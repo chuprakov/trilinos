@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** <tt>VectorSpaceFactory</tt> adapter subclass for <tt>Thyra::VectorSpaceBase</tt>.
+/** \brief <tt>VectorSpaceFactory</tt> adapter subclass for <tt>Thyra::VectorSpaceBase</tt>.
  */
 class VectorSpaceFactoryThyra : public VectorSpaceFactory {
 public:
@@ -43,20 +42,17 @@ public:
   /** @name Constructors / Initializers */
   //@{
 
-  ///
-  /** Construct to uninitialized.
+  /** \brief Construct to uninitialized.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_vec().get() == NULL</tt>
    * </ul>
    */
   VectorSpaceFactoryThyra();
-  ///
-  /** Calls <tt>this->initialize()</tt>.
+  /** \brief Calls <tt>this->initialize()</tt>.
    */
   VectorSpaceFactoryThyra( const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > &thyra_vec_spc_fcty );
-  ///
-  /** Initalize given a smart pointer to a <tt>Thyra::VetorSpaceFactory</tt> object.
+  /** \brief Initalize given a smart pointer to a <tt>Thyra::VetorSpaceFactory</tt> object.
    *
    * @param  thyra_vec_spc_fcty  [in] Smart pointer to Thyra vector
    *
@@ -69,16 +65,14 @@ public:
    * </ul>
    */
   void initialize( const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > &thyra_vec_spc_fcty );
-  ///
-  /** Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorSpaceBase</tt> object.
+  /** \brief Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorSpaceBase</tt> object.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_vec_spc_fcty().get() == NULL</tt>
    * </ul>
    */
   Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > set_uninitialized();
-  ///
-  /** Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorSpaceBase</tt> object.
+  /** \brief Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorSpaceBase</tt> object.
    *
    * If <tt>this->thyra_vec_spc_fcty().count() == 1</tt>, then <tt>this</tt>
    * has sole ownership of the <tt>*this->thyra_vec_spc_fcty()</tt> object.
@@ -90,7 +84,7 @@ public:
   /** @name Overridden from VectorSpaceFactory */
   //@{
 
-  ///
+  /** \brief . */
   space_ptr_t create_vec_spc(index_type dim) const;
 
   //@}

@@ -28,8 +28,7 @@
 
 #include "AbstractLinAlgPack_sparse_bounds.hpp"
 
-///
-/** Count the number of sparse bounds where at least one bound is
+/** \brief Count the number of sparse bounds where at least one bound is
   * finite.
   */
 AbstractLinAlgPack::size_type

@@ -49,13 +49,13 @@ typedef FortranTypes::f_dbl_prec	f_dbl_prec;
  */
 // @{
 
-///
+/** \brief . */
 const char SideChar[]	= {'L'	, 'R'			};
-///
+/** \brief . */
 const char TransChar[]	= {'N'	, 'T'	, 'C'	};
-///
+/** \brief . */
 const char UploChar[]	= {'U'	, 'L'			};
-///
+/** \brief . */
 const char DiagChar[]	= {'U'	, 'N'			};
 
 // @}
@@ -73,7 +73,7 @@ const char DiagChar[]	= {'U'	, 'N'			};
 /* * @name Generate plane rotation */
 // @{
 
-///
+/** \brief . */
 void rotg( f_dbl_prec* a, f_dbl_prec* b, f_dbl_prec* c, f_dbl_prec* s );
 
 // @}	 	
@@ -81,7 +81,7 @@ void rotg( f_dbl_prec* a, f_dbl_prec* b, f_dbl_prec* c, f_dbl_prec* s );
 /* * @name Apply plane rotation */
 // @{
 
-///
+/** \brief . */
 void rot(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY
      , const f_dbl_prec& C, const f_dbl_prec& S);
 // @}
@@ -89,7 +89,7 @@ void rot(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const 
 /* * @name  Interchange vectors */
 // @{
 
-///
+/** \brief . */
 void swap(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY);
 
 // @}
@@ -113,7 +113,7 @@ void copy(const f_int& N, const f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y,
 /* * @name  y = a*x + y */
 // @{
 
-///
+/** \brief . */
 void axpy(const f_int& N, const f_dbl_prec& A, const f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y
   , const f_int& INCY);
   
@@ -122,7 +122,7 @@ void axpy(const f_int& N, const f_dbl_prec& A, const f_dbl_prec* X, const f_int&
 /* * @name  Dot product */
 // @{
 
-///
+/** \brief . */
 f_dbl_prec dot(const f_int& N, const f_dbl_prec* X, const f_int& INCX, const f_dbl_prec* Y, const f_int& INCY);
 
 // @}
@@ -130,7 +130,7 @@ f_dbl_prec dot(const f_int& N, const f_dbl_prec* X, const f_int& INCX, const f_d
 /* * @name  2-Norm */
 // @{
 
-///
+/** \brief . */
 f_dbl_prec nrm2(const f_int& N, const f_dbl_prec* X, const f_int& INCX);
 
 // @}
@@ -138,7 +138,7 @@ f_dbl_prec nrm2(const f_int& N, const f_dbl_prec* X, const f_int& INCX);
 /* * @name  1-Norm */
 // @{
 
-///
+/** \brief . */
 f_dbl_prec asum(const f_int& N, const f_dbl_prec* X, const f_int& INCX);
 
 // @}
@@ -146,7 +146,7 @@ f_dbl_prec asum(const f_int& N, const f_dbl_prec* X, const f_int& INCX);
 /* * @name  Inifinity-Norm */
 // @{
 
-///
+/** \brief . */
 f_dbl_prec iamax(const f_int& N, const f_dbl_prec* X, const f_int& INCX);
 // @}
 
@@ -160,7 +160,7 @@ f_dbl_prec iamax(const f_int& N, const f_dbl_prec* X, const f_int& INCX);
 /* * @name General rectangular matrix-vector products */
 // @{
 
-///
+/** \brief . */
 void gemv(Transp transa, f_int m, f_int n, f_dbl_prec alpha, const f_dbl_prec* pa
   , f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
        
@@ -169,7 +169,7 @@ void gemv(Transp transa, f_int m, f_int n, f_dbl_prec alpha, const f_dbl_prec* p
 /* * @name General band matrix-vector products */
 // @{
 
-///
+/** \brief . */
 void gbmv(Transp transa, f_int m, f_int n, f_int kl, f_int ku, f_dbl_prec alpha, const f_dbl_prec* pa
   , f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
          
@@ -195,7 +195,7 @@ void gbmv(Transp transa, f_int m, f_int n, f_int kl, f_int ku, f_dbl_prec alpha,
 /* * @name Symmetric matrix-vector products */
 // @{
 
-///
+/** \brief . */
 void symv(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* pa
   , f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
       
@@ -204,7 +204,7 @@ void symv(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* pa
 /* * @name Symmetric band matrix-vector products */
 // @{
 
-///
+/** \brief . */
 void sbmv(Uplo uplo, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
   , f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
 
@@ -213,7 +213,7 @@ void sbmv(Uplo uplo, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
 /* * @name Symmetric packed matrix-vector products */
 // @{
 
-///
+/** \brief . */
 void spmv(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* pap
   , const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
 
@@ -222,7 +222,7 @@ void spmv(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* pap
 /* * @name Triangular matrix-vector products */
 // @{
 
-///
+/** \brief . */
 void trmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pa
   , f_int lda, f_dbl_prec* px, f_int incx);
 
@@ -231,7 +231,7 @@ void trmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pa
 /* * @name Triangular band matrix-vector products */
 // @{
 
-///
+/** \brief . */
 void tbmv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const f_dbl_prec* pa
   , f_int lda, f_dbl_prec* px, f_int incx);
 
@@ -240,7 +240,7 @@ void tbmv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const f_dbl_prec
 /* * @name Triangular packed matrix-vector products */
 // @{
 
-///
+/** \brief . */
 void tpmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pap
   , f_dbl_prec* px, f_int incx);
 
@@ -249,7 +249,7 @@ void tpmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pap
 /* * @name Triangular equation solve */
 // @{
 
-///
+/** \brief . */
 void trsv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pa
   , f_int lda, f_dbl_prec* px, f_int incx);
 
@@ -258,7 +258,7 @@ void trsv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pa
 /* * @name Triangular band equation solve */
 // @{
 
-///
+/** \brief . */
 void tbsv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const f_dbl_prec* pa
   , f_int lda, f_dbl_prec* px, f_int incx);
 
@@ -267,7 +267,7 @@ void tbsv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const f_dbl_prec
 /* * @name Triangular packed equation solve */
 // @{
 
-///
+/** \brief . */
 void tpsv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pap
   , f_dbl_prec* px, f_int incx);
 
@@ -276,7 +276,7 @@ void tpsv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pap
 /* * @name General rank-1 update */
 // @{
 
-///
+/** \brief . */
 void ger(f_int m, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
   , f_int incx, const f_dbl_prec* py, f_int incy, f_dbl_prec* pa, f_int lda);
 
@@ -305,7 +305,7 @@ void ger(f_int m, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
 /* * @name Symmetric rank-1 update */
 // @{
 
-///
+/** \brief . */
 void syr(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
   , f_int incx, f_dbl_prec* pa, f_int lda);
 
@@ -314,7 +314,7 @@ void syr(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
 /* * @name Symmetric packed rank-1 update */
 // @{
 
-///
+/** \brief . */
 void spr(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
   , f_int incx, f_dbl_prec* pap);
 
@@ -323,7 +323,7 @@ void spr(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
 /* * @name Symmetric rank-2 update */
 // @{
 
-///
+/** \brief . */
 void syr2(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
   , f_int incx, const f_dbl_prec* py, f_int incy, f_dbl_prec* pa, f_int lda);
 
@@ -332,7 +332,7 @@ void syr2(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
 /* * @name Symmetric packed rank-2 update */
 // @{
 
-///
+/** \brief . */
 void spr2(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
   , f_int incx, const f_dbl_prec* py, f_int incy, f_dbl_prec* pap);
 
@@ -348,7 +348,7 @@ void spr2(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
 /* * @name General rectangular matrix-matrix product */
 // @{
 
-///
+/** \brief . */
 void gemm(Transp transa, Transp transb, f_int m, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
   , f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
 
@@ -357,7 +357,7 @@ void gemm(Transp transa, Transp transb, f_int m, f_int n, f_int k, f_dbl_prec al
 /* * @name Symmetric matrix-matrix product */
 // @{
 
-///
+/** \brief . */
 void symm(Side side, Uplo uplo, f_int m, f_int n, f_dbl_prec alpha, const f_dbl_prec* pa
   , f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
 
@@ -371,7 +371,7 @@ void symm(Side side, Uplo uplo, f_int m, f_int n, f_dbl_prec alpha, const f_dbl_
 /* * @name Symmetric rank-k update */
 // @{
 
-///
+/** \brief . */
 void syrk(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
   , f_int lda, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
 
@@ -385,7 +385,7 @@ void syrk(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha, const f_d
 /* * @name Symmetric rank-2k update */
 // @{
 
-///
+/** \brief . */
 void syr2k(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
   , f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
 
@@ -399,7 +399,7 @@ void syr2k(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha, const f_
 /* * @name Triangular matrix-matrix product */
 // @{
 
-///
+/** \brief . */
 void trmm(Side side, Uplo uplo, Transp transa, Diag diag, f_int m, f_int n, f_dbl_prec alpha
   , const f_dbl_prec* pa, f_int lda, f_dbl_prec* pb, f_int ldb);
 
@@ -408,7 +408,7 @@ void trmm(Side side, Uplo uplo, Transp transa, Diag diag, f_int m, f_int n, f_db
 /* * @name Solution of triangular system */
 // @{
 
-///
+/** \brief . */
 void trsm(Side side, Uplo uplo, Transp transa, Diag diag, f_int m, f_int n, f_dbl_prec alpha
   , const f_dbl_prec* pa, f_int lda, f_dbl_prec* pb, f_int ldb);
           

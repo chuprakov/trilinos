@@ -33,8 +33,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Compute statistics for change in a vector.
+/** \brief Compute statistics for change in a vector.
   *
   * Given two vectors x and d where we wish to generate statistics
   * for the update x+d this function computes the following

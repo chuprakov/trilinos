@@ -39,7 +39,7 @@ namespace RTOpPack {
 class RTOpCPostMod {
 public:
 
-  ///
+  /** \brief . */
   RTOpCPostMod( const RTOp_RTOp_vtbl_t *vtbl ) : vtbl_(vtbl)
     {
 #ifdef TEUCHOS_DEBUG
@@ -49,7 +49,7 @@ public:
         );
 #endif			
     }
-  ///
+  /** \brief . */
   void initialize(RTOpC *op) const
     {
       op->op().vtbl = vtbl_;

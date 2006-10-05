@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract base class for all nonsingular polymorphic matrices
+/** \brief Abstract base class for all nonsingular polymorphic matrices
  * that can be used to compute matrix-vector products and solve
  * for linear systems efficiently.
  */
@@ -49,9 +48,9 @@ public:
   //@{
 
 #ifndef DOXYGEN_COMPILE
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixOpNonsing>    mat_mwons_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<MatrixOpNonsing>          mat_mwons_mut_ptr_t;
 #endif
 
@@ -60,8 +59,7 @@ public:
   /** @name Clone */
   //@{
 
-  ///
-  /** Clone the non-const matrix object (if supported).
+  /** \brief Clone the non-const matrix object (if supported).
    *
    * The default implementation returns NULL which is perfectly acceptable.
    * A matrix object is not required to return a non-NULL value but almost
@@ -69,8 +67,7 @@ public:
    */
   virtual mat_mwons_mut_ptr_t clone_mwons();
 
-  ///
-  /** Clone the const matrix object (if supported).
+  /** \brief Clone the const matrix object (if supported).
    *
    * The behavior of this method is the same as for the non-const version
    * above except it returns a smart pointer to a const matrix object.
@@ -82,8 +79,7 @@ public:
   /** @name Condition number estimation */
   //@{
 
-  ///
-  /** Compute an estimate of the condition number of this matrix.
+  /** \brief Compute an estimate of the condition number of this matrix.
    *
    * @param  requested_norm_type
    *                    [in] Determines the requested type of norm for the condition number.

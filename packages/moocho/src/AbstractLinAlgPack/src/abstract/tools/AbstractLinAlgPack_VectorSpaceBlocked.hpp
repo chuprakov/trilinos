@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** \c VectorSpace subclass for the composite of one or more <tt>%VectorSpace</tt>
+/** \brief \c VectorSpace subclass for the composite of one or more <tt>%VectorSpace</tt>
  * objects.
  *
  * This subclass allows <tt>%VectorSpace</tt> objects to be built out of one or more
@@ -87,8 +86,7 @@ namespace AbstractLinAlgPack {
 class VectorSpaceBlocked : public VectorSpace {
 public:
 
-  ///
-  /** Construct the vector space object.
+  /** \brief Construct the vector space object.
    *
    * Calls <tt>this->initialize()</tt>.
    */
@@ -98,8 +96,7 @@ public:
     ,const VectorSpace::space_fcty_ptr_t   &small_vec_spc_fcty = Teuchos::null
     );
   
-  ///
-  /** Initialize with a set of vector space objects.
+  /** \brief Initialize with a set of vector space objects.
    *
    * Postconditions:<ul>
    * <li> <tt>this->num_vector_spaces() == num_vector_spaces</tt>
@@ -133,20 +130,18 @@ public:
   /// Return the value of <tt>num_vec_spaces</tt> passed to <tt>this->initialize()</tt>.
   int num_vector_spaces() const;
 
-  ///
+  /** \brief . */
     /* Returns an array (length <tt>this->num_vector_spaces()</tt>) consistent with
      * <tt>vec_spaces</tt> passed into <tt>this->initialize()</tt>.
      */
   const VectorSpace::space_ptr_t*  vector_spaces() const;
 
-  ///
-  /** Returns array (length <tt>this->num_vector_spaces() + 1</tt>) of offsets for each constitient
+  /** \brief Returns array (length <tt>this->num_vector_spaces() + 1</tt>) of offsets for each constitient
      * vector space in the composite vector.
      */
   const index_type* vector_spaces_offsets() const;
 
-  ///
-  /** Get the position of the vector space object and its offset into the composite
+  /** \brief Get the position of the vector space object and its offset into the composite
    * vector of the vector space object that owns the <tt>ith</tt> index in the composite
    * vector.
    *
@@ -170,8 +165,7 @@ public:
   /** @name Overridden from VectorSpace */
   //@{
   
-  ///
-  /** Returns \c true if same type and has compatible vector spaces.
+  /** \brief Returns \c true if same type and has compatible vector spaces.
      *
      * This method will only return true if all of the following are true:
      * <ul>
@@ -183,17 +177,17 @@ public:
      * Otherwise, this method will return false.
    */
    bool is_compatible(const VectorSpace& vec_space) const;
-  ///
+  /** \brief . */
   index_type dim() const;
-  ///
+  /** \brief . */
   space_fcty_ptr_t small_vec_spc_fcty() const;
-  ///
+  /** \brief . */
   vec_mut_ptr_t create_member() const;
-  ///
+  /** \brief . */
   multi_vec_mut_ptr_t create_members(size_type num_vecs) const;
-  ///
+  /** \brief . */
   space_ptr_t clone() const;
-  ///
+  /** \brief . */
   space_ptr_t sub_space(const Range1D& rng) const;
 
   //@}

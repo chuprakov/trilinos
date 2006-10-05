@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Iterate through a set of sparse bounds.
+/** \brief Iterate through a set of sparse bounds.
  *
  * Finish documentation.
  *
@@ -45,7 +44,7 @@ private:
   enum EBound { LOWER, UPPER, BOTH };
 public:
 
-  ///
+  /** \brief . */
   sparse_bounds_itr(	
     const DVectorSlice::const_iterator   &bl_begin
     ,const DVectorSlice::const_iterator  &bl_end
@@ -61,13 +60,13 @@ public:
     else
       update();
   }
-  ///
+  /** \brief . */
   const value_type& big_bnd() const
   {    return big_bnd_; }
-  ///
+  /** \brief . */
   bool at_end() const
   {	return bl_itr_ == bl_end_; }
-  ///
+  /** \brief . */
   sparse_bounds_itr& operator++() {
     if(!at_end()) { ++bl_itr_; ++bu_itr_; ++index_; }
     for( ; !at_end() && ( *bl_itr_ <= -big_bnd_ && +big_bnd_ <= *bu_itr_ )
@@ -75,13 +74,13 @@ public:
     update();
     return *this;
   }
-  ///
+  /** \brief . */
   index_type index() const
   {	return index_; }
-  ///
+  /** \brief . */
   value_type lbound() const
   {	return lbound_; }
-  ///
+  /** \brief . */
   value_type ubound() const
   {	return ubound_; }
 

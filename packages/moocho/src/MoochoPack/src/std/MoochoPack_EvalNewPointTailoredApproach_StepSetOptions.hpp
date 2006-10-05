@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for EvalNewPointTailoredApproach_Step from an
+/** \brief Set options for EvalNewPointTailoredApproach_Step from an
   * OptionsFromStream object.
   *
   * The default options group name is EvalNewPointTailoredApproach.
@@ -69,7 +68,7 @@ class EvalNewPointTailoredApproach_StepSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   EvalNewPointTailoredApproach_StepSetOptions(
       EvalNewPointTailoredApproach_Step* target = 0
     , const char opt_grp_name[] = "EvalNewPointTailoredApproach" );

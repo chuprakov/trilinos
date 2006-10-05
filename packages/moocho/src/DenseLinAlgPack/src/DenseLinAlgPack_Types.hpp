@@ -47,52 +47,52 @@ namespace DenseLinAlgPack {
 
 // @{
 
-///
+/** \brief . */
 using RangePack::Range1D;
 #ifdef _INTEL_CXX
 using RangePack::full_range;
 #endif
-///
+/** \brief . */
 using BLAS_Cpp::rows;
-///
+/** \brief . */
 using BLAS_Cpp::cols;
-///
+/** \brief . */
 using BLAS_Cpp::trans_not;
 
 /// Enumeration for returning the amount of overlap between two objects
 enum EOverLap { NO_OVERLAP = 0, SOME_OVERLAP, SAME_MEM };	
 
-///
+/** \brief . */
 class IVector;
-///
+/** \brief . */
 class Range1D;
-///
+/** \brief . */
 template<class T>
 class VectorTmpl;
-///
+/** \brief . */
 template<class T>
 class VectorSliceTmpl;
-///
+/** \brief . */
 typedef VectorTmpl<value_type>                DVector;
-///
+/** \brief . */
 typedef VectorSliceTmpl<value_type>           DVectorSlice;
-///
+/** \brief . */
 typedef VectorTmpl<extended_value_type>       VectorExt;
-///
+/** \brief . */
 typedef VectorSliceTmpl<extended_value_type>  VectorSliceExt;
-///
+/** \brief . */
 class TransVectorSlice;
-///
+/** \brief . */
 class DMatrix;
-///
+/** \brief . */
 class DMatrixSlice;
-///
+/** \brief . */
 class TransGenMatrixSlice;
-///
+/** \brief . */
 class DMatrixSliceTriEle;
-///
+/** \brief . */
 class DMatrixSliceTri;
-///
+/** \brief . */
 class DMatrixSliceSym;
 
 // @}

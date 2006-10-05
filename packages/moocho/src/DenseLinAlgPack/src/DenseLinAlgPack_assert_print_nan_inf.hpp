@@ -35,11 +35,11 @@
 
 namespace DenseLinAlgPack {
 
-///
+/** \brief . */
 class NaNInfException : public std::runtime_error
 {public: NaNInfException(const std::string& what_arg) : std::runtime_error(what_arg) {}};
 
-///
+/** \brief . */
 /* * This function asserts if a value_type scalare is a NaN or Inf and optionally
   * prints out these entires.
   * 
@@ -62,7 +62,7 @@ class NaNInfException : public std::runtime_error
 bool assert_print_nan_inf( const value_type& val, char name[]
   , bool throw_excpt, std::ostream* out );
 
-///
+/** \brief . */
 /* * This function asserts if a vector has any NaN or inf entries and optionally
   * prints out these entires.
   * 
@@ -85,7 +85,7 @@ bool assert_print_nan_inf( const value_type& val, char name[]
 bool assert_print_nan_inf( const DVectorSlice& v, char name[]
   , bool throw_excpt, std::ostream* out );
 
-///
+/** \brief . */
 /* * This function asserts if a matrix has any NaN or inf entries and optionally
   * prints out these entires.
   * 

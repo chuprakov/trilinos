@@ -37,8 +37,7 @@ namespace MoochoPack {
 /// Name given to the quasi-Newton updating staistics iteration quantity
 extern const std::string quasi_newton_stats_name;
 
-///
-/** Class for object that attempts to return an IterQuantityAccess<QuasiNewtonStats>
+/** \brief Class for object that attempts to return an IterQuantityAccess<QuasiNewtonStats>
   * from an AlgorithmState object with the name quasi_newton_stats_name.
   */
 class quasi_newton_stats_iq_member

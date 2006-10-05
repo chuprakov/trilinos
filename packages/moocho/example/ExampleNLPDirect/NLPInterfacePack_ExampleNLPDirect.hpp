@@ -37,8 +37,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Simple example %NLP subclass to illustrate how to implement the
+/** \brief Simple example %NLP subclass to illustrate how to implement the
  * \c NLPDirect interface for a specialized \c NLP.
  *
  * For the NLP formulation see <tt>ExampleNLPObjGrad</tt>.
@@ -94,8 +93,7 @@ class ExampleNLPDirect
 {
 public:
 
-  ///
-  /** Constructor.
+  /** \brief Constructor.
    *
    * @param  vec_space  [in] Smart pointer to a vector space object that will
    *                    be used to define the spaces of dependent and independent
@@ -118,9 +116,9 @@ public:
   /** @name Overridden public members from NLP */
   //@{
 
-  ///
+  /** \brief . */
   void initialize(bool test_setup);
-  ///
+  /** \brief . */
   bool is_initialized() const;
 
   //@}
@@ -128,13 +126,13 @@ public:
   /** @name Overridden public members from NLPDirect */
   //@{
 
-  ///
+  /** \brief . */
   Range1D var_dep() const;
-  ///
+  /** \brief . */
   Range1D var_indep() const;
-  ///
+  /** \brief . */
   const mat_fcty_ptr_t factory_D() const;
-  ///
+  /** \brief . */
   void calc_point(
     const Vector     &x
     ,value_type      *f
@@ -147,7 +145,7 @@ public:
     ,MatrixOp        *D
     ,MatrixOp        *Uz
     ) const;
-  ///
+  /** \brief . */
   void calc_semi_newton_step(
     const Vector    &x
     ,VectorMutable  *c
@@ -169,7 +167,7 @@ private:
   // /////////////////////////////////////////
   // Private member functions
 
-  ///
+  /** \brief . */
   void assert_is_initialized() const;
 
 };	// end class ExampleNLPDirect

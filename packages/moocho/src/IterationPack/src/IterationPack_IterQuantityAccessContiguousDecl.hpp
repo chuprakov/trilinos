@@ -48,8 +48,7 @@ namespace IterationPack {
 
 // ToDo: Use an implementation subclass for the operations to avoid code blot.
 
-///
-/** Iteration Quanities subclass for contiguous iterations.
+/** \brief Iteration Quanities subclass for contiguous iterations.
   *
   * This class implements the IterQuantityAccess interface for
   * the case where storage is provided for consecutive iterations.
@@ -74,20 +73,19 @@ template<class T_info>
 class IterQuantityAccessContiguous : public IterQuantityAccess<T_info> {
 public:
 
-  ///
+  /** \brief . */
   typedef IterQuantityAccess<T_info> base_t;
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<T_info> >          abstract_factory_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::AbstractFactoryStd<T_info,T_info>    abstract_factory_std_t;
 
   /** @name Constructors/initalizers */
   //@{
 
-  ///
-  /** Construct storage for <tt>num_quantities</tt> with the name <tt>name</tt> given an abstract factory.
+  /** \brief Construct storage for <tt>num_quantities</tt> with the name <tt>name</tt> given an abstract factory.
    *
    * After construction <tt>this->set_k(offset)</tt> can be called for any
    * <tt>offset</tt> in the range of legal integers.
@@ -110,8 +108,7 @@ public:
 #endif
     );
 
-  ///
-  /** Set the abstract factory to use to allocate storate.
+  /** \brief Set the abstract factory to use to allocate storate.
    *
    * Postconditions:<ul>
    * <li> \c this will become uninitialized and current memory will be wipped out.
@@ -123,8 +120,7 @@ public:
    */
   void set_factory( const abstract_factory_ptr_t& abstract_factory );
 
-  ///
-  /** Resize the number of contiguous storage locations.
+  /** \brief Resize the number of contiguous storage locations.
    *
    * Postconditions:<ul>
    * <li> \c this will become uninitialized and current memory will be wipped out.
@@ -132,7 +128,7 @@ public:
    */
   void resize( int num_quantities );
 
-  ///
+  /** \brief . */
   ~IterQuantityAccessContiguous();
 
   //@}
@@ -148,25 +144,25 @@ public:
   /** @name Overridden from IterQuantity */
   //@{
 
-  ///
+  /** \brief . */
   IterQuantity* clone() const;
-  ///
+  /** \brief . */
   const char* name() const; 
-  ///
+  /** \brief . */
   bool has_storage_k(int offset) const;
-  ///
+  /** \brief . */
   bool updated_k(int offset) const;
-  ///
+  /** \brief . */
   int last_updated() const;
-  ///
+  /** \brief . */
   void set_not_updated_k(int offset);
-  ///
+  /** \brief . */
   void set_all_not_updated();
-  ///
+  /** \brief . */
   bool will_loose_mem(int offset, int set_offset) const;
-  ///
+  /** \brief . */
   void next_iteration();
-  ///
+  /** \brief . */
   void print_concrete_type( std::ostream& out ) const;
 
   //@}
@@ -174,13 +170,13 @@ public:
   /** @name Overridden from IterQuantityAccess */
   //@{
 
-  ///
+  /** \brief . */
   T_info& get_k(int offset);
-  ///
+  /** \brief . */
   const T_info& get_k(int offset) const;
-  ///
+  /** \brief . */
   T_info& set_k(int offset);
-  ///
+  /** \brief . */
   T_info& set_k(int set_offset, int get_offset);
 
   //@}

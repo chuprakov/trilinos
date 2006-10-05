@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Concrete subclass for a sub-view of a VectorMutable object.
+/** \brief Concrete subclass for a sub-view of a VectorMutable object.
  *
  * Not all of the methods from VectorMutable are overridden, only those that
  * need to be or may result in better performance.
@@ -54,20 +53,17 @@ class VectorMutableSubView
 {
 public:
 
-  ///
-  /** Constructs to uninitialized.
+  /** \brief Constructs to uninitialized.
    *
    * Postconditions: see \c set_uninitialized().
    */
   VectorMutableSubView();
 
-  ///
-  /** Calls <tt>this->initialize()</tt>.
+  /** \brief Calls <tt>this->initialize()</tt>.
    */
   VectorMutableSubView( const vec_mut_ptr_t& full_vec, const Range1D& rng );
 
-  ///
-  /** Initialize.
+  /** \brief Initialize.
    *
    * Constructs a view of the vector this = vec(rng).
    *
@@ -77,8 +73,7 @@ public:
    */
   void initialize( const vec_mut_ptr_t& vec, const Range1D& rng );
 
-  ///
-  /** Set uninitialized()
+  /** \brief Set uninitialized()
    *
    * Postconditions:<ul>
    * <li> <tt>this->dim() == 0</tt>
@@ -87,7 +82,7 @@ public:
    */
   void set_uninitialized();
 
-  ///
+  /** \brief . */
   const vec_mut_ptr_t& full_vec() const;
 
   /** @name Overridden from Vector */
@@ -101,15 +96,15 @@ public:
   /** @name Overridden from VectorMutable */
   //@{
   
-  ///
+  /** \brief . */
   void set_ele( index_type i, value_type val );
-  ///
+  /** \brief . */
   vec_mut_ptr_t sub_view( const Range1D& rng );
-  ///
+  /** \brief . */
   void get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec );
-  ///
+  /** \brief . */
   void commit_sub_vector( RTOpPack::MutableSubVector* sub_vec );
-  ///
+  /** \brief . */
   void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
 
   //@}

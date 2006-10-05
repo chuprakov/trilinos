@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Matrix subclass for a scaled identity matrix.
+/** \brief Matrix subclass for a scaled identity matrix.
  *
  * More operations will be overridden as they are needed by various applications.
  */
@@ -51,7 +50,7 @@ public:
     ,const value_type                        scale     = 1.0
     );
 
-  ///
+  /** \brief . */
   void initialize(
     const VectorSpace::space_ptr_t&          vec_space
     ,const value_type                        scale       = 1.0
@@ -62,7 +61,7 @@ public:
   /** @name Access */
   //@{
 
-  ///
+  /** \brief . */
   value_type scale() const;
 
   //@}
@@ -80,11 +79,11 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     ,const Vector& v_rhs2, value_type beta ) const;
@@ -94,7 +93,7 @@ public:
   /** @name Overridden from MatrixNonsing */
   //@{
 
-  ///
+  /** \brief . */
   void V_InvMtV(
     VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
     ,const Vector& v_rhs2 ) const;

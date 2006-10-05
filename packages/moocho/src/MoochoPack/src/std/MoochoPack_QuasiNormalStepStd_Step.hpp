@@ -34,8 +34,7 @@
 
 namespace MoochoPack {
 
-///
-/** Calculates the range space step by, solving for <tt>py = -inv(R)*c(equ_decomp)</tt>,
+/** \brief Calculates the range space step by, solving for <tt>py = -inv(R)*c(equ_decomp)</tt>,
  * then setting <tt>Ypy = Y * py</tt>.
  */
 class QuasiNormalStepStd_Step
@@ -45,10 +44,10 @@ public:
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   //@}

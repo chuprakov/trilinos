@@ -35,7 +35,7 @@
 
 namespace DenseLinAlgPack {
 
-///
+/** \brief . */
 /* * Output stream operator for IVector used as a permutation array.
   *
   * The output format is:\\

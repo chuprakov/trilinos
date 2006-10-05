@@ -16,8 +16,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Create a vector space given the input arguments argc, argv[] and an MPI communicator
+/** \brief Create a vector space given the input arguments argc, argv[] and an MPI communicator
  *
  */
 int exampleNLPDiagSetup(

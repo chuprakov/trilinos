@@ -33,7 +33,7 @@
 
 namespace DenseLinAlgPack {
 
-///
+/** \brief . */
 /* * DMatrixSlice output stream operator.
   *
   * This operator function calls the function output(os,gms,0).

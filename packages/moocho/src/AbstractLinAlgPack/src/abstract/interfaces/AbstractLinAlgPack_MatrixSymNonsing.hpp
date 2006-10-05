@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract base class for all polymorphic symmetrix nonsingular matrices that
+/** \brief Abstract base class for all polymorphic symmetrix nonsingular matrices that
  * can be used to solve for linear systems relatively efficently.
  *
  * This interface defines a single addition method to those found in \c MatrixNonsing:
@@ -68,12 +67,12 @@ public:
   //@{
 
 #ifndef DOXYGEN_COMPILE
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixSymNonsing>    mat_msns_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<MatrixSymNonsing>          mat_msns_mut_ptr_t;
 #endif
-  ///
+  /** \brief . */
   enum EMatrixDummyArg { DUMMY_ARG };
 
   //@}
@@ -81,7 +80,7 @@ public:
   /** @name Friends */
   //@{
 
-  ///
+  /** \brief . */
   friend
   void M_StMtInvMtM(
     MatrixSymOp* sym_gms_lhs, value_type alpha
@@ -95,8 +94,7 @@ public:
   /** @name Clone */
   //@{
 
-  ///
-  /** Clone the non-const matrix object (if supported).
+  /** \brief Clone the non-const matrix object (if supported).
    *
    * The default implementation returns NULL which is perfectly acceptable.
    * A matrix object is not required to return a non-NULL value but almost
@@ -104,8 +102,7 @@ public:
    */
   virtual mat_msns_mut_ptr_t clone_msns();
 
-  ///
-  /** Clone the const matrix object (if supported).
+  /** \brief Clone the const matrix object (if supported).
    *
    * The behavior of this method is the same as for the non-const version
    * above except it returns a smart pointer to a const matrix object.
@@ -119,8 +116,7 @@ protected:
   /** @name Level-3 */
   //@{
 
-  ///
-  /** symwo_lhs = alpha * op(mwo) * inv(M) * op(mwo)'.
+  /** \brief symwo_lhs = alpha * op(mwo) * inv(M) * op(mwo)'.
    *
    * The default implementation is based on the operation M_StInvMtM(...)
    * assuming that this #M# is a symmetric matrix.  For an efficient implementation

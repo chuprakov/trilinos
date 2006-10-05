@@ -79,7 +79,7 @@ public:
     {
 #ifdef TEUCHOS_DEBUG
       TEST_FOR_EXCEPTION(
-        !( 1 <= i && i < subDim_ ), std::logic_error
+        !( 0 <= i && i < subDim_ ), std::logic_error
         ,"Error, index i="<<i<<" does not fall in the range [0,"<<(subDim_-1)<<"]!"
         );
 #endif

@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for CheckConvergenceStd_AddedStep from an
+/** \brief Set options for CheckConvergenceStd_AddedStep from an
   * OptionsFromStream object.
   *
   * The default options group name is CheckConvergenceStd.
@@ -73,7 +72,7 @@ class CheckConvergenceStd_AddedStepSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   CheckConvergenceStd_AddedStepSetOptions(
       CheckConvergenceStd_AddedStep* target = 0
     , const char opt_grp_name[] = "CheckConvergenceStd" );

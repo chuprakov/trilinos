@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Concrete subclass for a default sub-space of a vector.
+/** \brief Concrete subclass for a default sub-space of a vector.
  *
  * There is not much to this subclass.  It basically implements all
  * of its methods based on the external VectorSpace interface to
@@ -48,20 +47,17 @@ namespace AbstractLinAlgPack {
 class VectorSpaceSubSpace : public virtual VectorSpace {
 public:
 
-  ///
-  /** Constructs to uninitialized.
+  /** \brief Constructs to uninitialized.
    *
    * Postconditions: see \c set_uninitialized().
    */
   VectorSpaceSubSpace();
 
-  ///
-  /** Calls <tt>this->initialize()</tt>.
+  /** \brief Calls <tt>this->initialize()</tt>.
    */
   VectorSpaceSubSpace( const space_ptr_t& full_space, const Range1D& rng );
 
-  ///
-  /** Initialize.
+  /** \brief Initialize.
    *
    * Constructs a sub-space of the vector space this = space.sub_space(rng).
    *
@@ -80,8 +76,7 @@ public:
    */
   void initialize( const space_ptr_t& full_space, const Range1D& rng );
 
-  ///
-  /** Set uninitilized.
+  /** \brief Set uninitilized.
    *
    * Postconditions:<ul>
    * <li> <tt>this->dim() == 0</tt>
@@ -90,10 +85,10 @@ public:
    */
   void set_uninitialized();
 
-  ///
+  /** \brief . */
   const space_ptr_t& full_space() const;
 
-  ///
+  /** \brief . */
   const Range1D& rng() const;
 
   /// Validate rng
@@ -102,17 +97,17 @@ public:
   /** @name Overridden from VectorSpace */
   //@{
 
-  ///
+  /** \brief . */
   bool is_compatible(const VectorSpace& ) const;
-  ///
+  /** \brief . */
   bool is_in_core() const;
-  ///
+  /** \brief . */
   index_type dim() const;
-  ///
+  /** \brief . */
   vec_mut_ptr_t create_member() const;
-  ///
+  /** \brief . */
   space_ptr_t clone() const;
-  ///
+  /** \brief . */
   space_ptr_t sub_space(const Range1D& rng) const;
 
   //@}

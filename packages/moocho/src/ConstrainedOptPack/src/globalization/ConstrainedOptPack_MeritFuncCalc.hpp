@@ -33,8 +33,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Abstract iterface for n-D merit functions {abstract}.
+/** \brief Abstract iterface for n-D merit functions {abstract}.
   *
   * Used to compute the value of the merit at a point \a x (\c phi(x)) and
   * to retrieve the derivative (\c phi.deriv()) along some direction \a d from
@@ -43,11 +42,10 @@ namespace ConstrainedOptPack {
 class MeritFuncCalc  {
 public:
 
-  ///
+  /** \brief . */
   virtual ~MeritFuncCalc() {}
 
-  ///
-  /** Return the value of the merit function at \a x.
+  /** \brief Return the value of the merit function at \a x.
     */
   virtual value_type operator()(const Vector& x) const= 0;
 

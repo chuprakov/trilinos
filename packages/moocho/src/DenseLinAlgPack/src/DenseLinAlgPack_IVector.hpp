@@ -37,7 +37,7 @@
 #include "Teuchos_TestForException.hpp"
 
 namespace DenseLinAlgPack {
-///
+/** \brief . */
 /* * Fortran compatable integer vector for holding the  pivot information for
  * the elements of a vector, or the rows or columns of a matrix.
  */
@@ -55,13 +55,13 @@ public:
 
   // constructors
 
-  ///
+  /** \brief . */
   IVector();
-  ///
+  /** \brief . */
   IVector(size_type n);
-  ///
+  /** \brief . */
   IVector(const value_type& val, size_type n);
-  ///
+  /** \brief . */
   IVector(const value_type* p, size_type n);
 
   /// Resize on assignment

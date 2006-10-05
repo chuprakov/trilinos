@@ -39,8 +39,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Implementation of limited Memory BFGS matrix.
+/** \brief Implementation of limited Memory BFGS matrix.
  *
  * The function set_num_updates_stored(l) must be called first to set the maximum number of
  * the most recent updates that can  be stored.  The storage requirements for this class are
@@ -123,16 +122,14 @@ public:
     ,bool       auto_rescaling     = false
     );
 
-  ///
-  /** Set whether automatic rescaling is used or not.
+  /** \brief Set whether automatic rescaling is used or not.
     *
     * This function must be called before a BFGS update is performed
     * in order for it to take effect for that update.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, auto_rescaling )
 
-  ///
-  /** Initial setup for the matrix.
+  /** \brief Initial setup for the matrix.
     *
     * This function must be called before init_identity(n)
     * is called.  When this function is called all current
@@ -179,21 +176,21 @@ public:
   // //////////////////////////////////
   // Representation access
 
-  ///
+  /** \brief . */
   size_type m() const;
-  ///
+  /** \brief . */
   size_type m_bar() const;
-  ///
+  /** \brief . */
   size_type k_bar() const;
-  ///
+  /** \brief . */
   value_type gamma_k() const;
-  ///
+  /** \brief . */
   const DMatrixSlice S() const;
-  ///
+  /** \brief . */
   const DMatrixSlice Y() const;
-  ///
+  /** \brief . */
   bool maintain_original() const;
-  ///
+  /** \brief . */
   bool maintain_inverse() const;
   /// Returns the total number of successful secant updates performed.
   size_type num_secant_updates() const;
@@ -201,18 +198,18 @@ public:
   // /////////////////////////////////////////////////////
   // Overridden from Matrix
 
-  ///
+  /** \brief . */
   size_type rows() const;
 
   // /////////////////////////////////////////////////////////
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& m);
-  ///
+  /** \brief . */
   void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const DVectorSlice& vs_rhs2, value_type beta) const;
 
@@ -222,7 +219,7 @@ public:
   /** @name Overridden from MatrixWithOpFactorized */
   //@{
 
-  ///
+  /** \brief . */
   void V_InvMtV( DVectorSlice* v_lhs, BLAS_Cpp::Transp trans_rhs1
     , const DVectorSlice& vs_rhs2) const;
 
@@ -232,17 +229,16 @@ public:
   /** @name Overridden from MatrixSymSecant */
   //@{
 
-  ///
+  /** \brief . */
   void init_identity( size_type n, value_type alpha );
-  ///
-  /** Actually this calls init_identity( (&diag)->size(), norm_inf(diag) ).
+  /** \brief Actually this calls init_identity( (&diag)->size(), norm_inf(diag) ).
     *
     * This initialization is not convienent for this implementation.
     * Besides, when we are using automatric rescaling (auto_rescaling == true)
     * then this will really not matter much anyway.
     */
   void init_diagonal( const DVectorSlice& diag );
-  ///
+  /** \brief . */
   void secant_update(DVectorSlice* s, DVectorSlice* y, DVectorSlice* Bs);
 
   //		end Overridden from MatrixSymSecant
@@ -265,14 +261,13 @@ public:
     ,Inertia           inertia
     ,PivotTolerances   pivot_tols
     );
-  ///
+  /** \brief . */
   size_type max_size() const;
   /// Returns (0,0,rows())
   Inertia inertia() const;
   /// Will set rows() == 0
   void set_uninitialized();
-  ///
-  /** Augment the matrix to add a row and column.
+  /** \brief Augment the matrix to add a row and column.
    *
    * This function is very limited in what it will do.
    * It will throw exceptions if alpha <= 0.0 or t != NULL
@@ -340,21 +335,21 @@ private:
 
   // Access to important matrices.
 
-  ///
+  /** \brief . */
   const DMatrixSliceTri R() const;
   /// Strictly lower triangular part of L
   const DMatrixSliceTri Lb() const;
-  ///
+  /** \brief . */
   DMatrixSlice STY();
-  ///
+  /** \brief . */
   const DMatrixSlice STY() const;
-  ///
+  /** \brief . */
   DMatrixSliceSym STS();
-  ///
+  /** \brief . */
   const DMatrixSliceSym STS() const;
-  ///
+  /** \brief . */
   DMatrixSliceSym YTY();
-  ///
+  /** \brief . */
   const DMatrixSliceSym YTY() const;
   /// y = inv(Q) * x
   void V_invQtV( DVectorSlice* y, const DVectorSlice& x ) const;
@@ -366,7 +361,7 @@ private:
   /// Update Q
   void update_Q() const;
 
-  ///
+  /** \brief . */
   void assert_initialized() const;
 
 };	// end class MatrixSymPosDefLBFGS

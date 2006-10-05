@@ -39,8 +39,7 @@
 
 namespace MoochoPack {
 
-///
-/** This is the most basic interface that clients use to solve an NLP.
+/** \brief This is the most basic interface that clients use to solve an NLP.
  *
  * ToDo: Finish documentaiton.
  */
@@ -50,7 +49,7 @@ public:
   /** @name Public Types */
   //@{
 
-  ///
+  /** \brief . */
   enum EFindMinReturn {
     SOLUTION_FOUND
     ,MAX_ITER_EXCEEDED
@@ -70,73 +69,61 @@ public:
   /// Set the maximum number of iterations the rSQP algorithm can perform
   STANDARD_MEMBER_COMPOSITION_MEMBERS( int, max_iter )
 
-  ///
-  /** Set the maximum run_time
+  /** \brief Set the maximum run_time
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( double, max_run_time )
 
-  ///
-  /** Set the termination tolerance for the relative (scaled) linear dependence of the
+  /** \brief Set the termination tolerance for the relative (scaled) linear dependence of the
    * gradients part of the first order necessary optimality conditions.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_tol )
 
-  ///
-  /** Set the termination tolerance for the (scaled) equality constraints ||c(x*)||inf
+  /** \brief Set the termination tolerance for the (scaled) equality constraints ||c(x*)||inf
    * which is part of the first order necessary optimality conditions.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_tol )
 
-  ///
-  /** Set the termination tolerance for the complementarity condition 
+  /** \brief Set the termination tolerance for the complementarity condition 
    *  for the (scaled) bound constraints
    *  which is part of the first order necessary optimality conditions.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_tol )
 
-  ///
-  /** Set the termination tolerance for the change in the estimate of the solution.
+  /** \brief Set the termination tolerance for the change in the estimate of the solution.
    *
    * The test is: <tt>|d(i)|/(1+|x(i)|) < step_tol</tt>. 
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, step_tol )
 
-  ///
-  /** Determine the amount of output to a journal file.
+  /** \brief Determine the amount of output to a journal file.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( EJournalOutputLevel, journal_output_level )
 
-  ///
-  /** Determine the amount of output of the null space to a journal file.
+  /** \brief Determine the amount of output of the null space to a journal file.
    *
    * This option allows the user to perform a higher level of output
    * for quantities in the null space.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( EJournalOutputLevel, null_space_journal_output_level )
 
-  ///
-  /** Set the precesion of the journal output.
+  /** \brief Set the precesion of the journal output.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( int, journal_print_digits )
 
-  ///
-  /** Set whether computations will be double checked or not.
+  /** \brief Set whether computations will be double checked or not.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, check_results )
 
-  ///
-  /** Set whether the condition numbers of important matrics is
+  /** \brief Set whether the condition numbers of important matrics is
    * computed and printed or not.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_conditioning )
 
-  ///
-  /** Set whether or not matrix norms are computed and printed.
+  /** \brief Set whether or not matrix norms are computed and printed.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_matrix_norms )
 
-  ///
-  /** Set whether calc_conditioning and calc_matrix_norms apply to only
+  /** \brief Set whether calc_conditioning and calc_matrix_norms apply to only
    * null space matrices.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_matrix_info_null_space_only )
@@ -152,8 +139,7 @@ public:
   /// <<std comp>> members for the track
   STANDARD_COMPOSITION_MEMBERS( AlgorithmTracker, track )
 
-  ///
-  /** Construct with no references set to nlp or track objects.
+  /** \brief Construct with no references set to nlp or track objects.
    */
   NLPSolverClientInterface(
     int                    max_iter             = 10000
@@ -171,7 +157,7 @@ public:
     ,bool                  calc_matrix_info_null_space_only = false
     );
 
-  ///
+  /** \brief . */
   virtual ~NLPSolverClientInterface() {}
 
   //@}
@@ -179,8 +165,7 @@ public:
   /** @name Solve the NLP*/
   //@{
 
-  ///
-  /** Find the minimun of the set NLP.
+  /** \brief Find the minimun of the set NLP.
    *
    * This function returns <tt>SOLUTION_FOUND</tt> if the NLP has been solved to the desired
    * tolerances.  In this case <tt>this->track().output_final(...,TERMINATE_TRUE)</tt>
@@ -223,8 +208,7 @@ public:
   /** @name Algorithm description */
   //@{
 
-  ///
-  /** Prints a description of the algorithm.
+  /** \brief Prints a description of the algorithm.
     */
   virtual void print_algorithm(std::ostream& out) const = 0;
 
@@ -233,19 +217,17 @@ public:
   /** @name Algorithm timing */
   //@{
 
-  ///
-  /** Causes algorithm to be timed.
+  /** \brief Causes algorithm to be timed.
    *
    * Call with <tt>algo_timing == true</tt> before calling <tt>find_min()</tt>
    * to have the algorithm timed.
    */
   virtual void set_algo_timing( bool algo_timing ) = 0;
 
-  ///
+  /** \brief . */
   virtual bool algo_timing() const = 0;
 
-  ///
-  /** Outputs table of times for each step and the cummulative times.
+  /** \brief Outputs table of times for each step and the cummulative times.
    *
    * Call after <tt>find_min()</tt> has executed to get a table
    * of times.
@@ -257,9 +239,9 @@ public:
 private:
 
 #ifdef DOXYGEN_COMPILE // Strictly for doxygen diagrams
-  ///
+  /** \brief . */
   NLPInterfacePack::NLP                  *nlp;
-  ///
+  /** \brief . */
   IterationPack::AlgorithmTracker   *track;
 #endif
 

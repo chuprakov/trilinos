@@ -36,8 +36,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Testing class for \c DecompositionSystem interface.
+/** \brief Testing class for \c DecompositionSystem interface.
  *
  * This testing class is basically a unit tester for \c DecompositionSystem.  The method \c test_decomp_system()
  * runs many different tests to validate the interface and the matrix objects associated with the interface.
@@ -60,7 +59,7 @@ public:
   /** @name Set and access options */
   //@{
 
-  ///
+  /** \brief . */
   enum EPrintTestLevel {
     PRINT_NOT_SELECTED =0  ///< The print option has not been selected (will default to PRINT_NONE if not set)
     ,PRINT_NONE        =1  ///< Don't print anything
@@ -99,8 +98,7 @@ public:
     ,value_type      solve_error_tol   = 1e-8
     );
  
-  ///
-  /** Test a \c DecompositionSystem object after <tt>DecompositionSystem::update_basis()</tt> is called.
+  /** \brief Test a \c DecompositionSystem object after <tt>DecompositionSystem::update_basis()</tt> is called.
    *
    * @param  decomp_sys
    *              [in] The \c DecompositionSystem object that \c DecompositionSystem::update_basis() was called on.

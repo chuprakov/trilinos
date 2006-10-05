@@ -47,7 +47,7 @@ typedef FortranTypes::f_logical		f_logical;
 // xPOTRF
 
 inline
-///
+/** \brief . */
 void potrf(  BLAS_Cpp::Uplo uplo
   , const f_int& n, f_dbl_prec* A, const f_int& lda
   , f_int* info )
@@ -59,7 +59,7 @@ void potrf(  BLAS_Cpp::Uplo uplo
 // xGEQRF
 
 inline
-///
+/** \brief . */
 void geqrf( const f_int& m
   , const f_int& n, f_dbl_prec* A, const f_int& lda
   , f_dbl_prec* tau, f_dbl_prec* work
@@ -71,7 +71,7 @@ void geqrf( const f_int& m
 // xORMQR
 
 inline
-///
+/** \brief . */
 void ormqr( BLAS_Cpp::Side side, BLAS_Cpp::Transp trans
   , const f_int& m, const f_int& n
   , const f_int& k, const f_dbl_prec* A, const f_int& lda
@@ -99,7 +99,7 @@ void sytrf( BLAS_Cpp::Uplo uplo, const f_int& n, f_dbl_prec A[]
 // xSYTRS
 
 inline
-///
+/** \brief . */
 void sytrs( BLAS_Cpp::Uplo uplo
   , const f_int& n, const f_int& nrhs, const f_dbl_prec A[]
   , const f_int& lda, const f_int ipiv[], f_dbl_prec B[]
@@ -123,7 +123,7 @@ void getrf(
 // xGETRS
 
 inline
-///
+/** \brief . */
 void getrs(
   BLAS_Cpp::Transp trans
   ,const f_int& n, const f_int& nrhs, const f_dbl_prec A[]

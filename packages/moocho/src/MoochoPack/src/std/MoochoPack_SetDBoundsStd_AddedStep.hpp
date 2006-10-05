@@ -36,23 +36,22 @@
 
 namespace MoochoPack {
 
-///
-/** Computes the bounds for the QP subproblem from the %NLP bounds.
+/** \brief Computes the bounds for the QP subproblem from the %NLP bounds.
  */
 class SetDBoundsStd_AddedStep
   : public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
-  ///
+  /** \brief . */
   SetDBoundsStd_AddedStep();
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   //@}

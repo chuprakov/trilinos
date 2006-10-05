@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for BFGSUpdate_Strategy from an OptionsFromStream
+/** \brief Set options for BFGSUpdate_Strategy from an OptionsFromStream
   * object.
   *
   * The default options group name is BFGSUpdate.
@@ -62,7 +61,7 @@ class BFGSUpdate_StrategySetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   BFGSUpdate_StrategySetOptions(
       BFGSUpdate_Strategy* target = 0
     , const char opt_grp_name[] = "BFGSUpdate" );

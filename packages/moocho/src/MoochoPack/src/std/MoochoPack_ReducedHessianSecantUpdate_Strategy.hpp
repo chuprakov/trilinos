@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Strategy interface for performing secant updates {abstract}.
+/** \brief Strategy interface for performing secant updates {abstract}.
  *
  * This interface is used by the class \c ReducedHessianSecantUpdateStd_Step
  * to actually perform the secant updates.
@@ -42,11 +41,10 @@ namespace MoochoPack {
 class ReducedHessianSecantUpdate_Strategy {
 public:
   
-    ///
+    /** \brief . */
   virtual ~ReducedHessianSecantUpdate_Strategy() {}
 
-  ///
-  /** Perform the secant update.
+  /** \brief Perform the secant update.
    *
    * The function will update <tt>rHL_k</tt> so that <tt>rHL_k * s_bfgs \approx y_bfgs</tt>.
    * Note that this post conditions for this function do not strictly require
@@ -90,8 +88,7 @@ public:
     ,MatrixSymOp        *rHL_k
     ) = 0;
   
-  ///
-  /** This function will print a description of the computations and logic used
+  /** \brief This function will print a description of the computations and logic used
    * in the update.
    */
   virtual void print_step( std::ostream& out, const std::string& leading_str ) const = 0;

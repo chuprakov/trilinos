@@ -36,8 +36,7 @@
 
 namespace MoochoPack {
 
-///
-/** Perform BFGS updates on full reduced Hessian.
+/** \brief Perform BFGS updates on full reduced Hessian.
  *
  * This is really a do nothing class that just uses a strategy
  * object (see #bfgs_update# below) to perform the update on the full
@@ -47,8 +46,7 @@ class ReducedHessianSecantUpdateBFGSFull_Strategy : public ReducedHessianSecantU
 {
 public:
   
-  ///
-  /** <<std comp>> members for the strategy object that will
+  /** \brief <<std comp>> members for the strategy object that will
    * perform guts secant update.
    */
   STANDARD_COMPOSITION_MEMBERS( BFGSUpdate_Strategy, bfgs_update )
@@ -59,7 +57,7 @@ public:
 
   /** @name Overridden from ReducedHessianSecantUpdate_Strategy */
   //@{
-  ///
+  /** \brief . */
   bool perform_update(
     VectorMutable     *s_bfgs
     ,VectorMutable    *y_bfgs
@@ -70,7 +68,7 @@ public:
     ,NLPAlgoState              *s
     ,MatrixSymOp        *rHL_k
     );
-  ///
+  /** \brief . */
   void print_step( std::ostream& out, const std::string& leading_str ) const;
   //@}
 

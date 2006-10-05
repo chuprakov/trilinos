@@ -38,39 +38,35 @@
 
 namespace IterationPack {
 
-///
-/** Base class for some of the implementation features of \c CastIQMember.
+/** \brief Base class for some of the implementation features of \c CastIQMember.
   *
   * This class is included to avoid code blot with the templates.
   */
 class CastIQMemberBase {
 public:
-  ///
-  /** Name returns the name of the iteration quantity
+  /** \brief Name returns the name of the iteration quantity
    */
   const std::string& iq_name() const;
-  ///
-  /** Returns if the iteration quantity exists in the state object.
+  /** \brief Returns if the iteration quantity exists in the state object.
    */
   bool exists_in( const AlgorithmState& s ) const;
 protected:
-  ///
+  /** \brief . */
   CastIQMemberBase( const std::string iq_name );
-  ///
+  /** \brief . */
   void cache_iq_id( const AlgorithmState& s ) const;
-  ///
+  /** \brief . */
   void throw_cast_error( const AlgorithmState::iq_id_type iq_id, const std::string& iqa_name ) const;
-  ///
+  /** \brief . */
   const std::string					iq_name_;
-  ///
+  /** \brief . */
   mutable AlgorithmState::iq_id_type	iq_id_;
 private:
   enum { NOT_SET_YET = AlgorithmState::DOES_NOT_EXIST - 1 };
   CastIQMemberBase(); // not defined and not to be called.
 };	// end class CastIQMemberBase
 
-///
-/** Template class to be used to lookup an interation quantity,
+/** \brief Template class to be used to lookup an interation quantity,
  * cast it to an <tt>\ref IterQuantityAccess "IterQuantityAccess<T>"</tt> object
  * and cache the \c iq_id for fast access later.
  *
@@ -146,8 +142,7 @@ class CastIQMember : public CastIQMemberBase {
 public:
   /// Construct with the name of an iteration quantity.
   CastIQMember( const std::string iq_name );
-  ///
-  /** Get the iteration quantity from an AlgorithmState object.
+  /** \brief Get the iteration quantity from an AlgorithmState object.
     *
     * If the iteration quantity of the name iq_namt does not
     * exist then a AlgorithmState::DoesNotExist exception
@@ -157,7 +152,7 @@ public:
     * will be thrown with a helpful error message.
     */
   IterQuantityAccess<T>& operator()( AlgorithmState& s ) const;
-  ///
+  /** \brief . */
   const IterQuantityAccess<T>& operator()( const AlgorithmState& s ) const;
 private:
   CastIQMember();	// not defined and not to be called

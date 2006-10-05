@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract interface for objects that can create vector spaces of a specified dimension.
+/** \brief Abstract interface for objects that can create vector spaces of a specified dimension.
  *
  * ToDo: Finish documentation!
  */
@@ -44,13 +43,13 @@ class VectorSpaceFactorySerial
 {
 public:
 
-  ///
+  /** \brief . */
   VectorSpaceFactorySerial( const inner_prod_ptr_t& inner_prod = Teuchos::null );
 
   /** @name Overridden from VectorSpaceFactory */
   //@{
 
-  ///
+  /** \brief . */
   space_ptr_t create_vec_spc(index_type dim) const;
 
   //@}

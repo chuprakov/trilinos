@@ -40,8 +40,7 @@ namespace AbstractLinAlgPack {
  */
 //@{
 
-///
-/** <tt>sv_lhs = alpha * op(P_rhs1) * vs_rhs2</tt>.
+/** \brief <tt>sv_lhs = alpha * op(P_rhs1) * vs_rhs2</tt>.
  * 
  * This function will resize the sparse vector lhs and only the
  * resultant nonzero elements will be added.
@@ -67,8 +66,7 @@ void V_MtV(
   V_StMtV(sv_lhs,1.0,P_rhs1,P_rhs1_trans,vs_rhs2);
 }
 
-///
-/** <tt>sv_lhs = alpha * op(P_rhs1) * sv_rhs2</tt>.
+/** \brief <tt>sv_lhs = alpha * op(P_rhs1) * sv_rhs2</tt>.
  * 
  * This function will resize the sparse vector lhs and add only the
  * nonzero elements in the rhs.
@@ -116,8 +114,7 @@ void V_MtV(
 }
 
 
-///
-/** <tt>sv_lhs += alpha * op(P_rhs1) * vs_rhs2</tt>.
+/** \brief <tt>sv_lhs += alpha * op(P_rhs1) * vs_rhs2</tt>.
  * 
  * This function will not resize the sparse vector lhs and will add
  * new elements for the nonzero elements in the rhs.  Therefore it is
@@ -135,8 +132,7 @@ void Vp_StMtV(
   );
 
 inline
-///
-/** <tt>sv_lhs += op(P_rhs1) * vs_rhs2</tt>.
+/** \brief <tt>sv_lhs += op(P_rhs1) * vs_rhs2</tt>.
  */ 
 void Vp_MtV(
   SpVector* sv_lhs, const GenPermMatrixSlice& P_rhs1
@@ -158,8 +154,7 @@ void Vp_StMtV(
   ,BLAS_Cpp::Transp P_rhs1_trans, const SpVectorSlice& sv_rhs2, value_type beta = 1.0)
   ;
 
-///
-/** Find the intersection between two GenPermMatrixSlice objects.
+/** \brief Find the intersection between two GenPermMatrixSlice objects.
  *
  * This subroutine has two modes.  In the first mode (<tt>Q_max_nz == 0</tt>) it just
  * computes the number of nonzero entries in the matrix:

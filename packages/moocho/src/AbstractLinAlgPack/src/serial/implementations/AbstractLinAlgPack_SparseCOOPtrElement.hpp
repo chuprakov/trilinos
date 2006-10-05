@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Sparse pointer element type for a COO matrix (val, ivect, jvect).
+/** \brief Sparse pointer element type for a COO matrix (val, ivect, jvect).
  *
  * This class abstracts a sparse element of a templated
  * type from a coordinate matrix. It
@@ -49,9 +48,9 @@ public:
   /** @name Public Typedefs. */
   //@{
 
-  ///
+  /** \brief . */
   typedef T_Value						value_type;
-  ///
+  /** \brief . */
   typedef T_Index						index_type;
 
   //@}
@@ -80,22 +79,22 @@ public:
   /** @name Value and index access */
   //@{ 
 
-  ///
+  /** \brief . */
   value_type& value()
   {
     return *pvalue_;
   }
-  ///
+  /** \brief . */
   value_type value() const
   {
     return *pvalue_;
   }
-  ///
+  /** \brief . */
   index_type row_i() const
   {
     return row_i_;
   }
-  ///
+  /** \brief . */
   index_type col_j() const
   {
     return col_j_;

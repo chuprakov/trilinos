@@ -34,8 +34,7 @@
 
 namespace OptionsFromStreamPack {
 
-///
-/** Map a string to an enumeration.
+/** \brief Map a string to an enumeration.
   *
   * The purpose of this class is to simplify mapping a standard string
   * to an integer which can be interpreted as an enumeration.
@@ -84,21 +83,21 @@ namespace OptionsFromStreamPack {
 class StringToIntMap {
 public:
 
-  ///
+  /** \brief . */
   class AlreadyExists : public std::logic_error
   {public: AlreadyExists(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-  ///
+  /** \brief . */
   class DoesNotExist : public AccessException
   {public: DoesNotExist(const std::string& what_arg) : AccessException(what_arg) {}};
 
-  ///
+  /** \brief . */
   StringToIntMap( const std::string& name, int n, const char* strings[] );
 
-  ///
+  /** \brief . */
   int operator()( const std::string& str ) const;
 
-  ///
+  /** \brief . */
   const std::string& name() const;
 
 private:

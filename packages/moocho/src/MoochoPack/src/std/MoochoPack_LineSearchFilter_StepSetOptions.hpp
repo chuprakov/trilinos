@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for LineSearchFilter_Step from an \c OptionsFromStream object.
+/** \brief Set options for LineSearchFilter_Step from an \c OptionsFromStream object.
  *
  * The default options group name is LineSearchFilter.
  *
@@ -56,7 +55,7 @@ class LineSearchFilter_StepSetOptions
   {
   public:
 
-    ///
+    /** \brief . */
     LineSearchFilter_StepSetOptions(
       LineSearchFilter_Step* target = 0,
       const char opt_grp_name[] = "LineSearchFilter" );

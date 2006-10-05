@@ -56,8 +56,7 @@ public:
 typedef std::list< FilterEntry > Filter_T;
 const std::string FILTER_IQ_STRING = "LS_FilterEntries";
 
-///
-/** Filter line-search step class.
+/** \brief Filter line-search step class.
  *
  * Todo: Finish documentataion.
  */
@@ -69,7 +68,7 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   static value_type F_MIN_UNBOUNDED;
   
   //@}
@@ -77,22 +76,19 @@ public:
   /** @name Constructors / initializers */
   //@{
   
-  ///
-  /** Feasibility decrease fraction.
+  /** \brief Feasibility decrease fraction.
    *
    * ToDo: Finish documentation.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_theta )
 
-    ///
-  /** Optimality decrease fraction.
+  /** \brief Optimality decrease fraction.
    *
    * ToDo: Finish documentation.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_f )
 
-    ///
-  /** Estimate of minimum value obtainable for the objective function.
+  /** \brief Estimate of minimum value obtainable for the objective function.
    *
    * If this value is set to F_MIN_UNBOUNDED then the default behavior
    * if gamma_f is alterned otherwise the value of gamma_f used
@@ -100,65 +96,56 @@ public:
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, f_min )
 
-    ///
-  /** alpha_min linearization correction fraction
+  /** \brief alpha_min linearization correction fraction
    *
    * ToDo: Finish documentation.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_alpha )
 
-    ///
-  /** Delta parameter for switching condition.
+  /** \brief Delta parameter for switching condition.
    *
    * ToDo: Finish documentation.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, delta )
   
-    ///
-  /** Exponent for objective in switching condition.
+  /** \brief Exponent for objective in switching condition.
    *
    * ToDo: Finish documentation.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, s_f )
 
-    ///
-  /** Exponent for theta in switching condition.
+  /** \brief Exponent for theta in switching condition.
    *
    * ToDo: Finish documentation.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, s_theta )
 
-    ///
-  /** Factor to evaluate theta_small
+  /** \brief Factor to evaluate theta_small
    * theta_small = theta_small_fact*max(1,theta_k)
    *
    * ToDo: Finish documentation.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_small_fact )
 
-    ///
-  /** Maximum allowable theta value
+  /** \brief Maximum allowable theta value
    *
    * ToDo: Finish documentation.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_max )
 
-    ///
-  /** Constant for Armijo condition on objective
+  /** \brief Constant for Armijo condition on objective
    *
    * ToDo: Finish documentation.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, eta_f )
 
-    ///
-  /** Backtracking fraction for step.
+  /** \brief Backtracking fraction for step.
    *
    * ToDo: Finish documentation.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, back_track_frac )
 
-    ///
-  /** Constructor.
+  /** \brief Constructor.
    */
   LineSearchFilter_Step(
     Teuchos::RefCountPtr<NLPInterfacePack::NLP> nlp
@@ -179,8 +166,7 @@ public:
 
   //@}
   
-  ///
-  /** Destructor.
+  /** \brief Destructor.
    */
   ~LineSearchFilter_Step();
 
@@ -188,11 +174,11 @@ public:
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step( Algorithm& algo, poss_type step_poss,
                 IterationPack::EDoStepType type,
                 poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss,
                    IterationPack::EDoStepType type,
                    poss_type assoc_step_poss, std::ostream& out,

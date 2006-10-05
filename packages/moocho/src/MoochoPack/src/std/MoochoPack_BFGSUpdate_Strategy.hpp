@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Strategy interface which contains the guts for a dampened BFGS update.
+/** \brief Strategy interface which contains the guts for a dampened BFGS update.
  *
  * This object can not change the flow of control or do anything fancy.  It just
  * performs the dampened update or skips it if the update is not sufficiently
@@ -47,42 +46,37 @@ namespace MoochoPack {
 class BFGSUpdate_Strategy {
 public:
 
-  ///
-  /** <<std member comp>> members for whether to rescale
+  /** \brief <<std member comp>> members for whether to rescale
    * the initial identity Hessian or not.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, rescale_init_identity )
 
-  ///
-  /** <<std member comp>> members for whether to perform
+  /** \brief <<std member comp>> members for whether to perform
     * dampended quasi-newton updating or not.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, use_dampening )
 
-  ///
+  /** \brief . */
   enum ESecantTesting { SECANT_TEST_DEFAULT, SECANT_TEST_ALWAYS, SECANT_NO_TEST };
 
-  ///
-  /** <<std member comp>> members how and if the secant property of the BFGS
+  /** \brief <<std member comp>> members how and if the secant property of the BFGS
     * update is tested.
     *
     * ToDo: Finish documentation.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( ESecantTesting, secant_testing )
 
-  ///
-  /** <<std member comp>> members for the warning tolerance for
+  /** \brief <<std member comp>> members for the warning tolerance for
     * the check of the secant property.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, secant_warning_tol )
 
-  ///
-  /** <<std member comp>> members for the error tolerance for
+  /** \brief <<std member comp>> members for the error tolerance for
     * the check of the secant property.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, secant_error_tol )
 
-  ///
+  /** \brief . */
   BFGSUpdate_Strategy(
     bool               rescale_init_identity  = true
     ,bool              use_dampening          = true
@@ -91,8 +85,7 @@ public:
     ,value_type        secant_error_tol       = 1e-1
     );
 
-  ///
-  /** Perform the BFGS update.
+  /** \brief Perform the BFGS update.
    *
    * The function performs a straight forward (possibly dampended) BFGS update
    * that strictly satisfies the secant property <tt>B * s_bfgs = y_bfgs</tt>.
@@ -134,7 +127,7 @@ public:
     ,QuasiNewtonStats        * quasi_newton_stats 
     );
   
-  ///
+  /** \brief . */
   void print_step( std::ostream& out, const std::string& leading_str ) const;
 
 }; // end class BFGSUpdate_Strategy

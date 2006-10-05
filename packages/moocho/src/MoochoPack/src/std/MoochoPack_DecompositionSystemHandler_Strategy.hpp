@@ -34,8 +34,7 @@
 
 namespace MoochoPack {
 
-///
-/** Interface for range/null decomposition handling.
+/** \brief Interface for range/null decomposition handling.
  *
  * ToDo: Finish documentation!
  */
@@ -45,18 +44,17 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   enum EDecompSysTesting { DST_DEFAULT, DST_TEST, DST_NO_TEST };
-  ///
+  /** \brief . */
   enum EDecompSysPrintLevel { DSPL_USE_GLOBAL, DSPL_LEAVE_DEFAULT };
 
   //@}
 
-  ///
+  /** \brief . */
   virtual ~DecompositionSystemHandler_Strategy() {}
 
-  ///
-  /** Update the decomposition.
+  /** \brief Update the decomposition.
    *
    * This method may select a new decomposition (permuting the variables
    * and constriants) and/or take control of the algorithm.
@@ -70,8 +68,7 @@ public:
     ,bool                                  *new_decomp_selected
     ) = 0;
 
-  ///
-  /** Print the algorithm used for updating the decomposition.
+  /** \brief Print the algorithm used for updating the decomposition.
    */
   virtual void print_update_decomposition(
     const NLPAlgo                          &algo

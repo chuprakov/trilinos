@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Interface for range/null decomposition handling.
+/** \brief Interface for range/null decomposition handling.
  *
  * ToDo: Finish documentation!
  */
@@ -43,8 +42,7 @@ class DecompositionSystemHandlerSelectNew_Strategy
 {
 public:
   
-  ///
-  /** Instruct the \c DecompositionSystemHandler_Strategy object to select a new decomposition
+  /** \brief Instruct the \c DecompositionSystemHandler_Strategy object to select a new decomposition
    * the next time \c update_decomposition() is called.
    */
   virtual void select_new_decomposition( bool select_new_decomposition = true ) = 0;

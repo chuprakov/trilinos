@@ -37,8 +37,7 @@
 
 namespace MoochoPack {
 
-///
-/** rSQP Algorithm control class.
+/** \brief rSQP Algorithm control class.
   */
 class NLPAlgo
   : public NLPAlgoInterface
@@ -60,45 +59,44 @@ public:
   /// <<std aggr>> members for nlp
   STANDARD_AGGREGATION_MEMBERS( NLP, nlp )
 
-  ///
+  /** \brief . */
   NLPAlgoState& rsqp_state()
   {	return dynamic_cast<NLPAlgoState&>(state()); }
 
-  ///
+  /** \brief . */
   const NLPAlgoState& rsqp_state() const
   {	return dynamic_cast<const NLPAlgoState&>(state()); }
 
-  ///
+  /** \brief . */
   void do_step_first(Algorithm::poss_type first_step_poss)
   {	first_step_poss_ = first_step_poss; }
 
   /** @name Overridden form rSQPAlgoInteface */
   //@{	
   
-  ///
+  /** \brief . */
   const NLPAlgoState& retrieve_state() const;
 
-  ///
-  /** This is the main control function for the rSQP algorithm.
+  /** \brief This is the main control function for the rSQP algorithm.
     *
     * This function basically just calls Algorithm::do_algorithm(...).
     */
   NLPSolverClientInterface::EFindMinReturn dispatch();
 
-  ///
+  /** \brief . */
   void interface_print_algorithm(std::ostream& out) const;
-  ///
+  /** \brief . */
   void interface_set_algo_timing( bool algo_timing );
-  ///
+  /** \brief . */
   bool interface_algo_timing() const;
-  ///
+  /** \brief . */
   void interface_print_algorithm_times( std::ostream& out ) const;
 
   //@}
 
   /// overridden from Algorihth.
 
-  ///
+  /** \brief . */
   void print_algorithm(std::ostream& out) const;
 
 protected:

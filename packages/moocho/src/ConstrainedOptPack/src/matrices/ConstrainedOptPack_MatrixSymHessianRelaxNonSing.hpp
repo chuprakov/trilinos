@@ -35,8 +35,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Matrix class for non-singular Hessian matrix augmented with a terms for
+/** \brief Matrix class for non-singular Hessian matrix augmented with a terms for
  * "Big M" relaxation variables.
  *
  * The matrix that is formed is:
@@ -52,18 +51,17 @@ class MatrixSymHessianRelaxNonSing
 {
 public:
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixSymOpNonsing>  G_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<VectorMutable>               vec_mut_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const VectorSpace>                 space_ptr_t;
   
   /** @name Constructors/initializers */
   //@{
 
-  ///
-  /** Construct uninitialized.
+  /** \brief Construct uninitialized.
    *
    * Postconditions:
    * <ul>
@@ -74,8 +72,7 @@ public:
    */
   MatrixSymHessianRelaxNonSing();
 
-  ///
-  /** Constructor (calls \c initialize()).
+  /** \brief Constructor (calls \c initialize()).
    */
   MatrixSymHessianRelaxNonSing(
     const G_ptr_t         &G_ptr
@@ -83,8 +80,7 @@ public:
     ,const space_ptr_t    &space = Teuchos::null
     );
 
-  ///
-  /** Initialize the Hessian and the relaxation terms.
+  /** \brief Initialize the Hessian and the relaxation terms.
    *
    * Preconditions:
    * <ul>
@@ -118,22 +114,21 @@ public:
     ,const space_ptr_t    &space = Teuchos::null
     );
 
-  ///
-  /** Set uninitalized.
+  /** \brief Set uninitalized.
    *
    */
   void set_uninitialized();
   
-  ///
+  /** \brief . */
   const G_ptr_t& G_ptr() const;
 
-  ///
+  /** \brief . */
   const vec_mut_ptr_t& M_diag_ptr() const;
 
-  ///
+  /** \brief . */
   const MatrixSymOpNonsing& G() const;
 
-  ///
+  /** \brief . */
   const AbstractLinAlgPack::MatrixSymDiagStd& M() const;
 
   //@}
@@ -141,27 +136,27 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   bool Mp_StM(
     MatrixOp* mwo_lhs, value_type alpha
     , BLAS_Cpp::Transp trans_rhs) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     ,const Vector& v_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     ,const SpVectorSlice& sv_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(
     VectorMutable* v_lhs, value_type alpha
     ,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     ,BLAS_Cpp::Transp M_rhs2_trans
     ,const Vector& v_rhs3, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(
     VectorMutable* v_lhs, value_type alpha
     ,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
@@ -173,7 +168,7 @@ public:
   /** @name Overridden form MatrixSymOp */
   //@{
 
-  ///
+  /** \brief . */
   void Mp_StPtMtP(
     MatrixSymOp* sym_lhs, value_type alpha
     ,EMatRhsPlaceHolder dummy_place_holder
@@ -186,11 +181,11 @@ public:
   /** @name Overridden from MatrixNonsing */
   //@{
 
-  ///
+  /** \brief . */
   void V_InvMtV(
     VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
     ,const Vector& v_rhs2) const;
-  ///
+  /** \brief . */
   void V_InvMtV(
     VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
     ,const SpVectorSlice& sv_rhs2) const;

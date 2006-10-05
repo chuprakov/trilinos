@@ -37,8 +37,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Simple example %NLP subclass to illustrate how to implement the
+/** \brief Simple example %NLP subclass to illustrate how to implement the
  * \c NLPObjGrad interface for a specialized \c NLP.
  *
  * The example %NLP we will use is a scalable problem where
@@ -60,8 +59,7 @@ namespace NLPInterfacePack {
 class ExampleNLPObjGrad : virtual public NLPObjGrad {
 public:
 
-  ///
-  /** Constructor.
+  /** \brief Constructor.
    *
    * @param  vec_space  [in] Smart pointer to a vector space object that will
    *                    be used to define the spaces of dependent and independent
@@ -84,9 +82,9 @@ public:
   /** @name Helper methods to be used by subclasses. */
   //@{
 
-  ///
+  /** \brief . */
   virtual Range1D var_dep() const;
-  ///
+  /** \brief . */
   virtual Range1D var_indep() const;
 
   //@}
@@ -94,37 +92,37 @@ public:
   /** @name Overridden public members from NLP */
   //@{
 
-  ///
+  /** \brief . */
   void initialize(bool test_setup);
-  ///
+  /** \brief . */
   bool is_initialized() const;
-  ///
+  /** \brief . */
   size_type n() const;
-  ///
+  /** \brief . */
   size_type m() const;
-  ///
+  /** \brief . */
   vec_space_ptr_t space_x() const;
-  ///
+  /** \brief . */
   vec_space_ptr_t space_c() const;
-  ///
+  /** \brief . */
     size_type num_bounded_x() const;
-  ///
+  /** \brief . */
   void force_xinit_in_bounds(bool force_xinit_in_bounds);
-  ///
+  /** \brief . */
   bool force_xinit_in_bounds() const;
-  ///
+  /** \brief . */
   const Vector& xinit() const;
-  ///
+  /** \brief . */
   const Vector& xl() const;
-  ///
+  /** \brief . */
   const Vector& xu() const;
-  ///
+  /** \brief . */
   value_type max_var_bounds_viol() const;
-  ///
+  /** \brief . */
   void scale_f( value_type scale_f );
-  ///
+  /** \brief . */
   value_type scale_f() const;
-  ///
+  /** \brief . */
   void report_final_solution(
     const Vector&    x
     ,const Vector*   lambda
@@ -139,11 +137,11 @@ protected:
   /** @name Overridden protected members from NLP */
   //@{
 
-  ///
+  /** \brief . */
   void imp_calc_f(
     const Vector& x, bool newx
     ,const ZeroOrderInfo& zero_order_info) const;
-  ///
+  /** \brief . */
   void imp_calc_c(
     const Vector& x, bool newx
     ,const ZeroOrderInfo& zero_order_info) const;
@@ -155,7 +153,7 @@ protected:
   /** @name Overridden protected members from NLPObjGrad */
   //@{
 
-  ///
+  /** \brief . */
   void imp_calc_Gf(
     const Vector& x, bool newx
     ,const ObjGradInfo& obj_grad_info) const;
@@ -185,7 +183,7 @@ private:
   // /////////////////////////////////////////
   // Private member functions
 
-  ///
+  /** \brief . */
   void assert_is_initialized() const;
 
 };	// end class ExampleNLPObjGrad

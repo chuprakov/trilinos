@@ -41,8 +41,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Implementation of limited Memory BFGS matrix for arbitrary vector spaces.
+/** \brief Implementation of limited Memory BFGS matrix for arbitrary vector spaces.
  *
  * The function <tt>set_num_updates_stored()</tt> must be called first to set the maximum number of
  * the most recent updates that can be stored.  The storage requirements for this class are
@@ -104,15 +103,14 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MultiVector>   multi_vec_ptr_t;
 
-  ///
-  /** PostMod class to use with <tt>MemMngPack::AbstractFactorStd</tt>.
+  /** \brief PostMod class to use with <tt>MemMngPack::AbstractFactorStd</tt>.
    */
   class PostMod {
   public:
-    ///
+    /** \brief . */
     PostMod(
       size_type     m                   = 10
       ,bool         maintain_original   = true
@@ -124,7 +122,7 @@ public:
       ,maintain_inverse_(maintain_inverse)
       ,auto_rescaling_(auto_rescaling)
     {}
-    ///
+    /** \brief . */
     void initialize(MatrixSymPosDefLBFGS* p) const
     {
       p->initial_setup(m_,maintain_original_,maintain_inverse_,auto_rescaling_);
@@ -149,16 +147,14 @@ public:
     ,bool         auto_rescaling      = false
     );
 
-  ///
-  /** Set whether automatic rescaling is used or not.
+  /** \brief Set whether automatic rescaling is used or not.
     *
     * This function must be called before a BFGS update is performed
     * in order for it to take effect for that update.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, auto_rescaling )
 
-  ///
-  /** Initial setup for the matrix.
+  /** \brief Initial setup for the matrix.
     *
     * This function must be called before init_identity(n)
     * is called in order for these setting to have affect.
@@ -201,22 +197,21 @@ public:
   // //////////////////////////////////
   // Representation access
 
-  ///
+  /** \brief . */
   size_type m() const;
-  ///
+  /** \brief . */
   size_type m_bar() const;
-  ///
+  /** \brief . */
   value_type gamma_k() const;
-  ///
+  /** \brief . */
   const multi_vec_ptr_t S() const;
-  ///
+  /** \brief . */
   const multi_vec_ptr_t Y() const;
-  ///
+  /** \brief . */
   bool maintain_original() const;
-  ///
+  /** \brief . */
   bool maintain_inverse() const;
-  ///
-  /** Returns the total number of successful secant updates performed
+  /** \brief Returns the total number of successful secant updates performed
    * since <tt>this->init_identity()</tt> was called.
    */
   size_type num_secant_updates() const;
@@ -226,13 +221,13 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& mwo);
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const Vector& v_rhs2, value_type beta ) const;
@@ -242,7 +237,7 @@ public:
   /** @name Overridden from MatrixOpNonsing */
   //@{
 
-  ///
+  /** \brief . */
   void V_InvMtV(
     VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
     , const Vector& v_rhs2 ) const;
@@ -252,17 +247,16 @@ public:
   /** @name Overridden from MatrixSymSecant */
   //@{
 
-  ///
+  /** \brief . */
   void init_identity( const VectorSpace& space_diag, value_type alpha );
-  ///
-  /** Actually this calls init_identity( diag.space(), diag.norm_inf() ).
+  /** \brief Actually this calls init_identity( diag.space(), diag.norm_inf() ).
     *
     * This initialization is not convienent for this implementation.
     * Besides, when we are using automatric rescaling (auto_rescaling == true)
     * then this will really not matter much anyway.
     */
   void init_diagonal( const Vector& diag );
-  ///
+  /** \brief . */
   void secant_update(
     VectorMutable     *s
     ,VectorMutable    *y
@@ -315,21 +309,21 @@ private:
 
   // Access to important matrices.
 
-  ///
+  /** \brief . */
   const DMatrixSliceTri R() const;
   /// Strictly lower triangular part of L
   const DMatrixSliceTri Lb() const;
-  ///
+  /** \brief . */
   DMatrixSlice STY();
-  ///
+  /** \brief . */
   const DMatrixSlice STY() const;
-  ///
+  /** \brief . */
   DMatrixSliceSym STS();
-  ///
+  /** \brief . */
   const DMatrixSliceSym STS() const;
-  ///
+  /** \brief . */
   DMatrixSliceSym YTY();
-  ///
+  /** \brief . */
   const DMatrixSliceSym YTY() const;
   /// y = inv(Q) * x
   void V_invQtV( DVectorSlice* y, const DVectorSlice& x ) const;
@@ -341,7 +335,7 @@ private:
   /// Update Q
   void update_Q() const;
 
-  ///
+  /** \brief . */
   void assert_initialized() const;
 
 };	// end class MatrixSymPosDefLBFGS

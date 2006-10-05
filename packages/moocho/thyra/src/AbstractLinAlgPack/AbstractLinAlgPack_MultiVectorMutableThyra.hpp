@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** <tt>MultiVectorMutable</tt> adapter subclass for <tt>Thyra::MultiVectorBase</tt>.
+/** \brief <tt>MultiVectorMutable</tt> adapter subclass for <tt>Thyra::MultiVectorBase</tt>.
  */
 class MultiVectorMutableThyra
   :virtual public MultiVectorMutable
@@ -47,8 +46,7 @@ public:
   /** @name Constructors / Initializers */
   //@{
 
-  ///
-  /** Construct to uninitialized.
+  /** \brief Construct to uninitialized.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_vec().get() == NULL</tt>
@@ -56,12 +54,10 @@ public:
    * </ul>
    */
   MultiVectorMutableThyra();
-  ///
-  /** Calls <tt>this->initialize()</tt>.
+  /** \brief Calls <tt>this->initialize()</tt>.
    */
   MultiVectorMutableThyra( const Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> >& thyra_multi_vec );
-  ///
-  /** Initalize given a smart pointer to a <tt>Thyra::MultiVectorBase</tt> object.
+  /** \brief Initalize given a smart pointer to a <tt>Thyra::MultiVectorBase</tt> object.
    *
    * @param  thyra_multi_vec  [in] Smart pointer to Thyra vector <tt>this</tt> will adapt.
    *
@@ -75,8 +71,7 @@ public:
    * </ul>
    */
   void initialize( const Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> >& thyra_multi_vec );
-  ///
-  /** Set to uninitialized and return smart pointer to the internal <tt>Thyra::LinearOpBase</tt> object.
+  /** \brief Set to uninitialized and return smart pointer to the internal <tt>Thyra::LinearOpBase</tt> object.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_multi_vec().get() == NULL</tt>
@@ -86,8 +81,7 @@ public:
    * <tt>MatrixOpThyra::set_uninitialized()</tt>.
    */
   Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> > set_uninitialized();
-  ///
-  /** Return a smart pointer to the internal <tt>Thyra::LinearOpBase</tt> object.
+  /** \brief Return a smart pointer to the internal <tt>Thyra::LinearOpBase</tt> object.
    */
   Teuchos::RefCountPtr<const Thyra::MultiVectorBase<value_type> > thyra_multi_vec() const;
 
@@ -128,7 +122,7 @@ public:
 
   ///  Returns <tt>COL_ACCESS</tt>
   access_by_t access_by() const;
-  ///
+  /** \brief . */
   void apply_op(
     EApplyBy apply_by, const RTOpPack::RTOp& primary_op
     ,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
@@ -137,7 +131,7 @@ public:
     ,const index_type primary_first_ele,   const index_type primary_sub_dim, const index_type primary_global_offset
     ,const index_type secondary_first_ele, const index_type secondary_sub_dim
     ) const;
-  ///
+  /** \brief . */
   void apply_op(
     EApplyBy apply_by, const RTOpPack::RTOp& primary_op, const RTOpPack::RTOp& secondary_op
     ,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
@@ -152,20 +146,20 @@ public:
   /** @name Overridden from MultiVectorMutable */
   //@{
 
-  ///
+  /** \brief . */
   vec_mut_ptr_t col(index_type j);
   /// <tt>return.get()==NULL</tt>
   vec_mut_ptr_t row(index_type i);
   /// <tt>return.get()==NULL</tt>
   vec_mut_ptr_t diag(int k);
-  ///
+  /** \brief . */
   multi_vec_mut_ptr_t mv_sub_view(const Range1D& row_rng, const Range1D& col_rng);
 
   //@}
 
 private:
 
-  ///
+  /** \brief . */
   Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> > cast_thyra_multi_vec();
   
 }; // end class MultiVectorMutableThyra

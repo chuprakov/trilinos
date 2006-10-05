@@ -34,8 +34,7 @@
 
 namespace MoochoPack {
 
-///
-/** Compute a dampening term zeta_k for the cross term w_k such that
+/** \brief Compute a dampening term zeta_k for the cross term w_k such that
  * Gf'*Z*pz <= 0.
  *
  * This condition Gf'*Z*pz <= 0 is needed to ensure descent of many
@@ -66,17 +65,17 @@ public:
   /// «std comp» members for frac_descent
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, frac_descent )
 
-  ///
+  /** \brief . */
   DampenCrossTermStd_Step(const value_type& frac_descent = 0.9);
 
   // ////////////////////
   // Overridden
 
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
 
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 

@@ -37,8 +37,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Standard subclass for representing a sub, possibly transposed, view of a matrix
+/** \brief Standard subclass for representing a sub, possibly transposed, view of a matrix
  * 
  * The matrix \c M_view represented by \c this is:
  \verbatim
@@ -51,14 +50,13 @@ namespace AbstractLinAlgPack {
 class MatrixOpSubView : public virtual MatrixOp {
 public:
   
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<MatrixOp>   mat_ptr_t;
 
   /** @name Constructors/initalizers */
   //@{
 
-  ///
-  /** Calls <tt>this->initialize(...)</tt>
+  /** \brief Calls <tt>this->initialize(...)</tt>
    */
   MatrixOpSubView(
     const mat_ptr_t&   M_full    = Teuchos::null
@@ -67,8 +65,7 @@ public:
     ,BLAS_Cpp::Transp   M_trans  = BLAS_Cpp::no_trans
     );
     
-  ///
-  /** Initialize the view of a matrix.
+  /** \brief Initialize the view of a matrix.
    *
    * @param  M_full   [in] Smart pointer for the matrix to provide a view of.
    *                  It is allowed for <tt>M_full.get() == NULL</tt> in which case
@@ -113,17 +110,17 @@ public:
   /** @name Representation access */
   //@{
 
-  ///
+  /** \brief . */
   const mat_ptr_t& M_full_ptr();
-  ///
+  /** \brief . */
   MatrixOp& M_full();
-  ///
+  /** \brief . */
   const MatrixOp& M_full() const;
-  ///
+  /** \brief . */
   Range1D rng_rows() const;
-  ///
+  /** \brief . */
   Range1D rng_cols() const;
-  ///
+  /** \brief . */
   BLAS_Cpp::Transp M_trans();
 
   //@}
@@ -131,11 +128,11 @@ public:
   /** @name Overridden from MatrixBase */
   //@{
 
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type cols() const;
-  ///
+  /** \brief . */
   size_type nz() const;
 
   //@}
@@ -143,116 +140,116 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   const VectorSpace& space_rows() const;
-  ///
+  /** \brief . */
   MatrixOp::mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
-  ///
+  /** \brief . */
   void zero_out();
-  ///
+  /** \brief . */
   void Mt_S( value_type alpha );
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& M);
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   bool Mp_StM(
     MatrixOp* mwo_lhs, value_type alpha
     , BLAS_Cpp::Transp trans_rhs) const;
-  ///
+  /** \brief . */
   bool Mp_StMtP(
     MatrixOp* mwo_lhs, value_type alpha
     , BLAS_Cpp::Transp M_trans
     , const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
     ) const;
-  ///
+  /** \brief . */
   bool Mp_StPtM(
     MatrixOp* mwo_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
     , BLAS_Cpp::Transp M_trans
     ) const;
-  ///
+  /** \brief . */
   bool Mp_StPtMtP(
     MatrixOp* mwo_lhs, value_type alpha
     ,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     ,BLAS_Cpp::Transp M_trans
     ,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
     ) const;
-  ///
+  /** \brief . */
   bool Mp_StM(
     value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs);
-  ///
+  /** \brief . */
   bool Mp_StMtP(
     value_type alpha
     ,const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
     ,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
     );
-  ///
+  /** \brief . */
   bool Mp_StPtM(
     value_type alpha
     ,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
     ,const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
     );
-  ///
+  /** \brief . */
   bool Mp_StPtMtP(
     value_type alpha
     ,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     ,const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
     ,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
     );
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const Vector& v_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(
     VectorMutable* vs_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     , BLAS_Cpp::Transp M_rhs2_trans
     , const Vector& v_rhs3, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(
     VectorMutable* vs_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     , BLAS_Cpp::Transp M_rhs2_trans
     , const SpVectorSlice& sv_rhs3, value_type beta) const;
-  ///
+  /** \brief . */
   value_type transVtMtV(
     const Vector& v_rhs1, BLAS_Cpp::Transp trans_rhs2
     , const Vector& v_rhs3) const;
-  ///
+  /** \brief . */
   value_type transVtMtV(
     const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
     , const SpVectorSlice& sv_rhs3) const;
-  ///
+  /** \brief . */
   void syr2k(
      BLAS_Cpp::Transp M_trans, value_type alpha
     , const GenPermMatrixSlice& P1, BLAS_Cpp::Transp P1_trans
     , const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
     , value_type beta, MatrixSymOp* symwo_lhs ) const;
-  ///
+  /** \brief . */
   bool Mp_StMtM(
     MatrixOp* mwo_lhs, value_type alpha
     , BLAS_Cpp::Transp trans_rhs1, const MatrixOp& mwo_rhs2
     , BLAS_Cpp::Transp trans_rhs2, value_type beta ) const;
-  ///
+  /** \brief . */
   bool Mp_StMtM(
     MatrixOp* mwo_lhs, value_type alpha
     , const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
     , BLAS_Cpp::Transp trans_rhs2, value_type beta ) const;
-  ///
+  /** \brief . */
   bool Mp_StMtM(
     value_type alpha
     ,const MatrixOp& mvw_rhs1, BLAS_Cpp::Transp trans_rhs1
     ,const MatrixOp& mwo_rhs2,BLAS_Cpp::Transp trans_rhs2
     ,value_type beta );
-  ///
+  /** \brief . */
   bool syrk(
      BLAS_Cpp::Transp M_trans, value_type alpha
     , value_type beta, MatrixSymOp* sym_lhs ) const;

@@ -36,13 +36,13 @@
 namespace DenseLinAlgPack {
 namespace LinAlgPackIO {
 
-///
+/** \brief . */
 /* * This class is used to encapsulate a set of bit flags.
   */
 class bit_flags {
 public:
 
-  ///
+  /** \brief . */
   typedef LinAlgPackIO::fmtflags fmtflags;	
 
   /// Initialize the flags to 0x0000
@@ -80,7 +80,7 @@ private:
 
 };	// end class flags
 
-///
+/** \brief . */
 /* * Memento class that saves the state of a standard stream.
   *
   * This is a variation of the "Memento" Pattern in Gama et. al.
@@ -104,7 +104,7 @@ private:
   int				wdt_;
   int				fill_;
 
-  ///
+  /** \brief . */
   ios_format_memento() : flags_((fmtflags)(0)), prec_(6), wdt_(0)
     , fill_(' ') {}
 
@@ -113,7 +113,7 @@ private:
 template<class T> class bound_format;
 template<class T> class const_bound_format;
 
-///
+/** \brief . */
 /* * This class is used to allow some flexiblility in inputing
   * and outputing of DVector, DVectorSlice, DMatrix and DMatrixSlice objects.
   * It maintains format information for a #std::ios_base# object and adds
@@ -144,7 +144,7 @@ template<class T> class const_bound_format;
 class format {
 public:
 
-  ///
+  /** \brief . */
   typedef LinAlgPackIO::fmtflags fmtflags;
 
   /// Sets format to defaults
@@ -159,14 +159,14 @@ public:
     */
   // @{	
   
-  ///
+  /** \brief . */
   bit_flags& ios_base_flags()				{	return ios_base_flags_;	}
-  ///
+  /** \brief . */
   const bit_flags& ios_base_flags() const	{	return ios_base_flags_;	}
 
-  ///
+  /** \brief . */
   bit_flags& extra_flags()				{	return extra_flags_;	}
-  ///
+  /** \brief . */
   const bit_flags& extra_flags() const	{	return extra_flags_;	}
 
   // @}
@@ -187,57 +187,57 @@ public:
     */
   // @{
 
-  ///
+  /** \brief . */
   format& showpoint()		{	ios_base_flags().setf(std::ios_base::showpoint); return *this;	}
-  ///
+  /** \brief . */
   format& noshowpoint()	{	ios_base_flags().unsetf(std::ios_base::showpoint); return *this;	}
-  ///
+  /** \brief . */
   format& showpos()		{	ios_base_flags().setf(std::ios_base::showpos); return *this;	}
-  ///
+  /** \brief . */
   format& noshowpos()		{	ios_base_flags().unsetf(std::ios_base::showpos); return *this;	}
-  ///
+  /** \brief . */
   format& skipws()		{	ios_base_flags().setf(std::ios_base::skipws); return *this;	}
-  ///
+  /** \brief . */
   format& noskipws()		{	ios_base_flags().unsetf(std::ios_base::skipws); return *this;	}
-  ///
+  /** \brief . */
   format& uppercase()		{	ios_base_flags().setf(std::ios_base::uppercase); return *this;	}
-  ///
+  /** \brief . */
   format& nouppercase()	{	ios_base_flags().unsetf(std::ios_base::uppercase); return *this;	}
-  ///
+  /** \brief . */
   format& internal()		{
     ios_base_flags().setf(std::ios_base::internal, std::ios_base::adjustfield);
     return *this;
   }
-  ///
+  /** \brief . */
   format& left()			{
     ios_base_flags().setf(std::ios_base::left, std::ios_base::adjustfield);
     return *this;
   }
-  ///
+  /** \brief . */
   format& right()			{
     ios_base_flags().setf(std::ios_base::right, std::ios_base::adjustfield);
     return *this;
   }
-  ///
+  /** \brief . */
   format& general()		{
     ios_base_flags().setf((fmtflags)0, std::ios_base::floatfield);
     return *this;
   }
-  ///
+  /** \brief . */
   format& fixed()			{
     ios_base_flags().setf(std::ios_base::fixed, std::ios_base::floatfield);
     return *this;
   }
-  ///
+  /** \brief . */
   format& scientific()	{
     ios_base_flags().setf(std::ios_base::scientific, std::ios_base::floatfield);
     return *this;
   }
-  ///
+  /** \brief . */
   format& setfill(int c)	{	fill_ = c; return *this;	}
-  ///
+  /** \brief . */
   format& setprecision(int p)	{	prec_ = p; return *this;	}
-  ///
+  /** \brief . */
   format& setw(int w)		{	wdt_ = w; return *this;	}
 
   // @}
@@ -257,25 +257,25 @@ public:
     */
   // @{
 
-  ///
+  /** \brief . */
   format& ignore_dim()
   {
     extra_flags().setf((fmtflags)(ignore_dim_bit));
     return *this;
   }
-  ///
+  /** \brief . */
   format& no_ignore_dim()
   {
     extra_flags().unsetf((fmtflags)(ignore_dim_bit));
     return *this;
   }
-  ///
+  /** \brief . */
   format& insert_newlines()
   {
     extra_flags().unsetf((fmtflags)(no_insert_newlines_bit));
     return *this;
   }
-  ///
+  /** \brief . */
   format& no_insert_newlines()
   {
     extra_flags().setf((fmtflags)(no_insert_newlines_bit));
@@ -288,17 +288,17 @@ public:
     */
   // @{
 
-  ///
+  /** \brief . */
   int precision() const			{	return prec_;	}
-  ///
+  /** \brief . */
   int precision(int p)			{	int tmp = prec_; prec_ = p; return tmp;	}
-  ///
+  /** \brief . */
   int width() const				{	return wdt_;	}
-  ///
+  /** \brief . */
   int width(int w)				{	int tmp = wdt_; wdt_ = w; return tmp;	}
-  ///
+  /** \brief . */
   int fill() const				{	return fill_;	}
-  ///
+  /** \brief . */
   int fill(int c)					{	int tmp = fill_; fill_ = c; return tmp;	}
 
   // @}
@@ -342,7 +342,7 @@ private:
 
 template<class T> class const_bound_format;
 
-///
+/** \brief . */
 /* * Special I/O manipulator class for non-constant objects.
   *
   * This class as a special manipulator and is composed of a composition
@@ -360,14 +360,14 @@ template<class T>
 class bound_format {
 public:
 
-  ///
+  /** \brief . */
   bound_format(const format& f, T& obj) : f_(f), obj_(obj) {}
 
-  ///
+  /** \brief . */
   const format& f() const	{ return f_; }
-  ///
+  /** \brief . */
   T&	obj()				{ return obj_; }
-  ///
+  /** \brief . */
   const T& obj() const	{ return obj_; }
   
 private:
@@ -380,7 +380,7 @@ private:
 
 };	// end class bound_format
 
-///
+/** \brief . */
 /* * Special I/O manipulator class for constant objects.
   *
   * This class as a special manipulator and is composed of a composition
@@ -395,15 +395,15 @@ template<class T>
 class const_bound_format {
 public:
 
-  ///
+  /** \brief . */
   const_bound_format(const format& f, const T& obj) : f_(f), obj_(obj) {}
 
   /// Allow implicit conversion from a bound_format to a const bound_format
   const_bound_format(const bound_format<T>& bf) : f_(bf.f()), obj_(bf.obj()) {}
 
-  ///
+  /** \brief . */
   const format& f() const	{ return f_; }
-  ///
+  /** \brief . */
   const T& obj() const	{ return obj_; }
 
 private:
@@ -416,7 +416,7 @@ private:
 
 };	// end class const_bound_format
 
-///
+/** \brief . */
 /* * Returns a bound_format<T> object using this format object.
   *
   * Using templated input/output operator functions this function
@@ -435,7 +435,7 @@ inline bound_format<T> bind(const format& f, T& obj) {
   return bound_format<T>(f,obj);
 }
 
-///
+/** \brief . */
 /* * Returns a const_bound_format<T> using this format object.
   *
   * This function works the same as the previous \Ref{bind}#()# function

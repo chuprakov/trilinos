@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Just force the decomposition system object to select a new
+/** \brief Just force the decomposition system object to select a new
  * decomposition and let everyone else fend for themselves.
  */
 class NewDecompositionSelectionStd_Strategy
@@ -47,7 +46,7 @@ public:
   /// «std comp» members for range/null decomposition handler
   STANDARD_COMPOSITION_MEMBERS( DecompositionSystemHandlerSelectNew_Strategy, decomp_sys_handler )
 
-  ///
+  /** \brief . */
   NewDecompositionSelectionStd_Strategy(
     const decomp_sys_handler_ptr_t   &decomp_sys_handler
     );
@@ -59,7 +58,7 @@ public:
     NLPAlgo& algo, Algorithm::poss_type step_poss
     ,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
     );
-  ///
+  /** \brief . */
   void print_new_decomposition(
     const NLPAlgo& algo, Algorithm::poss_type step_poss
     ,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss

@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for FeasibilityStepReducedStd_Strategy from an
+/** \brief Set options for FeasibilityStepReducedStd_Strategy from an
   * OptionsFromStream object.
   *
   * The default options group name is IndepDirecWithBoundsStd.
@@ -61,7 +60,7 @@ class FeasibilityStepReducedStd_StrategySetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   FeasibilityStepReducedStd_StrategySetOptions(
       FeasibilityStepReducedStd_Strategy* target = 0
     , const char opt_grp_name[] = "FeasibilityStepReducedStd" );

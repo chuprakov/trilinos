@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Function object class for sorting a sparse vectors in descending order
+/** \brief Function object class for sorting a sparse vectors in descending order
   * by abs(v(i)).
   */
 class SortByDescendingAbsValue {

@@ -42,8 +42,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Implements y = b*y + a*op(P)*op(M)*x where it is assumed that
+/** \brief Implements y = b*y + a*op(P)*op(M)*x where it is assumed that
  * generating rows of op(M) is cheap compared to computing op(M)*x.
  *
  * This function is not ment to be used by clients directly but instead

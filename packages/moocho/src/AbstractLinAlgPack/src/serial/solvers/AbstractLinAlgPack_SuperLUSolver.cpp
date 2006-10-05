@@ -82,8 +82,7 @@ namespace SuperLUPack {
 
 class SuperLUSolverImpl;
 
-///
-/** Implementation of SuperLUSolver.
+/** \brief Implementation of SuperLUSolver.
  *
  * ToDo: Finish documentation!
  */
@@ -93,7 +92,7 @@ public:
   /** @name Public Types */
   //@{
 
-  ///
+  /** \brief . */
   class FactorizationStructureImpl : public FactorizationStructure {
   public:
     friend class SuperLUSolverImpl;
@@ -110,7 +109,7 @@ public:
     std::valarray<int>    perm_c_orig_; // ...
   };
 
-  ///
+  /** \brief . */
   class FactorizationNonzerosImpl : public FactorizationNonzeros {
   public:
     friend class SuperLUSolverImpl;
@@ -124,7 +123,7 @@ public:
   /** @name Overridden from SuperLUSolver */
   //@{
 
-  ///
+  /** \brief . */
   void analyze_and_factor(
     int                         m
     ,int                        n
@@ -138,7 +137,7 @@ public:
     ,int                        col_perm[]
     ,int                        *rank
     );
-  ///
+  /** \brief . */
   void factor(
     int                             m
     ,int                            n
@@ -149,7 +148,7 @@ public:
     ,const FactorizationStructure   &fact_struct
     ,FactorizationNonzeros          *fact_nonzeros
     );
-  ///
+  /** \brief . */
   void solve(
     const FactorizationStructure    &fact_struct
     ,const FactorizationNonzeros    &fact_nonzeros
@@ -164,7 +163,7 @@ public:
 
 private:
 
-  ///
+  /** \brief . */
   void copy_basis_nonzeros(
     int                             m_orig
     ,int                            n_orig

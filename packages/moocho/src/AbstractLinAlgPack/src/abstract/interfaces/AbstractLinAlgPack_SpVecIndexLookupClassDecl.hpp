@@ -38,8 +38,7 @@ namespace AbstractLinAlgPack {
 namespace SparseVectorUtilityPack {
 
 // ///////////////////////////////////////////////////////////////////////
-///
-/** Sparse Vector Index Lookup and Caching class.
+/** \brief Sparse Vector Index Lookup and Caching class.
   *
   * This class is used to perform a lookup for elements in a sparse vector
   * stored as an array of nonzero elements of a templated type T_Element.
@@ -55,21 +54,21 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef T_Element							element_type;
-  ///
+  /** \brief . */
   typedef typename element_type::index_type	index_type;
-  ///
+  /** \brief . */
   typedef ptrdiff_t							difference_type;
-  ///
+  /** \brief . */
   class NoSpVecSetException : public std::logic_error
   {public: NoSpVecSetException(const std::string& what_arg) : std::logic_error(what_arg) {}};
-  ///
+  /** \brief . */
   class InvalidInternalStateException : public std::logic_error
   {public: InvalidInternalStateException(const std::string& what_arg) : std::logic_error(what_arg) {}};
-  ///
+  /** \brief . */
   enum UpperLower { UPPER_ELE, LOWER_ELE };
-  ///
+  /** \brief . */
   enum ElementRelation { BEFORE_ELE, AFTER_ELE, EQUAL_TO_ELE };
   /// Struct with members: size_type poss; ElementRelation rel;
   struct poss_type {
@@ -84,14 +83,12 @@ public:
   /** @name Constructors */
   //@{
 
-  ///
-  /** Construct uninitialized with not sparse vector set (#ele() == 0#) */
+  /** \brief Construct uninitialized with not sparse vector set (#ele() == 0#) */
   SpVecIndexLookup()
     : ele_(0), nz_(0), offset_(0), index_cached_(0)
   {}
 
-  ///
-  /** Construct initialize with a sparse vector */
+  /** \brief Construct initialize with a sparse vector */
   SpVecIndexLookup(element_type* ele, size_type nz, difference_type offset)
     : ele_(ele), nz_(nz), offset_(offset), index_cached_(0)
   {}
@@ -101,8 +98,7 @@ public:
   /** @name Sparse vector representation setup */
   //@{
 
-  ///
-  /** Set a new sparse vector.
+  /** \brief Set a new sparse vector.
     *
     * This will wipe out any cache that may be stored.
     */
@@ -121,15 +117,15 @@ public:
   /** @name Sparse vector representation access */
   //@{
 
-  ///
+  /** \brief . */
   element_type*		ele() const {
     return ele_;
   }
-  ///
+  /** \brief . */
   size_type			nz() const {
     return nz_;
   }
-  ///
+  /** \brief . */
   difference_type		offset() const {
     return offset_;
   }
@@ -139,8 +135,7 @@ public:
   /** @name Element lookup and caching */
   //@{
 
-  ///
-  /** Lookup an element and cache the result if a binary search was performed.
+  /** \brief Lookup an element and cache the result if a binary search was performed.
     *
     * This function should only be used if it can be assumed that the elements
     * are sorted in assending order.
@@ -170,8 +165,7 @@ public:
     */
   poss_type find_poss(index_type index, UpperLower uplow) const;
 
-  ///
-  /** Lookup an element.
+  /** \brief Lookup an element.
     *
     * Lookup an exact match for an element.  If the element is not found, the
     * end of the sequence will be returned.
@@ -195,16 +189,14 @@ public:
   /** @name State management */
   //@{
 
-  ///
-  /** Called by client to inform the object that the sparse vector was modified
+  /** \brief Called by client to inform the object that the sparse vector was modified
     * so that the cache may be invalidated.
     */
   void sp_vec_was_modified() {
     index_cached_ = 0;
   }
 
-  ///
-  /** Called by client to ensure that the internal state is valid.
+  /** \brief Called by client to ensure that the internal state is valid.
     *
     * If #ele() != 0# but #nz == 0# or #ele()[0].index() + offset() < 1# then this
     * is an invalid sparse vector and the function will throw a #NoSpVecSetException#
@@ -249,8 +241,7 @@ private:
   /// Adjust the cached possition
   size_type adjust_cached_poss(UpperLower uplow) const;
 
-  ///
-  /** Perform a binary search for an element in the sparse vector.
+  /** \brief Perform a binary search for an element in the sparse vector.
     *
     * @param	index	[I]	index begin looked for
     * @param	uplow	[I]	whether it is an upper (#UPPER_ELE#) or lower (#LOWER_ELE#) element needed

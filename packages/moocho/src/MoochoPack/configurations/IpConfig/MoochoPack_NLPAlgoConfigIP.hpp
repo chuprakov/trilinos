@@ -36,8 +36,7 @@
 
 namespace MoochoPack {
 
-///
-/** This is a do all configuration class for <tt>NLPAlgo</tt>.
+/** \brief This is a do all configuration class for <tt>NLPAlgo</tt>.
  *
  * Options specific for to this configuration class and the classes that
  * it works with that can be set through <tt>this->set_options()</tt>, see the file
@@ -51,17 +50,16 @@ namespace MoochoPack {
 class NLPAlgoConfigIP : public NLPAlgoConfig {
 public:
 
-  ///
+  /** \brief . */
   NLPAlgoConfigIP();
 
-  ///
+  /** \brief . */
   ~NLPAlgoConfigIP();
 
   /** Overridden from NLPAlgoConfig */
   //@{
 
-  ///
-  /** Set the <tt>OptionsFromStream</tt> object that will be used for specifying the options.
+  /** \brief Set the <tt>OptionsFromStream</tt> object that will be used for specifying the options.
    *
    *  @param  options
    *               [in] If \c NULL then no options will be set.  If <tt>!=NULL</tt> then
@@ -72,11 +70,11 @@ public:
    *
    */
   void set_options( const options_ptr_t& options );
-  ///
+  /** \brief . */
   const options_ptr_t& get_options() const;
-  ///
+  /** \brief . */
   void config_algo_cntr(NLPAlgoContainer* algo_cntr, std::ostream* trase_out);
-  ///
+  /** \brief . */
   void init_algo(NLPAlgoInterface* algo);
 
   //@}
@@ -86,26 +84,26 @@ public:
   /** @name Enums for variaous options categories */
   //@{
 
-  ///
+  /** \brief . */
   enum EQuasiNewton {
     QN_AUTO, QN_BFGS, QN_PBFGS, QN_LBFGS, QN_LPBFGS };
-  ///
+  /** \brief . */
   enum EHessianInitialization {
     INIT_HESS_AUTO, INIT_HESS_IDENTITY, INIT_HESS_FIN_DIFF_SCALE_IDENTITY
     , INIT_HESS_FIN_DIFF_SCALE_DIAGONAL, INIT_HESS_FIN_DIFF_SCALE_DIAGONAL_ABS };
-  ///
+  /** \brief . */
   enum EQPSolverType {
     QP_AUTO, QP_QPSOL, QP_QPOPT, QP_QPKWIK, QP_QPSCHUR };
-  ///
+  /** \brief . */
   enum ELineSearchMethod {
     LINE_SEARCH_AUTO, LINE_SEARCH_NONE, LINE_SEARCH_DIRECT
     , LINE_SEARCH_2ND_ORDER_CORRECT, LINE_SEARCH_WATCHDOG
     , LINE_SEARCH_FILTER };
-  ///
+  /** \brief . */
   enum EMeritFunctionType {
     MERIT_FUNC_AUTO, MERIT_FUNC_L1, MERIT_FUNC_MOD_L1
     , MERIT_FUNC_MOD_L1_INCR };
-  ///
+  /** \brief . */
   enum EL1PenaltyParamUpdate {
     L1_PENALTY_PARAM_AUTO, L1_PENALTY_PARAM_WITH_MULT
     , L1_PENALTY_PARAM_MULT_FREE };
@@ -115,7 +113,7 @@ public:
   /** @name Struct for options values */
   //@{
 
-  ///
+  /** \brief . */
   struct SOptionValues {
     // Constructor (sets default values)
     SOptionValues();

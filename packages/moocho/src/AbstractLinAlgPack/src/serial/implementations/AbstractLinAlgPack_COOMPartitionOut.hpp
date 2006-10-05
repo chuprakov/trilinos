@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Partition<> output stream operator.
+/** \brief Partition<> output stream operator.
   *
   * This operator function calls the function output_COOM(os,part,0).
   */
@@ -46,8 +45,7 @@ inline std::ostream& operator<<(std::ostream& os
   return output_COOM(os,part,0);
 }
 
-///
-/** TransposedPartition<> output stream operator.
+/** \brief TransposedPartition<> output stream operator.
   *
   * This operator function calls the function output_COOM(os,trans_part,0).
   */

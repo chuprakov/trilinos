@@ -43,8 +43,7 @@
 
 namespace IterationPack {
 
-///
-/** Iterface for information about Iteration Quantities.
+/** \brief Iterface for information about Iteration Quantities.
   *
   * This class provides and interface to all concrete types of iteration quantities
   * and provides all of the services except storage access.  It is assumed that
@@ -89,8 +88,7 @@ public:
   /// Return the name (zero terminated string) of this quantity.
   virtual const char* name() const = 0; 
   
-  ///
-  /** Determine if there is storage advailable for the k <tt>offset</tt> iteration quanity.
+  /** \brief Determine if there is storage advailable for the k <tt>offset</tt> iteration quanity.
     *
     * If this function returns true then <tt>set_f(offset)</tt> can be called to set
     * the quanity for the kth iteration or <tt>get_k(offset)</tt> (see \c IterQuantityAccess)
@@ -98,8 +96,7 @@ public:
     */
   virtual bool has_storage_k(int offset) const = 0;
   
-  ///
-  /** Determine if the quanity for the k <tt>offset</tt> iteration has been accessed
+  /** \brief Determine if the quanity for the k <tt>offset</tt> iteration has been accessed
     * by a call to <tt>set_k()</tt> (see \c IterQuantityAccess).
     *
     * This function does not confirm that the k <tt>offset</tt> quanity has been
@@ -109,16 +106,14 @@ public:
     */
   virtual bool updated_k(int offset) const = 0;
 
-  ///
-  /** Return the highest k such that <tt>updated_k(k)</tt> returns true.
+  /** \brief Return the highest k such that <tt>updated_k(k)</tt> returns true.
     *
     * If <tt>updated_k(k) == false</tt> false for all \c k then this function
     * will return \c NONE_UPDATED.
     */
   virtual int last_updated() const = 0;
 
-  ///
-  /** Determine if the memory for the k + <tt>offset</tt> quantityy will be lost if
+  /** \brief Determine if the memory for the k + <tt>offset</tt> quantityy will be lost if
     * <tt>set_k(set_offset)</tt> is called (see \c IterQuantityAccess).
     *
     * This member function allows clients to know a little about the
@@ -176,8 +171,7 @@ public:
   /** @name Misc modifier (non-const) methods */
   //@{
 
-  ///
-  /** Causes <tt>updated_k(k)</tt> to return false.
+  /** \brief Causes <tt>updated_k(k)</tt> to return false.
     *
      * Preconditions:<ul>
     * <li> <tt>updated_k(offset) == true</tt> [throw <tt>QuanityNotSet</tt>]
@@ -189,8 +183,7 @@ public:
     */
   virtual void set_not_updated_k(int offset) = 0;
 
-  ///
-  /** Causes <tt>updated_k(k)</tt> to return false for all <tt>k</tt>.
+  /** \brief Causes <tt>updated_k(k)</tt> to return false for all <tt>k</tt>.
     */
   virtual void set_all_not_updated() = 0;
 
@@ -199,8 +192,7 @@ public:
   /** @name Iteration incrementation */
   //@{
 
-  ///
-  /** Shift the reference point from the k to the k+1 iteration.
+  /** \brief Shift the reference point from the k to the k+1 iteration.
     *
      * Postcondtions:<ul>
     * <li> <tt>updated_k(offset)</tt> before the call equals <tt>updated_k(offset-1)</tt> after return
@@ -215,8 +207,7 @@ public:
   /** @name Runtime information */
   //@{
 
-  ///
-  /** Print to an output stream a description of this iteration quantity.
+  /** \brief Print to an output stream a description of this iteration quantity.
    *
    * The purpose if this method is allow the client get information as to what the
    * type of the iteration quantity really is for debugging and informational purposes.

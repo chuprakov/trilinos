@@ -33,8 +33,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Simple scalable serial %NLP subclass.
+/** \brief Simple scalable serial %NLP subclass.
  *
  * This example %NLP is a scalable problem where the basis of the jacobian of the
  * equality constraints is a banded (band width = bw) symmetric positive definite
@@ -149,8 +148,7 @@ public:
   /** @name Constructors / initializers */
   //@{
 
-  ///
-  /** Constructor.
+  /** \brief Constructor.
    *
    * ToDo: Finish documentation!
    */
@@ -190,11 +188,11 @@ public:
   /** @name Overridden public members from NLP */
   //@{
 
-  ///
+  /** \brief . */
   void initialize(bool test_setup);
-  ///
+  /** \brief . */
   bool is_initialized() const;
-  ///
+  /** \brief . */
   value_type max_var_bounds_viol() const;
 
   //@}
@@ -202,7 +200,7 @@ public:
   /** @name Overridden from NLPVarReductPerm */
   //@{
   
-  ///
+  /** \brief . */
   bool nlp_selects_basis() const;
 
   //@}
@@ -212,58 +210,58 @@ protected:
   /** @name Overridden protected methods from NLPSerialPreprocess */
   //@{
 
-  ///
+  /** \brief . */
   bool imp_nlp_has_changed() const;
-  ///
+  /** \brief . */
   size_type imp_n_orig() const;
-  ///
+  /** \brief . */
   size_type imp_m_orig() const;
-  ///
+  /** \brief . */
   size_type imp_mI_orig() const;
-  ///
+  /** \brief . */
   const DVectorSlice imp_xinit_orig() const;
-  ///
+  /** \brief . */
   bool imp_has_var_bounds() const;
-  ///
+  /** \brief . */
   const DVectorSlice imp_xl_orig() const;
-  ///
+  /** \brief . */
   const DVectorSlice imp_xu_orig() const;
-  ///
+  /** \brief . */
   const DVectorSlice imp_hl_orig() const;
-  ///
+  /** \brief . */
   const DVectorSlice imp_hu_orig() const;
-  ///
+  /** \brief . */
   void imp_calc_f_orig(
     const DVectorSlice            &x_full
     ,bool                        newx
     ,const ZeroOrderInfoSerial   &zero_order_info
     ) const;
-  ///
+  /** \brief . */
   void imp_calc_c_orig(
     const DVectorSlice            &x_full
     ,bool                        newx
     ,const ZeroOrderInfoSerial   &zero_order_info
     ) const;
-  ///
+  /** \brief . */
   void imp_calc_h_orig(
     const DVectorSlice            &x_full
     ,bool                        newx
     ,const ZeroOrderInfoSerial   &zero_order_info
     ) const;
-  ///
+  /** \brief . */
   void imp_calc_Gf_orig(
     const DVectorSlice            &x_full
     ,bool                        newx
     ,const ObjGradInfoSerial     &obj_grad_info
     ) const;
-  ///
+  /** \brief . */
   bool imp_get_next_basis(
     IVector      *var_perm_full
     ,IVector     *equ_perm_full
     ,size_type   *rank_full
     ,size_type   *rank
     );
-  ///
+  /** \brief . */
   void imp_report_orig_final_solution(
     const DVectorSlice      &x_orig
     ,const DVectorSlice     *lambda_orig
@@ -277,16 +275,16 @@ protected:
   /** @name Overridden protected methods from NLPSerialPreprocessExplJac */
   //@{
 
-  ///
+  /** \brief . */
   size_type imp_Gc_nz_orig() const;
-  ///
+  /** \brief . */
   size_type imp_Gh_nz_orig() const;
-  ///
+  /** \brief . */
   void imp_calc_Gc_orig(
     const DVectorSlice& x_full, bool newx
     , const FirstOrderExplInfo& first_order_expl_info
     ) const;
-  ///
+  /** \brief . */
   void imp_calc_Gh_orig(
     const DVectorSlice& x_full, bool newx
     , const FirstOrderExplInfo& first_order_expl_info
@@ -339,10 +337,10 @@ private:
   // /////////////////////////////////////////
   // Private member functions
 
-  ///
+  /** \brief . */
   void assert_is_initialized() const;
 
-  ///
+  /** \brief . */
   void inform_new_point(bool newx) const;
 
   // Not defined and not to be called

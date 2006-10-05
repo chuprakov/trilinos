@@ -36,8 +36,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** <tt>VectorMutable</tt> adapter subclass for <tt>Thyra::VectorBase</tt>.
+/** \brief <tt>VectorMutable</tt> adapter subclass for <tt>Thyra::VectorBase</tt>.
  */
 class VectorMutableThyra : public VectorMutable, private VectorApplyOpSerialBase {
 public:
@@ -45,20 +44,17 @@ public:
   /** @name Constructors / Initializers */
   //@{
 
-  ///
-  /** Construct to uninitialized.
+  /** \brief Construct to uninitialized.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_vec().get() == NULL</tt>
    * </ul>
    */
   VectorMutableThyra();
-  ///
-  /** Calls <tt>this->initialize()</tt>.
+  /** \brief Calls <tt>this->initialize()</tt>.
    */
   VectorMutableThyra( const Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >& thyra_vec );
-  ///
-  /** Initalize given a smart pointer to a <tt>Thyra::Vetor</tt> object.
+  /** \brief Initalize given a smart pointer to a <tt>Thyra::Vetor</tt> object.
    *
    * @param  thyra_vec  [in] Smart pointer to Thyra vector <tt>this</tt> will adapt.
    *
@@ -71,16 +67,14 @@ public:
    * </ul>
    */
   void initialize( const Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >& thyra_vec );
-  ///
-  /** Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorBase</tt> object.
+  /** \brief Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorBase</tt> object.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_vec().get() == NULL</tt>
    * </ul>
    */
   Teuchos::RefCountPtr<Thyra::VectorBase<value_type> > set_uninitialized();
-  ///
-  /** Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorBase</tt> object.
+  /** \brief Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorBase</tt> object.
    *
    * If <tt>this->thyra_vec().count() == 2</tt>, then <tt>this</tt>
    * has so ownership of the <tt>*this->thyra_vec()</tt> object.
@@ -92,9 +86,9 @@ public:
   /** @name Methods overridden from Vector */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space() const;
-  ///
+  /** \brief . */
   void apply_op(
     const RTOpPack::RTOp       &op
     ,const size_t              num_vecs
@@ -106,11 +100,11 @@ public:
     ,const index_type          sub_dim
     ,const index_type          global_offset
     ) const;
-  ///
+  /** \brief . */
   index_type dim() const;
-  ///
+  /** \brief . */
   void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
-  ///
+  /** \brief . */
   void free_sub_vector( RTOpPack::SubVector* sub_vec ) const;
 
   //@}
@@ -118,12 +112,21 @@ public:
   /** @name Methods overridden from VectorMutable */
   //@{
 
-  ///
+  /** \brief . */
   void get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec );
-  ///
+  /** \brief . */
   void commit_sub_vector( RTOpPack::MutableSubVector* sub_vec );
-  ///
+  /** \brief . */
   void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
+  /** \brief . */
+  void Vp_StMtV(
+    value_type                       alpha
+    ,const GenPermMatrixSlice        &P
+    ,BLAS_Cpp::Transp                P_trans
+    ,const Vector                    &x
+    ,value_type                      beta
+    );
+
 
   //@}
 

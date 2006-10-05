@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract base class for all serial polymorphic symmetrix nonsingular matrices that
+/** \brief Abstract base class for all serial polymorphic symmetrix nonsingular matrices that
  * can be used to solve for linear systems relatively efficiently.
  *
  * The methods of this interface should not be called directly but instead through
@@ -47,14 +46,13 @@ class MatrixSymNonsingSerial
 {
 public:
 
-  ///
+  /** \brief . */
   using MatrixSymNonsing::M_StMtInvMtM;
 
   /** @name Level-3 */
   //@{
 
-  ///
-  /** sym_gms_lhs = alpha * op(mwo) * inv(M) * op(mwo)'.
+  /** \brief sym_gms_lhs = alpha * op(mwo) * inv(M) * op(mwo)'.
     *
     * The default implementation is based on the operation M_StInvMtM(...)
     * assuming that this \c M is a symmetric matrix.  For an efficient implementation

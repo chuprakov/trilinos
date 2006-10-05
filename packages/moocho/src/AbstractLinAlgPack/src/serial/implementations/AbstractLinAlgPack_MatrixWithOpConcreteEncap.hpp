@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** This template class defines the storage for a concrete matrix
+/** \brief This template class defines the storage for a concrete matrix
   * class that operations are based on.
   *
   * The default copy constructor and assignment operator are allowed.
@@ -61,7 +60,7 @@ public:
     return m_;
   }
 
-  ///
+  /** \brief . */
   const M& m() const {
     return m_;
   }
@@ -71,16 +70,16 @@ public:
   // /////////////////////////////////////////////////////
   // Overridden from Matrix
 
-  ///
+  /** \brief . */
   size_type rows() const;
 
-  ///
+  /** \brief . */
   size_type cols() const;
 
   // /////////////////////////////////////////////////////
   // Overridden from MatrixOp
 
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& m);
 
 private:

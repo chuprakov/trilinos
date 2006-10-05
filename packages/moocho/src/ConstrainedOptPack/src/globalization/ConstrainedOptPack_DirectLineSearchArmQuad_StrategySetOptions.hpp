@@ -35,8 +35,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Set options for DirectLineSearchArmQuad_Strategy from a
+/** \brief Set options for DirectLineSearchArmQuad_Strategy from a
   * OptionsFromStream object.
   *
   * The default options group name is DirectLineSearchArmQuad.
@@ -82,7 +81,7 @@ class DirectLineSearchArmQuad_StrategySetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   DirectLineSearchArmQuad_StrategySetOptions(
       DirectLineSearchArmQuad_Strategy* qp_solver = 0
     , const char opt_grp_name[] = "DirectLineSearchArmQuad" );

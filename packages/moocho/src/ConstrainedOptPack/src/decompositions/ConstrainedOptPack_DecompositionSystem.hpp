@@ -36,8 +36,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** This class abstracts a decomposition choice for the quasi-range
+/** \brief This class abstracts a decomposition choice for the quasi-range
  * space \a Y and null space \a Z matrices for a linearly independent
  * set of columns of \a Gc.
  *
@@ -80,19 +79,19 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
-  ///
+  /** \brief . */
   class SingularDecomposition : public std::logic_error
   {public: SingularDecomposition(const std::string& what_arg) : std::logic_error(what_arg) {}};
-  ///
+  /** \brief . */
   class InvalidMatrixType : public std::logic_error
   {public: InvalidMatrixType(const std::string& what_arg) : std::logic_error(what_arg) {}};
-  ///
+  /** \brief . */
   class TestFailed : public std::runtime_error
   {public: TestFailed(const std::string& what_arg) : std::runtime_error(what_arg) {}};
   /// Enumeration for the amount of output to create from <tt>update_decomp()</tt>.
@@ -105,19 +104,18 @@ public:
     };
   /// Enumeration for if to run internal tests or not.
   enum ERunTests { RUN_TESTS, NO_TESTS };
-  ///
+  /** \brief . */
   enum EMatRelations { MATRICES_INDEP_IMPS, MATRICES_ALLOW_DEP_IMPS };
 
   //@}
 
-  ///
+  /** \brief . */
   virtual ~DecompositionSystem() {}
 
   /** @name Dimensionality of the decomposition */
   //@{
 
-  ///
-  /** Return the number of rows in \c Gc.
+  /** \brief Return the number of rows in \c Gc.
    *
    * Postconditions:<ul>
    * <li> <tt>n > m</tt>
@@ -128,8 +126,7 @@ public:
    */
   virtual size_type n() const;
 
-  ///
-  /** Return the number of columns in \c Gc.
+  /** \brief Return the number of columns in \c Gc.
    *
    * Postconditions:<ul>
    * <li> <tt>m > 0</tt>
@@ -137,8 +134,7 @@ public:
    */
   virtual size_type m() const = 0;
 
-  ///
-  /** Returns the rank of \c Gc(:,equ_decomp()).
+  /** \brief Returns the rank of \c Gc(:,equ_decomp()).
    *
    * Postconditions:<ul>
    * <li> <tt>r =< m</tt>
@@ -149,15 +145,13 @@ public:
    */
   virtual size_type r() const;
 
-  ///
-  /** Returns the range of the decomposed equalities.
+  /** \brief Returns the range of the decomposed equalities.
    *
    * The default implementation returns <tt>Range1D(1,this->r())</tt>.
    */
   virtual Range1D equ_decomp() const;
 
-  ///
-  /** Returns the range of the undecomposed equalities.
+  /** \brief Returns the range of the undecomposed equalities.
    *
    * The default implementation returns <tt>Range1D(this->r()+1,this->m())</tt>
    * or <tt>Range1D::Invalid</tt> if <tt>this->r() == this->m()<tt>
@@ -169,8 +163,7 @@ public:
   /** @name Range and null vector spaces */
   //@{
 
-  ///
-  /** Return a \c VectorSpace object for the range space.
+  /** \brief Return a \c VectorSpace object for the range space.
    *
    * Postconditions:<ul>
    * <li> <tt>return.get() != NULL</tt>
@@ -179,8 +172,7 @@ public:
    */
   virtual const VectorSpace::space_ptr_t space_range() const = 0;
 
-  ///
-  /** Return a \c VectorSpace object for the range space.
+  /** \brief Return a \c VectorSpace object for the range space.
    *
    * Postconditions:<ul>
    * <li> <tt>return.get() != NULL</tt>
@@ -194,28 +186,23 @@ public:
   /** @name Matrix factories */
   //@{
 
-  ///
-  /** Return a matrix factory object for <tt>Z</tt>
+  /** \brief Return a matrix factory object for <tt>Z</tt>
    */
   virtual const mat_fcty_ptr_t factory_Z() const = 0;
 
-  ///
-  /** Return a matrix factory object for <tt>Y</tt>
+  /** \brief Return a matrix factory object for <tt>Y</tt>
    */
   virtual const mat_fcty_ptr_t factory_Y() const = 0;
 
-  ///
-  /** Return a matrix factory object for <tt>R</tt>.
+  /** \brief Return a matrix factory object for <tt>R</tt>.
    */
   virtual const mat_nonsing_fcty_ptr_t factory_R() const = 0;
   
-  ///
-  /** Return a matrix factory object for <tt>Uz</tt>
+  /** \brief Return a matrix factory object for <tt>Uz</tt>
    */
   virtual const mat_fcty_ptr_t factory_Uz() const = 0;
 
-  ///
-  /** Return a matrix factory object for <tt>Uy</tt>
+  /** \brief Return a matrix factory object for <tt>Uy</tt>
    */
   virtual const mat_fcty_ptr_t factory_Uy() const = 0;
 
@@ -224,8 +211,7 @@ public:
   /** @name Update range/null decomposition */
   //@{
 
-  ///
-  /** Creates the range/null decomposition for <tt>Gc(:,equ_decomp)'</tt>.
+  /** \brief Creates the range/null decomposition for <tt>Gc(:,equ_decomp)'</tt>.
    *
    * The decomposition is based on the linearly independent columns \c Gc(:,equ_decomp)
    * of \c Gc
@@ -362,8 +348,7 @@ public:
     ,EMatRelations        mat_rel = MATRICES_INDEP_IMPS
     ) const = 0;
   
-  ///
-  /** Print the sub-algorithm by which the decomposition is formed
+  /** \brief Print the sub-algorithm by which the decomposition is formed
    *
    */
   virtual void print_update_decomp(

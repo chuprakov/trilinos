@@ -34,8 +34,7 @@
 
 namespace MemMngPack {
 
-///
-/** Template class that implements ReleaseResource interface for
+/** \brief Template class that implements ReleaseResource interface for
  * a RefCountPtr<T> object.
  *
  * Note that ~ReleaseResource_ref_count_ptr() does not need to be
@@ -46,7 +45,7 @@ template <class T>
 class ReleaseResource_ref_count_ptr : public ReleaseResource {
 public:
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<T>   ptr_t;
 
   /// Just give public access to pointer
@@ -58,7 +57,7 @@ public:
   // ////////////////////////////////////
   // Overriddend from ReleaseResource
 
-  ///
+  /** \brief . */
   bool resource_is_bound() const;
 
 }; // end class ReleaseResource_ref_count_ptr

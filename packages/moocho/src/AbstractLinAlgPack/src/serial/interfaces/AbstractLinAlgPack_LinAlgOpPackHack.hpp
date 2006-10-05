@@ -46,60 +46,65 @@ using AbstractLinAlgPack::MatrixOp;
 using AbstractLinAlgPack::MatrixNonsing;
 using AbstractLinAlgPack::MatrixOpNonsing;
 
-///
-/** <tt>m_lhs += alpha * op(mwo_rhs1)</tt>.
+/** \brief <tt>m_lhs += alpha * op(mwo_rhs1)</tt>.
  */
 void Mp_StM(
   DMatrixSlice* vs_lhs, value_type alpha
   ,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
   );
 
-///
-/** <tt>vs_lhs = alpha * op(mwo_rhs1) * vs_rhs2 + beta * vs_lhs</tt>.
+/** \brief <tt>vs_lhs = alpha * op(mwo_rhs1) * vs_rhs2 + beta * vs_lhs</tt>.
  */
 void Vp_StMtV(
   DVectorSlice* vs_lhs, value_type alpha, const MatrixOp& mwo_rhs1
   ,BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2
   ,value_type beta = 1.0 );
 
-///
-/** <tt>vs_lhs = alpha * op(mwo_rhs1) * vs_rhs2 + beta * sv_lhs</tt>.
+/** \brief <tt>vs_lhs = op(mwo_rhs1) * vs_rhs2 + beta * vs_lhs</tt>.
+ */
+void Vp_MtV(
+  DVectorSlice* vs_lhs, const MatrixOp& mwo_rhs1
+  ,BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2
+  ,value_type beta = 1.0 );
+
+/** \brief <tt>vs_lhs = alpha * op(mwo_rhs1) * vs_rhs2 + beta * sv_lhs</tt>.
  */
 void Vp_StMtV(
   DVectorSlice* vs_lhs, value_type alpha, const MatrixOp& mwo_rhs1
   ,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2
   ,value_type beta = 1.0 );
 
-///
-/** <tt>vs_lhs = inv(op(mwo_rhs1)) * vs_rhs2</tt>.
+/** \brief <tt>vs_lhs = op(mwo_rhs1) * vs_rhs2</tt>.
+ */
+void V_MtV(
+  DVectorSlice* vs_lhs, const MatrixOp& mwo_rhs1
+  ,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2 );
+
+/** \brief <tt>vs_lhs = inv(op(mwo_rhs1)) * vs_rhs2</tt>.
  */
 void V_InvMtV(
   DVectorSlice* vs_lhs, const MatrixOpNonsing& mwo_rhs1
   ,BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2 );
 
-///
-/** <tt>v_lhs = inv(op(mwo_rhs1)) * vs_rhs2</tt>.
+/** \brief <tt>v_lhs = inv(op(mwo_rhs1)) * vs_rhs2</tt>.
  */
 void V_InvMtV(
   DVector* v_lhs, const MatrixOpNonsing& mwo_rhs1
   ,BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2 );
 
-///
-/** <tt>vs_lhs = inv(op(mwo_rhs1)) * sv_rhs2</tt>.
+/** \brief <tt>vs_lhs = inv(op(mwo_rhs1)) * sv_rhs2</tt>.
  */
 void V_InvMtV(
   DVectorSlice* vs_lhs, const MatrixOpNonsing& mwo_rhs1
   ,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2 );
 
-///
-/** <tt>v_lhs = inv(op(mwo_rhs1)) * sv_rhs2</tt>.
+/** \brief <tt>v_lhs = inv(op(mwo_rhs1)) * sv_rhs2</tt>.
  */
 void V_InvMtV(
   DVector* v_lhs, const MatrixOpNonsing& mwo_rhs1
   ,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2 );
 
-///
-/** <tt>vs_lhs = alpha * op(gpms_rhs1) * op(mwo_rhs2) * vs_rhs3 + beta * vs_lhs</tt>.
+/** \brief <tt>vs_lhs = alpha * op(gpms_rhs1) * op(mwo_rhs2) * vs_rhs3 + beta * vs_lhs</tt>.
  */
 void Vp_StPtMtV(
   DVectorSlice* vs_lhs, value_type alpha
@@ -107,8 +112,7 @@ void Vp_StPtMtV(
   ,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
   ,const DVectorSlice& vs_rhs3, value_type beta = 1.0 );
 
-///
-/** <tt>vs_lhs = alpha * op(gpms_rhs1) * op(mwo_rhs2) * sv_rhs3 + beta * vs_lhs</tt>.
+/** \brief <tt>vs_lhs = alpha * op(gpms_rhs1) * op(mwo_rhs2) * sv_rhs3 + beta * vs_lhs</tt>.
  */
 void Vp_StPtMtV(
   DVectorSlice* vs_lhs, value_type alpha
@@ -117,5 +121,28 @@ void Vp_StPtMtV(
   ,const SpVectorSlice& sv_rhs3, value_type beta = 1.0 );
 
 } // end namespace LinAlgOpPack
+
+// //////////////////////
+// Inline functions
+
+inline
+void LinAlgOpPack::Vp_MtV(
+  DVectorSlice* vs_lhs, const MatrixOp& mwo_rhs1
+  ,BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2
+  ,value_type beta )
+{
+  Vp_StMtV(vs_lhs,1.0,mwo_rhs1,trans_rhs1,vs_rhs2,beta);
+}
+
+inline
+void LinAlgOpPack::V_MtV(
+  DVectorSlice* vs_lhs, const MatrixOp& mwo_rhs1
+  ,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2 )
+{
+  Vp_StMtV(vs_lhs,1.0,mwo_rhs1,trans_rhs1,sv_rhs2);
+}
+
+
+
 
 #endif // LIN_ALG_OP_PACK_HACK_H

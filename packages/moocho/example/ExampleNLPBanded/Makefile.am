@@ -50,3 +50,6 @@ ExampleNLPBanded_DEPENDENCIES = $(common_dependencies)
 ExampleNLPBanded_LDADD = $(common_ldadd)
 
 include $(top_srcdir)/MakefileExeStub.mak
+
+EXTRA_DIST = $(srcdir)/NLPInterfacePack_ExampleNLPBanded.hpp
+

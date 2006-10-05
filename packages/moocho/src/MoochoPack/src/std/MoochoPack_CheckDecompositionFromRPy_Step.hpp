@@ -36,8 +36,7 @@
 
 namespace MoochoPack {
 
-///
-/** Check if the decomposition is going singular and if it is select a new decomposition.
+/** \brief Check if the decomposition is going singular and if it is select a new decomposition.
  *
  * This steps checks if the decomposition is going singular if the computation
  * for the range space step looks like it is becomming more inaccurate.
@@ -66,13 +65,12 @@ public:
   /// <<std comp>> members for Decomposition Select Strategy object.
   STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy )
 
-  ///
-  /** Set the maximum change in the relative error in the range space
+  /** \brief Set the maximum change in the relative error in the range space
      * step before the selection of a new decomposition is triggered.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_decomposition_cond_change_frac )
 
-  ///
+  /** \brief . */
   CheckDecompositionFromRPy_Step(
      const new_decomp_strategy_ptr_t    &new_decomp_strategy
     ,value_type                         max_decomposition_cond_change_frac = 1e+4
@@ -83,10 +81,10 @@ public:
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   //@}

@@ -33,8 +33,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** This class provides a mix-in interface for allowing subclass merit
+/** \brief This class provides a mix-in interface for allowing subclass merit
  * functions to compute the directional 1D derivative at a base point.
  *
  * The quantities Gf(xo) (gradient of f(xo))
@@ -49,14 +48,13 @@ namespace ConstrainedOptPack {
 class MeritFuncNLPDirecDeriv {
 public:
 
-  ///
+  /** \brief . */
   virtual ~MeritFuncNLPDirecDeriv() {}
 
   /** @name To be overridden by subclasses */
   //@{
 
-  ///
-  /** Calculate d(phi(x_k + alpha_k*d_k))/d(alpha_k) at alpha_k = 0.
+  /** \brief Calculate d(phi(x_k + alpha_k*d_k))/d(alpha_k) at alpha_k = 0.
     *
     * The value is stored internally by the subclass are returned by its
     * deriv() member usually.  The value is also returned from this

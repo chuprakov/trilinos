@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Interface adding operations specific for a symmetric matrix {abstract}.
+/** \brief Interface adding operations specific for a symmetric matrix {abstract}.
  *
  * This interface defines two addition methods to those found in \c MatrixOp:
  *
@@ -54,19 +53,19 @@ namespace AbstractLinAlgPack {
 class MatrixSymOp : public virtual MatrixOp {
 public:
 
-  ///
+  /** \brief . */
   using MatrixOp::Mp_StPtMtP;
 
   /** @name Public types */
   //@{
 
 #ifndef DOXYGEN_COMPILE
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixSymOp>    mat_mswo_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<MatrixSymOp>          mat_mswo_mut_ptr_t;
 #endif
-  ///
+  /** \brief . */
   enum EMatRhsPlaceHolder { DUMMY_ARG };
 
   //@}
@@ -74,7 +73,7 @@ public:
   /** @Friends */
   //@{
 
-  ///
+  /** \brief . */
   friend
   void Mp_StPtMtP(
     MatrixSymOp* sym_lhs, value_type alpha
@@ -83,7 +82,7 @@ public:
     ,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
     ,value_type beta
     );
-  ///
+  /** \brief . */
   friend
   void Mp_StMtMtM(
     MatrixSymOp* sym_lhs, value_type alpha
@@ -98,8 +97,7 @@ public:
   /** @name Clone */
   //@{
 
-  ///
-  /** Clone the non-const matrix object (if supported).
+  /** \brief Clone the non-const matrix object (if supported).
    *
    * The default implementation returns NULL which is perfectly acceptable.
    * A matrix object is not required to return a non-NULL value but almost
@@ -107,8 +105,7 @@ public:
    */
   virtual mat_mswo_mut_ptr_t clone_mswo();
 
-  ///
-  /** Clone the const matrix object (if supported).
+  /** \brief Clone the const matrix object (if supported).
    *
    * The behavior of this method is the same as for the non-const version
    * above except it returns a smart pointer to a const matrix object.
@@ -122,8 +119,7 @@ protected:
   /** @name Level-1 BLAS */
   //@{
 
-  ///
-  /** sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
+  /** \brief sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
     *
     * The default operation is based on Vp_StMtV(...) and assumes
     * that the matrix is symmetric.  Of course, a more efficient implementation
@@ -141,8 +137,7 @@ protected:
   /** @name Level-3 BLAS */
   //@{
 
-  ///
-  /** sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs) + beta * sym_lhs.
+  /** \brief sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs) + beta * sym_lhs.
     *
     * The default operation is based on \c Vp_StMtV() and assumes
     * that the matrix is symmetric.  Of course, a more efficient implementation

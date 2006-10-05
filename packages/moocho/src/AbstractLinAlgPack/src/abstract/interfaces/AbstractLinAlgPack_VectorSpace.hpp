@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract interface for objects that represent a space for mutable coordinate vectors.
+/** \brief Abstract interface for objects that represent a space for mutable coordinate vectors.
  *
  * This interface acts primarily as an "Abstract Factory" interface for creating \c VectorMutable
  * objects using the \c create_member() method.  A <tt>%VectorSpace</tt> object may also be able
@@ -126,15 +125,15 @@ public:
   /// Thrown if vector spaces are incompatible
   class IncompatibleVectorSpaces : public std::logic_error
   {public: IncompatibleVectorSpaces(const std::string& what_arg) : std::logic_error(what_arg) {}};
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const InnerProduct>          inner_prod_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const VectorSpace>           space_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const VectorSpaceFactory>    space_fcty_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<VectorMutable>               vec_mut_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<MultiVectorMutable>          multi_vec_mut_ptr_t;
 
 
@@ -144,8 +143,7 @@ public:
   /// Calls \c inner_prod()
   VectorSpace( const inner_prod_ptr_t& inner_prod = Teuchos::null );
 
-  ///
-  /** Initialize with an inner product object.
+  /** \brief Initialize with an inner product object.
    *
    * @param  inner_prod  [in] Smart pointer to inner product strategy object.
    *                     If <tt>inner_prod.get()==NULL</tt> then an
@@ -158,8 +156,7 @@ public:
    */
   virtual void inner_prod( const inner_prod_ptr_t& inner_prod );
 
-  ///
-  /** Return the smart pointer to the inner product strategy object.
+  /** \brief Return the smart pointer to the inner product strategy object.
    *
    * Postconditions:<ul>
    * <li> <tt>return.get() != NULL</tt>
@@ -172,8 +169,7 @@ public:
   /** @name Pure virtual functions that must be overridden */
   //@{
 
-  ///
-  /** Create a clone of \c this vector space object.
+  /** \brief Create a clone of \c this vector space object.
    *
    * The returned vector space object is expected to be independent from \c this
    * and have a lifetime that extends beyond \c this.  This makes a vector space
@@ -187,8 +183,7 @@ public:
    */
   virtual space_ptr_t clone() const = 0;
 
-  ///
-  /** Compare the compatibility of two vector spaces.
+  /** \brief Compare the compatibility of two vector spaces.
    *
    * If this function returns true, then vectors created from
    * either of the vector spaces will be compatible and can
@@ -204,13 +199,11 @@ public:
    */
   virtual bool is_compatible(const VectorSpace& vec_spc ) const = 0;
 
-  ///
-  /** Return the dimmension of the vector space.
+  /** \brief Return the dimmension of the vector space.
    */
   virtual index_type dim() const = 0;
 
-  ///
-  /** Create a vector member from the vector space.
+  /** \brief Create a vector member from the vector space.
    *
    * Postconditions:<ul>
    * <li> <tt>return.get() != NULL</tt>
@@ -231,8 +224,7 @@ public:
   /** @name Virtual functions with default implementations */
   //@{
 
-  ///
-  /** Returns true if the vectors are in core.
+  /** \brief Returns true if the vectors are in core.
    *
    * If this function returns true then it means that the vector
    * access functions <tt>Vector::get_sub_vector()</tt> and
@@ -249,8 +241,7 @@ public:
    */
   virtual bool is_in_core() const;
 
-  ///
-  /** Return a <tt>VectorSpaceFactory</tt> object for the creation of
+  /** \brief Return a <tt>VectorSpaceFactory</tt> object for the creation of
    * vector spaces with a small dimension.
    *
    * ToDo: Finish documentation!
@@ -260,8 +251,7 @@ public:
    */
   virtual space_fcty_ptr_t small_vec_spc_fcty() const;
 
-  ///
-  /** Create a vector member from the vector space initialized to a scalar.
+  /** \brief Create a vector member from the vector space initialized to a scalar.
    *
    * @param  alpha   [in] Scalar that all elements of allocated vector are
    *                 initialized to.
@@ -283,8 +273,7 @@ public:
    */
   virtual vec_mut_ptr_t create_member(const value_type& alpha) const;
 
-  ///
-  /** Create a set of vector members (a \c MultiVectorMutable) from the vector space.
+  /** \brief Create a set of vector members (a \c MultiVectorMutable) from the vector space.
    *
    * Preconditions:<ul>
    * <li> <tt>num_vecs >= 1</tt> (throw <tt>???</tt>)
@@ -310,8 +299,7 @@ public:
 
   //@}
 
-  ///
-  /** Create a transient sub-space of the current vector space.
+  /** \brief Create a transient sub-space of the current vector space.
    *
    * @param  rng  [in] The range of the elements to extract a vector sub-space.
    *
@@ -353,8 +341,7 @@ public:
   /// Inlined to call <tt>this->sub_space(Range1D(il,iu))</tt>.
   space_ptr_t sub_space( const index_type il, const index_type iu ) const;
 
-  ///
-  /** Create a vector space for vector to gather the elements into.
+  /** \brief Create a vector space for vector to gather the elements into.
    *
    * @param  P        [in] A <tt>GenPermMatrixSlice</tt> object specifying the map.
    * @param  P_trans  [in] Determines if <tt>P</tt> is transposed or not.

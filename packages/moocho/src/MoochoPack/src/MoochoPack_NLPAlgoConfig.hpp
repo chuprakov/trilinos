@@ -40,8 +40,7 @@ namespace MoochoPack {
 class NLPAlgoContainer;
 class NLPAlgoInterface;
 
-///
-/** Interface for objects responsible for configuring an rSQP algorithm.
+/** \brief Interface for objects responsible for configuring an rSQP algorithm.
  *
  * Objects of this type configure a \c NLPAlgoContainer object with an rSQP algorithm object,
  * configuring the algo with step, state etc. objects and initailizing the algorithm before the
@@ -56,7 +55,7 @@ public:
   /// Thrown if NLP type is incompatible with this config
   class InvalidNLPType : public std::logic_error
   {public: InvalidNLPType(const std::string& what_arg) : std::logic_error(what_arg) {}};
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
 
@@ -65,7 +64,7 @@ public:
   /** @name Constructors/destructors */
   //@{
 
-  ///
+  /** \brief . */
   virtual ~NLPAlgoConfig() {}
 
   //@}
@@ -73,8 +72,7 @@ public:
   /** @name Set options */
   //@{
 
-  ///
-  /** Set the <tt>OptionsFromStreamPack::OptionsFromStream</tt> to extract the
+  /** \brief Set the <tt>OptionsFromStreamPack::OptionsFromStream</tt> to extract the
    * options for the configuration from.
    *
    * @param  options  [in] Smart pointer to an <tt>OptionsFromStream</tt> object that
@@ -93,8 +91,7 @@ public:
    */
   virtual void set_options( const options_ptr_t& options ) = 0;
 
-  ///
-  /** Get the <tt>OptionsFromStream</tt> object being used to extract the options from.
+  /** \brief Get the <tt>OptionsFromStream</tt> object being used to extract the options from.
    */
   virtual const options_ptr_t& get_options() const = 0;
 
@@ -103,8 +100,7 @@ public:
   /** @name Algorithm configuration and initialization */
   //@{
 
-  ///
-  /** Configure the rSQP algorithm container with an rSQP algorithm object.
+  /** \brief Configure the rSQP algorithm container with an rSQP algorithm object.
    *
    * @param  algo_cntr
    *                [in/out] On input, \c algo_cntr may or may not already have
@@ -137,8 +133,7 @@ public:
     ,std::ostream*           trase_out = 0
     ) = 0;
 
-  ///
-  /** Initialize the rSQP algorithm object for the start of SQP iterations.
+  /** \brief Initialize the rSQP algorithm object for the start of SQP iterations.
    *
    * @param  algo_cntr
    *                [in/out] On input, \c algo_cntr must already have
@@ -166,7 +161,7 @@ public:
 private:
 
 #ifdef DOXYGEN_COMPILE // Strictly for doxygen diagrams
-  ///
+  /** \brief . */
   OptionsFromStreamPack::OptionsFromStream    *options;
 #endif
 

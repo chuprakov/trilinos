@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Create an eta vector (scaled by alpha = default 1).
+/** \brief Create an eta vector (scaled by alpha = default 1).
   *
   * The created vector is of size n and has the single nonzero
   * element of eta(i) = alpha.
@@ -48,7 +47,7 @@ public:
   typedef SpVectorSlice::element_type		ele_t;
 
 
-  ///
+  /** \brief . */
   EtaVector( ele_t::index_type i, size_type n, ele_t::value_type alpha = 1.0 )
     : ele_(i,alpha), sv_(&ele_,1,0,n,true)
   {}

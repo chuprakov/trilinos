@@ -42,8 +42,7 @@ template <class T_Indice, class T_Value> class TransposedPartition;
 
 // ///////////////////////////////////////////////////////////////////////////////////////
 // ///////////////////////////////////////////////////////////////////////////////////////
-///
-/** COO Matrix partitioning view class.
+/** \brief COO Matrix partitioning view class.
   *
   * This class is used to provide a set of views (partitions)
   * of a permuted sparse coordinate (COO) matrix sorted in Fortran
@@ -176,21 +175,21 @@ public:
   /** @name Public Types */
   //@{
 
-  ///
+  /** \brief . */
   typedef COOMatrixPartitionedViewUtilityPack::Partition<T_Indice,T_Value>
                               partition_type;
-  ///
+  /** \brief . */
   typedef COOMatrixPartitionedViewUtilityPack::TransposedPartition<T_Indice,T_Value>
                               transposed_partition_type;
-  ///
+  /** \brief . */
   typedef T_Indice										indice_type;
-  ///
+  /** \brief . */
   typedef AbstractLinAlgPack::size_type						size_type;
-  ///
+  /** \brief . */
   typedef ptrdiff_t										difference_type;
-  ///
+  /** \brief . */
   enum EPartitionOrder { PARTITION_BY_ROW, PARTITION_BY_COL };
-  ///
+  /** \brief . */
   class UninitializedException: public std::logic_error
   {public: UninitializedException(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
@@ -207,8 +206,7 @@ public:
     */
   //@{
 
-  ///
-  /** Construct with no view set.
+  /** \brief Construct with no view set.
     *
     * Postconditions:\begin{itemize}
     *	\item	#rows() == 0#
@@ -219,8 +217,7 @@ public:
     */
   COOMatrixPartitionedView();
 
-  ///
-  /** Construct with a view to a partitioned COO matrix set.
+  /** \brief Construct with a view to a partitioned COO matrix set.
     *
     * Equivalent to calling the default constructor then #create_view(...)#.
     */
@@ -249,8 +246,7 @@ public:
     // a linking error saying that it could not find this function.
     // ToDo: Investagate this problem further at a latter time.
 
-  ///
-  /** Crete a view to a COO matrix.
+  /** \brief Crete a view to a COO matrix.
     *
     * The arguments to this function specify COO matrix
     *		(#rows#,#cols#,#nz#,#val#(#nz#),#ivect#(#nz#),#jvect#(#nz#))
@@ -338,8 +334,7 @@ public:
       , const size_type		col_part[]
       , const EPartitionOrder	partition_order );
 
-  ///
-  /** Bind the view of another partitioned matrix.
+  /** \brief Bind the view of another partitioned matrix.
     *
     * After being called #this# and #coom_view# will share storage
     * for the same COO matrix view.
@@ -379,16 +374,14 @@ public:
   /// return the number column partitions
   size_type num_col_part() const;
 
-  ///
-  /** get the array of row partitions.
+  /** \brief get the array of row partitions.
     *
     *	@param	row_part	[O]	array (length #this->num_row_part() + 1#) of
     *							row indices of start of the row partitions.
     */
   void get_row_part(indice_type row_part[]) const;
 
-  ///
-  /** get the array of column partitions.
+  /** \brief get the array of column partitions.
     *
     *	@param	col_part	[O]	array (length #this->num_col_part() + 1#) of
     *							column indices of start of the column partitions.
@@ -398,8 +391,7 @@ public:
   /// Returns whether the paritions or sorted by row or by column.
   EPartitionOrder partition_order() const;
 
-  ///
-  /** Returns the overall partition number (1 to #num_row_part() * num_col_part()#)
+  /** \brief Returns the overall partition number (1 to #num_row_part() * num_col_part()#)
     * given the row (1 to #num_row_part()#) and column (1 to #num_col_part()#) partition numbers.
     */
   size_type overall_part_num(size_type row_p, size_type col_p) const;
@@ -433,33 +425,29 @@ public:
 //	///
 //	operator const partition_type() const;
 
-  ///
-  /** Return a partition object for the entire view.
+  /** \brief Return a partition object for the entire view.
     */
   partition_type operator()();
 
-  ///
+  /** \brief . */
   const partition_type operator()() const;
 
-  ///
-  /** Return a partition object for a parition given its overall partition number (1-based).
+  /** \brief Return a partition object for a parition given its overall partition number (1-based).
     */
   partition_type partition(size_type overall_p);
 
-  ///
+  /** \brief . */
   const partition_type partition(size_type overall_p) const;
 
-  ///
-  /** Return a partition object for a parition given its row and column
+  /** \brief Return a partition object for a parition given its row and column
     * partition numbers.
     */
   partition_type partition(size_type row_p, size_type col_p);
 
-  ///
+  /** \brief . */
   const partition_type partition(size_type row_p, size_type col_p) const;
 
-  ///
-  /** Return a partition object for a range of continous overall partition numbers.
+  /** \brief Return a partition object for a range of continous overall partition numbers.
     *
     * This is probably only usefull when a set of rows of submatrices or column
     * submatrices need to be accessed.  For example, if the paritions are
@@ -474,7 +462,7 @@ public:
     */
   partition_type partition(Range1D rng_overall_p);
 
-  ///
+  /** \brief . */
   const partition_type partition(Range1D rng_overall_p) const;
 
   //@}
@@ -616,8 +604,7 @@ namespace COOMatrixPartitionedViewUtilityPack {
 
 // ///////////////////////////////////////////////////////////////////////
 // ///////////////////////////////////////////////////////////////////////
-///
-/** Class for a partition or a set of continous
+/** \brief Class for a partition or a set of continous
   * partitions in a partitioned COO matrix.
   *
   * This class represents the abstraction of the
@@ -636,17 +623,17 @@ public:
   /** @name Public types */
   //@{
   
-  ///
+  /** \brief . */
   typedef AbstractLinAlgPack::size_type				size_type;
-  ///
+  /** \brief . */
   typedef Partition<T_Indice,T_Value>				partition_type;
-  ///
+  /** \brief . */
   typedef ptrdiff_t								difference_type;
-  ///
+  /** \brief . */
   typedef SparseCOOPtrElement<T_Indice,T_Value>	element_type;
-  ///
+  /** \brief . */
   typedef element_type*							iterator;
-  ///
+  /** \brief . */
   typedef const element_type*						const_iterator;
 
   //@}
@@ -662,8 +649,7 @@ public:
     */
   //@{
   
-  ///
-  /** Constructs an uninitialized partition view.
+  /** \brief Constructs an uninitialized partition view.
     *
     * Postconditions:\begin{itemize}
     * \item #rows() == 0#
@@ -676,8 +662,7 @@ public:
     */
   Partition();
 
-  ///
-  /** Construct with the COO matrix initialized.
+  /** \brief Construct with the COO matrix initialized.
     *
     * Equivalent to calling the default constructor and #initialize(...)#.
     */
@@ -689,8 +674,7 @@ public:
       , difference_type	row_offset
       , difference_type	col_offset );
 
-  ///
-  /** Initialize the COO matrix.
+  /** \brief Initialize the COO matrix.
     *
     * @param	rows	number of rows in the submatrix
     *	@param	cols	number of columns in the submatrix
@@ -709,8 +693,7 @@ public:
       , difference_type	row_offset
       , difference_type	col_offset );
 
-  ///
-  /** bind to a partion.
+  /** \brief bind to a partion.
     *
     * ToDo:  finish documentation for this function
     */
@@ -721,23 +704,23 @@ public:
   /** @name COOMatrixTemplateInterface interface */
   //@{
 
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type cols() const ;
-  ///
+  /** \brief . */
   size_type nz() const;
-  ///
+  /** \brief . */
   difference_type row_offset() const;
-  ///
+  /** \brief . */
   difference_type col_offset() const;
-  ///
+  /** \brief . */
   iterator begin();
-  ///
+  /** \brief . */
   const_iterator begin() const;
-  ///
+  /** \brief . */
   iterator end();
-  ///
+  /** \brief . */
   const_iterator end() const;
 
   //@}
@@ -771,8 +754,7 @@ private:
 
 // /////////////////////////////////////////////////////////////////////////////////////
 // /////////////////////////////////////////////////////////////////////////////////////
-///
-/** Class for the transpose of a Partition
+/** \brief Class for the transpose of a Partition
   *
   * This class represents the abstraction of the
   * transpose of the matrix given by a Partition<> class.
@@ -800,22 +782,22 @@ public:
   /** @name Public types */
   //@{
   
-  ///
+  /** \brief . */
   typedef Partition<T_Indice,T_Value>				partition_type;
-  ///
+  /** \brief . */
   typedef AbstractLinAlgPack::size_type				size_type;
-  ///
+  /** \brief . */
   typedef ptrdiff_t								difference_type;
-  ///
+  /** \brief . */
   typedef SparseCOOPtrElement<T_Indice,T_Value>	element_type;
-  ///
+  /** \brief . */
   typedef TransSparseCOOElementViewIter<
           element_type*
         , std::random_access_iterator_tag
         , typename element_type::indice_type
         , typename element_type::value_type&
         , difference_type>					iterator;
-  ///
+  /** \brief . */
   typedef TransSparseCOOElementViewIter<
           const element_type*
         , std::random_access_iterator_tag
@@ -836,15 +818,13 @@ public:
     */
   //@{
 
-  ///
-  /** Construct with the partition initialized.
+  /** \brief Construct with the partition initialized.
     *
     * ToDo:  finish documentation for this function
     */
   TransposedPartition(const partition_type& partition);
 
-  ///
-  /** bind to a partion.
+  /** \brief bind to a partion.
     *
     * ToDo:  finish documentation for this function
     */
@@ -855,23 +835,23 @@ public:
   /** @name COOMatrixTemplateInterface interface */
   //@{
 
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type cols() const;
-  ///
+  /** \brief . */
   size_type nz() const;
-  ///
+  /** \brief . */
   difference_type row_offset() const;
-  ///
+  /** \brief . */
   difference_type col_offset() const;
-  ///
+  /** \brief . */
   iterator begin();
-  ///
+  /** \brief . */
   const_iterator begin() const;
-  ///
+  /** \brief . */
   iterator end();
-  ///
+  /** \brief . */
   const_iterator end() const;
 
   //@}
@@ -895,8 +875,7 @@ private:
 // //////////////////////////////////////////////////////////////////////////
 // Nonmember functions
 
-///
-/** Create a transposed view of a partition object.
+/** \brief Create a transposed view of a partition object.
   */
 template<class T_Indice, class T_Value>
 inline COOMatrixPartitionedViewUtilityPack::TransposedPartition<T_Indice,T_Value>

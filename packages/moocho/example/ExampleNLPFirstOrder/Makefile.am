@@ -43,3 +43,8 @@ ExampleNLPFirstOrder_LDADD = $(common_ldadd)
 include $(top_srcdir)/MakefileExeStub.mak
 
 AM_CPPFLAGS += -I$(top_srcdir)/example/ExampleNLPDirect
+
+EXTRA_DIST = $(srcdir)/NLPInterfacePack_ExampleBasisSystem.hpp \
+	$(srcdir)/NLPInterfacePack_ExampleNLPFirstOrder.hpp \
+	$(srcdir)/NLPInterfacePack_ExampleNLPFirstOrderRun.hpp
+

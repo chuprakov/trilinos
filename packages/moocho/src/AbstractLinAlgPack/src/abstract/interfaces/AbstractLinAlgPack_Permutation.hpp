@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract interface to permutation matrices.
+/** \brief Abstract interface to permutation matrices.
  *
  * A \c Permutation object is used to permute the elements within
  * a vector.  It is not a general linear operator since it does not
@@ -44,14 +43,13 @@ namespace AbstractLinAlgPack {
 class Permutation {
 public:
 
-  ///
+  /** \brief . */
   virtual ~Permutation() {}
 
   /** @name Vector space */
   //@{
   
-  ///
-  /** Return a reference to a vector space object that this permutation is compatible with.
+  /** \brief Return a reference to a vector space object that this permutation is compatible with.
    */
   virtual const VectorSpace& space() const = 0;
   
@@ -74,8 +72,7 @@ public:
   /** @name Vector permutations */
   //@{
 
-  ///
-  /** Permute a vector <tt>op(P)*x -> y</tt>
+  /** \brief Permute a vector <tt>op(P)*x -> y</tt>
    *
    * @param  P_trans  [in] <tt>op(P) = P</tt> for <tt>P_trans == BLAS_Cpp::no_trans</tt> or
    *                  <tt>op(P) = P'</tt> for <tt>P_trans == BLAS_Cpp::trans</tt>.
@@ -96,8 +93,7 @@ public:
     ,VectorMutable      *y
     ) const = 0;
 
-  ///
-  /** Permute a vector <tt>op(P)*y -> y</tt>
+  /** \brief Permute a vector <tt>op(P)*y -> y</tt>
    *
    * @param  P_trans  [in] <tt>op(P) = P</tt> for <tt>P_trans == BLAS_Cpp::no_trans</tt> or
    *                  <tt>op(P) = P'</tt> for <tt>P_trans == BLAS_Cpp::trans</tt>.

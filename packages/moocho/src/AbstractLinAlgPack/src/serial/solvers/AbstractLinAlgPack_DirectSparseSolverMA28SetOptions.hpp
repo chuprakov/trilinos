@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Set options for DirectSparseSolverMA28 from
+/** \brief Set options for DirectSparseSolverMA28 from
   * OptionsFromStream object.
   *
   * The options group is:
@@ -63,7 +62,7 @@ class DirectSparseSolverMA28SetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   DirectSparseSolverMA28SetOptions(
     DirectSparseSolverMA28* qp_solver = 0 );
 

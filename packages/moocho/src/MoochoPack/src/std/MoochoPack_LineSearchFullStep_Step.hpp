@@ -36,8 +36,7 @@
 
 namespace MoochoPack {
 
-///
-/** Takes the full step <tt>x_kp1 = x_k + d_k (d_k = Ypy_k + Zpz_k)</tt>.
+/** \brief Takes the full step <tt>x_kp1 = x_k + d_k (d_k = Ypy_k + Zpz_k)</tt>.
   */
 class LineSearchFullStep_Step
   : public IterationPack::AlgorithmStep // doxygen needs full path
@@ -47,17 +46,17 @@ public:
   /// «std comp» Members for variable bounds tester object
   STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
 
-  ///
+  /** \brief . */
   LineSearchFullStep_Step(
     const bounds_tester_ptr_t&	bounds_tester
     );
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   //@}

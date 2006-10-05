@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Specializes the update of the penalty parameter for a merit function as:
+/** \brief Specializes the update of the penalty parameter for a merit function as:
   * min_mu = |(Gf_k+nu_k)'* Ypy_k| / ||c_k||1.
   */
 class MeritFunc_PenaltyParamUpdateMultFree_AddedStep
@@ -42,7 +41,7 @@ class MeritFunc_PenaltyParamUpdateMultFree_AddedStep
 {
 public:
 
-  ///
+  /** \brief . */
   MeritFunc_PenaltyParamUpdateMultFree_AddedStep(
     value_type   small_mu = 1e-6
     ,value_type  mult_factor = 1e-4
@@ -54,9 +53,9 @@ protected:
   /** @name Overridden from MeritFunc_PenaltyParamUpdateGuts_AddedStep */
   //@{
 
-  ///
+  /** \brief . */
   bool min_mu( NLPAlgoState& s, value_type* min_mu ) const;
-  ///
+  /** \brief . */
   void print_min_mu_step( std::ostream& out
     , const std::string& leading_str ) const;
 

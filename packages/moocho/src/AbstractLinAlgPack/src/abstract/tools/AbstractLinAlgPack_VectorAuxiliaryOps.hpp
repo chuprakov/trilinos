@@ -42,8 +42,7 @@ namespace AbstractLinAlgPack {
 /** \defgroup VectorAuxiliaryOps_ROp_grp Reduction operations */
 //@{
 
-///
-/** Compute the maximum element in a vector.
+/** \brief Compute the maximum element in a vector.
  *
  * Returns:
  \verbatim
@@ -51,10 +50,9 @@ namespace AbstractLinAlgPack {
  max{ v(i), i = 1...n }
  \endverbatim
  */
-value_type max( const Vector& v ); 
+value_type max_element( const Vector& v ); 
 
-///
-/** Computes the maximum positive and negative step that can be taken
+/** \brief Computes the maximum positive and negative step that can be taken
   * that are within the relaxed bounds.
   *
   *	This function computes and returns the maximum (in magnitude) postive
@@ -76,8 +74,7 @@ max_near_feas_step(
   ,value_type max_bnd_viol
   ); 
 
-///
-/** Computes the maximum relative step of <tt>x = x + d</tt>.
+/** \brief Computes the maximum relative step of <tt>x = x + d</tt>.
   *
   \verbatim
 
@@ -113,8 +110,7 @@ value_type fraction_to_zero_boundary(
   const Vector  &d
   );
 
-///
-/** Count the number of finitly bounded elements in <tt>xl <= x <= xu</tt>.
+/** \brief Count the number of finitly bounded elements in <tt>xl <= x <= xu</tt>.
  *
  * ToDo: Finish documentation!
  */
@@ -122,8 +118,7 @@ size_type num_bounded(
   const Vector& xl, const Vector& xu
   ,value_type inf_bound );
 
-///
-/** Computes the log barrier term:
+/** \brief Computes the log barrier term:
  *
  \verbatim
 
@@ -136,8 +131,7 @@ value_type log_bound_barrier(
   ,const Vector   &xu
   ); 
 
-///
-/** Computes an estimate of the
+/** \brief Computes an estimate of the
  *   complementarity error
  *
  \verbatim
@@ -153,8 +147,7 @@ value_type combined_nu_comp_err(
   ); 
 
 
-///
-/** Computes an estimate of the
+/** \brief Computes an estimate of the
  *   complementarity error when only the lower 
  *   bounds are non-infinite
  *
@@ -173,8 +166,7 @@ value_type combined_nu_comp_err_lower(
   ,const Vector   &xl
   );
 
-///
-/** Computes an estimate of the
+/** \brief Computes an estimate of the
  *   complementarity error when only the upper
  *   bounds are non-infinite
  *
@@ -190,8 +182,7 @@ value_type combined_nu_comp_err_upper(
   );
 
 
-///
-/** Computes the complementarity error
+/** \brief Computes the complementarity error
  *   for a primal/dual interior point
  *   algorithm using inf norm.
  *
@@ -213,8 +204,7 @@ value_type IP_comp_err_with_mu(
   ,const Vector &vu
   );
 
-///
-/** Compute the maximum violation from a set of inequality constraints <tt>vL <= v <= vU</tt>.
+/** \brief Compute the maximum violation from a set of inequality constraints <tt>vL <= v <= vU</tt>.
  *
  * @param  v      [in] Inequality value vector.
  * @param  vL     [in] Lower inequality bounds (may be -infinity (i.e. very large negative number))
@@ -275,8 +265,7 @@ bool max_inequ_viol(
 /** \defgroup VectorAuxiliaryOps_TOp_grp Transformation operations */
 //@{
 
-///
-/** Force a vector in bounds.
+/** \brief Force a vector in bounds.
  *
  \verbatim
 
@@ -289,8 +278,7 @@ bool max_inequ_viol(
  */
 void force_in_bounds( const Vector& xl, const Vector& xu, VectorMutable* x );
 
-///
-/** Force a vector sufficiently within bounds according
+/** \brief Force a vector sufficiently within bounds according
  *   to a specified absolute and relative buffer
  *
  */
@@ -302,8 +290,7 @@ void force_in_bounds_buffer(
   VectorMutable  *x 
   );
 
-///
-/** Computes the inverse of the difference
+/** \brief Computes the inverse of the difference
  *   between two vectors
  *
  \verbatim
@@ -317,8 +304,7 @@ void inv_of_difference(
   ,VectorMutable   *z
   );
 
-///
-/** Corrects the lower bound multipliers with 
+/** \brief Corrects the lower bound multipliers with 
  *   infinite bounds
  *
  \verbatim
@@ -331,8 +317,7 @@ void correct_lower_bound_multipliers(
   ,VectorMutable    *vl
   );
 
-///
-/** Corrects the upper bound multipliers with 
+/** \brief Corrects the upper bound multipliers with 
  *   infinite bounds
  *
  \verbatim
@@ -345,8 +330,7 @@ void correct_upper_bound_multipliers(
   ,VectorMutable     *vu
   );
 
-///
-/** Calculates the multiplier step for lower bounds
+/** \brief Calculates the multiplier step for lower bounds
  *
 \verbatim
 dvl(i) = -vl(i) + mu*invXl(i)*e - invXl(i)*Vl(i)*d_k(i)
@@ -360,8 +344,7 @@ void lowerbound_multipliers_step(
   VectorMutable      *dvl
   );
 
-///
-/** Calculates the multiplier step for the upper bounds
+/** \brief Calculates the multiplier step for the upper bounds
  *
  *
 \verbatim
@@ -377,8 +360,7 @@ void upperbound_multipliers_step(
   );
 
 
-///
-/** Calculates the sqrt of each
+/** \brief Calculates the sqrt of each
  *   element in the vector
  * Pre Condition: all elements of z must be positive
  *
@@ -390,8 +372,7 @@ void ele_wise_sqrt(
   VectorMutable* z
     );		
 
-///
-/** Take the maximum value of the vector elements and a scalar.
+/** \brief Take the maximum value of the vector elements and a scalar.
  *
  \verbatim
 
@@ -403,8 +384,7 @@ void max_vec_scalar(
   ,VectorMutable    *y
   );
 
-///
-/** Take the maximum value of the absolute vector elements and a scalar.
+/** \brief Take the maximum value of the absolute vector elements and a scalar.
  *
  \verbatim
 

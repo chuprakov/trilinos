@@ -39,8 +39,7 @@
 
 namespace MoochoPack {
 
-///
-/** Barrier Parameter (mu) Update 
+/** \brief Barrier Parameter (mu) Update 
  *
  * This class updates barrier_parameter & e_tol for next iteration
  *
@@ -54,49 +53,42 @@ class UpdateBarrierParameter_Step
     /** @name Constructors / initializers */
     //@{
 
-    ///
-    /** Initial barrier parameter
+    /** \brief Initial barrier parameter
      *
      * mu_kp1 = min(tau_mu*mu_k,mu_k^theta_mu)
      */
     STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, init_barrier_parameter )
 
-    ///
-    /** barrier_parameter decrease fraction (linear decrease)
+    /** \brief barrier_parameter decrease fraction (linear decrease)
      *
      * mu_kp1 = min(tau_mu*mu_k,mu_k^theta_mu)
      */
     STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, tau_mu )
 
-    ///
-    /** barrier_parameter decrease power (for superlinear decrease)
+    /** \brief barrier_parameter decrease power (for superlinear decrease)
      *
      * mu_kp1 = min(tau_mu*mu_k,mu_k^theta_mu)
      */
     STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_mu )
 
-    ///
-    /** error tolerance fraction
+    /** \brief error tolerance fraction
      *
      * e_tol = min( e_tol_max, tau_epsilon*min(mu_k,mu_k^theta_epsilon))
      */
     STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, tau_epsilon )
 
-    ///
-    /** error tolerance power
+    /** \brief error tolerance power
      *
      * e_tol = min( e_tol_max, tau_epsilon*min(mu_k,mu_k^theta_epsilon))
      */
     STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_epsilon )
 
-    ///
-    /** maximum error tolerance
+    /** \brief maximum error tolerance
      *
      */
     STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, e_tol_max )
 
-    ///
-    /** Constructor.
+    /** \brief Constructor.
      */
     UpdateBarrierParameter_Step(
       const value_type init_barrier_parameter = 0.1,
@@ -110,7 +102,7 @@ class UpdateBarrierParameter_Step
 
     /** @name Overridden from AlgorithmStep */
     //@{
-    ///
+    /** \brief . */
     bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
            , poss_type assoc_step_poss);
     

@@ -38,8 +38,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Implementation of MatrixOp abstract interface for SymInvCholMatrix
+/** \brief Implementation of MatrixOp abstract interface for SymInvCholMatrix
   */
 class MatrixSymPosDefInvCholFactor
   : public virtual MatrixWithOpConcreteEncap<SymInvCholMatrix>
@@ -50,11 +49,11 @@ class MatrixSymPosDefInvCholFactor
 {
 public:
 
-  ///
+  /** \brief . */
   MatrixSymPosDefInvCholFactor()
   {}
 
-  ///
+  /** \brief . */
   MatrixSymPosDefInvCholFactor(const SymInvCholMatrix& m)
     : MatrixWithOpConcreteEncap<SymInvCholMatrix>(m)
   {}
@@ -70,20 +69,20 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& m);
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const DVectorSlice& vs_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   value_type transVtMtV(const DVectorSlice& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
     , const DVectorSlice& vs_rhs3) const;
-  ///
+  /** \brief . */
   value_type transVtMtV(const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
     , const SpVectorSlice& sv_rhs3) const;
 
@@ -92,22 +91,22 @@ public:
   /** @name Overridden from MatrixFactorized */
   //@{
 
-  ///
+  /** \brief . */
   void V_InvMtV(DVector* v_lhs, BLAS_Cpp::Transp trans_rhs1
     , const DVectorSlice& vs_rhs2) const;
-  ///
+  /** \brief . */
   void V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
     , const DVectorSlice& vs_rhs2) const;
-  ///
+  /** \brief . */
   void V_InvMtV(DVector* v_lhs, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2) const;
-  ///
+  /** \brief . */
   void V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2) const;
-  ///
+  /** \brief . */
   value_type transVtInvMtV(const DVectorSlice& vs_rhs1
     , BLAS_Cpp::Transp trans_rhs2, const DVectorSlice& vs_rhs3) const;
-  ///
+  /** \brief . */
   value_type transVtInvMtV(const SpVectorSlice& sv_rhs1
     , BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3) const;
 
@@ -116,7 +115,7 @@ public:
   /** @name Overridden from MatrixSymFactorized */
   //@{
 
-  ///
+  /** \brief . */
   void M_StMtInvMtM( DMatrixSliceSym* sym_gms_lhs, value_type alpha
     , const MatrixOp& mwo, BLAS_Cpp::Transp mwo_trans, EMatrixDummyArg
     ) const;
@@ -126,11 +125,11 @@ public:
   /** @name Overridden from MatrixSymSecant */
   //@{
 
-  ///
+  /** \brief . */
   void init_identity( size_type n, value_type alpha );
-  ///
+  /** \brief . */
   void init_diagonal( const DVectorSlice& diag );
-  ///
+  /** \brief . */
   void secant_update(DVectorSlice* s, DVectorSlice* y, DVectorSlice* Bs);
 
   //@}
@@ -138,7 +137,7 @@ public:
   /** @name Overridden from MatrixExtractInvCholFactor */
   //@{
 
-  ///
+  /** \brief . */
   void extract_inv_chol( DMatrixSliceTriEle* InvChol ) const;
 
   //@}
@@ -146,9 +145,9 @@ public:
   /** @name Overridden from Serializable */
   //@{
 
-  ///
+  /** \brief . */
   void serialize( std::ostream &out ) const;
-  ///
+  /** \brief . */
   void unserialize( std::istream &in );
 
   //@}

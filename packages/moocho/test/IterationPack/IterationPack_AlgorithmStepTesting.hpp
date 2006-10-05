@@ -33,33 +33,32 @@
 
 namespace IterationPack {
 
-///
-/** Testing class
+/** \brief Testing class
   */
 class AlgorithmStepTesting : public AlgorithmStep {
 public:
 
-  ///
+  /** \brief . */
   bool do_step(
     Algorithm& algo, poss_type step_poss, EDoStepType type
     ,poss_type assoc_step_poss
     );
-  ///
+  /** \brief . */
   void initialize_step(
     Algorithm& algo, poss_type step_poss, EDoStepType type
     ,poss_type assoc_step_poss
     );
-  ///
+  /** \brief . */
   void inform_updated(
     Algorithm& algo, poss_type step_poss, EDoStepType type
     ,poss_type assoc_step_poss
     );
-  ///
+  /** \brief . */
   void finalize_step(
     Algorithm& algo, poss_type step_poss, EDoStepType type
     ,poss_type assoc_step_poss
     );
-  ///
+  /** \brief . */
   void print_step(
     const Algorithm& algo, poss_type step_poss, EDoStepType type
     ,poss_type assoc_step_poss ,std::ostream& out, const std::string& leading_str
@@ -67,7 +66,7 @@ public:
 
 private:
   
-  ///
+  /** \brief . */
   void print_step_poss(
     const Algorithm& algo, poss_type step_poss, EDoStepType type
     ,poss_type assoc_step_poss

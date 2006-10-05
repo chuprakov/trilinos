@@ -39,8 +39,7 @@ namespace InputStreamHelperPack {
  */
 //@{
 
-///
-/** Discards comment lines from an input stream.
+/** \brief Discards comment lines from an input stream.
  *
  * Call this function to discard text that includes comment lines and
  * lines with only newline chars.  Here comment lines are in the tradition

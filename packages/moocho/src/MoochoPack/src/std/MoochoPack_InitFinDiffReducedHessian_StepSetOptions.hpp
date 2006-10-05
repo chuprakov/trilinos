@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for InitFinDiffReducedHessian_Step from an
+/** \brief Set options for InitFinDiffReducedHessian_Step from an
   * OptionsFromStream object.
   *
   * The default options group name is InitFinDiffReducedHessian.
@@ -79,7 +78,7 @@ class InitFinDiffReducedHessian_StepSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   InitFinDiffReducedHessian_StepSetOptions(
       InitFinDiffReducedHessian_Step* target = 0
     , const char opt_grp_name[] = "InitFinDiffReducedHessian" );

@@ -301,6 +301,7 @@ _EXPORT_LIBS = $(MOOCHO_LIBS) $(STRATIMIKOS_LIBS) $(EPETRAEXT_LIBS)
 @USING_GNUMAKE_FALSE@EXPORT_LIBS = $(_EXPORT_LIBS)
 AM_CPPFLAGS = $(EXPORT_INCLUDES)
 common_ldadd = $(EXPORT_LIBS)
+EXTRA_DIST = $(srcdir)/NLPInterfacePack_ExampleNLPBanded.hpp
 all: all-recursive
 
 .SUFFIXES:
@@ -516,7 +517,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/../..
+	$(mkdir_p) $(distdir)/$(srcdir) $(distdir)/../..
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

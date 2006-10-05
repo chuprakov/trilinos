@@ -36,8 +36,7 @@
 
 namespace MoochoPack {
 
-///
-/** Implementation for NLPAlgo solver.
+/** \brief Implementation for NLPAlgo solver.
  *
  * Acts as a container for NLPAlgo.  This class is hidden from clients
  * by not exposing it to them in header files.
@@ -60,15 +59,15 @@ public:
   /** @name Overridden from NLPAlgoClientInterface */
   //@{
 
-  ///
+  /** \brief . */
   void set_config(const config_ptr_t& config);
-  ///
+  /** \brief . */
   config_ptr_t& get_config();
-  ///
+  /** \brief . */
   const config_ptr_t& get_config() const;
-  ///
+  /** \brief . */
   NLPAlgoConfig& config();
-  ///
+  /** \brief . */
   const NLPAlgoConfig& config() const;
 
   //@}
@@ -76,17 +75,17 @@ public:
   /** @name Overridden from NLPSolverClientInterface */
   //@{
 
-  ///
+  /** \brief . */
   EFindMinReturn find_min();
-  ///
+  /** \brief . */
   void configure_algorithm(std::ostream* trase_out);
-  ///
+  /** \brief . */
   void print_algorithm(std::ostream& out) const;
-  ///
+  /** \brief . */
   void set_algo_timing( bool algo_timing );
-  ///
+  /** \brief . */
   bool algo_timing() const;
-  ///
+  /** \brief . */
   void print_algorithm_times( std::ostream& out ) const;
 
   //@}

@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Directs the selection of a new decomposition if the line search fails.
+/** \brief Directs the selection of a new decomposition if the line search fails.
   *
   * If the delegated line search Step object throws a \c LineSearchFailure
   * exception, then this object directs the selection of a new
@@ -54,7 +53,7 @@ public:
   /// <<std comp>> members for Decomposition Select Strategy object.
   STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy )
 
-  ///
+  /** \brief . */
   LineSearchFailureNewDecompositionSelection_Step(
     const line_search_step_ptr_t        &line_search_step
     ,const new_decomp_strategy_ptr_t    &new_decomp_strategy
@@ -62,10 +61,10 @@ public:
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   //@}

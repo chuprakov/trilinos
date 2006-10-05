@@ -34,8 +34,7 @@
 
 namespace MoochoPack {
 
-///
-/** Updates the active set statistics for the current iteration.
+/** \brief Updates the active set statistics for the current iteration.
   *
   * The function act_set_stats(...) is used to access the iteration
   * quantity object for the active set object.
@@ -46,11 +45,11 @@ public:
   // ////////////////////
   // Overridden
 
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
 
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 

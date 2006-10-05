@@ -41,8 +41,7 @@ namespace StopWatchPack {
 
 double seconds(void);
 
-///
-/** Simple stopwatch object.
+/** \brief Simple stopwatch object.
   */
 class stopwatch {
 public:

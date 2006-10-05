@@ -45,21 +45,21 @@ typedef RTOp_value_type  value_type;
 typedef RTOp_index_type  index_type;
 
 #ifdef DOXYGEN_COMPILE // Doxygen needs a little help finding these links
-///
+/** \brief . */
 typedef DenseLinAlgPack::VectorTmpl<value_type>             DVector;
-///
+/** \brief . */
 typedef DenseLinAlgPack::VectorSliceTmpl<value_type>        DVectorSlice;
-///
+/** \brief . */
 typedef DenseLinAlgPack::DMatrix                            DMatrix;
-///
+/** \brief . */
 typedef DenseLinAlgPack::DMatrixSlice                       DMatrixSlice;
-///
+/** \brief . */
 typedef DenseLinAlgPack::DMatrixSliceTriEle                 DMatrixSliceTriEle;
-///
+/** \brief . */
 typedef DenseLinAlgPack::DMatrixSliceTri                    DMatrixSliceTri;
-///
+/** \brief . */
 typedef DenseLinAlgPack::DMatrixSliceSym                    DMatrixSliceSym;
-///
+/** \brief . */
 typedef RangePack::Range1D Range1D;
 #endif
 

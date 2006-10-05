@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Output operator for Permutation objects.
+/** \brief Output operator for Permutation objects.
  */
 inline
 std::ostream& operator<<( std::ostream& o, const Permutation& P )

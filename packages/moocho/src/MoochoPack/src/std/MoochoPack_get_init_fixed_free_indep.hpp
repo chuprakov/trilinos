@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Determine the set of initially fixed and free independent variables.
+/** \brief Determine the set of initially fixed and free independent variables.
  *
  * This function will drop all but one of the fixed independent variables
  * whos Lagrange multiplier is above a predefined value.

@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract base class for all serial symmetric diagonal matrices with
+/** \brief Abstract base class for all serial symmetric diagonal matrices with
  * significant zeros along the diagonal.
  */
 class MatrixSymDiagSparse
@@ -44,14 +43,12 @@ class MatrixSymDiagSparse
 {
 public:
 
-  ///
-  /** <<std member comp>> members for how many updates to compute
+  /** \brief <<std member comp>> members for how many updates to compute
     * at once in the operation M_MtMtM(....).
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_updates_at_once )
 
-  ///
-  /** The default value of num_updates_at_once == 0 is set to allow
+  /** \brief The default value of num_updates_at_once == 0 is set to allow
     * this class to determine the appropriate size internally.
     */
   MatrixSymDiagSparse();
@@ -67,7 +64,7 @@ public:
   /** @name Overridden from MatrixBase */
   //@{
 
-  ///
+  /** \brief . */
   size_type rows() const;
 
   //@}
@@ -75,7 +72,7 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
 
   //@}
@@ -83,7 +80,7 @@ public:
   /** @name Overridden from MatrixOpSerial */
   //@{
 
-  ///
+  /** \brief . */
   void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const DVectorSlice& vs_rhs2, value_type beta) const;
 
@@ -92,8 +89,7 @@ public:
   /** @name Overridden from MatrixSymOpSerial */
   //@{
 
-  ///
-  /** Computes the dense symmetric matrix B += a*op(A')*M*op(A).
+  /** \brief Computes the dense symmetric matrix B += a*op(A')*M*op(A).
    *
    * This matrix is computed using a set of rank-1 updates.
    *
@@ -123,12 +119,12 @@ public:
   /** @name Overridden from MatrixConvertToSparse */
   //@{
 
-  ///
+  /** \brief . */
   index_type num_nonzeros(
     EExtractRegion        extract_region
     ,EElementUniqueness   element_uniqueness
     ) const;
-  ///
+  /** \brief . */
   void coor_extract_nonzeros(
     EExtractRegion                extract_region
     ,EElementUniqueness           element_uniqueness

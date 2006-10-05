@@ -34,8 +34,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Matrix class for a matrix vertically concatonated with an identity matrix {abstract}.
+/** \brief Matrix class for a matrix vertically concatonated with an identity matrix {abstract}.
  *
  * Represents an interface for a matrix that represents:
  \verbatim
@@ -65,38 +64,38 @@ public:
   /** @name Access to representation.
    */
   //@{
-  ///
+  /** \brief . */
   virtual Range1D D_rng() const = 0;
-  ///
+  /** \brief . */
   virtual Range1D I_rng() const = 0;
-  ///
+  /** \brief . */
   virtual value_type alpha() const = 0;
-  ///
+  /** \brief . */
   virtual const MatrixOp& D() const = 0;
-  ///
+  /** \brief . */
   virtual BLAS_Cpp::Transp D_trans() const = 0;
   //@}
 
   /** @name Overridden from MatrixBase */
   //@{
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type cols() const;
-  ///
+  /** \brief . */
   size_type nz() const;
   //@}
 
   /** @name Overridden from MatrixOp */
   //@{
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     ,const Vector& vs_rhs2, value_type beta
     ) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     ,const SpVectorSlice& sv_rhs2, value_type beta

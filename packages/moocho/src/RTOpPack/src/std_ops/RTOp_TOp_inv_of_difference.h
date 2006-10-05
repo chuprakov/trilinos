@@ -72,8 +72,6 @@ int RTOp_TOp_inv_of_difference_destroy( struct RTOp_RTOp* op );
 /* Initialize the state of the operator object */
 int RTOp_TOp_inv_of_difference_init( RTOp_value_type alpha, struct RTOp_RTOp* op );
 
-
-
 /*@} */
 
 #ifdef __cplusplus

@@ -34,8 +34,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Implementation of initial KKT system where all original variables
+/** \brief Implementation of initial KKT system where all original variables
  * are free and all the relaxation variables are fixed.
  *
  * In this implementation, #G# should support the \Ref{MatrixSymHessianRelaxNonSing}
@@ -50,8 +49,7 @@ public:
   // ////////////////////////////////
   // Overridden from InitKKTSystem
 
-  ///
-  /** Initialize the KKT system where the original variables are initiallly 
+  /** \brief Initialize the KKT system where the original variables are initiallly 
    * free and all the relaxation variables are fixed and their are no
    * constraints in Ko.
    *

@@ -33,8 +33,7 @@
 #include "Teuchos_AbstractFactory.hpp"
 
 namespace NLPInterfacePack {
-///
-/** NLP first order information interface class {abstract}.
+/** \brief NLP first order information interface class {abstract}.
  *
  * <b>Overview:</b>
  *
@@ -77,10 +76,10 @@ namespace NLPInterfacePack {
 class NLPFirstOrder : virtual public NLPObjGrad {
 public:
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<MatrixOp> >        mat_fcty_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<BasisSystem>           basis_sys_ptr_t;
 
   /** @name Constructors */
@@ -94,8 +93,7 @@ public:
   /** @name NLP initialization */
   //@{
 
-  ///
-  /** Initialize the NLP for its first use.
+  /** \brief Initialize the NLP for its first use.
    *
    * This function implementation should be called by subclass implementations
    * in order to reset counts for \c f(x), \c c(x), \c h(x), \c Gf(x), \c Gc(x)
@@ -115,8 +113,7 @@ public:
   /** @name Matrix factory objects */
   //@{
   
-  ///
-  /** Return a matrix factory object for creating <tt>Gc</tt>.
+  /** \brief Return a matrix factory object for creating <tt>Gc</tt>.
    *
    * This method may return <tt>return.get() == NULL</tt> if <tt>m() == 0</tt>.
    * Otherwise, it must must return a valid matrix factory object.
@@ -128,8 +125,7 @@ public:
   /** @name BasisSystem */
   //@{
 
-  ///
-  /** Return a <tt>BasisSystem</tt> object compatible with <tt>Gc</tt> and <tt>Gh</tt>.
+  /** \brief Return a <tt>BasisSystem</tt> object compatible with <tt>Gc</tt> and <tt>Gh</tt>.
    *
    * Note that multiple calls to this method may return the same <tt>return.get()</tt>
    * value so the client must not assume that they are unique.
@@ -143,8 +139,7 @@ public:
   /** @name <<std aggr>> members for the gradient of the objective function Gc(x) */
   //@{
 
-  ///
-  /** Set a pointer to a matrix object to be updated when <tt>this->calc_Gc()</tt> is called.
+  /** \brief Set a pointer to a matrix object to be updated when <tt>this->calc_Gc()</tt> is called.
    *
    * @param  Gc  [in] Pointer to matrix of gradients.  May be \c NULL.
    *
@@ -159,16 +154,14 @@ public:
    * </ul>
    */
   virtual void set_Gc(MatrixOp* Gc);
-  ///
-  /** Return pointer passed to <tt>this->set_Gc()</tt>.
+  /** \brief Return pointer passed to <tt>this->set_Gc()</tt>.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
    * </ul>
    */
   virtual MatrixOp* get_Gc();
-  ///
-  /** Returns non-<tt>const</tt> <tt>*this->get_Gc()</tt>.
+  /** \brief Returns non-<tt>const</tt> <tt>*this->get_Gc()</tt>.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -176,8 +169,7 @@ public:
    * </ul>
    */
   virtual MatrixOp& Gc();
-  ///
-  /** Returns <tt>const</tt> <tt>*this->get_Gc()</tt>.
+  /** \brief Returns <tt>const</tt> <tt>*this->get_Gc()</tt>.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -191,8 +183,7 @@ public:
   /** @name Unset calculation quantities */
   //@{
   
-  ///
-  /** Call to unset all storage quantities (both in this class and all subclasses).
+  /** \brief Call to unset all storage quantities (both in this class and all subclasses).
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -212,8 +203,7 @@ public:
   /** @name Calculation Members */
   //@{
 
-  ///
-  /** Update the matrix for \c Gc at the point \c x and put it in the stored reference.
+  /** \brief Update the matrix for \c Gc at the point \c x and put it in the stored reference.
    *
    * @param  x     [in] Point at which to calculate the matrix of gradients <tt>Gc(x)</tt>.
    * @param  newx  [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
@@ -243,8 +233,7 @@ public:
   /** @name Function evaluation counts */
   //@{
 
-  ///
-  /** Gradient of constraints matrix \c Gc evaluations count.
+  /** \brief Gradient of constraints matrix \c Gc evaluations count.
    *
    * This function can be called to find out how many evaluations
    * \c this->calc_Gc() the client requested since \c this->initialize() was called.
@@ -253,15 +242,14 @@ public:
 
   //@}
 
-  ///
-  /** Struct for zero and first order quantities (pointers)
+  /** \brief Struct for zero and first order quantities (pointers)
    */
   struct FirstOrderInfo {
-    ///
+    /** \brief . */
     FirstOrderInfo()
       : Gc(NULL), Gf(NULL), f(NULL), c(NULL)
     {}
-    ///
+    /** \brief . */
     FirstOrderInfo( MatrixOp* Gc_in, const ObjGradInfo& obj_grad )
       : Gc(Gc_in), Gf(obj_grad.Gf), f(obj_grad.f), c(obj_grad.c)
     {}
@@ -283,8 +271,7 @@ protected:
   /** @name Protected methods to be overridden by subclasses */
   //@{
 
-  ///
-  /** Overridden to compute \a Gc(x) and perhaps \a Gf(x), \a f(x) and \a c(x).
+  /** \brief Overridden to compute \a Gc(x) and perhaps \a Gf(x), \a f(x) and \a c(x).
    *
    * Preconditions:<ul>
    * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)

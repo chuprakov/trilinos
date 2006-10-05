@@ -33,8 +33,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** %NLP subclass for the Waechter and Biegler Counter Example.
+/** \brief %NLP subclass for the Waechter and Biegler Counter Example.
  *
  *
  * The Waechter & Biegler counter example %NLP is defined as:
@@ -72,8 +71,7 @@ public:
   /** @name Constructors / initializers */
   //@{
 
-  ///
-  /** Constructor.
+  /** \brief Constructor.
    *
    * @param  a       [in] The constant in constriant <tt>c(1)</tt>
    * @param  b       [in] The constant in constriant <tt>c(2)</tt>
@@ -100,11 +98,11 @@ public:
   /** @name Overridden public members from NLP */
   //@{
 
-  ///
+  /** \brief . */
   void initialize(bool test_setup);
-  ///
+  /** \brief . */
   bool is_initialized() const;
-  ///
+  /** \brief . */
   value_type max_var_bounds_viol() const;
 
   //@}
@@ -112,7 +110,7 @@ public:
   /** @name Overridden from NLPVarReductPerm */
   //@{
   
-  ///
+  /** \brief . */
   bool nlp_selects_basis() const;
 
   //@}
@@ -122,42 +120,42 @@ protected:
   /** @name Overridden protected methods from NLPSerialPreprocess */
   //@{
 
-  ///
+  /** \brief . */
   bool imp_nlp_has_changed() const;
-  ///
+  /** \brief . */
   size_type imp_n_orig() const;
-  ///
+  /** \brief . */
   size_type imp_m_orig() const;
-  ///
+  /** \brief . */
   size_type imp_mI_orig() const;
-  ///
+  /** \brief . */
   const DVectorSlice imp_xinit_orig() const;
-  ///
+  /** \brief . */
   bool imp_has_var_bounds() const;
-  ///
+  /** \brief . */
   const DVectorSlice imp_xl_orig() const;
-  ///
+  /** \brief . */
   const DVectorSlice imp_xu_orig() const;
-  ///
+  /** \brief . */
   const DVectorSlice imp_hl_orig() const;
-  ///
+  /** \brief . */
   const DVectorSlice imp_hu_orig() const;
-  ///
+  /** \brief . */
   void imp_calc_f_orig(
     const DVectorSlice &x_full, bool newx, const ZeroOrderInfoSerial &zero_order_info ) const;
-  ///
+  /** \brief . */
   void imp_calc_c_orig(
     const DVectorSlice &x_full, bool newx, const ZeroOrderInfoSerial &zero_order_info ) const;
-  ///
+  /** \brief . */
   void imp_calc_h_orig(
     const DVectorSlice &x_full, bool newx, const ZeroOrderInfoSerial &zero_order_info ) const;
-  ///
+  /** \brief . */
   void imp_calc_Gf_orig(
     const DVectorSlice &x_full, bool newx, const ObjGradInfoSerial &obj_grad_info ) const;
-  ///
+  /** \brief . */
   bool imp_get_next_basis(
     IVector *var_perm_full, IVector *equ_perm_full, size_type *rank_full, size_type *rank );
-  ///
+  /** \brief . */
   void imp_report_orig_final_solution(
     const DVectorSlice &x_orig, const DVectorSlice *lambda_orig
     ,const DVectorSlice *lambdaI_orig, const DVectorSlice *nu_orig, bool is_optimal ) const;
@@ -167,14 +165,14 @@ protected:
   /** @name Overridden protected methods from NLPSerialPreprocessExplJac */
   //@{
 
-  ///
+  /** \brief . */
   size_type imp_Gc_nz_orig() const;
-  ///
+  /** \brief . */
   size_type imp_Gh_nz_orig() const;
-  ///
+  /** \brief . */
   void imp_calc_Gc_orig(
     const DVectorSlice& x_full, bool newx, const FirstOrderExplInfo& first_order_expl_info ) const;
-  ///
+  /** \brief . */
   void imp_calc_Gh_orig(
     const DVectorSlice& x_full, bool newx, const FirstOrderExplInfo& first_order_expl_info ) const;
 

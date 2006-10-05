@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Interface for extracting nonzero elements from a banded subregion
+/** \brief Interface for extracting nonzero elements from a banded subregion
  * of a permuted sparse matrix in one of several Fortran compatible formats.
  *
  * The formats supported are:
@@ -91,8 +90,7 @@ class MatrixExtractSparseElements
 {
 public:
 
-  ///
-  /** Returns the number of nonzeros in the banded submatrix of the permuted matrix.
+  /** \brief Returns the number of nonzeros in the banded submatrix of the permuted matrix.
    *
    * Let \a B be the banded submatrix that is being specifed and let \a A be this
    * full matrix object.  Then the (dense) elemements of \a B are defined by:
@@ -230,8 +228,7 @@ public:
     ,index_type           du
     ) const = 0;
 
-  ///
-  /** Extract elements in a coordinate data structure.
+  /** \brief Extract elements in a coordinate data structure.
    *
    * Let B be the scaled banded submatrix that is being specifed
    * and let A be this matrix object.  Then the elemements
@@ -366,12 +363,12 @@ public:
   /** @name Overridden from MatrixConvertToSparse */
   //@{
 
-  ///
+  /** \brief . */
   index_type num_nonzeros(
     EExtractRegion        extract_region
     ,EElementUniqueness   element_uniqueness
     ) const;
-  ///
+  /** \brief . */
   void coor_extract_nonzeros(
     EExtractRegion                extract_region
     ,EElementUniqueness           element_uniqueness
@@ -388,7 +385,7 @@ public:
 
 private:
 
-  ///
+  /** \brief . */
   void get_dl_du( EExtractRegion extract_region, index_type* dl, index_type* du ) const;
 
 };	// end class MatrixExtractSparseElements

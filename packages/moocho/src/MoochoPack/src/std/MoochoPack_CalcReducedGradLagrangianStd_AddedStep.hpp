@@ -34,8 +34,7 @@
 
 namespace MoochoPack {
 
-///
-/** Calculates the reduced gradient of the Lagrangian
+/** \brief Calculates the reduced gradient of the Lagrangian
  * <tt>rGL = rGf + Z' * nu + GcUP' * lambda(equ_undecomp) + GhUP' * lambdaI(inequ_undecomp)</tt> 
  */
 class CalcReducedGradLagrangianStd_AddedStep
@@ -46,11 +45,11 @@ public:
   // ////////////////////
   // Overridden
 
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
 
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 

@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Update the cholesky factor of symmetric positive definite matrix for a rank-2 update.
+/** \brief Update the cholesky factor of symmetric positive definite matrix for a rank-2 update.
  *
  * This function updates and an upper or lower triangular cholesky
  * factor in O(n^2) flops.  The basic idea is that the original symmetric

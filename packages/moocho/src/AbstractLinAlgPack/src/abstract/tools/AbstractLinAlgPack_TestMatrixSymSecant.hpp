@@ -7,8 +7,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Checks the secant condition <tt>B*s = y</tt>.
+/** \brief Checks the secant condition <tt>B*s = y</tt>.
  *
  * Call this function after calling <tt>B.secant_update(s,y,...)</tt>.
  *

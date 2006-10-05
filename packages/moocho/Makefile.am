@@ -160,8 +160,8 @@ install-exec-hook:
 		--my-export-makefile=Makefile.export.moocho \
 		--my-abs-top-srcdir=@abs_top_srcdir@ \
 		--my-abs-incl-dirs=@abs_top_builddir@/src:@abs_top_srcdir@/src \
-		--my-abs-lib-dirs=@abs_top_builddir@/src \
-		--dep-package-abs-builddirs=@abs_top_builddir@/../teuchos
+		--my-abs-lib-dirs=@abs_top_builddir@/src:@abs_top_builddir@/thyra/src \
+		--dep-package-abs-builddirs=@abs_top_builddir@/../rtop:@abs_top_builddir@/../thyra:@abs_top_builddir@/../epetraext:@abs_top_builddir@/../stratimikos
 	$(PERL_EXE) $(top_srcdir)/config/generate-makeoptions.pl $(top_builddir)/src/Makefile MOOCHO > $(exec_prefix)/include/Makefile.export.moocho.macros
 
 uninstall-hook:

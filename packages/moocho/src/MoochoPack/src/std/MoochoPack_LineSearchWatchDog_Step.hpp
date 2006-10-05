@@ -39,8 +39,7 @@
 
 namespace MoochoPack {
 
-///
-/** Implements watchdog line search.
+/** \brief Implements watchdog line search.
   *
   * The watchdog proceedure will only be considered when :
   * opt_kkt_err_k <= opt_kkt_err_threshold && feas_kkt_err_k <= feas_kkt_err_threshold
@@ -55,24 +54,21 @@ public:
   /// <<std comp>> members for merit_func
   STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func)
 
-  ///
-  /** <<std member comp>> members for the armijo fractional reduction parameter.
+  /** \brief <<std member comp>> members for the armijo fractional reduction parameter.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, eta )
 
-  ///
-  /** <<std member comp>> members for the threshold for opt_kkt_err before
+  /** \brief <<std member comp>> members for the threshold for opt_kkt_err before
     * the watchdog procedure should kick-in.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_kkt_err_threshold )
   
-  ///
-  /** <<std member comp>> members for the threshold for feas_kkt_err before
+  /** \brief <<std member comp>> members for the threshold for feas_kkt_err before
     * the watchdog procedure should kick-in.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_kkt_err_threshold )
 
-  ///
+  /** \brief . */
   LineSearchWatchDog_Step(
         const direct_line_search_ptr_t&	direct_line_search		= 0
       , const merit_func_ptr_t&			merit_func				= 0
@@ -84,11 +80,11 @@ public:
   // ////////////////////
   // Overridden
 
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
 
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 

@@ -38,7 +38,7 @@
 # Optional 3rd argument is email address for bugs.
 
 #  #np# - package name, version number, and e-mail address below
-AC_INIT(moocho, version of the day, rabartl@sandia.gov)
+AC_INIT(moocho, version 1.0 in Trilinos 7.0, rabartl@sandia.gov)
 
 echo "----------------------------------------"
 echo "Running moocho Configure Script"

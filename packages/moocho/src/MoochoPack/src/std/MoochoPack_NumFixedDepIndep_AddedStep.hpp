@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Computes and outputs the number of fixed variables from the dependent
+/** \brief Computes and outputs the number of fixed variables from the dependent
   * and independent set..
   *
   * These statistics only make sense for variable reduction decompositions.
@@ -45,11 +44,11 @@ public:
   // ////////////////////
   // Overridden
 
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
 
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 

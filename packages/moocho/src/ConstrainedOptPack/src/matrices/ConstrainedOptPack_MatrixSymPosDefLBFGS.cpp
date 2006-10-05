@@ -77,8 +77,7 @@ namespace {
   using DenseLinAlgPack::DVectorSlice;
   using DenseLinAlgPack::DMatrixSlice;
 
-  ///
-  /** Compute Cb = Lb * inv(Db) * Lb' (see update_Q()).
+  /** \brief Compute Cb = Lb * inv(Db) * Lb' (see update_Q()).
     *
     * Here:
     *		Lb is lower triangular.
@@ -776,7 +775,16 @@ void MatrixSymPosDefLBFGS::update_Q() const
   // (through C) will contain the cholesky factor.
 
   DMatrixSliceTriEle C_upper = tri_ele( C, BLAS_Cpp::upper );
-  DenseLinAlgLAPack::potrf( &C_upper );
+  try {
+    DenseLinAlgLAPack::potrf( &C_upper );
+  }
+  catch( const DenseLinAlgLAPack::FactorizationException &fe ) {
+    TEST_FOR_EXCEPTION(
+      true, UpdateFailedException
+      ,"Error, the factorization of Q which should be s.p.d. failed with"
+      " the error message: {" << fe.what() << "}";
+      );
+  }
 
   Q_updated_ = true;
 }

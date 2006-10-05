@@ -35,8 +35,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Set options for <tt>NLPTester</tt> from an
+/** \brief Set options for <tt>NLPTester</tt> from an
  * <tt>\ref OptionsFromStreamPack::OptionsFromStream "OptionsFromStream"</tt> object.
  *
  * The default options group name is '%NLPTester'.
@@ -57,7 +56,7 @@ class NLPTesterSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   NLPTesterSetOptions(
       NLPTester* target = 0
     , const char opt_grp_name[] = "NLPTester" );

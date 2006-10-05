@@ -33,8 +33,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Implementation of initial KKT system for all variables initially free
+/** \brief Implementation of initial KKT system for all variables initially free
  * and <tt>Ko = G</tt>.
  *
  * In this implementation, \c G must support the \c MatrixSymOpNonsing
@@ -50,8 +49,7 @@ public:
   /** @name Overridden from InitKKTSystem */
   //@{
 
-  ///
-  /** Initialize the KKT system where all variables (except the relaxation variable)
+  /** \brief Initialize the KKT system where all variables (except the relaxation variable)
    * are initially free and no constraints are in Ko.
    *
    * For this implementation:

@@ -36,8 +36,7 @@
 
 namespace MoochoPack {
 
-///
-/** Strategy interface for performing convergence checks.
+/** \brief Strategy interface for performing convergence checks.
  *
  * This object can not change the flow of control or do anything fancy.  It just
  *  checks convergence by calculating norm errors and comparing with tolerance
@@ -55,8 +54,7 @@ class CheckConvergence_Strategy
       OPT_ERROR_GRADIENT_LAGR 
       };
 
-    ///
-    /** <<std member comp>> members for whether to check the reduced
+    /** \brief <<std member comp>> members for whether to check the reduced
      * or full gradient of the Lagrangian. 
      */
     STANDARD_MEMBER_COMPOSITION_MEMBERS( EOptErrorCheck, opt_error_check )
@@ -68,34 +66,30 @@ class CheckConvergence_Strategy
       SCALE_BY_NORM_INF_X 
       };
 
-    ///
-    /** <<std member comp>> members for how the optimality condition should
+    /** \brief <<std member comp>> members for how the optimality condition should
      *   be scaled
      */
     STANDARD_MEMBER_COMPOSITION_MEMBERS( EScaleKKTErrorBy, scale_opt_error_by )
     
 
-    ///
-    /** <<std member comp>> members for how the feasibility condition should
+    /** \brief <<std member comp>> members for how the feasibility condition should
      *   be scaled
      */
     STANDARD_MEMBER_COMPOSITION_MEMBERS( EScaleKKTErrorBy, scale_feas_error_by )
 
 
-    ///
-    /** <<std member comp>> members for how the complimentarity condition should
+    /** \brief <<std member comp>> members for how the complimentarity condition should
      *   be scaled
      */
     STANDARD_MEMBER_COMPOSITION_MEMBERS( EScaleKKTErrorBy, scale_comp_error_by )
 
 
-    ///
-    /** <<std member comp>> members for whether the optimality conditions
+    /** \brief <<std member comp>> members for whether the optimality conditions
      * should be scaled by the 
      */
     STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, scale_opt_error_by_Gf )
 
-    ///
+    /** \brief . */
     CheckConvergence_Strategy(
       EOptErrorCheck opt_error_check = OPT_ERROR_REDUCED_GRADIENT_LAGR,
       EScaleKKTErrorBy scale_opt_error_by = SCALE_BY_ONE,
@@ -104,18 +98,17 @@ class CheckConvergence_Strategy
       bool scale_opt_error_by_Gf = true
       );
     
-    ///
+    /** \brief . */
     virtual bool Converged( Algorithm& _algo)=0;
 
-    ///
+    /** \brief . */
     virtual void print_step( const Algorithm& _algo, std::ostream& out, const std::string& L ) const =0;
 
 
   }; // end interface CheckConvergence_Strategy
 
 
-///
-/** Set options for CheckConvergence_Strategy from an
+/** \brief Set options for CheckConvergence_Strategy from an
   * OptionsFromStream object.
   *
   * The default options group name is CheckConvergenceStrategy.
@@ -152,7 +145,7 @@ class CheckConvergence_StrategySetOptions
   {
   public:
     
-    ///
+    /** \brief . */
     CheckConvergence_StrategySetOptions(
       CheckConvergence_Strategy* target = 0
       , const char opt_grp_name[] = "CheckConvergenceStrategy" );

@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract interface that allows the extraction of a non-const <tt>DenseLinAlgPack::DMatrixSliceSym</tt>
+/** \brief Abstract interface that allows the extraction of a non-const <tt>DenseLinAlgPack::DMatrixSliceSym</tt>
  * view of a symmetry abstract matrix.
  *
  * This interface is ment to be used by <tt>MatrixSymOp</tt> objects
@@ -53,8 +52,7 @@ namespace AbstractLinAlgPack {
 class MatrixSymOpGetGMSSymMutable : virtual public MatrixSymOpGetGMSSym {
 public:
 
-  ///
-  /** Get a non-const view of the symmetric abstract matrix in the form <tt>DenseLinAlgPack::DenseLinAlgPack::DMatrixSliceSym</tt>.
+  /** \brief Get a non-const view of the symmetric abstract matrix in the form <tt>DenseLinAlgPack::DenseLinAlgPack::DMatrixSliceSym</tt>.
    *
    * @return On ouput, \c return will be initialized to point to storage to the dense matrix elements.
    * The output from this function <tt>sym_gms_view = this->get_sym_gms_view()</tt> must be passed to
@@ -71,8 +69,7 @@ public:
    */
   virtual DenseLinAlgPack::DMatrixSliceSym get_sym_gms_view() = 0;
 
-  ///
-  /** Free a view of a dense matrix initialized from <tt>get_sym_gms_view()>/tt>.
+  /** \brief Free a view of a dense matrix initialized from <tt>get_sym_gms_view()>/tt>.
    *
    * @param  sym_gms_view
    *              [in/out] On input, \c sym_gms_view must have been initialized from \c this->get_sym_gms_view().
@@ -91,8 +88,7 @@ public:
 
 }; // end class MatrixSymOpGetGMSSymMutable
 
-///
-/** Helper class type that simplifies the usage of the <tt>MatrixSymOpGetGMSSymMutable</tt> interface for clients.
+/** \brief Helper class type that simplifies the usage of the <tt>MatrixSymOpGetGMSSymMutable</tt> interface for clients.
  *
  * This takes care of worrying about if the <tt>MatrixSymOpGetGMSSymMutable</tt> interface is supported or not
  * and remembering to free the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view properly.
@@ -114,12 +110,10 @@ public:
 class MatrixDenseSymMutableEncap {
 public:
 
-  ///
-  /** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymOpGetGMSSymMutable</tt> object.
+  /** \brief Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymOpGetGMSSymMutable</tt> object.
    */
   MatrixDenseSymMutableEncap( MatrixSymOpGetGMSSymMutable*  mat_get );
-  ///
-  /** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymOp</tt> object.
+  /** \brief Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymOp</tt> object.
    *
    * If <tt>dynamic_cast<MatrixSymOpGetGMSSymMutable*>(mat) == NULL</tt> then a ???
    * exception is thrown.

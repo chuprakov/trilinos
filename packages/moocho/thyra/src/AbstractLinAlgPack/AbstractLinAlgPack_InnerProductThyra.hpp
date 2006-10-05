@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Implements the inner product using <tt>Thyra::VectorSpaceBase::scalarProd()</tt>.
+/** \brief Implements the inner product using <tt>Thyra::VectorSpaceBase::scalarProd()</tt>.
  */
 class InnerProductThyra : public InnerProduct {
 public:
@@ -43,20 +42,17 @@ public:
   /** @name Constructors / Initializers */
   //@{
 
-  ///
-  /** Construct to uninitialized.
+  /** \brief Construct to uninitialized.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_vec().get() == NULL</tt>
    * </ul>
    */
   InnerProductThyra();
-  ///
-  /** Calls <tt>this->initialize()</tt>.
+  /** \brief Calls <tt>this->initialize()</tt>.
    */
   InnerProductThyra( const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > &thyra_vec_spc );
-  ///
-  /** Initalize given a smart pointer to a <tt>Thyra::VetorSpace</tt> object.
+  /** \brief Initalize given a smart pointer to a <tt>Thyra::VetorSpace</tt> object.
    *
    * @param  thyra_vec_spc  [in] Smart pointer to Thyra vector
    *
@@ -69,16 +65,14 @@ public:
    * </ul>
    */
   void initialize( const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > &thyra_vec_spc );
-  ///
-  /** Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
+  /** \brief Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_vec_spc().get() == NULL</tt>
    * </ul>
    */
   Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > set_uninitialized();
-  ///
-  /** Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
+  /** \brief Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
    *
    * If <tt>this->thyra_vec_spc().count() == 1</tt>, then <tt>this</tt>
    * has sole ownership of the <tt>*this->thyra_vec_spc()</tt> object.
@@ -89,7 +83,7 @@ public:
 
   /** @name Overridden from InnerProduct */
   //@{
-  ///
+  /** \brief . */
   value_type inner_prod(const Vector& v1, const Vector& v2) const;
   //@}
 

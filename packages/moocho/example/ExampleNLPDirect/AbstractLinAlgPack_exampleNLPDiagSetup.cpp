@@ -27,7 +27,7 @@
 
 #endif // USE_EPETRA_THYRA
 
-///
+/** \brief . */
 int AbstractLinAlgPack::exampleNLPDiagSetup(
   int argc, char* argv[], MPI_Comm comm
   ,Teuchos::RefCountPtr<const VectorSpace>   *vec_space

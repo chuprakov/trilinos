@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for LineSearchWatchDog_Step from a OptionsFromStream
+/** \brief Set options for LineSearchWatchDog_Step from a OptionsFromStream
   * object.
   *
   * The options group is:
@@ -62,7 +61,7 @@ class LineSearchWatchDog_StepSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   LineSearchWatchDog_StepSetOptions(
     LineSearchWatchDog_Step* target = 0 );
 

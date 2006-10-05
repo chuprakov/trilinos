@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for NLPSolverClientInterface from an \c OptionsFromStream object.
+/** \brief Set options for NLPSolverClientInterface from an \c OptionsFromStream object.
  *
  * The default options group name is NLPSolverClientInterface.
  *
@@ -66,7 +65,7 @@ class NLPSolverClientInterfaceSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   NLPSolverClientInterfaceSetOptions(
       NLPSolverClientInterface* target = 0
     , const char opt_grp_name[] = "NLPSolverClientInterface" );

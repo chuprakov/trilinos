@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for MeritFunc_PenaltyParamUpdate_AddedStep from a
+/** \brief Set options for MeritFunc_PenaltyParamUpdate_AddedStep from a
  * OptionsFromStream object.
  *
  * The options group is:
@@ -70,7 +69,7 @@ class MeritFunc_PenaltyParamUpdate_AddedStepSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   MeritFunc_PenaltyParamUpdate_AddedStepSetOptions(
     MeritFunc_PenaltyParamUpdate_AddedStep* target = 0 );
 

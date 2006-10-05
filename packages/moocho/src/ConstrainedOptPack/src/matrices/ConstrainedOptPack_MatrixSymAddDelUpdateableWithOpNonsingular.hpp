@@ -33,8 +33,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Interface for updating a symmetric matrix and its factorization 
+/** \brief Interface for updating a symmetric matrix and its factorization 
  * by adding and deleting rows and columns and preforming operations with it.
  *
  * ToDo: Finish documentation.
@@ -42,13 +41,13 @@ namespace ConstrainedOptPack {
 class MatrixSymAddDelUpdateableWithOpNonsingular {
 public:
 
-  ///
+  /** \brief . */
   virtual ~MatrixSymAddDelUpdateableWithOpNonsingular() {}
-  ///
+  /** \brief . */
   virtual const MatrixSymOpNonsing& op_interface() const = 0;
-  ///
+  /** \brief . */
   virtual MatrixSymAddDelUpdateable& update_interface() = 0;
-  ///
+  /** \brief . */
   virtual const MatrixSymAddDelUpdateable& update_interface() const = 0;
 
 };	// end class MatrixSymAddDelUpdateableWithOpNonsingular

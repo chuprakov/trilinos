@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** This is a simple track class for getting statistics about a solved (or not
+/** \brief This is a simple track class for getting statistics about a solved (or not
  * solved) NLP.
  *
  * When output_final(...) is called the output stream will have the following
@@ -72,7 +71,7 @@ public:
   /// Construct with an output stream object.
   MoochoTrackerStatsStd( const ostream_ptr_t& o, const ostream_ptr_t& journal_out );
 
-  ///
+  /** \brief . */
   /* Set the output stream for statistics outputting.
    */
   void set_output_stream(const ostream_ptr_t& o);
@@ -85,9 +84,9 @@ public:
 
   /// Restarts the timer
   void initialize();
-  ///
+  /** \brief . */
   void output_iteration(const Algorithm& algo) const;
-  ///
+  /** \brief . */
   void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
 
   //@}

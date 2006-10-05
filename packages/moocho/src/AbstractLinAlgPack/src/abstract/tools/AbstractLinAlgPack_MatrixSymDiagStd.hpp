@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Simple diagonal matrix class.
+/** \brief Simple diagonal matrix class.
  *
  * ToDo: Implement clone_mswons() and deal with this->diag_ptr().count() > 1
  * by cloning vector if told to.  This allows lazy evaluation of the clone_mswons()
@@ -48,8 +47,7 @@ class MatrixSymDiagStd
 {
 public:
 
-  ///
-  /** PostMod class to use with <tt>MemMngPack::AbstractFactorStd</tt>.
+  /** \brief PostMod class to use with <tt>MemMngPack::AbstractFactorStd</tt>.
    */
   class PostMod {
   public:
@@ -74,8 +72,7 @@ public:
     ,bool                             unique = true
     );
 
-  ///
-  /** Initialize given the diagonal vector (or no vector at all).
+  /** \brief Initialize given the diagonal vector (or no vector at all).
    *
    * @param  diag   [in] Vector to be used for the diagonal.  If <tt>diag.get() == NULL</tt>
    *                then \c this will be uninitialized.
@@ -92,8 +89,7 @@ public:
   /** @name Access */
   //@{
 
-  ///
-  /** Give non-const access to the diagonal vector.
+  /** \brief Give non-const access to the diagonal vector.
    *
    * Preconditions:<ul>
    * <li> <tt>this->diag_ptr().get() != NULL</tt> (throw <tt>???</tt>)
@@ -102,9 +98,9 @@ public:
    * ToDo: Finish documentation!
    */
   VectorMutable& diag();
-  ///
+  /** \brief . */
   const VectorSpace::vec_mut_ptr_t& diag_ptr() const;
-  ///
+  /** \brief . */
   bool unique() const;
 
   //@}
@@ -114,7 +110,7 @@ public:
 
   /// Returns 0 if not initalized (this->diag() == NULL).
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type nz() const;
 
   //@}
@@ -122,28 +118,26 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space_rows() const;
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& mwo_rhs);
-  ///
-  /** Add to a mutable matrix lhs.
+  /** \brief Add to a mutable matrix lhs.
    *
    * Preconditions:<ul>
    * <li> #dynamic_cast<MultiVectorMutable*>(m_lhs) != NULL#.
    * </ul>
    */
   bool Mp_StM(MatrixOp* g_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const Vector& v_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2, value_type beta) const;
-  ///
-  /** Implements the symmetric rank-k update for all diagonal matrix lhs
+  /** \brief Implements the symmetric rank-k update for all diagonal matrix lhs
    *
    * @return Returns <tt>true</tt> if <tt>dynamic_cast<MatrixSymDiagStd>(sym_lhs) != NULL</tt>.
    * Otherwise, returns false.
@@ -160,10 +154,10 @@ public:
   /** Overridden from MatrixOpNonsing */
   //@{
 
-  ///
+  /** \brief . */
   void V_InvMtV(VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
     , const Vector& v_rhs2) const;
-  ///
+  /** \brief . */
   void V_InvMtV(VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2) const;
 
@@ -172,9 +166,9 @@ public:
   /** @name Overridden from MatrixSymInitDiag */
   //@{
 
-  ///
+  /** \brief . */
   void init_identity( const VectorSpace& space_diag, value_type alpha );
-  ///
+  /** \brief . */
   void init_diagonal( const Vector& diag );
 
   //@}
@@ -182,7 +176,7 @@ public:
   /** @name Overridden from MatrixSymDiag */
   //@{
 
-  ///
+  /** \brief . */
   const Vector& diag() const;
 
   //@}

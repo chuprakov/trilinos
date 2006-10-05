@@ -35,8 +35,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Set options for NLPFirstDerivTester from an
+/** \brief Set options for NLPFirstDerivTester from an
  * OptionsFromStream object.
  *
  * The default options group name is NLPFirstDerivTester.
@@ -60,7 +59,7 @@ class NLPFirstDerivTesterSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   NLPFirstDerivTesterSetOptions(
       NLPFirstDerivTester* target = 0
     , const char opt_grp_name[] = "NLPFirstDerivTester" );

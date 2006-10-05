@@ -35,8 +35,7 @@
 
 namespace IterationPack {
 
-///
-/** Set options for <tt>Algorithm</tt> from an <tt>OptionsFromStream</tt> object.
+/** \brief Set options for <tt>Algorithm</tt> from an <tt>OptionsFromStream</tt> object.
  */
 class AlgorithmSetOptions
   : public OptionsFromStreamPack::SetOptionsFromStreamNode 
@@ -45,10 +44,10 @@ class AlgorithmSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   AlgorithmSetOptions(
       Algorithm* target = 0
-    , const char opt_grp_name[] = "IterationPack::Algorithm" );
+    , const char opt_grp_name[] = "IterationPack_Algorithm" );
 
 protected:
 

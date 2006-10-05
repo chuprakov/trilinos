@@ -38,14 +38,14 @@ namespace FortranTypes {
   */
 //@{
 
-///
+/** \brief . */
 enum EOpenStatus { OPEN_OLD = 0, OPEN_NEW = 1, OPEN_SCRATCH = 2
   , OPEN_UNKNOWN = 3 };
-///
+/** \brief . */
 enum EOpenForm { OPEN_FORMATTED = 0, OPEN_UNFORMATTED = 1 };
-///
+/** \brief . */
 enum EOpenBlank { OPEN_NULL = 0, OPEN_ZERO = 1 };
-///
+/** \brief . */
 enum EOpenAccess { OPEN_SEQUENTIAL = 0, OPEN_DIRECT = 1 };
 
 /** Open a Fortran file given its name and unit number.

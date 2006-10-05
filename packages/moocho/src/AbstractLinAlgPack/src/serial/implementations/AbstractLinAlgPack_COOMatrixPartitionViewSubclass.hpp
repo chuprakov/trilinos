@@ -37,38 +37,37 @@ namespace AbstractLinAlgPack {
 // Could not derive this class form MatrixWithOpConcreteEncap because the assignment
 // operator is not defined for the partition class.
 
-///
-/** Implementation of MatrixOp abstract interface for
+/** \brief Implementation of MatrixOp abstract interface for
   * COOMatrixWithPartitionedView::partition_type.
   */
 class COOMatrixPartitionViewSubclass : public MatrixOp
 {
 public:
 
-  ///
+  /** \brief . */
   typedef COOMatrixWithPartitionedView::partition_type	M;
 
-  ///
+  /** \brief . */
   COOMatrixPartitionViewSubclass()
     : trans_(BLAS_Cpp::no_trans)
   {}
 
-  ///
+  /** \brief . */
   COOMatrixPartitionViewSubclass(BLAS_Cpp::Transp trans)
     : trans_(trans)
   {}
 
-  ///
+  /** \brief . */
   COOMatrixPartitionViewSubclass(const M& m)
     : m_(m), trans_(BLAS_Cpp::no_trans)
   {}
 
-  ///
+  /** \brief . */
   COOMatrixPartitionViewSubclass(const M& m, BLAS_Cpp::Transp trans)
     : m_(m), trans_(trans)
   {}
 
-  ///
+  /** \brief . */
   void set_trans(BLAS_Cpp::Transp trans) {
     trans_ = trans;
   }
@@ -82,7 +81,7 @@ public:
     return m_;
   }
 
-  ///
+  /** \brief . */
   const M& m() const {
     return m_;
   }
@@ -93,16 +92,16 @@ public:
   // /////////////////////////////////////////////////////
   // Overridden from Matrix
 
-  ///
+  /** \brief . */
   size_type rows() const;
 
-  ///
+  /** \brief . */
   size_type cols() const;
 
   // /////////////////////////////////////////////////////
   // Overridden from MatrixOp
 
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& m);
 
   // /////////////////////////////////////////////////////

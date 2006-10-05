@@ -36,8 +36,7 @@
 #include "MiReleaseResource.h"
 
 namespace ConstrainedOptPack {
-///
-/** Matrix subclass for banded symmetric positive definite matrices and their
+/** \brief Matrix subclass for banded symmetric positive definite matrices and their
  * Cholesky factors.
  * 
  * This class is designed to support the LAPACK routines for banded symmetric positive
@@ -67,15 +66,14 @@ class MatrixSymPosDefBandedChol	: public MatrixSymWithOpFactorized
 {
 public:
   
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
   // //////////////
     // Constructors
 
-  ///
-  /** Construct and Initialize.
+  /** \brief Construct and Initialize.
    *
    * This constructor just calls #this->initialize(...)#.
    */
@@ -95,8 +93,7 @@ public:
   // ///////////////////////////
     // Access representation
 
-  ///
-  /** Initialize
+  /** \brief Initialize
    *
    * If called with all of the default arguments then #this# will become uninitialized.
    *
@@ -141,46 +138,44 @@ public:
     ,value_type                       scale                   = 1.0
     );
 
-  ///
+  /** \brief . */
   size_type kd() const;
-  ///
-  /** Get view of MB.
+  /** \brief Get view of MB.
    */
   DMatrixSlice& MB();
-  ///
+  /** \brief . */
   const DMatrixSlice& MB() const;
-  ///
+  /** \brief . */
   BLAS_Cpp::Uplo MB_uplo() const;
-  ///
-  /** Get view of UB.
+  /** \brief Get view of UB.
    */
   DMatrixSlice& UB();
-  ///
+  /** \brief . */
   const DMatrixSlice& UB() const;
-  ///
+  /** \brief . */
   BLAS_Cpp::Uplo UB_uplo() const;
 
   // /////////////////////////////
   // Overridden from MatrixOp
 
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type nz() const;
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const DVectorSlice& vs_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     , BLAS_Cpp::Transp M_rhs2_trans
     , const DVectorSlice& vs_rhs3, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     , BLAS_Cpp::Transp M_rhs2_trans

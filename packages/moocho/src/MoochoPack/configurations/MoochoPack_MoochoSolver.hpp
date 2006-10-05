@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Universal interface to a MOOCHO solver.
+/** \brief Universal interface to a MOOCHO solver.
  *
  * This class is designed to act as a simple encapsulation to several
  * other smaller components needed to solve an NLP.  This class is an
@@ -79,7 +78,7 @@ namespace MoochoPack {
  * and <tt>\ref NLPAlgoConfigMamaJama_opts "Moocho.opt.NLPAlgoConfigMamaJama"</tt>
  * conatain the listing of these options as well as some documentation.
  * An options file <tt>Moocho.opt</tt> can be generated automatically
- * using the shell script <tt>generate_opt_file.x</tt>.
+ * using the shell script <tt>generate_opt_file.pl</tt>.
  *
  * <b>Requirements / Specifications</b>
  *
@@ -148,31 +147,31 @@ public:
   /** Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     NLPInterfacePack::NLP>                                       nlp_ptr_t; // full path needed by doxygen
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     IterationPack::AlgorithmTracker>                        track_ptr_t; // full path needed by doxygen
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<NLPAlgoConfig>    config_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     OptionsFromStreamPack::OptionsFromStream>                    options_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<std::ostream>       ostream_ptr_t;
-  ///
+  /** \brief . */
   enum EOutputToBlackHole {
     OUTPUT_TO_BLACK_HOLE_DEFAULT
     ,OUTPUT_TO_BLACK_HOLE_TRUE
     ,OUTPUT_TO_BLACK_HOLE_FALSE
   };
-  ///
+  /** \brief . */
   enum EConfigOptions {
     MAMA_JAMA
     ,INTERIOR_POINT
   };
-  ///
+  /** \brief . */
   enum ESolutionStatus {
     SOLVE_RETURN_SOLVED            =  0
     ,SOLVE_RETURN_NLP_TEST_FAILED  =  1
@@ -186,8 +185,7 @@ public:
   /** @name Initialization and algorithm configuration */
   //@{
 
-  ///
-  /** Constructs to uninitialized.
+  /** \brief Constructs to uninitialized.
    *
    * Postconditions:<ul>
    * <li> <tt>this->throw_exceptions() == false</tt>
@@ -199,23 +197,21 @@ public:
     ,const std::string &extra_options_str = ""
     );
 
-  ///
+  /** \brief . */
   OptionsFromStreamPack::CommandLineOptionsFromStreamProcessor&
   commandLineOptionsFromStreamProcessor();
 
-  ///
+  /** \brief . */
   const OptionsFromStreamPack::CommandLineOptionsFromStreamProcessor&
   commandLineOptionsFromStreamProcessor() const;
 
-  ///
-  /** Setup the commandline processor to process commandline options.
+  /** \brief Setup the commandline processor to process commandline options.
    */
   void setup_commandline_processor(
     Teuchos::CommandLineProcessor *clp
     );
 
-  ///
-  /** Set the NLP to be solved.
+  /** \brief Set the NLP to be solved.
    *
    * Preconditions:<ul>
    * <li> <tt>nlp.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>).
@@ -231,8 +227,7 @@ public:
    */
   void set_nlp(const nlp_ptr_t& nlp);
   
-  ///
-  /** Get the non-const smart pointer to the set NLP object.
+  /** \brief Get the non-const smart pointer to the set NLP object.
    *
    * @return Returns the nlp object pointer set by <tt>this->set_nlp()</tt>.
    */
@@ -246,15 +241,13 @@ public:
    */
   void set_track(const track_ptr_t& track);
   
-  ///
-  /** Get the non-const smart pointer to the set <tt>AlgorithmTracker</tt> object.
+  /** \brief Get the non-const smart pointer to the set <tt>AlgorithmTracker</tt> object.
    *
    * @return Returns the track object pointer set by <tt>this->set_track()</tt>.
    */
   const track_ptr_t& get_track() const;
 
-  ///
-  /** Set the algorithm configuration object.
+  /** \brief Set the algorithm configuration object.
    *
    * @param  config  [in] The algorithm configuration object to use the
    *                 next time <tt>this->do_config_algo()</tt> or
@@ -274,8 +267,7 @@ public:
    */
   void set_config( const config_ptr_t& config );
 
-  ///
-  /** Return the configuration object being used.
+  /** \brief Return the configuration object being used.
    *
    * @return Returns <tt>return.get() == config.get()</tt> passed to the last call to
    * <tt>this->set_config(config)</tt>.  
@@ -283,8 +275,7 @@ public:
    */
   const config_ptr_t& get_config() const;
 
-  ///
-  /** Set the various options to use.
+  /** \brief Set the various options to use.
    *
    * @param  options  [in]  Smart pointer to the <tt>OptionsFromStream</tt> object
    *                  to extract the options for <tt>this</tt> as well as for
@@ -306,8 +297,7 @@ public:
    */
   void set_options( const options_ptr_t& options );
 
-  ///
-  /** Get the <tt>OptionsFromStream</tt> object being used to extract the options from.
+  /** \brief Get the <tt>OptionsFromStream</tt> object being used to extract the options from.
    *
    * ToDo: Finish documentation.
    */
@@ -318,8 +308,7 @@ public:
   /** \name Exception handling */
   //@{
 
-  ///
-  /** Set the error output and whether exceptions will be thrown from these functions or not.
+  /** \brief Set the error output and whether exceptions will be thrown from these functions or not.
    *
    * @param  throw_exceptions
    *                [in] If \c true, then after printing the error message (see error_out) the
@@ -339,13 +328,11 @@ public:
     ,const ostream_ptr_t&   error_out
     );
 
-  ///
-  /** Return if exceptions will be thrown out of <tt>this->solve_nlp()</tt>.
+  /** \brief Return if exceptions will be thrown out of <tt>this->solve_nlp()</tt>.
    */
   bool throw_exceptions() const;
 
-  ///
-  /** Return the <tt>std::ostream</tt> object used for error reporting on exceptions.
+  /** \brief Return the <tt>std::ostream</tt> object used for error reporting on exceptions.
    *
    * If <tt>return.get() == NULL</tt> then this means that <tt>std::cerr</tt> wil be
    * written to.
@@ -376,18 +363,15 @@ public:
   /** \name Individual outputting control */
   //@{
 
-  ///
-  /** Turn on and off console outputting.
+  /** \brief Turn on and off console outputting.
    */
   void do_console_outputting(bool);
 
-  ///
-  /** Return if console outputting is performed or not.
+  /** \brief Return if console outputting is performed or not.
    */
   bool do_console_outputting() const;
 
-  ///
-  /** Set the <tt>std::ostream</tt> object to use for console output
+  /** \brief Set the <tt>std::ostream</tt> object to use for console output
    * by a <tt>MoochoTrackerConsoleStd</tt> object.
    *
    * @param  console_out  [in] Smart pointer to an <tt>std::ostream</tt>
@@ -411,8 +395,7 @@ public:
    */
   void set_console_out( const ostream_ptr_t& console_out );
 
-  ///
-  /** Get the non-const smart pointer to the set output stream for console outputting.
+  /** \brief Get the non-const smart pointer to the set output stream for console outputting.
    *
    * @return Returns the console_out smart pointer object pointer set by
    * the last call to <tt>this->set_console_out()</tt>.  Not that if
@@ -425,18 +408,15 @@ public:
    */
   const ostream_ptr_t& get_console_out() const;
   
-  ///
-  /** Turn on and off summary outputting.
+  /** \brief Turn on and off summary outputting.
    */
   void do_summary_outputting(bool);
 
-  ///
-  /** Return if summary outputting is performed or not.
+  /** \brief Return if summary outputting is performed or not.
    */
   bool do_summary_outputting() const;
 
-  ///
-  /** Set the <tt>std::ostream</tt> object to use for summary output.
+  /** \brief Set the <tt>std::ostream</tt> object to use for summary output.
    *
    * @param  summay_out  [in] Smart pointer to <tt>std::ostream</tt> object
    *                     that summary output is sent to.
@@ -455,8 +435,7 @@ public:
    */
   void set_summary_out( const ostream_ptr_t& summary_out );
   
-  ///
-  /** Get the non-const smart pointer to the set output stream for summary outputting.
+  /** \brief Get the non-const smart pointer to the set output stream for summary outputting.
    *
    * Postconditions:<ul>
    * <li> <tt>return.get() == summary_out.get()</tt> where <tt>summary_out</tt> was the
@@ -473,18 +452,15 @@ public:
    */
   const ostream_ptr_t& get_summary_out() const;
 
-  ///
-  /** Turn on and off journal outputting.
+  /** \brief Turn on and off journal outputting.
    */
   void do_journal_outputting(bool);
 
-  ///
-  /** Return if journal outputting is performed or not.
+  /** \brief Return if journal outputting is performed or not.
    */
   bool do_journal_outputting() const;
 
-  ///
-  /** Set the <tt>std::ostream</tt> object to use for journal output by the
+  /** \brief Set the <tt>std::ostream</tt> object to use for journal output by the
    * MOOCHO step objects.
    *
    * @param  journal_out [in] Smart pointer to an <tt>std::ostream</tt> object
@@ -507,8 +483,7 @@ public:
    */
   void set_journal_out( const ostream_ptr_t& journal_out );
   
-  ///
-  /** Get the non-const smart pointer to the set output stream for journal outputting.
+  /** \brief Get the non-const smart pointer to the set output stream for journal outputting.
    *
    * Postconditions:<ul>
    * <li> <tt>return.get() == journal_out.get()</tt> where <tt>journal_out</tt> was the
@@ -525,28 +500,23 @@ public:
    */
   const ostream_ptr_t& get_journal_out() const;
 
-  ///
-  /** Turn on and off algo outputting.
+  /** \brief Turn on and off algo outputting.
    */
   void do_algo_outputting(bool);
 
-  ///
-  /** Return if algo outputting is performed or not.
+  /** \brief Return if algo outputting is performed or not.
    */
   bool do_algo_outputting() const;
 
-  ///
-  /** Turn on and off the generation of a statistics file.
+  /** \brief Turn on and off the generation of a statistics file.
    */
   void generate_stats_file(bool);
 
-  ///
-  /** Return if a statistics file will be generated or not.
+  /** \brief Return if a statistics file will be generated or not.
    */
   bool generate_stats_file() const;
 
-  ///
-  /** Set the <tt>std::ostream</tt> object to use for algorithm output.
+  /** \brief Set the <tt>std::ostream</tt> object to use for algorithm output.
    *
    * @param  algo_out  [in] Smart pointer to an <tt>std::ostream</tt> object
    *                   that static algorithm output will be set to.
@@ -569,8 +539,7 @@ public:
    */
   void set_algo_out( const ostream_ptr_t& algo_out );
   
-  ///
-  /** Get the non-const smart pointer to the set output stream for algo outputting.
+  /** \brief Get the non-const smart pointer to the set output stream for algo outputting.
    *
    * Postconditions:<ul>
    * <li> <tt>return.get() == algo_out.get()</tt> where <tt>algo_out</tt> was the
@@ -592,8 +561,7 @@ public:
   /** @name Solve the NLP */
   //@{
 
-  ///
-  /** Solve the NLP.
+  /** \brief Solve the NLP.
    *
    * Preconditions:<ul>
    * <li> <tt>this->get_nlp() != NULL</tt> (throw <tt>std::logic_error</tt>)
@@ -659,8 +627,7 @@ public:
   /** @name Get the underlying solver object */
   //@{
 
-  ///
-  /** Get the underlying <tt>NLPSolverClientInterface</tt> object.
+  /** \brief Get the underlying <tt>NLPSolverClientInterface</tt> object.
    *
    * If the algorithm has not already been configured it will be here using whatever
    * <tt>NLPAlgoConfig</tt> object that it has (set using <tt>this->set_config*()</tt>
@@ -679,7 +646,7 @@ public:
    */
   NLPSolverClientInterface& get_solver();
 
-  ///
+  /** \brief . */
   const NLPSolverClientInterface& get_solver() const;
   
   //@}
@@ -689,7 +656,7 @@ private:
   // //////////////////////////////////////
   // Private types
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<NLPSolverClientInterface>    solver_ptr_t;
     
   // ////////////////////////////////////
@@ -740,13 +707,13 @@ private:
   // ////////////////////////////////////
   // Private member functions
 
-  ///
+  /** \brief . */
   Teuchos::RefCountPtr<std::ostream> generate_output_file(const std::string &fileNameBase) const;
 
-  ///
+  /** \brief . */
   void generate_output_streams() const;
 
-  ///
+  /** \brief . */
   void update_solver() const;
 
 }; // end class MoochoSolver
@@ -759,7 +726,7 @@ private:
  * see the documentation for
  * <tt>MoochoPack::NLPAlgoConfigMamaJama</tt>.
  *
- * \verbinclude Moocho.opt.MoochoSolver
+ * \verbinclude configurations/Moocho.opt.MoochoSolver
  */
 
 /** \defgroup DecompositionSystemStateStepBuilderStd_opts Options for common builder object of type DecompositionSystemStateStepBuilderStd object.
@@ -768,7 +735,7 @@ private:
  * are options that are shared by different specific configuration classes (for example, see
  * <tt>MoochoPack::NLPAlgoConfigMamaJama</tt>).
  *
- * \verbinclude Moocho.opt.DecompositionSystemStateStepBuilderStd
+ * \verbinclude configurations/Shared/Moocho.opt.DecompositionSystemStateStepBuilderStd
  */
 
 // /////////////////////////////////////////

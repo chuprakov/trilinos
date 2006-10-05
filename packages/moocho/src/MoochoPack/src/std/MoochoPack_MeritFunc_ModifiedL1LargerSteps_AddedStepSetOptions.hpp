@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for MeritFunc_ModifiedL1LargerSteps_AddedStep from a
+/** \brief Set options for MeritFunc_ModifiedL1LargerSteps_AddedStep from a
   * OptionsFromStream object.
   *
   * The options group is:
@@ -71,7 +70,7 @@ class MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions(
     MeritFunc_ModifiedL1LargerSteps_AddedStep* target = 0 );
 

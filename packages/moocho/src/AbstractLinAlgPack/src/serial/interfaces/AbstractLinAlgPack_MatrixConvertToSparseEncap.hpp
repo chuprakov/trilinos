@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Sparse conversion subclass based on views of a \c MatrixExtractSparseElements object.
+/** \brief Sparse conversion subclass based on views of a \c MatrixExtractSparseElements object.
  *
  * ToDo:Finish documentation!
  */
@@ -47,9 +46,9 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixExtractSparseElements>  mese_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const IVector>                      i_vector_ptr_t;
 
   //@}
@@ -57,13 +56,11 @@ public:
   /** @name Constructors/initializers */
   //@{
 
-  ///
-  /** Construct to uninitialized.
+  /** \brief Construct to uninitialized.
    */
   MatrixConvertToSparseEncap();
 
-  ///
-  /** Calls \c this->initialize().
+  /** \brief Calls \c this->initialize().
    */
   MatrixConvertToSparseEncap(
     const mese_ptr_t           &mese
@@ -75,8 +72,7 @@ public:
     ,const value_type          alpha = 1.0
     );
 
-  ///
-  /** Initialize a permuted view of a sparse matrix.
+  /** \brief Initialize a permuted view of a sparse matrix.
    *
    * <tt>A = alpha * op( (P'*B*Q)(row_rng,col_rng) )</tt>
    *
@@ -92,8 +88,7 @@ public:
     ,const value_type          alpha = 1.0
     );
 
-  ///
-  /** Set uninitialized.
+  /** \brief Set uninitialized.
    *
    * ToDo: Finish documentation!
    */
@@ -104,19 +99,19 @@ public:
   /** @name Access */
   //@{
 
-  ///
+  /** \brief . */
   const mese_ptr_t& mese() const;
-  ///
+  /** \brief . */
   const i_vector_ptr_t& inv_row_perm() const;
-  ///
+  /** \brief . */
   const Range1D& row_rng() const;
-  ///
+  /** \brief . */
   const i_vector_ptr_t& inv_col_perm() const;
-  ///
+  /** \brief . */
   const Range1D& col_rng() const;
-  ///
+  /** \brief . */
   const BLAS_Cpp::Transp mese_trans() const;
-  ///
+  /** \brief . */
   const value_type alpha() const;
 
   //@}
@@ -124,15 +119,15 @@ public:
   /** @name Overridden from MatrixBase */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   const VectorSpace& space_rows() const;
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type cols() const;
-  ///
+  /** \brief . */
   size_type nz() const;
 
   //@}
@@ -140,13 +135,13 @@ public:
   /** @name Overridden from MatrixConvertToSparse */
   //@{
 
-  ///
+  /** \brief . */
   index_type num_nonzeros(
     EExtractRegion        extract_region
     ,EElementUniqueness   element_uniqueness
     ) const;
 
-  ///
+  /** \brief . */
   void coor_extract_nonzeros(
     EExtractRegion                extract_region
     ,EElementUniqueness           element_uniqueness

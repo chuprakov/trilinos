@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Calculate the change in the active set and output change
+/** \brief Calculate the change in the active set and output change
   * if asked to.
   *
   * ToDo: Add more description of the output you get.

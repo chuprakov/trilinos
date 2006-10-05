@@ -9,8 +9,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** This is a base class that is meant to be inherited by <tt>Vector</tt>
+/** \brief This is a base class that is meant to be inherited by <tt>Vector</tt>
  * subclasses that wish to call <tt>TSFCore::apply_op_serial()</tt> when vectors
  * are in core.
  *
@@ -20,10 +19,10 @@ namespace AbstractLinAlgPack {
 class VectorApplyOpSerialBase {
 public:
 
-  ///
+  /** \brief . */
   VectorApplyOpSerialBase();
 
-  ///
+  /** \brief . */
   void apply_op_serial(
     const RTOpPack::RTOp& op
     ,const size_t num_vecs, const Vector* vecs[]

@@ -33,8 +33,7 @@
 
 namespace StrideIterPack {
 
-///
-/** C++ Standard Library compatable iterator class for accesing nonunit stride arrays of data.
+/** \brief C++ Standard Library compatable iterator class for accesing nonunit stride arrays of data.
  *
  * Random access iterator adaptor for non-unit strides.
  * This iterator does not have any range checking for maximum efficency.  It was desinged
@@ -49,17 +48,17 @@ public:
   /** @name typedefs */
   //@{
 
-  ///
+  /** \brief . */
   typedef	std::random_access_iterator_tag						iterator_category;
-  ///
+  /** \brief . */
   typedef	T_iterator_type										iterator_type;
-  ///
+  /** \brief . */
   typedef	T_value_type										value_type;
-  ///
+  /** \brief . */
   typedef T_reference_type									reference;
-  ///
+  /** \brief . */
   typedef T_pointer_type										pointer;
-  ///
+  /** \brief . */
   typedef	T_difference_type									difference_type;
   
   //@}
@@ -91,15 +90,15 @@ public:
   /** @name Access */
   //@{
 
-  ///
+  /** \brief . */
   reference		operator*()	const {
     return *current_;
   }
-  ///
+  /** \brief . */
   pointer		operator->() const {
     return  current_;
   }
-  ///
+  /** \brief . */
   reference		operator[](difference_type n)	const {
     return current_[n * stride_];
   }
@@ -166,12 +165,12 @@ public:
   /** @name Implimentation access */
   //@{
 
-  ///
+  /** \brief . */
   iterator_type	current() const {
     return current_;
   }
 
-  ///
+  /** \brief . */
   difference_type	stride() const {
     return stride_;
   }
@@ -179,9 +178,9 @@ public:
   //@}
 
 private:
-  ///
+  /** \brief . */
   iterator_type			current_;
-  ///
+  /** \brief . */
   difference_type			stride_;
 };
 

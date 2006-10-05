@@ -35,8 +35,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** The L1 merit function.
+/** \brief The L1 merit function.
  *
  * phi(x) = f(x) + mu * norm(c(x),1)
  *
@@ -65,9 +64,9 @@ public:
   /** @name Overridden from MeritFuncNLP */
   //@{
 
-  ///
+  /** \brief . */
   MeritFuncNLP& operator=(const MeritFuncNLP&);
-  ///
+  /** \brief . */
   value_type value(
     value_type             f
     ,const Vector    *c
@@ -75,9 +74,9 @@ public:
     ,const Vector    *hl
     ,const Vector    *hu
     ) const;
-  ///
+  /** \brief . */
   value_type deriv() const;
-  ///
+  /** \brief . */
   void print_merit_func(
     std::ostream& out, const std::string& leading_str ) const;
 
@@ -86,7 +85,7 @@ public:
   /** @name Overridden from MeritFuncNLPDirecDeriv */
   //@{
 
-  ///
+  /** \brief . */
   value_type calc_deriv(
     const Vector    &Gf_k
     ,const Vector   *c_k
@@ -101,10 +100,10 @@ public:
   /** @name Overridden from MeritFuncPenaltyParam */
   //@{
 
-  ///
+  /** \brief . */
   void mu(value_type mu);
 
-  ///
+  /** \brief . */
   value_type mu() const;
 
   //@}

@@ -35,32 +35,29 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Base class for all merit functions for NonLinear Programs (NLP) {abstract}.
+/** \brief Base class for all merit functions for NonLinear Programs (NLP) {abstract}.
   */
 class MeritFuncNLP {
 public:
 
-  ///
+  /** \brief . */
   class InvalidInitialization : public std::logic_error
   {public: InvalidInitialization(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-  ///
+  /** \brief . */
   virtual ~MeritFuncNLP() {}
 
   /** @name To be overridden by subclasses */
   //@{
 
-  ///
-  /** Assign the state of one Merit functions.
+  /** \brief Assign the state of one Merit functions.
    *
    * The default implementation throws an <tt>std::logic_error</tt> exception
    * unless it is assignment to self.
    */
   virtual MeritFuncNLP& operator=(const MeritFuncNLP&);
 
-  ///
-  /** Return the value of the merit function at f(x), c(x), h(x).
+  /** \brief Return the value of the merit function at f(x), c(x), h(x).
    * This interface requires the client to compute f(x)
    * c(x) and h(x) and pass it to this function to have
    * the value of phi(f,c,h,hl,hu) calculated.
@@ -76,8 +73,7 @@ public:
     ,const Vector    *hu
     ) const = 0;
 
-  ///
-  /** Return the value of the directional derivative of the 
+  /** \brief Return the value of the directional derivative of the 
    * merit function w.r.t. alpha at alpha = 0.  In other words
    * compute return d( phi(f(x),c(x),h(x)) ) / d(alpha_k) at alpha_k = 0
    * where x = x_k + alpha_k * d_k.
@@ -87,8 +83,7 @@ public:
    */
   virtual value_type deriv() const = 0;
 
-  ///
-  /** Print the merit funciton
+  /** \brief Print the merit funciton
    */
   virtual void print_merit_func(
     std::ostream& out, const std::string& leading_str ) const = 0;

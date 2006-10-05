@@ -152,8 +152,7 @@ void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSliceSym& sym
   Vp_StMtSV(vs_lhs, alpha, sym_gms_rhs1, trans_rhs1, sv_rhs2);
 }
 
-///
-/** vs_lhs = alpha * op(M_rhs1) * sv_rhs2 + beta * vs_lhs
+/** \brief vs_lhs = alpha * op(M_rhs1) * sv_rhs2 + beta * vs_lhs
   *
   * Calls: #Vp_StMtSV(vs_lhs,alpha,M_rhs1,trans_rhs1,V_rhs2);#
   *

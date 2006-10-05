@@ -33,13 +33,12 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Mix-in Interface for setting a matrix to a diagonal {abstract}.
+/** \brief Mix-in Interface for setting a matrix to a diagonal {abstract}.
  */
 class MatrixSymInitDiag {
 public:
 
-  ///
+  /** \brief . */
   virtual ~MatrixSymInitDiag() {}
 
   /// Initialize a <tt>n x n</tt> identity matrix scaled by \c alpha (where <tt>n = diag.dim()</tt>).

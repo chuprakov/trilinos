@@ -34,8 +34,7 @@
 
 namespace MoochoPack {
 
-///
-/** Null Space Step for Interior Point algorithm
+/** \brief Null Space Step for Interior Point algorithm
  *
  * This class calculates the step pz (and Zpz)
  *
@@ -48,7 +47,7 @@ class TangentialStepIP_Step
 
     /** @name Overridden from AlgorithmStep */
     //@{
-    ///
+    /** \brief . */
     bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
            , poss_type assoc_step_poss);
     

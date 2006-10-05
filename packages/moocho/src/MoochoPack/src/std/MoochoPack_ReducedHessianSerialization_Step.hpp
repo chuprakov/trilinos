@@ -37,8 +37,7 @@
 
 namespace MoochoPack {
 
-///
-/** Serializes rHL_k to and from a file.
+/** \brief Serializes rHL_k to and from a file.
  *
  * ToDo: Finish documentation!
  */
@@ -53,7 +52,7 @@ public:
   /// Pick the file name to write in the reduced Hessian to
   STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, reduced_hessian_output_file_name )
 
-  ///
+  /** \brief . */
   ReducedHessianSerialization_Step(
     const std::string    &reduced_hessian_input_file_name   = "reduced_hessian.in"
     ,const std::string   &reduced_hessian_output_file_name  = "reduced_hessian.out"
@@ -61,17 +60,17 @@ public:
   
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(
     Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     ,poss_type assoc_step_poss
     );
-  ///
+  /** \brief . */
   void finalize_step(
     Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     ,poss_type assoc_step_poss
     );
-  ///
+  /** \brief . */
   void print_step(
     const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     ,poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str

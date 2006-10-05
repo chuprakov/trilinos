@@ -39,8 +39,7 @@ namespace OptionsFromStreamPack {
 
 namespace AbstractLinAlgPack {
 
-///
-/** Interface for a factory object that will create <tt>BasisSystem</tt> objects.
+/** \brief Interface for a factory object that will create <tt>BasisSystem</tt> objects.
  *
  * 
  */
@@ -51,17 +50,16 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
 
   //@}
 
-  ///
+  /** \brief . */
   virtual ~BasisSystemFactory() {}
 
-  ///
-  /** Set the options that will be used to determine what basis system will be returned
+  /** \brief Set the options that will be used to determine what basis system will be returned
    * from <tt>this->create()</tt>.
    *
    * Note that it is allowed for the client to alter <tt>*options.get()</tt> after
@@ -70,8 +68,7 @@ public:
    */
   virtual void set_options( const options_ptr_t& options ) = 0;
 
-  ///
-  /** Get the <tt>OptionsFromStream</tt> object being used to extract the options from.
+  /** \brief Get the <tt>OptionsFromStream</tt> object being used to extract the options from.
    */
   virtual const options_ptr_t& get_options() const = 0;
 

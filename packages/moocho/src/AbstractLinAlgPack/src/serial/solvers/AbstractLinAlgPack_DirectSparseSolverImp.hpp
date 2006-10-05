@@ -36,8 +36,7 @@ namespace AbstractLinAlgPack {
 
 class DirectSparseSolverImp;
 
-///
-/** Implementation node class for \c DirectSparseSolver that takes
+/** \brief Implementation node class for \c DirectSparseSolver that takes
  * care of the memory management details.
  *
  * ToDo: Finish documentation!
@@ -54,8 +53,7 @@ public:
   /** @name Protected types */
   //@{
 
-  ///
-  /** Abstract class for objects that represent the factorization
+  /** \brief Abstract class for objects that represent the factorization
     * nonzeros of a particular matrix.
     *
     * This storage for the nonzeros can be reused over and over again
@@ -63,12 +61,11 @@ public:
     */
   class FactorizationNonzeros {
   public:
-    ///
+    /** \brief . */
     virtual ~FactorizationNonzeros() {}
   };
 
-  ///
-  /** Implementation node subclass that combines factorization structure and
+  /** \brief Implementation node subclass that combines factorization structure and
    * factorization nonzeros into a single basis matrix object.
    *
    * The only methods that subclasses must override for a complete
@@ -91,7 +88,7 @@ public:
     /** @name Public types */
     //@{
 
-    ///
+    /** \brief . */
     typedef Teuchos::RefCountPtr<FactorizationNonzeros> fact_nonzeros_ptr_t;
 
     //@}
@@ -99,8 +96,7 @@ public:
     /** @name Access */
     //@{
 
-    ///
-    /** Return a reference to a smart pointer to the object that represents
+    /** \brief Return a reference to a smart pointer to the object that represents
      * the factorization nonzeros.
      *
      * Returning a reference to a \c RefCountPtr<> object verses returning
@@ -115,13 +111,13 @@ public:
     /** @name Overridden from MatrixBase */
     //@{
 
-    ///
+    /** \brief . */
     const VectorSpace& space_cols() const;
-    ///
+    /** \brief . */
     const VectorSpace& space_rows() const;
-    ///
+    /** \brief . */
     size_type rows() const;
-    ///
+    /** \brief . */
     size_type cols() const;
 
     //@}
@@ -129,7 +125,7 @@ public:
     /** @name Overridden from MatrixNonsinguar */
     //@{
 
-    ///
+    /** \brief . */
     mat_mns_mut_ptr_t clone_mns();
 
     //@}
@@ -137,7 +133,7 @@ public:
     /** @name Overridden from BasisMatrix */
     //@{
 
-    ///
+    /** \brief . */
     virtual const fact_struc_ptr_t&  get_fact_struc() const;
 
     //@}
@@ -147,13 +143,11 @@ public:
     /** @name Constructors/initailizers */
     //@{
 
-    ///
-    /** Default initializers to uninitialized.
+    /** \brief Default initializers to uninitialized.
      */
     BasisMatrixImp();
 
-    ///
-    /** Calls <tt>this->initialize()</tt>
+    /** \brief Calls <tt>this->initialize()</tt>
      */
     BasisMatrixImp(
       size_type                      dim
@@ -161,8 +155,7 @@ public:
       ,const fact_nonzeros_ptr_t     &fact_nonzeros
       );
 
-    ///
-    /** Initialize given initialized factorization structure and factorization nonzeros objects.
+    /** \brief Initialize given initialized factorization structure and factorization nonzeros objects.
      */
     virtual void initialize(
       size_type                      dim
@@ -170,8 +163,7 @@ public:
       ,const fact_nonzeros_ptr_t     &fact_nonzeros
       );
 
-    ///
-    /** Make uninitialized.
+    /** \brief Make uninitialized.
      *
      * Postconditions:<ul>
      * <li> <tt>this->dim() == 0</tt>
@@ -193,8 +185,7 @@ public:
 
   private:
 
-    ///
-    /** Allow only DirectSparseSolverImp to initialize objects of this type.
+    /** \brief Allow only DirectSparseSolverImp to initialize objects of this type.
      * Important !!!!! Even though DirectSparseSolverImp has access to these
      * private members it is strictly not to access them directly !!!!
      */
@@ -217,7 +208,7 @@ public:
   /** @name Overridden from DirectSparseSolver */
   //@{
 
-  ///
+  /** \brief . */
   void analyze_and_factor(
     const AbstractLinAlgPack::MatrixConvertToSparse   &A
     ,DenseLinAlgPack::IVector                            *row_perm
@@ -226,16 +217,16 @@ public:
     ,BasisMatrix                                    *basis_matrix
     ,std::ostream                                   *out
     );
-  ///
+  /** \brief . */
   void factor(
     const AbstractLinAlgPack::MatrixConvertToSparse   &A
     ,BasisMatrix                                    *basis_matrix
     ,const BasisMatrix::fact_struc_ptr_t            &fact_struc
     ,std::ostream                                   *out
     );
-  ///
+  /** \brief . */
   const BasisMatrix::fact_struc_ptr_t& get_fact_struc() const;
-  ///
+  /** \brief . */
   void set_uninitialized();
 
   //@}
@@ -245,18 +236,15 @@ protected:
   /** @name Protected pure virtual methods to be overridden by concrete direct solver subclasses */
   //@{
 
-  ///
-  /** Create a new, uninitialized \c FactorizationStructure object.
+  /** \brief Create a new, uninitialized \c FactorizationStructure object.
    */
   virtual const Teuchos::RefCountPtr<FactorizationStructure> create_fact_struc() const = 0;
 
-  ///
-  /** Create a new, uninitialized \c FactorizationNonzeros object.
+  /** \brief Create a new, uninitialized \c FactorizationNonzeros object.
    */
   virtual const Teuchos::RefCountPtr<FactorizationNonzeros> create_fact_nonzeros() const = 0;
 
-  ///
-  /** Called to implement the \c analyze_and_factor() without having to worry about
+  /** \brief Called to implement the \c analyze_and_factor() without having to worry about
    * memory mangagment details.
    *
    * ToDo: Finish documentation!
@@ -271,8 +259,7 @@ protected:
     ,std::ostream                                   *out            = NULL
     ) = 0;
 
-  ///
-  /** Called to implement the \c analyze_and_factor() without having to worry about
+  /** \brief Called to implement the \c analyze_and_factor() without having to worry about
    * memory mangagment details.
    *
    * ToDo: Finish documentation!

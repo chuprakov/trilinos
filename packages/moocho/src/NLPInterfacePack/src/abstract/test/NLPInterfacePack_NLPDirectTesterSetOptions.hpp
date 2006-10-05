@@ -35,8 +35,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Set options for <tt>NLPDirectTester</tt> from an
+/** \brief Set options for <tt>NLPDirectTester</tt> from an
   * <tt>\ref OptionsFromStreamPack::OptionsFromStream "OptionsFromStream"</tt> object.
   *
   * The default options group name is 'NLPDirectTester'.
@@ -65,7 +64,7 @@ class NLPDirectTesterSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   NLPDirectTesterSetOptions(
       NLPDirectTester* target = 0
     , const char opt_grp_name[] = "NLPDirectTester" );

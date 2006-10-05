@@ -244,7 +244,7 @@ void Mp_StM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceTri& tri_
 void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
   , BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2, value_type beta = 1.0);
 
-///
+/** \brief . */
 /* * vs_lhs = alpha * op(sym_rhs1) * vs_rhs2 + beta * vs_lhs. (BLAS xSYMV).
   *
   * The transpose argument #trans_rhs1# is ignored and is only included so that
@@ -253,7 +253,7 @@ void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSlice& gms_rh
 void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSliceSym& sym_rhs1
   , BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2, value_type beta = 1.0);
 
-///
+/** \brief . */
 /* * v_lhs = op(tri_rhs1) * vs_rhs2 (BLAS xTRMV)
   *
   * Here vs_rhs2 and v_lhs can be the same vector.
@@ -265,7 +265,7 @@ void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSliceSym& sym
 void V_MtV(DVector* v_lhs, const DMatrixSliceTri& tri_rhs1, BLAS_Cpp::Transp trans_rhs1
   , const DVectorSlice& vs_rhs2);
 
-///
+/** \brief . */
 /* * vs_lhs = op(tri_rhs1) * vs_rhs2 (BLAS xTRMV)
   *
   * Same as previous accept for a DVectorSlice as the lhs.
@@ -273,7 +273,7 @@ void V_MtV(DVector* v_lhs, const DMatrixSliceTri& tri_rhs1, BLAS_Cpp::Transp tra
 void V_MtV(DVectorSlice* vs_lhs, const DMatrixSliceTri& tri_rhs1, BLAS_Cpp::Transp trans_rhs1
   , const DVectorSlice& vs_rhs2);
 
-///
+/** \brief . */
 /* * vs_lhs = alpha * op(tri_rhs1) * vs_rhs2 + beta * vs_lhs.
   *
   * This function is needed for use with the LinAlgPackOp template functions.
@@ -287,7 +287,7 @@ void V_MtV(DVectorSlice* vs_lhs, const DMatrixSliceTri& tri_rhs1, BLAS_Cpp::Tran
 void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
   , BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2, value_type beta = 1.0);
 
-///
+/** \brief . */
 /* * v_lhs = inv(op(tri_rhs1)) * vs_rhs2 (BLAS xTRSV)
   *
   * Here vs_rhs2 is assigned to v_lhs so if v_lhs is the same as vs_rhs2
@@ -299,7 +299,7 @@ void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSliceTri& tri
 void V_InvMtV(DVector* v_lhs, const DMatrixSliceTri& tri_rhs1, BLAS_Cpp::Transp trans_rhs1
   , const DVectorSlice& vs_rhs2);
 
-///
+/** \brief . */
 /* * vs_lhs = inv(op(tri_rhs1)) * vs_rhs2 (BLAS xTRSV)
   *
   * Same as above except for DVectorSlice as lhs.
@@ -307,7 +307,7 @@ void V_InvMtV(DVector* v_lhs, const DMatrixSliceTri& tri_rhs1, BLAS_Cpp::Transp 
 void V_InvMtV(DVectorSlice* vs_lhs, const DMatrixSliceTri& tri_rhs1, BLAS_Cpp::Transp trans_rhs1
   , const DVectorSlice& vs_rhs2);
 
-///
+/** \brief . */
 /* * gms_lhs = alpha * vs_rhs1 * vs_rhs2' + gms_lhs (BLAS xGER).
   *
   * This results in a direct call the the BLAS function ger(...).
@@ -320,7 +320,7 @@ void V_InvMtV(DVectorSlice* vs_lhs, const DMatrixSliceTri& tri_rhs1, BLAS_Cpp::T
 void ger(value_type alpha, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2
      , DMatrixSlice* gms_lhs);
 
-///
+/** \brief . */
 /* * sym_lhs = alpha * vs_rhs * vs_rhs' + sym_lhs (BLAS xSYR).
   *
   * This results in a direct call the the BLAS function syr(...).
@@ -332,7 +332,7 @@ void ger(value_type alpha, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_r
   */
 void syr(value_type alpha, const DVectorSlice& vs_rhs, DMatrixSliceSym* sym_lhs);
 
-///
+/** \brief . */
 /* * sym_lhs = alpha * vs_rhs1 * vs_rhs2' + alpha * vs_rhs2 * vs_rhs1' + sym_lhs (BLAS xSYR2).
   * 
   * There is no analog to this operation in the LinAlgPackOp template functions.
@@ -356,7 +356,7 @@ void syr2(value_type alpha, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_
   */
 // @{
 
-///
+/** \brief . */
 /* * gms_lhs = alpha * op(gms_rhs1) * op(gms_rhs2) + beta * gms_lhs (BLAS xGEMV).
   *
   * This function results in a nearly direct call the the BLAS gemv(...) function.
@@ -374,7 +374,7 @@ void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_r
   */
 // @{
 
-///
+/** \brief . */
 /* * gms_lhs = alpha * op(sym_rhs1) * op(gms_rhs2) + beta * gms_lhs (left) (BLAS xSYMM).
   *
   * The straight BLAS call would be:
@@ -391,7 +391,7 @@ void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceSym& sy
   , BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
   , BLAS_Cpp::Transp trans_rhs2, value_type beta = 1.0);
 
-///
+/** \brief . */
 /* * gms_lhs = alpha * op(gms_rhs1) * op(sym_rhs2) + beta * gms_lhs (right) (BLAS xSYMM).
   *
   * This function is similar to the previous one accept the symmeric matrix now appears
@@ -402,7 +402,7 @@ void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_r
   , BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceSym& sym_rhs2
   , BLAS_Cpp::Transp trans_rhs2, value_type beta = 1.0);
 
-///
+/** \brief . */
 /* * sym_lhs = alpha * op(gms_rhs) * op(gms_rhs')  + beta * sym_lhs (BLAS xSYRK).
   *
   * This results in a direct call the the BLAS function syrk(...).
@@ -415,7 +415,7 @@ void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_r
 void syrk(BLAS_Cpp::Transp trans, value_type alpha, const DMatrixSlice& gms_rhs
   , value_type beta, DMatrixSliceSym* sym_lhs);
 
-///
+/** \brief . */
 /* * sym_lhs = alpha * op(gms_rhs1) * op(gms_rhs2') + alpha * op(gms_rhs2) * op(gms_rhs1')
   *		+ beta * sym_lhs (BLAS xSYR2K).
   *
@@ -435,7 +435,7 @@ void syr2k(BLAS_Cpp::Transp trans,value_type alpha, const DMatrixSlice& gms_rhs1
   */
 // @{
 
-///
+/** \brief . */
 /* * gm_lhs = alpha * op(tri_rhs1) * op(gms_rhs2) (left) (BLAS xTRMM).
   *
   * Here op(gms_rhs2) and gms_lhs can be the same matrix .
@@ -447,7 +447,7 @@ void M_StMtM(DMatrix* gm_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
   , BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
   , BLAS_Cpp::Transp trans_rhs2);
 
-///
+/** \brief . */
 /* * gms_lhs = alpha * op(tri_rhs1) * op(gms_rhs2) (left) (BLAS xTRMM).
   *
   * Same as above accept for DMatrixSlice as the lhs.
@@ -456,7 +456,7 @@ void M_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceTri& tri
   , BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
   , BLAS_Cpp::Transp trans_rhs2);
 
-///
+/** \brief . */
 /* * gm_lhs = alpha * op(gms_rhs1) * op(tri_rhs2) (right) (BLAS xTRMM).
   *
   * Here op(gms_rhs1) and gms_lhs can be the same matrix .
@@ -469,7 +469,7 @@ void M_StMtM(DMatrix* gm_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
   , BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2
   , BLAS_Cpp::Transp trans_rhs2);
 
-///
+/** \brief . */
 /* * gms_lhs = alpha * op(gms_rhs1) * op(tri_rhs2) (right) (BLAS xTRMM).
   *
   * Same as above accept for DMatrixSlice as the lhs.
@@ -478,7 +478,7 @@ void M_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rh
   , BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2
   , BLAS_Cpp::Transp trans_rhs2);
 
-///
+/** \brief . */
 /* * gms_lhs = alpha * op(tri_rhs1) * op(gms_rhs2) + beta * gms_lhs (left).
   *
   * This form is included to conform with the LinAlgPackOp template functions.
@@ -491,7 +491,7 @@ void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceTri& tr
   , BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
   , BLAS_Cpp::Transp trans_rhs2, value_type beta = 1.0);
 
-///
+/** \brief . */
 /* * gms_lhs = alpha * op(gms_rhs1) * op(tri_rhs2) + beta * gms_lhs (right).
   *
   * This form is included to conform with the LinAlgPackOp template functions.
@@ -504,7 +504,7 @@ void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_r
   , BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2
   , BLAS_Cpp::Transp trans_rhs2, value_type beta = 1.0);
 
-///
+/** \brief . */
 /* * gm_lhs = alpha * inv(op(tri_rhs1)) * op(gms_rhs2) (left) (BLAS xTRSM).
   *
   * For the BLAS trsm(...) function to be called #assign(gm_lhs,gms_rhs2,trans_rhs2)#
@@ -516,7 +516,7 @@ void M_StInvMtM(DMatrix* gm_lhs, value_type alpha, const DMatrixSliceTri& tri_rh
   , BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
   , BLAS_Cpp::Transp trans_rhs2);
 
-///
+/** \brief . */
 /* * gms_lhs = alpha * inv(op(tri_rhs1)) * op(gms_rhs2) (left) (BLAS xTRSM).
   *
   * Same as above accept for DMatrixSlice as the lhs.
@@ -525,7 +525,7 @@ void M_StInvMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceTri& 
   , BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
   , BLAS_Cpp::Transp trans_rhs2);
 
-///
+/** \brief . */
 /* * gm_lhs = alpha * op(gms_rhs1) * inv(op(tri_rhs2)) (right) (BLAS xTRSM).
   *
   * For the BLAS trsm(...) function to be called #assign(gm_lhs,gms_rhs1,trans_rhs1)#
@@ -537,7 +537,7 @@ void M_StMtInvM(DMatrix* gm_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
   , BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2
   , BLAS_Cpp::Transp trans_rhs2);
 
-///
+/** \brief . */
 /* * gms_lhs = alpha * op(gms_rhs1) * inv(op(tri_rhs2)) (right) (BLAS xTRSM).
   *
   * Same as above accept for DMatrixSlice as the lhs.

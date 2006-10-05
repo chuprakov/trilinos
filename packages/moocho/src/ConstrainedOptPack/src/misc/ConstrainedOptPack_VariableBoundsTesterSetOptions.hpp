@@ -35,8 +35,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Set options for VariableBoundsTester from an OptionsFromStream
+/** \brief Set options for VariableBoundsTester from an OptionsFromStream
   * object.
   *
   * The default options group name is VariableBoundsTester.
@@ -57,7 +56,7 @@ class VariableBoundsTesterSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   VariableBoundsTesterSetOptions(
       VariableBoundsTester* target = 0
     , const char opt_grp_name[] = "VariableBoundsTester" );

@@ -37,8 +37,7 @@
 
 namespace IterationPack {
 
-///
-/** Lookup an iteration quantity by name and cast it
+/** \brief Lookup an iteration quantity by name and cast it
   * to an <tt>IterQuantityAccess<T></tt> of the given type \c T.
   * If the iteration quantity of that name does not
   * exist then a <tt>AlgorithmState::DoesNotExist</tt> exception
@@ -55,13 +54,12 @@ template<class T>
 IterQuantityAccess<T>& cast_iq(
   AlgorithmState& state, const std::string& iq_name );
 
-///
+/** \brief . */
 template<class T>
 const IterQuantityAccess<T>& cast_iq(
   const AlgorithmState& state, const std::string& iq_name );
 
-///
-/** Lookup an iteration quantity using its id and cast it
+/** \brief Lookup an iteration quantity using its id and cast it
  * to an <tt>IterQuantityAccess<T></tt> of the given type \c T.
  *
  * @param  state  [in] 
@@ -80,7 +78,7 @@ template<class T>
 IterQuantityAccess<T>& cast_iq(
   AlgorithmState& state, const AlgorithmState::iq_id_type iq_id, const std::string& iq_name );
 
-///
+/** \brief . */
 template<class T>
 const IterQuantityAccess<T>& cast_iq(
   const AlgorithmState& state, const AlgorithmState::iq_id_type iq_id, const std::string& iq_name );

@@ -85,9 +85,11 @@ MOOCHO_UTILITIES_HPP = \
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.hpp\
   $(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.hpp\
   $(srcdir)/MoochoUtilities/src/ReleaseResource.hpp\
+  $(srcdir)/MoochoUtilities/src/ReleaseResource_ref_count_ptr.hpp\
   $(srcdir)/MoochoUtilities/src/RangePack_Range1D.hpp\
   $(srcdir)/MoochoUtilities/src/SerializationPack_Serializable.hpp\
   $(srcdir)/MoochoUtilities/src/SpecialASCII.hpp\
+  $(srcdir)/MoochoUtilities/src/StandardAggregationMacros.hpp\
   $(srcdir)/MoochoUtilities/src/StandardCompositionRelationshipsPack.hpp\
   $(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.hpp\
   $(srcdir)/MoochoUtilities/src/StrideIterPack_StrideIter.hpp\
@@ -1097,3 +1099,9 @@ MAINTAINERCLEANFILES = Makefile.in
 # ------------------------------------------------------------------------
 all-libs:
 	$(MAKE) libmoocho.a
+
+EXTRA_DIST = $(srcdir)/MoochoPack/configurations/generate-opt-file.pl \
+	$(srcdir)/MoochoPack/configurations/IpConfig/Moocho.opt.NLPAlgoConfigIP \
+	$(srcdir)/MoochoPack/configurations/Moocho.opt.MoochoSolver \
+	$(srcdir)/MoochoPack/configurations/Shared/Moocho.opt.DecompositionSystemStateStepBuilderStd \
+	$(srcdir)/MoochoPack/configurations/MamaJama/Moocho.opt.NLPAlgoConfigMamaJama

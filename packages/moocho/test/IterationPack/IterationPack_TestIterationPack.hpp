@@ -35,11 +35,11 @@ namespace IterationPack {
   namespace TestingPack {
     /// Test all of IterationPack
     bool TestIterationPack( std::ostream* out );
-    ///
+    /** \brief . */
     bool TestIterQuantityAccessContiguous( std::ostream* out );
-    ///
+    /** \brief . */
     bool TestAlgorithmState( std::ostream* out );
-    ///
+    /** \brief . */
     bool TestAlgorithm( std::ostream* out );
   }
 }

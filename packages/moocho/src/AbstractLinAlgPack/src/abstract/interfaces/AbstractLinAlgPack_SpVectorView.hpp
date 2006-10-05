@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Create an <tt>RTOpPack::SparseSubVector</tt> view object from a
+/** \brief Create an <tt>RTOpPack::SparseSubVector</tt> view object from a
  * <tt>SpVectorSlice</tt> object.
  */
 RTOpPack::SparseSubVector sub_vec_view(

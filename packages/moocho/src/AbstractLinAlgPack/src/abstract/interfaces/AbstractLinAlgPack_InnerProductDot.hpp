@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Implements the inner product as the dot product.
+/** \brief Implements the inner product as the dot product.
  *
  * ToDo: Finish documentaion
  */
@@ -43,7 +42,7 @@ public:
 
   /** @name Overridden from InnerProduct */
   //@{
-  ///
+  /** \brief . */
   value_type inner_prod(const Vector& v1, const Vector& v2) const;
   //@}
 

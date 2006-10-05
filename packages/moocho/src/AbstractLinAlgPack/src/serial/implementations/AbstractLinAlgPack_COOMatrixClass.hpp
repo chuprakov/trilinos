@@ -37,8 +37,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Sparse Coordinate Matrix abstraction storage class.
+/** \brief Sparse Coordinate Matrix abstraction storage class.
   *
   * This class abstracts a fortran style sparse coordinate matrix which is stored
   * is three vectors: (val, ivect, jvect).  This class allows direct access to
@@ -56,11 +55,11 @@ public:
 
   /** @name {\bf Public Typedefs} */
   //@{
-  ///
+  /** \brief . */
   typedef	AbstractLinAlgPack::size_type					size_type;
-  ///
+  /** \brief . */
   typedef	AbstractLinAlgPack::indice_type				indice_type;
-  ///
+  /** \brief . */
   typedef AbstractLinAlgPack::value_type				value_type;
 
   //@}
@@ -84,16 +83,14 @@ public:
 
   //@}
 
-  ///
-  /** Assignment operator.
+  /** \brief Assignment operator.
     *
     * This function has similar behavior w.r.t sharing that the copy constructor
     * has accept any current storage will be deallocated.
     */
   COOMatrix& operator=(const COOMatrix& coom);
 
-  ///
-  /** Resize for a #rows# by #cols# sparse matrix with #nz# elements.
+  /** \brief Resize for a #rows# by #cols# sparse matrix with #nz# elements.
     *
     * Any sharing if row or column indices is lost.
     */
@@ -122,26 +119,25 @@ public:
 
   /// Return pointer to raw storage array (length #nz()#) for the values of the non-zero elements
   value_type*							val();
-  ///
+  /** \brief . */
   const value_type*					val() const;
-  ///
+  /** \brief . */
   const value_type*					const_val() const;
-  ///
+  /** \brief . */
   /// Return pointer to raw storage array (length #nz()#) for the row indices of the non-zero elements
   indice_type*						ivect();
-  ///
+  /** \brief . */
   const indice_type*					ivect() const;
-  ///
+  /** \brief . */
   const indice_type*					const_ivect() const;
   /// Return pointer to raw storage array (length #nz()#) for the column indices of the non-zero elements
   indice_type*						jvect();
-  ///
+  /** \brief . */
   const indice_type*					jvect() const;
-  ///
+  /** \brief . */
   const indice_type*					const_jvect() const;
 
-  ///
-  /** Initialize from an input stream.
+  /** \brief Initialize from an input stream.
     *
     * The format for the imput is:
     *

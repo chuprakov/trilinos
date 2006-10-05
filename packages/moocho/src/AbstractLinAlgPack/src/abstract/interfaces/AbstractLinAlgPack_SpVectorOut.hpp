@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** SpVectorSlice output stream operator.
+/** \brief SpVectorSlice output stream operator.
   */
 std::ostream& operator<<(std::ostream& os, const SpVectorSlice& svs);
 

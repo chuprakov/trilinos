@@ -108,8 +108,7 @@ extern const std::string nu_name;
  */
 //@{
 
-///
-/** Add class declarations for an arbitrary iteration quantity
+/** \brief Add class declarations for an arbitrary iteration quantity
  */
 #define STATE_IQ_DECL(TYPE,NAME)                                          \
   virtual IterQuantityAccess<TYPE>&       NAME();                       \
@@ -118,26 +117,22 @@ private:                                                                  \
   iq_id_encap NAME ## _iq_id_;                                          \
 public:
 
-///
-/** Add class declarations for an index (i.e. index_type) iteration quantity
+/** \brief Add class declarations for an index (i.e. index_type) iteration quantity
  */
 #define STATE_INDEX_IQ_DECL(NAME)                                    \
     STATE_IQ_DECL(index_type,NAME)                                   \
 
-///
-/** Add class declarations for a scalar (i.e. value_type) iteration quantity
+/** \brief Add class declarations for a scalar (i.e. value_type) iteration quantity
  */
 #define STATE_SCALAR_IQ_DECL(NAME)                                   \
     STATE_IQ_DECL(value_type,NAME)                                   \
 
-///
-/** Add class declarations for a VectorMutable iteration quantity.
+/** \brief Add class declarations for a VectorMutable iteration quantity.
  */
 #define STATE_VECTOR_IQ_DECL(NAME)                                   \
     STATE_IQ_DECL(VectorMutable,NAME)                          \
 
-///
-/** Add class definitions for an arbitrary iteration quantity.
+/** \brief Add class definitions for an arbitrary iteration quantity.
  *
  * This implementation can not instantate the underlying iteration quantity
  * so it is the responsibility of some client to do this.  This implementation
@@ -158,8 +153,7 @@ CLASS::NAME() const                                                       \
   return const_cast<CLASS*>(this)->NAME();                              \
 }
 
-///
-/** Add class definitions for a index_type iteration quantity.
+/** \brief Add class definitions for a index_type iteration quantity.
  *
  * This implementation will instantiate the IterQuantity object on the fly.
  */
@@ -177,8 +171,7 @@ CLASS::NAME() const                                                       \
   return const_cast<CLASS*>(this)->NAME();                              \
 }
 
-///
-/** Add class definitions for a value_type iteration quantity.
+/** \brief Add class definitions for a value_type iteration quantity.
  *
  * This implementation will instantiate the IterQuantity object on the fly.
  */
@@ -196,8 +189,7 @@ CLASS::NAME() const                                                       \
   return const_cast<CLASS*>(this)->NAME();                              \
 }
 
-///
-/** Add class definitions for a VectorMutable iteration quantity.
+/** \brief Add class definitions for a VectorMutable iteration quantity.
  *
  * This implementation will instantiate the IterQuantity object on the fly
  * given the VectorSpace (VEC_SPC).  Note that this VEC_SPC can be any
@@ -222,8 +214,7 @@ CLASS::NAME() const                                                       \
 
 //@}
 
-///
-/** Reduced space SQP state encapsulation interface.
+/** \brief Reduced space SQP state encapsulation interface.
  *
  * This in an interface to a set of data specific to a reduced space SQP algorithms.
  * The iteration quantites are abstracted within <tt>IterQuantityAccess<></tt> objects.
@@ -269,7 +260,7 @@ public:
   class InvalidType : public std::logic_error
   {public: InvalidType(const std::string& what_arg) : std::logic_error(what_arg) {}};
   
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const VectorSpace>    vec_space_ptr_t;
 
   //@}
@@ -279,7 +270,7 @@ protected:
   // /////////////////////////////
   // Protected types.
 
-  ///
+  /** \brief . */
   struct iq_id_encap {
     iq_id_encap() : iq_id(DOES_NOT_EXIST) {}
     iq_id_type iq_id;
@@ -299,8 +290,7 @@ public:
   STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_x )
   /// Set the VectorSpace of c
   STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_c )
-  ///
-  /** Set the VectorSpace of the range space (py).
+  /** \brief Set the VectorSpace of the range space (py).
    * 
    * Calling this method will cause all of the vector iteration
    * quantity objects set in this space to be updated with this
@@ -310,8 +300,7 @@ public:
   vec_space_ptr_t& get_space_range();
   const vec_space_ptr_t& get_space_range() const;
   const VectorSpace& space_range() const;
-  ///
-  /** Set the VectorSpace of the null space (pz).
+  /** \brief Set the VectorSpace of the null space (pz).
    * 
    * Calling this method will cause all of the vector iteration
    * quantity objects set in this space to be updated with this
@@ -322,8 +311,7 @@ public:
   const vec_space_ptr_t& get_space_null() const;
   const VectorSpace& space_null() const;
 
-  ///
-  /** Construct
+  /** \brief Construct
    *
    * Initializes num_basis() == 0
    */
@@ -335,7 +323,7 @@ public:
     ,const vec_space_ptr_t& space_null   = Teuchos::null
     );
 
-  ///
+  /** \brief . */
   virtual ~NLPAlgoState() {}
 
   //@}
@@ -490,22 +478,22 @@ protected:
   // These implementations are used to avoid code blot and help in debugging
   // (can't debug macros very well).
 
-  ///
+  /** \brief . */
   void update_iq_id(
     const std::string&                iq_name
     ,iq_id_encap*                     iq_id
     ) const;
-  ///
+  /** \brief . */
   void update_index_type_iq_id(
     const std::string&                iq_name
     ,iq_id_encap*                     iq_id
     );
-  ///
+  /** \brief . */
   void update_value_type_iq_id(
     const std::string&                iq_name
     ,iq_id_encap*                     iq_id
     );
-  ///
+  /** \brief . */
   void update_vector_iq_id(
     const std::string&                iq_name
     ,const VectorSpace::space_ptr_t&  vec_space

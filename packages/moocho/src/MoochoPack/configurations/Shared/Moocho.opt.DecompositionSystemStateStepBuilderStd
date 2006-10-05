@@ -2,7 +2,7 @@
 
 **********************************************************************************
 *** All of these options can be used with any NLPAlgoConfig
-*** subclass that using the standard DecompositionSystemStateStepBuilderStd
+*** subclass that uses the standard DecompositionSystemStateStepBuilderStd
 *** class.
 ***
 *** This file will be maintained and will include every option that
@@ -16,16 +16,16 @@
 *** These are options that are used by every IterationPack::Algorithm
 *** object that gets created and used.
 ***
-options_group IterationPack::Algorithm {
+options_group IterationPack_Algorithm {
 
-*   interrupt_file_name = "";             *** [default] Does not check for interrupt
+*   interrupt_file_name = "";             *** Does not check for interrupt file [default]
 *   interrupt_file_name = "interrupt.in"; *** checks for this file in current directory
-    *** This specifys a file name that is looked for at the end of every
+    *** This specifies a file name that is looked for at the end of every
     *** step in a running algorithm.  If this file exists, it is read for
     *** algorithm termination criteria (see the class IterationPack::Algorithm
-    *** and the option interrupt_file_name).  Using a file to interrupt allows
-    *** algorithms to be gracefully terminated when run in batch mode or when
-    *** access to standard out or standard in is just not possible.
+    *** and the option interrupt_file_name).  Using a file to interrupt an running
+    *** algorithm allows the algorithm to be gracefully terminated when run in batch
+    *** mode or when access to STDOUT or STDIN is not possible.
 
 }
 
@@ -38,15 +38,17 @@ options_group DecompositionSystemStateStepBuilderStd {
 *** Variable Reduction range/null space decomposition
 
 *    null_space_matrix = AUTO;         *** Let the solver decide [default]
-*    null_space_matrix = EXPLICIT;     *** Store D = -inv(C)*N explicitly
-*    null_space_matrix = IMPLICIT;     *** Perform operations implicity with C, N
+*    null_space_matrix = EXPLICIT;     *** Compute and store D = -inv(C)*N explicitly
+*    null_space_matrix = IMPLICIT;     *** Perform operations implicitly with C, N (requires adjoints)
      *** This option is used to determine the type of implementation to use for
      *** the variable reduction null space matrix Z = [ -inv(C)*N; I ].
      ***    AUTO     : Let the algorithm decide.  The algorithm will take into
      ***               account the number of degrees of freedom in the problem
      ***               (n-r), the number of active inequality constraints and
-     ***               other issues when deciding what implementation to use.
-     ***    EXPLICIT : The matrix D = -inv(C)*N is formed expliciting an us used
+     ***               other issues when deciding what implementation to use within
+     ***               each iteration.  Warning!  These automatic tests are only
+     ***               affective when a direct solver for C is used.
+     ***    EXPLICIT : The matrix D = -inv(C)*N is computed and formed explicitly and is used
      ***               to form Z = [ D; I ].
      ***    IMPLICIT : The matrix D = -inv(C)*N is not formed explicitly but is
      ***               instead used implicitly in matrix-vector and other
@@ -59,24 +61,29 @@ options_group DecompositionSystemStateStepBuilderStd {
      ***    AUTO      : Let the algorithm decide.  The algorithm will take into
      ***                account the number of degrees of freedom in the problem
      ***                (n-r) and other issues when deciding what representation to use.
+     ***                Warning!  These automatic tests are only affective when a direct
+     ***                solver for C is used.
      ***   COORDINATE : Use the coordinate decomposition Y = [ I; 0 ]
      ***   ORTHOGONAL : Use the orthogonal decomposition Y = [ I; N'*inv(C') ].
-     ***                Warning!  For general NLPs this option costs approximatly
-     ***                O((n-r)^2*r) flops per rSQP iteration and will dominate
-     ***                the runtime for large (n-r).
+     ***                Warning!  For general NLPs this option costs approximately
+     ***                O((n-r)^2*r) dense flops per rSQP iteration and will dominate
+     ***                the runtime for large (n-r).  In addition, this option
+     ***                assumes that you will be using null_space_matrix=EXPLICIT.
 
 *** Reduced Hessian Approximations
 
 *    max_dof_quasi_newton_dense = -1; *** [default]
      *** [quasi_newton == AUTO] (+-int)  This option is used to
-     *** determine when the algorithm will switch from quasi_newton=LBFGS
-     *** to quasi_newton=BFGS and from range_space_matrix=ORTHOGONAL
-     *** to range_space_matrix=COORDINATE.  Example values:
+     *** determine when the algorithm will switch from quasi_newton=BFGS
+     *** to quasi_newton=LBFGS and from range_space_matrix=ORTHOGONAL
+     *** to range_space_matrix=COORDINATE.
+     *** Example values:
      ***  -1 : (< 0) Let the solver decide dynamically [default]
      ***   0 : Always use limited memory LBFGS and COORDINATE.
-     *** 500 : Use LBFG when n-r >= 500 and dense BFGS when n-m < 500
+     *** 500 : Use LBFGS when n-r >= 500 and dense BFGS when n-m < 500
      ***       Use COORDINATE when (n-m)*r >= 500 and ORTHOGONAL when
      ***       (n-r)*r <= 500.
+     *** 1e10: Always use the dense BFGS and the orthogonal decomposition.
 
 }
 
@@ -84,7 +91,7 @@ options_group DecompositionSystemStateStepBuilderStd {
 *** Options group for CalcFiniteDiffProd class
 ***
 *** These options control how finite differences are computed
-*** when testing and for other purposes.
+*** for testing and for other purposes.
 ***
 options_group CalcFiniteDiffProd {
 
@@ -94,7 +101,7 @@ options_group CalcFiniteDiffProd {
 *    fd_method_order = FD_ORDER_TWO_AUTO;     *** Uses FD_ORDER_TWO_CENTRAL or FD_ORDER_TWO
 *    fd_method_order = FD_ORDER_FOUR;         *** Use O(eps^4) one sided finite differences
 *    fd_method_order = FD_ORDER_FOUR_CENTRAL; *** Use O(eps^4) two sided central finite differences
-*    fd_method_order = FD_ORDER_FOUR_AUTO;    *** [default] Uses FD_ORDER_FOUR_CENTRAL or FD_ORDER_FOUR
+*    fd_method_order = FD_ORDER_FOUR_AUTO;    *** [default] Use FD_ORDER_FOUR_CENTRAL or FD_ORDER_FOUR
      *** Selects the finite differencing method to use.  Several different
      *** methods of different orders are available.  For more accuracy use a higher order
      *** method, for faster execution time use a lower order method.
@@ -115,7 +122,8 @@ options_group CalcFiniteDiffProd {
 *    fd_step_size = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use.  If fd_step_select=FD_STEP_ABSOLUTE
      *** then this is the absolute step size that is used.  If fd_step_select=FD_STEP_RELATIVE
-     *** the actual step size used in fd_step_size * ||x||inf.  Some common values are:
+     *** the actual step size used in fd_step_size * ||x||inf.
+     *** Some common values are:
      ***   < 0.0   : let the implementation decide.
      ***   1e-8    : Optimal step size for FD_ORDER_ONE for IEEE double and perfect scaling?
      ***   1e-5    : Optimal step size for FD_ORDER_TWOx for IEEE double and perfect scaling?
@@ -125,7 +133,7 @@ options_group CalcFiniteDiffProd {
      *** Determines the minimum step size that will be taken to compute the finite differences.
      *** This option is used to forbid the computation of a finite difference with a very small
      *** step size as required by the variable bounds.  Computing finite difference derivatives
-     *** for such small step sizes generally result in a lot of roundoff errors.  If
+     *** for such small step sizes generally result in a lot of roundoff error.  If
      *** fd_step_size_min < 0.0, then the implementation will pick a default value that is
      *** smaller than the default value for fd_step_size.
 
@@ -133,19 +141,19 @@ options_group CalcFiniteDiffProd {
      *** Determines what finite difference step size to use for the objective function
      *** f(x).  If fd_step_size_f < 0.0, then the selected value for fd_step_size will be
      *** used (see the options fd_step_size and fd_step_select).  This option allows
-     *** fine-tunning of the finite difference computations.
+     *** fine-tuning of the finite difference computations.
 
 *    fd_step_size_c = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use for the equality constraints
      *** c(x).  If fd_step_size_c < 0.0, then the selected value for fd_step_size will be
      *** used (see the options fd_step_size and fd_step_select).  This option allows
-     *** fine-tunning of the finite difference computations.
+     *** fine-tuning of the finite difference computations.
 
 *    fd_step_size_h = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use for the inequality constraints
      *** h(x).  If fd_step_size_h < 0.0, then the selected value for fd_step_size will be
      *** used (see the options fd_step_size and fd_step_select).  This option allows
-     *** fine-tunning of the finite difference computations.
+     *** fine-tuning of the finite difference computations.
 
 }
 
@@ -198,12 +206,12 @@ options_group VariableBoundsTester {
 }
 
 ***********************************************************
-*** Options for the finite derivative testing for a
+*** Options for the finite difference testing of derivatives for a
 *** standard NLP.
 ***
 options_group NLPFirstDerivTester {
 *    fd_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(m))
-*    fd_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
+*    fd_testing_method = FD_DIRECTIONAL; *** [default] Only compute along random directions (O(1))
 *    num_fd_directions = 1;   *** [fd_testing_method == DIRECTIONAL]
 *    num_fd_directions = -1;  *** [fd_testing_method == DIRECTIONAL] Use single direction y=1.0
 *    warning_tol   = 1e-8; *** [default]
@@ -216,22 +224,22 @@ options_group NLPFirstDerivTester {
 *** See options_group NLPDirectTester
 ***
 options_group EvalNewPointTailoredApproach {
-*    fd_deriv_testing   = FD_DEFAULT;  *** Test if check_results==true (see above)
+*    fd_deriv_testing   = FD_DEFAULT;  *** [default] Test if check_results==true (see above)
 *    fd_deriv_testing   = FD_TEST;    *** Always test
 *    fd_deriv_testing   = FD_NO_TEST; *** never test
 }
 
 ****************************************************************
 *** Options for the finite difference derivative tester for a 
-*** direct sensistivity NLP.
+*** direct sensitivity NLP.
 ***
 options_group NLPDirectTester {
 *    Gf_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n))
-*    Gf_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
+*    Gf_testing_method = FD_DIRECTIONAL; *** [default] Only compute along random directions (O(1))
 *    Gf_warning_tol   = 1e-10;
 *    Gf_error_tol     = 1e-5;
 *    Gc_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n-m))
-*    Gc_testing_method = FD_DIRECTIONAL; *** Only compute along random directions
+*    Gc_testing_method = FD_DIRECTIONAL; *** [default] Only compute along random directions (O(1))
 *    Gc_warning_tol   = 1e-10;
 *    Gc_error_tol     = 1e-5;
 *    num_fd_directions = 1;  *** [testing_method == DIRECTIONAL]

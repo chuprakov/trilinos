@@ -53,7 +53,7 @@ class DMatrix;
 // GenMatrixClass
 //
 
-///
+/** \brief . */
 /* * 2-D General Rectangular Matrix Subregion Class (Slice) (column major).
   *
   * This class is used to represent a rectangular matrix.  It uses a BLAS-like
@@ -160,7 +160,7 @@ public:
 
   // @}
 
-  ///
+  /** \brief . */
   /* * Set to the view of the input DMatrixSlice.
     *
     *
@@ -273,7 +273,7 @@ public:
   DMatrixSlice* operator&() {
     return this;
   }
-  ///
+  /** \brief . */
   const DMatrixSlice* operator&() const {
     return this;
   }
@@ -287,7 +287,7 @@ public:
   /* * @name {\bf Assignment operators}. */
   // @{
 
-  ///
+  /** \brief . */
   /* * Sets all elements = alpha
     *
     * If the underlying valarray is unsized (#this->v().size() == 0#) the matrix is sized to 1 x 1
@@ -298,7 +298,7 @@ public:
     *		</ul>
     */
   DMatrixSlice& operator=(value_type alpha);
-  ///
+  /** \brief . */
   /* *  Copies all of the elements of the DMatrixSlice, #rhs#, into the elements of #this#.
     *
     * If the underlying valarray is unsized (#this->v().size() == 0#) the matrix is sized to
@@ -323,7 +323,7 @@ public:
 
   /// Return the number of rows in the full matrix. Equivalent to BLAS LDA argument.
   size_type			max_rows() const;
-  ///
+  /** \brief . */
   /* * Return pointer to the first element in the underlying array the jth
      * col (j is 1-based here [1,cols]).  If unsized col_ptr(1) returns zero if unsized.
      */
@@ -351,7 +351,7 @@ private:
 
 };	// end class DMatrixSlice
 
-///
+/** \brief . */
 /* * 2-D General Rectangular Matrix (column major) Storage Class.
   *
   * This class provides the storage for 2-D rectangular matrices.
@@ -392,7 +392,7 @@ public:
   DMatrix();
   /// Construct an uninitialied rectangular matrix (rows x cols) 
   explicit DMatrix(size_type rows, size_type cols);
-  ///
+  /** \brief . */
   /* * Construct rectangular matrix (rows x cols) with elements initialized to val.
     *
     * Postconditions: <ul>
@@ -408,7 +408,7 @@ public:
     *		</ul>
     */
   explicit DMatrix(const value_type* p, size_type rows, size_type cols);
-  ///
+  /** \brief . */
   /* * Construct a matrix from the elements in another DMatrixSlice, #gms#.
     *
     * Postconditions: <ul>
@@ -471,13 +471,13 @@ public:
   /// Return DVectorSlice object representing the ith row (1-based; 1,2,..,#this->rows()#)
   DVectorSlice			row(size_type i);
 
-  ///
+  /** \brief . */
   const DVectorSlice	row(size_type i) const;
 
   /// Return DVectorSlice object representing the jth column (1-based; 1,2,..,#this->cols()#)
   DVectorSlice			col(size_type j);
 
-  ///
+  /** \brief . */
   const DVectorSlice	col(size_type j) const;
 
   /// 
@@ -494,7 +494,7 @@ public:
     */
   DVectorSlice			diag(difference_type k = 0);
 
-  ///
+  /** \brief . */
   const DVectorSlice	diag(difference_type k = 0) const;
 
   /// 
@@ -515,7 +515,7 @@ public:
     */
   DMatrixSlice operator()(const Range1D& I, const Range1D& J);
 
-  ///
+  /** \brief . */
   const DMatrixSlice operator()(const Range1D& I, const Range1D& J) const;
 
   /// 
@@ -535,14 +535,14 @@ public:
   DMatrixSlice operator()(size_type i1, size_type i2, size_type j1
     , size_type j2);
 
-  ///
+  /** \brief . */
   const DMatrixSlice operator()(size_type i1, size_type i2, size_type j1
     , size_type j2) const;
 
   /// Return a DMatrixSlice that represents this entire matrix.
   DMatrixSlice operator()();
 
-  ///
+  /** \brief . */
   const DMatrixSlice operator()() const;
 
   // @}
@@ -555,9 +555,9 @@ public:
     */
   // @{
 
-  ///
+  /** \brief . */
   operator DMatrixSlice();
-  ///
+  /** \brief . */
   operator const DMatrixSlice() const;
 
   // @}
@@ -565,7 +565,7 @@ public:
   /* * @name {\bf Assignment Operators}. */
   // @{
   
-  ///
+  /** \brief . */
   /* * Sets all elements = alpha
     *
     * If the underlying valarray is unsized (#this->v().size() == 0#) the matrix is sized to 1 x 1
@@ -575,7 +575,7 @@ public:
     *		<li> #this->operator()(i,j) == alpha#, i = 1,2,...,#this->rows()#, j = 1,2,...,#this->cols()#
     */
   DMatrix& operator=(value_type rhs);
-  ///
+  /** \brief . */
   /* * Copies all of the elements of the DMatrixSlice, #rhs#, into the elements of #this#.
     *
     * If #this# is not the same size as gms_rhs the #this# is resized.
@@ -595,7 +595,7 @@ public:
 
   /// Return the number of rows in the full matrix. Equivalent to BLAS LDA argument.
   size_type			max_rows() const;
-  ///
+  /** \brief . */
   /* * Return pointer to the first element in the underlying array the jth
      * col (j is 1-based here [1,cols]).  If unsized col_ptr(1) returns zero if unsized.
      */
@@ -655,7 +655,7 @@ void assert_gms_square(const DMatrixSlice& gms) {
 } 
 
 inline 
-///
+/** \brief . */
 /* * Utility to check if a lhs matrix slice is the same size as a rhs matrix slice.
   *
   * A DMatrixSlice can not be resized since the rows_ property of the
@@ -677,49 +677,49 @@ void assert_gms_lhs(const DMatrixSlice& gms_lhs, size_type rows, size_type cols
 // @{
 
 inline 
-///
+/** \brief . */
 DVectorSlice row(DMatrixSlice& gms, BLAS_Cpp::Transp trans, size_type i) {
   return (trans ==  BLAS_Cpp::no_trans) ? gms.row(i) : gms.col(i);
 } 
 
 inline 
-///
+/** \brief . */
 DVectorSlice col(DMatrixSlice& gms, BLAS_Cpp::Transp trans, size_type j) {
   return (trans ==  BLAS_Cpp::no_trans) ? gms.col(j) : gms.row(j);
 } 
 
 inline 
-///
+/** \brief . */
 const DVectorSlice row(const DMatrixSlice& gms, BLAS_Cpp::Transp trans, size_type i) {
   return (trans ==  BLAS_Cpp::no_trans) ? gms.row(i) : gms.col(i);
 } 
 
 inline 
-///
+/** \brief . */
 const DVectorSlice col(const DMatrixSlice& gms, BLAS_Cpp::Transp trans, size_type j) {
   return (trans ==  BLAS_Cpp::no_trans) ? gms.col(j) : gms.row(j);
 } 
 
 inline 
-///
+/** \brief . */
 DVectorSlice row(DMatrix& gm, BLAS_Cpp::Transp trans, size_type i) {
   return (trans ==  BLAS_Cpp::no_trans) ? gm.row(i) : gm.col(i);
 } 
 
 inline 
-///
+/** \brief . */
 DVectorSlice col(DMatrix& gm, BLAS_Cpp::Transp trans, size_type j) {
   return (trans ==  BLAS_Cpp::no_trans) ? gm.col(j) : gm.row(j);
 } 
 
 inline 
-///
+/** \brief . */
 const DVectorSlice row(const DMatrix& gm, BLAS_Cpp::Transp trans, size_type i) {
   return (trans ==  BLAS_Cpp::no_trans) ? gm.row(i) : gm.col(i);
 } 
 
 inline 
-///
+/** \brief . */
 const DVectorSlice col(const DMatrix& gm, BLAS_Cpp::Transp trans, size_type j) {
   return (trans ==  BLAS_Cpp::no_trans) ? gm.col(j) : gm.row(j);
 } 

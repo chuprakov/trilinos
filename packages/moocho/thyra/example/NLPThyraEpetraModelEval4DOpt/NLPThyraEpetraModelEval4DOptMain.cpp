@@ -49,6 +49,15 @@ int main( int argc, char* argv[] )
     Scalar       x01         = 1.0;
     Scalar       p00         = 2.0;
     Scalar       p01         = 0.0;
+    Scalar       pL0         = -1e+50;
+    Scalar       pL1         = -1e+50;
+    Scalar       pU0         = +1e+50;
+    Scalar       pU1         = +1e+50;
+
+    Scalar       xL0         = -1e+50;
+    Scalar       xL1         = -1e+50;
+    Scalar       xU0         = +1e+50;
+    Scalar       xU1         = +1e+50;
     bool         do_sim      = false;
     bool         externalFactory = false;
 
@@ -65,6 +74,14 @@ int main( int argc, char* argv[] )
     clp.setOption( "x01", &x01 );
     clp.setOption( "p00", &p00 );
     clp.setOption( "p01", &p01 );
+    clp.setOption( "pL0", &pL0 );
+    clp.setOption( "pL1", &pL1 );
+    clp.setOption( "pU0", &pU0 );
+    clp.setOption( "pU1", &pU1 );
+    clp.setOption( "xL0", &xL0 );
+    clp.setOption( "xL1", &xL1 );
+    clp.setOption( "xU0", &xU0 );
+    clp.setOption( "xU1", &xU1 );
     clp.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
     clp.setOption( "external-lowsf", "internal-lowsf", &externalFactory
                    ,"Determines of the Thyra::LinearOpWithSolveFactory is used externally or internally to the Thyra::EpetraModelEvaluator object"  );
@@ -83,8 +100,10 @@ int main( int argc, char* argv[] )
     
     // Create the EpetraExt::ModelEvaluator object
 
-    Teuchos::RefCountPtr<EpetraExt::ModelEvaluator>
+    Teuchos::RefCountPtr<EpetraModelEval4DOpt>
       epetraModel = rcp(new EpetraModelEval4DOpt(xt0,xt1,pt0,pt1,d,x00,x01,p00,p01));
+    epetraModel->set_p_bounds(pL0,pL1,pU0,pU1);
+    epetraModel->set_x_bounds(xL0,xL1,xU0,xU1);
 
     // Create the Thyra::EpetraModelEvaluator object
 

@@ -37,8 +37,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Base class for all matrices implemented in a shared memory address space.
+/** \brief Base class for all matrices implemented in a shared memory address space.
  * 
  * This base class inherites from <tt>AbstractLinAlgPack::MatrixOp</tt> and
  * provides a means of transition from purely abstract (i.e. parallel, out-of-core)
@@ -67,17 +66,17 @@ class MatrixOpSerial
 {
 public:
 
-  ///
+  /** \brief . */
   using MatrixOp::Mp_StM;
-  ///
+  /** \brief . */
   using MatrixOp::Mp_StMtP;
-  ///
+  /** \brief . */
   using MatrixOp::Mp_StPtM;
-  ///
+  /** \brief . */
   using MatrixOp::Mp_StPtMtP;
-  ///
+  /** \brief . */
   using MatrixOp::Vp_StMtV;
-  ///
+  /** \brief . */
   using MatrixOp::Mp_StMtM;
 
   /** @name Level-1 BLAS */
@@ -135,8 +134,7 @@ public:
   virtual value_type transVtMtV(const DVectorSlice& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
     , const DVectorSlice& vs_rhs3) const;
 
-  ///
-  /** Perform a specialized rank-2k update of a dense symmetric matrix of the form:
+  /** \brief Perform a specialized rank-2k update of a dense symmetric matrix of the form:
    *
    * #sym_lhs += alpha*op(P1')*op(M)*op(P2) + alpha*op(P2')*op(M')*op(P1) + beta*sym_lhs#
    *
@@ -191,8 +189,7 @@ public:
     , BLAS_Cpp::Transp trans_rhs1, BLAS_Cpp::Transp trans_rhs2, value_type beta) const;
 
 
-  ///
-  /** Perform a rank-k update of a dense symmetric matrix of the form:
+  /** \brief Perform a rank-k update of a dense symmetric matrix of the form:
    *
    * #sym_lhs += op(M)*op(M') + beta*sym_lhs#
    *
@@ -209,77 +206,77 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   const VectorSpace& space_rows() const;
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   bool Mp_StM(
     MatrixOp* mwo_lhs, value_type alpha
     ,BLAS_Cpp::Transp trans_rhs
     ) const;
-  ///
+  /** \brief . */
   bool Mp_StMtP(
     MatrixOp* mwo_lhs, value_type alpha
     , BLAS_Cpp::Transp M_trans
     , const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
     ) const;
-  ///
+  /** \brief . */
   bool Mp_StPtM(
     MatrixOp* mwo_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
     , BLAS_Cpp::Transp M_trans
     ) const;
-  ///
+  /** \brief . */
   bool Mp_StPtMtP(
     MatrixOp* mwo_lhs, value_type alpha
     ,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     ,BLAS_Cpp::Transp M_trans
     ,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
     ) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const Vector& v_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(
     VectorMutable* v_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     , BLAS_Cpp::Transp M_rhs2_trans
     , const Vector& v_rhs3, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(
     VectorMutable* v_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     , BLAS_Cpp::Transp M_rhs2_trans
     , const SpVectorSlice& sv_rhs3, value_type beta) const;
-  ///
+  /** \brief . */
   value_type transVtMtV(
     const Vector& v_rhs1, BLAS_Cpp::Transp trans_rhs2
     , const Vector& v_rhs3) const;
-  ///
+  /** \brief . */
   value_type transVtMtV(
     const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
     , const SpVectorSlice& sv_rhs3) const;
-  ///
+  /** \brief . */
   void syr2k(
      BLAS_Cpp::Transp M_trans, value_type alpha
     , const GenPermMatrixSlice& P1, BLAS_Cpp::Transp P1_trans
     , const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
     , value_type beta, MatrixSymOp* symwo_lhs ) const;
-  ///
+  /** \brief . */
   bool Mp_StMtM(
     MatrixOp* mwo_lhs, value_type alpha
     ,BLAS_Cpp::Transp trans_rhs1
     ,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
     ,value_type beta ) const;
-  ///
+  /** \brief . */
   bool syrk(
     BLAS_Cpp::Transp M_trans, value_type alpha
     ,value_type beta, MatrixSymOp* sym_lhs ) const;

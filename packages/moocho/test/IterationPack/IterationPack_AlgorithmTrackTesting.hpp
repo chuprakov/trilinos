@@ -33,8 +33,7 @@
 
 namespace IterationPack {
 
-///
-/** Testing class.
+/** \brief Testing class.
   */
 class AlgorithmTrackTesting : public AlgorithmTracker {
 public:
@@ -44,10 +43,10 @@ public:
 
   // Overriden
   
-  ///
+  /** \brief . */
   void output_iteration(const Algorithm& algo) const;
 
-  ///
+  /** \brief . */
   void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
 
 };	// end class AlgorithmTrackTesting

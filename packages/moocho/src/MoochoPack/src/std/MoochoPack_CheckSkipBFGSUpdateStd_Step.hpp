@@ -35,21 +35,19 @@
 
 namespace MoochoPack {
 
-///
-/** Checks if a BFGS update should be preformed.
+/** \brief Checks if a BFGS update should be preformed.
   */
 class CheckSkipBFGSUpdateStd_Step
   : public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
-  ///
-  /** <<std member comp>> members for proportionality constant to use in the
+  /** \brief <<std member comp>> members for proportionality constant to use in the
     * test for if to perform BFGS update.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, skip_bfgs_prop_const )
 
-  ///
+  /** \brief . */
   CheckSkipBFGSUpdateStd_Step(
     value_type	skip_bfgs_prop_const	= 10.0
     );
@@ -57,10 +55,10 @@ public:
   /** @name Overridden from AlgorithmStep */
   //@{
 
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   

@@ -36,8 +36,7 @@
 
 namespace MoochoPack {
 
-///
-/** Checks for descent in the decomposed equality constraints with respect to the
+/** \brief Checks for descent in the decomposed equality constraints with respect to the
  * range space step <tt>Ypy</tt> using finite differences.
  *
  * This step class checks for descent in the feasibility measure <tt>q(x) = 1/2 * cd(x)'*cd(x) <: REAL</tt>
@@ -59,8 +58,7 @@ public:
   /// Set the object that will compute the finite difference products.
   STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
 
-  ///
-  /** Constructor
+  /** \brief Constructor
    */
   CheckDescentQuasiNormalStep_Step(
     const calc_fd_prod_ptr_t&   calc_fd_prod
@@ -68,10 +66,10 @@ public:
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   //@}

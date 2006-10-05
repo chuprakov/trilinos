@@ -33,8 +33,7 @@
 
 namespace OptionsFromStreamPack {
 
-///
-/** Templated node class manipulating a reference to a target object
+/** \brief Templated node class manipulating a reference to a target object
   * who will have its options set..
   */
 template< class T >
@@ -50,19 +49,19 @@ public:
     */
   //@{
 
-  ///
+  /** \brief . */
   void set_target(T* target)
   {	target_ = target; }
-  ///
+  /** \brief . */
   T* get_target()
   {	return target_; }
-  ///
+  /** \brief . */
   const T* get_target() const
   {	return target_; }
-  ///
+  /** \brief . */
   T& target()
   {	return StandardCompositionRelationshipsPack::role_name(target_, false, "target"); }
-  ///
+  /** \brief . */
   const T& target() const
   {	return StandardCompositionRelationshipsPack::role_name(target_, false, "target"); }
 

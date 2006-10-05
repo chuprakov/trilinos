@@ -34,8 +34,7 @@
 
 namespace MoochoPack {
 
-///
-/** Implementation of CheckConvergence_Strategy interface
+/** \brief Implementation of CheckConvergence_Strategy interface
  *
  * This object can not change the flow of control or do anything fancy.  It just
  *  checks convergence by calculating norm errors and comparing with tolerance
@@ -57,10 +56,10 @@ class CheckConvergenceIP_Strategy :
     
     /** @name Overridden from CheckConvergenceStd_Strategy */
     //@{
-    ///
+    /** \brief . */
     virtual bool Converged( Algorithm& _algo);
 
-    ///
+    /** \brief . */
     virtual void print_step( const Algorithm& _algo, std::ostream& out, const std::string& L ) const;
 
     //@}

@@ -34,8 +34,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Represents a symmetric Hessian matrix with a relaxation variable
+/** \brief Represents a symmetric Hessian matrix with a relaxation variable
   * added.
   *
   * This class is used to represent the matrix:
@@ -51,8 +50,7 @@ public:
   /// Construct to uninitialized
   MatrixHessianRelaxed();
 
-  ///
-  /** Initialize.
+  /** \brief Initialize.
     *
     * ToDo: Finish documentation!
     *
@@ -65,29 +63,29 @@ public:
   // ///////////////////////////////
   // Overridden from Matrix
 
-  ///
+  /** \brief . */
   size_type rows() const;
 
   // //////////////////////////////
   // Overridden from MatrixOp
 
-  ///
+  /** \brief . */
   void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const DVectorSlice& vs_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     , BLAS_Cpp::Transp M_rhs2_trans
     , const DVectorSlice& vs_rhs3, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     , BLAS_Cpp::Transp M_rhs2_trans
     , const SpVectorSlice& sv_rhs3, value_type beta) const;
-  ///
+  /** \brief . */
   value_type transVtMtV(const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
     , const SpVectorSlice& sv_rhs3) const ;
 

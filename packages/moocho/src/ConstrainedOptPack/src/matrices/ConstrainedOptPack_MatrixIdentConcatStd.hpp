@@ -35,8 +35,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Concrete implementation class for a matrix vertically concatonated with an identity matrix.
+/** \brief Concrete implementation class for a matrix vertically concatonated with an identity matrix.
  *
  * Represents an interface for a matrix that represents:
  \verbatim
@@ -57,20 +56,18 @@ public:
 
   /** @name Public types */
   //@{
-  ///
+  /** \brief . */
   enum ETopBottom { TOP, BOTTOM };
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixOp> D_ptr_t;
   //@}
 
   /** @name Constructors/initializers. */
   //@{
-  ///
-  /** Constructs to uninitialized.
+  /** \brief Constructs to uninitialized.
    */
   MatrixIdentConcatStd();
-  ///
-  /** Setup with a matrix object.
+  /** \brief Setup with a matrix object.
    *
    * @param  top_or_bottom
    *                 [in] If <tt>TOP</tt> then <tt>M = [ alpha*op(D); I ]</tt> and if <tt>BOTTOM</tt> then
@@ -113,8 +110,7 @@ public:
     ,const D_ptr_t                     &D_ptr
     ,BLAS_Cpp::Transp                  D_trans
     );
-  ///
-  /** Set the matrix to uninitialized.
+  /** \brief Set the matrix to uninitialized.
    *
    * Postconditions:<ul>
    * <li> <tt>this->space_cols()</tt> throws an exception
@@ -132,8 +128,7 @@ public:
    * </ul>
    */
   virtual void set_uninitialized();
-  ///
-  /** Return the smart reference counted point to the \c D matrix.
+  /** \brief Return the smart reference counted point to the \c D matrix.
    *
    * If the matrix object \c D is owned exclusively by \c this matrix object
    * then <tt>this->D_ptr().count() == 1</tt> on return.
@@ -143,26 +138,25 @@ public:
 
   /** @name Overridden form MatrixIdentConcat */
   //@{
-  ///
+  /** \brief . */
   Range1D D_rng() const;
-  ///
+  /** \brief . */
   Range1D I_rng() const;
-  ///
+  /** \brief . */
   value_type alpha() const;
-  ///
+  /** \brief . */
   const MatrixOp& D() const;
-  ///
+  /** \brief . */
   BLAS_Cpp::Transp D_trans() const;
   //@}
 
   /** @name Overridden from MatrixOp */
   //@{
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   const VectorSpace& space_rows() const;
-  ///
-  /** The default just performs a shallow copy and just copies
+  /** \brief The default just performs a shallow copy and just copies
    * the underlying smart reference counted pointer.  If other
    * behavior is desired then this method must be overridden.
    */

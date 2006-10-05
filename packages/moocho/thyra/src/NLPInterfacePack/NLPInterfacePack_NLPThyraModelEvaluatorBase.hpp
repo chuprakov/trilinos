@@ -271,7 +271,7 @@ protected:
   // /////////////////////////////////////////
   // Private member functions
 
-  ///
+  /** \brief . */
   void evalModel( 
     const Vector            &x
     ,bool                   newx

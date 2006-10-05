@@ -33,14 +33,13 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** This class provides interface for setting and retrieving a penalty parameter
+/** \brief This class provides interface for setting and retrieving a penalty parameter
   * that many merit functions use {abstract}.
   */
 class MeritFuncPenaltyParam {
 public:
 
-  ///
+  /** \brief . */
   virtual ~MeritFuncPenaltyParam() {}
 
   /// Set the penalty parameter mu

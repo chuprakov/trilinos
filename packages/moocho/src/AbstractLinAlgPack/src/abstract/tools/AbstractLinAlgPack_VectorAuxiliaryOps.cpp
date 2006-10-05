@@ -157,7 +157,7 @@ init_rtop_server_t  init_rtop_server;
 } // end namespace
 
 AbstractLinAlgPack::value_type
-AbstractLinAlgPack::max( const Vector& v )
+AbstractLinAlgPack::max_element( const Vector& v )
 {
   RTOpPack::RTOpC op;
   TEST_FOR_EXCEPT(0!=RTOp_ROp_max_construct(&op.op()));

@@ -34,8 +34,7 @@
 namespace ConstrainedOptPack {
 namespace QPSchurPack {
 
-///
-/** General (and flexible) implementation class for a QPSchur QP
+/** \brief General (and flexible) implementation class for a QPSchur QP
  * problem.
  *
  * The basic idea of this class is to just build the QP from its
@@ -49,8 +48,7 @@ public:
   /// Construct uninitialized
   QPInitFixedFreeStd();
 
-  ///
-  /** Initialize.
+  /** \brief Initialize.
    *
    * The pointers and references to the objects pointed to by the
    * arguments to this function must not be modified by the caller.
@@ -138,37 +136,37 @@ public:
   /** @name Overridden from QP */
   //@{ 
 
-  ///
+  /** \brief . */
   size_type n() const;
-  ///
+  /** \brief . */
   size_type m() const;
-  ///
+  /** \brief . */
   const DVectorSlice g() const;
-  ///
+  /** \brief . */
   const MatrixSymOp& G() const;
-  ///
+  /** \brief . */
   const MatrixOp& A() const;
-  ///
+  /** \brief . */
   size_type n_R() const;
-  ///
+  /** \brief . */
   const x_init_t& x_init() const;
-  ///
+  /** \brief . */
   const l_x_X_map_t& l_x_X_map() const;
-  ///
+  /** \brief . */
   const i_x_X_map_t& i_x_X_map() const;
-  ///
+  /** \brief . */
   const DVectorSlice b_X() const;
-  ///
+  /** \brief . */
   const GenPermMatrixSlice& Q_R() const;
-  ///
+  /** \brief . */
   const GenPermMatrixSlice& Q_X() const;
-  ///
+  /** \brief . */
   const MatrixSymOpNonsing& Ko() const;
-  ///
+  /** \brief . */
   const DVectorSlice fo() const;
-  ///
+  /** \brief . */
   Constraints& constraints();
-  ///
+  /** \brief . */
   const Constraints& constraints() const;
 
   //@}

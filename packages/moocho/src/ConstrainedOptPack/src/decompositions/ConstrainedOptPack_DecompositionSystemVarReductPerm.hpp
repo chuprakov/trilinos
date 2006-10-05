@@ -36,8 +36,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Specialization interface of \c DecompositonSystem that allows basis permutations.
+/** \brief Specialization interface of \c DecompositonSystem that allows basis permutations.
  *
  * ToDo: Finish documentation!
  */
@@ -47,7 +46,7 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
 
@@ -56,7 +55,7 @@ public:
   /** @name Constructors / initializers */
   //@{
 
-  ///
+  /** \brief . */
   DecompositionSystemVarReductPerm(
     EExplicitImplicit     D_imp    = MAT_IMP_AUTO
     ,EExplicitImplicit    Uz_imp   = MAT_IMP_AUTO
@@ -69,9 +68,9 @@ public:
   /** @name Permutation factories */
   //@{
 
-  ///
+  /** \brief . */
   virtual const perm_fcty_ptr_t   factory_P_var() const = 0;
-  ///
+  /** \brief . */
   virtual const perm_fcty_ptr_t   factory_P_equ() const = 0;
 
   //@}
@@ -79,13 +78,11 @@ public:
   /** @name Setting or selecting a new decomposition */
   //@{
 
-  ///
-  /** Query to see if a current basis is already selected.
+  /** \brief Query to see if a current basis is already selected.
    */
   virtual bool has_basis() const = 0;
 
-  ///
-  /** Client selects the basis for <tt>Gc(:,con_decomp)'</tt>.
+  /** \brief Client selects the basis for <tt>Gc(:,con_decomp)'</tt>.
    *
    * ToDo: Finish documentation!
    */
@@ -106,8 +103,7 @@ public:
     ,EMatRelations        mat_rel = MATRICES_INDEP_IMPS
     ) = 0;
   
-  ///
-  /** Client asks decompostion system object to select the basis for <tt>Gc(:,con_decomp)'</tt>.
+  /** \brief Client asks decompostion system object to select the basis for <tt>Gc(:,con_decomp)'</tt>.
    *
    * ToDo: Finish documentation!
    */

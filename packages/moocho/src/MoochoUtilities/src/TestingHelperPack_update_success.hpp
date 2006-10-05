@@ -42,8 +42,7 @@ namespace TestingHelperPack {
 /// Helper function for updating a flag for if an operation returned false
 bool update_success(bool result_check, bool* success);
 
-///
-/** Global flag for setting if and exception is thrown if a result_check
+/** \brief Global flag for setting if and exception is thrown if a result_check
   * == false causes an exception to be thrown.
   */
 extern bool throw_except_on_fail;

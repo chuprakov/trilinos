@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Interface to all diagonal matrices {abstract}.
+/** \brief Interface to all diagonal matrices {abstract}.
  */
 class MatrixSymDiag
   : public virtual MatrixSymOpNonsing

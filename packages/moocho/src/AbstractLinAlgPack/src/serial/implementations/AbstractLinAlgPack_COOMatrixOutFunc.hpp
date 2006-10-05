@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Output stream function for COOMatrix.
+/** \brief Output stream function for COOMatrix.
   *
   * The format for the output is:
   *

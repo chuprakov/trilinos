@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract base class for all polymorphic symmetrix nonsingular matrices that
+/** \brief Abstract base class for all polymorphic symmetrix nonsingular matrices that
  * can be used to compute matrix-vector products and solve for
  * linear systems relatively efficently.
  */
@@ -51,9 +50,9 @@ public:
   //@{
 
 #ifndef DOXYGEN_COMPILE
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixSymOpNonsing>    mat_mswons_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<MatrixSymOpNonsing>          mat_mswons_mut_ptr_t;
 #endif
 
@@ -62,8 +61,7 @@ public:
   /** @name Clone */
   //@{
 
-  ///
-  /** Clone the non-const matrix object (if supported).
+  /** \brief Clone the non-const matrix object (if supported).
    *
    * The default implementation returns NULL which is perfectly acceptable.
    * A matrix object is not required to return a non-NULL value but almost
@@ -71,8 +69,7 @@ public:
    */
   virtual mat_mswons_mut_ptr_t clone_mswons();
 
-  ///
-  /** Clone the const matrix object (if supported).
+  /** \brief Clone the const matrix object (if supported).
    *
    * The behavior of this method is the same as for the non-const version
    * above except it returns a smart pointer to a const matrix object.

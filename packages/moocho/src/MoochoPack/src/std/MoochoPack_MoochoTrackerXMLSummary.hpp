@@ -39,8 +39,7 @@ namespace MoochoPack {
 using IterationPack::Algorithm;
 using IterationPack::EAlgoReturn;
 
-///
-/** This class outputs an XML summary file of the algorithm 
+/** \brief This class outputs an XML summary file of the algorithm 
  *   results and performance
  */
 class MoochoTrackerXMLSummary
@@ -70,9 +69,9 @@ public:
   /** @name Overridden from AlgorithmTracker */
   //@{
 
-  ///
+  /** \brief . */
   void output_iteration(const Algorithm& algo) const;
-  ///
+  /** \brief . */
   void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
   
   //@}

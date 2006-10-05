@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Initializes the reduced hessian using a single finite difference
+/** \brief Initializes the reduced hessian using a single finite difference
  * along the null space of the constraints.
  *
  * A single finite difference correction is computed along:\\
@@ -75,10 +74,10 @@ public:
   /** @name Initializers/constructors */
   //@{
 
-  ///
+  /** \brief . */
   enum EInitializationMethod { SCALE_IDENTITY, SCALE_DIAGONAL, SCALE_DIAGONAL_ABS };
 
-  ///
+  /** \brief . */
   InitFinDiffReducedHessian_Step(
     EInitializationMethod   initialization_method  = SCALE_IDENTITY
     ,value_type             max_cond               = 1e+1
@@ -102,10 +101,10 @@ public:
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   //@}

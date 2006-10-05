@@ -33,18 +33,16 @@
 
 namespace MoochoPack {
 
-///
-/** Abstract interface for a strategy object that will compute a step that will
+/** \brief Abstract interface for a strategy object that will compute a step that will
  * improve feasibility (at least descent) {abstract}.
  */
 class FeasibilityStep_Strategy {
 public:
 
-  ///
+  /** \brief . */
   virtual ~FeasibilityStep_Strategy() {}
 
-  ///
-  /** Compute a step that improves feasibility (at least locally).
+  /** \brief Compute a step that improves feasibility (at least locally).
    *
    * This function will compute a step <tt>w</tt> that satisfies:
    *
@@ -72,8 +70,7 @@ public:
     ,const Vector& xo, const Vector& c_xo, VectorMutable* w
       ) = 0;
 
-  ///
-  /** This function will print a description of the computations and logic used.
+  /** \brief This function will print a description of the computations and logic used.
    */
   virtual void print_step( std::ostream& out, const std::string& leading_str ) const = 0;
 

@@ -125,7 +125,7 @@ void V_mV(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = alpha * vs_rhs
 void V_StV(DVectorSlice* vs_lhs, value_type alpha, const DVectorSlice& vs_rhs);
 
-///
+/** \brief . */
 /* Apply a plane (Givens) rotation.
  *
  * [  c  s ] * [ x' ] -> [ x' ]

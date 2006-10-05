@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Mix-in Interface for extracting the inverse cholesky factor of a dense symmetric
+/** \brief Mix-in Interface for extracting the inverse cholesky factor of a dense symmetric
   * positive definite matrix.
   */
 class MatrixExtractInvCholFactor
@@ -43,8 +42,7 @@ class MatrixExtractInvCholFactor
 {
 public:
 
-  ///
-  /** Extract the inverse cholesly factor.
+  /** \brief Extract the inverse cholesly factor.
     *
     * Warning, the entire DMatrixSlice InvChol->gms() can be
     * used for workspace!

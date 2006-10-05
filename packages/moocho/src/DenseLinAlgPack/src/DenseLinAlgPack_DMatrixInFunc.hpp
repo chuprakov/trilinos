@@ -97,7 +97,7 @@ namespace DenseLinAlgPack {
   */
 // @{
 
-///
+/** \brief . */
 /* * DMatrix input stream function.
   *
   * Inputs a DMatrix object from an input stream.
@@ -107,7 +107,7 @@ namespace DenseLinAlgPack {
   */
 std::istream& input(std::istream& is, DMatrix* gm, LinAlgPackIO::fmtflags extra_flags);
 
-///
+/** \brief . */
 /* * DMatrixSlice input stream function.
   *
   * Inputs a DMatrixSlice object from an input stream.

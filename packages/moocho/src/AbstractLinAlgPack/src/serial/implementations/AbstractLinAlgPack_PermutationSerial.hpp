@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Subclass for permutations of serial vectors.
+/** \brief Subclass for permutations of serial vectors.
  *
  * This subclass is really not tied to any specific vector implementation and
  * instead uses the <tt>Vector::get_sub_vector()</tt> and 
@@ -52,7 +51,7 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const IVector>  i_vector_ptr_t;
 
   //@}
@@ -60,13 +59,11 @@ public:
   /** @name Constructors / initializers */
   //@{
 
-  ///
-  /** Calls <tt>this->initialize_identity()</tt>
+  /** \brief Calls <tt>this->initialize_identity()</tt>
    */
   PermutationSerial( size_type dim = 0 );
 
-  ///
-  /** Calls <tt>this->initialize()</tt>
+  /** \brief Calls <tt>this->initialize()</tt>
    */
   PermutationSerial(
     const i_vector_ptr_t      &perm
@@ -75,8 +72,7 @@ public:
     ,bool                     check_inv_perm        = false
     );
   
-  ///
-  /** Initialize the identity permutations.
+  /** \brief Initialize the identity permutations.
    *
    * Postconditions:<ul>
    * <li> <tt>this->perm().get() == NULL</tt>
@@ -87,8 +83,7 @@ public:
    */
   void initialize_identity( size_type dim );
 
-  ///
-  /** Initialize given permutation vectors.
+  /** \brief Initialize given permutation vectors.
    *
    * @param  perm [in] Defines the permutation as:
    *              \verbatim P*x -> y  =>  y(i) = x(perm(i))\endverbatim
@@ -160,15 +155,13 @@ public:
   /** @name Access */
   //@{
   
-  ///
-  /** Get smart pointer to the permutation vector.
+  /** \brief Get smart pointer to the permutation vector.
    *
    * If <tt>this->perm().count() == 1</tt> then <tt>*this->perm()</tt>
    * is only referenced by \c this.
    */
   const i_vector_ptr_t& perm() const;
-  ///
-  /** Get smart pointer to the inverse permutation vector.
+  /** \brief Get smart pointer to the inverse permutation vector.
    *
    * If <tt>this->inv_perm().count() == 1</tt> then <tt>*this->inv_perm()</tt>
    * is only referenced by \c this.
@@ -180,21 +173,21 @@ public:
   /** @name Overridden from Permutation */
   //@{
   
-  ///
+  /** \brief . */
   const VectorSpace& space() const;
-  ///
+  /** \brief . */
   size_type dim() const;
-  ///
+  /** \brief . */
   bool is_identity() const;
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   void permute( 
     BLAS_Cpp::Transp          P_trans
     ,const Vector       &x
     ,VectorMutable      *y
     ) const;
-  ///
+  /** \brief . */
   void permute( 
     BLAS_Cpp::Transp          P_trans
     ,VectorMutable      *y

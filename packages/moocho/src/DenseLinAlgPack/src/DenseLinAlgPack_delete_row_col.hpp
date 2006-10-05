@@ -33,7 +33,7 @@
 
 namespace DenseLinAlgPack {
 
-///
+/** \brief . */
 /* * Delete a symmetric row and a column form a triangular matrix.
  *
  * If #M# is a lower triangular matrix then we partition it

@@ -35,8 +35,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Set options for DecompositionSystemTester from an
+/** \brief Set options for DecompositionSystemTester from an
   * OptionsFromStream object.
   *
   * The default options group name is DecompositionSystemTester.
@@ -69,7 +68,7 @@ class DecompositionSystemTesterSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   DecompositionSystemTesterSetOptions(
       DecompositionSystemTester* target = 0
     , const char opt_grp_name[] = "DecompositionSystemTester" );

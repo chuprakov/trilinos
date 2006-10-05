@@ -34,8 +34,7 @@
 
 namespace MoochoPack {
 
-///
-/** Computes the exact reduced Hessian rHL_k = Z_k' * HL_k * Z_k
+/** \brief Computes the exact reduced Hessian rHL_k = Z_k' * HL_k * Z_k
   */
 class ReducedHessianExactStd_Step : public ReducedHessian_Step {
 public:
@@ -43,11 +42,11 @@ public:
   // ////////////////////
   // Overridden
 
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
 
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 

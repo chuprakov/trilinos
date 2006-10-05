@@ -39,8 +39,7 @@
 
 namespace MoochoPack {
 
-///
-/** Standard new point evaluation step class.
+/** \brief Standard new point evaluation step class.
  *
  * This class calculates \c Gc, \c Gh, updates the range/null decompositon matrices
  * \c Z, \c Y, \c R, \c Uz, \c Uy \c Vz and \c Vy and calculates \c Gf, \c c,
@@ -54,7 +53,7 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   enum EFDDerivTesting   { FD_DEFAULT,  FD_TEST,  FD_NO_TEST  };
 
   //@}
@@ -70,27 +69,23 @@ public:
   STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
   /// «std comp» members for decomp_sys tester tester object
   STANDARD_COMPOSITION_MEMBERS( DecompositionSystemTester, decomp_sys_tester )
-  ///
-  /** Set how and if finite derivatives are tested.
+  /** \brief Set how and if finite derivatives are tested.
     *
     * ToDo: Finish documentation.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDDerivTesting, fd_deriv_testing )
-  ///
-  /** Set how and if the decomposition system is tested.
+  /** \brief Set how and if the decomposition system is tested.
     *
     * ToDo: Finish documentation.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy::EDecompSysTesting, decomp_sys_testing )
-  ///
-  /** Set how to set the print level for decomp_sys_tester (only if testing).
+  /** \brief Set how to set the print level for decomp_sys_tester (only if testing).
     *
     * ToDo: Finish documentation.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy::EDecompSysPrintLevel, decomp_sys_testing_print_level )
 
-  ///
-  /** Constructor.
+  /** \brief Constructor.
    *
    * new_point == true by default.
    */
@@ -108,10 +103,10 @@ public:
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   //@}

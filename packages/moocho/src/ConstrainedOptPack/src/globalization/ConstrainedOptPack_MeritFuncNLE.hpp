@@ -35,21 +35,19 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Base class for all merit functions for systems of NonLinear Equations (NLE) {abstract}.
+/** \brief Base class for all merit functions for systems of NonLinear Equations (NLE) {abstract}.
   */
 class MeritFuncNLE {
 public:
 
-  ///
+  /** \brief . */
   class InvalidInitialization : public std::logic_error
   {public: InvalidInitialization(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-  ///
+  /** \brief . */
   virtual ~MeritFuncNLE() {}
 
-  ///
-  /** Return the value of the merit function at <tt>c(x)</tt>.
+  /** \brief Return the value of the merit function at <tt>c(x)</tt>.
    * This interface requires the client to compute
    * <tt>c(x)</tt> and pass it to this function to have
    * the value of phi(c) calculated.
@@ -59,8 +57,7 @@ public:
    */
   virtual value_type value(const Vector& c) const = 0;
 
-  ///
-  /** Return the value of the directional derivative of the 
+  /** \brief Return the value of the directional derivative of the 
    * merit function w.r.t. <tt>alpha</tt> at <tt>alpha = 0</tt>.  In other words
    * compute return <tt>d(phi(c(x)))/d(alpha_k)</tt> at <tt>alpha_k = 0</tt>
    * where <tt>x = x_k + alpha_k * d_k</tt>.
@@ -70,8 +67,7 @@ public:
    */
   virtual value_type deriv() const = 0;
 
-  ///
-  /** Print the merit funciton
+  /** \brief Print the merit funciton
     */
   virtual void print_merit_func(std::ostream& out
     , const std::string& leading_str) const = 0;

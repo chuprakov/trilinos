@@ -37,8 +37,7 @@ namespace OptionsFromStreamPack {
 
 namespace NLPInterfacePack {
 
-///
-/** Test a \c BasisSystem object given matrices from a compatible \c NLPFirstOrder object.
+/** \brief Test a \c BasisSystem object given matrices from a compatible \c NLPFirstOrder object.
  *
  * ToDo: Finish documentation!
  */

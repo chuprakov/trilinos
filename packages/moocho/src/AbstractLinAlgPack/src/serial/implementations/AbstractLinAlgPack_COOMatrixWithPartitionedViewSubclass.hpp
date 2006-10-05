@@ -37,8 +37,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Implementation of MatrixOp abstract interface for COOMatrixWithPartitionedView.
+/** \brief Implementation of MatrixOp abstract interface for COOMatrixWithPartitionedView.
   *
   * Warning:  The return values of rows() and cols() may change if when the partitioned
   * view is setup it does not include the entire sparse matrix but this is unlikely.
@@ -50,11 +49,11 @@ class COOMatrixWithPartitionedViewSubclass
 {
 public:
 
-  ///
+  /** \brief . */
   COOMatrixWithPartitionedViewSubclass()
   {}
 
-  ///
+  /** \brief . */
   COOMatrixWithPartitionedViewSubclass(const COOMatrixWithPartitionedView& m)
     : MatrixWithOpConcreteEncap<COOMatrixWithPartitionedView>(m)
   {}
@@ -66,7 +65,7 @@ public:
   // /////////////////////////////////////////////////////
   // Overridden from MatrixOp
 
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
 
   // /////////////////////////////////////////////////////
@@ -121,14 +120,14 @@ public:
   // /////////////////////////////////////////////////////
   // Overridden from ConvertToCSC
 
-  ///
+  /** \brief . */
   size_type num_in_column(
       BLAS_Cpp::Transp					trans
     , size_type							col_offset
     , const IVector::value_type*		col_perm
     , size_type*						num_in_col	) const;
     
-  ///
+  /** \brief . */
   void insert_nonzeros(
       BLAS_Cpp::Transp					trans
     , value_type						alpha
@@ -140,7 +139,7 @@ public:
     , FortranTypes::f_dbl_prec*			D_val
     , FortranTypes::f_int*				D_row_i			) const;
 
-  ///
+  /** \brief . */
   value_type insert_scaled_nonzeros(
       BLAS_Cpp::Transp					trans
     , value_type						scaled_max_ele
@@ -155,10 +154,10 @@ public:
   // ////////////////////////////////////////////////////////////
   // Overridden from MatrixConvertToSparseFortranCompatible
 
-  ///
+  /** \brief . */
   FortranTypes::f_int num_nonzeros( EExtractRegion extract_region ) const;
 
-  ///
+  /** \brief . */
   void coor_extract_nonzeros(
       EExtractRegion extract_region
     , const FortranTypes::f_int len_Aval

@@ -304,6 +304,12 @@ _EXPORT_LIBS = $(MOOCHO_LIBS) $(STRATIMIKOS_LIBS) $(EPETRAEXT_LIBS)
 @USING_GNUMAKE_FALSE@EXPORT_LIBS = $(_EXPORT_LIBS)
 AM_CPPFLAGS = $(EXPORT_INCLUDES)
 common_ldadd = $(EXPORT_LIBS)
+EXTRA_DIST = $(srcdir)/AbstractLinAlgPack_exampleNLPDiagSetup.hpp \
+	$(srcdir)/ExampleNLPDirectRTOps.h \
+	$(srcdir)/NLPInterfacePack_ExampleNLPDirect.hpp \
+	$(srcdir)/NLPInterfacePack_ExampleNLPDirectRun.hpp \
+	$(srcdir)/NLPInterfacePack_ExampleNLPObjGrad.hpp
+
 all: all-am
 
 .SUFFIXES:
@@ -533,7 +539,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/../..
+	$(mkdir_p) $(distdir)/$(srcdir) $(distdir)/../..
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

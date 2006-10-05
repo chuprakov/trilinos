@@ -216,6 +216,12 @@ void BFGSUpdate_Strategy::perform_update(
       ,Bs.get()
       );
   }
+  catch( const MatrixSymSecant::UpdateFailedException& excpt ) {
+    if( (int)olevel >= (int)PRINT_BASIC_ALGORITHM_INFO ) {
+      out << "\nThe factorization of B failed in a major way!  Rethrow!\n";
+    }
+    throw;
+  }					
   catch( const MatrixSymSecant::UpdateSkippedException& excpt ) {
     if( (int)olevel >= (int)PRINT_BASIC_ALGORITHM_INFO ) {
       out << excpt.what() << std::endl

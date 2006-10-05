@@ -38,8 +38,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Matrix class that represents a hessian matrix where only the super
+/** \brief Matrix class that represents a hessian matrix where only the super
  * submatrix for the super basic variables need be nonsingular.
  *
  * Given a Hessian matrix #B# and a partitioning of the variables
@@ -77,26 +76,24 @@ class MatrixHessianSuperBasic
 {
 public:
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixSymWithOpFactorized>
     B_RR_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixOp>
     B_RX_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixSymOp>
     B_XX_ptr_t;
-  ///
+  /** \brief . */
   typedef std::vector<EBounds>
     bnd_fixed_t;
 
-  ///
-  /** Constructs to uninitialized.
+  /** \brief Constructs to uninitialized.
    */
   MatrixHessianSuperBasic();
 
-  ///
-  /** Initialize the matrix.
+  /** \brief Initialize the matrix.
    *
    * Preconditions:\begin{itemize}
    * \item [#i_x_free != NULL#] #0 < i_x_free[l-1] <= n, l = 1...n_R# (throw ???)
@@ -174,19 +171,19 @@ public:
   /** @name Provide access to constituent members */
   //@{
 
-  ///
+  /** \brief . */
   const GenPermMatrixSlice& Q_R() const;
-  ///
+  /** \brief . */
   const GenPermMatrixSlice& Q_X() const;
-  ///
+  /** \brief . */
   const bnd_fixed_t& bnd_fixed() const;
-  ///
+  /** \brief . */
   const B_RR_ptr_t& B_RR_ptr() const;
-  ///
+  /** \brief . */
   const B_RX_ptr_t& B_RX_ptr() const;
-  ///
+  /** \brief . */
   BLAS_Cpp::Transp B_RX_trans() const;
-  ///
+  /** \brief . */
   const B_XX_ptr_t& B_XX_ptr() const;
 
   //@}
@@ -202,18 +199,18 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const DVectorSlice& vs_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     , BLAS_Cpp::Transp M_rhs2_trans
     , const DVectorSlice& sv_rhs3, value_type beta) const;
-  ///
+  /** \brief . */
   value_type transVtMtV(const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
     , const SpVectorSlice& sv_rhs3) const ;
 
@@ -221,7 +218,7 @@ public:
 
 protected:
 
-  ///
+  /** \brief . */
   void assert_initialized() const;
 
 private:

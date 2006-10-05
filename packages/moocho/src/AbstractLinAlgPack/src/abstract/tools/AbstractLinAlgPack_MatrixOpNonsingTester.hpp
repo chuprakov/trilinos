@@ -36,8 +36,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Testing class for \c MatrixOpNonsing interface.
+/** \brief Testing class for \c MatrixOpNonsing interface.
  *
  * This testing class is basically a unit tester for \c MatrixOpNonsing.  The method \c test_matrix()
  * runs several different tests to check that \f$ M M^{-1} \approx I \f$ and \f$ M^{-T} M^T \approx I \f$ using
@@ -55,12 +54,12 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   enum ETestLevel {
     TEST_LEVEL_2_BLAS  = 1  ///< Test Level-2 BLAS operations only
     ,TEST_LEVEL_3_BLAS = 2  ///< Test Level-2 and Level-3 BLAS operations
   };
-  ///
+  /** \brief . */
   enum EPrintTestLevel {
     PRINT_NONE   = 0  ///< Don't print anything
     ,PRINT_BASIC = 1  ///< Print only very basic info
@@ -109,8 +108,7 @@ public:
   /** @name Test MatrixOpNonsing */
   //@{
  
-  ///
-  /** Test a \c MatrixOpNonsing object.
+  /** \brief Test a \c MatrixOpNonsing object.
    *
    * @param  M    [in] Matrix object being tested.
    * @param  M_name

@@ -36,8 +36,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Testing class for \c VectorSpace, \c Vector and \c VectorMutable.
+/** \brief Testing class for \c VectorSpace, \c Vector and \c VectorMutable.
  *
  * The purpose of this class is to test a \c VectorSpace object and the
  * \c VectorMutable objects that it creates.  The testing function
@@ -86,8 +85,7 @@ public:
     ;
 #endif		
 
-  ///
-  /** Constructor (set default options).
+  /** \brief Constructor (set default options).
    *
    * These default options are appropriate for even the largest vector spaces.
    */
@@ -100,11 +98,10 @@ public:
     ,value_type  error_tol        = 1e-10
     );
 
-  ///
+  /** \brief . */
   virtual ~VectorSpaceTester() {}
 
-  ///
-  /** Run a vector space and the vectors it creates through a set of comprehensive tets.
+  /** \brief Run a vector space and the vectors it creates through a set of comprehensive tets.
    *
    * @param  space  [in] The vector space object to test.
    * @param  out    [in/out] If <tt>out != NULL</tt> then output will be sent to <tt>*out</tt>.
@@ -140,7 +137,7 @@ public:
 
 private:
 
-  ///
+  /** \brief . */
   void check_test(value_type err, std::ostream* out, bool* success) const;
 
 }; // end class VectorSpaceTester

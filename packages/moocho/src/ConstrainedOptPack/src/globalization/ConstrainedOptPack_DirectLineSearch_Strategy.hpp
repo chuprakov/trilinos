@@ -36,8 +36,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Abstract strategy interface for 1D line searches {abstract}.
+/** \brief Abstract strategy interface for 1D line searches {abstract}.
  *
  * This is the interface for strategy objects that perform a line search
  * from an initial point along a search direction given a merit function.
@@ -54,7 +53,7 @@ public:
 
   //@}
 
-  ///
+  /** \brief . */
   virtual ~DirectLineSearch_Strategy() {}
 
   /// Set the maximum number of iterations
@@ -66,8 +65,7 @@ public:
   /// Get the number of iterations performed
   virtual int num_iterations() const = 0;
 
-  ///
-  /** Called to perform the linesearch.
+  /** \brief Called to perform the linesearch.
    *
    * This operaion  computes the
    * approximate minimum to a merit function along a search direcation.
@@ -115,8 +113,7 @@ public:
     ,std::ostream           *out      = 0
     ) = 0;
 
-  ///
-  /** Print the direct line search algorithm.
+  /** \brief Print the direct line search algorithm.
     *
     * The default does nothing.
     */

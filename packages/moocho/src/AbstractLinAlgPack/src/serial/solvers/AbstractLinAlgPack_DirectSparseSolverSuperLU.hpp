@@ -43,8 +43,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Concreate sparse solver subclass that uses SuperLU.
+/** \brief Concreate sparse solver subclass that uses SuperLU.
  *
  * ToDo: Finish documentation!
  */
@@ -61,8 +60,7 @@ public:
   /** @name Constructors/initializers */
   //@{
 
-  ///
-  /** Default constructor */
+  /** \brief Default constructor */
   DirectSparseSolverSuperLU();
 
   //@}
@@ -70,9 +68,9 @@ public:
   /** @name Overridden from DirectSparseSolver */
   //@{
 
-  ///
+  /** \brief . */
   const basis_matrix_factory_ptr_t basis_matrix_factory() const;
-  ///
+  /** \brief . */
   void estimated_fillin_ratio( value_type estimated_fillin_ratio );
 
   //@}
@@ -82,8 +80,7 @@ protected:
   /** @name Protected types */
   //@{
 
-  ///
-  /** Implements the BasisMatrix object for SuperLU.
+  /** \brief Implements the BasisMatrix object for SuperLU.
    */
   class BasisMatrixSuperLU : public BasisMatrixImp {
   public:
@@ -91,9 +88,9 @@ protected:
     /** @name Overridden from BasisMatrixImp */
     //@{
 
-    ///
+    /** \brief . */
     Teuchos::RefCountPtr<BasisMatrixImp> create_matrix() const;
-    ///
+    /** \brief . */
     void V_InvMtV(
       VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
       ,const Vector& v_rhs2) const ;
@@ -102,8 +99,7 @@ protected:
 
   }; // end class BasisMatrixSuperLU
 
-  ///
-  /** Stores the factorization structure for SuperLU
+  /** \brief Stores the factorization structure for SuperLU
    */
   class FactorizationStructureSuperLU : public FactorizationStructure {
   public:
@@ -117,8 +113,7 @@ protected:
     FactorizationStructureSuperLU();
   }; // end class FactorizationStructureSuperLU
 
-  ///
-  /** Stores the factorization nonzeros for SuperLU
+  /** \brief Stores the factorization nonzeros for SuperLU
    */
   class FactorizationNonzerosSuperLU : public FactorizationNonzeros {
   public:
@@ -134,11 +129,11 @@ protected:
   /** @name Overridden from DirectSparseSolverImp */
   //@{
 
-  ///
+  /** \brief . */
   const Teuchos::RefCountPtr<FactorizationStructure> create_fact_struc() const;
-  ///
+  /** \brief . */
   const Teuchos::RefCountPtr<FactorizationNonzeros> create_fact_nonzeros() const;
-  ///
+  /** \brief . */
   void imp_analyze_and_factor(
     const AbstractLinAlgPack::MatrixConvertToSparse   &A
     ,FactorizationStructure                         *fact_struc
@@ -148,7 +143,7 @@ protected:
     ,size_type                                      *rank
     ,std::ostream                                   *out
     );
-  ///
+  /** \brief . */
   void imp_factor(
     const AbstractLinAlgPack::MatrixConvertToSparse   &A
     ,const FactorizationStructure                   &fact_struc

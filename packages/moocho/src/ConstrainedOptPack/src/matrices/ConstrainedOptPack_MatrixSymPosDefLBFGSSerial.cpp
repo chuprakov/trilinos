@@ -69,8 +69,7 @@ namespace {
   using DenseLinAlgPack::DVectorSlice;
   using DenseLinAlgPack::DMatrixSlice;
 
-  ///
-  /** Compute Cb = Lb * inv(Db) * Lb' (see update_Q()).
+  /** \brief Compute Cb = Lb * inv(Db) * Lb' (see update_Q()).
     *
     * Here:
     *		Lb is lower triangular.

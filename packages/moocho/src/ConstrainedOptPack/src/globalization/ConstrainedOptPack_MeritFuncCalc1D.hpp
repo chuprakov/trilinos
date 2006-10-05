@@ -33,8 +33,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Abstracts a 1D merit function {abstract}.
+/** \brief Abstracts a 1D merit function {abstract}.
   *
   * This is the interface that line search algorithms use to compute
   * the value of the merit function at alpha (phi(alpha)) and
@@ -44,7 +43,7 @@ namespace ConstrainedOptPack {
 class MeritFuncCalc1D {
 public:
 
-  ///
+  /** \brief . */
   virtual ~MeritFuncCalc1D() {}
 
   /// Return the value of the merit function at alpha.

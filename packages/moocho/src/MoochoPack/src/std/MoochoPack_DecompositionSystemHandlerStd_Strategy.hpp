@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Subclass for updating the range/null space decomposition using
+/** \brief Subclass for updating the range/null space decomposition using
  * the base DecompositionSystem interface only.
  *
  * ToDo: Finish documentation!
@@ -47,8 +46,7 @@ public:
   /** @name Constructors / initializers */
   //@{
 
-  ///
-  /** Constructor
+  /** \brief Constructor
    */
   DecompositionSystemHandlerStd_Strategy();
 
@@ -57,7 +55,7 @@ public:
   /** @name Overridden from DecompositionSystemHandler_Strategy */
   //@{
 
-  ///
+  /** \brief . */
   bool update_decomposition(
     NLPAlgo                                &algo
     ,NLPAlgoState                          &s
@@ -66,7 +64,7 @@ public:
     ,EDecompSysPrintLevel                  decomp_sys_testing_print_level
     ,bool                                  *new_decomp_selected
     );
-  ///
+  /** \brief . */
   void print_update_decomposition(
     const NLPAlgo                          &algo
     ,const NLPAlgoState                    &s

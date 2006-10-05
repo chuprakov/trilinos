@@ -40,3 +40,8 @@ TestIterationPack_DEPENDENCIES = $(common_dependencies)
 TestIterationPack_LDADD = $(common_ldadd)
 
 include $(top_srcdir)/MakefileExeStub.mak
+
+EXTRA_DIST = $(srcdir)/IterationPack_AlgorithmStepTesting.hpp \
+	$(srcdir)/IterationPack_AlgorithmTrackTesting.hpp \
+	$(srcdir)/IterationPack_TestIterationPack.hpp
+

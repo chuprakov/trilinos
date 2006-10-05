@@ -39,8 +39,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Matrix class for matrices composed out of a set of other matrices and vectors.
+/** \brief Matrix class for matrices composed out of a set of other matrices and vectors.
  *
  * This matrix object represents:
  \verbatim
@@ -117,19 +116,18 @@ public:
   // ///////////////////////////////////
   // Public types
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
-  ///
-  /** Vector list entry for a sub-vector.
+  /** \brief Vector list entry for a sub-vector.
    *
    * ToDo: Finish Documentation!
    */
   struct SubVectorEntry {
-    ///
+    /** \brief . */
     typedef Teuchos::RefCountPtr<const GenPermMatrixSlice> GPMS_ptr_t;
-    ///
+    /** \brief . */
     SubVectorEntry(
       size_type r_l, size_type c_l, value_type beta
       ,const Range1D& rng_G
@@ -140,7 +138,7 @@ public:
       :r_l_(r_l),c_l_(c_l),beta_(beta),rng_G_(rng_G),G_(G),G_release_(G_release),G_trans_(G_trans)
       ,v_(v),v_release_(v_release),v_trans_(v_trans)
       {}
-    ///
+    /** \brief . */
     bool operator==(const SubVectorEntry v)
       {
         return 
@@ -148,39 +146,38 @@ public:
           && rng_G_==v.rng_G_ && G_.get()==v.G_.get() && G_release_.get()==v.G_release_.get() && G_trans_==v.G_trans_
           && v_==v.v_ && v_release_.get()==v.v_release_.get() && v_trans_==v.v_trans_;
       }
-    ///
+    /** \brief . */
     size_type                  r_l_,   ///< row of first element of vector in composite matrix.
                                c_l_;   ///< column of first element of vector in composite matrix.
-    ///
+    /** \brief . */
     value_type                 beta_;  ///< Scaling vector for vector elements
-    ///
+    /** \brief . */
     Range1D                    rng_G_; ///< rng_G_.size() > 0 => G_ is ignored, rng_G_.full_range() whole v!
-    ///
+    /** \brief . */
     GPMS_ptr_t                 G_;     ///< Will be non-identity if rng_G_.size() == 0.
-    ///
+    /** \brief . */
     release_resource_ptr_t     G_release_;
-    ///
+    /** \brief . */
     BLAS_Cpp::Transp           G_trans_;///< Determines op(G) == G (no_trans) or op(G) == G' (trans)
-    ///
+    /** \brief . */
     const Vector         *v_;     ///< Pointer to the vector (non-NULL)
-    ///
+    /** \brief . */
     release_resource_ptr_t     v_release_;
-    ///
+    /** \brief . */
     BLAS_Cpp::Transp           v_trans_;///< Determines op(v) = v (no_trans) or op(v) == v' (trans)
   }; // end struct SubVectorEntry
 
   /// Warning!  This could be changed to some other STL container!
   typedef std::deque<SubVectorEntry> vector_list_t;
 
-  ///
-  /** Matrix list entry for a sub-matrix.
+  /** \brief Matrix list entry for a sub-matrix.
    *
    * ToDo: Finish Documentation!
    */
   struct SubMatrixEntry {
-    ///
+    /** \brief . */
     typedef Teuchos::RefCountPtr<const GenPermMatrixSlice> GPMS_ptr_t;
-    ///
+    /** \brief . */
     SubMatrixEntry(
       size_type r_l, size_type r_u, size_type c_l, size_type c_u, value_type alpha
       ,const Range1D& rng_P
@@ -192,7 +189,7 @@ public:
       :r_l_(r_l),r_u_(r_u),c_l_(c_l),c_u_(c_u),alpha_(alpha),rng_P_(rng_P),P_(P),P_release_(P_release),P_trans_(P_trans)
       ,A_(A),A_release_(A_release),A_trans_(A_trans),rng_Q_(rng_Q),Q_(Q),Q_release_(Q_release),Q_trans_(Q_trans)
       {}
-    ///
+    /** \brief . */
     bool operator==(const SubMatrixEntry m)
       {
         return
@@ -201,31 +198,31 @@ public:
           && A_==m.A_ && A_release_.get()==m.A_release_.get() && A_trans_==m.A_trans_
           && rng_Q_==m.rng_Q_ && Q_.get()==m.Q_.get() && Q_release_.get()==m.Q_release_.get() && Q_trans_==m.Q_trans_;
       }
-    ///
+    /** \brief . */
     size_type                  r_l_, r_u_, c_l_, c_u_;
-    ///
+    /** \brief . */
     value_type                 alpha_;
-    ///
+    /** \brief . */
     Range1D                    rng_P_;  // rng_P_.size() > 0 => P_ is ignored, rng_P_.full_range() => all rows op(A)
-    ///
+    /** \brief . */
     GPMS_ptr_t                 P_;
-    ///
+    /** \brief . */
     release_resource_ptr_t     P_release_;
-    ///
+    /** \brief . */
     BLAS_Cpp::Transp           P_trans_;
-    ///
+    /** \brief . */
     const MatrixOp         *A_;
-    ///
+    /** \brief . */
     release_resource_ptr_t     A_release_;
-    ///
+    /** \brief . */
     BLAS_Cpp::Transp           A_trans_;
-    ///
+    /** \brief . */
     Range1D                    rng_Q_; // rng_Q_.size() > 0 => Q_ is ignored, rng_Q_.full_range() => all columns op(A)
-    ///
+    /** \brief . */
     GPMS_ptr_t                 Q_;
-    ///
+    /** \brief . */
     release_resource_ptr_t     Q_release_;
-    ///
+    /** \brief . */
     BLAS_Cpp::Transp           Q_trans_;
   }; // end struct SubMatrixEntry
 
@@ -235,15 +232,13 @@ public:
   /** @name Constructors, initializers */
   //@{
 
-  ///
-  /** Construct.
+  /** \brief Construct.
    *
    * Calls <tt>this->reinitalize()</tt>.
    */
   MatrixComposite( size_type rows = 0, size_type cols = 0 );
 
-  ///
-  /** Initialize a sized (on unsized) zero matrix to start with.
+  /** \brief Initialize a sized (on unsized) zero matrix to start with.
    *
    * After calling this function the user can add the constituent matrices and
    * vectors using the \c add_matrix() and \c add_vector() methods.
@@ -256,8 +251,7 @@ public:
    */
   void reinitialize( size_type rows = 0, size_type cols = 0 );
 
-  ///
-  /** Add a sub-vector beta*op(op(G)*v).
+  /** \brief Add a sub-vector beta*op(op(G)*v).
    *
    * ToDo : Finish Documentation!
    */
@@ -273,8 +267,7 @@ public:
     ,BLAS_Cpp::Transp              v_trans
     );
 
-  ///
-  /** Add a sub-vector beta*op(v(rng_G)).
+  /** \brief Add a sub-vector beta*op(v(rng_G)).
    *
    * ToDo : Finish Documentation!
    */
@@ -288,8 +281,7 @@ public:
     ,BLAS_Cpp::Transp              v_trans
     );
 
-  ///
-  /** Add a sub-vector beta*op(v)
+  /** \brief Add a sub-vector beta*op(v)
    *
    * ToDo : Finish Documentation!
    */
@@ -302,8 +294,7 @@ public:
     ,BLAS_Cpp::Transp              v_trans
     );
 
-  ///
-  /** Remove a sub-vector.
+  /** \brief Remove a sub-vector.
    *
    * Preconditions:<ul>
    * <li> <tt>this->vectors_begin() != this->vectors_end()</tt>
@@ -312,8 +303,7 @@ public:
    */
   void remove_vector( vector_list_t::iterator itr );
 
-  ///
-  /** Add a sub-matrix alpha*op(P)*op(A)*op(Q).
+  /** \brief Add a sub-matrix alpha*op(P)*op(A)*op(Q).
    *
    * ToDo : Finish Documentation!
    */
@@ -332,8 +322,7 @@ public:
     ,BLAS_Cpp::Transp              Q_trans
     );
 
-  ///
-  /** Add a sub-matrix alpha*op(A)(rng_P,rng_Q).
+  /** \brief Add a sub-matrix alpha*op(A)(rng_P,rng_Q).
    *
    * ToDo : Finish Documentation!
    */
@@ -348,8 +337,7 @@ public:
     ,const Range1D                 &rng_Q
     );
 
-  ///
-  /** Add a sub-matrix alpha*op(A)(rng_P,:)*op(Q).
+  /** \brief Add a sub-matrix alpha*op(A)(rng_P,:)*op(Q).
    *
    * ToDo : Finish Documentation!
    */
@@ -366,8 +354,7 @@ public:
     ,BLAS_Cpp::Transp              Q_trans
     );
 
-  ///
-  /** Add a sub-matrix alpha*op(P)*op(A)(:,rng_Q)
+  /** \brief Add a sub-matrix alpha*op(P)*op(A)(:,rng_Q)
    *
    * ToDo : Finish Documentation!
    */
@@ -384,8 +371,7 @@ public:
     ,const Range1D                 &rng_Q
     );
 
-  ///
-  /** Add a sub-matrix alpha*op(A).
+  /** \brief Add a sub-matrix alpha*op(A).
    *
    * ToDo : Finish Documentation!
    */
@@ -398,8 +384,7 @@ public:
     ,BLAS_Cpp::Transp              A_trans
     );
 
-  ///
-  /** Add a general permutation sub-matrix alpha*op(P).
+  /** \brief Add a general permutation sub-matrix alpha*op(P).
    *
    * ToDo : Finish Documentation!
    */
@@ -412,8 +397,7 @@ public:
     ,BLAS_Cpp::Transp              P_trans
     );
 
-  ///
-  /** Remove a sub-matrix.
+  /** \brief Remove a sub-matrix.
    *
    * Preconditions:<ul>
    * <li> <tt>this->matrices_begin() != this->matrices_end()</tt>
@@ -422,8 +406,7 @@ public:
    */
   void remove_matrix( matrix_list_t::iterator itr );
 
-  ///
-  /** Call to finish the construction process.
+  /** \brief Call to finish the construction process.
    *
    * This method must be called after all of the sub-vectors and sub-matrices have
    * been added and before <tt>this</tt> matrix object can be used.  This method will
@@ -463,25 +446,25 @@ public:
   /** @name Sub-vector, sub-matrix access (using iterators) */
   //@{
 
-  ///
+  /** \brief . */
   int                             num_vectors() const;
-  ///
+  /** \brief . */
   vector_list_t::iterator         vectors_begin();
-  ///
+  /** \brief . */
   vector_list_t::iterator         vectors_end();
-  ///
+  /** \brief . */
   vector_list_t::const_iterator   vectors_begin() const;
-  ///
+  /** \brief . */
   vector_list_t::const_iterator   vectors_end() const;
-  ///
+  /** \brief . */
   int                             num_matrices() const;
-  ///
+  /** \brief . */
   matrix_list_t::iterator         matrices_begin();
-  ///
+  /** \brief . */
   matrix_list_t::iterator         matrices_end();
-  ///
+  /** \brief . */
   matrix_list_t::const_iterator   matrices_begin() const;
-  ///
+  /** \brief . */
   matrix_list_t::const_iterator   matrices_end() const;
 
   //@}
@@ -489,11 +472,11 @@ public:
   /** @name Overridden from MatrixBase */
   //@{
 
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type cols() const;
-  ///
+  /** \brief . */
   size_type nz() const;
 
   //@}
@@ -501,24 +484,24 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space_rows() const;
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const Vector& v_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(VectorMutable* vs_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     , BLAS_Cpp::Transp M_rhs2_trans
     , const Vector& v_rhs3, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(VectorMutable* vs_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     , BLAS_Cpp::Transp M_rhs2_trans

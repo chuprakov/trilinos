@@ -33,16 +33,14 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract interface for inner products.
+/** \brief Abstract interface for inner products.
  *
  * ToDo: Finish documentaion
  */
 class InnerProduct {
 public:
 
-  ///
-  /** Compute the inner product of two vectors.
+  /** \brief Compute the inner product of two vectors.
    *
    * Preconditions:<ul>
    * <li> ToDo: Spell out

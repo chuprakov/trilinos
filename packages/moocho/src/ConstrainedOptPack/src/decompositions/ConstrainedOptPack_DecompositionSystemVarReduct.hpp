@@ -35,8 +35,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Specialization of \c DecompositionSystem for variable reduction decompositions.
+/** \brief Specialization of \c DecompositionSystem for variable reduction decompositions.
  *
  * This interface abstracts a variable reduction decomposition where:
  *
@@ -67,7 +66,7 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   enum EExplicitImplicit {
     MAT_IMP_EXPLICIT
     ,MAT_IMP_IMPLICIT
@@ -91,7 +90,7 @@ public:
   /** @name Constructors / initializers */
   //@{
 
-  ///
+  /** \brief . */
   DecompositionSystemVarReduct(
     EExplicitImplicit     D_imp    = MAT_IMP_AUTO
     ,EExplicitImplicit    Uz_imp   = MAT_IMP_AUTO
@@ -104,9 +103,9 @@ public:
   /** @name Variable partitions. */
   //@{
 
-  ///
+  /** \brief . */
   virtual Range1D var_indep() const = 0;
-  ///
+  /** \brief . */
   virtual Range1D var_dep() const = 0;
 
   //@}

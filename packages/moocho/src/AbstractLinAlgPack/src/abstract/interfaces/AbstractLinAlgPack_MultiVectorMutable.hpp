@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Interface for a collection of mutable vectors (multi-vector, matrix).
+/** \brief Interface for a collection of mutable vectors (multi-vector, matrix).
  *
  * This interface extends the \c MutiVector interface an allows mutable access to
  * the constituent vectors.
@@ -70,23 +69,22 @@ namespace AbstractLinAlgPack {
 class MultiVectorMutable : virtual public MultiVector {
 public:
   
-  ///
+  /** \brief . */
   using MultiVector::col;
-  ///
+  /** \brief . */
   using MultiVector::row;
-  ///
+  /** \brief . */
   using MultiVector::diag;
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<VectorMutable>       vec_mut_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<MultiVectorMutable>  multi_vec_mut_ptr_t;
 
   /** @name Clone */
   //@{
 
-  ///
-  /** Clone the non-const multi-vector object.
+  /** \brief Clone the non-const multi-vector object.
    *
    * The default implementation creates a new multi-vector
    * and then copies the values.
@@ -98,8 +96,7 @@ public:
   /** @name Provide mutable row, column and/or diagonal access */
   //@{
 
-  ///
-  /** Get a mutable column vector.
+  /** \brief Get a mutable column vector.
    *
    * Postconditions:<ul>
    * <li> [<tt>this->access_by() & COL_ACCESS</tt>] <tt>return.get() != NULL</tt>
@@ -109,8 +106,7 @@ public:
    * ToDo: Finish documentation!
    */
   virtual vec_mut_ptr_t col(index_type j) = 0;
-  ///
-  /** Get a mutable row vector.
+  /** \brief Get a mutable row vector.
    *
    * Postconditions:<ul>
    * <li> [<tt>this->access_by() & ROW_ACCESS</tt>] <tt>return.get() != NULL</tt>
@@ -120,8 +116,7 @@ public:
    * ToDo: Finish documentation!
    */
   virtual vec_mut_ptr_t row(index_type i) = 0;
-  ///
-  /** Get a mutable diagonal vector.
+  /** \brief Get a mutable diagonal vector.
    *
    * Postconditions:<ul>
    * <li> [<tt>this->access_by() & DIAG_ACCESS</tt>] <tt>return.get() != NULL</tt>
@@ -136,8 +131,7 @@ public:
   /** @name Sub-view methods */
   //@{
 
-  ///
-  /** Returns a mutable sub-view of the multi vector.
+  /** \brief Returns a mutable sub-view of the multi vector.
    *
    * ToDo: Finish documentation!
    *
@@ -146,8 +140,7 @@ public:
    */
   virtual multi_vec_mut_ptr_t mv_sub_view(const Range1D& row_rng, const Range1D& col_rng);
   
-  ///
-  /** Inlined implementation calls <tt>this->mv_sub_view(Range1D(rl,ru),Range1D(cl,cu))</tt>.
+  /** \brief Inlined implementation calls <tt>this->mv_sub_view(Range1D(rl,ru),Range1D(cl,cu))</tt>.
    */
   multi_vec_mut_ptr_t mv_sub_view(
     const index_type& rl, const index_type& ru
@@ -159,20 +152,20 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   mat_mut_ptr_t clone();
-  ///
+  /** \brief . */
   void zero_out();
-  ///
+  /** \brief . */
   void Mt_S( value_type alpha );
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& mwo_rhs);
-  ///
+  /** \brief . */
   bool Mp_StM(
     MatrixOp* mwo_lhs, value_type alpha
     ,BLAS_Cpp::Transp trans_rhs
     ) const;
-  ///
+  /** \brief . */
   bool Mp_StM(
     value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
     );
@@ -182,15 +175,15 @@ public:
   /** @name Overridden from MultiVector */
   //@{
 
-  ///
+  /** \brief . */
   multi_vec_ptr_t mv_clone() const;
-  ///
+  /** \brief . */
   vec_ptr_t col(index_type j) const;
-  ///
+  /** \brief . */
   vec_ptr_t row(index_type i) const;
-  ///
+  /** \brief . */
   vec_ptr_t diag(int k) const;
-  ///
+  /** \brief . */
   multi_vec_ptr_t mv_sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
 
   //@}

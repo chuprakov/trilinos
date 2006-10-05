@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** This rSQP iteration class provides a tablular output suitable for
+/** \brief This rSQP iteration class provides a tablular output suitable for
   * an 80 char wide console.
   * 
   * Specifically, these object produces a table with the following fields:
@@ -113,9 +112,9 @@ public:
 
   /// Restarts the timer
   void initialize();
-  ///
+  /** \brief . */
   void output_iteration(const Algorithm& algo) const;
-  ///
+  /** \brief . */
   void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
 
   //@}

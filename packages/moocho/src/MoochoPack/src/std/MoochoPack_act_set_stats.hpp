@@ -37,8 +37,7 @@ namespace MoochoPack {
 /// Name given to the active set statistics iteration quantity
 extern const std::string act_set_stats_name;
 
-///
-/** Class for object that attempts to return an IterQuantityAccess<ActSetStats>
+/** \brief Class for object that attempts to return an IterQuantityAccess<ActSetStats>
   * from an AlgorithmState object with the name act_set_stats_name.
   */
 class act_set_stats_iq_member

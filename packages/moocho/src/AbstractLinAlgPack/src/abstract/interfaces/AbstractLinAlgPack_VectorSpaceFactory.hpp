@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract interface for objects that can create vector spaces of a specified dimension.
+/** \brief Abstract interface for objects that can create vector spaces of a specified dimension.
  *
  * ToDo: Finish documentation!
  */
@@ -43,22 +42,21 @@ class VectorSpaceFactory
 {
 public:
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const InnerProduct>   inner_prod_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const VectorSpace>    space_ptr_t;
 
   /** @name Constructors / initializers */
   //@{
 
-  ///
+  /** \brief . */
   virtual ~VectorSpaceFactory();
 
   /// Calls \c inner_prod()
   VectorSpaceFactory( const inner_prod_ptr_t& inner_prod = Teuchos::null );
 
-  ///
-  /** Initialize with an inner product object that will be given to vector.
+  /** \brief Initialize with an inner product object that will be given to vector.
    *
    * @param  inner_prod  [in] Smart pointer to inner product strategy object.
    *                     If <tt>inner_prod.get()==NULL</tt> then an
@@ -71,8 +69,7 @@ public:
    */
   virtual void inner_prod( const inner_prod_ptr_t& inner_prod );
 
-  ///
-  /** Return the smart pointer to the inner product strategy object.
+  /** \brief Return the smart pointer to the inner product strategy object.
    *
    * Postconditions:<ul>
    * <li> <tt>return.get() != NULL</tt>
@@ -85,8 +82,7 @@ public:
   /** @name Pure virtual functions that must be overridden */
   //@{
 
-  ///
-  /** Create a vector space of the given dimension.
+  /** \brief Create a vector space of the given dimension.
    *
    * Postconditions:<ul>
    * <li> <tt>return.get() != NULL</tt>

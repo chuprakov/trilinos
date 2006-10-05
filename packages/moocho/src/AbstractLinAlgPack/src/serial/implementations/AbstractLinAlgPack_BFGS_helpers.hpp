@@ -33,13 +33,11 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** @name Functions to be used in BFGS updating.
+/** \brief @name Functions to be used in BFGS updating.
  */
 //@{
 
-///
-/** Check that s'*y is sufficiently positive and print the result if it is not.
+/** \brief Check that s'*y is sufficiently positive and print the result if it is not.
  *
  * @param  s           [in] DVector (size n): Secant update vector B*s=y.
  * @param  y           [in] DVector (size n): Secant update vector for B*s=y.

@@ -31,8 +31,7 @@
 
 #include "StandardCompositionRelationshipsPack.hpp"
 
-///
-/** \defgroup StandardAggregationMacros_grp Macros that add <<std aggr>> members for an association.
+/** \brief \defgroup StandardAggregationMacros_grp Macros that add <<std aggr>> members for an association.
  * \ingroup Misc_grp
  *
  * For example, if you want to include a <<std aggr>> association

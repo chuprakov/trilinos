@@ -35,8 +35,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Set options for \c CalcFiniteDiffProd from an
+/** \brief Set options for \c CalcFiniteDiffProd from an
  * \c OptionsFromStream object.
  *
  * The default options group name is CalcFiniteDiffProd.
@@ -68,7 +67,7 @@ class CalcFiniteDiffProdSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   CalcFiniteDiffProdSetOptions(
     CalcFiniteDiffProd* target = 0
     ,const char opt_grp_name[] = "CalcFiniteDiffProd" );

@@ -37,8 +37,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Coordinate matrix subclass.
+/** \brief Coordinate matrix subclass.
  *
  * ToDo: Finish documentation!
  */
@@ -52,11 +51,10 @@ public:
   /** @name Public types */
   //@{
   
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     MemMngPack::ReleaseResource>     release_resource_ptr_t;
-  ///
-  /** Subclass to delete dynamically allocated memory with \c delete[].
+  /** \brief Subclass to delete dynamically allocated memory with \c delete[].
    *
    * This subclass can be used by the client to cause
    */
@@ -100,13 +98,11 @@ public:
   /** @name Constructors / initializers */
   //@{
 
-  ///
-  /** Let \c this allocate its own memory.
+  /** \brief Let \c this allocate its own memory.
    */
   MatrixSparseCOORSerial();
 
-  ///
-  /** Give memory to use to store nonzero elements.
+  /** \brief Give memory to use to store nonzero elements.
    *
    * @param  max_nz  [in] Size of the buffers \c val[], \c row_i[] and \c col_j[].  It is allowed for
    *                 <tt>max_nz == 0</tt> in which case this matrix will not have any nonzero elements
@@ -168,8 +164,7 @@ public:
     ,bool                          check_input         = false
     );
     
-  ///
-  /** Release all owned memory and make uninitialized.
+  /** \brief Release all owned memory and make uninitialized.
    *
    * Postconditions:<ul>
    * <li> On the next call to <tt>this->reinitialize(rows,cols,max_nz)</tt>
@@ -184,19 +179,19 @@ public:
   /** @name Access */
   //@{
 
-  ///
+  /** \brief . */
   value_type* val();
-  ///
+  /** \brief . */
   const value_type* val() const;
-  ///
+  /** \brief . */
   index_type* row_i();
-  ///
+  /** \brief . */
   const index_type* row_i() const;
-  ///
+  /** \brief . */
   index_type* col_j();
-  ///
+  /** \brief . */
   const index_type* col_j() const;
-  ///
+  /** \brief . */
   const release_resource_ptr_t& release_resource() const;
 
   //@}
@@ -204,11 +199,11 @@ public:
   /** @name Overridden from MatrixBase */
   //@{
 
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type cols() const;
-  ///
+  /** \brief . */
   size_type nz() const;
 
   //@}
@@ -216,15 +211,15 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   const VectorSpace& space_rows() const;
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& M);
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const Vector& v_rhs2, value_type beta) const;
@@ -236,7 +231,7 @@ public:
   /** @name Overridden from MatrixLoadSparseElements */
   //@{
 
-  ///
+  /** \brief . */
   void reinitialize(
     size_type                  rows
     ,size_type                 cols
@@ -244,21 +239,21 @@ public:
     ,EAssumeElementUniqueness  element_uniqueness
     );
   void reset_to_load_values();
-  ///
+  /** \brief . */
   void get_load_nonzeros_buffers(
     size_type      max_nz_load
     ,value_type    **val
     ,index_type    **row_i
     ,index_type    **col_j
     );
-  ///
+  /** \brief . */
   void commit_load_nonzeros_buffers(
     size_type      nz_commit
     ,value_type    **val
     ,index_type    **row_i
     ,index_type    **col_j
     );
-  ///
+  /** \brief . */
   void finish_construction( bool test_setup );
 
   //@}
@@ -266,7 +261,7 @@ public:
   /** @name Overridden from MatrixExtractSparseElements */
   //@{
 
-  ///
+  /** \brief . */
   index_type count_nonzeros(
     EElementUniqueness    element_uniqueness
     ,const index_type     inv_row_perm[]
@@ -276,7 +271,7 @@ public:
     ,index_type           dl
     ,index_type           du
     ) const;
-  ///
+  /** \brief . */
   void coor_extract_nonzeros(
     EElementUniqueness    element_uniqueness
     ,const index_type     inv_row_perm[]

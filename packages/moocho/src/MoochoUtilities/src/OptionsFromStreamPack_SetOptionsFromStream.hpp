@@ -35,8 +35,7 @@ namespace OptionsFromStreamPack {
 
 class OptionsFromStream;
 
-///
-/** Abstact interface for objects that have options to be set
+/** \brief Abstact interface for objects that have options to be set
   * that are contained in an OptionsFromStreamObject.
   *
   * \ingroup OptionsFromStreamPack_grp
@@ -44,7 +43,7 @@ class OptionsFromStream;
 class SetOptionsFromStream {
 public:
   
-  ///
+  /** \brief . */
   virtual ~SetOptionsFromStream() {}
   
   /// Call to set options from a stream

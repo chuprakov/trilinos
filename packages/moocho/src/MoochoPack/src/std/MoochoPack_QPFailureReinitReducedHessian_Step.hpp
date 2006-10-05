@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Directs the algorithm to reinitalize the reduced Hessian on the event
+/** \brief Directs the algorithm to reinitalize the reduced Hessian on the event
  * of a QP failure.
  *
  * If the delegated Step object throws a \c QPFailure exception
@@ -49,19 +48,19 @@ class QPFailureReinitReducedHessian_Step
 {
 public:
 
-  ///
+  /** \brief . */
   STANDARD_COMPOSITION_MEMBERS( IterationPack::AlgorithmStep, null_space_step )
 
-  ///
+  /** \brief . */
   QPFailureReinitReducedHessian_Step( const null_space_step_ptr_t& null_space_step );
 
   // ////////////////////
   // Overridden
 
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 

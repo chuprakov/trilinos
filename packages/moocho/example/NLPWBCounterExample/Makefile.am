@@ -50,3 +50,6 @@ NLPWBCounterExample_DEPENDENCIES = $(common_dependencies)
 NLPWBCounterExample_LDADD = $(common_ldadd)
 
 include $(top_srcdir)/MakefileExeStub.mak
+
+EXTRA_DIST = $(srcdir)/NLPInterfacePack_NLPWBCounterExample.hpp
+

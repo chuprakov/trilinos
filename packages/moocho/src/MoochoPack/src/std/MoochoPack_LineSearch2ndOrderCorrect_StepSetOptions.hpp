@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for LineSearch2ndOrderCorrect_Step from an
+/** \brief Set options for LineSearch2ndOrderCorrect_Step from an
   * OptionsFromStream object.
   *
   * The default options group name is LineSearch2ndOrderCorrect.
@@ -103,7 +102,7 @@ class LineSearch2ndOrderCorrect_StepSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   LineSearch2ndOrderCorrect_StepSetOptions(
       LineSearch2ndOrderCorrect_Step* target = 0
     , const char opt_grp_name[] = "LineSearch2ndOrderCorrect" );

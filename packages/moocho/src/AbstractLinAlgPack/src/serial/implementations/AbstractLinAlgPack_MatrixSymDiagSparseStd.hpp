@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Concrete subclass for a serial symmetric diagonal matrix with many zeros on the diagonal.
+/** \brief Concrete subclass for a serial symmetric diagonal matrix with many zeros on the diagonal.
   *
   * The underlying diagonal vector is sorted and determines the dimensions of the
   * matrix.
@@ -52,13 +51,11 @@ public:
   MatrixSymDiagSparseStd()
   {}
 
-  ///
-  /** Construct the diagonal.
+  /** \brief Construct the diagonal.
     */
   MatrixSymDiagSparseStd( const SpVectorSlice& diag );
 
-  ///
-  /** Reinitialize the diagonal.
+  /** \brief Reinitialize the diagonal.
     */
   void initialize( const SpVectorSlice& diag );
 
@@ -67,7 +64,7 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& m);
 
   //@}
@@ -75,7 +72,7 @@ public:
   /** Overridden from MatrixDiagonalSparse */
   //@{
 
-  ///
+  /** \brief . */
   const SpVectorSlice diag() const;
 
   //@}

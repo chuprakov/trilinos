@@ -39,47 +39,46 @@
 
 namespace RTOpPack {
 
-///
-/** Adapter subclass that uses a <tt>RTOp_RTOp</tt> object.
+/** \brief Adapter subclass that uses a <tt>RTOp_RTOp</tt> object.
  *
  * ToDo: Finish documentation!
  */
 class RTOpC : public RTOpT<RTOp_value_type> {
 public:
 
-  ///
+  /** \brief . */
   typedef RTOp_value_type Scalar;
-  ///
+  /** \brief . */
   RTOpC();
-  ///
+  /** \brief . */
   ~RTOpC();
-  ///
+  /** \brief . */
   RTOp_RTOp& op();
-  ///
+  /** \brief . */
   const RTOp_RTOp& op() const;
-  ///
+  /** \brief . */
   RTOp_ReductTarget& operator()(ReductTarget& reduct_obj) const;
-  ///
+  /** \brief . */
   const RTOp_ReductTarget& operator()(const ReductTarget& reduct_obj) const;
 
   /** @name Overridden from RTOpT */
   //@{
 
-  ///
+  /** \brief . */
   void get_reduct_type_num_entries(
     int*   num_values
     ,int*  num_indexes
     ,int*  num_chars
     ) const;
-  ///
+  /** \brief . */
   Teuchos::RefCountPtr<ReductTarget> reduct_obj_create() const;
-  ///
+  /** \brief . */
   void reduce_reduct_objs(
     const ReductTarget& _in_reduct_obj, ReductTarget* _inout_reduct_obj
     ) const;
-  ///
+  /** \brief . */
   void reduct_obj_reinit( ReductTarget* reduct_obj ) const;
-  ///
+  /** \brief . */
   void extract_reduct_obj_state(
     const ReductTarget     &reduct_obj
     ,int                      num_values
@@ -89,7 +88,7 @@ public:
     ,int                      num_chars
     ,char_type                char_data[]
     ) const;
-  ///
+  /** \brief . */
   void load_reduct_obj_state(
     int                            num_values
     ,const primitive_value_type    value_data[]
@@ -99,13 +98,13 @@ public:
     ,const char_type               char_data[]
     ,ReductTarget               *reduct_obj
     ) const;
-  ///
+  /** \brief . */
   void get_op_type_num_entries(
     int*  num_values
     ,int* num_indexes
     ,int* num_chars
     ) const;
-  ///
+  /** \brief . */
   void extract_op_state(
     int                             num_values
     ,primitive_value_type           value_data[]
@@ -114,7 +113,7 @@ public:
     ,int                            num_chars
     ,char_type                      char_data[]
     ) const;
-  ///
+  /** \brief . */
   void load_op_state(
     int                           num_values
     ,const primitive_value_type   value_data[]
@@ -123,11 +122,11 @@ public:
     ,int                          num_chars
     ,const char_type              char_data[]
     );
-  ///
+  /** \brief . */
   bool coord_invariant() const;
-  ///
+  /** \brief . */
   const char* op_name() const;
-  ///
+  /** \brief . */
   void apply_op(
     const int   num_vecs,       const ConstSubVectorView<Scalar>         sub_vecs[]
     ,const int  num_targ_vecs,  const SubVectorView<Scalar>  targ_sub_vecs[]
@@ -142,8 +141,7 @@ private:
 
 }; // class RTOpC
 
-///
-/** Adapter subclass for <tt>RTOp_ReductTarget</tt>
+/** \brief Adapter subclass for <tt>RTOp_ReductTarget</tt>
  */
 class ReductTargetC : public ReductTarget {
 public:

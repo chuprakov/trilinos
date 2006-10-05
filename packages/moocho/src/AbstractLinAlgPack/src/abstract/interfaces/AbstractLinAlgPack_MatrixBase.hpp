@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Base class for all polymorphic matrices.
+/** \brief Base class for all polymorphic matrices.
   */
 class MatrixBase {
 public:
@@ -62,22 +61,19 @@ public:
   /** @name Dimensionality */
   //@{
 
-  ///
-  /** Return the number of rows in the matrix.
+  /** \brief Return the number of rows in the matrix.
    *
    * The default implementation returns <tt>space_cols().dim()</tt>.
    */
   virtual size_type rows() const;
 
-  ///
-  /** Return the number of columns in the matrix.
+  /** \brief Return the number of columns in the matrix.
    *
    * The default implementation returns <tt>space_rows().dim()</tt>.
    */
   virtual size_type cols() const;
 
-  ///
-  /** Return the number of nonzero elements in the matrix.
+  /** \brief Return the number of nonzero elements in the matrix.
    *
    * The default is to just assume it is dense and to return
    * <tt>rows() * cols()</tt>.

@@ -42,8 +42,7 @@
 
 namespace MoochoPack {
 
-///
-/** Solves the reduced QP subproblem with bounds and/or general
+/** \brief Solves the reduced QP subproblem with bounds and/or general
  * inequalities.
  *
  * ToDo: Finish documentation.
@@ -59,30 +58,26 @@ public:
   /// QP solver tester
   STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxedTester, qp_tester )
 
-  ///
-  /** Set the ratio of the number of inequality constraints in the
+  /** \brief Set the ratio of the number of inequality constraints in the
    * active-set of the last two calls before a warm start is attempted.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warm_start_frac )
 
-  ///
+  /** \brief . */
   enum EQPTesting { QP_TEST_DEFAULT, QP_TEST, QP_NO_TEST };
 
-  ///
-  /** Set how and if the QP solution is tested.
+  /** \brief Set how and if the QP solution is tested.
    *
    * ToDo: Finish documentation.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( EQPTesting, qp_testing )
 
-  ///
-  /** Determine if a QPFailure exception is thrown if the QP solver
+  /** \brief Determine if a QPFailure exception is thrown if the QP solver
    * returns PRIMAL_FEASIBLE_POINT.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, primal_feasible_point_error )
 
-  ///
-  /** Determine if a \c QPFailure exception is thrown if the QP solver
+  /** \brief Determine if a \c QPFailure exception is thrown if the QP solver
    * returns \c DUAl_FEASIBLE_POINT.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dual_feasible_point_error )
@@ -99,10 +94,10 @@ public:
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   //@}

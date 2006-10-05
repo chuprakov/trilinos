@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for ReducedHessianSerialization_Step from an \c OptionsFromStream object.
+/** \brief Set options for ReducedHessianSerialization_Step from an \c OptionsFromStream object.
  *
  * The default options group name is EvalNewPointStd.
  *
@@ -58,7 +57,7 @@ class ReducedHessianSerialization_StepSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   ReducedHessianSerialization_StepSetOptions(
       ReducedHessianSerialization_Step* target = 0
     , const char opt_grp_name[] = "ReducedHessianSerialization" );

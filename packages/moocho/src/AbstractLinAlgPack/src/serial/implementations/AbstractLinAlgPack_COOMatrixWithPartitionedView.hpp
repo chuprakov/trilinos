@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Aggregation of a COO matrix and a partitioned view of it.
+/** \brief Aggregation of a COO matrix and a partitioned view of it.
   *
   * This class represents the aggregation of a COOMatrix and a COOMatrixParitionedView.
   * This class is designed to help avoid mistakes that may happen when the underlying
@@ -58,11 +57,11 @@ public:
   /** @name Public Types */
   //@{
 
-  ///
+  /** \brief . */
   typedef COOMatrixPartitionedView<indice_type,value_type>	partitioned_view_type;
-  ///
+  /** \brief . */
   typedef partitioned_view_type::partition_type				partition_type;
-  ///
+  /** \brief . */
   typedef partitioned_view_type::EPartitionOrder				EPartitionOrder;
 
   //@}
@@ -84,8 +83,7 @@ public:
     return *this;
   }
   
-  ///
-  /** Allow assignment to a COOMatrix.
+  /** \brief Allow assignment to a COOMatrix.
     *
     * After the assignment #this# will not have its partitioned view initialized.
     */
@@ -102,8 +100,7 @@ public:
     */
   //@{
 
-  ///
-  /** Resize for a #rows# by #cols# sparse matrix with #nz# elements.
+  /** \brief Resize for a #rows# by #cols# sparse matrix with #nz# elements.
     *
     * If there was a partitioned view set up then this will destory it.
     */
@@ -112,16 +109,14 @@ public:
     coom_.resize(rows,cols,nz);
   }
 
-  ///
-  /** Return pointer to raw storage array (length #nz()#) for the values of the non-zero elements.
+  /** \brief Return pointer to raw storage array (length #nz()#) for the values of the non-zero elements.
     *
     * This operation will not result in a loss of the partitioned view.
     */
   value_type*							val() {
     return coom_.val();
   }
-  ///
-  /** Return pointer to raw storage array (length #nz()#) for the row indices of the non-zero elements
+  /** \brief Return pointer to raw storage array (length #nz()#) for the row indices of the non-zero elements
     *
     * This operation will result in a loss of the partitioned view.
     */
@@ -129,8 +124,7 @@ public:
     coom_view_.free();
     return coom_.ivect();
   }
-  ///
-  /** Return pointer to raw storage array (length #nz()#) for the column indices of the non-zero elements
+  /** \brief Return pointer to raw storage array (length #nz()#) for the column indices of the non-zero elements
     *
     * This operation will result in a loss of the partitioned view.
     */
@@ -139,8 +133,7 @@ public:
     return coom_.jvect();
   }
 
-  ///
-  /** Initialize from an input stream.
+  /** \brief Initialize from an input stream.
     *
     * This operation will result in a loss of the partitioned view.
     */
@@ -160,8 +153,7 @@ public:
   /** @name Non-const COOMatrixPartitionedView interface */
   //@{
 
-  ///
-  /** Crete a view to the COO matrix.
+  /** \brief Crete a view to the COO matrix.
     *
     * Calls create_view on the partitioned view object using the data
     * from the COOMatrix object.
@@ -180,17 +172,17 @@ public:
       ,partition_order);
   }
 
-  ///
+  /** \brief . */
   partition_type partition(size_type overall_p) {
     return coom_view_.partition(overall_p);
   }
 
-  ///
+  /** \brief . */
   partition_type partition(size_type row_p, size_type col_p) {
     return coom_view_.partition(row_p, col_p);
   }
 
-  ///
+  /** \brief . */
   partition_type partition(Range1D rng_overall_p) {
     return coom_view_.partition(rng_overall_p);
   }

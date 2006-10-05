@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Implements "coordinate" decompostion for "Tailored Appraoch".
+/** \brief Implements "coordinate" decompostion for "Tailored Appraoch".
   *
   * Computes:<br>
   * <tt>py = py</tt><br>
@@ -45,7 +44,7 @@ class EvalNewPointTailoredApproachCoordinate_Step
 {
 public:
 
-  ///
+  /** \brief . */
   EvalNewPointTailoredApproachCoordinate_Step(
       const deriv_tester_ptr_t& 	deriv_tester
     , const bounds_tester_ptr_t&	bounds_tester
@@ -57,12 +56,12 @@ protected:
   /** @name Overridden from EvalNewPointTailoredApproach_Step */
   //@{
 
-  ///
+  /** \brief . */
   void uninitialize_Y_Uy(
     MatrixOp         *Y
     ,MatrixOp        *Uy
     );
-  ///
+  /** \brief . */
   void calc_py_Y_Uy(
     const NLPDirect       &nlp
     ,const D_ptr_t        &D
@@ -72,14 +71,14 @@ protected:
     ,EJournalOutputLevel  olevel
     ,std::ostream         &out
     );
-  ///
+  /** \brief . */
   void recalc_py(
     const MatrixOp           &D
     ,VectorMutable           *py
     ,EJournalOutputLevel     olevel
     ,std::ostream            &out
     );
-  ///
+  /** \brief . */
   void print_calc_py_Y_Uy(
     std::ostream& out, const std::string& leading_str
     ) const;

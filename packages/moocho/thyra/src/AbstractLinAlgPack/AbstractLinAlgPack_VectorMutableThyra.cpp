@@ -30,6 +30,8 @@
 
 #include "AbstractLinAlgPack_VectorMutableThyra.hpp"
 #include "AbstractLinAlgPack_ThyraAccessors.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSliceOp.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
@@ -180,6 +182,22 @@ void VectorMutableThyra::set_sub_vector( const RTOpPack::SparseSubVector& sub_ve
 {
   thyra_vec_->setSubVector(sub_vec);
   this->has_changed();
+}
+
+void VectorMutableThyra::Vp_StMtV(
+  value_type                       alpha
+  ,const GenPermMatrixSlice        &P
+  ,BLAS_Cpp::Transp                P_trans
+  ,const Vector                    &x
+  ,value_type                      beta
+  )
+{
+#ifdef TEUCHOS_DEBUG
+  TEST_FOR_EXCEPT(!(space().is_in_core()));
+#endif
+  VectorDenseMutableEncap  y_de(*this);
+  VectorDenseEncap  x_de(x);
+  AbstractLinAlgPack::Vp_StMtV( &y_de(), alpha, P, P_trans, x_de(), beta );
 }
 
 } // end namespace AbstractLinAlgPack

@@ -36,8 +36,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Concreate subclass of \c DecompositionSystemVarReductPerm that uses an
+/** \brief Concreate subclass of \c DecompositionSystemVarReductPerm that uses an
  * aggregate \c DecompostionSystemVarReductImp object.
  *
  * ToDo: Finish documentation!
@@ -48,9 +47,9 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<DecompositionSystemVarReductImp>    decomp_sys_imp_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<BasisSystemPerm>                    basis_sys_ptr_t;
 
   //@}
@@ -81,9 +80,9 @@ public:
   /** @name Access */
   //@{
 
-  ///
+  /** \brief . */
   const decomp_sys_imp_ptr_t& decomp_sys_imp() const;
-  ///
+  /** \brief . */
   const basis_sys_ptr_t& basis_sys() const;
 
   //@}
@@ -91,31 +90,31 @@ public:
   /** @name Overridden from DecompositionSystem */
   //@{
 
-  ///
+  /** \brief . */
   size_type n() const;
-  ///
+  /** \brief . */
   size_type m() const;
-  ///
+  /** \brief . */
   size_type r() const;
-  ///
+  /** \brief . */
   Range1D equ_decomp() const;
-  ///
+  /** \brief . */
   Range1D equ_undecomp() const;
-  ///
+  /** \brief . */
   const VectorSpace::space_ptr_t space_range() const;
-  ///
+  /** \brief . */
   const VectorSpace::space_ptr_t space_null() const;
-  ///
+  /** \brief . */
   const mat_fcty_ptr_t factory_Z() const;
-  ///
+  /** \brief . */
   const mat_fcty_ptr_t factory_Y() const;
-  ///
+  /** \brief . */
   const mat_nonsing_fcty_ptr_t factory_R() const;
-  ///
+  /** \brief . */
   const mat_fcty_ptr_t factory_Uz() const;
-  ///
+  /** \brief . */
   const mat_fcty_ptr_t factory_Uy() const;
-  ///
+  /** \brief . */
   void update_decomp(
     std::ostream          *out
     ,EOutputLevel         olevel
@@ -128,7 +127,7 @@ public:
     ,MatrixOp             *Uy
     ,EMatRelations        mat_rel
     ) const;
-  ///
+  /** \brief . */
   void print_update_decomp(
     std::ostream& out, const std::string& leading_str ) const;
 
@@ -137,9 +136,9 @@ public:
   /** @name Overridden from DecompositionSystemVarReduct */
   //@{
 
-  ///
+  /** \brief . */
   Range1D var_indep() const;
-  ///
+  /** \brief . */
   Range1D var_dep() const;
 
   //@}
@@ -147,13 +146,13 @@ public:
   /** @name Overridden from DecompositionSystemVarReductPerm */
   //@{
 
-  ///
+  /** \brief . */
   const perm_fcty_ptr_t   factory_P_var() const;
-  ///
+  /** \brief . */
   const perm_fcty_ptr_t   factory_P_equ() const;
-  ///
+  /** \brief . */
   bool has_basis() const;
-  ///
+  /** \brief . */
   void set_decomp(
     std::ostream          *out
     ,EOutputLevel         olevel
@@ -170,7 +169,7 @@ public:
     ,MatrixOp             *Uy
     ,EMatRelations        mat_rel
     );
-  ///
+  /** \brief . */
   void select_decomp(
     std::ostream          *out
     ,EOutputLevel         olevel
@@ -203,7 +202,7 @@ private:
   // /////////////////////////
   // Private member functions
 
-  ///
+  /** \brief . */
   void assert_basis_selected() const;
 
   // Not defined and not to be called!

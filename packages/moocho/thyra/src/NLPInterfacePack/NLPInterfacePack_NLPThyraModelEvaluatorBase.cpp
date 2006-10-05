@@ -210,7 +210,6 @@ void NLPThyraModelEvaluatorBase::imp_calc_Gf(
   evalModel(x,newx,NULL,&obj_grad_info);
 }
 
-
 // Protected functions to be used by subclasses
 
 NLPThyraModelEvaluatorBase::NLPThyraModelEvaluatorBase()
@@ -431,7 +430,6 @@ void NLPThyraModelEvaluatorBase::set_x(
     model_inArgs.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(x).thyra_vec().assert_not_null());
   }
 }
-
 
 void NLPThyraModelEvaluatorBase::preprocessBaseInOutArgs(
   const Vector                                      &x

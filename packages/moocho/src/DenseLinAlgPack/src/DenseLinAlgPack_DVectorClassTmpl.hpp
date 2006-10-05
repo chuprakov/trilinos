@@ -50,7 +50,7 @@ namespace DenseLinAlgPack{
 /* * @name {\bf DVector Classes}. */
 // @{
   
-///
+/** \brief . */
 /* * Slice of a 1-D sequential C++ array treated as a vector.
   *
   * Objects of this class represent regions of vectors (continuous), rows of matrices
@@ -144,13 +144,13 @@ public:
 
   // @{
 
-  ///
+  /** \brief . */
   /* * Creates an empty view.
     *
     * You must use bind(...) to bind to a view to initialize after construction.
     */
   VectorSliceTmpl();
-  ///
+  /** \brief . */
   /* * Creates a VectorSice object that represents a non-continous region of a raw C++ array.
     *
     * Of course the sequence of elements #ptr[stride * i]# for #i# = 0, 1, ..., #size#-1
@@ -162,7 +162,7 @@ public:
     * @param	stride	the distance (may be negative) between each successive element (default = 1)
     */
   VectorSliceTmpl( value_type* ptr, size_type size, difference_type stride = 1 );
-  ///
+  /** \brief . */
   /* * Creates a VectorSliceTmpl object that represents a continous region of a raw C++ array.
     *
     * The VectorSliceTmpl Object represents the following elements of raw array:
@@ -229,19 +229,19 @@ public:
 
   /// 
   iterator begin();
-  ///
+  /** \brief . */
   iterator end();
-  ///
+  /** \brief . */
   const_iterator begin() const;
-  ///
+  /** \brief . */
   const_iterator end() const;
-  ///
+  /** \brief . */
   reverse_iterator rbegin();
-  ///
+  /** \brief . */
   reverse_iterator rend();
-  ///
+  /** \brief . */
   const_reverse_iterator rbegin() const;
-  ///
+  /** \brief . */
   const_reverse_iterator rend() const;
 
   // @}
@@ -293,7 +293,7 @@ public:
   VectorSliceTmpl<value_type>* operator&() {
     return this;
   }
-  ///
+  /** \brief . */
   const VectorSliceTmpl<value_type>* operator&() const {
     return this;
   }
@@ -346,7 +346,7 @@ public:
 
   // @{
 
-  ///
+  /** \brief . */
   /* * vs = alpha (Sets all the elements to the constant alpha).
     *
     * Preconditions: <ul>
@@ -358,7 +358,7 @@ public:
     *		</ul>
     */
   VectorSliceTmpl<value_type>& operator=(value_type alpha);
-  ///
+  /** \brief . */
   /* * vs = rhs (Copies the elements of rhs into the elements of this).
     *
     * Preconditions: <ul>
@@ -403,11 +403,11 @@ public:
 
   /// Return a pointer to the address of the first memory location of underlying array.
   value_type*			raw_ptr();
-  ///
+  /** \brief . */
   const value_type*	raw_ptr() const;
   /// Return a pointer to the conceptual first element in the underlying array.
   value_type*			start_ptr();
-  ///
+  /** \brief . */
   const value_type*	start_ptr() const;
   /// Return the distance (+,-) (in units of elements) between adjacent elements in the underlying array.
   difference_type		stride() const;
@@ -427,7 +427,7 @@ private:
 // DVector
 //
 
-///
+/** \brief . */
 /* * 1-D DVector Abstraction Storage Class.
   *
   * Holds the storage space for a 1-D vector of element type value_type.  The storage space class
@@ -491,7 +491,7 @@ public:
   VectorTmpl(size_type n);
   /// Constructs a vector with n elements initialized to val.
   VectorTmpl(value_type val, size_type n);
-  ///
+  /** \brief . */
   /* * Constructs a vector with n elements and intializes elements to those of an array.
     *
     * Postconditions: <ul>
@@ -499,7 +499,7 @@ public:
     *		</ul>
     */  
   VectorTmpl(const value_type* p, size_type n);
-  ///
+  /** \brief . */
   /* * Constructs a DVector object fron a VectorSliceTmpl object.
     *
     * Postconditions: <ul>
@@ -515,7 +515,7 @@ public:
 
   // @{
 
-  ///
+  /** \brief . */
   /* * Resize the vector to hold n elements.
     *
     * Any new elements added are initialized to val.
@@ -525,7 +525,7 @@ public:
     *		</ul>
     */  
   void resize(size_type n, value_type val = value_type());
-  ///
+  /** \brief . */
   /* * Free memory and resize DVector to this->dim() == 0.
     *
     * Postconditions: <ul>
@@ -563,21 +563,21 @@ public:
 
   // @{
 
-  ///
+  /** \brief . */
   iterator begin();
-  ///
+  /** \brief . */
   iterator end();
-  ///
+  /** \brief . */
   const_iterator begin() const;
-  ///
+  /** \brief . */
   const_iterator end() const;
-  ///
+  /** \brief . */
   reverse_iterator rbegin();
-  ///
+  /** \brief . */
   reverse_iterator rend();
-  ///
+  /** \brief . */
   const_reverse_iterator rbegin() const;
-  ///
+  /** \brief . */
   const_reverse_iterator rend() const;
 
   // @}
@@ -677,7 +677,7 @@ public:
 
   // @{
 
-  ///
+  /** \brief . */
   /* * vs = alpha (Sets all the elements to the constant alpha).
     *
     * Preconditions: <ul>
@@ -689,7 +689,7 @@ public:
     *		</ul>
     */
   VectorTmpl<value_type>& operator=(value_type alpha);
-  ///
+  /** \brief . */
   /* * vs = rhs (Copies the elements of rhs into the elements of this).
     *
     * Preconditions: <ul>
@@ -702,7 +702,7 @@ public:
     *		</ul>
     */
   VectorTmpl<value_type>& operator=(const VectorSliceTmpl<value_type>& rhs);
-  ///
+  /** \brief . */
   /* * Needed to override the default assignment operator.
     */
   VectorTmpl<value_type>& operator=(const VectorTmpl<value_type>& rhs);
@@ -718,11 +718,11 @@ public:
 
   /// Return a pointer to the address of the first memory location of underlying array.
   value_type*			raw_ptr();
-  ///
+  /** \brief . */
   const value_type*	raw_ptr() const;
   /// Return a pointer to the conceptual first element in the underlying array.
   value_type*			start_ptr();
-  ///
+  /** \brief . */
   const value_type*	start_ptr() const;
   /// Return the distance (+,-) (in units of elements) between adjacent elements in the underlying array.
   difference_type		stride() const;
@@ -753,13 +753,13 @@ size_type vector_validate_sized(size_type size);
 void vector_validate_range(size_type ubound, size_type max_ubound);
 //
 void vector_validate_subscript(size_type size, size_type i);
-///
+/** \brief . */
 /* * Utility for checking the sizes of two VectorSliceTmpl objects and throwing an exception
   * if the sizes are not the same.
   */
 void assert_vs_sizes(size_type size1, size_type size2);
 
-///
+/** \brief . */
 /* * Create a general vector slice.
   */
 template<class T>
@@ -769,7 +769,7 @@ VectorSliceTmpl<T> gen_vs( VectorSliceTmpl<T>& vs, size_type start, size_type si
   return VectorSliceTmpl<T>( vs.start_ptr() + vs.stride() * (start-1), size, vs.stride() * stride );
 }
 
-///
+/** \brief . */
 template<class T>
 inline
 const VectorSliceTmpl<T> gen_vs( const VectorSliceTmpl<T>& vs, size_type start, size_type size

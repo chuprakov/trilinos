@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** This is the interface to a basis and an nonbasis matrix.
+/** \brief This is the interface to a basis and an nonbasis matrix.
   *
   * The form of this matrix is:
   *
@@ -46,18 +45,17 @@ class MatrixBasisNonbasisStd
 {
 public:
   
-    ///
+    /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixOp>
     C_ptr_t;
-    ///
+    /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixFactorized>
     C_nonsingular_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixOp>
     N_ptr_t;
 
-  ///
-  /** Initialize to null pointers for C, C_nonsingular and N.
+  /** \brief Initialize to null pointers for C, C_nonsingular and N.
    *
    * Postconditions:\begin{itemize}
    * \item this->rows() == 0
@@ -70,8 +68,7 @@ public:
    */
   MatrixBasisNonbasisStd();
 
-  ///
-  /** Initialize smart reference counted points to C, C_nonsingular and N.
+  /** \brief Initialize smart reference counted points to C, C_nonsingular and N.
     *
     * Preconditions:\begin{itemize}
     * \item [C.get() != NULL] C->rows() == C->cols() (throw std::length_error)
@@ -107,15 +104,15 @@ public:
   void initialize( const C_ptr_t& C, const C_nonsingular_ptr_t& C_nonsingular
       , const N_ptr_t& N );
 
-  ///
+  /** \brief . */
   C_ptr_t C_ptr() const {
     return C_;
   }
-  ///
+  /** \brief . */
   C_nonsingular_ptr_t C_nonsingular_ptr() const {
     return C_nonsingular_;
   }
-  ///
+  /** \brief . */
   N_ptr_t N_ptr() const {
     return N_;
   }
@@ -123,20 +120,20 @@ public:
   // /////////////////////////////////////////////////////
   // Overridden from Matrix
 
-  ///
+  /** \brief . */
   size_type rows() const;
 
-  ///
+  /** \brief . */
   size_type cols() const;
 
   // //////////////////////////////////////////
   // Overridden from MatrixBasisNonbasis
 
-  ///
+  /** \brief . */
   const MatrixOp& C() const;
-  ///
+  /** \brief . */
   const MatrixFactorized& C_nonsingular() const;
-  ///
+  /** \brief . */
   const MatrixOp& N() const;
 
 private:

@@ -36,8 +36,7 @@
 
 namespace MoochoPack {
 
-///
-/** This function increases the penalty parameters of the modifed L1
+/** \brief This function increases the penalty parameters of the modifed L1
   * merit function to allow for larger steps by taking advantage
   * of constraints that are reduced for a full step.
   */
@@ -49,7 +48,7 @@ public:
   /// <<std comp>> members for merit_func
   STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func)
 
-  ///
+  /** \brief . */
   MeritFunc_ModifiedL1LargerSteps_AddedStep(
       const merit_func_ptr_t& merit_func
     , value_type	eta
@@ -80,11 +79,11 @@ public:
   // ///////////////////////////////
   // Overridden from AlgorithmStep
 
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
 
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss
     , IterationPack::EDoStepType type, poss_type assoc_step_poss
     , std::ostream& out, const std::string& leading_str ) const;

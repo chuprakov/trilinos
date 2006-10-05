@@ -41,8 +41,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Solves Quadratic Programming (QP) problem using the primal-dual interior-point
+/** \brief Solves Quadratic Programming (QP) problem using the primal-dual interior-point
   * solver LOQO (Vanderbei).
   *
   * In this implementation it is required that G support the \Ref{MatrixExtractInvCholFactor}
@@ -52,8 +51,7 @@ class QPSolverRelaxedLOQO : public QPSolverRelaxed
 {
 public:
 
-  ///
-  /** Strategy interface for initializing the Hessian matrix Q and the
+  /** \brief Strategy interface for initializing the Hessian matrix Q and the
    * Jacobian matrix A for LOQO.
    *
    * This interface allows clients to specialize how G, op(E), and op(F)
@@ -63,11 +61,10 @@ public:
   class InitLOQOHessianJacobian {
   public:
 
-    ///
+    /** \brief . */
     virtual ~InitLOQOHessianJacobian() {}
 
-    ///
-    /** Extract the Hessian Q and Jacobian A matrices.
+    /** \brief Extract the Hessian Q and Jacobian A matrices.
      *
      * The matrices formed are:
      *
@@ -115,39 +112,36 @@ public:
 
   }; // end class InitLOQOHessianJacobian
 
-  ///
-  /** Strategy object that sets up Q and A for LOQO
+  /** \brief Strategy object that sets up Q and A for LOQO
     */
   STANDARD_COMPOSITION_MEMBERS( InitLOQOHessianJacobian, init_hess_jacob )
 
-   ///
-  /** <<std member comp>> Big M parameter used in the objective.
+  /** \brief <<std member comp>> Big M parameter used in the objective.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, bigM )
 
-   ///
-  /** <<std member comp>> Tolerance under which inequalities are
+  /** \brief <<std member comp>> Tolerance under which inequalities are
    * considered nonbinding.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, nonbinding_lag_mult )
 
-  ///
+  /** \brief . */
   QPSolverRelaxedLOQO(
     const init_hess_jacob_ptr_t    init_hess_jacob      = new  InitLOQOHessianJacobian()
     ,value_type                     bigM                 = 1e+10
     ,value_type                     nonbinding_lag_mult  = 1e-12
     );
 
-  ///
+  /** \brief . */
   ~QPSolverRelaxedLOQO();
 
   // /////////////////////////////////
   // Overridden from QPSolverRelaxed
 
-  ///
+  /** \brief . */
   QPSolverStats get_qp_stats() const;
 
-  ///
+  /** \brief . */
   void release_memory();
 
 protected:
@@ -155,7 +149,7 @@ protected:
   // /////////////////////////////////
   // Overridden from QPSolverRelaxed
 
-  ///
+  /** \brief . */
   QPSolverStats::ESolutionType imp_solve_qp(
       std::ostream* out, EOutputLevel olevel, ERunTests test_what
     , const DVectorSlice& g, const MatrixOp& G

@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Permutatble basis system subclass that uses a direct sparse solver.
+/** \brief Permutatble basis system subclass that uses a direct sparse solver.
  *
  * This current implementation only allows undecomposed general inequality
  * constraints.
@@ -51,7 +50,7 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<DirectSparseSolver>   direct_solver_ptr_t;
 
   //@}
@@ -74,21 +73,21 @@ public:
   /** @name Overridden from BasisSystem */
   //@{
 
-  ///
+  /** \brief . */
   const mat_nonsing_fcty_ptr_t factory_C() const;
-  ///
+  /** \brief . */
   const mat_fcty_ptr_t factory_D() const;
-  ///
+  /** \brief . */
   const mat_fcty_ptr_t factory_GcUP() const;
-  ///
+  /** \brief . */
   Range1D var_dep() const;
-  ///
+  /** \brief . */
   Range1D var_indep() const;
-  ///
+  /** \brief . */
   Range1D equ_decomp() const;
-  ///
+  /** \brief . */
   Range1D equ_undecomp() const;
-  ///
+  /** \brief . */
   void update_basis(
     const MatrixOp          &Gc
     ,MatrixOpNonsing        *C
@@ -103,13 +102,13 @@ public:
   /** @name Overridded from BasisSystemPerm */
   //@{
 
-  ///
+  /** \brief . */
   const perm_fcty_ptr_t   factory_P_var() const;
-  ///
+  /** \brief . */
   const perm_fcty_ptr_t   factory_P_equ() const;
-  ///
+  /** \brief . */
   const perm_fcty_ptr_t   factory_P_inequ() const;
-  ///
+  /** \brief . */
   void set_basis(
     const Permutation          &P_var
     ,const Range1D             &var_dep
@@ -122,7 +121,7 @@ public:
     ,EMatRelations             mat_rel
     ,std::ostream              *out
     );
-  ///
+  /** \brief . */
   void select_basis(
     const Vector               *nu
     ,MatrixOp                  *Gc
@@ -161,11 +160,11 @@ private:
   // ///////////////////////////////
   // Private member functions
 
-  ///
+  /** \brief . */
   Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>
   get_basis_matrix( MatrixOpNonsingAggr &C_aggr ) const;
 
-  ///
+  /** \brief . */
   void set_A_mctse(
     size_type                    n
     ,size_type                   m
@@ -173,7 +172,7 @@ private:
     ,MatrixConvertToSparseEncap  *A_mctse
     ) const;
 
-  ///
+  /** \brief . */
   void update_basis_and_auxiliary_matrices(
     const MatrixOp& Gc
     ,const Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>& C_bm
@@ -181,7 +180,7 @@ private:
     ,MatrixOp* D, MatrixOp* GcUP
     ) const;
 
-  ///
+  /** \brief . */
   void do_some_basis_stuff(
     const MatrixOp& Gc
     ,const Range1D& var_dep, const Range1D& equ_decomp

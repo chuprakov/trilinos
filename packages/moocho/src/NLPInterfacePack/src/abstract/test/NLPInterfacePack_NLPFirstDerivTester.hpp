@@ -38,8 +38,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Concrete class that tests the derivatives using finite differences.
+/** \brief Concrete class that tests the derivatives using finite differences.
  *
  * There are two options for testing the derivatives by finite differences.
  * 
@@ -121,21 +120,21 @@ namespace NLPInterfacePack {
 class NLPFirstDerivTester {
 public:
 
-  ///
+  /** \brief . */
   enum ETestingMethod {
     FD_COMPUTE_ALL
     ,FD_DIRECTIONAL
   };
 
-  ///
+  /** \brief . */
   STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, fd_testing_method )
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 
   /// Constructor
@@ -147,8 +146,7 @@ public:
     ,value_type               error_tol          = 1e-3
     );
 
-  ///
-  /** This function takes an NLP object and its computed derivatives
+  /** \brief This function takes an NLP object and its computed derivatives
    * and function values and validates
    * the functions and the derivatives by evaluating them
    * about the given point <tt>x</tt>.  If all the checks as described in the
@@ -189,7 +187,7 @@ public:
 
 private:
 
-  ///
+  /** \brief . */
   bool fd_check_all(
     NLP               *nlp
     ,const Vector     &xo
@@ -201,7 +199,7 @@ private:
     ,std::ostream     *out
     ) const;
 
-  ///
+  /** \brief . */
   bool fd_directional_check(
     NLP               *nlp
     ,const Vector     &xo

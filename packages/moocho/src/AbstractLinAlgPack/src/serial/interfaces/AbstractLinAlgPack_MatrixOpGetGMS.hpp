@@ -36,8 +36,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract interface that allows the extraction of a const <tt>DMatrixSlice</tt>
+/** \brief Abstract interface that allows the extraction of a const <tt>DMatrixSlice</tt>
  * view of an abstract matrix.
  *
  * This interface is ment to be used by <tt>MatrixOp</tt> objects
@@ -57,8 +56,7 @@ class MatrixOpGetGMS
 {
 public:
 
-  ///
-  /** Get a const view of the abstract matrix in the form <tt>DenseLinAlgPack::DMatrixSlice</tt>.
+  /** \brief Get a const view of the abstract matrix in the form <tt>DenseLinAlgPack::DMatrixSlice</tt>.
    *
    * @return On ouput, \c return will be initialized to point to storage to the dense matrix elements.
    * The output from this function <tt>gms_view = this->get_gms_view()</tt> must be passed to
@@ -74,8 +72,7 @@ public:
    */
   virtual const DMatrixSlice get_gms_view() const = 0;
 
-  ///
-  /** Free a view of a dense matrix initialized from <tt>get_gms_view()>/tt>.
+  /** \brief Free a view of a dense matrix initialized from <tt>get_gms_view()>/tt>.
    *
    * @param  gms_view
    *              [in/out] On input, \c gms_view must have been initialized from \c this->get_gms_view().
@@ -93,8 +90,7 @@ public:
 
 }; // end class MatrixOpGetGMS
 
-///
-/** Helper class type that simplifies the usage of the <tt>MatrixOpGetGMS</tt> interface for clients.
+/** \brief Helper class type that simplifies the usage of the <tt>MatrixOpGetGMS</tt> interface for clients.
  *
  * This takes care of worrying about if the <tt>MatrixOpGetGMS</tt> interface is supported or not
  * and remembering to free the <tt>DMatrixSlice</tt> view properly.
@@ -116,12 +112,10 @@ public:
 class MatrixDenseEncap {
 public:
 
-  ///
-  /** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixOpGetGMS</tt> object.
+  /** \brief Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixOpGetGMS</tt> object.
    */
   MatrixDenseEncap( const MatrixOpGetGMS&  mat_get );
-  ///
-  /** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixOp</tt> object.
+  /** \brief Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixOp</tt> object.
    *
    * If <tt>dynamic_cast<const MatrixOpGetGMS*>(&mat) == NULL</tt> then a ???
    * exception is thrown.

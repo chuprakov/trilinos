@@ -39,8 +39,7 @@
 
 namespace MoochoPack {
 
-///
-/** Fraction to boundary rule for calculating alpha max
+/** \brief Fraction to boundary rule for calculating alpha max
  *   
  *
  * This class updates alpha_vl, alpha_vu, and alpha
@@ -56,8 +55,7 @@ class PostProcessBarrierLineSearch_Step
     /** @name Constructors / initializers */
     //@{
 
-    ///
-    /** Constructor.
+    /** \brief Constructor.
      */
     PostProcessBarrierLineSearch_Step(
       Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp
@@ -66,7 +64,7 @@ class PostProcessBarrierLineSearch_Step
 
     /** @name Overridden from AlgorithmStep */
     //@{
-    ///
+    /** \brief . */
     bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
            , poss_type assoc_step_poss);
     

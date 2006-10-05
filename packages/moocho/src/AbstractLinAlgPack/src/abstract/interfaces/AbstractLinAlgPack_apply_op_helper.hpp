@@ -9,8 +9,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Validate the inputs to <tt>apply_op()</tt>.
+/** \brief Validate the inputs to <tt>apply_op()</tt>.
  *
  * Throws an exception if one of the preconditions is not met.
  *
@@ -25,8 +24,7 @@ void apply_op_validate_input(
   ,const index_type first_ele, const index_type sub_dim, const index_type global_offset
   );
 
-///
-/** Implements reduction/transformation operators for any serial vectors
+/** \brief Implements reduction/transformation operators for any serial vectors
  * using just the public vector interface.
  *
  * Note that this function does not validate the input arguments so it is up to

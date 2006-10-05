@@ -42,22 +42,22 @@ namespace SparseVectorUtilityPack {
 
 void assert_is_sorted(bool is_sorted);
 
-///
+/** \brief . */
 class DoesNotExistException : public std::logic_error
 {public: DoesNotExistException(const std::string& what_arg) : std::logic_error(what_arg) {}};
-///
+/** \brief . */
 class NotSortedException : public std::logic_error
 {public: NotSortedException(const std::string& what_arg) : std::logic_error(what_arg) {}};
-///
+/** \brief . */
 class DuplicateIndexesException : public std::logic_error
 {public: DuplicateIndexesException(const std::string& what_arg) : std::logic_error(what_arg) {}};
-///
+/** \brief . */
 class OutOfRoomException : public std::logic_error
 {public: OutOfRoomException(const std::string& what_arg) : std::logic_error(what_arg) {}};
-///
+/** \brief . */
 class UnsizedException : public std::logic_error
 {public: UnsizedException(const std::string& what_arg) : std::logic_error(what_arg) {}};
-///
+/** \brief . */
 class NoNonZeroElementsException : public std::logic_error
 {public: NoNonZeroElementsException(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
@@ -67,8 +67,7 @@ class NoNonZeroElementsException : public std::logic_error
 /** @name Nonmember untility functions */
 //@{
 
-///
-/** Return a sparse vector slice.
+/** \brief Return a sparse vector slice.
   *
   * Preconditions:<ul>
   * <li> index_lookup.validate_state() is called
@@ -90,8 +89,7 @@ template <class T_Element>
 class SparseVectorSlice;
 
 // ///////////////////////////////////////////////////////////////////////
-///
-/** Sparse Vector class template.
+/** \brief Sparse Vector class template.
   *
   * This is a class for abstracting a sparse vector of a templated element
   * type.  All of the operations are based on the element type.  Access
@@ -118,17 +116,17 @@ public:
   /** @name Public Types. */
   //@{
 
-  ///
+  /** \brief . */
   typedef T_Alloc											allocator_type;
-  ///
+  /** \brief . */
   typedef T_Element										element_type;
-  ///
+  /** \brief . */
   typedef AbstractLinAlgPack::size_type					size_type;
-  ///
+  /** \brief . */
   typedef ptrdiff_t										difference_type;
-  ///
+  /** \brief . */
   typedef element_type*									iterator;
-  ///
+  /** \brief . */
   typedef const element_type*								const_iterator;
 
 #if defined(_WINDOWS) || defined(_INTEL_CXX)
@@ -142,24 +140,24 @@ public:
 
 #else
 
-  ///
+  /** \brief . */
   typedef std::reverse_iterator<iterator>					reverse_iterator;
-  ///
+  /** \brief . */
   typedef std::reverse_iterator<const_iterator>			const_reverse_iterator;
 
 #endif
 
-  ///
+  /** \brief . */
   typedef SparseVectorUtilityPack::DoesNotExistException		DoesNotExistException;
-  ///
+  /** \brief . */
   typedef SparseVectorUtilityPack::NotSortedException			NotSortedException;
-  ///
+  /** \brief . */
   typedef SparseVectorUtilityPack::DuplicateIndexesException	DuplicateIndexesException;
-  ///
+  /** \brief . */
   typedef SparseVectorUtilityPack::OutOfRoomException			OutOfRoomException;
-  ///
+  /** \brief . */
   typedef SparseVectorUtilityPack::UnsizedException			UnsizedException;
-  ///
+  /** \brief . */
   typedef SparseVectorUtilityPack::NoNonZeroElementsException	NoNonZeroElementsException;
 
   //@}
@@ -167,8 +165,7 @@ public:
   /** @name Constuctors */
   //@{
 
-  ///
-  /** Constructs a sparse vector with no elements (#nz() == dim() == 0#) and
+  /** \brief Constructs a sparse vector with no elements (#nz() == dim() == 0#) and
     * assumes the elements are not sorted.
     */
   SparseVector(const allocator_type& alloc = allocator_type());
@@ -180,8 +177,7 @@ public:
   SparseVector(size_type size, size_type max_nz, difference_type offset = 0
     , bool assume_sorted = false, const allocator_type& alloc = allocator_type());
 
-  ///
-  /** Constructs a sparse vector from another sparse vector.
+  /** \brief Constructs a sparse vector from another sparse vector.
     *
     * Copies the complete state including the same max_nz() but a fresh copy
     * of the elements are made.
@@ -197,16 +193,14 @@ public:
 
   //@}
 
-  ///
-  /** Assignment operator.
+  /** \brief Assignment operator.
     *
     * If #max_nz() > sp_vec.nz()# then no new allocation takes place
     * otherwise #this# will will be resized to #sp_vec.nz()#.
     */
   SparseVector<T_Element,T_Alloc>& operator=(const SparseVector<T_Element,T_Alloc>& sp_vec);
 
-  ///
-  /** Assignment operator.
+  /** \brief Assignment operator.
     *
     * If #max_nz() > sp_vec_slc.nz()# then no new allocation takes place
     * otherwise #this# will will be resized to #sp_vec_slc.nz()#.
@@ -234,14 +228,12 @@ public:
   /// Return the number of non-zero elements
   size_type nz() const;
 
-  ///
-  /** Return the offset for the indexes (ith real index = #begin()[i-1]->index() + offset()#
+  /** \brief Return the offset for the indexes (ith real index = #begin()[i-1]->index() + offset()#
     * , for i = 1,,,#nz()#)
     */
   difference_type offset() const;
 
-  ///
-  /** Return true if the sequence is sorted.
+  /** \brief Return true if the sequence is sorted.
     *
     * If sorted() was called prior to this then it is garrented to be sorted
     * and if assume_sorted(true) was called then a client is assumed to be
@@ -257,38 +249,36 @@ public:
     */
   //@{
 
-  ///
-  /** Returns iterator that iterates forward through the nonzero elements.
+  /** \brief Returns iterator that iterates forward through the nonzero elements.
     *
     * If #is_sorted() == true# then the elements will be forward iterated in accending
     * indexes.
     */
   iterator begin();
 
-  ///
+  /** \brief . */
   const_iterator begin() const;
 
   /// 
   iterator end();
 
-  ///
+  /** \brief . */
   const_iterator end() const;
 
-  ///
-  /** Returns iterator that iterates backward through the nonzero elements.
+  /** \brief Returns iterator that iterates backward through the nonzero elements.
     *
     * If #is_sorted() == true# then the elements will be forward iterated in deaccending
     * indexes.
     */
   reverse_iterator rbegin();
 
-  ///
+  /** \brief . */
   const_reverse_iterator rbegin() const;
 
   /// 
   reverse_iterator rend();
 
-  ///
+  /** \brief . */
   const_reverse_iterator rend() const;
   
   //	end Iterator access to elements
@@ -300,8 +290,7 @@ public:
   /** @name Element setup and modification */
   //@{
 
-  ///
-  /** Resize to #size# with a maximum of #max_nz# non-zero elements.
+  /** \brief Resize to #size# with a maximum of #max_nz# non-zero elements.
     *
     * This does not preserve the existing elements already in the sparse vector.
     * If you pass in #size == 0# or #max_nz == 0# then the storage will be deallocated
@@ -309,8 +298,7 @@ public:
     */
   void resize(size_type size, size_type max_nz, difference_type offset = 0);
 
-  ///
-  /** Resize to #size# with a #max_nz# uninitialized non-zero elements.
+  /** \brief Resize to #size# with a #max_nz# uninitialized non-zero elements.
     *
     * This function has the same basic behavior as #resize(...)# accept
     * on return #nz()# will equal #nz#.  The elements are initialized
@@ -322,8 +310,7 @@ public:
   /// Return the max number of elements that can be held without resizing
   size_type max_nz() const;
 
-  ///
-  /** Add an unsorted element.
+  /** \brief Add an unsorted element.
     *
     * If #nz() = max_nz()#) then the exception OutOfRoomException will be thrown.
     *
@@ -334,8 +321,7 @@ public:
     */
   void add_element(element_type ele);
 
-  ///
-  /** Add an element into a sorted sequence.
+  /** \brief Add an element into a sorted sequence.
     *
     * If #nz() = max_nz()#) then the exception OutOfRoomException will be thrown.
     *
@@ -346,8 +332,7 @@ public:
     */
   void insert_element(element_type ele);
 
-  ///
-  /** Called by the client to inform this sparse vector object that the elements
+  /** \brief Called by the client to inform this sparse vector object that the elements
     * be assumed to be in sequence and it is the clients responcibiliy to make sure
     * that it is.
     */
@@ -356,8 +341,7 @@ public:
   /// Sort the elements into assending order by index.
   void sort();
 
-  ///
-  /** Assert that sparse vector is sorted.
+  /** \brief Assert that sparse vector is sorted.
     *
     * This function will throw an exception if any of the following are not true:
     * \begin{enumerate}
@@ -387,9 +371,9 @@ public:
     */
   //@{
 
-  ///
+  /** \brief . */
   element_type* lookup_element(size_type i);
-  ///
+  /** \brief . */
   const element_type* lookup_element(size_type i) const;
 
   //@}
@@ -403,18 +387,16 @@ public:
     */
   //@{
 
-  ///
-  /** Allow an implicit conversion to a SparseVectorSlice<> object.
+  /** \brief Allow an implicit conversion to a SparseVectorSlice<> object.
     *
     * This is a very cheap operation.
     */
   operator SparseVectorSlice<T_Element>();
 
-  ///
+  /** \brief . */
   operator const SparseVectorSlice<T_Element>() const;
 
-  ///
-  /** Returns a SparseVectorSlice representing the entire sparse vector.
+  /** \brief Returns a SparseVectorSlice representing the entire sparse vector.
     *
     * It is used to provide a quick, explicit conversion so that
     * the SparseVector object can be used in functions that
@@ -422,7 +404,7 @@ public:
     */
   SparseVectorSlice<T_Element> operator()();
 
-  ///
+  /** \brief . */
   const SparseVectorSlice<T_Element> operator()() const;
 
   /// 
@@ -444,7 +426,7 @@ public:
     */
   SparseVectorSlice<T_Element> operator()(const Range1D& rng);
 
-  ///
+  /** \brief . */
   const SparseVectorSlice<T_Element> operator()(const Range1D& rng) const;
 
   /// 
@@ -476,7 +458,7 @@ private:
   // /////////////////////////////////////////////////////////////////////////
   // Private types
 
-  ///
+  /** \brief . */
   typedef SparseVectorUtilityPack::SpVecIndexLookup<element_type> SpVecIndexLookup;
 
   // /////////////////////////////////////////////////////////////////////////
@@ -524,7 +506,7 @@ private:
           , index_lookup_.offset(), size_, is_sorted());
   }
 
-  ///
+  /** \brief . */
   const SparseVectorSlice<T_Element> get_whole_sp_vec() const {
     return SparseVectorSlice<T_Element>(index_lookup_.ele(), index_lookup_.nz()
           , index_lookup_.offset(), size_, is_sorted());
@@ -539,8 +521,7 @@ private:
 };	// end class SparseVector
 
 // ///////////////////////////////////////////////////////////////////////
-///
-/** Sparse Vector Slice class template.
+/** \brief Sparse Vector Slice class template.
   *
   * This is a class for abstracting a region of a sparse vector stored
   * as an array of elements of a templated type.  The required inteface
@@ -563,15 +544,15 @@ public:
   /** @name Public types. */
   //@{
 
-  ///
+  /** \brief . */
   typedef T_Element										element_type;
-  ///
+  /** \brief . */
   typedef AbstractLinAlgPack::size_type					size_type;
-  ///
+  /** \brief . */
   typedef ptrdiff_t										difference_type;
-  ///
+  /** \brief . */
   typedef element_type*									iterator;
-  ///
+  /** \brief . */
   typedef const element_type*								const_iterator;
 
 #if defined(_WINDOWS) || defined(_INTEL_CXX)
@@ -585,16 +566,16 @@ public:
 
 #else
 
-  ///
+  /** \brief . */
   typedef std::reverse_iterator<iterator>					reverse_iterator;
-  ///
+  /** \brief . */
   typedef std::reverse_iterator<const_iterator>			const_reverse_iterator;
 
 #endif
 
-  ///
+  /** \brief . */
   typedef SparseVectorUtilityPack::DoesNotExistException	DoesNotExistException;
-  ///
+  /** \brief . */
   typedef SparseVectorUtilityPack::NotSortedException		NotSortedException;
 
   //@}
@@ -605,8 +586,7 @@ public:
     */
   //@{
 
-  ///
-  /** Constructs a sparse vector slice from an array of elements.
+  /** \brief Constructs a sparse vector slice from an array of elements.
     *
     * Here a pointer to an array of elements is used instead of a
     * pointer to std::vector<T_Ele,T_Alloc> in order to insulated
@@ -631,8 +611,7 @@ public:
 
   //@}
 
-  ///
-  /** Constructs a sparse vector slice view from another sparse vector slice.
+  /** \brief Constructs a sparse vector slice view from another sparse vector slice.
     */
   void bind(SparseVectorSlice svs);
 
@@ -657,39 +636,37 @@ public:
   /// Return the number of non-zero elements
   size_type nz() const;
 
-  ///
-  /** Return the offset for the indexes (ith real index = #begin()[i-1]->index() + offset()#
+  /** \brief Return the offset for the indexes (ith real index = #begin()[i-1]->index() + offset()#
     * , for i = 1,,,#nz()#)
     */
   difference_type offset() const;
 
-  ///
-  /** Return true if the sequence is assumed sorted.
+  /** \brief Return true if the sequence is assumed sorted.
     */
   bool is_sorted() const;
 
-  ///
+  /** \brief . */
   iterator begin();
 
-  ///
+  /** \brief . */
   const_iterator begin() const;
 
   /// 
   iterator end();
 
-  ///
+  /** \brief . */
   const_iterator end() const;
 
-  ///
+  /** \brief . */
   reverse_iterator rbegin();
 
-  ///
+  /** \brief . */
   const_reverse_iterator rbegin() const;
 
   /// 
   reverse_iterator rend();
 
-  ///
+  /** \brief . */
   const_reverse_iterator rend() const;
 
   //@}
@@ -709,9 +686,9 @@ public:
     */
   //@{
 
-  ///
+  /** \brief . */
   element_type* lookup_element(size_type i);
-  ///
+  /** \brief . */
   const element_type* lookup_element(size_type i) const;
 
   //@}
@@ -726,7 +703,7 @@ public:
     */
   SparseVectorSlice<T_Element>& operator()();
 
-  ///
+  /** \brief . */
   const SparseVectorSlice<T_Element>& operator()() const;
 
   /// Allow address to be taken of an rvalue of this object
@@ -755,7 +732,7 @@ public:
     */
   SparseVectorSlice<T_Element> operator()(const Range1D& rng);
 
-  ///
+  /** \brief . */
   const SparseVectorSlice<T_Element> operator()(const Range1D& rng) const;
 
   /// 
@@ -777,7 +754,7 @@ public:
     */
   SparseVectorSlice<T_Element> operator()(size_type lbound, size_type ubound);
 
-  ///
+  /** \brief . */
   const SparseVectorSlice<T_Element> operator()(size_type lbound, size_type ubound) const;
 
   //@}
@@ -786,7 +763,7 @@ private:
   // /////////////////////////////////////////////////////////////////////////
   // Private types
 
-  ///
+  /** \brief . */
   typedef SparseVectorUtilityPack::SpVecIndexLookup<element_type> index_lookup_type;
 
   // /////////////////////////////////////////////////////////////////////////
@@ -823,8 +800,7 @@ private:
 
 namespace SparseVectorUtilityPack {
 
-///
-/** Lookup an element.
+/** \brief Lookup an element.
   *
   * If the element does not exist, then NULL will be returned.
   */

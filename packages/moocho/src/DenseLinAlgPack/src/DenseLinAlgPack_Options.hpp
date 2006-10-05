@@ -52,7 +52,7 @@
   */
 // @{
 
-///
+/** \brief . */
 /* * If defined the library code checks to see if subscripts are in bounds for element access
   * an subregion indexing.  If the preconditions for the subscripting operations are
   * not satisfied then the listed exceptions will be thrown.
@@ -61,7 +61,7 @@
 #define LINALGPACK_CHECK_RANGE 1
 #endif
 
-///
+/** \brief . */
 /* * If defined the library code checks to see if the sizes of rhs arguments in expressions are compatible.
   * The exception std::length_error will be thrown if rhs sizes are not compatible.
   */
@@ -69,7 +69,7 @@
 #define LINALGPACK_CHECK_RHS_SIZES 1
 #endif
 
-///
+/** \brief . */
 /* * If defined the library code checks to see if DVectorSlice and DMatrixSlice objects have valid constructions.
   * If they do not have valid constructions then an exception will be thrown.  The operation of these
   * checks may depend on the definition of the macro \Ref{LINALGPACK_CHECK_RANGE}.

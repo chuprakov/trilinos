@@ -22,8 +22,7 @@ INPUT                  = ../browser/doc/index.doc \
                          ../src \
                          ../example \
                          ../test \
-                         ../thyra \
-                         ../../epetraext/example/model_evaluator
+                         ../thyra
 FILE_PATTERNS          = *.h *c *.hpp *.cpp groups.doc
 RECURSIVE              = YES
 EXCLUDE                = 

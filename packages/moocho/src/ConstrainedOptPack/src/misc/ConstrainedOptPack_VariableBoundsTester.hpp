@@ -34,8 +34,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Tests that a set of variables are within their bounds.
+/** \brief Tests that a set of variables are within their bounds.
   *
   \verbatim
     xL <= x <= xU
@@ -50,23 +49,22 @@ namespace ConstrainedOptPack {
 class VariableBoundsTester {
 public:
 
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
 
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 
-  ///
+  /** \brief . */
   VariableBoundsTester(
       value_type	warning_tol		= 1e-10
     , value_type	error_tol		= 1e-5
     );
 
-  ///
+  /** \brief . */
   virtual ~VariableBoundsTester() {}
 
-  ///
-  /** Check that the variables are within bounds.
+  /** \brief Check that the variables are within bounds.
    *
    * @param  print_all_warnings
    *              [in] If true, then all errors greater than warning_tol will

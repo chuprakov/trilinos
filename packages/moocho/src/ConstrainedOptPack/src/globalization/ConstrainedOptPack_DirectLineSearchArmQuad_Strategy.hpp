@@ -34,8 +34,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Performs a line search using the Armijo condition and
+/** \brief Performs a line search using the Armijo condition and
   * uses quadratic interpolation to select each new alpha.
   */
 class DirectLineSearchArmQuad_Strategy : public DirectLineSearch_Strategy {
@@ -50,8 +49,7 @@ public:
   /// The maximum fraction that alpha is reduced for each line search iteration.
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_frac )
 
-  ///
-  /** Deterimine if the line search iterations are maxed out or not.
+  /** \brief Deterimine if the line search iterations are maxed out or not.
    * 
    * This option is really only used for debugging and requires
    * changing the other parameters to make it useful.
@@ -70,14 +68,13 @@ public:
   /** @name Overridden from DirectLineSearch_Strategy */
   //@{
 
-  ///
+  /** \brief . */
   void set_max_iter(int max_iter);
-  ///
+  /** \brief . */
   int max_iter() const;
-  ///
+  /** \brief . */
   int num_iterations() const;
-  ///
-  /** Performs the following line search:<br>
+  /** \brief Performs the following line search:<br>
    *
    \verbatim
 
@@ -107,7 +104,7 @@ public:
     ,std::ostream           *out
     );
 
-  ///
+  /** \brief . */
   void print_algorithm(std::ostream& out, const std::string& leading_str) const;
 
   //@}

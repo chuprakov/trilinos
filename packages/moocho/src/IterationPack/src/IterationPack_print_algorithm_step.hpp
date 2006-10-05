@@ -35,8 +35,7 @@
 
 namespace IterationPack {
 
-///
-/** Prints to 'out' the algorithm step.
+/** \brief Prints to 'out' the algorithm step.
   *
   * This function can be used by \c AlgorithmStep subclasses in their
   * \c AlgorithmStep::print_step() methods to print the header for the

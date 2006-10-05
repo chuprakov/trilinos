@@ -43,8 +43,7 @@
 
 namespace MoochoPack {
 
-///
-/** Implements the feasibility step computation for reduced space SQP.
+/** \brief Implements the feasibility step computation for reduced space SQP.
  */
 class FeasibilityStepReducedStd_Strategy : public FeasibilityStep_Strategy
 {
@@ -62,27 +61,25 @@ public:
   /// Comparision object compatible with Gc
   STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxedTester, qp_tester )
     
-  ///
+  /** \brief . */
   enum EQPObjective {
     OBJ_MIN_FULL_STEP           ///< min 1/2 * (Y*wy + Z*wz)'*(Y*wy + Z*wz)
     ,OBJ_MIN_NULL_SPACE_STEP    ///< min 1/2 * wz'*wz
     ,OBJ_RSQP                   ///< min qp_grad_k'*wz + 1/2 * wz'*rHL_k*wz
   };
 
-  ///
-  /** Set what is used for the QP objective.
+  /** \brief Set what is used for the QP objective.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( EQPObjective, qp_objective )
 
-  ///
+  /** \brief . */
   enum EQPTesting {
     QP_TEST_DEFAULT     ///< Decide based on olevel input to <tt>compute_feasibility_step(...)</tt>
     ,QP_TEST            ///< Perform the tests
     ,QP_NO_TEST         ///< Don't perform the tests
   };
 
-  ///
-  /** Set how and if the QP solution is tested.
+  /** \brief Set how and if the QP solution is tested.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( EQPTesting, qp_testing )
 
@@ -98,8 +95,7 @@ public:
   // ////////////////////////////////////////////
   // Overridden from FeasibilityStep_Strategy
 
-  ///
-  /** Computes a feasibility step by computing simple quasi-range and null space components.
+  /** \brief Computes a feasibility step by computing simple quasi-range and null space components.
    *
    * ToDo: Finish documentation!
    *
@@ -109,7 +105,7 @@ public:
     ,const Vector& xo, const Vector& c_xo, VectorMutable* w
       );
 
-  ///
+  /** \brief . */
   void print_step( std::ostream& out, const std::string& leading_str ) const;
 
 private:

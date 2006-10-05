@@ -39,8 +39,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** This class maintains the factorization of symmetric indefinite matrix
+/** \brief This class maintains the factorization of symmetric indefinite matrix
  * using a Bunch & Kaufman factorization.
  *
  * When the matix in question is positive definite or negative definite
@@ -63,17 +62,17 @@ public:
 
   /// Pivot tolerance used durring the cholesky factorization (it may be zero).
   void pivot_tols( PivotTolerances pivot_tols );
-  ///
+  /** \brief . */
   PivotTolerances	pivot_tols() const;
 
   /** @name Overridden from MatrixSymAddDelUpdateableWithOpNonsingular */
   //@{
 
-  ///
+  /** \brief . */
   const MatrixSymOpNonsing& op_interface() const;
-  ///
+  /** \brief . */
   MatrixSymAddDelUpdateable& update_interface();
-  ///
+  /** \brief . */
   const MatrixSymAddDelUpdateable& update_interface() const;
 
   //@}
@@ -81,12 +80,12 @@ public:
   /** @name Overridden from MatrixSymAddDelUpdateable */
   //@{
 
-  ///
+  /** \brief . */
   void initialize(
     value_type         alpha
     ,size_type         max_size
     );
-  ///
+  /** \brief . */
   void initialize(
     const DMatrixSliceSym      &A
     ,size_type         max_size
@@ -94,13 +93,13 @@ public:
     ,Inertia           inertia
     ,PivotTolerances   pivot_tols
     );
-  ///
+  /** \brief . */
   size_type max_size() const;
-  ///
+  /** \brief . */
   Inertia inertia() const;
-  ///
+  /** \brief . */
   void set_uninitialized();
-  ///
+  /** \brief . */
   void augment_update(
     const DVectorSlice  *t
     ,value_type        alpha
@@ -108,7 +107,7 @@ public:
     ,EEigenValType     add_eigen_val
     ,PivotTolerances   pivot_tols
     );
-  ///
+  /** \brief . */
   void delete_update(
     size_type          jd
     ,bool              force_refactorization
@@ -121,16 +120,16 @@ public:
   /** @name Overridden from MatrixSymOpNonsingSerial */
   //@{
 
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     ,const DVectorSlice& vs_rhs2, value_type beta
     ) const;
-  ///
+  /** \brief . */
   void V_InvMtV(
     DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
     ,const DVectorSlice& vs_rhs2
@@ -174,36 +173,31 @@ private:
   // /////////////////////////////////////////////////////
   // Private member funcitons.
 
-  ///
-  /** Get view of DU.
+  /** \brief Get view of DU.
    */
   DMatrixSliceTriEle DU(size_type S_size, bool fact_in1);
-  ///
+  /** \brief . */
   const DMatrixSliceTriEle DU(size_type S_size, bool fact_in1) const;
-  ///
-  /** Get view of lower part of S.
+  /** \brief Get view of lower part of S.
    */
   DMatrixSliceSym S(size_type S_size);
-  ///
+  /** \brief . */
   const DMatrixSliceSym S(size_type S_size) const;
-  ///
+  /** \brief . */
   void assert_initialized() const;
-  ///
+  /** \brief . */
   void resize_DU_store( bool in_store1 );
-  ///
-  /** Copy the original matrix into the new storage location and factorize it.
+  /** \brief Copy the original matrix into the new storage location and factorize it.
    *
    * Will throw DenseLinAlgLAPack::FactorizationException if singular.
    */
   void copy_and_factor_matrix( size_type S_size, bool fact_in1 );
-  ///
-  /** Factor the current set matrix in-place (do not copy the original). 
+  /** \brief Factor the current set matrix in-place (do not copy the original). 
    *
    * Will throw DenseLinAlgLAPack::FactorizationException if singular.
    */
   void factor_matrix( size_type S_size, bool fact_in1 );
-  ///
-  /** Compute the new inertia and validate that it is what the client says it was.
+  /** \brief Compute the new inertia and validate that it is what the client says it was.
    *
    * Will throw exceptions if the matrix is singular or has the wrong inertia.  If
    * the matrix is near singular then true will be returned, the update should

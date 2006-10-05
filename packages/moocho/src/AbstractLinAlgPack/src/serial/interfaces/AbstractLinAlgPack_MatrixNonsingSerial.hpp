@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract base class for all <tt>AbstractLinAlgPack::MatrixNonsing</tt> objects
+/** \brief Abstract base class for all <tt>AbstractLinAlgPack::MatrixNonsing</tt> objects
  * implemented in shared memory space.
  *
  * This base class does a mapping from fully abstract linear algebra to shared memory

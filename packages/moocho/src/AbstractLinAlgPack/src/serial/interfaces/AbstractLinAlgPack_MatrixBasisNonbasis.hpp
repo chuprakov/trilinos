@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** This is the interface to a basis and an nonbasis matrix.
+/** \brief This is the interface to a basis and an nonbasis matrix.
   *
   * The form of this matrix is:
   *

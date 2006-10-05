@@ -34,8 +34,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Strategy interface for computing the product of the derivatives of the functions
+/** \brief Strategy interface for computing the product of the derivatives of the functions
  * of an %NLP along given directions using finite differences.
   *
   * Specifically, this interface can be used to compute products with the finite
@@ -108,7 +107,7 @@ namespace NLPInterfacePack {
 class CalcFiniteDiffProd {
 public:
 
-  ///
+  /** \brief . */
   enum EFDMethodOrder {
     FD_ORDER_ONE           ///< Use O(eps) one sided finite differences (cramped bounds)
     ,FD_ORDER_TWO          ///< Use O(eps^2) one sided finite differences (cramped bounds)
@@ -118,25 +117,23 @@ public:
     ,FD_ORDER_FOUR_CENTRAL ///< Use O(eps^4) two sided central finite differences
     ,FD_ORDER_FOUR_AUTO    ///< Use FD_ORDER_FOUR_CENTRAL when not limited by bounds, otherwise use FD_ORDER_FOUR
   };
-  ///
+  /** \brief . */
   enum EFDStepSelect {
     FD_STEP_ABSOLUTE      ///< Use absolute step size <tt>fd_step_size</tt>
     ,FD_STEP_RELATIVE     ///< Use relative step size <tt>fd_step_size * ||xo||inf</tt>
   };
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDMethodOrder, fd_method_order )
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDStepSelect, fd_step_select )
-  ///
-  /** Pick the size of the finite difference step.
+  /** \brief Pick the size of the finite difference step.
    *
    * If <tt>fd_step_size < 0</tt> then the implementation will try to
    * select it based on the order of method <tt>fd_method_order()</tt>
    * that is selected.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size )
-  ///
-  /** Pick the minimum step size under which the finite difference product
+  /** \brief Pick the minimum step size under which the finite difference product
    * will not be computed.
    *
    * If <tt>fd_step_size_min == 0</tt> then the finite difference computation
@@ -149,7 +146,7 @@ public:
   /// Set the step size for \a c(x)
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_c )
 
-  ///
+  /** \brief . */
   CalcFiniteDiffProd(
     EFDMethodOrder              fd_method_order  = FD_ORDER_FOUR_AUTO
     ,EFDStepSelect              fd_step_select   = FD_STEP_ABSOLUTE
@@ -159,11 +156,10 @@ public:
     ,value_type                 fd_step_size_c   = -1.0
     );
 
-  ///
+  /** \brief . */
   virtual ~CalcFiniteDiffProd() {}
 
-  ///
-  /** Compute the directional derivatives by finite differences.
+  /** \brief Compute the directional derivatives by finite differences.
    *
    * The computation may fail if \c NaN or \c Inf is encountered durring any
    * of the computations in which case a \c NaNInfException exception will be

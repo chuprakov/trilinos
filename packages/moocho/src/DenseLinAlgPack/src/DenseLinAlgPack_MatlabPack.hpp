@@ -48,7 +48,7 @@ namespace MatlabPack {
   */
 // @{
 
-///
+/** \brief . */
 /* * Output a DVectorSlice.
   *
   * The DVectorSlice is output in the following format:
@@ -63,7 +63,7 @@ namespace MatlabPack {
 std::ostream& out( std::ostream& o, const char* name, const DVectorSlice& vs
   , BLAS_Cpp::Transp trans = BLAS_Cpp::no_trans );
 
-///
+/** \brief . */
 /* * Output a DMatrixSlice.
   *
   * The DMatrixSlice is output in the following format:

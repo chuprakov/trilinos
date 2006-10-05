@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Default implementation for <tt>BasisSystemPermDirectSparse</tt> obejcts
+/** \brief Default implementation for <tt>BasisSystemPermDirectSparse</tt> obejcts
  * using <tt>DirectSparseSolver</tt> object.
  *
  * Several direct sparse solvers are supported by default.  These include:
@@ -58,15 +57,15 @@ class BasisSystemFactoryStd
 {
 public:
 
-  ///
+  /** \brief . */
   BasisSystemFactoryStd(); // ToDo: Add arguments!
 
   /** @name Overridden from BasisSystemFactory */
   //@{
 
-  ///
+  /** \brief . */
   void set_options( const options_ptr_t& options );
-  ///
+  /** \brief . */
   const options_ptr_t& get_options() const;
 
   //@}
@@ -74,7 +73,7 @@ public:
   /** @name Overridden from AbstractFactory */
   //@{
 
-  ///
+  /** \brief . */
   obj_ptr_t create() const;
 
   //@}

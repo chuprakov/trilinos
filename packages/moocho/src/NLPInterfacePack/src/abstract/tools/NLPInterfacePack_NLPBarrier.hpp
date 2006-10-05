@@ -33,8 +33,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Simple wrapper that provides an objective fn with the barrier term
+/** \brief Simple wrapper that provides an objective fn with the barrier term
  *   included.
  *
  */
@@ -65,12 +64,11 @@ public:
   /** @name Constructors / initializers */
   //@{
 
-  ///
-  /** Constructor.
+  /** \brief Constructor.
    */
   NLPBarrier();
 
-  ///
+  /** \brief . */
   void InitializeFromNLP(
     Teuchos::RefCountPtr<NLP> original_nlp
     );
@@ -80,27 +78,27 @@ public:
   /** @name Overridden public members from NLPObjGrad */
   //@{
 
-  ///
+  /** \brief . */
   void initialize(bool test_setup)
   { nlp_->initialize(test_setup); }
-  ///
+  /** \brief . */
   bool is_initialized() const
   { return nlp_->is_initialized(); }
-  ///
+  /** \brief . */
   void set_Gf(VectorMutable* Gf)
   { nlp_->set_Gf(Gf); }
-  ///
+  /** \brief . */
   VectorMutable* get_Gf()
   { return nlp_->get_Gf(); }
-  ///
+  /** \brief . */
   VectorMutable& Gf()
   { return nlp_->Gf(); }
-  ///
+  /** \brief . */
   const Vector& Gf() const
   { return nlp_->Gf(); }
   /// Overloaded to include barrier term
   void calc_Gf(const Vector& x, bool newx = true) const;
-  ///
+  /** \brief . */
   size_type num_Gf_evals() const
   { return nlp_->num_Gf_evals(); }
 
@@ -109,81 +107,81 @@ public:
   /** @name Overridden public members from NLP */
   //@{
 
-  ///
+  /** \brief . */
   void force_xinit_in_bounds(bool force_xinit_in_bounds)
   { nlp_->force_xinit_in_bounds(force_xinit_in_bounds); }
-  ///
+  /** \brief . */
   bool force_xinit_in_bounds() const
   { return nlp_->force_xinit_in_bounds(); }
-  ///
+  /** \brief . */
   size_type n() const
   { return nlp_->n(); }
-  ///
+  /** \brief . */
   size_type m() const
   { return nlp_->m(); }
-  ///
+  /** \brief . */
   vec_space_ptr_t space_x() const
   { return nlp_->space_x(); }
-  ///
+  /** \brief . */
   vec_space_ptr_t space_c() const
   { return nlp_->space_c(); }
-  ///
+  /** \brief . */
   size_type num_bounded_x() const
   { return nlp_->num_bounded_x(); }
-  ///
+  /** \brief . */
   const Vector& xl() const
   { return nlp_->xl(); }
-  ///
+  /** \brief . */
   const Vector& xu() const 
   { return nlp_->xu(); }
-  ///
+  /** \brief . */
   value_type max_var_bounds_viol() const
   { return nlp_->max_var_bounds_viol(); }
-  ///
+  /** \brief . */
   const Vector& xinit() const
   { return nlp_->xinit(); }
-  ///
+  /** \brief . */
   void get_init_lagrange_mult(
     VectorMutable*   lambda
     ,VectorMutable*  nu
     ) const
   { nlp_->get_init_lagrange_mult(lambda, nu); }
-  ///
+  /** \brief . */
   void set_f(value_type* f)
   { nlp_->set_f(f); }
-  ///
+  /** \brief . */
   value_type* get_f()
   { return nlp_->get_f(); }
-  ///
+  /** \brief . */
   value_type& f()
   { return nlp_->f(); }
-  ///
+  /** \brief . */
   const value_type& f() const
   { return nlp_->f(); }
-  ///
+  /** \brief . */
   void set_c(VectorMutable* c)
   { nlp_->set_c(c); }
-  ///
+  /** \brief . */
   VectorMutable* get_c()
   { return nlp_->get_c(); }
-  ///
+  /** \brief . */
   VectorMutable& c()
   { return nlp_->c(); }
-  ///
+  /** \brief . */
   const Vector& c() const
   { return nlp_->c(); }
-  ///
+  /** \brief . */
   void scale_f( value_type scale_f )
   { nlp_->scale_f(); }
-  ///
+  /** \brief . */
   value_type scale_f() const
   { return nlp_->scale_f(); }
   /// Overloaded to include barrier term
   void calc_f(const Vector& x, bool newx =  true) const;
-  ///
+  /** \brief . */
   void calc_c(const Vector& x, bool newx = true) const
   { nlp_->calc_c(x, newx); }
-  ///
+  /** \brief . */
   void report_final_solution(
     const Vector&    x
     ,const Vector*   lambda
@@ -194,61 +192,61 @@ public:
     x, lambda, nu, is_optimal
     );
   }
-  ///
+  /** \brief . */
   size_type num_f_evals() const
   { return nlp_->num_f_evals(); }
-  ///
+  /** \brief . */
   size_type num_c_evals() const
   { return nlp_->num_c_evals(); }
-  ///
+  /** \brief . */
   size_type ns() const
   { return nlp_->ns(); }
-  ///
+  /** \brief . */
   vec_space_ptr_t space_c_breve() const
   { return nlp_->space_c_breve(); }
-  ///
+  /** \brief . */
   vec_space_ptr_t space_h_breve() const
   { return nlp_->space_h_breve(); }
-  ///
+  /** \brief . */
   const Vector& hl_breve() const
   { return nlp_->hl_breve(); }
-  ///
+  /** \brief . */
   const Vector& hu_breve() const
   { return nlp_->hu_breve(); }
-  ///
+  /** \brief . */
   void set_c_breve(VectorMutable* c_breve)
   { nlp_->set_c_breve(c_breve); }
-  ///
+  /** \brief . */
   VectorMutable* get_c_breve()
   { return nlp_->get_c_breve(); }
-  ///
+  /** \brief . */
   VectorMutable& c_breve()
   { return nlp_->c_breve(); }
-  ///
+  /** \brief . */
   const Vector& c_breve() const
   { return nlp_->c_breve(); }
-  ///
+  /** \brief . */
   void set_h_breve(VectorMutable* h_breve)
   { nlp_->set_h_breve(h_breve); }
-  ///
+  /** \brief . */
   VectorMutable* get_h_breve()
   { return nlp_->get_h_breve(); }
-  ///
+  /** \brief . */
   VectorMutable& h_breve()
   { return nlp_->h_breve(); }
-  ///
+  /** \brief . */
   const Vector& h_breve() const
   { return nlp_->h_breve(); }
-  ///
+  /** \brief . */
   const Permutation& P_var() const
   { return nlp_->P_var(); }
-  ///
+  /** \brief . */
   const Permutation& P_equ() const
   { return nlp_->P_equ(); }
-  ///
+  /** \brief . */
   void calc_c_breve(const Vector& x, bool newx ) const
   { nlp_->calc_c_breve(x,newx); }
-  ///
+  /** \brief . */
   void calc_h_breve(const Vector& x, bool newx ) const
   { nlp_->calc_h_breve(x,newx); }
 
@@ -259,25 +257,25 @@ protected:
   /* protected members Overridden from NLP */
   //@{
 
-  ///
+  /** \brief . */
   void imp_calc_f(
     const Vector& x
     ,bool newx 
     ,const ZeroOrderInfo& zero_order_info
     ) const;
-  ///
+  /** \brief . */
   void imp_calc_c(
     const Vector& x
     ,bool newx 
     ,const ZeroOrderInfo& zero_order_info
     ) const;
-  ///
+  /** \brief . */
   void imp_calc_c_breve(
     const Vector& x
     ,bool newx 
     ,const ZeroOrderInfo& zero_order_info_breve
     ) const;
-  ///
+  /** \brief . */
   void imp_calc_h_breve(
     const Vector& x
     ,bool newx 
@@ -289,7 +287,7 @@ protected:
   /* protected members Overridden from NLPObjGrad */
   //@{
 
-  ///
+  /** \brief . */
   void imp_calc_Gf(
     const Vector& x,
     bool newx, 

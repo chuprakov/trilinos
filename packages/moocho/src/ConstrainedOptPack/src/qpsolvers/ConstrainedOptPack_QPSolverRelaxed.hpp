@@ -34,8 +34,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Solves Quadratic Programs (QPs) of several different forms while
+/** \brief Solves Quadratic Programs (QPs) of several different forms while
  * allowing a relaxation of the constraints.
  *
  * The formulation for the QP being solved is:
@@ -161,10 +160,10 @@ public:
   /// Set the scalar that will be used to identigy infinite bounds
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, infinite_bound )
 
-  ///
+  /** \brief . */
   QPSolverRelaxed();
 
-  ///
+  /** \brief . */
   virtual ~QPSolverRelaxed() {}
 
   //@}
@@ -172,8 +171,7 @@ public:
   /** @name Interface methods with default implementations */
   //@{
 
-  ///
-  /** Solve the QP.
+  /** \brief Solve the QP.
    *
    *	@param	out			[out] If out != NULL then output is printed to this stream
    *							depending on the value of <tt>olevel</tt>.
@@ -312,8 +310,7 @@ public:
     ,VectorMutable* lambda, VectorMutable* Fd
     );
 
-  ///
-  /** Solve the QP without general equality constrants.
+  /** \brief Solve the QP without general equality constrants.
    *
    * By default this function calls <tt>solve_qp()</tt> which accepts
    * various sets of constraints.
@@ -331,8 +328,7 @@ public:
     ,VectorMutable* mu, VectorMutable* Ed
     );
 
-  ///
-  /** Solve the QP without general inequality constrants.
+  /** \brief Solve the QP without general inequality constrants.
    *
    * By default this function calls <tt>solve_qp()</tt> which accepts
    * various sets of constraints.
@@ -350,8 +346,7 @@ public:
     );
 
 
-  ///
-  /** Solve the QP without general equality or inequality constrants (no relaxation
+  /** \brief Solve the QP without general equality or inequality constrants (no relaxation
    * needed).
    *
    * By default this function calls <tt>solve_qp()</tt> which accepts
@@ -366,8 +361,7 @@ public:
     ,VectorMutable* nu
     );
 
-  ///
-  /** This is a more flexible function where the client can
+  /** \brief This is a more flexible function where the client can
    * set different constraints to be included.
    *
    * The default implementation of this function validates the compatibily
@@ -393,8 +387,7 @@ public:
     ,VectorMutable* lambda, VectorMutable* Fd
     );
 
-  ///
-  /** Get the statistics of the last QP solved.
+  /** \brief Get the statistics of the last QP solved.
    *
    *	solution:	Returns the type of solution found.  See \c solve_qp()<br>
    *	num_iter:	Gives the number of QP iterations on output.<br>
@@ -409,8 +402,7 @@ public:
    */
   virtual QPSolverStats get_qp_stats() const = 0;
 
-  ///
-  /** Release any memory that is being used.
+  /** \brief Release any memory that is being used.
    */
   virtual void release_memory() = 0;
 
@@ -419,8 +411,7 @@ public:
   /** @name Static utility functions */
   //@{
 
-  ///
-  /** This is a (static) function that is used as a utility to
+  /** \brief This is a (static) function that is used as a utility to
    * validate the input arguments to \c solve_qp().
    * 
    * The input arguments are validated as follows.
@@ -457,8 +448,7 @@ public:
     ,const Vector* lambda, const Vector* Fd
     );
 
-  ///
-  /** Utility (static) function for printing the input input/output arguments before
+  /** \brief Utility (static) function for printing the input input/output arguments before
    * the QP solver is run.  The QP solver subclasses can call this function.
    *
    * @param out [out] stream printed to if <tt>out != NULL</tt>
@@ -488,8 +478,7 @@ public:
     ,VectorMutable* lambda
     );
 
-  ///
-  /** Utility (static) function for printing the output input/output arguments after
+  /** \brief Utility (static) function for printing the output input/output arguments after
    * the QP solver is run.  The QP solver subclasses can call this function.
    *
    * @param out [out] stream printed to if <tt>out != NULL</tt>
@@ -521,8 +510,7 @@ protected:
   /** @name Pure virtual methods that must be overridden by subclass */
   //@{
 
-  ///
-  /** Subclasses are to override this to implement the QP algorithm.
+  /** \brief Subclasses are to override this to implement the QP algorithm.
    *
    * Called by default implementations of \c solve_qp() methods.
    */

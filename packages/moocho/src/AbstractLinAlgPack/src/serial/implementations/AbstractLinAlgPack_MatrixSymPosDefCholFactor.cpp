@@ -55,6 +55,7 @@
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "ProfileHackPack_profile_hack.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "Teuchos_FancyOStream.hpp"
 
 // Helper functions
 extern "C" {
@@ -233,23 +234,27 @@ void MatrixSymPosDefCholFactor::zero_out()
   this->init_identity(this->space_cols(),0.0);
 }
 
-std::ostream& MatrixSymPosDefCholFactor::output(std::ostream& out) const
+std::ostream& MatrixSymPosDefCholFactor::output(std::ostream& out_arg) const
 {
+  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::OSTab tab(out);
   if( M_size_ ) {
     if( maintain_original_ ) {
-      out << "Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):\n"
+      *out
+        << "Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):\n"
         << M().gms();
     }
     if( factor_is_updated_ ) {
-      out << "Matrix scaling M = scale*U'*U, scale = " << scale_ << std::endl
+      *out
+        << "Matrix scaling M = scale*U'*U, scale = " << scale_ << std::endl
         << "Upper cholesky factor U (ignore lower nonzeros):\n"
         << U().gms();
     }
   }
   else {
-    out << "0 0\n";
+    *out << "0 0\n";
   }
-  return out;
+  return out_arg;
 }
 
 bool MatrixSymPosDefCholFactor::Mp_StM(
@@ -823,11 +828,11 @@ void MatrixSymPosDefCholFactor::secant_update(
   // Check that s'*Bs is positive and if not then throw exception
   const value_type sTBs = dot(*s,*Bs);
   TEST_FOR_EXCEPTION(
-    scale_*sTBs <= 0.0 && scale_ > 0.0, std::invalid_argument
+    scale_*sTBs <= 0.0 && scale_ > 0.0, UpdateFailedException
     ,"MatrixSymPosDefCholFactor::secant_update(...) : "
     "Error, B can't be positive definite if s'*Bs <= 0.0" );
   TEST_FOR_EXCEPTION(
-    scale_*sTBs <= 0.0 && scale_ <= 0.0, std::invalid_argument
+    scale_*sTBs <= 0.0 && scale_ <= 0.0, UpdateFailedException
     ,"MatrixSymPosDefCholFactor::secant_update(...) : "
     "Error, B can't be negative definite if s'*Bs >= 0.0" );
   if( maintain_original_ ) {
@@ -891,7 +896,7 @@ void MatrixSymPosDefCholFactor::secant_update(
 
 void MatrixSymPosDefCholFactor::initialize(
   value_type         alpha
-     ,size_type         max_size
+  ,size_type         max_size
   )
 {
 #ifdef PROFILE_HACK_ENABLED

@@ -35,8 +35,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Adds the ability to compute <tt>phi(f(x),c(x),h(x))</tt> at \c x
+/** \brief Adds the ability to compute <tt>phi(f(x),c(x),h(x))</tt> at \c x
   * directly instead of having to compute f, c and h first.
   * This class uses an aggregate NLP to perform the computations of \a f(x)
   * \a c(x) and \a h(x).
@@ -53,7 +52,7 @@ public:
   /// <<std aggr>> stereotype members for nlp.
   STANDARD_CONST_AGGREGATION_MEMBERS( NLP, nlp )
 
-  ///
+  /** \brief . */
   MeritFuncCalcNLP( const MeritFuncNLP* phi = 0, const NLP* nlp = 0 );
 
   //@}
@@ -61,8 +60,7 @@ public:
   /** @name Overridden from MeritFuncCalc */
   //@{
 
-  ///
-  /** Return the value of the merit function at x.
+  /** \brief Return the value of the merit function at x.
    * Here phi(x) is calculated directly using the nlp.
    */
   value_type operator()(const Vector& x) const;

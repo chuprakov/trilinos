@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Templateded iterator for iterating through a set of COO Matix 
+/** \brief Templateded iterator for iterating through a set of COO Matix 
   * elements but viewing them in transpose.
   *
   * The iterator type T_Iter must yield a type that conforms to
@@ -70,8 +69,7 @@ public:
   /** @name Public types. */
   //@{
 
-  ///
-  /** Type for the object that is returned for the transpose sparse
+  /** \brief Type for the object that is returned for the transpose sparse
     * element.
     *
     * The default copy constructor is allowed but not the default constructor
@@ -91,20 +89,19 @@ public:
 
     // typedefs
 
-    ///
+    /** \brief . */
     typedef TT_Indice						indice_type;
-    ///
+    /** \brief . */
     typedef TT_ValRef						value_ref_type;
 
-    ///
-    /** Construct with an iterator to the first element.
+    /** \brief Construct with an iterator to the first element.
       */
     ElementView(const TT_Iter& iter) : encap_iter_(iter)
     {}
 
     // access functions
 
-    ///
+    /** \brief . */
     value_ref_type value() const {
       return encap_iter_->value();
     }
@@ -130,28 +127,28 @@ public:
 
   // Local typedefs
 
-  ///
+  /** \brief . */
   typedef ElementView<T_Iter,T_IterCat,T_Indice
               ,T_ValRef,T_Diff>				element_view_type;
-  ///
+  /** \brief . */
   typedef T_Iter											encap_iter_type;
-  ///
+  /** \brief . */
   typedef TransSparseCOOElementViewIter<T_Iter,T_IterCat
                 ,T_Indice,T_ValRef,T_Diff>	iterator_type;
 
   // Standard C+ library types for iterators
 
-  ///
+  /** \brief . */
   typedef	T_IterCat										iterator_category;
-  ///
+  /** \brief . */
   typedef	element_view_type								value_type;
-  ///
+  /** \brief . */
   typedef element_view_type&								reference_type;
-  ///
+  /** \brief . */
   typedef element_view_type*								pointer_type;
-  ///
+  /** \brief . */
   typedef	T_Diff											difference_type;
-  ///
+  /** \brief . */
   typedef	size_t											distance_type;
 
   //	end Public Types
@@ -160,8 +157,7 @@ public:
   /** @name Constructors. */
   //@{
 
-  ///
-  /** Construct with the iterator of COO elements to transpose.
+  /** \brief Construct with the iterator of COO elements to transpose.
     *
     * Note that this constructor also allows an implicit conversion
     * from the nontransposed iterator to the transposed iterator.

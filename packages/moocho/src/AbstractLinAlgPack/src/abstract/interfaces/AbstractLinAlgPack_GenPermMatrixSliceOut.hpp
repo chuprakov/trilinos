@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Print the contents of a GenPermMatrixSlice object in machine readable format.
+/** \brief Print the contents of a GenPermMatrixSlice object in machine readable format.
  *
  * The format is:
  * 

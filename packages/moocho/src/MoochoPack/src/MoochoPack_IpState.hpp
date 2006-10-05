@@ -114,8 +114,7 @@ class IpState
     /// alpha_vl: step size for vu
     STATE_SCALAR_IQ_DECL(alpha_vu)
 
-    ///
-    /** Construct
+    /** \brief Construct
      *
      * 
      */

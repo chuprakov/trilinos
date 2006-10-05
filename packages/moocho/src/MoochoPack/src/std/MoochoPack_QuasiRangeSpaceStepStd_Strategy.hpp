@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Strategy class for computing a quasi-range-space step by solving
+/** \brief Strategy class for computing a quasi-range-space step by solving
  * the approximate range space problem directly.
  */
 class QuasiRangeSpaceStepStd_Strategy : public QuasiRangeSpaceStep_Strategy {
@@ -43,8 +42,7 @@ public:
   /** @name Overridden from QuasiRangeSpaceStep_Strategy */
   //@{
 
-  ///
-  /** Solves the range space problem with the old decomposition at x_k.
+  /** \brief Solves the range space problem with the old decomposition at x_k.
    *
    * Solves:
    \verbatim
@@ -57,7 +55,7 @@ public:
     ,const Vector& xo, const Vector& c_xo, VectorMutable* v
       );
 
-  ///
+  /** \brief . */
   void print_step( std::ostream& out, const std::string& leading_str ) const;
 
   //@}

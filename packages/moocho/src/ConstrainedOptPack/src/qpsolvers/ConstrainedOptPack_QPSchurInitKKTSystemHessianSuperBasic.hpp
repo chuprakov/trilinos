@@ -34,8 +34,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Implementation of initial KKT system for all variables initially fixed
+/** \brief Implementation of initial KKT system for all variables initially fixed
  * and free where #Ko = B_RR#.
  *
  * In this implementation, #G# must support the \Ref{MatrixHessianSuperBasic}
@@ -49,8 +48,7 @@ public:
   // ////////////////////////////////
   // Overridden from InitKKTSystem
 
-  ///
-  /** Initialize the KKT system where the variables are initiallly 
+  /** \brief Initialize the KKT system where the variables are initiallly 
    * fixed and free and no constraints are in Ko.
    *
    * The Hessian for the QP without the relaxation #G# is represented as

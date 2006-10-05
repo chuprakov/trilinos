@@ -78,20 +78,18 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract interface for inserting a matrix into
+/** \brief Abstract interface for inserting a matrix into
   * a Fortran compatable compressed column sparse
   * matrix format.
   */
 class ConvertToCSC {
 public:
 
-  ///
+  /** \brief . */
   virtual ~ConvertToCSC()
   {}
 
-  ///
-  /** Count the number of nonzero elements in each
+  /** \brief Count the number of nonzero elements in each
     * column of the matrix by incrementing num_in_col
     *
     * @return The number of nonzeros added.
@@ -102,8 +100,7 @@ public:
     , const IVector::value_type*		col_perm
     , size_type*						num_in_col	) const = 0;
     
-  ///
-  /** Inserts the nozero elements.
+  /** \brief Inserts the nozero elements.
     */
   virtual void insert_nonzeros(
       BLAS_Cpp::Transp					trans
@@ -116,8 +113,7 @@ public:
     , FortranTypes::f_dbl_prec*			D_val
     , FortranTypes::f_int*				D_row_i			) const = 0;
 
-  ///
-  /** Inserts the nozero elements scaled so that max|alpha*A| = scaled_max_ele
+  /** \brief Inserts the nozero elements scaled so that max|alpha*A| = scaled_max_ele
     * and returns alpha.
     */
   virtual value_type insert_scaled_nonzeros(
@@ -139,8 +135,7 @@ namespace ConvertToSparseCompressedColumnPack {
   */
 //@{
 
-///
-/** Add a nonzero element for a scalar.
+/** \brief Add a nonzero element for a scalar.
   */
 inline void scalar_insert_nonzero(
     value_type						alpha
@@ -156,8 +151,7 @@ inline void scalar_insert_nonzero(
     D_row_i[ ele - 1 ] = row_i;
 }
 
-///
-/** Add the nonzero elements in a dense vector for each column.
+/** \brief Add the nonzero elements in a dense vector for each column.
   */
 void vector_insert_nonzeros(
     const DVectorSlice&				vs
@@ -169,8 +163,7 @@ void vector_insert_nonzeros(
   , FortranTypes::f_dbl_prec*			D_val
   , FortranTypes::f_int*				D_row_i			);
 
-///
-/** Count the number of nonzeros in a dense matrix for each column.
+/** \brief Count the number of nonzeros in a dense matrix for each column.
   */
 size_type dense_num_in_column(
     size_type							rows
@@ -180,8 +173,7 @@ size_type dense_num_in_column(
   , const IVector::value_type*		col_perm
   , size_type*						num_in_col	);
 
-///
-/** Add the nonzero elements in a dense matrix for each column.
+/** \brief Add the nonzero elements in a dense matrix for each column.
   */
 void dense_insert_nonzeros(
     const DMatrixSlice&				gms
@@ -195,8 +187,7 @@ void dense_insert_nonzeros(
   , FortranTypes::f_dbl_prec*			D_val
   , FortranTypes::f_int*				D_row_i			);
 
-///
-/** Add the nonzero elements in a dense matrix for each column scaled.
+/** \brief Add the nonzero elements in a dense matrix for each column scaled.
   */
 value_type dense_insert_scaled_nonzeros(
     const DMatrixSlice&				gms
@@ -215,7 +206,7 @@ value_type dense_insert_scaled_nonzeros(
   */
 //@{
 
-///
+/** \brief . */
 size_type num_in_column(
     const MatrixOp&				m
   , BLAS_Cpp::Transp					trans
@@ -223,7 +214,7 @@ size_type num_in_column(
   , const IVector::value_type*		col_perm
   , size_type*						num_in_col	);
 
-///
+/** \brief . */
 void insert_nonzeros(
     const MatrixOp&				m
   , BLAS_Cpp::Transp					trans
@@ -236,7 +227,7 @@ void insert_nonzeros(
   , FortranTypes::f_dbl_prec*			D_val
   , FortranTypes::f_int*				D_row_i			);
 
-///
+/** \brief . */
 value_type insert_scaled_nonzeros(
     const MatrixOp&				m
   , BLAS_Cpp::Transp					trans

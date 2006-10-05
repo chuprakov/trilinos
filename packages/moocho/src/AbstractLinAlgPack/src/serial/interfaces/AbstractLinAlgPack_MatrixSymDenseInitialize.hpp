@@ -33,16 +33,14 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Mix-in Interface for initializing a matrix with a dense symmetric matrix.
+/** \brief Mix-in Interface for initializing a matrix with a dense symmetric matrix.
   */
 class MatrixSymDenseInitialize
   : virtual public AbstractLinAlgPack::MatrixBase // doxygen needs the full name
 {
 public:
 
-  ///
-  /** Initialize with a symmetric dense matrix.
+  /** \brief Initialize with a symmetric dense matrix.
    *
    * Through this interface there are absolutly no postconditions
    * as the the state of \c this after this function executes.

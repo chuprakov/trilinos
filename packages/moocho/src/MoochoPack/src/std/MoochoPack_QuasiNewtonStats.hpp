@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Class for storing statistics about the Quasi-Newton updating
+/** \brief Class for storing statistics about the Quasi-Newton updating
   */
 class QuasiNewtonStats {
 public:
@@ -58,7 +57,7 @@ public:
     update_ = update;
   }
 
-  ///
+  /** \brief . */
   EUpdate updated() const
   {
     return update_;

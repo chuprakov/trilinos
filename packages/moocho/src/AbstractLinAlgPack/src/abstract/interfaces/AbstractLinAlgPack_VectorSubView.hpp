@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Concrete subclass for a default sub-view implementation for a Vector
+/** \brief Concrete subclass for a default sub-view implementation for a Vector
  * object.
  *
  * Not all of the methods from Vector are overridden, only those that
@@ -57,18 +56,15 @@ class VectorSubView
 {
 public:
 
-  ///
-  /** Constructs to uninitialized.
+  /** \brief Constructs to uninitialized.
    *
    * Postconditions: see \c set_uninitialized().
    */
   VectorSubView();
-  ///
-  /** Calls <tt>this->initialize()</tt>.
+  /** \brief Calls <tt>this->initialize()</tt>.
    */
   VectorSubView( const vec_ptr_t& full_vec, const Range1D& rng );
-  ///
-  /** Initialize a sub-view based on a full vector.
+  /** \brief Initialize a sub-view based on a full vector.
    *
    * Constructs a view of the vector <tt>this = vec(rng)</tt>.
    *
@@ -86,8 +82,7 @@ public:
    * @param  rng       [in] The range of elements in <tt>full_vec</tt> that <tt>this</tt> vector will represent.
    */
   void initialize( const vec_ptr_t& full_vec, const Range1D& rng );
-  ///
-  /** Set uninitialized()
+  /** \brief Set uninitialized()
    *
    * Postconditions:<ul>
    * <li> <tt>this->dim() == 0</tt>
@@ -95,20 +90,19 @@ public:
    * </ul>
    */
   void set_uninitialized();
-  ///
+  /** \brief . */
   const vec_ptr_t& full_vec() const;
-  ///
+  /** \brief . */
   const VectorSpaceSubSpace& space_impl() const;
 
   /** @name Overridden from Vector */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space() const;
-  ///
+  /** \brief . */
   index_type dim() const;
-  ///
-  /** Calls \c apply_op() on the underlying full vectors.
+  /** \brief Calls \c apply_op() on the underlying full vectors.
    *
    * Preconditions:<ul>
    * <li> <tt>dynamic_cast<const VectorSubView*>(vecs[k]) != NULL</tt>, for <tt>k=0..num_vecs</tt>
@@ -130,13 +124,13 @@ public:
     ,RTOpPack::ReductTarget *reduct_obj
     ,const index_type first_ele, const index_type sub_dim, const index_type global_offset
     ) const;
-  ///
+  /** \brief . */
   value_type get_ele(index_type i) const;
-  ///
+  /** \brief . */
   vec_ptr_t sub_view( const Range1D& rng ) const;
-  ///
+  /** \brief . */
   void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
-  ///
+  /** \brief . */
   void free_sub_vector( RTOpPack::SubVector* sub_vec ) const;
 
   //@}

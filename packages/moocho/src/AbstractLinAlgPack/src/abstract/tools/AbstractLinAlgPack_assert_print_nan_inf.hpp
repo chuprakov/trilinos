@@ -35,12 +35,11 @@
 
 namespace AbstractLinAlgPack {
 
-///
+/** \brief . */
 class NaNInfException : public std::runtime_error
 {public: NaNInfException(const std::string& what_arg) : std::runtime_error(what_arg) {}};
 
-///
-/** This function asserts if a value_type scalare is a NaN or Inf and optionally
+/** \brief This function asserts if a value_type scalare is a NaN or Inf and optionally
  * prints out these entires.
  * 
  * @param  val             [in] Value the check
@@ -62,8 +61,7 @@ class NaNInfException : public std::runtime_error
 bool assert_print_nan_inf( const value_type& val, char name[]
   , bool throw_excpt, std::ostream* out );
 
-///
-/** This function asserts if a vector has any NaN or inf entries and optionally
+/** \brief This function asserts if a vector has any NaN or inf entries and optionally
  * prints out these entires.
  * 
  * @param  v              [in]	Vector slice to check

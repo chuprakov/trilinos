@@ -38,8 +38,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Implements <tt>D = - inv(C) * N</tt> for a variable reduction projection.
+/** \brief Implements <tt>D = - inv(C) * N</tt> for a variable reduction projection.
  *
  * This class is used to implement an implicit matrix defined as
  \verbatim
@@ -84,9 +83,9 @@ public:
   /** @name Public types */
   //@{
   
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixOpNonsing>   mat_nonsing_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixOp>              mat_ptr_t;
 
   //@}
@@ -94,8 +93,7 @@ public:
   /** @name Constructors / initializers */
   //@{
 
-  ///
-  /** Initialize \c this matrix object.
+  /** \brief Initialize \c this matrix object.
    *
    * @param  C  [in] Nonsingular basis matrix object.  This matrix object must
    *            not be altered while \c this is in use or until
@@ -135,8 +133,7 @@ public:
     ,const mat_ptr_t                 &N
     ,const mat_ptr_t                 &D_direct
     );
-  ///
-  /** Set the matrix to uninitialized.
+  /** \brief Set the matrix to uninitialized.
    *
    * Postconditions:<ul>
    * <li> <tt>this->C_ptr().get() == NULL</tt>
@@ -151,24 +148,21 @@ public:
   /** @name Access */
   //@{
 
-  ///
-  /** Return the smart pointer to the aggregate basis matrix object \c C.
+  /** \brief Return the smart pointer to the aggregate basis matrix object \c C.
    *
    * If <tt>this</tt> is the only reference to this matrix object, then
    * <tt>return.count() == 1</tt> will be true.
    */
   const mat_nonsing_ptr_t& C_ptr() const;
   
-  ///
-  /** Return the smart pointer to the aggregate nonbasis matrix object \c N.
+  /** \brief Return the smart pointer to the aggregate nonbasis matrix object \c N.
    *
    * If <tt>this</tt> is the only reference to this matrix object, then
    * <tt>return.count() == 1</tt> will be true.
    */
   const mat_ptr_t& N_ptr() const;
   
-  ///
-  /** Return the smart pointer to the aggregate precomputed matrix object \c D_direct (if set).
+  /** \brief Return the smart pointer to the aggregate precomputed matrix object \c D_direct (if set).
    *
    * If <tt>this</tt> is the only reference to this matrix object, then
    * <tt>return.count() == 1</tt> will be true.
@@ -179,43 +173,43 @@ public:
 
   /** @name Overridden from MatrixBase. */
   //@{
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type cols() const;
   //@}
 
   /** @name Overridden from MatrixOp. */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   const VectorSpace& space_rows() const;
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& M);
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream&) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha
     ,BLAS_Cpp::Transp trans_rhs1
     ,const Vector& v_rhs2, value_type beta
     ) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha
     ,BLAS_Cpp::Transp trans_rhs1
     ,const SpVectorSlice& sv_rhs2, value_type beta
     ) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(
     VectorMutable* v_lhs, value_type alpha
     ,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     ,BLAS_Cpp::Transp M_rhs2_trans
     ,const Vector& v_rhs3, value_type beta
     ) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(
     VectorMutable* v_lhs, value_type alpha
     ,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
@@ -264,7 +258,7 @@ private:
   // //////////////////////////////////
   // Private member functions
 
-  ///
+  /** \brief . */
   void assert_initialized() const;
 
 };	// end class MatrixVarReductImplicit

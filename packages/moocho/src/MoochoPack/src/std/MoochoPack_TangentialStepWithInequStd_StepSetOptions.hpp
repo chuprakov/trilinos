@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for TangentialStepWithInequStd_Step from an
+/** \brief Set options for TangentialStepWithInequStd_Step from an
  * OptionsFromStream object.
  *
  * The default options group name is IndepDirecWithBoundsStd.
@@ -62,7 +61,7 @@ class TangentialStepWithInequStd_StepSetOptions
     TangentialStepWithInequStd_Step >
 {
 public:
-  ///
+  /** \brief . */
   TangentialStepWithInequStd_StepSetOptions(
      TangentialStepWithInequStd_Step* target = NULL
     ,const char opt_grp_name[] = "NullSpaceStepWithInequStd" );

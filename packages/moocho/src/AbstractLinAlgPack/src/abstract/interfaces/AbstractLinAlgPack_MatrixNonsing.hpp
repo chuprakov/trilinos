@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract base class for all nonsingular polymorphic matrices that can solve
+/** \brief Abstract base class for all nonsingular polymorphic matrices that can solve
  * for linear system with but it may not be convienent to compute matrix vector
  * products {abstract}.
  * 
@@ -88,33 +87,33 @@ public:
   /** @name Friends */
   //@{
 
-  ///
+  /** \brief . */
   friend
   void V_InvMtV(
     VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
     ,BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2);
-  ///
+  /** \brief . */
   friend
   void V_InvMtV(
     VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
     ,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2);
-  ///
+  /** \brief . */
   friend
   value_type transVtInvMtV(
     const Vector& v_rhs1, const MatrixNonsing& M_rhs2
     ,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3);
-  ///
+  /** \brief . */
   friend
   value_type transVtInvMtV(
     const SpVectorSlice& sv_rhs1, const MatrixNonsing& M_rhs2
     ,BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3);
-  ///
+  /** \brief . */
   friend
   void M_StInvMtM(
     MatrixOp* m_lhs, value_type alpha
     ,const MatrixNonsing&  M_rhs1,     BLAS_Cpp::Transp trans_rhs1
     ,const MatrixOp&       mwo_rhs2,   BLAS_Cpp::Transp trans_rhs2 );
-  ///
+  /** \brief . */
   friend
   void M_StMtInvM(
     MatrixOp* m_lhs, value_type alpha
@@ -127,14 +126,13 @@ public:
   //@{
 
 #ifndef DOXYGEN_COMPILE
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixNonsing>    mat_mns_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<MatrixNonsing>          mat_mns_mut_ptr_t;
 #endif
 
-  ///
-  /** This exception will be thrown if it turns out at runtime that
+  /** \brief This exception will be thrown if it turns out at runtime that
    * the matrix is numerically singular.
    */
   class SingularMatrix : public std::logic_error
@@ -145,8 +143,7 @@ public:
   /** @name Clone */
   //@{
 
-  ///
-  /** Clone the non-const matrix object (if supported).
+  /** \brief Clone the non-const matrix object (if supported).
    *
    * The default implementation returns NULL which is perfectly acceptable.
    * A matrix object is not required to return a non-NULL value but almost
@@ -154,8 +151,7 @@ public:
    */
   virtual mat_mns_mut_ptr_t clone_mns();
 
-  ///
-  /** Clone the const matrix object (if supported).
+  /** \brief Clone the const matrix object (if supported).
    *
    * The behavior of this method is the same as for the non-const version
    * above except it returns a smart pointer to a const matrix object.
@@ -193,8 +189,7 @@ public:
   /** @name Level-3 BLAS */
   //@{
 
-  ///
-  /** m_lhs = alpha * inv(op(M_rhs1)) * op(mwo_rhs2) (right).
+  /** \brief m_lhs = alpha * inv(op(M_rhs1)) * op(mwo_rhs2) (right).
    *
    * The default implemention performs a <tt>dynamic_cast<MultiVectorMutable>(m_lhs)</tt>.
    * If this \c dynamic_cast<> does not return  \c NULL , then this operation is implemented in terms of
@@ -207,8 +202,7 @@ public:
     ,BLAS_Cpp::Transp trans_rhs1
     ,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
     ) const;
-  ///
-  /** m_lhs = alpha * op(mwo_rhs1) * inv(op(M_rhs2)) (left).
+  /** \brief m_lhs = alpha * op(mwo_rhs1) * inv(op(M_rhs2)) (left).
    *
    * The default implemention performs a <tt>dynamic_cast<MultiVectorMutable>(m_lhs)</tt>.
    * If this \c dynamic_cast<> does not return  \c NULL , then this operation is implemented in terms of

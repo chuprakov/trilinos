@@ -34,8 +34,7 @@
 
 namespace OptionsFromStreamPack {
 
-///
-/** Node class for setting options from a stream.
+/** \brief Node class for setting options from a stream.
   *
   * This class uses the template method pattern to
   * delegate the setting of options.
@@ -43,8 +42,7 @@ namespace OptionsFromStreamPack {
 class SetOptionsFromStreamNode: public SetOptionsFromStream {
 public:
 
-  ///
-  /** Constructs with the name of the options group and the names
+  /** \brief Constructs with the name of the options group and the names
     * of the options.
     *
     *	@param	options_group	The name of the options group to access
@@ -58,8 +56,7 @@ public:
     , int num_options, const char* option_names[]
     , bool exists_optional = true );
 
-  ///
-  /** Overridden from SetOptionsFromStream and calls setOption(...).
+  /** \brief Overridden from SetOptionsFromStream and calls setOption(...).
     *
     * The options group #options_group# is used.  If this options
     * group does not exist and #exists_optional# == false then
@@ -69,8 +66,7 @@ public:
 
 protected:
 
-  ///
-  /** To be overridden by the subclass to set an option given
+  /** \brief To be overridden by the subclass to set an option given
     * its integer position and the option value.
     *
     * The integer possition returned is the possition of the option

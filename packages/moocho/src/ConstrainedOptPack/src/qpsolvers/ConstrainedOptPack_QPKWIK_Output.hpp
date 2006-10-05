@@ -42,9 +42,9 @@ namespace QPKWIK_Output {
   */
 class set_output {
 public:
-  ///
+  /** \brief . */
   set_output(std::ostream* out);
-  ///
+  /** \brief . */
   ~set_output();
 private:
   // not defined and not to be called

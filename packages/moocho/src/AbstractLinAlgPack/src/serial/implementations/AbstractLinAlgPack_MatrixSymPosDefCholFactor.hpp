@@ -43,8 +43,7 @@
 #include "ReleaseResource.hpp"
 
 namespace AbstractLinAlgPack {
-///
-/** A do all class for dense symmetric positive definite matrices
+/** \brief A do all class for dense symmetric positive definite matrices
  * that stores the original matrix and/or its upper cholesky factor.
  *
  * This matrix class supports a boat load of interfaces.  It is ment to be
@@ -118,16 +117,15 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
-  ///
-  /** PostMod class to use with <tt>MemMngPack::AbstractFactorStd</tt>.
+  /** \brief PostMod class to use with <tt>MemMngPack::AbstractFactorStd</tt>.
    */
   class PostMod {
   public:
-    ///
+    /** \brief . */
     PostMod(
       bool   maintain_original = true
       ,bool  maintain_factor   = false
@@ -137,7 +135,7 @@ public:
       ,maintain_factor_(maintain_factor)
       ,allow_factor_(allow_factor)
     {}
-    ///
+    /** \brief . */
     void initialize(MatrixSymPosDefCholFactor* p) const
     {
       p->init_setup(
@@ -156,8 +154,7 @@ public:
     /** @name Constructors/initalizers */
   //@{
 
-  ///
-  /** Initialize to uninitialized.
+  /** \brief Initialize to uninitialized.
    *
    * By default if init_setup(...) is not called then this object
    * will allocate its own storage and maintain_original == true
@@ -165,8 +162,7 @@ public:
    */
   MatrixSymPosDefCholFactor();
 
-  ///
-  /** Initialize with possible storage.
+  /** \brief Initialize with possible storage.
    *
    * This constructor just calls <tt>this->init_setup(...)</tt>.
    */
@@ -181,8 +177,7 @@ public:
     ,value_type                       scale                = 1.0
     );
 
-  ///
-  /** Initial storage setup and possibly the view.
+  /** \brief Initial storage setup and possibly the view.
    *
    * @param  MU_store [in/state]
    *                  If <tt>MU_store != NULL</tt> then this matrix is 
@@ -245,8 +240,7 @@ public:
     ,bool                             set_full_view        = true
     ,value_type                       scale                = 1.0
     );
-  ///
-  /** Resize the view <tt>M</tt> and <tt>U</tt> of <tt>MU_store</tt>.
+  /** \brief Resize the view <tt>M</tt> and <tt>U</tt> of <tt>MU_store</tt>.
    *
    * Preconditions:\begin{itemize}
    * \item [<tt>!allocates_storage()</tt>] <tt>MU_store().rows() > 0</tt>
@@ -299,11 +293,10 @@ public:
     ,size_t           U_l_r
     ,size_t           U_l_c
     );
-  ///
-  /** Set the default pivot tolerance.
+  /** \brief Set the default pivot tolerance.
    */
   void pivot_tols( PivotTolerances pivot_tols );
-  ///
+  /** \brief . */
   PivotTolerances pivot_tols() const;
 
   //@}
@@ -311,8 +304,7 @@ public:
     /**  @name Access representation */
   //@{
 
-  ///
-  /** Get the current setup.
+  /** \brief Get the current setup.
    */
   void get_view_setup(
     size_t            *M_size
@@ -324,28 +316,24 @@ public:
     ,size_t           *U_l_r
     ,size_t           *U_l_c
     ) const;
-  ///
-  /** Return if this object owns and allocates storage.
+  /** \brief Return if this object owns and allocates storage.
    */
   bool allocates_storage() const;
 
-  ///
-  /** Get access to MU_store.
+  /** \brief Get access to MU_store.
    */
   DMatrixSlice& MU_store();
-  ///
+  /** \brief . */
   const DMatrixSlice& MU_store() const;
-  ///
-  /** Get view of U.
+  /** \brief Get view of U.
    */
   DMatrixSliceTri U();
-  ///
+  /** \brief . */
   const DMatrixSliceTri U() const;
-  ///
-  /** Get view of lower part of M.
+  /** \brief Get view of lower part of M.
    */
   DMatrixSliceSym M();
-  ///
+  /** \brief . */
   const DMatrixSliceSym M() const;
 
   //@}
@@ -353,7 +341,7 @@ public:
   /** @name Overridden from MatrixBase */
   //@{
 
-  ///
+  /** \brief . */
   size_type rows() const;
 
   //@}
@@ -361,20 +349,20 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   void zero_out();
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   bool Mp_StM(
     MatrixOp* m_lhs, value_type alpha
     ,BLAS_Cpp::Transp trans_rhs
     ) const;
-  ///
+  /** \brief . */
   bool Mp_StM(
     value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
     );
-  ///
+  /** \brief . */
   bool syrk(
     const MatrixOp      &mwo_rhs
     ,BLAS_Cpp::Transp   M_trans
@@ -387,18 +375,18 @@ public:
   /** @name Overridden from MatrixOpSerial */
   //@{
 
-  ///
+  /** \brief . */
   void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const DVectorSlice& vs_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& vs_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     , BLAS_Cpp::Transp M_rhs2_trans
     , const DVectorSlice& vs_rhs3, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
     , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
     , BLAS_Cpp::Transp M_rhs2_trans
@@ -450,9 +438,9 @@ public:
   /** @name Overridden from MatrixSymOpGetGMSSym */
   //@{
 
-  ///
+  /** \brief . */
   const DenseLinAlgPack::DMatrixSliceSym get_sym_gms_view() const;
-  ///
+  /** \brief . */
   void free_sym_gms_view(const DenseLinAlgPack::DMatrixSliceSym* sym_gms_view) const;
 
   //@}
@@ -460,9 +448,9 @@ public:
   /** @name Overridden from MatrixSymOpGetGMSSymMutable */
   //@{
 
-  ///
+  /** \brief . */
   DenseLinAlgPack::DMatrixSliceSym get_sym_gms_view();
-  ///
+  /** \brief . */
   void commit_sym_gms_view(DenseLinAlgPack::DMatrixSliceSym* sym_gms_view);
 
   //@}
@@ -470,7 +458,7 @@ public:
   /** @name Overridden from MatrixExtractInvCholFactor */
   //@{
 
-  ///
+  /** \brief . */
   void extract_inv_chol( DMatrixSliceTriEle* InvChol ) const;
   
   //@}
@@ -503,7 +491,7 @@ public:
     ,Inertia           inertia
     ,PivotTolerances   pivot_tols
     );
-  ///
+  /** \brief . */
   size_type max_size() const;
   /// Will be (rows(),0,0) if scale < 0 or (0,0,rows()) if scale > 0.
   Inertia inertia() const;
@@ -531,9 +519,9 @@ public:
   /** @name Overridden from Serializable */
   //@{
 
-  ///
+  /** \brief . */
   void serialize( std::ostream &out ) const;
-  ///
+  /** \brief . */
   void unserialize( std::istream &in );
 
   //@}

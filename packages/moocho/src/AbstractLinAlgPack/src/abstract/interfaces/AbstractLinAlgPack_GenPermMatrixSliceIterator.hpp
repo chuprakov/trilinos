@@ -39,22 +39,21 @@ namespace AbstractLinAlgPack {
 
 namespace GenPermMatrixSliceIteratorPack {
 
-///
+/** \brief . */
 enum EOrderedBy { BY_ROW, BY_COL, BY_ROW_AND_COL, UNORDERED };
 
-///
-/** External storage of a row and column indice.
+/** \brief External storage of a row and column indice.
   * This is required for creating a temporary in an assignment operation
   * in a sorting algorithm (like std::sort(...)).
   */
 template< class T >
 class external_row_col_value_type {
 public:
-  ///
+  /** \brief . */
   typedef T			index_type;
-  ///
+  /** \brief . */
   typedef ptrdiff_t	difference_type;
-  ///
+  /** \brief . */
   external_row_col_value_type(
       difference_type	row_off
     , difference_type	col_off
@@ -70,18 +69,17 @@ public:
   index_type		col_j_;
 };
 
-///
-/** Internal storage for the iterator of the
+/** \brief Internal storage for the iterator of the
   * row and column indices.
   */
 template< class T >
 class row_col_value_type {
 public:
-  ///
+  /** \brief . */
   typedef T			index_type;
-  ///
+  /** \brief . */
   typedef ptrdiff_t	difference_type;
-  ///
+  /** \brief . */
   row_col_value_type( 
       difference_type	row_off
     , difference_type	col_off
@@ -89,24 +87,24 @@ public:
     , index_type		col_j[]
     , size_type			nz
     );
-  ///
+  /** \brief . */
   void bind_view( const row_col_value_type<T>& val );
-  ///
+  /** \brief . */
   void increment(difference_type);
-  ///
+  /** \brief . */
   index_type	row_i() const;
-  ///
+  /** \brief . */
   index_type	col_j() const;
   /// May be NULL
   index_type* row_i_ptr() const;
-  ///
+  /** \brief . */
   row_col_value_type<T>& operator=( const row_col_value_type<T>& val );
-  ///
+  /** \brief . */
   operator const external_row_col_value_type<T>() const
   {
     return external_row_col_value_type<T>(row_off_,col_off_,*row_i_,*col_j_);
   }
-  ///
+  /** \brief . */
   row_col_value_type<T>& operator=( const external_row_col_value_type<T>& val )
   {
     assert( row_off_ == val.row_off_ );
@@ -123,7 +121,7 @@ private:
   index_type		*col_j_;
   size_type		nz_;
   int				k_;	// zero based
-  ///
+  /** \brief . */
   void assert_in_range() const;
   /// Not defined and not to be called
   row_col_value_type();
@@ -140,8 +138,7 @@ void swap( row_col_value_type<T>& v1, row_col_value_type<T>& v2 )
   v2 = tmp;
 }
 
-///
-/** This is a full random access iterator for accessing row and colunmn
+/** \brief This is a full random access iterator for accessing row and colunmn
   * indices.
   */
 template< class T >
@@ -151,21 +148,21 @@ class row_col_iterator
 #endif
 {
 public:
-  ///
+  /** \brief . */
   typedef T								index_type;
-  ///
+  /** \brief . */
   typedef	std::random_access_iterator_tag	iterator_category;
-  ///
+  /** \brief . */
   typedef	external_row_col_value_type<T>	value_type;
-  ///
+  /** \brief . */
   typedef row_col_value_type<T>&			reference;
-  ///
+  /** \brief . */
   typedef row_col_value_type<T>*			pointer;
-  ///
+  /** \brief . */
   typedef	ptrdiff_t						difference_type;
   /// Null pointer!
   row_col_iterator();
-  ///
+  /** \brief . */
   row_col_iterator(
      difference_type	row_off
     ,difference_type	col_off
@@ -173,13 +170,13 @@ public:
     ,index_type		col_j[]
     ,size_type			nz			// Number of elements in row_i[] and col_j[]
     );
-  ///
+  /** \brief . */
   row_col_iterator<T>& operator=( const row_col_iterator<T>& itr );
-  ///
+  /** \brief . */
   reference operator*();
-  ///
+  /** \brief . */
   reference operator*() const;
-  ///
+  /** \brief . */
   pointer operator->() const;
   /// itr + a
   row_col_iterator<T>	operator+(difference_type);

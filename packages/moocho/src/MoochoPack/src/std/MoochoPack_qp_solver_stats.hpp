@@ -40,8 +40,7 @@ extern const std::string qp_solver_stats_name;
 
 using ConstrainedOptPack::QPSolverStats;
 
-///
-/** Class for object that attempts to return an IterQuantityAccess<QPSolverStats>
+/** \brief Class for object that attempts to return an IterQuantityAccess<QPSolverStats>
   * from an AlgorithmState object with the name qp_solver_stats_name.
   */
 class qp_solver_stats_iq_member

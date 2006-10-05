@@ -41,8 +41,7 @@
 
 namespace IterationPack {
 
-///
-/** Abstacts a set of iteration quantities for an iterative algorithm.
+/** \brief Abstacts a set of iteration quantities for an iterative algorithm.
   *
   * This object encapsulates a set of iteration quantity access objects.
   * The concrete types of the \c IterQuantity objects are expected to be subclasses
@@ -84,11 +83,11 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef size_t													iq_id_type;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<IterQuantity>		IQ_ptr;
-  ///
+  /** \brief . */
   enum { DOES_NOT_EXIST = INT_MAX }; // should not ever be this many insertions.
 
   /// Thrown if name or id does not exist
@@ -101,14 +100,13 @@ public:
 
   //@}
 
-  ///
+  /** \brief . */
   virtual ~AlgorithmState() {}
 
   /** @name Constructors */
   //@{
 
-  ///
-  /** Construct with an initial guess for the number of iteration quantities.
+  /** \brief Construct with an initial guess for the number of iteration quantities.
     *
     * The iteration counter k is default constructed to zero.
     */
@@ -119,11 +117,11 @@ public:
   /** @name Iteration counter */
   //@{
 
-  ///
+  /** \brief . */
   void k(int k);
-  ///
+  /** \brief . */
   int k() const;
-  ///
+  /** \brief . */
   int incr_k();
 
   //@}
@@ -134,8 +132,7 @@ public:
   /// Return the number of iteration quantities.
   virtual size_t num_iter_quant() const;
 
-  ///
-  /** Inserts the iteration quantity through a RefCountPtr<...> object.
+  /** \brief Inserts the iteration quantity through a RefCountPtr<...> object.
     *
     * Time = O(log(num_iter_quant)), Space = O(1).
     *
@@ -150,8 +147,7 @@ public:
     */
   virtual iq_id_type set_iter_quant(const std::string& iq_name, const IQ_ptr& iq);
 
-  ///
-  /** Removes the iteration quantity with name iq_name.
+  /** \brief Removes the iteration quantity with name iq_name.
     *
     * Time = O(log(num_iter_quant)), Space = O(1).
     *
@@ -165,8 +161,7 @@ public:
     */
   virtual void erase_iter_quant(const std::string& iq_name);
 
-  ///
-  /** Return the iteration quantity id (iq_id) for the iteration quantity.
+  /** \brief Return the iteration quantity id (iq_id) for the iteration quantity.
     *
     * If an iteration quantity with the name <tt>iq_name</tt> does not exist, then
     * the value DOES_NOT_EXIST is returned.
@@ -175,8 +170,7 @@ public:
     */
   virtual iq_id_type get_iter_quant_id(const std::string& iq_name) const;
 
-  ///
-  /** Returns the RefCountPtr<...> for the iteration quantiy with iq_id
+  /** \brief Returns the RefCountPtr<...> for the iteration quantiy with iq_id
     *
     * If this iq_id does not correspond to a valid iteration quantity
     * object then a DoesNotExist exception will be thrown.  If iq_id
@@ -188,7 +182,7 @@ public:
     */
   virtual IQ_ptr& get_iter_quant(iq_id_type iq_id);
 
-  ///
+  /** \brief . */
   virtual const IQ_ptr& get_iter_quant(iq_id_type iq_id) const;
 
   //@}
@@ -196,8 +190,7 @@ public:
   /** @name Iteration quantity access */
   //@{
 
-  ///
-  /** Iteration quantity encapsulation object access with via iq_name.
+  /** \brief Iteration quantity encapsulation object access with via iq_name.
     *
     * Time = O(log(num_iter_quant())), Space = O(1).
     *
@@ -206,10 +199,9 @@ public:
     * </ul>
     */
   virtual IterQuantity& iter_quant(const std::string& iq_name );
-  ///
+  /** \brief . */
   virtual const IterQuantity& iter_quant(const std::string& iq_name ) const;
-  ///
-  /** Iteration quantity encapsulation object access via iq_id.
+  /** \brief Iteration quantity encapsulation object access via iq_id.
     *
     * Time = O(1), Space = O(1).
     *
@@ -217,7 +209,7 @@ public:
     * exception will be thrown.
     */
   virtual IterQuantity& iter_quant(iq_id_type iq_id);
-  ///
+  /** \brief . */
   virtual const IterQuantity& iter_quant(iq_id_type iq_id) const;
 
   //@}
@@ -225,8 +217,7 @@ public:
   /** @name Iteration incrementation */
   //@{
 
-  ///
-  /** iteration quantity forwarding.
+  /** \brief iteration quantity forwarding.
     *
     */
   virtual void next_iteration(bool incr_k = true);
@@ -236,8 +227,7 @@ public:
   /** @name Miscellaneous */
   //@{
 
-  ///
-  /** iteration quantity information dumping.
+  /** \brief iteration quantity information dumping.
     *
     * This function outputs a list with columns:
     *
@@ -280,9 +270,9 @@ private:
   // ///////////////////////////////////////////////////////////
   // Private member functions
   
-  ///
+  /** \brief . */
   iq_name_to_id_t::iterator find_and_assert(const std::string& iq_name);
-  ///
+  /** \brief . */
   iq_name_to_id_t::const_iterator find_and_assert(const std::string& iq_name) const;
 
 };	// end class AlgorithmState

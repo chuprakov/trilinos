@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Mix-in interface for all polymorphic symmetric matrices that support secant updating.
+/** \brief Mix-in interface for all polymorphic symmetric matrices that support secant updating.
  *
  * This interface is ment to be incorrporated in with a concrete <tt>AbstractLinAlgPack::MatrixOp</tt>
  * object that can implement some secant updating method.  Note that this is purely abstract interface\
@@ -55,12 +54,15 @@ class MatrixSymSecant
 {
 public:
 
-  ///
+  /** \brief . */
   class UpdateSkippedException : public std::runtime_error
   {public: UpdateSkippedException(const std::string& what_arg) : std::runtime_error(what_arg) {}};
 
-  ///
-  /** Perform a secant update of the matrix.
+  /** \brief . */
+  class UpdateFailedException : public std::runtime_error
+  {public: UpdateFailedException(const std::string& what_arg) : std::runtime_error(what_arg) {}};
+
+  /** \brief Perform a secant update of the matrix.
    *
    * The update is a secant update:
    *
@@ -76,8 +78,12 @@ public:
    * implementing subclass from having to compute it also.  Again, \c Bs may
    * be used as workspace by subclass so it may change.
    *
-   * If the update is not performed then an "UpdateSkippedException" will be
-   * thrown with an informative error message enclosed.
+   * If the update is not performed then an <tt>UpdateSkippedException</tt>
+   * will be thrown with an informative error message enclosed.
+   *
+   * If the update failed in catestrophic way and the state of <tt>this</tt>
+   * is invalid, then a <tt>UpdateFailedException</tt> will be thrown with an
+   * informative error message enclosed.
    *
    * Subclasses may also throw other unspecified exceptions but they should all
    * be derived from <tt>std::exception</tt>.

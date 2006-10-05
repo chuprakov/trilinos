@@ -37,8 +37,7 @@
 
 namespace MoochoPack {
 
-///
-/** Updates rHL_k using a secant update.
+/** \brief Updates rHL_k using a secant update.
  *
  * This class will initialize rHL = I if it is not already and will handle
  * transitions to new basis selections by reseting rHL = I.  The actually
@@ -51,23 +50,22 @@ class ReducedHessianSecantUpdateStd_Step
 {
 public:
 
-  ///
-  /** <<std comp>> members for the strategy interface object that will
+  /** \brief <<std comp>> members for the strategy interface object that will
    * actually perform the secant update.
    */
   STANDARD_COMPOSITION_MEMBERS( ReducedHessianSecantUpdate_Strategy, secant_update )
 
-  ///
+  /** \brief . */
   ReducedHessianSecantUpdateStd_Step(
     const secant_update_ptr_t& secant_update = Teuchos::null
     );
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   //@}

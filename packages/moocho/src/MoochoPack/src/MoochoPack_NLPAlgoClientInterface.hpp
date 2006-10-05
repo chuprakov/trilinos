@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Interface that smart clients use to set the algorithm configuration
+/** \brief Interface that smart clients use to set the algorithm configuration
  * object that defines the rSQP algorithm to be used to solve the NLP.
  *
  * ToDo: Finish documentation!
@@ -45,7 +44,7 @@ public:
   /** @name Public Types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<NLPAlgoConfig>	config_ptr_t;
 
   //@}
@@ -53,21 +52,20 @@ public:
   /** @name «std comp» members for config. */
   //@{
 
-  ///
+  /** \brief . */
   virtual void set_config(const config_ptr_t& config) = 0;
-  ///
+  /** \brief . */
   virtual config_ptr_t& get_config() = 0;
-  ///
+  /** \brief . */
   virtual const config_ptr_t& get_config() const = 0;
-  ///
+  /** \brief . */
   virtual NLPAlgoConfig& config() = 0;
-  ///
+  /** \brief . */
   virtual const NLPAlgoConfig& config() const = 0;
 
   //@}
   
-  ///
-  /** Causes the algorithm to be configured.
+  /** \brief Causes the algorithm to be configured.
    *
    * Causes the \c config object to configure the algorithm
    * to be ready to solve an NLP or print the algorithm.
@@ -85,7 +83,7 @@ public:
 private:
 
 #ifdef DOXYGEN_COMPILE // Strictly for doxygen diagrams
-  ///
+  /** \brief . */
   NLPAlgoConfig    *config;
 #endif
 

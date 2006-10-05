@@ -38,8 +38,7 @@
 
 namespace MoochoPack {
 
-///
-/** Base class for evaluating a new point for the "Tailored Approach".
+/** \brief Base class for evaluating a new point for the "Tailored Approach".
  *
  * Uses the \c NLPDirect interface to compute <tt>Z = [ -inv(C)*N; I ]</tt>
  * and <tt>py = -inv(C)*c(decomp)</tt> explicitly.  Subclasses determine how
@@ -52,27 +51,26 @@ public:
 
   /** @name Public types */
   //@{
-  ///
+  /** \brief . */
   enum EFDDerivTesting { FD_DEFAULT, FD_TEST, FD_NO_TEST };
   //@}
 
   /** @name Constructors / initializers */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixOp> D_ptr_t;
   /// <<std comp>> members for testing object for NLPDirect
   STANDARD_COMPOSITION_MEMBERS( NLPDirectTester, deriv_tester )
   /// <<std comp>> Members for variable bounds tester object
   STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
-  ///
-  /** Set how and if finite derivatives are tested.
+  /** \brief Set how and if finite derivatives are tested.
    *
    * ToDo: Finish documentation.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDDerivTesting, fd_deriv_testing )
 
-  ///
+  /** \brief . */
   EvalNewPointTailoredApproach_Step(
       const deriv_tester_ptr_t& 	deriv_tester
     , const bounds_tester_ptr_t&	bounds_tester
@@ -83,10 +81,10 @@ public:
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   //@}
@@ -94,8 +92,7 @@ public:
   /** @name To be overridden by subclasses */
   //@{
 
-  ///
-  /** Call to uninitialize the matrices.
+  /** \brief Call to uninitialize the matrices.
    *
    * ToDo: Finish documentation!
    */
@@ -104,8 +101,7 @@ public:
     ,MatrixOp        *Uy
     ) = 0;
 
-  ///
-  /** Overridden by subclass to compute \c py, \c Y and \c Uy.
+  /** \brief Overridden by subclass to compute \c py, \c Y and \c Uy.
    *
    * @param  D    [in/out] Smart pointer to matrix <tt>D = -inv(C)*N</tt>.
    *              On output, D->count() may be incremented in order to
@@ -128,8 +124,7 @@ public:
     ,std::ostream         &out
     ) = 0;
 
-  ///
-  /** Overridden by subclass to recompute \c py and \c Ypy.
+  /** \brief Overridden by subclass to recompute \c py and \c Ypy.
    *
    * @param  D    [in] matrix <tt>D = -inv(C)*N</tt>
    * @param  py   [in/out] On input <tt>py = -inv(C)*c(decomp)</tt>.
@@ -142,8 +137,7 @@ public:
     ,std::ostream           &out
     ) = 0;
   
-  ///
-  /** Overridden by subclass to print how \c py and \c Y are computed.
+  /** \brief Overridden by subclass to print how \c py and \c Y are computed.
    */
   virtual void print_calc_py_Y_Uy(
     std::ostream& out, const std::string& leading_str

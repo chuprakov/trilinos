@@ -33,7 +33,6 @@
 
 namespace AbstractLinAlgPack {
 
-///
 /** \brief Abstract interface for mutable coordinate vectors {abstract}.
  *
  * Objects of this type can act as a target vector of a transformation operation.
@@ -61,37 +60,33 @@ class VectorMutable : virtual public Vector
 {
 public:
 
-  ///
+  /** \brief . */
   using Vector::get_sub_vector;
-  ///
+  /** \brief . */
   using Vector::free_sub_vector;
 
   /** @name Virtual methods with default implementations */
   //@{
 
-  ///
-  /** Assign the elements of <tt>this</tt> vector to a scalar.
+  /** \brief Assign the elements of <tt>this</tt> vector to a scalar.
    *
    * The default implementation of this function uses a transforamtion operator class
    * (see RTOp_TOp_assign_scalar.h) and calls <tt>this->apply_op()</tt>.
    */
   virtual VectorMutable& operator=(value_type alpha);
 
-  ///
-  /** Assign the elements of a vector to <tt>this</tt>.
+  /** \brief Assign the elements of a vector to <tt>this</tt>.
    *
    * The default implementation of this function uses a transforamtion operator class
    * (see RTOp_TOp_assign_vectors.h) and calls <tt>this->apply_op()</tt>.
    */
   virtual VectorMutable& operator=(const Vector& v);
 
-  ///
-  /** Default implementation calls <tt>operator=((const &Vector)v)</tt>.
+  /** \brief Default implementation calls <tt>operator=((const &Vector)v)</tt>.
    */
   virtual VectorMutable& operator=(const VectorMutable& v);
 
-  ///
-  /** Set a specific element of a vector.
+  /** \brief Set a specific element of a vector.
    *
    * Preconditions:<ul>
    * <li> <tt>1 <= i <= this->dim()</tt> (<tt>throw std::out_of_range</tt>)
@@ -109,8 +104,7 @@ public:
    */
   virtual void set_ele( index_type i, value_type val );
 
-  ///
-  /** Create a mutable abstract view of a vector object.
+  /** \brief Create a mutable abstract view of a vector object.
    *
    * This is only a transient view of a sub-vector that is to be immediately used
    * and then released by <tt>RefCountPtr<></tt>.  This function is declared as
@@ -143,28 +137,24 @@ public:
    */
   virtual vec_mut_ptr_t sub_view( const Range1D& rng );
 
-  ///
-  /** Inline member function that simply calls <tt>this->sub_view(Range1D(l,u))</tt>.
+  /** \brief Inline member function that simply calls <tt>this->sub_view(Range1D(l,u))</tt>.
    */
   vec_mut_ptr_t sub_view( const index_type& l, const index_type& u );
 
-  ///
-  /** Zeros this vector.
+  /** \brief Zeros this vector.
    *
    * Calls <tt>operator=(0.0)</tt>.
    */
   virtual void zero();
 
-  ///
-  /** Adds a linear combination of another vector to this vector object.
+  /** \brief Adds a linear combination of another vector to this vector object.
    *
    * Calls <tt>this->apply_op()</tt> with an operator class
    * (see RTOp_TOp_axpy.h).
    */
   virtual void axpy( value_type alpha, const Vector& x );
 
-  ///
-  /** Get a mutable explicit view of a sub-vector.
+  /** \brief Get a mutable explicit view of a sub-vector.
    *
    * This is only a transient view of a sub-vector that is to be immediately used
    * and then released with a call to \c release_sub_vector().
@@ -211,8 +201,7 @@ public:
    */
   virtual void get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec );
 
-  ///
-  /** Free a mutable explicit view of a sub-vector.
+  /** \brief Free a mutable explicit view of a sub-vector.
    *
    * The sub-vector view must have been allocated by \c this->get_sub_vector() first.
    *
@@ -228,8 +217,7 @@ public:
    */
   virtual void commit_sub_vector( RTOpPack::MutableSubVector* sub_vec );
 
-  ///
-  /** Set a specific sub-vector.
+  /** \brief Set a specific sub-vector.
    *
    * After this function returns, the corresponding elements in <tt>this</tt> vector object will be
    * set equal to those in the input vector (the post conditions are obvious).
@@ -248,8 +236,7 @@ public:
    */
   virtual void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
 
-  ///
-  /** Perform a gather or scatter operation with a vector.
+  /** \brief Perform a gather or scatter operation with a vector.
    *
      \verbatim
 
@@ -272,8 +259,7 @@ public:
   /** @name Overridden from Vector */
   //@{
 
-  ///
-  /** Default implementation calls <tt>this->sub_view()</tt> (non-<tt>const</tt>) and then
+  /** \brief Default implementation calls <tt>this->sub_view()</tt> (non-<tt>const</tt>) and then
    * performs an cast to <tt>vec_ptr_t</tt>.
    *
    * This function override is actually needed here for another reason.  Without, the

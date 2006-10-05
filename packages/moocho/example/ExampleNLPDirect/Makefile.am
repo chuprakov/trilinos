@@ -39,3 +39,10 @@ ExampleNLPDirect_DEPENDENCIES = $(common_dependencies)
 ExampleNLPDirect_LDADD = $(common_ldadd)
 
 include $(top_srcdir)/MakefileExeStub.mak
+
+EXTRA_DIST = $(srcdir)/AbstractLinAlgPack_exampleNLPDiagSetup.hpp \
+	$(srcdir)/ExampleNLPDirectRTOps.h \
+	$(srcdir)/NLPInterfacePack_ExampleNLPDirect.hpp \
+	$(srcdir)/NLPInterfacePack_ExampleNLPDirectRun.hpp \
+	$(srcdir)/NLPInterfacePack_ExampleNLPObjGrad.hpp
+

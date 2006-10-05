@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Subclass for serial vector space objects that create <tt>VectorMutableDense</tt>
+/** \brief Subclass for serial vector space objects that create <tt>VectorMutableDense</tt>
  * vector and <tt>MultiVectorMutableDense</tt> multi-vector objects.
  *
  * The default constructor, copy constructor and assignment operators
@@ -49,13 +48,11 @@ public:
   /** @name Constructors / initializers */
   //@{
 
-  ///
-  /** Calls <tt>this->initialize()</tt>.
+  /** \brief Calls <tt>this->initialize()</tt>.
    */
   VectorSpaceSerial( size_type dim = 0 );
 
-  ///
-  /** Initialize given the dimension of the vector space.
+  /** \brief Initialize given the dimension of the vector space.
    *
    * @param  dim   [in] The dimension of the vector space.
    */
@@ -66,8 +63,7 @@ public:
   /** @name Overridden from VectorSpece */
   //@{
 
-  ///
-  /** Returns true if <tt>vec_space.dim() == this->dim()</tt>.
+  /** \brief Returns true if <tt>vec_space.dim() == this->dim()</tt>.
    *
    * The assumption here is that <tt>Vector::get_sub_vector()</tt>
    * and <tt>VectorMutable::get_sub_vector()</tt> can be used to implement
@@ -80,15 +76,15 @@ public:
   index_type dim() const;
   /// Returns a <tt>VectorSpaceFactorySerial</tt> object
   space_fcty_ptr_t small_vec_spc_fcty() const;
-  ///
+  /** \brief . */
   space_ptr_t clone() const;
   /// Returns a <tt>VectorMutableDense</tt> object.
   vec_mut_ptr_t create_member() const;
   /// Returns a <tt>MultiVectorMutableDense</tt> object.
   multi_vec_mut_ptr_t create_members(size_type num_vecs) const;
-  ///
+  /** \brief . */
   space_ptr_t sub_space(const Range1D& rng) const;
-  ///
+  /** \brief . */
   space_ptr_t space(
     const GenPermMatrixSlice  &P
     ,BLAS_Cpp::Transp         P_trans

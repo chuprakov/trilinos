@@ -35,8 +35,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Matrix class for a serial scaled identity matrix.
+/** \brief Matrix class for a serial scaled identity matrix.
  *
  * More operations will be overridden as they are needed by various applications.
  */
@@ -52,7 +51,7 @@ public:
   /// Calls <tt>this->initalize()</tt>
   MatrixSymIdentitySerial( size_type size = 1, value_type scale = 1.0 );
 
-  ///
+  /** \brief . */
   void initialize( size_type size, value_type scale );
 
   //@}
@@ -60,7 +59,7 @@ public:
   /** @name Access */
   //@{
 
-  ///
+  /** \brief . */
   value_type scale() const;
 
   //@}
@@ -68,9 +67,9 @@ public:
   /** Overridden from MatrixBase */
   //@{
 
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type nz() const;
 
   //@}
@@ -78,7 +77,7 @@ public:
   /** Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
 
   //@}
@@ -86,7 +85,7 @@ public:
   /** Overridden from MatrixOpSerial */
   //@{
 
-  ///
+  /** \brief . */
   void Vp_StMtV(
     DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     ,const DVectorSlice& vs_rhs2, value_type beta) const;
@@ -96,7 +95,7 @@ public:
   /** @name Overridden from MatrixNonsingSerial */
   //@{
 
-  ///
+  /** \brief . */
   void V_InvMtV(
     DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1,const DVectorSlice& vs_rhs2 ) const;
 
@@ -105,7 +104,7 @@ public:
   /** @name Overridden from MatrixSymNonsingSerial */
   //@{
 
-  ///
+  /** \brief . */
   void M_StMtInvMtM(
     DMatrixSliceSym* sym_gms_lhs, value_type alpha
     ,const MatrixOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
@@ -117,7 +116,7 @@ public:
   /** @name Overridden from MatrixExtractInvCholFactor */
   //@{
 
-  ///
+  /** \brief . */
   void extract_inv_chol( DMatrixSliceTriEle* InvChol ) const;
 
   //@}

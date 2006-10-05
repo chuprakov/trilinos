@@ -34,23 +34,22 @@
 
 namespace MoochoPack {
 
-///
-/** Abstract interface for an object that directs the selection of a new
+/** \brief Abstract interface for an object that directs the selection of a new
  * decomposition.
  */
 class NewDecompositionSelection_Strategy {
 public:
 
-  ///
+  /** \brief . */
   virtual ~NewDecompositionSelection_Strategy() {}
 
-  ///
+  /** \brief . */
   virtual bool new_decomposition(
     NLPAlgo& algo, Algorithm::poss_type step_poss
     ,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
     ) = 0;
 
-  ///
+  /** \brief . */
   virtual void print_new_decomposition(
     const NLPAlgo& algo, Algorithm::poss_type step_poss
     ,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss

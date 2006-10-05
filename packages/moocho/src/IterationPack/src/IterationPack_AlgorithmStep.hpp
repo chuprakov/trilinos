@@ -35,20 +35,18 @@
 
 namespace IterationPack {
 
-///
-/** Base type for all objects that perform steps in an <tt>Algorithm</tt>.
+/** \brief Base type for all objects that perform steps in an <tt>Algorithm</tt>.
   */
 class AlgorithmStep {
 public:
 
-  ///
+  /** \brief . */
   typedef size_t poss_type;
 
   /** @name Pure virtual functions that must be overridden */
   //@{
 
-  ///
-  /** Called by <tt>Algorithm</tt> to perform a main, pre or post step at step_poss and assoc_step_poss.
+  /** \brief Called by <tt>Algorithm</tt> to perform a main, pre or post step at step_poss and assoc_step_poss.
     *
     * @return Should return false if this step object has terminated the algorithm or
     * redirected control to another step.  In this case it is assumed that <tt>this</tt> called
@@ -67,11 +65,10 @@ public:
   /** @name Virtual functions with default implementations */
   //@{
 
-  ///
+  /** \brief . */
   virtual ~AlgorithmStep() {}
 
-  ///
-  /** Called by <tt>Algorithm</tt> just before the algorithm is run.
+  /** \brief Called by <tt>Algorithm</tt> just before the algorithm is run.
    *
    * This allows step objects to reinitialize themselves just before
    * an algorithm is run.
@@ -86,8 +83,7 @@ public:
     )
     {}
 
-  ///
-  /** Called by <tt>Algorithm</tt> to inform when a runtime configuration change
+  /** \brief Called by <tt>Algorithm</tt> to inform when a runtime configuration change
    * is finihed.
    *
    * This function is only called when the algorithm is already running
@@ -103,8 +99,7 @@ public:
     )
     {}
 
-  ///
-  /** Called by <tt>Algorithm</tt> just after an algorithm is terminiated.
+  /** \brief Called by <tt>Algorithm</tt> just after an algorithm is terminiated.
    *
    * This allows step objects to perform any final processing or cleanup
    * just after an algorithm is finished.
@@ -119,8 +114,7 @@ public:
     )
     {}
 
-  ///
-  /** Called by <tt>Algorithm::print_algorithm()</tt> to print out what this step does in Matlab like format.
+  /** \brief Called by <tt>Algorithm::print_algorithm()</tt> to print out what this step does in Matlab like format.
     *
     * The default does nothing.
     */

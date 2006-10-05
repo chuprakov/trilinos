@@ -38,8 +38,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Concrete class that tests the computed values of the
+/** \brief Concrete class that tests the computed values of the
   * <tt>NLPDirect</tt> interface using finite differences.
   *
   * There are two options for testing the derivatives by finite differences.
@@ -155,13 +154,13 @@ namespace NLPInterfacePack {
 class NLPDirectTester {
 public:
 
-  ///
+  /** \brief . */
   enum ETestingMethod {
     FD_COMPUTE_ALL
     ,FD_DIRECTIONAL
   };
 
-  ///
+  /** \brief . */
   STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
   /// Members for option \c Gf_testing_method()
   STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gf_testing_method )
@@ -193,8 +192,7 @@ public:
     ,bool                     dump_all            = false
     );
 
-  ///
-  /** This function takes an NLP object and its computed derivatives
+  /** \brief This function takes an NLP object and its computed derivatives
    * and function values and validates
    * the functions and the derivatives by evaluating them
    * about the given point <tt>xo</tt>.

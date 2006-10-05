@@ -33,7 +33,7 @@
 
 namespace DenseLinAlgPack {
 
-///
+/** \brief . */
 /* * Perform an update of the Cholesky factor of a symetric matrix (SM = L * L^T)
   * and while maintaining the triangular structure.
   *
@@ -49,7 +49,7 @@ namespace DenseLinAlgPack {
 void update_chol_factor(DMatrixSlice* UpTriM, DVectorSlice* u
   , const DVectorSlice& v);
 
-///
+/** \brief . */
 /* * Perform a jacobi rotation or a matrix about row i.
   *
   * Preconditions: <ul>

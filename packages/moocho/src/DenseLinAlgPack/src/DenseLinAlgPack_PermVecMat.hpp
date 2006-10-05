@@ -68,7 +68,7 @@
 
 namespace DenseLinAlgPack {
 
-///
+/** \brief . */
 /* * Initialize a permutation to the identiy permutation.
   *
   * Preconditions: <ul>
@@ -81,7 +81,7 @@ namespace DenseLinAlgPack {
   */
 void identity_perm(IVector* perm);
 
-///
+/** \brief . */
 /* * Find the inverse permutation (inv_perm) given a permutation vector (perm).
   *
   * Postconditions: <ul>

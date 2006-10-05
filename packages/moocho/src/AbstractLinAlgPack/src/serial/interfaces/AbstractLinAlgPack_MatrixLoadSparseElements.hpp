@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Mix-in interface for loading nonzero elements into a sparse matrix data structure.
+/** \brief Mix-in interface for loading nonzero elements into a sparse matrix data structure.
  *
  * The formats supported are:
  *
@@ -61,14 +60,13 @@ class MatrixLoadSparseElements
 {
 public:
 
-  ///
+  /** \brief . */
   enum EAssumeElementUniqueness {
     ELEMENTS_ASSUME_UNIQUE             ///< Entries assumed have unique row and column indexes (client must enforce this!)
     ,ELEMENTS_ASSUME_DUPLICATES_SUM    ///< Entries allowed with duplicate row and column indexes with the understanding that the values are summed
   };
 
-  ///
-  /** Resize the matrix and reserve space for nonzero elements to be added.
+  /** \brief Resize the matrix and reserve space for nonzero elements to be added.
    *
    * All of the nonzeros in the current matrix are discarded and we start fresh.
    *
@@ -81,8 +79,7 @@ public:
     ,EAssumeElementUniqueness  element_uniqueness = ELEMENTS_ASSUME_DUPLICATES_SUM
     ) = 0;
 
-  ///
-  /** Reinitialize internal counter to load new nonzero values.
+  /** \brief Reinitialize internal counter to load new nonzero values.
    *
    * The row and column index arrays are preserved from the last setup and here
    * the client only wants to set the nonzero values for the same matrix
@@ -92,8 +89,7 @@ public:
    */
   virtual void reset_to_load_values() = 0;
 
-  ///
-  /** Get pointers to buffers to add nonzero elements.
+  /** \brief Get pointers to buffers to add nonzero elements.
    *
    * @param  max_nz_load
    *                  [in] Maximum number of nonzero elements that will be set
@@ -127,8 +123,7 @@ public:
     ,index_type    **col_j
     ) = 0;
 
-  ///
-  /** Commit nonzeros in buffers obtained from \c get_load_nonzeros_buffers().
+  /** \brief Commit nonzeros in buffers obtained from \c get_load_nonzeros_buffers().
    *
    * @param  nz_commit
    *                  [in] Number of nonzero elements to be loaded fron the buffers.  Note that
@@ -162,8 +157,7 @@ public:
     ,index_type    **col_j
     ) = 0;
 
-  ///
-  /** To be called when the matrix construction is finally finished after all
+  /** \brief To be called when the matrix construction is finally finished after all
    * of the nonzero entries have been added.
    *
    * If \c reset_to_load_values() was called to initialize this set of loads then

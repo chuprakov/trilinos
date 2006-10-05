@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Simple <tt>%BasisSystem</tt> subclass the case where the client sets up seperate \c C and \c N matrices.
+/** \brief Simple <tt>%BasisSystem</tt> subclass the case where the client sets up seperate \c C and \c N matrices.
  *
  * This interface is based an implementation where \c C and \c N are manipulated by the application and
  * are concatenated into <tt>Gc = [ C'; N' ]</tt>.  Here, there are no undecomposed equality constraints allowed.
@@ -53,11 +52,11 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const Teuchos::AbstractFactory<MatrixOp> >  fcty_Gc_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<MatrixOpNonsing>                               C_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<MatrixOp>                                      N_ptr_t;
 
   //@}
@@ -65,8 +64,7 @@ public:
   /** @name Static member functions */
   //@{
 
-  ///
-  /** Initialize the composite vector space for <tt>x = [ xD; xI ]</tt> as well as \c var_dep and \c var_indep.
+  /** \brief Initialize the composite vector space for <tt>x = [ xD; xI ]</tt> as well as \c var_dep and \c var_indep.
    *
    * @param  space_xD  [in/out] Vector space for the dependent variables.  On output
    *                   <tt>space_xD.count()</tt> will be incremented by 1.
@@ -110,13 +108,11 @@ public:
     ,VectorSpace::space_ptr_t         *space_x
     );
 
-  ///
-  /** Return a matrix factory object for the composte \c Gc matrix object.
+  /** \brief Return a matrix factory object for the composte \c Gc matrix object.
    */
   static const fcty_Gc_ptr_t factory_Gc();
   
-  ///
-  /** Initialize the Gc matrix object given created from <tt>space_Gc()->create()</tt>.
+  /** \brief Initialize the Gc matrix object given created from <tt>space_Gc()->create()</tt>.
    *
    * Initializes the composite matrix object:
    \verbatim
@@ -160,8 +156,7 @@ public:
     ,MatrixOp                         *Gc
     );
 
-  ///
-  /** Get the non-const aggregate matrices \c C and \c N (or NULL pointers if not initialized).
+  /** \brief Get the non-const aggregate matrices \c C and \c N (or NULL pointers if not initialized).
    *
    * @param  Gc        [in] Composite matrix object <tt>Gc = [ C'; N' ]</tt>
    * @param  C         [out] Pointer to basis matrix object \c C.  If \c Gc has not
@@ -181,8 +176,7 @@ public:
     ,MatrixOp              **N
     );
 
-  ///
-  /** Get the const aggregate matrices C and N.
+  /** \brief Get the const aggregate matrices C and N.
    *
    * @param  Gc        [in] Composite matrix object <tt>Gc = [ C'; N' ]</tt>.  If
    *                   this matrix object has not been initialized with \c C
@@ -213,8 +207,7 @@ public:
    */
   BasisSystemComposite();
 
-  ///
-  /**  Calls <tt>this->initialize()</tt> in a way that is consistant with above helper functions.
+  /** \brief  Calls <tt>this->initialize()</tt> in a way that is consistant with above helper functions.
    */
   BasisSystemComposite(
     const VectorSpace::space_ptr_t       &space_x
@@ -236,8 +229,7 @@ public:
     ,const mat_fcty_ptr_t                &factory_D        = Teuchos::null
     );
   
-  ///
-  /** Initialize.
+  /** \brief Initialize.
    *
    * @param  space_x    [in] Smart pointer to vector space for \c x.
    * @param  var_dep    [in] Range for dependent variables \c xD.
@@ -284,8 +276,7 @@ public:
     ,const mat_fcty_ptr_t                &factory_D        = Teuchos::null
     );
 
-  ///
-  /** Set uninitialized.
+  /** \brief Set uninitialized.
    *
    * Postconditions:<ul>
    * <li> <tt>this->var_dep().size() == 0</tt>
@@ -307,9 +298,9 @@ public:
   /** @name Access */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace::space_ptr_t& space_x() const;
-  ///
+  /** \brief . */
   const VectorSpace::space_ptr_t& space_c() const;
 
   //@}
@@ -317,8 +308,7 @@ public:
   /** @name To be overridden by subclasses */
   //@{
 
-  ///
-  /** Overridden by subclasses to update \c D if a specialized implementation is needed.
+  /** \brief Overridden by subclasses to update \c D if a specialized implementation is needed.
    *
    * The default implementation just relies on the <tt>MultiVectorMutable</tt>
    * interface and the <tt>M_StInvMtV()</tt> method.
@@ -335,15 +325,15 @@ public:
   /** @name Overridden from BasisSystem */
   //@{
 
-  ///
+  /** \brief . */
   const mat_nonsing_fcty_ptr_t factory_C() const;
-  ///
+  /** \brief . */
   const mat_fcty_ptr_t factory_D() const;
-  ///
+  /** \brief . */
   Range1D var_dep() const;
-  ///
+  /** \brief . */
   Range1D var_indep() const;
-  ///
+  /** \brief . */
   void update_basis(
     const MatrixOp          &Gc
     ,MatrixOpNonsing        *C

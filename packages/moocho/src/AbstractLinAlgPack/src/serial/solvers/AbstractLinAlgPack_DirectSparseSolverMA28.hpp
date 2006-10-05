@@ -41,8 +41,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Concreate sparse solver subclass that uses MA28.
+/** \brief Concreate sparse solver subclass that uses MA28.
  *
  * ToDo: Finish documentation!
  */
@@ -52,7 +51,7 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   enum EScalingMethod { NO_SCALING, INITIAL_SCALING, SUCCESSIVE_SCALING };
 
   //@}
@@ -86,8 +85,7 @@ public:
   /** @name Constructors/initializers */
   //@{
 
-  ///
-  /** Default constructor */
+  /** \brief Default constructor */
   DirectSparseSolverMA28(
     value_type          estimated_fillin_ratio  = 10.0
     ,value_type         u                       = 0.1
@@ -104,9 +102,9 @@ public:
   /** @name Overridden from DirectSparseSolver */
   //@{
 
-  ///
+  /** \brief . */
   const basis_matrix_factory_ptr_t basis_matrix_factory() const;
-  ///
+  /** \brief . */
   void estimated_fillin_ratio( value_type estimated_fillin_ratio );
 
   //@}
@@ -116,8 +114,7 @@ protected:
   /** @name Protected types */
   //@{
 
-  ///
-  /** Implements the BasisMatrix object for MA28.
+  /** \brief Implements the BasisMatrix object for MA28.
    */
   class BasisMatrixMA28 : public BasisMatrixImp {
   public:
@@ -125,9 +122,9 @@ protected:
     /** @name Overridden from BasisMatrixImp */
     //@{
 
-    ///
+    /** \brief . */
     Teuchos::RefCountPtr<BasisMatrixImp> create_matrix() const;
-    ///
+    /** \brief . */
     void V_InvMtV(
       VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
       ,const Vector& v_rhs2) const ;
@@ -136,14 +133,13 @@ protected:
 
   }; // end class BasisMatrixMA28
 
-  ///
-  /** Stores the factorization structure for MA28
+  /** \brief Stores the factorization structure for MA28
    */
   class FactorizationStructureMA28 : public FactorizationStructure {
   public:
-    ///
+    /** \brief . */
     friend class DirectSparseSolverMA28;
-    ///
+    /** \brief . */
     friend class BasisMatrixMA28;
   private:
     // /////////////////////////////////////////
@@ -175,18 +171,17 @@ protected:
     index_type  rank_;
     // /////////////////////////////////////////
     // Private member functions
-    ///
+    /** \brief . */
     FactorizationStructureMA28();
   }; // end class FactorizationStructureMA28
 
-  ///
-  /** Stores the factorization nonzeros for MA28
+  /** \brief Stores the factorization nonzeros for MA28
    */
   class FactorizationNonzerosMA28 : public FactorizationNonzeros {
   public:
-    ///
+    /** \brief . */
     friend class DirectSparseSolverMA28;
-    ///
+    /** \brief . */
     friend class BasisMatrixMA28;
   private:
     std::valarray<value_type>	a_; // holds the non-zeros of the factorized matrix 'a'
@@ -197,11 +192,11 @@ protected:
   /** @name Overridden from DirectSparseSolverImp */
   //@{
 
-  ///
+  /** \brief . */
   const Teuchos::RefCountPtr<FactorizationStructure> create_fact_struc() const;
-  ///
+  /** \brief . */
   const Teuchos::RefCountPtr<FactorizationNonzeros> create_fact_nonzeros() const;
-  ///
+  /** \brief . */
   void imp_analyze_and_factor(
     const AbstractLinAlgPack::MatrixConvertToSparse   &A
     ,FactorizationStructure                         *fact_struc
@@ -211,7 +206,7 @@ protected:
     ,size_type                                      *rank
     ,std::ostream                                   *out
     );
-  ///
+  /** \brief . */
   void imp_factor(
     const AbstractLinAlgPack::MatrixConvertToSparse   &A
     ,const FactorizationStructure                   &fact_struc

@@ -36,8 +36,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Base class for all matrices that support basic matrix operations.
+/** \brief Base class for all matrices that support basic matrix operations.
  * 
  * These basic operations are:
  *
@@ -120,29 +119,29 @@ public:
   /** @name Friends */
   //@{
 
-  ///
+  /** \brief . */
   friend
   void Mt_S( MatrixOp* mwo_lhs, value_type alpha );
-  ///
+  /** \brief . */
   friend
   void Mp_StM(
     MatrixOp* mwo_lhs, value_type alpha, const MatrixOp& M_rhs
     , BLAS_Cpp::Transp trans_rhs);
-  ///
+  /** \brief . */
   friend
   void Mp_StMtP(
     MatrixOp* mwo_lhs, value_type alpha
     ,const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
     ,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
     );
-  ///
+  /** \brief . */
   friend
   void Mp_StPtM(
     MatrixOp* mwo_lhs, value_type alpha
     ,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
     ,const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
     );
-  ///
+  /** \brief . */
   friend
   void Mp_StPtMtP(
     MatrixOp* mwo_lhs, value_type alpha
@@ -150,19 +149,19 @@ public:
     ,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
     ,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
     );
-  ///
+  /** \brief . */
   friend
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha, const MatrixOp& M_rhs1
     ,BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2, value_type beta
     );
-  ///
+  /** \brief . */
   friend
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha, const MatrixOp& M_rhs1
     ,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2, value_type beta
     );
-  ///
+  /** \brief . */
   friend
   void Vp_StPtMtV(
     VectorMutable* v_lhs, value_type alpha
@@ -170,7 +169,7 @@ public:
     ,const MatrixOp& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
     ,const Vector& v_rhs3, value_type beta
     );
-  ///
+  /** \brief . */
   friend
   void Vp_StPtMtV(
     VectorMutable* v_lhs, value_type alpha
@@ -178,19 +177,19 @@ public:
     ,const MatrixOp& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
     ,const SpVectorSlice& sv_rhs3, value_type beta
     );
-  ///
+  /** \brief . */
   friend
   value_type transVtMtV(
     const Vector& v_rhs1, const MatrixOp& M_rhs2
     ,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3
     );
-  ///
+  /** \brief . */
   friend
   value_type transVtMtV(
     const SpVectorSlice& sv_rhs1, const MatrixOp& M_rhs2
     ,BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3
     );
-  ///
+  /** \brief . */
   friend
   void syr2k(
     const MatrixOp& M, BLAS_Cpp::Transp M_trans, value_type alpha
@@ -198,7 +197,7 @@ public:
     ,const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
     ,value_type beta, MatrixSymOp* symwo_lhs
     );
-  ///
+  /** \brief . */
   friend
   void Mp_StMtM(
     MatrixOp* mwo_lhs, value_type alpha
@@ -206,7 +205,7 @@ public:
     ,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
     ,value_type beta
     );
-  ///
+  /** \brief . */
   friend
   void syrk(
     const MatrixOp  &mwo_rhs
@@ -222,9 +221,9 @@ public:
   //@{
 
 #ifndef DOXYGEN_COMPILE
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixOp>    mat_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<MatrixOp>          mat_mut_ptr_t;
 #endif
 
@@ -256,8 +255,7 @@ public:
   /** @name Minimal modifying methods */
   //@{
 
-  ///
-  /** M_lhs = 0 :  Zero out the matrix.
+  /** \brief M_lhs = 0 :  Zero out the matrix.
    *
    * The default implementation throws an exception.  This is not
    * the best design but it meets some needs.  Any matrix implementation
@@ -268,8 +266,7 @@ public:
    */
   virtual void zero_out();
 
-  ///
-  /** M_lhs *= alpha : Multiply a matrix by a scalar.
+  /** \brief M_lhs *= alpha : Multiply a matrix by a scalar.
    *
    * The default implementation throws an exception.  This is not
    * the best design but it meets some needs.  Any matrix implementation
@@ -279,8 +276,7 @@ public:
    */
   virtual void Mt_S( value_type alpha );
 
-  ///
-  /** M_lhs = mwo_rhs : Virtual assignment operator.
+  /** \brief M_lhs = mwo_rhs : Virtual assignment operator.
     *
     * The default implementation just throws a std::logic_error
     * exception if it is not assignment to self.  A more specialized
@@ -294,8 +290,7 @@ public:
   /** @name Clone */
   //@{
 
-  ///
-  /** Clone the non-const matrix object (if supported).
+  /** \brief Clone the non-const matrix object (if supported).
    *
    * The primary purpose for this method is to allow a client to capture the
    * current state of a matrix object and be guaranteed that some other client
@@ -309,8 +304,7 @@ public:
    */
   virtual mat_mut_ptr_t clone();
 
-  ///
-  /** Clone the const matrix object (if supported).
+  /** \brief Clone the const matrix object (if supported).
    *
    * The behavior of this method is the same as for the non-const version
    * above except it returns a smart pointer to a const matrix object.
@@ -322,8 +316,7 @@ public:
   /** @name Output */
   //@{
 
-  ///
-  /** Virtual output function.
+  /** \brief Virtual output function.
     *
     * The default implementaion just extracts rows one at
     * a time by calling <tt>this->Vp_StMtV()</tt> with 
@@ -336,8 +329,7 @@ public:
   /** @name Norms */
   //@{
 
-  ///
-  /** Compute a norm of this matrix.
+  /** \brief Compute a norm of this matrix.
    *
    * @param  requested_norm_type
    *                    [in] Determines the requested type of norm to be computed.
@@ -377,8 +369,7 @@ public:
   /** @name Sub-matrix views */
   //@{
 
-  ///
-  /** Create a transient constant sub-matrix view of this matrix (if supported).
+  /** \brief Create a transient constant sub-matrix view of this matrix (if supported).
    *
    * This view is to be used immediatly and then discarded.
    *
@@ -395,8 +386,7 @@ public:
    */
   virtual mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
   
-  ///
-  /** Inlined implementation calls <tt>this->sub_view(Range1D(rl,ru),Range1D(cl,cu))</tt>.
+  /** \brief Inlined implementation calls <tt>this->sub_view(Range1D(rl,ru),Range1D(cl,cu))</tt>.
    */
   mat_ptr_t sub_view(
     const index_type& rl, const index_type& ru
@@ -408,8 +398,7 @@ public:
   /** @name Permuted views */
   //@{
 
-  ///
-  /** Create a permuted view: <tt>M_perm = P_row' * M * P_col</tt>.
+  /** \brief Create a permuted view: <tt>M_perm = P_row' * M * P_col</tt>.
    *
    * @param  P_row  [in] Row permutation.  If <tt>P_row == NULL</tt> then the
    *                indentity permutation is used.
@@ -458,8 +447,7 @@ public:
     ,int                       num_col_part
     ) const;
 
-  ///
-  /** Reinitialize a permuted view: <tt>M_perm = P_row' * M * P_col</tt>.
+  /** \brief Reinitialize a permuted view: <tt>M_perm = P_row' * M * P_col</tt>.
    *
    * @param  P_row  [in] Same as input to \c perm_view().
    * @param  row_part
@@ -505,8 +493,7 @@ protected:
   /** @name Level-1 BLAS */
   //@{
 
-  ///
-  /** mwo_lhs += alpha * op(M_rhs) (BLAS xAXPY).
+  /** \brief mwo_lhs += alpha * op(M_rhs) (BLAS xAXPY).
    *
    * The default implementation does nothing returns false.
    *
@@ -518,8 +505,7 @@ protected:
     ,BLAS_Cpp::Transp trans_rhs
     ) const;
 
-  ///
-  /** M_lhs += alpha * op(mwo_rhs) (BLAS xAXPY).
+  /** \brief M_lhs += alpha * op(mwo_rhs) (BLAS xAXPY).
    *
    * The default implementation does nothing and returns false.
    *
@@ -530,8 +516,7 @@ protected:
     value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
     );
 
-  ///
-  /** mwo_lhs += alpha * op(M_rhs) * op(P_rhs).
+  /** \brief mwo_lhs += alpha * op(M_rhs) * op(P_rhs).
    *
    * The default implementation does nothing and returns false.
    *
@@ -544,8 +529,7 @@ protected:
     ,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
     ) const;
 
-  ///
-  /** M_lhs += alpha * op(mwo_rhs) * op(P_rhs).
+  /** \brief M_lhs += alpha * op(mwo_rhs) * op(P_rhs).
    *
    * The default implementation does nothing and returns false.
    *
@@ -558,8 +542,7 @@ protected:
     ,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
     );
 
-  ///
-  /** mwo_lhs += alpha * op(P_rhs) * op(M_rhs).
+  /** \brief mwo_lhs += alpha * op(P_rhs) * op(M_rhs).
    *
    * The default implementation does nothing and returns false.
    *
@@ -572,8 +555,7 @@ protected:
     ,BLAS_Cpp::Transp M_trans
     ) const;
 
-  ///
-  /** M_lhs += alpha * op(P_rhs) * op(mwo_rhs).
+  /** \brief M_lhs += alpha * op(P_rhs) * op(mwo_rhs).
    *
    * The default implementation does nothing and returns false.
    *
@@ -586,8 +568,7 @@ protected:
     ,const MatrixOp& mwo_rhs, BLAS_Cpp::Transp M_trans
     );
 
-  ///
-  /** mwo_lhs += alpha * op(P_rhs1) * op(M_rhs) * op(P_rhs2).
+  /** \brief mwo_lhs += alpha * op(P_rhs1) * op(M_rhs) * op(P_rhs2).
    *
    * The default implementation does nothing and returns false.
    *
@@ -601,8 +582,7 @@ protected:
     ,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
     ) const;
 
-  ///
-  /** M_lhs += alpha * op(P_rhs1) * op(mwo_rhs) * op(P_rhs2).
+  /** \brief M_lhs += alpha * op(P_rhs1) * op(mwo_rhs) * op(P_rhs2).
    *
    * The default implementation does nothing and returns false.
    *
@@ -662,8 +642,7 @@ protected:
     ,const SpVectorSlice& sv_rhs3
     ) const;
 
-  ///
-  /** Perform a specialized rank-2k update of a dense symmetric matrix of the form:
+  /** \brief Perform a specialized rank-2k update of a dense symmetric matrix of the form:
    *
    * <tt>symwo_lhs += alpha*op(P1')*op(M)*op(P2) + alpha*op(P2')*op(M')*op(P1) + beta*symwo_lhs</tt>
    *
@@ -686,8 +665,7 @@ protected:
   /** @name Level-3 BLAS */
   //@{
 
-  ///
-  /** mwo_lhs = alpha * op(M_rhs1) * op(mwo_rhs2) + beta * mwo_lhs (left) (xGEMM).
+  /** \brief mwo_lhs = alpha * op(M_rhs1) * op(mwo_rhs2) + beta * mwo_lhs (left) (xGEMM).
    *
    * The default implementation does nothing and returns false.
    *
@@ -702,8 +680,7 @@ protected:
     ,value_type beta
     ) const;
 
-  ///
-  /** mwo_lhs = alpha * op(mwo_rhs1) * op(M_rhs2) + beta * mwo_lhs (right) (xGEMM)
+  /** \brief mwo_lhs = alpha * op(mwo_rhs1) * op(M_rhs2) + beta * mwo_lhs (right) (xGEMM)
    *
    * The default implementation does nothing and returns false.
    *
@@ -718,8 +695,7 @@ protected:
     ,value_type beta
     ) const;
 
-  ///
-  /** M_lhs = alpha * op(mwo_rhs1) * op(mwo_rhs2) + beta * mwo_lhs (left) (xGEMM)
+  /** \brief M_lhs = alpha * op(mwo_rhs1) * op(mwo_rhs2) + beta * mwo_lhs (left) (xGEMM)
    *
    * The default implementation does nothing and returns false.
    *
@@ -734,8 +710,7 @@ protected:
     ,value_type beta
     );
   
-  ///
-  /** Perform a rank-k update of a symmetric matrix of the form:
+  /** \brief Perform a rank-k update of a symmetric matrix of the form:
    *
    * <tt>symwo_lhs += alpha*op(M)*op(M') + beta*symwo_lhs</tt>
    *
@@ -753,8 +728,7 @@ protected:
     ,MatrixSymOp      *sym_lhs
     ) const;
   
-  ///
-  /** Perform a rank-k update of a symmetric matrix of the form:
+  /** \brief Perform a rank-k update of a symmetric matrix of the form:
    *
    * <tt>M += alpha*op(mwo_rhs)*op(mwo_rhs') + beta*M</tt>
    *
@@ -819,8 +793,7 @@ void Mp_StM(
   MatrixOp* mwo_lhs, value_type alpha, const MatrixOp& M_rhs
   , BLAS_Cpp::Transp trans_rhs);
 
-///
-/** mwo_lhs += alpha * op(M_rhs) * op(P_rhs).
+/** \brief mwo_lhs += alpha * op(M_rhs) * op(P_rhs).
  *
  * Entry point for (poor man's) multiple dispatch.
  * 
@@ -832,8 +805,7 @@ void Mp_StMtP(
   ,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
   );
 
-///
-/** mwo_lhs += alpha * op(P) * op(M_rhs).
+/** \brief mwo_lhs += alpha * op(P) * op(M_rhs).
  *
  * Entry point for (poor man's) multiple dispatch.
  * 
@@ -845,8 +817,7 @@ void Mp_StPtM(
   ,const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
   );
 
-///
-/** mwo_lhs += alpha * op(P_rhs1) * op(M_rhs) * op(P_rhs2).
+/** \brief mwo_lhs += alpha * op(P_rhs1) * op(M_rhs) * op(P_rhs2).
  *
  * Entry point for (poor man's) multiple dispatch.
  * 
@@ -940,8 +911,7 @@ inline void syr2k(
 /** @name Level-3 BLAS */
 //@{
 
-///
-/** mwo_lhs = alpha * op(mwo_rhs1) * op(mwo_rhs2) + beta * mwo_lhs (right) (xGEMM).
+/** \brief mwo_lhs = alpha * op(mwo_rhs1) * op(mwo_rhs2) + beta * mwo_lhs (right) (xGEMM).
  *
  * This method first calls <tt>mwo_rhs1.Mp_StMtM(...)</tt> to perform the opeation.
  * If <tt>mwo_rhs1.Mp_StMtM(...)</tt> returns false, then <tt>mwo_rhs2.Mp_StMtM(...)</tt>
@@ -960,8 +930,7 @@ void Mp_StMtM(
   ,value_type beta = 1.0
   );
 
-///
-/** Perform a rank-k update of a symmetric matrix of the form:
+/** \brief Perform a rank-k update of a symmetric matrix of the form:
  *
  * <tt>symwo_lhs += alpha*op(mwo_rhs)*op(mwo_rhs') + beta*symwo_lhs</tt>
  *

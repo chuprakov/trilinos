@@ -34,8 +34,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Matrix subclass for variable reduction orthogonal matrix </tt>R = Gc(:,con_decomp)'*Y</tt>.
+/** \brief Matrix subclass for variable reduction orthogonal matrix </tt>R = Gc(:,con_decomp)'*Y</tt>.
  *
  * This matrix class is used to represent the matrix:
  \verbatim
@@ -60,11 +59,11 @@ public:
   /** @name Public types */
   //@{
 #ifndef DOXYGEN_COMPILE
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixOpNonsing>     C_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixOp>                D_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixSymOpNonsing>  S_ptr_t;
 #endif
   //@}
@@ -72,8 +71,7 @@ public:
   /** @name Constructors/initializers */
   //@{
 
-  ///
-  /** Constructs uninitialized.
+  /** \brief Constructs uninitialized.
    *
    * Postconditions:<ul>
    * <li> Same as for <tt>this->set_uninitialized()</tt>.
@@ -88,8 +86,7 @@ public:
     ,const S_ptr_t  &S_ptr
     );
 
-  ///
-  /** Initialize the matrix object.
+  /** \brief Initialize the matrix object.
    *
    * @param  C_ptr  [in]
    * @param  D_ptr  [in]
@@ -119,8 +116,7 @@ public:
     ,const S_ptr_t  &S_ptr
     );
 
-  ///
-  /** Make uninitialized.
+  /** \brief Make uninitialized.
    *
    * Postconditions:<ul>
    * <li> <tt>this->C_ptr().get() == NULL</tt>
@@ -137,11 +133,11 @@ public:
   /** @name Access */
   //@{
 
-  ///
+  /** \brief . */
   const C_ptr_t& C_ptr() const;
-  ///
+  /** \brief . */
   const D_ptr_t& D_ptr() const;
-  ///
+  /** \brief . */
   const S_ptr_t& S_ptr() const;
 
   //@}
@@ -149,17 +145,17 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type cols() const;
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   const VectorSpace& space_rows() const;
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const Vector& v_rhs2, value_type beta ) const;
@@ -169,7 +165,7 @@ public:
   /** @name Overridden from MatrixOpNonsing */
   //@{
 
-  ///
+  /** \brief . */
   void V_InvMtV(
     VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
     , const Vector& v_rhs2 ) const;

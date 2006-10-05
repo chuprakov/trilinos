@@ -36,8 +36,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Testing class for \c BasisSystem interface.
+/** \brief Testing class for \c BasisSystem interface.
  *
  * This testing class is basically a unit tester for \c BasisSystem.  The method \c test_basis_system()
  * runs many different tests to validate the interface and the objects allocated with the interface.
@@ -60,7 +59,7 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   enum EPrintTestLevel {
     PRINT_NOT_SELECTED = 0  ///< The print option has not been selected (will default to PRINT_NONE if not set)
     ,PRINT_NONE        = 1  ///< Don't print anything
@@ -107,8 +106,7 @@ public:
   /** @name Test basis system */
   //@{
  
-  ///
-  /** Test a \c BasisSystem object after <tt>BasisSystem::update_basis()</tt> is called.
+  /** \brief Test a \c BasisSystem object after <tt>BasisSystem::update_basis()</tt> is called.
    *
    * @param  basis_sys
    *              [in] The \c BasisSystem object that \c BasisSystem::update_basis() was called on.

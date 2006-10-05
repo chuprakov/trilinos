@@ -35,8 +35,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** The modified L1 merit function using different penatly parameters for each constriant.
+/** \brief The modified L1 merit function using different penatly parameters for each constriant.
   *
   * phi(x) = f) + sum( mu(j) * abs(c(j)), j = 1,...,m )
   *
@@ -63,7 +62,7 @@ public:
   /** @name Overridden from MeritFuncNLP */
   //@{
 
-  ///
+  /** \brief . */
   value_type value(
     value_type             f
     ,const Vector    *c
@@ -72,10 +71,10 @@ public:
     ,const Vector    *hu
     ) const;
 
-  ///
+  /** \brief . */
   value_type deriv() const;
 
-  ///
+  /** \brief . */
   void print_merit_func(
     std::ostream& out, const std::string& leading_str ) const;
 
@@ -84,8 +83,7 @@ public:
   /** @name Overridden from MeritFuncNLPDirecDeriv */
   //@{
 
-  ///
-  /** If the value n passed to resize(n) does not
+  /** \brief If the value n passed to resize(n) does not
     * equal the size of the vector parameters then
     * an exception #MeritFuncNLP::InvalidInitialization#
     * will be thrown.
@@ -104,13 +102,13 @@ public:
   /** @name Overridden from MeritFuncPenaltyParams */
   //@{
 
-  ///
+  /** \brief . */
   void set_space_c( const VectorSpace::space_ptr_t& space_c );
 
-  ///
+  /** \brief . */
   VectorMutable& set_mu();
 
-  ///
+  /** \brief . */
   const Vector& get_mu() const;
 
   //@}

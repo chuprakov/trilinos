@@ -34,8 +34,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Adds the ability to compute phi(alpha) at alpha of a given set of vectors.
+/** \brief Adds the ability to compute phi(alpha) at alpha of a given set of vectors.
   *
   * Computes <tt>phi( x = sum( alpha^k * d[k], k = 0...p-1 ) )</tt> where 
   * <tt>1 <= p <= 2</tt>.
@@ -43,14 +42,13 @@ namespace ConstrainedOptPack {
 class MeritFuncCalc1DQuadratic : public MeritFuncCalc1D {
 public:
 
-  ///
+  /** \brief . */
   typedef const Vector*   const_VectorWithOp_ptr;
 
   /** @name Constructors */
   //@{
 
-  ///
-  /** The only constructor.
+  /** \brief The only constructor.
     *
     * Note that \c *x and \c *d gets updated as <tt>operator()(alpha)</tt> is called.
     *

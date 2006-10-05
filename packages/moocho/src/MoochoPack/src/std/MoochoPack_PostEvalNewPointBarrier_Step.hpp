@@ -42,8 +42,7 @@
 
 namespace MoochoPack {
 
-///
-/** Standard evaluation step class for extra parameters in primal/dual barrier method.
+/** \brief Standard evaluation step class for extra parameters in primal/dual barrier method.
  *
  * This class calculates \c invXu, \c invXl \c invXu_m_invXl
  *
@@ -56,7 +55,7 @@ class PostEvalNewPointBarrier_Step
 
     /** @name Overridden from AlgorithmStep */
     //@{
-    ///
+    /** \brief . */
     bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
            , poss_type assoc_step_poss);
     

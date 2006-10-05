@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Interface for the creation and maintainance of a basis matrix for a decomposition of
+/** \brief Interface for the creation and maintainance of a basis matrix for a decomposition of
  * linearlized constriants.
  *
  * <b>Overview:</b>
@@ -219,36 +218,34 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<MatrixOp> >           mat_fcty_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<MatrixSymOp> >        mat_sym_fcty_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
-  ///
+  /** \brief . */
   class SingularBasis : public std::runtime_error
   {public: SingularBasis(const std::string& what_arg) : std::runtime_error(what_arg) {}};
-  ///
+  /** \brief . */
   enum EMatRelations { MATRICES_INDEP_IMPS, MATRICES_ALLOW_DEP_IMPS };
 
   //@}
 
-  ///
-  /** Required constructor (calls <tt>initialize()</tt>).
+  /** \brief Required constructor (calls <tt>initialize()</tt>).
    */
   BasisSystem(
     const mat_sym_fcty_ptr_t             &factory_transDtD
     ,const mat_sym_nonsing_fcty_ptr_t    &factory_S
     );
 
-  ///
-  /** Initialize the factory objects for the special matrices for <tt>D'*D</tt> and <tt>S = I + D'*D</tt>.
+  /** \brief Initialize the factory objects for the special matrices for <tt>D'*D</tt> and <tt>S = I + D'*D</tt>.
    *
    * Postconditions:<ul>
    * <li>this->factory_transDtD().get() == factory_transDtD.get()</tt>
@@ -260,35 +257,31 @@ public:
     ,const mat_sym_nonsing_fcty_ptr_t    &factory_S
     );
 
-  ///
+  /** \brief . */
   virtual ~BasisSystem() {}
 
   /** @name Matrix factories */
   //@{
 
-  ///
-  /** Return a matrix factory object for basis <tt>C = [ Gc(var_dep,equ_decomp)';  Gh(var_dep,inequ_decomp)' ]</tt>.
+  /** \brief Return a matrix factory object for basis <tt>C = [ Gc(var_dep,equ_decomp)';  Gh(var_dep,inequ_decomp)' ]</tt>.
    */
   virtual const mat_nonsing_fcty_ptr_t factory_C() const = 0;
   
-  ///
-  /** Return a matrix factory object for sensitivity matrix <tt>D = -inv(C)*N</tt>.
+  /** \brief Return a matrix factory object for sensitivity matrix <tt>D = -inv(C)*N</tt>.
    *
    * It is allowed for this to return \c NULL in which case \c update_basis() will not
    * accept a \c D matrix to be computed.
    */
   virtual const mat_fcty_ptr_t factory_D() const = 0;
 
-  ///
-  /** Return a matrix factory object for auxiliary sensitivity matrix <tt>GcUP = Gc(var_indep,equ_undecomp)' + Gc(var_dep,equ_undecomp)'*D</tt>.
+  /** \brief Return a matrix factory object for auxiliary sensitivity matrix <tt>GcUP = Gc(var_indep,equ_undecomp)' + Gc(var_dep,equ_undecomp)'*D</tt>.
    *
    * It is allowed for this to return \c NULL in which case \c update_basis() will not
    * accept a \c GcUP matrix to be computed.
    */
   virtual const mat_fcty_ptr_t factory_GcUP() const;
 
-  ///
-  /** Returns a matrix factory for the result of <tt>J = D'*D</tt>
+  /** \brief Returns a matrix factory for the result of <tt>J = D'*D</tt>
    * 
    * The resulting matrix is symmetric but is assumed to be singular.
    *
@@ -299,8 +292,7 @@ public:
    */
   virtual const mat_sym_fcty_ptr_t factory_transDtD() const;
   
-  ///
-  /** Returns a matrix factory for the result of <tt>S = I + D'*D</tt>
+  /** \brief Returns a matrix factory for the result of <tt>S = I + D'*D</tt>
    * 
    * The resulting matrix is symmetric and is guarrenteed to be nonsingular.
    *
@@ -315,8 +307,7 @@ public:
   /** @name Return the ranges for variable and constraint partitioning */
   //@{
 
-  ///
-  /** Range of dependent (basic) variables.
+  /** \brief Range of dependent (basic) variables.
    *
    * If there are no dependent variables then <tt>return.size() == 0</tt>.
    * This would be a strange case where there was no basis matrix in which
@@ -328,8 +319,7 @@ public:
    * called.
    */
   virtual Range1D var_dep() const = 0;
-  ///
-  /** Range of independnet (nonbasic) variables.
+  /** \brief Range of independnet (nonbasic) variables.
    *
    * It is possible that the basis matrix may take up all of the degrees of
    * freedom with <tt>var_dep().size() == Gc->rows()</tt>.  In this case, there
@@ -338,8 +328,7 @@ public:
    * however, <tt>return.size() > 0</tt>.
    */
   virtual Range1D var_indep() const = 0;
-  ///
-  /** Range of decomposed general equality constraints.
+  /** \brief Range of decomposed general equality constraints.
    *
    * If there are no decomposed general equality constriants then
    * <tt>return.size() == 0</tt>.  Otherwise, <tt>return.size() > 0</tt>.
@@ -347,8 +336,7 @@ public:
    * The default implementation return <tt>Range1D(1,this->var_dep().size())</tt>
    */
   virtual Range1D equ_decomp() const;
-  ///
-  /** Range of undecomposed general equality constriants.
+  /** \brief Range of undecomposed general equality constriants.
    *
    * If there are no undecomposed equality constriants then
    * <tt>return.size() == 0</tt>.  Otherwise, <tt>return.size() > 0</tt>.
@@ -362,8 +350,7 @@ public:
   /** @name Update matrices */
   //@{
 
-  ///
-  /** Update a basis and posssibly the direct sensitivity matrix for a 
+  /** \brief Update a basis and posssibly the direct sensitivity matrix for a 
    * set of Jacobian matrices.
    *
    * @param  Gc    [in] Jacobian of the equality constriants.

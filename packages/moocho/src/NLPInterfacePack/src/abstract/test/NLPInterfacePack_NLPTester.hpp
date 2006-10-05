@@ -36,8 +36,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Testing class for base NLP interface.
+/** \brief Testing class for base NLP interface.
  *
  * This class is little more than a unit tester for the
  * <tt>NLP</tt> base interface.  This class will call all
@@ -64,8 +63,7 @@ public:
     ,bool    throw_exception  = true
     );
  
-  ///
-  /** Test the NLP interface as the given base point xo.
+  /** \brief Test the NLP interface as the given base point xo.
    *
    * @param  nlp  [in/out] The <tt>NLP</tt> object being tested.  The pointers returned by
    *              <tt>nlp->get_f()</tt>, <tt>nlp->get_c()</tt> and <tt>nlp->get_h()</tt> will

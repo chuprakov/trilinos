@@ -108,8 +108,7 @@ namespace FortranTypes {
   */
 //@{
 
-///
-/** Convert from a C++ (or C) null terminated string to an integer array
+/** \brief Convert from a C++ (or C) null terminated string to an integer array
   * suitable for passing to Fortran and later conversion to a CHARACTER
   * string.
   *
@@ -123,8 +122,7 @@ namespace FortranTypes {
 int convert_to_f_int_string( const char string[], f_int i_string[]
   , f_int* string_len );
 
-///
-/** Convert from a C++ (or C) null terminated string to an integer array
+/** \brief Convert from a C++ (or C) null terminated string to an integer array
   * suitable for passing to Fortran and later conversion to a CHARACTER
   * string.
   *

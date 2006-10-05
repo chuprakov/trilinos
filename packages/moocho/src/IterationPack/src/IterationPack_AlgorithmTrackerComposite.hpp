@@ -36,8 +36,7 @@
 
 namespace IterationPack {
 
-///
-/** This class acts a composite container for other \c AlgorithmTracker objects.
+/** \brief This class acts a composite container for other \c AlgorithmTracker objects.
  *
  * This class exposes a <tt>std::list<AlgorithmTracker*></tt> object and lets the client
  * manipulate the list.  It is up to the client to maintain this list.
@@ -47,25 +46,25 @@ namespace IterationPack {
 class AlgorithmTrackerComposite : public AlgorithmTracker {
 public:
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<AlgorithmTracker>      track_ptr_t;
-  ///
+  /** \brief . */
   typedef std::list<track_ptr_t>                                    track_list_t;
-  ///
+  /** \brief . */
   AlgorithmTrackerComposite(const ostream_ptr_t& journal_out);
   /// Give access to the list of \c AlgorithmTracker object pointers.
   track_list_t& tracks();
-  ///
+  /** \brief . */
   const track_list_t& tracks() const;
 
   /**  @name Overridden from AlgorithmTracker */
   //@{
 
-  ///
+  /** \brief . */
   void initialize();
-  ///
+  /** \brief . */
   void output_iteration(const Algorithm& algo) const;
-  ///
+  /** \brief . */
   void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
 
   //@}

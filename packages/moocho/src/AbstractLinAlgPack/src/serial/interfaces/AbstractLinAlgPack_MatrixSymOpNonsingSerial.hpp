@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract base class for all serial polymorphic symmetric nonsingular matrices that
+/** \brief Abstract base class for all serial polymorphic symmetric nonsingular matrices that
   * can be used to compute matrix-vector products and solve for linear systems relatively
   * efficiently.
   */

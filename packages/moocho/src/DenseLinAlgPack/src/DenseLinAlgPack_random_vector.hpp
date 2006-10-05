@@ -33,12 +33,12 @@
 
 namespace DenseLinAlgPack {
 
-///
+/** \brief . */
 /* * Seed the random number generator
   */
 void seed_random_vector_generator( unsigned int );
 
-///
+/** \brief . */
 /* * Generate a random vector with elements uniformly
   * distrubuted elements.
   * 

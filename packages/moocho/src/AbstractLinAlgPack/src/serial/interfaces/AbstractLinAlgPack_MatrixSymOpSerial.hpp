@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract base class for all <tt>AbstractLinAlgPack::MatrixSymOp</tt> objects
+/** \brief Abstract base class for all <tt>AbstractLinAlgPack::MatrixSymOp</tt> objects
  * implemented in shared memory space.
  *
  * This base class does a mapping from fully abstract linear algebra to shared memory
@@ -50,11 +49,10 @@ class MatrixSymOpSerial
 {
 public:
 
-  ///
+  /** \brief . */
   using MatrixSymOp::Mp_StPtMtP;
 
-  ///
-  /** sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
+  /** \brief sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
     *
     * The default operation is based on <tt>this->Vp_StMtV(...)</tt> and assumes
     * that the matrix is symmetric.  Of course, a more efficient implementation
@@ -67,8 +65,7 @@ public:
     ,value_type beta
     ) const;
 
-  ///
-  /** sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs).
+  /** \brief sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs).
     *
     * The default operation is based on <tt>this->Vp_StMtV(...)</tt> and assumes
     * that the matrix is symmetric.  Of course, a more efficient implementation

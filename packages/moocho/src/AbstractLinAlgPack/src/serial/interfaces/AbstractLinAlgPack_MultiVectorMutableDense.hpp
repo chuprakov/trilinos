@@ -37,8 +37,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** <tt>MultiVectorMutable</tt> "Adapter" subclass for <tt>DenseLinAlgPack::DMatrixSlice</tt>
+/** \brief <tt>MultiVectorMutable</tt> "Adapter" subclass for <tt>DenseLinAlgPack::DMatrixSlice</tt>
  * or <tt>DenseLinAlgPack::DMatrix</tt> object.
  *
  * This class can be used either as a view of a <tt>DenseLinAlgPack::DMatrixSlice</tt> object
@@ -75,38 +74,34 @@ class MultiVectorMutableDense
 {
 public:
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
   /** @name Constructors / initializers */
   //@{
 
-  ///
-  /** Calls <tt>this->initialize(rows,cols)</tt>.
+  /** \brief Calls <tt>this->initialize(rows,cols)</tt>.
    */
   MultiVectorMutableDense(
     const size_type                    rows = 0
     ,const size_type                   cols = 0
     );
-  ///
-  /** Calls <tt>this->initialize(gms,gms_trans,gms_release)</tt>.
+  /** \brief Calls <tt>this->initialize(gms,gms_trans,gms_release)</tt>.
    */
   MultiVectorMutableDense(
     DMatrixSlice                       gms
     ,BLAS_Cpp::Transp                  gms_trans
     ,const release_resource_ptr_t&     gms_release
     );
-  ///
-  /** Call <tt>this->initialize(v,v_release)</tt> with an allocated <tt>DenseLinAlgPack::DVector</tt>
+  /** \brief Call <tt>this->initialize(v,v_release)</tt> with an allocated <tt>DenseLinAlgPack::DVector</tt>
    * object.
    */
   void initialize(
     const size_type                    rows
     ,const size_type                   cols
     );
-  ///
-  /** Initialize with a dense matrix slice.
+  /** \brief Initialize with a dense matrix slice.
    *
    * Note that solve of the method overrides have to allocate a temporary memory
    * if <tt>gms_trans != no_trans</tt> (see \c get_gms_view() and \c output()).
@@ -127,8 +122,7 @@ public:
   /** @name Access */
   //@{
   
-  ///
-  /** Return the non-const dense matrix.
+  /** \brief Return the non-const dense matrix.
    *
    * Note that calling this method may result in the matrix implementation
    * being modified.  Therefore, no other methods on \c this object should be
@@ -136,16 +130,13 @@ public:
    * discarded.
    */
   DMatrixSlice set_gms();
-  ///
-  /** Return a const dense matrix.
+  /** \brief Return a const dense matrix.
    */
   const DMatrixSlice get_gms() const;
-  ///
-  /** Return if underlying matrix is being viewed as the transpose or non-transposed.
+  /** \brief Return if underlying matrix is being viewed as the transpose or non-transposed.
    */
   BLAS_Cpp::Transp gms_trans() const;
-  ///
-  /** Return a <tt>RefCountPtr<></tt> pointer to the object that will
+  /** \brief Return a <tt>RefCountPtr<></tt> pointer to the object that will
    * release the associated resource.
    */
   const release_resource_ptr_t& gms_release() const;
@@ -155,9 +146,9 @@ public:
   /** @name Overridden from MatrixOpGetGMS */
   //@{
 
-  ///
+  /** \brief . */
   const DMatrixSlice get_gms_view() const;
-  ///
+  /** \brief . */
   void free_gms_view(const DMatrixSlice* gms_view) const;
 
   //@}
@@ -165,9 +156,9 @@ public:
   /** @name Overridden from MatrixOpGetGMSMutable */
   //@{
 
-  ///
+  /** \brief . */
   DMatrixSlice get_gms_view();
-  ///
+  /** \brief . */
   void commit_gms_view(DMatrixSlice* gms_view);
 
   //@}
@@ -175,9 +166,9 @@ public:
   /** @name Overridden from MatrixBase */
   //@{
 
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type cols() const;
 
   //@}
@@ -185,35 +176,35 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   void zero_out();
-  ///
+  /** \brief . */
   void Mt_S( value_type alpha );
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& mwo_rhs);
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
-  ///
+  /** \brief . */
   bool Mp_StM(
     MatrixOp* mwo_lhs, value_type alpha
     ,BLAS_Cpp::Transp trans_rhs
     ) const;
-  ///
+  /** \brief . */
   bool Mp_StM(
     value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
     );
-  ///
+  /** \brief . */
   bool syrk(
      BLAS_Cpp::Transp M_trans, value_type alpha
     ,value_type beta, MatrixSymOp* sym_lhs
     ) const;
-  ///
+  /** \brief . */
   bool Mp_StMtM(
     MatrixOp* mwo_lhs, value_type alpha
     ,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
     ,BLAS_Cpp::Transp trans_rhs2
     ,value_type beta ) const;
-  ///
+  /** \brief . */
   bool Mp_StMtM(
     MatrixOp* mwo_lhs, value_type alpha
     ,BLAS_Cpp::Transp trans_rhs1
@@ -225,7 +216,7 @@ public:
   /** @name Overridden from MultiVector */
   //@{
 
-  ///
+  /** \brief . */
   access_by_t access_by() const;
 
   //@}
@@ -233,13 +224,13 @@ public:
   /** @name Overridden from MultiVectorMutable */
   //@{
 
-  ///
+  /** \brief . */
   vec_mut_ptr_t col(index_type j);
-  ///
+  /** \brief . */
   vec_mut_ptr_t row(index_type i);
-  ///
+  /** \brief . */
   vec_mut_ptr_t diag(int k);
-  ///
+  /** \brief . */
   multi_vec_mut_ptr_t mv_sub_view(const Range1D& row_rng, const Range1D& col_rng);
 
   //@}
@@ -247,11 +238,11 @@ public:
   /** @name Overridden from MatrixOpSerial */
   //@{
 
-  ///
+  /** \brief . */
   void Vp_StMtV(
     DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const DVectorSlice& vs_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2, value_type beta) const;
@@ -265,7 +256,7 @@ protected:
   /** @name Overridden from MultiVector */
   //@{
 
-  ///
+  /** \brief . */
   void apply_op(
     EApplyBy apply_by, const RTOpPack::RTOp& primary_op
     ,const size_t num_multi_vecs,      const MultiVector**   multi_vecs
@@ -274,7 +265,7 @@ protected:
     ,const index_type primary_first_ele   , const index_type primary_sub_dim   , const index_type primary_global_offset
     ,const index_type secondary_first_ele , const index_type secondary_sub_dim 
     ) const;
-  ///
+  /** \brief . */
   void apply_op(
     EApplyBy apply_by, const RTOpPack::RTOp& primary_op, const RTOpPack::RTOp& secondary_op
     ,const size_t num_multi_vecs,      const MultiVector**   multi_vecs

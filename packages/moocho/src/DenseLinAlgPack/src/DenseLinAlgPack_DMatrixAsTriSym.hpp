@@ -41,7 +41,7 @@ namespace DenseLinAlgPack {
 // @{
 
 // /////////////////////////////////////////////////////////////////////////////////////
-///
+/** \brief . */
 /* * Aggregate information for a triangular matrix (element-wise) stored in a DMatrix.
   *
   * This is the type to be used as lhs and rhs arguments in element-wise
@@ -49,7 +49,7 @@ namespace DenseLinAlgPack {
   */
 class DMatrixSliceTriEle {
 public:
-  ///
+  /** \brief . */
   DMatrixSliceTriEle(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
     : gms_(const_cast<DMatrixSlice&>(gms)), uplo_(uplo)
   {
@@ -57,23 +57,23 @@ public:
       assert_gms_square(gms);
     #endif
   }
-  ///
+  /** \brief . */
   size_type rows() const {
     return gms_.rows();
   }
-  ///
+  /** \brief . */
   size_type cols() const {
     return gms_.cols();
   }
-  ///
+  /** \brief . */
   DMatrixSlice& gms() {
     return gms_;
   }
-  ///
+  /** \brief . */
   const DMatrixSlice& gms() const {
     return gms_;
   }
-  ///
+  /** \brief . */
   BLAS_Cpp::Uplo	uplo() const {
     return uplo_;
   }
@@ -81,7 +81,7 @@ public:
   DMatrixSliceTriEle* operator&() {
     return this;
   }
-  ///
+  /** \brief . */
   const DMatrixSliceTriEle* operator&() const {
     return this;
   }
@@ -102,14 +102,14 @@ DMatrixSliceTriEle nonconst_tri_ele(DMatrixSlice gms, BLAS_Cpp::Uplo uplo)
 }
 
 inline
-///
+/** \brief . */
 const DMatrixSliceTriEle tri_ele(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
 {
   return DMatrixSliceTriEle(gms, uplo);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////
-///
+/** \brief . */
 /* * Aggregate information for a triangular matrix (structure dependent) stored in a DMatrix.
   *
   * This is the type to be used as a rhs argument in linear algebra operations
@@ -117,7 +117,7 @@ const DMatrixSliceTriEle tri_ele(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
   */
 class DMatrixSliceTri {
 public:
-  ///
+  /** \brief . */
   DMatrixSliceTri(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
     : gms_(const_cast<DMatrixSlice&>(gms)), uplo_(uplo), diag_(diag)
   {
@@ -125,27 +125,27 @@ public:
       assert_gms_square(gms);
     #endif
   }
-  ///
+  /** \brief . */
   size_type rows() const {
     return gms_.rows();
   }
-  ///
+  /** \brief . */
   size_type cols() const {
     return gms_.cols();
   }
-  ///
+  /** \brief . */
   DMatrixSlice& gms() {
     return gms_;
   }
-  ///
+  /** \brief . */
   const DMatrixSlice& gms() const {
     return gms_;
   }
-  ///
+  /** \brief . */
   BLAS_Cpp::Uplo	uplo() const {
     return uplo_;
   }
-  ///
+  /** \brief . */
   BLAS_Cpp::Diag	diag() const {
     return diag_;
   }
@@ -153,7 +153,7 @@ public:
   DMatrixSliceTri* operator&() {
     return this;
   }
-  ///
+  /** \brief . */
   const DMatrixSliceTri* operator&() const {
     return this;
   }
@@ -175,21 +175,21 @@ DMatrixSliceTri nonconst_tri(DMatrixSlice gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Di
 }
 
 inline
-///
+/** \brief . */
 const DMatrixSliceTri tri(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
 {
   return DMatrixSliceTri(gms, uplo, diag);
 }
 
 // /////////////////////////////////////////////////////////////////////////////////////////
-///
+/** \brief . */
 /* * Aggregate information for a symmetric matrix stored in a DMatrix.
   *
   * This is the type to be used as both lhs and rhs arguments in linear algebra operations.
   */
 class DMatrixSliceSym {
 public:
-  ///
+  /** \brief . */
   DMatrixSliceSym(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
     : gms_(const_cast<DMatrixSlice&>(gms)), uplo_(uplo)
   {
@@ -197,23 +197,23 @@ public:
       assert_gms_square(gms);
     #endif
   }
-  ///
+  /** \brief . */
   size_type rows() const {
     return gms_.rows();
   }
-  ///
+  /** \brief . */
   size_type cols() const {
     return gms_.cols();
   }
-  ///
+  /** \brief . */
   DMatrixSlice& gms() {
     return gms_;
   }
-  ///
+  /** \brief . */
   const DMatrixSlice& gms() const {
     return gms_;
   }
-  ///
+  /** \brief . */
   BLAS_Cpp::Uplo	uplo() const {
     return uplo_;
   }
@@ -241,7 +241,7 @@ DMatrixSliceSym nonconst_sym(DMatrixSlice gms, BLAS_Cpp::Uplo uplo)
 }
 
 inline
-///
+/** \brief . */
 const DMatrixSliceSym sym(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
 {
   return DMatrixSliceSym(gms, uplo);

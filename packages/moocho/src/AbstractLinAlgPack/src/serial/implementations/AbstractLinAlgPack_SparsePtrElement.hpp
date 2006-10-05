@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Sparse pointer element type.
+/** \brief Sparse pointer element type.
   *
   * This class abstracts a sparse element of a templated
   * type.  It is ment to be used in a sparse vector.  It
@@ -49,9 +48,9 @@ public:
   /** @name Public Typedefs. */
   //@{
 
-  ///
+  /** \brief . */
   typedef T_Value							value_type;
-  ///
+  /** \brief . */
   typedef T_Indice						indice_type;
 
   //@}
@@ -72,17 +71,17 @@ public:
   /** @name Value and indice access */
   //@{ 
 
-  ///
+  /** \brief . */
   value_type& value()
   {
     return *pvalue_;
   }
-  ///
+  /** \brief . */
   value_type value() const
   {
     return *pvalue_;
   }
-  ///
+  /** \brief . */
   indice_type indice() const
   {
     return indice_;

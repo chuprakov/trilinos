@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Class for storing statistics about the changes in the active set
+/** \brief Class for storing statistics about the changes in the active set
   * of an SQP algorithm
   */
 class ActSetStats {
@@ -67,33 +66,33 @@ public:
     num_drops_indep_   = num_drops_indep;
   }
 
-  ///
+  /** \brief . */
   int num_active() const
   {
     return num_active_;
   }
-  ///
+  /** \brief . */
   int	num_adds() const
   {
     return num_adds_;
   }
-  ///
+  /** \brief . */
   int	num_drops() const
   {
     return num_drops_;
   }
 
-  ///
+  /** \brief . */
   int num_active_indep() const
   {
     return num_active_indep_;
   }
-  ///
+  /** \brief . */
   int	num_adds_indep() const
   {
     return num_adds_indep_;
   }
-  ///
+  /** \brief . */
   int	num_drops_indep() const
   {
     return num_drops_indep_;

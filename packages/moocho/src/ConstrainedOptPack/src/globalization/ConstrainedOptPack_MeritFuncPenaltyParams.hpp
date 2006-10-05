@@ -34,25 +34,23 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** This class provides interface for setting and retrieving a penalty parameter
+/** \brief This class provides interface for setting and retrieving a penalty parameter
   * that many merit functions use {abstract}.
   */
 class MeritFuncPenaltyParams {
 public:
 
-  ///
+  /** \brief . */
   class CanNotResize : public std::logic_error
   {public: CanNotResize(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-  ///
+  /** \brief . */
   virtual ~MeritFuncPenaltyParams() {}
 
   /** @name To be overridden by subclasses */
   //@{
 
-  ///
-  /** Set the vector space for \c to use for the penalty parameters.
+  /** \brief Set the vector space for \c to use for the penalty parameters.
     */
   virtual void set_space_c( const VectorSpace::space_ptr_t& space_c ) = 0;
 

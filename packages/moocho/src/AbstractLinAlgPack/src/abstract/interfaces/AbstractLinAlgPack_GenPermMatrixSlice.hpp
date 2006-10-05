@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Concrete matrix type to represent general permutation (mapping) matrices.
+/** \brief Concrete matrix type to represent general permutation (mapping) matrices.
  *
  * These are matrices who's rows or columns represent eta vectors
  * (i.e. only one nonzero element with the value 1).  These matrices
@@ -56,16 +55,16 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   enum EIdentityOrZero { IDENTITY_MATRIX, ZERO_MATRIX };
 
-  ///
+  /** \brief . */
   typedef GenPermMatrixSliceIteratorPack::EOrderedBy		EOrderedBy;
 
-  ///
+  /** \brief . */
   typedef GenPermMatrixSliceIteratorPack::row_col_iterator<const index_type>
                       const_iterator;
-  ///
+  /** \brief . */
   typedef	ptrdiff_t						difference_type;
 
   //@}
@@ -76,8 +75,7 @@ public:
   /// Construct to a matrix intialized to identity or zero (see initialize(,,,)).
   GenPermMatrixSlice( index_type rows, index_type cols, EIdentityOrZero type );
 
-  ///
-  /** Initialize an identity or zero permutation.
+  /** \brief Initialize an identity or zero permutation.
    *
    * If <tt>type == IDENTITY_MATRIX</tt> then after this function is called <tt>this</tt> will
    * represent <tt>Q = [ I; 0 ]</tt> if <tt>rows > cols</tt> or <tt>Q = [ I, 0 ]</tt>
@@ -96,8 +94,7 @@ public:
    */
   void initialize( index_type rows, index_type cols, EIdentityOrZero type );
 
-  ///
-  /** Initialize.
+  /** \brief Initialize.
    *
    *	@param	rows	[in] Number of rows in matrix
    *	@param	cols	[in] Number of columns in matrix
@@ -150,8 +147,7 @@ public:
     ,bool				test_setup = false
     );
 
-  ///
-  /** Initialize and sort.
+  /** \brief Initialize and sort.
     *
     * This is the same as the initialize(...) function except that
     * this function will actually sort the entries by row or
@@ -188,27 +184,25 @@ public:
     ,bool				test_setup = false
     );
     
-  ///
-  /** Bind the view of another GenPermMatrixSlice object.
+  /** \brief Bind the view of another GenPermMatrixSlice object.
     *
     * After construction these objects will share points to
     * the same row_i[] and col_j[] arrays.
     */
   void bind( const GenPermMatrixSlice& gpms );
 
-  ///
+  /** \brief . */
   index_type rows() const;
-  ///
+  /** \brief . */
   index_type cols() const;
-  ///
+  /** \brief . */
   index_type nz() const;
-  ///
+  /** \brief . */
   EOrderedBy ordered_by() const;
-  ///
+  /** \brief . */
   bool is_identity() const;
 
-  ///
-  /** Lookup the ith row index for the nonzero entry in the jth column
+  /** \brief Lookup the ith row index for the nonzero entry in the jth column
    * if it exists.
    *
    * This function will return 0 if the index is not found.  If 
@@ -226,8 +220,7 @@ public:
    */
   index_type lookup_row_i(index_type col_j) const;
 
-  ///
-  /** Lookup the jth column index for the nonzero entry in the ith row
+  /** \brief Lookup the jth column index for the nonzero entry in the ith row
    * if it exists.
    *
    * This function will return 0 if the index is not found.  If 
@@ -248,8 +241,7 @@ public:
   /** @name Iterator Access. */
   //@{
 
-  ///
-  /** Return a random access iterator for accessing which row and column that each
+  /** \brief Return a random access iterator for accessing which row and column that each
    * nonzero 1.0 entry is located at.
    *
    * Preconditions:<ul>
@@ -275,8 +267,7 @@ public:
 
   //@}
 
-  ///
-  /** Create a submatrix by row, by column.
+  /** \brief Create a submatrix by row, by column.
     *
     * If nz > 1 and this->ordered_by() == BY_ROW then ordered_by
     * must also equal BY_ROW or if this->ordered_by() == BY_COL
@@ -345,7 +336,7 @@ private:
     ,std::ostringstream &omsg
     );
 
-  ///
+  /** \brief . */
   void validate_not_identity() const;
   
   /// not defined and not to be called

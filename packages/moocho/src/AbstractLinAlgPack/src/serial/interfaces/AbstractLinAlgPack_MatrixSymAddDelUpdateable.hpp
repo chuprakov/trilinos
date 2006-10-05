@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Mix-in Interface for updating a serial symmetric matrix by adding and deleting
+/** \brief Mix-in Interface for updating a serial symmetric matrix by adding and deleting
  * rows and columns.
  *
  * This interface is designed to allow objects of this type to be used
@@ -119,10 +118,9 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   enum EEigenValType { EIGEN_VAL_POS, EIGEN_VAL_NEG, EIGEN_VAL_ZERO, EIGEN_VAL_UNKNOWN };
-  ///
-  /** Struct for the inertia of the matrix.
+  /** \brief Struct for the inertia of the matrix.
    *
    * Any or all of the values <tt>neg_eigens</tt>, <tt>zero_eigens</tt> or <tt>pos_eigens</tt>
    * may be <tt>UNKNOWN</tt>.
@@ -138,15 +136,14 @@ public:
       ,zero_eigens(zero_eigen_vals)
       ,pos_eigens(pos_eigen_vals)
       {}
-    ///
+    /** \brief . */
     int  neg_eigens;
-    ///
+    /** \brief . */
     int  zero_eigens;
-    ///
+    /** \brief . */
     int  pos_eigens;
   }; 
-  ///
-  /** Struct for pivot tolerances to be used when initializing, and augmenting
+  /** \brief Struct for pivot tolerances to be used when initializing, and augmenting
    * and deleting rows and columns.
    */
   struct PivotTolerances {
@@ -165,11 +162,11 @@ public:
       ,singular_tol(_singular_tol)
       ,wrong_inertia_tol(_wrong_inertia_tol)
       {}
-    ///
+    /** \brief . */
     value_type warning_tol;
-    ///
+    /** \brief . */
     value_type singular_tol;
-    ///
+    /** \brief . */
     value_type wrong_inertia_tol;
   };
   /// Thrown if the matrix is near singular as a warning.
@@ -202,12 +199,11 @@ public:
   /** @name Public members to be overridden */
   //@{
 
-  ///
+  /** \brief . */
   virtual ~MatrixSymAddDelUpdateable()
   {}
 
-  ///
-  /** Initialize to a 1x1 matrix.
+  /** \brief Initialize to a 1x1 matrix.
    *
    * Since this is a 1x1 matrix the inetia is given by the sign
    * of alpha.
@@ -221,8 +217,7 @@ public:
     , size_type   max_size
     ) = 0;
 
-  ///
-  /** Initialize given a symmetric matrix.
+  /** \brief Initialize given a symmetric matrix.
    *
    * The behavior of this function will vary based on the subclass that implements it.
    * Some subclasses may require that <tt>A</tt> be nonsingular and therefore <tt>inertia.zero_eigens</tt>
@@ -251,26 +246,22 @@ public:
     ,PivotTolerances   pivot_tols            = PivotTolerances()
     ) = 0;
 
-  ///
-  /** Return the maximum size the matrix is allowed to become.
+  /** \brief Return the maximum size the matrix is allowed to become.
    */
   virtual size_type max_size() const = 0;
 
-  ///
-  /** Return the inertia of the matrix (if it is known).
+  /** \brief Return the inertia of the matrix (if it is known).
    * If any of the members of the inertia is not known then
    * they may be set to <tt>Inertia::UNKNOWN</tt>.  If the matrix is
    * nonsingular then <tt>return.zero_eigens == 0</tt> will be true.
    */
   virtual Inertia inertia() const = 0;
 
-  ///
-  /** Set the matrix to uninitialized.
+  /** \brief Set the matrix to uninitialized.
    */
   virtual void set_uninitialized() = 0;
 
-  ///
-  /** Update by adding a symmetric row and column.
+  /** \brief Update by adding a symmetric row and column.
    *
    * The update performed is:
    \verbatim
@@ -322,8 +313,7 @@ public:
     ,PivotTolerances   pivot_tols            = PivotTolerances()
     ) = 0;
 
-  ///
-  /** Update by deleteing a symmetric row and column.
+  /** \brief Update by deleteing a symmetric row and column.
    *
    \verbatim
    

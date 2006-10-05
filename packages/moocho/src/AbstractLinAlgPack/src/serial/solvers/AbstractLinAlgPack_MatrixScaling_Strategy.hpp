@@ -31,15 +31,14 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract interface for sparse matrix scaling strategies
+/** \brief Abstract interface for sparse matrix scaling strategies
  *
  * ToDo: Finish documentation!
  */
 class MatrixScaling_Strategy {
 public:
 
-  ///
+  /** \brief . */
   virtual ~MatrixScaling_Strategy() {}
 
   /** @name Pure virtual methods to be overridden by subclasses */

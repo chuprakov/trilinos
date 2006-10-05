@@ -80,8 +80,7 @@ public:
 class Constraints;
 class QP;
 
-///
-/** Represents the QP to be solved by QPSchur {abstract}.
+/** \brief Represents the QP to be solved by QPSchur {abstract}.
  *
  * In order to solve a QP, clients must define subclasses
  * for this interface and the \c Constraints interface
@@ -157,33 +156,33 @@ public:
   // /////////////////
   // Public Types
 
-  ///
+  /** \brief . */
   typedef vector_one_based_checked<EBounds>		x_init_t;
-  ///
+  /** \brief . */
   typedef vector_one_based_checked<size_type>		l_x_X_map_t;
-  ///
+  /** \brief . */
   typedef vector_one_based_checked<size_type>		i_x_X_map_t;
 
-  ///
+  /** \brief . */
   typedef QPSchurPack::Constraints				Constraints;
 
   // /////////////////
   // Public Interface
 
-  ///
+  /** \brief . */
   virtual ~QP()
   {}
 
   // ///////////////////////////////////////
   // Initial active set independent members 
 
-  ///
+  /** \brief . */
   virtual size_type n() const = 0;
-  ///
+  /** \brief . */
   virtual size_type m() const = 0;
-  ///
+  /** \brief . */
   virtual const DVectorSlice g() const = 0;
-  ///
+  /** \brief . */
   virtual const MatrixSymOp& G() const = 0;
   /// If m == 0 then don't call this, it may throw an exception or worse.
   virtual const MatrixOp& A() const = 0;
@@ -191,11 +190,10 @@ public:
   // /////////////////////////////////////
   // Initial active set specific members
 
-  ///
+  /** \brief . */
   virtual size_type n_R() const = 0;
 
-  ///
-  /** Return the status of a variable initially.
+  /** \brief Return the status of a variable initially.
    *
    * For 1 <= i <= n:
    \verbatim
@@ -207,8 +205,7 @@ public:
    */
   virtual const x_init_t& x_init() const = 0;
 
-  ///
-  /** Map from full x(i) to initially fixed x_X(l).
+  /** \brief Map from full x(i) to initially fixed x_X(l).
    *
    * For 1 <= i <= n:
    * 
@@ -221,8 +218,7 @@ public:
    */
   virtual const l_x_X_map_t& l_x_X_map() const = 0;
 
-  ///
-  /** Map from initially fixed x_X(l) to full x(i).
+  /** \brief Map from initially fixed x_X(l) to full x(i).
    *
    * For 1 <= l <= n_X:
    * 
@@ -233,7 +229,7 @@ public:
    */
   virtual const i_x_X_map_t& i_x_X_map() const = 0;
 
-  ///
+  /** \brief . */
   /* The bounds of the initially fixed variables.
    *
    * For 1 <= l <= n_X:
@@ -253,23 +249,22 @@ public:
   /// (Q_X().ordered_by() == BY_ROW)
   virtual const GenPermMatrixSlice& Q_X() const = 0;
 
-  ///
+  /** \brief . */
   virtual const MatrixSymOpNonsing& Ko() const = 0;
 
-  ///
+  /** \brief . */
   virtual const DVectorSlice fo() const = 0;
 
   // //////////////////////////////////////////////////////////
   // Additional constaints for cl_bar <= A_bar'*x <= cu_bar
 
-  ///
+  /** \brief . */
   virtual Constraints& constraints() = 0;
 
-  ///
+  /** \brief . */
   virtual const Constraints& constraints() const = 0;
 
-  ///
-  /** Dump the definition of the QP to a stream.
+  /** \brief Dump the definition of the QP to a stream.
    *
    * This function is only to be used for debugging small problems.
    */
@@ -277,8 +272,7 @@ public:
 
 };	// end class QP
 
-///
-/** Represents the extra constraints in the QP to be satisfied
+/** \brief Represents the extra constraints in the QP to be satisfied
  * by the schur complement QP solver QPSchur {abstract}.
  *
  * This class is only ment to be used in conjunction with the class \c QP
@@ -321,28 +315,27 @@ public:
 class Constraints {
 public:
 
-  ///
+  /** \brief . */
   enum EPickPolicy { ANY_VIOLATED, MOST_VIOLATED };
 
-  ///
+  /** \brief . */
   virtual ~Constraints() {}
 
-  ///
+  /** \brief . */
   virtual size_type n() const = 0;
   
-  ///
+  /** \brief . */
   virtual size_type m_breve() const = 0;
 
-  ///
+  /** \brief . */
   virtual const MatrixOp& A_bar() const = 0;
   
   /// Set the policy used to pick a violated constraint.
   virtual void pick_violated_policy( EPickPolicy pick_policy ) = 0;
-  ///
+  /** \brief . */
   virtual EPickPolicy pick_violated_policy() const = 0;
 
-  ///
-  /** Pick a violated constraint.
+  /** \brief Pick a violated constraint.
    *
    * @param	x			 [in] Trial point to pick a violated constraint at.
    * @param	j_viol		 [out] Indice of violated constraint.  j_viol = 0 if
@@ -359,13 +352,11 @@ public:
     ,value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
     ) const = 0;
 
-  ///
-  /** Inform to ignore the jth constraint the next time pick_violated(...) is called.
+  /** \brief Inform to ignore the jth constraint the next time pick_violated(...) is called.
    */
   virtual void ignore( size_type j ) = 0;
 
-  ///
-  /** Return the bound for a constraint.
+  /** \brief Return the bound for a constraint.
    *
    * @param	j	[in] Indice of the constraint of the bound to obtain.
    * @param	bnd	[in] Which bound to obtain (UPPER or LOWER).
@@ -381,8 +372,7 @@ public:
 
 }	// end namespace QPSchurPack 
 
-///
-/** Solves a Quadratic Program with a dual QP method using a schur complement
+/** \brief Solves a Quadratic Program with a dual QP method using a schur complement
  * factorization.
  *
  * See the paper "QPSchur: A Primal-Dual Active-Set Quadratic Programming
@@ -395,9 +385,9 @@ public:
   /** @name Public Types */
   //@{
 
-  ///
+  /** \brief . */
   typedef QPSchurPack::QP               QP;
-  ///
+  /** \brief . */
   typedef MatrixSymAddDelUpdateable     MSADU;
   /// Thrown if a test failed
   class TestFailed : public std::logic_error
@@ -446,103 +436,87 @@ public:
   /// Schur complement matrix object S_hat
   STANDARD_COMPOSITION_MEMBERS( MatrixSymAddDelUpdateableWithOpNonsingular, schur_comp )
 
-  ///
-  /** Set the maximum number of primal-dual QP iterations to take.
+  /** \brief Set the maximum number of primal-dual QP iterations to take.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, max_iter )
 
-  ///
-  /** Set the maximum wall clock runtime (in minutes).
+  /** \brief Set the maximum wall clock runtime (in minutes).
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_real_runtime )
 
-  ///
-  /** Set the feasibility tolerance for the constriants.
+  /** \brief Set the feasibility tolerance for the constriants.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_tol )
 
-  ///
-  /** Set a looser feasibility tolerance ( > feas_tol )
+  /** \brief Set a looser feasibility tolerance ( > feas_tol )
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, loose_feas_tol )
 
-  ///
-  /** Set the tolerence where a scaled Langrange multiplier is considered
+  /** \brief Set the tolerence where a scaled Langrange multiplier is considered
    * degenerate.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, dual_infeas_tol )
 
-  ///
-  /** Set the tolerence for the size of the step in the primal space that is considered
+  /** \brief Set the tolerence for the size of the step in the primal space that is considered
    * to be a near infinite step.  This is used to determine if the KKT
    * system is near singular.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, huge_primal_step )
 
-  ///
-  /** Set the tolerence for the size of the step in the dual space that is considered
+  /** \brief Set the tolerence for the size of the step in the dual space that is considered
    * to be a near infinite step.  This is used to determine if the constriants
    * are infeasible.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, huge_dual_step )
 
-  ///
-  /** <<std member comp>> members for the warning tolerance for tests.
+  /** \brief <<std member comp>> members for the warning tolerance for tests.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
 
-  ///
-  /** <<std member comp>> members for the error tolerance for tests.
+  /** \brief <<std member comp>> members for the error tolerance for tests.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 
-  ///
-  /** Set the minimum number of refinement iterations to perform
+  /** \brief Set the minimum number of refinement iterations to perform
    * when using iterative refinement.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, iter_refine_min_iter )
     
-  ///
-  /** Set the maximum number of refinement iterations to perform
+  /** \brief Set the maximum number of refinement iterations to perform
    * when using iterative refinement.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, iter_refine_max_iter )
 
-  ///
-  /** Set the maxinum scaled tolerance the residual of the optimality conditions
+  /** \brief Set the maxinum scaled tolerance the residual of the optimality conditions
    * must be before terminating iterative refinement.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, iter_refine_opt_tol )
 
-  ///
-  /** Set the maxinum scaled tolerance the residual of the feasibility conditions
+  /** \brief Set the maxinum scaled tolerance the residual of the feasibility conditions
    * must be before terminating iterative refinement.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, iter_refine_feas_tol )
 
-  ///
-  /** Set whether iterative refinement is automatically used once the solution
+  /** \brief Set whether iterative refinement is automatically used once the solution
    * is found.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, iter_refine_at_solution )
     
-  ///
-  /** Set whether a singular initial schur complement will attempted to be
+  /** \brief Set whether a singular initial schur complement will attempted to be
    * salvaged by adding as many nonsingular rows/cols as possible.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, salvage_init_schur_comp )
 
-  ///
-  /** Set the tolerances to use when updating the schur complement.
+  /** \brief Set the tolerances to use when updating the schur complement.
    */
   void pivot_tols( MSADU::PivotTolerances pivot_tols );
-  ///
+  /** \brief . */
   MSADU::PivotTolerances pivot_tols() const;
 
-  ///
+  /** \brief . */
   virtual ~QPSchur() {}
 
-  ///
+  /** \brief . */
   QPSchur(
     const schur_comp_ptr_t&   schur_comp           = Teuchos::null
     ,size_type                max_iter             = 100
@@ -563,8 +537,7 @@ public:
     ,MSADU::PivotTolerances   pivot_tols = MSADU::PivotTolerances( 1e-8,1e-11,1e-11 )
     );
 
-  ///
-  /** Solve a QP.
+  /** \brief Solve a QP.
    *
    * If the initial schur complement turns out to have the wrong inertia then
    * the QP is nonconvex, and the exception \c WrongInteriaUpdateExecption will be thrown.
@@ -632,8 +605,7 @@ public:
 
   //@}
 
-  ///
-  /** Represents the matrix U_hat. 
+  /** \brief Represents the matrix U_hat. 
    *
    * This matrix is only ment to be an aggregate of an <tt>ActiveSet</tt>
    * object and is only managed by the <tt>ActiveSet</tt> object.  It is made
@@ -653,31 +625,31 @@ public:
       ,const GenPermMatrixSlice	*P_XF_hat
       ,const GenPermMatrixSlice	*P_plus_hat
       );
-    ///
+    /** \brief . */
     const MatrixSymOp& G() const
     {	return *G_;	}
-    ///
+    /** \brief . */
     const MatrixOp* A() const
     {	return A_;	}
-    ///
+    /** \brief . */
     const MatrixOp& A_bar() const
     {	return *A_bar_;	}
-    ///
+    /** \brief . */
     const GenPermMatrixSlice& Q_R() const
     {	return *Q_R_; }
-    ///
+    /** \brief . */
     const GenPermMatrixSlice& P_XF_hat() const
     {	return *P_XF_hat_;	}
-    ///
+    /** \brief . */
     const GenPermMatrixSlice& P_plus_hat() const
     {	return *P_plus_hat_;	}
     
     /** @name Overridden from MatrixBase */
     //@{{
 
-    ///
+    /** \brief . */
     size_type rows() const;
-    ///
+    /** \brief . */
     size_type cols() const;
 
     //@}
@@ -685,12 +657,12 @@ public:
     /** @name Overridden from MatrixOpSerial */
     //@{
 
-    ///
+    /** \brief . */
     void Vp_StMtV(
       DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
       ,const DVectorSlice& vs_rhs2, value_type beta
       ) const;
-    ///
+    /** \brief . */
     void Vp_StMtV(
       DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
       ,const SpVectorSlice& sv_rhs2, value_type beta
@@ -708,8 +680,7 @@ public:
 
   };	// end class U_hat_t
 
-  ///
-  /** Represents and manages the active set for the QPSchur algorithm.
+  /** \brief Represents and manages the active set for the QPSchur algorithm.
    *
    * This is a concrete type that encapsulates the maintaince of the active set and
    * abstracts quantities associated with it.
@@ -746,28 +717,26 @@ public:
     // /////////////////////
     // Public types
 
-    ///
+    /** \brief . */
     typedef QPSchurPack::QP            QP;
-    ///
+    /** \brief . */
     typedef MatrixSymAddDelUpdateable  MSADU;
 
     // /////////////////////
     // Public interface
 
-    ///
-    /** «std comp» members for schur complement matrix S_hat.
+    /** \brief «std comp» members for schur complement matrix S_hat.
      *
      * Warning: Resetting schur_comp will cause a reinitialization to
      * an empty active set.
      */
     STANDARD_COMPOSITION_MEMBERS( MatrixSymAddDelUpdateableWithOpNonsingular, schur_comp )
 
-    ///
-    /** Set the tolerances to use when updating the schur complement.
+    /** \brief Set the tolerances to use when updating the schur complement.
      */
     STANDARD_MEMBER_COMPOSITION_MEMBERS( MSADU::PivotTolerances, pivot_tols )
 
-    ///
+    /** \brief . */
     ActiveSet(
       const schur_comp_ptr_t   &schur_comp
       ,MSADU::PivotTolerances  pivot_tols = MSADU::PivotTolerances( 1e-6,1e-8,1e-8 )
@@ -776,8 +745,7 @@ public:
     /** @name Update the active set. */
     //@{
 
-    ///
-    /** Initialize with an additional active set.
+    /** \brief Initialize with an additional active set.
      *
      * If the initial schur complement is not full rank
      * then an <tt>LDConstraintException</tt> exception will be thrown.
@@ -789,15 +757,13 @@ public:
       ,const EBounds bnds[], bool test, bool salvage_init_schur_comp
       ,std::ostream *out, EOutputLevel output_level );
 
-    ///
-    /** Reinitialize the schur complement factorization for the current active set
+    /** \brief Reinitialize the schur complement factorization for the current active set
      *
      * ToDo: Finish documentation
      */
     void refactorize_schur_comp();
 
-    ///
-    /** Add a constraint to the active set then refactorize the schur complemnt
+    /** \brief Add a constraint to the active set then refactorize the schur complemnt
      * (if forced).
      *
      * ToDo: Finish documentation
@@ -819,8 +785,7 @@ public:
       ,bool force_refactorization = true
       ,bool allow_any_cond = false );
 
-    ///
-    /** Drop a constraint from the active set then refactorize the schur
+    /** \brief Drop a constraint from the active set then refactorize the schur
      * complement (if forced).
      *
      * ToDo: Finish documentation
@@ -831,8 +796,7 @@ public:
       int jd, std::ostream *out, EOutputLevel output_level
       ,bool force_refactorization = true, bool allow_any_cond = false );
 
-    ///
-    /** Drop a constraint from, then add a constraint to the active set
+    /** \brief Drop a constraint from, then add a constraint to the active set
      * and refactorize the schur complement.
      *
      * ToDo: Finish documentation
@@ -848,9 +812,9 @@ public:
     /** @name access the QP */
     //@{
 
-    ///
+    /** \brief . */
     QP& qp();
-    ///
+    /** \brief . */
     const QP& qp() const;
 
     //@}
@@ -858,42 +822,36 @@ public:
     /** @name Access the active sets quantities. */
     //@{
 
-    ///
-    /** Return the total size of the schur complement.
+    /** \brief Return the total size of the schur complement.
      *
      * q_hat = q_plus_hat + q_F_hat + q_C_hat.
      */
     size_type q_hat() const;
 
-    ///
-    /** Return the number of constraints from A_bar added
+    /** \brief Return the number of constraints from A_bar added
      * to the active set.
      */
     size_type q_plus_hat() const;
 
-    ///
-    /** Return the number of variables that where
+    /** \brief Return the number of variables that where
      * initially fixed but are currently free or
      * fixed to another bound.
      */
     size_type q_F_hat() const;
 
-    ///
-    /** Return the number of variables that where
+    /** \brief Return the number of variables that where
      * initially fixed but are currently
      * fixed to another bound.
      */
     size_type q_C_hat() const;
 
-    ///
-    /** Return the number of variables that where
+    /** \brief Return the number of variables that where
      * initially fixed and are still currently
      * fixed to their intial bounds.
      */
     size_type q_D_hat() const;
 
-    ///
-    /** Returns -i for row & column of S_bar for an initially
+    /** \brief Returns -i for row & column of S_bar for an initially
      * fixed variable left out of Ko that became free and returns
      * j for the constraint a(j)'*x that was added to the active
      * set.
@@ -902,8 +860,7 @@ public:
      */
     int ij_map( size_type s ) const;
 
-    ///
-    /** Map from a constraint or initially fixed variable
+    /** \brief Map from a constraint or initially fixed variable
      * to a row and column in the schur complement S_bar.
      *
      * To determine if an initially fixed varible x(i) is now
@@ -920,8 +877,7 @@ public:
      */
     size_type s_map( int ij ) const;
 
-    ///
-    /** Returns ||a(j)||2 where j = ij_map(s).
+    /** \brief Returns ||a(j)||2 where j = ij_map(s).
      * 
      * If ij_map(s) < 0, the this function returns zero.
      * 
@@ -929,52 +885,49 @@ public:
      */
     value_type constr_norm( size_type s ) const;
 
-    ///
-    /** Return which bound is active for the active constraint.
+    /** \brief Return which bound is active for the active constraint.
      */
     EBounds bnd( size_type s ) const;
 
-    ///
-    /** Returns the indice of x_X(l) of the initially fixed variables
+    /** \brief Returns the indice of x_X(l) of the initially fixed variables
      * that are still fixed at their original bounds.
      *
      * i <= k <= q_D_hat
      */
     size_type l_fxfx( size_type k ) const;
 
-    ///
+    /** \brief . */
     const U_hat_t& U_hat() const;
-    ///
+    /** \brief . */
     const MatrixSymOpNonsing& S_hat() const;
-    ///
+    /** \brief . */
     const GenPermMatrixSlice& P_XF_hat() const;
-    ///
+    /** \brief . */
     const GenPermMatrixSlice& P_FC_hat() const;
-    ///
+    /** \brief . */
     const GenPermMatrixSlice& P_plus_hat() const;
-    ///
+    /** \brief . */
     const GenPermMatrixSlice& Q_XD_hat() const;
-    ///
+    /** \brief . */
     const DVectorSlice d_hat() const;
-    ///
+    /** \brief . */
     DVectorSlice z_hat();
-    ///
+    /** \brief . */
     const DVectorSlice z_hat() const;
-    ///
+    /** \brief . */
     DVectorSlice p_z_hat();
-    ///
+    /** \brief . */
     const DVectorSlice p_z_hat() const;
-    ///
+    /** \brief . */
     DVectorSlice mu_D_hat();
-    ///
+    /** \brief . */
     const DVectorSlice mu_D_hat() const;
-    ///
+    /** \brief . */
     DVectorSlice p_mu_D_hat();
-    ///
+    /** \brief . */
     const DVectorSlice p_mu_D_hat() const;
 
-    ///
-    /** Determine if a constriant was an initially fixed variable.
+    /** \brief Determine if a constriant was an initially fixed variable.
      *
      * This function will return true if:
      * 
@@ -995,17 +948,17 @@ public:
     // ///////////////////////////
     // Private types
 
-    ///
+    /** \brief . */
     typedef std::vector<int>			ij_map_t;
-    ///
+    /** \brief . */
     typedef std::map<int,size_type>		s_map_t;
-    ///
+    /** \brief . */
     typedef std::vector<EBounds>		bnds_t;
-    ///
+    /** \brief . */
     typedef std::vector<int>			l_fxfx_t;
-    ///
+    /** \brief . */
     typedef std::vector<size_type>		P_row_t;
-    ///
+    /** \brief . */
     typedef std::vector<size_type>		P_col_t;
 
     // ///////////////////////////
@@ -1113,15 +1066,14 @@ protected:
   // /////////////////////////
   // Protected types
 
-  ///
+  /** \brief . */
   enum EPDSteps { PICK_VIOLATED_CONSTRAINT, UPDATE_ACTIVE_SET, COMPUTE_SEARCH_DIRECTION
     , COMPUTE_STEP_LENGTHS, TAKE_STEP };
 
   // ///////////////////////////
   // Protected Member functions
 
-  ///
-  /** Run the algorithm from a dual feasible point.
+  /** \brief Run the algorithm from a dual feasible point.
    *
    * By default, the algorithm should start with
    * first_step = PICK_VIOLATED_CONSTRAINT if we are starting
@@ -1137,8 +1089,7 @@ protected:
     ,StopWatchPack::stopwatch* timer
     );
 
-  ///
-  /** Set the values in x for all the variables.
+  /** \brief Set the values in x for all the variables.
    */
   virtual void set_x( const ActiveSet& act_set, const DVectorSlice& v, DVectorSlice* x );
 
@@ -1150,7 +1101,7 @@ protected:
   /// Determine if time has run out and if we should return.
   bool timeout_return( StopWatchPack::stopwatch*timer, std::ostream *out, EOutputLevel output_level ) const;
 
-  ///
+  /** \brief . */
   enum EIterRefineReturn {
     ITER_REFINE_NOT_PERFORMED    // Did not even perform it (iter_refine_max_iter == 0)
     ,ITER_REFINE_ONE_STEP        // Only performed one step and the status is not known.
@@ -1159,8 +1110,7 @@ protected:
     ,ITER_REFINE_NOT_IMPROVED    // Tried iterative refinement but no improvement
     ,ITER_REFINE_CONVERGED       // Performed iterative refinement and converged!
   };
-  ///
-  /** Perform iterative refinement on the augmented KKT system for the current active set.
+  /** \brief Perform iterative refinement on the augmented KKT system for the current active set.
    \verbatim
 
    [   Ko     U_hat ] [ v ] + [ ao * bo ]

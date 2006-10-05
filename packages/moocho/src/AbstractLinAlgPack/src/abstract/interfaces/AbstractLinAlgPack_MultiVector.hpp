@@ -35,14 +35,13 @@
 
 namespace AbstractLinAlgPack {
 
-///
+/** \brief . */
 enum EApplyBy {
   APPLY_BY_ROW        ///<
   ,APPLY_BY_COL       ///<
 };
 
-///
-/** Apply a reduction/transformation operator column by column and
+/** \brief Apply a reduction/transformation operator column by column and
  * return an array of the reduction objects.
  *
  * ToDo: Finish documentation!
@@ -62,8 +61,7 @@ void apply_op(
   ,const index_type               secondary_sub_dim     = 0
   );
 
-///
-/** Apply a reduction/transformation operator column by column and reduce the intermediate
+/** \brief Apply a reduction/transformation operator column by column and reduce the intermediate
  * reduction objects into one reduction object.
  *
  * ToDo: Finish documentation!
@@ -84,8 +82,7 @@ void apply_op(
   ,const index_type               secondary_sub_dim     = 0
   );
 
-///
-/** Interface for a collection of non-mutable vectors (multi-vector, matrix).
+/** \brief Interface for a collection of non-mutable vectors (multi-vector, matrix).
  *
  * This interface is quite restrictive in that it allows a client to access a
  * matrix by accessing rows, columns and/or diagonals.
@@ -160,23 +157,23 @@ void apply_op(
 class MultiVector : virtual public MatrixOp {
 public:
 
-  ///
+  /** \brief . */
   typedef int  access_by_t;
-  ///
+  /** \brief . */
   enum {
     ROW_ACCESS    = 0x1 ///< 
     ,COL_ACCESS   = 0x2 ///<
     ,DIAG_ACCESS  = 0x4 ///<
   };
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const Vector>         vec_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const MultiVector>    multi_vec_ptr_t;
 
   /** @name Friends */
   //@{
 
-  ///
+  /** \brief . */
   friend
   void AbstractLinAlgPack::apply_op(
     EApplyBy                        apply_by
@@ -192,7 +189,7 @@ public:
     ,const index_type               secondary_first_ele
     ,const index_type               secondary_sub_dim
     );
-  ///
+  /** \brief . */
   friend
   void AbstractLinAlgPack::apply_op(
     EApplyBy                        apply_by
@@ -215,8 +212,7 @@ public:
   /** @name Clone */
   //@{
 
-  ///
-  /** Clone the non-const multi-vector object.
+  /** \brief Clone the non-const multi-vector object.
    *
    * The default implementation returns <tt>return.get()==NULL</tt>.
    */
@@ -227,8 +223,7 @@ public:
   /** @name Provide row, column and diagonal access as non-mutable vectors */
   //@{
 
-  ///
-  /** Return a bit field for the types of access that are the most convenient.
+  /** \brief Return a bit field for the types of access that are the most convenient.
    *
    * Postconditions:<ul>
    * <li> <tt>return & COL_ACCESS || return & ROW_ACCESS || return & DIAG_ACCESS</tt>
@@ -236,8 +231,7 @@ public:
    */
   virtual access_by_t access_by() const = 0;
 
-  ///
-  /** Get a non-mutable column vector.
+  /** \brief Get a non-mutable column vector.
    *
    * Postconditions:<ul>
    * <li> [<tt>this->access_by() & COL_ACCESS</tt>] <tt>return.get() != NULL</tt>
@@ -245,8 +239,7 @@ public:
    * </ul>
    */
   virtual vec_ptr_t col(index_type j) const = 0;
-  ///
-  /** Get a non-mutable row vector.
+  /** \brief Get a non-mutable row vector.
    *
    * Postconditions:<ul>
    * <li> [<tt>this->access_by() & ROW_ACCESS</tt>] <tt>return.get() != NULL</tt>
@@ -254,8 +247,7 @@ public:
    * </ul>
    */
   virtual vec_ptr_t row(index_type i) const = 0;
-  ///
-  /** Get a non-mutable diagonal vector.
+  /** \brief Get a non-mutable diagonal vector.
    *
    * Postconditions:<ul>
    * <li> [<tt>this->access_by() & DIAG_ACCESS</tt>] <tt>return.get() != NULL</tt>
@@ -268,8 +260,7 @@ public:
   /** @name Sub-view methods */
   //@{
 
-  ///
-  /** Returns a sub-view of the multi vector.
+  /** \brief Returns a sub-view of the multi vector.
    *
    * ToDo: Finish documentation!
    *
@@ -278,8 +269,7 @@ public:
    */
   virtual multi_vec_ptr_t mv_sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
   
-  ///
-  /** Inlined implementation calls <tt>this->mv_sub_view(Range1D(rl,ru),Range1D(cl,cu))</tt>.
+  /** \brief Inlined implementation calls <tt>this->mv_sub_view(Range1D(rl,ru),Range1D(cl,cu))</tt>.
    */
   multi_vec_ptr_t mv_sub_view(
     const index_type& rl, const index_type& ru
@@ -293,8 +283,7 @@ protected:
   /** @name Collective apply_op() methods */
   //@{
 
-  ///
-  /** Apply a reduction/transformation operator row by row, or column by column and return an array
+  /** \brief Apply a reduction/transformation operator row by row, or column by column and return an array
    * of the reduction objects.
    *
    * Preconditions:<ul>
@@ -316,8 +305,7 @@ protected:
     ,const index_type secondary_first_ele, const index_type secondary_sub_dim
     ) const;
 
-  ///
-  /** Apply a reduction/transformation operator row by row, or column by column and reduce the intermediate
+  /** \brief Apply a reduction/transformation operator row by row, or column by column and reduce the intermediate
    * reduction objects into one reduction object.
    *
    * Preconditions:<ul>
@@ -346,18 +334,15 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
-  /** Returns <tt>this->mv_clone()<tt>.
+  /** \brief Returns <tt>this->mv_clone()<tt>.
    */
   mat_ptr_t clone() const;
 
-  ///
-  /** Returns <tt>this->mv_sub_view(row_rng,col_rng)</tt> casted to a MatrixOp.
+  /** \brief Returns <tt>this->mv_sub_view(row_rng,col_rng)</tt> casted to a MatrixOp.
    */
   mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
 
-  ///
-  /** Provides a specialized implementation for <tt>mwo_rhs1</tt> of type <tt>MatrixSymDiag</tt>.
+  /** \brief Provides a specialized implementation for <tt>mwo_rhs1</tt> of type <tt>MatrixSymDiag</tt>.
    *
    * @return Returns <tt>true</tt> and implements the operation if
    * <tt>dynamic_cast<MatrixSymDiag>(&mwo_rhs1) != NULL
@@ -377,8 +362,7 @@ public:
     ,value_type beta
     ) const;
 
-  ///
-  /** Provides a specialized implementation for <tt>mwo_rhs2</tt> of type <tt>MatrixSymDiag</tt>.
+  /** \brief Provides a specialized implementation for <tt>mwo_rhs2</tt> of type <tt>MatrixSymDiag</tt>.
    *
    * @return Returns <tt>true</tt> and implements the operation if
    * <tt>dynamic_cast<MatrixSymDiag>(&mwo_rhs1) != NULL

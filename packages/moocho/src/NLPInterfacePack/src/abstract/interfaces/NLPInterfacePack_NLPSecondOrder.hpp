@@ -33,8 +33,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** NLP second order information interface class {abstract}.
+/** \brief NLP second order information interface class {abstract}.
  *
  * <b>Overview:</b>
  *
@@ -65,7 +64,7 @@ namespace NLPInterfacePack {
 class NLPSecondOrder : virtual public NLPFirstOrder {
 public:
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<MatrixSymOp> >    mat_sym_fcty_ptr_t;
 
@@ -80,8 +79,7 @@ public:
   /** @name NLP initialization */
   //@{
   
-  ///
-  /** Initialize the NLP for its first use.
+  /** \brief Initialize the NLP for its first use.
    *
    * This function implementation should be called by subclass implementations
    * in order to reset counts for \c f(x), \c c(x), \c h(x), \c Gf(x), \c Gc(x),
@@ -100,8 +98,7 @@ public:
   /** @name Matrix factory objects */
   //@{
 
-  ///
-  /** Return a matrix factory object for creating <tt>HL</tt>.
+  /** \brief Return a matrix factory object for creating <tt>HL</tt>.
    *
    * The returned matrix object may not support the creation of any
    * sub-matrix spaces (i.e. <tt>return->sub_space(rrng,crng).get() == NULL</tt>
@@ -114,8 +111,7 @@ public:
   /** @name <<std aggr>> members for the Hessian of the Lagrangian HL */
   //@{
 
-  ///
-  /** Set a pointer to a matrix object to be updated when <tt>this->calc_HL()</tt> is called.
+  /** \brief Set a pointer to a matrix object to be updated when <tt>this->calc_HL()</tt> is called.
    *
    * @param  HL  [in] Pointer to Hessian of the Lagrangian matrix.  May be \c NULL.
    *
@@ -128,16 +124,14 @@ public:
    * </ul>
    */
   virtual void set_HL(MatrixSymOp* HL);
-  ///
-  /** Return pointer passed to <tt>this->set_HL()</tt>.
+  /** \brief Return pointer passed to <tt>this->set_HL()</tt>.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
    * </ul>
    */
   virtual MatrixSymOp* get_HL();
-  ///
-  /** Returns non-<tt>const</tt> <tt>*this->get_HL()</tt>.
+  /** \brief Returns non-<tt>const</tt> <tt>*this->get_HL()</tt>.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -145,8 +139,7 @@ public:
    * </ul>
    */
   virtual MatrixSymOp& HL();
-  ///
-  /** Returns <tt>const</tt> <tt>*this->get_HL()</tt>.
+  /** \brief Returns <tt>const</tt> <tt>*this->get_HL()</tt>.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -160,8 +153,7 @@ public:
   /** @name Unset calculation quantities */
   //@{
   
-  ///
-  /** Call to unset all storage quantities (both in this class and all subclasses).
+  /** \brief Call to unset all storage quantities (both in this class and all subclasses).
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -181,8 +173,7 @@ public:
   /** @name Calculation Members */
   //@{
 
-  ///
-  /** Update the matrix for <tt>HL</tt> at the point <tt>x</tt>, <tt>lambda</tt>,
+  /** \brief Update the matrix for <tt>HL</tt> at the point <tt>x</tt>, <tt>lambda</tt>,
    * <tt>lambdaI</tt> and put it in the stored reference.
    *
    * The referenced storage for <tt>f</tt>, <tt>c</tt>, <tt>Gf</tt> and <tt>Gc</tt>
@@ -219,8 +210,7 @@ public:
   /** @name Number of function evaluations */
   //@{
 
-  ///
-  /** Number of Hessian evaluations.
+  /** \brief Number of Hessian evaluations.
     *
     * This function can be called to find out how many evaluations
     * the client requested since \c initialize() was called.
@@ -231,15 +221,14 @@ public:
 
 protected:
 
-  ///
-  /** Struct for zero, first and second order quantities (pointers)
+  /** \brief Struct for zero, first and second order quantities (pointers)
    */
   struct SecondOrderInfo {
-    ///
+    /** \brief . */
     SecondOrderInfo()
       : HL(NULL), Gc(NULL), Gf(NULL), f(NULL), c(NULL)
       {}
-    ///
+    /** \brief . */
     SecondOrderInfo( MatrixSymOp* HL_in, const FirstOrderInfo& first_order_info )
       :HL(HL_in), Gc(first_order_info.Gc), Gf(first_order_info.Gf)
       ,f(first_order_info.f), c(first_order_info.c)
@@ -262,8 +251,7 @@ protected:
   /** @name Protected methods to be overridden by subclasses */
   //@{
 
-  ///
-  /** Overridden to compute <tt>Gc(x)</tt> and perhaps <tt>Gf(x)</tt>, <tt>f(x)</tt> and <tt>c(x)</tt>.
+  /** \brief Overridden to compute <tt>Gc(x)</tt> and perhaps <tt>Gf(x)</tt>, <tt>f(x)</tt> and <tt>c(x)</tt>.
    *
    * @param x                     [in] Unknown vector (size n).
    * @param lambda                [in] Lagrange multipliers for equality constraints c(x).

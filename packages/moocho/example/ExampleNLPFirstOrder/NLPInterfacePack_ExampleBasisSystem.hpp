@@ -34,8 +34,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Subclass of BasisSystem for example NLP.
+/** \brief Subclass of BasisSystem for example NLP.
  *
  * ToDo: Finish documentation!
  */
@@ -51,8 +50,7 @@ public:
     ,const Range1D                       &var_indep
     );
   
-  ///
-  /** Initialize given the vector space for the dependent and independent variables.
+  /** \brief Initialize given the vector space for the dependent and independent variables.
    *
    * @param  space_x   [in]
    * @param  var_dep   [in]
@@ -69,7 +67,7 @@ public:
   /** @name Overridden from BasisSystemComposite */
   //@{
 
-  ///
+  /** \brief . */
   void update_D(
     const MatrixOpNonsing       &C
     ,const MatrixOp             &N

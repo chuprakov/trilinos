@@ -39,8 +39,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Read in a Coordinate Matrix from a C++ input stream and store it in valarrays.
+/** \brief Read in a Coordinate Matrix from a C++ input stream and store it in valarrays.
   *
   * The format for the imput is:
   *

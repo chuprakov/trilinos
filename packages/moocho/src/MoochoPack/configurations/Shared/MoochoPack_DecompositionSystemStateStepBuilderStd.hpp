@@ -41,8 +41,7 @@ namespace OptionsFromStreamPack {
 
 namespace MoochoPack {
 
-///
-/** Standard builder object for creating DecompositionSystem, EvalNewPoint Step and other objects
+/** \brief Standard builder object for creating DecompositionSystem, EvalNewPoint Step and other objects
  * and setting up some of the state object.
  *
  * This class is designed to be used by <tt>NLPAlgoConfig</tt> subclasses based on SQP
@@ -57,11 +56,11 @@ public:
   /** @name Enums for variaous options categories */
   //@{
 
-  ///
+  /** \brief . */
   enum ENullSpaceMatrixType {
     NULL_SPACE_MATRIX_AUTO, NULL_SPACE_MATRIX_EXPLICIT
     , NULL_SPACE_MATRIX_IMPLICIT };
-  ///
+  /** \brief . */
   enum ERangeSpaceMatrixType {
     RANGE_SPACE_MATRIX_AUTO, RANGE_SPACE_MATRIX_COORDINATE
     , RANGE_SPACE_MATRIX_ORTHOGONAL };
@@ -71,7 +70,7 @@ public:
   /** @name Struct for options values */
   //@{
 
-  ///
+  /** \brief . */
   struct SOptionValues {
     // Constructor (sets default values)
     SOptionValues();
@@ -82,15 +81,14 @@ public:
 
   //@}
   
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
 
-  ///
+  /** \brief . */
   DecompositionSystemStateStepBuilderStd();
 
-  ///
-  /** Set the options that will be used to configure the algorithmic objects.
+  /** \brief Set the options that will be used to configure the algorithmic objects.
    *
    *  @param  options
    *               [in] If \c NULL then no options will be set.  If <tt>!=NULL</tt> then
@@ -99,10 +97,9 @@ public:
    *               be maintained by the client until this object is no longer needed.
    */
   void set_options( const options_ptr_t& options );
-  ///
+  /** \brief . */
   const options_ptr_t& get_options() const;
-  ///
-  /** Process the %NLP and process the options passed in from <tt>set_options()</tt>.
+  /** \brief Process the %NLP and process the options passed in from <tt>set_options()</tt>.
    * Postconditions:<ul>
    * <li> <tt>this->current_option_values()</tt> returns the options that will be
    *      used in all of the following method.
@@ -118,8 +115,7 @@ public:
     ,NLPDirect            **nlp_fod
     ,bool                 *tailored_approach
     );
-  ///
-  /** Create the decomposition system object.
+  /** \brief Create the decomposition system object.
    *
    * ToDo: Finish documentation!
    */
@@ -132,8 +128,7 @@ public:
     ,bool                                              tailored_approach
     ,Teuchos::RefCountPtr<DecompositionSystem>         *decomp_sys
     );
-  ///
-  /** Add the common iteration quantities to the state object.
+  /** \brief Add the common iteration quantities to the state object.
    * 
    * ToDo: Finish documentation!
    */
@@ -148,8 +143,7 @@ public:
     ,const Teuchos::RefCountPtr<NLPAlgoState>              &state
     );
 
-  ///
-  /** Create the EvalNewPoint step object and allocated objects.
+  /** \brief Create the EvalNewPoint step object and allocated objects.
    *
    * ToDo: Finish documentation!
    */
@@ -167,8 +161,7 @@ public:
     ,Teuchos::RefCountPtr<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy
     );
 
-  ///
-  /** Return the current option values being used.
+  /** \brief Return the current option values being used.
    */
   SOptionValues& current_option_values();
 

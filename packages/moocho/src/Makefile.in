@@ -1056,9 +1056,11 @@ am__include_HEADERS_DIST = $(srcdir)/Moocho_ConfigDefs.hpp \
 	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.hpp \
 	$(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.hpp \
 	$(srcdir)/MoochoUtilities/src/ReleaseResource.hpp \
+	$(srcdir)/MoochoUtilities/src/ReleaseResource_ref_count_ptr.hpp \
 	$(srcdir)/MoochoUtilities/src/RangePack_Range1D.hpp \
 	$(srcdir)/MoochoUtilities/src/SerializationPack_Serializable.hpp \
 	$(srcdir)/MoochoUtilities/src/SpecialASCII.hpp \
+	$(srcdir)/MoochoUtilities/src/StandardAggregationMacros.hpp \
 	$(srcdir)/MoochoUtilities/src/StandardCompositionRelationshipsPack.hpp \
 	$(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.hpp \
 	$(srcdir)/MoochoUtilities/src/StrideIterPack_StrideIter.hpp \
@@ -1715,9 +1717,11 @@ MOOCHO_UTILITIES_HPP = \
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.hpp\
   $(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.hpp\
   $(srcdir)/MoochoUtilities/src/ReleaseResource.hpp\
+  $(srcdir)/MoochoUtilities/src/ReleaseResource_ref_count_ptr.hpp\
   $(srcdir)/MoochoUtilities/src/RangePack_Range1D.hpp\
   $(srcdir)/MoochoUtilities/src/SerializationPack_Serializable.hpp\
   $(srcdir)/MoochoUtilities/src/SpecialASCII.hpp\
+  $(srcdir)/MoochoUtilities/src/StandardAggregationMacros.hpp\
   $(srcdir)/MoochoUtilities/src/StandardCompositionRelationshipsPack.hpp\
   $(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.hpp\
   $(srcdir)/MoochoUtilities/src/StrideIterPack_StrideIter.hpp\
@@ -2692,6 +2696,12 @@ nodist_execinclude_HEADERS = Moocho_Config.h $(MOOCHO_H)
 # Files to be deleted by 'make maintainer-clean'
 # --------------------------------------------------------------------
 MAINTAINERCLEANFILES = Makefile.in 
+EXTRA_DIST = $(srcdir)/MoochoPack/configurations/generate-opt-file.pl \
+	$(srcdir)/MoochoPack/configurations/IpConfig/Moocho.opt.NLPAlgoConfigIP \
+	$(srcdir)/MoochoPack/configurations/Moocho.opt.MoochoSolver \
+	$(srcdir)/MoochoPack/configurations/Shared/Moocho.opt.DecompositionSystemStateStepBuilderStd \
+	$(srcdir)/MoochoPack/configurations/MamaJama/Moocho.opt.NLPAlgoConfigMamaJama
+
 all: Moocho_Config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -8198,7 +8208,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/AbstractLinAlgPack/src $(distdir)/AbstractLinAlgPack/src/abstract/interfaces $(distdir)/AbstractLinAlgPack/src/abstract/tools $(distdir)/AbstractLinAlgPack/src/serial/implementations $(distdir)/AbstractLinAlgPack/src/serial/interfaces $(distdir)/AbstractLinAlgPack/src/serial/solvers $(distdir)/ConstrainedOptPack/src $(distdir)/ConstrainedOptPack/src/decompositions $(distdir)/ConstrainedOptPack/src/globalization $(distdir)/ConstrainedOptPack/src/matrices $(distdir)/ConstrainedOptPack/src/misc $(distdir)/ConstrainedOptPack/src/qpsolvers $(distdir)/DenseLinAlgPack/src $(distdir)/IterationPack/src $(distdir)/MoochoPack/configurations $(distdir)/MoochoPack/configurations/IpConfig $(distdir)/MoochoPack/configurations/MamaJama $(distdir)/MoochoPack/configurations/Shared $(distdir)/MoochoPack/src $(distdir)/MoochoPack/src/std $(distdir)/MoochoUtilities/src $(distdir)/NLPInterfacePack/src $(distdir)/NLPInterfacePack/src/abstract/interfaces $(distdir)/NLPInterfacePack/src/abstract/test $(distdir)/NLPInterfacePack/src/abstract/tools $(distdir)/NLPInterfacePack/src/serial $(distdir)/RTOpPack/src/base $(distdir)/RTOpPack/src/std_ops
+	$(mkdir_p) $(distdir)/$(srcdir)/MoochoPack/configurations $(distdir)/$(srcdir)/MoochoPack/configurations/IpConfig $(distdir)/$(srcdir)/MoochoPack/configurations/MamaJama $(distdir)/$(srcdir)/MoochoPack/configurations/Shared $(distdir)/AbstractLinAlgPack/src $(distdir)/AbstractLinAlgPack/src/abstract/interfaces $(distdir)/AbstractLinAlgPack/src/abstract/tools $(distdir)/AbstractLinAlgPack/src/serial/implementations $(distdir)/AbstractLinAlgPack/src/serial/interfaces $(distdir)/AbstractLinAlgPack/src/serial/solvers $(distdir)/ConstrainedOptPack/src $(distdir)/ConstrainedOptPack/src/decompositions $(distdir)/ConstrainedOptPack/src/globalization $(distdir)/ConstrainedOptPack/src/matrices $(distdir)/ConstrainedOptPack/src/misc $(distdir)/ConstrainedOptPack/src/qpsolvers $(distdir)/DenseLinAlgPack/src $(distdir)/IterationPack/src $(distdir)/MoochoPack/configurations $(distdir)/MoochoPack/configurations/IpConfig $(distdir)/MoochoPack/configurations/MamaJama $(distdir)/MoochoPack/configurations/Shared $(distdir)/MoochoPack/src $(distdir)/MoochoPack/src/std $(distdir)/MoochoUtilities/src $(distdir)/NLPInterfacePack/src $(distdir)/NLPInterfacePack/src/abstract/interfaces $(distdir)/NLPInterfacePack/src/abstract/test $(distdir)/NLPInterfacePack/src/abstract/tools $(distdir)/NLPInterfacePack/src/serial $(distdir)/RTOpPack/src/base $(distdir)/RTOpPack/src/std_ops
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

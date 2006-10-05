@@ -81,3 +81,6 @@ common_sources = \
   $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp\
   $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp\
   $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp
+
+EXTRA_DIST = run-varied-tests.pl
+

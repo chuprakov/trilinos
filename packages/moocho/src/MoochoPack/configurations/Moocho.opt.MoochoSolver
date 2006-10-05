@@ -23,8 +23,8 @@ options_group MoochoSolver {
 *    workspace_MB = -1.0; *** [default]
      *** (+-dbl) If > 0, givens the number of megabytes that are allocated for
      *** temporary workspace for automatic arrays.  If < 0 then the
-     *** this will be determined internaly.  This value should be set by the
-     *** user for whatever is appropriate for the computing enviornment.  See
+     *** this will be determined internally.  This value should be set by the
+     *** user for whatever is appropriate for the computing environment.  See
      *** the summary output for statistics on memory allocation usage when the
      *** algorithm finishes.  Example values:
      *** -1.0 : (< 0) Allow the algorithm to decide how much to allocate.
@@ -33,7 +33,7 @@ options_group MoochoSolver {
 *    obj_scale = 1.0; *** [default]
      *** (+-dbl) Scale for the objective function.  This can have a dramatic impact
      *** on the behavior of the algorithm in some cases.  Changing this value
-     *** does a lot to change the wait between minimizing the objective and converging
+     *** does a lot to change the weight between minimizing the objective and converging
      *** the constraints.  Example values:
      *** 1e-8  : Really scale the objective down a lot!
      *** 1.0   : Leave the objective unscaled [default].
@@ -44,10 +44,10 @@ options_group MoochoSolver {
      *** If true then the NLP will be tested at the initial point.  The
      *** vector spaces (see options_group VectorSpaceTester),
      *** the NLP interface (see options_group NLPTester), and the gradients
-     *** (see options_group NLPDirectTester and options_group
-     *** NLPFirstOrderInfoTester).  With all of the default options in place
+     *** (see options_group NLPDirectTester and NLPFirstOrderInfoTester)
+     *** will all be tested.  With all of the default options in place
      *** these tests are fairly cheap so it is recommended that you perform
-     *** these test when first getting started.
+     *** these tests when first getting started.
 
 *    console_outputting = true; *** [default]
 *    console_outputting = false;
@@ -67,7 +67,7 @@ options_group MoochoSolver {
 
 *    algo_outputting = true; *** [default]
 *    algo_outputting = false;
-     *** If true, then algo output is proceed to the algo_out stream
+     *** If true, then an algorithm description is sent to the algo_out stream
      *** (which is the file 'MoochoAlgo.out' by default) 
 
 *    print_algo = true; *** [default]
@@ -91,7 +91,7 @@ options_group MoochoSolver {
 *    generate_stats_file = false; *** [default]
      *** If true, then a MoochoTrackerStatsStd object will be used to generate
      *** statistics about the solution process to an NLP.  The track object
-     *** will overwritte the file 'MoochoStats.out' in the current directory.
+     *** will overwrite the file 'MoochoStats.out' in the current directory.
 
 *    print_opt_grp_not_accessed = true; *** [default]
 *    print_opt_grp_not_accessed = false;
@@ -99,15 +99,15 @@ options_group MoochoSolver {
      *** If true, then the options groups that are specified but are not read by
      *** some software entity are printed to the algo_out stream (the file 'MoochoAlgo.out'
      *** by default).  This may help you catch problems associated with spelling the name of
-     *** an options group inproperly and then having its default options used instead of the
+     *** an options group improperly and then having its default options used instead of the
      *** options that you set.  Note that some options groups are only looked for depending
      *** on option values from other options groups.
 
 *    configuration = mama_jama; *** [default]
 *    configuration = interior_point;
      *** decides which configuration object will be used:
-	 ***   mama_jama      : standard reduced Space SQP configuration
-	 ***   interior_point : configuration for an interior point method
+     ***   mama_jama      : standard reduced-space SQP configuration
+     ***   interior_point : configuration for a simple reduced-space interior point method
 
 }
 
@@ -120,33 +120,36 @@ options_group MoochoSolver {
 ***
 *** These include basic algorithmic control parameters.
 ***
+*** Note that an algorithm can be interrupted at any time
+*** by pressing Ctrl+C.
+***
 options_group NLPSolverClientInterface {
 
-*    max_iter = 1000;  *** (default?)
+*    max_iter = 1000;  *** [default]
      *** (+int) Maximum number of SQP iterations allowed.
 
-*    max_run_time = 1e+10; *** In minutes (default?)
+*    max_run_time = 1e+10; *** In minutes [default]
      *** (+dbl) Maximum runtime for the SQP algorithm (in minutes).
      *** The default is to run forever.
 
-*    opt_tol = 1e-6;  *** (default?)
-     *** (+dbl) Convergence tolerence for (scaled) KKT linear dependence of gradinets.
-     *** This is usually the hardest error to minimize.  The exact definition of this tolerance
-     *** is depends on algorithms use and may use different scalings (see other options and
-     *** outputed algorithm description for details).  Example values:
+*    opt_tol = 1e-6;  *** [default]
+     *** (+dbl) Convergence tolerance for (scaled) KKT linear dependence of gradients.
+     *** This is usually the hardest error to reduce.  The exact definition of this tolerance
+     *** depends on the algorithms used and may use different scalings (see other options and
+     *** outputted algorithm description for details).  Example values:
      *** 0.0   : The algorithm will never converge except in trivial cases.
      *** 1e-6  : Only converge when opt_kkt_err is below this value [default].
      *** 1e+50 : (big number) Converged when any of the other tolerances are satisfied.
 
-*    feas_tol = 1e-6;  *** (default?)
-     *** (+dbl) Convergence tolerance for (scaled) feasibility of the equality constriants
+*    feas_tol = 1e-6;  *** [default]
+     *** (+dbl) Convergence tolerance for (scaled) feasibility of the equality constraints
      *** ||c(x)||inf.  The norm of the constraints ||c(x)||inf may be scaled (see other
-     *** options and the outputed algorithm description).  Example values:
+     *** options and the outputted algorithm description).  Example values:
      *** 0.0   : Never converge the algorithm except in trivial cases.
      *** 1e-6  : Only converge when feas_kkt_err is below this value [default].
      *** 1e+50 : (big number)  Converged when any of the other tolerances are satisfied.
 
-*    step_tol = 1e-2;  *** (default?)
+*    step_tol = 1e-2;  *** [default]
      *** (+dbl) Convergence tolerance for (scaled) step size ||x_k(+1)-x_k||inf.
      *** This tolerance is usually scaled by x is some way (see other output algorithm
      *** description).  Example values:
@@ -163,11 +166,11 @@ options_group NLPSolverClientInterface {
      *** [MoochoSolver::journal_outputting == true]
      *** This option determines the type and amount of output to the journal_out stream
      *** (the file 'MoochoJournal.out' by default) that is generated while the algorithm runs.
-     ***  In general, each increasing value includes the same output from the lower options
-     *** (i.e. PRINT_VECTORS includes all the output for PRINT_ACTIVE_SET and more).   Above
-     *** the identifer iter is the number of total rSQP iterations (see max_iter above), nact
-     *** is the total number of active inequality constriants, n is the total number
-     *** of NLP variables and m is the total number of NLP constraints.  The higer output
+     *** In general, each increasing value includes the same output from the lower options
+     *** (i.e. PRINT_VECTORS includes all the output for PRINT_ACTIVE_SET and more).  Above,
+     *** the identifier 'iter' is the number of total rSQP iterations (see max_iter above), 'nact'
+     *** is the total number of active inequality constraints, 'n' is the total number
+     *** of NLP variables, and 'm' is the total number of equality constraints.  The higher output
      *** values are generally used for debugging.  For most problems the value
      *** PRINT_ALGORITHM_STEPS is usually the most appropriate and will give a great deal
      *** of information about the algorithm without generating excessive output.
@@ -177,7 +180,6 @@ options_group NLPSolverClientInterface {
 *    null_space_journal_output_level = PRINT_ACTIVE_SET;           * O(iter*nact) output to journal  
 *    null_space_journal_output_level = PRINT_VECTORS;              * O(iter*(n-m)) output to journal   (lots!)
 *    null_space_journal_output_level = PRINT_ITERATION_QUANTITIES; * O(iter*(n-m)^2) output to journal (big lots!)
-
      *** [MoochoSolver::journal_outputting == true]
      *** This option determines the type and amount of output to the journal_out stream
      *** (the file 'MoochoJournal.out' by default) that is generated for quantities in the
@@ -185,11 +187,11 @@ options_group NLPSolverClientInterface {
      *** set to DEFAULT then it will default to the value of journal_output_level.
      *** If set to some other value then this value overrides journal_output_level
      *** for quantities in the null space.  For problems where the null space is small but
-     *** the full space is much larger, setting value of null_space_journal_output_level higher
+     *** the full space is much larger, setting the value of null_space_journal_output_level higher
      *** than journal_output_level can yield significantly more information while not generating
      *** too much output or impacting runtime to any great extent.
 
-*    journal_print_digits = 6;  *** (default?)
+*    journal_print_digits = 6;  *** [default]
      *** [MoochoSolver::journal_outputting == true]
      *** (+int) Number of decimal significant figures to print to journal_out stream.
      *** With a higher number more significant figures will be printed.  This may be useful
@@ -197,32 +199,33 @@ options_group NLPSolverClientInterface {
      *** precision, 18 is usually the maximum number of unique decimal significant figures.
 
 *    check_results = true;  *** (costly?)
-*    check_results = false; *** (default?)
-     *** If true then all computation that can be reasonably checked will be at runtime.
+*    check_results = false; *** [default]
+     *** If true then all computation that can be reasonably checked will be checked at runtime.
      *** When all of the other default testing options are used, this overhead usually will
-     *** not dominiate the cost of the algorithm so if speed is not critical then it is a
-     *** good idea to turn this testing on.  If your problem is not solving then you should
-     *** definitly try turning this on and try to see it will catch any bugs.  However,
-     *** for the fastest possible execution you should set this to false.
+     *** not dominate the cost of the algorithm so if speed is not critical then it is a
+     *** good idea to turning testing on.  If your problem is not solving then you should
+     *** definitely try turning this on and try to see if it will catch any errors.  However,
+     *** for the fastest possible execution you should set this to 'false'.
 
 *    calc_conditioning = true;  *** (costly?)
-*    calc_conditioning = false; *** (default?)
-     *** If true then estimates of the condition numbers of all of the imporant nonsingular
+*    calc_conditioning = false; *** [default]
+     *** If true then estimates of the condition numbers of all of the important nonsingular
      *** matrices used in the algorithm will be computed and printed.  Note that this can be
      *** a fairly expensive operation (especially when iterative solvers are being used)
-     *** so it should be used with care.  Warning! see the option calc_matrix_info_null_space_only.
+     *** so it should be used with care.  Warning! see the option calc_matrix_info_null_space_only
+     *** as it affects the behavior of this option.
 
 *    calc_matrix_norms = true;  *** (costly?)
-*    calc_matrix_norms = false; *** (default?)
-     *** If true, then estimates of the matrix norms of all of the imporant
+*    calc_matrix_norms = false; *** [default]
+     *** If true, then estimates of the matrix norms of all of the important
      *** matrices used in the algorithm will be computed and printed.  Note that this can be
      *** a fairly expensive operation (especially if iterative solvers are being used) so
      *** it should be used with care.  Warning! see the option calc_matrix_info_null_space_only.
 
 *    calc_matrix_info_null_space_only = true;  *** (costly?)
-*    calc_matrix_info_null_space_only = false; *** (default?)
+*    calc_matrix_info_null_space_only = false; *** [default]
      *** If true, then the options calc_conditioning and calc_matrix_norms will only
-     *** apply to quantities in the null space and not the quansi-range space
+     *** apply to quantities in the null space and not the quasi-range space
      *** or the full space for which these options will be considered to be false.
 
 }
@@ -277,7 +280,7 @@ options_group VectorSpaceTester {
 
 ****************************************************************
 *** Options for the finite difference derivative tester for a 
-*** direct sensistivity NLP.
+*** direct sensitivity NLP.
 ***
 *** See options_group NLPDirectTester in
 *** Moocho.opt.NLPAlgoConfigMamaJama
@@ -292,8 +295,8 @@ options_group VectorSpaceTester {
 ***
 
 ****************************************************************
-*** Options for the defautl BasisSystem factory object for
-*** the constriants of the Jacobian used by
+*** Options for the default BasisSystem factory object for
+*** the constraints of the Jacobian used by
 *** NLPSerialPreprocessExplJac
 ***
 options_group BasisSystemFactoryStd {
@@ -302,15 +305,14 @@ options_group BasisSystemFactoryStd {
 *    direct_linear_solver = MA28;    *** Use Harwell MA28 (see options_group DirectSparseSolverMA28)
 *    direct_linear_solver = MA48;    *** Not supported yet
 *    direct_linear_solver = SUPERLU; *** Use SuperLU (see options_group DirectSparseSolverSuperLU)
-     *** Direct fortran compatible linear solvers for the  basis of the Jacobian.
+     *** Direct fortran-compatible linear solver for the  basis of the Jacobian.
      *** When a general NLP is being solved this selects the sparse linear solver used.
-     *** When the user specializes the BasisSystem object this option generally means noting.
+     *** If the user specializes the BasisSystem object this option might be meaningless.
 
 }
 
 *****************************************************************
-*** Change how the penalty parameters for the modifed
-*** L1 merit function are increased.
+*** Set options for the MA28 solver.
 ***
 *** [BasisSystemFactoryStd::direct_linear_solver == MA28]
 ***
@@ -329,7 +331,7 @@ options_group DirectSparseSolverMA28 {
 
 *    u = 0.1; *** [default]
      *** (+dbl) Control parameter (0 <= u <= 1.0) that us used
-     *** to balance 
+     *** to balance sparsity and accuracy.
      *** Example values:
      ***    0.0 : Pivot for sparsity only
      ***    0.1 : Balance sparsity and stability
@@ -341,7 +343,9 @@ options_group DirectSparseSolverMA28 {
 
 *    nsrch = 4; *** [default]
      *** (+int) Number of columns that MA28 will search to find
-     *** pivots to try to reduce fill-in.
+     *** pivots to try to reduce fill-in.  Warning, setting a large
+     *** value for 'nsrch' can greatly slow down the initial
+     *** rSQP iteration.
      *** Example values:
      ***    0  : No columns are searched
      ***    4  : Four columns are searched
@@ -354,7 +358,7 @@ options_group DirectSparseSolverMA28 {
 *    print_ma28_outputs = true;
 *    print_ma28_outputs = false; *** [default]
      *** If true, then the values of the MA28 output will
-     *** be dumped to the output stream
+     *** be dumped to the journal output stream
      *** (if journal_output_level >= PRINT_ALGORITHM_STEPS).
 
 *    output_file_name = NONE; *** [default]

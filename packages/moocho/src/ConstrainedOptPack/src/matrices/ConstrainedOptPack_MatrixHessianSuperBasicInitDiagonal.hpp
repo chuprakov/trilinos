@@ -36,8 +36,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Matrix class that adds the ability to initialize to a diagonal
+/** \brief Matrix class that adds the ability to initialize to a diagonal
  * to a MatrixHessainSuperBasic object.
  *
  * Essentially, the matrix #B_RR# must support the #MatrixSymInitDiag#
@@ -50,8 +49,7 @@ class MatrixHessianSuperBasicInitDiagonal
   {
 public:
 
-  ///
-  /** Constructs to uninitialized.
+  /** \brief Constructs to uninitialized.
    */
   MatrixHessianSuperBasicInitDiagonal();
 
@@ -59,8 +57,7 @@ public:
    **/
   //@{
 
-  ///
-  /** Initialize the matrix and require B_RR to support #MatrixSymInitDiag#.
+  /** \brief Initialize the matrix and require B_RR to support #MatrixSymInitDiag#.
    *
    * Preconditions:\begin{itemize}
    * \item #dynamic_cast<MatrixSymInitDiag*>(const_cast<MatrixSymWithOpFactorized*>(B_RR_ptr.get())) != NULL#
@@ -105,9 +102,9 @@ public:
    **/
   //@{
 
-  ///
+  /** \brief . */
   void init_identity( size_type n, value_type alpha );
-  ///
+  /** \brief . */
   void init_diagonal( const DVectorSlice& diag );
 
   //@}

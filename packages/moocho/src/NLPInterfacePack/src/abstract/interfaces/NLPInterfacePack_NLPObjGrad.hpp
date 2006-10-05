@@ -32,8 +32,7 @@
 #include "NLPInterfacePack_NLP.hpp"
 
 namespace NLPInterfacePack {
-///
-/** %NLP interface class that adds gradient information for the objective function {abstract}.
+/** \brief %NLP interface class that adds gradient information for the objective function {abstract}.
  *
  * <b>Overview:</b>
  *
@@ -78,8 +77,7 @@ public:
   /** @name NLP initialization */
   //@{
 
-  ///
-  /** Initialize the NLP for its first use.
+  /** \brief Initialize the NLP for its first use.
     *
     * This function implementation should be called by subclass implementations
     * in order to reset counts for \c f(x), \c c(x), \c h(x) and \c Gf(x) evaluations.
@@ -114,8 +112,7 @@ public:
   /** @name <<std aggr>> members for the gradient of the objective function Gf(x) */
   //@{
 
-  ///
-  /** Set a pointer to a vector to be updated when <tt>this->calc_Gf()</tt> is called.
+  /** \brief Set a pointer to a vector to be updated when <tt>this->calc_Gf()</tt> is called.
    *
    * @param  Gf  [in] Pointer to gradient vector.  May be \c NULL.
    *
@@ -131,8 +128,7 @@ public:
    * </ul>
    */
   virtual void set_Gf(VectorMutable* Gf);
-  ///
-  /** Return pointer passed to <tt>this->set_Gf()</tt>.
+  /** \brief Return pointer passed to <tt>this->set_Gf()</tt>.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -140,8 +136,7 @@ public:
    * </ul>
    */
   virtual VectorMutable* get_Gf();
-  ///
-  /** Returns non-<tt>const</tt> <tt>*this->get_Gf()</tt>.
+  /** \brief Returns non-<tt>const</tt> <tt>*this->get_Gf()</tt>.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -150,8 +145,7 @@ public:
    * </ul>
    */
   virtual VectorMutable& Gf();
-  ///
-  /** Returns <tt>const</tt> <tt>*this->get_Gf()</tt>.
+  /** \brief Returns <tt>const</tt> <tt>*this->get_Gf()</tt>.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -166,8 +160,7 @@ public:
   /** @name Unset calculation quantities */
   //@{
   
-  ///
-  /** Call to unset all storage quantities (both in this class and all subclasses).
+  /** \brief Call to unset all storage quantities (both in this class and all subclasses).
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -187,8 +180,7 @@ public:
   /** @name Calculation Members */
   //@{
 
-  ///
-  /** Update the vector for \c Gf at the point \c x and put it in the stored reference.
+  /** \brief Update the vector for \c Gf at the point \c x and put it in the stored reference.
    *
    * @param  x     [in] Point at which to calculate the gradient of the objective <tt>Gf(x)</tt>.
    * @param  newx  [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
@@ -213,8 +205,7 @@ public:
    */ 
   virtual void calc_Gf(const Vector& x, bool newx = true) const;
 
-  ///
-  /** Calculate the inner product <tt>Gf(x)'*d</tt> at the point <tt>x</tt> and put it in the stored reference.
+  /** \brief Calculate the inner product <tt>Gf(x)'*d</tt> at the point <tt>x</tt> and put it in the stored reference.
    *
    * @param  x     [in] Base point
    * @param  d     [in] Direction to compute the product along.
@@ -246,8 +237,7 @@ public:
   /** @name Function evaluation counts. */
   //@{
 
-  ///
-  /** Objective gradient evaluations count.
+  /** \brief Objective gradient evaluations count.
    *
    * This function can be called to find out how many evaluations
    * \c this->calc_Gf() the client requested since \c this->initialize() was called.
@@ -259,15 +249,14 @@ public:
   /** @name Protected types */
   //@{
   
-  ///
-  /** Struct for gradient (objective), objective and constriants (pointers)
+  /** \brief Struct for gradient (objective), objective and constriants (pointers)
    */
   struct ObjGradInfo {
-    ///
+    /** \brief . */
     ObjGradInfo()
       : Gf(NULL), f(NULL), c(NULL)
     {}
-    ///
+    /** \brief . */
     ObjGradInfo( VectorMutable* Gf_in, const ZeroOrderInfo& first_order_info_in )
       : Gf(Gf_in), f(first_order_info_in.f), c(first_order_info_in.c)
     {}
@@ -289,8 +278,7 @@ protected:
   /** @name Protected methods to be overridden by subclasses */
   //@{
 
-  ///
-  /** Overridden to compute f(x) and perhaps c(x) (if multiple calculaiton = true).
+  /** \brief Overridden to compute f(x) and perhaps c(x) (if multiple calculaiton = true).
    *
    * Preconditions:<ul>
    * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)

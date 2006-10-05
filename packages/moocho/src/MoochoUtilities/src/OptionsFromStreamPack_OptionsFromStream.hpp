@@ -111,8 +111,7 @@ namespace OptionsFromStreamPack {
 
 namespace OptionsFromStreamUtilityPack {
 
-///
-/** Class used to encapsulate options belonging an options group.
+/** \brief Class used to encapsulate options belonging an options group.
   *
   * This class offers two ways to access the options and their values in
   * an options group.  These two methods differ in their convience,
@@ -223,9 +222,9 @@ public:
   /** @name Public Types */
   //@{
 
-  ///
+  /** \brief . */
   typedef option_to_value_map_t::iterator			iterator;
-  ///
+  /** \brief . */
   typedef option_to_value_map_t::const_iterator	const_iterator;
 
   //@}
@@ -246,14 +245,14 @@ public:
     */
   //@{
 
-  ///
+  /** \brief . */
   std::string& option_value( const std::string& option_name );
-  ///
+  /** \brief . */
   const std::string& option_value( const std::string& option_name ) const;
 
   //@}
 
-  ///
+  /** \brief . */
   static bool option_exists( const std::string& option_value );
 
   /// Returns true if this options groups exists.
@@ -262,15 +261,15 @@ public:
   /** @name Iterator access */
   //@{
 
-  ///
+  /** \brief . */
   int				num_options() const;
-  ///
+  /** \brief . */
   iterator		begin();
-  ///
+  /** \brief . */
   iterator		end();
-  ///
+  /** \brief . */
   const_iterator	begin() const;
-  ///
+  /** \brief . */
   const_iterator	end() const;
 
   //@}
@@ -292,13 +291,13 @@ public:
 };	// end class OptionsGroup
 
 inline
-///
+/** \brief . */
 const std::string& option_name( OptionsGroup::const_iterator& itr ) {
   return (*itr).first;
 }
 
 inline
-///
+/** \brief . */
 const std::string& option_value( OptionsGroup::const_iterator& itr ) {
   return (*itr).second;
 }
@@ -308,8 +307,7 @@ const std::string& option_value( OptionsGroup::const_iterator& itr ) {
 
 }	// end namespace OptionsFromStreamUtilityPack 
 
-///
-/** Extracts options from a text stream and then allows
+/** \brief Extracts options from a text stream and then allows
   * convenient access to them.
   *
   * The basic idea is that options are read in from a stream (which can be
@@ -435,8 +433,7 @@ public:
   /// Construct with no options set.
   OptionsFromStream();
 
-  ///
-  /** Construct initialized from a text stream.
+  /** \brief Construct initialized from a text stream.
     *
     * This is equivalent to calling the default constructor and then calling
     * <tt>read_options(in)</tt>.
@@ -446,8 +443,7 @@ public:
   /// Clear all the options
   void clear_options();
 
-  ///
-  /** Add / modify options read in from a text stream.
+  /** \brief Add / modify options read in from a text stream.
     *
     * The format of the text stream is described in the introduction.
     *
@@ -461,8 +457,7 @@ public:
 
   //@}
 
-  ///
-    /** Print the options to an output stream.
+    /** \brief Print the options to an output stream.
     *
       * This is useful for debugging and also to record exactly what options have been set.
     */
@@ -476,14 +471,14 @@ public:
     */
   //@{
 
-  ///
+  /** \brief . */
   options_group_t options_group( const std::string& options_group_name );
-  ///
+  /** \brief . */
   const options_group_t options_group( const std::string& options_group_name ) const;
 
   //@}
 
-  ///
+  /** \brief . */
   static bool options_group_exists( const options_group_t& options_group );
 
   /** @name Determine what options groups where not accessed.
@@ -507,15 +502,15 @@ public:
   /** @name Iterator access to options groups. */
   //@{
 
-  ///
+  /** \brief . */
   int				num_options_groups() const;
-  ///
+  /** \brief . */
   iterator		begin();
-  ///
+  /** \brief . */
   iterator		end();
-  ///
+  /** \brief . */
   const_iterator	begin() const;
-  ///
+  /** \brief . */
   const_iterator	end() const;
 
   //@}
@@ -528,7 +523,7 @@ private:
 
 };	// end class OptionsFromStream
 
-///
+/** \brief . */
 inline
 const std::string&
 options_group_name( OptionsFromStream::const_iterator& itr )
@@ -536,7 +531,7 @@ options_group_name( OptionsFromStream::const_iterator& itr )
   return (*itr).first;
 }
 
-///
+/** \brief . */
 inline
 const OptionsFromStream::options_group_t
 options_group( OptionsFromStream::const_iterator& itr )

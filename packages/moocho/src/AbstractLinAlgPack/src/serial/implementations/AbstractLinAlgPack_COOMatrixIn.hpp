@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Inputstream stream operator for COOMatrix.
+/** \brief Inputstream stream operator for COOMatrix.
   *
   * The format for the imput is:
   *

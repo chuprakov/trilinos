@@ -37,8 +37,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Abstract interface to serial direct sparse linear solvers.
+/** \brief Abstract interface to serial direct sparse linear solvers.
  *
  * This interface is designed to accommodate both unsymmetic and
  * symmetric direct solvers.  The motivation for using one common
@@ -230,8 +229,7 @@ public:
   /** @name Public Types */
   //@{
 
-  ///
-  /** Abstract class for objects that represent the factorization
+  /** \brief Abstract class for objects that represent the factorization
     * structure of a particular matrix.
     *
     * This structure can be reused over and over again for factorizing matrices
@@ -239,12 +237,11 @@ public:
     */
   class FactorizationStructure {
   public:
-    ///
+    /** \brief . */
     virtual ~FactorizationStructure() {}
   };
 
-  ///
-  /** Abstract class for objects that represent the factorized
+  /** \brief Abstract class for objects that represent the factorized
     * matrix and can be used to solve for different right-hand-sides.
     *
     * This object encapsulates the factorzation structure and the nonzero
@@ -252,10 +249,9 @@ public:
     */
   class BasisMatrix : public AbstractLinAlgPack::MatrixNonsing {
   public:
-    ///
+    /** \brief . */
     typedef Teuchos::RefCountPtr<FactorizationStructure>  fact_struc_ptr_t;
-    ///
-    /** Return a reference to a smart pointer to the object that represents
+    /** \brief Return a reference to a smart pointer to the object that represents
      * the factorization structure.
      *
      * Returning a reference to a \c RefCountPtr<> object verses returning
@@ -266,47 +262,45 @@ public:
     virtual const fact_struc_ptr_t&  get_fact_struc() const = 0;
   };
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<BasisMatrix> >   basis_matrix_factory_ptr_t;
 
-  ///
+  /** \brief . */
   class UnsymmetricRankDeficientException : public std::logic_error
   {public: UnsymmetricRankDeficientException (const std::string& what_arg)
   : std::logic_error(what_arg) {}};
 
-  ///
+  /** \brief . */
   class IncompatibleMatrixStructureException : public std::logic_error
   {public: IncompatibleMatrixStructureException (const std::string& what_arg)
   : std::logic_error(what_arg) {}};
 
-  ///
+  /** \brief . */
   class InvalidObjectType : public std::logic_error
   {public: InvalidObjectType (const std::string& what_arg)
   : std::logic_error(what_arg) {}};
 
-  ///
+  /** \brief . */
   class NoCurrentBasisException : public std::logic_error
   {public: NoCurrentBasisException (const std::string& what_arg)
   : std::logic_error(what_arg) {}};
 
-  ///
+  /** \brief . */
   class FactorizationFailure : public std::logic_error
   {public: FactorizationFailure (const std::string& what_arg)
   : std::logic_error(what_arg) {}};
 
   //@}
   
-  ///
+  /** \brief . */
   virtual ~DirectSparseSolver() {}
 
-  ///
-  /** Return a factory object that can create the basis matrix.
+  /** \brief Return a factory object that can create the basis matrix.
    */
   virtual const basis_matrix_factory_ptr_t basis_matrix_factory() const = 0;
 
-  ///
-  /** Set the estimate of the fill-in ratio of the factorization.
+  /** \brief Set the estimate of the fill-in ratio of the factorization.
    *
    * This value is used to set the initial guess at the amount
    * of storage needed for the factorization of the matrix
@@ -318,8 +312,7 @@ public:
    */
   virtual void estimated_fillin_ratio( value_type estimated_fillin_ratio ) = 0;
 
-  ///
-  /** Analyze and factor a matrix.
+  /** \brief Analyze and factor a matrix.
    *
    * @param  A         [in] Matrix who's elements are extracted in order
    *                   to form the factorization.  Here <tt>A.rows() <= A.cols()</tt>
@@ -489,8 +482,7 @@ public:
     ,std::ostream                                   *out            = NULL
     ) = 0;
   
-  ///
-  /** Factor a matrix given its factorization structure.
+  /** \brief Factor a matrix given its factorization structure.
    *
    * @param  A            [in] Matrix to be factored given a previously determined
    *                      factorization structure (see \c fact_struc).
@@ -579,8 +571,7 @@ public:
     ,std::ostream                                   *out           = NULL
     ) = 0;
 
-  ///
-  /** Get a smart pointer object to the current factorization structure.
+  /** \brief Get a smart pointer object to the current factorization structure.
    *
    * This returns a smart reference counted pointer to the factorization structure
    * computed from the last call to \c this->analyze_and_factor().  If no successful
@@ -589,8 +580,7 @@ public:
    */
   virtual const BasisMatrix::fact_struc_ptr_t& get_fact_struc() const = 0;
 
-  ///
-  /** Release all allocated memory.
+  /** \brief Release all allocated memory.
    *
    * Postconditions:<ul>
    * <li> \c this->get_fact_struc().get()==NULL.

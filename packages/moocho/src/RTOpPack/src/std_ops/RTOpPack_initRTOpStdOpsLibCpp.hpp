@@ -36,8 +36,7 @@
 
 namespace RTOpPack {
 
-///
-/** Initialize an <tt>RTOpPack::RTOpServer</tt> object for all of the
+/** \brief Initialize an <tt>RTOpPack::RTOpServer</tt> object for all of the
  * operators defined in this library.
  */
 void initRTOpStdOpsLibCpp( RTOpPack::RTOpServer<RTOp_value_type> *op_server );

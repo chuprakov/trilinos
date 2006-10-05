@@ -33,8 +33,7 @@
 
 namespace OptionsFromStreamPack {
 
-///
-/** Convert a string "true" or "false" into bool #true# or #false#.
+/** \brief Convert a string "true" or "false" into bool #true# or #false#.
   *
   * If the input string is not "true" or "false" then the exception
   * "InputException" will be thrown and the message will include

@@ -36,8 +36,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Mix-in interface that allows the extraction of a const <tt>DenseLinAlgPack::DMatrixSliceTri</tt>
+/** \brief Mix-in interface that allows the extraction of a const <tt>DenseLinAlgPack::DMatrixSliceTri</tt>
  * view of an non-singular abstract matrix.
  *
  * This interface is ment to be used by <tt>MatrixOp</tt> objects
@@ -57,8 +56,7 @@ class MatrixOpGetGMSTri
 {
 public:
 
-  ///
-  /** Get a const view of the symmetric abstract matrix in the form <tt>DenseLinAlgPack::DMatrixSliceTri</tt>.
+  /** \brief Get a const view of the symmetric abstract matrix in the form <tt>DenseLinAlgPack::DMatrixSliceTri</tt>.
    *
    * @return On ouput, \c return will be initialized to point to storage to the symmetric dense
    *  matrix elements.
@@ -75,8 +73,7 @@ public:
    */
   virtual const DenseLinAlgPack::DMatrixSliceTri get_tri_gms_view() const = 0;
 
-  ///
-  /** Free a view of a symmetric dense matrix initialized from <tt>get_tri_gms_view()>/tt>.
+  /** \brief Free a view of a symmetric dense matrix initialized from <tt>get_tri_gms_view()>/tt>.
    *
    * @param  tri_gms_view
    *              [in/out] On input, \c tri_gms_view must have been initialized from \c this->get_tri_gms_view().
@@ -94,8 +91,7 @@ public:
 
 }; // end class MatrixOpGetGMSTri
 
-///
-/** Helper class type that simplifies the usage of the <tt>MatrixOpGetGMSTri</tt> interface for clients.
+/** \brief Helper class type that simplifies the usage of the <tt>MatrixOpGetGMSTri</tt> interface for clients.
  *
  * This takes care of worrying about if the <tt>MatrixOpGetGMSTri</tt> interface is supported or not
  * and remembering to free the <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view properly.
@@ -116,12 +112,10 @@ public:
 class MatrixDenseTriEncap {
 public:
 
-  ///
-  /** Construct a <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view from a <tt>MatrixOpGetGMSTri</tt> object.
+  /** \brief Construct a <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view from a <tt>MatrixOpGetGMSTri</tt> object.
    */
   MatrixDenseTriEncap( const MatrixOpGetGMSTri&  mat_get );
-  ///
-  /** Construct a <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view from a <tt>MatrixOp</tt> object.
+  /** \brief Construct a <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view from a <tt>MatrixOp</tt> object.
    *
    * If <tt>dynamic_cast<const MatrixOpGetGMSTri*>(&mat) == NULL</tt> then a ???
    * exception is thrown.

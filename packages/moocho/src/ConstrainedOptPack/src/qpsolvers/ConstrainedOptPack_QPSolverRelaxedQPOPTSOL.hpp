@@ -52,19 +52,19 @@ public:
   /** @name Public Types */
   //@{
 
-  ///
+  /** \brief . */
   typedef FortranTypes::f_int       f_int;
-  ///
+  /** \brief . */
   typedef FortranTypes::f_dbl_prec  f_dbl_prec;
-  ///
+  /** \brief . */
   typedef FortranTypes::f_logical   f_logical;
 
   //@}
 
-  ///
+  /** \brief . */
   QPSolverRelaxedQPOPTSOL();
 
-  ///
+  /** \brief . */
   ~QPSolverRelaxedQPOPTSOL();
 
   /// Return a pointer to the matrix G to be used in the calculation of H*x by QPOPT and QPSOL.
@@ -76,10 +76,10 @@ public:
   // /////////////////////////////////
   // Overridden from QPSolverRelaxed
 
-  ///
+  /** \brief . */
   QPSolverStats get_qp_stats() const;
 
-  ///
+  /** \brief . */
   void release_memory();
 
 protected:
@@ -87,7 +87,7 @@ protected:
   // /////////////////////////////////
   // Overridden from QPSolverRelaxed
 
-  ///
+  /** \brief . */
   QPSolverStats::ESolutionType imp_solve_qp(
     std::ostream* out, EOutputLevel olevel, ERunTests test_what
     ,const Vector& g, const MatrixSymOp& G
@@ -106,14 +106,14 @@ protected:
   // //////////////////////////////////////////////////////////////
   // Protected types
 
-  ///
+  /** \brief . */
   typedef std::vector<f_int>			ISTATE_t;
-  ///
+  /** \brief . */
   typedef std::vector<f_int>			IWORK_t;
-  ///
+  /** \brief . */
   typedef std::vector<f_dbl_prec>		WORK_t;
 public: // RAB: 2001/05/03: MS VC++ 6.0 must have this public ???
-  ///
+  /** \brief . */
   enum EInform {
     STRONG_LOCAL_MIN,
     WEAK_LOCAL_MIN,
@@ -135,37 +135,37 @@ protected:
     */
   //@{
 
-  ///
+  /** \brief . */
   f_int		N_;
-  ///
+  /** \brief . */
   f_int		NCLIN_;
-  ///
+  /** \brief . */
   DMatrix	A_;
-  ///
+  /** \brief . */
   DVector		BL_;
-  ///
+  /** \brief . */
   DVector		BU_;
-  ///
+  /** \brief . */
   DVector		CVEC_;
-  ///
+  /** \brief . */
   ISTATE_t	ISTATE_;
-  ///
+  /** \brief . */
   DVector		X_;
-  ///
+  /** \brief . */
   DVector		AX_;
-  ///
+  /** \brief . */
   DVector		CLAMDA_;
-  ///
+  /** \brief . */
   f_int		ITER_;
-  ///
+  /** \brief . */
   f_dbl_prec	OBJ_;
-  ///
+  /** \brief . */
   f_int		LIWORK_;
-  ///
+  /** \brief . */
   IWORK_t		IWORK_;
-  ///
+  /** \brief . */
   f_int		LWORK_;
-  ///
+  /** \brief . */
   WORK_t		WORK_;
 
   //@}
@@ -179,8 +179,7 @@ protected:
   /// Length of real workspace
   virtual f_int lrwork(f_int N, f_int NCLIN) const = 0;
 
-  ///
-  /** Solve the QP defined in the protected input data members
+  /** \brief Solve the QP defined in the protected input data members
     * and set the solution in the protected output data members.
     */
   virtual EInform call_qp_solver(bool warm_start) = 0;

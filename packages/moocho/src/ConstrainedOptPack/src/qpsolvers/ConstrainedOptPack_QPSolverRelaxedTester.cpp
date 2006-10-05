@@ -292,7 +292,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
   using LinAlgOpPack::Vp_MtV;
   using LinAlgOpPack::V_StMtV;
   using LinAlgOpPack::Vp_V;
-  using AbstractLinAlgPack::max;
+  using AbstractLinAlgPack::max_element;
   typedef QPSolverStats qps_t;
 
   bool test_failed = false;
@@ -479,7 +479,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
         << "dL - d =\n" << *u_d;
     Vt_S( u_d.get(), 1.0/(1.0+d_norm_inf) );
 
-    err = max(*u_d);
+    err = max_element(*u_d);
     if(out)
       *out
         << "\nmax(dL-d) = " << err << endl;
@@ -521,7 +521,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
         << "d - dU =\n" << *u_d;
     Vt_S( u_d.get(), 1.0/(1.0+d_norm_inf) );
 
-    err = max(*u_d);
+    err = max_element(*u_d);
     if(out)
       *out
         << "\nmax(d-dU) = " << err << endl;
@@ -581,7 +581,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
         << "eL - e =\n" << *t_e;
     Vt_S( t_e.get(), 1.0/(1.0+e_norm_inf) );
 
-    err = max(*t_e);
+    err = max_element(*t_e);
     if(out)
       *out
         << "\nmax(eL-e) = " << err << endl;
@@ -622,7 +622,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
         << "\ne - eU =\n" << *t_e;
     Vt_S( t_e.get(), 1.0/(1.0+e_norm_inf) );
 
-    err = max(*t_e);
+    err = max_element(*t_e);
     if(out)
       *out
         << "\nmax(e-eU) = " << err << endl;

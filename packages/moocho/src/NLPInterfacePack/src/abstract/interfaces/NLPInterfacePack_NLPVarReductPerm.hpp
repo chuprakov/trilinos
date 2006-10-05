@@ -33,8 +33,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** NLP interface class that adds variable and constriant permutations for variable
+/** \brief NLP interface class that adds variable and constriant permutations for variable
  * reduction basis selections.
  *
  * This class adds basis selection and manipulation.  This functionality is needed by many
@@ -97,7 +96,7 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
 
@@ -110,9 +109,9 @@ public:
   /** @name Abstract factories for Permutation objects */
   //@{
 
-  ///
+  /** \brief . */
   virtual const perm_fcty_ptr_t factory_P_var() const = 0;
-  ///
+  /** \brief . */
   virtual const perm_fcty_ptr_t factory_P_equ() const = 0;
 
   //@}
@@ -120,13 +119,13 @@ public:
   /** @name Return ranges for the partitioning of variables and constraints */
   //@{
 
-  ///
+  /** \brief . */
   virtual Range1D var_dep() const = 0;
-  ///
+  /** \brief . */
   virtual Range1D var_indep() const = 0;
-  ///
+  /** \brief . */
   virtual Range1D equ_decomp() const = 0;
-  ///
+  /** \brief . */
   virtual Range1D equ_undecomp() const = 0;
 
   //@}
@@ -137,8 +136,7 @@ public:
   /// Returns true if the NLP can suggest one or more basis selections.
   virtual bool nlp_selects_basis() const = 0;
 
-  ///
-  /** Returns the next basis the %NLP has and sets the NLP to the returned basis.
+  /** \brief Returns the next basis the %NLP has and sets the NLP to the returned basis.
    *
    * @param  P_var        [out] Variable permutations defined as <tt>P_var'*x_old -> x_new = [ x(var_dep); x(var_indep) ]</tt>
    * @param  var_dep      [out] Range of dependent variables in <tt>x_new(var_dep)</tt>
@@ -156,8 +154,7 @@ public:
     ,Permutation* P_equ,   Range1D* equ_decomp
     ) = 0;
   
-  ///
-  /** Sets the basis the that the %NLP will use to permute the problem.
+  /** \brief Sets the basis the that the %NLP will use to permute the problem.
    *
    * @param  P_var        [in] Variable permutations defined as <tt>P_var'*x_old -> x_new = [ x(var_dep); x(var_indep) ]</tt>
    * @param  var_dep      [in] Range of dependent variables in <tt>x_new(var_dep)</tt>
@@ -174,8 +171,7 @@ public:
     ,const Permutation  *P_equ,   const Range1D  *equ_decomp
     ) =  0;
 
-  ///
-  /** Returns the basis selection currently being used by the NLP.
+  /** \brief Returns the basis selection currently being used by the NLP.
    *
    * @param  P_var        [out] Variable permutations defined as <tt>P_var'*x_old -> x_new = [ x(var_dep); x(var_indep) ]</tt>
    * @param  var_dep      [out] Range of dependent variables in <tt>x_new(var_dep)</tt>

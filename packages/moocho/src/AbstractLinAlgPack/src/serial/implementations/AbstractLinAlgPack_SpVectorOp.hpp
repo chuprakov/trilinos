@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Add elements from a dense vector to a sparse vector.
+/** \brief Add elements from a dense vector to a sparse vector.
  *
  * Here sv_lhs is not resized and only elements are added.
  * The purpose of this function is to add elements from
@@ -49,8 +48,7 @@ namespace AbstractLinAlgPack {
 void add_elements( SpVector* sv_lhs, value_type alpha, const DVectorSlice& vs_rhs
            , size_type offset = 0, bool add_zeros = true );
 
-///
-/** Add elements from a sparse vector to another sparse vector.
+/** \brief Add elements from a sparse vector to another sparse vector.
  *
  * Here sv_lhs is not resized and only elements are added.
  * The purpose of this function is to add elements from
@@ -66,8 +64,7 @@ void add_elements( SpVector* sv_lhs, value_type alpha, const SpVectorSlice& sv_r
            , size_type offset = 0, bool add_zeros = true );
 
 inline
-///
-/** Create a dense representation of a sparse vector.
+/** \brief Create a dense representation of a sparse vector.
  *
  * The primary use if the function is to create a DVectorSlice
  * object that only represents the nonzero values of the
@@ -79,7 +76,7 @@ inline
 DVectorSlice dense_view( SpVectorSlice& sv_rhs );
 
 inline
-///
+/** \brief . */
 const DVectorSlice dense_view( const SpVectorSlice& sv_rhs );
 
 } // end namespace AbstractLinAlgPack

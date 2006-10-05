@@ -35,8 +35,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Adds the ability to compute phi(c(x)) at x
+/** \brief Adds the ability to compute phi(c(x)) at x
   * directly instead of having to compute c first.
   * This class uses an aggregate NLP to perform the computations of c(x).
   */
@@ -49,14 +48,13 @@ public:
   /// <<std aggr>> stereotype members for nlp.
   STANDARD_CONST_AGGREGATION_MEMBERS( NLP, nlp )
 
-  ///
+  /** \brief . */
   MeritFuncCalcNLE( const MeritFuncNLE* phi = 0, const NLP* nlp = 0 );
 
   // ////////////////////////////////////////////
   // Overridden from MeritFuncCalc
 
-  ///
-  /** Return the value of the merit function at x.
+  /** \brief Return the value of the merit function at x.
     * Here phi(x) is calculated directly using the nlp.
     */
   value_type operator()(const Vector& x) const;

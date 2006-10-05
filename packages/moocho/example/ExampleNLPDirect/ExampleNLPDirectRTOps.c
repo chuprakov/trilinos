@@ -28,9 +28,7 @@
 // @HEADER
 */
 
-#include <assert.h>
-#include <malloc.h>
-
+#include "Teuchos_ConfigDefs.hpp"
 #include "ExampleNLPDirectRTOps.h"
 #include "RTOp_obj_null_vtbl.h"
 #include "RTOp_obj_index_vtbl.h"

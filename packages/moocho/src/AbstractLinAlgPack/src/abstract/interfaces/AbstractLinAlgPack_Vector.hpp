@@ -36,8 +36,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Apply a reduction/transformation,operation over a set of vectors:
+/** \brief Apply a reduction/transformation,operation over a set of vectors:
  * <tt>op(op(v[0]...v[nv-1],z[0]...z[nz-1]),(*reduct_obj)) -> z[0]...z[nz-1],(*reduct_obj)</tt>.
  *
  * The logical vector passed to the
@@ -116,8 +115,7 @@ void apply_op(
   ,const index_type          global_offset  = 0
   );
 
-///
-/** Abstract interface for immutable, finite dimensional, coordinate vectors {abstract}.
+/** \brief Abstract interface for immutable, finite dimensional, coordinate vectors {abstract}.
  *
  * This interface contains a mimimal set of operations.  The main feature
  * of this interface is the operation <tt>apply_op()</tt>.
@@ -176,12 +174,12 @@ void apply_op(
 class Vector {
 public:
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const Vector>   vec_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<VectorMutable>  vec_mut_ptr_t;
 
-  ///
+  /** \brief . */
   friend
   void AbstractLinAlgPack::apply_op(
     const RTOpPack::RTOp       &op
@@ -195,16 +193,15 @@ public:
     ,const index_type          global_offset
     );
 
-  ///
+  /** \brief . */
   Vector();
-  ///
+  /** \brief . */
   virtual ~Vector() {}
 
   /** @name Pure virtual methods (must be overridden by subclass) */
   //@{
 
-  ///
-  /** Return the vector space that this vector belongs to.
+  /** \brief Return the vector space that this vector belongs to.
    *
    * Note that the vectors space object returned is specifically bound to this
    * vector object.  The vector space object returned should only be considered
@@ -215,8 +212,7 @@ public:
 
 protected:
 
-  ///
-  /** Apply a reduction/transformation,operation over a set of vectors:
+  /** \brief Apply a reduction/transformation,operation over a set of vectors:
    * <tt>op(op(v[0]...v[nv-1],z[0]...z[nz-1]),(*reduct_obj)) -> z[0]...z[nz-1],(*reduct_obj)</tt>.
    *
    * The vector <tt>this</tt> that this method is called on is
@@ -247,8 +243,7 @@ public:
   /** @name Miscellaneous virtual methods with default implementations */
   //@{
 
-  ///
-  /** Return the dimension of this vector.
+  /** \brief Return the dimension of this vector.
    *
    * It is allowed for a vector to return a dimension of <tt>0</tt> in which case
    * the vector should be considered uninitialized in which the client should
@@ -257,8 +252,7 @@ public:
    */
   virtual index_type dim() const;
 
-  ///
-  /** Return the number of nonzero elements in the vector.
+  /** \brief Return the number of nonzero elements in the vector.
    *
    * The default implementation just uses a reduction operator
    * with the <tt>apply_op()</tt> method (See
@@ -266,8 +260,7 @@ public:
    */
   virtual index_type nz() const;
 
-  ///
-  /** Virtual output function.
+  /** \brief Virtual output function.
     *
     * The default implementation just uses get_sub_vector<tt>(...)</tt> to convert to
     * a dense vector and then prints this.
@@ -288,8 +281,7 @@ public:
     ,index_type global_offset = 0
     ) const;
 
-  ///
-  /** Create a clone of this vector objet.
+  /** \brief Create a clone of this vector objet.
    *
    * The vector object returned in a smart reference counted pointer to a functional copy of
    * the current vector object.  The vector object <tt>this</tt> and the vector returned by
@@ -300,8 +292,7 @@ public:
    */
   virtual vec_mut_ptr_t clone() const;
 
-  ///
-  /** Fetch an element in the vector.
+  /** \brief Fetch an element in the vector.
    *
    * Preconditions:<ul>
    * <li> <tt>1 <= i <= this->dim()</tt> (<tt>throw std::out_of_range</tt>)
@@ -314,8 +305,7 @@ public:
    */
   virtual value_type get_ele(index_type i) const;
 
-  ///
-  /** Create an abstract view of a vector object .
+  /** \brief Create an abstract view of a vector object .
    *
    * This is only a transient view of a sub-vector that is to be immediately used
    * and then released by <tt>RefCountPtr<></tt>.
@@ -359,24 +349,20 @@ public:
 
   //@}
 
-  ///
-  /** Inline member function that simply calls <tt>this->sub_view(Range1D(l,u))</tt>.
+  /** \brief Inline member function that simply calls <tt>this->sub_view(Range1D(l,u))</tt>.
    */
   vec_ptr_t sub_view( const index_type& l, const index_type& u ) const;
 
   /** @name Vector norms */
   //@{
 
-  ///
-  /** One norm. <tt>||v||_1 = sum( |v(i)|, i = 1,,,this->dim() )</tt>
+  /** \brief One norm. <tt>||v||_1 = sum( |v(i)|, i = 1,,,this->dim() )</tt>
    */
   virtual value_type norm_1() const;
-  ///
-  /** Two norm. <tt>||v||_2 = sqrt( sum( v(i)^2, i = 1,,,this->dim() ) )</tt>
+  /** \brief Two norm. <tt>||v||_2 = sqrt( sum( v(i)^2, i = 1,,,this->dim() ) )</tt>
    */
   virtual value_type norm_2() const;
-  ///
-  /** Infinity norm.  <tt>||v||_inf = max( |v(i)|, i = 1,,,this->dim() )</tt>
+  /** \brief Infinity norm.  <tt>||v||_inf = max( |v(i)|, i = 1,,,this->dim() )</tt>
    */
   virtual value_type norm_inf() const;
   
@@ -385,8 +371,7 @@ public:
   /** @name Inner product */
   //@{
 
-  ///
-  /** Return the inner product of <tt>*this</tt> with <tt>v</tt>.
+  /** \brief Return the inner product of <tt>*this</tt> with <tt>v</tt>.
    *
    * @return Returns <tt>this->space().inner_prod()->inner_prod(*this,v)</tt>
    */
@@ -397,8 +382,7 @@ public:
   /** @name Explicit sub-vector access */
   //@{
 
-  ///
-  /** Get a non-mutable explicit view of a sub-vector.
+  /** \brief Get a non-mutable explicit view of a sub-vector.
    *
    * This is only a transient view of a sub-vector that is to be immediately used
    * and then released with a call to \c release_sub_vector().
@@ -441,8 +425,7 @@ public:
    */
   virtual void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
 
-  ///
-  /** Free an explicit view of a sub-vector.
+  /** \brief Free an explicit view of a sub-vector.
    *
    * The sub-vector view must have been allocated by this->get_sub_vector() first.
    *
@@ -460,8 +443,7 @@ public:
 
   //@}
 
-  ///
-  /** Must be called by any vector subclass that modifies this vector
+  /** \brief Must be called by any vector subclass that modifies this vector
    * object!
    *
    * The way to use this method by subclasses is to call it when ever
@@ -489,8 +471,7 @@ protected:
   /** @name Protected helper functions */
   //@{
 
-  ///
-  /** This method usually needs to be called by subclasses at the
+  /** \brief This method usually needs to be called by subclasses at the
    * end of the <tt>apply_op()</tt> method implementation to
    * insure that <tt>has_changed()</tt> is called on the transformed
    * vector objects.

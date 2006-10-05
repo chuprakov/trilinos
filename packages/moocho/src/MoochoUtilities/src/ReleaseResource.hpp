@@ -31,8 +31,7 @@
 
 namespace MemMngPack {
 
-///
-/** Abstract interface for releasing an object when it is
+/** \brief Abstract interface for releasing an object when it is
  * not needed anymore {abstract}.
  *
  * The purpose of this object is so that a client can give another
@@ -42,14 +41,12 @@ namespace MemMngPack {
 class ReleaseResource {
 public:
 
-  ///
-  /** When object is deleted so will the resource if it is not
+  /** \brief When object is deleted so will the resource if it is not
    * needed anymore.
    */
   virtual ~ReleaseResource() {}
 
-  ///
-  /** Returns true if a resource is bound to this object.
+  /** \brief Returns true if a resource is bound to this object.
    */
   virtual bool resource_is_bound() const = 0;
 

@@ -29,7 +29,6 @@
 #include "AbstractLinAlgPack_BasisSystemFactoryStd.hpp"
 #include "AbstractLinAlgPack_BasisSystemPermDirectSparse.hpp"
 #include "AbstractLinAlgPack_DirectSparseSolverDense.hpp"
-#include "AbstractLinAlgPack_DirectSparseSolverSuperLU.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "OptionsFromStreamPack_OptionsFromStream.hpp"
 #include "OptionsFromStreamPack_StringToIntMap.hpp"

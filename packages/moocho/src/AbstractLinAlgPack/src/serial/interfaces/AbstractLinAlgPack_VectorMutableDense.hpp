@@ -38,8 +38,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** DVector "Adaptor" subclass for <tt>DenseLinAlgPack::DVectorSlice</tt>
+/** \brief DVector "Adaptor" subclass for <tt>DenseLinAlgPack::DVectorSlice</tt>
  * or <tt>DenseLinAlgPack::DVector</tt> objects.
  *
  * This class can be used either as a view of a <tt>DenseLinAlgPack::DVectorSlice</tt> object
@@ -75,35 +74,31 @@ class VectorMutableDense
 {
 public:
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
   /** @name Constructors/initializers */
   //@{
 
-  ///
-  /** Calls <tt>this->initialize(dim)</tt>.
+  /** \brief Calls <tt>this->initialize(dim)</tt>.
    */
   VectorMutableDense(
     const size_type                    dim = 0
     );
-  ///
-  /** Calls <tt>this->initialize(v,v_release)</tt>.
+  /** \brief Calls <tt>this->initialize(v,v_release)</tt>.
    */
   VectorMutableDense(
     DVectorSlice                        v
     ,const release_resource_ptr_t&     v_release
     );
-  ///
-  /** Call <tt>this->initialize(v,v_release)</tt> with an allocated <tt>DenseLinAlgPack::DVector</tt>
+  /** \brief Call <tt>this->initialize(v,v_release)</tt> with an allocated <tt>DenseLinAlgPack::DVector</tt>
    * object.
    */
   void initialize(
     const size_type                    dim
     );
-  ///
-  /** Initialize with a dense vector slice.
+  /** \brief Initialize with a dense vector slice.
    */
   void initialize(
     DVectorSlice                        v
@@ -115,8 +110,7 @@ public:
   /** @name Access */
   //@{
   
-  ///
-  /** Return the non-const dense vector.
+  /** \brief Return the non-const dense vector.
    *
    * Note that calling this method will result in the vector implementation
    * being modified.  Therefore, no other methods on \c this object should be
@@ -127,12 +121,10 @@ public:
    * before this method returns.
    */
   DVectorSlice set_vec();
-  ///
-  /** Return a const dense vector.
+  /** \brief Return a const dense vector.
    */
   const DVectorSlice get_vec() const;
-  ///
-  /** Return a <tt>RefCountPtr<></tt> pointer to the object that will
+  /** \brief Return a <tt>RefCountPtr<></tt> pointer to the object that will
    * release the associated resource.
    */
   const release_resource_ptr_t& vec_release() const;
@@ -142,9 +134,9 @@ public:
   /** @name Overriddenn from Vector */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space() const;
-  ///
+  /** \brief . */
   void apply_op(
     const RTOpPack::RTOp& op
     ,const size_t num_vecs, const Vector* vecs[]
@@ -152,13 +144,13 @@ public:
     ,RTOpPack::ReductTarget *reduct_obj
     ,const index_type first_ele, const index_type sub_dim, const index_type global_offset
     ) const;
-  ///
+  /** \brief . */
   index_type dim() const;
-  ///
+  /** \brief . */
   value_type get_ele(index_type i) const;
-  ///
+  /** \brief . */
   void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
-  ///
+  /** \brief . */
   void free_sub_vector( RTOpPack::SubVector* sub_vec ) const;
 
   //@}
@@ -166,23 +158,23 @@ public:
   /** @name Overriddenn from VectorMutable */
   //@{
 
-  ///
+  /** \brief . */
   VectorMutable& operator=(value_type alpha);
-  ///
+  /** \brief . */
   VectorMutable& operator=(const Vector& v);
-  ///
+  /** \brief . */
   VectorMutable& operator=(const VectorMutable& v);
-  ///
+  /** \brief . */
   void set_ele( index_type i, value_type val );
-  ///
+  /** \brief . */
   vec_mut_ptr_t sub_view( const Range1D& rng );
-  ///
+  /** \brief . */
   void get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec );
-  ///
+  /** \brief . */
   void commit_sub_vector( RTOpPack::MutableSubVector* sub_vec );
-  ///
+  /** \brief . */
   void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
-  ///
+  /** \brief . */
   void Vp_StMtV(
     value_type                       alpha
     ,const GenPermMatrixSlice        &P

@@ -39,8 +39,7 @@ namespace OptionsFromStreamPack {
 
 namespace NLPInterfacePack {
 
-///
-/** Test an <tt>NLPDirect</tt> object.
+/** \brief Test an <tt>NLPDirect</tt> object.
  *
  * @param  nlp  [in/out] %NLP object being tested.
  * @param  options

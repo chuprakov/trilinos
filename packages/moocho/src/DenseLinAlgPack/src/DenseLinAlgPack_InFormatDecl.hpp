@@ -33,7 +33,7 @@
 
 namespace DenseLinAlgPack {
 
-///
+/** \brief . */
 /* * Input stream operator function for bound_format objects.
   *
   * This template function performs the following tasks.

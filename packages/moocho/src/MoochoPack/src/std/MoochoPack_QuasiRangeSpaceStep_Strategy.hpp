@@ -33,18 +33,16 @@
 
 namespace MoochoPack {
 
-///
-/** Abstract interface for a strategy object that will compute a step that will
+/** \brief Abstract interface for a strategy object that will compute a step that will
  * approximalty solve a range space subproblem {abstract}.
  */
 class QuasiRangeSpaceStep_Strategy {
 public:
 
-  ///
+  /** \brief . */
   virtual ~QuasiRangeSpaceStep_Strategy() {}
 
-  ///
-  /** Compute a step that will approximatly solve a range-space subproblem.
+  /** \brief Compute a step that will approximatly solve a range-space subproblem.
    *
    * This function will compute a step <tt>v</tt> that will approximatly satisfy:
    *
@@ -76,8 +74,7 @@ public:
     ,const Vector& xo, const Vector& c_xo, VectorMutable* v
       ) = 0;
 
-  ///
-  /** This function will print a description of the computations and logic used.
+  /** \brief This function will print a description of the computations and logic used.
    */
   virtual void print_step( std::ostream& out, const std::string& leading_str ) const = 0;
 

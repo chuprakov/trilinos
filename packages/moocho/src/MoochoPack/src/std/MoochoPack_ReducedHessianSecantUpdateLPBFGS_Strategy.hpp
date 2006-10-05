@@ -39,8 +39,7 @@
 
 namespace MoochoPack {
 
-///
-/** Perform BFGS updates on only the free independent (super basic) variables.
+/** \brief Perform BFGS updates on only the free independent (super basic) variables.
  *
  * This method should be very efficient for few super basic variables.
  */
@@ -48,38 +47,33 @@ class ReducedHessianSecantUpdateLPBFGS_Strategy : public ReducedHessianSecantUpd
 {
 public:
   
-  ///
-  /** <<std comp>> members for the strategy object that will
+  /** \brief <<std comp>> members for the strategy object that will
    * perform dense projected BFGS updating.
    */
   STANDARD_COMPOSITION_MEMBERS( ReducedHessianSecantUpdateBFGSProjected_Strategy, proj_bfgs_updater )
 
-  ///
-  /** Set the minimum number of BFGS updates to perform on the LBFGS matrix
+  /** \brief Set the minimum number of BFGS updates to perform on the LBFGS matrix
    * before considering switching to projected BFGS updating.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, min_num_updates_proj_start )
 
-  ///
-  /** Set the maximum number of BFGS updates to perform on the LBFGS matrix
+  /** \brief Set the maximum number of BFGS updates to perform on the LBFGS matrix
    * before automatically switching to the projected BFGS updating
    * reguardless if the active set has calmed down or not.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, max_num_updates_proj_start )
 
-  ///
-  /** Set the maximum number of superbasic variables under which switching
+  /** \brief Set the maximum number of superbasic variables under which switching
    * from limited memory to dense projected PBFGS updating will be allowed.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_superbasics_switch_dense )
 
-  ///
-  /** Set maximum number of previous BFGS updates to initialize the new dense
+  /** \brief Set maximum number of previous BFGS updates to initialize the new dense
    * projected BFGS matrix with.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_add_recent_updates )
 
-  ///
+  /** \brief . */
     ReducedHessianSecantUpdateLPBFGS_Strategy(
     const proj_bfgs_updater_ptr_t&  proj_bfgs_updater            = NULL
     ,size_type                      min_num_updates_proj_start   = 0
@@ -88,13 +82,13 @@ public:
     ,size_type                      num_add_recent_updates       = 10
     );
 
-  ///
+  /** \brief . */
   bool perform_update(
     DVectorSlice* s_bfgs, DVectorSlice* y_bfgs, bool first_update
     ,std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
     ,MatrixOp *rHL_k
     );
-  ///
+  /** \brief . */
   void print_step( std::ostream& out, const std::string& leading_str ) const;
 
 private:

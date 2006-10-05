@@ -53,7 +53,7 @@ using TestingHelperPack::update_success;
   */
 // @{
 
-///
+/** \brief . */
 const value_type sqrt_eps
 #if defined(_GNU_GXX)
   = std::sqrt(std::numeric_limits<value_type>::epsilon());
@@ -63,13 +63,13 @@ const value_type sqrt_eps
   = ::sqrt(std::numeric_limits<value_type>::epsilon());
 #endif
 
-///
+/** \brief . */
 bool comp(const DVectorSlice& vs1, const DVectorSlice& vs2);
 
-///
+/** \brief . */
 bool comp(const DVectorSlice& vs, value_type alpha);
 
-///
+/** \brief . */
 bool comp(const DMatrixSlice& gms1, BLAS_Cpp::Transp trans1
   , const DMatrixSlice& gms2, BLAS_Cpp::Transp trans2);
 
@@ -77,22 +77,22 @@ bool comp(const DMatrixSlice& gms1, BLAS_Cpp::Transp trans1
 //bool comp(const DMatrixSlice& gms1, const DMatrixSlice& gms2);
 
 inline
-///
+/** \brief . */
 bool comp(const DMatrixSlice& gms1, const DMatrixSlice& gms2)
 {
   return comp(gms1, BLAS_Cpp::no_trans, gms2, BLAS_Cpp::no_trans);
 }
 
-///
+/** \brief . */
 bool comp(const DMatrixSlice& gms1, value_type alpha);
 
-///
+/** \brief . */
 bool comp(const DMatrixSliceTriEle& tri_gms1, const DMatrixSliceTriEle& tri_gms2);
 
-///
+/** \brief . */
 bool comp(const DMatrixSliceTriEle& tri_gms1, value_type alpha);
 
-///
+/** \brief . */
 bool comp_less(const DVectorSlice& vs, value_type alpha);
 
 // @}

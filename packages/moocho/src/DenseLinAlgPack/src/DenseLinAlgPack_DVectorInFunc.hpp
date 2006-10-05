@@ -75,7 +75,7 @@ namespace DenseLinAlgPack {
   */
 // @{
 
-///
+/** \brief . */
 /* * DVector input stream function.
   *
   * Inputs a DVector object from an input stream.  If #exta_flags & LinAlgPackIO::ignore_dim_bit != 0#
@@ -85,7 +85,7 @@ namespace DenseLinAlgPack {
   */
 std::istream& input(std::istream& is, DVector* v, LinAlgPackIO::fmtflags extra_flags);
 
-///
+/** \brief . */
 /* * DVectorSlice input stream function.
   *
   * Inputs a DVectorSlice object from an input stream.  If #exta_flags & LinAlgPackIO::ignore_dim_bit != 0#

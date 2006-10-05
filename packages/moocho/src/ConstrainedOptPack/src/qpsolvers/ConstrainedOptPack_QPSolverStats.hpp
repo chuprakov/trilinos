@@ -33,8 +33,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Class for storing statistics about a run of a (active set?) QP solver.
+/** \brief Class for storing statistics about a run of a (active set?) QP solver.
   */
 class QPSolverStats {
 public:
@@ -83,37 +82,37 @@ public:
     warm_start_		= warm_start;
     infeasible_qp_	= infeasible_qp;
   }
-  ///
+  /** \brief . */
   ESolutionType solution_type() const
   {
     return solution_type_;
   }
-  ///
+  /** \brief . */
   EConvexity convexity() const
   {
     return convexity_;
   }
-  ///
+  /** \brief . */
   int num_qp_iter() const
   {
     return num_qp_iter_;
   }
-  ///
+  /** \brief . */
   int	num_adds() const
   {
     return num_adds_;
   }
-  ///
+  /** \brief . */
   int	num_drop() const
   {
     return num_drops_;
   }
-  ///
+  /** \brief . */
   int	warm_start() const
   {
     return warm_start_;
   }
-  ///
+  /** \brief . */
   int	infeasible_qp() const
   {
     return infeasible_qp_;

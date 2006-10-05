@@ -40,8 +40,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** NLP node subclass complementing \c NLPSerialPreprocess for explicit Jacobians.
+/** \brief NLP node subclass complementing \c NLPSerialPreprocess for explicit Jacobians.
  *
  * This subclass does a lot of work.  It has to consider several different
  * types of variability.  The matrices \c Gc and \c Gh that are computed must
@@ -87,7 +86,7 @@ public:
   /** @name Public types */
   //@{
   
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<MatrixOp> >    factory_mat_ptr_t;
 
@@ -99,16 +98,14 @@ public:
   /// Set the <tt>BasisSystemFactory</tt> object used to create the basis system.
   STANDARD_COMPOSITION_MEMBERS( BasisSystemFactory, basis_sys_fcty )
 
-  ///
-  /** Calls <tt>this->set_basis_sys_fcty()</tt> and <tt>this->set_mat_factories()</tt> methods.
+  /** \brief Calls <tt>this->set_basis_sys_fcty()</tt> and <tt>this->set_mat_factories()</tt> methods.
    */
   NLPSerialPreprocessExplJac(
     const basis_sys_fcty_ptr_t  &basis_sys_fcty  = Teuchos::rcp(new BasisSystemFactoryStd())
     ,const factory_mat_ptr_t    &factory_Gc_full = Teuchos::null
     );
 
-  ///
-  /** Initialize with matrix factory for original matrices \c Gc.
+  /** \brief Initialize with matrix factory for original matrices \c Gc.
    *
    * This matrix type will be used for \c AbstractLinAlgPack::MatrixPermAggr::mat_orig()
    * returned by the initialized \c Gc.
@@ -127,11 +124,11 @@ public:
 
   /// Passes these options on to <tt>this->basis_sys_fcty().set_options(options)</tt>.
   void set_options( const options_ptr_t& options );
-  ///
+  /** \brief . */
   const options_ptr_t& get_options() const;
-  ///
+  /** \brief . */
   void initialize(bool test_setup);	
-  ///
+  /** \brief . */
   bool is_initialized() const;
 
   //@}
@@ -139,7 +136,7 @@ public:
   /** @name Overridden public members from NLPFirstOrder */
   //@{
   
-  ///
+  /** \brief . */
   const mat_fcty_ptr_t factory_Gc() const;
   /// Calls <tt>basis_sys_fcty()->create()</tt>
   const basis_sys_ptr_t basis_sys() const;
@@ -151,12 +148,12 @@ public:
   /** @name Overridden public members from NLPVarReductPerm */
   //@{
 
-  ///
+  /** \brief . */
   bool get_next_basis(
     Permutation*  P_var,   Range1D* var_dep
     ,Permutation* P_equ,   Range1D* equ_decomp
     );
-  ///
+  /** \brief . */
   void set_basis(
     const Permutation   &P_var,   const Range1D  &var_dep
     ,const Permutation  *P_equ,   const Range1D  *equ_decomp
@@ -170,7 +167,7 @@ protected:
   /** @name Overridden protected members from NLPFirstOrder */
   //@{
 
-  ///
+  /** \brief . */
   void imp_calc_Gc(
     const Vector& x, bool newx
     ,const FirstOrderInfo& first_order_info
@@ -181,8 +178,7 @@ protected:
   /** @name Protected types */
   //@{
 
-  ///
-  /** Struct for zero and explicit first order quantities that subclass must fill in.
+  /** \brief Struct for zero and explicit first order quantities that subclass must fill in.
    *
    * When computing <tt>Gc</tt> and/or <tt>Gh</tt>, the subclass can
    * be instructed to set the row and columns index arrays by
@@ -216,19 +212,19 @@ protected:
    * the code that accesses these matrix entries.
    */
   struct FirstOrderExplInfo {
-    ///
+    /** \brief . */
     typedef std::valarray<value_type>    val_t;
-    ///
+    /** \brief . */
     typedef std::valarray<index_type>    ivect_t;
     //
     typedef std::valarray<index_type>    jvect_t;
-    ///
+    /** \brief . */
     FirstOrderExplInfo()
       :Gc_val(NULL), Gc_ivect(NULL), Gc_jvect(NULL)
       ,Gh_val(NULL), Gh_ivect(NULL), Gh_jvect(NULL)
       ,f(NULL)
     {}
-    ///
+    /** \brief . */
     FirstOrderExplInfo(
       index_type* Gc_nz_in, val_t* Gc_val_in, ivect_t* Gc_ivect_in, jvect_t* Gc_jvect_in
       ,index_type* Gh_nz_in, val_t* Gh_val_in, ivect_t* Gh_ivect_in, jvect_t* Gh_jvect_in
@@ -238,29 +234,29 @@ protected:
       ,Gh_nz(Gh_nz_in), Gh_val(Gh_val_in), Gh_ivect(Gh_ivect_in), Gh_jvect(Gh_jvect_in)
       ,Gf(obj_grad.Gf), f(obj_grad.f), c(obj_grad.c), h(obj_grad.h)
     {}
-    ///
+    /** \brief . */
     size_type*    Gc_nz;
-    ///
+    /** \brief . */
     val_t*        Gc_val;
-    ///
+    /** \brief . */
     ivect_t*      Gc_ivect;
-    ///
+    /** \brief . */
     jvect_t*      Gc_jvect;
-    ///
+    /** \brief . */
     size_type*    Gh_nz;
-    ///
+    /** \brief . */
     val_t*        Gh_val;
-    ///
+    /** \brief . */
     ivect_t*      Gh_ivect;
-    ///
+    /** \brief . */
     jvect_t*      Gh_jvect;
-    ///
+    /** \brief . */
     DVector*       Gf;
-    ///
+    /** \brief . */
     value_type*   f;
-    ///
+    /** \brief . */
     DVector*       c;
-    ///
+    /** \brief . */
     DVector*       h;
   }; // end struct FirstOrderExplInfo
 
@@ -269,8 +265,7 @@ protected:
   /** @name Pure virtual template methods to be defined by subclasses */
   //@{
 
-  ///
-  /** Return the number of nonzero elements in \c Gc before elements are removed for fixed variables.
+  /** \brief Return the number of nonzero elements in \c Gc before elements are removed for fixed variables.
     *
     * The value returned from this method before the first time \c imp_calc_Gc() is called
     * is an upper estimate of the number of nonzeros.  To get the actual number
@@ -278,8 +273,7 @@ protected:
     */
   virtual size_type imp_Gc_nz_orig() const = 0;
 
-  ///
-  /** Return the number of nonzero elements in \c Gh before elements are removed for fixed variables.
+  /** \brief Return the number of nonzero elements in \c Gh before elements are removed for fixed variables.
     *
     * The value returned from this method before the first time \c imp_calc_Gh() is called
     * is an upper estimate of the number of nonzeros.  To get the actual number
@@ -287,8 +281,7 @@ protected:
     */
   virtual size_type imp_Gh_nz_orig() const = 0;
 
-  ///
-  /** Calculate the COOR matrix for the gradient for all of the
+  /** \brief Calculate the COOR matrix for the gradient for all of the
    * <tt>c(x)</tt> constaints in the original %NLP.
    *
    * @param x_full  [in] Unknown vector (size n_full).
@@ -333,8 +326,7 @@ protected:
     , const FirstOrderExplInfo& first_order_expl_info
     ) const = 0;
 
-  ///
-  /** Calculate the COOR matrix for the gradient for all of the
+  /** \brief Calculate the COOR matrix for the gradient for all of the
    * <tt>h(x)</tt> constaints in the original %NLP.
    *
    * @param x_full  [in] Unknown vector (size n_full).
@@ -387,7 +379,7 @@ protected:
   /// Assert if we have been initizlized (throws UnInitialized)
   void assert_initialized() const;
 
-  ///
+  /** \brief . */
   const FirstOrderExplInfo first_order_expl_info() const;
 
   //@}

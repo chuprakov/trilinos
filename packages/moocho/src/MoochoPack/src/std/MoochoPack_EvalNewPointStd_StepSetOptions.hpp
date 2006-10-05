@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for EvalNewPointStd_Step from an \c OptionsFromStream object.
+/** \brief Set options for EvalNewPointStd_Step from an \c OptionsFromStream object.
  *
  * The default options group name is EvalNewPointStd.
  *
@@ -82,7 +81,7 @@ class EvalNewPointStd_StepSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   EvalNewPointStd_StepSetOptions(
       EvalNewPointStd_Step* target = 0
     , const char opt_grp_name[] = "EvalNewPointStd" );

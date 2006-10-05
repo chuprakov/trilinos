@@ -35,8 +35,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Set options for QPSolverRelaxedQPSchur from an
+/** \brief Set options for QPSolverRelaxedQPSchur from an
   * OptionsFromStream object.
   *
   * The default options group name is QPSolverRelaxedQPSchur.
@@ -85,7 +84,7 @@ class QPSolverRelaxedQPSchurSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   QPSolverRelaxedQPSchurSetOptions(
       QPSolverRelaxedQPSchur* target = 0
     , const char opt_grp_name[] = "QPSolverRelaxedQPSchur" );

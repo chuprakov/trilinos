@@ -35,8 +35,7 @@
 
 namespace SuperLUPack {
 
-///
-/** Abstract interface to SuperLU.
+/** \brief Abstract interface to SuperLU.
  *
  * This class is abstract so that none of the SuperLU header files need
  * be presented to the client.  SuperLU uses some very bad software engineering
@@ -49,8 +48,7 @@ public:
   /** @name Public Types */
   //@{
 
-  ///
-  /** Abstract class for objects that represent the factorization
+  /** \brief Abstract class for objects that represent the factorization
     * structure of a particular class of matrices.
     *
     * This structure can be reused over and over again for factorizing matrices
@@ -58,33 +56,32 @@ public:
     */
   class FactorizationStructure {
   public:
-    ///
+    /** \brief . */
     virtual ~FactorizationStructure() {}
   };
 
-  ///
-  /** Abstract class for objects that represent the factorization
+  /** \brief Abstract class for objects that represent the factorization
     * nonzeos of a particular matrix.
     */
   class FactorizationNonzeros {
   public:
-    ///
+    /** \brief . */
     virtual ~FactorizationNonzeros() {}
   };
 
   //@}
 
-  ///
+  /** \brief . */
   virtual ~SuperLUSolver() {}
 
   /** @name Static members */
   //@{
 
-  ///
+  /** \brief . */
   static Teuchos::RefCountPtr<SuperLUSolver>                         create_solver();
-  ///
+  /** \brief . */
   static Teuchos::RefCountPtr<SuperLUSolver::FactorizationStructure> create_fact_struct();
-  ///
+  /** \brief . */
   static Teuchos::RefCountPtr<SuperLUSolver::FactorizationNonzeros>  create_fact_nonzeros();
 
   //@}
@@ -92,8 +89,7 @@ public:
   /** @name Basis selection and factorization */
   //@{
 
-  ///
-  /** Analyze and factor the matrix, finding a basis in the process
+  /** \brief Analyze and factor the matrix, finding a basis in the process
    *
    * param  m     [in] Number of rows in A
    * param  n     [in] Number of columns in A
@@ -138,8 +134,7 @@ public:
     ,int                        *rank
     ) = 0;
   
-  ///
-  /** Refactor the same basis.
+  /** \brief Refactor the same basis.
    *
    * ToDo: Finish documentation!
    */
@@ -159,8 +154,7 @@ public:
   /** @name Solve for linear systems */
   //@{
 
-  ///
-  /** Solve a set of linear systems.
+  /** \brief Solve a set of linear systems.
    *
    * ToDo: Finish documentation!
    */

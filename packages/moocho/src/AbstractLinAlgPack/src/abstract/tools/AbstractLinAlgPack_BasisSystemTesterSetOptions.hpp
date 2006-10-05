@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Set options for BasisSystemTester from an
+/** \brief Set options for BasisSystemTester from an
   * OptionsFromStream object.
   *
   * The default options group name is BasisSystemTester.
@@ -67,7 +66,7 @@ class BasisSystemTesterSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   BasisSystemTesterSetOptions(
       BasisSystemTester* target = 0
     , const char opt_grp_name[] = "BasisSystemTester" );

@@ -34,8 +34,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Interface providing only direct first order sensitivity information.
+/** \brief Interface providing only direct first order sensitivity information.
  *
  * <b>Overview:</b>
  *
@@ -100,18 +99,17 @@ class NLPDirect : virtual public NLPObjGrad
 {
 public:
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<MatrixSymOp> >            mat_sym_fcty_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
 
-  ///
-  /** Initialize the factory objects for the special matrices for <tt>D'*D</tt> and <tt>S = I + D'*D</tt>.
+  /** \brief Initialize the factory objects for the special matrices for <tt>D'*D</tt> and <tt>S = I + D'*D</tt>.
    *
    * Postconditions:<ul>
    * <li>this->factory_transDtD().get() == factory_transDtD.get()</tt>
@@ -126,8 +124,7 @@ public:
   /** @name Dimensionality */
   //@{
 
-  ///
-  /** Returns the number of decomposed equality constraints (<tt>r <= m</tt>).
+  /** \brief Returns the number of decomposed equality constraints (<tt>r <= m</tt>).
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -144,8 +141,7 @@ public:
    */
   //@{
 
-  ///
-  /** Return the range of dependent (i.e.\ basic) variables.
+  /** \brief Return the range of dependent (i.e.\ basic) variables.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -154,8 +150,7 @@ public:
    * The default implementation returns <tt>Range1D(1,this->m())</tt>.
    */
   virtual Range1D var_dep() const;
-  ///
-  /** Return the range of independent (i.e.\ nonbasic) variables.
+  /** \brief Return the range of independent (i.e.\ nonbasic) variables.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -164,8 +159,7 @@ public:
    * The default implementation returns <tt>Range1D(this->m()+1,this->n())</tt>.
    */
   virtual Range1D var_indep() const;
-  ///
-  /** Return the range of decomposed equality constraints.
+  /** \brief Return the range of decomposed equality constraints.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -174,8 +168,7 @@ public:
    * The default implementation returns <tt>Range1D(1,this->m())</tt>.
    */
   virtual Range1D con_decomp() const;
-  ///
-  /** Return the range of undecomposed equality constraints.
+  /** \brief Return the range of undecomposed equality constraints.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -190,8 +183,7 @@ public:
   /** @name Matrix factory objects */
   //@{
   
-  ///
-  /** Return a matrix factory object for creating <tt>GcU</tt>.
+  /** \brief Return a matrix factory object for creating <tt>GcU</tt>.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -206,16 +198,14 @@ public:
    * This gives access to the matrices <tt>E'</tt> and <tt>F'</tt> as shown above.
    */
   virtual const mat_fcty_ptr_t factory_GcU() const;
-  ///
-  /** Return a matrix factory object for <tt>D = -inv(C)*N</tt> {abstract}.
+  /** \brief Return a matrix factory object for <tt>D = -inv(C)*N</tt> {abstract}.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
    * </ul>
    */
   virtual const mat_fcty_ptr_t factory_D() const = 0;
-  ///
-  /** Return a matrix factory object for <tt>Uz = F + E * D</tt>.
+  /** \brief Return a matrix factory object for <tt>Uz = F + E * D</tt>.
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -227,8 +217,7 @@ public:
    * non-null matrix factory object.
    */
   virtual const mat_fcty_ptr_t factory_Uz() const;
-  ///
-  /** Return a matrix factory object for a mutable matrix compatible with <tt>GcU(var_dep)</tt>.
+  /** \brief Return a matrix factory object for a mutable matrix compatible with <tt>GcU(var_dep)</tt>.
    *
    * This matrix factory object is designed to create mutable matrix objects compatible
    * with <tt>GcU(var_dep)</tt>.  For example, a matrix object <tt>Uy</tt> created by this matrix factory
@@ -242,15 +231,13 @@ public:
    */
   virtual const mat_fcty_ptr_t factory_GcUD() const;
 
-  ///
-  /** Returns a matrix factory for the result of <tt>J = D'*D</tt>
+  /** \brief Returns a matrix factory for the result of <tt>J = D'*D</tt>
    * 
    * The resulting matrix is symmetric but is assumed to be singular.
    */
   virtual const mat_sym_fcty_ptr_t factory_transDtD() const;
   
-  ///
-  /** Returns a matrix factory for the result of <tt>S = I + D'*D</tt>
+  /** \brief Returns a matrix factory for the result of <tt>S = I + D'*D</tt>
    * 
    * The resulting matrix is symmetric and is guarrenteed to be nonsingular
    */
@@ -261,8 +248,7 @@ public:
   /** @name Calculation members */
   //@{
 
-  ///
-  /** Compute all of the needed quanities for direct sensitivities.
+  /** \brief Compute all of the needed quanities for direct sensitivities.
    *
    *	@param	x	[in] (dim == n()) Current value of unkowns.  This vector should
    *              have been created by <tt>this->space_x()->create_member()</tt>.
@@ -326,8 +312,7 @@ public:
     ,MatrixOp        *Uz
     ) const = 0;
 
-  ///
-  /** Calculate an approximate newton step given the Jacobian computed
+  /** \brief Calculate an approximate newton step given the Jacobian computed
    * for the last call to <tt>calc_point()</tt>.
    *
    * The idea behind this method is that with some applications it may be
@@ -366,8 +351,7 @@ public:
   /** @name Overridden from NLP */
   //@{
 
-  ///
-  /** Initialize the NLP for its first use.
+  /** \brief Initialize the NLP for its first use.
     *
     * This function implementation should be called by subclass implementations
     * in order to reset counts for \c f(x), \c c(x), \c h(x) and \c Gf(x) evaluations.

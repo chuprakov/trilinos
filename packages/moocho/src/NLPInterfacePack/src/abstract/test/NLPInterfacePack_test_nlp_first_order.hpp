@@ -39,8 +39,7 @@ namespace OptionsFromStreamPack {
 
 namespace NLPInterfacePack {
 
-///
-/** Test an <tt>NLPFirstOrder</tt> object.
+/** \brief Test an <tt>NLPFirstOrder</tt> object.
  *
  * @param  nlp     [in/out] %NLP object being tested.
  * @param  options [in] If <tt>options != NULL</tt> then the options to use are extracted

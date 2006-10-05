@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Interface for setting and selecting a basis from the Jacobian
+/** \brief Interface for setting and selecting a basis from the Jacobian
  * from a set of equations.
  *
  * ToDo: Finish documentation!
@@ -45,15 +44,14 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<
     const Teuchos::AbstractFactory<Permutation> >   perm_fcty_ptr_t;
 
   //@}
 
 
-  ///
-  /** Required constructor (calls <tt>initialize()</tt>).
+  /** \brief Required constructor (calls <tt>initialize()</tt>).
    */
   BasisSystemPerm(
     const mat_sym_fcty_ptr_t             &factory_transDtD
@@ -65,9 +63,9 @@ public:
   /** @name Permutation factories */
   //@{
 
-  ///
+  /** \brief . */
   virtual const perm_fcty_ptr_t   factory_P_var() const = 0;
-  ///
+  /** \brief . */
   virtual const perm_fcty_ptr_t   factory_P_equ() const = 0;
 
   //@}
@@ -75,8 +73,7 @@ public:
   /** @name Basis selection / manipulation */
   //@{
 
-  ///
-  /** Factor a basis selected by the client.
+  /** \brief Factor a basis selected by the client.
    *
    * ToDo: Finish documentation!
    */
@@ -93,8 +90,7 @@ public:
     ,std::ostream              *out    = NULL
     ) = 0;
 
-  ///
-  /** Select a basis.
+  /** \brief Select a basis.
    *
    * ToDo: Finish documentation!
    */

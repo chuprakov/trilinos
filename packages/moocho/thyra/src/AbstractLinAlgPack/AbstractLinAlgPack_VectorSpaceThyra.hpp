@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** <tt>VectorSpace</tt> adapter subclass for <tt>Thyra::VectorSpaceBase<value_type> </tt>.
+/** \brief <tt>VectorSpace</tt> adapter subclass for <tt>Thyra::VectorSpaceBase<value_type> </tt>.
  *
  * Note that the default copy constructor and assignment operators are
  * allowed which yield in shallow copy, not deep copy.
@@ -46,23 +45,20 @@ public:
   /** @name Constructors / initializers */
   //@{
 
-  ///
-  /** Construct to uninitialized.
+  /** \brief Construct to uninitialized.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_vec().get() == NULL</tt>
    * </ul>
    */
   VectorSpaceThyra();
-  ///
-  /** Calls <tt>this->initialize()</tt>.
+  /** \brief Calls <tt>this->initialize()</tt>.
    */
   VectorSpaceThyra(
     const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
     ,const inner_prod_ptr_t                                                  &inner_prod    = Teuchos::null
     );
-  ///
-  /** Initalize given a smart pointer to a <tt>Thyra::VetorSpace</tt> object.
+  /** \brief Initalize given a smart pointer to a <tt>Thyra::VetorSpace</tt> object.
    *
    * @param  thyra_vec_spc  [in] Smart pointer to Thyra vector <tt>this</tt> will adapt.
    * @param  inner_prod    [in] Smart pointer to an inner product.  If <tt>inner_prod.get()==NULL</tt>
@@ -85,16 +81,14 @@ public:
     const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
     ,const inner_prod_ptr_t                                                  &inner_prod    = Teuchos::null
     );
-  ///
-  /** Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
+  /** \brief Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_vec_spc().get() == NULL</tt>
    * </ul>
    */
   Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > set_uninitialized();
-  ///
-  /** Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
+  /** \brief Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
    *
    * If <tt>this->thyra_vec_spc().count() == 1</tt>, then <tt>this</tt>
    * has sole ownership of the <tt>*this->thyra_vec_spc()</tt> object.
@@ -106,19 +100,19 @@ public:
   /** @name Overridden from VectorSpace */
   //@{
 
-  ///
+  /** \brief . */
   space_ptr_t clone() const;
-  ///
+  /** \brief . */
   bool is_compatible(const VectorSpace& vec_spc ) const;
-  ///
+  /** \brief . */
   bool is_in_core() const;
-  ///
+  /** \brief . */
   index_type dim() const;
-  ///
+  /** \brief . */
   vec_mut_ptr_t create_member() const;
-  ///
+  /** \brief . */
   space_fcty_ptr_t small_vec_spc_fcty() const;
-  ///
+  /** \brief . */
   multi_vec_mut_ptr_t create_members(size_type num_vecs) const;
 
   //@}

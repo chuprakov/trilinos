@@ -34,8 +34,7 @@
 
 namespace MoochoPack {
 
-///
-/** Implements "orthogonal" decompostion for "Tailored Appraoch".
+/** \brief Implements "orthogonal" decompostion for "Tailored Appraoch".
  *
  * Computes:
  \verbatim
@@ -49,7 +48,7 @@ class EvalNewPointTailoredApproachOrthogonal_Step
 {
 public:
 
-  ///
+  /** \brief . */
   EvalNewPointTailoredApproachOrthogonal_Step(
     const deriv_tester_ptr_t                &deriv_tester
     ,const bounds_tester_ptr_t              &bounds_tester
@@ -61,12 +60,12 @@ protected:
   /** @name Overridden from EvalNewPointTailoredApproach_Step */
   //@{
 
-  ///
+  /** \brief . */
   void uninitialize_Y_Uy(
     MatrixOp         *Y
     ,MatrixOp        *Uy
     );
-  ///
+  /** \brief . */
   void calc_py_Y_Uy(
     const NLPDirect       &nlp
     ,const D_ptr_t        &D
@@ -76,14 +75,14 @@ protected:
     ,EJournalOutputLevel  olevel
     ,std::ostream         &out
     );
-  ///
+  /** \brief . */
   void recalc_py(
     const MatrixOp           &D
     ,VectorMutable           *py
     ,EJournalOutputLevel     olevel
     ,std::ostream            &out
     );
-  ///
+  /** \brief . */
   void print_calc_py_Y_Uy(
     std::ostream& out, const std::string& leading_str
     ) const;
@@ -95,7 +94,7 @@ private:
   // ///////////////////////////////
   // Private types
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<MatrixSymOpNonsing>  S_ptr_t;
 
   // ///////////////////////////////

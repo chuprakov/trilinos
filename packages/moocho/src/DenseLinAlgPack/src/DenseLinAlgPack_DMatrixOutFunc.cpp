@@ -32,17 +32,21 @@
 #include "DenseLinAlgPack_DMatrixOutFunc.hpp"
 #include "DenseLinAlgPack_DVectorOutFunc.hpp"
 #include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "Teuchos_FancyOStream.hpp"
 
-std::ostream& DenseLinAlgPack::output(std::ostream& os, const DMatrixSlice& gms
+std::ostream& DenseLinAlgPack::output(std::ostream& out_arg, const DMatrixSlice& gms
   , LinAlgPackIO::fmtflags extra_flags )
 {
-  int w = os.width(0) - 1; // get the set width (minus 1 since a space is inserted)
+  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::OSTab tab(out);
+  int w = out->width(0) - 1; // get the set width (minus 1 since a space is inserted)
 
   if( !(extra_flags & LinAlgPackIO::ignore_dim_bit) ) {
-    std::ios_base::fmtflags old = os.flags();
-    os	<< std::setw(0) << std::left << gms.rows() << ' ' << gms.cols()
+    std::ios_base::fmtflags old = out->flags();
+    *out
+      << std::setw(0) << std::left << gms.rows() << ' ' << gms.cols()
       << std::endl;
-    os.flags(old);
+    out->flags(old);
   }
 
   if( gms.rows() && gms.cols() ) {
@@ -50,11 +54,11 @@ std::ostream& DenseLinAlgPack::output(std::ostream& os, const DMatrixSlice& gms
       const DVectorSlice& vs =gms.row(i); 
       DVectorSlice::const_iterator itr = vs.begin();
       for( size_type j = 1; itr != vs.end(); ++j, ++itr ) {
-        os << " " << std::setw(w) << (*itr) << ":" << i << ":" << j;
+        *out << " " << std::setw(w) << (*itr) << ":" << i << ":" << j;
       }
-      os << std::endl;
+      *out << std::endl;
     }
   }
   
-  return os;
+  return out_arg;
 }

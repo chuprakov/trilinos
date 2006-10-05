@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for ReducedHessianSecantUpdateBFGSProjected_Strategy
+/** \brief Set options for ReducedHessianSecantUpdateBFGSProjected_Strategy
   * from a OptionsFromStream object.
   *
   * The options group is (with the default name):
@@ -61,7 +60,7 @@ class ReducedHessianSecantUpdateLPBFGS_StrategySetOptions
   {
 public:
 
-  ///
+  /** \brief . */
   ReducedHessianSecantUpdateLPBFGS_StrategySetOptions(
     ReducedHessianSecantUpdateLPBFGS_Strategy* target = 0
     , const char opt_grp_name[] = "ReducedHessianSecantUpdateLPBFGS" );

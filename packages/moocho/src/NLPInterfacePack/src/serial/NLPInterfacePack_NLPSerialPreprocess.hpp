@@ -41,8 +41,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** %NLP node implementation subclass for preprocessing and basis manipulation.
+/** \brief %NLP node implementation subclass for preprocessing and basis manipulation.
  *
  * This is an implementation node class that takes an original NLP and transforms
  * it by:
@@ -221,8 +220,7 @@ public:
 
   //@}
 
-  ///
-  /** Default Constructor.
+  /** \brief Default Constructor.
     *
     * This initalizes the basis to the first basis if the subclass specifies one and
     * if not picks to first \c r variables as the dependent variables and the last
@@ -231,8 +229,7 @@ public:
     */
   NLPSerialPreprocess();
 
-  ///
-  /** Gives the value of a Lagrange multipler for a fixed variable bound
+  /** \brief Gives the value of a Lagrange multipler for a fixed variable bound
    *.that has been preprocessed out of the problem.
    */
   static value_type fixed_var_mult(); 
@@ -240,41 +237,40 @@ public:
   /** @name Overridden public members from NLP */
   //@{
 
-  ///
+  /** \brief . */
   void force_xinit_in_bounds(bool force_xinit_in_bounds);
-  ///
+  /** \brief . */
   bool force_xinit_in_bounds() const;
-  ///
+  /** \brief . */
   void initialize(bool test_setup);	
-  ///
+  /** \brief . */
   bool is_initialized() const;
-  ///
+  /** \brief . */
   size_type n() const;
-  ///
+  /** \brief . */
   size_type m() const;
-  ///
+  /** \brief . */
   vec_space_ptr_t space_x() const;
-  ///
+  /** \brief . */
   vec_space_ptr_t space_c() const;
-  ///
+  /** \brief . */
   size_type num_bounded_x() const;
-  ///
+  /** \brief . */
   const Vector& xl() const;
-  ///
+  /** \brief . */
   const Vector& xu() const;
-  ///
+  /** \brief . */
   const Vector& xinit() const;
-  ///
+  /** \brief . */
   void get_init_lagrange_mult(
     VectorMutable*   lambda
     ,VectorMutable*  nu
     ) const;
-  ///
+  /** \brief . */
   void scale_f( value_type scale_f );
-  ///
+  /** \brief . */
   value_type scale_f() const;
-  ///
-  /** Overridden to permute the variables back into an order that is natural to the subclass.
+  /** \brief Overridden to permute the variables back into an order that is natural to the subclass.
     *
     * The default implementation of this function is to call the method
     * <tt>imp_report_full_final_solution(x_full,lambda_full,nu_full)</tt>.
@@ -288,19 +284,19 @@ public:
     ,const Vector*   nu
     ,bool            is_optimal
     );
-  ///
+  /** \brief . */
   virtual size_type ns() const;
-  ///
+  /** \brief . */
   vec_space_ptr_t space_c_breve() const;
-  ///
+  /** \brief . */
   vec_space_ptr_t space_h_breve() const;
-  ///
+  /** \brief . */
   const Vector& hl_breve() const;
-  ///
+  /** \brief . */
   const Vector& hu_breve() const;
-  ///
+  /** \brief . */
   const Permutation& P_var() const;
-  ///
+  /** \brief . */
   const Permutation& P_equ() const;
 
   //@}
@@ -308,31 +304,31 @@ public:
   /** @name Overridden public members from NLPVarReductPerm */
   //@{
 
-  ///
+  /** \brief . */
   const perm_fcty_ptr_t factory_P_var() const;
-  ///
+  /** \brief . */
   const perm_fcty_ptr_t factory_P_equ() const;
-  ///
+  /** \brief . */
   Range1D var_dep() const;
-  ///
+  /** \brief . */
   Range1D var_indep() const;
-  ///
+  /** \brief . */
   Range1D equ_decomp() const;
-  ///
+  /** \brief . */
   Range1D equ_undecomp() const;
-  ///
+  /** \brief . */
     bool nlp_selects_basis() const;
-  ///
+  /** \brief . */
   bool get_next_basis(
     Permutation*  P_var,   Range1D* var_dep
     ,Permutation* P_equ,   Range1D* equ_decomp
     );
-  ///
+  /** \brief . */
   void set_basis(
     const Permutation   &P_var,   const Range1D  &var_dep
     ,const Permutation  *P_equ,   const Range1D  *equ_decomp
     );
-  ///
+  /** \brief . */
   void get_basis(
     Permutation*  P_var,   Range1D* var_dep
     ,Permutation* P_equ,   Range1D* equ_decomp
@@ -345,25 +341,25 @@ protected:
   /** @name Overridden protected members from NLP */
   //@{
 
-  ///
+  /** \brief . */
   void imp_calc_f(
     const Vector            &x
     ,bool                   newx
     ,const ZeroOrderInfo    &zero_order_info
     ) const;
-  ///
+  /** \brief . */
   void imp_calc_c(
     const Vector            &x
     ,bool                   newx
     ,const ZeroOrderInfo    &zero_order_info
     ) const;
-  ///
+  /** \brief . */
   void imp_calc_c_breve(
     const Vector            &x
     ,bool                   newx
     ,const ZeroOrderInfo    &zero_order_info_breve
     ) const;
-  ///
+  /** \brief . */
   void imp_calc_h_breve(
     const Vector            &x
     ,bool                   newx
@@ -375,7 +371,7 @@ protected:
   /** @name Overridden protected members from NLPObjGrad */
   //@{
 
-  ///
+  /** \brief . */
   void imp_calc_Gf(
     const Vector            &x
     ,bool                   newx
@@ -387,8 +383,7 @@ protected:
   /** @name Protected types */
   //@{
 
-  ///
-  /** Struct for objective and constriants (pointer) as serial vectors.
+  /** \brief Struct for objective and constriants (pointer) as serial vectors.
    *
    * Objects of this type are passed on to subclasses and contain pointers to
    * quantities to be updated.  Note that %NLP subclasses are not to resize
@@ -397,10 +392,10 @@ protected:
    */
   struct ZeroOrderInfoSerial {
   public:
-    ///
+    /** \brief . */
         ZeroOrderInfoSerial() : f(NULL)
     {}
-    ///
+    /** \brief . */
     ZeroOrderInfoSerial( value_type* f_in, DVector* c_in, DVector* h_in )
       : f(f_in), c(c_in), h(h_in)
     {}
@@ -412,8 +407,7 @@ protected:
     DVector*        h;
   }; // end struct ZeroOrderInfoSerial
 
-  ///
-  /** Struct for serial gradient (objective), objective and constriants (pointers)
+  /** \brief Struct for serial gradient (objective), objective and constriants (pointers)
    *
    * Objects of this type are passed on to subclasses and contain
    * pointers to quantities to be updated.  Note that %NLP
@@ -423,10 +417,10 @@ protected:
    */
   struct ObjGradInfoSerial {
   public:
-    ///
+    /** \brief . */
     ObjGradInfoSerial()	: f(NULL)
     {}
-    ///
+    /** \brief . */
     ObjGradInfoSerial( DVector* Gf_in, const ZeroOrderInfoSerial& first_order_info_in )
       : Gf(Gf_in), f(first_order_info_in.f), c(first_order_info_in.c), h(first_order_info_in.h)
     {}
@@ -445,8 +439,7 @@ protected:
   /** @name Pure virtual methods to be defined by subclasses */
   //@{
 
-  ///
-  /** Return if the definition of the %NLP has changed since the last call to \c initialize()
+  /** \brief Return if the definition of the %NLP has changed since the last call to \c initialize()
    *
    * The default return is \c true.  This function is present in order to avoid
    * preprocessing when \c initialize() is called but nothing has changed.
@@ -462,8 +455,7 @@ protected:
   virtual const DVectorSlice imp_xinit_orig() const = 0;
   /// Return if the %NLP has bounds
   virtual bool imp_has_var_bounds() const = 0;
-  ///
-  /** Return the original lower variable bounds (size \c imp_n_orig()).
+  /** \brief Return the original lower variable bounds (size \c imp_n_orig()).
    *
    * Only to be called if <tt>this->imp_has_var_bounds() == true</tt>.
    * A lower bound is considered free if it is less than or equal to:
@@ -473,8 +465,7 @@ protected:
    \endverbatim
    */
   virtual const DVectorSlice imp_xl_orig() const = 0;
-  ///
-  /** Return the original upper variable bounds (size \c imp_n_orig()).
+  /** \brief Return the original upper variable bounds (size \c imp_n_orig()).
    *
    * Only to be called if <tt>this->imp_has_var_bounds() == true</tt>.
    * An upper bound is considered free if it is greater than or equal to:
@@ -484,8 +475,7 @@ protected:
    \endverbatim
    */
   virtual const DVectorSlice imp_xu_orig() const = 0;
-  ///
-  /** Return the original lower general inequality bounds (size \c imp_mI_orig()).
+  /** \brief Return the original lower general inequality bounds (size \c imp_mI_orig()).
    *
    * Only to be called if <tt>this->imp_mI_orig() == true</tt>.
    * A lower bound is considered free if it is equal to:
@@ -493,8 +483,7 @@ protected:
    * <tt>-NLP::infinite_bound()</tt>
    */
   virtual const DVectorSlice imp_hl_orig() const = 0;
-  ///
-  /** Return the original upper general inequality bounds (size \c imp_mI_orig()).
+  /** \brief Return the original upper general inequality bounds (size \c imp_mI_orig()).
    *
    * Only to be called if <tt>this->imp_mI_orig() == true</tt>.
    * An upper bound is considered free if it is equal to:
@@ -502,32 +491,28 @@ protected:
    * <tt>+NLP::infinite_bound()</tt>
    */
   virtual const DVectorSlice imp_hu_orig() const = 0;
-  ///
-  /** Calculate the objective function for the original %NLP.
+  /** \brief Calculate the objective function for the original %NLP.
    */
   virtual void imp_calc_f_orig(
     const DVectorSlice           &x_full
     ,bool                        newx
     ,const ZeroOrderInfoSerial   &zero_order_info
     ) const = 0;
-  ///
-  /** Calculate the vector for all of the general equality constaints in the original %NLP.
+  /** \brief Calculate the vector for all of the general equality constaints in the original %NLP.
    */
   virtual void imp_calc_c_orig(
     const DVectorSlice           &x_full
     ,bool                        newx
     ,const ZeroOrderInfoSerial   &zero_order_info
     ) const = 0;
-  ///
-  /** Calculate the vector for all of the general inequality constaints in the original %NLP.
+  /** \brief Calculate the vector for all of the general inequality constaints in the original %NLP.
    */
   virtual void imp_calc_h_orig(
     const DVectorSlice           &x_full
     ,bool                        newx
     ,const ZeroOrderInfoSerial   &zero_order_info
     ) const = 0;
-  ///
-  /** Calculate the vector for the gradient of the objective in the original NLP.
+  /** \brief Calculate the vector for the gradient of the objective in the original NLP.
    *
    * Note that the dimension of <tt>obj_grad_info.Gf->dim()</tt> is
    * <tt>n_orig + mI_orig</tt>.
@@ -543,8 +528,7 @@ protected:
     ,bool                        newx
     ,const ObjGradInfoSerial     &obj_grad_info
     ) const = 0;
-  ///
-  /** Return the next basis selection (default returns \c false).
+  /** \brief Return the next basis selection (default returns \c false).
    *
    * @param  var_perm_full
    *                   [out] (size = <tt>n_orig + mI_orig</tt>).
@@ -612,8 +596,7 @@ protected:
     ,size_type   *rank_full
     ,size_type   *rank
     );
-  ///
-  /** To be overridden by subclasses to report the final solution in the
+  /** \brief To be overridden by subclasses to report the final solution in the
    * original ordering natural to the subclass.
    *
    * Note that the lagrange multipliers for fixed variables that have been
@@ -650,14 +633,13 @@ protected:
   /// Give reference to current x_full
   DVectorSlice x_full() const;
 
-  ///
+  /** \brief . */
   const ZeroOrderInfoSerial zero_order_orig_info() const;
 
-  ///
+  /** \brief . */
   const ObjGradInfoSerial obj_grad_orig_info() const;
   
-  ///
-  /** Permutation vector for partitioning free and fixed variables.
+  /** \brief Permutation vector for partitioning free and fixed variables.
    *
    \verbatim
 
@@ -670,16 +652,14 @@ protected:
    */
   const IVector& var_remove_fixed_to_full() const;
 
-  ///
-  /** Inverse permutation vector of \c var_remove_fixed_to_full().
+  /** \brief Inverse permutation vector of \c var_remove_fixed_to_full().
    *
    * The inverse mapping <tt>i_free_fixed = var_full_to_remove_fixed()(i_full)</tt> can be used
    * to determine if a variable is free for fixed.
    */
   const IVector& var_full_to_remove_fixed() const;
 
-  ///
-  /** Permutes from the compated variable vector (removing fixed variables) to the current
+  /** \brief Permutes from the compated variable vector (removing fixed variables) to the current
    * basis selection.
    *
    * On top of this partitioning of free and fixed variables, there is a permutation
@@ -698,8 +678,7 @@ protected:
    */
   const IVector& var_perm() const;
 
-  ///
-  /** Permutes from the original constriant ordering to the current basis selection.
+  /** \brief Permutes from the original constriant ordering to the current basis selection.
    *
    \verbatim
 
@@ -712,8 +691,7 @@ protected:
    */
   const IVector& equ_perm() const;
 
-  ///
-  /** Inverse of \c equ_perm()
+  /** \brief Inverse of \c equ_perm()
    *
    * The mapping <tt>j_perm = inv_equ_perm()(j_full)</tt> is used to determine the index
    * \c j_perm of the constriant \c c being used by the client given the index in c_full.

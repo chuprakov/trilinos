@@ -38,8 +38,7 @@
 namespace ConstrainedOptPack {
 namespace QPSchurPack {
 
-///
-/** Constraints subclass that is used to represent generic
+/** \brief Constraints subclass that is used to represent generic
  * varaible bounds, and general inequality and equality constraints.
  *
  * The generic constraints represented by this class are those
@@ -80,8 +79,7 @@ public:
   // /////////////////////////////////////////////
   // Public types
 
-  ///
-  /** Matrix type for A_bar.
+  /** \brief Matrix type for A_bar.
    *
    \verbatim
 
@@ -94,15 +92,13 @@ public:
   class MatrixConstraints : public MatrixOp {
   public:
 
-    ///
-    /** Construct to unitinitialized.
+    /** \brief Construct to unitinitialized.
      *
      * this->nd() == 0 after construction.
      */
     MatrixConstraints();
 
-    ///
-    /** Initialize.
+    /** \brief Initialize.
      *
      * The sizes of the arguments are
      * not checked.
@@ -128,34 +124,34 @@ public:
     /** @name Access */
     //@{
 
-    ///
+    /** \brief . */
     size_type			nd() const
     {	return nd_;	}
-    ///
+    /** \brief . */
     size_type			m_in() const
     {	return m_in_;	}
-    ///
+    /** \brief . */
     size_type			m_eq() const
     {	return m_eq_;	}
-    ///
+    /** \brief . */
     const MatrixOp*	E() const
     {	return E_;	}
-    ///
+    /** \brief . */
     BLAS_Cpp::Transp	trans_E() const
     {	return trans_E_;	}
-    ///
+    /** \brief . */
     const Vector*	b() const
     {	return b_;	}
-    ///
+    /** \brief . */
     const MatrixOp*	F() const
     {	return F_;	}
-    ///
+    /** \brief . */
     BLAS_Cpp::Transp	trans_F() const
     {	return trans_F_;	}
-    ///
+    /** \brief . */
     const Vector*	f() const
     {	return f_;	}
-    ///
+    /** \brief . */
     const GenPermMatrixSlice& P_u() const
     {	return P_u_;	}
 
@@ -164,11 +160,11 @@ public:
     /** @name Overridden from MatrixOp */
     //@{
 
-    ///
+    /** \brief . */
     const VectorSpace& space_cols() const;
-    ///
+    /** \brief . */
     const VectorSpace& space_rows() const;
-    ///
+    /** \brief . */
     MatrixOp& operator=(const MatrixOp& m);
 //		///
 //		void Mp_StPtMtP(
@@ -177,12 +173,12 @@ public:
 //			,BLAS_Cpp::Transp M_trans
 //			,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 //			) const ;
-    ///
+    /** \brief . */
     void Vp_StMtV(
       VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
       ,const Vector& vs_rhs2, value_type beta
       ) const;
-    ///
+    /** \brief . */
     void Vp_StPtMtV(
       VectorMutable* vs_lhs, value_type alpha
       ,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
@@ -211,7 +207,7 @@ public:
     VectorSpaceBlocked         space_rows_;
   };	// end class MatrixConstraints
 
-  ///
+  /** \brief . */
   enum EInequalityPickPolicy {
     ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY
     ,ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY
@@ -221,31 +217,26 @@ public:
   /** @name Public member functions */
   //@{
 
-  ///
-  /** <<std comp>> members for feasibility tolerance for the bound constriants.
+  /** \brief <<std comp>> members for feasibility tolerance for the bound constriants.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, bounds_tol )
 
-  ///
-  /** <<std comp>> members for feasibility tolerance for the general inequality constraints.
+  /** \brief <<std comp>> members for feasibility tolerance for the general inequality constraints.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, inequality_tol )
 
-  ///
-  /** <<std comp>> members for feasibility tolerance for the general equality constriants.
+  /** \brief <<std comp>> members for feasibility tolerance for the general equality constriants.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, equality_tol )
 
-  ///
-  /** <<std comp>> members for policy used to select a violated constraint.
+  /** \brief <<std comp>> members for policy used to select a violated constraint.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( EInequalityPickPolicy, inequality_pick_policy )
 
   /// Constructs to uninitialized
   ConstraintsRelaxedStd();
 
-  ///
-  /** Initialize constriants.
+  /** \brief Initialize constriants.
    *
    * If there are no variable bounds then set:<br>
    * <tt>void(dL) == void(dU) == NULL</tt>
@@ -310,7 +301,7 @@ public:
     ,value_type                      equality_tol      = 1e-10
     );
 
-  ///
+  /** \brief . */
   const MatrixConstraints& A_bar_relaxed() const;
 
   //@}
@@ -318,12 +309,11 @@ public:
   /** @name Overridden from Constraints */
   //@{
 
-  ///
+  /** \brief . */
   size_type n() const;
-  ///
+  /** \brief . */
   size_type m_breve() const;
-  ///
-  /** Represents the constraints matrix.
+  /** \brief Represents the constraints matrix.
    *
    \verbatim
 
@@ -332,12 +322,11 @@ public:
    \endverbatim
    */
   const MatrixOp& A_bar() const;
-  ///
+  /** \brief . */
   void pick_violated_policy( EPickPolicy pick_policy );
-  ///
+  /** \brief . */
   EPickPolicy pick_violated_policy() const;
-  ///
-  /** Here the next violated constraint to add to the active set is selected.
+  /** \brief Here the next violated constraint to add to the active set is selected.
    *
    * Violated constraints are selected to to add to the active set in the following
    * order:
@@ -381,9 +370,9 @@ public:
     const DVectorSlice& x, size_type* j_viol, value_type* constr_val
     ,value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
     ) const;
-  ///
+  /** \brief . */
   void ignore( size_type j );
-  ///
+  /** \brief . */
   value_type get_bnd( size_type j, EBounds bnd ) const;
 
   //@}
@@ -422,7 +411,7 @@ private:
   // //////////////////////////////
   // Private member functions
 
-  ///
+  /** \brief . */
   void cache_last_added(
     size_type last_added_j, value_type last_added_bound
     ,EBounds last_added_bound_type

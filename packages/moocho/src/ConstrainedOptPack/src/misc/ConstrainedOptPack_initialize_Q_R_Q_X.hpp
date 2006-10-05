@@ -33,8 +33,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Initialize <tt>GenPermMatrixSlice</tt> mapping matrices for <tt>Q_R</tt> and <tt>Q_X</tt>.
+/** \brief Initialize <tt>GenPermMatrixSlice</tt> mapping matrices for <tt>Q_R</tt> and <tt>Q_X</tt>.
  *
  *
  * @param  n_R        [in] Number of free variables

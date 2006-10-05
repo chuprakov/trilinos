@@ -40,7 +40,7 @@ namespace AbstractLinAlgPack {
   */
 //@{
 
-///
+/** \brief . */
 template<class T_COOM>
 size_type COOM_num_in_column(
     const T_COOM&						m
@@ -49,7 +49,7 @@ size_type COOM_num_in_column(
   , const IVector::value_type*		col_perm
   , size_type*						num_in_col	);
 
-///
+/** \brief . */
 template<class T_COOM>
 void COOM_insert_nonzeros(
     const T_COOM&						m
@@ -63,7 +63,7 @@ void COOM_insert_nonzeros(
   , FortranTypes::f_dbl_prec*			D_val
   , FortranTypes::f_int*				D_row_i			);
 
-///
+/** \brief . */
 template<class T_COOM>
 value_type COOM_insert_scaled_nonzeros(
     const T_COOM&						m

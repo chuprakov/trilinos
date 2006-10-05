@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Output operator for \Ref{Vector} objects.
+/** \brief Output operator for \Ref{Vector} objects.
  */
 inline
 std::ostream& operator<<( std::ostream& o, const Vector& v )

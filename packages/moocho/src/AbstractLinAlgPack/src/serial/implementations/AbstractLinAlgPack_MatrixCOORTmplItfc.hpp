@@ -42,8 +42,7 @@ class MatrixCOORTmplItfcItrEleView;
 template<class T_Scalar, class T_Index>
 class MatrixCOORTmplItfcItr;
 
-///
-/** Templated class that supports the \c COOMatrixTemplateInterface
+/** \brief Templated class that supports the \c COOMatrixTemplateInterface
  * template interface.
  */
 template<class T_Scalar, class T_Index>
@@ -87,8 +86,7 @@ private:
 // ///////////////////////////////////////////////
 // Implementatioins, not of the user to look at!
 
-///
-/** Templated class for objects that support the
+/** \brief Templated class for objects that support the
  * \c SparseCOOElementTemplatInterface specification.
  */
 template<class T_Scalar, class T_Index>
@@ -115,8 +113,7 @@ private:
   MatrixCOORTmplItfcItrEleView();
 }; // end class MatrixCOORTmplItfcItrEleView
 
-///
-/** Templated class for iterator returning objects that support the
+/** \brief Templated class for iterator returning objects that support the
  * \c SparseCOOElementTemplatInterface specification.
  */
 template<class T_Scalar, class T_Index>

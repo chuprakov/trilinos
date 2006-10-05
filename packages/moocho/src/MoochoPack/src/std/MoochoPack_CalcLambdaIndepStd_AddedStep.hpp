@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Calculates the lagrange multipliers for the independent constraints.
+/** \brief Calculates the lagrange multipliers for the independent constraints.
   */
 class CalcLambdaIndepStd_AddedStep : public rSQPAlgo_Step {
 public:
@@ -42,11 +41,11 @@ public:
   // ////////////////////
   // Overridden
 
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
 
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 

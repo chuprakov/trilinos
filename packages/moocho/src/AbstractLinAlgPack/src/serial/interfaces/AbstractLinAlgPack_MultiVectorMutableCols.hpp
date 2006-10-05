@@ -38,8 +38,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Default subclass for <tt>MultiVectorMutable</tt> implemented using columns
+/** \brief Default subclass for <tt>MultiVectorMutable</tt> implemented using columns
  * of separate abstract vectors.
  *
  * Only column access is permitted.  This is a very bad implementation of a
@@ -71,8 +70,7 @@ public:
     ,Teuchos::RefCountPtr<VectorMutable>       col_vecs[] = NULL
     );
   
-  ///
-  /** Initialize given the spaces for the columns and rows and possibly the column vectors.
+  /** \brief Initialize given the spaces for the columns and rows and possibly the column vectors.
    *
    * @param  space_cols  [in] The space that the columns must lie in.  The underlying
    *                     vector space must not be changed while \c this is in use.
@@ -118,9 +116,9 @@ public:
   /** @name Overridden from MatrixBase */
   //@{
 
-  ///
+  /** \brief . */
   size_type rows() const;
-  ///
+  /** \brief . */
   size_type cols() const;
 
   //@}
@@ -128,29 +126,29 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   const VectorSpace& space_rows() const;
-  ///
+  /** \brief . */
   void zero_out();
-  ///
+  /** \brief . */
   void Mt_S( value_type alpha );
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& mwo_rhs);
-  ///
+  /** \brief . */
   mat_mut_ptr_t clone();
-  ///
+  /** \brief . */
   mat_ptr_t clone() const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const Vector& v_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2, value_type beta) const;
-  ///
+  /** \brief . */
   bool syrk(
      BLAS_Cpp::Transp M_trans, value_type alpha
     , value_type beta, MatrixSymOp* sym_lhs ) const;
@@ -163,13 +161,13 @@ public:
 
   /** @name Overridden from MultiVectorMutable */
   //@{
-  ///
+  /** \brief . */
   vec_mut_ptr_t col(index_type j);
   /// Returns <tt>return.get() == NULL</tt>
   vec_mut_ptr_t row(index_type i);
   /// Returns <tt>return.get() == NULL</tt>
   vec_mut_ptr_t diag(int k);
-  ///
+  /** \brief . */
   multi_vec_mut_ptr_t mv_sub_view(const Range1D& row_rng, const Range1D& col_rng);
   //@}
 

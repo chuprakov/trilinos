@@ -33,8 +33,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Implementation of initial KKT system using the Hessian for the free
+/** \brief Implementation of initial KKT system using the Hessian for the free
  * variables only.
  *
  * In this implementation, #G# must support the #MatrixSymOp#
@@ -48,8 +47,7 @@ public:
   // ////////////////////////////////
   // Overridden from InitKKTSystem
 
-  ///
-  /** Initialize the KKT system where initially fixed variables are removed and
+  /** \brief Initialize the KKT system where initially fixed variables are removed and
    * no equality constraints are included in Ko.
    *
    * For this implementation:

@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** <tt>MatrixOp</tt> adapter subclass for <tt>Thyra::LinearOpBase</tt>.
+/** \brief <tt>MatrixOp</tt> adapter subclass for <tt>Thyra::LinearOpBase</tt>.
  */
 class MatrixOpThyra : virtual public MatrixOp {
 public:
@@ -44,8 +43,7 @@ public:
   /** @name Constructors / Initializers */
   //@{
 
-  ///
-  /** Construct to uninitialized.
+  /** \brief Construct to uninitialized.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_linear_op().get() == NULL</tt>
@@ -54,15 +52,13 @@ public:
    * </ul>
    */
   MatrixOpThyra();
-  ///
-  /** Calls <tt>this->initialize()</tt>.
+  /** \brief Calls <tt>this->initialize()</tt>.
    */
   MatrixOpThyra(
     const Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> >   &thyra_linear_op
     ,BLAS_Cpp::Transp                                                    thyra_linear_op_trans = BLAS_Cpp::no_trans
     );
-  ///
-  /** Initalize given a smart pointer to a <tt>Thyra::LinearOpBase</tt> object.
+  /** \brief Initalize given a smart pointer to a <tt>Thyra::LinearOpBase</tt> object.
    *
    * @param  thyra_linear_op  [in] Smart pointer to Thyra vector <tt>this</tt> will adapt.
    *
@@ -83,22 +79,20 @@ public:
     const Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> >   &thyra_linear_op
     ,BLAS_Cpp::Transp                                                    thyra_linear_op_trans = BLAS_Cpp::no_trans
     );
-  ///
-  /** Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorBase</tt> object.
+  /** \brief Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorBase</tt> object.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_linear_op().get() == NULL</tt>
    * </ul>
    */
   Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> > set_uninitialized();
-  ///
-  /** Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorBase</tt> object.
+  /** \brief Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorBase</tt> object.
    *
    * If <tt>this->thyra_linear_op().count() == 1</tt>, then <tt>this</tt>
    * has sole ownership of the <tt>*this->thyra_linear_op()</tt> object.
    */
   const Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> >& thyra_linear_op() const;
-  ///
+  /** \brief . */
   BLAS_Cpp::Transp thyra_linear_op_trans() const;
 
   //@}
@@ -106,9 +100,9 @@ public:
   /** @name Overridden from MatrixBase */
   //@{
 
-  ///
+  /** \brief . */
   const VectorSpace& space_cols() const;
-  ///
+  /** \brief . */
   const VectorSpace& space_rows() const;
 
   //@}
@@ -116,11 +110,11 @@ public:
   /** @name Overridden from MatrixOp */
   //@{
 
-  ///
+  /** \brief . */
   mat_mut_ptr_t clone();
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& mwo_rhs);
-  ///
+  /** \brief . */
   void Vp_StMtV(
     VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     ,const Vector& v_rhs2, value_type beta

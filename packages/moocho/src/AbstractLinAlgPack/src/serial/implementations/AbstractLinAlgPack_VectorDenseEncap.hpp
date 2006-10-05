@@ -10,8 +10,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Extract a constant <tt>DenseLinAlgPack::DVectorSlice</tt> view of a <tt>Vector</tt> object.
+/** \brief Extract a constant <tt>DenseLinAlgPack::DVectorSlice</tt> view of a <tt>Vector</tt> object.
  *
  * This class is only to be used with <tt>Vector</tt> objects that store all of their
  * elements in the local address space or can easily access all of the vector elements in
@@ -54,8 +53,7 @@ private:
 
 }; // end class VectorDenseEncap
 
-///
-/** Extract a non-const <tt>DenseLinAlgPack::DVectorSlice</tt> view of a <tt>VectorMutable</tt> object.
+/** \brief Extract a non-const <tt>DenseLinAlgPack::DVectorSlice</tt> view of a <tt>VectorMutable</tt> object.
  *
  * This utility class is defined purly in terms of the abstract interfaces.  It is only to
  * be used as an automatic variable on the stack.  Note that the underlying <tt>VectorMutable</tt>

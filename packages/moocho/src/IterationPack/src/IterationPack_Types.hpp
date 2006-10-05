@@ -35,18 +35,18 @@ namespace MemMngPack {}
 
 namespace IterationPack {
 
-///
+/** \brief . */
 enum EAssocStepType {
   PRE_STEP   = 0
   ,POST_STEP = 1
 };
-///
+/** \brief . */
 enum EDoStepType {
   DO_MAIN_STEP  = 0
   ,DO_PRE_STEP  = 1
   ,DO_POST_STEP = 2
 };
-///
+/** \brief . */
 enum EAlgoReturn {
   TERMINATE_TRUE
   ,TERMINATE_FALSE
@@ -55,7 +55,7 @@ enum EAlgoReturn {
   ,INTERRUPTED_TERMINATE_TRUE
   ,INTERRUPTED_TERMINATE_FALSE
 };
-///
+/** \brief . */
 class InvalidTypeCastException : public std::logic_error
 {public: InvalidTypeCastException(const std::string& what_arg) : std::logic_error(what_arg) {}};
 

@@ -40,8 +40,7 @@ namespace NLPInterfacePack {
 /** \defgroup ExampleNLPFirstOrderRun_grp Helper function for ExampleNLPFirstOrder */
 //@{
 
-///
-/** Function accepts a VectorSpace object and then uses it to define
+/** \brief Function accepts a VectorSpace object and then uses it to define
  * an example NLP and run <tt>MoochoPack::MoochoSolver</tt> on it.
  *
  * @param  vec_space   [in] The vector space object used to create all of the

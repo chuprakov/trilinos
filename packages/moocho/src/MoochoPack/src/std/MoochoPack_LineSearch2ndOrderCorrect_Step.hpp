@@ -39,15 +39,14 @@
 
 namespace MoochoPack {
 
-///
-/** Implements second order correction.
+/** \brief Implements second order correction.
   *
   * Let the printed documentation describe these parameters.
   */
 class LineSearch2ndOrderCorrect_Step : public LineSearch_Step {
 public:
 
-  ///
+  /** \brief . */
   enum ENewtonOutputLevel {
     PRINT_USE_DEFAULT
     ,PRINT_NEWTON_NOTHING      = 0
@@ -56,41 +55,37 @@ public:
     ,PRINT_NEWTON_VECTORS      = 3
   };
 
-  ///
+  /** \brief . */
   enum EForcedConstrReduction { CONSTR_LESS_X_D, CONSTR_LESS_X };
 
-  ///
-  /** <<std comp>> members for direct_ls_sqp.
+  /** \brief <<std comp>> members for direct_ls_sqp.
     *
     * This is the line search strategy object for the SQP step
     * for x_k+1 = x_k + alpha_k * d_k + alpha_k^2 * w.
     */
   STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_ls_sqp)
 
-  ///
-  /** <<std comp>> members for merit_func.
+  /** \brief <<std comp>> members for merit_func.
     *
     * This is the merit function object for SQP step line search.
     */
   STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func)
 
-  ///
-  /** <<std comp>> members for feasibility_step.
+  /** \brief <<std comp>> members for feasibility_step.
     *
     * This is the strategy object that is used to compute feasibility
     * steps for the newton iterations.
     */
   STANDARD_COMPOSITION_MEMBERS(FeasibilityStep_Strategy,feasibility_step)
 
-  ///
-  /** <<std comp>> members for direct_ls_newton.
+  /** \brief <<std comp>> members for direct_ls_newton.
     *
     * This is the line search strategy object for the internal
     * newton iterations for determining the second order correction w.
     */
   STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_ls_newton)
 
-  ///
+  /** \brief . */
   LineSearch2ndOrderCorrect_Step(
     const direct_ls_sqp_ptr_t&			direct_ls_sqp			= NULL
     ,const merit_func_ptr_t&			merit_func				= NULL
@@ -144,11 +139,11 @@ public:
   // ////////////////////
   // Overridden
 
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
 
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 

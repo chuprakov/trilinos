@@ -34,8 +34,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Tests the optimality conditions of the output from a \c QPSolverRelaxed
+/** \brief Tests the optimality conditions of the output from a \c QPSolverRelaxed
  * object.
  *
  * For the given QP and its solution (if solved) this class tests
@@ -134,25 +133,25 @@ namespace ConstrainedOptPack {
 class QPSolverRelaxedTester {
 public:
 
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_warning_tol )
 
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_error_tol )
 
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_warning_tol )
 
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_error_tol )
 
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_warning_tol )
 
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_error_tol )
 
-  ///
+  /** \brief . */
   QPSolverRelaxedTester(
     value_type    opt_warning_tol   = 1e-10
     ,value_type   opt_error_tol     = 1e-5
@@ -162,11 +161,10 @@ public:
     ,value_type   comp_error_tol    = 1e-5
     );
 
-  ///
+  /** \brief . */
   virtual ~QPSolverRelaxedTester() {}
 
-  ///
-  /** Check the optimality conditions for the solved (or partially solved) QP.
+  /** \brief Check the optimality conditions for the solved (or partially solved) QP.
    *
    * The default implementation calls the function \c check_optimality_conditions()
    * which accepts various sets of constraints.
@@ -229,8 +227,7 @@ public:
     ,const Vector* lambda, const Vector* Fd
     );
 
-  ///
-  /** Check the optimality conditions without general equality constrants.
+  /** \brief Check the optimality conditions without general equality constrants.
    */
   virtual bool check_optimality_conditions(
     QPSolverStats::ESolutionType solution_type
@@ -247,8 +244,7 @@ public:
     ,const Vector* mu, const Vector* Ed
     );
 
-  ///
-  /** Check the optimality conditions general inequality constrants.
+  /** \brief Check the optimality conditions general inequality constrants.
    */
   virtual bool check_optimality_conditions(
     QPSolverStats::ESolutionType solution_type
@@ -265,8 +261,7 @@ public:
     );
 
 
-  ///
-  /** Check the optimality conditions without general equality or inequality
+  /** \brief Check the optimality conditions without general equality or inequality
    * constrants (no relaxation needed).
    */
   virtual bool check_optimality_conditions(
@@ -280,8 +275,7 @@ public:
     ,const Vector* nu
     );
 
-  ///
-  /** This is a more flexible function where the client can
+  /** \brief This is a more flexible function where the client can
    * set different constraints to be included.
    *
    */
@@ -304,8 +298,7 @@ public:
 
 protected:
 
-  ///
-  /** Subclasses are to override this to implement the testing code.
+  /** \brief Subclasses are to override this to implement the testing code.
    *
    * There is a default implementation that is very general and
    * should be considered good enough for most applications.

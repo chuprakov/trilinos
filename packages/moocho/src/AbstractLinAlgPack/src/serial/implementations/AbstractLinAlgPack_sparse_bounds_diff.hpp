@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Take the difference between a spare lower bound vector and a dense vector.
+/** \brief Take the difference between a spare lower bound vector and a dense vector.
   * 
   * r = alpha * ( sv - v )
   *

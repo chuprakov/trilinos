@@ -36,8 +36,7 @@
 
 namespace MoochoPack {
 
-///
-/** Check if the decomposition is going singular and if it is
+/** \brief Check if the decomposition is going singular and if it is
  * select a new decomposition.
  *
  * This steps checks if the decomposition is going singular by looking
@@ -66,14 +65,14 @@ class CheckDecompositionFromPy_Step
 {
 public:
 
-  ///
+  /** \brief . */
   STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy )
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_decomposition_cond_change_frac )
-  ///
+  /** \brief . */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_cond )
 
-  ///
+  /** \brief . */
   CheckDecompositionFromPy_Step(
     const new_decomp_strategy_ptr_t   &new_decomp_strategy
     ,value_type                       max_decomposition_cond_change_frac = 100.0
@@ -84,10 +83,10 @@ public:
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   //@}

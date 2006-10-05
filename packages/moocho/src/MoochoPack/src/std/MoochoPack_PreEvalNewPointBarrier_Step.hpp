@@ -42,8 +42,7 @@
 
 namespace MoochoPack {
 
-///
-/** Standard evaluation step class for extra parameters in primal/dual barrier method.
+/** \brief Standard evaluation step class for extra parameters in primal/dual barrier method.
  *
  * This class calculates \c invXu, \c invXl \c invXu_m_invXl
  *
@@ -54,8 +53,7 @@ class PreEvalNewPointBarrier_Step
   {
   public:
 
-    ///
-    /** relative fraction for initializing x within
+    /** \brief relative fraction for initializing x within
      *   bounds.
      *   xl_sb = min(xl+relative_bound_push*(xu-xl),
      *               xl + absolute_bound_push)
@@ -70,8 +68,7 @@ class PreEvalNewPointBarrier_Step
      */
     STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, relative_bound_push )
 
-    ///
-    /** absolute measure for initializing x within
+    /** \brief absolute measure for initializing x within
      *   bounds.
      *   xl_sb = min(xl+relative_bound_push*(xu-xl),
      *               xl + absolute_bound_push)
@@ -88,7 +85,7 @@ class PreEvalNewPointBarrier_Step
 
     /** @name Overridden from AlgorithmStep */
     //@{
-    ///
+    /** \brief . */
     bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
            , poss_type assoc_step_poss);
     

@@ -35,8 +35,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Set options for QPSolverRelaxedTester from an
+/** \brief Set options for QPSolverRelaxedTester from an
  * OptionsFromStream object.
  *
  * The default options group name is QPSolverRelaxedTester.
@@ -60,7 +59,7 @@ class QPSolverRelaxedTesterSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   QPSolverRelaxedTesterSetOptions(
       QPSolverRelaxedTester* target = 0
     , const char opt_grp_name[] = "QPSolverRelaxedTester" );

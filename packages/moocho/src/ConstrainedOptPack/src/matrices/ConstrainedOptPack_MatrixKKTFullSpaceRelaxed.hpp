@@ -36,8 +36,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Implementation of a KKT matrix factorized in the full space.
+/** \brief Implementation of a KKT matrix factorized in the full space.
   *
   * This class is used to represent the KKT matrix of the following
   * relaxed QP:
@@ -85,32 +84,32 @@ class MatrixKKTFullSpaceRelaxed
 {
 public:
   
-  ///
+  /** \brief . */
   typedef AbstractLinAlgPack::DirectSparseFortranCompatibleSolver
     DirectSparseFortranCompatibleSolver;
 
-  ///
+  /** \brief . */
   class NotInitializedException : public std::logic_error
   {public: NotInitializedException (const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-  ///
+  /** \brief . */
   class SingularMatrixException : public std::logic_error
   {public: SingularMatrixException (const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-  ///
+  /** \brief . */
   class InvalidMatrixType : public std::logic_error
   {public: InvalidMatrixType (const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-  ///
+  /** \brief . */
   enum ERunTests { RUN_TESTS, NO_TESTS };
 
-  ///
+  /** \brief . */
   enum EPrintMoreOrLess { PRINT_MORE, PRINT_LESS };
 
   /// <<std comp>> members for the direct sparse linear solver
   STANDARD_COMPOSITION_MEMBERS( DirectSparseFortranCompatibleSolver, direct_solver )
 
-  ///
+  /** \brief . */
   MatrixKKTFullSpaceRelaxed( const direct_solver_ptr_t& direct_solver = 0 );
 
   /** @name Initialize the relaxed or unrelaxed KKT matrix.
@@ -150,16 +149,14 @@ public:
     */
   //@{
 
-  ///
-  /** Initialize the nonrelaxed matrix.
+  /** \brief Initialize the nonrelaxed matrix.
     *
     */
   void initialize( const MatrixOp& G, const MatrixOp& A
     , std::ostream* out = 0, EPrintMoreOrLess print_what = PRINT_LESS
     , ERunTests test_what = NO_TESTS );
 
-  ///
-  /** Initialize the relaxed matrix.
+  /** \brief Initialize the relaxed matrix.
     *
     * If the unrelaxed QP is well scaled (near 1.0) then a reasonable
     * value for bigM = M might be 1e+10 however this is problem specific.
@@ -169,8 +166,7 @@ public:
     , std::ostream* out = 0, EPrintMoreOrLess print_what = PRINT_LESS
     , ERunTests test_what = NO_TESTS );
 
-  ///
-  /** Set the matrix to uninitialized.
+  /** \brief Set the matrix to uninitialized.
     *
     * The purpose of this method is for the client to specifically state that
     * it is done using this object for now.  This is to avoid problems where
@@ -182,8 +178,7 @@ public:
     */
   void set_uninitialized();
 
-  ///
-  /** Clear all allocated storage.
+  /** \brief Clear all allocated storage.
     *
     * The client should call this routine if he wants the new KKT matrix
     * to be reanalyze and factorized the next time initialize...(...) is
@@ -196,19 +191,19 @@ public:
   // /////////////////////////////////////////////////////
   // Overridden from Matrix
 
-  ///
+  /** \brief . */
   size_type rows() const;
 
-  ///
+  /** \brief . */
   size_type cols() const;
 
   // /////////////////////////////////////////////////////////
   // Overridden from MatrixOp
 
-  ///
+  /** \brief . */
   std::ostream& output(std::ostream& out) const;
 
-  ///
+  /** \brief . */
   MatrixOp& operator=(const MatrixOp& m);
 
   /// (2) vs_lhs = alpha * op(M_rhs1) * vs_rhs2 + beta * vs_lhs (BLAS xGEMV)
@@ -225,10 +220,10 @@ public:
   // ////////////////////////////////////////////////////////////
   // Overridden from MatrixConvertToSparseFortranCompatible
 
-  ///
+  /** \brief . */
   FortranTypes::f_int num_nonzeros( EExtractRegion extract_region ) const;
 
-  ///
+  /** \brief . */
   void coor_extract_nonzeros(
       EExtractRegion extract_region
     , const FortranTypes::f_int len_Aval
@@ -265,14 +260,13 @@ private:
   // //////////////////////////////
   // Private member functions
 
-  ///
+  /** \brief . */
   void assert_matrices_set() const;
 
-  ///
+  /** \brief . */
   void assert_initialized() const;
 
-  ///
-  /** Validate the types and sizes of G and A, set the member pointers G_ and A_
+  /** \brief Validate the types and sizes of G and A, set the member pointers G_ and A_
     * and return the conversion interfaces convG and convA.
     */
   void validate_and_set_matrices( const MatrixOp& G, const MatrixOp& A );

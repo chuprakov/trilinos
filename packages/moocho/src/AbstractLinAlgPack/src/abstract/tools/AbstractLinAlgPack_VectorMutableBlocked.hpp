@@ -36,8 +36,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Concrete subclass for a blocked vector.
+/** \brief Concrete subclass for a blocked vector.
  *
  * This is a near optimal implementation for a block vector in many
  * circumstances.
@@ -70,19 +69,17 @@ class VectorMutableBlocked : virtual public VectorMutable
 {
 public:
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const VectorSpaceBlocked>  vec_space_comp_ptr_t;
 
-  ///
-  /** Calls <tt>this->initialize()</tt>.
+  /** \brief Calls <tt>this->initialize()</tt>.
    */
   VectorMutableBlocked(
     VectorMutable::vec_mut_ptr_t*  vecs
     ,const vec_space_comp_ptr_t&         vec_space
     );
 
-  ///
-  /** Initialize given a list of constituent vectors.
+  /** \brief Initialize given a list of constituent vectors.
    *
    * Preconditions:<ul>
    * <li> <tt>vec_space.get() != NULL</tt> (throw <tt>std::logic_error</tt>).
@@ -103,18 +100,15 @@ public:
     ,const vec_space_comp_ptr_t&         vec_space
     );
 
-  ///
-  /** Return the underlying block vector space.
+  /** \brief Return the underlying block vector space.
    */
   const VectorSpaceBlocked& block_space() const;
 
-  ///
-  /** Get the kth (zero based) constituent vector.
+  /** \brief Get the kth (zero based) constituent vector.
    */
   const Vector& get_vector(int k) const;
 
-  ///
-  /** Get the kth (zero based) constituent vector.
+  /** \brief Get the kth (zero based) constituent vector.
    */
   VectorMutable& get_vector(int k);
 
@@ -123,11 +117,11 @@ public:
   /** @name Overridden form Vector */
   //@{
 
-  ///
+  /** \brief . */
   index_type dim() const;
-  ///
+  /** \brief . */
   const VectorSpace& space() const;
-  ///
+  /** \brief . */
   void apply_op(
     const RTOpPack::RTOp& op
     ,const size_t num_vecs, const Vector* vecs[]
@@ -135,24 +129,24 @@ public:
     ,RTOpPack::ReductTarget *reduct_obj
     ,const index_type first_ele, const index_type sub_dim, const index_type global_offset
     ) const;
-  ///
+  /** \brief . */
   index_type nz() const;
-  ///
+  /** \brief . */
   std::ostream& output(
     std::ostream& out, bool print_dim, bool newline
     ,index_type global_offset 
     ) const;
-  ///
+  /** \brief . */
   value_type get_ele(index_type i) const;
-  ///
+  /** \brief . */
   value_type norm_1() const;
-  ///
+  /** \brief . */
   value_type norm_inf() const;
-  ///
+  /** \brief . */
   value_type inner_product( const Vector& ) const;
-  ///
+  /** \brief . */
   void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
-  ///
+  /** \brief . */
   void free_sub_vector( RTOpPack::SubVector* sub_vec ) const;
 
   //@}
@@ -160,17 +154,17 @@ public:
   /** @name Overridden from VectorMutable */
   //@{
 
-  ///
+  /** \brief . */
   vec_mut_ptr_t sub_view( const Range1D& rng );
-  ///
+  /** \brief . */
   void axpy( value_type alpha, const Vector& x );
-  ///
+  /** \brief . */
   VectorMutable& operator=(value_type);
-  ///
+  /** \brief . */
   VectorMutable& operator=(const Vector&);
-  ///
+  /** \brief . */
   void set_ele( index_type i, value_type val );
-  ///
+  /** \brief . */
   void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
 
   //@}
@@ -179,7 +173,7 @@ protected:
 
   /** @name Overridden form Vector */
   //@{
-  ///
+  /** \brief . */
   void has_changed() const;
   //@}
 
@@ -206,10 +200,10 @@ private:
   // ////////////////////////////////////
   // Private member functions
 
-  ///
+  /** \brief . */
   void assert_in_range(int k) const;
 
-  ///
+  /** \brief . */
   void assert_initialized() const;
 
   // not defined and not to be called!

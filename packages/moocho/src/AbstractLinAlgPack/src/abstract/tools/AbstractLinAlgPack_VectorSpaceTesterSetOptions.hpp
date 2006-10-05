@@ -35,8 +35,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Set options for VectorSpaceTester from an
+/** \brief Set options for VectorSpaceTester from an
   * OptionsFromStream object.
   *
   * The default options group name is VectorSpaceTester.
@@ -65,7 +64,7 @@ class VectorSpaceTesterSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   VectorSpaceTesterSetOptions(
       VectorSpaceTester* target = 0
     , const char opt_grp_name[] = "VectorSpaceTester" );

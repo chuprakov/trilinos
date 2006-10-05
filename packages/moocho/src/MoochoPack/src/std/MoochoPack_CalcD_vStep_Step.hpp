@@ -34,8 +34,7 @@
 
 namespace MoochoPack {
 
-///
-/** Calculates <tt>dvl_k = mu*invXl_k*e - vl_k - invXl_k*Vl_k*d_k</tt>
+/** \brief Calculates <tt>dvl_k = mu*invXl_k*e - vl_k - invXl_k*Vl_k*d_k</tt>
  *   and       <tt>dvu_k = mu*invXu_k*e - vu_k + invXu_k*Vu_k*d_k</tt>
  */
 class CalcD_vStep_Step
@@ -45,10 +44,10 @@ public:
 
   /** @name Overridden from AlgorithmStep */
   //@{
-  ///
+  /** \brief . */
   bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss);
-  ///
+  /** \brief . */
   void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
     , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
   //@}

@@ -37,8 +37,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Specialization node implementation subclass of \c DecompositionSystem for
+/** \brief Specialization node implementation subclass of \c DecompositionSystem for
  * variable reduction decompositions.
  *
  * This interface abstracts a variable reduction decomposition where:
@@ -83,9 +82,9 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef DecompositionSystem	                               inherited;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<const BasisSystem>       basis_sys_ptr_t;
 
   //@}
@@ -96,8 +95,7 @@ public:
   /// Set the BasisSystem tester object
   STANDARD_COMPOSITION_MEMBERS( BasisSystemTester, basis_sys_tester )
 
-  ///
-  /** Construct a variable reduction decomposition.
+  /** \brief Construct a variable reduction decomposition.
    *
    * Calls <tt>this->initialize()</tt>.
    *
@@ -120,8 +118,7 @@ public:
 
   //@}
 
-  ///
-  /** Initialize.
+  /** \brief Initialize.
    *
    * @param  space_x
    *             [in] DVector space for variables \c x.
@@ -153,11 +150,11 @@ public:
   /** @name Access */
   //@{
   
-  ///
+  /** \brief . */
   const VectorSpace::space_ptr_t& space_x() const;
-  ///
+  /** \brief . */
   const VectorSpace::space_ptr_t& space_c() const;
-  ///
+  /** \brief . */
   const basis_sys_ptr_t& basis_sys() const;
 
   //@}
@@ -165,8 +162,7 @@ public:
   /** @name Basis manipulation */
   //@{
 
-  ///
-  /** Called by client to uninitialize decomposition matrices in prepairation
+  /** \brief Called by client to uninitialize decomposition matrices in prepairation
    * for selecting a different basis.
    *
    * @param  Z     [in/out] On output, \c Z will have all references to \c C and \c D removed.
@@ -215,8 +211,7 @@ public:
     ,Teuchos::RefCountPtr<MatrixOp>              *D_ptr
     );
 
-  ///
-  /** Set updated basis matrices along with a possibly updated basis system object.
+  /** \brief Set updated basis matrices along with a possibly updated basis system object.
    *
    * @param  C_ptr  [in] <tt>C_ptr.get()</tt> points to basis matrix object returned from
    *                \c this->uninitialize_matrices() which must be updated to current basis
@@ -272,12 +267,11 @@ public:
   const VectorSpace::space_ptr_t space_range() const;
   /// Returns <tt>this->space_x()->sub_space(var_indep)</tt>
   const VectorSpace::space_ptr_t space_null() const;
-  ///
+  /** \brief . */
   const mat_fcty_ptr_t factory_Z() const;
-  ///
+  /** \brief . */
   const mat_fcty_ptr_t factory_Uz() const;
-  ///
-  /**
+  /** \brief
    *
    * Preconditions:<ul>
    * <li> <tt>this->space_x().get() != NULL</tt> (throw <tt>std::logic_error</tt>)
@@ -297,7 +291,7 @@ public:
     ,MatrixOp             *Uy
     ,EMatRelations        mat_rel
     ) const;
-  ///
+  /** \brief . */
   void print_update_decomp(
     std::ostream& out, const std::string& leading_str ) const;
 
@@ -306,9 +300,9 @@ public:
   /** @name Overridden from DecompositionSystemVarReduct */
   //@{
 
-  ///
+  /** \brief . */
   Range1D var_indep() const;
-  ///
+  /** \brief . */
   Range1D var_dep() const;
 
   //@}
@@ -318,8 +312,7 @@ protected:
   /// Update D_imp_used
   virtual void update_D_imp_used(EExplicitImplicit *D_imp_used) const;
 
-  ///
-  /** Overridden by subclasses to uninitialized Y, R and Uy then return C if referenced.
+  /** \brief Overridden by subclasses to uninitialized Y, R and Uy then return C if referenced.
    *
    * Note that the returned smart pointer to \c C may have <tt>return.has_ownership() == false</tt>
    * in which case this will not be a shared resource with any other object (at least not
@@ -335,8 +328,7 @@ protected:
     ,MatrixOp                        *Uy
     ) const = 0;
 
-  ///
-  /** Overridden by subclasses to initialize Y, R and Uy given C and D.
+  /** \brief Overridden by subclasses to initialize Y, R and Uy given C and D.
    *
     * If C_ptr.has_ownership() == false, then the subclass implementation of this
    * method will use clone_mwons() to clone it so that the output matrices are
@@ -355,8 +347,7 @@ protected:
     ,EMatRelations                                         mat_rel
     ) const = 0;
 
-  ///
-  /** Print the sub-algorithm by which the matrices Y, R, Uy and Uy are updated.
+  /** \brief Print the sub-algorithm by which the matrices Y, R, Uy and Uy are updated.
    *
    * ToDo: Finish documentatation!
    */

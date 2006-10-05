@@ -36,8 +36,7 @@
 
 namespace MoochoPack {
 
-///
-/** This class simply outputs the convergence information
+/** \brief This class simply outputs the convergence information
   * for each iteration.
   */
 class MoochoTrackerSummaryStd
@@ -45,7 +44,7 @@ class MoochoTrackerSummaryStd
 {
 public:
 
-  ///
+  /** \brief . */
   enum EOptError { OPT_ERROR_REDUCED_GRADIENT_LAGR, OPT_ERROR_GRADIENT_LAGR };
 
   /// Construct with an output stream
@@ -61,8 +60,7 @@ public:
   /// Get the output stream for summary outputting.
   const ostream_ptr_t& get_output_stream() const;
 
-  ///
-  /** Output the total number of qp iterations back to and
+  /** \brief Output the total number of qp iterations back to and
     * the k=0 iteration.
     */
   int num_total_qp_iter() const
@@ -71,9 +69,9 @@ public:
   /** @name Overridden from AlgorithmTracker */
   //@{
 
-  ///
+  /** \brief . */
   void output_iteration(const Algorithm& algo) const;
-  ///
+  /** \brief . */
   void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
   
   //@}

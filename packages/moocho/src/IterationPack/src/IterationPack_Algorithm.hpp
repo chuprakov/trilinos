@@ -48,8 +48,7 @@ namespace IterationPack {
 
 // ToDo: 7/31/98: Finish documentation.
 
-///
-/** Acts as the central hub for an iterative algorithm.
+/** \brief Acts as the central hub for an iterative algorithm.
   *
   * This class is the center for a framework for iterative algorithms.
   * These iterative algorithms are of the form:
@@ -105,17 +104,17 @@ public:
   /** @name Public types */
   //@{
 
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<AlgorithmState>      state_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<AlgorithmTracker>    track_ptr_t;
-  ///
+  /** \brief . */
   typedef Teuchos::RefCountPtr<AlgorithmStep>       step_ptr_t;
-  ///
+  /** \brief . */
   typedef size_t                                    poss_type;
-  ///
+  /** \brief . */
   enum { DOES_NOT_EXIST = 1000 };  // never be that many steps
-  ///
+  /** \brief . */
   enum ERunningState { NOT_RUNNING = 0, RUNNING = 1, RUNNING_BEING_CONFIGURED = 2 };
 
   /// Thrown if name or id does not exist
@@ -147,19 +146,17 @@ public:
   /** @name Constructors & destructors */
   //@{
 
-  ///
-  /** Constructs an algorithm with no steps and a default of max_iter() == 100.
+  /** \brief Constructs an algorithm with no steps and a default of max_iter() == 100.
     *
     */
   Algorithm();
 
-  ///
+  /** \brief . */
   virtual ~Algorithm();
 
   //@}
 
-  ///
-  /** Name of an file that will cause the algorithm to terminate.
+  /** \brief Name of an file that will cause the algorithm to terminate.
    *
    * If <tt>interrupt_file_name()!=""</tt> then the file <tt>interrupt_file_name()</tt>
    * will be looked for in the current directory and if it exists, it will be read
@@ -198,15 +195,15 @@ public:
   /** @name «std comp» members for state */
   //@{
 
-  ///
+  /** \brief . */
   void set_state(const state_ptr_t& state);
-  ///
+  /** \brief . */
   state_ptr_t& get_state();
-  ///
+  /** \brief . */
   const state_ptr_t& get_state() const;
-  ///
+  /** \brief . */
   AlgorithmState& state();
-  ///
+  /** \brief . */
   const AlgorithmState& state() const;
 
   //@}
@@ -214,15 +211,15 @@ public:
   /** @name «std comp» members for track */
   //@{
 
-  ///
+  /** \brief . */
   void set_track(const track_ptr_t& track);
-  ///
+  /** \brief . */
   track_ptr_t& get_track();
-  ///
+  /** \brief . */
   const track_ptr_t& get_track() const;
-  ///
+  /** \brief . */
   AlgorithmTracker& track();
-  ///
+  /** \brief . */
   const AlgorithmTracker& track() const;
 
   //@}
@@ -230,9 +227,9 @@ public:
   /** @name Maximum iterations */
   //@{
   
-  ///
+  /** \brief . */
   virtual void max_iter(size_t max_iter);
-  ///
+  /** \brief . */
   virtual size_t max_iter() const;
 
   //@}
@@ -240,13 +237,12 @@ public:
   /** @name Maximum runtime (in minutes) */
   //@{
   
-  ///
-  /** Set the maximum runtime (in minues)
+  /** \brief Set the maximum runtime (in minues)
     * The runtime is checked at the end of each iteration and if it exceeds
     * this value then the algorithm is terminated.
     */
   virtual void max_run_time(double max_iter);
-  ///
+  /** \brief . */
   virtual double max_run_time() const;
 
   //@}
@@ -257,16 +253,14 @@ public:
   /// Return the number of main steps
   virtual int num_steps() const;
 
-  ///
-  /** Return the possition in the major loop of a named step.
+  /** \brief Return the possition in the major loop of a named step.
     *
     * If a step with this name does not exist then the value
     * DOES_NOT_EXIST will be returned.
     */
   virtual poss_type get_step_poss(const std::string& step_name) const;
 
-  ///
-  /** Return the name of a step given its possition.
+  /** \brief Return the name of a step given its possition.
     *
     * Preconditions:<ul>
     * <li> <tt>1 <= step_poss && step_poss <= num_steps()</tt> (throw <tt>DoesNotExist</tt>)
@@ -274,8 +268,7 @@ public:
     */
   virtual const std::string& get_step_name(poss_type step_poss) const;
 
-  ///
-  /** Return the RefCountPtr<...> object for the step object at step_poss.
+  /** \brief Return the RefCountPtr<...> object for the step object at step_poss.
     *
     * Preconditions:<ul>
     * <li> <tt>1 <= step_poss && step_poss <= num_steps()</tt> (throw <tt>DoesNotExist</tt>)
@@ -283,7 +276,7 @@ public:
     */
   virtual step_ptr_t& get_step(poss_type step_poss);
 
-  ///
+  /** \brief . */
   virtual const step_ptr_t& get_step(poss_type step_poss) const;
 
   //@}
@@ -291,8 +284,7 @@ public:
   /** @name Pre/post step information & access */
   //@{
 
-  ///
-  /** Return the number of pre or post steps for the main step step_poss.
+  /** \brief Return the number of pre or post steps for the main step step_poss.
     *
     * Preconditions:<ul>
     * <li> <tt>1 <= step_poss && step_poss <= num_steps()</tt> (throw <tt>DoesNotExist</tt>)
@@ -300,8 +292,7 @@ public:
     */
   virtual int num_assoc_steps(poss_type step_poss, EAssocStepType type) const;
 
-  ///
-  /** Return the possition of the pre or post step for the main step_poss.
+  /** \brief Return the possition of the pre or post step for the main step_poss.
     *
     * If a pre or post step does not exist with the name <tt>assoc_step_name</tt>
     * then a value of DOES_NOT_EXIST will be retruned.
@@ -313,8 +304,7 @@ public:
   virtual poss_type get_assoc_step_poss(poss_type step_poss, EAssocStepType type
     ,const std::string& assoc_step_name) const;
 
-  ///
-  /** Return the name of the pre or post step at step_poss and at assoc_step_poss.
+  /** \brief Return the name of the pre or post step at step_poss and at assoc_step_poss.
     *
     * Preconditions:<ul>
     * <li> <tt>1 <= step_poss && step_poss <= num_steps()</tt> (throw <tt>DoesNotExist</tt>)
@@ -325,8 +315,7 @@ public:
   virtual const std::string& get_assoc_step_name(poss_type step_poss, EAssocStepType type
     , poss_type assoc_step_poss) const;
 
-  ///
-  /** Return the RefCountPtr<...> object for the associated step object at step_poss
+  /** \brief Return the RefCountPtr<...> object for the associated step object at step_poss
     * and assoc_step_poss.
     *
     * Preconditions:<ul>
@@ -338,7 +327,7 @@ public:
   virtual step_ptr_t& get_assoc_step(poss_type step_poss, EAssocStepType type
     , poss_type assoc_step_poss);
 
-  ///
+  /** \brief . */
   virtual const step_ptr_t& get_assoc_step(poss_type step_poss, EAssocStepType type
     , poss_type assoc_step_poss) const;
 
@@ -347,8 +336,7 @@ public:
   /** @name Step manipulation */
   //@{
 
-  ///
-  /** Insert a step object with the name <tt>step_name</tt> into the possition <tt>step_poss</tt>.
+  /** \brief Insert a step object with the name <tt>step_name</tt> into the possition <tt>step_poss</tt>.
     *
     * All the steps at and after <tt>step_poss</tt> are pushed back one possition unless
     * <tt>step_poss == num_steps() + 1</tt> in which case the new step is appended to the end.
@@ -362,8 +350,7 @@ public:
     */
   virtual void insert_step(poss_type step_poss, const std::string& step_name, const step_ptr_t& step);
 
-  ///
-  /** Change the name of an existing step.
+  /** \brief Change the name of an existing step.
     *
     * None of the pre or post steps for the existing step are changes.
     *
@@ -374,8 +361,7 @@ public:
     */
   virtual void change_step_name(poss_type step_poss, const std::string& new_name);
 
-  ///
-  /** Replace the step object of an existing step.
+  /** \brief Replace the step object of an existing step.
     *
     * None of the pre or post steps for the existing step are changes.
     *
@@ -386,8 +372,7 @@ public:
     */
   virtual void replace_step(poss_type step_poss, const step_ptr_t& step);
 
-  ///
-  /** Remove an existing step object and all of its pre and post steps.
+  /** \brief Remove an existing step object and all of its pre and post steps.
     *
     * All of the steps after <tt>step_poss</tt> will have thier possitions
     * decreased by one.
@@ -404,8 +389,7 @@ public:
   /** @name Pre/post step manipulation */
   //@{
 
-  ///
-  /** Insert an pre or post step into for the main step step_poss into the possition
+  /** \brief Insert an pre or post step into for the main step step_poss into the possition
     * assoc_step_poss.
     *
     * All of the pre or post steps at and after <tt>assoc_step_poss</tt> will be pushed back
@@ -422,8 +406,7 @@ public:
   virtual void insert_assoc_step(poss_type step_poss, EAssocStepType type, poss_type assoc_step_poss
     , const std::string& assoc_step_name, const step_ptr_t& assoc_step);
 
-  ///
-  /** Remove an pre or post step for the main step step_poss in the possition
+  /** \brief Remove an pre or post step for the main step step_poss in the possition
     * assoc_step_poss.
     *
     * All of the pre or post steps after <tt>assoc_step_poss</tt> will be pushed forward
@@ -446,8 +429,7 @@ public:
   /// Return the current running state of \c this algorithm object.
   ERunningState running_state() const;
 
-  ///
-  /** Changes from running_state() == RUNNING to running_state() == RUNNING_BEING_CONFIGURED.
+  /** \brief Changes from running_state() == RUNNING to running_state() == RUNNING_BEING_CONFIGURED.
     *
     * Must be called before the algorithm's configuration can be changed while it is running.
     *
@@ -461,8 +443,7 @@ public:
     */
   virtual void begin_config_update();
 
-  ///
-  /** Changes from running_state() == RUNNING_BEING_CONFIGURED to running_state() == RUNNING.
+  /** \brief Changes from running_state() == RUNNING_BEING_CONFIGURED to running_state() == RUNNING.
     *
     * Must be called after the algorithm's configuration can be changed while it is running.
     *
@@ -481,8 +462,7 @@ public:
   /** @name Algorithmic control */
   //@{
 
-  ///
-  /** Called by step objects to set the step (given its name) that <tt>this</tt> will envoke the next time
+  /** \brief Called by step objects to set the step (given its name) that <tt>this</tt> will envoke the next time
     * <tt>this</tt> calls a step.
     *
     * Preconditions:<ul>
@@ -492,8 +472,7 @@ public:
     */
   virtual void do_step_next(const std::string& step_name);
 
-  ///
-  /** Called by step objects to set the step (given its possition) that <tt>this</tt> will envoke the next time
+  /** \brief Called by step objects to set the step (given its possition) that <tt>this</tt> will envoke the next time
     * <tt>this</tt> calls a step.
     *
     * Preconditions:<ul>
@@ -503,8 +482,7 @@ public:
     */
   virtual void do_step_next(poss_type step_poss);
 
-  ///
-  /** Returns the name of the next step <tt>this</tt> will call the next time it calls a step.
+  /** \brief Returns the name of the next step <tt>this</tt> will call the next time it calls a step.
     *
     * Preconditions:<ul>
     * <li> running_state() != NOT_RUNNING</tt> (throw <tt>InvalidRunningState</tt>)
@@ -512,8 +490,7 @@ public:
     */
   virtual const std::string& what_is_next_step_name() const;
 
-  ///
-  /** Returns the possition of the next step <tt>this</tt> will call the next time it calls a step.
+  /** \brief Returns the possition of the next step <tt>this</tt> will call the next time it calls a step.
     *
     * Preconditions:<ul>
     * <li> running_state() != NOT_RUNNING</tt> (throw <tt>InvalidRunningState</tt>)
@@ -521,8 +498,7 @@ public:
     */
   virtual poss_type what_is_next_step_poss() const;
 
-  ///
-  /** Calls <tt>do_step()</tt> on all of the pre step objects the step object and the post step objects
+  /** \brief Calls <tt>do_step()</tt> on all of the pre step objects the step object and the post step objects
     * in order for the step named <tt>step_name</tt>.
     *
     * This operation is called by step objects that need to take over control of the algorithm
@@ -540,8 +516,7 @@ public:
     */
   virtual bool do_step(const std::string& step_name);
 
-  ///
-  /** Call <tt>do_step()</tt> on all of the pre step objects the step object and the post step objects
+  /** \brief Call <tt>do_step()</tt> on all of the pre step objects the step object and the post step objects
     * in order for the step in the possition <tt>step_poss</tt>.
     *
     * This operation is called by step objects that need to take over control of the algorithm
@@ -558,8 +533,7 @@ public:
     */
   virtual bool do_step(poss_type step_poss);
 
-  ///
-  /** Called by step objects to terminate the algorithm.
+  /** \brief Called by step objects to terminate the algorithm.
     *
     * Calling with <tt>success == true</tt> cause <tt>do_algorithm()</tt> to completely return <tt>TERMINATE_TRUE</tt>
     * and with <tt>success == false</tt> return  <tt>TERMINATE_FALSE</tt>.
@@ -575,8 +549,7 @@ public:
   /** @name Start iterations */
   //@{
 
-  ///
-  /** Called by clients to begin an algorithm.
+  /** \brief Called by clients to begin an algorithm.
     *
     * Preconditions:<ul>
     * <li> <tt>this->get_track() != NULL</tt> (throw <tt>???</tt>)
@@ -616,13 +589,11 @@ public:
   /** @name Algorithm information output */
   //@{
 
-  ///
-  /** Print out just a listing of the steps, their positions in the algorithm and the subclasses.
+  /** \brief Print out just a listing of the steps, their positions in the algorithm and the subclasses.
     */
   virtual void print_steps(std::ostream& out) const;
 
-  ///
-  /** Print out the entire algorithm by calling <tt>print_step(...)</tt> on the step objects.
+  /** \brief Print out the entire algorithm by calling <tt>print_step(...)</tt> on the step objects.
     */
   virtual void print_algorithm(std::ostream& out) const;
 
@@ -632,8 +603,7 @@ public:
     */
   //@{
 
-  ///
-  /** Causes algorithm to be timed.
+  /** \brief Causes algorithm to be timed.
     *
     * Call with <tt>algo_timing == true</tt> before <tt>do_algorithm()</tt> to have the algorithm timed.
     *
@@ -641,11 +611,10 @@ public:
     */
   virtual void set_algo_timing( bool algo_timing );
 
-  ///
+  /** \brief . */
   virtual bool algo_timing() const;
 
-  ///
-  /** Outputs table of times for each step, cummulative times and other
+  /** \brief Outputs table of times for each step, cummulative times and other
     * statistics.
     *
     * Call after <tt>do_algorithm()</tt> has executed to get a table
@@ -655,8 +624,7 @@ public:
     */
   virtual void print_algorithm_times( std::ostream& out ) const;
 
-  ///
-  /** Returns the step_times for iteration offset.
+  /** \brief Returns the step_times for iteration offset.
    *
    * @param  offset       [in] The interation offset to retrieve times for.
    * @param  step_times   [out] Array (size <tt>this->num_steps() + 1</tt>) with the
@@ -673,8 +641,7 @@ public:
    */  
   void get_step_times_k( int offset, double step_times[] ) const;
 
-  ///
-  /** Returns the final statistics for a given step
+  /** \brief Returns the final statistics for a given step
     *  Do not call when algorithm is running
     */
   void get_final_step_stats( size_t step, double* total, double* average, double* min, double* max, double* percent) const;
@@ -686,35 +653,35 @@ private:
   // /////////////////////////////////////////////////////
   // Private types
 
-  ///
+  /** \brief . */
   template<class T_Step_ptr>
   struct step_ptr_and_name {
-    ///
+    /** \brief . */
     step_ptr_and_name(const T_Step_ptr& _step_ptr
         , const std::string& _name )
       : step_ptr(_step_ptr), name(_name)
     {}
-    ///
+    /** \brief . */
     T_Step_ptr step_ptr;
     //
     std::string name;
   };  // end struct step_ptr_and_name
 
-  ///
+  /** \brief . */
   typedef step_ptr_and_name<step_ptr_t>           steps_ele_t;
-  ///
+  /** \brief . */
   typedef std::deque<steps_ele_t>                 steps_t;
 
-  ///
+  /** \brief . */
   typedef step_ptr_and_name<step_ptr_t>           assoc_steps_ele_list_ele_t;
-  ///
+  /** \brief . */
   typedef std::list<assoc_steps_ele_list_ele_t>   assoc_steps_ele_list_t;
-  ///
+  /** \brief . */
   struct assoc_steps_ele_t {
-    ///
+    /** \brief . */
     assoc_steps_ele_list_t& operator[](int i)
     { return assoc_steps_lists_[i]; }
-    ///
+    /** \brief . */
     const assoc_steps_ele_list_t& operator[](int i) const
     { return assoc_steps_lists_[i]; }
   private:
@@ -722,19 +689,19 @@ private:
   };
 
   //typedef assoc_steps_ele_list_t[2]        assoc_steps_ele_t; // PRE_STEP, POST_STEP
-  ///
+  /** \brief . */
   typedef std::deque<assoc_steps_ele_t>      assoc_steps_t;
   
-  ///
+  /** \brief . */
   enum ETerminateStatus { STATUS_KEEP_RUNNING, STATUS_TERMINATE_TRUE, STATUS_TERMINATE_FALSE };
 
-  ///
+  /** \brief . */
   template<class T_ele>
   class name_comp {
   public:
-    ///
+    /** \brief . */
     name_comp(const std::string& name) : name_(name) {}
-    ///
+    /** \brief . */
     bool operator()(const T_ele& ele) { return ele.name == name_; }
   private:
     const std::string& name_;
@@ -742,17 +709,17 @@ private:
 
   typedef std::vector<double> step_times_t;
   
-  ///
+  /** \brief . */
   static const int
     TIME_STAT_TOTALS_OFFSET  = 0,
     TIME_STAT_AV_OFFSET    = 1,
     TIME_STAT_MIN_OFFSET    = 2,
     TIME_STAT_MAX_OFFSET    = 3,
     TIME_STAT_PERCENT_OFFSET  = 4;
-  ///
+  /** \brief . */
   enum { NUM_STEP_TIME_STATS = 5 };
 
-  ///
+  /** \brief . */
   typedef void (AlgorithmStep::*inform_func_ptr_t)(
     Algorithm&             algo
     ,poss_type             step_poss
@@ -897,51 +864,48 @@ private:
   /// Validate that the step_name in not the next step.
   void validate_not_next_step(const std::string& step_name) const;
 
-  ///
-  /** Find a step given its name and throw a DoesNotExist exception if not found.
+  /** \brief Find a step given its name and throw a DoesNotExist exception if not found.
     */
   steps_t::iterator step_itr(const std::string& step_name);
 
-  ///
+  /** \brief . */
   steps_t::const_iterator step_itr(const std::string& step_name) const;
 
-  ///
-  /** Find a step given its name and throw a DoesNotExist exception if not found.
+  /** \brief Find a step given its name and throw a DoesNotExist exception if not found.
     */
   steps_t::iterator step_itr_and_assert(const std::string& step_name);
 
-  ///
+  /** \brief . */
   steps_t::const_iterator step_itr_and_assert(const std::string& step_name) const;
 
-  ///
-  /** Find a an associated step given its name and throw a DoesNotExist exception if not found.
+  /** \brief Find a an associated step given its name and throw a DoesNotExist exception if not found.
     */
   static assoc_steps_ele_list_t::iterator assoc_step_itr(assoc_steps_ele_list_t& assoc_list
     , const std::string& assoc_step_name);
 
-  ///
+  /** \brief . */
   static assoc_steps_ele_list_t::const_iterator assoc_step_itr(const assoc_steps_ele_list_t& assoc_list
     , const std::string& assoc_step_name);
 
-  ///
+  /** \brief . */
   bool imp_do_step(poss_type step_poss);
 
-  ///
+  /** \brief . */
   bool imp_do_assoc_steps(EAssocStepType type);
 
-  ///
+  /** \brief . */
   void imp_inform_steps(inform_func_ptr_t inform_func_ptr);
 
-  ///
+  /** \brief . */
   void imp_print_algorithm(std::ostream& out, bool print_steps) const;
 
   /// EAssocStepType -> EDoStepType
   EDoStepType do_step_type(EAssocStepType assoc_step_type);
 
-  ///
+  /** \brief . */
   EAlgoReturn finalize_algorithm( EAlgoReturn algo_return );
 
-  ///
+  /** \brief . */
   void compute_final_time_stats() const;
 
   // Look for interrup

@@ -33,8 +33,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** A merit function for the square of the constriant values.
+/** \brief A merit function for the square of the constriant values.
   *
   * phi(x) = 1/2 * c(x)'*c(x)
   *
@@ -54,19 +53,19 @@ public:
   /// Initializes deriv() = 0
   MeritFuncNLESqrResid();
 
-  ///
+  /** \brief . */
   value_type calc_deriv( const Vector& c_k );
 
   // ////////////////////////////////
   // Overridden from MeritFuncNLE
 
-  ///
+  /** \brief . */
   value_type value(const Vector& c) const;
 
-  ///
+  /** \brief . */
   value_type deriv() const;
 
-  ///
+  /** \brief . */
   void print_merit_func(std::ostream& out
     , const std::string& leading_str) const;
 

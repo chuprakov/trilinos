@@ -40,8 +40,7 @@ namespace PBFGSPack {
  */
 //@{
 
-///
-/** Determine if the active set has calmed down enough and print this test.
+/** \brief Determine if the active set has calmed down enough and print this test.
  *
  * This function will return true if:
  \begin{verbatim}
@@ -61,8 +60,7 @@ bool act_set_calmed_down(
   ,std::ostream             &out
   );
 
-///
-/** Initialize i_x_free[], s_R'*s_R and s_R'*y_R for free variables not in nu_indep.
+/** \brief Initialize i_x_free[], s_R'*s_R and s_R'*y_R for free variables not in nu_indep.
  *
  * @param  nu_indep  [in] Sparse vector (n_pz = nu_indep.size(), n_pz_R = n_pz - nu_indep.nz())
  *                   of Lagrange multipliers for the independent variables.
@@ -84,8 +82,7 @@ void init_i_x_free_sRTsR_sRTyR(
   ,value_type                *sRTyR
   );
 
-///
-/** Sort fixed variables  according to the condition:
+/** \brief Sort fixed variables  according to the condition:
  *
  * #|s_X(i)^2*B(i,i)|/|sRTBRRsR| + |s_X(i)*y_X(i)|/|sRTyR|#.
  *
@@ -126,8 +123,7 @@ void sort_fixed_max_cond_viol(
   ,size_type                 l_x_fixed_sorted[]
   );
 
-///
-/** Choose the rest of i_x_free[] and i_x_fixed[].
+/** \brief Choose the rest of i_x_free[] and i_x_fixed[].
  *
  * The input quantities are defined as follows:
  \begin{verbatim}

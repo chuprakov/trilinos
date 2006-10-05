@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Strategy class for computing a quasi range space step for the
+/** \brief Strategy class for computing a quasi range space step for the
  * tailored approach NLP interface.
  */
 class QuasiRangeSpaceStepTailoredApproach_Strategy : public QuasiRangeSpaceStep_Strategy {
@@ -43,8 +42,7 @@ public:
   // ////////////////////////////////////////////////////////////
   // Overridden from QuasiRangeSpaceStep_Strategy
 
-  ///
-  /** Calls the NLPrSQPTailoredApproach iterface to compute the step.
+  /** \brief Calls the NLPrSQPTailoredApproach iterface to compute the step.
    *
    * ToDo: Finish documentation!
    */
@@ -53,7 +51,7 @@ public:
     ,const DVectorSlice& xo, const DVectorSlice& c_xo, DVectorSlice* v
       );
 
-  ///
+  /** \brief . */
   void print_step( std::ostream& out, const std::string& leading_str ) const;
 
 }; // end class QuasiRangeSpaceStepTailoredApproach_Strategy

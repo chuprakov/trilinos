@@ -33,8 +33,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Compute statistics for change in a vector and output to a stream.
+/** \brief Compute statistics for change in a vector and output to a stream.
   *
   * Calls the function vector_change_stats(x,d,max_term,max_k,min_term,min_k
   ,av_term) then produces the following output to the given stream.

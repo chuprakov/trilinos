@@ -33,8 +33,7 @@
 
 namespace IterationPack {
 
-///
-/** Interface to typed iteration quantities.
+/** \brief Interface to typed iteration quantities.
  *
  * Quantities are updated, read and queried given the
  * offset to the current iteration k.  For example, to set
@@ -98,13 +97,12 @@ template<class T_info>
 class IterQuantityAccess : public IterQuantity {
 public:
 
-  ///
+  /** \brief . */
   typedef	IterQuantity::NoStorageAvailable	NoStorageAvailable;
-  ///
+  /** \brief . */
   typedef IterQuantity::QuanityNotSet			QuanityNotSet;
 
-  ///
-  /** Return a reference for the <tt>k + offset</tt> iteration quanity.
+  /** \brief Return a reference for the <tt>k + offset</tt> iteration quanity.
    *
    * Clients call this member function to access a quantity for a
    * given iteration or modify the quantity which has already been
@@ -116,8 +114,7 @@ public:
    */
   virtual T_info& get_k(int offset) = 0;
 
-  ///
-  /** Return a const reference for the <tt>k + offset</tt> iteration quanity.
+  /** \brief Return a const reference for the <tt>k + offset</tt> iteration quanity.
     *
     * Preconditions:<ul>
     * <li> <tt>this->updated_k(offset) == true</tt> (throw QuanityNotSet)
@@ -128,8 +125,7 @@ public:
     */
   virtual const T_info& get_k(int offset) const = 0;
 
-  ///
-  /** Return a reference to the storage location for the <tt>k + offset</tt> iteration quanity.
+  /** \brief Return a reference to the storage location for the <tt>k + offset</tt> iteration quanity.
    *
    * Precondtions:<ul>
    * <li> <tt>this->has_storage_k(offset) == true</tt> (throw <tt>NoStorageAvailable</tt>)
@@ -159,8 +155,7 @@ public:
    */
   virtual T_info& set_k(int offset) = 0;
 
-  ///
-  /** Set the iteration quantity for the <tt>k + set_offset</tt>
+  /** \brief Set the iteration quantity for the <tt>k + set_offset</tt>
    * iteration to the <tt>k + get_offset</tt> iteration and return
    * the reference to the <tt>k + set_offset</tt> iteration
    * quantity.

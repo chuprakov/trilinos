@@ -39,8 +39,7 @@
 
 namespace MoochoPack {
 
-///
-/** Perform BFGS updates on only the free independent (super basic) variables.
+/** \brief Perform BFGS updates on only the free independent (super basic) variables.
  *
  * This method should be very efficient for few super basic variables.
  */
@@ -48,32 +47,28 @@ class ReducedHessianSecantUpdateBFGSProjected_Strategy : public ReducedHessianSe
 {
 public:
   
-  ///
-  /** <<std comp>> members for the strategy object that will
+  /** \brief <<std comp>> members for the strategy object that will
    * perform the guts of the BFGS update.
    */
   STANDARD_COMPOSITION_MEMBERS( BFGSUpdate_Strategy, bfgs_update )
 
-  ///
-  /** Set the ratio of the number of inequality constraints in the
+  /** \brief Set the ratio of the number of inequality constraints in the
     * active-set of the last two calls before a projected updating
     * for superbasic variables only is started.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, act_set_frac_proj_start )
 
-  ///
-  /** Set the tolerance for determining if a projected BFGS update is
+  /** \brief Set the tolerance for determining if a projected BFGS update is
    * valid ???
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, project_error_tol )
 
-  ///
-  /** Set the tolerance for Langrange multipliers for fixed variables
+  /** \brief Set the tolerance for Langrange multipliers for fixed variables
    * below which rows/cols from rHL_RR will not be dropped.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, super_basic_mult_drop_tol )
     
-  ///
+  /** \brief . */
     ReducedHessianSecantUpdateBFGSProjected_Strategy(
     const bfgs_update_ptr_t&      bfgs_update                = NULL
     ,value_type                   act_set_frac_proj_start    = 0.8
@@ -81,13 +76,13 @@ public:
     ,value_type                   super_basic_mult_drop_tol  = 1e-5
     );      
 
-  ///
+  /** \brief . */
   bool perform_update(
     DVectorSlice* s_bfgs, DVectorSlice* y_bfgs, bool first_update
     ,std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
     ,MatrixOp *rHL_k
     );
-  ///
+  /** \brief . */
   void print_step( std::ostream& out, const std::string& leading_str ) const;
 
 private:

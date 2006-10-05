@@ -428,21 +428,26 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
     
     }
   catch(const std::exception& excpt) {
-    *error_out_used_   << "\nCaught a std::exception: " << excpt.what() << endl;
+    std::ostringstream msg;
+    msg << "\nMoochoSolver: Caught an std::exception of type "
+        << typeid(excpt).name() << " described as : " << excpt.what() << endl;
+    *error_out_used_  << msg.str();
     if(do_summary_outputting())
-      *summary_out_used_ << "\nCaught a std::exception: " << excpt.what() << endl;
+      *summary_out_used_ << msg.str();
     if(do_journal_outputting())
-      *journal_out_used_ << "\nCaught a std::exception: " << excpt.what() << endl;
+      *journal_out_used_ << msg.str();
     if(throw_exceptions_)
       throw;
     threw_exception = true;
   }
   catch(...) {
-    *error_out_used_   << "\nCaught an unknown exception\n";
+    std::ostringstream msg;
+    msg << "\nMoochoSolver: Caught an unknown exception (i.e. ...)\n";
+    *error_out_used_   << msg.str();
     if(do_summary_outputting())
-      *summary_out_used_ << "\nCaught an unknown exception\n";
+      *summary_out_used_ << msg.str();
     if(do_journal_outputting())
-      *journal_out_used_ << "\nCaught an unknown exception\n";
+      *journal_out_used_ << msg.str();
     if(throw_exceptions_)
       throw;
     threw_exception = true;
@@ -615,7 +620,7 @@ void MoochoSolver::update_solver() const
   using ofsp::StringToIntMap;
   using ofsp::StringToBool;
 
-  ///
+  /** \brief . */
   // Validate the input
   //
   

@@ -35,8 +35,7 @@
 
 namespace MoochoPack {
 
-///
-/** Set options for CheckSkipBFGSUpdateStd_Step from a
+/** \brief Set options for CheckSkipBFGSUpdateStd_Step from a
   * OptionsFromStream object.
   *
   * The options group is:
@@ -59,7 +58,7 @@ class CheckSkipBFGSUpdateStd_StepSetOptions
 {
 public:
 
-  ///
+  /** \brief . */
   CheckSkipBFGSUpdateStd_StepSetOptions(
     CheckSkipBFGSUpdateStd_Step* target = 0 );
 

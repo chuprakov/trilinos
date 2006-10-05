@@ -34,8 +34,7 @@
 
 namespace NLPInterfacePack {
 
-///
-/** Simple example %NLP subclass to illustrate how to implement the
+/** \brief Simple example %NLP subclass to illustrate how to implement the
  * \c NLPFirstOrder interface for a specialized \c NLP.
  *
  * The example %NLP we will use is a scalable problem where
@@ -64,8 +63,7 @@ class ExampleNLPFirstOrder
 {
 public:
 
-  ///
-  /** Constructor (see </tt>ExampleNLPDirect::ExampleNLPDirect()</tt>).
+  /** \brief Constructor (see </tt>ExampleNLPDirect::ExampleNLPDirect()</tt>).
    */
   ExampleNLPFirstOrder(
     const VectorSpace::space_ptr_t&  vec_space
@@ -77,9 +75,9 @@ public:
   /** @name Overridden public members from NLP */
   //@{
 
-  ///
+  /** \brief . */
   void initialize(bool test_setup);
-  ///
+  /** \brief . */
   bool is_initialized() const;
 
   //@}
@@ -89,7 +87,7 @@ public:
 
   /// Overridden to check the concrete type of Gc
   void set_Gc(MatrixOp* Gc);
-  ///
+  /** \brief . */
   const NLPFirstOrder::mat_fcty_ptr_t factory_Gc() const;
   /// Returns an ExampleBasisSystem
   const basis_sys_ptr_t basis_sys() const;
@@ -101,7 +99,7 @@ protected:
   /** @name Overridden protected members from NLPFirstOrder */
   //@{
 
-  ///
+  /** \brief . */
   void imp_calc_Gc(const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const;
 
   //@}
@@ -118,7 +116,7 @@ private:
   // /////////////////////////////////////////
   // Private member functions
 
-  ///
+  /** \brief . */
   void assert_is_initialized() const;
 
 };	// end class ExampleNLPFirstOrder

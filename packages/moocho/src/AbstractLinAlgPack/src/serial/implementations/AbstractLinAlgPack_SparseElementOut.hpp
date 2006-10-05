@@ -37,8 +37,7 @@ namespace AbstractLinAlgPack {
 
 class SparsePtrVector;
 
-///
-/** Outputs a SparseElement<> object.
+/** \brief Outputs a SparseElement<> object.
   *
   * Output format is:
   *

@@ -34,8 +34,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Coordinate variable reduction subclass.
+/** \brief Coordinate variable reduction subclass.
  *
  * This is the interface for the coordinate variable reduction decomposition
  * where:
@@ -61,7 +60,7 @@ public:
   /** @name Constructors / initializers */
   //@{
 
-  ///
+  /** \brief . */
   DecompositionSystemCoordinate(
     const VectorSpace::space_ptr_t     &space_x          = Teuchos::null
     ,const VectorSpace::space_ptr_t    &space_c          = Teuchos::null
@@ -76,11 +75,11 @@ public:
   /** @name Overridden from DecompositionSystem */
   //@{
 
-  ///
+  /** \brief . */
   const mat_fcty_ptr_t factory_Y() const;
-  ///
+  /** \brief . */
   const mat_nonsing_fcty_ptr_t factory_R() const;
-  ///
+  /** \brief . */
   const mat_fcty_ptr_t factory_Uy() const;
 
   //@}
@@ -90,7 +89,7 @@ protected:
   /** @name Overridden from DecompositionSystemVarReductImp */
   //@{
 
-  ///
+  /** \brief . */
   mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t	uninitialize_matrices(
     std::ostream                                       *out
     ,EOutputLevel                                      olevel
@@ -98,7 +97,7 @@ protected:
     ,MatrixOpNonsing                                   *R
     ,MatrixOp                                          *Uy
     ) const;
-  ///
+  /** \brief . */
   void initialize_matrices(
     std::ostream                                           *out
     ,EOutputLevel                                          olevel
@@ -109,7 +108,7 @@ protected:
     ,MatrixOp                                              *Uy
     ,EMatRelations                                         mat_rel
     ) const;
-  ///
+  /** \brief . */
   void print_update_matrices(
     std::ostream& out, const std::string& leading_str ) const;
 

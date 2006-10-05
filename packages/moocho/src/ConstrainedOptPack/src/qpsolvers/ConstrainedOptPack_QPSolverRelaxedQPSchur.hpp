@@ -41,8 +41,7 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Solves Quadratic Programming (QP) problems using QPSchur.
+/** \brief Solves Quadratic Programming (QP) problems using QPSchur.
  *
  * This is the only subclass needed for QPSchur.  All of the specifics of how the
  * initial KKT system is formed is delegated to a strategy object of type
@@ -51,29 +50,27 @@ namespace ConstrainedOptPack {
 class QPSolverRelaxedQPSchur : public QPSolverRelaxed {
 public:
 
-  ///
-  /** Interface for the object that forms the initial KKT system {abstract}.
+  /** \brief Interface for the object that forms the initial KKT system {abstract}.
    *
    * Note that this interface is set up such that the relaxation variable
    * must always be initially fixed (and rightly so to avoid illconditioning).
    */
   class InitKKTSystem {
   public:
-    ///
+    /** \brief . */
     typedef std::vector<size_type> i_x_free_t;
-    ///
+    /** \brief . */
     typedef std::vector<size_type> i_x_fixed_t;
-    ///
+    /** \brief . */
     typedef std::vector<EBounds>   bnd_fixed_t;
-    ///
+    /** \brief . */
     typedef std::vector<size_type> j_f_decomp_t;
-    ///
+    /** \brief . */
     typedef Teuchos::RefCountPtr<const MatrixSymOpNonsing>
       Ko_ptr_t;
-    ///
+    /** \brief . */
     virtual ~InitKKTSystem() {}
-    ///
-    /** Initializes the KKT system.
+    /** \brief Initializes the KKT system.
      *
      * Let the following permutation matrices define the selection of the
      * initial KKT system:
@@ -169,8 +166,7 @@ public:
 
   }; // end class InitKKTSystem
 
-  ///
-  /** Interface for the object that can reform an initial KKT system
+  /** \brief Interface for the object that can reform an initial KKT system
    * dynamically {abstract}.
    *
    * This interface allows the definition of the initial KKT system to
@@ -184,28 +180,23 @@ public:
     // ToDo: Create method reinitailze_kkt_system(...)
   }; // end class ReinitKKTSystem
 
-  ///
-  /** Strategy object that sets up the initial KKT system.
+  /** \brief Strategy object that sets up the initial KKT system.
    */
   STANDARD_COMPOSITION_MEMBERS( InitKKTSystem, init_kkt_sys )
 
-  ///
-  /** Constraints object.
+  /** \brief Constraints object.
    */
   STANDARD_COMPOSITION_MEMBERS( QPSchurPack::ConstraintsRelaxedStd, constraints )
 
-  ///
-  /** Set the maximum number of QP iterations as <tt>max_itr = max_qp_iter_frac * n</tt>.
+  /** \brief Set the maximum number of QP iterations as <tt>max_itr = max_qp_iter_frac * n</tt>.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_qp_iter_frac )
 
-  ///
-  /** Set the maximum real run-time in minutes.
+  /** \brief Set the maximum real run-time in minutes.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_real_runtime )
 
-  ///
-  /** Policy used to select a violated constraint.
+  /** \brief Policy used to select a violated constraint.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
                           , inequality_pick_policy )
@@ -221,124 +212,104 @@ public:
     ,OUTPUT_ITER_QUANTITIES		= 5
   };
 
-  ///
-  /** Set the output level for QPSchur.
+  /** \brief Set the output level for QPSchur.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( ELocalOutputLevel, print_level )
 
-  ///
-  /** Set the feasibility tolerance for the bound constriants.
+  /** \brief Set the feasibility tolerance for the bound constriants.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, bounds_tol )
 
-  ///
-  /** Set the feasibility tolerance for the general inequality constraints.
+  /** \brief Set the feasibility tolerance for the general inequality constraints.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, inequality_tol )
 
-  ///
-  /** Set the feasibility tolerance for the general equality constriants.
+  /** \brief Set the feasibility tolerance for the general equality constriants.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, equality_tol )
 
-  ///
-  /** Set a looser feasibility tolerance ( > feas_tol )
+  /** \brief Set a looser feasibility tolerance ( > feas_tol )
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, loose_feas_tol )
 
-  ///
-  /** Set the tolerence where a scaled Langrange multiplier is considered
+  /** \brief Set the tolerence where a scaled Langrange multiplier is considered
    * degenerate.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, dual_infeas_tol )
 
-  ///
-  /** Set the tolerence for the size of the step in the primal space that is considered
+  /** \brief Set the tolerence for the size of the step in the primal space that is considered
    * to be a near infinite step.  This is used to determine if the KKT
    * system is near singular.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, huge_primal_step )
 
-  ///
-  /** Set the tolerence for the size of the step in the dual space that is considered
+  /** \brief Set the tolerence for the size of the step in the dual space that is considered
    * to be a near infinite step.  This is used to determine if the constriants
    * are infeasible.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, huge_dual_step )
 
-  ///
-  /** <<std member comp>> members for the Big M parameter used in the objective.
+  /** \brief <<std member comp>> members for the Big M parameter used in the objective.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, bigM )
 
-  ///
-  /** <<std member comp>> members for the warning tolerance for tests.
+  /** \brief <<std member comp>> members for the warning tolerance for tests.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
 
-  ///
-  /** <<std member comp>> members for the error tolerance for tests.
+  /** \brief <<std member comp>> members for the error tolerance for tests.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 
-  ///
-  /** Set the minimum number of refinement iterations to perform
+  /** \brief Set the minimum number of refinement iterations to perform
    * when using iterative refinement.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, iter_refine_min_iter )
     
-  ///
-  /** Set the maximum number of refinement iterations to perform
+  /** \brief Set the maximum number of refinement iterations to perform
    * when using iterative refinement.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, iter_refine_max_iter )
 
-  ///
-  /** Set the maxinum scaled tolerance the residual of the optimality conditions
+  /** \brief Set the maxinum scaled tolerance the residual of the optimality conditions
    * must be before terminating iterative refinement.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, iter_refine_opt_tol )
 
-  ///
-  /** Set the maxinum scaled tolerance the residual of the feasibility conditions
+  /** \brief Set the maxinum scaled tolerance the residual of the feasibility conditions
    * must be before terminating iterative refinement.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, iter_refine_feas_tol )
 
-  ///
-  /** Set whether iterative refinement is automatically used once the solution
+  /** \brief Set whether iterative refinement is automatically used once the solution
    * is found.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, iter_refine_at_solution )
 
-  ///
-  /** Set the relative tolerance for pivots in the schur complement under
+  /** \brief Set the relative tolerance for pivots in the schur complement under
    * which a waning will be printed (see MatrixSymAddDelUpdateable) for
    * near singular updates.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, pivot_warning_tol )
 
-  ///
-  /** Set the relative tolerance for pivots in the schur complement under
+  /** \brief Set the relative tolerance for pivots in the schur complement under
    * which a singularity exception will be thrown (see MatrixSymAddDelUpdateable)
    * for singular updates.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, pivot_singular_tol )
 
-  ///
-  /** Set the relative tolerance for pivots in the schur complement over
+  /** \brief Set the relative tolerance for pivots in the schur complement over
    * which a wrong inertia exception will be throw (see MatrixSymAddDelUpdateable)
    * for updates with the wrong inertia.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, pivot_wrong_inertia_tol )
 
-  ///
-  /** Set whether equality constriants are to be added to the active set
+  /** \brief Set whether equality constriants are to be added to the active set
    * initialy to the schur complement or not.
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, add_equalities_initially )
 
-  ///
+  /** \brief . */
   QPSolverRelaxedQPSchur(
     const init_kkt_sys_ptr_t&    init_kkt_sys       = Teuchos::null
     ,const constraints_ptr_t&    constraints        = Teuchos::rcp(new QPSchurPack::ConstraintsRelaxedStd)
@@ -369,15 +340,15 @@ public:
     ,bool                        add_equalities_initially= true
     );
 
-  ///
+  /** \brief . */
   ~QPSolverRelaxedQPSchur();
 
   /** @name Overridden from QPSolverRelaxed */
   //@{
 
-  ///
+  /** \brief . */
   QPSolverStats get_qp_stats() const;
-  ///
+  /** \brief . */
   void release_memory();
 
   //@}
@@ -387,7 +358,7 @@ protected:
   /** @name Overridden from QPSolverRelaxed */
   //@{
 
-  ///
+  /** \brief . */
   QPSolverStats::ESolutionType imp_solve_qp(
     std::ostream* out, EOutputLevel olevel, ERunTests test_what
     ,const Vector& g, const MatrixSymOp& G

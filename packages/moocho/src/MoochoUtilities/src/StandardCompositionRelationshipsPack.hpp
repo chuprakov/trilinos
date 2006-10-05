@@ -62,7 +62,7 @@ inline void assert_role_name_set(const ContainedClass* role_name_, const char fu
   if(!role_name_) ThrowNoRefSet(func_name, name);
 }
 
-///
+/** \brief . */
 template<class ContainedClass>
 inline void set_role_name(ContainedClass*& role_name_, bool& owns_role_name_, const char name[]
   , ContainedClass* role_name, bool owns_role_name)
@@ -71,7 +71,7 @@ inline void set_role_name(ContainedClass*& role_name_, bool& owns_role_name_, co
   role_name_ = role_name; owns_role_name_ = owns_role_name;
 }
 
-///
+/** \brief . */
 template<class ContainedClass>
 inline ContainedClass* get_role_name(ContainedClass* role_name_, bool owns_role_name_
   , const char name[])
@@ -79,7 +79,7 @@ inline ContainedClass* get_role_name(ContainedClass* role_name_, bool owns_role_
   return role_name_;
 }
 
-///
+/** \brief . */
 template<class ContainedClass>
 inline void set_owns_role_name(ContainedClass*& role_name_, bool& owns_role_name_
   , const char name[], bool owns_role_name)
@@ -88,7 +88,7 @@ inline void set_owns_role_name(ContainedClass*& role_name_, bool& owns_role_name
   owns_role_name_ = owns_role_name;
 }
 
-///
+/** \brief . */
 template<class ContainedClass>
 inline bool owns_role_name(ContainedClass* role_name_, bool owns_role_name_, const char name[])
 {
@@ -96,7 +96,7 @@ inline bool owns_role_name(ContainedClass* role_name_, bool owns_role_name_, con
   return owns_role_name_;
 }
 
-///
+/** \brief . */
 template<class ContainedClass>
 inline ContainedClass& role_name(ContainedClass* role_name_, bool owns_role_name_, const char name[])
 {
@@ -104,7 +104,7 @@ inline ContainedClass& role_name(ContainedClass* role_name_, bool owns_role_name
   return *role_name_;
 }
 
-///
+/** \brief . */
 template<class ContainedClass>
 inline const ContainedClass& role_name(const ContainedClass* role_name_, bool owns_role_name_, const char name[])
 {
@@ -112,7 +112,7 @@ inline const ContainedClass& role_name(const ContainedClass* role_name_, bool ow
   return *role_name_;
 }
 
-///
+/** \brief . */
 template<class ContainedClass>
 inline const ContainedClass& const_role_name(const ContainedClass* role_name_, bool owns_role_name_, const char name[])
 {
@@ -121,7 +121,7 @@ inline const ContainedClass& const_role_name(const ContainedClass* role_name_, b
 }
 
 
-///
+/** \brief . */
 template<class ContainedClass>
 inline void destory_container_obj(ContainedClass* role_name_, bool owns_role_name_)
 {

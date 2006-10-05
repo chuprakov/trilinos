@@ -33,9 +33,9 @@
 
 namespace MoochoPack {
 
-///
+/** \brief . */
 extern const std::string dl_name;
-///
+/** \brief . */
 extern const std::string du_name;
 
 }	// end namespace MoochoPack

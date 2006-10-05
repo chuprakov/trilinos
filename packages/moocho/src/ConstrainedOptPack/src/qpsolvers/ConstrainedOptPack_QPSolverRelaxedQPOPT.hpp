@@ -44,26 +44,25 @@ class QPSolverRelaxedQPOPT : public QPSolverRelaxedQPOPTSOL
 {
 public:
 
-  ///
+  /** \brief . */
   typedef QPSolverRelaxedQPOPTSOL inherited;
 
-  ///
-  /** Set the maximum number of QP iterations as max_itr = max_qp_iter_frac * n.
+  /** \brief Set the maximum number of QP iterations as max_itr = max_qp_iter_frac * n.
     */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_qp_iter_frac )
 
-  ///
+  /** \brief . */
   QPSolverRelaxedQPOPT(
     value_type max_qp_iter_frac	= 10.0
     );
 
-  ///
+  /** \brief . */
   ~QPSolverRelaxedQPOPT();
 
   // /////////////////////////////////
   // Overridden from QPSolverRelaxed
 
-  ///
+  /** \brief . */
   void release_memory();
 
 protected:
@@ -71,11 +70,11 @@ protected:
   // /////////////////////////////////////////////////////////////
   // Overridden from QPSolverRelaxedQPOPTSOL
 
-  ///
+  /** \brief . */
   f_int liwork(f_int N, f_int NCLIN) const;
-  ///
+  /** \brief . */
   f_int lrwork(f_int N, f_int NCLIN) const;
-  ///
+  /** \brief . */
   EInform call_qp_solver(bool warm_start);
 
 private:
@@ -83,7 +82,7 @@ private:
   // ////////////////////////////
   // Private types
 
-  ///
+  /** \brief . */
   enum EQPOPTInform {
     STRONG_LOCAL_MIN      = 0,
     WEAK_LOCAL_MIN        = 1,

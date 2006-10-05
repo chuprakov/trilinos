@@ -33,8 +33,7 @@
 
 namespace MoochoPack {
 
-///
-/** Subclass for selecting and updating the range/null space decomposition using
+/** \brief Subclass for selecting and updating the range/null space decomposition using
  * the DecompositionSystemVarReductPerm interface.
  *
  * ToDo: Finish documentation!
@@ -47,8 +46,7 @@ public:
   /** @name Constructors / initializers */
   //@{
 
-  ///
-  /** Constructor
+  /** \brief Constructor
    */
   DecompositionSystemHandlerVarReductPerm_Strategy();
 
@@ -57,7 +55,7 @@ public:
   /** @name Overridden from DecompositionSystemHandler_Strategy */
   //@{
 
-  ///
+  /** \brief . */
   bool update_decomposition(
     NLPAlgo                                &algo
     ,NLPAlgoState                          &s
@@ -66,7 +64,7 @@ public:
     ,EDecompSysPrintLevel                  decomp_sys_testing_print_level
     ,bool                                  *new_decomp_selected
     );
-  ///
+  /** \brief . */
   void print_update_decomposition(
     const NLPAlgo                          &algo
     ,const NLPAlgoState                    &s
@@ -79,7 +77,7 @@ public:
   /** @name Overridden from DecompositionSystemHandlerSelectNew_Strategy */
   //@{
 
-  ///
+  /** \brief . */
   void select_new_decomposition( bool select_new_decomposition );
 
   //@}

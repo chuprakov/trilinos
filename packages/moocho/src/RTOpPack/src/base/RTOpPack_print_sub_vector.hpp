@@ -33,8 +33,7 @@
 
 namespace RTOpPack {
 
-///
-/** Print an <tt>RTOp_SubVector</tt>.
+/** \brief Print an <tt>RTOp_SubVector</tt>.
  *
  * @param  o           [in/out] Stream that output is sent to.  On value of
  *                     <tt>o.width()</tt> on input is used to set the width

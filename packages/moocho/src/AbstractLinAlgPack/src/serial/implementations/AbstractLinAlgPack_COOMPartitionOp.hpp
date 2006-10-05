@@ -118,8 +118,7 @@ inline void Mp_StMtM( DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlic
   Mp_StMtCOOM(gms_lhs, alpha, gms_rhs1, trans_rhs1, coom_rhs2, trans_rhs2);
 }
 
-///
-/** gms_lhs = alpha * op(coom_rhs1) * op(M2_rhs2) + beta * gms_lhs (right).
+/** \brief gms_lhs = alpha * op(coom_rhs1) * op(M2_rhs2) + beta * gms_lhs (right).
   *
   * Was part of LinAlgOpPack but had to be removed becasue of unexplained bug.
   */
@@ -143,8 +142,7 @@ void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha
   Mp_StMtM(gms_lhs,alpha,coom_rhs1,trans_rhs1,M2_rhs2,trans_rhs2);
 }
 
-///
-/** gms_lhs = alpha * op(M1_rhs1) * op(coom_rhs2) + beta * gms_lhs (right).
+/** \brief gms_lhs = alpha * op(M1_rhs1) * op(coom_rhs2) + beta * gms_lhs (right).
   *
   * Was part of LinAlgOpPack but had to be removed becasue of unexplained bug.
   */
@@ -257,8 +255,7 @@ inline void Mp_StMtM( DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlic
   Mp_StMtCOOM(gms_lhs, alpha, gms_rhs1, trans_rhs1, coom_rhs2, trans_rhs2);
 }
 
-///
-/** gms_lhs = alpha * op(coom_rhs1) * op(M2_rhs2) + beta * gms_lhs (right).
+/** \brief gms_lhs = alpha * op(coom_rhs1) * op(M2_rhs2) + beta * gms_lhs (right).
   *
   * Was part of LinAlgOpPack but had to be removed becasue of unexplained bug.
   */
@@ -282,8 +279,7 @@ void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha
   Mp_StMtM(gms_lhs,alpha,coom_rhs1,trans_rhs1,M2_rhs2,trans_rhs2);
 }
 
-///
-/** gms_lhs = alpha * op(M1_rhs1) * op(coom_rhs2) + beta * gms_lhs (right).
+/** \brief gms_lhs = alpha * op(M1_rhs1) * op(coom_rhs2) + beta * gms_lhs (right).
   *
   * Was part of LinAlgOpPack but had to be removed becasue of unexplained bug.
   */

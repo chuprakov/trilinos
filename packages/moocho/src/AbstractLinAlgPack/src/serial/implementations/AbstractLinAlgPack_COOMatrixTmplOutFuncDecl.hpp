@@ -33,8 +33,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** @name COO matrix output stream function.
+/** \brief @name COO matrix output stream function.
   *
   * This is a functions that are used to output a templated COO matrix object
   * to a char based output stream.  The COOMatrixTemplateInterface specification

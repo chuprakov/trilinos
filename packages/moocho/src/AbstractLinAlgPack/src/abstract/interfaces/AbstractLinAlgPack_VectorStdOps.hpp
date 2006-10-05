@@ -40,28 +40,23 @@ namespace AbstractLinAlgPack {
 /** \defgroup VectorStdOps_ROp_grp Reduction operations */
 //@{
 
-///
-/** result = sum( v_rhs(i), i = 1,,,dim )
+/** \brief result = sum( v_rhs(i), i = 1,,,dim )
  */
 value_type sum( const Vector& v_rhs );
 
-///
-/** result = v_rhs1' * v_rhs2
+/** \brief result = v_rhs1' * v_rhs2
  */
 value_type dot( const Vector& v_rhs1, const Vector& v_rhs2 );
 
-///
-/** result = v_rhs1' * sv_rhs2
+/** \brief result = v_rhs1' * sv_rhs2
  */
 value_type dot( const Vector& v_rhs1, const SpVectorSlice& sv_rhs2 );
 
-///
-/** result = sv_rhs1' * v_rhs2
+/** \brief result = sv_rhs1' * v_rhs2
  */
 value_type dot( const SpVectorSlice& sv_rhs1, const Vector& v_rhs2 );
 
-///
-/** Compute the maximum element in a vector.
+/** \brief Compute the maximum element in a vector.
  *
  * @param  v        [in] The vector being searched
  * @param  max_v_j  [out] The value of the element with the max abs value.
@@ -83,13 +78,11 @@ void max_abs_ele( const Vector& v, value_type* max_v_j, index_type* max_j );
 /** \defgroup VectorStdOps_TOp_grp Transformation operations */
 //@{
 
-///
-/** v_lhs += alpha
+/** \brief v_lhs += alpha
  */
 void Vp_S( VectorMutable* v_lhs, const value_type& alpha );
 
-///
-/** v_lhs *= alpha
+/** \brief v_lhs *= alpha
  *
  * This takes care of the special cases of <tt>alpha == 0.0</tt>
  * (set <tt>v_lhs = 0.0</tt>) and <tt>alpha == 1.0</tt> (don't
@@ -97,45 +90,38 @@ void Vp_S( VectorMutable* v_lhs, const value_type& alpha );
  */
 void Vt_S( VectorMutable* v_lhs, const value_type& alpha );
 
-///
-/** v_lhs = alpha * v_rhs + v_lhs
+/** \brief v_lhs = alpha * v_rhs + v_lhs
  */
 void Vp_StV( VectorMutable* v_lhs, const value_type& alpha, const Vector& v_rhs );
 
-///
-/** v_lhs = alpha * sv_rhs + v_lhs
+/** \brief v_lhs = alpha * sv_rhs + v_lhs
  */
 void Vp_StV( VectorMutable* v_lhs, const value_type& alpha, const SpVectorSlice& sv_rhs );
 
-///
-/** v_lhs(i) += alpha * v_rhs1(i) * v_rhs2(i), i = 1,,,dim.
+/** \brief v_lhs(i) += alpha * v_rhs1(i) * v_rhs2(i), i = 1,,,dim.
  */
 void ele_wise_prod(
   const value_type& alpha, const Vector& v_rhs1, const Vector& v_rhs2
   ,VectorMutable* v_lhs );
 
-///
-/** v_lhs(i) = alpha * v_rhs1(i) / v_rhs2(i), i = 1,,,dim.
+/** \brief v_lhs(i) = alpha * v_rhs1(i) / v_rhs2(i), i = 1,,,dim.
  */
 void ele_wise_divide(
   const value_type& alpha, const Vector& v_rhs1, const Vector& v_rhs2
   ,VectorMutable* v_lhs );
 
-///
-/** Seed the random number generator
+/** \brief Seed the random number generator
   */
 void seed_random_vector_generator( unsigned int );
 
-///
-/** Generate a random vector with elements uniformly
+/** \brief Generate a random vector with elements uniformly
   * distrubuted elements.
   * 
   * The elements are randomly generated between <tt>[l,u]</tt>.
   */
 void random_vector( value_type l, value_type u, VectorMutable* v );
 
-///
-/** Compute the sign of each element in an input vector.
+/** \brief Compute the sign of each element in an input vector.
  *
  \verbatim
 

@@ -34,8 +34,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** Mix-in interface for extracing explicit elements from a sparse matrix
+/** \brief Mix-in interface for extracing explicit elements from a sparse matrix
  * in one of several Fortran compatible formats.
  *
  * The formats supported are:
@@ -78,20 +77,19 @@ class MatrixConvertToSparse
 {
 public:
 
-  ///
+  /** \brief . */
   enum EExtractRegion {
     EXTRACT_FULL_MATRIX       ///< Extract the nonzero elements from the full matrix
     ,EXTRACT_UPPER_TRIANGULAR ///< Extract the nonzero elements from the upper triangular region including the diagonal
     ,EXTRACT_LOWER_TRIANGULAR ///< Extract the nonzero elements from the lower triangular region including the diagonal
   };
-  ///
+  /** \brief . */
   enum EElementUniqueness {
     ELEMENTS_FORCE_UNIQUE             ///< Entries must have unique row and column indexes
     ,ELEMENTS_ALLOW_DUPLICATES_SUM    ///< Entries with duplicate row and column indexes are allowed with the understanding that the values are summed
   };
 
-  ///
-  /** Returns the number of nonzeros in the matrix.
+  /** \brief Returns the number of nonzeros in the matrix.
    *
    * @param  extract_region
    *               [in] Determines what matix region to extract:<ul>
@@ -117,8 +115,7 @@ public:
     ,EElementUniqueness   element_uniqueness
     ) const = 0;
 
-  ///
-  /** Extract sparse elements in a coordinate data structure.
+  /** \brief Extract sparse elements in a coordinate data structure.
    *
    * The client can extract the structure in \c Arow[] and \c Acol[] and/or
    * the nonzero elements in \c Aval[].  If the client wants to extract

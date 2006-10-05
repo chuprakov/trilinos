@@ -36,8 +36,7 @@
 
 namespace AbstractLinAlgPack {
 
-///
-/** <tt>MatrixOpNonsing</tt> adapter subclass for <tt>Thyra::Nonlin::LinearOpWithSolve</tt>.
+/** \brief <tt>MatrixOpNonsing</tt> adapter subclass for <tt>Thyra::Nonlin::LinearOpWithSolve</tt>.
  */
 class MatrixOpNonsingThyra
   :virtual public MatrixOpNonsing
@@ -48,8 +47,7 @@ public:
   /** @name Constructors / Initializers */
   //@{
 
-  ///
-  /** Construct to uninitialized.
+  /** \brief Construct to uninitialized.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_vec().get() == NULL</tt>
@@ -57,15 +55,13 @@ public:
    * </ul>
    */
   MatrixOpNonsingThyra();
-  ///
-  /** Calls <tt>this->initialize()</tt>.
+  /** \brief Calls <tt>this->initialize()</tt>.
    */
   MatrixOpNonsingThyra(
     const Teuchos::RefCountPtr<const Thyra::LinearOpWithSolveBase<value_type> >  &thyra_linear_op_ns
     ,BLAS_Cpp::Transp                                                            thyra_linear_op_trans = BLAS_Cpp::no_trans
     );
-  ///
-  /** Initalize given a smart pointer to a <tt>Thyra::LinearOpWithSolveBase</tt> object.
+  /** \brief Initalize given a smart pointer to a <tt>Thyra::LinearOpWithSolveBase</tt> object.
    *
    * @param  thyra_linear_op_ns  [in] Smart pointer to Thyra vector <tt>this</tt> will adapt.
    *
@@ -84,8 +80,7 @@ public:
     const Teuchos::RefCountPtr<const Thyra::LinearOpWithSolveBase<value_type> >  &thyra_linear_op_ns
     ,BLAS_Cpp::Transp                                                            thyra_linear_op_trans = BLAS_Cpp::no_trans
     );
-  ///
-  /** Set to uninitialized and return smart pointer to the internal <tt>Thyra::LinearOpWithSolveBase</tt> object.
+  /** \brief Set to uninitialized and return smart pointer to the internal <tt>Thyra::LinearOpWithSolveBase</tt> object.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_linear_op_ns().get() == NULL</tt>
@@ -95,8 +90,7 @@ public:
    * <tt>MatrixOpThyra::set_uninitialized()</tt>.
    */
   Teuchos::RefCountPtr<const Thyra::LinearOpWithSolveBase<value_type> > set_uninitialized();
-  ///
-  /** Return a smart pointer to the <tt>Thyra::LinearOpWithSolveBase</tt> object.
+  /** \brief Return a smart pointer to the <tt>Thyra::LinearOpWithSolveBase</tt> object.
    */
   Teuchos::RefCountPtr<const Thyra::LinearOpWithSolveBase<value_type> > thyra_linear_op_ns() const;
 
@@ -113,12 +107,12 @@ public:
   /** @name Overridden from MatrixNonsing */
   //@{
 
-  ///
+  /** \brief . */
   void V_InvMtV(
     VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
     ,const Vector& v_rhs2
     ) const;
-  ///
+  /** \brief . */
   void M_StInvMtM(
     MatrixOp* m_lhs, value_type alpha
     ,BLAS_Cpp::Transp trans_rhs1
@@ -130,7 +124,7 @@ public:
   /** @name Overridden from MatrixOpNonsing */
   //@{
 
-  ///
+  /** \brief . */
   mat_mwons_ptr_t clone_mwons() const;
 
   //@}

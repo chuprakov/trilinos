@@ -41,8 +41,7 @@
 
 namespace MoochoPack {
 
-///
-/** Standard class for updating the reduced sigma 
+/** \brief Standard class for updating the reduced sigma 
  *   for interior point optimization
  *
  *
@@ -62,8 +61,7 @@ class UpdateReducedSigma_Step
       BFGS_DUAL_SCALING_CORRECTION
       };
 
-    ///
-    /** update method for the reduced sigma term
+    /** \brief update method for the reduced sigma term
      *  update_method = always_explicit;
      *	update_method = BFGS_primal;
      *	update_method = BFGS_dual_no_correction;
@@ -85,7 +83,7 @@ class UpdateReducedSigma_Step
 
     /** @name Overridden from AlgorithmStep */
     //@{
-    ///
+    /** \brief . */
     bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
            , poss_type assoc_step_poss);
     
