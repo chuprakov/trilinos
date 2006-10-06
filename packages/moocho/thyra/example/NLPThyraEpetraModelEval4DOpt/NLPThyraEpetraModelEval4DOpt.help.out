@@ -1,0 +1,73 @@
+Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
+
+Echoing the command-line:
+
+c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBUG\packages\moocho\thyra\example\NLPThyraEpetraModelEval4DOpt\NLPThyraEpetraModelEval4DOpt.exe --echo-command-line --help 
+
+Usage: c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBUG\packages\moocho\thyra\example\NLPThyraEpetraModelEval4DOpt\NLPThyraEpetraModelEval4DOpt.exe [options]
+  options:
+  --help                                    Prints this help message
+  --pause-for-debugging                     Pauses for user input to allow attaching a debugger
+  --echo-command-line                       Echo the command-line but continue as normal
+  --linear-solver-params-file       string  Name of an XML file containing parameters for linear solver options to be appended first.
+                                            (default: --linear-solver-params-file="")
+  --extra-linear-solver-params      string  An XML string containing linear solver parameters to be appended second.
+                                            (default: --extra-linear-solver-params="")
+  --linear-solver-params-used-file  string  Name of an XML file that can be written with the parameter list after it has been used on completion of this program.
+                                            (default: --linear-solver-params-used-file="")
+  --moocho-options-file             string  Set the name of the MOOCHO options file in the OptionsFromStream format.  File is ignored if it does not exist!
+                                            (default: --moocho-options-file="Moocho.opt")
+  --moocho-extra-options            string  Extra MOOCHO options specified in the format "OptGrp1{name1=val1,...,namen=valn}:OptGr2{name1=val1,...,namen=valn}:..."
+                                            (default: --moocho-extra-options="")
+  --do-sim                          bool    Flag for if only the square constraints are solved
+  --do-opt                                  (default: --do-opt)
+  --use-direct                      bool    Flag for if we use the NLPDirect or NLPFirstOrderInfo implementation.
+  --use-first-order                         (default: --use-first-order)
+  --x-guess-file                    string  Base file name to read the guess of the state x from.
+                                            (default: --x-guess-file="")
+  --scale-x-guess                   double  Amount to scale the guess for x read in by --x-guess-file.
+                                            (default: --scale-x-guess=1)
+  --p-guess-file                    string  Base file name to read the guess of the parameters p from.
+                                            (default: --p-guess-file="")
+  --scale-p-guess                   double  Amount to scale the guess for p read in by --p-guess-file.
+                                            (default: --scale-p-guess=1)
+  --x-solu-file                     string  Base file name to write the state solution x to.
+                                            (default: --x-solu-file="")
+  --p-solu-file                     string  Base file name to write the parameter solution p to.
+                                            (default: --p-solu-file="")
+  --xt0                             double  No documentation
+                                            (default: --xt0=1)
+  --xt1                             double  No documentation
+                                            (default: --xt1=1)
+  --pt0                             double  No documentation
+                                            (default: --pt0=2)
+  --pt1                             double  No documentation
+                                            (default: --pt1=0)
+  --d                               double  No documentation
+                                            (default: --d=10)
+  --x00                             double  No documentation
+                                            (default: --x00=1)
+  --x01                             double  No documentation
+                                            (default: --x01=1)
+  --p00                             double  No documentation
+                                            (default: --p00=2)
+  --p01                             double  No documentation
+                                            (default: --p01=0)
+  --pL0                             double  No documentation
+                                            (default: --pL0=-1e+050)
+  --pL1                             double  No documentation
+                                            (default: --pL1=-1e+050)
+  --pU0                             double  No documentation
+                                            (default: --pU0=1e+050)
+  --pU1                             double  No documentation
+                                            (default: --pU1=1e+050)
+  --xL0                             double  No documentation
+                                            (default: --xL0=-1e+050)
+  --xL1                             double  No documentation
+                                            (default: --xL1=-1e+050)
+  --xU0                             double  No documentation
+                                            (default: --xU0=1e+050)
+  --xU1                             double  No documentation
+                                            (default: --xU1=1e+050)
+  --external-lowsf                  bool    Determines if the Thyra::LinearOpWithSolveFactory is used externally or internally to the Thyra::EpetraModelEvaluator object
+  --internal-lowsf                          (default: --internal-lowsf)

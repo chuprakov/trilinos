@@ -30,11 +30,11 @@ options_group MoochoSolver {
 }
 
 options_group NLPSolverClientInterface {
-*    max_iter = 1000;  *** (default?)
-*    max_run_time = 1e+10; *** In minutes (default?)
-*    opt_tol = 1e-6;  *** (default?)
-*    feas_tol = 1e-6;  *** (default?)
-*    step_tol = 1e-2;  *** (default?)
+*    max_iter = 1000;  *** [default]
+*    max_run_time = 1e+10; *** In minutes [default]
+*    opt_tol = 1e-6;  *** [default]
+*    feas_tol = 1e-6;  *** [default]
+*    step_tol = 1e-2;  *** [default]
 *    journal_output_level = PRINT_NOTHING;              * No output to journal from algorithm
 *    journal_output_level = PRINT_BASIC_ALGORITHM_INFO; * O(1) information usually
 *    journal_output_level = PRINT_ALGORITHM_STEPS;      * O(iter) output to journal     [default]
@@ -45,15 +45,15 @@ options_group NLPSolverClientInterface {
 *    null_space_journal_output_level = PRINT_ACTIVE_SET;           * O(iter*nact) output to journal  
 *    null_space_journal_output_level = PRINT_VECTORS;              * O(iter*(n-m)) output to journal   (lots!)
 *    null_space_journal_output_level = PRINT_ITERATION_QUANTITIES; * O(iter*(n-m)^2) output to journal (big lots!)
-*    journal_print_digits = 6;  *** (default?)
+*    journal_print_digits = 6;  *** [default]
 *    check_results = true;  *** (costly?)
-*    check_results = false; *** (default?)
+*    check_results = false; *** [default]
 *    calc_conditioning = true;  *** (costly?)
-*    calc_conditioning = false; *** (default?)
+*    calc_conditioning = false; *** [default]
 *    calc_matrix_norms = true;  *** (costly?)
-*    calc_matrix_norms = false; *** (default?)
+*    calc_matrix_norms = false; *** [default]
 *    calc_matrix_info_null_space_only = true;  *** (costly?)
-*    calc_matrix_info_null_space_only = false; *** (default?)
+*    calc_matrix_info_null_space_only = false; *** [default]
 }
 
 options_group NLPTester {
@@ -96,15 +96,15 @@ options_group DirectSparseSolverMA28 {
 *** Moocho.opt.DecompositionSystemStateStepBuilderStd 
 
 options_group IterationPack_Algorithm {
-*   interrupt_file_name = "";             *** [default] Does not check for interrupt
+*   interrupt_file_name = "";             *** Does not check for interrupt file [default]
 *   interrupt_file_name = "interrupt.in"; *** checks for this file in current directory
 }
 
 options_group DecompositionSystemStateStepBuilderStd {
 *** Variable Reduction range/null space decomposition
 *    null_space_matrix = AUTO;         *** Let the solver decide [default]
-*    null_space_matrix = EXPLICIT;     *** Store D = -inv(C)*N explicitly
-*    null_space_matrix = IMPLICIT;     *** Perform operations implicity with C, N
+*    null_space_matrix = EXPLICIT;     *** Compute and store D = -inv(C)*N explicitly
+*    null_space_matrix = IMPLICIT;     *** Perform operations implicitly with C, N (requires adjoints)
 *    range_space_matrix = AUTO;        *** Let the algorithm decide dynamically [default]
 *    range_space_matrix = COORDINATE;  *** Y = [ I; 0 ] (Cheaper computationally)
 *    range_space_matrix = ORTHOGONAL;  *** Y = [ I; -N'*inv(C') ] (more stable)
@@ -119,7 +119,7 @@ options_group CalcFiniteDiffProd {
 *    fd_method_order = FD_ORDER_TWO_AUTO;     *** Uses FD_ORDER_TWO_CENTRAL or FD_ORDER_TWO
 *    fd_method_order = FD_ORDER_FOUR;         *** Use O(eps^4) one sided finite differences
 *    fd_method_order = FD_ORDER_FOUR_CENTRAL; *** Use O(eps^4) two sided central finite differences
-*    fd_method_order = FD_ORDER_FOUR_AUTO;    *** [default] Uses FD_ORDER_FOUR_CENTRAL or FD_ORDER_FOUR
+*    fd_method_order = FD_ORDER_FOUR_AUTO;    *** [default] Use FD_ORDER_FOUR_CENTRAL or FD_ORDER_FOUR
 *    fd_step_select = FD_STEP_ABSOLUTE; *** [default] Use absolute step size fd_step_size
 *    fd_step_select = FD_STEP_RELATIVE; *** Use relative step size fd_step_size * ||x||inf
 *    fd_step_size = -1.0; *** [default] Let the implementation decide
@@ -147,7 +147,7 @@ options_group VariableBoundsTester {
 
 options_group NLPFirstDerivTester {
 *    fd_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(m))
-*    fd_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
+*    fd_testing_method = FD_DIRECTIONAL; *** [default] Only compute along random directions (O(1))
 *    num_fd_directions = 1;   *** [fd_testing_method == DIRECTIONAL]
 *    num_fd_directions = -1;  *** [fd_testing_method == DIRECTIONAL] Use single direction y=1.0
 *    warning_tol   = 1e-8; *** [default]
@@ -156,18 +156,18 @@ options_group NLPFirstDerivTester {
 }
 
 options_group EvalNewPointTailoredApproach {
-*    fd_deriv_testing   = FD_DEFAULT;  *** Test if check_results==true (see above)
+*    fd_deriv_testing   = FD_DEFAULT;  *** [default] Test if check_results==true (see above)
 *    fd_deriv_testing   = FD_TEST;    *** Always test
 *    fd_deriv_testing   = FD_NO_TEST; *** never test
 }
 
 options_group NLPDirectTester {
 *    Gf_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n))
-*    Gf_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
+*    Gf_testing_method = FD_DIRECTIONAL; *** [default] Only compute along random directions (O(1))
 *    Gf_warning_tol   = 1e-10;
 *    Gf_error_tol     = 1e-5;
 *    Gc_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n-m))
-*    Gc_testing_method = FD_DIRECTIONAL; *** Only compute along random directions
+*    Gc_testing_method = FD_DIRECTIONAL; *** [default] Only compute along random directions (O(1))
 *    Gc_warning_tol   = 1e-10;
 *    Gc_error_tol     = 1e-5;
 *    num_fd_directions = 1;  *** [testing_method == DIRECTIONAL]
@@ -213,7 +213,7 @@ options_group NLPAlgoConfigMamaJama {
 *    quasi_newton = BFGS;   *** Dense BFGS
 *    quasi_newton = LBFGS;  *** Limited memory BFGS
 *    num_lbfgs_updates_stored   = -1; *** [default]
-*    lbfgs_auto_scaling = true;  *** (defalut)
+*    lbfgs_auto_scaling = true;  *** (default)
 *    lbfgs_auto_scaling = false;
 *    hessian_initialization = AUTO;                       *** Let the solver decide dynamically [default]
 *    hessian_initialization = SERIALIZE;                  *** rHL_{0} read from file (see ReducedHessianSerialization)
@@ -226,7 +226,7 @@ options_group NLPAlgoConfigMamaJama {
 *    qp_solver = QPKWIK;  *** Primal-dual, active set, QR
 *    qp_solver = QPOPT;   *** Primal, active set, null space, Gill et. al.
 *    qp_solver = QPSOL;   *** Primal, active set, null space, Gill et. al.
-*    qp_solver = QPSCHUR; *** Primal-dual, active set, schur complement 
+*    qp_solver = QPSCHUR; *** [default] Primal-dual, active set, schur complement 
 *    reinit_hessian_on_qp_fail = true; *** [default]
 *    reinit_hessian_on_qp_fail = false;
 *** Line search methods
@@ -236,11 +236,11 @@ options_group NLPAlgoConfigMamaJama {
 *    line_search_method = 2ND_ORDER_CORRECT;  *** Like DIRECT except computes corrections for
 *                                             *** c(x) before backtracking line search
 *    line_search_method = WATCHDOG;           *** Like DIRECT except uses watchdog type trial steps
-*    line_search_method = FILTER;              *** Use the Filter line search method
+*    line_search_method = FILTER;             *** [default] Use the Filter line search method
 *    merit_function_type = AUTO;              *** [line_search_method != NONE] Let solver decide
 *    merit_function_type = L1;                *** [line_search_method != NONE] phi(x) = f(x) + mu*||c(x)||1
 *    merit_function_type = MODIFIED_L1;       *** [line_search_method != NONE] phi(x) = f(x) + sum{mu(j),|cj(x)|,j}
-*    merit_function_type = MODIFIED_L1_INCR;  *** [line_search_method != NONE] Like MODIFIED_L1 except mu(j) are altered
+*    merit_function_type = MODIFIED_L1_INCR;  *** [line_search_method != NONE] Like MODIFIED_L1 except mu(j) are altered in order to take larger steps
 *    l1_penalty_parameter_update = AUTO;      *** [merit_function_type == L1] let solver decide
 *    l1_penalty_parameter_update = WITH_MULT; *** [merit_function_type == L1] Use Lagrange multipliers to update mu
 *    l1_penalty_parameter_update = MULT_FREE; *** [merit_function_type == L1] Don't use Lagrange multipliers to update mu
@@ -255,7 +255,7 @@ options_group ReducedHessianSerialization {
 
 options_group InitFinDiffReducedHessian {
 *    initialization_method	= SCALE_IDENTITY;
-*    initialization_method	= SCALE_DIAGONA;
+*    initialization_method	= SCALE_DIAGONAL;
 *    initialization_method	= SCALE_DIAGONAL_ABS;
 *    max_cond			= 1e+1;
 *    min_diag			= 1e-8;
@@ -293,30 +293,33 @@ options_group CheckConvergenceStd {
 }
 
 options_group QPSolverRelaxedQPSchur {
+*** Convergence criteria and algorithm control options
 *    max_qp_iter_frac  = 10.0;   *** (+dbl) max_qp_itr = max_qp_itr_frac * (# variables)
-*    inequality_pick_policy = ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY;
-*    inequality_pick_policy = ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY; *** not supported yet!
-*    inequality_pick_policy = ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY;
-*    bounds_tol        = 1e-10;  *** (+dbl) feasibility tolerance for bound constriants
-*    inequality_tol    = 1e-10;  *** (+dbl) feasibility tolerance for general inequality constriants
-*    equality_tol      = 1e-10;  *** (+dbl) feasibility tolerance for general equality constriants
+*    bounds_tol        = 1e-10;  *** (+dbl) feasibility tolerance for bound constraints
+*    inequality_tol    = 1e-10;  *** (+dbl) feasibility tolerance for general inequality constraints
+*    equality_tol      = 1e-10;  *** (+dbl) feasibility tolerance for general equality constraints
 *    loose_feas_tol    = 1e-9;   *** (+dbl) (Expert use only)
-*    dual_infeas_tol   = 1e-12;  *** (+dbl) allowable dual infeasiblity before error
+*    dual_infeas_tol   = 1e-12;  *** (+dbl) allowable dual infeasibility before reporting an error
 *    huge_primal_step  = 1e+20;  *** (+dbl) value of a near infinite primal step
 *    huge_dual_step    = 1e+20;  *** (+dbl) value of a near infinite dual step
 *    bigM              = 1e+10;  *** (+dbl) value or relaxation penalty in objective
-*    warning_tol   = 1e-10;  *** Testing warning tolerance
-*    error_tol     = 1e-5;   *** Testing error tolerance
+*    iter_refine_at_solution = true;  *** [default]
+*    iter_refine_at_solution = false;
 *    iter_refine_min_iter = 1; *** [default]
 *    iter_refine_max_iter = 3; *** [default]
 *    iter_refine_opt_tol  = 1e-12; *** [default]
 *    iter_refine_feas_tol = 1e-12; *** [default]
-*    iter_refine_at_solution = true;  *** [default]
-*    iter_refine_at_solution = false;
+*    inequality_pick_policy = ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY; *** [default]
+*    inequality_pick_policy = ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY; *** not supported yet!
+*    inequality_pick_policy = ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY;
+*** Warning and error tolerances
+*    warning_tol   = 1e-10;  *** General testing warning tolerance
+*    error_tol     = 1e-5;   *** General testing error tolerance
 *    pivot_warning_tol = 1e-8;  *** [default]
 *    pivot_singular_tol = 1e-11;  *** [default]
 *    pivot_wrong_inertia_tol = 1e-11;  *** [default]
-*    print_level = USE_INPUT_ARG;  *** Use the input argument to solve_qp(...)
+*** Output control
+*    print_level = USE_INPUT_ARG;  *** [default] Use the input argument to solve_qp(...)
 *    print_level = NO_OUTPUT;
 *    print_level = OUTPUT_BASIC_INFO;
 *    print_level = OUTPUT_ITER_SUMMARY;

@@ -5,10 +5,7 @@
 \section moocho_outline_sec Outline
 
 <ul>
-<li>\ref mooch_intro_sec
-<!--
-<li>\ref moocho_overview_sec
--->
+<li>\ref mooch_intro_sec     <!-- <li>\ref moocho_overview_sec -->
 \if BUILD_HTML <li>\ref moocho_pdf_version_sec \endif \if BUILD_LATEX <li>\ref moocho_html_version_sec \endif
 <li>\ref moocho_quickstart_sec
   <ul>
@@ -18,7 +15,13 @@
     <li>\ref moocho_explicit_nlps_examples_sec
     <li>\ref moocho_simulation_constrained_nlps_examples_sec
     </ul>
+  <li>\ref moocho_quickstart_solve_driver_sec
   <li>\ref moocho_quickstart_solving_sec
+    <ul>
+    <li>\ref moocho_quickstart_input_linear_solver_input_params_sec
+    <li>\ref moocho_quickstart_moocho_input_options_sec
+    <li>\ref moocho_quickstart_solver_output_sec
+    </ul>
   </ul>
 <li>\ref moocho_nlps_sec
   <ul>
@@ -543,9 +546,9 @@ Waechter and Bielger counterexample [???] which shows global convergence
 failure from many starting points for many NLP solvers (including many current
 MOOCHO algorithms).
 
-<li><b><tt><a
-href="./NLPWBCounterExampleMain_8cpp-example.html">NLPWBCounterExampleMain.cpp</a></tt></b>:
-Main driver program for solving the NLP.
+<li><b><tt><a href="./NLPWBCounterExampleMain_8cpp-example.html">
+NLPWBCounterExampleMain.cpp</a></tt>:</b> Main driver program for solving the
+NLP.
 
 <li> Installed in
 <tt>$TRILINOS_INSTALL_DIR/example/moocho/NLPWBCounterExample</tt>
@@ -563,9 +566,9 @@ of <tt>bw</tt>.  This NLP can also be configured to represent a square
 simulation-only problem (i.e. <tt>nI=0</tt>) and an unconstrained optimization
 problem (i.e. <tt>nD=0</tt>).
 
-<li><b><tt><a
-href="./ExampleNLPBandedMain_8cpp-example.html">ExampleNLPBandedMain.cpp</a></tt></b>: Main driver program for solving
-the NLP.
+<li><b><tt><a href="./ExampleNLPBandedMain_8cpp-example.html">
+ExampleNLPBandedMain.cpp</a></tt>:</b> Main driver program for solving the
+NLP.
 
 <li> Installed in
 <tt>$TRILINOS_INSTALL_DIR/example/moocho/ExampleNLPBanded</tt>
@@ -586,14 +589,14 @@ solvers accessed through <tt>Thyra::DefaultRealLinearSolverBuilder</tt>.
 
 <ul>
 
-<li><b><tt>EpetraModelEval4DOpt:</tt></b> Subclass for a small serial model
+<li><b><tt>EpetraModelEval4DOpt</tt></b>: Subclass for a small serial model
 with n=4 variables and m=2 equality constraints.  The purpose of this model is
 to show the most basic parts of a concrete implementation.  This example is
 only serial however and does not address parallelization issues.
 
-<li><b><tt><a
-href="./tt>NLPThyraEpetraModelEval4DOptMain_8cpp-example.html">tt>NLPThyraEpetraModelEval4DOptMain.cpp</a></tt></b>:
-Main driver program for solving the NLP.
+<li><b><tt><a href="./tt>NLPThyraEpetraModelEval4DOptMain_8cpp-example.html">
+NLPThyraEpetraModelEval4DOptMain.cpp</a></tt>:</b> Main driver program for
+solving the NLP.
 
 <li> Installed in
 <tt>$TRILINOS_INSTALL_DIR/example/moocho/thyra/NLPThyraEpetraModelEval4DOpt</tt>
@@ -604,14 +607,14 @@ Main driver program for solving the NLP.
 
 <ul>
 
-<li><b><tt>GLpApp::AdvDiffReactOptModel:</tt></b> Implements an inversion
+<li><b><tt>GLpApp::AdvDiffReactOptModel</tt></b>: Implements an inversion
 problem based on a finite-element discretization of a 2D reaction/diffusion
 state equation.  This example shows a more advanced model what includes
 parallelization in the state space.
 
-<li><b><tt><a
-href="./tt>NLPThyraEpetraAdvDiffReactOptMain_8cpp-example.html">tt>NLPThyraEpetraAdvDiffReactOptMain.cpp</a></tt></b>:
-Main driver program for solving the NLP.
+<li><b><tt><a href="./tt>NLPThyraEpetraAdvDiffReactOptMain_8cpp-example.html">
+NLPThyraEpetraAdvDiffReactOptMain.cpp</a></tt>:</b> Main driver program for
+solving the NLP.
 
 <li> Installed in
 <tt>$TRILINOS_INSTALL_DIR/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt</tt>
@@ -625,18 +628,191 @@ options <tt>--enable-moocho</tt>, <tt>--enable-thyra</tt>,
 <tt>--enable-stratimikos</tt>, and <tt>--enable-epetraext-thyra</tt> are all
 included.
 
+\subsection moocho_quickstart_solve_driver_sec Setting up a driver program to call a MOOCHO solver
+
+Once an NLP is defined, a driver program must be constructed to setup a MOOCHO
+solver and configure it given user set options.  When building a driver
+program to solve an NLP based on an
+<tt>NLPInterfacePack::NLPSerialPreprocessExplJac</tt> subclass object, one
+should directly use the "Facade" solver class
+<tt>MoochoPack::MoochoSolver</tt> (see <tt><a
+href="./NLPWBCounterExampleMain_8cpp-example.html">
+NLPWBCounterExampleMain.cpp</a></tt>).  However, when using an NLP based on a
+<tt>Thyra::ModelEvaluator</tt> object, then the more specialized "Facade"
+solver class <tt>MoochoPack::ThyraModelEvaluatorSolver</tt> should be used
+(see <tt><a href="./tt>NLPThyraEpetraModelEval4DOptMain_8cpp-example.html">
+NLPThyraEpetraModelEval4DOptMain.cpp</a></tt>).  The class
+<tt>MoochoPack::ThyraModelEvaluatorSolver</tt> just uses
+<tt>MoochoPack::MoochoSolver</tt> internally for the main solve but provides a
+great deal of extra functionality to set initial guesses (also from an input
+file), wrap the model evaluator object with various "Dectorator" skins and to
+capture and return the final solution.
+
 \subsection moocho_quickstart_solving_sec Running MOOCHO to Solve Optimization Problems
 
 Once an NLP is defined and a driver program is in place (see the above driver
-programs), MOOCHO can then be run to try to solve the optimization problem.
-When solving an NLP based on
-<tt>NLPInterfacePack::NLPSerialPreprocessExplJac</tt> one should directly use
-the solver class <tt>MoochoPack::MoochoSolver</tt>.  However, when using an
-NLP based on <tt>Thyra::ModelEvaluator</tt>, then the solver class
-<tt>MoochoPack::ThyraModelEvaluatorSolver</tt> should be used.  The use of
-these two classes are demonstrated in the files ??? and ??? respectively.
+programs), then MOOCHO can be run to try to solve the optimization problem.
+Most of the options that affect MOOCHO (and the Trlinos linear solvers
+accessed through Stratimikos) can be read in from various input files or
+specified entirely on the command line.  The dirver programs shown above show
+examples of how to setup a Techos::CommandLineProcessor object to accept a
+number of different command-line arguments that can be used to read in MOOCHO
+and Trilinos linear solver options.  For example, consider the simple driver
+program <tt><a href="./tt>NLPThyraEpetraModelEval4DOptMain_8cpp-example.html">
+NLPThyraEpetraModelEval4DOptMain.cpp</a></tt>.  This example shows the use of
+both MOOCHO options and Stratimikos linear solver options.
 
-ToDo: Finish this section!
+Here are the command-line arguments that the program <tt><a
+href="./tt>NLPThyraEpetraModelEval4DOptMain_8cpp-example.html">
+NLPThyraEpetraModelEval4DOptMain.cpp</a></tt> takes:
+
+\verbinclude NLPThyraEpetraModelEval4DOpt.help.out
+
+Below, the various types of input and output are described.  These are
+seperated into linear solver options for %Stratimikos solvers and options for
+the %MOOCHO algorithms.
+
+\subsubsection moocho_quickstart_input_linear_solver_input_params_sec Linear solver input parameters (Thyra models only)
+
+When using a <tt>%Thyra::ModelEvaluator</tt> based NLP, the linear solver
+options for the basic of the equality constraints are read in through a
+<tt>Teuchos::ParameterList</tt> object which accepted through the %Stratimikos
+class <tt>Thyra::DefaultRealLinearSolverBuilder</tt> class.  When a
+<tt>MoochoPack::ThyraModelEvaluatorSolver</tt> object is used to build a
+driver program, it can add options to the
+<tt>Teuchos::CommandLineProcessor</tt> object through the function
+<tt>Thyra::DefaultRealLinearSolverBuilder::setupCLP()</tt> (see <tt><a
+href="./tt>NLPThyraEpetraModelEval4DOptMain_8cpp-example.html">
+NLPThyraEpetraModelEval4DOptMain.cpp</a></tt>).  The command-line arguments
+<tt>--linear-solver-params-file</tt> and <tt>--extra-linear-solver-params</tt>
+are added which are used to read in parameters for the Stratimikos-wrapped
+linear solvers in XML format.
+
+The format for the linear solver parameters file is XML and the list of all of
+the valid options that the Stratimikos "Facade" class accepts can be found in
+the documentation for the <tt>Thyra::DefaultRealLinearSolverBuilder</tt> class
+itself.  An example of a linear solver options input file that specifies the
+use of the %Amesos solver <tt>Amesos_Klu</tt> is shown below:
+
+\verbinclude _amesos.klu.xml
+
+The XML input for the linear solver parameters can be read from a file using
+<tt>--linear-solver-params-file</tt> and/or from the command-line itself using
+the <tt>--extra-linear-solver-params</tt> argument.  Note that any parameters
+specified by the <tt>--extra-linear-solver-params</tt> argument will append
+and overrite those read in from the file specified by the
+<tt>--linear-solver-params-file</tt> argument.  If the argument
+<tt>--linear-solver-params-file</tt> is missing, then a set of internal
+options is looked for instead.
+
+\subsubsection moocho_quickstart_moocho_input_options_sec MOOCHO input options
+
+The input for the MOOCHO options currently uses a completely different system
+than for linear solver parameters used by Stratimikos.  The class
+<tt>OptionsFromStreamPack::OptionsFromStream</tt> is used to read in MOOCHO
+options from a text string (or a file) and is used to represent the options
+data base.  The function
+<tt>MoochoPack::MoochoSolver::setup_command_line_processor()</tt> can be used
+to set the commandline arguments <tt>--moocho-options-file</tt> and
+<tt>--moocho-extra-options</tt> to read in MOOCHO options.  The format of the
+options file and a listing, with documentation, of all of the valid MOOCHO
+options is shown \ref Moocho_all_opts "here".
+
+An example of an options file showing some of the common options that a user
+might want to set are shown below:
+
+\verbinclude Moocho.sample.opt
+
+<!-- Note, the above options file is tested automatically by
+moocho/example/generate-sample-output.pl.stub.in! -->
+
+For more detailed documentation on what each of these options mean and more,
+see the full listing of the options \ref Moocho_all_documentation_opts "here".
+
+The argument <tt>--moocho-options-file</tt> is used to read in an set of
+MOOCHO options as shown in the format above from a file.  If the argument
+<tt>--moocho-options-file</tt> is missing, then a file with the name
+"Moocho.opt" is looked for in the current directory.  If this file is not
+found, then a warning is printed and a default set of options are used.
+
+The argument <tt>--moocho-extra-options</tt> can be used to specify MOOCHO
+options directly on the commnadline in a slightly more terse format than the
+format of a MOOCHO options file.  For example, the command-line equivalent to
+a subset of the options set in the above example MOOCHO options file is:
+
+\verbatim
+
+--moocho-extra-options="\
+  NLPSolverClientInterface{max_iter=20,max_run_time=2.0,opt_tol=1e-2,feas_tol=1e-7\
+    ,journal_output_level= PRINT_ALGORITHM_STEPS\
+    ,null_space_journal_output_level=PRINT_ITERATION_QUANTITIES\
+    ,journal_print_digits=10,calc_conditioning=true,calc_matrix_norms=true\
+    ,calc_matrix_info_null_space_only=true}\
+  :DecompositionSystemStateStepBuilderStd{\
+    null_space_matrix=EXPLICIT,range_space_matrix=ORTHOGONAL}\
+  :NLPAlgoConfigMamaJama{quasi_newton=BFGS,line_search_method=FILTER}"
+\endverbatim
+
+<!-- ToDo: Find an automated way to test the above commandline options! -->
+
+The options specified in the <tt>--moocho-extra-options</tt> argument will
+append and override those read in from a MOOCHO input file specified by the
+<tt>--moocho-options-file</tt> argument.
+
+\subsubsection moocho_quickstart_solver_output_sec MOOCHO algorithm output
+
+When a MOOCHO optimization algorithm is run, by default, several different
+types of ouput are generated.  By default, output is sent to the console
+(i.e. standard out) and to three different files: <tt>MoochoSummary.out</tt>,
+<tt>MoochoSummary.out</tt>, and <tt>MoochoJournal.out</tt>.  These four types
+of output provide different types of information about the MOOCHO algorithm.
+
+To demonstrate the output files, the example program <tt><a
+href="./tt>NLPThyraEpetraModelEval4DOptMain_8cpp-example.html">
+NLPThyraEpetraModelEval4DOptMain.cpp</a></tt> is used since it is fairly
+simple but can be used to generate more interesting output files.  The output
+from running MOOCHO on a <tt>Thyra::ModelEvaluator</tt>-based NLP looks very
+similar to running on one based on the more general NLP interface.
+
+The example program <tt>NLPThyraEpetraModelEval4DOpt.exe</tt> when run with
+the commandline arguments
+
+\verbinclude ExampleNLPBanded.cmndline.input.txt
+
+with the above sample <tt>\ref Moocho_sample_opt "Moocho.opt"</tt> file,
+creates the sample output:
+
+<ul>
+<li>\ref moocho_console_sample_out_grp
+<li>\ref moocho_algo_sample_out_grp
+<li>\ref moocho_summary_sample_out_grp
+<li>\ref moocho_journal_sample_out_grp
+</ul>
+
+Each of these different types of output is described below.
+
+<b>Console Output</b>
+
+Console outputting is generated by a default
+<tt>IterationPack::AlgorithmTracker</tt> subclass subclass object of type
+<tt>MoochoPack::MoochoTrackerConsoleStd</tt>.  This output is designed to
+approximately fit in an 80 character wide console.  Here is the output that is
+generated for this test program:
+
+\verbinclude ExampleNLPBanded.sample.out
+
+ToDo: Finish describing what is going on!
+
+<b>Algorithm Configuration Output (MoochoAlgo.out)</b>
+
+<b>Algorithm Summary and Timing Output (MoochoSummary.out)</b>
+
+<b>Algorithm Journal Output (MoochoJournal.out)</b>
+
+<!--
+ToDo: Mention input of initial guess and output of solution for Thyra-based
+problems.
+-->
 
 \section moocho_nlps_sec Representing Nonlinear Programs for MOOCHO to Solve
 
@@ -1033,3 +1209,77 @@ solvers for nearly any <tt>Epetra_RowMatrix</tt> object.
 /** \example NLPThyraEpetraModelEval4DOptMain.cpp */
 
 /** \example NLPThyraEpetraAdvDiffReactOptMain.cpp */
+
+/** \defgroup moocho_option_sample_grp Sample MOOCHO Options File
+
+Below is a sample MOOCHO options file for some of the typical options that a
+user might want to manipulate.  The full set of options with documentation are
+shown \ref Moocho_all_documentation_opts "here".
+
+\verbinclude Moocho.sample.opt
+
+*/
+
+/** \defgroup moocho_console_sample_out_grp Sample MOOCHO Console Output
+
+Below is the console output generated by the program
+<tt>ExampleNLPBanded.exe</tt> using the commandline arguments
+
+\verbinclude ExampleNLPBanded.cmndline.input.txt
+
+given the <tt>Moocho.opt</tt> options file shown
+\ref moocho_option_sample_grp "here".
+
+Here is the console output:
+
+\verbinclude ExampleNLPBanded.sample.out
+
+*/
+
+/** \defgroup moocho_algo_sample_out_grp Sample MOOCHO Algorithm Configuration Output (MoochoAlgo.out)
+
+Below is the output file <tt>MoochoAlgo.out</tt> from the program
+<tt>ExampleNLPBanded.exe</tt> using the commandline arguments
+
+\verbinclude ExampleNLPBanded.cmndline.input.txt
+
+given the <tt>Moocho.opt</tt> options file shown
+\ref moocho_option_sample_grp "here".
+
+Here is the output file <tt>MoochoAlgo.out</tt>:
+
+\verbinclude MoochoAlgo.ExampleNLPBanded.sample.out
+
+*/
+
+/** \defgroup moocho_summary_sample_out_grp Sample MOOCHO Algorithm Summary Output (MoochoSummary.out)
+
+Below is the output file <tt>MoochoSummary.out</tt> from the program
+<tt>ExampleNLPBanded.exe</tt> using the commandline arguments
+
+\verbinclude ExampleNLPBanded.cmndline.input.txt
+
+given the <tt>Moocho.opt</tt> options file shown
+\ref moocho_option_sample_grp "here".
+
+Here is the output file <tt>MoochoSummary.out</tt>:
+
+\verbinclude MoochoSummary.ExampleNLPBanded.sample.out
+
+*/
+
+/** \defgroup moocho_journal_sample_out_grp Sample MOOCHO Algorithm Journal Output (MoochoJournal.out)
+
+Below is the output file <tt>MoochoJournal.out</tt> from the program
+<tt>ExampleNLPBanded.exe</tt> using the commandline arguments
+
+\verbinclude ExampleNLPBanded.cmndline.input.txt
+
+given the <tt>Moocho.opt</tt> options file shown
+\ref moocho_option_sample_grp "here".
+
+Here is the output file <tt>MoochoJournal.out</tt>:
+
+\verbinclude MoochoJournal.ExampleNLPBanded.sample.out
+
+*/

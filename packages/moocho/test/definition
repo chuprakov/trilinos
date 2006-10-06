@@ -2,6 +2,11 @@
 # Test cases for all of MOOCHO
 #
 
+(DOCUMENTATION) {
+    TESTS = ../example/generate-sample-output.pl ../thyra/example/generate-sample-output.pl;
+    COMM = MPI(1),SERIAL;
+}
+
 (FRAMEWORK, INSTALL) {
     TESTS = ./MoochoUtilities/test_stop_watch.exe;
     COMM = SERIAL;

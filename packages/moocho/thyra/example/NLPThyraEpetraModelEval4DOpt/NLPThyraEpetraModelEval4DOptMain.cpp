@@ -1,9 +1,6 @@
-// //////////////////////////////////////////////////////////////////
-// NLPThyraEpetraModelEval4DOptMain.cpp
-
 #include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
 #include "EpetraModelEval4DOpt.hpp"
-#include "MoochoPack_MoochoSolver.hpp"
+#include "MoochoPack_ThyraModelEvaluatorSolver.hpp"
 #include "Thyra_DefaultModelEvaluatorWithSolveFactory.hpp"
 #include "Thyra_DefaultRealLinearSolverBuilder.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
@@ -12,18 +9,12 @@
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_StandardCatchMacros.hpp"
 
-/* * \mainpage Example optimization problem using <tt>Thyra::ModelEvaluator</tt> and <tt>EpetraExt::ModelEvaluator</tt>.
-
-ToDo: Finish documentation!
-
-*/
-
 int main( int argc, char* argv[] )
 {
-  using MoochoPack::MoochoSolver;
-  using NLPInterfacePack::NLPFirstOrderThyraModelEvaluator;
   using Teuchos::CommandLineProcessor;
   typedef AbstractLinAlgPack::value_type  Scalar;
+  using MoochoPack::MoochoSolver;
+  using MoochoPack::ThyraModelEvaluatorSolver;
 
   bool dummySuccess = true;
 
@@ -35,6 +26,7 @@ int main( int argc, char* argv[] )
   try {
 
     Thyra::DefaultRealLinearSolverBuilder lowsfCreator;
+    ThyraModelEvaluatorSolver             solver;
   
     //
     // Get options from the command line
@@ -58,12 +50,12 @@ int main( int argc, char* argv[] )
     Scalar       xL1         = -1e+50;
     Scalar       xU0         = +1e+50;
     Scalar       xU1         = +1e+50;
-    bool         do_sim      = false;
     bool         externalFactory = false;
 
     CommandLineProcessor  clp(false); // Don't throw exceptions
 
     lowsfCreator.setupCLP(&clp);
+    solver.setupCLP(&clp);
 
     clp.setOption( "xt0", &xt0 );
     clp.setOption( "xt1", &xt1 );
@@ -82,9 +74,8 @@ int main( int argc, char* argv[] )
     clp.setOption( "xL1", &xL1 );
     clp.setOption( "xU0", &xU0 );
     clp.setOption( "xU1", &xU1 );
-    clp.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
     clp.setOption( "external-lowsf", "internal-lowsf", &externalFactory
-                   ,"Determines of the Thyra::LinearOpWithSolveFactory is used externally or internally to the Thyra::EpetraModelEvaluator object"  );
+                   ,"Determines if the Thyra::LinearOpWithSolveFactory is used externally or internally to the Thyra::EpetraModelEvaluator object"  );
  
     CommandLineProcessor::EParseCommandLineReturn
       parse_return = clp.parse(argc,argv,&std::cerr);
@@ -127,27 +118,19 @@ int main( int argc, char* argv[] )
       epetraThyraModel->initialize(epetraModel,lowsFactory);
       thyraModel = epetraThyraModel;
     }
-
-    // ToDo: Specify an initial guess not from the Thyra::EpetraModelEvaluator object
-    
-    NLPFirstOrderThyraModelEvaluator nlp(
-      thyraModel
-      ,do_sim ? -1 : 0
-      ,do_sim ? -1 : 0
-      );
     
     //
     // Solve the NLP
     //
+    
+    // Set the model
+    solver.setModel(epetraThyraModel);
 
-    // Create the solver object
-    MoochoSolver  solver;
-
-    // Set the NLP
-    solver.set_nlp( Teuchos::rcp(&nlp,false) );
+    // Read the initial guess if one exists
+    solver.readInitialGuess(out.get());
 
     // Solve the NLP
-    const MoochoSolver::ESolutionStatus	solution_status = solver.solve_nlp();
+    const MoochoSolver::ESolutionStatus	solution_status = solver.solve();
 
     // Write the parameters that where read
     lowsfCreator.writeParamsFile(*lowsFactory);

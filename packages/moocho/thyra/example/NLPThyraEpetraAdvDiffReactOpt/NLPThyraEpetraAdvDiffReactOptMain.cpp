@@ -1,4 +1,5 @@
 #include "GLpApp_AdvDiffReactOptModelCreator.hpp"
+#include "MoochoPack_ThyraModelEvaluatorSolver.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Thyra_SpmdMultiVectorFileIO.hpp"
 #include "Thyra_DefaultRealLinearSolverBuilder.hpp"
@@ -6,7 +7,6 @@
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_StandardCatchMacros.hpp"
 #include "Teuchos_VerboseObject.hpp"
-#include "MoochoPack_ThyraModelEvaluatorSolver.hpp"
 #ifdef HAVE_MPI
 #  include "Epetra_MpiComm.h"
 #else
@@ -43,9 +43,11 @@ int main( int argc, char* argv[] )
   try {
   
     // Create the solver object
-    GLpApp::AdvDiffReactOptModelCreator     epetraModelCreator;
+    GLpApp::AdvDiffReactOptModelCreator     advDiffReacModelCreator;
     Thyra::DefaultRealLinearSolverBuilder   lowsfCreator;
     ThyraModelEvaluatorSolver               solver;
+    solver.insertStateElimCommandLineOptions(true);
+    solver.insertFiniteDiffCommandLineOptions(true);
 
     //
     // Get options from the command line
@@ -59,7 +61,7 @@ int main( int argc, char* argv[] )
     clp.throwExceptions(false);
     clp.addOutputSetupOptions(true);
 
-    epetraModelCreator.setupCLP(&clp);
+    advDiffReacModelCreator.setupCLP(&clp);
     lowsfCreator.setupCLP(&clp);
     solver.setupCLP(&clp);
 
@@ -119,7 +121,7 @@ int main( int argc, char* argv[] )
     *out << "\nCreate the GLpApp::AdvDiffReactOptModel wrapper object ...\n";
     
     Teuchos::RefCountPtr<GLpApp::AdvDiffReactOptModel>
-      epetraModel = epetraModelCreator.createModel(comm);
+      epetraModel = advDiffReacModelCreator.createModel(comm);
     epetraModel->setOStream(journalOut);
     if(dump_all) epetraModel->setVerbLevel(Teuchos::VERB_EXTREME);
 
@@ -161,6 +163,7 @@ int main( int argc, char* argv[] )
     // Set the model
     solver.setModel(epetraThyraModel);
 
+    // Read the initial guess if one exists
     solver.readInitialGuess(out.get());
 
     // Solve the NLP

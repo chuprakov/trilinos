@@ -93,7 +93,9 @@ const char* fdMethodTypeNames[numFDMethodTypes] =
 namespace MoochoPack {
 
 ThyraModelEvaluatorSolver::ThyraModelEvaluatorSolver()
-  :do_sim_(false)
+  :insertStateElimCommandLineOptions_(false)
+  ,insertFiniteDiffCommandLineOptions_(false)
+  ,do_sim_(false)
   ,use_direct_(false)
   ,use_black_box_(false)
   ,use_finite_diff_(false)
@@ -116,16 +118,20 @@ void ThyraModelEvaluatorSolver::setupCLP(
   solver_.setup_commandline_processor(clp);
   clp->setOption( "do-sim", "do-opt",  &do_sim_, "Flag for if only the square constraints are solved" );
   clp->setOption( "use-direct", "use-first-order",  &use_direct_, "Flag for if we use the NLPDirect or NLPFirstOrderInfo implementation." );
-  clp->setOption( "black-box", "all-at-once",  &use_black_box_, "Flag for if we do black-box NAND or all-at-once SAND." );
-  clp->setOption( "use-finite-diff", "no-use-finite-diff",  &use_finite_diff_, "Flag for if we are using finite differences or not." );
-  clp->setOption(
-    "finite-diff-type", &fd_method_type_
-    ,numFDMethodTypes,fdMethodTypeValues,fdMethodTypeNames
-    ,"The type of finite differences used [---use-finite-diff]"
-    );
-  clp->setOption( "fd-step-len", &fd_step_len_, "The finite-difference step length ( < 0 determine automatically )." );
-  clp->setOption( "fwd-newton-tol", &fwd_newton_tol_, "Nonlinear residual tolerance for the forward Newton solve." );
-  clp->setOption( "fwd-newton-max-iters", &fwd_newton_max_iters_, "Max number of iterations for the forward Newton solve." );
+  if(insertStateElimCommandLineOptions()) {
+    clp->setOption( "black-box", "all-at-once",  &use_black_box_, "Flag for if we do black-box NAND or all-at-once SAND." );
+    clp->setOption( "fwd-newton-tol", &fwd_newton_tol_, "Nonlinear residual tolerance for the forward Newton solve." );
+    clp->setOption( "fwd-newton-max-iters", &fwd_newton_max_iters_, "Max number of iterations for the forward Newton solve." );
+  }
+  if(insertFiniteDiffCommandLineOptions()) {
+    clp->setOption( "use-finite-diff", "no-use-finite-diff",  &use_finite_diff_, "Flag for if we are using finite differences or not." );
+    clp->setOption(
+      "finite-diff-type", &fd_method_type_
+      ,numFDMethodTypes,fdMethodTypeValues,fdMethodTypeNames
+      ,"The type of finite differences used [---use-finite-diff]"
+      );
+    clp->setOption( "fd-step-len", &fd_step_len_, "The finite-difference step length ( < 0 determine automatically )." );
+  }
   clp->setOption( "x-guess-file", &stateGuessFileBase_, "Base file name to read the guess of the state x from." );
   clp->setOption( "scale-x-guess", &scaleStateGuess_, "Amount to scale the guess for x read in by --x-guess-file." );
   clp->setOption( "p-guess-file", &paramGuessFileBase_, "Base file name to read the guess of the parameters p from." );

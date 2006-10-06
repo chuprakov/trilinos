@@ -26,6 +26,15 @@
 # ************************************************************************
 # @HEADER
 
+all-local: generate-sample-output.pl
+	@echo ""
+	@echo "Trilinos package moocho subdirectory thyra/example built successfully."
+	@echo ""
+
+generate-sample-output.pl : generate-sample-output.pl.stub
+	cp generate-sample-output.pl.stub generate-sample-output.pl
+	chmod a+x generate-sample-output.pl
+
 if ENABLE_MOOCHO_STRATIMIKOS
 if ENABLE_EPETRAEXT_THYRA
 MOOCHO_STRATIMIKOS_EXAMPLES = NLPThyraEpetraModelEval4DOpt NLPThyraEpetraAdvDiffReactOpt

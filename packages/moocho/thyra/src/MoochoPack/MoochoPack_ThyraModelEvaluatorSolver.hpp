@@ -34,6 +34,7 @@
 #include "Thyra_DirectionalFiniteDiffCalculator.hpp"
 #include "Thyra_DefaultNominalBoundsOverrideModelEvaluator.hpp"
 #include "Thyra_DefaultFinalPointCaptureModelEvaluator.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 
@@ -44,6 +45,12 @@ namespace MoochoPack {
  */
 class ThyraModelEvaluatorSolver {
 public:
+
+  /** \brief . */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, insertStateElimCommandLineOptions )
+
+  /** \brief . */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, insertFiniteDiffCommandLineOptions )
   
   /** \brief . */
   ThyraModelEvaluatorSolver();

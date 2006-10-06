@@ -1,0 +1,15 @@
+/*! \mainpage MOOCHO/Thyra Adapter Software
+
+This doxygen collection documents a set of code that allows MOOCHO to solve
+optimization problems presented as <tt>Thyra::ModelEvaluator</tt> and objects.
+
+\section moocho_thyra_links_sec Links to other documentation collections
+
+<ul>
+
+<li><b><a href="../../../doc/html/index.html">Main MOOCHO Documentatation Page</a></b>.
+
+</ul>
+
+*/
+

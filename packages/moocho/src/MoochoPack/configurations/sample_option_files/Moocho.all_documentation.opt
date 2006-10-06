@@ -26,8 +26,8 @@ options_group MoochoSolver {
 *    workspace_MB = -1.0; *** [default]
      *** (+-dbl) If > 0, givens the number of megabytes that are allocated for
      *** temporary workspace for automatic arrays.  If < 0 then the
-     *** this will be determined internaly.  This value should be set by the
-     *** user for whatever is appropriate for the computing enviornment.  See
+     *** this will be determined internally.  This value should be set by the
+     *** user for whatever is appropriate for the computing environment.  See
      *** the summary output for statistics on memory allocation usage when the
      *** algorithm finishes.  Example values:
      *** -1.0 : (< 0) Allow the algorithm to decide how much to allocate.
@@ -36,7 +36,7 @@ options_group MoochoSolver {
 *    obj_scale = 1.0; *** [default]
      *** (+-dbl) Scale for the objective function.  This can have a dramatic impact
      *** on the behavior of the algorithm in some cases.  Changing this value
-     *** does a lot to change the wait between minimizing the objective and converging
+     *** does a lot to change the weight between minimizing the objective and converging
      *** the constraints.  Example values:
      *** 1e-8  : Really scale the objective down a lot!
      *** 1.0   : Leave the objective unscaled [default].
@@ -47,10 +47,10 @@ options_group MoochoSolver {
      *** If true then the NLP will be tested at the initial point.  The
      *** vector spaces (see options_group VectorSpaceTester),
      *** the NLP interface (see options_group NLPTester), and the gradients
-     *** (see options_group NLPDirectTester and options_group
-     *** NLPFirstOrderInfoTester).  With all of the default options in place
+     *** (see options_group NLPDirectTester and NLPFirstOrderInfoTester)
+     *** will all be tested.  With all of the default options in place
      *** these tests are fairly cheap so it is recommended that you perform
-     *** these test when first getting started.
+     *** these tests when first getting started.
 
 *    console_outputting = true; *** [default]
 *    console_outputting = false;
@@ -70,7 +70,7 @@ options_group MoochoSolver {
 
 *    algo_outputting = true; *** [default]
 *    algo_outputting = false;
-     *** If true, then algo output is proceed to the algo_out stream
+     *** If true, then an algorithm description is sent to the algo_out stream
      *** (which is the file 'MoochoAlgo.out' by default) 
 
 *    print_algo = true; *** [default]
@@ -94,7 +94,7 @@ options_group MoochoSolver {
 *    generate_stats_file = false; *** [default]
      *** If true, then a MoochoTrackerStatsStd object will be used to generate
      *** statistics about the solution process to an NLP.  The track object
-     *** will overwritte the file 'MoochoStats.out' in the current directory.
+     *** will overwrite the file 'MoochoStats.out' in the current directory.
 
 *    print_opt_grp_not_accessed = true; *** [default]
 *    print_opt_grp_not_accessed = false;
@@ -102,15 +102,15 @@ options_group MoochoSolver {
      *** If true, then the options groups that are specified but are not read by
      *** some software entity are printed to the algo_out stream (the file 'MoochoAlgo.out'
      *** by default).  This may help you catch problems associated with spelling the name of
-     *** an options group inproperly and then having its default options used instead of the
+     *** an options group improperly and then having its default options used instead of the
      *** options that you set.  Note that some options groups are only looked for depending
      *** on option values from other options groups.
 
 *    configuration = mama_jama; *** [default]
 *    configuration = interior_point;
      *** decides which configuration object will be used:
-	 ***   mama_jama      : standard reduced Space SQP configuration
-	 ***   interior_point : configuration for an interior point method
+     ***   mama_jama      : standard reduced-space SQP configuration
+     ***   interior_point : configuration for a simple reduced-space interior point method
 
 }
 
@@ -123,33 +123,36 @@ options_group MoochoSolver {
 ***
 *** These include basic algorithmic control parameters.
 ***
+*** Note that an algorithm can be interrupted at any time
+*** by pressing Ctrl+C.
+***
 options_group NLPSolverClientInterface {
 
-*    max_iter = 1000;  *** (default?)
+*    max_iter = 1000;  *** [default]
      *** (+int) Maximum number of SQP iterations allowed.
 
-*    max_run_time = 1e+10; *** In minutes (default?)
+*    max_run_time = 1e+10; *** In minutes [default]
      *** (+dbl) Maximum runtime for the SQP algorithm (in minutes).
      *** The default is to run forever.
 
-*    opt_tol = 1e-6;  *** (default?)
-     *** (+dbl) Convergence tolerence for (scaled) KKT linear dependence of gradinets.
-     *** This is usually the hardest error to minimize.  The exact definition of this tolerance
-     *** is depends on algorithms use and may use different scalings (see other options and
-     *** outputed algorithm description for details).  Example values:
+*    opt_tol = 1e-6;  *** [default]
+     *** (+dbl) Convergence tolerance for (scaled) KKT linear dependence of gradients.
+     *** This is usually the hardest error to reduce.  The exact definition of this tolerance
+     *** depends on the algorithms used and may use different scalings (see other options and
+     *** outputted algorithm description for details).  Example values:
      *** 0.0   : The algorithm will never converge except in trivial cases.
      *** 1e-6  : Only converge when opt_kkt_err is below this value [default].
      *** 1e+50 : (big number) Converged when any of the other tolerances are satisfied.
 
-*    feas_tol = 1e-6;  *** (default?)
-     *** (+dbl) Convergence tolerance for (scaled) feasibility of the equality constriants
+*    feas_tol = 1e-6;  *** [default]
+     *** (+dbl) Convergence tolerance for (scaled) feasibility of the equality constraints
      *** ||c(x)||inf.  The norm of the constraints ||c(x)||inf may be scaled (see other
-     *** options and the outputed algorithm description).  Example values:
+     *** options and the outputted algorithm description).  Example values:
      *** 0.0   : Never converge the algorithm except in trivial cases.
      *** 1e-6  : Only converge when feas_kkt_err is below this value [default].
      *** 1e+50 : (big number)  Converged when any of the other tolerances are satisfied.
 
-*    step_tol = 1e-2;  *** (default?)
+*    step_tol = 1e-2;  *** [default]
      *** (+dbl) Convergence tolerance for (scaled) step size ||x_k(+1)-x_k||inf.
      *** This tolerance is usually scaled by x is some way (see other output algorithm
      *** description).  Example values:
@@ -166,11 +169,11 @@ options_group NLPSolverClientInterface {
      *** [MoochoSolver::journal_outputting == true]
      *** This option determines the type and amount of output to the journal_out stream
      *** (the file 'MoochoJournal.out' by default) that is generated while the algorithm runs.
-     ***  In general, each increasing value includes the same output from the lower options
-     *** (i.e. PRINT_VECTORS includes all the output for PRINT_ACTIVE_SET and more).   Above
-     *** the identifer iter is the number of total rSQP iterations (see max_iter above), nact
-     *** is the total number of active inequality constriants, n is the total number
-     *** of NLP variables and m is the total number of NLP constraints.  The higer output
+     *** In general, each increasing value includes the same output from the lower options
+     *** (i.e. PRINT_VECTORS includes all the output for PRINT_ACTIVE_SET and more).  Above,
+     *** the identifier 'iter' is the number of total rSQP iterations (see max_iter above), 'nact'
+     *** is the total number of active inequality constraints, 'n' is the total number
+     *** of NLP variables, and 'm' is the total number of equality constraints.  The higher output
      *** values are generally used for debugging.  For most problems the value
      *** PRINT_ALGORITHM_STEPS is usually the most appropriate and will give a great deal
      *** of information about the algorithm without generating excessive output.
@@ -180,7 +183,6 @@ options_group NLPSolverClientInterface {
 *    null_space_journal_output_level = PRINT_ACTIVE_SET;           * O(iter*nact) output to journal  
 *    null_space_journal_output_level = PRINT_VECTORS;              * O(iter*(n-m)) output to journal   (lots!)
 *    null_space_journal_output_level = PRINT_ITERATION_QUANTITIES; * O(iter*(n-m)^2) output to journal (big lots!)
-
      *** [MoochoSolver::journal_outputting == true]
      *** This option determines the type and amount of output to the journal_out stream
      *** (the file 'MoochoJournal.out' by default) that is generated for quantities in the
@@ -188,11 +190,11 @@ options_group NLPSolverClientInterface {
      *** set to DEFAULT then it will default to the value of journal_output_level.
      *** If set to some other value then this value overrides journal_output_level
      *** for quantities in the null space.  For problems where the null space is small but
-     *** the full space is much larger, setting value of null_space_journal_output_level higher
+     *** the full space is much larger, setting the value of null_space_journal_output_level higher
      *** than journal_output_level can yield significantly more information while not generating
      *** too much output or impacting runtime to any great extent.
 
-*    journal_print_digits = 6;  *** (default?)
+*    journal_print_digits = 6;  *** [default]
      *** [MoochoSolver::journal_outputting == true]
      *** (+int) Number of decimal significant figures to print to journal_out stream.
      *** With a higher number more significant figures will be printed.  This may be useful
@@ -200,32 +202,33 @@ options_group NLPSolverClientInterface {
      *** precision, 18 is usually the maximum number of unique decimal significant figures.
 
 *    check_results = true;  *** (costly?)
-*    check_results = false; *** (default?)
-     *** If true then all computation that can be reasonably checked will be at runtime.
+*    check_results = false; *** [default]
+     *** If true then all computation that can be reasonably checked will be checked at runtime.
      *** When all of the other default testing options are used, this overhead usually will
-     *** not dominiate the cost of the algorithm so if speed is not critical then it is a
-     *** good idea to turn this testing on.  If your problem is not solving then you should
-     *** definitly try turning this on and try to see it will catch any bugs.  However,
-     *** for the fastest possible execution you should set this to false.
+     *** not dominate the cost of the algorithm so if speed is not critical then it is a
+     *** good idea to turning testing on.  If your problem is not solving then you should
+     *** definitely try turning this on and try to see if it will catch any errors.  However,
+     *** for the fastest possible execution you should set this to 'false'.
 
 *    calc_conditioning = true;  *** (costly?)
-*    calc_conditioning = false; *** (default?)
-     *** If true then estimates of the condition numbers of all of the imporant nonsingular
+*    calc_conditioning = false; *** [default]
+     *** If true then estimates of the condition numbers of all of the important nonsingular
      *** matrices used in the algorithm will be computed and printed.  Note that this can be
      *** a fairly expensive operation (especially when iterative solvers are being used)
-     *** so it should be used with care.  Warning! see the option calc_matrix_info_null_space_only.
+     *** so it should be used with care.  Warning! see the option calc_matrix_info_null_space_only
+     *** as it affects the behavior of this option.
 
 *    calc_matrix_norms = true;  *** (costly?)
-*    calc_matrix_norms = false; *** (default?)
-     *** If true, then estimates of the matrix norms of all of the imporant
+*    calc_matrix_norms = false; *** [default]
+     *** If true, then estimates of the matrix norms of all of the important
      *** matrices used in the algorithm will be computed and printed.  Note that this can be
      *** a fairly expensive operation (especially if iterative solvers are being used) so
      *** it should be used with care.  Warning! see the option calc_matrix_info_null_space_only.
 
 *    calc_matrix_info_null_space_only = true;  *** (costly?)
-*    calc_matrix_info_null_space_only = false; *** (default?)
+*    calc_matrix_info_null_space_only = false; *** [default]
      *** If true, then the options calc_conditioning and calc_matrix_norms will only
-     *** apply to quantities in the null space and not the quansi-range space
+     *** apply to quantities in the null space and not the quasi-range space
      *** or the full space for which these options will be considered to be false.
 
 }
@@ -280,7 +283,7 @@ options_group VectorSpaceTester {
 
 ****************************************************************
 *** Options for the finite difference derivative tester for a 
-*** direct sensistivity NLP.
+*** direct sensitivity NLP.
 ***
 *** See options_group NLPDirectTester in
 *** Moocho.opt.NLPAlgoConfigMamaJama
@@ -295,8 +298,8 @@ options_group VectorSpaceTester {
 ***
 
 ****************************************************************
-*** Options for the defautl BasisSystem factory object for
-*** the constriants of the Jacobian used by
+*** Options for the default BasisSystem factory object for
+*** the constraints of the Jacobian used by
 *** NLPSerialPreprocessExplJac
 ***
 options_group BasisSystemFactoryStd {
@@ -305,15 +308,14 @@ options_group BasisSystemFactoryStd {
 *    direct_linear_solver = MA28;    *** Use Harwell MA28 (see options_group DirectSparseSolverMA28)
 *    direct_linear_solver = MA48;    *** Not supported yet
 *    direct_linear_solver = SUPERLU; *** Use SuperLU (see options_group DirectSparseSolverSuperLU)
-     *** Direct fortran compatible linear solvers for the  basis of the Jacobian.
+     *** Direct fortran-compatible linear solver for the  basis of the Jacobian.
      *** When a general NLP is being solved this selects the sparse linear solver used.
-     *** When the user specializes the BasisSystem object this option generally means noting.
+     *** If the user specializes the BasisSystem object this option might be meaningless.
 
 }
 
 *****************************************************************
-*** Change how the penalty parameters for the modifed
-*** L1 merit function are increased.
+*** Set options for the MA28 solver.
 ***
 *** [BasisSystemFactoryStd::direct_linear_solver == MA28]
 ***
@@ -332,7 +334,7 @@ options_group DirectSparseSolverMA28 {
 
 *    u = 0.1; *** [default]
      *** (+dbl) Control parameter (0 <= u <= 1.0) that us used
-     *** to balance 
+     *** to balance sparsity and accuracy.
      *** Example values:
      ***    0.0 : Pivot for sparsity only
      ***    0.1 : Balance sparsity and stability
@@ -344,7 +346,9 @@ options_group DirectSparseSolverMA28 {
 
 *    nsrch = 4; *** [default]
      *** (+int) Number of columns that MA28 will search to find
-     *** pivots to try to reduce fill-in.
+     *** pivots to try to reduce fill-in.  Warning, setting a large
+     *** value for 'nsrch' can greatly slow down the initial
+     *** rSQP iteration.
      *** Example values:
      ***    0  : No columns are searched
      ***    4  : Four columns are searched
@@ -357,7 +361,7 @@ options_group DirectSparseSolverMA28 {
 *    print_ma28_outputs = true;
 *    print_ma28_outputs = false; *** [default]
      *** If true, then the values of the MA28 output will
-     *** be dumped to the output stream
+     *** be dumped to the journal output stream
      *** (if journal_output_level >= PRINT_ALGORITHM_STEPS).
 
 *    output_file_name = NONE; *** [default]
@@ -374,7 +378,7 @@ options_group DirectSparseSolverMA28 {
 
 **********************************************************************************
 *** All of these options can be used with any NLPAlgoConfig
-*** subclass that using the standard DecompositionSystemStateStepBuilderStd
+*** subclass that uses the standard DecompositionSystemStateStepBuilderStd
 *** class.
 ***
 *** This file will be maintained and will include every option that
@@ -390,14 +394,14 @@ options_group DirectSparseSolverMA28 {
 ***
 options_group IterationPack_Algorithm {
 
-*   interrupt_file_name = "";             *** [default] Does not check for interrupt
+*   interrupt_file_name = "";             *** Does not check for interrupt file [default]
 *   interrupt_file_name = "interrupt.in"; *** checks for this file in current directory
-    *** This specifys a file name that is looked for at the end of every
+    *** This specifies a file name that is looked for at the end of every
     *** step in a running algorithm.  If this file exists, it is read for
     *** algorithm termination criteria (see the class IterationPack::Algorithm
-    *** and the option interrupt_file_name).  Using a file to interrupt allows
-    *** algorithms to be gracefully terminated when run in batch mode or when
-    *** access to standard out or standard in is just not possible.
+    *** and the option interrupt_file_name).  Using a file to interrupt an running
+    *** algorithm allows the algorithm to be gracefully terminated when run in batch
+    *** mode or when access to STDOUT or STDIN is not possible.
 
 }
 
@@ -410,15 +414,17 @@ options_group DecompositionSystemStateStepBuilderStd {
 *** Variable Reduction range/null space decomposition
 
 *    null_space_matrix = AUTO;         *** Let the solver decide [default]
-*    null_space_matrix = EXPLICIT;     *** Store D = -inv(C)*N explicitly
-*    null_space_matrix = IMPLICIT;     *** Perform operations implicity with C, N
+*    null_space_matrix = EXPLICIT;     *** Compute and store D = -inv(C)*N explicitly
+*    null_space_matrix = IMPLICIT;     *** Perform operations implicitly with C, N (requires adjoints)
      *** This option is used to determine the type of implementation to use for
      *** the variable reduction null space matrix Z = [ -inv(C)*N; I ].
      ***    AUTO     : Let the algorithm decide.  The algorithm will take into
      ***               account the number of degrees of freedom in the problem
      ***               (n-r), the number of active inequality constraints and
-     ***               other issues when deciding what implementation to use.
-     ***    EXPLICIT : The matrix D = -inv(C)*N is formed expliciting an us used
+     ***               other issues when deciding what implementation to use within
+     ***               each iteration.  Warning!  These automatic tests are only
+     ***               affective when a direct solver for C is used.
+     ***    EXPLICIT : The matrix D = -inv(C)*N is computed and formed explicitly and is used
      ***               to form Z = [ D; I ].
      ***    IMPLICIT : The matrix D = -inv(C)*N is not formed explicitly but is
      ***               instead used implicitly in matrix-vector and other
@@ -431,24 +437,29 @@ options_group DecompositionSystemStateStepBuilderStd {
      ***    AUTO      : Let the algorithm decide.  The algorithm will take into
      ***                account the number of degrees of freedom in the problem
      ***                (n-r) and other issues when deciding what representation to use.
+     ***                Warning!  These automatic tests are only affective when a direct
+     ***                solver for C is used.
      ***   COORDINATE : Use the coordinate decomposition Y = [ I; 0 ]
      ***   ORTHOGONAL : Use the orthogonal decomposition Y = [ I; N'*inv(C') ].
-     ***                Warning!  For general NLPs this option costs approximatly
-     ***                O((n-r)^2*r) flops per rSQP iteration and will dominate
-     ***                the runtime for large (n-r).
+     ***                Warning!  For general NLPs this option costs approximately
+     ***                O((n-r)^2*r) dense flops per rSQP iteration and will dominate
+     ***                the runtime for large (n-r).  In addition, this option
+     ***                assumes that you will be using null_space_matrix=EXPLICIT.
 
 *** Reduced Hessian Approximations
 
 *    max_dof_quasi_newton_dense = -1; *** [default]
      *** [quasi_newton == AUTO] (+-int)  This option is used to
-     *** determine when the algorithm will switch from quasi_newton=LBFGS
-     *** to quasi_newton=BFGS and from range_space_matrix=ORTHOGONAL
-     *** to range_space_matrix=COORDINATE.  Example values:
+     *** determine when the algorithm will switch from quasi_newton=BFGS
+     *** to quasi_newton=LBFGS and from range_space_matrix=ORTHOGONAL
+     *** to range_space_matrix=COORDINATE.
+     *** Example values:
      ***  -1 : (< 0) Let the solver decide dynamically [default]
      ***   0 : Always use limited memory LBFGS and COORDINATE.
-     *** 500 : Use LBFG when n-r >= 500 and dense BFGS when n-m < 500
+     *** 500 : Use LBFGS when n-r >= 500 and dense BFGS when n-m < 500
      ***       Use COORDINATE when (n-m)*r >= 500 and ORTHOGONAL when
      ***       (n-r)*r <= 500.
+     *** 1e10: Always use the dense BFGS and the orthogonal decomposition.
 
 }
 
@@ -456,7 +467,7 @@ options_group DecompositionSystemStateStepBuilderStd {
 *** Options group for CalcFiniteDiffProd class
 ***
 *** These options control how finite differences are computed
-*** when testing and for other purposes.
+*** for testing and for other purposes.
 ***
 options_group CalcFiniteDiffProd {
 
@@ -466,7 +477,7 @@ options_group CalcFiniteDiffProd {
 *    fd_method_order = FD_ORDER_TWO_AUTO;     *** Uses FD_ORDER_TWO_CENTRAL or FD_ORDER_TWO
 *    fd_method_order = FD_ORDER_FOUR;         *** Use O(eps^4) one sided finite differences
 *    fd_method_order = FD_ORDER_FOUR_CENTRAL; *** Use O(eps^4) two sided central finite differences
-*    fd_method_order = FD_ORDER_FOUR_AUTO;    *** [default] Uses FD_ORDER_FOUR_CENTRAL or FD_ORDER_FOUR
+*    fd_method_order = FD_ORDER_FOUR_AUTO;    *** [default] Use FD_ORDER_FOUR_CENTRAL or FD_ORDER_FOUR
      *** Selects the finite differencing method to use.  Several different
      *** methods of different orders are available.  For more accuracy use a higher order
      *** method, for faster execution time use a lower order method.
@@ -487,7 +498,8 @@ options_group CalcFiniteDiffProd {
 *    fd_step_size = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use.  If fd_step_select=FD_STEP_ABSOLUTE
      *** then this is the absolute step size that is used.  If fd_step_select=FD_STEP_RELATIVE
-     *** the actual step size used in fd_step_size * ||x||inf.  Some common values are:
+     *** the actual step size used in fd_step_size * ||x||inf.
+     *** Some common values are:
      ***   < 0.0   : let the implementation decide.
      ***   1e-8    : Optimal step size for FD_ORDER_ONE for IEEE double and perfect scaling?
      ***   1e-5    : Optimal step size for FD_ORDER_TWOx for IEEE double and perfect scaling?
@@ -497,7 +509,7 @@ options_group CalcFiniteDiffProd {
      *** Determines the minimum step size that will be taken to compute the finite differences.
      *** This option is used to forbid the computation of a finite difference with a very small
      *** step size as required by the variable bounds.  Computing finite difference derivatives
-     *** for such small step sizes generally result in a lot of roundoff errors.  If
+     *** for such small step sizes generally result in a lot of roundoff error.  If
      *** fd_step_size_min < 0.0, then the implementation will pick a default value that is
      *** smaller than the default value for fd_step_size.
 
@@ -505,19 +517,19 @@ options_group CalcFiniteDiffProd {
      *** Determines what finite difference step size to use for the objective function
      *** f(x).  If fd_step_size_f < 0.0, then the selected value for fd_step_size will be
      *** used (see the options fd_step_size and fd_step_select).  This option allows
-     *** fine-tunning of the finite difference computations.
+     *** fine-tuning of the finite difference computations.
 
 *    fd_step_size_c = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use for the equality constraints
      *** c(x).  If fd_step_size_c < 0.0, then the selected value for fd_step_size will be
      *** used (see the options fd_step_size and fd_step_select).  This option allows
-     *** fine-tunning of the finite difference computations.
+     *** fine-tuning of the finite difference computations.
 
 *    fd_step_size_h = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use for the inequality constraints
      *** h(x).  If fd_step_size_h < 0.0, then the selected value for fd_step_size will be
      *** used (see the options fd_step_size and fd_step_select).  This option allows
-     *** fine-tunning of the finite difference computations.
+     *** fine-tuning of the finite difference computations.
 
 }
 
@@ -570,12 +582,12 @@ options_group VariableBoundsTester {
 }
 
 ***********************************************************
-*** Options for the finite derivative testing for a
+*** Options for the finite difference testing of derivatives for a
 *** standard NLP.
 ***
 options_group NLPFirstDerivTester {
 *    fd_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(m))
-*    fd_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
+*    fd_testing_method = FD_DIRECTIONAL; *** [default] Only compute along random directions (O(1))
 *    num_fd_directions = 1;   *** [fd_testing_method == DIRECTIONAL]
 *    num_fd_directions = -1;  *** [fd_testing_method == DIRECTIONAL] Use single direction y=1.0
 *    warning_tol   = 1e-8; *** [default]
@@ -588,22 +600,22 @@ options_group NLPFirstDerivTester {
 *** See options_group NLPDirectTester
 ***
 options_group EvalNewPointTailoredApproach {
-*    fd_deriv_testing   = FD_DEFAULT;  *** Test if check_results==true (see above)
+*    fd_deriv_testing   = FD_DEFAULT;  *** [default] Test if check_results==true (see above)
 *    fd_deriv_testing   = FD_TEST;    *** Always test
 *    fd_deriv_testing   = FD_NO_TEST; *** never test
 }
 
 ****************************************************************
 *** Options for the finite difference derivative tester for a 
-*** direct sensistivity NLP.
+*** direct sensitivity NLP.
 ***
 options_group NLPDirectTester {
 *    Gf_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n))
-*    Gf_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
+*    Gf_testing_method = FD_DIRECTIONAL; *** [default] Only compute along random directions (O(1))
 *    Gf_warning_tol   = 1e-10;
 *    Gf_error_tol     = 1e-5;
 *    Gc_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n-m))
-*    Gc_testing_method = FD_DIRECTIONAL; *** Only compute along random directions
+*    Gc_testing_method = FD_DIRECTIONAL; *** [default] Only compute along random directions (O(1))
 *    Gc_warning_tol   = 1e-10;
 *    Gc_error_tol     = 1e-5;
 *    num_fd_directions = 1;  *** [testing_method == DIRECTIONAL]
@@ -670,11 +682,13 @@ options_group NLPAlgoConfigMamaJama {
 
 *    max_basis_cond_change_frac = -1.0;  *** [default]
      *** (+-dbl) If < 0 then the solver will decide what value to use.
-     *** Otherwise this is the (see printed algorithm description) above
-     *** which a new basis will be selected.  Example values:
+     *** Otherwise this is the change in a very inexact condition number estimate
+     *** between iterations (see printed algorithm description) which triggers the
+     *** selection of a new basis.
+     *** Example values:
      ***    -1 : Allow solver to decide [default] 
      ***     0 : Switch to a new basis every iteration (not a good idea)
-     ***   100 : Seitch to a new basis when change is more that 100?
+     ***   100 : Switch to a new basis when change is more that 100?
      *** 1e+50 : (big number) Never switch to a new basis.
 
 *** Reduced Hessian Approximations
@@ -692,11 +706,11 @@ options_group NLPAlgoConfigMamaJama {
      *** ToDo: Finish documentation!
 
 *    num_lbfgs_updates_stored   = -1; *** [default]
-     *** [quasi_newton == L*BFGS] (+-int) If < 0 then let solver decide
+     *** [quasi_newton == LBFGS] (+-int) If < 0 then let solver decide
      *** otherwise this is the maximum number of update vectors stored
-     *** for limite memory LBFGS.
+     *** for limited memory LBFGS.
 
-*    lbfgs_auto_scaling = true;  *** (defalut)
+*    lbfgs_auto_scaling = true;  *** (default)
 *    lbfgs_auto_scaling = false;
      *** [quasi_newton == LBFGS] If true then auto scaling of initial
      *** hessian approximation will be use for LBFGS.
@@ -716,15 +730,15 @@ options_group NLPAlgoConfigMamaJama {
 *    qp_solver = QPKWIK;  *** Primal-dual, active set, QR
 *    qp_solver = QPOPT;   *** Primal, active set, null space, Gill et. al.
 *    qp_solver = QPSOL;   *** Primal, active set, null space, Gill et. al.
-*    qp_solver = QPSCHUR; *** Primal-dual, active set, schur complement 
-     *** QP solver to use to solve the reduced space QP subproblem (NUll
-     *** space step).
+*    qp_solver = QPSCHUR; *** [default] Primal-dual, active set, schur complement 
+     *** QP solver to use to solve the reduced space QP subproblem (null
+     *** space step).  Note that only QPSCHUR ships with MOOCHO by default.
 
 *    reinit_hessian_on_qp_fail = true; *** [default]
 *    reinit_hessian_on_qp_fail = false;
      *** If true, then if a QPFailure exception is thrown (see printed algorithm)
-     *** then the Hessian approximation will be reinitialized and the QP will
-     *** will attempted to be solved again.
+     *** then the Hessian approximation will be reinitialized and the QP solver will
+     *** attempt to solve the QP again.
 
 *** Line search methods
 
@@ -734,7 +748,7 @@ options_group NLPAlgoConfigMamaJama {
 *    line_search_method = 2ND_ORDER_CORRECT;  *** Like DIRECT except computes corrections for
 *                                             *** c(x) before backtracking line search
 *    line_search_method = WATCHDOG;           *** Like DIRECT except uses watchdog type trial steps
-*    line_search_method = FILTER;              *** Use the Filter line search method
+*    line_search_method = FILTER;             *** [default] Use the Filter line search method
      *** Options:
      *** AUTO : Let the solver decide dynamically what line search method to use (if any)
      *** NONE : Take full steps at every iteration.  For most problems this is a bad idea.
@@ -744,18 +758,20 @@ options_group NLPAlgoConfigMamaJama {
      ***     the backtracking line search (see options_group LineSearch2ndOrderCorrect).
      ***     This can help greatly on some problems and can counter act the Maritos effect.
      *** FILTER : Use the filter line search.  Here we accept either a decrease in the
-     ***     objective function for the constriants.  See "Global and Local Convergence of
-     ***     Line Search Filter Methods for Nonliner Programming" by Waechter and Biegler.
+     ***     objective function for the constraints.  See "Global and Local Convergence of
+     ***     Line Search Filter Methods for Nonlinear Programming" by Waechter and Biegler.
 
 *    merit_function_type = AUTO;              *** [line_search_method != NONE] Let solver decide
 *    merit_function_type = L1;                *** [line_search_method != NONE] phi(x) = f(x) + mu*||c(x)||1
 *    merit_function_type = MODIFIED_L1;       *** [line_search_method != NONE] phi(x) = f(x) + sum{mu(j),|cj(x)|,j}
-*    merit_function_type = MODIFIED_L1_INCR;  *** [line_search_method != NONE] Like MODIFIED_L1 except mu(j) are altered
-                                              *** in order to take larger steps
+*    merit_function_type = MODIFIED_L1_INCR;  *** [line_search_method != NONE] Like MODIFIED_L1 except mu(j) are altered in order to take larger steps
+     *** Determines the type of merit function used when the line search
+     *** method uses a merit function.
+
 *    l1_penalty_parameter_update = AUTO;      *** [merit_function_type == L1] let solver decide
 *    l1_penalty_parameter_update = WITH_MULT; *** [merit_function_type == L1] Use Lagrange multipliers to update mu
 *    l1_penalty_parameter_update = MULT_FREE; *** [merit_function_type == L1] Don't use Lagrange multipliers to update mu
-
+     *** Determines how the penalty parameter is updated for the L1 merit function.
 }
 
 *********************************************************************
@@ -764,10 +780,18 @@ options_group NLPAlgoConfigMamaJama {
 *** [NLPAlgoConfigMamaJama::hessian_initialization == SERIALIZE]
 ***
 options_group ReducedHessianSerialization {
+
 *   reduced_hessian_input_file_name = "reduced_hessian.in";   *** [default]
 *   reduced_hessian_input_file_name = "";                     *** Does not read from file
+    *** The name of a file that will be used to read in the reduced Hessian
+    *** in a format that is compatible with the internal implementation.
+
 *   reduced_hessian_output_file_name = "reduced_hessian.out"; *** [default]
 *   reduced_hessian_output_file_name = "";                    *** Does not write to file
+    *** The name of a file that will be used to write in the reduced Hessian.
+    *** This reduced Hessian can then be read back in using the
+    *** reduced_hessian_input_file_name option.
+
 }
 
 *********************************************************************
@@ -777,7 +801,7 @@ options_group ReducedHessianSerialization {
 ***
 options_group InitFinDiffReducedHessian {
 *    initialization_method	= SCALE_IDENTITY;
-*    initialization_method	= SCALE_DIAGONA;
+*    initialization_method	= SCALE_DIAGONAL;
 *    initialization_method	= SCALE_DIAGONAL_ABS;
 *    max_cond			= 1e+1;
 *    min_diag			= 1e-8;
@@ -785,7 +809,7 @@ options_group InitFinDiffReducedHessian {
 }
 
 *********************************************************************
-*** Options for the check for if to skip the BFGS update.
+*** Options for checking for skipping the BFGS update.
 ***
 *** [NLPAlgoConfigMamaJama::exact_hessian == false]
 ***
@@ -794,7 +818,7 @@ options_group CheckSkipBFGSUpdateStd {
 }
 
 *********************************************************************
-*** Options the BFGS updating (dense or limited memory)
+*** Options for BFGS updating (dense or limited memory)
 *** 
 *** [NLPAlgoConfigMamaJama::exact_hessian == false]
 ***
@@ -838,7 +862,7 @@ options_group CheckConvergenceStd {
 *    scale_comp_error_by   = SCALE_BY_ONE;        *** [default]
 
      *** Determines what all of the error measures are scaled by when checking convergence
-     *** SCALE_BY_NORM_2_X   : Scale the optimiality conditions by 1/(1+||x_k||2)
+     *** SCALE_BY_NORM_2_X   : Scale the optimality conditions by 1/(1+||x_k||2)
      *** SCALE_BY_NORM_INF_X : Scale the optimality conditions by 1/(1+||x_k||inf)
      *** SCALE_BY_ONE        : Scale the optimality conditions by 1
 
@@ -846,8 +870,8 @@ options_group CheckConvergenceStd {
 *    scale_opt_error_by_Gf = false;
      *** Determines if the linear dependence of gradients (i.e. ||rGL_k||inf or ||GL_k||inf)
      *** is scaled by the gradient of the objective function or not.
-     *** true  : Scale ||rGL_k||inf ir ||GL_k|| by an additional 1/(1+||Gf||inf)
-     *** false : Scale ||rGL_k||inf ir ||GL_k|| by an addiational 1 (i.e. no extra scaling)
+     *** true  : Scale ||rGL_k||inf or ||GL_k|| by an additional 1/(1+||Gf||inf)
+     *** false : Scale ||rGL_k||inf or ||GL_k|| by an additional 1 (i.e. no extra scaling)
 
 }
 
@@ -858,24 +882,36 @@ options_group CheckConvergenceStd {
 *** [NLPAlgoConfigMamaJama::qp_solver == QPSCHUR]
 ***
 options_group QPSolverRelaxedQPSchur {
+
+*** Convergence criteria and algorithm control options
+
 *    max_qp_iter_frac  = 10.0;   *** (+dbl) max_qp_itr = max_qp_itr_frac * (# variables)
-*    inequality_pick_policy = ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY;
-*    inequality_pick_policy = ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY; *** not supported yet!
-*    inequality_pick_policy = ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY;
-*    bounds_tol        = 1e-10;  *** (+dbl) feasibility tolerance for bound constriants
-*    inequality_tol    = 1e-10;  *** (+dbl) feasibility tolerance for general inequality constriants
-*    equality_tol      = 1e-10;  *** (+dbl) feasibility tolerance for general equality constriants
+
+*    bounds_tol        = 1e-10;  *** (+dbl) feasibility tolerance for bound constraints
+
+*    inequality_tol    = 1e-10;  *** (+dbl) feasibility tolerance for general inequality constraints
+
+*    equality_tol      = 1e-10;  *** (+dbl) feasibility tolerance for general equality constraints
+
 *    loose_feas_tol    = 1e-9;   *** (+dbl) (Expert use only)
-*    dual_infeas_tol   = 1e-12;  *** (+dbl) allowable dual infeasiblity before error
+
+*    dual_infeas_tol   = 1e-12;  *** (+dbl) allowable dual infeasibility before reporting an error
+
 *    huge_primal_step  = 1e+20;  *** (+dbl) value of a near infinite primal step
+
 *    huge_dual_step    = 1e+20;  *** (+dbl) value of a near infinite dual step
+
 *    bigM              = 1e+10;  *** (+dbl) value or relaxation penalty in objective
-*    warning_tol   = 1e-10;  *** Testing warning tolerance
-*    error_tol     = 1e-5;   *** Testing error tolerance
+
+*    iter_refine_at_solution = true;  *** [default]
+*    iter_refine_at_solution = false;
+     *** If true then iterative refinement will be performed at the solution of
+     *** the QP in every case.
 
 *    iter_refine_min_iter = 1; *** [default]
      *** Minimum number of iterative refinement iterations to perform when
-     *** using iterative refinement.  Example values:
+     *** using iterative refinement.
+     *** Example values:
      *** 0 : Don't perform any iterations of iterative refinement if you don't have to
      *** 1 : Perform at least one step if iterative refinement no matter what the
      ***     residual is.
@@ -883,7 +919,7 @@ options_group QPSolverRelaxedQPSchur {
 *    iter_refine_max_iter = 3; *** [default]
      *** Maximum number of steps of iterative refinement to perform.
      *** This helps to keep down the cost of iterative refinement but
-     *** can cause the QP method to fail due to illconditioning and roundoff.
+     *** can cause the QP method to fail due to ill-conditioning and roundoff.
      *** This number should be kept small since the target residuals may not
      *** be obtainable.
      *** Example values:
@@ -913,15 +949,21 @@ options_group QPSolverRelaxedQPSchur {
      ***   1e+50 : (very big number) Allow convergence of iterative refinement at
      ***           any time.
 
-*    iter_refine_at_solution = true;  *** [default]
-*    iter_refine_at_solution = false;
-     *** If true then iterative refinement will be performed at the solution of
-     *** the QP in every case.
+*    inequality_pick_policy = ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY; *** [default]
+*    inequality_pick_policy = ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY; *** not supported yet!
+*    inequality_pick_policy = ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY;
+
+*** Warning and error tolerances
+
+*    warning_tol   = 1e-10;  *** General testing warning tolerance
+
+*    error_tol     = 1e-5;   *** General testing error tolerance
 
 *    pivot_warning_tol = 1e-8;  *** [default]
      *** (+dbl) Minimum relative tolerance for a pivot element in the schur complement
      *** under which a warning message for near singularity will be printed
-     *** (see MatrixSymAddDelUpdateable).  Example values:
+     *** (see MatrixSymAddDelUpdateable).
+     ***  Example values:
      ***    0.0: Don't print any warning messages about near singularity.
      ***   1e-6: default
      ***    2.0: ( > 1 ) Show the pivot tolerance of every update!
@@ -929,21 +971,25 @@ options_group QPSolverRelaxedQPSchur {
 *    pivot_singular_tol = 1e-11;  *** [default]
      *** (+dbl) Minimum relative tolerance for a pivot element in the schur complement
      *** under which the matrix is considered singular and an error message will be printed
-     *** (see MatrixSymAddDelUpdateable).  Example values:
+     *** (see MatrixSymAddDelUpdateable).
+     *** Example values:
      ***    0.0: Allow any numerically nonsingular matrix.
      ***   1e-8: default
-     ***    2.0: ( > 1 ) Every matrix is singular (makes no sence!)
+     ***    2.0: ( > 1 ) Every matrix is singular (makes no sense!)
 
 *    pivot_wrong_inertia_tol = 1e-11;  *** [default]
      *** (+dbl) Minimum relative tolerance for a pivot element in the schur complement
      *** over which the matrix is considered to have the wrong inertia rather than
      *** being singular and an error message will be printed
-     *** (see MatrixSymAddDelUpdateable).  Example values:
+     *** (see MatrixSymAddDelUpdateable).
+     *** Example values:
      ***    0.0: Any pivot with the wrong sign will be considered to have the wrong inertia
      ***   1e-8: default
-     ***    2.0: ( > 1 ) Every matrix has the wrong inertia (makes no sence!)
+     ***    2.0: ( > 1 ) Every matrix has the wrong inertia (makes no sense!)
 
-*    print_level = USE_INPUT_ARG;  *** Use the input argument to solve_qp(...)
+*** Output control
+
+*    print_level = USE_INPUT_ARG;  *** [default] Use the input argument to solve_qp(...)
 *    print_level = NO_OUTPUT;
 *    print_level = OUTPUT_BASIC_INFO;
 *    print_level = OUTPUT_ITER_SUMMARY;
@@ -958,6 +1004,8 @@ options_group QPSolverRelaxedQPSchur {
 ***
 *** [NLPAlgoConfigMamaJama::line_search_method != NONE]
 ***
+*** See the MoochoAlgo.opt file for details.
+***
 options_group DirectLineSearchArmQuadSQPStep {
 *    slope_frac       = 1.0e-4;
 *    min_frac_step    = 0.1:
@@ -969,6 +1017,8 @@ options_group DirectLineSearchArmQuadSQPStep {
 *** Options for the watchdog line search.
 *** 
 *** [NLPAlgoConfigMamaJama::line_search_method = WATCHDOG]
+***
+*** Warning!  The watchdog option is not currently supported!
 ***
 options_group LineSearchWatchDog {
 *    opt_kkt_err_threshold	= 1e-3; *** (+dbl)
@@ -982,6 +1032,8 @@ options_group LineSearchWatchDog {
 *** 
 *** [NLPAlgoConfigMamaJama::line_search_method == 2ND_ORDER_CORRECT]
 ***
+*** Warning!  The 2nd order correction option is not currently supported!
+***
 options_group LineSearch2ndOrderCorrect {
 
 *    newton_olevel = PRINT_USE_DEFAULT;   *** O(?) output [default]
@@ -990,15 +1042,15 @@ options_group LineSearch2ndOrderCorrect {
 *    newton_olevel = PRINT_STEPS;         *** O(max_newton_iter) output
 *    newton_olevel = PRINT_VECTORS;       *** O(max_newton_iter*n) output
      *** Determines the amount of output printed to the journal output stream.
-     *** PRINT_USE_DEFAULT: Use the output level from the overall algortihm
-     ***     to print comperable output (see journal_output_level).
-     *** PRINT_NOTHING: Don't print anything (overriddes default print level).
+     *** PRINT_USE_DEFAULT: Use the output level from the overall algorithm
+     ***     to print comparable output (see journal_output_level).
+     *** PRINT_NOTHING: Don't print anything (overrides default print level).
      *** PRINT_SUMMARY_INFO: Print a nice little summary table showing the sizes of the
      ***    newton steps used to compute a feasibility correction as well as what
      ***    progress is being made.
      *** PRINT_STEPS: Don't print a summary table and instead print some more detail
      ***    as to what computations are being performed etc.
-     *** PRINT_VECTORS: Print out relavant vectors as well for the feasibility Newton
+     *** PRINT_VECTORS: Print out relevant vectors as well for the feasibility Newton
      ***     iterations.
 
 *    constr_norm_threshold = 1.0; *** [default]
@@ -1011,10 +1063,10 @@ options_group LineSearch2ndOrderCorrect {
 *    constr_incr_ratio = 10.0; *** [default]
      *** (+dbl) Tolerance for ||c_kp1||inf/(1.0+||c_k||inf) below which a 2nd order
      *** correction step will be considered (see printed description).  Example values:
-     ***   0.0: Consider computing a correrction only if ||c_kp1||inf is zero.
+     ***   0.0: Consider computing a correction only if ||c_kp1||inf is zero.
      ***   10.0: Consider computing a correction if and only if
      ***        ||c_kp1||inf/(1.0+||c_k||inf) < 10.0.
-     *** 1e+50: (big number) Consider a corrrection requardless how big ||c_kp1||inf is.
+     *** 1e+50: (big number) Consider a correction regardless how big ||c_kp1||inf is.
 
 *    after_k_iter = 0; *** [default]
      *** (+int) Number of SQP iterations before a 2nd order correction will be considered
@@ -1031,7 +1083,7 @@ options_group LineSearch2ndOrderCorrect {
      ***             iteration should be required for this.
      ***   LESS_X:   phi(c(x_k+d+w)) < forced_reduct_ratio * phi(c(x_k)) is required.
      ***             In general, this may require several feasibility step calculations
-     ***             and several newton iterations.  Of course the maxinum number of
+     ***             and several newton iterations.  Of course the maximum number of
      ***             newton iterations may be exceeded before this is achieved.
 
 *    forced_reduct_ratio = 1.0; *** [default]
@@ -1043,7 +1095,7 @@ options_group LineSearch2ndOrderCorrect {
      ***    1.0: Don't require any extra reduction.
 
 *    max_step_ratio = 1.0; *** [default]
-     *** (+dbl) Maxumum ratio of ||w^p||inf/||d||inf allowed for correction step w^p before
+     *** (+dbl) Maximum ratio of ||w^p||inf/||d||inf allowed for correction step w^p before
      *** a line search along phi(c(x_k+d+b*w^p)) is performed.  The purpose of this parameter
      *** is to limit the number of line search iterations needed for each feasibility
      *** step and to keep the full w = sum(w^p,p=1...) from getting too big. Example values:
@@ -1053,11 +1105,11 @@ options_group LineSearch2ndOrderCorrect {
      ***  1e+50: (big number) Allow ||w^p||inf/||d||inf to be a big as possible.
 
 *    max_newton_iter = 3; *** [default]
-     *** (+int) Limit the number of newton feasibilty iterations (with line searches)
+     *** (+int) Limit the number of newton feasibility iterations (with line searches)
      *** allowed.  Example values:
      ***       0: Don't allow any newton iterations (no 2nd order correction).
      ***       3: Allow 3 newton iterations
-     ***  999999: Allow any number of newton iteations (not a good idea)
+     ***  999999: Allow any number of newton iterations (not a good idea)
 
 }
 
@@ -1065,6 +1117,8 @@ options_group LineSearch2ndOrderCorrect {
 *** Options for the filter search.
 *** 
 *** [NLPAlgoConfigMamaJama::line_search_method = FILTER]
+***
+*** See the MoochoAlgo.out file for details
 ***
 options_group LineSearchFilter {
 *    gamma_theta      = 1e-5; *** [default]
@@ -1086,6 +1140,8 @@ options_group LineSearchFilter {
 *** 
 *** [NLPAlgoConfigMamaJama::line_search_method == 2ND_ORDER_CORRECT]
 ***
+*** Warning!  The 2nd order correction option is not currently supported!
+***
 options_group FeasibilityStepReducedStd {
 *    qp_objective = OBJ_MIN_FULL_STEP;
 *    qp_objective = OBJ_MIN_NULL_SPACE_STEP;
@@ -1100,6 +1156,8 @@ options_group FeasibilityStepReducedStd {
 *** the newton steps of the 2nd order correction (see above).
 *** 
 *** [NLPAlgoConfigMamaJama::line_search_method == 2ND_ORDER_CORRECT]
+***
+*** Warning!  The 2nd order correction option is not currently supported!
 ***
 options_group DirectLineSearchArmQuad2ndOrderCorrectNewton {
 *    slope_frac       = 1.0e-4;
@@ -1122,7 +1180,7 @@ options_group MeritFuncPenaltyParamUpdate {
 }
 
 *****************************************************************
-*** Change how the penalty parameters for the modifed
+*** Change how the penalty parameters for the modified
 *** L1 merit function are increased.
 ***
 *** [NLPAlgoConfigMamaJama::line_search_method != NONE]
@@ -1144,8 +1202,8 @@ options_group MeritFuncModifiedL1LargerSteps {
      *** (+dbl) Ratio the multipliers are allowed to be increased.
      *** Set to a very large number (1e+100) to allow increasing the penalties
      *** to any value if it will help in taking a larger step.  This will
-     *** in effect put all of the wieght of the constraints and will force
-     *** the algorithm to only minimize the infeasibilities and ignore
+     *** in effect put all of the weight of the constraints and will force
+     *** the algorithm to only minimize the infeasibility and ignore
      *** optimality.
 
 *    pos_to_neg_penalty_increase   = 1.0;  *** (+dbl)

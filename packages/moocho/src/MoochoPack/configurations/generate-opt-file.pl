@@ -12,11 +12,13 @@ use File::Basename;
 use Cwd;
 #
 my $g_use_msg =
-  "Use: generate-opt-file.pl [-h] [-s] [-m,-i]\n".
+  "\nUse: generate-opt-file.pl [-h] [-s] [-m,-i]\n".
   "  -h : Prints this help message\n".
   "  -s : Ommits comments form the generated Moocho.opt file\n".
   "  -m : Include options for MamaJama (active-set) config (default)\n".
-  "  -i : Include options for IP config\n"
+  "  -i : Include options for IP config\n".
+  "\nPerl scipt that generates a MOOCHO options file named \"Moocho.opt\" in the\n".
+  "current working directory."
   ;
 #
 my $print_comments = 1;
@@ -24,21 +26,21 @@ my $mama_jama = 1;
 for (my $i = 0; $i < @ARGV; ++$i) {
   $_ = $ARGV[$i];
   if(/^-h$/) {
-	print STDERR
-	  $g_use_msg;
-	exit(0);
+    print STDERR
+      $g_use_msg;
+    exit(0);
   }
   elsif(/^-s$/) {
-	$print_comments = 0;
+    $print_comments = 0;
   }
   elsif(/^-m$/) {
-	$mama_jama = 1;
+    $mama_jama = 1;
   }
   elsif(/^-i$/) {
-	$mama_jama = 0;
+    $mama_jama = 0;
   }
   else {
-	die "The option $_ is not recognised!\n${g_use_msg}Try again!\n";
+    die "The option $_ is not recognised!\n${g_use_msg}Try again!\n";
   }
 }
 #
@@ -61,6 +63,8 @@ else {
 print FILE_OUT "\nend_options\n";
 #
 close FILE_OUT;
+#
+print "\nGenerated output file \"Moocho.opt\"\n";
 
 ################
 # Subroutines

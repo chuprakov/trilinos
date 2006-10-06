@@ -78,7 +78,7 @@ namespace MoochoPack {
  * and <tt>\ref NLPAlgoConfigMamaJama_opts "Moocho.opt.NLPAlgoConfigMamaJama"</tt>
  * conatain the listing of these options as well as some documentation.
  * An options file <tt>Moocho.opt</tt> can be generated automatically
- * using the shell script <tt>generate_opt_file.pl</tt>.
+ * using the shell script <tt>\ref generate_opt_file_pl "generate_opt_file.pl"</tt>.
  *
  * <b>Requirements / Specifications</b>
  *
@@ -717,6 +717,44 @@ private:
   void update_solver() const;
 
 }; // end class MoochoSolver
+
+/** \defgroup generate_opt_file_pl generate-opt-file.pl: Perl script that generates options files for MoochoSolver
+ *
+ * The script <tt>generate-opt-file.pl</tt>, which gets installed in
+ * <tt>$TRILINOS_INSTALL_DIR/tools/moocho/</tt> (where
+ * <tt>$TRILINOS_INSTALL_DIR</tt> is the same as the configure option
+ * <tt>--prefix</tt>), generates a <tt>Moocho.opt</tt> file in the current
+ * directory to be read in by a <tt>MoochoSolver</tt> object.
+ *
+ * Here is the output from <tt>generate-opt-file.pl -h</tt>:
+ *
+ * \verbinclude configurations/sample_option_files/generate-opt-file.pl.help.out
+ *
+ * See the list of options \ref Moocho_all_opts "stripped of comments" and
+ * \ref Moocho_all_documentation_opts "with full comments".
+ */
+
+/** \defgroup Moocho_all_opts All of the options for a MoochoSolver object
+ *
+ * Below are all of the options that MOOCHO will accept for the the "MamaJama"
+ * algorithm configuration.  This is the file that is returned by
+ * <tt>\ref generate_opt_file_pl "generate-opt-file.pl" -s</tt>.
+ * To view these same options with all of their documentation see
+ * \ref Moocho_all_documentation_opts "here".
+ *
+ * \verbinclude configurations/sample_option_files/Moocho.all.opt
+ */
+
+/** \defgroup Moocho_all_documentation_opts All of the options with full documentation for a MoochoSolver
+ *
+ * Below are all of the options that MOOCHO will accept for the the "MamaJama"
+ * algorithm configuration with full documentation.  This is the file that is
+ * returned by <tt>\ref generate_opt_file_pl "generate-opt-file.pl"</tt> with
+ * no options.  To view these same options stripped of most of the comments
+ * see \ref Moocho_all_opts "here".
+ *
+ * \verbinclude configurations/sample_option_files/Moocho.all_documentation.opt
+ */
 
 /** \defgroup MoochoSolver_opts Options for an MoochoSolver object.
  *

@@ -53,6 +53,7 @@ int main( int argc, char* argv[] )
     // Get options from the command line
     //
     
+    bool     show_options = false;
     int      nD = 1;
     int      nI = 1;
     int      bw = 1;
@@ -82,6 +83,7 @@ int main( int argc, char* argv[] )
 
     solver.setup_commandline_processor(&clp);
 
+    clp.setOption( "show-options", "no-show-options", &show_options, "Show the commandline options or not." );
     clp.setOption( "nD",  &nD, "Number of dependent variables" );
     clp.setOption( "nI",  &nI, "Number of independent variables" );
     clp.setOption( "bw",  &bw, "Band width of the basis matrix" );
@@ -114,8 +116,10 @@ int main( int argc, char* argv[] )
     if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
       return parse_return;
     
-    std::cout << "\nPrinting commandline options used (options used shown as (default: \?\?\?) ...\n\n";
-    clp.printHelpMessage(argv[0],std::cout);
+    if(show_options) {
+      std::cout << "\nPrinting commandline options used (options used shown as (default: \?\?\?) ...\n\n";
+      clp.printHelpMessage(argv[0],std::cout);
+    }
     
     //
     // Create and solve the NLP

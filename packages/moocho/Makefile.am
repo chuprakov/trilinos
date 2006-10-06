@@ -151,6 +151,15 @@ libs:
 	cd $(top_builddir)/src ; $(MAKE)
 	$(BUILD_THYRA_SUBLIB)
 
+sample-output:
+	cd test; \
+	../example/generate-sample-output.pl ; \
+	../thyra/example/generate-sample-output.pl
+	cd example/NLPWBCounterExample/external; make sample-makefile
+	cd example/ExampleNLPBanded/external; make sample-makefile
+	cd thyra/example/NLPThyraEpetraAdvDiffReactOpt/external; make sample-makefile
+	cd thyra/example/NLPThyraEpetraModelEval4DOpt/external; make sample-makefile
+
 if USING_EXPORT_MAKEFILES
 
 install-exec-hook:	

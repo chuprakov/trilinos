@@ -442,7 +442,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/. $(distdir)/config $(distdir)/example/ExampleNLPBanded/external $(distdir)/example/NLPWBCounterExample/external $(distdir)/thyra/example/NLPThyraEpetraAdvDiffReactOpt/external $(distdir)/thyra/example/NLPThyraEpetraModelEval4DOpt/external
+	$(mkdir_p) $(distdir)/. $(distdir)/config $(distdir)/example $(distdir)/example/ExampleNLPBanded/external $(distdir)/example/NLPWBCounterExample/external $(distdir)/thyra/example $(distdir)/thyra/example/NLPThyraEpetraAdvDiffReactOpt/external $(distdir)/thyra/example/NLPThyraEpetraModelEval4DOpt/external
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -714,6 +714,15 @@ all-libs:
 libs:
 	cd $(top_builddir)/src ; $(MAKE)
 	$(BUILD_THYRA_SUBLIB)
+
+sample-output:
+	cd test; \
+	../example/generate-sample-output.pl ; \
+	../thyra/example/generate-sample-output.pl
+	cd example/NLPWBCounterExample/external; make sample-makefile
+	cd example/ExampleNLPBanded/external; make sample-makefile
+	cd thyra/example/NLPThyraEpetraAdvDiffReactOpt/external; make sample-makefile
+	cd thyra/example/NLPThyraEpetraModelEval4DOpt/external; make sample-makefile
 
 @USING_EXPORT_MAKEFILES_TRUE@install-exec-hook:	
 @USING_EXPORT_MAKEFILES_TRUE@	cp $(top_builddir)/Makefile.export.moocho $(exec_prefix)/include/.

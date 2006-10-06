@@ -1,0 +1,42 @@
+
+Echoing the command-line:
+
+c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBUG\packages\moocho\example\ExampleNLPBanded\ExampleNLPBanded.exe --moocho-options-file=../example/Moocho.sample.opt --echo-command-line --nD=3000 --bw=10 --diag-scal=1e+3 --nI=5 --xIl=1e-5 --xo=0.1 
+
+
+test_nlp = true: Testing the NLP! ...
+
+Testing the supported NLPFirstOrder interface ...
+
+Successful end of testing of the nlp
+
+Calling Win32 version of Teuchos::seconds_initialize()!
+
+
+********************************
+*** Start of rSQP Iterations ***
+n = 3005, m = 3000, nz = 59910
+
+ k    f         ||c||s    ||rGL||s  QN #act ||Ypy||2 ||Zpz||2 ||d||inf alpha    time(s)  
+ ---- --------- --------- --------- -- ---- -------- -------- -------- -------- ---------
+    0        15  1.2e+002       9.8 IN    0        1   1e+002   1e+001     0.06  5.627887
+    1       2.2        70      0.21 UP    0        1     0.06      0.3        1  8.152638
+    2      0.62        16      0.28 SK    0      0.4     0.06     0.07        1  10.56647
+    3      0.39       1.3      0.28 SK    0     0.04     0.05     0.02        1   12.9757
+    4      0.34     0.045      0.27 DU    0    0.001      0.2      0.1        1  15.39359
+    5      0.17    0.0062       0.2 UP    1   0.0002      0.6      0.3        1   17.8305
+    6  4.3e-009    0.0016  2.4e-005 UP    4   9e-005   4e-006   3e-006        1  20.28171
+ ---- --------- --------- --------- -- ----
+    7  3.1e-010  7.9e-009  1.5e-005 UP    4   3e-010   2e-006   2e-006        -  22.72353
+
+Total time = 22.724 sec
+
+Jackpot! You have found the solution!!!!!!
+
+Number of function evaluations:
+-------------------------------
+f(x)  : 18
+c(x)  : 18
+Gf(x) : 9
+Gc(x) : 9
+Solution Found!

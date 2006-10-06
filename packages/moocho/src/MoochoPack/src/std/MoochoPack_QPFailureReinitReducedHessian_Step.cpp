@@ -104,7 +104,7 @@ void QPFailureReinitReducedHessian_Step::print_step(
 {
   out
     << L << "do null space step : " << typeid(null_space_step()).name() << std::endl;
-  null_space_step().print_step(algo,step_poss,type,assoc_step_poss,out,L+"    ");
+  null_space_step().print_step(algo,step_poss,type,assoc_step_poss,out,L+"  ");
   out
     << L << "end null space step\n"
     << L << "if QPFailure was thrown then\n"

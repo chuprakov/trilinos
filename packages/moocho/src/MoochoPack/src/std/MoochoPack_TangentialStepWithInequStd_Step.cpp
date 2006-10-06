@@ -600,7 +600,6 @@ void TangentialStepWithInequStd_Step::print_step(
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
 {
-return;
   out
     << L << "*** Calculate the null-space step by solving a constrained QP\n"
     << L << "qp_grad_k = rGf_k\n"

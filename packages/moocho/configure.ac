@@ -318,29 +318,31 @@ AC_SUBST(ac_aux_dir)
 AC_CONFIG_FILES([
     Makefile 
     Makefile.export.moocho
-    src/Makefile
-    example/Makefile
     example/ExampleNLPBanded/Makefile
     example/ExampleNLPBanded/external/Makefile
     example/ExampleNLPBanded/external/Makefile.external.stub
     example/ExampleNLPDirect/Makefile
     example/ExampleNLPFirstOrder/Makefile
+    example/Makefile
     example/NLPWBCounterExample/Makefile
     example/NLPWBCounterExample/external/Makefile
     example/NLPWBCounterExample/external/Makefile.external.stub
+    example/generate-sample-output.pl.stub
+    src/Makefile
+    test/DenseLinAlgPack/Makefile
+    test/IterationPack/Makefile
     test/Makefile
     test/MoochoUtilities/Makefile
-    test/IterationPack/Makefile
-    test/DenseLinAlgPack/Makefile
     thyra/Makefile
-    thyra/src/Makefile
     thyra/example/Makefile
-    thyra/example/NLPThyraEpetraModelEval4DOpt/Makefile
-    thyra/example/NLPThyraEpetraModelEval4DOpt/external/Makefile
-    thyra/example/NLPThyraEpetraModelEval4DOpt/external/Makefile.external.stub
     thyra/example/NLPThyraEpetraAdvDiffReactOpt/Makefile
     thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile
     thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile.external.stub
+    thyra/example/NLPThyraEpetraModelEval4DOpt/Makefile
+    thyra/example/NLPThyraEpetraModelEval4DOpt/external/Makefile
+    thyra/example/NLPThyraEpetraModelEval4DOpt/external/Makefile.external.stub
+    thyra/example/generate-sample-output.pl.stub
+    thyra/src/Makefile
     ])
 
 AC_OUTPUT()

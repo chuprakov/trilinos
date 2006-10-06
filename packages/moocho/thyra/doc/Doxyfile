@@ -16,38 +16,29 @@ TAGFILES += \
   $(TRILINOS_HOME)/packages/common/tag_files/AbstractLinAlgPack.tag=$(TRILINOS_HOME)/packages/moocho/src/AbstractLinAlgPack/doc/html \
   $(TRILINOS_HOME)/packages/common/tag_files/NLPInterfacePack.tag=$(TRILINOS_HOME)/packages/moocho/src/NLPInterfacePack/doc/html \
   $(TRILINOS_HOME)/packages/common/tag_files/ConstrainedOptPack.tag=$(TRILINOS_HOME)/packages/moocho/src/ConstrainedOptPack/doc/html \
-  $(TRILINOS_HOME)/packages/common/tag_files/MoochoPack.tag=$(TRILINOS_HOME)/packages/moocho/src/MoochoPack/doc/html \
-  $(TRILINOS_HOME)/packages/common/tag_files/MoochoThyra.tag=$(TRILINOS_HOME)/packages/moocho/thyra/doc/html
-# RAB: Note that I could not simply include the tag files from each individual package since
-# this caused doxygen to hang.
+  $(TRILINOS_HOME)/packages/common/tag_files/MoochoPack.tag=$(TRILINOS_HOME)/packages/moocho/src/MoochoPack/doc/html
 #
 # Package options
 #
-PROJECT_NAME           = "MOOCHO"
-OUTPUT_DIRECTORY       = .
+PROJECT_NAME           = "MOOCHO/Thyra Adapter Software"
+OUTPUT_DIRECTORY       = ../thyra/doc
 #
 # What and how documentation is extracted
 #
-INPUT                  = ./index.doc ../example ../thyra/example
-IMAGE_PATH             =
-EXAMPLE_PATH           = ../example/NLPWBCounterExample ../example/NLPWBCounterExample/sample_output \
-                         ../example/ExampleNLPBanded ../example/ExampleNLPBanded/sample_output \
-                         ../thyra/example/NLPThyraEpetraModelEval4DOpt \
-                         ../thyra/example/NLPThyraEpetraAdvDiffReactOpt \
-                         ../src/MoochoPack/configurations/sample_option_files \
-                         ../../stratimikos/example
+INPUT                  = ../thyra/doc/index.doc \
+                         ../thyra/src
+FILE_PATTERNS          = *.h *c *.hpp *.cpp
+RECURSIVE              = YES
 EXCLUDE                = 
-EXAMPLE_PATTERNS       =
+EXCLUDE_PATTERNS       = *.x *.o *.out
+EXAMPLE_PATH           = ../thyra/example
+EXAMPLE_PATTERNS       = *.cpp *.hpp
 INPUT_FILTER           = 
 ALPHABETICAL_INDEX     = YES
 IGNORE_PREFIX          = 
 #
-# Conditional sections
-#
-ENABLED_SECTIONS       = BUILD_HTML
-#
 # Links to other packages
 #
-GENERATE_TAGFILE       = ../../common/tag_files/moocho.tag
-ALLEXTERNALS           = YES
-EXTERNAL_GROUPS        = YES
+GENERATE_TAGFILE       = ../../common/tag_files/MoochoThyra.tag
+ALLEXTERNALS           = NO
+EXTERNAL_GROUPS        = NO
