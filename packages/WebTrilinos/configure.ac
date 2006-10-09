@@ -35,7 +35,7 @@
 # ------------------------------------------------------------------------
 
 #  #np# - package name, version number, and e-mail address below
-AC_INIT(WebTrilinos, 1.0, marzio.sala@gmail.com)
+AC_INIT(WebTrilinos, 1.1d, marzio.sala@gmail.com)
 
 echo "----------------------------------------"
 echo "Running WebTrilinos Configure Script"

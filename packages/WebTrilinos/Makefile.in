@@ -331,7 +331,10 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 autom4te.cache/* \
 	configure config.status config.log \
 	$(AUX_DIST) 
 
-SUBDIRS = c++ python
+
+# Test can be built unconditionally for now because the only purpose for
+# the directory is to keep the definition file in the expected location.
+SUBDIRS = c++ python test
 TRILINOS_HOME_DIR = @abs_top_srcdir@/../..
 TRILINOS_BUILD_DIR = @abs_top_builddir@/../..
 @HAVE_MPI_FALSE@WEBTRILINOS_CHECK_COMM = serial

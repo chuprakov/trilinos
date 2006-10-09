@@ -166,8 +166,10 @@ endif
 ## #######################################################################
 ## Subdirectories to be make'd recursively
 ## #######################################################################
+# Test can be built unconditionally for now because the only purpose for
+# the directory is to keep the definition file in the expected location.
 
-SUBDIRS = c++ python
+SUBDIRS = c++ python test
 
 ## #######################################################################
 ## Other make targets
