@@ -1,6 +1,0 @@
-
-always-build:
-	doxygen DoxyfileWeb
-
-clean:
-	rm -rf html
