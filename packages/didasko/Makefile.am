@@ -40,7 +40,8 @@ ACLOCAL	= aclocal -I config
 ## #######################################################################
 ## Additional files to be included in distribution for 'make dist'
 ## #######################################################################
-EXTRA_DIST = src/Didasko_ConfigDefs.h README
+EXTRA_DIST = config/strip_dup_incl_paths.pl config/strip_dup_libs.pl \
+	src/Didasko_ConfigDefs.h README
 
 ## #######################################################################
 ## Tools in the auxillary directory 

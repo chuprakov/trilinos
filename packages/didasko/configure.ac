@@ -42,7 +42,7 @@
 # From Trilinos 7.0, the version number should be as for Trilinos itself,
 # since the tutorial is so stricly related to Trilinos. Remember to change it 
 # a few lines below as well.
-AC_INIT(didasko, 7.0, marzio.sala@gmail.com)
+AC_INIT(didasko, 8.0d, marzio.sala@gmail.com)
 
 # Hello World!
 #
