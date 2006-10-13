@@ -1,7 +1,7 @@
 #@HEADER
 # ************************************************************************
 # 
-#              Meros: Segregated Preconditioning Package
+#               Meros: Segregated Preconditioning Package
 #                 Copyright (2004) Sandia Corporation
 # 
 # Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
@@ -26,21 +26,23 @@
 # ************************************************************************
 #@HEADER
 
-# The following line helps the test harness recover from build errors.
+EXEEXT = .exe
 
-all-local:
-	@echo ""
-	@echo "Trilinos package meros subdirectory example built successfully."
-	@echo ""
+include $(top_builddir)/Makefile.export.meros
 
-SUBDIRS = version_test saddle_pcd saddle_lsc
+bin_PROGRAMS = testInverseApply
 
-EXTRA_DIST = data/q1/Apq1 data/q1/Apq1.mm data/q1/Aq1 data/q1/Aq1.mm \
-	data/q1/Bq1 data/q1/Bq1.mm data/q1/Btq1 data/q1/Btq1.mm \
-	data/q1/newrhs data/q1/newrhs.mm data/q1/Q1Fp data/q1/Q1Fp.mm \
-	data/q1/rhsq1 data/q1/rhsq1.mm data/q1/rhsq1_press.mm \
-	data/q1/rhsq1_vel.mm data/ldc_stab/Ap.mm data/ldc_stab/B.mm \
-	data/ldc_stab/Bt.mm data/ldc_stab/C.mm data/ldc_stab/F.mm \
-	data/ldc_stab/Fp.mm data/ldc_stab/Qp.mm data/ldc_stab/rhs_press.mm \
-	data/ldc_stab/rhs_vel.mm
+testInverseApply_SOURCES = \
+	$(srcdir)/testInverseApply.cpp
+
+testInverseApply_DEPENDENCIES = $(top_builddir)/src/libmeros.a
+
+testInverseApply_LDADD = $(MEROS_LIBS)
+
+AM_CPPFLAGS = $(MEROS_INCLUDES)
+
+# This is already added part of MEROS_LIBS and therefore automake does not need to add this again!
+LIBS =
+
+
 

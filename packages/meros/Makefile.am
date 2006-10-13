@@ -47,7 +47,11 @@ ACLOCAL	= aclocal -I config
 EXTRA_DIST = bootstrap \
 	config/ac_cxx_have_std.m4 config/ac_cxx_have_stl.m4 \
 	config/ac_cxx_namespaces.m4 config/ac_cxx_mutable.m4 \
-	config/depcomp
+	config/strip_dup_incl_paths.pl config/strip_dup_libs.pl \
+	config/generate-makeoptions.pl config/replace-install-prefix.pl \
+	config/string-replace.pl       config/depcomp \
+	doc/build_docs doc/Doxyfile doc/DoxyfileWeb doc/footer.html \
+	doc/index.doc doc/mainpage.doxygen doc/meros_logo.jpg
 
 #
 #       I believe that by switching to AUX_DIR(../../config) one 
@@ -83,5 +87,43 @@ if BUILD_EXAMPLES
 EXAMPLE_SUBDIR=example
 endif
 
-SUBDIRS = src $(EXAMPLE_SUBDIR)
+SUBDIRS = src test $(EXAMPLE_SUBDIR)
+
+TRILINOS_HOME_DIR=@abs_top_srcdir@/../..
+TRILINOS_BUILD_DIR=@abs_top_builddir@/../..
+
+## #######################################################################
+## Export makefile stuff
+## #######################################################################
+
+all-libs:
+	cd $(top_builddir)/src ; $(MAKE) all-libs
+
+libs:
+	cd $(top_builddir)/src ; $(MAKE)
+
+if USING_EXPORT_MAKEFILES
+
+install-exec-hook:
+	cp $(top_builddir)/Makefile.export.meros $(exec_prefix)/include/.
+	$(PERL_EXE) $(top_srcdir)/config/replace-install-prefix.pl \
+                --exec-prefix=$(exec_prefix) \
+                --my-export-makefile=Makefile.export.meros \
+                --my-abs-top-srcdir=@abs_top_srcdir@ \
+                --my-abs-incl-dirs=@abs_top_builddir@/src:@abs_top_srcdir@/src \
+                --my-abs-lib-dirs=@abs_top_builddir@/src \
+                --dep-package-abs-builddirs=@abs_top_builddir@/../teuchos:@abs_top_builddir@/../epetra:@abs_top_builddir@/../ml:@abs_top_builddir@/../rtop:@abs_top_builddir@/../thyra:@abs_top_builddir@/../triutils:@abs_top_builddir@/../aztecoo
+	$(PERL_EXE) $(top_srcdir)/config/generate-makeoptions.pl $(top_builddir)/src/Makefile MEROS > $(exec_prefix)/include/Makefile.export.meros.macros
+
+uninstall-hook:
+	rm -f $(exec_prefix)/include/Makefile.export.meros
+	rm -f $(exec_prefix)/include/Makefile.export.meros.macros
+
+else
+
+install-exec-hook:
+
+uninstall-hook:
+
+endif
 

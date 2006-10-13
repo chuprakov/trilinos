@@ -42,7 +42,7 @@
 
 PROJECT_NAME           = Meros
 
-INPUT                  = ../src
+INPUT                  = ../src index.doc
 
 EXAMPLE_PATH           = ../example
 

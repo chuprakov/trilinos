@@ -26,21 +26,25 @@
 # ************************************************************************
 #@HEADER
 
-# The following line helps the test harness recover from build errors.
+EXEEXT = .exe
 
-all-local:
-	@echo ""
-	@echo "Trilinos package meros subdirectory example built successfully."
-	@echo ""
+include $(top_builddir)/Makefile.export.meros
 
-SUBDIRS = version_test saddle_pcd saddle_lsc
+bin_PROGRAMS = saddle_lsc saddle_lsc_epetra
 
-EXTRA_DIST = data/q1/Apq1 data/q1/Apq1.mm data/q1/Aq1 data/q1/Aq1.mm \
-	data/q1/Bq1 data/q1/Bq1.mm data/q1/Btq1 data/q1/Btq1.mm \
-	data/q1/newrhs data/q1/newrhs.mm data/q1/Q1Fp data/q1/Q1Fp.mm \
-	data/q1/rhsq1 data/q1/rhsq1.mm data/q1/rhsq1_press.mm \
-	data/q1/rhsq1_vel.mm data/ldc_stab/Ap.mm data/ldc_stab/B.mm \
-	data/ldc_stab/Bt.mm data/ldc_stab/C.mm data/ldc_stab/F.mm \
-	data/ldc_stab/Fp.mm data/ldc_stab/Qp.mm data/ldc_stab/rhs_press.mm \
-	data/ldc_stab/rhs_vel.mm
+#EXAMPLE = saddle_lsc saddle_lsc_epetra
+
+#noinst_PROGRAMS = saddle_lsc saddle_lsc_epetra
+
+saddle_lsc_SOURCES = $(srcdir)/saddle_lsc.cpp
+
+saddle_lsc_epetra_SOURCES = $(srcdir)/saddle_lsc_epetra.cpp
+
+saddle_lsc_DEPENDENCIES = $(top_builddir)/src/libmeros.a
+saddle_lsc_epetra_DEPENDENCIES = $(top_builddir)/src/libmeros.a
+
+saddle_lsc_LDADD = $(MEROS_LIBS)
+saddle_lsc_epetra_LDADD = $(MEROS_LIBS)
+
+AM_CPPFLAGS = $(MEROS_INCLUDES)
 

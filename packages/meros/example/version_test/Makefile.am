@@ -26,21 +26,26 @@
 # ************************************************************************
 #@HEADER
 
-# The following line helps the test harness recover from build errors.
+EXEEXT = .exe
 
-all-local:
-	@echo ""
-	@echo "Trilinos package meros subdirectory example built successfully."
-	@echo ""
+EXAMPLE = version_test
 
-SUBDIRS = version_test saddle_pcd saddle_lsc
+noinst_PROGRAMS = version_test
 
-EXTRA_DIST = data/q1/Apq1 data/q1/Apq1.mm data/q1/Aq1 data/q1/Aq1.mm \
-	data/q1/Bq1 data/q1/Bq1.mm data/q1/Btq1 data/q1/Btq1.mm \
-	data/q1/newrhs data/q1/newrhs.mm data/q1/Q1Fp data/q1/Q1Fp.mm \
-	data/q1/rhsq1 data/q1/rhsq1.mm data/q1/rhsq1_press.mm \
-	data/q1/rhsq1_vel.mm data/ldc_stab/Ap.mm data/ldc_stab/B.mm \
-	data/ldc_stab/Bt.mm data/ldc_stab/C.mm data/ldc_stab/F.mm \
-	data/ldc_stab/Fp.mm data/ldc_stab/Qp.mm data/ldc_stab/rhs_press.mm \
-	data/ldc_stab/rhs_vel.mm
+version_test_SOURCES = $(srcdir)/version_test.cpp
 
+version_test_DEPENDENCIES = \
+	$(top_builddir)/../teuchos/src/libteuchos.a \
+	$(top_builddir)/src/libmeros.a 
+
+
+version_test_CXXFLAGS =                           \
+ -I$(top_builddir)/src                            \
+ -I$(top_srcdir)/src                              \
+ -I$(top_builddir)/../teuchos/src                 \
+ -I$(top_srcdir)/../teuchos/src                   
+
+version_test_LDADD =                              \
+ $(top_builddir)/../meros/src/libmeros.a          \
+ $(top_builddir)/../teuchos/src/libteuchos.a      \
+ $(LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)

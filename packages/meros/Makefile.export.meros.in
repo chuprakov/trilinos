@@ -1,4 +1,4 @@
-#@HEADER
+# @HEADER
 # ************************************************************************
 # 
 #              Meros: Segregated Preconditioning Package
@@ -24,23 +24,36 @@
 # Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 # 
 # ************************************************************************
-#@HEADER
+# @HEADER
+include @abs_top_builddir@/../epetra/Makefile.export.epetra
+include @abs_top_builddir@/../epetraext/Makefile.export.epetraext
+include @abs_top_builddir@/../thyra/Makefile.export.thyra
+include @abs_top_builddir@/../teuchos/Makefile.export.teuchos
+include @abs_top_builddir@/../aztecoo/Makefile.export.aztecoo
+include @abs_top_builddir@/../ml/Makefile.export.ml
+#include @abs_top_builddir@/../ml/Makefile.export.amesos
 
-# The following line helps the test harness recover from build errors.
 
-all-local:
-	@echo ""
-	@echo "Trilinos package meros subdirectory example built successfully."
-	@echo ""
+_MEROS_INCLUDES = -I@abs_top_srcdir@/src -I@abs_top_builddir@/src \
+  $(IFPACK_INCLUDES) $(ML_INCLUDES) $(AZTECOO_INCLUDES) \
+  $(EPETRAEXT_INCLUDES) \
+  $(EPETRA_INCLUDES) \
+  $(THYRA_INCLUDES) \
+  $(TEUCHOS_INCLUDES) 
 
-SUBDIRS = version_test saddle_pcd saddle_lsc
 
-EXTRA_DIST = data/q1/Apq1 data/q1/Apq1.mm data/q1/Aq1 data/q1/Aq1.mm \
-	data/q1/Bq1 data/q1/Bq1.mm data/q1/Btq1 data/q1/Btq1.mm \
-	data/q1/newrhs data/q1/newrhs.mm data/q1/Q1Fp data/q1/Q1Fp.mm \
-	data/q1/rhsq1 data/q1/rhsq1.mm data/q1/rhsq1_press.mm \
-	data/q1/rhsq1_vel.mm data/ldc_stab/Ap.mm data/ldc_stab/B.mm \
-	data/ldc_stab/Bt.mm data/ldc_stab/C.mm data/ldc_stab/F.mm \
-	data/ldc_stab/Fp.mm data/ldc_stab/Qp.mm data/ldc_stab/rhs_press.mm \
-	data/ldc_stab/rhs_vel.mm
 
+
+_MEROS_LIBS     = @LDFLAGS@ -L@abs_top_builddir@/src -lmeros \
+  $(ML_LIBS) \
+  $(AZTECOO_LIBS) \
+  $(EPETRAEXT_LIBS) \
+  $(EPETRA_LIBS) \
+  $(TEUCHOS_LIBS) \
+  @LIBS@ @FLIBS@   
+
+@USING_GNUMAKE_TRUE@MEROS_INCLUDES  = $(shell @PERL_EXE@ @abs_top_srcdir@/config/strip_dup_incl_paths.pl $(_MEROS_INCLUDES))
+@USING_GNUMAKE_TRUE@MEROS_LIBS      = $(shell @PERL_EXE@ @abs_top_srcdir@/config/strip_dup_libs.pl $(_MEROS_LIBS))
+
+@USING_GNUMAKE_FALSE@MEROS_INCLUDES = $(_MEROS_INCLUDES)
+@USING_GNUMAKE_FALSE@MEROS_LIBS     = $(_MEROS_LIBS)

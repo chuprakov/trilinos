@@ -1,0 +1,249 @@
+// @HEADER
+// ***********************************************************************
+// 
+//              Meros: Segregated Preconditioning Package
+//                 Copyright (2004) Sandia Corporation
+// 
+// Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+// license for use of this work by or on behalf of the U.S. Government.
+// 
+// This library is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as
+// published by the Free Software Foundation; either version 2.1 of the
+// License, or (at your option) any later version.
+//  
+// This library is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//  
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA
+// Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
+// 
+// ***********************************************************************
+// @HEADER
+
+#include "Thyra_DefaultIdentityLinearOp.hpp"
+#include "Thyra_DefaultInverseLinearOpDecl.hpp"
+#include "Thyra_DefaultInverseLinearOp.hpp"
+#include "Thyra_DefaultPreconditioner.hpp"
+#include "Thyra_DefaultZeroLinearOp.hpp"
+#include "Thyra_LinearOpWithSolveFactoryHelpers.hpp"
+#include "Thyra_PreconditionerFactoryHelpers.hpp"
+#include "Thyra_SolveSupportTypes.hpp"
+#include "Thyra_LinearOpBase.hpp"
+#include "Thyra_LinearOpBaseDecl.hpp"
+#include "Thyra_VectorDecl.hpp"
+#include "Thyra_VectorImpl.hpp"
+#include "Thyra_VectorSpaceImpl.hpp"
+#include "Thyra_LinearOperatorDecl.hpp"
+#include "Thyra_LinearOperatorImpl.hpp"
+#include "Thyra_SpmdVectorBase.hpp"
+#include "Thyra_DefaultBlockedLinearOpDecl.hpp"
+#include "Thyra_PreconditionerFactoryBase.hpp"
+
+#include "Meros_AztecSolveStrategy.hpp"
+#include "Meros_InverseOperator.hpp"
+#include "Meros_ZeroOperator.hpp"
+#include "Meros_IdentityOperator.hpp"
+#include "Meros_LinearSolver.hpp"
+#include "Meros_PCDPreconditionerFactory.h"
+
+#include "AztecOO.h"
+#include "Thyra_AztecOOLinearOpWithSolveFactory.hpp"
+#include "Thyra_AztecOOLinearOpWithSolve.hpp"
+
+using namespace Teuchos;
+using namespace Thyra;
+using namespace Meros;
+
+
+// Constructors/initializers/accessors
+
+PCDPreconditionerFactory
+::PCDPreconditionerFactory()
+{;}
+
+
+PCDPreconditionerFactory
+::PCDPreconditionerFactory(RefCountPtr<ParameterList> azFParams,
+			   RefCountPtr<ParameterList> azApParams)
+{
+  azFParams_ = azFParams;
+  azApParams_ = azApParams;
+  azQpParams_ = Teuchos::null;
+}
+
+
+PCDPreconditionerFactory
+::PCDPreconditionerFactory(RefCountPtr<ParameterList> azFParams,
+			   RefCountPtr<ParameterList> azApParams,
+			   RefCountPtr<ParameterList> azQpParams)
+{
+  azFParams_ = azFParams;
+  azApParams_ = azApParams;
+  azQpParams_ = azQpParams;
+}
+
+
+
+bool PCDPreconditionerFactory
+::isCompatible(const LinearOpSourceBase<double> &fwdOpSrc) const
+{
+TEST_FOR_EXCEPT("PCDPreconditionerFactory::isCompatible is not implemented");
+}
+
+
+RefCountPtr<PreconditionerBase<double> > PCDPreconditionerFactory
+::createPrec() const
+{
+  return rcp(new DefaultPreconditioner<double>());
+}
+
+
+void PCDPreconditionerFactory
+::initializePrec(const RefCountPtr<const LinearOpSourceBase<double> > &opSrc,
+		 PreconditionerBase<double> *prec,
+		 const ESupportSolveUse supportSolveUse) const
+{
+  // Cast the LinearOpSourceBase object back to a PCDOperatorSource
+  RefCountPtr<const PCDOperatorSource> pcdOpSrcPtr 
+    = rcp_dynamic_cast<const PCDOperatorSource>(opSrc);
+
+  // Retrieve block operator and subblocks from the PCD operator source
+  //RefCountPtr<const LinearOpBase<double> > tmpBlockOp = pcdOpSrcPtr->getOp();
+  ConstLinearOperator<double> blockOp = pcdOpSrcPtr->getSaddleOp();
+  ConstLinearOperator<double> F = blockOp.getBlock(0,0);
+  ConstLinearOperator<double> Bt = blockOp.getBlock(0,1);
+  ConstLinearOperator<double> B = blockOp.getBlock(1,0);
+  // don't need C block for PCD
+
+  // Retrieve Fp, Ap, and Qp operators from PCD operator source.
+  // Note that Qp is set to the Identity if not included in the 
+  // operator source.
+  ConstLinearOperator<double> Fp = pcdOpSrcPtr->getFp();
+  ConstLinearOperator<double> Ap = pcdOpSrcPtr->getAp();
+  ConstLinearOperator<double> Qp = pcdOpSrcPtr->getQp();
+
+  
+  // Builde F inverse operator Finv using the AztecOO solver param list.
+  LinearSolveStrategy<double> azF 
+    = new AztecSolveStrategy(*(azFParams_.get()));
+  ConstLinearOperator<double> Finv 
+    = new InverseOperator<double>(F, azF);
+
+  // Build Ap inverse operator Apinv using the AztecOO solver param list.
+  LinearSolveStrategy<double> azAp 
+    = new AztecSolveStrategy(*(azApParams_.get()));
+  ConstLinearOperator<double> Apinv 
+     = new InverseOperator<double>(Ap, azAp);
+
+  // Build Qp inverse operator Qpinv using the AztecOO solver param list.
+  // If no Qpinv solver was given, we'll use the Ap solver parameters.
+  LinearSolveStrategy<double> azQp;
+  ConstLinearOperator<double> Qpinv; 
+  if(azQpParams_.get() != NULL)
+    {
+      // use given Qp params
+      azQp = new AztecSolveStrategy(*(azQpParams_.get()));
+      Qpinv = new InverseOperator<double>(Qp, azQp);
+    }
+  else
+    {
+      // use the Ap params
+      azQp = new AztecSolveStrategy(*(azApParams_.get()));
+      Qpinv = new InverseOperator<double>(Qp, azQp);
+    }
+
+  // Build identity matrices on the velocity and pressure spaces 
+  ConstLinearOperator<double> Ivel = new IdentityOperator<double>(Bt.range());
+  ConstLinearOperator<double> Ipress 
+    = new IdentityOperator<double>(Bt.domain());
+
+  // Build zero operators. Need one that is pressure x velocity and
+  // one that is velocity x pressure
+  ConstLinearOperator<double> Z = new ZeroOperator<double>(Bt.domain(), 
+							   Bt.range());
+  ConstLinearOperator<double> Zt = new ZeroOperator<double>(Bt.range(), 
+							    Bt.domain());
+
+  // Build the composed Schur complement approximation inverse
+  ConstLinearOperator<double> Xinv = Qpinv * Fp * Apinv;
+
+  // Build the 3 block operators for the preconditioner
+  ConstLinearOperator<double> P1 = block2x2(Finv, Zt, Z, Ipress);
+  ConstLinearOperator<double> P2 = block2x2(Ivel, (-1.0)*Bt, Z, Ipress);
+  ConstLinearOperator<double> P3 = block2x2(Ivel, Zt, Z, (-1.0)*Xinv);
+
+  ConstLinearOperator<double> PCDprec = P1 * P2 * P3;
+
+  DefaultPreconditioner<double>
+    *defaultPrec = &Teuchos::dyn_cast<DefaultPreconditioner<double> >(*prec);
+
+  (*defaultPrec).initializeRight(PCDprec.constPtr());
+
+//   if(hasQp_)
+//     {
+//       RefCountPtr<const LinearOpBase<double> > tmpQpOp = pcdOpSrcPtr->getQp();
+//       ConstLinearOperator<double> QpOp = tmpQpOp;
+//     }
+//   else
+//     {;
+//     }
+
+  // prec = P1*P2*P3...
+}
+
+
+void PCDPreconditionerFactory
+::uninitializePrec(PreconditionerBase<double> *prec,
+		   RefCountPtr<const LinearOpSourceBase<double> > *fwdOp,
+		   ESupportSolveUse *supportSolveUse) const
+{
+TEST_FOR_EXCEPT("PCDPreconditionerFactory::uninitializePrec not implemented");
+}
+
+
+// Overridden from ParameterListAcceptor
+
+void PCDPreconditionerFactory
+::setParameterList(Teuchos::RefCountPtr<Teuchos::ParameterList> const& paramList)
+{
+  TEST_FOR_EXCEPT(paramList.get()==NULL);
+  // Don't really have meros parameter lists yet.
+  //  paramList->validateParameters(*this->getValidParameters(),1);
+  paramList_ = paramList;
+}
+
+Teuchos::RefCountPtr<Teuchos::ParameterList>
+PCDPreconditionerFactory::getParameterList()
+{
+  return paramList_;
+}
+
+Teuchos::RefCountPtr<Teuchos::ParameterList>
+PCDPreconditionerFactory::unsetParameterList()
+{
+  Teuchos::RefCountPtr<Teuchos::ParameterList> _paramList = paramList_;
+  paramList_ = Teuchos::null;
+  return _paramList;
+}
+
+Teuchos::RefCountPtr<const Teuchos::ParameterList>
+PCDPreconditionerFactory::getParameterList() const
+{
+  return paramList_;
+}
+
+Teuchos::RefCountPtr<const Teuchos::ParameterList>
+PCDPreconditionerFactory::getValidParameters() const
+{
+  // if(!validPL_.get()) { validPL_ =
+  // defaultParameters(ML_DomainDecomposition); // Todo: the above is
+  // not really all of the valid parameters.  We need to // get ML to
+  // generate the entire list!  }
+  return validPL_;
+}

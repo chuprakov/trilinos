@@ -39,7 +39,7 @@
 # This must be the first line in configure.ac.
 # Optional 3rd argument is email address for bugs.
 
-AC_INIT(meros, 1.0, vehowle@ca.sandia.gov)
+AC_INIT(meros, 1.0, vehowle@sandia.gov)
 
 # Hello World!
 echo "----------------------------------------"
@@ -50,7 +50,7 @@ echo "----------------------------------------"
 # directory with --srcdir.  Any file in that directory will do,
 # preferably one that is unlikely to be removed or renamed.
 
-AC_CONFIG_SRCDIR(/src/SchurFactoryBase.h)
+AC_CONFIG_SRCDIR(/src/Meros_Version.h)
 
 # Specify directory for auxillary build tools (e.g., install-sh,
 # config.sub, config.guess) and M4 files.
@@ -59,7 +59,7 @@ AC_CONFIG_SRCDIR(/src/SchurFactoryBase.h)
 AC_CONFIG_AUX_DIR(config)
 # Configure should create src/meros_config.h from src/meros_config.h.in
 
-AM_CONFIG_HEADER(src/meros_config.h:src/meros_config.h.in)
+AM_CONFIG_HEADER(src/Meros_Config.h:src/Meros_Config.h.in)
 
 # Allow users to specify their own "install" command.  If none is specified,
 # the default is install-sh found in the config subdirectory.
@@ -277,6 +277,11 @@ AC_F77_LIBRARY_LDFLAGS
 #AC_SUBST(TRILINOS_TEMPLATE_OBJS)
 
 # ------------------------------------------------------------------------
+# Checks for Makefile.export related systems
+# ------------------------------------------------------------------------
+TAC_ARG_ENABLE_EXPORT_MAKEFILES(yes)
+
+# ------------------------------------------------------------------------
 # Checks for library functions
 # ------------------------------------------------------------------------
 
@@ -293,17 +298,16 @@ AC_SUBST(ac_aux_dir)
 
 AC_CONFIG_FILES([
 		Makefile 
+    Makefile.export.meros
 		src/Makefile
+		test/Makefile
+		test/EpetraThyraAdapter/Makefile
+		test/inverseApply/Makefile
+		test/OperatorSources/Makefile
 		example/Makefile
-                example/saddle_kayloghin/Makefile
-                example/saddle_diagschur/Makefile
-                example/saddle_bjb/Makefile
-                example/kayloghin_vbr/Makefile
-                example/saddle_matvec/Makefile
-            		example/saddle_simple/Makefile
-            		example/saddle_simplec/Makefile
-                example/saddle_solve/Makefile
-                example/vbr_test/Makefile
+                example/version_test/Makefile
+                example/saddle_pcd/Makefile
+                example/saddle_lsc/Makefile
 		])
 
 AC_OUTPUT()
