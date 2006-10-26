@@ -103,7 +103,7 @@ void MatrixSparseCOORSerial::set_buffers(
     space_cols_.initialize(rows);
     space_rows_.initialize(cols);
     if( nz && check_input ) {
-      assert(0); // Todo: Check that row_i[] and col_j[] are in bounds
+      TEST_FOR_EXCEPT(true); // Todo: Check that row_i[] and col_j[] are in bounds
     }
   }
   else {
@@ -474,7 +474,7 @@ index_type MatrixSparseCOORSerial::count_nonzeros(
   }
   else {
     // We have to consider the diagonals dl and du
-    assert(0); // ToDo: Implement!
+    TEST_FOR_EXCEPT(true); // ToDo: Implement!
   }
   return cnt_nz;
 }
@@ -535,7 +535,7 @@ void MatrixSparseCOORSerial::coor_extract_nonzeros(
         }
       }
       else {
-        assert(0); // ToDo: Implement!
+        TEST_FOR_EXCEPT(true); // ToDo: Implement!
       }
     }
     else {
@@ -616,7 +616,7 @@ void MatrixSparseCOORSerial::coor_extract_nonzeros(
   }
   else {
     // We have to consider the diagonals dl and du
-    assert(0); // ToDo: Implement!
+    TEST_FOR_EXCEPT(true); // ToDo: Implement!
   }
   assert( len_Aval == 0 || len_Aval == cnt_nz );
   assert( len_Aij == 0  || len_Aij  == cnt_nz );
@@ -627,7 +627,7 @@ void MatrixSparseCOORSerial::coor_extract_nonzeros(
 void MatrixSparseCOORSerial::make_storage_unique()
 {
   if( release_resource_.count() > 1 ) {
-    assert(0); // ToDo: Allocate new storage and copy this memory.
+    TEST_FOR_EXCEPT(true); // ToDo: Allocate new storage and copy this memory.
     self_allocate_ = true;
   }
 }

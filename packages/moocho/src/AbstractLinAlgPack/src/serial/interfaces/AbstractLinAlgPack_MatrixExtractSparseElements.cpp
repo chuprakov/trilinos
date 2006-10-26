@@ -90,7 +90,7 @@ void MatrixExtractSparseElements::get_dl_du(
       *du = 0;
       break;
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
       break;
   }
 }

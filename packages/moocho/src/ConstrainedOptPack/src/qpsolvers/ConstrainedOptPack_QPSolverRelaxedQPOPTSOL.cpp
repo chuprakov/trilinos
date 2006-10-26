@@ -426,7 +426,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
           // What do we do?
           break;
           default:
-          assert(0); // Should not get here!
+          TEST_FOR_EXCEPT(true); // Should not get here!
       }
     }
     mu->assume_sorted(true);

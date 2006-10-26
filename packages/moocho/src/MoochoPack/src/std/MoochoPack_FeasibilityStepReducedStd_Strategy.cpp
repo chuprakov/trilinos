@@ -206,7 +206,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
       break;
     }
       defaut:
-      assert(0); // Not a valid option
+      TEST_FOR_EXCEPT(true); // Not a valid option
   }
 
   //
@@ -324,7 +324,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
     DVector q(m-r);
     Range1D undecomp = s->con_undecomp();
     if( m > r ) {
-      assert(0); // ToDo: Implement when needed!
+      TEST_FOR_EXCEPT(true); // ToDo: Implement when needed!
     }
 
     // Setup the rest of the arguments
@@ -351,7 +351,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
         qp_olevel = QPSolverRelaxed::PRINT_EVERY_THING;
         break;
         default:
-        assert(0);
+        TEST_FOR_EXCEPT(true);
     }
 
     //
@@ -486,7 +486,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
     return false;
 
 */
-  assert(0);
+  TEST_FOR_EXCEPT(true);
 
   return true;
 }

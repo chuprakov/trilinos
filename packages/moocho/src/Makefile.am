@@ -1104,4 +1104,5 @@ EXTRA_DIST = $(srcdir)/MoochoPack/configurations/generate-opt-file.pl \
 	$(srcdir)/MoochoPack/configurations/IpConfig/Moocho.opt.NLPAlgoConfigIP \
 	$(srcdir)/MoochoPack/configurations/Moocho.opt.MoochoSolver \
 	$(srcdir)/MoochoPack/configurations/Shared/Moocho.opt.DecompositionSystemStateStepBuilderStd \
-	$(srcdir)/MoochoPack/configurations/MamaJama/Moocho.opt.NLPAlgoConfigMamaJama
+	$(srcdir)/MoochoPack/configurations/MamaJama/Moocho.opt.NLPAlgoConfigMamaJama \
+	$(srcdir)/MoochoPack/configurations/sample_option_files/Moocho.sample.opt

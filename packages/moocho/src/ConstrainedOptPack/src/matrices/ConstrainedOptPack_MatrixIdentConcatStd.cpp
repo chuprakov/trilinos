@@ -136,7 +136,7 @@ const VectorSpace& MatrixIdentConcatStd::space_rows() const
 
 MatrixOp& MatrixIdentConcatStd::operator=(const MatrixOp& m)
 {
-  assert(0); // Finish!
+  TEST_FOR_EXCEPT(true); // Finish!
   return *this;
 }
 

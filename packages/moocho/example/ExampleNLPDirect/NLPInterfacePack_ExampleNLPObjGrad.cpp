@@ -260,7 +260,7 @@ void ExampleNLPObjGrad::imp_calc_c(const Vector& x, bool newx
 void ExampleNLPObjGrad::imp_calc_h(
   const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const
 {
-  assert(0); // Should never be called!
+  TEST_FOR_EXCEPT(true); // Should never be called!
 }
 
 // Overridden protected members from NLPFirstOrder

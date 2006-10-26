@@ -58,7 +58,7 @@ void NLPThyraModelEvaluatorBase::initialize(bool test_setup)
     NLPObjGrad::initialize(test_setup);
     return;
   }
-  //assert(0); // Todo: push the variables in bounds!
+  //TEST_FOR_EXCEPT(true); // Todo: push the variables in bounds!
   num_bounded_x_ = AbstractLinAlgPack::num_bounded(*xl_,*xu_,NLP::infinite_bound());
   NLPObjGrad::initialize(test_setup);
   initialized_ = true;

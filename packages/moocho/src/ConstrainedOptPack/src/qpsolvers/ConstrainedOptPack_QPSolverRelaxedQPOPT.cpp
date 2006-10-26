@@ -241,7 +241,7 @@ QPSolverRelaxedQPOPTSOL::EInform QPSolverRelaxedQPOPT::call_qp_solver(bool warm_
         " QPOPT says that the problem type is not recognized" );
       break;
     default:
-      assert(0); // Should not happen
+      TEST_FOR_EXCEPT(true); // Should not happen
   }
   
   return return_inform;

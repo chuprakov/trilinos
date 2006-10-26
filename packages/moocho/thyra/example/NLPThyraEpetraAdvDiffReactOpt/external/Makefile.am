@@ -47,6 +47,8 @@ install-data-local:
            $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/. ; \
 	cp ../_run-varied-tests.pl $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/run-varied-tests.pl ; \
 	chmod a+x $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/run-varied-tests.pl ; \
+	$(INSTALL_DATA) $(top_srcdir)/src/MoochoPack/configurations/sample_option_files/Moocho.sample.opt \
+           $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/input_files/. ; \
 	$(INSTALL_DATA) Makefile.external.stub $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/Makefile
 
 sample-makefile:

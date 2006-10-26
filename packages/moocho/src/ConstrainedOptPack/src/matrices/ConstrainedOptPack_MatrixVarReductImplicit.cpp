@@ -260,7 +260,7 @@ const VectorSpace& MatrixVarReductImplicit::space_rows() const
 MatrixOp& MatrixVarReductImplicit::operator=(const MatrixOp& M)
 {
   assert_initialized();
-  assert(0); // ToDo: Finish!
+  TEST_FOR_EXCEPT(true); // ToDo: Finish!
   return *this;
 }
 

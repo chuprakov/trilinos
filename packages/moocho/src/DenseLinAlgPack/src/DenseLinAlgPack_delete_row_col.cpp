@@ -69,6 +69,6 @@ void DenseLinAlgPack::delete_row_col( size_type kd, DMatrixSliceTriEle* tri_M )
     }
   }
   else {
-    assert(0); // Invalid input
+    TEST_FOR_EXCEPT(true); // Invalid input
   }
 }

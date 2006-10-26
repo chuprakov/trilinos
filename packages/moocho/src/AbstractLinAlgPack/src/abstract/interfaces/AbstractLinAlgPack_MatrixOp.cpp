@@ -348,7 +348,7 @@ value_type MatrixOp::transVtMtV(
   const Vector& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
   , const Vector& vs_rhs3) const
 {
-  assert(0); // ToDo: Implement!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement!
   return 0.0;
 }
 
@@ -356,7 +356,7 @@ value_type MatrixOp::transVtMtV(
   const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
   , const SpVectorSlice& sv_rhs3) const
 {
-  assert(0); // ToDo: Implement!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement!
   return 0.0;
 }
 
@@ -366,7 +366,7 @@ void MatrixOp::syr2k(
   , const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
   , value_type beta, MatrixSymOp* sym_lhs ) const
 {
-  assert(0); // ToDo: Implement!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement!
 }
 
 // Level-3 BLAS
@@ -501,7 +501,7 @@ void AbstractLinAlgPack::Mp_StMtP(
     << typeid(*mwo_lhs).name() << "\' does not support the "
     "\'MultiVectorMutable\' interface!" );
 
-  assert(0); // ToDo: Implement!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement!
 }
 
 void AbstractLinAlgPack::Mp_StPtM(
@@ -528,7 +528,7 @@ void AbstractLinAlgPack::Mp_StPtM(
     << typeid(*mwo_lhs).name() << "\' does not support the "
     "\'MultiVectorMutable\' interface!" );
 
-  assert(0); // ToDo: Implement!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement!
 
 }
 
@@ -557,7 +557,7 @@ void AbstractLinAlgPack::Mp_StPtMtP(
     << typeid(*mwo_lhs).name() << "\' does not support the "
     "\'MultiVectorMutable\' interface!" );
 
-  assert(0); // ToDo: Implement!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement!
 
 }
 

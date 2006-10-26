@@ -55,7 +55,7 @@ const char* solution_type_str( ConstrainedOptPack::QPSolverStats::ESolutionType 
   case qpst::SUBOPTIMAL_POINT:
     return "SUBOPTIMAL_POINT";
   default:
-    assert(0);
+    TEST_FOR_EXCEPT(true);
   }
   return "";	// will never be executed.
 }
@@ -655,7 +655,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
   }
 
   if( F ) {
-    assert(0); // ToDo: Update below code!
+    TEST_FOR_EXCEPT(true); // ToDo: Update below code!
 /*
 
     ///////////////////////////////////

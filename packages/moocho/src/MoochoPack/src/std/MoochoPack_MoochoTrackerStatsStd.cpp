@@ -152,7 +152,7 @@ void MoochoTrackerStatsStd::output_final( const Algorithm& p_algo
       o << "interrupted_not_solved";
       break;
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
   o << "; # solved, except, max_iter, max_run_time\n";
   // niter

@@ -507,7 +507,7 @@ void ExampleNLPBanded::imp_calc_Gh_orig(
 
 void ExampleNLPBanded::assert_is_initialized() const
 {
-  assert(0); //  ToDo: Implemenet!
+  TEST_FOR_EXCEPT(true); //  ToDo: Implemenet!
 }
 
 void ExampleNLPBanded::inform_new_point(bool newx) const

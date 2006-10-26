@@ -166,7 +166,7 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
           *b_X_itr = (ele = dU.lookup_element(i))->value(); // Should not be null!
           break;
           default:
-          assert(0);
+          TEST_FOR_EXCEPT(true);
       }
     }
   }

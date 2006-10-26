@@ -50,7 +50,6 @@ int main( int argc, char* argv[] )
     Scalar       xL1         = -1e+50;
     Scalar       xU0         = +1e+50;
     Scalar       xU1         = +1e+50;
-    bool         externalFactory = false;
 
     CommandLineProcessor  clp(false); // Don't throw exceptions
 
@@ -74,8 +73,6 @@ int main( int argc, char* argv[] )
     clp.setOption( "xL1", &xL1 );
     clp.setOption( "xU0", &xU0 );
     clp.setOption( "xU1", &xU1 );
-    clp.setOption( "external-lowsf", "internal-lowsf", &externalFactory
-                   ,"Determines if the Thyra::LinearOpWithSolveFactory is used externally or internally to the Thyra::EpetraModelEvaluator object"  );
  
     CommandLineProcessor::EParseCommandLineReturn
       parse_return = clp.parse(argc,argv,&std::cerr);
@@ -104,20 +101,7 @@ int main( int argc, char* argv[] )
     Teuchos::RefCountPtr<Thyra::EpetraModelEvaluator>
       epetraThyraModel = rcp(new Thyra::EpetraModelEvaluator());
     
-    Teuchos::RefCountPtr<Thyra::ModelEvaluator<double> > thyraModel;
-    if(externalFactory) {
-      epetraThyraModel->initialize(epetraModel,Teuchos::null);
-      thyraModel = Teuchos::rcp(
-        new Thyra::DefaultModelEvaluatorWithSolveFactory<double>(
-          epetraThyraModel
-          ,lowsFactory
-          )
-        );
-    }
-    else {
-      epetraThyraModel->initialize(epetraModel,lowsFactory);
-      thyraModel = epetraThyraModel;
-    }
+    epetraThyraModel->initialize(epetraModel,lowsFactory);
     
     //
     // Solve the NLP

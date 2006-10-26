@@ -46,10 +46,10 @@ namespace NLPInterfacePack {
  * This is an implementation node class that takes an original NLP and transforms
  * it by:
  * <ul>
- * <li> Converting general inequalities to equalities with slack varaibles
+ * <li> Converting general inequalities to equalities with slack variables
  * <li> Removing variables fixed by bounds
  * <li> Converting general inequalities with cramped bounds into general equalities
- * <li> Reordering the quanities according to the current basis selection
+ * <li> Reordering the quantities according to the current basis selection
  *      (by implementing the \c NLPVarReductPerm interface).
  * </ul>
  *
@@ -62,10 +62,10 @@ namespace NLPInterfacePack {
      min    f_orig(x_orig)
      s.t.   c_orig(x_orig) = 0
             hl_orig <= h(x_orig) <= hu_orig
-          xl_orig <= x_orig <= xu_orig
+            xl_orig <= x_orig <= xu_orig
   where:
           x_orig         <: REAL^n_orig
-            f_orig(x_orig) <: REAL^n_orig -> REAL
+          f_orig(x_orig) <: REAL^n_orig -> REAL
           c_orig(x_orig) <: REAL^n_orig -> REAL^m_orig
           h_orig(x_orig) <: REAL^n_orig -> REAL^mI_orig
  \endverbatim
@@ -79,26 +79,26 @@ namespace NLPInterfacePack {
 
      min    f_full(x_full)
      s.t.   c_full(x_full) = 0
-          xl_full <= x_full <= xu_full
+            xl_full <= x_full <= xu_full
 
   where:
 
-          x_full         = [ x_orig ]  n_orig
+          x_full           = [ x_orig ]  n_orig
                              [ s_orig ]  mI_orig
 
-            f_full(x_full) = f_orig(x_orig)
+          f_full(x_full)   = f_orig(x_orig)
 
-            c_full(x_full) = [ c_orig(x_orig)          ]  m_orig
+          c_full(x_full)   = [ c_orig(x_orig)          ]  m_orig
                              [ h_orig(x_orig) - s_orig ]  mI_orig
 
-          xl_full        = [ xl_orig ]  n_orig
+          xl_full          = [ xl_orig ]  n_orig
                              [ hl_orig ]  mI_orig
 
-          xu_full        = [ xu_orig ]  n_orig
+          xu_full          = [ xu_orig ]  n_orig
                              [ hu_orig ]  mI_orig
  \endverbatim
  * Note that in this case, the Jacobian of the new equality constraints
- * becomes and the gradient of the new objective becomes:
+ * and the gradient of the new objective become:
  \verbatim
 
     Gc_full = [  Gc_orig    Gh_orig   ]  n_orig
@@ -109,19 +109,19 @@ namespace NLPInterfacePack {
     Gf_full = [ Gf_orig ]  n_orig
               [    0    ]  mI_orig
  \endverbatim
- * Note that it is up to the subclass to implement \c imp_calc_Gc()
+ * It is up to the subclass to implement \c imp_calc_Gc()
  * and \c imp_calc_Gh() in a way that is consistent with the above
  * transformation while also considering basis permutations (see 
  * \c NLPSerialPreprocessExplJac).  As for the gradient
  * \c Gc_full, the subclass can actually include terms for the slack
  * variables in the objective function but the most common behavior
- * will be to just ignore slack varaibles in the subclass.
+ * will be to just ignore slack variables in the subclass.
  *
- * <b>Preprocessing and basis manipulaiton</b>
+ * <b>Preprocessing and basis manipulation</b>
  *
- * The initial basis selection is the original order (<tt>x_full = [ x_orig; s_orig ]</tt>
+ * The initial basis selection is the original order (<tt>x_full = [ x_orig; s_orig ]</tt>)
  * with the variables fixed by bounds being removed,
- * and assuming there are no dependent equations (<tt>r == m</tt>).
+ * and assumes there are no dependent equations (<tt>r == m</tt>).
  *
  * The implementations of the Jacobian matrices \c Gc and \c Gh are not determined here and
  * must be defined by an %NLP subclass (see \c NLPSerialPreprocessExplJac for example).
@@ -160,26 +160,26 @@ namespace NLPInterfacePack {
  * <tt>x(i) == x_full(var_remove_fixed_to_full()(var_perm()(i))), for i = 1...n</tt>
  *
  * The permutation <tt>equ_perm()</tt> gives the partitioning of the equality constraints
- * into decomposed and undecomposed equalities.  Decomposed inequality constriants is not
- * supported yet.
+ * into decomposed and undecomposed equalities.  Decomposed inequality constraints are not
+ * supported currently.
  *
  * <b>Subclass developers notes</b>
  *
- * Handling of multiple updates by subclasses: Here we discuss the protocal for the 
- * handling of multiple updates to quantities durring the calculation of other quantities.
+ * Handling of multiple updates by subclasses: Here we discuss the protocol for the 
+ * handling of multiple updates to quantities during the calculation of other quantities.
  * In order to simplify the implementation of subclasses as much as possible, storage
  * for all iteration quantities will be passed to the subclass in the methods
  * <tt>imp_calc_f_orig()</tt>, <tt>imp_calc_c_orig()</tt>, <tt>imp_calc_h_orig()</tt>
- * and <tt>imp_calc_Gf_orig()</tt> requardless of what quantities where set by the user
+ * and <tt>imp_calc_Gf_orig()</tt> regardless of what quantities where set by the user
  * in the <tt>NLP</tt> interface.  The subclass can always find out what was set
  * by the client by calling <tt>get_f()</tt>, <tt>get_c()</tt>, <tt>get_Gf()</tt>
  * etc.  Therefore, in general, clients should just only compute what is required
  * in each call to <tt>imp_calc_xxx_orig()</tt> and only update other quantities
- * if it is absolutly free to do so (e.g. computing a function value when a gradient
+ * if it is absolutely free to do so (e.g. computing a function value when a gradient
  * is computed using AD) or is required to do so (e.g.an external interface that 
  * forces both <tt>f_orig(x_orig)</tt>, <tt>c_orig(x_orig)</tt> and <tt>h_orig(x_orig)</tt>
  * be computed at the same time).  It is up to the subclass to remember when a quantity
- * has already been computed so that it will not be computed again unecessarily.  It is
+ * has already been computed so that it will not be computed again unnecessarily.  It is
  * always safe for the subclass to ignore these issues and just do what is easiest.
  * More careful implementations can be handled by the subclass by keeping track of
  * <tt>get_xxx()</tt> and <tt>newx</tt> and remembering when quantities are computed.
@@ -189,7 +189,7 @@ namespace NLPInterfacePack {
  * The following methods from the \c NLP interface must be overridden by the %NLP subclass:
  * \c max_var_bounds_viol(), \c set_multi_calc(), \c multi_calc().
  *
- * The following methods from the \c NLPVarReductPerm interface msut be overridden by the %NLP subclass:
+ * The following methods from the \c NLPVarReductPerm interface must be overridden by the %NLP subclass:
  * \c nlp_selects_basis().
  *
  * In addition, the methods from this interface that must be overridden are: \c imp_n_orig(),

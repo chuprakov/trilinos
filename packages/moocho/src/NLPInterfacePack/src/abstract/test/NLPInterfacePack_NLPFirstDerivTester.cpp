@@ -108,7 +108,7 @@ bool NLPFirstDerivTester::finite_diff_check(
     case FD_DIRECTIONAL:
       return fd_directional_check(nlp,xo,xl,xu,Gc,Gf,print_all_warnings,out);
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
 
   } // end try

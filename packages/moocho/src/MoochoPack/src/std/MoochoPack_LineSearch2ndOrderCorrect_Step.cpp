@@ -303,7 +303,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
             use_newton_olevel = PRINT_NEWTON_VECTORS;
             break;
             default:
-            assert(0);
+            TEST_FOR_EXCEPT(true);
         }
       }
       else {
@@ -327,7 +327,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
             inner_olevel = PRINT_VECTORS;
           break;
           default:
-          assert(0);
+          TEST_FOR_EXCEPT(true);
       }
       
       // Print header for summary information
@@ -509,7 +509,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
             break;
           }
           default:
-            assert(0);
+            TEST_FOR_EXCEPT(true);
         }
 
         if(good_correction) {
@@ -672,7 +672,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
   }
 
 */
-  assert(0);
+  TEST_FOR_EXCEPT(true);
 
   return true;
 }

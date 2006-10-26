@@ -140,7 +140,7 @@ int main(int argc, char* argv[] ) {
         prog_return = PROG_EXCEPTION;
         break;
       default:
-        assert(0);
+        TEST_FOR_EXCEPT(true);
     }
     
   }	// end try

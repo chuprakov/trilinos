@@ -95,7 +95,7 @@ void MultiVectorMutableDense::initialize(
 const DMatrixSlice MultiVectorMutableDense::get_gms_view() const
 {
   if(gms_trans_ == BLAS_Cpp::trans) {
-    assert(0); // ToDo: We need to create a copy and transpose it!
+    TEST_FOR_EXCEPT(true); // ToDo: We need to create a copy and transpose it!
   }
   return get_gms(); // No memory to allocate!
 }
@@ -103,7 +103,7 @@ const DMatrixSlice MultiVectorMutableDense::get_gms_view() const
 void MultiVectorMutableDense::free_gms_view(const DMatrixSlice* gms_view) const
 {
   if(gms_trans_ == BLAS_Cpp::trans) {
-    assert(0); // ToDo: We need to free the copy that we created in get_gms_view()
+    TEST_FOR_EXCEPT(true); // ToDo: We need to free the copy that we created in get_gms_view()
   }
   else {
     // Nothing to free!
@@ -115,7 +115,7 @@ void MultiVectorMutableDense::free_gms_view(const DMatrixSlice* gms_view) const
 DMatrixSlice MultiVectorMutableDense::get_gms_view()
 {
   if(gms_trans_ == BLAS_Cpp::trans) {
-    assert(0); // ToDo: We need to create a copy and transpose it!
+    TEST_FOR_EXCEPT(true); // ToDo: We need to create a copy and transpose it!
   }
   return set_gms(); // No memory to allocate!
 }
@@ -123,7 +123,7 @@ DMatrixSlice MultiVectorMutableDense::get_gms_view()
 void MultiVectorMutableDense::commit_gms_view(DMatrixSlice* gms_view)
 {
   if(gms_trans_ == BLAS_Cpp::trans) {
-    assert(0); // ToDo: We need to free the copy that we created in get_gms_view()
+    TEST_FOR_EXCEPT(true); // ToDo: We need to free the copy that we created in get_gms_view()
   }
   else {
     // Nothing to free!

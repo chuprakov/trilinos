@@ -125,7 +125,7 @@ void AbstractLinAlgPack::V_StMtV(
     }
   }
   else {
-    assert(0);	// ToDo: Implement the other cases!
+    TEST_FOR_EXCEPT(true);	// ToDo: Implement the other cases!
   }
   if(	 P.ordered_by() == GPMSIP::BY_ROW_AND_COL
     || 	( P_trans == no_trans	&& P.ordered_by() == GPMSIP::BY_ROW )
@@ -250,7 +250,7 @@ void AbstractLinAlgPack::Vp_StMtV(
   else if( x.is_sorted() ) {
     const SpVectorSlice::difference_type x_off = x.offset();
     if( P_trans == no_trans && P.ordered_by() == GPMSIP::BY_COL ) {
-      assert(0);	// ToDo: implement this!
+      TEST_FOR_EXCEPT(true);	// ToDo: implement this!
     }
     else if( ( P_trans == trans && P.ordered_by() == GPMSIP::BY_ROW )
       || P.ordered_by() == GPMSIP::BY_ROW_AND_COL )
@@ -281,13 +281,13 @@ void AbstractLinAlgPack::Vp_StMtV(
       }
     }
     else {
-      assert(0); // ToDo: Implement what ever this case is?	
+      TEST_FOR_EXCEPT(true); // ToDo: Implement what ever this case is?	
     }
   }
   else {
     // Since things do not match up we will have to create a
     // temporary dense copy of x to operate on.
-    assert(0);	// ToDo: Implement this!
+    TEST_FOR_EXCEPT(true);	// ToDo: Implement this!
   }
 }
 
@@ -317,7 +317,7 @@ ordered_by(
       opP_ordered_by = GPMSIP::UNORDERED;
       break;
         default:
-      assert(0); // Should never happen
+      TEST_FOR_EXCEPT(true); // Should never happen
   }
   return opP_ordered_by;
 }
@@ -378,7 +378,7 @@ void AbstractLinAlgPack::intersection(
   }
   // One is identity?
   if( P1.is_identity() || P2.is_identity() ) {
-    assert(0); // ToDo: Implement this but it is a little tricking?
+    TEST_FOR_EXCEPT(true); // ToDo: Implement this but it is a little tricking?
     return;
   }
   //
@@ -389,7 +389,7 @@ void AbstractLinAlgPack::intersection(
   {
     // This is great!  Both of the matrices are sorted and we don't need any temparary storage
     if( Q_max_nz ) {
-      assert(0); // ToDo: Implement initializing Q_row_i, Q_col_j
+      TEST_FOR_EXCEPT(true); // ToDo: Implement initializing Q_row_i, Q_col_j
     }
     else {
       GenPermMatrixSlice::const_iterator
@@ -444,7 +444,7 @@ void AbstractLinAlgPack::intersection(
     }
     // Loop through the columns of op(op(P1)) and look for matches
     if( Q_max_nz ) {
-      assert(0); // ToDo: Implement initializing Q_row_i, Q_col_j
+      TEST_FOR_EXCEPT(true); // ToDo: Implement initializing Q_row_i, Q_col_j
     }
     else {
       GenPermMatrixSlice::const_iterator

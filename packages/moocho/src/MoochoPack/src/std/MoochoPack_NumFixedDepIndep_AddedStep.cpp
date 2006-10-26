@@ -60,7 +60,7 @@ bool MoochoPack::NumFixedDepIndep_AddedStep::do_step(Algorithm& _algo
       else if( indep.in_range( itr->indice() + nu_k.offset() ) )
         fixed_indep++;
       else
-        assert(0);	// should never happen
+        TEST_FOR_EXCEPT(true);	// should never happen
     }
     if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
       out	<< "\nnum_dep_fixed = "		<< fixed_dep

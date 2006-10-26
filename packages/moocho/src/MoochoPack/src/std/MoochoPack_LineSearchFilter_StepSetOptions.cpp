@@ -126,7 +126,7 @@ void LineSearchFilter_StepSetOptions::setOption(
       target().back_track_frac(::atof(option_value.c_str()));
       break;
     default:
-      assert(0);	// Local error only?
+      TEST_FOR_EXCEPT(true);	// Local error only?
     }
   }
 

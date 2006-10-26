@@ -258,7 +258,7 @@ bool InitFinDiffReducedHessian_Step::do_step(
           break;
         }
         default:
-          assert(0);	// only local programming error?
+          TEST_FOR_EXCEPT(true);	// only local programming error?
       }
     }
     nlp.unset_quantities();

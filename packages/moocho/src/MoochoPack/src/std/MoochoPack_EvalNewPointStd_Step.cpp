@@ -256,7 +256,7 @@ bool EvalNewPointStd_Step::do_step(
         ds_olevel = DecompositionSystem::PRINT_EVERY_THING;
         break;
       default:
-        assert(0); // Should not get here!
+        TEST_FOR_EXCEPT(true); // Should not get here!
     };
 
     // Test the decomposition system
@@ -280,7 +280,7 @@ bool EvalNewPointStd_Step::do_step(
             ds_olevel = DecompositionSystemTester::PRINT_ALL;
             break;
           default:
-            assert(0); // Should not get here!
+            TEST_FOR_EXCEPT(true); // Should not get here!
         }
         decomp_sys_tester().print_tests(ds_olevel);
         decomp_sys_tester().dump_all( olevel == PRINT_ITERATION_QUANTITIES );

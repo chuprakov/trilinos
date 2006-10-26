@@ -142,7 +142,7 @@ VectorSpaceBlocked::create_member() const
 VectorSpace::multi_vec_mut_ptr_t
 VectorSpaceBlocked::create_members(size_type num_vecs) const
 {
-  assert(0); // ToDo: Implement using MultiVectorMutableCompositeStd!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement using MultiVectorMutableCompositeStd!
   return Teuchos::null;
 }
 

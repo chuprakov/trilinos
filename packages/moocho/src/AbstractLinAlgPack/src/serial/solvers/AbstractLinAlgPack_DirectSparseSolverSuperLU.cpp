@@ -179,7 +179,7 @@ void DirectSparseSolverSuperLU::estimated_fillin_ratio(
   value_type estimated_fillin_ratio
   )
 {
-  assert(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 // Overridden from DirectSparseSolverImp

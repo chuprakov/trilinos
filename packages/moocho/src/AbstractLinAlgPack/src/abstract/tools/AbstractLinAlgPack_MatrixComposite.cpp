@@ -135,11 +135,11 @@ void Vp_StMtV_imp(
           // y(r) += a * beta * v'*x(c,c+n-1)
           //
 //					y->set_ele( r, y->get_ele(r) + a * itr->beta_ * dot( *itr->v_, *get_view(x,c,c+itr->v_->dim()-1) ) );
-          assert(0); // ToDo: Implement the above method in VectorStdOps for Vector,SpVectorSlice!
+          TEST_FOR_EXCEPT(true); // ToDo: Implement the above method in VectorStdOps for Vector,SpVectorSlice!
         }
       }
       else { // op(op(G)*v) or op(v(rng_G))
-        assert(0); // ToDo: Implement when needed!
+        TEST_FOR_EXCEPT(true); // ToDo: Implement when needed!
       }
     }
   }
@@ -181,7 +181,7 @@ void Vp_StMtV_imp(
           // y(rl:ru) += a * alpha * op(op(P)) * x(cl:cu)
           //
 // 					AbstractLinAlgPack::Vp_StMtV( y->sub_view(rl,ru).get(), a * itr->alpha_, itr->P_, op_P_trans, *get_view(x,cl,cu) );
-          assert(0); // ToDo: Implement the above method properly!
+          TEST_FOR_EXCEPT(true); // ToDo: Implement the above method properly!
         }
         else { // op(P)*op(A)*op(Q)  [or some simplification]
           //
@@ -205,7 +205,7 @@ void Vp_StMtV_imp(
               );
           }
           else {
-            assert(0); // ToDo: Implement when needed!
+            TEST_FOR_EXCEPT(true); // ToDo: Implement when needed!
           }
         }
       }
@@ -275,7 +275,7 @@ void MatrixComposite::add_vector(
   )
 {
   fully_constructed_ = false;
-  assert(0); // ToDo: Finish!
+  TEST_FOR_EXCEPT(true); // ToDo: Finish!
 }
 
 void MatrixComposite::add_vector(
@@ -289,7 +289,7 @@ void MatrixComposite::add_vector(
   )
 {
   fully_constructed_ = false;
-  assert(0); // ToDo: Finish!
+  TEST_FOR_EXCEPT(true); // ToDo: Finish!
 }
 
 void MatrixComposite::add_vector(
@@ -344,7 +344,7 @@ void MatrixComposite::add_matrix(
   )
 {
   fully_constructed_ = false;
-  assert(0); // ToDo: Finish!
+  TEST_FOR_EXCEPT(true); // ToDo: Finish!
 }
 
 void MatrixComposite::add_matrix(
@@ -361,7 +361,7 @@ void MatrixComposite::add_matrix(
   )
 {
   fully_constructed_ = false;
-  assert(0); // ToDo: Finish!
+  TEST_FOR_EXCEPT(true); // ToDo: Finish!
 }
 
 void MatrixComposite::add_matrix(
@@ -378,7 +378,7 @@ void MatrixComposite::add_matrix(
   )
 {
   fully_constructed_ = false;
-  assert(0); // ToDo: Finish!
+  TEST_FOR_EXCEPT(true); // ToDo: Finish!
 }
 
 void MatrixComposite::add_matrix(

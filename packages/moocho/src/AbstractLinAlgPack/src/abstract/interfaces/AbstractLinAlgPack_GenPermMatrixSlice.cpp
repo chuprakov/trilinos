@@ -76,7 +76,7 @@ const char* ordered_by_str(
     case AbstractLinAlgPack::GenPermMatrixSliceIteratorPack::UNORDERED:
       return "UNORDERED";
   }
-  assert(0);	// should never be executed
+  TEST_FOR_EXCEPT(true);	// should never be executed
   return 0;
 }
 
@@ -386,7 +386,7 @@ const GenPermMatrixSlice GenPermMatrixSlice::create_submatrix(
       break;
     }
     case GPMSIP::UNORDERED:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
   GenPermMatrixSlice gpms;
   if( k_u - k_l > 0 && k_u != nz() + 1 ) {

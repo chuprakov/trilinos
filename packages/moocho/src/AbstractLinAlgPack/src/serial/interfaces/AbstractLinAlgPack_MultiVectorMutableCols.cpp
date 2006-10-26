@@ -127,14 +127,14 @@ MultiVectorMutableCols::operator=(const MatrixOp& mwo_rhs)
 MatrixOp::mat_mut_ptr_t
 MultiVectorMutableCols::clone()
 {
-  assert(0); // ToDo: Implement!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement!
   return Teuchos::null;
 }
 
 MatrixOp::mat_ptr_t
 MultiVectorMutableCols::clone() const
 {
-  assert(0); // ToDo: Implement!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement!
   return Teuchos::null;
 }
 

@@ -1113,7 +1113,7 @@ void Algorithm::look_for_interrupt()
         break;
       }
       default: {
-        assert(0);
+        TEST_FOR_EXCEPT(true);
       }
     }
     static_processed_user_interrupt = true;

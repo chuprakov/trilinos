@@ -695,7 +695,7 @@ bool DecompositionSystemTester::test_decomp_system(
         olevel = MWONST_t::PRINT_ALL;
         break;
       default:
-        assert(0); // Should not get here
+        TEST_FOR_EXCEPT(true); // Should not get here
     }
     MWONST_t
       R_tester(

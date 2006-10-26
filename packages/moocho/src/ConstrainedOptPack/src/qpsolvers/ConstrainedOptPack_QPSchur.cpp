@@ -97,7 +97,7 @@ const char* bnd_str( ConstrainedOptPack::EBounds bnd )
     case ConstrainedOptPack::EQUALITY:
       return "EQUALITY";
   }
-  assert(0);	// should never be executed
+  TEST_FOR_EXCEPT(true);	// should never be executed
   return 0;
 }
 
@@ -696,7 +696,7 @@ void calc_obj_grad_norm_inf(
   ,DenseLinAlgPack::value_type                                *qp_grad_norm_inf
   )
 {
-  assert(0); // ToDo: Implement this?
+  TEST_FOR_EXCEPT(true); // ToDo: Implement this?
 }
 
 }	// end namespace
@@ -784,7 +784,7 @@ void QPSchur::U_hat_t::Mp_StM(DMatrixSlice* C, value_type a
       Mp_StMtP( &C2, a, *A(), trans, P_plus_hat(), no_trans );
   }
   else {
-    assert(0);	// Implement this!
+    TEST_FOR_EXCEPT(true);	// Implement this!
   }
 }
 */
@@ -890,7 +890,7 @@ void QPSchur::U_hat_t::Vp_StMtV(
       Vp_StPtMtV( y, a, P_XF_hat(), trans, *A(), no_trans, x2 );
   }
   else {
-    assert(0);	// Invalid value for M_trans
+    TEST_FOR_EXCEPT(true);	// Invalid value for M_trans
   }
 }
 
@@ -999,7 +999,7 @@ void QPSchur::U_hat_t::Vp_StMtV(
       Vp_StPtMtV( y, a, P_XF_hat(), trans, *A(), no_trans, x2 );
   }
   else {
-    assert(0);	// Invalid value for M_trans
+    TEST_FOR_EXCEPT(true);	// Invalid value for M_trans
   }
 }
 
@@ -1105,11 +1105,11 @@ void QPSchur::ActiveSet::initialize(
           }
           else if ( x_init_bnd == EQUALITY ) {
             // ToDo: Throw exception
-            assert(0);
+            TEST_FOR_EXCEPT(true);
           }
           else if( x_init_bnd == bnd ) {
             // ToDo: Throw exception
-            assert(0);
+            TEST_FOR_EXCEPT(true);
           }
           else {
             // Initially fixed variable being fixed to another bound
@@ -1121,7 +1121,7 @@ void QPSchur::ActiveSet::initialize(
           // Adding a general inequality (or equality) constraint
           if( ij > n + m_breve ) {
             // ToDo: Throw exception
-            assert(0);
+            TEST_FOR_EXCEPT(true);
           }		
           ++q_plus_hat;
         }
@@ -1458,7 +1458,7 @@ void QPSchur::ActiveSet::initialize(
 void QPSchur::ActiveSet::refactorize_schur_comp()
 {
   // ToDo: Finish Me
-  assert(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 bool QPSchur::ActiveSet::add_constraint(
@@ -2788,7 +2788,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
           << "\n*** The current point is suboptimal but we will return it anyway!\n";
         break;
       default:
-        assert(0);
+        TEST_FOR_EXCEPT(true);
     }
     *out	<< "\nNumber of QP iteratons                                = " << *iter;
     *out	<< "\nNumber of iterative refinement residual calculations  = " << iter_refine_num_resid;
@@ -3152,7 +3152,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
               }
             }
             else {
-              assert(0); // Should not happen!
+              TEST_FOR_EXCEPT(true); // Should not happen!
             }
             if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
               *out
@@ -3299,7 +3299,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
               set_x( *act_set, *v, x );
               break;
             default:
-              assert(0); // Local programming error only!
+              TEST_FOR_EXCEPT(true); // Local programming error only!
             }
           }
           if( iter_refine_at_solution() || using_iter_refinement ) {
@@ -4474,7 +4474,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
         }
       }
       default:
-        assert(0);	// only a local programming error
+        TEST_FOR_EXCEPT(true);	// only a local programming error
     }
   }
 

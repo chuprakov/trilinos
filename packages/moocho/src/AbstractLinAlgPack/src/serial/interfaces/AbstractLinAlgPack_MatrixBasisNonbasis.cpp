@@ -91,7 +91,7 @@ void MatrixBasisNonbasis::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_
       break;
 
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
 }
 
@@ -149,7 +149,7 @@ void MatrixBasisNonbasis::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_
       break;
 
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
 }
 

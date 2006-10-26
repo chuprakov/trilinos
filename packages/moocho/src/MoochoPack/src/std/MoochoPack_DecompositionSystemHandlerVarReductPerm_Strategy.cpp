@@ -147,7 +147,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
       ds_olevel = DecompositionSystem::PRINT_EVERY_THING;
       break;
     default:
-      assert(0); // Should not get here!
+      TEST_FOR_EXCEPT(true); // Should not get here!
   };
 
   if( !get_new_basis ) {

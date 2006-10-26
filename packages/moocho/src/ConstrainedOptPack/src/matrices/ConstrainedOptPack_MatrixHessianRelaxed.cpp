@@ -318,7 +318,7 @@ value_type MatrixHessianRelaxed::transVtMtV(
   }
   else {
     // x1 and x2 could be different sparse vectors
-    assert(0); // ToDo: Implement this!
+    TEST_FOR_EXCEPT(true); // ToDo: Implement this!
   }
   return 0.0; // Will never be executed!
 }

@@ -251,12 +251,12 @@ void MatrixSymPosDefInvCholFactor::extract_inv_chol( DMatrixSliceTriEle* InvChol
 
 void MatrixSymPosDefInvCholFactor::serialize( std::ostream &out ) const
 {
-  assert(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 void MatrixSymPosDefInvCholFactor::unserialize( std::istream &in )
 {
-  assert(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 }	// end namespace ConstrainedOptPack

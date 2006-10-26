@@ -346,7 +346,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
       cov_.quasi_newton_ = uov_.quasi_newton_;
       break;
       default:
-      assert(0); // Invalid option!
+      TEST_FOR_EXCEPT(true); // Invalid option!
   }
 
   // ToDo: Sort out the rest of the options!
@@ -566,7 +566,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
         );
     }
     else {
-      assert(0); // ToDo: Add rHL for an exact reduced Hessian!
+      TEST_FOR_EXCEPT(true); // ToDo: Add rHL for an exact reduced Hessian!
     }
     
     //
@@ -588,7 +588,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
             new Teuchos::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPModL1>());
           break;
         default:
-          assert(0);	// local programming error
+          TEST_FOR_EXCEPT(true);	// local programming error
       }
       state->set_iter_quant(
         merit_func_nlp_name
@@ -950,7 +950,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
                 = Teuchos::rcp(new  MeritFunc_PenaltyParamUpdateMultFree_AddedStep());
               break;
             default:
-              assert(0);
+              TEST_FOR_EXCEPT(true);
           }
           break;
         }
@@ -964,7 +964,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
             "The merit_function_type options of MODIFIED_L1 and MODIFIED_L1_INCR have not been updated yet!" );
           break;
         default:
-          assert(0);	// local programming error
+          TEST_FOR_EXCEPT(true);	// local programming error
       }
       if(options_.get()) {
         MeritFunc_PenaltyParamUpdate_AddedStepSetOptions
@@ -1080,7 +1080,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
         n == m, std::logic_error
         ,"NLPAlgoConfigIP::config_alg_cntr(...) : Error, "
         "Nonlinear equation (NLE) problems are not supported yet!" );
-      assert(0); // ToDo: add the step objects for this algorithm
+      TEST_FOR_EXCEPT(true); // ToDo: add the step objects for this algorithm
     }
     else if ( m > 0 || nb > 0 ) {
       //
@@ -1247,7 +1247,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 
     }
     else {
-      assert(0); // Error, this should not ever be called!
+      TEST_FOR_EXCEPT(true); // Error, this should not ever be called!
     }
   }
   
@@ -1495,7 +1495,7 @@ void NLPAlgoConfigIP::readin_options(
           break;
         }
         default:
-          assert(0);	// this would be a local programming error only.
+          TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
       }
     }
   }

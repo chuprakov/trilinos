@@ -166,7 +166,7 @@ index_type MatrixConvertToSparseEncap::num_nonzeros(
       du = +(index_type)col_rng_.lbound() - (index_type)row_rng_.lbound();
       break;
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
   const index_type
     *inv_row_perm = inv_row_perm_.get() ? &(*inv_row_perm_)(1) : NULL,
@@ -209,7 +209,7 @@ void MatrixConvertToSparseEncap::coor_extract_nonzeros(
       du = +(index_type)col_rng_.lbound() - (index_type)row_rng_.lbound();
       break;
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
   const index_type
     *inv_row_perm = inv_row_perm_.get() ? &(*inv_row_perm_)(1) : NULL,

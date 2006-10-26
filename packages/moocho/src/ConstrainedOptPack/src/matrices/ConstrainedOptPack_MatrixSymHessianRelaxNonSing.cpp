@@ -60,10 +60,15 @@ void Vp_StPtMtV_imp(
   using AbstractLinAlgPack::MatrixOp;
   namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 
+#ifdef TEUCHOS_DEBUG
+  TEST_FOR_EXCEPT(y==NULL);
+#endif
+
   const DenseLinAlgPack::size_type
     no = H.G().rows(),  // number of original variables
     nr = H.M().rows(),  // number of relaxation variables
-    nd = no + nr;       // total number of variables
+    nd = no + nr,       // total number of variables
+    ydim = y->dim();    // y->dim() == number of rows in op(P)
 
   DenseLinAlgPack::Vp_MtV_assert_sizes(
     y->dim(),P.rows(),P.cols(),P_trans
@@ -84,13 +89,13 @@ void Vp_StPtMtV_imp(
   //
   // For this to work op(P) must be sorted by column.
   //
-  if( 	( P.ordered_by() == GPMSIP::BY_ROW && P_trans == BLAS_Cpp::no_trans )
-      || 	( P.ordered_by() == GPMSIP::BY_COL && P_trans == BLAS_Cpp::trans )
-    ||  ( P.ordered_by() == GPMSIP::UNORDERED ) )
+  if(  ( P.ordered_by() == GPMSIP::BY_ROW && P_trans == BLAS_Cpp::no_trans )
+       || ( P.ordered_by() == GPMSIP::BY_COL && P_trans == BLAS_Cpp::trans )
+       ||  ( P.ordered_by() == GPMSIP::UNORDERED ) )
   {
     // Call the default implementation
     //H.MatrixOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b);
-    assert(0); // ToDo: Implement!
+    TEST_FOR_EXCEPT(true); // ToDo: Implement!
     return;
   }
   const DenseLinAlgPack::Range1D
@@ -99,15 +104,15 @@ void Vp_StPtMtV_imp(
   const AbstractLinAlgPack::GenPermMatrixSlice
     P1 = ( P.is_identity() 
          ? GenPermMatrixSlice(
-           P_trans == no_trans ? nd : no 
-           ,P_trans == no_trans ? no : nd
+           P_trans == no_trans ? ydim : no 
+           ,P_trans == no_trans ? no : ydim
            ,GenPermMatrixSlice::IDENTITY_MATRIX )
          : P.create_submatrix(o_rng,P_trans==trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
       ),
     P2 = ( P.is_identity()
          ? GenPermMatrixSlice(
-           P_trans == no_trans ? nd : nr
-           ,P_trans == no_trans ? nr : nd
+           P_trans == no_trans ? ydim : nr
+           ,P_trans == no_trans ? nr : ydim
            ,GenPermMatrixSlice::ZERO_MATRIX )
          : P.create_submatrix(r_rng,P_trans==trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
       );
@@ -119,7 +124,7 @@ void Vp_StPtMtV_imp(
   // y += a*op(P1)*G*x1
   if( P1.nz() )
     LinAlgOpPack::Vp_StPtMtV( y, a, P1, P_trans, H.G(), H_trans, x1, b );
-  // y2 += a*op(P2)*M*x2
+  // y += a*op(P2)*M*x2
   if( P2.nz() )
     LinAlgOpPack::Vp_StPtMtV( y, a, P2, P_trans, H.M(), H_trans, x2, 1.0 );
 }

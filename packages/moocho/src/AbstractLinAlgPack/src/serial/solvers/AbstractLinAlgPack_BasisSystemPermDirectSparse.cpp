@@ -179,21 +179,21 @@ void BasisSystemPermDirectSparse::update_basis(
 const AbstractLinAlgPack::BasisSystemPerm::perm_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_P_var() const
 {
-  assert(0); // ToDo: Implement using PermutationSerial
+  TEST_FOR_EXCEPT(true); // ToDo: Implement using PermutationSerial
   return Teuchos::null;
 }
 
 const AbstractLinAlgPack::BasisSystemPerm::perm_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_P_equ() const
 {
-  assert(0); // ToDo: Implement using PermutationSerial
+  TEST_FOR_EXCEPT(true); // ToDo: Implement using PermutationSerial
   return Teuchos::null;
 }
 
 const AbstractLinAlgPack::BasisSystemPerm::perm_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_P_inequ() const
 {
-  assert(0); // ToDo: Implement using PermutationSerial
+  TEST_FOR_EXCEPT(true); // ToDo: Implement using PermutationSerial
   return Teuchos::null;
 }
 
@@ -256,7 +256,7 @@ void BasisSystemPermDirectSparse::set_basis(
     ,out
     );
   if( rank < var_dep.size() ) {
-    assert(0); // ToDo: Throw an exception with a good error message!
+    TEST_FOR_EXCEPT(true); // ToDo: Throw an exception with a good error message!
   }
   // Update the rest of the basis stuff
   do_some_basis_stuff(Gc,var_dep,*equ_decomp,C_bm,&C_aggr,D,GcUP);
@@ -424,7 +424,7 @@ void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
       );
   }
   if( GcUP ) {
-    assert(0); // ToDo: Implement!
+    TEST_FOR_EXCEPT(true); // ToDo: Implement!
   }
 }
 

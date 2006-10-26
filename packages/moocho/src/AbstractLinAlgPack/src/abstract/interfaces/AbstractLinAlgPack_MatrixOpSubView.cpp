@@ -144,7 +144,7 @@ MatrixOp::mat_ptr_t
 MatrixOpSubView::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
   assert_initialized();
-  assert(0); // ToDo: Implement!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement!
   return Teuchos::null;
 }
 
@@ -175,7 +175,7 @@ void MatrixOpSubView::Mt_S( value_type alpha )
 MatrixOp& MatrixOpSubView::operator=(const MatrixOp& M)
 {
   assert_initialized();
-  assert(0); // ToDo: Implement!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement!
   return *this;
 }
 

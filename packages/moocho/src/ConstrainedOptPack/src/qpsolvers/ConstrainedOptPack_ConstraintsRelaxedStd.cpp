@@ -63,7 +63,7 @@ convert_bnd_type( int bnd_type )
     case +1:
       return ConstrainedOptPack::UPPER;
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
   return ConstrainedOptPack::LOWER; // Never be called
 }
@@ -254,7 +254,7 @@ void ConstraintsRelaxedStd::pick_violated_policy( EPickPolicy pick_policy )
       inequality_pick_policy_ = ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY;
       break;
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
 }
 
@@ -269,7 +269,7 @@ ConstraintsRelaxedStd::pick_violated_policy() const
     case ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY:
       return MOST_VIOLATED;
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
   return ANY_VIOLATED;	// will never be executed
 }
@@ -305,7 +305,7 @@ void ConstraintsRelaxedStd::pick_violated(
   // //////////////////////////////////////////////
   // Check the equality constraints first
   if( check_F_ && A_bar_.F() ) {
-    assert(0); // ToDo: Update below code!
+    TEST_FOR_EXCEPT(true); // ToDo: Update below code!
 /*
     // The basic strategy here is to go through all of the equality
     // constraints first and add all of the ones that are violated by
@@ -373,7 +373,7 @@ void ConstraintsRelaxedStd::pick_violated(
       // Now look through the list of passed over equalities and see which one
       // is violated.  If a passed over constraint is added to the active set
       // then it is removed from this list.
-      assert(0); // ToDo: Implement!
+      TEST_FOR_EXCEPT(true); // ToDo: Implement!
     }
 */
   }
@@ -524,7 +524,7 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
         case UPPER:
           return dU_->get_ele(j_local);
         default:
-          assert(0);
+          TEST_FOR_EXCEPT(true);
       }
     }
     else {
@@ -539,7 +539,7 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
       case UPPER:
         return +inf;
       default:
-        assert(0);
+        TEST_FOR_EXCEPT(true);
     }
   }
   else if( (j_local -= 1) <= A_bar_.m_in() ) {
@@ -550,7 +550,7 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
       case UPPER:
         return eU_->get_ele(j_local);
       default:
-        assert(0);
+        TEST_FOR_EXCEPT(true);
     }
   }
   else if( (j_local -= A_bar_.m_in()) <= A_bar_.m_eq() ) {
@@ -560,7 +560,7 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
       case UPPER:
         return -A_bar_.f()->get_ele(j_local);
       default:
-        assert(0);
+        TEST_FOR_EXCEPT(true);
     }
   }
   return 0.0;	// will never be executed!
@@ -688,7 +688,7 @@ MatrixOp& ConstraintsRelaxedStd::MatrixConstraints::operator=(
   )
 {
   // ToDo: Finish me
-  assert(0);
+  TEST_FOR_EXCEPT(true);
   return *this;
 }
 
@@ -750,11 +750,11 @@ void ConstraintsRelaxedStd::MatrixConstraints::Mp_StPtMtP(
     //      + a*op(P11)*op(F')*op(P24) - a*op(P12)*f'*op(P24)
     //      
 
-    assert(0);	// ToDo: Implement This!
+    TEST_FOR_EXCEPT(true);	// ToDo: Implement This!
 
   }
   else {
-    assert(0);	// ToDo: Finish This!
+    TEST_FOR_EXCEPT(true);	// ToDo: Finish This!
   }
 }
 */
@@ -873,7 +873,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
     }
   }
   else {
-    assert(0);	// Invalid trans value
+    TEST_FOR_EXCEPT(true);	// Invalid trans value
   }
 }
 
@@ -932,7 +932,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
   {
     // Call the default implementation
     //MatrixOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,beta);
-    assert(0);
+    TEST_FOR_EXCEPT(true);
     return;
   }
 
@@ -1078,7 +1078,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
     
   }
   else {
-    assert(0);	// Invalid trans value
+    TEST_FOR_EXCEPT(true);	// Invalid trans value
   }
 */
 }

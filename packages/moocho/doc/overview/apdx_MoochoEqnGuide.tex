@@ -5,11 +5,11 @@
 \esinglespace}
 %
 
-This is a summary of the mathematical notation for SQP and rSQP
-algorithms and the associated iteration quantities for MOOCHO
-algorithms.  This guide provides a precise mapping from mathematical
-notation to identifier names used in MOOCHO.  Algorithm developers should
-stay as true as possible this notation as possible.\\[2ex]
+%This is a summary of the mathematical notation for SQP and rSQP
+%algorithms and the associated iteration quantities for MOOCHO
+%algorithms.  This guide provides a precise mapping from mathematical
+%notation to identifier names used in MOOCHO.  Algorithm developers should
+%stay as true as possible this notation as possible.\\[2ex]
 
 {\bsinglespace
 \small
@@ -66,7 +66,7 @@ L(x,\lambda,\nu_L,\nu_U) =
 
 \noindent\fbox{
 \begin{minipage}[t]{2.4in}
-\textbf{Full-Space QP Subproblem (Relaxed)}
+\textbf{Full-Space QP Subproblem}
 %
 \begin{eqnarray*}
 \mbox{min}  &  & g^T d + \myonehalf d^T W d	+ M(\eta) \\
@@ -87,9 +87,9 @@ L(x,\lambda,\nu_L,\nu_U) =
 %
 \hfill
 %
-\begin{minipage}[t]{3.0in}
+\begin{minipage}[t]{3.2in}
 \fbox{
-\begin{minipage}[t]{2.8in}
+\begin{minipage}[t]{3.2in}
 \textbf{Null-Space Decomposition}
 %
 \[
@@ -111,9 +111,9 @@ d = (1-\eta) Y p_y + Z p_z
 \>	$p_y \:\in\: \mathcal{Y} \:\subseteq\:\RE\:^{r}$
 \end{tabbing}
 \end{minipage}
-} \\ [3ex]
+} \\ [1ex]
 \fbox{
-\begin{minipage}[t]{2.8in}
+\begin{minipage}[t]{3.2in}
 \textbf{Quasi-Normal (Range-Space) Subproblem}
 %
 \[
@@ -171,7 +171,7 @@ where: \\
 %
 %\fbox{
 \begin{minipage}[t]{2.3in}
-\textbf{Variable-Reduction Null-Space} \\
+\textbf{Variable-Reduction} \\
 \textbf{Decompositions} \\
 %
 \[
@@ -230,7 +230,7 @@ $U_y = E - F D^T$
 }\\[2ex]
 
 \noindent\fbox{
-\begin{minipage}{3.0in}
+\begin{minipage}{3.7in}
 \textbf{Orthonormal (QR) Null-Space Decomposition} \\
 \[
 Q^T A_d = {\bmat{c} R^T \\ 0 \emat}
@@ -288,13 +288,13 @@ $c(x)|_x \:\in\:\mathcal{C}$
 		\> General equality constraints evaluated at $x$ \\
 $A \equiv \nabla c(x)|_x \:\in\:\mathcal{X}|\mathcal{C}$
 	\> \texttt{Gc}
-		\> Gradient of $c(x)$ evaluated at $x$,
+		\> Gradient of $c(x)$,
 			 $\nabla c = {\bmat{ccc} \nabla c_1 & \ldots & \nabla c_m \emat}$ \\
 
 \textbf{\textit{Lagrangian}} \\
 $\lambda \:\in\: \mathcal{C}$
 	\> \texttt{lambda}
-		\> Lagrange multipliers for the general equality constraints  \\
+		\> Lagrange multipliers for $c(x)=0$  \\
 $\nu \:\in\: \mathcal{X}$
 	\> \texttt{nu}
 		\> Lagrange multipliers (sparse) for the variable bounds  \\
@@ -315,7 +315,7 @@ $\nabla_{xx}^2 L(x_k,\lambda_k)$ \\
 \textbf{\textit{SQP Step}} \\
 $d \:\in\: \mathcal{X}$
 	\> \texttt{d}
-		\> Full SQP step for the unknown variables, $d = (x_{k+1})^{+} - x_{k}$ \\
+		\> Full SQP step for the variables, $d = (x_{k+1})^{+} - x_{k}$ \\
 $\eta \:\in\: \RE$
 	\> \texttt{eta}
 		\> Relaxation variable for QP subproblem \\
@@ -359,7 +359,7 @@ $R = 	\begin{array}[t]{l}
 			\:\in\: \mathcal{C}_d|\mathcal{Y}
 		\end{array}$
 	\> \texttt{R}
-		\> \\
+		\> Nonsingular:  Equal to basis $C$ for coordinate decompositions\\
 $U_z = \begin{array}[t]{l}
 			[(\nabla c_u)^T Z] \\
 			\:\in\: \mathcal{C}_u|\mathcal{Z}

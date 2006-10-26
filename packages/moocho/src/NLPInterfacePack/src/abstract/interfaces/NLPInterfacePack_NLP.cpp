@@ -322,14 +322,14 @@ const Vector& NLP::h_breve() const
 
 const Permutation& NLP::P_var() const
 {
-  assert(0);
+  TEST_FOR_EXCEPT(true);
 //	if(!P_var_.get()) P_var_ = Teuchos::rcp(new PermutationSerial(this->space_x());
   return *P_var_;
 }
 
 const Permutation& NLP::P_equ() const
 {
-  assert(0);
+  TEST_FOR_EXCEPT(true);
 //	if(!P_equ_.get()) P_equ = Teuchos::rcp(new PermutationSerial(this->space_c());
   return *P_equ_;
 }

@@ -117,7 +117,7 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
         ds_olevel = DecompositionSystem::PRINT_EVERY_THING;
         break;
       default:
-        assert(0); // Should not get here!
+        TEST_FOR_EXCEPT(true); // Should not get here!
     };
     
     // Form the decomposition of Gc and update the decomposition system matrices

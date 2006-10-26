@@ -259,7 +259,7 @@ void PreProcessBarrierLineSearch_StepSetOptions::setOption(
       target().tau_boundary_frac(::atof(option_value.c_str()));
       break;
     default:
-      assert(0);	// Local error only?
+      TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

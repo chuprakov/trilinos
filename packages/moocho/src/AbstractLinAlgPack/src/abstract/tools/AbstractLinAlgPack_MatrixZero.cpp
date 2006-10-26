@@ -106,7 +106,7 @@ void MatrixZero::Mt_S( value_type alpha )
 MatrixOp& MatrixZero::operator=(const MatrixOp& M)
 {
   assert_initialized();
-  assert(0); // ToDo: Implement!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement!
   return *this;
 }
 

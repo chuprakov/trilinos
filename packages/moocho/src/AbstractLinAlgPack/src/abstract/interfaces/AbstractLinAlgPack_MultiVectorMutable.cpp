@@ -84,7 +84,7 @@ MultiVectorMutable::mv_clone()
 MultiVectorMutable::multi_vec_mut_ptr_t
 MultiVectorMutable::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng)
 {
-  assert(0); // ToDo: return a MultiVectorMutableSubView object.
+  TEST_FOR_EXCEPT(true); // ToDo: return a MultiVectorMutableSubView object.
   // Note that the MultiVectorMutableSubView class should derive from
   // MultiVectorSubView.
   return Teuchos::null;
@@ -122,7 +122,7 @@ MatrixOp& MultiVectorMutable::operator=(const MatrixOp& mwo_rhs)
     AbstractLinAlgPack::apply_op(APPLY_BY_COL,assign_vec_op,1,multi_vecs,1,targ_multi_vecs,NULL);
   }
   else {
-    assert(0); // ToDo: Get column by column or row by row
+    TEST_FOR_EXCEPT(true); // ToDo: Get column by column or row by row
   }
   return *this;
 }

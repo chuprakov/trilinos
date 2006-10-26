@@ -331,7 +331,7 @@ bool MatrixSymPosDefCholFactor::syrk(
   MatrixDenseSymMutableEncap  sym_gms_lhs(this);
   const MatrixOpGetGMS *mwo_rhs_gms = dynamic_cast<const MatrixOpGetGMS*>(&mwo_rhs);
   if(mwo_rhs_gms) {
-    assert(0); // ToDo: Implement
+    TEST_FOR_EXCEPT(true); // ToDo: Implement
     return true;
   }
   else {
@@ -482,8 +482,9 @@ void MatrixSymPosDefCholFactor::Vp_StPtMtV(
     DenseLinAlgPack::Vt_S(y,b); // y = b*y
     const DMatrixSlice M = this->M().gms(); // This is lower triangular!
     // Compute product column by corresponding to x_itr->index() + x.offset()
+    /*
     if( P.is_identity() ) {
-      assert(0); // ToDo: Implement
+      TEST_FOR_EXCEPT(true); // ToDo: Implement
     }
     else {
       for( SpVectorSlice::const_iterator x_itr = x.begin(); x_itr != x.end(); ++x_itr ) {
@@ -492,6 +493,7 @@ void MatrixSymPosDefCholFactor::Vp_StPtMtV(
 
       }
     }
+    */
     MatrixOpSerial::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // ToDo: Specialize when needed!
   }
   else {
@@ -1063,7 +1065,7 @@ void MatrixSymPosDefCholFactor::initialize(
         throw WarnNearSingularUpdateException( omsg.str(), gamma ); // The initialization still succeeded through
       }
       else {
-        assert(0); // Only local programming error?
+        TEST_FOR_EXCEPT(true); // Only local programming error?
       }
     }
   }
@@ -1251,7 +1253,7 @@ void MatrixSymPosDefCholFactor::augment_update(
         // Don't throw the exception till the very end!
       }
       else {
-        assert(0); // Only local programming error?
+        TEST_FOR_EXCEPT(true); // Only local programming error?
       }
     }
     // u22 = sqrt(u22^2)

@@ -10,8 +10,6 @@ Testing the supported NLPFirstOrder interface ...
 
 Successful end of testing of the nlp
 
-Calling Win32 version of Teuchos::seconds_initialize()!
-
 
 ********************************
 *** Start of rSQP Iterations ***

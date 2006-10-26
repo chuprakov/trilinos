@@ -166,7 +166,7 @@ void MatrixNonsing::M_StMtInvM(
   ,BLAS_Cpp::Transp trans_rhs2
   ) const
 {
-  assert(0); // ToDo: Implement!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement!
 }
 
 }	// end namespace AbstractLinAlgPack

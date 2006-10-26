@@ -49,7 +49,7 @@ void MatrixSymNonsing::M_StMtInvMtM(
     MatrixSymOp* S, value_type a, const MatrixOp& B
   , BLAS_Cpp::Transp B_trans, EMatrixDummyArg ) const
 {
-  assert(0); // ToDo: Implement!
+  TEST_FOR_EXCEPT(true); // ToDo: Implement!
 }
 
 // Overridden from MatrixNonsing

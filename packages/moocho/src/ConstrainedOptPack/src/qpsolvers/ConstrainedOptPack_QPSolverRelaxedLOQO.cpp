@@ -175,7 +175,7 @@ void QPSolverRelaxedLOQO::InitLOQOHessianJacobian::init_hess_jacob(
   else {
     // At least one of the inequality constriants has
     // both infinite upper and lower bounds.
-    assert(0); // ToDo: Finish this!
+    TEST_FOR_EXCEPT(true); // ToDo: Finish this!
   }
   
   // Loop through and adjust A for absent lower bound and using upper bound
@@ -406,7 +406,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
       loqo_lp->verbose = 6;
       break;
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
 
   //
@@ -536,7 +536,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
       solution_type = QPSolverStats::DUAL_FEASIBLE_POINT;
       break;
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
 
   qp_stats_.set_stats(

@@ -121,13 +121,13 @@ const DVectorSlice NLPWBCounterExample::imp_xu_orig() const
 
 const DVectorSlice NLPWBCounterExample::imp_hl_orig() const
 {
-  assert(0);  // Should never be called
+  TEST_FOR_EXCEPT(true);  // Should never be called
    return xinit_orig_();
 }
 
 const DVectorSlice NLPWBCounterExample::imp_hu_orig() const
 {
-  assert(0);  // Should never be called
+  TEST_FOR_EXCEPT(true);  // Should never be called
    return xinit_orig_();
 }
 
@@ -150,7 +150,7 @@ void NLPWBCounterExample::imp_calc_c_orig(
 void NLPWBCounterExample::imp_calc_h_orig(
   const DVectorSlice &x_full, bool newx, const ZeroOrderInfoSerial &zero_order_info ) const
 {
-  assert(0); // Should never be called
+  TEST_FOR_EXCEPT(true); // Should never be called
 }
 
 void NLPWBCounterExample::imp_calc_Gf_orig(
@@ -241,7 +241,7 @@ void NLPWBCounterExample::imp_calc_Gc_orig(
 void NLPWBCounterExample::imp_calc_Gh_orig(
   const DVectorSlice& x_full, bool newx, const FirstOrderExplInfo& first_order_expl_info ) const
 {
-  assert(0); // Should never be called
+  TEST_FOR_EXCEPT(true); // Should never be called
 }
 
 }	// end namespace NLPInterfacePack

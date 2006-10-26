@@ -88,7 +88,7 @@ void CheckConvergenceStd_AddedStepSetOptions::setOption(
       break;
     }
     default:
-      assert(0);	// Local error only?
+      TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

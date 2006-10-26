@@ -149,7 +149,7 @@ EConstraintType constraint_type( const f_int m1, const f_int m2, const f_int m3,
   else if(2*m1+m2+1 <= j	 && j <= 2*m1+2*m2	 ) return GAMA_U;
   else if(2*m1+2*m2+1 <= j && j <= 2*m1+2*m2+m3) return LAMBDA;
   else if( j == 2*m1+2*m2+m3 + 1				 ) return RELAXATION;
-  assert(0);
+  TEST_FOR_EXCEPT(true);
   return NU_L;	// should never be exectuted
 }
 
@@ -164,7 +164,7 @@ f_int constraint_index( const f_int m1, const f_int m2, const f_int m3, const f_
     case LAMBDA		: return j-2*m1-2*m2;
     case RELAXATION	: return 0;
   }
-  assert(0);
+  TEST_FOR_EXCEPT(true);
   return 0;	// should never be exectuted
 }
 
@@ -595,7 +595,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
     solution_type = QPSolverStats::DUAL_FEASIBLE_POINT;
   }
   else {
-    assert(0); // Unknown return value!
+    TEST_FOR_EXCEPT(true); // Unknown return value!
   }
   qp_stats_.set_stats(
     solution_type, QPSolverStats::CONVEX

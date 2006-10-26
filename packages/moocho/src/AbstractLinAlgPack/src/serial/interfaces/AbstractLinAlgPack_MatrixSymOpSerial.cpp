@@ -117,7 +117,7 @@ void MatrixSymOpSerial::Mp_StMtMtM(
   ,value_type beta
   ) const
 {
-  assert(0);	// ToDo: Give this some default implementation for 
+  TEST_FOR_EXCEPT(true);	// ToDo: Give this some default implementation for 
         // this at some point in the future?
 }
 

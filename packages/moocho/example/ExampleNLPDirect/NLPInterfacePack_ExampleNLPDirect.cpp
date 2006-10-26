@@ -253,7 +253,7 @@ void ExampleNLPDirect::calc_point(
   else if(py)
     targ_vecs[0] = py;
   else
-    assert(0); // Only local error?
+    TEST_FOR_EXCEPT(true); // Only local error?
   // targ_vecs[1] will be passed to apply_op(...)
   if(py && D)
     targ_vecs[1] = py;

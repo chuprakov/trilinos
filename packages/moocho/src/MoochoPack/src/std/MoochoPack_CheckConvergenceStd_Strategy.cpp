@@ -279,7 +279,7 @@ value_type CheckConvergenceStd_Strategy::CalculateScalingFactor( NLPAlgoState& s
       scale_factor = 1.0 + state.x().get_k(0).norm_inf();
       break;
     default:
-      assert(0);	// Should never be called
+      TEST_FOR_EXCEPT(true);	// Should never be called
     }
 
   return scale_factor;

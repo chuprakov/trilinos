@@ -101,7 +101,7 @@ void TangentialStepWithInequStd_StepSetOptions::setOption(
         target().dual_feasible_point_error(StringToBool("dual_feasible_point_error",option_value.c_str()));
       break;
       default:
-      assert(0);	// Local error only?
+      TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

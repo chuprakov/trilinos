@@ -99,7 +99,7 @@ bool UpdateReducedSigma_Step::do_step(
       }
       break;
     default:
-      assert(0); // local error ?
+      TEST_FOR_EXCEPT(true); // local error ?
     };
 
   if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) 
@@ -339,7 +339,7 @@ void UpdateReducedSigma_StepSetOptions::setOption(
       }
       break;
     default:
-      assert(0);	// Local error only?
+      TEST_FOR_EXCEPT(true);	// Local error only?
     }
   }
 

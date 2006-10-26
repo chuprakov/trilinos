@@ -389,7 +389,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
       cov_.quasi_newton_ = uov_.quasi_newton_;
       break;
       default:
-      assert(0); // Invalid option!
+      TEST_FOR_EXCEPT(true); // Invalid option!
   }
 
   if( uov_.qp_solver_type_ == QP_AUTO && nb == 0 ) {
@@ -541,7 +541,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
             );
           break;
         default:
-          assert(0); // Should not be called for now!
+          TEST_FOR_EXCEPT(true); // Should not be called for now!
       }
       
       state->set_iter_quant(
@@ -556,7 +556,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
         );
     }
     else {
-      assert(0); // ToDo: Add rHL for an exact reduced Hessian!
+      TEST_FOR_EXCEPT(true); // ToDo: Add rHL for an exact reduced Hessian!
     }
     
     //
@@ -578,7 +578,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
             new Teuchos::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPModL1>());
           break;
         default:
-          assert(0);	// local programming error
+          TEST_FOR_EXCEPT(true);	// local programming error
       }
       state->set_iter_quant(
         merit_func_nlp_name
@@ -810,7 +810,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
           break;
         }
         default:
-          assert(0);
+          TEST_FOR_EXCEPT(true);
       }
       
       // Finally build the step object
@@ -854,7 +854,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
           init_hess = InitFinDiffReducedHessian_Step::SCALE_DIAGONAL_ABS;
           break;
         default:
-          assert(0);	// only local programming error?
+          TEST_FOR_EXCEPT(true);	// only local programming error?
       }
       Teuchos::RefCountPtr<InitFinDiffReducedHessian_Step>
         _init_red_hess_step = Teuchos::rcp(new InitFinDiffReducedHessian_Step(init_hess));
@@ -908,7 +908,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 */
               break;
             default:
-              assert(0);
+              TEST_FOR_EXCEPT(true);
           }
           Teuchos::RefCountPtr<QPSolverRelaxedQPSchur>
             _qp_solver = Teuchos::rcp(new QPSolverRelaxedQPSchur(init_kkt_sys));
@@ -950,7 +950,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
           break;
         }
         default:
-          assert(0);
+          TEST_FOR_EXCEPT(true);
       }
       // QP solver tester
       Teuchos::RefCountPtr<QPSolverRelaxedTester> 
@@ -1034,7 +1034,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
                 = Teuchos::rcp(new  MeritFunc_PenaltyParamUpdateMultFree_AddedStep());
               break;
             default:
-              assert(0);
+              TEST_FOR_EXCEPT(true);
           }
           break;
         }
@@ -1048,7 +1048,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
             "The merit_function_type options of MODIFIED_L1 and MODIFIED_L1_INCR have not been updated yet!" );
           break;
         default:
-          assert(0);	// local programming error
+          TEST_FOR_EXCEPT(true);	// local programming error
       }
       if(options_.get()) {
         MeritFunc_PenaltyParamUpdate_AddedStepSetOptions
@@ -1498,7 +1498,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 
     }
     else {
-      assert(0); // Error, this should not ever be called!
+      TEST_FOR_EXCEPT(true); // Error, this should not ever be called!
     }
   }
   
@@ -1755,7 +1755,7 @@ void NLPAlgoConfigMamaJama::readin_options(
           break;
         }
         default:
-          assert(0);	// this would be a local programming error only.
+          TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
       }
     }
   }

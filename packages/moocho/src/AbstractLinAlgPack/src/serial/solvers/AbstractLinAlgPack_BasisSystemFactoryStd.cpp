@@ -124,7 +124,7 @@ BasisSystemFactoryStd::create() const
       break;
     }
     default:
-      assert(0); // Should not be called?
+      TEST_FOR_EXCEPT(true); // Should not be called?
   }
 
   // Return the basis system
@@ -203,7 +203,7 @@ void BasisSystemFactoryStd::read_options() const
           break;
         }
         default:
-          assert(0);	// this would be a local programming error only.
+          TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
       }
     }
   }

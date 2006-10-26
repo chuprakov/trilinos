@@ -264,7 +264,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
         D_imp = DecompositionSystemVarReduct::MAT_IMP_IMPLICIT;
         break;
       default:
-        assert(0);
+        TEST_FOR_EXCEPT(true);
     }
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
     // See if the basis system object supports basis permutations
@@ -295,7 +295,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
         break;
       }
       default:
-        assert(0);	// only a local error
+        TEST_FOR_EXCEPT(true);	// only a local error
     }
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
     // Create the actual DecompositionSystem object being used
@@ -630,7 +630,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
           = Teuchos::rcp(new EvalNewPointTailoredApproachOrthogonal_Step(deriv_tester,*bounds_tester) );
         break;
       default:
-        assert(0);	// only a local error
+        TEST_FOR_EXCEPT(true);	// only a local error
     }
     if(options_.get()) {
       EvalNewPointTailoredApproach_StepSetOptions
@@ -755,7 +755,7 @@ void DecompositionSystemStateStepBuilderStd::readin_options(
           ov->max_dof_quasi_newton_dense_ = ::atoi( ofsp::option_value(itr).c_str() );
           break;
         default:
-          assert(0);	// this would be a local programming error only.
+          TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
       }
     }
   }

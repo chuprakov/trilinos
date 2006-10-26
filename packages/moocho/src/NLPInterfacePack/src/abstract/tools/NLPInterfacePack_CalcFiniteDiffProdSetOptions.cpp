@@ -125,7 +125,7 @@ void CalcFiniteDiffProdSetOptions::setOption(
       target().fd_step_size_c(::atof(option_value.c_str()));
       break;
     default:
-      assert(0);	// Local error only?
+      TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

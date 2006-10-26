@@ -490,8 +490,8 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
         case NLPSolverClientInterface::ALGORITHMIC_ERROR: {
         if(do_summary_outputting())
           *summary_out_used_	<< "\n\n*********************************************\n"
-                    << "**** Some error occured in the algorithm ****\n";
-        *error_out_used_    << "Some algorithmic error occured!\n";
+                    << "**** Some error occurred in the algorithm ****\n";
+        *error_out_used_    << "Some algorithmic error occurred!\n";
         solve_return = SOLVE_RETURN_EXCEPTION;
         break;
       }
@@ -738,7 +738,7 @@ void MoochoSolver::update_solver() const
               configuration_ = config_map( ofsp::option_value(itr).c_str() );
               break;
             default:
-              assert(0);	// this would be a local programming error only.
+              TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
           }
         }
       }

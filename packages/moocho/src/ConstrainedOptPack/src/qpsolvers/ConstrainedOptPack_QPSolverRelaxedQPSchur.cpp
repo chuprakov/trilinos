@@ -185,7 +185,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
     // Create a full lookup array to determine if a constraint
     // is decomposed or not.  We need this to fill the array
     // j_f_undecomp[] (which is sorted).
-    assert(0); // ToDo: Implement this!
+    TEST_FOR_EXCEPT(true); // ToDo: Implement this!
   }
 
   // initialize constraints object
@@ -392,7 +392,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
           qpschur_olevel = QPSchur::OUTPUT_ITER_QUANTITIES;
           break;
         default:
-          assert(0);
+          TEST_FOR_EXCEPT(true);
       }
       break;
     }
@@ -415,7 +415,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
       qpschur_olevel = QPSchur::OUTPUT_ITER_QUANTITIES;
       break;
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
 
   //
@@ -563,7 +563,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
       solution_type = QPSolverStats::SUBOPTIMAL_POINT;
       break;
     default:
-      assert(0);
+      TEST_FOR_EXCEPT(true);
   }
   qp_stats_.set_stats(
     solution_type,convexity,qp_iter,num_adds,num_drops

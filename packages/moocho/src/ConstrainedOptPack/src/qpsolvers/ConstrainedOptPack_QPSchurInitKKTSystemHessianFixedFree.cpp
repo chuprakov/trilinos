@@ -162,7 +162,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
             b_X_val = dLU_itr.ubound();
             break;
           default:
-            assert(0); // Local error only?
+            TEST_FOR_EXCEPT(true); // Local error only?
         }
         (*b_X)[i_X] = b_X_val;
         ++i_X;

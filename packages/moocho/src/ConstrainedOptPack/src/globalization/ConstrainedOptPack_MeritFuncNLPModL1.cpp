@@ -54,7 +54,7 @@ value_type MeritFuncNLPModL1::value(
   using DenseLinAlgPack::norm_1;
   return f + local_constr_term( mu_, c, "calc_deriv" );
 */
-  assert(0); // ToDo: Write a reduction operator for the above operation
+  TEST_FOR_EXCEPT(true); // ToDo: Write a reduction operator for the above operation
   return 0.0;
 }
 
@@ -93,7 +93,7 @@ value_type MeritFuncNLPModL1::calc_deriv(
   using DenseLinAlgPack::dot; using DenseLinAlgPack::norm_1;
   return deriv_ = dot( Gf_k, d_k ) - local_constr_term( mu_, c_k, "calc_deriv" );
 */
-  assert(0); // ToDo: Write a reduction operator for the above operation
+  TEST_FOR_EXCEPT(true); // ToDo: Write a reduction operator for the above operation
   return 0.0;
 }
 
