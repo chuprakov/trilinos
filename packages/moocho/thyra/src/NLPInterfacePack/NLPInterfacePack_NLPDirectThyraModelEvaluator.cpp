@@ -311,7 +311,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
     if(out.get() && trace) {
       *out
         << "\nsolve status:\n";
-      *OSTab(out).getOStream() << solveStatus;
+      OSTab(out)() << solveStatus;
     }
     Thyra::scale(-1.0,&*thyra_pyD);
     Thyra::assign(&*thyra_py,*thyra_pyD->col(0));
@@ -328,7 +328,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
       if(out.get() && trace) {
         *out
           << "\nsolve status:\n";
-        *OSTab(out).getOStream() << solveStatus;
+        OSTab(out)() << solveStatus;
       }
       Thyra::Vt_S(&*thyra_py,-1.0);
     }
@@ -341,7 +341,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
       if(out.get() && trace) {
         *out
           << "\nsolve status:\n";
-        *OSTab(out).getOStream() << solveStatus;
+        OSTab(out)() << solveStatus;
       }
       Thyra::scale(-1.0,&*thyra_D);
     }

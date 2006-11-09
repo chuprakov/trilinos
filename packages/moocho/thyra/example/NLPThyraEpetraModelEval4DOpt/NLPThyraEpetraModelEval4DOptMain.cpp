@@ -1,7 +1,6 @@
 #include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
 #include "EpetraModelEval4DOpt.hpp"
 #include "MoochoPack_ThyraModelEvaluatorSolver.hpp"
-#include "Thyra_DefaultModelEvaluatorWithSolveFactory.hpp"
 #include "Thyra_DefaultRealLinearSolverBuilder.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
@@ -129,4 +128,5 @@ int main( int argc, char* argv[] )
   TEUCHOS_STANDARD_CATCH_STATEMENTS(true,*out,dummySuccess)
 
   return MoochoSolver::SOLVE_RETURN_EXCEPTION;
+
 }

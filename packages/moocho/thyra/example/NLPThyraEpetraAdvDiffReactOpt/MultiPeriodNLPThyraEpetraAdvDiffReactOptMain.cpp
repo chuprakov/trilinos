@@ -253,11 +253,11 @@ int main( int argc, char* argv[] )
 #endif
 
       *out << "\nTesting the vector space x_bar_space ...\n";
-      result = vectorSpaceTester.check(*x_bar_space,&*OSTab(out).getOStream());
+      result = vectorSpaceTester.check(*x_bar_space,OSTab(out).get());
       if(!result) success = false;
 
       *out << "\nTesting the vector space f_bar_space ...\n";
-      result = vectorSpaceTester.check(*f_bar_space,&*OSTab(out).getOStream());
+      result = vectorSpaceTester.check(*f_bar_space,OSTab(out).get());
       if(!result) success = false;
       
       Teuchos::RefCountPtr<const Thyra::VectorBase<Scalar> >

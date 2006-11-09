@@ -130,7 +130,7 @@ int main( int argc, char* argv[] )
     Teuchos::RefCountPtr<Thyra::LinearOpWithSolveFactoryBase<Scalar> >
       lowsFactory = lowsfCreator.createLinearSolveStrategy("");
     // ToDo: Set the output stream before calling above!
-    ///lowsFactory = lowsfCreator.createLOWSF(OSTab(journalOut).getOStream().get());
+    ///lowsFactory = lowsfCreator.createLOWSF(OSTab(journalOut).get());
     
     *out << "\nCreate the Thyra::EpetraModelEvaluator wrapper object ...\n";
     
