@@ -100,7 +100,7 @@ value_type NLPObjGrad::calc_Gf_prod(const Vector& x, const Vector& d, bool newx)
   TEST_FOR_EXCEPTION(
     true,std::logic_error
     ,"Error, the function calc_Gf_prod(...) is not implemented for the class "
-    << typeid(*this).name() << "!"
+    << typeName(*this) << "!"
     );
 }
 

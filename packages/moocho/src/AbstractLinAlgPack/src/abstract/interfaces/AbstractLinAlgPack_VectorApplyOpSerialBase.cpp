@@ -23,7 +23,7 @@ void VectorApplyOpSerialBase::apply_op_serial(
     ,"VectorApplyOpSerialBase::apply_op_serial(...): Error, this function has been entered "
     "recursively which most likely means that the explicit sub-vector access methods Vector::get_sub_vector(...), "
     "Vector::free_sub_vector(...), VectorMutable::get_sub_vector(...), VectorMutable::commit_sub_vector(...) "
-    "have not been overridden correctly on this concrete class \'" << typeid(*this).name() << "\' to not call "
+    "have not been overridden correctly on this concrete class \'" << typeName(*this) << "\' to not call "
     "apply_op(...) in there implemenations."
     );
   in_apply_op_ = true;

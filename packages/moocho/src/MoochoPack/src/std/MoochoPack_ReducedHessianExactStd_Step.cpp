@@ -113,7 +113,7 @@ bool ReducedHessianExactStd_Step::do_step(
       omsg
         << "ReducedHessianExactStd_Step::do_step(...) : Error, "
         << "The matrix HL with the concrete type "
-        << typeid(s.HL().get_k(0)).name() << " does not support the "
+        << typeName(s.HL().get_k(0)) << " does not support the "
         << "MatrixSymOp iterface";
       throw std::logic_error( omsg.str() );
     }		
@@ -125,7 +125,7 @@ bool ReducedHessianExactStd_Step::do_step(
       omsg
         << "ReducedHessianExactStd_Step::do_step(...) : Error, "
         << "The matrix rHL with the concrete type "
-        << typeid(s.rHL().get_k(0)).name() << " does not support the "
+        << typeName(s.rHL().get_k(0)) << " does not support the "
         << "MatrixSymDenseInitialize iterface";
       throw std::logic_error( omsg.str() );
     }		

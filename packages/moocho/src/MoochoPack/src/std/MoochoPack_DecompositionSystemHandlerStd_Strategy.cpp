@@ -187,7 +187,7 @@ void DecompositionSystemHandlerStd_Strategy::print_update_decomposition(
   else {
     out
       << L << "begin update decomposition\n"
-      << L << "(class = \'" << typeid(s.decomp_sys()).name() << "\')\n"
+      << L << "(class = \'" << typeName(s.decomp_sys()) << "\')\n"
       ;
     s.decomp_sys().print_update_decomp( out, L + "  " );
     out

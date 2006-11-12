@@ -127,7 +127,7 @@ void VectorMutableBlocked::apply_op(
     TEST_FOR_EXCEPTION(
       test_failed, VectorSpace::IncompatibleVectorSpaces
       ,"VectorMutableBlocked::apply_op(...): Error vecs["<<k<<"]->space() "
-      <<"of type \'"<<typeid(vecs[k]->space()).name()<<"\' is not compatible with this "
+      <<"of type \'"<<typeName(vecs[k]->space())<<"\' is not compatible with this "
       <<"\'VectorSpaceBlocked\' vector space!"
       );
   }}
@@ -136,7 +136,7 @@ void VectorMutableBlocked::apply_op(
     TEST_FOR_EXCEPTION(
       test_failed, VectorSpace::IncompatibleVectorSpaces
       ,"VectorMutableBlocked::apply_op(...): Error targ_vecs["<<k<<"]->space() "
-      <<"of type \'"<<typeid(vecs[k]->space()).name()<<"\' is not compatible with this "
+      <<"of type \'"<<typeName(vecs[k]->space())<<"\' is not compatible with this "
       <<"\'VectorSpaceBlocked\' vector space!"
       );
   }}
@@ -151,7 +151,7 @@ void VectorMutableBlocked::apply_op(
     TEST_FOR_EXCEPTION(
       vecs_args[k] == NULL, VectorSpace::IncompatibleVectorSpaces
       ,"VectorMutableBlocked::apply_op(...): Error vecs["<<k<<"] "
-      <<"of type \'"<<typeid(*vecs[k]).name()<<"\' does not support the "
+      <<"of type \'"<<typeName(*vecs[k])<<"\' does not support the "
       <<"\'VectorMutableBlocked\' interface!"
       );
 #endif
@@ -164,7 +164,7 @@ void VectorMutableBlocked::apply_op(
     TEST_FOR_EXCEPTION(
       targ_vecs_args[k] == NULL, VectorSpace::IncompatibleVectorSpaces
       ,"VectorMutableBlocked::apply_op(...): Error targ_vecs["<<k<<"] "
-      <<"of type \'"<<typeid(*targ_vecs[k]).name()<<"\' does not support the "
+      <<"of type \'"<<typeName(*targ_vecs[k])<<"\' does not support the "
       <<"\'VectorMutableBlocked\' interface!"
       );
 #endif

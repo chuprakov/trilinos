@@ -126,13 +126,13 @@ bool VectorSpaceTester::check_vector_space(
     *out << "\n*** Printing the immutable vectors\n";
     {for(int j = 0; j < 3; ++j) {
       sprintf( v_name, "v[%d]", j );
-      *out << std::endl << v_name << " : " << typeid(*v[j]).name() << std::endl
+      *out << std::endl << v_name << " : " << typeName(*v[j]) << std::endl
          << *v[j];
     }}
     *out << "\n*** Printing the mutable vectors\n";
     {for(int k = 0; k < 6; ++k) {
       sprintf( z_name, "z[%d]", k );
-      *out << std::endl << z_name << " : " << typeid(*z[k]).name() << std::endl
+      *out << std::endl << z_name << " : " << typeName(*z[k]) << std::endl
          << *z[k];
     }}
   }

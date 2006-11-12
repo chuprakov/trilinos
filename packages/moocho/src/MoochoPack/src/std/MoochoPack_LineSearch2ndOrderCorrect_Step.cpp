@@ -451,7 +451,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
         }
         catch(const DirectLineSearch_Strategy::NotDescentDirection& excpt ) {
           if( (int)use_newton_olevel >= (int)this_t::PRINT_NEWTON_SUMMARY_INFO ) {
-            out << "\nThe line search object throw the exception:" << typeid(excpt).name() << ":\n"
+            out << "\nThe line search object throw the exception:" << typeName(excpt) << ":\n"
               << excpt.what() << std::endl;
           }
           ls_okay = false;
@@ -736,7 +736,7 @@ void LineSearch2ndOrderCorrect_Step::print_step(
     << L << "    *** Lets try to compute a correction by performing\n"
     << L << "    *** a series of newton steps to compute local steps w\n"
     << L << "    for newton_i = 1...max_newton_itr\n"
-    << L << "      begin feasibility step calculation: \"" << typeid(feasibility_step()).name() << "\"\n";
+    << L << "      begin feasibility step calculation: \"" << typeName(feasibility_step()) << "\"\n";
 
   feasibility_step().print_step( out, L + "        " );
 
@@ -794,7 +794,7 @@ void LineSearch2ndOrderCorrect_Step::print_step(
     << L << "  else\n"
     << L << "    Perform line search along x_kp1 = x_k + alpha_k * d_k\n"
     << L << "  end\n"
-    << L << "  begin direct line search : \"" << typeid(direct_ls_sqp()).name() << "\"\n";
+    << L << "  begin direct line search : \"" << typeName(direct_ls_sqp()) << "\"\n";
 
   direct_ls_sqp().print_algorithm( out, L + "    " );
 

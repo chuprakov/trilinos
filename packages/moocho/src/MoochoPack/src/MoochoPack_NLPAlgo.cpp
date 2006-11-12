@@ -89,7 +89,7 @@ void NLPAlgo::interface_print_algorithm_times( std::ostream& out ) const {
 void NLPAlgo::print_algorithm(std::ostream& out) const {
   out
     << "\n*** NLP ***\n"
-    << typeid(*get_nlp()).name() << "\n";
+    << typeName(*get_nlp()) << "\n";
 
   Algorithm::print_algorithm(out);
 }

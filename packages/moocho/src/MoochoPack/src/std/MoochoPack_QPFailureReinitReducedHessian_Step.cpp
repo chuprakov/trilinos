@@ -103,7 +103,7 @@ void QPFailureReinitReducedHessian_Step::print_step(
   ) const
 {
   out
-    << L << "do null space step : " << typeid(null_space_step()).name() << std::endl;
+    << L << "do null space step : " << typeName(null_space_step()) << std::endl;
   null_space_step().print_step(algo,step_poss,type,assoc_step_poss,out,L+"  ");
   out
     << L << "end null space step\n"

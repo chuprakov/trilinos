@@ -9,6 +9,9 @@
 //     #include "DenseLinAlgPack_PublicTypes.ud"
 // }
 
+using Teuchos::typeName;
+using Teuchos::TypeNameTraits;
+
 typedef DenseLinAlgPack::value_type		value_type;
 typedef DenseLinAlgPack::index_type		index_type;
 typedef DenseLinAlgPack::size_type		size_type;

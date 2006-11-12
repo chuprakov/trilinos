@@ -511,7 +511,7 @@ void MoochoPack::LineSearchWatchDog_Step::print_step( const Algorithm& algo
     << L << "    Do line search for: x_kp1 = x_k + alpha_k + d_k\n"
     << L << "        -> alpha_k, x_kp1, f_kp1, c_kp1, phi_kp1\n"
     << L << "    begin direct line search : \""
-        << typeid(direct_line_search()).name() << "\"\n";
+        << typeName(direct_line_search()) << "\"\n";
 
   direct_line_search().print_algorithm( out, L + "    " );
 

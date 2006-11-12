@@ -162,7 +162,7 @@ bool CalcFiniteDiffProd::calc_deriv_product(
     Gc_prod && !Gc_prod->space().is_compatible(*nlp->space_c())
     ,std::invalid_argument
     ,"CalcFiniteDiffProd::calc_deriv(...) : "
-    "Error, Gc_prod (type \' "<<typeid(*Gc_prod).name()<<"\' "
+    "Error, Gc_prod (type \' "<<typeName(*Gc_prod)<<"\' "
     "is not compatible with the NLP" );
   TEST_FOR_EXCEPTION(
     (xl && !xu) || (!xl && xu), std::invalid_argument

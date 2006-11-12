@@ -114,7 +114,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy(
 //				D_ptr.get() == NULL, std::logic_error
 //				,"DecompositionSystemOrthogonal::update_decomp(...) : Error, "
 //				"The matrix class used for the direct sensitivity matrix D = inv(C)*N of type \'"
-//				<< typeid(*D).name() << "\' must return return.get() != NULL from the clone() method "
+//				<< typeName(*D) << "\' must return return.get() != NULL from the clone() method "
 //				"since mat_rel == MATRICES_INDEP_IMPS!" );
 //		}
     Y_orth->initialize(

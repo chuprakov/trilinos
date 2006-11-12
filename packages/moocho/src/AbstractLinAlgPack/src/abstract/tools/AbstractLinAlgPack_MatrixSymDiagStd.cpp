@@ -106,7 +106,7 @@ MatrixSymDiagStd::operator=(const MatrixOp& M)
   TEST_FOR_EXCEPTION(
     p_M == NULL, std::logic_error
     ,"MatrixSymDiagStd::operator=(M): Error, the matrix M with concrete type "
-    "\'" << typeid(M).name() << "\' does not support the MatrixSymDiagStd type! " );
+    "\'" << typeName(M) << "\' does not support the MatrixSymDiagStd type! " );
 
   if( p_M == this ) return *this; // Assignment to self
 

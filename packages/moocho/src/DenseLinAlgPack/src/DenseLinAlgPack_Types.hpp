@@ -32,10 +32,14 @@
 #include "DenseLinAlgPack_Options.hpp"
 #include "RangePack_Range1D.hpp"
 #include "BLAS_Cpp_Types.hpp"
+#include "Teuchos_TypeNameTraits.hpp"
 
 namespace MemMngPack {}
 
 namespace DenseLinAlgPack {
+
+using Teuchos::typeName;
+using Teuchos::TypeNameTraits;
 
 /* * @name {\bf DenseLinAlgPack Type Declarations}.
   *

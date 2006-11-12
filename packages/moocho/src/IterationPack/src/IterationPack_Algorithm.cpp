@@ -26,16 +26,15 @@
 // ***********************************************************************
 // @HEADER
 
-#include <assert.h>
 #include <signal.h>
 
 #include <iterator>
 #include <numeric>
-#include <typeinfo>
 
 #include "IterationPack_Algorithm.hpp"
 #include "StopWatchPack_stopwatch.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "Teuchos_TypeNameTraits.hpp"
 
 #ifdef HAVE_MPI
 #include "mpi.h"
@@ -950,10 +949,11 @@ void Algorithm::imp_inform_steps(inform_func_ptr_t inform_func_ptr)
 
 void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
 {
+  using Teuchos::typeName;
   const std::string leading_str = "    ";
   
-  steps_t::const_iterator				s_itr = steps_.begin();
-  assoc_steps_t::const_iterator		a_itr = assoc_steps_.begin();
+  steps_t::const_iterator          s_itr = steps_.begin();
+  assoc_steps_t::const_iterator    a_itr = assoc_steps_.begin();
   poss_type step_i = 1;
   for(; step_i <= static_cast<poss_type>(num_steps()); ++step_i, ++s_itr, ++a_itr) {
     // list pre_steps (e.q. 2.-3, 2.-2, 2.-1)
@@ -962,7 +962,7 @@ void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
     for(int pre_step_i = - pre_steps.size(); pre_step_i < 0; ++pre_step_i, ++pre_step_itr) {
       out		<< step_i << "." << pre_step_i << ". \""
           << (*pre_step_itr).name << "\"\n"
-          << leading_str << "(" << typeid(*(*pre_step_itr).step_ptr).name() << ")\n";
+          << leading_str << "(" << typeName(*(*pre_step_itr).step_ptr) << ")\n";
       if(print_steps) {
         (*(*pre_step_itr).step_ptr).print_step( *this, step_i, DO_PRE_STEP
           , pre_steps.size()+pre_step_i+1, out, leading_str );
@@ -972,7 +972,7 @@ void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
     // The main step.
     out		<< step_i << ". \"" << (*s_itr).name
         << "\"\n"
-        << leading_str << "(" << typeid(*(*s_itr).step_ptr).name() << ")\n";
+        << leading_str << "(" << typeName(*(*s_itr).step_ptr) << ")\n";
     if(print_steps) {
       (*(*s_itr).step_ptr).print_step( *this, step_i, DO_MAIN_STEP, 0, out, leading_str );
       out << std::endl;
@@ -983,7 +983,7 @@ void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
     for(int post_step_i = 1; post_step_i <= static_cast<poss_type>(post_steps.size()); ++post_step_i, ++post_step_itr) {
       out		<< step_i << "." << post_step_i << ". \""
           << (*post_step_itr).name << "\"\n"
-          << leading_str << "(" << typeid(*(*post_step_itr).step_ptr).name() << ")\n";
+          << leading_str << "(" << typeName(*(*post_step_itr).step_ptr) << ")\n";
       if(print_steps) {
         (*(*post_step_itr).step_ptr).print_step( *this, step_i, DO_POST_STEP, post_step_i
           , out, leading_str );

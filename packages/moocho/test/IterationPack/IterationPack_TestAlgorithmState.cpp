@@ -320,7 +320,7 @@ bool IterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 
   } // end try
   catch(const std::exception& excpt) {
-    if(out) *out << "\nCaught a std::exception: " << typeid(excpt).name() << " : " <<  excpt.what() << endl;
+    if(out) *out << "\nCaught a std::exception: " << typeName(excpt) << " : " <<  excpt.what() << endl;
   }
   catch(...) {
     if(out) *out << "\nCaught an unknown exception\n";

@@ -135,7 +135,7 @@ void AlgorithmState::dump_iter_quant(std::ostream& out) const {
   {
     out << std::left    << setw(name_w) << (*itr).first
       << std::right   << setw(id_w)   << (*itr).second
-      << gap          << std::left    << typeid(*iq_[(*itr).second]).name() << endl
+      << gap          << std::left    << typeName(*iq_[(*itr).second]) << endl
       << std::left    << setw(name_w) << ""
       << std::right   << setw(id_w)   << ""
       << gap          << std::left;

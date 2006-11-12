@@ -164,7 +164,7 @@ void CheckBasisFromCPy_Step::print_step( const Algorithm& algo, poss_type step_p
     << L << "    end\n"
     << L << "end\n"
     << L << "if select_new_basis == true then\n"
-    << L << "    new basis selection : " << typeid(new_basis_strategy()).name() << std::endl;
+    << L << "    new basis selection : " << typeName(new_basis_strategy()) << std::endl;
   new_basis_strategy().print_method( rsqp_algo(algo),step_poss,type,assoc_step_poss,out
     ,L+"        " );
   out

@@ -213,7 +213,7 @@ public:
    * type of the iteration quantity really is for debugging and informational purposes.
    * This should just include information on types and nothing else.
    *
-   * The concrete type of \c this can be printed using <tt>typeid(*this).name()</tt>.
+   * The concrete type of \c this can be printed using <tt>typeName(*this)</tt>.
    */
   virtual void print_concrete_type( std::ostream& out ) const = 0;
 

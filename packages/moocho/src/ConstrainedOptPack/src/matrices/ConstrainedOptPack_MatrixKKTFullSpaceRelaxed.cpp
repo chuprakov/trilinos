@@ -423,7 +423,7 @@ void MatrixKKTFullSpaceRelaxed::validate_and_set_matrices(
     std::ostringstream omsg;
     omsg
       << "MatrixKKTFullSpaceRelaxed::validate_and_set_matrices(...) : Error, "
-      << "The matrix G with concrete type " << typeid(G).name()
+      << "The matrix G with concrete type " << typeName(G)
       << " does not support the MatrixConvertToSparseFortranCompatible "
       << "interface";
     throw InvalidMatrixType(omsg.str());
@@ -434,7 +434,7 @@ void MatrixKKTFullSpaceRelaxed::validate_and_set_matrices(
     std::ostringstream omsg;
     omsg
       << "MatrixKKTFullSpaceRelaxed::validate_and_set_matrices(...) : Error, "
-      << "The matrix A with concrete type " << typeid(A).name()
+      << "The matrix A with concrete type " << typeName(A)
       << " does not support the MatrixConvertToSparseFortranCompatible "
       << "interface";
     throw InvalidMatrixType(omsg.str());

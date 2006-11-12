@@ -40,20 +40,20 @@ void AbstractLinAlgPack::apply_op_validate_input(
     TEST_FOR_EXCEPTION(
       !is_compatible, VectorSpace::IncompatibleVectorSpaces
       ,func_name << " : Error!  vecs["<<k<<"]->space() of type \'"
-      << typeid(vecs[k]->space()).name() << "\' "
+      << typeName(vecs[k]->space()) << "\' "
       << " with dimension vecs["<<k<<"].dim() = " << vecs[k]->dim()
       << " is not compatible with space of type \'"
-      << typeid(space).name() << " with dimmension space.dim() = " << dim );
+      << typeName(space) << " with dimmension space.dim() = " << dim );
   }}
   {for(int k = 0; k < num_targ_vecs; ++k) {
     const bool is_compatible = space.is_compatible(targ_vecs[k]->space());
     TEST_FOR_EXCEPTION(
       !is_compatible, VectorSpace::IncompatibleVectorSpaces
       ,func_name << " : Error!  targ_vecs["<<k<<"]->space() of type \'"
-      << typeid(targ_vecs[k]->space()).name() << "\' "
+      << typeName(targ_vecs[k]->space()) << "\' "
       << " with dimension targ_vecs["<<k<<"].dim() = " << targ_vecs[k]->dim()
       << " is not compatible with space of type \'"
-      << typeid(space).name() << " with dimmension space.dim() = " << dim );
+      << typeName(space) << " with dimmension space.dim() = " << dim );
   }}
 }
 

@@ -315,7 +315,7 @@ void MoochoPack::ReducedHessianSecantUpdateStd_Step::print_step(
     << L << "        end\n"
     << L << "        rHL_k = rHL_km1\n"
     << L << "        begin secant update\n"
-    << L << "        (" << typeid(secant_update()).name() << ")\n"
+    << L << "        (" << typeName(secant_update()) << ")\n"
     ;
   secant_update().print_step( out, L+"            " );
   out

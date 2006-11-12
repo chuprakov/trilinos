@@ -29,11 +29,14 @@
 #ifndef GENERAL_ITERATION_PACK_TYPES_H
 #define GENERAL_ITERATION_PACK_TYPES_H
 
-#include <stdexcept>
+#include "Teuchos_TypeNameTraits.hpp"
 
 namespace MemMngPack {}
 
 namespace IterationPack {
+
+using Teuchos::typeName;
+using Teuchos::TypeNameTraits;
 
 /** \brief . */
 enum EAssocStepType {

@@ -636,7 +636,7 @@ void TangentialStepWithInequStd_Step::print_step(
     << L << "  frac_same = max(num_active-num_adds-num_drops,0)/(num_active)\n"
     << L << "Use a warm start when frac_same >= warm_start_frac\n"
     << L << "Solve the following QP to compute qp_d, qp_eta, qp_Ed = qp_E * qp_d\n"
-    << L << ",qp_nu, qp_mu and qp_lambda (" << typeid(qp_solver()).name() << "):\n"
+    << L << ",qp_nu, qp_mu and qp_lambda (" << typeName(qp_solver()) << "):\n"
     << L << "  min  qp_g' * qp_d + 1/2 * qp_d' * qp_G * qp_d + M(eta)\n"
     << L << "  qp_d <: R^(n-r)\n"
     << L << "  s.t.\n"

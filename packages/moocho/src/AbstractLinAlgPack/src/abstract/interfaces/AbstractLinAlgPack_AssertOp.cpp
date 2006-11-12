@@ -61,11 +61,11 @@ public:
 std::ostream& operator<<( std::ostream& o, const dump_vec_spaces& d )
 {
   o << "Error, " << d.vec_space1_name << " at address " << &d.vec_space1
-    << " of type \'" << typeid(d.vec_space1).name()
+    << " of type \'" << typeName(d.vec_space1)
     << "\' with dimension " << d.vec_space1_name << ".dim() = " << d.vec_space1.dim()
     << " is not compatible with "
     << d.vec_space2_name  << " at address " << &d.vec_space2
-    << " of type \'" << typeid(d.vec_space2).name()
+    << " of type \'" << typeName(d.vec_space2)
     << "\' with dimension " << d.vec_space2_name << ".dim() = " << d.vec_space2.dim();
   return o;
 }

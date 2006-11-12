@@ -371,7 +371,7 @@ void DecompositionSystemHandlerVarReductPerm_Strategy::print_update_decompositio
     << L << "end\n"
     << L << "if (get_new_basis == true) then\n"
     << L << "  begin update decomposition\n"
-    << L << "  (class = \'" << typeid(s.decomp_sys()).name() << "\')\n"
+    << L << "  (class = \'" << typeName(s.decomp_sys()) << "\')\n"
     ;
   s.decomp_sys().print_update_decomp( out, L + "    " );
   out

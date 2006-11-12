@@ -89,7 +89,7 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
     std::ostringstream omsg;
     omsg
       << "MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(...), Error "
-      << "The class " << typeid(&merit_func()).name() << " does not support the "
+      << "The class " << typeName(&merit_func()) << " does not support the "
       << "MeritFuncPenaltyParams iterface\n";
     out << omsg.str();
     throw std::logic_error( omsg.str() );

@@ -172,11 +172,11 @@ CastIQMember<T>::operator()( AlgorithmState& s ) const
 {
   cache_iq_id(s);
   if( iq_id_ == AlgorithmState::DOES_NOT_EXIST )
-    throw_cast_error(iq_id_,typeid(T).name());
+    throw_cast_error(iq_id_,TypeNameTraits<T>::name());
   IterQuantityAccess<T>
     *p = dynamic_cast<IterQuantityAccess<T>*>( &s.iter_quant( iq_id_ ) );
   if( !p )
-    throw_cast_error(iq_id_,typeid(T).name());
+    throw_cast_error(iq_id_,TypeNameTraits<T>::name());
   return *p;	
 }
 
@@ -186,11 +186,11 @@ CastIQMember<T>::operator()( const AlgorithmState& s ) const
 {
   cache_iq_id(s);
   if( iq_id_ == AlgorithmState::DOES_NOT_EXIST )
-    throw_cast_error(iq_id_,typeid(T).name());
+    throw_cast_error(iq_id_,TypeNameTraits<T>::name());
   const IterQuantityAccess<T>
     *p = dynamic_cast<const IterQuantityAccess<T>*>( &s.iter_quant( iq_id_ ) );
   if( !p )
-    throw_cast_error(iq_id_,typeid(T).name());
+    throw_cast_error(iq_id_,TypeNameTraits<T>::name());
   return *p;	
 }
 

@@ -84,7 +84,7 @@ NLPInterfacePack::ExampleNLPFirstOrderRun(
       << "*************************************************\n"
       << "*** Running Tests on ExampleNLPFirstOrder ***\n"
       << "*************************************************\n"
-      << "\nUsing a vector space of type \'" << typeid(vec_space).name() << "\'"
+      << "\nUsing a vector space of type \'" << typeName(vec_space) << "\'"
       << "\nwith a dimension of vec_space.dim() = " << vec_space.dim()
       << std::endl;
 

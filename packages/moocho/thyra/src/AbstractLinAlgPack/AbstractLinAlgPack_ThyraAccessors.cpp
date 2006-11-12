@@ -44,7 +44,7 @@ void AbstractLinAlgPack::get_thyra_vector(
     TEST_FOR_EXCEPTION(
       true, std::logic_error
       ,"AbstractLinAlgPack::get_thyra_vector(...): Error, the vector of concrete type \'"
-      << typeid(vec).name() << "\' is not an incore vector."
+      << typeName(vec) << "\' is not an incore vector."
       );
   }
 }
@@ -100,7 +100,7 @@ void AbstractLinAlgPack::get_thyra_vector(
     TEST_FOR_EXCEPTION(
       true, std::logic_error
       ,"AbstractLinAlgPack::get_thyra_vector(...): Error, the vector of concrete type \'"
-      << typeid(vec).name() << "\' is not an incore vector."
+      << typeName(vec) << "\' is not an incore vector."
       );
   }
 }

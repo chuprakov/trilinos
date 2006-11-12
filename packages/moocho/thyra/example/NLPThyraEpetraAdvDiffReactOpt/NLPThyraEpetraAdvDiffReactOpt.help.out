@@ -1,10 +1,9 @@
-Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
 
 Echoing the command-line:
 
-c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBUG\packages\moocho\thyra\example\NLPThyraEpetraAdvDiffReactOpt\NLPThyraEpetraAdvDiffReactOpt.exe --echo-command-line --help 
+../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe --echo-command-line --help 
 
-Usage: c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBUG\packages\moocho\thyra\example\NLPThyraEpetraAdvDiffReactOpt\NLPThyraEpetraAdvDiffReactOpt.exe [options]
+Usage: ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe [options]
   options:
   --help                                    Prints this help message
   --pause-for-debugging                     Pauses for user input to allow attaching a debugger
@@ -57,6 +56,10 @@ Usage: c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBU
   --use-first-order                         (default: --use-first-order)
   --black-box                       bool    Flag for if we do black-box NAND or all-at-once SAND.
   --all-at-once                             (default: --all-at-once)
+  --fwd-newton-tol                  double  Nonlinear residual tolerance for the forward Newton solve.
+                                            (default: --fwd-newton-tol=-1)
+  --fwd-newton-max-iters            int     Max number of iterations for the forward Newton solve.
+                                            (default: --fwd-newton-max-iters=20)
   --use-finite-diff                 bool    Flag for if we are using finite differences or not.
   --no-use-finite-diff                      (default: --no-use-finite-diff)
   --finite-diff-type                enum    The type of finite differences used [---use-finite-diff]
@@ -64,10 +67,6 @@ Usage: c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBU
                                             (default: --finite-diff-type="order-one")
   --fd-step-len                     double  The finite-difference step length ( < 0 determine automatically ).
                                             (default: --fd-step-len=0.0001)
-  --fwd-newton-tol                  double  Nonlinear residual tolerance for the forward Newton solve.
-                                            (default: --fwd-newton-tol=-1)
-  --fwd-newton-max-iters            int     Max number of iterations for the forward Newton solve.
-                                            (default: --fwd-newton-max-iters=20)
   --x-guess-file                    string  Base file name to read the guess of the state x from.
                                             (default: --x-guess-file="")
   --scale-x-guess                   double  Amount to scale the guess for x read in by --x-guess-file.
@@ -82,3 +81,4 @@ Usage: c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBU
                                             (default: --p-solu-file="")
   --q-vec-file                      string  Base file name to read the objective state matching vector q (i.e. ||x-q||_M in objective).
                                             (default: --q-vec-file="")
+Teuchos::GlobalMPISession::GlobalMPISession(): started serial run

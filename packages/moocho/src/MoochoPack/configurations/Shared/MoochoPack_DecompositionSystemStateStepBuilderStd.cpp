@@ -155,7 +155,7 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
     TEST_FOR_EXCEPTION(
       true, std::logic_error
       ,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
-      "the NLP object of type \'" << typeid(nlp).name() <<
+      "the NLP object of type \'" << typeName(nlp) <<
       "\' does not support the NLPFirstOrder or NLPDirect "
       "interfaces!" );
   }
@@ -239,7 +239,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
       TEST_FOR_EXCEPTION(
         true, std::logic_error
         ,"\nA basis system object was not specified by the NLPFirstOrder object of type \'"
-        << typeid(nlp).name() << "\' and we can not build a rSQP algorithm without one!" );
+        << typeName(nlp) << "\' and we can not build a rSQP algorithm without one!" );
 
     }
     // Create the testing object for the basis system and set it up.
@@ -302,7 +302,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
     if( basis_sys_perm_.get() != NULL ) {
       if(trase_out)
         *trase_out
-          << "\nThe BasisSystem object with concreate type \'" << typeid(*basis_sys).name()
+          << "\nThe BasisSystem object with concreate type \'" << typeName(*basis_sys)
           << "\' supports the BasisSystemPerm interface.\n"
           << "Using DecompositionSystemVarReductPermStd to support basis permutations ...\n";
       *decomp_sys = Teuchos::rcp(
@@ -317,9 +317,9 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 #endif
       if(trase_out)
         *trase_out
-          << "\nThe BasisSystem object with concreate type \'" << typeid(*basis_sys).name()
+          << "\nThe BasisSystem object with concreate type \'" << typeName(*basis_sys)
           << "\' does not support the BasisSystemPerm interface.\n"
-          << "Using " << typeid(*decomp_sys_imp).name() << " with a fixed basis ...\n";
+          << "Using " << typeName(*decomp_sys_imp) << " with a fixed basis ...\n";
       decomp_sys_imp->initialize(
         nlp.space_x()
         ,nlp.space_c()

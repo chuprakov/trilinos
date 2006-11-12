@@ -1,9 +1,9 @@
 
 Echoing the command-line:
 
-c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBUG\packages\moocho\example\NLPWBCounterExample\NLPWBCounterExample.exe --echo-command-line --help 
+../example/NLPWBCounterExample/NLPWBCounterExample.exe --echo-command-line --help 
 
-Usage: c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBUG\packages\moocho\example\NLPWBCounterExample\NLPWBCounterExample.exe [options]
+Usage: ../example/NLPWBCounterExample/NLPWBCounterExample.exe [options]
   options:
   --help                          Prints this help message
   --pause-for-debugging           Pauses for user input to allow attaching a debugger

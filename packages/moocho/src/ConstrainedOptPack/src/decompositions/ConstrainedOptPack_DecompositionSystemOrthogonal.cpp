@@ -191,7 +191,7 @@ void DecompositionSystemOrthogonal::initialize_matrices(
         D_ptr.get() == NULL, std::logic_error
         ,"DecompositionSystemOrthogonal::update_decomp(...) : Error, "
         "The matrix class used for the direct sensitivity matrix D = inv(C)*N of type \'"
-        << typeid(*D).name() << "\' must return return.get() != NULL from the clone() method "
+        << typeName(*D) << "\' must return return.get() != NULL from the clone() method "
         "since mat_rel == MATRICES_INDEP_IMPS!" );
     }
     Y_orth->initialize(
@@ -211,7 +211,7 @@ void DecompositionSystemOrthogonal::initialize_matrices(
         C_ptr.get() == NULL, std::logic_error
         ,"DecompositionSystemOrthogonal::update_decomp(...) : Error, "
         "The matrix class used for the basis matrix C of type \'"
-        << typeid(*C).name() << "\' must return return.get() != NULL from the clone_mwons() method "
+        << typeName(*C) << "\' must return return.get() != NULL from the clone_mwons() method "
         "since mat_rel == MATRICES_INDEP_IMPS!" );
     }
     D_ptr_t  D_ptr = D;
@@ -221,7 +221,7 @@ void DecompositionSystemOrthogonal::initialize_matrices(
         D_ptr.get() == NULL, std::logic_error
         ,"DecompositionSystemOrthogonal::update_decomp(...) : Error, "
         "The matrix class used for the direct sensitivity matrix D = inv(C)*N of type \'"
-        << typeid(*D).name() << "\' must return return.get() != NULL from the clone() method "
+        << typeName(*D) << "\' must return return.get() != NULL from the clone() method "
         "since mat_rel == MATRICES_INDEP_IMPS!" );
     }
     if(S_ptr_.get() == NULL) {

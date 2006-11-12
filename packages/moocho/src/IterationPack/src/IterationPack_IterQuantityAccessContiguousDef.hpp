@@ -163,11 +163,11 @@ void IterQuantityAccessContiguous<T_info>::print_concrete_type( std::ostream& ou
 {
   const int last_updated = this->last_updated();
   if(last_updated != base_t::NONE_UPDATED)
-    out << typeid(get_k(last_updated)).name();
+    out << typeName(get_k(last_updated));
   else if( abstract_factory_.get() == NULL )
     out << "NULL";
   else
-    out << typeid(*abstract_factory_->create()).name();
+    out << typeName(*abstract_factory_->create());
 }
 
 // Overridden from IterQuantityAccess

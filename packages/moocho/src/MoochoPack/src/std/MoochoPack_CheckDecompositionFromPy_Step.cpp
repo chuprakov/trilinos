@@ -150,7 +150,7 @@ void CheckDecompositionFromPy_Step::print_step(
     << L << "  select_new_decomposition = true\n"
     << L << "end\n"
     << L << "if select_new_decomposition == true then\n"
-    << L << "  new decomposition selection : " << typeid(new_decomp_strategy()).name() << std::endl
+    << L << "  new decomposition selection : " << typeName(new_decomp_strategy()) << std::endl
     ;
   new_decomp_strategy().print_new_decomposition(
     rsqp_algo(algo),step_poss,type,assoc_step_poss,out, L + "    " );

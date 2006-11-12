@@ -208,7 +208,7 @@ void LineSearchDirect_Step::print_step(
     << L << "end\n"
     << L << "phi_kp1 = merit_func_nlp_k.value(f_kp1,c_kp1,h_kp1,hl,hu)\n"
     << L << "phi_k = merit_func_nlp_k.value(f_k,c_k,h_k,hl,hu)\n"
-    << L << "begin direct line search (where phi = merit_func_nlp_k): \"" << typeid(direct_line_search()).name() << "\"\n";
+    << L << "begin direct line search (where phi = merit_func_nlp_k): \"" << typeName(direct_line_search()) << "\"\n";
   direct_line_search().print_algorithm( out, L + "    " );
   out
     << L << "end direct line search\n"

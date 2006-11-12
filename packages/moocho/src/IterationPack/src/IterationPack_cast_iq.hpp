@@ -112,7 +112,7 @@ IterQuantityAccess<T>& cast_iq(
     *p = dynamic_cast<IterQuantityAccess<T>*>( &iq );
       // will throw exception if iq_name does not exist
   if( !p )
-    imp_cast_iq_throw_error( iq_name, typeid(iq).name(), typeid(T).name() );
+    imp_cast_iq_throw_error( iq_name, typeName(iq), TypeNameTraits<T>::name() );
   return *p;	
 }
 
@@ -127,7 +127,7 @@ const IterQuantityAccess<T>& cast_iq(
     *p = dynamic_cast<const IterQuantityAccess<T>*>( &iq );
       // will throw exception if iq_name does not exist
   if( !p )
-    imp_cast_iq_throw_error( iq_name, typeid(iq).name(), typeid(T).name() );
+    imp_cast_iq_throw_error( iq_name, typeName(iq), TypeNameTraits<T>::name() );
   return *p;	
 }
 
@@ -142,7 +142,7 @@ IterQuantityAccess<T>& cast_iq(
     *p = dynamic_cast<IterQuantityAccess<T>*>( &iq );
       // will throw exception if iq_name does not exist
   if( !p )
-    imp_cast_iq_throw_error( iq_id, iq_name, typeid(iq).name(), typeid(T).name() );
+    imp_cast_iq_throw_error( iq_id, iq_name, typeName(iq), TypeNameTraits<T>::name() );
   return *p;	
 }
 
@@ -157,7 +157,7 @@ const IterQuantityAccess<T>& cast_iq(
     *p = dynamic_cast<const IterQuantityAccess<T>*>( &iq );
       // will throw exception if iq_name does not exist
   if( !p )
-    imp_cast_iq_throw_error( iq_id, iq_name, typeid(iq).name(), typeid(T).name() );
+    imp_cast_iq_throw_error( iq_id, iq_name, typeName(iq), TypeNameTraits<T>::name() );
   return *p;
 }
 

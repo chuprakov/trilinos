@@ -238,7 +238,7 @@ MatrixOp& MatrixSymPosDefLBFGS::operator=(const MatrixOp& mwo)
     TEST_FOR_EXCEPTION(
       true,std::invalid_argument
       ,"MatrixSymPosDefLBFGS::operator=(const MatrixOp& mwo) : Error, "
-      "The concrete type of mwo \'" << typeid(mwo).name() << "\' is not "
+      "The concrete type of mwo \'" << typeName(mwo) << "\' is not "
       "as subclass of MatrixSymPosDefLBFGS as required" );
   }
   return *this;

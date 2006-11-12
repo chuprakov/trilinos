@@ -58,3 +58,11 @@ generate-opt-file:
 # Generate an options file Moocho.opt in the PWD with full comments
 generate-opt-file-verbose:
 	$(TRILINOS_INSTALL_DIR)/tools/moocho/generate-opt-file.pl
+
+# Run all test cases
+run-all : run-case-1
+
+# Run a test case
+run-case-1:
+	./NLPWBCounterExample.exe --echo-command-line \
+        --moocho-options-file=./input_files/Moocho.sample.out        

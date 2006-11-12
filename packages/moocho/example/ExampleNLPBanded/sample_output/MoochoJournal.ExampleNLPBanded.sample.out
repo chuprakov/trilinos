@@ -39,7 +39,7 @@ options_group NLPSolverClientInterface {
 end_options
 
 
-*** Setting up to run MOOCHO on the NLP using a configuration object of type 'class MoochoPack::NLPAlgoConfigMamaJama' ...
+*** Setting up to run MOOCHO on the NLP using a configuration object of type 'MoochoPack::NLPAlgoConfigMamaJama' ...
 
 test_nlp = true: Testing the NLP! ...
 
@@ -77,25 +77,25 @@ check: nlp->space_c()->dim() = 3000 == nlp->m() = 3000: true
 
 *** Validate that the initial starting point is in bounds ...
 
-||nlp->xinit()||inf = 1.00000000e-001
+||nlp->xinit()||inf = 1.00000000e-01
 
 check: xl <= x <= xu : true
-xinit is in bounds with { max |u| | xl <= x + u <= xu } -> 1.00000000e+050
+xinit is in bounds with { max |u| | xl <= x + u <= xu } -> 1.00000000e+50
 
 check: num_bounded(nlp->xl(),nlp->xu()) = 5 == nlp->num_bounded_x() = 5: true
 
 Getting the initial estimates for the Lagrange mutipliers ...
 
-||lambda||inf  = 0.00000000e+000
-||nu||inf      = 0.00000000e+000
+||lambda||inf  = 0.00000000e+00
+||nu||inf      = 0.00000000e+00
 nu.nz()        = 0
 
 *** Evaluate the point xo ...
 
-||xo||inf = 1.00000000e-001
+||xo||inf = 1.00000000e-01
 
-f(xo) = 1.50250000e+001
-||c(xo)||inf = 1.19973085e+002
+f(xo) = 1.50250000e+01
+||c(xo)||inf = 1.19973085e+02
 
 *** Report this point to the NLP as suboptimal ...
 
@@ -111,12 +111,12 @@ Calling nlp->calc_Gf(...) at nlp->xinit() ...
 Comparing directional products Gf'*y and/or Gc'*y with finite difference values  FDGf'*y and/or FDGc'*y for random y's ...
 
 ****
-**** Random directional vector 1 ( ||y||_1 / n = 6.98292776e-001 )
+**** Random directional vector 1 ( ||y||_1 / n = 5.02523278e-01 )
 ***
 
-rel_err(Gf'*y,FDGf'*y) = rel_err(-2.09836979e+002,-2.09836979e+002) = 3.31844121e-015
+rel_err(Gf'*y,FDGf'*y) = rel_err(-3.72976994e+00,-3.72976994e+00) = 1.20314339e-13
 
-rel_err(sum(Gc'*y),sum(FDGc'*y)) = rel_err(-2.72894778e+006,-2.72894778e+006) = 5.11913006e-016
+rel_err(sum(Gc'*y),sum(FDGc'*y)) = rel_err(3.34447607e+03,3.34447607e+03) = 3.22588066e-13
 
 Congradulations!  All of the computed errors were within the specified error tolerance!
 
@@ -133,7 +133,7 @@ Successful end of testing of the nlp
 
 x is not updated for any k so set x_k = nlp.xinit() ...
 
-||x_k||inf            = 1.0000000000e-001
+||x_k||inf            = 1.0000000000e-01
 
 Updating the decomposition ...
 
@@ -147,17 +147,19 @@ The NLP will attempt to select a basis (k = 0)...
 
 Must allocate a new matrix object for D = -inv(C)*N since one has not been allocated yet ...
 
-Allocated a new explicit matrix object for D = -inv(C)*N of type 'class AbstractLinAlgPack::MultiVectorMutableDense' ...
+Allocated a new explicit matrix object for D = -inv(C)*N of type 'AbstractLinAlgPack::MultiVectorMutableDense' ...
 
 Must allocate a new basis matrix object for C since one has not been allocated yet ...
 
-Allocated a new basis matrix object C of type 'class AbstractLinAlgPack::MatrixOpNonsingAggr' ...
+Allocated a new basis matrix object C of type 'AbstractLinAlgPack::MatrixOpNonsingAggr' ...
 
 End DecompositionSystemVarReductImp::get_basis_matrices(...)
 
 Using a direct sparse solver to set a new basis ...
 
-Using LAPACK xGETRF to analyze and factor a new matrix ...
+Using MA28 to analyze and factor a new matrix ...
+
+Calling ma28ad(...) ...
 
 ***********************************************************
 *** DecompositionSystemVarReductImp::update_decomp(...) ***
@@ -169,11 +171,11 @@ End DecompositionSystemVarReductImp::update_decomp(...)
 
 Printing the updated iteration quantities ...
 
-f_k                      = 1.5025000000e+001
-||Gf_k||inf              = 1.0000000000e-001
-||Gf_k(var_dep)_k||inf   = 1.0000000000e-001
-||Gf_k(var_indep)_k||inf = 1.0000000000e-001
-||c_k||inf               = 1.1997308452e+002
+f_k                      = 1.5025000000e+01
+||Gf_k||inf              = 1.0000000000e-01
+||Gf_k(var_dep)_k||inf   = 1.0000000000e-01
+||Gf_k(var_indep)_k||inf = 1.0000000000e-01
+||c_k||inf               = 1.1997308452e+02
 
 Gf(var_indep)_k =
   5
@@ -181,13 +183,13 @@ Gf(var_indep)_k =
 
 (0) 2: "QuasiNormalStep"
 
-||py||   = 4.7998936932e-003
+||py||   = 4.7998936932e-03
 
-||Ypy||2 = 1.1999603325e+000
+||Ypy||2 = 1.1999603325e+00
 
 (0) 2.1: "CheckDecompositionFromPy"
 
-beta = ||py||/||c|| = 4.0008087749e-005
+beta = ||py||/||c|| = 4.0008087749e-05
 
 num_basis_k was updated so the basis changed so we will skip this check
     reset min ||py||/||c|| to current value + 1
@@ -195,15 +197,15 @@ num_basis_k was updated so the basis changed so we will skip this check
 (0) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 1.3784529074e-011 / (1.1997308452e+002 + 2.2250738585e-308)
-     = 1.1489684648e-013
+     = 1.3756107364e-11 / (1.1997308452e+02 + 2.2250738585e-308)
+     = 1.1465994576e-13
 
 num_basis_k was updated so the basis changed so we will skip this check
-    reset min ||R*py+c||/||c|| to current value + epsilon(2.2204460493e-016)
+    reset min ||R*py+c||/||c|| to current value + epsilon(2.2204460493e-16)
 
 (0) 3: "ReducedGradient"
 
-||rGf||inf = 1.0809594644e+001
+||rGf||inf = 1.0809594644e+01
 
 rGf_k =
   5
@@ -215,26 +217,26 @@ rGf_k =
 
 Initializing rHL = eye(n-r) (k = 0)...
 
-||rHL_k||inf    = 1.0000000000e+000
+||rHL_k||inf    = 1.0000000000e+00
 
-cond_inf(rHL_k) = 1.0000000000e+000
+cond_inf(rHL_k) = 1.0000000000e+00
 
 rHL_k = 
   Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
     5 5
-     1:1:1 -593.779:1:2 1:1:3 0:1:4 0:1:5
-     0:2:1 1:2:2 -592.124:2:3 1:2:4 0:2:5
-     0:3:1 0:3:2 1:3:3 -590.468:3:4 1:3:5
-     0:4:1 0:4:2 0:4:3 1:4:4 -588.812:4:5
+     1:1:1 0:1:2 1:1:3 0:1:4 0:1:5
+     0:2:1 1:2:2 0:2:3 1:2:4 0:2:5
+     0:3:1 0:3:2 1:3:3 0:3:4 1:3:5
+     0:4:1 0:4:2 0:4:3 1:4:4 0:4:5
      0:5:1 0:5:2 0:5:3 0:5:4 1:5:5
   Matrix scaling M = scale*U'*U, scale = 1
   Upper cholesky factor U (ignore lower nonzeros):
     5 5
      1:1:1 0:1:2 0:1:3 0:1:4 0:1:5
-     -593.779:2:1 1:2:2 0:2:3 0:2:4 0:2:5
-     1:3:1 -592.124:3:2 1:3:3 0:3:4 0:3:5
-     0:4:1 1:4:2 -590.468:4:3 1:4:4 0:4:5
-     0:5:1 0:5:2 1:5:3 -588.812:5:4 1:5:5
+     0:2:1 1:2:2 0:2:3 0:2:4 0:2:5
+     1:3:1 0:3:2 1:3:3 0:3:4 0:3:5
+     0:4:1 1:4:2 0:4:3 1:4:4 0:4:5
+     0:5:1 0:5:2 1:5:3 0:5:4 1:5:5
 
 (0) 5.-1: "SetDBoundsStd"
 
@@ -246,8 +248,8 @@ qp_grad_k =
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 00D2EBE0
-    ||Ypy_k(var_indep)||inf = 5.2360290589e-001
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa09670
+    ||Ypy_k(var_indep)||inf = 5.2360290589e-01
 
 Using bounds on full Z*pz ...
 
@@ -268,7 +270,7 @@ Number of changes to the initial KKT system (num_act_change) = 0
 
 Solution to the initial KKT system, vo = inv(Ko)*fo:
 
-||vo||inf = 1.0809594644e+001
+||vo||inf = 1.0809594644e+01
 
 ***
 *** Removing constriants until we are dual feasible
@@ -280,7 +282,7 @@ There where 0 constraints dropped from the schur complement from the initial gue
 
 Current guess for unknowns x:
 
-||x||inf = 1.0809594644e+001
+||x||inf = 1.0809594644e+01
 
 *** Second, free initially fixed variables not in Ko
 
@@ -301,20 +303,20 @@ Number of QP iteratons                                = 0
 Number of iterative refinement residual calculations  = 1
 Number of iterative refinement solves                 = 0
 
-||x||inf                = 1.0809594644e+001
+||x||inf                = 1.0809594644e+01
 mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+010
-min(|mu(i)|)            = 1.0000000000e+010
+max(|mu(i)|)            = 1.0000000000e+10
+min(|mu(i)|)            = 1.0000000000e+10
 lambda_breve.nz()       = 0
-max(|lambda_breve(i)|)  = 0.0000000000e+000
-min(|lambda_breve(i)|)  = 0.0000000000e+000
+max(|lambda_breve(i)|)  = 0.0000000000e+00
+min(|lambda_breve(i)|)  = 0.0000000000e+00
 
 *** Leaving QPSchur::solve_qp(...)
 
-||pz_k||inf    = 1.0809594644e+001
+||pz_k||inf    = 1.0809594644e+01
 nu_k.nz()      = 0
-max(|nu_k(i)|) = 0.0000000000e+000
-||Zpz_k||2     = 1.1032346914e+002
+max(|nu_k(i)|) = 0.0000000000e+00
+||Zpz_k||2     = 1.1032346914e+02
 
 pz_k = 
   5
@@ -323,44 +325,44 @@ pz_k =
 (0) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (-1.3207213101e-012)/(1.1999603325e+000 * 1.1032346914e+002 + 2.2250738585e-308)
-  = -9.9764581665e-015
+  = (-1.3242740238e-12)/(1.1999603325e+00 * 1.1032346914e+02 + 2.2250738585e-308)
+  = -1.0003294638e-14
 
-||d||inf = 1.0285991738e+001
+||d||inf = 1.0285991738e+01
 
 (0) 7: "CalcReducedGradLagrangian"
 
-||rGL_k||inf = 1.0809594644e+001
+||rGL_k||inf = 1.0809594644e+01
 
 (0) 8: "CheckConvergence"
 
-scale_opt_factor = 1.0000000000e+000 (scale_opt_error_by = SCALE_BY_ONE)
-scale_feas_factor = 1.0000000000e+000 (scale_feas_error_by = SCALE_BY_ONE)
-scale_comp_factor = 1.0000000000e+000 (scale_comp_error_by = SCALE_BY_ONE)
-opt_scale_factor = 1.1000000000e+000 (scale_opt_error_by_Gf = true)
-opt_kkt_err_k    = 9.8269042215e+000 > opt_tol  = 1.0000000000e-002
-feas_kkt_err_k   = 1.1997308452e+002 > feas_tol = 1.0000000000e-007
-comp_kkt_err_k   = 0.0000000000e+000 < comp_tol = 1.0000000000e-006
-step_err         = 9.3509015798e+000 > step_tol = 1.0000000000e-002
+scale_opt_factor = 1.0000000000e+00 (scale_opt_error_by = SCALE_BY_ONE)
+scale_feas_factor = 1.0000000000e+00 (scale_feas_error_by = SCALE_BY_ONE)
+scale_comp_factor = 1.0000000000e+00 (scale_comp_error_by = SCALE_BY_ONE)
+opt_scale_factor = 1.1000000000e+00 (scale_opt_error_by_Gf = true)
+opt_kkt_err_k    = 9.8269042215e+00 > opt_tol  = 1.0000000000e-02
+feas_kkt_err_k   = 1.1997308452e+02 > feas_tol = 1.0000000000e-07
+comp_kkt_err_k   = -0.0000000000e+00 < comp_tol = 1.0000000000e-06
+step_err         = 9.3509015798e+00 > step_tol = 1.0000000000e-02
 
 Have not found the solution yet, have to keep going (k = 0) :-(
 
 (0) 9.-1: "LineSearchFullStep"
 
-f_k        = 1.5025000000e+001
-||c_k||inf = 1.1997308452e+002
-alpha_k    = 1.0000000000e+000
+f_k        = 1.5025000000e+01
+||c_k||inf = 1.1997308452e+02
+alpha_k    = 1.0000000000e+00
 
-||x_kp1||inf   = 1.0385991738e+001
+||x_kp1||inf   = 1.0385991738e+01
 
-f_kp1        = 5.5154949366e+003
-||c_kp1||inf = 2.4039402261e+005
+f_kp1        = 5.5154949366e+03
+||c_kp1||inf = 2.4039402261e+05
 
 (0) 9: "LineSearch"
 
-theta_k = ||c_k||1/c_k.dim() = 1.1792252057e+002
+theta_k = ||c_k||1/c_k.dim() = 1.1792252057e+02
 
-f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-005.
+f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-05.
 
 Beginning Filter line search method.
 
@@ -374,23 +376,23 @@ Filter is empty.
 ----------------------------------------------------------------------------------------------------------
 |    alpha_k    |     f_kp1     |   theta_kp1   |  pt. status   |                 comment                |
 ----------------------------------------------------------------------------------------------------------
-|1.0000000000e+000 5.5154949366e+003 2.3625283841e+005          failed      Fraction Reduction (! Switch Cond )|
-|5.0000000000e-001 1.2436714997e+003 3.3614573874e+004          failed      Fraction Reduction (! Switch Cond )|
-|2.5000000000e-001 2.4895113274e+002 5.1562325845e+003          failed      Fraction Reduction (! Switch Cond )|
-|1.2500000000e-001 3.6888787086e+001 8.1127274965e+002          failed      Fraction Reduction (! Switch Cond )|
-|6.2500000000e-002 2.1820737219e+000 6.8472167804e+001        accepted      Fraction Reduction (! Switch Cond )|
+|1.0000000000e+00 5.5154949366e+03 2.3625283841e+05          failed      Fraction Reduction (! Switch Cond )|
+|5.0000000000e-01 1.2436714997e+03 3.3614573874e+04          failed      Fraction Reduction (! Switch Cond )|
+|2.5000000000e-01 2.4895113274e+02 5.1562325845e+03          failed      Fraction Reduction (! Switch Cond )|
+|1.2500000000e-01 3.6888787086e+01 8.1127274965e+02          failed      Fraction Reduction (! Switch Cond )|
+|6.2500000000e-02 2.1820737219e+00 6.8472167804e+01        accepted      Fraction Reduction (! Switch Cond )|
 
 Point was accepted - augmenting the filter ...
 
 Augmenting the filter with the point:
-  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 2.1820737219e+000 - 1.0000000000e-005*6.8472167804e+001 = 2.1813890002e+000
-  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-005)*6.8472167804e+001 = 6.8471483083e+001
+  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 2.1820737219e+00 - 1.0000000000e-05*6.8472167804e+01 = 2.1813890002e+00
+  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-05)*6.8472167804e+01 = 6.8471483083e+01
 
 (1) 1: "EvalNewPoint"
 
-||x_k||inf            = 7.4287448361e-001
-||x(var_dep)_k||inf   = 2.3136269747e-002
-||x(var_indep)_k||inf = 7.4287448361e-001
+||x_k||inf            = 7.4287448361e-01
+||x(var_dep)_k||inf   = 2.3136269747e-02
+||x(var_indep)_k||inf = 7.4287448361e-01
 
 x(var_indep)_k = 
   5
@@ -410,7 +412,7 @@ Warning!!! mat_rel != MATRICES_INDEP_IMPS; The decompsition matrix objects may n
 *** DecompositionSystemVarReductImp::get_basis_matrices(...) ***
 ****************************************************************
 
-Allocated a new explicit matrix object for D = -inv(C)*N of type 'class AbstractLinAlgPack::MultiVectorMutableDense' ...
+Allocated a new explicit matrix object for D = -inv(C)*N of type 'AbstractLinAlgPack::MultiVectorMutableDense' ...
 
 End DecompositionSystemVarReductImp::get_basis_matrices(...)
 
@@ -418,17 +420,17 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using LAPACK xGETRF to refactor the basis matrix ...
+Using MA28 to factor a new matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
 Printing the updated iteration quantities ...
 
-f_k                      = 2.1820737219e+000
-||Gf_k||inf              = 7.4287448361e-001
-||Gf_k(var_dep)_k||inf   = 2.3136269747e-002
-||Gf_k(var_indep)_k||inf = 7.4287448361e-001
-||c_k||inf               = 6.9682547090e+001
+f_k                      = 2.1820737219e+00
+||Gf_k||inf              = 7.4287448361e-01
+||Gf_k(var_dep)_k||inf   = 2.3136269747e-02
+||Gf_k(var_indep)_k||inf = 7.4287448361e-01
+||c_k||inf               = 6.9682547090e+01
 
 Gf(var_indep)_k =
   5
@@ -436,23 +438,23 @@ Gf(var_indep)_k =
 
 (1) 2: "QuasiNormalStep"
 
-||py||   = 1.6259405998e-002
+||py||   = 1.6259405998e-02
 
-||Ypy||2 = 1.0621477516e+000
+||Ypy||2 = 1.0621477516e+00
 
 (1) 2.1: "CheckDecompositionFromPy"
 
-beta = ||py||/||c|| = 2.3333541435e-004
+beta = ||py||/||c|| = 2.3333541435e-04
 
 (1) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 6.8212102633e-013 / (6.9682547090e+001 + 2.2250738585e-308)
-     = 9.7889795195e-015
+     = 6.9633188104e-13 / (6.9682547090e+01 + 2.2250738585e-308)
+     = 9.9929165928e-15
 
 (1) 3: "ReducedGradient"
 
-||rGf||inf = 3.7462461296e-001
+||rGf||inf = 3.7462461296e-01
 
 rGf_k =
   5
@@ -461,9 +463,9 @@ rGf_k =
 (1) 4.-1: "CheckSkipBFGSUpdate"
 
 ratio = (skip_bfgs_prop_const/sqrt(||rGL_km1||+||c_km1||))*(||Zpz_km1||/||Ypy_km1||)
-      = (1.0000000000e+001/sqrt(2.4169862058e+001+6.4588832268e+003))
-        * (1.1032346914e+002/1.1999603325e+000)
-      = 1.1418557184e+001
+      = (1.0000000000e+01/sqrt(2.4169862058e+01+6.4588832268e+03))
+        * (1.1032346914e+02/1.1999603325e+00)
+      = 1.1418557184e+01
 ratio > 1
 Perform BFGS update if you can ...
 
@@ -471,9 +473,9 @@ Perform BFGS update if you can ...
 
 Performing Secant update ...
 
-||y_bfgs||inf = 1.1183897541e+001
+||y_bfgs||inf = 1.1183897541e+01
 
-||s_bfgs||inf = 6.7559966523e-001
+||s_bfgs||inf = 6.7559966523e-01
 
 y_bfgs =
   5
@@ -484,68 +486,68 @@ s_bfgs =
    0.675537:1 0.675568:2 0.675568:3 0.675568:4 0.6756:5
 
 Rescaling the initial identity matrix before the update as:
-Iscale = (y'*y)/(y'*s) = (6.2535947673e+002)/(3.7776268532e+001) = 1.6554294562e+001
+Iscale = (y'*y)/(y'*s) = (6.2535947673e+02)/(3.7776268532e+01) = 1.6554294562e+01
 B =  Iscale * eye(n-r) ...
 
 B after rescaling = 
   Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
     5 5
-     16.5543:1:1 -593.779:1:2 4.0687:1:3 0:1:4 0:1:5
-     0:2:1 16.5543:2:2 -592.124:2:3 4.0687:2:4 0:2:5
-     0:3:1 0:3:2 16.5543:3:3 -590.468:3:4 4.0687:3:5
-     0:4:1 0:4:2 0:4:3 16.5543:4:4 -588.812:4:5
+     16.5543:1:1 0:1:2 4.0687:1:3 0:1:4 0:1:5
+     0:2:1 16.5543:2:2 0:2:3 4.0687:2:4 0:2:5
+     0:3:1 0:3:2 16.5543:3:3 0:3:4 4.0687:3:5
+     0:4:1 0:4:2 0:4:3 16.5543:4:4 0:4:5
      0:5:1 0:5:2 0:5:3 0:5:4 16.5543:5:5
   Matrix scaling M = scale*U'*U, scale = 1
   Upper cholesky factor U (ignore lower nonzeros):
     5 5
      4.0687:1:1 0:1:2 0:1:3 0:1:4 0:1:5
-     -593.779:2:1 4.0687:2:2 0:2:3 0:2:4 0:2:5
-     16.5543:3:1 -592.124:3:2 4.0687:3:3 0:3:4 0:3:5
-     0:4:1 16.5543:4:2 -590.468:4:3 4.0687:4:4 0:4:5
-     0:5:1 0:5:2 16.5543:5:3 -588.812:5:4 4.0687:5:5
+     0:2:1 4.0687:2:2 0:2:3 0:2:4 0:2:5
+     16.5543:3:1 0:3:2 4.0687:3:3 0:3:4 0:3:5
+     0:4:1 16.5543:4:2 0:4:3 4.0687:4:4 0:4:5
+     0:5:1 0:5:2 16.5543:5:3 0:5:4 4.0687:5:5
 
 Considering the dampened update ...
 
-s_bfgs'*y_bfgs = 3.7776268532e+001 >=  s_bfgs' * B * s_bfgs = 3.7776268535e+001
+s_bfgs'*y_bfgs = 3.7776268532e+01 >=  s_bfgs' * B * s_bfgs = 3.7776268535e+01
 Perform the undamped update ...
 
 B after the BFGS update = 
   Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
     5 5
-     16.5544:1:1 2.23614:1:2 4.0687:1:3 2.85463e-009:1:4 1.95474e-009:1:5
-     5.27915e-005:2:1 16.5543:2:2 2.00002:2:3 4.0687:2:4 1.05485e-009:2:5
-     5.27878e-005:3:1 1.1783e-008:3:2 16.5543:3:3 1.73208:3:4 4.0687:3:5
-     5.27841e-005:4:1 8.12156e-009:4:2 4.46017e-009:4:3 16.5543:4:4 1.41425:4:5
-     -4.02538e-009:5:1 -5.27841e-005:5:2 -5.27878e-005:5:3 -5.27914e-005:5:4 16.5542:5:5
+     16.5544:1:1 2.23614:1:2 4.0687:1:3 2.85463e-09:1:4 1.95474e-09:1:5
+     5.27915e-05:2:1 16.5543:2:2 2.00002:2:3 4.0687:2:4 1.05485e-09:2:5
+     5.27878e-05:3:1 1.1783e-08:3:2 16.5543:3:3 1.73208:3:4 4.0687:3:5
+     5.27841e-05:4:1 8.12156e-09:4:2 4.46017e-09:4:3 16.5543:4:4 1.41425:4:5
+     -4.02538e-09:5:1 -5.27841e-05:5:2 -5.27878e-05:5:3 -5.27914e-05:5:4 16.5542:5:5
   Matrix scaling M = scale*U'*U, scale = 1
   Upper cholesky factor U (ignore lower nonzeros):
     5 5
-     4.06871:1:1 1.2975e-005:1:2 1.29741e-005:1:3 1.29732e-005:1:4 -9.89349e-010:1:5
-     2.23614:2:1 4.0687:2:2 2.85463e-009:2:3 1.95474e-009:2:4 -1.29732e-005:2:5
-     16.5543:3:1 2.00002:3:2 4.0687:3:3 1.05485e-009:3:4 -1.29741e-005:3:5
-     1.1783e-008:4:1 16.5543:4:2 1.73208:4:3 4.0687:4:4 -1.2975e-005:4:5
-     8.12156e-009:5:1 4.46017e-009:5:2 16.5543:5:3 1.41425:5:4 4.06868:5:5
+     4.06871:1:1 1.2975e-05:1:2 1.29741e-05:1:3 1.29732e-05:1:4 -9.89349e-10:1:5
+     2.23614:2:1 4.0687:2:2 2.85463e-09:2:3 1.95474e-09:2:4 -1.29732e-05:2:5
+     16.5543:3:1 2.00002:3:2 4.0687:3:3 1.05485e-09:3:4 -1.29741e-05:3:5
+     1.1783e-08:4:1 16.5543:4:2 1.73208:4:3 4.0687:4:4 -1.2975e-05:4:5
+     8.12156e-09:5:1 4.46017e-09:5:2 16.5543:5:3 1.41425:5:4 4.06868:5:5
 
-||rHL_k||inf    = 1.6554558493e+001
+||rHL_k||inf    = 1.6554558493e+01
 
-cond_inf(rHL_k) = 1.0000318885e+000
+cond_inf(rHL_k) = 1.0000318885e+00
 
 rHL_k = 
   Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
     5 5
-     16.5544:1:1 2.23614:1:2 4.0687:1:3 2.85463e-009:1:4 1.95474e-009:1:5
-     5.27915e-005:2:1 16.5543:2:2 2.00002:2:3 4.0687:2:4 1.05485e-009:2:5
-     5.27878e-005:3:1 1.1783e-008:3:2 16.5543:3:3 1.73208:3:4 4.0687:3:5
-     5.27841e-005:4:1 8.12156e-009:4:2 4.46017e-009:4:3 16.5543:4:4 1.41425:4:5
-     -4.02538e-009:5:1 -5.27841e-005:5:2 -5.27878e-005:5:3 -5.27914e-005:5:4 16.5542:5:5
+     16.5544:1:1 2.23614:1:2 4.0687:1:3 2.85463e-09:1:4 1.95474e-09:1:5
+     5.27915e-05:2:1 16.5543:2:2 2.00002:2:3 4.0687:2:4 1.05485e-09:2:5
+     5.27878e-05:3:1 1.1783e-08:3:2 16.5543:3:3 1.73208:3:4 4.0687:3:5
+     5.27841e-05:4:1 8.12156e-09:4:2 4.46017e-09:4:3 16.5543:4:4 1.41425:4:5
+     -4.02538e-09:5:1 -5.27841e-05:5:2 -5.27878e-05:5:3 -5.27914e-05:5:4 16.5542:5:5
   Matrix scaling M = scale*U'*U, scale = 1
   Upper cholesky factor U (ignore lower nonzeros):
     5 5
-     4.06871:1:1 1.2975e-005:1:2 1.29741e-005:1:3 1.29732e-005:1:4 -9.89349e-010:1:5
-     2.23614:2:1 4.0687:2:2 2.85463e-009:2:3 1.95474e-009:2:4 -1.29732e-005:2:5
-     16.5543:3:1 2.00002:3:2 4.0687:3:3 1.05485e-009:3:4 -1.29741e-005:3:5
-     1.1783e-008:4:1 16.5543:4:2 1.73208:4:3 4.0687:4:4 -1.2975e-005:4:5
-     8.12156e-009:5:1 4.46017e-009:5:2 16.5543:5:3 1.41425:5:4 4.06868:5:5
+     4.06871:1:1 1.2975e-05:1:2 1.29741e-05:1:3 1.29732e-05:1:4 -9.89349e-10:1:5
+     2.23614:2:1 4.0687:2:2 2.85463e-09:2:3 1.95474e-09:2:4 -1.29732e-05:2:5
+     16.5543:3:1 2.00002:3:2 4.0687:3:3 1.05485e-09:3:4 -1.29741e-05:3:5
+     1.1783e-08:4:1 16.5543:4:2 1.73208:4:3 4.0687:4:4 -1.2975e-05:4:5
+     8.12156e-09:5:1 4.46017e-09:5:2 16.5543:5:3 1.41425:5:4 4.06868:5:5
 
 (1) 5.-1: "SetDBoundsStd"
 
@@ -557,8 +559,8 @@ qp_grad_k =
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 00D2EBE0
-    ||Ypy_k(var_indep)||inf = 2.5901993894e-001
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa09670
+    ||Ypy_k(var_indep)||inf = 2.5901993894e-01
 
 Using bounds on full Z*pz ...
 
@@ -579,7 +581,7 @@ Number of changes to the initial KKT system (num_act_change) = 0
 
 Solution to the initial KKT system, vo = inv(Ko)*fo:
 
-||vo||inf = 2.2629695306e-002
+||vo||inf = 2.2629695306e-02
 
 ***
 *** Removing constriants until we are dual feasible
@@ -591,7 +593,7 @@ There where 0 constraints dropped from the schur complement from the initial gue
 
 Current guess for unknowns x:
 
-||x||inf = 2.2629695306e-002
+||x||inf = 2.2629695306e-02
 
 *** Second, free initially fixed variables not in Ko
 
@@ -612,20 +614,20 @@ Number of QP iteratons                                = 0
 Number of iterative refinement residual calculations  = 1
 Number of iterative refinement solves                 = 0
 
-||x||inf                = 2.2629695306e-002
+||x||inf                = 2.2629695306e-02
 mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+010
-min(|mu(i)|)            = 1.0000000000e+010
+max(|mu(i)|)            = 1.0000000000e+10
+min(|mu(i)|)            = 1.0000000000e+10
 lambda_breve.nz()       = 0
-max(|lambda_breve(i)|)  = 0.0000000000e+000
-min(|lambda_breve(i)|)  = 0.0000000000e+000
+max(|lambda_breve(i)|)  = 0.0000000000e+00
+min(|lambda_breve(i)|)  = 0.0000000000e+00
 
 *** Leaving QPSchur::solve_qp(...)
 
-||pz_k||inf    = 2.2629695306e-002
+||pz_k||inf    = 2.2629695306e-02
 nu_k.nz()      = 0
-max(|nu_k(i)|) = 0.0000000000e+000
-||Zpz_k||2     = 6.0331754008e-002
+max(|nu_k(i)|) = 0.0000000000e+00
+||Zpz_k||2     = 6.0331754008e-02
 
 pz_k = 
   5
@@ -634,44 +636,44 @@ pz_k =
 (1) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (-1.9715132304e-015)/(1.0621477516e+000 * 6.0331754008e-002 + 2.2250738585e-308)
-  = -3.0765842339e-014
+  = (-1.9654416983e-15)/(1.0621477516e+00 * 6.0331754008e-02 + 2.2250738585e-308)
+  = -3.0671094914e-14
 
-||d||inf = 2.8163092161e-001
+||d||inf = 2.8163092161e-01
 
 (1) 7: "CalcReducedGradLagrangian"
 
-||rGL_k||inf = 3.7462461296e-001
+||rGL_k||inf = 3.7462461296e-01
 
 (1) 8: "CheckConvergence"
 
-scale_opt_factor = 1.0000000000e+000 (scale_opt_error_by = SCALE_BY_ONE)
-scale_feas_factor = 1.0000000000e+000 (scale_feas_error_by = SCALE_BY_ONE)
-scale_comp_factor = 1.0000000000e+000 (scale_comp_error_by = SCALE_BY_ONE)
-opt_scale_factor = 1.7428744836e+000 (scale_opt_error_by_Gf = true)
-opt_kkt_err_k    = 2.1494640979e-001 > opt_tol  = 1.0000000000e-002
-feas_kkt_err_k   = 6.9682547090e+001 > feas_tol = 1.0000000000e-007
-comp_kkt_err_k   = 0.0000000000e+000 < comp_tol = 1.0000000000e-006
-step_err         = 1.6158990464e-001 > step_tol = 1.0000000000e-002
+scale_opt_factor = 1.0000000000e+00 (scale_opt_error_by = SCALE_BY_ONE)
+scale_feas_factor = 1.0000000000e+00 (scale_feas_error_by = SCALE_BY_ONE)
+scale_comp_factor = 1.0000000000e+00 (scale_comp_error_by = SCALE_BY_ONE)
+opt_scale_factor = 1.7428744836e+00 (scale_opt_error_by_Gf = true)
+opt_kkt_err_k    = 2.1494640979e-01 > opt_tol  = 1.0000000000e-02
+feas_kkt_err_k   = 6.9682547090e+01 > feas_tol = 1.0000000000e-07
+comp_kkt_err_k   = -0.0000000000e+00 < comp_tol = 1.0000000000e-06
+step_err         = 1.6158990464e-01 > step_tol = 1.0000000000e-02
 
 Have not found the solution yet, have to keep going (k = 1) :-(
 
 (1) 9.-1: "LineSearchFullStep"
 
-f_k        = 2.1820737219e+000
-||c_k||inf = 6.9682547090e+001
-alpha_k    = 1.0000000000e+000
+f_k        = 2.1820737219e+00
+||c_k||inf = 6.9682547090e+01
+alpha_k    = 1.0000000000e+00
 
-||x_kp1||inf   = 4.6135478069e-001
+||x_kp1||inf   = 4.6135478069e-01
 
-f_kp1        = 6.1576438692e-001
-||c_kp1||inf = 1.5830011682e+001
+f_kp1        = 6.1576438692e-01
+||c_kp1||inf = 1.5830011682e+01
 
 (1) 9: "LineSearch"
 
-theta_k = ||c_k||1/c_k.dim() = 6.8472167804e+001
+theta_k = ||c_k||1/c_k.dim() = 6.8472167804e+01
 
-f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-005.
+f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-05.
 
 Beginning Filter line search method.
 
@@ -679,30 +681,30 @@ Current Filter
 -----------------------------------------------------
 |     f_with_boundary     |  theta_with_boundary    |
 -----------------------------------------------------
-|        2.1813890002e+000         6.8471483083e+001|
+|         2.1813890002e+00          6.8471483083e+01|
 
   Iteration Status
 ----------------------------------------------------------------------------------------------------------
 |    alpha_k    |     f_kp1     |   theta_kp1   |  pt. status   |                 comment                |
 ----------------------------------------------------------------------------------------------------------
-|1.0000000000e+000 6.1576438692e-001 1.5552264182e+001        accepted      Fraction Reduction (! Switch Cond )|
+|1.0000000000e+00 6.1576438692e-01 1.5552264182e+01        accepted      Fraction Reduction (! Switch Cond )|
 
 Point was accepted - augmenting the filter ...
 
 Augmenting the filter with the point:
-  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 6.1576438692e-001 - 1.0000000000e-005*1.5552264182e+001 = 6.1560886428e-001
-  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-005)*1.5552264182e+001 = 1.5552108660e+001
+  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 6.1576438692e-01 - 1.0000000000e-05*1.5552264182e+01 = 6.1560886428e-01
+  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-05)*1.5552264182e+01 = 1.5552108660e+01
 
 Removing from the filter the redundant point:
-  f_with_boundary     = 2.1813890002e+000
-  theta_with_boundary = 6.8471483083e+001
+  f_with_boundary     = 2.1813890002e+00
+  theta_with_boundary = 6.8471483083e+01
   iteration added     = 0
 
 (2) 1: "EvalNewPoint"
 
-||x_k||inf            = 4.6135478069e-001
-||x(var_dep)_k||inf   = 7.4771752444e-003
-||x(var_indep)_k||inf = 4.6135478069e-001
+||x_k||inf            = 4.6135478069e-01
+||x(var_dep)_k||inf   = 7.4771752444e-03
+||x(var_indep)_k||inf = 4.6135478069e-01
 
 x(var_indep)_k = 
   5
@@ -722,7 +724,7 @@ Warning!!! mat_rel != MATRICES_INDEP_IMPS; The decompsition matrix objects may n
 *** DecompositionSystemVarReductImp::get_basis_matrices(...) ***
 ****************************************************************
 
-Allocated a new explicit matrix object for D = -inv(C)*N of type 'class AbstractLinAlgPack::MultiVectorMutableDense' ...
+Allocated a new explicit matrix object for D = -inv(C)*N of type 'AbstractLinAlgPack::MultiVectorMutableDense' ...
 
 End DecompositionSystemVarReductImp::get_basis_matrices(...)
 
@@ -730,17 +732,17 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using LAPACK xGETRF to refactor the basis matrix ...
+Using MA28 to factor a new matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
 Printing the updated iteration quantities ...
 
-f_k                      = 6.1576438692e-001
-||Gf_k||inf              = 4.6135478069e-001
-||Gf_k(var_dep)_k||inf   = 7.4771752444e-003
-||Gf_k(var_indep)_k||inf = 4.6135478069e-001
-||c_k||inf               = 1.5830011682e+001
+f_k                      = 6.1576438692e-01
+||Gf_k||inf              = 4.6135478069e-01
+||Gf_k(var_dep)_k||inf   = 7.4771752444e-03
+||Gf_k(var_indep)_k||inf = 4.6135478069e-01
+||c_k||inf               = 1.5830011682e+01
 
 Gf(var_indep)_k =
   5
@@ -748,23 +750,23 @@ Gf(var_indep)_k =
 
 (2) 2: "QuasiNormalStep"
 
-||py||   = 7.0350662441e-003
+||py||   = 7.0350662441e-03
 
-||Ypy||2 = 3.9705009790e-001
+||Ypy||2 = 3.9705009790e-01
 
 (2) 2.1: "CheckDecompositionFromPy"
 
-beta = ||py||/||c|| = 4.4441320608e-004
+beta = ||py||/||c|| = 4.4441320608e-04
 
 (2) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 2.3092638912e-014 / (1.5830011682e+001 + 2.2250738585e-308)
-     = 1.4587884946e-015
+     = 2.1316282073e-14 / (1.5830011682e+01 + 2.2250738585e-308)
+     = 1.3465739950e-15
 
 (2) 3: "ReducedGradient"
 
-||rGf||inf = 4.1554627380e-001
+||rGf||inf = 4.1554627380e-01
 
 rGf_k =
   5
@@ -773,9 +775,9 @@ rGf_k =
 (2) 4.-1: "CheckSkipBFGSUpdate"
 
 ratio = (skip_bfgs_prop_const/sqrt(||rGL_km1||+||c_km1||))*(||Zpz_km1||/||Ypy_km1||)
-      = (1.0000000000e+001/sqrt(8.3732647964e-001+3.7503756046e+003))
-        * (6.0331754008e-002/1.0621477516e+000)
-      = 9.2741722769e-003
+      = (1.0000000000e+01/sqrt(8.3732647964e-01+3.7503756046e+03))
+        * (6.0331754008e-02/1.0621477516e+00)
+      = 9.2741722769e-03
 ratio < 1
 Skipping BFGS update ...
 
@@ -795,8 +797,8 @@ qp_grad_k =
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 00D2EBE0
-    ||Ypy_k(var_indep)||inf = 4.3200066153e-002
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa09670
+    ||Ypy_k(var_indep)||inf = 4.3200066153e-02
 
 Using bounds on full Z*pz ...
 
@@ -817,7 +819,7 @@ Number of changes to the initial KKT system (num_act_change) = 0
 
 Solution to the initial KKT system, vo = inv(Ko)*fo:
 
-||vo||inf = 2.5101622321e-002
+||vo||inf = 2.5101622321e-02
 
 ***
 *** Removing constriants until we are dual feasible
@@ -829,7 +831,7 @@ There where 0 constraints dropped from the schur complement from the initial gue
 
 Current guess for unknowns x:
 
-||x||inf = 2.5101622321e-002
+||x||inf = 2.5101622321e-02
 
 *** Second, free initially fixed variables not in Ko
 
@@ -850,20 +852,20 @@ Number of QP iteratons                                = 0
 Number of iterative refinement residual calculations  = 1
 Number of iterative refinement solves                 = 0
 
-||x||inf                = 2.5101622321e-002
+||x||inf                = 2.5101622321e-02
 mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+010
-min(|mu(i)|)            = 1.0000000000e+010
+max(|mu(i)|)            = 1.0000000000e+10
+min(|mu(i)|)            = 1.0000000000e+10
 lambda_breve.nz()       = 0
-max(|lambda_breve(i)|)  = 0.0000000000e+000
-min(|lambda_breve(i)|)  = 0.0000000000e+000
+max(|lambda_breve(i)|)  = 0.0000000000e+00
+min(|lambda_breve(i)|)  = 0.0000000000e+00
 
 *** Leaving QPSchur::solve_qp(...)
 
-||pz_k||inf    = 2.5101622321e-002
+||pz_k||inf    = 2.5101622321e-02
 nu_k.nz()      = 0
-max(|nu_k(i)|) = 0.0000000000e+000
-||Zpz_k||2     = 5.7849459762e-002
+max(|nu_k(i)|) = 0.0000000000e+00
+||Zpz_k||2     = 5.7849459762e-02
 
 pz_k = 
   5
@@ -872,44 +874,44 @@ pz_k =
 (2) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (-3.2742905609e-016)/(3.9705009790e-001 * 5.7849459762e-002 + 2.2250738585e-308)
-  = -1.4255176574e-014
+  = (-3.2569433261e-16)/(3.9705009790e-01 * 5.7849459762e-02 + 2.2250738585e-308)
+  = -1.4179652459e-14
 
-||d||inf = 6.8289342521e-002
+||d||inf = 6.8289342521e-02
 
 (2) 7: "CalcReducedGradLagrangian"
 
-||rGL_k||inf = 4.1554627380e-001
+||rGL_k||inf = 4.1554627380e-01
 
 (2) 8: "CheckConvergence"
 
-scale_opt_factor = 1.0000000000e+000 (scale_opt_error_by = SCALE_BY_ONE)
-scale_feas_factor = 1.0000000000e+000 (scale_feas_error_by = SCALE_BY_ONE)
-scale_comp_factor = 1.0000000000e+000 (scale_comp_error_by = SCALE_BY_ONE)
-opt_scale_factor = 1.4613547807e+000 (scale_opt_error_by_Gf = true)
-opt_kkt_err_k    = 2.8435687164e-001 > opt_tol  = 1.0000000000e-002
-feas_kkt_err_k   = 1.5830011682e+001 > feas_tol = 1.0000000000e-007
-comp_kkt_err_k   = 0.0000000000e+000 < comp_tol = 1.0000000000e-006
-step_err         = 4.6733716607e-002 > step_tol = 1.0000000000e-002
+scale_opt_factor = 1.0000000000e+00 (scale_opt_error_by = SCALE_BY_ONE)
+scale_feas_factor = 1.0000000000e+00 (scale_feas_error_by = SCALE_BY_ONE)
+scale_comp_factor = 1.0000000000e+00 (scale_comp_error_by = SCALE_BY_ONE)
+opt_scale_factor = 1.4613547807e+00 (scale_opt_error_by_Gf = true)
+opt_kkt_err_k    = 2.8435687164e-01 > opt_tol  = 1.0000000000e-02
+feas_kkt_err_k   = 1.5830011682e+01 > feas_tol = 1.0000000000e-07
+comp_kkt_err_k   = -0.0000000000e+00 < comp_tol = 1.0000000000e-06
+step_err         = 4.6733716607e-02 > step_tol = 1.0000000000e-02
 
 Have not found the solution yet, have to keep going (k = 2) :-(
 
 (2) 9.-1: "LineSearchFullStep"
 
-f_k        = 6.1576438692e-001
-||c_k||inf = 1.5830011682e+001
-alpha_k    = 1.0000000000e+000
+f_k        = 6.1576438692e-01
+||c_k||inf = 1.5830011682e+01
+alpha_k    = 1.0000000000e+00
 
-||x_kp1||inf   = 3.9314710830e-001
+||x_kp1||inf   = 3.9314710830e-01
 
-f_kp1        = 3.8695300275e-001
-||c_kp1||inf = 1.3445285133e+000
+f_kp1        = 3.8695300275e-01
+||c_kp1||inf = 1.3445285133e+00
 
 (2) 9: "LineSearch"
 
-theta_k = ||c_k||1/c_k.dim() = 1.5552264182e+001
+theta_k = ||c_k||1/c_k.dim() = 1.5552264182e+01
 
-f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-005.
+f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-05.
 
 Beginning Filter line search method.
 
@@ -917,30 +919,30 @@ Current Filter
 -----------------------------------------------------
 |     f_with_boundary     |  theta_with_boundary    |
 -----------------------------------------------------
-|        6.1560886428e-001         1.5552108660e+001|
+|         6.1560886428e-01          1.5552108660e+01|
 
   Iteration Status
 ----------------------------------------------------------------------------------------------------------
 |    alpha_k    |     f_kp1     |   theta_kp1   |  pt. status   |                 comment                |
 ----------------------------------------------------------------------------------------------------------
-|1.0000000000e+000 3.8695300275e-001 1.3201800917e+000        accepted      Fraction Reduction (! Switch Cond )|
+|1.0000000000e+00 3.8695300275e-01 1.3201800917e+00        accepted      Fraction Reduction (! Switch Cond )|
 
 Point was accepted - augmenting the filter ...
 
 Augmenting the filter with the point:
-  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 3.8695300275e-001 - 1.0000000000e-005*1.3201800917e+000 = 3.8693980095e-001
-  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-005)*1.3201800917e+000 = 1.3201668899e+000
+  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 3.8695300275e-01 - 1.0000000000e-05*1.3201800917e+00 = 3.8693980095e-01
+  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-05)*1.3201800917e+00 = 1.3201668899e+00
 
 Removing from the filter the redundant point:
-  f_with_boundary     = 6.1560886428e-001
-  theta_with_boundary = 1.5552108660e+001
+  f_with_boundary     = 6.1560886428e-01
+  theta_with_boundary = 1.5552108660e+01
   iteration added     = 1
 
 (3) 1: "EvalNewPoint"
 
-||x_k||inf            = 3.9314710830e-001
-||x(var_dep)_k||inf   = 6.9887237779e-004
-||x(var_indep)_k||inf = 3.9314710830e-001
+||x_k||inf            = 3.9314710830e-01
+||x(var_dep)_k||inf   = 6.9887237779e-04
+||x(var_indep)_k||inf = 3.9314710830e-01
 
 x(var_indep)_k = 
   5
@@ -960,7 +962,7 @@ Warning!!! mat_rel != MATRICES_INDEP_IMPS; The decompsition matrix objects may n
 *** DecompositionSystemVarReductImp::get_basis_matrices(...) ***
 ****************************************************************
 
-Allocated a new explicit matrix object for D = -inv(C)*N of type 'class AbstractLinAlgPack::MultiVectorMutableDense' ...
+Allocated a new explicit matrix object for D = -inv(C)*N of type 'AbstractLinAlgPack::MultiVectorMutableDense' ...
 
 End DecompositionSystemVarReductImp::get_basis_matrices(...)
 
@@ -968,17 +970,17 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using LAPACK xGETRF to refactor the basis matrix ...
+Using MA28 to factor a new matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
 Printing the updated iteration quantities ...
 
-f_k                      = 3.8695300275e-001
-||Gf_k||inf              = 3.9314710830e-001
-||Gf_k(var_dep)_k||inf   = 6.9887237779e-004
-||Gf_k(var_indep)_k||inf = 3.9314710830e-001
-||c_k||inf               = 1.3445285133e+000
+f_k                      = 3.8695300275e-01
+||Gf_k||inf              = 3.9314710830e-01
+||Gf_k(var_dep)_k||inf   = 6.9887237779e-04
+||Gf_k(var_indep)_k||inf = 3.9314710830e-01
+||c_k||inf               = 1.3445285133e+00
 
 Gf(var_indep)_k =
   5
@@ -986,23 +988,23 @@ Gf(var_indep)_k =
 
 (3) 2: "QuasiNormalStep"
 
-||py||   = 6.9845040071e-004
+||py||   = 6.9845040071e-04
 
-||Ypy||2 = 3.8222397636e-002
+||Ypy||2 = 3.8222397636e-02
 
 (3) 2.1: "CheckDecompositionFromPy"
 
-beta = ||py||/||c|| = 5.1947607941e-004
+beta = ||py||/||c|| = 5.1947607941e-04
 
 (3) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 1.1102230246e-015 / (1.3445285133e+000 + 2.2250738585e-308)
-     = 8.2573408721e-016
+     = 8.8817841970e-16 / (1.3445285133e+00 + 2.2250738585e-308)
+     = 6.6058726977e-16
 
 (3) 3: "ReducedGradient"
 
-||rGf||inf = 3.9272839189e-001
+||rGf||inf = 3.9272839189e-01
 
 rGf_k =
   5
@@ -1011,9 +1013,9 @@ rGf_k =
 (3) 4.-1: "CheckSkipBFGSUpdate"
 
 ratio = (skip_bfgs_prop_const/sqrt(||rGL_km1||+||c_km1||))*(||Zpz_km1||/||Ypy_km1||)
-      = (1.0000000000e+001/sqrt(9.2894644415e-001+8.5183273306e+002))
-        * (5.7849459762e-002/3.9705009790e-001)
-      = 4.9893062465e-002
+      = (1.0000000000e+01/sqrt(9.2894644415e-01+8.5183273306e+02))
+        * (5.7849459762e-02/3.9705009790e-01)
+      = 4.9893062465e-02
 ratio < 1
 Skipping BFGS update ...
 
@@ -1033,8 +1035,8 @@ qp_grad_k =
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 00D2EBE0
-    ||Ypy_k(var_indep)||inf = 4.2053082371e-004
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa09670
+    ||Ypy_k(var_indep)||inf = 4.2053082371e-04
 
 Using bounds on full Z*pz ...
 
@@ -1055,7 +1057,7 @@ Number of changes to the initial KKT system (num_act_change) = 0
 
 Solution to the initial KKT system, vo = inv(Ko)*fo:
 
-||vo||inf = 2.3723277979e-002
+||vo||inf = 2.3723277979e-02
 
 ***
 *** Removing constriants until we are dual feasible
@@ -1067,7 +1069,7 @@ There where 0 constraints dropped from the schur complement from the initial gue
 
 Current guess for unknowns x:
 
-||x||inf = 2.3723277979e-002
+||x||inf = 2.3723277979e-02
 
 *** Second, free initially fixed variables not in Ko
 
@@ -1088,20 +1090,20 @@ Number of QP iteratons                                = 0
 Number of iterative refinement residual calculations  = 1
 Number of iterative refinement solves                 = 0
 
-||x||inf                = 2.3723277979e-002
+||x||inf                = 2.3723277979e-02
 mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+010
-min(|mu(i)|)            = 1.0000000000e+010
+max(|mu(i)|)            = 1.0000000000e+10
+min(|mu(i)|)            = 1.0000000000e+10
 lambda_breve.nz()       = 0
-max(|lambda_breve(i)|)  = 0.0000000000e+000
-min(|lambda_breve(i)|)  = 0.0000000000e+000
+max(|lambda_breve(i)|)  = 0.0000000000e+00
+min(|lambda_breve(i)|)  = 0.0000000000e+00
 
 *** Leaving QPSchur::solve_qp(...)
 
-||pz_k||inf    = 2.3723277979e-002
+||pz_k||inf    = 2.3723277979e-02
 nu_k.nz()      = 0
-max(|nu_k(i)|) = 0.0000000000e+000
-||Zpz_k||2     = 5.3050520400e-002
+max(|nu_k(i)|) = 0.0000000000e+00
+||Zpz_k||2     = 5.3050520400e-02
 
 pz_k = 
   5
@@ -1110,44 +1112,44 @@ pz_k =
 (3) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (-1.0554030523e-018)/(3.8222397636e-002 * 5.3050520400e-002 + 2.2250738585e-308)
-  = -5.2048805987e-016
+  = (-1.0587911841e-18)/(3.8222397636e-02 * 5.3050520400e-02 + 2.2250738585e-308)
+  = -5.2215896857e-16
 
-||d||inf = 2.4141742846e-002
+||d||inf = 2.4141742846e-02
 
 (3) 7: "CalcReducedGradLagrangian"
 
-||rGL_k||inf = 3.9272839189e-001
+||rGL_k||inf = 3.9272839189e-01
 
 (3) 8: "CheckConvergence"
 
-scale_opt_factor = 1.0000000000e+000 (scale_opt_error_by = SCALE_BY_ONE)
-scale_feas_factor = 1.0000000000e+000 (scale_feas_error_by = SCALE_BY_ONE)
-scale_comp_factor = 1.0000000000e+000 (scale_comp_error_by = SCALE_BY_ONE)
-opt_scale_factor = 1.3931471083e+000 (scale_opt_error_by_Gf = true)
-opt_kkt_err_k    = 2.8190015939e-001 > opt_tol  = 1.0000000000e-002
-feas_kkt_err_k   = 1.3445285133e+000 > feas_tol = 1.0000000000e-007
-comp_kkt_err_k   = 0.0000000000e+000 < comp_tol = 1.0000000000e-006
-step_err         = 1.7328925784e-002 > step_tol = 1.0000000000e-002
+scale_opt_factor = 1.0000000000e+00 (scale_opt_error_by = SCALE_BY_ONE)
+scale_feas_factor = 1.0000000000e+00 (scale_feas_error_by = SCALE_BY_ONE)
+scale_comp_factor = 1.0000000000e+00 (scale_comp_error_by = SCALE_BY_ONE)
+opt_scale_factor = 1.3931471083e+00 (scale_opt_error_by_Gf = true)
+opt_kkt_err_k    = 2.8190015939e-01 > opt_tol  = 1.0000000000e-02
+feas_kkt_err_k   = 1.3445285133e+00 > feas_tol = 1.0000000000e-07
+comp_kkt_err_k   = -0.0000000000e+00 < comp_tol = 1.0000000000e-06
+step_err         = 1.7328925784e-02 > step_tol = 1.0000000000e-02
 
 Have not found the solution yet, have to keep going (k = 3) :-(
 
 (3) 9.-1: "LineSearchFullStep"
 
-f_k        = 3.8695300275e-001
-||c_k||inf = 1.3445285133e+000
-alpha_k    = 1.0000000000e+000
+f_k        = 3.8695300275e-01
+||c_k||inf = 1.3445285133e+00
+alpha_k    = 1.0000000000e+00
 
-||x_kp1||inf   = 3.6900536545e-001
+||x_kp1||inf   = 3.6900536545e-01
 
-f_kp1        = 3.4024364074e-001
-||c_kp1||inf = 4.4987367193e-002
+f_kp1        = 3.4024364074e-01
+||c_kp1||inf = 4.4987367193e-02
 
 (3) 9: "LineSearch"
 
-theta_k = ||c_k||1/c_k.dim() = 1.3201800917e+000
+theta_k = ||c_k||1/c_k.dim() = 1.3201800917e+00
 
-f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-005.
+f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-05.
 
 Beginning Filter line search method.
 
@@ -1155,30 +1157,30 @@ Current Filter
 -----------------------------------------------------
 |     f_with_boundary     |  theta_with_boundary    |
 -----------------------------------------------------
-|        3.8693980095e-001         1.3201668899e+000|
+|         3.8693980095e-01          1.3201668899e+00|
 
   Iteration Status
 ----------------------------------------------------------------------------------------------------------
 |    alpha_k    |     f_kp1     |   theta_kp1   |  pt. status   |                 comment                |
 ----------------------------------------------------------------------------------------------------------
-|1.0000000000e+000 3.4024364074e-001 4.4177631526e-002        accepted      Fraction Reduction (! Switch Cond )|
+|1.0000000000e+00 3.4024364074e-01 4.4177631526e-02        accepted      Fraction Reduction (! Switch Cond )|
 
 Point was accepted - augmenting the filter ...
 
 Augmenting the filter with the point:
-  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 3.4024364074e-001 - 1.0000000000e-005*4.4177631526e-002 = 3.4024319897e-001
-  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-005)*4.4177631526e-002 = 4.4177189749e-002
+  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 3.4024364074e-01 - 1.0000000000e-05*4.4177631526e-02 = 3.4024319897e-01
+  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-05)*4.4177631526e-02 = 4.4177189749e-02
 
 Removing from the filter the redundant point:
-  f_with_boundary     = 3.8693980095e-001
-  theta_with_boundary = 1.3201668899e+000
+  f_with_boundary     = 3.8693980095e-01
+  theta_with_boundary = 1.3201668899e+00
   iteration added     = 2
 
 (4) 1: "EvalNewPoint"
 
-||x_k||inf            = 3.6900536545e-001
-||x(var_dep)_k||inf   = 2.4215783810e-005
-||x(var_indep)_k||inf = 3.6900536545e-001
+||x_k||inf            = 3.6900536545e-01
+||x(var_dep)_k||inf   = 2.4215783810e-05
+||x(var_indep)_k||inf = 3.6900536545e-01
 
 x(var_indep)_k = 
   5
@@ -1198,7 +1200,7 @@ Warning!!! mat_rel != MATRICES_INDEP_IMPS; The decompsition matrix objects may n
 *** DecompositionSystemVarReductImp::get_basis_matrices(...) ***
 ****************************************************************
 
-Allocated a new explicit matrix object for D = -inv(C)*N of type 'class AbstractLinAlgPack::MultiVectorMutableDense' ...
+Allocated a new explicit matrix object for D = -inv(C)*N of type 'AbstractLinAlgPack::MultiVectorMutableDense' ...
 
 End DecompositionSystemVarReductImp::get_basis_matrices(...)
 
@@ -1206,17 +1208,17 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using LAPACK xGETRF to refactor the basis matrix ...
+Using MA28 to factor a new matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
 Printing the updated iteration quantities ...
 
-f_k                      = 3.4024364074e-001
-||Gf_k||inf              = 3.6900536545e-001
-||Gf_k(var_dep)_k||inf   = 2.4215783810e-005
-||Gf_k(var_indep)_k||inf = 3.6900536545e-001
-||c_k||inf               = 4.4987367193e-002
+f_k                      = 3.4024364074e-01
+||Gf_k||inf              = 3.6900536545e-01
+||Gf_k(var_dep)_k||inf   = 2.4215783810e-05
+||Gf_k(var_indep)_k||inf = 3.6900536545e-01
+||c_k||inf               = 4.4987367193e-02
 
 Gf(var_indep)_k =
   5
@@ -1224,23 +1226,23 @@ Gf(var_indep)_k =
 
 (4) 2: "QuasiNormalStep"
 
-||py||   = 2.4215765620e-005
+||py||   = 2.4215765620e-05
 
-||Ypy||2 = 1.3249505872e-003
+||Ypy||2 = 1.3249505872e-03
 
 (4) 2.1: "CheckDecompositionFromPy"
 
-beta = ||py||/||c|| = 5.3827923550e-004
+beta = ||py||/||c|| = 5.3827923550e-04
 
 (4) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 3.4694469520e-017 / (4.4987367193e-002 + 2.2250738585e-308)
-     = 7.7120471110e-016
+     = 4.1633363423e-17 / (4.4987367193e-02 + 2.2250738585e-308)
+     = 9.2544565333e-16
 
 (4) 3: "ReducedGradient"
 
-||rGf||inf = 3.6900485363e-001
+||rGf||inf = 3.6900485363e-01
 
 rGf_k =
   5
@@ -1249,9 +1251,9 @@ rGf_k =
 (4) 4.-1: "CheckSkipBFGSUpdate"
 
 ratio = (skip_bfgs_prop_const/sqrt(||rGL_km1||+||c_km1||))*(||Zpz_km1||/||Ypy_km1||)
-      = (1.0000000000e+001/sqrt(8.7794944328e-001+7.2309266475e+001))
-        * (5.3050520400e-002/3.8222397636e-002)
-      = 1.6223856969e+000
+      = (1.0000000000e+01/sqrt(8.7794944328e-01+7.2309266475e+01))
+        * (5.3050520400e-02/3.8222397636e-02)
+      = 1.6223856969e+00
 ratio > 1
 Perform BFGS update if you can ...
 
@@ -1259,9 +1261,9 @@ Perform BFGS update if you can ...
 
 Performing Secant update ...
 
-||y_bfgs||inf = 2.3723538254e-002
+||y_bfgs||inf = 2.3723538254e-02
 
-||s_bfgs||inf = 2.3723277979e-002
+||s_bfgs||inf = 2.3723277979e-02
 
 y_bfgs =
   5
@@ -1273,11 +1275,11 @@ s_bfgs =
 
 Considering the dampened update ...
 
-s_bfgs'*y_bfgs = 2.8126935606e-003 <  s_bfgs' * B * s_bfgs = 4.6561647149e-002
+s_bfgs'*y_bfgs = 2.8126935606e-03 <  s_bfgs' * B * s_bfgs = 4.6561647149e-02
 Dampen the update ...
-theta = 8.5143334100e-001
+theta = 8.5143334100e-01
 y_bfgs = theta*y_bfgs + (1-theta)*B*s_bfgs ...
-||y_bfgs||inf = 7.8545356511e-002
+||y_bfgs||inf = 7.8545356511e-02
 y_bfgs =
   5
    -0.0785454:1 -0.0785262:2 -0.0785262:3 -0.0785262:4 -0.078507:5
@@ -1299,9 +1301,9 @@ B after the BFGS update =
      -2.64869:4:1 13.9056:4:2 2.79243:4:3 3.38525:4:4 -1.50452:4:5
      -2.64869:5:1 -2.64869:5:2 13.9056:5:3 1.89695:5:4 3.03294:5:5
 
-||rHL_k||inf    = 2.4499747866e+001
+||rHL_k||inf    = 2.4499747866e+01
 
-cond_inf(rHL_k) = 7.4011738690e+000
+cond_inf(rHL_k) = 7.4011738690e+00
 
 rHL_k = 
   Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
@@ -1330,8 +1332,8 @@ qp_grad_k =
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 00D2EBE0
-    ||Ypy_k(var_indep)||inf = 5.1410422885e-007
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa09670
+    ||Ypy_k(var_indep)||inf = 5.1410422885e-07
 
 Using bounds on full Z*pz ...
 
@@ -1352,7 +1354,7 @@ Number of changes to the initial KKT system (num_act_change) = 0
 
 Solution to the initial KKT system, vo = inv(Ko)*fo:
 
-||vo||inf = 1.1145113136e-001
+||vo||inf = 1.1145113136e-01
 
 ***
 *** Removing constriants until we are dual feasible
@@ -1364,7 +1366,7 @@ There where 0 constraints dropped from the schur complement from the initial gue
 
 Current guess for unknowns x:
 
-||x||inf = 1.1145113136e-001
+||x||inf = 1.1145113136e-01
 
 *** Second, free initially fixed variables not in Ko
 
@@ -1385,20 +1387,20 @@ Number of QP iteratons                                = 0
 Number of iterative refinement residual calculations  = 1
 Number of iterative refinement solves                 = 0
 
-||x||inf                = 1.1145113136e-001
+||x||inf                = 1.1145113136e-01
 mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+010
-min(|mu(i)|)            = 1.0000000000e+010
+max(|mu(i)|)            = 1.0000000000e+10
+min(|mu(i)|)            = 1.0000000000e+10
 lambda_breve.nz()       = 0
-max(|lambda_breve(i)|)  = 0.0000000000e+000
-min(|lambda_breve(i)|)  = 0.0000000000e+000
+max(|lambda_breve(i)|)  = 0.0000000000e+00
+min(|lambda_breve(i)|)  = 0.0000000000e+00
 
 *** Leaving QPSchur::solve_qp(...)
 
-||pz_k||inf    = 1.1145113136e-001
+||pz_k||inf    = 1.1145113136e-01
 nu_k.nz()      = 0
-max(|nu_k(i)|) = 0.0000000000e+000
-||Zpz_k||2     = 2.4915426691e-001
+max(|nu_k(i)|) = 0.0000000000e+00
+||Zpz_k||2     = 2.4915426691e-01
 
 pz_k = 
   5
@@ -1407,44 +1409,44 @@ pz_k =
 (4) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (-9.7541137832e-021)/(1.3249505872e-003 * 2.4915426691e-001 + 2.2250738585e-308)
-  = -2.9547436387e-017
+  = (-1.0005576689e-20)/(1.3249505872e-03 * 2.4915426691e-01 + 2.2250738585e-308)
+  = -3.0309174910e-17
 
-||d||inf = 1.1145164318e-001
+||d||inf = 1.1145164318e-01
 
 (4) 7: "CalcReducedGradLagrangian"
 
-||rGL_k||inf = 3.6900485363e-001
+||rGL_k||inf = 3.6900485363e-01
 
 (4) 8: "CheckConvergence"
 
-scale_opt_factor = 1.0000000000e+000 (scale_opt_error_by = SCALE_BY_ONE)
-scale_feas_factor = 1.0000000000e+000 (scale_feas_error_by = SCALE_BY_ONE)
-scale_comp_factor = 1.0000000000e+000 (scale_comp_error_by = SCALE_BY_ONE)
-opt_scale_factor = 1.3690053654e+000 (scale_opt_error_by_Gf = true)
-opt_kkt_err_k    = 2.6954229906e-001 > opt_tol  = 1.0000000000e-002
-feas_kkt_err_k   = 4.4987367193e-002 > feas_tol = 1.0000000000e-007
-comp_kkt_err_k   = 0.0000000000e+000 < comp_tol = 1.0000000000e-006
-step_err         = 8.1410669372e-002 > step_tol = 1.0000000000e-002
+scale_opt_factor = 1.0000000000e+00 (scale_opt_error_by = SCALE_BY_ONE)
+scale_feas_factor = 1.0000000000e+00 (scale_feas_error_by = SCALE_BY_ONE)
+scale_comp_factor = 1.0000000000e+00 (scale_comp_error_by = SCALE_BY_ONE)
+opt_scale_factor = 1.3690053654e+00 (scale_opt_error_by_Gf = true)
+opt_kkt_err_k    = 2.6954229906e-01 > opt_tol  = 1.0000000000e-02
+feas_kkt_err_k   = 4.4987367193e-02 > feas_tol = 1.0000000000e-07
+comp_kkt_err_k   = -0.0000000000e+00 < comp_tol = 1.0000000000e-06
+step_err         = 8.1410669372e-02 > step_tol = 1.0000000000e-02
 
 Have not found the solution yet, have to keep going (k = 4) :-(
 
 (4) 9.-1: "LineSearchFullStep"
 
-f_k        = 3.4024364074e-001
-||c_k||inf = 4.4987367193e-002
-alpha_k    = 1.0000000000e+000
+f_k        = 3.4024364074e-01
+||c_k||inf = 4.4987367193e-02
+alpha_k    = 1.0000000000e+00
 
-||x_kp1||inf   = 2.5755372227e-001
+||x_kp1||inf   = 2.5755372227e-01
 
-f_kp1        = 1.6574989579e-001
-||c_kp1||inf = 6.1791102848e-003
+f_kp1        = 1.6574989579e-01
+||c_kp1||inf = 6.1791102848e-03
 
 (4) 9: "LineSearch"
 
-theta_k = ||c_k||1/c_k.dim() = 4.4177631526e-002
+theta_k = ||c_k||1/c_k.dim() = 4.4177631526e-02
 
-f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-005.
+f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-05.
 
 Beginning Filter line search method.
 
@@ -1452,30 +1454,30 @@ Current Filter
 -----------------------------------------------------
 |     f_with_boundary     |  theta_with_boundary    |
 -----------------------------------------------------
-|        3.4024319897e-001         4.4177189749e-002|
+|         3.4024319897e-01          4.4177189749e-02|
 
   Iteration Status
 ----------------------------------------------------------------------------------------------------------
 |    alpha_k    |     f_kp1     |   theta_kp1   |  pt. status   |                 comment                |
 ----------------------------------------------------------------------------------------------------------
-|1.0000000000e+000 1.6574989579e-001 6.0687208500e-003        accepted      Fraction Reduction (! Switch Cond )|
+|1.0000000000e+00 1.6574989579e-01 6.0687208500e-03        accepted      Fraction Reduction (! Switch Cond )|
 
 Point was accepted - augmenting the filter ...
 
 Augmenting the filter with the point:
-  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 1.6574989579e-001 - 1.0000000000e-005*6.0687208500e-003 = 1.6574983511e-001
-  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-005)*6.0687208500e-003 = 6.0686601628e-003
+  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 1.6574989579e-01 - 1.0000000000e-05*6.0687208500e-03 = 1.6574983511e-01
+  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-05)*6.0687208500e-03 = 6.0686601628e-03
 
 Removing from the filter the redundant point:
-  f_with_boundary     = 3.4024319897e-001
-  theta_with_boundary = 4.4177189749e-002
+  f_with_boundary     = 3.4024319897e-01
+  theta_with_boundary = 4.4177189749e-02
   iteration added     = 3
 
 (5) 1: "EvalNewPoint"
 
-||x_k||inf            = 2.5755372227e-001
-||x(var_dep)_k||inf   = 3.9415362886e-006
-||x(var_indep)_k||inf = 2.5755372227e-001
+||x_k||inf            = 2.5755372227e-01
+||x(var_dep)_k||inf   = 3.9415362886e-06
+||x(var_indep)_k||inf = 2.5755372227e-01
 
 x(var_indep)_k = 
   5
@@ -1495,7 +1497,7 @@ Warning!!! mat_rel != MATRICES_INDEP_IMPS; The decompsition matrix objects may n
 *** DecompositionSystemVarReductImp::get_basis_matrices(...) ***
 ****************************************************************
 
-Allocated a new explicit matrix object for D = -inv(C)*N of type 'class AbstractLinAlgPack::MultiVectorMutableDense' ...
+Allocated a new explicit matrix object for D = -inv(C)*N of type 'AbstractLinAlgPack::MultiVectorMutableDense' ...
 
 End DecompositionSystemVarReductImp::get_basis_matrices(...)
 
@@ -1503,17 +1505,17 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using LAPACK xGETRF to refactor the basis matrix ...
+Using MA28 to factor a new matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
 Printing the updated iteration quantities ...
 
-f_k                      = 1.6574989579e-001
-||Gf_k||inf              = 2.5755372227e-001
-||Gf_k(var_dep)_k||inf   = 3.9415362886e-006
-||Gf_k(var_indep)_k||inf = 2.5755372227e-001
-||c_k||inf               = 6.1791102848e-003
+f_k                      = 1.6574989579e-01
+||Gf_k||inf              = 2.5755372227e-01
+||Gf_k(var_dep)_k||inf   = 3.9415362886e-06
+||Gf_k(var_indep)_k||inf = 2.5755372227e-01
+||c_k||inf               = 6.1791102848e-03
 
 Gf(var_indep)_k =
   5
@@ -1521,23 +1523,23 @@ Gf(var_indep)_k =
 
 (5) 2: "QuasiNormalStep"
 
-||py||   = 3.9415361956e-006
+||py||   = 3.9415361956e-06
 
-||Ypy||2 = 2.1569444240e-004
+||Ypy||2 = 2.1569444240e-04
 
 (5) 2.1: "CheckDecompositionFromPy"
 
-beta = ||py||/||c|| = 6.3788086213e-004
+beta = ||py||/||c|| = 6.3788086213e-04
 
 (5) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 6.9388939039e-018 / (6.1791102848e-003 + 2.2250738585e-308)
-     = 1.1229600354e-015
+     = 5.2041704279e-18 / (6.1791102848e-03 + 2.2250738585e-308)
+     = 8.4222002652e-16
 
 (5) 3: "ReducedGradient"
 
-||rGf||inf = 2.5755370750e-001
+||rGf||inf = 2.5755370750e-01
 
 rGf_k =
   5
@@ -1546,9 +1548,9 @@ rGf_k =
 (5) 4.-1: "CheckSkipBFGSUpdate"
 
 ratio = (skip_bfgs_prop_const/sqrt(||rGL_km1||+||c_km1||))*(||Zpz_km1||/||Ypy_km1||)
-      = (1.0000000000e+001/sqrt(8.2491431895e-001+2.4197092553e+000))
-        * (2.4915426691e-001/1.3249505872e-003)
-      = 1.0439663191e+003
+      = (1.0000000000e+01/sqrt(8.2491431895e-01+2.4197092553e+00))
+        * (2.4915426691e-01/1.3249505872e-03)
+      = 1.0439663191e+03
 ratio > 1
 Perform BFGS update if you can ...
 
@@ -1556,9 +1558,9 @@ Perform BFGS update if you can ...
 
 Performing Secant update ...
 
-||y_bfgs||inf = 1.1145114613e-001
+||y_bfgs||inf = 1.1145114613e-01
 
-||s_bfgs||inf = 1.1145113136e-001
+||s_bfgs||inf = 1.1145113136e-01
 
 y_bfgs =
   5
@@ -1570,7 +1572,7 @@ s_bfgs =
 
 Considering the dampened update ...
 
-s_bfgs'*y_bfgs = 6.2077810439e-002 >=  s_bfgs' * B * s_bfgs = 2.0553084537e-001
+s_bfgs'*y_bfgs = 6.2077810439e-02 >=  s_bfgs' * B * s_bfgs = 2.0553084537e-01
 Perform the undamped update ...
 
 B after the BFGS update = 
@@ -1590,9 +1592,9 @@ B after the BFGS update =
      -3.11086:4:1 13.4434:4:2 4.65375:4:3 3.0695:4:4 -2.3231:4:5
      -3.11086:5:1 -3.11086:5:2 13.4434:5:3 2.86651:5:4 2.00709:5:5
 
-||rHL_k||inf    = 2.5886144627e+001
+||rHL_k||inf    = 2.5886144627e+01
 
-cond_inf(rHL_k) = 2.5891815803e+001
+cond_inf(rHL_k) = 2.5891815803e+01
 
 rHL_k = 
   Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
@@ -1621,8 +1623,8 @@ qp_grad_k =
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 00D2EBE0
-    ||Ypy_k(var_indep)||inf = 1.4826932622e-008
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa09670
+    ||Ypy_k(var_indep)||inf = 1.4826932622e-08
 
 Using bounds on full Z*pz ...
 
@@ -1643,7 +1645,7 @@ Number of changes to the initial KKT system (num_act_change) = 0
 
 Solution to the initial KKT system, vo = inv(Ko)*fo:
 
-||vo||inf = 2.5754814772e-001
+||vo||inf = 2.5754814772e-01
 
 ***
 *** Removing constriants until we are dual feasible
@@ -1655,7 +1657,7 @@ There where 0 constraints dropped from the schur complement from the initial gue
 
 Current guess for unknowns x:
 
-||x||inf = 2.5754814772e-001
+||x||inf = 2.5754814772e-01
 
 *** Second, free initially fixed variables not in Ko
 
@@ -1676,20 +1678,20 @@ Number of QP iteratons                                = 1
 Number of iterative refinement residual calculations  = 1
 Number of iterative refinement solves                 = 0
 
-||x||inf                = 2.5753641905e-001
+||x||inf                = 2.5753641905e-01
 mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+010
-min(|mu(i)|)            = 1.0000000000e+010
+max(|mu(i)|)            = 1.0000000000e+10
+min(|mu(i)|)            = 1.0000000000e+10
 lambda_breve.nz()       = 1
-max(|lambda_breve(i)|)  = 6.2413617786e-005
-min(|lambda_breve(i)|)  = 6.2413617786e-005
+max(|lambda_breve(i)|)  = 6.2413617786e-05
+min(|lambda_breve(i)|)  = 6.2413617786e-05
 
 *** Leaving QPSchur::solve_qp(...)
 
-||pz_k||inf    = 2.5753641905e-001
+||pz_k||inf    = 2.5753641905e-01
 nu_k.nz()      = 1
-max(|nu_k(i)|) = 6.2413617786e-005
-||Zpz_k||2     = 5.7573213689e-001
+max(|nu_k(i)|) = 6.2413617786e-05
+||Zpz_k||2     = 5.7573213689e-01
 
 pz_k = 
   5
@@ -1698,10 +1700,10 @@ pz_k =
 (5) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (5.1616070223e-022)/(2.1569444240e-004 * 5.7573213689e-001 + 2.2250738585e-308)
-  = 4.1564782216e-018
+  = (3.3583532870e-22)/(2.1569444240e-04 * 5.7573213689e-01 + 2.2250738585e-308)
+  = 2.7043752531e-18
 
-||d||inf = 2.5753643382e-001
+||d||inf = 2.5753643382e-01
 
 (5) 7: "CalcReducedGradLagrangian"
 
@@ -1709,37 +1711,37 @@ rGL_k =
   5
    0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257359:5
 
-||rGL_k||inf = 2.5755370750e-001
+||rGL_k||inf = 2.5755370750e-01
 
 (5) 8: "CheckConvergence"
 
-scale_opt_factor = 1.0000000000e+000 (scale_opt_error_by = SCALE_BY_ONE)
-scale_feas_factor = 1.0000000000e+000 (scale_feas_error_by = SCALE_BY_ONE)
-scale_comp_factor = 1.0000000000e+000 (scale_comp_error_by = SCALE_BY_ONE)
-opt_scale_factor = 1.2575537223e+000 (scale_opt_error_by_Gf = true)
-opt_kkt_err_k    = 2.0480533192e-001 > opt_tol  = 1.0000000000e-002
-feas_kkt_err_k   = 6.1791102848e-003 > feas_tol = 1.0000000000e-007
-comp_kkt_err_k   = 1.6066000962e-005 > comp_tol = 1.0000000000e-006
-step_err         = 2.0479159598e-001 > step_tol = 1.0000000000e-002
+scale_opt_factor = 1.0000000000e+00 (scale_opt_error_by = SCALE_BY_ONE)
+scale_feas_factor = 1.0000000000e+00 (scale_feas_error_by = SCALE_BY_ONE)
+scale_comp_factor = 1.0000000000e+00 (scale_comp_error_by = SCALE_BY_ONE)
+opt_scale_factor = 1.2575537223e+00 (scale_opt_error_by_Gf = true)
+opt_kkt_err_k    = 2.0480533192e-01 > opt_tol  = 1.0000000000e-02
+feas_kkt_err_k   = 6.1791102848e-03 > feas_tol = 1.0000000000e-07
+comp_kkt_err_k   = 1.6066000962e-05 > comp_tol = 1.0000000000e-06
+step_err         = 2.0479159598e-01 > step_tol = 1.0000000000e-02
 
 Have not found the solution yet, have to keep going (k = 5) :-(
 
 (5) 9.-1: "LineSearchFullStep"
 
-f_k        = 1.6574989579e-001
-||c_k||inf = 6.1791102848e-003
-alpha_k    = 1.0000000000e+000
+f_k        = 1.6574989579e-01
+||c_k||inf = 6.1791102848e-03
+alpha_k    = 1.0000000000e+00
 
-||x_kp1||inf   = 1.7288455117e-005
+||x_kp1||inf   = 1.7288455117e-05
 
-f_kp1        = 4.3078479209e-009
-||c_kp1||inf = 1.6001110173e-003
+f_kp1        = 4.3078479209e-09
+||c_kp1||inf = 1.6001110173e-03
 
 (5) 9: "LineSearch"
 
-theta_k = ||c_k||1/c_k.dim() = 6.0687208500e-003
+theta_k = ||c_k||1/c_k.dim() = 6.0687208500e-03
 
-f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-005.
+f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-05.
 
 Beginning Filter line search method.
 
@@ -1747,34 +1749,34 @@ Current Filter
 -----------------------------------------------------
 |     f_with_boundary     |  theta_with_boundary    |
 -----------------------------------------------------
-|        1.6574983511e-001         6.0686601628e-003|
+|         1.6574983511e-01          6.0686601628e-03|
 
   Iteration Status
 ----------------------------------------------------------------------------------------------------------
 |    alpha_k    |     f_kp1     |   theta_kp1   |  pt. status   |                 comment                |
 ----------------------------------------------------------------------------------------------------------
-|1.0000000000e+000 4.3078479209e-009 1.5716730031e-003        accepted      Fraction Reduction (! Switch Cond )|
+|1.0000000000e+00 4.3078479209e-09 1.5716730031e-03        accepted      Fraction Reduction (! Switch Cond )|
 
 Point was accepted - augmenting the filter ...
 
 Augmenting the filter with the point:
-  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 4.3078479209e-009 - 1.0000000000e-005*1.5716730031e-003 = -1.1408882110e-008
-  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-005)*1.5716730031e-003 = 1.5716572864e-003
+  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 4.3078479209e-09 - 1.0000000000e-05*1.5716730031e-03 = -1.1408882110e-08
+  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-05)*1.5716730031e-03 = 1.5716572864e-03
 
 Removing from the filter the redundant point:
-  f_with_boundary     = 1.6574983511e-001
-  theta_with_boundary = 6.0686601628e-003
+  f_with_boundary     = 1.6574983511e-01
+  theta_with_boundary = 6.0686601628e-03
   iteration added     = 4
 
 (6) 1: "EvalNewPoint"
 
-||x_k||inf            = 1.7288455117e-005
-||x(var_dep)_k||inf   = 1.6137749700e-006
-||x(var_indep)_k||inf = 1.7288455117e-005
+||x_k||inf            = 1.7288455117e-05
+||x(var_dep)_k||inf   = 1.6137749700e-06
+||x(var_indep)_k||inf = 1.7288455117e-05
 
 x(var_indep)_k = 
   5
-   1.72885e-005:1 1.17603e-005:2 1.176e-005:3 1.17596e-005:4 1e-005:5
+   1.72885e-05:1 1.17603e-05:2 1.176e-05:3 1.17596e-05:4 1e-05:5
 
 Updating the decomposition ...
 
@@ -1790,7 +1792,7 @@ Warning!!! mat_rel != MATRICES_INDEP_IMPS; The decompsition matrix objects may n
 *** DecompositionSystemVarReductImp::get_basis_matrices(...) ***
 ****************************************************************
 
-Allocated a new explicit matrix object for D = -inv(C)*N of type 'class AbstractLinAlgPack::MultiVectorMutableDense' ...
+Allocated a new explicit matrix object for D = -inv(C)*N of type 'AbstractLinAlgPack::MultiVectorMutableDense' ...
 
 End DecompositionSystemVarReductImp::get_basis_matrices(...)
 
@@ -1798,52 +1800,52 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using LAPACK xGETRF to refactor the basis matrix ...
+Using MA28 to factor a new matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
 Printing the updated iteration quantities ...
 
-f_k                      = 4.3078479209e-009
-||Gf_k||inf              = 1.7288455117e-005
-||Gf_k(var_dep)_k||inf   = 1.6137749700e-006
-||Gf_k(var_indep)_k||inf = 1.7288455117e-005
-||c_k||inf               = 1.6001110173e-003
+f_k                      = 4.3078479209e-09
+||Gf_k||inf              = 1.7288455117e-05
+||Gf_k(var_dep)_k||inf   = 1.6137749700e-06
+||Gf_k(var_indep)_k||inf = 1.7288455117e-05
+||c_k||inf               = 1.6001110173e-03
 
 Gf(var_indep)_k =
   5
-   1.72885e-005:1 1.17603e-005:2 1.176e-005:3 1.17596e-005:4 1e-005:5
+   1.72885e-05:1 1.17603e-05:2 1.176e-05:3 1.17596e-05:4 1e-05:5
 
 (6) 2: "QuasiNormalStep"
 
-||py||   = 1.6137749599e-006
+||py||   = 1.6137749599e-06
 
-||Ypy||2 = 8.8328450816e-005
+||Ypy||2 = 8.8328450816e-05
 
 (6) 2.1: "CheckDecompositionFromPy"
 
-beta = ||py||/||c|| = 1.0085393716e-003
+beta = ||py||/||c|| = 1.0085393716e-03
 
 (6) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 1.5178830415e-018 / (1.6001110173e-003 + 2.2250738585e-308)
-     = 9.4861108079e-016
+     = 1.5178830415e-18 / (1.6001110173e-03 + 2.2250738585e-308)
+     = 9.4861108079e-16
 
 (6) 3: "ReducedGradient"
 
-||rGf||inf = 1.7285338958e-005
+||rGf||inf = 1.7285338958e-05
 
 rGf_k =
   5
-   1.72853e-005:1 1.17572e-005:2 1.17568e-005:3 1.17565e-005:4 9.99687e-006:5
+   1.72853e-05:1 1.17572e-05:2 1.17568e-05:3 1.17565e-05:4 9.99687e-06:5
 
 (6) 4.-1: "CheckSkipBFGSUpdate"
 
 ratio = (skip_bfgs_prop_const/sqrt(||rGL_km1||+||c_km1||))*(||Zpz_km1||/||Ypy_km1||)
-      = (1.0000000000e+001/sqrt(5.7573220998e-001+3.3239761380e-001))
-        * (5.7573213689e-001/2.1569444240e-004)
-      = 2.8009641333e+004
+      = (1.0000000000e+01/sqrt(5.7573220998e-01+3.3239761380e-01))
+        * (5.7573213689e-01/2.1569444240e-04)
+      = 2.8009641333e+04
 ratio > 1
 Perform BFGS update if you can ...
 
@@ -1851,9 +1853,9 @@ Perform BFGS update if you can ...
 
 Performing Secant update ...
 
-||y_bfgs||inf = 2.5753642216e-001
+||y_bfgs||inf = 2.5753642216e-01
 
-||s_bfgs||inf = 2.5753641905e-001
+||s_bfgs||inf = 2.5753641905e-01
 
 y_bfgs =
   5
@@ -1865,7 +1867,7 @@ s_bfgs =
 
 Considering the dampened update ...
 
-s_bfgs'*y_bfgs = 3.3146748967e-001 >=  s_bfgs' * B * s_bfgs = 3.3146752990e-001
+s_bfgs'*y_bfgs = 3.3146748967e-01 >=  s_bfgs' * B * s_bfgs = 3.3146752990e-01
 Perform the undamped update ...
 
 B after the BFGS update = 
@@ -1885,9 +1887,9 @@ B after the BFGS update =
      -3.11088:4:1 13.4434:4:2 4.65371:4:3 3.06949:4:4 -2.32311:4:5
      -3.11088:5:1 -3.11088:5:2 13.4434:5:3 2.86646:5:4 2.0071:5:5
 
-||rHL_k||inf    = 2.5886103889e+001
+||rHL_k||inf    = 2.5886103889e+01
 
-cond_inf(rHL_k) = 2.5891882950e+001
+cond_inf(rHL_k) = 2.5891882950e+01
 
 rHL_k = 
   Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
@@ -1912,12 +1914,12 @@ rHL_k =
 
 qp_grad_k = 
   5
-   1.72853e-005:1 1.17572e-005:2 1.17568e-005:3 1.17565e-005:4 9.99687e-006:5
+   1.72853e-05:1 1.17572e-05:2 1.17568e-05:3 1.17565e-05:4 9.99687e-06:5
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 00D2EBE0
-    ||Ypy_k(var_indep)||inf = 3.1252363232e-009
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa09670
+    ||Ypy_k(var_indep)||inf = 3.1252363232e-09
 
 Using bounds on full Z*pz ...
 
@@ -1938,7 +1940,7 @@ Number of changes to the initial KKT system (num_act_change) = 0
 
 Solution to the initial KKT system, vo = inv(Ko)*fo:
 
-||vo||inf = 1.2802099303e-005
+||vo||inf = 1.2802099303e-05
 
 ***
 *** Removing constriants until we are dual feasible
@@ -1950,7 +1952,7 @@ There where 0 constraints dropped from the schur complement from the initial gue
 
 Current guess for unknowns x:
 
-||x||inf = 1.2802099303e-005
+||x||inf = 1.2802099303e-05
 
 *** Second, free initially fixed variables not in Ko
 
@@ -1971,70 +1973,70 @@ Number of QP iteratons                                = 4
 Number of iterative refinement residual calculations  = 1
 Number of iterative refinement solves                 = 0
 
-||x||inf                = 2.5052443220e-006
+||x||inf                = 2.5052443219e-06
 mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+010
-min(|mu(i)|)            = 1.0000000000e+010
+max(|mu(i)|)            = 1.0000000000e+10
+min(|mu(i)|)            = 1.0000000000e+10
 lambda_breve.nz()       = 4
-max(|lambda_breve(i)|)  = 3.4224117744e-005
-min(|lambda_breve(i)|)  = 6.8491983462e-006
+max(|lambda_breve(i)|)  = 3.4224117743e-05
+min(|lambda_breve(i)|)  = 6.8491983453e-06
 
 *** Leaving QPSchur::solve_qp(...)
 
-||pz_k||inf    = 2.5052443220e-006
+||pz_k||inf    = 2.5052443219e-06
 nu_k.nz()      = 4
-max(|nu_k(i)|) = 3.4224117744e-005
-||Zpz_k||2     = 3.9415350434e-006
+max(|nu_k(i)|) = 3.4224117743e-05
+||Zpz_k||2     = 3.9415350433e-06
 
 pz_k = 
   5
-   -2.50524e-006:1 -1.75722e-006:2 -1.75684e-006:3 -1.75645e-006:4 3.12524e-009:5
+   -2.50524e-06:1 -1.75722e-06:2 -1.75684e-06:3 -1.75645e-06:4 3.12524e-09:5
 
 (6) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (1.8893372754e-028)/(8.8328450816e-005 * 3.9415350434e-006 + 2.2250738585e-308)
-  = 5.4267958900e-019
+  = (2.3364611713e-28)/(8.8328450816e-05 * 3.9415350433e-06 + 2.2250738585e-308)
+  = 6.7110822651e-19
 
-||d||inf = 2.5083604809e-006
+||d||inf = 2.5083604808e-06
 
 (6) 7: "CalcReducedGradLagrangian"
 
 rGL_k = 
   5
-   1.72853e-005:1 4.90802e-006:2 4.90168e-006:3 4.89533e-006:4 -2.42272e-005:5
+   1.72853e-05:1 4.90802e-06:2 4.90168e-06:3 4.89533e-06:4 -2.42272e-05:5
 
-||rGL_k||inf = 2.4227242980e-005
+||rGL_k||inf = 2.4227242979e-05
 
 (6) 8: "CheckConvergence"
 
-scale_opt_factor = 1.0000000000e+000 (scale_opt_error_by = SCALE_BY_ONE)
-scale_feas_factor = 1.0000000000e+000 (scale_feas_error_by = SCALE_BY_ONE)
-scale_comp_factor = 1.0000000000e+000 (scale_comp_error_by = SCALE_BY_ONE)
-opt_scale_factor = 1.0000172885e+000 (scale_opt_error_by_Gf = true)
-opt_kkt_err_k    = 2.4226824136e-005 < opt_tol  = 1.0000000000e-002
-feas_kkt_err_k   = 1.6001110173e-003 > feas_tol = 1.0000000000e-007
-comp_kkt_err_k   = 1.2072668759e-011 < comp_tol = 1.0000000000e-006
-step_err         = 2.5083171159e-006 < step_tol = 1.0000000000e-002
+scale_opt_factor = 1.0000000000e+00 (scale_opt_error_by = SCALE_BY_ONE)
+scale_feas_factor = 1.0000000000e+00 (scale_feas_error_by = SCALE_BY_ONE)
+scale_comp_factor = 1.0000000000e+00 (scale_comp_error_by = SCALE_BY_ONE)
+opt_scale_factor = 1.0000172885e+00 (scale_opt_error_by_Gf = true)
+opt_kkt_err_k    = 2.4226824135e-05 < opt_tol  = 1.0000000000e-02
+feas_kkt_err_k   = 1.6001110173e-03 > feas_tol = 1.0000000000e-07
+comp_kkt_err_k   = 1.2072668760e-11 < comp_tol = 1.0000000000e-06
+step_err         = 2.5083171159e-06 < step_tol = 1.0000000000e-02
 
 Have not found the solution yet, have to keep going (k = 6) :-(
 
 (6) 9.-1: "LineSearchFullStep"
 
-f_k        = 4.3078479209e-009
-||c_k||inf = 1.6001110173e-003
-alpha_k    = 1.0000000000e+000
+f_k        = 4.3078479209e-09
+||c_k||inf = 1.6001110173e-03
+alpha_k    = 1.0000000000e+00
 
-||x_kp1||inf   = 1.4780094636e-005
+||x_kp1||inf   = 1.4780094636e-05
 
-f_kp1        = 3.0922559878e-010
-||c_kp1||inf = 7.9473675344e-009
+f_kp1        = 3.0922559878e-10
+||c_kp1||inf = 7.9473675342e-09
 
 (6) 9: "LineSearch"
 
-theta_k = ||c_k||1/c_k.dim() = 1.5716730031e-003
+theta_k = ||c_k||1/c_k.dim() = 1.5716730031e-03
 
-f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-005.
+f_min==F_MIN_UNBOUNDED:  Setting gamma_f_used = gamma_f = 1.0000000000e-05.
 
 Beginning Filter line search method.
 
@@ -2042,29 +2044,29 @@ Current Filter
 -----------------------------------------------------
 |     f_with_boundary     |  theta_with_boundary    |
 -----------------------------------------------------
-|       -1.1408882110e-008         1.5716572864e-003|
+|        -1.1408882110e-08          1.5716572864e-03|
 
   Iteration Status
 ----------------------------------------------------------------------------------------------------------
 |    alpha_k    |     f_kp1     |   theta_kp1   |  pt. status   |                 comment                |
 ----------------------------------------------------------------------------------------------------------
-|1.0000000000e+000 3.0922559878e-010 4.8949810735e-009        accepted      Fraction Reduction (! Switch Cond )|
+|1.0000000000e+00 3.0922559878e-10 4.8949810733e-09        accepted      Fraction Reduction (! Switch Cond )|
 
 Point was accepted - augmenting the filter ...
 
 Augmenting the filter with the point:
-  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 3.0922559878e-010 - 1.0000000000e-005*4.8949810735e-009 = 3.0917664897e-010
-  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-005)*4.8949810735e-009 = 4.8949321237e-009
+  f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 3.0922559878e-10 - 1.0000000000e-05*4.8949810733e-09 = 3.0917664897e-10
+  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-05)*4.8949810733e-09 = 4.8949321234e-09
 
 (7) 1: "EvalNewPoint"
 
-||x_k||inf            = 1.4780094636e-005
-||x(var_dep)_k||inf   = 8.0843549152e-012
-||x(var_indep)_k||inf = 1.4780094636e-005
+||x_k||inf            = 1.4780094636e-05
+||x(var_dep)_k||inf   = 8.0843549147e-12
+||x(var_indep)_k||inf = 1.4780094636e-05
 
 x(var_indep)_k = 
   5
-   1.47801e-005:1 1e-005:2 1e-005:3 1e-005:4 1e-005:5
+   1.47801e-05:1 1e-05:2 1e-05:3 1e-05:4 1e-05:5
 
 Updating the decomposition ...
 
@@ -2080,7 +2082,7 @@ Warning!!! mat_rel != MATRICES_INDEP_IMPS; The decompsition matrix objects may n
 *** DecompositionSystemVarReductImp::get_basis_matrices(...) ***
 ****************************************************************
 
-Allocated a new explicit matrix object for D = -inv(C)*N of type 'class AbstractLinAlgPack::MultiVectorMutableDense' ...
+Allocated a new explicit matrix object for D = -inv(C)*N of type 'AbstractLinAlgPack::MultiVectorMutableDense' ...
 
 End DecompositionSystemVarReductImp::get_basis_matrices(...)
 
@@ -2088,52 +2090,52 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using LAPACK xGETRF to refactor the basis matrix ...
+Using MA28 to factor a new matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
 Printing the updated iteration quantities ...
 
-f_k                      = 3.0922559878e-010
-||Gf_k||inf              = 1.4780094636e-005
-||Gf_k(var_dep)_k||inf   = 8.0843549152e-012
-||Gf_k(var_indep)_k||inf = 1.4780094636e-005
-||c_k||inf               = 7.9473675344e-009
+f_k                      = 3.0922559878e-10
+||Gf_k||inf              = 1.4780094636e-05
+||Gf_k(var_dep)_k||inf   = 8.0843549147e-12
+||Gf_k(var_indep)_k||inf = 1.4780094636e-05
+||c_k||inf               = 7.9473675342e-09
 
 Gf(var_indep)_k =
   5
-   1.47801e-005:1 1e-005:2 1e-005:3 1e-005:4 1e-005:5
+   1.47801e-05:1 1e-05:2 1e-05:3 1e-05:4 1e-05:5
 
 (7) 2: "QuasiNormalStep"
 
-||py||   = 8.0843549152e-012
+||py||   = 8.0843549147e-12
 
-||Ypy||2 = 3.1177993329e-010
+||Ypy||2 = 3.1177993328e-10
 
 (7) 2.1: "CheckDecompositionFromPy"
 
-beta = ||py||/||c|| = 1.0172368247e-003
+beta = ||py||/||c|| = 1.0172368246e-03
 
 (7) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 6.6174449004e-024 / (7.9473675344e-009 + 2.2250738585e-308)
-     = 8.3265872275e-016
+     = 8.2718061255e-24 / (7.9473675342e-09 + 2.2250738585e-308)
+     = 1.0408234035e-15
 
 (7) 3: "ReducedGradient"
 
-||rGf||inf = 1.4780094636e-005
+||rGf||inf = 1.4780094636e-05
 
 rGf_k =
   5
-   1.47801e-005:1 1e-005:2 1e-005:3 1e-005:4 1e-005:5
+   1.47801e-05:1 1e-05:2 1e-05:3 1e-05:4 1e-05:5
 
 (7) 4.-1: "CheckSkipBFGSUpdate"
 
 ratio = (skip_bfgs_prop_const/sqrt(||rGL_km1||+||c_km1||))*(||Zpz_km1||/||Ypy_km1||)
-      = (1.0000000000e+001/sqrt(3.0948692947e-005+8.6084094835e-002))
-        * (3.9415350434e-006/8.8328450816e-005)
-      = 1.5206359933e+000
+      = (1.0000000000e+01/sqrt(3.0948692946e-05+8.6084094835e-02))
+        * (3.9415350433e-06/8.8328450816e-05)
+      = 1.5206359932e+00
 ratio > 1
 Perform BFGS update if you can ...
 
@@ -2141,21 +2143,21 @@ Perform BFGS update if you can ...
 
 Performing Secant update ...
 
-||y_bfgs||inf = 2.5052443220e-006
+||y_bfgs||inf = 2.5052443219e-06
 
-||s_bfgs||inf = 2.5052443220e-006
+||s_bfgs||inf = 2.5052443219e-06
 
 y_bfgs =
   5
-   -2.50524e-006:1 -1.75722e-006:2 -1.75684e-006:3 -1.75645e-006:4 3.12524e-009:5
+   -2.50524e-06:1 -1.75722e-06:2 -1.75684e-06:3 -1.75645e-06:4 3.12524e-09:5
 
 s_bfgs =
   5
-   -2.50524e-006:1 -1.75722e-006:2 -1.75684e-006:3 -1.75645e-006:4 3.12524e-009:5
+   -2.50524e-06:1 -1.75722e-06:2 -1.75684e-06:3 -1.75645e-06:4 3.12524e-09:5
 
 Considering the dampened update ...
 
-s_bfgs'*y_bfgs = 1.5535698402e-011 >=  s_bfgs' * B * s_bfgs = 6.9214067480e-011
+s_bfgs'*y_bfgs = 1.5535698401e-11 >=  s_bfgs' * B * s_bfgs = 6.9214067476e-11
 Perform the undamped update ...
 
 B after the BFGS update = 
@@ -2175,9 +2177,9 @@ B after the BFGS update =
      -3.25975:4:1 13.295:4:2 2.86352:4:3 2.00916:4:4 -0.181417:4:5
      -3.25934:5:1 -3.25893:5:2 13.2958:5:3 0.00177507:5:4 2.00473:5:5
 
-||rHL_k||inf    = 2.4625571263e+001
+||rHL_k||inf    = 2.4625571263e+01
 
-cond_inf(rHL_k) = 3.1556895451e+001
+cond_inf(rHL_k) = 3.1556895452e+01
 
 rHL_k = 
   Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
@@ -2202,12 +2204,12 @@ rHL_k =
 
 qp_grad_k = 
   5
-   1.47801e-005:1 1e-005:2 1e-005:3 1e-005:4 1e-005:5
+   1.47801e-05:1 1e-05:2 1e-05:3 1e-05:4 1e-05:5
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 00D2EBE0
-    ||Ypy_k(var_indep)||inf = 7.8420208896e-020
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa09670
+    ||Ypy_k(var_indep)||inf = 7.8420208892e-20
 
 Using bounds on full Z*pz ...
 
@@ -2228,7 +2230,7 @@ Number of changes to the initial KKT system (num_act_change) = 0
 
 Solution to the initial KKT system, vo = inv(Ko)*fo:
 
-||vo||inf = 1.4012954527e-005
+||vo||inf = 1.4012954527e-05
 
 ***
 *** Removing constriants until we are dual feasible
@@ -2240,7 +2242,7 @@ There where 0 constraints dropped from the schur complement from the initial gue
 
 Current guess for unknowns x:
 
-||x||inf = 1.4012954527e-005
+||x||inf = 1.4012954527e-05
 
 *** Second, free initially fixed variables not in Ko
 
@@ -2261,50 +2263,50 @@ Number of QP iteratons                                = 4
 Number of iterative refinement residual calculations  = 1
 Number of iterative refinement solves                 = 0
 
-||x||inf                = 1.5510400570e-006
+||x||inf                = 1.5510400571e-06
 mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+010
-min(|mu(i)|)            = 1.0000000000e+010
+max(|mu(i)|)            = 1.0000000000e+10
+min(|mu(i)|)            = 1.0000000000e+10
 lambda_breve.nz()       = 4
-max(|lambda_breve(i)|)  = 1.6287853297e-005
-min(|lambda_breve(i)|)  = 5.4413183995e-006
+max(|lambda_breve(i)|)  = 1.6287853298e-05
+min(|lambda_breve(i)|)  = 5.4413183992e-06
 
 *** Leaving QPSchur::solve_qp(...)
 
-||pz_k||inf    = 1.5510400570e-006
+||pz_k||inf    = 1.5510400571e-06
 nu_k.nz()      = 4
-max(|nu_k(i)|) = 1.6287853297e-005
-||Zpz_k||2     = 1.5510400570e-006
+max(|nu_k(i)|) = 1.6287853298e-05
+||Zpz_k||2     = 1.5510400571e-06
 
 pz_k = 
   5
-   -1.55104e-006:1 4.05368e-020:2 3.85338e-020:3 4.15964e-020:4 1.59273e-021:5
+   -1.55104e-06:1 3.8283e-20:2 4.07317e-20:3 4.12873e-20:4 2.20718e-21:5
 
 (7) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (-4.2980598113e-039)/(3.1177993329e-010 * 1.5510400570e-006 + 2.2250738585e-308)
-  = -8.8879434145e-024
+  = (-2.6997482175e-39)/(3.1177993328e-10 * 1.5510400571e-06 + 2.2250738585e-308)
+  = -5.5828002506e-24
 
-||d||inf = 1.5510400570e-006
+||d||inf = 1.5510400571e-06
 
 (7) 7: "CalcReducedGradLagrangian"
 
 rGL_k = 
   5
-   1.47801e-005:1 -6.28785e-006:2 -6.28549e-006:3 -6.28313e-006:4 4.55868e-006:5
+   1.47801e-05:1 -6.28785e-06:2 -6.28549e-06:3 -6.28313e-06:4 4.55868e-06:5
 
-||rGL_k||inf = 1.4780094636e-005
+||rGL_k||inf = 1.4780094636e-05
 
 (7) 8: "CheckConvergence"
 
-scale_opt_factor = 1.0000000000e+000 (scale_opt_error_by = SCALE_BY_ONE)
-scale_feas_factor = 1.0000000000e+000 (scale_feas_error_by = SCALE_BY_ONE)
-scale_comp_factor = 1.0000000000e+000 (scale_comp_error_by = SCALE_BY_ONE)
-opt_scale_factor = 1.0000147801e+000 (scale_opt_error_by_Gf = true)
-opt_kkt_err_k    = 1.4779876188e-005 < opt_tol  = 1.0000000000e-002
-feas_kkt_err_k   = 7.9473675344e-009 < feas_tol = 1.0000000000e-007
-comp_kkt_err_k   = 0.0000000000e+000 < comp_tol = 1.0000000000e-006
-step_err         = 1.5510171329e-006 < step_tol = 1.0000000000e-002
+scale_opt_factor = 1.0000000000e+00 (scale_opt_error_by = SCALE_BY_ONE)
+scale_feas_factor = 1.0000000000e+00 (scale_feas_error_by = SCALE_BY_ONE)
+scale_comp_factor = 1.0000000000e+00 (scale_comp_error_by = SCALE_BY_ONE)
+opt_scale_factor = 1.0000147801e+00 (scale_opt_error_by_Gf = true)
+opt_kkt_err_k    = 1.4779876188e-05 < opt_tol  = 1.0000000000e-02
+feas_kkt_err_k   = 7.9473675342e-09 < feas_tol = 1.0000000000e-07
+comp_kkt_err_k   = 0.0000000000e+00 < comp_tol = 1.0000000000e-06
+step_err         = 1.5510171329e-06 < step_tol = 1.0000000000e-02
 
 Jackpot!  Found the solution!!!!!! (k = 7)

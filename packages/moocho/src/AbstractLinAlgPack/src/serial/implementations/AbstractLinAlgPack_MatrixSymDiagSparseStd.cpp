@@ -57,7 +57,7 @@ MatrixOp& MatrixSymDiagSparseStd::operator=(const MatrixOp& m)
     TEST_FOR_EXCEPTION(
       true, std::invalid_argument
       ,"MatrixSymDiagSparseStd::operator=(const MatrixOp& m) : Error!"
-      "The concrete type of m = \'" << typeid(m).name() << "\' is not a subclass of "
+      "The concrete type of m = \'" << typeName(m) << "\' is not a subclass of "
       "MatrixSymDiagSparseStd as expected"
       );
   }

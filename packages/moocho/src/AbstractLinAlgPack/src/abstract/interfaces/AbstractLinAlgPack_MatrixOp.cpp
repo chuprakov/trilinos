@@ -53,7 +53,7 @@ void MatrixOp::zero_out()
   TEST_FOR_EXCEPTION(
     true, std::logic_error, "MatrixOp::zero_out(): "
     "Error, this method as not been defined by the subclass \'"
-    <<typeid(*this).name()<<"\'" );
+    <<typeName(*this)<<"\'" );
 }
 
 void MatrixOp::Mt_S(value_type alpha)
@@ -61,7 +61,7 @@ void MatrixOp::Mt_S(value_type alpha)
   TEST_FOR_EXCEPTION(
     true, std::logic_error, "MatrixOp::Mt_S(): "
     "Error, this method as not been defined by the subclass \'"
-    <<typeid(*this).name()<<"\'" );
+    <<typeName(*this)<<"\'" );
 }
 
 MatrixOp& MatrixOp::operator=(const MatrixOp& M)
@@ -71,7 +71,7 @@ MatrixOp& MatrixOp::operator=(const MatrixOp& M)
     !assign_to_self, std::logic_error
     ,"MatrixOp::operator=(M) : Error, this is not assignment "
     "to self and this method is not overridden for the subclass \'"
-    << typeid(*this).name() << "\'" );
+    << typeName(*this) << "\'" );
   return *this; // assignment to self
 }
 
@@ -452,10 +452,10 @@ void AbstractLinAlgPack::Mp_StM(
     !m_mut_lhs || !(m_mut_lhs->access_by() & MultiVector::COL_ACCESS)
     ,MatrixOp::MethodNotImplemented
     ,"MatrixOp::Mp_StM(...) : Error, mwo_lhs of type \'"
-    << typeid(*mwo_lhs).name() << "\' could not implement the operation "
+    << typeName(*mwo_lhs) << "\' could not implement the operation "
     "and does not support the "
     "\'MultiVectorMutable\' interface.  Furthermore, "
-    "the rhs matix argument of type \'" << typeid(*mwo_lhs).name()
+    "the rhs matix argument of type \'" << typeName(*mwo_lhs)
     << "\' could not implement the operation!" );
     
 #ifdef TEUCHOS_DEBUG
@@ -465,8 +465,8 @@ void AbstractLinAlgPack::Mp_StM(
     || !mwo_lhs->space_cols().is_compatible(
       trans_rhs == no_trans ? M_rhs.space_cols() : M_rhs.space_rows() )
     , MatrixOp::IncompatibleMatrices
-    ,"MatrixOp::Mp_StM(mwo_lhs,...): Error, mwo_lhs of type \'"<<typeid(*mwo_lhs).name()<<"\' "
-    <<"is not compatible with M_rhs of type \'"<<typeid(M_rhs).name()<<"\'" );
+    ,"MatrixOp::Mp_StM(mwo_lhs,...): Error, mwo_lhs of type \'"<<typeName(*mwo_lhs)<<"\' "
+    <<"is not compatible with M_rhs of type \'"<<typeName(M_rhs)<<"\'" );
 #endif
 
   const size_type
@@ -498,7 +498,7 @@ void AbstractLinAlgPack::Mp_StMtP(
   TEST_FOR_EXCEPTION(
     !m_mut_lhs, MatrixOp::MethodNotImplemented
     ,"MatrixOp::Mp_StMtP(...) : Error, mwo_lhs of type \'"
-    << typeid(*mwo_lhs).name() << "\' does not support the "
+    << typeName(*mwo_lhs) << "\' does not support the "
     "\'MultiVectorMutable\' interface!" );
 
   TEST_FOR_EXCEPT(true); // ToDo: Implement!
@@ -525,7 +525,7 @@ void AbstractLinAlgPack::Mp_StPtM(
   TEST_FOR_EXCEPTION(
     !m_mut_lhs, MatrixOp::MethodNotImplemented
     ,"MatrixOp::Mp_StPtM(...) : Error, mwo_lhs of type \'"
-    << typeid(*mwo_lhs).name() << "\' does not support the "
+    << typeName(*mwo_lhs) << "\' does not support the "
     "\'MultiVectorMutable\' interface!" );
 
   TEST_FOR_EXCEPT(true); // ToDo: Implement!
@@ -554,7 +554,7 @@ void AbstractLinAlgPack::Mp_StPtMtP(
   TEST_FOR_EXCEPTION(
     !m_mut_lhs, MatrixOp::MethodNotImplemented
     ,"MatrixOp::Mp_StPtMtP(...) : Error, mwo_lhs of type \'"
-    << typeid(*mwo_lhs).name() << "\' does not support the "
+    << typeName(*mwo_lhs) << "\' does not support the "
     "\'MultiVectorMutable\' interface!" );
 
   TEST_FOR_EXCEPT(true); // ToDo: Implement!
@@ -599,7 +599,7 @@ void AbstractLinAlgPack::Mp_StMtM(
     !Cmv || !(Cmv->access_by() & MultiVector::COL_ACCESS)
     ,MatrixOp::MethodNotImplemented
     ,"AbstractLinAlgPack::Mp_StMtM(...) : Error, mwo_lhs of type \'"
-    << typeid(*C).name() << "\' does not support the "
+    << typeName(*C) << "\' does not support the "
     "\'MultiVectorMutable\' interface or does not support column access!" );
   // ToDo: We could do this by row also!
   VectorSpace::vec_mut_ptr_t
@@ -633,8 +633,8 @@ void AbstractLinAlgPack::syrk(
   TEST_FOR_EXCEPTION(
     true, MatrixOp::MethodNotImplemented
     ,"AbstractLinAlgPack::syrk(...) : Error, neither the right-hand-side matrix "
-    "argument mwo_rhs of type \'" << typeid(A).name() << " nore the left-hand-side matrix "
-    "argument sym_lhs of type \'" << typeid(*B).name() << "\' could implement this operation!"
+    "argument mwo_rhs of type \'" << typeName(A) << " nore the left-hand-side matrix "
+    "argument sym_lhs of type \'" << typeName(*B) << "\' could implement this operation!"
     );
 
 }

@@ -495,7 +495,7 @@ void FeasibilityStepReducedStd_Strategy::print_step( std::ostream& out, const st
 {
   out << L << "*** Computes feasibility steps by solving a constrained QP using the range and null\n"
     << L << "*** space decomposition\n"
-    << L << "begin quais-range space step: \"" << typeid(quasi_range_space_step()).name() << "\"\n";
+    << L << "begin quais-range space step: \"" << typeName(quasi_range_space_step()) << "\"\n";
 
    quasi_range_space_step().print_step( out, L + "  " );
 
@@ -547,7 +547,7 @@ void FeasibilityStepReducedStd_Strategy::print_step( std::ostream& out, const st
     << L << "end\n"
     << L << "Use a warm start given the active-set in nu_k\n"
     << L << "Solve the following QP to compute qp_d, qp_eta, qp_Ed = qp_E * qp_d\n"
-    << L << ",qp_nu, qp_mu and qp_lambda (" << typeid(qp_solver()).name() << "):\n"
+    << L << ",qp_nu, qp_mu and qp_lambda (" << typeName(qp_solver()) << "):\n"
     << L << "  min    qp_g' * qp_d + 1/2 * qp_d' * qp_G * qp_d + M(eta)\n"
     << L << "  qp_d <: R^(n-r)\n"
     << L << "  s.t.\n"

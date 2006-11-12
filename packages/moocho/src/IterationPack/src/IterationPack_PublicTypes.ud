@@ -9,6 +9,9 @@
 //     #include "IterationPackPublicTypes.ud"
 // }
 
+using Teuchos::typeName;
+using Teuchos::TypeNameTraits;
+
 using IterationPack::EAssocStepType;
 using IterationPack::EDoStepType;
 using IterationPack::EAlgoReturn;

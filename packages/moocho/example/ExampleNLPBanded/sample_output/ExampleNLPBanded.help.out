@@ -1,9 +1,9 @@
 
 Echoing the command-line:
 
-c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBUG\packages\moocho\example\ExampleNLPBanded\ExampleNLPBanded.exe --echo-command-line --help 
+../example/ExampleNLPBanded/ExampleNLPBanded.exe --echo-command-line --help 
 
-Usage: c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBUG\packages\moocho\example\ExampleNLPBanded\ExampleNLPBanded.exe [options]
+Usage: ../example/ExampleNLPBanded/ExampleNLPBanded.exe [options]
   options:
   --help                           Prints this help message
   --pause-for-debugging            Pauses for user input to allow attaching a debugger
@@ -25,17 +25,17 @@ Usage: c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBU
   --xo                     double  Initial guess for x
                                    (default: --xo=1)
   --xDl                    double  Lower bounds on xD
-                                   (default: --xDl=-1e+050)
+                                   (default: --xDl=-1e+50)
   --xDu                    double  Upper bounds on xD
-                                   (default: --xDu=1e+050)
+                                   (default: --xDu=1e+50)
   --xIl                    double  Lower bounds on xI
-                                   (default: --xIl=-1e+050)
+                                   (default: --xIl=-1e+50)
   --xIu                    double  Upper bounds on xI
-                                   (default: --xIu=1e+050)
+                                   (default: --xIu=1e+50)
   --hl                     double  Lower bounds on general inequalities
-                                   (default: --hl=-1e+050)
+                                   (default: --hl=-1e+50)
   --hu                     double  Upper bounds on general inequalities
-                                   (default: --hu=1e+050)
+                                   (default: --hu=1e+50)
   --diag-scal              double  Scaling of the basis diagonal
                                    (default: --diag-scal=1)
   --diag-vary              double  Variation of the basis diagonal scaling

@@ -430,7 +430,7 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
   catch(const std::exception& excpt) {
     std::ostringstream msg;
     msg << "\nMoochoSolver: Caught an std::exception of type "
-        << typeid(excpt).name() << " described as : " << excpt.what() << endl;
+        << typeName(excpt) << " described as : " << excpt.what() << endl;
     *error_out_used_  << msg.str();
     if(do_summary_outputting())
       *summary_out_used_ << msg.str();
@@ -874,7 +874,7 @@ void MoochoSolver::update_solver() const
     if( do_summary_outputting() || do_journal_outputting() || do_algo_outputting() ) {
       std::ostringstream msg;
       msg << "\n*** Setting up to run MOOCHO on the NLP using a "
-        << "configuration object of type \'" << typeid(*_config).name() << "\' ...\n";
+        << "configuration object of type \'" << typeName(*_config) << "\' ...\n";
       if(do_summary_outputting())
         *summary_out_used_ << msg.str();
       if(do_journal_outputting())

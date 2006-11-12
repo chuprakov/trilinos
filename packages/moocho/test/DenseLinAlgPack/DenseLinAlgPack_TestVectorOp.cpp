@@ -235,7 +235,7 @@ bool DenseLinAlgPack::TestingPack::TestVectorOp(std::ostream* out)
     success = false;
     if(out)
       (*out)	<< "\nError, a standard exception was thrown: "
-          << typeid(excpt).name() << ": "
+          << typeName(excpt) << ": "
           << excpt.what() << std::endl; 
   }
   catch(...) {

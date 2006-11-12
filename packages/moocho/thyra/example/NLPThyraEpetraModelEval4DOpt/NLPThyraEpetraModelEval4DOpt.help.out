@@ -1,10 +1,9 @@
-Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
 
 Echoing the command-line:
 
-c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBUG\packages\moocho\thyra\example\NLPThyraEpetraModelEval4DOpt\NLPThyraEpetraModelEval4DOpt.exe --echo-command-line --help 
+../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe --echo-command-line --help 
 
-Usage: c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBUG\packages\moocho\thyra\example\NLPThyraEpetraModelEval4DOpt\NLPThyraEpetraModelEval4DOpt.exe [options]
+Usage: ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe [options]
   options:
   --help                                    Prints this help message
   --pause-for-debugging                     Pauses for user input to allow attaching a debugger
@@ -54,20 +53,19 @@ Usage: c:\_mystuff\PROJECTS\Trilinos.release-7-0-branch\BUILDS\INTEL\SERIAL_DEBU
   --p01                             double  No documentation
                                             (default: --p01=0)
   --pL0                             double  No documentation
-                                            (default: --pL0=-1e+050)
+                                            (default: --pL0=-1e+50)
   --pL1                             double  No documentation
-                                            (default: --pL1=-1e+050)
+                                            (default: --pL1=-1e+50)
   --pU0                             double  No documentation
-                                            (default: --pU0=1e+050)
+                                            (default: --pU0=1e+50)
   --pU1                             double  No documentation
-                                            (default: --pU1=1e+050)
+                                            (default: --pU1=1e+50)
   --xL0                             double  No documentation
-                                            (default: --xL0=-1e+050)
+                                            (default: --xL0=-1e+50)
   --xL1                             double  No documentation
-                                            (default: --xL1=-1e+050)
+                                            (default: --xL1=-1e+50)
   --xU0                             double  No documentation
-                                            (default: --xU0=1e+050)
+                                            (default: --xU0=1e+50)
   --xU1                             double  No documentation
-                                            (default: --xU1=1e+050)
-  --external-lowsf                  bool    Determines if the Thyra::LinearOpWithSolveFactory is used externally or internally to the Thyra::EpetraModelEvaluator object
-  --internal-lowsf                          (default: --internal-lowsf)
+                                            (default: --xU1=1e+50)
+Teuchos::GlobalMPISession::GlobalMPISession(): started serial run

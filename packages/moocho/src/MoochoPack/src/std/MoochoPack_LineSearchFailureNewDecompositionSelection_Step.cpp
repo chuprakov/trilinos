@@ -93,7 +93,7 @@ void LineSearchFailureNewDecompositionSelection_Step::print_step(
   ) const
 {
   out
-    << L << "do line search step : " << typeid(line_search_step()).name() << std::endl;
+    << L << "do line search step : " << typeName(line_search_step()) << std::endl;
   line_search_step().print_step(algo,step_poss,type,assoc_step_poss,out,L+"    ");
   out
     << L << "end line search step\n"
@@ -101,7 +101,7 @@ void LineSearchFailureNewDecompositionSelection_Step::print_step(
     << L << "  if line search failed at the last iteration also then\n"
     << L << "    throw line_search_failure\n"
     << L << "  end\n"
-    << L << "  new decomposition selection : " << typeid(new_decomp_strategy()).name() << std::endl
+    << L << "  new decomposition selection : " << typeName(new_decomp_strategy()) << std::endl
     ;
   new_decomp_strategy().print_new_decomposition(
     rsqp_algo(algo),step_poss,type,assoc_step_poss,out, L + "    " );

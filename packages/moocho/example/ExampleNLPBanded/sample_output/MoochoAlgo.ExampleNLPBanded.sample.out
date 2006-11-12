@@ -45,7 +45,7 @@ end_options
 workspace_MB < 0.0:
 Setting workspace_MB = n * default_ws_scale * 1e-6 * sizeof(value_type) = 3005 * 10 * 1e-6 * 8 = 0.2404 MB
 
-*** Setting up to run MOOCHO on the NLP using a configuration object of type 'class MoochoPack::NLPAlgoConfigMamaJama' ...
+*** Setting up to run MOOCHO on the NLP using a configuration object of type 'MoochoPack::NLPAlgoConfigMamaJama' ...
 
 *****************************************************************
 *** NLPAlgoConfigMamaJama Configuration                       ***
@@ -89,7 +89,7 @@ full_steps_after_k < 0 : the line search will never be turned off after so many 
 
 *** End setting default options
 
-The BasisSystem object with concreate type 'class AbstractLinAlgPack::BasisSystemPermDirectSparse' supports the BasisSystemPerm interface.
+The BasisSystem object with concreate type 'AbstractLinAlgPack::BasisSystemPermDirectSparse' supports the BasisSystemPerm interface.
 Using DecompositionSystemVarReductPermStd to support basis permutations ...
 
 *** Creating the state object and setting up iteration quantity objects ...
@@ -101,37 +101,37 @@ Configuring an algorithm for a nonlinear generally constrained NLP ( num_bounded
 *** Algorithm Steps ***
 
 1. "EvalNewPoint"
-    (class MoochoPack::EvalNewPointStd_Step)
+    (MoochoPack::EvalNewPointStd_Step)
 2. "QuasiNormalStep"
-    (class MoochoPack::QuasiNormalStepStd_Step)
+    (MoochoPack::QuasiNormalStepStd_Step)
 2.1. "CheckDecompositionFromPy"
-    (class MoochoPack::CheckDecompositionFromPy_Step)
+    (MoochoPack::CheckDecompositionFromPy_Step)
 2.2. "CheckDecompositionFromRPy"
-    (class MoochoPack::CheckDecompositionFromRPy_Step)
+    (MoochoPack::CheckDecompositionFromRPy_Step)
 3. "ReducedGradient"
-    (class MoochoPack::ReducedGradientStd_Step)
+    (MoochoPack::ReducedGradientStd_Step)
 4.-1. "CheckSkipBFGSUpdate"
-    (class MoochoPack::CheckSkipBFGSUpdateStd_Step)
+    (MoochoPack::CheckSkipBFGSUpdateStd_Step)
 4. "ReducedHessian"
-    (class MoochoPack::ReducedHessianSecantUpdateStd_Step)
+    (MoochoPack::ReducedHessianSecantUpdateStd_Step)
 5.-1. "SetDBoundsStd"
-    (class MoochoPack::SetDBoundsStd_AddedStep)
+    (MoochoPack::SetDBoundsStd_AddedStep)
 5. "TangentialStep"
-    (class MoochoPack::QPFailureReinitReducedHessian_Step)
+    (MoochoPack::QPFailureReinitReducedHessian_Step)
 6. "CalcDFromYPYZPZ"
-    (class MoochoPack::CalcDFromYPYZPZ_Step)
+    (MoochoPack::CalcDFromYPYZPZ_Step)
 7. "CalcReducedGradLagrangian"
-    (class MoochoPack::CalcReducedGradLagrangianStd_AddedStep)
+    (MoochoPack::CalcReducedGradLagrangianStd_AddedStep)
 8. "CheckConvergence"
-    (class MoochoPack::CheckConvergenceStd_AddedStep)
+    (MoochoPack::CheckConvergenceStd_AddedStep)
 9.-1. "LineSearchFullStep"
-    (class MoochoPack::LineSearchFullStep_Step)
+    (MoochoPack::LineSearchFullStep_Step)
 9. "LineSearch"
-    (class MoochoPack::LineSearchFailureNewDecompositionSelection_Step)
+    (MoochoPack::LineSearchFailureNewDecompositionSelection_Step)
 
 
 *** NLP ***
-class NLPInterfacePack::ExampleNLPBanded
+NLPInterfacePack::ExampleNLPBanded
 
 *** Iteration Quantities ***
 
@@ -139,78 +139,78 @@ class NLPInterfacePack::ExampleNLPBanded
 
 iq_name                iq_id    concrete type of iq / concrete type of object
 -----                 ------    ---------------------------------------------
-Gc                         0    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::MatrixOp>
-                                class AbstractLinAlgPack::MatrixPermAggr
-Gf                        15    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
-                                class AbstractLinAlgPack::VectorMutableDense
-LS_FilterEntries           7    class IterationPack::IterQuantityAccessContiguous<class std::list<class MoochoPack::FilterEntry,class std::allocator<class MoochoPack::FilterEntry> > >
-                                class std::list<class MoochoPack::FilterEntry,class std::allocator<class MoochoPack::FilterEntry> >
-R                          3    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::MatrixOpNonsing>
-                                class ConstrainedOptPack::MatrixDecompRangeOrthog
-Uy                         5    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::MatrixOp>
-                                class AbstractLinAlgPack::MatrixOpSubView
-Uz                         4    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::MatrixOp>
-                                class AbstractLinAlgPack::MatrixOpSubView
-Y                          2    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::MatrixOp>
-                                class ConstrainedOptPack::MatrixIdentConcatStd
-Ypy                       16    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
-                                class AbstractLinAlgPack::VectorMutableDense
-Z                          1    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::MatrixOp>
-                                class ConstrainedOptPack::MatrixIdentConcatStd
-Zpz                       17    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
-                                class AbstractLinAlgPack::VectorMutableDense
-act_set_stats             10    class IterationPack::IterQuantityAccessContiguous<class MoochoPack::ActSetStats>
-                                class MoochoPack::ActSetStats
-alpha                     24    class IterationPack::IterQuantityAccessContiguous<double>
+Gc                         0    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::MatrixOp>
+                                AbstractLinAlgPack::MatrixPermAggr
+Gf                        15    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
+                                AbstractLinAlgPack::VectorMutableDense
+LS_FilterEntries           7    IterationPack::IterQuantityAccessContiguous<std::list<MoochoPack::FilterEntry, std::allocator<MoochoPack::FilterEntry> > >
+                                std::list<MoochoPack::FilterEntry, std::allocator<MoochoPack::FilterEntry> >
+R                          3    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::MatrixOpNonsing>
+                                ConstrainedOptPack::MatrixDecompRangeOrthog
+Uy                         5    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::MatrixOp>
+                                AbstractLinAlgPack::MatrixOpSubView
+Uz                         4    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::MatrixOp>
+                                AbstractLinAlgPack::MatrixOpSubView
+Y                          2    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::MatrixOp>
+                                ConstrainedOptPack::MatrixIdentConcatStd
+Ypy                       16    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
+                                AbstractLinAlgPack::VectorMutableDense
+Z                          1    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::MatrixOp>
+                                ConstrainedOptPack::MatrixIdentConcatStd
+Zpz                       17    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
+                                AbstractLinAlgPack::VectorMutableDense
+act_set_stats             10    IterationPack::IterQuantityAccessContiguous<MoochoPack::ActSetStats>
+                                MoochoPack::ActSetStats
+alpha                     24    IterationPack::IterQuantityAccessContiguous<double>
                                 double
-c                         14    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
-                                class AbstractLinAlgPack::VectorMutableDense
-d                         18    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
-                                class AbstractLinAlgPack::VectorMutableDense
-dl                         8    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
-                                class AbstractLinAlgPack::VectorMutableDense
-du                         9    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
-                                class AbstractLinAlgPack::VectorMutableDense
-eta                       23    class IterationPack::IterQuantityAccessContiguous<double>
+c                         14    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
+                                AbstractLinAlgPack::VectorMutableDense
+d                         18    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
+                                AbstractLinAlgPack::VectorMutableDense
+dl                         8    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
+                                AbstractLinAlgPack::VectorMutableDense
+du                         9    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
+                                AbstractLinAlgPack::VectorMutableDense
+eta                       23    IterationPack::IterQuantityAccessContiguous<double>
                                 double
-f                         13    class IterationPack::IterQuantityAccessContiguous<double>
+f                         13    IterationPack::IterQuantityAccessContiguous<double>
                                 double
-feas_kkt_err              28    class IterationPack::IterQuantityAccessContiguous<double>
+feas_kkt_err              28    IterationPack::IterQuantityAccessContiguous<double>
                                 double
-lambda                    30    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
-                                class AbstractLinAlgPack::VectorMutableDense
-mu                        25    class IterationPack::IterQuantityAccessContiguous<double>
+lambda                    30    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
+                                AbstractLinAlgPack::VectorMutableDense
+mu                        25    IterationPack::IterQuantityAccessContiguous<double>
                                 double
-nu                        31    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
-                                class AbstractLinAlgPack::VectorMutableDense
-opt_kkt_err               27    class IterationPack::IterQuantityAccessContiguous<double>
+nu                        31    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
+                                AbstractLinAlgPack::VectorMutableDense
+opt_kkt_err               27    IterationPack::IterQuantityAccessContiguous<double>
                                 double
-phi                       26    class IterationPack::IterQuantityAccessContiguous<double>
+phi                       26    IterationPack::IterQuantityAccessContiguous<double>
                                 double
-qp_grad                   22    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
+qp_grad                   22    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
                                 NULL
-qp_solver_stats           11    class IterationPack::IterQuantityAccessContiguous<class ConstrainedOptPack::QPSolverStats>
-                                class ConstrainedOptPack::QPSolverStats
-quasi_newton_stats        32    class IterationPack::IterQuantityAccessContiguous<class MoochoPack::QuasiNewtonStats>
-                                class MoochoPack::QuasiNewtonStats
-rGL                       29    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
+qp_solver_stats           11    IterationPack::IterQuantityAccessContiguous<ConstrainedOptPack::QPSolverStats>
+                                ConstrainedOptPack::QPSolverStats
+quasi_newton_stats        32    IterationPack::IterQuantityAccessContiguous<MoochoPack::QuasiNewtonStats>
+                                MoochoPack::QuasiNewtonStats
+rGL                       29    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
                                 NULL
-rGf                       19    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
+rGf                       19    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
                                 NULL
-rHL                        6    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::MatrixSymOp>
-                                class AbstractLinAlgPack::MatrixSymPosDefCholFactor
-w                         20    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
+rHL                        6    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::MatrixSymOp>
+                                AbstractLinAlgPack::MatrixSymPosDefCholFactor
+w                         20    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
                                 NULL
-x                         12    class IterationPack::IterQuantityAccessContiguous<class AbstractLinAlgPack::VectorMutable>
-                                class AbstractLinAlgPack::VectorMutableDense
-zeta                      21    class IterationPack::IterQuantityAccessContiguous<double>
+x                         12    IterationPack::IterQuantityAccessContiguous<AbstractLinAlgPack::VectorMutable>
+                                AbstractLinAlgPack::VectorMutableDense
+zeta                      21    IterationPack::IterQuantityAccessContiguous<double>
                                 double
 
 
 *** Algorithm Description ***
 
 1. "EvalNewPoint"
-    (class MoochoPack::EvalNewPointStd_Step)
+    (MoochoPack::EvalNewPointStd_Step)
     *** Evaluate the new point and update the range/null decomposition
     if nlp is not initialized then initialize the nlp
     if x is not updated for any k then set x_k = xinit
@@ -226,7 +226,7 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
                                     s.t. Uz_k = Gc_k(:,equ_undecomp)' * Z_k
       if m > r : Uy_k <: space_c(equ_undecomp)|space_range
                                     s.t. Uy_k = Gc_k(:,equ_undecomp)' * Y_k
-    begin update decomposition (class 'class MoochoPack::DecompositionSystemHandlerVarReductPerm_Strategy')
+    begin update decomposition (class 'MoochoPack::DecompositionSystemHandlerVarReductPerm_Strategy')
       *** Updating or selecting a new decomposition using a variable reduction
       *** range/null decomposition object.
       if decomp_sys does not support the DecompositionSystemVarReductPerm interface then throw exception!
@@ -243,7 +243,7 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
       end
       if (get_new_basis == true) then
         begin update decomposition
-        (class = 'class ConstrainedOptPack::DecompositionSystemVarReductPermStd')
+        (class = 'ConstrainedOptPack::DecompositionSystemVarReductPermStd')
           *** Variable reduction decomposition (class DecompositionSytemVarReductImp)
           C = Gc(var_dep,equ_decomp)' (using basis_sys)
           if C is nearly singular then throw SingularDecomposition exception
@@ -305,13 +305,13 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
     end
 
 2. "QuasiNormalStep"
-    (class MoochoPack::QuasiNormalStepStd_Step)
+    (MoochoPack::QuasiNormalStepStd_Step)
     *** Calculate the range space step
     py_k = - inv(R_k) * c_k(equ_decomp)
     Ypy_k = Y_k * py_k
 
 2.1. "CheckDecompositionFromPy"
-    (class MoochoPack::CheckDecompositionFromPy_Step)
+    (MoochoPack::CheckDecompositionFromPy_Step)
     default: beta_min = inf
              max_decomposition_cond_change_frac = 10000
              max_cond = 0.01 * mach_eps
@@ -331,7 +331,7 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
       select_new_decomposition = true
     end
     if select_new_decomposition == true then
-      new decomposition selection : class MoochoPack::NewDecompositionSelectionStd_Strategy
+      new decomposition selection : MoochoPack::NewDecompositionSelectionStd_Strategy
         if k > max_iter then
           terminate the algorithm
         end
@@ -344,7 +344,7 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
     end
 
 2.2. "CheckDecompositionFromRPy"
-    (class MoochoPack::CheckDecompositionFromRPy_Step)
+    (MoochoPack::CheckDecompositionFromRPy_Step)
     *** Try to detect when the decomposition is becomming illconditioned
     default: beta_min = inf
              max_decomposition_cond_change_frac = 10000
@@ -361,7 +361,7 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
         end
     end
     if select_new_decomposition == true then
-        new decomposition selection : class MoochoPack::NewDecompositionSelectionStd_Strategy
+        new decomposition selection : MoochoPack::NewDecompositionSelectionStd_Strategy
         if k > max_iter then
           terminate the algorithm
         end
@@ -374,12 +374,12 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
     end
 
 3. "ReducedGradient"
-    (class MoochoPack::ReducedGradientStd_Step)
+    (MoochoPack::ReducedGradientStd_Step)
     *** Evaluate the reduced gradient of the objective funciton
     rGf_k = Z_k' * Gf_k
 
 4.-1. "CheckSkipBFGSUpdate"
-    (class MoochoPack::CheckSkipBFGSUpdateStd_Step)
+    (MoochoPack::CheckSkipBFGSUpdateStd_Step)
     *** Check if we should do the BFGS update
     if rHL_km1 is update then
         If Ypy_km1, Zpz_km1, rGL_km1, or c_km1 is not updated then
@@ -397,7 +397,7 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
     end
 
 4. "ReducedHessian"
-    (class MoochoPack::ReducedHessianSecantUpdateStd_Step)
+    (MoochoPack::ReducedHessianSecantUpdateStd_Step)
     *** Calculate the reduced hessian of the Lagrangian rHL = Z' * HL * Z
     default:  num_basis_remembered = NO_BASIS_UPDATED_YET
               iter_k_rHL_init_ident = -1
@@ -426,7 +426,7 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
             end
             rHL_k = rHL_km1
             begin secant update
-            (class MoochoPack::ReducedHessianSecantUpdateBFGSFull_Strategy)
+            (MoochoPack::ReducedHessianSecantUpdateBFGSFull_Strategy)
                 *** Perform BFGS update on full matrix where: B = rHL_k
                 if use_dampening == true then
                     if s'*y >= 0.2 * s'*B*s then
@@ -467,14 +467,14 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
     end
 
 5.-1. "SetDBoundsStd"
-    (class MoochoPack::SetDBoundsStd_AddedStep)
+    (MoochoPack::SetDBoundsStd_AddedStep)
     *** Set the bounds on d
     d_bounds_k.l = xl - x_k
     d_bounds_k.u = xu - x_k
 
 5. "TangentialStep"
-    (class MoochoPack::QPFailureReinitReducedHessian_Step)
-    do null space step : class MoochoPack::TangentialStepWithInequStd_Step
+    (MoochoPack::QPFailureReinitReducedHessian_Step)
+    do null space step : MoochoPack::TangentialStepWithInequStd_Step
       *** Calculate the null-space step by solving a constrained QP
       qp_grad_k = rGf_k
       if w_k is updated then set qp_grad_k = qp_grad_k + zeta_k * w_k
@@ -510,7 +510,7 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
         frac_same = max(num_active-num_adds-num_drops,0)/(num_active)
       Use a warm start when frac_same >= warm_start_frac
       Solve the following QP to compute qp_d, qp_eta, qp_Ed = qp_E * qp_d
-      ,qp_nu, qp_mu and qp_lambda (class ConstrainedOptPack::QPSolverRelaxedQPSchur):
+      ,qp_nu, qp_mu and qp_lambda (ConstrainedOptPack::QPSolverRelaxedQPSchur):
         min  qp_g' * qp_d + 1/2 * qp_d' * qp_G * qp_d + M(eta)
         qp_d <: R^(n-r)
         s.t.
@@ -569,12 +569,12 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
     end
 
 6. "CalcDFromYPYZPZ"
-    (class MoochoPack::CalcDFromYPYZPZ_Step)
+    (MoochoPack::CalcDFromYPYZPZ_Step)
     *** Calculates the search direction d from Ypy and Zpz
     d_k = Ypy_k + Zpz_k 
 
 7. "CalcReducedGradLagrangian"
-    (class MoochoPack::CalcReducedGradLagrangianStd_AddedStep)
+    (MoochoPack::CalcReducedGradLagrangianStd_AddedStep)
     *** Evaluate the reduced gradient of the Lagrangian
     if nu_k is updated and nu_k.nz() > 0 then
         rGL_k = Z_k' * (Gf_k + nu_k) + Uz_k' * lambda_k(equ_undecomp)
@@ -583,7 +583,7 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
     end
 
 8. "CheckConvergence"
-    (class MoochoPack::CheckConvergenceStd_AddedStep)
+    (MoochoPack::CheckConvergenceStd_AddedStep)
     *** Check to see if the KKT error is small enough for convergence
     if scale_(opt|feas|comp)_error_by == SCALE_BY_ONE then
         scale_(opt|feas|comp)_factor = 1.0
@@ -616,7 +616,7 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
     end
 
 9.-1. "LineSearchFullStep"
-    (class MoochoPack::LineSearchFullStep_Step)
+    (MoochoPack::LineSearchFullStep_Step)
     if alpha_k is not updated then
         alpha_k = 1.0
     end
@@ -625,8 +625,8 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
     if m > 0 then c_kp1 = c(x_kp1)
 
 9. "LineSearch"
-    (class MoochoPack::LineSearchFailureNewDecompositionSelection_Step)
-    do line search step : class MoochoPack::LineSearchFilter_Step
+    (MoochoPack::LineSearchFailureNewDecompositionSelection_Step)
+    do line search step : MoochoPack::LineSearchFilter_Step
         *** Filter line search method
         # Assumes initial d_k & alpha_k (0-1) is known and
         # x_kp1, f_kp1, c_kp1 and h_kp1 are calculated for that alpha_k
@@ -699,7 +699,7 @@ zeta                      21    class IterationPack::IterQuantityAccessContiguou
       if line search failed at the last iteration also then
         throw line_search_failure
       end
-      new decomposition selection : class MoochoPack::NewDecompositionSelectionStd_Strategy
+      new decomposition selection : MoochoPack::NewDecompositionSelectionStd_Strategy
         if k > max_iter then
           terminate the algorithm
         end

@@ -463,7 +463,7 @@ void EvalNewPointStd_Step::print_step(
       << L << "                                s.t. Uz_k = Gc_k(:,equ_undecomp)' * Z_k\n"
       << L << "  if m > r : Uy_k <: space_c(equ_undecomp)|space_range\n"
       << L << "                                s.t. Uy_k = Gc_k(:,equ_undecomp)' * Y_k\n"
-      << L << "begin update decomposition (class \'" << typeid(decomp_sys_handler()).name() << "\')\n"
+      << L << "begin update decomposition (class \'" << typeName(decomp_sys_handler()) << "\')\n"
       ;
     decomp_sys_handler().print_update_decomposition( algo, s, out, L + "  " );
     out

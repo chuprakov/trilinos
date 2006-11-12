@@ -259,7 +259,7 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
     (*C_ptr) = basis_sys_->factory_C()->create();
     if( out && olevel >= PRINT_BASIC_INFO )
       *out << "\nAllocated a new basis matrix object C "
-         << "of type \'" << typeid(*(*C_ptr)).name() << "\' ...\n";
+         << "of type \'" << typeName(*(*C_ptr)) << "\' ...\n";
   }
 
 
@@ -485,7 +485,7 @@ void DecompositionSystemVarReductImp::update_decomp(
       GcDd_ptr.get() == NULL, std::logic_error
       ,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
       "The matrix class used for the gradient of constraints matrix Gc of type \'"
-      << typeid(Gc).name() << "\' must return return.get() != NULL from "
+      << typeName(Gc) << "\' must return return.get() != NULL from "
       "Gc.sub_view(var_indep,equ_decomp)!" );
     if(mat_rel == MATRICES_INDEP_IMPS) {
       GcDd_ptr = GcDd_ptr->clone();
@@ -493,7 +493,7 @@ void DecompositionSystemVarReductImp::update_decomp(
         GcDd_ptr.get() == NULL, std::logic_error
         ,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
         "The matrix class used for the gradient of constraints matrix Gc.sub_view(var_indep,equ_decomp) "
-        "of type \'" << typeid(*GcDd_ptr).name() << "\' must return return.get() != NULL from \n"
+        "of type \'" << typeName(*GcDd_ptr) << "\' must return return.get() != NULL from \n"
         "Gc.sub_view(var_indep,equ_decomp)->clone() since mat_rel == MATRICES_INDEP_IMPS!" );
     }
     N_ptr = Teuchos::rcp(
@@ -672,7 +672,7 @@ void DecompositionSystemVarReductImp::alloc_new_D_matrix(
     (*D_ptr) = basis_sys_->factory_D()->create();
     if( out && olevel >= PRINT_BASIC_INFO )
       *out << "\nAllocated a new explicit matrix object for D = -inv(C)*N "
-         << "of type \'" << typeid(*(*D_ptr)).name() << "\' ...\n";
+         << "of type \'" << typeName(*(*D_ptr)) << "\' ...\n";
   }
 }
 
