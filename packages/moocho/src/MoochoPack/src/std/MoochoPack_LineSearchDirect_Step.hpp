@@ -44,7 +44,7 @@ class LineSearchDirect_Step
 public:
 
   /// Set the direct line search algorithm object
-  STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_line_search)
+  STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_line_search);
   /** \brief . */
   LineSearchDirect_Step(
     const direct_line_search_ptr_t& direct_line_search = Teuchos::null

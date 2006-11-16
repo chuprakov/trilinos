@@ -63,27 +63,27 @@ public:
     * This is the line search strategy object for the SQP step
     * for x_k+1 = x_k + alpha_k * d_k + alpha_k^2 * w.
     */
-  STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_ls_sqp)
+  STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_ls_sqp);
 
   /** \brief <<std comp>> members for merit_func.
     *
     * This is the merit function object for SQP step line search.
     */
-  STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func)
+  STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func);
 
   /** \brief <<std comp>> members for feasibility_step.
     *
     * This is the strategy object that is used to compute feasibility
     * steps for the newton iterations.
     */
-  STANDARD_COMPOSITION_MEMBERS(FeasibilityStep_Strategy,feasibility_step)
+  STANDARD_COMPOSITION_MEMBERS(FeasibilityStep_Strategy,feasibility_step);
 
   /** \brief <<std comp>> members for direct_ls_newton.
     *
     * This is the line search strategy object for the internal
     * newton iterations for determining the second order correction w.
     */
-  STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_ls_newton)
+  STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_ls_newton);
 
   /** \brief . */
   LineSearch2ndOrderCorrect_Step(
@@ -108,31 +108,31 @@ public:
   //@{
 
   /// the Armijo cord fractional reduction test parameter eta
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,eta)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,eta);
 
   /// Optput level for newton iterations.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(ENewtonOutputLevel,newton_olevel)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(ENewtonOutputLevel,newton_olevel);
 
   /// constr_norm_threshold.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,constr_norm_threshold)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,constr_norm_threshold);
 
   /// constr_incr_ratio
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,constr_incr_ratio)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,constr_incr_ratio);
 
   /// after_k_iter.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(int,after_k_iter)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(int,after_k_iter);
 
   /// forced_constr_reduction.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(EForcedConstrReduction,forced_constr_reduction)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(EForcedConstrReduction,forced_constr_reduction);
 
   /// forced_reduct_ratio
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,forced_reduct_ratio)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,forced_reduct_ratio);
 
   /// max_step_ratio.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,max_step_ratio)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,max_step_ratio);
 
   /// max_netwon_iter.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(int,max_newton_iter)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(int,max_newton_iter);
   
   //@}
 

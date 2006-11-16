@@ -66,11 +66,11 @@ class CheckDecompositionFromPy_Step
 public:
 
   /** \brief . */
-  STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy )
+  STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy );
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_decomposition_cond_change_frac )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_decomposition_cond_change_frac );
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_cond )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_cond );
 
   /** \brief . */
   CheckDecompositionFromPy_Step(

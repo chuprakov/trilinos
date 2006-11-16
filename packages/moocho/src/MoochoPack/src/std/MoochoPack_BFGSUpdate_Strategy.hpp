@@ -49,12 +49,12 @@ public:
   /** \brief <<std member comp>> members for whether to rescale
    * the initial identity Hessian or not.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, rescale_init_identity )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, rescale_init_identity );
 
   /** \brief <<std member comp>> members for whether to perform
     * dampended quasi-newton updating or not.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, use_dampening )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, use_dampening );
 
   /** \brief . */
   enum ESecantTesting { SECANT_TEST_DEFAULT, SECANT_TEST_ALWAYS, SECANT_NO_TEST };
@@ -64,17 +64,17 @@ public:
     *
     * ToDo: Finish documentation.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( ESecantTesting, secant_testing )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( ESecantTesting, secant_testing );
 
   /** \brief <<std member comp>> members for the warning tolerance for
     * the check of the secant property.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, secant_warning_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, secant_warning_tol );
 
   /** \brief <<std member comp>> members for the error tolerance for
     * the check of the secant property.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, secant_error_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, secant_error_tol );
 
   /** \brief . */
   BFGSUpdate_Strategy(

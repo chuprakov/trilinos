@@ -44,7 +44,7 @@ class NewDecompositionSelectionStd_Strategy
 public:
 
   /// «std comp» members for range/null decomposition handler
-  STANDARD_COMPOSITION_MEMBERS( DecompositionSystemHandlerSelectNew_Strategy, decomp_sys_handler )
+  STANDARD_COMPOSITION_MEMBERS( DecompositionSystemHandlerSelectNew_Strategy, decomp_sys_handler );
 
   /** \brief . */
   NewDecompositionSelectionStd_Strategy(

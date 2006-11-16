@@ -50,10 +50,10 @@ class VariableBoundsTester {
 public:
 
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol );
 
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol );
 
   /** \brief . */
   VariableBoundsTester(

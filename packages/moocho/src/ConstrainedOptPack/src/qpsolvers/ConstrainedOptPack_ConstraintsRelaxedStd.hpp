@@ -219,19 +219,19 @@ public:
 
   /** \brief <<std comp>> members for feasibility tolerance for the bound constriants.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, bounds_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, bounds_tol );
 
   /** \brief <<std comp>> members for feasibility tolerance for the general inequality constraints.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, inequality_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, inequality_tol );
 
   /** \brief <<std comp>> members for feasibility tolerance for the general equality constriants.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, equality_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, equality_tol );
 
   /** \brief <<std comp>> members for policy used to select a violated constraint.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( EInequalityPickPolicy, inequality_pick_policy )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EInequalityPickPolicy, inequality_pick_policy );
 
   /// Constructs to uninitialized
   ConstraintsRelaxedStd();

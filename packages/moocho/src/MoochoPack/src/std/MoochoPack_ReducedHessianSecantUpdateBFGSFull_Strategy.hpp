@@ -49,7 +49,7 @@ public:
   /** \brief <<std comp>> members for the strategy object that will
    * perform guts secant update.
    */
-  STANDARD_COMPOSITION_MEMBERS( BFGSUpdate_Strategy, bfgs_update )
+  STANDARD_COMPOSITION_MEMBERS( BFGSUpdate_Strategy, bfgs_update );
 
     ReducedHessianSecantUpdateBFGSFull_Strategy(
     const bfgs_update_ptr_t&      bfgs_update = Teuchos::null

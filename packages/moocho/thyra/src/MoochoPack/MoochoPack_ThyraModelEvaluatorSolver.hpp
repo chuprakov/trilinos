@@ -47,10 +47,10 @@ class ThyraModelEvaluatorSolver {
 public:
 
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, insertStateElimCommandLineOptions )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, insertStateElimCommandLineOptions );
 
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, insertFiniteDiffCommandLineOptions )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, insertFiniteDiffCommandLineOptions );
   
   /** \brief . */
   ThyraModelEvaluatorSolver();

@@ -44,7 +44,7 @@ class LineSearchNLE_Step
 public:
 
   /// <<std comp>> members for direct_line_search
-  STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_line_search)
+  STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_line_search);
   /** \brief . */
   LineSearchNLE_Step(
     const direct_line_search_ptr_t& direct_line_search = Teuchos::null

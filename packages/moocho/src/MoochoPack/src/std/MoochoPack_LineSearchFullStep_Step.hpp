@@ -44,7 +44,7 @@ class LineSearchFullStep_Step
 public:
 
   /// «std comp» Members for variable bounds tester object
-  STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
+  STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester );
 
   /** \brief . */
   LineSearchFullStep_Step(

@@ -123,16 +123,16 @@ public:
     ,FD_STEP_RELATIVE     ///< Use relative step size <tt>fd_step_size * ||xo||inf</tt>
   };
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDMethodOrder, fd_method_order )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDMethodOrder, fd_method_order );
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDStepSelect, fd_step_select )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDStepSelect, fd_step_select );
   /** \brief Pick the size of the finite difference step.
    *
    * If <tt>fd_step_size < 0</tt> then the implementation will try to
    * select it based on the order of method <tt>fd_method_order()</tt>
    * that is selected.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size );
   /** \brief Pick the minimum step size under which the finite difference product
    * will not be computed.
    *
@@ -140,11 +140,11 @@ public:
    * will always be performed.  If <tt>fd_step_size_min < 0</tt> then the
    * minimum step size will be determined internally.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_min )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_min );
   /// Set the step size for \a f(x)
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_f )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_f );
   /// Set the step size for \a c(x)
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_c )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_c );
 
   /** \brief . */
   CalcFiniteDiffProd(

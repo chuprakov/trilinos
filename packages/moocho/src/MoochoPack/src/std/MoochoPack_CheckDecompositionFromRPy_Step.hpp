@@ -63,12 +63,12 @@ class CheckDecompositionFromRPy_Step
 public:
 
   /// <<std comp>> members for Decomposition Select Strategy object.
-  STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy )
+  STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy );
 
   /** \brief Set the maximum change in the relative error in the range space
      * step before the selection of a new decomposition is triggered.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_decomposition_cond_change_frac )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_decomposition_cond_change_frac );
 
   /** \brief . */
   CheckDecompositionFromRPy_Step(

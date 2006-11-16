@@ -134,22 +134,22 @@ class QPSolverRelaxedTester {
 public:
 
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_warning_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_warning_tol );
 
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_error_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_error_tol );
 
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_warning_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_warning_tol );
 
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_error_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_error_tol );
 
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_warning_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_warning_tol );
 
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_error_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_error_tol );
 
   /** \brief . */
   QPSolverRelaxedTester(

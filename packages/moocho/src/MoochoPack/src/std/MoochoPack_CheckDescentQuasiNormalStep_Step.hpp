@@ -56,7 +56,7 @@ class CheckDescentQuasiNormalStep_Step
 public:
 
   /// Set the object that will compute the finite difference products.
-  STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
+  STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod );
 
   /** \brief Constructor
    */

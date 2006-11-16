@@ -52,10 +52,10 @@ public:
   //@{
 
   /// Set the maximum number of QP iterations as max_itr = max_qp_iter_frac * n.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_qp_iter_frac )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_qp_iter_frac );
 
   /// Set the value of an infinite bound.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, infinite_bound )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, infinite_bound );
 
   /** \brief . */
   QPSolverRelaxedQPKWIK(

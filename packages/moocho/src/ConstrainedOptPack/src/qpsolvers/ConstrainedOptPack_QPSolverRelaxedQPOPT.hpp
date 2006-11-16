@@ -49,7 +49,7 @@ public:
 
   /** \brief Set the maximum number of QP iterations as max_itr = max_qp_iter_frac * n.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_qp_iter_frac )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_qp_iter_frac );
 
   /** \brief . */
   QPSolverRelaxedQPOPT(

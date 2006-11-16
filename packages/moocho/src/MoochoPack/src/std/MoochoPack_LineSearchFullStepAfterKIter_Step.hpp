@@ -45,7 +45,7 @@ class LineSearchFullStepAfterKIter_Step : public LineSearch_Step {
 public:
 
   /// <<std comp>> members for the line search step
-  STANDARD_COMPOSITION_MEMBERS(LineSearch_Step,line_search)
+  STANDARD_COMPOSITION_MEMBERS(LineSearch_Step,line_search);
 
   /** \brief . */
   LineSearchFullStepAfterKIter_Step(

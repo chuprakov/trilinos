@@ -47,7 +47,7 @@ class MeritFunc_PenaltyParamsUpdateWithMult_AddedStep
 public:
 
   /// <<std comp>> members for merit_func
-  STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func)
+  STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func);
 
   /** \brief . */
   MeritFunc_PenaltyParamsUpdateWithMult_AddedStep(const merit_func_ptr_t& merit_func

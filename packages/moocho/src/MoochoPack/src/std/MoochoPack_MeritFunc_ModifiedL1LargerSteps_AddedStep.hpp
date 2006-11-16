@@ -46,7 +46,7 @@ class MeritFunc_ModifiedL1LargerSteps_AddedStep
 public:
 
   /// <<std comp>> members for merit_func
-  STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func)
+  STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func);
 
   /** \brief . */
   MeritFunc_ModifiedL1LargerSteps_AddedStep(
@@ -59,22 +59,22 @@ public:
     , value_type	incr_mult_factor			= 1e-4 );
 
   /// eta.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,eta)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,eta);
 
   /// after_k_iter.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(int,after_k_iter)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(int,after_k_iter);
 
   /// obj_increase_threshold.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,obj_increase_threshold)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,obj_increase_threshold);
 
   /// max_pos_penalty_increase
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,max_pos_penalty_increase)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,max_pos_penalty_increase);
 
   /// pos_to_neg_penalty_increase
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,pos_to_neg_penalty_increase)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,pos_to_neg_penalty_increase);
 
   /// incr_mult_factor
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,incr_mult_factor)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,incr_mult_factor);
 
   // ///////////////////////////////
   // Overridden from AlgorithmStep

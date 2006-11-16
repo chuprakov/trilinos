@@ -93,7 +93,7 @@ public:
   //@{
 
   /// Set the BasisSystem tester object
-  STANDARD_COMPOSITION_MEMBERS( BasisSystemTester, basis_sys_tester )
+  STANDARD_COMPOSITION_MEMBERS( BasisSystemTester, basis_sys_tester );
 
   /** \brief Construct a variable reduction decomposition.
    *

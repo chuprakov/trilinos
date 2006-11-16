@@ -152,7 +152,7 @@ public:
     * This function must be called before a BFGS update is performed
     * in order for it to take effect for that update.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, auto_rescaling )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, auto_rescaling );
 
   /** \brief Initial setup for the matrix.
     *

@@ -48,7 +48,7 @@ class NLPDirectThyraModelEvaluator
 public:
 
   /** \brief Utility object that computes directional finite differences */
-  STANDARD_COMPOSITION_MEMBERS( Thyra::DirectionalFiniteDiffCalculator<value_type>, direcFiniteDiffCalculator )
+  STANDARD_COMPOSITION_MEMBERS( Thyra::DirectionalFiniteDiffCalculator<value_type>, direcFiniteDiffCalculator );
 
   /** \brief Initialize to uninitialized */
   NLPDirectThyraModelEvaluator();

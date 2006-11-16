@@ -53,7 +53,7 @@ public:
   /** \brief <<std comp>> members for the strategy interface object that will
    * actually perform the secant update.
    */
-  STANDARD_COMPOSITION_MEMBERS( ReducedHessianSecantUpdate_Strategy, secant_update )
+  STANDARD_COMPOSITION_MEMBERS( ReducedHessianSecantUpdate_Strategy, secant_update );
 
   /** \brief . */
   ReducedHessianSecantUpdateStd_Step(

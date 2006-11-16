@@ -49,7 +49,7 @@ class QPFailureReinitReducedHessian_Step
 public:
 
   /** \brief . */
-  STANDARD_COMPOSITION_MEMBERS( IterationPack::AlgorithmStep, null_space_step )
+  STANDARD_COMPOSITION_MEMBERS( IterationPack::AlgorithmStep, null_space_step );
 
   /** \brief . */
   QPFailureReinitReducedHessian_Step( const null_space_step_ptr_t& null_space_step );

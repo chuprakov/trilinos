@@ -60,25 +60,25 @@ public:
   //@{
 
   /// Pivot tolerance versus sparsity
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, u )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, u );
 
   /// If true, than an estimate of growth of the factors is computed
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, grow )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, grow );
 
   /// Drop tolerance for an incomplete factorization
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, tol );
 
   /// Number of columns to search to reduce fill-in
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( index_type, nsrch )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( index_type, nsrch );
 
   /// If true, then the largest entry encountered is returned
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, lbig )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, lbig );
 
   /// If true, then outputs from ma28 are printed to output stream
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_ma28_outputs )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_ma28_outputs );
 
   /// If output_file != "", then output from MA28 is sent to this file.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, output_file_name )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, output_file_name );
 
   //@}
 

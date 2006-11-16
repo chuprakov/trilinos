@@ -107,7 +107,7 @@ public:
   enum EPrintMoreOrLess { PRINT_MORE, PRINT_LESS };
 
   /// <<std comp>> members for the direct sparse linear solver
-  STANDARD_COMPOSITION_MEMBERS( DirectSparseFortranCompatibleSolver, direct_solver )
+  STANDARD_COMPOSITION_MEMBERS( DirectSparseFortranCompatibleSolver, direct_solver );
 
   /** \brief . */
   MatrixKKTFullSpaceRelaxed( const direct_solver_ptr_t& direct_solver = 0 );

@@ -79,9 +79,9 @@ public:
   //@{
 
   /// Set whether to use explicit or implicit <tt>D = -inv(C)*N</tt> matrix.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(EExplicitImplicit,D_imp)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(EExplicitImplicit,D_imp);
   /// Set whether to use explicit or implicit <tt>Uz = F + E * D</tt> matrix.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(EExplicitImplicit,Uz_imp)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(EExplicitImplicit,Uz_imp);
 
     // ToDo: The above could be implemented as pure virtual funtions if needed later!
 

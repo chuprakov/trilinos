@@ -50,28 +50,28 @@ public:
   /** \brief <<std comp>> members for the strategy object that will
    * perform dense projected BFGS updating.
    */
-  STANDARD_COMPOSITION_MEMBERS( ReducedHessianSecantUpdateBFGSProjected_Strategy, proj_bfgs_updater )
+  STANDARD_COMPOSITION_MEMBERS( ReducedHessianSecantUpdateBFGSProjected_Strategy, proj_bfgs_updater );
 
   /** \brief Set the minimum number of BFGS updates to perform on the LBFGS matrix
    * before considering switching to projected BFGS updating.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, min_num_updates_proj_start )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, min_num_updates_proj_start );
 
   /** \brief Set the maximum number of BFGS updates to perform on the LBFGS matrix
    * before automatically switching to the projected BFGS updating
    * reguardless if the active set has calmed down or not.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, max_num_updates_proj_start )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, max_num_updates_proj_start );
 
   /** \brief Set the maximum number of superbasic variables under which switching
    * from limited memory to dense projected PBFGS updating will be allowed.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_superbasics_switch_dense )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_superbasics_switch_dense );
 
   /** \brief Set maximum number of previous BFGS updates to initialize the new dense
    * projected BFGS matrix with.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_add_recent_updates )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_add_recent_updates );
 
   /** \brief . */
     ReducedHessianSecantUpdateLPBFGS_Strategy(

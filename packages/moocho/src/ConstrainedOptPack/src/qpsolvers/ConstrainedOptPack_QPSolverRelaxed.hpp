@@ -158,7 +158,7 @@ public:
   //@{
 
   /// Set the scalar that will be used to identigy infinite bounds
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, infinite_bound )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, infinite_bound );
 
   /** \brief . */
   QPSolverRelaxed();

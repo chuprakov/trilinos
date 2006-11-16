@@ -48,7 +48,7 @@ public:
   //@{
 
   /// Members for <<std comp>> of the algorithm object algo.
-  STANDARD_COMPOSITION_MEMBERS( NLPAlgoInterface, algo )
+  STANDARD_COMPOSITION_MEMBERS( NLPAlgoInterface, algo );
 
   /// Construct a container with no configuration object set.
   NLPAlgoContainer()

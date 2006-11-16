@@ -48,10 +48,10 @@ class LineSearchFailureNewDecompositionSelection_Step
 public:
 
   /// <<std comp>> members for LineSearch object.
-  STANDARD_COMPOSITION_MEMBERS( IterationPack::AlgorithmStep, line_search_step )
+  STANDARD_COMPOSITION_MEMBERS( IterationPack::AlgorithmStep, line_search_step );
 
   /// <<std comp>> members for Decomposition Select Strategy object.
-  STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy )
+  STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy );
 
   /** \brief . */
   LineSearchFailureNewDecompositionSelection_Step(

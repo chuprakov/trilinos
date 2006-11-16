@@ -62,28 +62,28 @@ public:
   //@{
 
   /// «std comp» members for range/null decomposition handler
-  STANDARD_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy, decomp_sys_handler )
+  STANDARD_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy, decomp_sys_handler );
   /// «std comp» members for first derivative tester object
-  STANDARD_COMPOSITION_MEMBERS( NLPFirstDerivTester, deriv_tester )
+  STANDARD_COMPOSITION_MEMBERS( NLPFirstDerivTester, deriv_tester );
   /// «std comp» Members for variable bounds tester object
-  STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
+  STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester );
   /// «std comp» members for decomp_sys tester tester object
-  STANDARD_COMPOSITION_MEMBERS( DecompositionSystemTester, decomp_sys_tester )
+  STANDARD_COMPOSITION_MEMBERS( DecompositionSystemTester, decomp_sys_tester );
   /** \brief Set how and if finite derivatives are tested.
     *
     * ToDo: Finish documentation.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDDerivTesting, fd_deriv_testing )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDDerivTesting, fd_deriv_testing );
   /** \brief Set how and if the decomposition system is tested.
     *
     * ToDo: Finish documentation.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy::EDecompSysTesting, decomp_sys_testing )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy::EDecompSysTesting, decomp_sys_testing );
   /** \brief Set how to set the print level for decomp_sys_tester (only if testing).
     *
     * ToDo: Finish documentation.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy::EDecompSysPrintLevel, decomp_sys_testing_print_level )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy::EDecompSysPrintLevel, decomp_sys_testing_print_level );
 
   /** \brief Constructor.
    *

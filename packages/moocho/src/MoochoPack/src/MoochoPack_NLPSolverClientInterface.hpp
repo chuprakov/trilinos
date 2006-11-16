@@ -67,66 +67,66 @@ public:
   //@{
 
   /// Set the maximum number of iterations the rSQP algorithm can perform
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( int, max_iter )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( int, max_iter );
 
   /** \brief Set the maximum run_time
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( double, max_run_time )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( double, max_run_time );
 
   /** \brief Set the termination tolerance for the relative (scaled) linear dependence of the
    * gradients part of the first order necessary optimality conditions.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_tol );
 
   /** \brief Set the termination tolerance for the (scaled) equality constraints ||c(x*)||inf
    * which is part of the first order necessary optimality conditions.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_tol );
 
   /** \brief Set the termination tolerance for the complementarity condition 
    *  for the (scaled) bound constraints
    *  which is part of the first order necessary optimality conditions.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_tol );
 
   /** \brief Set the termination tolerance for the change in the estimate of the solution.
    *
    * The test is: <tt>|d(i)|/(1+|x(i)|) < step_tol</tt>. 
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, step_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, step_tol );
 
   /** \brief Determine the amount of output to a journal file.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( EJournalOutputLevel, journal_output_level )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EJournalOutputLevel, journal_output_level );
 
   /** \brief Determine the amount of output of the null space to a journal file.
    *
    * This option allows the user to perform a higher level of output
    * for quantities in the null space.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( EJournalOutputLevel, null_space_journal_output_level )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EJournalOutputLevel, null_space_journal_output_level );
 
   /** \brief Set the precesion of the journal output.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( int, journal_print_digits )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( int, journal_print_digits );
 
   /** \brief Set whether computations will be double checked or not.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, check_results )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, check_results );
 
   /** \brief Set whether the condition numbers of important matrics is
    * computed and printed or not.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_conditioning )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_conditioning );
 
   /** \brief Set whether or not matrix norms are computed and printed.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_matrix_norms )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_matrix_norms );
 
   /** \brief Set whether calc_conditioning and calc_matrix_norms apply to only
    * null space matrices.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_matrix_info_null_space_only )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_matrix_info_null_space_only );
 
   //@}
 
@@ -134,10 +134,10 @@ public:
   //@{
 
   /// <<std comp>> members for the nlp
-  STANDARD_COMPOSITION_MEMBERS( NLP, nlp )
+  STANDARD_COMPOSITION_MEMBERS( NLP, nlp );
 
   /// <<std comp>> members for the track
-  STANDARD_COMPOSITION_MEMBERS( AlgorithmTracker, track )
+  STANDARD_COMPOSITION_MEMBERS( AlgorithmTracker, track );
 
   /** \brief Construct with no references set to nlp or track objects.
    */

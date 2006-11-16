@@ -45,7 +45,7 @@ public:
   /** \brief <<std member comp>> members for proportionality constant to use in the
     * test for if to perform BFGS update.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, skip_bfgs_prop_const )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, skip_bfgs_prop_const );
 
   /** \brief . */
   CheckSkipBFGSUpdateStd_Step(

@@ -66,7 +66,7 @@ class PreEvalNewPointBarrier_Step
      *   else if (x > xu_sb) then
      *      x = xu_sb
      */
-    STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, relative_bound_push )
+    STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, relative_bound_push );
 
     /** \brief absolute measure for initializing x within
      *   bounds.
@@ -81,7 +81,7 @@ class PreEvalNewPointBarrier_Step
      *   else if (x > xu_sb) then
      *      x = xu_sb
      */
-    STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, absolute_bound_push )
+    STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, absolute_bound_push );
 
     /** @name Overridden from AlgorithmStep */
     //@{

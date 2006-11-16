@@ -86,16 +86,16 @@ public:
     );
 
   /// The initialization method for setting the diagonal
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(EInitializationMethod,initialization_method)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(EInitializationMethod,initialization_method);
 
   /// Maximum condition (l2 norm) for the intial matrix = (max(diag(i))/min(diag(i)).
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,max_cond)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,max_cond);
 
   /// The absolute minimum value of a diagonal element
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,min_diag)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,min_diag);
 
   /// The scaling of the step length u = step_scale / ||Z*e||inf
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,step_scale)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,step_scale);
 
   //@}
 

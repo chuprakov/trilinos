@@ -73,19 +73,19 @@ public:
   //@{
 
   /// Set the level of testing
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestLevel, test_level )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestLevel, test_level );
   /// Set the level of output produced durring tests.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( EPrintTestLevel, print_tests )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EPrintTestLevel, print_tests );
   /// Set whether vectors etc. are printed (warning, this may be a lot of output for larger systems).
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all );
   /// Set whether an exception that is thrown is thrown clear out of the testing function or not.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, throw_exception )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, throw_exception );
   /// Set the number of random test cases created.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_random_tests )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_random_tests );
   /// Set the relative tolerance for numerical tests above which to print a warning.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol );
   /// Set the relative tolerance for numerical tests above which to return false from the testing function.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol );
 
   //@}
 

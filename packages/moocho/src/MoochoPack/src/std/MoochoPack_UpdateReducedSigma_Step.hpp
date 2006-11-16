@@ -79,7 +79,7 @@ class UpdateReducedSigma_Step
      *** BFGS_dual_scaling_correction    : same as above
      ***										(scale by mu_kp1/mu_k when mu changes)
      */
-    STANDARD_MEMBER_COMPOSITION_MEMBERS( e_update_methods, update_method)
+    STANDARD_MEMBER_COMPOSITION_MEMBERS( e_update_methods, update_method);
 
     /** @name Overridden from AlgorithmStep */
     //@{

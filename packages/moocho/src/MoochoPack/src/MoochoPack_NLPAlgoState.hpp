@@ -285,11 +285,11 @@ public:
   // for all vector iteration quantities.
 
   /// Set the DecompositionSystem object that all share
-  STANDARD_COMPOSITION_MEMBERS( DecompositionSystem, decomp_sys )
+  STANDARD_COMPOSITION_MEMBERS( DecompositionSystem, decomp_sys );
   /// Set the VectorSpace of x
-  STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_x )
+  STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_x );
   /// Set the VectorSpace of c
-  STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_c )
+  STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_c );
   /** \brief Set the VectorSpace of the range space (py).
    * 
    * Calling this method will cause all of the vector iteration
@@ -442,9 +442,9 @@ public:
   //@{
 
   /// Range of decomposed equality constraints [1,r]
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, equ_decomp )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, equ_decomp );
   /// Range of undecomposed equality constraints [r+1,m]
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, equ_undecomp )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, equ_undecomp );
 
   //@}
 
@@ -452,13 +452,13 @@ public:
   //@{
 
   /// Current permutation for variables
-  STANDARD_COMPOSITION_MEMBERS( Permutation, P_var_current )
+  STANDARD_COMPOSITION_MEMBERS( Permutation, P_var_current );
   /// Previous permutation for variables
-  STANDARD_COMPOSITION_MEMBERS( Permutation, P_var_last )
+  STANDARD_COMPOSITION_MEMBERS( Permutation, P_var_last );
   /// Current permutation for equality constraints
-  STANDARD_COMPOSITION_MEMBERS( Permutation, P_equ_current )
+  STANDARD_COMPOSITION_MEMBERS( Permutation, P_equ_current );
   /// Previous permutation for equality constraints
-  STANDARD_COMPOSITION_MEMBERS( Permutation, P_equ_last )
+  STANDARD_COMPOSITION_MEMBERS( Permutation, P_equ_last );
 
   //@}
 

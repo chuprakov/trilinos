@@ -41,20 +41,20 @@ class DirectLineSearchArmQuad_Strategy : public DirectLineSearch_Strategy {
 public:
 
   /// Set the Armijo cord test fractional reduction parameter.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, eta )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, eta );
   
   /// The minimum fraction that alpha is reduced for each line search iteration.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, min_frac )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, min_frac );
 
   /// The maximum fraction that alpha is reduced for each line search iteration.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_frac )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_frac );
 
   /** \brief Deterimine if the line search iterations are maxed out or not.
    * 
    * This option is really only used for debugging and requires
    * changing the other parameters to make it useful.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, max_out_iter )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, max_out_iter );
 
   /// Constructs with default settings.
   DirectLineSearchArmQuad_Strategy(

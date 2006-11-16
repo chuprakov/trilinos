@@ -68,21 +68,21 @@ public:
     ,PRINT_ALL         =4  ///< Print everything all the tests in great detail but output is independent of problem size.
   };
   /// Set the level of output produced durring tests.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( EPrintTestLevel, print_tests )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EPrintTestLevel, print_tests );
   /// Set whether matrices, vectors ect. are printed (warning, this may be a lot of output for larger systems).
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all );
   /// Set whether an exception that is thrown is thrown clear out of the testing function or not.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, throw_exception )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, throw_exception );
   /// Set the number of random test cases created.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_random_tests )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_random_tests );
   /// Set the relative tolerance for numerical tests of matrix-vector multiplication above which to print a warning.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, mult_warning_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, mult_warning_tol );
   /// Set the relative tolerance for numerical tests  of matrix-vector multiplication above which to return \c false from the testing function.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, mult_error_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, mult_error_tol );
   /// Set the relative tolerance for numerical tests of matrix-vector solves above which to print a warning.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, solve_warning_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, solve_warning_tol );
   /// Set the relative tolerance for numerical tests  of matrix-vector solves above which to return \c false from the testing function.
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, solve_error_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, solve_error_tol );
 
   //@}
 

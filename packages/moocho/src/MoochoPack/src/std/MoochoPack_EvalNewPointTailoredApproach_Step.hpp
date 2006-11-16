@@ -61,14 +61,14 @@ public:
   /** \brief . */
   typedef Teuchos::RefCountPtr<const MatrixOp> D_ptr_t;
   /// <<std comp>> members for testing object for NLPDirect
-  STANDARD_COMPOSITION_MEMBERS( NLPDirectTester, deriv_tester )
+  STANDARD_COMPOSITION_MEMBERS( NLPDirectTester, deriv_tester );
   /// <<std comp>> Members for variable bounds tester object
-  STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
+  STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester );
   /** \brief Set how and if finite derivatives are tested.
    *
    * ToDo: Finish documentation.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDDerivTesting, fd_deriv_testing )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDDerivTesting, fd_deriv_testing );
 
   /** \brief . */
   EvalNewPointTailoredApproach_Step(

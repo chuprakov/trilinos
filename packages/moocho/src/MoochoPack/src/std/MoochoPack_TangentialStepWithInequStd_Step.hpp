@@ -53,15 +53,15 @@ class TangentialStepWithInequStd_Step
 public:
 
   /// QP solver
-  STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxed, qp_solver )
+  STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxed, qp_solver );
 
   /// QP solver tester
-  STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxedTester, qp_tester )
+  STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxedTester, qp_tester );
 
   /** \brief Set the ratio of the number of inequality constraints in the
    * active-set of the last two calls before a warm start is attempted.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warm_start_frac )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warm_start_frac );
 
   /** \brief . */
   enum EQPTesting { QP_TEST_DEFAULT, QP_TEST, QP_NO_TEST };
@@ -70,17 +70,17 @@ public:
    *
    * ToDo: Finish documentation.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( EQPTesting, qp_testing )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EQPTesting, qp_testing );
 
   /** \brief Determine if a QPFailure exception is thrown if the QP solver
    * returns PRIMAL_FEASIBLE_POINT.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, primal_feasible_point_error )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, primal_feasible_point_error );
 
   /** \brief Determine if a \c QPFailure exception is thrown if the QP solver
    * returns \c DUAl_FEASIBLE_POINT.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dual_feasible_point_error )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dual_feasible_point_error );
 
   /// Construct and initialize
   TangentialStepWithInequStd_Step(

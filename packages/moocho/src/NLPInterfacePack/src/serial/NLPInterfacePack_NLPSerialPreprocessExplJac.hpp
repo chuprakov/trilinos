@@ -96,7 +96,7 @@ public:
   //@{
 
   /// Set the <tt>BasisSystemFactory</tt> object used to create the basis system.
-  STANDARD_COMPOSITION_MEMBERS( BasisSystemFactory, basis_sys_fcty )
+  STANDARD_COMPOSITION_MEMBERS( BasisSystemFactory, basis_sys_fcty );
 
   /** \brief Calls <tt>this->set_basis_sys_fcty()</tt> and <tt>this->set_mat_factories()</tt> methods.
    */

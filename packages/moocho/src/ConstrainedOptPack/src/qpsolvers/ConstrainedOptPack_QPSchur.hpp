@@ -434,78 +434,78 @@ public:
   //@{
 
   /// Schur complement matrix object S_hat
-  STANDARD_COMPOSITION_MEMBERS( MatrixSymAddDelUpdateableWithOpNonsingular, schur_comp )
+  STANDARD_COMPOSITION_MEMBERS( MatrixSymAddDelUpdateableWithOpNonsingular, schur_comp );
 
   /** \brief Set the maximum number of primal-dual QP iterations to take.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, max_iter )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, max_iter );
 
   /** \brief Set the maximum wall clock runtime (in minutes).
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_real_runtime )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_real_runtime );
 
   /** \brief Set the feasibility tolerance for the constriants.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_tol );
 
   /** \brief Set a looser feasibility tolerance ( > feas_tol )
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, loose_feas_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, loose_feas_tol );
 
   /** \brief Set the tolerence where a scaled Langrange multiplier is considered
    * degenerate.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, dual_infeas_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, dual_infeas_tol );
 
   /** \brief Set the tolerence for the size of the step in the primal space that is considered
    * to be a near infinite step.  This is used to determine if the KKT
    * system is near singular.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, huge_primal_step )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, huge_primal_step );
 
   /** \brief Set the tolerence for the size of the step in the dual space that is considered
    * to be a near infinite step.  This is used to determine if the constriants
    * are infeasible.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, huge_dual_step )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, huge_dual_step );
 
   /** \brief <<std member comp>> members for the warning tolerance for tests.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol );
 
   /** \brief <<std member comp>> members for the error tolerance for tests.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol );
 
   /** \brief Set the minimum number of refinement iterations to perform
    * when using iterative refinement.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, iter_refine_min_iter )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, iter_refine_min_iter );
     
   /** \brief Set the maximum number of refinement iterations to perform
    * when using iterative refinement.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, iter_refine_max_iter )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, iter_refine_max_iter );
 
   /** \brief Set the maxinum scaled tolerance the residual of the optimality conditions
    * must be before terminating iterative refinement.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, iter_refine_opt_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, iter_refine_opt_tol );
 
   /** \brief Set the maxinum scaled tolerance the residual of the feasibility conditions
    * must be before terminating iterative refinement.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, iter_refine_feas_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, iter_refine_feas_tol );
 
   /** \brief Set whether iterative refinement is automatically used once the solution
    * is found.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, iter_refine_at_solution )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, iter_refine_at_solution );
     
   /** \brief Set whether a singular initial schur complement will attempted to be
    * salvaged by adding as many nonsingular rows/cols as possible.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, salvage_init_schur_comp )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, salvage_init_schur_comp );
 
   /** \brief Set the tolerances to use when updating the schur complement.
    */
@@ -730,11 +730,11 @@ public:
      * Warning: Resetting schur_comp will cause a reinitialization to
      * an empty active set.
      */
-    STANDARD_COMPOSITION_MEMBERS( MatrixSymAddDelUpdateableWithOpNonsingular, schur_comp )
+    STANDARD_COMPOSITION_MEMBERS( MatrixSymAddDelUpdateableWithOpNonsingular, schur_comp );
 
     /** \brief Set the tolerances to use when updating the schur complement.
      */
-    STANDARD_MEMBER_COMPOSITION_MEMBERS( MSADU::PivotTolerances, pivot_tols )
+    STANDARD_MEMBER_COMPOSITION_MEMBERS( MSADU::PivotTolerances, pivot_tols );
 
     /** \brief . */
     ActiveSet(

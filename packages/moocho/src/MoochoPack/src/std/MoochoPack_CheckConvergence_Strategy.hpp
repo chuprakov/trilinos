@@ -57,7 +57,7 @@ class CheckConvergence_Strategy
     /** \brief <<std member comp>> members for whether to check the reduced
      * or full gradient of the Lagrangian. 
      */
-    STANDARD_MEMBER_COMPOSITION_MEMBERS( EOptErrorCheck, opt_error_check )
+    STANDARD_MEMBER_COMPOSITION_MEMBERS( EOptErrorCheck, opt_error_check );
 
     enum EScaleKKTErrorBy 
       { 
@@ -69,25 +69,25 @@ class CheckConvergence_Strategy
     /** \brief <<std member comp>> members for how the optimality condition should
      *   be scaled
      */
-    STANDARD_MEMBER_COMPOSITION_MEMBERS( EScaleKKTErrorBy, scale_opt_error_by )
+    STANDARD_MEMBER_COMPOSITION_MEMBERS( EScaleKKTErrorBy, scale_opt_error_by );
     
 
     /** \brief <<std member comp>> members for how the feasibility condition should
      *   be scaled
      */
-    STANDARD_MEMBER_COMPOSITION_MEMBERS( EScaleKKTErrorBy, scale_feas_error_by )
+    STANDARD_MEMBER_COMPOSITION_MEMBERS( EScaleKKTErrorBy, scale_feas_error_by );
 
 
     /** \brief <<std member comp>> members for how the complimentarity condition should
      *   be scaled
      */
-    STANDARD_MEMBER_COMPOSITION_MEMBERS( EScaleKKTErrorBy, scale_comp_error_by )
+    STANDARD_MEMBER_COMPOSITION_MEMBERS( EScaleKKTErrorBy, scale_comp_error_by );
 
 
     /** \brief <<std member comp>> members for whether the optimality conditions
      * should be scaled by the 
      */
-    STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, scale_opt_error_by_Gf )
+    STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, scale_opt_error_by_Gf );
 
     /** \brief . */
     CheckConvergence_Strategy(

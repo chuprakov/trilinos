@@ -46,7 +46,7 @@ public:
   /** \brief <<std member comp>> members for how many updates to compute
     * at once in the operation M_MtMtM(....).
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_updates_at_once )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_updates_at_once );
 
   /** \brief The default value of num_updates_at_once == 0 is set to allow
     * this class to determine the appropriate size internally.

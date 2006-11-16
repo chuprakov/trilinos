@@ -161,23 +161,23 @@ public:
   };
 
   /** \brief . */
-  STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
+  STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod );
   /// Members for option \c Gf_testing_method()
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gf_testing_method )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gf_testing_method );
   /// Members for option \c Gc_testing_method()
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gc_testing_method )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gc_testing_method );
   /// Members for option \c Gf_warning_tol()
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_warning_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_warning_tol );
   /// Members for option \c Gf_error_tol()
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_error_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_error_tol );
   /// Members for option \c Gc_warning_tol()
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_warning_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_warning_tol );
   /// Members for option \c Gc_error_tol()
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_error_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_error_tol );
   /// Members for option \c num_fd_directions()
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions );
   /// Members for option \c dump_all()
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all );
 
   /// Constructor
   NLPDirectTester(

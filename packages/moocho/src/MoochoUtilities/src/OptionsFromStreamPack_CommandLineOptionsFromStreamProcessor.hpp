@@ -95,7 +95,7 @@ public:
    * <li><tt>this->options_file_name_opt_name()==options_file_name_opt_name</tt>
    * </ul>
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,options_file_name_opt_name)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,options_file_name_opt_name);
 
   /** \brief Set the documentation of the commandline option name that specifies the
    * options file name.
@@ -104,7 +104,7 @@ public:
    * <li><tt>this->options_file_name_opt_doc()==options_file_name_opt_doc</tt>
    * </ul>
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,options_file_name_opt_doc)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,options_file_name_opt_doc);
 
   /** \brief Set the options file name manually (which will be used for
    * default value for "--${options_file_name_opt_name}=???" commandline option).
@@ -113,7 +113,7 @@ public:
    * <li><tt>this->options_file_name()==options_file_name</tt>
    * </ul>
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,options_file_name)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,options_file_name);
 
   /** \brief Set the name of the commandline option name that specifies the
    * extra options.
@@ -122,7 +122,7 @@ public:
    * <li><tt>this->extra_options_str_opt_name()==extra_options_str_opt_name</tt>
    * </ul>
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,extra_options_str_opt_name)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,extra_options_str_opt_name);
 
   /** \brief Set the documentation of the commandline option name that
    * specifies the extra options.
@@ -131,7 +131,7 @@ public:
    * <li><tt>this->oextra_options_str_opt_doc()==extra_options_str_opt_doc</tt>
    * </ul>
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,extra_options_str_opt_doc)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,extra_options_str_opt_doc);
 
   /** \brief Set the extra commandline options string (can be used for default value
    * for "--${extra_options_str_opt_name}=???" commandline option).
@@ -140,7 +140,7 @@ public:
    * <li><tt>this->get_extra_options_str()===extra_options_str</tt>
    * </ul>
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,extra_options_str)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,extra_options_str);
 
   /** \brief Setup a comandline processor before it processes commandline
    * options or reads form a file.

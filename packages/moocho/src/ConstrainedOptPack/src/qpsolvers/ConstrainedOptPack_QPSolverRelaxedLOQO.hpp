@@ -114,16 +114,16 @@ public:
 
   /** \brief Strategy object that sets up Q and A for LOQO
     */
-  STANDARD_COMPOSITION_MEMBERS( InitLOQOHessianJacobian, init_hess_jacob )
+  STANDARD_COMPOSITION_MEMBERS( InitLOQOHessianJacobian, init_hess_jacob );
 
   /** \brief <<std member comp>> Big M parameter used in the objective.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, bigM )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, bigM );
 
   /** \brief <<std member comp>> Tolerance under which inequalities are
    * considered nonbinding.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, nonbinding_lag_mult )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, nonbinding_lag_mult );
 
   /** \brief . */
   QPSolverRelaxedLOQO(

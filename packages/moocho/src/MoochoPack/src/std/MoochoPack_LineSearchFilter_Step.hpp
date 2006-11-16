@@ -80,13 +80,13 @@ public:
    *
    * ToDo: Finish documentation.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_theta )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_theta );
 
   /** \brief Optimality decrease fraction.
    *
    * ToDo: Finish documentation.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_f )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_f );
 
   /** \brief Estimate of minimum value obtainable for the objective function.
    *
@@ -94,56 +94,56 @@ public:
    * if gamma_f is alterned otherwise the value of gamma_f used
    * is set to gamm_f_used = gamma_f *(f_k-f_min) (see the algorithm print out).
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, f_min )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, f_min );
 
   /** \brief alpha_min linearization correction fraction
    *
    * ToDo: Finish documentation.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_alpha )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_alpha );
 
   /** \brief Delta parameter for switching condition.
    *
    * ToDo: Finish documentation.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, delta )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, delta );
   
   /** \brief Exponent for objective in switching condition.
    *
    * ToDo: Finish documentation.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, s_f )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, s_f );
 
   /** \brief Exponent for theta in switching condition.
    *
    * ToDo: Finish documentation.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, s_theta )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, s_theta );
 
   /** \brief Factor to evaluate theta_small
    * theta_small = theta_small_fact*max(1,theta_k)
    *
    * ToDo: Finish documentation.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_small_fact )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_small_fact );
 
   /** \brief Maximum allowable theta value
    *
    * ToDo: Finish documentation.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_max )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_max );
 
   /** \brief Constant for Armijo condition on objective
    *
    * ToDo: Finish documentation.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, eta_f )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, eta_f );
 
   /** \brief Backtracking fraction for step.
    *
    * ToDo: Finish documentation.
    */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, back_track_frac )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, back_track_frac );
 
   /** \brief Constructor.
    */

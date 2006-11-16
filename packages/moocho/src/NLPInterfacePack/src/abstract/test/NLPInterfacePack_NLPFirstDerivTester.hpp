@@ -127,15 +127,15 @@ public:
   };
 
   /** \brief . */
-  STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
+  STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod );
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, fd_testing_method )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, fd_testing_method );
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions );
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol );
   /** \brief . */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol );
 
   /// Constructor
   NLPFirstDerivTester(

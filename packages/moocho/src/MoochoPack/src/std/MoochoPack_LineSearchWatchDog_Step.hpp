@@ -49,24 +49,24 @@ class LineSearchWatchDog_Step : public LineSearch_Step {
 public:
 
   /// <<std comp>> members for direct_line_search
-  STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_line_search)
+  STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_line_search);
 
   /// <<std comp>> members for merit_func
-  STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func)
+  STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func);
 
   /** \brief <<std member comp>> members for the armijo fractional reduction parameter.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, eta )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, eta );
 
   /** \brief <<std member comp>> members for the threshold for opt_kkt_err before
     * the watchdog procedure should kick-in.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_kkt_err_threshold )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_kkt_err_threshold );
   
   /** \brief <<std member comp>> members for the threshold for feas_kkt_err before
     * the watchdog procedure should kick-in.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_kkt_err_threshold )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_kkt_err_threshold );
 
   /** \brief . */
   LineSearchWatchDog_Step(

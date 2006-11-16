@@ -63,7 +63,7 @@ class DampenCrossTermStd_Step : public rSQPAlgo_Step {
 public:
 
   /// «std comp» members for frac_descent
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, frac_descent )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, frac_descent );
 
   /** \brief . */
   DampenCrossTermStd_Step(const value_type& frac_descent = 0.9);

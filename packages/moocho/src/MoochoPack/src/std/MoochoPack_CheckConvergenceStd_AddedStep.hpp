@@ -46,7 +46,7 @@ class CheckConvergenceStd_AddedStep
     /** \brief Strategy object to be used when checking for convergence
      * 
      */
-    STANDARD_COMPOSITION_MEMBERS( CheckConvergence_Strategy, convergence_strategy )
+    STANDARD_COMPOSITION_MEMBERS( CheckConvergence_Strategy, convergence_strategy );
 
     /** \brief . */
     CheckConvergenceStd_AddedStep(

@@ -50,16 +50,16 @@ class FeasibilityStepReducedStd_Strategy : public FeasibilityStep_Strategy
 public:
 
   /// <<std comp>> members for the qp solver
-  STANDARD_COMPOSITION_MEMBERS( QuasiRangeSpaceStep_Strategy, quasi_range_space_step )
+  STANDARD_COMPOSITION_MEMBERS( QuasiRangeSpaceStep_Strategy, quasi_range_space_step );
 
   typedef ConstrainedOptPack::QPSolverRelaxedTester
     QPSolverRelaxedTester;
 
   /// QP solver
-  STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxed, qp_solver )
+  STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxed, qp_solver );
 
   /// Comparision object compatible with Gc
-  STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxedTester, qp_tester )
+  STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxedTester, qp_tester );
     
   /** \brief . */
   enum EQPObjective {
@@ -70,7 +70,7 @@ public:
 
   /** \brief Set what is used for the QP objective.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( EQPObjective, qp_objective )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EQPObjective, qp_objective );
 
   /** \brief . */
   enum EQPTesting {
@@ -81,7 +81,7 @@ public:
 
   /** \brief Set how and if the QP solution is tested.
     */
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( EQPTesting, qp_testing )
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EQPTesting, qp_testing );
 
   /// Construct and initialize
   FeasibilityStepReducedStd_Strategy(
