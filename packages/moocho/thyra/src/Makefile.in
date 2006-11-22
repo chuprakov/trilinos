@@ -106,7 +106,7 @@ am__objects_1 = AbstractLinAlgPack_InnerProductThyra.$(OBJEXT) \
 am__objects_2 = NLPInterfacePack_NLPThyraModelEvaluatorBase.$(OBJEXT) \
 	NLPInterfacePack_NLPDirectThyraModelEvaluator.$(OBJEXT) \
 	NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.$(OBJEXT)
-am__objects_3 = MoochoPack_ThyraModelEvaluatorSolver.$(OBJEXT)
+am__objects_3 = MoochoPack_MoochoThyraSolver.$(OBJEXT)
 am_libmoochothyra_a_OBJECTS = $(am__objects_1) $(am__objects_2) \
 	$(am__objects_3)
 libmoochothyra_a_OBJECTS = $(am_libmoochothyra_a_OBJECTS)
@@ -121,7 +121,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/MoochoPack_MoochoThyraSolver.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluatorBase.Po
@@ -296,10 +296,10 @@ NLP_INTERFACE_PACK_THYRA_CPP = \
   $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp
 
 MOOCHO_PACK_THYRA_HPP = \
-  $(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.hpp
+  $(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.hpp
 
 MOOCHO_PACK_THYRA_CPP = \
-  $(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp
+  $(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp
 
 @USING_GNUMAKE_FALSE@EXPORT_INCLUDES = $(MOOCHO_INCLUDES)
 @USING_GNUMAKE_TRUE@EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(MOOCHO_INCLUDES))
@@ -445,7 +445,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MoochoPack_MoochoThyraSolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluatorBase.Po@am__quote@
@@ -642,21 +642,21 @@ NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.obj: $(srcdir)/NLPInterfacePac
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.obj `if test -f '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp'; fi`
 
-MoochoPack_ThyraModelEvaluatorSolver.o: $(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MoochoPack_ThyraModelEvaluatorSolver.o -MD -MP -MF "$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.Tpo" -c -o MoochoPack_ThyraModelEvaluatorSolver.o `test -f '$(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.Tpo" "$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.Po"; else rm -f "$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp' object='MoochoPack_ThyraModelEvaluatorSolver.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.Po' tmpdepfile='$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.TPo' @AMDEPBACKSLASH@
+MoochoPack_MoochoThyraSolver.o: $(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MoochoPack_MoochoThyraSolver.o -MD -MP -MF "$(DEPDIR)/MoochoPack_MoochoThyraSolver.Tpo" -c -o MoochoPack_MoochoThyraSolver.o `test -f '$(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/MoochoPack_MoochoThyraSolver.Tpo" "$(DEPDIR)/MoochoPack_MoochoThyraSolver.Po"; else rm -f "$(DEPDIR)/MoochoPack_MoochoThyraSolver.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp' object='MoochoPack_MoochoThyraSolver.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/MoochoPack_MoochoThyraSolver.Po' tmpdepfile='$(DEPDIR)/MoochoPack_MoochoThyraSolver.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MoochoPack_ThyraModelEvaluatorSolver.o `test -f '$(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MoochoPack_MoochoThyraSolver.o `test -f '$(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp
 
-MoochoPack_ThyraModelEvaluatorSolver.obj: $(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MoochoPack_ThyraModelEvaluatorSolver.obj -MD -MP -MF "$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.Tpo" -c -o MoochoPack_ThyraModelEvaluatorSolver.obj `if test -f '$(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.Tpo" "$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.Po"; else rm -f "$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp' object='MoochoPack_ThyraModelEvaluatorSolver.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.Po' tmpdepfile='$(DEPDIR)/MoochoPack_ThyraModelEvaluatorSolver.TPo' @AMDEPBACKSLASH@
+MoochoPack_MoochoThyraSolver.obj: $(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MoochoPack_MoochoThyraSolver.obj -MD -MP -MF "$(DEPDIR)/MoochoPack_MoochoThyraSolver.Tpo" -c -o MoochoPack_MoochoThyraSolver.obj `if test -f '$(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/MoochoPack_MoochoThyraSolver.Tpo" "$(DEPDIR)/MoochoPack_MoochoThyraSolver.Po"; else rm -f "$(DEPDIR)/MoochoPack_MoochoThyraSolver.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp' object='MoochoPack_MoochoThyraSolver.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/MoochoPack_MoochoThyraSolver.Po' tmpdepfile='$(DEPDIR)/MoochoPack_MoochoThyraSolver.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MoochoPack_ThyraModelEvaluatorSolver.obj `if test -f '$(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MoochoPack_MoochoThyraSolver.obj `if test -f '$(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp'; fi`
 uninstall-info-am:
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)

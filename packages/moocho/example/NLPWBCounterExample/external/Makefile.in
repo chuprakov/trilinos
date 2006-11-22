@@ -372,6 +372,7 @@ install-data-local:
 	$(INSTALL_DATA) $(srcdir)/../NLPWBCounterExampleMain.cpp $(exec_prefix)/example/moocho/NLPWBCounterExample/. ; \
 	$(INSTALL_DATA) $(srcdir)/../NLPInterfacePack_NLPWBCounterExample.cpp $(exec_prefix)/example/moocho/NLPWBCounterExample/. ; \
 	$(INSTALL_DATA) $(srcdir)/../NLPInterfacePack_NLPWBCounterExample.hpp $(exec_prefix)/example/moocho/NLPWBCounterExample/. ; \
+	$(INSTALL_DATA) $(top_srcdir)/src/MoochoPack/configurations/sample_option_files/Moocho.sample.opt $(exec_prefix)/example/moocho/NLPWBCounterExample/input_files/. ; \
 	$(INSTALL_DATA) Makefile.external.stub $(exec_prefix)/example/moocho/NLPWBCounterExample/Makefile
 
 sample-makefile:

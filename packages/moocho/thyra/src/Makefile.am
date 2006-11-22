@@ -57,10 +57,10 @@ NLP_INTERFACE_PACK_THYRA_CPP = \
   $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp
 
 MOOCHO_PACK_THYRA_HPP = \
-  $(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.hpp
+  $(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.hpp
 
 MOOCHO_PACK_THYRA_CPP = \
-  $(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp
+  $(srcdir)/MoochoPack/MoochoPack_MoochoThyraSolver.cpp
 
 #
 # Specify locations of include files within Trilinos

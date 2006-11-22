@@ -306,41 +306,35 @@
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
-    ARGS = --do-sim;
+    ARGS = --extra-moocho-thyra-params="<ParameterList><Parameter name=\"Solve Mode\" type=\"string\" value=\"Forward Solve\"/></ParameterList>";
+    COMM = SERIAL, MPI(1);
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
+    ARGS = --x00=0.9;
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
     ARGS = 
-      --x00=0.9
-       ;
+      --x00=0.9 \
+      --extra-moocho-thyra-params="<ParameterList><Parameter name=\"Solve Mode\" type=\"string\" value=\"Forward Solve\"/></ParameterList>";
+    COMM = SERIAL, MPI(1);
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
+    ARGS = --xt0=0.9;
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
     ARGS = 
-      --x00=0.9
-      --do-sim
-       ;
-    COMM = SERIAL, MPI(1);
-}
-
-(FRAMEWORK, INSTALL) {
-    TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
-    ARGS = 
-      --xt0=0.9
-       ;
-    COMM = SERIAL, MPI(1);
-}
-
-(FRAMEWORK, INSTALL) {
-    TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
-    ARGS = 
-      --xt0=0.9,
-      --do-sim
-       ;
+      --xt0=0.9 \
+      --extra-moocho-thyra-params="<ParameterList><Parameter name=\"Solve Mode\" type=\"string\" value=\"Forward Solve\"/></ParameterList>";
     COMM = SERIAL, MPI(1);
 }
 
@@ -360,47 +354,53 @@
 #
 
 #
-# --do-sim
+# Do forward solve
 #
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-sim --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
-    --moocho-extra-options="NLPSolverClientInterface\{max_iter=8\,journal_output_level=PRINT_NOTHING\}";
+    ARGS = --extra-moocho-thyra-params="<ParameterList><Parameter name=\"Solve Mode\" type=\"string\" value=\"Forward Solve\"/></ParameterList>" \
+      --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
+      --moocho-extra-options="NLPSolverClientInterface\{max_iter=8\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-sim --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 --x0=1.0 --p0=0.0 --reaction-rate=1e-5 \
-    --moocho-extra-options="NLPSolverClientInterface\{max_iter=6\,journal_output_level=PRINT_NOTHING\}";
+    ARGS = --extra-moocho-thyra-params="<ParameterList><Parameter name=\"Solve Mode\" type=\"string\" value=\"Forward Solve\"/></ParameterList>" \
+      --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 --x0=1.0 --p0=0.0 --reaction-rate=1e-5 \
+      --moocho-extra-options="NLPSolverClientInterface\{max_iter=6\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-sim --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
-    --moocho-extra-options="NLPSolverClientInterface\{max_iter=7\,journal_output_level=PRINT_NOTHING\}";
+    ARGS = --extra-moocho-thyra-params="<ParameterList><Parameter name=\"Solve Mode\" type=\"string\" value=\"Forward Solve\"/></ParameterList>" \
+      --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
+      --moocho-extra-options="NLPSolverClientInterface\{max_iter=7\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-sim --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 --x0=1.0 --p0=0.0 --reaction-rate=1e-5 \
-    --moocho-extra-options="NLPSolverClientInterface\{max_iter=6\,journal_output_level=PRINT_NOTHING\}";
+    ARGS = --extra-moocho-thyra-params="<ParameterList><Parameter name=\"Solve Mode\" type=\"string\" value=\"Forward Solve\"/></ParameterList>" \
+      --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 --x0=1.0 --p0=0.0 --reaction-rate=1e-5 \
+      --moocho-extra-options="NLPSolverClientInterface\{max_iter=6\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK,INSTALL,MOOCHOBELOSP2) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-sim --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.9x9.2 --use-first-order --moocho-extra-options="MoochoSolver\{test_nlp=false\}:NLPSolverClientInterface\{opt_tol=1e-6\,feas_tol=1e-8\,max_iter=11\,journal_output_level=PRINT_NOTHING\}" \
+    ARGS = --extra-moocho-thyra-params="<ParameterList><Parameter name=\"Solve Mode\" type=\"string\" value=\"Forward Solve\"/></ParameterList>" \
+      --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.9x9.2 --use-first-order --moocho-extra-options="MoochoSolver\{test_nlp=false\}:NLPSolverClientInterface\{opt_tol=1e-6\,feas_tol=1e-8\,max_iter=11\,journal_output_level=PRINT_NOTHING\}" \
       --extra-linear-solver-params="<ParameterList> <Parameter name=\"Linear Solver Type\" type=\"string\" value=\"AztecOO\"/></ParameterList>";
     COMM = MPI(2);
 }
 
 (FRAMEWORK,INSTALL,MOOCHOBELOSP4) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-sim --len-x=1.0 --len-y=10.0 --local-nx=3 --local-ny=4 --reaction-rate=1e-3 \
+    ARGS = --extra-moocho-thyra-params="<ParameterList><Parameter name=\"Solve Mode\" type=\"string\" value=\"Forward Solve\"/></ParameterList>" \
+      --len-x=1.0 --len-y=10.0 --local-nx=3 --local-ny=4 --reaction-rate=1e-3 \
       --use-first-order \
       --moocho-extra-options="MoochoSolver\{test_nlp=false\}:NLPSolverClientInterface\{opt_tol=1e-3\,feas_tol=1e-8\,max_iter=11\,journal_output_level=PRINT_NOTHING\}" \
       --extra-linear-solver-params="<ParameterList> <Parameter name=\"Linear Solver Type\" type=\"string\" value=\"AztecOO\"/></ParameterList>";
@@ -411,55 +411,103 @@
 # --do-opt
 #
 
-(FRAMEWORK, INSTALL) {
+(FRAMEWORK, INSTALL, MOOCHO_OPT_TEST_1) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
-    --moocho-extra-options="NLPSolverClientInterface\{max_iter=16\,journal_output_level=PRINT_NOTHING\}";
+    ARGS =
+      --extra-moocho-thyra-params="
+        <ParameterList>
+          <Parameter name=\"Solve Mode\" type=\"string\" value=\"Optimize\"/>
+          <Parameter name=\"NLP Type\" type=\"string\" value=\"First Order\"/>
+        </ParameterList>" \
+      --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
+      --moocho-extra-options="NLPSolverClientInterface\{max_iter=16\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-opt --use-direct --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
-    --moocho-extra-options="NLPSolverClientInterface\{max_iter=16\,journal_output_level=PRINT_NOTHING\}";
+    ARGS =
+      --extra-moocho-thyra-params="
+        <ParameterList>
+          <Parameter name=\"Solve Mode\" type=\"string\" value=\"Optimize\"/>
+          <Parameter name=\"NLP Type\" type=\"string\" value=\"Direct\"/>
+        </ParameterList>" \
+      --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
+      --moocho-extra-options="NLPSolverClientInterface\{max_iter=16\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-opt --use-direct --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
+    ARGS =
+      --extra-moocho-thyra-params="
+        <ParameterList>
+          <Parameter name=\"Solve Mode\" type=\"string\" value=\"Optimize\"/>
+          <Parameter name=\"NLP Type\" type=\"string\" value=\"Direct\"/>
+        </ParameterList>" \
+      --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
       --moocho-extra-options="NLPSolverClientInterface\{max_iter=16\,journal_output_level=PRINT_NOTHING\}" \
-      --extra-linear-solver-params="<ParameterList> <Parameter name=\"Linear Solver Type\" type=\"string\" value=\"AztecOO\"/></ParameterList>";
+      --extra-linear-solver-params="
+        <ParameterList>
+          <Parameter name=\"Linear Solver Type\" type=\"string\" value=\"AztecOO\"/>
+        </ParameterList>";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-opt --use-first-order --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
+    ARGS =
+      --extra-moocho-thyra-params="
+        <ParameterList>
+          <Parameter name=\"Solve Mode\" type=\"string\" value=\"Optimize\"/>
+          <Parameter name=\"NLP Type\" type=\"string\" value=\"First Order\"/>
+        </ParameterList>" \
+      --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
       --moocho-extra-options="NLPSolverClientInterface\{max_iter=16\,journal_output_level=PRINT_NOTHING\}" \
-      --extra-linear-solver-params="<ParameterList> <Parameter name=\"Linear Solver Type\" type=\"string\" value=\"AztecOO\"/></ParameterList>";
+      --extra-linear-solver-params="
+        <ParameterList>
+          <Parameter name=\"Linear Solver Type\" type=\"string\" value=\"AztecOO\"/>
+        </ParameterList>";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-opt --use-direct --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
+    ARGS =
+      --extra-moocho-thyra-params="
+        <ParameterList>
+          <Parameter name=\"Solve Mode\" type=\"string\" value=\"Optimize\"/>
+          <Parameter name=\"NLP Type\" type=\"string\" value=\"Direct\"/>
+        </ParameterList>" \
+      --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
       --moocho-extra-options="NLPSolverClientInterface\{max_iter=16\,journal_output_level=PRINT_NOTHING\}" \
-      --extra-linear-solver-params="<ParameterList> <Parameter name=\"Linear Solver Type\" type=\"string\" value=\"AztecOO\"/></ParameterList>";
+      --extra-linear-solver-params="
+        <ParameterList>
+          <Parameter name=\"Linear Solver Type\" type=\"string\" value=\"AztecOO\"/>
+        </ParameterList>";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-opt --use-first-order --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
+    ARGS =
+      --extra-moocho-thyra-params="
+        <ParameterList>
+          <Parameter name=\"Solve Mode\" type=\"string\" value=\"Optimize\"/>
+          <Parameter name=\"NLP Type\" type=\"string\" value=\"First Order\"/>
+        </ParameterList>" \
+      --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
       --moocho-extra-options="NLPSolverClientInterface\{max_iter=16\,journal_output_level=PRINT_NOTHING\}" \
-      --extra-linear-solver-params="<ParameterList> <Parameter name=\"Linear Solver Type\" type=\"string\" value=\"AztecOO\"/></ParameterList>";
+      --extra-linear-solver-params="
+        <ParameterList>
+          <Parameter name=\"Linear Solver Type\" type=\"string\" value=\"AztecOO\"/>
+        </ParameterList>";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-opt --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
+    ARGS = --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
     --np=1 \
     --moocho-extra-options="NLPSolverClientInterface\{max_iter=16\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
@@ -467,7 +515,7 @@
 
 (FRAMEWORK) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-opt --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
+    ARGS = --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
     --np=4 \
     --moocho-extra-options="NLPSolverClientInterface\{max_iter=39\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
@@ -475,42 +523,52 @@
 
 (FRAMEWORK) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-opt --beta=1e+3 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
+    ARGS = --beta=1e+3 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
     --moocho-extra-options="NLPSolverClientInterface\{opt_tol=0.2\,max_iter=25\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-opt --use-direct --beta=1e+3 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
-    --moocho-extra-options="NLPSolverClientInterface\{opt_tol=0.2\,max_iter=25\,journal_output_level=PRINT_NOTHING\}";
+    ARGS =
+      --extra-moocho-thyra-params="
+        <ParameterList>
+          <Parameter name=\"Solve Mode\" type=\"string\" value=\"Optimize\"/>
+          <Parameter name=\"NLP Type\" type=\"string\" value=\"Direct\"/>
+        </ParameterList>" \
+      --beta=1e+3 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
+      --moocho-extra-options="NLPSolverClientInterface\{opt_tol=0.2\,max_iter=25\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-opt --reaction-rate=1e+5 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
+    ARGS = --reaction-rate=1e+5 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
     --moocho-extra-options="NLPSolverClientInterface\{max_iter=15\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-opt --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
+    ARGS = --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
     --moocho-extra-options="NLPSolverClientInterface\{opt_tol=1e-4\,feas_tol=1e-10\,max_iter=52\,journal_output_level=PRINT_ALGORITHM_STEPS\}:DecompositionSystemStateStepBuilderStd\{range_space_matrix=ORTHOGONAL\}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-opt --local-nx=50 --local-ny=5 --np=4 \
+    ARGS = --local-nx=50 --local-ny=5 --np=4 \
     --moocho-extra-options="NLPSolverClientInterface\{opt_tol=1e-4\,feas_tol=1e-10\,max_iter=40\,journal_output_level=PRINT_ALGORITHM_STEPS\}:DecompositionSystemStateStepBuilderStd\{range_space_matrix=ORTHOGONAL\}";
     COMM = MPI(2);
 }
 
-(FRAMEWORK, INSTALL, TEST1) {
+(FRAMEWORK, INSTALL, MOOCHO_RUN_VARIED_TESTS1) {
   TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/_run-varied-tests.pl;
-  ARGS = --do-serial --exe=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe --beta=0.0 --reaction-rate=1e-2 --local-nx=5 --global-ny=5 --starting-num-procs=1 --max-num-procs=1 --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001 --p0=1.0 --p-solu-scale=20.0 --do-analytic --do-finite-diff --fd-step-len=1e-8 --do-black-box --bb-fd-step-len=1e-7 --extra-args="--use-direct --fwd-newton-tol=1e-10 --linear-solver-params-used-file=linear-solver.used.xml";
+  ARGS = --do-serial --exe=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe --beta=0.0 --reaction-rate=1e-2 \
+         --local-nx=5 --global-ny=5 --starting-num-procs=1 --max-num-procs=1 --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001 \
+         --p0=1.0 --p-solu-scale=20.0 --do-analytic --do-finite-diff --fd-step-len=1e-8 --do-black-box --bb-fd-step-len=1e-7 \
+         --use-direct --fwd-newton-tol=1e-10 \
+         --extra-args="--linear-solver-params-used-file=linear-solver.used.xml";
   COMM = SERIAL;
 }
 

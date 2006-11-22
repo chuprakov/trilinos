@@ -1,6 +1,6 @@
 #include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
 #include "EpetraModelEval4DOpt.hpp"
-#include "MoochoPack_ThyraModelEvaluatorSolver.hpp"
+#include "MoochoPack_MoochoThyraSolver.hpp"
 #include "Thyra_DefaultRealLinearSolverBuilder.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
@@ -13,7 +13,7 @@ int main( int argc, char* argv[] )
   using Teuchos::CommandLineProcessor;
   typedef AbstractLinAlgPack::value_type  Scalar;
   using MoochoPack::MoochoSolver;
-  using MoochoPack::ThyraModelEvaluatorSolver;
+  using MoochoPack::MoochoThyraSolver;
 
   bool dummySuccess = true;
 
@@ -25,7 +25,7 @@ int main( int argc, char* argv[] )
   try {
 
     Thyra::DefaultRealLinearSolverBuilder lowsfCreator;
-    ThyraModelEvaluatorSolver             solver;
+    MoochoThyraSolver                     solver;
   
     //
     // Get options from the command line
@@ -80,6 +80,7 @@ int main( int argc, char* argv[] )
       return parse_return;
 
     lowsfCreator.readParameters(out.get());
+    solver.readParameters(out.get());
 
     //
     // Create the NLP
@@ -117,6 +118,7 @@ int main( int argc, char* argv[] )
 
     // Write the parameters that where read
     lowsfCreator.writeParamsFile(*lowsFactory);
+    solver.writeParamsFile();
     
     //
     // Return the solution status (0 if sucessfull)

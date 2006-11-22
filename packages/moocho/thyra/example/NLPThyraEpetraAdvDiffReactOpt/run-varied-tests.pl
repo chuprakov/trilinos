@@ -60,6 +60,9 @@ my $do_black_box = 0;
 my $bb_fd_step_len = 1e-8;
 my $bb_options_file = "";
 
+my $use_direct = 0;
+my $fwd_newton_tol = 1e-10;
+
 my $extra_args = "";
 
 GetOptions(
@@ -102,6 +105,8 @@ GetOptions(
   "do-black-box!"           => \$do_black_box,
   "bb-fd-step-len=f"        => \$bb_fd_step_len,
   "bb-options-file=s"       => \$bb_options_file,
+  "use-direct!"             => \$use_direct,
+  "fwd-newton-tol=f"        => \$fwd_newton_tol,
   "extra-args=s"            => \$extra_args
   );
 
@@ -182,7 +187,7 @@ for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
         .$cmnd_last
         ;
 
-      0!=run_case($cmnd) || ($rtn=1);
+      $rtn = 1 if (0!=run_case($cmnd));
 
       chdir "..";
 
@@ -199,7 +204,7 @@ for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
         .$cmnd_last
         ;
 
-      0!=run_case($cmnd) || ($rtn=1);
+      $rtn = 1 if (0!=run_case($cmnd));
 
       chdir "..";
 
@@ -216,7 +221,7 @@ for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
         .$cmnd_last
         ;
 
-      0!=run_case($cmnd,1,0) || ($rtn=1);
+      $rtn = 1 if (0!=run_case($cmnd,1,0));
 
       my $block_size = min($starting_block_size,$model_np+1);
       my $loop_max_block_size = min($max_block_size,$model_np+1);
@@ -232,7 +237,7 @@ for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
           .$cmnd_last
           ;
 
-        0!=run_case($cmnd,0,1,($vary_block_size?"../../fwd":"../fwd")) || ($rtn=1);
+        $rtn = 1 if (0!=run_case($cmnd,0,1,($vary_block_size?"../../fwd":"../fwd")));
 
         chdir("..") if($vary_block_size);
 
@@ -283,14 +288,82 @@ sub mkchdir {
 
 sub extra_linear_solver_cmndline {
   my $solver_name = shift;
-  return "--extra-linear-solver-params=\"<ParameterList><Parameter name=\\\"Linear Solver Type\\\" type=\\\"string\\\" value=\\\"${solver_name}\\\"/></ParameterList>\""
+  return "--extra-linear-solver-params=\""
+    ."<ParameterList>"
+      ."<Parameter name=\\\"Linear Solver Type\\\" type=\\\"string\\\" value=\\\"${solver_name}\\\"/>"
+    ."</ParameterList>\""
+}
+
+sub moocho_thyra_solver_cmndline {
+  #
+  my $cmnd_hashref = shift;
+  #
+  my $do_sim = exists $cmnd_hashref->{"do-sim"};
+  my $use_direct = $use_direct;
+  $use_direct = 0 if(exists $cmnd_hashref->{"use-first-order"});
+  my $x_guess_file = "";
+  if(exists $cmnd_hashref->{"x-guess-file"}) {
+    $x_guess_file = $cmnd_hashref->{"x-guess-file"};
+  }
+  my $p_guess_file = "";
+  if(exists $cmnd_hashref->{"p-guess-file"}) {
+    $p_guess_file = $cmnd_hashref->{"p-guess-file"};
+  }
+  my $scale_x_guess = 1.0;
+  if(exists $cmnd_hashref->{"scale-x-guess"}) {
+    $scale_x_guess = $cmnd_hashref->{"scale-x-guess"};
+  }
+  my $scale_p_guess = 1.0;
+  if(exists $cmnd_hashref->{"scale-p-guess"}) {
+    $scale_p_guess = $cmnd_hashref->{"scale-p-guess"};
+  }
+  my $x_solu_file = "";
+  if(exists $cmnd_hashref->{"x-solu-file"}) {
+    $x_solu_file = $cmnd_hashref->{"x-solu-file"};
+  }
+  my $p_solu_file = "";
+  if(exists $cmnd_hashref->{"p-solu-file"}) {
+    $p_solu_file = $cmnd_hashref->{"p-solu-file"};
+  }
+  my $black_box = (exists $cmnd_hashref->{"black-box"});
+  my $fd_step_len = -1.0;
+  if(exists $cmnd_hashref->{"fd-step-len"}) {
+    $fd_step_len = $cmnd_hashref->{"fd-step-len"};
+  }
+  #
+  return "--extra-moocho-thyra-params=\""
+   ."<ParameterList>"
+     .($do_sim ? "<Parameter name=\\\"Solve Mode\\\" type=\\\"string\\\" value=\\\"Forward Solve\\\"/>" : "" )
+     .($use_direct ? "<Parameter name=\\\"NLP Type\\\" type=\\\"string\\\" value=\\\"Direct\\\"/>" : "" )
+     .($x_guess_file ne "" ? "<Parameter name=\\\"State Guess File Base Name\\\" type=\\\"string\\\" value=\\\"$x_guess_file\\\"/>" : "" )
+     .($p_guess_file ne "" ? "<Parameter name=\\\"Parameters Guess File Base Name\\\" type=\\\"string\\\" value=\\\"$p_guess_file\\\"/>" : "" )
+     .($scale_x_guess != 1.0 ? "<Parameter name=\\\"State Guess Scale\\\" type=\\\"double\\\" value=\\\"$scale_x_guess\\\"/>" : "" )
+     .($scale_p_guess != 1.0 ? "<Parameter name=\\\"Parameters Guess Scale\\\" type=\\\"double\\\" value=\\\"$scale_p_guess\\\"/>" : "" )
+     .($x_solu_file ne "" ? "<Parameter name=\\\"State Solution File Base Name\\\" type=\\\"string\\\" value=\\\"$x_solu_file\\\"/>" : "" )
+     .($p_solu_file ne "" ? "<Parameter name=\\\"Parameters Solution File Base Name\\\" type=\\\"string\\\" value=\\\"$p_solu_file\\\"/>" : "" )
+     .($black_box ? "<Parameter name=\\\"Nonlinearly Eliminate States\\\" type=\\\"bool\\\" value=\\\"1\\\"/>" : "" )
+     .($black_box ? "<Parameter name=\\\"Forward Newton Tolerance\\\" type=\\\"double\\\" value=\\\"$fwd_newton_tol\\\"/>" : "" )
+     .($fd_step_len > 0.0
+       ? (
+           "<Parameter name=\\\"Use Finite Differences\\\" type=\\\"bool\\\" value=\\\"1\\\"/>"
+           ."<ParameterList name=\\\"Finite Difference Settings\\\">"
+             ."<Parameter name=\\\"FD Step Length\\\" type=\\\"double\\\" value=\\\"$fd_step_len\\\"/>"
+           ."</ParameterList>"
+          )
+       : ""
+       )
+   ."</ParameterList>\"";
 }
 
 sub run_cmnd {
-    my  $cmnd = shift;
-    $cmnd .= " 2>&1 | tee run-test.out";
-    print "\nRunning command: $cmnd\n";
-    return system($cmnd);
+  my $cmnd = shift;
+  $cmnd .= " 2>&1 | tee run-test.out";
+  print "\nRunning command: $cmnd\n";
+  my $rtn = system($cmnd);
+  my $passed_msg = `grep 'End Result: TEST PASSED' run-test.out`;
+  chomp($passed_msg);
+  print "\npassed_msg = \"$passed_msg\"\n";
+  return ( $passed_msg eq "End Result: TEST PASSED" ? 0 : 1);
 }
 
 sub run_test {
@@ -324,10 +397,16 @@ sub run_case {
 
       my $fwdcmnd =
         $cmnd
-        ." --moocho-options-file=$fwd_init_options_file"
-        ." --do-sim --use-first-order --x-solu-file=x.out --p-solu-file=p.out";
-
-      0!=run_test($fwdcmnd) || ($rtn=1);
+        ." --moocho-options-file=$fwd_init_options_file "
+        .moocho_thyra_solver_cmndline(
+            {
+              "do-sim"=>""
+              ,"use-first-order"=>""
+              ,"x-solu-file"=>"x.out"
+              ,"p-solu-file"=>"p.out"
+            }
+          );
+      $rtn = 1 if (0!=run_test($fwdcmnd));
 
       chdir "..";
 
@@ -335,11 +414,20 @@ sub run_case {
 
       $fwdcmnd =
         $cmnd
-        ." --moocho-options-file=$fwd_options_file"
-        ." --do-sim --use-first-order --x-guess-file=../fwd-init/x.out --p-guess-file=../fwd-init/p.out --scale-p-guess=$p_solu_scale"
-        ." --x-solu-file=x.out --p-solu-file=p.out";
+        ." --moocho-options-file=$fwd_options_file "
+        .moocho_thyra_solver_cmndline(
+            {
+              "do-sim"=>""
+              ,"use-first-order"=>""
+              ,"x-guess-file"=>"../fwd-init/x.out"
+              ,"p-guess-file"=>"../fwd-init/p.out"
+              ,"scale-p-guess"=>$p_solu_scale
+              ,"x-solu-file"=>"x.out"
+              ,"p-solu-file"=>"p.out"
+            }
+          );
 
-      0!=run_test($fwdcmnd) || ($rtn=1);
+      $rtn = 1 if (0!=run_test($fwdcmnd));
 
       chdir "..";
 
@@ -364,10 +452,16 @@ sub run_case {
         mkchdir("black-box") if($build_subdirs);
         my $invcmnd =
           $cmnd 
-            ." --black-box --use-finite-diff --fd-step-len=$bb_fd_step_len"
-            ." --moocho-options-file=$bb_options_file"
-            ." --q-vec-file=$fwd_dir/../fwd-init/x.out --x-guess-file=$fwd_dir/x.out --p-guess-file=$fwd_dir/p.out";
-        0!=run_test($invcmnd) || ($rtn=1);
+            ." --moocho-options-file=$bb_options_file --q-vec-file=$fwd_dir/../fwd-init/x.out "
+            .moocho_thyra_solver_cmndline(
+               {
+                 "black-box"=>""
+                 ,"fd-step-len"=>$bb_fd_step_len
+                 ,"x-guess-file"=>"$fwd_dir/x.out"
+                 ,"p-guess-file"=>"$fwd_dir/p.out"
+               }
+             );
+        $rtn = 1 if (0!=run_test($invcmnd));
         chdir("..") if($build_subdirs);
       }
 
@@ -375,10 +469,15 @@ sub run_case {
         mkchdir("finite-diff") if($build_subdirs);
         my $invcmnd =
           $cmnd 
-            ." --use-finite-diff --fd-step-len=$fd_step_len"
-            ." --moocho-options-file=$fd_options_file"
-            ." --q-vec-file=$fwd_dir/../fwd-init/x.out --x-guess-file=$fwd_dir/x.out --p-guess-file=$fwd_dir/p.out";
-        0!=run_test($invcmnd) || ($rtn=1);
+            ." --moocho-options-file=$fd_options_file --q-vec-file=$fwd_dir/../fwd-init/x.out "
+            .moocho_thyra_solver_cmndline(
+               {
+                 "fd-step-len"=>$fd_step_len
+                 ,"x-guess-file"=>"$fwd_dir/x.out"
+                 ,"p-guess-file"=>"$fwd_dir/p.out"
+               }
+             );
+        $rtn = 1 if (0!=run_test($invcmnd));
         chdir("..") if($build_subdirs);
       }
 
@@ -386,9 +485,15 @@ sub run_case {
         mkchdir("analytic") if($build_subdirs);
         my $invcmnd =
           $cmnd 
-            ." --moocho-options-file=$inv_options_file"
-            ." --q-vec-file=$fwd_dir/../fwd-init/x.out --x-guess-file=$fwd_dir/x.out --p-guess-file=$fwd_dir/p.out";
-        0!=run_test($invcmnd) || ($rtn=1);
+
+            ." --moocho-options-file=$inv_options_file --q-vec-file=$fwd_dir/../fwd-init/x.out "
+            .moocho_thyra_solver_cmndline(
+               {
+                 "x-guess-file"=>"$fwd_dir/x.out"
+                 ,"p-guess-file"=>"$fwd_dir/p.out"
+               }
+             );
+        $rtn = 1 if (0!=run_test($invcmnd));
         chdir("..") if($build_subdirs);
       }
 
@@ -399,7 +504,7 @@ sub run_case {
   }
   else {
 
-    0!=run_test($cmnd) || ($rtn=1);
+    $rtn = 1 if (0!=run_test($cmnd));
 
   }
 

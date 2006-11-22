@@ -372,6 +372,7 @@ install-data-local:
 	$(INSTALL_DATA) $(srcdir)/../ExampleNLPBandedMain.cpp $(exec_prefix)/example/moocho/ExampleNLPBanded/. ; \
 	$(INSTALL_DATA) $(srcdir)/../NLPInterfacePack_ExampleNLPBanded.cpp $(exec_prefix)/example/moocho/ExampleNLPBanded/. ; \
 	$(INSTALL_DATA) $(srcdir)/../NLPInterfacePack_ExampleNLPBanded.hpp $(exec_prefix)/example/moocho/ExampleNLPBanded/. ; \
+	$(INSTALL_DATA) $(top_srcdir)/src/MoochoPack/configurations/sample_option_files/Moocho.sample.opt $(exec_prefix)/example/moocho/ExampleNLPBanded/input_files/. ; \
 	$(INSTALL_DATA) Makefile.external.stub $(exec_prefix)/example/moocho/ExampleNLPBanded/Makefile
 
 sample-makefile:

@@ -1,5 +1,5 @@
 #include "GLpApp_AdvDiffReactOptModelCreator.hpp"
-#include "MoochoPack_ThyraModelEvaluatorSolver.hpp"
+#include "MoochoPack_MoochoThyraSolver.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Thyra_SpmdMultiVectorFileIO.hpp"
 #include "Thyra_DefaultRealLinearSolverBuilder.hpp"
@@ -25,7 +25,7 @@ int main( int argc, char* argv[] )
   using Teuchos::RefCountPtr;
   using Teuchos::OSTab;
   using MoochoPack::MoochoSolver;
-  using MoochoPack::ThyraModelEvaluatorSolver;
+  using MoochoPack::MoochoThyraSolver;
   using Teuchos::CommandLineProcessor;
 
   Teuchos::GlobalMPISession mpiSession(&argc,&argv);
@@ -45,9 +45,7 @@ int main( int argc, char* argv[] )
     // Create the solver object
     GLpApp::AdvDiffReactOptModelCreator     advDiffReacModelCreator;
     Thyra::DefaultRealLinearSolverBuilder   lowsfCreator;
-    ThyraModelEvaluatorSolver               solver;
-    solver.insertStateElimCommandLineOptions(true);
-    solver.insertFiniteDiffCommandLineOptions(true);
+    MoochoThyraSolver                       solver;
 
     //
     // Get options from the command line
@@ -55,7 +53,6 @@ int main( int argc, char* argv[] )
 
     std::string         matchingVecFile     = "";
     bool                dump_all            = false;
-    int                 numProcsPerCluster  = -1;
 
     CommandLineProcessor  clp;
     clp.throwExceptions(false);
@@ -65,7 +62,11 @@ int main( int argc, char* argv[] )
     lowsfCreator.setupCLP(&clp);
     solver.setupCLP(&clp);
 
-    clp.setOption( "q-vec-file", &matchingVecFile, "Base file name to read the objective state matching vector q (i.e. ||x-q||_M in objective)." );
+    clp.setOption(
+      "q-vec-file", &matchingVecFile
+      ,"Base file name to read the objective state matching "
+      "vector q (i.e. ||x-q||_M in the objective)."
+      );
 
     CommandLineProcessor::EParseCommandLineReturn
       parse_return = clp.parse(argc,argv,&std::cerr);
@@ -74,6 +75,7 @@ int main( int argc, char* argv[] )
       return parse_return;
 
     lowsfCreator.readParameters(out.get());
+    solver.readParameters(out.get());
 
     //
     // Setup the output streams
@@ -174,15 +176,22 @@ int main( int argc, char* argv[] )
     
     // Write the final parameters to file
     lowsfCreator.writeParamsFile(*lowsFactory);
+    solver.writeParamsFile();
     
     //
     // Return the solution status (0 if successful)
     //
 
+    if(solution_status == MoochoSolver::SOLVE_RETURN_SOLVED)
+      *out << "\nEnd Result: TEST PASSED\n";
+    else
+      *out << "\nEnd Result: TEST FAILED\n";
+    
     return solution_status;
 
   }
   TEUCHOS_STANDARD_CATCH_STATEMENTS(true,*out,dummySuccess)
 
   return MoochoSolver::SOLVE_RETURN_EXCEPTION;
+
 }

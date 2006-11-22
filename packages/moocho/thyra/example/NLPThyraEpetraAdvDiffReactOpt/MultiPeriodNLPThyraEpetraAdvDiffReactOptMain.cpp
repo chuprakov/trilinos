@@ -1,5 +1,5 @@
 #include "GLpApp_AdvDiffReactOptModelCreator.hpp"
-#include "MoochoPack_ThyraModelEvaluatorSolver.hpp"
+#include "MoochoPack_MoochoThyraSolver.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Thyra_SpmdMultiVectorFileIO.hpp"
 #include "Thyra_DefaultClusteredSpmdProductVectorSpace.hpp"
@@ -36,7 +36,7 @@ int main( int argc, char* argv[] )
   using Teuchos::OpaqueWrapper;
   using Teuchos::OSTab;
   using MoochoPack::MoochoSolver;
-  using MoochoPack::ThyraModelEvaluatorSolver;
+  using MoochoPack::MoochoThyraSolver;
   using Teuchos::CommandLineProcessor;
   typedef Thyra::ModelEvaluatorBase MEB;
   typedef Thyra::Index Index;
@@ -59,7 +59,7 @@ int main( int argc, char* argv[] )
     GLpApp::AdvDiffReactOptModelCreator     epetraModelCreator;
 
     // Create the solver object
-    ThyraModelEvaluatorSolver solver;
+    MoochoThyraSolver solver;
 
     //
     // Get options from the command line
@@ -90,6 +90,7 @@ int main( int argc, char* argv[] )
       return parse_return;
 
     lowsfCreator.readParameters(out.get());
+    solver.readParameters(out.get());
 
     *out
       << "\n***"
@@ -331,7 +332,7 @@ int main( int argc, char* argv[] )
     solver.getSolver().set_output_context("fwd-init");
 
     // Set the solve mode to solve the forward problem
-    solver.setDoSim(true);
+    solver.setSolveMode(MoochoThyraSolver::SOLVE_MODE_FORWARD);
     
     // Set the model
     solver.setModel(thyraModel);
@@ -356,7 +357,7 @@ int main( int argc, char* argv[] )
     solver.getSolver().set_output_context("fwd");
 
     // Set the solve mode to solve the forward problem
-    solver.setDoSim(true);
+    solver.setSolveMode(MoochoThyraSolver::SOLVE_MODE_FORWARD);
    
     // Set the model
     solver.setModel(thyraModel);
@@ -390,7 +391,7 @@ int main( int argc, char* argv[] )
     epetraModel->set_q(Thyra::get_Epetra_Vector(*epetraModel->get_x_map(),x_opt));
 
     // Set the solve mode to solve the inverse problem
-    solver.setDoSim(false);
+    solver.setSolveMode(MoochoThyraSolver::SOLVE_MODE_OPTIMIZE);
    
     // Set the model
     solver.setModel(thyraModel);
@@ -413,6 +414,7 @@ int main( int argc, char* argv[] )
     
     // Write the final parameters to file
     lowsfCreator.writeParamsFile(*lowsFactory);
+    solver.writeParamsFile();
     
     //
     // Return the solution status (0 if successful)
