@@ -7,6 +7,7 @@
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_StandardCatchMacros.hpp"
 #include "Teuchos_VerboseObject.hpp"
+#include "Teuchos_XMLParameterListHelpers.hpp"
 #ifdef HAVE_MPI
 #  include "Epetra_MpiComm.h"
 #else
@@ -52,7 +53,10 @@ int main( int argc, char* argv[] )
     //
 
     std::string         matchingVecFile     = "";
-    bool                dump_all            = false;
+
+    bool                showMoochoThyraParams = false;
+    bool                showMoochoThyraParamsWithDoc = true;
+    bool                showMoochoThyraParamsXML = false;
 
     CommandLineProcessor  clp;
     clp.throwExceptions(false);
@@ -67,6 +71,20 @@ int main( int argc, char* argv[] )
       ,"Base file name to read the objective state matching "
       "vector q (i.e. ||x-q||_M in the objective)."
       );
+    
+    clp.setOption(
+      "only-print-moocho-thyra-solver-params", "no-print-moocho-thyra-solver-params"
+      ,&showMoochoThyraParams
+      ,"Only print the parameters accepted by MoochoPack::MoochoThyraSolver and stop."
+      );
+    clp.setOption(
+      "show-doc", "hide-doc", &showMoochoThyraParamsWithDoc
+      ,"Show MoochoPack::MocohoThyraSolver parameters with documentation or not."
+      );
+    clp.setOption(
+      "xml-format", "readable-format", &showMoochoThyraParamsXML
+      ,"Show MoochoPack::MoochoThyraSolver parameters in XML or human-readable format."
+      );
 
     CommandLineProcessor::EParseCommandLineReturn
       parse_return = clp.parse(argc,argv,&std::cerr);
@@ -76,6 +94,20 @@ int main( int argc, char* argv[] )
 
     lowsfCreator.readParameters(out.get());
     solver.readParameters(out.get());
+
+    if(showMoochoThyraParams) {
+      typedef Teuchos::ParameterList::PrintOptions PLPrintOptions;
+      if(showMoochoThyraParamsXML)
+        Teuchos::writeParameterListToXmlOStream(
+          *solver.getValidParameters()
+          ,*out
+          );
+      else
+        solver.getValidParameters()->print(
+          *out,PLPrintOptions().indent(2).showTypes(true).showDoc(showMoochoThyraParamsWithDoc)
+          );
+      return 0;
+    }
 
     //
     // Setup the output streams
@@ -125,7 +157,6 @@ int main( int argc, char* argv[] )
     Teuchos::RefCountPtr<GLpApp::AdvDiffReactOptModel>
       epetraModel = advDiffReacModelCreator.createModel(comm);
     epetraModel->setOStream(journalOut);
-    if(dump_all) epetraModel->setVerbLevel(Teuchos::VERB_EXTREME);
 
     *out << "\nCreate the Thyra::LinearOpWithSolveFactory object ...\n";
 

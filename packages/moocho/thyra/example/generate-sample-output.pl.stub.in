@@ -33,11 +33,26 @@ sub run_cmnd {
 #
 
 run_cmnd(
+  "../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe --echo-command-line --help"
+  ,"$abs_top_srcdir/thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.help.out"
+  );
+
+run_cmnd(
   "../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe --echo-command-line --help"
   ,"$abs_top_srcdir/thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.help.out"
   );
 
 run_cmnd(
-  "../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe --echo-command-line --help"
-  ,"$abs_top_srcdir/thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.help.out"
+  "../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe  --only-print-moocho-thyra-solver-params --readable-format --show-doc"
+  ,"$abs_top_srcdir/thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.params.readabledoc.out"
+  );
+
+run_cmnd(
+  "../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe  --only-print-moocho-thyra-solver-params --readable-format --hide-doc"
+  ,"$abs_top_srcdir/thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.params.readable.out"
+  );
+
+run_cmnd(
+  "../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe  --only-print-moocho-thyra-solver-params --xml-format"
+  ,"$abs_top_srcdir/thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.params.xml.out"
   );

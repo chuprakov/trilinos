@@ -56,6 +56,14 @@ solveModeValidator = Teuchos::rcp(
       "Forward Solve"
       ,"Optimize"
       )
+    ,Teuchos::tuple<std::string>(
+      "Only solve state equaitons f(x,p)=0 for states x\n"
+      "given fixed parameters values p."
+      ,"Solve the simulation constrained optimization problem\n"
+      "  min  g(x,p)\n"
+      "  s.t. f(x,p)=0\n"
+      "for the state varaibles x and parameters p."
+      )
     ,Teuchos::tuple<MoochoPack::MoochoThyraSolver::ESolveMode>(
       MoochoPack::MoochoThyraSolver::SOLVE_MODE_FORWARD
       ,MoochoPack::MoochoThyraSolver::SOLVE_MODE_OPTIMIZE
@@ -76,6 +84,13 @@ nlpTypeValidator = Teuchos::rcp(
     Teuchos::tuple<std::string>(
       "First Order"
       ,"Direct"
+      )
+    ,Teuchos::tuple<std::string>(
+      "Support the NLPInterfacePack::NLPFirstOrder interface which assumes\n"
+      "that full adjoints for the objective and constraint derivatives are\n"
+      "available."
+      ,"Support the NLPInterfacePack::NLPDirect interface which only assumes\n"
+      "that forward or direct sensitivities and state solves are supported."
       )
     ,Teuchos::tuple<MoochoPack::MoochoThyraSolver::ENLPType>(
       MoochoPack::MoochoThyraSolver::NLP_TYPE_FIRST_ORDER

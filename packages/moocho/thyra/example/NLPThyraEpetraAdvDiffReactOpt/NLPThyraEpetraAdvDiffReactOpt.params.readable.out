@@ -1,0 +1,17 @@
+Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
+    Forward Newton Max Iters : int = 20
+    Forward Newton Tolerance : double = -1
+    NLP Type : string = First Order
+    Nonlinearly Eliminate States : bool = 0
+    Parameters Guess File Base Name : string = 
+    Parameters Guess Scale : double = 1
+    Parameters Solution File Base Name : string = 
+    Solve Mode : string = Optimize
+    State Guess File Base Name : string = 
+    State Guess Scale : double = 1
+    State Solution File Base Name : string = 
+    Use Finite Differences : bool = 0
+    Finite Difference Settings -> 
+      FD Method : string = order-one
+      FD Step Length : double = -1
+      FD Step Select Type : string = Absolute

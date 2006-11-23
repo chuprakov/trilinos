@@ -18,22 +18,12 @@ Usage: ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOp
                                             (default: --moocho-options-file="Moocho.opt")
   --moocho-extra-options            string  Extra MOOCHO options specified in the format "OptGrp1{name1=val1,...,namen=valn}:OptGr2{name1=val1,...,namen=valn}:..."
                                             (default: --moocho-extra-options="")
-  --do-sim                          bool    Flag for if only the square constraints are solved
-  --do-opt                                  (default: --do-opt)
-  --use-direct                      bool    Flag for if we use the NLPDirect or NLPFirstOrderInfo implementation.
-  --use-first-order                         (default: --use-first-order)
-  --x-guess-file                    string  Base file name to read the guess of the state x from.
-                                            (default: --x-guess-file="")
-  --scale-x-guess                   double  Amount to scale the guess for x read in by --x-guess-file.
-                                            (default: --scale-x-guess=1)
-  --p-guess-file                    string  Base file name to read the guess of the parameters p from.
-                                            (default: --p-guess-file="")
-  --scale-p-guess                   double  Amount to scale the guess for p read in by --p-guess-file.
-                                            (default: --scale-p-guess=1)
-  --x-solu-file                     string  Base file name to write the state solution x to.
-                                            (default: --x-solu-file="")
-  --p-solu-file                     string  Base file name to write the parameter solution p to.
-                                            (default: --p-solu-file="")
+  --moocho-thyra-params-file        string  Name of an XML file containing parameters for linear solver options to be appended first.
+                                            (default: --moocho-thyra-params-file="")
+  --extra-moocho-thyra-params       string  An XML string containing linear solver parameters to be appended second.
+                                            (default: --extra-moocho-thyra-params="")
+  --moocho-thyra-params-used-file   string  Name of an XML file that can be written with the parameter list after it has been used on completion of this program.
+                                            (default: --moocho-thyra-params-used-file="")
   --xt0                             double  No documentation
                                             (default: --xt0=1)
   --xt1                             double  No documentation

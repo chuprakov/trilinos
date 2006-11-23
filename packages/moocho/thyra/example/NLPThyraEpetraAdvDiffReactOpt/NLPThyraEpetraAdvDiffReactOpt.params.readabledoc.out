@@ -1,0 +1,98 @@
+Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
+    Forward Newton Max Iters : int = 20
+      # Maximum number of iterations allows for the forward state
+      # solver in eliminating the state equations/variables.
+    Forward Newton Tolerance : double = -1
+      # Tolarance used for the forward state solver in eliminating
+      # the state equations/variables.
+    NLP Type : string = First Order
+      # The type of MOOCHO NLP subclass to use.
+      #   Valid string values:
+      #     {
+      #       "First Order"
+      #          Support the NLPInterfacePack::NLPFirstOrder interface which assumes
+      #          that full adjoints for the objective and constraint derivatives are
+      #          available.
+      #       "Direct"
+      #          Support the NLPInterfacePack::NLPDirect interface which only assumes
+      #          that forward or direct sensitivities and state solves are supported.
+      #     }
+    Nonlinearly Eliminate States : bool = 0
+      # If true, then the model's state equations and state variables
+      # are nonlinearlly eliminated using a forward solver.
+    Parameters Guess File Base Name : string = 
+      # The base name of a file that is used to read in the guess for
+      # the parameters.  If set, then a file for each process must be
+      # present for each process to read from.
+    Parameters Guess Scale : double = 1
+      # Sets the constant by which the initial guess for the parameters are scaled
+      # will be scaled by before they are used.  This feature allows for controlled
+      # experiments where a solution is perturbed and the solver must resolve the
+      # problem.
+    Parameters Solution File Base Name : string = 
+      # If specified, a file with this basename will be written to with
+      # the final value of the parameters.  A different file for each
+      # process will be created.  Note that these files can be used for the
+      # initial guess for the parameters.
+    Solve Mode : string = Optimize
+      # The type of solve to perform.
+      #   Valid string values:
+      #     {
+      #       "Forward Solve"
+      #          Only solve state equaitons f(x,p)=0 for states x
+      #          given fixed parameters values p.
+      #       "Optimize"
+      #          Solve the simulation constrained optimization problem
+      #            min  g(x,p)
+      #            s.t. f(x,p)=0
+      #          for the state varaibles x and parameters p.
+      #     }
+    State Guess File Base Name : string = 
+      # The base name of a file that is used to read in the guess for
+      # the state variables.  If set, then a file for each process must be
+      # present for each process to read from.
+    State Guess Scale : double = 1
+      # Sets the constant by which the initial guess for the state variables are scaled
+      # will be scaled by before they are used.  This feature allows for controlled
+      # experiments where a solution is perturbed and the solver must resolve the
+      # problem.
+    State Solution File Base Name : string = 
+      # If specified, a file with this basename will be written to with
+      # the final value of the state variables.  A different file for each
+      # process will be created.  Note that these files can be used for the
+      # initial guess for the state variables.
+    Use Finite Differences : bool = 0
+      # Use finite differences for missing model derivatives (Direct NLP only).
+      # See the options in the sublist "Finite Difference Settings".
+    Finite Difference Settings -> 
+      FD Method : string = order-one
+        # The method used to compute the finite differences.
+        #   Valid string values:
+        #     {
+        #       "order-one"
+        #          Use O(eps) one sided finite differences (cramped bounds)
+        #       "order-two"
+        #          Use O(eps^2) one sided finite differences (cramped bounds)
+        #       "order-two-central"
+        #          Use O(eps^2) two sided central finite differences
+        #       "order-two-auto"
+        #          Use "order-two-central" when not cramped by bounds, otherwise use "order-two"
+        #       "order-four"
+        #          Use O(eps^4) one sided finite differences (cramped bounds)
+        #       "order-four-central"
+        #          Use O(eps^4) two sided central finite differences
+        #       "order-four-auto"
+        #          Use "order-four-central" when not cramped by bounds, otherwise use "order-four"
+        #     }
+      FD Step Length : double = -1
+        # The length of the finite difference step to take.
+        # A value of < 0.0 means that the step length will be determined automatically.
+      FD Step Select Type : string = Absolute
+        # Method used to select the finite difference step length.
+        #   Valid string values:
+        #     {
+        #       "Absolute"
+        #          Use absolute step size "FD Step Length"
+        #       "Relative"
+        #          Use relative step size "FD Step Length"*||xo||inf
+        #     }

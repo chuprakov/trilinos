@@ -41,6 +41,25 @@ namespace MoochoPack {
 /** \brief MOOCHO NLP Solver class for models represented through
  * <tt>Thyra::ModelEvaluator</tt>.
  *
+ * The parameters this class accepts are shown below in different format:
+ * <ul>
+ * <li> \ref HumanReadableWithDocumentation "Human readable format (with documentation) for valid parameters accepted by this class"
+ * <li> \ref HumanReadableWithoutDocumentation "Human readable format (without documentation) for valid parameters accepted by this class"
+ * <li> \ref XmlFormat "XML format for valid parameters accepted by this class"
+ * </ul>
+ *
+ * <b>\anchor HumanReadableWithDocumentation Human readable format (with documentation) for valid parameters accepted by this class</b>
+ *
+ * \verbinclude NLPThyraEpetraAdvDiffReactOpt.params.readabledoc.out
+ *
+ * <b>\anchor HumanReadableWithoutDocumentation Human readable format (without documentation) for valid parameters accepted by this class</b>
+ *
+ * \verbinclude NLPThyraEpetraAdvDiffReactOpt.params.readable.out
+ *
+ * <b>\anchor XmlFormat XML format for valid parameters accepted by this class</b>
+ *
+ * \verbinclude NLPThyraEpetraAdvDiffReactOpt.params.xml.out
+ *
  * ToDo: Finish documetation!
  */
 class MoochoThyraSolver : virtual public Teuchos::ParameterListAcceptor {

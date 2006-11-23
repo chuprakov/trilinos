@@ -31,14 +31,13 @@ FILE_PATTERNS          = *.h *c *.hpp *.cpp
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_PATTERNS       = *.x *.o *.out
-EXAMPLE_PATH           = ../thyra/example
-EXAMPLE_PATTERNS       = *.cpp *.hpp
+EXAMPLE_PATTERNS       =
+EXAMPLE_PATH           = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt
 INPUT_FILTER           = 
 ALPHABETICAL_INDEX     = YES
 IGNORE_PREFIX          = 
 #
 # Links to other packages
-#
+ALLEXTERNALS           = YES
+EXTERNAL_GROUPS        = YES
 GENERATE_TAGFILE       = ../../common/tag_files/MoochoThyra.tag
-ALLEXTERNALS           = NO
-EXTERNAL_GROUPS        = NO
