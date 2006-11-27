@@ -469,7 +469,7 @@ sub run_case {
         mkchdir("finite-diff") if($build_subdirs);
         my $invcmnd =
           $cmnd 
-            ." --moocho-options-file=$fd_options_file --q-vec-file=$fwd_dir/../fwd-init/x.out "
+            ." --no-support-derivatives --moocho-options-file=$fd_options_file --q-vec-file=$fwd_dir/../fwd-init/x.out "
             .moocho_thyra_solver_cmndline(
                {
                  "fd-step-len"=>$fd_step_len

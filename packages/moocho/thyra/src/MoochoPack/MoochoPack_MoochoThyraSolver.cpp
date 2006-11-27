@@ -219,22 +219,37 @@ void MoochoThyraSolver::setupCLP(
     );
 }
 
-void MoochoThyraSolver::readParameters( std::ostream *out )
+void MoochoThyraSolver::readParameters( std::ostream *out_arg )
 {
+  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+    out = Teuchos::getFancyOStream(Teuchos::rcp(out_arg,false));
+  Teuchos::OSTab tab(out);
+  if(out.get()) *out << "\nMoochoThyraSolver::readParameters(...):\n";
   Teuchos::RefCountPtr<Teuchos::ParameterList>
     paramList = this->getParameterList();
-  if(!paramList.get())
+  if(!paramList.get()) {
+    if(out.get()) *out << "\nCreating a new Teuchos::ParameterList ...\n";
     paramList = Teuchos::rcp(new Teuchos::ParameterList("MoochoThyraSolver"));
+  }
   if(paramsXmlFileName().length()) {
-    if(out) *out << "\nReading parameters from XML file \""<<paramsXmlFileName()<<"\" ...\n";
+    if(out.get()) *out << "\nReading parameters from XML file \""<<paramsXmlFileName()<<"\" ...\n";
     Teuchos::updateParametersFromXmlFile(paramsXmlFileName(),&*paramList);
   }
   if(extraParamsXmlString().length()) {
-    if(out) *out << "\nAppending extra parameters from the XML string \""<<extraParamsXmlString()<<"\" ...\n";
+    if(out.get())
+      *out << "\nAppending extra parameters from the XML string \""<<extraParamsXmlString()<<"\" ...\n";
     Teuchos::updateParametersFromXmlString(extraParamsXmlString(),&*paramList);
   }
-  if( paramsXmlFileName().length() || extraParamsXmlString().length() )
+  if( paramsXmlFileName().length() || extraParamsXmlString().length() ) {
+    typedef Teuchos::ParameterList::PrintOptions PLPrintOptions;
+    if(out.get()) {
+      *out  << "\nUpdated parameter list:\n";
+      paramList->print(
+        *out,PLPrintOptions().indent(2).showTypes(true)
+        );
+    }
     this->setParameterList(paramList);
+  }
 }
 
 // Overridden from ParameterListAcceptor

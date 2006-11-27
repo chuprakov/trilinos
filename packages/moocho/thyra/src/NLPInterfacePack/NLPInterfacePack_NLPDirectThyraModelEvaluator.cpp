@@ -281,8 +281,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
     &&
     direcFiniteDiffCalculator_.get()
     &&
-    ( new_thyra_N
-      || model_outArgs.get_DfDp_properties(p_idx_).linearity!=MEB::DERIV_LINEARITY_CONST )
+    ( new_thyra_N || DfDp_is_const() )
     )
   {
     if(out.get() && trace)
@@ -290,7 +289,11 @@ void NLPDirectThyraModelEvaluator::calc_point(
     // !
     if(thyra_c.get())
       model_outArgs.set_f(rcp_const_cast<Thyra::VectorBase<value_type> >(thyra_c)); // Okay, will not be changed!
-    MEB::OutArgs<value_type> model_fdOutArgs = model_->createOutArgs();
+    typedef Thyra::DirectionalFiniteDiffCalculator<value_type>::SelectedDerivatives SelectedDerivatives; 
+    MEB::OutArgs<value_type>
+      model_fdOutArgs = direcFiniteDiffCalculator_->createOutArgs(
+        *model_,SelectedDerivatives().supports(MEB::OUT_ARG_DfDp,0)
+        );
     model_fdOutArgs.set_DfDp(p_idx_,DerivMV(thyra_N_.assert_not_null(),MEB::DERIV_MV_BY_COL));
     direcFiniteDiffCalculator_->calcDerivatives(
       *model_

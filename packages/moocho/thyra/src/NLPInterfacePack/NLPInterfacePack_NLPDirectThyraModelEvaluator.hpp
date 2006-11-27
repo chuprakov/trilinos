@@ -33,6 +33,7 @@
 #include "NLPInterfacePack_NLPDirect.hpp"
 #include "Thyra_DirectionalFiniteDiffCalculator.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace NLPInterfacePack {
 
@@ -49,6 +50,9 @@ public:
 
   /** \brief Utility object that computes directional finite differences */
   STANDARD_COMPOSITION_MEMBERS( Thyra::DirectionalFiniteDiffCalculator<value_type>, direcFiniteDiffCalculator );
+
+  /** \brief Set if model.DfDp is constant or not */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, DfDp_is_const );
 
   /** \brief Initialize to uninitialized */
   NLPDirectThyraModelEvaluator();
