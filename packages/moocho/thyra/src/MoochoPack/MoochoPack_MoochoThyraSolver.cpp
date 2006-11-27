@@ -504,10 +504,12 @@ void MoochoThyraSolver::setModel(
         switch(nlpType_) {
           case NLP_TYPE_DIRECT: {
             Teuchos::RefCountPtr<NLPDirectThyraModelEvaluator>
-              nlpDirect = rcp(new NLPDirectThyraModelEvaluator(outerModel_,p_idx,g_idx));
-            if(use_finite_diff_) {
-              nlpDirect->set_direcFiniteDiffCalculator(direcFiniteDiffCalculator);
-            }
+              nlpDirect = rcp(
+                new NLPDirectThyraModelEvaluator(
+                  outerModel_,p_idx,g_idx
+                  ,use_finite_diff_ ? direcFiniteDiffCalculator : Teuchos::null
+                  )
+                );
             nlp = nlpDirect;
             break;
           }

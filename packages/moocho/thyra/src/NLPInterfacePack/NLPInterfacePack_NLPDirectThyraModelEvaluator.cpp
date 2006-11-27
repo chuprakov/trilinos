@@ -54,25 +54,31 @@ NLPDirectThyraModelEvaluator::NLPDirectThyraModelEvaluator(
   const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model   
   ,const int                                                      p_idx 
   ,const int                                                      g_idx 
+  ,const direcFiniteDiffCalculator_ptr_t                          direcFiniteDiffCalculator
   )
 {
-  initialize(model,p_idx,g_idx);
+  initialize(model,p_idx,g_idx,direcFiniteDiffCalculator);
 }
 
 void NLPDirectThyraModelEvaluator::initialize(
   const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
   ,const int                                                      p_idx
   ,const int                                                      g_idx
+  ,const direcFiniteDiffCalculator_ptr_t                          direcFiniteDiffCalculator
   )
 {
   typedef Thyra::ModelEvaluatorBase MEB;
+  if(direcFiniteDiffCalculator.get())
+    this->set_direcFiniteDiffCalculator(direcFiniteDiffCalculator);
   initializeBase(model,p_idx,g_idx);
   Thyra::ModelEvaluatorBase::OutArgs<double> model_outArgs = model->createOutArgs();
   MEB::DerivativeProperties model_W_properties = model_outArgs.get_W_properties();
   if( p_idx >= 0 ) {
     TEST_FOR_EXCEPTION(
-      !model_outArgs.supports(MEB::OUT_ARG_DfDp,p_idx).supports(MEB::DERIV_MV_BY_COL),std::invalid_argument
-      ,"Error, model must support computing DfDp("<<p_idx<<") as a column-oriented multi-vector!"
+      (direcFiniteDiffCalculator_.get()==0  && !model_outArgs.supports(MEB::OUT_ARG_DfDp,p_idx).supports(MEB::DERIV_MV_BY_COL))
+      ,std::invalid_argument
+      ,"Error, model must support computing DfDp("<<p_idx<<") as a"
+      " column-oriented multi-vector if not using finite differences!"
       );
   }
 }

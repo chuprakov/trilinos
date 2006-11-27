@@ -249,6 +249,7 @@ void NLPThyraModelEvaluatorBase::initializeBase(
     MEB::DerivativeProperties model_W_properties = model_outArgs.get_W_properties();
     TEST_FOR_EXCEPTION( model_W_properties.supportsAdjoint==false, std::invalid_argument, msg_err );
     TEST_FOR_EXCEPTION( model_W_properties.rank==MEB::DERIV_RANK_DEFICIENT, std::invalid_argument, msg_err );
+    /*
     if(p_idx >= 0 ) {
       TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DfDp,p_idx).none(), std::invalid_argument, msg_err );
       if(g_idx >= 0) {
@@ -258,6 +259,7 @@ void NLPThyraModelEvaluatorBase::initializeBase(
     if(g_idx >= 0) {
       TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DgDx,g_idx).none(), std::invalid_argument, msg_err );
     }
+    */
   }
   //
   model_ = model;

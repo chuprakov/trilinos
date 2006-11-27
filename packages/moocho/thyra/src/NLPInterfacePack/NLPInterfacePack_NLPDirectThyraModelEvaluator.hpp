@@ -58,6 +58,7 @@ public:
     const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
+    ,const direcFiniteDiffCalculator_ptr_t                          direcFiniteDiffCalculator = Teuchos::null
     );
 
   /** \brief .Initialize given a <tt>Thyra::ModelEvaluator</tt> and
@@ -69,6 +70,7 @@ public:
     const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
+    ,const direcFiniteDiffCalculator_ptr_t                          direcFiniteDiffCalculator = Teuchos::null
     );
 
   /** @name Overridden public members from NLP */
