@@ -35,6 +35,7 @@
 #include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "Thyra_ModelEvaluator.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace AbstractLinAlgPack { class VectorSpaceThyra; }
 
@@ -77,6 +78,9 @@ namespace NLPInterfacePack {
  */
 class NLPThyraModelEvaluatorBase : virtual public NLPObjGrad {
 public:
+
+  /** \brief Set if a trace of the model evaluations is shown or not. */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, showModelEvaluatorTrace );
 
   /** @name Overridden public members from NLP */
   //@{

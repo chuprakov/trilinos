@@ -54,28 +54,35 @@ NLPDirectThyraModelEvaluator::NLPDirectThyraModelEvaluator(
   const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model   
   ,const int                                                      p_idx 
   ,const int                                                      g_idx 
-  ,const direcFiniteDiffCalculator_ptr_t                          direcFiniteDiffCalculator
+  ,const objDirecFiniteDiffCalculator_ptr_t                       objDirecFiniteDiffCalculator
+  ,const conDirecFiniteDiffCalculator_ptr_t                       conDirecFiniteDiffCalculator
   )
 {
-  initialize(model,p_idx,g_idx,direcFiniteDiffCalculator);
+  initialize(
+    model,p_idx,g_idx
+    ,objDirecFiniteDiffCalculator,conDirecFiniteDiffCalculator
+    );
 }
 
 void NLPDirectThyraModelEvaluator::initialize(
   const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
   ,const int                                                      p_idx
   ,const int                                                      g_idx
-  ,const direcFiniteDiffCalculator_ptr_t                          direcFiniteDiffCalculator
+  ,const objDirecFiniteDiffCalculator_ptr_t                       objDirecFiniteDiffCalculator
+  ,const conDirecFiniteDiffCalculator_ptr_t                       conDirecFiniteDiffCalculator
   )
 {
   typedef Thyra::ModelEvaluatorBase MEB;
-  if(direcFiniteDiffCalculator.get())
-    this->set_direcFiniteDiffCalculator(direcFiniteDiffCalculator);
+  if(objDirecFiniteDiffCalculator.get())
+    this->set_objDirecFiniteDiffCalculator(objDirecFiniteDiffCalculator);
+  if(conDirecFiniteDiffCalculator.get())
+    this->set_conDirecFiniteDiffCalculator(conDirecFiniteDiffCalculator);
   initializeBase(model,p_idx,g_idx);
   Thyra::ModelEvaluatorBase::OutArgs<double> model_outArgs = model->createOutArgs();
   MEB::DerivativeProperties model_W_properties = model_outArgs.get_W_properties();
   if( p_idx >= 0 ) {
     TEST_FOR_EXCEPTION(
-      (direcFiniteDiffCalculator_.get()==0  && !model_outArgs.supports(MEB::OUT_ARG_DfDp,p_idx).supports(MEB::DERIV_MV_BY_COL))
+      (conDirecFiniteDiffCalculator_.get()==0  && !model_outArgs.supports(MEB::OUT_ARG_DfDp,p_idx).supports(MEB::DERIV_MV_BY_COL))
       ,std::invalid_argument
       ,"Error, model must support computing DfDp("<<p_idx<<") as a"
       " column-oriented multi-vector if not using finite differences!"
@@ -104,20 +111,23 @@ void NLPDirectThyraModelEvaluator::unset_quantities()
 
 bool NLPDirectThyraModelEvaluator::supports_Gf() const
 {
-  if(direcFiniteDiffCalculator_.get())
+  if(objDirecFiniteDiffCalculator_.get())
     return false;
-  return true; // ToDo: Change this to false when only the operator for model_DgDx is supported!
+  return true;
+  // ToDo: Change this to false when only the operator for model_DgDx is
+  // supported!
 }
 
 bool NLPDirectThyraModelEvaluator::supports_Gf_prod() const
 {
-  return ( direcFiniteDiffCalculator_.get() != NULL );
+  return ( objDirecFiniteDiffCalculator_.get() != NULL );
 }
 
 value_type NLPDirectThyraModelEvaluator::calc_Gf_prod(
   const Vector& x, const Vector& d, bool newx
   ) const
 {
+  TEST_FOR_EXCEPT(objDirecFiniteDiffCalculator_.get()==0);
   typedef Thyra::ModelEvaluatorBase MEB;
   MEB::InArgs<value_type>  basePoint   = model_->createInArgs();
   MEB::InArgs<value_type>  directions  = model_->createInArgs();
@@ -126,7 +136,7 @@ value_type NLPDirectThyraModelEvaluator::calc_Gf_prod(
   set_x(x,&basePoint);
   set_x(d,&directions);
   variations.set_g(g_idx_,createMember(model_->get_g_space(g_idx_)));
-  direcFiniteDiffCalculator_->calcVariations(
+  objDirecFiniteDiffCalculator_->calcVariations(
     *model_,basePoint,directions,baseFunc,variations
     );
   return Thyra::get_ele(*variations.get_g(g_idx_),0);
@@ -188,13 +198,16 @@ void NLPDirectThyraModelEvaluator::calc_point(
   //
   // Get output and verbosity
   //
-  const RefCountPtr<FancyOStream> out       = this->getOStream();
-  const Teuchos::EVerbosityLevel  verbLevel = this->getVerbLevel();
+  const Teuchos::RefCountPtr<Teuchos::FancyOStream>
+    out = this->getOStream();
+  const Teuchos::EVerbosityLevel
+    verbLevel = ( showModelEvaluatorTrace() ? this->getVerbLevel() : Teuchos::VERB_NONE );
   Teuchos::OSTab tab(out);
   typedef Teuchos::VerboseObjectTempState<MEB> VOTSME;
   VOTSME modelOutputTempState(model_,out,verbLevel);
   typedef Teuchos::VerboseObjectTempState<Thyra::DirectionalFiniteDiffCalculator<value_type> > VOTSDFDC;
-  VOTSDFDC direcFiniteDiffCalculatorOutputTempState(direcFiniteDiffCalculator_,out,verbLevel);
+  VOTSDFDC objDirecFiniteDiffCalculatorOutputTempState(objDirecFiniteDiffCalculator_,out,verbLevel);
+  VOTSDFDC conDirecFiniteDiffCalculatorOutputTempState(conDirecFiniteDiffCalculator_,out,verbLevel);
   const bool trace = static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW);
   if(out.get() && trace)
     *out << "\nEntering MoochoPack::NLPDirectThyraModelEvaluator::calc_point(...) ...\n";
@@ -204,7 +217,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
   TEST_FOR_EXCEPT(GcU!=NULL);  // Can't handle these yet!
   TEST_FOR_EXCEPT(Uz!=NULL);
   TEST_FOR_EXCEPTION(
-    direcFiniteDiffCalculator_.get()!=NULL && Gf!=NULL, std::logic_error
+    objDirecFiniteDiffCalculator_.get()!=NULL && Gf!=NULL, std::logic_error
     ,"Error, can not compute full gradient vector Gf when using directional finite differences!"
     );
   //
@@ -237,7 +250,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
       new_thyra_N = true;
     }
     if(
-      !direcFiniteDiffCalculator_.get()
+      !conDirecFiniteDiffCalculator_.get()
       &&
       ( new_thyra_N
         || model_outArgs.get_DfDp_properties(p_idx_).linearity!=MEB::DERIV_LINEARITY_CONST )
@@ -261,7 +274,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
   Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >         thyra_py;
   RefCountPtr<MatrixOp>                                        D_used = rcp(D,false);
   RefCountPtr<Thyra::MultiVectorBase<value_type> >             thyra_D;
-  if( py || ( ( rGf || D ) && direcFiniteDiffCalculator_.get() ) ) {
+  if( py || ( ( rGf || D ) && conDirecFiniteDiffCalculator_.get() ) ) {
     space_c  = &dyn_cast<const VectorSpaceThyra>(c->space()),
       space_xD = &dyn_cast<const VectorSpaceThyra>(py->space());
     get_thyra_vector(*space_c,*c,&thyra_c);
@@ -279,7 +292,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
   if(
     ( rGf || D )
     &&
-    direcFiniteDiffCalculator_.get()
+    conDirecFiniteDiffCalculator_.get()
     &&
     ( new_thyra_N || DfDp_is_const() )
     )
@@ -291,11 +304,11 @@ void NLPDirectThyraModelEvaluator::calc_point(
       model_outArgs.set_f(rcp_const_cast<Thyra::VectorBase<value_type> >(thyra_c)); // Okay, will not be changed!
     typedef Thyra::DirectionalFiniteDiffCalculator<value_type>::SelectedDerivatives SelectedDerivatives; 
     MEB::OutArgs<value_type>
-      model_fdOutArgs = direcFiniteDiffCalculator_->createOutArgs(
+      model_fdOutArgs = conDirecFiniteDiffCalculator_->createOutArgs(
         *model_,SelectedDerivatives().supports(MEB::OUT_ARG_DfDp,0)
         );
     model_fdOutArgs.set_DfDp(p_idx_,DerivMV(thyra_N_.assert_not_null(),MEB::DERIV_MV_BY_COL));
-    direcFiniteDiffCalculator_->calcDerivatives(
+    conDirecFiniteDiffCalculator_->calcDerivatives(
       *model_
       ,model_inArgs     // The base point to compute the derivatives at
       ,model_outArgs    // The base function values
@@ -365,7 +378,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
     const Range1D
       var_dep   = basis_sys_->var_dep(),
       var_indep = basis_sys_->var_indep();
-    if(direcFiniteDiffCalculator_.get()) {
+    if(objDirecFiniteDiffCalculator_.get()) {
       if(out.get() && trace)
         *out << "\nComputing rGf using directional finite differences ...\n";
       //
@@ -389,7 +402,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
       for( int i = 0; i < np; ++i ) {
         set_ele(i,1.0,&*e_i);
         dir.set_x(thyra_D->col(i));
-        direcFiniteDiffCalculator_->calcVariations(
+        objDirecFiniteDiffCalculator_->calcVariations(
           *model_,model_inArgs,dir,bfunc,var
           );
         dir.set_x(Teuchos::null);

@@ -32,6 +32,7 @@
 #include "Thyra_DefaultFiniteDifferenceModelEvaluator.hpp"
 #include "Thyra_DefaultStateEliminationModelEvaluator.hpp"
 #include "Thyra_DefaultEvaluationLoggerModelEvaluator.hpp"
+#include "Thyra_DefaultInverseModelEvaluator.hpp"
 #include "Thyra_SpmdMultiVectorFileIO.hpp"
 #include "Thyra_DampenedNewtonNonlinearSolver.hpp"
 #include "Thyra_VectorStdOps.hpp"
@@ -104,16 +105,29 @@ const std::string NLPType_default = "First Order";
 const std::string NonlinearlyEliminateStates_name = "Nonlinearly Eliminate States";
 const bool NonlinearlyEliminateStates_default = false;
 
-const std::string UseFiniteDifferences_name = "Use Finite Differences";
-const bool UseFiniteDifferences_default = false;
+const std::string UseFiniteDifferencesForObjective_name = "Use Finite Differences For Objective";
+const bool UseFiniteDifferencesForObjective_default = false;
 
-const std::string FiniteDifferenceSettings_name = "Finite Difference Settings";
+const std::string ObjectiveFiniteDifferenceSettings_name = "Objective Finite Difference Settings";
+
+const std::string UseFiniteDifferencesForConstraints_name = "Use Finite Differences For Constraints";
+const bool UseFiniteDifferencesForConstraints_default = false;
+
+const std::string ConstraintsFiniteDifferenceSettings_name = "Constraints Finite Difference Settings";
 
 const std::string FwdNewtonTol_name = "Forward Newton Tolerance";
 const double FwdNewtonTol_default = -1.0;
 
 const std::string FwdNewtonMaxIters_name = "Forward Newton Max Iters";
 const int FwdNewtonMaxIters_default = 20;
+
+const std::string UseBuiltInverseObjectiveFunction_name = "Use Built-in Inverse Objective Function";
+const bool UseBuiltInverseObjectiveFunction_default = false;
+
+const std::string InverseObjectiveFunctionSettings_name = "Inverse Objective Function Settings";
+
+const std::string ShowModelEvaluatorTrace_name = "Show Model Evaluator Trace";
+const bool ShowModelEvaluatorTrace_default = "false";
 
 const std::string StateGuessFileBaseName_name = "State Guess File Base Name";
 const std::string StateGuessFileBaseName_default = "";
@@ -185,9 +199,12 @@ MoochoThyraSolver::MoochoThyraSolver(
   ,solveMode_(SOLVE_MODE_OPTIMIZE)
   ,nlpType_(NLP_TYPE_FIRST_ORDER)
   ,nonlinearlyElimiateStates_(false)
-  ,use_finite_diff_(false)
+  ,use_finite_diff_for_obj_(false)
+  ,use_finite_diff_for_con_(false)
   ,fwd_newton_tol_(-1.0)
   ,fwd_newton_max_iters_(20)
+  ,useInvObjFunc_(false)
+  ,showModelEvaluatorTrace_(false)
   ,stateGuessFileBase_("")
   ,scaleStateGuess_(1.0)
   ,paramGuessFileBase_("")
@@ -225,6 +242,7 @@ void MoochoThyraSolver::readParameters( std::ostream *out_arg )
     out = Teuchos::getFancyOStream(Teuchos::rcp(out_arg,false));
   Teuchos::OSTab tab(out);
   if(out.get()) *out << "\nMoochoThyraSolver::readParameters(...):\n";
+  Teuchos::OSTab tab2(out);
   Teuchos::RefCountPtr<Teuchos::ParameterList>
     paramList = this->getParameterList();
   if(!paramList.get()) {
@@ -268,12 +286,18 @@ void MoochoThyraSolver::setParameterList(
       *paramList_,NLPType_name,NLPType_default);
     nonlinearlyElimiateStates_ = paramList_->get(
       NonlinearlyEliminateStates_name,NonlinearlyEliminateStates_default);
-    use_finite_diff_ = paramList_->get(
-      UseFiniteDifferences_name,UseFiniteDifferences_default);
+    use_finite_diff_for_obj_ = paramList_->get(
+      UseFiniteDifferencesForObjective_name,UseFiniteDifferencesForObjective_default);
+    use_finite_diff_for_con_ = paramList_->get(
+      UseFiniteDifferencesForConstraints_name,UseFiniteDifferencesForConstraints_default);
     fwd_newton_tol_ = paramList_->get(
       FwdNewtonTol_name,FwdNewtonTol_default);
     fwd_newton_max_iters_ = paramList_->get(
       FwdNewtonMaxIters_name,FwdNewtonMaxIters_default);
+    useInvObjFunc_ = paramList_->get(
+      UseBuiltInverseObjectiveFunction_name,UseBuiltInverseObjectiveFunction_default);
+    showModelEvaluatorTrace_ = paramList->get(
+      ShowModelEvaluatorTrace_name,ShowModelEvaluatorTrace_default);
     stateGuessFileBase_ = paramList_->get(
       StateGuessFileBaseName_name,StateGuessFileBaseName_default);
     scaleStateGuess_ = paramList_->get(
@@ -331,14 +355,24 @@ MoochoThyraSolver::getValidParameters() const
       "are nonlinearlly eliminated using a forward solver."
       );
     pl->set(
-      UseFiniteDifferences_name,UseFiniteDifferences_default
-      ,"Use finite differences for missing model derivatives (Direct NLP only).\n"
-      "See the options in the sublist \"" + FiniteDifferenceSettings_name + "\"."
+      UseFiniteDifferencesForObjective_name,UseFiniteDifferencesForObjective_default
+      ,"Use finite differences for missing objective function derivatives (Direct NLP only).\n"
+      "See the options in the sublist \"" + ObjectiveFiniteDifferenceSettings_name + "\"."
+      );
+    Thyra::DirectionalFiniteDiffCalculator<Scalar> dfdcalc;
+    if(1) {
+      Teuchos::ParameterList
+        &fdSublist = pl->sublist(ObjectiveFiniteDifferenceSettings_name);
+      fdSublist.setParameters(*dfdcalc.getValidParameters());
+    }
+    pl->set(
+      UseFiniteDifferencesForConstraints_name,UseFiniteDifferencesForConstraints_default
+      ,"Use finite differences for missing constraint derivatives (Direct NLP only).\n"
+      "See the options in the sublist \"" + ConstraintsFiniteDifferenceSettings_name + "\"."
       );
     if(1) {
       Teuchos::ParameterList
-        &fdSublist = pl->sublist(FiniteDifferenceSettings_name);
-      Thyra::DirectionalFiniteDiffCalculator<Scalar> dfdcalc;
+        &fdSublist = pl->sublist(ConstraintsFiniteDifferenceSettings_name);
       fdSublist.setParameters(*dfdcalc.getValidParameters());
     }
     pl->set(
@@ -350,6 +384,30 @@ MoochoThyraSolver::getValidParameters() const
       FwdNewtonMaxIters_name,FwdNewtonMaxIters_default
       ,"Maximum number of iterations allows for the forward state\n"
       "solver in eliminating the state equations/variables."
+      );
+    pl->set(
+      UseBuiltInverseObjectiveFunction_name,UseBuiltInverseObjectiveFunction_default
+      ,"Use a built-in form of a simple inverse objection function instead\n"
+      "of a a response function contained in the underlying model evaluator\n"
+      "object itself.  The settings are contained in the sublist\n"
+      "\""+InverseObjectiveFunctionSettings_name+"\".\n"
+      "Note that this feature allows the client to form a useful type\n"
+      "of optimization problem just with a model that supports only the\n"
+      "parameterized state function f(x,p)=0."
+      );
+    pl->sublist(
+      InverseObjectiveFunctionSettings_name,false
+      ,"Settings for the built-in inverse objective function.\n"
+      "See the outer parameter \""+UseBuiltInverseObjectiveFunction_name+"\"."
+      ).setParameters(
+        *Teuchos::rcp(
+          new Thyra::DefaultInverseModelEvaluator<value_type>()
+          )->getValidParameters()
+        );
+    pl->set(
+      ShowModelEvaluatorTrace_name,ShowModelEvaluatorTrace_default
+      ,"Determine if a trace of the objective function will be shown or not\n"
+      "when the NLP is evaluated."
       );
     pl->set(
       StateGuessFileBaseName_name,StateGuessFileBaseName_default
@@ -441,9 +499,21 @@ void MoochoThyraSolver::setModel(
   //const int numProcs = Teuchos::GlobalMPISession::getNProc();
 
   //
-  // Wrap the orginal model
+  // Wrap the orginal model in different decorators
   //
 
+  outerModel_ = origModel_;
+
+  if(useInvObjFunc_) {
+    Teuchos::RefCountPtr<Thyra::DefaultInverseModelEvaluator<Scalar> >
+      inverseModel
+      = rcp(new Thyra::DefaultInverseModelEvaluator<Scalar>(outerModel_));
+    inverseModel->setParameterList(
+      Teuchos::sublist(paramList_,InverseObjectiveFunctionSettings_name) );
+    outerModel_ = inverseModel; 
+    g_idx_ = inverseModel->Ng()-1;
+  }
+  
   Teuchos::RefCountPtr<std::ostream>
     modelEvalLogOut;
   if(procRank==0)
@@ -454,16 +524,20 @@ void MoochoThyraSolver::setModel(
     loggerThyraModel
     = rcp(
       new Thyra::DefaultEvaluationLoggerModelEvaluator<Scalar>(
-        origModel_,modelEvalLogOut
+        outerModel_,modelEvalLogOut
         )
       );
+  outerModel_ = loggerThyraModel; 
+
   nominalModel_
     = rcp(
-      new Thyra::DefaultNominalBoundsOverrideModelEvaluator<Scalar>(loggerThyraModel,Teuchos::null)
+      new Thyra::DefaultNominalBoundsOverrideModelEvaluator<Scalar>(outerModel_,Teuchos::null)
       );
+  outerModel_ = nominalModel_; 
+
   finalPointModel_
     = rcp(
-      new Thyra::DefaultFinalPointCaptureModelEvaluator<value_type>(nominalModel_)
+      new Thyra::DefaultFinalPointCaptureModelEvaluator<value_type>(outerModel_)
       );
   outerModel_ = finalPointModel_;
 
@@ -475,17 +549,30 @@ void MoochoThyraSolver::setModel(
 
   switch(solveMode_) {
     case SOLVE_MODE_FORWARD: {
-      nlp = rcp(new NLPFirstOrderThyraModelEvaluator(outerModel_,-1,-1));
+      RefCountPtr<NLPFirstOrderThyraModelEvaluator>
+        nlpFirstOrder = rcp(
+          new NLPFirstOrderThyraModelEvaluator(outerModel_,-1,-1)
+          );
+      nlpFirstOrder->showModelEvaluatorTrace(showModelEvaluatorTrace_);
+      nlp = nlpFirstOrder;
       break;
     }
     case SOLVE_MODE_OPTIMIZE: {
       // Setup finite difference object
-      RefCountPtr<Thyra::DirectionalFiniteDiffCalculator<Scalar> > direcFiniteDiffCalculator;
-      if(use_finite_diff_) {
-        direcFiniteDiffCalculator = rcp(new Thyra::DirectionalFiniteDiffCalculator<Scalar>());
+      RefCountPtr<Thyra::DirectionalFiniteDiffCalculator<Scalar> > objDirecFiniteDiffCalculator;
+      if(use_finite_diff_for_obj_) {
+        objDirecFiniteDiffCalculator = rcp(new Thyra::DirectionalFiniteDiffCalculator<Scalar>());
         if(paramList_.get())
-          direcFiniteDiffCalculator->setParameterList(
-            Teuchos::sublist(paramList_,FiniteDifferenceSettings_name)
+          objDirecFiniteDiffCalculator->setParameterList(
+            Teuchos::sublist(paramList_,ObjectiveFiniteDifferenceSettings_name)
+            );
+      }
+      RefCountPtr<Thyra::DirectionalFiniteDiffCalculator<Scalar> > conDirecFiniteDiffCalculator;
+      if(use_finite_diff_for_con_) {
+        conDirecFiniteDiffCalculator = rcp(new Thyra::DirectionalFiniteDiffCalculator<Scalar>());
+        if(paramList_.get())
+          conDirecFiniteDiffCalculator->setParameterList(
+            Teuchos::sublist(paramList_,ConstraintsFiniteDifferenceSettings_name)
             );
       }
       if( nonlinearlyElimiateStates_ ) {
@@ -500,12 +587,13 @@ void MoochoThyraSolver::setModel(
           reducedThyraModel = rcp(new Thyra::DefaultStateEliminationModelEvaluator<Scalar>(outerModel_,stateSolver));
         Teuchos::RefCountPtr<Thyra::ModelEvaluator<Scalar> >
           finalReducedThyraModel;
-        if(use_finite_diff_) {
+        if(use_finite_diff_for_obj_) {
           // Create the finite-difference wrapped Thyra::ModelEvaluator object
           Teuchos::RefCountPtr<Thyra::DefaultFiniteDifferenceModelEvaluator<Scalar> >
             fdReducedThyraModel = rcp(
               new Thyra::DefaultFiniteDifferenceModelEvaluator<Scalar>(
-                reducedThyraModel,direcFiniteDiffCalculator)
+                reducedThyraModel,objDirecFiniteDiffCalculator
+                )
               );
           finalReducedThyraModel = fdReducedThyraModel;
         }
@@ -513,7 +601,12 @@ void MoochoThyraSolver::setModel(
           finalReducedThyraModel = reducedThyraModel;
         }
         // Wrap the reduced NAND Thyra::ModelEvaluator object in an NLP object
-        nlp = rcp(new NLPFirstOrderThyraModelEvaluator(finalReducedThyraModel,p_idx,g_idx));
+        RefCountPtr<NLPFirstOrderThyraModelEvaluator>
+          nlpFirstOrder = rcp(
+            new NLPFirstOrderThyraModelEvaluator(finalReducedThyraModel,p_idx_,g_idx_)
+            );
+        nlpFirstOrder->showModelEvaluatorTrace(showModelEvaluatorTrace_);
+        nlp = nlpFirstOrder;
       }
       else {
         switch(nlpType_) {
@@ -521,15 +614,22 @@ void MoochoThyraSolver::setModel(
             Teuchos::RefCountPtr<NLPDirectThyraModelEvaluator>
               nlpDirect = rcp(
                 new NLPDirectThyraModelEvaluator(
-                  outerModel_,p_idx,g_idx
-                  ,use_finite_diff_ ? direcFiniteDiffCalculator : Teuchos::null
+                  outerModel_,p_idx_,g_idx_
+                  ,objDirecFiniteDiffCalculator
+                  ,conDirecFiniteDiffCalculator
                   )
                 );
+            nlpDirect->showModelEvaluatorTrace(showModelEvaluatorTrace_);
             nlp = nlpDirect;
             break;
           }
           case NLP_TYPE_FIRST_ORDER: {
-            nlp = rcp(new NLPFirstOrderThyraModelEvaluator(outerModel_,p_idx,g_idx));
+            RefCountPtr<NLPFirstOrderThyraModelEvaluator>
+              nlpFirstOrder = rcp(
+                new NLPFirstOrderThyraModelEvaluator(outerModel_,p_idx_,g_idx_)
+                );
+            nlpFirstOrder->showModelEvaluatorTrace(showModelEvaluatorTrace_);
+            nlp = nlpFirstOrder;
             break;
           }
           default:

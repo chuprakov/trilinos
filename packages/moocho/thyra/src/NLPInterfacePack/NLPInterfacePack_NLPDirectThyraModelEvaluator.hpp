@@ -48,8 +48,11 @@ class NLPDirectThyraModelEvaluator
 {
 public:
 
-  /** \brief Utility object that computes directional finite differences */
-  STANDARD_COMPOSITION_MEMBERS( Thyra::DirectionalFiniteDiffCalculator<value_type>, direcFiniteDiffCalculator );
+  /** \brief Utility object that computes directional finite differences for objective */
+  STANDARD_COMPOSITION_MEMBERS( Thyra::DirectionalFiniteDiffCalculator<value_type>, objDirecFiniteDiffCalculator );
+
+  /** \brief Utility object that computes directional finite differences for constraints */
+  STANDARD_COMPOSITION_MEMBERS( Thyra::DirectionalFiniteDiffCalculator<value_type>, conDirecFiniteDiffCalculator );
 
   /** \brief Set if model.DfDp is constant or not */
   STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, DfDp_is_const );
@@ -62,7 +65,8 @@ public:
     const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
-    ,const direcFiniteDiffCalculator_ptr_t                          direcFiniteDiffCalculator = Teuchos::null
+    ,const objDirecFiniteDiffCalculator_ptr_t                       objDirecFiniteDiffCalculator = Teuchos::null
+    ,const conDirecFiniteDiffCalculator_ptr_t                       conDirecFiniteDiffCalculator = Teuchos::null
     );
 
   /** \brief .Initialize given a <tt>Thyra::ModelEvaluator</tt> and
@@ -74,7 +78,8 @@ public:
     const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
-    ,const direcFiniteDiffCalculator_ptr_t                          direcFiniteDiffCalculator = Teuchos::null
+    ,const objDirecFiniteDiffCalculator_ptr_t                       objDirecFiniteDiffCalculator = Teuchos::null
+    ,const conDirecFiniteDiffCalculator_ptr_t                       conDirecFiniteDiffCalculator = Teuchos::null
     );
 
   /** @name Overridden public members from NLP */

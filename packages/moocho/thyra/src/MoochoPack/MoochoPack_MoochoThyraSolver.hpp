@@ -62,7 +62,9 @@ namespace MoochoPack {
  *
  * ToDo: Finish documetation!
  */
-class MoochoThyraSolver : virtual public Teuchos::ParameterListAcceptor {
+class MoochoThyraSolver
+  : virtual public Teuchos::ParameterListAcceptor
+{
 public:
 
   /** \name Public types */
@@ -281,9 +283,12 @@ private:
   ESolveMode          solveMode_;
   ENLPType            nlpType_;
   bool                nonlinearlyElimiateStates_;
-  bool                use_finite_diff_;
+  bool                use_finite_diff_for_obj_;
+  bool                use_finite_diff_for_con_;
   double              fwd_newton_tol_;
   int                 fwd_newton_max_iters_;
+  bool                useInvObjFunc_;
+  bool                showModelEvaluatorTrace_;
   std::string         stateGuessFileBase_;
   double              scaleStateGuess_;
   std::string         paramGuessFileBase_;

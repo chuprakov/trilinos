@@ -140,8 +140,10 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
   //
   // Get output and verbosity
   //
-  const RefCountPtr<FancyOStream> out       = this->getOStream();
-  const Teuchos::EVerbosityLevel  verbLevel = this->getVerbLevel();
+  const Teuchos::RefCountPtr<Teuchos::FancyOStream>
+    out = this->getOStream();
+  const Teuchos::EVerbosityLevel
+    verbLevel = ( showModelEvaluatorTrace() ? this->getVerbLevel() : Teuchos::VERB_NONE );
   Teuchos::OSTab tab(out);
   VOTSME modelOutputTempState(model_,out,verbLevel);
   if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
@@ -215,7 +217,8 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
     RefCountPtr<Thyra::LinearOpWithSolveBase<value_type> >
       model_W = model_outArgs.get_W();
     model_W->setOStream(out);
-    model_W->setVerbLevel(verbLevel);
+    if(showModelEvaluatorTrace())
+      model_W->setVerbLevel(verbLevel);
     dyn_cast<MatrixOpNonsingThyra>(*C_aggr).initialize(model_W,BLAS_Cpp::no_trans);
     // ToDo: This is implemented for direct sensitivities, change this for adjoint sensitivities
     if(p_idx_>=0)

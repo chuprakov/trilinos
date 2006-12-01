@@ -1,4 +1,8 @@
 Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
+  
+  MoochoThyraSolver::readParameters(...):
+    
+    Creating a new Teuchos::ParameterList ...
     Forward Newton Max Iters : int = 20
     Forward Newton Tolerance : double = -1
     NLP Type : string = First Order
@@ -6,12 +10,26 @@ Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
     Parameters Guess File Base Name : string = 
     Parameters Guess Scale : double = 1
     Parameters Solution File Base Name : string = 
+    Show Model Evaluator Trace : bool = 1
     Solve Mode : string = Optimize
     State Guess File Base Name : string = 
     State Guess Scale : double = 1
     State Solution File Base Name : string = 
-    Use Finite Differences : bool = 0
-    Finite Difference Settings -> 
+    Use Built-in Inverse Objective Function : bool = 0
+    Use Finite Differences For Constraints : bool = 0
+    Use Finite Differences For Objective : bool = 0
+    Constraints Finite Difference Settings -> 
+      FD Method : string = order-one
+      FD Step Length : double = -1
+      FD Step Select Type : string = Absolute
+    Inverse Objective Function Settings -> 
+      Parameter Base File Name Base : string = 
+      Parameter Multiplier : double = 1e-06
+      Parameter Scale File Name Base : string = 
+      State Multiplier : double = 1
+      State Scale File Name Base : string = 
+      State Target File Name Base : string = 
+    Objective Finite Difference Settings -> 
       FD Method : string = order-one
       FD Step Length : double = -1
       FD Step Select Type : string = Absolute

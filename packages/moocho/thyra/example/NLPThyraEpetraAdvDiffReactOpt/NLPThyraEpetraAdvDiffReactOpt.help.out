@@ -40,6 +40,8 @@ Usage: ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReact
                                                    (default: --x0=0)
   --p0                                     double  Initial guess or nonminal value for optimization parameters.
                                                    (default: --p0=1)
+  --support-derivatives                    bool    Support derivatives or not.
+  --no-support-derivatives                         (default: --support-derivatives)
   --linear-solver-params-file              string  Name of an XML file containing parameters for linear solver options to be appended first.
                                                    (default: --linear-solver-params-file="")
   --extra-linear-solver-params             string  An XML string containing linear solver parameters to be appended second.

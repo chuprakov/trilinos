@@ -1,21 +1,41 @@
 Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
+  
+  MoochoThyraSolver::readParameters(...):
+    
+    Creating a new Teuchos::ParameterList ...
 <ParameterList>
-  <ParameterList name="Finite Difference Settings">
+  <ParameterList name="Constraints Finite Difference Settings">
     <Parameter name="FD Method" type="string" value="order-one"/>
     <Parameter name="FD Step Length" type="double" value="-1"/>
     <Parameter name="FD Step Select Type" type="string" value="Absolute"/>
   </ParameterList>
   <Parameter name="Forward Newton Max Iters" type="int" value="20"/>
   <Parameter name="Forward Newton Tolerance" type="double" value="-1"/>
+  <ParameterList name="Inverse Objective Function Settings">
+    <Parameter name="Parameter Base File Name Base" type="string" value=""/>
+    <Parameter name="Parameter Multiplier" type="double" value="1e-06"/>
+    <Parameter name="Parameter Scale File Name Base" type="string" value=""/>
+    <Parameter name="State Multiplier" type="double" value="1"/>
+    <Parameter name="State Scale File Name Base" type="string" value=""/>
+    <Parameter name="State Target File Name Base" type="string" value=""/>
+  </ParameterList>
   <Parameter name="NLP Type" type="string" value="First Order"/>
   <Parameter name="Nonlinearly Eliminate States" type="bool" value="0"/>
+  <ParameterList name="Objective Finite Difference Settings">
+    <Parameter name="FD Method" type="string" value="order-one"/>
+    <Parameter name="FD Step Length" type="double" value="-1"/>
+    <Parameter name="FD Step Select Type" type="string" value="Absolute"/>
+  </ParameterList>
   <Parameter name="Parameters Guess File Base Name" type="string" value=""/>
   <Parameter name="Parameters Guess Scale" type="double" value="1"/>
   <Parameter name="Parameters Solution File Base Name" type="string" value=""/>
+  <Parameter name="Show Model Evaluator Trace" type="bool" value="1"/>
   <Parameter name="Solve Mode" type="string" value="Optimize"/>
   <Parameter name="State Guess File Base Name" type="string" value=""/>
   <Parameter name="State Guess Scale" type="double" value="1"/>
   <Parameter name="State Solution File Base Name" type="string" value=""/>
-  <Parameter name="Use Finite Differences" type="bool" value="0"/>
+  <Parameter name="Use Built-in Inverse Objective Function" type="bool" value="0"/>
+  <Parameter name="Use Finite Differences For Constraints" type="bool" value="0"/>
+  <Parameter name="Use Finite Differences For Objective" type="bool" value="0"/>
 </ParameterList>
 

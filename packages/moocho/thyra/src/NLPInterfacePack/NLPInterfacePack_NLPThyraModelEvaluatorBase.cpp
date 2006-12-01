@@ -213,7 +213,8 @@ void NLPThyraModelEvaluatorBase::imp_calc_Gf(
 // Protected functions to be used by subclasses
 
 NLPThyraModelEvaluatorBase::NLPThyraModelEvaluatorBase()
-  :initialized_(false),obj_scale_(1.0),has_bounds_(false)
+  :showModelEvaluatorTrace_(false),initialized_(false)
+  ,obj_scale_(1.0),has_bounds_(false)
   ,force_xinit_in_bounds_(true),num_bounded_x_(0)
 {}
 
@@ -546,7 +547,7 @@ void NLPThyraModelEvaluatorBase::postprocessBaseOutArgs(
   MEB::OutArgs<value_type> &model_outArgs = *model_outArgs_inout;
   if( f && !f_updated_ ) {
     if(g_idx_>=0) {
-      *f = ::Thyra::get_ele(*model_g_,g_idx_);
+      *f = ::Thyra::get_ele(*model_g_,0);
     }
     else {
       *f = 0.0;
@@ -590,13 +591,15 @@ void NLPThyraModelEvaluatorBase::evalModel(
   //
   // Get output and verbosity
   //
-  const Teuchos::RefCountPtr<Teuchos::FancyOStream> out       = this->getOStream();
-  const Teuchos::EVerbosityLevel                    verbLevel = this->getVerbLevel();
+  const Teuchos::RefCountPtr<Teuchos::FancyOStream>
+    out = this->getOStream();
+  const Teuchos::EVerbosityLevel
+    verbLevel = ( showModelEvaluatorTrace() ? this->getVerbLevel() : Teuchos::VERB_NONE );
   Teuchos::OSTab tab(out);
   typedef Teuchos::VerboseObjectTempState<MEB> VOTSME;
   VOTSME modelOutputTempState(model_,out,verbLevel);
   if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
-    *out << "\nEntering MoochoPack::NLPFirstOrderThyraModelEvaluator::evalModel(...) ...\n";
+    *out << "\nEntering MoochoPack::NLPThyraModelEvaluatorBase::evalModel(...) ...\n";
   //
   // Set the input and output arguments
   //
@@ -619,7 +622,7 @@ void NLPThyraModelEvaluatorBase::evalModel(
   postprocessBaseOutArgs(&model_outArgs,Gf,f,c);
   //
   if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
-    *out << "\nLeaving MoochoPack::NLPFirstOrderThyraModelEvaluator::evalModel(...) ...\n";
+    *out << "\nLeaving MoochoPack::NLPThyraModelEvaluatorBase::evalModel(...) ...\n";
 }
 
 }	// end namespace NLPInterfacePack

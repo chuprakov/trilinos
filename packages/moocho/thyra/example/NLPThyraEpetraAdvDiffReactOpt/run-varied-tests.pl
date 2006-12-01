@@ -56,12 +56,17 @@ my $do_finite_diff = 0;
 my $fd_step_len = -1.0;
 my $fd_options_file = "";
 
+my $use_finite_diff_obj = 0;
+my $use_finite_diff_con = 0;
+
 my $do_black_box = 0;
 my $bb_fd_step_len = 1e-8;
 my $bb_options_file = "";
 
 my $use_direct = 0;
 my $fwd_newton_tol = 1e-10;
+
+my $use_default_inv_obj = 0;
 
 my $extra_args = "";
 
@@ -102,11 +107,14 @@ GetOptions(
   "do-finite-diff!"         => \$do_finite_diff,
   "fd-step-len=f"           => \$fd_step_len,
   "fd-options-file=s"       => \$fd_options_file,
+  "use-finite-diff-obj"     => \$use_finite_diff_obj,
+  "use-finite-diff-con"     => \$use_finite_diff_con,
   "do-black-box!"           => \$do_black_box,
   "bb-fd-step-len=f"        => \$bb_fd_step_len,
   "bb-options-file=s"       => \$bb_options_file,
   "use-direct!"             => \$use_direct,
   "fwd-newton-tol=f"        => \$fwd_newton_tol,
+  "use-default-inv-obj!"    => \$use_default_inv_obj,
   "extra-args=s"            => \$extra_args
   );
 
@@ -301,6 +309,10 @@ sub moocho_thyra_solver_cmndline {
   my $do_sim = exists $cmnd_hashref->{"do-sim"};
   my $use_direct = $use_direct;
   $use_direct = 0 if(exists $cmnd_hashref->{"use-first-order"});
+  my $q_vec_file = "";
+  if(exists $cmnd_hashref->{"q-vec-file"}) {
+    $q_vec_file = $cmnd_hashref->{"q-vec-file"};
+  }
   my $x_guess_file = "";
   if(exists $cmnd_hashref->{"x-guess-file"}) {
     $x_guess_file = $cmnd_hashref->{"x-guess-file"};
@@ -331,28 +343,54 @@ sub moocho_thyra_solver_cmndline {
     $fd_step_len = $cmnd_hashref->{"fd-step-len"};
   }
   #
-  return "--extra-moocho-thyra-params=\""
-   ."<ParameterList>"
-     .($do_sim ? "<Parameter name=\\\"Solve Mode\\\" type=\\\"string\\\" value=\\\"Forward Solve\\\"/>" : "" )
-     .($use_direct ? "<Parameter name=\\\"NLP Type\\\" type=\\\"string\\\" value=\\\"Direct\\\"/>" : "" )
-     .($x_guess_file ne "" ? "<Parameter name=\\\"State Guess File Base Name\\\" type=\\\"string\\\" value=\\\"$x_guess_file\\\"/>" : "" )
-     .($p_guess_file ne "" ? "<Parameter name=\\\"Parameters Guess File Base Name\\\" type=\\\"string\\\" value=\\\"$p_guess_file\\\"/>" : "" )
-     .($scale_x_guess != 1.0 ? "<Parameter name=\\\"State Guess Scale\\\" type=\\\"double\\\" value=\\\"$scale_x_guess\\\"/>" : "" )
-     .($scale_p_guess != 1.0 ? "<Parameter name=\\\"Parameters Guess Scale\\\" type=\\\"double\\\" value=\\\"$scale_p_guess\\\"/>" : "" )
-     .($x_solu_file ne "" ? "<Parameter name=\\\"State Solution File Base Name\\\" type=\\\"string\\\" value=\\\"$x_solu_file\\\"/>" : "" )
-     .($p_solu_file ne "" ? "<Parameter name=\\\"Parameters Solution File Base Name\\\" type=\\\"string\\\" value=\\\"$p_solu_file\\\"/>" : "" )
-     .($black_box ? "<Parameter name=\\\"Nonlinearly Eliminate States\\\" type=\\\"bool\\\" value=\\\"1\\\"/>" : "" )
-     .($black_box ? "<Parameter name=\\\"Forward Newton Tolerance\\\" type=\\\"double\\\" value=\\\"$fwd_newton_tol\\\"/>" : "" )
-     .($fd_step_len > 0.0
-       ? (
-           "<Parameter name=\\\"Use Finite Differences\\\" type=\\\"bool\\\" value=\\\"1\\\"/>"
-           ."<ParameterList name=\\\"Finite Difference Settings\\\">"
-             ."<Parameter name=\\\"FD Step Length\\\" type=\\\"double\\\" value=\\\"$fd_step_len\\\"/>"
-           ."</ParameterList>"
-          )
-       : ""
-       )
-   ."</ParameterList>\"";
+  return
+    ($fd_step_len > 0.0 && $use_finite_diff_obj && $use_finite_diff_con ? " --no-support-derivatives" : "" )
+    .($q_vec_file ne "" ? " --q-vec-file=$q_vec_file" : "" )
+    ." --extra-moocho-thyra-params=\""
+       ."<ParameterList>"
+         .($do_sim ? "<Parameter name=\\\"Solve Mode\\\" type=\\\"string\\\" value=\\\"Forward Solve\\\"/>" : "" )
+         .($use_direct ? "<Parameter name=\\\"NLP Type\\\" type=\\\"string\\\" value=\\\"Direct\\\"/>" : "" )
+         .(!$do_sim && $use_default_inv_obj
+           ? "<Parameter name=\\\"Use Built-in Inverse Objective Function\\\" type=\\\"bool\\\" value=\\\"1\\\"/>"
+             ."<ParameterList name=\\\"Inverse Objective Function Settings\\\">"
+               ."<Parameter name=\\\"State Multiplier\\\" type=\\\"double\\\" value=\\\"1.0\\\"/>"
+               ."<Parameter name=\\\"State Target File Name Base\\\" type=\\\"string\\\" value=\\\"$x_guess_file\\\"/>"
+               ."<Parameter name=\\\"Parameter Multiplier\\\" type=\\\"double\\\" value=\\\"0.0\\\"/>"
+               ."<Parameter name=\\\"Parameter Base File Name Base\\\" type=\\\"string\\\" value=\\\"$p_guess_file\\\"/>"
+             ."</ParameterList>"
+           : ""
+           )
+         .($x_guess_file ne "" ? "<Parameter name=\\\"State Guess File Base Name\\\" type=\\\"string\\\" value=\\\"$x_guess_file\\\"/>" : "" )
+         .($p_guess_file ne "" ? "<Parameter name=\\\"Parameters Guess File Base Name\\\" type=\\\"string\\\" value=\\\"$p_guess_file\\\"/>" : "" )
+         .($scale_x_guess != 1.0 ? "<Parameter name=\\\"State Guess Scale\\\" type=\\\"double\\\" value=\\\"$scale_x_guess\\\"/>" : "" )
+         .($scale_p_guess != 1.0 ? "<Parameter name=\\\"Parameters Guess Scale\\\" type=\\\"double\\\" value=\\\"$scale_p_guess\\\"/>" : "" )
+         .($x_solu_file ne "" ? "<Parameter name=\\\"State Solution File Base Name\\\" type=\\\"string\\\" value=\\\"$x_solu_file\\\"/>" : "" )
+         .($p_solu_file ne "" ? "<Parameter name=\\\"Parameters Solution File Base Name\\\" type=\\\"string\\\" value=\\\"$p_solu_file\\\"/>" : "" )
+         .($black_box ? "<Parameter name=\\\"Nonlinearly Eliminate States\\\" type=\\\"bool\\\" value=\\\"1\\\"/>" : "" )
+         .($black_box ? "<Parameter name=\\\"Forward Newton Tolerance\\\" type=\\\"double\\\" value=\\\"$fwd_newton_tol\\\"/>" : "" )
+         .($fd_step_len > 0.0
+           ?
+           ($use_finite_diff_obj
+            ? (
+               "<Parameter name=\\\"Use Finite Differences For Objective\\\" type=\\\"bool\\\" value=\\\"1\\\"/>"
+               ."<ParameterList name=\\\"Objective Finite Difference Settings\\\">"
+               ."<Parameter name=\\\"FD Step Length\\\" type=\\\"double\\\" value=\\\"$fd_step_len\\\"/>"
+               ."</ParameterList>"
+               )
+            : ""
+            )
+           .($use_finite_diff_con
+             ? (
+                "<Parameter name=\\\"Use Finite Differences For Constraints\\\" type=\\\"bool\\\" value=\\\"1\\\"/>"
+                ."<ParameterList name=\\\"Constraints Finite Difference Settings\\\">"
+                ."<Parameter name=\\\"FD Step Length\\\" type=\\\"double\\\" value=\\\"$fd_step_len\\\"/>"
+                ."</ParameterList>"
+                )
+             : ""
+             )
+           : ""
+           )
+       ."</ParameterList>\"";
 }
 
 sub run_cmnd {
@@ -452,10 +490,11 @@ sub run_case {
         mkchdir("black-box") if($build_subdirs);
         my $invcmnd =
           $cmnd 
-            ." --moocho-options-file=$bb_options_file --q-vec-file=$fwd_dir/../fwd-init/x.out "
+            ." --moocho-options-file=$bb_options_file "
             .moocho_thyra_solver_cmndline(
                {
-                 "black-box"=>""
+                 "q-vec-file"=>"$fwd_dir/../fwd-init/x.out"
+                 ,"black-box"=>""
                  ,"fd-step-len"=>$bb_fd_step_len
                  ,"x-guess-file"=>"$fwd_dir/x.out"
                  ,"p-guess-file"=>"$fwd_dir/p.out"
@@ -469,10 +508,11 @@ sub run_case {
         mkchdir("finite-diff") if($build_subdirs);
         my $invcmnd =
           $cmnd 
-            ." --no-support-derivatives --moocho-options-file=$fd_options_file --q-vec-file=$fwd_dir/../fwd-init/x.out "
+            ." --moocho-options-file=$fd_options_file "
             .moocho_thyra_solver_cmndline(
                {
-                 "fd-step-len"=>$fd_step_len
+                 "q-vec-file"=>"$fwd_dir/../fwd-init/x.out"
+                 ,"fd-step-len"=>$fd_step_len
                  ,"x-guess-file"=>"$fwd_dir/x.out"
                  ,"p-guess-file"=>"$fwd_dir/p.out"
                }
@@ -486,10 +526,11 @@ sub run_case {
         my $invcmnd =
           $cmnd 
 
-            ." --moocho-options-file=$inv_options_file --q-vec-file=$fwd_dir/../fwd-init/x.out "
+            ." --moocho-options-file=$inv_options_file "
             .moocho_thyra_solver_cmndline(
                {
-                 "x-guess-file"=>"$fwd_dir/x.out"
+                 "q-vec-file"=>"$fwd_dir/../fwd-init/x.out"
+                 ,"x-guess-file"=>"$fwd_dir/x.out"
                  ,"p-guess-file"=>"$fwd_dir/p.out"
                }
              );
