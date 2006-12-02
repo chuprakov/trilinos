@@ -217,14 +217,19 @@ bool EvalNewPointTailoredApproach_Step::do_step(
     out << std::endl;
   }
 
+  if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+    out	<< "\nrGf_k = \n" << s.rGf().get_k(0);
+    out << std::endl;
+  }
+
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
     out	<< "\nc_k  = \n" << s.c().get_k(0);
     if(supports_Gf)
       out	<< "\nGf_k = \n" << s.Gf().get_k(0);
     out	<< "\npy_k = \n" << s.py().get_k(0);
-    out	<< "\nrGf_k = \n" << s.rGf().get_k(0);
     out << std::endl;
   }
+
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
     out << "\nD = -inv(C)*N = \n" << *D_ptr;
     out << std::endl;

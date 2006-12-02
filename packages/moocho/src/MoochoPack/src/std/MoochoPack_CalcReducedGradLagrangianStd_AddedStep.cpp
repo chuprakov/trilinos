@@ -101,11 +101,11 @@ bool CalcReducedGradLagrangianStd_AddedStep::do_step(
   // ToDo: Add terms for undecomposed equalities and inequalities!
   // + Uz' * lambda(equ_undecomp)
 
-  if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+  if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
     out	<< "\n||rGL_k||inf = " << rGL_k.norm_inf() << "\n";
   }
 
-  if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+  if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
     out	<< "\nrGL_k = \n" << rGL_k;
   }
 
