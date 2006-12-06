@@ -359,6 +359,7 @@ for (OrdinalType i = OrdinalZero ; i < MyLength ; ++i)
 \end{verbatim}
 
 Several methods are associated with a Tpetra::Vector object. For example,
+\newline
   \verb!scale(ScalarType scalarThis)! scales the current values of the
   vector, \verb!norm1()! returns the 1-norm, \verb!norm2()! returns the
   2-norm, \verb!normInf()! the $\infty\-$norm, \verb!minValue()! computes the
@@ -416,7 +417,8 @@ for (OrdinalType LID = OrdinalZero ; LID < NumMyElements ; ++LID)
 }
 \end{verbatim}
 Method {\tt submitEntry} requires the CombineMode 
-(Tpetra::Insert, Tpetra::Add, Tpetra::Replace), the row (or column) ID, the
+{\tt (Tpetra::Insert}, {\tt Tpetra::Add}, \newline
+{\tt Tpetra::Replace)}, the row (or column) ID, the
 value, and the column (or row) ID of the
 element to be inserted.  Method \verb!submitEntries()! can also be used to
 submit multiple entries with just one function call. The last step is
@@ -437,6 +439,7 @@ number of entries per row/column are returned with methods
 \verb!getNumGlobalNonzeros()!,
 \verb!getNumGlobalRows()!,
 \verb!getNumGlobalCols()!,
+\newline
 \verb!getNumGlobalDiagonals()!,
 \verb!getGlobalMaxNumEntries()!, respectively. The corresponding local
 information are returned by similar methods with \verb!My! instead of
@@ -447,7 +450,9 @@ information are returned by similar methods with \verb!My! instead of
 \smallskip
 
 To apply the matrix to a vector \verb!x! and get the result in
-\verb!y!, one can simply write \verb!matrix.apply(x, y, UseHermitian)!, where
+\verb!y!, one can simply write 
+\newline
+\verb!matrix.apply(x, y, UseHermitian)!, where
 \verb!UseHermitian! is a boolean variable that can be used to multiply with
 $A$ or $A^H$.
 

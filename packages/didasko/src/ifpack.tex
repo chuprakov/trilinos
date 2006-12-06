@@ -38,15 +38,13 @@ variety of overlapping (one-level) Schwarz preconditioners. The package
 uses Epetra for basic matrix-vector calculations, and accepts user
 matrices via an abstract matrix interface. A concrete implementation for
 Epetra matrices is provided. The package separates graph construction
-from factorization, improving performance in a substantial manner with
-respect to other factorization packages.
+from factorization, improving performance substantially compared to other factorization packages.
 
 In this Chapter we discuss the use of IFPACK objects as preconditioners for
 AztecOO solvers.  Specifically we present:
 \begin{itemize}
 \item Parallel distributed memory issues (in Section~\ref{sec:ifpack_parallel}).
-\item Incomplete factorizations and set the
-  notation (in Section~\ref{sec:ifpack_theoretical}).
+\item Incomplete factorizations and notation (in Section~\ref{sec:ifpack_theoretical}).
 \item How to compute incomplete Cholesky factorizations (in
   Section~\ref{sec:ifpack_chol}).
 \item IFPACK's RILU-type factorizations (in

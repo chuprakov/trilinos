@@ -295,13 +295,13 @@ from Epetra. It accepts input matrix in formats different
 from the Epetra\_RowMatrix or Epetra\_Operator. However, as part of the
 Trilinos project, ML can be used to define a preconditioner operator for
 \verb!Epetra_LinearProblem! objects (see for
-instance~\cite{Epetra-Ref-Guide}). This means that, in a C++ framework,
+instance~\cite{Epetra-Ref-Guide-new}). This means that, in a C++ framework,
 ML can be defined as an \verb!Epetra_Operator! object, applied to an
 \verb!Epetra_MultiVector!  object, and used as a preconditioner for
 AztecOO.  This can be done in two ways:
 \begin{itemize}
 \item By defining an \verb!ML_Epetra::MultiLevelOperator! object, derived from the
-  Epetra\_Operator class. The constructor of this object requires
+  Epetra\_\-Operator class. The constructor of this object requires
   already filled ML\_Struct and ML\_Aggregate structures.  ML must have
   been configure with the option \newline \verb!--enable-epetra!.
 \item By defining an \verb!ML_Epetra::MultiLevelPreconditioner! object, derived
@@ -334,7 +334,8 @@ Users must include it, and along with some subset of
 \verb!Epetra_Operator.h!, 
 \verb!Epetra_MultiVector.h!
 and
-\verb!Epetra_LinearProblem.h!.
+\verb!Epetra_-!
+\verb!LinearProblem.h!.
 Check the Epetra and AztecOO documentation for more information on this topic.
 
 The next steps proceed exactly as in \S~\ref{sec:ml_prec}:
@@ -503,7 +504,7 @@ specified parameter, that can be any C++ object or pointer.  This list
 is passed to the constructor, together with a pointer to the matrix, and
 a boolean flag.  If this flag is set to \verb!false!, the constructor
 will not compute the multilevel hierarchy until when
-\verb!MLPrec->ComputePreconditioner()! is called. The hierarchy can be
+{\tt MLPrec->ComputePrecon-}\newline {\tt ditioner()} is called. The hierarchy can be
 destroyed using \verb!MLPrec->Destroy()!.  For instance, the user may
 define a code like:
 \begin{verbatim}
