@@ -456,7 +456,6 @@ AC_CONFIG_FILES([
 		Makefile 
 		Makefile.export
 		Makefile.export.didasko 
-                doc/Makefile
 		examples/Makefile
 		examples/amesos/Makefile
 		examples/anasazi/Makefile

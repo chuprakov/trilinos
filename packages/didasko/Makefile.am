@@ -41,7 +41,9 @@ ACLOCAL	= aclocal -I config
 ## Additional files to be included in distribution for 'make dist'
 ## #######################################################################
 EXTRA_DIST = config/strip_dup_incl_paths.pl config/strip_dup_libs.pl \
-	src/Didasko_ConfigDefs.h README
+	src/Didasko_ConfigDefs.h README doc/Doxyfile \
+	doc/mainpage.doxygen src/Trilinos70Tutorial.pdf \
+	doc/didasko_logo.jpeg
 
 ## #######################################################################
 ## Tools in the auxillary directory 
@@ -73,7 +75,7 @@ if BUILD_EXAMPLES
 EXAMPLE_SUBDIR=examples
 endif
                                                                                 
-SUBDIRS = $(EXAMPLE_SUBDIR) $(TEST_SUBDIR) doc
+SUBDIRS = $(EXAMPLE_SUBDIR) $(TEST_SUBDIR)
 
 ## #######################################################################
 ## The below targets allow you to use the new

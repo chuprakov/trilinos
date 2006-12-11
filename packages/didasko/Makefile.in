@@ -113,7 +113,7 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	uninstall-recursive
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = examples test doc
+DIST_SUBDIRS = examples test
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -277,7 +277,9 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 AUTOMAKE_OPTIONS = foreign
 EXTRA_DIST = config/strip_dup_incl_paths.pl config/strip_dup_libs.pl \
-	src/Didasko_ConfigDefs.h README
+	src/Didasko_ConfigDefs.h README doc/Doxyfile \
+	doc/mainpage.doxygen src/Trilinos70Tutorial.pdf \
+	doc/didasko_logo.jpeg
 
 AUX_DIST = config/install-sh config/missing config/mkinstalldirs 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 autom4te.cache/* \
@@ -287,7 +289,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 autom4te.cache/* \
 
 @BUILD_TESTS_TRUE@TEST_SUBDIR = test
 @BUILD_EXAMPLES_TRUE@EXAMPLE_SUBDIR = examples
-SUBDIRS = $(EXAMPLE_SUBDIR) $(TEST_SUBDIR) doc
+SUBDIRS = $(EXAMPLE_SUBDIR) $(TEST_SUBDIR)
 TRILINOS_HOME_DIR = @abs_top_srcdir@/../..
 TRILINOS_BUILD_DIR = @abs_top_builddir@/../..
 @HAVE_MPI_FALSE@DIDASKO_CHECK_COMM = serial
@@ -470,7 +472,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/. $(distdir)/config $(distdir)/src
+	$(mkdir_p) $(distdir)/. $(distdir)/config $(distdir)/doc $(distdir)/src
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
