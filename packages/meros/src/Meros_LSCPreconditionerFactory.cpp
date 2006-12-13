@@ -26,41 +26,20 @@
 // ***********************************************************************
 // @HEADER
 
-#include "Thyra_DefaultIdentityLinearOp.hpp"
-#include "Thyra_DefaultInverseLinearOpDecl.hpp"
-#include "Thyra_DefaultInverseLinearOp.hpp"
 #include "Thyra_DefaultPreconditioner.hpp"
-#include "Thyra_DefaultZeroLinearOp.hpp"
-#include "Thyra_LinearOpWithSolveFactoryHelpers.hpp"
 #include "Thyra_PreconditionerFactoryHelpers.hpp"
 #include "Thyra_SolveSupportTypes.hpp"
 #include "Thyra_LinearOpBase.hpp"
-#include "Thyra_LinearOpBaseDecl.hpp"
-#include "Thyra_VectorDecl.hpp"
 #include "Thyra_VectorImpl.hpp"
 #include "Thyra_VectorSpaceImpl.hpp"
-#include "Thyra_LinearOperatorDecl.hpp"
 #include "Thyra_LinearOperatorImpl.hpp"
-#include "Thyra_SpmdVectorBase.hpp"
-#include "Thyra_DefaultBlockedLinearOpDecl.hpp"
 #include "Thyra_PreconditionerFactoryBase.hpp"
+#include "Thyra_InverseLinearOperator.hpp"
 
 #include "Meros_LSCPreconditionerFactory.h"
-#include "Meros_AztecSolveStrategy.hpp"
-#include "Meros_InverseOperator.hpp"
-#include "Meros_ZeroOperator.hpp"
-#include "Meros_IdentityOperator.hpp"
-#include "Meros_LinearSolver.hpp"
 #include "Meros_PCDPreconditionerFactory.h"
 
-#include "AztecOO.h"
-#include "Thyra_AztecOOLinearOpWithSolveFactory.hpp"
-#include "Thyra_AztecOOLinearOpWithSolve.hpp"
-
-using namespace Teuchos;
-using namespace Thyra;
 using namespace Meros;
-
 
 // Constructors/initializers/accessors
 
@@ -70,27 +49,25 @@ using namespace Meros;
 
 
 LSCPreconditionerFactory
-::LSCPreconditionerFactory(RefCountPtr<ParameterList> azFParams,
-			   RefCountPtr<ParameterList> azBBtParams)
-{
-  azFParams_ = azFParams;
-  azBBtParams_ = azBBtParams;
-}
-
+::LSCPreconditionerFactory(
+  RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   const&  FSolveStrategy,
+  RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   const&  BBtSolveStrategy
+  )
+  :FSolveStrategy_(FSolveStrategy),
+   BBtSolveStrategy_(BBtSolveStrategy)
+{}
 
 bool LSCPreconditionerFactory
 ::isCompatible(const LinearOpSourceBase<double> &fwdOpSrc) const
 {
-TEST_FOR_EXCEPT("LSCPreconditionerFactory::isCompatible is not implemented");
+  TEST_FOR_EXCEPT("LSCPreconditionerFactory::isCompatible is not implemented");
 }
-
 
 RefCountPtr<PreconditionerBase<double> > LSCPreconditionerFactory
 ::createPrec() const
 {
   return rcp(new DefaultPreconditioner<double>());
 }
-
 
 void LSCPreconditionerFactory
 ::initializePrec(const RefCountPtr<const LinearOpSourceBase<double> > &opSrc,
@@ -110,30 +87,21 @@ void LSCPreconditionerFactory
   // Ignoring C block.
 
   // Builde F inverse operator Finv
-  LinearSolveStrategy<double> azF 
-    = new AztecSolveStrategy(*(azFParams_.get()));
-  ConstLinearOperator<double> Finv 
-    = new InverseOperator<double>(F, azF);
+  ConstLinearOperator<double>
+    Finv = inverse(*FSolveStrategy_,F,Thyra::IGNORE_SOLVE_FAILURE);
 
   // Builde BBt inverse operator BBtinv
   ConstLinearOperator<double> BBt = B * Bt;
-  LinearSolveStrategy<double> azBBt 
-    = new AztecSolveStrategy(*(azBBtParams_.get()));
-  //  ConstLinearOperator<double> BBtinv 
-  //    = new InverseOperator<double>(makeEpetraOperator(BBt), azBBt);
-  ConstLinearOperator<double> BBtinv 
-    = new InverseOperator<double>(BBt, azBBt);
+  ConstLinearOperator<double>
+    BBtinv = inverse(*BBtSolveStrategy_,BBt,Thyra::IGNORE_SOLVE_FAILURE);
 
   // Build identity matrices on the velocity and pressure spaces 
-  ConstLinearOperator<double> Ivel = new IdentityOperator<double>(Bt.range());
-  ConstLinearOperator<double> Ipress = new IdentityOperator<double>(Bt.domain());
+  ConstLinearOperator<double> Ivel = identity(Bt.range());
+  ConstLinearOperator<double> Ipress = identity(Bt.domain());
 
   // Build zero operators. Need one that is pressure x velocity and
   // one that is velocity x pressure
-  ConstLinearOperator<double> Z = new ZeroOperator<double>(Bt.domain(), 
-						      Bt.range());
-  ConstLinearOperator<double> Zt = new ZeroOperator<double>(Bt.range(), 
-						       Bt.domain());
+  ConstLinearOperator<double> zero;
 
   // Build Quinv
   // Setting Quinv = I for now. Will not be identity for some discretizations.
@@ -143,9 +111,12 @@ void LSCPreconditionerFactory
   ConstLinearOperator<double> Xinv = BBtinv * BFBt *  BBtinv;
 
   // Build the 3 block operators for the preconditioner
-  ConstLinearOperator<double> P1 = block2x2(Finv, Zt, Z, Ipress);
-  ConstLinearOperator<double> P2 = block2x2(Ivel, (-1.0)*Bt, Z, Ipress);
-  ConstLinearOperator<double> P3 = block2x2(Ivel, Zt, Z, (-1.0)*Xinv);
+  ConstLinearOperator<double> P1 = block2x2(  Finv,    zero,
+                                              zero,    Ipress        );
+  ConstLinearOperator<double> P2 = block2x2(  Ivel,    (-1.0)*Bt,
+                                              zero,    Ipress        );
+  ConstLinearOperator<double> P3 = block2x2(  Ivel,    zero, 
+                                              zero,    (-1.0)*Xinv   );
 
   //  ConstLinearOperator<double> LSCprec = makeEpetraOperator(P1 * P2 * P3);
   ConstLinearOperator<double> LSCprec = P1 * P2 * P3;

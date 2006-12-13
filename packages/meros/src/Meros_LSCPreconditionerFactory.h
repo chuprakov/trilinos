@@ -48,7 +48,11 @@
 
 namespace Meros
 {
-  using namespace Teuchos;
+
+  using Teuchos::ParameterList;
+  using Teuchos::RefCountPtr;
+  using Teuchos::rcp;
+  using Teuchos::null;
   using namespace Thyra;
 
   /*! \ingroup PreconditionerFactory
@@ -111,9 +115,12 @@ namespace Meros
        *  preconditioner factory. Takes an AztecOO parameter list for
        *  the F (convection-diffusion) solve and the B*Bt 
        *  solve.  */
-      LSCPreconditionerFactory(RefCountPtr<ParameterList> azFParams,
-			       RefCountPtr<ParameterList> azBBtParams);
-      //@}
+      LSCPreconditionerFactory(
+        RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   const&  FSolveStrategy,
+        RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   const&  BBtSolveStrategy
+        );
+
+     //@}
 
       /** @name Overridden from PreconditionerFactoryBase */
       //@{
@@ -122,7 +129,6 @@ namespace Meros
        * <tt>*this</tt> factory object.
        */
       bool isCompatible(const LinearOpSourceBase<double> &fwdOpSrc ) const;
-
 
       /** \brief Create an (uninitialized) <tt>LinearOperator</tt>
        * object to be initalized as the preconditioner later in
@@ -173,11 +179,13 @@ namespace Meros
       /* GET_RCP(PreconditionerFactoryBase<double>); */
 
     private:
+
       mutable RefCountPtr<ParameterList>  validPL_;
       RefCountPtr<ParameterList>          paramList_;
 
-      RefCountPtr<ParameterList> azFParams_;
-      RefCountPtr<ParameterList> azBBtParams_;
+      RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   FSolveStrategy_;
+      RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   BBtSolveStrategy_;
+
     };
 
 }  // namespace Meros

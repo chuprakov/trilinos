@@ -59,6 +59,7 @@
 #include "Thyra_DefaultPreconditionerDecl.hpp"
 #include "Thyra_DefaultPreconditioner.hpp"
 #include "Thyra_SingleRhsLinearOpWithSolveBase.hpp"
+#include "Thyra_AztecOOLinearOpWithSolveFactory.hpp"
 
 #ifdef HAVE_MPI
 #include "Epetra_MpiComm.h"
@@ -281,10 +282,11 @@ int main(int argc, char *argv[])
 
       // Make a zero operator on the small (pressure) space since the
       // 2,2 block (C) is zero in this example.
-      RefCountPtr<Thyra::LinearOpBase<double> > tmpZ = 
-        rcp(new DefaultZeroLinearOp<double>(tmpBt->domain(), 
-                                            tmpBt->domain()));
-      const LinearOperator<double> Z = tmpZ;
+      // RefCountPtr<Thyra::LinearOpBase<double> > tmpZ = 
+      // rcp(new DefaultZeroLinearOp<double>(tmpBt->domain(), 
+      //                                   tmpBt->domain()));
+      // const LinearOperator<double> Z = tmpZ;
+      const LinearOperator<double> Z;
 
       // Build the block saddle operator with F, Bt, B, and Z.  This
       // operator will be blockOp = [F Bt; B zero] (in Matlab
@@ -486,8 +488,12 @@ int main(int argc, char *argv[])
 
       // 4) Build the LSC block preconditioner factory.
       RefCountPtr<PreconditionerFactoryBase<double> > merosPrecFac
-        = rcp(new LSCPreconditionerFactory(aztecFParams,
-                                           aztecBBtParams));
+        = rcp(
+          new LSCPreconditionerFactory(
+            rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecFParams))
+            ,rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecBBtParams))
+            )
+          );
   
       RefCountPtr<PreconditionerBase<double> > Prcp 
         = merosPrecFac->createPrec();

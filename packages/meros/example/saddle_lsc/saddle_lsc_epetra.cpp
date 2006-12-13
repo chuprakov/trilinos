@@ -62,6 +62,7 @@
 #include "Thyra_DefaultPreconditionerDecl.hpp"
 #include "Thyra_DefaultPreconditioner.hpp"
 #include "Thyra_SingleRhsLinearOpWithSolveBase.hpp"
+#include "Thyra_AztecOOLinearOpWithSolveFactory.hpp"
 
 #ifdef HAVE_MPI
 #include "Epetra_MpiComm.h"
@@ -327,10 +328,17 @@ int main(int argc, char *argv[])
 
 
       // 4) Build the LSC block preconditioner factory.
+      // RefCountPtr<PreconditionerFactoryBase<double> > merosPrecFac
+      //  = rcp(new LSCPreconditionerFactory(aztecFParams,
+      //			   aztecBBtParams));
       RefCountPtr<PreconditionerFactoryBase<double> > merosPrecFac
-	= rcp(new LSCPreconditionerFactory(aztecFParams,
-					   aztecBBtParams));
-  
+        = rcp(
+	      new LSCPreconditionerFactory(
+	       rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecFParams)),
+               rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecBBtParams))
+	       )
+	      );  
+
       RefCountPtr<PreconditionerBase<double> > Prcp 
 	= merosPrecFac->createPrec();
 
@@ -426,7 +434,7 @@ int main(int argc, char *argv[])
       
       if(normResvec < 10.0*saddleTol)
 	{
-	  cerr << "Example PASSED" << endl;
+	  cerr << "Example PASSED!" << endl;
 	  return 0;
 	}
       else

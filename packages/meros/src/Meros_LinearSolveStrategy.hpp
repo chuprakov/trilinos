@@ -61,6 +61,12 @@ namespace Meros
     LinearSolveStrategy(Handleable<LinearOpWithSolveFactoryBase<Scalar> >* lowsf)
       : lowsf_(lowsf->getRcp()), pf_(lowsf_->getPreconditionerFactory()) {;}
 
+    /** \brief . */
+    RefCountPtr<LinearOpWithSolveFactoryBase<Scalar> > getLOWSF() const
+      {
+        return lowsf_;
+      }
+
     /** */
     RefCountPtr<LinearOpWithSolveBase<Scalar> > getLOWS(const LinearOperator<Scalar>& op) const 
     {
