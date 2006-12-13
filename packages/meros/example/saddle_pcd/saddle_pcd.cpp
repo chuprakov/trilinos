@@ -435,12 +435,12 @@ int main(int argc, char *argv[])
         = rcp(new ParameterList("aztecOOQpSolverFactory"), true);
       
       // forward solve settings
-      aztecApParams->sublist("Forward Solve").set("Max Iterations", 100);
-      aztecApParams->sublist("Forward Solve").set("Tolerance", 10e-8);
+      aztecQpParams->sublist("Forward Solve").set("Max Iterations", 100);
+      aztecQpParams->sublist("Forward Solve").set("Tolerance", 10e-8);
       // aztecOO solver settings
-      aztecApParams->sublist("Forward Solve")
+      aztecQpParams->sublist("Forward Solve")
         .sublist("AztecOO Settings").set("Aztec Solver", "BiCGStab");
-      aztecApParams->sublist("Forward Solve")
+      aztecQpParams->sublist("Forward Solve")
         .sublist("AztecOO Settings").set("Aztec Preconditioner", "none");
 
 
