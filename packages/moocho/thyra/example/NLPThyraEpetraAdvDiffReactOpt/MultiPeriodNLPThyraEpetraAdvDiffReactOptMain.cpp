@@ -1,7 +1,6 @@
 #include "GLpApp_AdvDiffReactOptModelCreator.hpp"
 #include "MoochoPack_MoochoThyraSolver.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
-#include "Thyra_SpmdMultiVectorFileIO.hpp"
 #include "Thyra_DefaultClusteredSpmdProductVectorSpace.hpp"
 #include "Thyra_DefaultMultiPeriodModelEvaluator.hpp"
 #include "Thyra_VectorSpaceTester.hpp"

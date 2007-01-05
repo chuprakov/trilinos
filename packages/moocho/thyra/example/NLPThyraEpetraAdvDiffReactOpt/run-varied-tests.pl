@@ -353,17 +353,31 @@ sub moocho_thyra_solver_cmndline {
          .(!$do_sim && $use_default_inv_obj
            ? "<Parameter name=\\\"Use Built-in Inverse Objective Function\\\" type=\\\"bool\\\" value=\\\"1\\\"/>"
              ."<ParameterList name=\\\"Inverse Objective Function Settings\\\">"
-               ."<Parameter name=\\\"State Multiplier\\\" type=\\\"double\\\" value=\\\"1.0\\\"/>"
-               ."<Parameter name=\\\"State Target File Name Base\\\" type=\\\"string\\\" value=\\\"$x_guess_file\\\"/>"
+               ."<Parameter name=\\\"Observation Multiplier\\\" type=\\\"double\\\" value=\\\"1.0\\\"/>"
+               ."<ParameterList name=\\\"Observation Target Vector\\\">"
+                 ."<Parameter name=\\\"File Name Base\\\" type=\\\"string\\\" value=\\\"$q_vec_file\\\"/>"
+               ."</ParameterList>"
                ."<Parameter name=\\\"Parameter Multiplier\\\" type=\\\"double\\\" value=\\\"0.0\\\"/>"
-               ."<Parameter name=\\\"Parameter Base File Name Base\\\" type=\\\"string\\\" value=\\\"$p_guess_file\\\"/>"
+               ."<ParameterList name=\\\"Parameter Base Vector\\\">"
+                 ."<Parameter name=\\\"File Name Base\\\" type=\\\"string\\\" value=\\\"$p_guess_file\\\"/>"
+               ."</ParameterList>"
              ."</ParameterList>"
            : ""
            )
-         .($x_guess_file ne "" ? "<Parameter name=\\\"State Guess File Base Name\\\" type=\\\"string\\\" value=\\\"$x_guess_file\\\"/>" : "" )
-         .($p_guess_file ne "" ? "<Parameter name=\\\"Parameters Guess File Base Name\\\" type=\\\"string\\\" value=\\\"$p_guess_file\\\"/>" : "" )
-         .($scale_x_guess != 1.0 ? "<Parameter name=\\\"State Guess Scale\\\" type=\\\"double\\\" value=\\\"$scale_x_guess\\\"/>" : "" )
-         .($scale_p_guess != 1.0 ? "<Parameter name=\\\"Parameters Guess Scale\\\" type=\\\"double\\\" value=\\\"$scale_p_guess\\\"/>" : "" )
+         .($x_guess_file ne ""
+           ? "<ParameterList name=\\\"State Guess\\\">"
+               ."<Parameter name=\\\"File Name Base\\\" type=\\\"string\\\" value=\\\"$x_guess_file\\\"/>"
+               .($scale_x_guess != 1.0 ? "<Parameter name=\\\"Scale By\\\" type=\\\"double\\\" value=\\\"$scale_x_guess\\\"/>" : "" )
+             ."</ParameterList>"
+           : ""
+           )
+         .($p_guess_file ne ""
+           ? "<ParameterList name=\\\"Parameter Guess\\\">"
+               ."<Parameter name=\\\"File Name Base\\\" type=\\\"string\\\" value=\\\"$p_guess_file\\\"/>"
+               .($scale_p_guess != 1.0 ? "<Parameter name=\\\"Scale By\\\" type=\\\"double\\\" value=\\\"$scale_p_guess\\\"/>" : "" )
+             ."</ParameterList>"
+           : ""
+           )
          .($x_solu_file ne "" ? "<Parameter name=\\\"State Solution File Base Name\\\" type=\\\"string\\\" value=\\\"$x_solu_file\\\"/>" : "" )
          .($p_solu_file ne "" ? "<Parameter name=\\\"Parameters Solution File Base Name\\\" type=\\\"string\\\" value=\\\"$p_solu_file\\\"/>" : "" )
          .($black_box ? "<Parameter name=\\\"Nonlinearly Eliminate States\\\" type=\\\"bool\\\" value=\\\"1\\\"/>" : "" )

@@ -33,7 +33,7 @@
 #include "Thyra_DefaultStateEliminationModelEvaluator.hpp"
 #include "Thyra_DefaultEvaluationLoggerModelEvaluator.hpp"
 #include "Thyra_DefaultInverseModelEvaluator.hpp"
-#include "Thyra_SpmdMultiVectorFileIO.hpp"
+#include "Thyra_DefaultSpmdMultiVectorFileIO.hpp"
 #include "Thyra_DampenedNewtonNonlinearSolver.hpp"
 #include "Thyra_VectorStdOps.hpp"
 #include "Teuchos_StandardParameterEntryValidators.hpp"
@@ -129,52 +129,15 @@ const std::string InverseObjectiveFunctionSettings_name = "Inverse Objective Fun
 const std::string ShowModelEvaluatorTrace_name = "Show Model Evaluator Trace";
 const bool ShowModelEvaluatorTrace_default = "false";
 
-const std::string StateGuessFileBaseName_name = "State Guess File Base Name";
-const std::string StateGuessFileBaseName_default = "";
+const std::string StateGuess_name = "State Guess";
 
-const std::string StateGuessScale_name = "State Guess Scale";
-const double StateGuessScale_default = 1.0;
-
-const std::string ParamGuessFileBaseName_name = "Parameters Guess File Base Name";
-const std::string ParamGuessFileBaseName_default = "";
-
-const std::string ParamGuessScale_name = "Parameters Guess Scale";
-const double ParamGuessScale_default = 1.0;
+const std::string ParamGuess_name = "Parameter Guess";
 
 const std::string StateSoluFileBaseName_name = "State Solution File Base Name";
 const std::string StateSoluFileBaseName_default = "";
 
 const std::string ParamSoluFileBaseName_name = "Parameters Solution File Base Name";
 const std::string ParamSoluFileBaseName_default = "";
-
-//
-// Other stuff
-//
-
-typedef AbstractLinAlgPack::value_type  Scalar;
-
-Teuchos::RefCountPtr<Thyra::VectorBase<Scalar> >
-readVectorFromFile(
-  const std::string                                                   &fileNameBase
-  ,const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<Scalar> >  &vs
-  ,const double                                                       scaleBy = 1.0
-  )
-{
-  Thyra::SpmdMultiVectorFileIO<Scalar> fileIO;
-  Teuchos::RefCountPtr<Thyra::VectorBase<Scalar> >
-    vec = fileIO.readVectorFromFile(fileNameBase,vs);
-  Thyra::Vt_S(&*vec,scaleBy);
-  return vec;
-}
-
-void writeVectorToFile(
-  const Thyra::VectorBase<Scalar>    &vec
-  ,const std::string                 &fileNameBase
-  )
-{
-  Thyra::SpmdMultiVectorFileIO<Scalar> fileIO;
-  fileIO.writeToFile(vec,fileNameBase);
-}
 
 } // namespace
 
@@ -196,6 +159,8 @@ MoochoThyraSolver::MoochoThyraSolver(
   ,paramsXmlFileNameOption_(paramsXmlFileNameOption)
   ,extraParamsXmlStringOption_(extraParamsXmlStringOption)
   ,paramsUsedXmlOutFileNameOption_(paramsUsedXmlOutFileNameOption)
+  ,stateVectorIO_(Teuchos::rcp(new Thyra::DefaultSpmdMultiVectorFileIO<value_type>))
+  ,parameterVectorIO_(Teuchos::rcp(new Thyra::DefaultSpmdMultiVectorFileIO<value_type>))
   ,solveMode_(SOLVE_MODE_OPTIMIZE)
   ,nlpType_(NLP_TYPE_FIRST_ORDER)
   ,nonlinearlyElimiateStates_(false)
@@ -205,10 +170,6 @@ MoochoThyraSolver::MoochoThyraSolver(
   ,fwd_newton_max_iters_(20)
   ,useInvObjFunc_(false)
   ,showModelEvaluatorTrace_(false)
-  ,stateGuessFileBase_("")
-  ,scaleStateGuess_(1.0)
-  ,paramGuessFileBase_("")
-  ,scaleParamGuess_(1.0)
   ,stateSoluFileBase_("")
   ,paramSoluFileBase_("")
 {}
@@ -276,41 +237,40 @@ void MoochoThyraSolver::setParameterList(
   Teuchos::RefCountPtr<Teuchos::ParameterList> const& paramList
   )
 {
-  if(paramList.get())
-    paramList->validateParameters(*getValidParameters(),0); // Just validate my level!
+  TEST_FOR_EXCEPT(!paramList.get());
+  paramList->validateParameters(*getValidParameters(),0); // Just validate my level!
   paramList_ = paramList;
-  if(paramList_.get()) {
-    solveMode_ = solveModeValidator->getIntegralValue(
-      *paramList_,SolveMode_name,SolveMode_default);
-    nlpType_ = nlpTypeValidator->getIntegralValue(
-      *paramList_,NLPType_name,NLPType_default);
-    nonlinearlyElimiateStates_ = paramList_->get(
-      NonlinearlyEliminateStates_name,NonlinearlyEliminateStates_default);
-    use_finite_diff_for_obj_ = paramList_->get(
-      UseFiniteDifferencesForObjective_name,UseFiniteDifferencesForObjective_default);
-    use_finite_diff_for_con_ = paramList_->get(
-      UseFiniteDifferencesForConstraints_name,UseFiniteDifferencesForConstraints_default);
-    fwd_newton_tol_ = paramList_->get(
-      FwdNewtonTol_name,FwdNewtonTol_default);
-    fwd_newton_max_iters_ = paramList_->get(
-      FwdNewtonMaxIters_name,FwdNewtonMaxIters_default);
-    useInvObjFunc_ = paramList_->get(
-      UseBuiltInverseObjectiveFunction_name,UseBuiltInverseObjectiveFunction_default);
-    showModelEvaluatorTrace_ = paramList->get(
-      ShowModelEvaluatorTrace_name,ShowModelEvaluatorTrace_default);
-    stateGuessFileBase_ = paramList_->get(
-      StateGuessFileBaseName_name,StateGuessFileBaseName_default);
-    scaleStateGuess_ = paramList_->get(
-      StateGuessScale_name,StateGuessScale_default);
-    paramGuessFileBase_ = paramList_->get(
-      ParamGuessFileBaseName_name,ParamGuessFileBaseName_default);
-    scaleParamGuess_ = paramList_->get(
-      ParamGuessScale_name,ParamGuessScale_default);
-    stateSoluFileBase_ = paramList_->get(
-      StateSoluFileBaseName_name,StateSoluFileBaseName_default);
-    paramSoluFileBase_ = paramList_->get(
-      ParamSoluFileBaseName_name,ParamSoluFileBaseName_default);
-  }
+  solveMode_ = solveModeValidator->getIntegralValue(
+    *paramList_,SolveMode_name,SolveMode_default);
+  nlpType_ = nlpTypeValidator->getIntegralValue(
+    *paramList_,NLPType_name,NLPType_default);
+  nonlinearlyElimiateStates_ = paramList_->get(
+    NonlinearlyEliminateStates_name,NonlinearlyEliminateStates_default);
+  use_finite_diff_for_obj_ = paramList_->get(
+    UseFiniteDifferencesForObjective_name,UseFiniteDifferencesForObjective_default);
+  use_finite_diff_for_con_ = paramList_->get(
+    UseFiniteDifferencesForConstraints_name,UseFiniteDifferencesForConstraints_default);
+  fwd_newton_tol_ = paramList_->get(
+    FwdNewtonTol_name,FwdNewtonTol_default);
+  fwd_newton_max_iters_ = paramList_->get(
+    FwdNewtonMaxIters_name,FwdNewtonMaxIters_default);
+  useInvObjFunc_ = paramList_->get(
+    UseBuiltInverseObjectiveFunction_name,UseBuiltInverseObjectiveFunction_default);
+  showModelEvaluatorTrace_ = paramList->get(
+    ShowModelEvaluatorTrace_name,ShowModelEvaluatorTrace_default);
+  x_reader_.setParameterList(
+    sublist(paramList_,StateGuess_name)
+    );
+  p_reader_.setParameterList(
+    sublist(paramList_,ParamGuess_name)
+    );
+  stateSoluFileBase_ = paramList_->get(
+    StateSoluFileBaseName_name,StateSoluFileBaseName_default);
+  paramSoluFileBase_ = paramList_->get(
+    ParamSoluFileBaseName_name,ParamSoluFileBaseName_default);
+#ifdef TEUCHOS_DEBUG
+  paramList->validateParameters(*getValidParameters(),0); // Just validate my level!
+#endif
 }
 
 Teuchos::RefCountPtr<Teuchos::ParameterList>
@@ -395,46 +355,26 @@ MoochoThyraSolver::getValidParameters() const
       "of optimization problem just with a model that supports only the\n"
       "parameterized state function f(x,p)=0."
       );
-    pl->sublist(
-      InverseObjectiveFunctionSettings_name,false
-      ,"Settings for the built-in inverse objective function.\n"
-      "See the outer parameter \""+UseBuiltInverseObjectiveFunction_name+"\"."
-      ).setParameters(
-        *Teuchos::rcp(
-          new Thyra::DefaultInverseModelEvaluator<value_type>()
-          )->getValidParameters()
-        );
+    if(1) {
+      Teuchos::RefCountPtr<Thyra::DefaultInverseModelEvaluator<Scalar> >
+        inverseModel = rcp(new Thyra::DefaultInverseModelEvaluator<Scalar>());
+      pl->sublist(
+        InverseObjectiveFunctionSettings_name,false
+        ,"Settings for the built-in inverse objective function.\n"
+        "See the outer parameter \""+UseBuiltInverseObjectiveFunction_name+"\"."
+        ).setParameters(*inverseModel->getValidParameters());
+    }
     pl->set(
       ShowModelEvaluatorTrace_name,ShowModelEvaluatorTrace_default
       ,"Determine if a trace of the objective function will be shown or not\n"
       "when the NLP is evaluated."
       );
-    pl->set(
-      StateGuessFileBaseName_name,StateGuessFileBaseName_default
-      ,"The base name of a file that is used to read in the guess for\n"
-      "the state variables.  If set, then a file for each process must be\n"
-      "present for each process to read from."
-      );
-    pl->set(
-      StateGuessScale_name,StateGuessScale_default
-      ,"Sets the constant by which the initial guess for the state variables are scaled\n"
-      "will be scaled by before they are used.  This feature allows for controlled\n"
-      "experiments where a solution is perturbed and the solver must resolve the\n"
-      "problem."
-      );
-    pl->set(
-      ParamGuessFileBaseName_name,ParamGuessFileBaseName_default
-      ,"The base name of a file that is used to read in the guess for\n"
-      "the parameters.  If set, then a file for each process must be\n"
-      "present for each process to read from."
-      );
-    pl->set(
-      ParamGuessScale_name,ParamGuessScale_default
-      ,"Sets the constant by which the initial guess for the parameters are scaled\n"
-      "will be scaled by before they are used.  This feature allows for controlled\n"
-      "experiments where a solution is perturbed and the solver must resolve the\n"
-      "problem."
-      );
+    if(this->get_stateVectorIO().get())
+      x_reader_.set_fileIO(this->get_stateVectorIO());
+    pl->sublist(StateGuess_name).setParameters(*x_reader_.getValidParameters());
+    if(this->get_parameterVectorIO().get())
+      p_reader_.set_fileIO(this->get_parameterVectorIO());
+    pl->sublist(ParamGuess_name).setParameters(*p_reader_.getValidParameters());
     pl->set(
       StateSoluFileBaseName_name,StateSoluFileBaseName_default
       ,"If specified, a file with this basename will be written to with\n"
@@ -508,6 +448,9 @@ void MoochoThyraSolver::setModel(
     Teuchos::RefCountPtr<Thyra::DefaultInverseModelEvaluator<Scalar> >
       inverseModel
       = rcp(new Thyra::DefaultInverseModelEvaluator<Scalar>(outerModel_));
+    inverseModel->setVerbLevel(Teuchos::VERB_LOW);
+    inverseModel->set_observationTargetIO(get_stateVectorIO());
+    inverseModel->set_parameterBaseIO(get_parameterVectorIO());
     inverseModel->setParameterList(
       Teuchos::sublist(paramList_,InverseObjectiveFunctionSettings_name) );
     outerModel_ = inverseModel; 
@@ -655,25 +598,21 @@ void MoochoThyraSolver::readInitialGuess(
   Teuchos::RefCountPtr<Teuchos::FancyOStream>
     out = Teuchos::getFancyOStream(Teuchos::rcp(out_arg,false));
   Teuchos::RefCountPtr<Thyra::ModelEvaluatorBase::InArgs<value_type> >
-    initialGuess = Teuchos::rcp(new Thyra::ModelEvaluatorBase::InArgs<value_type>(origModel_->createInArgs()));
-  if(stateGuessFileBase_ != "") {
-    if(out.get())
-      *out << "\nReading the guess of the state \'x\' from the file(s) with base name \""<<stateGuessFileBase_<<"\" ...\n";
-    initialGuess->set_x(readVectorFromFile(stateGuessFileBase_,origModel_->get_x_space(),scaleStateGuess_));
-  }
-  else {
-    if(out.get())
-      *out << "\nNot reading the guess of the state \'x\' from a file!\n";
-  }
-  if(paramGuessFileBase_ != "") {
-    if(out.get())
-      *out << "\nReading the guess of the parameters \'p\' from the file(s) with base name \""<<paramGuessFileBase_<<"\" ...\n";
-    initialGuess->set_p(p_idx_,readVectorFromFile(paramGuessFileBase_,origModel_->get_p_space(p_idx_),scaleParamGuess_));
-  }
-  else {
-    if(out.get())
-      *out << "\nNot reading the guess of the parameters \'p\' from a file!\n";
-  }
+    initialGuess = Teuchos::rcp(
+      new Thyra::ModelEvaluatorBase::InArgs<value_type>(origModel_->createInArgs())
+      );
+  x_reader_.set_vecSpc(origModel_->get_x_space());
+  if(this->get_stateVectorIO().get())
+    x_reader_.set_fileIO(this->get_stateVectorIO());
+  Teuchos::VerboseObjectTempState<Thyra::ParameterDrivenMultiVectorInput<value_type> >
+    vots_x_reader(rcp(&x_reader_,false),out,Teuchos::VERB_LOW);
+  initialGuess->set_x(x_reader_.readVector("initial guess for the state \'x\'"));
+  p_reader_.set_vecSpc(origModel_->get_p_space(p_idx_));
+  if(this->get_parameterVectorIO().get())
+    p_reader_.set_fileIO(this->get_parameterVectorIO());
+  Teuchos::VerboseObjectTempState<Thyra::ParameterDrivenMultiVectorInput<value_type> >
+    vots_p_reader(rcp(&p_reader_,false),out,Teuchos::VERB_LOW);
+  initialGuess->set_p(p_idx_,p_reader_.readVector("initial guess for the parameters \'p\'"));
   nominalModel_->setNominalValues(initialGuess);
 }
 
@@ -693,7 +632,7 @@ void MoochoThyraSolver::setInitialGuess(
     );
 }
   
-MoochoSolver::ESolutionStatus	MoochoThyraSolver::solve()
+MoochoSolver::ESolutionStatus MoochoThyraSolver::solve()
 {
   return solver_.solve_nlp();
 }
@@ -714,12 +653,16 @@ void MoochoThyraSolver::writeFinalSolution(
   if( stateSoluFileBase_ != "" && finalPointModel_->getFinalPoint().get_x().get() ) {
     if(out.get())
       *out << "\nWriting the state solution \'x\' to the file(s) with base name \""<<stateSoluFileBase_<<"\" ...\n";
-    writeVectorToFile(*finalPointModel_->getFinalPoint().get_x(),stateSoluFileBase_);
+    stateVectorIO().writeMultiVectorToFile(
+      *finalPointModel_->getFinalPoint().get_x(),stateSoluFileBase_
+      );
   }
   if( paramSoluFileBase_ != "" ) {
     if(out.get())
       *out << "\nWriting the parameter solution \'p\' to the file(s) with base name \""<<paramSoluFileBase_<<"\" ...\n";
-    writeVectorToFile(*finalPointModel_->getFinalPoint().get_p(p_idx_),paramSoluFileBase_);
+    parameterVectorIO().writeMultiVectorToFile(
+      *finalPointModel_->getFinalPoint().get_p(p_idx_),paramSoluFileBase_
+      );
   }
 }
 

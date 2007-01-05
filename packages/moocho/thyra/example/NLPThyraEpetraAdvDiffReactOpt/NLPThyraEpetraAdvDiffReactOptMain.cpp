@@ -1,7 +1,7 @@
 #include "GLpApp_AdvDiffReactOptModelCreator.hpp"
 #include "MoochoPack_MoochoThyraSolver.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
-#include "Thyra_SpmdMultiVectorFileIO.hpp"
+#include "Thyra_DefaultSpmdMultiVectorFileIO.hpp"
 #include "Thyra_DefaultRealLinearSolverBuilder.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
@@ -178,10 +178,11 @@ int main( int argc, char* argv[] )
 
     if(matchingVecFile != "") {
       *out << "\nReading the matching vector \'q\' from the file(s) with base name \""<<matchingVecFile<<"\" ...\n";
-      Thyra::SpmdMultiVectorFileIO<Scalar> fileIO;
+      Thyra::DefaultSpmdMultiVectorFileIO<Scalar> fileIO;
       epetraModel->set_q(
         Thyra::get_Epetra_Vector(
-          *epetraModel->get_x_map(),fileIO.readVectorFromFile(matchingVecFile,epetraThyraModel->get_x_space())
+          *epetraModel->get_x_map()
+          ,readVectorFromFile(fileIO,matchingVecFile,*epetraThyraModel->get_x_space())
           )
         );
     }

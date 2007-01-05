@@ -34,6 +34,8 @@
 #include "Thyra_DirectionalFiniteDiffCalculator.hpp"
 #include "Thyra_DefaultNominalBoundsOverrideModelEvaluator.hpp"
 #include "Thyra_DefaultFinalPointCaptureModelEvaluator.hpp"
+#include "Thyra_MultiVectorFileIOBase.hpp"
+#include "Thyra_ParameterDrivenMultiVectorInput.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
@@ -129,6 +131,30 @@ public:
    * processor that will set <tt>paramsUsedXmlOutFileName()</tt> .
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,paramsUsedXmlOutFileNameOption);
+
+  /** \brief MultiVectorFileIOBase object used to read and write state vectors
+   * to and from files.
+   *
+   * The default implementation used is
+   * <tt>Thyra::DefaultSpmdMultiVectorFileIO</tt>.  See
+   * <tt>Thyra::DefaultSpmdMultiVectorFileIO::DefaultSpmdMultiVectorFileIO()</tt>
+   * for the default conditions of such an object.
+   */
+  STANDARD_NONCONST_COMPOSITION_MEMBERS( Thyra::MultiVectorFileIOBase<value_type>, stateVectorIO );
+
+  /** \brief MultiVectorFileIOBase object used to read and write parameter vectors
+   * to and from files.
+   *
+   * The default implementation used is
+   * <tt>Thyra::DefaultSpmdMultiVectorFileIO</tt>.  See
+   * <tt>Thyra::DefaultSpmdMultiVectorFileIO::DefaultSpmdMultiVectorFileIO()</tt>
+   * for the default conditions.
+   *
+   * ToDo: You may need to change this to set different the
+   * MultiVectorFileIOBase objects for each parameter subvector for each index
+   * l=0...Np-1!
+   */
+  STANDARD_NONCONST_COMPOSITION_MEMBERS( Thyra::MultiVectorFileIOBase<value_type>, parameterVectorIO );
   
   /** \brief Sets up the commandline for reading in the parameter list for
    * this object (minus the options for MoochoSolver).
@@ -264,11 +290,16 @@ public:
 
 private:
 
+  typedef value_type Scalar;
+
   MoochoSolver                                               solver_;
   
   Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >   origModel_;
   int                                                        p_idx_;
   int                                                        g_idx_;
+
+  mutable Thyra::ParameterDrivenMultiVectorInput<value_type> x_reader_;
+  mutable Thyra::ParameterDrivenMultiVectorInput<value_type> p_reader_;
 
   Teuchos::RefCountPtr<Teuchos::ParameterList>               paramList_;
   
@@ -289,10 +320,6 @@ private:
   int                 fwd_newton_max_iters_;
   bool                useInvObjFunc_;
   bool                showModelEvaluatorTrace_;
-  std::string         stateGuessFileBase_;
-  double              scaleStateGuess_;
-  std::string         paramGuessFileBase_;
-  double              scaleParamGuess_;
   std::string         stateSoluFileBase_;
   std::string         paramSoluFileBase_;
 
