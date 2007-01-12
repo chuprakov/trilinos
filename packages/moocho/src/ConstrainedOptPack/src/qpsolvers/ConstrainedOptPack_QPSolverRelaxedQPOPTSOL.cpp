@@ -348,7 +348,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
   //
 
   // d
-  if(1) {
+  {
     VectorDenseMutableEncap d_de(*d);
     d_de() = X_(1,n);
   }

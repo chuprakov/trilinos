@@ -103,7 +103,7 @@ int main( int argc, char* argv[] )
       intraClusterMpiComm = Teuchos::opaqueWrapper<MPI_Comm>(MPI_COMM_WORLD),
       interClusterMpiComm = Teuchos::null;
     //if( numProcsPerCluster > 0 ) {
-    if(1) {
+    {
       *out << "\nCreating communicator for local cluster of "<<numProcsPerCluster<<" processes ...\n";
       numClusters = numProcs/numProcsPerCluster;
       const int remainingProcs = numProcs%numProcsPerCluster;
@@ -130,7 +130,7 @@ int main( int argc, char* argv[] )
         ,&rawIntraClusterMpiComm // newcomm
         );
       intraClusterMpiComm = Teuchos::opaqueWrapper(rawIntraClusterMpiComm,MPI_Comm_free);
-      if(1) {
+      {
         *out << "\nintraClusterMpiComm:";
         Teuchos::OSTab tab(out);
         int rank, size;
@@ -153,7 +153,7 @@ int main( int argc, char* argv[] )
         interClusterMpiComm = Teuchos::opaqueWrapper(rawInterClusterMpiComm,MPI_Comm_free);
       else
         interClusterMpiComm = Teuchos::opaqueWrapper(rawInterClusterMpiComm);
-      if(1) {
+      {
         *out << "\ninterClusterMpiComm:";
         Teuchos::OSTab tab(out);
         if(*interClusterMpiComm==MPI_COMM_NULL) {
@@ -211,7 +211,7 @@ int main( int argc, char* argv[] )
 #ifdef HAVE_MPI
 
     //if( numClusters > 0 ) {
-    if(1) {
+    {
       
       *out << "\nCreate block parallel vector spaces for multi-period model.x and model.f ...\n";
       Teuchos::RefCountPtr<const Teuchos::Comm<Index> >
@@ -362,7 +362,7 @@ int main( int argc, char* argv[] )
     solver.setModel(thyraModel);
 
     // Set the initial guess and the perturbed parameters
-    if(1) {
+    {
       MEB::InArgs<Scalar> initialGuess = thyraModel->createInArgs();
       initialGuess.setArgs(thyraModel->getNominalValues());
       initialGuess.set_x(x_init);
@@ -396,7 +396,7 @@ int main( int argc, char* argv[] )
     solver.setModel(thyraModel);
 
     // Set the initial guess for model.x and model.p
-    if(1) {
+    {
       MEB::InArgs<Scalar> initialGuess = thyraModel->createInArgs();
       initialGuess.setArgs(thyraModel->getNominalValues());
       initialGuess.set_x(x_init);

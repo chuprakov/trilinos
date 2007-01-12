@@ -1518,7 +1518,7 @@ void MatrixSymPosDefCholFactor::update_factorization() const
     *nc_this = const_cast<MatrixSymPosDefCholFactor*>(this);
   DMatrixSliceTriEle U = DenseLinAlgPack::nonconst_tri_ele( nc_this->U().gms(), BLAS_Cpp::upper );
   DenseLinAlgPack::assign( &U, DenseLinAlgPack::tri_ele( M().gms(), BLAS_Cpp::lower ) );  // Copy in the original
-  if(1){
+  {
 #ifdef PROFILE_HACK_ENABLED
     ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::update_factorization(...) ... potrf" );
 #endif

@@ -110,7 +110,7 @@ index_type Vector::dim() const
 index_type Vector::nz() const
 {
 #ifdef ALAP_VECTOR_IGNORE_CACHE_DATA
-  if(1) {
+  {
 #else
   if( num_nonzeros_ < 0 ) {
 #endif
@@ -159,7 +159,7 @@ value_type Vector::get_ele(index_type i) const
 value_type Vector::norm_1() const
 {
 #ifdef ALAP_VECTOR_IGNORE_CACHE_DATA
-  if(1) {
+  {
 #else
   if( norm_1_ < 0.0 ) {
 #endif
@@ -174,7 +174,7 @@ value_type Vector::norm_1() const
 value_type Vector::norm_2() const
 {
 #ifdef ALAP_VECTOR_IGNORE_CACHE_DATA
-  if(1) {
+  {
 #else
   if( norm_2_ < 0.0 ) {
 #endif
@@ -189,7 +189,7 @@ value_type Vector::norm_2() const
 value_type Vector::norm_inf() const
 {
 #ifdef ALAP_VECTOR_IGNORE_CACHE_DATA
-  if(1) {
+  {
 #else
   if( norm_inf_ < 0.0 ) {
 #endif

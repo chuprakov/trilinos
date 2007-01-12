@@ -320,7 +320,7 @@ MoochoThyraSolver::getValidParameters() const
       "See the options in the sublist \"" + ObjectiveFiniteDifferenceSettings_name + "\"."
       );
     Thyra::DirectionalFiniteDiffCalculator<Scalar> dfdcalc;
-    if(1) {
+    {
       Teuchos::ParameterList
         &fdSublist = pl->sublist(ObjectiveFiniteDifferenceSettings_name);
       fdSublist.setParameters(*dfdcalc.getValidParameters());
@@ -330,7 +330,7 @@ MoochoThyraSolver::getValidParameters() const
       ,"Use finite differences for missing constraint derivatives (Direct NLP only).\n"
       "See the options in the sublist \"" + ConstraintsFiniteDifferenceSettings_name + "\"."
       );
-    if(1) {
+    {
       Teuchos::ParameterList
         &fdSublist = pl->sublist(ConstraintsFiniteDifferenceSettings_name);
       fdSublist.setParameters(*dfdcalc.getValidParameters());
@@ -355,7 +355,7 @@ MoochoThyraSolver::getValidParameters() const
       "of optimization problem just with a model that supports only the\n"
       "parameterized state function f(x,p)=0."
       );
-    if(1) {
+    {
       Teuchos::RefCountPtr<Thyra::DefaultInverseModelEvaluator<Scalar> >
         inverseModel = rcp(new Thyra::DefaultInverseModelEvaluator<Scalar>());
       pl->sublist(
