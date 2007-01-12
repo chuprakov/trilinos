@@ -595,24 +595,31 @@ void MoochoThyraSolver::readInitialGuess(
   )
 {
   using Teuchos::OSTab;
+  using Teuchos::RefCountPtr;
   Teuchos::RefCountPtr<Teuchos::FancyOStream>
     out = Teuchos::getFancyOStream(Teuchos::rcp(out_arg,false));
   Teuchos::RefCountPtr<Thyra::ModelEvaluatorBase::InArgs<value_type> >
     initialGuess = Teuchos::rcp(
       new Thyra::ModelEvaluatorBase::InArgs<value_type>(origModel_->createInArgs())
       );
-  x_reader_.set_vecSpc(origModel_->get_x_space());
-  if(this->get_stateVectorIO().get())
-    x_reader_.set_fileIO(this->get_stateVectorIO());
-  Teuchos::VerboseObjectTempState<Thyra::ParameterDrivenMultiVectorInput<value_type> >
-    vots_x_reader(rcp(&x_reader_,false),out,Teuchos::VERB_LOW);
-  initialGuess->set_x(x_reader_.readVector("initial guess for the state \'x\'"));
-  p_reader_.set_vecSpc(origModel_->get_p_space(p_idx_));
-  if(this->get_parameterVectorIO().get())
-    p_reader_.set_fileIO(this->get_parameterVectorIO());
-  Teuchos::VerboseObjectTempState<Thyra::ParameterDrivenMultiVectorInput<value_type> >
-    vots_p_reader(rcp(&p_reader_,false),out,Teuchos::VERB_LOW);
-  initialGuess->set_p(p_idx_,p_reader_.readVector("initial guess for the parameters \'p\'"));
+  RefCountPtr<const Thyra::VectorSpaceBase<value_type> >
+    x_space = origModel_->get_x_space();
+  if( 0 != x_space.get() ) {
+    x_reader_.set_vecSpc(origModel_->get_x_space());
+    if(this->get_stateVectorIO().get())
+      x_reader_.set_fileIO(this->get_stateVectorIO());
+    Teuchos::VerboseObjectTempState<Thyra::ParameterDrivenMultiVectorInput<value_type> >
+      vots_x_reader(rcp(&x_reader_,false),out,Teuchos::VERB_LOW);
+    initialGuess->set_x(x_reader_.readVector("initial guess for the state \'x\'"));
+  }
+  if( origModel_->Np() > 0 ) {
+    p_reader_.set_vecSpc(origModel_->get_p_space(p_idx_));
+    if(this->get_parameterVectorIO().get())
+      p_reader_.set_fileIO(this->get_parameterVectorIO());
+    Teuchos::VerboseObjectTempState<Thyra::ParameterDrivenMultiVectorInput<value_type> >
+      vots_p_reader(rcp(&p_reader_,false),out,Teuchos::VERB_LOW);
+    initialGuess->set_p(p_idx_,p_reader_.readVector("initial guess for the parameters \'p\'"));
+  }
   nominalModel_->setNominalValues(initialGuess);
 }
 
@@ -657,7 +664,12 @@ void MoochoThyraSolver::writeFinalSolution(
       *finalPointModel_->getFinalPoint().get_x(),stateSoluFileBase_
       );
   }
-  if( paramSoluFileBase_ != "" ) {
+  if(
+    ( "" != paramSoluFileBase_ )
+    && ( origModel_->Np() > 0 )
+    && ( 0 != finalPointModel_->getFinalPoint().get_p(p_idx_).get() )
+    )
+  {
     if(out.get())
       *out << "\nWriting the parameter solution \'p\' to the file(s) with base name \""<<paramSoluFileBase_<<"\" ...\n";
     parameterVectorIO().writeMultiVectorToFile(
