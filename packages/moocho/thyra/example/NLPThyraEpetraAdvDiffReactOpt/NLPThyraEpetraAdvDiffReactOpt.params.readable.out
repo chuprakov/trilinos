@@ -1,19 +1,10 @@
-Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
-  
-  MoochoThyraSolver::readParameters(...):
-    
-    Creating a new Teuchos::ParameterList ...
     Forward Newton Max Iters : int = 20
     Forward Newton Tolerance : double = -1
     NLP Type : string = First Order
     Nonlinearly Eliminate States : bool = 0
-    Parameters Guess File Base Name : string = 
-    Parameters Guess Scale : double = 1
     Parameters Solution File Base Name : string = 
     Show Model Evaluator Trace : bool = 1
     Solve Mode : string = Optimize
-    State Guess File Base Name : string = 
-    State Guess Scale : double = 1
     State Solution File Base Name : string = 
     Use Built-in Inverse Objective Function : bool = 0
     Use Finite Differences For Constraints : bool = 0
@@ -23,13 +14,27 @@ Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
       FD Step Length : double = -1
       FD Step Select Type : string = Absolute
     Inverse Objective Function Settings -> 
-      Parameter Base File Name Base : string = 
+      Observation Index : int = -1
+      Observation Multiplier : double = 1
       Parameter Multiplier : double = 1e-06
-      Parameter Scale File Name Base : string = 
-      State Multiplier : double = 1
-      State Scale File Name Base : string = 
-      State Target File Name Base : string = 
+      Parameter Subvector Index : int = 0
+      Observation Target Vector -> 
+        Explicit Array : string = {}
+        File Name Base : string = 
+        Scale By : double = 1
+      Parameter Base Vector -> 
+        Explicit Array : string = {}
+        File Name Base : string = 
+        Scale By : double = 1
     Objective Finite Difference Settings -> 
       FD Method : string = order-one
       FD Step Length : double = -1
       FD Step Select Type : string = Absolute
+    Parameter Guess -> 
+      Explicit Array : string = {}
+      File Name Base : string = 
+      Scale By : double = 1
+    State Guess -> 
+      Explicit Array : string = {}
+      File Name Base : string = 
+      Scale By : double = 1

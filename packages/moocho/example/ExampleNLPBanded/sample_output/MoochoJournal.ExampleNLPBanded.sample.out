@@ -334,6 +334,10 @@ pz_k =
 
 ||rGL_k||inf = 1.0809594644e+01
 
+rGL_k = 
+  5
+   -10.8086:1 -10.8091:2 -10.8091:3 -10.8091:4 -10.8096:5
+
 (0) 8: "CheckConvergence"
 
 scale_opt_factor = 1.0000000000e+00 (scale_opt_error_by = SCALE_BY_ONE)
@@ -645,6 +649,10 @@ pz_k =
 
 ||rGL_k||inf = 3.7462461296e-01
 
+rGL_k = 
+  5
+   0.374625:1 0.374464:2 0.374464:3 0.374464:4 0.374303:5
+
 (1) 8: "CheckConvergence"
 
 scale_opt_factor = 1.0000000000e+00 (scale_opt_error_by = SCALE_BY_ONE)
@@ -883,6 +891,10 @@ pz_k =
 
 ||rGL_k||inf = 4.1554627380e-01
 
+rGL_k = 
+  5
+   0.415546:1 0.415437:2 0.415437:3 0.415437:4 0.415329:5
+
 (2) 8: "CheckConvergence"
 
 scale_opt_factor = 1.0000000000e+00 (scale_opt_error_by = SCALE_BY_ONE)
@@ -1120,6 +1132,10 @@ pz_k =
 (3) 7: "CalcReducedGradLagrangian"
 
 ||rGL_k||inf = 3.9272839189e-01
+
+rGL_k = 
+  5
+   0.392728:1 0.392631:2 0.392631:3 0.392631:4 0.392533:5
 
 (3) 8: "CheckConvergence"
 
@@ -1418,6 +1434,10 @@ pz_k =
 
 ||rGL_k||inf = 3.6900485363e-01
 
+rGL_k = 
+  5
+   0.369005:1 0.368913:2 0.368913:3 0.368913:4 0.368821:5
+
 (4) 8: "CheckConvergence"
 
 scale_opt_factor = 1.0000000000e+00 (scale_opt_error_by = SCALE_BY_ONE)
@@ -1712,6 +1732,10 @@ rGL_k =
    0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257359:5
 
 ||rGL_k||inf = 2.5755370750e-01
+
+rGL_k = 
+  5
+   0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257359:5
 
 (5) 8: "CheckConvergence"
 
@@ -2008,6 +2032,10 @@ rGL_k =
 
 ||rGL_k||inf = 2.4227242979e-05
 
+rGL_k = 
+  5
+   1.72853e-05:1 4.90802e-06:2 4.90168e-06:3 4.89533e-06:4 -2.42272e-05:5
+
 (6) 8: "CheckConvergence"
 
 scale_opt_factor = 1.0000000000e+00 (scale_opt_error_by = SCALE_BY_ONE)
@@ -2297,6 +2325,10 @@ rGL_k =
    1.47801e-05:1 -6.28785e-06:2 -6.28549e-06:3 -6.28313e-06:4 4.55868e-06:5
 
 ||rGL_k||inf = 1.4780094636e-05
+
+rGL_k = 
+  5
+   1.47801e-05:1 -6.28785e-06:2 -6.28549e-06:3 -6.28313e-06:4 4.55868e-06:5
 
 (7) 8: "CheckConvergence"
 

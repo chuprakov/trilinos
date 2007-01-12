@@ -1,8 +1,3 @@
-Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
-  
-  MoochoThyraSolver::readParameters(...):
-    
-    Creating a new Teuchos::ParameterList ...
     Forward Newton Max Iters : int = 20
       # Maximum number of iterations allows for the forward state
       # solver in eliminating the state equations/variables.
@@ -24,15 +19,6 @@ Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
     Nonlinearly Eliminate States : bool = 0
       # If true, then the model's state equations and state variables
       # are nonlinearlly eliminated using a forward solver.
-    Parameters Guess File Base Name : string = 
-      # The base name of a file that is used to read in the guess for
-      # the parameters.  If set, then a file for each process must be
-      # present for each process to read from.
-    Parameters Guess Scale : double = 1
-      # Sets the constant by which the initial guess for the parameters are scaled
-      # will be scaled by before they are used.  This feature allows for controlled
-      # experiments where a solution is perturbed and the solver must resolve the
-      # problem.
     Parameters Solution File Base Name : string = 
       # If specified, a file with this basename will be written to with
       # the final value of the parameters.  A different file for each
@@ -54,15 +40,6 @@ Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
       #            s.t. f(x,p)=0
       #          for the state varaibles x and parameters p.
       #     }
-    State Guess File Base Name : string = 
-      # The base name of a file that is used to read in the guess for
-      # the state variables.  If set, then a file for each process must be
-      # present for each process to read from.
-    State Guess Scale : double = 1
-      # Sets the constant by which the initial guess for the state variables are scaled
-      # will be scaled by before they are used.  This feature allows for controlled
-      # experiments where a solution is perturbed and the solver must resolve the
-      # problem.
     State Solution File Base Name : string = 
       # If specified, a file with this basename will be written to with
       # the final value of the state variables.  A different file for each
@@ -117,18 +94,45 @@ Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
     Inverse Objective Function Settings -> 
       # Settings for the built-in inverse objective function.
       # See the outer parameter "Use Built-in Inverse Objective Function".
-      Parameter Base File Name Base : string = 
-        # Base-name of file(s) that contain parameter base vector pt.
+      Observation Index : int = -1
+        # The index of the observation function, obs_idx.
+        # If obs_idx < 0, then the observation will be the state vector x.
+        # If obs_idx >= 0, then the observation will be the response function g(obs_idx).
+      Observation Multiplier : double = 1
+        # observationMultiplier
       Parameter Multiplier : double = 1e-06
         # parameterMultiplier
-      Parameter Scale File Name Base : string = 
-        # Base-name of file(s) that contain parameter scaling vector ps.
-      State Multiplier : double = 1
-        # stateMultiplier
-      State Scale File Name Base : string = 
-        # Base-name of file(s) that contain state scaling vector xs.
-      State Target File Name Base : string = 
-        # Base-name of file(s) that contain state matching vector xt.
+      Parameter Subvector Index : int = 0
+        # The index of the parameter subvector that will be used in the
+        # regularization term.
+      Observation Target Vector -> 
+        Explicit Array : string = {}
+          # The vector specified explicitly as a string interpreted as a Teuchos::Array
+          # object.  If this array is set, it will override the vector specified
+          # by the above "File Name Base" parameter.
+          # Note that a VectorSpaceBase object
+          # must be set internally for this to work.
+        File Name Base : string = 
+          # Base-name of file(s) that will be used to read in the vector.
+          # If this parameter is empty "", no file(s) will be read.
+          # Note that a MultiVectorFileIOBase object and a VectorSpaceBase object
+          # must be set internally for this to work.
+        Scale By : double = 1
+          # A factor by which the read in vector will be scaled by.
+      Parameter Base Vector -> 
+        Explicit Array : string = {}
+          # The vector specified explicitly as a string interpreted as a Teuchos::Array
+          # object.  If this array is set, it will override the vector specified
+          # by the above "File Name Base" parameter.
+          # Note that a VectorSpaceBase object
+          # must be set internally for this to work.
+        File Name Base : string = 
+          # Base-name of file(s) that will be used to read in the vector.
+          # If this parameter is empty "", no file(s) will be read.
+          # Note that a MultiVectorFileIOBase object and a VectorSpaceBase object
+          # must be set internally for this to work.
+        Scale By : double = 1
+          # A factor by which the read in vector will be scaled by.
     Objective Finite Difference Settings -> 
       FD Method : string = order-one
         # The method used to compute the finite differences.
@@ -161,3 +165,31 @@ Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
         #       "Relative"
         #          Use relative step size "FD Step Length"*||xo||inf
         #     }
+    Parameter Guess -> 
+      Explicit Array : string = {}
+        # The vector specified explicitly as a string interpreted as a Teuchos::Array
+        # object.  If this array is set, it will override the vector specified
+        # by the above "File Name Base" parameter.
+        # Note that a VectorSpaceBase object
+        # must be set internally for this to work.
+      File Name Base : string = 
+        # Base-name of file(s) that will be used to read in the vector.
+        # If this parameter is empty "", no file(s) will be read.
+        # Note that a MultiVectorFileIOBase object and a VectorSpaceBase object
+        # must be set internally for this to work.
+      Scale By : double = 1
+        # A factor by which the read in vector will be scaled by.
+    State Guess -> 
+      Explicit Array : string = {}
+        # The vector specified explicitly as a string interpreted as a Teuchos::Array
+        # object.  If this array is set, it will override the vector specified
+        # by the above "File Name Base" parameter.
+        # Note that a VectorSpaceBase object
+        # must be set internally for this to work.
+      File Name Base : string = 
+        # Base-name of file(s) that will be used to read in the vector.
+        # If this parameter is empty "", no file(s) will be read.
+        # Note that a MultiVectorFileIOBase object and a VectorSpaceBase object
+        # must be set internally for this to work.
+      Scale By : double = 1
+        # A factor by which the read in vector will be scaled by.

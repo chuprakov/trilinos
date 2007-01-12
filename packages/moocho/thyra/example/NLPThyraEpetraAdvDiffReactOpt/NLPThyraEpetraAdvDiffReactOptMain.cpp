@@ -92,8 +92,8 @@ int main( int argc, char* argv[] )
     if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
       return parse_return;
 
-    lowsfCreator.readParameters(out.get());
-    solver.readParameters(out.get());
+    lowsfCreator.readParameters( !showMoochoThyraParams ? out.get() : NULL );
+    solver.readParameters( !showMoochoThyraParams ? out.get() : NULL );
 
     if(showMoochoThyraParams) {
       typedef Teuchos::ParameterList::PrintOptions PLPrintOptions;

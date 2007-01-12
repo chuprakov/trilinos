@@ -43,16 +43,16 @@ run_cmnd(
   );
 
 run_cmnd(
-  "../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe  --only-print-moocho-thyra-solver-params --readable-format --show-doc"
+  "../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe --only-print-moocho-thyra-solver-params --readable-format --show-doc --teuchos-suppress-startup-banner"
   ,"$abs_top_srcdir/thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.params.readabledoc.out"
   );
 
 run_cmnd(
-  "../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe  --only-print-moocho-thyra-solver-params --readable-format --hide-doc"
+  "../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe --only-print-moocho-thyra-solver-params --readable-format --hide-doc --teuchos-suppress-startup-banner"
   ,"$abs_top_srcdir/thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.params.readable.out"
   );
 
 run_cmnd(
-  "../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe  --only-print-moocho-thyra-solver-params --xml-format"
+  "../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe --only-print-moocho-thyra-solver-params --xml-format"
   ,"$abs_top_srcdir/thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.params.xml.out"
   );
