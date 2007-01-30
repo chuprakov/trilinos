@@ -72,6 +72,7 @@ MoochoSolver::MoochoSolver(
   ,generate_stats_file_(false)
   ,print_opt_grp_not_accessed_(true)
   ,throw_exceptions_(false)
+  ,output_file_tag_("")
   ,do_console_outputting_(true)
   ,do_summary_outputting_(true)
   ,do_journal_outputting_(true)
@@ -304,6 +305,22 @@ const MoochoSolver::ostream_ptr_t&
 MoochoSolver::get_algo_out() const
 {
   return algo_out_;
+}
+
+Teuchos::RefCountPtr<std::ostream>
+MoochoSolver::generate_output_file(const std::string &fileNameBase) const
+{
+  if( output_to_black_hole_ == OUTPUT_TO_BLACK_HOLE_TRUE )
+    return Teuchos::rcp(new Teuchos::oblackholestream());
+  std::string fileName = fileNameBase;
+  if(file_context_postfix_.length())
+    fileName += "." + file_context_postfix_;
+  if(file_proc_postfix_.length())
+    fileName += "." + file_proc_postfix_;
+  if(output_file_tag_.length())
+    fileName += ( "." + output_file_tag_ );
+  fileName += ".out";
+  return Teuchos::rcp(new std::ofstream(fileName.c_str()));
 }
 
 // Solve the NLP
@@ -559,20 +576,6 @@ const NLPSolverClientInterface& MoochoSolver::get_solver() const
 }
 
 // private
-
-Teuchos::RefCountPtr<std::ostream>
-MoochoSolver::generate_output_file(const std::string &fileNameBase) const
-{
-  if( output_to_black_hole_ == OUTPUT_TO_BLACK_HOLE_TRUE )
-    return Teuchos::rcp(new Teuchos::oblackholestream());
-  std::string fileName = fileNameBase;
-  if(file_context_postfix_.length())
-    fileName += "." + file_context_postfix_;
-  if(file_proc_postfix_.length())
-    fileName += "." + file_proc_postfix_;
-  fileName += ".out";
-  return Teuchos::rcp(new std::ofstream(fileName.c_str()));
-}
 
 void MoochoSolver::generate_output_streams() const
 {

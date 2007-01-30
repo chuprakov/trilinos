@@ -126,6 +126,9 @@ const bool UseBuiltInverseObjectiveFunction_default = false;
 
 const std::string InverseObjectiveFunctionSettings_name = "Inverse Objective Function Settings";
 
+const std::string OutputFileTag_name = "Output File Tag";
+const std::string OutputFileTag_default = "";
+
 const std::string ShowModelEvaluatorTrace_name = "Show Model Evaluator Trace";
 const bool ShowModelEvaluatorTrace_default = "false";
 
@@ -169,6 +172,7 @@ MoochoThyraSolver::MoochoThyraSolver(
   ,fwd_newton_tol_(-1.0)
   ,fwd_newton_max_iters_(20)
   ,useInvObjFunc_(false)
+  ,outputFileTag_("")
   ,showModelEvaluatorTrace_(false)
   ,stateSoluFileBase_("")
   ,paramSoluFileBase_("")
@@ -256,6 +260,9 @@ void MoochoThyraSolver::setParameterList(
     FwdNewtonMaxIters_name,FwdNewtonMaxIters_default);
   useInvObjFunc_ = paramList_->get(
     UseBuiltInverseObjectiveFunction_name,UseBuiltInverseObjectiveFunction_default);
+  outputFileTag_ = paramList->get(
+    OutputFileTag_name,OutputFileTag_default);
+  solver_.set_output_file_tag(outputFileTag_);
   showModelEvaluatorTrace_ = paramList->get(
     ShowModelEvaluatorTrace_name,ShowModelEvaluatorTrace_default);
   x_reader_.setParameterList(
@@ -364,8 +371,10 @@ MoochoThyraSolver::getValidParameters() const
         "See the outer parameter \""+UseBuiltInverseObjectiveFunction_name+"\"."
         ).setParameters(*inverseModel->getValidParameters());
     }
-    pl->set(
-      ShowModelEvaluatorTrace_name,ShowModelEvaluatorTrace_default
+    pl->set(OutputFileTag_name,OutputFileTag_default,
+      "A tag that is attached to every output file that is created by the\n"
+      "solver.  If empty \"\", then no tag is used." );
+    pl->set(ShowModelEvaluatorTrace_name,ShowModelEvaluatorTrace_default
       ,"Determine if a trace of the objective function will be shown or not\n"
       "when the NLP is evaluated."
       );
@@ -459,10 +468,16 @@ void MoochoThyraSolver::setModel(
   
   Teuchos::RefCountPtr<std::ostream>
     modelEvalLogOut;
-  if(procRank==0)
-    modelEvalLogOut = rcp(new std::ofstream("ModelEvaluationLog.out"));
-  else
+  if(procRank==0) {
+    std::string modeEvalLogOutFile = "ModelEvaluationLog";
+    if(outputFileTag_.length())
+      modeEvalLogOutFile += ( "." + outputFileTag_ );
+    modeEvalLogOutFile += ".out";
+    modelEvalLogOut = rcp(new std::ofstream(modeEvalLogOutFile.c_str()));
+  }
+  else {
     modelEvalLogOut = rcp(new Teuchos::oblackholestream());
+  }
   Teuchos::RefCountPtr<Thyra::DefaultEvaluationLoggerModelEvaluator<Scalar> >
     loggerThyraModel
     = rcp(

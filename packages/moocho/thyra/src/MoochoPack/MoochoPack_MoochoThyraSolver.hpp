@@ -319,6 +319,7 @@ private:
   double              fwd_newton_tol_;
   int                 fwd_newton_max_iters_;
   bool                useInvObjFunc_;
+  std::string         outputFileTag_;
   bool                showModelEvaluatorTrace_;
   std::string         stateSoluFileBase_;
   std::string         paramSoluFileBase_;

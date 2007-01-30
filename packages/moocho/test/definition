@@ -523,6 +523,7 @@
 (FRAMEWORK) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --beta=1e+3 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
+    --extra-moocho-thyra-params="<ParameterList><Parameter name=\"Output File Tag\" type=\"string\" value=\"tag\"/></ParameterList>" \
     --moocho-extra-options="NLPSolverClientInterface\{opt_tol=0.2\,max_iter=25\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
 }

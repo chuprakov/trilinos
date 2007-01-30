@@ -363,6 +363,11 @@ public:
   /** \name Individual outputting control */
   //@{
 
+  /** \brief Set a tag for output file names for all file names that are
+   * created internally.
+   */
+  void set_output_file_tag(const std::string&);
+
   /** \brief Turn on and off console outputting.
    */
   void do_console_outputting(bool);
@@ -556,6 +561,14 @@ public:
    */
   const ostream_ptr_t& get_algo_out() const;
 
+  /** \brief Generate an output file given a base file name.
+   *
+   * Note that this will typically only create a ofsteam object on the root
+   * process and a oblackholestream object on all other processes.
+   */
+  Teuchos::RefCountPtr<std::ostream>
+  generate_output_file(const std::string &fileNameBase) const;
+
   //@}
 
   /** @name Solve the NLP */
@@ -677,6 +690,7 @@ private:
   mutable bool              generate_stats_file_;
   mutable bool              print_opt_grp_not_accessed_;
   mutable bool              throw_exceptions_;
+  mutable std::string       output_file_tag_;
   mutable bool              do_console_outputting_;
   mutable bool              do_summary_outputting_;
   mutable bool              do_journal_outputting_;
@@ -706,9 +720,6 @@ private:
 
   // ////////////////////////////////////
   // Private member functions
-
-  /** \brief . */
-  Teuchos::RefCountPtr<std::ostream> generate_output_file(const std::string &fileNameBase) const;
 
   /** \brief . */
   void generate_output_streams() const;
@@ -778,6 +789,12 @@ private:
 
 // /////////////////////////////////////////
 // Inline members
+
+inline
+void MoochoSolver::set_output_file_tag(const std::string& output_file_tag)
+{
+  output_file_tag_ = output_file_tag;
+}
 
 inline
 void MoochoSolver::do_console_outputting(bool do_console_outputting)
