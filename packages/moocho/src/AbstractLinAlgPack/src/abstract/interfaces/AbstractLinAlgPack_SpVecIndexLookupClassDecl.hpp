@@ -62,10 +62,10 @@ public:
   typedef ptrdiff_t							difference_type;
   /** \brief . */
   class NoSpVecSetException : public std::logic_error
-  {public: NoSpVecSetException(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  {public: explicit NoSpVecSetException(const std::string& what_arg) : std::logic_error(what_arg) {}};
   /** \brief . */
   class InvalidInternalStateException : public std::logic_error
-  {public: InvalidInternalStateException(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  {public: explicit InvalidInternalStateException(const std::string& what_arg) : std::logic_error(what_arg) {}};
   /** \brief . */
   enum UpperLower { UPPER_ELE, LOWER_ELE };
   /** \brief . */
