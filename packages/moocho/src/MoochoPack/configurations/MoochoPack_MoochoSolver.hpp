@@ -574,6 +574,16 @@ public:
   /** @name Solve the NLP */
   //@{
 
+  /** \brief Setup the state of the solver and get ready for a solve.
+   *
+   * This function gets called already by <tt>solve_nlp()</tt> so it does not
+   * have to be called manually.  However, after calling this function all
+   * stream objects will be set up in order to be used prior to calling
+   * <tt>solve_nlp()</tt>.
+   */
+  void update_solver() const;
+
+
   /** \brief Solve the NLP.
    *
    * Preconditions:<ul>
@@ -702,10 +712,10 @@ private:
   config_ptr_t              config_;
   options_ptr_t             options_;          // set by client
   ostream_ptr_t             error_out_;        // set by client
-  ostream_ptr_t             algo_out_;         // set by client
-  ostream_ptr_t             console_out_;      // set by client
-  ostream_ptr_t             summary_out_;      // set by client
-  ostream_ptr_t             journal_out_;      // set by client
+  mutable ostream_ptr_t     algo_out_;         // set by client
+  mutable ostream_ptr_t     console_out_;      // set by client
+  mutable ostream_ptr_t     summary_out_;      // set by client
+  mutable ostream_ptr_t     journal_out_;      // set by client
   mutable options_ptr_t     options_used_;     // actually used (can be NULL)
   mutable ostream_ptr_t     error_out_used_;   // actually used (can't be NULL)
   mutable ostream_ptr_t     console_out_used_; // actually used (can be NULL if do_console_outputting == false)
@@ -723,9 +733,6 @@ private:
 
   /** \brief . */
   void generate_output_streams() const;
-
-  /** \brief . */
-  void update_solver() const;
 
 }; // end class MoochoSolver
 

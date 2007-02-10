@@ -325,292 +325,6 @@ MoochoSolver::generate_output_file(const std::string &fileNameBase) const
 
 // Solve the NLP
 
-MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
-{
-  using std::endl;
-  using std::setw;
-  using StopWatchPack::stopwatch;
-  using Teuchos::RefCountPtr;
-
-  stopwatch                                  timer;
-  bool                                       threw_exception = false;
-  ESolutionStatus                            solve_return    = SOLVE_RETURN_EXCEPTION;
-  NLPSolverClientInterface::EFindMinReturn   r_find_min      = NLPSolverClientInterface::SOLUTION_FOUND;
-
-  try {
-    
-    update_solver();
-
-    //
-    // Direct any output from the NLP to the journal output file
-    //
-
-    EJournalOutputLevel olevel = solver_.journal_output_level();
-    Teuchos::VerboseObjectTempState<NLP>
-      nlpOutputTempState(nlp_,Teuchos::getFancyOStream(journal_out_used_),convertToVerbLevel(olevel));
-
-    //
-    // Scale the NLP objective function
-    //
-  
-    nlp_->scale_f(obj_scale_);
-
-    //
-    // Test the nlp if needed
-    //
-    
-    if(test_nlp_) {
-      
-      const char msg1[] = "\ntest_nlp = true: Testing the NLP! ...\n";
-      if(do_console_outputting())
-        *console_out_used_ << msg1;
-      if(do_summary_outputting())
-        *summary_out_used_ << msg1;
-      if(do_journal_outputting())
-        *journal_out_used_ << msg1;
-      if(NLPFirstOrder* nlp_foi = dynamic_cast<NLPFirstOrder*>(nlp_.get())) {
-        const char msg[] = "\nTesting the supported NLPFirstOrder interface ...\n";
-        if(do_console_outputting())
-          *console_out_used_ << msg;
-        if(do_summary_outputting())
-          *summary_out_used_ << msg;
-        if(do_journal_outputting())
-          *journal_out_used_ << msg;
-        const bool
-          result = NLPInterfacePack::test_nlp_first_order(
-            nlp_foi,options_used_.get()
-            ,do_journal_outputting() ? journal_out_used_.get() : NULL
-            );
-        if(!result) {
-          const char msg[] = "\nNLPFirstOrder test failed (see journal file)!  exiting!\n";
-          if(do_console_outputting())
-            *console_out_used_ << msg;
-          if(do_summary_outputting())
-            *summary_out_used_ << msg;
-          if(do_journal_outputting())
-            *journal_out_used_ << msg;
-          solve_return = SOLVE_RETURN_NLP_TEST_FAILED;
-          return solve_return;
-        }
-      }
-      else if(NLPDirect* nlp_fod = dynamic_cast<NLPDirect*>(nlp_.get())) {
-        const char msg[] = "\nTesting the supported NLPDirect interface ...\n";
-        if(do_console_outputting())
-          *console_out_used_ << msg;
-        if(do_summary_outputting())
-          *summary_out_used_ << msg;
-        if(do_journal_outputting())
-          *journal_out_used_ << msg;
-        const bool
-          result = NLPInterfacePack::test_nlp_direct(
-            nlp_fod,options_used_.get()
-            ,do_journal_outputting() ? journal_out_used_.get() : NULL
-            );
-        if(!result) {
-          const char msg[] = "\nNLPDirect test failed (see journal file)!  exiting!\n";
-          if(do_console_outputting())
-            *console_out_used_ << msg;
-          if(do_summary_outputting())
-            *summary_out_used_ << msg;
-          if(do_journal_outputting())
-            *journal_out_used_ << msg;
-          solve_return = SOLVE_RETURN_NLP_TEST_FAILED;
-          return solve_return;
-        }
-      }
-      const char msg2[] = "\nSuccessful end of testing of the nlp\n";
-      if(do_console_outputting())
-        *console_out_used_ << msg2;
-      if(do_summary_outputting())
-        *summary_out_used_ << msg2;
-      if(do_journal_outputting())
-        *journal_out_used_ << msg2;
-
-    }
-    
-    //
-    // Solve the NLP
-    //
-    
-    if(do_journal_outputting())
-      *journal_out_used_
-        << "\n************************************"
-        << "\n*** MoochoSolver::solve_nlp()    ***"
-        << "\n************************************\n"	
-        << "\n*** Starting iterations ...\n\n";
-    
-    solver_.set_algo_timing(algo_timing_);
-    timer.start();
-    r_find_min = solver_.find_min();
-    
-    }
-  catch(const std::exception& excpt) {
-    std::ostringstream msg;
-    msg << "\nMoochoSolver: Caught an std::exception of type "
-        << typeName(excpt) << " described as : " << excpt.what() << endl;
-    *error_out_used_  << msg.str();
-    if(do_summary_outputting())
-      *summary_out_used_ << msg.str();
-    if(do_journal_outputting())
-      *journal_out_used_ << msg.str();
-    if(throw_exceptions_)
-      throw;
-    threw_exception = true;
-  }
-  catch(...) {
-    std::ostringstream msg;
-    msg << "\nMoochoSolver: Caught an unknown exception (i.e. ...)\n";
-    *error_out_used_   << msg.str();
-    if(do_summary_outputting())
-      *summary_out_used_ << msg.str();
-    if(do_journal_outputting())
-      *journal_out_used_ << msg.str();
-    if(throw_exceptions_)
-      throw;
-    threw_exception = true;
-  }
-  
-  timer.stop();
-  
-  if(threw_exception) {
-    if(do_summary_outputting())
-      *summary_out_used_	<< "\n\n****************************\n"
-                << "**** Threw an exception ****\n";
-    solve_return = SOLVE_RETURN_EXCEPTION;
-  }
-  else {
-    switch( r_find_min ) {
-        case NLPSolverClientInterface::SOLUTION_FOUND: {
-        if(do_summary_outputting())
-          *summary_out_used_	<< "\n\n************************\n"
-                    << "**** Solution Found ****\n";
-        *error_out_used_    << "Solution Found!\n";
-        solve_return = SOLVE_RETURN_SOLVED;
-        break;
-      }
-        case NLPSolverClientInterface::MAX_ITER_EXCEEDED: {
-        if(do_summary_outputting())
-          *summary_out_used_	<< "\n\n**********************************************\n"
-                    << "**** Maximun number of iteration exceeded ****\n";
-        *error_out_used_    << "Maximun number of iteration exceeded!\n";
-        solve_return = SOLVE_RETURN_MAX_ITER;
-        break;
-      }
-        case NLPSolverClientInterface::MAX_RUN_TIME_EXCEEDED: {
-        if(do_summary_outputting())
-          *summary_out_used_	<< "\n\n**********************************\n"
-                    << "**** Maximun runtime exceeded ****\n";
-        *error_out_used_    << "Maximun runtime exceeded!\n";
-        solve_return = SOLVE_RETURN_MAX_RUN_TIME;
-        break;
-      }
-        case NLPSolverClientInterface::ALGORITHMIC_ERROR: {
-        if(do_summary_outputting())
-          *summary_out_used_	<< "\n\n*********************************************\n"
-                    << "**** Some error occurred in the algorithm ****\n";
-        *error_out_used_    << "Some algorithmic error occurred!\n";
-        solve_return = SOLVE_RETURN_EXCEPTION;
-        break;
-      }
-    }
-  }
-  
-  if(do_summary_outputting()) {
-    *summary_out_used_	<< "\n  total time = " << timer.read() << " sec.\n";
-    if( solver_.algo_timing() ) {
-      Teuchos::TimeMonitor::format().setRowsBetweenLines(100);
-      solver_.print_algorithm_times( *summary_out_used_ );
-      *summary_out_used_ << "\n\n";
-      Teuchos::TimeMonitor::summarize(*summary_out_used_);
-    }
-  }
-  
-  // Print workspace usage statistics
-  if(do_summary_outputting())
-    *summary_out_used_
-      << "\n*** Statistics for automatic array workspace:"
-      << "\nNumber of megabytes of preallocated workspace                = "
-      << workspace_MB_
-      << "\nNumber of allocations using preallocated workspace           = "
-      << Teuchos::get_default_workspace_store()->num_static_allocations()
-      << "\nNumber of dynamic allocations beyond preallocated workspace  = "
-      << Teuchos::get_default_workspace_store()->num_dyn_allocations();
-  
-  // Print which options groups were not read
-  if( do_algo_outputting() && print_opt_grp_not_accessed_ ) {
-    *algo_out_used_
-      <<	"\n***************************************************************\n"
-      "Warning, the following options groups where not accessed.\n"
-      "An options group may not be accessed if it is not looked for\n"
-      "or if an \"optional\" options group was looked from and the user\n"
-      "spelled it incorrectly:\n\n";
-    if(options_used_.get())
-      options_used_->print_unaccessed_options_groups(*algo_out_used_);
-  }
-
-  if(do_console_outputting())
-    console_out_used_->flush();
-  if(do_summary_outputting())
-    summary_out_used_->flush();
-  if(do_journal_outputting())
-    journal_out_used_->flush();
-  if(do_algo_outputting())
-    algo_out_used_->flush();
-  
-  return solve_return;
-  
-}
-
-// Get the underlying solver object
-
-NLPSolverClientInterface& MoochoSolver::get_solver()
-{
-  update_solver();
-  return solver_;
-}
-
-const NLPSolverClientInterface& MoochoSolver::get_solver() const
-{
-  update_solver();
-  return solver_;
-}
-
-// private
-
-void MoochoSolver::generate_output_streams() const
-{
-  if( do_console_outputting() && console_out_used_.get() == NULL ) {
-    if( console_out_.get() != NULL )
-      console_out_used_ = console_out_;
-    else
-      console_out_used_ = Teuchos::VerboseObjectBase::getDefaultOStream();
-  }
-  if( do_summary_outputting() && summary_out_used_.get()==NULL ) {
-    if( summary_out_.get() == NULL )
-      summary_out_used_ = generate_output_file("MoochoSummary");
-    else
-      summary_out_used_ = summary_out_;
-  }
-  if( do_journal_outputting() && journal_out_used_.get() == NULL ) {
-    if( journal_out_.get() == NULL )
-      journal_out_used_ = generate_output_file("MoochoJournal");
-    else
-      journal_out_used_ = journal_out_;
-  }
-  else {
-    journal_out_used_ = Teuchos::rcp(new Teuchos::oblackholestream());
-  }
-  if( do_algo_outputting() && algo_out_used_.get() == NULL ) {
-    if( algo_out_.get() == NULL )
-      algo_out_used_ = generate_output_file("MoochoAlgo");
-    else
-      algo_out_used_ = algo_out_;
-  }
-  if( generate_stats_file_ && stats_out_used_.get() == NULL ) {
-    stats_out_used_ = generate_output_file("MoochoStats");
-  }
-}
-
 void MoochoSolver::update_solver() const
 {
 
@@ -932,6 +646,314 @@ void MoochoSolver::update_solver() const
 
   }
   
+}
+
+MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
+{
+  using std::endl;
+  using std::setw;
+  using StopWatchPack::stopwatch;
+  using Teuchos::RefCountPtr;
+
+  stopwatch                                  timer;
+  bool                                       threw_exception = false;
+  ESolutionStatus                            solve_return    = SOLVE_RETURN_EXCEPTION;
+  NLPSolverClientInterface::EFindMinReturn   r_find_min      = NLPSolverClientInterface::SOLUTION_FOUND;
+
+  try {
+    
+    update_solver();
+
+    {
+      std::ostringstream os;
+      os
+        << "\n*****************************"
+        << "\n*** MoochoSolver::solve() ***"
+        << "\n*****************************\n";
+      *this->get_console_out() << os.str();
+      *this->get_summary_out() << os.str();
+      *this->get_journal_out() << os.str();
+    }
+    //    
+    // Direct any output from the NLP to the journal output file
+    //
+
+    EJournalOutputLevel olevel = solver_.journal_output_level();
+    Teuchos::VerboseObjectTempState<NLP>
+      nlpOutputTempState(nlp_,Teuchos::getFancyOStream(journal_out_used_),convertToVerbLevel(olevel));
+
+    //
+    // Scale the NLP objective function
+    //
+  
+    nlp_->scale_f(obj_scale_);
+
+    //
+    // Test the nlp if needed
+    //
+    
+    if(test_nlp_) {
+      
+      const char msg1[] = "\ntest_nlp = true: Testing the NLP! ...\n";
+      if(do_console_outputting())
+        *console_out_used_ << msg1;
+      if(do_summary_outputting())
+        *summary_out_used_ << msg1;
+      if(do_journal_outputting())
+        *journal_out_used_ << msg1;
+      if(NLPFirstOrder* nlp_foi = dynamic_cast<NLPFirstOrder*>(nlp_.get())) {
+        const char msg[] = "\nTesting the supported NLPFirstOrder interface ...\n";
+        if(do_console_outputting())
+          *console_out_used_ << msg;
+        if(do_summary_outputting())
+          *summary_out_used_ << msg;
+        if(do_journal_outputting())
+          *journal_out_used_ << msg;
+        const bool
+          result = NLPInterfacePack::test_nlp_first_order(
+            nlp_foi,options_used_.get()
+            ,do_journal_outputting() ? journal_out_used_.get() : NULL
+            );
+        if(!result) {
+          const char msg[] = "\nNLPFirstOrder test failed (see journal file)!  exiting!\n";
+          if(do_console_outputting())
+            *console_out_used_ << msg;
+          if(do_summary_outputting())
+            *summary_out_used_ << msg;
+          if(do_journal_outputting())
+            *journal_out_used_ << msg;
+          solve_return = SOLVE_RETURN_NLP_TEST_FAILED;
+          return solve_return;
+        }
+      }
+      else if(NLPDirect* nlp_fod = dynamic_cast<NLPDirect*>(nlp_.get())) {
+        const char msg[] = "\nTesting the supported NLPDirect interface ...\n";
+        if(do_console_outputting())
+          *console_out_used_ << msg;
+        if(do_summary_outputting())
+          *summary_out_used_ << msg;
+        if(do_journal_outputting())
+          *journal_out_used_ << msg;
+        const bool
+          result = NLPInterfacePack::test_nlp_direct(
+            nlp_fod,options_used_.get()
+            ,do_journal_outputting() ? journal_out_used_.get() : NULL
+            );
+        if(!result) {
+          const char msg[] = "\nNLPDirect test failed (see journal file)!  exiting!\n";
+          if(do_console_outputting())
+            *console_out_used_ << msg;
+          if(do_summary_outputting())
+            *summary_out_used_ << msg;
+          if(do_journal_outputting())
+            *journal_out_used_ << msg;
+          solve_return = SOLVE_RETURN_NLP_TEST_FAILED;
+          return solve_return;
+        }
+      }
+      const char msg2[] = "\nSuccessful end of testing of the nlp\n";
+      if(do_console_outputting())
+        *console_out_used_ << msg2;
+      if(do_summary_outputting())
+        *summary_out_used_ << msg2;
+      if(do_journal_outputting())
+        *journal_out_used_ << msg2;
+
+    }
+    
+    //
+    // Solve the NLP
+    //
+    
+    if(do_journal_outputting())
+      *journal_out_used_
+        << "\n************************************"
+        << "\n*** MoochoSolver::solve_nlp()    ***"
+        << "\n************************************\n"	
+        << "\n*** Starting iterations ...\n\n";
+    
+    solver_.set_algo_timing(algo_timing_);
+    timer.start();
+    r_find_min = solver_.find_min();
+    
+    }
+  catch(const std::exception& excpt) {
+    std::ostringstream msg;
+    msg << "\nMoochoSolver: Caught an std::exception of type "
+        << typeName(excpt) << " described as : " << excpt.what() << endl;
+    *error_out_used_  << msg.str();
+    if(do_summary_outputting())
+      *summary_out_used_ << msg.str();
+    if(do_journal_outputting())
+      *journal_out_used_ << msg.str();
+    if(throw_exceptions_)
+      throw;
+    threw_exception = true;
+  }
+  catch(...) {
+    std::ostringstream msg;
+    msg << "\nMoochoSolver: Caught an unknown exception (i.e. ...)\n";
+    *error_out_used_   << msg.str();
+    if(do_summary_outputting())
+      *summary_out_used_ << msg.str();
+    if(do_journal_outputting())
+      *journal_out_used_ << msg.str();
+    if(throw_exceptions_)
+      throw;
+    threw_exception = true;
+  }
+  
+  timer.stop();
+  
+  if(threw_exception) {
+    if(do_summary_outputting())
+      *summary_out_used_	<< "\n\n****************************\n"
+                << "**** Threw an exception ****\n";
+    solve_return = SOLVE_RETURN_EXCEPTION;
+  }
+  else {
+    switch( r_find_min ) {
+        case NLPSolverClientInterface::SOLUTION_FOUND: {
+        if(do_summary_outputting())
+          *summary_out_used_	<< "\n\n************************\n"
+                    << "**** Solution Found ****\n";
+        *error_out_used_    << "Solution Found!\n";
+        solve_return = SOLVE_RETURN_SOLVED;
+        break;
+      }
+        case NLPSolverClientInterface::MAX_ITER_EXCEEDED: {
+        if(do_summary_outputting())
+          *summary_out_used_	<< "\n\n**********************************************\n"
+                    << "**** Maximun number of iteration exceeded ****\n";
+        *error_out_used_    << "Maximun number of iteration exceeded!\n";
+        solve_return = SOLVE_RETURN_MAX_ITER;
+        break;
+      }
+        case NLPSolverClientInterface::MAX_RUN_TIME_EXCEEDED: {
+        if(do_summary_outputting())
+          *summary_out_used_	<< "\n\n**********************************\n"
+                    << "**** Maximun runtime exceeded ****\n";
+        *error_out_used_    << "Maximun runtime exceeded!\n";
+        solve_return = SOLVE_RETURN_MAX_RUN_TIME;
+        break;
+      }
+        case NLPSolverClientInterface::ALGORITHMIC_ERROR: {
+        if(do_summary_outputting())
+          *summary_out_used_	<< "\n\n*********************************************\n"
+                    << "**** Some error occurred in the algorithm ****\n";
+        *error_out_used_    << "Some algorithmic error occurred!\n";
+        solve_return = SOLVE_RETURN_EXCEPTION;
+        break;
+      }
+    }
+  }
+  
+  if(do_summary_outputting()) {
+    *summary_out_used_	<< "\n  total time = " << timer.read() << " sec.\n";
+    if( solver_.algo_timing() ) {
+      Teuchos::TimeMonitor::format().setRowsBetweenLines(100);
+      solver_.print_algorithm_times( *summary_out_used_ );
+      *summary_out_used_ << "\n\n";
+      Teuchos::TimeMonitor::summarize(*summary_out_used_);
+    }
+  }
+  
+  // Print workspace usage statistics
+  if(do_summary_outputting())
+    *summary_out_used_
+      << "\n*** Statistics for automatic array workspace:"
+      << "\nNumber of megabytes of preallocated workspace                = "
+      << workspace_MB_
+      << "\nNumber of allocations using preallocated workspace           = "
+      << Teuchos::get_default_workspace_store()->num_static_allocations()
+      << "\nNumber of dynamic allocations beyond preallocated workspace  = "
+      << Teuchos::get_default_workspace_store()->num_dyn_allocations();
+  
+  // Print which options groups were not read
+  if( do_algo_outputting() && print_opt_grp_not_accessed_ ) {
+    *algo_out_used_
+      <<	"\n***************************************************************\n"
+      "Warning, the following options groups where not accessed.\n"
+      "An options group may not be accessed if it is not looked for\n"
+      "or if an \"optional\" options group was looked from and the user\n"
+      "spelled it incorrectly:\n\n";
+    if(options_used_.get())
+      options_used_->print_unaccessed_options_groups(*algo_out_used_);
+  }
+
+  if(do_console_outputting())
+    console_out_used_->flush();
+  if(do_summary_outputting())
+    summary_out_used_->flush();
+  if(do_journal_outputting())
+    journal_out_used_->flush();
+  if(do_algo_outputting())
+    algo_out_used_->flush();
+  
+  return solve_return;
+  
+}
+
+// Get the underlying solver object
+
+NLPSolverClientInterface& MoochoSolver::get_solver()
+{
+  update_solver();
+  return solver_;
+}
+
+const NLPSolverClientInterface& MoochoSolver::get_solver() const
+{
+  update_solver();
+  return solver_;
+}
+
+// private
+
+void MoochoSolver::generate_output_streams() const
+{
+  if( do_console_outputting() && console_out_used_.get() == NULL ) {
+    if( console_out_.get() == NULL ) {
+      console_out_used_ = Teuchos::VerboseObjectBase::getDefaultOStream();
+      console_out_ = console_out_used_;
+    }
+    else {
+      console_out_used_ = console_out_;
+    }
+  }
+  if( do_summary_outputting() && summary_out_used_.get()==NULL ) {
+    if( summary_out_.get() == NULL ) {
+      summary_out_used_ = generate_output_file("MoochoSummary");
+      summary_out_ = summary_out_used_;
+    }
+    else {
+      summary_out_used_ = summary_out_;
+    }
+  }
+  if( do_journal_outputting() && journal_out_used_.get() == NULL ) {
+    if( journal_out_.get() == NULL ) {
+      journal_out_used_ = generate_output_file("MoochoJournal");
+      journal_out_ = journal_out_used_;
+    }
+    else {
+      journal_out_used_ = journal_out_;
+    }
+  }
+  else {
+    journal_out_used_ = Teuchos::rcp(new Teuchos::oblackholestream());
+  }
+  if( do_algo_outputting() && algo_out_used_.get() == NULL ) {
+    if( algo_out_.get() == NULL ) {
+      algo_out_used_ = generate_output_file("MoochoAlgo");
+      algo_out_ = algo_out_used_;
+    }
+    else {
+      algo_out_used_ = algo_out_;
+    }
+  }
+  if( generate_stats_file_ && stats_out_used_.get() == NULL ) {
+    stats_out_used_ = generate_output_file("MoochoStats");
+  }
 }
 
 } // end namespace MoochoPack

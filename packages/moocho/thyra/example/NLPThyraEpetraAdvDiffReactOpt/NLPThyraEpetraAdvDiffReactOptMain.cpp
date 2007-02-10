@@ -31,7 +31,6 @@ int main( int argc, char* argv[] )
 
   Teuchos::GlobalMPISession mpiSession(&argc,&argv);
 
-  const int procRank = mpiSession.getRank();
   const int numProcs = mpiSession.getNProc();
 
   Teuchos::Time timer("");

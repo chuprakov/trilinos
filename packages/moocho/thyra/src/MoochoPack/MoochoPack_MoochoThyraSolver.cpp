@@ -656,6 +656,23 @@ void MoochoThyraSolver::setInitialGuess(
   
 MoochoSolver::ESolutionStatus MoochoThyraSolver::solve()
 {
+  using Teuchos::RefCountPtr; using Teuchos::null;
+  solver_.update_solver();
+  std::ostringstream os;
+  os
+    << "\n**********************************"
+    << "\n*** MoochoThyraSolver::solve() ***"
+    << "\n**********************************\n";
+  const RefCountPtr<const Thyra::VectorSpaceBase<value_type> >
+    x_space = outerModel_->get_x_space(),
+    p_space = ( p_idx_ >= 0 ? outerModel_->get_p_space(p_idx_) : null );
+  if( x_space != null )
+    os << "\nx_space: " << x_space->description() << "\n";
+  if( p_space != null )
+    os << "\np_space: " << p_space->description() << "\n";
+  *solver_.get_console_out() << os.str();
+  *solver_.get_summary_out() << os.str();
+  *solver_.get_journal_out() << os.str();
   return solver_.solve_nlp();
 }
 
