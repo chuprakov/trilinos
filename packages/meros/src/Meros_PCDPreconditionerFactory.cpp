@@ -26,74 +26,72 @@
 // ***********************************************************************
 // @HEADER
 
-#include "Thyra_DefaultIdentityLinearOp.hpp"
-#include "Thyra_DefaultInverseLinearOpDecl.hpp"
-#include "Thyra_DefaultInverseLinearOp.hpp"
 #include "Thyra_DefaultPreconditioner.hpp"
-#include "Thyra_DefaultZeroLinearOp.hpp"
-#include "Thyra_LinearOpWithSolveFactoryHelpers.hpp"
 #include "Thyra_PreconditionerFactoryHelpers.hpp"
 #include "Thyra_SolveSupportTypes.hpp"
 #include "Thyra_LinearOpBase.hpp"
-#include "Thyra_LinearOpBaseDecl.hpp"
-#include "Thyra_VectorDecl.hpp"
 #include "Thyra_VectorImpl.hpp"
 #include "Thyra_VectorSpaceImpl.hpp"
-#include "Thyra_LinearOperatorDecl.hpp"
 #include "Thyra_LinearOperatorImpl.hpp"
-#include "Thyra_SpmdVectorBase.hpp"
-#include "Thyra_DefaultBlockedLinearOpDecl.hpp"
 #include "Thyra_PreconditionerFactoryBase.hpp"
+#include "Thyra_InverseLinearOperator.hpp"
 
-#include "Meros_AztecSolveStrategy.hpp"
-#include "Meros_InverseOperator.hpp"
-#include "Meros_ZeroOperator.hpp"
-#include "Meros_IdentityOperator.hpp"
-#include "Meros_LinearSolver.hpp"
+#include "Meros_LSCPreconditionerFactory.h"
 #include "Meros_PCDPreconditionerFactory.h"
 
-#include "AztecOO.h"
-#include "Thyra_AztecOOLinearOpWithSolveFactory.hpp"
-#include "Thyra_AztecOOLinearOpWithSolve.hpp"
-
-using namespace Teuchos;
-using namespace Thyra;
 using namespace Meros;
 
 
 // Constructors/initializers/accessors
 
-PCDPreconditionerFactory
-::PCDPreconditionerFactory()
-{;}
-
-
-PCDPreconditionerFactory
-::PCDPreconditionerFactory(RefCountPtr<ParameterList> azFParams,
-			   RefCountPtr<ParameterList> azApParams)
-{
-  azFParams_ = azFParams;
-  azApParams_ = azApParams;
-  azQpParams_ = Teuchos::null;
-}
-
+//PCDPreconditionerFactory
+//::PCDPreconditionerFactory()
+//{;}
 
 PCDPreconditionerFactory
-::PCDPreconditionerFactory(RefCountPtr<ParameterList> azFParams,
-			   RefCountPtr<ParameterList> azApParams,
-			   RefCountPtr<ParameterList> azQpParams)
-{
-  azFParams_ = azFParams;
-  azApParams_ = azApParams;
-  azQpParams_ = azQpParams;
-}
+::PCDPreconditionerFactory(
+  RefCountPtr<const LinearOpWithSolveFactoryBase<double> > 
+  const&  FSolveStrategy,
+  RefCountPtr<const LinearOpWithSolveFactoryBase<double> >  
+  const&  ApSolveStrategy
+  )
+  :FSolveStrategy_(FSolveStrategy),
+   ApSolveStrategy_(ApSolveStrategy),
+   QpSolveStrategy_(Teuchos::null)
+{}
+
+
+PCDPreconditionerFactory
+::PCDPreconditionerFactory(
+  RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   
+  const&  FSolveStrategy,
+  RefCountPtr<const LinearOpWithSolveFactoryBase<double> >  
+  const&  ApSolveStrategy,
+  RefCountPtr<const LinearOpWithSolveFactoryBase<double> >  
+  const&  QpSolveStrategy
+  )
+  :FSolveStrategy_(FSolveStrategy),
+   ApSolveStrategy_(ApSolveStrategy),
+   QpSolveStrategy_(QpSolveStrategy)
+{}
+
+
+// PCDPreconditionerFactory
+// ::PCDPreconditionerFactory(RefCountPtr<ParameterList> azFParams,
+// 			   RefCountPtr<ParameterList> azApParams,
+// 			   RefCountPtr<ParameterList> azQpParams)
+// {
+//   azFParams_ = azFParams;
+//   azApParams_ = azApParams;
+//   azQpParams_ = azQpParams;
+// }
 
 
 
 bool PCDPreconditionerFactory
 ::isCompatible(const LinearOpSourceBase<double> &fwdOpSrc) const
 {
-TEST_FOR_EXCEPT("PCDPreconditionerFactory::isCompatible is not implemented");
+  TEST_FOR_EXCEPT("PCDPreconditionerFactory::isCompatible is not implemented");
 }
 
 
@@ -130,53 +128,52 @@ void PCDPreconditionerFactory
 
   
   // Builde F inverse operator Finv using the AztecOO solver param list.
-  LinearSolveStrategy<double> azF 
-    = new AztecSolveStrategy(*(azFParams_.get()));
-  ConstLinearOperator<double> Finv 
-    = new InverseOperator<double>(F, azF);
+  // LinearSolveStrategy<double> azF 
+  //   = new AztecSolveStrategy(*(azFParams_.get()));
+  ConstLinearOperator<double> 
+    Finv = inverse(*FSolveStrategy_,F,Thyra::IGNORE_SOLVE_FAILURE);
 
   // Build Ap inverse operator Apinv using the AztecOO solver param list.
-  LinearSolveStrategy<double> azAp 
-    = new AztecSolveStrategy(*(azApParams_.get()));
-  ConstLinearOperator<double> Apinv 
-     = new InverseOperator<double>(Ap, azAp);
+  //  LinearSolveStrategy<double> azAp 
+  //   = new AztecSolveStrategy(*(azApParams_.get()));
+  ConstLinearOperator<double> 
+    Apinv = inverse(*ApSolveStrategy_,Ap,Thyra::IGNORE_SOLVE_FAILURE);
 
   // Build Qp inverse operator Qpinv using the AztecOO solver param list.
   // If no Qpinv solver was given, we'll use the Ap solver parameters.
-  LinearSolveStrategy<double> azQp;
+  // LinearSolveStrategy<double> azQp;
   ConstLinearOperator<double> Qpinv; 
-  if(azQpParams_.get() != NULL)
+  if(QpSolveStrategy_.get() != NULL)
     {
       // use given Qp params
-      azQp = new AztecSolveStrategy(*(azQpParams_.get()));
-      Qpinv = new InverseOperator<double>(Qp, azQp);
+      // azQp = new AztecSolveStrategy(*(azQpParams_.get()));
+      Qpinv = inverse(*QpSolveStrategy_,Qp,Thyra::IGNORE_SOLVE_FAILURE);
     }
   else
     {
       // use the Ap params
-      azQp = new AztecSolveStrategy(*(azApParams_.get()));
-      Qpinv = new InverseOperator<double>(Qp, azQp);
+      // azQp = new AztecSolveStrategy(*(azApParams_.get()));
+      Qpinv = inverse(*ApSolveStrategy_,Qp,Thyra::IGNORE_SOLVE_FAILURE);
     }
 
   // Build identity matrices on the velocity and pressure spaces 
-  ConstLinearOperator<double> Ivel = new IdentityOperator<double>(Bt.range());
-  ConstLinearOperator<double> Ipress 
-    = new IdentityOperator<double>(Bt.domain());
+  ConstLinearOperator<double> Ivel = identity(Bt.range());
+  ConstLinearOperator<double> Ipress = identity(Bt.domain());
 
   // Build zero operators. Need one that is pressure x velocity and
   // one that is velocity x pressure
-  ConstLinearOperator<double> Z = new ZeroOperator<double>(Bt.domain(), 
-							   Bt.range());
-  ConstLinearOperator<double> Zt = new ZeroOperator<double>(Bt.range(), 
-							    Bt.domain());
+  ConstLinearOperator<double> zero;
 
   // Build the composed Schur complement approximation inverse
   ConstLinearOperator<double> Xinv = Qpinv * Fp * Apinv;
 
   // Build the 3 block operators for the preconditioner
-  ConstLinearOperator<double> P1 = block2x2(Finv, Zt, Z, Ipress);
-  ConstLinearOperator<double> P2 = block2x2(Ivel, (-1.0)*Bt, Z, Ipress);
-  ConstLinearOperator<double> P3 = block2x2(Ivel, Zt, Z, (-1.0)*Xinv);
+  ConstLinearOperator<double> P1 = block2x2( Finv, zero, 
+					     zero, Ipress );
+  ConstLinearOperator<double> P2 = block2x2( Ivel, (-1.0)*Bt, 
+					     zero,   Ipress  );
+  ConstLinearOperator<double> P3 = block2x2( Ivel,   zero, 
+					     zero,   (-1.0)*Xinv );
 
   ConstLinearOperator<double> PCDprec = P1 * P2 * P3;
 

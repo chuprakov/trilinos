@@ -457,11 +457,20 @@ int main(int argc, char *argv[])
       //   = rcp(new PCDPreconditionerFactory(aztecFParams,
       //                                aztecApParams));
   
+//       RefCountPtr<PreconditionerFactoryBase<double> > merosPrecFac
+//         = rcp(new PCDPreconditionerFactory(aztecFParams,
+//                                            aztecApParams,
+//                                            aztecQpParams));
+
       RefCountPtr<PreconditionerFactoryBase<double> > merosPrecFac
-        = rcp(new PCDPreconditionerFactory(aztecFParams,
-                                           aztecApParams,
-                                           aztecQpParams));
-  
+        = rcp(
+	      new PCDPreconditionerFactory(
+		rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecFParams)),
+		rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecApParams)),
+		rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecQpParams))
+		)
+	      );
+        
       RefCountPtr<PreconditionerBase<double> > Prcp 
         = merosPrecFac->createPrec();
 

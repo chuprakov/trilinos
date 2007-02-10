@@ -30,7 +30,7 @@ EXEEXT = .exe
 
 include $(top_builddir)/Makefile.export.meros
 
-bin_PROGRAMS = saddle_pcd saddle_pcd_epetra saddle_pcd_lid
+bin_PROGRAMS = saddle_pcd saddle_pcd_epetra saddle_pcd_lid 
 
 saddle_pcd_SOURCES = $(srcdir)/saddle_pcd.cpp
 

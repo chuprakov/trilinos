@@ -489,15 +489,15 @@ int main(int argc, char *argv[])
       // 4) Build the LSC block preconditioner factory.
       RefCountPtr<PreconditionerFactoryBase<double> > merosPrecFac
         = rcp(
-          new LSCPreconditionerFactory(
-            rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecFParams))
-            ,rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecBBtParams))
-            )
-          );
-  
+	      new LSCPreconditionerFactory(
+		rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecFParams)),
+		rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecBBtParams))
+		)
+	      );
+      
       RefCountPtr<PreconditionerBase<double> > Prcp 
         = merosPrecFac->createPrec();
-
+      
       merosPrecFac->initializePrec(myLSCopSrcRcp, &*Prcp);
 
 

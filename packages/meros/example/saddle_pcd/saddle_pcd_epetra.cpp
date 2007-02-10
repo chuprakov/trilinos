@@ -341,10 +341,18 @@ int main(int argc, char *argv[])
 
 
       // 4) Build the PCD block preconditioner factory.
+//       RefCountPtr<PreconditionerFactoryBase<double> > merosPrecFac
+// 	= rcp(new PCDPreconditionerFactory(aztecFParams,
+// 					   aztecApParams));
+
       RefCountPtr<PreconditionerFactoryBase<double> > merosPrecFac
-	= rcp(new PCDPreconditionerFactory(aztecFParams,
-					   aztecApParams));
-  
+        = rcp(
+	      new PCDPreconditionerFactory(
+	       rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecFParams)),
+               rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecApParams))
+	       )
+	      );    
+      
       RefCountPtr<PreconditionerBase<double> > Prcp 
 	= merosPrecFac->createPrec();
 

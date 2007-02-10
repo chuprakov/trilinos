@@ -35,7 +35,6 @@
  */
 
 #include "Teuchos_ParameterListAcceptor.hpp"
-#include "Teuchos_RefCountPtr.hpp"
 #include "Thyra_SolveSupportTypes.hpp"
 #include "Thyra_LinearOpSourceBase.hpp"
 #include "Thyra_PreconditionerBase.hpp"
@@ -47,7 +46,10 @@
 
 namespace Meros
 {
-  using namespace Teuchos;
+  using Teuchos::ParameterList;
+  using Teuchos::RefCountPtr;
+  using Teuchos::rcp;
+  using Teuchos::null;
   using namespace Thyra;
 
   /*! \ingroup PreconditionerFactory
@@ -112,17 +114,25 @@ namespace Meros
        *  preconditioner factory. Takes an AztecOO parameter list for
        *  the F (convection-diffusion) solve and the Ap 
        *  (pressure Poisson) solve.  */
-      PCDPreconditionerFactory(RefCountPtr<ParameterList> azFParams,
-			       RefCountPtr<ParameterList> azApParams);
-
+      PCDPreconditionerFactory(
+         RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   
+	 const&  FSolveStrategy,
+	 RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   
+	 const&  ApSolveStrategy
+	 );
+      
       /** \brief Constructor for Pressure Convection-Diffusion
        *  preconditioner factory. Takes an AztecOO parameter list for
        *  the F (convection-diffusion) solve the Ap (pressure Poisson)
        *  solve, and the Qp (pressure mass matrix) solve.  */
-      PCDPreconditionerFactory(RefCountPtr<ParameterList> azFParams,
-			       RefCountPtr<ParameterList> azApParams,
-			       RefCountPtr<ParameterList> azQpParams);
-
+      PCDPreconditionerFactory(
+	 RefCountPtr<const LinearOpWithSolveFactoryBase<double> > 
+	 const& FSolveStrategy,
+	 RefCountPtr<const LinearOpWithSolveFactoryBase<double> >
+	 const& ApSolveStrategy,
+	 RefCountPtr<const LinearOpWithSolveFactoryBase<double> >
+	 const& QpSolveStrategy
+	 );
       //@}
 
       /** @name Overridden from PreconditionerFactoryBase */
@@ -186,9 +196,12 @@ namespace Meros
       mutable RefCountPtr<ParameterList>  validPL_;
       RefCountPtr<ParameterList>          paramList_;
 
-      RefCountPtr<ParameterList> azFParams_;
-      RefCountPtr<ParameterList> azApParams_;
-      RefCountPtr<ParameterList> azQpParams_;
+      RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   
+	FSolveStrategy_;
+      RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   
+	ApSolveStrategy_;
+      RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   
+	QpSolveStrategy_;
     };
 
 }  // namespace Meros
