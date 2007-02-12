@@ -665,7 +665,11 @@ MoochoSolver::ESolutionStatus MoochoThyraSolver::solve()
     << "\n**********************************\n";
   const RefCountPtr<const Thyra::VectorSpaceBase<value_type> >
     x_space = outerModel_->get_x_space(),
-    p_space = ( p_idx_ >= 0 ? outerModel_->get_p_space(p_idx_) : null );
+    p_space = (
+      ( p_idx_ >= 0 && outerModel_->Np() > 0 )
+      ? outerModel_->get_p_space(p_idx_)
+      : null
+      );
   if( x_space != null )
     os << "\nx_space: " << x_space->description() << "\n";
   if( p_space != null )
