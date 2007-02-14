@@ -410,7 +410,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 
   MatrixIdentConcatStd
     *Z_vr = Z ? &dyn_cast<MatrixIdentConcatStd>(*Z) : NULL;
-  assert(Uz == NULL); // ToDo: Implement undecomposed general equalities
+  TEST_FOR_EXCEPT( !( Uz == NULL ) ); // ToDo: Implement undecomposed general equalities
 
   //
   // Get smart pointers to unreferenced C and D matrix objects.
@@ -458,8 +458,8 @@ void DecompositionSystemVarReductImp::update_decomp(
     if( out && olevel >= PRINT_BASIC_INFO )
       *out << "\nUpdating the basis matrix C and other matices using the BasisSystem object ...\n";
   
-    assert( D_ptr.get() ); // local programming error only!
-    assert( C_ptr.get() ); // local programming error only!
+    TEST_FOR_EXCEPT( !(  D_ptr.get()  ) ); // local programming error only!
+    TEST_FOR_EXCEPT( !(  C_ptr.get()  ) ); // local programming error only!
   
     basis_sys_->update_basis(
       Gc                                                       // Gc
@@ -557,7 +557,7 @@ void DecompositionSystemVarReductImp::update_decomp(
   // Initialize the implicit D = -inv(C)*N matrix object.
   //
 
-  assert(D_ptr.get()); // local programming error only?
+  TEST_FOR_EXCEPT( !( D_ptr.get() ) ); // local programming error only?
   if( D_imp_used_ == MAT_IMP_IMPLICIT ) {
     if( !C_ptr.has_ownership() && mat_rel == MATRICES_INDEP_IMPS ) {
       C_ptr = C_ptr->clone_mwons();
@@ -600,7 +600,7 @@ void DecompositionSystemVarReductImp::update_decomp(
       );
   }
 
-  assert(Uz == NULL); // ToDo: Implement for undecomposed general equalities
+  TEST_FOR_EXCEPT( !( Uz == NULL ) ); // ToDo: Implement for undecomposed general equalities
 
   // Clear cache for basis matrices.
   C_ptr_ = Teuchos::null;

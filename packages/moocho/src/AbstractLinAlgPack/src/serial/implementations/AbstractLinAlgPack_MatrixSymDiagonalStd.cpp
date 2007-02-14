@@ -130,9 +130,9 @@ void MatrixSymDiagStd::Vp_StMtV(
       y_end = vs_lhs->end();
     for( ; y_itr != y_end; ++y_itr, ++d_itr, ++x_itr ) {
 #ifdef LINALGPACK_CHECK_RANGE
-      assert( d_itr < diag.end() );
-      assert( x_itr < vs_rhs2.end() );
-      assert( y_itr < vs_lhs->end() );
+      TEST_FOR_EXCEPT( !(  d_itr < diag.end()  ) );
+      TEST_FOR_EXCEPT( !(  x_itr < vs_rhs2.end()  ) );
+      TEST_FOR_EXCEPT( !(  y_itr < vs_lhs->end()  ) );
 #endif
       *y_itr = beta * (*y_itr) + alpha * (*d_itr) * (*x_itr);
     }
@@ -208,9 +208,9 @@ void MatrixSymDiagStd::V_InvMtV(
       y_itr = vs_lhs->begin(),
       y_end = vs_lhs->end();
     for( ; y_itr != y_end; ++y_itr, ++d_itr, ++x_itr ) {
-      assert( d_itr < diag.end() );
-      assert( x_itr < vs_rhs2.end() );
-      assert( y_itr < vs_lhs->end() );
+      TEST_FOR_EXCEPT( !(  d_itr < diag.end()  ) );
+      TEST_FOR_EXCEPT( !(  x_itr < vs_rhs2.end()  ) );
+      TEST_FOR_EXCEPT( !(  y_itr < vs_lhs->end()  ) );
       *y_itr = (*x_itr)/(*d_itr);
     }
   }

@@ -76,7 +76,7 @@ inline void seconds_initialize() {
     // timeslice interruptions
     ::SetThreadPriority( ::GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL );
   // Get the first count.
-  assert( QueryPerformanceCounter( &start_count ) );
+  TEST_FOR_EXCEPT( !(  QueryPerformanceCounter( &start_count )  ) );
   seconds_initialized = true;
 }
 

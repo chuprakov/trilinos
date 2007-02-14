@@ -371,7 +371,7 @@ void AbstractLinAlgPack::intersection(
   // Both are identity?
   if( P1.is_identity() && P2.is_identity() ) {
     *Q_nz = P1.nz(); // Should be the same as P2.nz();
-    assert( P1.nz() == P2.nz() );
+    TEST_FOR_EXCEPT( !(  P1.nz() == P2.nz()  ) );
     if(Q)
       Q->initialize(opP1_rows,opP2_cols,GenPermMatrixSlice::IDENTITY_MATRIX);
     return;
@@ -460,5 +460,5 @@ void AbstractLinAlgPack::intersection(
 
   }
   // Setup Q
-  assert(Q == NULL); // ToDo: Implement initializing Q
+  TEST_FOR_EXCEPT( !( Q == NULL ) ); // ToDo: Implement initializing Q
 }

@@ -121,7 +121,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
       }
     }
   }
-  assert( nd >= num_init_fixed );
+  TEST_FOR_EXCEPT( !(  nd >= num_init_fixed  ) );
 
   // n_R
   *n_R = nd - num_init_fixed;
@@ -148,10 +148,10 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
       else {
         (*i_x_fixed)[i_X] = i;
         (*bnd_fixed)[i_X] = bnd_i;
-        assert( !dLU_itr.at_end() );    // find entry in b_X
+        TEST_FOR_EXCEPT( !(  !dLU_itr.at_end()  ) );    // find entry in b_X
         while( dLU_itr.indice() < i )
           ++dLU_itr;
-        assert( dLU_itr.indice() == i );
+        TEST_FOR_EXCEPT( !(  dLU_itr.indice() == i  ) );
         value_type b_X_val = 0.0;
         switch( bnd_i ) {
           case EQUALITY:

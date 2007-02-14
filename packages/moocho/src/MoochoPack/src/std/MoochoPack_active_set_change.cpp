@@ -52,7 +52,7 @@ void MoochoPack::active_set_change(
   if( !nu_k.nz() && !nu_km1.nz() )
     return;
 
-  assert( nu_k.is_sorted() && nu_km1.is_sorted() );
+  TEST_FOR_EXCEPT( !(  nu_k.is_sorted() && nu_km1.is_sorted()  ) );
 
   bool dump_change = (int)olevel >= (int)PRINT_ACTIVE_SET;
 

@@ -848,7 +848,7 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
         ++basic_itr;
       }
       else {
-        assert(*nonbasic_itr == *fixed_itr); // If basic was not fixed then nonbasic better be!
+        TEST_FOR_EXCEPT( !( *nonbasic_itr == *fixed_itr ) ); // If basic was not fixed then nonbasic better be!
         ++count_nonbasic_fixed;
         ++nonbasic_itr;
 
@@ -860,7 +860,7 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
       for( ; *nonbasic_itr < next_fixed; ++nonbasic_itr )
         *(nonbasic_itr - count_nonbasic_fixed) = *nonbasic_itr - count_fixed;
     }
-    assert(count_fixed == n_full_ - n_); // Basic check
+    TEST_FOR_EXCEPT( !( count_fixed == n_full_ - n_ ) ); // Basic check
 
     var_perm->resize(n_);
     std::copy(

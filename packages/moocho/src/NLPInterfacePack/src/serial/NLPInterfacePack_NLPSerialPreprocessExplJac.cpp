@@ -318,7 +318,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
       for( index_type k = 1; k <= mI_orig; ++k ) {
         size_type var_idx = var_full_to_remove_fixed(n_orig+k); // Knows about slacks
 #ifdef TEUCHOS_DEBUG
-        assert( 0 < var_idx && var_idx <= n_full );
+        TEST_FOR_EXCEPT( !(  0 < var_idx && var_idx <= n_full  ) );
 #endif
         if(var_idx <= n) {
           // This is not a fixed variable
@@ -334,7 +334,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
       for( index_type k = 1; k <= mI_orig; ++k ) {
         size_type var_idx = var_full_to_remove_fixed(n_orig+k); // Knows about slacks
 #ifdef TEUCHOS_DEBUG
-        assert( 0 < var_idx && var_idx <= n_full );
+        TEST_FOR_EXCEPT( !(  0 < var_idx && var_idx <= n_full  ) );
 #endif
         if(var_idx <= n) {
           // This is not a fixed variable
@@ -461,11 +461,11 @@ void NLPSerialPreprocessExplJac::imp_fill_jacobian_entries(
     // Fill values and i and j
     for( ; val_orig != val_orig_end ; ++val_orig, ++ivect_orig, ++jvect_orig) {
 #ifdef TEUCHOS_DEBUG
-      assert( 0 <= *ivect_orig && *ivect_orig <= n_full );
+      TEST_FOR_EXCEPT( !(  0 <= *ivect_orig && *ivect_orig <= n_full  ) );
 #endif
       size_type var_idx = var_full_to_remove_fixed(*ivect_orig);
 #ifdef TEUCHOS_DEBUG
-      assert( 0 < var_idx && var_idx <= n_full );
+      TEST_FOR_EXCEPT( !(  0 < var_idx && var_idx <= n_full  ) );
 #endif
       if(var_idx <= n) {
         // This is not a fixed variable
@@ -481,11 +481,11 @@ void NLPSerialPreprocessExplJac::imp_fill_jacobian_entries(
     // Just fill values
     for( ; val_orig != val_orig_end ; ++val_orig, ++ivect_orig) {
 #ifdef TEUCHOS_DEBUG
-      assert( 0 <= *ivect_orig && *ivect_orig <= n_full );
+      TEST_FOR_EXCEPT( !(  0 <= *ivect_orig && *ivect_orig <= n_full  ) );
 #endif
       size_type var_idx = var_full_to_remove_fixed(*ivect_orig);
 #ifdef TEUCHOS_DEBUG
-      assert( 0 < var_idx && var_idx <= n_full );
+      TEST_FOR_EXCEPT( !(  0 < var_idx && var_idx <= n_full  ) );
 #endif
       if(var_idx <= n) {
         // This is not a fixed variable

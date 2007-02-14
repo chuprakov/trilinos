@@ -103,7 +103,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
     &x_k = s->x().get_k(0).v();
   const SpVector
     &nu_k = s->nu().get_k(0);
-  assert(nu_k.is_sorted());
+  TEST_FOR_EXCEPT( !( nu_k.is_sorted() ) );
   SpVector bl(n,n), bu(n,n);
   sparse_bounds_itr
     d_bnds_itr(dl.begin(),dl.end(),dl.offset(),du.begin(),du.end(),du.offset());
@@ -170,7 +170,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
         if( Hess_ptr_.get() == NULL || dynamic_cast<const MatrixSymPosDefCholFactor*>(Hess_ptr_.get()) == NULL )
           Hess_ptr_ = new MatrixSymPosDefCholFactor;
         H_ptr = const_cast<MatrixSymPosDefCholFactor*>(dynamic_cast<const MatrixSymPosDefCholFactor*>(Hess_ptr_.get()));
-        assert(H_ptr); // Should not be null!
+        TEST_FOR_EXCEPT( !( H_ptr ) ); // Should not be null!
         H_ptr->init_setup(
           &Hess_store_()  // The original matrix is stored in the lower triangular part (below diagonal)!
           ,NULL           // Nothing to deallocate
@@ -193,7 +193,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
         Hess_ptr_ = new MatrixSymIdent;
       if( current_k_ != s->k() ) {
         H_ptr = const_cast<MatrixSymIdent*>(dynamic_cast<const MatrixSymIdent*>(Hess_ptr_.get()));
-        assert(H_ptr); // Should not be null!
+        TEST_FOR_EXCEPT( !( H_ptr ) ); // Should not be null!
         H_ptr->init_setup(n-r,1.0);
         grad = 0.0;
       }

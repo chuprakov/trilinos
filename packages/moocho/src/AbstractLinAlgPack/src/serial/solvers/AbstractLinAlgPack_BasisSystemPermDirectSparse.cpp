@@ -329,7 +329,7 @@ void BasisSystemPermDirectSparse::select_basis(
     ,out
     );
   if( rank == 0 ) {
-    assert( rank == 0 ); // ToDo: Throw exception with good error message!
+    TEST_FOR_EXCEPT( !(  rank == 0  ) ); // ToDo: Throw exception with good error message!
   }
   // Return the selected basis
   // ToDo: Use var_perm_ds and equ_perm_ds together with nu to
@@ -415,7 +415,7 @@ void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
   // Get the concreate type of the direct sensitivity matrix (if one was passed in)
   if( D ) {
     MultiVectorMutableDense *D_mvd = &dyn_cast<MultiVectorMutableDense>(*D);
-    assert( D ); // ToDo: Throw exception!
+    TEST_FOR_EXCEPT( !(  D  ) ); // ToDo: Throw exception!
     // D = -inv(C) * N
     D_mvd->initialize(var_dep_.size(),var_indep_.size());
     AbstractLinAlgPack::M_StInvMtM(

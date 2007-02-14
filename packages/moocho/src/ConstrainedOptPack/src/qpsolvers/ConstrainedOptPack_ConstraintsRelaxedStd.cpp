@@ -127,7 +127,7 @@ void ConstraintsRelaxedStd::initialize(
     m_in = 0,
     m_eq = 0;
 
-  assert( m_undecomp == (F ? f->dim() : 0) ); // ToDo: support decomposed equalities in future.
+  TEST_FOR_EXCEPT( !(  m_undecomp == (F ? f->dim() : 0)  ) ); // ToDo: support decomposed equalities in future.
 
   // Validate that the correct sets of constraints are selected
   TEST_FOR_EXCEPTION(
@@ -764,7 +764,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
   ,const Vector& x, value_type b
   ) const
 {
-  assert( !F_ || P_u_.cols() == f_->dim() ); // ToDo: Add P_u when needed!
+  TEST_FOR_EXCEPT( !(  !F_ || P_u_.cols() == f_->dim()  ) ); // ToDo: Add P_u when needed!
 
   namespace mmp = MemMngPack;
   using BLAS_Cpp::trans_not;
@@ -888,7 +888,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
   
 /*
 
-  assert( !F_ || P_u_.cols() == f_->dim() ); // ToDo: Add P_u when needed!
+  TEST_FOR_EXCEPT( !(  !F_ || P_u_.cols() == f_->dim()  ) ); // ToDo: Add P_u when needed!
 
   using BLAS_Cpp::no_trans;
   using BLAS_Cpp::trans;
@@ -993,7 +993,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
     // y(i) +=  a * ( x2 - b'*x3 - f'*x4 )
     //   
     if( P2.nz() ){
-      assert(P2.nz() == 1);
+      TEST_FOR_EXCEPT( !( P2.nz() == 1 ) );
       const size_type
         i = P_trans == BLAS_Cpp::no_trans
           ? P2.begin()->row_i() : P2.begin()->col_j();
@@ -1026,7 +1026,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
     //   P4 = op(P)(:,nd+1+m_in+1:nd+1+m_in+m_eq)
     //
 
-    assert( !P.is_identity() ); // We should never have this!
+    TEST_FOR_EXCEPT( !(  !P.is_identity()  ) ); // We should never have this!
 
     size_type off = 0;
     const GenPermMatrixSlice
@@ -1058,7 +1058,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
     Vp_StMtV( y, a, P1, P_trans, x1, beta );
     // y += a*op(P2)*x2
     if( P2.nz() ){
-      assert(P2.nz() == 1);
+      TEST_FOR_EXCEPT( !( P2.nz() == 1 ) );
       (*y)( P_trans == BLAS_Cpp::no_trans
           ? P2.begin()->row_i() : P2.begin()->col_j() )
         += a * x2;

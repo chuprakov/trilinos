@@ -214,7 +214,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
         ibnds_itr	= i_inequ_bnds_.begin();
       // loop
       for(size_type i = 1; i <= n_inequ_bnds_; ++i, ++eLU_itr, ++ibnds_itr ) {
-        assert(!eLU_itr.at_end());
+        TEST_FOR_EXCEPT( !( !eLU_itr.at_end() ) );
         const size_type k      = eLU_itr.indice();
         *BL_itr++              = eLU_itr.lbound();
         *BU_itr++              = eLU_itr.ubound();
@@ -243,7 +243,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
       ibnds_t::iterator
         ibnds_itr	= i_inequ_bnds_.begin();
       for(size_type i = 1; i <= n_inequ_bnds_; ++i, ++eLU_itr, ++ibnds_itr ) {
-        assert(!eLU_itr.at_end());
+        TEST_FOR_EXCEPT( !( !eLU_itr.at_end() ) );
         const size_type k      = eLU_itr.indice();
         *BL_itr++              = eLU_itr.lbound();
         *BU_itr++              = eLU_itr.ubound();
@@ -449,7 +449,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
     ISTATE_t::const_iterator
       istate_itr = ISTATE_.begin() + N_ + n_inequ_bnds_;
     for( size_type k = 1; k <= f->dim(); ++k, ++istate_itr ) {
-      assert( *istate_itr == 3 );
+      TEST_FOR_EXCEPT( !(  *istate_itr == 3  ) );
     }
   }
 

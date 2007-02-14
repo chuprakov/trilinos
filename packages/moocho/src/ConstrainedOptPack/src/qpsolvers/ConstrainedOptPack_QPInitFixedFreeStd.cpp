@@ -260,7 +260,7 @@ const MatrixSymOp& QPInitFixedFreeStd::G() const
 
 const MatrixOp& QPInitFixedFreeStd::A() const
 {
-  assert(A_);	// ToDo: make this throw an exception
+  TEST_FOR_EXCEPT( !( A_ ) );	// ToDo: make this throw an exception
   return *A_;
 }
 

@@ -129,9 +129,9 @@ void MoochoPack::get_init_fixed_free_indep(
       *i_x_free_itr++ = i_indep;
       ++(*n_pz_R);
     }}
-    assert( i_x_free_itr  - i_x_free  == *n_pz_R );
-    assert( i_x_fixed_itr - i_x_fixed == *n_pz_X );
-    assert( bnd_fixed_itr - bnd_fixed == *n_pz_X );
+    TEST_FOR_EXCEPT( !(  i_x_free_itr  - i_x_free  == *n_pz_R  ) );
+    TEST_FOR_EXCEPT( !(  i_x_fixed_itr - i_x_fixed == *n_pz_X  ) );
+    TEST_FOR_EXCEPT( !(  bnd_fixed_itr - bnd_fixed == *n_pz_X  ) );
     if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
       out << "\nRemoving n_pz_X = " << (*n_pz_X) << " from the superbasic set and keeping n_pz_R = " << (*n_pz_R) << std::endl;
     }

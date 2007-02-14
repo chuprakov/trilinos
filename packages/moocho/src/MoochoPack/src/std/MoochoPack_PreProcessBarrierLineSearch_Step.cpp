@@ -163,8 +163,8 @@ bool PreProcessBarrierLineSearch_Step::do_step(
     dvu_k
     );
 
-  assert(alpha_k <= 1.0 && alpha_vl_k <= 1.0 && alpha_vu_k <= 1.0);
-  assert(alpha_k >= 0.0 && alpha_vl_k >= 0.0 && alpha_vu_k >= 0.0);
+  TEST_FOR_EXCEPT( !( alpha_k <= 1.0 && alpha_vl_k <= 1.0 && alpha_vu_k <= 1.0 ) );
+  TEST_FOR_EXCEPT( !( alpha_k >= 0.0 && alpha_vl_k >= 0.0 && alpha_vu_k >= 0.0 ) );
 
   x_kp1 = x_k;
   Vp_StV( &x_kp1, alpha_k, d_k);

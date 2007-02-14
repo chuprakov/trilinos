@@ -114,8 +114,8 @@ void QPSolverRelaxedLOQO::InitLOQOHessianJacobian::init_hess_jacob(
     m_in  = E ? b->size() : 0,
     m_eq  = F ? f->size() : 0;
 
-  assert( loqo_lp->n == nd + 1 );
-  assert( loqo_lp->m == num_inequal + m_eq );
+  TEST_FOR_EXCEPT( !(  loqo_lp->n == nd + 1  ) );
+  TEST_FOR_EXCEPT( !(  loqo_lp->m == num_inequal + m_eq  ) );
 
   // This default implementation assumes G, E and F are completely dense!
 
@@ -257,7 +257,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
   //
 
   LOQO *loqo_lp = openlp();
-  assert( loqo_lp );
+  TEST_FOR_EXCEPT( !(  loqo_lp  ) );
 
   //
   // Setup loqo_r and loqo_b and count the number of actual
@@ -304,7 +304,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
         *b_stat_itr = j; // We need to make A(k,:) = [ +op(E)(j,:), -b(j) ]
       }
       else {
-        assert(eLU_itr.ubound() < +inf_bnd);
+        TEST_FOR_EXCEPT( !( eLU_itr.ubound() < +inf_bnd ) );
         *b_itr = -eLU_itr.ubound();
         *r_itr = eLU_itr.lbound() <= -inf_bnd ? real_big : - eLU_itr.lbound() + eLU_itr.ubound();
         *b_stat_itr = -j; // We need to make A(k,:) = [ -op(E)(j,:), +b(j) ]
@@ -428,7 +428,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
   // Map the solution to the output arguments
   //
 
-  assert( loqo_lp->x );
+  TEST_FOR_EXCEPT( !(  loqo_lp->x  ) );
   DVectorSlice loqo_x_sol( loqo_lp->x, nd+1 );
 
   // d
@@ -444,8 +444,8 @@ QPSolverRelaxedLOQO::imp_solve_qp(
   // nu
   if(nu) {
     nu->resize(nd,nd);
-    assert( loqo_lp->z );
-    assert( loqo_lp->s );
+    TEST_FOR_EXCEPT( !(  loqo_lp->z  ) );
+    TEST_FOR_EXCEPT( !(  loqo_lp->s  ) );
     const DVectorSlice
       loqo_z(loqo_lp->z,loqo_lp->n),   // Multipliers for l - x <= 0
       loqo_s(loqo_lp->s,loqo_lp->n);   // Multipliers for x - u <= 0
@@ -472,8 +472,8 @@ QPSolverRelaxedLOQO::imp_solve_qp(
     mu->resize(m_in,num_inequal);
     DenseLinAlgPack::VectorSliceTmpl<int>::iterator
       b_stat_itr  = loqo_b_stat.begin();
-    assert( loqo_lp->v );
-    assert( loqo_lp->q );
+    TEST_FOR_EXCEPT( !(  loqo_lp->v  ) );
+    TEST_FOR_EXCEPT( !(  loqo_lp->q  ) );
     const DVectorSlice
       loqo_v(loqo_lp->v,loqo_lp->m),   // Multipliers for b <= A*x
       loqo_q(loqo_lp->q,loqo_lp->m);   // Multipliers for A*x <= b + r
@@ -505,7 +505,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 
   // lambda
   if(lambda) {
-    assert( loqo_lp->y );
+    TEST_FOR_EXCEPT( !(  loqo_lp->y  ) );
     const DVectorSlice
       loqo_y(loqo_lp->y,loqo_lp->m);         // Multipliers for equalities
     DVectorSlice::const_iterator

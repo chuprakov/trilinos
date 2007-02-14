@@ -139,7 +139,7 @@ void AbstractLinAlgPack::max_abs_ele(
   const Vector& v, value_type* max_v_j, index_type* max_j
   )
 {
-  assert( max_v_j && max_j );
+  TEST_FOR_EXCEPT( !(  max_v_j && max_j  ) );
   RTOpPack::RTOpC op;
   TEST_FOR_EXCEPT(0!=RTOp_ROp_max_abs_ele_construct(&op.op()));
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> reduct_obj = op.reduct_obj_create();
@@ -249,7 +249,7 @@ void AbstractLinAlgPack::sign(
   )
 {
   RTOpPack::RTOpC op;
-  assert(0==RTOp_TOp_sign_construct(&op.op()));
+  TEST_FOR_EXCEPT( !( 0==RTOp_TOp_sign_construct(&op.op()) ) );
   const Vector*   vecs[1]      = { &v };
   VectorMutable*  targ_vecs[1] = { z  };
   apply_op(op,1,vecs,1,targ_vecs,NULL);

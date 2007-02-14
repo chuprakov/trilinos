@@ -162,7 +162,7 @@ FortranTypes::f_int
 COOMatrixWithPartitionedViewSubclass::num_nonzeros( EExtractRegion extract_region ) const
 {
   // ToDo: Implement upper and lower triangular regions when needed!
-  assert( extract_region == EXTRACT_FULL_MATRIX );
+  TEST_FOR_EXCEPT( !(  extract_region == EXTRACT_FULL_MATRIX  ) );
 
   return this->nz();	
 }
@@ -179,7 +179,7 @@ void COOMatrixWithPartitionedViewSubclass::coor_extract_nonzeros(
    ) const
 {
   // ToDo: Implement upper and lower triangular regions when needed!
-  assert( extract_region == EXTRACT_FULL_MATRIX );
+  TEST_FOR_EXCEPT( !(  extract_region == EXTRACT_FULL_MATRIX  ) );
 
 
   // Get the permuted view (Partition<> object)
@@ -192,8 +192,8 @@ void COOMatrixWithPartitionedViewSubclass::coor_extract_nonzeros(
     nz = part_view.nz();
 
   // Validate the input
-  assert( len_Aval == 0 || (len_Aval == nz && Aval)			);
-  assert( len_Aij  == 0 || (len_Aij  == nz && Arow && Acol)	);
+  TEST_FOR_EXCEPT( !(  len_Aval == 0 || (len_Aval == nz && Aval)			 ) );
+  TEST_FOR_EXCEPT( !(  len_Aij  == 0 || (len_Aij  == nz && Arow && Acol)	 ) );
   
   // Get overall row and column offsets
   const part_view_t::difference_type

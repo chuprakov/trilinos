@@ -144,7 +144,7 @@ void NLPBarrier::imp_calc_f(
   const ZeroOrderInfo& zero_order_info
   ) const
   {
-  assert(false && !"This should never get called.");
+  TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
   }
 
 void NLPBarrier::imp_calc_c(
@@ -153,7 +153,7 @@ void NLPBarrier::imp_calc_c(
   const ZeroOrderInfo& zero_order_info
   ) const
   {
-  assert(false && !"This should never get called.");
+  TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
   }
 
 void NLPBarrier::imp_calc_c_breve(
@@ -162,7 +162,7 @@ void NLPBarrier::imp_calc_c_breve(
   const ZeroOrderInfo& zero_order_info_breve
   ) const
   {	
-  assert(false && !"This should never get called.");
+  TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
   }
 
 void NLPBarrier::imp_calc_h_breve(
@@ -171,7 +171,7 @@ void NLPBarrier::imp_calc_h_breve(
   const ZeroOrderInfo& zero_order_info_breve
   ) const
   {	
-  assert(false && !"This should never get called.");
+  TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
   }
 
 void NLPBarrier::imp_calc_Gf(
@@ -180,7 +180,7 @@ void NLPBarrier::imp_calc_Gf(
   const ObjGradInfo& obj_grad_info
   ) const
   {
-  assert(false && !"This should never get called.");
+  TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
   }
 
 

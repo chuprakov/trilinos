@@ -167,9 +167,9 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
   const size_type
     n_R = n_R_tmp,
     n_X = nd + 1 - n_R; // fixed variables in d and eta
-  assert( i_x_free.size() == 0 || i_x_free.size()  >= n_R );  // Todo: Make an exception!
-  assert( i_x_fixed.size() >= n_X );  // Todo: Make an exception!
-  assert( bnd_fixed.size() >= n_X ); // Todo: Make and exception!
+  TEST_FOR_EXCEPT( !(  i_x_free.size() == 0 || i_x_free.size()  >= n_R  ) );  // Todo: Make an exception!
+  TEST_FOR_EXCEPT( !(  i_x_fixed.size() >= n_X  ) );  // Todo: Make an exception!
+  TEST_FOR_EXCEPT( !(  bnd_fixed.size() >= n_X  ) ); // Todo: Make and exception!
 
   // //////////////////////////////
   // Initialize constraints object

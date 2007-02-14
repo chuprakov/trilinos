@@ -108,7 +108,7 @@ AbstractLinAlgPack::sub_vec_view(
   else {
     SpVectorSlice::const_iterator
       itr = sv.begin();
-    assert(itr != sv.end());
+    TEST_FOR_EXCEPT( !( itr != sv.end() ) );
     const value_type  *values  = &itr->value();
     if( sv.dim() && sv.nz() == sv.dim() && sv.is_sorted() ) {
       sub_vec.initialize(

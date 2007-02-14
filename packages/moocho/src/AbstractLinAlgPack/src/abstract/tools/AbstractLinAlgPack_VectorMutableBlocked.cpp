@@ -211,7 +211,7 @@ void VectorMutableBlocked::apply_op(
     g_off += local_dim;
     num_elements_remaining -= local_sub_dim;
   }
-  assert(num_elements_remaining == 0);
+  TEST_FOR_EXCEPT( !( num_elements_remaining == 0 ) );
   // Must allert all of the block vectors that they may have changed!
   {for(int k = 0; k < num_targ_vecs; ++k) {
     targ_vecs[k]->has_changed();
@@ -255,7 +255,7 @@ value_type VectorMutableBlocked::get_ele(index_type i) const
   index_type  kth_global_offset = 0;
   vec_space_->get_vector_space_position(i,&kth_vector_space,&kth_global_offset);
 #ifdef TEUCHOS_DEBUG
-  assert( 0 <= kth_vector_space && kth_vector_space <= vecs_.size() );
+  TEST_FOR_EXCEPT( !(  0 <= kth_vector_space && kth_vector_space <= vecs_.size()  ) );
 #endif
   return vecs_[kth_vector_space]->get_ele( i - kth_global_offset );
 }
@@ -303,7 +303,7 @@ void VectorMutableBlocked::get_sub_vector( const Range1D& rng_in, RTOpPack::SubV
   index_type  kth_global_offset = 0;
   vec_space_->get_vector_space_position(rng.lbound(),&kth_vector_space,&kth_global_offset);
 #ifdef TEUCHOS_DEBUG
-  assert( 0 <= kth_vector_space && kth_vector_space <= vecs_.size() );
+  TEST_FOR_EXCEPT( !(  0 <= kth_vector_space && kth_vector_space <= vecs_.size()  ) );
 #endif
   if( rng.lbound() + rng.size() <= kth_global_offset + 1 + vecs_[kth_vector_space]->dim() ) {
     // This involves only one sub-vector so just return it.
@@ -329,7 +329,7 @@ void VectorMutableBlocked::free_sub_vector( RTOpPack::SubVector* sub_vec ) const
   vec_space_->get_vector_space_position(
     sub_vec->globalOffset()+1,&kth_vector_space,&kth_global_offset);
 #ifdef TEUCHOS_DEBUG
-  assert( 0 <= kth_vector_space && kth_vector_space <= vecs_.size() );
+  TEST_FOR_EXCEPT( !(  0 <= kth_vector_space && kth_vector_space <= vecs_.size()  ) );
 #endif
   if( sub_vec->globalOffset() + sub_vec->subDim() <= kth_global_offset +  vecs_[kth_vector_space]->dim() ) {
     // This sub_vec was extracted from a single constituent vector
@@ -381,7 +381,7 @@ VectorMutableBlocked::sub_view( const Range1D& rng_in )
   const VectorSpace::space_ptr_t*  vector_spaces      = vec_space_->vector_spaces();
   const index_type*                vec_spaces_offsets = vec_space_->vector_spaces_offsets();
 #ifdef TEUCHOS_DEBUG
-  assert( 0 <= kth_vector_space && kth_vector_space <= vecs.size() );
+  TEST_FOR_EXCEPT( !(  0 <= kth_vector_space && kth_vector_space <= vecs.size()  ) );
 #endif
   if( rng.lbound() == kth_global_offset + 1
     && rng.size() == vec_spaces_offsets[kth_vector_space+1] - vec_spaces_offsets[kth_vector_space] )
@@ -396,8 +396,8 @@ VectorMutableBlocked::sub_view( const Range1D& rng_in )
   index_type    end_kth_global_offset = 0;
   vec_space_->get_vector_space_position(rng.ubound(),&end_kth_vector_space,&end_kth_global_offset);
 #ifdef TEUCHOS_DEBUG
-  assert( 0 <= end_kth_vector_space && end_kth_vector_space <= vecs.size() );
-  assert( end_kth_vector_space > kth_vector_space );
+  TEST_FOR_EXCEPT( !(  0 <= end_kth_vector_space && end_kth_vector_space <= vecs.size()  ) );
+  TEST_FOR_EXCEPT( !(  end_kth_vector_space > kth_vector_space  ) );
 #endif
   // Create a VectorWithOpMutableCompsiteStd object containing the relavant constituent vectors
   Teuchos::RefCountPtr<VectorMutableBlocked>
@@ -449,7 +449,7 @@ void VectorMutableBlocked::set_ele( index_type i, value_type val )
   index_type  kth_global_offset = 0;
   vec_space_->get_vector_space_position(i,&kth_vector_space,&kth_global_offset);
 #ifdef TEUCHOS_DEBUG
-  assert( 0 <= kth_vector_space && kth_vector_space <= vecs_.size() );
+  TEST_FOR_EXCEPT( !(  0 <= kth_vector_space && kth_vector_space <= vecs_.size()  ) );
 #endif
   vecs_[kth_vector_space]->set_ele( i - kth_global_offset, val );
   this->has_changed();
@@ -462,7 +462,7 @@ void VectorMutableBlocked::set_sub_vector( const RTOpPack::SparseSubVector& sub_
   vec_space_->get_vector_space_position(
     sub_vec.globalOffset()+1,&kth_vector_space,&kth_global_offset);
 #ifdef TEUCHOS_DEBUG
-  assert( 0 <= kth_vector_space && kth_vector_space <= vecs_.size() );
+  TEST_FOR_EXCEPT( !(  0 <= kth_vector_space && kth_vector_space <= vecs_.size()  ) );
 #endif
   if( sub_vec.globalOffset() + sub_vec.subDim() <= kth_global_offset +  vecs_[kth_vector_space]->dim() ) {
     // This sub-vector fits into a single constituent vector

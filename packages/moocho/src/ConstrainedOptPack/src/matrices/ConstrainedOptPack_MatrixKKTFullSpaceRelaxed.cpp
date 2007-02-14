@@ -342,7 +342,7 @@ void MatrixKKTFullSpaceRelaxed::coor_extract_nonzeros(
         const FortranTypes::f_int
           G_lo_nz = convG_->num_nonzeros( MCTSFC_t::EXTRACT_LOWER_TRIANGULAR ),
           A_nz = convA_->num_nonzeros( MCTSFC_t::EXTRACT_FULL_MATRIX);
-        assert( (len_Aval == 0 || len_Aval == G_lo_nz + A_nz)
+        TEST_FOR_EXCEPT( !(  (len_Aval == 0 || len_Aval == G_lo_nz + A_nz ) )
             && (len_Aij == 0 || len_Aij == G_lo_nz + A_nz) );
         // Set the elements for G
         convG_->coor_extract_nonzeros(

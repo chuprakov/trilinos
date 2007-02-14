@@ -135,7 +135,7 @@ void deincrement_indices(
 {
   typedef DenseLinAlgPack::size_type				size_type;
   typedef std::vector<DenseLinAlgPack::size_type>	vec_t;
-  assert( len_vector <= indice_vector->size() );
+  TEST_FOR_EXCEPT( !(  len_vector <= indice_vector->size()  ) );
   for( vec_t::iterator itr = indice_vector->begin(); itr != indice_vector->begin() + len_vector; ++itr ) {
     if( *itr > k_remove )
       --(*itr);
@@ -154,7 +154,7 @@ void insert_pair_sorted(
   )
 {
   typedef std::vector<DenseLinAlgPack::size_type> rc_t;
-  assert( r->size() >= len_vector && c->size() >= len_vector );
+  TEST_FOR_EXCEPT( !(  r->size() >= len_vector && c->size() >= len_vector  ) );
   // find the insertion point in r[]
   rc_t::iterator
     itr = std::lower_bound( r->begin(), r->begin() + len_vector-1, r_v );
@@ -1198,7 +1198,7 @@ void QPSchur::ActiveSet::initialize(
         }
       }
     }
-    assert(s == q_hat);
+    TEST_FOR_EXCEPT( !( s == q_hat ) );
   }
 
   // Setup P_XF_hat_ and P_plus_hat_
@@ -1221,7 +1221,7 @@ void QPSchur::ActiveSet::initialize(
       EBounds x_init_ij;
       if( ij < 0 ) {
         const size_type i = -ij;
-        assert( i <= n );
+        TEST_FOR_EXCEPT( !(  i <= n  ) );
         // [P_XF_hat](:,s) = e(i)
         P_XF_hat_row_[k_XF_hat] = i;
         P_XF_hat_col_[k_XF_hat] = s;
@@ -1229,15 +1229,15 @@ void QPSchur::ActiveSet::initialize(
       }
       else if( !(ij <= n && (x_init_ij = x_init(ij)) != FREE ) ) {
         const size_type j = ij;
-        assert( 0 < j && j <= n + m_breve );
+        TEST_FOR_EXCEPT( !(  0 < j && j <= n + m_breve  ) );
         // [P_plus_hat](:,s) = e(j)
         P_plus_hat_row_[k_plus_hat] = j;
         P_plus_hat_col_[k_plus_hat] = s;
         ++k_plus_hat;
       }
     }
-    assert( k_XF_hat == q_F_hat );
-    assert( k_plus_hat == q_plus_hat );
+    TEST_FOR_EXCEPT( !(  k_XF_hat == q_F_hat  ) );
+    TEST_FOR_EXCEPT( !(  k_plus_hat == q_plus_hat  ) );
   }
   P_XF_hat_.initialize_and_sort(
     n,q_hat,q_F_hat,0,0,GPMSTP::BY_ROW
@@ -1290,7 +1290,7 @@ void QPSchur::ActiveSet::initialize(
         ++k_XD_hat;
       }
     }
-    assert( k_XD_hat == q_D_hat );
+    TEST_FOR_EXCEPT( !(  k_XD_hat == q_D_hat  ) );
   }
   Q_XD_hat_.initialize(
       n,q_D_hat,q_D_hat,0,0,GPMSTP::BY_ROW	// Should already be sorted by row!
@@ -1304,7 +1304,7 @@ void QPSchur::ActiveSet::initialize(
   if(q_D_hat) {
     for( size_type k = 0; k < q_D_hat; ++k ) {
       l_fxfx_[k] = l_x_X_map(Q_XD_hat_row_[k]);
-      assert( l_fxfx_[k] != 0 );
+      TEST_FOR_EXCEPT( !(  l_fxfx_[k] != 0  ) );
     }
   }
 
@@ -1497,8 +1497,8 @@ bool QPSchur::ActiveSet::add_constraint(
     const size_type q_hat = this->q_hat();
     const size_type sd = s_map(-int(ja));
     const size_type la = qp_->l_x_X_map()(ja);
-    assert(sd);
-    assert(la);
+    TEST_FOR_EXCEPT( !( sd ) );
+    TEST_FOR_EXCEPT( !( la ) );
     wrote_output = remove_augmented_element(
       sd,force_refactorization
       ,MatrixSymAddDelUpdateable::EIGEN_VAL_POS
@@ -1506,7 +1506,7 @@ bool QPSchur::ActiveSet::add_constraint(
     // We must remove (ja,sd) from P_XF_hat
     P_row_t::iterator
       itr = std::lower_bound( P_XF_hat_row_.begin(), P_XF_hat_row_.begin()+q_F_hat_, ja );
-    assert( itr != P_XF_hat_row_.end() );
+    TEST_FOR_EXCEPT( !(  itr != P_XF_hat_row_.end()  ) );
     const size_type p = itr - P_XF_hat_row_.begin();
     std::copy( P_XF_hat_row_.begin() + p + 1, P_XF_hat_row_.begin()+q_F_hat_,
       P_XF_hat_row_.begin() + p );
@@ -1561,7 +1561,7 @@ bool QPSchur::ActiveSet::add_constraint(
       //
       const size_type
         la = qp_->Q_R().lookup_col_j(ja);
-      assert( la );
+      TEST_FOR_EXCEPT( !(  la  ) );
       const eta_t u_p = eta_t(la,n_R_+m_);
       // r = inv(Ko)*u_p
       DVector r;	// ToDo: Make this sparse!
@@ -1589,9 +1589,9 @@ bool QPSchur::ActiveSet::add_constraint(
       // v_p = e(sd) <: R^(q_hat), where sd = s_map(-ja)
       //
       sd = s_map(-int(ja));
-      assert(sd);
+      TEST_FOR_EXCEPT( !( sd ) );
       const size_type la = qp_->l_x_X_map()(ja);
-      assert(la);
+      TEST_FOR_EXCEPT( !( la ) );
       // t_hat = e(sd)
       t_hat = 0.0;
       t_hat(sd) = 1.0;
@@ -1690,7 +1690,7 @@ bool QPSchur::ActiveSet::add_constraint(
       insert_pair_sorted(ja,q_hat_new,q_plus_hat_,&P_plus_hat_row_,&P_plus_hat_col_);
     }
     else {
-      assert(sd);
+      TEST_FOR_EXCEPT( !( sd ) );
       // Insert (sd,q_hat_new) into P_FC_hat, sorted by row)
       insert_pair_sorted(sd,q_hat_new,q_C_hat_,&P_FC_hat_row_,&P_FC_hat_col_);
     }
@@ -1736,14 +1736,14 @@ bool QPSchur::ActiveSet::drop_constraint(
       q_D_hat    = this->q_D_hat();
     // Get indexes
     const size_type id = -jd;
-    assert( 1 <= id && id <= n_ );
+    TEST_FOR_EXCEPT( !(  1 <= id && id <= n_  ) );
     const size_type ld = qp_->l_x_X_map()(-jd);
-    assert( 1 <= ld && ld <= n_ - n_R_ );
+    TEST_FOR_EXCEPT( !(  1 <= ld && ld <= n_ - n_R_  ) );
     size_type kd; // Find kd (this is unsorted)
     {for( kd = 1; kd <= q_D_hat; ++kd ) {
       if( l_fxfx_[kd-1] == ld ) break;
     }}
-    assert( kd <= q_D_hat );
+    TEST_FOR_EXCEPT( !(  kd <= q_D_hat  ) );
     // Get references
     const MatrixSymOp
       &G           = qp_->G();
@@ -1842,7 +1842,7 @@ bool QPSchur::ActiveSet::drop_constraint(
     // remove Q_XD_hat(id,ld) from Q_XD_hat(...)
     P_row_t::iterator
       itr = std::lower_bound( Q_XD_hat_row_.begin(), Q_XD_hat_row_.begin()+q_D_hat, id );
-    assert( itr != Q_XD_hat_row_.end() );
+    TEST_FOR_EXCEPT( !(  itr != Q_XD_hat_row_.end()  ) );
     const size_type p = itr - Q_XD_hat_row_.begin();
     std::copy( Q_XD_hat_row_.begin() + p + 1, Q_XD_hat_row_.begin()+q_D_hat,
       Q_XD_hat_row_.begin() + p );
@@ -1877,7 +1877,7 @@ bool QPSchur::ActiveSet::drop_constraint(
     //
     const size_type q_hat = this->q_hat();
     const size_type sd = s_map(jd);
-    assert(sd);
+    TEST_FOR_EXCEPT( !( sd ) );
     wrote_output = remove_augmented_element(
       sd,force_refactorization
       ,MatrixSymAddDelUpdateable::EIGEN_VAL_NEG
@@ -1887,11 +1887,11 @@ bool QPSchur::ActiveSet::drop_constraint(
       // This must be an intially fixed variable, currently fixed at a different bound.
       // We must remove this element from P_FC_hat(...)
       const size_type sd1 = s_map(-jd); // This is the position in the schur complement where first freed
-      assert(sd1);
+      TEST_FOR_EXCEPT( !( sd1 ) );
       // Remove P_FC_hat(sd1,sd) from P_FC_hat(...)
       P_row_t::iterator
         itr = std::lower_bound( P_FC_hat_row_.begin(), P_FC_hat_row_.begin()+q_C_hat_, sd1 );
-      assert( itr != P_FC_hat_row_.end() );
+      TEST_FOR_EXCEPT( !(  itr != P_FC_hat_row_.end()  ) );
       const size_type p = itr - P_FC_hat_row_.begin();
       std::copy( P_FC_hat_row_.begin() + p + 1, P_FC_hat_row_.begin()+q_C_hat_,
         P_FC_hat_row_.begin() + p );
@@ -1903,7 +1903,7 @@ bool QPSchur::ActiveSet::drop_constraint(
       // We must remove P_plus_hat(jd,sd) from P_plus_hat(...)
       P_row_t::iterator
         itr = std::lower_bound( P_plus_hat_row_.begin(), P_plus_hat_row_.begin()+q_plus_hat_, jd );
-      assert( itr != P_plus_hat_row_.end() );
+      TEST_FOR_EXCEPT( !(  itr != P_plus_hat_row_.end()  ) );
       const size_type p = itr - P_plus_hat_row_.begin();
       std::copy( P_plus_hat_row_.begin() + p + 1, P_plus_hat_row_.begin()+q_plus_hat_,
         P_plus_hat_row_.begin() + p );
@@ -1983,7 +1983,7 @@ size_type QPSchur::ActiveSet::q_D_hat() const
 
 int QPSchur::ActiveSet::ij_map( size_type s ) const
 {
-  assert( 1 <= s && s <= this->q_hat() );
+  TEST_FOR_EXCEPT( !(  1 <= s && s <= this->q_hat()  ) );
   return ij_map_[s-1];
 }
 
@@ -1998,19 +1998,19 @@ size_type QPSchur::ActiveSet::s_map( int ij ) const
 
 value_type QPSchur::ActiveSet::constr_norm( size_type s ) const
 {
-  assert( 1 <= s && s <= this->q_hat() );
+  TEST_FOR_EXCEPT( !(  1 <= s && s <= this->q_hat()  ) );
   return constr_norm_(s);
 }
 
 EBounds QPSchur::ActiveSet::bnd( size_type s ) const
 {
-  assert( 1 <= s && s <= this->q_hat() );
+  TEST_FOR_EXCEPT( !(  1 <= s && s <= this->q_hat()  ) );
   return bnds_[s-1];
 }
 
 size_type QPSchur::ActiveSet::l_fxfx( size_type k ) const
 {
-  assert( 1 <= k && k <= this->q_D_hat() );
+  TEST_FOR_EXCEPT( !(  1 <= k && k <= this->q_D_hat()  ) );
   return l_fxfx_[k-1];
 }
 
@@ -2127,7 +2127,7 @@ void QPSchur::ActiveSet::assert_initialized() const
 
 void QPSchur::ActiveSet::assert_s( size_type s) const
 {
-  assert( s <= q_hat() );	// ToDo: Throw an exception
+  TEST_FOR_EXCEPT( !(  s <= q_hat()  ) );	// ToDo: Throw an exception
 }
 
 void QPSchur::ActiveSet::reinitialize_matrices(bool test)
@@ -2739,7 +2739,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
       const int       i    = itr->row_i();
       value_type      viol = 0.0;
       const EBounds   bnd  = x_init(i);
-      assert( bnd != FREE );
+      TEST_FOR_EXCEPT( !(  bnd != FREE  ) );
       const int dual_feas_status
         = correct_dual_infeas(
           i,bnd,0.0,1.0,dual_infeas_tol(),DEGENERATE_MULT
@@ -3479,8 +3479,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
             const size_type
               sa = act_set->s_map(-int(ja)),
               la = act_set->qp().l_x_X_map()(ja);
-            assert(sa);
-            assert(la);
+            TEST_FOR_EXCEPT( !( sa ) );
+            TEST_FOR_EXCEPT( !( la ) );
             // v_a = e(sa) <: R^q_hat
             Workspace<value_type> v_a_ws(wss,act_set->q_hat());
             DVectorSlice v_a(&v_a_ws[0],v_a_ws.size());
@@ -3551,7 +3551,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
               // 
               const size_type
                 la = act_set->qp().Q_R().lookup_col_j(ja);
-              assert( la );
+              TEST_FOR_EXCEPT( !(  la  ) );
               const EtaVector u_a = EtaVector(la,n_R+m);
               const value_type d_a = b_a;
               DVector t1;

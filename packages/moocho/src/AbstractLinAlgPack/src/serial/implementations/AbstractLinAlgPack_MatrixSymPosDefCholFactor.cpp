@@ -117,7 +117,7 @@ void MatrixSymPosDefCholFactor::init_setup(
   ,value_type                       scale
   )
 {
-  assert( maintain_original || maintain_factor );
+  TEST_FOR_EXCEPT( !(  maintain_original || maintain_factor  ) );
   if( MU_store == NULL ) {
     maintain_original_ = maintain_original;
     maintain_factor_   = maintain_factor;
@@ -136,13 +136,13 @@ void MatrixSymPosDefCholFactor::init_setup(
     is_diagonal_ = false;
   }
   else {
-    assert( MU_store->rows() );
+    TEST_FOR_EXCEPT( !(  MU_store->rows()  ) );
     allocates_storage_ = false; // The client allocated the storage!
     MU_store_.bind(*MU_store);
     release_resource_ptr_ = release_resource_ptr;
     max_size_ = my_min( MU_store->rows(), MU_store->cols() ) - 1;
     if( set_full_view ) {
-      assert( scale != 0.0 );
+      TEST_FOR_EXCEPT( !(  scale != 0.0  ) );
       this->set_view(
         max_size_
         ,scale,maintain_original,1,1
@@ -170,19 +170,19 @@ void MatrixSymPosDefCholFactor::set_view(
   ,size_t           U_l_c
   )
 {
-  assert( maintain_original || maintain_factor );
+  TEST_FOR_EXCEPT( !(  maintain_original || maintain_factor  ) );
   if( max_size_ )
     allocate_storage(max_size_);
   else
     allocate_storage( my_max( M_l_r + M_size, M_l_c + M_size ) - 1 );
   // Check the preconditions
   if( maintain_original ) {
-    assert( 1 <= M_l_r && M_l_r <= M_l_c );
-    assert( M_l_r+M_size <= MU_store_.rows() );
+    TEST_FOR_EXCEPT( !(  1 <= M_l_r && M_l_r <= M_l_c  ) );
+    TEST_FOR_EXCEPT( !(  M_l_r+M_size <= MU_store_.rows()  ) );
   }
   if( maintain_factor ) {
-    assert( 1 <= U_l_r && U_l_r >= U_l_c );
-    assert( U_l_c+M_size <= MU_store_.cols() );
+    TEST_FOR_EXCEPT( !(  1 <= U_l_r && U_l_r >= U_l_c  ) );
+    TEST_FOR_EXCEPT( !(  U_l_c+M_size <= MU_store_.cols()  ) );
   }
   // Set the members
   maintain_original_    = maintain_original;
@@ -793,7 +793,7 @@ void MatrixSymPosDefCholFactor::secant_update(
   assert_initialized();
 
   // Validate the input
-  assert( s_in && y_in );
+  TEST_FOR_EXCEPT( !(  s_in && y_in  ) );
   DenseLinAlgPack::Vp_MtV_assert_sizes( y_in->dim(), M_size_, M_size_, no_trans, s_in->dim() );
 
   // Get the serial vectors
@@ -953,8 +953,8 @@ void MatrixSymPosDefCholFactor::initialize(
     n = A.rows();
 
   // Validate proper usage of inertia parameter
-  assert( inertia.zero_eigens == Inertia::UNKNOWN || inertia.zero_eigens == 0 );
-  assert( (inertia.neg_eigens == Inertia::UNKNOWN && inertia.pos_eigens == Inertia::UNKNOWN)
+  TEST_FOR_EXCEPT( !(  inertia.zero_eigens == Inertia::UNKNOWN || inertia.zero_eigens == 0  ) );
+  TEST_FOR_EXCEPT( !(  (inertia.neg_eigens == Inertia::UNKNOWN && inertia.pos_eigens == Inertia::UNKNOWN ) )
       || ( inertia.neg_eigens == n && inertia.pos_eigens == 0 )
       || ( inertia.neg_eigens == 0 && inertia.pos_eigens == n )
     );
@@ -1298,10 +1298,10 @@ void MatrixSymPosDefCholFactor::delete_update(
     ,"MatrixSymPosDefCholFactor::delete_update(jd,...): "
     "Error, the indice jd must be 1 <= jd <= rows()" );
 
-  assert( drop_eigen_val == MSADU::EIGEN_VAL_UNKNOWN
-      || (scale_ > 0.0 && drop_eigen_val == MSADU::EIGEN_VAL_POS)
-      || (scale_ < 0.0 && drop_eigen_val == MSADU::EIGEN_VAL_NEG)
-    );
+  TEST_FOR_EXCEPT( !( drop_eigen_val == MSADU::EIGEN_VAL_UNKNOWN
+    || (scale_ > 0.0 && drop_eigen_val == MSADU::EIGEN_VAL_POS)
+    || (scale_ < 0.0 && drop_eigen_val == MSADU::EIGEN_VAL_NEG)
+    ) );
 
   if( maintain_original_ ) {
     //
@@ -1456,7 +1456,7 @@ void MatrixSymPosDefCholFactor::unserialize( std::istream &in )
 
 void MatrixSymPosDefCholFactor::assert_storage() const
 {
-  assert( MU_store_.rows() );
+  TEST_FOR_EXCEPT( !(  MU_store_.rows()  ) );
 }
 
 void MatrixSymPosDefCholFactor::allocate_storage(size_type max_size) const
@@ -1472,13 +1472,13 @@ void MatrixSymPosDefCholFactor::allocate_storage(size_type max_size) const
     const_cast<MatrixSymPosDefCholFactor*>(this)->max_size_ = max_size;
   }
   else {
-    assert( MU_store_.rows()  >= max_size + 1 );
+    TEST_FOR_EXCEPT( !(  MU_store_.rows()  >= max_size + 1  ) );
   }
 }
 
 void MatrixSymPosDefCholFactor::assert_initialized() const
 {
-  assert( M_size_ );
+  TEST_FOR_EXCEPT( !(  M_size_  ) );
 }
 
 void MatrixSymPosDefCholFactor::resize_and_zero_off_diagonal(size_type n, value_type scale)
@@ -1486,7 +1486,7 @@ void MatrixSymPosDefCholFactor::resize_and_zero_off_diagonal(size_type n, value_
   using DenseLinAlgPack::nonconst_tri_ele;
   using DenseLinAlgPack::assign;
 
-  assert( n <= my_min( MU_store_.rows(), MU_store_.cols() ) - 1 );
+  TEST_FOR_EXCEPT( !(  n <= my_min( MU_store_.rows(), MU_store_.cols() ) - 1  ) );
 
   // Resize the views
   set_view(

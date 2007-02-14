@@ -169,7 +169,7 @@ void Vp_StMtV_imp(
       }
       else {
         if( itr->A_ == NULL ) { // op(P)
-          assert( itr->P_.get() && !itr->P_->is_identity() );
+          TEST_FOR_EXCEPT( !(  itr->P_.get() && !itr->P_->is_identity()  ) );
           //
           //       [ y1 ]        [                        ]   [ x1 ]
           // rl:ru [ y2 ] += a * [    alpha * op(op(P))   ] * [ x2 ] cl:cu
@@ -303,16 +303,16 @@ void MatrixComposite::add_vector(
 {
   namespace rcp = MemMngPack;
 
-  assert( beta != 0.0 );
-  assert( v != NULL );
+  TEST_FOR_EXCEPT( !(  beta != 0.0  ) );
+  TEST_FOR_EXCEPT( !(  v != NULL  ) );
   fully_constructed_ = false;
   if( v_trans == BLAS_Cpp::no_trans ) {
-    assert( row_offset + v->dim() <= rows_ );
-    assert( col_offset + 1 <= cols_ );
+    TEST_FOR_EXCEPT( !(  row_offset + v->dim() <= rows_  ) );
+    TEST_FOR_EXCEPT( !(  col_offset + 1 <= cols_  ) );
   }
   else {
-    assert( row_offset + 1 <= rows_ );
-    assert( col_offset + v->dim() <= cols_ );
+    TEST_FOR_EXCEPT( !(  row_offset + 1 <= rows_  ) );
+    TEST_FOR_EXCEPT( !(  col_offset + v->dim() <= cols_  ) );
   }
 
   vector_list_.push_back(
@@ -506,8 +506,8 @@ void MatrixComposite::add_matrix(
   using BLAS_Cpp::rows;
   using BLAS_Cpp::cols;
 
-  assert( alpha != 0.0 );
-  assert( P != NULL );
+  TEST_FOR_EXCEPT( !(  alpha != 0.0  ) );
+  TEST_FOR_EXCEPT( !(  P != NULL  ) );
 
   fully_constructed_ = false;
 
@@ -517,8 +517,8 @@ void MatrixComposite::add_matrix(
     opP_rows = rows(P_rows,P_cols,P_trans),
     opP_cols = cols(P_rows,P_cols,P_trans);
 
-  assert( row_offset + opP_rows <= rows_ );
-  assert( col_offset + opP_cols <= cols_ );
+  TEST_FOR_EXCEPT( !(  row_offset + opP_rows <= rows_  ) );
+  TEST_FOR_EXCEPT( !(  col_offset + opP_cols <= cols_  ) );
 
   matrix_list_.push_back(
     SubMatrixEntry(

@@ -166,7 +166,7 @@ void DecompositionSystemCoordinate::initialize_matrices(
       ,BLAS_Cpp::no_trans                               // D_trans
       );
   }
-  assert(Uy_sv == NULL); // ToDo: Implement for undecomposed equalities
+  TEST_FOR_EXCEPT( !( Uy_sv == NULL ) ); // ToDo: Implement for undecomposed equalities
 
   // The R = C matrix object should already be updateded
 

@@ -214,8 +214,8 @@ void MatrixSymDiagSparse::Mp_StMtMtM(
     SpVectorSlice::const_iterator
       m_itr = diag.begin() + (i1-1);
     for( size_type l = 1; l <= i2-i1+1; ++l, ++m_itr ) {
-      assert( m_itr < diag.end() );
-      assert( m_itr->value() >= 0.0 );
+      TEST_FOR_EXCEPT( !(  m_itr < diag.end()  ) );
+      TEST_FOR_EXCEPT( !(  m_itr->value() >= 0.0  ) );
       V_MtV( &D.col(l), A, trans_not(A_trans)
         , eta( m_itr->index(), n, ::sqrt(m_itr->value()) )() );
     }

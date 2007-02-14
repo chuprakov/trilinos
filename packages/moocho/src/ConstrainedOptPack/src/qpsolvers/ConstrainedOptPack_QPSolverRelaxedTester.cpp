@@ -86,7 +86,7 @@ void set_complementarity(
   ,DenseLinAlgPack::DVector			 	*comp_err
   )
 {
-  assert( gamma.size() == constr_resid.size() && gamma.size() == constr.size() );
+  TEST_FOR_EXCEPT( !(  gamma.size() == constr_resid.size() && gamma.size() == constr.size()  ) );
   comp_err->resize( gamma.size() );
   *comp_err = 0.0;
   const AbstractLinAlgPack::SpVector::difference_type o = gamma.offset();

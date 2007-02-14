@@ -216,14 +216,14 @@ void BasisSystemComposite::get_C_N(
     mat_itr = Gc_comp.matrices_begin(),
     mat_end = Gc_comp.matrices_end();
   if( mat_itr != mat_end ) {
-    assert(mat_itr != mat_end);
+    TEST_FOR_EXCEPT( !( mat_itr != mat_end ) );
     *C = &dyn_cast<MatrixOpNonsing>(
       const_cast<MatrixOp&>(*(mat_itr++)->A_) );
     if( n > m ) {
-      assert(mat_itr != mat_end);
+      TEST_FOR_EXCEPT( !( mat_itr != mat_end ) );
       *N = &const_cast<MatrixOp&>(*(mat_itr++)->A_);
     }
-    assert(mat_itr == mat_end);
+    TEST_FOR_EXCEPT( !( mat_itr == mat_end ) );
   }
   else {
     *C = NULL;
@@ -257,13 +257,13 @@ void BasisSystemComposite::get_C_N(
     mat_itr = Gc_comp.matrices_begin(),
     mat_end = Gc_comp.matrices_end();
   if( mat_itr != mat_end ) {
-    assert(mat_itr != mat_end);
+    TEST_FOR_EXCEPT( !( mat_itr != mat_end ) );
     *C = &dyn_cast<const MatrixOpNonsing>(*(mat_itr++)->A_);
     if( n > m ) {
-      assert(mat_itr != mat_end);
+      TEST_FOR_EXCEPT( !( mat_itr != mat_end ) );
       *N = &dyn_cast<const MatrixOp>(*(mat_itr++)->A_);
     }
-    assert(mat_itr == mat_end);
+    TEST_FOR_EXCEPT( !( mat_itr == mat_end ) );
   }
   else {
     TEST_FOR_EXCEPTION(

@@ -107,7 +107,7 @@ inline IVector& IVector::operator=(const IVector& iv)
 inline IVector::reference IVector::operator()(size_type i)
 {
 #ifdef TEUCHOS_DEBUG
-  assert( 1 <= i && i <= static_cast<size_type>(size()) );
+  TEST_FOR_EXCEPT( !(  1 <= i && i <= static_cast<size_type>(size())  ) );
 #endif
   return operator[](i-1);
 }
@@ -115,7 +115,7 @@ inline IVector::reference IVector::operator()(size_type i)
 inline IVector::const_reference IVector::operator()(size_type i) const
 {
 #ifdef TEUCHOS_DEBUG
-  assert( 1 <= i && i <= static_cast<size_type>(size()) );
+  TEST_FOR_EXCEPT( !(  1 <= i && i <= static_cast<size_type>(size())  ) );
 #endif
   return const_cast<IVector*>(this)->operator[](i-1);
 }

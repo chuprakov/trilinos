@@ -119,9 +119,9 @@ void MatrixSymAddDelBunchKaufman::initialize(
     n = A.rows();
 
   // Validate proper usage of inertia parameter
-  assert( expected_inertia.zero_eigens == Inertia::UNKNOWN
-      || expected_inertia.zero_eigens == 0 );
-
+  TEST_FOR_EXCEPT( ! ( expected_inertia.zero_eigens == Inertia::UNKNOWN
+    || expected_inertia.zero_eigens == 0 ) );
+  
   try {
     // Resize the storage if we have to
     if( S_store1_.rows() < max_size+1 && S_store1_.cols() < max_size+1 )
@@ -763,7 +763,7 @@ bool MatrixSymAddDelBunchKaufman::compute_assert_inertia(
       // D(k:k+1,k:k+1) is a 2x2 block.
       // This represents one positive eigen value and
       // on negative eigen value
-      assert( IPIV_[k] == k_p ); // This is what the documentation for xSYTRF(...) says!
+      TEST_FOR_EXCEPT( !(  IPIV_[k] == k_p ) ); // This is what the documentation for xSYTRF(...) says!
       ++inertia.pos_eigens;
       ++inertia.neg_eigens;
       // To find the largest and smallest diagonals of U for L*U we must perform Gaussian

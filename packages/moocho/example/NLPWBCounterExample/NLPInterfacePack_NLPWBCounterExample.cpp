@@ -169,7 +169,10 @@ bool NLPWBCounterExample::imp_get_next_basis(
   )
 {
 #ifdef TEUCHOS_DEBUG
-  assert(var_perm_full); assert(equ_perm_full); assert(rank_full); assert(rank);
+  TEST_FOR_EXCEPT( !( var_perm_full) );
+  TEST_FOR_EXCEPT( !( equ_perm_full ) );
+  TEST_FOR_EXCEPT( !( rank_full ) );
+  TEST_FOR_EXCEPT( !( rank  ) );
 #endif
   if(basis_selection_was_given_) return false; // Already gave this basis selection
   // Select x(2) ans x(3) as the basic variables (sorted!)

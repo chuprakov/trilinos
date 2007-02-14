@@ -53,7 +53,7 @@ create_slice(const SparseVectorUtilityPack::SpVecIndexLookup<T_Element>& index_l
   }
   else {
 #ifdef TEUCHOS_DEBUG
-    assert( rng.ubound() <= size );
+    TEST_FOR_EXCEPT( !(  rng.ubound() <= size  ) );
 #endif
   }
 

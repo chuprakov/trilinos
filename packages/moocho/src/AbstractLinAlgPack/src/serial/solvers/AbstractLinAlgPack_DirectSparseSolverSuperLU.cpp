@@ -82,7 +82,7 @@ void convet_to_csr(
     acsr_col_j[row_ptr] = a_col_j[row_ptr] - 1; // from one-based to zero-based
     ++acsr_row_ptr[row_i];
   }}
-  assert( acsr_row_ptr[m] == nz );
+  TEST_FOR_EXCEPT( !(  acsr_row_ptr[m] == nz  ) );
 
 }
 

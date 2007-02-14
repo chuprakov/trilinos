@@ -215,7 +215,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 
   typedef Teuchos::RefCountPtr<NLPAlgo>	algo_ptr_t;
   algo_ptr_t algo = Teuchos::rcp(new NLPAlgo);
-  assert(algo.get());
+  TEST_FOR_EXCEPT( !( algo.get() ) );
   algo_cntr->set_algo(algo);
   algo->set_algo_cntr(algo_cntr);
 
@@ -1297,7 +1297,7 @@ void NLPAlgoConfigIP::readin_options(
   using		ofsp::StringToIntMap;
   using		ofsp::StringToBool;
 
-  assert(ov);	// only a local class error
+  TEST_FOR_EXCEPT( !( ov ) );	// only a local class error
 
   // Get the options group for "NLPAlgoConfigIP"
   const std::string opt_grp_name = "NLPAlgoConfigIP";

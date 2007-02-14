@@ -35,9 +35,9 @@
 void DenseLinAlgPack::delete_row_col( size_type kd, DMatrixSliceTriEle* tri_M )
 {
   // Validate input
-  assert( tri_M );
-  assert( tri_M->rows() );
-  assert( 1 <= kd && kd <= tri_M->rows() );
+  TEST_FOR_EXCEPT( !(  tri_M  ) );
+  TEST_FOR_EXCEPT( !(  tri_M->rows()  ) );
+  TEST_FOR_EXCEPT( !(  1 <= kd && kd <= tri_M->rows()  ) );
 
   DMatrixSlice   M = tri_M->gms();
   const size_type  n = M.rows();

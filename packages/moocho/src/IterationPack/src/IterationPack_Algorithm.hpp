@@ -937,11 +937,11 @@ const Algorithm::state_ptr_t& Algorithm::get_state() const
 
 inline
 AlgorithmState& Algorithm::state()
-{  assert(state_.get()); return *state_; }
+{  TEST_FOR_EXCEPT( !( state_.get() ) ); return *state_; }
 
 inline
 const AlgorithmState& Algorithm::state() const
-{  assert(state_.get()); return *state_; }
+{  TEST_FOR_EXCEPT( !( state_.get() ) ); return *state_; }
 
 // «std comp» members for track 
 
@@ -959,11 +959,11 @@ const Algorithm::track_ptr_t& Algorithm::get_track() const
 
 inline
 AlgorithmTracker& Algorithm::track()
-{  assert(track_.get()); return *track_; }
+{  TEST_FOR_EXCEPT( !( track_.get() ) ); return *track_; }
 
 inline
 const AlgorithmTracker& Algorithm::track() const
-{  assert(track_.get()); return *track_; }
+{  TEST_FOR_EXCEPT( !( track_.get() ) ); return *track_; }
 
 // running state
 
@@ -1009,7 +1009,7 @@ EDoStepType Algorithm::do_step_type(EAssocStepType assoc_step_type) {
     case PRE_STEP  : return DO_PRE_STEP;
     case POST_STEP  : return DO_POST_STEP;
   }
-  assert(true);
+  TEST_FOR_EXCEPT( !( true ) );
   return DO_PRE_STEP;  // will never execute.
 }
 

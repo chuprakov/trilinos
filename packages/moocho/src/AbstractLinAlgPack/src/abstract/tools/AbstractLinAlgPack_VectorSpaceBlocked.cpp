@@ -86,7 +86,7 @@ void VectorSpaceBlocked::get_vector_space_position(
     ++(*kth_vector_space);
   }
 #ifdef TEUCHOS_DEBUG
-  assert(*kth_vector_space < vector_spaces_.size());
+  TEST_FOR_EXCEPT( !( *kth_vector_space < vector_spaces_.size() ) );
 #endif
 }
 
@@ -174,7 +174,7 @@ VectorSpaceBlocked::sub_space(const Range1D& rng_in) const
   const vector_spaces_t      &vector_spaces      = vector_spaces_;      // Need to examine in debugger!
   const vec_spaces_offsets_t &vec_spaces_offsets = vec_spaces_offsets_;
 #ifdef TEUCHOS_DEBUG
-  assert( 0 <= kth_vector_space && kth_vector_space <= vector_spaces.size() );
+  TEST_FOR_EXCEPT( !(  0 <= kth_vector_space && kth_vector_space <= vector_spaces.size()  ) );
 #endif
   if( rng.lbound() == kth_global_offset + 1
     && rng.size() == vec_spaces_offsets[kth_vector_space+1] - vec_spaces_offsets[kth_vector_space] )
@@ -189,8 +189,8 @@ VectorSpaceBlocked::sub_space(const Range1D& rng_in) const
   index_type    end_kth_global_offset = 0;
   this->get_vector_space_position(rng.ubound(),&end_kth_vector_space,&end_kth_global_offset);
 #ifdef TEUCHOS_DEBUG
-  assert( 0 <= end_kth_vector_space && end_kth_vector_space <= vector_spaces.size() );
-  assert( end_kth_vector_space > kth_vector_space );
+  TEST_FOR_EXCEPT( !(  0 <= end_kth_vector_space && end_kth_vector_space <= vector_spaces.size()  ) );
+  TEST_FOR_EXCEPT( !(  end_kth_vector_space > kth_vector_space  ) );
 #endif
   // Create a VectorSpaceComposite object containing the relavant constituent vector spaces
   Teuchos::RefCountPtr<VectorSpaceBlocked>

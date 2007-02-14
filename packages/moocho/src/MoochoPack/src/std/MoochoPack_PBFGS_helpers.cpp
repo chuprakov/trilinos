@@ -321,7 +321,7 @@ void PBFGSPack::choose_fixed_free(
     *bnd_fixed_itr = bnd_fixed;
   {for( size_type i = 1; i <= n_pz; ++i ) {
     long int status = i_x_status[i-1];
-    assert(status); // should not be zero!
+    TEST_FOR_EXCEPT( !( status ) ); // should not be zero!
     if( status > 0 ) {
       // A superbasic variable
       *i_x_free_itr++ = i;
@@ -329,15 +329,15 @@ void PBFGSPack::choose_fixed_free(
     else {
       // A nonbasic variable
       for( ; nu_itr->indice() + nu_o < i; ++nu_itr ); // Find the multiplier
-      assert(nu_itr != nu_end);
-      assert(nu_itr->indice() + nu_o == i );
+      TEST_FOR_EXCEPT( !( nu_itr != nu_end ) );
+      TEST_FOR_EXCEPT( !( nu_itr->indice() + nu_o == i  ) );
       *i_x_fixed_itr++ = i;
       *bnd_fixed_itr++ = ( nu_itr->value() > 0.0 ? COP::UPPER : COP::LOWER );
     }
   }}
-  assert( i_x_free_itr  - i_x_free  == *n_pz_R );
-  assert( i_x_fixed_itr - i_x_fixed == *n_pz_X );
-  assert( bnd_fixed_itr - bnd_fixed == *n_pz_X );
+  TEST_FOR_EXCEPT( !(  i_x_free_itr  - i_x_free  == *n_pz_R  ) );
+  TEST_FOR_EXCEPT( !(  i_x_fixed_itr - i_x_fixed == *n_pz_X  ) );
+  TEST_FOR_EXCEPT( !(  bnd_fixed_itr - bnd_fixed == *n_pz_X  ) );
 }
 
 } // end namespace MoochoPack

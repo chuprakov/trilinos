@@ -263,7 +263,7 @@ void MatrixSymPosDefLBFGS::Vp_StMtV(
 
   assert_initialized();
 
-  assert( original_is_updated_ ); // For now just always update
+  TEST_FOR_EXCEPT( !(  original_is_updated_  ) ); // For now just always update
 
   // y = b*y + Bk * x
   //
@@ -357,7 +357,7 @@ void MatrixSymPosDefLBFGS::V_InvMtV(
 
   assert_initialized();
 
-  assert( inverse_is_updated_ ); // For now just always update
+  TEST_FOR_EXCEPT( !(  inverse_is_updated_  ) ); // For now just always update
 
   // y = inv(Bk) * x = Hk * x
   //
@@ -475,8 +475,8 @@ void MatrixSymPosDefLBFGS::init_identity( const VectorSpace& space_diag, value_t
   // Set storage
   S_ = vec_spc_->create_members(m_);
   Y_ = vec_spc_->create_members(m_);
-  assert(S_.get());
-  assert(Y_.get());
+  TEST_FOR_EXCEPT( !( S_.get() ) );
+  TEST_FOR_EXCEPT( !( Y_.get() ) );
   STY_.resize( m_, m_ );
   STSYTY_.resize( m_+1, m_+1 );
   STSYTY_.diag(0) = 0.0;
@@ -931,7 +931,7 @@ void comp_Cb(
   typedef DenseLinAlgPack::size_type size_type;
   typedef DenseLinAlgPack::value_type value_type;
 
-  assert( Lb.rows() == Cb->rows() && Cb->rows() == Db_diag.dim() ); // only a local error!
+  TEST_FOR_EXCEPT( !(  Lb.rows() == Cb->rows() && Cb->rows() == Db_diag.dim()  ) ); // only a local error!
 
   const size_type p = Db_diag.dim();
 

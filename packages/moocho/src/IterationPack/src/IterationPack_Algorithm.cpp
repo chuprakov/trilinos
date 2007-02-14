@@ -328,13 +328,13 @@ void Algorithm::end_config_update()
 
   // update next_step_poss_ and next_step_name_.
   steps_t::iterator itr = step_itr(saved_next_step_name_);
-  assert( itr != steps_.end() );	// the step with this name should not have been deleted or changed.
+  TEST_FOR_EXCEPT( !(  itr != steps_.end()  ) );	// the step with this name should not have been deleted or changed.
   next_step_poss_ = std::distance( steps_.begin() , itr ) + 1;
   next_step_name_ = &(*itr).name;
 
   // update curr_step_poss_
   itr = step_itr(saved_curr_step_name_);
-  assert( itr != steps_.end() );	// the step with this name should not have been deleted or changed.
+  TEST_FOR_EXCEPT( !(  itr != steps_.end()  ) );	// the step with this name should not have been deleted or changed.
   curr_step_poss_ = std::distance( steps_.begin() , itr ) + 1;
 
   // inform the step objects that *this has changes.

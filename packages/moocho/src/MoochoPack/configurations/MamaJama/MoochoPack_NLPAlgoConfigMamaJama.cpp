@@ -840,7 +840,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
     {
       // InitFinDiffReducedHessian_Step
       Algorithm::poss_type poss;
-      assert(poss = algo->get_step_poss( ReducedHessian_name ) );
+      TEST_FOR_EXCEPT( !( poss = algo->get_step_poss( ReducedHessian_name )  ) );
       InitFinDiffReducedHessian_Step::EInitializationMethod
         init_hess;
       switch( cov_.hessian_initialization_ ) {
@@ -1548,7 +1548,7 @@ void NLPAlgoConfigMamaJama::readin_options(
   using		ofsp::StringToIntMap;
   using		ofsp::StringToBool;
 
-  assert(ov);	// only a local class error
+  TEST_FOR_EXCEPT( !( ov ) );	// only a local class error
 
   // Get the options group for "NLPAlgoConfigMamaJama"
   const std::string opt_grp_name = "NLPAlgoConfigMamaJama";

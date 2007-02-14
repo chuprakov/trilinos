@@ -352,7 +352,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 
   if( tailored_approach ) {
     // NLPDirect
-    assert( nlp_fod->con_undecomp().size() == 0 );
+    TEST_FOR_EXCEPT( !(  nlp_fod->con_undecomp().size() == 0  ) );
     // ToDo: Add the necessary iteration quantities when con_undecomp().size() > 0 is supported!
   }
   else {
@@ -692,7 +692,7 @@ void DecompositionSystemStateStepBuilderStd::readin_options(
   using		ofsp::StringToIntMap;
   using		ofsp::StringToBool;
 
-  assert(ov);	// only a local class error
+  TEST_FOR_EXCEPT( !( ov ) );	// only a local class error
 
   const std::string opt_grp_name = "DecompositionSystemStateStepBuilderStd";
   const OptionsFromStream::options_group_t optgrp = options.options_group( opt_grp_name );
@@ -774,7 +774,7 @@ void DecompositionSystemStateStepBuilderStd::set_default_options(
   )
 {
 
-  assert(cov);
+  TEST_FOR_EXCEPT( !( cov ) );
 
   if(trase_out)
     *trase_out

@@ -66,7 +66,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::uninitialize_Y_Uy(
 
   if(Y_orth)
     Y_orth->set_uninitialized();
-  assert(Uy_cpst == NULL); // ToDo: Implement for undecomposed equalities
+  TEST_FOR_EXCEPT( !( Uy_cpst == NULL ) ); // ToDo: Implement for undecomposed equalities
 }
 
 void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy(
@@ -135,7 +135,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy(
   dyn_cast<MatrixSymInitDiag>(*S_ptr_).init_identity(D->space_rows());
   syrk(*D,BLAS_Cpp::trans,1.0,1.0,S_ptr_.get());
 
-  assert(Uy_cpst == NULL); // ToDo: Implement for undecomposed equalities
+  TEST_FOR_EXCEPT( !( Uy_cpst == NULL ) ); // ToDo: Implement for undecomposed equalities
 
   recalc_py(*D,py,olevel,out);
 

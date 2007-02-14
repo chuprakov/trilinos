@@ -353,7 +353,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
         ibnds_itr	= IBND_.begin() + M1_;
       // loop
       for(size_type i = 1; i <= M2_; ++i, ++eLU_itr, ++ibnds_itr ) {
-        assert(!eLU_itr.at_end());
+        TEST_FOR_EXCEPT( !( !eLU_itr.at_end() ) );
         const size_type k      = eLU_itr.index();
         *BL_itr++              = eLU_itr.lbound();
         *BU_itr++              = eLU_itr.ubound();
@@ -494,7 +494,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
       const value_type val = itr->value();
       if( j <= nd ) { // Variable bound
         const size_type ibnd_i = IBND_INV_[j-1];
-        assert(ibnd_i);
+        TEST_FOR_EXCEPT( !( ibnd_i ) );
         IACTSTORE_[NACTSTORE_]
           = (val < 0.0
              ? ibnd_i               // lower bound (see IACT(*))
@@ -504,7 +504,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
       }
       else if( j <= nd + m_in ) { // General inequality constraint
         const size_type ibnd_i = IBND_INV_[j-1]; // offset into M1_ + ibnd_j
-        assert(ibnd_i);
+        TEST_FOR_EXCEPT( !( ibnd_i ) );
         IACTSTORE_[NACTSTORE_]
           = (val < 0.0
              ? ibnd_i               // lower bound (see IACT(*))
@@ -589,7 +589,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
       ,"QPSolverRelaxedQPKWIK::solve_qp(...) : Error, QP is infeasible" );
   }
   else if( INF_ == -2 ) { // LRW too small
-    assert(INF_ != -2);  // Local programming error?
+    TEST_FOR_EXCEPT( !( INF_ != -2 ) );  // Local programming error?
   }
   else if( INF_ == -3 ) { // Max iterations exceeded
     solution_type = QPSolverStats::DUAL_FEASIBLE_POINT;

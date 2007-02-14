@@ -88,7 +88,7 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
     nd   = G_super.rows(),
     nd_R = Q_R.cols(),
     nd_X = Q_X.cols();
-  assert( nd_R + nd_X == nd );
+  TEST_FOR_EXCEPT( !(  nd_R + nd_X == nd  ) );
 
   // Setup output arguments
 
@@ -102,8 +102,8 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
     for( ; Q_itr != Q_R.end(); ++Q_itr ) {
       const size_type i = Q_itr->row_i();
       const size_type k = Q_itr->col_j();
-      assert( 0 < i && i <= nd );
-      assert( 0 < k && k <= nd_R );
+      TEST_FOR_EXCEPT( !(  0 < i && i <= nd  ) );
+      TEST_FOR_EXCEPT( !(  0 < k && k <= nd_R  ) );
       (*i_x_free)[k-1] = i;
     }
   }
@@ -116,8 +116,8 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
     for( ; Q_itr != Q_X.end(); ++Q_itr ) {
       const size_type i = Q_itr->row_i();
       const size_type k = Q_itr->col_j();
-      assert( 0 < i && i <= nd );
-      assert( 0 < k && k <= nd_X );
+      TEST_FOR_EXCEPT( !(  0 < i && i <= nd  ) );
+      TEST_FOR_EXCEPT( !(  0 < k && k <= nd_X  ) );
       (*i_x_fixed)[k-1] = i;
     }
   }
@@ -129,7 +129,7 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
     typedef MatrixHessianSuperBasic MHSB;
     const MHSB::bnd_fixed_t
       &bnd_fixed_from = G_super.bnd_fixed();
-    assert(bnd_fixed_from.size() == nd_X);
+    TEST_FOR_EXCEPT( !( bnd_fixed_from.size() == nd_X ) );
     MHSB::bnd_fixed_t::const_iterator
       bnd_from_itr = bnd_fixed_from.begin();
     bnd_fixed_t::iterator

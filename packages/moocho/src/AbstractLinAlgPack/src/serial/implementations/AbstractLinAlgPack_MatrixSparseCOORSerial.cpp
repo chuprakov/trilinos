@@ -618,8 +618,8 @@ void MatrixSparseCOORSerial::coor_extract_nonzeros(
     // We have to consider the diagonals dl and du
     TEST_FOR_EXCEPT(true); // ToDo: Implement!
   }
-  assert( len_Aval == 0 || len_Aval == cnt_nz );
-  assert( len_Aij == 0  || len_Aij  == cnt_nz );
+  TEST_FOR_EXCEPT( !(  len_Aval == 0 || len_Aval == cnt_nz  ) );
+  TEST_FOR_EXCEPT( !(  len_Aij == 0  || len_Aij  == cnt_nz  ) );
 }
 
 // private
