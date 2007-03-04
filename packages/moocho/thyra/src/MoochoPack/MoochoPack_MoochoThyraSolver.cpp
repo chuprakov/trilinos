@@ -467,17 +467,9 @@ void MoochoThyraSolver::setModel(
   }
   
   Teuchos::RefCountPtr<std::ostream>
-    modelEvalLogOut;
-  if(procRank==0) {
-    std::string modeEvalLogOutFile = "ModelEvaluationLog";
-    if(outputFileTag_.length())
-      modeEvalLogOutFile += ( "." + outputFileTag_ );
-    modeEvalLogOutFile += ".out";
-    modelEvalLogOut = rcp(new std::ofstream(modeEvalLogOutFile.c_str()));
-  }
-  else {
-    modelEvalLogOut = rcp(new Teuchos::oblackholestream());
-  }
+    modelEvalLogOut = Teuchos::fancyOStream(
+      solver_.generate_output_file("ModelEvaluationLog")
+      );
   Teuchos::RefCountPtr<Thyra::DefaultEvaluationLoggerModelEvaluator<Scalar> >
     loggerThyraModel
     = rcp(
@@ -486,7 +478,7 @@ void MoochoThyraSolver::setModel(
         )
       );
   outerModel_ = loggerThyraModel; 
-
+  
   nominalModel_
     = rcp(
       new Thyra::DefaultNominalBoundsOverrideModelEvaluator<Scalar>(outerModel_,Teuchos::null)
