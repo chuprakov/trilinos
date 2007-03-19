@@ -101,7 +101,8 @@ int main(int argc, char* argv[])
   *ra_ptr2 = *ra_ptr3;    // ""
 
   // Get the raw C++ pointer.
-  A* true_ptr = a_ptr1.get();
+  A* true_ptr = 0;
+  true_ptr = a_ptr1.get();
 
 #ifdef HAVE_MPI
   MPI_Finalize();
