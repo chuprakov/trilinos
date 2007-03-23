@@ -60,6 +60,8 @@ bool EvalNewPointTailoredApproach_Step::do_step(
   ,poss_type assoc_step_poss
   )
 {
+
+  using Teuchos::RefCountPtr;
   using Teuchos::rcp;
   using Teuchos::dyn_cast;
   using AbstractLinAlgPack::assert_print_nan_inf;
@@ -235,6 +237,21 @@ bool EvalNewPointTailoredApproach_Step::do_step(
     out << std::endl;
   }
 
+  if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
+    out << "Printing column norms of D:\n";
+    RefCountPtr<VectorMutable>
+      e_i = D_ptr->space_rows().create_member();
+    RefCountPtr<VectorMutable>
+      D_i = D_ptr->space_cols().create_member();
+    *e_i = 0.0;
+    for( int i = 1; i <= (n-r); ++i ) {
+      e_i->set_ele(i,1.0);
+      V_MtV( &*D_i, *D_ptr, BLAS_Cpp::no_trans, *e_i );
+      e_i->set_ele(i,0.0);
+      out << "  ||D(:,"<<i<<")||_2 = " << D_i->norm_2() << "\n";
+    }
+  }
+
   if(algo.algo_cntr().check_results()) {
     assert_print_nan_inf(s.f().get_k(0),   "f_k",true,&out); 
     assert_print_nan_inf(s.c().get_k(0),   "c_k",true,&out); 
@@ -292,6 +309,8 @@ bool EvalNewPointTailoredApproach_Step::do_step(
   }
 
   // Compute py, Y and Uy
+  if( olevel >= PRINT_ALGORITHM_STEPS )
+    out << "\nUpdating py_k, Y_k, and Uy_k given D_k ...\n";
   calc_py_Y_Uy( nlp, D_ptr, &py_k, &Y_k, Uy_k, olevel, out ); 
 
   // Compute Ypy = Y*py

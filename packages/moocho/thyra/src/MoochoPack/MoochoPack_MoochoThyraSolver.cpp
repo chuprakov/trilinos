@@ -326,21 +326,23 @@ MoochoThyraSolver::getValidParameters() const
       ,"Use finite differences for missing objective function derivatives (Direct NLP only).\n"
       "See the options in the sublist \"" + ObjectiveFiniteDifferenceSettings_name + "\"."
       );
-    Thyra::DirectionalFiniteDiffCalculator<Scalar> dfdcalc;
     {
-      Teuchos::ParameterList
-        &fdSublist = pl->sublist(ObjectiveFiniteDifferenceSettings_name);
-      fdSublist.setParameters(*dfdcalc.getValidParameters());
-    }
-    pl->set(
-      UseFiniteDifferencesForConstraints_name,UseFiniteDifferencesForConstraints_default
-      ,"Use finite differences for missing constraint derivatives (Direct NLP only).\n"
-      "See the options in the sublist \"" + ConstraintsFiniteDifferenceSettings_name + "\"."
-      );
-    {
-      Teuchos::ParameterList
-        &fdSublist = pl->sublist(ConstraintsFiniteDifferenceSettings_name);
-      fdSublist.setParameters(*dfdcalc.getValidParameters());
+      Thyra::DirectionalFiniteDiffCalculator<Scalar> dfdcalc;
+      {
+        Teuchos::ParameterList
+          &fdSublist = pl->sublist(ObjectiveFiniteDifferenceSettings_name);
+        fdSublist.setParameters(*dfdcalc.getValidParameters());
+      }
+      pl->set(
+        UseFiniteDifferencesForConstraints_name,UseFiniteDifferencesForConstraints_default
+        ,"Use  finite differences for missing constraint derivatives (Direct NLP only).\n"
+        "See the   options in the sublist \"" + ConstraintsFiniteDifferenceSettings_name + "\"."
+        );
+      {
+        Teuchos::ParameterList
+          &fdSublist = pl->sublist(ConstraintsFiniteDifferenceSettings_name);
+        fdSublist.setParameters(*dfdcalc.getValidParameters());
+      }
     }
     pl->set(
       FwdNewtonTol_name,FwdNewtonTol_default
@@ -595,6 +597,12 @@ void MoochoThyraSolver::setModel(
   // Set the NLP
   solver_.set_nlp(nlp);
 
+}
+
+const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
+MoochoThyraSolver::getOuterModel() const
+{
+  return outerModel_;
 }
 
 void MoochoThyraSolver::readInitialGuess(

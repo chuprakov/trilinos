@@ -233,6 +233,10 @@ public:
     ,const int                                                     p_idx  = 0
     ,const int                                                     g_idx  = 0
     );
+  
+  /** \brief . */
+  const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
+  getOuterModel() const;
     
   /** \brief . */
   void readInitialGuess(
