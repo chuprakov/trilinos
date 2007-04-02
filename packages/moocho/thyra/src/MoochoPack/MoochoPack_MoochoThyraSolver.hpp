@@ -304,6 +304,8 @@ private:
 
   mutable Thyra::ParameterDrivenMultiVectorInput<value_type> x_reader_;
   mutable Thyra::ParameterDrivenMultiVectorInput<value_type> p_reader_;
+  mutable Thyra::ParameterDrivenMultiVectorInput<value_type> p_l_reader_;
+  mutable Thyra::ParameterDrivenMultiVectorInput<value_type> p_u_reader_;
 
   Teuchos::RefCountPtr<Teuchos::ParameterList>               paramList_;
   

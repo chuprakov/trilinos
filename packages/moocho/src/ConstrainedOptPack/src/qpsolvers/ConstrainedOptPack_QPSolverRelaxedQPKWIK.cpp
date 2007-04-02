@@ -39,7 +39,7 @@
 #include "AbstractLinAlgPack_SortByDescendingAbsValue.hpp"
 #include "AbstractLinAlgPack_VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack_sparse_bounds.hpp"
 #include "AbstractLinAlgPack_SpVectorOp.hpp"
 #include "DenseLinAlgPack_LinAlgOpPack.hpp"

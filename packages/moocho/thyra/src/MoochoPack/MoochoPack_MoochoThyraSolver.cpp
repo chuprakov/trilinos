@@ -35,6 +35,7 @@
 #include "Thyra_DefaultInverseModelEvaluator.hpp"
 #include "Thyra_DefaultSpmdMultiVectorFileIO.hpp"
 #include "Thyra_DampenedNewtonNonlinearSolver.hpp"
+#include "Thyra_ModelEvaluatorHelpers.hpp"
 #include "Thyra_VectorStdOps.hpp"
 #include "Teuchos_StandardParameterEntryValidators.hpp"
 #include "Teuchos_XMLParameterListHelpers.hpp"
@@ -135,6 +136,10 @@ const bool ShowModelEvaluatorTrace_default = "false";
 const std::string StateGuess_name = "State Guess";
 
 const std::string ParamGuess_name = "Parameter Guess";
+
+const std::string ParamLowerBounds_name = "Parameter Lower Bounds";
+
+const std::string ParamUpperBounds_name = "Parameter Upper Bounds";
 
 const std::string StateSoluFileBaseName_name = "State Solution File Base Name";
 const std::string StateSoluFileBaseName_default = "";
@@ -271,6 +276,12 @@ void MoochoThyraSolver::setParameterList(
   p_reader_.setParameterList(
     sublist(paramList_,ParamGuess_name)
     );
+  p_l_reader_.setParameterList(
+    sublist(paramList_,ParamLowerBounds_name)
+    );
+  p_u_reader_.setParameterList(
+    sublist(paramList_,ParamUpperBounds_name)
+    );
   stateSoluFileBase_ = paramList_->get(
     StateSoluFileBaseName_name,StateSoluFileBaseName_default);
   paramSoluFileBase_ = paramList_->get(
@@ -383,9 +394,14 @@ MoochoThyraSolver::getValidParameters() const
     if(this->get_stateVectorIO().get())
       x_reader_.set_fileIO(this->get_stateVectorIO());
     pl->sublist(StateGuess_name).setParameters(*x_reader_.getValidParameters());
-    if(this->get_parameterVectorIO().get())
+    if(this->get_parameterVectorIO().get()) {
       p_reader_.set_fileIO(this->get_parameterVectorIO());
-    pl->sublist(ParamGuess_name).setParameters(*p_reader_.getValidParameters());
+      p_l_reader_.set_fileIO(this->get_parameterVectorIO());
+      p_u_reader_.set_fileIO(this->get_parameterVectorIO());
+      pl->sublist(ParamGuess_name).setParameters(*p_reader_.getValidParameters());
+      pl->sublist(ParamLowerBounds_name).setParameters(*p_l_reader_.getValidParameters());
+      pl->sublist(ParamUpperBounds_name).setParameters(*p_u_reader_.getValidParameters());
+    }
     pl->set(
       StateSoluFileBaseName_name,StateSoluFileBaseName_default
       ,"If specified, a file with this basename will be written to with\n"
@@ -611,12 +627,16 @@ void MoochoThyraSolver::readInitialGuess(
 {
   using Teuchos::OSTab;
   using Teuchos::RefCountPtr;
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  using Thyra::clone;
+  typedef Thyra::ModelEvaluatorBase MEB;
+
+  RefCountPtr<Teuchos::FancyOStream>
     out = Teuchos::getFancyOStream(Teuchos::rcp(out_arg,false));
-  Teuchos::RefCountPtr<Thyra::ModelEvaluatorBase::InArgs<value_type> >
-    initialGuess = Teuchos::rcp(
-      new Thyra::ModelEvaluatorBase::InArgs<value_type>(origModel_->createInArgs())
-      );
+  RefCountPtr<MEB::InArgs<value_type> >
+    initialGuess = clone(origModel_->getNominalValues()),
+    lowerBounds = clone(origModel_->getLowerBounds()),
+    upperBounds = clone(origModel_->getUpperBounds());
+
   RefCountPtr<const Thyra::VectorSpaceBase<value_type> >
     x_space = origModel_->get_x_space();
   if( 0 != x_space.get() ) {
@@ -629,13 +649,22 @@ void MoochoThyraSolver::readInitialGuess(
   }
   if( origModel_->Np() > 0 ) {
     p_reader_.set_vecSpc(origModel_->get_p_space(p_idx_));
-    if(this->get_parameterVectorIO().get())
+    p_l_reader_.set_vecSpc(p_reader_.get_vecSpc());
+    p_u_reader_.set_vecSpc(p_reader_.get_vecSpc());
+    if(this->get_parameterVectorIO().get()) {
       p_reader_.set_fileIO(this->get_parameterVectorIO());
+      p_l_reader_.set_fileIO(p_reader_.get_fileIO());
+      p_u_reader_.set_fileIO(p_reader_.get_fileIO());
+    }
     Teuchos::VerboseObjectTempState<Thyra::ParameterDrivenMultiVectorInput<value_type> >
       vots_p_reader(rcp(&p_reader_,false),out,Teuchos::VERB_LOW);
     initialGuess->set_p(p_idx_,p_reader_.readVector("initial guess for the parameters \'p\'"));
+    lowerBounds->set_p(p_idx_,p_l_reader_.readVector("lower bounds for the parameters \'p\'"));
+    upperBounds->set_p(p_idx_,p_u_reader_.readVector("upper bounds for the parameters \'p\'"));
   }
   nominalModel_->setNominalValues(initialGuess);
+  nominalModel_->setLowerBounds(lowerBounds);
+  nominalModel_->setUpperBounds(upperBounds);
 }
 
 void MoochoThyraSolver::setInitialGuess(

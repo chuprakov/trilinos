@@ -362,6 +362,8 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
   if( nu ) {
     Vp_V( u_d.get(), *nu );
     opt_scale += nu->norm_inf();
+    if(out)
+      *out << "||nu||inf = " << nu->norm_inf() << endl;
   }
 
   if(E) {

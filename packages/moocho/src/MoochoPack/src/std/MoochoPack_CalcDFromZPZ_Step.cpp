@@ -42,10 +42,11 @@ bool CalcDFromZPZ_Step::do_step(
   )
 {
 
-  NLPAlgo	&algo	= rsqp_algo(_algo);
-  NLPAlgoState	&s		= algo.rsqp_state();
+  NLPAlgo &algo = rsqp_algo(_algo);
+  NLPAlgoState &s = algo.rsqp_state();
 
   EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+  EJournalOutputLevel ns_olevel = algo.algo_cntr().null_space_journal_output_level();
   std::ostream& out = algo.track().journal_out();
 
   // print step header.
@@ -55,7 +56,7 @@ bool CalcDFromZPZ_Step::do_step(
   }
 
   // d = Zpz
-  VectorMutable    &d_k    = s.d().set_k(0) = s.Zpz().get_k(0);
+  VectorMutable &d_k = s.d().set_k(0) = s.Zpz().get_k(0);
 
   if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
     out	<< "\n||d||inf = " << d_k.norm_inf() << std::endl;

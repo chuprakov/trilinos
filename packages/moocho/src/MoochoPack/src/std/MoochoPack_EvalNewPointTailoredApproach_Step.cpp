@@ -92,6 +92,9 @@ bool EvalNewPointTailoredApproach_Step::do_step(
     var_dep = nlp.var_dep(),
     var_indep = nlp.var_indep();
 
+  s.var_dep(var_dep);
+  s.var_indep(var_indep);
+
   const size_type
     n  = nlp.n(),
     m  = nlp.m(),
@@ -327,6 +330,17 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
     out	<< "\npy_k = \n"  << s.py().get_k(0);
+  }
+
+  if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+    if(var_indep.size())
+      out	<< "\nYpy(var_indep)_k = \n" << *s.Ypy().get_k(0).sub_view(var_indep);
+    out << std::endl;
+  }
+
+  if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+    if(var_dep.size())
+      out	<< "\nYpy(var_dep)_k = \n" << *s.Ypy().get_k(0).sub_view(var_dep);
     out	<< "\nYpy_k = \n" << s.Ypy().get_k(0);
     out << std::endl;
   }

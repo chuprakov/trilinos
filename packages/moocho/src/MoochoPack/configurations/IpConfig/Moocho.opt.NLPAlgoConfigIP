@@ -79,7 +79,7 @@ options_group NLPAlgoConfigIP {
 
 *    merit_function_type = AUTO;              *** [line_search_method != NONE] Let solver decide
 *    merit_function_type = L1;                *** [line_search_method != NONE] phi(x) = f(x) + mu*||c(x)||1
-*    merit_function_type = MODIFIED_L1;       *** [line_search_method != NONE] phi(x) = f(x) + sum{mu(j),|cj(x)|,j}
+*    merit_function_type = MODIFIED_L1;       *** [line_search_method != NONE] phi(x) = f(x) + sum(mu(j),|cj(x)|,j)
 *    merit_function_type = MODIFIED_L1_INCR;  *** [line_search_method != NONE] Like MODIFIED_L1 except mu(j) are
 *                                             *** altered in order to take larger steps
 *    l1_penalty_parameter_update = AUTO;      *** [merit_function_type == L1] let solver decide

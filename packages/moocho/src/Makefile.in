@@ -332,10 +332,12 @@ am__libmoocho_a_SOURCES_DIST = $(srcdir)/MoochoUtilities/src/FortranTypes_CppFor
 	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp \
 	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp \
 	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp \
 	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp \
 	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp \
 	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp \
 	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/QPKWIKNEW.f \
 	$(srcdir)/MoochoPack/configurations/MoochoPack_MoochoSolver.cpp \
 	$(srcdir)/MoochoPack/configurations/IpConfig/MoochoPack_NLPAlgoConfigIP.cpp \
 	$(srcdir)/MoochoPack/configurations/MamaJama/MoochoPack_NLPAlgoConfigMamaJama.cpp \
@@ -630,11 +632,13 @@ am__objects_13 = ConstrainedOptPack_DecompositionSystem.$(OBJEXT) \
 	ConstrainedOptPack_QPSchur.$(OBJEXT) \
 	ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.$(OBJEXT) \
 	ConstrainedOptPack_QPSolverRelaxed.$(OBJEXT) \
+	ConstrainedOptPack_QPSolverRelaxedQPKWIK.$(OBJEXT) \
 	ConstrainedOptPack_QPSolverRelaxedQPSchur.$(OBJEXT) \
 	ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.$(OBJEXT) \
 	ConstrainedOptPack_QPSolverRelaxedTester.$(OBJEXT) \
 	ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.$(OBJEXT)
-am__objects_14 = MoochoPack_MoochoSolver.$(OBJEXT) \
+am__objects_14 = QPKWIKNEW.$(OBJEXT)
+am__objects_15 = MoochoPack_MoochoSolver.$(OBJEXT) \
 	MoochoPack_NLPAlgoConfigIP.$(OBJEXT) \
 	MoochoPack_NLPAlgoConfigMamaJama.$(OBJEXT) \
 	MoochoPack_DecompositionSystemStateStepBuilderStd.$(OBJEXT) \
@@ -712,7 +716,7 @@ am_libmoocho_a_OBJECTS = $(am__objects_1) $(am__objects_2) \
 	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
 	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
 	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
-	$(am__objects_13) $(am__objects_7) $(am__objects_14)
+	$(am__objects_13) $(am__objects_14) $(am__objects_15)
 libmoocho_a_OBJECTS = $(am_libmoocho_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -825,6 +829,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSchur.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Po \
@@ -2412,6 +2417,7 @@ CONSTRAINED_OPT_PACK_CPP = \
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp\
@@ -2419,7 +2425,10 @@ CONSTRAINED_OPT_PACK_CPP = \
 
 
 # ToDo: Add conditional logic for QPOPT and QPKWIK!
-CONSTRAINED_OPT_PACK_F = 
+CONSTRAINED_OPT_PACK_F = \
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/QPKWIKNEW.f
+
+
 #CONSTRAINED_OPT_PACK_F = \
 #  $(srcdir)/ConstrainedOptPack/src/qpsolvers/qpoptcpp.f
 MOOCHO_PACK_HPP = \
@@ -2902,6 +2911,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSchur.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Po@am__quote@
@@ -6833,6 +6843,22 @@ ConstrainedOptPack_QPSolverRelaxed.obj: $(srcdir)/ConstrainedOptPack/src/qpsolve
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSolverRelaxed.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp'; fi`
 
+ConstrainedOptPack_QPSolverRelaxedQPKWIK.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSolverRelaxedQPKWIK.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.Tpo" -c -o ConstrainedOptPack_QPSolverRelaxedQPKWIK.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp' object='ConstrainedOptPack_QPSolverRelaxedQPKWIK.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSolverRelaxedQPKWIK.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp
+
+ConstrainedOptPack_QPSolverRelaxedQPKWIK.obj: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSolverRelaxedQPKWIK.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.Tpo" -c -o ConstrainedOptPack_QPSolverRelaxedQPKWIK.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp' object='ConstrainedOptPack_QPSolverRelaxedQPKWIK.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPKWIK.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSolverRelaxedQPKWIK.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp'; fi`
+
 ConstrainedOptPack_QPSolverRelaxedQPSchur.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSolverRelaxedQPSchur.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Tpo" -c -o ConstrainedOptPack_QPSolverRelaxedQPSchur.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Tpo"; exit 1; fi
@@ -8126,6 +8152,12 @@ dchud.o: $(srcdir)/AbstractLinAlgPack/src/serial/implementations/dchud.f
 
 dchud.obj: $(srcdir)/AbstractLinAlgPack/src/serial/implementations/dchud.f
 	$(F77) $(AM_FFLAGS) $(FFLAGS) -c -o dchud.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/serial/implementations/dchud.f'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/serial/implementations/dchud.f'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/serial/implementations/dchud.f'; fi`
+
+QPKWIKNEW.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/QPKWIKNEW.f
+	$(F77) $(AM_FFLAGS) $(FFLAGS) -c -o QPKWIKNEW.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/QPKWIKNEW.f' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/QPKWIKNEW.f
+
+QPKWIKNEW.obj: $(srcdir)/ConstrainedOptPack/src/qpsolvers/QPKWIKNEW.f
+	$(F77) $(AM_FFLAGS) $(FFLAGS) -c -o QPKWIKNEW.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/QPKWIKNEW.f'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/QPKWIKNEW.f'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/QPKWIKNEW.f'; fi`
 uninstall-info-am:
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)

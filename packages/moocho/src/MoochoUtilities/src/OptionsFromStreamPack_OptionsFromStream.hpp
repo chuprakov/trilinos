@@ -307,14 +307,13 @@ const std::string& option_value( OptionsGroup::const_iterator& itr ) {
 
 }	// end namespace OptionsFromStreamUtilityPack 
 
+
 /** \brief Extracts options from a text stream and then allows
   * convenient access to them.
   *
   * The basic idea is that options are read in from a stream (which can be
   * a file, C++ string etc.) and then parsed and stored in a format so
-  * that options can be efficiently looked up by client software.  See the
-  * 
-  *
+  * that options can be efficiently looked up by client software.
   *
   * The syntax for the file (or any C++ istream) is as follows:
   \verbatim
@@ -333,7 +332,7 @@ const std::string& option_value( OptionsGroup::const_iterator& itr ) {
   options_group YourSolverOptions {
       tol       = 1e-4;
       *** These options determine the type of problem solved
-      *type_prob = LP;
+  *    type_prob = LP;
       type_prob = QP;
   }
 
@@ -345,10 +344,11 @@ const std::string& option_value( OptionsGroup::const_iterator& itr ) {
   end_options
 
   \endverbatim
+
   * The text stream will be read up to the <tt>end_options</tt> line.
   * Options groups will be read starting with the <tt>begin_options</tt> line.
   * Options groups can not be nested.  The names for the option groups
-  * or the options themselves can not contain any white space.  The
+  * or the option names themselves can not contain any white space.  The
   * text for the option values however can contain white space.  The <tt>=</tt> must
   * separate each option from its value.  The value for an option begins
   * with the first non-whitespace character after the <tt>=</tt> and ends with the
@@ -358,6 +358,9 @@ const std::string& option_value( OptionsGroup::const_iterator& itr ) {
   * <tt>*</tt> can be placed anywhere in the stream and will be ignored.
   * Also comments starting with <tt>*</tt> after the <tt>;</tt> for an option and value
   * pair can occur on the same line as shown above.
+  *
+  * <b>Warning!</b> Do not use the char '}' in any comment within an options
+  * group!  This will break the parser.
   *
   * The options groups are also reentrant which means that they may be included
   * more than once as shown above.  Therefore options may be set and reset in the
@@ -400,8 +403,6 @@ const std::string& option_value( OptionsGroup::const_iterator& itr ) {
   *     Most of the major functionality comes from the ISO standard C++ library
   *     and therefore should be portable to any up to date C++ compiler.
   *</ul>
-  *
-  *
   */
 class OptionsFromStream {
 public:
@@ -450,8 +451,11 @@ public:
     * The options read in from <tt>in</tt> will either be added anew or will
     * overwrite options already present.
     *
-    * If the format of the stream is not correct then a \Ref{InputStreamError}
-    * exception will be thrown.
+    * If the format of the stream is not correct then a
+    * <tt>InputStreamError</tt> exception will be thrown.
+    *
+    * <b>Warning!</b> Do not use the char '}' in any comment within an options
+    * group!  This will break the parser.
     */
   void read_options( std::istream& in );
 

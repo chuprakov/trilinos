@@ -46,17 +46,22 @@ bool SetDBoundsStd_AddedStep::do_step(
   ,poss_type assoc_step_poss
   )
 {
-  NLPAlgo              &algo      = rsqp_algo(_algo);
-  NLPAlgoState             &s         = algo.rsqp_state();
+  NLPAlgo &algo = rsqp_algo(_algo);
+  NLPAlgoState &s = algo.rsqp_state();
 
-  EJournalOutputLevel   olevel     = algo.algo_cntr().journal_output_level();
-  std::ostream          &out       = algo.track().journal_out();
+  EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+  EJournalOutputLevel ns_olevel = algo.algo_cntr().null_space_journal_output_level();
+  std::ostream &out = algo.track().journal_out();
 
   // print step header.
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
     using IterationPack::print_algorithm_step;
     print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
   }
+
+  const Range1D
+    var_dep = s.var_dep(),
+    var_indep = s.var_indep();
 
   const Vector
     &x_k = s.x().get_k(0),
@@ -72,7 +77,18 @@ bool SetDBoundsStd_AddedStep::do_step(
   // du = xu - x_k
   LinAlgOpPack::V_VmV( &du, xu, x_k );	
 
+  if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+    if(var_indep.size()) {
+      out << "\ndl(var_indep)_k = \n" << *dl.sub_view(var_indep);
+      out << "\ndu(var_indep)_k = \n" << *du.sub_view(var_indep);
+    }
+  }
+
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+    if(var_dep.size()) {
+      out << "\ndl(var_dep)_k = \n" << *dl.sub_view(var_dep);
+      out << "\ndu(var_dep)_k = \n" << *du.sub_view(var_dep);
+    }
     out << "\ndl_k = \n" << dl;
     out << "\ndu_k = \n" << du;
   }

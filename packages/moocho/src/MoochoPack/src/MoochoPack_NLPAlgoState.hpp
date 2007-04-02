@@ -441,6 +441,11 @@ public:
   /** @name Decomposition information */
   //@{
 
+  /// Range of dependent variables [1,r]
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, var_dep );
+  /// Range of independent varaibles [r+1,n]
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, var_indep );
+
   /// Range of decomposed equality constraints [1,r]
   STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, equ_decomp );
   /// Range of undecomposed equality constraints [r+1,m]

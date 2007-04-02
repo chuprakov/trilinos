@@ -76,7 +76,8 @@ bool TangentialStepWithInequStd_Step::do_step(
   ,poss_type assoc_step_poss
   )
 {
-  namespace mmp = MemMngPack;
+
+  using Teuchos::RefCountPtr;
   using Teuchos::dyn_cast;
   using ::fabs;
   using LinAlgOpPack::Vt_S;
@@ -156,7 +157,9 @@ bool TangentialStepWithInequStd_Step::do_step(
       Vp_V( &qp_grad_k, w_iq.get_k(0) );
   }
 
+  //
   // Set the bounds for:
+  //
   //   dl <= Z*pz + Y*py <= du  ->  dl - Ypy <= Z*pz <= du - Ypz
 
   vec_mut_ptr_t
@@ -284,9 +287,12 @@ bool TangentialStepWithInequStd_Step::do_step(
   // [ d(var_dep)   ]  = [ D ] * pz  + (1-eta) * [ Ypy(var_dep)   ]
   // [ d(var_indep) ]    [ I ]                   [ Ypy(var_indep) ]
   // 
-  // For a cooridinate decomposition (Y = [ I ; 0 ]) then Ypy(var_indep) == 0.0 and
-  // in this case the bounds on d(var_indep) become simple bounds on pz even
-  // with the relaxation.
+  // For a cooridinate decomposition (Y = [ I ; 0 ]) then Ypy(var_indep) ==
+  // 0.0 and in this case the bounds on d(var_indep) become simple bounds on
+  // pz even with the relaxation.  Also, if dl(var_dep) and du(var_dep) are
+  // unbounded, then we can also use simple bounds since we don't need the
+  // relaxation and we can set eta=0. In this case we just have to subtract
+  // from the upper and lower bounds on pz!
   // 
   // Otherwise, we can not use simple variable bounds and implement the
   // relaxation properly.
@@ -298,7 +304,10 @@ bool TangentialStepWithInequStd_Step::do_step(
     var_dep   = Zvr ? Zvr->D_rng() : Range1D::Invalid,
     var_indep = Zvr ? Zvr->I_rng() : Range1D();
 
-  const value_type Ypy_indep_norm_inf = ( m ? Ypy_k->sub_view(var_indep)->norm_inf() : 0.0);
+  RefCountPtr<Vector> Ypy_indep;
+  const value_type
+    Ypy_indep_norm_inf
+    = ( m ? (Ypy_indep=Ypy_k->sub_view(var_indep))->norm_inf() : 0.0);
 
   if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
     out
@@ -308,8 +317,20 @@ bool TangentialStepWithInequStd_Step::do_step(
       << "    ||Ypy_k(var_indep)||inf = " << Ypy_indep_norm_inf << std::endl;
 
   const bool
-    use_simple_pz_bounds = ( m == 0 || ( Zvr != NULL && Ypy_indep_norm_inf == 0.0 ) ),
-    bounded_var_dep      = ( m > 0 && num_bounded( *bl->sub_view(var_dep), *bu->sub_view(var_dep), qp_bnd_inf ) );
+    bounded_var_dep
+    = (
+      m > 0
+      &&
+      num_bounded( *bl->sub_view(var_dep), *bu->sub_view(var_dep), qp_bnd_inf )
+      );
+
+  const bool
+    use_simple_pz_bounds
+    = (
+      m == 0
+      ||
+      ( Zvr != NULL && ( Ypy_indep_norm_inf == 0.0 || bounded_var_dep == 0 ) )
+      );
 
   if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
     out
@@ -322,8 +343,8 @@ bool TangentialStepWithInequStd_Step::do_step(
 
   if( use_simple_pz_bounds ) {
     // Set simple bound constraints on pz
-    qp_dL = bl->sub_view(var_indep);
-    qp_dU = bu->sub_view(var_indep);
+    qp_dL = bl->sub_view(var_indep)->clone();
+    qp_dU = bu->sub_view(var_indep)->clone();
     qp_nu = nu_k.sub_view(var_indep); // nu_k(var_indep) will be updated directly!
     if( m && bounded_var_dep ) {
       // Set general inequality constraints for D*pz
@@ -552,6 +573,9 @@ bool TangentialStepWithInequStd_Step::do_step(
       TEST_FOR_EXCEPT(true);	// should not happen!
   }
 
+  //
+  // Output the final solution!
+  //
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
     out	<< "\n||pz_k||inf    = " << s.pz().get_k(0).norm_inf()
       << "\nnu_k.nz()      = " << s.nu().get_k(0).nz()
@@ -567,13 +591,29 @@ bool TangentialStepWithInequStd_Step::do_step(
 
   if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
     out << "\npz_k = \n" << s.pz().get_k(0);
+    if(var_indep.size())
+      out << "\nnu_k(var_indep) = \n" << *s.nu().get_k(0).sub_view(var_indep);
+  }
+
+  if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+    if(var_indep.size())
+      out	<< "\nZpz(var_indep)_k = \n" << *s.Zpz().get_k(0).sub_view(var_indep);
+    out << std::endl;
+  }
+
+  if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+    if(var_dep.size())
+      out	<< "\nZpz(var_dep)_k = \n" << *s.Zpz().get_k(0).sub_view(var_dep);
+    out	<< "\nZpz_k = \n" << s.Zpz().get_k(0);
+    out << std::endl;
   }
 
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
     out << "\nnu_k = \n" << s.nu().get_k(0);
+    if(var_dep.size())
+      out << "\nnu_k(var_dep) = \n" << *s.nu().get_k(0).sub_view(var_dep);
     if( m > r )
       out << "\nlambda_k(equ_undecomp) = \n" << *s.lambda().get_k(0).sub_view(equ_undecomp);
-    out << "\nZpz_k = \n" << s.Zpz().get_k(0);
     if(qp_eta > 0.0) out << "\nYpy = \n" << s.Ypy().get_k(0);
   }
 
@@ -608,7 +648,13 @@ void TangentialStepWithInequStd_Step::print_step(
     << L << "bu = du_k - Ypy_k\n"
     << L << "etaL = 0.0\n"
     << L << "*** Determine if we can use simple bounds on pz or not\n"
-    << L << "if m==0 or (Z_k is a variable reduction null space matrix and ||Ypy_k(var_indep)||inf == 0) then\n"
+    << L << "if (\n"
+    << L << "    m==0\n"
+    << L << "    or (Z_k is a variable reduction null space matrix\n"
+    << L << "         and ( ||Ypy_k(var_indep)||inf == 0\n"
+    << L << "               or there are no bounded dep vars )\n"
+    << L << "    )\n"
+    << L << "  ) then\n"
     << L << "  use_simple_pz_bounds = true\n"
     << L << "else\n"
     << L << "  use_simple_pz_bounds = false\n"
@@ -617,7 +663,7 @@ void TangentialStepWithInequStd_Step::print_step(
     << L << "qp_g = qp_grad_k\n"
     << L << "qp_G = rHL_k\n"
     << L << "if (use_simple_pz_bounds == true) then\n"
-    << L << "  qp_dL = bl(var_indep),  qp_dU = bu(var_indep)\n"
+    << L << "  qp_dL = bl(var_indep) - Ypy(var_indep),  qp_dU = bu(var_indep) - Ypy(var_indep)\n"
     << L << "  if (m > 0) then\n"
     << L << "    qp_E  = Z_k.D,          qp_b  = Ypy_k(var_dep)\n"
     << L << "    qp_eL = bl(var_dep),    qp_eU = bu(var_dep)\n"

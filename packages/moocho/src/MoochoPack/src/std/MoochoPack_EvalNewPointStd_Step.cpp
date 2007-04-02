@@ -170,6 +170,8 @@ bool EvalNewPointStd_Step::do_step(
       var_dep   = decomp_sys_vr->var_dep();
       var_indep = decomp_sys_vr->var_indep();
     }
+    s.var_dep(var_dep);
+    s.var_indep(var_indep);
   }
 
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {

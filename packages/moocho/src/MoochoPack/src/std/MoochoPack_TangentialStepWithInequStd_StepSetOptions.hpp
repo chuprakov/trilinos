@@ -64,7 +64,7 @@ public:
   /** \brief . */
   TangentialStepWithInequStd_StepSetOptions(
      TangentialStepWithInequStd_Step* target = NULL
-    ,const char opt_grp_name[] = "NullSpaceStepWithInequStd" );
+    ,const char opt_grp_name[] = "TangentialStepWithInequStd" );
 protected:
   /// Overridden from SetOptionsFromStreamNode
   void setOption( int option_num, const std::string& option_value );

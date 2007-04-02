@@ -69,4 +69,9 @@
 
 #include <Moocho_Config.h>
 
+// Make QPKWIK enabled by default!
+#define CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK 1
+// ToDo: Remove the above define from all files since we will build QPKWIK by
+// default!
+
 #endif /*_MOOCHO_CONFIGDEFS_H_*/

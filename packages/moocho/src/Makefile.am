@@ -784,6 +784,7 @@ CONSTRAINED_OPT_PACK_CPP = \
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp\
@@ -791,7 +792,9 @@ CONSTRAINED_OPT_PACK_CPP = \
 
 # ToDo: Add conditional logic for QPOPT and QPKWIK!
 
-CONSTRAINED_OPT_PACK_F =
+CONSTRAINED_OPT_PACK_F = \
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/QPKWIKNEW.f
+
 #CONSTRAINED_OPT_PACK_F = \
 #  $(srcdir)/ConstrainedOptPack/src/qpsolvers/qpoptcpp.f
 
