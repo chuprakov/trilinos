@@ -343,8 +343,8 @@ bool TangentialStepWithInequStd_Step::do_step(
 
   if( use_simple_pz_bounds ) {
     // Set simple bound constraints on pz
-    qp_dL = bl->sub_view(var_indep)->clone();
-    qp_dU = bu->sub_view(var_indep)->clone();
+    qp_dL = bl->sub_view(var_indep);
+    qp_dU = bu->sub_view(var_indep);
     qp_nu = nu_k.sub_view(var_indep); // nu_k(var_indep) will be updated directly!
     if( m && bounded_var_dep ) {
       // Set general inequality constraints for D*pz
@@ -648,12 +648,16 @@ void TangentialStepWithInequStd_Step::print_step(
     << L << "bu = du_k - Ypy_k\n"
     << L << "etaL = 0.0\n"
     << L << "*** Determine if we can use simple bounds on pz or not\n"
-    << L << "if (\n"
-    << L << "    m==0\n"
-    << L << "    or (Z_k is a variable reduction null space matrix\n"
-    << L << "         and ( ||Ypy_k(var_indep)||inf == 0\n"
-    << L << "               or there are no bounded dep vars )\n"
-    << L << "    )\n"
+    << L << "if num_bounded(bl_k(var_dep),bu_k(var_dep)) > 0 then\n"
+    << L << "  bounded_var_dep = true\n"
+    << L << "else\n"
+    << L << "  bounded_var_dep = false\n"
+    << L << "end\n"
+    << L << "if( m==0\n"
+    << L << "    or\n"
+    << L << "    ( Z_k is a variable reduction null space matrix\n"
+    << L << "      and\n"
+    << L << "      ( ||Ypy_k(var_indep)||inf == 0 or bounded_var_dep==false ) )\n"
     << L << "  ) then\n"
     << L << "  use_simple_pz_bounds = true\n"
     << L << "else\n"
@@ -663,20 +667,20 @@ void TangentialStepWithInequStd_Step::print_step(
     << L << "qp_g = qp_grad_k\n"
     << L << "qp_G = rHL_k\n"
     << L << "if (use_simple_pz_bounds == true) then\n"
-    << L << "  qp_dL = bl(var_indep) - Ypy(var_indep),  qp_dU = bu(var_indep) - Ypy(var_indep)\n"
+    << L << "  qp_dL = bl(var_indep), qp_dU = bu(var_indep))\n"
     << L << "  if (m > 0) then\n"
-    << L << "    qp_E  = Z_k.D,          qp_b  = Ypy_k(var_dep)\n"
-    << L << "    qp_eL = bl(var_dep),    qp_eU = bu(var_dep)\n"
+    << L << "    qp_E  = Z_k.D,       qp_b  = Ypy_k(var_dep)\n"
+    << L << "    qp_eL = bl(var_dep), qp_eU = bu(var_dep)\n"
     << L << "  end\n"
     << L << "elseif (use_simple_pz_bounds == false) then\n"
-    << L << "  qp_dL = -inf,           qp_dU = +inf\n"
-    << L << "  qp_E  = Z_k,            qp_b  = Ypy_k\n"
-    << L << "  qp_eL = bl,             qp_eU = bu\n"
+    << L << "  qp_dL = -inf,  qp_dU = +inf\n"
+    << L << "  qp_E  = Z_k,   qp_b  = Ypy_k\n"
+    << L << "  qp_eL = bl,    qp_eU = bu\n"
     << L << "end\n"
     << L << "if (m > r) then\n"
-    << L << "  qp_F  = V_k,            qp_f  = Uy_k*py_k + c_k(equ_undecomp)\n"
+    << L << "  qp_F  = V_k,     qp_f  = Uy_k*py_k + c_k(equ_undecomp)\n"
     << L << "else\n"
-    << L << "  qp_F  = empty,          qp_f  = empty\n"
+    << L << "  qp_F  = empty,   qp_f  = empty\n"
     << L << "end\n"
     << L << "Given active-set statistics (act_set_stats_km1)\n"
     << L << "  frac_same = max(num_active-num_adds-num_drops,0)/(num_active)\n"

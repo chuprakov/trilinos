@@ -124,9 +124,9 @@ void MoochoPack::DampenCrossTermStd_Step::print_step( const Algorithm& algo
     << L << "*** Compute the dampening parameter for the reduced QP cross term w_k\n"
     << L << "default: frac_descent = " << frac_descent() << std::endl
     << L << "if w_k is update then\n"
-    << L << "    find zeta_k s.t.\n"
-    << L << "        Gf_k'*Z_k*pz_k ~\n"
-    << L << "           - zeta_k * rGf_k'*inv(rHL_k)*w_k - rGf_k'*inv(rHL_k)*rGf_k\n"
-    << L << "             <= - frac_descent * rGf_k'*inv(rHL_k)*rGf_k\n"
+    << L << "  find zeta_k s.t.\n"
+    << L << "    Gf_k'*Z_k*pz_k approx\n"
+    << L << "       - zeta_k * rGf_k'*inv(rHL_k)*w_k - rGf_k'*inv(rHL_k)*rGf_k\n"
+    << L << "       <= - frac_descent * rGf_k'*inv(rHL_k)*rGf_k\n"
     << L << "end\n";
 }
