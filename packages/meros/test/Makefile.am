@@ -9,3 +9,6 @@ all-local:
 	@echo ""
 
 SUBDIRS = EpetraThyraAdapter inverseApply OperatorSources
+
+EXTRA_DIST = definition
+
