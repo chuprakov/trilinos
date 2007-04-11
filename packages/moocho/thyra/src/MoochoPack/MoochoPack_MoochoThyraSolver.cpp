@@ -446,7 +446,7 @@ const MoochoSolver& MoochoThyraSolver::getSolver() const
 // Model specification, setup, solve, and solution extraction.
 
 void MoochoThyraSolver::setModel(
-  const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> > &model
+  const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> > &origModel
   ,const int                                                     p_idx
   ,const int                                                     g_idx
   )
@@ -458,7 +458,7 @@ void MoochoThyraSolver::setModel(
   using NLPInterfacePack::NLPDirectThyraModelEvaluator;
   using NLPInterfacePack::NLPFirstOrderThyraModelEvaluator;
 
-  origModel_ = model;
+  origModel_ = origModel;
   p_idx_ = p_idx;
   g_idx_ = g_idx;
 
@@ -613,6 +613,12 @@ void MoochoThyraSolver::setModel(
   // Set the NLP
   solver_.set_nlp(nlp);
 
+}
+
+const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
+MoochoThyraSolver::getOrigModel() const
+{
+  return origModel_;
 }
 
 const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >

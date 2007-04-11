@@ -229,10 +229,14 @@ public:
   
   /** \brief . */
   void setModel(
-    const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> > &model
+    const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> > &origModel
     ,const int                                                     p_idx  = 0
     ,const int                                                     g_idx  = 0
     );
+  
+  /** \brief . */
+  const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
+  getOrigModel() const;
   
   /** \brief . */
   const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
