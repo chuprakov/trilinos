@@ -39,6 +39,20 @@
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "DenseLinAlgPack_DMatrixOp.hpp"
 
+
+void LinAlgOpPack::assign(
+  DMatrixSlice* gms_lhs, const MatrixOp& M_rhs,
+  BLAS_Cpp::Transp trans_rhs
+  )
+{
+  Mp_M_assert_sizes(
+    gms_lhs->rows(), gms_lhs->cols(), BLAS_Cpp::no_trans,
+    M_rhs.rows(), M_rhs.cols(), trans_rhs );
+  (*gms_lhs) = 0.0;
+  Mp_StM(gms_lhs,1.0,M_rhs,trans_rhs);
+}
+
+
 void LinAlgOpPack::Mp_StM(
   DMatrixSlice* C, value_type a
   ,const MatrixOp& B, BLAS_Cpp::Transp B_trans

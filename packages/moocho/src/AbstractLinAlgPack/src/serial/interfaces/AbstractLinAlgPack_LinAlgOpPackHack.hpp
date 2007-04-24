@@ -46,6 +46,9 @@ using AbstractLinAlgPack::MatrixOp;
 using AbstractLinAlgPack::MatrixNonsing;
 using AbstractLinAlgPack::MatrixOpNonsing;
 
+/** \brief gms_lhs = op(M_rhs). */
+void assign(DMatrixSlice* gms_lhs, const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs);
+
 /** \brief <tt>m_lhs += alpha * op(mwo_rhs1)</tt>.
  */
 void Mp_StM(
