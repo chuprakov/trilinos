@@ -78,7 +78,7 @@
 # interpreted and imported into the create makefiles.  This is very nice
 # indeed!
 
-SOURCES = $(NLPThyraEpetraModelEval4DOpt_SOURCES)
+SOURCES = $(NLPThyraEpetraModelEval4DOpt_SOURCES) $(NLPThyraEpetraMultiPointModelEval4DOpt_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -101,7 +101,8 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
-noinst_PROGRAMS = NLPThyraEpetraModelEval4DOpt$(EXEEXT)
+noinst_PROGRAMS = NLPThyraEpetraModelEval4DOpt$(EXEEXT) \
+	NLPThyraEpetraMultiPointModelEval4DOpt$(EXEEXT)
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/MakefileExeStub.mak
 subdir = thyra/example/NLPThyraEpetraModelEval4DOpt
@@ -131,18 +132,27 @@ am_NLPThyraEpetraModelEval4DOpt_OBJECTS =  \
 NLPThyraEpetraModelEval4DOpt_OBJECTS =  \
 	$(am_NLPThyraEpetraModelEval4DOpt_OBJECTS)
 am__DEPENDENCIES_1 =
+am_NLPThyraEpetraMultiPointModelEval4DOpt_OBJECTS =  \
+	NLPThyraEpetraMultiPointModelEval4DOptMain.$(OBJEXT) \
+	EpetraMultiPointModelEval4DOpt.$(OBJEXT)
+NLPThyraEpetraMultiPointModelEval4DOpt_OBJECTS =  \
+	$(am_NLPThyraEpetraMultiPointModelEval4DOpt_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/EpetraModelEval4DOpt.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/NLPThyraEpetraModelEval4DOptMain.Po
+@AMDEP_TRUE@	./$(DEPDIR)/EpetraMultiPointModelEval4DOpt.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/NLPThyraEpetraModelEval4DOptMain.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(NLPThyraEpetraModelEval4DOpt_SOURCES)
-DIST_SOURCES = $(NLPThyraEpetraModelEval4DOpt_SOURCES)
+SOURCES = $(NLPThyraEpetraModelEval4DOpt_SOURCES) \
+	$(NLPThyraEpetraMultiPointModelEval4DOpt_SOURCES)
+DIST_SOURCES = $(NLPThyraEpetraModelEval4DOpt_SOURCES) \
+	$(NLPThyraEpetraMultiPointModelEval4DOpt_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-exec-recursive install-info-recursive \
@@ -290,6 +300,12 @@ NLPThyraEpetraModelEval4DOpt_SOURCES = \
 
 NLPThyraEpetraModelEval4DOpt_DEPENDENCIES = $(common_dependencies)
 NLPThyraEpetraModelEval4DOpt_LDADD = $(common_ldadd)
+NLPThyraEpetraMultiPointModelEval4DOpt_SOURCES = \
+  $(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp\
+  $(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp
+
+NLPThyraEpetraMultiPointModelEval4DOpt_DEPENDENCIES = $(common_dependencies)
+NLPThyraEpetraMultiPointModelEval4DOpt_LDADD = $(common_ldadd)
 @ENABLE_MOOCHO_THYRA_TRUE@MOOCHO_THYRA_LIB = $(top_builddir)/thyra/src/libmoochothyra.a
 common_dependencies = \
   $(top_builddir)/src/libmoocho.a \
@@ -342,6 +358,9 @@ clean-noinstPROGRAMS:
 NLPThyraEpetraModelEval4DOpt$(EXEEXT): $(NLPThyraEpetraModelEval4DOpt_OBJECTS) $(NLPThyraEpetraModelEval4DOpt_DEPENDENCIES) 
 	@rm -f NLPThyraEpetraModelEval4DOpt$(EXEEXT)
 	$(CXXLINK) $(NLPThyraEpetraModelEval4DOpt_LDFLAGS) $(NLPThyraEpetraModelEval4DOpt_OBJECTS) $(NLPThyraEpetraModelEval4DOpt_LDADD) $(LIBS)
+NLPThyraEpetraMultiPointModelEval4DOpt$(EXEEXT): $(NLPThyraEpetraMultiPointModelEval4DOpt_OBJECTS) $(NLPThyraEpetraMultiPointModelEval4DOpt_DEPENDENCIES) 
+	@rm -f NLPThyraEpetraMultiPointModelEval4DOpt$(EXEEXT)
+	$(CXXLINK) $(NLPThyraEpetraMultiPointModelEval4DOpt_LDFLAGS) $(NLPThyraEpetraMultiPointModelEval4DOpt_OBJECTS) $(NLPThyraEpetraMultiPointModelEval4DOpt_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -350,7 +369,9 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EpetraModelEval4DOpt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EpetraMultiPointModelEval4DOpt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPThyraEpetraModelEval4DOptMain.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -399,6 +420,38 @@ EpetraModelEval4DOpt.obj: $(top_srcdir)/../epetraext/example/model_evaluator/4do
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/EpetraModelEval4DOpt.Po' tmpdepfile='$(DEPDIR)/EpetraModelEval4DOpt.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o EpetraModelEval4DOpt.obj `if test -f '$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraModelEval4DOpt.cpp'; then $(CYGPATH_W) '$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraModelEval4DOpt.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraModelEval4DOpt.cpp'; fi`
+
+NLPThyraEpetraMultiPointModelEval4DOptMain.o: $(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPThyraEpetraMultiPointModelEval4DOptMain.o -MD -MP -MF "$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.Tpo" -c -o NLPThyraEpetraMultiPointModelEval4DOptMain.o `test -f '$(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.Tpo" "$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.Po"; else rm -f "$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp' object='NLPThyraEpetraMultiPointModelEval4DOptMain.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.Po' tmpdepfile='$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPThyraEpetraMultiPointModelEval4DOptMain.o `test -f '$(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp
+
+NLPThyraEpetraMultiPointModelEval4DOptMain.obj: $(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPThyraEpetraMultiPointModelEval4DOptMain.obj -MD -MP -MF "$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.Tpo" -c -o NLPThyraEpetraMultiPointModelEval4DOptMain.obj `if test -f '$(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.Tpo" "$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.Po"; else rm -f "$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp' object='NLPThyraEpetraMultiPointModelEval4DOptMain.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.Po' tmpdepfile='$(DEPDIR)/NLPThyraEpetraMultiPointModelEval4DOptMain.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPThyraEpetraMultiPointModelEval4DOptMain.obj `if test -f '$(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp'; fi`
+
+EpetraMultiPointModelEval4DOpt.o: $(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT EpetraMultiPointModelEval4DOpt.o -MD -MP -MF "$(DEPDIR)/EpetraMultiPointModelEval4DOpt.Tpo" -c -o EpetraMultiPointModelEval4DOpt.o `test -f '$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp' || echo '$(srcdir)/'`$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/EpetraMultiPointModelEval4DOpt.Tpo" "$(DEPDIR)/EpetraMultiPointModelEval4DOpt.Po"; else rm -f "$(DEPDIR)/EpetraMultiPointModelEval4DOpt.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp' object='EpetraMultiPointModelEval4DOpt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/EpetraMultiPointModelEval4DOpt.Po' tmpdepfile='$(DEPDIR)/EpetraMultiPointModelEval4DOpt.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o EpetraMultiPointModelEval4DOpt.o `test -f '$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp' || echo '$(srcdir)/'`$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp
+
+EpetraMultiPointModelEval4DOpt.obj: $(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT EpetraMultiPointModelEval4DOpt.obj -MD -MP -MF "$(DEPDIR)/EpetraMultiPointModelEval4DOpt.Tpo" -c -o EpetraMultiPointModelEval4DOpt.obj `if test -f '$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp'; then $(CYGPATH_W) '$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/EpetraMultiPointModelEval4DOpt.Tpo" "$(DEPDIR)/EpetraMultiPointModelEval4DOpt.Po"; else rm -f "$(DEPDIR)/EpetraMultiPointModelEval4DOpt.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp' object='EpetraMultiPointModelEval4DOpt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/EpetraMultiPointModelEval4DOpt.Po' tmpdepfile='$(DEPDIR)/EpetraMultiPointModelEval4DOpt.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o EpetraMultiPointModelEval4DOpt.obj `if test -f '$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp'; then $(CYGPATH_W) '$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp'; fi`
 uninstall-info-am:
 
 # This directory's subdirectories are mostly independent; you can cd

@@ -41,13 +41,19 @@ SUBDIRS = $(EXTERNAL_MAKEFILE_EXAMPLE)
 # we can test this.
 #
 
-noinst_PROGRAMS = NLPThyraEpetraModelEval4DOpt
+noinst_PROGRAMS = NLPThyraEpetraModelEval4DOpt  NLPThyraEpetraMultiPointModelEval4DOpt
 
 NLPThyraEpetraModelEval4DOpt_SOURCES = \
   $(srcdir)/NLPThyraEpetraModelEval4DOptMain.cpp\
   $(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraModelEval4DOpt.cpp
 NLPThyraEpetraModelEval4DOpt_DEPENDENCIES = $(common_dependencies)
 NLPThyraEpetraModelEval4DOpt_LDADD = $(common_ldadd)
+
+NLPThyraEpetraMultiPointModelEval4DOpt_SOURCES = \
+  $(srcdir)/NLPThyraEpetraMultiPointModelEval4DOptMain.cpp\
+  $(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraMultiPointModelEval4DOpt.cpp
+NLPThyraEpetraMultiPointModelEval4DOpt_DEPENDENCIES = $(common_dependencies)
+NLPThyraEpetraMultiPointModelEval4DOpt_LDADD = $(common_ldadd)
 
 include $(top_srcdir)/MakefileExeStub.mak
 
