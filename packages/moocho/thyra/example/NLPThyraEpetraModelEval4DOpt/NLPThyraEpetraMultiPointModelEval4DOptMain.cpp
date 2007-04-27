@@ -1,6 +1,8 @@
 #include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
+#ifdef HAVE_MPI
 #include "EpetraExt_MultiPointModelEvaluator.h"
 #include "EpetraExt_MultiMpiComm.h"
+#endif
 #include "EpetraMultiPointModelEval4DOpt.hpp"
 #include "MoochoPack_MoochoThyraSolver.hpp"
 #include "Thyra_DefaultRealLinearSolverBuilder.hpp"
