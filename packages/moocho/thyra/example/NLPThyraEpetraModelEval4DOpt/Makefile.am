@@ -41,7 +41,9 @@ SUBDIRS = $(EXTERNAL_MAKEFILE_EXAMPLE)
 # we can test this.
 #
 
+if HAVE_MPI
 noinst_PROGRAMS = NLPThyraEpetraModelEval4DOpt  NLPThyraEpetraMultiPointModelEval4DOpt
+endif
 
 NLPThyraEpetraModelEval4DOpt_SOURCES = \
   $(srcdir)/NLPThyraEpetraModelEval4DOptMain.cpp\

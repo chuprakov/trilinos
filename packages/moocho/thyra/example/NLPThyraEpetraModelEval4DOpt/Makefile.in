@@ -101,8 +101,9 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
-noinst_PROGRAMS = NLPThyraEpetraModelEval4DOpt$(EXEEXT) \
-	NLPThyraEpetraMultiPointModelEval4DOpt$(EXEEXT)
+@HAVE_MPI_TRUE@noinst_PROGRAMS =  \
+@HAVE_MPI_TRUE@	NLPThyraEpetraModelEval4DOpt$(EXEEXT) \
+@HAVE_MPI_TRUE@	NLPThyraEpetraMultiPointModelEval4DOpt$(EXEEXT)
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/MakefileExeStub.mak
 subdir = thyra/example/NLPThyraEpetraModelEval4DOpt
