@@ -164,6 +164,10 @@ void MoochoSolver::set_output_context(
     file_proc_postfix_ = "";
   }
   
+  summary_out_ = Teuchos::null;
+  journal_out_ = Teuchos::null;
+  algo_out_ = Teuchos::null;
+  
   summary_out_used_ = Teuchos::null;
   journal_out_used_ = Teuchos::null;
   algo_out_used_ = Teuchos::null;

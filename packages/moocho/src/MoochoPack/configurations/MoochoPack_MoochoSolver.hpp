@@ -346,10 +346,30 @@ public:
 
   /** \brief Setup the context for outputting.
    *
-   * \param  output_to_black_hole
-   *           [in] Determines if output will be sent to black-hole streams or not.
    * \param  file_context_postfix
    *           [in] Prefix to attach to every file name for default output files.
+   * \param  output_to_black_hole
+   *           [in] Determines if output will be sent to black-hole streams or not.
+   * \param  procRank
+   *           [in] If <tt>procRank >= 0</tt> then this this will be considered to be
+   *           the rank of this process.  Otherwise, <tt>procRank</tt> will be
+   *           extracted from <tt>Teuchos::GlobalMPISession::getRank()</tt>.
+   *           This integer is used to build file names for output streams
+   *           that get created.
+   * \param   numProcs
+   *           [in] If <tt>numProcs > 0</tt> then this this will be considered to be
+   *           the number of processes.  Otherwise, <tt>numProcs</tt> will be
+   *           extracted from <tt>Teuchos::GlobalMPISession::getNProc()</tt>.
+   *           This integer is used to build file names for output streams
+   *           that get created.
+   *
+   * Note that this function will wipe out all storage for all of the output
+   * streams that are set.  Therefore, you should call this function before
+   * you set any streams manually.
+   *
+   * This information affects the file names created by the
+   * <tt>generate_output_file()</tt> function which is used both by external
+   * clients and also internally to create various output files.
    */
   void set_output_context(
     const std::string    &file_context_postfix

@@ -359,7 +359,7 @@ void BasisSystemComposite::initialize(
   factory_C_       = factory_C;
   factory_D_       = factory_D;
   if( factory_D_.get() == NULL ) {
-    factory_D_ = Teuchos::abstract_factory_std_alloc<MatrixOp,MultiVectorMutable>(
+    factory_D_ = Teuchos::abstractFactoryStd<MatrixOp,MultiVectorMutable>(
       AllocatorMultiVectorMutable(space_x_->sub_space(var_dep),var_indep.size() ) );
   }
   BasisSystem::initialize(factory_transDtD,factory_S);

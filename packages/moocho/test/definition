@@ -673,9 +673,86 @@
 #    COMM = MPI(2,4);
 #}
 
+###
+### Test MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe
+###
 
+###
+### --np==1
+###
+
+(FRAMEWORK,INSTALL,MPME,MPME1) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --np=1 --num-periods-per-cluster=1 --p-perturb-scaling=2.0 --beta=0.0 --reaction-rate=1e-2 --state-inv-error=1e-6 --param-inv-error=1e-6 --no-multi-period --use-inner-inverse --linear-solver-params-file=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/aztecooParams.xml;
+    COMM = SERIAL, MPI(1-4);
+    EXIT-STATUS = STRING-COMPARISON;
+}
+
+(FRAMEWORK,INSTALL,MPME,MPME2) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --np=1 --num-periods-per-cluster=1 --p-perturb-scaling=2.0 --beta=0.0 --reaction-rate=1e-2 --state-inv-error=1e-6 --param-inv-error=1e-6 --multi-period --use-inner-inverse --linear-solver-params-file=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/aztecooParams.xml;
+    COMM = SERIAL, MPI(1-4);
+    EXIT-STATUS = STRING-COMPARISON;
+}
+
+(FRAMEWORK,INSTALL,MPME,MPME3) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --np=1 --num-periods-per-cluster=1 --p-perturb-scaling=2.0 --beta=0.0 --reaction-rate=1e-2 --state-inv-error=1e-6 --param-inv-error=1e-6 --multi-period --use-outer-inverse --linear-solver-params-file=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/aztecooParams.xml;
+    COMM = SERIAL, MPI(1-4);
+    EXIT-STATUS = STRING-COMPARISON;
+}
+
+
+(FRAMEWORK,INSTALL,MPME,MPME4) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --np=1 --num-periods-per-cluster=4 --p-perturb-scaling=2.0 --period-param-scale=0.80 --beta=0.0 --reaction-rate=1e-2 --state-inv-error=1e-6 --param-inv-error=1e-6 --multi-period --use-outer-inverse --init-solve-all-at-once --linear-solver-params-file=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/aztecooParams.xml;
+    COMM = SERIAL, MPI(1-4);
+    EXIT-STATUS = STRING-COMPARISON;
+}
+
+(FRAMEWORK,INSTALL,MPME,MPME5) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --np=1 --num-periods-per-cluster=4 --p-perturb-scaling=2.0 --period-param-scale=0.80 --beta=0.0 --reaction-rate=1e-2 --state-inv-error=1e-6 --param-inv-error=1e-6 --multi-period --use-outer-inverse --init-solve-continuation --linear-solver-params-file=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/aztecooParams.xml;
+    COMM = SERIAL, MPI(1-4);
+    EXIT-STATUS = STRING-COMPARISON;
+}
+
+(FRAMEWORK,INSTALL,MPME,MPME6) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --np=1 --num-periods-per-cluster=4 --p-perturb-scaling=2.0 --period-param-scale=2.0 --beta=0.0 --reaction-rate=1e-2 --state-inv-error=1e-6 --param-inv-error=1e-6 --multi-period --use-outer-inverse --init-solve-continuation --linear-solver-params-file=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/aztecooParams.xml;
+    COMM = SERIAL, MPI(1-4);
+    EXIT-STATUS = STRING-COMPARISON;
+}
+
+(FRAMEWORK,INSTALL,MPME,MPME7) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --np=1 --num-periods-per-cluster=4 --p-perturb-scaling=2.0 --period-param-scale=0.80 --beta=0.0 --reaction-rate=1e-2 --state-inv-error=1e-6 --param-inv-error=1e-6 --multi-period --use-outer-inverse --init-solve-continuation --use-stateless-period-model --linear-solver-params-file=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/aztecooParams.xml;
+    COMM = SERIAL, MPI(1-4);
+    EXIT-STATUS = STRING-COMPARISON;
+}
+
+###
+### --np==4
+###
+
+(FRAMEWORK,INSTALL,MPME,MPME8) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --np=4 --num-periods-per-cluster=8 --p-perturb-scaling=2.0 --period-param-scale=1.5 --beta=0.0 --moocho-extra-options="MoochoSolver\{test_nlp=false\}:NLPSolverClientInterface\{opt_tol=1e-10\,feas_tol=1e-10\,max_iter=40\}" --state-inv-error=1e-6 --param-inv-error=1e-6 --multi-period --use-outer-inverse --init-solve-continuation --use-stateless-period-model;
+    COMM = SERIAL;
+    EXIT-STATUS = STRING-COMPARISON;
+}
+
+(FRAMEWORK,INSTALL,MPME,MPME8) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --np=4 --num-periods-per-cluster=8 --p-perturb-scaling=2.0 --period-param-scale=1.5 --beta=0.0 --reaction-rate=1e-2 --moocho-extra-options="MoochoSolver\{test_nlp=false\}:NLPSolverClientInterface\{opt_tol=1e-10\,feas_tol=1e-10\,max_iter=50\}" --state-inv-error=1e-6 --param-inv-error=1e-6 --multi-period --use-outer-inverse --init-solve-continuation --use-stateless-period-model --linear-solver-params-file=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/aztecooParams.xml;
+    COMM = MPI(1-4);
+    EXIT-STATUS = STRING-COMPARISON;
+}
+
+#
 # These following tests are just to make sure the
 # Thyra::DefaultClusteredSpmdVector[Space] classes work correctly!
+#
 
 (FRAMEWORK,INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;

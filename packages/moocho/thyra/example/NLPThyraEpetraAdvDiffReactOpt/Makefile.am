@@ -41,7 +41,7 @@ SUBDIRS = $(EXTERNAL_MAKEFILE_EXAMPLE)
 # we can test this.
 #
 
-all-local: square.1.000 _run-varied-tests.pl
+all-local: square.1.000 _run-varied-tests.pl aztecooParams.xml
 
 noinst_PROGRAMS = \
   NLPThyraEpetraAdvDiffReactOpt \
@@ -69,6 +69,9 @@ square.1.000: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/squ
 
 _run-varied-tests.pl : run-varied-tests.pl
 	cp $(srcdir)/run-varied-tests.pl _run-varied-tests.pl
+
+aztecooParams.xml: _aztecooParams.xml
+	cp $(srcdir)/_aztecooParams.xml aztecooParams.xml
 
 include $(top_srcdir)/MakefileExeStub.mak
 

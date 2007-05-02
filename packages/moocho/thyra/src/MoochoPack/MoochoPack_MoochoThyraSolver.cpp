@@ -386,7 +386,10 @@ MoochoThyraSolver::getValidParameters() const
     }
     pl->set(OutputFileTag_name,OutputFileTag_default,
       "A tag that is attached to every output file that is created by the\n"
-      "solver.  If empty \"\", then no tag is used." );
+      "solver.  If empty \"\", then no tag is used.  This option simply is\n"
+      "passed into the set_output_context(...) function on the underlying\n"
+      "MoochoPack::MoochoSolver object.  Therefore, this same parameter\n"
+      "can be set in code as well without going through the parameter list.");
     pl->set(ShowModelEvaluatorTrace_name,ShowModelEvaluatorTrace_default
       ,"Determine if a trace of the objective function will be shown or not\n"
       "when the NLP is evaluated."
@@ -424,7 +427,7 @@ MoochoThyraSolver::getValidParameters() const
 
 void MoochoThyraSolver::setSolveMode( const ESolveMode solveMode )
 {
-  solveMode_ = solveMode_;
+  solveMode_ = solveMode;
 }
 
 MoochoThyraSolver::ESolveMode
@@ -691,7 +694,7 @@ void MoochoThyraSolver::setInitialGuess(
   
 MoochoSolver::ESolutionStatus MoochoThyraSolver::solve()
 {
-  using Teuchos::RefCountPtr; using Teuchos::null;
+  using Teuchos::RefCountPtr; using Teuchos::null; using Teuchos::describe;
   solver_.update_solver();
   std::ostringstream os;
   os
@@ -705,10 +708,10 @@ MoochoSolver::ESolutionStatus MoochoThyraSolver::solve()
       ? outerModel_->get_p_space(p_idx_)
       : null
       );
-  if( x_space != null )
-    os << "\nx_space: " << x_space->description() << "\n";
-  if( p_space != null )
-    os << "\np_space: " << p_space->description() << "\n";
+  if( !is_null(x_space) )
+    os << "\nx_space: " << describe(*x_space,Teuchos::VERB_MEDIUM);
+  if( !is_null(p_space) )
+    os << "\np_space: " << describe(*p_space,Teuchos::VERB_MEDIUM);
   *solver_.get_console_out() << os.str();
   *solver_.get_summary_out() << os.str();
   *solver_.get_journal_out() << os.str();
