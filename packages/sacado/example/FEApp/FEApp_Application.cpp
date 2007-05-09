@@ -39,7 +39,9 @@
 FEApp::Application::Application(
 		   const std::vector<double>& coords,
 		   const Teuchos::RefCountPtr<const Epetra_Comm>& comm,
-		   const Teuchos::RefCountPtr<Teuchos::ParameterList>& params) 
+		   const Teuchos::RefCountPtr<Teuchos::ParameterList>& params,
+		   bool is_transient) :
+  transient(is_transient)
 {
   // Create problem object
   Teuchos::RefCountPtr<Teuchos::ParameterList> problemParams = 
@@ -72,6 +74,9 @@ FEApp::Application::Application(
   exporter = Teuchos::rcp(new Epetra_Export(*(disc->getOverlapMap()), 
 					    *(disc->getMap())));
   overlapped_x = Teuchos::rcp(new Epetra_Vector(*(disc->getOverlapMap())));
+  if (transient)
+    overlapped_xdot = 
+      Teuchos::rcp(new Epetra_Vector(*(disc->getOverlapMap())));
   overlapped_f = Teuchos::rcp(new Epetra_Vector(*(disc->getOverlapMap())));
   overlapped_jac = 
     Teuchos::rcp(new Epetra_CrsMatrix(Copy, 
@@ -114,19 +119,32 @@ FEApp::Application::getInitialSolution() const
   return initial_x;
 }
 
+bool
+FEApp::Application::isTransient() const
+{
+  return transient;
+}
+
 void
-FEApp::Application::computeGlobalResidual(const Epetra_Vector& x,
+FEApp::Application::computeGlobalResidual(const Epetra_Vector* xdot,
+					  const Epetra_Vector& x,
 					  Epetra_Vector& f)
 {
   // Scatter x to the overlapped distrbution
   overlapped_x->Import(x, *importer, Insert);
+
+  // Scatter xdot to the overlapped distribution
+  if (transient)
+    overlapped_xdot->Import(*xdot, *importer, Insert);
 
   // Zero out overlapped residual
   overlapped_f->PutScalar(0.0);
   f.PutScalar(0.0);
 
   // Create residual init/post op
-  FEApp::ResidualOp op(overlapped_x, overlapped_f);
+  Teuchos::RefCountPtr<FEApp::ResidualOp> op;
+  op = Teuchos::rcp(new FEApp::ResidualOp(overlapped_xdot, overlapped_x, 
+					  overlapped_f));
 
   // Get template PDE instantiation
   Teuchos::RefCountPtr< FEApp::AbstractPDE<ResidualOp::fill_type> > pde = 
@@ -134,8 +152,8 @@ FEApp::Application::computeGlobalResidual(const Epetra_Vector& x,
 
   // Do global fill
   FEApp::GlobalFill<ResidualOp::fill_type> globalFill(disc->getMesh(), quad, 
-						      pde);
-  globalFill.computeGlobalFill(op);
+						      pde, transient);
+  globalFill.computeGlobalFill(*op);
 
   // Assemble global residual
   f.Export(*overlapped_f, *exporter, Add);
@@ -146,13 +164,18 @@ FEApp::Application::computeGlobalResidual(const Epetra_Vector& x,
 }
 
 void
-FEApp::Application::computeGlobalJacobian(
-			 const Epetra_Vector& x,
-			 Epetra_Vector& f,
-			 Epetra_CrsMatrix& jac)
+FEApp::Application::computeGlobalJacobian(double alpha, double beta,
+					  const Epetra_Vector* xdot,
+					  const Epetra_Vector& x,
+					  Epetra_Vector& f,
+					  Epetra_CrsMatrix& jac)
 {
   // Scatter x to the overlapped distrbution
   overlapped_x->Import(x, *importer, Insert);
+
+  // Scatter xdot to the overlapped distribution
+  if (transient)
+    overlapped_xdot->Import(*xdot, *importer, Insert);
 
   // Zero out overlapped residual
   overlapped_f->PutScalar(0.0);
@@ -163,7 +186,10 @@ FEApp::Application::computeGlobalJacobian(
   jac.PutScalar(0.0);
 
   // Create Jacobian init/post op
-  FEApp::JacobianOp op(overlapped_x, overlapped_f, overlapped_jac);
+  Teuchos::RefCountPtr<FEApp::JacobianOp> op;
+  op = Teuchos::rcp(new FEApp::JacobianOp(alpha, beta, overlapped_xdot, 
+					  overlapped_x, overlapped_f, 
+					  overlapped_jac));
 
   // Get template PDE instantiation
   Teuchos::RefCountPtr< FEApp::AbstractPDE<JacobianOp::fill_type> > pde = 
@@ -171,8 +197,8 @@ FEApp::Application::computeGlobalJacobian(
 
   // Do global fill
   FEApp::GlobalFill<JacobianOp::fill_type> globalFill(disc->getMesh(), 
-						      quad, pde);
-  globalFill.computeGlobalFill(op);
+						      quad, pde, transient);
+  globalFill.computeGlobalFill(*op);
 
   // Assemble global residual
   f.Export(*overlapped_f, *exporter, Add);

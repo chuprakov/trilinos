@@ -56,7 +56,8 @@ namespace FEApp {
     //! Constructor 
     Application(const std::vector<double>& coords,
 		const Teuchos::RefCountPtr<const Epetra_Comm>& comm,
-		const Teuchos::RefCountPtr<Teuchos::ParameterList>& params);
+		const Teuchos::RefCountPtr<Teuchos::ParameterList>& params,
+		bool is_transient);
 
     //! Destructor
     ~Application();
@@ -70,12 +71,24 @@ namespace FEApp {
     //! Get initial solution
     Teuchos::RefCountPtr<const Epetra_Vector> getInitialSolution() const;
 
+    //! Return whether problem is transient
+    bool isTransient() const;
+
     //! Compute global residual
-    void computeGlobalResidual(const Epetra_Vector& x,
+    /*!
+     * Set xdot to NULL for steady-state problems
+     */
+    void computeGlobalResidual(const Epetra_Vector* xdot,
+			       const Epetra_Vector& x,
 			       Epetra_Vector& f);
 
     //! Compute global Jacobian
-    void computeGlobalJacobian(const Epetra_Vector& x,
+    /*!
+     * Set xdot to NULL for steady-state problems
+     */
+    void computeGlobalJacobian(double alpha, double beta,
+			       const Epetra_Vector* xdot,
+			       const Epetra_Vector& x,
 			       Epetra_Vector& f,
 			       Epetra_CrsMatrix& jac);
 
@@ -88,6 +101,9 @@ namespace FEApp {
     Application& operator=(const Application&);
 
   protected:
+
+    //! Is problem transient
+    bool transient;
     
     //! Element discretization
     Teuchos::RefCountPtr<FEApp::AbstractDiscretization> disc;
@@ -112,6 +128,9 @@ namespace FEApp {
 
     //! Overlapped solution vector
     Teuchos::RefCountPtr<Epetra_Vector> overlapped_x;
+
+    //! Overlapped time derivative vector
+    Teuchos::RefCountPtr<Epetra_Vector> overlapped_xdot;
 
     //! Overlapped residual vector
     Teuchos::RefCountPtr<Epetra_Vector> overlapped_f;

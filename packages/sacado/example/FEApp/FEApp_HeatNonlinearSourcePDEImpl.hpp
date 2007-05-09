@@ -39,6 +39,7 @@ HeatNonlinearSourcePDE(const Teuchos::RefCountPtr< const FEApp::AbstractSourceFu
   dphidxi(),
   jac(),
   u(),
+  udot(),
   f()
 {
 }
@@ -69,6 +70,7 @@ init(unsigned int numQuadPoints, unsigned int numNodes)
   dphidxi.resize(num_qp);
   jac.resize(num_qp);
   u.resize(num_qp);
+  udot.resize(num_qp);
   f.resize(num_qp);
 
   for (unsigned int i=0; i<num_qp; i++) {
@@ -82,6 +84,7 @@ void
 FEApp::HeatNonlinearSourcePDE<ScalarT>::
 evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
 			const FEApp::AbstractElement& element,
+			const std::vector<ScalarT>* dot,
 			const std::vector<ScalarT>& solution,
 			std::vector<ScalarT>& residual)
  {
@@ -104,8 +107,12 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
   // Compute u
   for (unsigned int i=0; i<num_qp; i++) {
     u[i] = 0.0;
-    for (unsigned int j=0; j<num_nodes; j++)
+    udot[i] = 0.0;
+    for (unsigned int j=0; j<num_nodes; j++) {
       u[i] += solution[j] * phi[i][j];
+      if (dot != NULL)
+	udot[i] += (*dot)[j] * phi[i][j];
+    }
   }
 
   // Evaluate source function
@@ -120,7 +127,7 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
       for (unsigned int j=0; j<num_nodes; j++)
 	tmp += solution[j] * dphidxi[k][j];
       residual[i] += 
-	w[k] * (f[k]*phi[k][i]*jac[k] + tmp*dphidxi[k][i] / jac[k]);
+	w[k] * ((udot[k] + f[k]*phi[k][i])*jac[k] + tmp*dphidxi[k][i]/jac[k]);
     }
   }
 

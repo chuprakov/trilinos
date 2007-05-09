@@ -58,6 +58,7 @@ namespace FEApp {
     virtual void
     evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
 			    const FEApp::AbstractElement& element,
+			    const std::vector<ScalarT>* dot,
 			    const std::vector<ScalarT>& solution,
 			    std::vector<ScalarT>& residual);
 
@@ -97,6 +98,12 @@ namespace FEApp {
 
     //! Discretized solution derivative
     std::vector<ScalarT> dC;
+
+    //! Discretized time derivative
+    std::vector<ScalarT> Tdot;
+
+    //! Discretized time derivative
+    std::vector<ScalarT> Cdot;
 
     //! Model parameters
     double alpha, beta, D1, D2;

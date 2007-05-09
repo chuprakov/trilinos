@@ -34,20 +34,25 @@ FEApp::GlobalFill<ScalarT>::
 GlobalFill(
       const Teuchos::RefCountPtr<const FEApp::Mesh>& elementMesh,
       const Teuchos::RefCountPtr<const FEApp::AbstractQuadrature>& quadRule,
-      const Teuchos::RefCountPtr< FEApp::AbstractPDE<ScalarT> >& pdeEquations):
+      const Teuchos::RefCountPtr< FEApp::AbstractPDE<ScalarT> >& pdeEquations,
+      bool is_transient):
   mesh(elementMesh),
   quad(quadRule),
   pde(pdeEquations),
+  transient(is_transient),
   nnode(0),
   neqn(pde->numEquations()),
   ndof(0),
   elem_x(),
+  elem_xdot(NULL),
   elem_f()
 {
   Teuchos::RefCountPtr<const FEApp::AbstractElement> e0 = *(mesh->begin());
   nnode = e0->numNodes();
   ndof = nnode*neqn;
   elem_x.resize(ndof);
+  if (transient)
+    elem_xdot = new std::vector<ScalarT>(ndof);
   elem_f.resize(ndof);
 }
 
@@ -55,6 +60,8 @@ template <typename ScalarT>
 FEApp::GlobalFill<ScalarT>::
 ~GlobalFill()
 {
+  if (transient)
+    delete elem_xdot;
 }
 
 template <typename ScalarT>
@@ -72,10 +79,10 @@ computeGlobalFill(FEApp::AbstractInitPostOp<ScalarT>& initPostOp)
       elem_f[i] = 0.0;
 
     // Initialize element solution
-    initPostOp.evalInit(*e, neqn, elem_x);
+    initPostOp.evalInit(*e, neqn, elem_xdot, elem_x);
 
     // Compute element residual
-    pde->evaluateElementResidual(*quad, *e, elem_x, elem_f);
+    pde->evaluateElementResidual(*quad, *e, elem_xdot, elem_x, elem_f);
 
     // Post-process element residual
     initPostOp.evalPost(*e, neqn, elem_f);

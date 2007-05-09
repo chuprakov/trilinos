@@ -41,6 +41,8 @@ BrusselatorPDE(double alpha_, double beta_, double D1_, double D2_) :
   C(),
   dT(),
   dC(),
+  Tdot(),
+  Cdot(),
   alpha(alpha_),
   beta(beta_),
   D1(D1_),
@@ -77,6 +79,8 @@ init(unsigned int numQuadPoints, unsigned int numNodes)
   C.resize(num_qp);
   dT.resize(num_qp);
   dC.resize(num_qp);
+  Tdot.resize(num_qp);
+  Cdot.resize(num_qp);
 
   for (unsigned int i=0; i<num_qp; i++) {
     phi[i].resize(num_nodes);
@@ -89,6 +93,7 @@ void
 FEApp::BrusselatorPDE<ScalarT>::
 evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
 			const FEApp::AbstractElement& element,
+			const std::vector<ScalarT>* dot,
 			const std::vector<ScalarT>& solution,
 			std::vector<ScalarT>& residual)
  {
@@ -114,12 +119,18 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
     C[qp] = 0.0;
     dT[qp] = 0.0;
     dC[qp] = 0.0;
+    Tdot[qp] = 0.0;
+    Cdot[qp] = 0.0;
 
     for (unsigned int node=0; node<num_nodes; node++) {
       T[qp] += solution[2*node] * phi[qp][node];
       C[qp] += solution[2*node+1] * phi[qp][node];
       dT[qp] += solution[2*node] * dphi[qp][node];
       dC[qp] += solution[2*node+1] * dphi[qp][node];
+      if (dot != NULL) {
+	Tdot[qp] += (*dot)[2*node] * phi[qp][node];
+	Cdot[qp] += (*dot)[2*node+1] * phi[qp][node];
+      }
     }
 
   }
@@ -133,10 +144,12 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
       residual[2*node] += 
 	w[qp]*jac[qp]*((1.0/(jac[qp]*jac[qp]))*D1*dT[qp]*dphi[qp][node] + 
 		       phi[qp][node]*(-alpha + (beta+1.0)*T[qp] - 
-				      T[qp]*T[qp]*C[qp]));
+				      T[qp]*T[qp]*C[qp] + 
+				      Tdot[qp]));
       residual[2*node+1] += 
 	w[qp]*jac[qp]*((1.0/(jac[qp]*jac[qp]))*D2*dC[qp]*dphi[qp][node] + 
-		       phi[qp][node]*(-beta*T[qp] + T[qp]*T[qp]*C[qp]));
+		       phi[qp][node]*(-beta*T[qp] + T[qp]*T[qp]*C[qp] + 
+				      Cdot[qp]));
     }
   }
 

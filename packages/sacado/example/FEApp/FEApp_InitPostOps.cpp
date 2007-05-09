@@ -34,8 +34,10 @@
 #include "Epetra_Map.h"
 
 FEApp::ResidualOp::ResidualOp(
+	      const Teuchos::RefCountPtr<const Epetra_Vector>& overlapped_xdot,
 	      const Teuchos::RefCountPtr<const Epetra_Vector>& overlapped_x,
 	      const Teuchos::RefCountPtr<Epetra_Vector>& overlapped_f) :
+  xdot(overlapped_xdot),
   x(overlapped_x),
   f(overlapped_f)
 {
@@ -48,6 +50,7 @@ FEApp::ResidualOp::~ResidualOp()
 void
 FEApp::ResidualOp::evalInit(const FEApp::AbstractElement& e,
 			    unsigned int neqn,
+			    std::vector<double>* elem_xdot,
 			    std::vector<double>& elem_x)
 {
   // Global node ID
@@ -65,6 +68,8 @@ FEApp::ResidualOp::evalInit(const FEApp::AbstractElement& e,
     firstDOF = x->Map().LID(node_GID*neqn);
     for (unsigned int j=0; j<neqn; j++) {
       elem_x[neqn*i+j] = (*x)[firstDOF+j];
+      if (elem_xdot != NULL)
+	(*elem_xdot)[neqn*i+j] = (*xdot)[firstDOF+j];
     }
   }
 
@@ -121,9 +126,14 @@ FEApp::ResidualOp::evalPost(const FEApp::AbstractElement& e,
 }
 
 FEApp::JacobianOp::JacobianOp(
+             double alpha, double beta,
+	     const Teuchos::RefCountPtr<const Epetra_Vector>& overlapped_xdot,
 	     const Teuchos::RefCountPtr<const Epetra_Vector>& overlapped_x,
 	     const Teuchos::RefCountPtr<Epetra_Vector>& overlapped_f,
 	     const Teuchos::RefCountPtr<Epetra_CrsMatrix>& overlapped_jac) :
+  m_coeff(alpha),
+  j_coeff(beta),
+  xdot(overlapped_xdot),
   x(overlapped_x),
   f(overlapped_f),
   jac(overlapped_jac)
@@ -135,9 +145,11 @@ FEApp::JacobianOp::~JacobianOp()
 }
 
 void
-FEApp::JacobianOp::evalInit(const FEApp::AbstractElement& e,
-			    unsigned int neqn,
-			    std::vector< Sacado::Fad::DFad<double> >& elem_x)
+FEApp::JacobianOp::evalInit(
+			 const FEApp::AbstractElement& e,
+			 unsigned int neqn,
+			 std::vector< Sacado::Fad::DFad<double> >* elem_xdot,
+			 std::vector< Sacado::Fad::DFad<double> >& elem_x)
 {
   // Global node ID
   unsigned int node_GID;
@@ -157,7 +169,14 @@ FEApp::JacobianOp::evalInit(const FEApp::AbstractElement& e,
     firstDOF = x->Map().LID(node_GID*neqn);
     for (unsigned int j=0; j<neqn; j++) {
       elem_x[neqn*i+j] = 
-	Sacado::Fad::DFad<double>(ndof, neqn*i+j, (*x)[firstDOF+j]);
+	Sacado::Fad::DFad<double>(ndof, (*x)[firstDOF+j]);
+      elem_x[neqn*i+j].fastAccessDx(neqn*i+j) = j_coeff;
+      if (elem_xdot != NULL) {
+	(*elem_xdot)[neqn*i+j] = 
+	  Sacado::Fad::DFad<double>(ndof, (*xdot)[firstDOF+j]);
+	(*elem_xdot)[neqn*i+j].fastAccessDx(neqn*i+j) = m_coeff;
+      }
+	
     }
   }
 

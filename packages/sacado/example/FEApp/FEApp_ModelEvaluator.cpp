@@ -71,6 +71,11 @@ FEApp::ModelEvaluator::createInArgs() const
   InArgsSetup inArgs;
   inArgs.setModelEvalDescription(this->description());
   inArgs.setSupports(IN_ARG_x,true);
+  if (app->isTransient()) {
+    inArgs.setSupports(IN_ARG_x_dot,true);
+    inArgs.setSupports(IN_ARG_alpha,true);
+    inArgs.setSupports(IN_ARG_beta,true);
+  }
   return inArgs;
 }
 
@@ -96,6 +101,16 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
   // Get the input arguments
   //
   const Epetra_Vector& x = *inArgs.get_x();
+  const Epetra_Vector *x_dot = NULL;
+  double alpha = 0.0;
+  double beta = 1.0;
+  if (app->isTransient()) {
+    x_dot = inArgs.get_x_dot().get();
+    if (x_dot) {
+      alpha = inArgs.get_alpha();
+      beta = inArgs.get_beta();
+    }
+  }
 
   //
   // Get the output arguments
@@ -112,13 +127,13 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
   // Compute the functions
   //
   if(f_out != Teuchos::null && W_out != Teuchos::null) {
-    app->computeGlobalJacobian(x, *f_out, *W_out_crs);
+    app->computeGlobalJacobian(alpha, beta, x_dot, x, *f_out, *W_out_crs);
   }
   else if(f_out != Teuchos::null ) {
-    app->computeGlobalResidual(x, *f_out);
+    app->computeGlobalResidual(x_dot, x, *f_out);
   }
   else if(W_out != Teuchos::null ) {
     Epetra_Vector f(x.Map());
-    app->computeGlobalJacobian(x, f, *W_out_crs);
+    app->computeGlobalJacobian(alpha, beta, x_dot, x, f, *W_out_crs);
   }
 }

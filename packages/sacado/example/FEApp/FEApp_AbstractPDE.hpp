@@ -59,6 +59,7 @@ namespace FEApp {
     virtual void
     evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
 			    const FEApp::AbstractElement& element,
+			    const std::vector<ScalarT>* dot,
 			    const std::vector<ScalarT>& solution,
 			    std::vector<ScalarT>& residual) = 0;
 

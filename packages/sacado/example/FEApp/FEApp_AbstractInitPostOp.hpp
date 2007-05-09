@@ -54,6 +54,7 @@ namespace FEApp {
     //! Evaulate init operator
     virtual void evalInit(const FEApp::AbstractElement& e,
 			  unsigned int neqn,
+			  std::vector<ScalarT>* elem_xdot,
 			  std::vector<ScalarT>& elem_x) = 0;
 
     //! Evaluate post operator

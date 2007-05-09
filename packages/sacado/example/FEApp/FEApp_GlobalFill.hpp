@@ -51,7 +51,8 @@ namespace FEApp {
     GlobalFill(
       const Teuchos::RefCountPtr<const FEApp::Mesh>& elementMesh,
       const Teuchos::RefCountPtr<const FEApp::AbstractQuadrature>& quadRule,
-      const Teuchos::RefCountPtr< FEApp::AbstractPDE<ScalarT> >& pdeEquations);
+      const Teuchos::RefCountPtr< FEApp::AbstractPDE<ScalarT> >& pdeEquations,
+      bool is_transient);
   
     //! Destructor
     ~GlobalFill();
@@ -78,6 +79,9 @@ namespace FEApp {
     //! PDE Equations
     Teuchos::RefCountPtr< FEApp::AbstractPDE<ScalarT> > pde;
 
+    //! Are we transient?
+    bool transient;
+
     //! Number of nodes per element
     unsigned int nnode;
 
@@ -89,6 +93,9 @@ namespace FEApp {
 
     //! Element solution variables
     std::vector<ScalarT> elem_x;
+
+    //! Element time derivative variables
+    std::vector<ScalarT>* elem_xdot;
 
     //! Element residual variables
     std::vector<ScalarT> elem_f;

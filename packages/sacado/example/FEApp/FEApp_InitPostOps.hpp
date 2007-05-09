@@ -42,12 +42,18 @@
 
 namespace FEApp {
 
+  //! Fill operator for residual
   class ResidualOp : public FEApp::AbstractInitPostOp<double> {
   public:
     
     //! Constructor
-    ResidualOp(const Teuchos::RefCountPtr<const Epetra_Vector>& overlapped_x,
-	       const Teuchos::RefCountPtr<Epetra_Vector>& overlapped_f);
+    /*!
+     * Set xdot to Teuchos::null for steady-state problems
+     */
+    ResidualOp(
+	    const Teuchos::RefCountPtr<const Epetra_Vector>& overlapped_xdot,
+	    const Teuchos::RefCountPtr<const Epetra_Vector>& overlapped_x,
+	    const Teuchos::RefCountPtr<Epetra_Vector>& overlapped_f);
 
     //! Destructor
     virtual ~ResidualOp();
@@ -55,6 +61,7 @@ namespace FEApp {
     //! Evaulate init operator
     virtual void evalInit(const FEApp::AbstractElement& e,
 			  unsigned int neqn,
+			  std::vector<double>* elem_xdot,
 			  std::vector<double>& elem_x);
 
     //! Evaluate post operator
@@ -72,6 +79,9 @@ namespace FEApp {
 
   protected:
 
+    //! Time derivative vector (may be null)
+    Teuchos::RefCountPtr<const Epetra_Vector> xdot;
+
     //! Solution vector
     Teuchos::RefCountPtr<const Epetra_Vector> x;
 
@@ -80,14 +90,21 @@ namespace FEApp {
 
   };
 
+  //! Fill operator for Jacobian
   class JacobianOp : 
     public FEApp::AbstractInitPostOp< Sacado::Fad::DFad<double> > {
   public:
 
     //! Constructor
-    JacobianOp(const Teuchos::RefCountPtr<const Epetra_Vector>& overlapped_x,
-	       const Teuchos::RefCountPtr<Epetra_Vector>& overlapped_f,
-	       const Teuchos::RefCountPtr<Epetra_CrsMatrix>& overlapped_jac);
+    /*!
+     * Set xdot to Teuchos::null for steady-state problems
+     */
+    JacobianOp(
+	    double alpha, double beta,
+	    const Teuchos::RefCountPtr<const Epetra_Vector>& overlapped_xdot,
+	    const Teuchos::RefCountPtr<const Epetra_Vector>& overlapped_x,
+	    const Teuchos::RefCountPtr<Epetra_Vector>& overlapped_f,
+	    const Teuchos::RefCountPtr<Epetra_CrsMatrix>& overlapped_jac);
 
     //! Destructor
     virtual ~JacobianOp();
@@ -95,6 +112,7 @@ namespace FEApp {
     //! Evaulate init operator
     virtual void evalInit(const FEApp::AbstractElement& e,
 			  unsigned int neqn,
+			  std::vector< Sacado::Fad::DFad<double> >* elem_xdot,
 			  std::vector< Sacado::Fad::DFad<double> >& elem_x);
 
     //! Evaluate post operator
@@ -111,6 +129,15 @@ namespace FEApp {
     JacobianOp& operator=(const JacobianOp&);
 
   protected:
+
+    //! Coefficient of mass matrix
+    double m_coeff;
+
+    //! Coefficient of Jacobian matrix
+    double j_coeff;
+
+    //! Time derivative vector (may be null)
+    Teuchos::RefCountPtr<const Epetra_Vector> xdot;
 
     //! Solution vector
     Teuchos::RefCountPtr<const Epetra_Vector> x;
