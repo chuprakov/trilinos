@@ -215,15 +215,15 @@ int main(int argc, char *argv[])
       // wrapping to the Thyra core vector layer, then converting to
       // the handle layer
 
-      RefCountPtr<const Thyra::SpmdVectorSpaceBase<double> > epetra_vs_press;
-      RefCountPtr<const Thyra::SpmdVectorSpaceBase<double> > epetra_vs_vel;
-      epetra_vs_press = Thyra::create_VectorSpace(rcp(pressureMap,false));
-      epetra_vs_vel = Thyra::create_VectorSpace(rcp(velocityMap,false));
+      RefCountPtr<const Thyra::VectorSpaceBase<double> > epetra_vs_press
+        = Thyra::create_VectorSpace(rcp(pressureMap,false));
+      RefCountPtr<const Thyra::VectorSpaceBase<double> > epetra_vs_vel
+        = Thyra::create_VectorSpace(rcp(velocityMap,false));
 
 
-      RefCountPtr<SpmdVectorBase<double> > rhs1
+      RefCountPtr<VectorBase<double> > rhs1
         = create_Vector(rcp(rhsq1_press, false), epetra_vs_press);
-      RefCountPtr<SpmdVectorBase<double> > rhs2
+      RefCountPtr<VectorBase<double> > rhs2
         = create_Vector(rcp(rhsq1_vel, false), epetra_vs_vel);
 
       // Convert the vectors to handled vectors
