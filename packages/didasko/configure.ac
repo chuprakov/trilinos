@@ -54,7 +54,7 @@ echo "----------------------------------------"
 # directory with --srcdir.  Any file in that directory will do,
 # preferably one that is unlikely to be removed or renamed.
 
-AC_CONFIG_SRCDIR(/src/Didasko_ConfigDefs.h)
+AC_CONFIG_SRCDIR([src/Didasko_ConfigDefs.h])
 
 # Specify directory for auxillary build tools (e.g., install-sh,
 # config.sub, config.guess) and M4 files.
@@ -93,11 +93,11 @@ AC_CANONICAL_TARGET
 # Use automake
 
 # Package name and version below
-AM_INIT_AUTOMAKE(Didasko, 7.0)
+AM_INIT_AUTOMAKE(1.10 no-define tar-ustar)
 
 # Specify required version of autoconf.
 
-AC_PREREQ(2.52)
+AC_PREREQ(2.61)
 
 #  can eliminate compiler checks below if your package does not use the
 #  language corresponding to the check
@@ -187,7 +187,6 @@ else
 fi  
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
 AC_C_INLINE
 
 # ------------------------------------------------------------------------
