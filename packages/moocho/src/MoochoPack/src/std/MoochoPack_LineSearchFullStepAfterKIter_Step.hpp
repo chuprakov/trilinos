@@ -31,7 +31,7 @@
 
 #include <limits>
 
-#include "../rSQPAlgo_StepBaseClasses.h"
+#include "rSQPAlgo_StepBaseClasses.h"
 #include "ConstrainedOptPack_DirectLineSearch_Strategy.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"

@@ -29,7 +29,7 @@
 #ifndef CROSS_TERM_EXACT_STD_STEP_H
 #define CROSS_TERM_EXACT_STD_STEP_H
 
-#include "../rSQPAlgo_Step.h"
+#include "rSQPAlgo_Step.h"
 
 namespace MoochoPack {
 

@@ -29,7 +29,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "../std/MoochoPack_InitFinDiffReducedHessian_StepSetOptions.hpp"
+#include "MoochoPack_InitFinDiffReducedHessian_StepSetOptions.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options

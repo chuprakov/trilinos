@@ -29,9 +29,9 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "../std/MoochoPack_LineSearchWatchDog_Step.hpp"
-#include "../std/MoochoPack_MoochoAlgorithmStepNames.hpp"
-#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "MoochoPack_LineSearchWatchDog_Step.hpp"
+#include "MoochoPack_MoochoAlgorithmStepNames.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
 #include "IterationPack_print_algorithm_step.hpp"
 #include "ConstrainedOptPack_MeritFuncCalc1DQuadratic.hpp"
 #include "ConstrainedOptPack_MeritFuncCalcNLP.hpp"

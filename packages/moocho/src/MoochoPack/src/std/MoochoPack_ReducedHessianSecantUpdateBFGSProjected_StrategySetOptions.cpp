@@ -29,7 +29,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "../std/MoochoPack_ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.hpp"
+#include "MoochoPack_ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options

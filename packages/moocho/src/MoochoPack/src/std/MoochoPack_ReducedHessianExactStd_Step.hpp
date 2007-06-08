@@ -29,8 +29,8 @@
 #ifndef REDUCED_HESSIAN_EXACT_STD_STEP_H
 #define REDUCED_HESSIAN_EXACT_STD_STEP_H
 
-#include "../rSQPAlgo_StepBaseClasses.h"
-#include "../MoochoPack_NLPAlgo.hpp"
+#include "rSQPAlgo_StepBaseClasses.h"
+#include "MoochoPack_NLPAlgo.hpp"
 
 namespace MoochoPack {
 

@@ -31,7 +31,7 @@
 #include <iomanip>
 #include <ostream>
 
-#include "../std/MoochoPack_active_set_change.hpp"
+#include "MoochoPack_active_set_change.hpp"
 #include "AbstractLinAlgPack/src/AbstractLinAlgPack_SpVectorClass.hpp"
 
 void MoochoPack::active_set_change(

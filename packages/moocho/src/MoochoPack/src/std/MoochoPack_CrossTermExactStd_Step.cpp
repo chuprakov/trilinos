@@ -28,8 +28,8 @@
 
 #include <ostream>
 
-#include "../std/MoochoPack_CrossTermExactStd_Step.hpp"
-#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "MoochoPack_CrossTermExactStd_Step.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
 #include "IterationPack_print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
 #include "AbstractLinAlgPack/src/AbstractLinAlgPack_MatrixOp.hpp"

@@ -29,7 +29,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "../std/ReducedHessianBFGSStd_StepSetOptions.h"
+#include "ReducedHessianBFGSStd_StepSetOptions.h"
 #include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options

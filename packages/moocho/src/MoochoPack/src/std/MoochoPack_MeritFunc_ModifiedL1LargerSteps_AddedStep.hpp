@@ -29,7 +29,7 @@
 #ifndef MERIT_FUNC_MODIFIED_L1_LARGER_STEPS_ADDED_STEP_H
 #define MERIT_FUNC_MODIFIED_L1_LARGER_STEPS_ADDED_STEP_H
 
-#include "../rSQPAlgo_Step.h"
+#include "rSQPAlgo_Step.h"
 #include "ConstrainedOptPack_MeritFuncNLP.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"

@@ -28,7 +28,7 @@
 
 #include <assert.h>
 
-#include "../std/MoochoPack_CheckConvergenceStd_AddedStepSetOptions.hpp"
+#include "MoochoPack_CheckConvergenceStd_AddedStepSetOptions.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options

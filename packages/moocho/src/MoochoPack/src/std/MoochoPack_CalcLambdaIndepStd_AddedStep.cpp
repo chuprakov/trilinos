@@ -28,8 +28,8 @@
 
 #include <ostream>
 
-#include "../std/MoochoPack_CalcLambdaIndepStd_AddedStep.hpp"
-#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "MoochoPack_CalcLambdaIndepStd_AddedStep.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
 #include "IterationPack_print_algorithm_step.hpp"
 #include "ConstrainedOptPack_ComputeMinMult.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"

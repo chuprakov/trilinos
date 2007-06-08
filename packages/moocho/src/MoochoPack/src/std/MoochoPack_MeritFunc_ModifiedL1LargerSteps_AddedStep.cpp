@@ -29,8 +29,8 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "../std/MoochoPack_MeritFunc_ModifiedL1LargerSteps_AddedStep.hpp"
-#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "MoochoPack_MeritFunc_ModifiedL1LargerSteps_AddedStep.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
 #include "IterationPack_print_algorithm_step.hpp"
 #include "ConstrainedOptPack_MeritFuncPenaltyParams.hpp"
 #include "ConstrainedOptPack_MeritFuncNLPDirecDeriv.hpp"

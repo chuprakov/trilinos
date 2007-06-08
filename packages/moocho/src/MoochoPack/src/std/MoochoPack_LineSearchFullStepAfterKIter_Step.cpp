@@ -28,8 +28,8 @@
 
 #include <ostream>
 
-#include "../std/MoochoPack_LineSearchFullStepAfterKIter_Step.hpp"
-#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "MoochoPack_LineSearchFullStepAfterKIter_Step.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
 #include "IterationPack_print_algorithm_step.hpp"
 
 bool MoochoPack::LineSearchFullStepAfterKIter_Step::do_step(Algorithm& _algo

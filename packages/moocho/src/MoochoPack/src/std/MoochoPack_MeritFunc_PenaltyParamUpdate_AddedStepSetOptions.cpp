@@ -28,7 +28,7 @@
 
 #include <assert.h>
 
-#include "../std/MoochoPack_MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.hpp"
+#include "MoochoPack_MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options

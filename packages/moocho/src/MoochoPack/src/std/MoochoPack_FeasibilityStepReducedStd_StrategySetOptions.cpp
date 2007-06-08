@@ -29,7 +29,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "../std/MoochoPack_FeasibilityStepReducedStd_StrategySetOptions.hpp"
+#include "MoochoPack_FeasibilityStepReducedStd_StrategySetOptions.hpp"
 
 // Define the options
 namespace {

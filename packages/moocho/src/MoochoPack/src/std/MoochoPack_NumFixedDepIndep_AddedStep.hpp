@@ -29,7 +29,7 @@
 #ifndef NUM_FIXED_DEP_INDEP_ADDED_STEP_H
 #define NUM_FIXED_DEP_INDEP_ADDED_STEP_H
 
-#include "../rSQPAlgo_Step.h"
+#include "rSQPAlgo_Step.h"
 
 namespace MoochoPack {
 

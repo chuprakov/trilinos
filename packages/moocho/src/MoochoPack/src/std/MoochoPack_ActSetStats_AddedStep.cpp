@@ -28,9 +28,9 @@
 
 #include <ostream>
 
-#include "../std/MoochoPack_ActSetStats_AddedStep.hpp"
-#include "../std/MoochoPack_active_set_change.hpp"
-#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "MoochoPack_ActSetStats_AddedStep.hpp"
+#include "MoochoPack_active_set_change.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
 #include "IterationPack_print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/AbstractLinAlgPack_SpVectorClass.hpp"
 

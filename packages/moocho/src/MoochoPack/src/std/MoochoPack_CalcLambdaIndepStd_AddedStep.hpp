@@ -29,7 +29,7 @@
 #ifndef CALC_LAMBDA_INDEP_STD_ADDED_STEP_H
 #define CALC_LAMBDA_INDEP_STD_ADDED_STEP_H
 
-#include "../rSQPAlgo_Step.h"
+#include "rSQPAlgo_Step.h"
 
 namespace MoochoPack {
 

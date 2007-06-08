@@ -31,7 +31,7 @@
 
 #include <iosfwd>
 
-#include "../MoochoPack_Types.hpp"
+#include "MoochoPack_Types.hpp"
 
 namespace MoochoPack {
 

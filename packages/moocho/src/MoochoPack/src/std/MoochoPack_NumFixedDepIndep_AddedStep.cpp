@@ -28,8 +28,8 @@
 
 #include <ostream>
 
-#include "../std/MoochoPack_NumFixedDepIndep_AddedStep.hpp"
-#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "MoochoPack_NumFixedDepIndep_AddedStep.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
 #include "IterationPack_print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/AbstractLinAlgPack_SpVectorClass.hpp"
 

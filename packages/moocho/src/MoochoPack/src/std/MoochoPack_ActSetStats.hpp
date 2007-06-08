@@ -29,7 +29,7 @@
 #ifndef ACT_SET_STATS_H
 #define ACT_SET_STATS_H
 
-#include "../MoochoPack_Types.hpp"
+#include "MoochoPack_Types.hpp"
 
 namespace MoochoPack {
 

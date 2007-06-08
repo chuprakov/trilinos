@@ -29,7 +29,7 @@
 #ifndef LINE_SEARCH_WATCH_DOG_STEP_H
 #define LINE_SEARCH_WATCH_DOG_STEP_H
 
-#include "../rSQPAlgo_StepBaseClasses.h"
+#include "rSQPAlgo_StepBaseClasses.h"
 #include "ConstrainedOptPack_MeritFuncNLP.hpp"
 #include "ConstrainedOptPack_DirectLineSearch_Strategy.hpp"
 #include "DenseLinAlgPack_DVectorClass.hpp"
