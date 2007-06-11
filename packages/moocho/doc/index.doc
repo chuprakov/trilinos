@@ -19,7 +19,6 @@
     <ul>
     <li>\ref moocho_quickstart_input_linear_solver_input_params_sec
     <li>\ref moocho_quickstart_moocho_input_options_sec
-    <li>\ref moocho_quickstart_moocho_thyra_input_params_sec
     <li>\ref moocho_quickstart_solver_output_sec
       <ul>
       <li> \ref moocho_console_output_sec "Console output" 
@@ -199,7 +198,6 @@ moocho_installed_examples_sec.
     <ul>
     <li>\ref moocho_quickstart_input_linear_solver_input_params_sec
     <li>\ref moocho_quickstart_moocho_input_options_sec
-    <li>\ref moocho_quickstart_moocho_thyra_input_params_sec
     <li>\ref moocho_quickstart_solver_output_sec
       <ul>
       <li> \ref moocho_console_output_sec "Console output"
@@ -695,10 +693,10 @@ should directly use the "Facade" solver class
 href="./NLPWBCounterExampleMain_8cpp-example.html">
 NLPWBCounterExampleMain.cpp</a></tt>).  However, when using an NLP based on a
 <tt>Thyra::ModelEvaluator</tt> object, then the more specialized "Facade"
-solver class <tt>MoochoPack::MoochoThyraSolver</tt> should be used
+solver class <tt>MoochoPack::ThyraModelEvaluatorSolver</tt> should be used
 (see <tt><a href="./NLPThyraEpetraModelEval4DOptMain_8cpp-example.html">
 NLPThyraEpetraModelEval4DOptMain.cpp</a></tt>).  The class
-<tt>MoochoPack::MoochoThyraSolver</tt> just uses
+<tt>MoochoPack::ThyraModelEvaluatorSolver</tt> just uses
 <tt>MoochoPack::MoochoSolver</tt> internally for the main solve but provides a
 great deal of extra functionality to set initial guesses (also from an input
 file) and wrap the model evaluator object with various "Decorator" skins and
@@ -734,7 +732,7 @@ When using a <tt>%Thyra::ModelEvaluator</tt>-based NLP, the linear solver
 options for inverting the basis of the equality constraints are read in
 through a <tt>Teuchos::ParameterList</tt> object which is accepted through the
 %Stratimikos class <tt>Thyra::DefaultRealLinearSolverBuilder</tt>.  When a
-<tt>MoochoPack::MoochoThyraSolver</tt> object is used to build a
+<tt>MoochoPack::ThyraModelEvaluatorSolver</tt> object is used to build a
 driver program, it can add options to the
 <tt>Teuchos::CommandLineProcessor</tt> object through the function
 <tt>Thyra::DefaultRealLinearSolverBuilder::setupCLP()</tt> (see <tt><a
@@ -817,29 +815,6 @@ a subset of the options set in the above example MOOCHO options file is:
 The options specified in the <tt>--moocho-extra-options</tt> argument will
 append and override those read in from a MOOCHO input file specified by the
 <tt>--moocho-options-file</tt> argument.
-
-\subsubsection moocho_quickstart_moocho_thyra_input_params_sec MOOCHO/Thyra input parameters
-
-In addition to the options taken by the core MOOCHO solver, there is also a
-parameter list taken by the <tt>MoochoPack::MoochoThyraSolver</tt> facade
-class.  This parameter list can be set from any valid
-<tt>Teuchos::ParameterList</tt> object.  However, for simple
-commandline-driven programs, the specification of this parameter list can be
-specified as an XML file (specified using the commandline argument
-<tt>--moocho-thyra-params-file</tt>) or can be passed in directly on the
-commandline (using the commandline argument
-<tt>--extra-moocho-thyra-params</tt>).  These arguments can be set on the
-commandline processor using the function
-<tt>MoochoPack::MoochoThyraSolver::setupCLP()</tt> (see <li><tt><a
-href="./NLPThyraEpetraModelEval4DOptMain_8cpp-example.html">
-NLPThyraEpetraModelEval4DOptMain.cpp</a></tt>).
-
-This parameter list accepted by a <tt>MoochoPack::MoochoThyraSolver</tt> is:
-
-\verbinclude NLPThyraEpetraAdvDiffReactOpt.params.xml.out
-
-The documentation for the options can be found in the documentation for the
-class <tt>MoochoPack::MoochoThyraSolver</tt>.
 
 \subsubsection moocho_quickstart_solver_output_sec MOOCHO algorithm output
 
@@ -1669,7 +1644,7 @@ meat of nonlinear programing is found in MOOCHO.  This collection provides the
 Adapters</a></b>: Provides adapter classes for allowing MOOCHO to solve
 simulation-constrained optimization problems presented as
 <tt>Thyra::ModelEvaluator</tt> objects.  Also included is the higher-level "Facade" class
-<tt>MoochoPack::MoochoThyraSolver</tt>.
+<tt>MoochoPack::ThyraModelEvaluatorSolver</tt>.
 
 </ul>
 

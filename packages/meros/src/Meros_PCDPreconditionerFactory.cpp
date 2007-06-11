@@ -125,7 +125,6 @@ void PCDPreconditionerFactory
   ConstLinearOperator<double> Fp = pcdOpSrcPtr->getFp();
   ConstLinearOperator<double> Ap = pcdOpSrcPtr->getAp();
   ConstLinearOperator<double> Qp = pcdOpSrcPtr->getQp();
-
   
   // Builde F inverse operator Finv using the AztecOO solver param list.
   // LinearSolveStrategy<double> azF 
@@ -168,12 +167,9 @@ void PCDPreconditionerFactory
   ConstLinearOperator<double> Xinv = Qpinv * Fp * Apinv;
 
   // Build the 3 block operators for the preconditioner
-  ConstLinearOperator<double> P1 = block2x2( Finv, zero, 
-					     zero, Ipress );
-  ConstLinearOperator<double> P2 = block2x2( Ivel, (-1.0)*Bt, 
-					     zero,   Ipress  );
-  ConstLinearOperator<double> P3 = block2x2( Ivel,   zero, 
-					     zero,   (-1.0)*Xinv );
+  ConstLinearOperator<double> P1 = block2x2( Finv, zero, zero, Ipress );
+  ConstLinearOperator<double> P2 = block2x2( Ivel, (-1.0)*Bt, zero, Ipress  );
+  ConstLinearOperator<double> P3 = block2x2( Ivel,   zero, zero, (-1.0)*Xinv );
 
   ConstLinearOperator<double> PCDprec = P1 * P2 * P3;
 
@@ -182,16 +178,6 @@ void PCDPreconditionerFactory
 
   (*defaultPrec).initializeRight(PCDprec.constPtr());
 
-//   if(hasQp_)
-//     {
-//       RefCountPtr<const LinearOpBase<double> > tmpQpOp = pcdOpSrcPtr->getQp();
-//       ConstLinearOperator<double> QpOp = tmpQpOp;
-//     }
-//   else
-//     {;
-//     }
-
-  // prec = P1*P2*P3...
 }
 
 
