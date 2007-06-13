@@ -1,0 +1,193 @@
+% Meros User's Guide
+%
+% Formatted for Sandia SAND Report
+\typeout{Using SANDmath LaTeX Package: 6/12/2007, VEH}
+
+\documentclass[oneeqnum,onefignum,onetabnum,10pt]{SANDreport}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{epsfig}
+\usepackage{ifthen}
+
+\usepackage{mathptmx}
+
+\usepackage{theorem}
+\usepackage{latexsym}
+\usepackage{thp}
+\usepackage{subfigure}
+\def\vdown{\\[4pt]}
+
+\setlength{\topmargin}{0in}
+\setlength{\oddsidemargin}{.10in}
+\setlength{\evensidemargin}{.10in}
+\setlength{\headheight}{1pt}
+\setlength{\headsep}{10pt}
+\setlength{\topskip}{1pt}
+\setlength{\textheight}{8.5in}
+\setlength{\textwidth}{6.25in}
+
+\definecolor{AztecOOBlue}{rgb}{0,0,0}
+\def\TrilinosTM{{\color{AztecOOBlue} \bf
+      \textsf{Trilinos}}\textsuperscript{\tiny{\texttrademark}}}
+\def\MerosTM{{\color{AztecOOBlue} \bf
+      \textsf{Meros}}\textsuperscript{\tiny{\texttrademark}}}
+\newcommand{\InlineCommand}[1]{
+  {\hspace{0.01 in}} {\tt #1} {\hspace{0.01 in}}}
+
+\input{epsf}
+
+\title{DRAFT: Meros User's Guide\footnote{For \MerosTM{} Version 2.0 in
+\TrilinosTM{} Release 8.0}}
+
+%\thanks{This work was partially supported
+%by the DOE Office of Science MICS Program and by the ASC Program at
+%Sandia National Laboratories.  Sandia is a multiprogram laboratory
+%operated by Sandia Corporation, a Lockheed Martin Company, for the
+%United States Department of Energy's National Nuclear Security
+%Administration under contract DE-AC04-94AL85000.}}
+
+\author{
+Victoria E. Howle\thanks{Sandia National Laboratories, PO Box 969, MS 9159
+    Livermore, CA 94551, {\tt vehowle}\protect@{\tt sandia.gov}.}
+  \and
+  Robert Shuttleworth\thanks{Applied Mathematics and Scientific Computing Program and Center for Scientific
+Computation and Mathematical Modeling,
+University of Maryland, College Park, MD 20742. {\tt rshuttle}\protect@{\tt math.umd.edu}}
+  \and
+  Ray Tuminaro\thanks{Sandia National Laboratories, PO Box 969, MS 9159,
+    Livermore, CA 94551, {\tt rstumin}\protect@{\tt sandia.gov}.}
+}
+
+\date{}
+
+\SANDnum{SAND2007-xxxx}
+\SANDprintDate{August 2007}
+\SANDauthor{Victoria E. Howle, Robert Shuttleworth, Ray Tuminaro}
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+meros abstract
+\end{abstract}
+
+
+
+
+\bibliographystyle{siam}
+%\pagestyle{plain}
+
+\SANDmain
+
+\clearpage
+\tableofcontents
+%\listoffigures
+%\listoftables
+
+%\input{intro}
+\section{Introduction}
+Meros is a segregated preconditioning package. Provides scalable block
+preconditioning for problems that coupled simultaneous solution
+variables such as Navier-Strokes problems. 
+
+
+Adding a citation to test bib\cite{ElmanSilvesterWathen.book}.
+
+\section{Block Methods}
+\subsection{Pressure Convection-Diffusion (PCD)}
+Factory for building pressure convection-diffusion style block
+preconditioner. This class of preconditioners were originally proposed
+by Kay, Loghin, and Wathen (ref) and Silvester, Elman, Kay, and Wathen
+(ref).
+
+Meros 1.0 currently implements the PCD preconditioner, a.k.a. Fp
+preconditioner. 
+
+The LDU factors of a saddle point system are given as follows:
+
+\begin{equation}
+  \left[ \begin{array}{cc} A & B^T \\ B & C \end{array} \right]
+     = \left[ \begin{array}{cc} I & \\ BF^{-1} & I \end{array} \right]
+       \left[ \begin{array}{cc} F & \\  & -S \end{array} \right]
+       \left[ \begin{array}{cc} I & F^{-1} B^T  \\  & I \end{array} \right],
+\end{equation}
+
+where $S$ is the Schur complement $S = B F^{-1} B^T - C$.  A
+pressure convection-diffusion style preconditioner is then given by
+
+\begin{equation}
+  P^{-1} =
+       \left[ \begin{array}{cc} F & B^T \\ & -\tilde S \end{array} \right]^{-1}
+       = 
+       \left[ \begin{array}{cc} F^{-1} &  \\  & I \end{array} \right]
+       \left[ \begin{array}{cc} I & -B^T \\  & I \end{array} \right]
+       \left[ \begin{array}{cc} I &  \\  & -\tilde S^{-1} \end{array} \right]
+\end{equation}
+where for $\tilde S$ is an approximation to the Schur complement S.
+
+To apply the above preconditioner, we need a linear solver on the
+(0,0) block and an approximation to the inverse of the Schur
+complement.
+
+To build a concrete preconditioner object, we will also need a 2x2
+block Thyra matrix or the 4 separate blocks as either Thyra or Epetra
+matrices.  If Thyra, assumes each block is a Thyra EpetraMatrix.
+
+
+
+
+
+\subsection{Least Squares Commutator (LSC)}
+Factory for building least squares commutator style block
+preconditioner.  
+
+Note that the LSC preconditioner assumes that we are using
+a stable discretization an a uniform mesh.
+
+The LDU factors of a saddle point system are given as follows:
+
+\begin{equation}
+  \left[ \begin{array}{cc} A & B^T \\ B & C \end{array} \right]
+     = \left[ \begin{array}{cc} I & \\ BF^{-1} & I \end{array} \right]
+       \left[ \begin{array}{cc} F & \\  & -S \end{array} \right]
+       \left[ \begin{array}{cc} I & F^{-1} B^T  \\  & I \end{array} \right],
+\end{equation}
+where $S$ is the Schur complement $S = B F^{-1} B^T - C$.
+A pressure convection-diffusion style preconditioner is then given by
+     
+\begin{equation}
+     P^{-1} =
+       \left[ \begin{array}{cc} F & B^T \\ & -\tilde S \end{array} \right]^{-1}
+       = 
+       \left[ \begin{array}{cc} F^{-1} &  \\  & I \end{array} \right]
+       \left[ \begin{array}{cc} I & -B^T \\  & I \end{array} \right]
+       \left[ \begin{array}{cc} I &  \\  & -\tilde S^{-1} \end{array} \right]
+\end{equation}
+where for $\tilde S$ is an approximation to the Schur complement S.
+
+To apply the above preconditioner, we need a linear solver on the
+(0,0) block and an approximation to the inverse of the Schur
+complement.
+
+To build a concrete preconditioner object, we will also need a 2x2
+block Thyra matrix or the 4 separate blocks as either Thyra or Epetra
+matrices.  If Thyra, assumes each block is a Thyra EpetraMatrix.
+
+
+
+
+\subsection{SIMPLE}
+
+\section{Examples}
+
+\appendix
+
+\section{Meros \InlineCommand{configure} Options}
+
+
+\bibliography{refs}
+    
+\include{SANDdistribution}
+
+\end{document}
