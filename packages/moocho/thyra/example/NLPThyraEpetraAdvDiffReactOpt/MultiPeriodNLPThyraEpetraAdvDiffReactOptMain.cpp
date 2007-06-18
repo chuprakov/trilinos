@@ -599,8 +599,8 @@ int main( int argc, char* argv[] )
     p_init = solver.getFinalPoint().get_p(0)->clone_v();
 
     *out
-      << "\nrelErr(x_perturb,x_opt) = " << Thyra::relErr(*x_init,*x_opt)
-      << "\nrelErr(p_perturb,p_opt) = " << Thyra::relErr(*p_init,*p_opt)
+      << "\nrelErr(x_perturb,x_opt) = " << Thyra::relErr<Scalar>(*x_init,*x_opt)
+      << "\nrelErr(p_perturb,p_opt) = " << Thyra::relErr<Scalar>(*p_init,*p_opt)
       << "\n";
     
     //
@@ -688,8 +688,8 @@ int main( int argc, char* argv[] )
     *out << "\np_inv =\n" << Teuchos::describe(*p_inv,Teuchos::VERB_EXTREME);
 
     const Scalar
-      x_err = Thyra::relErr( *x_inv, *x_opt ),
-      p_err = Thyra::relErr( *p_inv, *p_opt );
+      x_err = Thyra::relErr<Scalar>( *x_inv, *x_opt ),
+      p_err = Thyra::relErr<Scalar>( *p_inv, *p_opt );
 
     const bool
       x_test_passed = ( x_err <= stateInvError ),
