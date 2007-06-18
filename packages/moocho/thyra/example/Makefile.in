@@ -212,7 +212,7 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@ENABLE_EPETRAEXT_THYRA_TRUE@@ENABLE_MOOCHO_STRATIMIKOS_TRUE@MOOCHO_STRATIMIKOS_EXAMPLES = NLPThyraEpetraModelEval4DOpt NLPThyraEpetraAdvDiffReactOpt
+@ENABLE_MOOCHO_STRATIMIKOS_TRUE@@ENABLE_THYRA_EPETRAEXT_TRUE@MOOCHO_STRATIMIKOS_EXAMPLES = NLPThyraEpetraModelEval4DOpt NLPThyraEpetraAdvDiffReactOpt
 SUBDIRS = $(MOOCHO_STRATIMIKOS_EXAMPLES)
 all: all-recursive
 

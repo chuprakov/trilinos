@@ -696,8 +696,8 @@ ENABLE_MOOCHO_THYRA_TRUE
 ENABLE_MOOCHO_THYRA_FALSE
 ENABLE_MOOCHO_STRATIMIKOS_TRUE
 ENABLE_MOOCHO_STRATIMIKOS_FALSE
-ENABLE_EPETRAEXT_THYRA_TRUE
-ENABLE_EPETRAEXT_THYRA_FALSE
+ENABLE_THYRA_EPETRAEXT_TRUE
+ENABLE_THYRA_EPETRAEXT_FALSE
 BUILD_TESTS_TRUE
 BUILD_TESTS_FALSE
 BUILD_EXAMPLES_TRUE
@@ -1325,10 +1325,10 @@ Optional Features:
                           Can be overridden with --disable-moocho-stratimikos.
   --enable-moocho-stratimikos
                           Build the Stratimikos adapater support in Moocho.
-  --enable-epetraext      See epetraext/configure --help
-  --enable-thyra          See epetraext/configure --help
-  --enable-epetraext-thyra
-                          See epetraext/configure --help
+  --enable-thyra          See thyra/configure --help
+  --enable-epetraext      See thyra/configure --help
+  --enable-thyra-epetraext
+                          See thyra/configure --help
   --enable-tests          Build tests for all Trilinos packages (not all
                           packages are sensitive to this option) (default is
                           yes)
@@ -5354,8 +5354,7 @@ else
 fi
 
 
-if test "Xyes
-  " != "Xno"; then
+if test "Xyes" != "Xno"; then
   ac_cv_moocho_using_thyra_default=$ac_cv_implicit_use_thyra
 else
   ac_cv_moocho_using_thyra_default=no
@@ -5406,8 +5405,7 @@ else
 fi
 
 
-if test "Xyes
-  " != "Xno"; then
+if test "Xyes" != "Xno"; then
   ac_cv_moocho_using_stratimikos_default=$ac_cv_implicit_use_stratimikos
 else
   ac_cv_moocho_using_stratimikos_default=no
@@ -5450,14 +5448,6 @@ fi
 
 
 
-# Check whether --enable-epetraext was given.
-if test "${enable_epetraext+set}" = set; then
-  enableval=$enable_epetraext; ac_cv_implicit_use_epetraext=$enableval
-else
-  ac_cv_implicit_use_epetraext=no
-fi
-
-
 # Check whether --enable-thyra was given.
 if test "${enable_thyra+set}" = set; then
   enableval=$enable_thyra; ac_cv_implicit_use_thyra=$enableval
@@ -5466,34 +5456,41 @@ else
 fi
 
 
-if test "Xyes
-  " != "Xno"; then
-  if test "X$ac_cv_implicit_use_epetraext" != "Xno"; then
-    ac_cv_epetraext_using_thyra_default=$ac_cv_implicit_use_thyra
+# Check whether --enable-epetraext was given.
+if test "${enable_epetraext+set}" = set; then
+  enableval=$enable_epetraext; ac_cv_implicit_use_epetraext=$enableval
+else
+  ac_cv_implicit_use_epetraext=no
+fi
+
+
+if test "Xyes" != "Xno"; then
+  if test "X$ac_cv_implicit_use_thyra" != "Xno"; then
+    ac_cv_thyra_using_epetraext_default=$ac_cv_implicit_use_epetraext
   else
-    ac_cv_epetraext_using_thyra_default=no
+    ac_cv_thyra_using_epetraext_default=no
   fi
 else
-  ac_cv_epetraext_using_thyra_default=no
+  ac_cv_thyra_using_epetraext_default=no
 fi
 
-# Check whether --enable-epetraext-thyra was given.
-if test "${enable_epetraext_thyra+set}" = set; then
-  enableval=$enable_epetraext_thyra; ac_cv_use_thyra=$enableval
+# Check whether --enable-thyra-epetraext was given.
+if test "${enable_thyra_epetraext+set}" = set; then
+  enableval=$enable_thyra_epetraext; ac_cv_use_epetraext=$enableval
 else
-  ac_cv_use_thyra=$ac_cv_epetraext_using_thyra_default
+  ac_cv_use_epetraext=$ac_cv_thyra_using_epetraext_default
 fi
 
 
-{ echo "$as_me:$LINENO: checking whether to build optional thyra dependent code in epetraext" >&5
-echo $ECHO_N "checking whether to build optional thyra dependent code in epetraext... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking whether to build optional epetraext dependent code in thyra" >&5
+echo $ECHO_N "checking whether to build optional epetraext dependent code in thyra... $ECHO_C" >&6; }
 
-if test "X$ac_cv_use_thyra" != "Xno"; then
+if test "X$ac_cv_use_epetraext" != "Xno"; then
   { echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6; }
 
 cat >>confdefs.h <<\_ACEOF
-#define HAVE_EPETRAEXT_THYRA 1
+#define HAVE_THYRA_EPETRAEXT 1
 _ACEOF
 
 else
@@ -5501,41 +5498,16 @@ else
 echo "${ECHO_T}no" >&6; }
 fi
 
- if test "X$ac_cv_use_thyra" = "Xyes"; then
-  ENABLE_EPETRAEXT_THYRA_TRUE=
-  ENABLE_EPETRAEXT_THYRA_FALSE='#'
+ if test "X$ac_cv_use_epetraext" = "Xyes"; then
+  ENABLE_THYRA_EPETRAEXT_TRUE=
+  ENABLE_THYRA_EPETRAEXT_FALSE='#'
 else
-  ENABLE_EPETRAEXT_THYRA_TRUE='#'
-  ENABLE_EPETRAEXT_THYRA_FALSE=
+  ENABLE_THYRA_EPETRAEXT_TRUE='#'
+  ENABLE_THYRA_EPETRAEXT_FALSE=
 fi
 
 
 
-
-#TAC_ARG_INFORM_SUBPACKAGE_USED(
-#   amesos, thyra, AMESOS_THYRA, ENABLE_AMESOS_THYRA, yes,
-#  [See amesos/configure --help],
-#  [See amesos/configure --help])
-#
-#TAC_ARG_INFORM_SUBPACKAGE_USED(
-#   amesos, thyra, AMESOS_THYRA, ENABLE_AMESOS_THYRA, yes,
-#  [See amesos/configure --help],
-#  [See amesos/configure --help])
-#
-#TAC_ARG_INFORM_SUBPACKAGE_USED(
-#   aztecoo, thyra, AZTECOO_THYRA, ENABLE_AZTECOO_THYRA, yes,
-#  [See aztecoo/configure --help],
-#  [See aztecoo/configure --help])
-#
-#TAC_ARG_INFORM_SUBPACKAGE_USED(
-#   belos, thyra, BELOS_THYRA, ENABLE_BELOS_THYRA, yes,
-#  [See belos/configure --help],
-#  [See belos/configure --help])
-#
-#TAC_ARG_INFORM_SUBPACKAGE_USED(
-#   ifpack, thyra, IFPACK_THYRA, ENABLE_IFPACK_THYRA, yes,
-#  [See ifpack/configure --help],
-#  [See ifpack/configure --help])
 
 # ------------------------------------------------------------------------
 # Checks if examples should be built
@@ -6664,10 +6636,10 @@ echo "$as_me: error: conditional \"ENABLE_MOOCHO_STRATIMIKOS\" was never defined
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${ENABLE_EPETRAEXT_THYRA_TRUE}" && test -z "${ENABLE_EPETRAEXT_THYRA_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"ENABLE_EPETRAEXT_THYRA\" was never defined.
+if test -z "${ENABLE_THYRA_EPETRAEXT_TRUE}" && test -z "${ENABLE_THYRA_EPETRAEXT_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"ENABLE_THYRA_EPETRAEXT\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"ENABLE_EPETRAEXT_THYRA\" was never defined.
+echo "$as_me: error: conditional \"ENABLE_THYRA_EPETRAEXT\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -7422,8 +7394,8 @@ ENABLE_MOOCHO_THYRA_TRUE!$ENABLE_MOOCHO_THYRA_TRUE$ac_delim
 ENABLE_MOOCHO_THYRA_FALSE!$ENABLE_MOOCHO_THYRA_FALSE$ac_delim
 ENABLE_MOOCHO_STRATIMIKOS_TRUE!$ENABLE_MOOCHO_STRATIMIKOS_TRUE$ac_delim
 ENABLE_MOOCHO_STRATIMIKOS_FALSE!$ENABLE_MOOCHO_STRATIMIKOS_FALSE$ac_delim
-ENABLE_EPETRAEXT_THYRA_TRUE!$ENABLE_EPETRAEXT_THYRA_TRUE$ac_delim
-ENABLE_EPETRAEXT_THYRA_FALSE!$ENABLE_EPETRAEXT_THYRA_FALSE$ac_delim
+ENABLE_THYRA_EPETRAEXT_TRUE!$ENABLE_THYRA_EPETRAEXT_TRUE$ac_delim
+ENABLE_THYRA_EPETRAEXT_FALSE!$ENABLE_THYRA_EPETRAEXT_FALSE$ac_delim
 BUILD_TESTS_TRUE!$BUILD_TESTS_TRUE$ac_delim
 BUILD_TESTS_FALSE!$BUILD_TESTS_FALSE$ac_delim
 BUILD_EXAMPLES_TRUE!$BUILD_EXAMPLES_TRUE$ac_delim

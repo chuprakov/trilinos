@@ -1,8 +1,5 @@
 /* src/Moocho_Config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Define if want to build with epetraext enabled */
-#undef HAVE_EPETRAEXT_THYRA
-
 /* Define if want to build examples */
 #undef HAVE_EXAMPLES
 
@@ -32,6 +29,9 @@
 
 /* Define if want to build tests */
 #undef HAVE_TESTS
+
+/* Define if want to build with thyra enabled */
+#undef HAVE_THYRA_EPETRAEXT
 
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT

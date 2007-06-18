@@ -171,44 +171,19 @@ TAC_ARG_ENABLE_CAN_USE_PACKAGE(
   [Build in support for HSL solver MA28 into Moocho.  Can be overridden with --disable-moocho-ma28.])
 
 TAC_ARG_ENABLE_CAN_USE_PACKAGE(
-  moocho, thyra, MOOCHO_THYRA, ENABLE_MOOCHO_THYRA, yes
-  ,[Build the Thyra adapater support in Moocho.]
-  ,[Build the Thyra adapater support in Moocho.  Can be overridden with --disable-moocho-thyra.])
+  moocho, thyra, MOOCHO_THYRA, ENABLE_MOOCHO_THYRA, yes,
+  [Build the Thyra adapater support in Moocho.],
+  [Build the Thyra adapater support in Moocho.  Can be overridden with --disable-moocho-thyra.])
 
 TAC_ARG_ENABLE_CAN_USE_PACKAGE(
-  moocho, stratimikos, MOOCHO_STRATIMIKOS, ENABLE_MOOCHO_STRATIMIKOS, yes
-  ,[Build the Stratimikos adapater support in Moocho.]
-  ,[Build the Stratimikos adapater support in Moocho.  Can be overridden with --disable-moocho-stratimikos.])
+  moocho, stratimikos, MOOCHO_STRATIMIKOS, ENABLE_MOOCHO_STRATIMIKOS, yes,
+  [Build the Stratimikos adapater support in Moocho.],
+  [Build the Stratimikos adapater support in Moocho.  Can be overridden with --disable-moocho-stratimikos.])
 
 TAC_ARG_INFORM_SUBPACKAGE_USED(
-  epetraext, thyra, EPETRAEXT_THYRA, ENABLE_EPETRAEXT_THYRA, yes
-  ,[See epetraext/configure --help]
-  ,[See epetraext/configure --help])
-
-#TAC_ARG_INFORM_SUBPACKAGE_USED(
-#   amesos, thyra, AMESOS_THYRA, ENABLE_AMESOS_THYRA, yes,
-#  [See amesos/configure --help],
-#  [See amesos/configure --help])
-#
-#TAC_ARG_INFORM_SUBPACKAGE_USED(
-#   amesos, thyra, AMESOS_THYRA, ENABLE_AMESOS_THYRA, yes,
-#  [See amesos/configure --help],
-#  [See amesos/configure --help])
-#
-#TAC_ARG_INFORM_SUBPACKAGE_USED(
-#   aztecoo, thyra, AZTECOO_THYRA, ENABLE_AZTECOO_THYRA, yes,
-#  [See aztecoo/configure --help],
-#  [See aztecoo/configure --help])
-#
-#TAC_ARG_INFORM_SUBPACKAGE_USED(
-#   belos, thyra, BELOS_THYRA, ENABLE_BELOS_THYRA, yes,
-#  [See belos/configure --help],
-#  [See belos/configure --help])
-#
-#TAC_ARG_INFORM_SUBPACKAGE_USED(
-#   ifpack, thyra, IFPACK_THYRA, ENABLE_IFPACK_THYRA, yes,
-#  [See ifpack/configure --help],
-#  [See ifpack/configure --help])
+  thyra, epetraext, THYRA_EPETRAEXT, ENABLE_THYRA_EPETRAEXT, yes,
+  [See thyra/configure --help],
+  [See thyra/configure --help])
 
 # ------------------------------------------------------------------------
 # Checks if examples should be built

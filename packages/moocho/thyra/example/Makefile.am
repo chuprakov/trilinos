@@ -36,7 +36,7 @@ generate-sample-output.pl : generate-sample-output.pl.stub
 	chmod a+x generate-sample-output.pl
 
 if ENABLE_MOOCHO_STRATIMIKOS
-if ENABLE_EPETRAEXT_THYRA
+if ENABLE_THYRA_EPETRAEXT
 MOOCHO_STRATIMIKOS_EXAMPLES = NLPThyraEpetraModelEval4DOpt NLPThyraEpetraAdvDiffReactOpt
 endif
 endif
