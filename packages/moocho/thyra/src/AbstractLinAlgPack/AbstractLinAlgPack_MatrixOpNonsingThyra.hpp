@@ -58,7 +58,7 @@ public:
   /** \brief Calls <tt>this->initialize()</tt>.
    */
   MatrixOpNonsingThyra(
-    const Teuchos::RefCountPtr<const Thyra::LinearOpWithSolveBase<value_type> >  &thyra_linear_op_ns
+    const Teuchos::RCP<const Thyra::LinearOpWithSolveBase<value_type> >  &thyra_linear_op_ns
     ,BLAS_Cpp::Transp                                                            thyra_linear_op_trans = BLAS_Cpp::no_trans
     );
   /** \brief Initalize given a smart pointer to a <tt>Thyra::LinearOpWithSolveBase</tt> object.
@@ -77,7 +77,7 @@ public:
    * </ul>
    */
   void initialize(
-    const Teuchos::RefCountPtr<const Thyra::LinearOpWithSolveBase<value_type> >  &thyra_linear_op_ns
+    const Teuchos::RCP<const Thyra::LinearOpWithSolveBase<value_type> >  &thyra_linear_op_ns
     ,BLAS_Cpp::Transp                                                            thyra_linear_op_trans = BLAS_Cpp::no_trans
     );
   /** \brief Set to uninitialized and return smart pointer to the internal <tt>Thyra::LinearOpWithSolveBase</tt> object.
@@ -89,10 +89,10 @@ public:
    * Note that his nonvirtual function hides the nonvirtual function
    * <tt>MatrixOpThyra::set_uninitialized()</tt>.
    */
-  Teuchos::RefCountPtr<const Thyra::LinearOpWithSolveBase<value_type> > set_uninitialized();
+  Teuchos::RCP<const Thyra::LinearOpWithSolveBase<value_type> > set_uninitialized();
   /** \brief Return a smart pointer to the <tt>Thyra::LinearOpWithSolveBase</tt> object.
    */
-  Teuchos::RefCountPtr<const Thyra::LinearOpWithSolveBase<value_type> > thyra_linear_op_ns() const;
+  Teuchos::RCP<const Thyra::LinearOpWithSolveBase<value_type> > thyra_linear_op_ns() const;
 
   //@}
   

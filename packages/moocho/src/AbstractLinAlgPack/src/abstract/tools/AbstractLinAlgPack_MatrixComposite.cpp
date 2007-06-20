@@ -59,7 +59,7 @@ get_element( const AbstractLinAlgPack::SpVectorSlice& v, AbstractLinAlgPack::ind
 // Get a view of a vector (two versions)
 
 inline
-Teuchos::RefCountPtr<const AbstractLinAlgPack::Vector>
+Teuchos::RCP<const AbstractLinAlgPack::Vector>
 get_view(
   const AbstractLinAlgPack::Vector& v
   ,AbstractLinAlgPack::index_type l
@@ -70,7 +70,7 @@ get_view(
 }
 
 inline
-Teuchos::RefCountPtr<const AbstractLinAlgPack::SpVectorSlice>
+Teuchos::RCP<const AbstractLinAlgPack::SpVectorSlice>
 get_view(
   const AbstractLinAlgPack::SpVectorSlice& v
   ,AbstractLinAlgPack::index_type l

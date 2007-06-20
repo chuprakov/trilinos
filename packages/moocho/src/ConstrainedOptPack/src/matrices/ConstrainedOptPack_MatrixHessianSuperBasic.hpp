@@ -77,13 +77,13 @@ class MatrixHessianSuperBasic
 public:
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixSymWithOpFactorized>
+  typedef Teuchos::RCP<const MatrixSymWithOpFactorized>
     B_RR_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixOp>
+  typedef Teuchos::RCP<const MatrixOp>
     B_RX_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixSymOp>
+  typedef Teuchos::RCP<const MatrixSymOp>
     B_XX_ptr_t;
   /** \brief . */
   typedef std::vector<EBounds>

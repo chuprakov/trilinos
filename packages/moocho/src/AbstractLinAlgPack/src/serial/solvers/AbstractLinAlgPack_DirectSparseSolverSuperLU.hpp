@@ -89,7 +89,7 @@ protected:
     //@{
 
     /** \brief . */
-    Teuchos::RefCountPtr<BasisMatrixImp> create_matrix() const;
+    Teuchos::RCP<BasisMatrixImp> create_matrix() const;
     /** \brief . */
     void V_InvMtV(
       VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
@@ -106,9 +106,9 @@ protected:
     friend class DirectSparseSolverSuperLU;
     friend class BasisMatrixSuperLU;
   private:
-    Teuchos::RefCountPtr<SuperLUPack::SuperLUSolver>
+    Teuchos::RCP<SuperLUPack::SuperLUSolver>
       superlu_solver_;
-    Teuchos::RefCountPtr<SuperLUPack::SuperLUSolver::FactorizationStructure>
+    Teuchos::RCP<SuperLUPack::SuperLUSolver::FactorizationStructure>
       fact_struct_;
     FactorizationStructureSuperLU();
   }; // end class FactorizationStructureSuperLU
@@ -120,7 +120,7 @@ protected:
     friend class DirectSparseSolverSuperLU;
     friend class BasisMatrixSuperLU;
   private:
-    Teuchos::RefCountPtr<SuperLUPack::SuperLUSolver::FactorizationNonzeros>
+    Teuchos::RCP<SuperLUPack::SuperLUSolver::FactorizationNonzeros>
       fact_nonzeros_;
   }; // end class FactorizationNonzerosSuperLU
 
@@ -130,9 +130,9 @@ protected:
   //@{
 
   /** \brief . */
-  const Teuchos::RefCountPtr<FactorizationStructure> create_fact_struc() const;
+  const Teuchos::RCP<FactorizationStructure> create_fact_struc() const;
   /** \brief . */
-  const Teuchos::RefCountPtr<FactorizationNonzeros> create_fact_nonzeros() const;
+  const Teuchos::RCP<FactorizationNonzeros> create_fact_nonzeros() const;
   /** \brief . */
   void imp_analyze_and_factor(
     const AbstractLinAlgPack::MatrixConvertToSparse   &A

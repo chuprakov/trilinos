@@ -187,7 +187,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
   )
 {
 
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   using Teuchos::dyn_cast;
   using Teuchos::dyn_cast;
 
@@ -213,7 +213,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
   if(trase_out)
     *trase_out << "\n*** Creating the NLPAlgo algo object ...\n";
 
-  typedef Teuchos::RefCountPtr<NLPAlgo>	algo_ptr_t;
+  typedef Teuchos::RCP<NLPAlgo>	algo_ptr_t;
   algo_ptr_t algo = Teuchos::rcp(new NLPAlgo);
   TEST_FOR_EXCEPT( !( algo.get() ) );
   algo_cntr->set_algo(algo);
@@ -375,7 +375,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
   // /////////////////////////////////////////////////////
   // C.1. Create the decomposition system object
 
-  typedef RefCountPtr<DecompositionSystem> decomp_sys_ptr_t;
+  typedef RCP<DecompositionSystem> decomp_sys_ptr_t;
   decomp_sys_ptr_t decomp_sys;
   decomp_sys_step_builder_.create_decomp_sys(
     trase_out, nlp, nlp_foi, nlp_soi, nlp_fod, tailored_approach
@@ -383,7 +383,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
     );
 
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
-  RefCountPtr<DecompositionSystemVarReductPerm>
+  RCP<DecompositionSystemVarReductPerm>
     decomp_sys_perm = Teuchos::rcp_dynamic_cast<DecompositionSystemVarReductPerm>(decomp_sys);
 #endif
 
@@ -399,7 +399,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
     // Create the state object with the vector spaces
     //
 
-    typedef RefCountPtr<IpState>   state_ptr_t;
+    typedef RCP<IpState>   state_ptr_t;
     state_ptr_t
       state = Teuchos::rcp(
         new IpState(
@@ -544,7 +544,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
     // Add reduced Hessian of the Lagrangian
 
     if( !cov_.exact_reduced_hessian_ ) {
-      RefCountPtr<Teuchos::AbstractFactory<MatrixSymOp> >
+      RCP<Teuchos::AbstractFactory<MatrixSymOp> >
         abstract_factory_rHL = Teuchos::rcp(
           new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
             MatrixSymPosDefCholFactor::PostMod(
@@ -575,7 +575,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 
     if( cov_.line_search_method_ != LINE_SEARCH_NONE 
        && cov_.line_search_method_ != LINE_SEARCH_FILTER) {
-      RefCountPtr<Teuchos::AbstractFactory<MeritFuncNLP> >
+      RCP<Teuchos::AbstractFactory<MeritFuncNLP> >
         merit_func_factory = Teuchos::null;
       switch( cov_.merit_function_type_ ) {
         case MERIT_FUNC_L1:
@@ -683,20 +683,20 @@ void NLPAlgoConfigIP::config_algo_cntr(
     // specific algorithms
     //
     
-    typedef RefCountPtr<AlgorithmStep>   algo_step_ptr_t;
+    typedef RCP<AlgorithmStep>   algo_step_ptr_t;
 
     // Create the EvalNewPoint step and associated objects
     algo_step_ptr_t                                    eval_new_point_step           = Teuchos::null;
-    RefCountPtr<CalcFiniteDiffProd>                  calc_fd_prod                  = Teuchos::null;
-    RefCountPtr<VariableBoundsTester>                bounds_tester                 = Teuchos::null;
-    RefCountPtr<NewDecompositionSelection_Strategy>  new_decomp_selection_strategy = Teuchos::null;
+    RCP<CalcFiniteDiffProd>                  calc_fd_prod                  = Teuchos::null;
+    RCP<VariableBoundsTester>                bounds_tester                 = Teuchos::null;
+    RCP<NewDecompositionSelection_Strategy>  new_decomp_selection_strategy = Teuchos::null;
     decomp_sys_step_builder_.create_eval_new_point(
       trase_out, nlp, nlp_foi, nlp_soi, nlp_fod, tailored_approach, decomp_sys
       ,&eval_new_point_step, &calc_fd_prod, &bounds_tester, &new_decomp_selection_strategy
       );
 
     // UpdateBarrierParameter_Step
-    Teuchos::RefCountPtr<UpdateBarrierParameter_Step>	updateBarrierParameter_step  = Teuchos::null;
+    Teuchos::RCP<UpdateBarrierParameter_Step>	updateBarrierParameter_step  = Teuchos::null;
     updateBarrierParameter_step = Teuchos::rcp(new UpdateBarrierParameter_Step());
     if(options_.get()) 
       {
@@ -705,7 +705,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
       }
     
     // PreEvalNewPointBarrier_Step
-    Teuchos::RefCountPtr<PreEvalNewPointBarrier_Step>  preEvalNewPointBarrier_step  = Teuchos::null;
+    Teuchos::RCP<PreEvalNewPointBarrier_Step>  preEvalNewPointBarrier_step  = Teuchos::null;
     preEvalNewPointBarrier_step = Teuchos::rcp(new PreEvalNewPointBarrier_Step());
     if(options_.get()) 
       {
@@ -760,7 +760,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
     // CheckSkipBFGSUpdate
     algo_step_ptr_t    check_skip_bfgs_update_step = Teuchos::null;
     if(!cov_.exact_reduced_hessian_) {
-      RefCountPtr<CheckSkipBFGSUpdateStd_Step>
+      RCP<CheckSkipBFGSUpdateStd_Step>
         step = Teuchos::rcp(new CheckSkipBFGSUpdateStd_Step());
       if(options_.get()) {
         CheckSkipBFGSUpdateStd_StepSetOptions
@@ -774,7 +774,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
     algo_step_ptr_t    reduced_hessian_step = Teuchos::null;
     {
       // Get the strategy object that will perform the actual secant update.
-      RefCountPtr<ReducedHessianSecantUpdate_Strategy>
+      RCP<ReducedHessianSecantUpdate_Strategy>
         secant_update_strategy = Teuchos::null;
       switch( cov_.quasi_newton_ )
       {
@@ -784,7 +784,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
         case QN_LPBFGS:
         {
           // create and setup the actual BFGS strategy object
-          typedef RefCountPtr<BFGSUpdate_Strategy> bfgs_strategy_ptr_t;
+          typedef RCP<BFGSUpdate_Strategy> bfgs_strategy_ptr_t;
           bfgs_strategy_ptr_t
             bfgs_strategy = Teuchos::rcp(new BFGSUpdate_Strategy);
           if(options_.get()) { 
@@ -825,7 +825,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
           1
           ,quasi_newton_stats_name
 #ifdef _MIPS_CXX
-          ,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats> >(
+          ,Teuchos::RCP<Teuchos::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats> >(
             new Teuchos::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats>())
 #endif
           )
@@ -833,7 +833,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
     }
 
     // UpdateReducedSigma_Step
-    Teuchos::RefCountPtr<UpdateReducedSigma_Step> updateReducedSigma_step = Teuchos::null;
+    Teuchos::RCP<UpdateReducedSigma_Step> updateReducedSigma_step = Teuchos::null;
     updateReducedSigma_step = Teuchos::rcp(new UpdateReducedSigma_Step());
     if(options_.get()) 
       {
@@ -853,10 +853,10 @@ void NLPAlgoConfigIP::config_algo_cntr(
       // Step object that sets bounds for QP subproblem
       set_d_bounds_step = Teuchos::rcp(new SetDBoundsStd_AddedStep());
       // QP Solver object
-      Teuchos::RefCountPtr<QPSolverRelaxed>  qp_solver = Teuchos::null;
+      Teuchos::RCP<QPSolverRelaxed>  qp_solver = Teuchos::null;
         // ToDo: Create the QP solver!
       // QP solver tester
-      Teuchos::RefCountPtr<QPSolverRelaxedTester> 
+      Teuchos::RCP<QPSolverRelaxedTester> 
         qp_solver_tester = Teuchos::rcp(new QPSolverRelaxedTester());
       if(options_.get()) {
         QPSolverRelaxedTesterSetOptions
@@ -864,7 +864,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
         opt_setter.set_options( *options_ );
       }
       // The null-space step
-      Teuchos::RefCountPtr<TangentialStepWithInequStd_Step>
+      Teuchos::RCP<TangentialStepWithInequStd_Step>
         tangential_step_with_inequ_step = Teuchos::rcp(
           new TangentialStepWithInequStd_Step(
             qp_solver, qp_solver_tester ) );
@@ -890,7 +890,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
     algo_step_ptr_t calc_d_v_step_step = Teuchos::rcp(new CalcD_vStep_Step());
 
     // build the barrier nlp decorator to be used by the line search
-    Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp = Teuchos::rcp(new NLPInterfacePack::NLPBarrier());
+    Teuchos::RCP<NLPInterfacePack::NLPBarrier> barrier_nlp = Teuchos::rcp(new NLPInterfacePack::NLPBarrier());
     barrier_nlp->InitializeFromNLP( algo_cntr->get_nlp() );
 
     // PreProcessBarrierLineSearch_Step
@@ -910,7 +910,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
     algo_step_ptr_t    check_convergence_step = Teuchos::null;
       {
       // Create the strategy object
-      RefCountPtr<CheckConvergenceIP_Strategy>
+      RCP<CheckConvergenceIP_Strategy>
         check_convergence_strategy = Teuchos::rcp(new CheckConvergenceIP_Strategy());
 
       if(options_.get()) 
@@ -920,7 +920,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
         opt_setter.set_options( *options_ );
         }
       
-      RefCountPtr<CheckConvergenceStd_AddedStep>
+      RCP<CheckConvergenceStd_AddedStep>
         _check_convergence_step = Teuchos::rcp(new CheckConvergenceStd_AddedStep(check_convergence_strategy));
       
       check_convergence_step = _check_convergence_step;
@@ -932,7 +932,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
       // We don't need to update a penalty parameter for the filter method :-)
     }
     else if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
-      RefCountPtr<MeritFunc_PenaltyParamUpdate_AddedStep>
+      RCP<MeritFunc_PenaltyParamUpdate_AddedStep>
         param_update_step = Teuchos::null;
       switch( cov_.merit_function_type_ ) {
         case MERIT_FUNC_L1: {
@@ -983,7 +983,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
     // LineSearch_Step
     algo_step_ptr_t    line_search_step = Teuchos::null;
     if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
-      RefCountPtr<DirectLineSearchArmQuad_Strategy>
+      RCP<DirectLineSearchArmQuad_Strategy>
         direct_line_search = Teuchos::rcp(new  DirectLineSearchArmQuad_Strategy());
       if(options_.get()) {
         ConstrainedOptPack::DirectLineSearchArmQuad_StrategySetOptions
@@ -1011,7 +1011,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
         }
         case LINE_SEARCH_FILTER: 
           {
-          Teuchos::RefCountPtr<LineSearchFilter_Step> 
+          Teuchos::RCP<LineSearchFilter_Step> 
             line_search_filter_step = Teuchos::rcp(new LineSearchFilter_Step(barrier_nlp, barrier_obj_name, grad_barrier_obj_name));
 
           if(options_.get()) 

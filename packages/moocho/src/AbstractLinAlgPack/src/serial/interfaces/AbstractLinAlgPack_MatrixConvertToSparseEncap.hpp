@@ -30,7 +30,7 @@
 #define MATRIX_CONVERT_TO_SPARSE_ENCAP_H
 
 #include "AbstractLinAlgPack_MatrixConvertToSparse.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -47,9 +47,9 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixExtractSparseElements>  mese_ptr_t;
+  typedef Teuchos::RCP<const MatrixExtractSparseElements>  mese_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const IVector>                      i_vector_ptr_t;
+  typedef Teuchos::RCP<const IVector>                      i_vector_ptr_t;
 
   //@}
 
@@ -158,7 +158,7 @@ public:
 
 private:
 
-  typedef Teuchos::RefCountPtr<const VectorSpace> space_ptr_t;  
+  typedef Teuchos::RCP<const VectorSpace> space_ptr_t;  
 
 #ifdef DOXYGEN_COMPILE
   const MatrixExtractSparseElements    *mese;

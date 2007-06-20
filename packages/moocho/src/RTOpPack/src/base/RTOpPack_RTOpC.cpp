@@ -66,7 +66,7 @@ void RTOpC::get_reduct_type_num_entries(
     );
 }
 
-Teuchos::RefCountPtr<ReductTarget>
+Teuchos::RCP<ReductTarget>
 RTOpC::reduct_obj_create() const
 {
   RTOp_ReductTarget reduct_obj_raw = RTOp_REDUCT_OBJ_NULL;

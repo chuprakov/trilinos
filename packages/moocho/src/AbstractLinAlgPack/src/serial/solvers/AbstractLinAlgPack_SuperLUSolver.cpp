@@ -186,19 +186,19 @@ private:
 // SuperLUSolver
 //
 
-Teuchos::RefCountPtr<SuperLUSolver>
+Teuchos::RCP<SuperLUSolver>
 SuperLUSolver::create_solver()
 {
   return Teuchos::rcp(new SuperLUSolverImpl());
 }
 
-Teuchos::RefCountPtr<SuperLUSolver::FactorizationStructure>
+Teuchos::RCP<SuperLUSolver::FactorizationStructure>
 SuperLUSolver::create_fact_struct()
 {
   return Teuchos::rcp(new SuperLUSolverImpl::FactorizationStructureImpl());
 }
 
-Teuchos::RefCountPtr<SuperLUSolver::FactorizationNonzeros>
+Teuchos::RCP<SuperLUSolver::FactorizationNonzeros>
 SuperLUSolver::create_fact_nonzeros()
 {
   return Teuchos::rcp(new SuperLUSolverImpl::FactorizationNonzerosImpl());

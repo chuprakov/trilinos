@@ -58,7 +58,7 @@ class PostProcessBarrierLineSearch_Step
     /** \brief Constructor.
      */
     PostProcessBarrierLineSearch_Step(
-      Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp
+      Teuchos::RCP<NLPInterfacePack::NLPBarrier> barrier_nlp
       );
     //@}
 
@@ -74,7 +74,7 @@ class PostProcessBarrierLineSearch_Step
     //@}
 
   private:
-    Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
+    Teuchos::RCP<NLPInterfacePack::NLPBarrier> barrier_nlp_;
 
   }; // end class PostProcessBarrierLineSearch_Step
 

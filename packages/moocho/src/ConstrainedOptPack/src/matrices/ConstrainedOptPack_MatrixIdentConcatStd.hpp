@@ -31,7 +31,7 @@
 
 #include "ConstrainedOptPack_MatrixIdentConcat.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -59,7 +59,7 @@ public:
   /** \brief . */
   enum ETopBottom { TOP, BOTTOM };
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixOp> D_ptr_t;
+  typedef Teuchos::RCP<const MatrixOp> D_ptr_t;
   //@}
 
   /** @name Constructors/initializers. */

@@ -79,17 +79,17 @@ BasisSystemFactoryStd::create() const
   read_options();
 
   // Create the direct sparse solver
-  Teuchos::RefCountPtr<DirectSparseSolver>  direct_sparse_solver;
+  Teuchos::RCP<DirectSparseSolver>  direct_sparse_solver;
   switch(direct_linear_solver_type_) {
     case LA_DENSE: {
-      Teuchos::RefCountPtr<DirectSparseSolverDense>
+      Teuchos::RCP<DirectSparseSolverDense>
         dss_dense = Teuchos::rcp(new DirectSparseSolverDense());
       direct_sparse_solver = dss_dense;
       break;
     }
     case LA_MA28: {
 #ifdef HAVE_MOOCHO_MA28
-      Teuchos::RefCountPtr<DirectSparseSolverMA28>
+      Teuchos::RCP<DirectSparseSolverMA28>
         dss_ma28 = Teuchos::rcp(new DirectSparseSolverMA28());
       if(options_.get()) {
         AbstractLinAlgPack::DirectSparseSolverMA28SetOptions
@@ -112,7 +112,7 @@ BasisSystemFactoryStd::create() const
     }
     case LA_SUPERLU: {
 #ifdef SPARSE_SOLVER_PACK_USE_SUPERLU
-      Teuchos::RefCountPtr<DirectSparseSolverSuperLU>
+      Teuchos::RCP<DirectSparseSolverSuperLU>
         dss_slu = Teuchos::rcp(new DirectSparseSolverSuperLU());
       // ToDo: Set options from stream!
       direct_sparse_solver = dss_slu;

@@ -578,7 +578,7 @@ void NLPSerialPreprocess::set_basis(
     &P_var_s   = dyn_cast<const PermutationSerial>(P_var),
     *P_equ_s   = m_full_  ? &dyn_cast<const PermutationSerial>(*P_equ)   : NULL;
   // Get the underlying permutation vectors
-  Teuchos::RefCountPtr<IVector>
+  Teuchos::RCP<IVector>
     var_perm   = Teuchos::rcp_const_cast<IVector>(P_var_s.perm()),
     equ_perm   = ( m_full_
              ? Teuchos::rcp_const_cast<IVector>(P_equ_s->perm())
@@ -609,7 +609,7 @@ void NLPSerialPreprocess::get_basis(
     &P_var_s   = dyn_cast<PermutationSerial>(*P_var),
     *P_equ_s   = m_full_  ? &dyn_cast<PermutationSerial>(*P_equ)   : NULL;
   // Get the underlying permutation vectors
-  Teuchos::RefCountPtr<IVector>
+  Teuchos::RCP<IVector>
     var_perm   = Teuchos::rcp_const_cast<IVector>(P_var_s.perm()),
     equ_perm   = ( m_full_
              ? Teuchos::rcp_const_cast<IVector>(P_equ_s->perm())

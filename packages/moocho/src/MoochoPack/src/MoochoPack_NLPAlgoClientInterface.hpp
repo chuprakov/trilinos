@@ -45,7 +45,7 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<NLPAlgoConfig>	config_ptr_t;
+  typedef Teuchos::RCP<NLPAlgoConfig>	config_ptr_t;
 
   //@}
 

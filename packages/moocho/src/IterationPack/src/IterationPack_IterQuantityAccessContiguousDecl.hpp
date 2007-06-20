@@ -77,7 +77,7 @@ public:
   typedef IterQuantityAccess<T_info> base_t;
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<T_info> >          abstract_factory_ptr_t;
   /** \brief . */
   typedef Teuchos::AbstractFactoryStd<T_info,T_info>    abstract_factory_std_t;

@@ -56,7 +56,7 @@ public:
   class InvalidNLPType : public std::logic_error
   {public: InvalidNLPType(const std::string& what_arg) : std::logic_error(what_arg) {}};
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
 
   //@}

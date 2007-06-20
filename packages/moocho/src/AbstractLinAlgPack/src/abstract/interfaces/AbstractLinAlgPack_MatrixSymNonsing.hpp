@@ -68,9 +68,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixSymNonsing>    mat_msns_ptr_t;
+  typedef Teuchos::RCP<const MatrixSymNonsing>    mat_msns_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<MatrixSymNonsing>          mat_msns_mut_ptr_t;
+  typedef Teuchos::RCP<MatrixSymNonsing>          mat_msns_mut_ptr_t;
 #endif
   /** \brief . */
   enum EMatrixDummyArg { DUMMY_ARG };

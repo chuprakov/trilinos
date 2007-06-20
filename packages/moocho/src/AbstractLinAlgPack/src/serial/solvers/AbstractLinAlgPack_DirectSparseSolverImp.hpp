@@ -89,7 +89,7 @@ public:
     //@{
 
     /** \brief . */
-    typedef Teuchos::RefCountPtr<FactorizationNonzeros> fact_nonzeros_ptr_t;
+    typedef Teuchos::RCP<FactorizationNonzeros> fact_nonzeros_ptr_t;
 
     //@}
 
@@ -99,9 +99,9 @@ public:
     /** \brief Return a reference to a smart pointer to the object that represents
      * the factorization nonzeros.
      *
-     * Returning a reference to a \c RefCountPtr<> object verses returning
-     * a \c RefCountPtr<> object itself is critical so that we can rely on
-     * \c RefCountPtr<>::count() to tell us how many clients have a reference
+     * Returning a reference to a \c RCP<> object verses returning
+     * a \c RCP<> object itself is critical so that we can rely on
+     * \c RCP<>::count() to tell us how many clients have a reference
      * to this object.
      */
     virtual const fact_nonzeros_ptr_t&  get_fact_nonzeros() const;
@@ -179,7 +179,7 @@ public:
     //@{
 
     /// Called by \c this->clone-mns(). 
-    virtual Teuchos::RefCountPtr<BasisMatrixImp> create_matrix() const = 0;
+    virtual Teuchos::RCP<BasisMatrixImp> create_matrix() const = 0;
 
     //@}
 
@@ -238,11 +238,11 @@ protected:
 
   /** \brief Create a new, uninitialized \c FactorizationStructure object.
    */
-  virtual const Teuchos::RefCountPtr<FactorizationStructure> create_fact_struc() const = 0;
+  virtual const Teuchos::RCP<FactorizationStructure> create_fact_struc() const = 0;
 
   /** \brief Create a new, uninitialized \c FactorizationNonzeros object.
    */
-  virtual const Teuchos::RefCountPtr<FactorizationNonzeros> create_fact_nonzeros() const = 0;
+  virtual const Teuchos::RCP<FactorizationNonzeros> create_fact_nonzeros() const = 0;
 
   /** \brief Called to implement the \c analyze_and_factor() without having to worry about
    * memory mangagment details.

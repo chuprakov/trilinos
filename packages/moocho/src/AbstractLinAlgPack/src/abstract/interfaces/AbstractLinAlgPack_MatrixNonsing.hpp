@@ -30,7 +30,7 @@
 #define ABSTRACT_LINALG_PACK_MATRIX_NONSINGULAR_H
 
 #include "AbstractLinAlgPack_MatrixBase.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -127,9 +127,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixNonsing>    mat_mns_ptr_t;
+  typedef Teuchos::RCP<const MatrixNonsing>    mat_mns_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<MatrixNonsing>          mat_mns_mut_ptr_t;
+  typedef Teuchos::RCP<MatrixNonsing>          mat_mns_mut_ptr_t;
 #endif
 
   /** \brief This exception will be thrown if it turns out at runtime that

@@ -55,7 +55,7 @@ public:
   /** \brief Calls <tt>this->initialize()</tt>.
    */
   MatrixOpThyra(
-    const Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> >   &thyra_linear_op
+    const Teuchos::RCP<const Thyra::LinearOpBase<value_type> >   &thyra_linear_op
     ,BLAS_Cpp::Transp                                                    thyra_linear_op_trans = BLAS_Cpp::no_trans
     );
   /** \brief Initalize given a smart pointer to a <tt>Thyra::LinearOpBase</tt> object.
@@ -76,7 +76,7 @@ public:
    * </ul>
    */
   virtual void initialize(
-    const Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> >   &thyra_linear_op
+    const Teuchos::RCP<const Thyra::LinearOpBase<value_type> >   &thyra_linear_op
     ,BLAS_Cpp::Transp                                                    thyra_linear_op_trans = BLAS_Cpp::no_trans
     );
   /** \brief Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorBase</tt> object.
@@ -85,13 +85,13 @@ public:
    * <li><tt>this->thyra_linear_op().get() == NULL</tt>
    * </ul>
    */
-  Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> > set_uninitialized();
+  Teuchos::RCP<const Thyra::LinearOpBase<value_type> > set_uninitialized();
   /** \brief Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorBase</tt> object.
    *
    * If <tt>this->thyra_linear_op().count() == 1</tt>, then <tt>this</tt>
    * has sole ownership of the <tt>*this->thyra_linear_op()</tt> object.
    */
-  const Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> >& thyra_linear_op() const;
+  const Teuchos::RCP<const Thyra::LinearOpBase<value_type> >& thyra_linear_op() const;
   /** \brief . */
   BLAS_Cpp::Transp thyra_linear_op_trans() const;
 
@@ -134,7 +134,7 @@ private:
 #ifdef DOXYGEN_COMPILE
   Thyra::LinearOpBase<value_type>                                *thyra_linear_op;
 #else
-  Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> >   thyra_linear_op_;
+  Teuchos::RCP<const Thyra::LinearOpBase<value_type> >   thyra_linear_op_;
 #endif
   BLAS_Cpp::Transp                                               thyra_linear_op_trans_;
   VectorSpaceThyra                                               space_cols_;
@@ -146,7 +146,7 @@ private:
 // Inlined functions
 
 inline
-const Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> >&
+const Teuchos::RCP<const Thyra::LinearOpBase<value_type> >&
 MatrixOpThyra::thyra_linear_op() const
 {
   return thyra_linear_op_;

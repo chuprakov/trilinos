@@ -100,13 +100,13 @@ class NLPDirect : virtual public NLPObjGrad
 public:
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<MatrixSymOp> >            mat_sym_fcty_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
 
   /** \brief Initialize the factory objects for the special matrices for <tt>D'*D</tt> and <tt>S = I + D'*D</tt>.

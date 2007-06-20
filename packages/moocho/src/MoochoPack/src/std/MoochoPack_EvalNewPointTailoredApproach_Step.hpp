@@ -59,7 +59,7 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixOp> D_ptr_t;
+  typedef Teuchos::RCP<const MatrixOp> D_ptr_t;
   /// <<std comp>> members for testing object for NLPDirect
   STANDARD_COMPOSITION_MEMBERS( NLPDirectTester, deriv_tester );
   /// <<std comp>> Members for variable bounds tester object

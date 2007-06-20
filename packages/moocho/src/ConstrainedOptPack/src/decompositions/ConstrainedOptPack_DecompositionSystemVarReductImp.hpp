@@ -85,7 +85,7 @@ public:
   /** \brief . */
   typedef DecompositionSystem	                               inherited;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const BasisSystem>       basis_sys_ptr_t;
+  typedef Teuchos::RCP<const BasisSystem>       basis_sys_ptr_t;
 
   //@}
 
@@ -207,8 +207,8 @@ public:
     ,MatrixOpNonsing                                  *R
     ,MatrixOp                                         *Uz
     ,MatrixOp                                         *Uy
-    ,Teuchos::RefCountPtr<MatrixOpNonsing>       *C_ptr
-    ,Teuchos::RefCountPtr<MatrixOp>              *D_ptr
+    ,Teuchos::RCP<MatrixOpNonsing>       *C_ptr
+    ,Teuchos::RCP<MatrixOp>              *D_ptr
     );
 
   /** \brief Set updated basis matrices along with a possibly updated basis system object.
@@ -243,8 +243,8 @@ public:
     std::ostream                                       *out
     ,EOutputLevel                                      olevel
     ,ERunTests                                         test_what
-    ,const Teuchos::RefCountPtr<MatrixOpNonsing>  &C_ptr
-    ,const Teuchos::RefCountPtr<MatrixOp>         &D_ptr
+    ,const Teuchos::RCP<MatrixOpNonsing>  &C_ptr
+    ,const Teuchos::RCP<MatrixOp>         &D_ptr
     ,MatrixOp                                          *Uz
     ,const basis_sys_ptr_t                             &basis_sys   = Teuchos::null
     );
@@ -371,8 +371,8 @@ private:
   VectorSpace::space_ptr_t              space_c_;
   VectorSpace::space_ptr_t              space_range_;
   VectorSpace::space_ptr_t              space_null_;
-  mutable Teuchos::RefCountPtr<MatrixOpNonsing>  C_ptr_;
-  mutable Teuchos::RefCountPtr<MatrixOp>             D_ptr_;
+  mutable Teuchos::RCP<MatrixOpNonsing>  C_ptr_;
+  mutable Teuchos::RCP<MatrixOp>             D_ptr_;
   mutable EExplicitImplicit                                   D_imp_used_;
 #endif
   // //////////////////////////////////
@@ -382,7 +382,7 @@ private:
   void alloc_new_D_matrix( 
     std::ostream                             *out
     ,EOutputLevel                            olevel
-    ,Teuchos::RefCountPtr<MatrixOp> *D_ptr
+    ,Teuchos::RCP<MatrixOp> *D_ptr
     ) const;
   
   // not defined and not to be called!

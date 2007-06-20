@@ -52,13 +52,13 @@ namespace {
 
 // sum
 static RTOpPack::RTOpC                               sum_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  sum_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  sum_targ;
 // dot prod
 static RTOpPack::RTOpC                               dot_prod_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  dot_prod_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  dot_prod_targ;
 // number of bounded elements
 static RTOpPack::RTOpC                               num_bounded_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  num_bounded_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  num_bounded_targ;
 // add scalar to vector
 static RTOpPack::RTOpC                               add_scalar_op;
 // scale vector
@@ -142,7 +142,7 @@ void AbstractLinAlgPack::max_abs_ele(
   TEST_FOR_EXCEPT( !(  max_v_j && max_j  ) );
   RTOpPack::RTOpC op;
   TEST_FOR_EXCEPT(0!=RTOp_ROp_max_abs_ele_construct(&op.op()));
-  Teuchos::RefCountPtr<RTOpPack::ReductTarget> reduct_obj = op.reduct_obj_create();
+  Teuchos::RCP<RTOpPack::ReductTarget> reduct_obj = op.reduct_obj_create();
   const Vector* vecs[1] = { &v };
   apply_op(op,1,vecs,0,NULL,&*reduct_obj);
   RTOp_value_index_type val = RTOp_ROp_max_abs_ele_val(op(*reduct_obj));

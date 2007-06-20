@@ -42,7 +42,7 @@ MatrixOpThyra::MatrixOpThyra()
 {}
 
 MatrixOpThyra::MatrixOpThyra(
-  const Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> >   &thyra_linear_op
+  const Teuchos::RCP<const Thyra::LinearOpBase<value_type> >   &thyra_linear_op
   ,BLAS_Cpp::Transp                                                    thyra_linear_op_trans
   )
 {
@@ -50,7 +50,7 @@ MatrixOpThyra::MatrixOpThyra(
 }
 
 void MatrixOpThyra::initialize(
-  const Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> >   &thyra_linear_op
+  const Teuchos::RCP<const Thyra::LinearOpBase<value_type> >   &thyra_linear_op
   ,BLAS_Cpp::Transp                                                    thyra_linear_op_trans
   )
 {
@@ -71,10 +71,10 @@ void MatrixOpThyra::initialize(
   space_rows_.initialize(thyra_linear_op_->domain());
 }
 
-Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> > 
+Teuchos::RCP<const Thyra::LinearOpBase<value_type> > 
 MatrixOpThyra::set_uninitialized()
 {
-  Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> > tmp_thyra_linear_op = thyra_linear_op_;
+  Teuchos::RCP<const Thyra::LinearOpBase<value_type> > tmp_thyra_linear_op = thyra_linear_op_;
   thyra_linear_op_       = Teuchos::null;
   thyra_linear_op_trans_ = BLAS_Cpp::no_trans;
   space_cols_.set_uninitialized();
@@ -122,9 +122,9 @@ void MatrixOpThyra::Vp_StMtV(
 {
   using BLAS_Cpp::trans_trans;
   // Get Thyra views of the vectors
-  Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> > thyra_vec_rhs2;
+  Teuchos::RCP<const Thyra::VectorBase<value_type> > thyra_vec_rhs2;
   get_thyra_vector( BLAS_Cpp::no_trans==trans_rhs1 ? space_rows_ : space_cols_, v_rhs2, &thyra_vec_rhs2 );
-  Teuchos::RefCountPtr<Thyra::VectorBase<value_type> > thyra_vec_lhs;
+  Teuchos::RCP<Thyra::VectorBase<value_type> > thyra_vec_lhs;
   get_thyra_vector( BLAS_Cpp::no_trans==trans_rhs1 ? space_cols_ : space_rows_, v_lhs, &thyra_vec_lhs );
   // Perform the multiplication
   ::Thyra::apply(

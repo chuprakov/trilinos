@@ -31,7 +31,7 @@
 
 #include "AbstractLinAlgPack_Types.hpp"
 #include "Teuchos_AbstractFactory.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -173,7 +173,7 @@ namespace AbstractLinAlgPack {
  * following code example shows how to create a matrix object for \a N
  * (given the matrix \c Gc input to <tt>bs.update_basis(Gc,...)</tt> and \c bs):
  \code
-Teuchos::RefCountPtr<const MatrixOp>
+Teuchos::RCP<const MatrixOp>
 create_N(
     const AbstractLinAlgPack::MatrixOp       &Gc
     ,const AbstractLinAlgPack::BasisSystem   &bs
@@ -197,7 +197,7 @@ create_N(
  *
  * The client can also form matrices of the form <tt>S = I + D'*D</tt> as follows:
  \code
- Teuchos::RefCountPtr<MatrixSymOpNonsing>
+ Teuchos::RCP<MatrixSymOpNonsing>
      S = basis_sys.factory_S()->create();
  Teuchos::dyn_cast<MatrixSymInitDiag>(*S).init_identity(D.space_rows());
  syrk(D,BLAS_Cpp::trans,1.0,1.0,S.get();
@@ -219,16 +219,16 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<MatrixOp> >           mat_fcty_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<MatrixSymOp> >        mat_sym_fcty_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
   /** \brief . */
   class SingularBasis : public std::runtime_error

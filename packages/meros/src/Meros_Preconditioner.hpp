@@ -33,10 +33,12 @@
 #include "Thyra_VectorSpaceImpl.hpp" // need for LinOpDecl
 #include "Thyra_LinearOperatorImpl.hpp"
 #include "Thyra_PreconditionerBase.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 
 namespace Meros 
 {
+
   using namespace Teuchos;
   using namespace Thyra;
 

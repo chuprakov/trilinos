@@ -188,7 +188,7 @@ bool BasisSystemTester::test_basis_system(
     *out << " : " << ( lresult ? "passed" : "failed" );
 
   // Create the N matrix if not input
-  Teuchos::RefCountPtr<const AbstractLinAlgPack::MatrixOp>
+  Teuchos::RCP<const AbstractLinAlgPack::MatrixOp>
     N = Teuchos::rcp(N_in,false);
   if( Gc && C && N.get() == NULL ) {
     if(out && print_tests >= PRINT_BASIC)
@@ -197,7 +197,7 @@ bool BasisSystemTester::test_basis_system(
     if(out && print_tests >= PRINT_MORE)
       *out
         << std::endl;
-    Teuchos::RefCountPtr<AbstractLinAlgPack::MatrixComposite>
+    Teuchos::RCP<AbstractLinAlgPack::MatrixComposite>
       N_comp = Teuchos::rcp(new AbstractLinAlgPack::MatrixComposite(var_dep.size(),var_indep.size()));
     if( equ_decomp.size() )
       N_comp->add_matrix( 0, 0, 1.0, equ_decomp, Gc, Teuchos::null, BLAS_Cpp::trans, var_indep );

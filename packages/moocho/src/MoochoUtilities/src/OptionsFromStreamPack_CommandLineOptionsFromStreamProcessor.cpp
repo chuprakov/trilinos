@@ -50,13 +50,13 @@ CommandLineOptionsFromStreamProcessor::CommandLineOptionsFromStreamProcessor(
 {}
 
 void CommandLineOptionsFromStreamProcessor::set_options(
-  Teuchos::RefCountPtr<OptionsFromStream> const& options
+  Teuchos::RCP<OptionsFromStream> const& options
   )
 {
   options_ = options;
 }
 
-Teuchos::RefCountPtr<OptionsFromStream>
+Teuchos::RCP<OptionsFromStream>
 CommandLineOptionsFromStreamProcessor::get_options() const
 {
   return options_;
@@ -117,7 +117,7 @@ void CommandLineOptionsFromStreamProcessor::process_options()
   }
 }
 
-Teuchos::RefCountPtr<OptionsFromStream>
+Teuchos::RCP<OptionsFromStream>
 CommandLineOptionsFromStreamProcessor::process_and_get_options()
 {
   process_options();

@@ -147,7 +147,7 @@ void BasisSystemPermDirectSparse::update_basis(
   // Get the basis matrix object from the aggregate or allocate one
   MatrixOpNonsingAggr
     &C_aggr = dyn_cast<MatrixOpNonsingAggr>(*C);
-  Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>
+  Teuchos::RCP<DirectSparseSolver::BasisMatrix>
     C_bm = get_basis_matrix(C_aggr);
   // Setup the encapulated convert-to-sparse matrix object
   MatrixConvertToSparseEncap A_mctse;
@@ -231,7 +231,7 @@ void BasisSystemPermDirectSparse::set_basis(
   // Get the basis matrix object from the aggregate or allocate one
   MatrixOpNonsingAggr
     &C_aggr = dyn_cast<MatrixOpNonsingAggr>(*C);
-  Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>
+  Teuchos::RCP<DirectSparseSolver::BasisMatrix>
     C_bm = get_basis_matrix(C_aggr);
   // Get at the concreate permutation vectors
   const PermutationSerial
@@ -305,7 +305,7 @@ void BasisSystemPermDirectSparse::select_basis(
   // Get the basis matrix object from the aggregate or allocate one
   MatrixOpNonsingAggr
     &C_aggr = dyn_cast<MatrixOpNonsingAggr>(*C);
-  Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>
+  Teuchos::RCP<DirectSparseSolver::BasisMatrix>
     C_bm = get_basis_matrix(C_aggr);
   // Setup the encapulated convert-to-sparse matrix object
   // ToDo: Use nu to exclude variables that are at a bound!
@@ -316,7 +316,7 @@ void BasisSystemPermDirectSparse::select_basis(
   MatrixConvertToSparseEncap A_mctse;
   set_A_mctse( n, m, Gc_pa, &A_mctse );
   // Analyze and factor this basis (it had better be full rank)!
-  Teuchos::RefCountPtr<IVector>
+  Teuchos::RCP<IVector>
     var_perm_ds = Teuchos::rcp(new IVector),
     equ_perm_ds = Teuchos::rcp(new IVector);
   size_type rank = 0;
@@ -362,11 +362,11 @@ void BasisSystemPermDirectSparse::select_basis(
 
 // private
 
-Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>
+Teuchos::RCP<DirectSparseSolver::BasisMatrix>
 BasisSystemPermDirectSparse::get_basis_matrix( MatrixOpNonsingAggr &C_aggr ) const
 {
   using Teuchos::dyn_cast;
-  Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix> C_bm;
+  Teuchos::RCP<DirectSparseSolver::BasisMatrix> C_bm;
   if( C_aggr.mns().get() ) {
     C_bm = Teuchos::rcp_dynamic_cast<DirectSparseSolver::BasisMatrix>(
       Teuchos::rcp_const_cast<MatrixNonsing>(C_aggr.mns() ) );
@@ -398,7 +398,7 @@ void BasisSystemPermDirectSparse::set_A_mctse(
 
 void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
   const MatrixOp& Gc
-  ,const Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>& C_bm
+  ,const Teuchos::RCP<DirectSparseSolver::BasisMatrix>& C_bm
   ,MatrixOpNonsingAggr *C_aggr
   ,MatrixOp* D, MatrixOp* GcUP
   ) const
@@ -431,7 +431,7 @@ void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
 void BasisSystemPermDirectSparse::do_some_basis_stuff(
   const MatrixOp& Gc
   ,const Range1D& var_dep, const Range1D& equ_decomp
-  ,const Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>& C_bm
+  ,const Teuchos::RCP<DirectSparseSolver::BasisMatrix>& C_bm
   ,MatrixOpNonsingAggr *C_aggr
   ,MatrixOp* D, MatrixOp* GcUP
   )

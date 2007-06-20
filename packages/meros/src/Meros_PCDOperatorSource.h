@@ -35,9 +35,12 @@
 #include "Thyra_VectorSpaceImpl.hpp" 
 #include "Thyra_LinearOperatorDecl.hpp"
 #include "Epetra_RowMatrix.h"
+#include "Teuchos_RefCountPtr.hpp"
+
 
 namespace Meros 
 {
+
   using namespace Thyra;
   
   /** \brief Meros implementation of a Thyra

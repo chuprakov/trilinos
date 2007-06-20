@@ -66,7 +66,7 @@ void MultiVectorMutableDense::initialize(
 {
   namespace rcp = MemMngPack;
   namespace rmp = MemMngPack;
-  typedef Teuchos::RefCountPtr<DMatrix> vec_ptr_t;
+  typedef Teuchos::RCP<DMatrix> vec_ptr_t;
   vec_ptr_t gms_ptr = Teuchos::rcp(new DMatrix(rows,cols));
   this->initialize(
     (*gms_ptr)()

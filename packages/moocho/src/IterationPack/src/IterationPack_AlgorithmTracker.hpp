@@ -32,7 +32,7 @@
 #include <iosfwd>
 
 #include "IterationPack_Types.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 namespace IterationPack {
 
@@ -53,7 +53,7 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<std::ostream>    ostream_ptr_t;
+  typedef Teuchos::RCP<std::ostream>    ostream_ptr_t;
 
   //@}
 

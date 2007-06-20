@@ -70,7 +70,7 @@ class VectorMutableBlocked : virtual public VectorMutable
 public:
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const VectorSpaceBlocked>  vec_space_comp_ptr_t;
+  typedef Teuchos::RCP<const VectorSpaceBlocked>  vec_space_comp_ptr_t;
 
   /** \brief Calls <tt>this->initialize()</tt>.
    */

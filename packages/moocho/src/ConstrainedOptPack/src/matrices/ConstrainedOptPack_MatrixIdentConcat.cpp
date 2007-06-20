@@ -44,7 +44,7 @@ namespace {
 // Get a view of a vector (two versions)
 
 inline
-Teuchos::RefCountPtr<const AbstractLinAlgPack::Vector>
+Teuchos::RCP<const AbstractLinAlgPack::Vector>
 get_view(
   const AbstractLinAlgPack::Vector  &v
   ,const RangePack::Range1D         &rng
@@ -54,7 +54,7 @@ get_view(
 }
 
 inline
-Teuchos::RefCountPtr<const AbstractLinAlgPack::SpVectorSlice>
+Teuchos::RCP<const AbstractLinAlgPack::SpVectorSlice>
 get_view(
   const AbstractLinAlgPack::SpVectorSlice &v
   ,const RangePack::Range1D               &rng
@@ -140,7 +140,7 @@ size_type MatrixIdentConcat::nz() const
 
 std::ostream& MatrixIdentConcat::output(std::ostream& out_arg) const
 {
-  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
   Teuchos::OSTab tab(out);
   const Range1D           D_rng   = this->D_rng();
   const BLAS_Cpp::Transp  D_trans = this->D_trans();

@@ -62,7 +62,7 @@ public:
 
   /** \brief Calls <tt>initialize()</tt>. */
   NLPDirectThyraModelEvaluator(
-    const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
+    const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
     ,const objDirecFiniteDiffCalculator_ptr_t                       objDirecFiniteDiffCalculator = Teuchos::null
@@ -75,7 +75,7 @@ public:
    * ToDo: Finish documentation!
    */
   void initialize(
-    const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
+    const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
     ,const objDirecFiniteDiffCalculator_ptr_t                       objDirecFiniteDiffCalculator = Teuchos::null
@@ -140,8 +140,8 @@ public:
 
 private:
 
-  mutable Teuchos::RefCountPtr<Thyra::LinearOpWithSolveBase<value_type> >  thyra_C_;
-  mutable Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> >        thyra_N_;
+  mutable Teuchos::RCP<Thyra::LinearOpWithSolveBase<value_type> >  thyra_C_;
+  mutable Teuchos::RCP<Thyra::MultiVectorBase<value_type> >        thyra_N_;
   
 };	// end class NLPDirectThyraModelEvaluator
 

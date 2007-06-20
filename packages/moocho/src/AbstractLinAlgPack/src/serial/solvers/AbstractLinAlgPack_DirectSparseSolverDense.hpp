@@ -79,7 +79,7 @@ protected:
     //@{
 
     /** \brief . */
-    Teuchos::RefCountPtr<BasisMatrixImp> create_matrix() const;
+    Teuchos::RCP<BasisMatrixImp> create_matrix() const;
     /** \brief . */
     void V_InvMtV(
       VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
@@ -125,9 +125,9 @@ protected:
   //@{
 
   /** \brief . */
-  const Teuchos::RefCountPtr<FactorizationStructure> create_fact_struc() const;
+  const Teuchos::RCP<FactorizationStructure> create_fact_struc() const;
   /** \brief . */
-  const Teuchos::RefCountPtr<FactorizationNonzeros> create_fact_nonzeros() const;
+  const Teuchos::RCP<FactorizationNonzeros> create_fact_nonzeros() const;
   /** \brief . */
   void imp_analyze_and_factor(
     const AbstractLinAlgPack::MatrixConvertToSparse   &A

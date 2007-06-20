@@ -77,10 +77,10 @@ class NLPFirstOrder : virtual public NLPObjGrad {
 public:
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<MatrixOp> >        mat_fcty_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<BasisSystem>           basis_sys_ptr_t;
+  typedef Teuchos::RCP<BasisSystem>           basis_sys_ptr_t;
 
   /** @name Constructors */
   //@{

@@ -126,15 +126,15 @@ public:
   class IncompatibleVectorSpaces : public std::logic_error
   {public: IncompatibleVectorSpaces(const std::string& what_arg) : std::logic_error(what_arg) {}};
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const InnerProduct>          inner_prod_ptr_t;
+  typedef Teuchos::RCP<const InnerProduct>          inner_prod_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const VectorSpace>           space_ptr_t;
+  typedef Teuchos::RCP<const VectorSpace>           space_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const VectorSpaceFactory>    space_fcty_ptr_t;
+  typedef Teuchos::RCP<const VectorSpaceFactory>    space_fcty_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<VectorMutable>               vec_mut_ptr_t;
+  typedef Teuchos::RCP<VectorMutable>               vec_mut_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<MultiVectorMutable>          multi_vec_mut_ptr_t;
+  typedef Teuchos::RCP<MultiVectorMutable>          multi_vec_mut_ptr_t;
 
 
   /** @name Constructors / initializers */

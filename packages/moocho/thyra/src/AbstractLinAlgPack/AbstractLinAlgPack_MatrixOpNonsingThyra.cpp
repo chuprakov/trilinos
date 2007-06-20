@@ -40,7 +40,7 @@ MatrixOpNonsingThyra::MatrixOpNonsingThyra()
 {}
 
 MatrixOpNonsingThyra::MatrixOpNonsingThyra(
-  const Teuchos::RefCountPtr<const Thyra::LinearOpWithSolveBase<value_type> >  &thyra_linear_op_ns
+  const Teuchos::RCP<const Thyra::LinearOpWithSolveBase<value_type> >  &thyra_linear_op_ns
   ,BLAS_Cpp::Transp                                                            thyra_linear_op_trans
   )
 {
@@ -48,7 +48,7 @@ MatrixOpNonsingThyra::MatrixOpNonsingThyra(
 }
 
 void MatrixOpNonsingThyra::initialize(
-  const Teuchos::RefCountPtr<const Thyra::LinearOpWithSolveBase<value_type> >  &thyra_linear_op_ns
+  const Teuchos::RCP<const Thyra::LinearOpWithSolveBase<value_type> >  &thyra_linear_op_ns
   ,BLAS_Cpp::Transp                                                            thyra_linear_op_trans
   )
 {
@@ -60,16 +60,16 @@ void MatrixOpNonsingThyra::initialize(
   MatrixOpThyra::initialize(thyra_linear_op_ns,thyra_linear_op_trans);
 }
 
-Teuchos::RefCountPtr<const Thyra::LinearOpWithSolveBase<value_type> > 
+Teuchos::RCP<const Thyra::LinearOpWithSolveBase<value_type> > 
 MatrixOpNonsingThyra::set_uninitialized()
 {
-  Teuchos::RefCountPtr<const Thyra::LinearOpWithSolveBase<value_type> >
+  Teuchos::RCP<const Thyra::LinearOpWithSolveBase<value_type> >
     tmp_thyra_linear_op_ns = thyra_linear_op_ns();
   MatrixOpThyra::set_uninitialized();
   return tmp_thyra_linear_op_ns;
 }
 
-Teuchos::RefCountPtr<const Thyra::LinearOpWithSolveBase<value_type> >
+Teuchos::RCP<const Thyra::LinearOpWithSolveBase<value_type> >
 MatrixOpNonsingThyra::thyra_linear_op_ns() const
 {
   return Teuchos::rcp_dynamic_cast<const Thyra::LinearOpWithSolveBase<value_type> >(this->thyra_linear_op());
@@ -100,7 +100,7 @@ void MatrixOpNonsingThyra::V_InvMtV(
 #endif
   *v_lhs = 0.0; // Must initialize before sending to solve(...)!
   VectorMutableThyra &v_thyra_lhs = dyn_cast<VectorMutableThyra>(*v_lhs);
-  Teuchos::RefCountPtr<Thyra::VectorBase<value_type> > thyra_vec_lhs = v_thyra_lhs.set_uninitialized();
+  Teuchos::RCP<Thyra::VectorBase<value_type> > thyra_vec_lhs = v_thyra_lhs.set_uninitialized();
   Thyra::solve(
     *thyra_linear_op_ns()
     ,trans_trans(trans_rhs1,thyra_linear_op_trans())==BLAS_Cpp::no_trans ? Thyra::NOTRANS : Thyra::TRANS  // M_trans

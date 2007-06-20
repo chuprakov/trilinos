@@ -350,11 +350,11 @@ int main( int argc, char **argv )
   InitialGuess.PutScalar(0.0);
 
   // Set up the problem interface
-  Teuchos::RefCountPtr<SimpleProblemInterface> interface = 
+  Teuchos::RCP<SimpleProblemInterface> interface = 
     Teuchos::rcp(new SimpleProblemInterface(&Problem) );
   
   // Create the top level parameter list
-  Teuchos::RefCountPtr<Teuchos::ParameterList> nlParamsPtr =
+  Teuchos::RCP<Teuchos::ParameterList> nlParamsPtr =
     Teuchos::rcp(new Teuchos::ParameterList);
   Teuchos::ParameterList& nlParams = *(nlParamsPtr.get());
 
@@ -394,11 +394,11 @@ int main( int argc, char **argv )
   lsParams.set("Output Frequency", 50);    
   lsParams.set("Aztec Preconditioner", "ilu"); 
 
-  Teuchos::RefCountPtr<Epetra_CrsMatrix> A = Teuchos::rcp( Problem.GetMatrix(), false );
+  Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( Problem.GetMatrix(), false );
 
-  Teuchos::RefCountPtr<NOX::Epetra::Interface::Required> iReq = interface;
-  Teuchos::RefCountPtr<NOX::Epetra::Interface::Jacobian> iJac = interface;
-  Teuchos::RefCountPtr<NOX::Epetra::LinearSystemAztecOO> linSys = 
+  Teuchos::RCP<NOX::Epetra::Interface::Required> iReq = interface;
+  Teuchos::RCP<NOX::Epetra::Interface::Jacobian> iJac = interface;
+  Teuchos::RCP<NOX::Epetra::LinearSystemAztecOO> linSys = 
     Teuchos::rcp(new NOX::Epetra::LinearSystemAztecOO(printParams, lsParams,
 						      iReq,
 						      iJac, A, 
@@ -406,19 +406,19 @@ int main( int argc, char **argv )
 
   // Need a NOX::Epetra::Vector for constructor
   NOX::Epetra::Vector noxInitGuess(InitialGuess, NOX::DeepCopy);
-  Teuchos::RefCountPtr<NOX::Epetra::Group> grpPtr = 
+  Teuchos::RCP<NOX::Epetra::Group> grpPtr = 
     Teuchos::rcp(new NOX::Epetra::Group(printParams, 
 					iReq, 
 					noxInitGuess, 
 					linSys)); 
 
   // Set up the status tests
-  Teuchos::RefCountPtr<NOX::StatusTest::NormF> testNormF = 
+  Teuchos::RCP<NOX::StatusTest::NormF> testNormF = 
     Teuchos::rcp(new NOX::StatusTest::NormF(1.0e-4));
-  Teuchos::RefCountPtr<NOX::StatusTest::MaxIters> testMaxIters = 
+  Teuchos::RCP<NOX::StatusTest::MaxIters> testMaxIters = 
     Teuchos::rcp(new NOX::StatusTest::MaxIters(20));
   // this will be the convergence test to be used
-  Teuchos::RefCountPtr<NOX::StatusTest::Combo> combo = 
+  Teuchos::RCP<NOX::StatusTest::Combo> combo = 
     Teuchos::rcp(new NOX::StatusTest::Combo(NOX::StatusTest::Combo::OR, 
 					    testNormF, testMaxIters));
 

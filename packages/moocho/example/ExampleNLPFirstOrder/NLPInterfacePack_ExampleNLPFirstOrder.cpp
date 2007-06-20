@@ -125,9 +125,9 @@ void ExampleNLPFirstOrder::imp_calc_Gc(
     first_order_info.Gc, &C_aggr, &N_aggr ); // Will return NULLs if Gc is not initialized
 
   // Allocate C and N matrix objects if not done yet!
-  Teuchos::RefCountPtr<MatrixOpNonsing>
+  Teuchos::RCP<MatrixOpNonsing>
     C_ptr = Teuchos::null;
-  Teuchos::RefCountPtr<MatrixOp>
+  Teuchos::RCP<MatrixOp>
     N_ptr = Teuchos::null;
   if( C_aggr == NULL ) {
     const VectorSpace::space_ptr_t

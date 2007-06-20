@@ -32,7 +32,7 @@
 #include <list>
 
 #include "IterationPack_AlgorithmTracker.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 namespace IterationPack {
 
@@ -47,7 +47,7 @@ class AlgorithmTrackerComposite : public AlgorithmTracker {
 public:
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<AlgorithmTracker>      track_ptr_t;
+  typedef Teuchos::RCP<AlgorithmTracker>      track_ptr_t;
   /** \brief . */
   typedef std::list<track_ptr_t>                                    track_list_t;
   /** \brief . */

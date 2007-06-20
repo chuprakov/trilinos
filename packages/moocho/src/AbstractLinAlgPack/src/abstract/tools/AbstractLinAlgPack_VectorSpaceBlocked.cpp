@@ -193,7 +193,7 @@ VectorSpaceBlocked::sub_space(const Range1D& rng_in) const
   TEST_FOR_EXCEPT( !(  end_kth_vector_space > kth_vector_space  ) );
 #endif
   // Create a VectorSpaceComposite object containing the relavant constituent vector spaces
-  Teuchos::RefCountPtr<VectorSpaceBlocked>
+  Teuchos::RCP<VectorSpaceBlocked>
     vec_space_comp = Teuchos::rcp(
       new VectorSpaceBlocked(
         &vector_spaces[kth_vector_space]

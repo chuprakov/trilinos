@@ -80,10 +80,10 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
   /** \brief . */
   class SingularDecomposition : public std::logic_error

@@ -47,7 +47,7 @@ using std::setw;
 namespace MoochoPack {
 
 MoochoTrackerXMLSummary::MoochoTrackerXMLSummary(
-  const Teuchos::RefCountPtr<std::ostream> &journal_out
+  const Teuchos::RCP<std::ostream> &journal_out
   ,const std::string xml_filename
   ,const std::string problem_name
   ,const std::string algorithm_description
@@ -74,7 +74,7 @@ void MoochoTrackerXMLSummary::output_iteration(const Algorithm& algo) const
     // first iteration...
     // write out a dummy file that will be overwritten if the algorithm completes
     // this way there will be an xml file even if the algorithm exceptions...
-    Teuchos::RefCountPtr<std::ofstream> xml_out = Teuchos::rcp( new std::ofstream(xml_filename_.c_str(), std::ios::out));
+    Teuchos::RCP<std::ofstream> xml_out = Teuchos::rcp( new std::ofstream(xml_filename_.c_str(), std::ios::out));
     std::ofstream &out = *xml_out.get();
     
     // Print the Problem Element
@@ -105,7 +105,7 @@ void MoochoTrackerXMLSummary::output_final(const Algorithm& algo
   const size_type
     m = nlp.m();
 
-  Teuchos::RefCountPtr<std::ofstream> xml_out = Teuchos::rcp( new std::ofstream(xml_filename_.c_str(), std::ios::out));
+  Teuchos::RCP<std::ofstream> xml_out = Teuchos::rcp( new std::ofstream(xml_filename_.c_str(), std::ios::out));
   std::ofstream &out = *xml_out.get();
 
   // Print the Problem Element
@@ -239,7 +239,7 @@ void MoochoTrackerXMLSummary::output_final(const Algorithm& algo
 
 void MoochoTrackerXMLSummary::output_pre_file() const
 {
-  Teuchos::RefCountPtr<std::ofstream> xml_out = Teuchos::rcp( new std::ofstream(xml_filename_.c_str(), std::ios::out));
+  Teuchos::RCP<std::ofstream> xml_out = Teuchos::rcp( new std::ofstream(xml_filename_.c_str(), std::ios::out));
   std::ofstream &out = *xml_out.get();
   
   char ind[] = "   ";

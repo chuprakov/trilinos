@@ -53,11 +53,11 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const Teuchos::AbstractFactory<MatrixOp> >  fcty_Gc_ptr_t;
+  typedef Teuchos::RCP<const Teuchos::AbstractFactory<MatrixOp> >  fcty_Gc_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<MatrixOpNonsing>                               C_ptr_t;
+  typedef Teuchos::RCP<MatrixOpNonsing>                               C_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<MatrixOp>                                      N_ptr_t;
+  typedef Teuchos::RCP<MatrixOp>                                      N_ptr_t;
 
   //@}
 

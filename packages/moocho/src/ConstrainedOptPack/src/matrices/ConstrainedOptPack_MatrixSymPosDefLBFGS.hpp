@@ -104,7 +104,7 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MultiVector>   multi_vec_ptr_t;
+  typedef Teuchos::RCP<const MultiVector>   multi_vec_ptr_t;
 
   /** \brief PostMod class to use with <tt>MemMngPack::AbstractFactorStd</tt>.
    */

@@ -236,7 +236,7 @@ void MatrixSymPosDefCholFactor::zero_out()
 
 std::ostream& MatrixSymPosDefCholFactor::output(std::ostream& out_arg) const
 {
-  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
   Teuchos::OSTab tab(out);
   if( M_size_ ) {
     if( maintain_original_ ) {
@@ -1464,7 +1464,7 @@ void MatrixSymPosDefCholFactor::allocate_storage(size_type max_size) const
   namespace rcp = MemMngPack;
   if( allocates_storage_ && MU_store_.rows() < max_size + 1 ) {
     // We have the right to allocate storage so lets just do it.
-    Teuchos::RefCountPtr<DMatrix>
+    Teuchos::RCP<DMatrix>
       MU_store = Teuchos::rcp(new DMatrix( max_size + 1, max_size + 1 ));
     typedef MemMngPack::ReleaseResource_ref_count_ptr<DMatrix> ptr_t;
     const_cast<MatrixSymPosDefCholFactor*>(this)->release_resource_ptr_ = Teuchos::rcp(new ptr_t(MU_store));

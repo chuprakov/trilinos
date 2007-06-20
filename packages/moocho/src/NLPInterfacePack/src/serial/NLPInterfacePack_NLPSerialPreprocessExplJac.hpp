@@ -87,7 +87,7 @@ public:
   //@{
   
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<MatrixOp> >    factory_mat_ptr_t;
 
   //@}

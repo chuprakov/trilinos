@@ -44,7 +44,7 @@ bool IterationPack::TestingPack::TestIterQuantityAccessContiguous(std::ostream* 
     IterQuantityAccessContiguous<T> iq_v(
       1,"v"
 #ifdef _MIPS_CXX
-      ,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<T,T> >(
+      ,Teuchos::RCP<Teuchos::AbstractFactoryStd<T,T> >(
         new Teuchos::AbstractFactoryStd<T,T>())
 #endif			
       );
@@ -81,7 +81,7 @@ bool IterationPack::TestingPack::TestIterQuantityAccessContiguous(std::ostream* 
     IterQuantityAccessContiguous<int> x_cont(
       1, "x"
 #ifdef _MIPS_CXX
-      ,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<int,int> >(
+      ,Teuchos::RCP<Teuchos::AbstractFactoryStd<int,int> >(
         new Teuchos::AbstractFactoryStd<int,int>())
 #endif			
       );
@@ -256,7 +256,7 @@ bool IterationPack::TestingPack::TestIterQuantityAccessContiguous(std::ostream* 
     IterQuantityAccessContiguous<int> x_cont(
       2, "x"
 #ifdef _MIPS_CXX
-      ,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<int,int> >(
+      ,Teuchos::RCP<Teuchos::AbstractFactoryStd<int,int> >(
         new Teuchos::AbstractFactoryStd<int,int>())
 #endif			
       );
@@ -486,7 +486,7 @@ bool IterationPack::TestingPack::TestIterQuantityAccessContiguous(std::ostream* 
     IterQuantityAccessContiguous<int> x_cont(
       4, "x"
 #ifdef _MIPS_CXX
-      ,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<int,int> >(
+      ,Teuchos::RCP<Teuchos::AbstractFactoryStd<int,int> >(
         new Teuchos::AbstractFactoryStd<int,int>())
 #endif			
       );

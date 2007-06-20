@@ -48,9 +48,9 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<DecompositionSystemVarReductImp>    decomp_sys_imp_ptr_t;
+  typedef Teuchos::RCP<DecompositionSystemVarReductImp>    decomp_sys_imp_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<BasisSystemPerm>                    basis_sys_ptr_t;
+  typedef Teuchos::RCP<BasisSystemPerm>                    basis_sys_ptr_t;
 
   //@}
 

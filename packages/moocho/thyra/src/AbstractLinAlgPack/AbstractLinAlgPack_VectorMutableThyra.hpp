@@ -53,7 +53,7 @@ public:
   VectorMutableThyra();
   /** \brief Calls <tt>this->initialize()</tt>.
    */
-  VectorMutableThyra( const Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >& thyra_vec );
+  VectorMutableThyra( const Teuchos::RCP<Thyra::VectorBase<value_type> >& thyra_vec );
   /** \brief Initalize given a smart pointer to a <tt>Thyra::Vetor</tt> object.
    *
    * @param  thyra_vec  [in] Smart pointer to Thyra vector <tt>this</tt> will adapt.
@@ -66,20 +66,20 @@ public:
    * <li><tt>this->thyra_vec().get() == thyra_vec.get()</tt>
    * </ul>
    */
-  void initialize( const Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >& thyra_vec );
+  void initialize( const Teuchos::RCP<Thyra::VectorBase<value_type> >& thyra_vec );
   /** \brief Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorBase</tt> object.
    *
    * Postconditioins:<ul>
    * <li><tt>this->thyra_vec().get() == NULL</tt>
    * </ul>
    */
-  Teuchos::RefCountPtr<Thyra::VectorBase<value_type> > set_uninitialized();
+  Teuchos::RCP<Thyra::VectorBase<value_type> > set_uninitialized();
   /** \brief Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorBase</tt> object.
    *
    * If <tt>this->thyra_vec().count() == 2</tt>, then <tt>this</tt>
    * has so ownership of the <tt>*this->thyra_vec()</tt> object.
    */
-  Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> > thyra_vec() const;
+  Teuchos::RCP<const Thyra::VectorBase<value_type> > thyra_vec() const;
 
   //@}
 
@@ -135,7 +135,7 @@ private:
 #ifdef DOXYGEN_COMPILE
   Thyra::VectorBase<value_type>                          *thyra_vector;
 #else
-  Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >   thyra_vec_;
+  Teuchos::RCP<Thyra::VectorBase<value_type> >   thyra_vec_;
 #endif
   VectorSpaceThyra                                       space_;
 
@@ -149,7 +149,7 @@ private:
 // Inline functions
 
 inline
-Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> >
+Teuchos::RCP<const Thyra::VectorBase<value_type> >
 VectorMutableThyra::thyra_vec() const
 {
   return thyra_vec_;

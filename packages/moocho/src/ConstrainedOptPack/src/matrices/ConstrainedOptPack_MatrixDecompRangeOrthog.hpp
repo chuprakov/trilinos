@@ -60,11 +60,11 @@ public:
   //@{
 #ifndef DOXYGEN_COMPILE
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixOpNonsing>     C_ptr_t;
+  typedef Teuchos::RCP<const MatrixOpNonsing>     C_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixOp>                D_ptr_t;
+  typedef Teuchos::RCP<const MatrixOp>                D_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixSymOpNonsing>  S_ptr_t;
+  typedef Teuchos::RCP<const MatrixSymOpNonsing>  S_ptr_t;
 #endif
   //@}
 

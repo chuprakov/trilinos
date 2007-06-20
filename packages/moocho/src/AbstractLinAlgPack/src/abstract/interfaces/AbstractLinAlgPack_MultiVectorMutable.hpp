@@ -77,9 +77,9 @@ public:
   using MultiVector::diag;
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<VectorMutable>       vec_mut_ptr_t;
+  typedef Teuchos::RCP<VectorMutable>       vec_mut_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<MultiVectorMutable>  multi_vec_mut_ptr_t;
+  typedef Teuchos::RCP<MultiVectorMutable>  multi_vec_mut_ptr_t;
 
   /** @name Clone */
   //@{

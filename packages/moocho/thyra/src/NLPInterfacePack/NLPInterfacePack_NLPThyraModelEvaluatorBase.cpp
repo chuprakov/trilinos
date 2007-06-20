@@ -151,7 +151,7 @@ void NLPThyraModelEvaluatorBase::report_final_solution(
   )
 {
   using Teuchos::dyn_cast;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   typedef Thyra::ModelEvaluatorBase MEB;
   using AbstractLinAlgPack::VectorMutableThyra;
   MEB::InArgs<value_type> model_finalPoint = model_->createInArgs();
@@ -159,7 +159,7 @@ void NLPThyraModelEvaluatorBase::report_final_solution(
     const Range1D
       var_dep   = basis_sys_->var_dep(),
       var_indep = basis_sys_->var_indep();
-    RefCountPtr<const Vector> xD = x.sub_view(var_dep), xI;
+    RCP<const Vector> xD = x.sub_view(var_dep), xI;
     if(p_idx_>=0) xI = x.sub_view(var_indep);
     model_finalPoint.set_x(dyn_cast<const VectorMutableThyra>(*xD).thyra_vec().assert_not_null());
     if(p_idx_ >= 0)
@@ -219,7 +219,7 @@ NLPThyraModelEvaluatorBase::NLPThyraModelEvaluatorBase()
 {}
 
 void NLPThyraModelEvaluatorBase::initializeBase(
-  const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
+  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >  &model
   ,const int                                                      p_idx
   ,const int                                                      g_idx
   )
@@ -240,9 +240,9 @@ void NLPThyraModelEvaluatorBase::initializeBase(
   TEST_FOR_EXCEPTION( p_idx >= 0 && ( p_idx > model_outArgs.Np()-1 ), std::invalid_argument, msg_err );
   TEST_FOR_EXCEPTION( g_idx >= 0 && ( g_idx > model_outArgs.Ng()-1 ), std::invalid_argument, msg_err );
   //
-  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > model_space_x(model->get_x_space());
+  Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> > model_space_x(model->get_x_space());
   const bool no_model_x = (model_space_x.get() == NULL);
-  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > model_space_f(model->get_f_space());
+  Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> > model_space_f(model->get_f_space());
   const bool no_model_f = (model_space_f.get() == NULL);
   //
   if( !no_model_f ) {
@@ -348,11 +348,11 @@ void NLPThyraModelEvaluatorBase::updateInitialGuessAndBounds()
 
   Thyra::ModelEvaluatorBase::OutArgs<value_type>
     model_outArgs = model_->createOutArgs();
-  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >
+  Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >
     model_space_x = model_->get_x_space();
   const bool
     no_model_x = (model_space_x.get() == NULL);
-  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >
+  Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >
     model_space_f = model_->get_f_space();
   const bool
     no_model_f = (model_space_f.get() == NULL);
@@ -409,7 +409,7 @@ void NLPThyraModelEvaluatorBase::set_x(
   ) const
 {
   using Teuchos::dyn_cast;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   using Teuchos::rcp_const_cast;
   using Teuchos::rcp_dynamic_cast;
   using AbstractLinAlgPack::VectorMutableThyra;
@@ -422,7 +422,7 @@ void NLPThyraModelEvaluatorBase::set_x(
     const Range1D
       var_dep   = basis_sys_->var_dep(),
       var_indep = basis_sys_->var_indep();
-    RefCountPtr<const Vector> xD = x.sub_view(var_dep), xI;
+    RCP<const Vector> xD = x.sub_view(var_dep), xI;
     if(p_idx_>=0) xI = x.sub_view(var_indep);
     model_inArgs.set_x(dyn_cast<const VectorMutableThyra>(*xD).thyra_vec().assert_not_null());
     if(p_idx_ >= 0)
@@ -449,7 +449,7 @@ void NLPThyraModelEvaluatorBase::preprocessBaseInOutArgs(
   ) const
 {
   using Teuchos::dyn_cast;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   using Teuchos::rcp_const_cast;
   using Teuchos::rcp_dynamic_cast;
   using AbstractLinAlgPack::VectorMutableThyra;
@@ -497,7 +497,7 @@ void NLPThyraModelEvaluatorBase::preprocessBaseInOutArgs(
     model_outArgs.set_g(g_idx_,model_g_.assert_not_null()); // ToDo: Make more general!
   }
   if( c && !c_updated_ ) {
-    Teuchos::RefCountPtr<Thyra::VectorBase<value_type> > thyra_c;
+    Teuchos::RCP<Thyra::VectorBase<value_type> > thyra_c;
     get_thyra_vector(*space_c_,c,&thyra_c);
     model_outArgs.set_f(thyra_c.assert_not_null());
   }
@@ -555,7 +555,7 @@ void NLPThyraModelEvaluatorBase::postprocessBaseOutArgs(
     f_updated_ = true;
   }
   if( c && !c_updated_ ) {
-    Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >
+    Teuchos::RCP<Thyra::VectorBase<value_type> >
       thyra_c = model_outArgs.get_f();
     commit_thyra_vector(*space_c_,c,&thyra_c);
     model_outArgs.set_f(Teuchos::null);
@@ -591,7 +591,7 @@ void NLPThyraModelEvaluatorBase::evalModel(
   //
   // Get output and verbosity
   //
-  const Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  const Teuchos::RCP<Teuchos::FancyOStream>
     out = this->getOStream();
   const Teuchos::EVerbosityLevel
     verbLevel = ( showModelEvaluatorTrace() ? this->getVerbLevel() : Teuchos::VERB_NONE );

@@ -53,7 +53,7 @@ public:
     :vec_space_(vec_space)
     ,num_vecs_(num_vecs)
   {}
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     AbstractLinAlgPack::MultiVectorMutable>               ptr_t;
   ptr_t allocate() const
   {
@@ -158,7 +158,7 @@ void BasisSystemComposite::initialize_Gc(
   
   Gc_comp.reinitialize(n,m);
   // Add the C matrix object
-  typedef Teuchos::RefCountPtr<mmp::ReleaseResource_ref_count_ptr<MatrixOpNonsing> > C_rr_ptr_ptr_t;
+  typedef Teuchos::RCP<mmp::ReleaseResource_ref_count_ptr<MatrixOpNonsing> > C_rr_ptr_ptr_t;
   C_rr_ptr_ptr_t
     C_rr_ptr_ptr = Teuchos::rcp(new mmp::ReleaseResource_ref_count_ptr<MatrixOpNonsing>(C));
   Gc_comp.add_matrix(
@@ -170,7 +170,7 @@ void BasisSystemComposite::initialize_Gc(
     );
   if( n > m ) {
     // Add the N matrix object
-    typedef Teuchos::RefCountPtr<mmp::ReleaseResource_ref_count_ptr<MatrixOp> > N_rr_ptr_ptr_t;
+    typedef Teuchos::RCP<mmp::ReleaseResource_ref_count_ptr<MatrixOp> > N_rr_ptr_ptr_t;
     N_rr_ptr_ptr_t
       N_rr_ptr_ptr = Teuchos::rcp(new mmp::ReleaseResource_ref_count_ptr<MatrixOp>(N));
     Gc_comp.add_matrix(

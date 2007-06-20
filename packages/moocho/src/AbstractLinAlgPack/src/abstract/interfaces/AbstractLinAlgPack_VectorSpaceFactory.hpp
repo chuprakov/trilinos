@@ -30,7 +30,7 @@
 #define VECTOR_SPACE_FACTORY_H
 
 #include "AbstractLinAlgPack_Types.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -43,9 +43,9 @@ class VectorSpaceFactory
 public:
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const InnerProduct>   inner_prod_ptr_t;
+  typedef Teuchos::RCP<const InnerProduct>   inner_prod_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const VectorSpace>    space_ptr_t;
+  typedef Teuchos::RCP<const VectorSpace>    space_ptr_t;
 
   /** @name Constructors / initializers */
   //@{

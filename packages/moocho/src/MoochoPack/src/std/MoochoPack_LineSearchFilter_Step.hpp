@@ -148,7 +148,7 @@ public:
   /** \brief Constructor.
    */
   LineSearchFilter_Step(
-    Teuchos::RefCountPtr<NLPInterfacePack::NLP> nlp
+    Teuchos::RCP<NLPInterfacePack::NLP> nlp
     ,const std::string         obj_iq_name      = "f"
     ,const std::string         grad_obj_iq_name = "Gf"
     ,const value_type          &gamma_theta      = 1e-5
@@ -200,7 +200,7 @@ private:
   CastIQMember<VectorMutable> grad_obj_f_;
 
   // nlp to use for calculations
-  Teuchos::RefCountPtr<NLPInterfacePack::NLP> nlp_;
+  Teuchos::RCP<NLPInterfacePack::NLP> nlp_;
 
   // /////////////////////////////
   // Private member functions

@@ -31,7 +31,7 @@
 
 #include "OptionsFromStreamPack_OptionsFromStream.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace OptionsFromStreamPack {
@@ -78,7 +78,7 @@ public:
    * </ul>
    */
   void set_options(
-    Teuchos::RefCountPtr<OptionsFromStream> const& options
+    Teuchos::RCP<OptionsFromStream> const& options
     );
 
   /** \brief Just return the <tt>OptionsFromStream</tt> object in its current
@@ -86,7 +86,7 @@ public:
    *
    * This function does not force the options to be processed.
    */
-  Teuchos::RefCountPtr<OptionsFromStream> get_options() const;
+  Teuchos::RCP<OptionsFromStream> get_options() const;
 
   /** \brief Set the name of the commandline option name that specifies the
    * options file name.
@@ -175,11 +175,11 @@ public:
   /** \brief Calls <tt>process_options()</tt> and returns
    * <tt>get_options()</tt>
    */
-  Teuchos::RefCountPtr<OptionsFromStream> process_and_get_options();
+  Teuchos::RCP<OptionsFromStream> process_and_get_options();
 
 private:
 
-  Teuchos::RefCountPtr<OptionsFromStream>     options_;
+  Teuchos::RCP<OptionsFromStream>     options_;
 
 };
 

@@ -73,7 +73,7 @@ namespace AbstractLinAlgPack {
 
 // Overridden from BasisMatrixImp
 
-Teuchos::RefCountPtr<DirectSparseSolverImp::BasisMatrixImp>
+Teuchos::RCP<DirectSparseSolverImp::BasisMatrixImp>
 DirectSparseSolverDense::BasisMatrixDense::create_matrix() const
 {
   return Teuchos::rcp(new BasisMatrixDense);
@@ -197,13 +197,13 @@ void DirectSparseSolverDense::estimated_fillin_ratio(
 
 // Overridden from DirectSparseSolverImp
 
-const Teuchos::RefCountPtr<DirectSparseSolver::FactorizationStructure>
+const Teuchos::RCP<DirectSparseSolver::FactorizationStructure>
 DirectSparseSolverDense::create_fact_struc() const
 {
   return Teuchos::rcp(new FactorizationStructureDense);
 }
 
-const Teuchos::RefCountPtr<DirectSparseSolverImp::FactorizationNonzeros>
+const Teuchos::RCP<DirectSparseSolverImp::FactorizationNonzeros>
 DirectSparseSolverDense::create_fact_nonzeros() const
 {
   return Teuchos::rcp(new FactorizationNonzerosDense);

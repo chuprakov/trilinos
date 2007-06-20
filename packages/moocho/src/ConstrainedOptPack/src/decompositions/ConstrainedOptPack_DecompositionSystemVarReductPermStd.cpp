@@ -218,8 +218,8 @@ void DecompositionSystemVarReductPermStd::set_decomp(
   // Get smart pointers to the basis matrix and the direct sensistivity matrices
   // and remove references to these matrix objects from the other decomposition
   // matrices by uninitializing them.
-  Teuchos::RefCountPtr<MatrixOpNonsing>  C_ptr;
-  Teuchos::RefCountPtr<MatrixOp>         D_ptr;
+  Teuchos::RCP<MatrixOpNonsing>  C_ptr;
+  Teuchos::RCP<MatrixOp>         D_ptr;
   decomp_sys_imp_->get_basis_matrices(
     out, olevel, test_what
     ,Z, Y, R, Uz, Uy
@@ -298,8 +298,8 @@ void DecompositionSystemVarReductPermStd::select_decomp(
   // Get smart pointers to the basis matrix and the direct sensistivity matrices
   // and remove references to these matrix objects from the other decomposition
   // matrices by uninitializing them.
-  Teuchos::RefCountPtr<MatrixOpNonsing>  C_ptr;
-  Teuchos::RefCountPtr<MatrixOp>             D_ptr;
+  Teuchos::RCP<MatrixOpNonsing>  C_ptr;
+  Teuchos::RCP<MatrixOp>             D_ptr;
   //const bool unintialized_basis = decomp_sys_imp_->basis_sys()->var_dep().size() == 0;
   decomp_sys_imp_->get_basis_matrices(
     out, olevel, test_what

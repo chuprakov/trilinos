@@ -67,7 +67,7 @@ class PreProcessBarrierLineSearch_Step
     /** \brief Constructor.
      */
     PreProcessBarrierLineSearch_Step(
-      Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp,
+      Teuchos::RCP<NLPInterfacePack::NLPBarrier> barrier_nlp,
       const value_type tau_boundary_frac = 0.99
       );
     //@}
@@ -88,7 +88,7 @@ class PreProcessBarrierLineSearch_Step
     // //////////////////////////
     // Private data members
 
-    Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
+    Teuchos::RCP<NLPInterfacePack::NLPBarrier> barrier_nlp_;
     CastIQMember< Filter_T > filter_;
 
   }; // end class PreProcessBarrierLineSearch_Step

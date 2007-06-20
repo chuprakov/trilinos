@@ -46,13 +46,13 @@ class MatrixBasisNonbasisStd
 public:
   
     /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixOp>
+  typedef Teuchos::RCP<const MatrixOp>
     C_ptr_t;
     /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixFactorized>
+  typedef Teuchos::RCP<const MatrixFactorized>
     C_nonsingular_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixOp>
+  typedef Teuchos::RCP<const MatrixOp>
     N_ptr_t;
 
   /** \brief Initialize to null pointers for C, C_nonsingular and N.

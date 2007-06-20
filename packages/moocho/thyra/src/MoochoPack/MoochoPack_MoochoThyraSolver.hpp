@@ -195,15 +195,15 @@ public:
   //@{
 
   /** \brief . */
-  void setParameterList(Teuchos::RefCountPtr<Teuchos::ParameterList> const& paramList);
+  void setParameterList(Teuchos::RCP<Teuchos::ParameterList> const& paramList);
   /** \brief . */
-  Teuchos::RefCountPtr<Teuchos::ParameterList> getParameterList();
+  Teuchos::RCP<Teuchos::ParameterList> getParameterList();
   /** \brief . */
-  Teuchos::RefCountPtr<Teuchos::ParameterList> unsetParameterList();
+  Teuchos::RCP<Teuchos::ParameterList> unsetParameterList();
   /** \brief . */
-  Teuchos::RefCountPtr<const Teuchos::ParameterList> getParameterList() const;
+  Teuchos::RCP<const Teuchos::ParameterList> getParameterList() const;
   /** \brief . */
-  Teuchos::RefCountPtr<const Teuchos::ParameterList> getValidParameters() const;
+  Teuchos::RCP<const Teuchos::ParameterList> getValidParameters() const;
 
   //@}
 
@@ -229,17 +229,17 @@ public:
   
   /** \brief . */
   void setModel(
-    const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> > &origModel
+    const Teuchos::RCP<Thyra::ModelEvaluator<value_type> > &origModel
     ,const int                                                     p_idx  = 0
     ,const int                                                     g_idx  = 0
     );
   
   /** \brief . */
-  const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
+  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >
   getOrigModel() const;
   
   /** \brief . */
-  const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
+  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >
   getOuterModel() const;
     
   /** \brief . */
@@ -249,7 +249,7 @@ public:
     
   /** \brief . */
   void setInitialGuess(
-    const Teuchos::RefCountPtr<const Thyra::ModelEvaluatorBase::InArgs<value_type> > &initialGuess
+    const Teuchos::RCP<const Thyra::ModelEvaluatorBase::InArgs<value_type> > &initialGuess
     );
     
   /** \brief . */
@@ -302,7 +302,7 @@ private:
 
   MoochoSolver                                               solver_;
   
-  Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >   origModel_;
+  Teuchos::RCP<Thyra::ModelEvaluator<value_type> >   origModel_;
   int                                                        p_idx_;
   int                                                        g_idx_;
 
@@ -311,15 +311,15 @@ private:
   mutable Thyra::ParameterDrivenMultiVectorInput<value_type> p_l_reader_;
   mutable Thyra::ParameterDrivenMultiVectorInput<value_type> p_u_reader_;
 
-  Teuchos::RefCountPtr<Teuchos::ParameterList>               paramList_;
+  Teuchos::RCP<Teuchos::ParameterList>               paramList_;
   
-  Teuchos::RefCountPtr<Thyra::DefaultNominalBoundsOverrideModelEvaluator<value_type> >
+  Teuchos::RCP<Thyra::DefaultNominalBoundsOverrideModelEvaluator<value_type> >
   nominalModel_;
   
-  Teuchos::RefCountPtr<Thyra::DefaultFinalPointCaptureModelEvaluator<value_type> >
+  Teuchos::RCP<Thyra::DefaultFinalPointCaptureModelEvaluator<value_type> >
   finalPointModel_;
 
-  Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> > outerModel_;
+  Teuchos::RCP<Thyra::ModelEvaluator<value_type> > outerModel_;
 
   ESolveMode          solveMode_;
   ENLPType            nlpType_;

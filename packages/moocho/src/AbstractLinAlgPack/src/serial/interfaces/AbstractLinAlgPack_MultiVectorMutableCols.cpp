@@ -41,18 +41,18 @@ MultiVectorMutableCols::MultiVectorMutableCols()
 {}
 
 MultiVectorMutableCols::MultiVectorMutableCols(
-  const  Teuchos::RefCountPtr<const VectorSpace>   &space_cols
-  ,const  Teuchos::RefCountPtr<const VectorSpace>  &space_rows
-  ,Teuchos::RefCountPtr<VectorMutable>       col_vecs[]
+  const  Teuchos::RCP<const VectorSpace>   &space_cols
+  ,const  Teuchos::RCP<const VectorSpace>  &space_rows
+  ,Teuchos::RCP<VectorMutable>       col_vecs[]
   )
 {
   this->initialize(space_cols,space_rows,col_vecs);
 }
   
 void MultiVectorMutableCols::initialize(
-  const  Teuchos::RefCountPtr<const VectorSpace>   &space_cols
-  ,const  Teuchos::RefCountPtr<const VectorSpace>  &space_rows
-  ,Teuchos::RefCountPtr<VectorMutable>       col_vecs[]
+  const  Teuchos::RCP<const VectorSpace>   &space_cols
+  ,const  Teuchos::RCP<const VectorSpace>  &space_rows
+  ,Teuchos::RCP<VectorMutable>       col_vecs[]
   )
 {
   space_cols_ = space_cols;

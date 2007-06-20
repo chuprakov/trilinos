@@ -51,7 +51,7 @@ NLPDirectThyraModelEvaluator::NLPDirectThyraModelEvaluator()
 {}
 
 NLPDirectThyraModelEvaluator::NLPDirectThyraModelEvaluator(
-  const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model   
+  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >  &model   
   ,const int                                                      p_idx 
   ,const int                                                      g_idx 
   ,const objDirecFiniteDiffCalculator_ptr_t                       objDirecFiniteDiffCalculator
@@ -65,7 +65,7 @@ NLPDirectThyraModelEvaluator::NLPDirectThyraModelEvaluator(
 }
 
 void NLPDirectThyraModelEvaluator::initialize(
-  const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
+  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >  &model
   ,const int                                                      p_idx
   ,const int                                                      g_idx
   ,const objDirecFiniteDiffCalculator_ptr_t                       objDirecFiniteDiffCalculator
@@ -182,7 +182,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
   using Teuchos::FancyOStream;
   using Teuchos::OSTab;
   using Teuchos::dyn_cast;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   using Teuchos::rcp;
   using Teuchos::rcp_const_cast;
   using Teuchos::rcp_dynamic_cast;
@@ -192,13 +192,13 @@ void NLPDirectThyraModelEvaluator::calc_point(
   using AbstractLinAlgPack::MatrixOpThyra;
   using AbstractLinAlgPack::MatrixOpNonsingThyra;
   typedef Thyra::ModelEvaluatorBase MEB;
-  typedef Teuchos::RefCountPtr<Thyra::VectorBase<value_type> > TVecPtr;
+  typedef Teuchos::RCP<Thyra::VectorBase<value_type> > TVecPtr;
   typedef MEB::DerivativeMultiVector<value_type> DerivMV;
   typedef MEB::Derivative<value_type> Deriv;
   //
   // Get output and verbosity
   //
-  const Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  const Teuchos::RCP<Teuchos::FancyOStream>
     out = this->getOStream();
   const Teuchos::EVerbosityLevel
     verbLevel = ( showModelEvaluatorTrace() ? this->getVerbLevel() : Teuchos::VERB_NONE );
@@ -270,10 +270,10 @@ void NLPDirectThyraModelEvaluator::calc_point(
   // Setup solve components
   const VectorSpaceThyra                                       *space_c;
   const VectorSpaceThyra                                       *space_xD;
-  Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> >   thyra_c;
-  Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >         thyra_py;
-  RefCountPtr<MatrixOp>                                        D_used = rcp(D,false);
-  RefCountPtr<Thyra::MultiVectorBase<value_type> >             thyra_D;
+  Teuchos::RCP<const Thyra::VectorBase<value_type> >   thyra_c;
+  Teuchos::RCP<Thyra::VectorBase<value_type> >         thyra_py;
+  RCP<MatrixOp>                                        D_used = rcp(D,false);
+  RCP<Thyra::MultiVectorBase<value_type> >             thyra_D;
   if( py || ( ( rGf || D ) && conDirecFiniteDiffCalculator_.get() ) ) {
     space_c  = &dyn_cast<const VectorSpaceThyra>(c->space()),
       space_xD = &dyn_cast<const VectorSpaceThyra>(py->space());
@@ -321,11 +321,11 @@ void NLPDirectThyraModelEvaluator::calc_point(
     if(out.get() && trace)
       *out << "\nSolving C*[py,D] = -[c,N] simultaneously ...\n";
     const int nind = thyra_N_->domain()->dim();
-    RefCountPtr<Thyra::MultiVectorBase<value_type> > 
+    RCP<Thyra::MultiVectorBase<value_type> > 
       thyra_cN = Thyra::createMembers(thyra_N_->range(),nind+1);
     Thyra::assign(&*thyra_cN->col(0),*thyra_c);
     Thyra::assign(&*thyra_cN->subView(Teuchos::Range1D(1,nind)),*thyra_N_);
-    RefCountPtr<Thyra::MultiVectorBase<value_type> > 
+    RCP<Thyra::MultiVectorBase<value_type> > 
       thyra_pyD = Thyra::createMembers(thyra_D->range(),nind+1);
     Thyra::assign(&*thyra_pyD,0.0);
     Thyra::SolveStatus<value_type>

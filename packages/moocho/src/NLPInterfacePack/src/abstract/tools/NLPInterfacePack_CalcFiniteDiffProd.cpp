@@ -94,7 +94,7 @@ bool CalcFiniteDiffProd::calc_deriv_product(
   using AbstractLinAlgPack::assert_print_nan_inf;
   using LinAlgOpPack::V_StV;
 
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  Teuchos::RCP<Teuchos::FancyOStream>
     out = Teuchos::getFancyOStream(Teuchos::rcp(out_arg,false));
   Teuchos::OSTab tab(out);
 

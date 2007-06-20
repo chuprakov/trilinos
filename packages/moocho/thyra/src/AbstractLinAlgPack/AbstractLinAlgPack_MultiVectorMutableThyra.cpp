@@ -41,14 +41,14 @@ MultiVectorMutableThyra::MultiVectorMutableThyra()
 {}
 
 MultiVectorMutableThyra::MultiVectorMutableThyra(
-  const Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> >& thyra_multi_vec
+  const Teuchos::RCP<Thyra::MultiVectorBase<value_type> >& thyra_multi_vec
   )
 {
   this->initialize(thyra_multi_vec);
 }
 
 void MultiVectorMutableThyra::initialize(
-  const Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> >& thyra_multi_vec
+  const Teuchos::RCP<Thyra::MultiVectorBase<value_type> >& thyra_multi_vec
   )
 {
   namespace mmp = MemMngPack;
@@ -59,16 +59,16 @@ void MultiVectorMutableThyra::initialize(
   MatrixOpThyra::initialize(thyra_multi_vec);
 }
 
-Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> > 
+Teuchos::RCP<Thyra::MultiVectorBase<value_type> > 
 MultiVectorMutableThyra::set_uninitialized()
 {
-  Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> >
+  Teuchos::RCP<Thyra::MultiVectorBase<value_type> >
     tmp_thyra_multi_vec = cast_thyra_multi_vec();
   MatrixOpThyra::set_uninitialized();
   return tmp_thyra_multi_vec;
 }
 
-Teuchos::RefCountPtr<const Thyra::MultiVectorBase<value_type> >
+Teuchos::RCP<const Thyra::MultiVectorBase<value_type> >
 MultiVectorMutableThyra::thyra_multi_vec() const
 {
   return Teuchos::rcp_dynamic_cast<const Thyra::MultiVectorBase<value_type> >(this->thyra_linear_op());
@@ -77,7 +77,7 @@ MultiVectorMutableThyra::thyra_multi_vec() const
 // Overridden from MatrixOpThyra
 
 void MultiVectorMutableThyra::initialize(
-  const Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> >& thyra_linear_op
+  const Teuchos::RCP<const Thyra::LinearOpBase<value_type> >& thyra_linear_op
   )
 {
   namespace mmp = MemMngPack;
@@ -196,7 +196,7 @@ MultiVectorMutableThyra::mv_sub_view(const Range1D& row_rng_in, const Range1D& c
 
 // private
 
-Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> >
+Teuchos::RCP<Thyra::MultiVectorBase<value_type> >
 MultiVectorMutableThyra::cast_thyra_multi_vec()
 {
   namespace mmp = MemMngPack;

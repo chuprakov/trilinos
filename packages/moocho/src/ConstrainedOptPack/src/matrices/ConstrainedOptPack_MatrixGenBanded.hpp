@@ -61,7 +61,7 @@ class MatrixGenBanded	: public MatrixOp
 public:
   
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
   // //////////////

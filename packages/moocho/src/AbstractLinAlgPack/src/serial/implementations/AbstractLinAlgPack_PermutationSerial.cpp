@@ -83,13 +83,13 @@ void PermutationSerial::initialize(
   perm_     = perm;
   inv_perm_ = inv_perm;
   if( allocate_missing_perm && perm_.get() == NULL ) {
-    Teuchos::RefCountPtr<IVector>
+    Teuchos::RCP<IVector>
       _perm = Teuchos::rcp(new IVector(inv_perm_->size()));
     DenseLinAlgPack::inv_perm( *inv_perm_, _perm.get() );
     perm_ = _perm;
   }
   if( allocate_missing_perm && inv_perm_.get() == NULL ) {
-    Teuchos::RefCountPtr<IVector>
+    Teuchos::RCP<IVector>
       _inv_perm = Teuchos::rcp(new IVector(perm_->size()));
     DenseLinAlgPack::inv_perm( *perm_, _inv_perm.get() );
     inv_perm_ = _inv_perm;

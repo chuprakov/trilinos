@@ -43,14 +43,14 @@ InnerProductThyra::InnerProductThyra()
 {}
 
 InnerProductThyra::InnerProductThyra(
-  const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >& thyra_vec_spc
+  const Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >& thyra_vec_spc
   )
 {
   this->initialize(thyra_vec_spc);
 }
 
 void InnerProductThyra::initialize(
-  const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >& thyra_vec_spc
+  const Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >& thyra_vec_spc
   )
 {
   TEST_FOR_EXCEPTION(
@@ -60,10 +60,10 @@ void InnerProductThyra::initialize(
   thyra_vec_spc_ = thyra_vec_spc;
 }
 
-Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > 
+Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> > 
 InnerProductThyra::set_uninitialized()
 {
-  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > tmp_thyra_vec_spc = thyra_vec_spc_;
+  Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> > tmp_thyra_vec_spc = thyra_vec_spc_;
   thyra_vec_spc_ = Teuchos::null;
   return tmp_thyra_vec_spc;
 }

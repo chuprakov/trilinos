@@ -50,7 +50,7 @@ class CheckConvergenceStd_AddedStep
 
     /** \brief . */
     CheckConvergenceStd_AddedStep(
-      Teuchos::RefCountPtr<CheckConvergence_Strategy> convergence_strategy
+      Teuchos::RCP<CheckConvergence_Strategy> convergence_strategy
       );
 
     /** @name Overridden from AlgorithmStep */

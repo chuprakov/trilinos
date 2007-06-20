@@ -53,7 +53,7 @@ NLPFirstOrderThyraModelEvaluator::NLPFirstOrderThyraModelEvaluator()
 {}
 
 NLPFirstOrderThyraModelEvaluator::NLPFirstOrderThyraModelEvaluator(
-  const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model   
+  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >  &model   
   ,const int                                                      p_idx 
   ,const int                                                      g_idx 
   )
@@ -62,7 +62,7 @@ NLPFirstOrderThyraModelEvaluator::NLPFirstOrderThyraModelEvaluator(
 }
 
 void NLPFirstOrderThyraModelEvaluator::initialize(
-  const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
+  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >  &model
   ,const int                                                      p_idx
   ,const int                                                      g_idx
   )
@@ -127,7 +127,7 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
   using Teuchos::FancyOStream;
   using Teuchos::OSTab;
   using Teuchos::dyn_cast;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   using Teuchos::rcp_const_cast;
   using Teuchos::rcp_dynamic_cast;
   using AbstractLinAlgPack::VectorMutableThyra;
@@ -140,7 +140,7 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
   //
   // Get output and verbosity
   //
-  const Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  const Teuchos::RCP<Teuchos::FancyOStream>
     out = this->getOStream();
   const Teuchos::EVerbosityLevel
     verbLevel = ( showModelEvaluatorTrace() ? this->getVerbLevel() : Teuchos::VERB_NONE );
@@ -204,8 +204,8 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
   postprocessBaseOutArgs(&model_outArgs,Gf,f,c);
   //
   if( Gc && !Gc_updated_ ) {
-    RefCountPtr<MatrixOpNonsing> C_ptr;
-    RefCountPtr<MatrixOp>        N_ptr;
+    RCP<MatrixOpNonsing> C_ptr;
+    RCP<MatrixOp>        N_ptr;
     if(!C_aggr) {
       C_ptr  = Teuchos::rcp(new MatrixOpNonsingThyra());
       C_aggr = &*C_ptr;
@@ -214,7 +214,7 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
         N_aggr = &*N_ptr;
       }
     }
-    RefCountPtr<Thyra::LinearOpWithSolveBase<value_type> >
+    RCP<Thyra::LinearOpWithSolveBase<value_type> >
       model_W = model_outArgs.get_W();
     model_W->setOStream(out);
     if(showModelEvaluatorTrace())

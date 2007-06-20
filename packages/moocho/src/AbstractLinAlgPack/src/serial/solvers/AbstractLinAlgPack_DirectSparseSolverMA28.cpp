@@ -97,7 +97,7 @@ DirectSparseSolverMA28::FactorizationStructureMA28::FactorizationStructureMA28()
 
 // Overridden from BasisMatrixImp
 
-Teuchos::RefCountPtr<DirectSparseSolverImp::BasisMatrixImp>
+Teuchos::RCP<DirectSparseSolverImp::BasisMatrixImp>
 DirectSparseSolverMA28::BasisMatrixMA28::create_matrix() const
 {
   return Teuchos::rcp(new BasisMatrixMA28);
@@ -225,13 +225,13 @@ void DirectSparseSolverMA28::estimated_fillin_ratio(
 
 // Overridden from DirectSparseSolverImp
 
-const Teuchos::RefCountPtr<DirectSparseSolver::FactorizationStructure>
+const Teuchos::RCP<DirectSparseSolver::FactorizationStructure>
 DirectSparseSolverMA28::create_fact_struc() const
 {
   return Teuchos::rcp(new FactorizationStructureMA28);
 }
 
-const Teuchos::RefCountPtr<DirectSparseSolverImp::FactorizationNonzeros>
+const Teuchos::RCP<DirectSparseSolverImp::FactorizationNonzeros>
 DirectSparseSolverMA28::create_fact_nonzeros() const
 {
   return Teuchos::rcp(new FactorizationNonzerosMA28);

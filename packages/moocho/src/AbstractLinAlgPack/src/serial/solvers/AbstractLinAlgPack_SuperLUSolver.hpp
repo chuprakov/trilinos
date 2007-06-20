@@ -31,7 +31,7 @@
 #ifndef SSP_SUPERLU_SOLVER_H
 #define SSP_SUPERLU_SOLVER_H
 
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 namespace SuperLUPack {
 
@@ -78,11 +78,11 @@ public:
   //@{
 
   /** \brief . */
-  static Teuchos::RefCountPtr<SuperLUSolver>                         create_solver();
+  static Teuchos::RCP<SuperLUSolver>                         create_solver();
   /** \brief . */
-  static Teuchos::RefCountPtr<SuperLUSolver::FactorizationStructure> create_fact_struct();
+  static Teuchos::RCP<SuperLUSolver::FactorizationStructure> create_fact_struct();
   /** \brief . */
-  static Teuchos::RefCountPtr<SuperLUSolver::FactorizationNonzeros>  create_fact_nonzeros();
+  static Teuchos::RCP<SuperLUSolver::FactorizationNonzeros>  create_fact_nonzeros();
 
   //@}
 

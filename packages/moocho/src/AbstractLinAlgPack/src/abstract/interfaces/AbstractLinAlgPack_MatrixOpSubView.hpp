@@ -32,7 +32,7 @@
 #include <iosfwd>
 
 #include "AbstractLinAlgPack_MatrixOp.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
@@ -51,7 +51,7 @@ class MatrixOpSubView : public virtual MatrixOp {
 public:
   
   /** \brief . */
-  typedef Teuchos::RefCountPtr<MatrixOp>   mat_ptr_t;
+  typedef Teuchos::RCP<MatrixOp>   mat_ptr_t;
 
   /** @name Constructors/initalizers */
   //@{

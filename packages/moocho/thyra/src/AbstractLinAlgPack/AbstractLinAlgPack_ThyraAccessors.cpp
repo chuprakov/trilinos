@@ -8,7 +8,7 @@
 void AbstractLinAlgPack::get_thyra_vector(
   const VectorSpaceThyra                                         &thyra_vec_spc
   ,const Vector                                                  &vec
-  ,Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> >    *thyra_vec
+  ,Teuchos::RCP<const Thyra::VectorBase<value_type> >    *thyra_vec
   )
 {
 #ifdef TEUCHOS_DEBUG
@@ -21,7 +21,7 @@ void AbstractLinAlgPack::get_thyra_vector(
   }
   else if(vec.space().is_in_core()) {
     // We need to create a temporary copy and then copy the explicit elements
-    Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >
+    Teuchos::RCP<Thyra::VectorBase<value_type> >
       _thyra_vec = ::Thyra::createMember(thyra_vec_spc.thyra_vec_spc());
     // Get explicit views of the elements
     RTOpPack::SubVector vec_sv;
@@ -52,7 +52,7 @@ void AbstractLinAlgPack::get_thyra_vector(
 void AbstractLinAlgPack::free_thyra_vector(
   const VectorSpaceThyra                                         &thyra_vec_spc
   ,const Vector                                                  &vec
-  ,Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> >    *thyra_vec
+  ,Teuchos::RCP<const Thyra::VectorBase<value_type> >    *thyra_vec
   )
 {
 #ifdef TEUCHOS_DEBUG
@@ -64,7 +64,7 @@ void AbstractLinAlgPack::free_thyra_vector(
 void AbstractLinAlgPack::get_thyra_vector(
   const VectorSpaceThyra                                         &thyra_vec_spc
   ,VectorMutable                                                 *vec
-  ,Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >          *thyra_vec
+  ,Teuchos::RCP<Thyra::VectorBase<value_type> >          *thyra_vec
   )
 { 
 #ifdef TEUCHOS_DEBUG
@@ -77,7 +77,7 @@ void AbstractLinAlgPack::get_thyra_vector(
   }
   else if(thyra_vec_spc.is_in_core()) {
     // We need to create a temporary copy and then copy the explicit elements
-    Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >
+    Teuchos::RCP<Thyra::VectorBase<value_type> >
       _thyra_vec = ::Thyra::createMember(thyra_vec_spc.thyra_vec_spc());
     // Get explicit views of the elements
     RTOpPack::SubVector vec_sv;
@@ -108,13 +108,13 @@ void AbstractLinAlgPack::get_thyra_vector(
 void AbstractLinAlgPack::commit_thyra_vector(
   const VectorSpaceThyra                                         &thyra_vec_spc
   ,VectorMutable                                                 *vec
-  ,Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >          *thyra_vec_in
+  ,Teuchos::RCP<Thyra::VectorBase<value_type> >          *thyra_vec_in
   )
 {
 #ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION( vec==NULL || thyra_vec_in==NULL, std::invalid_argument, "Error!" );
 #endif
-  Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >  &thyra_vec = *thyra_vec_in;
+  Teuchos::RCP<Thyra::VectorBase<value_type> >  &thyra_vec = *thyra_vec_in;
   VectorMutableThyra *vmthyra_vec = dynamic_cast<VectorMutableThyra*>(vec);
   if(vmthyra_vec) {
     // We can just directly reset the Thyra vector

@@ -125,7 +125,7 @@ private:
   // ////////////////////////
   // Private types
 
-  typedef Teuchos::RefCountPtr<MatrixSymOpNonsing>  S_ptr_t;
+  typedef Teuchos::RCP<MatrixSymOpNonsing>  S_ptr_t;
 
   // ////////////////////////
   // Private data members

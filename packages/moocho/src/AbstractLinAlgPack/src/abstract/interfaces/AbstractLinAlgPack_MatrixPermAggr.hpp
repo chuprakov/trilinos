@@ -47,7 +47,7 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const Permutation>   perm_ptr_t;
+  typedef Teuchos::RCP<const Permutation>   perm_ptr_t;
 
   //@}
 

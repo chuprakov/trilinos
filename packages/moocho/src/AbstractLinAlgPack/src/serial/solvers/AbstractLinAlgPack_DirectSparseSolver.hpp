@@ -32,7 +32,7 @@
 #include "AbstractLinAlgPack_Types.hpp"
 #include "AbstractLinAlgPack_MatrixConvertToSparse.hpp"
 #include "AbstractLinAlgPack_MatrixNonsing.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "Teuchos_AbstractFactory.hpp"
 
 namespace AbstractLinAlgPack {
@@ -250,20 +250,20 @@ public:
   class BasisMatrix : public AbstractLinAlgPack::MatrixNonsing {
   public:
     /** \brief . */
-    typedef Teuchos::RefCountPtr<FactorizationStructure>  fact_struc_ptr_t;
+    typedef Teuchos::RCP<FactorizationStructure>  fact_struc_ptr_t;
     /** \brief Return a reference to a smart pointer to the object that represents
      * the factorization structure.
      *
-     * Returning a reference to a \c RefCountPtr<> object verses returning
-     * a \c RefCountPtr<> object itself is critical so that we can rely on
-     * \c RefCountPtr<>::count() to tell us how many clients have a reference
+     * Returning a reference to a \c RCP<> object verses returning
+     * a \c RCP<> object itself is critical so that we can rely on
+     * \c RCP<>::count() to tell us how many clients have a reference
      * to this object.
      */
     virtual const fact_struc_ptr_t&  get_fact_struc() const = 0;
   };
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<BasisMatrix> >   basis_matrix_factory_ptr_t;
 
   /** \brief . */

@@ -47,7 +47,7 @@ namespace {
 //
 
 const std::string SolveMode_name = "Solve Mode";
-const Teuchos::RefCountPtr<
+const Teuchos::RCP<
   Teuchos::StringToIntegralParameterEntryValidator<
     MoochoPack::MoochoThyraSolver::ESolveMode
   >
@@ -76,7 +76,7 @@ solveModeValidator = Teuchos::rcp(
 const std::string SolveMode_default = "Optimize";
 
 const std::string NLPType_name = "NLP Type";
-const Teuchos::RefCountPtr<
+const Teuchos::RCP<
   Teuchos::StringToIntegralParameterEntryValidator<
     MoochoPack::MoochoThyraSolver::ENLPType
     >
@@ -208,12 +208,12 @@ void MoochoThyraSolver::setupCLP(
 
 void MoochoThyraSolver::readParameters( std::ostream *out_arg )
 {
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  Teuchos::RCP<Teuchos::FancyOStream>
     out = Teuchos::getFancyOStream(Teuchos::rcp(out_arg,false));
   Teuchos::OSTab tab(out);
   if(out.get()) *out << "\nMoochoThyraSolver::readParameters(...):\n";
   Teuchos::OSTab tab2(out);
-  Teuchos::RefCountPtr<Teuchos::ParameterList>
+  Teuchos::RCP<Teuchos::ParameterList>
     paramList = this->getParameterList();
   if(!paramList.get()) {
     if(out.get()) *out << "\nCreating a new Teuchos::ParameterList ...\n";
@@ -243,7 +243,7 @@ void MoochoThyraSolver::readParameters( std::ostream *out_arg )
 // Overridden from ParameterListAcceptor
 
 void MoochoThyraSolver::setParameterList(
-  Teuchos::RefCountPtr<Teuchos::ParameterList> const& paramList
+  Teuchos::RCP<Teuchos::ParameterList> const& paramList
   )
 {
   TEST_FOR_EXCEPT(!paramList.get());
@@ -291,30 +291,30 @@ void MoochoThyraSolver::setParameterList(
 #endif
 }
 
-Teuchos::RefCountPtr<Teuchos::ParameterList>
+Teuchos::RCP<Teuchos::ParameterList>
 MoochoThyraSolver::getParameterList()
 {
   return paramList_;
 }
 
-Teuchos::RefCountPtr<Teuchos::ParameterList>
+Teuchos::RCP<Teuchos::ParameterList>
 MoochoThyraSolver::unsetParameterList()
 {
-  Teuchos::RefCountPtr<Teuchos::ParameterList> _paramList = paramList_;
+  Teuchos::RCP<Teuchos::ParameterList> _paramList = paramList_;
   paramList_ = Teuchos::null;
   return _paramList;
 }
 
-Teuchos::RefCountPtr<const Teuchos::ParameterList>
+Teuchos::RCP<const Teuchos::ParameterList>
 MoochoThyraSolver::getParameterList() const
 {
   return paramList_;
 }
 
-Teuchos::RefCountPtr<const Teuchos::ParameterList>
+Teuchos::RCP<const Teuchos::ParameterList>
 MoochoThyraSolver::getValidParameters() const
 {
-  static Teuchos::RefCountPtr<Teuchos::ParameterList> pl;
+  static Teuchos::RCP<Teuchos::ParameterList> pl;
   if(pl.get()==NULL) {
     pl = Teuchos::rcp(new Teuchos::ParameterList());
     pl->set(
@@ -376,7 +376,7 @@ MoochoThyraSolver::getValidParameters() const
       "parameterized state function f(x,p)=0."
       );
     {
-      Teuchos::RefCountPtr<Thyra::DefaultInverseModelEvaluator<Scalar> >
+      Teuchos::RCP<Thyra::DefaultInverseModelEvaluator<Scalar> >
         inverseModel = rcp(new Thyra::DefaultInverseModelEvaluator<Scalar>());
       pl->sublist(
         InverseObjectiveFunctionSettings_name,false
@@ -449,14 +449,14 @@ const MoochoSolver& MoochoThyraSolver::getSolver() const
 // Model specification, setup, solve, and solution extraction.
 
 void MoochoThyraSolver::setModel(
-  const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> > &origModel
+  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> > &origModel
   ,const int                                                     p_idx
   ,const int                                                     g_idx
   )
 {
 
   using Teuchos::rcp;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   using NLPInterfacePack::NLP;
   using NLPInterfacePack::NLPDirectThyraModelEvaluator;
   using NLPInterfacePack::NLPFirstOrderThyraModelEvaluator;
@@ -475,7 +475,7 @@ void MoochoThyraSolver::setModel(
   outerModel_ = origModel_;
 
   if(useInvObjFunc_) {
-    Teuchos::RefCountPtr<Thyra::DefaultInverseModelEvaluator<Scalar> >
+    Teuchos::RCP<Thyra::DefaultInverseModelEvaluator<Scalar> >
       inverseModel
       = rcp(new Thyra::DefaultInverseModelEvaluator<Scalar>(outerModel_));
     inverseModel->setVerbLevel(Teuchos::VERB_LOW);
@@ -487,11 +487,11 @@ void MoochoThyraSolver::setModel(
     g_idx_ = inverseModel->Ng()-1;
   }
   
-  Teuchos::RefCountPtr<std::ostream>
+  Teuchos::RCP<std::ostream>
     modelEvalLogOut = Teuchos::fancyOStream(
       solver_.generate_output_file("ModelEvaluationLog")
       );
-  Teuchos::RefCountPtr<Thyra::DefaultEvaluationLoggerModelEvaluator<Scalar> >
+  Teuchos::RCP<Thyra::DefaultEvaluationLoggerModelEvaluator<Scalar> >
     loggerThyraModel
     = rcp(
       new Thyra::DefaultEvaluationLoggerModelEvaluator<Scalar>(
@@ -516,11 +516,11 @@ void MoochoThyraSolver::setModel(
   // Create the NLP
   //
     
-  Teuchos::RefCountPtr<NLP> nlp;
+  Teuchos::RCP<NLP> nlp;
 
   switch(solveMode_) {
     case SOLVE_MODE_FORWARD: {
-      RefCountPtr<NLPFirstOrderThyraModelEvaluator>
+      RCP<NLPFirstOrderThyraModelEvaluator>
         nlpFirstOrder = rcp(
           new NLPFirstOrderThyraModelEvaluator(outerModel_,-1,-1)
           );
@@ -530,7 +530,7 @@ void MoochoThyraSolver::setModel(
     }
     case SOLVE_MODE_OPTIMIZE: {
       // Setup finite difference object
-      RefCountPtr<Thyra::DirectionalFiniteDiffCalculator<Scalar> > objDirecFiniteDiffCalculator;
+      RCP<Thyra::DirectionalFiniteDiffCalculator<Scalar> > objDirecFiniteDiffCalculator;
       if(use_finite_diff_for_obj_) {
         objDirecFiniteDiffCalculator = rcp(new Thyra::DirectionalFiniteDiffCalculator<Scalar>());
         if(paramList_.get())
@@ -538,7 +538,7 @@ void MoochoThyraSolver::setModel(
             Teuchos::sublist(paramList_,ObjectiveFiniteDifferenceSettings_name)
             );
       }
-      RefCountPtr<Thyra::DirectionalFiniteDiffCalculator<Scalar> > conDirecFiniteDiffCalculator;
+      RCP<Thyra::DirectionalFiniteDiffCalculator<Scalar> > conDirecFiniteDiffCalculator;
       if(use_finite_diff_for_con_) {
         conDirecFiniteDiffCalculator = rcp(new Thyra::DirectionalFiniteDiffCalculator<Scalar>());
         if(paramList_.get())
@@ -549,18 +549,18 @@ void MoochoThyraSolver::setModel(
       if( nonlinearlyElimiateStates_ ) {
         // Create a Thyra::NonlinearSolverBase object to solve and eliminate the
         // state variables and the state equations
-        Teuchos::RefCountPtr<Thyra::DampenedNewtonNonlinearSolver<Scalar> >
+        Teuchos::RCP<Thyra::DampenedNewtonNonlinearSolver<Scalar> >
           stateSolver = rcp(new Thyra::DampenedNewtonNonlinearSolver<Scalar>()); // ToDo: Replace with MOOCHO!
         stateSolver->defaultTol(fwd_newton_tol_);
         stateSolver->defaultMaxNewtonIterations(fwd_newton_max_iters_);
         // Create the reduced Thyra::ModelEvaluator object for p -> g_hat(p)
-        Teuchos::RefCountPtr<Thyra::DefaultStateEliminationModelEvaluator<Scalar> >
+        Teuchos::RCP<Thyra::DefaultStateEliminationModelEvaluator<Scalar> >
           reducedThyraModel = rcp(new Thyra::DefaultStateEliminationModelEvaluator<Scalar>(outerModel_,stateSolver));
-        Teuchos::RefCountPtr<Thyra::ModelEvaluator<Scalar> >
+        Teuchos::RCP<Thyra::ModelEvaluator<Scalar> >
           finalReducedThyraModel;
         if(use_finite_diff_for_obj_) {
           // Create the finite-difference wrapped Thyra::ModelEvaluator object
-          Teuchos::RefCountPtr<Thyra::DefaultFiniteDifferenceModelEvaluator<Scalar> >
+          Teuchos::RCP<Thyra::DefaultFiniteDifferenceModelEvaluator<Scalar> >
             fdReducedThyraModel = rcp(
               new Thyra::DefaultFiniteDifferenceModelEvaluator<Scalar>(
                 reducedThyraModel,objDirecFiniteDiffCalculator
@@ -572,7 +572,7 @@ void MoochoThyraSolver::setModel(
           finalReducedThyraModel = reducedThyraModel;
         }
         // Wrap the reduced NAND Thyra::ModelEvaluator object in an NLP object
-        RefCountPtr<NLPFirstOrderThyraModelEvaluator>
+        RCP<NLPFirstOrderThyraModelEvaluator>
           nlpFirstOrder = rcp(
             new NLPFirstOrderThyraModelEvaluator(finalReducedThyraModel,p_idx_,g_idx_)
             );
@@ -582,7 +582,7 @@ void MoochoThyraSolver::setModel(
       else {
         switch(nlpType_) {
           case NLP_TYPE_DIRECT: {
-            Teuchos::RefCountPtr<NLPDirectThyraModelEvaluator>
+            Teuchos::RCP<NLPDirectThyraModelEvaluator>
               nlpDirect = rcp(
                 new NLPDirectThyraModelEvaluator(
                   outerModel_,p_idx_,g_idx_
@@ -595,7 +595,7 @@ void MoochoThyraSolver::setModel(
             break;
           }
           case NLP_TYPE_FIRST_ORDER: {
-            RefCountPtr<NLPFirstOrderThyraModelEvaluator>
+            RCP<NLPFirstOrderThyraModelEvaluator>
               nlpFirstOrder = rcp(
                 new NLPFirstOrderThyraModelEvaluator(outerModel_,p_idx_,g_idx_)
                 );
@@ -618,13 +618,13 @@ void MoochoThyraSolver::setModel(
 
 }
 
-const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
+const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >
 MoochoThyraSolver::getOrigModel() const
 {
   return origModel_;
 }
 
-const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
+const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >
 MoochoThyraSolver::getOuterModel() const
 {
   return outerModel_;
@@ -635,18 +635,18 @@ void MoochoThyraSolver::readInitialGuess(
   )
 {
   using Teuchos::OSTab;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   using Thyra::clone;
   typedef Thyra::ModelEvaluatorBase MEB;
 
-  RefCountPtr<Teuchos::FancyOStream>
+  RCP<Teuchos::FancyOStream>
     out = Teuchos::getFancyOStream(Teuchos::rcp(out_arg,false));
-  RefCountPtr<MEB::InArgs<value_type> >
+  RCP<MEB::InArgs<value_type> >
     initialGuess = clone(origModel_->getNominalValues()),
     lowerBounds = clone(origModel_->getLowerBounds()),
     upperBounds = clone(origModel_->getUpperBounds());
 
-  RefCountPtr<const Thyra::VectorSpaceBase<value_type> >
+  RCP<const Thyra::VectorSpaceBase<value_type> >
     x_space = origModel_->get_x_space();
   if( 0 != x_space.get() ) {
     x_reader_.set_vecSpc(origModel_->get_x_space());
@@ -677,7 +677,7 @@ void MoochoThyraSolver::readInitialGuess(
 }
 
 void MoochoThyraSolver::setInitialGuess(
-  const Teuchos::RefCountPtr<const Thyra::ModelEvaluatorBase::InArgs<value_type> > &initialGuess
+  const Teuchos::RCP<const Thyra::ModelEvaluatorBase::InArgs<value_type> > &initialGuess
   )
 {
   nominalModel_->setNominalValues(initialGuess);
@@ -694,14 +694,14 @@ void MoochoThyraSolver::setInitialGuess(
   
 MoochoSolver::ESolutionStatus MoochoThyraSolver::solve()
 {
-  using Teuchos::RefCountPtr; using Teuchos::null; using Teuchos::describe;
+  using Teuchos::RCP; using Teuchos::null; using Teuchos::describe;
   solver_.update_solver();
   std::ostringstream os;
   os
     << "\n**********************************"
     << "\n*** MoochoThyraSolver::solve() ***"
     << "\n**********************************\n";
-  const RefCountPtr<const Thyra::VectorSpaceBase<value_type> >
+  const RCP<const Thyra::VectorSpaceBase<value_type> >
     x_space = outerModel_->get_x_space(),
     p_space = (
       ( p_idx_ >= 0 && outerModel_->Np() > 0 )
@@ -729,7 +729,7 @@ void MoochoThyraSolver::writeFinalSolution(
   ) const
 {
   using Teuchos::OSTab;
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  Teuchos::RCP<Teuchos::FancyOStream>
     out = Teuchos::getFancyOStream(Teuchos::rcp(out_arg,false));
   if( stateSoluFileBase_ != "" && finalPointModel_->getFinalPoint().get_x().get() ) {
     if(out.get())

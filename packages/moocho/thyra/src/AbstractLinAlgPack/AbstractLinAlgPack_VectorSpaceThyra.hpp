@@ -55,7 +55,7 @@ public:
   /** \brief Calls <tt>this->initialize()</tt>.
    */
   VectorSpaceThyra(
-    const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
+    const Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
     ,const inner_prod_ptr_t                                                  &inner_prod    = Teuchos::null
     );
   /** \brief Initalize given a smart pointer to a <tt>Thyra::VetorSpace</tt> object.
@@ -78,7 +78,7 @@ public:
    * </ul>
    */
   void initialize(
-    const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
+    const Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
     ,const inner_prod_ptr_t                                                  &inner_prod    = Teuchos::null
     );
   /** \brief Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
@@ -87,13 +87,13 @@ public:
    * <li><tt>this->thyra_vec_spc().get() == NULL</tt>
    * </ul>
    */
-  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > set_uninitialized();
+  Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> > set_uninitialized();
   /** \brief Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
    *
    * If <tt>this->thyra_vec_spc().count() == 1</tt>, then <tt>this</tt>
    * has sole ownership of the <tt>*this->thyra_vec_spc()</tt> object.
    */
-  const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >& thyra_vec_spc() const;
+  const Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >& thyra_vec_spc() const;
 
   //@}
 
@@ -122,7 +122,7 @@ private:
 #ifdef DOXYGEN_COMPILE
   const Thyra::VectorSpaceBase<value_type>                              *thyra_vector_space;
 #else
-  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >  thyra_vec_spc_;
+  Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >  thyra_vec_spc_;
 #endif
 
 }; // end class VectorSpaceThyra
@@ -131,7 +131,7 @@ private:
 // Inline functions
 
 inline
-const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >&
+const Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >&
 VectorSpaceThyra::thyra_vec_spc() const
 {
   return thyra_vec_spc_;

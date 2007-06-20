@@ -1456,7 +1456,7 @@ moocho_simulation_constrained_nlps_examples_sec.
 <ul>
 
 <li><b><a href="../../../teuchos/doc/html/index.html">teuchos</a></b>: This
-package supplies basic utility classes such as <tt>Teuchos::RefCountPtr</tt>
+package supplies basic utility classes such as <tt>Teuchos::RCP</tt>
 and <tt>Teuchos::BLAS</tt> that %MOOCHO software is dependent on.
 
 <li><b><a href="../../../rtop/doc/html/index.html">rtop</a></b>: This package
@@ -1589,7 +1589,7 @@ Below are links to individual doxygen collections that make up MOOCHO:
 href="../../src/MoochoUtilities/doc/html/index.html">MoochoUtilities</a></b>:
 Collection of a small amount of utility code that is peculiar to MOOCHO.  Some
 of the software that is now in <tt>%Teuchos</tt> such as
-<tt>Teuchos::RefCountPtr</tt> and <tt>Teuchos::CommandLineProcessor</tt> were
+<tt>Teuchos::RCP</tt> and <tt>Teuchos::CommandLineProcessor</tt> were
 once in this collection.
 
 <li><b><a

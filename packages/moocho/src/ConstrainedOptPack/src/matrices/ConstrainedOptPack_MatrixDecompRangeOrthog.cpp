@@ -115,7 +115,7 @@ const VectorSpace& MatrixDecompRangeOrthog::space_rows() const
 
 std::ostream& MatrixDecompRangeOrthog::output(std::ostream& out_arg) const
 {
-  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
   Teuchos::OSTab tab(out);
   *out
     << "This is a " << this->rows() << " x " << this->cols()

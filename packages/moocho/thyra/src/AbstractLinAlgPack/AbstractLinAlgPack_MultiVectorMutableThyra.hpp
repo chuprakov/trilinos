@@ -56,7 +56,7 @@ public:
   MultiVectorMutableThyra();
   /** \brief Calls <tt>this->initialize()</tt>.
    */
-  MultiVectorMutableThyra( const Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> >& thyra_multi_vec );
+  MultiVectorMutableThyra( const Teuchos::RCP<Thyra::MultiVectorBase<value_type> >& thyra_multi_vec );
   /** \brief Initalize given a smart pointer to a <tt>Thyra::MultiVectorBase</tt> object.
    *
    * @param  thyra_multi_vec  [in] Smart pointer to Thyra vector <tt>this</tt> will adapt.
@@ -70,7 +70,7 @@ public:
    * <li>See the post conditions for <tt>MatrixOpThyra::initialize()</tt>
    * </ul>
    */
-  void initialize( const Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> >& thyra_multi_vec );
+  void initialize( const Teuchos::RCP<Thyra::MultiVectorBase<value_type> >& thyra_multi_vec );
   /** \brief Set to uninitialized and return smart pointer to the internal <tt>Thyra::LinearOpBase</tt> object.
    *
    * Postconditioins:<ul>
@@ -80,10 +80,10 @@ public:
    * Note that his nonvirtual function hides the nonvirtual function
    * <tt>MatrixOpThyra::set_uninitialized()</tt>.
    */
-  Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> > set_uninitialized();
+  Teuchos::RCP<Thyra::MultiVectorBase<value_type> > set_uninitialized();
   /** \brief Return a smart pointer to the internal <tt>Thyra::LinearOpBase</tt> object.
    */
-  Teuchos::RefCountPtr<const Thyra::MultiVectorBase<value_type> > thyra_multi_vec() const;
+  Teuchos::RCP<const Thyra::MultiVectorBase<value_type> > thyra_multi_vec() const;
 
   //@}
 
@@ -91,7 +91,7 @@ public:
   //@{
 
   /// Performs a const_cast<> and dynamic_cast<> and passes on to <tt>this->initialize()</tt>.
-  void initialize( const Teuchos::RefCountPtr<const Thyra::LinearOpBase<value_type> >& thyra_linear_op );
+  void initialize( const Teuchos::RCP<const Thyra::LinearOpBase<value_type> >& thyra_linear_op );
 
   //@}
 
@@ -160,7 +160,7 @@ public:
 private:
 
   /** \brief . */
-  Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> > cast_thyra_multi_vec();
+  Teuchos::RCP<Thyra::MultiVectorBase<value_type> > cast_thyra_multi_vec();
   
 }; // end class MultiVectorMutableThyra
 

@@ -39,7 +39,7 @@
 #include "AbstractLinAlgPack_SpVectorView.hpp"
 #include "AbstractLinAlgPack_EtaVector.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {

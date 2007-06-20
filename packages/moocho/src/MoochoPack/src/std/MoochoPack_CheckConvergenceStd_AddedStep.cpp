@@ -38,7 +38,7 @@
 namespace MoochoPack {
 
 CheckConvergenceStd_AddedStep::CheckConvergenceStd_AddedStep(
-  Teuchos::RefCountPtr<CheckConvergence_Strategy> convergence_strategy
+  Teuchos::RCP<CheckConvergence_Strategy> convergence_strategy
   )
   :
   convergence_strategy_(convergence_strategy)

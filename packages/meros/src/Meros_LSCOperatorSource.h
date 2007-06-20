@@ -30,15 +30,16 @@
 #define MEROS_LSC_OPERATOR_SOURCE_H
 
 #include "Thyra_LinearOpSourceBase.hpp"
-#include "Teuchos_ConstNonconstObjectContainer.hpp"
 #include "Thyra_VectorImpl.hpp" 
 #include "Thyra_VectorSpaceImpl.hpp" 
 #include "Thyra_LinearOperatorDecl.hpp"
 #include "Epetra_RowMatrix.h"
+#include "Teuchos_RefCountPtr.hpp"
 
 
 namespace Meros 
 {
+
   using namespace Thyra;
   
   /** \brief Meros implementation of a Thyra

@@ -87,7 +87,7 @@ bool TangentialStepIP_Step::do_step(
   const value_type            &mu    = s.barrier_parameter().get_k(0);
   const MatrixOp          &Z_k   = s.Z().get_k(0);
 
-  Teuchos::RefCountPtr<VectorMutable> rhs = s.Gf().get_k(0).clone();
+  Teuchos::RCP<VectorMutable> rhs = s.Gf().get_k(0).clone();
   Vp_StV( rhs.get(), mu,      invXu.diag() );
   Vp_StV( rhs.get(), -1.0*mu, invXl.diag() );
   

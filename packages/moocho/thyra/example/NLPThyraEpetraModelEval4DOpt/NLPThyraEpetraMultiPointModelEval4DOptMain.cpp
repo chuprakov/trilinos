@@ -7,7 +7,7 @@
 #include "MoochoPack_MoochoThyraSolver.hpp"
 #include "Thyra_DefaultRealLinearSolverBuilder.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_VerboseObject.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
@@ -25,7 +25,7 @@ int main( int argc, char* argv[] )
 
   Teuchos::GlobalMPISession mpiSession(&argc,&argv);
 
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  Teuchos::RCP<Teuchos::FancyOStream>
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
   try {
@@ -96,15 +96,15 @@ int main( int argc, char* argv[] )
     
     // Construct global and split (individual point) communicators
     int numPoints = 20;
-    Teuchos::RefCountPtr<EpetraExt::MultiMpiComm> globalComm = 
+    Teuchos::RCP<EpetraExt::MultiMpiComm> globalComm = 
       Teuchos::rcp(new EpetraExt::MultiMpiComm(MPI_COMM_WORLD, 1,  numPoints));
     int myPoints = globalComm->NumTimeStepsOnDomain();
     int myFirstPoint = globalComm->FirstTimeStepOnDomain();
 
-    Teuchos::RefCountPtr<Epetra_MpiComm> epetra_comm = Teuchos::rcp(&globalComm->SubDomainComm(),false);
+    Teuchos::RCP<Epetra_MpiComm> epetra_comm = Teuchos::rcp(&globalComm->SubDomainComm(),false);
 
     // Create the single-point EpetraExt::ModelEvaluator object
-    Teuchos::RefCountPtr<EpetraMultiPointModelEval4DOpt>
+    Teuchos::RCP<EpetraMultiPointModelEval4DOpt>
       epetraModel = Teuchos::rcp(new EpetraMultiPointModelEval4DOpt(epetra_comm,xt0,xt1,pt0,pt1,d,x00,x01,p00,p01, q0));
     epetraModel->set_p_bounds(pL0,pL1,pU0,pU1);
     epetraModel->set_x_bounds(xL0,xL1,xU0,xU1);
@@ -115,24 +115,24 @@ int main( int argc, char* argv[] )
     for (int i=0; i<myPoints; i++) { multi_x_init[i] = &init_vec;}
 
     // Fill a vector of pointers to parameter vectors that define the multiple points
-    Teuchos::RefCountPtr<std::vector< Teuchos::RefCountPtr<Epetra_Vector> > >  q_vec
-        = Teuchos::rcp(new std::vector< Teuchos::RefCountPtr<Epetra_Vector> >(myPoints));
+    Teuchos::RCP<std::vector< Teuchos::RCP<Epetra_Vector> > >  q_vec
+        = Teuchos::rcp(new std::vector< Teuchos::RCP<Epetra_Vector> >(myPoints));
     for (int i=0; i<myPoints; i++) {
        q_vec->operator[](i) = Teuchos::rcp(new Epetra_Vector( *(epetraModel->get_p_map(1))));
        q_vec->operator[](i)->operator[](0) = 0.0 + 0.1*(i+myFirstPoint);
     }
 
     // Create the EpetraExt::MultiPointModelEvaluator object
-    Teuchos::RefCountPtr<EpetraExt::MultiPointModelEvaluator>
+    Teuchos::RCP<EpetraExt::MultiPointModelEvaluator>
        multiPointModel = rcp(new EpetraExt::MultiPointModelEvaluator(
                              epetraModel, globalComm, multi_x_init, q_vec));
 
     // Create the Thyra::EpetraModelEvaluator object
 
-    Teuchos::RefCountPtr<Thyra::LinearOpWithSolveFactoryBase<double> >
+    Teuchos::RCP<Thyra::LinearOpWithSolveFactoryBase<double> >
       lowsFactory = lowsfCreator.createLinearSolveStrategy("");
 
-    Teuchos::RefCountPtr<Thyra::EpetraModelEvaluator>
+    Teuchos::RCP<Thyra::EpetraModelEvaluator>
       epetraThyraModel = rcp(new Thyra::EpetraModelEvaluator());
     
     epetraThyraModel->initialize(multiPointModel,lowsFactory);

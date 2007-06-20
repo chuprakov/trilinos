@@ -83,7 +83,7 @@ MoochoSolver::MoochoSolver(
   ,file_proc_postfix_("")
 {
   
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  Teuchos::RCP<Teuchos::FancyOStream>
     defaultOut = Teuchos::VerboseObjectBase::getDefaultOStream();
   error_out_used_ = defaultOut;
 
@@ -136,7 +136,7 @@ void MoochoSolver::set_output_context(
 
   output_to_black_hole_ = output_to_black_hole;
   
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  Teuchos::RCP<Teuchos::FancyOStream>
     defaultOut = Teuchos::VerboseObjectBase::getDefaultOStream();
   
   const int procRank
@@ -311,7 +311,7 @@ MoochoSolver::get_algo_out() const
   return algo_out_;
 }
 
-Teuchos::RefCountPtr<std::ostream>
+Teuchos::RCP<std::ostream>
 MoochoSolver::generate_output_file(const std::string &fileNameBase) const
 {
   if( output_to_black_hole_ == OUTPUT_TO_BLACK_HOLE_TRUE )
@@ -335,7 +335,7 @@ void MoochoSolver::update_solver() const
   using std::endl;
   using std::setw;
   using StopWatchPack::stopwatch;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   namespace ofsp = OptionsFromStreamPack;
   using ofsp::OptionsFromStream;
   using ofsp::StringToIntMap;
@@ -622,7 +622,7 @@ void MoochoSolver::update_solver() const
     // Set up the track objects
     //
     
-    RefCountPtr<AlgorithmTrackerComposite>
+    RCP<AlgorithmTrackerComposite>
       composite_track = Teuchos::rcp(new AlgorithmTrackerComposite(journal_out_used_));
     if(do_console_outputting())
       composite_track->tracks().push_back(
@@ -657,7 +657,7 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
   using std::endl;
   using std::setw;
   using StopWatchPack::stopwatch;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
 
   stopwatch                                  timer;
   bool                                       threw_exception = false;

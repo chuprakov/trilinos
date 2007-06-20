@@ -40,7 +40,7 @@
 #include "IterationPack_AlgorithmState.hpp"
 #include "IterationPack_AlgorithmTracker.hpp"
 #include "IterationPack_AlgorithmStep.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
@@ -88,7 +88,7 @@ namespace IterationPack {
   * possitions.
   *
   * In addition, access is given to the step objects themselves through
-  * the RefCountPtr<...> objects that are used to manage thier memory.
+  * the RCP<...> objects that are used to manage thier memory.
   * Using this type of direct access allows clients to take over memory
   * management if needed and to call the step objects in any order
   * and thereby taking over control of the algorithm.
@@ -105,11 +105,11 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<AlgorithmState>      state_ptr_t;
+  typedef Teuchos::RCP<AlgorithmState>      state_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<AlgorithmTracker>    track_ptr_t;
+  typedef Teuchos::RCP<AlgorithmTracker>    track_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<AlgorithmStep>       step_ptr_t;
+  typedef Teuchos::RCP<AlgorithmStep>       step_ptr_t;
   /** \brief . */
   typedef size_t                                    poss_type;
   /** \brief . */
@@ -268,7 +268,7 @@ public:
     */
   virtual const std::string& get_step_name(poss_type step_poss) const;
 
-  /** \brief Return the RefCountPtr<...> object for the step object at step_poss.
+  /** \brief Return the RCP<...> object for the step object at step_poss.
     *
     * Preconditions:<ul>
     * <li> <tt>1 <= step_poss && step_poss <= num_steps()</tt> (throw <tt>DoesNotExist</tt>)
@@ -315,7 +315,7 @@ public:
   virtual const std::string& get_assoc_step_name(poss_type step_poss, EAssocStepType type
     , poss_type assoc_step_poss) const;
 
-  /** \brief Return the RefCountPtr<...> object for the associated step object at step_poss
+  /** \brief Return the RCP<...> object for the associated step object at step_poss
     * and assoc_step_poss.
     *
     * Preconditions:<ul>
@@ -738,10 +738,10 @@ private:
   AlgorithmStep        *steps;
 #else
   state_ptr_t        state_;
-  // RefCountPtr<...> object for the aggragate AlgorithmState object.
+  // RCP<...> object for the aggragate AlgorithmState object.
 
   track_ptr_t        track_;
-  // RefCountPtr<...> object for the aggragate AlgorithmTracker object.
+  // RCP<...> object for the aggragate AlgorithmTracker object.
 #endif
 
   // algorithm control etc.
@@ -802,7 +802,7 @@ private:
   // step and associated step object data structures
 
   steps_t          steps_;
-  // Array of std::pair<RefCountPtr<step_ptr_t>,std::string> objects.
+  // Array of std::pair<RCP<step_ptr_t>,std::string> objects.
   //
   // *steps_[step_poss].first returns the step object for step_poss = 1...steps_.size().
   // steps_[step_poss].second returns the name of the step for step_poss = 1...steps_.size().

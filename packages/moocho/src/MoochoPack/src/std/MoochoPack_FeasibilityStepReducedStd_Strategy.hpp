@@ -113,7 +113,7 @@ private:
   IterationPack::CastIQMember<VectorMutable>  dl_iq_;
   IterationPack::CastIQMember<VectorMutable>  du_iq_;
   int                                                      current_k_;
-  Teuchos::RefCountPtr<const MatrixOp>            Hess_ptr_;
+  Teuchos::RCP<const MatrixOp>            Hess_ptr_;
   VectorSpace::vec_mut_ptr_t                               grad_store_;
   DMatrix                                                Hess_store_;
 

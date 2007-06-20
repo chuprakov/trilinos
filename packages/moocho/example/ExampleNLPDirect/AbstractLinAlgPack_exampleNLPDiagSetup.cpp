@@ -30,7 +30,7 @@
 /** \brief . */
 int AbstractLinAlgPack::exampleNLPDiagSetup(
   int argc, char* argv[], MPI_Comm comm
-  ,Teuchos::RefCountPtr<const VectorSpace>   *vec_space
+  ,Teuchos::RCP<const VectorSpace>   *vec_space
   ,size_type *n, value_type *xo, bool *has_bounds, bool *dep_bounded
   )
 {
@@ -38,7 +38,7 @@ int AbstractLinAlgPack::exampleNLPDiagSetup(
   using std::endl;
   using std::setw;
   namespace mmp = MemMngPack;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   typedef AbstractLinAlgPack::size_type size_type;
   typedef AbstractLinAlgPack::value_type value_type;
 
@@ -103,13 +103,13 @@ int AbstractLinAlgPack::exampleNLPDiagSetup(
     //
     // Use parallel vectors!
     //
-    Teuchos::RefCountPtr<Epetra_Comm> comm;
+    Teuchos::RCP<Epetra_Comm> comm;
 #ifdef HAVE_MPI
     comm = Teuchos::rcp(new Epetra_MpiComm(MPI_COMM_WORLD));
 #else
     comm = Teuchos::rcp(new Epetra_SerialComm());
 #endif
-    Teuchos::RefCountPtr<Epetra_Map> map = Teuchos::rcp(new Epetra_Map(*n,0,*comm));
+    Teuchos::RCP<Epetra_Map> map = Teuchos::rcp(new Epetra_Map(*n,0,*comm));
     Teuchos::set_extra_data( comm, "comm", &map );
     *vec_space = Teuchos::rcp(new VectorSpaceTSFCore(Teuchos::rcp(new TSFCore::EpetraVectorSpace(map))));
   }

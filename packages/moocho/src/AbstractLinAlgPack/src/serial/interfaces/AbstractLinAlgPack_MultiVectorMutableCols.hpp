@@ -65,9 +65,9 @@ public:
 
   /// Calls <tt>initalize()</tt>.
   MultiVectorMutableCols(
-    const  Teuchos::RefCountPtr<const VectorSpace>   &space_cols
-    ,const  Teuchos::RefCountPtr<const VectorSpace>  &space_rows
-    ,Teuchos::RefCountPtr<VectorMutable>       col_vecs[] = NULL
+    const  Teuchos::RCP<const VectorSpace>   &space_cols
+    ,const  Teuchos::RCP<const VectorSpace>  &space_rows
+    ,Teuchos::RCP<VectorMutable>       col_vecs[] = NULL
     );
   
   /** \brief Initialize given the spaces for the columns and rows and possibly the column vectors.
@@ -103,9 +103,9 @@ public:
    * </ul>
    */
   void initialize(
-    const  Teuchos::RefCountPtr<const VectorSpace>   &space_cols
-    ,const  Teuchos::RefCountPtr<const VectorSpace>  &space_rows
-    ,Teuchos::RefCountPtr<VectorMutable>       col_vecs[] = NULL
+    const  Teuchos::RCP<const VectorSpace>   &space_cols
+    ,const  Teuchos::RCP<const VectorSpace>  &space_rows
+    ,Teuchos::RCP<VectorMutable>       col_vecs[] = NULL
     );
 
   /// Set uninitalized.
@@ -178,9 +178,9 @@ private:
   const VectorSpace                  *space_rows;
   VectorMutable                *column_vectors;
 #else
-  Teuchos::RefCountPtr<const VectorSpace>                  space_cols_;
-  Teuchos::RefCountPtr<const VectorSpace>                  space_rows_;
-  std::vector< Teuchos::RefCountPtr<VectorMutable> > col_vecs_;
+  Teuchos::RCP<const VectorSpace>                  space_cols_;
+  Teuchos::RCP<const VectorSpace>                  space_rows_;
+  std::vector< Teuchos::RCP<VectorMutable> > col_vecs_;
 #endif
   
 }; // end class MultiVectorMutableCols

@@ -76,8 +76,8 @@ In this Chapter, we will present the following ``standard'' build classes:
   ParameterList is a container that can be used to group all the parameters required by a
   given piece of code.
 
-\item \verb!Teuchos::RefCountPtr! class (Section~\ref{sec:teuchos:RefCountPtr}):
-  RefCountPtr is a smart reference-counted pointer class, which provides a functionality
+\item \verb!Teuchos::RCP! class (Section~\ref{sec:teuchos:RCP}):
+  RCP is a smart reference-counted pointer class, which provides a functionality
   similar to the garbage collector of Java. 
 
 \item \verb!Teuchos::TimeMonitor! class (Section~\ref{sec:teuchos:TimeMonitor}):
@@ -558,23 +558,23 @@ This section presents examples of all the methods in the
 %%%
 %%%
 
-\section{Teuchos::RefCountPtr}
-\label{sec:teuchos:RefCountPtr}
+\section{Teuchos::RCP}
+\label{sec:teuchos:RCP}
 
-The \verb!Teuchos::RefCountPtr! class is a templated class for implementing
+The \verb!Teuchos::RCP! class is a templated class for implementing
 automatic garbage collection in C++ using smart, reference-counted pointers.
 Using this class allows one client to dynamically create an object and pass
 the object around to other clients without fear of memory leaks.  
 No client is required to explicitly
 call delete because object will be deleted when all the clients remove their
-references to it.  The type of garbage collection performed by \verb!Teuchos::RefCountPtr! is similar to those found in Perl and Java.
+references to it.  The type of garbage collection performed by \verb!Teuchos::RCP! is similar to those found in Perl and Java.
 
-To use the \verb!Teuchos::RefCountPtr! class, include the header:
+To use the \verb!Teuchos::RCP! class, include the header:
 {\small 
 \begin{verbatim}
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 \end{verbatim}}
-The data type used with {\tt Teuchos::RefCountPtr} should not 
+The data type used with {\tt Teuchos::RCP} should not 
 be a built-in data type (like {\tt int} or {\tt double}), this creates unnecessary 
 overhead.  Instead, it should be used to manage dynamic objects 
 and data members that need to be shared with many clients.  This means that the data type 
@@ -597,24 +597,24 @@ Creating a reference-counted pointer to a dynamically allocated object (of type 
 {\small 
 \begin{verbatim}
 // Create a reference-counted NULL pointer of type A.
-RefCountPtr<A>	           a_null_ptr;
+RCP<A>	           a_null_ptr;
 // Create a reference-counted pointer of non-const type A.
-RefCountPtr<A>             a_ptr = rcp(new A);
+RCP<A>             a_ptr = rcp(new A);
 // Create a reference-counted pointer of const type A.
-RefCountPtr<const A>       ca_ptr = rcp(new A);
+RCP<const A>       ca_ptr = rcp(new A);
 // Create a const reference-counted pointer of non-const type A.
-const RefCountPtr<A>       a_cptr = rcp(new A); 
+const RCP<A>       a_cptr = rcp(new A); 
 // Create a const reference-counted pointer of const type A.
-const RefCountPtr<const A> ca_cptr = rcp(new A); 
+const RCP<const A> ca_cptr = rcp(new A); 
 \end{verbatim}}
 
-The {\tt Teuchos::RefCountPtr} class can also perform implicit conversions between a derived
+The {\tt Teuchos::RCP} class can also perform implicit conversions between a derived
 class ({\tt B1}) and its base class ({\tt A}):
 
 {\small
 \begin{verbatim}
-RefCountPtr<B1> b1_ptr  = rcp(new B1);
-RefCountPtr<A> a_ptr1 = b1_ptr;
+RCP<B1> b1_ptr  = rcp(new B1);
+RCP<A> a_ptr1 = b1_ptr;
 \end{verbatim}}
 
 \noindent Other non-implicit type conversions like static, dynamic, or const casts
@@ -622,22 +622,22 @@ can be taken care of by non-member template functions:
 
 {\small
 \begin{verbatim}
-RefCountPtr<const C> c_ptr = rcp(new C);
+RCP<const C> c_ptr = rcp(new C);
 // Implicit cast from C to B2.
-RefCountPtr<const B2> b2_ptr = c_ptr;                              
+RCP<const B2> b2_ptr = c_ptr;                              
 // Safe cast, type-checked, from C to A.
-RefCountPtr<const A> ca_ptr1 = rcp_dynamic_cast<const A>(c_ptr); 
+RCP<const A> ca_ptr1 = rcp_dynamic_cast<const A>(c_ptr); 
 // Unsafe cast, non-type-checked, from C to A.
-RefCountPtr<const A> ca_ptr2 = rcp_static_cast<const A>(c_ptr);  
+RCP<const A> ca_ptr2 = rcp_static_cast<const A>(c_ptr);  
 // Cast away const from B2.
-RefCountPtr<B2>       nc_b2_ptr = rcp_const_cast<B2>(b2_ptr);           
+RCP<B2>       nc_b2_ptr = rcp_const_cast<B2>(b2_ptr);           
 \end{verbatim}}
 
 Using a reference-counted pointer is very similar to using a raw C++ pointer.  Some
 of the operations that are common to both are:
 {\small
 \begin{verbatim}
-RefCountPtr<A>
+RCP<A>
    a_ptr2 = rcp(new A), // Initialize reference-counted pointers.
    a_ptr3 = rcp(new A); // ""
 A  *ra_ptr2 = new A,    // Initialize non-reference counted pointers.
@@ -661,13 +661,13 @@ a_ptr1++;            // error
 a_ptr1 == ra_ptr1;   // error 
 \end{verbatim}}
 
-\noindent Because the two are not equivalent, the {\tt Teuchos::RefCountPtr} class provides 
-a way of getting the raw C++ pointer held by any {\tt RefCountPtr<A>} object:
+\noindent Because the two are not equivalent, the {\tt Teuchos::RCP} class provides 
+a way of getting the raw C++ pointer held by any {\tt RCP<A>} object:
 {\small
 \begin{verbatim}
 A* true_ptr = a_ptr1.get();
 \end{verbatim}}
-These are just some of the basic features found in the {\tt Teuchos::RefCountPtr} class.  
+These are just some of the basic features found in the {\tt Teuchos::RCP} class.  
 A more extensive tutorial of this powerful tool is ``in the works'' and will be made available
 to Teuchos users as soon as it is finished.  The examples presented in this section can be found in
 \TriExe{teuchos/ex5.cpp}.  
@@ -694,7 +694,7 @@ To use the \verb!Teuchos::TimeMonitor! class, include the header:
 To create a timer for the TimeMonitor to manage, call:
 {\small 
 \begin{verbatim}
-RefCountPtr<Time> FactTime = TimeMonitor::getNewTimer("Factorial Time");
+RCP<Time> FactTime = TimeMonitor::getNewTimer("Factorial Time");
 \end{verbatim}}
 \noindent The {\tt getNewTimer} method creates a new reference-counted
 {\tt Teuchos::Time} object and adds it to the internal array.  To avoid

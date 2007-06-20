@@ -75,7 +75,7 @@ void VectorMutableDense::initialize(
   CLASS_MEMBER_PTRS
   namespace rcp = MemMngPack;
   namespace rmp = MemMngPack;
-  typedef Teuchos::RefCountPtr<DVector> vec_ptr_t;
+  typedef Teuchos::RCP<DVector> vec_ptr_t;
   vec_ptr_t vec_ptr = Teuchos::rcp(new DVector(dim));
   this->initialize(
     (*vec_ptr)()

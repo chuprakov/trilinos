@@ -94,22 +94,22 @@ int main(int argc, char *argv[]) {
   int blocksize = 4;
 
 
-  // Get a pointer to the system matrix, inside of a Teuchos::RefCountPtr
-  // The Teuchos::RefCountPtr is a reference counting pointer that handles
+  // Get a pointer to the system matrix, inside of a Teuchos::RCP
+  // The Teuchos::RCP is a reference counting pointer that handles
   // garbage collection for us, so that we can perform memory allocation without
   // having to worry about freeing memory manually.
-  Teuchos::RefCountPtr<Epetra_CrsMatrix> A = Teuchos::rcp( Gallery.GetMatrix(), false );
+  Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( Gallery.GetMatrix(), false );
 
   // Create an Anasazi MultiVector, based on Epetra MultiVector
   const Epetra_Map * Map = &(A->RowMap());
-  Teuchos::RefCountPtr<Epetra_MultiVector> ivec = 
+  Teuchos::RCP<Epetra_MultiVector> ivec = 
     Teuchos::rcp( new Epetra_MultiVector(*Map,blocksize) );
 
   // Fill it with random numbers
   ivec->Random();
 
   // Setup the eigenproblem, with the matrix A and the initial vectors ivec
-  Teuchos::RefCountPtr< Anasazi::BasicEigenproblem<double,MV,OP> > MyProblem = 
+  Teuchos::RCP< Anasazi::BasicEigenproblem<double,MV,OP> > MyProblem = 
     Teuchos::rcp( new Anasazi::BasicEigenproblem<double,MV,OP>(A, ivec) );
 
   // The problem is non-symmetric. Specify this in the eigenproblem.
@@ -200,7 +200,7 @@ int main(int argc, char *argv[]) {
   std::vector<int> index = sol.index;
   
   // Get eigenvectors
-  Teuchos::RefCountPtr<Epetra_MultiVector> evecs = sol.Evecs;
+  Teuchos::RCP<Epetra_MultiVector> evecs = sol.Evecs;
   
   // Get eigenvalues
   // Because the matrix is nonsymmetric (and the eigenvalues are potentially 
@@ -215,7 +215,7 @@ int main(int argc, char *argv[]) {
   int i=0;
   std::vector<int> curind(1);
   std::vector<double> resnorm(1), tempnrm(1);
-  Teuchos::RefCountPtr<MV> evecr, eveci, tempAevec;
+  Teuchos::RCP<MV> evecr, eveci, tempAevec;
   Epetra_MultiVector Aevec(*Map,numev);
   
   // Compute A*evecs

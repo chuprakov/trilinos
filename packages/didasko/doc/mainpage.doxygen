@@ -121,7 +121,7 @@ Packages are reported in alphabetical order.
 - Teuchos interface to BLAS: \ref teuchos_ex2
 - Teuchos interface to LAPACK: \ref teuchos_ex3
 - Teuchos parameters list: \ref teuchos_ex4
-- Teuchos RefCountPtr: \ref teuchos_ex5
+- Teuchos RCP: \ref teuchos_ex5
 - Teuchos time monitor: \ref teuchos_ex6
 - Teuchos command line processor: \ref teuchos_ex7
 

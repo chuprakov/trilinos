@@ -23,7 +23,7 @@ typedef AbstractLinAlgPack::value_type  Scalar;
 int main( int argc, char* argv[] )
 {
   using Teuchos::rcp;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   using Teuchos::OSTab;
   using MoochoPack::MoochoSolver;
   using MoochoPack::MoochoThyraSolver;
@@ -37,7 +37,7 @@ int main( int argc, char* argv[] )
   
   bool dummySuccess = true;
 
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  Teuchos::RCP<Teuchos::FancyOStream>
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
   try {
@@ -112,7 +112,7 @@ int main( int argc, char* argv[] )
     // Setup the output streams
     //
     
-    Teuchos::RefCountPtr<Teuchos::FancyOStream>
+    Teuchos::RCP<Teuchos::FancyOStream>
       journalOut = Teuchos::rcp(
         new Teuchos::FancyOStream(
           solver.getSolver().generate_output_file("MoochoJournal")
@@ -130,7 +130,7 @@ int main( int argc, char* argv[] )
     MPI_Comm mpiComm = MPI_COMM_WORLD;
 #endif
 
-    Teuchos::RefCountPtr<Epetra_Comm> comm = Teuchos::null;
+    Teuchos::RCP<Epetra_Comm> comm = Teuchos::null;
 #ifdef HAVE_MPI
     comm = Teuchos::rcp(new Epetra_MpiComm(mpiComm));
 #else
@@ -143,20 +143,20 @@ int main( int argc, char* argv[] )
     
     *out << "\nCreate the GLpApp::AdvDiffReactOptModel wrapper object ...\n";
     
-    Teuchos::RefCountPtr<GLpApp::AdvDiffReactOptModel>
+    Teuchos::RCP<GLpApp::AdvDiffReactOptModel>
       epetraModel = advDiffReacModelCreator.createModel(comm);
     epetraModel->setOStream(journalOut);
 
     *out << "\nCreate the Thyra::LinearOpWithSolveFactory object ...\n";
 
-    Teuchos::RefCountPtr<Thyra::LinearOpWithSolveFactoryBase<Scalar> >
+    Teuchos::RCP<Thyra::LinearOpWithSolveFactoryBase<Scalar> >
       lowsFactory = lowsfCreator.createLinearSolveStrategy("");
     // ToDo: Set the output stream before calling above!
     ///lowsFactory = lowsfCreator.createLOWSF(OSTab(journalOut).get());
     
     *out << "\nCreate the Thyra::EpetraModelEvaluator wrapper object ...\n";
     
-    Teuchos::RefCountPtr<Thyra::EpetraModelEvaluator>
+    Teuchos::RCP<Thyra::EpetraModelEvaluator>
       epetraThyraModel = rcp(new Thyra::EpetraModelEvaluator()); // Sets default options!
     epetraThyraModel->setOStream(journalOut);
     epetraThyraModel->initialize(epetraModel,lowsFactory);

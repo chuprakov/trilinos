@@ -77,7 +77,7 @@ MatrixOp& MatrixOp::operator=(const MatrixOp& M)
 
 std::ostream& MatrixOp::output(std::ostream& out_arg) const
 {
-  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
   Teuchos::OSTab tab(out);
   const size_type m = this->rows(), n = this->cols();
   VectorSpace::vec_mut_ptr_t

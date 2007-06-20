@@ -31,7 +31,7 @@
 
 #include "AbstractLinAlgPack_Types.hpp"
 #include "Teuchos_AbstractFactory.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 namespace OptionsFromStreamPack {
   class OptionsFromStream;
@@ -51,7 +51,7 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
 
   //@}

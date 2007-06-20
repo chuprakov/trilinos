@@ -50,7 +50,7 @@
 namespace MoochoPack {
 
 PreProcessBarrierLineSearch_Step::PreProcessBarrierLineSearch_Step(
-  Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp,
+  Teuchos::RCP<NLPInterfacePack::NLPBarrier> barrier_nlp,
   const value_type tau_boundary_frac
   )
   :

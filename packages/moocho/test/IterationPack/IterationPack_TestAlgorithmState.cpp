@@ -38,7 +38,7 @@
 #include "Teuchos_TestForException.hpp"
 
 // explicit instantiation for testing compilation only
-//template Teuchos::RefCountPtr<double>;
+//template Teuchos::RCP<double>;
 //class B {};
 //class D : public B {};
 //template IterationPack::IterQuantityAccessDerivedToBase<B,D>;
@@ -113,7 +113,7 @@ bool IterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
     new alpha_t(
       2,"alpha"
 #ifdef _MIPS_CXX
-      ,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<alpha_k_t,alpha_k_t> >(
+      ,Teuchos::RCP<Teuchos::AbstractFactoryStd<alpha_k_t,alpha_k_t> >(
         new Teuchos::AbstractFactoryStd<alpha_k_t,alpha_k_t>())
 #endif			
       )) );
@@ -123,7 +123,7 @@ bool IterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
     new x_t(
       2,"x"
 #ifdef _MIPS_CXX
-      ,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<x_k_t,x_k_t> >(
+      ,Teuchos::RCP<Teuchos::AbstractFactoryStd<x_k_t,x_k_t> >(
         new Teuchos::AbstractFactoryStd<x_k_t,x_k_t>())
 #endif			
       )) );
@@ -148,7 +148,7 @@ bool IterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
       new x_t(
         2,"x"
 #ifdef _MIPS_CXX
-        ,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<x_k_t,x_k_t> >(
+        ,Teuchos::RCP<Teuchos::AbstractFactoryStd<x_k_t,x_k_t> >(
           new Teuchos::AbstractFactoryStd<x_k_t,x_k_t>())
 #endif			
         )) );

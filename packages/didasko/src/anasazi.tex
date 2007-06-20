@@ -253,7 +253,7 @@ package.
 
 \begin{remark}
 Anasazi makes extensive use of the Teuchos utility classes, especially
-Teuchos::RefCountPtr (Section~\ref{sec:teuchos:RefCountPtr}) and
+Teuchos::RCP (Section~\ref{sec:teuchos:RCP}) and
 Teuchos::ParameterList (Section~\ref{sec:teuchos:ParameterList}). Users
 are encouraged to become familiar with these classes and their correct
 usage.
@@ -315,9 +315,9 @@ necessary to describe both generalized and standard linear eigenvalue problems.
 The Anasazi::Eigensolution structure was developed in order to facilitate setting
 and retrieving of solution data. The class contains the following information:
 \begin{itemize}
-  \item \verb!Teuchos::RefCountPtr< MV > Evecs! \\ 
+  \item \verb!Teuchos::RCP< MV > Evecs! \\ 
    The computed eigenvectors.
- \item \verb!Teuchos::RefCountPtr< MV > Espace! \\ 
+ \item \verb!Teuchos::RCP< MV > Espace! \\ 
    An orthonormal basis for the computed eigenspace.
  \item \verb!std::vector< Value< ScalarType > > Evals! \\ 
    The computed eigenvalues.
@@ -432,11 +432,11 @@ type, multivector type and operator type. The options for the eigensolver are pa
 through the constructor, defined by Anasazi::Eigensolver to have the following form:
 \begin{verbatim}
 Eigensolver( 
-   const Teuchos::RefCountPtr< Eigenproblem<ST,MV,OP> > &problem, 
-   const Teuchos::RefCountPtr< SortManager<ST,MV,OP>  > &sorter,
-   const Teuchos::RefCountPtr< OutputManager<ST>      > &printer,
-   const Teuchos::RefCountPtr< StatusTest<ST,MV,OP>   > &tester,
-   const Teuchos::RefCountPtr< OrthoManager<ST,OP>    > &ortho,
+   const Teuchos::RCP< Eigenproblem<ST,MV,OP> > &problem, 
+   const Teuchos::RCP< SortManager<ST,MV,OP>  > &sorter,
+   const Teuchos::RCP< OutputManager<ST>      > &printer,
+   const Teuchos::RCP< StatusTest<ST,MV,OP>   > &tester,
+   const Teuchos::RCP< OrthoManager<ST,OP>    > &ortho,
    ParameterList                                        &params  
  );
 \end{verbatim}
@@ -499,7 +499,7 @@ either Anasazi::Converged or Anasazi::Unconverged.
 Consider the following example code:
 \begin{verbatim}
 // create an eigenproblem
-Teuchos::RefCountPtr< Anasazi::Eigenproblem<ScalarType,MV,OP> > problem = ...;
+Teuchos::RCP< Anasazi::Eigenproblem<ScalarType,MV,OP> > problem = ...;
 // create a parameter list
 Teuchos::ParameterList params;
 params.set(...);
@@ -752,13 +752,13 @@ typedef Epetra_Operator OP;
 
 \noindent Multivectors will be of type \verb!MV!:
 \begin{verbatim}
-Teuchos::RefCountPtr<MV> X 
+Teuchos::RCP<MV> X 
    = Teuchos::rcp( new MV(...) );
 \end{verbatim}
 
 \noindent Operators can be any subclass of \verb!OP!, for example, an Epetra\_CrsMatrix:
 \begin{verbatim}
-Teuchos::RefCountPtr<OP> A 
+Teuchos::RCP<OP> A 
    = Teuchos::rcp( new Epetra_CrsMatrix(...) );
 \end{verbatim}
 
@@ -784,10 +784,10 @@ The first step in solving an eigenvalue problem is to define the eigenvalue
 problem. Assume we have chosen classes to represent our scalars, multivectors
 and operators as \verb!ST!, \verb!MV! and \verb!OP!, respectively. Given an
 operator \verb!A! and a multivector \verb!X! containing initial vectors, both
-wrapped in Teuchos::RefCountPtr, we might define the eigenproblem as
+wrapped in Teuchos::RCP, we might define the eigenproblem as
 follows:
 \begin{verbatim}
-Teuchos::RefCountPtr< BasicEigenproblem<ST,MV,OP> > MyProblem 
+Teuchos::RCP< BasicEigenproblem<ST,MV,OP> > MyProblem 
   = Teuchos::rcp( new BasicEigenproblem<ST,MV,OP>(A,X) );
 MyProblem->setHermitian( true );
 MyProblem->setNEV( 4 );
@@ -798,7 +798,7 @@ if (ret != true) {
 \end{verbatim}
 
 The first line creates a Anasazi::BasicEigenproblem object and wraps it in a
-Teuchos::\-RefCountPtr (Section~\ref{sec:teuchos:RefCountPtr}). The second line
+Teuchos::\-RCP (Section~\ref{sec:teuchos:RCP}). The second line
 specifies the symmetry of the eigenproblem.
 The third line specifies the desired
 number of eigenvalues and eigenvectors. Lastly, the fourth signals that we have

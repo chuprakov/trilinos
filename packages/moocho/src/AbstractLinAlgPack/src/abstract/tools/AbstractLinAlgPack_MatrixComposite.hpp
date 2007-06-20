@@ -34,7 +34,7 @@
 #include "AbstractLinAlgPack_MatrixOp.hpp"
 #include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "ReleaseResource.hpp"
 
 namespace AbstractLinAlgPack {
@@ -117,7 +117,7 @@ public:
   // Public types
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
   /** \brief Vector list entry for a sub-vector.
@@ -126,7 +126,7 @@ public:
    */
   struct SubVectorEntry {
     /** \brief . */
-    typedef Teuchos::RefCountPtr<const GenPermMatrixSlice> GPMS_ptr_t;
+    typedef Teuchos::RCP<const GenPermMatrixSlice> GPMS_ptr_t;
     /** \brief . */
     SubVectorEntry(
       size_type r_l, size_type c_l, value_type beta
@@ -176,7 +176,7 @@ public:
    */
   struct SubMatrixEntry {
     /** \brief . */
-    typedef Teuchos::RefCountPtr<const GenPermMatrixSlice> GPMS_ptr_t;
+    typedef Teuchos::RCP<const GenPermMatrixSlice> GPMS_ptr_t;
     /** \brief . */
     SubMatrixEntry(
       size_type r_l, size_type r_u, size_type c_l, size_type c_u, value_type alpha

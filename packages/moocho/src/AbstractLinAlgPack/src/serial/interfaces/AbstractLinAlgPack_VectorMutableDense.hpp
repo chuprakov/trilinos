@@ -33,7 +33,7 @@
 #include "AbstractLinAlgPack_VectorMutable.hpp"
 #include "AbstractLinAlgPack_VectorApplyOpSerialBase.hpp"
 #include "DenseLinAlgPack_DVectorClass.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "ReleaseResource.hpp"
 
 namespace AbstractLinAlgPack {
@@ -75,7 +75,7 @@ class VectorMutableDense
 public:
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
   /** @name Constructors/initializers */
@@ -124,7 +124,7 @@ public:
   /** \brief Return a const dense vector.
    */
   const DVectorSlice get_vec() const;
-  /** \brief Return a <tt>RefCountPtr<></tt> pointer to the object that will
+  /** \brief Return a <tt>RCP<></tt> pointer to the object that will
    * release the associated resource.
    */
   const release_resource_ptr_t& vec_release() const;

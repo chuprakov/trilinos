@@ -123,7 +123,7 @@ protected:
     //@{
 
     /** \brief . */
-    Teuchos::RefCountPtr<BasisMatrixImp> create_matrix() const;
+    Teuchos::RCP<BasisMatrixImp> create_matrix() const;
     /** \brief . */
     void V_InvMtV(
       VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
@@ -144,7 +144,7 @@ protected:
   private:
     // /////////////////////////////////////////
     // Private types
-    typedef Teuchos::RefCountPtr<MatrixScaling_Strategy>    matrix_scaling_ptr_t;
+    typedef Teuchos::RCP<MatrixScaling_Strategy>    matrix_scaling_ptr_t;
     // /////////////////////////////////////////
     // Private data members
     mutable MA28_Cpp::MA28Solver ma28_; // Management of common block data
@@ -193,9 +193,9 @@ protected:
   //@{
 
   /** \brief . */
-  const Teuchos::RefCountPtr<FactorizationStructure> create_fact_struc() const;
+  const Teuchos::RCP<FactorizationStructure> create_fact_struc() const;
   /** \brief . */
-  const Teuchos::RefCountPtr<FactorizationNonzeros> create_fact_nonzeros() const;
+  const Teuchos::RCP<FactorizationNonzeros> create_fact_nonzeros() const;
   /** \brief . */
   void imp_analyze_and_factor(
     const AbstractLinAlgPack::MatrixConvertToSparse   &A
@@ -247,7 +247,7 @@ private:
   // Private data members
 
   value_type                          estimated_fillin_ratio_;
-  Teuchos::RefCountPtr<std::ostream>  output_file_;
+  Teuchos::RCP<std::ostream>  output_file_;
   int                                 file_output_num_;
 
   // ////////////////////////////////

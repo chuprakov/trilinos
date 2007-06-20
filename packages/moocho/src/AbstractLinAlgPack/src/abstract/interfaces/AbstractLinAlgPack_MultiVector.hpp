@@ -31,7 +31,7 @@
 
 #include "AbstractLinAlgPack_MatrixOp.hpp"
 #include "RTOpPack_RTOpT.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -166,9 +166,9 @@ public:
     ,DIAG_ACCESS  = 0x4 ///<
   };
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const Vector>         vec_ptr_t;
+  typedef Teuchos::RCP<const Vector>         vec_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MultiVector>    multi_vec_ptr_t;
+  typedef Teuchos::RCP<const MultiVector>    multi_vec_ptr_t;
 
   /** @name Friends */
   //@{

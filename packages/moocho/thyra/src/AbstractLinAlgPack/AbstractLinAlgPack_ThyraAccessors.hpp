@@ -12,28 +12,28 @@ namespace AbstractLinAlgPack {
 void get_thyra_vector(
   const VectorSpaceThyra                                         &thyra_vec_spc
   ,const Vector                                                  &vec
-  ,Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> >    *thyra_vec
+  ,Teuchos::RCP<const Thyra::VectorBase<value_type> >    *thyra_vec
   );
 
 /** \brief . */
 void free_thyra_vector(
   const VectorSpaceThyra                                         &thyra_vec_spc
   ,const Vector                                                  &vec
-  ,Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> >    *thyra_vec
+  ,Teuchos::RCP<const Thyra::VectorBase<value_type> >    *thyra_vec
   );
 
 /** \brief . */
 void get_thyra_vector(
   const VectorSpaceThyra                                         &thyra_vec_spc
   ,VectorMutable                                                 *vec
-  ,Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >          *thyra_vec
+  ,Teuchos::RCP<Thyra::VectorBase<value_type> >          *thyra_vec
   );
 
 /** \brief . */
 void commit_thyra_vector(
   const VectorSpaceThyra                                         &thyra_vec_spc
   ,VectorMutable                                                 *vec
-  ,Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >          *thyra_vec
+  ,Teuchos::RCP<Thyra::VectorBase<value_type> >          *thyra_vec
   );
 
 }

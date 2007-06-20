@@ -44,14 +44,14 @@ VectorMutableThyra::VectorMutableThyra()
 {}
 
 VectorMutableThyra::VectorMutableThyra(
-  const Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >& thyra_vec
+  const Teuchos::RCP<Thyra::VectorBase<value_type> >& thyra_vec
   )
 {
   this->initialize(thyra_vec);
 }
 
 void VectorMutableThyra::initialize(
-  const Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >& thyra_vec
+  const Teuchos::RCP<Thyra::VectorBase<value_type> >& thyra_vec
   )
 {
   namespace mmp = MemMngPack;
@@ -64,10 +64,10 @@ void VectorMutableThyra::initialize(
   this->has_changed();
 }
 
-Teuchos::RefCountPtr<Thyra::VectorBase<value_type> > 
+Teuchos::RCP<Thyra::VectorBase<value_type> > 
 VectorMutableThyra::set_uninitialized()
 {
-  Teuchos::RefCountPtr<Thyra::VectorBase<value_type> > tmp_thyra_vec = thyra_vec_;
+  Teuchos::RCP<Thyra::VectorBase<value_type> > tmp_thyra_vec = thyra_vec_;
   thyra_vec_ = Teuchos::null;
   space_.set_uninitialized();
   this->has_changed();
@@ -108,14 +108,14 @@ void VectorMutableThyra::apply_op(
     return;
   }
   // Convert the non-mutable vectors into non-mutable Thyra vectors
-  Workspace< Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> > > thyra_vecs_sptr(wss,num_vecs);
+  Workspace< Teuchos::RCP<const Thyra::VectorBase<value_type> > > thyra_vecs_sptr(wss,num_vecs);
   Workspace<const Thyra::VectorBase<value_type>*> thyra_vecs(wss,num_vecs);
   for(int k = 0; k < num_vecs; ++k ) {
     get_thyra_vector( space_, *vecs[k], &thyra_vecs_sptr[k] );
     thyra_vecs[k] = &*thyra_vecs_sptr[k];
   }
   // Convert the mutable vetors into mutable Thyra vectors
-  Workspace< Teuchos::RefCountPtr<Thyra::VectorBase<value_type> > > targ_thyra_vecs_sptr(wss,num_targ_vecs);
+  Workspace< Teuchos::RCP<Thyra::VectorBase<value_type> > > targ_thyra_vecs_sptr(wss,num_targ_vecs);
   Workspace<Thyra::VectorBase<value_type>*> targ_thyra_vecs(wss,num_targ_vecs);
   for(int k = 0; k < num_targ_vecs; ++k ) {
     get_thyra_vector( space_, targ_vecs[k], &targ_thyra_vecs_sptr[k] );

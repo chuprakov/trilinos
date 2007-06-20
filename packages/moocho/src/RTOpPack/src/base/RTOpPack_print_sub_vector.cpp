@@ -34,7 +34,7 @@ std::ostream& RTOpPack::output(
   ,bool print_dim , bool newline
   )
 {
-  Teuchos::RefCountPtr<Teuchos::FancyOStream> o = Teuchos::getFancyOStream(Teuchos::rcp(&o_arg,false));
+  Teuchos::RCP<Teuchos::FancyOStream> o = Teuchos::getFancyOStream(Teuchos::rcp(&o_arg,false));
   //Teuchos::OSTab tab(o);
   int w = o->width(0) - 1; // get the set width (minus 1 since a space is inserted)
   if( print_dim )

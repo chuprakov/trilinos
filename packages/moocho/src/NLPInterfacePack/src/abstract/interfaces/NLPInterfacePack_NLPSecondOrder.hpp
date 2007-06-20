@@ -65,7 +65,7 @@ class NLPSecondOrder : virtual public NLPFirstOrder {
 public:
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<MatrixSymOp> >    mat_sym_fcty_ptr_t;
 
   /** @name Constructors */

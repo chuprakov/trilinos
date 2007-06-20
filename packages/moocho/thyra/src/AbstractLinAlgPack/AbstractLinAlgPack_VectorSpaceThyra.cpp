@@ -44,7 +44,7 @@ VectorSpaceThyra::VectorSpaceThyra()
 {}
 
 VectorSpaceThyra::VectorSpaceThyra(
-  const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
+  const Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
   ,const inner_prod_ptr_t                                                  &inner_prod
   )
 {
@@ -52,7 +52,7 @@ VectorSpaceThyra::VectorSpaceThyra(
 }
 
 void VectorSpaceThyra::initialize(
-  const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
+  const Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
   ,const inner_prod_ptr_t                                                  &inner_prod
   )
 {
@@ -68,10 +68,10 @@ void VectorSpaceThyra::initialize(
     this->inner_prod(Teuchos::rcp(new InnerProductThyra(thyra_vec_spc)));
 }
 
-Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >
+Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >
 VectorSpaceThyra::set_uninitialized()
 {
-  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > tmp_thyra_vec_spc = thyra_vec_spc_;
+  Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> > tmp_thyra_vec_spc = thyra_vec_spc_;
   thyra_vec_spc_ = Teuchos::null;
   return tmp_thyra_vec_spc;
 }

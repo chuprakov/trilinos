@@ -97,7 +97,7 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const Teuchos::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
 
   /// Thrown if an invalid basis selection is made

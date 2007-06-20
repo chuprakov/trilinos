@@ -234,7 +234,7 @@ std::ostream& VectorMutableBlocked::output(
   ,index_type global_offset
   ) const
 {
-  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
   Teuchos::OSTab tab(out);
   if(print_dim)
     *out << this->dim() << std::endl;
@@ -400,7 +400,7 @@ VectorMutableBlocked::sub_view( const Range1D& rng_in )
   TEST_FOR_EXCEPT( !(  end_kth_vector_space > kth_vector_space  ) );
 #endif
   // Create a VectorWithOpMutableCompsiteStd object containing the relavant constituent vectors
-  Teuchos::RefCountPtr<VectorMutableBlocked>
+  Teuchos::RCP<VectorMutableBlocked>
     vec_comp = Teuchos::rcp(new VectorMutableBlocked(
       &vecs[kth_vector_space]
       ,Teuchos::rcp(new VectorSpaceBlocked(

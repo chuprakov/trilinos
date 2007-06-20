@@ -51,9 +51,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixSymOpNonsing>    mat_mswons_ptr_t;
+  typedef Teuchos::RCP<const MatrixSymOpNonsing>    mat_mswons_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<MatrixSymOpNonsing>          mat_mswons_mut_ptr_t;
+  typedef Teuchos::RCP<MatrixSymOpNonsing>          mat_mswons_mut_ptr_t;
 #endif
 
   //@}

@@ -51,7 +51,7 @@ public:
 
   /** \brief Calls <tt>initialize()</tt>. */
   NLPFirstOrderThyraModelEvaluator(
-    const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
+    const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
     );
@@ -64,7 +64,7 @@ public:
    * Todo: Add arguments for auxiliary inequalites and equalities
    */
   void initialize(
-    const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
+    const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
     );

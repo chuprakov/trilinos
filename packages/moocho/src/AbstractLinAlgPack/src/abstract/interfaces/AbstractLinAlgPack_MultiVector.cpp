@@ -212,7 +212,7 @@ void MultiVector::apply_op(
 
   // Create a temporary buffer for the reduction objects of the primary reduction
   // so that we can call the companion version of this method.
-  Workspace<Teuchos::RefCountPtr<RTOpPack::ReductTarget> >   rcp_reduct_objs(wss,sec_sub_dim);
+  Workspace<Teuchos::RCP<RTOpPack::ReductTarget> >   rcp_reduct_objs(wss,sec_sub_dim);
   Workspace<RTOpPack::ReductTarget*>                         reduct_objs(wss,sec_sub_dim);
   for(index_type k = 0; k < sec_sub_dim; ++k) {
     rcp_reduct_objs[k] = prim_op.reduct_obj_create();

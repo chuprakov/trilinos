@@ -202,7 +202,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
     &sym_G_RR_dense, 1.0, MatrixSymOp::DUMMY_ARG
     ,G_sym, Q_R, BLAS_Cpp::no_trans, 0.0 );
   // Initialize a factorization object for this matrix
-  typedef Teuchos::RefCountPtr<MatrixSymPosDefCholFactor> G_RR_ptr_t;
+  typedef Teuchos::RCP<MatrixSymPosDefCholFactor> G_RR_ptr_t;
   G_RR_ptr_t
     G_RR_ptr = new MatrixSymPosDefCholFactor();
   G_RR_ptr->initialize(sym_G_RR_dense);

@@ -66,7 +66,7 @@ public:
     /** \brief . */
     typedef std::vector<size_type> j_f_decomp_t;
     /** \brief . */
-    typedef Teuchos::RefCountPtr<const MatrixSymOpNonsing>
+    typedef Teuchos::RCP<const MatrixSymOpNonsing>
       Ko_ptr_t;
     /** \brief . */
     virtual ~InitKKTSystem() {}

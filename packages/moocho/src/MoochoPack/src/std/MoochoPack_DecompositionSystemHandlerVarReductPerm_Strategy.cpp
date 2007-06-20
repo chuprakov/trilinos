@@ -182,7 +182,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 
   if( !decomp_updated ) {
     if( s.get_P_var_current().get() == NULL ) {
-      Teuchos::RefCountPtr<Permutation>
+      Teuchos::RCP<Permutation>
         P_var = nlp_vrp.factory_P_var()->create(),
         P_equ = nlp_vrp.factory_P_equ()->create();
       Range1D
@@ -193,7 +193,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
       s.set_P_var_current( P_var );
       s.set_P_equ_current( P_equ );
     }
-    Teuchos::RefCountPtr<Permutation>
+    Teuchos::RCP<Permutation>
       P_var = nlp_vrp.factory_P_var()->create(),
       P_equ = nlp_vrp.factory_P_equ()->create();
     Range1D

@@ -175,9 +175,9 @@ class Vector {
 public:
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const Vector>   vec_ptr_t;
+  typedef Teuchos::RCP<const Vector>   vec_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<VectorMutable>  vec_mut_ptr_t;
+  typedef Teuchos::RCP<VectorMutable>  vec_mut_ptr_t;
 
   /** \brief . */
   friend
@@ -308,7 +308,7 @@ public:
   /** \brief Create an abstract view of a vector object .
    *
    * This is only a transient view of a sub-vector that is to be immediately used
-   * and then released by <tt>RefCountPtr<></tt>.
+   * and then released by <tt>RCP<></tt>.
    *
    * It is important to understand what the minimum postconditions are for the sub vector objects
    * returned from this method.  If two vector objects <tt>x</tt> and <tt>y</tt> are compatible (possibly of

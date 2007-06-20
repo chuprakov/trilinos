@@ -75,7 +75,7 @@ class MultiVectorMutableDense
 public:
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
   /** @name Constructors / initializers */
@@ -136,7 +136,7 @@ public:
   /** \brief Return if underlying matrix is being viewed as the transpose or non-transposed.
    */
   BLAS_Cpp::Transp gms_trans() const;
-  /** \brief Return a <tt>RefCountPtr<></tt> pointer to the object that will
+  /** \brief Return a <tt>RCP<></tt> pointer to the object that will
    * release the associated resource.
    */
   const release_resource_ptr_t& gms_release() const;

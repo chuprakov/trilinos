@@ -51,19 +51,19 @@ namespace {
 
 // get element operator
 static RTOpPack::RTOpC                               sum_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  sum_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  sum_targ;
 // number nonzros
 static RTOpPack::RTOpC                               num_nonzeros_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  num_nonzeros_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  num_nonzeros_targ;
 // Norm 1
 static RTOpPack::RTOpC                               norm_1_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  norm_1_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  norm_1_targ;
 // Norm 2
 static RTOpPack::RTOpC                               norm_2_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  norm_2_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  norm_2_targ;
 // Norm inf
 static RTOpPack::RTOpC                               norm_inf_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  norm_inf_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  norm_inf_targ;
 // get sub-vector operator
 static RTOpPack::RTOpC                               get_sub_vector_op;
 
@@ -127,7 +127,7 @@ std::ostream& Vector::output(
   ,index_type global_offset
   ) const
 {
-  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
   Teuchos::OSTab tab(out);
   RTOpPack::SubVector sub_vec;
   this->get_sub_vector( Range1D(), &sub_vec );
@@ -243,7 +243,7 @@ void Vector::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec
   RTOpPack::RTOpC get_sub_vector_op;
   TEST_FOR_EXCEPT(0!=RTOp_ROp_get_sub_vector_construct(rng.lbound(),rng.ubound(),&get_sub_vector_op.op()));
   // Create the reduction object (another sub_vec)
-  Teuchos::RefCountPtr<RTOpPack::ReductTarget> reduct_obj = get_sub_vector_op.reduct_obj_create(); // This is really of type RTOpPack::ConstSubVectorView<Scalar>!
+  Teuchos::RCP<RTOpPack::ReductTarget> reduct_obj = get_sub_vector_op.reduct_obj_create(); // This is really of type RTOpPack::ConstSubVectorView<Scalar>!
   // Perform the reduction (get the sub-vector requested)
   const size_t  num_vecs = 1;
   const Vector* sub_vecs[num_vecs] = { this };

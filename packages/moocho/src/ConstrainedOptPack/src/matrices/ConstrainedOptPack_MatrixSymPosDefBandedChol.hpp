@@ -67,7 +67,7 @@ class MatrixSymPosDefBandedChol	: public MatrixSymWithOpFactorized
 public:
   
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
   // //////////////

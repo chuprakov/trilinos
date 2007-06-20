@@ -32,7 +32,7 @@
 #include <iosfwd>
 
 #include "AbstractLinAlgPack_MatrixBase.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -222,9 +222,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixOp>    mat_ptr_t;
+  typedef Teuchos::RCP<const MatrixOp>    mat_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<MatrixOp>          mat_mut_ptr_t;
+  typedef Teuchos::RCP<MatrixOp>          mat_mut_ptr_t;
 #endif
 
   /// Type of matrix norm

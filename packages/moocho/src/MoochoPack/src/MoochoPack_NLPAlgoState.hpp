@@ -261,7 +261,7 @@ public:
   {public: InvalidType(const std::string& what_arg) : std::logic_error(what_arg) {}};
   
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const VectorSpace>    vec_space_ptr_t;
+  typedef Teuchos::RCP<const VectorSpace>    vec_space_ptr_t;
 
   //@}
 

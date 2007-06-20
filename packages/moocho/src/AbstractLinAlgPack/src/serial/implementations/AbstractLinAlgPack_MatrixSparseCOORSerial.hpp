@@ -52,7 +52,7 @@ public:
   //@{
   
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     MemMngPack::ReleaseResource>     release_resource_ptr_t;
   /** \brief Subclass to delete dynamically allocated memory with \c delete[].
    *

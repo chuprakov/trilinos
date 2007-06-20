@@ -148,18 +148,18 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     NLPInterfacePack::NLP>                                       nlp_ptr_t; // full path needed by doxygen
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     IterationPack::AlgorithmTracker>                        track_ptr_t; // full path needed by doxygen
   /** \brief . */
-  typedef Teuchos::RefCountPtr<NLPAlgoConfig>    config_ptr_t;
+  typedef Teuchos::RCP<NLPAlgoConfig>    config_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     OptionsFromStreamPack::OptionsFromStream>                    options_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<std::ostream>       ostream_ptr_t;
+  typedef Teuchos::RCP<std::ostream>       ostream_ptr_t;
   /** \brief . */
   enum EOutputToBlackHole {
     OUTPUT_TO_BLACK_HOLE_DEFAULT
@@ -586,7 +586,7 @@ public:
    * Note that this will typically only create a ofsteam object on the root
    * process and a oblackholestream object on all other processes.
    */
-  Teuchos::RefCountPtr<std::ostream>
+  Teuchos::RCP<std::ostream>
   generate_output_file(const std::string &fileNameBase) const;
 
   //@}
@@ -700,7 +700,7 @@ private:
   // Private types
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<NLPSolverClientInterface>    solver_ptr_t;
+  typedef Teuchos::RCP<NLPSolverClientInterface>    solver_ptr_t;
     
   // ////////////////////////////////////
   // Private data members

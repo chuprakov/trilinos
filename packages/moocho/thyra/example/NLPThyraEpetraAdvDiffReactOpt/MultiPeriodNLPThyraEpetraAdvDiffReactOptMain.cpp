@@ -40,7 +40,7 @@ int main( int argc, char* argv[] )
   using Teuchos::rcp_dynamic_cast;
   using Teuchos::rcp_implicit_cast;
   using Teuchos::null;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   using Teuchos::Array;
   using Teuchos::tuple;
   using Teuchos::ParameterList;
@@ -65,7 +65,7 @@ int main( int argc, char* argv[] )
   
   bool result, success = true;
 
-  RefCountPtr<Teuchos::FancyOStream>
+  RCP<Teuchos::FancyOStream>
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
   try {
@@ -143,7 +143,7 @@ int main( int argc, char* argv[] )
     int numClusters = -1;
 #ifdef HAVE_MPI
 
-    RefCountPtr<OpaqueWrapper<MPI_Comm> >
+    RCP<OpaqueWrapper<MPI_Comm> >
       intraClusterMpiComm = Teuchos::opaqueWrapper<MPI_Comm>(MPI_COMM_WORLD),
       interClusterMpiComm = Teuchos::null;
     
@@ -222,7 +222,7 @@ int main( int argc, char* argv[] )
 
 #endif
 
-    RefCountPtr<Epetra_Comm> comm = Teuchos::null;
+    RCP<Epetra_Comm> comm = Teuchos::null;
 #ifdef HAVE_MPI
     comm = Teuchos::rcp(new Epetra_MpiComm(*intraClusterMpiComm));
     Teuchos::set_extra_data(intraClusterMpiComm,"mpiComm",&comm);
@@ -236,18 +236,18 @@ int main( int argc, char* argv[] )
     
     *out << "\nCreate the GLpApp::AdvDiffReactOptModel wrapper object ...\n";
     
-    RefCountPtr<GLpApp::AdvDiffReactOptModel>
+    RCP<GLpApp::AdvDiffReactOptModel>
       epetraModel = epetraModelCreator.createModel(comm);
 
     *out << "\nCreate the Thyra::LinearOpWithSolveFactory object ...\n";
 
-    RefCountPtr<Thyra::LinearOpWithSolveFactoryBase<Scalar> >
+    RCP<Thyra::LinearOpWithSolveFactoryBase<Scalar> >
       lowsFactory = lowsfCreator.createLinearSolveStrategy("");
     // ToDo: Set the output stream before calling above!
     
     *out << "\nCreate the Thyra::EpetraModelEvaluator wrapper object ...\n";
     
-    RefCountPtr<Thyra::EpetraModelEvaluator>
+    RCP<Thyra::EpetraModelEvaluator>
       epetraThyraModel = rcp(new Thyra::EpetraModelEvaluator()); // Sets default options!
     epetraThyraModel->setOStream(out);
     epetraThyraModel->initialize(epetraModel,lowsFactory);
@@ -260,7 +260,7 @@ int main( int argc, char* argv[] )
     // Create the parallel product spaces for x and f
     //
 
-    RefCountPtr<const Thyra::ProductVectorSpaceBase<Scalar> >
+    RCP<const Thyra::ProductVectorSpaceBase<Scalar> >
       x_bar_space, f_bar_space;
     
 #ifdef HAVE_MPI
@@ -272,7 +272,7 @@ int main( int argc, char* argv[] )
     if (skipSolve) {
       
       *out << "\nCreate block parallel vector spaces for multi-period model.x and model.f ...\n";
-      RefCountPtr<const Teuchos::Comm<Index> >
+      RCP<const Teuchos::Comm<Index> >
         intraClusterComm = rcp(new Teuchos::MpiComm<Index>(intraClusterMpiComm)),
         interClusterComm = Teuchos::createMpiComm<Index>(interClusterMpiComm);
       x_bar_space = Teuchos::rcp(
@@ -281,7 +281,7 @@ int main( int argc, char* argv[] )
           ,0 // clusterRootRank
           ,interClusterComm
           ,1 // numBlocks
-          ,Teuchos::arrayArg<RefCountPtr<const Thyra::VectorSpaceBase<Scalar> > >(
+          ,Teuchos::arrayArg<RCP<const Thyra::VectorSpaceBase<Scalar> > >(
             epetraThyraModel->get_x_space()
             )()
           )
@@ -292,7 +292,7 @@ int main( int argc, char* argv[] )
           ,0 // clusterRootRank
           ,interClusterComm
           ,1 // numBlocks
-          ,Teuchos::arrayArg<RefCountPtr<const Thyra::VectorSpaceBase<Scalar> > >(
+          ,Teuchos::arrayArg<RCP<const Thyra::VectorSpaceBase<Scalar> > >(
             epetraThyraModel->get_f_space()
             )()
           )
@@ -317,7 +317,7 @@ int main( int argc, char* argv[] )
       result = vectorSpaceTester.check(*f_bar_space,OSTab(out).get());
       if(!result) success = false;
       
-      RefCountPtr<const VectorBase<Scalar> >
+      RCP<const VectorBase<Scalar> >
         x0 = epetraThyraModel->getNominalValues().get_x();
       double nrm_x0;
       
@@ -331,7 +331,7 @@ int main( int argc, char* argv[] )
       *out << "\nTiming a global reduction across the entire set of processes: ||x0||_1 = ";
       timer.start(true);
       RTOpPack::ROpNorm1<Scalar> norm_1_op;
-      RefCountPtr<RTOpPack::ReductTarget> norm_1_targ = norm_1_op.reduct_obj_create();
+      RCP<RTOpPack::ReductTarget> norm_1_targ = norm_1_op.reduct_obj_create();
       const VectorBase<Scalar>* vecs[] = { &*x0 };
       Teuchos::dyn_cast<const Thyra::SpmdVectorBase<Scalar> >(*x0).applyOp(
         &*Teuchos::DefaultComm<Index>::getComm()
@@ -367,7 +367,7 @@ int main( int argc, char* argv[] )
 
     const int N = numPeriodsPerCluster;
 
-    Array<RefCountPtr<Thyra::ModelEvaluator<Scalar> > >
+    Array<RCP<Thyra::ModelEvaluator<Scalar> > >
       inverseThyraModels(N);
     if (useOuterInverse) {
       *out << "\nUsing Thyra::DefaultInverseModelEvaluator for the objective function ...\n";
@@ -377,24 +377,24 @@ int main( int argc, char* argv[] )
       else {
         *out << "\nBuilding multiple Thyra::DefaultInverseModelEvaluator objects where the matching vector is held internally ...\n";
       }
-      RefCountPtr<ParameterList> invMEPL = Teuchos::parameterList();
+      RCP<ParameterList> invMEPL = Teuchos::parameterList();
       invMEPL->set( "Observation Multiplier", 1.0 );
       invMEPL->set( "Parameter Multiplier", epetraModel->getDataPool()->getbeta() );
       if ( useStatelessPeriodModel )
         invMEPL->set( "Observation Target as Parameter", true );
-      RefCountPtr<const Thyra::EpetraLinearOp>
+      RCP<const Thyra::EpetraLinearOp>
         H = Thyra::epetraLinearOp(epetraModel->getDataPool()->getH(),"H"),
         R = Thyra::epetraLinearOp(epetraModel->getDataPool()->getR(),"R");
-      RefCountPtr<const Thyra::MultiVectorBase<Scalar> >
+      RCP<const Thyra::MultiVectorBase<Scalar> >
         B_bar = Thyra::create_MultiVector(
           epetraModel->get_B_bar(),
           R->spmdRange()
           );
-      RefCountPtr<const Thyra::LinearOpBase<Scalar> >
+      RCP<const Thyra::LinearOpBase<Scalar> >
         R_bar = Thyra::multiply<Scalar>(Thyra::adjoint<Scalar>(B_bar),R,B_bar);
       for ( int i = 0; i < N; ++i ) {
         if ( ( useStatelessPeriodModel && i==0 ) || !useStatelessPeriodModel ) {
-          RefCountPtr<Thyra::DefaultInverseModelEvaluator<Scalar> >
+          RCP<Thyra::DefaultInverseModelEvaluator<Scalar> >
             _inverseThyraModel = Thyra::inverseModelEvaluator<Scalar>(epetraThyraModel);
           _inverseThyraModel->setParameterList(invMEPL);
           _inverseThyraModel->set_observationMatchWeightingOp(H);
@@ -428,21 +428,21 @@ int main( int argc, char* argv[] )
         ? tuple<int>(z_p_index, z_x_index)
         : tuple<int>(z_p_index)
         );
-    Array<Array<RefCountPtr<const VectorBase<Scalar> > > > z;
+    Array<Array<RCP<const VectorBase<Scalar> > > > z;
     const int g_index = ( useOuterInverse ? 1 : 0 );
     Array<Scalar> weights;
-    RefCountPtr<VectorBase<Scalar> >
+    RCP<VectorBase<Scalar> >
       z_base = inverseThyraModels[0]->getNominalValues().get_p(z_index)->clone_v();
     *out << "\nz_base =\n" << Teuchos::describe(*z_base,Teuchos::VERB_EXTREME);
     Scalar scale_z_i = 1.0;
     for ( int i = 0; i < N; ++i ) {
       weights.push_back(1.0);
-      RefCountPtr<VectorBase<Scalar> > z_i = z_base->clone_v();
+      RCP<VectorBase<Scalar> > z_i = z_base->clone_v();
       Vt_S( &*z_i, scale_z_i );
       *out << "\nz["<<i<<"] =\n" << Teuchos::describe(*z_i,Teuchos::VERB_EXTREME);
       if ( useStatelessPeriodModel ) {
         z.push_back(
-          tuple<RefCountPtr<const VectorBase<Scalar> > >(
+          tuple<RCP<const VectorBase<Scalar> > >(
             z_i,
             null // We will set this again later!
             )
@@ -450,13 +450,13 @@ int main( int argc, char* argv[] )
       }
       else {
         z.push_back(
-          tuple<RefCountPtr<const VectorBase<Scalar> > >(z_i)
+          tuple<RCP<const VectorBase<Scalar> > >(z_i)
           );
       }
       scale_z_i *= periodParamScale;
     }
 
-    RefCountPtr<Thyra::ModelEvaluator<Scalar> >
+    RCP<Thyra::ModelEvaluator<Scalar> >
       thyraModel = inverseThyraModels[0];
 
     if (doMultiPeriod) {
@@ -479,7 +479,7 @@ int main( int argc, char* argv[] )
     solver.setSolveMode(MoochoThyraSolver::SOLVE_MODE_FORWARD);
 
     // Save the solution for model.x and model.p to be used later
-    RefCountPtr<const VectorBase<Scalar> >
+    RCP<const VectorBase<Scalar> >
       x_opt, // Will be set below
       x_init, // Will be set below
       p_opt = inverseThyraModels[0]->getNominalValues().get_p(0)->clone_v();
@@ -490,11 +490,11 @@ int main( int argc, char* argv[] )
       
       *out << "\nSolving individual period problems one at time using continuation ...\n";
 
-      RefCountPtr<ProductVectorBase<Scalar> >
+      RCP<ProductVectorBase<Scalar> >
         x_opt_prod = rcp_dynamic_cast<ProductVectorBase<Scalar> >(
          createMember( thyraModel->get_x_space() ), true );
 
-      RefCountPtr<const VectorBase<Scalar> > period_x;
+      RCP<const VectorBase<Scalar> > period_x;
 
       for ( int i = 0; i < N; ++i ) {
 
@@ -579,7 +579,7 @@ int main( int argc, char* argv[] )
     solver.setModel(thyraModel);
     
     // Set the initial guess and the perturbed parameters
-    RefCountPtr<VectorBase<Scalar> >
+    RCP<VectorBase<Scalar> >
       p_init = p_opt->clone_v();
     {
       MEB::InArgs<Scalar> initialGuess = thyraModel->createInArgs();
@@ -599,8 +599,8 @@ int main( int argc, char* argv[] )
     p_init = solver.getFinalPoint().get_p(0)->clone_v();
 
     *out
-      << "\nrelErr(x_perturb,x_opt) = " << Thyra::relErr<Scalar>(*x_init,*x_opt)
-      << "\nrelErr(p_perturb,p_opt) = " << Thyra::relErr<Scalar>(*p_init,*p_opt)
+      << "\nrelVectorErr(x_perturb,x_opt) = " << Thyra::relVectorErr(*x_init,*x_opt)
+      << "\nrelVectorErr(p_perturb,p_opt) = " << Thyra::relVectorErr(*p_init,*p_opt)
       << "\n";
     
     //
@@ -618,7 +618,7 @@ int main( int argc, char* argv[] )
         !useOuterInverse, std::logic_error,
         "Error, if N > 1, you have to use the outer inverse objective function\n"
         "since each target vector will be different!" );
-      RefCountPtr<const ProductVectorBase<Scalar> >
+      RCP<const ProductVectorBase<Scalar> >
         x_opt_prod = rcp_dynamic_cast<const ProductVectorBase<Scalar> >(
           rcp_implicit_cast<const VectorBase<Scalar> >(x_opt), true
           ); // This cast can *not* fail!
@@ -629,11 +629,11 @@ int main( int argc, char* argv[] )
       }
     }
     else if ( 1 == N ) {
-      RefCountPtr<const ProductVectorBase<Scalar> >
+      RCP<const ProductVectorBase<Scalar> >
         x_opt_prod = rcp_dynamic_cast<const ProductVectorBase<Scalar> >(
           rcp_implicit_cast<const VectorBase<Scalar> >(x_opt)
           ); // This cast can fail!
-      RefCountPtr<const VectorBase<Scalar> >
+      RCP<const VectorBase<Scalar> >
         x_opt_i =
         ( !is_null(x_opt_prod)
           ? x_opt_prod->getVectorBlock(0)
@@ -680,7 +680,7 @@ int main( int argc, char* argv[] )
     
     // Get the inverted for solution and compare it to the optimal solution
 
-    RefCountPtr<const VectorBase<Scalar> >
+    RCP<const VectorBase<Scalar> >
       x_inv = solver.getFinalPoint().get_x(),
       p_inv = solver.getFinalPoint().get_p(0);
 
@@ -688,17 +688,17 @@ int main( int argc, char* argv[] )
     *out << "\np_inv =\n" << Teuchos::describe(*p_inv,Teuchos::VERB_EXTREME);
 
     const Scalar
-      x_err = Thyra::relErr<Scalar>( *x_inv, *x_opt ),
-      p_err = Thyra::relErr<Scalar>( *p_inv, *p_opt );
+      x_err = Thyra::relVectorErr( *x_inv, *x_opt ),
+      p_err = Thyra::relVectorErr( *p_inv, *p_opt );
 
     const bool
       x_test_passed = ( x_err <= stateInvError ),
       p_test_passed = ( p_err <= paramInvError );
 
     *out
-      << "\nrelErr(x_inv,x_opt) = " << x_err << " <= " << stateInvError
+      << "\nrelVectorErr(x_inv,x_opt) = " << x_err << " <= " << stateInvError
       << " : " << Thyra::passfail(x_test_passed)
-      << "\nrelErr(p_inv,p_opt) = " << p_err << " <= " << paramInvError
+      << "\nrelVectorErr(p_inv,p_opt) = " << p_err << " <= " << paramInvError
       << " : " << Thyra::passfail(p_test_passed)
       << "\n";
     

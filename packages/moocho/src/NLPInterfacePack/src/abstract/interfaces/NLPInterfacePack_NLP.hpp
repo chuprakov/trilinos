@@ -36,7 +36,7 @@
 #include "AbstractLinAlgPack_VectorMutable.hpp"
 #include "AbstractLinAlgPack_Permutation.hpp"
 #include "StandardCompositionRelationshipsPack.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "Teuchos_VerboseObject.hpp"
 
 namespace OptionsFromStreamPack {
@@ -294,10 +294,10 @@ public:
   typedef AbstractLinAlgPack::VectorMutable  VectorMutable;  // doxygen likes typedef?
   
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const VectorSpace>  vec_space_ptr_t;
+  typedef Teuchos::RCP<const VectorSpace>  vec_space_ptr_t;
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
 
   /** @name exceptions */
@@ -1098,8 +1098,8 @@ private:
   Permutation                     *P_var;
   Permtuation                     *P_equ;
 #else
-  Teuchos::RefCountPtr<Permutation>  P_var_;
-  Teuchos::RefCountPtr<Permutation>  P_equ_;
+  Teuchos::RCP<Permutation>  P_var_;
+  Teuchos::RCP<Permutation>  P_equ_;
 #endif
   mutable ZeroOrderInfo           first_order_info_;
   mutable ZeroOrderInfo           first_order_info_breve_;

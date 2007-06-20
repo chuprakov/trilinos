@@ -215,15 +215,15 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
   MatrixPermAggr
     &G_aggr = dyn_cast<MatrixPermAggr>( *first_order_info.Gc );
   // Get smart pointers to the constituent members
-  Teuchos::RefCountPtr<MatrixOp>
+  Teuchos::RCP<MatrixOp>
     G_full = Teuchos::rcp_const_cast<MatrixOp>( G_aggr.mat_orig() );
-  Teuchos::RefCountPtr<PermutationSerial>
+  Teuchos::RCP<PermutationSerial>
     P_row = Teuchos::rcp_dynamic_cast<PermutationSerial>(
       Teuchos::rcp_const_cast<Permutation>( G_aggr.row_perm() ) );  // variable permutation
-  Teuchos::RefCountPtr<PermutationSerial>
+  Teuchos::RCP<PermutationSerial>
     P_col = Teuchos::rcp_dynamic_cast<PermutationSerial>(
       Teuchos::rcp_const_cast<Permutation>( G_aggr.col_perm() ) );  // constraint permutation
-  Teuchos::RefCountPtr<const MatrixOp>
+  Teuchos::RCP<const MatrixOp>
     G_perm = G_aggr.mat_perm();
   // Remove references to G_full, G_perm, P_row and P_col.
   G_aggr.set_uninitialized();
@@ -370,7 +370,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
   // Setup row (variable) permutation
   if( P_row.get() == NULL || P_col.count() > 1 )
       P_row = Teuchos::rcp(new PermutationSerial());
-  Teuchos::RefCountPtr<IVector>        var_perm;
+  Teuchos::RCP<IVector>        var_perm;
   if( P_row->perm().get() == NULL )  var_perm = Teuchos::rcp(new IVector(n_full));
   else                               var_perm = Teuchos::rcp_const_cast<IVector>(P_row->perm());
   *var_perm = this->var_perm();
@@ -378,7 +378,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
   // Setup column (constraint) permutation
   if( P_col.get() == NULL || P_col.count() > 1 )
       P_col = Teuchos::rcp(new PermutationSerial());
-  Teuchos::RefCountPtr<IVector>        con_perm;
+  Teuchos::RCP<IVector>        con_perm;
   if( P_col->perm().get() == NULL )  con_perm = Teuchos::rcp(new IVector(m_full));
   else                               con_perm = Teuchos::rcp_const_cast<IVector>(P_col->perm());
   *con_perm = this->equ_perm();

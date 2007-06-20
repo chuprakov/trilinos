@@ -217,11 +217,11 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
   ,NLPSecondOrder                                    *nlp_soi
   ,NLPDirect                                         *nlp_fod
   ,bool                                              tailored_approach
-  ,Teuchos::RefCountPtr<DecompositionSystem>         *decomp_sys
+  ,Teuchos::RCP<DecompositionSystem>         *decomp_sys
   )
 {
   namespace mmp = MemMngPack;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
 
   const size_type
     m  = nlp.m();
@@ -231,7 +231,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
     return;
   }
 
-  RefCountPtr<BasisSystem> basis_sys = Teuchos::null;
+  RCP<BasisSystem> basis_sys = Teuchos::null;
   if(!tailored_approach) {
     // Set the default basis system if one is not set
     basis_sys = nlp_foi->basis_sys();
@@ -243,7 +243,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 
     }
     // Create the testing object for the basis system and set it up.
-    RefCountPtr<BasisSystemTester>
+    RCP<BasisSystemTester>
       basis_sys_tester = Teuchos::rcp(new BasisSystemTester());
     if(options_.get()) {
       BasisSystemTesterSetOptions
@@ -271,7 +271,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
     basis_sys_perm_ = Teuchos::rcp_dynamic_cast<BasisSystemPerm>(basis_sys);
 #endif
     // Create the DecompositionSystem implementation object
-    typedef RefCountPtr<DecompositionSystemVarReductImp> decomp_sys_imp_ptr_t;
+    typedef RCP<DecompositionSystemVarReductImp> decomp_sys_imp_ptr_t;
     decomp_sys_imp_ptr_t decomp_sys_imp;
     switch( cov_.range_space_matrix_type_ ) {
       case RANGE_SPACE_MATRIX_COORDINATE:
@@ -339,8 +339,8 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
   ,NLPSecondOrder                                        *nlp_soi
   ,NLPDirect                                             *nlp_fod
   ,bool                                                  tailored_approach
-  ,const Teuchos::RefCountPtr<DecompositionSystem>       &decomp_sys
-  ,const Teuchos::RefCountPtr<NLPAlgoState>              &state
+  ,const Teuchos::RCP<DecompositionSystem>       &decomp_sys
+  ,const Teuchos::RCP<NLPAlgoState>              &state
   )
 {
   namespace mmp = MemMngPack;
@@ -521,24 +521,24 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
   ,NLPSecondOrder                                              *nlp_soi
   ,NLPDirect                                                   *nlp_fod
   ,bool                                                        tailored_approach
-  ,const Teuchos::RefCountPtr<DecompositionSystem>             &decomp_sys
-  ,Teuchos::RefCountPtr<IterationPack::AlgorithmStep>          *eval_new_point_step
-  ,Teuchos::RefCountPtr<CalcFiniteDiffProd>                    *calc_fd_prod
-  ,Teuchos::RefCountPtr<VariableBoundsTester>                  *bounds_tester
-  ,Teuchos::RefCountPtr<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy
+  ,const Teuchos::RCP<DecompositionSystem>             &decomp_sys
+  ,Teuchos::RCP<IterationPack::AlgorithmStep>          *eval_new_point_step
+  ,Teuchos::RCP<CalcFiniteDiffProd>                    *calc_fd_prod
+  ,Teuchos::RCP<VariableBoundsTester>                  *bounds_tester
+  ,Teuchos::RCP<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy
   )
 {
   namespace mmp = MemMngPack;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
 
   const size_type
     m  = nlp.m(),
     nb = nlp.num_bounded_x();
 
-  typedef RefCountPtr<DecompositionSystemHandler_Strategy>           decomp_sys_handler_ptr_t;
+  typedef RCP<DecompositionSystemHandler_Strategy>           decomp_sys_handler_ptr_t;
   decomp_sys_handler_ptr_t             decomp_sys_handler               = Teuchos::null;
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
-  typedef RefCountPtr<DecompositionSystemHandlerSelectNew_Strategy>  decomp_sys_handler_select_new_ptr_t;
+  typedef RCP<DecompositionSystemHandlerSelectNew_Strategy>  decomp_sys_handler_select_new_ptr_t;
   decomp_sys_handler_select_new_ptr_t  decomp_sys_handler_select_new   = Teuchos::null;
 #endif
 
@@ -603,7 +603,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
   // Create the step object
   if( tailored_approach ) {
     // create and setup the derivative tester
-    typedef Teuchos::RefCountPtr<NLPDirectTester>   deriv_tester_ptr_t;
+    typedef Teuchos::RCP<NLPDirectTester>   deriv_tester_ptr_t;
     deriv_tester_ptr_t
       deriv_tester = Teuchos::rcp(
         new NLPDirectTester(
@@ -617,7 +617,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
       options_setter.set_options(*options_);
     }
     // create the step
-    typedef Teuchos::RefCountPtr<EvalNewPointTailoredApproach_Step>  _eval_new_point_step_ptr_t;
+    typedef Teuchos::RCP<EvalNewPointTailoredApproach_Step>  _eval_new_point_step_ptr_t;
     _eval_new_point_step_ptr_t
       _eval_new_point_step = Teuchos::null;
     switch( cov_.range_space_matrix_type_ ) {
@@ -641,7 +641,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
   }
   else {
     // create and setup the derivative tester
-    typedef Teuchos::RefCountPtr<NLPFirstDerivTester>   deriv_tester_ptr_t;
+    typedef Teuchos::RCP<NLPFirstDerivTester>   deriv_tester_ptr_t;
     deriv_tester_ptr_t
       deriv_tester = Teuchos::rcp(
         new NLPFirstDerivTester(
@@ -654,7 +654,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
         options_setter.set_options(*options_);
     }
       // create and setup the decomposition system tester
-    typedef Teuchos::RefCountPtr<DecompositionSystemTester>   decomp_sys_tester_ptr_t;
+    typedef Teuchos::RCP<DecompositionSystemTester>   decomp_sys_tester_ptr_t;
     decomp_sys_tester_ptr_t
       decomp_sys_tester = Teuchos::rcp( new DecompositionSystemTester() );
     if(options_.get()) {
@@ -662,7 +662,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
         options_setter(decomp_sys_tester.get());
       options_setter.set_options(*options_);
     }
-    Teuchos::RefCountPtr<EvalNewPointStd_Step>
+    Teuchos::RCP<EvalNewPointStd_Step>
       _eval_new_point_step = Teuchos::rcp(
         new EvalNewPointStd_Step(
           decomp_sys_handler

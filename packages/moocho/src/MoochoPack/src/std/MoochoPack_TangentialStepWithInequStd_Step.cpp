@@ -77,7 +77,7 @@ bool TangentialStepWithInequStd_Step::do_step(
   )
 {
 
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   using Teuchos::dyn_cast;
   using ::fabs;
   using LinAlgOpPack::Vt_S;
@@ -259,13 +259,13 @@ bool TangentialStepWithInequStd_Step::do_step(
   const value_type        qp_etaL     = 0.0;
   vec_mut_ptr_t           qp_dL       = Teuchos::null;
   vec_mut_ptr_t           qp_dU       = Teuchos::null;
-  Teuchos::RefCountPtr<const MatrixOp>
+  Teuchos::RCP<const MatrixOp>
                           qp_E        = Teuchos::null;
   BLAS_Cpp::Transp        qp_trans_E  = BLAS_Cpp::no_trans;
   vec_mut_ptr_t           qp_b        = Teuchos::null;
   vec_mut_ptr_t           qp_eL       = Teuchos::null;
   vec_mut_ptr_t           qp_eU       = Teuchos::null;
-  Teuchos::RefCountPtr<const MatrixOp>
+  Teuchos::RCP<const MatrixOp>
                           qp_F        = Teuchos::null;
   BLAS_Cpp::Transp        qp_trans_F  = BLAS_Cpp::no_trans;
   vec_mut_ptr_t           qp_f        = Teuchos::null;
@@ -304,7 +304,7 @@ bool TangentialStepWithInequStd_Step::do_step(
     var_dep   = Zvr ? Zvr->D_rng() : Range1D::Invalid,
     var_indep = Zvr ? Zvr->I_rng() : Range1D();
 
-  RefCountPtr<Vector> Ypy_indep;
+  RCP<Vector> Ypy_indep;
   const value_type
     Ypy_indep_norm_inf
     = ( m ? (Ypy_indep=Ypy_k->sub_view(var_indep))->norm_inf() : 0.0);

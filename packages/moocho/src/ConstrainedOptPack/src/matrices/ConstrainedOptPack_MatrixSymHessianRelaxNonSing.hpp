@@ -31,7 +31,7 @@
 
 #include "ConstrainedOptPack_Types.hpp"
 #include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -52,11 +52,11 @@ class MatrixSymHessianRelaxNonSing
 public:
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixSymOpNonsing>  G_ptr_t;
+  typedef Teuchos::RCP<const MatrixSymOpNonsing>  G_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<VectorMutable>               vec_mut_ptr_t;
+  typedef Teuchos::RCP<VectorMutable>               vec_mut_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const VectorSpace>                 space_ptr_t;
+  typedef Teuchos::RCP<const VectorSpace>                 space_ptr_t;
   
   /** @name Constructors/initializers */
   //@{

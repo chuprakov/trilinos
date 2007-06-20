@@ -39,7 +39,7 @@
 #include "DenseLinAlgPack_DMatrixClass.hpp"
 #include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
 #include "SerializationPack_Serializable.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "ReleaseResource.hpp"
 
 namespace AbstractLinAlgPack {
@@ -91,7 +91,7 @@ namespace AbstractLinAlgPack {
  * diagonal of <tt>MU_store</tt> open for use as workspace.
  *
  * To allow for more flexible resourse management, this class maintains a
- * <tt>RefCountPtr<ReleaseResource></tt> object so whatever memory needs to be released
+ * <tt>RCP<ReleaseResource></tt> object so whatever memory needs to be released
  * will be released when <tt>MU_store</tt> is no longer needed.  This class will also
  * allocate its own memory if none is set through the constructor or the
  * init_setup(...) method.
@@ -118,7 +118,7 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
   /** \brief PostMod class to use with <tt>MemMngPack::AbstractFactorStd</tt>.

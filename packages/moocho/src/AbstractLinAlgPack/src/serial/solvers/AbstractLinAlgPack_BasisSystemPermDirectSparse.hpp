@@ -51,7 +51,7 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<DirectSparseSolver>   direct_solver_ptr_t;
+  typedef Teuchos::RCP<DirectSparseSolver>   direct_solver_ptr_t;
 
   //@}
 
@@ -161,7 +161,7 @@ private:
   // Private member functions
 
   /** \brief . */
-  Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>
+  Teuchos::RCP<DirectSparseSolver::BasisMatrix>
   get_basis_matrix( MatrixOpNonsingAggr &C_aggr ) const;
 
   /** \brief . */
@@ -175,7 +175,7 @@ private:
   /** \brief . */
   void update_basis_and_auxiliary_matrices(
     const MatrixOp& Gc
-    ,const Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>& C_bm
+    ,const Teuchos::RCP<DirectSparseSolver::BasisMatrix>& C_bm
     ,MatrixOpNonsingAggr *C_aggr
     ,MatrixOp* D, MatrixOp* GcUP
     ) const;
@@ -184,7 +184,7 @@ private:
   void do_some_basis_stuff(
     const MatrixOp& Gc
     ,const Range1D& var_dep, const Range1D& equ_decomp
-    ,const Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>& C_bm
+    ,const Teuchos::RCP<DirectSparseSolver::BasisMatrix>& C_bm
     ,MatrixOpNonsingAggr *C_aggr
     ,MatrixOp* D, MatrixOp* GcUP
     );

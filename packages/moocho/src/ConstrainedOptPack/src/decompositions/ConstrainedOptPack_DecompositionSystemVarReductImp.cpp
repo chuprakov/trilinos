@@ -107,8 +107,8 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
   ,MatrixOpNonsing                                  *R
   ,MatrixOp                                         *Uz
   ,MatrixOp                                         *Uy
-  ,Teuchos::RefCountPtr<MatrixOpNonsing>       *C_ptr
-  ,Teuchos::RefCountPtr<MatrixOp>              *D_ptr
+  ,Teuchos::RCP<MatrixOpNonsing>       *C_ptr
+  ,Teuchos::RCP<MatrixOp>              *D_ptr
   )
 {
 
@@ -202,7 +202,7 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
   // Get the matrix object of D and allocate a new matrix object if needed.
   //
 
-  Teuchos::RefCountPtr<MatrixOp> _D_ptr;
+  Teuchos::RCP<MatrixOp> _D_ptr;
   if( new_D_mat_object ) {
     // Create a new matrix object!
     alloc_new_D_matrix( out, olevel, &_D_ptr );
@@ -272,8 +272,8 @@ void DecompositionSystemVarReductImp::set_basis_matrices(
   std::ostream                                           *out
   ,EOutputLevel                                          olevel
   ,ERunTests                                             test_what
-  ,const Teuchos::RefCountPtr<MatrixOpNonsing>      &C_ptr
-  ,const Teuchos::RefCountPtr<MatrixOp>             &D_ptr
+  ,const Teuchos::RCP<MatrixOpNonsing>      &C_ptr
+  ,const Teuchos::RCP<MatrixOp>             &D_ptr
   ,MatrixOp                                              *Uz
   ,const basis_sys_ptr_t                                 &basis_sys
   )
@@ -416,8 +416,8 @@ void DecompositionSystemVarReductImp::update_decomp(
   // Get smart pointers to unreferenced C and D matrix objects.
   //
 
-  Teuchos::RefCountPtr<MatrixOpNonsing>    C_ptr;
-  Teuchos::RefCountPtr<MatrixOp>               D_ptr;
+  Teuchos::RCP<MatrixOpNonsing>    C_ptr;
+  Teuchos::RCP<MatrixOp>               D_ptr;
 
   if( C_ptr_.get() ) {
     //
@@ -476,10 +476,10 @@ void DecompositionSystemVarReductImp::update_decomp(
   //
   // Create the matrix object: N = Gc(var_indep,cond_decomp)' 
   //
-  Teuchos::RefCountPtr<const MatrixOp>
+  Teuchos::RCP<const MatrixOp>
     N_ptr = Teuchos::null;
   if( D_imp_used_ == MAT_IMP_IMPLICIT ) {
-    Teuchos::RefCountPtr<const MatrixOp>
+    Teuchos::RCP<const MatrixOp>
       GcDd_ptr = Gc.sub_view(var_indep,equ_decomp);
     TEST_FOR_EXCEPTION(
       GcDd_ptr.get() == NULL, std::logic_error
@@ -659,7 +659,7 @@ void DecompositionSystemVarReductImp::update_D_imp_used(EExplicitImplicit *D_imp
 void DecompositionSystemVarReductImp::alloc_new_D_matrix( 
   std::ostream                             *out
   ,EOutputLevel                            olevel
-  ,Teuchos::RefCountPtr<MatrixOp> *D_ptr
+  ,Teuchos::RCP<MatrixOp> *D_ptr
   ) const
 {
   if(D_imp_used_ == MAT_IMP_IMPLICIT) {

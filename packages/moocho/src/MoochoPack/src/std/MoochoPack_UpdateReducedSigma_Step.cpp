@@ -193,7 +193,7 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
   // Calculate Reduced Sigma
   // Try sigma^1/2 making use of dependent and independent variables
 
-  Teuchos::RefCountPtr<const VectorMutable>
+  Teuchos::RCP<const VectorMutable>
     Sigma_D_diag = Sigma.diag().sub_view(Z.D_rng()),
     Sigma_I_diag = Sigma.diag().sub_view(Z.I_rng());
   const size_type
@@ -224,7 +224,7 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
         out << "\nSigma_D_sqrt =\n" << Sigma_D_sqrt;
         }
   
-      Teuchos::RefCountPtr<MultiVectorMutable>
+      Teuchos::RCP<MultiVectorMutable>
         J = Sigma_D_sqrt.space_cols().create_members(Z.cols());
       M_MtM(
         static_cast<MatrixOp*>(J.get())

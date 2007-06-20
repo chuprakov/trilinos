@@ -57,7 +57,7 @@ value_type MAX(value_type x, value_type y)
 { return (x > y) ? x : y; }
 
 LineSearchFilter_Step::LineSearchFilter_Step( 
-  Teuchos::RefCountPtr<NLPInterfacePack::NLP> nlp
+  Teuchos::RCP<NLPInterfacePack::NLP> nlp
   ,const std::string obj_iq_name
   ,const std::string grad_obj_iq_name
   ,const value_type &gamma_theta

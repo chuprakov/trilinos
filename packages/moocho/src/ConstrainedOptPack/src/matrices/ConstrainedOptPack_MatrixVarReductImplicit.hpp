@@ -84,9 +84,9 @@ public:
   //@{
   
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixOpNonsing>   mat_nonsing_ptr_t;
+  typedef Teuchos::RCP<const MatrixOpNonsing>   mat_nonsing_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixOp>              mat_ptr_t;
+  typedef Teuchos::RCP<const MatrixOp>              mat_ptr_t;
 
   //@}
 

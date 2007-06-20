@@ -38,14 +38,14 @@ VectorSpaceFactoryThyra::VectorSpaceFactoryThyra()
 {}
 
 VectorSpaceFactoryThyra::VectorSpaceFactoryThyra(
-  const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> >& thyra_vec_spc_fcty
+  const Teuchos::RCP<const Thyra::VectorSpaceFactoryBase<value_type> >& thyra_vec_spc_fcty
   )
 {
   this->initialize(thyra_vec_spc_fcty);
 }
 
 void VectorSpaceFactoryThyra::initialize(
-  const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> >& thyra_vec_spc_fcty
+  const Teuchos::RCP<const Thyra::VectorSpaceFactoryBase<value_type> >& thyra_vec_spc_fcty
   )
 {
   TEST_FOR_EXCEPTION(
@@ -55,10 +55,10 @@ void VectorSpaceFactoryThyra::initialize(
   thyra_vec_spc_fcty_ = thyra_vec_spc_fcty;
 }
 
-Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > 
+Teuchos::RCP<const Thyra::VectorSpaceFactoryBase<value_type> > 
 VectorSpaceFactoryThyra::set_uninitialized()
 {
-  Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > tmp_thyra_vec_spc_fcty = thyra_vec_spc_fcty_;
+  Teuchos::RCP<const Thyra::VectorSpaceFactoryBase<value_type> > tmp_thyra_vec_spc_fcty = thyra_vec_spc_fcty_;
   thyra_vec_spc_fcty_ = Teuchos::null;
   return tmp_thyra_vec_spc_fcty;
 }

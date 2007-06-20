@@ -49,9 +49,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixOpNonsing>    mat_mwons_ptr_t;
+  typedef Teuchos::RCP<const MatrixOpNonsing>    mat_mwons_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<MatrixOpNonsing>          mat_mwons_mut_ptr_t;
+  typedef Teuchos::RCP<MatrixOpNonsing>          mat_mwons_mut_ptr_t;
 #endif
 
   //@}

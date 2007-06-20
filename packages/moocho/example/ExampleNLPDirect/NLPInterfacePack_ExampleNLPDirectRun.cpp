@@ -60,7 +60,7 @@ NLPInterfacePack::ExampleNLPDirectRun(
   using std::endl;
   using std::setw;
   namespace rcp = MemMngPack;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   namespace ofsp = OptionsFromStreamPack;
   using ofsp::OptionsFromStream;
   namespace rsqp = MoochoPack;

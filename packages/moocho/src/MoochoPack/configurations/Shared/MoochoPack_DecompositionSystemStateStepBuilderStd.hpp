@@ -82,7 +82,7 @@ public:
   //@}
   
   /** \brief . */
-  typedef Teuchos::RefCountPtr<
+  typedef Teuchos::RCP<
     const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
 
   /** \brief . */
@@ -126,7 +126,7 @@ public:
     ,NLPSecondOrder                                    *nlp_soi
     ,NLPDirect                                         *nlp_fod
     ,bool                                              tailored_approach
-    ,Teuchos::RefCountPtr<DecompositionSystem>         *decomp_sys
+    ,Teuchos::RCP<DecompositionSystem>         *decomp_sys
     );
   /** \brief Add the common iteration quantities to the state object.
    * 
@@ -139,8 +139,8 @@ public:
     ,NLPSecondOrder                                        *nlp_soi
     ,NLPDirect                                             *nlp_fod
     ,bool                                                  tailored_approach
-    ,const Teuchos::RefCountPtr<DecompositionSystem>       &decomp_sys
-    ,const Teuchos::RefCountPtr<NLPAlgoState>              &state
+    ,const Teuchos::RCP<DecompositionSystem>       &decomp_sys
+    ,const Teuchos::RCP<NLPAlgoState>              &state
     );
 
   /** \brief Create the EvalNewPoint step object and allocated objects.
@@ -154,11 +154,11 @@ public:
     ,NLPSecondOrder                                              *nlp_soi
     ,NLPDirect                                                   *nlp_fod
     ,bool                                                        tailored_approach
-    ,const Teuchos::RefCountPtr<DecompositionSystem>             &decomp_sys
-    ,Teuchos::RefCountPtr<IterationPack::AlgorithmStep>          *eval_new_point_step
-    ,Teuchos::RefCountPtr<CalcFiniteDiffProd>                    *calc_fd_prod
-    ,Teuchos::RefCountPtr<VariableBoundsTester>                  *bounds_tester
-    ,Teuchos::RefCountPtr<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy
+    ,const Teuchos::RCP<DecompositionSystem>             &decomp_sys
+    ,Teuchos::RCP<IterationPack::AlgorithmStep>          *eval_new_point_step
+    ,Teuchos::RCP<CalcFiniteDiffProd>                    *calc_fd_prod
+    ,Teuchos::RCP<VariableBoundsTester>                  *bounds_tester
+    ,Teuchos::RCP<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy
     );
 
   /** \brief Return the current option values being used.
@@ -178,7 +178,7 @@ private:
   SOptionValues       cov_; // current option values actually used
 
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
-  Teuchos::RefCountPtr<BasisSystemPerm> basis_sys_perm_;
+  Teuchos::RCP<BasisSystemPerm> basis_sys_perm_;
 #endif
 
   // /////////////////////////

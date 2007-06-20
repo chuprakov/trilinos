@@ -190,7 +190,7 @@ protected:
    * Todo: Add arguments for auxiliary inequalites and equalities
    */
   void initializeBase(
-    const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
+    const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
     );
@@ -238,7 +238,7 @@ protected:
   // /////////////////////////////////////////
   // Private types
 
-  typedef Teuchos::RefCountPtr<const AbstractLinAlgPack::VectorSpaceThyra> VectorSpaceThyra_ptr_t;
+  typedef Teuchos::RCP<const AbstractLinAlgPack::VectorSpaceThyra> VectorSpaceThyra_ptr_t;
 
   // /////////////////////////////////////////
   // Private data members
@@ -248,7 +248,7 @@ protected:
   bool                                has_bounds_;   // True if has bounds
   bool                                force_xinit_in_bounds_; // default = true.
   index_type                          num_bounded_x_;
-  Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
+  Teuchos::RCP<Thyra::ModelEvaluator<value_type> >
                                       model_;
   int                                 p_idx_;
   int                                 g_idx_;
@@ -262,7 +262,7 @@ protected:
   VectorSpace::vec_mut_ptr_t          xl_;           // lower bounds.
   VectorSpace::vec_mut_ptr_t          xu_;           // upper bounds.
 
-  Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >                     model_g_;
+  Teuchos::RCP<Thyra::VectorBase<value_type> >                     model_g_;
 
   mutable bool model_g_updated_;
   mutable bool model_Dg_updated_;

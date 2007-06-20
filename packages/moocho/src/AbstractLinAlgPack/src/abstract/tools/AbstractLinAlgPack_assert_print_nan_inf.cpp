@@ -40,7 +40,7 @@ namespace {
 
 // Find a NaN or Inf element!
 static RTOpPack::RTOpC                               find_nan_inf_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  find_nan_inf_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  find_nan_inf_targ;
 
 class init_rtop_server_t {
 public:

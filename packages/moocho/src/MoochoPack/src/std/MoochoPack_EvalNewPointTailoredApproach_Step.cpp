@@ -61,7 +61,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
   )
 {
 
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   using Teuchos::rcp;
   using Teuchos::dyn_cast;
   using AbstractLinAlgPack::assert_print_nan_inf;
@@ -191,7 +191,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 
   // Compute all the quantities.
   const bool supports_Gf = nlp.supports_Gf();
-  Teuchos::RefCountPtr<MatrixOp>
+  Teuchos::RCP<MatrixOp>
     GcU = (m > r) ? nlp.factory_GcU()->create() : Teuchos::null; // ToDo: Reuse GcU somehow? 
   VectorMutable
     &py_k  = s.py().set_k(0);
@@ -242,9 +242,9 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 
   if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
     out << "Printing column norms of D:\n";
-    RefCountPtr<VectorMutable>
+    RCP<VectorMutable>
       e_i = D_ptr->space_rows().create_member();
-    RefCountPtr<VectorMutable>
+    RCP<VectorMutable>
       D_i = D_ptr->space_cols().create_member();
     *e_i = 0.0;
     for( int i = 1; i <= (n-r); ++i ) {

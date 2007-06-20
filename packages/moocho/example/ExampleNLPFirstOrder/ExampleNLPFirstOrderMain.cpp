@@ -45,7 +45,7 @@ int main(int argc, char* argv[] ) {
   using std::endl;
   using std::setw;
   namespace mmp = MemMngPack;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   typedef AbstractLinAlgPack::size_type size_type;
   typedef AbstractLinAlgPack::value_type value_type;
   namespace NLPIP = NLPInterfacePack;

@@ -52,7 +52,7 @@ public:
   //@{
 
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const IVector>  i_vector_ptr_t;
+  typedef Teuchos::RCP<const IVector>  i_vector_ptr_t;
 
   //@}
 

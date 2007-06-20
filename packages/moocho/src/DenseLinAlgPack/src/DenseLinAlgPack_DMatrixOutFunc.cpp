@@ -37,7 +37,7 @@
 std::ostream& DenseLinAlgPack::output(std::ostream& out_arg, const DMatrixSlice& gms
   , LinAlgPackIO::fmtflags extra_flags )
 {
-  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
   Teuchos::OSTab tab(out);
   int w = out->width(0) - 1; // get the set width (minus 1 since a space is inserted)
 

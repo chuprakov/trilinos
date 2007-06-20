@@ -48,7 +48,7 @@ NLPBarrier::NLPBarrier()
 
 
 void NLPBarrier::InitializeFromNLP(
-  Teuchos::RefCountPtr<NLP> original_nlp
+  Teuchos::RCP<NLP> original_nlp
   )
   {
   TEST_FOR_EXCEPTION(
@@ -81,12 +81,12 @@ value_type NLPBarrier::objective_term() const
   return objective_term_;
   }
 
-const Teuchos::RefCountPtr<Vector> NLPBarrier::grad_barrier_term() const
+const Teuchos::RCP<Vector> NLPBarrier::grad_barrier_term() const
   {
   return grad_barrier_term_;
   }
 
-const Teuchos::RefCountPtr<Vector>  NLPBarrier::grad_objective_term() const
+const Teuchos::RCP<Vector>  NLPBarrier::grad_objective_term() const
   {
   return grad_objective_term_;
   }

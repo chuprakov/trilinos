@@ -49,7 +49,7 @@
 namespace MoochoPack {
 
 PostProcessBarrierLineSearch_Step::PostProcessBarrierLineSearch_Step(
-  Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp
+  Teuchos::RCP<NLPInterfacePack::NLPBarrier> barrier_nlp
   )
   :
   barrier_nlp_(barrier_nlp)

@@ -54,34 +54,34 @@ namespace {
 
 // log_bound_barrier
 static RTOpPack::RTOpC                               log_bound_barrier_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  log_bound_barrier_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  log_bound_barrier_targ;
 // combined_nu_comp_err
 static RTOpPack::RTOpC                               combined_nu_comp_err_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  combined_nu_comp_err_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  combined_nu_comp_err_targ;
 // combined_nu_comp_err_lower
 static RTOpPack::RTOpC                               combined_nu_comp_err_lower_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  combined_nu_comp_err_lower_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  combined_nu_comp_err_lower_targ;
 // combined_nu_comp_err_upper
 static RTOpPack::RTOpC                               combined_nu_comp_err_upper_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  combined_nu_comp_err_upper_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  combined_nu_comp_err_upper_targ;
 // comp_err_with_mu
 static RTOpPack::RTOpC                               comp_err_with_mu_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  comp_err_with_mu_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  comp_err_with_mu_targ;
 // maximum near feasible step
 static RTOpPack::RTOpC                               max_near_feas_step_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  max_near_feas_step_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  max_near_feas_step_targ;
 // fraction to boundary rule
 static RTOpPack::RTOpC                               fraction_to_boundary_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  fraction_to_boundary_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  fraction_to_boundary_targ;
 // fraction to zero boundary rule
 static RTOpPack::RTOpC                               fraction_to_zero_boundary_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  fraction_to_zero_boundary_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  fraction_to_zero_boundary_targ;
 // maximum relative step
 static RTOpPack::RTOpC                               max_rel_step_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  max_rel_step_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  max_rel_step_targ;
 // number of bounded elements
 static RTOpPack::RTOpC                               num_bounded_op;
-static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  num_bounded_targ;
+static Teuchos::RCP<RTOpPack::ReductTarget>  num_bounded_targ;
 // force in bounds
 static RTOpPack::RTOpC                               force_in_bounds_op;
 // force in bounds with buffer
@@ -161,7 +161,7 @@ AbstractLinAlgPack::max_element( const Vector& v )
 {
   RTOpPack::RTOpC op;
   TEST_FOR_EXCEPT(0!=RTOp_ROp_max_construct(&op.op()));
-  Teuchos::RefCountPtr<RTOpPack::ReductTarget> reduct_obj = op.reduct_obj_create();
+  Teuchos::RCP<RTOpPack::ReductTarget> reduct_obj = op.reduct_obj_create();
   const Vector* vecs[1] = { &v };
   apply_op(op,1,vecs,0,NULL,&*reduct_obj);
   return RTOp_ROp_max_val(op(*reduct_obj));
@@ -369,7 +369,7 @@ bool AbstractLinAlgPack::max_inequ_viol(
 {
   RTOpPack::RTOpC op;
   TEST_FOR_EXCEPT(0!=RTOp_ROp_max_inequ_viol_construct(&op.op()));
-  Teuchos::RefCountPtr<RTOpPack::ReductTarget> reduct_obj = op.reduct_obj_create();
+  Teuchos::RCP<RTOpPack::ReductTarget> reduct_obj = op.reduct_obj_create();
   const int num_vecs = 3;
   const Vector*
     vecs[num_vecs] = { &v, &vL, &vU };

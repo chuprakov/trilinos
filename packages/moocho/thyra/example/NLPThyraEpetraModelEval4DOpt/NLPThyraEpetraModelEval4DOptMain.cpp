@@ -19,7 +19,7 @@ int main( int argc, char* argv[] )
 
   Teuchos::GlobalMPISession mpiSession(&argc,&argv);
 
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  Teuchos::RCP<Teuchos::FancyOStream>
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
   try {
@@ -88,17 +88,17 @@ int main( int argc, char* argv[] )
     
     // Create the EpetraExt::ModelEvaluator object
 
-    Teuchos::RefCountPtr<EpetraModelEval4DOpt>
+    Teuchos::RCP<EpetraModelEval4DOpt>
       epetraModel = rcp(new EpetraModelEval4DOpt(xt0,xt1,pt0,pt1,d,x00,x01,p00,p01));
     epetraModel->set_p_bounds(pL0,pL1,pU0,pU1);
     epetraModel->set_x_bounds(xL0,xL1,xU0,xU1);
 
     // Create the Thyra::EpetraModelEvaluator object
 
-    Teuchos::RefCountPtr<Thyra::LinearOpWithSolveFactoryBase<double> >
+    Teuchos::RCP<Thyra::LinearOpWithSolveFactoryBase<double> >
       lowsFactory = lowsfCreator.createLinearSolveStrategy("");
 
-    Teuchos::RefCountPtr<Thyra::EpetraModelEvaluator>
+    Teuchos::RCP<Thyra::EpetraModelEvaluator>
       epetraThyraModel = rcp(new Thyra::EpetraModelEvaluator());
     
     epetraThyraModel->initialize(epetraModel,lowsFactory);

@@ -61,9 +61,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
   /** \brief . */
-  typedef Teuchos::RefCountPtr<const MatrixSymOp>    mat_mswo_ptr_t;
+  typedef Teuchos::RCP<const MatrixSymOp>    mat_mswo_ptr_t;
   /** \brief . */
-  typedef Teuchos::RefCountPtr<MatrixSymOp>          mat_mswo_mut_ptr_t;
+  typedef Teuchos::RCP<MatrixSymOp>          mat_mswo_mut_ptr_t;
 #endif
   /** \brief . */
   enum EMatRhsPlaceHolder { DUMMY_ARG };
