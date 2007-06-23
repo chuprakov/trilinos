@@ -38,6 +38,8 @@
 #include "FEApp_AbstractProblem.hpp"
 #include "FEApp_BrusselatorPDE.hpp"
 
+#include "Sacado_ScalarParameterLibrary.hpp"
+
 namespace FEApp {
 
   /*!
@@ -49,7 +51,8 @@ namespace FEApp {
   
     //! Default constructor
     BrusselatorProblem(
-		 const Teuchos::RefCountPtr<Teuchos::ParameterList>& params);
+	const Teuchos::RefCountPtr<Teuchos::ParameterList>& params,
+	const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib);
 
     //! Destructor
     virtual ~BrusselatorProblem();
@@ -57,17 +60,12 @@ namespace FEApp {
     //! Get the number of equations
     virtual unsigned int numEquations() const;
 
-    //! Build the PDE instantiations
+    //! Build the PDE instantiations, boundary conditions, and initial solution
     virtual void 
-    buildPDEs(FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM);
-
-    //! Build the boundary conditions
-    virtual std::vector< Teuchos::RefCountPtr<const FEApp::AbstractBC> >
-    buildBCs(const Epetra_Map& dofMap);
-
-    //! Build the initial solution
-    virtual Teuchos::RefCountPtr<Epetra_Vector>
-    buildInitialSolution(const Epetra_Map& dofMap);
+    buildProblem(const Epetra_Map& dofMap,
+		 FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM,
+		 std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> >& bcs,
+		 const Teuchos::RefCountPtr<Epetra_Vector>& u);
 
   private:
 
@@ -82,7 +80,12 @@ namespace FEApp {
     //! Model parameters
     double alpha, beta, D1, D2;
 
+    //! Parameter library
+    Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> paramLib;
+
   };
+
+  
 
 }
 

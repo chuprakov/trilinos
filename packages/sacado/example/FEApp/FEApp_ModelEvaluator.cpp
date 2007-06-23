@@ -31,11 +31,31 @@
 
 #include "FEApp_ModelEvaluator.hpp"
 #include "Teuchos_ScalarTraits.hpp"
+#include "Teuchos_TestForException.hpp"
 
 FEApp::ModelEvaluator::ModelEvaluator(
-		const Teuchos::RefCountPtr<FEApp::Application>& app_) :
-  app(app_)
+  const Teuchos::RefCountPtr<FEApp::Application>& app_,
+  const Teuchos::RefCountPtr< Teuchos::Array<std::string> >& free_param_names) 
+  : app(app_),
+    param_names(free_param_names)
 {
+  // Initialize Sacado parameter vector
+  sacado_param_vec = Teuchos::rcp(new Sacado::ScalarParameterVector);
+  if (param_names != Teuchos::null)
+    app->getParamLib()->fillVector(*param_names, *sacado_param_vec);
+
+  // Create Epetra map for parameter vector
+  const Epetra_Comm& comm = app->getMap()->Comm();
+  epetra_param_map = Teuchos::rcp(new Epetra_LocalMap(sacado_param_vec->size(),
+						      0, comm));
+
+  // Create Epetra vector for parameters
+  epetra_param_vec = Teuchos::rcp(new Epetra_Vector(*epetra_param_map));
+  
+  // Set parameters
+  for (unsigned int i=0; i<sacado_param_vec->size(); i++)
+    (*epetra_param_vec)[i] = (*sacado_param_vec)[i].baseValue;
+						      
 }
 
 // Overridden from EpetraExt::ModelEvaluator
@@ -52,10 +72,45 @@ FEApp::ModelEvaluator::get_f_map() const
   return app->getMap();
 }
 
+Teuchos::RefCountPtr<const Epetra_Map>
+FEApp::ModelEvaluator::get_p_map(int l) const
+{
+  TEST_FOR_EXCEPTION(l != 0, Teuchos::Exceptions::InvalidParameter,
+		     std::endl << 
+		     "Error!  FEApp::ModelEvaluator::get_p_map() only " <<
+		     " supports 1 parameter vector.  Supplied index l = " << 
+		     l << std::endl);
+
+  return epetra_param_map;
+}
+
+Teuchos::RefCountPtr<const Teuchos::Array<std::string> >
+FEApp::ModelEvaluator::get_p_names(int l) const
+{
+  TEST_FOR_EXCEPTION(l != 0, Teuchos::Exceptions::InvalidParameter,
+		     std::endl << 
+		     "Error!  FEApp::ModelEvaluator::get_p_names() only " <<
+		     " supports 1 parameter vector.  Supplied index l = " << 
+		     l << std::endl);
+  return param_names;
+}
+
 Teuchos::RefCountPtr<const Epetra_Vector>
 FEApp::ModelEvaluator::get_x_init() const
 {
   return app->getInitialSolution();
+}
+
+Teuchos::RefCountPtr<const Epetra_Vector>
+FEApp::ModelEvaluator::get_p_init(int l) const
+{
+  TEST_FOR_EXCEPTION(l != 0, Teuchos::Exceptions::InvalidParameter,
+		     std::endl << 
+		     "Error!  FEApp::ModelEvaluator::get_p_init() only " <<
+		     " supports 1 parameter vector.  Supplied index l = " << 
+		     l << std::endl);
+  
+  return epetra_param_vec;
 }
 
 Teuchos::RefCountPtr<Epetra_Operator>
@@ -71,6 +126,7 @@ FEApp::ModelEvaluator::createInArgs() const
   InArgsSetup inArgs;
   inArgs.setModelEvalDescription(this->description());
   inArgs.setSupports(IN_ARG_x,true);
+  inArgs.set_Np(1); // 1 parameter vector
   if (app->isTransient()) {
     inArgs.setSupports(IN_ARG_x_dot,true);
     inArgs.setSupports(IN_ARG_alpha,true);
@@ -111,6 +167,11 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
       beta = inArgs.get_beta();
     }
   }
+  const Epetra_Vector *p = inArgs.get_p(0).get();
+  if (p != NULL) {
+    for (unsigned int i=0; i<sacado_param_vec->size(); i++)
+      (*sacado_param_vec)[i].baseValue = (*p)[i];
+  }
 
   //
   // Get the output arguments
@@ -119,21 +180,22 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
   Teuchos::RefCountPtr<Epetra_Operator> W_out = outArgs.get_W();
 
   // Cast W to a CrsMatrix, throw an exception if this fails
-  Teuchos::RefCountPtr<Epetra_CrsMatrix> W_out_crs;
-  if (W_out != Teuchos::null)
-    W_out_crs = Teuchos::rcp_dynamic_cast<Epetra_CrsMatrix>(W_out, true);
+  Teuchos::RefCountPtr<Epetra_CrsMatrix> W_out_crs = 
+    Teuchos::rcp_dynamic_cast<Epetra_CrsMatrix>(W_out, true);
   
   //
   // Compute the functions
   //
   if(f_out != Teuchos::null && W_out != Teuchos::null) {
-    app->computeGlobalJacobian(alpha, beta, x_dot, x, *f_out, *W_out_crs);
+    app->computeGlobalJacobian(alpha, beta, x_dot, x, *sacado_param_vec,
+			       *f_out, *W_out_crs);
   }
   else if(f_out != Teuchos::null ) {
-    app->computeGlobalResidual(x_dot, x, *f_out);
+    app->computeGlobalResidual(x_dot, x, *sacado_param_vec, *f_out);
   }
   else if(W_out != Teuchos::null ) {
     Epetra_Vector f(x.Map());
-    app->computeGlobalJacobian(alpha, beta, x_dot, x, f, *W_out_crs);
+    app->computeGlobalJacobian(alpha, beta, x_dot, x, *sacado_param_vec, 
+			       f, *W_out_crs);
   }
 }

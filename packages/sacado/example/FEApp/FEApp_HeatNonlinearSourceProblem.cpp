@@ -30,9 +30,10 @@
 // @HEADER
 
 #include "FEApp_HeatNonlinearSourceProblem.hpp"
-#include "FEApp_ConstantDirichletBC.hpp"
+#include "FEApp_ConstantNodeBCStrategy.hpp"
 
-FEApp::HeatNonlinearSourceProblem::HeatNonlinearSourceProblem(
+FEApp::HeatNonlinearSourceProblem::
+HeatNonlinearSourceProblem(
 		 const Teuchos::RefCountPtr<Teuchos::ParameterList>& params_) :
   params(params_)
 {
@@ -40,43 +41,38 @@ FEApp::HeatNonlinearSourceProblem::HeatNonlinearSourceProblem(
   rightBC = params->get("Right BC", 0.0);
 }
 
-FEApp::HeatNonlinearSourceProblem::~HeatNonlinearSourceProblem()
+FEApp::HeatNonlinearSourceProblem::
+~HeatNonlinearSourceProblem()
 {
 }
 
 unsigned int
-FEApp::HeatNonlinearSourceProblem::numEquations() const
+FEApp::HeatNonlinearSourceProblem::
+numEquations() const
 {
   return 1;
 }
 
 void
-FEApp::HeatNonlinearSourceProblem:: buildPDEs(
-		       FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM)
+FEApp::HeatNonlinearSourceProblem:: 
+buildProblem(const Epetra_Map& dofMap,
+	     FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM,
+	     std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> >& bcs,
+	     const Teuchos::RefCountPtr<Epetra_Vector>& u)
 {
+  // Build PDE equations
   FEApp::HeatNonlinearSourcePDE_TemplateBuilder pdeBuilder(params);
   pdeTM.buildObjects(pdeBuilder);
-}
 
-std::vector< Teuchos::RefCountPtr<const FEApp::AbstractBC> >
-FEApp::HeatNonlinearSourceProblem::buildBCs(const Epetra_Map& dofMap)
-{
-  std::vector< Teuchos::RefCountPtr<const FEApp::AbstractBC> > bc(2);
-  bc[0] = Teuchos::rcp(new FEApp::ConstantDirichletBC(dofMap.MinAllGID(),
-						      leftBC));
-  bc[1] = Teuchos::rcp(new FEApp::ConstantDirichletBC(dofMap.MaxAllGID(),
-						      rightBC));
+  // Build boundary conditions
+  FEApp::ConstantNodeBCStrategy_TemplateBuilder leftBuilder(0, 0, leftBC);
+  FEApp::ConstantNodeBCStrategy_TemplateBuilder rightBuilder(0, 0, rightBC);
+  int left_node = dofMap.MinAllGID();
+  int right_node = dofMap.MaxAllGID();
+  bcs.resize(2);
+  bcs[0] = Teuchos::rcp(new FEApp::NodeBC(dofMap, left_node, 1, leftBuilder));
+  bcs[1] = Teuchos::rcp(new FEApp::NodeBC(dofMap, right_node, 1, rightBuilder));
 
-  return bc;
-}
-
-Teuchos::RefCountPtr<Epetra_Vector>
-FEApp::HeatNonlinearSourceProblem::buildInitialSolution(
-						     const Epetra_Map& dofMap)
-{
-  Teuchos::RefCountPtr<Epetra_Vector> u =
-    Teuchos::rcp(new Epetra_Vector(dofMap, false));
+  // Build initial solution
   u->PutScalar(0.0);
-
-  return u;
 }

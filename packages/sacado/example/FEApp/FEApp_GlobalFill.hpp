@@ -38,6 +38,7 @@
 
 #include "FEApp_AbstractPDE.hpp"
 #include "FEApp_AbstractQuadrature.hpp"
+#include "FEApp_NodeBC.hpp"
 #include "FEApp_Mesh.hpp"
 #include "FEApp_AbstractInitPostOp.hpp"
 
@@ -52,6 +53,7 @@ namespace FEApp {
       const Teuchos::RefCountPtr<const FEApp::Mesh>& elementMesh,
       const Teuchos::RefCountPtr<const FEApp::AbstractQuadrature>& quadRule,
       const Teuchos::RefCountPtr< FEApp::AbstractPDE<ScalarT> >& pdeEquations,
+      const std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> >& nodeBCs,
       bool is_transient);
   
     //! Destructor
@@ -79,6 +81,9 @@ namespace FEApp {
     //! PDE Equations
     Teuchos::RefCountPtr< FEApp::AbstractPDE<ScalarT> > pde;
 
+    //! Node boundary conditions
+    std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> > bc;
+
     //! Are we transient?
     bool transient;
 
@@ -99,6 +104,15 @@ namespace FEApp {
 
     //! Element residual variables
     std::vector<ScalarT> elem_f;
+
+    //! Node solution variables
+    std::vector<ScalarT> node_x;
+
+    //! Node time derivative variables
+    std::vector<ScalarT>* node_xdot;
+
+    //! Node residual variables
+    std::vector<ScalarT> node_f;
 
   };
 

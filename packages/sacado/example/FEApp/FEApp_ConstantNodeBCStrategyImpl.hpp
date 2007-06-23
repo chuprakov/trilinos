@@ -29,53 +29,57 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef FEAPP_PROBLEMFACTORY_HPP
-#define FEAPP_PROBLEMFACTORY_HPP
-
-#include "Teuchos_ParameterList.hpp"
-#include "Teuchos_RefCountPtr.hpp"
-
-#include "FEApp_AbstractProblem.hpp"
-
-#include "Sacado_ScalarParameterLibrary.hpp"
-
-namespace FEApp {
-
-  /*!
-   * \brief A factory class to instantiate AbstractProblem objects
-   */
-  class ProblemFactory {
-  public:
-
-    //! Default constructor
-    ProblemFactory(
-	const Teuchos::RefCountPtr<Teuchos::ParameterList>& problemParams,
-	const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib);
-
-    //! Destructor
-    virtual ~ProblemFactory() {}
-
-    virtual Teuchos::RefCountPtr<FEApp::AbstractProblem>
-    create();
-
-  private:
-
-    //! Private to prohibit copying
-    ProblemFactory(const ProblemFactory&);
-
-    //! Private to prohibit copying
-    ProblemFactory& operator=(const ProblemFactory&);
-
-  protected:
-
-    //! Parameter list specifying what problem to create
-    Teuchos::RefCountPtr<Teuchos::ParameterList> problemParams;
-
-    //! Parameter library
-    Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> paramLib;
-
-  };
-
+template <typename ScalarT>
+FEApp::ConstantNodeBCStrategy<ScalarT>::
+ConstantNodeBCStrategy(unsigned int solution_index, 
+		       unsigned int residual_index,
+		       const ScalarT& value) :
+  sol_index(solution_index),
+  res_index(residual_index),
+  val(value),
+  offsets(1)
+{
+  offsets[0] = residual_index;
 }
 
-#endif // FEAPP_PROBLEMFACTORY_HPP
+template <typename ScalarT>
+FEApp::ConstantNodeBCStrategy<ScalarT>::
+~ConstantNodeBCStrategy()
+{
+}
+
+template <typename ScalarT>
+const std::vector<unsigned int>&
+FEApp::ConstantNodeBCStrategy<ScalarT>::
+getOffsets() const
+{
+  return offsets;
+}
+
+template <typename ScalarT>
+void
+FEApp::ConstantNodeBCStrategy<ScalarT>::
+evaluateResidual(const std::vector<ScalarT>* dot,
+		 const std::vector<ScalarT>& solution,
+		 std::vector<ScalarT>& residual) const
+{
+  residual[res_index] = solution[sol_index] - val;
+}
+
+template <typename ScalarT>
+void
+FEApp::ConstantNodeBCStrategy<ScalarT>::
+setValue(const ScalarT& value, bool mark_constant)
+{
+  val = value;
+  if (mark_constant)
+    Sacado::MarkConstant<ScalarT>::eval(val);
+}
+
+template <typename ScalarT>
+const ScalarT&
+FEApp::ConstantNodeBCStrategy<ScalarT>::
+getValue() const
+{
+  return val;
+}

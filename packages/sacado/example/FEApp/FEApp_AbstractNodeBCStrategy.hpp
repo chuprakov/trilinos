@@ -29,41 +29,55 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef FEAPP_ABSTRACTBC_HPP
-#define FEAPP_ABSTRACTBC_HPP
+#ifndef FEAPP_ABSTRACTNODEBCSTRATEGY_HPP
+#define FEAPP_ABSTRACTNODEBCSTRATEGY_HPP
 
-#include "Epetra_Vector.h"
-#include "Epetra_CrsMatrix.h"
+#include <vector>
+
+#include "FEApp_AbstractNodeBCStrategy_NTBase.hpp"
+
+#include "Sacado_TemplateManager.hpp"
 
 namespace FEApp {
 
-  class AbstractBC {
+  /*!
+   * \brief Abstract interface for a nodal boundary condition
+   */
+  template <typename ScalarT>
+  class AbstractNodeBCStrategy : public FEApp::AbstractNodeBCStrategy_NTBase {
   public:
 
     //! Constructor
-    AbstractBC() {};
+    AbstractNodeBCStrategy() {};
 
     //! Destructor
-    virtual ~AbstractBC() {};
+    virtual ~AbstractNodeBCStrategy() {};
 
-    //! Apply boundary condition to residual
-    virtual void applyResidual(const Epetra_Vector& x, 
-			       Epetra_Vector& f) const = 0;
-
-    //! Apply boundary condition to Jacobian
-    virtual void applyJacobian(const Epetra_Vector& x, Epetra_Vector& f,
-			       Epetra_CrsMatrix& jac) const = 0;
+    //! Evaluate BC residual
+    virtual void evaluateResidual(const std::vector<ScalarT>* dot,
+				  const std::vector<ScalarT>& solution,
+				  std::vector<ScalarT>& residual) const = 0;
 
   private:
 
     //! Private to prohibit copying
-    AbstractBC(const AbstractBC&);
+    AbstractNodeBCStrategy(const AbstractNodeBCStrategy&);
 
     //! Private to prohibit copying
-    AbstractBC& operator=(const AbstractBC&);
+    AbstractNodeBCStrategy& operator=(const AbstractNodeBCStrategy&);
 
+  };
+
+  template <typename TypeSeq>
+  class AbstractNodeBCStrategy_TemplateManager : 
+    public Sacado::TemplateManager<TypeSeq, 
+				   FEApp::AbstractNodeBCStrategy_NTBase,
+				   AbstractNodeBCStrategy> {
+  public:
+    AbstractNodeBCStrategy_TemplateManager() {}
+    ~AbstractNodeBCStrategy_TemplateManager() {}
   };
 
 }
 
-#endif // FEAPP_ABSTRACTBC_HPP
+#endif // FEAPP_ABSTRACTNODEBC_HPP

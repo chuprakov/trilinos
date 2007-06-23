@@ -58,16 +58,27 @@ namespace FEApp {
     //! Destructor
     virtual ~ResidualOp();
     
-    //! Evaulate init operator
-    virtual void evalInit(const FEApp::AbstractElement& e,
-			  unsigned int neqn,
-			  std::vector<double>* elem_xdot,
-			  std::vector<double>& elem_x);
+    //! Evaulate element init operator
+    virtual void elementInit(const FEApp::AbstractElement& e,
+			     unsigned int neqn,
+			     std::vector<double>* elem_xdot,
+			     std::vector<double>& elem_x);
 
-    //! Evaluate post operator
-    virtual void evalPost(const FEApp::AbstractElement& e,
+    //! Evaluate element post operator
+    virtual void elementPost(const FEApp::AbstractElement& e,
+			     unsigned int neqn,
+			     std::vector<double>& elem_f);
+
+    //! Evaulate node init operator
+    virtual void nodeInit(const FEApp::NodeBC& bc,
 			  unsigned int neqn,
-			  std::vector<double>& elem_f);
+			  std::vector<double>* node_xdot,
+			  std::vector<double>& node_x);
+
+    //! Evaluate node post operator
+    virtual void nodePost(const FEApp::NodeBC& bc,
+			  unsigned int neqn,
+			  std::vector<double>& node_f);
 
   private:
     
@@ -109,16 +120,28 @@ namespace FEApp {
     //! Destructor
     virtual ~JacobianOp();
 
-    //! Evaulate init operator
-    virtual void evalInit(const FEApp::AbstractElement& e,
-			  unsigned int neqn,
-			  std::vector< Sacado::Fad::DFad<double> >* elem_xdot,
-			  std::vector< Sacado::Fad::DFad<double> >& elem_x);
+    //! Evaulate element init operator
+    virtual void elementInit(
+			 const FEApp::AbstractElement& e,
+			 unsigned int neqn,
+			 std::vector< Sacado::Fad::DFad<double> >* elem_xdot,
+			 std::vector< Sacado::Fad::DFad<double> >& elem_x);
 
-    //! Evaluate post operator
-    virtual void evalPost(const FEApp::AbstractElement& e,
+    //! Evaluate element post operator
+    virtual void elementPost(const FEApp::AbstractElement& e,
+			     unsigned int neqn,
+			     std::vector< Sacado::Fad::DFad<double> >& elem_f);
+
+    //! Evaulate node init operator
+    virtual void nodeInit(const FEApp::NodeBC& bc,
 			  unsigned int neqn,
-			  std::vector< Sacado::Fad::DFad<double> >& elem_f);
+			  std::vector< Sacado::Fad::DFad<double> >* node_xdot,
+			  std::vector< Sacado::Fad::DFad<double> >& node_x);
+
+    //! Evaluate node post operator
+    virtual void nodePost(const FEApp::NodeBC& bc,
+			  unsigned int neqn,
+			  std::vector< Sacado::Fad::DFad<double> >& node_f);
 
   private:
     

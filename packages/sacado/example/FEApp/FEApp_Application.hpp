@@ -41,12 +41,15 @@
 #include "Epetra_Import.h"
 #include "Epetra_Export.h"
 
-#include "FEApp_AbstractBC.hpp"
+#include "FEApp_NodeBC.hpp"
 #include "FEApp_AbstractPDE.hpp"
 #include "FEApp_AbstractQuadrature.hpp"
 #include "FEApp_AbstractDiscretization.hpp"
 #include "FEApp_AbstractProblem.hpp"
 #include "FEApp_TemplateTypes.hpp"
+
+#include "Sacado_ScalarParameterLibrary.hpp"
+#include "Sacado_ScalarParameterVector.hpp"
 
 namespace FEApp {
 
@@ -71,6 +74,9 @@ namespace FEApp {
     //! Get initial solution
     Teuchos::RefCountPtr<const Epetra_Vector> getInitialSolution() const;
 
+    //! Get parameter library
+    Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> getParamLib();
+
     //! Return whether problem is transient
     bool isTransient() const;
 
@@ -80,6 +86,7 @@ namespace FEApp {
      */
     void computeGlobalResidual(const Epetra_Vector* xdot,
 			       const Epetra_Vector& x,
+			       const Sacado::ScalarParameterVector& p,
 			       Epetra_Vector& f);
 
     //! Compute global Jacobian
@@ -89,6 +96,7 @@ namespace FEApp {
     void computeGlobalJacobian(double alpha, double beta,
 			       const Epetra_Vector* xdot,
 			       const Epetra_Vector& x,
+			       const Sacado::ScalarParameterVector& p,
 			       Epetra_Vector& f,
 			       Epetra_CrsMatrix& jac);
 
@@ -109,7 +117,7 @@ namespace FEApp {
     Teuchos::RefCountPtr<FEApp::AbstractDiscretization> disc;
 
     //! Boundary conditions
-    std::vector< Teuchos::RefCountPtr<const FEApp::AbstractBC> > bc;
+    std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> > bc;
 
     //! Quadrature rule
     Teuchos::RefCountPtr<const FEApp::AbstractQuadrature> quad;
@@ -118,7 +126,7 @@ namespace FEApp {
     FEApp::AbstractPDE_TemplateManager<ValidTypes> pdeTM;
 
     //! Initial solution vector
-    Teuchos::RefCountPtr<const Epetra_Vector> initial_x;
+    Teuchos::RefCountPtr<Epetra_Vector> initial_x;
 
     //! Importer for overlapped data
     Teuchos::RefCountPtr<Epetra_Import> importer;
@@ -137,6 +145,9 @@ namespace FEApp {
 
     //! Overlapped Jacobian matrix
     Teuchos::RefCountPtr<Epetra_CrsMatrix> overlapped_jac;
+
+    //! Parameter library
+    Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> paramLib;
 
   };
 

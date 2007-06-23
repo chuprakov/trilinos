@@ -38,7 +38,7 @@
 #include "Epetra_Map.h"
 #include "Epetra_Vector.h"
 
-#include "FEApp_AbstractBC.hpp"
+#include "FEApp_NodeBC.hpp"
 #include "FEApp_AbstractPDE.hpp"
 #include "FEApp_TemplateTypes.hpp"
 
@@ -60,17 +60,12 @@ namespace FEApp {
     //! Get the number of equations
     virtual unsigned int numEquations() const = 0;
 
-    //! Build the PDE instantiations
+    //! Build the PDE instantiations, boundary conditions, and initial solution
     virtual void 
-    buildPDEs(FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM) = 0;
-
-    //! Build the boundary conditions
-    virtual std::vector< Teuchos::RefCountPtr<const FEApp::AbstractBC> >
-    buildBCs(const Epetra_Map& dofMap) = 0;
-
-    //! Build the initial solution
-    virtual Teuchos::RefCountPtr<Epetra_Vector>
-    buildInitialSolution(const Epetra_Map& dofMap) = 0;
+    buildProblem(const Epetra_Map& dofMap,
+		 FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM,
+		 std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> >& bcs,
+		 const Teuchos::RefCountPtr<Epetra_Vector>& u) = 0;
 
   private:
 

@@ -35,8 +35,10 @@
 #include "FEApp_HeatNonlinearSourceProblem.hpp"
 
 FEApp::ProblemFactory::ProblemFactory(
-	 const Teuchos::RefCountPtr<Teuchos::ParameterList>& problemParams_) :
-  problemParams(problemParams_)
+       const Teuchos::RefCountPtr<Teuchos::ParameterList>& problemParams_,
+       const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib_) :
+  problemParams(problemParams_),
+  paramLib(paramLib_)
 {
 }
 
@@ -47,7 +49,8 @@ FEApp::ProblemFactory::create()
 
   std::string& method = problemParams->get("Name", "Brusselator");
   if (method == "Brusselator") {
-    strategy = Teuchos::rcp(new FEApp::BrusselatorProblem(problemParams));
+    strategy = Teuchos::rcp(new FEApp::BrusselatorProblem(problemParams, 
+							  paramLib));
   }
   else if (method == "Heat Nonlinear Source") {
     strategy = 

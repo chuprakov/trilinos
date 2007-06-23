@@ -29,60 +29,13 @@
 // ***********************************************************************
 // @HEADER
 
-#include "FEApp_ConstantDirichletBC.hpp"
+#include "FEApp_TemplateTypes.hpp"
 
-FEApp::ConstantDirichletBC::ConstantDirichletBC(unsigned int dof_GID, 
-						double value) :
-  dof(dof_GID),
-  val(value)
-{
-}
+#ifdef SACADO_ETI
 
-FEApp::ConstantDirichletBC::~ConstantDirichletBC()
-{
-}
+#include "FEApp_BrusselatorNodeBCStrategy.hpp"
+#include "FEApp_BrusselatorNodeBCStrategyImpl.hpp"
 
-void
-FEApp::ConstantDirichletBC::applyResidual(const Epetra_Vector& x, 
-					  Epetra_Vector& f) const
-{
-  // Get map
-  const Epetra_BlockMap& map = x.Map();
+INSTANTIATE_TEMPLATE_CLASS(FEApp::BrusselatorNodeBCStrategy)
 
-  if (map.MyGID(dof)) {
-    int lid = map.LID(dof);
-
-    // Set residual to f = x - a
-    f[lid] = x[lid] - val;
-  }
-}
-
-void
-FEApp::ConstantDirichletBC::applyJacobian(const Epetra_Vector& x, 
-					  Epetra_Vector& f,
-					  Epetra_CrsMatrix& jac) const
-{
-  // Get map
-  const Epetra_BlockMap& map = x.Map();
-
-  if (map.MyGID(dof)) {
-    int lid = map.LID(dof);
-
-    // Set residual to f = x - a
-    f[lid] = x[lid] - val;
-
-    // Get view of row
-    double *row_view;
-    double done = 1.0;
-    int num_entries;
-    jac.ExtractGlobalRowView(dof, num_entries, row_view);
-
-    // Set all entries to zero
-    for (int k=0; k<num_entries; k++)
-      row_view[k] = 0.0;
-
-    // Set diagonal element to 1
-    int idof = dof;  // remove const
-    jac.ReplaceGlobalValues(idof, 1, &done, &idof);
-  }
-}
+#endif

@@ -33,9 +33,14 @@
 #define FEAPP_MODELEVALUATOR_HPP
 
 #include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_Array.hpp"
+
 #include "EpetraExt_ModelEvaluator.h"
 
 #include "FEApp_Application.hpp"
+
+#include "Epetra_LocalMap.h"
+#include "Sacado_ScalarParameterVector.hpp"
 
 namespace FEApp {
 
@@ -43,7 +48,9 @@ namespace FEApp {
   public:
 
     // Constructor
-    ModelEvaluator(const Teuchos::RefCountPtr<FEApp::Application>& app);
+    ModelEvaluator(
+       const Teuchos::RefCountPtr<FEApp::Application>& app,
+       const Teuchos::RefCountPtr< Teuchos::Array<std::string> >& free_param_names = Teuchos::null);
 
     /** \name Overridden from EpetraExt::ModelEvaluator . */
     //@{
@@ -54,8 +61,18 @@ namespace FEApp {
     //! Return residual vector map
     Teuchos::RefCountPtr<const Epetra_Map> get_f_map() const;
 
+    //! Return parameter vector map
+    Teuchos::RefCountPtr<const Epetra_Map> get_p_map(int l) const;
+
+    //! Return array of parameter names
+    Teuchos::RefCountPtr<const Teuchos::Array<std::string> > 
+    get_p_names(int l) const;
+
     //! Return initial solution
     Teuchos::RefCountPtr<const Epetra_Vector> get_x_init() const;
+
+    //! Return initial parameters
+    Teuchos::RefCountPtr<const Epetra_Vector> get_p_init(int l) const;
 
     //! Create W = alpha*M + beta*J matrix
     Teuchos::RefCountPtr<Epetra_Operator> create_W() const;
@@ -75,6 +92,18 @@ namespace FEApp {
 
     //! Application object
     Teuchos::RefCountPtr<FEApp::Application> app;
+
+    //! List of free parameter names
+    Teuchos::RefCountPtr< Teuchos::Array<std::string> > param_names;
+
+    //! Sacado parameter vector
+    Teuchos::RefCountPtr<Sacado::ScalarParameterVector> sacado_param_vec;
+
+    //! Epetra map for parameter vector
+    Teuchos::RefCountPtr<Epetra_LocalMap> epetra_param_map;
+
+    //! Epetra parameter vector
+    Teuchos::RefCountPtr<Epetra_Vector> epetra_param_vec;
 
   };
 

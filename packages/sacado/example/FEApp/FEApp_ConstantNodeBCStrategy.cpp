@@ -29,48 +29,13 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef FEAPP_CONSTANTDIRICHLETBC_HPP
-#define FEAPP_CONSTANTDIRICHLETBC_HPP
+#include "FEApp_TemplateTypes.hpp"
 
-#include "FEApp_AbstractBC.hpp"
+#ifdef SACADO_ETI
 
-namespace FEApp {
+#include "FEApp_ConstantNodeBCStrategy.hpp"
+#include "FEApp_ConstantNodeBCStrategyImpl.hpp"
 
-  class ConstantDirichletBC : public FEApp::AbstractBC {
-  public:
+INSTANTIATE_TEMPLATE_CLASS(FEApp::ConstantNodeBCStrategy)
 
-    //! Constructor
-    ConstantDirichletBC(unsigned int dof_GID, double value);
-
-    //! Destructor
-    virtual ~ConstantDirichletBC();
-
-    //! Apply boundary condition to residual
-    virtual void applyResidual(const Epetra_Vector& x, 
-			       Epetra_Vector& f) const;
-
-    //! Apply boundary condition to Jacobian
-    virtual void applyJacobian(const Epetra_Vector& x, Epetra_Vector& f,
-			       Epetra_CrsMatrix& jac) const;
-
-  private:
-    
-    //! Private to prohibit copying
-    ConstantDirichletBC(const ConstantDirichletBC&);
-
-    //! Private to prohibit copying
-    ConstantDirichletBC& operator=(const ConstantDirichletBC&);
-
-  protected:
-    
-    //! GID of DOF
-    unsigned int dof;
-
-    //! Value of BC
-    double val;
-
-  };
-
-}
-
-#endif // FEAPP_CONSTANTDIRICHLETBC_HPP
+#endif

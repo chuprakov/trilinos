@@ -48,10 +48,10 @@ FEApp::ResidualOp::~ResidualOp()
 }
 
 void
-FEApp::ResidualOp::evalInit(const FEApp::AbstractElement& e,
-			    unsigned int neqn,
-			    std::vector<double>* elem_xdot,
-			    std::vector<double>& elem_x)
+FEApp::ResidualOp::elementInit(const FEApp::AbstractElement& e,
+			       unsigned int neqn,
+			       std::vector<double>* elem_xdot,
+			       std::vector<double>& elem_x)
 {
   // Global node ID
   unsigned int node_GID;
@@ -91,9 +91,9 @@ FEApp::ResidualOp::evalInit(const FEApp::AbstractElement& e,
 }
 
 void
-FEApp::ResidualOp::evalPost(const FEApp::AbstractElement& e,
-			    unsigned int neqn,
-			    std::vector<double>& elem_f)
+FEApp::ResidualOp::elementPost(const FEApp::AbstractElement& e,
+			       unsigned int neqn,
+			       std::vector<double>& elem_f)
 {
   // Global node ID
   unsigned int node_GID;
@@ -125,6 +125,52 @@ FEApp::ResidualOp::evalPost(const FEApp::AbstractElement& e,
   }
 }
 
+void
+FEApp::ResidualOp::nodeInit(const FEApp::NodeBC& bc,
+			    unsigned int neqn,
+			    std::vector<double>* node_xdot,
+			    std::vector<double>& node_x)
+{
+  // Global node ID
+  unsigned int node_GID = bc.getNodeGID();
+
+  // Local ID of first DOF
+  unsigned int firstDOF = x->Map().LID(node_GID*neqn);
+
+  // Copy node solution
+  for (unsigned int j=0; j<neqn; j++) {
+    node_x[j] = (*x)[firstDOF+j];
+    if (node_xdot != NULL)
+      (*node_xdot)[j] = (*xdot)[firstDOF+j];
+  }
+}
+
+void
+FEApp::ResidualOp::nodePost(const FEApp::NodeBC& bc,
+			    unsigned int neqn,
+			    std::vector<double>& node_f)
+{
+  // Global node ID
+  unsigned int node_GID = bc.getNodeGID();
+
+  // Global ID of first DOF
+  unsigned int firstDOF = node_GID*neqn;
+
+  double zero = 0.0;
+
+  // Residual offsets
+  const std::vector<unsigned int>& offsets = bc.getOffsets();
+
+  // Replace global residual
+  for (unsigned int j=0; j<offsets.size(); j++) {
+    int row = static_cast<int>(firstDOF + offsets[j]);
+    if (bc.isOwned())
+      f->ReplaceGlobalValues(1, &(node_f[offsets[j]]), &row);
+    else
+      f->ReplaceGlobalValues(1, &zero, &row);
+  }
+}
+
 FEApp::JacobianOp::JacobianOp(
              double alpha, double beta,
 	     const Teuchos::RefCountPtr<const Epetra_Vector>& overlapped_xdot,
@@ -145,7 +191,7 @@ FEApp::JacobianOp::~JacobianOp()
 }
 
 void
-FEApp::JacobianOp::evalInit(
+FEApp::JacobianOp::elementInit(
 			 const FEApp::AbstractElement& e,
 			 unsigned int neqn,
 			 std::vector< Sacado::Fad::DFad<double> >* elem_xdot,
@@ -199,17 +245,12 @@ FEApp::JacobianOp::evalInit(
 }
 
 void
-FEApp::JacobianOp::evalPost(const FEApp::AbstractElement& e,
+FEApp::JacobianOp::elementPost(
+			    const FEApp::AbstractElement& e,
 			    unsigned int neqn,
 			    std::vector< Sacado::Fad::DFad<double> >& elem_f)
 {
-  // Global node ID
-  unsigned int node_GID;
-
-  // Local ID of first DOF
-  unsigned int firstDOF;
-
-   // Number of nodes
+  // Number of nodes
   unsigned int nnode = e.numNodes();
 
   // Sum element residual and Jacobian into global residual, Jacobian
@@ -255,6 +296,90 @@ FEApp::JacobianOp::evalPost(const FEApp::AbstractElement& e,
     } // row equations
 
   } // row node
+
+}
+
+void
+FEApp::JacobianOp::nodeInit(
+			 const FEApp::NodeBC& bc,
+			 unsigned int neqn,
+			 std::vector< Sacado::Fad::DFad<double> >* node_xdot,
+			 std::vector< Sacado::Fad::DFad<double> >& node_x)
+{
+  // Global node ID
+  unsigned int node_GID = bc.getNodeGID();
+
+  // Local ID of first DOF
+  unsigned int firstDOF = x->Map().LID(node_GID*neqn);
+
+  // Copy element solution
+  for (unsigned int j=0; j<neqn; j++) {
+    node_x[j] = Sacado::Fad::DFad<double>(neqn, (*x)[firstDOF+j]);
+    node_x[j].fastAccessDx(j) = j_coeff;
+    if (node_xdot != NULL) {
+      (*node_xdot)[j] = Sacado::Fad::DFad<double>(neqn, (*xdot)[firstDOF+j]);
+      (*node_xdot)[j].fastAccessDx(j) = m_coeff;
+    }
+  }
+}
+
+void
+FEApp::JacobianOp::nodePost(const FEApp::NodeBC& bc,
+			    unsigned int neqn,
+			    std::vector< Sacado::Fad::DFad<double> >& node_f)
+{
+  // Global node ID
+  unsigned int node_GID = bc.getNodeGID();
+
+  // Global ID of first DOF
+  unsigned int firstDOF = node_GID*neqn;
+
+  // Residual offsets
+  const std::vector<unsigned int>& offsets = bc.getOffsets();
+
+  int num_entries;
+  double* row_view = 0;
+  int row, col;
+
+  double zero = 0.0;
+
+  // Loop over equations per node
+  for (unsigned int eq_row=0; eq_row<offsets.size(); eq_row++) {
+
+    // Global row
+    row = static_cast<int>(firstDOF + offsets[eq_row]);
+    
+    // Replace residual
+    if (bc.isOwned())
+      f->ReplaceGlobalValues(1, &(node_f[offsets[eq_row]].val()), &row);
+    else
+      f->ReplaceGlobalValues(1, &zero, &row);
+
+    // Always zero out row (This takes care of the not-owned case)
+    jac->ExtractGlobalRowView(row, num_entries, row_view);
+    for (int k=0; k<num_entries; k++)
+      row_view[k] = 0.0;
+	
+    // Check derivative array is nonzero
+    if (node_f[offsets[eq_row]].hasFastAccess()) {
+	    
+      // Loop over equations per node
+      for (unsigned int eq_col=0; eq_col<neqn; eq_col++) {
+	      
+	// Global column
+	col = static_cast<int>(firstDOF + eq_col);
+
+	// Replace Jacobian
+	if (bc.isOwned())
+	  jac->ReplaceGlobalValues(row, 1, 
+				   &(node_f[eq_row].fastAccessDx(eq_col)),
+				   &col);
+
+      } // column equations
+	
+    } // has fast access
+      
+  } // row equations
 
 }
   

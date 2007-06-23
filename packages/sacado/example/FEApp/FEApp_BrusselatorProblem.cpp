@@ -30,10 +30,13 @@
 // @HEADER
 
 #include "FEApp_BrusselatorProblem.hpp"
-#include "FEApp_ConstantDirichletBC.hpp"
+#include "FEApp_BrusselatorNodeBCStrategy.hpp"
 
-FEApp::BrusselatorProblem::BrusselatorProblem(
-		   const Teuchos::RefCountPtr<Teuchos::ParameterList>& params)
+FEApp::BrusselatorProblem::
+BrusselatorProblem(
+      const Teuchos::RefCountPtr<Teuchos::ParameterList>& params,
+      const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib_) :
+  paramLib(paramLib_)
 {
   alpha = params->get("alpha", 1.0);
   beta = params->get("beta", 1.0);
@@ -41,50 +44,45 @@ FEApp::BrusselatorProblem::BrusselatorProblem(
   D2 = params->get("D2", 1.0);
 }
 
-FEApp::BrusselatorProblem::~BrusselatorProblem()
+FEApp::BrusselatorProblem::
+~BrusselatorProblem()
 {
 }
 
 unsigned int
-FEApp::BrusselatorProblem::numEquations() const
+FEApp::BrusselatorProblem::
+numEquations() const
 {
   return 2;
 }
 
 void
-FEApp::BrusselatorProblem:: buildPDEs(
-		       FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM)
+FEApp::BrusselatorProblem::
+buildProblem(const Epetra_Map& dofMap,
+	     FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM,
+	     std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> >& bcs,
+	     const Teuchos::RefCountPtr<Epetra_Vector>& u)
 {
-  FEApp::BrusselatorPDE_TemplateBuilder pdeBuilder(alpha, beta, D1, D2);
+  // Build PDE equations
+  FEApp::BrusselatorPDE_TemplateBuilder pdeBuilder(alpha, beta, D1, D2, 
+						   paramLib);
   pdeTM.buildObjects(pdeBuilder);
-}
 
-std::vector< Teuchos::RefCountPtr<const FEApp::AbstractBC> >
-FEApp::BrusselatorProblem::buildBCs(const Epetra_Map& dofMap)
-{
-  std::vector< Teuchos::RefCountPtr<const FEApp::AbstractBC> > bc(4);
-  bc[0] = Teuchos::rcp(new FEApp::ConstantDirichletBC(dofMap.MinAllGID(),
-						      alpha));
-  bc[1] = Teuchos::rcp(new FEApp::ConstantDirichletBC(dofMap.MinAllGID()+1,
-						      beta/alpha));
-  bc[2] = Teuchos::rcp(new FEApp::ConstantDirichletBC(dofMap.MaxAllGID()-1,
-						      alpha));
-  bc[3] = Teuchos::rcp(new FEApp::ConstantDirichletBC(dofMap.MaxAllGID(),
-						      beta/alpha));
+  // Build boundary conditions
+  FEApp::BrusselatorNodeBCStrategy_TemplateBuilder bcBuilder(alpha, beta,
+							     paramLib);
+  int left_node = dofMap.MinAllGID();
+  int right_node = 
+    (dofMap.MaxAllGID() - dofMap.MinAllGID())/2 + dofMap.MinAllGID();
+  bcs.resize(2);
+  bcs[0] = Teuchos::rcp(new FEApp::NodeBC(dofMap, left_node, 2, bcBuilder));
+  bcs[1] = Teuchos::rcp(new FEApp::NodeBC(dofMap, right_node, 2, bcBuilder));
 
-  return bc;
-}
-
-Teuchos::RefCountPtr<Epetra_Vector>
-FEApp::BrusselatorProblem::buildInitialSolution(const Epetra_Map& dofMap)
-{
-  Teuchos::RefCountPtr<Epetra_Vector> u =
-    Teuchos::rcp(new Epetra_Vector(dofMap, false));
-//   for (int i=0; i<u->MyLength(); i++) {
+  // Build initial solution
+//   for (int i=0; i<u->MyLength()/2; i++) {
 //     (*u)[2*i]   = alpha;
 //     (*u)[2*i+1] = beta/alpha;
 //   }
-  u->PutScalar(0.5);
-
-  return u;
+  u->PutScalar(0.0);
 }
+

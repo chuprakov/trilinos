@@ -29,53 +29,71 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef FEAPP_PROBLEMFACTORY_HPP
-#define FEAPP_PROBLEMFACTORY_HPP
+#ifndef FEAPP_NODEBC_HPP
+#define FEAPP_NODEBC_HPP
 
-#include "Teuchos_ParameterList.hpp"
-#include "Teuchos_RefCountPtr.hpp"
-
-#include "FEApp_AbstractProblem.hpp"
-
-#include "Sacado_ScalarParameterLibrary.hpp"
+#include <vector>
+#include "Epetra_Map.h"
+#include "FEApp_AbstractNodeBCStrategy.hpp"
+#include "FEApp_TemplateTypes.hpp"
 
 namespace FEApp {
 
   /*!
-   * \brief A factory class to instantiate AbstractProblem objects
+   * \brief Concrete object to represent a nodal boundary condition
    */
-  class ProblemFactory {
+  class NodeBC {
   public:
 
-    //! Default constructor
-    ProblemFactory(
-	const Teuchos::RefCountPtr<Teuchos::ParameterList>& problemParams,
-	const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib);
+    //! Constructor
+    template <typename BuilderT>
+    NodeBC(const Epetra_Map& dofMap, 
+	   unsigned int gid,
+	   unsigned int neqn,
+	   const BuilderT& builder) : global_node_id(gid) {
+      strategyTM.buildObjects(builder);
+      is_owned = dofMap.MyGID(gid*neqn);
+    }
 
     //! Destructor
-    virtual ~ProblemFactory() {}
+    virtual ~NodeBC() {}
 
-    virtual Teuchos::RefCountPtr<FEApp::AbstractProblem>
-    create();
+    //! Get global node ID
+    unsigned int getNodeGID() const { return global_node_id; }
+
+    //! Get residual offsets
+    const std::vector<unsigned int>& getOffsets() const { 
+      return strategyTM.begin()->getOffsets(); }
+
+    //! Return if BC is locally owned
+    bool isOwned() const { return is_owned; }
+
+    //! Get strategy
+    template <typename ScalarT>
+    Teuchos::RefCountPtr< FEApp::AbstractNodeBCStrategy<ScalarT> >
+    getStrategy() { return strategyTM.getAsObject<ScalarT>(); }
 
   private:
 
     //! Private to prohibit copying
-    ProblemFactory(const ProblemFactory&);
+    NodeBC(const NodeBC&);
 
     //! Private to prohibit copying
-    ProblemFactory& operator=(const ProblemFactory&);
+    NodeBC& operator=(const NodeBC&);
 
   protected:
 
-    //! Parameter list specifying what problem to create
-    Teuchos::RefCountPtr<Teuchos::ParameterList> problemParams;
+    //! Global ID of node for this BC
+    unsigned int global_node_id;
 
-    //! Parameter library
-    Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> paramLib;
+    //! Template manager storing instantiations of strategies
+    AbstractNodeBCStrategy_TemplateManager<ValidTypes> strategyTM;
+
+    //! Is BC owned on this proc
+    bool is_owned;
 
   };
 
 }
 
-#endif // FEAPP_PROBLEMFACTORY_HPP
+#endif // FEAPP_NODEBC_HPP

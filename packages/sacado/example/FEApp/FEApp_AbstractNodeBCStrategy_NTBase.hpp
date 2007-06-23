@@ -29,53 +29,36 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef FEAPP_PROBLEMFACTORY_HPP
-#define FEAPP_PROBLEMFACTORY_HPP
-
-#include "Teuchos_ParameterList.hpp"
-#include "Teuchos_RefCountPtr.hpp"
-
-#include "FEApp_AbstractProblem.hpp"
-
-#include "Sacado_ScalarParameterLibrary.hpp"
+#ifndef FEAPP_ABSTRACTNODEBCSTRATEGY_NTBASE_HPP
+#define FEAPP_ABSTRACTNODEBCSTRATEGY_NTBASE_HPP
 
 namespace FEApp {
 
   /*!
-   * \brief A factory class to instantiate AbstractProblem objects
+   * \brief Non-template base for abstract nodal boundary condition strategies
    */
-  class ProblemFactory {
+  class AbstractNodeBCStrategy_NTBase {
   public:
-
+  
     //! Default constructor
-    ProblemFactory(
-	const Teuchos::RefCountPtr<Teuchos::ParameterList>& problemParams,
-	const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib);
+    AbstractNodeBCStrategy_NTBase() {};
 
     //! Destructor
-    virtual ~ProblemFactory() {}
+    virtual ~AbstractNodeBCStrategy_NTBase() {};
 
-    virtual Teuchos::RefCountPtr<FEApp::AbstractProblem>
-    create();
+    //! Get residual offsets
+    virtual const std::vector<unsigned int>& getOffsets() const = 0;
 
   private:
+    
+    //! Private to prohibit copying
+    AbstractNodeBCStrategy_NTBase(const AbstractNodeBCStrategy_NTBase&);
 
     //! Private to prohibit copying
-    ProblemFactory(const ProblemFactory&);
-
-    //! Private to prohibit copying
-    ProblemFactory& operator=(const ProblemFactory&);
-
-  protected:
-
-    //! Parameter list specifying what problem to create
-    Teuchos::RefCountPtr<Teuchos::ParameterList> problemParams;
-
-    //! Parameter library
-    Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> paramLib;
+    AbstractNodeBCStrategy_NTBase& operator=(const AbstractNodeBCStrategy_NTBase&);
 
   };
 
 }
 
-#endif // FEAPP_PROBLEMFACTORY_HPP
+#endif // FEAPP_ABSTRACTNODEBCSTRATEGY_NTBASE_HPP

@@ -35,6 +35,7 @@
 #include <vector>
 
 #include "FEApp_AbstractElement.hpp"
+#include "FEApp_NodeBC.hpp"
 
 namespace FEApp {
 
@@ -51,16 +52,27 @@ namespace FEApp {
     //! Destructor
     virtual ~AbstractInitPostOp() {};
 
-    //! Evaulate init operator
-    virtual void evalInit(const FEApp::AbstractElement& e,
+    //! Evaulate element init operator
+    virtual void elementInit(const FEApp::AbstractElement& e,
 			  unsigned int neqn,
 			  std::vector<ScalarT>* elem_xdot,
 			  std::vector<ScalarT>& elem_x) = 0;
 
-    //! Evaluate post operator
-    virtual void evalPost(const FEApp::AbstractElement& e,
+    //! Evaluate element post operator
+    virtual void elementPost(const FEApp::AbstractElement& e,
+			     unsigned int neqn,
+			     std::vector<ScalarT>& elem_f) = 0;
+
+    //! Evaulate node init operator
+    virtual void nodeInit(const FEApp::NodeBC& bc,
 			  unsigned int neqn,
-			  std::vector<ScalarT>& elem_f) = 0;
+			  std::vector<ScalarT>* node_xdot,
+			  std::vector<ScalarT>& node_x) = 0;
+
+    //! Evaluate node post operator
+    virtual void nodePost(const FEApp::NodeBC& bc,
+			  unsigned int neqn,
+			  std::vector<ScalarT>& node_f) = 0;
 
   private:
     

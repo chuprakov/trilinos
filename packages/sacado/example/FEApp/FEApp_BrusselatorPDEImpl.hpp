@@ -29,9 +29,13 @@
 // ***********************************************************************
 // @HEADER
 
+#include "FEApp_BrusselatorParameters.hpp"
+
 template <typename ScalarT>
 FEApp::BrusselatorPDE<ScalarT>::
-BrusselatorPDE(double alpha_, double beta_, double D1_, double D2_) : 
+BrusselatorPDE(
+       double alpha_, double beta_, double D1_, double D2_,
+       const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib) : 
   num_qp(0),
   num_nodes(0),
   phi(),
@@ -46,8 +50,28 @@ BrusselatorPDE(double alpha_, double beta_, double D1_, double D2_) :
   alpha(alpha_),
   beta(beta_),
   D1(D1_),
-  D2(D2_)
+  D2(D2_),
+  pl(paramLib)
 {
+  // Add "alpha" to parameter library
+  std::string name = "Brusselator Alpha";
+  if (!pl->isParameter(name))
+    pl->addParameterFamily(name, true, false);
+  if (!pl->template isParameterForType<ScalarT>(name)) {
+    Teuchos::RefCountPtr< BrusselatorAlphaParameter<ScalarT> > tmpa = 
+      Teuchos::rcp(new BrusselatorAlphaParameter<ScalarT>(alpha));
+    pl->template addEntry<ScalarT>(name, tmpa);
+  }
+
+  // Add "beta" to parameter library
+  name = "Brusselator Beta";
+  if (!pl->isParameter(name))
+    pl->addParameterFamily(name, true, false);
+  if (!pl->template isParameterForType<ScalarT>(name)) {
+    Teuchos::RefCountPtr< BrusselatorBetaParameter<ScalarT> > tmpb = 
+      Teuchos::rcp(new BrusselatorBetaParameter<ScalarT>(beta));
+    pl->template addEntry<ScalarT>(name, tmpb);
+  }
 }
 
 template <typename ScalarT>
@@ -96,9 +120,12 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
 			const std::vector<ScalarT>* dot,
 			const std::vector<ScalarT>& solution,
 			std::vector<ScalarT>& residual)
- {
+{
+  // Get alpha, beta
+  alpha = pl->template getValue<ScalarT>("Brusselator Alpha");
+  beta = pl->template getValue<ScalarT>("Brusselator Beta");
   
-  // Quadrature points
+   // Quadrature points
   const std::vector<double>& xi = quadRule.quadPoints();
 
   // Weights
@@ -142,13 +169,13 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
 
     for (unsigned int qp=0; qp<num_qp; qp++) {
       residual[2*node] += 
-	w[qp]*jac[qp]*((1.0/(jac[qp]*jac[qp]))*D1*dT[qp]*dphi[qp][node] + 
-		       phi[qp][node]*(-alpha + (beta+1.0)*T[qp] - 
-				      T[qp]*T[qp]*C[qp] + 
+	w[qp]*jac[qp]*(-(1.0/(jac[qp]*jac[qp]))*D1*dT[qp]*dphi[qp][node] + 
+		       phi[qp][node]*(alpha - (beta+1.0)*T[qp] + 
+				      T[qp]*T[qp]*C[qp] - 
 				      Tdot[qp]));
       residual[2*node+1] += 
-	w[qp]*jac[qp]*((1.0/(jac[qp]*jac[qp]))*D2*dC[qp]*dphi[qp][node] + 
-		       phi[qp][node]*(-beta*T[qp] + T[qp]*T[qp]*C[qp] + 
+	w[qp]*jac[qp]*(-(1.0/(jac[qp]*jac[qp]))*D2*dC[qp]*dphi[qp][node] + 
+		       phi[qp][node]*(beta*T[qp] - T[qp]*T[qp]*C[qp] - 
 				      Cdot[qp]));
     }
   }

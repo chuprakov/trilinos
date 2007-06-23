@@ -36,6 +36,8 @@
 
 #include "FEApp_AbstractPDE.hpp"
 
+#include "Sacado_ScalarParameterLibrary.hpp"
+
 namespace FEApp {
 
   template <typename ScalarT>
@@ -43,7 +45,9 @@ namespace FEApp {
   public:
   
     //! Constructor
-    BrusselatorPDE(double alpha, double beta, double D1, double D2);
+    BrusselatorPDE(
+	 double alpha, double beta, double D1, double D2,
+	 const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib);
 
     //! Destructor
     virtual ~BrusselatorPDE();
@@ -106,21 +110,27 @@ namespace FEApp {
     std::vector<ScalarT> Cdot;
 
     //! Model parameters
-    double alpha, beta, D1, D2;
+    ScalarT alpha, beta;
+    double D1, D2;
+
+    //! Parameter library
+    Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> pl;
 
   };
 
   class BrusselatorPDE_TemplateBuilder {
   public:
-    BrusselatorPDE_TemplateBuilder(double alpha_, double beta_, double D1_, 
-				   double D2_) :
-      alpha(alpha_), beta(beta_), D1(D1_), D2(D2_) {}
+    BrusselatorPDE_TemplateBuilder(
+	double alpha_, double beta_, double D1_, double D2_,
+	const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib) :
+      alpha(alpha_), beta(beta_), D1(D1_), D2(D2_), pl(paramLib) {}
     template <typename T>
     Teuchos::RefCountPtr<FEApp::AbstractPDE_NTBase> build() const {
-      return Teuchos::rcp( new BrusselatorPDE<T>(alpha, beta, D1, D2));
+      return Teuchos::rcp( new BrusselatorPDE<T>(alpha, beta, D1, D2, pl));
     }
   protected:
     double alpha, beta, D1, D2;
+    Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> pl;
   };
 
 }
