@@ -2,6 +2,15 @@
 \label{index_methods}
 %Adding a citation to test bib\cite{ElmanSilvesterWathen.book}.  
 \subsection{Overview}
+Outline:
+\begin{itemize}
+\item Overview of problems Meros is intended to solve and the methods
+  included
+\item Overview of PreconditionerFactory and how Meros extends from
+  Thyra
+\end{itemize}
+
+
 Meros is a segregated preconditioning package within
 Trilinos~\cite{Trilinos-Overview}.  Meros
 provides scalable block preconditioning for problems that couple
@@ -145,6 +154,12 @@ $ \begin{bmatrix} A & B^T \\ B & C \end{bmatrix} = \begin{bmatrix} I &
 where $S$ is the Schur complement $S = B F^{-1} B^T - C$.
 
 \subsection{Pressure Convection-Diffusion (PCD)}
+\begin{itemize}
+\item Mathematical overview
+\item PCDPreconditionerFactory and PCDOperatorSource
+\end{itemize}
+
+
 In this section we describe the factory for building a pressure
 convection-diffusion style block preconditioner. This class of
 preconditioners were originally proposed by Kay, Loghin, and
@@ -185,6 +200,12 @@ block Thyra matrix or the 4 separate blocks as either Thyra or Epetra
 matrices.  If Thyra, assumes each block is a Thyra EpetraMatrix.
 
 \subsection{Least Squares Commutator (LSC)}
+\begin{itemize}
+\item Mathematical overview
+\item LSCPreconditionerFactory and LSCOperatorSource
+\end{itemize}
+
+
 Factory for building least squares commutator style block
 preconditioner.  
 
@@ -222,4 +243,7 @@ matrices.  If Thyra, assumes each block is a Thyra EpetraMatrix.
 
 
 \subsection{SIMPLE}
-
+\begin{itemize}
+\item Mathematical overview
+\item SIMPLEPreconditionerFactory and SIMPLEOperatorSource
+\end{itemize}
