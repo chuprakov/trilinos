@@ -36,6 +36,7 @@
 
 #include "Teuchos_RefCountPtr.hpp"
 #include "Teuchos_ParameterList.hpp"
+#include "Teuchos_SerialDenseMatrix.hpp"
 #include "Epetra_Vector.h"
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_Import.h"
@@ -99,6 +100,21 @@ namespace FEApp {
 			       const Sacado::ScalarParameterVector& p,
 			       Epetra_Vector& f,
 			       Epetra_CrsMatrix& jac);
+
+    //! Compute global Tangent
+    /*!
+     * Set xdot to NULL for steady-state problems
+     */
+    void computeGlobalTangent(double alpha, double beta,
+			      bool sum_derivs,
+			      const Epetra_Vector* xdot,
+			      const Epetra_Vector& x,
+			      Sacado::ScalarParameterVector* p,
+			      const Epetra_MultiVector* Vx,
+			      const Teuchos::SerialDenseMatrix<int,double>* Vp,
+			      Epetra_Vector* f,
+			      Epetra_MultiVector* JVx,
+			      Epetra_MultiVector* fVp);
 
   private:
     

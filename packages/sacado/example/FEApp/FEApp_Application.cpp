@@ -224,3 +224,95 @@ FEApp::Application::computeGlobalJacobian(
   // Todo:  need to call fillComplete() and change Init/PostOps to use
   // local indices
 }
+
+void
+FEApp::Application::computeGlobalTangent(
+			      double alpha, double beta,
+			      bool sum_derivs,
+			      const Epetra_Vector* xdot,
+			      const Epetra_Vector& x,
+			      Sacado::ScalarParameterVector* p,
+			      const Epetra_MultiVector* Vx,
+			      const Teuchos::SerialDenseMatrix<int,double>* Vp,
+			      Epetra_Vector* f,
+			      Epetra_MultiVector* JVx,
+			      Epetra_MultiVector* fVp)
+{
+  // Scatter x to the overlapped distrbution
+  overlapped_x->Import(x, *importer, Insert);
+
+  // Scatter xdot to the overlapped distribution
+  if (transient)
+    overlapped_xdot->Import(*xdot, *importer, Insert);
+
+  // Zero out overlapped residual
+  Teuchos::RCP<Epetra_Vector> overlapped_ff;
+  if (f != NULL) {
+    overlapped_ff = overlapped_f;
+    overlapped_ff->PutScalar(0.0);
+    f->PutScalar(0.0);
+  }
+
+  Teuchos::RCP<Epetra_MultiVector> overlapped_JVx;
+  if (JVx != NULL) {
+    overlapped_JVx = 
+      Teuchos::rcp(new Epetra_MultiVector(*(disc->getOverlapMap()), 
+					  JVx->NumVectors()));
+    overlapped_JVx->PutScalar(0.0);
+    JVx->PutScalar(0.0);
+  }
+  
+  Teuchos::RCP<Epetra_MultiVector> overlapped_fVp;
+  if (fVp != NULL) {
+    overlapped_fVp = 
+      Teuchos::rcp(new Epetra_MultiVector(*(disc->getOverlapMap()), 
+					  fVp->NumVectors()));
+    overlapped_fVp->PutScalar(0.0);
+    fVp->PutScalar(0.0);
+  }
+
+  Teuchos::RCP<Epetra_MultiVector> overlapped_Vx;
+  if (Vx != NULL) {
+    overlapped_Vx = 
+      Teuchos::rcp(new Epetra_MultiVector(*(disc->getOverlapMap()), 
+					  Vx->NumVectors()));
+  }
+
+  Teuchos::RCP<const Teuchos::SerialDenseMatrix<int,double> > vp =
+    Teuchos::rcp(Vp);
+  Teuchos::RCP<Sacado::ScalarParameterVector> params = 
+    Teuchos::rcp(p);
+
+  // Create Jacobian init/post op
+  Teuchos::RefCountPtr<FEApp::TangentOp> op;
+  op = Teuchos::rcp(new FEApp::TangentOp(alpha, beta, sum_derivs,
+					 overlapped_xdot, 
+					 overlapped_x,
+					 params,
+					 overlapped_Vx,
+					 overlapped_Vx,
+					 vp,
+					 overlapped_ff, 
+					 overlapped_JVx,
+					 overlapped_fVp));
+
+  // Get template PDE instantiation
+  Teuchos::RefCountPtr< FEApp::AbstractPDE<JacobianOp::fill_type> > pde = 
+    pdeTM.getAsObject<JacobianOp::fill_type>();
+
+  // Do global fill
+  FEApp::GlobalFill<JacobianOp::fill_type> globalFill(disc->getMesh(), 
+						      quad, pde, bc, 
+						      transient);
+  globalFill.computeGlobalFill(*op);
+
+  // Assemble global residual
+  if (f != NULL)
+    f->Export(*overlapped_f, *exporter, Add);
+
+  // Assemble derivatives
+  if (JVx != NULL)
+    JVx->Export(*overlapped_JVx, *exporter, Add);
+  if (fVp != NULL)
+    fVp->Export(*overlapped_fVp, *exporter, Add);
+}
