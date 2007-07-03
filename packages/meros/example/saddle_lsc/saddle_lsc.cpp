@@ -38,7 +38,7 @@
 #include "Teuchos_DefaultComm.hpp"
 #include "Teuchos_ParameterList.hpp"
 #include "Teuchos_ParameterXMLFileReader.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 #include "Thyra_SolveSupportTypes.hpp"
 #include "Thyra_LinearOpBase.hpp"
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
   int DEBUG = 1;
 
   // Get stream that can print to just root or all streams!
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  Teuchos::RCP<Teuchos::FancyOStream>
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
   //  Epetra_Comm* Comm;
@@ -198,15 +198,15 @@ int main(int argc, char *argv[])
       // first wrap as Thyra core operators, then convert to the
       // handle layer LinearOperators.
       
-      RefCountPtr<LinearOpBase<double> >
+      RCP<LinearOpBase<double> >
         tmpF = rcp(new EpetraLinearOp(rcp(FMatrix,false)));
       const LinearOperator<double> F = tmpF;
 
-      RefCountPtr<LinearOpBase<double> >
+      RCP<LinearOpBase<double> >
         tmpBt = rcp(new EpetraLinearOp(rcp(BtMatrix,false)));
       const LinearOperator<double> Bt = tmpBt;
 
-      RefCountPtr<LinearOpBase<double> >
+      RCP<LinearOpBase<double> >
         tmpB = rcp(new EpetraLinearOp(rcp(BMatrix,false)));
       const LinearOperator<double> B = tmpB;
 
@@ -215,22 +215,22 @@ int main(int argc, char *argv[])
       // wrapping to the Thyra core vector layer, then converting to
       // the handle layer
 
-      RefCountPtr<const Thyra::VectorSpaceBase<double> > epetra_vs_press
+      RCP<const Thyra::VectorSpaceBase<double> > epetra_vs_press
         = Thyra::create_VectorSpace(rcp(pressureMap,false));
-      RefCountPtr<const Thyra::VectorSpaceBase<double> > epetra_vs_vel
+      RCP<const Thyra::VectorSpaceBase<double> > epetra_vs_vel
         = Thyra::create_VectorSpace(rcp(velocityMap,false));
 
 
-      RefCountPtr<VectorBase<double> > rhs1
+      RCP<VectorBase<double> > rhs1
         = create_Vector(rcp(rhsq1_press, false), epetra_vs_press);
-      RefCountPtr<VectorBase<double> > rhs2
+      RCP<VectorBase<double> > rhs2
         = create_Vector(rcp(rhsq1_vel, false), epetra_vs_vel);
 
       // Convert the vectors to handled vectors
-      RefCountPtr<VectorBase<double> > tmp1 = rhs1;
+      RCP<VectorBase<double> > tmp1 = rhs1;
       const Vector<double> rhs_press = tmp1;
 
-      RefCountPtr<VectorBase<double> > tmp2 = rhs2;
+      RCP<VectorBase<double> > tmp2 = rhs2;
       const Vector<double> rhs_vel = tmp2;
 
 
@@ -282,7 +282,7 @@ int main(int argc, char *argv[])
 
       // Make a zero operator on the small (pressure) space since the
       // 2,2 block (C) is zero in this example.
-      // RefCountPtr<Thyra::LinearOpBase<double> > tmpZ = 
+      // RCP<Thyra::LinearOpBase<double> > tmpZ = 
       // rcp(new DefaultZeroLinearOp<double>(tmpBt->domain(), 
       //                                   tmpBt->domain()));
       // const LinearOperator<double> Z = tmpZ;
@@ -365,10 +365,10 @@ int main(int argc, char *argv[])
       // 1) Build an AztecOO ParameterList for inv(F) solve
       //    This one corresponds to (unpreconditioned) GMRES
 
-      RefCountPtr<ParameterList>
+      RCP<ParameterList>
         aztecFParams = rcp(new ParameterList("aztecOOFSolverFactory"));
 
-      RefCountPtr<LinearOpWithSolveFactoryBase<double> > aztecFLowsFactory;
+      RCP<LinearOpWithSolveFactoryBase<double> > aztecFLowsFactory;
 
       if(DEBUG> 1)
         {
@@ -412,7 +412,7 @@ int main(int argc, char *argv[])
       // 2) Build an AztecOO ParameterList for inv(Ap) solve
       //    This one corresponds to unpreconditioned CG.
 
-      RefCountPtr<ParameterList>
+      RCP<ParameterList>
         aztecBBtParams = rcp(new ParameterList("aztecOOBBtSolverFactory"));
 
       // forward solve settings
@@ -436,7 +436,7 @@ int main(int argc, char *argv[])
       if(DEBUG > 1)
         {
           // Print out the parameters we just set
-          RefCountPtr<LinearOpWithSolveFactoryBase<double> > 
+          RCP<LinearOpWithSolveFactoryBase<double> > 
             aztecBBtLowsFactory = rcp(new AztecOOLinearOpWithSolveFactory());
           aztecBBtLowsFactory->setParameterList(aztecBBtParams);
           aztecBBtLowsFactory->getParameterList()->print(cerr, 0, true, false);
@@ -445,18 +445,18 @@ int main(int argc, char *argv[])
 
       // 3) Make an LSCOperatorSource that contains  blockOp
       //    The velocity mass matrix Qu is the identity in this example.
-      RefCountPtr<const LinearOpSourceBase<double> > myLSCopSrcRcp 
+      RCP<const LinearOpSourceBase<double> > myLSCopSrcRcp 
         = rcp(new LSCOperatorSource(blockOp));
 
 
       if(DEBUG > 1) 
         {
           // Test getting subblock components out of the operator source
-          RefCountPtr<const LSCOperatorSource> lscOpSrcPtr 
+          RCP<const LSCOperatorSource> lscOpSrcPtr 
             = rcp_dynamic_cast<const LSCOperatorSource>(myLSCopSrcRcp);  
 	  
           // Retrieve operators from the LSC operator source
-          RefCountPtr<const LinearOpBase<double> > tmpBlockOp 
+          RCP<const LinearOpBase<double> > tmpBlockOp 
             = lscOpSrcPtr->getOp();
           ConstLinearOperator<double> blockOp = tmpBlockOp;
           ConstLinearOperator<double> testF2 = blockOp.getBlock(0,0);
@@ -487,7 +487,7 @@ int main(int argc, char *argv[])
 
 
       // 4) Build the LSC block preconditioner factory.
-      RefCountPtr<PreconditionerFactoryBase<double> > merosPrecFac
+      RCP<PreconditionerFactoryBase<double> > merosPrecFac
         = rcp(
 	      new LSCPreconditionerFactory(
 		rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecFParams)),
@@ -495,7 +495,7 @@ int main(int argc, char *argv[])
 		)
 	      );
       
-      RefCountPtr<PreconditionerBase<double> > Prcp 
+      RCP<PreconditionerBase<double> > Prcp 
         = merosPrecFac->createPrec();
       
       merosPrecFac->initializePrec(myLSCopSrcRcp, &*Prcp);
@@ -511,10 +511,10 @@ int main(int argc, char *argv[])
       /* --- Now build a solver factory for outer saddle point problem --- */
 
       // Set up parameter list and AztecOO solver
-      RefCountPtr<ParameterList> aztecSaddleParams 
+      RCP<ParameterList> aztecSaddleParams 
         = rcp(new ParameterList("aztecOOSaddleSolverFactory"));
       
-      RefCountPtr<LinearOpWithSolveFactoryBase<double> >
+      RCP<LinearOpWithSolveFactoryBase<double> >
         aztecSaddleLowsFactory = rcp(new AztecOOLinearOpWithSolveFactory());
       
       double saddleTol = 1.0e-6;
@@ -549,7 +549,7 @@ int main(int argc, char *argv[])
 
 
       // Set up the preconditioned inverse object and do the solve!
-      RefCountPtr<LinearOpWithSolveBase<double> > rcpAztecSaddle 
+      RCP<LinearOpWithSolveBase<double> > rcpAztecSaddle 
         = aztecSaddleLowsFactory->createOp();
 
       // LinearOperator<double> epetraBlockOp = makeEpetraOperator(blockOp);
@@ -564,13 +564,13 @@ int main(int argc, char *argv[])
       // 					 Prcp,
       // 					 &*rcpAztecSaddle );
       
-      //       RefCountPtr<LinearOpBase<double> > tmpSaddleInv 
+      //       RCP<LinearOpBase<double> > tmpSaddleInv 
       // 	= rcp(new DefaultInverseLinearOp<double>(rcpAztecSaddle));
       
       //       LinearOperator<double> saddleInv = tmpSaddleInv;
       //       saddleInv.description();
 
-      RefCountPtr<const LinearOpBase<double> > tmpPinv 
+      RCP<const LinearOpBase<double> > tmpPinv 
         = Prcp->getRightPrecOp();
       ConstLinearOperator<double> Pinv = tmpPinv;
 

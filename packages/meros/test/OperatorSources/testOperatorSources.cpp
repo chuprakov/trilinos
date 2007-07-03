@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
   typedef Teuchos::ScalarTraits<double> ST;
   
   // Get stream that can print to just root or all streams!
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  Teuchos::RCP<Teuchos::FancyOStream>
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
   
   try
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
       Thyra::randomize(-1.0, 1.0, apvec.ptr().get());
 
       // Set up a PCD operator source with these three operators
-      RefCountPtr<const PCDOperatorSource> pcdOpSrcRcp 
+      RCP<const PCDOperatorSource> pcdOpSrcRcp 
 	= rcp(new PCDOperatorSource(S, Fp, Ap));
 
       // Get the blocks back from the operator source
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
 
 
       // Tests of LSCOperatorSource
-      RefCountPtr<const LSCOperatorSource> lscOpSrcRcp 
+      RCP<const LSCOperatorSource> lscOpSrcRcp 
 	= rcp(new LSCOperatorSource(S));
 
       // Get the blocks back from the operator source
@@ -213,9 +213,9 @@ template <class Scalar> inline
 LinearOperator<Scalar> makeRandomDenseOperator(int nc, const VectorSpace<Scalar>& rowSp)
 {
   typedef typename Teuchos::ScalarTraits<Scalar> ST;
-  RefCountPtr<Thyra::MultiVectorBase<Scalar> > mv = rowSp.createMembers(nc);
+  RCP<Thyra::MultiVectorBase<Scalar> > mv = rowSp.createMembers(nc);
   Thyra::randomize(-ST::one(), ST::one(), &*mv);
-  RefCountPtr<Thyra::LinearOpBase<Scalar> > rtn = mv;
+  RCP<Thyra::LinearOpBase<Scalar> > rtn = mv;
   return rtn;
 }
 

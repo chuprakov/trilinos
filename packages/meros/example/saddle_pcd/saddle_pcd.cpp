@@ -39,7 +39,7 @@
 #include "Teuchos_DefaultComm.hpp"
 #include "Teuchos_ParameterList.hpp"
 #include "Teuchos_ParameterXMLFileReader.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 #include "Thyra_SolveSupportTypes.hpp"
 #include "Thyra_LinearOpBase.hpp"
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
   int DEBUG = 1;
 
   // Get stream that can print to just root or all streams!
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  Teuchos::RCP<Teuchos::FancyOStream>
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
   //  Epetra_Comm* Comm;
@@ -214,42 +214,42 @@ int main(int argc, char *argv[])
       // first wrap as Thyra core operators, then convert to the
       // handle layer LinearOperators.
       
-      RefCountPtr<LinearOpBase<double> >
+      RCP<LinearOpBase<double> >
         tmpFF = rcp(new EpetraLinearOp(rcp(FMatrix,false)));
       const LinearOperator<double> FF = tmpFF;
 
-      RefCountPtr<LinearOpBase<double> >
+      RCP<LinearOpBase<double> >
         tmpBBt = rcp(new EpetraLinearOp(rcp(BtMatrix,false)));
       const LinearOperator<double> BBt = tmpBBt;
 
-      RefCountPtr<LinearOpBase<double> >
+      RCP<LinearOpBase<double> >
         tmpBB = rcp(new EpetraLinearOp(rcp(BMatrix,false)));
       const LinearOperator<double> BB = tmpBB;
 
-      RefCountPtr<LinearOpBase<double> >
+      RCP<LinearOpBase<double> >
         tmpFp = rcp(new EpetraLinearOp(rcp(FpMatrix,false)));
       const LinearOperator<double> Fp = tmpFp;
 
-      RefCountPtr<LinearOpBase<double> >
+      RCP<LinearOpBase<double> >
         tmpAp = rcp(new EpetraLinearOp(rcp(ApMatrix,false)));
       const LinearOperator<double> Ap = tmpAp;
 
       // Wrap Epetra vectors into Thyra vectors
-      RefCountPtr<const Thyra::VectorSpaceBase<double> > epetra_vs_press
+      RCP<const Thyra::VectorSpaceBase<double> > epetra_vs_press
         = Thyra::create_VectorSpace(rcp(pressureMap,false));
-      RefCountPtr<const Thyra::VectorSpaceBase<double> > epetra_vs_vel
+      RCP<const Thyra::VectorSpaceBase<double> > epetra_vs_vel
         = Thyra::create_VectorSpace(rcp(velocityMap,false));
 
-      RefCountPtr<VectorBase<double> > rhs1
+      RCP<VectorBase<double> > rhs1
         = create_Vector(rcp(rhsq1_press, false), epetra_vs_press);
-      RefCountPtr<VectorBase<double> > rhs2
+      RCP<VectorBase<double> > rhs2
         = create_Vector(rcp(rhsq1_vel, false), epetra_vs_vel);
 
       // Convert the vectors to handled vectors
-      RefCountPtr<VectorBase<double> > tmp1 = rhs1;
+      RCP<VectorBase<double> > tmp1 = rhs1;
       const Vector<double> rhs_press = tmp1;
 
-      RefCountPtr<VectorBase<double> > tmp2 = rhs2;
+      RCP<VectorBase<double> > tmp2 = rhs2;
       const Vector<double> rhs_vel = tmp2;
 
       if(DEBUG > 1){
@@ -282,7 +282,7 @@ int main(int argc, char *argv[])
 
       // Make a zero operator on the small (pressure) space since the
       // 2,2 block (C) is zero in this example.
-      RefCountPtr<Thyra::LinearOpBase<double> > tmpZZ = 
+      RCP<Thyra::LinearOpBase<double> > tmpZZ = 
         rcp(new DefaultZeroLinearOp<double>(tmpBBt->domain(), 
                                             tmpBBt->domain()));
 
@@ -352,10 +352,10 @@ int main(int argc, char *argv[])
       // 1) Build an AztecOO ParameterList for inv(F) solve
       //    This one corresponds to (unpreconditioned) GMRES.
 
-      RefCountPtr<ParameterList> aztecFParams 
+      RCP<ParameterList> aztecFParams 
         = rcp(new ParameterList("aztecOOFSolverFactory"), true);
       
-      RefCountPtr<LinearOpWithSolveFactoryBase<double> > aztecFLowsFactory;
+      RCP<LinearOpWithSolveFactoryBase<double> > aztecFLowsFactory;
 
 
       if(DEBUG> 1)
@@ -399,7 +399,7 @@ int main(int argc, char *argv[])
       // 2) Build an AztecOO ParameterList for inv(Ap) solve
       //    This one corresponds to unpreconditioned CG.
 
-      RefCountPtr<ParameterList> aztecApParams 
+      RCP<ParameterList> aztecApParams 
         = rcp(new ParameterList("aztecOOApSolverFactory"), true);
       
       // forward solve settings
@@ -422,7 +422,7 @@ int main(int argc, char *argv[])
       if(DEBUG > 1)
         {
           // Print out the parameters we just set
-          RefCountPtr<LinearOpWithSolveFactoryBase<double> > 
+          RCP<LinearOpWithSolveFactoryBase<double> > 
             aztecApLowsFactory = rcp(new AztecOOLinearOpWithSolveFactory());
           aztecApLowsFactory->setParameterList(aztecApParams);
           aztecApLowsFactory->getParameterList()->print(cerr, 0, true, false);
@@ -431,7 +431,7 @@ int main(int argc, char *argv[])
       // 2.b) Build an AztecOO ParameterList for inv(Qp) solve
       //    This one corresponds to unpreconditioned CG.
 
-      RefCountPtr<ParameterList> aztecQpParams 
+      RCP<ParameterList> aztecQpParams 
         = rcp(new ParameterList("aztecOOQpSolverFactory"), true);
       
       // forward solve settings
@@ -447,22 +447,22 @@ int main(int argc, char *argv[])
 
       // 3) Make a PCDOperatorSource with blockOp, Fp, Ap 
       //    The pressure mass matrix Qp is the identity in this example.
-      RefCountPtr<const LinearOpSourceBase<double> > myPCDopSrcRcp 
+      RCP<const LinearOpSourceBase<double> > myPCDopSrcRcp 
         = rcp(new PCDOperatorSource(blockOp, Fp, Ap));
 
 
       // 4) Build the PCD block preconditioner factory.
  
-     // RefCountPtr<PreconditionerFactoryBase<double> > merosPrecFac
+     // RCP<PreconditionerFactoryBase<double> > merosPrecFac
       //   = rcp(new PCDPreconditionerFactory(aztecFParams,
       //                                aztecApParams));
   
-//       RefCountPtr<PreconditionerFactoryBase<double> > merosPrecFac
+//       RCP<PreconditionerFactoryBase<double> > merosPrecFac
 //         = rcp(new PCDPreconditionerFactory(aztecFParams,
 //                                            aztecApParams,
 //                                            aztecQpParams));
 
-      RefCountPtr<PreconditionerFactoryBase<double> > merosPrecFac
+      RCP<PreconditionerFactoryBase<double> > merosPrecFac
         = rcp(
 	      new PCDPreconditionerFactory(
 		rcp(new Thyra::AztecOOLinearOpWithSolveFactory(aztecFParams)),
@@ -471,7 +471,7 @@ int main(int argc, char *argv[])
 		)
 	      );
         
-      RefCountPtr<PreconditionerBase<double> > Prcp 
+      RCP<PreconditionerBase<double> > Prcp 
         = merosPrecFac->createPrec();
 
       merosPrecFac->initializePrec(myPCDopSrcRcp, &*Prcp);
@@ -487,10 +487,10 @@ int main(int argc, char *argv[])
       /* --- Now build a solver factory for outer saddle point problem --- */
 
       // Set up parameter list and AztecOO solver
-      RefCountPtr<ParameterList> aztecSaddleParams 
+      RCP<ParameterList> aztecSaddleParams 
         = rcp(new ParameterList("aztecOOSaddleSolverFactory"));
 
-      RefCountPtr<LinearOpWithSolveFactoryBase<double> >
+      RCP<LinearOpWithSolveFactoryBase<double> >
         aztecSaddleLowsFactory = rcp(new AztecOOLinearOpWithSolveFactory());
       
       double saddleTol = 10e-6;
@@ -525,7 +525,7 @@ int main(int argc, char *argv[])
 
       
       // Set up the preconditioned inverse object and do the solve!
-      RefCountPtr<LinearOpWithSolveBase<double> > rcpAztecSaddle 
+      RCP<LinearOpWithSolveBase<double> > rcpAztecSaddle 
         = aztecSaddleLowsFactory->createOp();
       
       // LinearOperator<double> epetraBlockOp = makeEpetraOperator(blockOp);
@@ -540,14 +540,14 @@ int main(int argc, char *argv[])
 //                                          Prcp,
 //                                          &*rcpAztecSaddle );
       
-//       RefCountPtr<LinearOpBase<double> > tmpSaddleInv 
+//       RCP<LinearOpBase<double> > tmpSaddleInv 
 //         = rcp(new DefaultInverseLinearOp<double>(rcpAztecSaddle));
       
 //       LinearOperator<double> saddleInv = tmpSaddleInv;
       // cerr << saddleInv.description() << endl;
       //      saddleInv.description();
 
-      RefCountPtr<const LinearOpBase<double> > tmpPinv 
+      RCP<const LinearOpBase<double> > tmpPinv 
         = Prcp->getRightPrecOp();
       ConstLinearOperator<double> Pinv = tmpPinv;
 

@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 
 
   // Get stream that can print to just root or all streams!
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+  Teuchos::RCP<Teuchos::FancyOStream>
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
   
   try
@@ -165,19 +165,19 @@ int main(int argc, char *argv[])
       // against them. To do this, we first wrap as Thyra core
       // operators, then convert to the handle layer LinearOperators.
       
-      RefCountPtr<LinearOpBase<double> >
+      RCP<LinearOpBase<double> >
 	tmpF = rcp(new EpetraLinearOp(rcp(FMatrix,false)));
       const LinearOperator<double> F = tmpF;
 
-      RefCountPtr<LinearOpBase<double> >
+      RCP<LinearOpBase<double> >
 	tmpBt = rcp(new EpetraLinearOp(rcp(BtMatrix,false)));
       const LinearOperator<double> Bt = tmpBt;
 
-      RefCountPtr<LinearOpBase<double> >
+      RCP<LinearOpBase<double> >
 	tmpB = rcp(new EpetraLinearOp(rcp(BMatrix,false)));
       const LinearOperator<double> B = tmpB;
 
-      RefCountPtr<LinearOpBase<double> >
+      RCP<LinearOpBase<double> >
 	tmpC = rcp(new EpetraLinearOp(rcp(CMatrix,false)));
       const LinearOperator<double> C = tmpC;
 
@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
 
 
 //       // Set up a PCD operator source with these three operators
-//       RefCountPtr<const PCDOperatorSource> pcdOpSrcRcp 
+//       RCP<const PCDOperatorSource> pcdOpSrcRcp 
 // 	= rcp(new PCDOperatorSource(FMatrix, BtMatrix, BMatrix, CMatrix));
 
 //       // Get the blocks back from the operator source
@@ -200,9 +200,9 @@ int main(int argc, char *argv[])
 //       ConstLinearOperator<double> Bout = blockOpOut.getBlock(1,0);
 //       ConstLinearOperator<double> Cout = blockOpOut.getBlock(1,1);
 
-//       RefCountPtr<const LinearOpBase<double> > tmpFpOut = pcdOpSrcRcp->getFp();
+//       RCP<const LinearOpBase<double> > tmpFpOut = pcdOpSrcRcp->getFp();
 //       ConstLinearOperator<double> FpOut = tmpFpOut;
-//       RefCountPtr<const LinearOpBase<double> > tmpApOut = pcdOpSrcRcp->getAp();
+//       RCP<const LinearOpBase<double> > tmpApOut = pcdOpSrcRcp->getAp();
 //       ConstLinearOperator<double> ApOut = tmpApOut;
 
 //       Vector<double> rangevec = S.range().createMember();
@@ -238,7 +238,7 @@ int main(int argc, char *argv[])
 
       /* ------------- test LSC Operator Source --------------*/
       // Tests of LSCOperatorSource
-      RefCountPtr<const LSCOperatorSource> lscOpSrcRcp 
+      RCP<const LSCOperatorSource> lscOpSrcRcp 
 	= rcp(new LSCOperatorSource(FMatrix, BtMatrix, BMatrix, CMatrix));
 
       // Get the blocks back from the operator source
