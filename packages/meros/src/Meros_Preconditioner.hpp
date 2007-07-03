@@ -33,7 +33,7 @@
 #include "Thyra_VectorSpaceImpl.hpp" // need for LinOpDecl
 #include "Thyra_LinearOperatorImpl.hpp"
 #include "Thyra_PreconditionerBase.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 
 namespace Meros 
@@ -53,7 +53,7 @@ namespace Meros
     Preconditioner() : p_() {;}
     
     /** */
-    Preconditioner(const RefCountPtr<PreconditionerBase<Scalar> >& p)
+    Preconditioner(const RCP<PreconditionerBase<Scalar> >& p)
       : p_(p) {;}
     
     /** */
@@ -92,12 +92,12 @@ namespace Meros
     }
 
     /** */
-    const RefCountPtr<PreconditionerBase<Scalar> >& ptr() const {return p_;}
+    const RCP<PreconditionerBase<Scalar> >& ptr() const {return p_;}
     /** */
-    RefCountPtr<PreconditionerBase<Scalar> > ptr() {return p_;}
+    RCP<PreconditionerBase<Scalar> > ptr() {return p_;}
 
   private:
-    RefCountPtr<PreconditionerBase<Scalar> > p_;
+    RCP<PreconditionerBase<Scalar> > p_;
   };
 
 

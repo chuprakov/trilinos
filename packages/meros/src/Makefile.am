@@ -60,13 +60,17 @@ CORE_H = \
 	$(srcdir)/Meros_PCDPreconditionerFactory.h    \
 	$(srcdir)/Meros_Preconditioner.hpp	      \
 	$(srcdir)/Meros_PreconditioningStrategy.hpp   \
+	$(srcdir)/Meros_SIMPLEOperatorSource.h        \
+	$(srcdir)/Meros_SIMPLEPreconditionerFactory.h \
 	$(srcdir)/Meros_ZeroOperator.hpp              
 
 CORE = \
 	$(srcdir)/Meros_LSCOperatorSource.cpp         \
 	$(srcdir)/Meros_LSCPreconditionerFactory.cpp  \
 	$(srcdir)/Meros_PCDOperatorSource.cpp         \
-	$(srcdir)/Meros_PCDPreconditionerFactory.cpp  
+	$(srcdir)/Meros_PCDPreconditionerFactory.cpp  \
+	$(srcdir)/Meros_SIMPLEOperatorSource.cpp      \
+	$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp  
 
 UTIL_H = \
 	$(srcdir)/Meros_Version.h

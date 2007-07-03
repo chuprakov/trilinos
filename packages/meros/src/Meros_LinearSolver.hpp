@@ -71,7 +71,7 @@ namespace Meros
     }
 
   private:
-    RefCountPtr<const LinearOpWithSolveBase<Scalar> > lows_;
+    RCP<const LinearOpWithSolveBase<Scalar> > lows_;
     LinearOperator<Scalar> op_;
     LinearSolveStrategy<Scalar> strategy_;
       

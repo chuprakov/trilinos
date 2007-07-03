@@ -50,9 +50,9 @@ using namespace Meros;
 
 PCDPreconditionerFactory
 ::PCDPreconditionerFactory(
-  RefCountPtr<const LinearOpWithSolveFactoryBase<double> > 
+  RCP<const LinearOpWithSolveFactoryBase<double> > 
   const&  FSolveStrategy,
-  RefCountPtr<const LinearOpWithSolveFactoryBase<double> >  
+  RCP<const LinearOpWithSolveFactoryBase<double> >  
   const&  ApSolveStrategy
   )
   :FSolveStrategy_(FSolveStrategy),
@@ -63,11 +63,11 @@ PCDPreconditionerFactory
 
 PCDPreconditionerFactory
 ::PCDPreconditionerFactory(
-  RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   
+  RCP<const LinearOpWithSolveFactoryBase<double> >   
   const&  FSolveStrategy,
-  RefCountPtr<const LinearOpWithSolveFactoryBase<double> >  
+  RCP<const LinearOpWithSolveFactoryBase<double> >  
   const&  ApSolveStrategy,
-  RefCountPtr<const LinearOpWithSolveFactoryBase<double> >  
+  RCP<const LinearOpWithSolveFactoryBase<double> >  
   const&  QpSolveStrategy
   )
   :FSolveStrategy_(FSolveStrategy),
@@ -77,9 +77,9 @@ PCDPreconditionerFactory
 
 
 // PCDPreconditionerFactory
-// ::PCDPreconditionerFactory(RefCountPtr<ParameterList> azFParams,
-// 			   RefCountPtr<ParameterList> azApParams,
-// 			   RefCountPtr<ParameterList> azQpParams)
+// ::PCDPreconditionerFactory(RCP<ParameterList> azFParams,
+// 			   RCP<ParameterList> azApParams,
+// 			   RCP<ParameterList> azQpParams)
 // {
 //   azFParams_ = azFParams;
 //   azApParams_ = azApParams;
@@ -95,7 +95,7 @@ bool PCDPreconditionerFactory
 }
 
 
-RefCountPtr<PreconditionerBase<double> > PCDPreconditionerFactory
+RCP<PreconditionerBase<double> > PCDPreconditionerFactory
 ::createPrec() const
 {
   return rcp(new DefaultPreconditioner<double>());
@@ -103,16 +103,16 @@ RefCountPtr<PreconditionerBase<double> > PCDPreconditionerFactory
 
 
 void PCDPreconditionerFactory
-::initializePrec(const RefCountPtr<const LinearOpSourceBase<double> > &opSrc,
+::initializePrec(const RCP<const LinearOpSourceBase<double> > &opSrc,
 		 PreconditionerBase<double> *prec,
 		 const ESupportSolveUse supportSolveUse) const
 {
   // Cast the LinearOpSourceBase object back to a PCDOperatorSource
-  RefCountPtr<const PCDOperatorSource> pcdOpSrcPtr 
+  RCP<const PCDOperatorSource> pcdOpSrcPtr 
     = rcp_dynamic_cast<const PCDOperatorSource>(opSrc);
 
   // Retrieve block operator and subblocks from the PCD operator source
-  //RefCountPtr<const LinearOpBase<double> > tmpBlockOp = pcdOpSrcPtr->getOp();
+  //RCP<const LinearOpBase<double> > tmpBlockOp = pcdOpSrcPtr->getOp();
   ConstLinearOperator<double> blockOp = pcdOpSrcPtr->getSaddleOp();
   ConstLinearOperator<double> F = blockOp.getBlock(0,0);
   ConstLinearOperator<double> Bt = blockOp.getBlock(0,1);
@@ -183,7 +183,7 @@ void PCDPreconditionerFactory
 
 void PCDPreconditionerFactory
 ::uninitializePrec(PreconditionerBase<double> *prec,
-		   RefCountPtr<const LinearOpSourceBase<double> > *fwdOp,
+		   RCP<const LinearOpSourceBase<double> > *fwdOp,
 		   ESupportSolveUse *supportSolveUse) const
 {
 TEST_FOR_EXCEPT("PCDPreconditionerFactory::uninitializePrec not implemented");
@@ -193,7 +193,7 @@ TEST_FOR_EXCEPT("PCDPreconditionerFactory::uninitializePrec not implemented");
 // Overridden from ParameterListAcceptor
 
 void PCDPreconditionerFactory
-::setParameterList(Teuchos::RefCountPtr<Teuchos::ParameterList> const& paramList)
+::setParameterList(Teuchos::RCP<Teuchos::ParameterList> const& paramList)
 {
   TEST_FOR_EXCEPT(paramList.get()==NULL);
   // Don't really have meros parameter lists yet.
@@ -201,27 +201,27 @@ void PCDPreconditionerFactory
   paramList_ = paramList;
 }
 
-Teuchos::RefCountPtr<Teuchos::ParameterList>
+Teuchos::RCP<Teuchos::ParameterList>
 PCDPreconditionerFactory::getParameterList()
 {
   return paramList_;
 }
 
-Teuchos::RefCountPtr<Teuchos::ParameterList>
+Teuchos::RCP<Teuchos::ParameterList>
 PCDPreconditionerFactory::unsetParameterList()
 {
-  Teuchos::RefCountPtr<Teuchos::ParameterList> _paramList = paramList_;
+  Teuchos::RCP<Teuchos::ParameterList> _paramList = paramList_;
   paramList_ = Teuchos::null;
   return _paramList;
 }
 
-Teuchos::RefCountPtr<const Teuchos::ParameterList>
+Teuchos::RCP<const Teuchos::ParameterList>
 PCDPreconditionerFactory::getParameterList() const
 {
   return paramList_;
 }
 
-Teuchos::RefCountPtr<const Teuchos::ParameterList>
+Teuchos::RCP<const Teuchos::ParameterList>
 PCDPreconditionerFactory::getValidParameters() const
 {
   // if(!validPL_.get()) { validPL_ =

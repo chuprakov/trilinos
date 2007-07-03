@@ -35,7 +35,7 @@
 #include "Thyra_VectorSpaceImpl.hpp" 
 #include "Thyra_LinearOperatorDecl.hpp"
 #include "Epetra_RowMatrix.h"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 
 namespace Meros 
@@ -124,10 +124,10 @@ namespace Meros
       bool isOpConst() const;
 
       /** \brief . */
-      RefCountPtr<const LinearOpBase<double> > getOp() const;
+      RCP<const LinearOpBase<double> > getOp() const;
 
       /** \brief . */
-      RefCountPtr<LinearOpBase<double> > getNonconstOp() ;
+      RCP<LinearOpBase<double> > getNonconstOp() ;
 
       /** \brief . */
       ConstLinearOperator<double> getSaddleOp() const;

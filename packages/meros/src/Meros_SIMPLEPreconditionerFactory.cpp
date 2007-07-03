@@ -36,54 +36,54 @@
 #include "Thyra_PreconditionerFactoryBase.hpp"
 #include "Thyra_InverseLinearOperator.hpp"
 
-#include "Meros_LSCPreconditionerFactory.h"
+#include "Meros_SIMPLEPreconditionerFactory.h"
 #include "Meros_PCDPreconditionerFactory.h"
 
 using namespace Meros;
 
 // Constructors/initializers/accessors
 
-// LSCPreconditionerFactory
-// ::LSCPreconditionerFactory()
+// SIMPLEPreconditionerFactory
+// ::SIMPLEPreconditionerFactory()
 // {;}
 
 
-LSCPreconditionerFactory
-::LSCPreconditionerFactory(
+SIMPLEPreconditionerFactory
+::SIMPLEPreconditionerFactory(
   RCP<const LinearOpWithSolveFactoryBase<double> >   const&  FSolveStrategy,
-  RCP<const LinearOpWithSolveFactoryBase<double> >   const&  BBtSolveStrategy
+  RCP<const LinearOpWithSolveFactoryBase<double> >   const&  SchurSolveStrategy
   )
   :FSolveStrategy_(FSolveStrategy),
-   BBtSolveStrategy_(BBtSolveStrategy)
+   SchurSolveStrategy_(SchurSolveStrategy)
 {}
 
-bool LSCPreconditionerFactory
+bool SIMPLEPreconditionerFactory
 ::isCompatible(const LinearOpSourceBase<double> &fwdOpSrc) const
 {
-  TEST_FOR_EXCEPT("LSCPreconditionerFactory::isCompatible is not implemented");
+  TEST_FOR_EXCEPT("SIMPLEPreconditionerFactory::isCompatible is not implemented");
 }
 
-RCP<PreconditionerBase<double> > LSCPreconditionerFactory
+RCP<PreconditionerBase<double> > SIMPLEPreconditionerFactory
 ::createPrec() const
 {
   return rcp(new DefaultPreconditioner<double>());
 }
 
-void LSCPreconditionerFactory
+void SIMPLEPreconditionerFactory
 ::initializePrec(const RCP<const LinearOpSourceBase<double> > &opSrc,
 		 PreconditionerBase<double> *prec,
 		 const ESupportSolveUse supportSolveUse) const
 {
-  // Cast the general LinearOpSourceBase object to a LSCOperatorSource
-  RCP<const LSCOperatorSource> lscOpSrcPtr 
-    = rcp_dynamic_cast<const LSCOperatorSource>(opSrc);  
+  // Cast the general LinearOpSourceBase object to a SIMPLEOperatorSource
+  RCP<const SIMPLEOperatorSource> lscOpSrcPtr 
+    = rcp_dynamic_cast<const SIMPLEOperatorSource>(opSrc);  
   
-  // Retrieve operators from the LSC operator source
-  ConstLinearOperator<double> blockOp = lscOpSrcPtr->getSaddleOp();
+  // Retrieve operators from the SIMPLE operator source
+  ConstLinearOperator<double> blockOp = lscOpSrcPtr->getOp();
   ConstLinearOperator<double> F = blockOp.getBlock(0,0);
   ConstLinearOperator<double> Bt = blockOp.getBlock(0,1);
   ConstLinearOperator<double> B = blockOp.getBlock(1,0);
-  // This version of LSC assumes a stable discretization. 
+  // This version of SIMPLE assumes a stable discretization. 
   // Ignoring C block.
 
   // Builde F inverse operator Finv
@@ -93,7 +93,7 @@ void LSCPreconditionerFactory
   // Builde BBt inverse operator BBtinv
   ConstLinearOperator<double> BBt = B * Bt;
   ConstLinearOperator<double>
-    BBtinv = inverse(*BBtSolveStrategy_,BBt,Thyra::IGNORE_SOLVE_FAILURE);
+    BBtinv = inverse(*SchurSolveStrategy_,BBt,Thyra::IGNORE_SOLVE_FAILURE);
 
   // Build identity matrices on the velocity and pressure spaces 
   ConstLinearOperator<double> Ivel = identity(Bt.range());
@@ -118,13 +118,13 @@ void LSCPreconditionerFactory
   ConstLinearOperator<double> P3 = block2x2(  Ivel,    zero, 
                                               zero,    (-1.0)*Xinv   );
 
-  //  ConstLinearOperator<double> LSCprec = makeEpetraOperator(P1 * P2 * P3);
-  ConstLinearOperator<double> LSCprec = P1 * P2 * P3;
+  //  ConstLinearOperator<double> SIMPLEprec = makeEpetraOperator(P1 * P2 * P3);
+  ConstLinearOperator<double> SIMPLEprec = P1 * P2 * P3;
 
   DefaultPreconditioner<double>
     *defaultPrec = &Teuchos::dyn_cast<DefaultPreconditioner<double> >(*prec);
 
-  (*defaultPrec).initializeRight(LSCprec.constPtr());
+  (*defaultPrec).initializeRight(SIMPLEprec.constPtr());
 
 //   if(hasQp_)
 //     {
@@ -138,18 +138,18 @@ void LSCPreconditionerFactory
 }
 
 
-void LSCPreconditionerFactory
+void SIMPLEPreconditionerFactory
 ::uninitializePrec(PreconditionerBase<double> *prec,
 		   RCP<const LinearOpSourceBase<double> > *fwdOp,
 		   ESupportSolveUse *supportSolveUse) const
 {
-TEST_FOR_EXCEPT("LSCPreconditionerFactory::uninitializePrec not implemented");
+TEST_FOR_EXCEPT("SIMPLEPreconditionerFactory::uninitializePrec not implemented");
 }
 
 
 // Overridden from ParameterListAcceptor
 
-void LSCPreconditionerFactory
+void SIMPLEPreconditionerFactory
 ::setParameterList(Teuchos::RCP<Teuchos::ParameterList> const& paramList)
 {
   TEST_FOR_EXCEPT(paramList.get()==NULL);
@@ -159,13 +159,13 @@ void LSCPreconditionerFactory
 }
 
 Teuchos::RCP<Teuchos::ParameterList>
-LSCPreconditionerFactory::getParameterList()
+SIMPLEPreconditionerFactory::getParameterList()
 {
   return paramList_;
 }
 
 Teuchos::RCP<Teuchos::ParameterList>
-LSCPreconditionerFactory::unsetParameterList()
+SIMPLEPreconditionerFactory::unsetParameterList()
 {
   Teuchos::RCP<Teuchos::ParameterList> _paramList = paramList_;
   paramList_ = Teuchos::null;
@@ -173,13 +173,13 @@ LSCPreconditionerFactory::unsetParameterList()
 }
 
 Teuchos::RCP<const Teuchos::ParameterList>
-LSCPreconditionerFactory::getParameterList() const
+SIMPLEPreconditionerFactory::getParameterList() const
 {
   return paramList_;
 }
 
 Teuchos::RCP<const Teuchos::ParameterList>
-LSCPreconditionerFactory::getValidParameters() const
+SIMPLEPreconditionerFactory::getValidParameters() const
 {
   // if(!validPL_.get()) {
 //     validPL_ = defaultParameters(ML_DomainDecomposition);

@@ -47,7 +47,7 @@
 namespace Meros
 {
   using Teuchos::ParameterList;
-  using Teuchos::RefCountPtr;
+  using Teuchos::RCP;
   using Teuchos::rcp;
   using Teuchos::null;
   using namespace Thyra;
@@ -115,9 +115,9 @@ namespace Meros
        *  the F (convection-diffusion) solve and the Ap 
        *  (pressure Poisson) solve.  */
       PCDPreconditionerFactory(
-         RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   
+         RCP<const LinearOpWithSolveFactoryBase<double> >   
 	 const&  FSolveStrategy,
-	 RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   
+	 RCP<const LinearOpWithSolveFactoryBase<double> >   
 	 const&  ApSolveStrategy
 	 );
       
@@ -126,11 +126,11 @@ namespace Meros
        *  the F (convection-diffusion) solve the Ap (pressure Poisson)
        *  solve, and the Qp (pressure mass matrix) solve.  */
       PCDPreconditionerFactory(
-	 RefCountPtr<const LinearOpWithSolveFactoryBase<double> > 
+	 RCP<const LinearOpWithSolveFactoryBase<double> > 
 	 const& FSolveStrategy,
-	 RefCountPtr<const LinearOpWithSolveFactoryBase<double> >
+	 RCP<const LinearOpWithSolveFactoryBase<double> >
 	 const& ApSolveStrategy,
-	 RefCountPtr<const LinearOpWithSolveFactoryBase<double> >
+	 RCP<const LinearOpWithSolveFactoryBase<double> >
 	 const& QpSolveStrategy
 	 );
       //@}
@@ -154,11 +154,11 @@ namespace Meros
        * guaranteed to be fully initialized until after it is passed
        * through <tt>this->initializePrecOp()</tt>.
        */
-      RefCountPtr<PreconditionerBase<double> > createPrec() const;
+      RCP<PreconditionerBase<double> > createPrec() const;
 
 
       /** \brief Initialize the PCDPreconditioner object */
-      void initializePrec(const RefCountPtr<const LinearOpSourceBase<double> >
+      void initializePrec(const RCP<const LinearOpSourceBase<double> >
 			  &fwdOpSrc,
 			  PreconditionerBase<double> *precOp,
 			  const ESupportSolveUse 
@@ -168,7 +168,7 @@ namespace Meros
 
       /** \brief Uninitialize the PCDPreconditioner object */
       void uninitializePrec(PreconditionerBase<double> *prec,
-			    RefCountPtr<const LinearOpSourceBase<double> > *fwdOpSrc,
+			    RCP<const LinearOpSourceBase<double> > *fwdOpSrc,
 			    ESupportSolveUse *supportSolveUse = NULL) const;
 
 
@@ -178,29 +178,29 @@ namespace Meros
       //@{
       
       /** \brief . */
-      void setParameterList(RefCountPtr<ParameterList> const& paramList);
+      void setParameterList(RCP<ParameterList> const& paramList);
       /** \brief . */
-      RefCountPtr<ParameterList> getParameterList();
+      RCP<ParameterList> getParameterList();
       /** \brief . */
-      RefCountPtr<ParameterList> unsetParameterList();
+      RCP<ParameterList> unsetParameterList();
       /** \brief . */
-      RefCountPtr<const ParameterList> getParameterList() const;
+      RCP<const ParameterList> getParameterList() const;
       /** \brief . */
-      RefCountPtr<const Teuchos::ParameterList> getValidParameters() const;
+      RCP<const Teuchos::ParameterList> getValidParameters() const;
       //@}
 
       /* Deal with all of the TSFHandleable features */
       /* GET_RCP(PreconditionerFactoryBase<double>); */
 
     private:
-      mutable RefCountPtr<ParameterList>  validPL_;
-      RefCountPtr<ParameterList>          paramList_;
+      mutable RCP<ParameterList>  validPL_;
+      RCP<ParameterList>          paramList_;
 
-      RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   
+      RCP<const LinearOpWithSolveFactoryBase<double> >   
 	FSolveStrategy_;
-      RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   
+      RCP<const LinearOpWithSolveFactoryBase<double> >   
 	ApSolveStrategy_;
-      RefCountPtr<const LinearOpWithSolveFactoryBase<double> >   
+      RCP<const LinearOpWithSolveFactoryBase<double> >   
 	QpSolveStrategy_;
     };
 

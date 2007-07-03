@@ -54,7 +54,7 @@ namespace Meros
     AztecSolveStrategy(const ParameterList& params) 
       : AztecOOLinearOpWithSolveFactory()
     {
-      RefCountPtr<ParameterList> p = rcp(new ParameterList(params));
+      RCP<ParameterList> p = rcp(new ParameterList(params));
       this->setParameterList(p);
     }
 
@@ -63,7 +63,7 @@ namespace Meros
                        const PreconditioningStrategy<double>& prec) 
       : AztecOOLinearOpWithSolveFactory()
     {
-      RefCountPtr<ParameterList> p = rcp(new ParameterList(params));
+      RCP<ParameterList> p = rcp(new ParameterList(params));
       this->setParameterList(p);
       this->setPreconditionerFactory(prec.ptr(), "dummy name");
     }

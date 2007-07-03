@@ -26,28 +26,27 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef MEROS_LSC_OPERATOR_SOURCE_H
-#define MEROS_LSC_OPERATOR_SOURCE_H
+#ifndef MEROS_SIMPLE_OPERATOR_SOURCE_H
+#define MEROS_SIMPLE_OPERATOR_SOURCE_H
 
 #include "Thyra_LinearOpSourceBase.hpp"
+#include "Teuchos_ConstNonconstObjectContainer.hpp"
 #include "Thyra_VectorImpl.hpp" 
 #include "Thyra_VectorSpaceImpl.hpp" 
 #include "Thyra_LinearOperatorDecl.hpp"
 #include "Epetra_RowMatrix.h"
-#include "Teuchos_RCP.hpp"
 
 
 namespace Meros 
 {
-
   using namespace Thyra;
   
   /** \brief Meros implementation of a Thyra
    * <tt>LinearOpSourceBase</tt> that accepts and gives up 
-   * linear operators for an LSC preconditioner
+   * linear operators for an SIMPLE preconditioner
    */
   //template <class double, class double = double>
-  class LSCOperatorSource : virtual public LinearOpSourceBase<double>
+  class SIMPLEOperatorSource : virtual public LinearOpSourceBase<double>
     {
     public:
 
@@ -56,46 +55,26 @@ namespace Meros
 
       /** \brief Construct to uninitialized.
        */
-      LSCOperatorSource();
+      SIMPLEOperatorSource();
 
 
       /** \brief Construct with saddle LinearOperator
        */
-      LSCOperatorSource(ConstLinearOperator<double> op);
-
-      /** \brief Construct with saddle and Qu LinearOperator
-       */
-      LSCOperatorSource(ConstLinearOperator<double> op,
-			ConstLinearOperator<double> Qu);
-
-      /** \brief Construct with epetra operators 
-       */
-      LSCOperatorSource(Epetra_RowMatrix* S00,
-			Epetra_RowMatrix* S01,
-			Epetra_RowMatrix* S10,
-			Epetra_RowMatrix* S11);
+      SIMPLEOperatorSource(ConstLinearOperator<double> op);
 
 
       /** \brief Construct with epetra operators 
        */
-      LSCOperatorSource(Epetra_RowMatrix* S00,
-			Epetra_RowMatrix* S01,
-			Epetra_RowMatrix* S10,
-			Epetra_RowMatrix* S11,
-			Epetra_RowMatrix* Qu);
+      SIMPLEOperatorSource(Epetra_RowMatrix* S00,
+			   Epetra_RowMatrix* S01,
+			   Epetra_RowMatrix* S10,
+			   Epetra_RowMatrix* S11);
 
-
-
-/*       /\** \brief Initialize with saddle LinearOperator */
-/*        *\/ */
-/*       void initialize(ConstLinearOperator<double> op); */
 
 
       /** \brief Initialize with saddle and Qu LinearOperators
        */
-      void initialize(ConstLinearOperator<double> op,
-		      ConstLinearOperator<double> Qu);
-
+      void initialize(ConstLinearOperator<double> op);
 
       /** \brief Uninitialize.
        *
@@ -116,21 +95,22 @@ namespace Meros
       RCP<LinearOpBase<double> > getNonconstOp() ;
 
       /** \brief . */
-      ConstLinearOperator<double> getSaddleOp() const;
+      ConstLinearOperator<double> getDinvOp() const;
 
       /** \brief . */
-      ConstLinearOperator<double> getQu() const;
+      //ConstLinearOperator<double> getQu() const;
 
 
   
     private:
       
       Teuchos::ConstNonconstObjectContainer<LinearOpBase<double> >  op_;
-      Teuchos::ConstNonconstObjectContainer<LinearOpBase<double> >  Qu_;
+      Teuchos::ConstNonconstObjectContainer<LinearOpBase<double> >  dinv_;
+      //Teuchos::ConstNonconstObjectContainer<LinearOpBase<double> >  Qu_;
 
     };
 
 
 } // namespace Meros
 
-#endif // MEROS_LSC_OPERATOR_SOURCE_H
+#endif // MEROS_SIMPLE_OPERATOR_SOURCE_H

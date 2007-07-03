@@ -26,10 +26,10 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef MEROS_LSC_PRECONDITIONERFACTORY_H
-#define MEROS_LSC_PRECONDITIONERFACTORY_H
+#ifndef MEROS_SIMPLE_PRECONDITIONERFACTORY_H
+#define MEROS_SIMPLE_PRECONDITIONERFACTORY_H
 
-/*! \file Meros_LSCPreconditionerFactory.h
+/*! \file Meros_SIMPLEPreconditionerFactory.h
  *  \brief Factory for building Least Squares Commutator block
  *         preconditioners.
  */
@@ -43,7 +43,7 @@
 #include "Thyra_LinearOpWithSolveBase.hpp"
 #include "Thyra_PreconditionerFactoryBase.hpp"
 
-#include "Meros_LSCOperatorSource.h"
+#include "Meros_SIMPLEOperatorSource.h"
 
 
 namespace Meros
@@ -60,7 +60,7 @@ namespace Meros
    *  \brief Factory for building least squares commutator
    *  style block preconditioner. 
    *
-   *  Note that the LSC preconditioner assumes that we are using
+   *  Note that the SIMPLE preconditioner assumes that we are using
    *  a stable discretization an a uniform mesh.
    *  
    *  The LDU factors of a saddle point system are given as follows:
@@ -100,7 +100,7 @@ namespace Meros
    */
 
 
-  class LSCPreconditionerFactory 
+  class SIMPLEPreconditionerFactory 
     : public PreconditionerFactoryBase<double>
     {
     public:
@@ -108,16 +108,16 @@ namespace Meros
       //@{
 
       /** \brief Default constructor. */
-      LSCPreconditionerFactory();
+      SIMPLEPreconditionerFactory();
       
 
       /** \brief Constructor for Pressure Convection-Diffusion
        *  preconditioner factory. Takes an AztecOO parameter list for
        *  the F (convection-diffusion) solve and the B*Bt 
        *  solve.  */
-      LSCPreconditionerFactory(
+      SIMPLEPreconditionerFactory(
         RCP<const LinearOpWithSolveFactoryBase<double> >   const&  FSolveStrategy,
-        RCP<const LinearOpWithSolveFactoryBase<double> >   const&  BBtSolveStrategy
+        RCP<const LinearOpWithSolveFactoryBase<double> >   const&  SchurSolveStrategy
         );
 
      //@}
@@ -143,7 +143,7 @@ namespace Meros
       RCP<PreconditionerBase<double> > createPrec() const;
 
 
-      /** \brief Initialize the LSCPreconditioner object */
+      /** \brief Initialize the SIMPLEPreconditioner object */
       void initializePrec(const RCP<const LinearOpSourceBase<double> >
 			  &fwdOpSrc,
 			  PreconditionerBase<double> *precOp,
@@ -152,7 +152,7 @@ namespace Meros
 
 
 
-      /** \brief Uninitialize the LSCPreconditioner object */
+      /** \brief Uninitialize the SIMPLEPreconditioner object */
       void uninitializePrec(PreconditionerBase<double> *prec,
 			    RCP<const LinearOpSourceBase<double> >  *fwdOpSrc,
 			    ESupportSolveUse *supportSolveUse = NULL) const;
@@ -184,10 +184,10 @@ namespace Meros
       RCP<ParameterList>          paramList_;
 
       RCP<const LinearOpWithSolveFactoryBase<double> >   FSolveStrategy_;
-      RCP<const LinearOpWithSolveFactoryBase<double> >   BBtSolveStrategy_;
+      RCP<const LinearOpWithSolveFactoryBase<double> >   SchurSolveStrategy_;
 
     };
 
 }  // namespace Meros
 
-#endif  // MEROS_LSC_PRECONDITIONERFACTORY_H
+#endif  // MEROS_SIMPLE_PRECONDITIONERFACTORY_H

@@ -54,7 +54,7 @@ namespace Meros
     LinearSolveStrategy() : lowsf_(), pf_() {;}
     
     /** */
-    LinearSolveStrategy(const RefCountPtr<LinearOpWithSolveFactoryBase<Scalar> >& lowsf)
+    LinearSolveStrategy(const RCP<LinearOpWithSolveFactoryBase<Scalar> >& lowsf)
       : lowsf_(lowsf), pf_(lowsf->getPreconditionerFactory()) {;}
     
     /** */
@@ -62,16 +62,16 @@ namespace Meros
       : lowsf_(lowsf->getRcp()), pf_(lowsf_->getPreconditionerFactory()) {;}
 
     /** \brief . */
-    RefCountPtr<LinearOpWithSolveFactoryBase<Scalar> > getLOWSF() const
+    RCP<LinearOpWithSolveFactoryBase<Scalar> > getLOWSF() const
       {
         return lowsf_;
       }
 
     /** */
-    RefCountPtr<LinearOpWithSolveBase<Scalar> > getLOWS(const LinearOperator<Scalar>& op) const 
+    RCP<LinearOpWithSolveBase<Scalar> > getLOWS(const LinearOperator<Scalar>& op) const 
     {
-      RefCountPtr<LinearOpWithSolveBase<Scalar> > rtn = lowsf_->createOp();
-      RefCountPtr<const LinearOpSourceBase<Scalar> > src 
+      RCP<LinearOpWithSolveBase<Scalar> > rtn = lowsf_->createOp();
+      RCP<const LinearOpSourceBase<Scalar> > src 
         = rcp(new DefaultLinearOpSource<Scalar>(op.ptr()));
 
       if (pf_.get() == 0)
@@ -90,10 +90,10 @@ namespace Meros
     }
 
     /** */
-    RefCountPtr<LinearOpWithSolveBase<Scalar> > getLOWS(const ConstLinearOperator<Scalar>& op) const 
+    RCP<LinearOpWithSolveBase<Scalar> > getLOWS(const ConstLinearOperator<Scalar>& op) const 
     {
-      RefCountPtr<LinearOpWithSolveBase<Scalar> > rtn = lowsf_->createOp();
-      RefCountPtr<const LinearOpSourceBase<Scalar> > src 
+      RCP<LinearOpWithSolveBase<Scalar> > rtn = lowsf_->createOp();
+      RCP<const LinearOpSourceBase<Scalar> > src 
         = rcp(new DefaultLinearOpSource<Scalar>(op.constPtr()));
 
       if (pf_.get() == 0)
@@ -112,13 +112,13 @@ namespace Meros
     }
 
   protected:
-    RefCountPtr<LinearOpWithSolveFactoryBase<Scalar> > lowsf() {return lowsf_;}
-    RefCountPtr<PreconditionerFactoryBase<Scalar> > pf() {return pf_;}
+    RCP<LinearOpWithSolveFactoryBase<Scalar> > lowsf() {return lowsf_;}
+    RCP<PreconditionerFactoryBase<Scalar> > pf() {return pf_;}
 
   private:
 
-    RefCountPtr<LinearOpWithSolveFactoryBase<Scalar> > lowsf_;
-    RefCountPtr<PreconditionerFactoryBase<Scalar> > pf_;
+    RCP<LinearOpWithSolveFactoryBase<Scalar> > lowsf_;
+    RCP<PreconditionerFactoryBase<Scalar> > pf_;
   };
 
 

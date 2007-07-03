@@ -80,19 +80,19 @@ PCDOperatorSource
 {
 
   // Convert to LinearOperators
-  RefCountPtr<const LinearOpBase<double> >
+  RCP<const LinearOpBase<double> >
     tmpS00 = rcp(new EpetraLinearOp(rcp(S00epetra,false)));
   ConstLinearOperator<double> S00 = tmpS00;
 
-  RefCountPtr<const LinearOpBase<double> >
+  RCP<const LinearOpBase<double> >
     tmpS01 = rcp(new EpetraLinearOp(rcp(S01epetra,false)));
   ConstLinearOperator<double> S01 = tmpS01;
 
-  RefCountPtr<const LinearOpBase<double> >
+  RCP<const LinearOpBase<double> >
     tmpS10 = rcp(new EpetraLinearOp(rcp(S10epetra,false)));
   ConstLinearOperator<double> S10 = tmpS10;
 
-  RefCountPtr<const LinearOpBase<double> >
+  RCP<const LinearOpBase<double> >
     tmpS11 = rcp(new EpetraLinearOp(rcp(S11epetra,false)));
   ConstLinearOperator<double> S11 = tmpS11;
 
@@ -100,11 +100,11 @@ PCDOperatorSource
   ConstLinearOperator<double> S = block2x2(S00, S01, S10,S11);
 
   // Convert Fp and Ap to Thyra LinearOperators
-  RefCountPtr<const LinearOpBase<double> >
+  RCP<const LinearOpBase<double> >
     tmpFp = rcp(new EpetraLinearOp(rcp(Fpepetra,false)));
   ConstLinearOperator<double> Fp = tmpFp;
 
-  RefCountPtr<const LinearOpBase<double> >
+  RCP<const LinearOpBase<double> >
     tmpAp = rcp(new EpetraLinearOp(rcp(Apepetra,false)));
   ConstLinearOperator<double> Ap = tmpAp;
 
@@ -129,19 +129,19 @@ PCDOperatorSource
 {
 
   // Convert to Thyra LinearOperators
-  RefCountPtr<const LinearOpBase<double> >
+  RCP<const LinearOpBase<double> >
     tmpS00 = rcp(new EpetraLinearOp(rcp(S00epetra,false)));
   ConstLinearOperator<double> S00 = tmpS00;
 
-  RefCountPtr<const LinearOpBase<double> >
+  RCP<const LinearOpBase<double> >
     tmpS01 = rcp(new EpetraLinearOp(rcp(S01epetra,false)));
   ConstLinearOperator<double> S01 = tmpS01;
 
-  RefCountPtr<const LinearOpBase<double> >
+  RCP<const LinearOpBase<double> >
     tmpS10 = rcp(new EpetraLinearOp(rcp(S10epetra,false)));
   ConstLinearOperator<double> S10 = tmpS10;
 
-  RefCountPtr<const LinearOpBase<double> >
+  RCP<const LinearOpBase<double> >
     tmpS11 = rcp(new EpetraLinearOp(rcp(S11epetra,false)));
   ConstLinearOperator<double> S11 = tmpS11;
 
@@ -149,15 +149,15 @@ PCDOperatorSource
   ConstLinearOperator<double> S = block2x2(S00, S01, S10,S11);
 
   // Convert Fp, Ap, and Qp to Thyra LinearOperators
-  RefCountPtr<const LinearOpBase<double> >
+  RCP<const LinearOpBase<double> >
     tmpFp = rcp(new EpetraLinearOp(rcp(Fpepetra,false)));
   ConstLinearOperator<double> Fp = tmpFp;
 
-  RefCountPtr<const LinearOpBase<double> >
+  RCP<const LinearOpBase<double> >
     tmpAp = rcp(new EpetraLinearOp(rcp(Apepetra,false)));
   ConstLinearOperator<double> Ap = tmpAp;
 
-  RefCountPtr<const LinearOpBase<double> >
+  RCP<const LinearOpBase<double> >
     tmpQp = rcp(new EpetraLinearOp(rcp(Qpepetra,false)));
   ConstLinearOperator<double> Qp = tmpQp;
 
@@ -207,12 +207,12 @@ bool PCDOperatorSource::isOpConst() const
   return op_.isConst();
 }
 
-RefCountPtr<LinearOpBase<double> > PCDOperatorSource::getNonconstOp() 
+RCP<LinearOpBase<double> > PCDOperatorSource::getNonconstOp() 
 {
   return op_.getNonconstObj();
 }
 
-RefCountPtr<const LinearOpBase<double> > PCDOperatorSource::getOp() const
+RCP<const LinearOpBase<double> > PCDOperatorSource::getOp() const
 {
   return op_.getConstObj();
 }

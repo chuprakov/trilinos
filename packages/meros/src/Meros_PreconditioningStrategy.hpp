@@ -54,7 +54,7 @@ namespace Meros
     PreconditioningStrategy() : pf_() {;}
     
     /** */
-    PreconditioningStrategy(const RefCountPtr<PreconditionerFactoryBase<Scalar> >& pf)
+    PreconditioningStrategy(const RCP<PreconditionerFactoryBase<Scalar> >& pf)
       : pf_(pf) {;}
     
     /** */
@@ -62,24 +62,24 @@ namespace Meros
       : pf_(pf->getRcp()) {;}
 
     /** */
-    RefCountPtr<PreconditionerBase<Scalar> > getPrec(const LinearOperator<Scalar>& op) const 
+    RCP<PreconditionerBase<Scalar> > getPrec(const LinearOperator<Scalar>& op) const 
     {
-      RefCountPtr<PreconditionerBase<Scalar> > rtn = pf_->createPrec();
+      RCP<PreconditionerBase<Scalar> > rtn = pf_->createPrec();
       pf_->initializeOp<Scalar>(op.ptr(), &*rtn);
       return rtn;
     }
 
     /** */
-    const RefCountPtr<PreconditionerFactoryBase<Scalar> >& ptr() const {return pf_;}
+    const RCP<PreconditionerFactoryBase<Scalar> >& ptr() const {return pf_;}
     /** */
-    RefCountPtr<PreconditionerFactoryBase<Scalar> > ptr() {return pf_;}
+    RCP<PreconditionerFactoryBase<Scalar> > ptr() {return pf_;}
 
   protected:
-    RefCountPtr<PreconditionerFactoryBase<Scalar> > pf() {return pf_;}
+    RCP<PreconditionerFactoryBase<Scalar> > pf() {return pf_;}
 
   private:
 
-    RefCountPtr<PreconditionerFactoryBase<Scalar> > pf_;
+    RCP<PreconditionerFactoryBase<Scalar> > pf_;
   };
 
 

@@ -111,7 +111,9 @@ libmeros_a_DEPENDENCIES =
 am__objects_1 = Meros_LSCOperatorSource.$(OBJEXT) \
 	Meros_LSCPreconditionerFactory.$(OBJEXT) \
 	Meros_PCDOperatorSource.$(OBJEXT) \
-	Meros_PCDPreconditionerFactory.$(OBJEXT)
+	Meros_PCDPreconditionerFactory.$(OBJEXT) \
+	Meros_SIMPLEOperatorSource.$(OBJEXT) \
+	Meros_SIMPLEPreconditionerFactory.$(OBJEXT)
 am__objects_2 =
 @HAVE_MPI_TRUE@am__objects_3 = $(am__objects_2)
 am_libmeros_a_OBJECTS = $(am__objects_1) $(am__objects_2) \
@@ -279,13 +281,17 @@ CORE_H = \
 	$(srcdir)/Meros_PCDPreconditionerFactory.h    \
 	$(srcdir)/Meros_Preconditioner.hpp	      \
 	$(srcdir)/Meros_PreconditioningStrategy.hpp   \
+	$(srcdir)/Meros_SIMPLEOperatorSource.h        \
+	$(srcdir)/Meros_SIMPLEPreconditionerFactory.h \
 	$(srcdir)/Meros_ZeroOperator.hpp              
 
 CORE = \
 	$(srcdir)/Meros_LSCOperatorSource.cpp         \
 	$(srcdir)/Meros_LSCPreconditionerFactory.cpp  \
 	$(srcdir)/Meros_PCDOperatorSource.cpp         \
-	$(srcdir)/Meros_PCDPreconditionerFactory.cpp  
+	$(srcdir)/Meros_PCDPreconditionerFactory.cpp  \
+	$(srcdir)/Meros_SIMPLEOperatorSource.cpp      \
+	$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp  
 
 UTIL_H = \
 	$(srcdir)/Meros_Version.h
@@ -560,6 +566,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Meros_LSCPreconditionerFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Meros_PCDOperatorSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Meros_PCDPreconditionerFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Meros_SIMPLEOperatorSource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Meros_SIMPLEPreconditionerFactory.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -630,6 +638,34 @@ Meros_PCDPreconditionerFactory.obj: $(srcdir)/Meros_PCDPreconditionerFactory.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/Meros_PCDPreconditionerFactory.cpp' object='Meros_PCDPreconditionerFactory.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Meros_PCDPreconditionerFactory.obj `if test -f '$(srcdir)/Meros_PCDPreconditionerFactory.cpp'; then $(CYGPATH_W) '$(srcdir)/Meros_PCDPreconditionerFactory.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/Meros_PCDPreconditionerFactory.cpp'; fi`
+
+Meros_SIMPLEOperatorSource.o: $(srcdir)/Meros_SIMPLEOperatorSource.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Meros_SIMPLEOperatorSource.o -MD -MP -MF $(DEPDIR)/Meros_SIMPLEOperatorSource.Tpo -c -o Meros_SIMPLEOperatorSource.o `test -f '$(srcdir)/Meros_SIMPLEOperatorSource.cpp' || echo '$(srcdir)/'`$(srcdir)/Meros_SIMPLEOperatorSource.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Meros_SIMPLEOperatorSource.Tpo $(DEPDIR)/Meros_SIMPLEOperatorSource.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/Meros_SIMPLEOperatorSource.cpp' object='Meros_SIMPLEOperatorSource.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Meros_SIMPLEOperatorSource.o `test -f '$(srcdir)/Meros_SIMPLEOperatorSource.cpp' || echo '$(srcdir)/'`$(srcdir)/Meros_SIMPLEOperatorSource.cpp
+
+Meros_SIMPLEOperatorSource.obj: $(srcdir)/Meros_SIMPLEOperatorSource.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Meros_SIMPLEOperatorSource.obj -MD -MP -MF $(DEPDIR)/Meros_SIMPLEOperatorSource.Tpo -c -o Meros_SIMPLEOperatorSource.obj `if test -f '$(srcdir)/Meros_SIMPLEOperatorSource.cpp'; then $(CYGPATH_W) '$(srcdir)/Meros_SIMPLEOperatorSource.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/Meros_SIMPLEOperatorSource.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Meros_SIMPLEOperatorSource.Tpo $(DEPDIR)/Meros_SIMPLEOperatorSource.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/Meros_SIMPLEOperatorSource.cpp' object='Meros_SIMPLEOperatorSource.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Meros_SIMPLEOperatorSource.obj `if test -f '$(srcdir)/Meros_SIMPLEOperatorSource.cpp'; then $(CYGPATH_W) '$(srcdir)/Meros_SIMPLEOperatorSource.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/Meros_SIMPLEOperatorSource.cpp'; fi`
+
+Meros_SIMPLEPreconditionerFactory.o: $(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Meros_SIMPLEPreconditionerFactory.o -MD -MP -MF $(DEPDIR)/Meros_SIMPLEPreconditionerFactory.Tpo -c -o Meros_SIMPLEPreconditionerFactory.o `test -f '$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp' || echo '$(srcdir)/'`$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Meros_SIMPLEPreconditionerFactory.Tpo $(DEPDIR)/Meros_SIMPLEPreconditionerFactory.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp' object='Meros_SIMPLEPreconditionerFactory.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Meros_SIMPLEPreconditionerFactory.o `test -f '$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp' || echo '$(srcdir)/'`$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp
+
+Meros_SIMPLEPreconditionerFactory.obj: $(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Meros_SIMPLEPreconditionerFactory.obj -MD -MP -MF $(DEPDIR)/Meros_SIMPLEPreconditionerFactory.Tpo -c -o Meros_SIMPLEPreconditionerFactory.obj `if test -f '$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp'; then $(CYGPATH_W) '$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Meros_SIMPLEPreconditionerFactory.Tpo $(DEPDIR)/Meros_SIMPLEPreconditionerFactory.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp' object='Meros_SIMPLEPreconditionerFactory.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Meros_SIMPLEPreconditionerFactory.obj `if test -f '$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp'; then $(CYGPATH_W) '$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/Meros_SIMPLEPreconditionerFactory.cpp'; fi`
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(includedir)" || $(MKDIR_P) "$(DESTDIR)$(includedir)"
