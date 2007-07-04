@@ -39,6 +39,7 @@
 #define max(a,b) ( (a) > (b) ? (a) : (b) )
 #define min(a,b) ( (a) < (b) ? (a) : (b) )
 
+
 #include "RTOp_ROp_fraction_to_zero_boundary.h"
 #include "RTOp_obj_value_vtbl.h"  /* vtbl for operator object instance data */
 #include "RTOp_reduct_min_value.h"  /* Reduction of intermediate reduction objects */

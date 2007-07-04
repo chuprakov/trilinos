@@ -38,6 +38,7 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "RTOp_MPI_config.h"
 

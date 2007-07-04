@@ -32,33 +32,41 @@
 
 #include "Meros_Config.h"
 #include "Meros_Version.h"
-#include "Teuchos_MPISession.hpp"
+#include "Teuchos_GlobalMPISession.hpp"
 
-using namespace Meros;
-using namespace Teuchos;
-using std::string;
-
-int main(int argc, void** argv)
+int main(int argc, char** argv)
 {
+
+  using std::string;
+  using std::cout;
+  using std::cerr;
+  using std::endl;
+
+  using namespace Meros;
+  using namespace Teuchos;
+
+  GlobalMPISession mpiSession(&argc, &argv);
+
   try
-    {
-      MPISession::init(&argc, &argv);
-      const int myRank = MPISession::getRank();
-      const int numProcs = MPISession::getNProc();
+  {
+    const int myRank = GlobalMPISession::getRank();
+    const int numProcs = GlobalMPISession::getNProc();
+    
+    if (myRank == 0)
+      cout << "Number of processors = " << numProcs << endl;
+    
+    cout << "Proc " << myRank << ": " 
+         << Meros::Meros_Version() << endl;
+    
+    return 0;
 
-      if (myRank == 0)
-	cout << "Number of processors = " << numProcs << endl;
-
-      cout << "Proc " << myRank << ": " 
-	   << Meros::Meros_Version() << endl;
-      
-      MPISession::finalize();
-
-      return 0;
-    }
+  }
   catch(std::exception& e)
-    {
-      cerr << e.what() << endl;
-     }
+  {
+    cerr << e.what() << endl;
+  }
+
+  return 1; // Failed!
+
 }
 

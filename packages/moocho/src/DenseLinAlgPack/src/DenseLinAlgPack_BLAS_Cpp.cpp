@@ -33,7 +33,6 @@
 
 namespace BLAS_C_Decl {
 
-using namespace std;
 typedef FortranTypes::f_int  		f_int;
 typedef FortranTypes::f_real		f_real;
 typedef FortranTypes::f_dbl_prec	f_dbl_prec;
