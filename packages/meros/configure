@@ -728,8 +728,14 @@ ALTERNATE_AR
 CXXCPP
 GREP
 EGREP
+BUILD_TESTS_TRUE
+BUILD_TESTS_FALSE
 BUILD_EXAMPLES_TRUE
 BUILD_EXAMPLES_FALSE
+SUB_TEST_TRUE
+SUB_TEST_FALSE
+SUB_EXAMPLE_TRUE
+SUB_EXAMPLE_FALSE
 FLIBS
 BLAS_LIBS
 LAPACK_LIBS
@@ -1344,12 +1350,16 @@ Optional Features:
   --enable-mpi            MPI support
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
-  --enable-examples       Build examples for all Trilinos packages (not all
-                          packages are sensitive to this option) (default is
-                          yes)
+  --enable-tests          Make tests for all Trilinos packages buildable with
+                          'make tests' (default is yes)
 
-  --enable-meros-examples Build Meros examples (default is yes if
-                          --disable-examples is not specified)
+  --enable-meros-tests    Make Meros tests buildable with 'make tests'
+                          (default is yes if --disable-tests is not specified)
+  --enable-examples       Make examples for all Trilinos packages buildable
+                          with 'make examples' (default is yes)
+  --enable-meros-examples Make Meros examples buildable with 'make examples'
+                          (default is yes if --disable-examples is not
+                          specified)
   --enable-libcheck       Check for some third-party libraries including BLAS
                           and LAPACK. (Cannot be disabled unless tests and
                           examples are also disabled.) (default is yes)
@@ -6996,8 +7006,75 @@ fi
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------
-# Checks if examples should be built
+# Checks if tests and examples should be built
 # ------------------------------------------------------------------------
+
+
+# Check whether --enable-tests was given.
+if test "${enable_tests+set}" = set; then
+  enableval=$enable_tests; ac_cv_use_tests=$enableval
+else
+  ac_cv_use_tests=yes
+fi
+
+
+{ echo "$as_me:$LINENO: checking whether to use tests" >&5
+echo $ECHO_N "checking whether to use tests... $ECHO_C" >&6; }
+
+if test "X$ac_cv_use_tests" != "Xno"; then
+  { echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6; }
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_TESTS
+_ACEOF
+
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+# Check whether --enable-tests was given.
+if test "${enable_tests+set}" = set; then
+  enableval=$enable_tests; ac_cv_use_tests=$enableval
+else
+  ac_cv_use_tests=yes
+fi
+
+
+# Check whether --enable-meros-tests was given.
+if test "${enable_meros_tests+set}" = set; then
+  enableval=$enable_meros_tests; ac_cv_use_meros_tests=$enableval
+else
+  ac_cv_use_meros_tests=${ac_cv_use_tests}
+fi
+
+
+{ echo "$as_me:$LINENO: checking whether to use meros-tests" >&5
+echo $ECHO_N "checking whether to use meros-tests... $ECHO_C" >&6; }
+
+if test "X$ac_cv_use_meros_tests" != "Xno"; then
+  { echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6; }
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_MEROS_TESTS
+_ACEOF
+
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+ if test "X$ac_cv_use_meros_tests" != "Xno"; then
+  BUILD_TESTS_TRUE=
+  BUILD_TESTS_FALSE='#'
+else
+  BUILD_TESTS_TRUE='#'
+  BUILD_TESTS_FALSE=
+fi
+
 
 
 # Check whether --enable-examples was given.
@@ -7063,6 +7140,28 @@ fi
 else
   BUILD_EXAMPLES_TRUE='#'
   BUILD_EXAMPLES_FALSE=
+fi
+
+
+#We now build tests and examples through separate make targets, rather than
+#during "make".  We still need to conditionally include the test and example
+#in SUBDIRS, even though SUB_TEST and SUB_EXAMPLE will never be
+#defined, so that the tests and examples are included in the distribution
+#tarball.
+ if test "X$ac_cv_use_sub_test" = "Xyes"; then
+  SUB_TEST_TRUE=
+  SUB_TEST_FALSE='#'
+else
+  SUB_TEST_TRUE='#'
+  SUB_TEST_FALSE=
+fi
+
+ if test "X$ac_cv_use_sub_example" = "Xyes"; then
+  SUB_EXAMPLE_TRUE=
+  SUB_EXAMPLE_FALSE='#'
+else
+  SUB_EXAMPLE_TRUE='#'
+  SUB_EXAMPLE_FALSE=
 fi
 
 
@@ -10571,10 +10670,31 @@ echo "$as_me: error: conditional \"USE_ALTERNATE_AR\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${BUILD_TESTS_TRUE}" && test -z "${BUILD_TESTS_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_TESTS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_TESTS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${BUILD_EXAMPLES_TRUE}" && test -z "${BUILD_EXAMPLES_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_EXAMPLES\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"BUILD_EXAMPLES\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${SUB_TEST_TRUE}" && test -z "${SUB_TEST_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"SUB_TEST\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"SUB_TEST\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${SUB_EXAMPLE_TRUE}" && test -z "${SUB_EXAMPLE_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"SUB_EXAMPLE\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"SUB_EXAMPLE\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -11295,8 +11415,14 @@ ALTERNATE_AR!$ALTERNATE_AR$ac_delim
 CXXCPP!$CXXCPP$ac_delim
 GREP!$GREP$ac_delim
 EGREP!$EGREP$ac_delim
+BUILD_TESTS_TRUE!$BUILD_TESTS_TRUE$ac_delim
+BUILD_TESTS_FALSE!$BUILD_TESTS_FALSE$ac_delim
 BUILD_EXAMPLES_TRUE!$BUILD_EXAMPLES_TRUE$ac_delim
 BUILD_EXAMPLES_FALSE!$BUILD_EXAMPLES_FALSE$ac_delim
+SUB_TEST_TRUE!$SUB_TEST_TRUE$ac_delim
+SUB_TEST_FALSE!$SUB_TEST_FALSE$ac_delim
+SUB_EXAMPLE_TRUE!$SUB_EXAMPLE_TRUE$ac_delim
+SUB_EXAMPLE_FALSE!$SUB_EXAMPLE_FALSE$ac_delim
 FLIBS!$FLIBS$ac_delim
 BLAS_LIBS!$BLAS_LIBS$ac_delim
 LAPACK_LIBS!$LAPACK_LIBS$ac_delim
@@ -11313,7 +11439,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 32; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 38; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
