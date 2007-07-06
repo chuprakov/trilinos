@@ -133,13 +133,21 @@ TAC_ARG_CHECK_MPI
 # Checks if tests and examples should be built
 # ------------------------------------------------------------------------
 
-TAC_ARG_ENABLE_FEATURE(tests, [Build tests for all Trilinos packages (not all packages are sensitive to this option)], TESTS, yes)
-TAC_ARG_ENABLE_FEATURE_SUB_CHECK( webtrilinos, tests, [Build WebTrilinos tests], WEBTRILINOS_TESTS)
+TAC_ARG_ENABLE_FEATURE(tests, [Make tests for all Trilinos packages buildable with 'make tests'], TESTS, yes)
+TAC_ARG_ENABLE_FEATURE_SUB_CHECK( webtrilinos, tests, [Make WebTrilinos tests buildable with 'make tests'], WEBTRILINOS_TESTS)
 AM_CONDITIONAL(BUILD_TESTS, test "X$ac_cv_use_webtrilinos" != "Xno")
 
-TAC_ARG_ENABLE_FEATURE(examples, [Build examples for all Trilinos packages (not all packages are sensitive to this option)], EXAMPLES, yes)
-TAC_ARG_ENABLE_FEATURE_SUB_CHECK( webtrilinos, examples, [Build WebTrilinos examples], WEBTRILINOS_EXAMPLES)
+TAC_ARG_ENABLE_FEATURE(examples, [Make examples for all Trilinos packages buildable with 'make examples'], EXAMPLES, yes)
+TAC_ARG_ENABLE_FEATURE_SUB_CHECK( webtrilinos, examples, [Make WebTrilinos examples buildable with 'make examples'], WEBTRILINOS_EXAMPLES)
 AM_CONDITIONAL(BUILD_EXAMPLES, test "X$ac_cv_use_webtrilinos_examples" != "Xno")
+
+#We now build tests and examples through separate make targets, rather than
+#during "make".  We still need to conditionally include the test and example
+#in SUBDIRS, even though SUB_TEST and SUB_EXAMPLE will never be
+#defined, so that the tests and examples are included in the distribution
+#tarball.
+AM_CONDITIONAL(SUB_TEST, test "X$ac_cv_use_sub_test" = "Xyes")
+AM_CONDITIONAL(SUB_EXAMPLE, test "X$ac_cv_use_sub_example" = "Xyes")
 
 # ------------------------------------------------------------------------
 # Enable optional python wrappers

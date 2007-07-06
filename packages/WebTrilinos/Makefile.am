@@ -1,8 +1,3 @@
-#np# Typically the only line that needs to be edited in this file is the last 
-#np# line.  Set 'SUBDIRS= (list all subdirectories that are autotool'ed here)'
-#np# List all subdirectories even if one or more are configured/built only
-#np# conditionally.
-
 # @HEADER
 # ************************************************************************
 #
@@ -166,10 +161,59 @@ endif
 ## #######################################################################
 ## Subdirectories to be make'd recursively
 ## #######################################################################
-# Test can be built unconditionally for now because the only purpose for
-# the directory is to keep the definition file in the expected location.
 
-SUBDIRS = c++ python test
+#We now build tests and examples through separate make targets, rather than
+#during "make".  We still need to conditionally include the test and example
+#in SUBDIRS, even though BUILD_TESTS and BUILD_EXAMPLES will never be
+#defined, so that the tests and examples are included in the distribution
+#tarball.
+
+if SUB_TEST
+TEST_SUBDIR=test
+endif
+
+if SUB_EXAMPLE
+EXAMPLE_SUBDIR=python
+endif
+
+if BUILD_TESTS
+tests:
+	cd $(top_builddir)/test; $(MAKE)
+else
+tests:
+	@echo "WebTrilinos tests were disabled at configure time"
+endif
+
+if BUILD_EXAMPLES
+examples:
+	cd $(top_builddir)/example ; $(MAKE)
+
+install-examples:
+	cd $(top_builddir)/example ; $(MAKE) install
+else
+examples:
+	@echo "WebTrilinos examples were disabled at configure time"
+
+install-examples:
+	@echo "WebTrilinos examples were disabled at configure time"
+endif
+
+clean-tests:
+	cd $(top_builddir)/test ; $(MAKE) clean
+
+clean-examples:
+	cd $(top_builddir)/example ; $(MAKE) clean
+
+everything:
+	$(MAKE) ; $(MAKE) examples ; $(MAKE) tests
+
+clean-everything:
+	$(MAKE) clean-examples ; $(MAKE) clean-tests ; $(MAKE) clean
+
+install-everything:
+	$(MAKE) install ; $(MAKE) install-examples
+
+SUBDIRS = c++ $(EXAMPLE_SUBDIR) $(TEST_SUBDIR)
 
 ## #######################################################################
 ## Other make targets
