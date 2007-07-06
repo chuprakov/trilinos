@@ -33,11 +33,17 @@ all-local:
 	@echo "Trilinos package moocho subdirectory thyra built successfully."
 	@echo ""
 
-if BUILD_TESTS
+#We now build tests and examples through separate make targets, rather than
+#during "make".  We still need to conditionally include the test and example
+#in SUBDIRS, even though BUILD_TESTS and BUILD_EXAMPLES will never be
+#defined, so that the tests and examples are included in the distribution
+#tarball.
+
+if SUB_TEST
 #TEST_SUBDIR=test
 endif
 
-if BUILD_EXAMPLES 
+if SUB_EXAMPLE 
 EXAMPLE_SUBDIR=example
 endif
 
