@@ -149,10 +149,3 @@ nodist_execinclude_HEADERS = $(MOOCHO_THYRA_H)
 # --------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in 
-
-# ------------------------------------------------------------------------
-# Library Target for Circular Dependencies
-# ------------------------------------------------------------------------
-all-libs:
-	$(MAKE) $(MOOCHO_THYRA_LIB)
-	cd $(top_builddir)/../thyra ; $(MAKE) all-libs

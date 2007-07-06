@@ -1097,12 +1097,6 @@ nodist_execinclude_HEADERS = Moocho_Config.h $(MOOCHO_H)
 
 MAINTAINERCLEANFILES = Makefile.in 
 
-# ------------------------------------------------------------------------
-# Library Target for Circular Dependencies
-# ------------------------------------------------------------------------
-all-libs:
-	$(MAKE) libmoocho.a
-
 EXTRA_DIST = $(srcdir)/MoochoPack/configurations/generate-opt-file.pl \
 	$(srcdir)/MoochoPack/configurations/IpConfig/Moocho.opt.NLPAlgoConfigIP \
 	$(srcdir)/MoochoPack/configurations/Moocho.opt.MoochoSolver \
