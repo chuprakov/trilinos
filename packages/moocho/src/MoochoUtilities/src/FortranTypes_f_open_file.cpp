@@ -30,18 +30,23 @@
 #include "FortranTypes_CppFortranStrings.hpp"
 #include "Teuchos_TestForException.hpp"
 
+namespace {
+
 typedef FortranTypes::f_int	f_int;
 
 extern "C" {
 
-FORTRAN_FUNC_DECL_UL_(f_int,F_OPEN_FILE,f_open_file) ( const f_int& IUNIT
-  , const f_int I_FILE[], const f_int& I_FILE_LEN, const f_int& ISTATUS
-  , const f_int& IFORM, const f_int& IBLANK, const f_int& IACCESS
-  , const f_int& IRECL );
+FORTRAN_FUNC_DECL_UL_(f_int,FOR_OPEN_FILE,for_open_file) ( const f_int& iunit
+  , const f_int i_file[], const f_int& i_file_len, const f_int& istatus
+  , const f_int& iform, const f_int& iblank, const f_int& iaccess
+  , const f_int& irecl );
 
-FORTRAN_FUNC_DECL_UL_(void,F_CLOSE_FILE,f_close_file) ( const f_int& IUNIT, const f_int& KEEP );
+FORTRAN_FUNC_DECL_UL_(void,FOR_CLOSE_FILE,for_close_file) (
+  const f_int& iunit, const f_int& keep );
 
 }	// end extern "C"
+
+} // namespace
 
 void FortranTypes::f_open_file( const f_int iunit, const char file[]
   , EOpenStatus status, EOpenForm form, EOpenBlank blank
@@ -49,16 +54,20 @@ void FortranTypes::f_open_file( const f_int iunit, const char file[]
 {
   int result;
   // Convert the file name to an integer to pass to Fortran.
-  f_int I_FILE[100], I_FILE_LEN;
-  result = convert_to_f_int_string( file, I_FILE, &I_FILE_LEN );
+  FortranTypes::f_int int_file[100], int_file_len;
+  result = convert_to_f_int_string( file, int_file, &int_file_len );
   TEST_FOR_EXCEPTION(
     result, InvalidFileNameException
     ,"f_open_file(...) : Error, the "
     << -result << " Character of the file name \""
     << file << "\" is not a valid ASCII character." );
 
-  if( result = FORTRAN_FUNC_CALL_UL_(F_OPEN_FILE,f_open_file)(iunit, I_FILE, I_FILE_LEN
-    , status, form, blank, access, recl ) )
+  if(
+    //result = FORTRAN_FUNC_CALL_UL_(F_OPEN_FILE,f_open_file)(
+    result = FORTRAN_FUNC_CALL_UL_(FOR_OPEN_FILE,for_open_file)(
+      iunit, int_file, int_file_len, status, form, blank, access, recl
+      )
+    )
   {
     TEST_FOR_EXCEPTION(
       result < 0, InvalidFileNameException
@@ -75,5 +84,5 @@ void FortranTypes::f_open_file( const f_int iunit, const char file[]
 
 void FortranTypes::f_close_file( const f_int iunit, bool keep )
 {
-  FORTRAN_FUNC_CALL_UL_(F_CLOSE_FILE,f_close_file)( iunit, keep ? 1 : 0 ); 
+  FORTRAN_FUNC_CALL_UL_(FOR_CLOSE_FILE,for_close_file)( iunit, keep ? 1 : 0 ); 
 }

@@ -1,4 +1,4 @@
-      INTEGER FUNCTION F_OPEN_FILE( IUNIT, I_FILE, I_FILE_LEN,
+      INTEGER FUNCTION FOR_OPEN_FILE( IUNIT, I_FILE, I_FILE_LEN,
      &	ISTATUS, IFORM, IBLANK, IACCESS, IRECL )
 
       IMPLICIT NONE
@@ -54,7 +54,7 @@
 
       RESULT = CONVERT_FROM_C_INT_STR( I_FILE, I_FILE_LEN, S_FILE )
       IF( RESULT .NE. 0 ) THEN
-          F_OPEN_FILE = - RESULT
+          FOR_OPEN_FILE = - RESULT
           RETURN
       ENDIF
 
@@ -104,13 +104,13 @@
 *     &        , ACCESS = 'SEQUENTIAL' ) 
       ENDIF
 
-      F_OPEN_FILE = IOS
+      FOR_OPEN_FILE = IOS
 
       END
 
 *======================================================================
 
-      SUBROUTINE F_CLOSE_FILE( IUNIT, KEEP )
+      SUBROUTINE FOR_CLOSE_FILE( IUNIT, KEEP )
 
       IMPLICIT NONE
 

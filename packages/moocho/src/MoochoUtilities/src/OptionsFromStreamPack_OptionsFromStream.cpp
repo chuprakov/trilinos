@@ -192,9 +192,9 @@ void OptionsFromStream::read_options( std::istream& in )
       // Process the option and value
       const std::string::size_type equal_idx = option_and_value.find('=',0);
       TEST_FOR_EXCEPTION(
-        equal_idx==std::string::npos, std::logic_error
-        ,"Error, for the option group \""<<options_group_name<<"\""
-        " the option value string \"" << option_and_value << "\" is missing the \"=\" separator!"
+        equal_idx==std::string::npos, std::logic_error,
+        "Error, for the option group \"" << optgroup_name << "\""
+        << " the option value string \"" << option_and_value << "\" is missing the \"=\" separator!"
         );
       std::string option = option_and_value.substr(0,equal_idx);
       std::string value = option_and_value.substr(equal_idx+1);
