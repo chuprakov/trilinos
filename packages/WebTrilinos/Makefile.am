@@ -169,7 +169,7 @@ endif
 #tarball.
 
 if SUB_TEST
-TEST_SUBDIR=test
+TEST_SUBDIR=test c++
 endif
 
 if SUB_EXAMPLE
@@ -178,7 +178,7 @@ endif
 
 if BUILD_TESTS
 tests:
-	cd $(top_builddir)/test; $(MAKE)
+	cd $(top_builddir)/test && $(MAKE) && cd ../c++ && $(MAKE)
 else
 tests:
 	@echo "WebTrilinos tests were disabled at configure time"
@@ -186,34 +186,32 @@ endif
 
 if BUILD_EXAMPLES
 examples:
-	cd $(top_builddir)/example ; $(MAKE)
+	cd $(top_builddir)/python && $(MAKE) && cd .. && $(MAKE) tests
 
-install-examples:
-	cd $(top_builddir)/example ; $(MAKE) install
 else
 examples:
 	@echo "WebTrilinos examples were disabled at configure time"
-
-install-examples:
-	@echo "WebTrilinos examples were disabled at configure time"
 endif
 
+install-examples:
+	@echo "No WebTrilinos examples should be installed"
+
 clean-tests:
-	cd $(top_builddir)/test ; $(MAKE) clean
+	cd $(top_builddir)/test && $(MAKE) clean && cd ../c++ && $(MAKE) clean
 
 clean-examples:
-	cd $(top_builddir)/example ; $(MAKE) clean
+	cd $(top_builddir)/python && $(MAKE) clean && cd .. && $(MAKE) clean-tests
 
 everything:
-	$(MAKE) ; $(MAKE) examples ; $(MAKE) tests
+	$(MAKE) && $(MAKE) examples && $(MAKE) tests
 
 clean-everything:
-	$(MAKE) clean-examples ; $(MAKE) clean-tests ; $(MAKE) clean
+	$(MAKE) clean-examples && $(MAKE) clean-tests && $(MAKE) clean
 
 install-everything:
-	$(MAKE) install ; $(MAKE) install-examples
+	$(MAKE) install && $(MAKE) install-examples
 
-SUBDIRS = c++ $(EXAMPLE_SUBDIR) $(TEST_SUBDIR)
+SUBDIRS = $(EXAMPLE_SUBDIR) $(TEST_SUBDIR)
 
 ## #######################################################################
 ## Other make targets
