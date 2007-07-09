@@ -64,7 +64,7 @@ FEApp::ResidualOp::elementInit(const FEApp::AbstractElement& e,
   unsigned int nnode = e.numNodes();
 
   // Copy element solution
-  for (unsigned int i=0; i<e.numNodes(); i++) {
+  for (unsigned int i=0; i<nnode; i++) {
     node_GID = e.nodeGID(i);
     firstDOF = x->Map().LID(node_GID*neqn);
     for (unsigned int j=0; j<neqn; j++) {
@@ -73,22 +73,6 @@ FEApp::ResidualOp::elementInit(const FEApp::AbstractElement& e,
 	(*elem_xdot)[neqn*i+j] = (*xdot)[firstDOF+j];
     }
   }
-
-//   // Copy element solution
-//   int row;
-//   unsigned int lrow;
-//   for (unsigned int node_row=0; node_row<nnode; node_row++) {
-//     for (unsigned int eq_row=0; eq_row<neqn; eq_row++) {
-//       lrow = neqn*node_row+eq_row;
-//       row = static_cast<int>(e.nodeGID(node_row)*neqn + eq_row);
-//       if (!x->Map().MyGID(row)) {
-// 	std::cout << "ResidualOp::evalInit:  invalid row " << row 
-// 		  << " for node " << node_row 
-// 		  << "and equation " << eq_row << std::endl;
-//       }
-//       elem_x[lrow] = (*x)[x->Map().LID(row)];
-//     }
-//   }
 }
 
 void
@@ -96,23 +80,8 @@ FEApp::ResidualOp::elementPost(const FEApp::AbstractElement& e,
 			       unsigned int neqn,
 			       std::vector<double>& elem_f)
 {
-  // Global node ID
-  unsigned int node_GID;
-
-  // Local ID of first DOF
-  unsigned int firstDOF;
-
   // Number of nodes
   unsigned int nnode = e.numNodes();
-
-//   // Sum element residual into global residual
-//   for (unsigned int i=0; i<e.numNodes(); i++) {
-//     node_GID = e.nodeGID(i);
-//     firstDOF = f->Map().LID(node_GID*neqn);
-//     for (unsigned int j=0; j<neqn; j++) {
-//       (*f)[firstDOF+j] += elem_f[neqn*i+j];
-//     }
-//   }
 
   // Sum element residual into global residual
   int row;
@@ -121,7 +90,7 @@ FEApp::ResidualOp::elementPost(const FEApp::AbstractElement& e,
     for (unsigned int eq_row=0; eq_row<neqn; eq_row++) {
       lrow = neqn*node_row+eq_row;
       row = static_cast<int>(e.nodeGID(node_row)*neqn + eq_row);
-      f->SumIntoGlobalValues(1, &(elem_f[lrow]), &row);
+      f->SumIntoGlobalValue(row, 0, elem_f[lrow]);
     }
   }
 }
@@ -157,8 +126,6 @@ FEApp::ResidualOp::nodePost(const FEApp::NodeBC& bc,
   // Global ID of first DOF
   unsigned int firstDOF = node_GID*neqn;
 
-  double zero = 0.0;
-
   // Residual offsets
   const std::vector<unsigned int>& offsets = bc.getOffsets();
 
@@ -166,9 +133,9 @@ FEApp::ResidualOp::nodePost(const FEApp::NodeBC& bc,
   for (unsigned int j=0; j<offsets.size(); j++) {
     int row = static_cast<int>(firstDOF + offsets[j]);
     if (bc.isOwned())
-      f->ReplaceGlobalValues(1, &(node_f[offsets[j]]), &row);
-    else
-      f->ReplaceGlobalValues(1, &zero, &row);
+      f->ReplaceGlobalValue(row, 0, node_f[offsets[j]]);
+    else if (bc.isShared())
+      f->ReplaceGlobalValue(row, 0, 0.0);
   }
 }
 
@@ -226,23 +193,6 @@ FEApp::JacobianOp::elementInit(
 	
     }
   }
-
-//   // Copy element solution
-//   int row;
-//   unsigned int lrow;
-//   for (unsigned int node_row=0; node_row<nnode; node_row++) {
-//     for (unsigned int eq_row=0; eq_row<neqn; eq_row++) {
-//       lrow = neqn*node_row+eq_row;
-//       row = static_cast<int>(e.nodeGID(node_row)*neqn + eq_row);
-//       if (!x->Map().MyGID(row)) {
-// 	std::cout << "JacobianOp::evalInit:  invalid row " << row 
-// 		  << " for node " << node_row 
-// 		  << "and equation " << eq_row << std::endl;
-//       }
-//       elem_x[lrow] = Sacado::Fad::DFad<double>(ndof, lrow, 
-// 					       (*x)[x->Map().LID(row)]);
-//     }
-//   }
 }
 
 void
@@ -268,7 +218,7 @@ FEApp::JacobianOp::elementPost(
       row = static_cast<int>(e.nodeGID(node_row)*neqn + eq_row);
 
       // Sum residual
-      f->SumIntoGlobalValues(1, &(elem_f[lrow].val()), &row);
+      f->SumIntoGlobalValue(row, 0, elem_f[lrow].val());
 	
       // Check derivative array is nonzero
       if (elem_f[lrow].hasFastAccess()) {
@@ -342,8 +292,6 @@ FEApp::JacobianOp::nodePost(const FEApp::NodeBC& bc,
   double* row_view = 0;
   int row, col;
 
-  double zero = 0.0;
-
   // Loop over equations per node
   for (unsigned int eq_row=0; eq_row<offsets.size(); eq_row++) {
 
@@ -352,14 +300,16 @@ FEApp::JacobianOp::nodePost(const FEApp::NodeBC& bc,
     
     // Replace residual
     if (bc.isOwned())
-      f->ReplaceGlobalValues(1, &(node_f[offsets[eq_row]].val()), &row);
-    else
-      f->ReplaceGlobalValues(1, &zero, &row);
+      f->ReplaceGlobalValue(row, 0, node_f[offsets[eq_row]].val());
+    else if (bc.isShared())
+      f->ReplaceGlobalValue(row, 0, 0.0);
 
     // Always zero out row (This takes care of the not-owned case)
-    jac->ExtractGlobalRowView(row, num_entries, row_view);
-    for (int k=0; k<num_entries; k++)
-      row_view[k] = 0.0;
+    if (bc.isOwned() || bc.isShared()) {
+      jac->ExtractGlobalRowView(row, num_entries, row_view);
+      for (int k=0; k<num_entries; k++)
+	row_view[k] = 0.0;
+    }
 	
     // Check derivative array is nonzero
     if (node_f[offsets[eq_row]].hasFastAccess()) {
@@ -615,7 +565,7 @@ FEApp::TangentOp::nodePost(const FEApp::NodeBC& bc,
     if (f != Teuchos::null) {
       if (bc.isOwned())
 	f->ReplaceGlobalValue(row, 0, node_f[offsets[eq_row]].val());
-      else
+      else if (bc.isShared())
 	f->ReplaceGlobalValue(row, 0, 0.0);
     }
 
@@ -631,7 +581,7 @@ FEApp::TangentOp::nodePost(const FEApp::NodeBC& bc,
 	  fp->ReplaceGlobalValue(row, col, 
 				 node_f[offsets[eq_row]].dx(col+param_offset));
     }
-    else {
+    else if (bc.isShared()) {
       if (JV != Teuchos::null && Vx != Teuchos::null)
 	for (int col=0; col<num_cols_x; col++)
 	  JV->ReplaceGlobalValue(row, col, 0.0);

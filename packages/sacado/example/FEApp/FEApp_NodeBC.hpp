@@ -48,11 +48,13 @@ namespace FEApp {
     //! Constructor
     template <typename BuilderT>
     NodeBC(const Epetra_Map& dofMap, 
+	   const Epetra_Map& overlapped_dofMap,
 	   unsigned int gid,
 	   unsigned int neqn,
 	   const BuilderT& builder) : global_node_id(gid) {
       strategyTM.buildObjects(builder);
       is_owned = dofMap.MyGID(gid*neqn);
+      is_shared = overlapped_dofMap.MyGID(gid*neqn) && !is_owned;
     }
 
     //! Destructor
@@ -67,6 +69,9 @@ namespace FEApp {
 
     //! Return if BC is locally owned
     bool isOwned() const { return is_owned; }
+
+    //! Return if BC is shared across procs
+    bool isShared() const { return is_shared; }
 
     //! Get strategy
     template <typename ScalarT>
@@ -91,6 +96,9 @@ namespace FEApp {
 
     //! Is BC owned on this proc
     bool is_owned;
+
+    //! Is node shared across procs
+    bool is_shared;
 
   };
 

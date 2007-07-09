@@ -102,18 +102,23 @@ computeGlobalFill(FEApp::AbstractInitPostOp<ScalarT>& initPostOp)
   // Loop over boundary conditions
   for (std::size_t i=0; i<bc.size(); i++) {
 
-    // Zero out node residual
-    for (unsigned int j=0; j<neqn; j++)
-      node_f[j] = 0.0;
+    if (bc[i]->isOwned() || bc[i]->isShared()) {
 
-    // Initialize node solution
-    initPostOp.nodeInit(*bc[i], neqn, node_xdot, node_x);
+      // Zero out node residual
+      for (unsigned int j=0; j<neqn; j++)
+	node_f[j] = 0.0;
 
-    // Compute node residual
-    bc[i]->getStrategy<ScalarT>()->evaluateResidual(node_xdot, node_x, node_f);
+      // Initialize node solution
+      initPostOp.nodeInit(*bc[i], neqn, node_xdot, node_x);
 
-    // Post-process node residual
-    initPostOp.nodePost(*bc[i], neqn, node_f);
+      // Compute node residual
+      bc[i]->getStrategy<ScalarT>()->evaluateResidual(node_xdot, node_x, 
+						      node_f);
+
+      // Post-process node residual
+      initPostOp.nodePost(*bc[i], neqn, node_f);
+
+    }
     
   }
 

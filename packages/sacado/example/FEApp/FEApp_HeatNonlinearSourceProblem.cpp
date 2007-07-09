@@ -56,6 +56,7 @@ numEquations() const
 void
 FEApp::HeatNonlinearSourceProblem:: 
 buildProblem(const Epetra_Map& dofMap,
+	     const Epetra_Map& overlapped_dofMap,
 	     FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM,
 	     std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
 	     const Teuchos::RCP<Epetra_Vector>& u)
@@ -70,8 +71,10 @@ buildProblem(const Epetra_Map& dofMap,
   int left_node = dofMap.MinAllGID();
   int right_node = dofMap.MaxAllGID();
   bcs.resize(2);
-  bcs[0] = Teuchos::rcp(new FEApp::NodeBC(dofMap, left_node, 1, leftBuilder));
-  bcs[1] = Teuchos::rcp(new FEApp::NodeBC(dofMap, right_node, 1, rightBuilder));
+  bcs[0] = Teuchos::rcp(new FEApp::NodeBC(dofMap, overlapped_dofMap,
+					  left_node, 1, leftBuilder));
+  bcs[1] = Teuchos::rcp(new FEApp::NodeBC(dofMap, overlapped_dofMap,
+					  right_node, 1, rightBuilder));
 
   // Build initial solution
   u->PutScalar(0.0);

@@ -87,7 +87,8 @@ FEApp::Application::Application(
 
   // Initialize problem
   initial_x = Teuchos::rcp(new Epetra_Vector(*(disc->getMap())));
-  problem->buildProblem(*(disc->getMap()), pdeTM, bc, initial_x);
+  problem->buildProblem(*(disc->getMap()), *(disc->getOverlapMap()), 
+			pdeTM, bc, initial_x);
   typedef FEApp::AbstractPDE_TemplateManager<ValidTypes>::iterator iterator;
   int nqp = quad->numPoints();
   int nn = disc->getNumNodesPerElement();
@@ -221,8 +222,7 @@ FEApp::Application::computeGlobalJacobian(
   // Assemble global Jacobian
   jac.Export(*overlapped_jac, *exporter, Add);
 
-  // Todo:  need to call fillComplete() and change Init/PostOps to use
-  // local indices
+  jac.FillComplete(true);
 }
 
 void
