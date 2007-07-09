@@ -1235,7 +1235,7 @@ void Algorithm::look_for_interrupt()
         std::cerr
           << "p=" << static_proc_rank << ": Algorithm::look_for_interrupt(): Error, the globally reduced value of "
           "recvbuf[0] = " << recvbuf[0] << " is not valid!";
-        abort();
+        std::abort();
     }
     // Set static_interrupt_terminate_return
     static_interrupt_terminate_return = ( recvbuf[1] == 0 ? false : true );
@@ -1247,7 +1247,7 @@ void Algorithm::look_for_interrupt()
     if( static_proc_rank == 0 ) {
       std::cerr << "\nAborting the program now!\n";
     }
-    abort();
+    std::abort();
   }
 #endif
 }
@@ -1284,7 +1284,7 @@ void Algorithm::interrupt()
         << "\nIterationPack::Algorithm::interrupt(): Received signal SIGINT but an Algorithm "
         << "object has not been allocated yet and no algorithm is running.\n"
         << "\nAborting the program now!\n";
-    abort();
+    std::abort();
     return;  // Should not be called!
   }
   //
@@ -1298,7 +1298,7 @@ void Algorithm::interrupt()
         << static_num_proc << " > 1 and query_for_interrupt = false so:\n"
         << "\nAborting the program now!\n";
     }
-    abort();
+    std::abort();
     return;  // Should not be called!
   }
   //

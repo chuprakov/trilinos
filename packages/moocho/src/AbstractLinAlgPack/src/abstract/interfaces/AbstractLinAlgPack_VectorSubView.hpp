@@ -52,7 +52,7 @@ namespace AbstractLinAlgPack {
  */
 class VectorSubView
   : virtual public Vector
-  , virtual private VectorApplyOpSerialBase
+  , virtual protected VectorApplyOpSerialBase
 {
 public:
 

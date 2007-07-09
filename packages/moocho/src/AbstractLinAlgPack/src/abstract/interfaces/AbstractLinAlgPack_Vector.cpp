@@ -237,7 +237,7 @@ void Vector::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec
 #endif
   // Free sub_vec if needed (note this is dependent on the implemenation of this operator class!)
   if( sub_vec_inout->values() ) {
-    free( (void*)sub_vec_inout->values()  );
+    std::free( (void*)sub_vec_inout->values()  );
   }
   // Initialize the operator
   RTOpPack::RTOpC get_sub_vector_op;
@@ -258,14 +258,14 @@ void Vector::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec
   RTOp_SubVector sub_vec = RTOp_ROp_get_sub_vector_val(reduct_obj_raw);
   sub_vec_inout->initialize(sub_vec.global_offset,sub_vec.sub_dim,sub_vec.values,sub_vec.values_stride);\
   reduct_obj.release();  // Do not allow delete to be called!
-  free(reduct_obj_raw); // Now *sub_vec owns the values[] and indices[] arrays!
+  std::free(reduct_obj_raw); // Now *sub_vec owns the values[] and indices[] arrays!
 }
 
 void Vector::free_sub_vector( RTOpPack::SubVector* sub_vec ) const
 {
   // Free sub_vec if needed (note this is dependent on the implemenation of this operator class!)
   if( sub_vec->values() )
-    free( (void*)sub_vec->values() );
+    std::free( (void*)sub_vec->values() );
   sub_vec->set_uninitialized();
 }
 
