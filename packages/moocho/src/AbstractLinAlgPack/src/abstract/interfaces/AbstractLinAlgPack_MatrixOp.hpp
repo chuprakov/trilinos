@@ -488,7 +488,11 @@ public:
 
   //@}
 
+#ifdef TEMPLATE_FRIENDS_NOT_SUPPORTED
+public:
+#else
 protected:
+#endif
 
   /** @name Level-1 BLAS */
   //@{
