@@ -33,7 +33,7 @@
 #define FEAPP_ELEMENTFACTORY_HPP
 
 #include "Teuchos_ParameterList.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 #include "FEApp_AbstractElement.hpp"
 
@@ -47,12 +47,12 @@ namespace FEApp {
 
     //! Default constructor
     ElementFactory(
-	      const Teuchos::RefCountPtr<Teuchos::ParameterList>& elemParams);
+	      const Teuchos::RCP<Teuchos::ParameterList>& elemParams);
 
     //! Destructor
     virtual ~ElementFactory() {}
 
-    virtual Teuchos::RefCountPtr<FEApp::AbstractElement>
+    virtual Teuchos::RCP<FEApp::AbstractElement>
     create();
 
   private:
@@ -66,7 +66,7 @@ namespace FEApp {
   protected:
 
     //! Parameter list specifying what element to create
-    Teuchos::RefCountPtr<Teuchos::ParameterList> elemParams;
+    Teuchos::RCP<Teuchos::ParameterList> elemParams;
 
   };
 

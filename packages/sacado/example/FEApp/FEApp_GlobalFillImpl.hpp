@@ -32,10 +32,10 @@
 template <typename ScalarT>
 FEApp::GlobalFill<ScalarT>::
 GlobalFill(
-      const Teuchos::RefCountPtr<const FEApp::Mesh>& elementMesh,
-      const Teuchos::RefCountPtr<const FEApp::AbstractQuadrature>& quadRule,
-      const Teuchos::RefCountPtr< FEApp::AbstractPDE<ScalarT> >& pdeEquations,
-      const std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> >& nodeBCs,
+      const Teuchos::RCP<const FEApp::Mesh>& elementMesh,
+      const Teuchos::RCP<const FEApp::AbstractQuadrature>& quadRule,
+      const Teuchos::RCP< FEApp::AbstractPDE<ScalarT> >& pdeEquations,
+      const std::vector< Teuchos::RCP<FEApp::NodeBC> >& nodeBCs,
       bool is_transient):
   mesh(elementMesh),
   quad(quadRule),
@@ -52,7 +52,7 @@ GlobalFill(
   node_xdot(NULL),
   node_f()
 {
-  Teuchos::RefCountPtr<const FEApp::AbstractElement> e0 = *(mesh->begin());
+  Teuchos::RCP<const FEApp::AbstractElement> e0 = *(mesh->begin());
   nnode = e0->numNodes();
   ndof = nnode*neqn;
   elem_x.resize(ndof);
@@ -80,7 +80,7 @@ FEApp::GlobalFill<ScalarT>::
 computeGlobalFill(FEApp::AbstractInitPostOp<ScalarT>& initPostOp)
 {
   // Loop over elements
-  Teuchos::RefCountPtr<const FEApp::AbstractElement> e;
+  Teuchos::RCP<const FEApp::AbstractElement> e;
   for (FEApp::Mesh::const_iterator eit=mesh->begin(); eit!=mesh->end(); ++eit){
     e = *eit;
 

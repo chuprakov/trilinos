@@ -34,7 +34,7 @@
 
 #include <vector>
 
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "Epetra_Map.h"
 #include "Epetra_Vector.h"
 
@@ -64,8 +64,8 @@ namespace FEApp {
     virtual void 
     buildProblem(const Epetra_Map& dofMap,
 		 FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM,
-		 std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> >& bcs,
-		 const Teuchos::RefCountPtr<Epetra_Vector>& u) = 0;
+		 std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
+		 const Teuchos::RCP<Epetra_Vector>& u) = 0;
 
   private:
 

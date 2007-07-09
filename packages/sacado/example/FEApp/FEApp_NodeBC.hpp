@@ -70,7 +70,7 @@ namespace FEApp {
 
     //! Get strategy
     template <typename ScalarT>
-    Teuchos::RefCountPtr< FEApp::AbstractNodeBCStrategy<ScalarT> >
+    Teuchos::RCP< FEApp::AbstractNodeBCStrategy<ScalarT> >
     getStrategy() { return strategyTM.getAsObject<ScalarT>(); }
 
   private:

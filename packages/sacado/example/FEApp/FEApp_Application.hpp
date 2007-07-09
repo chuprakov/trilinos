@@ -34,7 +34,7 @@
 
 #include <vector>
 
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "Teuchos_ParameterList.hpp"
 #include "Teuchos_SerialDenseMatrix.hpp"
 #include "Epetra_Vector.h"
@@ -59,24 +59,24 @@ namespace FEApp {
 
     //! Constructor 
     Application(const std::vector<double>& coords,
-		const Teuchos::RefCountPtr<const Epetra_Comm>& comm,
-		const Teuchos::RefCountPtr<Teuchos::ParameterList>& params,
+		const Teuchos::RCP<const Epetra_Comm>& comm,
+		const Teuchos::RCP<Teuchos::ParameterList>& params,
 		bool is_transient);
 
     //! Destructor
     ~Application();
 
     //! Get DOF map
-    Teuchos::RefCountPtr<const Epetra_Map> getMap() const;
+    Teuchos::RCP<const Epetra_Map> getMap() const;
 
     //! Get Jacobian graph
-    Teuchos::RefCountPtr<const Epetra_CrsGraph> getJacobianGraph() const;
+    Teuchos::RCP<const Epetra_CrsGraph> getJacobianGraph() const;
 
     //! Get initial solution
-    Teuchos::RefCountPtr<const Epetra_Vector> getInitialSolution() const;
+    Teuchos::RCP<const Epetra_Vector> getInitialSolution() const;
 
     //! Get parameter library
-    Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> getParamLib();
+    Teuchos::RCP<Sacado::ScalarParameterLibrary> getParamLib();
 
     //! Return whether problem is transient
     bool isTransient() const;
@@ -130,40 +130,40 @@ namespace FEApp {
     bool transient;
     
     //! Element discretization
-    Teuchos::RefCountPtr<FEApp::AbstractDiscretization> disc;
+    Teuchos::RCP<FEApp::AbstractDiscretization> disc;
 
     //! Boundary conditions
-    std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> > bc;
+    std::vector< Teuchos::RCP<FEApp::NodeBC> > bc;
 
     //! Quadrature rule
-    Teuchos::RefCountPtr<const FEApp::AbstractQuadrature> quad;
+    Teuchos::RCP<const FEApp::AbstractQuadrature> quad;
 
     //! PDE equations
     FEApp::AbstractPDE_TemplateManager<ValidTypes> pdeTM;
 
     //! Initial solution vector
-    Teuchos::RefCountPtr<Epetra_Vector> initial_x;
+    Teuchos::RCP<Epetra_Vector> initial_x;
 
     //! Importer for overlapped data
-    Teuchos::RefCountPtr<Epetra_Import> importer;
+    Teuchos::RCP<Epetra_Import> importer;
 
     //! Exporter for overlapped data
-    Teuchos::RefCountPtr<Epetra_Export> exporter;
+    Teuchos::RCP<Epetra_Export> exporter;
 
     //! Overlapped solution vector
-    Teuchos::RefCountPtr<Epetra_Vector> overlapped_x;
+    Teuchos::RCP<Epetra_Vector> overlapped_x;
 
     //! Overlapped time derivative vector
-    Teuchos::RefCountPtr<Epetra_Vector> overlapped_xdot;
+    Teuchos::RCP<Epetra_Vector> overlapped_xdot;
 
     //! Overlapped residual vector
-    Teuchos::RefCountPtr<Epetra_Vector> overlapped_f;
+    Teuchos::RCP<Epetra_Vector> overlapped_f;
 
     //! Overlapped Jacobian matrix
-    Teuchos::RefCountPtr<Epetra_CrsMatrix> overlapped_jac;
+    Teuchos::RCP<Epetra_CrsMatrix> overlapped_jac;
 
     //! Parameter library
-    Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> paramLib;
+    Teuchos::RCP<Sacado::ScalarParameterLibrary> paramLib;
 
   };
 

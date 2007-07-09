@@ -34,8 +34,8 @@
 
 FEApp::BrusselatorProblem::
 BrusselatorProblem(
-      const Teuchos::RefCountPtr<Teuchos::ParameterList>& params,
-      const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib_) :
+      const Teuchos::RCP<Teuchos::ParameterList>& params,
+      const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib_) :
   paramLib(paramLib_)
 {
   alpha = params->get("alpha", 1.0);
@@ -60,8 +60,8 @@ void
 FEApp::BrusselatorProblem::
 buildProblem(const Epetra_Map& dofMap,
 	     FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM,
-	     std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> >& bcs,
-	     const Teuchos::RefCountPtr<Epetra_Vector>& u)
+	     std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
+	     const Teuchos::RCP<Epetra_Vector>& u)
 {
   // Build PDE equations
   FEApp::BrusselatorPDE_TemplateBuilder pdeBuilder(alpha, beta, D1, D2, 

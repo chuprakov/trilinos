@@ -34,7 +34,7 @@
 
 #include <vector>
 
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 #include "Epetra_Map.h"
 #include "Epetra_CrsGraph.h"
@@ -62,23 +62,23 @@ namespace FEApp {
     virtual void createJacobianGraphs() = 0;
 
     //! Get element mesh
-    virtual Teuchos::RefCountPtr<const FEApp::Mesh> 
+    virtual Teuchos::RCP<const FEApp::Mesh> 
     getMesh() const = 0; 
 
     //! Get DOF map
-    virtual Teuchos::RefCountPtr<const Epetra_Map> 
+    virtual Teuchos::RCP<const Epetra_Map> 
     getMap() const = 0;
 
     //! Get overlapped DOF map
-    virtual Teuchos::RefCountPtr<const Epetra_Map> 
+    virtual Teuchos::RCP<const Epetra_Map> 
     getOverlapMap() const = 0;
 
     //! Get Jacobian graph
-    virtual Teuchos::RefCountPtr<const Epetra_CrsGraph> 
+    virtual Teuchos::RCP<const Epetra_CrsGraph> 
     getJacobianGraph() const = 0;
 
     //! Get overlap Jacobian graph
-    virtual Teuchos::RefCountPtr<const Epetra_CrsGraph> 
+    virtual Teuchos::RCP<const Epetra_CrsGraph> 
     getOverlapJacobianGraph() const = 0;
 
     //! Get number of nodes per element

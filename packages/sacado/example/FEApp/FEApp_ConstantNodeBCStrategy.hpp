@@ -94,7 +94,7 @@ namespace FEApp {
 					   double value) :
       sol_index(solution_index), res_index(residual_index), val(value) {}
     template <typename T>
-    Teuchos::RefCountPtr<FEApp::AbstractNodeBCStrategy_NTBase> build() const {
+    Teuchos::RCP<FEApp::AbstractNodeBCStrategy_NTBase> build() const {
       return Teuchos::rcp( new ConstantNodeBCStrategy<T>(sol_index, 
 							 res_index, 
 							 val));

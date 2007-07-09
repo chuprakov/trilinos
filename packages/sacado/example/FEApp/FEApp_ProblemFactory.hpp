@@ -33,7 +33,7 @@
 #define FEAPP_PROBLEMFACTORY_HPP
 
 #include "Teuchos_ParameterList.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 #include "FEApp_AbstractProblem.hpp"
 
@@ -49,13 +49,13 @@ namespace FEApp {
 
     //! Default constructor
     ProblemFactory(
-	const Teuchos::RefCountPtr<Teuchos::ParameterList>& problemParams,
-	const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib);
+	const Teuchos::RCP<Teuchos::ParameterList>& problemParams,
+	const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib);
 
     //! Destructor
     virtual ~ProblemFactory() {}
 
-    virtual Teuchos::RefCountPtr<FEApp::AbstractProblem>
+    virtual Teuchos::RCP<FEApp::AbstractProblem>
     create();
 
   private:
@@ -69,10 +69,10 @@ namespace FEApp {
   protected:
 
     //! Parameter list specifying what problem to create
-    Teuchos::RefCountPtr<Teuchos::ParameterList> problemParams;
+    Teuchos::RCP<Teuchos::ParameterList> problemParams;
 
     //! Parameter library
-    Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> paramLib;
+    Teuchos::RCP<Sacado::ScalarParameterLibrary> paramLib;
 
   };
 

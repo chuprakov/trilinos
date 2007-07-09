@@ -34,16 +34,16 @@
 
 template <typename ScalarT>
 FEApp::SourceFunctionFactory<ScalarT>::SourceFunctionFactory(
-	    const Teuchos::RefCountPtr<Teuchos::ParameterList>& funcParams_) :
+	    const Teuchos::RCP<Teuchos::ParameterList>& funcParams_) :
   funcParams(funcParams_)
 {
 }
 
 template <typename ScalarT>
-Teuchos::RefCountPtr< FEApp::AbstractSourceFunction<ScalarT> >
+Teuchos::RCP< FEApp::AbstractSourceFunction<ScalarT> >
 FEApp::SourceFunctionFactory<ScalarT>::create()
 {
-  Teuchos::RefCountPtr< FEApp::AbstractSourceFunction<ScalarT> > strategy;
+  Teuchos::RCP< FEApp::AbstractSourceFunction<ScalarT> > strategy;
 
   std::string& method = funcParams->get("Name", "Quadratic");
   if (method == "Quadratic") {

@@ -32,7 +32,7 @@
 #ifndef FEAPP_HEATNONLINEARSOURCEPDE_HPP
 #define FEAPP_HEATNONLINEARSOURCEPDE_HPP
 
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 #include "FEApp_AbstractPDE.hpp"
 #include "FEApp_SourceFunctionFactory.hpp"
@@ -44,7 +44,7 @@ namespace FEApp {
   public:
   
     //! Constructor
-    HeatNonlinearSourcePDE(const Teuchos::RefCountPtr< const FEApp::AbstractSourceFunction<ScalarT> >& src_func);
+    HeatNonlinearSourcePDE(const Teuchos::RCP< const FEApp::AbstractSourceFunction<ScalarT> >& src_func);
 
     //! Destructor
     virtual ~HeatNonlinearSourcePDE();
@@ -74,7 +74,7 @@ namespace FEApp {
   protected:
     
     //! Pointer to source function
-    Teuchos::RefCountPtr< const FEApp::AbstractSourceFunction<ScalarT> > source;
+    Teuchos::RCP< const FEApp::AbstractSourceFunction<ScalarT> > source;
 
     //! Number of quad points
     unsigned int num_qp;
@@ -105,17 +105,17 @@ namespace FEApp {
   class HeatNonlinearSourcePDE_TemplateBuilder {
   public:
     HeatNonlinearSourcePDE_TemplateBuilder(
-		const Teuchos::RefCountPtr<Teuchos::ParameterList>& params_) :
+		const Teuchos::RCP<Teuchos::ParameterList>& params_) :
       params(Teuchos::rcp(&(params_->sublist("Source Function")),false)) {}
     template <typename T>
-    Teuchos::RefCountPtr<FEApp::AbstractPDE_NTBase> build() const {
+    Teuchos::RCP<FEApp::AbstractPDE_NTBase> build() const {
       FEApp::SourceFunctionFactory<T> factory(params);
-      Teuchos::RefCountPtr< FEApp::AbstractSourceFunction<T> > source =
+      Teuchos::RCP< FEApp::AbstractSourceFunction<T> > source =
 	factory.create();
       return Teuchos::rcp( new FEApp::HeatNonlinearSourcePDE<T>(source));
     }
   protected:
-    Teuchos::RefCountPtr<Teuchos::ParameterList> params;
+    Teuchos::RCP<Teuchos::ParameterList> params;
   };
 
 }

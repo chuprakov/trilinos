@@ -32,7 +32,7 @@
 #ifndef FEAPP_MODELEVALUATOR_HPP
 #define FEAPP_MODELEVALUATOR_HPP
 
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "Teuchos_Array.hpp"
 
 #include "EpetraExt_ModelEvaluator.h"
@@ -49,33 +49,33 @@ namespace FEApp {
 
     // Constructor
     ModelEvaluator(
-       const Teuchos::RefCountPtr<FEApp::Application>& app,
-       const Teuchos::RefCountPtr< Teuchos::Array<std::string> >& free_param_names = Teuchos::null);
+       const Teuchos::RCP<FEApp::Application>& app,
+       const Teuchos::RCP< Teuchos::Array<std::string> >& free_param_names = Teuchos::null);
 
     /** \name Overridden from EpetraExt::ModelEvaluator . */
     //@{
 
     //! Return solution vector map
-    Teuchos::RefCountPtr<const Epetra_Map> get_x_map() const;
+    Teuchos::RCP<const Epetra_Map> get_x_map() const;
 
     //! Return residual vector map
-    Teuchos::RefCountPtr<const Epetra_Map> get_f_map() const;
+    Teuchos::RCP<const Epetra_Map> get_f_map() const;
 
     //! Return parameter vector map
-    Teuchos::RefCountPtr<const Epetra_Map> get_p_map(int l) const;
+    Teuchos::RCP<const Epetra_Map> get_p_map(int l) const;
 
     //! Return array of parameter names
-    Teuchos::RefCountPtr<const Teuchos::Array<std::string> > 
+    Teuchos::RCP<const Teuchos::Array<std::string> > 
     get_p_names(int l) const;
 
     //! Return initial solution
-    Teuchos::RefCountPtr<const Epetra_Vector> get_x_init() const;
+    Teuchos::RCP<const Epetra_Vector> get_x_init() const;
 
     //! Return initial parameters
-    Teuchos::RefCountPtr<const Epetra_Vector> get_p_init(int l) const;
+    Teuchos::RCP<const Epetra_Vector> get_p_init(int l) const;
 
     //! Create W = alpha*M + beta*J matrix
-    Teuchos::RefCountPtr<Epetra_Operator> create_W() const;
+    Teuchos::RCP<Epetra_Operator> create_W() const;
 
     //! Create InArgs
     InArgs createInArgs() const;
@@ -91,19 +91,19 @@ namespace FEApp {
   protected:
 
     //! Application object
-    Teuchos::RefCountPtr<FEApp::Application> app;
+    Teuchos::RCP<FEApp::Application> app;
 
     //! List of free parameter names
-    Teuchos::RefCountPtr< Teuchos::Array<std::string> > param_names;
+    Teuchos::RCP< Teuchos::Array<std::string> > param_names;
 
     //! Sacado parameter vector
-    Teuchos::RefCountPtr<Sacado::ScalarParameterVector> sacado_param_vec;
+    Teuchos::RCP<Sacado::ScalarParameterVector> sacado_param_vec;
 
     //! Epetra map for parameter vector
-    Teuchos::RefCountPtr<Epetra_LocalMap> epetra_param_map;
+    Teuchos::RCP<Epetra_LocalMap> epetra_param_map;
 
     //! Epetra parameter vector
-    Teuchos::RefCountPtr<Epetra_Vector> epetra_param_vec;
+    Teuchos::RCP<Epetra_Vector> epetra_param_vec;
 
   };
 

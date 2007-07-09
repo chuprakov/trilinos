@@ -38,8 +38,8 @@
 
 FEApp::Application::Application(
 		   const std::vector<double>& coords,
-		   const Teuchos::RefCountPtr<const Epetra_Comm>& comm,
-		   const Teuchos::RefCountPtr<Teuchos::ParameterList>& params,
+		   const Teuchos::RCP<const Epetra_Comm>& comm,
+		   const Teuchos::RCP<Teuchos::ParameterList>& params,
 		   bool is_transient) :
   transient(is_transient)
 {
@@ -47,23 +47,23 @@ FEApp::Application::Application(
   paramLib = Teuchos::rcp(new Sacado::ScalarParameterLibrary);
 
   // Create problem object
-  Teuchos::RefCountPtr<Teuchos::ParameterList> problemParams = 
+  Teuchos::RCP<Teuchos::ParameterList> problemParams = 
     Teuchos::rcp(&(params->sublist("Problem")),false);
   FEApp::ProblemFactory problemFactory(problemParams, paramLib);
-  Teuchos::RefCountPtr<FEApp::AbstractProblem> problem = 
+  Teuchos::RCP<FEApp::AbstractProblem> problem = 
     problemFactory.create();
 
   // Get number of equations
   unsigned int num_equations = problem->numEquations();
 
   // Create quadrature object
-  Teuchos::RefCountPtr<Teuchos::ParameterList> quadParams = 
+  Teuchos::RCP<Teuchos::ParameterList> quadParams = 
     Teuchos::rcp(&(params->sublist("Quadrature")),false);
   FEApp::QuadratureFactory quadFactory(quadParams);
   quad = quadFactory.create();
 
   // Create discretization object
-  Teuchos::RefCountPtr<Teuchos::ParameterList> discParams = 
+  Teuchos::RCP<Teuchos::ParameterList> discParams = 
     Teuchos::rcp(&(params->sublist("Discretization")),false);
   FEApp::DiscretizationFactory discFactory(discParams);
   disc = discFactory.create(coords, num_equations, comm);
@@ -99,25 +99,25 @@ FEApp::Application::~Application()
 {
 }
 
-Teuchos::RefCountPtr<const Epetra_Map>
+Teuchos::RCP<const Epetra_Map>
 FEApp::Application::getMap() const
 {
   return disc->getMap();
 }
 
-Teuchos::RefCountPtr<const Epetra_CrsGraph>
+Teuchos::RCP<const Epetra_CrsGraph>
 FEApp::Application::getJacobianGraph() const
 {
   return disc->getJacobianGraph();
 }
 
-Teuchos::RefCountPtr<const Epetra_Vector>
+Teuchos::RCP<const Epetra_Vector>
 FEApp::Application::getInitialSolution() const
 {
   return initial_x;
 }
 
-Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> 
+Teuchos::RCP<Sacado::ScalarParameterLibrary> 
 FEApp::Application::getParamLib()
 {
   return paramLib;
@@ -153,12 +153,12 @@ FEApp::Application::computeGlobalResidual(
   f.PutScalar(0.0);
 
   // Create residual init/post op
-  Teuchos::RefCountPtr<FEApp::ResidualOp> op;
+  Teuchos::RCP<FEApp::ResidualOp> op;
   op = Teuchos::rcp(new FEApp::ResidualOp(overlapped_xdot, overlapped_x, 
 					  overlapped_f));
 
   // Get template PDE instantiation
-  Teuchos::RefCountPtr< FEApp::AbstractPDE<ResidualOp::fill_type> > pde = 
+  Teuchos::RCP< FEApp::AbstractPDE<ResidualOp::fill_type> > pde = 
     pdeTM.getAsObject<ResidualOp::fill_type>();
 
   // Do global fill
@@ -200,13 +200,13 @@ FEApp::Application::computeGlobalJacobian(
   jac.PutScalar(0.0);
 
   // Create Jacobian init/post op
-  Teuchos::RefCountPtr<FEApp::JacobianOp> op;
+  Teuchos::RCP<FEApp::JacobianOp> op;
   op = Teuchos::rcp(new FEApp::JacobianOp(alpha, beta, overlapped_xdot, 
 					  overlapped_x, overlapped_f, 
 					  overlapped_jac));
 
   // Get template PDE instantiation
-  Teuchos::RefCountPtr< FEApp::AbstractPDE<JacobianOp::fill_type> > pde = 
+  Teuchos::RCP< FEApp::AbstractPDE<JacobianOp::fill_type> > pde = 
     pdeTM.getAsObject<JacobianOp::fill_type>();
 
   // Do global fill
@@ -284,7 +284,7 @@ FEApp::Application::computeGlobalTangent(
     Teuchos::rcp(p);
 
   // Create Jacobian init/post op
-  Teuchos::RefCountPtr<FEApp::TangentOp> op;
+  Teuchos::RCP<FEApp::TangentOp> op;
   op = Teuchos::rcp(new FEApp::TangentOp(alpha, beta, sum_derivs,
 					 overlapped_xdot, 
 					 overlapped_x,
@@ -297,7 +297,7 @@ FEApp::Application::computeGlobalTangent(
 					 overlapped_fVp));
 
   // Get template PDE instantiation
-  Teuchos::RefCountPtr< FEApp::AbstractPDE<JacobianOp::fill_type> > pde = 
+  Teuchos::RCP< FEApp::AbstractPDE<JacobianOp::fill_type> > pde = 
     pdeTM.getAsObject<JacobianOp::fill_type>();
 
   // Do global fill

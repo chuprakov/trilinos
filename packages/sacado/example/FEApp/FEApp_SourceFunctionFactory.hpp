@@ -33,7 +33,7 @@
 #define FEAPP_SOURCEFUNCTIONFACTORY_HPP
 
 #include "Teuchos_ParameterList.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 #include "FEApp_AbstractSourceFunction.hpp"
 
@@ -48,12 +48,12 @@ namespace FEApp {
 
     //! Default constructor
     SourceFunctionFactory(
-	       const Teuchos::RefCountPtr<Teuchos::ParameterList>& funcParams);
+	       const Teuchos::RCP<Teuchos::ParameterList>& funcParams);
 
     //! Destructor
     virtual ~SourceFunctionFactory() {}
 
-    virtual Teuchos::RefCountPtr< FEApp::AbstractSourceFunction<ScalarT> >
+    virtual Teuchos::RCP< FEApp::AbstractSourceFunction<ScalarT> >
     create();
 
   private:
@@ -67,7 +67,7 @@ namespace FEApp {
   protected:
 
     //! Parameter list specifying what strategy to create
-    Teuchos::RefCountPtr<Teuchos::ParameterList> funcParams;
+    Teuchos::RCP<Teuchos::ParameterList> funcParams;
 
   };
 

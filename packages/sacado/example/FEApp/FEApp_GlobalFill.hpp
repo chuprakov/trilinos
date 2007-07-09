@@ -34,7 +34,7 @@
 
 #include <vector>
 
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 #include "FEApp_AbstractPDE.hpp"
 #include "FEApp_AbstractQuadrature.hpp"
@@ -50,10 +50,10 @@ namespace FEApp {
     
     //! Constructor
     GlobalFill(
-      const Teuchos::RefCountPtr<const FEApp::Mesh>& elementMesh,
-      const Teuchos::RefCountPtr<const FEApp::AbstractQuadrature>& quadRule,
-      const Teuchos::RefCountPtr< FEApp::AbstractPDE<ScalarT> >& pdeEquations,
-      const std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> >& nodeBCs,
+      const Teuchos::RCP<const FEApp::Mesh>& elementMesh,
+      const Teuchos::RCP<const FEApp::AbstractQuadrature>& quadRule,
+      const Teuchos::RCP< FEApp::AbstractPDE<ScalarT> >& pdeEquations,
+      const std::vector< Teuchos::RCP<FEApp::NodeBC> >& nodeBCs,
       bool is_transient);
   
     //! Destructor
@@ -73,16 +73,16 @@ namespace FEApp {
   protected:
     
     //! Element mesh
-    Teuchos::RefCountPtr<const FEApp::Mesh> mesh;
+    Teuchos::RCP<const FEApp::Mesh> mesh;
 
     //! Quadrature rule
-    Teuchos::RefCountPtr<const FEApp::AbstractQuadrature> quad;
+    Teuchos::RCP<const FEApp::AbstractQuadrature> quad;
 
     //! PDE Equations
-    Teuchos::RefCountPtr< FEApp::AbstractPDE<ScalarT> > pde;
+    Teuchos::RCP< FEApp::AbstractPDE<ScalarT> > pde;
 
     //! Node boundary conditions
-    std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> > bc;
+    std::vector< Teuchos::RCP<FEApp::NodeBC> > bc;
 
     //! Are we transient?
     bool transient;

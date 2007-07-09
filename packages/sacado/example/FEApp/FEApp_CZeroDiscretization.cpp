@@ -35,8 +35,8 @@
 FEApp::CZeroDiscretization::CZeroDiscretization(
 		  const std::vector<double>& coords,
 		  unsigned int num_equations,
-		  const Teuchos::RefCountPtr<const Epetra_Comm>& epetra_comm,
-		  const Teuchos::RefCountPtr<Teuchos::ParameterList>& params) :
+		  const Teuchos::RCP<const Epetra_Comm>& epetra_comm,
+		  const Teuchos::RCP<Teuchos::ParameterList>& params) :
   x(coords),
   comm(epetra_comm),
   elemFactory(Teuchos::rcp(&(params->sublist("Element")),false)),
@@ -55,7 +55,7 @@ FEApp::CZeroDiscretization::CZeroDiscretization(
   elem_map = Teuchos::rcp(new Epetra_Map(x.size()-1, 0, *comm));
   numMyElements = elem_map->NumMyElements();
 
-  Teuchos::RefCountPtr<AbstractElement> base_element = 
+  Teuchos::RCP<AbstractElement> base_element = 
     elemFactory.create();
   nodes_per_element = base_element->numNodes();
 }
@@ -70,7 +70,7 @@ FEApp::CZeroDiscretization::createMesh()
   mesh = Teuchos::rcp(new FEApp::Mesh);
 
   // Create elements and node IDs
-  Teuchos::RefCountPtr<FEApp::AbstractElement> e;
+  Teuchos::RCP<FEApp::AbstractElement> e;
   unsigned int elem_GID;
   for (unsigned int i=0; i<numMyElements; i++) {
     elem_GID = elem_map->GID(i);
@@ -123,7 +123,7 @@ FEApp::CZeroDiscretization::createJacobianGraphs()
   int row, col;
   
   // Loop over elements
-  Teuchos::RefCountPtr<FEApp::AbstractElement> e;
+  Teuchos::RCP<FEApp::AbstractElement> e;
   for (FEApp::Mesh::iterator eit=mesh->begin(); eit!=mesh->end(); ++eit) {
     e = *eit;
 
@@ -166,31 +166,31 @@ FEApp::CZeroDiscretization::createJacobianGraphs()
   graph->FillComplete();
 }
 	    
-Teuchos::RefCountPtr<const FEApp::Mesh>
+Teuchos::RCP<const FEApp::Mesh>
 FEApp::CZeroDiscretization::getMesh() const
 {
   return mesh;
 }
 
-Teuchos::RefCountPtr<const Epetra_Map>
+Teuchos::RCP<const Epetra_Map>
 FEApp::CZeroDiscretization::getMap() const
 {
   return map;
 }
 
-Teuchos::RefCountPtr<const Epetra_Map>
+Teuchos::RCP<const Epetra_Map>
 FEApp::CZeroDiscretization::getOverlapMap() const
 {
   return overlap_map;
 }
 
-Teuchos::RefCountPtr<const Epetra_CrsGraph>
+Teuchos::RCP<const Epetra_CrsGraph>
 FEApp::CZeroDiscretization::getJacobianGraph() const
 {
   return graph;
 }
 
-Teuchos::RefCountPtr<const Epetra_CrsGraph>
+Teuchos::RCP<const Epetra_CrsGraph>
 FEApp::CZeroDiscretization::getOverlapJacobianGraph() const
 {
   return overlap_graph;

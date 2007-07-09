@@ -35,7 +35,7 @@ template <typename ScalarT>
 FEApp::BrusselatorNodeBCStrategy<ScalarT>::
 BrusselatorNodeBCStrategy(
        const ScalarT& alpha_, const ScalarT& beta_,
-       const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib) :
+       const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) :
   alpha(alpha_),
   beta(beta_),
   offsets(2),
@@ -49,7 +49,7 @@ BrusselatorNodeBCStrategy(
   if (!pl->isParameter(name))
     pl->addParameterFamily(name, true, false);
   if (!pl->template isParameterForType<ScalarT>(name)) {
-    Teuchos::RefCountPtr< BrusselatorAlphaParameter<ScalarT> > tmpa = 
+    Teuchos::RCP< BrusselatorAlphaParameter<ScalarT> > tmpa = 
       Teuchos::rcp(new BrusselatorAlphaParameter<ScalarT>(alpha));
     pl->template addEntry<ScalarT>(name, tmpa);
   }
@@ -59,7 +59,7 @@ BrusselatorNodeBCStrategy(
   if (!pl->isParameter(name))
     pl->addParameterFamily(name, true, false);
   if (!pl->template isParameterForType<ScalarT>(name)) {
-    Teuchos::RefCountPtr< BrusselatorBetaParameter<ScalarT> > tmpb = 
+    Teuchos::RCP< BrusselatorBetaParameter<ScalarT> > tmpb = 
       Teuchos::rcp(new BrusselatorBetaParameter<ScalarT>(beta));
     pl->template addEntry<ScalarT>(name, tmpb);
   }

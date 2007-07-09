@@ -34,8 +34,8 @@
 #include "Teuchos_TestForException.hpp"
 
 FEApp::ModelEvaluator::ModelEvaluator(
-  const Teuchos::RefCountPtr<FEApp::Application>& app_,
-  const Teuchos::RefCountPtr< Teuchos::Array<std::string> >& free_param_names) 
+  const Teuchos::RCP<FEApp::Application>& app_,
+  const Teuchos::RCP< Teuchos::Array<std::string> >& free_param_names) 
   : app(app_),
     param_names(free_param_names)
 {
@@ -60,19 +60,19 @@ FEApp::ModelEvaluator::ModelEvaluator(
 
 // Overridden from EpetraExt::ModelEvaluator
 
-Teuchos::RefCountPtr<const Epetra_Map>
+Teuchos::RCP<const Epetra_Map>
 FEApp::ModelEvaluator::get_x_map() const
 {
   return app->getMap();
 }
 
-Teuchos::RefCountPtr<const Epetra_Map>
+Teuchos::RCP<const Epetra_Map>
 FEApp::ModelEvaluator::get_f_map() const
 {
   return app->getMap();
 }
 
-Teuchos::RefCountPtr<const Epetra_Map>
+Teuchos::RCP<const Epetra_Map>
 FEApp::ModelEvaluator::get_p_map(int l) const
 {
   TEST_FOR_EXCEPTION(l != 0, Teuchos::Exceptions::InvalidParameter,
@@ -84,7 +84,7 @@ FEApp::ModelEvaluator::get_p_map(int l) const
   return epetra_param_map;
 }
 
-Teuchos::RefCountPtr<const Teuchos::Array<std::string> >
+Teuchos::RCP<const Teuchos::Array<std::string> >
 FEApp::ModelEvaluator::get_p_names(int l) const
 {
   TEST_FOR_EXCEPTION(l != 0, Teuchos::Exceptions::InvalidParameter,
@@ -95,13 +95,13 @@ FEApp::ModelEvaluator::get_p_names(int l) const
   return param_names;
 }
 
-Teuchos::RefCountPtr<const Epetra_Vector>
+Teuchos::RCP<const Epetra_Vector>
 FEApp::ModelEvaluator::get_x_init() const
 {
   return app->getInitialSolution();
 }
 
-Teuchos::RefCountPtr<const Epetra_Vector>
+Teuchos::RCP<const Epetra_Vector>
 FEApp::ModelEvaluator::get_p_init(int l) const
 {
   TEST_FOR_EXCEPTION(l != 0, Teuchos::Exceptions::InvalidParameter,
@@ -113,7 +113,7 @@ FEApp::ModelEvaluator::get_p_init(int l) const
   return epetra_param_vec;
 }
 
-Teuchos::RefCountPtr<Epetra_Operator>
+Teuchos::RCP<Epetra_Operator>
 FEApp::ModelEvaluator::create_W() const
 {
   return 
@@ -176,11 +176,11 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
   //
   // Get the output arguments
   //
-  Teuchos::RefCountPtr<Epetra_Vector> f_out = outArgs.get_f();
-  Teuchos::RefCountPtr<Epetra_Operator> W_out = outArgs.get_W();
+  Teuchos::RCP<Epetra_Vector> f_out = outArgs.get_f();
+  Teuchos::RCP<Epetra_Operator> W_out = outArgs.get_W();
 
   // Cast W to a CrsMatrix, throw an exception if this fails
-  Teuchos::RefCountPtr<Epetra_CrsMatrix> W_out_crs = 
+  Teuchos::RCP<Epetra_CrsMatrix> W_out_crs = 
     Teuchos::rcp_dynamic_cast<Epetra_CrsMatrix>(W_out, true);
   
   //

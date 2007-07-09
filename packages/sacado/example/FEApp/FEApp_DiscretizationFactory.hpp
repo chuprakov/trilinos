@@ -35,7 +35,7 @@
 #include <vector>
 
 #include "Teuchos_ParameterList.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "Epetra_Comm.h"
 
 #include "FEApp_AbstractDiscretization.hpp"
@@ -50,15 +50,15 @@ namespace FEApp {
 
     //! Default constructor
     DiscretizationFactory(
-	      const Teuchos::RefCountPtr<Teuchos::ParameterList>& discParams);
+	      const Teuchos::RCP<Teuchos::ParameterList>& discParams);
 
     //! Destructor
     virtual ~DiscretizationFactory() {}
 
-    virtual Teuchos::RefCountPtr<FEApp::AbstractDiscretization>
+    virtual Teuchos::RCP<FEApp::AbstractDiscretization>
     create(const std::vector<double>& coords,
 	   unsigned int num_equations,
-	   const Teuchos::RefCountPtr<const Epetra_Comm>& epetra_comm);
+	   const Teuchos::RCP<const Epetra_Comm>& epetra_comm);
 
   private:
 
@@ -71,7 +71,7 @@ namespace FEApp {
   protected:
 
     //! Parameter list specifying what element to create
-    Teuchos::RefCountPtr<Teuchos::ParameterList> discParams;
+    Teuchos::RCP<Teuchos::ParameterList> discParams;
 
   };
 

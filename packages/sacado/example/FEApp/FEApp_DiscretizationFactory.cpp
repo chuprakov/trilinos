@@ -34,18 +34,18 @@
 #include "FEApp_CZeroDiscretization.hpp"
 
 FEApp::DiscretizationFactory::DiscretizationFactory(
-	    const Teuchos::RefCountPtr<Teuchos::ParameterList>& discParams_) :
+	    const Teuchos::RCP<Teuchos::ParameterList>& discParams_) :
   discParams(discParams_)
 {
 }
 
-Teuchos::RefCountPtr<FEApp::AbstractDiscretization>
+Teuchos::RCP<FEApp::AbstractDiscretization>
 FEApp::DiscretizationFactory::create(
 		  const std::vector<double>& coords,
 		  unsigned int num_equations,
-	          const Teuchos::RefCountPtr<const Epetra_Comm>& epetra_comm)
+	          const Teuchos::RCP<const Epetra_Comm>& epetra_comm)
 {
-  Teuchos::RefCountPtr<FEApp::AbstractDiscretization> strategy;
+  Teuchos::RCP<FEApp::AbstractDiscretization> strategy;
 
   std::string& method = discParams->get("Method", "C Zero");
   if (method == "C Zero") {

@@ -31,7 +31,7 @@
 
 template <typename ScalarT>
 FEApp::HeatNonlinearSourcePDE<ScalarT>::
-HeatNonlinearSourcePDE(const Teuchos::RefCountPtr< const FEApp::AbstractSourceFunction<ScalarT> >& src_func) : 
+HeatNonlinearSourcePDE(const Teuchos::RCP< const FEApp::AbstractSourceFunction<ScalarT> >& src_func) : 
   source(src_func),
   num_qp(0),
   num_nodes(0),

@@ -35,7 +35,7 @@ template <typename ScalarT>
 FEApp::BrusselatorPDE<ScalarT>::
 BrusselatorPDE(
        double alpha_, double beta_, double D1_, double D2_,
-       const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib) : 
+       const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) : 
   num_qp(0),
   num_nodes(0),
   phi(),
@@ -58,7 +58,7 @@ BrusselatorPDE(
   if (!pl->isParameter(name))
     pl->addParameterFamily(name, true, false);
   if (!pl->template isParameterForType<ScalarT>(name)) {
-    Teuchos::RefCountPtr< BrusselatorAlphaParameter<ScalarT> > tmpa = 
+    Teuchos::RCP< BrusselatorAlphaParameter<ScalarT> > tmpa = 
       Teuchos::rcp(new BrusselatorAlphaParameter<ScalarT>(alpha));
     pl->template addEntry<ScalarT>(name, tmpa);
   }
@@ -68,7 +68,7 @@ BrusselatorPDE(
   if (!pl->isParameter(name))
     pl->addParameterFamily(name, true, false);
   if (!pl->template isParameterForType<ScalarT>(name)) {
-    Teuchos::RefCountPtr< BrusselatorBetaParameter<ScalarT> > tmpb = 
+    Teuchos::RCP< BrusselatorBetaParameter<ScalarT> > tmpb = 
       Teuchos::rcp(new BrusselatorBetaParameter<ScalarT>(beta));
     pl->template addEntry<ScalarT>(name, tmpb);
   }

@@ -42,7 +42,7 @@ FEApp::Mesh::~Mesh()
 
 void
 FEApp::Mesh::addElement(
-		   const Teuchos::RefCountPtr<FEApp::AbstractElement>& element)
+		   const Teuchos::RCP<FEApp::AbstractElement>& element)
 {
   elements.push_back(element);
 }

@@ -33,7 +33,7 @@
 #define FEAPP_QUADRATUREFACTORY_HPP
 
 #include "Teuchos_ParameterList.hpp"
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 #include "FEApp_AbstractQuadrature.hpp"
 
@@ -47,12 +47,12 @@ namespace FEApp {
 
     //! Default constructor
     QuadratureFactory(
-	       const Teuchos::RefCountPtr<Teuchos::ParameterList>& quadParams);
+	       const Teuchos::RCP<Teuchos::ParameterList>& quadParams);
 
     //! Destructor
     virtual ~QuadratureFactory() {}
 
-    virtual Teuchos::RefCountPtr<FEApp::AbstractQuadrature>
+    virtual Teuchos::RCP<FEApp::AbstractQuadrature>
     create();
 
   private:
@@ -66,7 +66,7 @@ namespace FEApp {
   protected:
 
     //! Parameter list specifying what strategy to create
-    Teuchos::RefCountPtr<Teuchos::ParameterList> quadParams;
+    Teuchos::RCP<Teuchos::ParameterList> quadParams;
 
   };
 

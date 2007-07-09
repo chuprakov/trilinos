@@ -34,15 +34,15 @@
 #include "FEApp_GaussianQuadrature2.hpp"
 
 FEApp::QuadratureFactory::QuadratureFactory(
-	    const Teuchos::RefCountPtr<Teuchos::ParameterList>& quadParams_) :
+	    const Teuchos::RCP<Teuchos::ParameterList>& quadParams_) :
   quadParams(quadParams_)
 {
 }
 
-Teuchos::RefCountPtr<FEApp::AbstractQuadrature>
+Teuchos::RCP<FEApp::AbstractQuadrature>
 FEApp::QuadratureFactory::create()
 {
-  Teuchos::RefCountPtr<FEApp::AbstractQuadrature> strategy;
+  Teuchos::RCP<FEApp::AbstractQuadrature> strategy;
 
   std::string& method = quadParams->get("Method", "Gaussian");
   if (method == "Gaussian") {

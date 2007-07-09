@@ -32,7 +32,7 @@
 #ifndef FEAPP_INITPOSTOPS_HPP
 #define FEAPP_INITPOSTOPS_HPP
 
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "Teuchos_SerialDenseMatrix.hpp"
 #include "Epetra_Vector.h"
 #include "Epetra_CrsMatrix.h"

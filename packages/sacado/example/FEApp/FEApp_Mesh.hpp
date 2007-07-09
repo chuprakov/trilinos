@@ -34,7 +34,7 @@
 
 #include <list>
 
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 #include "FEApp_AbstractElement.hpp"
 
@@ -43,7 +43,7 @@ namespace FEApp {
   class Mesh {
   public:
 
-    typedef std::list< Teuchos::RefCountPtr<FEApp::AbstractElement> > MeshList;
+    typedef std::list< Teuchos::RCP<FEApp::AbstractElement> > MeshList;
     
     typedef MeshList::const_iterator const_iterator;
 
@@ -57,7 +57,7 @@ namespace FEApp {
 
     //! Add a new element
     void addElement(
-		 const Teuchos::RefCountPtr<FEApp::AbstractElement>& element);
+		 const Teuchos::RCP<FEApp::AbstractElement>& element);
 
     //! Return number of elements
     unsigned int numElements() const;

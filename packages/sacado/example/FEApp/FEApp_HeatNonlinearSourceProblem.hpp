@@ -32,7 +32,7 @@
 #ifndef FEAPP_HEATNONLINEARSOURCEPROBLEM_HPP
 #define FEAPP_HEATNONLINEARSOURCEPROBLEM_HPP
 
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 #include "Teuchos_ParameterList.hpp"
 
 #include "FEApp_AbstractProblem.hpp"
@@ -49,7 +49,7 @@ namespace FEApp {
   
     //! Default constructor
     HeatNonlinearSourceProblem(
-		 const Teuchos::RefCountPtr<Teuchos::ParameterList>& params);
+		 const Teuchos::RCP<Teuchos::ParameterList>& params);
 
     //! Destructor
     virtual ~HeatNonlinearSourceProblem();
@@ -61,8 +61,8 @@ namespace FEApp {
     virtual void 
     buildProblem(const Epetra_Map& dofMap,
 		 FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM,
-		 std::vector< Teuchos::RefCountPtr<FEApp::NodeBC> >& bcs,
-		 const Teuchos::RefCountPtr<Epetra_Vector>& u);
+		 std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
+		 const Teuchos::RCP<Epetra_Vector>& u);
 
   private:
 
@@ -75,7 +75,7 @@ namespace FEApp {
   protected:
 
     //! Problem parameters
-    Teuchos::RefCountPtr<Teuchos::ParameterList> params;
+    Teuchos::RCP<Teuchos::ParameterList> params;
 
     //! Boundary conditions
     double leftBC, rightBC;

@@ -34,15 +34,15 @@
 #include "FEApp_LinearElement.hpp"
 
 FEApp::ElementFactory::ElementFactory(
-	    const Teuchos::RefCountPtr<Teuchos::ParameterList>& elemParams_) :
+	    const Teuchos::RCP<Teuchos::ParameterList>& elemParams_) :
   elemParams(elemParams_)
 {
 }
 
-Teuchos::RefCountPtr<FEApp::AbstractElement>
+Teuchos::RCP<FEApp::AbstractElement>
 FEApp::ElementFactory::create()
 {
-  Teuchos::RefCountPtr<FEApp::AbstractElement> strategy;
+  Teuchos::RCP<FEApp::AbstractElement> strategy;
 
   std::string& method = elemParams->get("Method", "Linear");
   if (method == "Linear") {

@@ -32,7 +32,7 @@
 #ifndef FEAPP_BRUSSELATORNODEBCSTRATEGY_HPP
 #define FEAPP_BRUSSELATORNODEBCSTRATEGY_HPP
 
-#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_RCP.hpp"
 
 #include "FEApp_AbstractNodeBCStrategy.hpp"
 
@@ -48,7 +48,7 @@ namespace FEApp {
     //! Constructor
     BrusselatorNodeBCStrategy(
 	 const ScalarT& alpha, const ScalarT& beta,
-	 const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib);
+	 const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib);
 
     //! Destructor
     virtual ~BrusselatorNodeBCStrategy();
@@ -81,7 +81,7 @@ namespace FEApp {
     std::vector<unsigned int> offsets;
 
     //! Parameter library
-    Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> pl;
+    Teuchos::RCP<Sacado::ScalarParameterLibrary> pl;
 
   };
 
@@ -89,15 +89,15 @@ namespace FEApp {
   public:
     BrusselatorNodeBCStrategy_TemplateBuilder(
         double alpha, double beta,
-        const Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary>& paramLib) :
+        const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) :
       a(alpha), b(beta), pl(paramLib) {}
     template <typename T>
-    Teuchos::RefCountPtr<FEApp::AbstractNodeBCStrategy_NTBase> build() const {
+    Teuchos::RCP<FEApp::AbstractNodeBCStrategy_NTBase> build() const {
       return Teuchos::rcp( new BrusselatorNodeBCStrategy<T>(a,b,pl));
     }
   protected:
     double a, b;
-    Teuchos::RefCountPtr<Sacado::ScalarParameterLibrary> pl;
+    Teuchos::RCP<Sacado::ScalarParameterLibrary> pl;
   };
 
 }

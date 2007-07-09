@@ -49,8 +49,8 @@ namespace FEApp {
     CZeroDiscretization(
 		 const std::vector<double>& coords,
 		 unsigned int num_equations,
-		 const Teuchos::RefCountPtr<const Epetra_Comm>& epetra_comm,
-		 const Teuchos::RefCountPtr<Teuchos::ParameterList>& params);
+		 const Teuchos::RCP<const Epetra_Comm>& epetra_comm,
+		 const Teuchos::RCP<Teuchos::ParameterList>& params);
 
     //! Destructor
     virtual ~CZeroDiscretization();
@@ -65,23 +65,23 @@ namespace FEApp {
     virtual void createJacobianGraphs();
 
     //! Get element mesh
-    virtual Teuchos::RefCountPtr<const FEApp::Mesh> 
+    virtual Teuchos::RCP<const FEApp::Mesh> 
     getMesh() const; 
 
     //! Get DOF map
-    virtual Teuchos::RefCountPtr<const Epetra_Map> 
+    virtual Teuchos::RCP<const Epetra_Map> 
     getMap() const;
 
     //! Get overlapped DOF map
-    virtual Teuchos::RefCountPtr<const Epetra_Map> 
+    virtual Teuchos::RCP<const Epetra_Map> 
     getOverlapMap() const;
 
     //! Get Jacobian graph
-    virtual Teuchos::RefCountPtr<const Epetra_CrsGraph> 
+    virtual Teuchos::RCP<const Epetra_CrsGraph> 
     getJacobianGraph() const;
 
     //! Get overlap Jacobian graph
-    virtual Teuchos::RefCountPtr<const Epetra_CrsGraph> 
+    virtual Teuchos::RCP<const Epetra_CrsGraph> 
     getOverlapJacobianGraph() const;
 
     //! Get number of nodes per element
@@ -102,28 +102,28 @@ namespace FEApp {
     std::vector<double> x;
 
     //! Epetra communicator
-    Teuchos::RefCountPtr<const Epetra_Comm> comm;
+    Teuchos::RCP<const Epetra_Comm> comm;
 
     //! Element factory
     FEApp::ElementFactory elemFactory;
 
     //! Element mesh
-    Teuchos::RefCountPtr<FEApp::Mesh> mesh;
+    Teuchos::RCP<FEApp::Mesh> mesh;
 
     //! Element map
-    Teuchos::RefCountPtr<Epetra_Map> elem_map;
+    Teuchos::RCP<Epetra_Map> elem_map;
 
     //! Unknown Map
-    Teuchos::RefCountPtr<Epetra_Map> map;
+    Teuchos::RCP<Epetra_Map> map;
 
     //! Overlapped unknown map
-    Teuchos::RefCountPtr<Epetra_Map> overlap_map;
+    Teuchos::RCP<Epetra_Map> overlap_map;
 
     //! Jacobian matrix graph
-    Teuchos::RefCountPtr<Epetra_CrsGraph> graph;
+    Teuchos::RCP<Epetra_CrsGraph> graph;
 
     //! Overlapped Jacobian matrix graph
-    Teuchos::RefCountPtr<Epetra_CrsGraph> overlap_graph;
+    Teuchos::RCP<Epetra_CrsGraph> overlap_graph;
 
     //! Processor ID
     unsigned int myPID;
