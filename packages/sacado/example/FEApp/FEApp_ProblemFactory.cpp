@@ -54,7 +54,8 @@ FEApp::ProblemFactory::create()
   }
   else if (method == "Heat Nonlinear Source") {
     strategy = 
-      Teuchos::rcp(new FEApp::HeatNonlinearSourceProblem(problemParams));
+      Teuchos::rcp(new FEApp::HeatNonlinearSourceProblem(problemParams,
+							 paramLib));
   }
   else {
     TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,

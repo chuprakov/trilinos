@@ -36,6 +36,7 @@
 
 #include "FEApp_AbstractPDE.hpp"
 #include "FEApp_SourceFunctionFactory.hpp"
+#include "Sacado_ScalarParameterLibrary.hpp"
 
 namespace FEApp {
 
@@ -86,13 +87,16 @@ namespace FEApp {
     std::vector< std::vector<double> > phi;
 
     //! Shape function derivatives
-    std::vector< std::vector<double> > dphidxi;
+    std::vector< std::vector<double> > dphi;
 
     //! Element transformation Jacobian
     std::vector<double> jac;
 
     //! Discretized solution
     std::vector<ScalarT> u;
+
+    //! Discretized solution
+    std::vector<ScalarT> du;
 
     //! Discretized time derivative
     std::vector<ScalarT> udot;
@@ -105,17 +109,20 @@ namespace FEApp {
   class HeatNonlinearSourcePDE_TemplateBuilder {
   public:
     HeatNonlinearSourcePDE_TemplateBuilder(
-		const Teuchos::RCP<Teuchos::ParameterList>& params_) :
-      params(Teuchos::rcp(&(params_->sublist("Source Function")),false)) {}
+		const Teuchos::RCP<Teuchos::ParameterList>& params_,
+	        const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) :
+      params(Teuchos::rcp(&(params_->sublist("Source Function")),false)),
+      pl(paramLib) {}
     template <typename T>
     Teuchos::RCP<FEApp::AbstractPDE_NTBase> build() const {
-      FEApp::SourceFunctionFactory<T> factory(params);
+      FEApp::SourceFunctionFactory<T> factory(params, pl);
       Teuchos::RCP< FEApp::AbstractSourceFunction<T> > source =
 	factory.create();
       return Teuchos::rcp( new FEApp::HeatNonlinearSourcePDE<T>(source));
     }
   protected:
     Teuchos::RCP<Teuchos::ParameterList> params;
+    Teuchos::RCP<Sacado::ScalarParameterLibrary> pl;
   };
 
 }

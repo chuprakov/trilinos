@@ -38,6 +38,8 @@
 #include "FEApp_AbstractProblem.hpp"
 #include "FEApp_HeatNonlinearSourcePDE.hpp"
 
+#include "Sacado_ScalarParameterLibrary.hpp"
+
 namespace FEApp {
 
   /*!
@@ -49,7 +51,8 @@ namespace FEApp {
   
     //! Default constructor
     HeatNonlinearSourceProblem(
-		 const Teuchos::RCP<Teuchos::ParameterList>& params);
+		 const Teuchos::RCP<Teuchos::ParameterList>& params,
+	         const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib);
 
     //! Destructor
     virtual ~HeatNonlinearSourceProblem();
@@ -80,6 +83,9 @@ namespace FEApp {
 
     //! Boundary conditions
     double leftBC, rightBC;
+
+    //! Parameter library
+    Teuchos::RCP<Sacado::ScalarParameterLibrary> paramLib;
 
   };
 

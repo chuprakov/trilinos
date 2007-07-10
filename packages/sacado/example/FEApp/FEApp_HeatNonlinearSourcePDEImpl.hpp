@@ -36,9 +36,10 @@ HeatNonlinearSourcePDE(const Teuchos::RCP< const FEApp::AbstractSourceFunction<S
   num_qp(0),
   num_nodes(0),
   phi(),
-  dphidxi(),
+  dphi(),
   jac(),
   u(),
+  du(),
   udot(),
   f()
 {
@@ -67,15 +68,16 @@ init(unsigned int numQuadPoints, unsigned int numNodes)
   num_nodes = numNodes;
 
   phi.resize(num_qp);
-  dphidxi.resize(num_qp);
+  dphi.resize(num_qp);
   jac.resize(num_qp);
   u.resize(num_qp);
+  du.resize(num_qp);
   udot.resize(num_qp);
   f.resize(num_qp);
 
   for (unsigned int i=0; i<num_qp; i++) {
     phi[i].resize(num_nodes);
-    dphidxi[i].resize(num_nodes);
+    dphi[i].resize(num_nodes);
   }
 }
 
@@ -99,19 +101,21 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
   element.evaluateShapes(xi, phi);
 
   // Evaluate shape function derivatives
-  element.evaluateShapeDerivs(xi, dphidxi);
+  element.evaluateShapeDerivs(xi, dphi);
 
   // Evaluate Jacobian of transformation to standard element
   element.evaluateJacobian(xi, jac);
 
   // Compute u
-  for (unsigned int i=0; i<num_qp; i++) {
-    u[i] = 0.0;
-    udot[i] = 0.0;
-    for (unsigned int j=0; j<num_nodes; j++) {
-      u[i] += solution[j] * phi[i][j];
+  for (unsigned int qp=0; qp<num_qp; qp++) {
+    u[qp] = 0.0;
+    du[qp] = 0.0;
+    udot[qp] = 0.0;
+    for (unsigned int node=0; node<num_nodes; node++) {
+      u[qp] += solution[node] * phi[qp][node];
+      du[qp] += solution[node] * dphi[qp][node];
       if (dot != NULL)
-	udot[i] += (*dot)[j] * phi[i][j];
+	udot[qp] += (*dot)[node] * phi[qp][node];
     }
   }
 
@@ -119,15 +123,12 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
   source->evaluate(u, f);
 
   // Evaluate residual
-  ScalarT tmp;
-  for (unsigned int i=0; i<num_nodes; i++) {
-    residual[i] = 0.0;
-    for (unsigned int k=0; k<num_qp; k++) {
-      tmp = 0.0;
-      for (unsigned int j=0; j<num_nodes; j++)
-	tmp += solution[j] * dphidxi[k][j];
-      residual[i] += 
-	w[k] * ((udot[k] + f[k]*phi[k][i])*jac[k] + tmp*dphidxi[k][i]/jac[k]);
+  for (unsigned int node=0; node<num_nodes; node++) {
+    residual[node] = 0.0;
+    for (unsigned int qp=0; qp<num_qp; qp++) {
+      residual[node] += 
+	w[qp]*jac[qp]*(-(1.0/(jac[qp]*jac[qp]))*du[qp]*dphi[qp][node] + 
+		       phi[qp][node]*(f[qp] - udot[qp]));
     }
   }
 

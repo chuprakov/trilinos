@@ -34,8 +34,10 @@
 
 FEApp::HeatNonlinearSourceProblem::
 HeatNonlinearSourceProblem(
-		 const Teuchos::RCP<Teuchos::ParameterList>& params_) :
-  params(params_)
+	      const Teuchos::RCP<Teuchos::ParameterList>& params_,
+              const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib_) :
+  params(params_),
+  paramLib(paramLib_)
 {
   leftBC = params->get("Left BC", 0.0);
   rightBC = params->get("Right BC", 0.0);
@@ -62,12 +64,14 @@ buildProblem(const Epetra_Map& dofMap,
 	     const Teuchos::RCP<Epetra_Vector>& u)
 {
   // Build PDE equations
-  FEApp::HeatNonlinearSourcePDE_TemplateBuilder pdeBuilder(params);
+  FEApp::HeatNonlinearSourcePDE_TemplateBuilder pdeBuilder(params, paramLib);
   pdeTM.buildObjects(pdeBuilder);
 
   // Build boundary conditions
-  FEApp::ConstantNodeBCStrategy_TemplateBuilder leftBuilder(0, 0, leftBC);
-  FEApp::ConstantNodeBCStrategy_TemplateBuilder rightBuilder(0, 0, rightBC);
+  FEApp::ConstantNodeBCStrategy_TemplateBuilder leftBuilder(0, 0, leftBC, 1,
+							    paramLib);
+  FEApp::ConstantNodeBCStrategy_TemplateBuilder rightBuilder(0, 0, rightBC, 2,
+							     paramLib);
   int left_node = dofMap.MinAllGID();
   int right_node = dofMap.MaxAllGID();
   bcs.resize(2);
@@ -77,5 +81,5 @@ buildProblem(const Epetra_Map& dofMap,
 					  right_node, 1, rightBuilder));
 
   // Build initial solution
-  u->PutScalar(0.0);
+  u->PutScalar(1.0);
 }

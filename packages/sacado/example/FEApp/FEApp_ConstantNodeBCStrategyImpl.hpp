@@ -29,17 +29,34 @@
 // ***********************************************************************
 // @HEADER
 
+#include <sstream>
+
 template <typename ScalarT>
 FEApp::ConstantNodeBCStrategy<ScalarT>::
-ConstantNodeBCStrategy(unsigned int solution_index, 
-		       unsigned int residual_index,
-		       const ScalarT& value) :
+ConstantNodeBCStrategy(
+		unsigned int solution_index, 
+		unsigned int residual_index,
+		const ScalarT& value,
+		unsigned int bc_id,
+		const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) :
   sol_index(solution_index),
   res_index(residual_index),
   val(value),
   offsets(1)
 {
   offsets[0] = residual_index;
+  
+  // Add BC to parameter library
+  std::stringstream ss; 
+  ss << "Constant Node BC " << bc_id;
+  std::string name = ss.str();
+  if (!paramLib->isParameter(name))
+    paramLib->addParameterFamily(name, true, false);
+  if (!paramLib->template isParameterForType<ScalarT>(name)) {
+    Teuchos::RCP< ConstantNodeBCParameter<ScalarT> > tmp = 
+      Teuchos::rcp(new ConstantNodeBCParameter<ScalarT>(Teuchos::rcp(this,false)));
+    paramLib->template addEntry<ScalarT>(name, tmp);
+  }
 }
 
 template <typename ScalarT>

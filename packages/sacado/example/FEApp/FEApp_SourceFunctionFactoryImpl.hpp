@@ -31,11 +31,13 @@
 #include "Teuchos_TestForException.hpp"
 #include "Sacado_ConfigDefs.h"
 #include "FEApp_QuadraticSourceFunction.hpp"
+#include "FEApp_CubicSourceFunction.hpp"
 
 template <typename ScalarT>
 FEApp::SourceFunctionFactory<ScalarT>::SourceFunctionFactory(
-	    const Teuchos::RCP<Teuchos::ParameterList>& funcParams_) :
-  funcParams(funcParams_)
+	    const Teuchos::RCP<Teuchos::ParameterList>& funcParams_,
+	    const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib_) :
+  funcParams(funcParams_), paramLib(paramLib_)
 {
 }
 
@@ -49,7 +51,14 @@ FEApp::SourceFunctionFactory<ScalarT>::create()
   if (method == "Quadratic") {
     double factor = funcParams->get("Nonlinear Factor", 1.0);
     strategy = 
-      Teuchos::rcp(new FEApp::QuadraticSourceFunction<ScalarT>(factor));
+      Teuchos::rcp(new FEApp::QuadraticSourceFunction<ScalarT>(factor,
+							       paramLib));
+  }
+  else if (method == "Cubic") {
+    double factor = funcParams->get("Nonlinear Factor", 1.0);
+    strategy = 
+      Teuchos::rcp(new FEApp::CubicSourceFunction<ScalarT>(factor,
+							   paramLib));
   }
   else {
     TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,

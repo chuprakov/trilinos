@@ -37,6 +37,8 @@
 
 #include "FEApp_AbstractSourceFunction.hpp"
 
+#include "Sacado_ScalarParameterLibrary.hpp"
+
 namespace FEApp {
 
   /*!
@@ -48,7 +50,8 @@ namespace FEApp {
 
     //! Default constructor
     SourceFunctionFactory(
-	       const Teuchos::RCP<Teuchos::ParameterList>& funcParams);
+	       const Teuchos::RCP<Teuchos::ParameterList>& funcParams,
+	       const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib);
 
     //! Destructor
     virtual ~SourceFunctionFactory() {}
@@ -68,6 +71,9 @@ namespace FEApp {
 
     //! Parameter list specifying what strategy to create
     Teuchos::RCP<Teuchos::ParameterList> funcParams;
+
+    //! Parameter library
+    Teuchos::RCP<Sacado::ScalarParameterLibrary> paramLib;
 
   };
 
