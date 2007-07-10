@@ -218,7 +218,8 @@ FEApp::JacobianOp::elementPost(
       row = static_cast<int>(e.nodeGID(node_row)*neqn + eq_row);
 
       // Sum residual
-      f->SumIntoGlobalValue(row, 0, elem_f[lrow].val());
+      if (f != Teuchos::null)
+	f->SumIntoGlobalValue(row, 0, elem_f[lrow].val());
 	
       // Check derivative array is nonzero
       if (elem_f[lrow].hasFastAccess()) {
@@ -299,10 +300,12 @@ FEApp::JacobianOp::nodePost(const FEApp::NodeBC& bc,
     row = static_cast<int>(firstDOF + offsets[eq_row]);
     
     // Replace residual
-    if (bc.isOwned())
-      f->ReplaceGlobalValue(row, 0, node_f[offsets[eq_row]].val());
-    else if (bc.isShared())
-      f->ReplaceGlobalValue(row, 0, 0.0);
+    if (f != Teuchos::null) {
+      if (bc.isOwned())
+	f->ReplaceGlobalValue(row, 0, node_f[offsets[eq_row]].val());
+      else if (bc.isShared())
+	f->ReplaceGlobalValue(row, 0, 0.0);
+    }
 
     // Always zero out row (This takes care of the not-owned case)
     if (bc.isOwned() || bc.isShared()) {
@@ -356,7 +359,11 @@ FEApp::TangentOp::TangentOp(
   Vp(Vp_),
   f(overlapped_f),
   JV(overlapped_JV),
-  fp(overlapped_fp)
+  fp(overlapped_fp),
+  num_cols_x(0),
+  num_cols_p(0),
+  num_cols_tot(0),
+  param_offset(0)
 {
   if (Vx != Teuchos::null)
     num_cols_x = Vx->NumVectors();

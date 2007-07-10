@@ -140,8 +140,10 @@ FEApp::ModelEvaluator::createOutArgs() const
 {
   OutArgsSetup outArgs;
   outArgs.setModelEvalDescription(this->description());
+  outArgs.set_Np_Ng(1, 0); // 1 parameter vector
   outArgs.setSupports(OUT_ARG_f,true);
   outArgs.setSupports(OUT_ARG_W,true);
+  outArgs.setSupports(OUT_ARG_DfDp, 0, DerivativeSupport(DERIV_MV_BY_COL));
   outArgs.set_W_properties(
     DerivativeProperties(
       DERIV_LINEARITY_UNKNOWN ,DERIV_RANK_FULL ,true)
@@ -178,6 +180,9 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
   //
   Teuchos::RCP<Epetra_Vector> f_out = outArgs.get_f();
   Teuchos::RCP<Epetra_Operator> W_out = outArgs.get_W();
+  Teuchos::RCP<Epetra_MultiVector> dfdp_out;
+  if (outArgs.Np() > 0)
+    dfdp_out = outArgs.get_DfDp(0).getMultiVector();
 
   // Cast W to a CrsMatrix, throw an exception if this fails
   Teuchos::RCP<Epetra_CrsMatrix> W_out_crs = 
@@ -186,16 +191,26 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
   //
   // Compute the functions
   //
-  if(f_out != Teuchos::null && W_out != Teuchos::null) {
-    app->computeGlobalJacobian(alpha, beta, x_dot, x, *sacado_param_vec,
-			       *f_out, *W_out_crs);
+  if(W_out != Teuchos::null) {
+    app->computeGlobalJacobian(alpha, beta, x_dot, x, sacado_param_vec.get(),
+			       f_out.get(), *W_out_crs);
+  }
+  else if (dfdp_out != Teuchos::null) {
+    Teuchos::Array<int> p_indexes = 
+      outArgs.get_DfDp(0).getDerivativeMultiVector().getParamIndexes();
+    unsigned int n_params = p_indexes.size();
+    Teuchos::Array<std::string> p_names(n_params);
+    for (unsigned int i=0; i<n_params; i++)
+      p_names[i] = (*param_names)[p_indexes[i]];
+    Sacado::ScalarParameterVector p_vec;
+    app->getParamLib()->fillVector(p_names, p_vec);
+    for (unsigned int i=0; i<p_vec.size(); i++)
+      p_vec[i].baseValue = (*p)[p_indexes[i]];
+  
+    app->computeGlobalTangent(0.0, 0.0, false, x_dot, x, &p_vec,
+			      NULL, NULL, f_out.get(), NULL, dfdp_out.get());
   }
   else if(f_out != Teuchos::null ) {
-    app->computeGlobalResidual(x_dot, x, *sacado_param_vec, *f_out);
-  }
-  else if(W_out != Teuchos::null ) {
-    Epetra_Vector f(x.Map());
-    app->computeGlobalJacobian(alpha, beta, x_dot, x, *sacado_param_vec, 
-			       f, *W_out_crs);
+    app->computeGlobalResidual(x_dot, x, sacado_param_vec.get(), *f_out);
   }
 }

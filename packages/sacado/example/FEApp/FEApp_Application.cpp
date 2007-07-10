@@ -134,7 +134,7 @@ void
 FEApp::Application::computeGlobalResidual(
 				    const Epetra_Vector* xdot,
 				    const Epetra_Vector& x,
-				    const Sacado::ScalarParameterVector& p,
+				    const Sacado::ScalarParameterVector* p,
 				    Epetra_Vector& f)
 {
   // Scatter x to the overlapped distrbution
@@ -145,8 +145,10 @@ FEApp::Application::computeGlobalResidual(
     overlapped_xdot->Import(*xdot, *importer, Insert);
 
   // Set parameters
-  for (unsigned int i=0; i<p.size(); ++i) {
-    p[i].family->setRealValueForAllTypes(p[i].baseValue);
+  if (p != NULL) {
+    for (unsigned int i=0; i<p->size(); ++i) {
+      (*p)[i].family->setRealValueForAllTypes((*p)[i].baseValue);
+    }
   }
 
   // Zero out overlapped residual
@@ -176,8 +178,8 @@ FEApp::Application::computeGlobalJacobian(
 				      double alpha, double beta,
 				      const Epetra_Vector* xdot,
 				      const Epetra_Vector& x,
-				      const Sacado::ScalarParameterVector& p,
-				      Epetra_Vector& f,
+				      const Sacado::ScalarParameterVector* p,
+				      Epetra_Vector* f,
 				      Epetra_CrsMatrix& jac)
 {
   // Scatter x to the overlapped distrbution
@@ -188,13 +190,19 @@ FEApp::Application::computeGlobalJacobian(
     overlapped_xdot->Import(*xdot, *importer, Insert);
 
   // Set parameters
-  for (unsigned int i=0; i<p.size(); ++i) {
-    p[i].family->setRealValueForAllTypes(p[i].baseValue);
+  if (p != NULL) {
+    for (unsigned int i=0; i<p->size(); ++i) {
+      (*p)[i].family->setRealValueForAllTypes((*p)[i].baseValue);
+    }
   }
 
   // Zero out overlapped residual
-  overlapped_f->PutScalar(0.0);
-  f.PutScalar(0.0);
+  Teuchos::RCP<Epetra_Vector> overlapped_ff;
+  if (f != NULL) {
+    overlapped_ff = overlapped_f;
+    overlapped_ff->PutScalar(0.0);
+    f->PutScalar(0.0);
+  }
 
   // Zero out Jacobian
   overlapped_jac->PutScalar(0.0);
@@ -203,7 +211,7 @@ FEApp::Application::computeGlobalJacobian(
   // Create Jacobian init/post op
   Teuchos::RCP<FEApp::JacobianOp> op;
   op = Teuchos::rcp(new FEApp::JacobianOp(alpha, beta, overlapped_xdot, 
-					  overlapped_x, overlapped_f, 
+					  overlapped_x, overlapped_ff, 
 					  overlapped_jac));
 
   // Get template PDE instantiation
@@ -217,7 +225,8 @@ FEApp::Application::computeGlobalJacobian(
   globalFill.computeGlobalFill(*op);
 
   // Assemble global residual
-  f.Export(*overlapped_f, *exporter, Add);
+  if (f != NULL)
+    f->Export(*overlapped_f, *exporter, Add);
 
   // Assemble global Jacobian
   jac.Export(*overlapped_jac, *exporter, Add);
@@ -279,9 +288,9 @@ FEApp::Application::computeGlobalTangent(
   }
 
   Teuchos::RCP<const Teuchos::SerialDenseMatrix<int,double> > vp =
-    Teuchos::rcp(Vp);
+    Teuchos::rcp(Vp, false);
   Teuchos::RCP<Sacado::ScalarParameterVector> params = 
-    Teuchos::rcp(p);
+    Teuchos::rcp(p, false);
 
   // Create Jacobian init/post op
   Teuchos::RCP<FEApp::TangentOp> op;

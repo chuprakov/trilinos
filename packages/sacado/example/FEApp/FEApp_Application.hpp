@@ -87,7 +87,7 @@ namespace FEApp {
      */
     void computeGlobalResidual(const Epetra_Vector* xdot,
 			       const Epetra_Vector& x,
-			       const Sacado::ScalarParameterVector& p,
+			       const Sacado::ScalarParameterVector* p,
 			       Epetra_Vector& f);
 
     //! Compute global Jacobian
@@ -97,8 +97,8 @@ namespace FEApp {
     void computeGlobalJacobian(double alpha, double beta,
 			       const Epetra_Vector* xdot,
 			       const Epetra_Vector& x,
-			       const Sacado::ScalarParameterVector& p,
-			       Epetra_Vector& f,
+			       const Sacado::ScalarParameterVector* p,
+			       Epetra_Vector* f,
 			       Epetra_CrsMatrix& jac);
 
     //! Compute global Tangent
