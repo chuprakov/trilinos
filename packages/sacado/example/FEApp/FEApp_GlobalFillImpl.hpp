@@ -70,8 +70,10 @@ template <typename ScalarT>
 FEApp::GlobalFill<ScalarT>::
 ~GlobalFill()
 {
-  if (transient)
+  if (transient) {
     delete elem_xdot;
+    delete node_xdot;
+  }
 }
 
 template <typename ScalarT>
