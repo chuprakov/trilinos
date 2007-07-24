@@ -29,7 +29,6 @@
 // ***********************************************************************
 // @HEADER
 #include "Teuchos_TestForException.hpp"
-#include "Sacado_ConfigDefs.h"
 #include "FEApp_DiscretizationFactory.hpp"
 #include "FEApp_CZeroDiscretization.hpp"
 

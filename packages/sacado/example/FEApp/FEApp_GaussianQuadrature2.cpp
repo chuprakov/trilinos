@@ -30,7 +30,7 @@
 // @HEADER
 
 #include "FEApp_GaussianQuadrature2.hpp"
-#include "Sacado_ConfigDefs.h" // for sqrt
+#include <cmath> // for sqrt
 
 FEApp::GaussianQuadrature2::GaussianQuadrature2() :
   qp(2),

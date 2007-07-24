@@ -29,7 +29,6 @@
 // ***********************************************************************
 // @HEADER
 #include "Teuchos_TestForException.hpp"
-#include "Sacado_ConfigDefs.h"
 #include "FEApp_QuadratureFactory.hpp"
 #include "FEApp_GaussianQuadrature2.hpp"
 

@@ -29,7 +29,6 @@
 // ***********************************************************************
 // @HEADER
 #include "Teuchos_TestForException.hpp"
-#include "Sacado_ConfigDefs.h"
 #include "FEApp_ElementFactory.hpp"
 #include "FEApp_LinearElement.hpp"
 
