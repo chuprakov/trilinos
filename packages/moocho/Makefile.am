@@ -100,8 +100,14 @@ EXAMPLE_SUBDIR=example
 endif
 
 if BUILD_TESTS
-tests:
+tests: examples
+	@echo ""
+	@echo "Now building moocho tests."
+	@echo ""
 	cd $(top_builddir)/test && $(MAKE)
+	@echo ""
+	@echo "Finished building moocho tests."
+	@echo ""
 else
 tests:
 	@echo "moocho tests were disabled at configure time"
@@ -109,7 +115,13 @@ endif
 
 if BUILD_EXAMPLES
 examples:
+	@echo ""
+	@echo "Now building moocho examples."
+	@echo ""
 	cd $(top_builddir)/example && $(MAKE) && cd ../thyra/example && $(MAKE)
+	@echo ""
+	@echo "Finished building moocho examples."
+	@echo ""
 
 install-examples:
 	cd $(top_builddir)/example && $(MAKE) install && cd ../thyra/example && $(MAKE) install
