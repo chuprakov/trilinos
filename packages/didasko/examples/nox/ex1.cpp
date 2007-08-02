@@ -98,29 +98,21 @@ public:
       throw;
     }
   
-    int NumMyElements = J->Map().NumMyElements();
-    int * MyGlobalElements = J->Map().MyGlobalElements();
-    int indices[2];
-    double values[2];
-    indices[0] = 0; indices[1] = 1;
-    
-    for( int i=0 ; i<NumMyElements ; ++i ) {
-      switch( MyGlobalElements[i] ) {
-      case 0:
-        values[0] = 2.0 * x[0];
-	values[1] = 2.0 * x[1];
-        J->ReplaceGlobalValues(0, 2, values, indices );
-	break;
-      case 1:
-        values[0] = - 2.0 * x[0];
-	values[1] = 1.0;
-        J->ReplaceGlobalValues(1, 2, values, indices );
-	break;
-      default:
-        cerr << "*ERR*" << endl;
-	exit( EXIT_FAILURE );	
-      }
-    }
+    std::vector<int> indices(2);
+    std::vector<double> values(2);
+
+    indices[0] = 0; 
+    indices[1] = 1;
+
+    // Row 0
+    values[0] = 2.0 * x[0];
+    values[1] = 2.0 * x[1];
+    J->ReplaceGlobalValues(0, 2, &values[0], &indices[0]);
+
+    // Row 1
+    values[0] = - 2.0 * x[0];
+    values[1] = 1.0;
+    J->ReplaceGlobalValues(1, 2, &values[0], &indices[0]);
 
     return true;
   }
@@ -227,33 +219,25 @@ int main( int argc, char **argv )
   lsParams.set("Output Frequency", 50);    
   lsParams.set("Aztec Preconditioner", "ilu"); 
 
-  // define the Jacobian matrix
+  // Build the Jacobian matrix
   Teuchos::RCP<Epetra_CrsMatrix> A = 
-    Teuchos::rcp( new Epetra_CrsMatrix(Copy,Map,2));
-  int NumMyElements = A.get()->Map().NumMyElements();
-  int * MyGlobalElements = A.get()->Map().MyGlobalElements();
-  int indices[2];
-  double values[2];
+    Teuchos::rcp(new Epetra_CrsMatrix(Copy,Map,2));
+  {
+    std::vector<int> indices(2);
+    std::vector<double> values(2);
+    indices[0]=0; 
+    indices[1]=1;
     
-  indices[0]=0; indices[1]=1;
-  
-  for( int i=0 ; i<NumMyElements ; ++i ) {
-      switch( MyGlobalElements[i] ) {
-      case 0:
-        values[0] = 2.0 * InitialGuess[0];
-	values[1] = 2.0 * InitialGuess[1];
-        A.get()->InsertGlobalValues(0, 2, values, indices );
-	break;
-      case 1:
-        values[0] = - 2.0 * InitialGuess[0];
-	values[1] = 1.0;
-        A.get()->InsertGlobalValues(1, 2, values, indices );
-	break;
-    }
-  }
-
-  A.get()->FillComplete();  
-
+    values[0] = 2.0 * InitialGuess[0];
+    values[1] = 2.0 * InitialGuess[1];
+    A.get()->InsertGlobalValues(0, 2, &values[0], &indices[0]);
+    values[0] = - 2.0 * InitialGuess[0];
+    values[1] = 1.0;
+    A.get()->InsertGlobalValues(1, 2, &values[0], &indices[0]);
+    
+    A.get()->FillComplete();
+  }  
+    
   Teuchos::RCP<NOX::Epetra::Interface::Required> iReq = interface;
   Teuchos::RCP<NOX::Epetra::Interface::Jacobian> iJac = interface;
   Teuchos::RCP<NOX::Epetra::LinearSystemAztecOO> linSys = 
@@ -261,7 +245,7 @@ int main( int argc, char **argv )
 						      iReq,
 						      iJac, A, 
 						      InitialGuess));
-
+  
   // Need a NOX::Epetra::Vector for constructor
   NOX::Epetra::Vector noxInitGuess(InitialGuess, NOX::DeepCopy);
   Teuchos::RCP<NOX::Epetra::Group> grpPtr = 
@@ -281,10 +265,11 @@ int main( int argc, char **argv )
 					    testNormF, testMaxIters));
 
   // Create the solver
-  NOX::Solver::Manager solver(grpPtr, combo, nlParamsPtr);
+  Teuchos::RCP<NOX::Solver::Generic> solver = 
+    NOX::Solver::buildSolver(grpPtr, combo, nlParamsPtr);
 
   // Solve the nonlinesar system
-  NOX::StatusTest::StatusType status = solver.solve();
+  NOX::StatusTest::StatusType status = solver->solve();
 
   if( NOX::StatusTest::Converged  != status )
     cout << "\n" << "-- NOX solver converged --" << "\n";
@@ -293,11 +278,11 @@ int main( int argc, char **argv )
 
   // Print the answer
   cout << "\n" << "-- Parameter List From Solver --" << "\n";
-  solver.getList().print(cout);
+  solver->getList().print(cout);
 
   // Get the Epetra_Vector with the final solution from the solver
   const NOX::Epetra::Group & finalGroup = 
-    dynamic_cast<const NOX::Epetra::Group&>(solver.getSolutionGroup());
+    dynamic_cast<const NOX::Epetra::Group&>(solver->getSolutionGroup());
   const Epetra_Vector & finalSolution = 
       (dynamic_cast<const NOX::Epetra::Vector&>(finalGroup.getX())).getEpetraVector();
 

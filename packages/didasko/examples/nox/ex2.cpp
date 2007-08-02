@@ -423,10 +423,11 @@ int main( int argc, char **argv )
 					    testNormF, testMaxIters));
 
   // Create the solver
-  NOX::Solver::Manager solver(grpPtr, combo, nlParamsPtr);
+  Teuchos::RCP<NOX::Solver::Generic> solver = 
+    NOX::Solver::buildSolver(grpPtr, combo, nlParamsPtr);
 
   // Solve the nonlinesar system
-  NOX::StatusTest::StatusType status = solver.solve();
+  NOX::StatusTest::StatusType status = solver->solve();
 
   if( NOX::StatusTest::Converged  != status )
     cout << "\n" << "-- NOX solver converged --" << "\n";
@@ -435,11 +436,11 @@ int main( int argc, char **argv )
 
   // Print the answer
   cout << "\n" << "-- Parameter List From Solver --" << "\n";
-  solver.getList().print(cout);
+  solver->getList().print(cout);
 
   // Get the Epetra_Vector with the final solution from the solver
   const NOX::Epetra::Group & finalGroup = 
-    dynamic_cast<const NOX::Epetra::Group&>(solver.getSolutionGroup());
+    dynamic_cast<const NOX::Epetra::Group&>(solver->getSolutionGroup());
   const Epetra_Vector & finalSolution = 
       (dynamic_cast<const NOX::Epetra::Vector&>(finalGroup.getX())).getEpetraVector();
 
