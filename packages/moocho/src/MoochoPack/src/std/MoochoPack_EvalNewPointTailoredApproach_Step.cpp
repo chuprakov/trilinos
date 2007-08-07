@@ -86,7 +86,9 @@ bool EvalNewPointTailoredApproach_Step::do_step(
     nlp.initialize(algo.algo_cntr().check_results());
 
   Teuchos::VerboseObjectTempState<NLP>
-    nlpOutputTempState(rcp(&nlp,false),Teuchos::getFancyOStream(rcp(&out,false)),convertToVerbLevel(olevel));
+    nlpOutputTempState(
+      rcp(&nlp,false), Teuchos::getFancyOStream(rcp(&out,false)),
+      convertToVerbLevel(olevel) );
 
   const Range1D
     var_dep = nlp.var_dep(),

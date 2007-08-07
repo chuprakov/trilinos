@@ -190,7 +190,7 @@ void MoochoTrackerConsoleStd::output_iteration(const Algorithm& p_algo) const
     o << " " << setprecision(p2_) << right << setw(w_p2_) << s.alpha().get_k(0);
   else
     o << " " << right << setw(w_p2_) << "-";
-  // time(s)
+  // time(sec)
   o << " " << setprecision(7) << right << setw(w_p3_) << timer_.read();
 
   o << std::endl;
@@ -316,7 +316,7 @@ void MoochoTrackerConsoleStd::output_final( const Algorithm& p_algo
     o << " " << setprecision(p2_) << right << setw(w_p2_) << s.alpha().get_k(0);
   else
     o << " " << right << setw(w_p2_) << "-";
-  // time(s)
+  // time(sec)
   o << " " << setprecision(7) << right << setw(w_p3_) << timer_.read();
 
   o << endl;
@@ -421,7 +421,7 @@ void MoochoTrackerConsoleStd::print_header(const NLPAlgoState &s
     << " " << left << setw(w_p2_) << "||Zpz||2"
     << " " << left << setw(w_p2_) << "||d||inf"
     << " " << left << setw(w_p2_) << "alpha"
-    << " " << left << setw(w_p3_) << "time(s)"
+    << " " << left << setw(w_p3_) << "time(sec)"
     << endl
     << " " << right << ul_i4_    // "k"
     << " " << right << ul_p3_    // "f"

@@ -196,7 +196,7 @@ protected:
     );
 
   /** \brief Update the initial guess and bounds . */
-  void updateInitialGuessAndBounds();
+  void updateInitialGuessAndBounds() const;
 
   /** \brief . */
   void assert_is_initialized() const;
@@ -258,6 +258,7 @@ protected:
   VectorSpaceThyra_ptr_t              space_c_;      // Space for the constraints
   NLPFirstOrder::mat_fcty_ptr_t       factory_Gc_;   // Factory for Gc
   NLPFirstOrder::basis_sys_ptr_t      basis_sys_;    // The basis system
+  mutable bool                        x_guess_bounds_updated_;
   VectorSpace::vec_mut_ptr_t          xinit_;        // Initial guess.
   VectorSpace::vec_mut_ptr_t          xl_;           // lower bounds.
   VectorSpace::vec_mut_ptr_t          xu_;           // upper bounds.

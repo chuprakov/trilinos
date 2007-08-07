@@ -338,6 +338,7 @@
     COMM = SERIAL, MPI(1);
 }
 
+# Test with cramped bounds
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
     ARGS = --x00=0.5 --xU0=0.6,
@@ -347,6 +348,49 @@
            --x00=2.0 --xL0=1.1 --x01=2.0 --xL1=1.1,
            --x00=0.5 --xU0=0.6 --x01=0.5 --xU1=0.6;
     COMM = SERIAL, MPI(1);
+}
+
+
+#
+# Test parameter lumping
+#
+
+(FRAMEWORK,INSTALL,MoochoLumpedParams) {
+    TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/test_lumped_param_model.py;
+    COMM = SERIAL;
+    EXIT-STATUS = STRING-COMPARISON;
+}
+
+# rabartl: Above, we can not run this script with MPI since it is not an MPI
+# program.  Instead, we just run it one time by itself below just to make sure
+# that it runs with MPI.
+
+# This test shows that with a full-rank basis, you can solve the optimization
+# problem for the the same as without the parameter lumping.  In this problem
+# we compute the original parameters p_orig={2.0,0.0} using the affine
+# approximation parameters p=x(var_indep)={2.12132,-4.94975}.  This is good
+# confirmation that this capability is working correctly!
+(FRAMEWORK,INSTALL,MoochoLumpedParams,MoochoLumpedParamsBasis2) {
+    TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
+    ARGS = 
+      --p00=4.0 --p01=-5.0 \
+      --extra-moocho-thyra-params="
+        <ParameterList>
+          <Parameter name=\"NLP Type\" type=\"std::string\" value=\"Direct\"/>
+          <Parameter name=\"Use Parameter Lumping\" type=\"bool\" value=\"1\"/>
+          <Parameter name=\"Show Model Evaluator Trace\" type=\"bool\" value=\"0\"/>
+          <ParameterList name=\"Lumped Parameters Settings\">
+            <Parameter name=\"Number of Basis Columns\" type=\"int\" value=\"1\"/>
+            <Parameter name=\"Ignore Parameter Bounds\" type=\"bool\" value=\"1\"/>
+            <Parameter name=\"Dump Basis Matrix\" type=\"bool\" value=\"1\"/>
+            <ParameterList name=\"VerboseObject\">
+              <Parameter name=\"Verbosity Level\" type=\"std::string\" value=\"high\"/>
+            </ParameterList>
+          </ParameterList>
+          <Parameter name=\"Parameters Solution File Base Name\" type=\"std::string\" value=\"p.out\"/>
+          <Parameter name=\"State Solution File Base Name\" type=\"std::string\" value=\"x.out\"/>
+        </ParameterList>";
+    COMM = MPI(1);
 }
 
 #

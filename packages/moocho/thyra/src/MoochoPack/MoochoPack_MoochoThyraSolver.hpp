@@ -40,6 +40,9 @@
 
 namespace MoochoPack {
 
+/** \brief . */
+using Teuchos::RCP;
+
 /** \brief MOOCHO NLP Solver class for models represented through
  * <tt>Thyra::ModelEvaluator</tt>.
  *
@@ -195,15 +198,15 @@ public:
   //@{
 
   /** \brief . */
-  void setParameterList(Teuchos::RCP<Teuchos::ParameterList> const& paramList);
+  void setParameterList(RCP<Teuchos::ParameterList> const& paramList);
   /** \brief . */
-  Teuchos::RCP<Teuchos::ParameterList> getParameterList();
+  RCP<Teuchos::ParameterList> getParameterList();
   /** \brief . */
-  Teuchos::RCP<Teuchos::ParameterList> unsetParameterList();
+  RCP<Teuchos::ParameterList> unsetParameterList();
   /** \brief . */
-  Teuchos::RCP<const Teuchos::ParameterList> getParameterList() const;
+  RCP<const Teuchos::ParameterList> getParameterList() const;
   /** \brief . */
-  Teuchos::RCP<const Teuchos::ParameterList> getValidParameters() const;
+  RCP<const Teuchos::ParameterList> getValidParameters() const;
 
   //@}
 
@@ -229,17 +232,17 @@ public:
   
   /** \brief . */
   void setModel(
-    const Teuchos::RCP<Thyra::ModelEvaluator<value_type> > &origModel
-    ,const int                                                     p_idx  = 0
-    ,const int                                                     g_idx  = 0
+    const RCP<Thyra::ModelEvaluator<value_type> > &origModel,
+    const int p_idx  = 0,
+    const int g_idx  = 0
     );
   
   /** \brief . */
-  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >
+  const RCP<Thyra::ModelEvaluator<value_type> >
   getOrigModel() const;
   
   /** \brief . */
-  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >
+  const RCP<Thyra::ModelEvaluator<value_type> >
   getOuterModel() const;
     
   /** \brief . */
@@ -249,7 +252,7 @@ public:
     
   /** \brief . */
   void setInitialGuess(
-    const Teuchos::RCP<const Thyra::ModelEvaluatorBase::InArgs<value_type> > &initialGuess
+    const RCP<const Thyra::ModelEvaluatorBase::InArgs<value_type> > &initialGuess
     );
     
   /** \brief . */
@@ -300,39 +303,40 @@ private:
 
   typedef value_type Scalar;
 
-  MoochoSolver                                               solver_;
-  
-  Teuchos::RCP<Thyra::ModelEvaluator<value_type> >   origModel_;
-  int                                                        p_idx_;
-  int                                                        g_idx_;
+  MoochoSolver solver_;
+ 
+  RCP<Thyra::ModelEvaluator<value_type> > origModel_;
+  int p_idx_;
+  int g_idx_;
 
   mutable Thyra::ParameterDrivenMultiVectorInput<value_type> x_reader_;
   mutable Thyra::ParameterDrivenMultiVectorInput<value_type> p_reader_;
   mutable Thyra::ParameterDrivenMultiVectorInput<value_type> p_l_reader_;
   mutable Thyra::ParameterDrivenMultiVectorInput<value_type> p_u_reader_;
 
-  Teuchos::RCP<Teuchos::ParameterList>               paramList_;
-  
-  Teuchos::RCP<Thyra::DefaultNominalBoundsOverrideModelEvaluator<value_type> >
+  RCP<Teuchos::ParameterList> paramList_;
+ 
+  RCP<Thyra::DefaultNominalBoundsOverrideModelEvaluator<value_type> >
   nominalModel_;
-  
-  Teuchos::RCP<Thyra::DefaultFinalPointCaptureModelEvaluator<value_type> >
+ 
+  RCP<Thyra::DefaultFinalPointCaptureModelEvaluator<value_type> >
   finalPointModel_;
 
-  Teuchos::RCP<Thyra::ModelEvaluator<value_type> > outerModel_;
+  RCP<Thyra::ModelEvaluator<value_type> > outerModel_;
 
-  ESolveMode          solveMode_;
-  ENLPType            nlpType_;
-  bool                nonlinearlyElimiateStates_;
-  bool                use_finite_diff_for_obj_;
-  bool                use_finite_diff_for_con_;
-  double              fwd_newton_tol_;
-  int                 fwd_newton_max_iters_;
-  bool                useInvObjFunc_;
-  std::string         outputFileTag_;
-  bool                showModelEvaluatorTrace_;
-  std::string         stateSoluFileBase_;
-  std::string         paramSoluFileBase_;
+  ESolveMode solveMode_;
+  ENLPType nlpType_;
+  bool nonlinearlyElimiateStates_;
+  bool use_finite_diff_for_obj_;
+  bool use_finite_diff_for_con_;
+  double fwd_newton_tol_;
+  int fwd_newton_max_iters_;
+  bool useInvObjFunc_;
+  bool useParameterLumping_;
+  std::string outputFileTag_;
+  bool showModelEvaluatorTrace_;
+  std::string stateSoluFileBase_;
+  std::string paramSoluFileBase_;
 
 };
 

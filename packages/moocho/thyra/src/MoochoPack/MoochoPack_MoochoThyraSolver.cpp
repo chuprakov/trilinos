@@ -33,6 +33,7 @@
 #include "Thyra_DefaultStateEliminationModelEvaluator.hpp"
 #include "Thyra_DefaultEvaluationLoggerModelEvaluator.hpp"
 #include "Thyra_DefaultInverseModelEvaluator.hpp"
+#include "Thyra_DefaultLumpedParameterModelEvaluator.hpp"
 #include "Thyra_DefaultSpmdMultiVectorFileIO.hpp"
 #include "Thyra_DampenedNewtonNonlinearSolver.hpp"
 #include "Thyra_ModelEvaluatorHelpers.hpp"
@@ -122,10 +123,15 @@ const double FwdNewtonTol_default = -1.0;
 const std::string FwdNewtonMaxIters_name = "Forward Newton Max Iters";
 const int FwdNewtonMaxIters_default = 20;
 
-const std::string UseBuiltInverseObjectiveFunction_name = "Use Built-in Inverse Objective Function";
-const bool UseBuiltInverseObjectiveFunction_default = false;
+const std::string UseBuiltInInverseObjectiveFunction_name = "Use Built-in Inverse Objective Function";
+const bool UseBuiltInInverseObjectiveFunction_default = false;
 
 const std::string InverseObjectiveFunctionSettings_name = "Inverse Objective Function Settings";
+
+const std::string UseParameterLumping_name = "Use Parameter Lumping";
+const bool UseParameterLumping_default = false;
+
+const std::string LumpedParametersSettings_name = "Lumped Parameters Settings";
 
 const std::string OutputFileTag_name = "Output File Tag";
 const std::string OutputFileTag_default = "";
@@ -177,6 +183,7 @@ MoochoThyraSolver::MoochoThyraSolver(
   ,fwd_newton_tol_(-1.0)
   ,fwd_newton_max_iters_(20)
   ,useInvObjFunc_(false)
+  ,useParameterLumping_(false)
   ,outputFileTag_("")
   ,showModelEvaluatorTrace_(false)
   ,stateSoluFileBase_("")
@@ -264,7 +271,9 @@ void MoochoThyraSolver::setParameterList(
   fwd_newton_max_iters_ = paramList_->get(
     FwdNewtonMaxIters_name,FwdNewtonMaxIters_default);
   useInvObjFunc_ = paramList_->get(
-    UseBuiltInverseObjectiveFunction_name,UseBuiltInverseObjectiveFunction_default);
+    UseBuiltInInverseObjectiveFunction_name,UseBuiltInInverseObjectiveFunction_default);
+  useParameterLumping_ = paramList_->get(
+    UseParameterLumping_name, UseParameterLumping_default);
   outputFileTag_ = paramList->get(
     OutputFileTag_name,OutputFileTag_default);
   solver_.set_output_file_tag(outputFileTag_);
@@ -366,7 +375,7 @@ MoochoThyraSolver::getValidParameters() const
       "solver in eliminating the state equations/variables."
       );
     pl->set(
-      UseBuiltInverseObjectiveFunction_name,UseBuiltInverseObjectiveFunction_default
+      UseBuiltInInverseObjectiveFunction_name,UseBuiltInInverseObjectiveFunction_default
       ,"Use a built-in form of a simple inverse objection function instead\n"
       "of a a response function contained in the underlying model evaluator\n"
       "object itself.  The settings are contained in the sublist\n"
@@ -381,8 +390,26 @@ MoochoThyraSolver::getValidParameters() const
       pl->sublist(
         InverseObjectiveFunctionSettings_name,false
         ,"Settings for the built-in inverse objective function.\n"
-        "See the outer parameter \""+UseBuiltInverseObjectiveFunction_name+"\"."
+        "See the outer parameter \""+UseBuiltInInverseObjectiveFunction_name+"\"."
         ).setParameters(*inverseModel->getValidParameters());
+    }
+    pl->set(
+      UseParameterLumping_name,UseParameterLumping_default,
+      "Use a reduced basis to lump optimization parameters as\n"
+      "p_orig = P_basis * p.  If set to true, then the settings\n"
+      "in \""+LumpedParametersSettings_name+"\" determine how the\n"
+      "parameter basis is set.  This feature can be used to safely\n"
+      "regularize a problem if there are linearly dependent parameters\n"
+      "and will generally speed up the optimiztation algorithms."
+      );
+    {
+      Teuchos::RCP<Thyra::DefaultLumpedParameterModelEvaluator<Scalar> >
+        lumpedParamModel = rcp(new Thyra::DefaultLumpedParameterModelEvaluator<Scalar>);
+      pl->sublist(
+        LumpedParametersSettings_name,false
+        ,"Settings for parameter lumping.\n"
+        "See the outer parameter \""+UseParameterLumping_name+"\"."
+        ).setParameters(*lumpedParamModel->getValidParameters());
     }
     pl->set(OutputFileTag_name,OutputFileTag_default,
       "A tag that is attached to every output file that is created by the\n"
@@ -449,14 +476,14 @@ const MoochoSolver& MoochoThyraSolver::getSolver() const
 // Model specification, setup, solve, and solution extraction.
 
 void MoochoThyraSolver::setModel(
-  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> > &origModel
-  ,const int                                                     p_idx
-  ,const int                                                     g_idx
+  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> > &origModel,
+  const int p_idx,
+  const int g_idx
   )
 {
 
   using Teuchos::rcp;
-  using Teuchos::RCP;
+  using Teuchos::sublist;
   using NLPInterfacePack::NLP;
   using NLPInterfacePack::NLPDirectThyraModelEvaluator;
   using NLPInterfacePack::NLPFirstOrderThyraModelEvaluator;
@@ -474,10 +501,10 @@ void MoochoThyraSolver::setModel(
 
   outerModel_ = origModel_;
 
-  if(useInvObjFunc_) {
+  // Inverse objective (and parameter regularization)?
+  if (useInvObjFunc_) {
     Teuchos::RCP<Thyra::DefaultInverseModelEvaluator<Scalar> >
-      inverseModel
-      = rcp(new Thyra::DefaultInverseModelEvaluator<Scalar>(outerModel_));
+      inverseModel = Thyra::defaultInverseModelEvaluator<Scalar>(outerModel_);
     inverseModel->setVerbLevel(Teuchos::VERB_LOW);
     inverseModel->set_observationTargetIO(get_stateVectorIO());
     inverseModel->set_parameterBaseIO(get_parameterVectorIO());
@@ -487,6 +514,7 @@ void MoochoThyraSolver::setModel(
     g_idx_ = inverseModel->Ng()-1;
   }
   
+  // Evaluation loging
   Teuchos::RCP<std::ostream>
     modelEvalLogOut = Teuchos::fancyOStream(
       solver_.generate_output_file("ModelEvaluationLog")
@@ -500,17 +528,32 @@ void MoochoThyraSolver::setModel(
       );
   outerModel_ = loggerThyraModel; 
   
+  // Manipulating the nominal values
   nominalModel_
     = rcp(
       new Thyra::DefaultNominalBoundsOverrideModelEvaluator<Scalar>(outerModel_,Teuchos::null)
       );
   outerModel_ = nominalModel_; 
 
+  // Capturing the final point
   finalPointModel_
     = rcp(
       new Thyra::DefaultFinalPointCaptureModelEvaluator<value_type>(outerModel_)
       );
   outerModel_ = finalPointModel_;
+
+  // Parameter lumping?
+  if (useParameterLumping_) {
+    Teuchos::RCP<Thyra::DefaultLumpedParameterModelEvaluator<Scalar> >
+      lumpedParamModel = Thyra::defaultLumpedParameterModelEvaluator<Scalar>(outerModel_);
+    lumpedParamModel->setVerbLevel(Teuchos::VERB_LOW);
+    lumpedParamModel->setParameterList(
+      sublist(paramList_,LumpedParametersSettings_name));
+    outerModel_ = lumpedParamModel; 
+  }
+  // Note, above we put parameter lumping on the very top so that everything
+  // like the final point capture and the nominal bounds overrider deal with
+  // the original parameters, not the lumped parameters.
 
   //
   // Create the NLP
@@ -654,7 +697,11 @@ void MoochoThyraSolver::readInitialGuess(
       x_reader_.set_fileIO(this->get_stateVectorIO());
     Teuchos::VerboseObjectTempState<Thyra::ParameterDrivenMultiVectorInput<value_type> >
       vots_x_reader(rcp(&x_reader_,false),out,Teuchos::VERB_LOW);
-    initialGuess->set_x(x_reader_.readVector("initial guess for the state \'x\'"));
+    initialGuess->set_x(
+      readVectorOverride(
+        x_reader_,"initial guess for the state \'x\'",initialGuess->get_x()
+        )
+      );
   }
   if( origModel_->Np() > 0 ) {
     p_reader_.set_vecSpc(origModel_->get_p_space(p_idx_));
@@ -667,9 +714,25 @@ void MoochoThyraSolver::readInitialGuess(
     }
     Teuchos::VerboseObjectTempState<Thyra::ParameterDrivenMultiVectorInput<value_type> >
       vots_p_reader(rcp(&p_reader_,false),out,Teuchos::VERB_LOW);
-    initialGuess->set_p(p_idx_,p_reader_.readVector("initial guess for the parameters \'p\'"));
-    lowerBounds->set_p(p_idx_,p_l_reader_.readVector("lower bounds for the parameters \'p\'"));
-    upperBounds->set_p(p_idx_,p_u_reader_.readVector("upper bounds for the parameters \'p\'"));
+    initialGuess->set_p(
+      p_idx_,
+      readVectorOverride(
+        p_reader_,"initial guess for the parameters \'p\'",
+        initialGuess->get_p(p_idx_)
+        )
+      );
+    lowerBounds->set_p(
+      p_idx_,
+      readVectorOverride(
+        p_l_reader_,"lower bounds for the parameters \'p\'",lowerBounds->get_p(p_idx_)
+        )
+      );
+    upperBounds->set_p(
+      p_idx_,
+      readVectorOverride(
+        p_u_reader_,"upper bounds for the parameters \'p\'",upperBounds->get_p(p_idx_)
+        )
+      );
   }
   nominalModel_->setNominalValues(initialGuess);
   nominalModel_->setLowerBounds(lowerBounds);

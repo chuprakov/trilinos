@@ -395,7 +395,8 @@ int main( int argc, char* argv[] )
       for ( int i = 0; i < N; ++i ) {
         if ( ( useStatelessPeriodModel && i==0 ) || !useStatelessPeriodModel ) {
           RCP<Thyra::DefaultInverseModelEvaluator<Scalar> >
-            _inverseThyraModel = Thyra::inverseModelEvaluator<Scalar>(epetraThyraModel);
+            _inverseThyraModel = Thyra::defaultInverseModelEvaluator<Scalar>(
+              epetraThyraModel );
           _inverseThyraModel->setParameterList(invMEPL);
           _inverseThyraModel->set_observationMatchWeightingOp(H);
           _inverseThyraModel->set_parameterRegularizationWeightingOp(R_bar);

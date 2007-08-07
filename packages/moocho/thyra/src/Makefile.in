@@ -281,7 +281,7 @@ MOOCHO_PACK_THYRA_CPP = \
 
 @USING_GNUMAKE_FALSE@EXPORT_INCLUDES = $(MOOCHO_INCLUDES)
 @USING_GNUMAKE_TRUE@EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(MOOCHO_INCLUDES))
-AM_CPPFLAGS = $(EXPORT_INCLUDES)
+AM_CPPFLAGS = $(EXPORT_INCLUDES) -I$(top_srcdir)/../thyra/example/operator_vector
 
 # --------------------------------------------------------------------
 # Moocho library specifications

@@ -59,8 +59,8 @@ bool LineSearchDirect_Step::do_step(
   using LinAlgOpPack::V_VpV;
 
   NLPAlgo	&algo	= rsqp_algo(_algo);
-  NLPAlgoState	&s		= algo.rsqp_state();
-  NLP			&nlp	= algo.nlp();
+  NLPAlgoState	&s = algo.rsqp_state();
+  NLP	&nlp = algo.nlp();
 
   EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
   std::ostream& out = algo.track().journal_out();
@@ -70,6 +70,14 @@ bool LineSearchDirect_Step::do_step(
     using IterationPack::print_algorithm_step;
     print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
   }
+
+  Teuchos::VerboseObjectTempState<NLP>
+    nlpOutputTempState(
+      Teuchos::rcp(&nlp,false), Teuchos::getFancyOStream(Teuchos::rcp(&out,false)),
+      Teuchos::VERB_DEFAULT );
+  // Above, we don't want to litter the output with any trace from the NLP.
+  // However, if the user forces the verbosity level to be increased, then we
+  // want to set the stream so that it knows where to print to.
 
   const size_type
     m  = nlp.m();

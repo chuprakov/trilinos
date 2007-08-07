@@ -42,10 +42,6 @@
 # ************************************************************************
 # @HEADER
 
-#
-# Build the external example for users to see how to do this.
-#
-
 # ************************************************************************
 # 
 # Moocho: Multi-functional Object-Oriented arCHitecture for Optimization
@@ -97,9 +93,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@HAVE_MPI_TRUE@noinst_PROGRAMS =  \
-@HAVE_MPI_TRUE@	NLPThyraEpetraModelEval4DOpt$(EXEEXT) \
-@HAVE_MPI_TRUE@	NLPThyraEpetraMultiPointModelEval4DOpt$(EXEEXT)
+noinst_PROGRAMS = NLPThyraEpetraModelEval4DOpt$(EXEEXT) \
+	$(am__EXEEXT_1)
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/MakefileExeStub.mak
 subdir = thyra/example/NLPThyraEpetraModelEval4DOpt
@@ -122,6 +117,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/Moocho_Config.h
 CONFIG_CLEAN_FILES =
+@HAVE_MPI_TRUE@am__EXEEXT_1 = NLPThyraEpetraMultiPointModelEval4DOpt$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 am_NLPThyraEpetraModelEval4DOpt_OBJECTS =  \
 	NLPThyraEpetraModelEval4DOptMain.$(OBJEXT) \
@@ -275,8 +271,18 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+
+#
+# Build the external example for users to see how to do this.
+#
 @USING_EXPORT_MAKEFILES_TRUE@EXTERNAL_MAKEFILE_EXAMPLE = external
 SUBDIRS = $(EXTERNAL_MAKEFILE_EXAMPLE)
+
+#
+# Build the actual test program in the build directory so that
+# we can test this.
+#
+@HAVE_MPI_TRUE@NLPTHYRAEPETRAMULTIPOINTMODELEVAL4DOPT = NLPThyraEpetraMultiPointModelEval4DOpt
 NLPThyraEpetraModelEval4DOpt_SOURCES = \
   $(srcdir)/NLPThyraEpetraModelEval4DOptMain.cpp\
   $(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraModelEval4DOpt.cpp
@@ -303,6 +309,9 @@ _EXPORT_LIBS = $(MOOCHO_LIBS) $(STRATIMIKOS_LIBS) $(EPETRAEXT_LIBS)
 AM_CPPFLAGS = $(EXPORT_INCLUDES) \
 	-I$(top_srcdir)/../epetraext/example/model_evaluator/4dopt
 common_ldadd = $(EXPORT_LIBS)
+
+# Extra files to add to the tarball
+EXTRA_DIST = _test_lumped_param_model.py.stub.in
 all: all-recursive
 
 .SUFFIXES:
@@ -603,7 +612,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-recursive
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(PROGRAMS) all-local
 installdirs: installdirs-recursive
 installdirs-am:
 install: install-recursive
@@ -691,7 +700,7 @@ uninstall-am:
 	install-strip
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
-	all all-am check check-am clean clean-generic \
+	all all-am all-local check check-am clean clean-generic \
 	clean-noinstPROGRAMS ctags ctags-recursive distclean \
 	distclean-compile distclean-generic distclean-tags distdir dvi \
 	dvi-am html html-am info info-am install install-am \
@@ -704,6 +713,12 @@ uninstall-am:
 	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
 	tags tags-recursive uninstall uninstall-am
 
+
+all-local: test_lumped_param_model.py
+
+test_lumped_param_model.py:
+	cp $(builddir)/_test_lumped_param_model.py.stub test_lumped_param_model.py
+	chmod a+x test_lumped_param_model.py
 
 include $(top_builddir)/Makefile.export.moocho
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -26,6 +26,8 @@
 # ************************************************************************
 # @HEADER
 
+all-local: test_lumped_param_model.py
+
 #
 # Build the external example for users to see how to do this.
 #
@@ -42,8 +44,10 @@ SUBDIRS = $(EXTERNAL_MAKEFILE_EXAMPLE)
 #
 
 if HAVE_MPI
-noinst_PROGRAMS = NLPThyraEpetraModelEval4DOpt  NLPThyraEpetraMultiPointModelEval4DOpt
+NLPTHYRAEPETRAMULTIPOINTMODELEVAL4DOPT = NLPThyraEpetraMultiPointModelEval4DOpt
 endif
+
+noinst_PROGRAMS = NLPThyraEpetraModelEval4DOpt $(NLPTHYRAEPETRAMULTIPOINTMODELEVAL4DOPT)
 
 NLPThyraEpetraModelEval4DOpt_SOURCES = \
   $(srcdir)/NLPThyraEpetraModelEval4DOptMain.cpp\
@@ -57,6 +61,14 @@ NLPThyraEpetraMultiPointModelEval4DOpt_SOURCES = \
 NLPThyraEpetraMultiPointModelEval4DOpt_DEPENDENCIES = $(common_dependencies)
 NLPThyraEpetraMultiPointModelEval4DOpt_LDADD = $(common_ldadd)
 
+test_lumped_param_model.py:
+	cp $(builddir)/_test_lumped_param_model.py.stub test_lumped_param_model.py
+	chmod a+x test_lumped_param_model.py
+
 include $(top_srcdir)/MakefileExeStub.mak
 
 AM_CPPFLAGS += -I$(top_srcdir)/../epetraext/example/model_evaluator/4dopt
+
+
+# Extra files to add to the tarball
+EXTRA_DIST = _test_lumped_param_model.py.stub.in

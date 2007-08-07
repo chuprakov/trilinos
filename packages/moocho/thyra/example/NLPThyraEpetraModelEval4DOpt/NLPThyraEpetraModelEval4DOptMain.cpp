@@ -116,6 +116,9 @@ int main( int argc, char* argv[] )
     // Solve the NLP
     const MoochoSolver::ESolutionStatus	solution_status = solver.solve();
 
+    // Write the final solution if requested
+    solver.writeFinalSolution(out.get());
+
     // Write the parameters that where read
     lowsfCreator.writeParamsFile(*lowsFactory);
     solver.writeParamsFile();

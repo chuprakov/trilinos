@@ -53,6 +53,7 @@ namespace NLPInterfacePack {
 
 void NLPThyraModelEvaluatorBase::initialize(bool test_setup)
 {
+  x_guess_bounds_updated_ = false;
   updateInitialGuessAndBounds();
   if(initialized_) {
     NLPObjGrad::initialize(test_setup);
@@ -98,16 +99,19 @@ bool NLPThyraModelEvaluatorBase::force_xinit_in_bounds() const
 
 const Vector& NLPThyraModelEvaluatorBase::xinit() const
 {
+  updateInitialGuessAndBounds();
   return *xinit_;
 }
 
 const Vector& NLPThyraModelEvaluatorBase::xl() const
 {
+  updateInitialGuessAndBounds();
   return *xl_;
 }
 
 const Vector& NLPThyraModelEvaluatorBase::xu() const
 {
+  updateInitialGuessAndBounds();
   return *xu_;
 }
 
@@ -216,12 +220,13 @@ NLPThyraModelEvaluatorBase::NLPThyraModelEvaluatorBase()
   :showModelEvaluatorTrace_(false),initialized_(false)
   ,obj_scale_(1.0),has_bounds_(false)
   ,force_xinit_in_bounds_(true),num_bounded_x_(0)
+  ,x_guess_bounds_updated_(false)
 {}
 
 void NLPThyraModelEvaluatorBase::initializeBase(
-  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >  &model
-  ,const int                                                      p_idx
-  ,const int                                                      g_idx
+  const Teuchos::RCP<Thyra::ModelEvaluator<value_type> >  &model,
+  const int p_idx,
+  const int g_idx
   )
 {
 
@@ -230,10 +235,11 @@ void NLPThyraModelEvaluatorBase::initializeBase(
   using AbstractLinAlgPack::VectorMutableThyra;
   using AbstractLinAlgPack::MatrixOpNonsingThyra;
   typedef ::Thyra::ModelEvaluatorBase MEB;
-  //
+
   initialized_ = false;
+  x_guess_bounds_updated_ = false;
   model_g_updated_ = model_Dg_updated_ = f_updated_ = c_updated_ = Gf_updated_ = Gc_updated_ = false;
-  //
+
   const char msg_err[] = "NLPThyraModelEvaluatorBase::initialize(...): Errror!";
   Thyra::ModelEvaluatorBase::OutArgs<value_type> model_outArgs = model->createOutArgs();
   TEST_FOR_EXCEPTION( model.get() == NULL, std::invalid_argument, msg_err );
@@ -262,11 +268,11 @@ void NLPThyraModelEvaluatorBase::initializeBase(
     }
     */
   }
-  //
+
   model_ = model;
   p_idx_ = p_idx;
   g_idx_ = g_idx;
-  //
+
   if(p_idx >= 0 ) {
     DfDp_supports_op_ = model_outArgs.supports(MEB::OUT_ARG_DfDp,p_idx).supports(MEB::DERIV_LINEAR_OP);
     DfDp_supports_mv_ = model_outArgs.supports(MEB::OUT_ARG_DfDp,p_idx).supports(MEB::DERIV_MV_BY_COL);
@@ -275,7 +281,7 @@ void NLPThyraModelEvaluatorBase::initializeBase(
     DfDp_supports_op_ = false;
     DfDp_supports_mv_ = false;
   }
-  //
+
   VectorSpace::space_ptr_t space_xI;
   if(p_idx >= 0)
     space_xI = Teuchos::rcp(new VectorSpaceThyra(model_->get_p_space(p_idx)));
@@ -296,12 +302,11 @@ void NLPThyraModelEvaluatorBase::initializeBase(
   } 
   TEST_FOR_EXCEPT(!space_x_.get());
 
-  //
   if(!no_model_f)
     space_c_ = Teuchos::rcp(new VectorSpaceThyra(model_space_f));
   else
     space_c_ = Teuchos::null;
-  //
+
   xinit_ = space_x_->create_member();  *xinit_ = 0.0;
   xl_    = space_x_->create_member();  *xl_    = -NLP::infinite_bound();
   xu_    = space_x_->create_member();  *xu_    = +NLP::infinite_bound();
@@ -333,11 +338,9 @@ void NLPThyraModelEvaluatorBase::initializeBase(
     model_g_ = createMember(model_->get_g_space(g_idx));
   }
 
-  updateInitialGuessAndBounds();
-
 }
 
-void NLPThyraModelEvaluatorBase::updateInitialGuessAndBounds()
+void NLPThyraModelEvaluatorBase::updateInitialGuessAndBounds() const
 {
 
   using Teuchos::dyn_cast;
@@ -345,6 +348,9 @@ void NLPThyraModelEvaluatorBase::updateInitialGuessAndBounds()
   using AbstractLinAlgPack::VectorMutableThyra;
   using AbstractLinAlgPack::MatrixOpNonsingThyra;
   typedef ::Thyra::ModelEvaluatorBase MEB;
+
+  if (x_guess_bounds_updated_)
+    return;
 
   Thyra::ModelEvaluatorBase::OutArgs<value_type>
     model_outArgs = model_->createOutArgs();
@@ -357,9 +363,10 @@ void NLPThyraModelEvaluatorBase::updateInitialGuessAndBounds()
   const bool
     no_model_f = (model_space_f.get() == NULL);
 
-  Thyra::ModelEvaluatorBase::InArgs<value_type> model_initialGuess = model_->getNominalValues();
-  Thyra::ModelEvaluatorBase::InArgs<value_type> model_lowerBounds = model_->getLowerBounds();
-  Thyra::ModelEvaluatorBase::InArgs<value_type> model_upperBounds = model_->getUpperBounds();
+  Thyra::ModelEvaluatorBase::InArgs<value_type>
+    model_initialGuess = model_->getNominalValues(),
+    model_lowerBounds = model_->getLowerBounds(),
+    model_upperBounds = model_->getUpperBounds();
 
   if(!no_model_x) {
     VectorSpace::vec_mut_ptr_t xinit_D = xinit_->sub_view(basis_sys_->var_dep());
@@ -379,6 +386,8 @@ void NLPThyraModelEvaluatorBase::updateInitialGuessAndBounds()
     VectorSpace::vec_mut_ptr_t xu_I = xu_->sub_view(var_indep);
     copy_from_model_p( model_upperBounds.get_p(p_idx_).get(), &*xu_I );
   }
+
+  x_guess_bounds_updated_ = true;
 
 }
 
@@ -547,7 +556,7 @@ void NLPThyraModelEvaluatorBase::postprocessBaseOutArgs(
   MEB::OutArgs<value_type> &model_outArgs = *model_outArgs_inout;
   if( f && !f_updated_ ) {
     if(g_idx_>=0) {
-      *f = ::Thyra::get_ele(*model_g_,0);
+      *f = obj_scale_ * ::Thyra::get_ele(*model_g_,0);
     }
     else {
       *f = 0.0;
@@ -566,6 +575,8 @@ void NLPThyraModelEvaluatorBase::postprocessBaseOutArgs(
       const Range1D
         var_dep   = ( basis_sys_.get() ? basis_sys_->var_dep() : Range1D::Invalid ),
         var_indep = ( basis_sys_.get() ? basis_sys_->var_indep() : Range1D() );
+      if (obj_scale_ != 1.0 )
+        Vt_S( Gf, obj_scale_ );
       if(var_dep.size())
         Gf->sub_view(var_dep)->has_changed();
       if(var_indep.size())

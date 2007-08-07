@@ -116,7 +116,7 @@ bool LineSearchFilter_Step::do_step(
   IterationPack::EDoStepType type
   ,poss_type assoc_step_poss)
 {
-  // Namespace Declarations
+
   using Teuchos::dyn_cast;
   using IterationPack::print_algorithm_step;
   using LinAlgOpPack::Vp_StV;
@@ -127,7 +127,7 @@ bool LineSearchFilter_Step::do_step(
   NLPAlgoState &s = algo.rsqp_state();
 
   EJournalOutputLevel olevel  = algo.algo_cntr().journal_output_level();
-  std::ostream        &out    = algo.track().journal_out();
+  std::ostream &out = algo.track().journal_out();
     
   // print step header
   if (static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS)) 
@@ -135,6 +135,14 @@ bool LineSearchFilter_Step::do_step(
     using IterationPack::print_algorithm_step;
     print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
   }
+
+  Teuchos::VerboseObjectTempState<NLP>
+    nlpOutputTempState(
+      nlp_, Teuchos::getFancyOStream(Teuchos::rcp(&out,false)),
+      Teuchos::VERB_DEFAULT );
+  // Above, we don't want to litter the output with any trace from the NLP.
+  // However, if the user forces the verbosity level to be increased, then we
+  // want to set the stream so that it knows where to print to.
     
   const size_type
     m  = nlp_->m();

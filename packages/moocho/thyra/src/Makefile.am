@@ -74,7 +74,7 @@ else
 EXPORT_INCLUDES = $(MOOCHO_INCLUDES)
 endif
 
-AM_CPPFLAGS = $(EXPORT_INCLUDES)
+AM_CPPFLAGS = $(EXPORT_INCLUDES) -I$(top_srcdir)/../thyra/example/operator_vector
 
 # --------------------------------------------------------------------
 # Moocho library specifications
