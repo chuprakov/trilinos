@@ -60,7 +60,7 @@ config/acx_pthread.m4                     config/tac_arg_with_lapacklib.m4 \
 config/config.guess                       config/tac_arg_with_libdirs.m4 \
 config/config.sub                         config/tac_arg_with_package.m4 \
 bootstrap \
-index.html \
+index.html                config/token-replace.pl \
 ChangeLog-WebTrilinos     README-WebTrilinos \
 common/index.html         common/basic.html \
 common/setup.html         common/testing.html \
@@ -136,7 +136,7 @@ all-local:
 	@echo "        | *to be operational through a web browser*          |"
 	@echo "        |                                                    |"
 	@echo "        | Details are reported on the web site               |"
-	@echo "        | http://software.sandia.gov/trilinos/packages/      |"
+	@echo "        | http://trilinos.sandia.gov/packages/               |"
 	@echo "        |        webtrilinos/installation.html               |"
 	@echo "        |                                                    |"
 	@echo "        | Please send questions/comments to:                 |"
@@ -178,7 +178,13 @@ endif
 
 if BUILD_TESTS
 tests:
+	@echo ""
+	@echo "Now building WebTrilinos tests."
+	@echo ""
 	cd $(top_builddir)/test && $(MAKE) && cd ../c++ && $(MAKE)
+	@echo ""
+	@echo "Finished building WebTrilinos tests."
+	@echo ""
 else
 tests:
 	@echo "WebTrilinos tests were disabled at configure time"
@@ -186,7 +192,13 @@ endif
 
 if BUILD_EXAMPLES
 examples:
+	@echo ""
+	@echo "Now building WebTrilinos examples."
+	@echo ""
 	cd $(top_builddir)/python && $(MAKE) && cd .. && $(MAKE) tests
+	@echo ""
+	@echo "Finished building WebTrilinos examples."
+	@echo ""
 
 else
 examples:

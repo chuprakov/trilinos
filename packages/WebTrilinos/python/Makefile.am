@@ -41,9 +41,9 @@ EXAMPLE_SUITE = ex_Amesos  ex_Comm\
 SETPATH = setpath.py
 
 all: $(EXAMPLE_SUITE)
-	        if [ $(top_srcdir) != @abs_top_builddir@ ]; then cp $(srcdir)/$(SETPATH) . ; fi
+	        if [ $(srcdir) != '.' ]; then cp $(srcdir)/$(SETPATH) . ; fi
 
 ex%: $(srcdir)/ex%.py
-	        if [ $(top_srcdir) != @abs_top_builddir@ ]; then cp $(srcdir)/$@.py . ; fi
+	        if [ $(srcdir) != '.' ]; then cp $(srcdir)/$@.py . ; fi
 
 CLEANFILES = $(EXAMPLE_SUITE:=.py) $(SETPATH) *.pyc

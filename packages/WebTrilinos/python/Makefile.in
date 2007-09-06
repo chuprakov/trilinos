@@ -391,10 +391,10 @@ uninstall-am:
 
 
 all: $(EXAMPLE_SUITE)
-	        if [ $(top_srcdir) != @abs_top_builddir@ ]; then cp $(srcdir)/$(SETPATH) . ; fi
+	        if [ $(srcdir) != '.' ]; then cp $(srcdir)/$(SETPATH) . ; fi
 
 ex%: $(srcdir)/ex%.py
-	        if [ $(top_srcdir) != @abs_top_builddir@ ]; then cp $(srcdir)/$@.py . ; fi
+	        if [ $(srcdir) != '.' ]; then cp $(srcdir)/$@.py . ; fi
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

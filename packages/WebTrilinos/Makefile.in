@@ -267,7 +267,7 @@ config/acx_pthread.m4                     config/tac_arg_with_lapacklib.m4 \
 config/config.guess                       config/tac_arg_with_libdirs.m4 \
 config/config.sub                         config/tac_arg_with_package.m4 \
 bootstrap \
-index.html \
+index.html                config/token-replace.pl \
 ChangeLog-WebTrilinos     README-WebTrilinos \
 common/index.html         common/basic.html \
 common/setup.html         common/testing.html \
@@ -784,7 +784,7 @@ all-local:
 	@echo "        | *to be operational through a web browser*          |"
 	@echo "        |                                                    |"
 	@echo "        | Details are reported on the web site               |"
-	@echo "        | http://software.sandia.gov/trilinos/packages/      |"
+	@echo "        | http://trilinos.sandia.gov/packages/               |"
 	@echo "        |        webtrilinos/installation.html               |"
 	@echo "        |                                                    |"
 	@echo "        | Please send questions/comments to:                 |"
@@ -805,12 +805,24 @@ all-local:
 	@echo 
 
 @BUILD_TESTS_TRUE@tests:
+@BUILD_TESTS_TRUE@	@echo ""
+@BUILD_TESTS_TRUE@	@echo "Now building WebTrilinos tests."
+@BUILD_TESTS_TRUE@	@echo ""
 @BUILD_TESTS_TRUE@	cd $(top_builddir)/test && $(MAKE) && cd ../c++ && $(MAKE)
+@BUILD_TESTS_TRUE@	@echo ""
+@BUILD_TESTS_TRUE@	@echo "Finished building WebTrilinos tests."
+@BUILD_TESTS_TRUE@	@echo ""
 @BUILD_TESTS_FALSE@tests:
 @BUILD_TESTS_FALSE@	@echo "WebTrilinos tests were disabled at configure time"
 
 @BUILD_EXAMPLES_TRUE@examples:
+@BUILD_EXAMPLES_TRUE@	@echo ""
+@BUILD_EXAMPLES_TRUE@	@echo "Now building WebTrilinos examples."
+@BUILD_EXAMPLES_TRUE@	@echo ""
 @BUILD_EXAMPLES_TRUE@	cd $(top_builddir)/python && $(MAKE) && cd .. && $(MAKE) tests
+@BUILD_EXAMPLES_TRUE@	@echo ""
+@BUILD_EXAMPLES_TRUE@	@echo "Finished building WebTrilinos examples."
+@BUILD_EXAMPLES_TRUE@	@echo ""
 
 @BUILD_EXAMPLES_FALSE@examples:
 @BUILD_EXAMPLES_FALSE@	@echo "WebTrilinos examples were disabled at configure time"
