@@ -29,9 +29,6 @@
 # The following line helps the test harness recover from build errors.
 
 all-local:
-	@echo ""
-	@echo "Trilinos package didasko subdirectory example built successfully."
-	@echo ""
 
 if HAVE_DIDASKO_AMESOS
 AMESOS_SUBDIR = amesos

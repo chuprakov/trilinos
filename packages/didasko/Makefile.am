@@ -43,7 +43,7 @@ ACLOCAL_AMFLAGS = -I config
 EXTRA_DIST = config/strip_dup_incl_paths.pl config/strip_dup_libs.pl \
 	src/Didasko_ConfigDefs.h README doc/Doxyfile \
 	doc/mainpage.doxygen src/Trilinos70Tutorial.pdf \
-	doc/didasko_logo.jpeg
+	doc/didasko_logo.jpeg config/token-replace.pl
 
 ## #######################################################################
 ## Tools in the auxillary directory 
@@ -82,8 +82,14 @@ EXAMPLE_SUBDIR=examples
 endif
 
 if BUILD_TESTS
-tests:
+tests: examples
+	@echo ""
+	@echo "Now building didasko tests."
+	@echo ""
 	cd $(top_builddir)/test && $(MAKE)
+	@echo ""
+	@echo "Finished building didasko tests."
+	@echo ""
 else
 tests:
 	@echo "didasko tests were disabled at configure time"
@@ -91,7 +97,13 @@ endif
 
 if BUILD_EXAMPLES
 examples: FORCE
+	@echo ""
+	@echo "Now building didasko examples."
+	@echo ""
 	cd $(top_builddir)/examples && $(MAKE)
+	@echo ""
+	@echo "Finished building didasko examples."
+	@echo ""
 
 install-examples:
 	cd $(top_builddir)/examples && $(MAKE) install
@@ -145,7 +157,7 @@ run-examples:
 	@echo "For more details, please refer to Trilinos/doc/check_installation.txt"
 	@echo
 	@$(PERL_EXE) $(TRILINOS_HOME_DIR)/commonTools/test/utilities/runtests \
-  	--trilinos-dir=$(TRILINOS_HOME_DIR) \
+	--trilinos-dir=$(TRILINOS_HOME_DIR) \
 	--comm=$(DIDASKO_CHECK_COMM) \
 	--mpi-go="$(TRILINOS_MPI_GO)" \
 	--build-dir=$(TRILINOS_BUILD_DIR) \
@@ -163,7 +175,7 @@ run-tests:
 	@echo "For more details, please refer to Trilinos/doc/check_installation.txt"
 	@echo
 	@$(PERL_EXE) $(TRILINOS_HOME_DIR)/commonTools/test/utilities/runtests \
-  	--trilinos-dir=$(TRILINOS_HOME_DIR) \
+	--trilinos-dir=$(TRILINOS_HOME_DIR) \
 	--comm=$(DIDASKO_CHECK_COMM) \
 	--mpi-go="$(TRILINOS_MPI_GO)" \
 	--build-dir=$(TRILINOS_BUILD_DIR) \
