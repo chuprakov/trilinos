@@ -51,7 +51,8 @@ EXTRA_DIST = bootstrap \
 	config/generate-makeoptions.pl config/replace-install-prefix.pl \
 	config/string-replace.pl       config/depcomp \
 	doc/build_docs doc/Doxyfile doc/DoxyfileWeb doc/footer.html \
-	doc/index.doc doc/mainpage.doxygen doc/meros_logo.jpg
+	doc/index.doc doc/mainpage.doxygen doc/meros_logo.jpg \
+        config/token-replace.pl
 
 #
 #       I believe that by switching to AUX_DIR(../../config) one 
@@ -98,7 +99,13 @@ endif
 
 if BUILD_TESTS
 tests:
+	@echo ""
+	@echo "Now building meros tests."
+	@echo ""
 	cd $(top_builddir)/test && $(MAKE)
+	@echo ""
+	@echo "Finished building meros tests."
+	@echo ""
 else
 tests:
 	@echo "meros tests were disabled at configure time"
@@ -106,7 +113,13 @@ endif
 
 if BUILD_EXAMPLES
 examples:
+	@echo ""
+	@echo "Now building meros examples."
+	@echo ""
 	cd $(top_builddir)/example && $(MAKE)
+	@echo ""
+	@echo "Finished building meros examples."
+	@echo ""
 
 install-examples:
 	cd $(top_builddir)/example && $(MAKE) install

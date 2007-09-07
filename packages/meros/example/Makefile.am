@@ -29,9 +29,6 @@
 # The following line helps the test harness recover from build errors.
 
 all-local:
-	@echo ""
-	@echo "Trilinos package meros subdirectory example built successfully."
-	@echo ""
 
 SUBDIRS = version_test saddle_pcd saddle_lsc
 

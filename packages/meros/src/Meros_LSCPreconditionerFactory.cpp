@@ -61,6 +61,7 @@ bool LSCPreconditionerFactory
 ::isCompatible(const LinearOpSourceBase<double> &fwdOpSrc) const
 {
   TEST_FOR_EXCEPT("LSCPreconditionerFactory::isCompatible is not implemented");
+  return(true);
 }
 
 RCP<PreconditionerBase<double> > LSCPreconditionerFactory
@@ -96,8 +97,8 @@ void LSCPreconditionerFactory
     BBtinv = inverse(*BBtSolveStrategy_,BBt,Thyra::IGNORE_SOLVE_FAILURE);
 
   // Build identity matrices on the velocity and pressure spaces 
-  ConstLinearOperator<double> Ivel = identity(Bt.range());
-  ConstLinearOperator<double> Ipress = identity(Bt.domain());
+  ConstLinearOperator<double> Ivel = Thyra::identity<double>(Bt.range());
+  ConstLinearOperator<double> Ipress = Thyra::identity<double>(Bt.domain());
 
   // Build zero operators. Need one that is pressure x velocity and
   // one that is velocity x pressure
