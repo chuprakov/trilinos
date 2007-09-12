@@ -29,9 +29,6 @@
 # The following line helps the test harness recover from build errors.
 
 all-local: generate-sample-output.pl
-	@echo ""
-	@echo "Trilinos package moocho subdirectory example built successfully."
-	@echo ""
 
 generate-sample-output.pl : generate-sample-output.pl.stub
 	cp generate-sample-output.pl.stub generate-sample-output.pl
