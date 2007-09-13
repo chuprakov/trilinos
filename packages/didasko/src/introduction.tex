@@ -1,28 +1,28 @@
 % @HEADER
 % ***********************************************************************
-% 
+%
 %                      Didasko Tutorial Package
 %                 Copyright (2005) Sandia Corporation
-% 
+%
 % Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
 % license for use of this work by or on behalf of the U.S. Government.
-% 
+%
 % This library is free software; you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation; either version 2.1 of the
 % License, or (at your option) any later version.
-%  
+%
 % This library is distributed in the hope that it will be useful, but
 % WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 % Lesser General Public License for more details.
-%  
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with this library; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 % USA
-% Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
-% 
+% Questions? Contact Michael A. Heroux (maherou@sandia.gov)
+%
 % ***********************************************************************
 % @HEADER
 
@@ -47,11 +47,11 @@ valuable when combined with other Trilinos packages.
 
 \smallskip
 
-Trilinos is a large software project, and currently about twenty
+Trilinos is a large software project, and currently about thirty
 packages are included.  The entire set of packages covers a wide range
 of numerical methods for large scale computing, as well as a large set
 of utilities to improve the development of software for scientific
-computing. 
+computing.
 
 Clearly, a full understanding all the functionalities of the Trilinos
 packages requires time.  Each package offers sophisticated features,
@@ -67,7 +67,7 @@ documentation contained in each package.
 \medskip
 
 We will describe the following subset of the Trilinos packages.
-\begin{itemize} 
+\begin{itemize}
 \item {\bf Epetra}. The package defines the basic classes for
   distributed matrices and vectors, linear operators and linear
   problems. Epetra classes are the common language spoken by all the
@@ -94,7 +94,7 @@ We will describe the following subset of the Trilinos packages.
 \item {\bf Amesos}. The package provides a common interface to certain
   sparse direct linear solvers (generally available outside the Trilinos
   framework), both sequential and parallel.
-\item {\bf Anasazi}. The package provides a common interface to parallel eigenvalue 
+\item {\bf Anasazi}. The package provides a common interface to parallel eigenvalue
   and eigenvector solvers, for both symmetric and non-symmetric linear problems.
 \item {\bf NOX}. This is a collection of nonlinear solvers, designed to
   be easily integrated into an application and used with many different
@@ -113,10 +113,10 @@ accomplished using Trilinos.
     {\bf Service provided/Task performed} & {\bf Package} & {\bf Tutorial}\\
     \hline
     \hline
-    Advanced serial dense or sparse matrices: & Epetra 
+    Advanced serial dense or sparse matrices: & Epetra
     & Chapter \ref{chap:epetra_mat} \\
     Advanced utilities for Epetra vectors and sparse matrices: &
-    EpetraExt & --  
+    EpetraExt & --
     \\
     \hline
     Templated distributed vectors and sparse matrices: & Tpetra$^\star$
@@ -124,7 +124,7 @@ accomplished using Trilinos.
     \hline
     Distributed sparse matrices:& Epetra & -- \\
     \hline
-    Solve a linear system with preconditioned Krylov accelerators, 
+    Solve a linear system with preconditioned Krylov accelerators,
     CG, GMRES, Bi-CGSTAB, TFQMR:& AztecOO, Belos$^\star$ &
     Chapter \ref{chap:aztecoo} \\
     \hline
@@ -148,17 +148,17 @@ accomplished using Trilinos.
     Interface with various direct solvers, as UMFPACK, MUMPS, SuperLU\_DIST
     and ScaLAPACK :& Amesos & Chapter \ref{chap:amesos} \\
     \hline
-    Eigenvalue problems for sparse matrices:& Anasazi & Chapter 
+    Eigenvalue problems for sparse matrices:& Anasazi & Chapter
     \ref{chap:anasazi} \\
     \hline
     Complex linear systems (using equivalent real formulation):&
     Komplex$^\star$ & -- \\
     \hline
     Segregated and block preconditioners (e.g., incompressible
-    Navier-Stokes equations):& 
+    Navier-Stokes equations):&
     Meros$^\star$ & -- \\
     \hline
-    Light-weight interface to BLAS and LAPACK: & Epetra 
+    Light-weight interface to BLAS and LAPACK: & Epetra
     & Chapter \ref{chap:epetra_mat} \\
     \hline
     Templated interface to BLAS and LAPACK, arbitrary-precision
@@ -232,8 +232,8 @@ http://software.sandia.gov/Trilinos
 \end{verbatim}
 
 Trilinos has been compiled on a variety of architectures, including
-various flavors of Linux, Sun Solaris, SGI Irix, DEC, Mac OS X, ASCI
-Red, and many others. Trilinos has been designed to support parallel
+various flavors of Linux, Sun Solaris, SGI Irix, DEC, Mac OSX, IBM
+AIX, ASC Red Storm, and others. Trilinos has been designed to support parallel
 applications.  However, it also compiles and runs on serial computers.
 Detailed comments on the installation, and an exhaustive list of FAQs,
 may be found at the web pages:
@@ -271,7 +271,7 @@ $ ../configure --prefix=<your-trilinos-directory>/LINUX_MPI \
   --enable-nox        \
   --enable-nox-epetra \
   --enable-didasko    | tee configure_LINUX_MPI.log
-$ make | tee make_LINUX_MPI.log
+$ make everything| tee make_LINUX_MPI.log
 $ make install | tee make_install_LINUX_MPI.log
 \end{verbatim}
 For more details, simply type
@@ -449,21 +449,34 @@ $ make
 \section{List of Trilinos Developers}
 \label{sec:intro_incomplete}
 
-The Trilinos' developers as of May 2004 are (in alphabetical order):
+Below is a list of past and present Trilinos developers as of 
+July 2007 (alphabetical order):
 
+Christopher Baker,
 Roscoe A. Bartlett,
+Paul Boggs,
+Erik Boman,
+Todd Coffey,
 Jason A. Cross,
 David M. Day,
+Clark Dohrmann,
+David Gay,
+Michael Gee,
 Robert Heaphy,
+Ulrich Hetmaniuk,
 Michael A. Heroux (project leader),
+Robert J. Hoekstra,
 Russell Hooper,
 Vicki E. Howle,
-Robert J. Hoekstra,
 Jonathan J. Hu,
 Tamara G. Kolda,
+Kristopher Kampshoff,
+Sarah Knepper,
+Joe Kotulski,
 Richard B. Lehoucq,
 Paul Lin,
 Kevin R. Long,
+Joe Outzen,
 Roger P. Pawlowski,
 Michael N. Phenow,
 Eric T. Phipps,
@@ -471,6 +484,7 @@ Andrew J. Rothfuss,
 Marzio Sala,
 Andrew G. Salinger,
 Paul M. Sexton,
+Chris Siefert,
 Kendall S. Stanley,
 Heidi K. Thornquist,
 Ray S. Tuminaro,
