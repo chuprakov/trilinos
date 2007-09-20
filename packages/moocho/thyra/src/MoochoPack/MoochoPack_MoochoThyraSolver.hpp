@@ -331,6 +331,8 @@ private:
   bool use_finite_diff_for_con_;
   double fwd_newton_tol_;
   int fwd_newton_max_iters_;
+  bool fwd_newton_dampening_;
+  int fwd_newton_max_ls_iters_;
   bool useInvObjFunc_;
   bool useParameterLumping_;
   std::string outputFileTag_;

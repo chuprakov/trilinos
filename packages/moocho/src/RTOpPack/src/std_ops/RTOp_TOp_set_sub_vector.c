@@ -31,6 +31,8 @@
 #include "RTOp_TOp_set_sub_vector.h"
 #include "RTOp_obj_null_vtbl.h"
 
+#include <stdlib.h>
+
 /* Operator object data virtual function table */
 
 struct RTOp_TOp_set_sub_vector_state_t { /* operator object instance data */

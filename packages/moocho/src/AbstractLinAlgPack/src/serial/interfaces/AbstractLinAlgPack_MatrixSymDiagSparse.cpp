@@ -217,7 +217,7 @@ void MatrixSymDiagSparse::Mp_StMtMtM(
       TEST_FOR_EXCEPT( !(  m_itr < diag.end()  ) );
       TEST_FOR_EXCEPT( !(  m_itr->value() >= 0.0  ) );
       V_MtV( &D.col(l), A, trans_not(A_trans)
-        , eta( m_itr->index(), n, ::sqrt(m_itr->value()) )() );
+        , eta( m_itr->index(), n, std::sqrt(m_itr->value()) )() );
     }
     const DMatrixSlice
       D_update = D(1,m,1,i2-i1+1);

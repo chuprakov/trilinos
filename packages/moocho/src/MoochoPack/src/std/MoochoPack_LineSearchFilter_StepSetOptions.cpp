@@ -89,41 +89,41 @@ void LineSearchFilter_StepSetOptions::setOption(
   typedef LineSearchFilter_Step target_t;
   switch( (local_EOptions)option_num ) {
     case GAMMA_THETA:
-      target().gamma_theta(::atof(option_value.c_str()));
+      target().gamma_theta(std::atof(option_value.c_str()));
       break;
     case GAMMA_F:
-      target().gamma_f(::atof(option_value.c_str()));
+      target().gamma_f(std::atof(option_value.c_str()));
       break;
     case F_MIN: {
       if( option_value == "UNBOUNDED" )
         target().f_min(target_t::F_MIN_UNBOUNDED);
       else
-        target().f_min(::atof(option_value.c_str()));
+        target().f_min(std::atof(option_value.c_str()));
       break;
     }
     case GAMMA_ALPHA:
-      target().gamma_alpha(::atof(option_value.c_str()));
+      target().gamma_alpha(std::atof(option_value.c_str()));
       break;
     case DELTA:
-      target().delta(::atof(option_value.c_str()));
+      target().delta(std::atof(option_value.c_str()));
       break;
     case S_THETA:
-      target().s_theta(::atof(option_value.c_str()));
+      target().s_theta(std::atof(option_value.c_str()));
       break;
     case S_F:
-      target().s_f(::atof(option_value.c_str()));
+      target().s_f(std::atof(option_value.c_str()));
       break;
     case THETA_SMALL_FACT:
-      target().theta_small_fact(::atof(option_value.c_str()));
+      target().theta_small_fact(std::atof(option_value.c_str()));
       break;
     case THETA_MAX:
-      target().theta_max(::atof(option_value.c_str()));
+      target().theta_max(std::atof(option_value.c_str()));
       break;
     case ETA_F:
-      target().eta_f(::atof(option_value.c_str()));
+      target().eta_f(std::atof(option_value.c_str()));
       break;
     case BACK_TRACK_FRAC:
-      target().back_track_frac(::atof(option_value.c_str()));
+      target().back_track_frac(std::atof(option_value.c_str()));
       break;
     default:
       TEST_FOR_EXCEPT(true);	// Local error only?

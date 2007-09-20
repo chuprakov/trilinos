@@ -50,6 +50,8 @@ int main( int argc, char* argv[] )
     Scalar       xU0         = +1e+50;
     Scalar       xU1         = +1e+50;
 
+    bool supportDerivs = true;
+
     CommandLineProcessor  clp(false); // Don't throw exceptions
 
     lowsfCreator.setupCLP(&clp);
@@ -72,6 +74,7 @@ int main( int argc, char* argv[] )
     clp.setOption( "xL1", &xL1 );
     clp.setOption( "xU0", &xU0 );
     clp.setOption( "xU1", &xU1 );
+    clp.setOption( "support-derivs", "no-support-derivs", &supportDerivs );
  
     CommandLineProcessor::EParseCommandLineReturn
       parse_return = clp.parse(argc,argv,&std::cerr);
@@ -90,6 +93,7 @@ int main( int argc, char* argv[] )
 
     Teuchos::RCP<EpetraModelEval4DOpt>
       epetraModel = rcp(new EpetraModelEval4DOpt(xt0,xt1,pt0,pt1,d,x00,x01,p00,p01));
+    epetraModel->setSupportDerivs(supportDerivs);
     epetraModel->set_p_bounds(pL0,pL1,pU0,pU1);
     epetraModel->set_x_bounds(xL0,xL1,xU0,xU1);
 

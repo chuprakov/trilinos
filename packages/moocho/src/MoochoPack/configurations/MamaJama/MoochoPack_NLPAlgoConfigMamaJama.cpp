@@ -183,6 +183,8 @@ NLPAlgoConfigMamaJama::SOptionValues::SOptionValues()
   ,merit_function_type_(MERIT_FUNC_AUTO)
   ,l1_penalty_param_update_(L1_PENALTY_PARAM_AUTO)
   ,full_steps_after_k_(-1)
+  ,max_pz_norm_(-1.0)
+  ,num_pz_damp_iters_(0)
 {}
 
 NLPAlgoConfigMamaJama::NLPAlgoConfigMamaJama()
@@ -880,7 +882,12 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
     algo_step_ptr_t    set_d_bounds_step    = Teuchos::null;
     algo_step_ptr_t    tangential_step_step = Teuchos::null;
     if( nb == 0 ) {
-      tangential_step_step = Teuchos::rcp(new TangentialStepWithoutBounds_Step());
+      Teuchos::RCP<TangentialStepWithoutBounds_Step>
+        tangental_step_output_bounds_step
+        = Teuchos::rcp(new TangentialStepWithoutBounds_Step());
+      tangental_step_output_bounds_step->max_pz_norm(cov_.max_pz_norm_);
+      tangental_step_output_bounds_step->num_pz_damp_iters(cov_.num_pz_damp_iters_);
+      tangential_step_step = tangental_step_output_bounds_step;
     }
     else {
       // Step object that sets bounds for QP subproblem
@@ -1556,7 +1563,7 @@ void NLPAlgoConfigMamaJama::readin_options(
   if( OptionsFromStream::options_group_exists( optgrp ) ) {
 
     // Define map for options group "MamaJama".
-    const int num_opts = 11;
+    const int num_opts = 13;
     enum EMamaJama {
       MAX_BASIS_COND_CHANGE_FRAC
       ,EXACT_REDUCED_HESSIAN
@@ -1569,6 +1576,8 @@ void NLPAlgoConfigMamaJama::readin_options(
       ,LINE_SEARCH_METHOD
       ,MERIT_FUNCTION_TYPE
       ,L1_PENALTY_PARAM_UPDATE
+      ,MAX_PZ_NORM
+      ,NUM_PZ_DAMP_ITERS
     };
     const char* SMamaJama[num_opts]	= {
       "max_basis_cond_change_frac"
@@ -1582,6 +1591,8 @@ void NLPAlgoConfigMamaJama::readin_options(
       ,"line_search_method"
       ,"merit_function_type"
       ,"l1_penalty_parameter_update"
+      ,"max_pz_norm"
+      ,"num_pz_damp_iters"
     };
     StringToIntMap	mama_jama_map(	opt_grp_name, num_opts, SMamaJama );
 
@@ -1589,7 +1600,7 @@ void NLPAlgoConfigMamaJama::readin_options(
     for( ; itr != optgrp.end(); ++itr ) {
       switch( (EMamaJama)mama_jama_map( ofsp::option_name(itr) ) ) {
         case MAX_BASIS_COND_CHANGE_FRAC:
-          ov->max_basis_cond_change_frac_ = ::atof( ofsp::option_value(itr).c_str() );
+          ov->max_basis_cond_change_frac_ = std::atof( ofsp::option_value(itr).c_str() );
           break;
         case EXACT_REDUCED_HESSIAN:
           ov->exact_reduced_hessian_ = StringToBool( "exact_reduced_hessian", ofsp::option_value(itr).c_str() );
@@ -1618,7 +1629,7 @@ void NLPAlgoConfigMamaJama::readin_options(
           break;
         }
         case NUM_LBFGS_UPDATES_STORED:
-          ov->num_lbfgs_updates_stored_ = ::atoi( ofsp::option_value(itr).c_str() );
+          ov->num_lbfgs_updates_stored_ = std::atoi( ofsp::option_value(itr).c_str() );
           break;
         case LBFGS_AUTO_SCALING:
           ov->lbfgs_auto_scaling_
@@ -1754,6 +1765,17 @@ void NLPAlgoConfigMamaJama::readin_options(
               "are avalible."  );
           break;
         }
+        case MAX_PZ_NORM: {
+          const std::string &option = ofsp::option_value(itr);
+          ov->max_pz_norm_ = std::atof(option.c_str());
+          break;
+        }
+        case NUM_PZ_DAMP_ITERS: {
+          const std::string &option = ofsp::option_value(itr);
+          ov->num_pz_damp_iters_ = std::atoi(option.c_str());
+          break;
+        }
+
         default:
           TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
       }
@@ -1877,6 +1899,8 @@ void NLPAlgoConfigMamaJama::set_default_options(
   else {
     cov->full_steps_after_k_ = uov.full_steps_after_k_;
   }
+  cov->max_pz_norm_ = uov.max_pz_norm_;
+  cov->num_pz_damp_iters_ = uov.num_pz_damp_iters_;
   if(trase_out)
     *trase_out
       << "\n*** End setting default options\n";

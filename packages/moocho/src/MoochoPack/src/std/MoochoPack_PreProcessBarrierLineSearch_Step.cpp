@@ -256,7 +256,7 @@ void PreProcessBarrierLineSearch_StepSetOptions::setOption(
   switch( (local_EOptions)option_num ) 
   {
     case TAU_BOUNDARY_FRAC:
-      target().tau_boundary_frac(::atof(option_value.c_str()));
+      target().tau_boundary_frac(std::atof(option_value.c_str()));
       break;
     default:
       TEST_FOR_EXCEPT(true);	// Local error only?

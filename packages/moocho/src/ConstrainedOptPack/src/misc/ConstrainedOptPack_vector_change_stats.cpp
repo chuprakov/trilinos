@@ -31,6 +31,7 @@
 #include "ConstrainedOptPack_vector_change_stats.hpp"
 #include "DenseLinAlgPack_DVectorClass.hpp"
 #include "DenseLinAlgPack_AssertOp.hpp"
+#include "Teuchos_ScalarTraits.hpp"
 
 void ConstrainedOptPack::vector_change_stats(
     const DVectorSlice& x, const DVectorSlice& d
@@ -38,7 +39,8 @@ void ConstrainedOptPack::vector_change_stats(
   , value_type* min_term, size_type* min_k
   , value_type* av_term )
 {
-  DenseLinAlgPack::VopV_assert_sizes( x.size(), d.size() );
+  typedef Teuchos::ScalarTraits<value_type> ST;
+  DenseLinAlgPack::VopV_assert_sizes( x.dim(), d.dim() );
   const value_type
     min_num		= std::numeric_limits<value_type>::min(),
     inf			= std::numeric_limits<value_type>::max();
@@ -58,7 +60,7 @@ void ConstrainedOptPack::vector_change_stats(
     // with the case that both x(i) and d(i) are zero (in which
     // case the ratio should be zero since x(i) == x(i) + d(i)).
     const value_type
-      term = ::fabs(*d_itr) / ( 1 + ::fabs(*x_itr) );
+      term = ST::magnitude(*d_itr) / ( 1 + ST::magnitude(*x_itr) );
     if( term > *max_term ) {
       *max_term	= term;
       *max_k		= i;
@@ -69,5 +71,5 @@ void ConstrainedOptPack::vector_change_stats(
     }
     *av_term += term;
   }
-  *av_term = *av_term / x.size();
+  *av_term = *av_term / x.dim();
 }

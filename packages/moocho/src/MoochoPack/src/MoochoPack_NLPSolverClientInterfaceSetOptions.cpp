@@ -91,22 +91,22 @@ void NLPSolverClientInterfaceSetOptions::setOption(
   typedef NLPSolverClientInterface target_t;
   switch( (local_EOptions)option_num ) {
     case MAX_ITER:
-      target().max_iter(::abs(::atoi(option_value.c_str())));
+      target().max_iter(std::abs(std::atoi(option_value.c_str())));
       break;
     case MAX_RUN_TIME:
-      target().max_run_time(::fabs(::atof(option_value.c_str())));
+      target().max_run_time(std::fabs(std::atof(option_value.c_str())));
       break;
     case OPT_TOL:
-      target().opt_tol(::fabs(::atof(option_value.c_str())));
+      target().opt_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case FEAS_TOL:
-      target().feas_tol(::fabs(::atof(option_value.c_str())));
+      target().feas_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case COMP_TOL:
-      target().comp_tol(::fabs(::atof(option_value.c_str())));
+      target().comp_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case STEP_TOL:
-      target().step_tol(::fabs(::atof(option_value.c_str())));
+      target().step_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case JOURNAL_OUTPUT_LEVEL:
     {
@@ -149,7 +149,7 @@ void NLPSolverClientInterfaceSetOptions::setOption(
       break;
     }
     case JOURNAL_PRINT_DIGITS:
-      target().journal_print_digits(::abs(::atoi(option_value.c_str())));
+      target().journal_print_digits(std::abs(std::atoi(option_value.c_str())));
       break;
     case CHECK_RESULTS:
       target().check_results(

@@ -215,12 +215,18 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
     out << "\nQuantities computed directly from NLPDirect nlp object ...\n";
-    out << "\nf_k           = " << s.f().get_k(0);
-    out << "\n||c_k||inf    = " << s.c().get_k(0).norm_inf();
-    if(supports_Gf)
-      out << "\n||Gf_k||inf   = " << s.Gf().get_k(0).norm_inf();
-    out << "\n||py_k||inf   = " << s.py().get_k(0).norm_inf();
-    out << "\n||rGf_k||inf  = " << s.rGf().get_k(0).norm_inf();
+    out << "\nf_k                    = " << s.f().get_k(0);
+    out << "\n||c_k||inf             = " << s.c().get_k(0).norm_inf();
+    if(supports_Gf) {
+      const Vector &Gf = s.Gf().get_k(0);
+      out << "\n||Gf_k||inf            = " << Gf.norm_inf();
+      if (var_dep.size())
+        out << "\n||Gf(var_dep)_k||inf   = " << Gf.sub_view(var_dep)->norm_inf();
+      if (var_indep.size())
+        out << "\n||Gf(var_indep)_k||inf = " << Gf.sub_view(var_indep)->norm_inf();
+    }
+    out << "\n||py_k||inf            = " << s.py().get_k(0).norm_inf();
+    out << "\n||rGf_k||inf           = " << s.rGf().get_k(0).norm_inf();
     out << std::endl;
   }
 
@@ -243,7 +249,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
   }
 
   if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
-    out << "Printing column norms of D:\n";
+    out << "Printing column norms of D = -inv(C)*N:\n";
     RCP<VectorMutable>
       e_i = D_ptr->space_rows().create_member();
     RCP<VectorMutable>

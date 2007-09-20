@@ -30,23 +30,23 @@
 #include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
 
 // Iteration Quantity Strings
-extern const std::string MoochoPack::barrier_parameter_name = "barrier_parameter";
-extern const std::string MoochoPack::barrier_obj_name = "barrier_obj";
-extern const std::string MoochoPack::grad_barrier_obj_name = "grad_barrier_obj";
-extern const std::string MoochoPack::e_tol_name = "e_tol";
-extern const std::string MoochoPack::comp_err_mu_name = "comp_err_mu";
-extern const std::string MoochoPack::Vu_name = "Vu";
-extern const std::string MoochoPack::Vl_name = "Vl";
-extern const std::string MoochoPack::invXu_name = "invXu";
-extern const std::string MoochoPack::invXl_name = "invXl";
-extern const std::string MoochoPack::rHB_name = "rHB";
-extern const std::string MoochoPack::B_name = "B";
-extern const std::string MoochoPack::Sigma_name = "Sigma";
-extern const std::string MoochoPack::w_sigma_name = "w_sigma";
-extern const std::string MoochoPack::dvl_name = "dvl";
-extern const std::string MoochoPack::dvu_name = "dvu";
-extern const std::string MoochoPack::alpha_vl_name = "alpha_vl";
-extern const std::string MoochoPack::alpha_vu_name = "alpha_vu";
+const std::string MoochoPack::barrier_parameter_name = "barrier_parameter";
+const std::string MoochoPack::barrier_obj_name = "barrier_obj";
+const std::string MoochoPack::grad_barrier_obj_name = "grad_barrier_obj";
+const std::string MoochoPack::e_tol_name = "e_tol";
+const std::string MoochoPack::comp_err_mu_name = "comp_err_mu";
+const std::string MoochoPack::Vu_name = "Vu";
+const std::string MoochoPack::Vl_name = "Vl";
+const std::string MoochoPack::invXu_name = "invXu";
+const std::string MoochoPack::invXl_name = "invXl";
+const std::string MoochoPack::rHB_name = "rHB";
+const std::string MoochoPack::B_name = "B";
+const std::string MoochoPack::Sigma_name = "Sigma";
+const std::string MoochoPack::w_sigma_name = "w_sigma";
+const std::string MoochoPack::dvl_name = "dvl";
+const std::string MoochoPack::dvu_name = "dvu";
+const std::string MoochoPack::alpha_vl_name = "alpha_vl";
+const std::string MoochoPack::alpha_vu_name = "alpha_vu";
 
 namespace MoochoPack {
 

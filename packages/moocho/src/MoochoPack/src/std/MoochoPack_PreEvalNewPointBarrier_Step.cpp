@@ -204,10 +204,10 @@ void PreEvalNewPointBarrier_StepSetOptions::setOption(
   switch( (local_EOptions)option_num ) 
     {
     case RELATIVE_BOUND_PUSH:
-      target().relative_bound_push(::atof(option_value.c_str()));
+      target().relative_bound_push(std::atof(option_value.c_str()));
       break;
     case ABSOLUTE_BOUND_PUSH:
-      target().absolute_bound_push(::atof(option_value.c_str()));
+      target().absolute_bound_push(std::atof(option_value.c_str()));
       break;
     default:
       TEST_FOR_EXCEPT(true);	// Local error only?

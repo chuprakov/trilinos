@@ -321,7 +321,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
   if( force_refactorization && fact_updated_ ) {
     const value_type
       beta        = alpha - ( t ? transVtInvMtV(*t,*this,no_trans,*t) : 0.0 ),
-      abs_beta    = ::fabs(beta),
+      abs_beta    = std::fabs(beta),
       nrm_D_diag  = norm_inf(DU(n,fact_in1_).gms().diag()); // ToDo: Consider 2x2 blocks also!
     gamma = abs_beta / nrm_D_diag;
     // Check gamma
@@ -750,7 +750,7 @@ bool MatrixSymAddDelBunchKaufman::compute_assert_inertia(
     if( k_p > 0 ) {
       // D(k,k) is a 1x1 block.
       // Lets get the eigen value from the sign of D(k,k)
-      const value_type D_k_k = DU(k,k), abs_D_k_k = ::fabs(D_k_k);
+      const value_type D_k_k = DU(k,k), abs_D_k_k = std::fabs(D_k_k);
       if( D_k_k > 0.0 )
         ++inertia.pos_eigens;
       else
@@ -770,15 +770,15 @@ bool MatrixSymAddDelBunchKaufman::compute_assert_inertia(
       // elimination on this 2x2 block:
       const value_type                                   // [ a   b ] = D(k:k+1,k:k+1) 
         a = DU(k,k), b = DU(k,k+1), c = DU(k+1,k+1),   // [ b   c ]
-        abs_a = ::fabs(a), abs_b = ::fabs(b);  
+        abs_a = std::fabs(a), abs_b = std::fabs(b);  
       value_type pivot_1, pivot_2;
       if( abs_a > abs_b ) { // Pivot on a = D(k,k)
         pivot_1 = abs_a;              // [   1      ] * [ a   b ] = [ a      b     ]
-        pivot_2 = ::fabs(c - b*b/a);  // [ -b/a  1  ]   [ b   c ]   [ 0  c - b*b/a ]
+        pivot_2 = std::fabs(c - b*b/a);  // [ -b/a  1  ]   [ b   c ]   [ 0  c - b*b/a ]
       }
       else {                // Pivot on b = D(k+1,k) = D(k,k+1)
         pivot_1 = abs_b;              // [   1      ] * [ b   c ] = [ b      c     ]
-        pivot_2 = ::fabs(b - a*c/b);  // [ -a/b  1  ]   [ a   b ]   [ 0  b - a*c/b ]
+        pivot_2 = std::fabs(b - a*c/b);  // [ -a/b  1  ]   [ a   b ]   [ 0  b - a*c/b ]
       }
       if(pivot_1 > max_diag) max_diag = pivot_1;
       if(pivot_1 < min_diag) min_diag = pivot_1;

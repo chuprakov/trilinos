@@ -74,7 +74,7 @@ void TangentialStepWithInequStd_StepSetOptions::setOption(
   typedef TangentialStepWithInequStd_Step target_t;
   switch( (local_EOptions)option_num ) {
     case WARM_START_FRAC:
-      target().warm_start_frac(::fabs(::atof(option_value.c_str())));
+      target().warm_start_frac(std::fabs(std::atof(option_value.c_str())));
       break;
       case QP_TESTING:
     {

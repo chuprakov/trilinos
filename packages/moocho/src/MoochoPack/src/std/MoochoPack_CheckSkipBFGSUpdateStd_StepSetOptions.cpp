@@ -64,7 +64,7 @@ void CheckSkipBFGSUpdateStd_StepSetOptions::setOption(
 {
   switch( (local_EOptions)option_num ) {
     case SKIP_BFGS_PROP_CONST: {
-      target().skip_bfgs_prop_const( ::fabs( ::atof( option_value.c_str() ) ) );
+      target().skip_bfgs_prop_const( std::fabs( std::atof( option_value.c_str() ) ) );
       break;
     }
     default:

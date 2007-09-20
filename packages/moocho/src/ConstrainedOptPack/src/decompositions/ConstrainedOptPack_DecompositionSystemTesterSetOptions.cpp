@@ -109,19 +109,19 @@ void DecompositionSystemTesterSetOptions::setOption(
         );
       break;
       case NUM_RANDOM_TESTS:
-      target().num_random_tests(::abs(::atoi(option_value.c_str())));
+      target().num_random_tests(std::abs(std::atoi(option_value.c_str())));
       break;
       case MULT_WARNING_TOL:
-      target().mult_warning_tol(::fabs(::atof(option_value.c_str())));
+      target().mult_warning_tol(std::fabs(std::atof(option_value.c_str())));
       break;
       case MULT_ERROR_TOL:
-      target().mult_error_tol(::fabs(::atof(option_value.c_str())));
+      target().mult_error_tol(std::fabs(std::atof(option_value.c_str())));
       break;
       case SOLVE_WARNING_TOL:
-      target().solve_warning_tol(::fabs(::atof(option_value.c_str())));
+      target().solve_warning_tol(std::fabs(std::atof(option_value.c_str())));
       break;
       case SOLVE_ERROR_TOL:
-      target().solve_error_tol(::fabs(::atof(option_value.c_str())));
+      target().solve_error_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     default:
       TEST_FOR_EXCEPT(true);	// Local error only?

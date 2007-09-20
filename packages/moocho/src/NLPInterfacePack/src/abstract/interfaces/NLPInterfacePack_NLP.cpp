@@ -245,6 +245,14 @@ const Vector& NLP::hl_breve() const
   TEST_FOR_EXCEPTION(
     true, std::logic_error
     ,"NLP::hl_breve(): Error, this method must be overridden if space_h_breve is defined" );
+
+  //execution should never reach this point, but compilers expect a non-void
+  //function to return something, so we'll create a dummy value to use in a
+  //return statement.
+  //(a better design would not require function bodies for unimplemented
+  //functions like this...)
+  Vector* dummy = NULL;
+  return(*dummy);
 }
 
 const Vector& NLP::hu_breve() const
@@ -252,6 +260,14 @@ const Vector& NLP::hu_breve() const
   TEST_FOR_EXCEPTION(
     true, std::logic_error
     ,"NLP::hl_breve(): Error, this method must be overridden if space_h_breve is defined" );
+
+  //execution should never reach this point, but compilers expect a non-void
+  //function to return something, so we'll create a dummy value to use in a
+  //return statement.
+  //(a better design would not require function bodies for unimplemented
+  //functions like this...)
+  Vector* dummy = NULL;
+  return(*dummy);
 }
 
 void NLP::set_c_breve(VectorMutable* c_breve)

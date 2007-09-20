@@ -108,10 +108,10 @@ void QPSolverRelaxedQPSchurSetOptions::setOption(
   typedef QPSchurPack::ConstraintsRelaxedStd constr_t;
   switch( (local_EOptions)option_num ) {
     case MAX_QP_ITER_FRAC:
-      target().max_qp_iter_frac(::fabs(::atof(option_value.c_str())));
+      target().max_qp_iter_frac(std::fabs(std::atof(option_value.c_str())));
       break;
     case MAX_REAL_RUNTIME:
-      target().max_real_runtime(::fabs(::atof(option_value.c_str())));
+      target().max_real_runtime(std::fabs(std::atof(option_value.c_str())));
       break;
     case INEQUALITY_PICK_POLICY:
       if(			option_value == "ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY" )
@@ -129,59 +129,59 @@ void QPSolverRelaxedQPSchurSetOptions::setOption(
           " \"QPSolverRelaxedQPSchur::inequality_pick_policy\"" );
       break;
     case BOUND_TOL:
-      target().bounds_tol(::fabs(::atof(option_value.c_str())));
+      target().bounds_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case INEQUALITY_TOL:
-      target().inequality_tol(::fabs(::atof(option_value.c_str())));
+      target().inequality_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case EQUALITY_TOL:
-      target().equality_tol(::fabs(::atof(option_value.c_str())));
+      target().equality_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case LOOSE_FEAS_TOL:
-      target().loose_feas_tol(::fabs(::atof(option_value.c_str())));
+      target().loose_feas_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case DUAL_INFEAS_TOL:
-      target().dual_infeas_tol(::fabs(::atof(option_value.c_str())));
+      target().dual_infeas_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case HUGE_PRIMAL_STEP:
-      target().huge_primal_step(::fabs(::atof(option_value.c_str())));
+      target().huge_primal_step(std::fabs(std::atof(option_value.c_str())));
       break;
     case HUGE_DUAL_STEP:
-      target().huge_dual_step(::fabs(::atof(option_value.c_str())));
+      target().huge_dual_step(std::fabs(std::atof(option_value.c_str())));
       break;
     case BIGM:
-      target().bigM(::fabs(::atof(option_value.c_str())));
+      target().bigM(std::fabs(std::atof(option_value.c_str())));
       break;
     case WARNING_TOL:
-      target().warning_tol(::fabs(::atof(option_value.c_str())));
+      target().warning_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case ERROR_TOL:
-      target().error_tol(::fabs(::atof(option_value.c_str())));
+      target().error_tol(std::fabs(std::atof(option_value.c_str())));
       break;
 
     case ITER_REFINE_MIN_ITER:
-      target().iter_refine_min_iter(::abs(::atoi(option_value.c_str())));
+      target().iter_refine_min_iter(std::abs(std::atoi(option_value.c_str())));
       break;
     case ITER_REFINE_MAX_ITER:
-      target().iter_refine_max_iter(::abs(::atoi(option_value.c_str())));
+      target().iter_refine_max_iter(std::abs(std::atoi(option_value.c_str())));
       break;
     case ITER_REFINE_OPT_TOL:
-      target().iter_refine_opt_tol(::fabs(::atof(option_value.c_str())));
+      target().iter_refine_opt_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case ITER_REFINE_FEAS_TOL:
-      target().iter_refine_feas_tol(::fabs(::atof(option_value.c_str())));
+      target().iter_refine_feas_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case ITER_REFINE_AT_SOLUTION:
       target().iter_refine_at_solution(StringToBool( "iter_refine_at_solution", option_value.c_str() ));
       break;
     case PIVOT_WARNING_TOL:
-      target().pivot_warning_tol(::fabs(::atof(option_value.c_str())));
+      target().pivot_warning_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case PIVOT_SINGULAR_TOL:
-      target().pivot_singular_tol(::fabs(::atof(option_value.c_str())));
+      target().pivot_singular_tol(std::fabs(std::atof(option_value.c_str())));
       break;
       case PIVOT_WRONG_INERTIA_TOL:
-      target().pivot_wrong_inertia_tol(::fabs(::atof(option_value.c_str())));
+      target().pivot_wrong_inertia_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case PRINT_LEVEL:
       if(			option_value == "USE_INPUT_ARG" )

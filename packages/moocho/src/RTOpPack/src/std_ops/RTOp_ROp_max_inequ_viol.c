@@ -37,6 +37,8 @@
 #include "RTOp_obj_free_free.h"
 #include "RTOp_get_reduct_op.hpp"
 
+#include <stdlib.h>
+
 /* */
 /* Implementation functions */
 /* */

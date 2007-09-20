@@ -38,7 +38,7 @@
 # Optional 3rd argument is email address for bugs.
 
 #  #np# - package name, version number, and e-mail address below
-AC_INIT(moocho, version 1.0 in Trilinos 7.0, rabartl@sandia.gov)
+AC_INIT(moocho, Development Version, rabartl@sandia.gov)
 
 echo "----------------------------------------"
 echo "Running moocho Configure Script"
@@ -179,6 +179,11 @@ TAC_ARG_ENABLE_CAN_USE_PACKAGE(
   moocho, stratimikos, MOOCHO_STRATIMIKOS, ENABLE_MOOCHO_STRATIMIKOS, yes,
   [Build the Stratimikos adapater support in Moocho.],
   [Build the Stratimikos adapater support in Moocho.  Can be overridden with --disable-moocho-stratimikos.])
+
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(
+  moocho, rythmos, MOOCHO_RYTHMOS, ENABLE_MOOCHO_RYTHMOS, yes,
+  [Build the Rythmos adapater support in Moocho.],
+  [Build the Rythmos adapater support in Moocho.  Can be overridden with --disable-moocho-rythmos.])
 
 TAC_ARG_INFORM_SUBPACKAGE_USED(
   thyra, epetraext, THYRA_EPETRAEXT, ENABLE_THYRA_EPETRAEXT, yes,
@@ -321,8 +326,10 @@ AC_CONFIG_FILES([
     thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile
     thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile.external.stub
     thyra/example/NLPThyraEpetraModelEval4DOpt/Makefile
+    thyra/example/NLPThyraEpetraModelEval4DOpt/_test_lumped_param_model.py.stub
     thyra/example/NLPThyraEpetraModelEval4DOpt/external/Makefile
     thyra/example/NLPThyraEpetraModelEval4DOpt/external/Makefile.external.stub
+    thyra/example/DiagonalTransientInversion/Makefile
     thyra/example/generate-sample-output.pl.stub
     thyra/src/Makefile
     ])

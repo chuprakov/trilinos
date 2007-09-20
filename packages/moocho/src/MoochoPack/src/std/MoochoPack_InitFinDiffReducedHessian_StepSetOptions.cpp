@@ -84,13 +84,13 @@ void InitFinDiffReducedHessian_StepSetOptions::setOption(
       break;
     }
       case MAX_COND:
-      target().max_cond(::fabs(::atof(option_value.c_str())));
+      target().max_cond(std::fabs(std::atof(option_value.c_str())));
       break;
     case MIN_DIAG:
-      target().min_diag(::abs(::atoi(option_value.c_str())));
+      target().min_diag(std::abs(std::atoi(option_value.c_str())));
       break;
     case STEP_SCALE:
-      target().step_scale(::fabs(::atof(option_value.c_str())));
+      target().step_scale(std::fabs(std::atof(option_value.c_str())));
       break;
     default:
       TEST_FOR_EXCEPT(true);	// Local error only?

@@ -752,7 +752,7 @@ void DecompositionSystemStateStepBuilderStd::readin_options(
           break;
         }
         case MAX_DOF_QUASI_NEWTON_DENSE:
-          ov->max_dof_quasi_newton_dense_ = ::atoi( ofsp::option_value(itr).c_str() );
+          ov->max_dof_quasi_newton_dense_ = std::atoi( ofsp::option_value(itr).c_str() );
           break;
         default:
           TEST_FOR_EXCEPT(true);	// this would be a local programming error only.

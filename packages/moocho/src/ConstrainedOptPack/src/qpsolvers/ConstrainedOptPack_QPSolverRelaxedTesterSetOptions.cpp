@@ -73,22 +73,22 @@ void QPSolverRelaxedTesterSetOptions::setOption(
   typedef QPSolverRelaxedTester target_t;
   switch( (local_EOptions)option_num ) {
       case OPT_WARNING_TOL:
-      target().opt_warning_tol(::fabs(::atof(option_value.c_str())));
+      target().opt_warning_tol(std::fabs(std::atof(option_value.c_str())));
       break;
       case OPT_ERROR_TOL:
-      target().opt_error_tol(::fabs(::atof(option_value.c_str())));
+      target().opt_error_tol(std::fabs(std::atof(option_value.c_str())));
       break;
       case FEAS_WARNING_TOL:
-      target().feas_warning_tol(::fabs(::atof(option_value.c_str())));
+      target().feas_warning_tol(std::fabs(std::atof(option_value.c_str())));
       break;
       case FEAS_ERROR_TOL:
-      target().feas_error_tol(::fabs(::atof(option_value.c_str())));
+      target().feas_error_tol(std::fabs(std::atof(option_value.c_str())));
       break;
       case COMP_WARNING_TOL:
-      target().comp_warning_tol(::fabs(::atof(option_value.c_str())));
+      target().comp_warning_tol(std::fabs(std::atof(option_value.c_str())));
       break;
       case COMP_ERROR_TOL:
-      target().comp_error_tol(::fabs(::atof(option_value.c_str())));
+      target().comp_error_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     default:
       TEST_FOR_EXCEPT(true);	// Local error only?

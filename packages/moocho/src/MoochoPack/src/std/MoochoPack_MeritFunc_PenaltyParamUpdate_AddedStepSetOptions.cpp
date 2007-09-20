@@ -69,19 +69,19 @@ void MeritFunc_PenaltyParamUpdate_AddedStepSetOptions::setOption(
 {
   switch( (local_EOptions)option_num ) {
     case SMALL_MU: {
-      target().small_mu( ::atof( option_value.c_str() ) );
+      target().small_mu( std::atof( option_value.c_str() ) );
       break;
     }
     case MIN_MU_RATIO: {
-      target().min_mu_ratio( ::atof( option_value.c_str() ) );
+      target().min_mu_ratio( std::atof( option_value.c_str() ) );
       break;
     }
     case MULT_FACTOR: {
-      target().mult_factor( ::atof( option_value.c_str() ) );
+      target().mult_factor( std::atof( option_value.c_str() ) );
       break;
     }
     case KKT_NEAR_SOL: {
-      target().kkt_near_sol( ::atof( option_value.c_str() ) );
+      target().kkt_near_sol( std::atof( option_value.c_str() ) );
       break;
     }
     default:

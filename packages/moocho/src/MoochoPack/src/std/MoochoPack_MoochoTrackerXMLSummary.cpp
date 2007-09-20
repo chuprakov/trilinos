@@ -117,25 +117,25 @@ void MoochoTrackerXMLSummary::output_final(const Algorithm& algo
   switch (algo_return) 
     {
     case IterationPack::TERMINATE_TRUE:
-      strcpy(soln_status, "SOLVED");
+      std::strcpy(soln_status, "SOLVED");
       break;
     case IterationPack::TERMINATE_FALSE:
-      strcpy(soln_status, "FAILED");
+      std::strcpy(soln_status, "FAILED");
       break;
     case IterationPack::MAX_ITER_EXCEEDED:
-      strcpy(soln_status, "MAX_ITER");
+      std::strcpy(soln_status, "MAX_ITER");
       break;
     case IterationPack::MAX_RUN_TIME_EXCEEDED:
-      strcpy(soln_status, "MAX_RUN_TIME");
+      std::strcpy(soln_status, "MAX_RUN_TIME");
       break;
     case IterationPack::INTERRUPTED_TERMINATE_TRUE:
-      strcpy(soln_status, "INTERRUPTED_SOLVED");
+      std::strcpy(soln_status, "INTERRUPTED_SOLVED");
       break;
     case IterationPack::INTERRUPTED_TERMINATE_FALSE:
-      strcpy(soln_status, "INTERRUPTED_FAILED");
+      std::strcpy(soln_status, "INTERRUPTED_FAILED");
       break;
     default:
-      strcpy(soln_status, "UNKNOWN_STATUS");
+      std::strcpy(soln_status, "UNKNOWN_STATUS");
       break;
     }
 
@@ -247,7 +247,7 @@ void MoochoTrackerXMLSummary::output_pre_file() const
   // get a string representation of the current date/time
   time_t current_time = time(NULL);
   char time_str[26];
-  strcpy(time_str, ctime(&current_time));
+  std::strcpy(time_str, ctime(&current_time));
   time_str[24]='\0';
   out << "<Problem name=\"" << problem_name_  << "\" time=\"" << time_str << "\">\n";
 

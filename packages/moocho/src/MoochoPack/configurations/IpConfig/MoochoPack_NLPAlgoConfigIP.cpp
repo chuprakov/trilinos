@@ -1338,7 +1338,7 @@ void NLPAlgoConfigIP::readin_options(
     for( ; itr != optgrp.end(); ++itr ) {
       switch( (EIpConfig)map( ofsp::option_name(itr) ) ) {
         case MAX_BASIS_COND_CHANGE_FRAC:
-          ov->max_basis_cond_change_frac_ = ::atof( ofsp::option_value(itr).c_str() );
+          ov->max_basis_cond_change_frac_ = std::atof( ofsp::option_value(itr).c_str() );
           break;
         case EXACT_REDUCED_HESSIAN:
           ov->exact_reduced_hessian_ = StringToBool( "exact_reduced_hessian", ofsp::option_value(itr).c_str() );
@@ -1367,7 +1367,7 @@ void NLPAlgoConfigIP::readin_options(
           break;
         }
         case NUM_LBFGS_UPDATES_STORED:
-          ov->num_lbfgs_updates_stored_ = ::atoi( ofsp::option_value(itr).c_str() );
+          ov->num_lbfgs_updates_stored_ = std::atoi( ofsp::option_value(itr).c_str() );
           break;
         case LBFGS_AUTO_SCALING:
           ov->lbfgs_auto_scaling_

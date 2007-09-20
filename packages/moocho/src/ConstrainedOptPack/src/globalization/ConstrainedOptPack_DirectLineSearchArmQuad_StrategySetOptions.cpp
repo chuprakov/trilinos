@@ -71,19 +71,19 @@ void DirectLineSearchArmQuad_StrategySetOptions::setOption(
   using OptionsFromStreamPack::StringToBool;
   switch( (local_EOptions)option_num ) {
     case SLOPE_FRAC: {
-      target().eta( ::atof( option_value.c_str() ) );
+      target().eta( std::atof( option_value.c_str() ) );
       break;
     }
     case MIN_FRAC_STEP: {
-      target().min_frac( ::atof( option_value.c_str() ) );
+      target().min_frac( std::atof( option_value.c_str() ) );
       break;
     }
     case MAX_FRAC_STEP: {
-      target().max_frac( ::atof( option_value.c_str() ) );
+      target().max_frac( std::atof( option_value.c_str() ) );
       break;
     }
     case MAX_LS_ITER: {
-      target().set_max_iter( ::atof( option_value.c_str() ) );
+      target().set_max_iter( std::atof( option_value.c_str() ) );
       break;
     }
     case MAX_OUT_LS_ITER: {

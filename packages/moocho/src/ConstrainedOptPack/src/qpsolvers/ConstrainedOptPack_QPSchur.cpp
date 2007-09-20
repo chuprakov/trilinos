@@ -529,7 +529,7 @@ void calc_resid(
   }
   if( bo ) {
     LinAlgOpPack::Vp_StV( &roR, ao, boR );    // roR += ao*boR
-    *roR_scaling += ::fabs(ao) * norm_inf(boR);
+    *roR_scaling += std::fabs(ao) * norm_inf(boR);
   }
   // rom = A'*t1 + ao*bom
   if( m ) {
@@ -538,7 +538,7 @@ void calc_resid(
     LinAlgOpPack::Vp_V(&rom,tm);
     if(bo) {
       LinAlgOpPack::Vp_StV( &rom, ao, bom );        // rom += ao*bom
-      *rom_scaling += ::fabs(ao)*norm_inf(bom);
+      *rom_scaling += std::fabs(ao)*norm_inf(bom);
     }
   }
   // ra = P_XF_hat'*t1 + P_plus_hat'*A_bar'*x_free + P_XF_hat'*t2 + P_XF_hat'*t3
@@ -546,7 +546,7 @@ void calc_resid(
   if( q_hat ) {
     if(ba) {              // ra = aa*ba
       V_StV( ra, aa, *ba );
-      *ra_scaling += ::fabs(aa) * norm_inf(*ba);
+      *ra_scaling += std::fabs(aa) * norm_inf(*ba);
     }
     else {
       *ra = 0.0;
@@ -626,7 +626,7 @@ int correct_dual_infeas(
   if( nu_j_max > 0.0 || bnd_j == COP::EQUALITY ) // Leave any multiplier value with the correct sign alone!
     return +1; // No correction needed
   // See if we need to correct the multiplier
-  nu_j_max = ::fabs(nu_j_max);
+  nu_j_max = std::fabs(nu_j_max);
   if( nu_j_max < dual_infeas_tol ) {
     // This is a near degenerate multiplier so adjust it
     value_type degen_val = degen_mult_val * ( bnd_j == COP::UPPER ? +1.0 : -1.0 );
@@ -641,7 +641,7 @@ int correct_dual_infeas(
         << "multiplier is set to " << degen_val << std::endl;
     }
     if(p_nu_j) {
-      nu_j_max += ::fabs( t_P * (*p_nu_j) ) * scale;
+      nu_j_max += std::fabs( t_P * (*p_nu_j) ) * scale;
       if( nu_j_max < dual_infeas_tol ) {
         // The full step is also degenerate so adjust it also
         if( out && (int)olevel >= (int)COP::QPSchur::OUTPUT_BASIC_INFO ) {
@@ -3206,7 +3206,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
             }
           }
           else {
-            scaled_viol = ::fabs(con_ja_val - b_a)/(1.0 + ::fabs(con_ja_val));
+            scaled_viol = std::fabs(con_ja_val - b_a)/(1.0 + std::fabs(con_ja_val));
             if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
               *out
                 << "\n\nThis is the most violated constraint, we are using iterative refinement and\n"
@@ -3231,7 +3231,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
           }
         }
         else if( act_set->all_dof_used_up()
-             && (scaled_viol = ::fabs(con_ja_val - b_a)/(1.0 + ::fabs(con_ja_val))) < feas_tol() )
+             && (scaled_viol = std::fabs(con_ja_val - b_a)/(1.0 + std::fabs(con_ja_val))) < feas_tol() )
         {
           if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
             *out
@@ -3885,7 +3885,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
               << "    dual_infeas_scale       = " << dual_infeas_scale	<< std::endl
               << "    norm_2_constr           = " << norm_2_constr  		<< std::endl
               << "    |t_P/(norm_2_constr*dual_infeas_scale)| = "
-              << ::fabs(t_P/(norm_2_constr*dual_infeas_scale))
+              << std::fabs(t_P/(norm_2_constr*dual_infeas_scale))
               << " <= dual_infeas_tol = " << dual_infeas_tol()			<< std::endl;
           }
           summary_lines_counter = 0;

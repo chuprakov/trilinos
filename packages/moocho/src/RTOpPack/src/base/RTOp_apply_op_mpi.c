@@ -32,6 +32,8 @@
 #include "RTOp_parallel_helpers.h"
 #include "RTOpToMPI.h"
 
+#include <stdlib.h>
+
 int RTOp_apply_op_mpi(
   MPI_Comm comm
   ,RTOp_index_type global_dim_in, RTOp_index_type local_sub_dim_in, RTOp_index_type local_offset_in

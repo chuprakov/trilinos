@@ -48,7 +48,7 @@
 \section mooch_intro_sec Introduction
 
 MOOCHO (Multifunctional Object-Oriented arCHitecture for Optimization) is a <a
-href="http://software.sandia.gov/trilinos">Trilinos</a> package written in C++
+href="http://trilinos.sandia.gov">Trilinos</a> package written in C++
 designed to solve large-scale, equality and inequality nonlinearly
 constrained, non-convex optimization problems (i.e. nonlinear programs) using
 reduced-space successive quadratic programming (SQP) methods.  The most
@@ -278,7 +278,7 @@ Guide</a>.
 
 If you do not have CVS access you can obtain a tar ball for a release of
 Trilinos from the <a
-href="http://software.sandia.gov/trilinos/downloads">Trilinos Releases
+href="http://trilinos.sandia.gov/download">Trilinos Releases
 Download Page</a>.  Once you have the tar ball, you can expand it into the
 directory <tt>$TRILINOS_BASE_DIR</tt> as follows:
 
@@ -558,16 +558,16 @@ EXAMPLE_PATH doxygen variable -->
 \verbinclude NLPWBCounterExample/external/Makefile.external.sample
 
 By using the macros starting with <tt>MOOCHO_</tt> one is guaranteed that the
-same compiler with the same options that were used to build Trilinos are used
-to build the client's codes.  Of particular importance are the macros
-<tt>MOOCHO_CXX</tt>, <tt>MOOCHO_DEFS</tt>, <tt>MOOCHO_CPPFLAGS</tt>, and
-<tt>MOOCHO_CXXLD</tt> since these ensure that the same C++ compiler and the
-same <tt>-D</tt> C/C++ preprocessor definitions are used.  These are critical
-to compiling compatible code in many cases.  The macro <tt>MOOCHO_LIBS</tt>
-contain all of the libraries needed to link executables and they include all
-of the libraries in their lower-level dependent Trilinos packages.  For
-example, you don't explicitly see the libraries for say %Teuchos, but you can
-be sure that they are there.
+same compiler/linker with the same compiler/linker options that were used to
+build Trilinos are used to build the client's codes.  Of particular importance
+are the macros <tt>MOOCHO_CXX</tt>, <tt>MOOCHO_DEFS</tt>,
+<tt>MOOCHO_CPPFLAGS</tt>, and <tt>MOOCHO_CXXLD</tt> since these ensure that
+the same C++ compiler and the same <tt>-D</tt> C/C++ preprocessor definitions
+are used.  These are critical to compiling compatible code in many cases.  The
+macro <tt>MOOCHO_LIBS</tt> contain all of the libraries needed to link
+executables and they include all of the libraries in their lower-level
+dependent Trilinos packages.  For example, you don't explicitly see the
+libraries for say %Teuchos, but you can be sure that they are there.
 
 This makefile gets created with the following lines commented in or out
 depending on if <tt>--with-gnumake</tt> was specified or not when Trilinos
@@ -580,7 +580,7 @@ EXAMPLE_PATH doxygen variable -->
 \until LOCAL_LINK_FLAGS = $(_LOCAL_LINK_FLAGS)
 
 In the above example, support for GNU Make is enabled which results in scripts
-being called to clean up the list of libraries and which may have duplicate
+being called to clean up the list of libraries which may have duplicate
 entries otherwise.
 
 A few different installed NLP examples are described below.
@@ -607,7 +607,6 @@ NLP.
 <tt>$TRILINOS_INSTALL_DIR/example/moocho/NLPWBCounterExample</tt>
 
 </ul>
-2
 
 <li><b>Scalable Banded Equality and/or Inequality Constrained Example</b>
 
@@ -693,10 +692,10 @@ should directly use the "Facade" solver class
 href="./NLPWBCounterExampleMain_8cpp-example.html">
 NLPWBCounterExampleMain.cpp</a></tt>).  However, when using an NLP based on a
 <tt>Thyra::ModelEvaluator</tt> object, then the more specialized "Facade"
-solver class <tt>MoochoPack::ThyraModelEvaluatorSolver</tt> should be used
+solver class <tt>MoochoPack::MoochoThyraSolver</tt> should be used
 (see <tt><a href="./NLPThyraEpetraModelEval4DOptMain_8cpp-example.html">
 NLPThyraEpetraModelEval4DOptMain.cpp</a></tt>).  The class
-<tt>MoochoPack::ThyraModelEvaluatorSolver</tt> just uses
+<tt>MoochoPack::MoochoThyraSolver</tt> just uses
 <tt>MoochoPack::MoochoSolver</tt> internally for the main solve but provides a
 great deal of extra functionality to set initial guesses (also from an input
 file) and wrap the model evaluator object with various "Decorator" skins and
@@ -732,7 +731,7 @@ When using a <tt>%Thyra::ModelEvaluator</tt>-based NLP, the linear solver
 options for inverting the basis of the equality constraints are read in
 through a <tt>Teuchos::ParameterList</tt> object which is accepted through the
 %Stratimikos class <tt>Thyra::DefaultRealLinearSolverBuilder</tt>.  When a
-<tt>MoochoPack::ThyraModelEvaluatorSolver</tt> object is used to build a
+<tt>MoochoPack::MoochoThyraSolver</tt> object is used to build a
 driver program, it can add options to the
 <tt>Teuchos::CommandLineProcessor</tt> object through the function
 <tt>Thyra::DefaultRealLinearSolverBuilder::setupCLP()</tt> (see <tt><a
@@ -1644,7 +1643,7 @@ meat of nonlinear programing is found in MOOCHO.  This collection provides the
 Adapters</a></b>: Provides adapter classes for allowing MOOCHO to solve
 simulation-constrained optimization problems presented as
 <tt>Thyra::ModelEvaluator</tt> objects.  Also included is the higher-level "Facade" class
-<tt>MoochoPack::ThyraModelEvaluatorSolver</tt>.
+<tt>MoochoPack::MoochoThyraSolver</tt>.
 
 </ul>
 

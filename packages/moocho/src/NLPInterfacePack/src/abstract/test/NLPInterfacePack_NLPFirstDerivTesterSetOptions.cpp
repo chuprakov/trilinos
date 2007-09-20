@@ -82,13 +82,13 @@ void NLPFirstDerivTesterSetOptions::setOption(
       break;
     }
       case NUM_FD_DIRECTIONS:
-      target().num_fd_directions(::atoi(option_value.c_str()));
+      target().num_fd_directions(std::atoi(option_value.c_str()));
       break;
       case WARNING_TOL:
-      target().warning_tol(::fabs(::atof(option_value.c_str())));
+      target().warning_tol(std::fabs(std::atof(option_value.c_str())));
       break;
       case ERROR_TOL:
-      target().error_tol(::fabs(::atof(option_value.c_str())));
+      target().error_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     default:
       TEST_FOR_EXCEPT(true);	// Local error only?

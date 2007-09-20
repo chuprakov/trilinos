@@ -90,13 +90,13 @@ void VectorSpaceTesterSetOptions::setOption(
         );
       break;
       case NUM_RANDOM_TESTS:
-      target().num_random_tests(::abs(::atoi(option_value.c_str())));
+      target().num_random_tests(std::abs(std::atoi(option_value.c_str())));
       break;
       case WARNING_TOL:
-      target().warning_tol(::fabs(::atof(option_value.c_str())));
+      target().warning_tol(std::abs(std::atof(option_value.c_str())));
       break;
       case ERROR_TOL:
-      target().error_tol(::fabs(::atof(option_value.c_str())));
+      target().error_tol(std::abs(std::atof(option_value.c_str())));
       break;
     default:
       TEST_FOR_EXCEPT(true);	// Local error only?

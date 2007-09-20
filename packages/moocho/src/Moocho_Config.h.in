@@ -16,6 +16,9 @@
 #undef HAVE_MOOCHO_MA28
 
 /* Define if want to build with moocho enabled */
+#undef HAVE_MOOCHO_RYTHMOS
+
+/* Define if want to build with moocho enabled */
 #undef HAVE_MOOCHO_STRATIMIKOS
 
 /* Define if want to build moocho-tests */

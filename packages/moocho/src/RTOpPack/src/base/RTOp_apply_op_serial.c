@@ -33,6 +33,8 @@
 
 #include "RTOp_apply_op_serial.h"
 
+#include <stdlib.h>
+
 int RTOp_apply_op_serial(
   RTOp_index_type full_dim
   ,const int      num_vecs,  const RTOp_value_type*      vec_ptrs[],  const ptrdiff_t      vec_strides[]

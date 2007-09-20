@@ -96,6 +96,7 @@ target_triplet = @target@
 noinst_PROGRAMS = NLPThyraEpetraModelEval4DOpt$(EXEEXT) \
 	$(am__EXEEXT_1)
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	$(srcdir)/_test_lumped_param_model.py.stub.in \
 	$(top_srcdir)/MakefileExeStub.mak
 subdir = thyra/example/NLPThyraEpetraModelEval4DOpt
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -116,7 +117,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/Moocho_Config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = _test_lumped_param_model.py.stub
 @HAVE_MPI_TRUE@am__EXEEXT_1 = NLPThyraEpetraMultiPointModelEval4DOpt$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 am_NLPThyraEpetraModelEval4DOpt_OBJECTS =  \
@@ -300,8 +301,8 @@ common_dependencies = \
   $(top_builddir)/src/libmoocho.a \
   $(MOOCHO_THYRA_LIB)
 
-_EXPORT_INCLUDES = $(MOOCHO_INCLUDES) $(STRATIMIKOS_INCLUDES) $(EPETRAEXT_INCLUDES)
-_EXPORT_LIBS = $(MOOCHO_LIBS) $(STRATIMIKOS_LIBS) $(EPETRAEXT_LIBS)
+_EXPORT_INCLUDES = $(MOOCHO_INCLUDES) $(RYTHMOS_INCLUDES) $(STRATIMIKOS_INCLUDES) $(EPETRAEXT_INCLUDES)
+_EXPORT_LIBS = $(MOOCHO_LIBS) $(RYTHMOS_LIBS) $(STRATIMIKOS_LIBS) $(EPETRAEXT_LIBS)
 @USING_GNUMAKE_TRUE@EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(_EXPORT_INCLUDES))
 @USING_GNUMAKE_TRUE@EXPORT_LIBS = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_libs.pl $(_EXPORT_LIBS))
 @USING_GNUMAKE_FALSE@EXPORT_INCLUDES = $(_EXPORT_INCLUDES)
@@ -311,7 +312,7 @@ AM_CPPFLAGS = $(EXPORT_INCLUDES) \
 common_ldadd = $(EXPORT_LIBS)
 
 # Extra files to add to the tarball
-EXTRA_DIST = _test_lumped_param_model.py.stub.in
+EXTRA_DIST = _test_lumped_param_model.py.stub.in _moochoThyraFdNand.xml
 all: all-recursive
 
 .SUFFIXES:
@@ -345,6 +346,8 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+_test_lumped_param_model.py.stub: $(top_builddir)/config.status $(srcdir)/_test_lumped_param_model.py.stub.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
@@ -714,11 +717,14 @@ uninstall-am:
 	tags tags-recursive uninstall uninstall-am
 
 
-all-local: test_lumped_param_model.py
+all-local: test_lumped_param_model.py moochoThyraFdNand.xml
 
-test_lumped_param_model.py:
+test_lumped_param_model.py: $(builddir)/_test_lumped_param_model.py.stub
 	cp $(builddir)/_test_lumped_param_model.py.stub test_lumped_param_model.py
 	chmod a+x test_lumped_param_model.py
+
+moochoThyraFdNand.xml: $(srcdir)/_moochoThyraFdNand.xml
+	cp $(srcdir)/_moochoThyraFdNand.xml moochoThyraFdNand.xml
 
 include $(top_builddir)/Makefile.export.moocho
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

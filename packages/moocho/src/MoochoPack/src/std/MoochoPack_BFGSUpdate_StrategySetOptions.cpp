@@ -95,10 +95,10 @@ void BFGSUpdate_StrategySetOptions::setOption(
       break;
     }
       case SECANT_WARNING_TOL:
-      target().secant_warning_tol(::fabs(::atof(option_value.c_str())));
+      target().secant_warning_tol(std::fabs(std::atof(option_value.c_str())));
       break;
       case SECANT_ERROR_TOL:
-      target().secant_error_tol(::fabs(::atof(option_value.c_str())));
+      target().secant_error_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     default:
       TEST_FOR_EXCEPT(true);	// Local error only?

@@ -778,6 +778,7 @@ CONSTRAINED_OPT_PACK_CPP = \
   $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp\
   $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp\
   $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp\

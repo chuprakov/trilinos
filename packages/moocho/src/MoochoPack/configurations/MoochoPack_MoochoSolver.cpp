@@ -423,10 +423,10 @@ void MoochoSolver::update_solver() const
         for( ; itr != optgrp.end(); ++itr ) {
           switch( (EOptions)opt_map( ofsp::option_name(itr) ) ) {
             case WORKSPACE_MB:
-              workspace_MB_ = ::atof( ofsp::option_value(itr).c_str() );
+              workspace_MB_ = std::atof( ofsp::option_value(itr).c_str() );
               break;
             case OBJ_SCALE:
-              obj_scale_ = ::atof( ofsp::option_value(itr).c_str() );
+              obj_scale_ = std::atof( ofsp::option_value(itr).c_str() );
               break;
             case TEST_NLP:
               test_nlp_ = StringToBool( "test_nlp", ofsp::option_value(itr).c_str() );
@@ -656,14 +656,16 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 {
   using std::endl;
   using std::setw;
+  using std::flush;
   using StopWatchPack::stopwatch;
   using Teuchos::RCP;
 
-  stopwatch                                  timer;
-  bool                                       threw_exception = false;
-  ESolutionStatus                            solve_return    = SOLVE_RETURN_EXCEPTION;
-  NLPSolverClientInterface::EFindMinReturn   r_find_min      = NLPSolverClientInterface::SOLUTION_FOUND;
-
+  stopwatch timer;
+  bool threw_exception = false;
+  ESolutionStatus solve_return = SOLVE_RETURN_EXCEPTION;
+  NLPSolverClientInterface::EFindMinReturn
+    r_find_min = NLPSolverClientInterface::SOLUTION_FOUND;
+  
   try {
     
     update_solver();
@@ -785,11 +787,11 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
     std::ostringstream msg;
     msg << "\nMoochoSolver: Caught an std::exception of type "
         << typeName(excpt) << " described as : " << excpt.what() << endl;
-    *error_out_used_  << msg.str();
+    *error_out_used_  << msg.str() << flush;
     if(do_summary_outputting())
-      *summary_out_used_ << msg.str();
+      *summary_out_used_ << msg.str() << flush;
     if(do_journal_outputting())
-      *journal_out_used_ << msg.str();
+      *journal_out_used_ << msg.str() << flush;
     if(throw_exceptions_)
       throw;
     threw_exception = true;
@@ -797,11 +799,11 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
   catch(...) {
     std::ostringstream msg;
     msg << "\nMoochoSolver: Caught an unknown exception (i.e. ...)\n";
-    *error_out_used_   << msg.str();
+    *error_out_used_   << msg.str() << flush;
     if(do_summary_outputting())
-      *summary_out_used_ << msg.str();
+      *summary_out_used_ << msg.str() << flush;
     if(do_journal_outputting())
-      *journal_out_used_ << msg.str();
+      *journal_out_used_ << msg.str() << flush;
     if(throw_exceptions_)
       throw;
     threw_exception = true;

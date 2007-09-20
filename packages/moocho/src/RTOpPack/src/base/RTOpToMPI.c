@@ -30,6 +30,8 @@
 
 #include "RTOpToMPI.h"
 
+#include <stdlib.h>
+
 #ifdef RTOP_TO_MPI_SHOW_TIMES
 #include <time.h>
 #include <stdio.h>

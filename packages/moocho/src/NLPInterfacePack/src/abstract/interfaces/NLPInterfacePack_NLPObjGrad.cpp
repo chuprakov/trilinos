@@ -102,6 +102,14 @@ value_type NLPObjGrad::calc_Gf_prod(const Vector& x, const Vector& d, bool newx)
     ,"Error, the function calc_Gf_prod(...) is not implemented for the class "
     << typeName(*this) << "!"
     );
+
+  //execution should never reach this point, but compilers expect a non-void
+  //function to return something. So we'll create a dummy value to use in a
+  //return statement.
+  //(a better design would not require function bodies for unimplemented
+  //functions like this...)
+  value_type* dummy = NULL;
+  return(*dummy);
 }
 
 size_type NLPObjGrad::num_Gf_evals() const

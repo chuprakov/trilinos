@@ -123,37 +123,39 @@ public:
   struct SOptionValues {
     // Constructor (sets default values)
     SOptionValues();
-    // Variable Reduction,  Range/Null space decompositions
-    value_type              max_basis_cond_change_frac_;    // If < , don't change default
+    // Variable Reduction, Range/Null space decompositions
+    value_type max_basis_cond_change_frac_; // If < , don't change default
     // Reduced Hessian Approximations
-    bool                    exact_reduced_hessian_;
-    EQuasiNewton            quasi_newton_;
-    int                     num_lbfgs_updates_stored_;      // If < 0, don't change default
-    bool                    lbfgs_auto_scaling_;
-    EHessianInitialization  hessian_initialization_;
+    bool exact_reduced_hessian_;
+    EQuasiNewton quasi_newton_;
+    int num_lbfgs_updates_stored_; // If < 0, don't change default
+    bool lbfgs_auto_scaling_;
+    EHessianInitialization hessian_initialization_;
     // QP subproblem solvers
-    EQPSolverType           qp_solver_type_;
-    bool                    reinit_hessian_on_qp_fail_;
+    EQPSolverType qp_solver_type_;
+    bool reinit_hessian_on_qp_fail_;
     // Line search methods
-    ELineSearchMethod       line_search_method_;
-    EMeritFunctionType      merit_function_type_;
-    EL1PenaltyParamUpdate   l1_penalty_param_update_;
-    int                     full_steps_after_k_;            // If < 0, do not use this option at all.
+    ELineSearchMethod line_search_method_;
+    EMeritFunctionType merit_function_type_;
+    EL1PenaltyParamUpdate l1_penalty_param_update_;
+    int full_steps_after_k_; // If < 0, do not use this option at all.
+    value_type max_pz_norm_;
+    int num_pz_damp_iters_;
   };
-
+  
   //@}
 
 private:
 
   /// Builder class for some common code
-  DecompositionSystemStateStepBuilderStd   decomp_sys_step_builder_;
-
+  DecompositionSystemStateStepBuilderStd decomp_sys_step_builder_;
+  
   /// Smart pointer to options
-  options_ptr_t      options_;
-
+  options_ptr_t options_;
+  
   /// Options structs
-  SOptionValues       uov_; // options set by user
-  SOptionValues       cov_; // current option values actually used
+  SOptionValues uov_; // options set by user
+  SOptionValues cov_; // current option values actually used
 
   // ///////////////////////////////////////////////////////
   // Private member functions

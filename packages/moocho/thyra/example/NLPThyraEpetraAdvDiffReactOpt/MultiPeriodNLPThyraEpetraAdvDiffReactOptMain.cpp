@@ -403,8 +403,8 @@ int main( int argc, char* argv[] )
           inverseThyraModels[i] = _inverseThyraModel;
         }
         else {
-#ifndef TEUCHOS_DEBUG
-          TEST_FOR_ECXEPT( ! ( useStatelessPeriodModel && i > 0 ) );
+#ifdef TEUCHOS_DEBUG
+          TEST_FOR_EXCEPT( ! ( useStatelessPeriodModel && i > 0 ) );
 #endif
           inverseThyraModels[i] = inverseThyraModels[0];
         }

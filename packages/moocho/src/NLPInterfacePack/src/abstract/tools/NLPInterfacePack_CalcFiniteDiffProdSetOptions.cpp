@@ -113,16 +113,16 @@ void CalcFiniteDiffProdSetOptions::setOption(
       break;
     }
       case FD_STEP_SIZE:
-      target().fd_step_size(::atof(option_value.c_str()));
+      target().fd_step_size(std::atof(option_value.c_str()));
       break;
       case FD_STEP_SIZE_MIN:
-      target().fd_step_size_min(::atof(option_value.c_str()));
+      target().fd_step_size_min(std::atof(option_value.c_str()));
       break;
       case FD_STEP_SIZE_F:
-      target().fd_step_size_f(::atof(option_value.c_str()));
+      target().fd_step_size_f(std::atof(option_value.c_str()));
       break;
       case FD_STEP_SIZE_C:
-      target().fd_step_size_c(::atof(option_value.c_str()));
+      target().fd_step_size_c(std::atof(option_value.c_str()));
       break;
     default:
       TEST_FOR_EXCEPT(true);	// Local error only?

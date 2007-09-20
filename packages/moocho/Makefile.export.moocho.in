@@ -65,3 +65,4 @@ _MOOCHO_LIBS = @LDFLAGS@  $(_MOOCHO_THYRA_LIBS) -L@abs_top_builddir@/src -lmooch
 #
 
 @ENABLE_MOOCHO_THYRA_TRUE@@ENABLE_MOOCHO_STRATIMIKOS_TRUE@include @abs_top_builddir@/../stratimikos/Makefile.export.stratimikos
+@ENABLE_MOOCHO_THYRA_TRUE@@ENABLE_MOOCHO_RYTHMOS_TRUE@include @abs_top_builddir@/../rythmos/Makefile.export.rythmos

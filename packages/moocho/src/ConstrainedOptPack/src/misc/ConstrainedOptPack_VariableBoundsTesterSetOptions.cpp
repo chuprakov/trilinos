@@ -65,10 +65,10 @@ void VariableBoundsTesterSetOptions::setOption(
   typedef VariableBoundsTester target_t;
   switch( (local_EOptions)option_num ) {
       case WARNING_TOL:
-      target().warning_tol(::fabs(::atof(option_value.c_str())));
+      target().warning_tol(std::fabs(std::atof(option_value.c_str())));
       break;
       case ERROR_TOL:
-      target().error_tol(::fabs(::atof(option_value.c_str())));
+      target().error_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     default:
       TEST_FOR_EXCEPT(true);	// Local error only?

@@ -113,7 +113,7 @@ template<class T_SpVec>
 value_type norm_inf_SV(const T_SpVec& sv_rhs) {
   typename T_SpVec::element_type::value_type result = 0.0;
   for(typename T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
-    result = my_my_max(result,::fabs(iter->value()));
+    result = my_my_max(result,std::fabs(iter->value()));
   return result;
 }
 

@@ -31,6 +31,7 @@
 
 #include "MoochoPack_Types.hpp"
 #include "IterationPack_AlgorithmStep.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 
@@ -50,6 +51,22 @@ class TangentialStepWithoutBounds_Step
   : public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
+
+  /** \brief Set the maximum size for ||pz|| dampening.
+   *
+   * A value of <tt>max_pz_norm <= 0.0</tt> means not to dampen pz!
+   */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_pz_norm );
+
+  /** \brief Set the number of iterations to dampen pz for.
+   *
+   * A value of <tt>num_pz_damp_iters <= 0</tt> means not to dampen pz for any
+   * iterations!
+   */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( int, num_pz_damp_iters );
+
+  /** \brief . */
+  TangentialStepWithoutBounds_Step();
 
   /** @name Overridden from AlgorithmStep */
   //@{

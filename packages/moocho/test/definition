@@ -350,6 +350,14 @@
     COMM = SERIAL, MPI(1);
 }
 
+# Test with finite-difference elimination of nonlinear constraints
+(FRAMEWORK, INSTALL, MoochoFdNand) {
+    TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
+    ARGS = \
+      --moocho-thyra-params-file=../thyra/example/NLPThyraEpetraModelEval4DOpt/moochoThyraFdNand.xml \
+      --no-support-derivs --p00=1.0;
+    COMM = SERIAL, MPI(1);
+}
 
 #
 # Test parameter lumping
@@ -808,4 +816,61 @@
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --num-procs-per-cluster=2 --skip-solve;
     COMM = MPI(2,4,6,8);
+}
+
+#
+# DiagonalTransientInversion.exe
+#
+
+(FRAMEWORK,INSTALL,DiagonalTransientInversion,DiagonalTransientInversion0) {
+    TESTS = ../thyra/example/DiagonalTransientInversion/DiagonalTransientInversion.exe;
+    ARGS = \
+      --moocho-options-file=../thyra/example/DiagonalTransientInversion/MoochoDiagTransInvSmall.opt \
+      --params-file=../thyra/example/DiagonalTransientInversion/diagTransInvSmall_1.xml \
+      --num-observations=1 \
+      --final-time=1e-2 --scale-params-by=1.5 \
+      --max-sens-error=0.07 \
+      --max-p-inv-error=1e-12 \
+      --no-print-valid-options --verb-level=VERB_EXTREME;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK,INSTALL,DiagonalTransientInversion,DiagonalTransientInversion1) {
+    TESTS = ../thyra/example/DiagonalTransientInversion/DiagonalTransientInversion.exe;
+    ARGS = \
+      --moocho-options-file=../thyra/example/DiagonalTransientInversion/MoochoDiagTransInvSmall.opt \
+      --params-file=../thyra/example/DiagonalTransientInversion/diagTransInvSmall_1.xml \
+      --num-observations=1 \
+      --final-time=1e-4 --scale-params-by=1.5 \
+      --max-sens-error=1e-5 \
+      --no-do-inv-prob \
+      --no-print-valid-options --verb-level=VERB_EXTREME;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK,INSTALL,DiagonalTransientInversion,DiagonalTransientInversion2) {
+    TESTS = ../thyra/example/DiagonalTransientInversion/DiagonalTransientInversion.exe;
+    ARGS = \
+      --moocho-options-file=../thyra/example/DiagonalTransientInversion/MoochoDiagTransInvMedium.opt \
+      --params-file=../thyra/example/DiagonalTransientInversion/diagTransInvMedium.xml \
+      --num-observations=7 \
+      --final-time=1e-2 --scale-params-by=1.5 \
+      --max-sens-error=0.03 \
+      --do-inv-prob --max-p-inv-error=1e-10 \
+      --no-print-valid-options --verb-level=VERB_EXTREME;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK,INSTALL,DiagonalTransientInversion,DiagonalTransientInversion3) {
+    TESTS = ../thyra/example/DiagonalTransientInversion/DiagonalTransientInversion.exe;
+    ARGS = \
+      --moocho-options-file=../thyra/example/DiagonalTransientInversion/MoochoDiagTransInvBdfVariable.opt \
+      --params-file=../thyra/example/DiagonalTransientInversion/diagTransInvBdfVariable.xml \
+      --use-BDF \
+      --num-observations=7 \
+      --final-time=1e-2 --scale-params-by=1.5 \
+      --max-sens-error=1e-3 \
+      --do-inv-prob --max-p-inv-error=1e-10 \
+      --no-print-valid-options --verb-level=VERB_EXTREME;
+    COMM = SERIAL;
 }

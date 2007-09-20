@@ -716,7 +716,7 @@ void MatrixSymPosDefCholFactor::extract_inv_chol( DMatrixSliceTriEle* InvChol ) 
   DenseLinAlgPack::assign( &InvChol->gms(), 0.0 );  // Set InvChol to identity first.
   InvChol->gms().diag() = 1.0;
   DenseLinAlgPack::M_StInvMtM(                      // Comput InvChol using Level-3 BLAS
-      &InvChol->gms(), 1.0 / ::sqrt(scale_), U()
+      &InvChol->gms(), 1.0 / std::sqrt(scale_), U()
     , InvChol->uplo() == BLAS_Cpp::upper ? BLAS_Cpp::no_trans : BLAS_Cpp::trans
     , InvChol->gms(), BLAS_Cpp::no_trans );
 }
@@ -740,7 +740,7 @@ void MatrixSymPosDefCholFactor::init_identity( const VectorSpace& space_diag, va
     M().gms().diag()(1,n) = alpha;
   }
   if( maintain_factor_ ) {
-    U().gms().diag()(1,n) = ::sqrt(::fabs(alpha));
+    U().gms().diag()(1,n) = std::sqrt(std::fabs(alpha));
     factor_is_updated_ = true;
   }
   is_diagonal_ = true;
@@ -875,7 +875,7 @@ void MatrixSymPosDefCholFactor::secant_update(
     // v = sqrt(y'*s/(s'*B*s))*U*s
     DVectorSlice v = *s; // Reuse s as storage for v
     DenseLinAlgPack::V_MtV( &v, U, no_trans, v ); // Direct call to xSYMV(...)
-    DenseLinAlgPack::Vt_S( &v, ::sqrt( sTy / sTBs ) );
+    DenseLinAlgPack::Vt_S( &v, std::sqrt( sTy / sTBs ) );
     // u = (y - U'*v)
     DVectorSlice u = *y;  // Reuse y as storage for u
     DenseLinAlgPack::Vp_StMtV( &u, -1.0, U, trans, v );
@@ -928,7 +928,7 @@ void MatrixSymPosDefCholFactor::initialize(
     M().gms()(1,1) = alpha;
   }
   if( U_l_r_ ) {
-    U().gms()(1,1) = ::sqrt( scale_ * alpha );
+    U().gms()(1,1) = std::sqrt( scale_ * alpha );
     factor_is_updated_ = true;
   }
   is_diagonal_ = false;
@@ -1024,7 +1024,7 @@ void MatrixSymPosDefCholFactor::initialize(
       U_itr = U_ele.gms().diag().begin(),
       U_end = U_ele.gms().diag().end();
     while( U_itr != U_end ) {
-      const value_type U_abs = ::fabs(*U_itr++);
+      const value_type U_abs = std::abs(*U_itr++);
       if(U_abs < min_diag) min_diag = U_abs;
       if(U_abs > max_diag) max_diag = U_abs;
     }
@@ -1197,7 +1197,7 @@ void MatrixSymPosDefCholFactor::augment_update(
     // u22^2 = (1/scale)*alpha - u12'*u12;
     const value_type
       u22sqr          = (1/scale_) * alpha - ( t ? dot( u12, u12 ) : 0.0 ),
-      u22sqrabs       = ::fabs(u22sqr),
+      u22sqrabs       = std::abs(u22sqr),
       nrm_U_diag      = norm_inf(U().gms().diag()),
       sqr_nrm_U_diag  = nrm_U_diag * nrm_U_diag;
     // Calculate gamma in proper context
@@ -1257,7 +1257,7 @@ void MatrixSymPosDefCholFactor::augment_update(
       }
     }
     // u22 = sqrt(u22^2)
-    u22 = ::sqrt(u22sqrabs);
+    u22 = std::sqrt(u22sqrabs);
   }
   else {
     factor_is_updated_ = false;

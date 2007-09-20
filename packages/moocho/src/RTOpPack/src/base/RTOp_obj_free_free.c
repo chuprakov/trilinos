@@ -30,6 +30,8 @@
 
 #include "RTOp_obj_free_free.h"
 
+#include <stdlib.h>
+
 int RTOp_obj_free_free( const struct RTOp_obj_type_vtbl_t* vtbl, const void* instance_data, void** obj )
 {
   free( *obj );

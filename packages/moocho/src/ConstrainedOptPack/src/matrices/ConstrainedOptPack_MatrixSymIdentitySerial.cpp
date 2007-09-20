@@ -116,7 +116,7 @@ void MatrixSymIdentitySerial::extract_inv_chol( DMatrixSliceTriEle* InvChol ) co
       "Error, we can not compute the inverse cholesky factor "
       "of a negative definite matrix." );
   DenseLinAlgPack::assign( &InvChol->gms(), 0.0 );
-  InvChol->gms().diag() = 1.0 / ::sqrt(scale_);
+  InvChol->gms().diag() = 1.0 / std::sqrt(scale_);
 }
 
 } // end namespace ConstrainedOptPack

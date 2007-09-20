@@ -37,8 +37,14 @@ generate-sample-output.pl : generate-sample-output.pl.stub
 
 if ENABLE_MOOCHO_STRATIMIKOS
 if ENABLE_THYRA_EPETRAEXT
-MOOCHO_STRATIMIKOS_EXAMPLES = NLPThyraEpetraModelEval4DOpt NLPThyraEpetraAdvDiffReactOpt
+MOOCHO_STRATIMIKOS_EXAMPLES = \
+  NLPThyraEpetraModelEval4DOpt \
+  NLPThyraEpetraAdvDiffReactOpt
+endif
+if ENABLE_MOOCHO_RYTHMOS
+MOOCHO_RYTHMOS_EXAMPLES = \
+  DiagonalTransientInversion
 endif
 endif
 
-SUBDIRS = $(MOOCHO_STRATIMIKOS_EXAMPLES)
+SUBDIRS = $(MOOCHO_STRATIMIKOS_EXAMPLES) $(MOOCHO_RYTHMOS_EXAMPLES)

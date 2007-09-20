@@ -31,6 +31,8 @@
 #include "RTOp_ROp_get_sub_vector.h"
 #include "RTOp_obj_free_free.h"
 
+#include <stdlib.h>
+
 #define MY_MIN(a,b) a < b ? a : b
 
 /* Operator object data virtual function table */

@@ -43,9 +43,9 @@ ConstrainedOptPack ::min_abs( const DVectorSlice& mu )
 {
   if( !mu.dim() )
     return 0.0;
-  value_type min = ::fabs(mu(1));
+  value_type min = std::fabs(mu(1));
   for( DVectorSlice::const_iterator itr = mu.begin() + 1; itr != mu.end(); )
-    min = my_min( min, ::fabs(*itr++) );
+    min = my_min( min, std::fabs(*itr++) );
   return min;
 }
 
@@ -56,8 +56,8 @@ ConstrainedOptPack ::min_abs( const SpVectorSlice& mu )
     return 0.0;
   if( !mu.nz() )
     return 0.0;
-  value_type min = ::fabs(mu.begin()->value());
+  value_type min = std::fabs(mu.begin()->value());
   for( SpVectorSlice::const_iterator itr = mu.begin() + 1; itr != mu.end(); ++itr )
-    min = my_min( min, ::fabs(itr->value()) );
+    min = my_min( min, std::fabs(itr->value()) );
   return min;
 }

@@ -329,6 +329,7 @@ am__libmoocho_a_SOURCES_DIST = $(srcdir)/MoochoUtilities/src/FortranTypes_CppFor
 	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp \
 	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp \
 	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp \
+	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp \
 	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp \
 	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp \
 	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp \
@@ -629,6 +630,7 @@ am__objects_13 = ConstrainedOptPack_DecompositionSystem.$(OBJEXT) \
 	ConstrainedOptPack_VariableBoundsTesterSetOptions.$(OBJEXT) \
 	ConstrainedOptPack_initialize_Q_R_Q_X.$(OBJEXT) \
 	ConstrainedOptPack_print_vector_change_stats.$(OBJEXT) \
+	ConstrainedOptPack_vector_change_stats.$(OBJEXT) \
 	ConstrainedOptPack_ConstraintsRelaxedStd.$(OBJEXT) \
 	ConstrainedOptPack_QPInitFixedFreeStd.$(OBJEXT) \
 	ConstrainedOptPack_QPKWIK_Output.$(OBJEXT) \
@@ -2091,6 +2093,7 @@ CONSTRAINED_OPT_PACK_CPP = \
   $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp\
   $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp\
   $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp\
   $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp\
@@ -2600,6 +2603,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_vector_change_stats.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgLAPack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_AssertOp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Po@am__quote@
@@ -5972,6 +5976,20 @@ ConstrainedOptPack_print_vector_change_stats.obj: $(srcdir)/ConstrainedOptPack/s
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp' object='ConstrainedOptPack_print_vector_change_stats.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_print_vector_change_stats.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp'; fi`
+
+ConstrainedOptPack_vector_change_stats.o: $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_vector_change_stats.o -MD -MP -MF $(DEPDIR)/ConstrainedOptPack_vector_change_stats.Tpo -c -o ConstrainedOptPack_vector_change_stats.o `test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ConstrainedOptPack_vector_change_stats.Tpo $(DEPDIR)/ConstrainedOptPack_vector_change_stats.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp' object='ConstrainedOptPack_vector_change_stats.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_vector_change_stats.o `test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp
+
+ConstrainedOptPack_vector_change_stats.obj: $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_vector_change_stats.obj -MD -MP -MF $(DEPDIR)/ConstrainedOptPack_vector_change_stats.Tpo -c -o ConstrainedOptPack_vector_change_stats.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ConstrainedOptPack_vector_change_stats.Tpo $(DEPDIR)/ConstrainedOptPack_vector_change_stats.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp' object='ConstrainedOptPack_vector_change_stats.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_vector_change_stats.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.cpp'; fi`
 
 ConstrainedOptPack_ConstraintsRelaxedStd.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_ConstraintsRelaxedStd.o -MD -MP -MF $(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.Tpo -c -o ConstrainedOptPack_ConstraintsRelaxedStd.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp

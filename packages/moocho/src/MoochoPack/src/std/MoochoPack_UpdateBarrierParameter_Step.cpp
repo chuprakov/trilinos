@@ -240,19 +240,19 @@ void UpdateBarrierParameter_StepSetOptions::setOption(
   switch( (local_EOptions)option_num ) 
     {
     case TAU_MU:
-      target().tau_mu(::atof(option_value.c_str()));
+      target().tau_mu(std::atof(option_value.c_str()));
       break;
     case THETA_MU:
-      target().theta_mu(::atof(option_value.c_str()));
+      target().theta_mu(std::atof(option_value.c_str()));
       break;
     case TAU_EPSILON:
-      target().tau_epsilon(::atof(option_value.c_str()));
+      target().tau_epsilon(std::atof(option_value.c_str()));
       break;
     case THETA_EPSILON:
-      target().theta_epsilon(::atof(option_value.c_str()));
+      target().theta_epsilon(std::atof(option_value.c_str()));
       break;
     case E_TOL_MAX:
-      target().e_tol_max(::atof(option_value.c_str()));
+      target().e_tol_max(std::atof(option_value.c_str()));
       break;
     default:
       TEST_FOR_EXCEPT(true);	// Local error only?

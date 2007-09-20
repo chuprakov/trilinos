@@ -93,10 +93,10 @@ void NLPDirectTesterSetOptions::setOption(
       break;
     }
     case GF_WARNING_TOL:
-      target().Gf_warning_tol(::fabs(::atof(option_value.c_str())));
+      target().Gf_warning_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case GF_ERROR_TOL:
-      target().Gf_error_tol(::fabs(::atof(option_value.c_str())));
+      target().Gf_error_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case GC_TESTING_METHOD:
     {
@@ -112,13 +112,13 @@ void NLPDirectTesterSetOptions::setOption(
       break;
     }
     case GC_WARNING_TOL:
-      target().Gc_warning_tol(::fabs(::atof(option_value.c_str())));
+      target().Gc_warning_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case GC_ERROR_TOL:
-      target().Gc_error_tol(::fabs(::atof(option_value.c_str())));
+      target().Gc_error_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     case NUM_FD_DIRECTIONS:
-      target().num_fd_directions(::abs(::atoi(option_value.c_str())));
+      target().num_fd_directions(std::abs(std::atoi(option_value.c_str())));
       break;
     case DUMP_ALL:
       target().dump_all(StringToBool("dump_all",option_value.c_str()));

@@ -123,6 +123,12 @@ const double FwdNewtonTol_default = -1.0;
 const std::string FwdNewtonMaxIters_name = "Forward Newton Max Iters";
 const int FwdNewtonMaxIters_default = 20;
 
+const std::string ForwardNewtonDampening_name = "Forward Newton Dampening";
+const bool ForwardNewtonDampening_default = true;
+
+const std::string FwdNewtonMaxLineSearchIters_name = "Forward Newton Max Line Search Iters";
+const int FwdNewtonMaxLineSearchIters_default = 20;
+
 const std::string UseBuiltInInverseObjectiveFunction_name = "Use Built-in Inverse Objective Function";
 const bool UseBuiltInInverseObjectiveFunction_default = false;
 
@@ -182,6 +188,8 @@ MoochoThyraSolver::MoochoThyraSolver(
   ,use_finite_diff_for_con_(false)
   ,fwd_newton_tol_(-1.0)
   ,fwd_newton_max_iters_(20)
+  ,fwd_newton_dampening_(false)
+  ,fwd_newton_max_ls_iters_(20)
   ,useInvObjFunc_(false)
   ,useParameterLumping_(false)
   ,outputFileTag_("")
@@ -270,6 +278,10 @@ void MoochoThyraSolver::setParameterList(
     FwdNewtonTol_name,FwdNewtonTol_default);
   fwd_newton_max_iters_ = paramList_->get(
     FwdNewtonMaxIters_name,FwdNewtonMaxIters_default);
+  fwd_newton_dampening_ = paramList_->get(
+    ForwardNewtonDampening_name,ForwardNewtonDampening_default);
+  fwd_newton_max_ls_iters_ = paramList_->get(
+    FwdNewtonMaxLineSearchIters_name,FwdNewtonMaxLineSearchIters_default);
   useInvObjFunc_ = paramList_->get(
     UseBuiltInInverseObjectiveFunction_name,UseBuiltInInverseObjectiveFunction_default);
   useParameterLumping_ = paramList_->get(
@@ -371,8 +383,18 @@ MoochoThyraSolver::getValidParameters() const
       );
     pl->set(
       FwdNewtonMaxIters_name,FwdNewtonMaxIters_default
-      ,"Maximum number of iterations allows for the forward state\n"
+      ,"Maximum number of iterations allowed for the forward state\n"
       "solver in eliminating the state equations/variables."
+      );
+    pl->set(
+      ForwardNewtonDampening_name, ForwardNewtonDampening_default,
+      "If true, then the state elimination nonlinear solver will\n"
+      "use a dampened line search.  Otherwise, it will just take fulls steps."
+      );
+    pl->set(
+      FwdNewtonMaxLineSearchIters_name, FwdNewtonMaxLineSearchIters_default,
+      "Maximum number of linea search iterations per newton iteration\n"
+      "allowed for the forward state solver in eliminating the state equations/variables."
       );
     pl->set(
       UseBuiltInInverseObjectiveFunction_name,UseBuiltInInverseObjectiveFunction_default
@@ -596,6 +618,8 @@ void MoochoThyraSolver::setModel(
           stateSolver = rcp(new Thyra::DampenedNewtonNonlinearSolver<Scalar>()); // ToDo: Replace with MOOCHO!
         stateSolver->defaultTol(fwd_newton_tol_);
         stateSolver->defaultMaxNewtonIterations(fwd_newton_max_iters_);
+        stateSolver->useDampenedLineSearch(fwd_newton_dampening_);
+        stateSolver->maxLineSearchIterations(fwd_newton_max_ls_iters_);
         // Create the reduced Thyra::ModelEvaluator object for p -> g_hat(p)
         Teuchos::RCP<Thyra::DefaultStateEliminationModelEvaluator<Scalar> >
           reducedThyraModel = rcp(new Thyra::DefaultStateEliminationModelEvaluator<Scalar>(outerModel_,stateSolver));
@@ -604,10 +628,8 @@ void MoochoThyraSolver::setModel(
         if(use_finite_diff_for_obj_) {
           // Create the finite-difference wrapped Thyra::ModelEvaluator object
           Teuchos::RCP<Thyra::DefaultFiniteDifferenceModelEvaluator<Scalar> >
-            fdReducedThyraModel = rcp(
-              new Thyra::DefaultFiniteDifferenceModelEvaluator<Scalar>(
-                reducedThyraModel,objDirecFiniteDiffCalculator
-                )
+            fdReducedThyraModel = Thyra::defaultFiniteDifferenceModelEvaluator<Scalar>(
+              reducedThyraModel, objDirecFiniteDiffCalculator
               );
           finalReducedThyraModel = fdReducedThyraModel;
         }
@@ -696,7 +718,7 @@ void MoochoThyraSolver::readInitialGuess(
     if(this->get_stateVectorIO().get())
       x_reader_.set_fileIO(this->get_stateVectorIO());
     Teuchos::VerboseObjectTempState<Thyra::ParameterDrivenMultiVectorInput<value_type> >
-      vots_x_reader(rcp(&x_reader_,false),out,Teuchos::VERB_LOW);
+      vots_x_reader(RCP<Thyra::ParameterDrivenMultiVectorInput<value_type> >(&x_reader_,false),out,Teuchos::VERB_LOW);
     initialGuess->set_x(
       readVectorOverride(
         x_reader_,"initial guess for the state \'x\'",initialGuess->get_x()
@@ -713,7 +735,7 @@ void MoochoThyraSolver::readInitialGuess(
       p_u_reader_.set_fileIO(p_reader_.get_fileIO());
     }
     Teuchos::VerboseObjectTempState<Thyra::ParameterDrivenMultiVectorInput<value_type> >
-      vots_p_reader(rcp(&p_reader_,false),out,Teuchos::VERB_LOW);
+      vots_p_reader(RCP<Thyra::ParameterDrivenMultiVectorInput<value_type> >(&p_reader_,false),out,Teuchos::VERB_LOW);
     initialGuess->set_p(
       p_idx_,
       readVectorOverride(
@@ -778,6 +800,7 @@ MoochoSolver::ESolutionStatus MoochoThyraSolver::solve()
   *solver_.get_console_out() << os.str();
   *solver_.get_summary_out() << os.str();
   *solver_.get_journal_out() << os.str();
+  outerModel_->setOStream(Teuchos::getFancyOStream(solver_.get_journal_out()));
   return solver_.solve_nlp();
 }
 

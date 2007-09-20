@@ -33,6 +33,8 @@
 #include "RTOp_obj_value_vtbl.h"
 #include "RTOp_obj_free_free.h"
 
+#include <stdlib.h>
+
 /* Local function definitions */
 
 static int get_obj_type_num_entries(
