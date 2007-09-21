@@ -59,6 +59,8 @@ clean	  :	config_clean     src_clean     tests_clean ;
 install   :	config_install   src_install ;
 uninstall :	config_uninstall src_uninstall ;
 tests     :	tests_run ;
+phdmesh.tar :
+	tar cvf $@ -C $(PHDMESH_PATH) .
 
 include	\
 	$(PHDMESH_PATH)/config/Make.in	\

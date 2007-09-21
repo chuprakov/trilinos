@@ -64,10 +64,29 @@ static int txblas_rbcr_compare( const void * lhs , const void * rhs )
   return diff ;
 }
 
+static txblas_SparseMatrixEntry * txblas_row_split(
+  txblas_SparseMatrixEntry * i ,
+  txblas_SparseMatrixEntry * j ,
+  const unsigned row_split )
+{
+  txblas_SparseMatrixEntry tmp ;
+  while ( i < j ) {
+    while ( i < --j && row_split < j->row );
+
+    while ( i < j && i->row < row_split ) { ++i ; }
+
+    tmp.row = i->row ;  tmp.col = i->col ;  tmp.val = i->val ;
+    i->row  = j->row ;  i->col  = j->col ;  i->val  = j->val ;
+    i->row  = tmp.row ; i->col  = tmp.col ; i->val  = tmp.val ;
+  }
+  return i ;
+}
+
+/*--------------------------------------------------------------------*/
+
 typedef struct txblasTask_rbcr_MatrixStruct {
   unsigned                         number_row ;
   unsigned                         block_size ;
-  unsigned                         iter ;
   const unsigned                 * p_begin ;
   const txblas_SparseMatrixEntry * a_begin ;
   const double                   * x_begin ;
@@ -96,45 +115,30 @@ static int txblas_task_rbcr_mxv(
   const double                   * const x_beg = t->x_begin ;
         double                   * const y_beg = t->y_begin ;
 
-  for ( unsigned iblock = beg_block ; iblock < end_block ; ++iblock ) {
-    const unsigned                 *       p_blk = p_beg + iblock ;
-    const txblas_SparseMatrixEntry *       a     = a_beg + p_blk[0] ;
-    const txblas_SparseMatrixEntry * const a_end = a_beg + p_blk[1] ;
+  double ytmp[ block_size ];
 
+  const txblas_SparseMatrixEntry * a = a_beg + p_beg[ beg_block ];
+
+  for ( unsigned iblock = beg_block ; iblock < end_block ; ) {
     const unsigned row_beg = block_size * iblock ;
     const unsigned row_num = ( block_size < number_row - row_beg )
                              ? block_size : number_row - row_beg ;
 
-    double ytmp[ row_num ];
+    double * const y_end = ytmp + row_num ;
+    double * y ;
 
-    for ( unsigned i = 0 ; i < row_num ; ++i ) { ytmp[i] = 0 ; }
+    for ( y = ytmp ; y < y_end ; ++y ) { *y = 0 ; }
+
+    const txblas_SparseMatrixEntry * const a_end = a_beg + p_beg[ ++iblock ];
 
     while ( a != a_end ) {
-      const unsigned col = a->col ;
-
-#if 0
-      /* Constant memory query of double[1] into cache */
-      const double x = x_beg[ col ];
-      do {
-        ytmp[ a->row - row_beg ] += a->val * x ;
-      } while ( ++a != a_end && col == a->col );
-#else
-      /* Constant memory query of double[#] into cache */
-      const double xblock[4] = { x_beg[col] ,   x_beg[col+1] ,
-                                 x_beg[col+2] , x_beg[col+3] };
-      unsigned jcol = 0 ;
-      do {
-        ytmp[ a->row - row_beg ] += a->val * xblock[jcol];
-      } while ( ++a != a_end && ( jcol = a->col - col ) < 4 );
-#endif
-
+      ytmp[ a->row - row_beg ] += a->val * x_beg[ a->col ];
+      ++a ;
     }
 
-    double * const y_out = y_beg + row_beg ;
+    double * y_out = y_beg + row_beg ;
 
-    for ( unsigned i = 0 ; i < row_num ; ++i ) {
-      y_out[i] = ytmp[i] ; /* <-- Exclusive memory update */
-    }
+    for ( y = ytmp ; y < y_end ; ++y , ++y_out ) { *y_out = *y ; }
   }
 
   return 0 ;
@@ -153,7 +157,6 @@ void txblas_rbcr_mxv(
   txblasTask_rbcr_Matrix data ;
   data.number_row = number_row ;
   data.block_size = block_size ;
-  data.iter       = 0 ;
   data.p_begin    = blocking ;
   data.a_begin    = a ;
   data.x_begin    = x ;
@@ -169,7 +172,6 @@ typedef struct txblasTask_MatrixPrepStruct {
   unsigned                   number_row ;
   unsigned                   block_size ;
   unsigned                   iter_level ;
-  unsigned                   iter ;
   unsigned                 * p_begin ;
   txblas_SparseMatrixEntry * a_begin ;
 } txblasTask_MatrixPrep ;
@@ -187,6 +189,7 @@ static int txblas_task_rbcr_prep(
   unsigned                 * const p_begin    = t->p_begin ;
   txblas_SparseMatrixEntry * const a_begin    = t->a_begin ;
 
+  const unsigned part_num     = 1u << ( level - 1 );
   const unsigned level_denom  = 1u << level ;
   const unsigned number_block = number_row / block_size +
                               ( number_row % block_size ? 1 : 0 );
@@ -194,23 +197,20 @@ static int txblas_task_rbcr_prep(
   const size_t size = ( (unsigned char *)(a_begin+1)) -
                       ( (unsigned char *)(a_begin  ));
 
-  volatile unsigned * const block = & t->iter ;
+  const unsigned part_beg = ( part_num * p_rank ) / p_size ;
+  const unsigned part_end = ( part_num * ( p_rank + 1 ) ) / p_size ;
 
-  for (;;) {
-    phdmesh_taskpool_lock(0,NULL);
+  for ( unsigned block = part_beg ; block < part_end ; ++block ) {
 
-    unsigned k = *block ;
-    *block = ++k ;
+    unsigned k = 2 * block ;
 
-    phdmesh_taskpool_unlock(0,NULL);
+    const double f_begin = (double) k        / (double) level_denom ;
+    const double f_split = (double)( k + 1 ) / (double) level_denom ;
+    const double f_end   = (double)( k + 2 ) / (double) level_denom ;
 
-    k = 2 * k ;
-
-    if ( level_denom < k ) break ;
-
-    const unsigned iblock_begin = ( number_block * ( k - 2 ) ) / level_denom ;
-    const unsigned iblock_split = ( number_block * ( k - 1 ) ) / level_denom ;
-    const unsigned iblock_end   = ( number_block * ( k     ) ) / level_denom ;
+    const unsigned iblock_begin = (unsigned)( number_block * f_begin );
+    const unsigned iblock_split = (unsigned)( number_block * f_split );
+    const unsigned iblock_end   = (unsigned)( number_block * f_end );
 
     txblas_SparseMatrixEntry * i = a_begin + p_begin[iblock_begin];
     txblas_SparseMatrixEntry * j = a_begin + p_begin[iblock_end];
@@ -221,20 +221,7 @@ static int txblas_task_rbcr_prep(
 
       const unsigned row_split = iblock_split * block_size ;
 
-      int ok ;
-      do {
-        do { --j ; } while ( row_split < j->row );
-
-        while ( ( ok = i != j ) && i->row < row_split ) { ++i ; }
-
-        if ( ok ) {
-          txblas_SparseMatrixEntry tmp ;
-          tmp.row = i->row ;  tmp.col = i->col ;  tmp.val = i->val ;
-          i->row  = j->row ;  i->col  = j->col ;  i->val  = j->val ;
-          i->row  = tmp.row ; i->col  = tmp.col ; i->val  = tmp.val ;
-        }
-      } while ( ok );
-      p_begin[ iblock_split ] = i - a_begin ;
+      p_begin[ iblock_split ] = txblas_row_split( i, j, row_split ) - a_begin ;
     }
     else if ( iblock_begin < iblock_end ) {
 
@@ -244,8 +231,6 @@ static int txblas_task_rbcr_prep(
 
      qsort( i , num , size , & txblas_rbcr_compare );
     }
-
-    if ( level_denom == k ) break ;
   }
   return 0 ;
 }
@@ -266,7 +251,7 @@ int txblas_rbcr_prep(
   data.p_begin    = blocking ;
   data.a_begin    = a ;
 
-  const unsigned nlock = 1 ;
+  const unsigned nlock = 0 ;
 
   const unsigned nblock = number_row / block_size +
                         ( number_row % block_size ? 1 : 0 );
@@ -274,15 +259,28 @@ int txblas_rbcr_prep(
   blocking[0] = 0 ;
   blocking[ nblock ] = number_coef ;
 
-  for ( unsigned level = 0 ; ( 1u << level ) < nblock ; ) {
-    data.iter_level = ++level ;
-    data.iter = 0 ;
+  for ( data.iter_level = 0 ; ( 1u << data.iter_level ) < nblock ; ) {
+    ++(data.iter_level);
     phdmesh_taskpool_run( & txblas_task_rbcr_prep , & data , nlock );
   }
+  ++(data.iter_level);
+  phdmesh_taskpool_run( & txblas_task_rbcr_prep , & data , nlock );
 
-  for ( unsigned i = 0 ; i < number_coef ; ++i ) {
-    if ( number_row <= a[i].row ) {
-      return -1 ;
+  for ( unsigned i = 1 ; i < number_coef ; ++i ) {
+    const unsigned i_block = a[i-1].row / block_size ;
+    const unsigned j_block = a[i].row / block_size ;
+    if ( j_block < i_block ) {
+      abort();
+    }
+    else if ( j_block == i_block ) {
+      if ( a[i].col < a[i-1].col ) {
+        abort();
+      }
+      else if ( a[i].col == a[i-1].col ) {
+        if ( a[i].row <= a[i-1].row ) {
+          abort();
+        }
+      }
     }
   }
 
@@ -295,19 +293,13 @@ int txblas_rbcr_prep(
 
 static int txblas_cr_compare( const void * lhs , const void * rhs )
 {
-  int diff = 0 ;
+  const txblas_SparseMatrixEntry * const l =
+    (const txblas_SparseMatrixEntry *) lhs ;
 
-  if ( NULL != lhs && NULL != rhs ) {
-    const txblas_SparseMatrixEntry * const l =
-      (const txblas_SparseMatrixEntry *) lhs ;
+  const txblas_SparseMatrixEntry * const r =
+    (const txblas_SparseMatrixEntry *) rhs ;
 
-    const txblas_SparseMatrixEntry * const r =
-      (const txblas_SparseMatrixEntry *) rhs ;
-
-    diff = (int) l->row - (int) r->row ;
-    if ( ! diff ) { diff = (int) l->col - (int) r->col ; }
-  }
-  return diff ;
+  return (int) l->col - (int) r->col ;
 }
 
 static int txblas_task_cr_mxv(
@@ -336,9 +328,11 @@ static int txblas_task_cr_mxv(
   while ( p < p_end ) {
     double ytmp = 0 ;
 
-    for ( const txblas_SparseMatrixEntry * const
-          a_end = a_begin + *++p ; a < a_end ; ++a ) {
+    const txblas_SparseMatrixEntry * const a_end = a_begin + *++p ;
+
+    while ( a < a_end ) {
       ytmp += a->val * x_beg[ a->col ];
+      ++a ;
     }
 
     *y++ = ytmp ;
@@ -346,6 +340,7 @@ static int txblas_task_cr_mxv(
 
   return 0 ;
 }
+
 
 void txblas_cr_mxv(
   const unsigned                 number_row  /* Number rows */ ,
@@ -359,7 +354,6 @@ void txblas_cr_mxv(
   txblasTask_rbcr_Matrix data ;
   data.number_row = number_row ;
   data.block_size = 0 ;
-  data.iter       = 0 ;
   data.p_begin = blocking ;
   data.a_begin = a ;
   data.x_begin = x ;
@@ -367,25 +361,6 @@ void txblas_cr_mxv(
 
   phdmesh_taskpool_run( & txblas_task_cr_mxv , & data , nlock );
 }
-
-static txblas_SparseMatrixEntry * txblas_cr_split(
-  txblas_SparseMatrixEntry * i ,
-  txblas_SparseMatrixEntry * j ,
-  const unsigned row_split )
-{
-  while ( i < j ) {
-    while ( i < --j && row_split < j->row );
-
-    while ( i < j && i->row < row_split ) { ++i ; }
-
-    txblas_SparseMatrixEntry tmp ;
-    tmp.row = i->row ;  tmp.col = i->col ;  tmp.val = i->val ;
-    i->row  = j->row ;  i->col  = j->col ;  i->val  = j->val ;
-    i->row  = tmp.row ; i->col  = tmp.col ; i->val  = tmp.val ;
-  }
-  return i ;
-}
-
 
 static int txblas_task_cr_prep(
   void * data , unsigned p_size , unsigned p_rank )
@@ -401,35 +376,33 @@ static int txblas_task_cr_prep(
 
   const unsigned p_next   = p_rank + 1 ;
   const unsigned num_part = 1u << level ;
-  const int      complete = p_size <= num_part ; /* All threads have work */
 
   const unsigned part_beg = ( num_part * p_rank ) / p_size ;
   const unsigned part_end = ( num_part * p_next ) / p_size ;
-  const unsigned row_beg  = ( number_row * part_beg ) / num_part ;
-  const unsigned row_end  = ( number_row * part_end ) / num_part ;
 
-  txblas_SparseMatrixEntry * i = a_begin + p_begin[row_beg];
-  txblas_SparseMatrixEntry * j = a_begin + p_begin[row_end];
+  for ( unsigned ipart = part_beg ; ipart < part_end ; ++ipart ) {
+    const double ifraction = ((double) ipart ) / ((double) num_part );
+    const double jfraction = ((double) ipart + 1 ) / ((double) num_part );
+    const unsigned row_beg = (unsigned)( number_row * ifraction );
+    const unsigned row_end = (unsigned)( number_row * jfraction );
 
-  if ( complete || 1 == row_end - row_beg ) {
-    const unsigned number = j - i ;
+    txblas_SparseMatrixEntry * i = a_begin + p_begin[row_beg];
+    txblas_SparseMatrixEntry * j = a_begin + p_begin[row_end];
 
-    const size_t size = ( (unsigned char *)(i+1)) -
-                        ( (unsigned char *)(i  ));
+    if ( 1 < row_end - row_beg ) {
+      const double kfraction = ( ifraction + jfraction ) * 0.5 ;
+      const unsigned row_split = (unsigned)( number_row * kfraction );
+      p_begin[ row_split ] = txblas_row_split( i , j , row_split ) - a_begin ;
+    }
+    else {
+      const unsigned number = j - i ;
 
-    qsort( i, number , size, & txblas_cr_compare );
+      const size_t size = ( (unsigned char *)(i+1)) -
+                          ( (unsigned char *)(i  ));
 
-    for ( unsigned row = row_beg + 1 ; row < row_end ; ++row ) {
-      while ( i < j && i->row < row ) { ++i ; }
-      p_begin[row] = i - a_begin ;
+      qsort( i, number , size, & txblas_cr_compare );
     }
   }
-  else if ( 1 < row_end - row_beg ) {
-    const unsigned row_split = ( row_beg + row_end ) / 2 ;
-    p_begin[ row_split ] = txblas_cr_split( i , j , row_split ) - a_begin ;
-  }
-
-  if ( complete && 0 == p_rank ) { t->iter = 0 ; }
 
   return 0 ;
 }
@@ -452,11 +425,44 @@ int txblas_cr_prep(
   blocking[0] = 0 ;
   blocking[ number_row ] = number_coef ;
 
-  data.iter = 1 ;
+  data.iter_level = 0 ;
+  phdmesh_taskpool_run( & txblas_task_cr_prep , & data , nlock );
 
-  for ( data.iter_level = 0 ; data.iter ; ++( data.iter_level ) ) {
+  while ( ( 1u << data.iter_level ) < number_row ) {
+    ++( data.iter_level );
     phdmesh_taskpool_run( & txblas_task_cr_prep , & data , nlock );
   }
+
+#if 0
+  {
+    unsigned i = 0 ;
+    unsigned j = 0 ;
+    while ( j < number_row ) {
+      if ( blocking[j] != i ) {
+        abort();
+      }
+      while ( i < number_coef && a[i].row == j ) {
+        ++i ;
+      }
+      ++j ;
+    }
+    if ( blocking[j] != number_coef ) {
+      abort();
+    }
+  }
+  {
+    for ( unsigned i = 1 ; i < number_coef ; ++i ) {
+      if ( a[i].row < a[i-1].row ) {
+        abort();
+      }
+      else if ( a[i].row == a[i-1].row ) {
+        if ( a[i].col <= a[i-1].col ) {
+          abort();
+        }
+      }
+    }
+  }
+#endif
 
   return 0 ;
 }
