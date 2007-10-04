@@ -86,6 +86,14 @@ MPICH | mpich )
   export LDCXX=${CXX}
   export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_MPI\n"
   ;;
+MPICHXX | mpichxx )
+  shift 1
+  export CC="mpicc"
+  export CXX="mpicxx"
+  export LDCXX=${CXX}
+  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_MPI\n"
+  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define MPICH_SKIP_MPICXX\n"
+  ;;
 PURIFY | purify )
   export LDCXX="purify ${CXX}"
   ;;

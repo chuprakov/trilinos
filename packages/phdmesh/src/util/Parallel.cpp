@@ -91,27 +91,21 @@ namespace phdmesh {
 
 double wall_time()
 {
-  const double microseconds = 1000000 ;
-
+  static bool    first = true ;
   static timeval tp_init ;
-  static bool    normal = false ;
 
   timeval tp ;
 
   gettimeofday( &tp , reinterpret_cast<struct timezone *>( NULL ) );
 
-  double result = 0 ;
-
-  if ( normal ) {
-    result = ( (double)( tp.tv_sec  - tp_init.tv_sec  ) ) +
-             ( (double)( tp.tv_usec - tp_init.tv_usec ) / microseconds );
-  }
-  else {
+  if ( first ) {
     tp_init.tv_usec = tp.tv_usec ;
     tp_init.tv_sec  = tp.tv_sec ;
-    normal = true ;
+    first = false ;
   }
-  return result ;
+
+  return ( (double)( tp.tv_sec  - tp_init.tv_sec  ) ) +
+         ( (double)( tp.tv_usec - tp_init.tv_usec ) / 1000000.0 );
 } 
 
 }

@@ -35,20 +35,21 @@
 #include <util/ParallelInputStream.hpp>
 
 #include <txblas/Reduction.hpp>
-#include <txblas/sparse_mxv.h>
-#include <txblas/SparseMatrix.hpp>
+
+#include <txblas/cr4_mxv.h>
+#include <txblas/CR4Matrix.hpp>
 
 using namespace phdmesh ;
 
-void test_fill_sparse_band(
+void test_fill_cr4_band(
   ParallelMachine comm ,
   const std::vector<unsigned> & partition ,
   const unsigned iband ,
   const unsigned nband ,
   const unsigned stride ,
   const double evalue ,
-  const unsigned block_size ,
-  SparseMatrix & mat );
+  std::vector<unsigned> & prefix ,
+  std::vector<txblas_cr4> & matrix );
 
 namespace {
 
@@ -112,10 +113,11 @@ void timing_test_txblas(
 
   const double dt_fill = wall_dtime( t );
 
-  double z[4] = { 0 , 0 , 0 , 0 };
+  Summation z ;
 
   for ( unsigned i = 0 ; i < ncycle ; ++i ) {
-    txddot1( z , m_local , & values[0] );
+    txddot1( z.xdval , m_local , & values[0] );
+    all_reduce( comm , ReduceSum<1>( & z ) );
   }
 
   double dt_txddot1 = wall_dtime( t ) / (double) ncycle ;
@@ -170,9 +172,7 @@ void test_txblas_accuracy( ParallelMachine comm ,
 
   all_reduce( comm , ReduceSum<1>( & z ) & ReduceSum<1>( & a ) );
 
-
   for ( i = values.begin() ; i != values.end() ; ++i ) { *i = - *i ; }
-
 
   txdsum_add_array( z.xdval , m_local , & values[0] );
 
@@ -195,13 +195,12 @@ void test_txblas_accuracy( ParallelMachine comm ,
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void test_txblas_rbcr_mxv( ParallelMachine comm ,
-                           const unsigned N ,
-                           const unsigned block_size ,
-                           const unsigned nband ,
-                           const unsigned stride ,
-                           const unsigned ncycle ,
-                           const double Value )
+void test_txblas_cr4_mxv( ParallelMachine comm ,
+                         const unsigned N ,
+                         const unsigned nband ,
+                         const unsigned stride ,
+                         const unsigned ncycle ,
+                         const double Value )
 {
   const unsigned p_rank = parallel_machine_rank( comm );
 
@@ -218,29 +217,35 @@ void test_txblas_rbcr_mxv( ParallelMachine comm ,
   double * const x = & x_vec[0] ;
   double * const y = & y_vec[0] ;
 
-  SparseMatrix matrix ;
-
-  double total[2] = { 0 , 0 };
+  double total[3] = { 0 , 0 , 0 };
 
   double t = wall_time();
-  test_fill_sparse_band( comm, partition, 1, nband, stride, Value,
-                         block_size, matrix );
+
+  std::vector<unsigned>   cr4_prefix ;
+  std::vector<txblas_cr4> cr4_matrix ;
+
+  test_fill_cr4_band( comm, partition, 1, nband, stride, Value,
+                      cr4_prefix , cr4_matrix );
   total[0] = wall_dtime( t );
+
+  CR4Matrix matrix( comm , partition , cr4_prefix , cr4_matrix );
+  total[1] = wall_dtime( t );
 
   for ( unsigned i = 0 ; i < ncycle ; ++i ) {
     matrix.multiply( x , y );
   }
-  total[1] = wall_dtime( t );
+  total[2] = wall_dtime( t );
 
-  all_reduce( comm , ReduceMax<2>( total ) );
+  all_reduce( comm , ReduceMax<3>( total ) );
 
   if ( p_rank == 0 ) {
-    std::cout << "Test SparseMatrix::multiply timing " ;
+    std::cout << "Test CR4Matrix timing: " ;
     std::cout << "fill = " << total[0] ;
+    std::cout << ", construct = " << total[1] ;
     std::cout << ", mxv = " ;
-    std::cout << ( total[1] / ncycle );
+    std::cout << ( total[2] / ncycle );
     std::cout << " seconds" << std::endl ;
- }
+  }
 
   return ;
 }
@@ -253,19 +258,17 @@ void test_txblas_rbcr_mxv( ParallelMachine comm ,
 void test_rbcr_mxv( phdmesh::ParallelMachine comm , std::istream & is )
 {
   unsigned nsize = 1000000 ;
-  unsigned blocking = 20 ;
   unsigned nband = 50 ;
   unsigned stride = 1 ;
   unsigned ncycle = 1 ;
   double   value = 1 ;
   if ( is.good() ) { is >> nsize ; }
-  if ( is.good() ) { is >> blocking ; }
   if ( is.good() ) { is >> nband ; }
   if ( is.good() ) { is >> stride ; }
   if ( is.good() ) { is >> ncycle ; }
   if ( is.good() ) { is >> value ; }
-  test_txblas_rbcr_mxv( comm, nsize, blocking,
-                        nband, stride, ncycle, value);
+
+  test_txblas_cr4_mxv( comm , nsize , nband , stride , ncycle , value );
 }
 
 void test_accuracy( phdmesh::ParallelMachine comm , std::istream & is )

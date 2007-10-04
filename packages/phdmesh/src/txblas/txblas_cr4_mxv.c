@@ -21,69 +21,75 @@
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
 /**
- * @author  H. Carter Edwards
+ * @author H. Carter Edwards
  */
 
-#ifndef txblas_sparse_mxv_h
-#define txblas_sparse_mxv_h
-
-#if defined( __cplusplus )
-extern "C" {
-#endif
+#include <stddef.h>
+#include <util/taskpool.h>
+#include <txblas/cr4_mxv.h>
 
 /*--------------------------------------------------------------------*/
 
-typedef struct txblas_SparseMatrixEntry_struct {
-  double   val ;
-  unsigned row ;
-  unsigned col ;
-} txblas_SparseMatrixEntry ;
-
-/*--------------------------------------------------------------------*/
-/* Preprocess the matrix entries and generate blocking data
- * for subsequent matrix-vector multiplication.
- * The 'blocking' array must be dimensioned to at least:
- *   blocking[ 1 + ceil( number_row / block_size ) ]
- */
-int txblas_rbcr_prep(
-  const unsigned number_row ,
-  const unsigned block_size ,
-  const unsigned number_coef ,
-        txblas_SparseMatrixEntry a[] ,
-        unsigned blocking[] );
-
-void txblas_rbcr_mxv(
-  const unsigned number_row ,
-  const unsigned block_size ,
-  const txblas_SparseMatrixEntry a[] ,
-  const unsigned blocking[] ,
-  const double   x[] ,
-        double   y[] );
-
-/*--------------------------------------------------------------------*/
-/* Preprocess the matrix entries and generate blocking data
- * for subsequent matrix-vector multiplication.
- * The 'blocking' array must be dimensioned to at least:
- *   blocking[ number_row ]
- */
-int txblas_cr_prep(
-  const unsigned number_row ,
-  const unsigned number_coef ,
-        txblas_SparseMatrixEntry a[] ,
-        unsigned blocking[] );
-
-void txblas_cr_mxv(
-  const unsigned number_row ,
-  const txblas_SparseMatrixEntry a[] ,
-  const unsigned blocking[] ,
-  const double   x[] ,
-        double   y[] );
+typedef struct txblasTask_cr4_MatrixStruct {
+  unsigned           number_row ;
+  const unsigned   * pc_begin ;
+  const txblas_cr4 * a_begin ;
+  const double     * x_begin ;
+        double     * y_begin ;
+} txblasTask_cr4_Matrix ;
 
 /*--------------------------------------------------------------------*/
 
-#if defined( __cplusplus )
-} /* extern "C" */
-#endif
+static int txblas_task_cr4_mxv(
+  void * data , unsigned p_size , unsigned p_rank )
+{
+  txblasTask_cr4_Matrix * const t = (txblasTask_cr4_Matrix*) data ;
 
-#endif
+  const unsigned beg_row = ( t->number_row * ( p_rank     ) ) / p_size ;
+  const unsigned end_row = ( t->number_row * ( p_rank + 1 ) ) / p_size ;
+
+  const unsigned   * const pc_end = t->pc_begin + end_row ;
+  const txblas_cr4 * const a_beg  = t->a_begin ;
+  const double     * const x_beg  = t->x_begin ;
+        double     *       y      = t->y_begin + beg_row ;
+
+  const unsigned   * pc = t->pc_begin + beg_row ;
+  const txblas_cr4 * a  = a_beg + *pc ;
+
+  while ( pc < pc_end ) {
+    double ytmp = 0 ;
+
+    for ( const txblas_cr4 * const a_end = a_beg + *++pc ; a < a_end ; ++a ) {
+      ytmp += a->val[0] * x_beg[ a->col[0] ] +
+              a->val[1] * x_beg[ a->col[1] ] +
+              a->val[2] * x_beg[ a->col[2] ] +
+              a->val[3] * x_beg[ a->col[3] ] ;
+    }
+
+    *y++ = ytmp ;
+  }
+
+  return 0 ;
+}
+
+
+void txblas_cr4_mxv(
+  const unsigned   nr  /* Number rows */ ,
+  const unsigned   pc[] ,
+  const txblas_cr4 a[] ,
+  const double     x[] ,  /* Input vector */
+        double     y[] )  /* Output vector */
+{
+  const unsigned nlock = 0 ;
+
+  txblasTask_cr4_Matrix data ;
+  data.number_row = nr ;
+  data.pc_begin = pc ;
+  data.a_begin = a ;
+  data.x_begin = x ;
+  data.y_begin = y ;
+
+  phdmesh_taskpool_run( & txblas_task_cr4_mxv , & data , nlock );
+}
+
 

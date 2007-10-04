@@ -14,12 +14,12 @@ timing   10000000 100
 taskpool 4
 timing   10000000 100
 #
-# rbcr_mxv <global_size> <block_size> <#band> <stride> <#cycles> <evalue>
+# rbcr_mxv <global_size> <#band> <stride> <#cycles> <evalue>
 taskpool 1
-rbcr_mxv  100000 1000 100 1 100
+rbcr_mxv  100000 100 1 100
 taskpool 2
-rbcr_mxv  100000 1000 100 1 100
+rbcr_mxv  100000 100 1 100
 taskpool 4
-rbcr_mxv  100000 1000 100 1 100
+rbcr_mxv  100000 100 1 100
 #
 

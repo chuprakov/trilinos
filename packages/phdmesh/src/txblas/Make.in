@@ -26,14 +26,14 @@ TXBLAS_INC_DIR = $(PHDMESH_PATH)/include/txblas
 TXBLAS_INC_FILES =	\
 	$(TXBLAS_INC_DIR)/reduction.h	\
 	$(TXBLAS_INC_DIR)/Reduction.hpp	\
-	$(TXBLAS_INC_DIR)/SparseMatrix.hpp	\
-	$(TXBLAS_INC_DIR)/sparse_mxv.h
+	$(TXBLAS_INC_DIR)/CR4Matrix.hpp	\
+	$(TXBLAS_INC_DIR)/cr4_mxv.h
 
 TXBLAS_OBJ_FILES =	\
 	txblas_axpby.o	\
 	txblas_reduction.o	\
-	txblas_SparseMatrix.o	\
-	txblas_sparse_mxv.o
+	txblas_CR4Matrix.o	\
+	txblas_cr4_mxv.o
 
 TXBLAS_INC_DEPS = $(TXBLAS_INC_FILES) $(UTIL_INC_DEPS)
 

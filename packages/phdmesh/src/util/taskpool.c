@@ -237,7 +237,7 @@ int phdmesh_taskpool_control(
         --number ; /* The 'main' is one of the threads */
       }
       else {
-        phdmesh_taskpool_lock_control( CLEAR , number , NULL );
+        phdmesh_taskpool_lock_control( CLEAR , 0 , NULL );
       }
 
       const unsigned n = number < MAX_PTHREADS ? number : MAX_PTHREADS ;
@@ -245,16 +245,19 @@ int phdmesh_taskpool_control(
       while ( n < num_threads ) {
         --num_threads ;
         pthread_mutex_unlock( & threads[ num_threads ].m_active );
-        pthread_join( threads[ num_threads ].m_thread , NULL );
         pthread_mutex_destroy( & threads[ num_threads ].m_active );
         pthread_mutex_destroy( & threads[ num_threads ].m_sync );
       }
 
       if ( num_threads < n ) {
 
+        /* pthread_setconcurrency( n + 1 ); */
+
         pthread_attr_t thread_attr ;
         pthread_attr_init( & thread_attr );
-        pthread_attr_setdetachstate( & thread_attr, PTHREAD_CREATE_JOINABLE);
+        pthread_attr_setscope(       & thread_attr, PTHREAD_SCOPE_SYSTEM );
+        pthread_attr_setschedpolicy( & thread_attr, SCHED_FIFO );
+        pthread_attr_setdetachstate( & thread_attr, PTHREAD_CREATE_DETACHED);
 
         while ( ! result && num_threads < n ) {
 
@@ -262,7 +265,7 @@ int phdmesh_taskpool_control(
 
           data->m_routine  = NULL ;
           data->m_argument = NULL ;
-          data->m_size     = n + 1 ;
+          data->m_size     = 0 ;
           data->m_rank     = num_threads + 1 ;
           data->m_result   = 0 ;
 
@@ -278,6 +281,10 @@ int phdmesh_taskpool_control(
         }
 
         pthread_attr_destroy( & thread_attr );
+      }
+
+      for ( unsigned i = 0 ; i < n ; ++i ) {
+        threads[i].m_size = n + 1 ;
       }
     }
 
