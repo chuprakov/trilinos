@@ -128,6 +128,7 @@ FEApp::ModelEvaluator::createInArgs() const
   inArgs.setSupports(IN_ARG_x,true);
   inArgs.set_Np(1); // 1 parameter vector
   if (app->isTransient()) {
+    inArgs.setSupports(IN_ARG_t,true);
     inArgs.setSupports(IN_ARG_x_dot,true);
     inArgs.setSupports(IN_ARG_alpha,true);
     inArgs.setSupports(IN_ARG_beta,true);
