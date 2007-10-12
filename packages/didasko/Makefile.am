@@ -43,7 +43,8 @@ ACLOCAL_AMFLAGS = -I config
 EXTRA_DIST = config/strip_dup_incl_paths.pl config/strip_dup_libs.pl \
 	src/Didasko_ConfigDefs.h README doc/Doxyfile \
 	doc/mainpage.doxygen src/Trilinos70Tutorial.pdf \
-	doc/didasko_logo.jpeg config/token-replace.pl
+	doc/didasko_logo.jpeg config/token-replace.pl \
+        doc/build_docs doc/DoxyfileWeb
 
 ## #######################################################################
 ## Tools in the auxillary directory 
