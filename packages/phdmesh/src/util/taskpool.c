@@ -24,11 +24,12 @@
  * @author H. Carter Edwards
  */
 
-#include <stddef.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <phdmesh_config.h>
 #include <util/taskpool.h>
+
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /*--------------------------------------------------------------------*/
 /*--------------------------------------------------------------------*/
@@ -72,7 +73,7 @@ int phdmesh_taskpool_run(
 
 #include <pthread.h>
 
-inline void phdmesh_private_lock( pthread_mutex_t * m )
+static void phdmesh_private_lock( pthread_mutex_t * m )
 {
 #if 1
    while ( pthread_mutex_trylock( m ) );

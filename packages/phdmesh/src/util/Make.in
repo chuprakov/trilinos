@@ -36,6 +36,8 @@ UTIL_INC_FILES =	\
 	$(UTIL_INC_DIR)/ParallelIndex.hpp	\
 	$(UTIL_INC_DIR)/ParallelReduce.hpp	\
 	$(UTIL_INC_DIR)/ParallelInputStream.hpp	\
+	$(UTIL_INC_DIR)/NamedValue.hpp	\
+	$(UTIL_INC_DIR)/ValueIOS.hpp	\
 	$(UTIL_INC_DIR)/OctTree.hpp	\
 	$(UTIL_INC_DIR)/OctTreeOps.hpp	\
 	$(UTIL_INC_DIR)/TestDriver.hpp
@@ -50,6 +52,8 @@ UTIL_OBJ_FILES =	\
 	ParallelReduce.o	\
 	ParallelIndex.o	\
 	ParallelInputStream.o	\
+	NamedValue.o	\
+	ValueIOS.o	\
 	OctTree.o	\
 	OctTreeOps.o	\
 	TestDriver.o

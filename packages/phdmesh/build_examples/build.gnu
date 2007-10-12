@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------
 # Paths
 
-export PHDMESH_PATH=".."
+export PHDMESH_PATH="${HOME}/Trilinos/packages/phdmesh"
 
 #----------------------------------------------------------------------
 # The configuration is dependent upon this file
