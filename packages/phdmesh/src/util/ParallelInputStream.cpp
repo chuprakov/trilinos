@@ -126,13 +126,19 @@ int ParInBuf::underflow()
   return 0 < nread ? *buf : EOF ;
 }
 
-int ParInBuf::overflow( int )
+namespace {
+
+void throw_overflow()
 {
   std::string msg ;
   msg.append("phdmesh::ParallelInputStream::overflow CALL IS ERRONEOUS" );
   throw std::runtime_error(msg);
-  return EOF ;
 }
+
+}
+
+int ParInBuf::overflow( int )
+{ throw_overflow(); return EOF ; }
 
 int ParInBuf::sync()
 { return 0 ; }

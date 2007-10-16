@@ -39,6 +39,29 @@ namespace phdmesh {
 
 namespace {
 
+bool value_ios_get_token( std::istream & s , int t , bool required )
+{
+  static const char method_name[] = "phdmesh::value_ios_get_token" ;
+
+  while ( s.good() && isspace( s.peek() ) ) { s.get(); }
+
+  const bool found = s.peek() == t ;
+
+  if ( found ) {
+    s.get();
+  }
+  else if ( required ) {
+    const char c[2] = { (char) t , 0 };
+    std::string msg ;
+    msg.append( method_name )
+       .append( " FAILED to find '" )
+       .append( c )
+       .append( "'" );
+    throw std::runtime_error(msg);
+  }
+  return found ;
+}
+
 bool good_c_name( const char * name )
 {
   bool result = isalpha( *name );
@@ -62,21 +85,21 @@ struct less_pset {
 
   less_pset( int (*comp)( const char * , const char * ) ) : compare(comp) {}
 
-  bool operator()( const NamedValueSet::MemberVoid & lhs ,
+  bool operator()( const NamedValue<> * lhs ,
                    const char * rhs ) const
-    { return (*compare)( lhs.first->name.c_str() , rhs ) < 0 ; }
+    { return (*compare)( lhs->name.c_str() , rhs ) < 0 ; }
 };
 
-std::vector< NamedValueSet::MemberVoid >::const_iterator
-lower_bound( const std::vector<NamedValueSet::MemberVoid> & v ,
+std::vector< NamedValue<>* >::const_iterator
+lower_bound( const std::vector<NamedValue<>* > & v ,
              const NamedValueSet::CompareFunction comp ,
              const char * n )
 {
   return std::lower_bound( v.begin(), v.end(), n , less_pset(comp) );
 }
 
-std::vector< NamedValueSet::MemberVoid >::iterator
-lower_bound( std::vector<NamedValueSet::MemberVoid> & v ,
+std::vector< NamedValue<>* >::iterator
+lower_bound( std::vector<NamedValue<>*> & v ,
              const NamedValueSet::CompareFunction comp ,
              const char * n )
 {
@@ -120,10 +143,10 @@ void verify_type( const char * method_name ,
 
 void verify_no_loop( const char * const method ,
                      const NamedValueSet * const vs ,
-                     const NamedValue<void> & p ,
+                     const NamedValue<> & p ,
                      std::string path )
 {
-  if ( p.value_type == typeid(NamedValueSet) ) {
+  if ( p.scalar_type() == typeid(NamedValueSet) ) {
     const NamedValueSet * ps =
       & static_cast< const NamedValue<NamedValueSet> & >(p).value ;
 
@@ -140,11 +163,11 @@ void verify_no_loop( const char * const method ,
     else {
       path.append( p.name ).append( "." );
 
-      const std::vector<NamedValueSet::MemberVoid> & vec = ps->get_all();
+      const std::vector<NamedValue<>*> & vec = ps->get_all();
 
-      for ( std::vector<NamedValueSet::MemberVoid>::const_iterator
+      for ( std::vector<NamedValue<>*>::const_iterator
             i = vec.begin() ; i != vec.end() ; ++i ) {
-        verify_no_loop( method , vs , *(i->first) , path );
+        verify_no_loop( method , vs , **i , path );
       }
     }
   }
@@ -166,7 +189,20 @@ void remove_this( std::vector< NamedValueSet *> & v , NamedValueSet * const ps )
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-NamedValue<void>::~NamedValue()
+void NamedValue<>::throw_type( const std::type_info & t ) const
+{
+  std::string msg ;
+  msg.append( "phdmesh::NamedValue<>[scalar_typeid(" )
+     .append( scalar_type().name() )
+     .append( ") != argument_typeid(" )
+     .append( t.name() )
+     .append( ")" );
+  throw std::runtime_error( msg );
+}
+
+//----------------------------------------------------------------------
+
+NamedValue<>::~NamedValue()
 {
   while ( ! m_sets.empty() ) {
     NamedValueSet & ps = *m_sets.back() ;
@@ -174,82 +210,88 @@ NamedValue<void>::~NamedValue()
   }
 }
 
-NamedValue<void>::NamedValue( const std::type_info & t , const char * n )
-  : name(n), value_type(t), m_sets() {}
+NamedValue<>::NamedValue( const char * n ) : name(n), m_sets() {}
 
 //----------------------------------------------------------------------
 
 NamedValueSet::~NamedValueSet()
-{
-  for ( std::vector< MemberVoid >::iterator
-        i = m_values.begin() ; i != m_values.end() ; ++i ) {
-    remove_this( i->first->m_sets , this );
-  }
-}
+{ clear(); }
 
 NamedValueSet::NamedValueSet()
-  : m_good( good_c_name ),
-    m_compare( compare_nocase ),
+  : m_compare( compare_nocase ),
+    m_good( good_c_name ),
+    m_ios( ValueIOS<NamedValueSet>::default_policy() ),
     m_values()
 {}
 
 NamedValueSet::NamedValueSet( CompareFunction arg_compare ,
-                              GoodFunction    arg_good )
-  : m_good( arg_good ? arg_good : good_c_name ),
-    m_compare( arg_compare ? arg_compare : compare_nocase ),
+                              GoodFunction    arg_good ,
+                              const ValueIOSPolicy * arg_ios )
+  : m_compare( arg_compare ? arg_compare : compare_nocase ),
+    m_good( arg_good ? arg_good : good_c_name ),
+    m_ios( arg_ios ? * arg_ios : ValueIOS<NamedValueSet>::default_policy() ),
     m_values()
 {}
 
 NamedValueSet::NamedValueSet( const NamedValueSet & ps )
-  : m_good(    ps.m_good ),
-    m_compare( ps.m_compare ),
-    m_values(  ps.m_values )
+  : m_compare( ps.m_compare ),
+    m_good(    ps.m_good ),
+    m_ios(     ps.m_ios ),
+    m_values()
+{ assign( ps.m_values ); }
+
+void NamedValueSet::clear()
 {
   NamedValueSet * myself = this ;
-  for ( std::vector< MemberVoid >::iterator
-        i = m_values.begin() ; i != m_values.end() ; ++i ) {
-    i->first->m_sets.push_back( myself );
+  while ( ! m_values.empty() ) {
+    NamedValue<> & v = * m_values.back();
+    remove_this( v.m_sets , myself );
+    m_values.pop_back();
   }
 }
 
-void NamedValueSet::clear() { m_values.clear(); }
-
-void NamedValueSet::assign( const std::vector<NamedValueSet::MemberVoid> & v )
+void NamedValueSet::assign( const std::vector<NamedValue<>*> & v )
 {
   static const char method_name[] = "phdmesh::NamedValueSet::assign" ;
 
-  for ( std::vector<MemberVoid>::const_iterator
+  for ( std::vector<NamedValue<>*>::const_iterator
         i = v.begin() ; i != v.end() ; ++i ) {
-    verify_name_policy( method_name , m_good , i->first->name.c_str() );
+    verify_name_policy( method_name , m_good , (*i)->name.c_str() );
   }
+
+  clear();
+
   m_values = v ;
+
+  NamedValueSet * myself = this ;
+  for ( std::vector< NamedValue<> * >::iterator
+        i = m_values.begin() ; i != m_values.end() ; ++i ) {
+    (*i)->m_sets.push_back( myself );
+  }
 }
 
 //----------------------------------------------------------------------
 
-NamedValueSet::MemberVoid
-NamedValueSet::m_get( const std::type_info & t ,
-                      const std::string & n ,
-                      const char sep ) const
+NamedValue<> *
+NamedValueSet::m_find( const std::type_info & t ,
+                       const std::string & n ,
+                       const char sep ) const
 {
-  static const char method_name[] = "phdmesh::NamedValueSet::get" ;
+  static const char method_name[] = "phdmesh::NamedValueSet::find" ;
 
-  NamedValue<void>     * vs = NULL ;
-  const ValueIOS<void> * io = NULL ;
-
-  MemberVoid m( vs , io );
+  NamedValue<> * v = NULL ;
 
   const std::string::size_type len = n.size();
   const std::string::size_type p   = sep ? n.find( sep ) : len ;
 
   if ( len == p || std::string::npos == p ) {
     // Local:
-    const std::vector<MemberVoid>::const_iterator
+    const std::vector<NamedValue<>*>::const_iterator
       i = lower_bound( m_values , m_compare , n.c_str() );
 
-    if ( m_values.end() != i && n == i->first->name ) {
-      verify_type( method_name , n , i->first->value_type , t );
-      m = *i ;
+    if ( m_values.end() != i && n == (*i)->name ) {
+      verify_type( method_name , n , (*i)->scalar_type() , t );
+      v = *i ;
     }
   }
   else {
@@ -257,100 +299,71 @@ NamedValueSet::m_get( const std::type_info & t ,
     std::string local_name  = n.substr( 0 , p ); // before sep
     std::string nested_name = n.substr( p + 1 ); // after  sep
 
-    const std::vector<MemberVoid>::const_iterator
+    const std::vector<NamedValue<>*>::const_iterator
       i = lower_bound( m_values , m_compare , local_name.c_str() );
 
     verify_type( method_name , local_name ,
-                 i->first->value_type , typeid(NamedValueSet) );
+                 (*i)->scalar_type() , typeid(NamedValueSet) );
 
     NamedValueSet & nested =
-      static_cast< NamedValue<NamedValueSet> *>( i->first )->value ;
+      static_cast< NamedValue<NamedValueSet> *>( *i )->value ;
 
-    m = nested.m_get( t , nested_name , sep );
+    v = nested.m_find( t , nested_name , sep );
   }
 
-  return m ;
+  return v ;
 }
 //----------------------------------------------------------------------
 
-NamedValueSet::MemberVoid
-NamedValueSet::m_insert( NamedValueSet::MemberVoid m )
-{
-  static const char method_name[] = "phdmesh::NamedValueSet::insert" ;
-
-  verify_name_policy( method_name , m_good , m.first->name.c_str() );
-
-  verify_no_loop( method_name , this , *m.first , std::string() );
-
-  std::vector<MemberVoid>::iterator
-    i = lower_bound( m_values , m_compare , m.first->name.c_str() );
-
-  if ( m_values.end() != i && m.first->name == i->first->name ) {
-    verify_type( method_name , m.first->name ,
-                               i->first->value_type , m.first->value_type );
-    m = *i ;
-  }
-  else {
-    NamedValueSet * myself = this ;
-    m.first->m_sets.push_back( myself );
-    m_values.insert( i , m );
-  }
-
-  return m ;
-}
-
-NamedValueSet::MemberVoid
-NamedValueSet::m_replace( NamedValueSet::MemberVoid m )
+NamedValue<> *
+NamedValueSet::m_insert( NamedValue<> & v , bool replace )
 {
   static const char method_name[] = "phdmesh::NamedValueSet::replace" ;
 
-  verify_name_policy( method_name , m_good , m.first->name.c_str() );
+  NamedValue<> * m = NULL ;
 
-  verify_no_loop( method_name , this , *m.first , std::string() );
+  verify_name_policy( method_name , m_good , v.name.c_str() );
 
-  std::vector<MemberVoid>::iterator
-    i = lower_bound( m_values , m_compare , m.first->name.c_str() );
+  verify_no_loop( method_name , this , v , std::string() );
 
-  if ( m_values.end() != i && m.first->name == i->first->name ) {
+  std::vector<NamedValue<>*>::iterator
+    i = lower_bound( m_values , m_compare , v.name.c_str() );
 
-    verify_type( method_name , m.first->name ,
-                               i->first->value_type , m.first->value_type );
+  if ( m_values.end() != i && v.name == (*i)->name ) {
 
-    if ( m.first != i->first ) {
-      NamedValueSet * myself = this ;
-      m.first->m_sets.push_back( myself );
-      remove_this( i->first->m_sets , myself );
+    verify_type( method_name, v.name, (*i)->scalar_type(), v.scalar_type() );
 
-      NamedValue<void> * tmp = i->first ;
-      i->first = m.first ;
-      m.first = tmp ;
-    }
-     
-    if ( m.second ) {
-      if ( m.second != i->second ) {
-        const ValueIOS<void> * tmp = i->second ;
-        i->second = m.second ;
-        m.second = tmp ;
+    if ( replace ) {
+      if ( & v != *i ) {
+        NamedValueSet * myself = this ;
+        v.m_sets.push_back( myself );
+        remove_this( (*i)->m_sets , myself );
+
+        m = *i ;
+        *i = & v ;
       }
+    }
+    else {
+      m = *i ;
     }
   }
   else {
     NamedValueSet * myself = this ;
-    m.first->m_sets.push_back( myself );
+    v.m_sets.push_back( myself );
+    m = & v ;
     m_values.insert( i , m );
-    m.first = NULL ;
-    m.second = NULL ;
+    if ( replace ) { m = NULL ; }
   }
 
   return m ;
 }
 
-void NamedValueSet::remove( NamedValue<void> & p )
+void NamedValueSet::remove( NamedValue<> & p )
 {
-  std::vector<MemberVoid>::iterator
+  std::vector<NamedValue<>*>::iterator
     i = lower_bound( m_values , m_compare , p.name.c_str() );
 
-  if ( m_values.end() != i && i->first == & p ) {
+  if ( m_values.end() != i && *i == & p ) {
     m_values.erase( i );
     remove_this( p.m_sets , this );
   }
@@ -363,6 +376,9 @@ ValueIOS<NamedValueSet>::ValueIOS() : ValueIOS<void>() {}
 
 ValueIOS<NamedValueSet>::~ValueIOS() {}
 
+const std::type_info & ValueIOS<NamedValueSet>::type() const
+{ return typeid(NamedValueSet); }
+
 void ValueIOS<NamedValueSet>::getp( std::istream & s , void * v ) const
 { get( s , * reinterpret_cast<ValueType*>(v) ); }
 
@@ -370,14 +386,14 @@ void ValueIOS<NamedValueSet>::get( std::istream & s , NamedValueSet & v ) const
 {
   static const char method[] = "phdmesh::ValueIOS<NamedValueSet>::get" ;
 
-  if ( value_ios_get_block_begin(s) ) {
+  if ( value_ios_get_token(s,'{',false) ) {
     std::string ex_msg ;
     std::string name ;
 
     try {
-      NamedValueSet::MemberVoid m ;
+      NamedValue<> * m = NULL ;
 
-      while ( ! value_ios_get_block_end( s ) ) {
+      while ( ! value_ios_get_token( s , '}' , false ) ) {
 
         s >> name ;
 
@@ -387,17 +403,25 @@ void ValueIOS<NamedValueSet>::get( std::istream & s , NamedValueSet & v ) const
 
         value_ios_get_token( s , '=' , true );
 
-        m = v.get_ios<void>( name );
+        m = v.find<void>( name );
 
-        if ( m.first == NULL ) {
+        if ( m == NULL ) {
           throw std::runtime_error( std::string("not found") );
         }
 
-        if ( m.second == NULL ) {
+        const ValueIOS<void> * const ios = v.m_ios.get_void(m->scalar_type());
+
+        if ( ios == NULL ) {
           throw std::runtime_error( std::string("no ValueIOS") );
         }
 
-        m.second->getp( s , m.first->pointer() );
+        for ( size_t i = 0 ; ! value_ios_get_token(s,';',false) ; ++i ) {
+          void * const p = m->put_void(i);
+          if ( ! p ) {
+            throw std::runtime_error( std::string("too many values") );
+          }
+          ios->getp( s , p );
+        }
       }
     }
     catch( const std::exception & x ) {
@@ -429,9 +453,10 @@ void ValueIOS<NamedValueSet>::put( std::ostream & s , unsigned indent ,
   static const char buf[] = "                                                                               " ; 
   static const unsigned buf_len = sizeof(buf) - 1 ;
 
-  const char * const b = buf + buf_len - indent ;
+  const char * const b  = buf + buf_len - indent ;
+  const char * const b2 = buf + buf_len - ( indent + 2 );
 
-  const std::vector< NamedValueSet::MemberVoid > & vec = v.get_all();
+  const std::vector< NamedValue<> * > & vec = v.get_all();
 
   if ( vec.empty() ) {
     s << "{}" ;
@@ -439,17 +464,24 @@ void ValueIOS<NamedValueSet>::put( std::ostream & s , unsigned indent ,
   else {
     s << "{" ;
 
-    for ( std::vector<NamedValueSet::MemberVoid>::const_iterator
+    for ( std::vector<NamedValue<>* >::const_iterator
           i = vec.begin() ; i != vec.end() ; ++i ) {
 
-      s << std::endl << b << i->first->name ;
+      s << std::endl << b2 << (*i)->name ;
 
-      if ( i->second ) {
+      const ValueIOS<void> * const ios = v.m_ios.get_void((*i)->scalar_type());
+
+      if ( ios ) {
         s << " = " ;
-        i->second->putp( s , indent + 2 , i->first->pointer() );
+        const size_t get_max = (*i)->get_max();
+        for ( unsigned j = 0 ; j < get_max ; ++j ) {
+          ios->putp( s , indent + 2 , (*i)->get_void(j) );
+          s << " " ;
+        }
+        s << ";" ;
       }
       else {
-        s << "< ValueIOS = NULL >" ;
+        s << " <?> ;" ;
       }
     }
 
@@ -467,9 +499,10 @@ void ValueIOS<NamedValueSet>::tell( std::ostream & s , unsigned indent ,
   static const char buf[] = "                                                                               " ; 
   static const unsigned buf_len = sizeof(buf) - 1 ;
 
-  const char * const b = buf + buf_len - indent ;
+  const char * const b  = buf + buf_len - indent ;
+  const char * const b2 = buf + buf_len - ( indent + 2 );
 
-  const std::vector< NamedValueSet::MemberVoid > & vec = v.get_all();
+  const std::vector< NamedValue<>* > & vec = v.get_all();
 
   if ( vec.empty() ) {
     s << "{}" ;
@@ -477,17 +510,27 @@ void ValueIOS<NamedValueSet>::tell( std::ostream & s , unsigned indent ,
   else {
     s << "{" ;
 
-    for ( std::vector<NamedValueSet::MemberVoid>::const_iterator
+    for ( std::vector<NamedValue<>*>::const_iterator
           i = vec.begin() ; i != vec.end() ; ++i ) {
 
-      s << std::endl << b << i->first->name ;
+      s << std::endl << b2 << (*i)->name ;
 
-      if ( i->second ) {
+      const ValueIOS<void> * const ios = v.m_ios.get_void((*i)->scalar_type());
+
+      if ( ios ) {
+        const size_t put_max = (*i)->put_max();
+        if ( put_max == std::numeric_limits<size_t>::max() ) {
+           s << "[*]" ;
+        }
+        else if ( 1 < put_max ) {
+           s << "[" << put_max << "]" ;
+        }
         s << " = " ;
-        i->second->tellp( s , indent + 2 , i->first->pointer() );
+        ios->tellp( s , indent + 2 , (*i)->get_void(0) );
+        s << " ;" ;
       }
       else {
-        s << "< ValueIOS = NULL >" ;
+        s << " <?> ;" ;
       }
     }
 
@@ -497,6 +540,30 @@ void ValueIOS<NamedValueSet>::tell( std::ostream & s , unsigned indent ,
 
 const ValueIOS<NamedValueSet> & ValueIOS<NamedValueSet>::singleton()
 { static const ValueIOS<NamedValueSet> io ; return io ; }
+
+const ValueIOSPolicy & ValueIOS<NamedValueSet>::default_policy()
+{
+  static ValueIOSPolicy ios_policy ;
+  static bool first = true ;
+
+  if ( first ) { ios_policy.replace( singleton() ); }
+
+  return ios_policy ;
+}
+
+std::ostream & operator << ( std::ostream & s , const NamedValueSet & v )
+{
+  const ValueIOS<NamedValueSet> * const io = v.m_ios.get<NamedValueSet>();
+  io->put( s , 0 , v );
+  return s ;
+}
+
+std::istream & operator >> ( std::istream & s , NamedValueSet & v )
+{
+  const ValueIOS<NamedValueSet> * const io = v.m_ios.get<NamedValueSet>();
+  io->get( s , v );
+  return s ;
+}
 
 } // namespace phdmesh
 

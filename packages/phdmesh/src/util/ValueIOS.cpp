@@ -28,85 +28,88 @@
 #include <stdexcept>
 #include <string>
 #include <iostream>
+#include <algorithm>
 
 #include <util/ValueIOS.hpp>
 
 namespace phdmesh {
 
-//----------------------------------------------------------------------
+namespace {
 
-bool value_ios_get_token( std::istream & s , int t , bool required )
-{
-  static const char method_name[] = "phdmesh::value_ios_get_token" ;
+struct compare_type_info {
 
-  while ( s.good() && isspace( s.peek() ) ) { s.get(); }
+  bool operator()( const std::type_info & lhs ,
+                   const std::type_info & rhs ) const
+  { return lhs.before( rhs ) && lhs != rhs ; }
 
-  const bool found = s.peek() == t ;
+  bool operator()( const ValueIOS<void> * const lhs ,
+                   const std::type_info &       rhs ) const
+  { return operator()( lhs->type() , rhs ); }
 
-  if ( found ) {
-    s.get();
-  }
-  else if ( required ) {
-    const char c[2] = { (char) t , 0 };
-    std::string msg ;
-    msg.append( method_name )
-       .append( " FAILED to find '" )
-       .append( c )
-       .append( "'" );
-    throw std::runtime_error(msg);
-  }
-  return found ;
+  compare_type_info() {}
+}; 
+
 }
-
-bool value_ios_get_block_begin( std::istream & s , bool required )
-{ return value_ios_get_token( s , '{' , required ); }
-
-bool value_ios_get_block_end( std::istream & s , bool required )
-{ return value_ios_get_token( s , '}' , required ); }
-
-void value_ios_put_block_begin( std::ostream & s ) { s << "{" ; }
-void value_ios_put_block_end(   std::ostream & s ) { s << "}" ; }
 
 //----------------------------------------------------------------------
 
-void value_ios_get_fixed_array( std::istream & s ,
-                                const ValueIOS<void> & io ,
-                                const size_t stride ,
-                                const size_t length ,
-                                void * v )
+const ValueIOS<void> *
+ValueIOSPolicy::get_void( const std::type_info & scalar_type ) const
 {
-  unsigned char * p = reinterpret_cast<unsigned char*>(v);
-  unsigned char * const e = p + stride * length ;
-  value_ios_get_block_begin(s);
-  for ( ; p < e ; p += stride ) { io.getp( s , p ); }
-  value_ios_get_block_end(s);
+  const compare_type_info compare ;
+
+  std::vector< const ValueIOS<void> *>::const_iterator
+    i = std::lower_bound( m_ios.begin() , m_ios.end() , scalar_type , compare );
+
+  return i != m_ios.end() && (*i)->type() == scalar_type ? *i : NULL ;
 }
 
-void value_ios_put_fixed_array( std::ostream & s ,
-                                unsigned indent ,
-                                const ValueIOS<void> & io ,
-                                const size_t stride ,
-                                const size_t length ,
-                                const void * v )
+void ValueIOSPolicy::replace( const ValueIOS<void> & ios )
 {
-  const unsigned char * p = reinterpret_cast<const unsigned char*>(v);
-  const unsigned char * const e = p + stride * length ;
-  s << "{" ;
-  for ( ; p < e ; p += stride ) { s << " " ; io.putp( s , indent , p ); }
-  s << " }" ;
+  const compare_type_info compare ;
+
+  std::vector< const ValueIOS<void> *>::iterator
+    i = std::lower_bound( m_ios.begin() , m_ios.end() , ios.type() , compare );
+
+  if ( i != m_ios.end() && (*i)->type() == ios.type() ) {
+    *i = & ios ;
+  }
+  else {
+    const ValueIOS<void> * const tmp = & ios ;
+    m_ios.insert( i , tmp );
+  }
 }
 
-void value_ios_tell_fixed_array( std::ostream & s ,
-                                 unsigned indent ,
-                                 const ValueIOS<void> & io ,
-                                 const size_t ,
-                                 const size_t length ,
-                                 const void * v )
+//----------------------------------------------------------------------
+
+ValueIOSPolicy::~ValueIOSPolicy() {}
+
+ValueIOSPolicy::ValueIOSPolicy() : m_ios()
 {
-  s << "[" << length << "]{ " ;
-  io.tellp( s , indent , v );
-  s << " }" ;
+  static const ValueIOS<short>          ios_short ;
+  static const ValueIOS<unsigned short> ios_unsigned_short ;
+  static const ValueIOS<int>            ios_int ;
+  static const ValueIOS<unsigned int>   ios_unsigned_int ;
+  static const ValueIOS<long>           ios_long ;
+  static const ValueIOS<unsigned long>  ios_unsigned_long ;
+  static const ValueIOS<float>          ios_float ;
+  static const ValueIOS<double>         ios_double ;
+  static const ValueIOS<std::string>    ios_string ;
+
+  replace( ios_short );
+  replace( ios_unsigned_short );
+  replace( ios_int );
+  replace( ios_unsigned_int );
+  replace( ios_long );
+  replace( ios_unsigned_long );
+  replace( ios_float );
+  replace( ios_double );
+  replace( ios_string );
 }
+
+ValueIOSPolicy::ValueIOSPolicy( const ValueIOSPolicy & p )
+  : m_ios( p.m_ios )
+{}
 
 //----------------------------------------------------------------------
 
@@ -134,9 +137,6 @@ void ValueIOS<short int>
   ::tellp( std::ostream & s, unsigned i, const void * v) const
 { tell( s , i, * reinterpret_cast<const ValueType*>(v) ); }
 
-const ValueIOS<short int> & ValueIOS<short int>::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
-
 //----------------------------------------------------------------------
 
 void ValueIOS<unsigned short>
@@ -162,9 +162,6 @@ void ValueIOS<unsigned short>
 void ValueIOS<unsigned short>
   ::tellp( std::ostream & s, unsigned i, const void * v) const
 { tell( s , i, * reinterpret_cast<const ValueType*>(v) ); }
-
-const ValueIOS<unsigned short> & ValueIOS<unsigned short>::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
 
 //----------------------------------------------------------------------
 
@@ -192,9 +189,6 @@ void ValueIOS<int>
   ::tellp( std::ostream & s, unsigned i, const void * v) const
 { tell( s , i, * reinterpret_cast<const ValueType*>(v) ); }
 
-const ValueIOS<int> & ValueIOS<int>::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
-
 //----------------------------------------------------------------------
 
 void ValueIOS<unsigned>
@@ -220,9 +214,6 @@ void ValueIOS<unsigned>
 void ValueIOS<unsigned>
   ::tellp( std::ostream & s, unsigned i, const void * v) const
 { tell( s , i, * reinterpret_cast<const ValueType*>(v) ); }
-
-const ValueIOS<unsigned> & ValueIOS<unsigned>::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
 
 //----------------------------------------------------------------------
 
@@ -250,9 +241,6 @@ void ValueIOS<long>
   ::tellp( std::ostream & s, unsigned i, const void * v) const
 { tell( s , i, * reinterpret_cast<const ValueType*>(v) ); }
 
-const ValueIOS<long> & ValueIOS<long>::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
-
 //----------------------------------------------------------------------
 
 void ValueIOS<unsigned long>
@@ -278,9 +266,6 @@ void ValueIOS<unsigned long>
 void ValueIOS<unsigned long>
   ::tellp( std::ostream & s, unsigned i, const void * v) const
 { tell( s , i, * reinterpret_cast<const ValueType*>(v) ); }
-
-const ValueIOS<unsigned long> & ValueIOS<unsigned long>::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
 
 //----------------------------------------------------------------------
 
@@ -308,9 +293,6 @@ void ValueIOS<float>
   ::tellp( std::ostream & s, unsigned i, const void * v) const
 { tell( s , i, * reinterpret_cast<const ValueType*>(v) ); }
 
-const ValueIOS<float> & ValueIOS<float>::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
-
 //----------------------------------------------------------------------
 
 void ValueIOS<double>
@@ -337,375 +319,7 @@ void ValueIOS<double>
   ::tellp( std::ostream & s, unsigned i, const void * v) const
 { tell( s , i, * reinterpret_cast<const ValueType*>(v) ); }
 
-const ValueIOS<double> & ValueIOS<double>::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
-
 //----------------------------------------------------------------------
-//----------------------------------------------------------------------
-
-namespace {
-
-template<typename T>
-void get_array( std::istream & s , unsigned n , T * v )
-{
-  T * const e = v + n ;
-  value_ios_get_block_begin( s , true );
-  for ( ; v < e ; ++v ) { s >> *v ; }
-  value_ios_get_block_end( s , true );
-}
-
-template<typename T>
-void put_array( std::ostream & s , unsigned n , const T * v )
-{
-  const T * const e = v + n ;
-  value_ios_put_block_begin( s );
-  for ( ; v < e ; ++v ) { s << " " << *v ; }
-  s << " " ;
-  value_ios_put_block_end( s );
-}
-
-template<typename T>
-void get_vector( std::istream & s, std::vector<T> & v )
-{
-  v.clear();
-  if ( value_ios_get_block_begin( s ) ) {
-    while ( ! value_ios_get_block_end( s ) ) {
-      T tmp ; s >> tmp ; v.push_back( tmp );
-    }
-  }
-}
-
-template<typename T>
-void put_vector( std::ostream & s, const std::vector<T> & v )
-{
-  typedef std::vector<T> VectorType ;
-  typedef typename VectorType::const_iterator const_iterator ;
-  value_ios_put_block_begin(s);
-  for ( const_iterator j = v.begin() ; j != v.end() ; ++j ) {
-    s << " " << *j ;
-  }
-  s << " " ;
-  value_ios_put_block_end(s);
-}
-
-}
-
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
-
-void value_ios_get_array( std::istream & s , unsigned n , short * v )
-{ get_array( s , n , v ); }
-
-void value_ios_put_array( std::ostream & s , unsigned n , const short * v )
-{ put_array( s , n , v ); }
-
-void value_ios_tell_array( std::ostream & s , unsigned n , const short * )
-{ s << "[" << n << "]{ short }" ; }
-
-void value_ios_get_array( std::istream & s , unsigned n , unsigned short * v )
-{ get_array( s , n , v ); }
-
-void value_ios_put_array( std::ostream & s , unsigned n , const unsigned short * v )
-{ put_array( s , n , v ); }
-
-void value_ios_tell_array( std::ostream & s , unsigned n , const unsigned short * )
-{ s << "[" << n << "]{ unsigned short }" ; }
-
-void value_ios_get_array( std::istream & s , unsigned n , int * v )
-{ get_array( s , n , v ); }
-
-void value_ios_put_array( std::ostream & s , unsigned n , const int * v )
-{ put_array( s , n , v ); }
-
-void value_ios_tell_array( std::ostream & s , unsigned n , const int * )
-{ s << "[" << n << "]{ int }" ; }
-
-void value_ios_get_array( std::istream & s , unsigned n , unsigned * v )
-{ get_array( s , n , v ); }
-
-void value_ios_put_array( std::ostream & s , unsigned n , const unsigned * v )
-{ put_array( s , n , v ); }
-
-void value_ios_tell_array( std::ostream & s , unsigned n , const unsigned * )
-{ s << "[" << n << "]{ unsigned }" ; }
-
-void value_ios_get_array( std::istream & s , unsigned n , long * v )
-{ get_array( s , n , v ); }
-
-void value_ios_put_array( std::ostream & s , unsigned n , const long * v )
-{ put_array( s , n , v ); }
-
-void value_ios_tell_array( std::ostream & s , unsigned n , const long * )
-{ s << "[" << n << "]{ long }" ; }
-
-void value_ios_get_array( std::istream & s , unsigned n , unsigned long * v )
-{ get_array( s , n , v ); }
-
-void value_ios_put_array( std::ostream & s , unsigned n , const unsigned long * v )
-{ put_array( s , n , v ); }
-
-void value_ios_tell_array( std::ostream & s , unsigned n , const unsigned long * )
-{ s << "[" << n << "]{ unsigned long }" ; }
-
-void value_ios_get_array( std::istream & s , unsigned n , float * v )
-{ get_array( s , n , v ); }
-
-void value_ios_put_array( std::ostream & s , unsigned n , const float * v )
-{ put_array( s , n , v ); }
-
-void value_ios_tell_array( std::ostream & s , unsigned n , const float * )
-{ s << "[" << n << "]{ float }" ; }
-
-void value_ios_get_array( std::istream & s , unsigned n , double * v )
-{ get_array( s , n , v ); }
-
-void value_ios_put_array( std::ostream & s , unsigned n , const double * v )
-{ put_array( s , n , v ); }
-
-void value_ios_tell_array( std::ostream & s , unsigned n , const double * )
-{ s << "[" << n << "]{ double }" ; }
-
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
-
-void ValueIOS< std::vector<short> >
-  ::get( std::istream & s, std::vector<short> & v ) const
-{ get_vector( s , v ); } 
-
-void ValueIOS< std::vector<short> >
-  ::put( std::ostream & s, unsigned, const std::vector<short> & v) const
-{ put_vector( s , v ); }
-
-void ValueIOS< std::vector<short> >
-  ::tell( std::ostream & s, unsigned, const std::vector<short> &  ) const
-{ s << "[*]{ short }" ; }
-
-void ValueIOS< std::vector<short> >
-  ::getp( std::istream & s, void * v ) const
-{ get( s , * reinterpret_cast<ValueType*>(v) ); }
-
-void ValueIOS< std::vector<short> >
-  ::putp( std::ostream & s, unsigned i, const void * v) const
-{ put( s , i, * reinterpret_cast<const ValueType*>(v) ); }
-
-void ValueIOS< std::vector<short> >
-  ::tellp( std::ostream & s , unsigned i, const void * v) const
-{ tell( s, i, * reinterpret_cast<const ValueType*>(v) ); }
-
-const ValueIOS< std::vector<short> > &
-ValueIOS< std::vector<short> >::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
-
-//----------------------------------------------------------------------
-
-void ValueIOS< std::vector<unsigned short> >
-  ::get( std::istream & s, std::vector<unsigned short> & v ) const
-{ get_vector( s , v ); } 
-
-void ValueIOS< std::vector<unsigned short> >
-  ::put( std::ostream & s, unsigned, const std::vector<unsigned short> & v) const
-{ put_vector( s , v ); }
-
-void ValueIOS< std::vector<unsigned short> >
-  ::tell( std::ostream & s, unsigned, const std::vector<unsigned short> &  ) const
-{ s << "[*]{ unsigned short }" ; }
-
-void ValueIOS< std::vector<unsigned short> >
-  ::getp( std::istream & s, void * v ) const
-{ get( s , * reinterpret_cast<ValueType*>(v) ); }
-
-void ValueIOS< std::vector<unsigned short> >
-  ::putp( std::ostream & s, unsigned i, const void * v) const
-{ put( s , i, * reinterpret_cast<const ValueType*>(v) ); }
-
-void ValueIOS< std::vector<unsigned short> >
-  ::tellp( std::ostream & s , unsigned i, const void * v) const
-{ tell( s, i, * reinterpret_cast<const ValueType*>(v) ); }
-
-const ValueIOS< std::vector<unsigned short> > &
-ValueIOS< std::vector<unsigned short> >::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
-
-//----------------------------------------------------------------------
-
-void ValueIOS< std::vector<int> >
-  ::get( std::istream & s, std::vector<int> & v ) const
-{ get_vector( s , v ); } 
-
-void ValueIOS< std::vector<int> >
-  ::put( std::ostream & s, unsigned, const std::vector<int> & v) const
-{ put_vector( s , v ); }
-
-void ValueIOS< std::vector<int> >
-  ::tell( std::ostream & s, unsigned, const std::vector<int> &  ) const
-{ s << "[*]{ int }" ; }
-
-void ValueIOS< std::vector<int> >
-  ::getp( std::istream & s, void * v ) const
-{ get( s , * reinterpret_cast<ValueType*>(v) ); }
-
-void ValueIOS< std::vector<int> >
-  ::putp( std::ostream & s, unsigned i, const void * v) const
-{ put( s , i, * reinterpret_cast<const ValueType*>(v) ); }
-
-void ValueIOS< std::vector<int> >
-  ::tellp( std::ostream & s , unsigned i, const void * v) const
-{ tell( s, i, * reinterpret_cast<const ValueType*>(v) ); }
-
-const ValueIOS< std::vector<int> > &
-ValueIOS< std::vector<int> >::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
-
-//----------------------------------------------------------------------
-
-void ValueIOS< std::vector<unsigned> >
-  ::get( std::istream & s, std::vector<unsigned> & v ) const
-{ get_vector( s , v ); } 
-
-void ValueIOS< std::vector<unsigned> >
-  ::put( std::ostream & s, unsigned, const std::vector<unsigned> & v) const
-{ put_vector( s , v ); }
-
-void ValueIOS< std::vector<unsigned> >
-  ::tell( std::ostream & s, unsigned, const std::vector<unsigned> &  ) const
-{ s << "[*]{ unsigned }" ; }
-
-void ValueIOS< std::vector<unsigned> >
-  ::getp( std::istream & s, void * v ) const
-{ get( s , * reinterpret_cast<ValueType*>(v) ); }
-
-void ValueIOS< std::vector<unsigned> >
-  ::putp( std::ostream & s, unsigned i, const void * v) const
-{ put( s , i, * reinterpret_cast<const ValueType*>(v) ); }
-
-void ValueIOS< std::vector<unsigned> >
-  ::tellp( std::ostream & s , unsigned i, const void * v) const
-{ tell( s, i, * reinterpret_cast<const ValueType*>(v) ); }
-
-const ValueIOS< std::vector<unsigned> > &
-ValueIOS< std::vector<unsigned> >::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
-
-//----------------------------------------------------------------------
-
-void ValueIOS< std::vector<long> >
-  ::get( std::istream & s, std::vector<long> & v ) const
-{ get_vector( s , v ); } 
-
-void ValueIOS< std::vector<long> >
-  ::put( std::ostream & s, unsigned, const std::vector<long> & v) const
-{ put_vector( s , v ); }
-
-void ValueIOS< std::vector<long> >
-  ::tell( std::ostream & s, unsigned, const std::vector<long> &  ) const
-{ s << "[*]{ long }" ; }
-
-void ValueIOS< std::vector<long> >
-  ::getp( std::istream & s, void * v ) const
-{ get( s , * reinterpret_cast<ValueType*>(v) ); }
-
-void ValueIOS< std::vector<long> >
-  ::putp( std::ostream & s, unsigned i, const void * v) const
-{ put( s , i, * reinterpret_cast<const ValueType*>(v) ); }
-
-void ValueIOS< std::vector<long> >
-  ::tellp( std::ostream & s , unsigned i, const void * v) const
-{ tell( s, i, * reinterpret_cast<const ValueType*>(v) ); }
-
-const ValueIOS< std::vector<long> > &
-ValueIOS< std::vector<long> >::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
-
-//----------------------------------------------------------------------
-
-void ValueIOS< std::vector<unsigned long> >
-  ::get( std::istream & s, std::vector<unsigned long> & v ) const
-{ get_vector( s , v ); } 
-
-void ValueIOS< std::vector<unsigned long> >
-  ::put( std::ostream & s, unsigned, const std::vector<unsigned long> & v) const
-{ put_vector( s , v ); }
-
-void ValueIOS< std::vector<unsigned long> >
-  ::tell( std::ostream & s, unsigned, const std::vector<unsigned long> &  ) const
-{ s << "[*]{ unsigned long }" ; }
-
-void ValueIOS< std::vector<unsigned long> >
-  ::getp( std::istream & s, void * v ) const
-{ get( s , * reinterpret_cast<ValueType*>(v) ); }
-
-void ValueIOS< std::vector<unsigned long> >
-  ::putp( std::ostream & s, unsigned i, const void * v) const
-{ put( s , i, * reinterpret_cast<const ValueType*>(v) ); }
-
-void ValueIOS< std::vector<unsigned long> >
-  ::tellp( std::ostream & s , unsigned i, const void * v) const
-{ tell( s, i, * reinterpret_cast<const ValueType*>(v) ); }
-
-const ValueIOS< std::vector<unsigned long> > &
-ValueIOS< std::vector<unsigned long> >::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
-
-//----------------------------------------------------------------------
-
-void ValueIOS< std::vector<float> >
-  ::get( std::istream & s, std::vector<float> & v ) const
-{ get_vector( s , v ); } 
-
-void ValueIOS< std::vector<float> >
-  ::put( std::ostream & s, unsigned, const std::vector<float> & v) const
-{ put_vector( s , v ); }
-
-void ValueIOS< std::vector<float> >
-  ::tell( std::ostream & s, unsigned, const std::vector<float> &  ) const
-{ s << "[*]{ float }" ; }
-
-void ValueIOS< std::vector<float> >
-  ::getp( std::istream & s, void * v ) const
-{ get( s , * reinterpret_cast<ValueType*>(v) ); }
-
-void ValueIOS< std::vector<float> >
-  ::putp( std::ostream & s, unsigned i, const void * v) const
-{ put( s , i, * reinterpret_cast<const ValueType*>(v) ); }
-
-void ValueIOS< std::vector<float> >
-  ::tellp( std::ostream & s , unsigned i, const void * v) const
-{ tell( s, i, * reinterpret_cast<const ValueType*>(v) ); }
-
-const ValueIOS< std::vector<float> > &
-ValueIOS< std::vector<float> >::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
-
-//----------------------------------------------------------------------
-
-void ValueIOS< std::vector<double> >
-  ::get( std::istream & s, std::vector<double> & v ) const
-{ get_vector( s , v ); } 
-
-void ValueIOS< std::vector<double> >
-  ::put( std::ostream & s, unsigned, const std::vector<double> & v) const
-{ put_vector( s , v ); }
-
-void ValueIOS< std::vector<double> >
-  ::tell( std::ostream & s, unsigned, const std::vector<double> &  ) const
-{ s << "[*]{ double }" ; }
-
-void ValueIOS< std::vector<double> >
-  ::getp( std::istream & s, void * v ) const
-{ get( s , * reinterpret_cast<ValueType*>(v) ); }
-
-void ValueIOS< std::vector<double> >
-  ::putp( std::ostream & s, unsigned i, const void * v) const
-{ put( s , i, * reinterpret_cast<const ValueType*>(v) ); }
-
-void ValueIOS< std::vector<double> >
-  ::tellp( std::ostream & s , unsigned i, const void * v) const
-{ tell( s, i, * reinterpret_cast<const ValueType*>(v) ); }
-
-const ValueIOS< std::vector<double> > &
-ValueIOS< std::vector<double> >::singleton()
-{ static const ValueIOS<ValueType> io ; return io ; }
-
 //----------------------------------------------------------------------
 
 void ValueIOS< std::string >
@@ -736,13 +350,19 @@ void ValueIOS< std::string >
 
 void ValueIOS_Quoted::get( std::istream & s , std::string & v ) const
 {
-  value_ios_get_token( s , '"' , true );
   v.clear();
-  while ( s.good() && s.peek() != '"' ) {
-    char tmp[2] = { (char) s.get() , 0 };
-    v.append( tmp );
+  while ( s.good() && isspace( s.peek() ) ) { s.get(); }
+  if ( s.peek() == '"' ) {
+    s.get();
+    while ( s.good() && s.peek() != '"' ) {
+      char tmp[2] = { (char) s.get() , 0 };
+      v.append( tmp );
+    }
+    if ( s.get() != '"' ) {
+      std::string msg("Reading unterminated quoted string" );
+      throw std::runtime_error(msg);
+    }
   }
-  if ( s.good() ) { s.get(); }
 }
 
 void ValueIOS_Quoted

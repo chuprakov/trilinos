@@ -132,14 +132,12 @@ void test_parameters()
   ps.value.insert( pi3 );
   ps.value.insert( pui3 );
 
-  NamedValue<int> * r_pi = ps.value.get<int>( pi.name );
+  NamedValue<> * r_pi  = ps.value.find<int>( pi.name );
+  NamedValue<> * r_pdv = ps.value.find<double>( pdv.name );
 
-  NamedValue<std::vector<double> > * r_pdv =
-    ps.value.get<std::vector<double> >( pdv.name );
-
-  r_pi->value = 10 ;
-  r_pdv->value[0] = 10 ;
-  r_pdv->value[1] = 20 ;
+  r_pi->put<int>() = 10 ;
+  r_pdv->put<double>(0) = 10 ;
+  r_pdv->put<double>(1) = 20 ;
 
   {
     std::ofstream ofile( "scratch_test_container" , std::ios::out );
@@ -147,12 +145,16 @@ void test_parameters()
   }
   {
     pi.value = -1 ;
-    r_pi->value = -1 ;
-    r_pdv->value[0] = -1 ;
-    r_pdv->value[1] = -1 ;
+    r_pi->put<int>() = -1 ;
+    r_pdv->put<double>(0) = -1 ;
+    r_pdv->put<double>(1) = -1 ;
+
+    std::cout << ps.name << " = " << ps.value << std::endl ;
 
     std::ifstream ifile( "scratch_test_container" );
     ifile >> ps.value ;
+
+    std::cout << ps.name << " = " << ps.value << std::endl ;
   }
 
   try {
@@ -164,7 +166,7 @@ void test_parameters()
     ps_nest2.value.insert( pi3 );
 
     std::string path("nest1.nest2.pi3");
-    NamedValue<int[3]> * test_find = ps.value.get<int[3]>( path , '.' );
+    NamedValue<> * test_find = ps.value.find<int>( path , '.' );
     if ( test_find != & pi3 ) {
       std::cout << "  FAILED to find " << path << std::endl ;
     }
