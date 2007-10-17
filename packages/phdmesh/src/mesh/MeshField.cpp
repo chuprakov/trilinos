@@ -24,32 +24,19 @@
  * @author H. Carter Edwards
  */
 
+#include <strings.h>
+
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
 #include <algorithm>
-#include <map>
 
+#include <util/FixedArray.hpp>
 #include <mesh/Field.hpp>
 #include <mesh/Part.hpp>
 #include <mesh/Schema.hpp>
 
 namespace phdmesh {
-
-enum { OkFieldTypesList = StaticAssert<
-  TypeListIndex<FieldTypes,void>          ::value == 0  &&
-  TypeListIndex<FieldTypes,signed   char> ::value == 1  &&
-  TypeListIndex<FieldTypes,unsigned char> ::value == 2  &&
-  TypeListIndex<FieldTypes,signed   short>::value == 3  &&
-  TypeListIndex<FieldTypes,unsigned short>::value == 4  &&
-  TypeListIndex<FieldTypes,signed   int>  ::value == 5  &&
-  TypeListIndex<FieldTypes,unsigned int>  ::value == 6  &&
-  TypeListIndex<FieldTypes,signed   long> ::value == 7  &&
-  TypeListIndex<FieldTypes,unsigned long> ::value == 8  &&
-  TypeListIndex<FieldTypes,float>         ::value == 9  &&
-  TypeListIndex<FieldTypes,double>        ::value == 10 &&
-  TypeListIndex<FieldTypes,std::complex<float> > ::value == 11 &&
-  TypeListIndex<FieldTypes,std::complex<double> >::value == 12 >::OK };
 
 //----------------------------------------------------------------------
 
@@ -69,87 +56,34 @@ const char * field_state_name( FieldState s )
   return name_list[i] ;
 }
 
-const char * field_type_name( unsigned t )
-{
-  typedef FieldTypes List ;
-
-  enum { Max = TypeListLength<List>::value };
-
-  static const char name_void[]   = "void" ;
-  static const char name_schar[]  = "signed char" ;
-  static const char name_uchar[]  = "unsigned char" ;
-  static const char name_short[]  = "short" ;
-  static const char name_ushort[] = "unsigned short" ;
-  static const char name_int[]    = "int" ;
-  static const char name_uint[]   = "unsigned int" ;
-  static const char name_long[]   = "long" ;
-  static const char name_ulong[]  = "unsigned long" ;
-  static const char name_float[]  = "float" ;
-  static const char name_double[] = "double" ;
-  static const char name_complex_float[]  = "complex<float>" ;
-  static const char name_complex_double[] = "complex<double>" ;
-  static const char name_error[]  = "ERROR" ;
-
-  static const char * name_list[] = {
-    name_void ,
-    name_schar , name_uchar ,
-    name_short , name_ushort ,
-    name_int ,   name_uint ,
-    name_long ,  name_ulong ,
-    name_float , name_double ,
-    name_complex_float , name_complex_double ,
-    name_error };
-
-  if ( Max < t ) { t = Max ; }
-
-  return name_list[ t ];
-}
-
-unsigned field_type_size( unsigned t )
-{
-  typedef FieldTypes List ;
-
-  enum { Max = TypeListLength<List>::value };
-
-  static unsigned size_list[] = {
-    0 ,
-    sizeof(signed char) , sizeof(unsigned char) ,
-    sizeof(short) ,       sizeof(unsigned short) ,
-    sizeof(int) ,         sizeof(unsigned int) ,
-    sizeof(long) ,        sizeof(unsigned long) ,
-    sizeof(float) ,       sizeof(double) ,
-    sizeof(std::complex<float>) , sizeof(std::complex<double>) ,
-    0 };
-
-  if ( Max < t ) { t = Max ; }
-
-  return size_list[ t ];
-}
-
 //----------------------------------------------------------------------
 
-FieldDimension::FieldDimension()
+FieldDimension::FieldDimension() : m_part( NULL )
 {
   const unsigned zero = 0 ;
   Copy<MaxInfo>( m_info , zero );
 }
 
 FieldDimension::FieldDimension( const FieldDimension & rhs )
+  : m_part( rhs.m_part )
 {
   Copy<MaxInfo>( m_info , rhs.m_info );
 }
 
 FieldDimension & FieldDimension::operator = ( const FieldDimension & rhs )
 {
+  m_part = rhs.m_part ;
   Copy<MaxInfo>( m_info , rhs.m_info );
   return *this ;
 }
 
 FieldDimension::FieldDimension(
+  const Part & p ,
   unsigned scalar_size ,
   unsigned n0 , unsigned n1 , unsigned n2 ,
   unsigned n3 , unsigned n4 , unsigned n5 ,
   unsigned n6 , unsigned n7 )
+  : m_part( & p )
 {
   enum { OK = StaticAssert< MaxDim == 8 >::OK };
 
@@ -193,45 +127,64 @@ bool FieldDimension::indices( unsigned off , unsigned * const ind ) const
   return result ;
 }
 
-bool FieldDimension::operator == ( const FieldDimension & rhs ) const
+bool FieldDimension::compare_dimension( const FieldDimension & rhs ) const
 {
   return Compare<MaxInfo>::equal( m_info , rhs.m_info );
 }
 
-bool FieldDimension::operator != ( const FieldDimension & rhs ) const
-{
-  return Compare<MaxInfo>::not_equal( m_info , rhs.m_info );
-}
-
 //----------------------------------------------------------------------
 
-struct LessPart {
-  bool operator()( const Part * const lhs , const Part * const rhs ) const
+namespace {
+
+struct LessFieldDimension {
+  LessFieldDimension() {}
+
+  bool operator()( const FieldDimension & lhs , const Part & rhs ) const 
   {
-    const unsigned L = lhs->schema_ordinal();
-    const unsigned R = rhs->schema_ordinal();
+    const unsigned L = lhs.part()->schema_ordinal();
+    const unsigned R = rhs.schema_ordinal();
     return L < R ;
   }
 };
 
-class FieldDimensionMap :
-  public std::map<const Part*,FieldDimension,LessPart> {
-public:
-  FieldDimensionMap() {}
-  ~FieldDimensionMap() {}
-private:
-  FieldDimensionMap( const FieldDimensionMap & );
-  FieldDimensionMap & operator = ( const FieldDimensionMap & );
-};
+std::vector<FieldDimension>::iterator
+find( std::vector<FieldDimension> & v , const Part & p )
+{
+  LessFieldDimension cmp ;
+  std::vector<FieldDimension>::iterator
+    i = std::lower_bound( v.begin() , v.end() , p , cmp );
+  if ( i != v.end() && i->part() != & p ) { i = v.end(); }
+  return i ;
+}
+
+std::vector<FieldDimension>::const_iterator
+find( const std::vector<FieldDimension> & v , const Part & p )
+{
+  LessFieldDimension cmp ;
+  std::vector<FieldDimension>::const_iterator
+    i = std::lower_bound( v.begin() , v.end() , p , cmp );
+  if ( i != v.end() && i->part() != & p ) { i = v.end(); }
+  return i ;
+}
+
+void insert( std::vector<FieldDimension> & v , const FieldDimension & d )
+{
+  LessFieldDimension cmp ;
+  const Part & p = * d.part();
+
+  std::vector<FieldDimension>::iterator
+    i = std::lower_bound( v.begin() , v.end() , p , cmp );
+
+  if ( i == v.end() || i->part() != d.part() ) { v.insert( i , d ); }
+}
+
+
+}
 
 //----------------------------------------------------------------------
 
 Field<void,0>::~Field()
-{
-  if ( m_this_state == StateNone ) {
-    delete m_dim_map ;
-  }
-}
+{ }
 
 Field<void,0>::Field(
   Schema &            arg_schema ,
@@ -250,11 +203,17 @@ Field<void,0>::Field(
   m_num_dim( number_of_dimensions ) ,
   m_num_states( number_of_states ),
   m_this_state( state ),
-  m_dim_map( state == StateNone ? new FieldDimensionMap() : NULL )
+  m_dim_map()
 {
   Field<void,0> * const pzero = NULL ;
   Copy<MaximumFieldStates>( m_field_states , pzero );
 }
+
+const std::vector<FieldDimension> & Field<void,0>::dimension() const
+{ return m_field_states[0]->m_dim_map ; }
+
+std::vector<FieldDimension> & Field<void,0>::dimension()
+{ return m_field_states[0]->m_dim_map ; }
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
@@ -266,7 +225,7 @@ struct FieldLessName {
     {
       const char * const l_name = lhs->name().c_str();
       const char * const r_name = rhs.c_str();
-      return compare_nocase( l_name , r_name ) < 0 ;
+      return strcasecmp( l_name , r_name ) < 0 ;
     }
 };
 
@@ -290,7 +249,7 @@ get_field_header( std::ostream      & arg_msg ,
   if ( arg_declare ) { arg_msg << "phdmesh::Schema::declare_field" ; }
   else               { arg_msg << "phdmesh::Schema::get_field" ; }
   arg_msg << "< " ;
-  arg_msg << field_type_name( arg_scalar_type );
+  arg_msg << NumericEnum<>::name( arg_scalar_type );
   arg_msg << " , " ;
   arg_msg << arg_num_dim ;
   arg_msg << " >( " ;
@@ -357,7 +316,7 @@ Schema::get_field(
 
   if ( field != NULL ) {
 
-    const bool bad_type    = arg_scalar_type != field->field_types_ordinal();
+    const bool bad_type    = arg_scalar_type != field->numeric_type_ordinal();
     const bool bad_num_dim = arg_num_dim     != field->number_of_dimensions();
     const bool bad_num_states = arg_num_states != field->number_of_states() ;
 
@@ -370,7 +329,7 @@ Schema::get_field(
 
       msg << " FAILED WITH INCOMPATIBLE " ;
       msg << "Field<" ;
-      msg << field_type_name( field->field_types_ordinal() );
+      msg << NumericEnum<>::name( field->numeric_type_ordinal() );
       msg << "," ;
       msg << field->number_of_dimensions();
       msg << ">[" << arg_num_states << "]" ;
@@ -448,7 +407,7 @@ Schema::declare_field(
         msg << method ;
         msg << " FAILED due to name collision with " ;
         msg << "Field< " ;
-        msg << field_type_name( tmp.field_types_ordinal() );
+        msg << NumericEnum<>::name( tmp.numeric_type_ordinal() );
         msg << " , " ;
         msg << tmp.number_of_dimensions();
         msg << " > " ;
@@ -474,7 +433,6 @@ Schema::declare_field(
 
     for ( unsigned i = 0 ; i < arg_num_states ; ++i ) {
       Field<void,0> & tmp = * f[i] ;
-      tmp.m_dim_map = field->m_dim_map ; // Share the dimension map
       for ( unsigned k = 0 ; k < arg_num_states ; ++k ) {
         tmp.m_field_states[k] = f[k] ;
       }
@@ -507,18 +465,24 @@ namespace {
 
 void assert_field_dimension_compatible(
   const char * const method ,
+  const char * const field_name ,
   const FieldDimension & dim_a ,
   const FieldDimension & dim_b )
 {
-  if ( dim_a != dim_b ) {
+  if ( ! dim_a.compare_dimension( dim_b ) ) {
     std::ostringstream msg ;
     msg << method ;
-    msg << " FAILED WITH INCOMPATIBLE DIMENSIONS : { " ;
+    msg << "[ " ;
+    msg << field_name ;
+    msg << " ]" ;
+    msg << " FAILED: incompatible dimensions : { " ;
 
+    dim_a.part()->name();
     for ( unsigned i = 0 ; i < MaximumFieldDimension ; ++i ) {
       msg << " " << dim_a[i] ;
     }
     msg << " } != { " ;
+    dim_b.part()->name();
     for ( unsigned i = 0 ; i < MaximumFieldDimension ; ++i ) {
       msg << " " << dim_b[i] ;
     }
@@ -545,13 +509,15 @@ void Field<void,0>::set_dimension(
 
   m_schema.assert_not_committed( method );
 
-  FieldDimension dim( field_type_size( m_scalar_type ) ,
+  FieldDimension dim( p , NumericEnum<>::size( m_scalar_type ) ,
                       n0 , n1 , n2 , n3 , n4 , n5 , n6 , n7 );
+
+  std::vector<FieldDimension> & dim_map = dimension();
 
   //----------------------------------------
   // ERROR CHECKING:
   {
-    const unsigned type_size  = field_type_size( m_scalar_type );
+    const unsigned type_size  = NumericEnum<>::size( m_scalar_type );
     const unsigned dim_length = dim.length();
     const unsigned dim_size   = dim.size();
     const unsigned dim_number = dim.number_of_dimensions();
@@ -564,7 +530,7 @@ void Field<void,0>::set_dimension(
       msg << " FAILED WITH INCOMPATIBLE DIMENSION : " ;
       msg << entity_type_name( m_entity_type );
       msg << " Field< " ;
-      msg << field_type_name( m_scalar_type );
+      msg << NumericEnum<>::name( m_scalar_type );
       msg << "(" << type_size ;
       msg << ") , " << m_num_dim ;
       msg << " > " ;
@@ -587,8 +553,9 @@ void Field<void,0>::set_dimension(
 
   const FieldDimension & old_dim = dimension( p );
 
-  if ( old_dim.length() ) {
-    assert_field_dimension_compatible( method , dim , old_dim );
+  if ( old_dim.length() ) { // This part or a superset already exists
+    assert_field_dimension_compatible( method , m_name.c_str(),
+                                       dim , old_dim );
   }
   else {
 
@@ -599,19 +566,19 @@ void Field<void,0>::set_dimension(
     for ( ip = p.subsets().begin() ; ip != p.subsets().end() ; ++ip ) {
       const FieldDimension & tmp_dim = dimension( **ip );
       if ( tmp_dim.length() ) {
-        assert_field_dimension_compatible( method, dim, tmp_dim );
+        assert_field_dimension_compatible( method, m_name.c_str(),
+                                           dim, tmp_dim );
       }
     }
 
     // If subset already present then remove it:
+
     for ( ip = p.subsets().begin() ; ip != p.subsets().end() ; ++ip ) {
-      const Part * const ptmp = *ip ;
-      FieldDimensionMap::iterator itmp = m_dim_map->find( ptmp );
-      if ( itmp != m_dim_map->end() ) { m_dim_map->erase( itmp ); }
+      std::vector<FieldDimension>::iterator itmp = find( dim_map , **ip );
+      if ( itmp != dim_map.end() ) { dim_map.erase( itmp ); }
     }
 
-    const Part * const p_ptr = & p ;
-    (*m_dim_map)[ p_ptr ] = dim ;
+    insert( dim_map , dim );
   }
 }
 
@@ -627,20 +594,23 @@ void Field<void,0>::clean_dimension()
 
   m_schema.assert_not_committed( method );
 
-  FieldDimensionMap::iterator i = m_dim_map->begin();
+  std::vector<FieldDimension> & dim_map = dimension();
 
-  for ( ; i != m_dim_map->end() ; ++i ) {
-    const PartSet  & sub = (*i).first->subsets();
-    FieldDimension & dim = (*i).second ;
+  std::vector<FieldDimension>::iterator i = dim_map.begin();
 
-    FieldDimensionMap::iterator j = m_dim_map->begin();
+  for ( ; i != dim_map.end() ; ++i ) {
+    FieldDimension & dim = *i ;
+    const PartSet  & sub = dim.part()->subsets();
 
-    while ( j != m_dim_map->end() ) {
-      FieldDimensionMap::iterator k = j ; ++j ;
+    std::vector<FieldDimension>::iterator j = dim_map.begin();
+
+    while ( j != dim_map.end() ) {
+      std::vector<FieldDimension>::iterator k = j ; ++j ;
       if ( i != k ) {
-        if ( contain( sub , *(*k).first ) ) {
-          assert_field_dimension_compatible( method, dim, (*k).second );
-          m_dim_map->erase( k );
+        if ( contain( sub , * k->part() ) ) {
+          assert_field_dimension_compatible( method, m_name.c_str(),
+                                             dim, *k );
+          dim_map.erase( k );
         }
       }
     }
@@ -656,31 +626,34 @@ Field<void,0>::dimension( const Part & part ) const
 {
   static const FieldDimension empty ;
 
-  const FieldDimensionMap::iterator ie = m_dim_map->end() ;
+  const std::vector<FieldDimension> & dim_map = dimension();
 
-  const Part * const p_ptr = & part ;
-  FieldDimensionMap::iterator i = m_dim_map->find( p_ptr );
+  const std::vector<FieldDimension>::const_iterator ie = dim_map.end() ;
+
+  std::vector<FieldDimension>::const_iterator i = find( dim_map , part );
 
   const PartSet::const_iterator ipe = part.supersets().end();
         PartSet::const_iterator ip  = part.supersets().begin() ;
 
   for ( ; i == ie && ip != ipe ; ++ip ) {
-    const Part * const p = *ip ;
-    i = m_dim_map->find( p );
+    const Part & p = **ip ;
+    i = find( dim_map , p );
   }
 
-  return i == ie ? empty : (*i).second ;
+  return i == ie ? empty : *i ;
 }
 
 unsigned Field<void,0>::max_length() const
 {
   unsigned max = 0 ;
 
-  const FieldDimensionMap::iterator ie = m_dim_map->end();
-        FieldDimensionMap::iterator i  = m_dim_map->begin();
+  const std::vector<FieldDimension> & dim_map = dimension();
+
+  const std::vector<FieldDimension>::const_iterator ie = dim_map.end();
+        std::vector<FieldDimension>::const_iterator i  = dim_map.begin();
 
   for ( ; i != ie ; ++i ) {
-    const unsigned len = (*i).second.length();
+    const unsigned len = i->length();
     if ( max < len ) { max = len ; }
   }
 
@@ -691,11 +664,13 @@ unsigned Field<void,0>::max_size() const
 {
   unsigned max = 0 ;
 
-  const FieldDimensionMap::iterator ie = m_dim_map->end();
-        FieldDimensionMap::iterator i  = m_dim_map->begin();
+  const std::vector<FieldDimension> & dim_map = dimension();
+
+  const std::vector<FieldDimension>::const_iterator ie = dim_map.end();
+        std::vector<FieldDimension>::const_iterator i  = dim_map.begin();
 
   for ( ; i != ie ; ++i ) {
-    const unsigned siz = (*i).second.size();
+    const unsigned siz = i->size();
     if ( max < siz ) { max = siz ; }
   }
 
@@ -708,7 +683,7 @@ void Field<void,0>::assert_validity( unsigned ftype ,
                                      unsigned ndim ,
                                      unsigned state ) const
 {
-  enum { vtype = TypeListIndex< FieldTypes,void>::value };
+  enum { vtype = NumericEnum<void>::value };
 
   const bool bad_type  = vtype != ftype && ftype != m_scalar_type ;
   const bool bad_ndim  = 0     != ndim  && ndim  != m_num_dim ;
@@ -719,7 +694,7 @@ void Field<void,0>::assert_validity( unsigned ftype ,
     msg << "phdmesh::" ;
     msg << entity_type_name( m_entity_type );
     msg << " Field< " ;
-    msg << field_type_name( m_scalar_type );
+    msg << NumericEnum<>::name( m_scalar_type );
     msg << " , " ;
     msg << m_num_dim ;
     msg << " > " ;
@@ -730,7 +705,7 @@ void Field<void,0>::assert_validity( unsigned ftype ,
       msg << " ] " ;
     }
     msg << " ERROR INVALID CAST TO Field<" ;
-    msg << field_type_name( ftype );
+    msg << NumericEnum<>::name( ftype );
     msg << " , " ;
     msg << ndim ;
     msg << " >" ;
@@ -756,18 +731,45 @@ CSet & Field<void,0>::cset_update()
 
 //----------------------------------------------------------------------
 
-std::ostream & Field<void,0>::print( std::ostream & arg_msg ) const
+std::ostream & operator << ( std::ostream & s , const Field<void,0> & f )
 {
-  arg_msg << "Field< " ;
-  arg_msg << field_type_name( m_scalar_type );
-  arg_msg << " , " ;
-  arg_msg << m_num_dim ;
-  arg_msg << " >( " ;
-  arg_msg << entity_type_name( m_entity_type );
-  arg_msg << " , " ;
-  arg_msg << m_name ;
-  arg_msg << " )" ;
-  return arg_msg ;
+  s << "Field< " ;
+  s << NumericEnum<>::name( f.numeric_type_ordinal() );
+  s << " , " ;
+  s << f.number_of_dimensions();
+  s << " >( " ;
+  s << entity_type_name( f.entity_type() );
+  s << " , " ;
+  s << f.name() ;
+  if ( 1 < f.number_of_states() ) {
+    s << "[ " ;
+    s << field_state_name( f.state() );
+    s << " ]" ;
+  }
+  s << " )" ;
+  return s ;
+}
+
+std::ostream & print( std::ostream & s ,
+                      const char * const b , const Field<void,0> & f )
+{
+  const std::vector<FieldDimension> & dim_map = f.dimension();
+  s << f ;
+  s << " {" ;
+  for ( std::vector<FieldDimension>::const_iterator
+        i = dim_map.begin() ; i != dim_map.end() ; ++i ) {
+    const FieldDimension & d = *i ;
+    s << std::endl << b << "  " ;
+    s << d.part()->name();
+    s << " ( " << d[0] ;
+    const unsigned n = d.number_of_dimensions();
+    for ( unsigned j = 1 ; j < n ; ++j ) {
+      s << " , " << d[j] ;
+    }
+    s << " )" ;
+  }
+  s << std::endl << b << "}" ;
+  return s ;
 }
 
 //----------------------------------------------------------------------

@@ -31,8 +31,6 @@
 
 #include <limits>
 #include <utility>
-#include <util/Basics.hpp>
-
 
 namespace phdmesh {
 
@@ -73,14 +71,6 @@ enum { EntityTypeDigits = 4 ,
 /** Query text name for entity type */
 
 const char * entity_type_name( EntityType );
-
-//----------------------------------------------------------------------
-/* Case insensitive name comparison used to order Parts and Fields.
- *   return == 0   then lhs == rhs
- *   return <  0   then lhs <  rhs
- *   return >  0   then lhs >  rhs
- */
-int compare_nocase( const char * lhs , const char * rhs );
 
 } // namespace phdmesh
 

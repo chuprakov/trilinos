@@ -30,7 +30,7 @@
 
 #include <cstddef>
 #include <iosfwd>
-#include <util/Basics.hpp>
+#include <util/FixedArray.hpp>
 #include <util/Parallel.hpp>
 
 //------------------------------------------------------------------------

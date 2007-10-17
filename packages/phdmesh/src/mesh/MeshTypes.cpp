@@ -34,33 +34,6 @@
 namespace phdmesh {
 
 //----------------------------------------------------------------------
-// result == 0   then lhs == rhs
-// result <  0   then lhs <  rhs
-// result >  0   then lhs >  rhs
-
-int compare_nocase( const char * lhs , const char * rhs )
-{
-  int diff = 0 ;
-  if ( rhs != lhs ) {
-    if ( rhs == NULL ) {
-      diff = toupper( *lhs );
-    }
-    else if ( lhs == NULL ) {
-      diff = - toupper( *rhs );
-    }
-    else {
-      int l , r ;
-      do {
-        l = toupper(*lhs); ++lhs ;
-        r = toupper(*rhs); ++rhs ;
-        diff = l - r ;
-      } while ( ! diff && l && r );
-    }
-  }
-  return diff ;
-}
-
-//----------------------------------------------------------------------
 
 const char * entity_type_name( EntityType t )
 {

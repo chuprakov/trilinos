@@ -26,6 +26,7 @@ UTIL_INC_DIR = $(PHDMESH_PATH)/include/util
 
 UTIL_INC_FILES =	\
 	$(UTIL_INC_DIR)/Basics.hpp	\
+	$(UTIL_INC_DIR)/FixedArray.hpp	\
 	$(UTIL_INC_DIR)/CSet.hpp	\
 	$(UTIL_INC_DIR)/Setv.hpp	\
 	$(UTIL_INC_DIR)/FixedPoolAlloc.hpp	\
@@ -36,6 +37,7 @@ UTIL_INC_FILES =	\
 	$(UTIL_INC_DIR)/ParallelIndex.hpp	\
 	$(UTIL_INC_DIR)/ParallelReduce.hpp	\
 	$(UTIL_INC_DIR)/ParallelInputStream.hpp	\
+	$(UTIL_INC_DIR)/NumericEnum.hpp	\
 	$(UTIL_INC_DIR)/NamedValue.hpp	\
 	$(UTIL_INC_DIR)/ValueIOS.hpp	\
 	$(UTIL_INC_DIR)/OctTree.hpp	\
@@ -52,6 +54,7 @@ UTIL_OBJ_FILES =	\
 	ParallelReduce.o	\
 	ParallelIndex.o	\
 	ParallelInputStream.o	\
+	NumericEnum.o	\
 	NamedValue.o	\
 	ValueIOS.o	\
 	OctTree.o	\

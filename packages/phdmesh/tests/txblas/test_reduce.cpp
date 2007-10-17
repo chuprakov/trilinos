@@ -24,7 +24,7 @@
  * @author H. Carter Edwards
  */
 
-#include <cstdlib>
+#include <stdlib.h>
 #include <iostream>
 #include <stdexcept>
 #include <vector>

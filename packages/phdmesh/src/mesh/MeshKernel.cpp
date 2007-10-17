@@ -153,7 +153,7 @@ bool Kernel::valid( const Field<void,0> & f ,
   if ( required_by && ! ok ) {
     std::ostringstream msg ;
     msg << "phdmesh::Kernel::valid( " ;
-    f.print( msg );
+    msg << f ;
     msg << " , " ;
     msg << ord ;
     msg << " , " ;
@@ -274,7 +274,7 @@ const FieldDimension & dimension( const Field<void,0> & field ,
     if ( tmp.length() ) {
       if ( dim->length() == 0 ) { dim = & tmp ; } 
 
-      if ( tmp != *dim ) { // ERROR
+      if ( ! tmp.compare_dimension( *dim ) ) { // ERROR
         std::string msg ;
         msg.append( method );
         msg.append( " FAILED WITH INCOMPATIBLE FIELD DIMENSIONS" );

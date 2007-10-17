@@ -212,7 +212,7 @@ Schema::get_field( EntityType entity_type ,
                    const std::string & name ,
                    const char * required_by ) const
 {
-  enum { ftype = TypeListIndex<FieldTypes,T>::value };
+  enum { ftype = NumericEnum<T>::value };
 
   Field<void,0> * const f =
     get_field( false , entity_type , name , ftype , NDim , 0 , required_by );
@@ -227,7 +227,7 @@ Schema::declare_field( EntityType entity_type ,
                        const std::string & name ,
                        unsigned number_of_states )
 {
-  enum { ftype = TypeListIndex<FieldTypes,T>::value };
+  enum { ftype = NumericEnum<T>::value };
 
   Field<void,0> & f =
     declare_field( entity_type, name, ftype, NDim, number_of_states );

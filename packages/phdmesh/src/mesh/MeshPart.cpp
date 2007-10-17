@@ -24,6 +24,8 @@
  * @author H. Carter Edwards
  */
 
+#include <strings.h>
+
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
@@ -57,7 +59,7 @@ struct PartLess {
   {
     const char * const lhs_c_str = lhs->name().c_str();
     const char * const rhs_c_str = rhs.c_str();
-    return compare_nocase( lhs_c_str , rhs_c_str ) < 0 ;
+    return strcasecmp( lhs_c_str , rhs_c_str ) < 0 ;
   }
 };
 

@@ -691,7 +691,7 @@ bool comm_mesh_field_values(
   for ( fi = fb ; fi != fe ; ++fi ) {
     const Field<void,0> & f   = **fi ;
     const EntityType      et  = f.entity_type();
-    const unsigned        fsize = field_type_size( f.field_types_ordinal() );
+    const unsigned      fsize = NumericEnum<>::size(f.numeric_type_ordinal());
 
     fields_size[ et ] += f.max_length() * fsize ;
   }

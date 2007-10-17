@@ -43,7 +43,9 @@ private:
   enum { I_Size   = MaxDim + 2 };
   enum { I_NDim   = MaxDim + 3 };
   enum { MaxInfo  = MaxDim + 4 };
-  unsigned m_info[ MaxInfo ];
+
+  const Part * m_part ;
+  unsigned     m_info[ MaxInfo ];
 
 public:
 
@@ -51,13 +53,14 @@ public:
   FieldDimension( const FieldDimension & rhs );
   FieldDimension & operator = ( const FieldDimension & rhs );
 
-  FieldDimension( unsigned scalar_size ,
+  FieldDimension( const Part & p , unsigned scalar_size ,
                   unsigned n0 ,     unsigned n1 = 0 , unsigned n2 = 0 ,
                   unsigned n3 = 0 , unsigned n4 = 0 , unsigned n5 = 0 ,
                   unsigned n6 = 0 , unsigned n7 = 0 );
 
-  bool operator == ( const FieldDimension & rhs ) const ;
-  bool operator != ( const FieldDimension & rhs ) const ;
+  const Part * part() const { return m_part ; }
+
+  bool compare_dimension( const FieldDimension & rhs ) const ;
 
   unsigned number_of_dimensions() const { return m_info[ I_NDim ]; }
 

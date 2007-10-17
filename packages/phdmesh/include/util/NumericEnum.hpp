@@ -22,42 +22,69 @@
 /*------------------------------------------------------------------------*/
 /**
  * @author H. Carter Edwards  <hcedwar@sandia.gov>
- * @date   November 2006
+ * @date   October 2007
  */
 
-#ifndef util_Basics_hpp
-#define util_Basics_hpp
+#ifndef util_NumericEnum_hpp
+#define util_NumericEnum_hpp
+
+#include <complex>
+#include <util/TypeList.hpp>
 
 namespace phdmesh {
 
-//----------------------------------------------------------------------
-// Compile time assertion
-//     enum { ok = StaticAssert< logical_expression >::OK };
-//     StaticAssert< logical_expression >::ok();
-//  For logical_expression == true  it generates a valid no-op
-//  For logical_expression == false it generates a compile error
+/** List of numeric types, with 'void' as undefined */
 
-template<bool> struct StaticAssert ;
+typedef TypeList<          void ,
+        TypeList< signed   char ,
+        TypeList< unsigned char ,
+        TypeList< signed   short ,
+        TypeList< unsigned short ,
+        TypeList< signed   int ,
+        TypeList< unsigned int ,
+        TypeList< signed   long ,
+        TypeList< unsigned long ,
+        TypeList<          float ,
+        TypeList<          double ,
+        TypeList<          std::complex<float> ,
+        TypeList<          std::complex<double> ,
+        TypeListEnd > > > > > > > > > > > > > NumericTypeList ;
 
-template<> struct StaticAssert<true> {
-  enum { OK = true };
-  static bool ok() { return true ; }
+template<typename Type = void> struct NumericEnum ;
+
+template<>
+struct NumericEnum<void> {
+  enum { OK = StaticAssert< TypeListUnique<NumericTypeList>::value >::OK };
+
+  enum { length  = TypeListLength<NumericTypeList>::value };
+  enum { minimum = 1 };
+  enum { maximum = length - 1 };
+
+  static const char * name( unsigned ordinal );
+  static unsigned     size( unsigned ordinal );
+
+  enum { value = 0 };
 };
 
-template<> struct StaticAssert<false> {};
+template<typename Type>
+struct NumericEnum {
+  enum { value = TypeListIndex< NumericTypeList , Type>::value };
 
-//----------------------------------------------------------------------
-// Compile time comparison of types
+  enum { OK = StaticAssert<
+               0 < (int) value &&
+                   (int) value < (int) NumericEnum<void>::length >::OK };
+};
 
-template<typename T1, typename T2> struct SameType ;
+template<unsigned Ordinal>
+struct NumericType {
+private:
+  enum { OK = StaticAssert< Ordinal < NumericEnum<>::length >::OK };
+public:
+  typedef typename TypeListAt< NumericTypeList , Ordinal >::type type ;
+};
 
-template<typename T> struct SameType<T,T> { enum { value = true }; };
 
-template <typename T1, typename T2> struct SameType { enum { value = false }; };
-
-//----------------------------------------------------------------------
-
-} // namespace phdmesh
+}
 
 #endif
 

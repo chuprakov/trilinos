@@ -29,18 +29,28 @@
 
 //----------------------------------------------------------------------
 
-#include <complex>
 #include <iosfwd>
 #include <string>
+#include <vector>
 
-#include <util/TypeList.hpp>
+#include <util/NumericEnum.hpp>
 #include <util/CSet.hpp>
+
 #include <mesh/Types.hpp>
 #include <mesh/FieldDim.hpp>
 
 //----------------------------------------------------------------------
 
 namespace phdmesh {
+
+/** if ( #states == 1 ) "Field<T,N>( entity , name )"
+ *  else                "Field<T,N>( entity , name[ state ] )"
+ */
+std::ostream & operator << ( std::ostream & , const Field<void,0> & );
+
+/** Print field and field dimension map entries on new lines. */
+std::ostream & print( std::ostream & ,
+                      const char * const , const Field<void,0> & );
 
 //----------------------------------------------------------------------
 /** Field value states.
@@ -60,34 +70,8 @@ enum { MaximumFieldStates = 6 };
 
 const char * field_state_name( FieldState );
 
-/** List of supported field types */
-
-typedef TypeList<          void ,
-        TypeList< signed   char ,
-        TypeList< unsigned char ,
-        TypeList< signed   short ,
-        TypeList< unsigned short ,
-        TypeList< signed   int ,
-        TypeList< unsigned int ,
-        TypeList< signed   long ,
-        TypeList< unsigned long ,
-        TypeList<          float ,
-        TypeList<          double ,
-        TypeList<          std::complex<float> ,
-        TypeList<          std::complex<double> ,
-        TypeListEnd > > > > > > > > > > > > > FieldTypes ;
-
-enum { FieldTypesAreUnique =
-         StaticAssert< TypeListUnique<FieldTypes>::value >::OK };
-
-const char * field_type_name( unsigned field_types_ordinal );
-
-unsigned field_type_size( unsigned field_types_ordinal );
-
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
-
-class FieldDimensionMap ;
 
 template<>
 class Field<void,0> {
@@ -102,10 +86,10 @@ public:
 
   const std::string & name() const { return m_name ; }
 
-  template<typename T> bool type_is() const
-    { return m_scalar_type == TypeListIndex< FieldTypes,T>::value ; }
+  template<typename NumType> bool type_is() const
+    { return m_scalar_type == NumericEnum<NumType>::value ; }
 
-  unsigned field_types_ordinal() const { return m_scalar_type ; }
+  unsigned numeric_type_ordinal() const { return m_scalar_type ; }
 
   unsigned number_of_dimensions() const { return m_num_dim ; }
 
@@ -119,6 +103,9 @@ public:
 
   /** Volatile until the schema is committed */
   const FieldDimension & dimension( const Part & ) const ;
+
+  /** Volatile until the schema is committed */
+  const std::vector<FieldDimension> & dimension() const ;
 
   /** The schema cannot be committed.
    *  The number of non-zero arguments must match the number of dimensions.
@@ -134,29 +121,17 @@ public:
 
   //----------------------------------------
 
-  std::ostream & print( std::ostream & ) const ;
-
-  //----------------------------------------
-
   const CSet & cset_query() const { return m_cset ; }
         CSet & cset_update();
 
   //----------------------------------------
-  /** Checked conversion to field of the given specification */
+  /** Checked conversion to field of the given specification. */
   template<typename T, unsigned NDim>
-    const Field<T,NDim> & field() const
-  {
-    assert_validity( TypeListIndex<FieldTypes,T>::value , NDim , 0 );
-    return static_cast<const Field<T,NDim> &>( *this );
-  }
-
-  /** Checked conversion to field of the given specification */
-  template<typename T, unsigned NDim>
-    const Field<T,NDim> & field( FieldState s ) const
-  {
-    assert_validity( TypeListIndex<FieldTypes,T>::value, NDim, (unsigned) s );
-    return static_cast<const Field<T,NDim> &>( * m_field_states[s]  );
-  }
+    const Field<T,NDim> & field( FieldState s = StateNew ) const
+      {
+        assert_validity( NumericEnum<T>::value, NDim, (unsigned) s );
+        return static_cast<const Field<T,NDim> &>( * m_field_states[s]  );
+      }
 
 private:
 
@@ -178,6 +153,8 @@ private:
          unsigned number_of_states ,
          FieldState );
 
+  std::vector<FieldDimension> & dimension();
+
   CSet        m_cset ;
   std::string m_name ;
   Schema    & m_schema ;         // Mesh schema in which this field resides
@@ -187,7 +164,7 @@ private:
   unsigned    m_num_dim ;        // Number of dimensions
   unsigned    m_num_states ;     // Number of states of this field
   FieldState  m_this_state ;     // Field state of this field
-  FieldDimensionMap * m_dim_map ;
+  std::vector<FieldDimension> m_dim_map ; // Only valid on StateNone
   Field<void,0> * m_field_states[ MaximumFieldStates ];
 };
 
@@ -196,16 +173,8 @@ private:
 template<typename T, unsigned NDim>
 class Field : public Field<void,0> {
 private:
-  enum { NumScalarType  = TypeListLength< FieldTypes        >::value ,
-         VoidScalarType = TypeListIndex<  FieldTypes , void >::value ,
-         ThisScalarType = TypeListIndex<  FieldTypes , T    >::value };
-
-  enum { OkType = StaticAssert<
-                    VoidScalarType < ThisScalarType &&
-                                     ThisScalarType < NumScalarType >::OK };
-
-  enum { OkDim = StaticAssert< NDim <= MaximumFieldDimension >::OK };
-
+  enum { OkType = NumericEnum<T>::OK };
+  enum { OkDim  = StaticAssert< NDim <= MaximumFieldDimension >::OK };
 public:
 
   const Field<T,NDim> & operator[]( FieldState state ) const

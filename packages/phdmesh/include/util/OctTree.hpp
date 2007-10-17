@@ -31,6 +31,7 @@
 #include <limits>
 #include <iosfwd>
 #include <util/Basics.hpp>
+#include <util/FixedArray.hpp>
 
 namespace phdmesh {
 

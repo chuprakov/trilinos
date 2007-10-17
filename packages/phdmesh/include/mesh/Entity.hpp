@@ -41,7 +41,7 @@ namespace phdmesh {
 //----------------------------------------------------------------------
 /** Intrinsic type of connections between mesh entities. */
 
-enum ConnectType { Uses = 0 , UsedBy = 1 , Anonymous = 2 };
+enum ConnectType { Uses = 1 , UsedBy = 2 , Anonymous = 3 };
 
 /** Query text name for entity connections type */
 
