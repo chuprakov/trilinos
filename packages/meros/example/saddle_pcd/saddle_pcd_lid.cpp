@@ -235,31 +235,31 @@ int main(int argc, char *argv[])
       // handle layer LinearOperators.
       
       RCP<LinearOpBase<double> >
-        tmpFF = rcp(new EpetraLinearOp(rcp(FMatrix,false)));
+        tmpFF = nonconstEpetraLinearOp(rcp(FMatrix,false));
       const LinearOperator<double> FF = tmpFF;
 
       RCP<LinearOpBase<double> >
-        tmpBBt = rcp(new EpetraLinearOp(rcp(BtMatrix,false)));
+        tmpBBt = nonconstEpetraLinearOp(rcp(BtMatrix,false));
       const LinearOperator<double> BBt = tmpBBt;
 
       RCP<LinearOpBase<double> >
-        tmpBB = rcp(new EpetraLinearOp(rcp(BMatrix,false)));
+        tmpBB = nonconstEpetraLinearOp(rcp(BMatrix,false));
       const LinearOperator<double> BB = tmpBB;
 
       RCP<LinearOpBase<double> >
-        tmpC = rcp(new EpetraLinearOp(rcp(CMatrix,false)));
+        tmpC = nonconstEpetraLinearOp(rcp(CMatrix,false));
       const LinearOperator<double> CC = tmpC;
 
       RCP<LinearOpBase<double> >
-        tmpFp = rcp(new EpetraLinearOp(rcp(FpMatrix,false)));
+        tmpFp = nonconstEpetraLinearOp(rcp(FpMatrix,false));
       const LinearOperator<double> Fp = tmpFp;
 
       RCP<LinearOpBase<double> >
-        tmpAp = rcp(new EpetraLinearOp(rcp(ApMatrix,false)));
+        tmpAp = nonconstEpetraLinearOp(rcp(ApMatrix,false));
       const LinearOperator<double> Ap = tmpAp;
 
       RCP<LinearOpBase<double> >
-        tmpQp = rcp(new EpetraLinearOp(rcp(QpMatrix,false)));
+        tmpQp = nonconstEpetraLinearOp(rcp(QpMatrix,false));
       const LinearOperator<double> Qp = tmpQp;
 
       // Wrap Epetra vectors into Thyra vectors

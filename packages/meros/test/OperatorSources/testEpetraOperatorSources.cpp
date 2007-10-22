@@ -166,19 +166,19 @@ int main(int argc, char *argv[])
       // operators, then convert to the handle layer LinearOperators.
       
       RCP<LinearOpBase<double> >
-	tmpF = rcp(new EpetraLinearOp(rcp(FMatrix,false)));
+        tmpF = nonconstEpetraLinearOp(rcp(FMatrix,false));
       const LinearOperator<double> F = tmpF;
 
       RCP<LinearOpBase<double> >
-	tmpBt = rcp(new EpetraLinearOp(rcp(BtMatrix,false)));
+        tmpBt = nonconstEpetraLinearOp(rcp(BtMatrix,false));
       const LinearOperator<double> Bt = tmpBt;
 
       RCP<LinearOpBase<double> >
-	tmpB = rcp(new EpetraLinearOp(rcp(BMatrix,false)));
+        tmpB = nonconstEpetraLinearOp(rcp(BMatrix,false));
       const LinearOperator<double> B = tmpB;
 
       RCP<LinearOpBase<double> >
-	tmpC = rcp(new EpetraLinearOp(rcp(CMatrix,false)));
+        tmpC = nonconstEpetraLinearOp(rcp(CMatrix,false));
       const LinearOperator<double> C = tmpC;
 
       const LinearOperator<double> S = block2x2(F, Bt, B, C);

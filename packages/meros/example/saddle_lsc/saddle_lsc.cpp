@@ -199,15 +199,15 @@ int main(int argc, char *argv[])
       // handle layer LinearOperators.
       
       RCP<LinearOpBase<double> >
-        tmpF = rcp(new EpetraLinearOp(rcp(FMatrix,false)));
+        tmpF = nonconstEpetraLinearOp(rcp(FMatrix,false));
       const LinearOperator<double> F = tmpF;
 
       RCP<LinearOpBase<double> >
-        tmpBt = rcp(new EpetraLinearOp(rcp(BtMatrix,false)));
+        tmpBt = nonconstEpetraLinearOp(rcp(BtMatrix,false));
       const LinearOperator<double> Bt = tmpBt;
 
       RCP<LinearOpBase<double> >
-        tmpB = rcp(new EpetraLinearOp(rcp(BMatrix,false)));
+        tmpB = nonconstEpetraLinearOp(rcp(BMatrix,false));
       const LinearOperator<double> B = tmpB;
 
 

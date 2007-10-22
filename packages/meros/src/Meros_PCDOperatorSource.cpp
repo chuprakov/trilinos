@@ -81,19 +81,19 @@ PCDOperatorSource
 
   // Convert to LinearOperators
   RCP<const LinearOpBase<double> >
-    tmpS00 = rcp(new EpetraLinearOp(rcp(S00epetra,false)));
+    tmpS00 = Thyra::epetraLinearOp(rcp(S00epetra,false));
   ConstLinearOperator<double> S00 = tmpS00;
 
   RCP<const LinearOpBase<double> >
-    tmpS01 = rcp(new EpetraLinearOp(rcp(S01epetra,false)));
+    tmpS01 = Thyra::epetraLinearOp(rcp(S01epetra,false));
   ConstLinearOperator<double> S01 = tmpS01;
 
   RCP<const LinearOpBase<double> >
-    tmpS10 = rcp(new EpetraLinearOp(rcp(S10epetra,false)));
+    tmpS10 = Thyra::epetraLinearOp(rcp(S10epetra,false));
   ConstLinearOperator<double> S10 = tmpS10;
 
   RCP<const LinearOpBase<double> >
-    tmpS11 = rcp(new EpetraLinearOp(rcp(S11epetra,false)));
+    tmpS11 = Thyra::epetraLinearOp(rcp(S11epetra,false));
   ConstLinearOperator<double> S11 = tmpS11;
 
   // Build block matrix
@@ -101,11 +101,11 @@ PCDOperatorSource
 
   // Convert Fp and Ap to Thyra LinearOperators
   RCP<const LinearOpBase<double> >
-    tmpFp = rcp(new EpetraLinearOp(rcp(Fpepetra,false)));
+    tmpFp = Thyra::epetraLinearOp(rcp(Fpepetra,false));
   ConstLinearOperator<double> Fp = tmpFp;
 
   RCP<const LinearOpBase<double> >
-    tmpAp = rcp(new EpetraLinearOp(rcp(Apepetra,false)));
+    tmpAp = Thyra::epetraLinearOp(rcp(Apepetra,false));
   ConstLinearOperator<double> Ap = tmpAp;
 
   // Qp = I if not given in constructor
@@ -130,19 +130,19 @@ PCDOperatorSource
 
   // Convert to Thyra LinearOperators
   RCP<const LinearOpBase<double> >
-    tmpS00 = rcp(new EpetraLinearOp(rcp(S00epetra,false)));
+    tmpS00 = Thyra::epetraLinearOp(rcp(S00epetra,false));
   ConstLinearOperator<double> S00 = tmpS00;
 
   RCP<const LinearOpBase<double> >
-    tmpS01 = rcp(new EpetraLinearOp(rcp(S01epetra,false)));
+    tmpS01 = Thyra::epetraLinearOp(rcp(S01epetra,false));
   ConstLinearOperator<double> S01 = tmpS01;
 
   RCP<const LinearOpBase<double> >
-    tmpS10 = rcp(new EpetraLinearOp(rcp(S10epetra,false)));
+    tmpS10 = Thyra::epetraLinearOp(rcp(S10epetra,false));
   ConstLinearOperator<double> S10 = tmpS10;
 
   RCP<const LinearOpBase<double> >
-    tmpS11 = rcp(new EpetraLinearOp(rcp(S11epetra,false)));
+    tmpS11 = Thyra::epetraLinearOp(rcp(S11epetra,false));
   ConstLinearOperator<double> S11 = tmpS11;
 
   // Build block operator
@@ -150,15 +150,15 @@ PCDOperatorSource
 
   // Convert Fp, Ap, and Qp to Thyra LinearOperators
   RCP<const LinearOpBase<double> >
-    tmpFp = rcp(new EpetraLinearOp(rcp(Fpepetra,false)));
+    tmpFp = Thyra::epetraLinearOp(rcp(Fpepetra,false));
   ConstLinearOperator<double> Fp = tmpFp;
 
   RCP<const LinearOpBase<double> >
-    tmpAp = rcp(new EpetraLinearOp(rcp(Apepetra,false)));
+    tmpAp = Thyra::epetraLinearOp(rcp(Apepetra,false));
   ConstLinearOperator<double> Ap = tmpAp;
 
   RCP<const LinearOpBase<double> >
-    tmpQp = rcp(new EpetraLinearOp(rcp(Qpepetra,false)));
+    tmpQp = Thyra::epetraLinearOp(rcp(Qpepetra,false));
   ConstLinearOperator<double> Qp = tmpQp;
 
   op_.initialize(S.constPtr());
