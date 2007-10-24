@@ -192,7 +192,10 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
       if(p_idx_>=0)
         model_outArgs.set_DfDp(p_idx_,Thyra::create_DfDp_mv(*model_,p_idx_,MEB::DERIV_MV_BY_COL));
     }
-    if(model_inArgs.supports(MEB::IN_ARG_alpha)) model_inArgs.set_alpha(0.0);
+    if (model_inArgs.supports(MEB::IN_ARG_alpha))
+      model_inArgs.set_alpha(0.0);
+    if (model_inArgs.supports(MEB::IN_ARG_beta))
+      model_inArgs.set_beta(1.0);
   }
   //
   // Evaluate the model
