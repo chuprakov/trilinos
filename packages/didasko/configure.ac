@@ -308,6 +308,11 @@ TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, anasazi, DIDASKO_ANASAZI,
   [Enables ANASAZI examples.],
   [Enables ANASAZI examples.  Can be overridden with --disable-didasko-anasazi.])
 #
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, belos, DIDASKO_BELOS,
+  HAVE_DIDASKO_BELOS, yes,
+  [Enables BELOS examples.],
+  [Enables BELOS examples.  Can be overridden with --disable-didasko-belos.])
+#
 TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, triutils, DIDASKO_TRIUTILS,
   HAVE_DIDASKO_TRIUTILS, yes,
   [Enables TRIUTILS examples.],
@@ -465,6 +470,7 @@ AC_CONFIG_FILES([
 		examples/amesos/Makefile
 		examples/anasazi/Makefile
 		examples/aztecoo/Makefile
+		examples/belos/Makefile
 		examples/epetra/Makefile
 		examples/epetraext/Makefile
 		examples/ifpack/Makefile

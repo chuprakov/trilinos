@@ -754,6 +754,8 @@ HAVE_DIDASKO_TEUCHOS_TRUE
 HAVE_DIDASKO_TEUCHOS_FALSE
 HAVE_DIDASKO_ANASAZI_TRUE
 HAVE_DIDASKO_ANASAZI_FALSE
+HAVE_DIDASKO_BELOS_TRUE
+HAVE_DIDASKO_BELOS_FALSE
 HAVE_DIDASKO_TRIUTILS_TRUE
 HAVE_DIDASKO_TRIUTILS_FALSE
 HAVE_DIDASKO_AZTECOO_TRUE
@@ -1418,6 +1420,9 @@ Optional Features:
                           --disable-didasko-anasazi.
   --enable-didasko-anasazi
                           Enables ANASAZI examples.
+  --enable-belos          Enables BELOS examples. Can be overridden with
+                          --disable-didasko-belos.
+  --enable-didasko-belos  Enables BELOS examples.
   --enable-triutils       Enables TRIUTILS examples. Can be overridden with
                           --disable-didasko-triutils.
   --enable-didasko-triutils
@@ -8091,6 +8096,57 @@ fi
 #
 
 
+# Check whether --enable-belos was given.
+if test "${enable_belos+set}" = set; then
+  enableval=$enable_belos; ac_cv_implicit_use_belos=$enableval
+else
+  ac_cv_implicit_use_belos=no
+fi
+
+
+if test "Xyes" != "Xno"; then
+  ac_cv_didasko_using_belos_default=$ac_cv_implicit_use_belos
+else
+  ac_cv_didasko_using_belos_default=no
+fi
+
+# Check whether --enable-didasko-belos was given.
+if test "${enable_didasko_belos+set}" = set; then
+  enableval=$enable_didasko_belos; ac_cv_use_belos=$enableval
+else
+  ac_cv_use_belos=$ac_cv_didasko_using_belos_default
+fi
+
+
+{ echo "$as_me:$LINENO: checking whether to build optional belos dependent code in didasko" >&5
+echo $ECHO_N "checking whether to build optional belos dependent code in didasko... $ECHO_C" >&6; }
+
+if test "X$ac_cv_use_belos" != "Xno"; then
+  { echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6; }
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_DIDASKO_BELOS 1
+_ACEOF
+
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+ if test "X$ac_cv_use_belos" = "Xyes"; then
+  HAVE_DIDASKO_BELOS_TRUE=
+  HAVE_DIDASKO_BELOS_FALSE='#'
+else
+  HAVE_DIDASKO_BELOS_TRUE='#'
+  HAVE_DIDASKO_BELOS_FALSE=
+fi
+
+
+
+#
+
+
 # Check whether --enable-triutils was given.
 if test "${enable_triutils+set}" = set; then
   enableval=$enable_triutils; ac_cv_implicit_use_triutils=$enableval
@@ -11420,7 +11476,7 @@ fi
 #  of tests.  New package comes only with src and example.
 #  You will need to change AC_CONFIG_FILES below and Makefile.am
 #  to add a new directory.
-ac_config_files="$ac_config_files Makefile Makefile.export Makefile.export.didasko examples/Makefile examples/amesos/Makefile examples/anasazi/Makefile examples/aztecoo/Makefile examples/epetra/Makefile examples/epetraext/Makefile examples/ifpack/Makefile examples/ml/Makefile examples/nox/Makefile examples/teuchos/Makefile examples/triutils/Makefile examples/HBMatrices/Makefile examples/tpetra/Makefile test/Makefile"
+ac_config_files="$ac_config_files Makefile Makefile.export Makefile.export.didasko examples/Makefile examples/amesos/Makefile examples/anasazi/Makefile examples/aztecoo/Makefile examples/belos/Makefile examples/epetra/Makefile examples/epetraext/Makefile examples/ifpack/Makefile examples/ml/Makefile examples/nox/Makefile examples/teuchos/Makefile examples/triutils/Makefile examples/HBMatrices/Makefile examples/tpetra/Makefile test/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -11649,6 +11705,13 @@ if test -z "${HAVE_DIDASKO_ANASAZI_TRUE}" && test -z "${HAVE_DIDASKO_ANASAZI_FAL
   { { echo "$as_me:$LINENO: error: conditional \"HAVE_DIDASKO_ANASAZI\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"HAVE_DIDASKO_ANASAZI\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HAVE_DIDASKO_BELOS_TRUE}" && test -z "${HAVE_DIDASKO_BELOS_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_DIDASKO_BELOS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_DIDASKO_BELOS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -12191,6 +12254,7 @@ do
     "examples/amesos/Makefile") CONFIG_FILES="$CONFIG_FILES examples/amesos/Makefile" ;;
     "examples/anasazi/Makefile") CONFIG_FILES="$CONFIG_FILES examples/anasazi/Makefile" ;;
     "examples/aztecoo/Makefile") CONFIG_FILES="$CONFIG_FILES examples/aztecoo/Makefile" ;;
+    "examples/belos/Makefile") CONFIG_FILES="$CONFIG_FILES examples/belos/Makefile" ;;
     "examples/epetra/Makefile") CONFIG_FILES="$CONFIG_FILES examples/epetra/Makefile" ;;
     "examples/epetraext/Makefile") CONFIG_FILES="$CONFIG_FILES examples/epetraext/Makefile" ;;
     "examples/ifpack/Makefile") CONFIG_FILES="$CONFIG_FILES examples/ifpack/Makefile" ;;
@@ -12443,6 +12507,8 @@ HAVE_DIDASKO_TEUCHOS_TRUE!$HAVE_DIDASKO_TEUCHOS_TRUE$ac_delim
 HAVE_DIDASKO_TEUCHOS_FALSE!$HAVE_DIDASKO_TEUCHOS_FALSE$ac_delim
 HAVE_DIDASKO_ANASAZI_TRUE!$HAVE_DIDASKO_ANASAZI_TRUE$ac_delim
 HAVE_DIDASKO_ANASAZI_FALSE!$HAVE_DIDASKO_ANASAZI_FALSE$ac_delim
+HAVE_DIDASKO_BELOS_TRUE!$HAVE_DIDASKO_BELOS_TRUE$ac_delim
+HAVE_DIDASKO_BELOS_FALSE!$HAVE_DIDASKO_BELOS_FALSE$ac_delim
 HAVE_DIDASKO_TRIUTILS_TRUE!$HAVE_DIDASKO_TRIUTILS_TRUE$ac_delim
 HAVE_DIDASKO_TRIUTILS_FALSE!$HAVE_DIDASKO_TRIUTILS_FALSE$ac_delim
 HAVE_DIDASKO_AZTECOO_TRUE!$HAVE_DIDASKO_AZTECOO_TRUE$ac_delim
@@ -12470,7 +12536,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 67; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 69; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

@@ -45,6 +45,9 @@
 #undef HAVE_DIDASKO_AZTECOO
 
 /* Define if want to build with didasko enabled */
+#undef HAVE_DIDASKO_BELOS
+
+/* Define if want to build with didasko enabled */
 #undef HAVE_DIDASKO_EPETRA
 
 /* Define if want to build with didasko enabled */

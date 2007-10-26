@@ -1,7 +1,6 @@
-#@HEADER
 # ************************************************************************
 # 
-#               Disasko : a Tutorial for Trilinos
+#                      Didasko Tutorial Package
 #                 Copyright (2005) Sandia Corporation
 # 
 # Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
@@ -24,62 +23,23 @@
 # Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 # 
 # ************************************************************************
-#@HEADER
 
-# The following line helps the test harness recover from build errors.
+include $(TRILINOS_HOME)/build/makefile.$(TRILINOS_ARCH)
 
-all-local:
+MY_COMPILER_FLAGS = -DHAVE_CONFIG_H $(CXXFLAGS) -c -g\
+	            -I$(TRILINOS_LIB)/include/
 
-if HAVE_DIDASKO_AMESOS
-AMESOS_SUBDIR = amesos
-endif
+MY_LINKER_FLAGS = $(LDFLAGS) $(TEST_C_OBJ) \
+	-L$(TRILINOS_LIB)/lib/ \
+	-lanasazi -lteuchos -ltriutils -lepetra \
+	$(LIB_PATHS) $(ARCH_LIBS) -lblas -llapack
 
-if HAVE_DIDASKO_ANASAZI
-ANASAZI_SUBDIR = anasazi
-endif
+all: ex1
 
-if HAVE_DIDASKO_AZTECOO
-AZTECOO_SUBDIR = aztecoo
-endif
+ex1: ex1.cpp
+	$(CXX)     ex1.cpp $(MY_COMPILER_FLAGS) 
+	$(LINKER)  ex1.o   $(MY_LINKER_FLAGS)    -o ex1.exe
+	/bin/rm -r ex1.o
 
-if HAVE_DIDASKO_BELOS
-BELOS_SUBDIR = belos
-endif
-
-if HAVE_DIDASKO_EPETRA
-EPETRA_SUBDIR = epetra
-endif
-
-if HAVE_DIDASKO_EPETRAEXT
-EPETRAEXT_SUBDIR = epetraext
-endif
-
-if HAVE_DIDASKO_IFPACK
-IFPACK_SUBDIR = ifpack
-endif
-
-if HAVE_DIDASKO_ML
-ML_SUBDIR = ml
-endif
-
-if HAVE_DIDASKO_NOX
-NOX_SUBDIR = nox
-endif
-
-if HAVE_DIDASKO_TEUCHOS
-TEUCHOS_SUBDIR = teuchos
-endif
-
-if HAVE_DIDASKO_TRIUTILS
-TRIUTILS_SUBDIR = triutils
-endif
-
-if HAVE_DIDASKO_TPETRA
-TPETRA_SUBDIR = tpetra
-endif
-
-
-SUBDIRS = $(AMESOS_SUBDIR) $(ANASAZI_SUBDIR) $(AZTECOO_SUBDIR) \
-	  $(BELOS_SUBDIR) $(EPETRA_SUBDIR) $(EPETRAEXT_SUBDIR) \
-	  $(IFPACK_SUBDIR)  $(ML_SUBDIR) $(NOX_SUBDIR) $(TEUCHOS_SUBDIR) \
-	  $(TRIUTILS_SUBDIR) $(TPETRA_SUBDIR) HBMatrices
+clean:
+	/bin/rm -f *.o ex?.exe
