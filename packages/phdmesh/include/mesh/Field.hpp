@@ -43,8 +43,8 @@
 
 namespace phdmesh {
 
-/** if ( #states == 1 ) "Field<T,N>( entity , name )"
- *  else                "Field<T,N>( entity , name[ state ] )"
+/** Print the text name for a field, depending on the number of states.
+ *  "Field<T,N>( entity_type , name , #states )"
  */
 std::ostream & operator << ( std::ostream & , const Field<void,0> & );
 
@@ -107,22 +107,9 @@ public:
   /** Volatile until the schema is committed */
   const std::vector<FieldDimension> & dimension() const ;
 
-  /** The schema cannot be committed.
-   *  The number of non-zero arguments must match the number of dimensions.
-   */
-  void set_dimension( const Part & , unsigned n0 ,
-                                     unsigned n1 = 0 , unsigned n2 = 0 ,
-                                     unsigned n3 = 0 , unsigned n4 = 0 ,
-                                     unsigned n5 = 0 , unsigned n6 = 0 ,
-                                     unsigned n7 = 0 );
-
-  /** Verify and clean part->dimension mapping */
-  void clean_dimension();
-
   //----------------------------------------
 
-  const CSet & cset_query() const { return m_cset ; }
-        CSet & cset_update();
+  const CSet & attributes() const { return m_cset ; }
 
   //----------------------------------------
   /** Checked conversion to field of the given specification. */

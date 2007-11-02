@@ -63,7 +63,9 @@ void test_schema_parts( ParallelMachine comm , std::istream & )
 {
   static const char method[] = "phdmesh::test::schema_parts" ;
 
-  Schema schema( 3 , comm );
+  if ( 0 < parallel_machine_rank( comm ) ) { return ; }
+
+  Schema schema ;
 
   // Should have exactly five predefined parts
 
@@ -91,13 +93,13 @@ void test_schema_parts( ParallelMachine comm , std::istream & )
   Part & b_b   = schema.declare_part( std::string("b_b") );
   Part & b_b_c = schema.declare_part( std::string("b_b_c") );
 
-  a.add_subset( a_a );
-  a.add_subset( a_b );
-  a_b.add_subset( a_b_c );
+  schema.declare_part_subset( a , a_a );
+  schema.declare_part_subset( a , a_b );
+  schema.declare_part_subset( a_b , a_b_c );
 
-  b.add_subset( b_a );
-  b.add_subset( b_b );
-  b_b.add_subset( b_b_c );
+  schema.declare_part_subset( b , b_a );
+  schema.declare_part_subset( b , b_b );
+  schema.declare_part_subset( b_b , b_b_c );
 
   PartSet x_intersect ;
   {
@@ -112,8 +114,8 @@ void test_schema_parts( ParallelMachine comm , std::istream & )
 
   Part & y = schema.declare_part( std::string("y") );
 
-  a_b_c.add_subset( y );
-  b_b_c.add_subset( y );
+  schema.declare_part_subset( a_b_c , y );
+  schema.declare_part_subset( b_b_c , y );
 
   //--------------------------------------------------------------------
   // Test expectations:
@@ -160,7 +162,7 @@ void test_schema_parts( ParallelMachine comm , std::istream & )
   // Test errors:
 
   try {
-    a_b.add_subset( a );
+    schema.declare_part_subset( a_b , a );
     require( false , method , "accepted circular a_b > a" );
   }
   catch(...) {
@@ -168,7 +170,7 @@ void test_schema_parts( ParallelMachine comm , std::istream & )
   }
 
   try {
-    a_b_c.add_subset( a );
+    schema.declare_part_subset( a_b_c , a );
     require( false , method , "accepted circular a_b_c > a" );
   }
   catch(...) {
@@ -179,19 +181,17 @@ void test_schema_parts( ParallelMachine comm , std::istream & )
 
   schema.commit();
 
-  if ( schema.parallel_rank() == 0 ) {
-    std::cout << std::endl ;
-    print( std::cout , NULL , a );
-    print( std::cout , NULL , a_a );
-    print( std::cout , NULL , a_b );
-    print( std::cout , NULL , a_b_c );
-    print( std::cout , NULL , b );
-    print( std::cout , NULL , b_a );
-    print( std::cout , NULL , b_b );
-    print( std::cout , NULL , b_b_c );
-    print( std::cout , NULL , x );
-    print( std::cout , NULL , y );
-    std::cout << std::endl ;
-  }
+  std::cout << std::endl ;
+  print( std::cout , NULL , a );
+  print( std::cout , NULL , a_a );
+  print( std::cout , NULL , a_b );
+  print( std::cout , NULL , a_b_c );
+  print( std::cout , NULL , b );
+  print( std::cout , NULL , b_a );
+  print( std::cout , NULL , b_b );
+  print( std::cout , NULL , b_b_c );
+  print( std::cout , NULL , x );
+  print( std::cout , NULL , y );
+  std::cout << std::endl ;
 }
 

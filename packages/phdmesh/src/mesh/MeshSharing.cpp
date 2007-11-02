@@ -46,10 +46,9 @@ bool comm_verify_shared_entity_values(
   const Mesh & M ,
   const Field<void,0> & f )
 {
-  const Schema & S = M.schema();
   const EntityType t = f.entity_type();
   const unsigned max_size   = f.max_size();
-  const unsigned parallel_size = S.parallel_size();
+  const unsigned parallel_size = M.parallel_size();
 
   const std::pair< std::vector<EntityProc>::const_iterator ,
                    std::vector<EntityProc>::const_iterator >
@@ -57,7 +56,7 @@ bool comm_verify_shared_entity_values(
 
   std::vector<EntityProc>::const_iterator ic ;
 
-  ParallelMachine comm = S.parallel();
+  ParallelMachine comm = M.parallel();
 
   CommAll sparse ;
 
@@ -125,7 +124,7 @@ void comm_mesh_discover_sharing( Mesh & M )
   static const char method[] = "phdmesh::comm_mesh_discover_sharing" ;
 
   const Schema & S = M.schema();
-  const unsigned p_rank = S.parallel_rank();
+  const unsigned p_rank = M.parallel_rank();
 
   std::vector<unsigned long> local ;
   std::vector< ParallelIndex::KeyProc > global ;
@@ -149,7 +148,7 @@ void comm_mesh_discover_sharing( Mesh & M )
     for ( i = eset.begin() ; i != e ; ++i ) { local.push_back( i->key() ); }
   }
 
-  ParallelIndex par_index( S.parallel() , local );
+  ParallelIndex par_index( M.parallel() , local );
 
   par_index.query( global );
 
@@ -200,7 +199,7 @@ void comm_mesh_discover_sharing( Mesh & M )
     M.change_entity_owner( *entity , p_owner );
   }
 
-  // Finally set the shares connection
+  // Set the shares connection
  
   M.set_shares( share );
 }
@@ -211,8 +210,8 @@ void comm_mesh_discover_sharing( Mesh & M )
 
 bool comm_mesh_scrub_sharing( Mesh & M )
 {
-  const unsigned p_size = M.schema().parallel_size();
-  const unsigned p_rank = M.schema().parallel_rank();
+  const unsigned p_size = M.parallel_size();
+  const unsigned p_rank = M.parallel_rank();
 
   std::vector<EntityProc> shares( M.shares() );
 
@@ -247,7 +246,7 @@ bool comm_mesh_scrub_sharing( Mesh & M )
 
   // Inform sharing processors of the destruction
 
-  CommAll all( M.schema().parallel() );
+  CommAll all( M.parallel() );
 
   for ( i = shares.begin() ; i != shares.end() ; ++i ) {
     all.send_buffer( i->second ).skip<unsigned char>(1);
@@ -374,7 +373,7 @@ bool unpack_info_verify(
     const unsigned connect_size = std::distance(connect.first, connect.second);
     const unsigned long key = entity.key();
     const unsigned p_owner  = entity.owner_rank();
-    const unsigned p_local  = schema.parallel_rank();
+    const unsigned p_local  = mesh.parallel_rank();
     const unsigned p_recv   = ep.second ;
 
     std::vector<unsigned> part_ordinals ;
@@ -482,7 +481,7 @@ bool unpack_info_verify(
         const bool has_aura   = con_e.kernel().has_superset( *aura_part );
 
         os << std::endl << "    " ;
-        ic->print( os );
+        os << *ic ;
         os << ".{ Owner = P" << con_e.owner_rank();
         if ( has_owned )  { os << " owned" ; }
         if ( has_shared ) { os << " shares" ; }
@@ -529,7 +528,7 @@ bool verify_parallel_attributes(
   // Verify all entities with the shares_part are in the sharing list
 
   const Schema & S = M.schema();
-  const unsigned p_rank = S.parallel_rank();
+  const unsigned p_rank = M.parallel_rank();
   Part & owns_part  = S.owns_part();
   Part & shares_part = S.shares_part();
   Part & aura_part   = S.aura_part();
@@ -624,12 +623,10 @@ bool verify_parallel_attributes(
 
 bool comm_mesh_verify_parallel_consistency( Mesh & M )
 {
-  const Schema & S = M.schema();
-
   // Exchange the shared entities' identifiers, part mesh ordinals, and
   // owner processor.  Should be fully consistent modulo the owner part.
 
-  const unsigned p_size = S.parallel_size();
+  const unsigned p_size = M.parallel_size();
 
   std::string msg ;
   int result = 1 ;
@@ -645,7 +642,7 @@ bool comm_mesh_verify_parallel_consistency( Mesh & M )
 
     const std::vector<EntityProc> & shares = M.shares();
 
-    CommAll all_info( S.parallel() );
+    CommAll all_info( M.parallel() );
 
     pack_info( all_info , shares );
 
@@ -660,19 +657,19 @@ bool comm_mesh_verify_parallel_consistency( Mesh & M )
 
   // Verify consistency of aura
 
-  if ( ! comm_verify( S.parallel(), M.aura_domain(), M.aura_range(), msg) ) {
+  if ( ! comm_verify( M.parallel(), M.aura_domain(), M.aura_range(), msg) ) {
     result = false ;
   }
 
   // Global reduction of result flag:
 
-  all_reduce( S.parallel() , ReduceMin<1>( & result ) );
+  all_reduce( M.parallel() , ReduceMin<1>( & result ) );
 
   //--------------------------------------------------------------------
   // If an error occured collect the messages on
   // processor zero and output to standard error stream.
 
-  if ( ! result ) { all_write( S.parallel() , std::cerr , msg ); }
+  if ( ! result ) { all_write( M.parallel() , std::cerr , msg ); }
 
   return result ;
 }
@@ -833,8 +830,8 @@ void comm_mesh_add_sharing( Mesh & M , const std::vector<EntityProc> & add )
 
   const SharingManager mgr ;
   const Schema & S = M.schema();
-  const unsigned p_rank = S.parallel_rank();
-  const unsigned p_size = S.parallel_size();
+  const unsigned p_rank = M.parallel_rank();
+  const unsigned p_size = M.parallel_size();
   Part * const shares_part = & S.shares_part();
 
   const std::vector<EntityProc> & old_shares = M.shares();
@@ -850,7 +847,7 @@ void comm_mesh_add_sharing( Mesh & M , const std::vector<EntityProc> & add )
     std::vector<EntityProc> new_aura_range(  M.aura_range() );
 
     {
-      CommAll all( S.parallel() );
+      CommAll all( M.parallel() );
 
       for ( std::vector<EntityProc>::const_iterator
             j = add.begin() ; j != add.end() ; ++j ) {
@@ -942,7 +939,7 @@ void comm_mesh_add_sharing( Mesh & M , const std::vector<EntityProc> & add )
 
   // Now owners send to sharing the extent of sharing
   {
-    CommAll all( S.parallel() );
+    CommAll all( M.parallel() );
 
     pack_sharing( all , new_shares );
 

@@ -500,50 +500,42 @@ void assert_field_dimension_compatible(
 // If subset exists then replace it.
 // If exists or superset exists then do nothing.
 
-void Field<void,0>::set_dimension(
+void Schema::declare_field_dimension(
+  Field<void,0> & field ,
   const Part & p , unsigned n0 , unsigned n1 , unsigned n2 ,
                    unsigned n3 , unsigned n4 , unsigned n5 ,
                    unsigned n6 , unsigned n7 )
 {
-  static const char method[] = "phdmesh::Field::set_dimension" ;
+  static const char method[] = "phdmesh::Schema::declare_field_dimension" ;
 
-  m_schema.assert_not_committed( method );
+  assert_not_committed( method );
+  assert_same_schema( method , field.m_schema );
+  assert_same_schema( method , p.m_schema );
 
-  FieldDimension dim( p , NumericEnum<>::size( m_scalar_type ) ,
-                      n0 , n1 , n2 , n3 , n4 , n5 , n6 , n7 );
+  const unsigned type_size = NumericEnum<>::size(field.numeric_type_ordinal());
 
-  std::vector<FieldDimension> & dim_map = dimension();
+  FieldDimension dim( p , type_size , n0 , n1 , n2 , n3 , n4 , n5 , n6 , n7 );
+
+  std::vector<FieldDimension> & dim_map = field.dimension();
 
   //----------------------------------------
   // ERROR CHECKING:
   {
-    const unsigned type_size  = NumericEnum<>::size( m_scalar_type );
-    const unsigned dim_length = dim.length();
-    const unsigned dim_size   = dim.size();
     const unsigned dim_number = dim.number_of_dimensions();
-    const bool bad_num_dim    = m_num_dim != dim_number ;
-    const bool bad_type_size  = dim_length * type_size != dim_size ;
 
-    if ( bad_num_dim || bad_type_size ) {
+    if ( field.number_of_dimensions() != dim_number ) {
       std::ostringstream msg ;
       msg << method ;
       msg << " FAILED WITH INCOMPATIBLE DIMENSION : " ;
-      msg << entity_type_name( m_entity_type );
+      msg << entity_type_name( field.m_entity_type );
       msg << " Field< " ;
-      msg << NumericEnum<>::name( m_scalar_type );
+      msg << NumericEnum<>::name( field.m_scalar_type );
       msg << "(" << type_size ;
-      msg << ") , " << m_num_dim ;
+      msg << ") , " << field.m_num_dim ;
       msg << " > " ;
-      msg << m_name ;
-      if ( bad_num_dim ) {
-        msg << " #Dimensions = " ;
-        msg << dim_number ;
-      }
-      else {
-        msg << " TypeSize(" ;
-        msg << ( dim_length ? ( dim_size / dim_length ) : 0 );
-        msg << ")" ;
-      }
+      msg << field.m_name ;
+      msg << " #Dimensions = " ;
+      msg << dim_number ;
       throw std::runtime_error( msg.str() );
     }
   }
@@ -551,10 +543,10 @@ void Field<void,0>::set_dimension(
   //----------------------------------------
   // Retrieve dimension for this part, also retrieves for supersets.
 
-  const FieldDimension & old_dim = dimension( p );
+  const FieldDimension & old_dim = field.dimension( p );
 
   if ( old_dim.length() ) { // This part or a superset already exists
-    assert_field_dimension_compatible( method , m_name.c_str(),
+    assert_field_dimension_compatible( method , field.name().c_str(),
                                        dim , old_dim );
   }
   else {
@@ -564,9 +556,9 @@ void Field<void,0>::set_dimension(
     // All subsets must be compatible:
 
     for ( ip = p.subsets().begin() ; ip != p.subsets().end() ; ++ip ) {
-      const FieldDimension & tmp_dim = dimension( **ip );
+      const FieldDimension & tmp_dim = field.dimension( **ip );
       if ( tmp_dim.length() ) {
-        assert_field_dimension_compatible( method, m_name.c_str(),
+        assert_field_dimension_compatible( method, field.name().c_str(),
                                            dim, tmp_dim );
       }
     }
@@ -586,31 +578,35 @@ void Field<void,0>::set_dimension(
 // If a part and one of its subset parts show up in the dimension map
 // verify compatibility of dimensions and delete the subset part.
 
-void Field<void,0>::clean_dimension()
+void Schema::clean_field_dimension()
 {
-  typedef std::vector<FieldDimension>::difference_type d_type ;
+  static const char method[] = "phdmesh::Schema::clean_field_dimension" ;
 
-  static const char method[] = "phdmesh::Field::clearn_dimension" ;
+  for ( unsigned t = 0 ; t < EntityTypeMaximum ; ++t ) {
+    std::vector< Field<void,0> *> & fm = m_fields[t] ;
 
-  m_schema.assert_not_committed( method );
+    for ( std::vector< Field<void,0> *>::iterator
+          f = fm.begin() ; f != fm.end() ; ++f ) {
 
-  std::vector<FieldDimension> & dim_map = dimension();
+      std::vector<FieldDimension> & dim_map = (*f)->dimension();
 
-  std::vector<FieldDimension>::iterator i = dim_map.begin();
+      for ( std::vector<FieldDimension>::iterator
+            i = dim_map.begin() ; i != dim_map.end() ; ++i ) {
+        FieldDimension & dim = *i ;
+        const PartSet  & sub = dim.part()->subsets();
 
-  for ( ; i != dim_map.end() ; ++i ) {
-    FieldDimension & dim = *i ;
-    const PartSet  & sub = dim.part()->subsets();
+        std::vector<FieldDimension>::iterator j = dim_map.begin();
 
-    std::vector<FieldDimension>::iterator j = dim_map.begin();
-
-    while ( j != dim_map.end() ) {
-      std::vector<FieldDimension>::iterator k = j ; ++j ;
-      if ( i != k ) {
-        if ( contain( sub , * k->part() ) ) {
-          assert_field_dimension_compatible( method, m_name.c_str(),
-                                             dim, *k );
-          dim_map.erase( k );
+        while ( j != dim_map.end() ) {
+          std::vector<FieldDimension>::iterator k = j ; ++j ;
+          if ( i != k ) {
+            if ( contain( sub , * k->part() ) ) {
+              assert_field_dimension_compatible( method,
+                                                 (*f)->m_name.c_str(),
+                                                 dim, *k );
+              dim_map.erase( k );
+            }
+          }
         }
       }
     }
@@ -720,17 +716,6 @@ void Field<void,0>::assert_validity( unsigned ftype ,
 
 //----------------------------------------------------------------------
 
-CSet & Field<void,0>::cset_update()
-{
-  static const char method[] = "phdmesh::Schema::cset_update" ;
-
-  m_schema.assert_not_committed( method );
-
-  return m_cset ;
-}
-
-//----------------------------------------------------------------------
-
 std::ostream & operator << ( std::ostream & s , const Field<void,0> & f )
 {
   s << "Field< " ;
@@ -741,11 +726,8 @@ std::ostream & operator << ( std::ostream & s , const Field<void,0> & f )
   s << entity_type_name( f.entity_type() );
   s << " , " ;
   s << f.name() ;
-  if ( 1 < f.number_of_states() ) {
-    s << "[ " ;
-    s << field_state_name( f.state() );
-    s << " ]" ;
-  }
+  s << " , " ;
+  s << f.number_of_states();
   s << " )" ;
   return s ;
 }

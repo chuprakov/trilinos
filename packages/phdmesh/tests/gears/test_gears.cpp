@@ -99,9 +99,8 @@ void test_gears_face_proximity(
 {
   static const char method[] = "phdmesh::test_gears_face_proximity" ;
 
-  const Schema & schema = M.schema();
-  // const unsigned p_size = schema.parallel_size();
-  const unsigned p_rank = schema.parallel_rank();
+  // const unsigned p_size = M.parallel_size();
+  const unsigned p_rank = M.parallel_rank();
   double wt ;
 
   if ( verify && ! comm_mesh_verify_parallel_consistency( M ) ) {
@@ -227,7 +226,7 @@ void test_gears_face_proximity(
 
   unsigned flag = M.shares() == sharing_A ;
 
-  all_reduce( M.schema().parallel() , ReduceMin<1>( & flag ) );
+  all_reduce( M.parallel() , ReduceMin<1>( & flag ) );
 
   if ( ! flag ) {
     if ( p_rank == 0 ) {
@@ -256,7 +255,7 @@ void test_gears( ParallelMachine pm ,
     { 100 , 100 , 100 , 100 , 100 };
     // { 20 , 20 , 20 , 20 , 20 };
 
-  Schema S( 3 , pm);
+  Schema S ;
 
   GearFields gear_fields( S );
 
@@ -304,7 +303,7 @@ void test_gears( ParallelMachine pm ,
   Field<double,1> & field_node_proximity =
     S.declare_field<double,1>( Node , std::string("proximity") , 1 );
 
-  field_node_proximity.set_dimension( S.universal_part() , 1 );
+  S.declare_field_dimension( field_node_proximity , S.universal_part() , 1 );
 
   //------------------------------
 
@@ -337,7 +336,7 @@ void test_gears( ParallelMachine pm ,
 
         gears[ k * j_end * i_end + j * i_end + i ] = g ;
 
-        g->m_surf.cset_update().insert( & proximity_search , NULL );
+        S.declare_part_attribute( g->m_surf , & proximity_search , NULL );
       }
     }
   }
@@ -359,7 +358,7 @@ void test_gears( ParallelMachine pm ,
 
   //------------------------------
 
-  Mesh M(S,kernel_capacity);
+  Mesh M(S,pm,kernel_capacity);
 
   double wt = wall_time();
 
@@ -387,7 +386,7 @@ void test_gears( ParallelMachine pm ,
     ptr = & gear_fields.model_coord ;   fields.push_back( ptr );
     ptr = & gear_fields.current_coord ; fields.push_back( ptr );
 
-    comm_mesh_field_values( fields , M.aura_domain(), M.aura_range(), false );
+    comm_mesh_field_values( M, M.aura_domain(), M.aura_range(), fields, false );
   }
 
   {
@@ -526,8 +525,8 @@ void test_gears( ParallelMachine pm ,
         std::vector< const Field<void,0> *> fields ;
         const Field<void,0> * const ptr = & gear_fields.current_coord ;
         fields.push_back( ptr );
-        comm_mesh_field_values( fields , M.aura_domain(),
-                                         M.aura_range(), false );
+        comm_mesh_field_values( M, M.aura_domain(),
+                                   M.aura_range(), fields, false );
       }
 
       // Check parallel consistency of shared variable

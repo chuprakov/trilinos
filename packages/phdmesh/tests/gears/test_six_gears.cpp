@@ -92,8 +92,8 @@ void test_six_gears_face_proximity(
   static const char method[] = "phdmesh::test_six_gears_face_proximity" ;
 
   const Schema & schema = M.schema();
-  const unsigned p_size = schema.parallel_size();
-  const unsigned p_rank = schema.parallel_rank();
+  const unsigned p_size = M.parallel_size();
+  const unsigned p_rank = M.parallel_rank();
 
   if ( ! comm_mesh_verify_parallel_consistency( M ) ) {
     if ( p_rank == 0 ) {
@@ -179,7 +179,7 @@ void test_six_gears_face_proximity(
     send_count[0] = counts[2] ; // Owned faces
     send_count[1] = d_count ;   // Owned domain proximity face
 
-    parallel_gather( schema.parallel() , 0 ,
+    parallel_gather( M.parallel() , 0 ,
                      send_count , & recv_counts[0] , 2 );
 
     if ( p_rank == 0 ) {
@@ -261,7 +261,7 @@ void test_six_gears_face_proximity(
 
   unsigned flag = M.shares() == sharing_A ;
 
-  all_reduce( M.schema().parallel() , ReduceMin<1>( & flag ) );
+  all_reduce( M.parallel() , ReduceMin<1>( & flag ) );
 
   if ( ! flag ) {
     if ( p_rank == 0 ) {
@@ -285,7 +285,7 @@ void test_six_gears( ParallelMachine pm , std::istream & )
     { 100 , 100 , 100 , 100 , 100 };
     // { 20 , 20 , 20 , 20 , 20 };
 
-  Schema S( 3 , pm);
+  Schema S ;
 
   GearFields gear_fields( S );
 
@@ -384,7 +384,7 @@ void test_six_gears( ParallelMachine pm , std::istream & )
 
       gears[ j * i_end + i ] = g ;
 
-      g->m_surf.cset_update().insert( & proximity_search , NULL );
+      S.declare_part_attribute( g->m_surf , & proximity_search , NULL );
 
       file_schema.declare_part( g->m_gear.name() , 1 , exodus::HEX , 8 );
     }
@@ -400,12 +400,12 @@ void test_six_gears( ParallelMachine pm , std::istream & )
 
   ProximitySearch proximity_search( gear_fields.current_coord , 0.25 );
 
-  A.m_surf.cset_update().insert( & proximity_search , NULL );
-  B.m_surf.cset_update().insert( & proximity_search , NULL );
-  C.m_surf.cset_update().insert( & proximity_search , NULL );
-  D.m_surf.cset_update().insert( & proximity_search , NULL );
-  E.m_surf.cset_update().insert( & proximity_search , NULL );
-  F.m_surf.cset_update().insert( & proximity_search , NULL );
+  S.declare_part_attribute( A.m_surf , & proximity_search , NULL );
+  S.declare_part_attribute( B.m_surf , & proximity_search , NULL );
+  S.declare_part_attribute( C.m_surf , & proximity_search , NULL );
+  S.declare_part_attribute( D.m_surf , & proximity_search , NULL );
+  S.declare_part_attribute( E.m_surf , & proximity_search , NULL );
+  S.declare_part_attribute( F.m_surf , & proximity_search , NULL );
 
   //------------------------------
 
@@ -422,11 +422,11 @@ void test_six_gears( ParallelMachine pm , std::istream & )
   Field<double,1> & field_node_proximity =
     S.declare_field<double,1>( Node , std::string("proximity") , 1 );
 
-  field_node_proximity.set_dimension( S.universal_part() , 1 );
+  S.declare_field_dimension( field_node_proximity , S.universal_part() , 1 );
 
   S.commit();
 
-  Mesh M(S,kernel_capacity);
+  Mesh M(S,pm,kernel_capacity);
 
   A.mesh(M);
   B.mesh(M);
@@ -452,7 +452,7 @@ void test_six_gears( ParallelMachine pm , std::istream & )
     ptr = & gear_fields.model_coord ;   fields.push_back( ptr );
     ptr = & gear_fields.current_coord ; fields.push_back( ptr );
 
-    comm_mesh_field_values( fields , M.aura_domain(), M.aura_range(), false );
+    comm_mesh_field_values( M, M.aura_domain(), M.aura_range(), fields, false );
   }
 
   {
@@ -594,8 +594,8 @@ void test_six_gears( ParallelMachine pm , std::istream & )
         std::vector< const Field<void,0> *> fields ;
         const Field<void,0> * const ptr = & gear_fields.current_coord ;
         fields.push_back( ptr );
-        comm_mesh_field_values( fields , M.aura_domain(),
-                                         M.aura_range(), false );
+        comm_mesh_field_values( M, M.aura_domain(),
+                                   M.aura_range(), fields, false );
       }
 
       // Check parallel consistency of shared variable
@@ -649,7 +649,7 @@ void test_six_gears( ParallelMachine pm , std::istream & )
   //------------------------------
   // Test reading the written file
   {
-    Schema S_read( 3 , pm);
+    Schema S_read ;
     
     GearFields gear_fields_read( S_read );
 
@@ -659,11 +659,12 @@ void test_six_gears( ParallelMachine pm , std::istream & )
 
     exodus::FileSchema FS_read( S_read , gear_fields_read.model_coord , 
                                          gear_fields_read.element_attr ,
-                                         i_file_name.str() );
+                                         i_file_name.str() ,
+                                         pm );
 
     S_read.commit();
 
-    Mesh M_read(S_read,kernel_capacity);
+    Mesh M_read(S_read,pm,kernel_capacity);
 
     std::vector< const Field<void,0> * > none ;
 

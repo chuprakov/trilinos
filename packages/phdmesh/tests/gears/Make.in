@@ -31,7 +31,7 @@ TEST_MESH_OBJ_FILES =	\
 	test_gears.o	\
 	test_mesh.o	\
 	test_six_gears.o	\
-	two_gear_test.o
+	test_simple_mesh.o
 
 #-----------------------------------------------------------------------
 

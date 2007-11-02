@@ -197,7 +197,7 @@ unsigned proximity_search(
   std::vector< std::pair<IdentProc,IdentProc> > & proximity )
 {
   const Schema & S = M.schema();
-  const unsigned p_rank = S.parallel_rank();
+  const unsigned p_rank = M.parallel_rank();
 
   // Iterate surfaces and generate bounding boxes
 
@@ -255,7 +255,7 @@ unsigned proximity_search(
   // Generate a global square box that will contain all of the
   // local boxes.
   {
-    box_global_bounds( S.parallel() ,
+    box_global_bounds( M.parallel() ,
                        boxes.size() , & boxes[0] , 0 , NULL ,
                        global_box );
 
@@ -285,7 +285,7 @@ unsigned proximity_search(
   unsigned search_stats[6] ;
   unsigned search_tasks ;
 
-  oct_tree_proximity_search( S.parallel() , global_box ,
+  oct_tree_proximity_search( M.parallel() , global_box ,
                              boxes.size() , & boxes[0] , 0 , NULL ,
                              NULL , proximity , search_stats ,
                              & search_tasks );
@@ -381,7 +381,7 @@ int ProximitySearch::part_id( const Kernel & kernel ) const
   PartSet::iterator i ;
   for ( i = part_set.begin() ; part == NULL && i != part_set.end() ; ++i ) {
     const ProximitySearch * const tmp = 
-      (*i)->cset_query().get<ProximitySearch>();
+      (*i)->attributes().get<ProximitySearch>();
     if ( tmp == this ) { part = *i ; }
   }
 

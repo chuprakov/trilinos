@@ -114,7 +114,7 @@ const Field<int,1> & exo_index( Schema & arg_schema , EntityType arg_type )
   static const char name[] = "exodusII_local_index" ;
   Field<int,1> & f =
     arg_schema.declare_field<int,1>( arg_type , std::string(name) , 1 );
-  f.set_dimension( arg_schema.universal_part() , 2 );
+  arg_schema.declare_field_dimension( f , arg_schema.universal_part() , 2 );
   return f ;
 }
 
@@ -127,6 +127,7 @@ FileSchema::FileSchema(
   const unsigned          arg_writer_rank )
   : m_schema( arg_schema ),
     m_io_rank( arg_writer_rank ),
+    m_dimension( arg_node_coordinates.max_length() ),
     m_field_node_coord( arg_node_coordinates ),
     m_field_elem_attr(  arg_elem_attributes ),
     m_field_node_index( exo_index( arg_schema , Node ) ),
@@ -149,6 +150,7 @@ const FilePart * internal_declare_part(
   int                 arg_id ,
   EntityType          arg_type ,
   ElementType         arg_element_type ,
+  int                 arg_element_dim ,
   int                 arg_number_nodes ,
   int                 arg_number_attr ,
   const Field<double,1> & arg_attributes )
@@ -157,11 +159,11 @@ const FilePart * internal_declare_part(
 
   Part & part = arg_schema.declare_part( arg_name );
 
-  const FilePart * file_part = part.cset_query().get<FilePart>();
+  const FilePart * file_part = part.attributes().get<FilePart>();
 
   if ( NULL == file_part ) {
 
-    const unsigned dim = arg_schema.dimension();
+    const unsigned dim = arg_element_dim ;
 
     unsigned n = arg_number_attr ;
 
@@ -177,13 +179,14 @@ const FilePart * internal_declare_part(
     }
 
     if ( n ) {
-      const_cast<Field<double,1>&>( arg_attributes ).set_dimension( part , n );
+      arg_schema.declare_field_dimension(
+        const_cast<Field<double,1>&>( arg_attributes ) , part , n );
     }
 
     file_part = new FilePart( part, arg_id, arg_type,
                               arg_element_type, arg_number_nodes , n );
 
-    part.cset_update().insert( file_part );
+    arg_schema.declare_part_attribute( part , file_part );
   }
 
   if ( & file_part->m_part         != & part ||
@@ -211,7 +214,7 @@ Part & FileSchema::declare_part(
 {
   const FilePart * const fp =
     internal_declare_part( m_schema , arg_name , arg_id ,
-                           Element , arg_element_type ,
+                           Element , arg_element_type , m_dimension ,
                            arg_number_nodes , arg_num_attributes ,
                            m_field_elem_attr );
 
@@ -227,7 +230,7 @@ Part & FileSchema::declare_part(
 {
   const FilePart * const fp =
      internal_declare_part( m_schema , arg_name , arg_id ,
-                            arg_type , UNDEFINED , 0 , 0 ,
+                            arg_type , UNDEFINED , m_dimension , 0 , 0 ,
                             m_field_elem_attr );
 
   m_parts[ arg_type ].push_back( fp );
@@ -273,10 +276,9 @@ void assign_contiguous_indices(
 
   const unsigned u_zero = 0 ;
 
-  const Schema & S = M.schema();
-  const unsigned p_size = S.parallel_size();
-  const unsigned p_rank = S.parallel_rank();
-  const ParallelMachine p_comm = S.parallel();
+  const unsigned p_size = M.parallel_size();
+  const unsigned p_rank = M.parallel_rank();
+  const ParallelMachine p_comm = M.parallel();
 
   std::vector< std::pair<int,const Entity*> >::const_iterator i ;
 
@@ -492,7 +494,7 @@ void FileSchema::assign_indices( Mesh & arg_mesh ) const
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-#if defined( PHDMESH_HAS_SNL_ACCESS )
+#if defined( PHDMESH_HAS_SNL_EXODUSII )
 
 #include <exodusII.h>
 #include <ne_nemesisI.h>
@@ -614,9 +616,8 @@ ElementType element_type( const char * label )
 FileOutput::~FileOutput()
 {
   const Mesh       & M  = m_mesh ;
-  const Schema     & SM = M.schema();
   const FileSchema & FS = m_schema ;
-  const unsigned  p_rank = SM.parallel_rank();
+  const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = FS.m_io_rank ;
 
   if ( p_rank == p_write ) { ex_close( m_exo_id ); }
@@ -709,9 +710,8 @@ WriteNodeIndexCoord::WriteNodeIndexCoord(
     coord_x_y_z()
 {
   const Mesh       & M  = output.m_mesh ;
-  const Schema     & SM = M.schema();
   const FileSchema & SF = output.m_schema ;
-  const unsigned  p_rank = SM.parallel_rank();
+  const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = SF.m_io_rank ;
 
   writer = p_rank == p_write ;
@@ -723,10 +723,9 @@ void WriteNodeIndexCoord::operator()(
   const std::vector<const Entity *> & send )
 {
   const Mesh       & M  = output.m_mesh ;
-  const Schema     & SM = M.schema();
   const FileSchema & SF = output.m_schema ;
-  ParallelMachine p_comm = SM.parallel();
-  const unsigned  p_size = SM.parallel_size();
+  ParallelMachine p_comm = M.parallel();
+  const unsigned  p_size = M.parallel_size();
   const unsigned  p_write = SF.m_io_rank ;
 
   const unsigned send_size =
@@ -830,9 +829,8 @@ WriteElemIndexConnect::WriteElemIndexConnect(
 {
   const int i_zero = 0 ;
   const Mesh       & M  = output.m_mesh ;
-  const Schema     & SM = M.schema();
   const FileSchema & SF = output.m_schema ;
-  const unsigned  p_rank = SM.parallel_rank();
+  const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = SF.m_io_rank ;
 
   const unsigned send_data_num = part.m_number_nodes + 2 ;
@@ -852,10 +850,9 @@ void WriteElemIndexConnect::operator()(
   const std::vector<const Entity *> & send )
 {
   const Mesh       & M  = output.m_mesh ;
-  const Schema     & SM = M.schema();
   const FileSchema & SF = output.m_schema ;
-  ParallelMachine p_comm = SM.parallel();
-  const unsigned  p_size = SM.parallel_size();
+  ParallelMachine p_comm = M.parallel();
+  const unsigned  p_size = M.parallel_size();
   const unsigned  p_write = SF.m_io_rank ;
 
   const unsigned block_id           = part.m_identifier ;
@@ -967,9 +964,9 @@ std::string variable_name( const Part & p ,
     dim.dimension( dimension );
     dim.indices( k , indices );
 
-    const FieldName * des = f.cset_query().get<FieldName>();
+    const FieldName * des = f.attributes().get<FieldName>();
 
-    if ( ! des ) { des = & array_name(); }
+    if ( ! des ) { des = & io_array_name(); }
 
     name = des->encode( f.name() , dim.number_of_dimensions() ,
                         dimension , indices );
@@ -1062,8 +1059,8 @@ FileOutput::FileOutput(
   const Mesh       & M  = arg_mesh ;
   const Schema     & SM = M.schema();
   const FileSchema & FS = arg_schema ;
-  ParallelMachine p_comm = SM.parallel();
-  const unsigned  p_rank = SM.parallel_rank();
+  ParallelMachine p_comm = M.parallel();
+  const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = FS.m_io_rank ;
 
   const bool writer = p_write == p_rank ;
@@ -1157,7 +1154,7 @@ FileOutput::FileOutput(
   //--------------------------------------------------------------------
   // Sizes and counts
 
-  const int num_dim       = SM.dimension() ;
+  const int num_dim       = FS.m_dimension ;
   const int num_node_sets = node_parts.size();
   const int num_edge_sets = edge_parts.size();
   const int num_face_sets = face_parts.size();
@@ -1470,35 +1467,35 @@ void pack_entity_data( const std::vector<const Entity *> & send ,
                        const unsigned                      offset ,
                        CommBuffer & buf )
 {
-  switch( f_data.field_types_ordinal() ) {
-  case TypeListIndex< FieldTypes , signed char >::value :
+  switch( f_data.numeric_type_ordinal() ) {
+  case NumericEnum< signed char >::value :
     pack_entity_data( send, f_index, f_data.field<signed char,0>(), offset, buf );
     break ;
-  case TypeListIndex< FieldTypes , unsigned char >::value :
+  case NumericEnum< unsigned char >::value :
     pack_entity_data( send, f_index, f_data.field<unsigned char,0>(), offset, buf );
     break ;
-  case TypeListIndex< FieldTypes , signed short >::value :
+  case NumericEnum< signed short >::value :
     pack_entity_data( send, f_index, f_data.field<signed short,0>(), offset, buf );
     break ;
-  case TypeListIndex< FieldTypes , unsigned short >::value :
+  case NumericEnum< unsigned short >::value :
     pack_entity_data( send, f_index, f_data.field<unsigned short,0>(), offset, buf );
     break ;
-  case TypeListIndex< FieldTypes , signed int >::value :
+  case NumericEnum< signed int >::value :
     pack_entity_data( send, f_index, f_data.field<signed int,0>(), offset, buf );
     break ;
-  case TypeListIndex< FieldTypes , unsigned int >::value :
+  case NumericEnum< unsigned int >::value :
     pack_entity_data( send, f_index, f_data.field<unsigned int,0>(), offset, buf );
     break ;
-  case TypeListIndex< FieldTypes , signed long >::value :
+  case NumericEnum< signed long >::value :
     pack_entity_data( send, f_index, f_data.field<signed long,0>(), offset, buf );
     break ;
-  case TypeListIndex< FieldTypes , unsigned long >::value :
+  case NumericEnum< unsigned long >::value :
     pack_entity_data( send, f_index, f_data.field<unsigned long,0>(), offset, buf );
     break ;
-  case TypeListIndex< FieldTypes , float >::value :
+  case NumericEnum< float >::value :
     pack_entity_data( send, f_index, f_data.field<float,0>(), offset, buf );
     break ;
-  case TypeListIndex< FieldTypes , double >::value :
+  case NumericEnum< double >::value :
     pack_entity_data( send, f_index, f_data.field<double,0>(), offset, buf );
     break ;
   default : break ;
@@ -1538,9 +1535,8 @@ WriteNodeValues::WriteNodeValues(
     recv_buffer()
 {
   const Mesh       & M  = output.m_mesh ;
-  const Schema     & SM = M.schema();
   const FileSchema & SF = output.m_schema ;
-  const unsigned  p_rank = SM.parallel_rank();
+  const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = SF.m_io_rank ;
 
   writer = p_write == p_rank ;
@@ -1556,10 +1552,9 @@ void WriteNodeValues::operator()(
   const std::vector<const Entity *> & send )
 {
   const Mesh       & M  = output.m_mesh ;
-  const Schema     & SM = M.schema();
   const FileSchema & SF = output.m_schema ;
-  ParallelMachine p_comm = SM.parallel();
-  const unsigned  p_size = SM.parallel_size();
+  ParallelMachine p_comm = M.parallel();
+  const unsigned  p_size = M.parallel_size();
   const unsigned  p_write = SF.m_io_rank ;
 
   const unsigned send_size = 2 * sizeof(double) * send.size();
@@ -1645,9 +1640,8 @@ WriteElemValues::WriteElemValues(
     recv_buffer()
 {
   const Mesh       & M  = output.m_mesh ;
-  const Schema     & SM = M.schema();
   const FileSchema & SF = output.m_schema ;
-  const unsigned  p_rank = SM.parallel_rank();
+  const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = SF.m_io_rank ;
 
   writer = p_write == p_rank ;
@@ -1663,10 +1657,9 @@ void WriteElemValues::operator()(
   const std::vector<const Entity *> & send )
 {
   const Mesh       & M  = output.m_mesh ;
-  const Schema     & SM = M.schema();
   const FileSchema & SF = output.m_schema ;
-  ParallelMachine p_comm = SM.parallel();
-  const unsigned  p_size = SM.parallel_size();
+  ParallelMachine p_comm = M.parallel();
+  const unsigned  p_size = M.parallel_size();
   const unsigned  p_write = SF.m_io_rank ;
 
   const unsigned send_size = 2 * sizeof(double) * send.size();
@@ -1728,8 +1721,8 @@ void FileOutput::write( double time_value )
   const Mesh       & M  = m_mesh ;
   const Schema     & SM = M.schema();
   const FileSchema & FS = m_schema ;
-  ParallelMachine p_comm = SM.parallel();
-  const unsigned  p_rank = SM.parallel_rank() ;
+  ParallelMachine p_comm = M.parallel();
+  const unsigned  p_rank = M.parallel_rank() ;
   const unsigned  p_write = FS.m_io_rank ;
 
   const std::vector<const FilePart *> & node_parts = FS.parts( Node );
@@ -1877,9 +1870,11 @@ FileSchema::FileSchema( Schema & arg_schema ,
                         const Field<double,1> & arg_node_coordinates ,
                         const Field<double,1> & arg_elem_attributes ,
                         const std::string     & arg_file_path ,
+                        ParallelMachine         arg_comm ,
                         const unsigned          arg_reader_rank )
   : m_schema( arg_schema ),
     m_io_rank( arg_reader_rank ),
+    m_dimension( arg_node_coordinates.max_length() ),
     m_field_node_coord( arg_node_coordinates ),
     m_field_elem_attr(  arg_elem_attributes ),
     m_field_node_index( exo_index( arg_schema , Node ) ),
@@ -1889,8 +1884,8 @@ FileSchema::FileSchema( Schema & arg_schema ,
 {
   static const char method[] = "phdmesh::exodus::FileSchema::FileSchema" ;
 
-  ParallelMachine p_comm = m_schema.parallel();
-  const unsigned  p_rank = m_schema.parallel_rank();
+  ParallelMachine p_comm = arg_comm ;
+  const unsigned  p_rank = parallel_machine_rank( arg_comm );
   const unsigned  p_read = arg_reader_rank ;
 
   //--------------------------------------------------------------------
@@ -1942,11 +1937,11 @@ FileSchema::FileSchema( Schema & arg_schema ,
   // const int num_node_sets    = exo_data[5] ;
   // const int num_side_sets    = exo_data[6] ;
 
-  if ( num_dim != (int) m_schema.dimension() ) {
+  if ( num_dim != (int) m_dimension ) {
     std::ostringstream msg ;
     if ( reader ) {
       msg << method << " FAILED: incompatible spatial dimensions "
-          << m_schema.dimension() << " != "
+          << m_dimension << " != "
           << num_dim ;
     }
     throw std::runtime_error( msg.str() );
@@ -2044,6 +2039,7 @@ FileSchema::FileSchema( Schema & arg_schema ,
                                  data[i].block_id ,
                                  Element ,
                                  element_type( data[i].type ) ,
+                                 m_dimension ,
                                  data[i].num_nodes ,
                                  data[i].num_attr ,
                                  m_field_elem_attr );
@@ -2117,9 +2113,8 @@ struct less_NodeData {
 FileInput::~FileInput()
 {
   const Mesh       & M  = m_mesh ;
-  const Schema     & SM = M.schema();
   const FileSchema & FS = m_schema ;
-  const unsigned  p_rank = SM.parallel_rank();
+  const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_read = FS.m_io_rank ;
 
   if ( p_rank == p_read ) { ex_close( m_exo_id ); }
@@ -2141,9 +2136,9 @@ FileInput::FileInput(
         Mesh       & M  = arg_mesh ;
   const Schema     & SM = M.schema();
   const FileSchema & FS = arg_schema ;
-  ParallelMachine p_comm = SM.parallel();
-  const unsigned  p_size = SM.parallel_size();
-  const unsigned  p_rank = SM.parallel_rank();
+  ParallelMachine p_comm = M.parallel();
+  const unsigned  p_size = M.parallel_size();
+  const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_read = FS.m_io_rank ;
 
   const bool reader = p_read == p_rank ;
@@ -2270,12 +2265,12 @@ FileInput::FileInput(
   const bool has_node_identifiers = exo_data[7] ;
   const bool has_elem_identifiers = exo_data[8] ;
 
-  if ( num_dim != (int) SM.dimension() ||
+  if ( num_dim != (int) FS.m_dimension ||
        num_elem_blk != (int) elem_parts.size() ) {
     std::ostringstream msg ;
     if ( reader ) {
       msg << method << " FAILED: incompatible spatial dimension "
-          << SM.dimension() << " != "
+          << FS.m_dimension << " != "
           << num_dim
           << " OR element block count "
           << elem_parts.size() << " != "
@@ -2667,18 +2662,14 @@ FileInput::FileInput(
           Entity & node = M.declare_entity( Node, node_ident,
                                             entity_parts, (int)p_rank);
 
+          M.declare_connection( elem , node , j , method );
+
           * node.data( FS.m_field_node_index ) = node_index ;
 
           double * const node_coord = node.data( FS.m_field_node_coord );
           node_coord[0] = iter_node_data->coord[0] ;
           node_coord[1] = iter_node_data->coord[1] ;
           node_coord[2] = iter_node_data->coord[2] ;
-
-          Connect con( node , Uses , j );
-          Connect con_c( elem , UsedBy , j );
-
-          elem.add_connection( con , method );
-          node.add_connection( con_c );
         }
       }
     }
@@ -2713,9 +2704,11 @@ FileSchema::FileSchema( Schema & arg_schema ,
                         const Field<double,1> & arg_node_coordinates ,
                         const Field<double,1> & arg_elem_attributes ,
                         const std::string     & ,
+                        ParallelMachine         ,
                         const unsigned          arg_reader_rank )
   : m_schema( arg_schema ),
     m_io_rank( arg_reader_rank ),
+    m_dimension( arg_node_coordinates.max_length() ),
     m_field_node_coord( arg_node_coordinates ),
     m_field_elem_attr(  arg_elem_attributes ),
     m_field_node_index( exo_index( arg_schema , Node ) ),

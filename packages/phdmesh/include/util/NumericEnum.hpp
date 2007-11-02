@@ -48,7 +48,23 @@ typedef TypeList<          void ,
         TypeList<          double ,
         TypeList<          std::complex<float> ,
         TypeList<          std::complex<double> ,
-        TypeListEnd > > > > > > > > > > > > > NumericTypeList ;
+
+        TypeList<          void * ,
+        TypeList< signed   char * ,
+        TypeList< unsigned char * ,
+        TypeList< signed   short * ,
+        TypeList< unsigned short * ,
+        TypeList< signed   int * ,
+        TypeList< unsigned int * ,
+        TypeList< signed   long * ,
+        TypeList< unsigned long * ,
+        TypeList<          float * ,
+        TypeList<          double * ,
+        TypeList<          std::complex<float> * ,
+        TypeList<          std::complex<double> * ,
+
+        TypeListEnd > > > > > > > > > > > > >
+                    > > > > > > > > > > > > > NumericTypeList ;
 
 template<typename Type = void> struct NumericEnum ;
 

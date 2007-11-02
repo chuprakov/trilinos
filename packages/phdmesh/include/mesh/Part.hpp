@@ -103,14 +103,10 @@ public:
   /** Parts for which this part is defined to be the intersection */
   const PartSet & intersection_of() const { return m_intersect ; }
 
-  /** Add subset */
-  void add_subset( Part & );
-
   bool operator == ( const Part & rhs ) const { return this == & rhs ; }
   bool operator != ( const Part & rhs ) const { return this != & rhs ; }
 
-  const CSet & cset_query() const { return m_cset ; }
-        CSet & cset_update();
+  const CSet & attributes() const { return m_cset ; }
 
 private:
 

@@ -33,6 +33,7 @@
 #include <sstream>
 
 #include <mesh/Field.hpp>
+#include <mesh/Schema.hpp>
 #include <mesh_io/FieldName.hpp>
 
 namespace phdmesh {
@@ -267,14 +268,14 @@ bool FieldName_Tensor::decode(
 
 //----------------------------------------------------------------------
 
-const FieldName & array_name()
+const FieldName & io_array_name()
 {
   static const FieldName descriptor ;
   return descriptor ;
 }
 
 
-const FieldName & cartesian_vector()
+const FieldName & io_cartesian_vector()
 {
   static const char name[] = "phdmesh::FieldName_Vector" ;
   static const char x[] = "x" ;
@@ -287,7 +288,7 @@ const FieldName & cartesian_vector()
   return descriptor ;
 }
 
-const FieldName & cylindrical_vector()
+const FieldName & io_cylindrical_vector()
 {
   static const char name[] = "phdmesh::FieldName_Cylindrical" ;
   static const char r[] = "r" ;
@@ -300,14 +301,14 @@ const FieldName & cylindrical_vector()
   return descriptor ;
 }
 
-void declare( Field<void,0> & f , const FieldName & d )
+void io_declare( Field<void,0> & f , const FieldName & d )
 {
-  static const char method[] = "phdmesh::declare" ;
+  static const char method[] = "phdmesh::io_declare" ;
 
-  const unsigned ordinal = f.cset_update().insert( & d , NULL );
+  const unsigned ordinal = f.schema().declare_field_attribute( f, & d, NULL );
 
   if ( ordinal ) {
-    const FieldName * const old = f.cset_query().get<FieldName>(0);
+    const FieldName * const old = f.attributes().get<FieldName>(0);
 
     std::ostringstream msg ;
     msg << method << "( " << f.name() << " , " << d.name()

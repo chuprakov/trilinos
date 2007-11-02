@@ -172,9 +172,8 @@ void assemble( const Mesh & M , const std::vector<Assemble> ops )
       update_fields.push_back( src_field );
     }
 
-    comm_mesh_field_values( update_fields ,
-                            M.aura_domain() ,
-                            M.aura_range() , false );
+    comm_mesh_field_values( M , M.aura_domain() , M.aura_range() ,
+                            update_fields , false );
   }
 
   // Local assembly

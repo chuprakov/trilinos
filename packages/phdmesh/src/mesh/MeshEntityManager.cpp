@@ -55,19 +55,23 @@ Entity * EntityManager::declare_entity(
   Entity & e = recv_mesh.declare_entity( entity_type , entity_id ,
                                          parts , owner_rank );
 
-  std::vector<Connect>::iterator i ;
+  for ( std::vector<Connect>::iterator
+        i = rels.begin() ; i != rels.end() ; ++i ) {
 
-  for ( i = rels.begin() ; i != rels.end() ; ++i ) {
-    e.add_connection( *i );
+    const ConnectType r_type   = i->type();
+    const unsigned    r_ident  = i->identifier();
+          Entity    & r_entity = * i->entity();
 
-    const ConnectType r_type = i->type();
-
-    if ( r_type == Uses || r_type == UsedBy ) {
-      // Add the converse connection
-      Entity       & con_e = * i->entity();
-      const unsigned id    =   i->identifier();
-      Connect converse( e , ( r_type == Uses ? UsedBy : Uses ) , id );
-      con_e.add_connection( converse );
+    switch( r_type ) {
+    case Uses :
+      recv_mesh.declare_connection( e , r_entity , r_ident );
+      break ;
+    case UsedBy :
+      recv_mesh.declare_connection( r_entity , e , r_ident );
+      break ;
+    case Anonymous :
+      recv_mesh.declare_connection_anon( e , r_entity , r_ident );
+      break ;
     }
   }
 
@@ -307,7 +311,7 @@ void EntityManager::unpack_field_values(
     unsigned recv_data_size ; buf.unpack<unsigned>( recv_data_size );
     if ( data_size != recv_data_size ) {
       if ( ok ) {
-        msg << "P" << schema.parallel_rank();
+        msg << "P" << mesh.parallel_rank();
         msg << ": " << method ;
         msg << "( " ;
         print_entity_key( msg , entity.key() );

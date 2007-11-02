@@ -2,7 +2,7 @@ taskpool 1
 #
 schema_parts
 #
-# two_gears
+simple_mesh
 #
 # six_gears
 #

@@ -38,6 +38,9 @@
 
 namespace phdmesh {
 
+void verify_parallel_consistency( const Schema & , ParallelMachine );
+
+//----------------------------------------------------------------------
 /** Parallel Heterogeneous Dynamic Mesh.
  *  An dynamic unstructured mesh of mesh entities with
  *  subsets of parts partitioned into homogeneous kernels.
@@ -48,14 +51,18 @@ public:
 
   ~Mesh();
 
-  /** Construct mesh for the given parallel machine and
+  /** Construct mesh for the given Schema, parallel machine, and
    *  with the specified maximum number of entities per kernel,
    *  kernel_capacity[ EntityTypeMaximum ].
    */
-  explicit Mesh( const Schema & schema ,
-                 const unsigned kernel_capacity[] );
+  Mesh( const Schema & schema , ParallelMachine parallel ,
+        const unsigned kernel_capacity[] );
 
   const Schema & schema() const { return m_schema ; }
+
+  ParallelMachine parallel() const { return m_parallel_machine ; }
+  unsigned parallel_size()   const { return m_parallel_size ; }
+  unsigned parallel_rank()   const { return m_parallel_rank ; }
 
   //------------------------------------
   
@@ -84,6 +91,7 @@ public:
   Entity * get_entity( EntityType , unsigned long ,
                        const char * required_by = NULL ) const ;
 
+  //------------------------------------
   /** Create or retrieve entity of the given type and id.
    *  If has different parts then merge the existing parts
    *  and the input parts.
@@ -109,6 +117,26 @@ public:
   void change_entity_parts( const Kernel & ,
                             const std::vector<Part*> & add_parts ,
                             const std::vector<Part*> & remove_parts );
+
+  /** Declare a connection and its converse between entities in the same mesh.
+   *  The greater entity type 'uses' the lesser entity type.
+   *  If 'required_unique_by' is set and declaration is non-unique
+   *  then throws an error with the message.
+   */
+  void declare_connection( Entity & ,
+                           Entity & ,
+                           const unsigned identifier ,
+                           const char * required_unique_by = NULL );
+
+  /** Declare an anonymous connection between entities in the same mesh.
+   *  The converse connection is not automatically introduced.
+   */
+  void declare_connection_anon( Entity & ,
+                                Entity & ,
+                                const unsigned identifier );
+
+  /** Remove all connections between two entities. */
+  void destroy_connection( Entity & , Entity & );
 
   /** Destroy an entity */
   void destroy_entity( Entity * );
@@ -146,6 +174,9 @@ private:
   Mesh & operator = ( const Mesh & );
 
   const Schema           & m_schema ;
+  ParallelMachine          m_parallel_machine ;
+  unsigned                 m_parallel_size ;
+  unsigned                 m_parallel_rank ;
   unsigned                 m_kernel_capacity[ EntityTypeMaximum ];
   KernelSet                m_kernels[  EntityTypeMaximum ];
   EntitySet                m_entities[ EntityTypeMaximum ];

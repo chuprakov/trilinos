@@ -46,22 +46,11 @@ namespace phdmesh {
 class Schema {
 public:
 
-  /** Construct mesh schema for meshes of a given spatial dimension
-   *  and distribution over the given parallel machine.
-   */
-  explicit Schema( unsigned arg_dimension , ParallelMachine );
-
-  unsigned dimension() const { return m_dimension ; }
-
-  ParallelMachine parallel() const { return m_parallel_machine ; }
-  unsigned parallel_size()   const { return m_parallel_size ; }
-  unsigned parallel_rank()   const { return m_parallel_rank ; }
-
   //------------------------------------
   // Predefined parts:
 
   /** Universal: superset of all other parts */
-  const Part & universal_part() const { return m_universal_part ; }
+  Part & universal_part() const { return const_cast<Part&>(m_universal_part); }
 
   /** Owned: owned by the local processor */
   Part & owns_part()  const { return *m_owns_part ; }
@@ -94,6 +83,25 @@ public:
    */
   const PartSet & get_parts() const { return m_universal_part.subsets(); }
 
+  /** Declare a part of the given name.
+   *  Redeclaration returns the previously declared part.
+   */
+  Part & declare_part( const std::string & );
+
+  /** Declare a part that is defined as the
+   *  intersection of the given part set.
+   */
+  Part & declare_part( const PartSet & );
+
+  /** Declare a superset-subset relationship */
+  void declare_part_subset( Part & superset , Part & subset );
+
+  /** Declare an attribute on a part */
+  template<class CSetMemberType>
+    unsigned declare_part_attribute( Part & , const CSetMemberType * ,
+                                     CSet::MemberDestroy =
+                                       & CSet::default_destroy );
+
   //------------------------------------
   /** Get a field, return NULL if it does not exist.
    *  If T != void or NDim != 0 then an exception will be thrown
@@ -114,17 +122,6 @@ public:
   const std::vector< Field<void,0> *> & get_fields( EntityType t ) const
     { return m_fields[ t ]; }
 
-  //------------------------------------
-  /** Declare a part of the given name.
-   *  Redeclaration returns the previously declared part.
-   */
-  Part & declare_part( const std::string & );
-
-  /** Declare a part that is defined as the
-   *  intersection of the given part set.
-   */
-  Part & declare_part( const PartSet & );
-
   /** Declare a field within the mesh.
    *  Redeclaration with compatible parameters returns the
    *  previously declared field.
@@ -135,9 +132,23 @@ public:
                                  const std::string & name ,
                                  unsigned number_of_states = 1 );
 
+  /** Declare a field to have a dimension over a given part */
+  void declare_field_dimension( Field<void,0> & field , const Part & ,
+                                unsigned n0 ,     unsigned n1 = 0 ,
+                                unsigned n2 = 0 , unsigned n3 = 0 ,
+                                unsigned n4 = 0 , unsigned n5 = 0 ,
+                                unsigned n6 = 0 , unsigned n7 = 0 );
+
+  /** Declare an attribute on a field */
+  template<class CSetMemberType>
+    unsigned declare_field_attribute( Field<void,0> & , const CSetMemberType * ,
+                                      CSet::MemberDestroy =
+                                        & CSet::default_destroy );
+  //------------------------------------
   /** Commit the part and field declarations.
    *  Verifies consistency and assigns ordinals for faster usage.
-   *  No more parts or fields may be declared.
+   *  No more declarations (parts, part-subsets, fields, field-dimensions)
+   *  can be made.
    */
   void commit();
 
@@ -155,18 +166,14 @@ public:
 
   ~Schema();
 
+  Schema();
+
 private:
 
-  Schema();
   Schema( const Schema & );
   Schema & operator = ( const Schema & );
 
-  bool            m_commit ;
-  unsigned        m_dimension ;
-  ParallelMachine m_parallel_machine ;
-  unsigned        m_parallel_size ;
-  unsigned        m_parallel_rank ;
-
+  bool   m_commit ;
   Part   m_universal_part ;
   Part * m_owns_part ;
   Part * m_shares_part ;
@@ -187,6 +194,8 @@ private:
                              unsigned arg_num_dim ,
                              unsigned arg_num_states ,
                              const char * required_by ) const ;
+
+  void clean_field_dimension();
 };
 
 } // namespace phdmesh
@@ -195,6 +204,24 @@ private:
 //----------------------------------------------------------------------
 
 namespace phdmesh {
+
+template<class CSetMemberType>
+inline
+unsigned Schema::declare_part_attribute(
+  Part & p , const CSetMemberType * a , CSet::MemberDestroy d )
+{
+  assert_not_committed( "phdmesh::Schema::declare_part_attribute" );
+  return p.m_cset.insert( a , d );
+}
+
+template<class CSetMemberType>
+inline
+unsigned Schema::declare_field_attribute(
+  Field<void,0> & f , const CSetMemberType * a , CSet::MemberDestroy d )
+{
+  assert_not_committed( "phdmesh::Schema::declare_field_attribute" );
+  return f.m_cset.insert( a , d );
+}
 
 inline
 Field<void,0> *

@@ -39,12 +39,19 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-Mesh::Mesh( const Schema & schema , const unsigned kernel_capacity[] )
-  : m_schema( schema )
+Mesh::Mesh( const Schema & schema ,
+            ParallelMachine parallel ,
+            const unsigned kernel_capacity[] )
+  : m_schema( schema ),
+    m_parallel_machine( parallel ),
+    m_parallel_size( parallel_machine_size( parallel ) ),
+    m_parallel_rank( parallel_machine_rank( parallel ) )
 {
   static const char method[] = "phdmesh::Mesh::Mesh" ;
 
   m_schema.assert_committed( method );
+
+  verify_parallel_consistency( schema , parallel );
 
   Copy<EntityTypeMaximum>( m_kernel_capacity , kernel_capacity );
 }
@@ -172,15 +179,27 @@ Entity & Mesh::declare_entity( EntityType entity_type ,
 
   const std::pair< EntitySet::iterator , bool > result = eset.insert( key );
 
-  {
-    PartSet empty ;
-    change_entity_parts( *result.first , parts , empty );
+  const bool is_new = result.second ;
+
+  if ( owner < 0 ) {
+    owner = is_new ? parallel_rank() : result.first->owner_rank();
   }
 
-  if ( result.second || 0 <= owner ) {
-    if ( owner < 0 ) { owner = m_schema.parallel_rank(); }
-    change_entity_owner( *result.first , (unsigned) owner );
+  PartSet add( parts ) , remove ;
+
+  if ( is_new && add.empty() ) {
+    if ( owner == (int) parallel_rank() ) {
+      Part * const owns_part = & m_schema.owns_part();
+      add.push_back( owns_part );
+    }
+    else {
+      Part * const univ_part = & m_schema.universal_part();
+      add.push_back( univ_part );
+    }
   }
+
+  change_entity_parts( *result.first , add , remove );
+  change_entity_owner( *result.first , (unsigned) owner );
 
   return * result.first ;
 }
@@ -340,7 +359,7 @@ void Mesh::change_entity_identifier( Entity & e , unsigned long id )
 
   if ( ! ok ) {
     std::ostringstream msg ;
-    msg << "P" << m_schema.parallel_size() ;
+    msg << "P" << parallel_size() ;
     msg << ": " << method ;
     msg << "( " ;
     print_entity_key( msg , e.key() );
@@ -357,16 +376,16 @@ void Mesh::change_entity_owner( Entity & e , unsigned owner_rank )
 {
   static const char method[] = "phdmesh::Mesh::change_entity_owner" ;
 
-  if ( m_schema.parallel_size() <= owner_rank ) {
+  if ( parallel_size() <= owner_rank ) {
     std::ostringstream msg ;
-    msg << "P" << m_schema.parallel_size() ;
+    msg << "P" << parallel_size() ;
     msg << ": " << method ;
     msg << "( " ;
     print_entity_key( msg , e.key() );
     msg << " , " ;
     msg << owner_rank ;
     msg << " ) FAILED due to invalid rank >= " ;
-    msg << m_schema.parallel_size() ;
+    msg << parallel_size() ;
     throw std::invalid_argument( msg.str() );
   }
   e.m_owner_rank = owner_rank ;
@@ -376,21 +395,16 @@ void Mesh::change_entity_owner( Entity & e , unsigned owner_rank )
 
 void Mesh::destroy_entity( Entity * e )
 {
-  const EntityType entity_type = e->entity_type();
-
-  {
-    const ConnectSet tmp( e->m_connect );
-    const ConnectSet::const_iterator i_end = tmp.end();
-          ConnectSet::const_iterator i     = tmp.begin();
-    for ( ; i_end != i ; ++i ) {
-      i->entity()->remove_connections( e );
-    }
+  while ( ! e->m_connect.empty() ) {
+    destroy_connection( * e , * e->m_connect.back().entity() );
   }
 
   remove_entity( e->m_kernel , e->m_kernel_ord );
 
   e->m_kernel     = KernelSet::iterator();
   e->m_kernel_ord = 0 ;
+
+  const EntityType entity_type = e->entity_type();
 
   EntitySet & es = m_entities[ entity_type ];
 
@@ -403,14 +417,14 @@ void Mesh::set_shares( const std::vector<EntityProc> & s )
 {
   static const char method[] = "phdmesh::Mesh::set_shares" ;
 
-  const unsigned p_rank = m_schema.parallel_rank();
+  const unsigned p_rank = parallel_rank();
   Part & shares_part = m_schema.shares_part();
 
   std::string msg ;
 
   // Parallel verification
 
-  bool ok = comm_verify( m_schema.parallel() , s , msg );
+  bool ok = comm_verify( parallel() , s , msg );
 
   // Verify each member has the shares part
 
@@ -443,7 +457,7 @@ void Mesh::set_shares( const std::vector<EntityProc> & s )
 
     if ( ! e->kernel().has_superset( shares_part ) ) {
       std::ostringstream os ;
-      os << "P" << m_schema.parallel_rank() << ": " << method << " FAILED " ;
+      os << "P" << parallel_rank() << ": " << method << " FAILED " ;
       print_entity_key( os , is->first->key() );
       os << " does not have part " ;
       os << shares_part.name();
@@ -469,7 +483,7 @@ void Mesh::set_shares( const std::vector<EntityProc> & s )
 
     if ( ! ok ) {
       std::ostringstream os ;
-      os << "P" << m_schema.parallel_rank() << ": " << method ;
+      os << "P" << parallel_rank() << ": " << method ;
       os << " FAILED " << s.size();
       os << " entity counts {" ;
       for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
@@ -487,7 +501,7 @@ void Mesh::set_shares( const std::vector<EntityProc> & s )
   {
     // Global reduce on the error flag, are any of the flag false ?
     unsigned flag = ok ;
-    all_reduce( m_schema.parallel() , ReduceMin<1>( & flag ) );
+    all_reduce( parallel() , ReduceMin<1>( & flag ) );
     ok = flag ;
   }
 
@@ -507,13 +521,13 @@ void Mesh::set_aura( const std::vector<EntityProc> & d ,
 
   Part & owns_part = m_schema.owns_part();
   Part & aura_part = m_schema.aura_part();
-  const unsigned p_rank = m_schema.parallel_rank();
+  const unsigned p_rank = parallel_rank();
 
   std::string msg ;
 
   // Parallel verification
 
-  bool ok = comm_verify( m_schema.parallel() , d , r , msg );
+  bool ok = comm_verify( parallel() , d , r , msg );
 
   // Local verification of range ordering
 
@@ -534,7 +548,7 @@ void Mesh::set_aura( const std::vector<EntityProc> & d ,
       if ( ! e->kernel().has_superset( owns_part ) ||
            p_rank != e->owner_rank() ) {
         std::ostringstream os ;
-        os << "P" << m_schema.parallel_rank() << ": " << method << " FAILED " ;
+        os << "P" << parallel_rank() << ": " << method << " FAILED " ;
         print_entity_key( os , is->first->key() );
         os << " does not have part " ;
         os << owns_part.name();
@@ -570,7 +584,7 @@ void Mesh::set_aura( const std::vector<EntityProc> & d ,
 
       if ( bad_part || bad_rank || bad_domain ) {
         std::ostringstream os ;
-        os << "P" << m_schema.parallel_rank() << ": " << method << " FAILED " ;
+        os << "P" << parallel_rank() << ": " << method << " FAILED " ;
         print_entity_key( os , e->key() );
         if ( bad_domain ) {
           os << " Had multiple entries" ;
@@ -604,7 +618,7 @@ void Mesh::set_aura( const std::vector<EntityProc> & d ,
 
       if ( entity_count[i] != kernel_count[i] ) {
         std::ostringstream os ;
-        os << "P" << m_schema.parallel_rank() << ": " << method << " FAILED " ;
+        os << "P" << parallel_rank() << ": " << method << " FAILED " ;
         os << " aura entity count = " << entity_count[i] ;
         os << " != " << kernel_count[i] << " = aura kernel entity count" ;
         msg = os.str();
@@ -616,7 +630,7 @@ void Mesh::set_aura( const std::vector<EntityProc> & d ,
   {
     // Global reduce on the error flag, are any of the flag false ?
     unsigned flag = ok ;
-    all_reduce( m_schema.parallel() , ReduceMin<1>( & flag ) );
+    all_reduce( parallel() , ReduceMin<1>( & flag ) );
     ok = flag ;
   }
 

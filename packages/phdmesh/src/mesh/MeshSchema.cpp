@@ -31,6 +31,7 @@
 #include <algorithm>
 
 #include <util/ParallelComm.hpp>
+#include <util/ParallelReduce.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Comm.hpp>
 
@@ -86,26 +87,45 @@ void Schema::assert_not_predefined( const char * method , Part & p ) const
 
 //----------------------------------------------------------------------
 
-Schema::Schema( unsigned arg_dimension , ParallelMachine pm )
+Schema::Schema()
   : m_commit( false ),
-    m_dimension( arg_dimension ),
-    m_parallel_machine( pm ),
-    m_parallel_size( parallel_machine_size( pm ) ),
-    m_parallel_rank( parallel_machine_rank( pm ) ),
     m_universal_part( *this , std::string( "{UNIVERSAL}" ) , PartSet() ),
     m_owns_part( NULL ),
     m_shares_part( NULL ),
     m_aura_part( NULL )
 {
-  { // Declare remaining predefined parts
-    const std::string owns_part_name(   "{PARALLEL_OWNS}" );
-    const std::string shares_part_name( "{PARALLEL_SHARES}" );
-    const std::string aura_part_name(   "{PARALLEL_AURA}" );
+  // Declare remaining predefined parts
+  const std::string owns_part_name(   "{PARALLEL_OWNS}" );
+  const std::string shares_part_name( "{PARALLEL_SHARES}" );
+  const std::string aura_part_name(   "{PARALLEL_AURA}" );
 
-    m_owns_part  = & declare_part( owns_part_name );
-    m_shares_part = & declare_part( shares_part_name );
-    m_aura_part   = & declare_part( aura_part_name );
+  m_owns_part   = & declare_part( owns_part_name );
+  m_shares_part = & declare_part( shares_part_name );
+  m_aura_part   = & declare_part( aura_part_name );
+}
+
+void Schema::commit()
+{
+  static const char method[] = "phdmesh::Schema::commit" ;
+
+  assert_not_committed( method );
+
+  { // Verify parts
+    std::string msg ;
+    msg.append( method );
+    msg.append( " FAILED : " );
+    const std::vector<Part*> & parts = m_universal_part.subsets();
+    for ( unsigned i = 0 ; i < parts.size() ; ++i ) {
+      Part & p = * parts[i] ;
+      if ( ! verify( p , msg ) ) {
+        throw std::logic_error( msg );
+      }
+    }
   }
+
+  clean_field_dimension();
+
+  m_commit = true ; // Cannot add or change parts or fields now
 }
 
 Schema::~Schema()
@@ -140,121 +160,7 @@ Schema::~Schema()
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
-
-namespace {
-
-void clean_intersection( const char * const method ,
-                         PartSet     & pset ,
-                         std::string & name )
-{
-  static const char separator[] = "^" ;
-
-  order( pset );
-
-  PartSet::iterator i ;
-
-  for ( i = pset.begin() ; i != pset.end() ; ) {
-    // If a subset of 'i' is contained then 'i' is redundant
-    if ( intersect( (*i)->subsets() , pset ) ) {
-      i = pset.erase( i );
-    }
-    else {
-      ++i ;
-    }
-  }
-
-  if ( pset.size() < 2 ) {
-    std::string msg ;
-    msg.append(method);
-    msg.append(" : FAILED, Cannot intersect fewer than two unique parts." );
-    msg.append(" Input {" );
-    PartSet::iterator j ;
-    for ( j = pset.begin() ; j != pset.end() ; ++j ) {
-      msg.append(" ");
-      msg.append( (*j)->name() );
-    }
-    msg.append(" } Clean {" );
-    for ( i = pset.begin() ; i != pset.end() ; ) {
-      msg.append(" ");
-      msg.append( (*i)->name() );
-    }
-    throw std::invalid_argument(msg);
-  }
-
-  name.assign("{");
-  for ( i = pset.begin() ; i != pset.end() ; ++i ) {
-    if ( i != pset.begin() ) { name.append( separator ); }
-    name.append( (*i)->name() );
-  }
-  name.append("}");
-}
-
-}
-
-Part & Schema::declare_part( const PartSet & pset )
-{
-  static const char method[] = "phdmesh::Mesh::declare_part" ;
-
-  assert_not_committed( method );
-
-  PartSet pset_clean( pset );
-
-  std::string p_name ;
-
-  clean_intersection( method , pset_clean , p_name );
-
-  Part * p = get_part( p_name , false );
-
-  if ( p == NULL ) { p = new Part( *this , p_name , pset_clean ); }
-
-  if ( pset_clean != p->intersection_of() ) {
-    std::string msg ;
-    msg.append(method);
-    msg.append(" : FAILED, Redundant incompatible intersection.");
-    throw std::invalid_argument(msg);
-  }
-
-  return *p ;
-}
-
-Part & Schema::declare_part( const std::string & p_name )
-{
-  static const char method[] = "phdmesh::Mesh::declare_part" ;
-
-  assert_not_committed( method );
-
-  Part * p = get_part( p_name , false );
-
-  if ( p == NULL ) { p = new Part( *this , p_name , PartSet() ); }
-
-  return *p ;
-}
-
-Part * Schema::get_part( const std::string & p_name ,
-                         const char * required_by ) const
-{
-  const PartSet & all_parts = m_universal_part.m_subsets ;
-
-  Part * const p = find( all_parts , p_name );
-
-  if ( required_by && NULL == p ) { // ERROR
-    static const char method[] = "phdmesh::Mesh::get_part" ;
-    std::string msg ;
-    msg.append( method )
-       .append( "( " )
-       .append( p_name )
-       .append( " , " )
-       .append( required_by )
-       .append( " ) FAILED to find part" );
-    throw std::runtime_error( msg );
-  }
-
-  return p ;
-}
-
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
-// Commit fields and parts
+// Verify parallel consistency of fields and parts
 
 namespace {
 
@@ -263,7 +169,7 @@ void pack( CommBuffer & b , const PartSet & pset )
   PartSet::const_iterator i , j ;
   for ( i = pset.begin() ; i != pset.end() ; ++i ) {
     const Part & p = **i ;
-    const CSet    & cset      = p.cset_query();
+    const CSet    & cset      = p.attributes();
     const PartSet & subsets   = p.subsets();
     const PartSet & intersect = p.intersection_of();
 
@@ -313,7 +219,7 @@ bool unpack_verify( CommBuffer & b , const PartSet & pset )
   PartSet::const_iterator i , j ;
   for ( i = pset.begin() ; ok && i != pset.end() ; ++i ) {
     const Part & p = **i ;
-    const CSet    & cset      = p.cset_query();
+    const CSet    & cset      = p.attributes();
     const PartSet & subsets   = p.subsets();
     const PartSet & intersect = p.intersection_of();
     const unsigned     name_len = p.name().size() + 1 ;
@@ -370,64 +276,78 @@ bool unpack_verify( CommBuffer & b , const PartSet & pset )
   return ok ;
 }
 
+void pack( CommBuffer & ,
+           const std::vector< Field<void,0> * > & )
+{
 }
 
-void Schema::commit()
+bool unpack_verify( CommBuffer & ,
+                    const std::vector< Field<void,0> * > & )
 {
-  static const char method[] = "phdmesh::Schema::commit" ;
+  bool ok = true ;
+  return ok ;
+}
 
-  assert_not_committed( method );
+}
 
-  { // Verify parts
-    std::string msg ;
-    msg.append( method );
-    msg.append( " FAILED : " );
-    const std::vector<Part*> & parts = m_universal_part.subsets();
-    for ( unsigned i = 0 ; i < parts.size() ; ++i ) {
-      Part & p = * parts[i] ;
-      if ( ! verify( p , msg ) ) {
-        throw std::logic_error( msg );
-      }
-    }
+//----------------------------------------------------------------------
+
+void verify_parallel_consistency( const Schema & s , ParallelMachine pm )
+{
+  static const char method[] = "phdmesh::verify_parallel_consistency(Schema)" ;
+
+  const unsigned p_rank = parallel_machine_rank( pm );
+
+  const bool is_root = 0 == p_rank ;
+
+  CommBroadcast comm( pm , 0 );
+
+  if ( is_root ) {
+    pack( comm.send_buffer() , s.get_parts() );
+    pack( comm.send_buffer() , s.get_fields( EntityType(0) ) );
+    pack( comm.send_buffer() , s.get_fields( EntityType(1) ) );
+    pack( comm.send_buffer() , s.get_fields( EntityType(2) ) );
+    pack( comm.send_buffer() , s.get_fields( EntityType(3) ) );
+    pack( comm.send_buffer() , s.get_fields( EntityType(4) ) );
   }
 
-  // Assign ordinals to fields, grouped by entity type
-  // Insure that the fields' dimension maps do not have
-  // incompatible subsets or supersets.
+  comm.allocate_buffer();
 
-  for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
-    std::vector< Field<void,0> *> & fm = m_fields[i] ;
-    std::vector< Field<void,0> *>::iterator j ;
-    for ( j = fm.begin() ; j != fm.end() ; ++j ) {
-      (*j)->clean_dimension();
-    }
+  if ( is_root ) {
+    pack( comm.send_buffer() , s.get_parts() );
+    pack( comm.send_buffer() , s.get_fields( EntityType(0) ) );
+    pack( comm.send_buffer() , s.get_fields( EntityType(1) ) );
+    pack( comm.send_buffer() , s.get_fields( EntityType(2) ) );
+    pack( comm.send_buffer() , s.get_fields( EntityType(3) ) );
+    pack( comm.send_buffer() , s.get_fields( EntityType(4) ) );
   }
 
-  // Parallel verification of part consistency
+  comm.communicate();
 
-  {
-    const bool is_root = 0 == m_parallel_rank ;
+  int ok[6] ;
 
-    CommBroadcast comm( m_parallel_machine , 0 );
+  ok[5] = unpack_verify( comm.recv_buffer() , s.get_parts() );
+  ok[0] = unpack_verify( comm.recv_buffer() , s.get_fields( EntityType(0) ) );
+  ok[1] = unpack_verify( comm.recv_buffer() , s.get_fields( EntityType(1) ) );
+  ok[2] = unpack_verify( comm.recv_buffer() , s.get_fields( EntityType(2) ) );
+  ok[3] = unpack_verify( comm.recv_buffer() , s.get_fields( EntityType(3) ) );
+  ok[4] = unpack_verify( comm.recv_buffer() , s.get_fields( EntityType(4) ) );
 
-    if ( is_root ) pack( comm.send_buffer() , m_universal_part.subsets() );
+  all_reduce( pm , ReduceMin<6>( ok ) );
 
-    comm.allocate_buffer();
-
-    if ( is_root ) pack( comm.send_buffer() , m_universal_part.subsets() );
-
-    comm.communicate();
-
-    if ( ! unpack_verify( comm.recv_buffer() , m_universal_part.subsets() ) ) {
-      std::ostringstream msg ;
-      msg << "P" << m_parallel_rank ;
-      msg << ": " << method ;
-      msg << " : FAILED Parallel Part consistency" ;
-      throw std::logic_error( msg.str() );
-    }
+  if ( ! ( ok[0] && ok[1] && ok[2] && ok[3] && ok[4] && ok[5] ) ) {
+    std::ostringstream msg ;
+    msg << "P" << p_rank ;
+    msg << ": " << method ;
+    msg << " : FAILED for:" ;
+    if ( ! ok[5] ) { msg << " Parts ," ; }
+    if ( ! ok[0] ) { msg << " Node Fields ," ; }
+    if ( ! ok[1] ) { msg << " Edge Fields ," ; }
+    if ( ! ok[2] ) { msg << " Face Fields ," ; }
+    if ( ! ok[3] ) { msg << " Element Fields ," ; }
+    if ( ! ok[4] ) { msg << " Other Fields ," ; }
+    throw std::logic_error( msg.str() );
   }
-
-  m_commit = true ; // Cannot add or change parts or fields now
 }
 
 //----------------------------------------------------------------------

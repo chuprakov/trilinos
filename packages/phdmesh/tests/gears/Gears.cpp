@@ -64,15 +64,15 @@ GearFields::GearFields( Schema & S )
 {
   const unsigned n3 = 3 ;
   const Part & universe = S.universal_part();
-  gear_coord   .set_dimension( universe , n3 );
-  model_coord  .set_dimension( universe , n3 );
-  current_coord.set_dimension( universe , n3 );
-  displacement .set_dimension( universe , n3 );
+  S.declare_field_dimension( gear_coord    , universe , n3 );
+  S.declare_field_dimension( model_coord   , universe , n3 );
+  S.declare_field_dimension( current_coord , universe , n3 );
+  S.declare_field_dimension( displacement  , universe , n3 );
 
-  declare( gear_coord ,    cylindrical_vector() );
-  declare( model_coord ,   cartesian_vector() );
-  declare( current_coord , cartesian_vector() );
-  declare( displacement ,  cartesian_vector() );
+  io_declare( gear_coord ,    io_cylindrical_vector() );
+  io_declare( model_coord ,   io_cartesian_vector() );
+  io_declare( current_coord , io_cartesian_vector() );
+  io_declare( displacement ,  io_cartesian_vector() );
 }
 
 //----------------------------------------------------------------------
@@ -116,12 +116,12 @@ Gear::Gear( Schema & S ,
 {
   enum { NNODE = 8 };
 
-  gear_fields.gear_coord   .set_dimension( m_gear , 3 );
-  gear_fields.model_coord  .set_dimension( m_gear , 3 );
-  gear_fields.current_coord.set_dimension( m_gear , 3 );
-  gear_fields.displacement .set_dimension( m_gear , 3 );
-  gear_fields.element_value.set_dimension( m_gear , 1 , NNODE );
-  gear_fields.node_value   .set_dimension( m_gear , 1 );
+  S.declare_field_dimension( gear_fields.gear_coord    , m_gear , 3 );
+  S.declare_field_dimension( gear_fields.model_coord   , m_gear , 3 );
+  S.declare_field_dimension( gear_fields.current_coord , m_gear , 3 );
+  S.declare_field_dimension( gear_fields.displacement  , m_gear , 3 );
+  S.declare_field_dimension( gear_fields.element_value , m_gear , 1 , NNODE );
+  S.declare_field_dimension( gear_fields.node_value    , m_gear , 1 );
 
   const double TWO_PI = 2.0 * acos( (double) -1.0 );
 
@@ -154,7 +154,7 @@ Entity * Gear::create_node(
   const unsigned ir ,
   const unsigned ia ) const
 {
-  const unsigned p_owner = m_schema.parallel_rank();
+  const unsigned p_owner = m_mesh->parallel_rank();
 
   const double angle     = m_ang_inc * ia ;
   const double cos_angle = cos( angle );
@@ -206,10 +206,8 @@ void Gear::mesh( Mesh & M )
 
   m_mesh = & M ;
 
-  const EntityManager manager ;
-
-  const unsigned p_size = m_schema.parallel_size();
-  const unsigned p_rank = m_schema.parallel_rank();
+  const unsigned p_size = M.parallel_size();
+  const unsigned p_rank = M.parallel_rank();
 
   unsigned long counts[ EntityTypeMaximum ];
   unsigned long max_id[ EntityTypeMaximum ];
@@ -267,8 +265,6 @@ void Gear::mesh( Mesh & M )
           node[6] = create_node( elem_parts, node_id_base, iz_1, ir_1, ia   );
           node[7] = create_node( elem_parts, node_id_base, iz_1, ir_1, ia_1 );
 
-          std::vector<Connect> rel ;
-
           // Centroid of the element for verification
 
           const double angle = m_ang_inc * ( 0.5 + (double) ia );
@@ -277,9 +273,6 @@ void Gear::mesh( Mesh & M )
           double c[3] = { 0 , 0 , 0 };
 
           for ( unsigned j = 0 ; j < 8 ; ++j ) {
-            Connect con( *node[j] , Uses , j );
-            rel.push_back( con );
-
             double * const coord_data = node[j]->data( m_model_coord );
             c[0] += coord_data[0] ;
             c[1] += coord_data[1] ;
@@ -304,12 +297,10 @@ void Gear::mesh( Mesh & M )
           }
 
           Entity & elem =
-            * manager.declare_entity( M , Element , elem_id ,
-                                      p_rank , elem_parts , rel );
+            M.declare_entity( Element, elem_id, elem_parts, p_rank );
 
           for ( unsigned j = 0 ; j < 8 ; ++j ) {
-            Connect con( elem , UsedBy , j );
-            node[j]->add_connection( con );
+            M.declare_connection( elem , * node[j] , j );
           }
         }
       }
@@ -345,33 +336,16 @@ void Gear::mesh( Mesh & M )
           node[2] = create_node( face_parts, node_id_base, iz_1, ir  , ia   );
           node[3] = create_node( face_parts, node_id_base, iz_1, ir  , ia_1 );
 
-          std::vector<Connect> rel ;
+          Entity & face =
+            M.declare_entity( Face , face_id , face_parts , p_rank );
 
           for ( unsigned j = 0 ; j < 4 ; ++j ) {
-            Connect con( *node[j] , Uses , j );
-            rel.push_back( con );
+            M.declare_connection( face , * node[j] , j );
           }
 
           Entity & elem = * M.get_entity(Element,elem_id,method);
 
-          {
-            Connect con( elem , UsedBy , face_ord );
-            rel.push_back( con );
-          }
-
-          Entity & face =
-              * manager.declare_entity( M , Face , face_id ,
-                                        p_rank , face_parts , rel );
-
-          for ( unsigned j = 0 ; j < 4 ; ++j ) {
-            Connect con( face , UsedBy , j );
-            node[j]->add_connection( con );
-          }
-
-          {
-            Connect con( face , Uses , face_ord );
-            elem.add_connection( con );
-          }
+          M.declare_connection( elem , face , face_ord );
         }
       }
     }

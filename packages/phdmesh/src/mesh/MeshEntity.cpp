@@ -30,6 +30,7 @@
 #include <algorithm>
 
 #include <mesh/Entity.hpp>
+#include <mesh/Mesh.hpp>
 
 namespace phdmesh {
 
@@ -118,31 +119,27 @@ print_entity_key( std::ostream & os , unsigned long key )
 }
 
 std::ostream &
-Connect::print( std::ostream & os ) const
+operator << ( std::ostream & os , const Connect & con )
 {
-  const char * const name = connect_type_name( type() );
-  const unsigned     id   = identifier();
+  const char * const name = connect_type_name( con.type() );
+  const unsigned     id   = con.identifier();
 
   os << name << "[" << id << "]->" ;
 
-  if ( m_entity != NULL ) { print_entity_key( os , m_entity->key() ); }
+  if ( con.entity() != NULL ) { print_entity_key( os , con.entity()->key() ); }
 
   return os ;
 }
 
 std::ostream &
-Entity::print( std::ostream & os , const std::string & lead ) const
+print_entity( std::ostream & os , const std::string & lead , const Entity & e )
 {
-  os << lead ;
-  print_entity_key( os , key() );
-  os << " Owner(P" << m_owner_rank << ") Connections {" ;
-  
-  const ConnectSet::const_iterator e = m_connect.end();
-        ConnectSet::const_iterator i = m_connect.begin();
+  print_entity_key( os , e.key() );
+  os << " Owner(P" << e.owner_rank() << ") Connections {" ;
 
-  for ( ; i != e ; ++i ) {
-    os << std::endl << lead << "  " ;
-    i->print( os );
+  for ( ConnectSpan con = e.connections() ;
+        con.first != con.second ; ++con.first ) {
+    os << std::endl << lead << "  " << *con.first ;
   }
   os << " }" << std::endl ;
 
@@ -207,69 +204,103 @@ ConnectSpan Entity::connections( EntityType et , ConnectType t ) const
 
 //----------------------------------------------------------------------
 
-void Entity::add_connection( const Connect & r ,
-                             const char * required_unique_by )
+namespace {
+
+inline bool equal_attr( const Connect & lhs , const Connect & rhs )
 {
-  static const char method_name[] = "phdmesh::Entity::add_connection" ;
+  const unsigned lhs_attr = lhs.attribute();
+  const unsigned rhs_attr = rhs.attribute();
+  return lhs_attr == rhs_attr ;
+}
 
-  std::ostringstream msg ;
+}
 
-  if ( r.entity() == NULL ) {
-    msg << method_name << " ERROR : GIVEN NULL Entity" ;
-    throw std::invalid_argument( msg.str() );
-  }
+void Mesh::declare_connection_anon( Entity & e1 , Entity & e2 ,
+                                    const unsigned identifier )
+{
+  const Connect e1_to_e2( e2 , Anonymous , identifier );
 
-  const ConnectSet::iterator e = m_connect.end();
-        ConnectSet::iterator i = m_connect.begin();
+  const ConnectSet::iterator e = e1.m_connect.end();
+        ConnectSet::iterator i = e1.m_connect.begin();
 
-  i = std::lower_bound( i , e , r , LessConnect() );
+  i = std::lower_bound( i , e , e1_to_e2 , LessConnect() );
 
-  bool flag = i != m_connect.end();
-
-  if ( flag ) { // Not the end
-    {
-      const unsigned i_attr = i->attribute();
-      const unsigned r_attr = r.attribute();
-
-      flag = i_attr == r_attr ;
-    }
-
-    if ( flag ) { // Equal attributes
-
-      {
-        Entity * const i_entity = i->entity();
-        Entity * const r_entity = r.entity();
-
-        flag = i_entity == r_entity ;
-      }
-
-      // One or more connections with this attribute already exists
-
-      if ( required_unique_by ) {
-        msg << method_name << "( " ;
-        r.print( msg );
-        msg << " , " << required_unique_by
-            << " ) ALREADY HAS " ;
-        i->print( msg );
-
-        throw std::invalid_argument(msg.str());
-      }
-    }
-  }
-
-  if ( ! flag ) {
-    m_connect.insert( i , r );
+  if ( e == i || e1_to_e2 != *i ) {
+    e1.m_connect.insert( i , e1_to_e2 );
   }
 }
 
-void Entity::remove_connections( Entity * const entity )
+void Mesh::declare_connection( Entity & e1 , Entity & e2 ,
+                               const unsigned identifier ,
+                               const char * required_unique_by )
 {
-  ConnectSet::iterator i = m_connect.end();
-  while ( i != m_connect.begin() ) {
-    --i ;
-    if ( entity == i->entity() ) {
-      i = m_connect.erase( i );
+  static const char method_name[] = "phdmesh::Mesh::declare_connection" ;
+
+  std::ostringstream msg ;
+
+  const EntityType e1_type = e1.entity_type();
+  const EntityType e2_type = e2.entity_type();
+
+  Entity & e_hi = e1_type == e2_type ? e1 : ( e1_type < e2_type ? e2 : e1 );
+  Entity & e_lo = e1_type == e2_type ? e2 : ( e1_type < e2_type ? e1 : e2 );
+
+  const Connect hi_to_lo( e_lo , Uses , identifier );
+  const Connect lo_to_hi( e_hi , UsedBy , identifier );
+
+  {
+    const ConnectSet::iterator e = e_hi.m_connect.end();
+          ConnectSet::iterator i = e_hi.m_connect.begin();
+
+    i = std::lower_bound( i , e , hi_to_lo , LessConnect() );
+
+    if ( required_unique_by && e != i && equal_attr( hi_to_lo , *i ) ) {
+      msg << method_name << "( " ;
+      print_entity_key( msg , e1.key() );
+      msg << " , " ;
+      print_entity_key( msg , e2.key() );
+      msg << " , " ;
+      msg << identifier ;
+      msg << " , " ;
+      msg << required_unique_by ;
+      msg << " ) FAILED : ALREADY HAS " ;
+      print_entity_key( msg , e_hi.key() );
+      msg << "->{ Uses , " ;
+      msg << identifier ;
+      msg << " }->" ;
+      print_entity_key( msg , i->entity()->key() );
+
+      throw std::invalid_argument(msg.str());
     }
+
+    if ( e == i || hi_to_lo != *i ) {
+      e_hi.m_connect.insert( i , hi_to_lo );
+    }
+  }
+
+  {
+    const ConnectSet::iterator e = e_lo.m_connect.end();
+          ConnectSet::iterator i = e_lo.m_connect.begin();
+
+    i = std::lower_bound( i , e , lo_to_hi , LessConnect() );
+
+    if ( e == i || lo_to_hi != *i ) {
+      e_lo.m_connect.insert( i , lo_to_hi );
+    }
+  }
+}
+
+void Mesh::destroy_connection( Entity & e1 , Entity & e2 )
+{
+  ConnectSet::iterator i ;
+
+  for ( i = e1.m_connect.end() ; i != e1.m_connect.begin() ; ) {
+    --i ;
+    if ( & e2 == i->entity() ) { i = e1.m_connect.erase( i ); }
+  }
+
+  for ( i = e2.m_connect.end() ; i != e2.m_connect.begin() ; ) {
+    --i ;
+    if ( & e1 == i->entity() ) { i = e2.m_connect.erase( i ); }
   }
 }
 

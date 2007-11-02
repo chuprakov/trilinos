@@ -243,8 +243,7 @@ bool verify( const std::vector<EntityProc> & v , std::string & msg )
 
     if ( result ) {
       Mesh   & M = v[0].first->kernel().mesh();
-      const Schema & S = M.schema();
-      const unsigned p_size = S.parallel_size();
+      const unsigned p_size = M.parallel_size();
 
       for ( i = v.begin() ; result && i != e ; ++i ) {
         if ( ! ( result = & M == & i->first->kernel().mesh() ) ) {
@@ -473,7 +472,7 @@ bool comm_mesh_stats( Mesh & M ,
   // Count locally owned entities
 
   const Schema & S = M.schema();
-  ParallelMachine comm = S.parallel();
+  ParallelMachine comm = M.parallel();
   Part & owns = S.owns_part();
 
   for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
@@ -524,9 +523,9 @@ bool comm_mesh_entities(
 
   static const char method[] = "phdmesh::comm_mesh_entities" ;
 
-  ParallelMachine comm = send_mesh.schema().parallel();
+  ParallelMachine comm = send_mesh.parallel();
 
-  if ( comm != recv_mesh.schema().parallel() ) {
+  if ( comm != recv_mesh.parallel() ) {
     std::string msg ;
     msg.append( method );
     msg.append( " ERROR: given meshes with different parallel machines" );
@@ -664,17 +663,16 @@ bool comm_mesh_entities(
 // Heterogeneity?
 
 bool comm_mesh_field_values(
-  const std::vector<const Field<void,0> *> & fields ,
+  const Mesh & mesh ,
   const std::vector<EntityProc> & domain ,
   const std::vector<EntityProc> & range ,
+  const std::vector<const Field<void,0> *> & fields ,
   bool local_flag )
 {
   if ( fields.empty() ) { return local_flag ; }
 
-  const Schema & schema = fields[0]->schema();
-
-  const unsigned parallel_size = schema.parallel_size();
-  const unsigned parallel_rank = schema.parallel_rank();
+  const unsigned parallel_size = mesh.parallel_size();
+  const unsigned parallel_rank = mesh.parallel_rank();
   const bool     asymmetric    = & domain != & range ;
 
   // Memory required per field
@@ -749,7 +747,7 @@ bool comm_mesh_field_values(
   {
     const unsigned * const s_size = & send_size[0] ;
     const unsigned * const r_size = & recv_size[0] ;
-    sparse.allocate_buffers( schema.parallel(), parallel_size / 4 , s_size, r_size);
+    sparse.allocate_buffers( mesh.parallel(), parallel_size / 4 , s_size, r_size);
   }
 
   // Pack for send:

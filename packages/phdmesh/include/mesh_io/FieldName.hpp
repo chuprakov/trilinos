@@ -72,13 +72,13 @@ private:
   FieldName & operator = ( const FieldName & );
 };
 
-const FieldName & array_name();
+const FieldName & io_array_name();
 
-const FieldName & cartesian_vector();
+const FieldName & io_cartesian_vector();
 
-const FieldName & cylindrical_vector();
+const FieldName & io_cylindrical_vector();
 
-void declare( Field<void,0> & , const FieldName & );
+void io_declare( Field<void,0> & , const FieldName & );
 
 } // namespace phdmesh
 

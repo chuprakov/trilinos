@@ -425,58 +425,160 @@ Part::Part( Schema & m , const std::string & n , const PartSet & intersect )
     m_intersect = intersect ;
     PartSet::const_iterator i ;
     for ( i = intersect.begin() ; i != intersect.end() ; ++i ) {
-      (*i)->add_subset( *this );
+      m_schema.declare_part_subset( **i , *this );
     }
   }
 }
 
 //----------------------------------------------------------------------
 
-void Part::add_subset( Part & sub )
+namespace {
+
+void clean_intersection( const char * const method ,
+                         PartSet     & pset ,
+                         std::string & name )
 {
-  static const char method[] = "phdmesh::Part::add_subset" ;
+  static const char separator[] = "^" ;
 
-  if ( ! contain( m_subsets , sub ) ) {
+  order( pset );
 
-    m_schema.assert_same_schema(    method , sub.m_schema );
-    m_schema.assert_not_committed(  method );
-    m_schema.assert_not_predefined( method , sub );
+  PartSet::iterator i ;
 
-    if ( this == & sub || contain( m_supersets , sub ) ) {
+  for ( i = pset.begin() ; i != pset.end() ; ) {
+    // If a subset of 'i' is contained then 'i' is redundant
+    if ( intersect( (*i)->subsets() , pset ) ) {
+      i = pset.erase( i );
+    }
+    else {
+      ++i ;
+    }
+  }
+
+  if ( pset.size() < 2 ) {
+    std::string msg ;
+    msg.append(method);
+    msg.append(" : FAILED, Cannot intersect fewer than two unique parts." );
+    msg.append(" Input {" );
+    PartSet::iterator j ;
+    for ( j = pset.begin() ; j != pset.end() ; ++j ) {
+      msg.append(" ");
+      msg.append( (*j)->name() );
+    }
+    msg.append(" } Clean {" );
+    for ( i = pset.begin() ; i != pset.end() ; ) {
+      msg.append(" ");
+      msg.append( (*i)->name() );
+    }
+    throw std::invalid_argument(msg);
+  }
+
+  name.assign("{");
+  for ( i = pset.begin() ; i != pset.end() ; ++i ) {
+    if ( i != pset.begin() ) { name.append( separator ); }
+    name.append( (*i)->name() );
+  }
+  name.append("}");
+}
+
+}
+
+Part & Schema::declare_part( const PartSet & pset )
+{
+  static const char method[] = "phdmesh::Mesh::declare_part" ;
+
+  assert_not_committed( method );
+
+  PartSet pset_clean( pset );
+
+  std::string p_name ;
+
+  clean_intersection( method , pset_clean , p_name );
+
+  Part * p = find( m_universal_part.m_subsets , p_name );
+
+  if ( p == NULL ) { p = new Part( *this , p_name , pset_clean ); }
+
+  if ( pset_clean != p->intersection_of() ) {
+    std::string msg ;
+    msg.append(method);
+    msg.append(" : FAILED, Redundant incompatible intersection.");
+    throw std::invalid_argument(msg);
+  }
+
+  return *p ;
+}
+
+Part & Schema::declare_part( const std::string & p_name )
+{
+  static const char method[] = "phdmesh::Mesh::declare_part" ;
+
+  assert_not_committed( method );
+
+  Part * p = find( m_universal_part.m_subsets , p_name );
+
+  if ( p == NULL ) { p = new Part( *this , p_name , PartSet() ); }
+
+  return *p ;
+}
+
+//----------------------------------------------------------------------
+
+void Schema::declare_part_subset( Part & superset , Part & subset )
+{
+  static const char method[] = "phdmesh::Schema::declare_part_subset" ;
+
+  if ( ! contain( superset.m_subsets , subset ) ) {
+
+    assert_not_committed(  method );
+    assert_not_predefined( method , subset );
+    assert_same_schema(    method , superset.schema() );
+    assert_same_schema(    method , subset.schema() );
+
+    if ( & superset == & subset || contain( superset.m_supersets , subset ) ) {
       std::string msg ;
       msg.append( method )
          .append( "[ " )
-         .append( m_name )
+         .append( superset.name() )
          .append( " ] ( " )
-         .append( sub.m_name )
+         .append( subset.name() )
          .append( " ) FAILED, IS CIRCULAR" );
       throw std::invalid_argument( msg );
     }
 
     // Symmetry:
 
-    insert( sub.m_supersets , *this ); // I am one of its supersets
-    insert( m_subsets , sub );         // Is now one of my subsets
+    insert( subset.m_supersets , superset );
+    insert( superset.m_subsets , subset );
 
     PartSet::iterator i ;
 
-    // Transitive, is also a subset of my supersets:
+    // Transitive, is also a subset of superset's supersets:
 
-    for ( i = m_supersets.begin() ; i != m_supersets.end() ; ++i ) {
-      (*i)->add_subset( sub );
+    for ( i =  superset.m_supersets.begin() ;
+          i != superset.m_supersets.end() ; ++i ) {
+      declare_part_subset( **i , subset );
     }
 
-    // Intersection, if fully contained in one of my intersections
-    // then is also a subset of that intersection.
+    // Intersection-part membership check.
 
-    for ( i = m_subsets.begin() ; i != m_subsets.end() ; ++i ) {
+    for ( i =  superset.m_subsets.begin() ;
+          i != superset.m_subsets.end() ; ++i ) {
       Part & p_sub = **i ;
-      if ( & p_sub != & sub ) {
-        if ( contain( sub.m_supersets , p_sub.m_intersect ) ) {
-          p_sub.add_subset( sub );
+      if ( & p_sub != & subset ) {
+
+        // If subset is fully contained in a superset->subset
+        // intersection-part then is also a subset of that
+        // intersection-part.
+
+        // If subset is an intersection-part and one of the superset's
+        // subsets is fully contained in the subset's intersection then
+        // that superset-subset is a subset of this subset.
+
+        if ( contain( subset.m_supersets , p_sub.m_intersect ) ) {
+          declare_part_subset( p_sub , subset );
         }
-        else if ( contain( p_sub.m_supersets , sub.m_intersect ) ) {
-          sub.add_subset( p_sub );
+        else if ( contain( p_sub.m_supersets , subset.m_intersect ) ) {
+          declare_part_subset( subset , p_sub );
         }
       }
     }
@@ -485,17 +587,29 @@ void Part::add_subset( Part & sub )
 
 //----------------------------------------------------------------------
 
-CSet & Part::cset_update()
+Part * Schema::get_part( const std::string & p_name ,
+                         const char * required_by ) const
 {
-  static const char method[] = "phdmesh::Part::cset_update" ;
+  const PartSet & all_parts = m_universal_part.m_subsets ;
 
-  m_schema.assert_not_committed( method );
+  Part * const p = find( all_parts , p_name );
 
-  return m_cset ;
+  if ( required_by && NULL == p ) { // ERROR
+    static const char method[] = "phdmesh::Mesh::get_part" ;
+    std::string msg ;
+    msg.append( method )
+       .append( "( " )
+       .append( p_name )
+       .append( " , " )
+       .append( required_by )
+       .append( " ) FAILED to find part" );
+    throw std::runtime_error( msg );
+  }
+
+  return p ;
 }
 
 //----------------------------------------------------------------------
-
 
 } // namespace phdmesh
 

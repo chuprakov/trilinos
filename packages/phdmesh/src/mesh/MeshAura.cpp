@@ -134,7 +134,7 @@ void RegenAuraManager::receive_entity(
                  parts , connections , send_destinations );
 
   const Schema & S = receive_mesh.schema();
-  Part * const owns_part  = & S.owns_part();
+  Part * const owns_part   = & S.owns_part();
   Part * const shares_part = & S.shares_part();
   Part * const aura_part   = & S.aura_part();
 
@@ -155,7 +155,7 @@ void RegenAuraManager::receive_entity(
 
   if ( NULL != ep.first ||
        send_source != owner_rank ||
-       send_source == S.parallel_rank() ) {
+       send_source == receive_mesh.parallel_rank() ) {
     std::string msg( "phdmesh::RegenAuraManager::receive_entity FAILED" );
     throw std::logic_error( msg );
   }
@@ -177,8 +177,8 @@ void scrub( Mesh & M , std::vector<EntityProc> & new_domain ,
   const Schema & S = M.schema();
   Part & shares_part = S.shares_part();
   Part & aura_part   = S.aura_part();
-  const unsigned p_rank = S.parallel_rank();
-  const unsigned p_size = S.parallel_size();
+  const unsigned p_rank = M.parallel_rank();
+  const unsigned p_size = M.parallel_size();
 
   std::vector<EntityProc>::iterator i ;
 
@@ -231,7 +231,7 @@ void scrub( Mesh & M , std::vector<EntityProc> & new_domain ,
 
   // Inform the owners of the destroyed aura entities
 
-  CommAll all( S.parallel() );
+  CommAll all( M.parallel() );
 
   bool change = false ;
 
@@ -278,9 +278,8 @@ void comm_mesh_regenerate_aura( Mesh & M )
   static const char method[] = "phdmesh::comm_mesh_regenerate_aura" ;
 
   const RegenAuraManager mgr ;
-  const Schema & S = M.schema();
-  const unsigned p_size = S.parallel_size();
-  const unsigned p_rank = S.parallel_rank();
+  const unsigned p_size = M.parallel_size();
+  const unsigned p_rank = M.parallel_rank();
 
   const std::vector<EntityProc> & shares = M.shares();
 
@@ -359,7 +358,7 @@ void comm_mesh_regenerate_aura( Mesh & M )
   }
 
   {
-    CommAll all( S.parallel() );
+    CommAll all( M.parallel() );
 
     std::vector<EntityProc>::iterator j ;
 

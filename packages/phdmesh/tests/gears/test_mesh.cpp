@@ -41,7 +41,7 @@
 
 using namespace phdmesh ;
 
-void test_two_gears( ParallelMachine , std::istream & );
+void test_simple_mesh( ParallelMachine , std::istream & );
 void test_six_gears( ParallelMachine , std::istream & );
 void test_gears( ParallelMachine , std::istream & );
 void test_schema_parts( ParallelMachine , std::istream & );
@@ -53,10 +53,10 @@ int main( int argc , char ** argv )
 {
   TestDriverMap test_map ;
 
-  test_map[ std::string( "gears" ) ]  = & test_gears ;
-  test_map[ std::string( "two_gears" ) ]  = & test_two_gears ;
-  test_map[ std::string( "six_gears" ) ]  = & test_six_gears ;
-  test_map[ std::string( "schema_parts" ) ]  = & test_schema_parts ;
+  test_map[ std::string( "schema_parts" ) ] = & test_schema_parts ;
+  test_map[ std::string( "simple_mesh" ) ]  = & test_simple_mesh ;
+  test_map[ std::string( "gears" ) ]        = & test_gears ;
+  test_map[ std::string( "six_gears" ) ]    = & test_six_gears ;
 
   //----------------------------------
 

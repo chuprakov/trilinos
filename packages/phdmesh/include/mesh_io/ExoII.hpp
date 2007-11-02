@@ -59,6 +59,7 @@ public:
               const Field<double,1> & arg_node_coordinates ,
               const Field<double,1> & arg_elem_attributes ,
               const std::string     & arg_file_path ,
+              ParallelMachine         arg_comm ,
               const unsigned          arg_writer_rank = 0 );
 
   /** Declare element part, default number of attributes. */
@@ -80,6 +81,7 @@ public:
 
   Schema                & m_schema ;
   const unsigned          m_io_rank ;
+  const unsigned          m_dimension ;
   const Field<double,1> & m_field_node_coord ;
   const Field<double,1> & m_field_elem_attr ;
   const Field<int,1>    & m_field_node_index ;

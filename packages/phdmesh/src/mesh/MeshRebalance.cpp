@@ -78,7 +78,7 @@ void global_coordinate_bounds( Mesh & M ,
     }
   }
 
-  all_reduce( schema.parallel() , ReduceMin<3>( min ) &
+  all_reduce( M.parallel() , ReduceMin<3>( min ) &
                                   ReduceMax<3>( max ) );
 
   // A bounding cube:
@@ -207,7 +207,7 @@ void global_element_cuts( Mesh & M ,
   const float * const weights =
     elem_weight_field ? & elem_weights[0] : (float *) NULL ;
 
-  oct_tree_partition_fine( schema.parallel() , number , keys , weights ,
+  oct_tree_partition_fine( M.parallel() , number , keys , weights ,
                            cut_begin );
 }
 
@@ -249,12 +249,12 @@ void rebal_other_entities( Mesh & M , std::vector<EntityProc> & rebal )
         for ( j = con.first ; j != con.second ; ++j ) {
           if ( j->type() != Uses ) {
             std::ostringstream msg ;
-            msg << "P" << schema.parallel_rank();
+            msg << "P" << M.parallel_rank();
             msg << ": " << method ;
             msg << " FAILED, Cannot rebalance " ;
             print_entity_key( msg , entity->key() );
             msg << "->{ " ;
-            j->print( msg );
+            msg << *j ;
             msg << " }" ;
             throw std::runtime_error( msg.str() );
           }
@@ -416,7 +416,7 @@ void RebalanceManager::receive_entity(
 
 void destroy_not_retained( Mesh & M , std::vector<EntityProc> & rebal )
 {
-  const unsigned p_rank = M.schema().parallel_rank();
+  const unsigned p_rank = M.parallel_rank();
 
   // Iterating backwards, the 'rebal' array must be sorted and unique
 
@@ -491,13 +491,13 @@ void comm_mesh_rebalance( Mesh & M ,
                           const Field<float,1>  * const elem_weight_field ,
                           std::vector<OctTreeKey> & cut_keys )
 {
-  const Schema & schema = M.schema();
-  Part * const owns_part  = & schema.owns_part();
+  const Schema & schema    = M.schema();
+  Part * const owns_part   = & schema.owns_part();
   Part * const shares_part = & schema.shares_part();
   Part * const aura_part   = & schema.aura_part();
 
-  const unsigned p_size = schema.parallel_size();
-  const unsigned p_rank = schema.parallel_rank();
+  const unsigned p_size = M.parallel_size();
+  const unsigned p_rank = M.parallel_rank();
 
   //--------------------------------------------------------------------
   // The node_coord_field must be up to date on all processors
@@ -510,7 +510,7 @@ void comm_mesh_rebalance( Mesh & M ,
     tmp.push_back( ptr );
     const std::vector<EntityProc> & aura_domain = M.aura_domain();
     const std::vector<EntityProc> & aura_range  = M.aura_range();
-    comm_mesh_field_values( tmp , aura_domain , aura_range , false );
+    comm_mesh_field_values( M , aura_domain , aura_range , tmp , false );
   }
   //--------------------------------------------------------------------
   // Generate global oct-tree keys for local element centroids
@@ -543,7 +543,7 @@ void comm_mesh_rebalance( Mesh & M ,
     const std::vector<EntityProc> & d = M.aura_domain();
     const std::vector<EntityProc> & r = M.aura_range();
 
-    comm_mesh_field_values( tmp , d , r , false );
+    comm_mesh_field_values( M , d , r , tmp , false );
   }
 
   {

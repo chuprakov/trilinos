@@ -174,9 +174,10 @@ bool comm_mesh_entities(
  *  If symmetric ( & domain == & range) then from owned to not owned.
  */
 bool comm_mesh_field_values(
-  const std::vector< const Field<void,0> *> & fields ,
+  const Mesh & mesh ,
   const std::vector<EntityProc> & domain ,
   const std::vector<EntityProc> & range ,
+  const std::vector< const Field<void,0> *> & fields ,
   bool local_flag );
 
 //----------------------------------------------------------------------

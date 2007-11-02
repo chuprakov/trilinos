@@ -106,10 +106,6 @@ public:
   bool operator < ( const Connect & r ) const ;
 
   //----------------------------------------
-
-  std::ostream & print( std::ostream & ) const ;
-
-  //----------------------------------------
   // Methods for manipulation of the connection attribute.
   // Intended for internal use only.
 
@@ -193,26 +189,12 @@ public:
   ConnectSpan connections( EntityType , ConnectType ) const ;
 
   //------------------------------------
-  /** Add a new connection.  If required to be unique then throw.
-   *  Any returned 'connections' are invalidated.
-   */
-  void add_connection( const Connect & ,
-                       const char * required_unique_by = NULL );
-
-  /** Remove all connections to the given entity.
-   *  Any returned 'connections' are invalidated.
-   */
-  void remove_connections( Entity * const );
-
-  //------------------------------------
   /** Pointer to field value for this mesh entity and field */
   template<typename T,unsigned NDim> T * data( const Field<T,NDim> & f ) const
     { return m_kernel->data( f , m_kernel_ord ); }
 
-  //------------------------------------
-
-  /** Print identifier and connections */
-  std::ostream & print( std::ostream & , const std::string & ) const ;
+  unsigned data_size( const Field<void,0> & f ) const
+    { return m_kernel->data_size( f ); }
 
   //------------------------------------
 
@@ -236,6 +218,12 @@ const FieldDimension & dimension( const Field<void,0> & f , const Entity & e )
 { return dimension( f , e.kernel() ); }
 
 //----------------------------------------------------------------------
+
+std::ostream & operator << ( std::ostream & , const Connect & );
+
+/** Print identifier and connections */
+std::ostream &
+print_entity( std::ostream & , const std::string & lead , const Entity & );
 
 std::ostream &
 print_entity_key( std::ostream & , EntityType type , unsigned long id );
