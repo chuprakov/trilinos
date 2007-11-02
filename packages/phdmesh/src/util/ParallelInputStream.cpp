@@ -89,9 +89,14 @@ ParInBuf::ParInBuf( ParallelMachine comm , const char * const file_name )
 
   if ( ! result ) {
     std::string msg;
-    msg.append("phdmesh::ParallelInputStream( " )
-       .append( file_name )
-       .append( ") FAILED" );
+    msg.append("phdmesh::ParallelInputStream( " );
+    if ( 0 == parallel_machine_rank( comm ) && NULL != file_name ) {
+      msg.append( file_name );
+    }
+    else {
+      msg.append( "<NULL>" );
+    }
+    msg.append( " ) FAILED" );
     throw std::runtime_error(msg);
   }
 }

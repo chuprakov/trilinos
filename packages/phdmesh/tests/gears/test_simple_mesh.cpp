@@ -52,12 +52,22 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   Schema S ;
 
+  // Get some of the predefined parts for later use...
+  Part * const owns_part = & S.owns_part();
+  Part * const univ_part = & S.universal_part();
+
+  // Declare a part for the element block and side set,
+  // these are automatically a subset of the universal part.
+
+  Part * const elem_part = & S.declare_part( std::string("element_block") );
+  Part * const face_part = & S.declare_part( std::string("side_set") );
+
   // Nodal coordinate field dimensioned to 3 everywhere in the mesh
 
   Field<double,1> & node_coordinates =
     S.declare_field<double,1>( Node , std::string("coordinates") );
 
-  S.declare_field_dimension( node_coordinates , S.universal_part() , 3 );
+  S.declare_field_dimension( node_coordinates , *univ_part , 3 );
   
   // Done defining the schema, commit it.
 
@@ -74,45 +84,55 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   Mesh M( S , pm , kernel_capacity );
 
-  // Define a trivial mesh, one hex element per processor
-  // Node and element identifiers must not be zero.
+  // Define a trivial mesh, stack of hex elements
+  // with one hex element per processor ordered by
+  // processor rank.
+  // Attach the +X face, use ExodusII element-node ordering
+  // and element-face orientation.
+  // Node and element identifiers must not be zero,
+  // an identifier of zero is reserved for 'undefined'.
 
-  // Base of hex
+  // Base of this processor's hex
   const unsigned long node_id_1 = p_rank * 4 + 1 ;
   const unsigned long node_id_2 = node_id_1 + 1 ;
   const unsigned long node_id_3 = node_id_1 + 2 ;
   const unsigned long node_id_4 = node_id_1 + 3 ;
 
-  // Top of hex
+  // Top of this processor's hex
   const unsigned long node_id_5 = node_id_1 + 4 ;
   const unsigned long node_id_6 = node_id_1 + 5 ;
   const unsigned long node_id_7 = node_id_1 + 6 ;
   const unsigned long node_id_8 = node_id_1 + 7 ;
 
   const unsigned long elem_id = p_rank + 1 ;
+  const unsigned long face_id = p_rank + 1 ;
 
-  std::vector<Part*> parts ;
-  { // Assume this processor owns everything it declares,
-    // will resolve parallel sharing later.
-    Part * const owns_part = & S.owns_part();
-    parts.push_back(owns_part);
-  }
+  // Part membership for the elements and nodes:
+  // 'owns_part'  Assume this processor owns everything it declares,
+  //              will resolve parallel sharing later.
+
+  std::vector<Part*> add_parts , remove_parts ;
+  add_parts.push_back( owns_part );
+  add_parts.push_back( elem_part );
 
   // Declare node and element entities:
 
-  Entity & node_1 = M.declare_entity( Node , node_id_1 , parts , p_rank );
-  Entity & node_2 = M.declare_entity( Node , node_id_2 , parts , p_rank );
-  Entity & node_3 = M.declare_entity( Node , node_id_3 , parts , p_rank );
-  Entity & node_4 = M.declare_entity( Node , node_id_4 , parts , p_rank );
-  Entity & node_5 = M.declare_entity( Node , node_id_5 , parts , p_rank );
-  Entity & node_6 = M.declare_entity( Node , node_id_6 , parts , p_rank );
-  Entity & node_7 = M.declare_entity( Node , node_id_7 , parts , p_rank );
-  Entity & node_8 = M.declare_entity( Node , node_id_8 , parts , p_rank );
+  Entity & elem = M.declare_entity( Element , elem_id , add_parts , p_rank );
 
-  Entity & elem = M.declare_entity( Element , elem_id , parts , p_rank );
+  Entity & node_1 = M.declare_entity( Node , node_id_1 , add_parts , p_rank );
+  Entity & node_2 = M.declare_entity( Node , node_id_2 , add_parts , p_rank );
+  Entity & node_3 = M.declare_entity( Node , node_id_3 , add_parts , p_rank );
+  Entity & node_4 = M.declare_entity( Node , node_id_4 , add_parts , p_rank );
+  Entity & node_5 = M.declare_entity( Node , node_id_5 , add_parts , p_rank );
+  Entity & node_6 = M.declare_entity( Node , node_id_6 , add_parts , p_rank );
+  Entity & node_7 = M.declare_entity( Node , node_id_7 , add_parts , p_rank );
+  Entity & node_8 = M.declare_entity( Node , node_id_8 , add_parts , p_rank );
 
-  // Declare element <-> node connections,
-  // these are required to be unique by 'method'
+  // Declare element <-> node connections
+  // These are required to have unique identifiers
+  // by providing the 'method' argument.
+  // If non-unique then an exception is thrown that includes
+  // the text contained in the 'method' string.
 
   M.declare_connection( elem , node_1 , 1 , method );
   M.declare_connection( elem , node_2 , 2 , method );
@@ -122,6 +142,30 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   M.declare_connection( elem , node_6 , 6 , method );
   M.declare_connection( elem , node_7 , 7 , method );
   M.declare_connection( elem , node_8 , 8 , method );
+
+  // Declare the face entity:
+
+  add_parts.push_back( face_part );
+  
+  Entity & face = M.declare_entity( Face , face_id , add_parts , p_rank );
+
+  // Declare element <-> face connection
+
+  M.declare_connection( elem , face , 2 , method );
+
+  // Declare face <-> node connections
+
+  M.declare_connection( face , node_1 , 1 , method );
+  M.declare_connection( face , node_2 , 2 , method );
+  M.declare_connection( face , node_6 , 3 , method );
+  M.declare_connection( face , node_5 , 4 , method );
+
+  // Update the nodes on the face to also be members of the face part.
+
+  M.change_entity_parts( node_1 , add_parts , remove_parts );
+  M.change_entity_parts( node_2 , add_parts , remove_parts );
+  M.change_entity_parts( node_6 , add_parts , remove_parts );
+  M.change_entity_parts( node_5 , add_parts , remove_parts );
 
   // Set node coordinates:
 
@@ -149,9 +193,12 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   // Generate the parallel ghosting 'aura'
   comm_mesh_regenerate_aura( M );
 
+  // Verify that the parallel sharing and aura were generated properly
   if ( ! comm_mesh_verify_parallel_consistency( M ) ) {
     if ( p_rank == 0 ) {
-      std::cout << method << " is not parallel consistent" << std::endl ;
+      std::cout << method
+                << " FAILED: is not parallel consistent"
+                << std::endl ;
     }
     return ;
   }
@@ -221,6 +268,7 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
       parallel_machine_barrier( pm );
     }
   }
+  parallel_machine_barrier( pm );
 
   //------------------------------
 

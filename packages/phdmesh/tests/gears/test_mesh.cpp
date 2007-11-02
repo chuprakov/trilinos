@@ -64,10 +64,17 @@ int main( int argc , char ** argv )
 
   const unsigned p_rank = phdmesh::parallel_machine_rank( comm );
 
-  phdmesh::ParallelInputStream
-    is( comm , ( 0 == p_rank && argc == 2 ? argv[1] : NULL ) );
+  int result = -1 ;
 
-  const int result = phdmesh::test_driver( comm , is , test_map );
+  try {
+    phdmesh::ParallelInputStream
+      is( comm , ( 0 == p_rank && argc == 2 ? argv[1] : NULL ) );
+
+    result = phdmesh::test_driver( comm , is , test_map );
+  }
+  catch( const std::exception & x ) {
+    std::cout << "P" << p_rank << ": " << x.what() << std::endl ;
+  }
 
   phdmesh::parallel_machine_finalize();
 
