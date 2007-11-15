@@ -29,6 +29,7 @@
 #include <sstream>
 #include <algorithm>
 
+#include <util/SpanIter.hpp>
 #include <util/ParallelComm.hpp>
 
 #include <mesh/Schema.hpp>
@@ -40,61 +41,21 @@
 namespace phdmesh {
 
 //----------------------------------------------------------------------
-
-void comm_mesh_remove_aura( Mesh & M )
-{
-  const Schema & S = M.schema();
-
-  Part & aura_part = S.aura_part();
-
-  unsigned k = EntityTypeMaximum ;
-
-  while ( k ) {
-    --k ;
-
-    const KernelSet & ks = M.kernels( EntityType(k) );
-
-    const KernelSet::const_iterator ek = ks.rend();
-          KernelSet::const_iterator ik = ks.rbegin();
-
-    while ( ik != ek ) {
-      const Kernel & kernel = *ik ; --ik ;
-      if ( kernel.has_superset( aura_part ) ) {
-        unsigned ordinal ;
-        do {
-          ordinal = kernel.size() - 1 ;
-          M.destroy_entity( kernel[ ordinal ] );
-        } while ( ordinal );
-      }
-    }
-
-    for ( ik = ks.rbegin() ; ik != ek ; ) {
-      const Kernel & kernel = *ik ; --ik ;
-      if ( kernel.has_superset( aura_part ) ) {
-        std::string msg("phdmesh::comm_mesh_remove_aura impossible failure");
-        throw std::runtime_error(msg);
-      }
-    }
-  }
-
-  const std::vector<EntityProc> tmp ;
-  M.set_aura( tmp , tmp );
-}
-
-//----------------------------------------------------------------------
 // Regenerate the parallel aura of mesh entities that are
 // connected to the shared node mesh entities.
 
 namespace {
 
-bool not_member( const std::vector<EntityProc> & aura_domain ,
+bool not_member( const EntityProcSet & aura_domain ,
                  const EntityProc & ep )
 {
-  const std::vector<EntityProc>::const_iterator
+  const EntityProcSet::const_iterator
     i = lower_bound( aura_domain , ep );
 
   return i == aura_domain.end() || ep != *i ;
 }
+
+//----------------------------------------------------------------------
 
 class RegenAuraManager : public EntityManager {
 private:
@@ -110,7 +71,7 @@ public:
     CommBuffer & buffer ,
     Mesh & receive_mesh ,
     const unsigned send_source ,
-    std::vector<EntityProc> & receive_info ) const ;
+    EntityProcSet & receive_info ) const ;
 };
 
 const char * RegenAuraManager::name() const
@@ -120,7 +81,7 @@ void RegenAuraManager::receive_entity(
   CommBuffer              & buffer ,
   Mesh                    & receive_mesh ,
   const unsigned            send_source ,
-  std::vector<EntityProc> & receive_info ) const
+  EntityProcSet & receive_info ) const
 {
   EntityType            entity_type ;
   unsigned long         entity_id ;
@@ -134,19 +95,15 @@ void RegenAuraManager::receive_entity(
                  parts , connections , send_destinations );
 
   const Schema & S = receive_mesh.schema();
-  Part * const owns_part   = & S.owns_part();
-  Part * const shares_part = & S.shares_part();
-  Part * const aura_part   = & S.aura_part();
+  Part * const owns_part = & S.owns_part();
+  Part * const uses_part = & S.uses_part();
 
-  // Don't set the owns or shares part
+  // This is an aura, not a member of the owns part or uses part
 
   std::vector<Part*>::iterator ip = parts.end();
   while ( ip != parts.begin() ) {
     --ip ;
-    Part * const p = *ip ;
-    if ( p == owns_part || p == shares_part || p == aura_part ) {
-      ip = parts.erase( ip );
-    }
+    if ( *ip == owns_part || *ip == uses_part ) { ip = parts.erase( ip ); }
   }
 
   EntityProc ep ;
@@ -160,8 +117,6 @@ void RegenAuraManager::receive_entity(
     throw std::logic_error( msg );
   }
 
-  parts.push_back( aura_part );
-
   ep.first = declare_entity( receive_mesh , entity_type , entity_id ,
                              owner_rank , parts , connections );
   ep.second = owner_rank ;
@@ -169,45 +124,42 @@ void RegenAuraManager::receive_entity(
   receive_info.push_back( ep );
 }
 
-void scrub( Mesh & M , std::vector<EntityProc> & new_domain ,
-                       std::vector<EntityProc> & new_range )
+//----------------------------------------------------------------------
+
+void scrub( Mesh & M , EntityProcSet & new_domain ,
+                       EntityProcSet & new_range )
 {
   static const char method[] = "phdmesh::comm_mesh_regenerate_aura::scrub" ;
 
-  const Schema & S = M.schema();
-  Part & shares_part = S.shares_part();
-  Part & aura_part   = S.aura_part();
+  Part & uses_part = M.schema().uses_part();
   const unsigned p_rank = M.parallel_rank();
   const unsigned p_size = M.parallel_size();
 
-  std::vector<EntityProc>::iterator i ;
+  EntityProcSet::iterator i ;
 
   for ( i = new_range.end() ; i != new_range.begin() ; ) {
     --i ;
     Entity & aura_entity = *i->first ;
 
-    if ( ! aura_entity.kernel().has_superset( aura_part ) ) {
+    if ( aura_entity.kernel().has_superset( uses_part ) ) {
       i->first = NULL ;
     }
     else {
 
       bool destroy_it = true ;
 
-      const ConnectSpan aura_con = aura_entity.connections();
+      for ( ConnectSpan aura_con = aura_entity.connections();
+            destroy_it && aura_con ; ++aura_con ) {
+        Entity & e = * aura_con->entity();
 
-      std::vector<Connect>::const_iterator ic = aura_con.first ;
-
-      for ( ; destroy_it && ic != aura_con.second ; ++ic ) {
-        Entity & e = * ic->entity();
-
-        if ( ic->type() == Uses ) {
-          if ( e.kernel().has_superset( shares_part ) ) {
-            destroy_it = false ;
+        if ( aura_con->type() == Uses ) {
+          if ( e.sharing() ) {
+            destroy_it = false ; // Uses a shared entity
           }
         }
-        else if ( ic->type() == UsedBy ) {
-          if ( e.kernel().has_superset( aura_part ) ) {
-            destroy_it = false ;
+        else if ( aura_con->type() == UsedBy ) {
+          if ( ! e.kernel().has_superset( uses_part ) ) {
+            destroy_it = false ; // Used by a retained aura entity
           }
           else {
             std::ostringstream msg ;
@@ -272,6 +224,8 @@ void scrub( Mesh & M , std::vector<EntityProc> & new_domain ,
 
 }
 
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
 
 void comm_mesh_regenerate_aura( Mesh & M )
 {
@@ -281,63 +235,55 @@ void comm_mesh_regenerate_aura( Mesh & M )
   const unsigned p_size = M.parallel_size();
   const unsigned p_rank = M.parallel_rank();
 
-  const std::vector<EntityProc> & shares = M.shares();
+  const EntityProcSet & shares = M.shares();
 
-  std::vector<EntityProc> old_aura_domain( M.aura_domain() );
-  std::vector<EntityProc> old_aura_range(  M.aura_range() );
+  EntityProcSet old_aura_domain( M.aura_domain() );
+  EntityProcSet old_aura_range(  M.aura_range() );
 
   scrub( M , old_aura_domain , old_aura_range );
 
   // Run the shared entities and push all 'UsedBy' entities
   // into the send vector.
 
-  std::vector<EntityProc> new_aura_domain ;
-  std::vector<EntityProc> new_aura_range ;
+  EntityProcSet new_aura_domain ;
+  EntityProcSet new_aura_range ;
 
-  for ( std::vector<EntityProc>::const_iterator
+  for ( EntityProcSet::const_iterator
         i = shares.begin() ; i != shares.end() ; ) {
 
-    const std::vector<EntityProc>::const_iterator ib = i ;
+    const EntityProcSet::const_iterator ib = i ;
     for ( ; i != shares.end() && ib->first == i->first ; ++i );
-    const std::vector<EntityProc>::const_iterator ie = i ;
+    const EntityProcSet::const_iterator ie = i ;
 
-    Entity * const entity = ib->first ;
+    Entity * const shared_entity = ib->first ;
 
-    const ConnectSpan & entity_con = entity->connections();
+    for ( ConnectSpan shared_entity_con = shared_entity->connections() ;
+          shared_entity_con ; ++shared_entity_con ) {
 
-    std::vector<Connect>::const_iterator ic ;
+      Entity * const e = shared_entity_con->entity();
 
-    for ( ic = entity_con.first ; ic != entity_con.second ; ++ic ) {
+      if ( shared_entity_con->type() == UsedBy && p_rank == e->owner_rank() ) {
 
-      Entity * const e = ic->entity();
-
-      if ( ic->type() == UsedBy && p_rank == e->owner_rank() ) {
-
-        const ConnectSpan e_con = e->connections();
-
+        // 'e' is a shared_entity->UsedBy->entity and locally owned
         // Send to each shares processor
 
-        std::vector<EntityProc>::const_iterator j ;
-
-        for ( j = ib ; j != ie ; ++j ) {
+        for ( EntityProcSet::const_iterator
+              j = ib ; j != ie ; ++j ) {
           EntityProc entry ;
 
           entry.first = e ;
           entry.second = j->second ;
-
-          // The entity->UsedBy->entity
 
           if ( not_member( shares , entry ) &&
                not_member( old_aura_domain , entry ) ) {
             new_aura_domain.push_back( entry );
           }
 
-          // and all of the entity->UsedBy->entity->Uses->{entities}
+          // and all of the shared_entity->UsedBy->entity->Uses->{entities}
 
-          std::vector<Connect>::const_iterator jc ;
+          for ( ConnectSpan jc = e->connections(); jc ; ++jc ) {
 
-          for ( jc = e_con.first ; jc != e_con.second ; ++jc ) {
-            if ( jc->type() == Uses && entity != jc->entity() ) {
+            if ( jc->type() == Uses && shared_entity != jc->entity() ) {
               entry.first = jc->entity();
               if ( not_member( shares , entry ) ) {
                 if ( p_rank == entry.first->owner_rank() ) {
@@ -360,7 +306,7 @@ void comm_mesh_regenerate_aura( Mesh & M )
   {
     CommAll all( M.parallel() );
 
-    std::vector<EntityProc>::iterator j ;
+    EntityProcSet::iterator j ;
 
     for ( j = new_aura_range.begin() ; j != new_aura_range.end() ; ++j ) {
       all.send_buffer( j->first->owner_rank() ).skip<unsigned long>(2);

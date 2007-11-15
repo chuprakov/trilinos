@@ -233,29 +233,19 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
     for ( unsigned p = 0 ; p < p_size ; ++p ) {
       parallel_machine_barrier( pm );
       if ( p_rank == p ) {
+        partset_entity_count( M , S.uses_part() , counts );
+
+        std::cout << "  P" << p_rank << " Uses  Counts = {" 
+                  << " " << counts[0]
+                  << " " << counts[1]
+                  << " " << counts[2]
+                  << " " << counts[3]
+                  << " " << counts[4]
+                  << " }" << std::endl ;
+
         partset_entity_count( M , S.owns_part() , counts );
 
-        std::cout << "  P" << p_rank << " Owned  Counts = {" 
-                  << " " << counts[0]
-                  << " " << counts[1]
-                  << " " << counts[2]
-                  << " " << counts[3]
-                  << " " << counts[4]
-                  << " }" << std::endl ;
-
-        partset_entity_count( M , S.shares_part() , counts );
-
-        std::cout << "  P" << p_rank << " Shared Counts = {" 
-                  << " " << counts[0]
-                  << " " << counts[1]
-                  << " " << counts[2]
-                  << " " << counts[3]
-                  << " " << counts[4]
-                  << " }" << std::endl ;
-
-        partset_entity_count( M , S.aura_part() , counts );
-
-        std::cout << "  P" << p_rank << " Aura   Counts = {" 
+        std::cout << "  P" << p_rank << " Owns  Counts = {" 
                   << " " << counts[0]
                   << " " << counts[1]
                   << " " << counts[2]

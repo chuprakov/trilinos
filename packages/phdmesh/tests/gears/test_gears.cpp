@@ -90,8 +90,8 @@ void test_gears_face_proximity(
   const Field<double,1> & gear_coordinates ,
   const Field<double,1> & field_proximity ,
   const ProximitySearch & prox_search ,
-  std::vector<EntityProc> & domain ,
-  std::vector<EntityProc> & range ,
+  EntityProcSet & domain ,
+  EntityProcSet & range ,
   const bool verify ,
   double & dt_proximity_search ,
   double & dt_ghosting ,
@@ -149,12 +149,11 @@ void test_gears_face_proximity(
       for ( unsigned j = 0 ; j < 2 ; ++j ) {
         if ( p_rank == d[j].proc ) {
           Entity & face = * M.get_entity( Face , d[j].ident , method );
-          ConnectSpan face_nodes = face.connections( Node , Uses );
-          while ( face_nodes.first != face_nodes.second ) {
-            Entity & node = * face_nodes.first->entity();
+          for ( ConnectSpan face_nodes = face.connections( Node , Uses );
+                face_nodes ; ++face_nodes ) {
+            Entity & node = * face_nodes->entity();
             double * const data = node.data( field_proximity );
             *data = 20 ;
-            ++ face_nodes.first ;
           }
         }
       }
@@ -170,7 +169,7 @@ void test_gears_face_proximity(
   // 'aura' of the range processor.
   // If the range face is not on the domain processor then share it.
 
-  std::vector<EntityProc> to_be_shared ;
+  EntityProcSet to_be_shared ;
 
   for ( i = i_beg ; i_end != i ; ++i ) {
     const IdentProc & d = i->first ;
@@ -185,13 +184,9 @@ void test_gears_face_proximity(
       ep.second = d.proc ;
       to_be_shared.push_back( ep );
 
-      const ConnectSpan con = ep.first->connections();
-
-      std::vector<Connect>::const_iterator j ;
-
-      for ( j = con.first ; j != con.second ; ++j ) {
-        if ( j->type() == Uses ) {
-          ep.first = j->entity();
+      for ( ConnectSpan con = ep.first->connections(); con ; ++con ) {
+        if ( con->type() == Uses ) {
+          ep.first = con->entity();
           to_be_shared.push_back( ep );
         }
       }
@@ -200,7 +195,7 @@ void test_gears_face_proximity(
 
   sort_unique( to_be_shared );
 
-  const std::vector<EntityProc> sharing_A( M.shares() );
+  const EntityProcSet sharing_A( M.shares() );
 
   comm_mesh_add_sharing( M , to_be_shared );
 
@@ -463,8 +458,8 @@ void test_gears( ParallelMachine pm ,
     dt_exo_write += wall_dtime(wt);
   }
 
-  std::vector<EntityProc> prox_domain ;
-  std::vector<EntityProc> prox_range ;
+  EntityProcSet prox_domain ;
+  EntityProcSet prox_range ;
 
   test_gears_face_proximity( M ,
                              gear_fields.gear_coord ,

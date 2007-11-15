@@ -49,24 +49,18 @@ public:
   //------------------------------------
   // Predefined parts:
 
-  /** Universal: superset of all other parts */
+  /** Universal: superset of all other parts. */
   Part & universal_part() const { return const_cast<Part&>(m_universal_part); }
 
-  /** Owned: owned by the local processor */
-  Part & owns_part()  const { return *m_owns_part ; }
-
-  /** Shared: shared with one or more other processors.
-   *  Implies active participation in computations,
-   *  typically reduction operations on parallel subdomain boundaries.
-   */ 
-  Part & shares_part() const { return *m_shares_part ; }
-
-  /** Aura: not owned, not active, not shared.
-   *  Typically for entities required by patch-based computations
-   *  that do not update the aura entities.
-   *  Implies updates via copying data from the owner.
+  /** Uses: used by the local processor, subset of 'universal_part'.
+   *  The aura is a subset of 'universal_part \ uses_part'.
    */
-  Part & aura_part() const { return *m_aura_part ; }
+  Part & uses_part() const { return *m_uses_part ; }
+
+  /** Owned: owned by the local processor, subset of 'uses_part'.
+   *  Each mesh entity is owned by exactly one processor.
+   */
+  Part & owns_part()  const { return *m_owns_part ; }
 
   //------------------------------------
   /** Get an existing part of the given name and type.
@@ -114,10 +108,6 @@ public:
                              const std::string & name ,
                              const char * required_by = NULL ) const ;
 
-  Field<void,0> * get_field_void( EntityType entity_type ,
-                                  const std::string & name ,
-                                  const char * required_by = NULL ) const ;
-
   /** Get all fields associated with the given entity type */
   const std::vector< Field<void,0> *> & get_fields( EntityType t ) const
     { return m_fields[ t ]; }
@@ -160,8 +150,6 @@ public:
 
   void assert_same_schema( const char * , const Schema & ) const ;
 
-  void assert_not_predefined( const char * , Part & ) const ;
-
   bool is_commit() const { return m_commit ; }
 
   ~Schema();
@@ -175,9 +163,8 @@ private:
 
   bool   m_commit ;
   Part   m_universal_part ;
+  Part * m_uses_part ;
   Part * m_owns_part ;
-  Part * m_shares_part ;
-  Part * m_aura_part ;
 
   std::vector< Field<void,0> * > m_fields[ EntityTypeMaximum ];
 
@@ -221,15 +208,6 @@ unsigned Schema::declare_field_attribute(
 {
   assert_not_committed( "phdmesh::Schema::declare_field_attribute" );
   return f.m_cset.insert( a , d );
-}
-
-inline
-Field<void,0> *
-Schema::get_field_void( EntityType entity_type ,
-                        const std::string & name ,
-                        const char * required_by ) const
-{
-  return get_field( false , entity_type , name , 0 , 0 , 0 , required_by );
 }
 
 template<typename T,unsigned NDim>

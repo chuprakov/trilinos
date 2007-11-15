@@ -69,8 +69,8 @@ public:
   virtual void send_entity(
     CommBuffer & buffer ,
     const Mesh & receive_mesh ,
-    const std::vector<EntityProc>::const_iterator ibeg ,
-    const std::vector<EntityProc>::const_iterator iend ) const ;
+    const EntityProcSet::const_iterator ibeg ,
+    const EntityProcSet::const_iterator iend ) const ;
 
   /** Receive entity from send_source and update receive_info accordingly.
    *  Default behavior is to invoke unpack_entity, declare the entity
@@ -81,15 +81,15 @@ public:
     CommBuffer & buffer ,
     Mesh & receive_mesh ,
     const unsigned send_source ,
-    std::vector<EntityProc> & receive_info ) const ;
+    EntityProcSet & receive_info ) const ;
 
   /** Pack entity information for declaration in the receive mesh.
    *  Parts are mapped from the send mesh to the receive mesh.
    *  Include the span of destination processors.
    */
   void pack_entity( CommBuffer & , const Mesh & ,
-                    const std::vector<EntityProc>::const_iterator ,
-                    const std::vector<EntityProc>::const_iterator ) const ;
+                    const EntityProcSet::const_iterator ,
+                    const EntityProcSet::const_iterator ) const ;
 
   /** Unpack entity information filled by pack_entity. */
   void unpack_entity( CommBuffer & , const Mesh & ,

@@ -405,10 +405,10 @@ bool verify_gather( const Kernel & kernel , const Field<T,1> & field )
   result = NV == dim[0] ;
   for ( unsigned i = 0 ; result && i < kernel.size() ; ++i ) {
     ConnectSpan con = kernel[i]->connections( con_type );
-    result = std::distance( con.first , con.second ) <= NC ;
-    while ( result && con.first != con.second ) {
-      result = NULL != con.first->entity()->data( field );
-      ++con.first ;
+    result = con.size() <= NC ;
+    while ( result && con ) {
+      result = NULL != con->entity()->data( field );
+      ++con ;
     }
   }
   return result ;
@@ -419,8 +419,8 @@ template<typename T, unsigned NV, unsigned NC>
 void gather( T * dst , const Entity & src , const Field<T,1> & field )
 {
   ConnectSpan con = src.connections( field.entity_type() );
-  for ( unsigned n = 0 ; n < NC ; ++n , ++con.first , dst += NV ) {
-    Copy<NV>( dst , con.first->entity()->data( field ) );
+  for ( unsigned n = 0 ; n < NC ; ++n , ++con , dst += NV ) {
+    Copy<NV>( dst , con->entity()->data( field ) );
   }
 }
 

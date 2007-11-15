@@ -28,6 +28,7 @@ TEST_UTIL_SRC_DIR = $(PHDMESH_PATH)/tests/util
 TEST_UTIL_OBJ_FILES =	\
 	test_comm_bounds.o	\
 	test_comm.o	\
+	test_comm_all.o	\
 	test_containers.o	\
 	test_octtree.o	\
 	test_util.o

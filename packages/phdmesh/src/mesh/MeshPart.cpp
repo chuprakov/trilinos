@@ -529,12 +529,13 @@ void Schema::declare_part_subset( Part & superset , Part & subset )
 
   if ( ! contain( superset.m_subsets , subset ) ) {
 
-    assert_not_committed(  method );
-    assert_not_predefined( method , subset );
-    assert_same_schema(    method , superset.schema() );
-    assert_same_schema(    method , subset.schema() );
+    assert_not_committed( method );
+    assert_same_schema(   method , superset.schema() );
+    assert_same_schema(   method , subset.schema() );
 
-    if ( & superset == & subset || contain( superset.m_supersets , subset ) ) {
+    if ( & m_universal_part == & subset ||
+         & superset         == & subset ||
+         contain( superset.m_supersets , subset ) ) {
       std::string msg ;
       msg.append( method )
          .append( "[ " )

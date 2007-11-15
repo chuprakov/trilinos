@@ -566,8 +566,9 @@ void CommAll::communicate()
           << "] Buffer not filled." ;
       throw std::underflow_error( msg.str() );
     }
-
+/*
     m_send[i].reset();
+*/
     m_recv[i].reset();
   }
 

@@ -254,6 +254,40 @@ private:
 };
 
 //----------------------------------------------------------------------
+//----------------------------------------------------------------------
+// Stream io specialization support for enumerated values
+// Functions accept array of ValueIOS_Enum with final member
+// having a 'm_name' value of NULL.  Name comparison is
+// case-insensitive.
+
+struct ValueIOS_Enum {
+  const char * m_name ;
+        long   m_value ;
+};
+
+long         enum_value_of_name( const ValueIOS_Enum * , const char * );
+const char * enum_name_of_value( const ValueIOS_Enum * , const long );
+void         enum_tell( std::ostream & , unsigned ,
+                        const char * , const ValueIOS_Enum * );
+
+template<>
+class ValueIOS<bool> : public ValueIOS<void> {
+public:
+  typedef bool ValueType ;
+  virtual void get(  std::istream &, ValueType & ) const ;
+  virtual void put(  std::ostream &, unsigned, const ValueType &) const ;
+  virtual void tell( std::ostream &, unsigned, const ValueType &) const ;
+  virtual const std::type_info & type() const { return typeid(ValueType); }
+  ~ValueIOS() {}
+  ValueIOS() : ValueIOS<void>() {}
+private:
+  virtual void tellp( std::ostream & , unsigned , const void * ) const ;
+  virtual void putp(  std::ostream & , unsigned , const void * ) const ;
+  virtual void getp(  std::istream & , void * ) const ;
+};
+
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
 
 template<>
 struct ValueIOS< std::string > : public ValueIOS<void> {

@@ -125,7 +125,7 @@ public:
    */
   ptrdiff_t remaining() const ;
 
-  /** Pointer to base of buffer.  Returns NULL if capacity() is zero. */
+  /** Pointer to base of buffer. */
   void * buffer() const ;
 
   ~CommBuffer();

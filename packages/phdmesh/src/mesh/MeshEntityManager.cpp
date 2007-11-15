@@ -83,8 +83,8 @@ Entity * EntityManager::declare_entity(
 void EntityManager::send_entity(
   CommBuffer & buffer ,
   const Mesh & receive_mesh ,
-  const std::vector<EntityProc>::const_iterator ibeg ,
-  const std::vector<EntityProc>::const_iterator iend ) const
+  const EntityProcSet::const_iterator ibeg ,
+  const EntityProcSet::const_iterator iend ) const
 {
   pack_entity( buffer , receive_mesh , ibeg , iend );
 }
@@ -93,7 +93,7 @@ void EntityManager::receive_entity(
   CommBuffer              & buffer ,
   Mesh                    & receive_mesh ,
   const unsigned            send_source ,
-  std::vector<EntityProc> & receive_info ) const
+  EntityProcSet & receive_info ) const
 {
   EntityType            entity_type ;
   unsigned long         entity_id ;
@@ -120,8 +120,8 @@ void EntityManager::receive_entity(
 void EntityManager::pack_entity(
   CommBuffer & buf ,
   const Mesh & recv_mesh ,
-  const std::vector<EntityProc>::const_iterator ibeg ,
-  const std::vector<EntityProc>::const_iterator iend ) const
+  const EntityProcSet::const_iterator ibeg ,
+  const EntityProcSet::const_iterator iend ) const
 {
   const Schema      & recv_schema = recv_mesh.schema();
   const Entity      & entity      = * ibeg->first ;
@@ -130,9 +130,8 @@ void EntityManager::pack_entity(
   const Kernel      & kernel      = entity.kernel();
   const Schema      & send_schema = kernel.mesh().schema();
   const bool          same_schema = & send_schema == & recv_schema ;
-  const ConnectSpan   rel         = entity.connections();
-  const unsigned      rel_size    = std::distance( rel.first , rel.second );
   const unsigned      dest_size   = std::distance( ibeg , iend );
+        ConnectSpan   rel         = entity.connections();
 
   std::vector<unsigned> part_ordinals ;
 
@@ -166,19 +165,19 @@ void EntityManager::pack_entity(
 
   // Connections:
   {
+    const unsigned rel_size = rel.size();
     buf.pack<unsigned>( rel_size );
     unsigned long rel_data[2] ;
-    for ( std::vector<Connect>::const_iterator j =  rel.first ;
-                                               j != rel.second ; ++j ) {
-      rel_data[0] = j->entity()->key();
-      rel_data[1] = j->attribute();
+    for ( ; rel ; ++rel ) {
+      rel_data[0] = rel->entity()->key();
+      rel_data[1] = rel->attribute();
       buf.pack<unsigned long>( rel_data , 2 );
     }
   }
 
   // Processors:
   buf.pack<unsigned>( dest_size );
-  for ( std::vector<EntityProc>::const_iterator i = ibeg ; i != iend ; ++i ) {
+  for ( EntityProcSet::const_iterator i = ibeg ; i != iend ; ++i ) {
     buf.pack<unsigned>( i->second );
   }
 }

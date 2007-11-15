@@ -320,14 +320,10 @@ void ProximitySearch::box(
     entity_box[0] = entity_box[1] = entity_box[2] =  f_max ;
     entity_box[3] = entity_box[4] = entity_box[5] = - f_max ;
 
-    const std::pair< std::vector<Connect>::const_iterator ,
-                     std::vector<Connect>::const_iterator >
-      entity_nodes = entity.connections( Node );
+    ConnectSpan jnode = entity.connections( Node );
 
-    std::vector<Connect>::const_iterator j ;
-
-    for ( j = entity_nodes.first ; j != entity_nodes.second ; ++j ) {
-      const Entity & node = * j->entity();
+    for ( ; jnode ; ++jnode ) {
+      const Entity & node = * jnode->entity();
 
       const double * const coord = node.data( m_node_coord );
 

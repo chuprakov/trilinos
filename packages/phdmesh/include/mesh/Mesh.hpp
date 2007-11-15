@@ -107,8 +107,6 @@ public:
 
   void change_entity_identifier( Entity & , unsigned long );
 
-  void change_entity_owner( Entity & , unsigned );
-
   void change_entity_parts( Entity & ,
                             const std::vector<Part*> & add_parts ,
                             const std::vector<Part*> & remove_parts );
@@ -117,6 +115,8 @@ public:
   void change_entity_parts( const Kernel & ,
                             const std::vector<Part*> & add_parts ,
                             const std::vector<Part*> & remove_parts );
+
+  void change_entity_owner( Entity & , unsigned );
 
   /** Declare a connection and its converse between entities in the same mesh.
    *  The greater entity type 'uses' the lesser entity type.
@@ -143,29 +143,25 @@ public:
 
   //------------------------------------
   /** Symmetric parallel connections for shared mesh entities.  */
-  const std::vector<EntityProc> & shares() const { return m_shares_all ; }
+  const EntityProcSet & shares() const { return m_shares_all ; }
 
   /** Asymmetric parallel connections for owner-to-aura mesh entities.
    *  Both the domain and the range are fully ordered.
    */
-  const std::vector<EntityProc> & aura_domain() const 
-    { return m_aura_domain ; }
+  const EntityProcSet & aura_domain() const { return m_aura_domain ; }
+  const EntityProcSet & aura_range()  const { return m_aura_range ; }
 
-  const std::vector<EntityProc> & aura_range() const 
-    { return m_aura_range ; }
-
-  /** The input must be symmetric, fully ordered, and contain
-   *  every mesh entity with the 'shares_part'.
+  /** The input must be symmetric, fully ordered, and
+   *  each mesh entity must be a member of the 'uses_part'.
    */
-  void set_shares( const std::vector<EntityProc> & );
+  void set_shares( const EntityProcSet & );
 
-  /** The domain and range inputs must be asymmetric, fully ordered,
-   *  contain every mesh entity with the 'aura_part'.
+  /** The domain and range inputs must be asymmetric, fully ordered, and
+   *  each mesh entity must not be a member of the 'uses_part'.
    *  Domain entities must be owns and range entries must match
    *  the 'owner_field' value.
    */
-  void set_aura( const std::vector<EntityProc> & ,
-                 const std::vector<EntityProc> & );
+  void set_aura( const EntityProcSet & , const EntityProcSet & );
 
 private:
 
@@ -173,16 +169,16 @@ private:
   Mesh( const Mesh & );
   Mesh & operator = ( const Mesh & );
 
-  const Schema           & m_schema ;
-  ParallelMachine          m_parallel_machine ;
-  unsigned                 m_parallel_size ;
-  unsigned                 m_parallel_rank ;
-  unsigned                 m_kernel_capacity[ EntityTypeMaximum ];
-  KernelSet                m_kernels[  EntityTypeMaximum ];
-  EntitySet                m_entities[ EntityTypeMaximum ];
-  std::vector<EntityProc>  m_shares_all ;
-  std::vector<EntityProc>  m_aura_domain ;
-  std::vector<EntityProc>  m_aura_range ;
+  const Schema  & m_schema ;
+  ParallelMachine m_parallel_machine ;
+  unsigned        m_parallel_size ;
+  unsigned        m_parallel_rank ;
+  unsigned        m_kernel_capacity[ EntityTypeMaximum ];
+  KernelSet       m_kernels[  EntityTypeMaximum ];
+  EntitySet       m_entities[ EntityTypeMaximum ];
+  EntityProcSet   m_shares_all ;
+  EntityProcSet   m_aura_domain ;
+  EntityProcSet   m_aura_range ;
 
   void insert_entity( Entity & , const PartSet & );
   void remove_entity( KernelSet::iterator , unsigned );

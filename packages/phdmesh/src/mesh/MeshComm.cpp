@@ -90,99 +90,65 @@ struct EqualEntityProc {
 
 //----------------------------------------------------------------------
 
-void sort_unique( std::vector<EntityProc> & v )
+void sort_unique( EntityProcSet & v )
 {
-  std::vector<EntityProc>::iterator i = v.begin();
-  std::vector<EntityProc>::iterator e = v.end();
+  EntityProcSet::iterator i = v.begin();
+  EntityProcSet::iterator e = v.end();
 
   std::sort( i , e , LessEntityProc() );
   i = std::unique( i , e , EqualEntityProc() );
   v.erase( i , e );
 }
 
-std::vector<EntityProc>::const_iterator
-lower_bound( const std::vector<EntityProc> & v , Entity & m )
+EntityProcSet::const_iterator
+lower_bound( const EntityProcSet & v , EntityType t )
 {
-  const std::vector<EntityProc>::const_iterator i = v.begin();
-  const std::vector<EntityProc>::const_iterator e = v.end();
+  const EntityProcSet::const_iterator i = v.begin();
+  const EntityProcSet::const_iterator e = v.end();
+  return lower_bound( i , e , t , LessEntityProc() );
+}
+
+EntityProcSet::const_iterator
+lower_bound( const EntityProcSet & v , Entity & m )
+{
+  const EntityProcSet::const_iterator i = v.begin();
+  const EntityProcSet::const_iterator e = v.end();
   return lower_bound( i , e , m , LessEntityProc() );
 }
 
-std::vector<EntityProc>::const_iterator
-lower_bound( const std::vector<EntityProc> & v , const EntityProc & m )
+EntityProcSet::const_iterator
+lower_bound( const EntityProcSet & v , const EntityProc & m )
 {
-  const std::vector<EntityProc>::const_iterator i = v.begin();
-  const std::vector<EntityProc>::const_iterator e = v.end();
+  const EntityProcSet::const_iterator i = v.begin();
+  const EntityProcSet::const_iterator e = v.end();
   return lower_bound( i , e , m , LessEntityProc() );
 }
 
-std::vector<EntityProc>::iterator
-lower_bound( std::vector<EntityProc> & v , Entity & m )
+EntityProcSet::iterator
+lower_bound( EntityProcSet & v , Entity & m )
 {
-  const std::vector<EntityProc>::iterator i = v.begin();
-  const std::vector<EntityProc>::iterator e = v.end();
+  const EntityProcSet::iterator i = v.begin();
+  const EntityProcSet::iterator e = v.end();
   return lower_bound( i , e , m , LessEntityProc() );
 }
 
-std::vector<EntityProc>::iterator
-lower_bound( std::vector<EntityProc> & v , const EntityProc & m )
+EntityProcSet::iterator
+lower_bound( EntityProcSet & v , const EntityProc & m )
 {
-  const std::vector<EntityProc>::iterator i = v.begin();
-  const std::vector<EntityProc>::iterator e = v.end();
+  const EntityProcSet::iterator i = v.begin();
+  const EntityProcSet::iterator e = v.end();
   return lower_bound( i , e , m , LessEntityProc() );
-}
-
-std::pair< std::vector<EntityProc>::const_iterator ,
-           std::vector<EntityProc>::const_iterator >
-span( const std::vector<EntityProc> & v , EntityType entity_type )
-{
-  const unsigned t1 = entity_type ;
-  const unsigned t2 = t1 + 1 ;
-
-  std::pair< std::vector<EntityProc>::const_iterator ,
-             std::vector<EntityProc>::const_iterator > result ;
-
-  result.first  = v.begin();
-  result.second = v.end();
-  result.first  = lower_bound(result.first,result.second,t1,LessEntityProc());
-  result.second = lower_bound(result.first,result.second,t2,LessEntityProc());
-  return result ;
-}
-
-std::pair< std::vector<EntityProc>::iterator ,
-           std::vector<EntityProc>::iterator >
-span( std::vector<EntityProc> & v , EntityType entity_type )
-{
-  const unsigned t1 = entity_type ;
-  const unsigned t2 = t1 + 1 ;
-
-  std::pair< std::vector<EntityProc>::iterator ,
-             std::vector<EntityProc>::iterator > result ;
-
-  result.first  = v.begin();
-  result.second = v.end();
-  result.first  = lower_bound(result.first,result.second,t1,LessEntityProc());
-  result.second = lower_bound(result.first,result.second,t2,LessEntityProc());
-  return result ;
 }
 
 //----------------------------------------------------------------------
 
-void procs( const std::vector<EntityProc> & v , Entity & m ,
-            std::vector<unsigned> & p )
-{
-  p.clear();
-  std::vector<EntityProc>::const_iterator i = lower_bound( v , m );
-  for ( ; i != v.end() && i->first == & m ; ++i ) {
-    p.push_back( i->second );
-  }
-}
+#if 0
 
-void procs( const std::vector<EntityProc> & v ,
+void procs( const EntityProcSet & v ,
             const std::vector< Entity * > & m ,
             std::vector<unsigned> & p )
 {
-  typedef std::vector<EntityProc>::const_iterator Iter ;
+  typedef EntityProcSet::const_iterator Iter ;
 
   p.clear();
 
@@ -219,10 +185,12 @@ void procs( const std::vector<EntityProc> & v ,
   }
 }
 
+#endif
+
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-bool verify( const std::vector<EntityProc> & v , std::string & msg )
+bool verify( const EntityProcSet & v , std::string & msg )
 {
   const LessEntityProc less_op ;
 
@@ -230,8 +198,8 @@ bool verify( const std::vector<EntityProc> & v , std::string & msg )
 
   if ( ! v.empty() ) {
 
-    const std::vector<EntityProc>::const_iterator e = v.end();
-          std::vector<EntityProc>::const_iterator i ;
+    const EntityProcSet::const_iterator e = v.end();
+          EntityProcSet::const_iterator i ;
 
     std::ostringstream os ;
 
@@ -277,7 +245,7 @@ bool verify( const std::vector<EntityProc> & v , std::string & msg )
 }
 
 bool comm_verify( ParallelMachine comm ,
-                  const std::vector<EntityProc> & v ,
+                  const EntityProcSet & v ,
                   std::string & msg )
 {
   static const char method[] = "phdmesh::comm_verify[symmetric]" ;
@@ -297,8 +265,8 @@ bool comm_verify( ParallelMachine comm ,
   const unsigned zero = 0 ;
   std::vector<unsigned> send_size( p_size , zero );
 
-  const std::vector<EntityProc>::const_iterator i_end = v.end();
-        std::vector<EntityProc>::const_iterator i ;
+  const EntityProcSet::const_iterator i_end = v.end();
+        EntityProcSet::const_iterator i ;
 
   if ( result ) {
     for ( i = v.begin() ; i != i_end ; ++i ) {
@@ -391,8 +359,8 @@ bool comm_verify( ParallelMachine comm ,
 //----------------------------------------------------------------------
 
 bool comm_verify( ParallelMachine comm ,
-                  const std::vector<EntityProc> & send ,
-                  const std::vector<EntityProc> & recv ,
+                  const EntityProcSet & send ,
+                  const EntityProcSet & recv ,
                   std::string & msg )
 {
   static const char method[] = "phdmesh::comm_verify[asymmetric]" ;
@@ -410,7 +378,7 @@ bool comm_verify( ParallelMachine comm ,
   std::vector<unsigned> send_size( p_size , zero );
   std::vector<unsigned> recv_size( p_size , zero );
 
-  std::vector<EntityProc>::const_iterator i ;
+  EntityProcSet::const_iterator i ;
 
   if ( result ) {
     for ( i = send.begin() ; i != send.end() ; ++i ) {
@@ -515,8 +483,8 @@ bool comm_mesh_entities(
   const EntityManager & manager ,
   Mesh & send_mesh ,
   Mesh & recv_mesh ,
-  const std::vector<EntityProc> & send ,
-        std::vector<EntityProc> & recv_info ,
+  const EntityProcSet & send ,
+        EntityProcSet & recv_info ,
   bool local_flag )
 {
   enum { NUM_COUNT = EntityTypeMaximum + 1 };
@@ -538,9 +506,9 @@ bool comm_mesh_entities(
   const unsigned p_rank = all.parallel_rank();
   const unsigned p_size = all.parallel_size();
 
-  const std::vector<EntityProc>::const_iterator i_end = send.end() ;
-  const std::vector<EntityProc>::const_iterator i_beg = send.begin();
-        std::vector<EntityProc>::const_iterator i ;
+  const EntityProcSet::const_iterator i_end = send.end() ;
+  const EntityProcSet::const_iterator i_beg = send.begin();
+        EntityProcSet::const_iterator i ;
 
   // Verify monotonic ordering:
   {
@@ -571,9 +539,9 @@ bool comm_mesh_entities(
 
     for ( i = i_beg ; i != i_end ; ) {
 
-      const std::vector<EntityProc>::const_iterator ib = i ;
+      const EntityProcSet::const_iterator ib = i ;
       for ( ; i != send.end() && ib->first == i->first ; ++i );
-      const std::vector<EntityProc>::const_iterator eb = i ;
+      const EntityProcSet::const_iterator eb = i ;
 
       for ( i = ib ; i != eb ; ++i ) {
         if ( p_rank != i->second ) {
@@ -618,9 +586,9 @@ bool comm_mesh_entities(
 
     for ( i = i_beg ; i != i_end ; ) {
 
-      const std::vector<EntityProc>::const_iterator ib = i ;
+      const EntityProcSet::const_iterator ib = i ;
       for ( ; i != send.end() && ib->first == i->first ; ++i );
-      const std::vector<EntityProc>::const_iterator eb = i ;
+      const EntityProcSet::const_iterator eb = i ;
 
       for ( i = ib ; i != eb ; ++i ) {
         if ( p_rank != i->second ) {
@@ -664,8 +632,8 @@ bool comm_mesh_entities(
 
 bool comm_mesh_field_values(
   const Mesh & mesh ,
-  const std::vector<EntityProc> & domain ,
-  const std::vector<EntityProc> & range ,
+  const EntityProcSet & domain ,
+  const EntityProcSet & range ,
   const std::vector<const Field<void,0> *> & fields ,
   bool local_flag )
 {
@@ -700,7 +668,7 @@ bool comm_mesh_field_values(
   std::vector<unsigned> send_size( parallel_size , zero );
   std::vector<unsigned> recv_size( parallel_size , zero );
 
-  std::vector<EntityProc>::const_iterator i ;
+  EntityProcSet::const_iterator i ;
 
   for ( i = domain.begin() ; i != domain.end() ; ++i ) {
     Entity       & e = * i->first ;

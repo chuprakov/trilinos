@@ -69,17 +69,15 @@ void test_schema_parts( ParallelMachine comm , std::istream & )
 
   // Should have exactly five predefined parts
 
-  require( schema.get_parts().size() == 4 , method , "predefined parts" );
+  require( schema.get_parts().size() == 3 , method , "predefined parts" );
 
   const Part & universal = schema.universal_part();
+  const Part & uses      = schema.uses_part();
   const Part & owns      = schema.owns_part();
-  const Part & shares    = schema.shares_part();
-  const Part & aura      = schema.aura_part();
 
   require_get( schema , & universal );
+  require_get( schema , & uses );
   require_get( schema , & owns );
-  require_get( schema , & shares );
-  require_get( schema , & aura );
 
   //--------------------------------------------------------------------
   // Parts and subsets

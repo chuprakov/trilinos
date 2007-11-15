@@ -32,6 +32,7 @@
 #include <limits>
 #include <iosfwd>
 
+#include <util/SpanIter.hpp>
 #include <mesh/Kernel.hpp>
 
 //----------------------------------------------------------------------
@@ -136,8 +137,7 @@ typedef std::vector<Connect> ConnectSet ;
  *  (3) identifier, and
  *  (4) range entity identifier.
  */
-typedef std::pair< ConnectSet::const_iterator ,
-                   ConnectSet::const_iterator > ConnectSpan ;
+typedef SpanIter< ConnectSet::const_iterator > ConnectSpan ;
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
@@ -151,6 +151,7 @@ private:
   KernelSet::iterator  m_kernel ;     // Containing kernel
   unsigned             m_kernel_ord ; // Ordinal in the kernel
   unsigned             m_owner_rank ; // Parallel owner rank
+  EntityProcSpan       m_sharing ;
 
   enum { KeyDigits = std::numeric_limits<unsigned long>::digits };
   enum { KeyIdentifierDigits = KeyDigits - EntityTypeDigits };
@@ -181,12 +182,15 @@ public:
 
   //------------------------------------
 
-  ConnectSpan connections() const
-    { return ConnectSpan( m_connect.begin() , m_connect.end() ); }
+  ConnectSpan connections() const { return ConnectSpan( m_connect ); }
 
   ConnectSpan connections( EntityType ) const ;
 
   ConnectSpan connections( EntityType , ConnectType ) const ;
+
+  //------------------------------------
+
+  const EntityProcSpan & sharing() const { return m_sharing ; }
 
   //------------------------------------
   /** Pointer to field value for this mesh entity and field */

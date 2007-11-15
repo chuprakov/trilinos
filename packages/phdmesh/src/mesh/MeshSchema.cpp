@@ -70,38 +70,22 @@ void Schema::assert_same_schema( const char * method ,
   }
 }
 
-void Schema::assert_not_predefined( const char * method , Part & p ) const
-{
-  if ( & p == & m_universal_part ||
-       & p == m_owns_part     ||
-       & p == m_shares_part    ||
-       & p == m_aura_part ) {
-    std::string msg ;
-    msg.append( method )
-       .append( "( " )
-       .append( p.name() )
-       .append( " ) FAILED Is predefined part" );
-    throw std::logic_error( msg );
-  }
-}
-
 //----------------------------------------------------------------------
 
 Schema::Schema()
   : m_commit( false ),
     m_universal_part( *this , std::string( "{UNIVERSAL}" ) , PartSet() ),
-    m_owns_part( NULL ),
-    m_shares_part( NULL ),
-    m_aura_part( NULL )
+    m_uses_part( NULL ),
+    m_owns_part( NULL )
 {
   // Declare remaining predefined parts
-  const std::string owns_part_name(   "{PARALLEL_OWNS}" );
-  const std::string shares_part_name( "{PARALLEL_SHARES}" );
-  const std::string aura_part_name(   "{PARALLEL_AURA}" );
+  const std::string uses_part_name( "{USES}" );
+  const std::string owns_part_name( "{OWNS}" );
 
-  m_owns_part   = & declare_part( owns_part_name );
-  m_shares_part = & declare_part( shares_part_name );
-  m_aura_part   = & declare_part( aura_part_name );
+  m_uses_part = & declare_part( uses_part_name );
+  m_owns_part = & declare_part( owns_part_name );
+
+  declare_part_subset( * m_uses_part , * m_owns_part );
 }
 
 void Schema::commit()

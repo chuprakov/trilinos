@@ -39,6 +39,26 @@
 
 namespace phdmesh {
 
+namespace {
+
+std::pair< EntityProcSet::const_iterator ,
+           EntityProcSet::const_iterator >
+span( const EntityProcSet & v , EntityType entity_type )
+{
+  const unsigned t1 = entity_type ;
+  const unsigned t2 = t1 + 1 ;
+
+  std::pair< EntityProcSet::const_iterator ,
+             EntityProcSet::const_iterator > result ;
+
+  result.first  = lower_bound(v, EntityType(t1) );
+  result.second = lower_bound(v, EntityType(t2) );
+
+  return result ;
+}
+
+}
+
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
@@ -50,11 +70,11 @@ bool comm_verify_shared_entity_values(
   const unsigned max_size   = f.max_size();
   const unsigned parallel_size = M.parallel_size();
 
-  const std::pair< std::vector<EntityProc>::const_iterator ,
-                   std::vector<EntityProc>::const_iterator >
+  const std::pair< EntityProcSet::const_iterator ,
+                   EntityProcSet::const_iterator >
     shares = span( M.shares() , t );
 
-  std::vector<EntityProc>::const_iterator ic ;
+  EntityProcSet::const_iterator ic ;
 
   ParallelMachine comm = M.parallel();
 
@@ -128,7 +148,7 @@ void comm_mesh_discover_sharing( Mesh & M )
 
   std::vector<unsigned long> local ;
   std::vector< ParallelIndex::KeyProc > global ;
-  std::vector<EntityProc> share ;
+  EntityProcSet share ;
 
   unsigned count = 0 ;
   for ( unsigned k = 0 ; k < EntityTypeMaximum ; ++k ) {
@@ -168,13 +188,12 @@ void comm_mesh_discover_sharing( Mesh & M )
 
   sort_unique( share );
 
-  // Now revise the shared and ownership parts for the entities
+  // Now revise ownership
 
-  Part * const owns_part  = & S.owns_part();
-  Part * const shares_part = & S.shares_part();
+  Part * const owns_part = & S.owns_part();
 
-  const std::vector<EntityProc>::iterator ipe = share.end();
-        std::vector<EntityProc>::iterator ip ;
+  const EntityProcSet::iterator ipe = share.end();
+        EntityProcSet::iterator ip ;
 
   for ( ip = share.begin() ; ip != ipe ; ) {
     Entity * const entity = ip->first ;
@@ -183,8 +202,6 @@ void comm_mesh_discover_sharing( Mesh & M )
     for ( ; ip != ipe && ip->first == entity ; ++ip );
 
     std::vector<Part*> add_parts , remove_parts ;
-
-    add_parts.push_back( shares_part );
 
     const unsigned p_owner = p_rank < p_send ? p_rank : p_send ;
 
@@ -206,21 +223,23 @@ void comm_mesh_discover_sharing( Mesh & M )
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
-// If an entity is not owned and not UsedBy an owned entity then remove it.
+// If an entity is not owned and not UsedBy an owned entity then remove it
+// from the sharing and the processor.  If sharing changes then regenerate
+// the aura.
 
 bool comm_mesh_scrub_sharing( Mesh & M )
 {
   const unsigned p_size = M.parallel_size();
   const unsigned p_rank = M.parallel_rank();
 
-  std::vector<EntityProc> shares( M.shares() );
+  EntityProcSet shares( M.shares() );
 
   bool changed = false ;
 
-  std::vector<EntityProc>::iterator i ;
+  EntityProcSet::iterator i ;
 
   for ( i = shares.end() ; i != shares.begin() ; ) {
-    const std::vector<EntityProc>::iterator ie = i ;
+    const EntityProcSet::iterator ie = i ;
 
     Entity * const entity = (--i)->first ;
 
@@ -229,15 +248,14 @@ bool comm_mesh_scrub_sharing( Mesh & M )
 
     bool destroy_it = p_rank != entity->owner_rank();
 
-    const ConnectSpan con = entity->connections();
-    std::vector<Connect>::const_iterator j = con.first ;
-    for ( ; j != con.second && destroy_it ; ++j ) {
-      destroy_it = ! ( UsedBy == j->type() &&
-                       p_rank == j->entity()->owner_rank() );
+    for ( ConnectSpan
+          con = entity->connections() ; con && destroy_it ; ++con ) {
+      destroy_it = ! ( UsedBy == con->type() &&
+                       p_rank == con->entity()->owner_rank() );
     }
 
     if ( destroy_it ) {
-      std::vector<EntityProc>::iterator ib = i ;
+      EntityProcSet::iterator ib = i ;
       for ( ; ib != ie ; ++ib ) { ib->first = NULL ; }
       M.destroy_entity( entity );
       changed = true ;
@@ -257,30 +275,18 @@ bool comm_mesh_scrub_sharing( Mesh & M )
   changed = all.allocate_buffers( p_size / 4 , symmetric , changed );
 
   if ( changed ) {
-    Part * const shares_part = & M.schema().shares_part();
-    PartSet remove_parts ; remove_parts.push_back( shares_part );
-    PartSet add_parts ;
 
     for ( i = shares.begin() ; i != shares.end() ; ++i ) {
-      const unsigned char flag = NULL != i->first ;
-      all.send_buffer( i->second ).pack<unsigned char>( flag );
+      const unsigned char flag_remove = NULL == i->first ;
+      all.send_buffer( i->second ).pack<unsigned char>( flag_remove );
     }
 
     all.communicate();
 
-    for ( i = shares.begin() ; i != shares.end() ; ) {
-      Entity * const e = i->first ;
-      bool not_shared = true ;
-      for ( ; i != shares.end() && e == i->first ; ++i ) {
-        unsigned char flag ; 
-        all.recv_buffer( i->second ).unpack<unsigned char>( flag );
-        if ( flag ) { not_shared = false ; }
-        else        { i->first = NULL ; }
-      }
-      if ( NULL != e && not_shared ) {
-        // Remove the shared part
-        M.change_entity_parts( *e , add_parts , remove_parts );
-      }
+    for ( i = shares.begin() ; i != shares.end() ; ++i ) {
+      unsigned char flag_remove ; 
+      all.recv_buffer( i->second ).unpack<unsigned char>( flag_remove );
+      if ( flag_remove ) { i->first = NULL ; }
     }
   
     for ( i = shares.end() ; i != shares.begin() ; ) {
@@ -300,19 +306,19 @@ bool comm_mesh_scrub_sharing( Mesh & M )
 
 namespace {
 
-void pack_info( CommAll & all , const std::vector<EntityProc> & shares )
+void pack_info( CommAll & all , const EntityProcSet & shares )
 {
-  const std::vector<EntityProc>::const_iterator i_end = shares.end();
-        std::vector<EntityProc>::const_iterator i     = shares.begin();
+  const EntityProcSet::const_iterator i_end = shares.end();
+        EntityProcSet::const_iterator i     = shares.begin();
 
   while ( i != i_end ) {
     const EntityProc & ep = *i ; ++i ;
 
     Entity & entity = * ep.first ;
-    const ConnectSpan connect = entity.connections();
+    ConnectSpan connect = entity.connections();
     const unsigned long key = entity.key();
     const unsigned p_owner  = entity.owner_rank();
-    const unsigned numconnect = std::distance( connect.first, connect.second );
+    const unsigned numconnect = connect.size();
 
     const unsigned p_send = ep.second ;
 
@@ -329,11 +335,10 @@ void pack_info( CommAll & all , const std::vector<EntityProc> & shares )
 
     b.pack<unsigned>( & part_ordinals[0] , numparts );
 
-    for ( std::vector<Connect>::const_iterator k = connect.first ;
-           k != connect.second ; ++k ) {
+    for ( ; connect ; ++connect ) {
       unsigned long con[2] ;
-      con[0] = k->attribute();
-      con[1] = k->entity()->key();
+      con[0] = connect->attribute();
+      con[1] = connect->entity()->key();
       b.pack<unsigned long>( con , 2 );
     }
   }
@@ -341,7 +346,7 @@ void pack_info( CommAll & all , const std::vector<EntityProc> & shares )
 
 bool unpack_info_verify(
   CommAll & all ,
-  const std::vector<EntityProc> & shares ,
+  const EntityProcSet & shares ,
   std::string & error_msg )
 {
   static const char method[] =
@@ -351,8 +356,8 @@ bool unpack_info_verify(
   const unsigned long ul_zero = 0 ;
   bool result = true ;
 
-  const std::vector<EntityProc>::const_iterator i_end = shares.end();
-        std::vector<EntityProc>::const_iterator i     = shares.begin();
+  const EntityProcSet::const_iterator i_end = shares.end();
+        EntityProcSet::const_iterator i     = shares.begin();
 
   std::vector<unsigned> recv_ordinal ;
   std::vector<unsigned long> recv_connect ;
@@ -366,11 +371,9 @@ bool unpack_info_verify(
     const Schema & schema = mesh.schema();
     const PartSet & mesh_parts = schema.get_parts();
     const ConnectSpan connect = entity.connections();
-    Part * const owns_part  = & schema.owns_part();
-    Part * const shares_part = & schema.shares_part();
-    Part * const aura_part   = & schema.aura_part();
+    Part * const owns_part = & schema.owns_part();
 
-    const unsigned connect_size = std::distance(connect.first, connect.second);
+    const unsigned connect_size = connect.size();
     const unsigned long key = entity.key();
     const unsigned p_owner  = entity.owner_rank();
     const unsigned p_local  = mesh.parallel_rank();
@@ -379,8 +382,6 @@ bool unpack_info_verify(
     std::vector<unsigned> part_ordinals ;
     kernel.supersets( part_ordinals );
     const unsigned parts_size = part_ordinals.size();
-
-    ConnectSpan::first_type ic ;
 
     CommBuffer & b = all.recv_buffer( p_recv );
 
@@ -404,8 +405,6 @@ bool unpack_info_verify(
     result = recv_key == key && recv_p_owner == p_owner ;
 
     if ( result ) {
-
-      bool has_shared = true ;
 
       unsigned j_this = 0 ;
       unsigned j_recv = 0 ;
@@ -441,17 +440,17 @@ bool unpack_info_verify(
           else {
             ++j_this ;
             ++j_recv ;
-
-            if ( shares_part == part_this ) { has_shared = true ; }
           }
         }
       }
-      if ( ! has_shared ) { result = false ; }
     }
 
     if ( connect_size != recv_connect_size ) { result = false ; }
 
-    ic = connect.first ;
+    ConnectSpan::iterator ic ;
+
+    ic = connect.begin();
+
     for ( unsigned k = 0 ; result && k < recv_connect_size ; ++k , ++ic ) {
       const Connect & con = *ic ;
       const unsigned k2 = k * 2 ;
@@ -473,19 +472,15 @@ bool unpack_info_verify(
         os << " " << mesh_parts[ part_ordinals[j] ]->name();
       }
       os << " ;" << std::endl << "  Connections =" ;
-      for ( ic = connect.first ; ic != connect.second ; ++ic ) {
+      for ( ic = connect.begin() ; ic != connect.end() ; ++ic ) {
         Entity & con_e = * ic->entity();
 
-        const bool has_owned  = con_e.kernel().has_superset( *owns_part );
-        const bool has_shared = con_e.kernel().has_superset( *shares_part );
-        const bool has_aura   = con_e.kernel().has_superset( *aura_part );
+        const bool has_owned = con_e.kernel().has_superset( *owns_part );
 
         os << std::endl << "    " ;
         os << *ic ;
         os << ".{ Owner = P" << con_e.owner_rank();
-        if ( has_owned )  { os << " owned" ; }
-        if ( has_shared ) { os << " shares" ; }
-        if ( has_aura )   { os << " aura" ; }
+        if ( has_owned ) { os << " owned" ; }
         os << " }" ;
       }
       os << " } != " << std::endl ;
@@ -525,19 +520,15 @@ bool verify_parallel_attributes(
 {
   bool result = true ;
 
-  // Verify all entities with the shares_part are in the sharing list
-
   const Schema & S = M.schema();
   const unsigned p_rank = M.parallel_rank();
-  Part & owns_part  = S.owns_part();
-  Part & shares_part = S.shares_part();
-  Part & aura_part   = S.aura_part();
+  Part & uses_part = S.uses_part();
+  Part & owns_part = S.owns_part();
 
   const EntitySet & es = M.entities( type );
 
-  std::pair< std::vector<EntityProc>::const_iterator ,
-             std::vector<EntityProc>::const_iterator >
-    share_span = span( M.shares() , type ) ,
+  std::pair< EntityProcSet::const_iterator ,
+             EntityProcSet::const_iterator >
     aura_span = span( M.aura_range() , type );
 
   // Iterate everything in identifier ordering.
@@ -549,37 +540,28 @@ bool verify_parallel_attributes(
     Entity & entity = *i ; ++i ;
     Kernel & kernel = entity.kernel();
 
-    const bool owned  = kernel.has_superset( owns_part );
-    const bool shared = kernel.has_superset( shares_part );
-    const bool aura   = kernel.has_superset( aura_part );
+    const bool uses = kernel.has_superset( uses_part );
+    const bool owns = kernel.has_superset( owns_part );
     const unsigned p_owner = entity.owner_rank();
 
-    if ( owned ) {
-      // Owner is local, cannot be aura
+    const bool shares = entity.sharing();
+
+    // Shared is a subset of uses.
+
+    if ( shares && ! uses ) { result = false ; }
+
+    if ( owns ) {
+      // Owner is local
       if ( p_owner != p_rank ) { result = false ; }
-      if ( aura ) { result = false ; }
     }
     else {
-      // Owner is remote, must be shared or aura
+      // Owner is remote: if uses then must be shared
       if ( p_owner == p_rank ) { result = false ; }
-      if ( ! ( shared || aura ) ) { result = false ; }
+      if ( uses && ! shares ) { result = false ; }
     }
 
-    // Cannot be shared and aura
-
-    if ( aura && shared ) { result = false ; }
-
-    bool in_shared = false ;
     bool in_aura = false ;
     unsigned aura_rank = p_owner ;
-
-    // Could appear multiple times in the shared parallel connection:
-
-    while ( share_span.first != share_span.second &&
-            share_span.first->first == & entity ) {
-      in_shared = true ;
-      ++share_span.first ;
-    }
 
     // Can appear at most once in the aura parallel connection:
 
@@ -595,8 +577,7 @@ bool verify_parallel_attributes(
       ++aura_span.first ;
     }
 
-    if ( shared != in_shared ) { result = false ; }
-    if ( aura   != in_aura )   { result = false ; }
+    if ( in_aura && uses ) { result = false ; }
 
     if ( ! result ) {
       std::ostringstream os ;
@@ -605,11 +586,9 @@ bool verify_parallel_attributes(
       os << "  " ;
       print_entity_key( os , entity.key() );
       os << ".owner(P" << p_owner << ")" ;
-      if ( owned )  { os << " , owns" ; }
-      if ( shared ) { os << " , shares" ; }
-      if ( aura )   { os << " , aura" ; }
-      if ( in_shared ) { os << " , in_shared" ; }
-      else             { os << " , not_in_shared" ; }
+      if ( uses )   { os << " , uses" ; }
+      if ( owns )   { os << " , owns" ; }
+      if ( shares ) { os << " , shares" ; }
       if ( in_aura ) { os << " , in_aura(P" << aura_rank << ")" ; }
       else           { os << " , not_in_aura" ; }
       os << std::endl ;
@@ -640,7 +619,7 @@ bool comm_mesh_verify_parallel_consistency( Mesh & M )
   {
     // Verify all shared entities
 
-    const std::vector<EntityProc> & shares = M.shares();
+    const EntityProcSet & shares = M.shares();
 
     CommAll all_info( M.parallel() );
 
@@ -693,7 +672,7 @@ public:
     CommBuffer & buffer ,
     Mesh & receive_mesh ,
     const unsigned send_source ,
-    std::vector<EntityProc> & receive_info ) const ;
+    EntityProcSet & receive_info ) const ;
 };
 
 const char * SharingManager::name() const
@@ -703,14 +682,13 @@ void SharingManager::receive_entity(
   CommBuffer & buffer ,
   Mesh & receive_mesh ,
   const unsigned send_source ,
-  std::vector<EntityProc> & receive_info ) const
+  EntityProcSet & receive_info ) const
 {
   // receive_info is the new_aura_range
 
   const Schema & S = receive_mesh.schema();
-  Part * const owns_part  = & S.owns_part();
-  Part * const shares_part = & S.shares_part();
-  Part * const aura_part   = & S.aura_part();
+  Part * const uses_part = & S.uses_part();
+  Part * const owns_part = & S.owns_part();
 
   EntityType            entity_type ;
   unsigned long         entity_id ;
@@ -723,16 +701,17 @@ void SharingManager::receive_entity(
                  entity_type , entity_id , owner_rank ,
                  parts , connections , send_dest );
 
+  // Must have been sent by the owner.
+
   if ( send_source != owner_rank ) {
     std::string msg( "phdmesh::SharingManager::receive_entity FAILED owner" );
     throw std::logic_error( msg );
   }
 
-  { // Remove owned part, add shared part.
+  { // Remove owns part
     std::vector<Part*>::iterator ip = parts.begin() ;
     for ( ; ip != parts.end() && owns_part != *ip ; ++ip );
     if ( ip != parts.end() ) { parts.erase( ip ); }
-    parts.push_back( shares_part );
   }
 
   EntityProc ep ;
@@ -740,46 +719,42 @@ void SharingManager::receive_entity(
   ep.first  = receive_mesh.get_entity( entity_type , entity_id );
   ep.second = send_source ;
 
-  // If entity exists it must be an aura
+  // If entity exists it must be currently an aura, i.e. not a uses_part
 
   if ( NULL != ep.first ) {
-    std::vector<EntityProc>::iterator
-      k = lower_bound( receive_info , *ep.first );
+    EntityProcSet::iterator k = lower_bound( receive_info , *ep.first );
 
-    if ( ! ep.first->kernel().has_superset( *aura_part ) ||
+    if ( ep.first->kernel().has_superset( *uses_part ) ||
          k == receive_info.end() || k->first != ep.first ) {
       std::string msg( "phdmesh::SharingManager::receive_entity FAILED aura" );
       throw std::logic_error( msg );
     }
 
     receive_info.erase( k );
-
-    std::vector<Part*> p_remove ; p_remove.push_back( aura_part );
-    receive_mesh.change_entity_parts( *ep.first , parts , p_remove );
   }
 
   ep.first = declare_entity( receive_mesh , entity_type , entity_id ,
                              owner_rank , parts , connections );
 }
 
-bool not_member( const std::vector<EntityProc> & s , const EntityProc & m )
+bool not_member( const EntityProcSet & s , const EntityProc & m )
 {
-  const std::vector<EntityProc>::const_iterator i = lower_bound( s , m );
+  const EntityProcSet::const_iterator i = lower_bound( s , m );
   return i == s.end() || m != *i ;
 }
 
 // Owner packs sharing
 
-void pack_sharing( CommAll & all , const std::vector<EntityProc> & sharing )
+void pack_sharing( CommAll & all , const EntityProcSet & sharing )
 {
   const unsigned p_rank = all.parallel_rank();
 
-  std::vector<EntityProc>::const_iterator i , j ;
+  EntityProcSet::const_iterator i , j ;
 
   for ( i = sharing.begin() ; i != sharing.end() ; ) {
-    const std::vector<EntityProc>::const_iterator ib = i ;
+    const EntityProcSet::const_iterator ib = i ;
     for ( ; i != sharing.end() && i->first == ib->first ; ++i );
-    const std::vector<EntityProc>::const_iterator ie = i ;
+    const EntityProcSet::const_iterator ie = i ;
 
     if ( p_rank == ib->first->owner_rank() ) {
       const unsigned n = std::distance( ib , ie ) - 1 ;
@@ -799,7 +774,7 @@ void pack_sharing( CommAll & all , const std::vector<EntityProc> & sharing )
 }
 
 void unpack_sharing( CommAll & all , Mesh & M ,
-                     std::vector<EntityProc> & sharing ,
+                     EntityProcSet & sharing ,
                      const char * method )
 {
   const unsigned p_size = all.parallel_size();
@@ -824,32 +799,30 @@ void unpack_sharing( CommAll & all , Mesh & M ,
 
 }
 
-void comm_mesh_add_sharing( Mesh & M , const std::vector<EntityProc> & add )
+void comm_mesh_add_sharing( Mesh & M , const EntityProcSet & add )
 {
   static const char method[] = "phdmesh::comm_mesh_add_sharing" ;
 
   const SharingManager mgr ;
-  const Schema & S = M.schema();
   const unsigned p_rank = M.parallel_rank();
   const unsigned p_size = M.parallel_size();
-  Part * const shares_part = & S.shares_part();
 
-  const std::vector<EntityProc> & old_shares = M.shares();
+  const EntityProcSet & old_shares = M.shares();
 
-  std::vector<EntityProc> new_shares ;
+  EntityProcSet new_shares ;
 
   //--------------------------------------------------------------------
   // Have the owners send the to-be-shared entities to the
   // specified processors.  If an aura relationship exists
   // then remove it and replace it with a shared relationship.
   {
-    std::vector<EntityProc> new_aura_domain( M.aura_domain() );
-    std::vector<EntityProc> new_aura_range(  M.aura_range() );
+    EntityProcSet new_aura_domain( M.aura_domain() );
+    EntityProcSet new_aura_range(  M.aura_range() );
 
     {
       CommAll all( M.parallel() );
 
-      for ( std::vector<EntityProc>::const_iterator
+      for ( EntityProcSet::const_iterator
             j = add.begin() ; j != add.end() ; ++j ) {
 
         const unsigned p_owner = j->first->owner_rank();
@@ -866,7 +839,7 @@ void comm_mesh_add_sharing( Mesh & M , const std::vector<EntityProc> & add )
 
       all.allocate_buffers( p_size / 4 , false /* not symmetric */ );
 
-      for ( std::vector<EntityProc>::const_iterator
+      for ( EntityProcSet::const_iterator
             j = add.begin() ; j != add.end() ; ++j ) {
 
         const unsigned p_owner = j->first->owner_rank();
@@ -900,22 +873,13 @@ void comm_mesh_add_sharing( Mesh & M , const std::vector<EntityProc> & add )
 
     // Change the newly shared mesh entities on the owner processor
     // Remove from the aura_domain.
-    {
-      Entity * e = NULL ;
-      PartSet remove_parts ;
-      PartSet add_parts ; add_parts.push_back( shares_part );
-      std::vector<EntityProc>::iterator i ;
-      for ( i = new_shares.begin() ; i != new_shares.end() ; ++i ) {
-        if ( e != i->first ) {
-          e = i->first ;
-          M.change_entity_parts( *e , add_parts , remove_parts );
-        }
+    for ( EntityProcSet::iterator
+          i = new_shares.begin() ; i != new_shares.end() ; ++i ) {
 
-        const std::vector<EntityProc>::iterator
-          k = lower_bound( new_aura_domain , *i );
-        if ( k != new_aura_domain.end() && *k == *i ) {
-          new_aura_domain.erase( k );
-        }
+      const EntityProcSet::iterator k = lower_bound( new_aura_domain , *i );
+
+      if ( k != new_aura_domain.end() && *k == *i ) {
+        new_aura_domain.erase( k );
       }
     }
 

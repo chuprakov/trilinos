@@ -875,8 +875,8 @@ void WriteElemIndexConnect::operator()(
 
       ConnectSpan con = elem.connections();
 
-      for ( unsigned j = 0 ; j < num_nodes_per_elem ; ++j , ++con.first ) {
-        Entity & node = * con.first->entity();
+      for ( unsigned j = 0 ; j < num_nodes_per_elem ; ++j , ++con ) {
+        Entity & node = * con->entity();
         send_data[j+2] = * node.data( SF.m_field_node_index );
       }
 

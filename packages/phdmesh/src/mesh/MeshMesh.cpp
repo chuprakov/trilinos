@@ -412,217 +412,310 @@ void Mesh::destroy_entity( Entity * e )
 }
 
 //----------------------------------------------------------------------
+//----------------------------------------------------------------------
 
-void Mesh::set_shares( const std::vector<EntityProc> & s )
+namespace {
+
+void verify_set_shares( const Mesh & M )
 {
   static const char method[] = "phdmesh::Mesh::set_shares" ;
 
-  const unsigned p_rank = parallel_rank();
-  Part & shares_part = m_schema.shares_part();
-
   std::string msg ;
+
+  const EntityProcSet & shares = M.shares();
 
   // Parallel verification
 
-  bool ok = comm_verify( parallel() , s , msg );
-
-  // Verify each member has the shares part
-
-  unsigned entity_count[ EntityTypeMaximum ] ;
-  unsigned kernel_count[ EntityTypeMaximum ] ;
-
-  for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
-    entity_count[i] = 0 ;
-    kernel_count[i] = 0 ;
-  }
-  Entity * e = NULL ;
-
-  const std::vector<EntityProc>::const_iterator es = s.end();
-        std::vector<EntityProc>::const_iterator is = s.begin();
-
-  for ( ; ok && is != es ; ++is ) {
-    if ( e != is->first ) {
-      e = is->first ;
-      ++( entity_count[ e->entity_type() ] );
-    }
-
-    if ( p_rank == is->second ) {
-      std::ostringstream os ;
-      os << "P" << p_rank << ": " << method << " FAILED " ;
-      print_entity_key( os , is->first->key() );
-      os << " paired with P" << p_rank ;
-      msg = os.str();
-      ok = false ;
-    }
-
-    if ( ! e->kernel().has_superset( shares_part ) ) {
-      std::ostringstream os ;
-      os << "P" << parallel_rank() << ": " << method << " FAILED " ;
-      print_entity_key( os , is->first->key() );
-      os << " does not have part " ;
-      os << shares_part.name();
-      msg = os.str();
-      ok = false ;
-    }
-  }
+  bool ok = comm_verify( M.parallel() , shares , msg );
 
   if ( ok ) {
-    // Verify that each entity with the shares part is in this array
 
-    for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
-      const KernelSet & kset = m_kernels[ EntityType(i) ];
-      const KernelSet::const_iterator ek = kset.end();
-            KernelSet::const_iterator ik = kset.begin();
-      for ( ; ik != ek ; ++ik ) {
-        if ( ik->has_superset( shares_part ) ) {
-          kernel_count[i] += ik->size();
-        }
+    const unsigned p_rank = M.parallel_rank();
+    Part & owns_part = M.schema().owns_part();
+    Part & uses_part = M.schema().uses_part();
+
+    std::ostringstream os ;
+
+    os << "P" << p_rank << ": " << method << " FAILED " << std::endl ;
+
+    const EntityProcSet::const_iterator es = shares.end();
+          EntityProcSet::const_iterator is = shares.begin();
+
+    for ( ; is != es ; ++is ) {
+
+      // Verify not attempting to share with self
+
+      if ( p_rank == is->second ) {
+        print_entity_key( os , is->first->key() );
+        os << " paired with P" << p_rank ;
+        os << std::endl ;
+        ok = false ;
       }
-      if ( entity_count[i] != kernel_count[i] ) { ok = false ; }
+
+      // Verify each member has the uses part
+
+      if ( ! is->first->kernel().has_superset( uses_part ) ) {
+        print_entity_key( os , is->first->key() );
+        os << " to be shared with P" ;
+        os << is->second ;
+        os << " does not have part " ;
+        os << uses_part.name();
+        os << std::endl ;
+        ok = false ;
+      }
     }
 
-    if ( ! ok ) {
-      std::ostringstream os ;
-      os << "P" << parallel_rank() << ": " << method ;
-      os << " FAILED " << s.size();
-      os << " entity counts {" ;
-      for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
-        os << " " << entity_count[i] ;
-      }
-      os << " } != kernel counts {" ;
-      for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
-        os << " " << kernel_count[i] ;
-      }
-      os << " }" ;
-      msg = os.str();
-    }
+    // Verify all uses but not owned entities are shared
+    // and their owner is one of the shared.
+
+    for ( unsigned t = 0 ; t < EntityTypeMaximum ; ++t ) {
+
+      const KernelSet & kernels = M.kernels( EntityType(t) );
+
+      const KernelSet::iterator ek = kernels.end();
+            KernelSet::iterator ik = kernels.begin();
+
+      for ( ; ek != ik ; ++ik ) {
+
+        if ( ik->has_superset( uses_part ) ) {
+
+          const Kernel::iterator e = ik->end();
+                Kernel::iterator i = ik->begin();
+
+          if ( ik->has_superset( owns_part ) ) {
+
+            for ( ; e != i ; ++i ) {
+
+              if ( (*i)->owner_rank() != p_rank ) {
+                print_entity_key( os , (*i)->key() ); 
+                os << " member of " ;
+                os << owns_part.name();
+                os << " but non-local owner = P" ;
+                os << (*i)->owner_rank() ;
+                os << std::endl ;
+                ok = false ;
+              }
+            }
+          }
+          else {
+
+            for ( ; e != i ; ++i ) {
+
+              if ( (*i)->owner_rank() == p_rank ) {
+                print_entity_key( os , (*i)->key() ); 
+                os << " not member of " ;
+                os << owns_part.name();
+                os << " but local owner = P" ;
+                os << p_rank ;
+                os << std::endl ;
+                ok = false ;
+              }
+
+              EntityProcSpan ss = (*i)->sharing();
+
+              if ( ss.empty() ) {
+                print_entity_key( os , (*i)->key() );
+                os << " not member of " ;
+                os << owns_part.name();
+                os << ", is member of " ;
+                os << uses_part.name();
+                os << ", but is not shared." ;
+                os << std::endl ;
+                msg.append( os.str() );
+                ok = false ;
+              }
+
+              for ( ; ss && (*i)->owner_rank() != ss->second ; ++ss );
+
+              if ( ss.empty() ) {
+                print_entity_key( os , (*i)->key() );
+                os << " not member of " ;
+                os << owns_part.name();
+                os << ", is member of " ;
+                os << uses_part.name();
+                os << ", but does not share with owner P" ;
+                os << (*i)->owner_rank();
+                os << std::endl ;
+                msg.append( os.str() );
+                ok = false ;
+              }
+            }
+          } // end not member of owns_spart
+        }   // end not member of uses_part
+      }     // end kernel loop
+    }       // end entity type loop
+
+    if ( ! ok ) { msg = os.str(); }
   }
 
   {
     // Global reduce on the error flag, are any of the flag false ?
     unsigned flag = ok ;
-    all_reduce( parallel() , ReduceMin<1>( & flag ) );
+    all_reduce( M.parallel() , ReduceMin<1>( & flag ) );
     ok = flag ;
   }
 
   if ( ! ok ) {
     throw std::runtime_error( msg );
   }
+}
 
+}
+
+void Mesh::set_shares( const EntityProcSet & s )
+{
   m_shares_all = s ;
+
+  // Clear the entities' sharing in preparation for setting it.
+
+  {
+    const EntityProcSpan ss_empty ;
+
+    for ( unsigned t = 0 ; t < EntityTypeMaximum ; ++t ) {
+      const EntitySet::iterator e = m_entities[t].end();
+            EntitySet::iterator i = m_entities[t].begin();
+      for ( ; e != i ; ++i ) { i->m_sharing = ss_empty ; }
+    }
+  }
+
+  // Set the entities' sharing.
+
+  const EntityProcSet::iterator es = m_shares_all.end();
+        EntityProcSet::iterator is = m_shares_all.begin();
+
+  while ( is != es ) {
+    const EntityProcSet::iterator js = is ;
+    for ( ; is != es && js->first == is->first ; ++is );
+    js->first->m_sharing = EntityProcSpan( js , is );
+  }
+
+  // Verify 
+
+  verify_set_shares( *this );
 }
 
 //----------------------------------------------------------------------
+//----------------------------------------------------------------------
 
-void Mesh::set_aura( const std::vector<EntityProc> & d ,
-                     const std::vector<EntityProc> & r )
+namespace {
+
+void verify_set_aura( const Mesh & M )
 {
   static const char method[] = "phdmesh::Mesh::set_aura" ;
 
-  Part & owns_part = m_schema.owns_part();
-  Part & aura_part = m_schema.aura_part();
-  const unsigned p_rank = parallel_rank();
-
   std::string msg ;
+
+  const EntityProcSet & domain = M.aura_domain();
+  const EntityProcSet & range  = M.aura_range();
 
   // Parallel verification
 
-  bool ok = comm_verify( parallel() , d , r , msg );
+  bool ok = comm_verify( M.parallel(), domain , range , msg );
 
   // Local verification of range ordering
 
-  if ( ok ) { ok = verify( r , msg ); }
+  if ( ok ) { ok = verify( range , msg ); }
 
-  // Verify each entity in the domain has the owns part
-  {
-    Entity * e = NULL ;
+  if ( ok ) {
 
-    const std::vector<EntityProc>::const_iterator es = d.end();
-          std::vector<EntityProc>::const_iterator is = d.begin();
+    Part & uses_part = M.schema().uses_part();
+    Part & owns_part = M.schema().owns_part();
 
-    for ( ; ok && is != es ; ++is ) {
-      if ( e != is->first ) {
+    const unsigned p_rank = M.parallel_rank();
+
+    std::ostringstream os ;
+
+    os << "P" << M.parallel_rank() << ": " << method << " FAILED " ;
+
+    // Verify each entity in the domain has the owns part
+    {
+      Entity * e = NULL ;
+
+      const EntityProcSet::const_iterator es = domain.end();
+            EntityProcSet::const_iterator is = domain.begin();
+
+      for ( ; is != es ; ++is ) {
+        if ( e != is->first ) {
+          e = is->first ;
+        }
+
+        if ( ! e->kernel().has_superset( owns_part ) ||
+             p_rank != e->owner_rank() ) {
+          print_entity_key( os , is->first->key() );
+          os << " does not have part " ;
+          os << owns_part.name();
+          os << std::endl ;
+          msg = os.str();
+          ok = false ;
+        }
+      }
+    }
+
+    // Verify
+    // (1) each entity in the range does not have the uses part
+    // (2) an entity only appears in the range once
+
+    {
+      unsigned entity_count[ EntityTypeMaximum ];
+      unsigned kernel_count[ EntityTypeMaximum ];
+
+      for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
+        entity_count[i] = 0 ;
+        kernel_count[i] = 0 ;
+      }
+
+      Entity * e = NULL ;
+
+      const EntityProcSet::const_iterator es = range.end();
+            EntityProcSet::const_iterator is = range.begin();
+
+      for ( ; is != es ; ++is ) {
+        const bool bad_domain = e == is->first ;
         e = is->first ;
-      }
 
-      if ( ! e->kernel().has_superset( owns_part ) ||
-           p_rank != e->owner_rank() ) {
-        std::ostringstream os ;
-        os << "P" << parallel_rank() << ": " << method << " FAILED " ;
-        print_entity_key( os , is->first->key() );
-        os << " does not have part " ;
-        os << owns_part.name();
-        msg = os.str();
-        ok = false ;
-      }
-    }
-  }
+        ++( entity_count[ e->entity_type() ] );
 
-  // Verify each range member has the aura part
-  {
-    unsigned entity_count[ EntityTypeMaximum ];
-    unsigned kernel_count[ EntityTypeMaximum ];
+        const bool bad_part = e->kernel().has_superset( uses_part );
+        const bool bad_rank = is->second != e->owner_rank();
 
-    for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
-      entity_count[i] = 0 ;
-      kernel_count[i] = 0 ;
-    }
-
-    Entity * e = NULL ;
-
-    const std::vector<EntityProc>::const_iterator es = r.end();
-          std::vector<EntityProc>::const_iterator is = r.begin();
-
-    for ( ; ok && is != es ; ++is ) {
-      const bool bad_domain = e == is->first ;
-      e = is->first ;
-
-      ++( entity_count[ e->entity_type() ] );
-
-      const bool bad_part = ! e->kernel().has_superset( aura_part );
-      const bool bad_rank = is->second != e->owner_rank();
-
-      if ( bad_part || bad_rank || bad_domain ) {
-        std::ostringstream os ;
-        os << "P" << parallel_rank() << ": " << method << " FAILED " ;
-        print_entity_key( os , e->key() );
-        if ( bad_domain ) {
-          os << " Had multiple entries" ;
-        }
-        if ( bad_part ) {
-          os << " Does not have part " ;
-          os << aura_part.name();
-        }
-        if ( bad_rank ) {
-          os << " Is received from P" ;
-          os << is->second ;
-          os << " instead of owner P" ;
-          os << e->owner_rank();
-        }
-        msg = os.str();
-        ok = false ;
-      }
-    }
-
-    // Verify that each entity with the aura part is in this array
-
-    for ( unsigned i = 0 ; ok && i < EntityTypeMaximum ; ++i ) {
-      const KernelSet & kset = m_kernels[ EntityType(i) ];
-      const KernelSet::const_iterator ek = kset.end();
-            KernelSet::const_iterator ik = kset.begin();
-      for ( ; ik != ek ; ++ik ) {
-        if ( ik->has_superset( aura_part ) ) {
-          kernel_count[i] += ik->size();
+        if ( bad_part || bad_rank || bad_domain ) {
+          print_entity_key( os , e->key() );
+          if ( bad_part ) {
+            os << " member of " ;
+            os << uses_part.name();
+          }
+          if ( bad_domain ) {
+            os << " Received from multiple procesors " ;
+          }
+          if ( bad_rank ) {
+            os << " Received from P" ;
+            os << is->second ;
+            os << " instead of owner P" ;
+            os << e->owner_rank();
+          }
+          msg = os.str();
+          ok = false ;
         }
       }
 
-      if ( entity_count[i] != kernel_count[i] ) {
-        std::ostringstream os ;
-        os << "P" << parallel_rank() << ": " << method << " FAILED " ;
-        os << " aura entity count = " << entity_count[i] ;
-        os << " != " << kernel_count[i] << " = aura kernel entity count" ;
-        msg = os.str();
-        ok = false ;
+      // Verify aura range count equals not member of uses count.
+
+      for ( unsigned i = 0 ; ok && i < EntityTypeMaximum ; ++i ) {
+        const KernelSet & kset = M.kernels( EntityType(i) );
+        const KernelSet::const_iterator ek = kset.end();
+              KernelSet::const_iterator ik = kset.begin();
+        for ( ; ik != ek ; ++ik ) {
+          if ( ! ik->has_superset( uses_part ) ) {
+            kernel_count[i] += ik->size();
+          }
+        }
+
+        if ( entity_count[i] != kernel_count[i] ) {
+          os << " aura entity count = " << entity_count[i] ;
+          os << " != " << kernel_count[i] << " = not 'uses' entity count" ;
+          msg = os.str();
+          ok = false ;
+        }
       }
     }
   }
@@ -630,7 +723,7 @@ void Mesh::set_aura( const std::vector<EntityProc> & d ,
   {
     // Global reduce on the error flag, are any of the flag false ?
     unsigned flag = ok ;
-    all_reduce( parallel() , ReduceMin<1>( & flag ) );
+    all_reduce( M.parallel() , ReduceMin<1>( & flag ) );
     ok = flag ;
   }
 
@@ -638,10 +731,19 @@ void Mesh::set_aura( const std::vector<EntityProc> & d ,
     throw std::runtime_error( msg );
   }
 
-  m_aura_domain = d ;
-  m_aura_range = r ;
 }
 
+}
+
+void Mesh::set_aura( const EntityProcSet & d , const EntityProcSet & r )
+{
+  m_aura_domain = d ;
+  m_aura_range  = r ;
+
+  verify_set_aura( *this );
+}
+
+//----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
 void get_kernels( const KernelSet & ks ,

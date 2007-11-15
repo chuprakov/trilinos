@@ -66,54 +66,33 @@ namespace phdmesh {
 //----------------------------------------------------------------------
 /** Sort and unique an EntityProc array.
  */
-void sort_unique( std::vector<EntityProc> & );
+void sort_unique( EntityProcSet & );
 
 /** Sanity check locally for non-null, same-mesh, off-processor,
  *  and proper ordering.  Return an error string if a problem.
  */
-bool verify( const std::vector<EntityProc> & , std::string & );
+bool verify( const EntityProcSet & , std::string & );
 
 /** Find the first entry corresponding to the given entity.
  *  The array must be properly sorted.
  */
-std::vector<EntityProc>::const_iterator
-lower_bound( const std::vector<EntityProc> & , Entity & );
+EntityProcSet::const_iterator
+lower_bound( const EntityProcSet & , Entity & );
 
-std::vector<EntityProc>::const_iterator
-lower_bound( const std::vector<EntityProc> & , const EntityProc & );
+EntityProcSet::const_iterator
+lower_bound( const EntityProcSet & , EntityType );
+
+EntityProcSet::const_iterator
+lower_bound( const EntityProcSet & , const EntityProc & );
 
 /** Find the first entry corresponding to the given entity.
  *  The array must be properly sorted.
  */
-std::vector<EntityProc>::iterator
-lower_bound( std::vector<EntityProc> & , Entity & );
+EntityProcSet::iterator
+lower_bound( EntityProcSet & , Entity & );
 
-std::vector<EntityProc>::iterator
-lower_bound( std::vector<EntityProc> & , const EntityProc & );
-
-/** Query span of a sorted array for a given entity type.
- */
-std::pair< std::vector<EntityProc>::const_iterator ,
-           std::vector<EntityProc>::const_iterator >
-span( const std::vector<EntityProc> & , EntityType );
-
-/** Query span of a sorted array for a given entity type.
- */
-std::pair< std::vector<EntityProc>::iterator ,
-           std::vector<EntityProc>::iterator >
-span( std::vector<EntityProc> & , EntityType );
-
-/** Query the set of processors for which the entity appears.
- */
-void procs( const std::vector<EntityProc> & ,
-            Entity & ,
-            std::vector<unsigned> & );
-
-/** Query the set of processors for which all of the entities appear.
- */
-void procs( const std::vector<EntityProc> & ,
-            const std::vector< Entity * > & ,
-            std::vector<unsigned> & );
+EntityProcSet::iterator
+lower_bound( EntityProcSet & , const EntityProc & );
 
 //----------------------------------------------------------------------
 /** Sanity check on existing or potential parallel connection information.
@@ -121,7 +100,7 @@ void procs( const std::vector<EntityProc> & ,
  *  Symmetric version of verification.
  */
 bool comm_verify( ParallelMachine ,
-                  const std::vector<EntityProc> & ,
+                  const EntityProcSet & ,
                   std::string & );
 
 /** Sanity check on existing or potential parallel connection information.
@@ -129,8 +108,8 @@ bool comm_verify( ParallelMachine ,
  *  Asymmetric version of verification.
  */
 bool comm_verify( ParallelMachine ,
-                  const std::vector<EntityProc> & ,
-                  const std::vector<EntityProc> & ,
+                  const EntityProcSet & ,
+                  const EntityProcSet & ,
                   std::string & );
 
 //----------------------------------------------------------------------
@@ -151,8 +130,8 @@ bool comm_mesh_stats( Mesh & ,
 void comm_copy(
   Mesh & send_mesh ,
   Mesh & recv_mesh ,
-  const std::vector<EntityProc> & send ,
-        std::vector<EntityProc> & recv );
+  const EntityProcSet & send ,
+        EntityProcSet & recv );
 
 //----------------------------------------------------------------------
 /** Communicate mesh entities from the send mesh to the receive mesh.
@@ -163,8 +142,8 @@ bool comm_mesh_entities(
   const EntityManager & manager ,
   Mesh & send_mesh ,
   Mesh & recv_mesh ,
-  const std::vector<EntityProc> & send ,
-        std::vector<EntityProc> & recv ,
+  const EntityProcSet & send ,
+        EntityProcSet & recv ,
   bool local_flag );
 
 //----------------------------------------------------------------------
@@ -175,8 +154,8 @@ bool comm_mesh_entities(
  */
 bool comm_mesh_field_values(
   const Mesh & mesh ,
-  const std::vector<EntityProc> & domain ,
-  const std::vector<EntityProc> & range ,
+  const EntityProcSet & domain ,
+  const EntityProcSet & range ,
   const std::vector< const Field<void,0> *> & fields ,
   bool local_flag );
 
@@ -191,7 +170,7 @@ bool comm_verify_shared_entity_values( const Mesh & , const Field<void,0> & f );
  */
 void comm_mesh_discover_sharing( Mesh & );
 
-void comm_mesh_add_sharing( Mesh & , const std::vector<EntityProc> & );
+void comm_mesh_add_sharing( Mesh & , const EntityProcSet & );
 
 /** Scrub shared entities of any that are 
  *  not owned and not used by an owned entity.
@@ -207,13 +186,8 @@ bool comm_mesh_scrub_sharing( Mesh & M );
 bool comm_mesh_verify_parallel_consistency( Mesh & M );
 
 //----------------------------------------------------------------------
-/** Generate all aura entities attached to shared nodes.
- *  Communicated entities will have the active_part removed
- *  and the aura_part added.
- */
+/** Generate all aura entities attached to shared nodes.  */
 void comm_mesh_regenerate_aura( Mesh & );
-
-void comm_mesh_remove_aura( Mesh & );
 
 //----------------------------------------------------------------------
 /** Rebalance the mesh using the HSFC algorithm.

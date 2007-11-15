@@ -29,6 +29,7 @@ UTIL_INC_FILES =	\
 	$(UTIL_INC_DIR)/FixedArray.hpp	\
 	$(UTIL_INC_DIR)/CSet.hpp	\
 	$(UTIL_INC_DIR)/Setv.hpp	\
+	$(UTIL_INC_DIR)/SpanIter.hpp	\
 	$(UTIL_INC_DIR)/FixedPoolAlloc.hpp	\
 	$(UTIL_INC_DIR)/taskpool.h	\
 	$(UTIL_INC_DIR)/TaskPool.hpp	\

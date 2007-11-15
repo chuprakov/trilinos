@@ -78,8 +78,7 @@ void AssembleTask::work(unsigned,unsigned)
   const KernelSet::const_iterator ik_end = mesh.kernels( entity_type ).end();
 
   const Schema & schema = mesh.schema();
-  Part & owns   = schema.owns_part();
-  Part & shares = schema.shares_part();
+  Part & uses = schema.uses_part();
 
   for(;;) {
     // Get work:
@@ -88,8 +87,7 @@ void AssembleTask::work(unsigned,unsigned)
     {
       taskpool::lock get_work_lock(0);
       for ( ; ik_work != ik_end && NULL == k ; ++ik_work ) {
-        if ( ik_work->has_superset( owns ) ||
-             ik_work->has_superset( shares ) ) {
+        if ( ik_work->has_superset( uses ) ) {
           k = & *ik_work ;
         }
       }
@@ -121,11 +119,10 @@ void AssembleTask::work(unsigned,unsigned)
 
           for ( ; ie_end != ie ; ++ie , dst_ptr += data_size ) {
 
-            ConnectSpan con = (*ie)->connections( src_type );
-
-            for ( ; con.first != con.second ; ++con.first ) {
-              const unsigned src_id  = con.first->identifier();
-              void * const   src_ptr = con.first->entity()->data(src_field);
+            for ( ConnectSpan con = (*ie)->connections( src_type );
+                  con ; ++con ) {
+              const unsigned src_id  = con->identifier();
+              void * const   src_ptr = con->entity()->data(src_field);
               assemble( dst_ptr , src_ptr , src_id );
             }
           }

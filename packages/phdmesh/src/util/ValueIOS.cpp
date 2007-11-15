@@ -25,8 +25,10 @@
  */
 
 #include <ctype.h>
+#include <strings.h>
 #include <stdexcept>
 #include <string>
+#include <sstream>
 #include <iostream>
 #include <algorithm>
 
@@ -318,6 +320,130 @@ void ValueIOS<double>
 void ValueIOS<double>
   ::tellp( std::ostream & s, unsigned i, const void * v) const
 { tell( s , i, * reinterpret_cast<const ValueType*>(v) ); }
+
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+
+namespace {
+
+void enum_tell( std::ostream & os,
+                const char * const indent ,
+                const ValueIOS_Enum * en )
+{
+  os << "{" ;
+
+  if ( ! en[1].m_name ) {
+    os << " " ;
+    os << en->m_name ;
+    os << " = " ;
+    os << en->m_value ;
+    os << " " ;
+  }
+  else {
+    while ( en->m_name ) {
+      if ( indent ) { os << std::endl << indent ; }
+      else          { os << " " ; }
+      os << en->m_name ;
+      os << " = " ;
+      os << en->m_value ;
+      os << " " ;
+      ++en ;
+      if ( ! en->m_name ) { os << "," ; }
+    }
+  }
+  os << "}" ;
+}
+
+}
+
+void enum_tell( std::ostream & os, unsigned indent,
+                const char * name , const ValueIOS_Enum * en )
+{
+  static const char buf[] = "                                                                               " ;
+  static const unsigned buf_len = sizeof(buf) - 1 ;
+
+  const char * const b = buf + buf_len - indent ;
+
+  os << "enum " << name << " " ;
+  enum_tell( os , b , en );
+}
+
+
+long enum_value_of_name( const ValueIOS_Enum * en , const char * name )
+{
+  const ValueIOS_Enum * i = en ;
+  while ( i->m_name && strcasecmp( i->m_name , name ) ) { ++i ; }
+
+  if ( ! i->m_name ) {
+    std::ostringstream msg ;
+    msg << name ;
+    msg << "' NOT IN " ;
+    enum_tell( msg , NULL , en );
+    throw std::runtime_error( msg.str() );
+  }
+  return i->m_value ;
+}
+
+const char * enum_name_of_value( const ValueIOS_Enum * en , const long v )
+{
+  const ValueIOS_Enum * i = en ;
+
+  while ( i->m_name && v != i->m_value ) { ++i ; }
+
+  if ( ! i->m_name ) {
+    std::ostringstream msg ;
+    msg << v ;
+    msg << "' NOT IN " ;
+    enum_tell( msg , NULL , en );
+    throw std::runtime_error( msg.str() );
+  }
+  return i->m_name ;
+}
+
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+
+namespace {
+
+const ValueIOS_Enum * named_bool_values()
+{
+  static const ValueIOS_Enum values[] = {
+    { "false" , false } ,
+    { "true" , true } ,
+    { NULL , 0 }
+  };
+  return values ;
+}
+
+}
+
+void ValueIOS<bool>
+  ::get( std::istream & s , bool & v ) const
+{
+  std::string name ; s >> name ;
+  long tmp = enum_value_of_name( named_bool_values() , name.c_str() );
+  v = bool( tmp );
+}
+
+void ValueIOS<bool>
+  ::put( std::ostream & s , unsigned, const bool & v ) const
+{ s << enum_name_of_value( named_bool_values() , (long) v ); }
+
+void ValueIOS<bool>
+  ::tell( std::ostream & s , unsigned indent , const bool & ) const
+{ enum_tell( s , indent , "bool" , named_bool_values() ); }
+
+void ValueIOS<bool>
+  ::getp( std::istream & s , void * v ) const
+{ get( s , * reinterpret_cast<ValueType*>(v) ); }
+
+void ValueIOS<bool>
+  ::putp( std::ostream & s, unsigned i, const void * v) const
+{ put( s , i, * reinterpret_cast<const ValueType*>(v) ); }
+
+void ValueIOS<bool>
+  ::tellp( std::ostream & s , unsigned i, const void * v) const
+{ tell( s, i, * reinterpret_cast<const ValueType*>(v) ); }
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------

@@ -34,15 +34,15 @@ namespace phdmesh {
 //
 //  Example:  Sum<5>(x,y)   results in  x[i] += y[i]  for i=0..4
 
-template<unsigned n,unsigned i=0> struct Copy ;
-template<unsigned n,unsigned i=0> struct Sum ;
-template<unsigned n,unsigned i=0> struct Prod ;
-template<unsigned n,unsigned i=0> struct Max ;
-template<unsigned n,unsigned i=0> struct Min ;
-template<unsigned n,unsigned i=0> struct BitOr ;
-template<unsigned n,unsigned i=0> struct BitAnd ;
-template<unsigned n,unsigned i=0> struct InnerProduct ;
-template<unsigned n,unsigned i=0> struct Compare ;
+template< unsigned n, unsigned i=0> struct Copy ;
+template< unsigned n, unsigned i=0> struct Sum ;
+template< unsigned n, unsigned i=0> struct Prod ;
+template< unsigned n, unsigned i=0> struct Max ;
+template< unsigned n, unsigned i=0> struct Min ;
+template< unsigned n, unsigned i=0> struct BitOr ;
+template< unsigned n, unsigned i=0> struct BitAnd ;
+template< unsigned n, unsigned i=0> struct InnerProduct ;
+template< unsigned n, unsigned i=0> struct Compare ;
 
 //----------------------------------------------------------------------
 

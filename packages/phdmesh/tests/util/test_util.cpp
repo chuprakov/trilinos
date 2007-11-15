@@ -35,6 +35,7 @@ void test_containers( phdmesh::ParallelMachine , std::istream & );
 void test_comm_bounds( phdmesh::ParallelMachine , std::istream & );
 void test_comm_sparse( phdmesh::ParallelMachine , std::istream & );
 void test_comm_dense(  phdmesh::ParallelMachine , std::istream & );
+void test_comm_all(  phdmesh::ParallelMachine , std::istream & );
 void test_global_box( phdmesh::ParallelMachine comm , std::istream & );
 void test_oct_tree( phdmesh::ParallelMachine , std::istream & );
 void test_oct_tree_part_course( phdmesh::ParallelMachine , std::istream & );
@@ -55,6 +56,7 @@ int main( int argc , char **argv )
   test_map[ std::string("containers") ] = & test_containers ;
   test_map[ std::string("bounds") ] = & test_comm_bounds ;
   test_map[ std::string("sparse") ] = & test_comm_sparse ;
+  test_map[ std::string("comm_all") ] = & test_comm_all ;
   test_map[ std::string("dense") ] = & test_comm_dense ;
   test_map[ std::string("global_box") ] = & test_global_box ;
   test_map[ std::string("oct_tree") ] = & test_oct_tree ;

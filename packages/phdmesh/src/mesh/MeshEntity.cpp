@@ -137,9 +137,8 @@ print_entity( std::ostream & os , const std::string & lead , const Entity & e )
   print_entity_key( os , e.key() );
   os << " Owner(P" << e.owner_rank() << ") Connections {" ;
 
-  for ( ConnectSpan con = e.connections() ;
-        con.first != con.second ; ++con.first ) {
-    os << std::endl << lead << "  " << *con.first ;
+  for ( ConnectSpan con = e.connections() ; con ; ++con ) {
+    os << std::endl << lead << "  " << *con ;
   }
   os << " }" << std::endl ;
 
@@ -149,11 +148,11 @@ print_entity( std::ostream & os , const std::string & lead , const Entity & e )
 //----------------------------------------------------------------------
 
 namespace {
-const unsigned long zero_ul = 0 ;
+const unsigned long & zero_ul() { static unsigned long z = 0 ; return z ; }
 }
 
 Entity::Entity()
-  : SetvMember<unsigned long>( zero_ul ),
+  : SetvMember<unsigned long>( zero_ul() ),
     m_connect(), m_kernel(), m_kernel_ord(0), m_owner_rank(0)
 {}
 
@@ -175,15 +174,13 @@ ConnectSpan Entity::connections( EntityType et ) const
   const unsigned lo_key = Connect::attribute( et ,   ConnectType(0) , 0 );
   const unsigned hi_key = Connect::attribute( et+1 , ConnectType(0) , 0 );
 
-  ConnectSpan result( m_connect.begin() , m_connect.end() );
+  ConnectSet::const_iterator i = m_connect.begin();
+  ConnectSet::const_iterator e = m_connect.end();
 
-  result.first  = std::lower_bound( result.first , result.second ,
-                                    lo_key , LessConnectAttr() );
+  i = std::lower_bound( i , e , lo_key , LessConnectAttr() );
+  e = std::lower_bound( i , e , hi_key , LessConnectAttr() );
 
-  result.second = std::lower_bound( result.first , result.second ,
-                                    hi_key , LessConnectAttr() );
-
-  return result ;
+  return ConnectSpan( i , e );
 }
 
 ConnectSpan Entity::connections( EntityType et , ConnectType t ) const
@@ -191,15 +188,13 @@ ConnectSpan Entity::connections( EntityType et , ConnectType t ) const
   const unsigned lo_key = Connect::attribute( et , t ,   0 );
   const unsigned hi_key = Connect::attribute( et , t+1 , 0 );
 
-  ConnectSpan result( m_connect.begin() , m_connect.end() );
+  ConnectSet::const_iterator i = m_connect.begin();
+  ConnectSet::const_iterator e = m_connect.end();
 
-  result.first  = std::lower_bound( result.first , result.second ,
-                                    lo_key , LessConnectAttr() );
+  i = std::lower_bound( i , e , lo_key , LessConnectAttr() );
+  e = std::lower_bound( i , e , hi_key , LessConnectAttr() );
 
-  result.second = std::lower_bound( result.first , result.second ,
-                                    hi_key , LessConnectAttr() );
-
-  return result ;
+  return ConnectSpan( i , e );
 }
 
 //----------------------------------------------------------------------

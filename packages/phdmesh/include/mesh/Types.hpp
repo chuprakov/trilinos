@@ -31,6 +31,9 @@
 
 #include <limits>
 #include <utility>
+#include <vector>
+
+#include <util/SpanIter.hpp>
 
 namespace phdmesh {
 
@@ -51,6 +54,10 @@ class Entity ;  // Individual entity within the mesh
 class Connect ; // Connect pair of local mesh entities
 
 typedef std::pair<Entity*,unsigned> EntityProc ; // Entity-processor pair
+
+typedef std::vector< EntityProc > EntityProcSet ;
+
+typedef SpanIter< EntityProcSet::const_iterator > EntityProcSpan ;
 
 //----------------------------------------------------------------------
 /** Types of mesh entities.  Extensible via update to the enumeration */
