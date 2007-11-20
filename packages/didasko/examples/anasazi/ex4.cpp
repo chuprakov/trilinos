@@ -224,7 +224,7 @@ int main(int argc, char *argv[]) {
   // Compute the 2-norm of each vector in the MultiVector
   // and store them to a std::vector<double>
   std::vector<double> normR(numev);
-  MVT::MvNorm( R, &normR );
+  MVT::MvNorm( R, normR );
 
   // Output results to screen
   if(verbose) {
