@@ -36,7 +36,7 @@ Questions? Contact Michael A. Heroux (maherou@sandia.gov)
 #define __cplusplus
 #endif
 
-#ifdef HAVE_CONFIG_H
+#ifndef TRILINOS_NO_CONFIG_H
 
 /*
  * The macros PACKAGE, PACKAGE_NAME, etc, get defined for each package and need to
@@ -136,7 +136,7 @@ using std::endl;
 #endif
 #endif
 
-#else /*HAVE_CONFIG_H is not defined*/
+#else /*TRILINOS_NO_CONFIG_H is defined*/
 
 #ifndef __cplusplus
 #define __cplusplus
