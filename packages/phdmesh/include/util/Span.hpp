@@ -25,32 +25,33 @@
  * @date   November 2007
  */
 
-#ifndef util_SpanIter_hpp
-#define util_SpanIter_hpp
+#ifndef util_Span_hpp
+#define util_Span_hpp
 
 #include <iterator>
 
 namespace phdmesh {
 
-/** @class SpanIter
+/** @class Span
  *  Iterate a span of a container defined by begin and end iterators.
+ *  Provides forward iterator and const container-like functionality.
  */
 
 template< class IterType ,
           class IterCategory =
              typename std::iterator_traits< IterType >::iterator_category >
-class SpanIter ;
+class Span ;
 
 //----------------------------------------------------------------------
 // Only defined for random access iterators
 
 template< class IterType >
-class SpanIter< IterType , std::random_access_iterator_tag > {
+class Span< IterType , std::random_access_iterator_tag > {
 public:
   typedef IterType iterator ;
 
 private:
-  typedef SpanIter< iterator , std::random_access_iterator_tag > Self ;
+  typedef Span< iterator , std::random_access_iterator_tag > Self ;
   typedef std::iterator_traits< iterator > Traits ;
 
   iterator m_end ;
@@ -58,19 +59,18 @@ private:
 public:
 
   //--------------------------------
-  // Forward iterator requirements
+  // Forward iterator functionality
 
   typedef typename Traits::value_type      value_type ;
   typedef typename Traits::difference_type difference_type ;
   typedef typename Traits::pointer         pointer ;
   typedef typename Traits::reference       reference ;
-  typedef std::forward_iterator_tag        iterator_category ;
 
-  ~SpanIter() {}
+  ~Span() {}
 
-  SpanIter() : m_end() { m_iter = m_end ; }
+  Span() : m_end() { m_iter = m_end ; }
 
-  SpanIter( const Self & rhs ) : m_end( rhs.m_end ) , m_iter( rhs.m_iter ) {}
+  Span( const Self & rhs ) : m_end( rhs.m_end ) , m_iter( rhs.m_iter ) {}
 
   Self & operator = ( const Self & rhs )
     { m_end = rhs.m_end ; m_iter = rhs.m_iter ; return *this ; }
@@ -89,27 +89,28 @@ public:
   pointer   operator -> () const { return & *m_iter ; }
 
   //--------------------------------
-  // Additional 'span' functionality
+  // Container-like functionality for random access iterators.
+
+  reference front() const { return *m_iter ; }
+  reference back()  const { return m_end[-1] ; }
 
   iterator begin() const { return m_iter ; }
   iterator end()   const { return m_end ; }
 
-  SpanIter( iterator i , iterator e ) : m_end(e), m_iter(i) {}
+  template<class Iterator>
+  Span( Iterator i , Iterator e ) : m_end(e), m_iter(i) {}
 
   template<class Container>
   explicit
-  SpanIter( const Container & c ) : m_end( c.end() ), m_iter( c.begin() ) {}
+  Span( const Container & c ) : m_end( c.end() ), m_iter( c.begin() ) {}
 
   template<class Container>
   explicit
-  SpanIter( Container & c ) : m_end( c.end() ), m_iter( c.begin() ) {}
+  Span( Container & c ) : m_end( c.end() ), m_iter( c.begin() ) {}
 
   bool empty () const { return ! ( m_iter < m_end ) ; }
 
   operator bool () const { return m_iter < m_end ; }
-
-  //--------------------------------
-  // Additonal random access functionality
 
   reference operator [] ( difference_type n ) const { return m_iter[n] ; }
 

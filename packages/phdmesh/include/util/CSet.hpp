@@ -29,223 +29,168 @@
 #define util_CSet_hpp
 
 #include <typeinfo>
-#include <utility>
 #include <vector>
-#include <string>
+#include <iosfwd>
+
+#include <util/Span.hpp>
 
 namespace phdmesh {
 
 //----------------------------------------------------------------------
 /**
  * @class CSet
- * @brief Multiset of entities with varying virtual base classes
+ * @brief Multiset of entities of arbitrary types.
  *
- * @par Simple inheritence usage
+ *  Example usage of the three methods:
  *
- *    Let 'A' and 'B' be virtual base classes and
- *    let 'U', 'V', and 'W' be implementation classes.
+ *  class A { ... };
+ *  class B { ... };
  *
- *      class A : public phdmesh::CSetMember<A> { ... };
- *      class B : public phdmesh::CSetMember<B> { ... };
+ *  CSet cset ;
  *
- *    The 'phdmesh::CSetMember<class T>' base class enables
- *    implementations of 'A' and 'B' to be inserted into a
- *    CSet container.  DO NOT use virtual inheritence in the
- *    above derivations.
+ *  // Insert pointers to objects:
  *
- *      class U : public A { ... };
- *      class V : public B { ... };
- *      class W : public B { ... };
+ *  cset.insert<A>( new A ); // Do not delete on destruction
+ *  cset.insert<B>( new B , true ); // Delete on destruction
+ *  cset.insert<B>( new B , true ); // Delete on destruction
  *
- *    Insert implementations of U, V, and W into a virtual set.
+ *  // Query the collection of objects of a given type:
  *
- *      CSet s ;
- *      U * inst_u = new U();
- *      V * inst_v = new V();
- *      W * inst_w = new W();
+ *  Span< CSet::iterator<A> > sa = cset.get<A>();
+ *  Span< CSet::iterator<B> > sb = cset.get<B>();
  *
- *      s.insert<A>( inst_u ) == 0 // The first  member of class 'A'
- *      s.insert<B>( inst_v ) == 0 // The first  member of class 'B'
- *      s.insert<B>( inst_w ) == 1 // The second member of class 'B'
+ *  // Erase a member:
  *
- *      s.count<A>() == 1
- *      s.count<B>() == 2
- *
- *    The default ordinal to the 'get' method is zero
- *
- *      A * au = s.get<A>();   au == inst_u
- *      B * bv = s.get<B>();   bv == inst_v
- *      B * bw = s.get<B>(1);  bw == inst_w
- *
- * @par Geting all implementations of a given base class
- *
- *      std::vector<const A *> a_all = s.get_all<A>();
- *
- * @par Destruction of member implementations
- *
- *    The 'insert' method has a second argument 'destroy' which
- *    is a function to destroy the inserted member when ever the
- *    container is destroyed.  The default value for 'destroy' is
- *    a function that calls the 'delete' operator on the member.
- *    If the 'insert' method is given 'NULL' then nothing is done
- *    to the inserted member when the container is destroyed.
- *
- *      U & inst_u = singleton_of_u();
- *
- *      s.insert<A>( inst_u , NULL ); // Do not call 'delete' on 'inst_u'
- *
- * @par Multiple interitence usage
- *
- *    Let 'A' and 'B' be virtual base classes as before,
- *    let 'U', 'V', and 'W' be implementation classes as before, and
- *    let 'X' implement both 'A' and 'B'
- *
- *      class X : public A , public B { ... }
- *
- *    Insert impelementations of U, V, and W as before.
- *    Insert X into the same virtual set, but only destroy it once!
- *
- *      X * inst_x = new X();
- *
- *      s.insert<A>( inst_x ) == 1        // The second member of class 'A'
- *      s.insert<B>( inst_x , NULL ) == 2 // The third  member of class 'B'
- *
- *      s.count<A>() == 2
- *      s.count<B>() == 3
- *
- *      A * ax = s.get<A>(1);   ax == inst_x
- *      B * bx = s.get<B>(2);   bx == inst_x
- *
+ *  {
+ *    B * b = cset.erase( sb.begin() ); // Erase never deletes
+ *    delete b ;
+ *  }
  */
 //----------------------------------------------------------------------
 
 class CSet ;
-template<class Type> struct CSetMember ;
+
+class CSetMemberBase {
+public:
+  virtual ~CSetMemberBase();
+  const std::type_info & m_typeid ;
+protected:
+  bool m_delete ;
+  explicit CSetMemberBase( const std::type_info & t )
+    : m_typeid(t), m_delete(false) {}
+private:
+  CSetMemberBase();
+  CSetMemberBase( const CSetMemberBase & );
+  CSetMemberBase & operator = ( const CSetMemberBase & );
+  friend class CSet ;
+};
+
+namespace {
+
+template<class T>
+class CSetMember : public CSetMemberBase {
+public:
+  T * m_value ;
+  virtual ~CSetMember();
+  explicit CSetMember( T * v ) : CSetMemberBase( typeid(T) ), m_value(v) {}
+private:
+  CSetMember();
+  CSetMember( const CSetMember<T> & );
+  CSetMember<T> & operator = ( const CSetMember<T> & );
+};
+
+template<class T>
+CSetMember<T>::~CSetMember() { if ( m_delete ) { delete m_value ; } }
+
+}
 
 //----------------------------------------------------------------------
 /**
  * @class CSet
- * @brief Set of entities with varied virtual base classes.
+ * @brief Set of pointers to objects with varied types.
  */
-
 class CSet {
 public:
 
-  static void default_destroy( const CSetMember<void> * m );
+  typedef std::vector< CSetMemberBase * > MemberSet ;
 
-  typedef void (*MemberDestroy)( const CSetMember<void> * );
+  template<class T>
+  class iterator : public std::iterator<std::random_access_iterator_tag,T> {
+  private:
+    friend class CSet ;
+
+    MemberSet::const_iterator i ;
+
+    T * value( ptrdiff_t n ) const
+      { return static_cast<CSetMember<T>*>(*(i+n))->m_value ; }
+
+    T * value() const { return static_cast<CSetMember<T>*>(*i)->m_value ; }
+
+  public:
+
+    iterator( MemberSet::iterator rhs ) : i(rhs) {}
+    iterator( MemberSet::const_iterator rhs ) : i(rhs) {}
+
+    ~iterator() {}
+    iterator() {}
+    iterator( const iterator<T> & rhs ) : i( rhs.i ) {}
+    iterator<T> & operator = ( const iterator<T> & rhs )
+      { i = rhs.i ; return *this ; }
+
+    T & operator[]( ptrdiff_t n ) const { return *value(n); }
+    T & operator *  () const { return *value(); }
+    T * operator -> () const { return value(); }
+
+    bool operator == ( const iterator<T> & rhs ) const { return i == rhs.i ; }
+    bool operator != ( const iterator<T> & rhs ) const { return i != rhs.i ; }
+    bool operator <  ( const iterator<T> & rhs ) const { return i <  rhs.i ; }
+    bool operator >  ( const iterator<T> & rhs ) const { return i >  rhs.i ; }
+    bool operator <= ( const iterator<T> & rhs ) const { return i <= rhs.i ; }
+    bool operator >= ( const iterator<T> & rhs ) const { return i >= rhs.i ; }
+
+    iterator<T> & operator ++ () { ++i ; return *this ; }
+    iterator<T> & operator -- () { --i ; return *this ; }
+    iterator<T>   operator ++ (int) { return iterator<T>( i++ ); }
+    iterator<T>   operator -- (int) { return iterator<T>( i-- ); }
+    iterator<T> & operator += (ptrdiff_t n) { i+=n ; return *this; }
+    iterator<T> & operator -= (ptrdiff_t n) { i-=n ; return *this; }
+    iterator<T>   operator +  (ptrdiff_t n) const {return iterator<T>(i+n);}
+    iterator<T>   operator -  (ptrdiff_t n) const {return iterator<T>(i-n);}
+
+    ptrdiff_t operator - ( const iterator<T> & rhs ) const
+      { return i - rhs.i ; }
+  };
+
+  //--------------------------------
+  /** Insert and optionally request deletion upon destruction */
+  template<class T> iterator<T> insert( T * , bool = false );
+
+  /** Erase a member without deleting */
+  template<class T> T * erase( iterator<T> );
+
+  /** Get members conforming to the given type */
+  template<class T> Span< iterator<T> > get() const ;
 
   //--------------------------------
 
   ~CSet();
   CSet();
 
-  /** Insert a member of the given base type.
-   *  Return the ordinal of the member among members with the same base type.
-   *  Ordinals are incremented with each insertion of the same base type.
-   */
-
-  template<class T>
-    unsigned insert( const T * , MemberDestroy = & default_destroy );
-
-  /** Replace a member of the given base type.
-   *  Return ordinal of the replaced member.
-   *  The caller assumes ownership of the replaced member.
-   */
-
-  template<class T>
-    unsigned replace( const T * c_old ,
-                      const T * c_new , MemberDestroy = & default_destroy );
-
-  /** Get count of members of the given base type */
-
-  template<class T> unsigned count() const ;
-
-  /** Get a member of the given base type with the given ordinal.  */
-
-  template<class T>
-    const typename T::CSet_Type * get( unsigned ordinal = 0 ) const ;
-
-  /** Get all members of a given base type.  */
-
-  template<class T>
-    std::vector<const typename T::CSet_Type *> get_all() const ;
-
-  void print( std::string & , const char * separator ) const ;
+  std::ostream & print( std::ostream & , const char * separator ) const ;
 
 private:
 
-  typedef std::pair< const CSetMember<void> * ,
-                     void (*)( const CSetMember<void> * ) > ValueType ;
+  Span< MemberSet::const_iterator > span( const std::type_info & ) const ;
+  Span< MemberSet::iterator >       span( const std::type_info & );
 
-  typedef std::pair< std::vector<ValueType>::const_iterator ,
-                     std::vector<ValueType>::const_iterator > BoundsType ;
+  MemberSet::iterator p_insert( MemberSet::iterator , CSetMemberBase * );
 
-  static
-  std::vector<ValueType>::const_iterator
-  m_upper_bound( std::vector<ValueType>::const_iterator ,
-                 std::vector<ValueType>::const_iterator ,
-                 const std::type_info & );
-  static 
-  std::vector<ValueType>::const_iterator
-  m_lower_bound( std::vector<ValueType>::const_iterator ,
-                 std::vector<ValueType>::const_iterator ,
-                 const std::type_info & );
+  bool p_erase( MemberSet::const_iterator );
 
-  static
-  std::vector<ValueType>::iterator
-  m_lower_bound( std::vector<ValueType>::iterator ,
-                 std::vector<ValueType>::iterator ,
-                 const std::type_info & );
-
-  BoundsType m_bounds( const std::type_info & ) const ;
-
-  unsigned m_insert( const CSetMember<void> * , MemberDestroy ,
-                     const char * const );
-
-  unsigned m_replace( const CSetMember<void> * ,
-                      const CSetMember<void> * , MemberDestroy ,
-                      const char * const );
-
-  std::vector< ValueType > m_inst ;
+  MemberSet m_members ;
 };
 
-//----------------------------------------------------------------------
-
-template<>
-struct CSetMember<void> {
-  /** The implementation class may provide a name */
-  virtual const char * name() const ;
-
-  /** Virtual destructor for destruction of the CSet container. */
-  virtual ~CSetMember() {}
-
-  /** The base class type (container key) for this member */
-  const std::type_info & m_cset_type ;
-
-private:
-
-  CSetMember( const std::type_info & t ) : m_cset_type(t) {}
-
-  CSetMember();
-  CSetMember( const CSetMember<void> & );
-  CSetMember<void> & operator = ( const CSetMember & );
-
-  template<class T> friend class CSetMember ;
-};
-
-template<class T>
-struct CSetMember : public CSetMember<void> {
-  typedef T CSet_Type ;
-
-  virtual ~CSetMember() {}
-
-  CSetMember()                     : CSetMember<void>( typeid(CSet_Type) ) {}
-  CSetMember(const CSetMember<T> &) : CSetMember<void>( typeid(CSet_Type) ) {}
-  CSetMember<T> & operator = ( const CSetMember<T> & ) {}
-};
-
-} // namespace phdmesh
+}
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
@@ -255,68 +200,35 @@ namespace phdmesh {
 
 template<class T>
 inline
-unsigned CSet::count() const
+Span< CSet::iterator<T> > CSet::get() const
 {
-  const BoundsType b = m_bounds( typeid(typename T::CSet_Type) );
-  return b.second - b.first ;
+  const Span< MemberSet::const_iterator > s = span( typeid(T) );
+  return Span< CSet::iterator<T> >( s.begin() , s.end() );
 }
 
 template<class T>
 inline
-const typename T::CSet_Type * CSet::get( unsigned ordinal ) const
+CSet::iterator<T> CSet::insert( T * arg_value , bool arg_delete )
 {
-  BoundsType b = m_bounds( typeid(typename T::CSet_Type) );
+  Span< MemberSet::iterator > s = span( typeid(T) );
 
-  return ( b.first += ordinal ) < b.second
-         ? static_cast<const typename T::CSet_Type *>( b.first->first )
-         : reinterpret_cast<const typename T::CSet_Type*>( NULL );
+  for ( ; s && arg_value != static_cast<CSetMember<T>*>(*s)->m_value ; ++s );
+
+  const MemberSet::iterator i =
+    s ? s.begin() : p_insert( s.end() , new CSetMember<T>(arg_value) );
+
+  (*i)->m_delete = arg_delete ;
+
+  return CSet::iterator<T>( i );
 }
 
 template<class T>
 inline
-std::vector<const typename T::CSet_Type *> CSet::get_all() const
+T * CSet::erase( CSet::iterator<T> j )
 {
-  std::vector<const typename T::CSet_Type *> result ;
-
-  BoundsType b = m_bounds( typeid(typename T::CSet_Type) );
-
-  result.reserve( b.second - b.first );
-
-  for ( ; b.first != b.second ; ++b.first ) {
-    result.push_back(
-      static_cast<const typename T::CSet_Type *>(b.first->first) );
-  }
-  return result ;
+  T * const p = j.value();
+  return p_erase( j.i ) ? p : (T*) NULL ;
 }
-
-template<class T>
-inline
-unsigned CSet::insert( const T * t , CSet::MemberDestroy destroy )
-{
-  // Require the proper inheritence at insertion.
-
-  const CSetMember<typename T::CSet_Type> * const ts = t ;
-  const CSetMember<void>                  * const tv = ts ;
-
-  return m_insert( tv , destroy , typeid(T).name() );
-}
-
-
-template<class T>
-inline
-unsigned CSet::replace( const T * c_old ,
-                        const T * c_new , CSet::MemberDestroy destroy )
-{
-  // Require the proper inheritence at removal.
-
-  const CSetMember<typename T::CSet_Type> * const ts_old = c_old ;
-  const CSetMember<void>                  * const tv_old = ts_old ;
-  const CSetMember<typename T::CSet_Type> * const ts_new = c_new ;
-  const CSetMember<void>                  * const tv_new = ts_new ;
-
-  return m_replace( tv_old , tv_new , destroy , typeid(T).name() );
-}
-
 
 } // namespace phdmesh
 

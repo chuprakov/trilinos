@@ -57,7 +57,7 @@
 #include <util/Parallel.hpp>
 #include <util/OctTree.hpp>
 #include <mesh/Types.hpp>
-#include <mesh/EntityManager.hpp>
+#include <mesh/EntityComm.hpp>
 
 //----------------------------------------------------------------------
 
@@ -139,7 +139,7 @@ void comm_copy(
  *  and incorporate received mesh entities into the receive mesh.
  */
 bool comm_mesh_entities(
-  const EntityManager & manager ,
+  const EntityComm & manager ,
   Mesh & send_mesh ,
   Mesh & recv_mesh ,
   const EntityProcSet & send ,

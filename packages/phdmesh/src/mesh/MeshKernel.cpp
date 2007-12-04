@@ -204,8 +204,8 @@ void Kernel::zero_fields( Kernel & k_dst , unsigned i_dst )
   const DataMap * const e = i + field_set.size();
 
   for ( ; i != e ; ++i ) {
-    if ( i->first ) {
-      memory_zero( p + i->first + i->second * i_dst , i->second );
+    if ( i->m_size ) {
+      memory_zero( p + i->m_base + i->m_size * i_dst , i->m_size );
     }
   }
 }
@@ -226,11 +226,11 @@ void Kernel::copy_fields( Kernel & k_dst , unsigned i_dst ,
 
   for ( ; i != e ; ++i , ++j ) {
 
-    if ( i->first ) {
-      if ( j->first ) {
-        if ( i->second == j->second ) {
-          memory_copy( d + i->first + i->second * i_dst ,
-                       s + j->first + j->second * i_src , i->second );
+    if ( i->m_size ) {
+      if ( j->m_size ) {
+        if ( i->m_size == j->m_size ) {
+          memory_copy( d + i->m_base + i->m_size * i_dst ,
+                       s + j->m_base + j->m_size * i_src , i->m_size );
         }
         else {
           std::ostringstream msg ;
@@ -240,7 +240,7 @@ void Kernel::copy_fields( Kernel & k_dst , unsigned i_dst ,
         }
       }
       else {
-        memory_zero( d + i->first + i->second * i_dst , i->second );
+        memory_zero( d + i->m_base + i->m_size * i_dst , i->m_size );
       }
     }
   }
@@ -288,16 +288,6 @@ const FieldDimension & dimension( const Field<void,0> & field ,
 
 }
 
-const FieldDimension & dimension( const Field<void,0> & field ,
-                                  const Kernel & kernel )
-{
-  static const char method[] = "phdmesh::dimension( Field , Kernel )" ;
-
-  PartSet parts ; kernel.supersets( parts );
-
-  return dimension( field , parts , method );
-}
-
 //----------------------------------------------------------------------
 
 void Kernel::update_state()
@@ -314,16 +304,16 @@ void Kernel::update_state()
       const unsigned num_state = field.number_of_states();
       i += num_state ;
 
-      if ( 1 < num_state && tmp->first ) {
+      if ( 1 < num_state && tmp->m_size ) {
         unsigned offset[ MaximumFieldStates ] ;
 
         for ( unsigned j = 0 ; j < num_state ; ++j ) {
-          offset[j] = tmp[j].first ;
+          offset[j] = tmp[j].m_base ;
         }
 
         for ( unsigned j = 0 ; j < num_state ; ++j ) {
           const unsigned j_new = ( j + num_state - 1 ) % num_state ;
-          tmp[j_new].first = offset[j] ;
+          tmp[j_new].m_base = offset[j] ;
         }
       }
     }
@@ -436,15 +426,18 @@ Mesh::declare_kernel( const EntityType arg_entity_type ,
       for ( unsigned i = 0 ; i < num_fields ; ++i ) {
         const Field<void,0>  & field = * field_set[i] ;
         const FieldDimension & dim   = dimension( field, entity_parts, method);
-        const unsigned value_size    = dim.size();
+        const unsigned value_size =
+          NumericEnum<void>::size(field.numeric_type_ordinal()) * dim.length();
 
-        field_map[i].first  = value_offset ;
-        field_map[i].second = value_size ;
+        field_map[i].m_base = value_offset ;
+        field_map[i].m_size = value_size ;
+        field_map[i].m_dim  = & dim ;
 
         value_offset += align( value_size * kernel_capacity );
       }
-      field_map[ num_fields ].first  = value_offset ;
-      field_map[ num_fields ].second = 0 ;
+      field_map[ num_fields ].m_base  = value_offset ;
+      field_map[ num_fields ].m_size = 0 ;
+      field_map[ num_fields ].m_dim = NULL ;
     }
 
     // Allocation size:
@@ -455,7 +448,7 @@ Mesh::declare_kernel( const EntityType arg_entity_type ,
 
     const size_t size = align( sizeof(Kernel) ) +
                         align( sizeof(unsigned) * key_size ) +
-                        field_map[ num_fields ].first ;
+                        field_map[ num_fields ].m_base ;
 
     // All fields checked and sized, Ready to allocate
 

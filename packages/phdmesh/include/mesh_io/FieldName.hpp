@@ -31,14 +31,13 @@
 
 #include <string>
 
-#include <util/CSet.hpp>
 #include <mesh/Types.hpp>
 
 //----------------------------------------------------------------------
 
 namespace phdmesh {
 
-class FieldName : public CSetMember<FieldName> {
+class FieldName {
 public:
 
   /** Encode a descriptive text label given a name, dimension, and indices */
@@ -78,7 +77,9 @@ const FieldName & io_cartesian_vector();
 
 const FieldName & io_cylindrical_vector();
 
-void io_declare( Field<void,0> & , const FieldName & );
+void io_declare_field_name( Field<void,0> & , const FieldName & );
+
+const FieldName * io_get_field_name( const Field<void,0> & );
 
 } // namespace phdmesh
 

@@ -27,36 +27,34 @@
 #include <algorithm>
 #include <stdexcept>
 #include <iostream>
+#include <sstream>
 
 #include <util/CSet.hpp>
 
 namespace phdmesh {
 
-const char * CSetMember<void>::name() const
+std::ostream & CSet::print( std::ostream & s , const char * separator ) const
 {
-  static const char n[] = "phdmesh::CSetMember<undetermined>" ;
-  return n ;
-}
+  static const char space[] = " " ;
+  const MemberSet::const_iterator b = m_members.begin();
+  const MemberSet::const_iterator e = m_members.end();
+  MemberSet::const_iterator i ;
 
-void CSet::default_destroy( const CSetMember<void> * m )
-{
-  delete const_cast<CSetMember<void>*>( m );
-}
+  if ( ! separator ) { separator = space ; }
 
-void CSet::print( std::string & s , const char * separator ) const
-{
-  const std::vector<CSet::ValueType>::const_iterator b = m_inst.begin();
-  const std::vector<CSet::ValueType>::const_iterator e = m_inst.end();
-  std::vector<CSet::ValueType>::const_iterator i ;
-
-  for ( i = b ; i != e ; ++i ) {
-    if ( separator && i != b ) { s.append( separator ); }
-    s.append( "( typeid(" );
-    s.append( i->first->m_cset_type.name() );
-    s.append( ") , " );
-    s.append( i->first->name() );
-    s.append( " )" );
+  for ( i = b ; i != e ; ) {
+    if ( i != b ) { s << separator ; }
+    CSetMemberBase & m = **i ;
+    unsigned count = 0 ;
+    while ( i != e && m.m_typeid == (*i)->m_typeid ) {
+      ++i ; ++count ;
+    }
+    s << "typeid(" ;
+    s << m.m_typeid.name();
+    s << ")#" ;
+    s << count ;
   }
+  return s ;
 }
 
 //----------------------------------------------------------------------
@@ -65,12 +63,11 @@ namespace {
 
 // Comparison for sorted vector
 
-typedef std::pair< const CSetMember<void> * ,
-                   void (*)( const CSetMember<void> * ) > VT ;
-
 struct less_cset {
-  bool operator()( const VT & lhs , const std::type_info & rhs ) const ;
-  bool operator()( const std::type_info & lhs , const VT & rhs ) const ;
+  bool operator()( const CSetMemberBase * lhs ,
+                   const std::type_info & rhs ) const ;
+  bool operator()( const std::type_info & lhs ,
+                   const CSetMemberBase * rhs ) const ;
 };
 
 // On some systems, namely AIX, std::type_info::before(...)
@@ -78,214 +75,70 @@ struct less_cset {
 // Thus we pay a small price on all systems to specifically
 // test for and eliminate equality.
 
-bool less_cset::operator()( const VT & lhs , const std::type_info & rhs ) const
-{
-  return lhs.first->m_cset_type.before( rhs ) &&
-         lhs.first->m_cset_type != rhs ;
-}
+bool less_cset::operator()( const CSetMemberBase * lhs ,
+                            const std::type_info   & rhs ) const
+{ return lhs->m_typeid.before( rhs ) && lhs->m_typeid != rhs ; }
 
-bool less_cset::operator()( const std::type_info & lhs , const VT & rhs ) const
-{
-  return lhs.before( rhs.first->m_cset_type ) &&
-         lhs != rhs.first->m_cset_type ;
-}
-
-}
-
-std::vector<CSet::ValueType>::const_iterator
-CSet::m_upper_bound( std::vector<CSet::ValueType>::const_iterator i ,
-                     std::vector<CSet::ValueType>::const_iterator j ,
-                     const std::type_info & t )
-{ return std::upper_bound( i , j , t , less_cset() ); }
-
-std::vector<CSet::ValueType>::const_iterator
-CSet::m_lower_bound( std::vector<CSet::ValueType>::const_iterator i ,
-                     std::vector<CSet::ValueType>::const_iterator j ,
-                     const std::type_info & t )
-{ return std::lower_bound( i , j , t , less_cset() ); }
-
-std::vector<CSet::ValueType>::iterator
-CSet::m_lower_bound( std::vector<CSet::ValueType>::iterator i ,
-                     std::vector<CSet::ValueType>::iterator j ,
-                     const std::type_info & t )
-{ return std::lower_bound( i , j , t , less_cset() ); }
-
-
-//----------------------------------------------------------------------
-
-std::pair< std::vector<VT>::const_iterator ,
-           std::vector<VT>::const_iterator >
-CSet::m_bounds( const std::type_info & t ) const
-{
-  std::vector<CSet::ValueType>::const_iterator i = m_inst.begin();
-  std::vector<CSet::ValueType>::const_iterator j = m_inst.end();
-
-  i = m_lower_bound( i , j , t );
-  j = m_upper_bound( i , j , t );
-
-  return BoundsType( i , j );
-}
-
-//----------------------------------------------------------------------
-
-namespace {
-
-void throw_null_value( const char * method_name ,
-                       const char * type_name )
-{
-  std::string msg ;
-  msg.append( method_name )
-     .append( "<" )
-     .append( type_name )
-     .append( "> FAILED: Given {null} value" );
-  throw std::invalid_argument( msg );
-}
-
-void throw_redundant_value( const char * method_name ,
-                            const char * type_name ,
-                            const char * value_name )
-{
-  std::string msg ;
-  msg.append( method_name )
-     .append( "<" )
-     .append( type_name )
-     .append( ">( " )
-     .append( value_name )
-     .append( " ) FAILED: Redundant value has a conflict" );
-  throw std::invalid_argument( msg );
-}
-
-void throw_not_value( const char * method_name ,
-                      const char * type_name ,
-                      const char * value_name )
-{
-  std::string msg ;
-  msg.append( method_name )
-     .append( "<" )
-     .append( type_name )
-     .append( ">( " )
-     .append( value_name )
-     .append( " ) FAILED: Not currently a value" );
-  throw std::invalid_argument( msg );
-}
+bool less_cset::operator()( const std::type_info   & lhs ,
+                            const CSetMemberBase * rhs ) const
+{ return lhs.before( rhs->m_typeid ) && lhs != rhs->m_typeid ; }
 
 }
 
 //----------------------------------------------------------------------
 
-unsigned
-CSet::m_insert( const CSetMember<void> * inst ,
-                CSet::MemberDestroy destroy ,
-                const char * const type_name )
+Span< CSet::MemberSet::const_iterator >
+CSet::span( const std::type_info & t ) const
 {
-  static const char method_name[] = "phdmesh::CSet::insert" ;
+  MemberSet::const_iterator i = m_members.begin();
+  MemberSet::const_iterator j = m_members.end();
 
-  if ( inst == NULL ) { throw_null_value( method_name , type_name ); }
+  i = std::lower_bound( i , j , t , less_cset() );
+  j = std::upper_bound( i , j , t , less_cset() );
 
-  // Find insertion point, make sure this insert is not imcompatible
+  return Span< CSet::MemberSet::const_iterator >( i , j );
+}
 
-  const std::vector<CSet::ValueType>::iterator e = m_inst.end();
-        std::vector<CSet::ValueType>::iterator i = m_inst.begin();
-        std::vector<CSet::ValueType>::iterator j ;
+Span< CSet::MemberSet::iterator >
+CSet::span( const std::type_info & t )
+{
+  MemberSet::iterator i = m_members.begin();
+  MemberSet::iterator j = m_members.end();
 
-  i = m_lower_bound( i , e , inst->m_cset_type );
+  i = std::lower_bound( i , j , t , less_cset() );
+  j = std::upper_bound( i , j , t , less_cset() );
 
-  // Check for a duplication of this member
+  return Span< CSet::MemberSet::iterator >( i , j );
+}
 
-  bool match = false ;
+CSet::MemberSet::iterator
+CSet::p_insert( CSet::MemberSet::iterator i , CSetMemberBase * v )
+{ return m_members.insert( i , v ); }
 
-  for ( j = i ; j != e &&
-                j->first->m_cset_type == inst->m_cset_type &&
-                ! ( match = j->first == inst ) ; ++j );
+bool CSet::p_erase( CSet::MemberSet::const_iterator i )
+{
+  ptrdiff_t n = std::distance( ((const MemberSet &) m_members).begin() , i );
 
-  const unsigned ordinal = j - i ;
+  const bool valid = 0 <= n && n < (ptrdiff_t) m_members.size();
 
-  if ( match ) {
-    if ( j->second != destroy ) {
-      throw_redundant_value( method_name , type_name , inst->name() );
-    }
-  }
-  else {
-    m_inst.insert( j , CSet::ValueType( inst , destroy ) );
-  }
+  if ( valid ) { m_members.erase( m_members.begin() + n ); }
 
-  return ordinal ;
+  return valid ;
 }
 
 //----------------------------------------------------------------------
 
-unsigned
-CSet::m_replace( const CSetMember<void> * c_old ,
-                 const CSetMember<void> * c_new ,
-                 CSet::MemberDestroy destroy ,
-                 const char * const type_name )
-{
-  static const char method_name[] = "phdmesh::CSet::replace" ;
-
-  if ( c_old == NULL || c_new == NULL ) {
-    throw_null_value( method_name , type_name );
-  }
-
-  // Search for the old and new components
-  // Old component must exist.
-  // New component either must not exist or be the old component
-
-  const std::vector<CSet::ValueType>::iterator e = m_inst.end();
-        std::vector<CSet::ValueType>::iterator i = m_inst.begin();
-        std::vector<CSet::ValueType>::iterator j , k ;
-
-  i = m_lower_bound( i, e, c_old->m_cset_type );
-
-  bool old_match = false ;
-
-  for ( j = i ; j != e &&
-                j->first->m_cset_type == c_old->m_cset_type &&
-                ! ( old_match = j->first == c_old ) ; ++j );
-
-  if ( ! old_match ) {
-    throw_not_value( method_name , type_name , c_old->name() );
-  }
-
-  const unsigned ordinal = j - i ;
-
-  if ( c_old != c_new ) {
-
-    bool new_match = false ;
-
-    for ( k = i ; k != e &&
-                  k->first->m_cset_type == c_new->m_cset_type &&
-                  ! ( new_match = k->first == c_new ) ; ++k );
-
-    if ( new_match ) {
-      throw_redundant_value( method_name , type_name , c_new->name() );
-    }
-  }
-
-  j->first  = c_new ;
-  j->second = destroy ;
-
-  return ordinal ;
-}
-
-//----------------------------------------------------------------------
+CSetMemberBase::~CSetMemberBase() {}
 
 CSet::~CSet()
 {
-  const std::vector<CSet::ValueType>::iterator e = m_inst.end();
-        std::vector<CSet::ValueType>::iterator i = m_inst.begin();
-
-  while ( i != e ) {
-    if ( i->first && i->second ) {
-      MemberDestroy d = i->second ;
-      (*d)( i->first );
-    }
-    i->first   = NULL ;
-    i->second  = NULL ;
-    ++i ;
+  while ( ! m_members.empty() ) {
+    delete m_members.back();
+    m_members.pop_back();
   }
 }
 
-CSet::CSet() : m_inst() {}
+CSet::CSet() : m_members() {}
 
 } // namespace phdmesh
 
@@ -298,55 +151,70 @@ CSet::CSet() : m_inst() {}
 namespace phdmesh {
 namespace unit_test {
 
-void DoNotDelete( const phdmesh::CSetMember<void> * m )
-{
-  std::cout << "DoNotDelete(" << m->name() << ")" << std::endl ;
-}
-
-void DoDelete( const phdmesh::CSetMember<void> * m )
-{
-  std::cout << "DoDelete(" << m->name() << ")" << std::endl ;
-  delete m ;
-}
-
-class A : public phdmesh::CSetMember<A> {
+class A {
 public:
+  virtual const char * name() const = 0 ;
   virtual ~A();
 };
 
-class B : public phdmesh::CSetMember<B> {
+class B {
 public:
+  virtual const char * name() const = 0 ;
   virtual ~B();
 };
+
+void DoNotDelete( A * a )
+{ std::cout << "DoNotDelete(" << a->name() << ")" << std::endl ; }
+
+void DoDelete( A * a )
+{
+  std::cout << "DoDelete(" << a->name() << ")" << std::endl ;
+  delete a ;
+}
+
+void DoNotDelete( B * b )
+{ std::cout << "DoNotDelete(" << b->name() << ")" << std::endl ; }
+
+void DoDelete( B * b )
+{
+  std::cout << "DoDelete(" << b->name() << ")" << std::endl ;
+  delete b ;
+}
 
 class U : public A {
 public:
   const char * name() const ;
+  ~U() {}
 };
 
 class V : public B {
 public:
   const char * name() const ;
+  ~V() {}
 };
 
 class W : public B {
 public:
   const char * name() const ;
+  ~W() {}
 };
 
 class X : public A , public B {
 public:
   const char * name() const ;
+  ~X() {}
 };
 
 class Y : public A , public B {
 public:
   const char * name() const ;
+  ~Y() {}
 };
 
 class Z {
 public:
   const char * name() const ;
+  ~Z() {}
 };
 
 //----------------------------------------------------------------------
@@ -354,6 +222,8 @@ public:
 int cset()
 {
   CSet s ;
+  Span< CSet::iterator<A> > sa ;
+  Span< CSet::iterator<B> > sb ;
 
   U * u = new U();
   V * v = new V();
@@ -361,63 +231,64 @@ int cset()
   X * x = new X();
   Y * y = new Y();
 
-  std::cout << "s.insert<A>(u) = " << s.insert<A>(u) << std::endl ;
-  std::cout << "s.insert<B>(v) = " << s.insert<B>(v) << std::endl ;
-  std::cout << "s.insert<B>(w) = " << s.insert<B>(w) << std::endl ;
-  std::cout << "s.insert<A>(x) = " << s.insert<A>(x) << std::endl ;
-  std::cout << "s.insert<B>(x,NULL) = " << s.insert<B>(x,NULL) << std::endl ;
+  std::cout << "s.insert<A>(u,true) " << std::endl ; s.insert<A>(u,true);
+  std::cout << "s.insert<B>(v,true) " << std::endl ; s.insert<B>(v,true);
+  std::cout << "s.insert<B>(w,true) " << std::endl ; s.insert<B>(w,true);
+  std::cout << "s.insert<A>(x) "      << std::endl ; s.insert<A>(x);
+  std::cout << "s.insert<B>(x) "      << std::endl ; s.insert<B>(x);
+
+  sa = s.get<A>();
+  sb = s.get<B>();
 
   std::cout
-    << "s.count<A>() == " << s.count<A>() << std::endl 
-    << "s.count<B>() == " << s.count<B>() << std::endl ;
+    << "s.get<A>().size() == " << sa.size() << std::endl 
+    << "s.get<B>().size() == " << sb.size() << std::endl ;
   s.print( std::cout , "  " ) << std::endl ;
 
-  std::cout << "s.replace<A>(x,x,DoNotDelete) = "
-            <<  s.replace<A>(x,x,DoNotDelete) << std::endl ;
-  std::cout << "s.replace<B>(x,x,DoDelete) = "
-            <<  s.replace<B>(x,x,DoDelete) << std::endl ;
+  for ( unsigned i = 0 ; i < sa.size() ; ++i ) {
+    std::cout << "s.get<A>()[" << i << "].name() == "
+              << sa[i].name() << std::endl ;
+  }
+  for ( unsigned i = 0 ; i < sb.size() ; ++i ) {
+    std::cout << "s.get<B>()[" << i << "].name() == "
+              << sb[i].name() << std::endl ;
+  }
 
-  std::cout
-    << "s.count<A>() == " << s.count<A>() << std::endl 
-    << "s.count<B>() == " << s.count<B>() << std::endl ;
-  s.print( std::cout , "  " ) << std::endl ;
+  std::cout << "s.erase( <last A> )" << std::endl ; s.erase(sa.end()-1);
 
-  std::cout << "s.replace<A>(x,y,DoNotDelete) = "
-            <<  s.replace<A>(x,y,DoNotDelete) << std::endl ;
-  std::cout << "s.replace<B>(x,y,DoDelete) = "
-            <<  s.replace<B>(x,y,DoDelete) << std::endl ;
+  sa = s.get<A>();
+  sb = s.get<B>();
+
+  std::cout << "s.erase( <last B> )" << std::endl ; s.erase(sb.end()-1);
+
+  sa = s.get<A>();
+  sb = s.get<B>();
 
   delete x ; x = NULL ;
 
-  std::cout
-    << "s.count<A>() == " << s.count<A>() << std::endl 
-    << "s.count<B>() == " << s.count<B>() << std::endl ;
-  s.print( std::cout , "  " ) << std::endl ;
-
-  std::cout << "s.get<A>()->name()  == " << s.get<A>()->name() << std::endl ;
-  std::cout << "s.get<A>(1)->name() == " << s.get<A>(1)->name() << std::endl ;
-  std::cout << "s.get<B>()->name()  == " << s.get<B>()->name() << std::endl ;
-  std::cout << "s.get<B>(1)->name() == " << s.get<B>(1)->name() << std::endl ;
-  std::cout << "s.get<B>(2)->name() == " << s.get<B>(2)->name() << std::endl ;
-
-  std::vector<const B *> b_all = s.get_all<B>();
-  std::cout << "b_all.size() == " << b_all.size() << std::endl ;
-  for ( std::vector<const B *>::const_iterator i = b_all.begin() ;
-        i != b_all.end() ; ++i ) {
-    std::cout << "b_all has '" << (*i)->name()  << "'" << std::endl ;
+  for ( unsigned i = 0 ; i < sa.size() ; ++i ) {
+    std::cout << "s.get<A>()[" << i << "].name() == "
+              << sa[i].name() << std::endl ;
+  }
+  for ( unsigned i = 0 ; i < sb.size() ; ++i ) {
+    std::cout << "s.get<B>()[" << i << "].name() == "
+              << sb[i].name() << std::endl ;
   }
 
-#if 0 /* Compile errors */
+  std::cout << "s.insert<A>(y,true) " << std::endl ; s.insert<A>(y,true);
+  std::cout << "s.insert<B>(y) "      << std::endl ; s.insert<B>(y);
 
-  Z * z = new Z();
+  sa = s.get<A>();
+  sb = s.get<B>();
 
-  s.insert<A>(v);
-
-  s.insert<Z>(z);
-
-  s.get<Z>();
-
-#endif
+  for ( unsigned i = 0 ; i < sa.size() ; ++i ) {
+    std::cout << "s.get<A>()[" << i << "].name() == "
+              << sa[i].name() << std::endl ;
+  }
+  for ( unsigned i = 0 ; i < sb.size() ; ++i ) {
+    std::cout << "sb.get<A>()[" << i << "].name() == "
+              << sb[i].name() << std::endl ;
+  }
 
   return 0 ;
 }

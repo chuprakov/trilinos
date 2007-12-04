@@ -128,12 +128,8 @@ public:
                            const unsigned identifier ,
                            const char * required_unique_by = NULL );
 
-  /** Declare an anonymous connection between entities in the same mesh.
-   *  The converse connection is not automatically introduced.
-   */
-  void declare_connection_anon( Entity & ,
-                                Entity & ,
-                                const unsigned identifier );
+  void declare_connection( Entity & , const std::vector<Connect> & ,
+                           const char * required_unique_by = NULL );
 
   /** Remove all connections between two entities. */
   void destroy_connection( Entity & , Entity & );

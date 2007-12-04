@@ -37,13 +37,10 @@
 
 namespace phdmesh {
 
-const FieldDimension & dimension( const Field<void,0> & , const Kernel & );
-
 /** A given PartSet, i.e. the intersection of a set of parts,
  *  has one or more associated Kernels.  Each kernel is identified
  *  by its PartSet and ordinal.
  */
-
 struct KernelLess {
   bool operator()( const unsigned * lhs , const unsigned * rhs ) const ;
 };
@@ -53,10 +50,13 @@ struct KernelLess {
  *  Homogeneous in that all entities are of the same entity type
  *  and are members of the same set of parts.
  */
-
 class Kernel : private SetvMember<const unsigned * const> {
 private:
-  typedef std::pair<unsigned,unsigned> DataMap ;
+  struct DataMap {
+    const FieldDimension * m_dim ;
+    unsigned               m_base ;
+    unsigned               m_size ;
+  };
 
   Mesh      & m_mesh ;        // Mesh in which this kernel resides
   EntityType  m_entity_type ; // Type of mesh entities
@@ -110,11 +110,10 @@ public:
   template<typename T,unsigned NDim>
     T * data( const Field<T,NDim> & f ) const
       {
-        unsigned char * ptr = NULL ;
         const DataMap & pd = m_field_map[ f.schema_ordinal() ];
-        if ( pd.first ) {
-          ptr = reinterpret_cast<unsigned char*>( m_entities ) + pd.first ;
-        }
+        unsigned char * const ptr = pd.m_size
+          ? reinterpret_cast<unsigned char*>( m_entities ) + pd.m_base
+          : NULL ;
         return reinterpret_cast<T*>( ptr );
       }
 
@@ -124,12 +123,11 @@ public:
   template<typename T,unsigned NDim>
     T * data( const Field<T,NDim> & f , unsigned i ) const
       {
-        unsigned char * ptr = NULL ;
         const DataMap & pd = m_field_map[ f.schema_ordinal() ];
-        if ( pd.first ) {
-          ptr = reinterpret_cast<unsigned char*>( m_entities ) + pd.first
-                + pd.second * i ;
-        }
+        unsigned char * const ptr = pd.m_size
+          ? reinterpret_cast<unsigned char*>( m_entities )
+            + pd.m_base + pd.m_size * i 
+          : NULL ;
         return reinterpret_cast<T*>( ptr );
       }
 
@@ -137,10 +135,10 @@ public:
    *  No validity checking for best performance.
    */
   unsigned data_size( const Field<void,0> & f ) const
-    {
-      const DataMap & pd = m_field_map[ f.schema_ordinal() ];
-      return pd.second ;
-    }
+    { return m_field_map[ f.schema_ordinal() ].m_size ; }
+
+  const FieldDimension & data_dim( const Field<void,0> & f ) const
+    { return * m_field_map[ f.schema_ordinal() ].m_dim ; }
 
   //--------------------------------
 

@@ -29,13 +29,12 @@
 #include <sstream>
 #include <algorithm>
 
-#include <util/SpanIter.hpp>
 #include <util/ParallelComm.hpp>
 
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
-#include <mesh/EntityManager.hpp>
+#include <mesh/EntityComm.hpp>
 
 
 namespace phdmesh {
@@ -57,13 +56,13 @@ bool not_member( const EntityProcSet & aura_domain ,
 
 //----------------------------------------------------------------------
 
-class RegenAuraManager : public EntityManager {
+class RegenAuraComm : public EntityComm {
 private:
-  RegenAuraManager( const RegenAuraManager & );
-  RegenAuraManager & operator = ( const RegenAuraManager & );
+  RegenAuraComm( const RegenAuraComm & );
+  RegenAuraComm & operator = ( const RegenAuraComm & );
 public:
-  RegenAuraManager() {}
-  ~RegenAuraManager() {}
+  RegenAuraComm() {}
+  ~RegenAuraComm() {}
 
   const char * name() const ;
 
@@ -74,10 +73,10 @@ public:
     EntityProcSet & receive_info ) const ;
 };
 
-const char * RegenAuraManager::name() const
-{ static const char n[] = "phdmesh::RegenAuraManager" ; return n ; }
+const char * RegenAuraComm::name() const
+{ static const char n[] = "phdmesh::RegenAuraComm" ; return n ; }
 
-void RegenAuraManager::receive_entity(
+void RegenAuraComm::receive_entity(
   CommBuffer              & buffer ,
   Mesh                    & receive_mesh ,
   const unsigned            send_source ,
@@ -113,12 +112,15 @@ void RegenAuraManager::receive_entity(
   if ( NULL != ep.first ||
        send_source != owner_rank ||
        send_source == receive_mesh.parallel_rank() ) {
-    std::string msg( "phdmesh::RegenAuraManager::receive_entity FAILED" );
+    std::string msg( "phdmesh::RegenAuraComm::receive_entity FAILED" );
     throw std::logic_error( msg );
   }
 
-  ep.first = declare_entity( receive_mesh , entity_type , entity_id ,
-                             owner_rank , parts , connections );
+  ep.first = & receive_mesh.declare_entity( entity_type , entity_id ,
+                                            parts , owner_rank );
+
+  receive_mesh.declare_connection( *ep.first , connections , name() );
+
   ep.second = owner_rank ;
 
   receive_info.push_back( ep );
@@ -141,6 +143,8 @@ void scrub( Mesh & M , EntityProcSet & new_domain ,
     --i ;
     Entity & aura_entity = *i->first ;
 
+    const EntityType aura_type = aura_entity.entity_type();
+
     if ( aura_entity.kernel().has_superset( uses_part ) ) {
       i->first = NULL ;
     }
@@ -151,13 +155,14 @@ void scrub( Mesh & M , EntityProcSet & new_domain ,
       for ( ConnectSpan aura_con = aura_entity.connections();
             destroy_it && aura_con ; ++aura_con ) {
         Entity & e = * aura_con->entity();
+        const EntityType e_type = aura_con->entity_type();
 
-        if ( aura_con->type() == Uses ) {
+        if ( e_type < aura_type ) { // Aura Uses this entity
           if ( e.sharing() ) {
             destroy_it = false ; // Uses a shared entity
           }
         }
-        else if ( aura_con->type() == UsedBy ) {
+        else if ( aura_type < e_type ) { // Aura UsedBy this entity
           if ( ! e.kernel().has_superset( uses_part ) ) {
             destroy_it = false ; // Used by a retained aura entity
           }
@@ -231,7 +236,7 @@ void comm_mesh_regenerate_aura( Mesh & M )
 {
   static const char method[] = "phdmesh::comm_mesh_regenerate_aura" ;
 
-  const RegenAuraManager mgr ;
+  const RegenAuraComm mgr ;
   const unsigned p_size = M.parallel_size();
   const unsigned p_rank = M.parallel_rank();
 
@@ -256,15 +261,17 @@ void comm_mesh_regenerate_aura( Mesh & M )
     const EntityProcSet::const_iterator ie = i ;
 
     Entity * const shared_entity = ib->first ;
+    const EntityType shared_type = shared_entity->entity_type();
 
     for ( ConnectSpan shared_entity_con = shared_entity->connections() ;
           shared_entity_con ; ++shared_entity_con ) {
 
       Entity * const e = shared_entity_con->entity();
+      const EntityType e_type = shared_entity_con->entity_type();
 
-      if ( shared_entity_con->type() == UsedBy && p_rank == e->owner_rank() ) {
+      if ( shared_type < e_type && p_rank == e->owner_rank() ) {
 
-        // 'e' is a shared_entity->UsedBy->entity and locally owned
+        // "shared_entity->UsedBy->e" and 'e' is locally owned
         // Send to each shares processor
 
         for ( EntityProcSet::const_iterator
@@ -283,7 +290,10 @@ void comm_mesh_regenerate_aura( Mesh & M )
 
           for ( ConnectSpan jc = e->connections(); jc ; ++jc ) {
 
-            if ( jc->type() == Uses && shared_entity != jc->entity() ) {
+            if ( jc->entity_type() < e_type && shared_entity != jc->entity() ) {
+
+              // e->Uses->(jc->entity())
+
               entry.first = jc->entity();
               if ( not_member( shares , entry ) ) {
                 if ( p_rank == entry.first->owner_rank() ) {

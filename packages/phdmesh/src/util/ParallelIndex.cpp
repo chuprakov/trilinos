@@ -25,6 +25,7 @@
  */
 
 #include <algorithm>
+#include <util/Span.hpp>
 #include <util/ParallelComm.hpp>
 #include <util/ParallelIndex.hpp>
 
@@ -55,29 +56,21 @@ void sort_unique( std::vector<ParallelIndex::KeyProc> & key_proc )
 }
 
 typedef
-std::pair< std::vector< ParallelIndex::KeyProc >::const_iterator ,
-           std::vector< ParallelIndex::KeyProc >::const_iterator >
-  SpanKeyProc ;
+  Span< std::vector< ParallelIndex::KeyProc >::const_iterator >
+    SpanKeyProc ;
 
 SpanKeyProc
 span( const std::vector< ParallelIndex::KeyProc > & key_proc ,
       const unsigned long key )
 {
-  SpanKeyProc result ;
+  std::vector< ParallelIndex::KeyProc >::const_iterator i = key_proc.begin();
+  std::vector< ParallelIndex::KeyProc >::const_iterator j = key_proc.end();
 
-  result.first  = key_proc.begin();
-  result.second = key_proc.end();
+  i = std::lower_bound( i , j , key , ParallelIndex::LessKeyProc() );
 
-  result.first =
-    std::lower_bound( result.first , result.second ,
-                      key , ParallelIndex::LessKeyProc() );
+  for ( j = i ; j != key_proc.end() && j->first == key ; ++j );
 
-  for ( result.second = result.first ;
-        result.second != key_proc.end() &&
-        result.second->first == key ;
-        ++result.second );
-
-  return result ;
+  return SpanKeyProc( i , j );
 }
 
 //----------------------------------------------------------------------
@@ -192,7 +185,7 @@ void pack_query( CommAll & all ,
 
       std::vector< ParallelIndex::KeyProc >::const_iterator j ;
 
-      for ( j = s.first ; j != s.second ; ++j ) {
+      for ( j = s.begin() ; j != s.end() ; ++j ) {
         value[1] = j->second ;
         buf.pack<unsigned long>( value , 2 );
       }

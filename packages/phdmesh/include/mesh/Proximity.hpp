@@ -29,7 +29,6 @@
 
 //----------------------------------------------------------------------
 
-#include <util/CSet.hpp>
 #include <mesh/Types.hpp>
 
 namespace phdmesh {
@@ -44,9 +43,8 @@ unsigned proximity_search( Mesh & M ,
                            const EntityType entity_type ,
                            std::vector< std::pair<IdentProc,IdentProc> > & );
 
-class ProximitySearch : public CSetMember<ProximitySearch> {
+class ProximitySearch {
 public:
-  virtual const char * name() const ;
 
   /** Generate a cartesion box enclosing the entity.
    *  box[0-2] = min , box[3-5] = max

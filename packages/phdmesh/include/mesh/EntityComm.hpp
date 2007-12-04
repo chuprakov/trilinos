@@ -24,14 +24,13 @@
  * @author H. Carter Edwards
  */
 
-#ifndef phdmesh_EntityManager_hpp
-#define phdmesh_EntityManager_hpp
+#ifndef phdmesh_EntityComm_hpp
+#define phdmesh_EntityComm_hpp
 
 //----------------------------------------------------------------------
 
 #include <vector>
 
-#include <util/CSet.hpp>
 #include <util/ParallelComm.hpp>
 #include <mesh/Types.hpp>
 
@@ -44,24 +43,11 @@ namespace phdmesh {
  *  Received mesh entities are identified in 'recv'.
  */
 
-class EntityManager : public CSetMember<EntityManager> {
+class EntityComm {
 public:
-  EntityManager() {}
-  virtual ~EntityManager();
+  EntityComm() {}
+  virtual ~EntityComm();
   virtual const char * name() const ;
-
-  /** Find or create an entity in the mesh
-   *  based upon the entity type, entity identifier,
-   *  parts, and connections.
-   *  Default is to declare the entity and
-   *  merge the parts and connections.
-   */
-  virtual Entity * declare_entity( Mesh & ,
-                                   EntityType ,
-                                   unsigned long id ,
-                                   unsigned owner_rank ,
-                                   std::vector<Part*> & ,
-                                   std::vector<Connect> & ) const ;
 
   /** Send entity to receive_mesh and processors in the range [ibeg,iend).
    *  Default behavior is to call pack_entity.
@@ -107,8 +93,8 @@ public:
   void unpack_field_values( CommBuffer & , Entity & ) const ;
 
 private:
-  EntityManager( const EntityManager & );
-  EntityManager & operator = ( const EntityManager & );
+  EntityComm( const EntityComm & );
+  EntityComm & operator = ( const EntityComm & );
 };
 
 

@@ -34,7 +34,7 @@
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
-#include <mesh/EntityManager.hpp>
+#include <mesh/EntityComm.hpp>
 
 namespace phdmesh {
 
@@ -243,7 +243,7 @@ void rebal_other_entities( Mesh & M , EntityProcSet & rebal )
         rebal_procs.clear();
 
         for ( ConnectSpan j = entity->connections(); j ; ++j ) {
-          if ( j->type() != Uses ) {
+          if ( j->entity_type() == Other ) {
             std::ostringstream msg ;
             msg << "P" << M.parallel_rank();
             msg << ": " << method ;
@@ -336,10 +336,10 @@ void rebal_elem_entities( Mesh & M ,
   }
 }
 
-class RebalanceManager : public EntityManager {
+class RebalanceComm : public EntityComm {
 public:
-  ~RebalanceManager() {}
-  RebalanceManager() {}
+  ~RebalanceComm() {}
+  RebalanceComm() {}
 
   const char * name() const ;
 
@@ -354,14 +354,14 @@ public:
     EntityProcSet & receive_info ) const ;
 
 private:
-  RebalanceManager( const RebalanceManager & );
-  RebalanceManager & operator = ( const RebalanceManager & );
+  RebalanceComm( const RebalanceComm & );
+  RebalanceComm & operator = ( const RebalanceComm & );
 };
 
-const char * RebalanceManager::name() const
-{ static const char n[] = "phdmesh::RebalanceManager" ; return n ; }
+const char * RebalanceComm::name() const
+{ static const char n[] = "phdmesh::RebalanceComm" ; return n ; }
 
-void RebalanceManager::send_entity(
+void RebalanceComm::send_entity(
   CommBuffer & buf ,
   const Mesh & recv_mesh ,
   const EntityProcSet::const_iterator ib ,
@@ -378,7 +378,7 @@ void RebalanceManager::send_entity(
   }
 }
 
-void RebalanceManager::receive_entity(
+void RebalanceComm::receive_entity(
   CommBuffer              & buffer ,
   Mesh                    & receive_mesh ,
   const unsigned            send_source ,
@@ -397,8 +397,11 @@ void RebalanceManager::receive_entity(
 
   EntityProc ep ;
 
-  ep.first = declare_entity( receive_mesh , entity_type , entity_id ,
-                             owner_rank , parts , connections );
+  ep.first = & receive_mesh.declare_entity( entity_type , entity_id ,
+                                            parts , owner_rank );
+
+  receive_mesh.declare_connection( *ep.first , connections , name() );
+
   ep.second = send_source ;
 
   std::vector<unsigned>::iterator ip ;
@@ -455,7 +458,7 @@ void remove_aura( Mesh & M )
 {
   Part & uses_part = M.schema().uses_part();
 
-  for ( SpanIter< std::vector< EntityProc >::const_iterator >
+  for ( Span< std::vector< EntityProc >::const_iterator >
         span( M.aura_range() ) ; span ; ++span ) {
     Entity * const e = span->first ;
     if ( e->kernel().has_superset( uses_part ) ) {
@@ -629,7 +632,7 @@ void comm_mesh_rebalance( Mesh & M ,
   // Add received entities to shared if more than one processor.
 
   {
-    const RebalanceManager manager ;
+    const RebalanceComm manager ;
     EntityProcSet recv_rebal ;
 
     comm_mesh_entities( manager , M , M , rebal , recv_rebal , false );

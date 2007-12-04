@@ -91,10 +91,7 @@ public:
   void declare_part_subset( Part & superset , Part & subset );
 
   /** Declare an attribute on a part */
-  template<class CSetMemberType>
-    unsigned declare_part_attribute( Part & , const CSetMemberType * ,
-                                     CSet::MemberDestroy =
-                                       & CSet::default_destroy );
+  template<class T> void declare_part_attribute( Part & , T * , bool );
 
   //------------------------------------
   /** Get a field, return NULL if it does not exist.
@@ -130,10 +127,8 @@ public:
                                 unsigned n6 = 0 , unsigned n7 = 0 );
 
   /** Declare an attribute on a field */
-  template<class CSetMemberType>
-    unsigned declare_field_attribute( Field<void,0> & , const CSetMemberType * ,
-                                      CSet::MemberDestroy =
-                                        & CSet::default_destroy );
+  template<class T>
+    void declare_field_attribute( Field<void,0> & , T * , bool );
   //------------------------------------
   /** Commit the part and field declarations.
    *  Verifies consistency and assigns ordinals for faster usage.
@@ -192,22 +187,20 @@ private:
 
 namespace phdmesh {
 
-template<class CSetMemberType>
+template<class T>
 inline
-unsigned Schema::declare_part_attribute(
-  Part & p , const CSetMemberType * a , CSet::MemberDestroy d )
+void Schema::declare_part_attribute( Part & p , T * a , bool d )
 {
   assert_not_committed( "phdmesh::Schema::declare_part_attribute" );
-  return p.m_cset.insert( a , d );
+  p.m_cset.insert( a , d );
 }
 
-template<class CSetMemberType>
+template<class T>
 inline
-unsigned Schema::declare_field_attribute(
-  Field<void,0> & f , const CSetMemberType * a , CSet::MemberDestroy d )
+void Schema::declare_field_attribute( Field<void,0> & f , T * a , bool d )
 {
   assert_not_committed( "phdmesh::Schema::declare_field_attribute" );
-  return f.m_cset.insert( a , d );
+  f.m_cset.insert( a , d );
 }
 
 template<typename T,unsigned NDim>

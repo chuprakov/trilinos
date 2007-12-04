@@ -160,10 +160,10 @@ void pack( CommBuffer & b , const PartSet & pset )
     const unsigned     name_len = p.name().size() + 1 ;
     const char * const name_ptr = p.name().c_str();
 
-    std::string cset_text ;
+    std::ostringstream cset_text ;
     cset.print( cset_text , ":" );
-    const unsigned     cset_len = cset_text.size() + 1 ;
-    const char * const cset_ptr = cset_text.c_str();
+    const unsigned     cset_len = cset_text.str().size() + 1 ;
+    const char * const cset_ptr = cset_text.str().c_str();
 
     {
       const unsigned ord = p.schema_ordinal();
@@ -209,10 +209,10 @@ bool unpack_verify( CommBuffer & b , const PartSet & pset )
     const unsigned     name_len = p.name().size() + 1 ;
     const char * const name_ptr = p.name().c_str();
 
-    std::string cset_text ;
+    std::ostringstream cset_text ;
     cset.print( cset_text , ":" );
-    const unsigned     cset_len = cset_text.size() + 1 ;
-    const char * const cset_ptr = cset_text.c_str();
+    const unsigned     cset_len = cset_text.str().size() + 1 ;
+    const char * const cset_ptr = cset_text.str().c_str();
 
     if ( ok ) {
       b.unpack<unsigned>( b_tmp );

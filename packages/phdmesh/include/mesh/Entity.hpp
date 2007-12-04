@@ -32,7 +32,7 @@
 #include <limits>
 #include <iosfwd>
 
-#include <util/SpanIter.hpp>
+#include <util/Span.hpp>
 #include <mesh/Kernel.hpp>
 
 //----------------------------------------------------------------------
@@ -40,22 +40,13 @@
 namespace phdmesh {
 
 //----------------------------------------------------------------------
-/** Intrinsic type of connections between mesh entities. */
-
-enum ConnectType { Uses = 1 , UsedBy = 2 , Anonymous = 3 };
-
-/** Query text name for entity connections type */
-
-const char * connect_type_name( ConnectType );
-
-//----------------------------------------------------------------------
 /** Connection between mesh entities with attributes.
  *
  *  Concept is a relation consisting of 
- *    { ( ( DomainEntity , RangeEntity ) , Attribute ) }
+ *    { ( ( DomainEntity , RangeEntity ) , RelationIdentifier ) }
  *
  *  Design is for the DomainEntity to own a subset of the relation,
- *    DomainEntity -> { ( RangeEntity , Attribute ) }
+ *    DomainEntity -> { ( RangeEntity , RelationIdentifier ) }
  *
  *  The Connect class consists of ( RangeEntity , Attribute ) where
  *  Attribute is the aggregation of ( EntityType , ConnectType , identifier ).
@@ -66,14 +57,9 @@ private:
   unsigned m_attr ;
   Entity * m_entity ;
 
-  enum { u_digits = std::numeric_limits<unsigned>::digits };
-  enum { e_digits = EntityTypeDigits };
-  enum { t_digits = 2 };
-  enum { e_shift = u_digits - e_digits };
-  enum { t_shift = e_shift  - t_digits };
-  enum { e_mask = EntityTypeMask };
-  enum { t_mask = 0x03 };
-  enum { i_mask = ( ~((unsigned)0) ) >> ( e_digits + t_digits ) };
+  enum { e_shift = std::numeric_limits<unsigned>::digits - EntityTypeDigits };
+  enum { e_mask  = EntityTypeMask };
+  enum { i_mask  = ( ~((unsigned)0) ) >> EntityTypeDigits };
 public:
 
   ~Connect() {}
@@ -85,18 +71,15 @@ public:
   Connect & operator = ( const Connect & r )
     { m_attr = r.m_attr ; m_entity = r.m_entity ; return *this ; }
 
-  /** Construct with range entity, connection type, and identifier */
-  Connect( Entity & , ConnectType , unsigned );
+  /** Construct with range entity, identifier, and if anonymous */
+  Connect( Entity & , unsigned );
 
   Entity * entity() const { return m_entity ; }
 
-  ConnectType type() const
-    { return ConnectType( ( m_attr >> t_shift ) & t_mask ); }
-
-  unsigned identifier() const { return m_attr & i_mask ; }
-
   EntityType entity_type() const
     { return EntityType( ( m_attr >> e_shift ) & e_mask ); }
+
+  unsigned identifier() const { return m_attr & i_mask ; }
 
   bool operator == ( const Connect & r ) const
     { return m_attr == r.m_attr && m_entity == r.m_entity ; }
@@ -112,20 +95,14 @@ public:
 
   unsigned attribute() const { return m_attr ; }
 
-  Connect( Entity & arg_entity , unsigned arg_attr )
-    : m_attr( arg_attr ) , m_entity( & arg_entity ) {}
+  static unsigned attribute( unsigned entity_type , unsigned identifier )
+    { return ((entity_type & e_mask) << e_shift) | (identifier & i_mask) ; }
 
-  explicit Connect( unsigned arg_attr )
-    : m_attr( arg_attr ) , m_entity( NULL ) {}
+  static EntityType entity_type( unsigned attr )
+    { return EntityType( ( attr >> e_shift ) & e_mask ); }
 
-  static unsigned attribute( unsigned entity_type ,
-                             unsigned connect_type ,
-                             unsigned identifier )
-    {
-      return ( ( entity_type  & e_mask ) << e_shift ) |
-             ( ( connect_type & t_mask ) << t_shift ) |
-               ( identifier   & i_mask ) ;
-    }
+  static unsigned identifier( unsigned attr )
+    { return attr & i_mask ; }
 };
 
 typedef std::vector<Connect> ConnectSet ;
@@ -137,7 +114,7 @@ typedef std::vector<Connect> ConnectSet ;
  *  (3) identifier, and
  *  (4) range entity identifier.
  */
-typedef SpanIter< ConnectSet::const_iterator > ConnectSpan ;
+typedef Span< ConnectSet::const_iterator > ConnectSpan ;
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
@@ -186,7 +163,7 @@ public:
 
   ConnectSpan connections( EntityType ) const ;
 
-  ConnectSpan connections( EntityType , ConnectType ) const ;
+  ConnectSpan connections( EntityType , unsigned ) const ;
 
   //------------------------------------
 
@@ -199,6 +176,9 @@ public:
 
   unsigned data_size( const Field<void,0> & f ) const
     { return m_kernel->data_size( f ); }
+
+  const FieldDimension & data_dim( const Field<void,0> & f ) const
+    { return m_kernel->data_dim( f ); }
 
   //------------------------------------
 
@@ -217,13 +197,8 @@ private:
 
 typedef Setv<Entity> EntitySet ;
 
-inline
-const FieldDimension & dimension( const Field<void,0> & f , const Entity & e )
-{ return dimension( f , e.kernel() ); }
 
 //----------------------------------------------------------------------
-
-std::ostream & operator << ( std::ostream & , const Connect & );
 
 /** Print identifier and connections */
 std::ostream &
@@ -234,6 +209,12 @@ print_entity_key( std::ostream & , EntityType type , unsigned long id );
 
 std::ostream &
 print_entity_key( std::ostream & , unsigned long key );
+
+std::ostream & print_connect( std::ostream & os ,
+                              unsigned connect_attr ,
+                              unsigned long entity_key );
+
+std::ostream & operator << ( std::ostream & , const Connect & );
 
 } // namespace phdmesh
 

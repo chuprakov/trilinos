@@ -141,7 +141,7 @@ void test_six_gears_face_proximity(
       for ( unsigned j = 0 ; j < 2 ; ++j ) {
         if ( p_rank == d[j].proc ) {
           Entity & face = * M.get_entity( Face , d[j].ident , method );
-          for ( ConnectSpan face_nodes = face.connections( Node , Uses );
+          for ( ConnectSpan face_nodes = face.connections( Node );
                 face_nodes ; ++face_nodes ) {
             Entity & node = * face_nodes->entity();
             double * const data = node.data( field_proximity );
@@ -222,7 +222,7 @@ void test_six_gears_face_proximity(
       to_be_shared.push_back( ep );
 
       for ( ConnectSpan con = ep.first->connections(); con ; ++con ) {
-        if ( con->type() == Uses ) {
+        if ( con->entity_type() < Face ) {
           ep.first = con->entity();
           to_be_shared.push_back( ep );
         }
@@ -395,12 +395,12 @@ void test_six_gears( ParallelMachine pm , std::istream & )
 
   ProximitySearch proximity_search( gear_fields.current_coord , 0.25 );
 
-  S.declare_part_attribute( A.m_surf , & proximity_search , NULL );
-  S.declare_part_attribute( B.m_surf , & proximity_search , NULL );
-  S.declare_part_attribute( C.m_surf , & proximity_search , NULL );
-  S.declare_part_attribute( D.m_surf , & proximity_search , NULL );
-  S.declare_part_attribute( E.m_surf , & proximity_search , NULL );
-  S.declare_part_attribute( F.m_surf , & proximity_search , NULL );
+  S.declare_part_attribute( A.m_surf , & proximity_search , false );
+  S.declare_part_attribute( B.m_surf , & proximity_search , false );
+  S.declare_part_attribute( C.m_surf , & proximity_search , false );
+  S.declare_part_attribute( D.m_surf , & proximity_search , false );
+  S.declare_part_attribute( E.m_surf , & proximity_search , false );
+  S.declare_part_attribute( F.m_surf , & proximity_search , false );
 
   //------------------------------
 

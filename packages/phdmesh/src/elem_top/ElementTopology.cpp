@@ -24,65 +24,35 @@
  * @author H. Carter Edwards
  */
 
-#ifndef phdmesh_Types_hpp
-#define phdmesh_Types_hpp
-
-//----------------------------------------------------------------------
-
-#include <limits>
-#include <utility>
-#include <vector>
-
-#include <util/Span.hpp>
+#include <elem_top/Topology.hpp>
 
 namespace phdmesh {
+namespace element {
 
 //----------------------------------------------------------------------
 
-class Schema ;  // Parts and fields of a mesh
-class Part ;    // Designated subset or part of the mesh
+template<>
+const Topology & topology< Point , 0 >()
+{
+  StaticAssert< Point::number_vertex == 0 &&
+                Point::number_edge   == 0 &&
+                Point::number_side   == 0 &&
+                Point::boundary >::ok();
+  static const Topology top( Point() , 0 , 0 );
+  return top ;
+}
 
-template< typename T , unsigned NDim = 0 > class Field ;
+template<>
+const Topology & topology< Sphere , 1 >()
+{
+  StaticAssert< Sphere::number_vertex == 1 &&
+                Sphere::number_edge   == 0 &&
+                Sphere::number_side   == 0 &&
+                ! Sphere::boundary >::ok();
+  static const Topology top( Sphere() , 1 , 1 );
+  return top ;
+}
 
-enum { MaximumFieldDimension = 8 };
-
-//----------------------------------------------------------------------
-
-class Mesh ;    // Kernels and entities of a mesh
-class Kernel ;  // Homogeneous collection of mesh entitities
-class Entity ;  // Individual entity within the mesh
-class Connect ; // Connect pair of local mesh entities
-
-typedef std::pair<Entity*,unsigned> EntityProc ; // Entity-processor pair
-
-typedef std::vector< EntityProc > EntityProcSet ;
-
-typedef Span< EntityProcSet::const_iterator > EntityProcSpan ;
-
-//----------------------------------------------------------------------
-/** Types of mesh entities.  Extensible via update to the enumeration */
-
-enum EntityType {
-  Node    = 0 ,
-  Edge    = 1 ,
-  Face    = 2 ,
-  Element = 3 ,
-  Other   = 4 ,
-  EntityTypeMaximum = 5 ,
-  EntityTypeMask = 0x0f };
-
-enum { EntityTypeDigits = 4 ,
-       EntityIdentifierDigits =
-         std::numeric_limits<unsigned long>::digits - EntityTypeDigits };
-
-/** Query text name for entity type */
-
-const char * entity_type_name( EntityType );
-
-} // namespace phdmesh
-
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
-
-#endif
+}
+}
 

@@ -40,9 +40,8 @@ private:
   enum { MaxDim = MaximumFieldDimension };
   enum { OK = StaticAssert< MaxDim == 8 >::OK };
   enum { I_Length = MaxDim + 1 };
-  enum { I_Size   = MaxDim + 2 };
-  enum { I_NDim   = MaxDim + 3 };
-  enum { MaxInfo  = MaxDim + 4 };
+  enum { I_NDim   = MaxDim + 2 };
+  enum { MaxInfo  = MaxDim + 3 };
 
   const Part * m_part ;
   unsigned     m_info[ MaxInfo ];
@@ -53,7 +52,7 @@ public:
   FieldDimension( const FieldDimension & rhs );
   FieldDimension & operator = ( const FieldDimension & rhs );
 
-  FieldDimension( const Part & p , unsigned scalar_size ,
+  FieldDimension( const Part & p ,
                   unsigned n0 ,     unsigned n1 = 0 , unsigned n2 = 0 ,
                   unsigned n3 = 0 , unsigned n4 = 0 , unsigned n5 = 0 ,
                   unsigned n6 = 0 , unsigned n7 = 0 );
@@ -70,9 +69,6 @@ public:
 
   /** Length = product of dimensions */
   unsigned length() const { return m_info[ I_Length ]; }
-
-  /** Size = byte size */
-  unsigned size() const { return m_info[ I_Size ]; }
 
   unsigned offset( unsigned * const i )
     {

@@ -36,15 +36,6 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-const char * connect_type_name( ConnectType r )
-{
-  static const char * connect_names[] = { "USES" , "USEDBY" , "ANONYMOUS" };
-
-  return connect_names[ (unsigned) r ];
-}
-
-//----------------------------------------------------------------------
-
 bool Connect::operator < ( const Connect & r ) const
 {
   unsigned long lhs =   m_attr ;
@@ -58,8 +49,8 @@ bool Connect::operator < ( const Connect & r ) const
   return lhs < rhs ;
 }
 
-Connect::Connect( Entity & e , ConnectType t , unsigned id )
-  : m_attr( attribute( e.entity_type(), t, id) ) , m_entity(&e)
+Connect::Connect( Entity & e , unsigned id )
+  : m_attr( attribute( e.entity_type(), id) ) , m_entity(&e)
 {}
 
 //----------------------------------------------------------------------
@@ -119,14 +110,32 @@ print_entity_key( std::ostream & os , unsigned long key )
 }
 
 std::ostream &
+print_connect( std::ostream & os ,
+               unsigned connect_attr ,
+               unsigned long entity_key )
+{
+  const EntityType    type   = Connect::entity_type( connect_attr );
+  const unsigned      local  = Connect::identifier( connect_attr );
+  const unsigned long global = Entity::key_identifier( entity_key );
+
+  const char * name = entity_type_name( type );
+
+  os << name << "[" << local << "->" << global << "]" ;
+
+  return os ;
+}
+
+std::ostream &
 operator << ( std::ostream & os , const Connect & con )
 {
-  const char * const name = connect_type_name( con.type() );
-  const unsigned     id   = con.identifier();
+  const char * name = entity_type_name( con.entity_type() );
+  const unsigned local_id     = con.identifier();
+  const Entity * const entity = con.entity();
 
-  os << name << "[" << id << "]->" ;
-
-  if ( con.entity() != NULL ) { print_entity_key( os , con.entity()->key() ); }
+  os << name << "[" << local_id << "->" ;
+  if ( entity != NULL ) { os << entity->identifier(); }
+  else                  { os << "?" ; }
+  os << "]" ;
 
   return os ;
 }
@@ -169,105 +178,103 @@ Entity::~Entity()
 
 //----------------------------------------------------------------------
 
-ConnectSpan Entity::connections( EntityType et ) const
+namespace {
+
+ConnectSpan con_span( const ConnectSet & con ,
+                      const unsigned lo_attr ,
+                      const unsigned hi_attr )
 {
-  const unsigned lo_key = Connect::attribute( et ,   ConnectType(0) , 0 );
-  const unsigned hi_key = Connect::attribute( et+1 , ConnectType(0) , 0 );
+  ConnectSet::const_iterator i = con.begin();
+  ConnectSet::const_iterator e = con.end();
 
-  ConnectSet::const_iterator i = m_connect.begin();
-  ConnectSet::const_iterator e = m_connect.end();
-
-  i = std::lower_bound( i , e , lo_key , LessConnectAttr() );
-  e = std::lower_bound( i , e , hi_key , LessConnectAttr() );
+  i = std::lower_bound( i , e , lo_attr , LessConnectAttr() );
+  e = std::lower_bound( i , e , hi_attr , LessConnectAttr() );
 
   return ConnectSpan( i , e );
 }
 
-ConnectSpan Entity::connections( EntityType et , ConnectType t ) const
+}
+
+ConnectSpan Entity::connections( EntityType et ) const
 {
-  const unsigned lo_key = Connect::attribute( et , t ,   0 );
-  const unsigned hi_key = Connect::attribute( et , t+1 , 0 );
+  const unsigned lo_key = Connect::attribute( et ,   0 );
+  const unsigned hi_key = Connect::attribute( et+1 , 0 );
 
-  ConnectSet::const_iterator i = m_connect.begin();
-  ConnectSet::const_iterator e = m_connect.end();
+  return con_span( m_connect , lo_key , hi_key );
+}
 
-  i = std::lower_bound( i , e , lo_key , LessConnectAttr() );
-  e = std::lower_bound( i , e , hi_key , LessConnectAttr() );
+ConnectSpan Entity::connections( EntityType et, unsigned id ) const
+{
+  const unsigned lo_key = Connect::attribute( et , id );
+  const unsigned hi_key = Connect::attribute( et , id );
 
-  return ConnectSpan( i , e );
+  return con_span( m_connect , lo_key , hi_key );
 }
 
 //----------------------------------------------------------------------
 
 namespace {
 
-inline bool equal_attr( const Connect & lhs , const Connect & rhs )
+void throw_required_unique( Entity & e_hi ,
+                            Entity & e_lo ,
+                            Entity & e_lo_exist ,
+                            const unsigned identifier ,
+                            const char * required_unique_by )
 {
-  const unsigned lhs_attr = lhs.attribute();
-  const unsigned rhs_attr = rhs.attribute();
-  return lhs_attr == rhs_attr ;
+  static const char method_name[] = "phdmesh::Mesh::declare_connection" ;
+
+  std::ostringstream msg ;
+
+  msg << method_name << "( " ;
+  print_entity_key( msg , e_hi.key() );
+  msg << "->[" ;
+  msg << identifier ;
+  msg << "]->" ;
+  print_entity_key( msg , e_lo.key() );
+  msg << " , " ;
+  msg << required_unique_by ;
+  msg << " ) FAILED : ALREADY HAS " ;
+  print_entity_key( msg , e_hi.key() );
+  msg << "->[" ;
+  msg << identifier ;
+  msg << "]->" ;
+  print_entity_key( msg , e_lo_exist.key() );
+
+  throw std::invalid_argument(msg.str());
 }
 
-}
-
-void Mesh::declare_connection_anon( Entity & e1 , Entity & e2 ,
-                                    const unsigned identifier )
-{
-  const Connect e1_to_e2( e2 , Anonymous , identifier );
-
-  const ConnectSet::iterator e = e1.m_connect.end();
-        ConnectSet::iterator i = e1.m_connect.begin();
-
-  i = std::lower_bound( i , e , e1_to_e2 , LessConnect() );
-
-  if ( e == i || e1_to_e2 != *i ) {
-    e1.m_connect.insert( i , e1_to_e2 );
-  }
 }
 
 void Mesh::declare_connection( Entity & e1 , Entity & e2 ,
                                const unsigned identifier ,
                                const char * required_unique_by )
 {
-  static const char method_name[] = "phdmesh::Mesh::declare_connection" ;
-
-  std::ostringstream msg ;
-
   const EntityType e1_type = e1.entity_type();
   const EntityType e2_type = e2.entity_type();
 
   Entity & e_hi = e1_type == e2_type ? e1 : ( e1_type < e2_type ? e2 : e1 );
   Entity & e_lo = e1_type == e2_type ? e2 : ( e1_type < e2_type ? e1 : e2 );
 
-  const Connect hi_to_lo( e_lo , Uses , identifier );
-  const Connect lo_to_hi( e_hi , UsedBy , identifier );
-
   {
     const ConnectSet::iterator e = e_hi.m_connect.end();
           ConnectSet::iterator i = e_hi.m_connect.begin();
 
+    const Connect hi_to_lo( e_lo , identifier );
+
     i = std::lower_bound( i , e , hi_to_lo , LessConnect() );
 
-    if ( required_unique_by && e != i && equal_attr( hi_to_lo , *i ) ) {
-      msg << method_name << "( " ;
-      print_entity_key( msg , e1.key() );
-      msg << " , " ;
-      print_entity_key( msg , e2.key() );
-      msg << " , " ;
-      msg << identifier ;
-      msg << " , " ;
-      msg << required_unique_by ;
-      msg << " ) FAILED : ALREADY HAS " ;
-      print_entity_key( msg , e_hi.key() );
-      msg << "->{ Uses , " ;
-      msg << identifier ;
-      msg << " }->" ;
-      print_entity_key( msg , i->entity()->key() );
+    if ( e == i || hi_to_lo != *i ) { // Not a duplicate
 
-      throw std::invalid_argument(msg.str());
-    }
+      if ( required_unique_by && e != i ) {
+        const unsigned attr_hi_to_lo = hi_to_lo.attribute();
+        const unsigned attr_existing = i->attribute();
 
-    if ( e == i || hi_to_lo != *i ) {
+        if ( attr_hi_to_lo == attr_existing ) {
+          throw_required_unique( e_hi, e_lo, *i->entity(), identifier,
+                                 required_unique_by);
+        }
+      }
+
       e_hi.m_connect.insert( i , hi_to_lo );
     }
   }
@@ -276,11 +283,27 @@ void Mesh::declare_connection( Entity & e1 , Entity & e2 ,
     const ConnectSet::iterator e = e_lo.m_connect.end();
           ConnectSet::iterator i = e_lo.m_connect.begin();
 
+    const Connect lo_to_hi( e_hi , identifier );
+
     i = std::lower_bound( i , e , lo_to_hi , LessConnect() );
 
-    if ( e == i || lo_to_hi != *i ) {
+    if ( e == i || lo_to_hi != *i ) { // Not a duplicate
       e_lo.m_connect.insert( i , lo_to_hi );
     }
+  }
+}
+
+void Mesh::declare_connection( Entity & e ,
+                               const std::vector<Connect> & con ,
+                               const char * required_unique_by )
+{
+  for ( std::vector<Connect>::const_iterator
+        i = con.begin() ; i != con.end() ; ++i ) {
+
+    const unsigned r_ident  =   i->identifier();
+          Entity & r_entity = * i->entity();
+
+    declare_connection( e , r_entity , r_ident , required_unique_by );
   }
 }
 

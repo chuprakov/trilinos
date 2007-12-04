@@ -79,24 +79,23 @@ FieldDimension & FieldDimension::operator = ( const FieldDimension & rhs )
 
 FieldDimension::FieldDimension(
   const Part & p ,
-  unsigned scalar_size ,
   unsigned n0 , unsigned n1 , unsigned n2 ,
   unsigned n3 , unsigned n4 , unsigned n5 ,
   unsigned n6 , unsigned n7 )
   : m_part( & p )
 {
-  enum { OK = StaticAssert< MaxDim == 8 >::OK };
+  enum { OK_Dim  = StaticAssert< MaxDim  == 8 >::OK };
+  enum { OK_Info = StaticAssert< MaxInfo == 11 >::OK };
 
   m_info[0] = 1 ;  m_info[1] = n0 ; m_info[2] = n1 ;
   m_info[3] = n2 ; m_info[4] = n3 ; m_info[5] = n4 ;
   m_info[6] = n5 ; m_info[7] = n6 ; m_info[8] = n7 ;
-  m_info[7] = 0 ;  m_info[8] = 0 ;  m_info[9] = 0 ;
+  m_info[9] = 0 ;  m_info[10] = 0 ;
 
   for ( unsigned i = 0 ; i < MaxDim ; ++i ) {
     const unsigned n = i + 1 ;
     if ( m_info[n] *= m_info[i] ) {
       m_info[ I_Length ] = m_info[n] ;
-      m_info[ I_Size ]   = m_info[n] * scalar_size ;
       m_info[ I_NDim ]   = n ;
     }
   }
@@ -512,9 +511,7 @@ void Schema::declare_field_dimension(
   assert_same_schema( method , field.m_schema );
   assert_same_schema( method , p.m_schema );
 
-  const unsigned type_size = NumericEnum<>::size(field.numeric_type_ordinal());
-
-  FieldDimension dim( p , type_size , n0 , n1 , n2 , n3 , n4 , n5 , n6 , n7 );
+  FieldDimension dim( p , n0 , n1 , n2 , n3 , n4 , n5 , n6 , n7 );
 
   std::vector<FieldDimension> & dim_map = field.dimension();
 
@@ -530,8 +527,7 @@ void Schema::declare_field_dimension(
       msg << entity_type_name( field.m_entity_type );
       msg << " Field< " ;
       msg << NumericEnum<>::name( field.m_scalar_type );
-      msg << "(" << type_size ;
-      msg << ") , " << field.m_num_dim ;
+      msg << " , " << field.m_num_dim ;
       msg << " > " ;
       msg << field.m_name ;
       msg << " #Dimensions = " ;
@@ -658,19 +654,7 @@ unsigned Field<void,0>::max_length() const
 
 unsigned Field<void,0>::max_size() const
 {
-  unsigned max = 0 ;
-
-  const std::vector<FieldDimension> & dim_map = dimension();
-
-  const std::vector<FieldDimension>::const_iterator ie = dim_map.end();
-        std::vector<FieldDimension>::const_iterator i  = dim_map.begin();
-
-  for ( ; i != ie ; ++i ) {
-    const unsigned siz = i->size();
-    if ( max < siz ) { max = siz ; }
-  }
-
-  return max ;
+  return max_length() * NumericEnum<void>::size( m_scalar_type );
 }
 
 //----------------------------------------------------------------------

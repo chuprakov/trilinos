@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------
-#       phdMesh : Parallel Heterogneous Dynamic unstructured Mesh
+#      phdMesh : Parallel Heterogneous Dynamic unstructured Mesh
 #		 Copyright (2007) Sandia Corporation
 #
 #  Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
@@ -21,37 +21,41 @@
 #  USA
 #-----------------------------------------------------------------------
 
-PHDMESH_SRC_DIRS =	\
-		$(PHDMESH_PATH)/src/util	\
-		$(PHDMESH_PATH)/src/txblas	\
-		$(PHDMESH_PATH)/src/mesh	\
-		$(PHDMESH_PATH)/src/mesh_io	\
-		$(PHDMESH_PATH)/src/elem_top
+ELEM_TOP_INC_DIR = $(PHDMESH_PATH)/include/elem_top
 
+ELEM_TOP_INC_FILES =	\
+	$(ELEM_TOP_INC_DIR)/Shape.hpp	\
+	$(ELEM_TOP_INC_DIR)/Topology.hpp
 
-include	\
-	$(PHDMESH_PATH)/src/util/Make.in	\
-	$(PHDMESH_PATH)/src/txblas/Make.in	\
-	$(PHDMESH_PATH)/src/mesh/Make.in	\
-	$(PHDMESH_PATH)/src/mesh_io/Make.in	\
-	$(PHDMESH_PATH)/src/elem_top/Make.in
+ELEM_TOP_OBJ_FILES =	\
+	ElementTopology.o	\
+	ElementTopologyLine.o	\
+	ElementTopologyTriangle.o	\
+	ElementTopologyQuadrilateral.o	\
+	ElementTopologyHexahedron.o
 
+ELEM_TOP_INC_DEPS = $(ELEM_TOP_INC_FILES) $(UTIL_INC_DEPS)
 
+ELEM_TOP_LIB = libphdmesh_elem_top.a
 
-vpath %.c   $(PHDMESH_SRC_DIRS)
-vpath %.cpp $(PHDMESH_SRC_DIRS)
+ELEM_TOP_LIB_LINK = -lphdmesh_elem_top
 
-src_all     :	util_all     txblas_all	\
-		mesh_all     mesh_io_all     elem_top_all ;
+$(ELEM_TOP_OBJ_FILES) : $(ELEM_TOP_INC_DEPS)
 
-src_clean   :	util_clean   txblas_clean	\
-		mesh_clean   mesh_io_clean   elem_top_clean ;
+$(ELEM_TOP_LIB) : $(ELEM_TOP_OBJ_FILES)
+	rm -f $@
+	$(AR) $(ARFLAGS) $@ $^
+	$(RANLIB) $@
 
-src_install :	util_install txblas_install	\
-		mesh_install mesh_io_install elem_top_install ;
+elem_top_all : $(ELEM_TOP_LIB) ;
 
-src_uninstall : \
-	util_uninstall txblas_uninstall	\
-	mesh_uninstall mesh_io_uninstall	
-	elem_top_uninstall ;
+elem_top_clean : ; rm -f $(ELEM_TOP_LIB) $(ELEM_TOP_OBJ_FILES)
+
+elem_top_install : $(ELEM_TOP_LIB) config_install
+	@ cp $(ELEM_TOP_LIB) $(PHDMESH_INSTALL)/$(ELEM_TOP_LIB)
+
+elem_top_uninstall :
+	@ rm -f $(PHDMESH_INSTALL)/$(ELEM_TOP_LIB)
+
+#-----------------------------------------------------------------------
 

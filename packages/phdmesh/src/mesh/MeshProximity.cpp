@@ -295,12 +295,6 @@ unsigned proximity_search(
 
 //----------------------------------------------------------------------
 
-const char * ProximitySearch::name() const
-{
-  static const char n[] = "phdmesh::ProximitySearch" ;
-  return n ;
-}
-
 ProximitySearch::~ProximitySearch() {}
 
 ProximitySearch::ProximitySearch( const Field<double,1> & node_coord ,
@@ -376,9 +370,9 @@ int ProximitySearch::part_id( const Kernel & kernel ) const
 
   PartSet::iterator i ;
   for ( i = part_set.begin() ; part == NULL && i != part_set.end() ; ++i ) {
-    const ProximitySearch * const tmp = 
+    Span< CSet::iterator<ProximitySearch> > tmp =
       (*i)->attributes().get<ProximitySearch>();
-    if ( tmp == this ) { part = *i ; }
+    if ( tmp.size() == 1 && this == &*tmp ) { part = *i ; }
   }
 
   return part != NULL ? part->schema_ordinal() + 1 : 0 ;

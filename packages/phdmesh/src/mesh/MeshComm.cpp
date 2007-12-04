@@ -34,7 +34,7 @@
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
-#include <mesh/EntityManager.hpp>
+#include <mesh/EntityComm.hpp>
 
 
 namespace phdmesh {
@@ -480,7 +480,7 @@ bool comm_mesh_stats( Mesh & M ,
 //----------------------------------------------------------------------
 
 bool comm_mesh_entities(
-  const EntityManager & manager ,
+  const EntityComm & manager ,
   Mesh & send_mesh ,
   Mesh & recv_mesh ,
   const EntityProcSet & send ,
@@ -681,8 +681,7 @@ bool comm_mesh_field_values(
         const EntityType      fet = f.entity_type();
         const EntityType      eet = e.entity_type();
         if ( fet == eet ) {
-          const FieldDimension & dim = dimension( f , e );
-          e_size += dim.size();
+          e_size += e.kernel().data_size( f );
         }
       } 
       send_size[ p ] += e_size ;
@@ -700,8 +699,7 @@ bool comm_mesh_field_values(
         const EntityType      fet = f.entity_type();
         const EntityType      eet = e.entity_type();
         if ( fet == eet ) {
-          const FieldDimension & dim = dimension( f , e );
-          e_size += dim.size();
+          e_size += e.kernel().data_size( f );
         }
       } 
       recv_size[ p ] += e_size ;
@@ -731,9 +729,9 @@ bool comm_mesh_field_values(
         const EntityType      fet = f.entity_type();
         const EntityType      eet = e.entity_type();
         if ( fet == eet ) {
-          const FieldDimension & dim = dimension( f , e );
           unsigned char * data = (unsigned char *) e.data( f );
-          b.pack<unsigned char>( data , dim.size() );
+          unsigned data_size = e.kernel().data_size( f );
+          b.pack<unsigned char>( data , data_size );
         }
       }
     }
@@ -756,9 +754,9 @@ bool comm_mesh_field_values(
         const EntityType      fet = f.entity_type();
         const EntityType      eet = e.entity_type();
         if ( fet == eet ) {
-          const FieldDimension & dim = dimension( f , e );
           unsigned char * data = (unsigned char *) e.data( f );
-          b.unpack<unsigned char>( data , dim.size() );
+          unsigned data_size = e.kernel().data_size( f );
+          b.unpack<unsigned char>( data , data_size );
         }
       }
     }

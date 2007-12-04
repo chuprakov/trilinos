@@ -29,7 +29,6 @@
 
 #include <vector>
 #include <util/Parallel.hpp>
-#include <util/CSet.hpp>
 #include <mesh/Types.hpp>
 
 namespace phdmesh {
@@ -52,7 +51,7 @@ private:
   GearFields & operator = ( const GearFields & );
 };
 
-class Gear : public CSetMember<Gear> {
+class Gear {
 public:
   Gear( Schema & S ,
         const std::string & name ,

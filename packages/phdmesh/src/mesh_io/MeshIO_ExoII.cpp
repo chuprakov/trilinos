@@ -79,7 +79,7 @@ namespace exodus {
 
 //----------------------------------------------------------------------
 
-class FilePart : public CSetMember<FilePart> {
+class FilePart {
 public:
   Part            & m_part ;
   const int         m_identifier ;
@@ -159,9 +159,11 @@ const FilePart * internal_declare_part(
 
   Part & part = arg_schema.declare_part( arg_name );
 
-  const FilePart * file_part = part.attributes().get<FilePart>();
+  Span< CSet::iterator<FilePart> > attr = part.attributes().get<FilePart>();
 
-  if ( NULL == file_part ) {
+  FilePart * file_part = NULL ;
+
+  if ( attr.empty() ) {
 
     const unsigned dim = arg_element_dim ;
 
@@ -186,17 +188,23 @@ const FilePart * internal_declare_part(
     file_part = new FilePart( part, arg_id, arg_type,
                               arg_element_type, arg_number_nodes , n );
 
-    arg_schema.declare_part_attribute( part , file_part );
+    arg_schema.declare_part_attribute( part , file_part , true );
+  }
+  else if ( attr.size() == 1 ) {
+    file_part = & * attr ;
   }
 
-  if ( & file_part->m_part         != & part ||
+  if ( file_part == NULL ||
+       & file_part->m_part         != & part ||
          file_part->m_identifier   != arg_id ||
          file_part->m_entity_type  != arg_type ||
          file_part->m_element_type != arg_element_type ||
          file_part->m_number_nodes != arg_number_nodes ||
          file_part->m_number_attr  != arg_number_attr ) {
     std::ostringstream msg ;
-    msg << method << "FAILED redeclaration" ;
+    msg << method << "FAILED redeclaration (count = " ;
+    msg << attr.size();
+    msg << ")" ;
     throw std::runtime_error( msg.str() );
   }
 
@@ -964,9 +972,9 @@ std::string variable_name( const Part & p ,
     dim.dimension( dimension );
     dim.indices( k , indices );
 
-    const FieldName * des = f.attributes().get<FieldName>();
+    const FieldName * des = io_get_field_name( f );
 
-    if ( ! des ) { des = & io_array_name(); }
+    if ( des == NULL ) { des = & io_array_name(); }
 
     name = des->encode( f.name() , dim.number_of_dimensions() ,
                         dimension , indices );

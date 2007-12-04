@@ -35,6 +35,8 @@
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
 
+#include <elem_top/Shape.hpp>
+
 using namespace phdmesh ;
 
 //----------------------------------------------------------------------
@@ -42,6 +44,8 @@ using namespace phdmesh ;
 
 void test_simple_mesh( ParallelMachine pm , std::istream & )
 {
+  typedef element::Hexahedron Hex ;
+
   static const char method[] = "test_simple_mesh" ;
 
   const unsigned p_rank = parallel_machine_rank( pm );
@@ -93,16 +97,16 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   // an identifier of zero is reserved for 'undefined'.
 
   // Base of this processor's hex
-  const unsigned long node_id_1 = p_rank * 4 + 1 ;
-  const unsigned long node_id_2 = node_id_1 + 1 ;
-  const unsigned long node_id_3 = node_id_1 + 2 ;
-  const unsigned long node_id_4 = node_id_1 + 3 ;
+  const unsigned long node_id_0 = p_rank * 4 + 1 ;
+  const unsigned long node_id_1 = node_id_0 + 1 ;
+  const unsigned long node_id_2 = node_id_0 + 2 ;
+  const unsigned long node_id_3 = node_id_0 + 3 ;
 
   // Top of this processor's hex
-  const unsigned long node_id_5 = node_id_1 + 4 ;
-  const unsigned long node_id_6 = node_id_1 + 5 ;
-  const unsigned long node_id_7 = node_id_1 + 6 ;
-  const unsigned long node_id_8 = node_id_1 + 7 ;
+  const unsigned long node_id_4 = node_id_0 + 4 ;
+  const unsigned long node_id_5 = node_id_0 + 5 ;
+  const unsigned long node_id_6 = node_id_0 + 6 ;
+  const unsigned long node_id_7 = node_id_0 + 7 ;
 
   const unsigned long elem_id = p_rank + 1 ;
   const unsigned long face_id = p_rank + 1 ;
@@ -119,6 +123,7 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   Entity & elem = M.declare_entity( Element , elem_id , add_parts , p_rank );
 
+  Entity & node_0 = M.declare_entity( Node , node_id_0 , add_parts , p_rank );
   Entity & node_1 = M.declare_entity( Node , node_id_1 , add_parts , p_rank );
   Entity & node_2 = M.declare_entity( Node , node_id_2 , add_parts , p_rank );
   Entity & node_3 = M.declare_entity( Node , node_id_3 , add_parts , p_rank );
@@ -126,7 +131,6 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   Entity & node_5 = M.declare_entity( Node , node_id_5 , add_parts , p_rank );
   Entity & node_6 = M.declare_entity( Node , node_id_6 , add_parts , p_rank );
   Entity & node_7 = M.declare_entity( Node , node_id_7 , add_parts , p_rank );
-  Entity & node_8 = M.declare_entity( Node , node_id_8 , add_parts , p_rank );
 
   // Declare element <-> node connections
   // These are required to have unique identifiers
@@ -134,6 +138,7 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   // If non-unique then an exception is thrown that includes
   // the text contained in the 'method' string.
 
+  M.declare_connection( elem , node_0 , 0 , method );
   M.declare_connection( elem , node_1 , 1 , method );
   M.declare_connection( elem , node_2 , 2 , method );
   M.declare_connection( elem , node_3 , 3 , method );
@@ -141,7 +146,6 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   M.declare_connection( elem , node_5 , 5 , method );
   M.declare_connection( elem , node_6 , 6 , method );
   M.declare_connection( elem , node_7 , 7 , method );
-  M.declare_connection( elem , node_8 , 8 , method );
 
   // Declare the face entity:
 
@@ -151,24 +155,30 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   // Declare element <-> face connection
 
-  M.declare_connection( elem , face , 2 , method );
+  M.declare_connection( elem , face , 0 , method );
 
   // Declare face <-> node connections
 
+  StaticAssert< Hex::side<0>::vertex<0>::ordinal == 0 >::ok();
+  StaticAssert< Hex::side<0>::vertex<1>::ordinal == 1 >::ok();
+  StaticAssert< Hex::side<0>::vertex<2>::ordinal == 5 >::ok();
+  StaticAssert< Hex::side<0>::vertex<3>::ordinal == 4 >::ok();
+
+  M.declare_connection( face , node_0 , 0 , method );
   M.declare_connection( face , node_1 , 1 , method );
-  M.declare_connection( face , node_2 , 2 , method );
-  M.declare_connection( face , node_6 , 3 , method );
-  M.declare_connection( face , node_5 , 4 , method );
+  M.declare_connection( face , node_5 , 2 , method );
+  M.declare_connection( face , node_4 , 3 , method );
 
   // Update the nodes on the face to also be members of the face part.
 
+  M.change_entity_parts( node_0 , add_parts , remove_parts );
   M.change_entity_parts( node_1 , add_parts , remove_parts );
-  M.change_entity_parts( node_2 , add_parts , remove_parts );
-  M.change_entity_parts( node_6 , add_parts , remove_parts );
   M.change_entity_parts( node_5 , add_parts , remove_parts );
+  M.change_entity_parts( node_4 , add_parts , remove_parts );
 
   // Set node coordinates:
 
+  double * const node_0_coord = node_0.data( node_coordinates );
   double * const node_1_coord = node_1.data( node_coordinates );
   double * const node_2_coord = node_2.data( node_coordinates );
   double * const node_3_coord = node_3.data( node_coordinates );
@@ -176,16 +186,15 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   double * const node_5_coord = node_5.data( node_coordinates );
   double * const node_6_coord = node_6.data( node_coordinates );
   double * const node_7_coord = node_7.data( node_coordinates );
-  double * const node_8_coord = node_8.data( node_coordinates );
 
-  node_1_coord[0] = 0 ; node_1_coord[1] = 0 ; node_1_coord[2] = p_rank ;
-  node_2_coord[0] = 1 ; node_2_coord[1] = 0 ; node_2_coord[2] = p_rank ;
-  node_3_coord[0] = 1 ; node_3_coord[1] = 1 ; node_3_coord[2] = p_rank ;
-  node_4_coord[0] = 0 ; node_4_coord[1] = 1 ; node_4_coord[2] = p_rank ;
-  node_5_coord[0] = 0 ; node_5_coord[1] = 0 ; node_5_coord[2] = p_rank + 1 ;
-  node_6_coord[0] = 1 ; node_6_coord[1] = 0 ; node_6_coord[2] = p_rank + 1 ;
-  node_7_coord[0] = 1 ; node_7_coord[1] = 1 ; node_7_coord[2] = p_rank + 1 ;
-  node_8_coord[0] = 0 ; node_8_coord[1] = 1 ; node_8_coord[2] = p_rank + 1 ;
+  node_0_coord[0] = 0 ; node_0_coord[1] = 0 ; node_0_coord[2] = p_rank ;
+  node_1_coord[0] = 1 ; node_1_coord[1] = 0 ; node_1_coord[2] = p_rank ;
+  node_2_coord[0] = 1 ; node_2_coord[1] = 1 ; node_2_coord[2] = p_rank ;
+  node_3_coord[0] = 0 ; node_3_coord[1] = 1 ; node_3_coord[2] = p_rank ;
+  node_4_coord[0] = 0 ; node_4_coord[1] = 0 ; node_4_coord[2] = p_rank + 1 ;
+  node_5_coord[0] = 1 ; node_5_coord[1] = 0 ; node_5_coord[2] = p_rank + 1 ;
+  node_6_coord[0] = 1 ; node_6_coord[1] = 1 ; node_6_coord[2] = p_rank + 1 ;
+  node_7_coord[0] = 0 ; node_7_coord[1] = 1 ; node_7_coord[2] = p_rank + 1 ;
 
   // Determine proper parallel sharing and ownership
   comm_mesh_discover_sharing( M );

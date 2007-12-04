@@ -34,7 +34,6 @@
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
-#include <mesh/EntityManager.hpp>
 #include <mesh_io/FieldName.hpp>
 
 #include "Gears.hpp"
@@ -69,10 +68,10 @@ GearFields::GearFields( Schema & S )
   S.declare_field_dimension( current_coord , universe , n3 );
   S.declare_field_dimension( displacement  , universe , n3 );
 
-  io_declare( gear_coord ,    io_cylindrical_vector() );
-  io_declare( model_coord ,   io_cartesian_vector() );
-  io_declare( current_coord , io_cartesian_vector() );
-  io_declare( displacement ,  io_cartesian_vector() );
+  io_declare_field_name( gear_coord ,    io_cylindrical_vector() );
+  io_declare_field_name( model_coord ,   io_cartesian_vector() );
+  io_declare_field_name( current_coord , io_cartesian_vector() );
+  io_declare_field_name( displacement ,  io_cartesian_vector() );
 }
 
 //----------------------------------------------------------------------

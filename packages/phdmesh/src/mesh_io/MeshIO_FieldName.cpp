@@ -301,19 +301,28 @@ const FieldName & io_cylindrical_vector()
   return descriptor ;
 }
 
-void io_declare( Field<void,0> & f , const FieldName & d )
+const FieldName * io_get_field_name( const Field<void,0> & f )
+{
+  Span< CSet::iterator<const FieldName> > attr =
+    f.attributes().get<const FieldName>();
+
+  return attr.empty() ? (const FieldName *) NULL : & *attr ;
+}
+
+void io_declare_field_name( Field<void,0> & f , const FieldName & d )
 {
   static const char method[] = "phdmesh::io_declare" ;
 
-  const unsigned ordinal = f.schema().declare_field_attribute( f, & d, NULL );
+  const FieldName * const exist = io_get_field_name( f );
 
-  if ( ordinal ) {
-    const FieldName * const old = f.attributes().get<FieldName>(0);
-
+  if ( ! exist ) {
+    f.schema().declare_field_attribute<const FieldName>( f, & d , false );
+  }
+  else if ( exist != & d ) {
     std::ostringstream msg ;
     msg << method << "( " << f.name() << " , " << d.name()
         << " ) FAILED: Redeclaration from "
-        << old->name();
+        << exist->name();
     throw std::logic_error( msg.str() );
   }
 }

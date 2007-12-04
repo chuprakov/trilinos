@@ -27,7 +27,7 @@ MESH_INC_FILES =	\
 	$(MESH_INC_DIR)/Assemble.hpp	\
 	$(MESH_INC_DIR)/Comm.hpp	\
 	$(MESH_INC_DIR)/Entity.hpp	\
-	$(MESH_INC_DIR)/EntityManager.hpp	\
+	$(MESH_INC_DIR)/EntityComm.hpp	\
 	$(MESH_INC_DIR)/FieldDim.hpp	\
 	$(MESH_INC_DIR)/Field.hpp	\
 	$(MESH_INC_DIR)/Gather.hpp	\
@@ -43,7 +43,7 @@ MESH_OBJ_FILES =	\
 	MeshAura.o	\
 	MeshComm.o	\
 	MeshEntity.o	\
-	MeshEntityManager.o	\
+	MeshEntityComm.o	\
 	MeshField.o	\
 	MeshKernel.o	\
 	MeshMesh.o	\

@@ -30,57 +30,23 @@
 
 #include <mesh/Mesh.hpp>
 #include <mesh/Schema.hpp>
-#include <mesh/EntityManager.hpp>
+#include <mesh/EntityComm.hpp>
 
 namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-EntityManager::~EntityManager() {}
+EntityComm::~EntityComm() {}
 
-const char * EntityManager::name() const
+const char * EntityComm::name() const
 {
-  static const char my_name[] = "phdmesh::EntityManager" ;
+  static const char my_name[] = "phdmesh::EntityComm" ;
   return my_name ;
-}
-
-Entity * EntityManager::declare_entity(
-  Mesh & recv_mesh ,
-  EntityType entity_type ,
-  unsigned long entity_id ,
-  unsigned owner_rank ,
-  std::vector<Part*> & parts ,
-  std::vector<Connect> & rels ) const
-{
-  Entity & e = recv_mesh.declare_entity( entity_type , entity_id ,
-                                         parts , owner_rank );
-
-  for ( std::vector<Connect>::iterator
-        i = rels.begin() ; i != rels.end() ; ++i ) {
-
-    const ConnectType r_type   = i->type();
-    const unsigned    r_ident  = i->identifier();
-          Entity    & r_entity = * i->entity();
-
-    switch( r_type ) {
-    case Uses :
-      recv_mesh.declare_connection( e , r_entity , r_ident );
-      break ;
-    case UsedBy :
-      recv_mesh.declare_connection( r_entity , e , r_ident );
-      break ;
-    case Anonymous :
-      recv_mesh.declare_connection_anon( e , r_entity , r_ident );
-      break ;
-    }
-  }
-
-  return & e ;
 }
 
 //----------------------------------------------------------------------
 
-void EntityManager::send_entity(
+void EntityComm::send_entity(
   CommBuffer & buffer ,
   const Mesh & receive_mesh ,
   const EntityProcSet::const_iterator ibeg ,
@@ -89,7 +55,7 @@ void EntityManager::send_entity(
   pack_entity( buffer , receive_mesh , ibeg , iend );
 }
 
-void EntityManager::receive_entity(
+void EntityComm::receive_entity(
   CommBuffer              & buffer ,
   Mesh                    & receive_mesh ,
   const unsigned            send_source ,
@@ -108,8 +74,11 @@ void EntityManager::receive_entity(
 
   EntityProc ep ;
 
-  ep.first = declare_entity( receive_mesh , entity_type , entity_id ,
-                             owner_rank , parts , connections );
+  ep.first = & receive_mesh.declare_entity( entity_type , entity_id ,
+                                            parts , owner_rank );
+
+  receive_mesh.declare_connection( *ep.first , connections , name() );
+
   ep.second = send_source ;
 
   receive_info.push_back( ep );
@@ -117,7 +86,7 @@ void EntityManager::receive_entity(
 
 //----------------------------------------------------------------------
 
-void EntityManager::pack_entity(
+void EntityComm::pack_entity(
   CommBuffer & buf ,
   const Mesh & recv_mesh ,
   const EntityProcSet::const_iterator ibeg ,
@@ -182,7 +151,7 @@ void EntityManager::pack_entity(
   }
 }
 
-void EntityManager::unpack_entity(
+void EntityComm::unpack_entity(
   CommBuffer            & recv_buf ,
   const Mesh            & recv_mesh ,
   EntityType            & entity_type ,
@@ -251,7 +220,7 @@ void EntityManager::unpack_entity(
 
 //----------------------------------------------------------------------
 
-void EntityManager::pack_field_values(
+void EntityComm::pack_field_values(
   CommBuffer & buf , Entity & entity ) const
 {
   const EntityType entity_type = entity.entity_type();
@@ -283,10 +252,10 @@ void EntityManager::pack_field_values(
   }
 }
 
-void EntityManager::unpack_field_values(
+void EntityComm::unpack_field_values(
   CommBuffer & buf , Entity & entity ) const
 {
-  static const char method[] = "phdmesh::EntityManager::unpack_field_values" ;
+  static const char method[] = "phdmesh::EntityComm::unpack_field_values" ;
 
   const EntityType entity_type = entity.entity_type();
   const Kernel & kernel = entity.kernel();

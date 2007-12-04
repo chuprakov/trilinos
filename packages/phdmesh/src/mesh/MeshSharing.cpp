@@ -98,8 +98,7 @@ bool comm_verify_shared_entity_values(
   for ( ic = shares.first ; ic != shares.second ; ++ic ) {
     Entity & e = * ic->first ;
     Kernel & k = e.kernel();
-    const FieldDimension & dim = dimension( f , k );
-    const unsigned this_size = dim.size();
+    const unsigned this_size = k.data_size( f );
     CommBuffer & b = sparse.send_buffer( ic->second );
 
     unsigned char * data = (unsigned char *) e.data( f );
@@ -115,8 +114,7 @@ bool comm_verify_shared_entity_values(
   for ( ic = shares.first ; ic != shares.second ; ++ic ) {
     Entity & e = * ic->first ;
     Kernel & k = e.kernel();
-    const FieldDimension & dim = dimension( f , k );
-    const unsigned this_size = dim.size();
+    const unsigned this_size = k.data_size( f );
     CommBuffer & b = sparse.recv_buffer( ic->second );
 
     unsigned char * data = (unsigned char *) e.data( f );
@@ -242,6 +240,7 @@ bool comm_mesh_scrub_sharing( Mesh & M )
     const EntityProcSet::iterator ie = i ;
 
     Entity * const entity = (--i)->first ;
+    const EntityType entity_type = entity->entity_type();
 
     for ( ; i != shares.begin() && entity == i->first ; --i );
     if ( entity != i->first ) { ++i ; }
@@ -250,7 +249,8 @@ bool comm_mesh_scrub_sharing( Mesh & M )
 
     for ( ConnectSpan
           con = entity->connections() ; con && destroy_it ; ++con ) {
-      destroy_it = ! ( UsedBy == con->type() &&
+
+      destroy_it = ! ( entity_type < con->entity_type() &&
                        p_rank == con->entity()->owner_rank() );
     }
 
@@ -500,11 +500,8 @@ bool unpack_info_verify(
       for ( unsigned j = 0 ; j < recv_connect_size * 2 ; ) {
         const unsigned      attr    = recv_connect[j] ; ++j ;
         const unsigned long con_key = recv_connect[j] ; ++j ;
-        const Connect con( attr );
         os << std::endl << "    " ;
-        os << connect_type_name( con.type() );
-        os << "[" << con.identifier() << "]->" ;
-        print_entity_key( os , con_key );
+        print_connect( os , attr , con_key );
       }
       os << " }" << std::endl ;
 
@@ -658,13 +655,13 @@ bool comm_mesh_verify_parallel_consistency( Mesh & M )
 
 namespace {
 
-class SharingManager : public EntityManager {
+class SharingComm : public EntityComm {
 private:
-  SharingManager( const SharingManager & );
-  SharingManager & operator = ( const SharingManager & );
+  SharingComm( const SharingComm & );
+  SharingComm & operator = ( const SharingComm & );
 public:
-  SharingManager() {}
-  ~SharingManager() {}
+  SharingComm() {}
+  ~SharingComm() {}
 
   const char * name() const ;
 
@@ -675,10 +672,10 @@ public:
     EntityProcSet & receive_info ) const ;
 };
 
-const char * SharingManager::name() const
-{ static const char n[] = "phdmesh::SharingManager" ; return n ; }
+const char * SharingComm::name() const
+{ static const char n[] = "phdmesh::SharingComm" ; return n ; }
 
-void SharingManager::receive_entity(
+void SharingComm::receive_entity(
   CommBuffer & buffer ,
   Mesh & receive_mesh ,
   const unsigned send_source ,
@@ -704,7 +701,7 @@ void SharingManager::receive_entity(
   // Must have been sent by the owner.
 
   if ( send_source != owner_rank ) {
-    std::string msg( "phdmesh::SharingManager::receive_entity FAILED owner" );
+    std::string msg( "phdmesh::SharingComm::receive_entity FAILED owner" );
     throw std::logic_error( msg );
   }
 
@@ -726,15 +723,17 @@ void SharingManager::receive_entity(
 
     if ( ep.first->kernel().has_superset( *uses_part ) ||
          k == receive_info.end() || k->first != ep.first ) {
-      std::string msg( "phdmesh::SharingManager::receive_entity FAILED aura" );
+      std::string msg( "phdmesh::SharingComm::receive_entity FAILED aura" );
       throw std::logic_error( msg );
     }
 
     receive_info.erase( k );
   }
 
-  ep.first = declare_entity( receive_mesh , entity_type , entity_id ,
-                             owner_rank , parts , connections );
+  ep.first = & receive_mesh.declare_entity( entity_type , entity_id ,
+                                            parts , owner_rank );
+
+  receive_mesh.declare_connection( *ep.first , connections , name() );
 }
 
 bool not_member( const EntityProcSet & s , const EntityProc & m )
@@ -803,7 +802,7 @@ void comm_mesh_add_sharing( Mesh & M , const EntityProcSet & add )
 {
   static const char method[] = "phdmesh::comm_mesh_add_sharing" ;
 
-  const SharingManager mgr ;
+  const SharingComm mgr ;
   const unsigned p_rank = M.parallel_rank();
   const unsigned p_size = M.parallel_size();
 
