@@ -32,7 +32,7 @@
 
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 
-#include "DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack_MatrixSymOpNonsingSerial.hpp"
 
 namespace LinAlgOpPack {
