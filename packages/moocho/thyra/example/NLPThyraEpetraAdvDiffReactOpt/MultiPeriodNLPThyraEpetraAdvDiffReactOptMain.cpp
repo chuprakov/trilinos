@@ -423,12 +423,11 @@ int main( int argc, char* argv[] )
     const int z_index = 1;
     const int z_p_index = 1; // Index of the reaction rate parameter parameter subvector
     const int z_x_index = 2; // Index of the state matching subvector parameter
-    Array<int> z_indexes
-      = (
-        useStatelessPeriodModel
-        ? tuple<int>(z_p_index, z_x_index)
-        : tuple<int>(z_p_index)
-        );
+    Array<int> z_indexes;
+    if (useStatelessPeriodModel)
+      z_indexes = tuple<int>(z_p_index, z_x_index);
+    else
+      z_indexes = tuple<int>(z_p_index);
     Array<Array<RCP<const VectorBase<Scalar> > > > z;
     const int g_index = ( useOuterInverse ? 1 : 0 );
     Array<Scalar> weights;
