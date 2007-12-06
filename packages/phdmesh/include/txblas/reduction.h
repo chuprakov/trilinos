@@ -109,8 +109,9 @@ void txddot1( double * s2 , unsigned , const double * );
  *      phdmesh_dsum_sum( s4 , x[i] * y[i] );
  *    }
  */
-void xddot(  double * s4 , unsigned , const double * , const double * );
-void txddot( double * s4 , unsigned , const double * , const double * );
+void xddot(   double * s4 , unsigned , const double * , const double * );
+void txddot(  double * s4 , unsigned , const double * , const double * );
+void tbxddot( double * s4 , unsigned , const double * , const double * );
 
 #if defined( __cplusplus )
 } /* extern "C" */

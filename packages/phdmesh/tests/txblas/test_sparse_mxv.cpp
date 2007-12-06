@@ -81,7 +81,7 @@ int task_rand_fill( void * arg , unsigned p_size , unsigned p_rank )
   return 0 ;
 }
 
-void timing_test_txblas(
+void timing_test_txddot(
   ParallelMachine comm , const unsigned M , const unsigned ncycle )
 {
   const unsigned p_size = parallel_machine_size( comm );
@@ -99,36 +99,82 @@ void timing_test_txblas(
     }
   }
 
-  std::vector<double> values( m_local );
-
-  double t = wall_time();
+  std::vector<double> x_values( m_local );
 
   {
     FillWork data ;
     data.x_mag = 1 ;
-    data.x_beg = & values[0] ;
+    data.x_beg = & x_values[0] ;
     data.x_length = m_local ;
     phdmesh::taskpool::run( & task_rand_fill , & data , 0 );
   }
 
-  const double dt_fill = wall_dtime( t );
+  std::vector<double> y_values( x_values );
 
-  Summation z ;
+  double t = wall_time();
 
   for ( unsigned i = 0 ; i < ncycle ; ++i ) {
-    txddot1( z.xdval , m_local , & values[0] );
+    Summation z ;
+    txddot( z.xdval , m_local , & x_values[0] , & y_values[0] );
     all_reduce( comm , ReduceSum<1>( & z ) );
   }
 
-  double dt_txddot1 = wall_dtime( t ) / (double) ncycle ;
+  double dt_txddot = wall_dtime( t ) / (double) ncycle ;
 
-  all_reduce( comm , ReduceMax<1>( & dt_txddot1 ) );
+  all_reduce( comm , ReduceMax<1>( & dt_txddot ) );
 
   if ( p_rank == 0 ) {
-    std::cout << "TIMING rand_fill[  " << M << " ] = "
-              << dt_fill << " sec" << std::endl ;
-    std::cout << "TIMING txddot1[ " << M << " ] = "
-              << dt_txddot1 << " sec" << std::endl ;
+    std::cout << "TIMING txddot[ " << M << " ] = "
+              << dt_txddot << " sec" << std::endl ;
+    std::cout.flush();
+  }
+}
+
+void timing_test_tbxddot(
+  ParallelMachine comm , const unsigned M , const unsigned ncycle )
+{
+  const unsigned p_size = parallel_machine_size( comm );
+  const unsigned p_rank = parallel_machine_rank( comm );
+
+  const unsigned m_rem   = M % p_size ;
+  const unsigned m_local = M / p_size + ( p_rank < m_rem ? 1 : 0 );
+
+  {
+    std::vector<double> tmp ;
+    if ( tmp.max_size() < m_local ) {
+      std::cout << "timing_test_txblas cannot allocate "
+                << m_local << std::endl ;
+      return ;
+    }
+  }
+
+  std::vector<double> x_values( m_local );
+
+  {
+    FillWork data ;
+    data.x_mag = 1 ;
+    data.x_beg = & x_values[0] ;
+    data.x_length = m_local ;
+    phdmesh::taskpool::run( & task_rand_fill , & data , 0 );
+  }
+
+  std::vector<double> y_values( x_values );
+
+  double t = wall_time();
+
+  for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+    Summation z ;
+    tbxddot( z.xdval , m_local , & x_values[0] , & y_values[0] );
+    all_reduce( comm , ReduceSum<1>( & z ) );
+  }
+
+  double dt_tbxddot = wall_dtime( t ) / (double) ncycle ;
+
+  all_reduce( comm , ReduceMax<1>( & dt_tbxddot ) );
+
+  if ( p_rank == 0 ) {
+    std::cout << "TIMING tbxddot[ " << M << " ] = "
+              << dt_tbxddot << " sec" << std::endl ;
     std::cout.flush();
   }
 }
@@ -286,7 +332,8 @@ void test_timing( phdmesh::ParallelMachine comm , std::istream & is )
   unsigned ncycle = 10 ;
   if ( is.good() ) { is >> num ; }
   if ( is.good() ) { is >> ncycle ; }
-  timing_test_txblas( comm , num , ncycle );
+  timing_test_tbxddot( comm , num , ncycle );
+  timing_test_txddot( comm , num , ncycle );
 }
 
 //----------------------------------------------------------------------

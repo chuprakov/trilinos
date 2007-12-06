@@ -271,17 +271,51 @@ const Topology & topology< Quadrilateral2D , 9 >()
 
 //----------------------------------------------------------------------
 
+namespace {
+
+const Topology::Boundary * shell_quad_face_4()
+{
+  static const Topology & face_top = topology< QFace , 4 >();
+  static const Topology::Orientation * const orient = quad25_orientation();
+
+  static Topology::Boundary faces[] =
+    { { orient[0].node_map , & face_top } ,
+      { orient[4].node_map , & face_top } };
+
+  return faces ;
+}
+
+const Topology::Boundary * shell_quad_face_8()
+{
+  static const Topology & face_top = topology< QFace , 8 >();
+  static const Topology::Orientation * const orient = quad25_orientation();
+
+  static Topology::Boundary faces[] =
+    { { orient[0].node_map , & face_top } ,
+      { orient[4].node_map , & face_top } };
+
+  return faces ;
+}
+
+const Topology::Boundary * shell_quad_face_9()
+{
+  static const Topology & face_top = topology< QFace , 9 >();
+  static const Topology::Orientation * const orient = quad25_orientation();
+
+  static Topology::Boundary faces[] =
+    { { orient[0].node_map , & face_top } ,
+      { orient[4].node_map , & face_top } };
+
+  return faces ;
+}
+
+}
+
 template<>
 const Topology & topology< QuadrilateralShell , 4 >()
 {
-  static const Topology & face_top = topology< QFace , 4 >();
-
-  static Topology::Boundary faces[] =
-    { { face_top.orientation[0].node_map , & face_top } ,
-      { face_top.orientation[3].node_map , & face_top } };
-
   static const Topology top( QuadrilateralShell(), 4, 25,
-                             quad25_edge_2_map(), faces );
+                             quad25_edge_2_map(), shell_quad_face_4() );
 
   return top ;
 }
@@ -289,14 +323,8 @@ const Topology & topology< QuadrilateralShell , 4 >()
 template<>
 const Topology & topology< QuadrilateralShell , 8 >()
 {
-  static const Topology & face_top = topology< QFace , 8 >();
-
-  static Topology::Boundary faces[] =
-    { { face_top.orientation[0].node_map , & face_top } ,
-      { face_top.orientation[3].node_map , & face_top } };
-
   static const Topology top( QuadrilateralShell(), 8, 25,
-                             quad25_edge_3_map(), faces );
+                             quad25_edge_3_map(), shell_quad_face_8() );
 
   return top ;
 }
@@ -304,14 +332,8 @@ const Topology & topology< QuadrilateralShell , 8 >()
 template<>
 const Topology & topology< QuadrilateralShell , 9 >()
 {
-  static const Topology & face_top = topology< QFace , 9 >();
-
-  static Topology::Boundary faces[] =
-    { { face_top.orientation[0].node_map , & face_top } ,
-      { face_top.orientation[3].node_map , & face_top } };
-
   static const Topology top( QuadrilateralShell(), 9, 25,
-                             quad25_edge_3_map(), faces );
+                             quad25_edge_3_map(), shell_quad_face_9() );
 
   return top ;
 }

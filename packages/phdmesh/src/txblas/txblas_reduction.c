@@ -252,21 +252,26 @@ void txddot1( double * s , unsigned n , const double * x )
 
 /*--------------------------------------------------------------------*/
 
-static
-void dot_unroll( double * const s ,
-                 const double * x ,
-                 const double * y ,
-                 const size_t n )
+static int task_dot_xy_work( void * arg , unsigned p_size , unsigned p_rank )
 {
-  enum { NB = 8 };
+  struct TaskXY * const t = (struct TaskXY *) arg ;
 
-  for ( const double * const y_blk = y + n % NB ; y_blk != y ; ++x , ++y ) {
-    double a = *x * *y ;
-    double * const p = a < 0 ? ( a = -a , s + 2 ) : s ;
-    SUM_ADD( p , a );
-  }
+  const unsigned block    = 8 ;
+  const unsigned stride   = block ;
+  const unsigned n_global = t->number ;
+  const unsigned n_begin  = ( n_global * p_rank ) / p_size ;
+  const unsigned n_end    = ( n_global * p_rank + n_global ) / p_size ;
 
-  for ( const double * const y_end = y + n ; y_end != y ; x += NB , y += NB ) {
+  const double * x = t->x_beg + n_begin ;
+  const double * y = t->y_beg + n_begin ;
+
+  const double * const y_end = t->y_beg + n_end ;
+  const double * const y_blk = y_end - ( y_end - y ) % block ;
+
+  double pos[2] = { 0 , 0 };
+  double neg[2] = { 0 , 0 };
+
+  for ( ; y < y_blk ; x += stride , y += stride ) {
     double a0 = x[0] * y[0] ;
     double a1 = x[1] * y[1] ;
     double a2 = x[2] * y[2] ;
@@ -275,14 +280,14 @@ void dot_unroll( double * const s ,
     double a5 = x[5] * y[5] ;
     double a6 = x[6] * y[6] ;
     double a7 = x[7] * y[7] ;
-    double * const p0 = a0 < 0 ? ( a0 = -a0 , s + 2 ) : s ;
-    double * const p1 = a1 < 0 ? ( a1 = -a1 , s + 2 ) : s ;
-    double * const p2 = a2 < 0 ? ( a2 = -a2 , s + 2 ) : s ;
-    double * const p3 = a3 < 0 ? ( a3 = -a3 , s + 2 ) : s ;
-    double * const p4 = a4 < 0 ? ( a4 = -a4 , s + 2 ) : s ;
-    double * const p5 = a5 < 0 ? ( a5 = -a5 , s + 2 ) : s ;
-    double * const p6 = a6 < 0 ? ( a6 = -a6 , s + 2 ) : s ;
-    double * const p7 = a7 < 0 ? ( a7 = -a7 , s + 2 ) : s ;
+    double * const p0 = a0 < 0 ? ( a0 = -a0 , neg ) : pos ;
+    double * const p1 = a1 < 0 ? ( a1 = -a1 , neg ) : pos ;
+    double * const p2 = a2 < 0 ? ( a2 = -a2 , neg ) : pos ;
+    double * const p3 = a3 < 0 ? ( a3 = -a3 , neg ) : pos ;
+    double * const p4 = a4 < 0 ? ( a4 = -a4 , neg ) : pos ;
+    double * const p5 = a5 < 0 ? ( a5 = -a5 , neg ) : pos ;
+    double * const p6 = a6 < 0 ? ( a6 = -a6 , neg ) : pos ;
+    double * const p7 = a7 < 0 ? ( a7 = -a7 , neg ) : pos ;
     SUM_ADD( p0 , a0 );
     SUM_ADD( p1 , a1 );
     SUM_ADD( p2 , a2 );
@@ -292,47 +297,119 @@ void dot_unroll( double * const s ,
     SUM_ADD( p6 , a6 );
     SUM_ADD( p7 , a7 );
   }
-}
 
-void xddot( double * s4 , unsigned n , const double * x , const double * y )
-{ dot_unroll( s4 , x , y , n ); }
-
-static int task_dot_xy_work( void * arg , unsigned p_size , unsigned p_rank )
-{
-  struct TaskXY * const t  = (struct TaskXY *) arg ;
-
-  double partial[4] = { 0 , 0 , 0 , 0 };
-
-  {
-    const unsigned p_next = p_rank + 1 ;
-    const unsigned n_global = t->number ;
-    const unsigned n_begin = ( n_global * p_rank ) / p_size ;
-    const unsigned n_local = ( n_global * p_next ) / p_size - n_begin ;
-
-    const double * const xb = t->x_beg + n_begin ;
-    const double * const yb = t->y_beg + n_begin ;
-
-    dot_unroll( partial , xb , yb , n_local );
+  if ( y_blk == y ) {
+    for ( ; y < y_end ; ++x , ++y ) {
+      double a = *x * *y ;
+      double * const p = a < 0 ? ( a = -a , neg ) : pos ;
+      SUM_ADD( p , a );
+    }
   }
 
   phdmesh_taskpool_lock(0,NULL);
   {
-    double * const s = t->xy_sum ;
-    xdsum_add_dsum( s , partial );
+    double * const s_pos = t->xy_sum ;
+    double * const s_neg = s_pos + 2 ;
+    SUM_ADD( s_pos , pos[0] );
+    SUM_ADD( s_pos , pos[1] );
+    SUM_ADD( s_neg , neg[0] );
+    SUM_ADD( s_neg , neg[1] );
   }
   phdmesh_taskpool_unlock(0,NULL);
 
   return 0 ;
 }
 
+/*--------------------------------------------------------------------*/
+
+static int task_dot_xy_work_block(
+  void * arg , unsigned p_size , unsigned p_rank )
+{
+  struct TaskXY * const t = (struct TaskXY *) arg ;
+
+  const unsigned block   = 8 ;
+  const unsigned stride  = block * p_size ;
+  const unsigned n_begin = block * p_rank ;
+  const unsigned n_end   = t->number ;
+
+  const double * x = t->x_beg + n_begin ;
+  const double * y = t->y_beg + n_begin ;
+
+  const double * const y_end = t->y_beg + n_end ;
+  const double * const y_blk = y_end - ( y_end - y ) % block ;
+
+  double pos[2] = { 0 , 0 };
+  double neg[2] = { 0 , 0 };
+
+  for ( ; y < y_blk ; x += stride , y += stride ) {
+    double a0 = x[0] * y[0] ;
+    double a1 = x[1] * y[1] ;
+    double a2 = x[2] * y[2] ;
+    double a3 = x[3] * y[3] ;
+    double a4 = x[4] * y[4] ;
+    double a5 = x[5] * y[5] ;
+    double a6 = x[6] * y[6] ;
+    double a7 = x[7] * y[7] ;
+    double * const p0 = a0 < 0 ? ( a0 = -a0 , neg ) : pos ;
+    double * const p1 = a1 < 0 ? ( a1 = -a1 , neg ) : pos ;
+    double * const p2 = a2 < 0 ? ( a2 = -a2 , neg ) : pos ;
+    double * const p3 = a3 < 0 ? ( a3 = -a3 , neg ) : pos ;
+    double * const p4 = a4 < 0 ? ( a4 = -a4 , neg ) : pos ;
+    double * const p5 = a5 < 0 ? ( a5 = -a5 , neg ) : pos ;
+    double * const p6 = a6 < 0 ? ( a6 = -a6 , neg ) : pos ;
+    double * const p7 = a7 < 0 ? ( a7 = -a7 , neg ) : pos ;
+    SUM_ADD( p0 , a0 );
+    SUM_ADD( p1 , a1 );
+    SUM_ADD( p2 , a2 );
+    SUM_ADD( p3 , a3 );
+    SUM_ADD( p4 , a4 );
+    SUM_ADD( p5 , a5 );
+    SUM_ADD( p6 , a6 );
+    SUM_ADD( p7 , a7 );
+  }
+
+  if ( y_blk == y ) {
+    for ( ; y < y_end ; ++x , ++y ) {
+      double a = *x * *y ;
+      double * const p = a < 0 ? ( a = -a , neg ) : pos ;
+      SUM_ADD( p , a );
+    }
+  }
+
+  phdmesh_taskpool_lock(0,NULL);
+  {
+    double * const s_pos = t->xy_sum ;
+    double * const s_neg = s_pos + 2 ;
+    SUM_ADD( s_pos , pos[0] );
+    SUM_ADD( s_pos , pos[1] );
+    SUM_ADD( s_neg , neg[0] );
+    SUM_ADD( s_neg , neg[1] );
+  }
+  phdmesh_taskpool_unlock(0,NULL);
+
+  return 0 ;
+}
+
+/*--------------------------------------------------------------------*/
+
 void txddot( double * s , unsigned n , const double * x , const double * y )
 {
   struct TaskXY data ;
   data.xy_sum = s ;
   data.x_beg  = x ;
-  data.x_beg  = y ;
+  data.y_beg  = y ;
   data.number = n ;
   phdmesh_taskpool_run( & task_dot_xy_work , & data , 1 );
+}
+
+void tbxddot( double * s , unsigned n , const double * x , const double * y )
+{
+  struct TaskXY data ;
+  data.xy_sum = s ;
+  data.x_beg  = x ;
+  data.y_beg  = y ;
+  data.number = n ;
+  phdmesh_taskpool_run( & task_dot_xy_work_block , & data , 1 );
 }
 
 /*--------------------------------------------------------------------*/
