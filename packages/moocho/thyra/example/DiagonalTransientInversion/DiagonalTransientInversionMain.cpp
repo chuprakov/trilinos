@@ -5,7 +5,7 @@
 #include "Rythmos_ImplicitBDFStepper.hpp"
 #include "Rythmos_ForwardSensitivityStepper.hpp"
 #include "Rythmos_TimeStepNonlinearSolver.hpp"
-#include "Rythmos_SimpleIntegrator.hpp"
+#include "Rythmos_DefaultIntegrator.hpp"
 #include "Rythmos_SimpleIntegrationControlStrategy.hpp"
 #include "Rythmos_StepperAsModelEvaluator.hpp"
 #include "Rythmos_ForwardSensitivityIntegratorAsModelEvaluator.hpp"
@@ -217,7 +217,7 @@ int main( int argc, char* argv[] )
       
     RCP<Rythmos::IntegratorBase<Scalar> > integrator;
     {
-      integrator = Rythmos::controlledSimpleIntegrator<Scalar>(
+      integrator = Rythmos::controlledDefaultIntegrator<Scalar>(
         Rythmos::simpleIntegrationControlStrategy<Scalar>(
           sublist(paramList,"Rythmos Integration Control",true)
           )
