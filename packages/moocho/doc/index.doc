@@ -634,7 +634,7 @@ NLP.
 
 The below examples show subclasses of <tt>EpetraExt::ModelEvaluator</tt> that
 are used along with <tt>Thyra::EpetraModelEvaluator</tt> and the stratimikos
-solvers accessed through <tt>Thyra::DefaultRealLinearSolverBuilder</tt>.
+solvers accessed through <tt>Stratimikos::DefaultLinearSolverBuilder</tt>.
 
 <ul>
 
@@ -730,11 +730,11 @@ parameters/options are separated into linear solver parameters for
 When using a <tt>%Thyra::ModelEvaluator</tt>-based NLP, the linear solver
 options for inverting the basis of the equality constraints are read in
 through a <tt>Teuchos::ParameterList</tt> object which is accepted through the
-%Stratimikos class <tt>Thyra::DefaultRealLinearSolverBuilder</tt>.  When a
+%Stratimikos class <tt>Stratimikos::DefaultLinearSolverBuilder</tt>.  When a
 <tt>MoochoPack::MoochoThyraSolver</tt> object is used to build a
 driver program, it can add options to the
 <tt>Teuchos::CommandLineProcessor</tt> object through the function
-<tt>Thyra::DefaultRealLinearSolverBuilder::setupCLP()</tt> (see <tt><a
+<tt>Stratimikos::DefaultLinearSolverBuilder::setupCLP()</tt> (see <tt><a
 href="./NLPThyraEpetraModelEval4DOptMain_8cpp-example.html">
 NLPThyraEpetraModelEval4DOptMain.cpp</a></tt>).  This adds the command-line arguments
 <tt>--linear-solver-params-file</tt> and <tt>--extra-linear-solver-params</tt>
@@ -743,7 +743,7 @@ solvers in XML format.
 
 The linear solver parameters file is specified in XML and the list of all of
 the valid options can be found in the documentation for the class
-<tt>Thyra::DefaultRealLinearSolverBuilder</tt> itself.
+<tt>Stratimikos::DefaultLinearSolverBuilder</tt> itself.
 
 An example of a linear solver options input file that specifies the use of the
 %Amesos solver <tt>Amesos_Klu</tt> is shown below:

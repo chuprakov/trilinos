@@ -2,7 +2,7 @@
 #include "MoochoPack_MoochoThyraSolver.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Thyra_DefaultSpmdMultiVectorFileIO.hpp"
-#include "Thyra_DefaultRealLinearSolverBuilder.hpp"
+#include "Stratimikos_DefaultLinearSolverBuilder.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_StandardCatchMacros.hpp"
@@ -44,7 +44,7 @@ int main( int argc, char* argv[] )
   
     // Create the solver object
     GLpApp::AdvDiffReactOptModelCreator     advDiffReacModelCreator;
-    Thyra::DefaultRealLinearSolverBuilder   lowsfCreator;
+    Stratimikos::DefaultLinearSolverBuilder   lowsfCreator;
     MoochoThyraSolver                       solver;
 
     //

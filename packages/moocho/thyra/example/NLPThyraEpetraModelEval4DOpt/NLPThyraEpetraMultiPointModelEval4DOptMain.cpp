@@ -5,7 +5,7 @@
 #endif
 #include "EpetraMultiPointModelEval4DOpt.hpp"
 #include "MoochoPack_MoochoThyraSolver.hpp"
-#include "Thyra_DefaultRealLinearSolverBuilder.hpp"
+#include "Stratimikos_DefaultLinearSolverBuilder.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Teuchos_RCP.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
@@ -30,7 +30,7 @@ int main( int argc, char* argv[] )
 
   try {
 
-    Thyra::DefaultRealLinearSolverBuilder lowsfCreator;
+    Stratimikos::DefaultLinearSolverBuilder lowsfCreator;
     MoochoThyraSolver                     solver;
   
     //

@@ -5,7 +5,7 @@
 #include "Thyra_DefaultClusteredSpmdProductVectorSpace.hpp"
 #include "Thyra_DefaultMultiPeriodModelEvaluator.hpp"
 #include "Thyra_VectorSpaceTester.hpp"
-#include "Thyra_DefaultRealLinearSolverBuilder.hpp"
+#include "Stratimikos_DefaultLinearSolverBuilder.hpp"
 #include "Thyra_DefaultInverseModelEvaluator.hpp"
 #include "Thyra_DefaultScaledAdjointLinearOp.hpp"
 #include "Thyra_DefaultMultipliedLinearOp.hpp"
@@ -70,7 +70,7 @@ int main( int argc, char* argv[] )
 
   try {
   
-    Thyra::DefaultRealLinearSolverBuilder   lowsfCreator;
+    Stratimikos::DefaultLinearSolverBuilder   lowsfCreator;
     GLpApp::AdvDiffReactOptModelCreator     epetraModelCreator;
 
     // Create the solver object

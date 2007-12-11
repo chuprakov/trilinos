@@ -1,7 +1,7 @@
 #include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
 #include "EpetraModelEval4DOpt.hpp"
 #include "MoochoPack_MoochoThyraSolver.hpp"
-#include "Thyra_DefaultRealLinearSolverBuilder.hpp"
+#include "Stratimikos_DefaultLinearSolverBuilder.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_VerboseObject.hpp"
@@ -24,7 +24,7 @@ int main( int argc, char* argv[] )
 
   try {
 
-    Thyra::DefaultRealLinearSolverBuilder lowsfCreator;
+    Stratimikos::DefaultLinearSolverBuilder lowsfCreator;
     MoochoThyraSolver                     solver;
   
     //

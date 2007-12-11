@@ -11,7 +11,7 @@
 #include "Rythmos_ForwardSensitivityIntegratorAsModelEvaluator.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Thyra_DefaultSpmdMultiVectorFileIO.hpp"
-#include "Thyra_DefaultRealLinearSolverBuilder.hpp"
+#include "Stratimikos_DefaultLinearSolverBuilder.hpp"
 #include "Thyra_DefaultInverseModelEvaluator.hpp"
 #include "Thyra_ModelEvaluatorHelpers.hpp"
 #include "Thyra_DefaultFiniteDifferenceModelEvaluator.hpp"
@@ -76,7 +76,7 @@ int main( int argc, char* argv[] )
   try {
   
     // Create the solver objects
-    Thyra::DefaultRealLinearSolverBuilder lowsfCreator;
+    Stratimikos::DefaultLinearSolverBuilder lowsfCreator;
     MoochoThyraSolver moochoThyraSolver;
 
     //
@@ -171,7 +171,7 @@ int main( int argc, char* argv[] )
         );
     }
 
-    Thyra::DefaultRealLinearSolverBuilder linearSolverBuilder;
+    Stratimikos::DefaultLinearSolverBuilder linearSolverBuilder;
     linearSolverBuilder.setParameterList(sublist(paramList,"Stratimikos",true));
     RCP<Thyra::LinearOpWithSolveFactoryBase<Scalar> >
       W_factory = createLinearSolveStrategy(linearSolverBuilder);
