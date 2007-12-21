@@ -25,28 +25,39 @@
  */
 
 #include <iostream>
+#include <util/TPI.h>
 #include <util/Parallel.hpp>
 #include <util/ParallelInputStream.hpp>
 #include <util/TestDriver.hpp>
 
 //----------------------------------------------------------------------
 
-void test_tpi( phdmesh::ParallelMachine , std::istream & );
-void test_containers( phdmesh::ParallelMachine , std::istream & );
-void test_comm_bounds( phdmesh::ParallelMachine , std::istream & );
-void test_comm_sparse( phdmesh::ParallelMachine , std::istream & );
-void test_comm_dense(  phdmesh::ParallelMachine , std::istream & );
-void test_comm_all(  phdmesh::ParallelMachine , std::istream & );
-void test_global_box( phdmesh::ParallelMachine comm , std::istream & );
-void test_oct_tree( phdmesh::ParallelMachine , std::istream & );
-void test_oct_tree_part_course( phdmesh::ParallelMachine , std::istream & );
+void test_tpi( phdmesh::ParallelMachine , TPI_ThreadPool, std::istream & );
+void test_containers( phdmesh::ParallelMachine ,
+                      TPI_ThreadPool, std::istream & );
+void test_comm_bounds( phdmesh::ParallelMachine ,
+                      TPI_ThreadPool, std::istream & );
+void test_comm_sparse( phdmesh::ParallelMachine ,
+                      TPI_ThreadPool, std::istream & );
+void test_comm_dense(  phdmesh::ParallelMachine ,
+                      TPI_ThreadPool, std::istream & );
+void test_comm_all(  phdmesh::ParallelMachine ,
+                      TPI_ThreadPool, std::istream & );
+void test_global_box( phdmesh::ParallelMachine comm ,
+                      TPI_ThreadPool, std::istream & );
+void test_oct_tree( phdmesh::ParallelMachine ,
+                    TPI_ThreadPool, std::istream & );
+void test_oct_tree_part_course( phdmesh::ParallelMachine ,
+                                TPI_ThreadPool, std::istream & );
 
-void test_oct_tree_comm_part( phdmesh::ParallelMachine , std::istream & );
+void test_oct_tree_comm_part( phdmesh::ParallelMachine ,
+                              TPI_ThreadPool, std::istream & );
 
-void test_oct_tree_global_search(phdmesh::ParallelMachine , std::istream & );
+void test_oct_tree_global_search( phdmesh::ParallelMachine ,
+                                  TPI_ThreadPool, std::istream & );
 
 void test_oct_tree_global_search_time(
-  phdmesh::ParallelMachine , std::istream & );
+  phdmesh::ParallelMachine , TPI_ThreadPool, std::istream & );
 
 //----------------------------------------------------------------------
 

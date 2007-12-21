@@ -18,7 +18,7 @@ SUN_MPI_PATH="/opt/SUNWhpc/bin"
 
 export PATH="${SUN_STUDIO_PATH}:${SUN_MPI_PATH}:${PATH}"
 
-source ${PHDMESH_PATH}/config/sun opt mpi pthreads
+source ${PHDMESH_PATH}/config/sun opt mpi 
 
 #----------------------------------------------------------------------
 

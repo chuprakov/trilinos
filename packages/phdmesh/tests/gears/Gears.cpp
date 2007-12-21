@@ -29,6 +29,7 @@
 #include <limits>
 #include <stdexcept>
 
+#include <util/TPI.h>
 #include <util/ParallelComm.hpp>
 
 #include <mesh/Schema.hpp>

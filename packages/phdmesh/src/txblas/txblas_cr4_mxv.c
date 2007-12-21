@@ -25,7 +25,7 @@
  */
 
 #include <stddef.h>
-#include <util/taskpool.h>
+#include <util/TPI.h>
 #include <txblas/cr4_mxv.h>
 
 /*--------------------------------------------------------------------*/
@@ -40,40 +40,44 @@ typedef struct txblasTask_cr4_MatrixStruct {
 
 /*--------------------------------------------------------------------*/
 
-static int txblas_task_cr4_mxv(
-  void * data , unsigned p_size , unsigned p_rank )
+static void txblas_task_cr4_mxv(
+  void * data , TPI_ThreadPool pool , int p_rank )
 {
-  txblasTask_cr4_Matrix * const t = (txblasTask_cr4_Matrix*) data ;
+  int p_size ;
 
-  const unsigned beg_row = ( t->number_row * ( p_rank     ) ) / p_size ;
-  const unsigned end_row = ( t->number_row * ( p_rank + 1 ) ) / p_size ;
+  if ( ! TPI_Pool_size( pool , & p_size ) ) {
 
-  const unsigned   * const pc_end = t->pc_begin + end_row ;
-  const txblas_cr4 * const a_beg  = t->a_begin ;
-  const double     * const x_beg  = t->x_begin ;
-        double     *       y      = t->y_begin + beg_row ;
+    txblasTask_cr4_Matrix * const t = (txblasTask_cr4_Matrix*) data ;
 
-  const unsigned   * pc = t->pc_begin + beg_row ;
-  const txblas_cr4 * a  = a_beg + *pc ;
+    const unsigned beg_row = ( t->number_row * ( p_rank     ) ) / p_size ;
+    const unsigned end_row = ( t->number_row * ( p_rank + 1 ) ) / p_size ;
 
-  while ( pc < pc_end ) {
-    double ytmp = 0 ;
+    const unsigned   * const pc_end = t->pc_begin + end_row ;
+    const txblas_cr4 * const a_beg  = t->a_begin ;
+    const double     * const x_beg  = t->x_begin ;
+          double     *       y      = t->y_begin + beg_row ;
 
-    for ( const txblas_cr4 * const a_end = a_beg + *++pc ; a < a_end ; ++a ) {
-      ytmp += a->val[0] * x_beg[ a->col[0] ] +
-              a->val[1] * x_beg[ a->col[1] ] +
-              a->val[2] * x_beg[ a->col[2] ] +
-              a->val[3] * x_beg[ a->col[3] ] ;
+    const unsigned   * pc = t->pc_begin + beg_row ;
+    const txblas_cr4 * a  = a_beg + *pc ;
+
+    while ( pc < pc_end ) {
+      double ytmp = 0 ;
+
+      for ( const txblas_cr4 * const a_end = a_beg + *++pc ; a < a_end ; ++a ) {
+        ytmp += a->val[0] * x_beg[ a->col[0] ] +
+                a->val[1] * x_beg[ a->col[1] ] +
+                a->val[2] * x_beg[ a->col[2] ] +
+                a->val[3] * x_beg[ a->col[3] ] ;
+      }
+
+      *y++ = ytmp ;
     }
-
-    *y++ = ytmp ;
   }
-
-  return 0 ;
 }
 
 
 void txblas_cr4_mxv(
+  TPI_ThreadPool pool ,
   const unsigned   nr  /* Number rows */ ,
   const unsigned   pc[] ,
   const txblas_cr4 a[] ,
@@ -89,7 +93,7 @@ void txblas_cr4_mxv(
   data.x_begin = x ;
   data.y_begin = y ;
 
-  phdmesh_taskpool_run( & txblas_task_cr4_mxv , & data , nlock );
+  TPI_Run( pool , & txblas_task_cr4_mxv , & data , nlock );
 }
 
 

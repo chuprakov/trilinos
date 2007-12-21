@@ -76,9 +76,6 @@ public:
   void update_state();
 
   //------------------------------------
-  // Entities can only be created and deleted
-  // after the mesh has been committed.
-
   /** All kernels of a given entity type */
   const KernelSet & kernels( EntityType ) const ;
 

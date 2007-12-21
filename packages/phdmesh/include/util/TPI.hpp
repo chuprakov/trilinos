@@ -24,17 +24,34 @@
  * @author H. Carter Edwards  <hcedwar@sandia.gov>
  */
 
-#ifndef util_TaskPool_hpp
-#define util_TaskPool_hpp
+#ifndef util_ThreadPool_hpp
+#define util_ThreadPool_hpp
 
-#include <util/taskpool.h>
+#include <string>
+#include <stdexcept>
 
-namespace phdmesh {
-namespace taskpool {
+#include <util/TPI.h>
+
+namespace TPI {
+
+typedef TPI_ThreadPool ThreadPool ;
 
 inline
-int resize( unsigned num_tasks )
-{ return phdmesh_taskpool_resize( num_tasks ); }
+int Pool_size( ThreadPool pool , int & n )
+  { return TPI_Pool_size( pool , & n ); }
+
+inline
+int Lock_size( ThreadPool pool , int & n )
+  { return TPI_Lock_size( pool , & n ); }
+
+inline
+int Lock( ThreadPool pool , int n ) { return TPI_Lock( pool , n ); }
+
+inline
+int Unlock( ThreadPool pool , int n ) { return TPI_Unlock( pool , n ); }
+
+inline
+void Run( ThreadPool, void (*)(void*,ThreadPool,int), void *, unsigned );
 
 /** Run 'void Worker::method()'
  *  This method uses 'num_locks' locks to control access of shared data.
@@ -46,21 +63,24 @@ int resize( unsigned num_tasks )
  */
 template<class Worker>
 inline
-int run( Worker & , void (Worker::*)(unsigned,unsigned), unsigned num_locks );
+void Run( ThreadPool , Worker & , void (Worker::*)(ThreadPool,int),
+          unsigned num_locks = 0 );
 
-class lock {
+class LockGuard {
 private:
-  lock();
-  lock( const lock & );
-  lock & operator = ( const lock & );
-  const unsigned m_value ;
-  void throw_lock();
-  void throw_unlock();
+  LockGuard();
+  LockGuard( const LockGuard & );
+  LockGuard & operator = ( const LockGuard & );
+  const ThreadPool m_pool ;
+  const int        m_value ;
+  const int        m_result ;
 public:
-  explicit lock( unsigned i_lock , const char * const error_info = NULL )
-    : m_value( i_lock ) { phdmesh_taskpool_lock( i_lock , error_info ); }
+  operator int() const { return m_result ; }
 
-  ~lock() { phdmesh_taskpool_unlock( m_value , NULL ); }
+  explicit LockGuard( ThreadPool pool , unsigned i_lock )
+    : m_pool( pool ), m_value( i_lock ), m_result( TPI_Lock(pool,i_lock) ) {}
+
+  ~LockGuard() { TPI_Unlock( m_pool , m_value ); }
 };
 
 //----------------------------------------------------------------------
@@ -74,50 +94,66 @@ private:
   WorkerMethod( const WorkerMethod & );
   WorkerMethod & operator = ( const WorkerMethod & );
 
-  typedef void (Worker::*Method)( unsigned p_size , unsigned p_rank );
-  Worker & worker ;
-  Method   method ;
 public:
-  WorkerMethod( Worker & w , Method m ) : worker(w), method(m) {}
-  void run( unsigned p_size , unsigned p_rank )
-    { (worker.*method)( p_size , p_rank ); }
+
+  typedef void (Worker::*Method)( ThreadPool , int p_rank );
+
+  Worker    & worker ;
+  Method      method ;
+  int         nlock ;
+  std::string msg ;
+
+  WorkerMethod( Worker & w , Method m , int n )
+    : worker(w), method(m), nlock(n), msg() {}
+
+  void run( ThreadPool pool , int p_rank )
+    {
+      try {
+        (worker.*method)( pool , p_rank );
+      }
+      catch( const std::exception & x ) {
+        TPI::LockGuard tmp( pool , nlock );
+        msg.append( x.what() ).append("\n");
+      }
+      catch( ... ) {
+        TPI::LockGuard tmp( pool , nlock );
+        msg.append( "[non-standard exception]\n");
+      }
+    }
+
+  static void p_run( void * arg, ThreadPool pool, int p_rank )
+    { reinterpret_cast<WorkerMethod*>(arg)->run(pool,p_rank); }
 };
 
-template<class Worker>
-int worker_method_run( void * arg , unsigned p_size , unsigned p_rank )
-{
-  int result = 0 ;
-  try {
-    reinterpret_cast<WorkerMethod<Worker>*>(arg)->run(p_size,p_rank);
-  } catch( ... ) { result = -1 ; }
-  return result ;
-}
-
 }
 
 inline
-int run( int (*routine)(void *,unsigned,unsigned) ,
-         void * routine_data , unsigned num_locks )
+void Run( ThreadPool pool ,
+          void (*func)( void * , ThreadPool , int ) ,
+          void * arg , unsigned num )
 {
-  return phdmesh_taskpool_run(
-    reinterpret_cast< phdmesh_taskpool_routine >( routine ) ,
-    routine_data , num_locks );
+  TPI_Run( pool, reinterpret_cast< TPI_parallel_subprogram >(func), arg, num );
 }
 
 template<class Worker>
 inline
-int run( Worker & worker,
-         void (Worker::*method)(unsigned,unsigned),
-         unsigned num_locks )
+void Run( ThreadPool pool ,
+          Worker & worker,
+          void (Worker::*method)(ThreadPool,int),
+          unsigned num_locks )
 {
-  WorkerMethod<Worker> tmp( worker , method );
+  typedef WorkerMethod<Worker> WM ;
 
-  return run( & worker_method_run<Worker>, & tmp , num_locks );
+  WM tmp( worker , method , num_locks );
+
+  TPI_Run( pool , reinterpret_cast< TPI_parallel_subprogram >(& WM::p_run) ,
+           & tmp , num_locks + 1 );
+
+  if ( tmp.msg.size() ) { throw std::runtime_error( tmp.msg ); }
 }
 
 //----------------------------------------------------------------------
 
-}
 }
 
 #endif

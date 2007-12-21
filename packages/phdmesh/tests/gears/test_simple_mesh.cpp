@@ -29,6 +29,7 @@
 #include <stdexcept>
 #include <cmath>
 
+#include <util/TPI.h>
 #include <util/ParallelComm.hpp>
 
 #include <mesh/Schema.hpp>
@@ -42,7 +43,7 @@ using namespace phdmesh ;
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void test_simple_mesh( ParallelMachine pm , std::istream & )
+void test_simple_mesh( ParallelMachine pm , TPI_ThreadPool, std::istream & )
 {
   typedef element::Hexahedron Hex ;
 

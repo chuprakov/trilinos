@@ -48,6 +48,9 @@ CXXFLAGS_DIAG="-Wall -Wextra -Werror -std=c++98 -Woverloaded-virtual"
 export CFLAGS="${CFLAGS} ${CFLAGS_DIAG} ${INCLUDE_PATH}"
 export CXXFLAGS="${CXXFLAGS} ${CXXFLAGS_DIAG} ${INCLUDE_PATH}"
 
+export C_LIB_EXT="${C_LIB_EXT}     -lpthread"
+export CXX_LIB_EXT="${CXX_LIB_EXT} -lpthread"
+
 #-----------------------------------------------------------------------
 
 while [ -n "${1}" ] ; do
@@ -73,12 +76,6 @@ STATIC | static )
   export CFLAGS="${CFLAGS} -static"
   export CXXFLAGS="${CXXFLAGS} -static"
   ;;
-PTHREADS | pthreads )
-  shift 1
-  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_PTHREADS\n"
-  export C_LIB_EXT="${C_LIB_EXT}     -lpthread"
-  export CXX_LIB_EXT="${CXX_LIB_EXT} -lpthread"
-  ;;
 MPICH | mpich )
   shift 1
   export CC="mpicc"
@@ -95,11 +92,14 @@ MPICHXX | mpichxx )
   export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define MPICH_SKIP_MPICXX\n"
   ;;
 PURIFY | purify )
+  shift 1
   export LDCXX="purify ${CXX}"
   ;;
 MPICH_PURIFY | mpich_purify )
-  MPICH_C_LIB="-L${2} -lmpich -lpthread -lrt"
-  MPICH_CXX_LIB="-L${2} -lpmpich++ -lmpich -lpthread -lrt"
+  shift 1
+  MPICH_C_LIB="-L${1} -lmpich -lpthread -lrt"
+  MPICH_CXX_LIB="-L${1} -lpmpich++ -lmpich -lpthread -lrt"
+  shift 1
   export CC="mpicc"
   export CXX="mpiCC"
   export LDCXX="purify g++"

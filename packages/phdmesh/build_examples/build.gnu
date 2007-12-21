@@ -17,7 +17,7 @@ GNU_PATH="/usr/local/gcc/64Bit/4.0.1/bin"
 
 export PATH="${GNU_PATH}:${PATH}"
 
-source ${PHDMESH_PATH}/config/gnu opt pthreads
+source ${PHDMESH_PATH}/config/gnu opt 
 
 #----------------------------------------------------------------------
 # Compiler and linker configuration:
@@ -27,7 +27,7 @@ source ${PHDMESH_PATH}/config/gnu opt pthreads
 #
 # export PATH="${MPI_PATH}/bin:${GNU_PATH}:${PATH}"
 #
-# source ${PHDMESH_PATH}/config/gnu 32bit static opt pthreads mpich
+# source ${PHDMESH_PATH}/config/gnu 32bit static opt mpich
 #
 #----------------------------------------------------------------------
 # Compiler and linker configuration:
@@ -37,7 +37,7 @@ source ${PHDMESH_PATH}/config/gnu opt pthreads
 #
 # export PATH="${MPI_PATH}/bin:${GNU_PATH}:${PATH}"
 #
-# source ${PHDMESH_PATH}/config/gnu 32bit static debug pthreads \
+# source ${PHDMESH_PATH}/config/gnu 32bit static debug \
 #				mpich_purify ${MPI_PATH}/lib
 #
 #----------------------------------------------------------------------
@@ -48,7 +48,7 @@ source ${PHDMESH_PATH}/config/gnu opt pthreads
 #
 # export PATH="${MPI_PATH}/bin:${GNU_PATH}:${PATH}"
 #
-# source ${PHDMESH_PATH}/config/gnu 32bit static opt pthreads mpigm /opt/gm/lib
+# source ${PHDMESH_PATH}/config/gnu 32bit static opt mpigm /opt/gm/lib
 #
 #----------------------------------------------------------------------
 # SNL ACCESS ExodusII and NemesisI configuration, only for 32Bit :

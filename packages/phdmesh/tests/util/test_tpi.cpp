@@ -25,8 +25,8 @@
  */
 
 #include <iostream>
-#include <util/Parallel.hpp>
 #include <util/TPI.h>
+#include <util/Parallel.hpp>
 
 extern "C" {
 int test_c_tpi( TPI_ThreadPool );
@@ -37,7 +37,7 @@ int test_c_tpi_split( TPI_ThreadPool );
 
 using namespace phdmesh ;
 
-void test_tpi( ParallelMachine , std::istream & s )
+void test_tpi( ParallelMachine , TPI_ThreadPool, std::istream & s )
 {
   {
     int nthreads = 1 ; 

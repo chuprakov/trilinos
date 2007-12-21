@@ -50,8 +50,8 @@ export CFLAGS="${CFLAGS} ${CFLAGS64} -xc99 -errwarn=%all ${CFLAGS_INC}"
 
 export CXXFLAGS="${CXXFLAGS} ${CFLAGS64} -library=stlport4 -xwe ${CFLAGS_INC}"
 
-# export C_LIB_EXT="${C_LIB_EXT} "
-# export CXX_LIB_EXT="${CXX_LIB_EXT} "
+export C_LIB_EXT="${C_LIB_EXT}     -lpthread"
+export CXX_LIB_EXT="${CXX_LIB_EXT} -lpthread"
 
 #-----------------------------------------------------------------------
 
@@ -71,12 +71,6 @@ OPT* | opt* )
 PURIFY | purify )
   shift 1
   export LDCXX="purify ${CXX}"
-  ;;
-PTHREADS | pthreads )
-  shift 1
-  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_PTHREADS\n"
-  export C_LIB_EXT="${C_LIB_EXT}     -lpthread"
-  export CXX_LIB_EXT="${CXX_LIB_EXT} -lpthread"
   ;;
 MPI | mpi )
   shift 1

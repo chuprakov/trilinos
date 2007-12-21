@@ -59,11 +59,6 @@ int TPI_Pool_size( TPI_ThreadPool , int * );
 
 int TPI_Lock_size( TPI_ThreadPool , int * );
 
-/** Allocate locks only when a thread-pool is
- *  not running a thread-pool parallel subprogram.
- */
-int TPI_Lock_allocation( TPI_ThreadPool , int number );
-
 /*--------------------------------------------------------------------*/
 /**  A thread-pool parallel subprogram and its shared data
  *   running within a thread-pool of 'size' threads where
@@ -71,17 +66,19 @@ int TPI_Lock_allocation( TPI_ThreadPool , int number );
  */
 typedef void (*TPI_parallel_subprogram)( void * shared_data ,
                                          TPI_ThreadPool pool ,
-                                         int size ,
                                          int rank );
 
 /** Run a thread-pool parallel subprogram.
  *  Each thread in the pool will call the subprogram as:
  *
- *    (*subprogram)( shared_data , pool )
+ *    (*subprogram)( shared_data , pool , pool_rank )
  *
  *  Nested calls to this routine are illegal.
  */
-int TPI_Run( TPI_ThreadPool , TPI_parallel_subprogram , void * );
+int TPI_Run( TPI_ThreadPool ,
+             TPI_parallel_subprogram ,
+             void * /* shared data */ ,
+             int    /* Number locks required */ );
 
 /** Blocks until lock # is obtained */
 int TPI_Lock( TPI_ThreadPool , int );
@@ -97,15 +94,21 @@ int TPI_Unlock( TPI_ThreadPool , int );
  *  subprogram on the root thread of each thread-pool with the subset
  *  thread-pool object.
  *
- *    subprogram[i]( data[i] , pool , split_rank );
+ *    subprogram[i]( data[i] , pool , pool_rank );
  *
- *  These new 'main' subprograms may now call TPI_Run within their own pool.
+ *  These new 'main' subprograms may now call TPI_Run within their child pool.
  */
 int TPI_Split( TPI_ThreadPool ,
-               const int                  /* Number of pools     */ ,
-               const int []               /* array of pool sizes */ ,
+               const int                  /* Number of child pools     */ ,
+               const int []               /* array of child pool sizes */ ,
                TPI_parallel_subprogram [] /* array of main functions  */ ,
-               void * []                  /* array of main functions' data */ );
+               void * []                  /* array of main functions' data */ ,
+               int                        /* number parent locks required */ );
+
+int TPI_Split_lock_size( TPI_ThreadPool , int * );
+int TPI_Split_lock(      TPI_ThreadPool , int );
+int TPI_Split_trylock(   TPI_ThreadPool , int );
+int TPI_Split_unlock(    TPI_ThreadPool , int );
 
 /*--------------------------------------------------------------------*/
 

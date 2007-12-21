@@ -29,6 +29,7 @@
 
 //----------------------------------------------------------------------
 
+#include <util/TPI.hpp>
 #include <mesh/Types.hpp>
 
 namespace phdmesh {
@@ -38,10 +39,11 @@ class ProximitySearch ;
 /** Global geometric proximity search for same-mesh and same-type entities.
  *  Only the owned entities are included in the search.
  */
-unsigned proximity_search( Mesh & M ,
-                           const ProximitySearch & ,
-                           const EntityType entity_type ,
-                           std::vector< std::pair<IdentProc,IdentProc> > & );
+void proximity_search( TPI::ThreadPool ,
+                       Mesh & M ,
+                       const ProximitySearch & ,
+                       const EntityType entity_type ,
+                       std::vector< std::pair<IdentProc,IdentProc> > & );
 
 class ProximitySearch {
 public:

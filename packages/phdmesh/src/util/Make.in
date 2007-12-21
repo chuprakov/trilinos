@@ -31,9 +31,8 @@ UTIL_INC_FILES =	\
 	$(UTIL_INC_DIR)/Setv.hpp	\
 	$(UTIL_INC_DIR)/Span.hpp	\
 	$(UTIL_INC_DIR)/FixedPoolAlloc.hpp	\
-	$(UTIL_INC_DIR)/taskpool.h	\
 	$(UTIL_INC_DIR)/TPI.h	\
-	$(UTIL_INC_DIR)/TaskPool.hpp	\
+	$(UTIL_INC_DIR)/TPI.hpp	\
 	$(UTIL_INC_DIR)/Parallel.hpp	\
 	$(UTIL_INC_DIR)/ParallelComm.hpp	\
 	$(UTIL_INC_DIR)/ParallelIndex.hpp	\
@@ -49,7 +48,6 @@ UTIL_INC_FILES =	\
 UTIL_OBJ_FILES =	\
 	CSet.o	\
 	Setv.o	\
-	taskpool.o	\
 	TPI.o	\
 	FixedPoolAlloc.o	\
 	Parallel.o	\

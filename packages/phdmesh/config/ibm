@@ -47,8 +47,8 @@ CXXFLAGS_DIAG="-qlanglvl=ansi -qsuppress=1500-029"
 export CFLAGS="${CFLAGS}     ${CFLAGS_DIAG}   ${CFLAGS_INC}"
 export CXXFLAGS="${CXXFLAGS} ${CXXFLAGS_DIAG} ${CFLAGS_INC}"
 
-# export C_LIB_EXT=
-# export CXX_LIB_EXT=
+export C_LIB_EXT="${C_LIB_EXT}     -lpthread"
+export CXX_LIB_EXT="${CXX_LIB_EXT} -lpthread"
 
 #-----------------------------------------------------------------------
 
@@ -64,12 +64,6 @@ OPT* | opt* )
   shift 1
   export CFLAGS="${CFLAGS} -O"
   export CXXFLAGS="${CXXFLAGS} -O"
-  ;;
-PTHREADS | pthreads )
-  shift 1
-  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_PTHREADS\n"
-  export C_LIB_EXT="${C_LIB_EXT}     -lpthread"
-  export CXX_LIB_EXT="${CXX_LIB_EXT} -lpthread"
   ;;
 MPI | mpi )
   shift 1

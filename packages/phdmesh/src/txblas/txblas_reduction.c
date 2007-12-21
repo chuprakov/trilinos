@@ -26,7 +26,7 @@
 
 #include <stddef.h>
 #include <math.h>
-#include <util/taskpool.h>
+#include <util/TPI.h>
 #include <txblas/reduction.h>
 
 /*--------------------------------------------------------------------*/
@@ -104,34 +104,40 @@ void add_array( double * const s , const double * x , const double * const xe )
 void xdsum_add_array( double * s , unsigned n , const double * x )
 { add_array( s , x , x + n ); }
 
-static int task_sum_work( void * arg , unsigned p_size , unsigned p_rank )
+static void task_sum_work( void * arg , TPI_ThreadPool pool , int p_rank )
 {
-  struct TaskX * const t  = (struct TaskX *) arg ;
+  int p_size ;
 
-  const unsigned p_next = p_rank + 1 ;
-  const unsigned n = t->number ;
-  const double * const xb = t->x_beg + ( n * p_rank ) / p_size ;
-  const double * const xe = t->x_beg + ( n * p_next ) / p_size ;
-        double * const v  = t->x_sum ;
+  if ( ! TPI_Pool_size( pool , & p_size ) ) {
 
-  double partial[4] = { 0 , 0 , 0 , 0 };
+    struct TaskX * const t  = (struct TaskX *) arg ;
 
-  add_array( partial , xb , xe );
+    const unsigned p_next = p_rank + 1 ;
+    const unsigned n = t->number ;
+    const double * const xb = t->x_beg + ( n * p_rank ) / p_size ;
+    const double * const xe = t->x_beg + ( n * p_next ) / p_size ;
+          double * const v  = t->x_sum ;
 
-  phdmesh_taskpool_lock(0,NULL);
-  xdsum_add_dsum( v , partial );
-  phdmesh_taskpool_unlock(0,NULL);
+    double partial[4] = { 0 , 0 , 0 , 0 };
 
-  return 0 ;
+    add_array( partial , xb , xe );
+
+    TPI_Lock( pool , 0 );
+
+    xdsum_add_dsum( v , partial );
+
+    TPI_Unlock( pool , 0 );
+  }
 }
 
-void txdsum_add_array( double * s , unsigned n , const double * x )
+void txdsum_add_array( TPI_ThreadPool pool ,
+                       double * s , unsigned n , const double * x )
 {
   struct TaskX data ;
   data.x_sum  = s ;
   data.x_beg  = x ;
   data.number = n ;
-  phdmesh_taskpool_run( & task_sum_work , & data , 1 );
+  TPI_Run( pool , & task_sum_work , & data , 1 );
 }
 
 /*--------------------------------------------------------------------*/
@@ -144,35 +150,41 @@ static void norm1( double * s , const double * x , const double * const xe )
 void xdnorm1( double * s2 , unsigned n , const double * x )
 { norm1( s2 , x , x + n ); }
 
-static int task_norm1_work( void * arg , unsigned p_size , unsigned p_rank )
+static void task_norm1_work( void * arg , TPI_ThreadPool pool , int p_rank )
 {
-  struct TaskX * const t  = (struct TaskX *) arg ;
+  int p_size ;
 
-  const unsigned p_next = p_rank + 1 ;
-  const unsigned n = t->number ;
-  const double * const xb = t->x_beg + ( n * p_rank ) / p_size ;
-  const double * const xe = t->x_beg + ( n * p_next ) / p_size ;
-        double * const v  = t->x_sum ;
+  if ( ! TPI_Pool_size( pool , & p_size ) ) {
 
-  double partial[2] = { 0 , 0 };
+    struct TaskX * const t  = (struct TaskX *) arg ;
 
-  norm1( partial , xb , xe );
+    const unsigned p_next = p_rank + 1 ;
+    const unsigned n = t->number ;
+    const double * const xb = t->x_beg + ( n * p_rank ) / p_size ;
+    const double * const xe = t->x_beg + ( n * p_next ) / p_size ;
+          double * const v  = t->x_sum ;
 
-  phdmesh_taskpool_lock(0,NULL);
-  SUM_ADD( v , partial[0] );
-  SUM_ADD( v , partial[1] );
-  phdmesh_taskpool_unlock(0,NULL);
+    double partial[2] = { 0 , 0 };
 
-  return 0 ;
+    norm1( partial , xb , xe );
+
+    TPI_Lock( pool , 0 );
+
+    SUM_ADD( v , partial[0] );
+    SUM_ADD( v , partial[1] );
+
+    TPI_Unlock( pool , 0 );
+  }
 }
 
-void txdnorm1( double * s , unsigned n , const double * x )
+void txdnorm1( TPI_ThreadPool pool ,
+               double * s , unsigned n , const double * x )
 {
   struct TaskX data ;
   data.x_sum  = s ;
   data.x_beg  = x ;
   data.number = n ;
-  phdmesh_taskpool_run( & task_norm1_work , & data , 1 );
+  TPI_Run( pool , & task_norm1_work , & data , 1 );
 }
 
 /*--------------------------------------------------------------------*/
@@ -216,44 +228,49 @@ static void dot1_unroll( double * s , const double * x , const size_t n )
 void xddot1( double * s2 , unsigned n , const double * x )
 { dot1_unroll( s2 , x , n ); }
 
-static int task_dot_x_work( void * arg , unsigned p_size , unsigned p_rank )
+static void task_dot_x_work( void * arg , TPI_ThreadPool pool , int p_rank )
 {
-  double partial[2] = { 0 , 0 };
-  struct TaskX * const t  = (struct TaskX *) arg ;
+  int p_size ;
 
-  {
-    const unsigned p_next   = p_rank + 1 ;
-    const unsigned n_global = t->number ;
-    const unsigned n_begin  = ( ( n_global * p_rank ) / p_size );
-    const unsigned n_local  = ( ( n_global * p_next ) / p_size ) - n_begin ;
+  if ( ! TPI_Pool_size( pool , & p_size ) ) {
 
-    dot1_unroll( partial , t->x_beg + n_begin , n_local );
+    double partial[2] = { 0 , 0 };
+    struct TaskX * const t  = (struct TaskX *) arg ;
+
+    {
+      const unsigned p_next   = p_rank + 1 ;
+      const unsigned n_global = t->number ;
+      const unsigned n_begin  = ( ( n_global * p_rank ) / p_size );
+      const unsigned n_local  = ( ( n_global * p_next ) / p_size ) - n_begin ;
+
+      dot1_unroll( partial , t->x_beg + n_begin , n_local );
+    }
+
+    {
+      TPI_Lock(pool,0);
+      double * const v = t->x_sum ;
+      SUM_ADD( v , partial[0] );
+      SUM_ADD( v , partial[1] );
+      TPI_Unlock(pool,0);
+    }
   }
-
-  {
-    phdmesh_taskpool_lock(0,NULL);
-    double * const v = t->x_sum ;
-    SUM_ADD( v , partial[0] );
-    SUM_ADD( v , partial[1] );
-    phdmesh_taskpool_unlock(0,NULL);
-  }
-
-  return 0 ;
 }
 
-void txddot1( double * s , unsigned n , const double * x )
+void txddot1( TPI_ThreadPool pool , double * s , unsigned n , const double * x )
 {
   struct TaskX data ;
   data.x_sum  = s ;
   data.x_beg  = x ;
   data.number = n ;
-  phdmesh_taskpool_run( & task_dot_x_work , & data , 1 );
+  TPI_Run( pool , & task_dot_x_work , & data , 1 );
 }
 
 /*--------------------------------------------------------------------*/
 
-static int task_dot_xy_work( void * arg , unsigned p_size , unsigned p_rank )
+static void task_dot_xy_work( void * arg , TPI_ThreadPool pool , int p_rank )
 {
+  int p_size ; TPI_Pool_size( pool , & p_size );
+
   struct TaskXY * const t = (struct TaskXY *) arg ;
 
   const unsigned block    = 8 ;
@@ -306,7 +323,7 @@ static int task_dot_xy_work( void * arg , unsigned p_size , unsigned p_rank )
     }
   }
 
-  phdmesh_taskpool_lock(0,NULL);
+  TPI_Lock(pool,0);
   {
     double * const s_pos = t->xy_sum ;
     double * const s_neg = s_pos + 2 ;
@@ -315,16 +332,16 @@ static int task_dot_xy_work( void * arg , unsigned p_size , unsigned p_rank )
     SUM_ADD( s_neg , neg[0] );
     SUM_ADD( s_neg , neg[1] );
   }
-  phdmesh_taskpool_unlock(0,NULL);
-
-  return 0 ;
+  TPI_Unlock(pool,0);
 }
 
 /*--------------------------------------------------------------------*/
 
-static int task_dot_xy_work_block(
-  void * arg , unsigned p_size , unsigned p_rank )
+static void task_dot_xy_work_block(
+  void * arg , TPI_ThreadPool pool , int p_rank )
 {
+  int p_size ; TPI_Pool_size( pool , & p_size );
+
   struct TaskXY * const t = (struct TaskXY *) arg ;
 
   const unsigned block   = 8 ;
@@ -376,7 +393,7 @@ static int task_dot_xy_work_block(
     }
   }
 
-  phdmesh_taskpool_lock(0,NULL);
+  TPI_Lock(pool,0);
   {
     double * const s_pos = t->xy_sum ;
     double * const s_neg = s_pos + 2 ;
@@ -385,31 +402,31 @@ static int task_dot_xy_work_block(
     SUM_ADD( s_neg , neg[0] );
     SUM_ADD( s_neg , neg[1] );
   }
-  phdmesh_taskpool_unlock(0,NULL);
-
-  return 0 ;
+  TPI_Unlock(pool,0);
 }
 
 /*--------------------------------------------------------------------*/
 
-void txddot( double * s , unsigned n , const double * x , const double * y )
+void txddot( TPI_ThreadPool pool , 
+             double * s , unsigned n , const double * x , const double * y )
 {
   struct TaskXY data ;
   data.xy_sum = s ;
   data.x_beg  = x ;
   data.y_beg  = y ;
   data.number = n ;
-  phdmesh_taskpool_run( & task_dot_xy_work , & data , 1 );
+  TPI_Run( pool , & task_dot_xy_work , & data , 1 );
 }
 
-void tbxddot( double * s , unsigned n , const double * x , const double * y )
+void tbxddot( TPI_ThreadPool pool ,
+              double * s , unsigned n , const double * x , const double * y )
 {
   struct TaskXY data ;
   data.xy_sum = s ;
   data.x_beg  = x ;
   data.y_beg  = y ;
   data.number = n ;
-  phdmesh_taskpool_run( & task_dot_xy_work_block , & data , 1 );
+  TPI_Run( pool , & task_dot_xy_work_block , & data , 1 );
 }
 
 /*--------------------------------------------------------------------*/

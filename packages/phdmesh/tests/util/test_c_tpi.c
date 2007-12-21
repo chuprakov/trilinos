@@ -34,14 +34,19 @@ struct TestTPI {
 };
 
 static
-void test_tpi_loop( void * arg , TPI_ThreadPool pool , int size , int rank )
+void test_tpi_loop( void * arg , TPI_ThreadPool pool , int rank )
 {
   static const char name[] = "test_tpi_loop" ;
 
   struct TestTPI * const data = (struct TestTPI *) arg ;
 
   int nlock  = -1 ;
+  int size  = -1 ;
   int result = 0 ;
+
+  if ( ! result && ( result = TPI_Pool_size( pool , & size ) ) ) {
+    fprintf(stderr,"%s: TPI_Pool_size = %d\n",name,result);
+  }
 
   if ( ! result && ( result = TPI_Lock_size( pool , & nlock ) ) ) {
     fprintf(stderr,"%s: TPI_Lock_size = %d\n",name,result);
@@ -84,13 +89,9 @@ int test_c_tpi( TPI_ThreadPool pool )
     fprintf(stderr,"%s: TPI_Pool_size = %d\n",name,result);
   }
 
-  if ( ! result && ( result = TPI_Lock_allocation( pool , 1 ) ) ) {
-    fprintf(stderr,"%s: TPI_Lock_allocation = %d\n",name,result);
-  }
-
   if ( ! result ) {
     struct TestTPI data = { 1000000 , 0 , 0 };
-    if ( ( result = TPI_Run( pool , & test_tpi_loop , & data ) ) ) {
+    if ( ( result = TPI_Run( pool , & test_tpi_loop , & data , 1 ) ) ) {
       fprintf(stderr,"%s: TPI_Run = %d\n",name,result);
     }
     if ( ! result ) {
@@ -118,34 +119,32 @@ struct TestTPISplit {
 
 
 static
-void test_tpi_split_run( void * arg , TPI_ThreadPool pool ,
-                         int size , int rank )
+void test_tpi_split_run( void * arg , TPI_ThreadPool pool , int rank )
 {
   struct TestTPISplit * const data = (struct TestTPISplit *) arg ;
 
-  TPI_Lock( pool , 0 );
+  int pool_size ;
 
-  if ( size != data->pool_size ) {
-    data->error = -1 - rank ;
+  if ( TPI_Lock( pool , 0 ) ) {
+    printf("test_tpi_split %d.%d failed TPI_Lock\n",
+           data->split_rank , rank );
   }
-  else {
 
-    if ( TPI_Lock_allocation( pool , 2 ) ) {
-      printf("test_tpi_split %d.%d good error check\n",
-             data->split_rank , rank );
-    }
-    else {
-      printf("test_tpi_split %d.%d failed error check\n",
-             data->split_rank , rank );
-    }
+  if ( TPI_Lock( pool , 1 ) ) {
+    printf("test_tpi_split %d.%d successfull error check TPI_Lock\n",
+           data->split_rank , rank );
+  }
+
+  if ( TPI_Pool_size( pool , & pool_size ) ||
+       pool_size != data->pool_size ) {
+    data->error = -1 - rank ;
   }
 
   TPI_Unlock( pool , 0 );
 }
 
 static
-void test_tpi_split( void * arg , TPI_ThreadPool pool ,
-                     int split_size , int split_rank )
+void test_tpi_split( void * arg , TPI_ThreadPool pool , int rank )
 {
   struct TestTPISplit * const data = (struct TestTPISplit *) arg ;
 
@@ -153,18 +152,14 @@ void test_tpi_split( void * arg , TPI_ThreadPool pool ,
 
   data->error = 0 ;
 
-  if ( TPI_Pool_size( pool , & pool_size ) ||
-       pool_size  != data->pool_size ||
-       split_size != data->split_size ||
-       split_rank != data->split_rank ) {
+  if ( TPI_Pool_size( pool ,  & pool_size ) ) {
     data->error = 1 ;
   }
-
-  if ( ! data->error && TPI_Lock_allocation( pool , 1 ) ) {
+  else if ( pool_size != data->pool_size || 0 != rank ) {
     data->error = 2 ;
   }
 
-  if ( ! data->error && TPI_Run( pool , & test_tpi_split_run , arg ) ) {
+  if ( ! data->error && TPI_Run( pool , & test_tpi_split_run , arg , 1 ) ) {
     data->error = 3 ;
   }
 }
@@ -180,10 +175,6 @@ int test_c_tpi_split( TPI_ThreadPool pool )
     fprintf(stderr,"%s: TPI_Pool_size = %d\n",name,result);
   }
 
-  if ( ! result && ( result = TPI_Lock_allocation( pool , 1 ) ) ) {
-    fprintf(stderr,"%s: TPI_Lock_allocation = %d\n",name,result);
-  }
-
   if ( ! result && 1 < size ) {
     int split_size[ 2 ] = { 2 , size - 2 };
     TPI_parallel_subprogram split_routine[2] =
@@ -191,7 +182,7 @@ int test_c_tpi_split( TPI_ThreadPool pool )
     struct TestTPISplit data[2] = { { 0 , 2 , 2 , 0 } ,
                                     { 1 , 2 , size - 2 , 0 } };
     void * ptr[2] = { data , data + 1 };
-    result = TPI_Split( pool , 2 , split_size , split_routine , ptr );
+    result = TPI_Split( pool , 2 , split_size , split_routine , ptr , 0 );
 
     if      ( data[0].error ) { result = data[0].error ; }
     else if ( data[1].error ) { result = data[1].error ; }

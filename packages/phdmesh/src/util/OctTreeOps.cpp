@@ -33,10 +33,10 @@
 #include <algorithm>
 #include <stdexcept>
 
+#include <util/TPI.hpp>
 #include <util/Basics.hpp>
 #include <util/ParallelComm.hpp>
 #include <util/ParallelReduce.hpp>
-#include <util/TaskPool.hpp>
 #include <util/OctTreeOps.hpp>
 
 namespace phdmesh {
@@ -293,6 +293,7 @@ template< class S >
 struct SetInsertBuffer {
   enum { N = 128 };
   S      & m_set ;
+  TPI::ThreadPool m_pool ;
   unsigned m_lock ;
   unsigned m_iter ;
   typename S::value_type m_buffer[ N ] ;
@@ -300,7 +301,8 @@ struct SetInsertBuffer {
   void overflow();
   void operator()( const typename S::value_type & v );
 
-  SetInsertBuffer( S & s , unsigned l ) : m_set(s), m_lock(l), m_iter(0) {}
+  SetInsertBuffer( S & s , TPI::ThreadPool p , unsigned l )
+    : m_set(s), m_pool(p), m_lock(l), m_iter(0) {}
 
   ~SetInsertBuffer() { overflow(); }
 };
@@ -308,7 +310,7 @@ struct SetInsertBuffer {
 template<class S>
 void SetInsertBuffer<S>::overflow()
 {
-  taskpool::lock update_lock( m_lock );
+  TPI::LockGuard update_lock( m_pool , m_lock );
   while ( m_iter ) {
     m_set.insert( m_buffer[ --m_iter ] );
   }
@@ -502,12 +504,12 @@ public:
   ~ProximitySearch() {}
 
   ProximitySearch(
+    TPI::ThreadPool ,
     bool symmetric ,
     const SearchTree & search_tree ,
-    std::set< std::pair<IdentProc,IdentProc> > & relation ,
-    unsigned & run_task_count );
+    std::set< std::pair<IdentProc,IdentProc> > & relation );
 
-  void iterate_tree(unsigned,unsigned);
+  void iterate_tree(TPI::ThreadPool,int);
 
 private:
   ProximitySearch();
@@ -516,12 +518,12 @@ private:
 };
 
 
-void ProximitySearch::iterate_tree(unsigned,unsigned)
+void ProximitySearch::iterate_tree(TPI::ThreadPool pool,int)
 {
   enum { N_WORK = 32 };
 
   SetInsertBuffer< std::set< std::pair<IdentProc,IdentProc> > >
-    tmp( m_relation , 1 );
+    tmp( m_relation , pool , 1 );
 
   const SearchTree::const_iterator i_tree_end = m_tree_end ;
 
@@ -534,7 +536,7 @@ void ProximitySearch::iterate_tree(unsigned,unsigned)
     SearchTree::const_iterator i_beg , i_end ;
 
     { // Get work:
-      taskpool::lock get_work_lock( 0 );
+      TPI::LockGuard get_work_lock( pool , 0 );
 
       i_end = i_beg = m_tree_iter ;
 
@@ -553,18 +555,17 @@ void ProximitySearch::iterate_tree(unsigned,unsigned)
 }
 
 ProximitySearch::ProximitySearch(
+  TPI::ThreadPool pool ,
   bool symmetric ,
   const SearchTree & search_tree ,
-  std::set< std::pair<IdentProc,IdentProc> > & relation ,
-  unsigned & run_task_count )
+  std::set< std::pair<IdentProc,IdentProc> > & relation )
 : m_search( symmetric ? & proximity_search_symmetric
                       : & proximity_search_asymmetric ) ,
   m_relation( relation ),
   m_tree_iter( search_tree.begin() ),
   m_tree_end(  search_tree.end() )
 {
-  run_task_count =
-    taskpool::run( *this , & ProximitySearch::iterate_tree , NLOCKS );
+  TPI::Run( pool , *this , & ProximitySearch::iterate_tree , NLOCKS );
 
   if ( m_tree_iter != m_tree_end ) {
     std::string msg("phdmesh::proximity_search FAILED to complete" );
@@ -1213,6 +1214,7 @@ void oct_tree_partition(
 
 bool oct_tree_proximity_search(
   ParallelMachine            arg_comm ,
+  TPI::ThreadPool            arg_pool ,
   const float        * const arg_global_box ,
   const unsigned             arg_domain_boxes_number ,
   const IdentProcBox * const arg_domain_boxes ,
@@ -1220,8 +1222,7 @@ bool oct_tree_proximity_search(
   const IdentProcBox * const arg_range_boxes ,
   const OctTreeKey   * const arg_cut_keys ,
   std::vector< std::pair<IdentProc,IdentProc> > & arg_relation ,
-  unsigned * const arg_search_tree_stats ,
-  unsigned * const arg_search_tree_tasks )
+  unsigned * const arg_search_tree_stats )
 {
   enum { Dim = 3 };
 
@@ -1229,8 +1230,6 @@ bool oct_tree_proximity_search(
                          arg_range_boxes == NULL ;
   const unsigned p_size = parallel_machine_size( arg_comm );
   const unsigned p_rank = parallel_machine_rank( arg_comm );
-
-  unsigned search_task_count = 0 ;
 
   //----------------------------------------------------------------------
   // Search tree defined by oct-tree covering for boxes
@@ -1295,7 +1294,7 @@ bool oct_tree_proximity_search(
                               arg_search_tree_stats );
     }
 
-    ProximitySearch( symmetric, search_tree, tmp_relation, search_task_count );
+    ProximitySearch( arg_pool, symmetric, search_tree, tmp_relation);
   }
   else {
     // Communicate search_tree members
@@ -1328,16 +1327,11 @@ bool oct_tree_proximity_search(
                               arg_search_tree_stats );
     }
 
-    ProximitySearch( symmetric, local_tree, local_relation, search_task_count);
+    ProximitySearch( arg_pool, symmetric, local_tree, local_relation);
 
     // Communicate relations back to domain and range processors
 
     communicate( arg_comm , local_relation , tmp_relation );
-  }
-
-  if ( arg_search_tree_tasks ) {
-    all_reduce( arg_comm , ReduceSum<1>( & search_task_count ) );
-    *arg_search_tree_tasks = search_task_count ;
   }
 
   arg_relation.clear();

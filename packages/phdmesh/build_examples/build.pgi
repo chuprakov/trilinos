@@ -25,7 +25,7 @@ export P4_GLOBMEMSIZE 268435456
 
 export PATH="${MPICH_HOME}/bin:${PGI_HOME}/bin:${PATH}"
 
-source ${PHDMESH_PATH}/config/pgi opt pthreads mpi
+source ${PHDMESH_PATH}/config/pgi opt mpi
 
 #----------------------------------------------------------------------
 # SNL ACCESS ExodusII and NemesisI library configuration:

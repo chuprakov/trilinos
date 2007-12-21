@@ -29,6 +29,7 @@
 #include <sstream>
 #include <algorithm>
 
+#include <util/TPI.h>
 #include <mesh/Schema.hpp>
 
 using namespace phdmesh ;
@@ -59,7 +60,7 @@ void require_get( Schema & schema , const Part * part )
 
 }
 
-void test_schema_parts( ParallelMachine comm , std::istream & )
+void test_schema_parts( ParallelMachine comm , TPI_ThreadPool, std::istream & )
 {
   static const char method[] = "phdmesh::test::schema_parts" ;
 

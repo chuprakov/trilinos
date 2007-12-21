@@ -31,11 +31,13 @@
 #include <string>
 #include <iosfwd>
 
+#include <util/TPI.h>
 #include <util/Parallel.hpp>
 
 namespace phdmesh {
 
-typedef void (*TestSubprogram)( ParallelMachine , std::istream & );
+typedef
+void (*TestSubprogram)( ParallelMachine , TPI_ThreadPool , std::istream & );
 
 typedef std::map< std::string , TestSubprogram > TestDriverMap ;
 

@@ -222,13 +222,15 @@ void CR4Matrix::multiply(
       while ( e != s ) { *d++ = *s++ ; }
     }
 
-    txblas_cr4_mxv( m_row_size ,
+    txblas_cr4_mxv( m_pool ,
+                    m_row_size ,
                     & m_prefix[0] ,
                     & m_matrix[0] ,
                     & x_work[0] , y );
   }
   else {
-    txblas_cr4_mxv( m_row_size ,
+    txblas_cr4_mxv( m_pool ,
+                    m_row_size ,
                     & m_prefix[0] ,
                     & m_matrix[0] ,
                     x , y );
@@ -253,12 +255,14 @@ void ordered_insert( std::vector<unsigned> & vec , unsigned val )
 
 CR4Matrix::CR4Matrix(
  ParallelMachine arg_comm ,
+ TPI_ThreadPool  arg_pool ,
  const std::vector<unsigned>   & arg_partition ,
        std::vector<unsigned>   & arg_prefix ,
        std::vector<txblas_cr4> & arg_matrix )
   : m_comm( arg_comm ),
     m_comm_size( parallel_machine_size( arg_comm ) ),
     m_comm_rank( parallel_machine_rank( arg_comm ) ),
+    m_pool( arg_pool ),
     m_sparse( false ),
     m_work_disp(),
     m_send_disp(),

@@ -25,16 +25,17 @@
  */
 
 #include <iostream>
+#include <util/TPI.h>
 #include <util/Parallel.hpp>
 #include <util/ParallelInputStream.hpp>
 #include <util/TestDriver.hpp>
 
 //----------------------------------------------------------------------
 
-void test_reduce( phdmesh::ParallelMachine , std::istream & );
-void test_timing( phdmesh::ParallelMachine , std::istream & );
-void test_accuracy( phdmesh::ParallelMachine , std::istream & );
-void test_rbcr_mxv( phdmesh::ParallelMachine , std::istream & );
+void test_reduce( phdmesh::ParallelMachine , TPI_ThreadPool , std::istream & );
+void test_timing( phdmesh::ParallelMachine , TPI_ThreadPool , std::istream & );
+void test_accuracy( phdmesh::ParallelMachine, TPI_ThreadPool, std::istream & );
+void test_rbcr_mxv( phdmesh::ParallelMachine, TPI_ThreadPool, std::istream & );
 
 //----------------------------------------------------------------------
 

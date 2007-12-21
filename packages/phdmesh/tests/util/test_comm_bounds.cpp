@@ -28,6 +28,7 @@
 
 #include <iostream>
 #include <vector>
+#include <util/TPI.h>
 #include <util/ParallelComm.hpp>
 #include <util/ParallelReduce.hpp>
 
@@ -35,7 +36,7 @@ using namespace phdmesh ;
 
 // Stress test for communication: message sizes
 
-void test_comm_bounds( ParallelMachine comm , std::istream & )
+void test_comm_bounds( ParallelMachine comm , TPI_ThreadPool, std::istream & )
 {
   static const char method[] = "phdmesh::test_comm_sizes" ;
 

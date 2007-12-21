@@ -25,8 +25,8 @@
  */
 
 #include <stddef.h>
+#include <util/TPI.hpp>
 #include <util/Basics.hpp>
-#include <util/TaskPool.hpp>
 #include <mesh/Assemble.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
@@ -52,14 +52,16 @@ public:
 
   KernelSet::const_iterator ik_work ;
 
-  AssembleTask( const Mesh & arg_mesh ,
+  AssembleTask( TPI::ThreadPool ,
+                const Mesh & arg_mesh ,
                 EntityType   arg_entity_type ,
                 const std::vector<Assemble> & arg_ops );
 
-  void work(unsigned,unsigned);
+  void work(TPI::ThreadPool,int);
 };
 
-AssembleTask::AssembleTask( const Mesh & arg_mesh ,
+AssembleTask::AssembleTask( TPI::ThreadPool pool ,
+                            const Mesh & arg_mesh ,
                             EntityType   arg_entity_type ,
                             const std::vector<Assemble> & arg_ops )
   : mesh( arg_mesh ),
@@ -67,10 +69,10 @@ AssembleTask::AssembleTask( const Mesh & arg_mesh ,
     ops( arg_ops ),
     ik_work( arg_mesh.kernels( arg_entity_type ).begin() )
 {
-  taskpool::run( *this , & AssembleTask::work , 1 );
+  TPI::Run( pool , *this , & AssembleTask::work , 1 );
 }
 
-void AssembleTask::work(unsigned,unsigned)
+void AssembleTask::work(TPI::ThreadPool pool,int)
 {
   const std::vector<Assemble>::const_iterator ia_beg = ops.begin();
   const std::vector<Assemble>::const_iterator ia_end = ops.end();
@@ -85,7 +87,7 @@ void AssembleTask::work(unsigned,unsigned)
 
     const Kernel * k = NULL ;
     {
-      taskpool::lock get_work_lock(0);
+      TPI::LockGuard get_work_lock(pool,0);
       for ( ; ik_work != ik_end && NULL == k ; ++ik_work ) {
         if ( ik_work->has_superset( uses ) ) {
           k = & *ik_work ;
@@ -134,7 +136,8 @@ void AssembleTask::work(unsigned,unsigned)
 
 }
 
-void assemble( const Mesh & M , const std::vector<Assemble> ops )
+void assemble( TPI::ThreadPool pool ,
+               const Mesh & M , const std::vector<Assemble> ops )
 {
   static const char method[] = "phdmesh::assemble" ;
 
@@ -178,7 +181,7 @@ void assemble( const Mesh & M , const std::vector<Assemble> ops )
   for ( unsigned t = 0 ; t < EntityTypeMaximum ; ++t ) {
     if ( dst_type_present[ t ] ) {
       const EntityType entity_type( (EntityType) t );
-      AssembleTask work( M , entity_type , ops );
+      AssembleTask work( pool , M , entity_type , ops );
     }
   }
 }

@@ -29,7 +29,6 @@
 #include <iostream>
 #include <sstream>
 
-#include <util/TaskPool.hpp>
 #include <util/OctTreeOps.hpp>
 
 #include <mesh/Types.hpp>
@@ -178,7 +177,8 @@ ProximityBoxes::ProximityBoxes(
   unsigned search_stats[6] ;
   unsigned search_tasks ;
 
-  oct_tree_proximity_search( S.parallel() , global_box ,
+  oct_tree_proximity_search( S.parallel() , thread_pool ,
+                             global_box ,
                              boxes.size() , & boxes[0] , 0 , NULL ,
                              NULL , proximity , search_stats ,
                              & search_tasks );
@@ -190,7 +190,8 @@ ProximityBoxes::ProximityBoxes(
 
 //----------------------------------------------------------------------
 
-unsigned proximity_search(
+void proximity_search(
+  TPI::ThreadPool thread_pool ,
   Mesh & M ,
   const ProximitySearch & prox ,
   const EntityType entity_type ,
@@ -283,14 +284,11 @@ unsigned proximity_search(
   }
 
   unsigned search_stats[6] ;
-  unsigned search_tasks ;
 
-  oct_tree_proximity_search( M.parallel() , global_box ,
+  oct_tree_proximity_search( M.parallel() , thread_pool ,
+                             global_box ,
                              boxes.size() , & boxes[0] , 0 , NULL ,
-                             NULL , proximity , search_stats ,
-                             & search_tasks );
-
-  return search_tasks ;
+                             NULL , proximity , search_stats );
 }
 
 //----------------------------------------------------------------------

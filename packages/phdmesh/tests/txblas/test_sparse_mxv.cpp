@@ -29,7 +29,7 @@
 #include <stdexcept>
 #include <vector>
 
-#include <util/TaskPool.hpp>
+#include <util/TPI.hpp>
 #include <util/Parallel.hpp>
 #include <util/ParallelReduce.hpp>
 #include <util/ParallelInputStream.hpp>
@@ -59,9 +59,10 @@ struct FillWork {
   unsigned x_length ;
 };
 
-int task_rand_fill( void * arg , unsigned p_size , unsigned p_rank )
+void task_rand_fill( void * arg , TPI::ThreadPool pool , int p_rank )
 {
   const double r_max = RAND_MAX ;
+  int p_size ; TPI::Pool_size( pool , p_size );
 
   FillWork & w = * reinterpret_cast<FillWork*>( arg );
 
@@ -78,11 +79,12 @@ int task_rand_fill( void * arg , unsigned p_size , unsigned p_rank )
     const double r = rand_r( & seed );
     *x = mag * 2.0 * ( ( r / r_max ) - 0.5 );
   }
-  return 0 ;
 }
 
 void timing_test_txddot(
-  ParallelMachine comm , const unsigned M , const unsigned ncycle )
+  ParallelMachine comm ,
+  TPI::ThreadPool pool , 
+  const unsigned M , const unsigned ncycle )
 {
   const unsigned p_size = parallel_machine_size( comm );
   const unsigned p_rank = parallel_machine_rank( comm );
@@ -106,7 +108,7 @@ void timing_test_txddot(
     data.x_mag = 1 ;
     data.x_beg = & x_values[0] ;
     data.x_length = m_local ;
-    phdmesh::taskpool::run( & task_rand_fill , & data , 0 );
+    TPI::Run( pool , & task_rand_fill , & data , 0 );
   }
 
   std::vector<double> y_values( x_values );
@@ -115,7 +117,7 @@ void timing_test_txddot(
 
   for ( unsigned i = 0 ; i < ncycle ; ++i ) {
     Summation z ;
-    txddot( z.xdval , m_local , & x_values[0] , & y_values[0] );
+    txddot( pool , z.xdval , m_local , & x_values[0] , & y_values[0] );
     all_reduce( comm , ReduceSum<1>( & z ) );
   }
 
@@ -131,7 +133,9 @@ void timing_test_txddot(
 }
 
 void timing_test_tbxddot(
-  ParallelMachine comm , const unsigned M , const unsigned ncycle )
+  ParallelMachine comm ,
+  TPI::ThreadPool pool , 
+  const unsigned M , const unsigned ncycle )
 {
   const unsigned p_size = parallel_machine_size( comm );
   const unsigned p_rank = parallel_machine_rank( comm );
@@ -155,7 +159,7 @@ void timing_test_tbxddot(
     data.x_mag = 1 ;
     data.x_beg = & x_values[0] ;
     data.x_length = m_local ;
-    phdmesh::taskpool::run( & task_rand_fill , & data , 0 );
+    TPI::Run( pool , & task_rand_fill , & data , 0 );
   }
 
   std::vector<double> y_values( x_values );
@@ -164,7 +168,7 @@ void timing_test_tbxddot(
 
   for ( unsigned i = 0 ; i < ncycle ; ++i ) {
     Summation z ;
-    tbxddot( z.xdval , m_local , & x_values[0] , & y_values[0] );
+    tbxddot( pool , z.xdval , m_local , & x_values[0] , & y_values[0] );
     all_reduce( comm , ReduceSum<1>( & z ) );
   }
 
@@ -182,6 +186,7 @@ void timing_test_tbxddot(
 //----------------------------------------------------------------------
 
 void test_txblas_accuracy( ParallelMachine comm ,
+                           TPI::ThreadPool pool ,
                            const unsigned M ,
                            const double mag )
 {
@@ -198,7 +203,7 @@ void test_txblas_accuracy( ParallelMachine comm ,
     data.x_mag = mag ;
     data.x_beg = & values[0] ;
     data.x_length = m_local ;
-    phdmesh::taskpool::run( & task_rand_fill , & data , 0 );
+    TPI::Run( pool , & task_rand_fill , & data , 0 );
   }
 
   const double init = 1 ;
@@ -212,7 +217,7 @@ void test_txblas_accuracy( ParallelMachine comm ,
   std::vector<double>::iterator i ;
 
 
-  txdsum_add_array( z.xdval , m_local , & values[0] );
+  txdsum_add_array( pool , z.xdval , m_local , & values[0] );
 
   for ( i = values.begin() ; i != values.end() ; ++i ) { a += *i ; }
 
@@ -220,7 +225,7 @@ void test_txblas_accuracy( ParallelMachine comm ,
 
   for ( i = values.begin() ; i != values.end() ; ++i ) { *i = - *i ; }
 
-  txdsum_add_array( z.xdval , m_local , & values[0] );
+  txdsum_add_array( pool , z.xdval , m_local , & values[0] );
 
   for ( i = values.begin() ; i != values.end() ; ++i ) { a += *i ; }
 
@@ -242,11 +247,12 @@ void test_txblas_accuracy( ParallelMachine comm ,
 //----------------------------------------------------------------------
 
 void test_txblas_cr4_mxv( ParallelMachine comm ,
-                         const unsigned N ,
-                         const unsigned nband ,
-                         const unsigned stride ,
-                         const unsigned ncycle ,
-                         const double Value )
+                          TPI::ThreadPool pool ,
+                          const unsigned N ,
+                          const unsigned nband ,
+                          const unsigned stride ,
+                          const unsigned ncycle ,
+                          const double Value )
 {
   const unsigned p_rank = parallel_machine_rank( comm );
 
@@ -274,7 +280,7 @@ void test_txblas_cr4_mxv( ParallelMachine comm ,
                       cr4_prefix , cr4_matrix );
   total[0] = wall_dtime( t );
 
-  CR4Matrix matrix( comm , partition , cr4_prefix , cr4_matrix );
+  CR4Matrix matrix( comm , pool , partition , cr4_prefix , cr4_matrix );
   total[1] = wall_dtime( t );
 
   for ( unsigned i = 0 ; i < ncycle ; ++i ) {
@@ -301,7 +307,9 @@ void test_txblas_cr4_mxv( ParallelMachine comm ,
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void test_rbcr_mxv( phdmesh::ParallelMachine comm , std::istream & is )
+void test_rbcr_mxv( phdmesh::ParallelMachine comm ,
+                    TPI::ThreadPool pool ,
+                    std::istream & is )
 {
   unsigned nsize = 1000000 ;
   unsigned nband = 50 ;
@@ -314,26 +322,30 @@ void test_rbcr_mxv( phdmesh::ParallelMachine comm , std::istream & is )
   if ( is.good() ) { is >> ncycle ; }
   if ( is.good() ) { is >> value ; }
 
-  test_txblas_cr4_mxv( comm , nsize , nband , stride , ncycle , value );
+  test_txblas_cr4_mxv( comm , pool , nsize , nband , stride , ncycle , value );
 }
 
-void test_accuracy( phdmesh::ParallelMachine comm , std::istream & is )
+void test_accuracy( phdmesh::ParallelMachine comm ,
+                    TPI::ThreadPool pool ,
+                    std::istream & is )
 {
   unsigned num = 100000000 ;
   double mag = 1e10 ;
   if ( is.good() ) { is >> num ; }
   if ( is.good() ) { is >> mag ; }
-  test_txblas_accuracy( comm , num , mag );
+  test_txblas_accuracy( comm , pool , num , mag );
 }
 
-void test_timing( phdmesh::ParallelMachine comm , std::istream & is )
+void test_timing( phdmesh::ParallelMachine comm ,
+                  TPI::ThreadPool pool ,
+                  std::istream & is )
 {
   unsigned num = 100000000 ;
   unsigned ncycle = 10 ;
   if ( is.good() ) { is >> num ; }
   if ( is.good() ) { is >> ncycle ; }
-  timing_test_tbxddot( comm , num , ncycle );
-  timing_test_txddot( comm , num , ncycle );
+  timing_test_tbxddot( comm , pool , num , ncycle );
+  timing_test_txddot( comm , pool , num , ncycle );
 }
 
 //----------------------------------------------------------------------

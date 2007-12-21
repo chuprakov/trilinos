@@ -32,8 +32,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <util/TPI.h>
 #include <util/TestDriver.hpp>
-#include <util/TaskPool.hpp>
 #include <util/Parallel.hpp>
 #include <util/ParallelComm.hpp>
 #include <util/ParallelReduce.hpp>
@@ -41,10 +41,9 @@
 
 using namespace phdmesh ;
 
-void test_simple_mesh( ParallelMachine , std::istream & );
-void test_six_gears( ParallelMachine , std::istream & );
-void test_gears( ParallelMachine , std::istream & );
-void test_schema_parts( ParallelMachine , std::istream & );
+void test_simple_mesh( ParallelMachine , TPI_ThreadPool, std::istream & );
+void test_gears( ParallelMachine , TPI_ThreadPool, std::istream & );
+void test_schema_parts( ParallelMachine , TPI_ThreadPool, std::istream & );
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
@@ -56,7 +55,6 @@ int main( int argc , char ** argv )
   test_map[ std::string( "schema_parts" ) ] = & test_schema_parts ;
   test_map[ std::string( "simple_mesh" ) ]  = & test_simple_mesh ;
   test_map[ std::string( "gears" ) ]        = & test_gears ;
-  test_map[ std::string( "six_gears" ) ]    = & test_six_gears ;
 
   //----------------------------------
 

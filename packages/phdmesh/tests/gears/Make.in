@@ -30,7 +30,6 @@ TEST_MESH_OBJ_FILES =	\
 	MeshTestSchema.o	\
 	test_gears.o	\
 	test_mesh.o	\
-	test_six_gears.o	\
 	test_simple_mesh.o
 
 #-----------------------------------------------------------------------

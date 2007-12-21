@@ -17,7 +17,7 @@ export PHDMESH_CONFIG_DEPS=$0
 
 export PATH="/usr/vacpp/bin:${PATH}"
 
-source ${PHDMESH_PATH}/config/ibm opt pthreads
+source ${PHDMESH_PATH}/config/ibm opt 
 
 #----------------------------------------------------------------------
 # SNL ACCESS ExodusII and NemesisI library configuration:

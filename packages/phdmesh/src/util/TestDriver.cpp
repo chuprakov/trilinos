@@ -32,7 +32,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#include <util/TaskPool.hpp>
+#include <util/TPI.h>
 #include <util/Parallel.hpp>
 #include <util/ParallelComm.hpp>
 #include <util/ParallelReduce.hpp>
@@ -48,6 +48,8 @@ int test_driver(
   const double time_init = phdmesh::wall_time();
 
   const unsigned p_rank = parallel_machine_rank( comm );
+
+  TPI_ThreadPool pool = NULL ;
 
   int result = 0 ;
 
@@ -75,17 +77,18 @@ int test_driver(
           if ( is_key.empty() ) {
             ;
           }
-          else if ( is_key == std::string("taskpool") ) {
+          else if ( is_key == std::string("threadpool") ) {
             unsigned ntasks = 1 ;
             if ( is_line.good() ) { is_line >> ntasks ; }
-            phdmesh::taskpool::resize( ntasks );
+            if ( pool != NULL ) { TPI_Finalize(); }
+            TPI_Init( ntasks , & pool );
           }
           else {
             TestDriverMap::const_iterator iter = dmap.find( is_key );
 
             if ( iter != dmap.end() ) {
               const TestSubprogram ts = (*iter).second ;
-              (*ts)( comm , is_line );
+              (*ts)( comm , pool , is_line );
             }
             else {
               if ( p_rank == 0 ) {
@@ -108,7 +111,7 @@ int test_driver(
     result = -1 ;
   }
 
-  phdmesh::taskpool::resize(0);
+  TPI_Finalize();
 
   const double time_fin = phdmesh::wall_time();
 

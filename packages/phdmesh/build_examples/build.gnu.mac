@@ -19,7 +19,7 @@ export PATH="${MPI_PATH}/bin:${PATH}"
 
 export DYLD_LIBRARY_PATH=${MPI_PATH}/lib:$DYLD_LIBRARY_PATH
 
-source ${PHDMESH_PATH}/config/gnu opt mpichxx pthreads
+source ${PHDMESH_PATH}/config/gnu opt mpichxx 
 
 #----------------------------------------------------------------------
 

@@ -24,187 +24,274 @@
  * @author H. Carter Edwards
  */
 
-#include <phdmesh_config.h>
 #include <util/TPI.h>
 
-enum { MAX_THREADS = 1024 };
-enum { MAX_LOCK = 15 };
+/*--------------------------------------------------------------------*/
+/*--------------------------------------------------------------------*/
 
-#if defined( PHDMESH_HAS_PTHREADS )
+#ifdef NO_PTHREADS_AVAILABLE
 
-#include <pthread.h>
+int TPI_Init( int , TPI_ThreadPool * root )
+{ if ( root ) { *root = NULL ; } return 0 ; }
+
+int TPI_Finalize() {}
+
+int TPI_Pool_size( TPI_ThreadPool , int * size )
+{ if ( size ) { *size = 1 ; } return 0 ; }
+
+int TPI_Lock_size( TPI_ThreadPool , int * size )
+{ if ( size ) { *size = 0 ; } return 0 ; }
+
+int TPI_Run( TPI_ThreadPool ,
+             TPI_parallel_subprogram prog , void * arg , int )
+{ if ( prog ) { (*prog)( arg , NULL , 0 ); } return 0 ; }
+
+int TPI_Lock( TPI_ThreadPool , int )
+{ return 0 ; }
+
+int TPI_Unlock( TPI_ThreadPool , int )
+{ return 0 ; }
+
+int TPI_Trylock( TPI_ThreadPool , int )
+{ return 0 ; }
+
+int TPI_Split( TPI_ThreadPool ,
+               const int n ,
+               const int sizes[] ,
+               TPI_parallel_subprogram prog[] ,
+               void * arg[] ,
+               int )
+{
+  int result = 1 == n && sizes[0] == 1 ? 0 : TPI_ERROR_SIZE ;
+
+  if ( ! result && prog[0] ) { (*(prog[0]))( arg[0] , NULL , 0 ); }
+
+  return result ;
+}
+
+int TPI_Split_lock_size( TPI_ThreadPool , int * size )
+{ if ( size ) { *size = 0 ; } return 0 ; }
+
+int TPI_Split_lock(      TPI_ThreadPool , int ) { return 0 ; }
+int TPI_Split_trylock(   TPI_ThreadPool , int ) { return 0 ; }
+int TPI_Split_unlock(    TPI_ThreadPool , int ) { return 0 ; }
+
+/*--------------------------------------------------------------------*/
+/*--------------------------------------------------------------------*/
+
+#else
+
 #include <unistd.h>
 #include <errno.h>
-
-/*--------------------------------------------------------------------*/
-/*--------------------------------------------------------------------*/
+#include <pthread.h>
 
 typedef struct ThreadDataStruct {
   pthread_t               m_thread ;
   pthread_mutex_t         m_lock ;
   TPI_ThreadPool          m_pool ;
-  int                     m_size ;
   int                     m_rank ;
   TPI_parallel_subprogram m_routine ;
   void                  * m_argument ;
 } ThreadData ;
 
 typedef struct TPI_ThreadPool_Private {
-  ThreadData    * m_begin ;
-  ThreadData    * m_end ;
-  int             m_mutex_size ;
-  pthread_mutex_t m_mutex[ MAX_LOCK + 1 ];
+  pthread_mutex_t   m_active ;
+  pthread_mutex_t * m_mutex ;
+  int               m_mutex_size ;
+  ThreadData      * m_begin ;
+  ThreadData      * m_end ;
+  TPI_ThreadPool    m_parent ;
+  void           (* m_check )();
 } ThreadPool ;
 
-/*--------------------------------------------------------------------*/
-/*--------------------------------------------------------------------*/
+static void local_thread_pool_check() {}
 
-static TPI_ThreadPool local_thread_pool_root()
-{
-  static ThreadPool root_pool ;
-  return & root_pool ;
-}
+/*--------------------------------------------------------------------*/
+/*--------------------------------------------------------------------*/
 
 int TPI_Pool_size( TPI_ThreadPool pool , int * size )
 {
-  const TPI_ThreadPool root = local_thread_pool_root();
+  int result = 0 ;
 
-  int result = pool != NULL ? 0 : TPI_ERROR_NULL ;
-
-  if ( ! result ) {
-
-    if ( pool->m_begin < root->m_begin || root->m_end < pool->m_begin ||
-         pool->m_end   < root->m_begin || root->m_end < pool->m_end ) {
+  if ( NULL != pool ) {
+    if ( & local_thread_pool_check != pool->m_check ) {
       result = TPI_ERROR_POOL ;
     }
     else if ( size ) {
       *size = pool->m_end - pool->m_begin ;
     }
   }
-
-  return result ;
-}
-
-static int local_thread_pool_lock_create( TPI_ThreadPool pool )
-{
-  return pthread_mutex_init( pool->m_mutex + MAX_LOCK , NULL )
-         ? TPI_ERROR_INTERNAL : 0 ;
-}
-
-static void local_thread_pool_lock_destroy( TPI_ThreadPool pool )
-{
-  pthread_mutex_destroy( pool->m_mutex + MAX_LOCK );
-}
-
-static int local_thread_pool_lock( TPI_ThreadPool pool )
-{
-  int result = TPI_Pool_size( pool , NULL );
-
-  if ( ! result && pthread_mutex_trylock( pool->m_mutex + MAX_LOCK ) ) {
-    result = TPI_ERROR_ACTIVE ;
+  else if ( size ) {
+    *size = 1 ;
   }
 
   return result ;
 }
-
-static void local_thread_pool_unlock( TPI_ThreadPool pool )
-{
-  pthread_mutex_unlock( pool->m_mutex + MAX_LOCK );
-}
-
-/*--------------------------------------------------------------------*/
-/*--------------------------------------------------------------------*/
-
-int TPI_Lock_allocation( TPI_ThreadPool pool , int number )
-{
-  int result = local_thread_pool_lock( pool );
-
-  if ( ! result ) {
-
-    local_thread_pool_unlock( pool );
-
-    if ( MAX_LOCK < number ) {
-      result = TPI_ERROR_SIZE ;
-    }
-    else if ( number < 0 ) {
-      for ( int i = 0 ; i < pool->m_mutex_size ; ++i ) {
-        pthread_mutex_destroy( pool->m_mutex + i );
-      }
-      pool->m_mutex_size = 0 ;
-    }
-    else if ( pool->m_mutex_size < number ) {
-      for ( int i = pool->m_mutex_size ; i < number ; ++i ) {
-        if ( pthread_mutex_init( pool->m_mutex + i , NULL ) ) {
-          result = TPI_ERROR_INTERNAL ;
-        }
-      }
-      pool->m_mutex_size = number ;
-    }
-  }
-
-  return result ;
-}
-
-/*--------------------------------------------------------------------*/
 
 int TPI_Lock_size( TPI_ThreadPool pool , int * size )
 {
-  int result = TPI_Pool_size( pool , NULL );
+  int result = 0 ;
 
-  if ( ! result && size ) { *size = pool->m_mutex_size ; }
+  if ( NULL != pool ) {
+    if ( & local_thread_pool_check != pool->m_check ) {
+      result = TPI_ERROR_POOL ;
+    }
+    else if ( size ) {
+      *size = pool->m_mutex_size ;
+    }
+  }
+  else if ( size ) {
+    *size = 0 ;
+  }
 
+  return result ;
+}
+
+int TPI_Split_lock_size( TPI_ThreadPool pool , int * size )
+{
+  int result = 0 ;
+
+  if ( NULL != pool ) {
+    if ( & local_thread_pool_check != pool->m_check ) {
+      result = TPI_ERROR_POOL ;
+    }
+    else if ( size ) {
+      *size = pool->m_parent ? pool->m_parent->m_mutex_size : 0 ;
+    }
+  }
+  else if ( size ) {
+    *size = 0 ;
+  }
+
+  return result ;
+}
+
+/*--------------------------------------------------------------------*/
+/*--------------------------------------------------------------------*/
+
+static
+int local_thread_pool_mutex( TPI_ThreadPool pool , int i ,
+                             pthread_mutex_t ** m )
+{
+  int result = NULL != pool ? 0 : TPI_ERROR_NULL ;
+
+  if ( ! result && & local_thread_pool_check != pool->m_check ) {
+    result = TPI_ERROR_POOL ;
+  }
+
+  if ( ! result && ( i < 0 || pool->m_mutex_size <= i ) ) {
+    result = TPI_ERROR_SIZE ;
+  }
+
+  if ( ! result ) { *m = pool->m_mutex + i ; }
+
+  return result ;
+}
+
+static
+int local_thread_pool_split_mutex( TPI_ThreadPool pool , int i ,
+                                   pthread_mutex_t ** m )
+{
+  int result = NULL != pool ? 0 : TPI_ERROR_NULL ;
+
+  if ( ! result && & local_thread_pool_check != pool->m_check ) {
+    result = TPI_ERROR_POOL ;
+  }
+
+  if ( ! result && ( NULL == pool->m_parent || i < 0 ||
+                     pool->m_parent->m_mutex_size <= i ) ) {
+    result = TPI_ERROR_SIZE ;
+  }
+
+  if ( ! result ) { *m = pool->m_parent->m_mutex + i ; }
+
+  return result ;
+}
+
+static
+int local_thread_pool_lock( pthread_mutex_t * m )
+{
+  int result ;
+#if 1
+  while ( EBUSY == ( result = pthread_mutex_trylock(m) ) ); 
+  if ( result ) { result = TPI_ERROR_LOCK ; }
+#else
+  result = pthread_mutex_lock(m) ? TPI_ERROR_LOCK : 0 ;
+#endif
+  return result ;
+}
+
+static
+int local_thread_pool_trylock( pthread_mutex_t * m )
+{
+  int result = pthread_mutex_trylock( m );
+  if ( EBUSY == result ) { result = TPI_LOCK_BUSY ; }
+  else if ( result ) { result = TPI_ERROR_LOCK ; }
   return result ;
 }
 
 int TPI_Lock( TPI_ThreadPool pool , int i )
 {
-  int result = TPI_Pool_size( pool , NULL );
+  pthread_mutex_t * m ;
 
-  if ( ! result ) {
-    result = 0 <= i && i < pool->m_mutex_size ? 0 : TPI_ERROR_SIZE ;
-  }
+  int result = local_thread_pool_mutex( pool , i , & m );
 
-  if ( ! result ) {
-    pthread_mutex_t * const m = pool->m_mutex + i ;
-#if 1
-    for ( result = EBUSY ; EBUSY == ( result = pthread_mutex_trylock(m) ) ; ); 
-    if ( result ) { result = TPI_ERROR_LOCK ; }
-#else
-    result = pthread_mutex_lock(m) ? TPI_ERROR_LOCK : 0 ;
-#endif
-  }
+  if ( ! result ) { result = local_thread_pool_lock( m ); }
+
+  return result ;
+}
+
+int TPI_Split_lock( TPI_ThreadPool pool , int i )
+{
+  pthread_mutex_t * m ;
+
+  int result = local_thread_pool_split_mutex( pool , i , & m );
+
+  if ( ! result ) { result = local_thread_pool_lock( m ); }
 
   return result ;
 }
 
 int TPI_Trylock( TPI_ThreadPool pool , int i )
 {
-  int result = TPI_Pool_size( pool , NULL );
+  pthread_mutex_t * m ;
 
-  if ( ! result ) {
-    result = 0 <= i && i < pool->m_mutex_size ? 0 : TPI_ERROR_SIZE ;
-  }
+  int result = local_thread_pool_mutex( pool , i , & m );
 
-  if ( ! result ) {
-    result = pthread_mutex_trylock( pool->m_mutex + i );
-    if ( EBUSY == result ) { result = TPI_LOCK_BUSY ; }
-    else if ( result ) { result = TPI_ERROR_LOCK ; }
-  }
+  if ( ! result ) { result = local_thread_pool_trylock( m ); }
+
+  return result ;
+}
+
+int TPI_Split_trylock( TPI_ThreadPool pool , int i )
+{
+  pthread_mutex_t * m ;
+
+  int result = local_thread_pool_split_mutex( pool , i , & m );
+
+  if ( ! result ) { result = local_thread_pool_trylock( m ); }
 
   return result ;
 }
 
 int TPI_Unlock( TPI_ThreadPool pool , int i )
 {
-  int result = TPI_Pool_size( pool , NULL );
+  pthread_mutex_t * m ;
 
-  if ( ! result ) {
-    result = 0 <= i && i < pool->m_mutex_size ? 0 : TPI_ERROR_SIZE ;
-  }
+  int result = local_thread_pool_mutex( pool , i , & m );
 
-  if ( ! result ) {
-    result = pthread_mutex_unlock( pool->m_mutex + i ) ? TPI_ERROR_LOCK : 0 ;
-  }
+  if ( ! result ) { result = pthread_mutex_unlock( m ) ? TPI_ERROR_LOCK : 0 ; }
+
+  return result ;
+}
+
+int TPI_Split_unlock( TPI_ThreadPool pool , int i )
+{
+  pthread_mutex_t * m ;
+
+  int result = local_thread_pool_split_mutex( pool , i , & m );
+
+  if ( ! result ) { result = pthread_mutex_unlock( m ) ? TPI_ERROR_LOCK : 0 ; }
 
   return result ;
 }
@@ -229,7 +316,7 @@ static void * local_thread_pool_driver( void * arg )
       td->m_argument = NULL ;
 
       if ( NULL != routine ) {
-        (*routine)( argument, td->m_pool, td->m_size, td->m_rank );
+        (*routine)( argument, td->m_pool, td->m_rank );
       }
 
       if ( NULL == td->m_pool ) {
@@ -247,7 +334,6 @@ static void local_thread_pool_run_root( ThreadData * const td ,
                                         ThreadData * const td_root )
 {
   TPI_ThreadPool          pool     = td->m_pool ;
-  int                     size     = td->m_size ;
   int                     rank     = td->m_rank ;
   TPI_parallel_subprogram routine  = td->m_routine ;
   void                  * argument = td->m_argument ;
@@ -255,75 +341,141 @@ static void local_thread_pool_run_root( ThreadData * const td ,
   td->m_routine  = td_root->m_routine  ;
   td->m_argument = td_root->m_argument ;
   td->m_pool     = td_root->m_pool ;
-  td->m_size     = td_root->m_size ;
   td->m_rank     = td_root->m_rank ;
 
   if ( NULL != routine ) {
-    (*routine)(argument,pool,size,rank);
+    (*routine)(argument,pool,rank);
   }
 }
 
 /*--------------------------------------------------------------------*/
 
-int TPI_Run( TPI_ThreadPool pool ,
-             TPI_parallel_subprogram routine ,
-             void * routine_data )
+static void local_thread_pool_run( TPI_ThreadPool pool ,
+                                   TPI_parallel_subprogram routine ,
+                                   void * routine_data )
 {
-  int result = 0 ;
+  const int size = pool->m_end - pool->m_begin ;
 
-  if ( NULL != routine && ! ( result = local_thread_pool_lock( pool ) ) ) {
+  ThreadData tmp[ size ];
 
-    const int size = pool->m_end - pool->m_begin ;
+  for ( int rank = 0 ; rank < size ; ++rank ) {
 
-    ThreadData tmp[ size ];
-    int rank ;
+    ThreadData * const td = pool->m_begin + rank ;
+    ThreadData * const td_tmp = tmp + rank ;
 
-    for ( rank = 0 ; rank < size ; ++rank ) {
+    td_tmp->m_rank     = td->m_rank ;
+    td_tmp->m_pool     = td->m_pool ;
+    td_tmp->m_routine  = td->m_routine ;
+    td_tmp->m_argument = td->m_argument ;
+
+    td->m_rank     = rank ;
+    td->m_pool     = pool ;
+    td->m_routine  = routine ;
+    td->m_argument = routine_data ;
+  }
+
+  for ( int rank = 1 ; rank < size ; ++rank ) {
+    pthread_mutex_unlock( & pool->m_begin[rank].m_lock );
+  }
+
+  /* Participate in the work */
+  local_thread_pool_run_root( pool->m_begin , tmp );
+
+  /* Wait for all threads to run and re-acquire locks */
+
+  for ( int waiting = 1 ; waiting ; ) {
+
+    waiting = 0 ;
+
+    for ( int rank = 1 ; rank < size ; ++rank ) {
 
       ThreadData * const td = pool->m_begin + rank ;
       ThreadData * const td_tmp = tmp + rank ;
 
-      td_tmp->m_size     = td->m_size ;
-      td_tmp->m_rank     = td->m_rank ;
-      td_tmp->m_pool     = td->m_pool ;
-      td_tmp->m_routine  = td->m_routine ;
-      td_tmp->m_argument = td->m_argument ;
-
-      td->m_size     = size ;
-      td->m_rank     = rank ;
-      td->m_pool     = pool ;
-      td->m_routine  = routine ;
-      td->m_argument = routine_data ;
-    }
-
-    for ( rank = 1 ; rank < size ; ++rank ) {
-      pthread_mutex_unlock( & pool->m_begin[rank].m_lock );
-    }
-
-    /* Participate in the work */
-    local_thread_pool_run_root( pool->m_begin , tmp );
-
-    /* Wait for all threads to run and re-acquire locks */
-
-    for ( int waiting = 1 ; waiting ; ) {
-
-      waiting = 0 ;
-
-      for ( rank = 1 ; rank < size ; ++rank ) {
-
-        ThreadData * const td = pool->m_begin + rank ;
-        ThreadData * const td_tmp = tmp + rank ;
-
-        if ( td_tmp->m_pool != td->m_pool ) {
-          if ( ! pthread_mutex_trylock( & td->m_lock ) ) {
-            local_thread_pool_run_root( td , td_tmp );
-          }
+      if ( td_tmp->m_pool != td->m_pool ) {
+        if ( ! pthread_mutex_trylock( & td->m_lock ) ) {
+          local_thread_pool_run_root( td , td_tmp );
         }
-        if ( td_tmp->m_pool != td->m_pool ) { waiting = 1 ; }
+      }
+      if ( td_tmp->m_pool != td->m_pool ) { waiting = 1 ; }
+    }
+  }
+}
+
+int TPI_Run( TPI_ThreadPool pool ,
+             TPI_parallel_subprogram routine ,
+             void * routine_data ,
+             int number_locks )
+{
+  int result = number_locks < 0 ? TPI_ERROR_SIZE : 0 ;
+
+  if ( ! result && NULL != routine ) {
+
+    pthread_mutex_t locks[ number_locks ];
+
+    int nlocks = 0 ;
+
+    while ( nlocks < number_locks && ! result ) {
+      if ( ! pthread_mutex_init( locks + nlocks , NULL ) ) {
+        ++nlocks ;
+      }
+      else {
+        result = TPI_ERROR_INTERNAL ;
       }
     }
 
-    local_thread_pool_unlock( pool );
+    if ( ! result ) {
+
+      if ( NULL != pool ) {
+
+        if ( & local_thread_pool_check != pool->m_check ) {
+          result = TPI_ERROR_POOL ;
+        }
+
+        if ( ! result && pthread_mutex_trylock( & pool->m_active ) ) {
+          result = TPI_ERROR_ACTIVE ;
+        }
+
+        if ( ! result ) {
+ 
+          pool->m_mutex = locks ;
+          pool->m_mutex_size = number_locks ;
+
+          local_thread_pool_run( pool , routine , routine_data );
+
+          pool->m_mutex = NULL ;
+          pool->m_mutex_size = 0 ;
+
+          pthread_mutex_unlock( & pool->m_active );
+        }
+      }
+      else {
+        ThreadData dtmp = { pthread_self() , PTHREAD_MUTEX_INITIALIZER ,
+                            NULL , -1 , NULL , NULL };
+
+        ThreadPool ptmp = { PTHREAD_MUTEX_INITIALIZER,
+                            locks , number_locks ,
+                            & dtmp, ( & dtmp ) + 1 ,
+                            NULL , & local_thread_pool_check };
+
+        dtmp.m_pool = & ptmp ;
+
+        if ( ! pthread_mutex_trylock( & ptmp.m_active ) ) {
+ 
+          local_thread_pool_run( & ptmp , routine , routine_data );
+
+          pthread_mutex_unlock(  & ptmp.m_active );
+          pthread_mutex_destroy( & ptmp.m_active );
+        }
+        else {
+          result = TPI_ERROR_INTERNAL ;
+        }
+      }
+    }
+
+    while ( nlocks-- ) {
+      pthread_mutex_destroy( locks + nlocks );
+    }
   }
 
   return result ;
@@ -331,62 +483,56 @@ int TPI_Run( TPI_ThreadPool pool ,
 
 /*--------------------------------------------------------------------*/
 
-int TPI_Split( TPI_ThreadPool parent ,
-               const int number ,
-               const int sizes[] ,
-               TPI_parallel_subprogram routine[] ,
-               void * routine_data[] )
+int local_thread_pool_split_run( TPI_ThreadPool parent ,
+                                 const int number ,
+                                 const int sizes[] ,
+                                 TPI_parallel_subprogram routine[] ,
+                                 void * routine_data[] )
 {
-  int parent_size ;
-  int result = TPI_Pool_size( parent , & parent_size );
+  ThreadPool children[ number ];
+  ThreadData tmp[ number ];
+  int child , offset ;
+  int result = 0 ;
 
-  {
-    int child_size = 0 ;
+  for ( offset = child = 0 ; child < number && ! result ; ++child ) {
 
-    for ( int i = 0 ; i < number && ! result ; ++i ) {
-      if ( sizes[i] < 0 ) { result = TPI_ERROR_SIZE ; }
-      child_size += sizes[i] ;
+    ThreadData * const td = parent->m_begin + offset ;
+
+    if ( NULL != routine[child] && sizes[child] ) {
+
+      ThreadData * const td_tmp = tmp + child ;
+
+      td_tmp->m_rank     = td->m_rank ;
+      td_tmp->m_pool     = td->m_pool ;
+      td_tmp->m_routine  = td->m_routine ;
+      td_tmp->m_argument = td->m_argument ;
+
+      td->m_rank     = 0 ;
+      td->m_pool     = children + child ;
+      td->m_routine  = routine[child] ;
+      td->m_argument = routine_data[child] ;
+
+      children[child].m_mutex  = NULL ;
+      children[child].m_mutex_size = 0 ;
+      children[child].m_begin  = td ;
+      children[child].m_end    = td + sizes[child] ;
+      children[child].m_parent = parent ;
+      children[child].m_check  = & local_thread_pool_check ;
+
+      if ( pthread_mutex_init( & children[child].m_active , NULL ) ) {
+        result = TPI_ERROR_INTERNAL ;
+      }
     }
 
-    result = parent_size == child_size ? 0 : TPI_ERROR_SIZE ;
+    offset += sizes[child] ;
   }
 
-  if ( ! result ) { result = local_thread_pool_lock( parent ); }
-
-  if ( ! result ) {
-    ThreadPool children[ number ];
-    ThreadData tmp[ number ];
-    int child , offset ;
-
-    for ( offset = child = 0 ; child < number ; ++child ) {
-
-      ThreadData * const td = parent->m_begin + offset ;
-
-      if ( NULL != routine[child] && sizes[child] ) {
-
-        ThreadData * const td_tmp = tmp + child ;
-
-        td_tmp->m_size     = td->m_size ;
-        td_tmp->m_rank     = td->m_rank ;
-        td_tmp->m_pool     = td->m_pool ;
-        td_tmp->m_routine  = td->m_routine ;
-        td_tmp->m_argument = td->m_argument ;
-
-        td->m_size     = number ;
-        td->m_rank     = child ;
-        td->m_pool     = children + child ;
-        td->m_routine  = routine[child] ;
-        td->m_argument = routine_data[child] ;
-
-        children[child].m_begin = td ;
-        children[child].m_end   = td + sizes[child] ;
-        children[child].m_mutex_size = 0 ;
-
-        result = local_thread_pool_lock_create( children + child );
-      }
-
-      offset += sizes[child] ;
+  if ( result ) {
+    while ( child-- ) {
+      pthread_mutex_destroy( & children[child].m_active );
     }
+  }
+  else {
 
     for ( child = 1 ; child < number ; ++child ) {
       if ( NULL != routine[child] && sizes[child] ) {
@@ -396,8 +542,7 @@ int TPI_Split( TPI_ThreadPool parent ,
 
     if ( NULL != routine[0] ) {
       local_thread_pool_run_root( children->m_begin , tmp );
-      TPI_Lock_allocation( children , -1 );
-      local_thread_pool_lock_destroy( children );
+      pthread_mutex_destroy( & children->m_active );
     }
 
     for ( int waiting = 1 ; waiting ; ) {
@@ -417,13 +562,68 @@ int TPI_Split( TPI_ThreadPool parent ,
             if ( td_tmp->m_pool != td->m_pool ) { waiting = 1 ; }
           }
 
-          TPI_Lock_allocation( children + child , -1 );
-          local_thread_pool_lock_destroy( children + child );
+          pthread_mutex_destroy( & children[child].m_active );
         }
       }
     }
+  }
 
-    local_thread_pool_unlock( parent );
+  return result ;
+}
+
+int TPI_Split( TPI_ThreadPool parent ,
+               const int number ,
+               const int sizes[] ,
+               TPI_parallel_subprogram routine[] ,
+               void * routine_data[] ,
+               int number_locks )
+{
+  int parent_size ;
+  int result = TPI_Pool_size( parent , & parent_size );
+
+  {
+    int child_size = 0 ;
+
+    for ( int i = 0 ; i < number && ! result ; ++i ) {
+      if ( sizes[i] < 0 ) { result = TPI_ERROR_SIZE ; }
+      child_size += sizes[i] ;
+    }
+
+    result = parent_size == child_size ? 0 : TPI_ERROR_SIZE ;
+  }
+
+  if ( ! result && pthread_mutex_trylock( & parent->m_active ) ) {
+    result = TPI_ERROR_ACTIVE ;
+  }
+
+  if ( ! result ) {
+
+    pthread_mutex_t locks[ number_locks ];
+
+    for ( int i = 0 ; i < number_locks && ! result ; ++i ) {
+      if ( pthread_mutex_init( locks + i , NULL ) ) {
+        result = TPI_ERROR_INTERNAL ;
+        while ( i-- ) { pthread_mutex_destroy( locks + i ); }
+      }
+    }
+
+    if ( ! result ) {
+
+      parent->m_mutex = locks ;
+      parent->m_mutex_size = number_locks ;
+
+      result = local_thread_pool_split_run( parent , number , sizes ,
+                                            routine , routine_data );
+
+      parent->m_mutex = NULL ;
+      parent->m_mutex_size = 0 ;
+
+      for ( int i = 0 ; i < number_locks ; ++i ) {
+        pthread_mutex_destroy( locks + i );
+      }
+    }
+
+    pthread_mutex_unlock( & parent->m_active );
   }
 
   return result ;
@@ -468,15 +668,15 @@ static int local_thread_pool_create_locks( int n , TPI_ThreadPool pool )
 }
 
 static void local_thread_pool_verify_task(
-  void * arg , TPI_ThreadPool pool , int size , int rank )
+  void * arg , TPI_ThreadPool pool , int rank )
 {
   ThreadData * const td = (ThreadData *) arg ;
 
-  if ( NULL == td || NULL == pool ||
-       size != pool->m_end - pool->m_begin ||
-       rank != td - pool->m_begin ||
-       pool != td->m_pool ||
-       td->m_thread   != pthread_self() ) {
+  if ( NULL == td ||
+       NULL == pool ||
+       pool         != td->m_pool ||
+       rank         != td - pool->m_begin ||
+       td->m_thread != pthread_self() ) {
     td->m_rank = -1 ;
   }
 }
@@ -489,7 +689,6 @@ static int local_thread_pool_verify_start( int n , TPI_ThreadPool pool )
     ThreadData * td = pool->m_begin + rank ;
 
     td->m_pool = pool ;
-    td->m_size = n ;
     td->m_rank = rank ;
     td->m_routine = & local_thread_pool_verify_task ;
     td->m_argument = td ;
@@ -512,7 +711,6 @@ static int local_thread_pool_verify_start( int n , TPI_ThreadPool pool )
           else { /* Has run */
             if ( -1 == td->m_rank ) { result = TPI_ERROR_INTERNAL ; }
             td->m_pool = NULL ;
-            td->m_size = -1 ;
             td->m_rank = -1 ;
           }
         }
@@ -529,7 +727,6 @@ static void local_thread_pool_terminate_threads( int n , TPI_ThreadPool pool )
 {
   for ( int i = 1 ; i < n ; ++i ) {
     ThreadData * const td = pool->m_begin + i ;
-    td->m_size     = 0 ;
     td->m_rank     = 0 ;
     td->m_pool     = NULL ;
     td->m_routine  = NULL ;
@@ -542,17 +739,16 @@ static void local_thread_pool_terminate_threads( int n , TPI_ThreadPool pool )
     for ( int i = 1 ; i < n ; ++i ) {
       ThreadData * const td = pool->m_begin + i ;
 
-      if ( ! td->m_size ) {
+      if ( ! td->m_rank ) {
         if ( ! pthread_mutex_trylock( & td->m_lock ) ) {
           if ( NULL != td->m_argument ) {
             pthread_mutex_unlock( & td->m_lock );
           }
           else {
-            td->m_size = -1 ;
             td->m_rank = -1 ;
           }
         }
-        if ( ! td->m_size ) { waiting = 1 ; }
+        if ( ! td->m_rank ) { waiting = 1 ; }
       }
     }
   }
@@ -568,7 +764,6 @@ static int local_thread_pool_create_threads( int n , TPI_ThreadPool pool )
 
     ThreadData * const td = pool->m_begin + n_thread ;
 
-    td->m_size     = -1 ;
     td->m_rank     = -1 ;
     td->m_pool     = NULL ;
     td->m_routine  = NULL ;
@@ -625,271 +820,75 @@ static int local_thread_pool_create_threads( int n , TPI_ThreadPool pool )
   return result ;
 }
 
-int TPI_Init( int n , TPI_ThreadPool * root )
+static int local_thread_pool_root( int n , TPI_ThreadPool * pool )
 {
+  enum { MAX_THREADS = 1024 };
+
   static ThreadData threads[ MAX_THREADS ];
-  static int ultimate_init = 1 ;
 
-  int result = 0 < n && n < MAX_THREADS ? 0 : TPI_ERROR_SIZE ;
+  static ThreadPool root = {
+      PTHREAD_MUTEX_INITIALIZER ,
+      NULL , 0 ,
+      threads , threads ,
+      NULL ,
+      & local_thread_pool_check };
 
-  if ( ! result && NULL == root ) { result = TPI_ERROR_NULL ; }
+  int result = threads == root.m_begin ? 0 : TPI_ERROR_INTERNAL ;
+
+  if ( ! result && pthread_mutex_trylock( & root.m_active ) ) {
+    result = TPI_ERROR_ACTIVE ;
+  }
 
   if ( ! result ) {
 
-    TPI_ThreadPool pool = local_thread_pool_root() ;
+    if ( pool ) { /* Initialize */
 
-    if ( ultimate_init ) {
-      pool->m_begin = threads ;
-      pool->m_end   = threads ;
-      pool->m_mutex_size = 0 ;
-      ultimate_init = 0 ;
-    }
+      result = 0 < n && n < MAX_THREADS ? 0 : TPI_ERROR_SIZE ;
 
-    if ( pool->m_begin != pool->m_end ) {
-      result = TPI_ERROR_ACTIVE ;
-    }
+      if ( ! result && threads != root.m_end ) { result = TPI_ERROR_ACTIVE ; }
 
-    if ( ! result ) { result = local_thread_pool_lock_create( pool ); }
-
-    if ( ! result ) {
-      result = local_thread_pool_create_locks( n , pool );
-    }
-
-    if ( ! result ) {
-      /* Have locks */
-
-      result = local_thread_pool_create_threads( n , pool );
-
-      if ( result ) {
-        local_thread_pool_destroy_locks( n , pool );
+      if ( ! result ) {
+        result = local_thread_pool_create_locks( n , & root );
       }
+
+      if ( ! result ) { /* Have locks */
+
+        result = local_thread_pool_create_threads( n , & root );
+
+        if ( result ) {
+          local_thread_pool_destroy_locks( n , & root );
+        }
+      }
+      *pool = result ? NULL : & root ;
     }
-    *root = result ? NULL : pool ;
+    else if ( root.m_begin < root.m_end ) { /* Shut down */
+
+      n = root.m_end - root.m_begin ;
+
+      local_thread_pool_terminate_threads( n , & root );
+      local_thread_pool_destroy_locks(     n , & root );
+
+      root.m_end = root.m_begin ;
+    }
+
+    pthread_mutex_unlock( & root.m_active );
   }
 
   return result ;
 }
 
-/*--------------------------------------------------------------------*/
-/*--------------------------------------------------------------------*/
-
-int TPI_Finalize()
-{
-  TPI_ThreadPool pool = local_thread_pool_root() ;
-
-  int result = local_thread_pool_lock( pool );
-
-  if ( ! result ) {
-
-    local_thread_pool_unlock( pool );
-    local_thread_pool_lock_destroy( pool );
-
-    const int n = pool->m_end - pool->m_begin ;
-
-    local_thread_pool_terminate_threads( n , pool );
-    local_thread_pool_destroy_locks( n , pool );
-
-    TPI_Lock_allocation( pool , -1 );
-
-    pool->m_end = pool->m_begin ;
-  }
-
-  return result ;
-}
-
-/*--------------------------------------------------------------------*/
-/*--------------------------------------------------------------------*/
-
-#else
-
-/*--------------------------------------------------------------------*/
-/*--------------------------------------------------------------------*/
-
-typedef struct TPI_ThreadPool_Private {
-  TPI_ThreadPool m_root ;
-  int            m_size ;
-  int            m_lock_size ;
-  int            m_lock[ MAX_LOCK + 1 ];
-} ThreadPool ;
-
-/*--------------------------------------------------------------------*/
-
-static TPI_ThreadPool local_thread_pool_root()
-{
-  static ThreadPool root_pool = { NULL , 0 , 0 };
-  return & root_pool ;
-}
-
-int TPI_Pool_size( TPI_ThreadPool pool , int * size )
+int TPI_Init( int n , TPI_ThreadPool * pool )
 {
   int result = NULL != pool ? 0 : TPI_ERROR_NULL ;
 
-  if ( ! result && pool->m_root != local_thread_pool_root() ) {
-    result = TPI_ERROR_POOL ;
-  }
-
-  if ( ! result && size ) { *size = pool->m_size ; }
-
-  return result ;
-}
-
-int TPI_Lock_size( TPI_ThreadPool pool , int * size )
-{
-  int result = TPI_Pool_size( pool , NULL );
-  if ( ! result && size ) { *size = pool->m_lock_size ; }
-  return result ;
-}
-
-int TPI_Lock_allocation( TPI_ThreadPool pool , int number )
-{
-  int result = TPI_Pool_size( pool , NULL );
-
-  if ( ! result && pool->m_lock[ MAX_LOCK ] ) { result = TPI_ERROR_ACTIVE ; }
-
-  if ( ! result ) {
-    if ( MAX_LOCK < number ) {
-      result = TPI_ERROR_SIZE ;
-    }
-    else if ( number < 0 ) {
-      for ( int i = 0 ; i < pool->m_lock_size ; ++i ) {
-        pool->m_lock[i] = 0 ;
-      }
-      pool->m_lock_size = 0 ;
-    }
-    else if ( pool->m_lock_size < number ) {
-      for ( int i = pool->m_lock_size ; i < number ; ++i ) {
-        pool->m_lock[i] = 0 ;
-      }
-      pool->m_lock_size = number ;
-    }
-  }
-  return result ;
-}
-
-int TPI_Run( TPI_ThreadPool pool ,
-             TPI_parallel_subprogram routine ,
-             void * routine_data )
-{
-  int size ;
-  int result = TPI_Pool_size( pool , & size );
-
-  if ( ! result && pool->m_lock[ MAX_LOCK ] ) { result = TPI_ERROR_ACTIVE ; }
-
-  if ( ! result && NULL != routine ) {
-    pool->m_lock[ MAX_LOCK ] = 1 ;
-    for ( int rank = 0 ; rank < size ; ++rank ) {
-      (*routine)( routine_data , pool , size , rank );
-    }
-    pool->m_lock[ MAX_LOCK ] = 0 ;
-  }
-  return result ;
-}
-
-int TPI_Lock( TPI_ThreadPool pool , int i )
-{
-  int result = TPI_Pool_size( pool , NULL );
-
-  if ( ! result && pool->m_lock_size <= i ) { result = TPI_ERROR_SIZE ; }
-
-  if ( ! result && pool->m_lock[i] ) { result = TPI_ERROR_LOCK ; }
-
-  if ( ! result ) { pool->m_lock[i] = 1 ; }
-
-  return result ;
-}
-
-int TPI_Split( TPI_ThreadPool parent ,
-               const int number ,
-               const int sizes[] ,
-               TPI_parallel_subprogram routine[] ,
-               void * routine_data[] )
-{
-  int parent_size ;
-  int result = TPI_Pool_size( parent , & parent_size );
-
-  {
-    int child_size = 0 ;
-
-    for ( int i = 0 ; i < number && ! result ; ++i ) {
-      if ( sizes[i] < 0 ) { result = TPI_ERROR_SIZE ; }
-      child_size += sizes[i] ;
-    }
-
-    result = parent_size == child_size ? 0 : TPI_ERROR_SIZE ;
-  }
-
-  if ( ! result && parent->m_lock[MAX_LOCK] ) { result = TPI_ERROR_ACTIVE ; }
-
-  if ( ! result ) {
-    TPI_ThreadPool root = local_thread_pool_root();
-    ThreadPool children[ number ];
-
-    for ( int child = 0 ; child < number ; ++child ) {
-      children[child].m_root = root ;
-      children[child].m_size = sizes[child] ;
-      children[child].m_lock_size = 0 ;
-      children[child].m_lock[ MAX_LOCK ] = 0 ;
-
-      if ( NULL != routine[child] && sizes[child] ) {
-        (*routine[child])( routine_data[child] , children + child ,
-                           number , child );
-      }
-    }
-  }
-
-  return result ;
-}
-
-int TPI_Trylock( TPI_ThreadPool pool , int i )
-{ return TPI_Lock( pool , i ); }
-
-int TPI_Unlock( TPI_ThreadPool pool , int i )
-{
-  int result = TPI_Pool_size( pool , NULL );
-
-  if ( ! result && pool->m_lock_size <= i ) { result = TPI_ERROR_SIZE ; }
-
-  if ( ! result && ! pool->m_lock[i] ) { result = TPI_ERROR_LOCK ; }
-
-  if ( ! result ) { pool->m_lock[i] = 0 ; }
-
-  return result ;
-}
-
-int TPI_Init( int n , TPI_ThreadPool * root )
-{
-  TPI_ThreadPool pool = local_thread_pool_root() ;
-
-  int result = 0 < n && n < MAX_THREADS ? 0 : TPI_ERROR_SIZE ;
-
-  if ( ! result ) { result = root != NULL ? 0 : TPI_ERROR_NULL ; }
-
-  if ( ! result && pool->m_size ) { result = TPI_ERROR_ACTIVE ; }
-
-  if ( ! result ) {
-    pool->m_root = pool ;
-    pool->m_size = n ;
-    pool->m_lock_size = 0 ;
-    pool->m_lock[ MAX_LOCK ] = 0 ;
-    *root = pool ;
-  }
+  if ( ! result ) { result = local_thread_pool_root( n , pool ); }
 
   return result ;
 }
 
 int TPI_Finalize()
 {
-  TPI_ThreadPool pool = local_thread_pool_root();
-
-  int result = pool->m_lock[ MAX_LOCK ] ? TPI_ERROR_ACTIVE : 0 ;
-
-  if ( ! result ) {
-    TPI_Lock_allocation( pool , -1 );
-    pool->m_root = NULL ;
-    pool->m_size = 0 ;
-  }
-
-  return result ;
+  return local_thread_pool_root( 0 , NULL );
 }
 
 /*--------------------------------------------------------------------*/

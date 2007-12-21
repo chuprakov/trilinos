@@ -89,66 +89,70 @@ public:
 //----------------------------------------------------------------------
 
 inline
-double sum( unsigned n , const double * x )
-{ Summation s ; txdsum_add_array( s.xdval , n , x ); return s.value(); }
+double sum( TPI_ThreadPool p , unsigned n , const double * x )
+{ Summation s ; txdsum_add_array( p , s.xdval , n , x ); return s.value(); }
 
 inline
-double dot( unsigned n , const double * x )
-{ double d[2] ; txddot1( d , n , x ); return d[0] ; }
+double dot( TPI_ThreadPool p , unsigned n , const double * x )
+{ double d[2] ; txddot1( p , d , n , x ); return d[0] ; }
 
 inline
-double dot( unsigned n , const double * x , const double * y )
-{ Summation s ; txddot( s.xdval , n , x , y ); return s.value(); }
+double dot( TPI_ThreadPool p , unsigned n , const double * x , const double * y )
+{ Summation s ; txddot( p , s.xdval , n , x , y ); return s.value(); }
 
 inline
-double norm2( unsigned n , const double * x )
-{ return sqrt( dot( n , x ) ); }
+double norm2( TPI_ThreadPool p , unsigned n , const double * x )
+{ return sqrt( dot( p , n , x ) ); }
 
 inline
-double norm1( unsigned n , const double * x )
-{ double d[2] ; txdnorm1( d , n , x ); return d[0] ; }
+double norm1( TPI_ThreadPool p , unsigned n , const double * x )
+{ double d[2] ; txdnorm1( p , d , n , x ); return d[0] ; }
 
 //----------------------------------------------------------------------
 
 inline
-double sum( ParallelMachine comm , unsigned n , const double * x )
+double sum( ParallelMachine comm , TPI_ThreadPool p ,
+            unsigned n , const double * x )
 {
   Summation s ;
-  txdsum_add_array( s.xdval , n , x );
+  txdsum_add_array( p , s.xdval , n , x );
   all_reduce( comm , ReduceSum<1>( & s ) );
   return s.value();
 }
 
 inline
-double dot( ParallelMachine comm , unsigned n , const double * x )
+double dot( ParallelMachine comm , TPI_ThreadPool p ,
+            unsigned n , const double * x )
 {
   Summation s ;
-  txddot1( s.xdval , n , x );
+  txddot1( p , s.xdval , n , x );
   all_reduce( comm , ReduceSum<1>( & s ) );
   return s.xdval[0] ;
 }
 
 inline
-double dot( ParallelMachine comm , 
+double dot( ParallelMachine comm ,  TPI_ThreadPool p ,
             unsigned n , const double * x , const double * y )
 {
   Summation s ;
-  txddot( s.xdval , n , x , y );
+  txddot( p , s.xdval , n , x , y );
   all_reduce( comm , ReduceSum<1>( & s ) );
   return s.value();
 }
 
 inline
-double norm2( ParallelMachine comm , unsigned n , const double * x )
+double norm2( ParallelMachine comm , TPI_ThreadPool p ,
+              unsigned n , const double * x )
 {
-  return sqrt( dot( comm , n , x ) );
+  return sqrt( dot( comm , p , n , x ) );
 }
 
 inline
-double norm1( ParallelMachine comm , unsigned n , const double * x )
+double norm1( ParallelMachine comm , TPI_ThreadPool p , 
+              unsigned n , const double * x )
 {
   Summation s ;
-  txdnorm1( s.xdval , n , x );
+  txdnorm1( p , s.xdval , n , x );
   all_reduce( comm , ReduceSum<1>( & s ) );
   return s.xdval[0] ;
 }

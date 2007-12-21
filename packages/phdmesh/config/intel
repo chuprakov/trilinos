@@ -40,19 +40,20 @@ export CC="icc"
 export CXX="icc"
 export LDCXX="${CXX}"
 
+# -wd141  = suppress warning of unnamed prototype parameters
 # -wd444  = suppress warning of base class without virtual destructor
 # -wd981  = suppress warning: order of operations
 # -wd1418 = suppress warning rfunctions declared without prior prototype
 # -wd1419 - suppress warning: external declaration in 'main' file
 
 CFLAGS_INC="-I. -I${PHDMESH_PATH}/include"
-CFLAGS_DIAG="-strict-ansi -Wall -Wcheck -Werror -wd981 -wd1418 -wd1419"
+CFLAGS_DIAG="-strict-ansi -Wall -Wcheck -Werror -wd981 -wd1418 -wd1419 -wd141"
 
 export CFLAGS="${CFLAGS}     ${CFLAGS_DIAG} -std=c99 ${CFLAGS_INC}"
 export CXXFLAGS="${CXXFLAGS} ${CFLAGS_DIAG} -wd444   ${CFLAGS_INC}"
 
-# export C_LIB_EXT=
-export CXX_LIB_EXT="${CXX_LIB_EXT} -lstdc++"
+export C_LIB_EXT="${C_LIB_EXT}     -lpthread"
+export CXX_LIB_EXT="${CXX_LIB_EXT} -lpthread -lstdc++"
 
 #-----------------------------------------------------------------------
 
@@ -68,12 +69,6 @@ OPT* | opt* )
   shift 1
   export CFLAGS="${CFLAGS} -O3"
   export CXXFLAGS="${CXXFLAGS} -O3"
-  ;;
-PTHREADS | pthreads )
-  shift 1
-  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_PTHREADS\n"
-  export C_LIB_EXT="${C_LIB_EXT}     -lpthread"
-  export CXX_LIB_EXT="${CXX_LIB_EXT} -lpthread"
   ;;
 MPI | mpi )
   shift 1

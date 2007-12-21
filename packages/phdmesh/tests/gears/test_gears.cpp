@@ -30,6 +30,7 @@
 #include <limits>
 #include <stdexcept>
 
+#include <util/TPI.h>
 #include <util/ParallelComm.hpp>
 #include <util/ParallelReduce.hpp>
 #include <util/OctTreeOps.hpp>
@@ -86,6 +87,7 @@ void parallel_gather( ParallelMachine ,
 //----------------------------------------------------------------------
 
 void test_gears_face_proximity(
+  TPI::ThreadPool thread_pool ,
   Mesh & M ,
   const Field<double,1> & gear_coordinates ,
   const Field<double,1> & field_proximity ,
@@ -94,8 +96,7 @@ void test_gears_face_proximity(
   EntityProcSet & range ,
   const bool verify ,
   double & dt_proximity_search ,
-  double & dt_ghosting ,
-  unsigned & num_search_tasks )
+  double & dt_ghosting )
 {
   static const char method[] = "phdmesh::test_gears_face_proximity" ;
 
@@ -118,8 +119,7 @@ void test_gears_face_proximity(
 
   wt = wall_time();
 
-  num_search_tasks =
-    proximity_search( M , prox_search , Face , proximity );
+  proximity_search( thread_pool , M , prox_search , Face , proximity );
 
   dt_proximity_search += wall_dtime(wt);
 
@@ -235,6 +235,7 @@ void test_gears_face_proximity(
 //----------------------------------------------------------------------
 
 void test_gears( ParallelMachine pm ,
+                 TPI::ThreadPool thread_pool ,
                  const unsigned i_end ,
                  const unsigned j_end ,
                  const unsigned k_end ,
@@ -258,7 +259,6 @@ void test_gears( ParallelMachine pm ,
   double dt_proximity = 0 ;
   double dt_ghosting = 0 ;
   double dt_exo_write = 0 ;
-  unsigned num_search_tasks = 0 ;
 
   //------------------------------
   // Six circular gears with a 'z' axis of rotation.
@@ -461,14 +461,13 @@ void test_gears( ParallelMachine pm ,
   EntityProcSet prox_domain ;
   EntityProcSet prox_range ;
 
-  test_gears_face_proximity( M ,
+  test_gears_face_proximity( thread_pool , M ,
                              gear_fields.gear_coord ,
                              field_node_proximity ,
                              proximity_search ,
                              prox_domain , prox_range ,
                              verify ,
-                             dt_proximity , dt_ghosting ,
-                             num_search_tasks );
+                             dt_proximity , dt_ghosting );
 
   wt = wall_time();
 
@@ -547,14 +546,13 @@ void test_gears( ParallelMachine pm ,
         return ;
       }
 
-      test_gears_face_proximity( M ,
+      test_gears_face_proximity( thread_pool , M ,
                                  gear_fields.gear_coord ,
                                  field_node_proximity ,
                                  proximity_search ,
                                  prox_domain , prox_range ,
                                  verify ,
-                                 dt_proximity , dt_ghosting ,
-                                 num_search_tasks );
+                                 dt_proximity , dt_ghosting );
 
       // Surface in proximity are added to the Aura
 
@@ -583,7 +581,6 @@ void test_gears( ParallelMachine pm ,
 
   if ( p_rank == 0 ) {
     std::cout << "N_GEARS " << nsteps
-              << ", #search tasks = " << num_search_tasks
               << ", mesh = " << dt_mesh_gen 
               << ", rebal = " << dt_rebalance 
               << ", search = " << dt_proximity 
@@ -594,7 +591,8 @@ void test_gears( ParallelMachine pm ,
   }
 }
 
-void test_gears( phdmesh::ParallelMachine comm , std::istream & is )
+void test_gears( phdmesh::ParallelMachine comm ,
+                 TPI_ThreadPool thread_pool , std::istream & is )
 {
   const unsigned p_size = phdmesh::parallel_machine_size( comm );
   std::string sval ;
@@ -619,6 +617,6 @@ void test_gears( phdmesh::ParallelMachine comm , std::istream & is )
     exo_file_name << sval << "_np" << p_size << ".exo" ;
   }
 
-  test_gears( comm , i , j , k , exo_file_name.str() , verify );
+  test_gears( comm , thread_pool , i , j , k , exo_file_name.str() , verify );
 }
 

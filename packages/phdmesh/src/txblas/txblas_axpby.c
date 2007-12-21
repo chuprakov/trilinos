@@ -26,7 +26,6 @@
 
 #include <stddef.h>
 #include <math.h>
-#include <util/taskpool.h>
 #include <txblas/reduction.h>
 
 struct TaskXY {
@@ -36,31 +35,38 @@ struct TaskXY {
         unsigned number ;
 };
 
-static int task_axpby_work( void * arg , unsigned p_size , unsigned p_rank )
-{
-  struct TaskXY * const t  = (struct TaskXY *) arg ;
+static void task_axpby_work( void * , TPI_ThreadPool , int );
 
-  const unsigned p_next = p_rank + 1 ;
-  const unsigned n = t->number ;
-  const unsigned i = ( n * p_rank ) / p_size ;
-  const unsigned j = ( n * p_next ) / p_size ;
-
-  const double a = t->alpha ;
-
-  const double * const xe = t->x_beg + j ;
-  const double *       x  = t->x_beg + i ;
-        double *       y  = t->y_beg + i ;
-
-  while ( xe != x ) { *y += a * *x ; ++x ; ++y ; }
-
-  return 0 ;
-}
-
-void txdaxpy( unsigned n , double a , const double * x , double * y )
+void txdaxpy( TPI_ThreadPool pool ,
+              unsigned n , double a , const double * x , double * y )
 {
   struct TaskXY data = { a , x , y , n };
-  phdmesh_taskpool_run( & task_axpby_work , & data , 0 );
+  TPI_Run( pool , & task_axpby_work , & data , 0 );
 }
 
 /*--------------------------------------------------------------------*/
+
+static void task_axpby_work( void * arg , TPI_ThreadPool pool , int p_rank )
+{
+  int p_size ;
+
+  if ( ! TPI_Pool_size( pool , & p_size ) ) {
+
+    struct TaskXY * const t = (struct TaskXY *) arg ;
+
+    const unsigned p_next = p_rank + 1 ;
+    const unsigned n = t->number ;
+    const unsigned i = ( n * p_rank ) / p_size ;
+    const unsigned j = ( n * p_next ) / p_size ;
+
+    const double a = t->alpha ;
+
+    const double * const xe = t->x_beg + j ;
+    const double *       x  = t->x_beg + i ;
+          double *       y  = t->y_beg + i ;
+
+    while ( xe != x ) { *y += a * *x ; ++x ; ++y ; }
+  }
+}
+
 
