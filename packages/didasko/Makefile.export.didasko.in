@@ -13,6 +13,9 @@
 ## Optional dependency on nox
 @HAVE_DIDASKO_NOX_TRUE@include @abs_top_builddir@/../nox/Makefile.export.nox
 
+## Optional dependency on belos
+@HAVE_DIDASKO_BELOS_TRUE@include @abs_top_builddir@/../belos/Makefile.export.belos
+
 ## Optional dependency on ml
 @HAVE_DIDASKO_ML_TRUE@include @abs_top_builddir@/../ml/Makefile.export.ml
 
@@ -33,6 +36,7 @@
 
 _DIDASKO_INCLUDES = -I@abs_top_builddir@/src -I@abs_top_srcdir@/src \
    $(NOX_INCLUDES)         \
+   $(BELOS_INCLUDES)       \
    $(ML_INCLUDES)          \
    $(ANASAZI_INCLUDES)     \
    $(IFPACK_INCLUDES)      \
@@ -47,6 +51,7 @@ _DIDASKO_INCLUDES = -I@abs_top_builddir@/src -I@abs_top_srcdir@/src \
 _DIDASKO_LIBS = \
   @LDFLAGS@ \
   $(NOX_LIBS)         \
+  $(BELOS_LIBS)       \
   $(ML_LIBS)          \
   $(ANASAZI_LIBS)     \
   $(IFPACK_LIBS)      \
@@ -56,8 +61,7 @@ _DIDASKO_LIBS = \
   $(TRIUTILS_LIBS)    \
   $(EPETRA_LIBS)      \
   $(TEUCHOS_LIBS)     \
-  $(TPETRA_LIBS)	\
-  @LIBS@ @LAPACK_LIBS@ @BLAS_LIBS@ @FLIBS@
+  $(TPETRA_LIBS)
 
 @USING_GNUMAKE_TRUE@DIDASKO_INCLUDES  = $(shell @PERL_EXE@ @abs_top_srcdir@/config/strip_dup_incl_paths.pl $(_DIDASKO_INCLUDES))
 @USING_GNUMAKE_TRUE@DIDASKO_LIBS      = $(shell @PERL_EXE@ @abs_top_srcdir@/config/strip_dup_libs.pl $(_DIDASKO_LIBS))
