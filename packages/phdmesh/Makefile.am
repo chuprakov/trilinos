@@ -113,6 +113,8 @@ endif
 #EXAMPLE_SUBDIR=example
 #endif
 
+.PHONY : tests
+
 if BUILD_TESTS
 tests:
 	@echo ""
