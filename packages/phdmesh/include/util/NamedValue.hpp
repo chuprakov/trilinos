@@ -29,20 +29,19 @@
 #define util_NamedValue_hpp
 
 #include <typeinfo>
-#include <limits>
-#include <utility>
 #include <iosfwd>
 #include <vector>
 #include <string>
 
-#include <util/ValueIOS.hpp>
+#include <util/Reference.hpp>
+#include <util/ValueIO.hpp>
 
 namespace phdmesh {
 
 class NamedValueSet ;
 
-std::ostream & operator << ( std::ostream & s , const NamedValueSet & v );
-std::istream & operator >> ( std::istream & s , NamedValueSet & v );
+std::ostream & operator << ( std::ostream & , const NamedValueSet & );
+std::istream & operator >> ( std::istream & ,       NamedValueSet & );
 
 //----------------------------------------------------------------------
 /** @class NamedValue
@@ -98,18 +97,6 @@ template<class Type = void> class NamedValue ;
 class NamedValueSet {
 public:
 
-  typedef int  (* CompareFunction )( const char * , const char * );
-  typedef bool (* GoodFunction )( const char * );
-
-  /* Policy for comparing names, default is case-insensitive. */
-  const CompareFunction m_compare ;
-
-  /* Policy for a good name, default is [A-Za-z][_A-Za-z0-9]*. */
-  const GoodFunction m_good ;
-
-  /* Policy for scalar strean io */
-  const ValueIOSPolicy & m_ios ;
-
   //----------------------------------
   /** The member of the given scalar type and name is returned.
    *  If no such member exists it returns NULL.
@@ -152,11 +139,6 @@ public:
   NamedValueSet();
   NamedValueSet( const NamedValueSet & );
 
-  /** Construct an empty container, with policies.
-   *  If any arguments are NULL then the defaults are used.
-   */
-  NamedValueSet( CompareFunction , GoodFunction , const ValueIOSPolicy * );
-
   /** Clear the container */
   void clear();
 
@@ -177,43 +159,24 @@ private:
 };
 
 //----------------------------------------------------------------------
+
+template<>
+struct ValueIO<NamedValueSet> {
+  enum { binary_size = 0 };
+  static void   write( std::ostream &, const NamedValueSet*, size_t );
+  static size_t read(  std::istream &,       NamedValueSet*, size_t );
+  static void   tell(  std::ostream &, const NamedValueSet*, size_t, size_t );
+};
+
+//----------------------------------------------------------------------
 //----------------------------------------------------------------------
 // Base class to enable NamedValueSet of heterogeneous value types.
 
 template<>
 class NamedValue<void> {
 public:
-  const std::string name ;
-
-  template<typename ScalarType>
-  void assert_scalar_type() const
-    {
-      const std::type_info & t = typeid(ScalarType);
-      if ( t != scalar_type() ) { throw_type( t ); }
-    }
-
-  template<typename ScalarType>
-  const ScalarType & get( size_t i = 0 ) const
-    {
-      assert_scalar_type<ScalarType>();
-      return * reinterpret_cast<const ScalarType*>( get_void(i) );
-   }
-
-  template<typename ScalarType>
-  ScalarType & put( size_t i = 0 )
-    {
-      assert_scalar_type<ScalarType>();
-      return * reinterpret_cast<ScalarType*>( put_void(i) );
-    }
-
-  //----------------------------------
-
-  virtual const std::type_info & scalar_type() const = 0 ;
-
-  virtual       size_t get_max() const = 0 ;
-  virtual       size_t put_max() const = 0 ;
-  virtual       void * put_void( size_t ) = 0 ;
-  virtual const void * get_void( size_t ) const = 0 ;
+  const std::string       name ;
+  const Reference<void> & reference ;
 
   //----------------------------------
   /** Remove this named value from its named value sets.
@@ -224,144 +187,19 @@ public:
 
   const std::vector<NamedValueSet*> sets() const { return m_sets ; }
 
+protected:
+
+  NamedValue( const char * , const Reference<void> & );
+
 private:
   /** NamedValueSets for which this named value is a member */
   std::vector<NamedValueSet*> m_sets ;
 
   friend class NamedValueSet ;
 
-  template<typename T> friend class NamedValue ;
-
-  explicit NamedValue( const char * n );
-
-  void throw_type( const std::type_info & ) const ;
-
-  // Not implemented:
   NamedValue();
-  NamedValue( const NamedValue<void> & );
-  NamedValue<void> & operator = ( const NamedValue<void> & );
-};
-
-//----------------------------------------------------------------------
-
-template<typename T>
-class NamedValue<T&> : public NamedValue<void> {
-public:
-  typedef T            ScalarType ;
-  typedef ScalarType & ValueType ;
-
-  ValueType value ;
-
-  NamedValue( const char * arg_name , ValueType arg_ref )
-    : NamedValue<void>(arg_name), value(arg_ref) {}
-
-  ~NamedValue() {}
-
-private:
-
-  const std::type_info & scalar_type() const { return typeid(ScalarType); }
-
-        size_t get_max() const { return 1 ; }
-        size_t put_max() const { return 1 ; }
-        void * put_void( size_t i )       { return i ? NULL : & value ; }
-  const void * get_void( size_t i ) const { return i ? NULL : & value ; }
-
-  // Not implemented:
-  NamedValue();
-  NamedValue( const NamedValue<ValueType> & );
-  NamedValue<ValueType> & operator = ( const NamedValue<ValueType> & );
-};
-
-template<typename T>
-class NamedValue<const T &> : public NamedValue<void> {
-public:
-  typedef T                  ScalarType ;
-  typedef const ScalarType & ValueType ;
-
-  ValueType value ;
-
-  NamedValue( const char * arg_name , ValueType arg_ref )
-    : NamedValue<void>(arg_name), value(arg_ref) {}
-
-  ~NamedValue() {}
-
-private:
-
-  const std::type_info & scalar_type() const { return typeid(ScalarType); }
-
-        size_t get_max() const { return 1 ; }
-        size_t put_max() const { return 0 ; }
-        void * put_void( size_t i )       { return NULL ; }
-  const void * get_void( size_t i ) const { return i ? NULL : & value ; }
-
-  // Not implemented:
-  NamedValue();
-  NamedValue( const NamedValue<ValueType> & );
-  NamedValue<ValueType> & operator = ( const NamedValue<ValueType> & );
-};
-
-//----------------------------------------------------------------------
-
-template<typename T>
-class NamedValue<T*> : public NamedValue<void> {
-public:
-  typedef T            ScalarType ;
-  typedef ScalarType * ValueType ;
-
-  ValueType value ;
-
-  NamedValue( const char * arg_name , ValueType arg_ptr , size_t arg_size )
-    : NamedValue<void>(arg_name), value(arg_ptr), m_size( arg_size ) {}
-
-  ~NamedValue() {}
-
-private:
-
-  const size_t m_size ;
-
-  const std::type_info & scalar_type() const { return typeid(ScalarType); }
-
-        size_t get_max() const { return m_size ; }
-        size_t put_max() const { return m_size ; }
-        void * put_void(size_t i)       {return i < m_size ? value+i : NULL;}
-  const void * get_void(size_t i) const {return i < m_size ? value+i : NULL;}
-
-  // Not implemented:
-  NamedValue();
-  NamedValue( const NamedValue<ValueType> & );
-  NamedValue<ValueType> & operator = ( const NamedValue<ValueType> & );
-};
-
-//----------------------------------------------------------------------
-
-template<typename T>
-class NamedValue<const T*> : public NamedValue<void> {
-public:
-  typedef T                  ScalarType ;
-  typedef const ScalarType * ValueType ;
-
-  ValueType value ;
-
-  NamedValue( const char * arg_name , ValueType arg_ptr , size_t arg_size )
-    : NamedValue<void>(arg_name), value(arg_ptr), m_size( arg_size ) {}
-
-  ~NamedValue() {}
-
-private:
-
-  const size_t m_size ;
-
-  const std::type_info & scalar_type() const { return typeid(ScalarType); }
-
-        size_t get_max() const { return m_size ; }
-        size_t put_max() const { return 0 ; }
-        void * put_void(size_t )        {return NULL ; }
-  const void * get_void(size_t i) const {return i < m_size ? value+i : NULL;}
-
-  // Not implemented:
-  NamedValue();
-  NamedValue( const NamedValue<ValueType> & );
-  NamedValue<ValueType> & operator = ( const NamedValue<ValueType> & );
+  NamedValue( const NamedValue & );
+  NamedValue & operator = ( const NamedValue & );
 };
 
 //----------------------------------------------------------------------
@@ -369,119 +207,69 @@ private:
 template<typename T, unsigned N>
 class NamedValue<T[N]> : public NamedValue<void> {
 public:
-  typedef T          ScalarType ;
-  typedef ScalarType ValueType[ N ] ;
-
-  ValueType value ;
-
-  explicit NamedValue( const char * arg_name ) : NamedValue<void>(arg_name) {}
-
-  ~NamedValue() {}
-
-private:
-
-  const std::type_info & scalar_type() const { return typeid(ScalarType); }
-
-        size_t get_max() const { return N ; }
-        size_t put_max() const { return N ; }
-        void * put_void( size_t i )       { return i < N ? & value[i] : NULL ; }
-  const void * get_void( size_t i ) const { return i < N ? & value[i] : NULL ; }
-
-  // Not implemented:
-  NamedValue();
-  NamedValue( const NamedValue<ValueType> & );
-  NamedValue<ValueType> & operator = ( const NamedValue<ValueType> & );
-};
-
-//----------------------------------------------------------------------
-
-template<typename T>
-class NamedValue< std::vector<T> > : public NamedValue<void> {
-public:
-  typedef T                       ScalarType ;
-  typedef std::vector<ScalarType> ValueType ;
-
-  ValueType value ;
 
   explicit NamedValue( const char * arg_name )
-    : NamedValue<void>(arg_name) {}
-
-  explicit NamedValue( const char * arg_name , const ValueType & arg_v )
-    : NamedValue<void>(arg_name), value( arg_v ) {}
+    : NamedValue<void>(arg_name,m_ref), m_ref( value , N ) {}
 
   ~NamedValue() {}
 
-private:
-
-  const std::type_info & scalar_type() const { return typeid(ScalarType); }
-
-  size_t get_max() const { return value.size(); }
-  size_t put_max() const { return std::numeric_limits<size_t>::max(); }
-
-  void * put_void( size_t i )
-    { if ( value.size() <= i ) { value.resize(i+1); } return & value[i] ; }
-
-  const void * get_void( size_t i ) const
-    { return i < value.size() ? & value[i] : NULL ; }
-};
-
-//----------------------------------------------------------------------
-
-template<typename T>
-class NamedValue< const std::vector<T> > : public NamedValue<void> {
-public:
-  typedef T                             ScalarType ;
-  typedef const std::vector<ScalarType> ValueType ;
-
-  ValueType value ;
-
-  explicit NamedValue( const char * arg_name , ValueType & arg_v )
-    : NamedValue<void>(arg_name), value( arg_v ) {}
-
-  ~NamedValue() {}
+  T value[N] ;
 
 private:
 
-  const std::type_info & scalar_type() const { return typeid(ScalarType); }
+  Reference<T*> m_ref ;
 
-  size_t get_max() const { return value.size(); }
-  size_t put_max() const { return 0 ; }
-
-  void * put_void( size_t ) { return NULL ; }
-
-  const void * get_void( size_t i ) const
-    { return i < value.size() ? & value[i] : NULL ; }
-};
-
-//----------------------------------------------------------------------
-
-template<typename T>
-class NamedValue<const T> : public NamedValue<void> {
-public:
-
-  typedef T       ScalarType ;
-  typedef const T ValueType ;
-
-  ValueType value ;
-
-  NamedValue( const char * arg_name , const ValueType & arg_val )
-    : NamedValue<void>( arg_name ), value( arg_val ) {}
-
-  ~NamedValue() {}
-
-private:
-
-  const std::type_info & scalar_type() const { return typeid(ScalarType); }
-
-        size_t get_max() const { return 1 ; }
-        size_t put_max() const { return 0 ; }
-        void * put_void( size_t   )       { return NULL ; }
-  const void * get_void( size_t i ) const { return i ? NULL : & value ; }
-
-  // Not implemented:
   NamedValue();
-  NamedValue( const NamedValue<ValueType> & );
-  NamedValue<ValueType> & operator = ( const NamedValue<ValueType> & );
+  NamedValue( const NamedValue & );
+  NamedValue & operator = ( const NamedValue & );
+};
+
+//----------------------------------------------------------------------
+
+template<typename T>
+class NamedValue<T*> : public NamedValue<void> {
+public:
+
+  NamedValue( const char * arg_name , T * arg_ptr , size_t arg_size )
+    : NamedValue<void>(arg_name,m_ref),
+      value(arg_ptr), size( arg_size ),
+      m_ref( arg_ptr , arg_size ) {}
+
+  ~NamedValue() {}
+
+  T * const    value ;
+  const size_t size ;
+
+private:
+
+  Reference<T*> m_ref ;
+
+  NamedValue();
+  NamedValue( const NamedValue & );
+  NamedValue & operator = ( const NamedValue & );
+};
+
+//----------------------------------------------------------------------
+
+template<typename T>
+class NamedValue<T&> : public NamedValue<void> {
+public:
+
+  NamedValue( const char * arg_name , T & arg_ref )
+    : NamedValue<void>(arg_name,m_ref),
+      value(arg_ref), m_ref(arg_ref) {}
+
+  ~NamedValue() {}
+
+  T & value ;
+
+private:
+
+  Reference<T> m_ref ;
+
+  NamedValue();
+  NamedValue( const NamedValue & );
+  NamedValue & operator = ( const NamedValue & );
 };
 
 //----------------------------------------------------------------------
@@ -490,55 +278,25 @@ template<typename T>
 class NamedValue : public NamedValue<void> {
 public:
 
-  typedef T ScalarType ;
-  typedef T ValueType ;
-
-  ValueType value ;
-
   explicit NamedValue( const char * arg_name )
-    : NamedValue<void>( arg_name ) {}
+    : NamedValue<void>( arg_name , m_ref ),
+      value(), m_ref(value) {}
 
-  NamedValue( const char * arg_name , const ValueType & arg_val )
-    : NamedValue<void>( arg_name ), value( arg_val ) {}
+  NamedValue( const char * arg_name , const T & arg_val )
+    : NamedValue<void>( arg_name , m_ref ),
+      value(arg_val), m_ref(value) {}
 
   ~NamedValue() {}
 
+  T value ;
+
 private:
 
-  const std::type_info & scalar_type() const { return typeid(ScalarType); }
+  Reference<T> m_ref ;
 
-        size_t get_max() const { return 1 ; }
-        size_t put_max() const { return 1 ; }
-        void * put_void( size_t i )       { return i ? NULL : & value ; }
-  const void * get_void( size_t i ) const { return i ? NULL : & value ; }
-
-  // Not implemented:
   NamedValue();
-  NamedValue( const NamedValue<ValueType> & );
-  NamedValue<ValueType> & operator = ( const NamedValue<ValueType> & );
-};
-
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
-
-template<>
-class ValueIOS<NamedValueSet> : public ValueIOS<void> {
-public:
-  typedef NamedValueSet ValueType ;
-  void tell( std::ostream & , unsigned , const ValueType & ) const ;
-  void put(  std::ostream & , unsigned , const ValueType & ) const ;
-  void get(  std::istream & , ValueType & ) const ;
-  const std::type_info & type() const ;
-
-  ~ValueIOS();
-  ValueIOS();
-
-  static const ValueIOSPolicy      & default_policy();
-  static const ValueIOS<ValueType> & singleton();
-private:
-  void tellp( std::ostream & , unsigned , const void * ) const ;
-  void putp(  std::ostream & , unsigned , const void * ) const ;
-  void getp(  std::istream & , void * ) const ;
+  NamedValue( const NamedValue & );
+  NamedValue & operator = ( const NamedValue & );
 };
 
 //----------------------------------------------------------------------

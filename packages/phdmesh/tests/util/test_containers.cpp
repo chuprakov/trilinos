@@ -136,9 +136,9 @@ void test_parameters()
   NamedValue<> * r_pi  = ps.value.find<int>( pi.name );
   NamedValue<> * r_pdv = ps.value.find<double>( pdv.name );
 
-  r_pi->put<int>() = 10 ;
-  r_pdv->put<double>(0) = 10 ;
-  r_pdv->put<double>(1) = 20 ;
+  r_pi->reference.put<int>() = 10 ;
+  r_pdv->reference.put<double>(0) = 10 ;
+  r_pdv->reference.put<double>(1) = 20 ;
 
   {
     std::ofstream ofile( "scratch_test_container" , std::ios::out );
@@ -146,9 +146,9 @@ void test_parameters()
   }
   {
     pi.value = -1 ;
-    r_pi->put<int>() = -1 ;
-    r_pdv->put<double>(0) = -1 ;
-    r_pdv->put<double>(1) = -1 ;
+    r_pi->reference.put<int>() = -1 ;
+    r_pdv->reference.put<double>(0) = -1 ;
+    r_pdv->reference.put<double>(1) = -1 ;
 
     std::cout << ps.name << " = " << ps.value << std::endl ;
 
@@ -175,10 +175,6 @@ void test_parameters()
       std::cout << "  SUCCESSFULLY found " << path << std::endl ;
     }
 
-    std::cout << ps.name << " = " ;
-    ValueIOS<NamedValueSet>::singleton().tell(std::cout,2,ps.value);
-    std::cout << std::endl ;
-
     std::cout << ps.name << " = " << ps.value << std::endl ;
 
     ps_nest3.value.insert( ps );
@@ -188,10 +184,6 @@ void test_parameters()
     std::cout << "correctly caught:" << std::endl
               << "  " << x.what() << std::endl << std::endl ;
   }
-
-  std::cout << ps.name << " = " ;
-  ValueIOS<NamedValueSet>::singleton().tell(std::cout,2,ps.value);
-  std::cout << std::endl ;
 
   std::cout << ps.name << " = " << ps.value << std::endl ;
 }
