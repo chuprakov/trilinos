@@ -131,6 +131,12 @@ TAC_ARG_WITH_AR
 TAC_ARG_CHECK_MPI
 
 # ------------------------------------------------------------------------
+# Determine how to build C programs using POSIX
+# ------------------------------------------------------------------------
+
+ACX_PTHREAD
+
+# ------------------------------------------------------------------------
 # Checks for header files
 # ------------------------------------------------------------------------
 # This needs to be added for phdMesh
@@ -150,7 +156,8 @@ TAC_ARG_ENABLE_EXPORT_MAKEFILES(yes)
 # Checks for special package flags
 # ------------------------------------------------------------------------
 
-TAC_ARG_ENABLE_OPTION(threads, [enable shared memory threads], PHDMESH_HAS_PTHREADS, no)
+# Per Carter, phdMesh now unconditionally requires threads
+#TAC_ARG_ENABLE_OPTION(threads, [enable shared memory threads], PHDMESH_HAS_PTHREADS, no)
 #AM_CONDITIONAL(HAVE_THREADS, [test "X$ac_cv_use_pdmesh_has_threads" != "Xno"])
 
 # ------------------------------------------------------------------------

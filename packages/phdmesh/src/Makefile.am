@@ -82,12 +82,13 @@ UTIL_H = \
 	$(srcdir)/../include/util/ParallelIndex.hpp \
 	$(srcdir)/../include/util/ParallelInputStream.hpp \
 	$(srcdir)/../include/util/ParallelReduce.hpp \
+	$(srcdir)/../include/util/Reference.hpp \
 	$(srcdir)/../include/util/Setv.hpp \
 	$(srcdir)/../include/util/TPI.hpp \
 	$(srcdir)/../include/util/TPI.h \
 	$(srcdir)/../include/util/TestDriver.hpp \
 	$(srcdir)/../include/util/TypeList.hpp \
-	$(srcdir)/../include/util/ValueIOS.hpp
+	$(srcdir)/../include/util/ValueIO.hpp
 
 UTIL = \
 	$(srcdir)/util/CSet.cpp \
@@ -101,10 +102,11 @@ UTIL = \
 	$(srcdir)/util/ParallelIndex.cpp \
 	$(srcdir)/util/ParallelInputStream.cpp \
 	$(srcdir)/util/ParallelReduce.cpp \
+	$(srcdir)/util/Reference.cpp \
 	$(srcdir)/util/Setv.cpp \
 	$(srcdir)/util/TPI.c \
 	$(srcdir)/util/TestDriver.cpp \
-	$(srcdir)/util/ValueIOS.cpp
+	$(srcdir)/util/ValueIO.cpp
 
 MESHIO_H = \
 	$(srcdir)/../include/mesh_io/ExoII.hpp \

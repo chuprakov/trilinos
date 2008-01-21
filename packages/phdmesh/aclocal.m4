@@ -918,12 +918,12 @@ AC_SUBST([am__tar])
 AC_SUBST([am__untar])
 ]) # _AM_PROG_TAR
 
+m4_include([config/acx_pthread.m4])
 m4_include([config/tac_arg_check_mpi.m4])
 m4_include([config/tac_arg_config_mpi.m4])
 m4_include([config/tac_arg_enable_export-makefiles.m4])
 m4_include([config/tac_arg_enable_feature.m4])
 m4_include([config/tac_arg_enable_feature_sub_check.m4])
-m4_include([config/tac_arg_enable_option.m4])
 m4_include([config/tac_arg_with_ar.m4])
 m4_include([config/tac_arg_with_flags.m4])
 m4_include([config/tac_arg_with_incdirs.m4])
