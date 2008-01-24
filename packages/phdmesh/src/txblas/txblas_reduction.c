@@ -104,11 +104,11 @@ void add_array( double * const s , const double * x , const double * const xe )
 void xdsum_add_array( double * s , unsigned n , const double * x )
 { add_array( s , x , x + n ); }
 
-static void task_sum_work( void * arg , TPI_ThreadPool pool , int p_rank )
+static void task_sum_work( void * arg , TPI_ThreadPool pool )
 {
-  int p_size ;
+  int p_size , p_rank ;
 
-  if ( ! TPI_Pool_size( pool , & p_size ) ) {
+  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
 
     struct TaskX * const t  = (struct TaskX *) arg ;
 
@@ -137,7 +137,8 @@ void txdsum_add_array( TPI_ThreadPool pool ,
   data.x_sum  = s ;
   data.x_beg  = x ;
   data.number = n ;
-  TPI_Run( pool , & task_sum_work , & data , 1 );
+  TPI_Set_lock_size( pool , 1 );
+  TPI_Run( pool , & task_sum_work , & data );
 }
 
 /*--------------------------------------------------------------------*/
@@ -150,11 +151,11 @@ static void norm1( double * s , const double * x , const double * const xe )
 void xdnorm1( double * s2 , unsigned n , const double * x )
 { norm1( s2 , x , x + n ); }
 
-static void task_norm1_work( void * arg , TPI_ThreadPool pool , int p_rank )
+static void task_norm1_work( void * arg , TPI_ThreadPool pool )
 {
-  int p_size ;
+  int p_size , p_rank ;
 
-  if ( ! TPI_Pool_size( pool , & p_size ) ) {
+  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
 
     struct TaskX * const t  = (struct TaskX *) arg ;
 
@@ -184,7 +185,8 @@ void txdnorm1( TPI_ThreadPool pool ,
   data.x_sum  = s ;
   data.x_beg  = x ;
   data.number = n ;
-  TPI_Run( pool , & task_norm1_work , & data , 1 );
+  TPI_Set_lock_size( pool , 1 );
+  TPI_Run( pool , & task_norm1_work , & data );
 }
 
 /*--------------------------------------------------------------------*/
@@ -228,11 +230,11 @@ static void dot1_unroll( double * s , const double * x , const size_t n )
 void xddot1( double * s2 , unsigned n , const double * x )
 { dot1_unroll( s2 , x , n ); }
 
-static void task_dot_x_work( void * arg , TPI_ThreadPool pool , int p_rank )
+static void task_dot_x_work( void * arg , TPI_ThreadPool pool )
 {
-  int p_size ;
+  int p_size , p_rank ;
 
-  if ( ! TPI_Pool_size( pool , & p_size ) ) {
+  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
 
     double partial[2] = { 0 , 0 };
     struct TaskX * const t  = (struct TaskX *) arg ;
@@ -262,14 +264,17 @@ void txddot1( TPI_ThreadPool pool , double * s , unsigned n , const double * x )
   data.x_sum  = s ;
   data.x_beg  = x ;
   data.number = n ;
-  TPI_Run( pool , & task_dot_x_work , & data , 1 );
+  TPI_Set_lock_size( pool , 1 );
+  TPI_Run( pool , & task_dot_x_work , & data );
 }
 
 /*--------------------------------------------------------------------*/
 
-static void task_dot_xy_work( void * arg , TPI_ThreadPool pool , int p_rank )
+static void task_dot_xy_work( void * arg , TPI_ThreadPool pool )
 {
-  int p_size ; TPI_Pool_size( pool , & p_size );
+  int p_size , p_rank ;
+
+  TPI_Pool_rank( pool , & p_rank , & p_size );
 
   struct TaskXY * const t = (struct TaskXY *) arg ;
 
@@ -337,10 +342,9 @@ static void task_dot_xy_work( void * arg , TPI_ThreadPool pool , int p_rank )
 
 /*--------------------------------------------------------------------*/
 
-static void task_dot_xy_work_block(
-  void * arg , TPI_ThreadPool pool , int p_rank )
+static void task_dot_xy_work_block( void * arg , TPI_ThreadPool pool )
 {
-  int p_size ; TPI_Pool_size( pool , & p_size );
+  int p_size , p_rank ; TPI_Pool_rank( pool , & p_rank , & p_size );
 
   struct TaskXY * const t = (struct TaskXY *) arg ;
 
@@ -415,7 +419,8 @@ void txddot( TPI_ThreadPool pool ,
   data.x_beg  = x ;
   data.y_beg  = y ;
   data.number = n ;
-  TPI_Run( pool , & task_dot_xy_work , & data , 1 );
+  TPI_Set_lock_size( pool , 1 );
+  TPI_Run( pool , & task_dot_xy_work , & data );
 }
 
 void tbxddot( TPI_ThreadPool pool ,
@@ -426,7 +431,8 @@ void tbxddot( TPI_ThreadPool pool ,
   data.x_beg  = x ;
   data.y_beg  = y ;
   data.number = n ;
-  TPI_Run( pool , & task_dot_xy_work_block , & data , 1 );
+  TPI_Set_lock_size( pool , 1 );
+  TPI_Run( pool , & task_dot_xy_work_block , & data );
 }
 
 /*--------------------------------------------------------------------*/

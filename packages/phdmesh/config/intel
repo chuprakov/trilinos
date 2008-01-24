@@ -49,8 +49,8 @@ export LDCXX="${CXX}"
 CFLAGS_INC="-I. -I${PHDMESH_PATH}/include"
 CFLAGS_DIAG="-strict-ansi -Wall -Wcheck -Werror -wd981 -wd1418 -wd1419 -wd141"
 
-export CFLAGS="${CFLAGS}     ${CFLAGS_DIAG} -std=c99 ${CFLAGS_INC}"
-export CXXFLAGS="${CXXFLAGS} ${CFLAGS_DIAG} -wd444   ${CFLAGS_INC}"
+export CFLAGS="-std=c99 ${CFLAGS} ${CFLAGS_DIAG} ${CFLAGS_INC}"
+export CXXFLAGS="${CXXFLAGS} ${CFLAGS_DIAG} -wd444 ${CFLAGS_INC}"
 
 export C_LIB_EXT="${C_LIB_EXT}     -lpthread"
 export CXX_LIB_EXT="${CXX_LIB_EXT} -lpthread -lstdc++"

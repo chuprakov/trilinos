@@ -46,7 +46,7 @@ CFLAGS_INC="-I. -I${PHDMESH_PATH}/include"
 
 CFLAGS64="-xtarget=native64 -xarch=native64"
 
-export CFLAGS="${CFLAGS} ${CFLAGS64} -xc99 -errwarn=%all ${CFLAGS_INC}"
+export CFLAGS="-xc99 ${CFLAGS} ${CFLAGS64} -errwarn=%all ${CFLAGS_INC}"
 
 export CXXFLAGS="${CXXFLAGS} ${CFLAGS64} -library=stlport4 -xwe ${CFLAGS_INC}"
 

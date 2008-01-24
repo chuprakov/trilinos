@@ -40,12 +40,11 @@ typedef struct txblasTask_cr4_MatrixStruct {
 
 /*--------------------------------------------------------------------*/
 
-static void txblas_task_cr4_mxv(
-  void * data , TPI_ThreadPool pool , int p_rank )
+static void txblas_task_cr4_mxv( void * data , TPI_ThreadPool pool )
 {
-  int p_size ;
+  int p_size , p_rank ;
 
-  if ( ! TPI_Pool_size( pool , & p_size ) ) {
+  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
 
     txblasTask_cr4_Matrix * const t = (txblasTask_cr4_Matrix*) data ;
 
@@ -84,8 +83,6 @@ void txblas_cr4_mxv(
   const double     x[] ,  /* Input vector */
         double     y[] )  /* Output vector */
 {
-  const unsigned nlock = 0 ;
-
   txblasTask_cr4_Matrix data ;
   data.number_row = nr ;
   data.pc_begin = pc ;
@@ -93,7 +90,7 @@ void txblas_cr4_mxv(
   data.x_begin = x ;
   data.y_begin = y ;
 
-  TPI_Run( pool , & txblas_task_cr4_mxv , & data , nlock );
+  TPI_Run( pool , & txblas_task_cr4_mxv , & data );
 }
 
 

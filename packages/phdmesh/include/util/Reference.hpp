@@ -178,7 +178,7 @@ private:
 //----------------------------------------------------------------------
 
 template<typename T>
-class Reference<const T*> : public Reference<> {
+class Reference<const T* , ValueIO > : public Reference<> {
 public:
   const T * const value ;
   const size_t    size ;
@@ -211,7 +211,7 @@ private:
 
 
 template<typename T>
-class Reference<T*> : public Reference<> {
+class Reference<T* , ValueIO > : public Reference<> {
 public:
   T * const    value ;
   const size_t size ;
@@ -246,7 +246,7 @@ private:
 //----------------------------------------------------------------------
 
 template<typename T>
-class Reference<const T> : public Reference<> {
+class Reference<const T , ValueIO > : public Reference<> {
 public:
   const T & value ;
 

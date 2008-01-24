@@ -57,7 +57,7 @@ public:
                 EntityType   arg_entity_type ,
                 const std::vector<Assemble> & arg_ops );
 
-  void work(TPI::ThreadPool,int);
+  void work(TPI::ThreadPool);
 };
 
 AssembleTask::AssembleTask( TPI::ThreadPool pool ,
@@ -69,10 +69,11 @@ AssembleTask::AssembleTask( TPI::ThreadPool pool ,
     ops( arg_ops ),
     ik_work( arg_mesh.kernels( arg_entity_type ).begin() )
 {
-  TPI::Run( pool , *this , & AssembleTask::work , 1 );
+  TPI::Set_lock_size( pool , 1 );
+  TPI::Run( pool , *this , & AssembleTask::work );
 }
 
-void AssembleTask::work(TPI::ThreadPool pool,int)
+void AssembleTask::work(TPI::ThreadPool pool)
 {
   const std::vector<Assemble>::const_iterator ia_beg = ops.begin();
   const std::vector<Assemble>::const_iterator ia_end = ops.end();

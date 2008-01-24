@@ -42,11 +42,11 @@ export LDCXX=${CXX}
 
 INCLUDE_PATH="-I. -I${PHDMESH_PATH}/include"
 
-CFLAGS_DIAG="-Wall -Wextra -Werror -std=c99"
-CXXFLAGS_DIAG="-Wall -Wextra -Werror -std=c++98 -Woverloaded-virtual"
+CFLAGS_DIAG="-Wall -Wextra -Werror"
+CXXFLAGS_DIAG="-Wall -Wextra -Werror -Woverloaded-virtual"
 
-export CFLAGS="${CFLAGS} ${CFLAGS_DIAG} ${INCLUDE_PATH}"
-export CXXFLAGS="${CXXFLAGS} ${CXXFLAGS_DIAG} ${INCLUDE_PATH}"
+export CFLAGS="  -std=c99   ${CFLAGS}   ${CFLAGS_DIAG}   ${INCLUDE_PATH}"
+export CXXFLAGS="-std=c++98 ${CXXFLAGS} ${CXXFLAGS_DIAG} ${INCLUDE_PATH}"
 
 export C_LIB_EXT="${C_LIB_EXT}     -lpthread"
 export CXX_LIB_EXT="${CXX_LIB_EXT} -lpthread"

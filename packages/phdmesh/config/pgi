@@ -41,10 +41,10 @@ export CXX="pgCC"
 export LDCXX="${CXX}"
 
 CFLAGS_INC="-I. -I${PHDMESH_PATH}/include"
-CFLAGS_DIAG="-c9x -Xc"
-CXXFLAGS_DIAG="-c9x -Xc"
+CFLAGS_DIAG=""
+CXXFLAGS_DIAG=""
 
-export CFLAGS="${CFLAGS}     ${CFLAGS_DIAG} ${CFLAGS_INC}"
+export CFLAGS="-c99 ${CFLAGS} ${CFLAGS_DIAG} ${CFLAGS_INC}"
 export CXXFLAGS="${CXXFLAGS} ${CXXFLAGS_DIAG} ${CFLAGS_INC}"
 
 export C_LIB_EXT="${C_LIB_EXT}     -lpthread"

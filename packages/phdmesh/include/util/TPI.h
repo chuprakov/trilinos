@@ -55,9 +55,17 @@ int TPI_Init( int , TPI_ThreadPool * );
 /** Finalize (shut down) all threads and thread pools. */
 int TPI_Finalize();
 
-int TPI_Pool_size( TPI_ThreadPool , int * );
+int TPI_Pool_rank( TPI_ThreadPool , int * /* rank */ , int * /* size */ );
+
+int TPI_Buffer( TPI_ThreadPool , void ** /* buffer */ , int * /* byte_size */ );
 
 int TPI_Lock_size( TPI_ThreadPool , int * );
+
+/* Set the lock size for the next call to TPI_Run. */
+int TPI_Set_lock_size( TPI_ThreadPool , int );
+
+/* Set the stack buffer size for the next call to TPI_Run. */
+int TPI_Set_buffer_size( TPI_ThreadPool , int );
 
 /*--------------------------------------------------------------------*/
 /**  A thread-pool parallel subprogram and its shared data
@@ -65,20 +73,18 @@ int TPI_Lock_size( TPI_ThreadPool , int * );
  *   this is the 'rank' thread.
  */
 typedef void (*TPI_parallel_subprogram)( void * shared_data ,
-                                         TPI_ThreadPool pool ,
-                                         int rank );
+                                         TPI_ThreadPool pool );
 
 /** Run a thread-pool parallel subprogram.
  *  Each thread in the pool will call the subprogram as:
  *
- *    (*subprogram)( shared_data , pool , pool_rank )
+ *    (*subprogram)( shared_data , pool )
  *
  *  Nested calls to this routine are illegal.
  */
 int TPI_Run( TPI_ThreadPool ,
              TPI_parallel_subprogram ,
-             void * /* shared data */ ,
-             int    /* Number locks required */ );
+             void * /* shared data */ );
 
 /** Blocks until lock # is obtained */
 int TPI_Lock( TPI_ThreadPool , int );
@@ -102,8 +108,7 @@ int TPI_Split( TPI_ThreadPool ,
                const int                  /* Number of child pools     */ ,
                const int []               /* array of child pool sizes */ ,
                TPI_parallel_subprogram [] /* array of main functions  */ ,
-               void * []                  /* array of main functions' data */ ,
-               int                        /* number parent locks required */ );
+               void * []                  /* array of main functions' data */);
 
 int TPI_Split_lock_size( TPI_ThreadPool , int * );
 int TPI_Split_lock(      TPI_ThreadPool , int );

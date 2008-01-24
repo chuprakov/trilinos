@@ -59,10 +59,10 @@ struct FillWork {
   unsigned x_length ;
 };
 
-void task_rand_fill( void * arg , TPI::ThreadPool pool , int p_rank )
+void task_rand_fill( void * arg , TPI::ThreadPool pool )
 {
   const double r_max = RAND_MAX ;
-  int p_size ; TPI::Pool_size( pool , p_size );
+  int p_rank , p_size ; TPI::Pool_rank( pool , p_rank , p_size );
 
   FillWork & w = * reinterpret_cast<FillWork*>( arg );
 
@@ -108,7 +108,7 @@ void timing_test_txddot(
     data.x_mag = 1 ;
     data.x_beg = & x_values[0] ;
     data.x_length = m_local ;
-    TPI::Run( pool , & task_rand_fill , & data , 0 );
+    TPI::Run( pool , & task_rand_fill , & data );
   }
 
   std::vector<double> y_values( x_values );
@@ -159,7 +159,7 @@ void timing_test_tbxddot(
     data.x_mag = 1 ;
     data.x_beg = & x_values[0] ;
     data.x_length = m_local ;
-    TPI::Run( pool , & task_rand_fill , & data , 0 );
+    TPI::Run( pool , & task_rand_fill , & data );
   }
 
   std::vector<double> y_values( x_values );
@@ -203,7 +203,7 @@ void test_txblas_accuracy( ParallelMachine comm ,
     data.x_mag = mag ;
     data.x_beg = & values[0] ;
     data.x_length = m_local ;
-    TPI::Run( pool , & task_rand_fill , & data , 0 );
+    TPI::Run( pool , & task_rand_fill , & data );
   }
 
   const double init = 1 ;

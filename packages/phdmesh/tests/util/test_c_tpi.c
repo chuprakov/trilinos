@@ -34,7 +34,7 @@ struct TestTPI {
 };
 
 static
-void test_tpi_loop( void * arg , TPI_ThreadPool pool , int rank )
+void test_tpi_loop( void * arg , TPI_ThreadPool pool )
 {
   static const char name[] = "test_tpi_loop" ;
 
@@ -42,10 +42,11 @@ void test_tpi_loop( void * arg , TPI_ThreadPool pool , int rank )
 
   int nlock  = -1 ;
   int size  = -1 ;
+  int rank  = -1 ;
   int result = 0 ;
 
-  if ( ! result && ( result = TPI_Pool_size( pool , & size ) ) ) {
-    fprintf(stderr,"%s: TPI_Pool_size = %d\n",name,result);
+  if ( ! result && ( result = TPI_Pool_rank( pool , & rank , & size ) ) ) {
+    fprintf(stderr,"%s: TPI_Pool_rank = %d\n",name,result);
   }
 
   if ( ! result && ( result = TPI_Lock_size( pool , & nlock ) ) ) {
@@ -85,13 +86,16 @@ int test_c_tpi( TPI_ThreadPool pool )
   int size = -1 ;
   int result = 0 ;
 
-  if ( ! result && ( result = TPI_Pool_size( pool , & size ) ) ) {
-    fprintf(stderr,"%s: TPI_Pool_size = %d\n",name,result);
+  if ( ! result && ( result = TPI_Pool_rank( pool , NULL , & size ) ) ) {
+    fprintf(stderr,"%s: TPI_Pool_rank = %d\n",name,result);
   }
 
   if ( ! result ) {
     struct TestTPI data = { 1000000 , 0 , 0 };
-    if ( ( result = TPI_Run( pool , & test_tpi_loop , & data , 1 ) ) ) {
+    if ( ( result = TPI_Set_lock_size( pool , 1 ) ) ) {
+      fprintf(stderr,"%s: TPI_Set_lock_size = %d\n",name,result);
+    }
+    if ( ( result = TPI_Run( pool , & test_tpi_loop , & data ) ) ) {
       fprintf(stderr,"%s: TPI_Run = %d\n",name,result);
     }
     if ( ! result ) {
@@ -119,15 +123,21 @@ struct TestTPISplit {
 
 
 static
-void test_tpi_split_run( void * arg , TPI_ThreadPool pool , int rank )
+void test_tpi_split_run( void * arg , TPI_ThreadPool pool )
 {
   struct TestTPISplit * const data = (struct TestTPISplit *) arg ;
 
   int pool_size ;
+  int rank ;
+  int result ;
 
-  if ( TPI_Lock( pool , 0 ) ) {
-    printf("test_tpi_split %d.%d failed TPI_Lock\n",
-           data->split_rank , rank );
+  if ( ( result = TPI_Pool_rank( pool , & rank , & pool_size ) ) ) {
+    printf("test_tpi_split failed TPI_Rank = %d\n",result);
+  }
+
+  if ( ( result = TPI_Lock( pool , 0 ) ) ) {
+    printf("test_tpi_split %d.%d failed TPI_Lock = %d\n",
+           data->split_rank , rank , result );
   }
 
   if ( TPI_Lock( pool , 1 ) ) {
@@ -135,32 +145,30 @@ void test_tpi_split_run( void * arg , TPI_ThreadPool pool , int rank )
            data->split_rank , rank );
   }
 
-  if ( TPI_Pool_size( pool , & pool_size ) ||
-       pool_size != data->pool_size ) {
-    data->error = -1 - rank ;
-  }
-
   TPI_Unlock( pool , 0 );
 }
 
 static
-void test_tpi_split( void * arg , TPI_ThreadPool pool , int rank )
+void test_tpi_split( void * arg , TPI_ThreadPool pool )
 {
   struct TestTPISplit * const data = (struct TestTPISplit *) arg ;
 
   int pool_size ;
+  int rank ;
 
   data->error = 0 ;
 
-  if ( TPI_Pool_size( pool ,  & pool_size ) ) {
+  if ( TPI_Pool_rank( pool , & rank , & pool_size ) ) {
     data->error = 1 ;
   }
   else if ( pool_size != data->pool_size || 0 != rank ) {
     data->error = 2 ;
   }
-
-  if ( ! data->error && TPI_Run( pool , & test_tpi_split_run , arg , 1 ) ) {
+  else if ( TPI_Set_lock_size( pool , 1 ) ) {
     data->error = 3 ;
+  }
+  else if ( TPI_Run( pool , & test_tpi_split_run , arg ) ) {
+    data->error = 4 ;
   }
 }
 
@@ -171,8 +179,8 @@ int test_c_tpi_split( TPI_ThreadPool pool )
   int size = -1 ;
   int result = 0 ;
 
-  if ( ! result && ( result = TPI_Pool_size( pool , & size ) ) ) {
-    fprintf(stderr,"%s: TPI_Pool_size = %d\n",name,result);
+  if ( ! result && ( result = TPI_Pool_rank( pool , NULL , & size ) ) ) {
+    fprintf(stderr,"%s: TPI_Pool_rank = %d\n",name,result);
   }
 
   if ( ! result && 1 < size ) {
@@ -182,7 +190,10 @@ int test_c_tpi_split( TPI_ThreadPool pool )
     struct TestTPISplit data[2] = { { 0 , 2 , 2 , 0 } ,
                                     { 1 , 2 , size - 2 , 0 } };
     void * ptr[2] = { data , data + 1 };
-    result = TPI_Split( pool , 2 , split_size , split_routine , ptr , 0 );
+
+    int nsplit = split_size[1] ? 2 : 1 ;
+
+    result = TPI_Split( pool , nsplit , split_size , split_routine , ptr );
 
     if      ( data[0].error ) { result = data[0].error ; }
     else if ( data[1].error ) { result = data[1].error ; }

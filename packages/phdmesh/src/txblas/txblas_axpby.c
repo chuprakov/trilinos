@@ -35,22 +35,23 @@ struct TaskXY {
         unsigned number ;
 };
 
-static void task_axpby_work( void * , TPI_ThreadPool , int );
+static void task_axpby_work( void * , TPI_ThreadPool );
 
 void txdaxpy( TPI_ThreadPool pool ,
               unsigned n , double a , const double * x , double * y )
 {
   struct TaskXY data = { a , x , y , n };
-  TPI_Run( pool , & task_axpby_work , & data , 0 );
+  TPI_Run( pool , & task_axpby_work , & data );
 }
 
 /*--------------------------------------------------------------------*/
 
-static void task_axpby_work( void * arg , TPI_ThreadPool pool , int p_rank )
+static void task_axpby_work( void * arg , TPI_ThreadPool pool )
 {
   int p_size ;
+  int p_rank ;
 
-  if ( ! TPI_Pool_size( pool , & p_size ) ) {
+  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
 
     struct TaskXY * const t = (struct TaskXY *) arg ;
 

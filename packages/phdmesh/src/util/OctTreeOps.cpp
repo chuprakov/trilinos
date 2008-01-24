@@ -509,7 +509,7 @@ public:
     const SearchTree & search_tree ,
     std::set< std::pair<IdentProc,IdentProc> > & relation );
 
-  void iterate_tree(TPI::ThreadPool,int);
+  void iterate_tree(TPI::ThreadPool);
 
 private:
   ProximitySearch();
@@ -518,7 +518,7 @@ private:
 };
 
 
-void ProximitySearch::iterate_tree(TPI::ThreadPool pool,int)
+void ProximitySearch::iterate_tree(TPI::ThreadPool pool)
 {
   enum { N_WORK = 32 };
 
@@ -565,7 +565,8 @@ ProximitySearch::ProximitySearch(
   m_tree_iter( search_tree.begin() ),
   m_tree_end(  search_tree.end() )
 {
-  TPI::Run( pool , *this , & ProximitySearch::iterate_tree , NLOCKS );
+  TPI::Set_lock_size( pool , NLOCKS );
+  TPI::Run( pool , *this , & ProximitySearch::iterate_tree );
 
   if ( m_tree_iter != m_tree_end ) {
     std::string msg("phdmesh::proximity_search FAILED to complete" );
