@@ -109,7 +109,8 @@ public:
 
   //----------------------------------------
 
-  const CSet & attributes() const { return m_cset ; }
+  template<class A>
+  CSet::Span<A> attribute() const { return m_cset.get<A>(); }
 
   //----------------------------------------
   /** Checked conversion to field of the given specification. */

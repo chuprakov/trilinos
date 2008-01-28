@@ -159,9 +159,9 @@ const FilePart * internal_declare_part(
 
   Part & part = arg_schema.declare_part( arg_name );
 
-  Span< CSet::iterator<FilePart> > attr = part.attributes().get<FilePart>();
+  CSet::Span<FilePart> attr = part.attribute<FilePart>();
 
-  FilePart * file_part = NULL ;
+  const FilePart * file_part = NULL ;
 
   if ( attr.empty() ) {
 
@@ -188,10 +188,10 @@ const FilePart * internal_declare_part(
     file_part = new FilePart( part, arg_id, arg_type,
                               arg_element_type, arg_number_nodes , n );
 
-    arg_schema.declare_part_attribute( part , file_part , true );
+    arg_schema.declare_part_attribute<FilePart>( part , file_part , true );
   }
   else if ( attr.size() == 1 ) {
-    file_part = & * attr ;
+    file_part = & *attr ;
   }
 
   if ( file_part == NULL ||

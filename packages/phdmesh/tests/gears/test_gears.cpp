@@ -331,7 +331,9 @@ void test_gears( ParallelMachine pm ,
 
         gears[ k * j_end * i_end + j * i_end + i ] = g ;
 
-        S.declare_part_attribute( g->m_surf , & proximity_search , false );
+        S.declare_part_attribute<ProximitySearch>( g->m_surf ,
+                                                   & proximity_search ,
+                                                   false );
       }
     }
   }

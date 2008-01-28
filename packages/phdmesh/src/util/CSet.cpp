@@ -33,41 +33,19 @@
 
 namespace phdmesh {
 
-std::ostream & CSet::print( std::ostream & s , const char * separator ) const
-{
-  static const char space[] = " " ;
-  const MemberSet::const_iterator b = m_members.begin();
-  const MemberSet::const_iterator e = m_members.end();
-  MemberSet::const_iterator i ;
-
-  if ( ! separator ) { separator = space ; }
-
-  for ( i = b ; i != e ; ) {
-    if ( i != b ) { s << separator ; }
-    CSetMemberBase & m = **i ;
-    unsigned count = 0 ;
-    while ( i != e && m.m_typeid == (*i)->m_typeid ) {
-      ++i ; ++count ;
-    }
-    s << "typeid(" ;
-    s << m.m_typeid.name();
-    s << ")#" ;
-    s << count ;
-  }
-  return s ;
-}
-
-//----------------------------------------------------------------------
-
 namespace {
+
+typedef void (* DeleteFunction )( void * );
+
+typedef std::pair< const std::type_info * , DeleteFunction > Manager ;
 
 // Comparison for sorted vector
 
 struct less_cset {
-  bool operator()( const CSetMemberBase * lhs ,
+  bool operator()( const Manager        & lhs ,
                    const std::type_info & rhs ) const ;
   bool operator()( const std::type_info & lhs ,
-                   const CSetMemberBase * rhs ) const ;
+                   const Manager        & rhs ) const ;
 };
 
 // On some systems, namely AIX, std::type_info::before(...)
@@ -75,70 +53,104 @@ struct less_cset {
 // Thus we pay a small price on all systems to specifically
 // test for and eliminate equality.
 
-bool less_cset::operator()( const CSetMemberBase * lhs ,
-                            const std::type_info   & rhs ) const
-{ return lhs->m_typeid.before( rhs ) && lhs->m_typeid != rhs ; }
+bool less_cset::operator()( const Manager        & lhs ,
+                            const std::type_info & rhs ) const
+{ return lhs.first->before( rhs ) && * lhs.first != rhs ; }
 
-bool less_cset::operator()( const std::type_info   & lhs ,
-                            const CSetMemberBase * rhs ) const
-{ return lhs.before( rhs->m_typeid ) && lhs != rhs->m_typeid ; }
+bool less_cset::operator()( const std::type_info & lhs ,
+                            const Manager        & rhs ) const
+{ return lhs.before( *rhs.first ) && lhs != *rhs.first ; }
+
+std::pair<size_t,size_t>
+span( const std::vector< Manager > & v , const std::type_info & t )
+{
+  std::vector< Manager >::const_iterator i = v.begin();
+  std::vector< Manager >::const_iterator j = v.end();
+
+  i = std::lower_bound( i , j , t , less_cset() );
+  j = std::upper_bound( i , j , t , less_cset() );
+
+  std::pair<size_t,size_t> result ;
+
+  result.first  = i - v.begin();
+  result.second = j - v.begin();
+
+  return result ;
+}
 
 }
 
 //----------------------------------------------------------------------
 
-Span< CSet::MemberSet::const_iterator >
-CSet::span( const std::type_info & t ) const
+std::pair<const void*const*,const void*const*>
+CSet::p_get( const std::type_info & t ) const
 {
-  MemberSet::const_iterator i = m_members.begin();
-  MemberSet::const_iterator j = m_members.end();
+  const void * const * b = NULL ;
+  const void * const * e = NULL ;
 
-  i = std::lower_bound( i , j , t , less_cset() );
-  j = std::upper_bound( i , j , t , less_cset() );
+  const std::pair<size_t,size_t> s = span( m_manager , t );
 
-  return Span< CSet::MemberSet::const_iterator >( i , j );
+  if ( s.first < s.second ) {
+    b = & m_value[ s.first ];
+    e = & m_value[ s.second ];
+  }
+  return SpanVoid( b , e );
 }
 
-Span< CSet::MemberSet::iterator >
-CSet::span( const std::type_info & t )
+std::pair<const void*const*,const void*const*>
+CSet::p_insert( const Manager & m , const void * v )
 {
-  MemberSet::iterator i = m_members.begin();
-  MemberSet::iterator j = m_members.end();
+  std::pair<size_t,size_t> s = span( m_manager , * m.first );
+  size_t i ;
 
-  i = std::lower_bound( i , j , t , less_cset() );
-  j = std::upper_bound( i , j , t , less_cset() );
+  for ( i = s.first ; i < s.second && v != m_value[i] ; ++i );
 
-  return Span< CSet::MemberSet::iterator >( i , j );
+  if ( i == s.second ) {
+    std::vector<Manager>    ::iterator im = m_manager.begin();
+    std::vector<const void*>::iterator iv = m_value  .begin();
+    std::advance( im , s.second );
+    std::advance( iv , s.second );
+
+    m_manager.insert( im , m );
+    m_value  .insert( iv , v );
+    ++s.second ;
+  }
+  return SpanVoid( & m_value[s.first] , & m_value[s.second] );
 }
 
-CSet::MemberSet::iterator
-CSet::p_insert( CSet::MemberSet::iterator i , CSetMemberBase * v )
-{ return m_members.insert( i , v ); }
-
-bool CSet::p_erase( CSet::MemberSet::const_iterator i )
+bool CSet::p_remove( const std::type_info & t , const void * v )
 {
-  ptrdiff_t n = std::distance( ((const MemberSet &) m_members).begin() , i );
+  bool result ;
 
-  const bool valid = 0 <= n && n < (ptrdiff_t) m_members.size();
+  std::pair<size_t,size_t> s = span( m_manager , t );
 
-  if ( valid ) { m_members.erase( m_members.begin() + n ); }
+  for ( ; s.first < s.second && v != m_value[s.first] ; ++s.first );
 
-  return valid ;
+  if ( ( result = s.first < s.second ) ) {
+    std::vector<Manager>    ::iterator im = m_manager.begin();
+    std::vector<const void*>::iterator iv = m_value  .begin();
+    std::advance( im , s.first );
+    std::advance( iv , s.first );
+    m_manager.erase( im );
+    m_value  .erase( iv );
+  }
+
+  return result ;
 }
 
 //----------------------------------------------------------------------
-
-CSetMemberBase::~CSetMemberBase() {}
 
 CSet::~CSet()
 {
-  while ( ! m_members.empty() ) {
-    delete m_members.back();
-    m_members.pop_back();
+  const size_t n = m_manager.size();
+  for ( size_t i = 0 ; i < n ; ++i ) {
+    if ( m_manager[i].second ) {
+      (*m_manager[i].second)( const_cast<void*>( m_value[i] ) );
+    }
   }
 }
 
-CSet::CSet() : m_members() {}
+CSet::CSet() : m_manager(), m_value() {}
 
 } // namespace phdmesh
 
@@ -222,8 +234,8 @@ public:
 int cset()
 {
   CSet s ;
-  Span< CSet::iterator<A> > sa ;
-  Span< CSet::iterator<B> > sb ;
+  CSet::Span<A> sa ;
+  CSet::Span<B> sb ;
 
   U * u = new U();
   V * v = new V();
@@ -243,7 +255,6 @@ int cset()
   std::cout
     << "s.get<A>().size() == " << sa.size() << std::endl 
     << "s.get<B>().size() == " << sb.size() << std::endl ;
-  s.print( std::cout , "  " ) << std::endl ;
 
   for ( unsigned i = 0 ; i < sa.size() ; ++i ) {
     std::cout << "s.get<A>()[" << i << "].name() == "
@@ -254,12 +265,12 @@ int cset()
               << sb[i].name() << std::endl ;
   }
 
-  std::cout << "s.erase( <last A> )" << std::endl ; s.erase(sa.end()-1);
+  std::cout << "s.remove( <last A> )" << std::endl ; s.remove(& sa.back());
 
   sa = s.get<A>();
   sb = s.get<B>();
 
-  std::cout << "s.erase( <last B> )" << std::endl ; s.erase(sb.end()-1);
+  std::cout << "s.remove( <last B> )" << std::endl ; s.remove(& sb.back());
 
   sa = s.get<A>();
   sb = s.get<B>();

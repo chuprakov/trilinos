@@ -303,8 +303,7 @@ const FieldName & io_cylindrical_vector()
 
 const FieldName * io_get_field_name( const Field<void,0> & f )
 {
-  Span< CSet::iterator<const FieldName> > attr =
-    f.attributes().get<const FieldName>();
+  CSet::Span<FieldName> attr = f.attribute<FieldName>();
 
   return attr.empty() ? (const FieldName *) NULL : & *attr ;
 }
@@ -316,7 +315,7 @@ void io_declare_field_name( Field<void,0> & f , const FieldName & d )
   const FieldName * const exist = io_get_field_name( f );
 
   if ( ! exist ) {
-    f.schema().declare_field_attribute<const FieldName>( f, & d , false );
+    f.schema().declare_field_attribute<FieldName>( f, & d , false );
   }
   else if ( exist != & d ) {
     std::ostringstream msg ;

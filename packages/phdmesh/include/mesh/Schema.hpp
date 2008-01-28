@@ -91,7 +91,8 @@ public:
   void declare_part_subset( Part & superset , Part & subset );
 
   /** Declare an attribute on a part */
-  template<class T> void declare_part_attribute( Part & , T * , bool );
+  template<class T>
+  CSet::Span<T> declare_part_attribute( Part & , const T * , bool );
 
   //------------------------------------
   /** Get a field, return NULL if it does not exist.
@@ -128,7 +129,7 @@ public:
 
   /** Declare an attribute on a field */
   template<class T>
-    void declare_field_attribute( Field<void,0> & , T * , bool );
+  CSet::Span<T> declare_field_attribute( Field<void,0> & , const T * , bool );
   //------------------------------------
   /** Commit the part and field declarations.
    *  Verifies consistency and assigns ordinals for faster usage.
@@ -189,18 +190,20 @@ namespace phdmesh {
 
 template<class T>
 inline
-void Schema::declare_part_attribute( Part & p , T * a , bool d )
+CSet::Span<T>
+Schema::declare_part_attribute( Part & p , const T * a , bool d )
 {
   assert_not_committed( "phdmesh::Schema::declare_part_attribute" );
-  p.m_cset.insert( a , d );
+  return p.m_cset.insert<T>( a , d );
 }
 
 template<class T>
 inline
-void Schema::declare_field_attribute( Field<void,0> & f , T * a , bool d )
+CSet::Span<T>
+Schema::declare_field_attribute( Field<void,0> & f , const T * a , bool d )
 {
   assert_not_committed( "phdmesh::Schema::declare_field_attribute" );
-  f.m_cset.insert( a , d );
+  return f.m_cset.insert<T>( a , d );
 }
 
 template<typename T,unsigned NDim>

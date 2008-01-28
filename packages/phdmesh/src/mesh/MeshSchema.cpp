@@ -153,17 +153,11 @@ void pack( CommBuffer & b , const PartSet & pset )
   PartSet::const_iterator i , j ;
   for ( i = pset.begin() ; i != pset.end() ; ++i ) {
     const Part & p = **i ;
-    const CSet    & cset      = p.attributes();
     const PartSet & subsets   = p.subsets();
     const PartSet & intersect = p.intersection_of();
 
     const unsigned     name_len = p.name().size() + 1 ;
     const char * const name_ptr = p.name().c_str();
-
-    std::ostringstream cset_text ;
-    cset.print( cset_text , ":" );
-    const unsigned     cset_len = cset_text.str().size() + 1 ;
-    const char * const cset_ptr = cset_text.str().c_str();
 
     {
       const unsigned ord = p.schema_ordinal();
@@ -172,9 +166,6 @@ void pack( CommBuffer & b , const PartSet & pset )
 
     b.pack<unsigned>( name_len );
     b.pack<char>( name_ptr , name_len );
-
-    b.pack<unsigned>( cset_len );
-    b.pack<char>( cset_ptr , cset_len );
 
     const unsigned subset_size = subsets.size();
     b.pack<unsigned>( subset_size );
@@ -203,16 +194,10 @@ bool unpack_verify( CommBuffer & b , const PartSet & pset )
   PartSet::const_iterator i , j ;
   for ( i = pset.begin() ; ok && i != pset.end() ; ++i ) {
     const Part & p = **i ;
-    const CSet    & cset      = p.attributes();
     const PartSet & subsets   = p.subsets();
     const PartSet & intersect = p.intersection_of();
     const unsigned     name_len = p.name().size() + 1 ;
     const char * const name_ptr = p.name().c_str();
-
-    std::ostringstream cset_text ;
-    cset.print( cset_text , ":" );
-    const unsigned     cset_len = cset_text.str().size() + 1 ;
-    const char * const cset_ptr = cset_text.str().c_str();
 
     if ( ok ) {
       b.unpack<unsigned>( b_tmp );
@@ -226,15 +211,6 @@ bool unpack_verify( CommBuffer & b , const PartSet & pset )
     if ( ok ) {
       b.unpack<char>( b_text , name_len );
       ok = 0 == strcmp( name_ptr , b_text );
-    }
-
-    if ( ok ) {
-      b.unpack<unsigned>( b_tmp );
-      ok = b_tmp == cset_len ;
-    }
-    if ( ok ) {
-      b.unpack<char>( b_text , cset_len );
-      ok = 0 == strcmp( cset_ptr , b_text );
     }
 
     if ( ok ) {
