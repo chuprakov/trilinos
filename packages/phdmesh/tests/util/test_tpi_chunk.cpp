@@ -33,7 +33,7 @@
 extern "C" {
 
 struct TestTPI_Chunk {
-  double *  array ;
+  double ** array ;
   unsigned  num_array ;
   unsigned  len_array ;
   unsigned  len_chunk ;
@@ -45,12 +45,12 @@ void test_tpi_chunk_array( void * arg , TPI_ThreadPool pool )
 {
   struct TestTPI_Chunk * const data = (struct TestTPI_Chunk *) arg ;
 
-  double * const array     = data->array  ;
-  const unsigned num_array = data->num_array ;
-  const unsigned len_array = data->len_array ;
-  const unsigned len_chunk = data->len_chunk ;
+  double * const * const array = data->array  ;
+  const unsigned     num_array = data->num_array ;
+  const unsigned     len_array = data->len_array ;
+  const unsigned     len_chunk = data->len_chunk ;
 
-  /* array[ len_array * num_array ] */
+  /* array[ num_array ][ len_array ] */
 
   for ( int work = 1 ; work ; ) {
     unsigned chunk ;
@@ -66,12 +66,11 @@ void test_tpi_chunk_array( void * arg , TPI_ThreadPool pool )
 
       if ( ( work = beg < end ) ) {
         for ( unsigned i = beg ; i < end ; ++i ) {
-          double * const arr = array + i ;
           double tmp = 0 ;
           for ( unsigned j = 1 ; j < num_array ; ++j ) {
-            tmp += arr[ j * len_array ] ;
+            tmp += array[j][i] ;
           }
-          arr[0] += tmp ;
+          array[0][i] += tmp ;
         }
       }
     }
@@ -85,13 +84,12 @@ void test_tpi_chunk_chunk( void * arg , TPI_ThreadPool pool )
 {
   struct TestTPI_Chunk * const data = (struct TestTPI_Chunk *) arg ;
 
-  double * const array     = data->array ;
-  const unsigned num_array = data->num_array ;
-  const unsigned len_array = data->len_array ;
-  const unsigned len_chunk = data->len_chunk ;
-  const unsigned chunk_size = len_chunk * num_array ;
+  double * const * const array = data->array ;
+  const unsigned     num_array = data->num_array ;
+  const unsigned     len_array = data->len_array ;
+  const unsigned     len_chunk = data->len_chunk ;
 
-  /* array[][ len_chunk * num_array ] */
+  /* array[ num_chunk ][ len_chunk * num_array ] */
 
   for ( int work = 1 ; work ; ) {
     unsigned chunk ;
@@ -106,14 +104,15 @@ void test_tpi_chunk_chunk( void * arg , TPI_ThreadPool pool )
                            ? beg + len_chunk : len_array ;
 
       if ( ( work = beg < end ) ) {
-        const unsigned num = end - beg ;
-        double * const arr = array + chunk * chunk_size ;
+        const unsigned num   = end - beg ;
+        const unsigned j_end = num * num_array ;
+        double * const arr = array[ chunk ];
 
         for ( unsigned i = 0 ; i < num ; ++i ) {
           double * const a = arr + i ;
           double tmp = 0 ;
-          for ( unsigned j = 1 ; j < num_array ; ++j ) {
-            tmp += a[ j * num ] ;
+          for ( unsigned j = num ; j < j_end ; j += num ) {
+            tmp += a[j] ;
           }
           a[0] += tmp ;
         }
@@ -153,44 +152,71 @@ void test_tpi_chunk( ParallelMachine , TPI_ThreadPool pool , std::istream & s )
   }
 
   if ( s.good() ) {
-    const double dzero = 0 ;
+    { // Chunks
+      const unsigned num_chunks = 1 + data.len_array / data.len_chunk ;
 
-    std::vector<double> array( data.num_array * data.len_array , dzero );
+      data.array = (double **) malloc( sizeof(double*) * num_chunks );
 
-    data.array = & array[0] ;
+      for ( unsigned i = 0 ; i < num_chunks ; ++i ) {
+        const unsigned beg = i * data.len_chunk ;
+        const unsigned end = ( beg + data.len_chunk < data.len_array )
+                             ? beg + data.len_chunk : data.len_array ;
+        const unsigned num = end - beg ;
 
-    {
-      data.chunk = 0 ;
-      TPI_Set_lock_size( pool , 1 );
-      TPI_Run( pool , & test_tpi_chunk_array , & data );
-    }
-    {
-      data.chunk = 0 ;
-      TPI_Set_lock_size( pool , 1 );
-      TPI_Run( pool , & test_tpi_chunk_chunk , & data );
-    }
+        data.array[i] = (double *)
+          calloc( num * data.num_array , sizeof(double) );
+      }
 
-    t = wall_time();
-
-    for ( unsigned i = 0 ; i < nloop ; ++i ) {
-      data.chunk = 0 ;
-      TPI_Set_lock_size( pool , 1 );
-      TPI_Run( pool , & test_tpi_chunk_array , & data );
-    }
-
-    dt_array = wall_dtime( t ) / nloop ;
-
-    for ( unsigned i = 0 ; i < nloop ; ++i ) {
       data.chunk = 0 ;
       TPI_Set_lock_size( pool , 1 );
       TPI_Run( pool , & test_tpi_chunk_chunk , & data );
+
+      t = wall_time();
+
+      for ( unsigned i = 0 ; i < nloop ; ++i ) {
+        data.chunk = 0 ;
+        TPI_Set_lock_size( pool , 1 );
+        TPI_Run( pool , & test_tpi_chunk_chunk , & data );
+      }
+
+      dt_chunk = wall_dtime( t ) / nloop ;
+
+      for ( unsigned i = 0 ; i < num_chunks ; ++i ) {
+        free( data.array[i] );
+      }
+      free( data.array );
     }
 
-    dt_chunk = wall_dtime( t ) / nloop ;
+    { // Array
+      data.array = (double **) malloc( sizeof(double*) * data.num_array );
+
+      for ( unsigned i = 0 ; i < data.num_array ; ++i ) {
+        data.array[i] = (double *) calloc( data.len_array , sizeof(double) );
+      }
+
+      data.chunk = 0 ;
+      TPI_Set_lock_size( pool , 1 );
+      TPI_Run( pool , & test_tpi_chunk_array , & data );
+
+      t = wall_time();
+
+      for ( unsigned i = 0 ; i < nloop ; ++i ) {
+        data.chunk = 0 ;
+        TPI_Set_lock_size( pool , 1 );
+        TPI_Run( pool , & test_tpi_chunk_array , & data );
+      }
+
+      dt_array = wall_dtime( t ) / nloop ;
+
+      for ( unsigned i = 0 ; i < data.num_array ; ++i ) {
+        free( data.array[i] );
+      }
+      free( data.array );
+    }
   }
 
-  std::cout << "TEST_TPI_CHUNK, relative speedup = "
-            << ( ( dt_array - dt_chunk ) / dt_array )
+  std::cout << "TEST_TPI_CHUNK, relative speed = "
+            << ( dt_chunk / dt_array )
             << std::endl
             << "    ARRAY DT = " << dt_array
             << " , DT/N = " << ( dt_array / data.num_array )

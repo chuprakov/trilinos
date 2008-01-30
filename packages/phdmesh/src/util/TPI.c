@@ -36,6 +36,8 @@
 #include <errno.h>
 #include <pthread.h>
 
+#define USE_SPIN_LOCK 1
+
 /*--------------------------------------------------------------------*/
 
 struct ThreadPool_Data ;
@@ -118,7 +120,7 @@ static int local_thread_pool_lock( ThreadPool * pool , int i )
                ? 0 : TPI_ERROR_SIZE ;
   if ( ! result ) {
     pthread_mutex_t * m = pool->m_mutex + i ;
-#if 0
+#if USE_SPIN_LOCK
     while ( EBUSY == ( result = pthread_mutex_trylock(m) ) ); 
     if ( result ) { result = TPI_ERROR_LOCK ; }
 #else
@@ -235,14 +237,12 @@ static void * local_thread_pool_driver( void * arg )
   ThreadData * const td = (ThreadData*)( arg );
 
   for ( int working = 1 ; working ; ) {
-#if 0
-    /* spin lock */
+#if USE_SPIN_LOCK
     if ( ! pthread_mutex_trylock( & td->m_lock ) ) {
       working = local_thread_pool_run_routine( td );
       pthread_mutex_unlock( & td->m_lock );
     }
 #else
-    /* hard lock */
     pthread_mutex_lock( & td->m_lock );
     working = local_thread_pool_run_routine( td );
     pthread_mutex_unlock( & td->m_lock );

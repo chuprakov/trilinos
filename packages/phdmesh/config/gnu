@@ -95,6 +95,10 @@ PURIFY | purify )
   shift 1
   export LDCXX="purify ${CXX}"
   ;;
+QUANTIFY | quantify )
+  shift 1
+  export LDCXX="quantify ${CXX}"
+  ;;
 MPICH_PURIFY | mpich_purify )
   shift 1
   MPICH_C_LIB="-L${1} -lmpich -lpthread -lrt"
