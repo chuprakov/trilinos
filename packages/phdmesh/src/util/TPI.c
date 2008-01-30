@@ -24,7 +24,13 @@
  * @author H. Carter Edwards
  */
 
+#include <phdmesh_config.h>
 #include <util/TPI.h>
+
+/*--------------------------------------------------------------------*/
+/*--------------------------------------------------------------------*/
+
+#if ! defined(NO_PTHREADS)
 
 #include <unistd.h>
 #include <errno.h>
@@ -628,4 +634,143 @@ int TPI_Finalize()
 
 /*--------------------------------------------------------------------*/
 /*--------------------------------------------------------------------*/
+
+#else
+
+/*--------------------------------------------------------------------*/
+/*--------------------------------------------------------------------*/
+
+#include <stddef.h>
+
+struct TPI_ThreadPool_Private {
+  TPI_ThreadPool m_parent ;
+  int    m_lock_size ;
+  int    m_buf_size ;
+  void * m_buffer ;
+};
+
+int TPI_Init( int size , TPI_ThreadPool * local )
+{
+  static struct TPI_ThreadPool_Private root = { NULL , 0 , 0 , NULL };
+  const int result = 1 == size ? 0 : TPI_ERROR_SIZE ;
+  if ( ! result && local ) { *local = & root ; }
+  return result ;
+}
+
+int TPI_Finalize() { return 0 ; }
+
+int TPI_Pool_rank( TPI_ThreadPool local , int * rank , int * size )
+{
+  const int result = NULL != local ? 0 : TPI_ERROR_NULL ;
+  if ( rank ) { *rank = 0 ; }
+  if ( size ) { *size = 1 ; }
+  return result ;
+}
+
+int TPI_Buffer( TPI_ThreadPool local , void ** buffer , int * size )
+{
+  const int result = NULL != local ? 0 : TPI_ERROR_NULL ;
+  if ( ! result ) {
+    if ( buffer ) { *buffer = local->m_buffer ; }
+    if ( size )   { *size   = local->m_buf_size ; }
+  }
+  return result ;
+}
+
+int TPI_Lock_size( TPI_ThreadPool local , int * size )
+{
+  const int result = NULL != local ? 0 : TPI_ERROR_NULL ;
+  if ( ! result ) {
+    if ( size ) { *size = local->m_lock_size ; }
+  }
+  return result ;
+}
+
+int TPI_Set_lock_size( TPI_ThreadPool local , int size )
+{
+  const int result = local->m_buffer ? TPI_ERROR_ACTIVE : 0 ;
+  if ( ! result ) { local->m_lock_size = size ; }
+  return result ;
+}
+
+int TPI_Set_buffer_size( TPI_ThreadPool local , int size )
+{
+  const int result = local->m_buffer ? TPI_ERROR_ACTIVE : 0 ;
+  if ( ! result ) { local->m_buf_size = size ; }
+  return result ;
+}
+
+int TPI_Run( TPI_ThreadPool local ,
+             TPI_parallel_subprogram prog ,
+             void * shared )
+{
+  const int result = local->m_buffer ? TPI_ERROR_ACTIVE : 0 ;
+  const int buf_size = local->m_buf_size ;
+  if ( ! result ) {
+    char buffer[ buf_size ];
+    local->m_buffer = & buffer[0] ;
+    (*prog)( shared , local );
+    local->m_buffer = NULL ;
+  }
+  return result ;
+}
+
+int TPI_Lock( TPI_ThreadPool local , int n )
+{
+  return 0 <= n && n < local->m_lock_size ? 0 : TPI_ERROR_SIZE ;
+}
+
+int TPI_Trylock( TPI_ThreadPool local , int n )
+{
+  return 0 <= n && n < local->m_lock_size ? 0 : TPI_ERROR_SIZE ;
+}
+
+int TPI_Unlock( TPI_ThreadPool local , int n )
+{
+  return 0 <= n && n < local->m_lock_size ? 0 : TPI_ERROR_SIZE ;
+}
+
+int TPI_Split( TPI_ThreadPool local ,
+               const int nchild           /* Number of child pools     */ ,
+               const int sizes[]          /* array of child pool sizes */ ,
+               TPI_parallel_subprogram prog[] /* array of main functions  */ ,
+               void * shared []           /* array of main functions' data */)
+{
+  int result = local->m_buffer ? TPI_ERROR_ACTIVE : 0 ;
+
+  if ( ! result && ( 1 != nchild || 1 != sizes[0] ) ) {
+    result = TPI_ERROR_SIZE ;
+  }
+
+  if ( ! result ) {
+    struct TPI_ThreadPool_Private child = { local , 0 , 0 , NULL };
+
+    (*prog[0])( shared[0] , & child );
+  }
+
+  return result ;
+}
+
+int TPI_Split_lock_size( TPI_ThreadPool local , int * size )
+{
+  if ( size ) { *size = local->m_parent->m_lock_size ; }
+  return 0 ;
+}
+
+int TPI_Split_lock(    TPI_ThreadPool local , int n )
+{
+  return 0 <= n && n < local->m_parent->m_lock_size ? 0 : TPI_ERROR_SIZE ;
+}
+
+int TPI_Split_trylock( TPI_ThreadPool local , int n )
+{
+  return 0 <= n && n < local->m_parent->m_lock_size ? 0 : TPI_ERROR_SIZE ;
+}
+
+int TPI_Split_unlock(  TPI_ThreadPool local , int n )
+{
+  return 0 <= n && n < local->m_parent->m_lock_size ? 0 : TPI_ERROR_SIZE ;
+}
+
+#endif
 

@@ -1,6 +1,51 @@
-threadpool 4
-#
 containers
+#
+tpi 1
+tpi 2
+tpi 3
+tpi 4
+tpi 5
+tpi 6
+#
+threadpool 1
+tpi_chunk { loop=10; num_array=  4; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array=  8; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array= 16; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array= 32; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array= 64; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array=128; len_array=1000000; len_chunk= 1000; }
+#
+threadpool 2
+tpi_chunk { loop=10; num_array=  4; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array=  8; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array= 16; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array= 32; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array= 64; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array=128; len_array=1000000; len_chunk= 1000; }
+#
+threadpool 3
+tpi_chunk { loop=10; num_array=  4; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array=  8; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array= 16; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array= 32; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array= 64; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array=128; len_array=1000000; len_chunk= 1000; }
+#
+threadpool 4
+tpi_chunk { loop=10; num_array=  4; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array=  8; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array= 16; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array= 32; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array= 64; len_array=1000000; len_chunk= 1000; }
+tpi_chunk { loop=10; num_array=128; len_array=1000000; len_chunk= 1000; }
+#
+
+# comm_all { length =    10000 ; neighbors = -1 1 ; dense = 0 ; }
+# comm_all { length =   100000 ; neighbors = -1 1 ; dense = 0 ; }
+# comm_all { length =  1000000 ; neighbors = -1 1 ; dense = 0 ; }
+# comm_all { length = 10000000 ; neighbors = -1 1 ; dense = 0 ; }
+# comm_all { length = 10000000 ; dense = 0 ; }
+#
 #
 bounds
 #

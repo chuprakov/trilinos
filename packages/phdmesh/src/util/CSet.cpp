@@ -115,7 +115,9 @@ CSet::p_insert( const Manager & m , const void * v )
     m_value  .insert( iv , v );
     ++s.second ;
   }
-  return SpanVoid( & m_value[s.first] , & m_value[s.second] );
+  const void * const * const b = & m_value[ s.first ];
+  const void * const * const e = & m_value[ s.second ];
+  return SpanVoid( b , e );
 }
 
 bool CSet::p_remove( const std::type_info & t , const void * v )

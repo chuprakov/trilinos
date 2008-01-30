@@ -33,6 +33,7 @@
 //----------------------------------------------------------------------
 
 void test_tpi( phdmesh::ParallelMachine , TPI_ThreadPool, std::istream & );
+void test_tpi_chunk( phdmesh::ParallelMachine, TPI_ThreadPool, std::istream &);
 void test_containers( phdmesh::ParallelMachine ,
                       TPI_ThreadPool, std::istream & );
 void test_comm_bounds( phdmesh::ParallelMachine ,
@@ -66,6 +67,7 @@ int main( int argc , char **argv )
   phdmesh::TestDriverMap test_map ;
 
   test_map[ std::string("tpi") ] = & test_tpi ;
+  test_map[ std::string("tpi_chunk") ] = & test_tpi_chunk ;
   test_map[ std::string("containers") ] = & test_containers ;
   test_map[ std::string("bounds") ] = & test_comm_bounds ;
   test_map[ std::string("sparse") ] = & test_comm_sparse ;
