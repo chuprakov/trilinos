@@ -56,5 +56,4 @@ WEBTRILINOS_LIBS=          \
 	$(GALERI_LIB)      \
 	$(EPETRAEXT_LIB)   \
 	$(EPETRA_LIB)      \
-	$(TEUCHOS_LIB)     \
-	@LDFLAGS@  @LAPACK_LIBS@ @BLAS_LIBS@ @LIBS@ @FLIBS@
+	$(TEUCHOS_LIB) 
