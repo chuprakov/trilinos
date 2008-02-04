@@ -39,11 +39,20 @@
 #define USE_SPIN_LOCK 1
 
 /*--------------------------------------------------------------------*/
+/*  Note to self, try <pthread.h> advanced realtime threads option.
+ *     pthread_spinlock_t
+ *     pthread_spin_init
+ *     pthread_spin_lock
+ *     pthread_spin_trylock
+ *     pthread_spin_unlock
+ *     pthread_spin_destroy
+ */
+/*--------------------------------------------------------------------*/
 
 struct ThreadPool_Data ;
 
 typedef struct TPI_ThreadPool_Private {
-  pthread_mutex_t          m_lock ;
+  pthread_mutex_t          m_lock ; /* Consider pthread_spin_t */
   int                   (* m_check )( TPI_ThreadPool );
 
   struct ThreadPool_Data * m_pool ;
@@ -51,12 +60,12 @@ typedef struct TPI_ThreadPool_Private {
 } ThreadData ;
 
 typedef struct ThreadPool_Data {
-  pthread_mutex_t          m_active ;
+  pthread_mutex_t          m_active ; /* Contention indicates an error */
   struct ThreadPool_Data * m_parent ;
   ThreadData             * m_thread ;
   int                      m_thread_size ;
 
-  pthread_mutex_t        * m_mutex ;
+  pthread_mutex_t        * m_mutex ; /* Consider pthred_spin_t */
   int                      m_mutex_size ;
   TPI_parallel_subprogram  m_routine ;
   void                   * m_argument ;
@@ -262,7 +271,7 @@ static int local_thread_pool_run( ThreadPool * const pool )
   int result = 0 ;
 
   {
-    pthread_mutex_t locks[ number_locks ];
+    pthread_mutex_t locks[ number_locks ]; /* consider pthread_spin_t */
 
     unsigned nlocks = 0 ;
 
@@ -294,7 +303,7 @@ static int local_thread_pool_run( ThreadPool * const pool )
         for ( unsigned i = 1 ; i < number_thread ; ++i ) {
           if ( running[i] ) {
             ThreadData * const td = pool->m_thread + i ;
-            if ( ! pthread_mutex_trylock( & td->m_lock ) ) {
+            if ( ! pthread_mutex_trylock( & td->m_lock ) ) { /* Spin */
               local_thread_pool_run_routine( td );
               running[i] = 0 ;
             }
@@ -499,7 +508,7 @@ static void local_thread_pool_terminate_threads( ThreadPool * pool )
     pthread_mutex_unlock( & td->m_lock );
 
     for ( int waiting = 1 ; waiting ; ) {
-      if ( ! pthread_mutex_lock( & td->m_lock ) ) {
+      if ( ! pthread_mutex_lock( & td->m_lock ) ) { /* Hard */
         if ( NULL == td->m_pool ) { waiting = 0 ; }
         pthread_mutex_unlock( & td->m_lock );
       }
@@ -556,7 +565,7 @@ static int local_thread_pool_create_threads( int n , ThreadPool * pool )
       }
       else {
         for ( int waiting = 1 ; waiting && ! result ; ) {
-          if ( ! pthread_mutex_lock( & td->m_lock ) ) {
+          if ( ! pthread_mutex_lock( & td->m_lock ) ) { /* Hard */
             if ( NULL != td->m_pool ) {
               pthread_mutex_unlock( & td->m_lock ); /* has not run */
             }
