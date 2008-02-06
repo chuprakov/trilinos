@@ -65,18 +65,18 @@ int Unlock( ThreadPool pool , int n ) { return TPI_Unlock( pool , n ); }
 inline
 void Run( ThreadPool, void (*)(void*,ThreadPool), void * );
 
-/** Run 'void Worker::method()'
- *  This method uses 'num_locks' locks to control access of shared data.
- *  Locks are bracketed in a block within this method.
- *    { taskpool::lock local_lock( i );
- *    } // 'local_lock' releases at destruction.
- *  Returns number of tasks actually used for success.
- *  Returns negative number if Worker::operator() throws an exception.
- */
+/** Run 'void Worker::method( TPI::ThreadPool )' */
 template<class Worker>
 inline
-void Run( ThreadPool , Worker & , void (Worker::*)(ThreadPool,int) );
+void Run( ThreadPool , Worker & , void (Worker::*)(ThreadPool) );
 
+/** Lock guard to insure that a lock is released
+ *  when control exists a block.
+ *    {
+ *      TPI::LockGuard local_lock( i );
+ *    }
+ */
+template<class Worker>
 class LockGuard {
 private:
   LockGuard();
