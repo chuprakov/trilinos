@@ -81,6 +81,8 @@ void task_rand_fill( void * arg , TPI::ThreadPool pool )
   }
 }
 
+/*--------------------------------------------------------------------*/
+
 void timing_test_txddot(
   ParallelMachine comm ,
   TPI::ThreadPool pool , 
@@ -102,6 +104,7 @@ void timing_test_txddot(
   }
 
   std::vector<double> x_values( m_local );
+  std::vector<double> y_values( m_local );
 
   {
     FillWork data ;
@@ -111,7 +114,13 @@ void timing_test_txddot(
     TPI::Run( pool , & task_rand_fill , & data );
   }
 
-  std::vector<double> y_values( x_values );
+  {
+    FillWork data ;
+    data.x_mag = 1 ;
+    data.x_beg = & y_values[0] ;
+    data.x_length = m_local ;
+    TPI::Run( pool , & task_rand_fill , & data );
+  }
 
   double t = wall_time();
 
@@ -126,59 +135,16 @@ void timing_test_txddot(
   all_reduce( comm , ReduceMax<1>( & dt_txddot ) );
 
   if ( p_rank == 0 ) {
+    // ddot = ( 1 mult + 7 add + 2 compare ) * N
+    const unsigned op_count = 10 ;
+    const unsigned op_total = M * op_count ;
+    const double m_op = ( (double) op_total ) / 1000000.0 ;
+    const double m_ops = m_op / dt_txddot ;
+
     std::cout << "TIMING txddot[ " << M << " ] = "
-              << dt_txddot << " sec" << std::endl ;
-    std::cout.flush();
-  }
-}
-
-void timing_test_tbxddot(
-  ParallelMachine comm ,
-  TPI::ThreadPool pool , 
-  const unsigned M , const unsigned ncycle )
-{
-  const unsigned p_size = parallel_machine_size( comm );
-  const unsigned p_rank = parallel_machine_rank( comm );
-
-  const unsigned m_rem   = M % p_size ;
-  const unsigned m_local = M / p_size + ( p_rank < m_rem ? 1 : 0 );
-
-  {
-    std::vector<double> tmp ;
-    if ( tmp.max_size() < m_local ) {
-      std::cout << "timing_test_txblas cannot allocate "
-                << m_local << std::endl ;
-      return ;
-    }
-  }
-
-  std::vector<double> x_values( m_local );
-
-  {
-    FillWork data ;
-    data.x_mag = 1 ;
-    data.x_beg = & x_values[0] ;
-    data.x_length = m_local ;
-    TPI::Run( pool , & task_rand_fill , & data );
-  }
-
-  std::vector<double> y_values( x_values );
-
-  double t = wall_time();
-
-  for ( unsigned i = 0 ; i < ncycle ; ++i ) {
-    Summation z ;
-    tbxddot( pool , z.xdval , m_local , & x_values[0] , & y_values[0] );
-    all_reduce( comm , ReduceSum<1>( & z ) );
-  }
-
-  double dt_tbxddot = wall_dtime( t ) / (double) ncycle ;
-
-  all_reduce( comm , ReduceMax<1>( & dt_tbxddot ) );
-
-  if ( p_rank == 0 ) {
-    std::cout << "TIMING tbxddot[ " << M << " ] = "
-              << dt_tbxddot << " sec" << std::endl ;
+              << dt_txddot << " sec, "
+              << m_ops << " Mflops"
+              << std::endl ;
     std::cout.flush();
   }
 }
@@ -269,34 +235,36 @@ void test_txblas_cr4_mxv( ParallelMachine comm ,
   double * const x = & x_vec[0] ;
   double * const y = & y_vec[0] ;
 
-  double total[3] = { 0 , 0 , 0 };
-
-  double t = wall_time();
-
   std::vector<unsigned>   cr4_prefix ;
   std::vector<txblas_cr4> cr4_matrix ;
 
   test_fill_cr4_band( comm, partition, 1, nband, stride, Value,
                       cr4_prefix , cr4_matrix );
-  total[0] = wall_dtime( t );
 
   CR4Matrix matrix( comm , pool , partition , cr4_prefix , cr4_matrix );
-  total[1] = wall_dtime( t );
+
+  double t = wall_time();
 
   for ( unsigned i = 0 ; i < ncycle ; ++i ) {
     matrix.multiply( x , y );
   }
-  total[2] = wall_dtime( t );
 
-  all_reduce( comm , ReduceMax<3>( total ) );
+  double dt_mxv =  wall_dtime( t ) / ((double) ncycle );
+
+  all_reduce( comm , ReduceMax<1>( & dt_mxv ) );
 
   if ( p_rank == 0 ) {
-    std::cout << "Test CR4Matrix timing: " ;
-    std::cout << "fill = " << total[0] ;
-    std::cout << ", construct = " << total[1] ;
-    std::cout << ", mxv = " ;
-    std::cout << ( total[2] / ncycle );
-    std::cout << " seconds" << std::endl ;
+    const unsigned nz_row = 1 + 2 * nband ;
+    const unsigned op_count = 2 * N * nz_row ;
+    const double m_flops = ((double) op_count) / ( dt_mxv * 1000000.0 );
+
+    std::cout << "Test CR4Matrix: " ;
+    std::cout << " mxv = " ;
+    std::cout << dt_mxv ;
+    std::cout << " sec, " ;
+    std::cout << m_flops ;
+    std::cout << " Mflops" ;
+    std::cout << std::endl ;
   }
 
   return ;
@@ -344,7 +312,6 @@ void test_timing( phdmesh::ParallelMachine comm ,
   unsigned ncycle = 10 ;
   if ( is.good() ) { is >> num ; }
   if ( is.good() ) { is >> ncycle ; }
-  timing_test_tbxddot( comm , pool , num , ncycle );
   timing_test_txddot( comm , pool , num , ncycle );
 }
 

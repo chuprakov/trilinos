@@ -115,9 +115,8 @@ void txddot1( TPI_ThreadPool ,
  *    }
  */
 void xddot(   double * s4 , unsigned , const double * , const double * );
+
 void txddot(  TPI_ThreadPool ,
-              double * s4 , unsigned , const double * , const double * );
-void tbxddot( TPI_ThreadPool ,
               double * s4 , unsigned , const double * , const double * );
 
 #if defined( __cplusplus )

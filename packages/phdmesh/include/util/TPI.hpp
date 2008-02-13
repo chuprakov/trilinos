@@ -76,7 +76,6 @@ void Run( ThreadPool , Worker & , void (Worker::*)(ThreadPool) );
  *      TPI::LockGuard local_lock( i );
  *    }
  */
-template<class Worker>
 class LockGuard {
 private:
   LockGuard();
