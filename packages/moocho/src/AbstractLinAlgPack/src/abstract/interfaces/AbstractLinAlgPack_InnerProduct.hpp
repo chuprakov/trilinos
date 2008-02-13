@@ -40,6 +40,9 @@ namespace AbstractLinAlgPack {
 class InnerProduct {
 public:
 
+  /** \brief . */
+  virtual ~InnerProduct() {}
+
   /** \brief Compute the inner product of two vectors.
    *
    * Preconditions:<ul>

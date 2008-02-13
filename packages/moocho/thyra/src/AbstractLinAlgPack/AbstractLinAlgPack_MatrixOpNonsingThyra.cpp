@@ -29,6 +29,8 @@
 
 #include "AbstractLinAlgPack_MatrixOpNonsingThyra.hpp"
 #include "AbstractLinAlgPack_VectorMutableThyra.hpp"
+#include "Thyra_VectorStdOps.hpp"
+#include "Thyra_MultiVectorStdOps.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
