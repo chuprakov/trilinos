@@ -230,7 +230,7 @@ static void dot1_unroll( double * s , const double * x , const size_t n )
 void xddot1( double * s2 , unsigned n , const double * x )
 { dot1_unroll( s2 , x , n ); }
 
-static void task_dot_x_work( void * arg , TPI_ThreadPool pool )
+static void task_xddot_x_work( void * arg , TPI_ThreadPool pool )
 {
   int p_size , p_rank ;
 
@@ -265,7 +265,71 @@ void txddot1( TPI_ThreadPool pool , double * s , unsigned n , const double * x )
   data.x_beg  = x ;
   data.number = n ;
   TPI_Set_lock_size( pool , 1 );
-  TPI_Run( pool , & task_dot_x_work , & data );
+  TPI_Run( pool , & task_xddot_x_work , & data );
+}
+
+/*--------------------------------------------------------------------*/
+
+double ddot( unsigned n , const double * x , const double * y )
+{
+  enum { STRIDE = 8 };
+
+  const double * const x_end = x + n ;
+  const double * const x_blk = x_end - n % STRIDE ;
+
+  double result = 0 ;
+
+  for ( ; x < x_blk ; x += STRIDE , y += STRIDE ) {
+    result += x[0] * y[0] +
+              x[1] * y[1] +
+              x[2] * y[2] +
+              x[3] * y[3] +
+              x[4] * y[4] +
+              x[5] * y[5] +
+              x[6] * y[6] +
+              x[7] * y[7] ;
+  }
+
+  for ( ; x < x_end ; ++x , ++y ) {
+    result += *x * *y ;
+  }
+
+  return result ;
+}
+
+static void task_ddot_xy_work( void * arg , TPI_ThreadPool pool )
+{
+  int p_size , p_rank ;
+
+  TPI_Pool_rank( pool , & p_rank , & p_size );
+
+  {
+    struct TaskXY * const t = (struct TaskXY *) arg ;
+
+    const unsigned n_total = t->number ;
+    const unsigned n_begin = ( n_total * ( p_rank     ) ) / p_size ;
+    const unsigned n_end   = ( n_total * ( p_rank + 1 ) ) / p_size ;
+    const unsigned n_local = ( n_end - n_begin );
+
+    const double * x = t->x_beg + n_begin ;
+    const double * y = t->y_beg + n_begin ;
+
+    const double result = ddot( n_local , x , y );
+
+    TPI_Lock(pool,0);
+    {
+      (*t->xy_sum) += result ;
+    }
+    TPI_Unlock(pool,0);
+  }
+}
+
+void tddot( TPI_ThreadPool pool , 
+            double * s , unsigned n , const double * x , const double * y )
+{
+  struct TaskXY data = { s , x , y , n };
+  TPI_Set_lock_size( pool , 1 );
+  TPI_Run( pool , & task_ddot_xy_work , & data );
 }
 
 /*--------------------------------------------------------------------*/
@@ -319,7 +383,9 @@ void xddot( double * s4 , unsigned n , const double * x , const double * y )
   s4[3] = neg[1] ;
 }
 
-static void task_dot_xy_work( void * arg , TPI_ThreadPool pool )
+/*--------------------------------------------------------------------*/
+
+static void task_xddot_xy_work( void * arg , TPI_ThreadPool pool )
 {
   int p_size , p_rank ;
 
@@ -353,14 +419,12 @@ static void task_dot_xy_work( void * arg , TPI_ThreadPool pool )
   }
 }
 
-/*--------------------------------------------------------------------*/
-
 void txddot( TPI_ThreadPool pool , 
              double * s , unsigned n , const double * x , const double * y )
 {
   struct TaskXY data = { s , x , y , n };
   TPI_Set_lock_size( pool , 1 );
-  TPI_Run( pool , & task_dot_xy_work , & data );
+  TPI_Run( pool , & task_xddot_xy_work , & data );
 }
 
 /*--------------------------------------------------------------------*/

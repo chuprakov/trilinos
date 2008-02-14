@@ -58,7 +58,6 @@ typedef struct txblas_cr4_struct {
  *    }
  *  The operation is split among threads.
  */
-
 void txblas_cr4_mxv(
   TPI_ThreadPool ,
   const unsigned   nr ,
@@ -66,6 +65,15 @@ void txblas_cr4_mxv(
   const txblas_cr4 a[] ,
   const double     x[] ,
         double     y[] );
+
+void txblas_cr_mxv(
+  TPI_ThreadPool ,
+  const unsigned nr ,
+  const unsigned pc[] ,
+  const unsigned ia[] ,
+  const double   a[] ,
+  const double   x[] ,
+        double   y[] );
 
 #if defined( __cplusplus )
 } /* extern "C" */

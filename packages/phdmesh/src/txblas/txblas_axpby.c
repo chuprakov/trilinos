@@ -30,6 +30,7 @@
 
 struct TaskXY {
   const double   alpha ;
+  const double   beta ;
   const double * x_beg ;
         double * y_beg ;
         unsigned number ;
@@ -37,10 +38,10 @@ struct TaskXY {
 
 static void task_axpby_work( void * , TPI_ThreadPool );
 
-void txdaxpy( TPI_ThreadPool pool ,
-              unsigned n , double a , const double * x , double * y )
+void tdaxpby( TPI_ThreadPool pool ,
+              unsigned n , double a , const double * x , double b , double * y )
 {
-  struct TaskXY data = { a , x , y , n };
+  struct TaskXY data = { a , b , x , y , n };
   TPI_Run( pool , & task_axpby_work , & data );
 }
 
@@ -48,6 +49,7 @@ void txdaxpy( TPI_ThreadPool pool ,
 
 static void task_axpby_work( void * arg , TPI_ThreadPool pool )
 {
+  enum { STRIDE = 8 };
   int p_size ;
   int p_rank ;
 
@@ -55,18 +57,31 @@ static void task_axpby_work( void * arg , TPI_ThreadPool pool )
 
     struct TaskXY * const t = (struct TaskXY *) arg ;
 
-    const unsigned p_next = p_rank + 1 ;
-    const unsigned n = t->number ;
-    const unsigned i = ( n * p_rank ) / p_size ;
-    const unsigned j = ( n * p_next ) / p_size ;
+    const unsigned n_beg = ( t->number * ( p_rank     ) ) / p_size ;
+    const unsigned n_end = ( t->number * ( p_rank + 1 ) ) / p_size ;
 
     const double a = t->alpha ;
+    const double b = t->beta ;
 
-    const double * const xe = t->x_beg + j ;
-    const double *       x  = t->x_beg + i ;
-          double *       y  = t->y_beg + i ;
+    const double * const xe = t->x_beg + n_end ;
+    const double * const xb = xe - ( n_end - n_beg ) % STRIDE ;
+    const double *       x  = t->x_beg + n_beg ;
+          double *       y  = t->y_beg + n_beg ;
 
-    while ( xe != x ) { *y += a * *x ; ++x ; ++y ; }
+    for ( ; x < xb ; x += STRIDE , y += STRIDE ) {
+      y[0] = a * x[0] + b * y[0] ;
+      y[1] = a * x[1] + b * y[1] ;
+      y[2] = a * x[2] + b * y[2] ;
+      y[3] = a * x[3] + b * y[3] ;
+      y[4] = a * x[4] + b * y[4] ;
+      y[5] = a * x[5] + b * y[5] ;
+      y[6] = a * x[6] + b * y[6] ;
+      y[7] = a * x[7] + b * y[7] ;
+    }
+
+    for ( ; x < xe ; ++x , ++y ) {
+      *y = a * *x + b * *y ;
+    }
   }
 }
 

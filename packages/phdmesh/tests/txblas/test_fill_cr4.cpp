@@ -100,3 +100,61 @@ void test_fill_cr4_band(
 }
 
 
+void test_fill_cr_band(
+  ParallelMachine comm ,
+  const std::vector<unsigned> & partition ,
+  const unsigned iband ,
+  const unsigned nband ,
+  const unsigned stride ,
+  const double evalue ,
+  std::vector<unsigned> & prefix ,
+  std::vector<unsigned> & coli ,
+  std::vector<double>   & coef )
+{
+  const unsigned p_size = parallel_machine_size( comm );
+  const unsigned p_rank = parallel_machine_rank( comm );
+
+  const unsigned local_irow = partition[ p_rank ];
+  const unsigned local_nrow = partition[ p_rank + 1 ] - local_irow ;
+
+  const unsigned nglobal = partition[ p_size ];
+  const unsigned nzrow = 1 + 2 * nband ;
+  const unsigned local_alloc = local_nrow * nzrow ;
+
+  prefix.resize( local_nrow + 1 );
+  coli.resize( local_alloc );
+  coef.resize( local_alloc );
+
+  for ( unsigned i = 0 ; i <= local_nrow ; ++i ) {
+    prefix[i] = i * nzrow ;
+  }
+
+  std::vector< std::pair<unsigned,double> > row( nzrow );
+
+  for ( unsigned i = 0 ; i < local_nrow ; ++i ) {
+    const unsigned irow = local_irow + i ;
+
+    row[0].first  = irow ;
+    row[0].second = evalue + ( nzrow - 1 );
+
+    for ( unsigned j = 0 ; j < nband ; ++j ) {
+      const unsigned b = iband + j * stride ;
+      row[j+1].first  = ( irow + b ) % nglobal ;
+      row[j+1].second = -1 ;
+
+      row[j+1+nband].first = ( irow + nglobal - b ) % nglobal ;
+      row[j+1+nband].second = -1 ;
+    }
+
+    std::sort( row.begin() , row.end() );
+
+    const unsigned k = i * nzrow ;
+
+    for ( unsigned j = 0 ; j < nzrow ; ++j ) {
+      coli[ k + j ] = row[j].first ;
+      coef[ k + j ] = row[j].second ;
+    }
+  }
+}
+
+

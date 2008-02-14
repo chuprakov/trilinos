@@ -119,6 +119,12 @@ void xddot(   double * s4 , unsigned , const double * , const double * );
 void txddot(  TPI_ThreadPool ,
               double * s4 , unsigned , const double * , const double * );
 
+
+double ddot( unsigned , const double * , const double * );
+
+void tddot(  TPI_ThreadPool ,
+             double * s , unsigned , const double * , const double * );
+
 #if defined( __cplusplus )
 } /* extern "C" */
 #endif

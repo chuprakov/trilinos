@@ -186,8 +186,20 @@ void all_to_all( ParallelMachine ,
 
 #endif
 
+
+void ordered_insert( std::vector<unsigned> & vec , unsigned val )
+{
+  const std::vector<unsigned>::iterator e = vec.end();
+        std::vector<unsigned>::iterator i = vec.begin();
+
+  i = std::lower_bound( i , e , val );
+
+  if ( e == i || val != *i ) { vec.insert( i , val ); }
 }
 
+}
+
+//----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
 CR4Matrix::~CR4Matrix() {}
@@ -239,19 +251,6 @@ void CR4Matrix::multiply(
 
 //----------------------------------------------------------------------
 
-namespace {
-
-void ordered_insert( std::vector<unsigned> & vec , unsigned val )
-{
-  const std::vector<unsigned>::iterator e = vec.end();
-        std::vector<unsigned>::iterator i = vec.begin();
-
-  i = std::lower_bound( i , e , val );
-
-  if ( e == i || val != *i ) { vec.insert( i , val ); }
-}
-
-}
 
 CR4Matrix::CR4Matrix(
  ParallelMachine arg_comm ,
@@ -454,6 +453,263 @@ CR4Matrix::CR4Matrix(
 }
 
 //----------------------------------------------------------------------
+//----------------------------------------------------------------------
+
+CR_Matrix::~CR_Matrix() {}
+
+//----------------------------------------------------------------------
+
+void CR_Matrix::multiply(
+  const double * const x ,
+        double * const y ) const
+{
+  if ( 1 < m_comm_size ) {
+
+    std::vector<double> x_work( m_work_disp[ m_comm_size ] );
+
+    { // Remote gathered portion:
+      std::vector<double> x_send( m_send_disp[ m_comm_size ] );
+
+      for ( unsigned i = 0 ; i < m_send_map.size() ; ++i ) {
+        x_send[i] = x[ m_send_map[i] ];
+      }
+
+      // Skips local-to-local
+      all_to_all( m_comm , PARALLEL_DATATYPE_DOUBLE , m_sparse ,
+                  & x_send[0] , & m_send_disp[0] ,
+                  & x_work[0] , & m_work_disp[0] );
+    }
+
+    { // Local portion:
+      double * d = & x_work[0] + m_work_disp[ m_comm_rank ];
+      const double * s = x ;
+      const double * const e = x + m_row_size ;
+      while ( e != s ) { *d++ = *s++ ; }
+    }
+
+    txblas_cr_mxv( m_pool ,
+                   m_row_size ,
+                   & m_prefix[0] ,
+                   & m_coli[0] ,
+                   & m_coef[0] ,
+                   & x_work[0] , y );
+  }
+  else {
+    txblas_cr_mxv( m_pool ,
+                   m_row_size ,
+                   & m_prefix[0] ,
+                   & m_coli[0] ,
+                   & m_coef[0] ,
+                   x , y );
+  }
+}
+
+//----------------------------------------------------------------------
+
+
+CR_Matrix::CR_Matrix(
+ ParallelMachine arg_comm ,
+ TPI_ThreadPool  arg_pool ,
+ const std::vector<unsigned> & arg_partition ,
+       std::vector<unsigned> & arg_prefix ,
+       std::vector<unsigned> & arg_coli ,
+       std::vector<double>   & arg_coef )
+  : m_comm( arg_comm ),
+    m_comm_size( parallel_machine_size( arg_comm ) ),
+    m_comm_rank( parallel_machine_rank( arg_comm ) ),
+    m_pool( arg_pool ),
+    m_sparse( false ),
+    m_work_disp(),
+    m_send_disp(),
+    m_send_map(),
+    m_row_size( 0 ),
+    m_prefix(),
+    m_coli(),
+    m_coef()
+{
+  static const char method[] = "phdmesh::CR_Matrix::CR_Matrix" ;
+
+  if ( arg_prefix.empty() ) { return ; }
+
+  //------------------------------------
+
+  if ( arg_coli.size() != arg_prefix.back() ||
+       arg_coef.size() != arg_prefix.back() ) {
+    std::ostringstream msg ;
+    msg << method << " ERROR" ;
+    msg << " arg_coli.size() = " << arg_coli.size() ;
+    msg << " arg_coef.size() = " << arg_coef.size() ;
+    msg << " !=  arg_prefix.back() = " << arg_prefix.back() ;
+    throw std::invalid_argument( msg.str() );
+  }
+
+  swap( m_prefix , arg_prefix );
+  swap( m_coli , arg_coli );
+  swap( m_coef , arg_coef );
+
+  m_row_size = m_prefix.size() - 1 ;
+
+  if ( 1 == m_comm_size ) { return ; }
+
+  //------------------------------------
+
+  if ( arg_partition.size() != 1 + m_comm_size ) {
+    std::ostringstream msg ;
+    msg << method << " ERROR" ;
+    msg << " comm_size = " << m_comm_size ;
+    msg << " + 1  !=  arg_partition.size() = " << arg_partition.size() ;
+    throw std::invalid_argument( msg.str() );
+  }
+
+  const unsigned row_first = arg_partition[ m_comm_rank ];
+  const unsigned row_end   = arg_partition[ m_comm_rank + 1 ] ;
+
+  if ( m_row_size != ( row_end - row_first ) ) {
+    std::ostringstream msg ;
+    msg << method << " ERROR" ;
+    msg << " arg_prefix'row_size = " << m_row_size ;
+    msg << " !=  arg_partition'row_size = " << ( row_end - row_first );
+    throw std::invalid_argument( msg.str() );
+  }
+
+  //------------------------------------
+
+  m_send_disp.resize( m_comm_size + 1 );
+  m_work_disp.resize( m_comm_size + 1 );
+
+  // Generate a vector of off-processor column identifiers
+
+  std::vector<unsigned> work_col_ident ;
+
+  {
+    const std::vector<unsigned>::iterator j = m_coli.end();
+          std::vector<unsigned>::iterator b = m_coli.begin();
+          std::vector<unsigned>::iterator i ;
+
+    for ( i = b ; j != i ; ++i ) { 
+      const unsigned global_col = *i ;
+      if ( global_col < row_first || row_end <= global_col ) {
+        ordered_insert( work_col_ident , global_col );
+      }
+    }
+  }
+
+  //------------------------------------
+  // Map column global identifiers to local work offsets
+
+  {
+    const std::vector<unsigned>::iterator b = work_col_ident.begin();
+    const std::vector<unsigned>::iterator e = work_col_ident.end();
+          std::vector<unsigned>::iterator j ;
+
+    j = std::lower_bound( b , e , row_end );
+
+    const unsigned local_row_end = j - b ;
+
+    for ( std::vector<unsigned>::iterator
+          i = m_coli.begin() ; i != m_coli.end() ; ++i ) {
+      const unsigned global_col = *i ;
+
+      j = std::lower_bound( b, e, global_col );
+
+      unsigned local_col = j - b ;
+
+      if ( row_end <= global_col ) { local_col += local_row_end ; }
+
+      *i = local_col ;
+    }
+  }
+
+  //------------------------------------
+  // Displacement prefix for work vector
+
+  {
+    std::vector<unsigned>::const_iterator i = work_col_ident.begin() ;
+
+    m_work_disp[0] = 0 ;
+
+    for ( unsigned p = 0 ; p < m_comm_size ; ++p ) {
+      const unsigned p_row_end = arg_partition[p+1] ;
+      unsigned count = 0 ;
+      for ( ; i != work_col_ident.end() && *i < p_row_end ; ++i ) {
+        ++count ;
+      }
+
+      m_work_disp[p+1] = m_work_disp[p] + count ;
+    }
+  }
+
+  //------------------------------------
+  // Set up communications to gather work subvector
+
+  {
+    std::vector<unsigned> send_col_size( m_comm_size );
+    std::vector<unsigned> recv_col_size( m_comm_size );
+
+    for ( unsigned p = 0 ; p < m_comm_size ; ++p ) {
+      send_col_size[p] = m_work_disp[p+1] - m_work_disp[p] ;
+    }
+
+    if ( send_col_size[ m_comm_rank ] ) {
+      std::ostringstream msg ;
+      msg << method << " ERROR with communication sizing logic" ;
+      throw std::logic_error( msg.str() );
+    }
+
+    unsigned num_msg_maximum = 0 ;
+
+    comm_sizes( m_comm , m_comm_size / 4 , num_msg_maximum ,
+                & send_col_size[0] , & recv_col_size[0] );
+
+    m_sparse = num_msg_maximum < ( m_comm_size / 4 );
+
+    m_send_disp[0] = 0 ;
+    for ( unsigned p = 0 ; p < m_comm_size ; ++p ) {
+      m_send_disp[p+1] = m_send_disp[p] + recv_col_size[p] ;
+    }
+  }
+
+  const unsigned send_map_size = m_send_disp[ m_comm_size ];
+
+  m_send_map.resize( send_map_size );
+
+  all_to_all( m_comm , PARALLEL_DATATYPE_UNSIGNED , m_sparse ,
+              & work_col_ident[0] , & m_work_disp[0],
+              & m_send_map[0] ,     & m_send_disp[0] );
+
+  //------------------------------------
+  // Remap the 'm_work_disp' for receiving coefficients into the
+  // work vector: [ lower_row_recv , local_row , upper_row_recv ]
+
+  for ( unsigned p = m_comm_rank ; p < m_comm_size ; ++p ) {
+    m_work_disp[p+1] += m_row_size ;
+  }
+
+  //------------------------------------
+  // Map the send_map from global to local indices,
+  // also sanity check it.
+
+  for ( unsigned i = 0 ; i < send_map_size ; ++i ) {
+
+    if ( m_send_map[i] < (int) row_first ||
+                         (int) row_end <= m_send_map[i] ) {
+      std::ostringstream msg ;
+      msg << method << " ERROR Received index " ;
+      msg << m_send_map[i] ;
+      msg << " out of range [ " ;
+      msg << row_first ;
+      msg << " : " ;
+      msg << row_end ;
+      msg << " )" ;
+      throw std::runtime_error( msg.str() );
+    }
+
+    m_send_map[i] -= row_first ;
+  }
+}
+
+//----------------------------------------------------------------------
 
 }
+
 

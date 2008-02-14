@@ -39,6 +39,12 @@
 #include <txblas/cr4_mxv.h>
 #include <txblas/CR4Matrix.hpp>
 
+extern "C" {
+void tdaxpby( TPI_ThreadPool pool ,
+              unsigned n , double a , const double * x ,
+                           double b , double * y );
+}
+
 using namespace phdmesh ;
 
 void test_fill_cr4_band(
@@ -50,6 +56,17 @@ void test_fill_cr4_band(
   const double evalue ,
   std::vector<unsigned> & prefix ,
   std::vector<txblas_cr4> & matrix );
+
+void test_fill_cr_band(
+  ParallelMachine comm ,
+  const std::vector<unsigned> & partition ,
+  const unsigned iband ,
+  const unsigned nband ,
+  const unsigned stride ,
+  const double evalue ,
+  std::vector<unsigned> & prefix ,
+  std::vector<unsigned> & coli ,
+  std::vector<double> & coef );
 
 namespace {
 
@@ -125,6 +142,14 @@ void timing_test_txddot(
   double t = wall_time();
 
   for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+    double s ;
+    tddot( pool , & s , m_local , & x_values[0] , & y_values[0] );
+    all_reduce( comm , ReduceSum<1>( & s ) );
+  }
+
+  double dt_tddot = wall_dtime( t ) / (double) ncycle ;
+
+  for ( unsigned i = 0 ; i < ncycle ; ++i ) {
     Summation z ;
     txddot( pool , z.xdval , m_local , & x_values[0] , & y_values[0] );
     all_reduce( comm , ReduceSum<1>( & z ) );
@@ -132,19 +157,56 @@ void timing_test_txddot(
 
   double dt_txddot = wall_dtime( t ) / (double) ncycle ;
 
+  for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+    Summation z ;
+    tdaxpby( pool , m_local , 1.0 , & x_values[0] , 1.0 , & y_values[0] );
+    all_reduce( comm , ReduceSum<1>( & z ) );
+  }
+
+  double dt_tdaxpby = wall_dtime( t ) / (double) ncycle ;
+
   all_reduce( comm , ReduceMax<1>( & dt_txddot ) );
 
   if ( p_rank == 0 ) {
-    // ddot = ( 1 mult + 7 add + 2 compare ) * N
-    const unsigned op_count = 10 ;
-    const unsigned op_total = M * op_count ;
-    const double m_op = ( (double) op_total ) / 1000000.0 ;
-    const double m_ops = m_op / dt_txddot ;
+    {
+      // ddot = ( 1 mult + 1 add ) * N
+      const unsigned dot_op_count = 2 ;
+      const unsigned dot_op_total = M * dot_op_count ;
+      const double m_dot_op = ( (double) dot_op_total ) / 1000000.0 ;
+      const double m_dot_ops = m_dot_op / dt_tddot ;
 
-    std::cout << "TIMING txddot[ " << M << " ] = "
-              << dt_txddot << " sec, "
-              << m_ops << " Mflops"
-              << std::endl ;
+      std::cout << "TIMING tddot[ " << M << " ] = "
+                << dt_tddot << " sec, "
+                << m_dot_ops << " Mflops"
+                << std::endl ;
+    }
+
+    {
+      // xddot = ( 1 mult + 7 add + 2 compare ) * N
+      const unsigned xdot_op_count = 10 ;
+      const unsigned xdot_op_total = M * xdot_op_count ;
+      const double m_xdot_op = ( (double) xdot_op_total ) / 1000000.0 ;
+      const double m_xdot_ops = m_xdot_op / dt_txddot ;
+
+      std::cout << "TIMING txddot[ " << M << " ] = "
+                << dt_txddot << " sec, "
+                << m_xdot_ops << " Mflops"
+                << std::endl ;
+    }
+
+    {
+      // daxpby = 2 mult + 1 add
+      const unsigned daxpby_op_count = 3 ;
+      const unsigned daxpby_op_total = M * daxpby_op_count ;
+      const double m_daxpby_op = ( (double) daxpby_op_total ) / 1000000.0 ;
+      const double m_daxpby_ops = m_daxpby_op / dt_tdaxpby ;
+
+      std::cout << "TIMING tdaxpy[ " << M << " ] = "
+                << dt_tdaxpby << " sec, "
+                << m_daxpby_ops << " Mflops"
+                << std::endl ;
+    }
+
     std::cout.flush();
   }
 }
@@ -270,6 +332,68 @@ void test_txblas_cr4_mxv( ParallelMachine comm ,
   return ;
 }
 
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+
+void test_txblas_cr_mxv( ParallelMachine comm ,
+                         TPI::ThreadPool pool ,
+                         const unsigned N ,
+                         const unsigned nband ,
+                         const unsigned stride ,
+                         const unsigned ncycle ,
+                         const double Value )
+{
+  const unsigned p_rank = parallel_machine_rank( comm );
+
+  std::vector<unsigned> partition ;
+
+  simple_partition( comm , N , partition );
+
+  const unsigned n_local = partition[ p_rank + 1 ] - partition[ p_rank ];
+
+  const double d_one = 1 ;
+  std::vector<double> x_vec( n_local , d_one );
+  std::vector<double> y_vec( n_local );
+
+  double * const x = & x_vec[0] ;
+  double * const y = & y_vec[0] ;
+
+  std::vector<unsigned> cr_prefix ;
+  std::vector<unsigned> cr_coli ;
+  std::vector<double>   cr_coef ;
+
+  test_fill_cr_band( comm, partition, 1, nband, stride, Value,
+                     cr_prefix , cr_coli , cr_coef );
+
+  CR_Matrix matrix( comm , pool , partition , cr_prefix , cr_coli , cr_coef );
+
+  double t = wall_time();
+
+  for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+    matrix.multiply( x , y );
+  }
+
+  double dt_mxv =  wall_dtime( t ) / ((double) ncycle );
+
+  all_reduce( comm , ReduceMax<1>( & dt_mxv ) );
+
+  if ( p_rank == 0 ) {
+    const unsigned nz_row = 1 + 2 * nband ;
+    const unsigned op_count = 2 * N * nz_row ;
+    const double m_flops = ((double) op_count) / ( dt_mxv * 1000000.0 );
+
+    std::cout << "Test CR_Matrix: " ;
+    std::cout << " mxv = " ;
+    std::cout << dt_mxv ;
+    std::cout << " sec, " ;
+    std::cout << m_flops ;
+    std::cout << " Mflops" ;
+    std::cout << std::endl ;
+  }
+
+  return ;
+}
+
 }
 
 //----------------------------------------------------------------------
@@ -290,6 +414,7 @@ void test_rbcr_mxv( phdmesh::ParallelMachine comm ,
   if ( is.good() ) { is >> ncycle ; }
   if ( is.good() ) { is >> value ; }
 
+  test_txblas_cr_mxv(  comm , pool , nsize , nband , stride , ncycle , value );
   test_txblas_cr4_mxv( comm , pool , nsize , nband , stride , ncycle , value );
 }
 
