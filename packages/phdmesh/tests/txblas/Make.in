@@ -26,9 +26,8 @@ TEST_TXBLAS_EXE = test_txblas.exe
 TEST_TXBLAS_SRC_DIR = $(PHDMESH_PATH)/tests/txblas
 
 TEST_TXBLAS_OBJ_FILES =	\
-	test_fill_cr4.o	\
-	test_reduce.o	\
-	test_sparse_mxv.o	\
+	test_accuracy.o	\
+	test_performance.o	\
 	test_txblas.o
 
 #-----------------------------------------------------------------------

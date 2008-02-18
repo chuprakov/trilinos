@@ -30,65 +30,6 @@
 
 /*--------------------------------------------------------------------*/
 
-typedef struct txblasTask_cr4_MatrixStruct {
-  unsigned           number_row ;
-  const unsigned   * pc_begin ;
-  const txblas_cr4 * a_begin ;
-  const double     * x_begin ;
-        double     * y_begin ;
-} txblasTask_cr4_Matrix ;
-
-/*--------------------------------------------------------------------*/
-
-static void txblas_task_cr4_mxv( void * data , TPI_ThreadPool pool )
-{
-  int p_size , p_rank ;
-
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
-
-    txblasTask_cr4_Matrix * const t = (txblasTask_cr4_Matrix*) data ;
-
-    const unsigned beg_row = ( t->number_row * ( p_rank     ) ) / p_size ;
-    const unsigned end_row = ( t->number_row * ( p_rank + 1 ) ) / p_size ;
-
-    const unsigned   * const pc_end = t->pc_begin + end_row ;
-    const txblas_cr4 * const a_beg  = t->a_begin ;
-    const double     * const x_beg  = t->x_begin ;
-          double     *       y      = t->y_begin + beg_row ;
-
-    const unsigned   * pc = t->pc_begin + beg_row ;
-    const txblas_cr4 * a  = a_beg + *pc ;
-
-    while ( pc < pc_end ) {
-      double ytmp = 0 ;
-
-      for ( const txblas_cr4 * const a_end = a_beg + *++pc ; a < a_end ; ++a ) {
-        ytmp += a->val[0] * x_beg[ a->col[0] ] +
-                a->val[1] * x_beg[ a->col[1] ] +
-                a->val[2] * x_beg[ a->col[2] ] +
-                a->val[3] * x_beg[ a->col[3] ] ;
-      }
-
-      *y++ = ytmp ;
-    }
-  }
-}
-
-
-void txblas_cr4_mxv(
-  TPI_ThreadPool pool ,
-  const unsigned   nr  /* Number rows */ ,
-  const unsigned   pc[] ,
-  const txblas_cr4 a[] ,
-  const double     x[] ,  /* Input vector */
-        double     y[] )  /* Output vector */
-{
-  txblasTask_cr4_Matrix data = { nr , pc , a , x , y };
-  TPI_Run( pool , & txblas_task_cr4_mxv , & data );
-}
-
-/*--------------------------------------------------------------------*/
-
 typedef struct txblasTask_cr_MatrixStruct {
   unsigned         number_row ;
   const unsigned * pc_begin ;

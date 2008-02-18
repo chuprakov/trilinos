@@ -28,12 +28,124 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include <util/TPI.h>
-#include <util/ParallelComm.hpp>
+
+#include <util/TPI.hpp>
+#include <util/Parallel.hpp>
 #include <util/ParallelReduce.hpp>
+#include <util/ParallelInputStream.hpp>
+
 #include <txblas/Reduction.hpp>
 
 using namespace phdmesh ;
+
+namespace {
+
+struct FillWork {
+  double   x_mag ;
+  double * x_beg ;
+  unsigned x_length ;
+};
+
+void task_rand_fill( void * arg , TPI::ThreadPool pool )
+{
+  const double r_max = RAND_MAX ;
+  int p_rank , p_size ; TPI::Pool_rank( pool , p_rank , p_size );
+
+  FillWork & w = * reinterpret_cast<FillWork*>( arg );
+
+  const unsigned p_next = p_rank + 1 ;
+  const unsigned       n = w.x_length ;
+        double * const xe = w.x_beg + ( n * p_next ) / p_size ;
+        double *       x  = w.x_beg + ( n * p_rank ) / p_size ;
+
+  const double mag = w.x_mag ;
+
+  unsigned seed = p_rank ;
+
+  for ( ; xe != x ; ++x ) {
+    const double r = rand_r( & seed );
+    *x = mag * 2.0 * ( ( r / r_max ) - 0.5 );
+  }
+}
+
+}
+
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+
+void test_accuracy_txblas( ParallelMachine comm ,
+                           TPI::ThreadPool pool ,
+                           const unsigned M ,
+                           const double mag )
+{
+  const unsigned p_size = parallel_machine_size( comm );
+  const unsigned p_rank = parallel_machine_rank( comm );
+
+  const unsigned m_rem   = M % p_size ;
+  const unsigned m_local = M / p_size + ( p_rank < m_rem ? 1 : 0 );
+
+  std::vector<double> values( m_local );
+
+  {
+    FillWork data ;
+    data.x_mag = mag ;
+    data.x_beg = & values[0] ;
+    data.x_length = m_local ;
+    TPI::Run( pool , & task_rand_fill , & data );
+  }
+
+  const double init = 1 ;
+  double a = 0 ;
+  Summation z ;
+  if ( p_rank == 0 ) {
+    a = init ;
+    z += init ;
+  }
+
+  std::vector<double>::iterator i ;
+
+
+  txdsum_add_array( pool , z.xdval , m_local , & values[0] );
+
+  for ( i = values.begin() ; i != values.end() ; ++i ) { a += *i ; }
+
+  all_reduce( comm , ReduceSum<1>( & z ) & ReduceSum<1>( & a ) );
+
+  for ( i = values.begin() ; i != values.end() ; ++i ) { *i = - *i ; }
+
+  txdsum_add_array( pool , z.xdval , m_local , & values[0] );
+
+  for ( i = values.begin() ; i != values.end() ; ++i ) { a += *i ; }
+
+  all_reduce( comm , ReduceSum<1>( & z ) & ReduceSum<1>( & a ) );
+
+
+  const double z_val = z.value();
+
+  if ( p_rank == 0 ) {
+    std::cout << "ACCURACY txdsum_add_array[ N = "
+              << M << " , mag = " << mag << " ] " << std::endl
+              << "  init_value[ " << init
+              << " ] , txdsum_add[ " << z_val
+              << " ] , simple_sum[ " << a << " ]" << std::endl ;
+  }
+}
+
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+
+void test_accuracy( phdmesh::ParallelMachine comm ,
+                    TPI::ThreadPool pool ,
+                    std::istream & is )
+{
+  unsigned num = 100000000 ;
+  double mag = 1e10 ;
+  if ( is.good() ) { is >> num ; }
+  if ( is.good() ) { is >> mag ; }
+  test_accuracy_txblas( comm , pool , num , mag );
+}
+
+//----------------------------------------------------------------------
 
 void test_reduce( ParallelMachine comm , TPI_ThreadPool pool ,
                   std::istream & is )

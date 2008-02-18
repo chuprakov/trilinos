@@ -33,9 +33,9 @@
 //----------------------------------------------------------------------
 
 void test_reduce( phdmesh::ParallelMachine , TPI_ThreadPool , std::istream & );
-void test_timing( phdmesh::ParallelMachine , TPI_ThreadPool , std::istream & );
 void test_accuracy( phdmesh::ParallelMachine, TPI_ThreadPool, std::istream & );
-void test_rbcr_mxv( phdmesh::ParallelMachine, TPI_ThreadPool, std::istream & );
+void test_timing_blas1( phdmesh::ParallelMachine , TPI_ThreadPool , std::istream & );
+void test_timing_mxv( phdmesh::ParallelMachine, TPI_ThreadPool, std::istream & );
 
 //----------------------------------------------------------------------
 
@@ -44,9 +44,9 @@ int main( int argc , char **argv )
   phdmesh::TestDriverMap test_map ;
 
   test_map[ std::string("reduce") ] = & test_reduce ;
-  test_map[ std::string("timing") ] = & test_timing ;
   test_map[ std::string("accuracy") ] = & test_accuracy ;
-  test_map[ std::string("rbcr_mxv") ] = & test_rbcr_mxv ;
+  test_map[ std::string("timing_mxv") ] = & test_timing_mxv ;
+  test_map[ std::string("timing_blas1") ] = & test_timing_blas1 ;
 
   phdmesh::ParallelMachine comm = phdmesh::parallel_machine_init(&argc,&argv);
 

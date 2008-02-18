@@ -46,43 +46,6 @@ void simple_partition(
 
 //----------------------------------------------------------------------
 
-class CR4Matrix {
-private:
-  CR4Matrix();
-  CR4Matrix( const CR4Matrix & );
-  CR4Matrix & operator = ( const CR4Matrix & );
-
-  // Global:
-  ParallelMachine       m_comm ;
-  unsigned              m_comm_size ;
-  unsigned              m_comm_rank ;
-  TPI_ThreadPool        m_pool ;
-  bool                  m_sparse ;
-  std::vector<int>      m_work_disp ;
-  std::vector<int>      m_send_disp ;
-  std::vector<int>      m_send_map ;
-
-  // Local:
-  unsigned                m_row_size ;
-  std::vector<unsigned>   m_prefix ;
-  std::vector<txblas_cr4> m_matrix ;
-
-public:
-
-  ~CR4Matrix();
-
-  /* The 'arg_prefix' and 'arg_matrix' vectors are taken via 'swap' */
-  CR4Matrix( ParallelMachine arg_comm ,
-             TPI_ThreadPool  arg_pool ,
-             const std::vector<unsigned>   & arg_partition ,
-                   std::vector<unsigned>   & arg_prefix ,
-                   std::vector<txblas_cr4> & arg_matrix );
-
-  void multiply( const double * const x , double * const y ) const ;
-};
-
-//----------------------------------------------------------------------
-
 class CR_Matrix {
 private:
   CR_Matrix();

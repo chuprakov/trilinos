@@ -334,6 +334,8 @@ void tddot( TPI_ThreadPool pool ,
 
 /*--------------------------------------------------------------------*/
 
+#if 1
+
 void xddot( double * s4 , unsigned n , const double * x , const double * y )
 {
   enum { STRIDE = 8 };
@@ -341,8 +343,34 @@ void xddot( double * s4 , unsigned n , const double * x , const double * y )
   const double * const x_end = x + n ;
   const double * const x_blk = x_end - n % STRIDE ;
 
+  for ( ; x < x_blk ; x += STRIDE , y += STRIDE ) {
+    xdsum_add_value( s4 , x[0] * y[0] );
+    xdsum_add_value( s4 , x[1] * y[1] );
+    xdsum_add_value( s4 , x[2] * y[2] );
+    xdsum_add_value( s4 , x[3] * y[3] );
+    xdsum_add_value( s4 , x[4] * y[4] );
+    xdsum_add_value( s4 , x[5] * y[5] );
+    xdsum_add_value( s4 , x[6] * y[6] );
+    xdsum_add_value( s4 , x[7] * y[7] );
+  }
+
+  for ( ; x < x_end ; ++x , ++y ) {
+    xdsum_add_value( s4 , *x * *y );
+  }
+}
+
+#else
+
+void xddot( double * s4 , unsigned n , const double * x , const double * y )
+{
+  enum { STRIDE = 8 };
+
   double pos[2] = { 0 , 0 };
   double neg[2] = { 0 , 0 };
+
+  const double * const x_end = x + n ;
+
+  const double * const x_blk = x_end - n % STRIDE ;
 
   for ( ; x < x_blk ; x += STRIDE , y += STRIDE ) {
     double a0 = x[0] * y[0] ;
@@ -382,6 +410,8 @@ void xddot( double * s4 , unsigned n , const double * x , const double * y )
   s4[2] = neg[0] ;
   s4[3] = neg[1] ;
 }
+
+#endif
 
 /*--------------------------------------------------------------------*/
 

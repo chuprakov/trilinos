@@ -33,39 +33,6 @@
 extern "C" {
 #endif
 
-/** Sparse compressed row matrix blocked into four coefficients per entry.
- *  This structure places the coefficients and column indices into
- *  a contiguous and well-aligned block of memory.  Hopefully reducing
- *  the memory-fetching traffic for one array versus two separate arrays
- *  for coefficients and column indices.
- *  This structure also unrolls the matrix-vector multiply loop by four.
- */
-
-typedef struct txblas_cr4_struct {
-  double   val[4] ;
-  unsigned col[4] ;
-} txblas_cr4 ;
-
-/** Compressed row matrix satisfying:
- *
- *    for ( row = 0 ; row < nr ; ++row ) {
- *      for ( i = pc[row] ; i < pc[row+1] ; ++i ) {
- *        y[row] += a[i].val[0] * x[ a[i].ind[0] ] +
-                    a[i].val[1] * x[ a[i].ind[1] ] +
-                    a[i].val[2] * x[ a[i].ind[2] ] +
-                    a[i].val[3] * x[ a[i].ind[3] ] ;
- *      }
- *    }
- *  The operation is split among threads.
- */
-void txblas_cr4_mxv(
-  TPI_ThreadPool ,
-  const unsigned   nr ,
-  const unsigned   pc[] ,
-  const txblas_cr4 a[] ,
-  const double     x[] ,
-        double     y[] );
-
 void txblas_cr_mxv(
   TPI_ThreadPool ,
   const unsigned nr ,
