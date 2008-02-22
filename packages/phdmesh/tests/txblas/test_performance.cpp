@@ -28,6 +28,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <algorithm>
 
 #include <util/TPI.hpp>
 #include <util/Parallel.hpp>
@@ -41,8 +42,10 @@
 
 extern "C" {
 void tdaxpby( TPI_ThreadPool pool ,
-              unsigned n , double a , const double * x ,
-                           double b , double * y );
+              unsigned n ,
+              double a , const double * x ,
+              double b , double * y ,
+              int block );
 }
 
 using namespace phdmesh ;
@@ -252,17 +255,31 @@ void timing_txblas1(
     double t = wall_time();
 
     for ( unsigned i = 0 ; i < ncycle ; ++i ) {
-      tdaxpby( pool , m_local , 1.0 , & x_values[0] , 1.0 , & y_values[0] );
+      tdaxpby( pool, m_local, 1.0, & x_values[0], 1.0, & y_values[0], 0 );
     }
 
     double dt = wall_dtime( t );
 
     all_reduce( comm , ReduceMax<1>( & dt ) );
 
+    t = wall_time();
+
+    for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+      tdaxpby( pool, m_local, 1.0, & x_values[0], 1.0, & y_values[0], 1 );
+    }
+
+    double dt_block = wall_dtime( t );
+
+    all_reduce( comm , ReduceMax<1>( & dt_block ) );
+
     if ( p_rank == 0 ) {
-      std::cout << "TIMING tdaxpby = "
+      std::cout << "TIMING tdaxpby[part]  = "
                 << ( mflop_total / dt ) << " Mflops ( "
                 << mflop_cycle << " * " << ncycle << " / " << dt << " )"
+                << std::endl ;
+      std::cout << "TIMING tdaxpby[block] = "
+                << ( mflop_total / dt_block ) << " Mflops ( "
+                << mflop_cycle << " * " << ncycle << " / " << dt_block << " )"
                 << std::endl ;
       std::cout.flush();
     }
@@ -365,6 +382,8 @@ void test_timing_blas1( phdmesh::ParallelMachine comm ,
   unsigned mflop = 1000 ;
   if ( is.good() ) { is >> num ; }
   if ( is.good() ) { is >> mflop ; }
+  timing_txblas1( comm , pool , num , mflop );
+  timing_txblas1( comm , pool , num , mflop );
   timing_txblas1( comm , pool , num , mflop );
 }
 

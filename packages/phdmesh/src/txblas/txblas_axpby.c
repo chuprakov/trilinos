@@ -34,22 +34,68 @@ struct TaskXY {
   const double * x_beg ;
         double * y_beg ;
         unsigned number ;
+        unsigned * iter ;
 };
 
 static void task_axpby_work( void * , TPI_ThreadPool );
+static void task_axpby_work_block( void * , TPI_ThreadPool );
+static void task_axpby_work_steal( void * , TPI_ThreadPool );
 
 void tdaxpby( TPI_ThreadPool pool ,
-              unsigned n , double a , const double * x , double b , double * y )
+              unsigned n ,
+              double a , const double * x ,
+              double b , double * y ,
+              int block )
 {
-  struct TaskXY data = { a , b , x , y , n };
-  TPI_Run( pool , & task_axpby_work , & data );
+  int p_rank , p_size ;
+  TPI_Pool_rank( pool , & p_rank , & p_size );
+
+  {
+    unsigned tmp[ p_size ];
+    struct TaskXY data = { a , b , x , y , n , tmp };
+    for ( int i = 0 ; i < p_size ; ++i ) { tmp[i] = i ; }
+    if ( 0 < block ) {
+      TPI_Run( pool , & task_axpby_work_block , & data );
+    }
+    else if ( block < 0 ) {
+      TPI_Set_lock_size( pool , p_size );
+      TPI_Run( pool , & task_axpby_work_steal , & data );
+    }
+    else {
+      TPI_Run( pool , & task_axpby_work , & data );
+    }
+  }
 }
 
 /*--------------------------------------------------------------------*/
 
+enum { UNROLL = 8 };
+
+static void daxpby_work( unsigned n ,
+                         const double a , const double * x ,
+                         const double b , double * y )
+{
+  const double * const xe = x + n ;
+  const double * const xb = xe - n % UNROLL ;
+
+  for ( ; x < xb ; x += UNROLL , y += UNROLL ) {
+    y[0] = a * x[0] + b * y[0] ;
+    y[1] = a * x[1] + b * y[1] ;
+    y[2] = a * x[2] + b * y[2] ;
+    y[3] = a * x[3] + b * y[3] ;
+    y[4] = a * x[4] + b * y[4] ;
+    y[5] = a * x[5] + b * y[5] ;
+    y[6] = a * x[6] + b * y[6] ;
+    y[7] = a * x[7] + b * y[7] ;
+  }
+
+  for ( ; x < xe ; ++x , ++y ) {
+    *y = a * *x + b * *y ;
+  }
+}
+
 static void task_axpby_work( void * arg , TPI_ThreadPool pool )
 {
-  enum { STRIDE = 8 };
   int p_size ;
   int p_rank ;
 
@@ -57,30 +103,100 @@ static void task_axpby_work( void * arg , TPI_ThreadPool pool )
 
     struct TaskXY * const t = (struct TaskXY *) arg ;
 
-    const unsigned n_beg = ( t->number * ( p_rank     ) ) / p_size ;
-    const unsigned n_end = ( t->number * ( p_rank + 1 ) ) / p_size ;
+    const int      n_rem = t->number % p_size ;
+    const unsigned n_num = t->number / p_size ;
+    const unsigned n_beg = p_rank * n_num + ( p_rank < n_rem ? p_rank : n_rem );
+    const unsigned n_len = n_num + ( p_rank < n_rem ? 1 : 0 );
 
-    const double a = t->alpha ;
-    const double b = t->beta ;
+    daxpby_work( n_len , t->alpha , t->x_beg + n_beg ,
+                         t->beta  , t->y_beg + n_beg );
+  }
+}
 
-    const double * const xe = t->x_beg + n_end ;
-    const double * const xb = xe - ( n_end - n_beg ) % STRIDE ;
-    const double *       x  = t->x_beg + n_beg ;
-          double *       y  = t->y_beg + n_beg ;
+static void task_axpby_work_block( void * arg , TPI_ThreadPool pool )
+{
+  enum { BLOCK = UNROLL * 1024 };
+  int p_size ;
+  int p_rank ;
 
-    for ( ; x < xb ; x += STRIDE , y += STRIDE ) {
-      y[0] = a * x[0] + b * y[0] ;
-      y[1] = a * x[1] + b * y[1] ;
-      y[2] = a * x[2] + b * y[2] ;
-      y[3] = a * x[3] + b * y[3] ;
-      y[4] = a * x[4] + b * y[4] ;
-      y[5] = a * x[5] + b * y[5] ;
-      y[6] = a * x[6] + b * y[6] ;
-      y[7] = a * x[7] + b * y[7] ;
+  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+
+    struct TaskXY * const t = (struct TaskXY *) arg ;
+
+    const unsigned inc = BLOCK * p_size ;
+    const unsigned num = t->number ;
+
+    if ( 1 < p_size && 2 * inc < num ) { /* More than two blocks of work */
+      const double a = t->alpha ;
+      const double b = t->beta ;
+      const double * const x = t->x_beg ;
+            double * const y = t->y_beg ;
+
+      int len ;
+
+      for ( unsigned i = BLOCK * p_rank ; 0 < ( len = num - i ) ; i += inc ) {
+        daxpby_work( ( BLOCK < len ? BLOCK : len ) , a , x + i , b , y + i );
+      }
+    }
+    else { /* Even partitioning */
+      const int      n_rem = num % p_size ;
+      const unsigned n_num = num / p_size ;
+      const unsigned n_beg = p_rank*n_num + (p_rank < n_rem ? p_rank : n_rem);
+      const unsigned n_len = n_num + ( p_rank < n_rem ? 1 : 0 );
+
+      daxpby_work( n_len , t->alpha , t->x_beg + n_beg ,
+                           t->beta ,  t->y_beg + n_beg );
+    }
+  }
+}
+
+static void task_axpby_work_steal( void * arg , TPI_ThreadPool pool )
+{
+  enum { BLOCK = UNROLL * 128 };
+  int p_size ;
+  int p_rank ;
+
+  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+
+    struct TaskXY * const t = (struct TaskXY *) arg ;
+
+    const double   a = t->alpha ;
+    const double   b = t->beta ;
+    const unsigned n = t->number ;
+    const double * const x = t->x_beg ;
+          double * const y = t->y_beg ;
+
+    unsigned * const all_iter = t->iter ;
+    unsigned * const my_iter  = all_iter + p_size ;
+
+    for ( unsigned i = 0 ; i < n ; ) {
+      TPI_Lock( pool , p_rank );
+      i = *my_iter * BLOCK ; *my_iter += p_size ;
+      TPI_Unlock( pool , p_rank );
+      if ( i < n ) {
+        const unsigned len = BLOCK < n - i ? BLOCK : n - i ;
+        daxpby_work( len, a, x + i, b, y + i );
+      }
     }
 
-    for ( ; x < xe ; ++x , ++y ) {
-      *y = a * *x + b * *y ;
+    /* Finished my work, steal work from someone else */
+
+    for ( int working = 1 ; working ; ) {
+      working = 0 ;
+      for ( int p = 0 ; p < p_size ; ++p ) {
+        if ( all_iter[p] * BLOCK < n ) {
+          if ( ! TPI_Trylock( pool , p ) ) {
+            const unsigned i = all_iter[p] * BLOCK ;
+            all_iter[p] += p_size ;
+            TPI_Unlock( pool , p );
+            if ( i < n ) {
+              const unsigned len = BLOCK < n - i ? BLOCK : n - i ;
+              daxpby_work( len, a, x + i, b, y + i );
+            }
+          }
+          working = 1 ;
+        }
+      }
     }
   }
 }

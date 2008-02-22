@@ -29,6 +29,8 @@
 #include <util/TPI.h>
 #include <txblas/reduction.h>
 
+#define BLOCKING_SIZE 0
+
 /*--------------------------------------------------------------------*/
 
 
@@ -86,6 +88,7 @@ struct TaskXY {
   const double * x_beg ;
   const double * y_beg ;
         unsigned number ;
+        unsigned block ;
 };
 
 /*--------------------------------------------------------------------*/
@@ -297,13 +300,39 @@ double ddot( unsigned n , const double * x , const double * y )
   return result ;
 }
 
+static void task_ddot_xy_work_blocking( void * arg , TPI_ThreadPool pool )
+{
+  int p_size , p_rank ;
+
+  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+
+    struct TaskXY * const t = (struct TaskXY *) arg ;
+
+    const unsigned block_size   = t->block ;
+    const unsigned block_start  = block_size * p_rank ;
+    const unsigned block_stride = block_size * p_size ;
+
+    const double * const x_end = t->x_beg + t->number ;
+    const double * x = t->x_beg + block_start ;
+    const double * y = t->x_beg + block_start ;
+
+    double local = 0.0 ;
+
+    for ( ; x < x_end ; x += block_stride , y += block_stride ) {
+      const unsigned n = x_end - x ;
+      local += ddot( ( block_size < n ? block_size : n ) , x , y );
+    }
+
+    t->xy_sum[ p_rank ] = local ;
+  }
+}
+
 static void task_ddot_xy_work( void * arg , TPI_ThreadPool pool )
 {
   int p_size , p_rank ;
 
-  TPI_Pool_rank( pool , & p_rank , & p_size );
+  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
 
-  {
     struct TaskXY * const t = (struct TaskXY *) arg ;
 
     const unsigned n_total = t->number ;
@@ -314,27 +343,30 @@ static void task_ddot_xy_work( void * arg , TPI_ThreadPool pool )
     const double * x = t->x_beg + n_begin ;
     const double * y = t->y_beg + n_begin ;
 
-    const double result = ddot( n_local , x , y );
-
-    TPI_Lock(pool,0);
-    {
-      (*t->xy_sum) += result ;
-    }
-    TPI_Unlock(pool,0);
+    t->xy_sum[ p_rank ] = ddot( n_local , x , y );
   }
 }
 
 void tddot( TPI_ThreadPool pool , 
             double * s , unsigned n , const double * x , const double * y )
 {
-  struct TaskXY data = { s , x , y , n };
-  TPI_Set_lock_size( pool , 1 );
-  TPI_Run( pool , & task_ddot_xy_work , & data );
+  int p_rank , p_size ;
+  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+    double tmp[ p_size ];
+    struct TaskXY data = { tmp , x , y , n , BLOCKING_SIZE };
+    for ( int i = 0 ; i < p_size ; ++i ) { tmp[i] = 0 ; }
+    if ( data.block ) {
+      TPI_Run( pool , & task_ddot_xy_work_blocking , & data );
+    }
+    else {
+      TPI_Run( pool , & task_ddot_xy_work , & data );
+    }
+    for ( int i = 1 ; i < p_size ; ++i ) { tmp[0] += tmp[i] ; }
+    *s = tmp[0] ;
+  }
 }
 
 /*--------------------------------------------------------------------*/
-
-#if 1
 
 void xddot( double * s4 , unsigned n , const double * x , const double * y )
 {
@@ -359,69 +391,46 @@ void xddot( double * s4 , unsigned n , const double * x , const double * y )
   }
 }
 
-#else
-
-void xddot( double * s4 , unsigned n , const double * x , const double * y )
-{
-  enum { STRIDE = 8 };
-
-  double pos[2] = { 0 , 0 };
-  double neg[2] = { 0 , 0 };
-
-  const double * const x_end = x + n ;
-
-  const double * const x_blk = x_end - n % STRIDE ;
-
-  for ( ; x < x_blk ; x += STRIDE , y += STRIDE ) {
-    double a0 = x[0] * y[0] ;
-    double a1 = x[1] * y[1] ;
-    double a2 = x[2] * y[2] ;
-    double a3 = x[3] * y[3] ;
-    double a4 = x[4] * y[4] ;
-    double a5 = x[5] * y[5] ;
-    double a6 = x[6] * y[6] ;
-    double a7 = x[7] * y[7] ;
-    double * const p0 = a0 < 0 ? ( a0 = -a0 , neg ) : pos ;
-    double * const p1 = a1 < 0 ? ( a1 = -a1 , neg ) : pos ;
-    double * const p2 = a2 < 0 ? ( a2 = -a2 , neg ) : pos ;
-    double * const p3 = a3 < 0 ? ( a3 = -a3 , neg ) : pos ;
-    double * const p4 = a4 < 0 ? ( a4 = -a4 , neg ) : pos ;
-    double * const p5 = a5 < 0 ? ( a5 = -a5 , neg ) : pos ;
-    double * const p6 = a6 < 0 ? ( a6 = -a6 , neg ) : pos ;
-    double * const p7 = a7 < 0 ? ( a7 = -a7 , neg ) : pos ;
-    SUM_ADD( p0 , a0 );
-    SUM_ADD( p1 , a1 );
-    SUM_ADD( p2 , a2 );
-    SUM_ADD( p3 , a3 );
-    SUM_ADD( p4 , a4 );
-    SUM_ADD( p5 , a5 );
-    SUM_ADD( p6 , a6 );
-    SUM_ADD( p7 , a7 );
-  }
-
-  for ( ; x < x_end ; ++x , ++y ) {
-    double a = *x * *y ;
-    double * const p = a < 0 ? ( a = -a , neg ) : pos ;
-    SUM_ADD( p , a );
-  }
-
-  s4[0] = pos[0] ;
-  s4[1] = pos[1] ;
-  s4[2] = neg[0] ;
-  s4[3] = neg[1] ;
-}
-
-#endif
-
 /*--------------------------------------------------------------------*/
+
+static void task_xddot_xy_work_blocking( void * arg , TPI_ThreadPool pool )
+{
+  int p_size , p_rank ;
+
+  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+
+    struct TaskXY * const t = (struct TaskXY *) arg ;
+
+    const unsigned block_size   = t->block ;
+    const unsigned block_start  = block_size * p_rank ;
+    const unsigned block_stride = block_size * p_size ;
+
+    const double * const x_end = t->x_beg + t->number ;
+    const double * x = t->x_beg + block_start ;
+    const double * y = t->x_beg + block_start ;
+
+    double s_local[4] = { 0 , 0 , 0 , 0 };
+
+    for ( ; x < x_end ; x += block_stride , y += block_stride ) {
+      const unsigned n = x_end - x ;
+      xddot( s_local , ( block_size < n ? block_size : n ) , x , y );
+    }
+
+    double * const xy_sum = t->xy_sum + 4 * p_rank ;
+
+    xy_sum[0] = s_local[0] ;
+    xy_sum[1] = s_local[1] ;
+    xy_sum[2] = s_local[2] ;
+    xy_sum[3] = s_local[3] ;
+  }
+}
 
 static void task_xddot_xy_work( void * arg , TPI_ThreadPool pool )
 {
   int p_size , p_rank ;
 
-  TPI_Pool_rank( pool , & p_rank , & p_size );
+  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
 
-  {
     struct TaskXY * const t = (struct TaskXY *) arg ;
 
     const unsigned n_total = t->number ;
@@ -429,32 +438,42 @@ static void task_xddot_xy_work( void * arg , TPI_ThreadPool pool )
     const unsigned n_end   = ( n_total * ( p_rank + 1 ) ) / p_size ;
     const unsigned n_local = ( n_end - n_begin );
 
-    const double * x = t->x_beg + n_begin ;
-    const double * y = t->y_beg + n_begin ;
+    const double * const x = t->x_beg + n_begin ;
+    const double * const y = t->y_beg + n_begin ;
 
     double s_local[4] = { 0 , 0 , 0 , 0 };
 
     xddot( s_local , n_local , x , y );
 
-    TPI_Lock(pool,0);
-    {
-      double * const s_pos = t->xy_sum ;
-      double * const s_neg = s_pos + 2 ;
-      SUM_ADD( s_pos , s_local[0] );
-      SUM_ADD( s_pos , s_local[1] );
-      SUM_ADD( s_neg , s_local[2] );
-      SUM_ADD( s_neg , s_local[3] );
-    }
-    TPI_Unlock(pool,0);
+    double * const xy_sum = t->xy_sum + 4 * p_rank ;
+
+    xy_sum[0] = s_local[0] ;
+    xy_sum[1] = s_local[1] ;
+    xy_sum[2] = s_local[2] ;
+    xy_sum[3] = s_local[3] ;
   }
 }
+
 
 void txddot( TPI_ThreadPool pool , 
              double * s , unsigned n , const double * x , const double * y )
 {
-  struct TaskXY data = { s , x , y , n };
-  TPI_Set_lock_size( pool , 1 );
-  TPI_Run( pool , & task_xddot_xy_work , & data );
+  int p_rank , p_size ;
+  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+    const int ntmp = 4 * p_size ;
+    double tmp[ ntmp ];
+    struct TaskXY data = { tmp , x , y , n , BLOCKING_SIZE };
+    for ( int i = 0 ; i < ntmp ; ++i ) { tmp[i] = 0 ; }
+    if ( data.block ) {
+      TPI_Run( pool , & task_xddot_xy_work_blocking , & data );
+    }
+    else {
+      TPI_Run( pool , & task_xddot_xy_work , & data );
+    }
+    for ( int i = 0 ; i < p_size ; ++i ) {
+      xdsum_add_dsum( s , tmp + 4 * i );
+    }
+  }
 }
 
 /*--------------------------------------------------------------------*/

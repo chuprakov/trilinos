@@ -32,29 +32,107 @@
 
 #if ! defined(NO_PTHREADS)
 
+#include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
 #include <pthread.h>
 
-#define USE_SPIN_LOCK 1
+/*--------------------------------------------------------------------*/
+/*--------------------------------------------------------------------*/
+
+#define NO_SCHED
+
+#if ! defined(NO_SCHED)
+
+#include <sys/types.h>
+
+static int set_affinity( int i )
+{
+  extern int sched_getaffinity( pid_t, unsigned int , unsigned long * );
+  extern int sched_setaffinity( pid_t, unsigned int , unsigned long * );
+
+  unsigned long tmp = 0 ;
+
+  int result = sched_getaffinity( 0 , sizeof(unsigned long) , & tmp );
+
+  if ( ! result ) {
+    result = ( tmp &= 1 << i ) ? 0 : -1 ;
+  }
+/* For now simply verify that the rank is within the CPU count */
+/*
+  if ( ! result ) {
+    result = sched_setaffinity( 0 , sizeof(unsigned long) , & tmp );
+  }
+  if ( ! result ) {
+    result = sched_getaffinity( 0 , sizeof(unsigned long) , & tmp );
+  }
+  if ( ! result ) {
+    result = ( tmp == 1 << i ) ? 0 : -1 ;
+  }
+*/
+  return result ;
+}
+
+#else
+
+static int set_affinity( int i ) { return i ? 0 : 0  ; }
+
+#endif
 
 /*--------------------------------------------------------------------*/
-/*  Note to self, try <pthread.h> advanced realtime threads option.
- *     pthread_spinlock_t
- *     pthread_spin_init
- *     pthread_spin_lock
- *     pthread_spin_trylock
- *     pthread_spin_unlock
- *     pthread_spin_destroy
- */
+/*--------------------------------------------------------------------*/
+
+#define USE_SPIN_LOCK 0
+#define USE_MUTEX_TRYLOCK 1
+
+#if USE_SPIN_LOCK
+
+/*  try <pthread.h> advanced realtime threads option. */
+typedef pthread_spinlock_t fastlock_type ;
+
+#define FASTLOCK_LOCK( T )     pthread_spin_lock( T )
+#define FASTLOCK_TRYLOCK( T )  pthread_spin_trylock( T )
+#define FASTLOCK_UNLOCK( T )   pthread_spin_unlock( T )
+#define FASTLOCK_INIT( T )     pthread_spin_init( T , PTHREAD_PROCESS_PRIVATE )
+#define FASTLOCK_DESTROY( T )  pthread_spin_destroy( T )
+
+#elif USE_MUTEX_TRYLOCK
+
+typedef pthread_mutex_t   fastlock_type ;
+
+static int FASTLOCK_LOCK( fastlock_type * T )
+{
+  int result ;
+  while ( EBUSY == ( result = pthread_mutex_trylock( T ) ) ); 
+  return result ;
+}
+
+#define FASTLOCK_TRYLOCK( T )  pthread_mutex_trylock( T )
+#define FASTLOCK_UNLOCK( T )   pthread_mutex_unlock( T )
+#define FASTLOCK_INIT( T )     pthread_mutex_init( T , NULL )
+#define FASTLOCK_DESTROY( T )  pthread_mutex_destroy( T )
+
+#else
+
+typedef pthread_mutext_t   fastlock_type ;
+
+#define FASTLOCK_LOCK( T )     pthread_mutex_lock( T )
+#define FASTLOCK_TRYLOCK( T )  pthread_mutex_trylock( T )
+#define FASTLOCK_UNLOCK( T )   pthread_mutex_unlock( T )
+#define FASTLOCK_INIT( T )     pthread_mutex_init( T , NULL )
+#define FASTLOCK_DESTROY( T )  pthread_mutex_destroy( T )
+
+#endif
+
+/*--------------------------------------------------------------------*/
 /*--------------------------------------------------------------------*/
 
 struct ThreadPool_Data ;
 
 typedef struct TPI_ThreadPool_Private {
-  pthread_mutex_t          m_lock ; /* Consider pthread_spin_t */
+  fastlock_type            m_lock ;
   int                   (* m_check )( TPI_ThreadPool );
-
+  volatile int             m_status ;
   struct ThreadPool_Data * m_pool ;
   void                   * m_buffer ;
 } ThreadData ;
@@ -65,7 +143,7 @@ typedef struct ThreadPool_Data {
   ThreadData             * m_thread ;
   int                      m_thread_size ;
 
-  pthread_mutex_t        * m_mutex ; /* Consider pthred_spin_t */
+  fastlock_type          * m_mutex ;
   int                      m_mutex_size ;
   TPI_parallel_subprogram  m_routine ;
   void                   * m_argument ;
@@ -90,6 +168,10 @@ int TPI_Pool_rank( TPI_ThreadPool local , int * rank , int * size )
     if ( NULL != rank ) { *rank = local - local->m_pool->m_thread ; }
     if ( NULL != size ) { *size = local->m_pool->m_thread_size ; }
   }
+  else {
+    if ( NULL != rank ) { *rank = 0 ; }
+    if ( NULL != size ) { *size = 0 ; }
+  }
   return result ;
 }
 
@@ -99,6 +181,10 @@ int TPI_Buffer( TPI_ThreadPool local , void ** buffer , int * size )
   if ( ! result ) {
     if ( NULL != buffer ) { *buffer = local->m_buffer ; }
     if ( NULL != size   ) { *size   = local->m_pool->m_buf_size ; }
+  }
+  else {
+    if ( NULL != buffer ) { *buffer = NULL ; }
+    if ( NULL != size   ) { *size   = 0 ; }
   }
   return result ;
 }
@@ -128,13 +214,7 @@ static int local_thread_pool_lock( ThreadPool * pool , int i )
   int result = ( NULL != pool && 0 <= i && i < pool->m_mutex_size )
                ? 0 : TPI_ERROR_SIZE ;
   if ( ! result ) {
-    pthread_mutex_t * m = pool->m_mutex + i ;
-#if USE_SPIN_LOCK
-    while ( EBUSY == ( result = pthread_mutex_trylock(m) ) ); 
-    if ( result ) { result = TPI_ERROR_LOCK ; }
-#else
-    result = pthread_mutex_lock(m) ? TPI_ERROR_LOCK : 0 ;
-#endif
+    result = FASTLOCK_LOCK( pool->m_mutex + i ) ? TPI_ERROR_LOCK : 0 ;
   }
   return result ;
 }
@@ -144,9 +224,11 @@ static int local_thread_pool_trylock( ThreadPool * pool , int i )
   int result = ( NULL != pool && 0 <= i && i < pool->m_mutex_size )
                ? 0 : TPI_ERROR_SIZE ;
   if ( ! result ) {
-    result = pthread_mutex_trylock( pool->m_mutex + i );
-    if ( EBUSY == result ) { result = TPI_LOCK_BUSY ; }
-    else if ( result )     { result = TPI_ERROR_LOCK ; }
+    switch( FASTLOCK_TRYLOCK( pool->m_mutex + i ) ) {
+    case 0 : break ;
+    case EBUSY : result = TPI_LOCK_BUSY ; break ;
+    default    : result = TPI_ERROR_LOCK ; break ;
+    }
   }
   return result ;
 }
@@ -156,7 +238,7 @@ static int local_thread_pool_unlock( ThreadPool * pool , int i )
   int result = ( NULL != pool && 0 <= i && i < pool->m_mutex_size )
                ? 0 : TPI_ERROR_SIZE ;
   if ( ! result ) {
-    result = pthread_mutex_unlock( pool->m_mutex + i ) ? TPI_ERROR_LOCK : 0 ;
+    result = FASTLOCK_UNLOCK( pool->m_mutex + i ) ? TPI_ERROR_LOCK : 0 ;
   }
   return result ;
 }
@@ -216,23 +298,36 @@ int TPI_Split_unlock( TPI_ThreadPool local , int i )
 /*--------------------------------------------------------------------*/
 /*--------------------------------------------------------------------*/
 
+static void local_thread_pool_die( void * arg , TPI_ThreadPool pool )
+{
+  if ( NULL == pool || arg != pool->m_pool ) {
+    fprintf(stderr,"TPI internal corruption\n");
+    fflush(stderr);
+  }
+}
+
 static int local_thread_pool_run_routine( ThreadData * const td )
 {
   int working = 1 ;
 
-  const ThreadPool * const p = td->m_pool ;
+  if ( ! FASTLOCK_TRYLOCK( & td->m_lock ) ) {
 
-  if ( NULL != p ) {
+    const ThreadPool * const p = td->m_pool ;
     const unsigned size = p->m_buf_size ;
 
-    if ( ( working = ( NULL != p->m_routine ) ) ) {
+    if ( td->m_status ) {
       char buffer[ size ];
       void * const old = td->m_buffer ;
       td->m_buffer = size ? buffer : NULL ;
       (* p->m_routine)( p->m_argument, td );
       td->m_buffer = old ;
+
+      td->m_status = 0 ; /* Have completed */
     }
-    td->m_pool = NULL ; /* Have completed */
+
+    working = local_thread_pool_die != td->m_pool->m_routine ;
+
+    FASTLOCK_UNLOCK( & td->m_lock );
   }
 
   return working ;
@@ -241,25 +336,58 @@ static int local_thread_pool_run_routine( ThreadData * const td )
 /*--------------------------------------------------------------------*/
 /* Driver: call the routine, check for thread termination */
 
+#if 0
+
 static void * local_thread_pool_driver( void * arg )
 {
   ThreadData * const td = (ThreadData*)( arg );
 
   for ( int working = 1 ; working ; ) {
-#if USE_SPIN_LOCK
-    if ( ! pthread_mutex_trylock( & td->m_lock ) ) {
+    if ( td->m_status ) {
       working = local_thread_pool_run_routine( td );
-      pthread_mutex_unlock( & td->m_lock );
     }
-#else
-    pthread_mutex_lock( & td->m_lock );
-    working = local_thread_pool_run_routine( td );
-    pthread_mutex_unlock( & td->m_lock );
-#endif
   }
 
   return NULL ;
 }
+
+#else
+
+static void * local_thread_pool_driver( void * arg )
+{
+  ThreadData * const my_td = (ThreadData*)( arg );
+  ThreadPool * const root_pool = my_td->m_pool ; /* started on root */
+  const unsigned root_size = root_pool->m_thread_size ;
+  const unsigned root_rank = my_td - root_pool->m_thread ;
+
+  for ( int working = 1 ; working ; ) {
+
+    /* Always do my work first, I may terminate */
+
+    if ( my_td->m_status ) {
+
+      working = local_thread_pool_run_routine( my_td );
+
+      if ( working ) {
+        /* Finished my work, try to steal some work */
+
+        for ( unsigned i = 1 ; i < root_size ; ++i ) {
+          const unsigned p = ( i + root_rank ) % root_size ;
+          if ( p ) {
+            ThreadData * const td = root_pool->m_thread + p ;
+            if ( td->m_status ) {
+              local_thread_pool_run_routine( td );
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return NULL ;
+}
+
+#endif
 
 /*--------------------------------------------------------------------*/
 
@@ -271,12 +399,12 @@ static int local_thread_pool_run( ThreadPool * const pool )
   int result = 0 ;
 
   {
-    pthread_mutex_t locks[ number_locks ]; /* consider pthread_spin_t */
+    fastlock_type locks[ number_locks ];
 
     unsigned nlocks = 0 ;
 
     while ( nlocks < number_locks && ! result ) {
-      if ( pthread_mutex_init( locks + nlocks , NULL ) ) {
+      if ( FASTLOCK_INIT( locks + nlocks ) ) {
         result = TPI_ERROR_INTERNAL ;
       }
       else {
@@ -285,15 +413,12 @@ static int local_thread_pool_run( ThreadPool * const pool )
     }
 
     if ( ! result ) {
-      int running[ number_thread ];
 
       pool->m_mutex = locks ;
 
-      for ( unsigned i = 1 ; i < number_thread ; ++i ) {
+      for ( unsigned i = 0 ; i < number_thread ; ++i ) {
         ThreadData * const td = pool->m_thread + i ;
-        if ( ( running[i] = NULL != td->m_pool ) ) {
-          pthread_mutex_unlock( & td->m_lock );
-        }
+        td->m_status = NULL != td->m_pool ; /* Start running now */
       }
 
       local_thread_pool_run_routine( pool->m_thread );
@@ -301,25 +426,16 @@ static int local_thread_pool_run( ThreadPool * const pool )
       for ( int waiting = 1 ; waiting ; ) {
         waiting = 0 ;
         for ( unsigned i = 1 ; i < number_thread ; ++i ) {
-          if ( running[i] ) {
-            ThreadData * const td = pool->m_thread + i ;
-            if ( ! pthread_mutex_trylock( & td->m_lock ) ) { /* Spin */
-              local_thread_pool_run_routine( td );
-              running[i] = 0 ;
-            }
-            else {
-              waiting = 1 ;
-            }
+          ThreadData * const td = pool->m_thread + i ;
+          if ( td->m_status ) { /* Tried to start this, maybe it ran ? */
+            waiting = 1 ;
+            local_thread_pool_run_routine( td ); /* Make sure it ran */
           }
         }
       }
     }
 
-    while ( nlocks-- ) { pthread_mutex_destroy( locks + nlocks ); }
-  }
-
-  for ( unsigned i = 0 ; i < number_thread ; ++i ) {
-    pool->m_thread[i].m_pool = NULL ;
+    while ( nlocks-- ) { FASTLOCK_DESTROY( locks + nlocks ); }
   }
 
   pool->m_mutex      = NULL ;
@@ -386,15 +502,7 @@ int TPI_Run( TPI_ThreadPool local ,
     pool->m_routine  = routine ;
     pool->m_argument = routine_data ;
 
-    const unsigned number_thread = pool->m_thread_size ;
-
-    for ( unsigned i = 1 ; i < number_thread ; ++i ) {
-      pool->m_thread[i].m_pool = pool ;
-    }
-
     result = local_thread_pool_run( pool );
-
-    local->m_pool = pool ;
 
     pthread_mutex_unlock( & pool->m_active );
   }
@@ -433,7 +541,12 @@ int TPI_Split( TPI_ThreadPool local ,
     if ( ! result ) {
 
       ThreadPool children[ number ];
+
       int child = 0 ;
+
+      for ( int i = 0 ; i < parent->m_thread_size ; ++i ) {
+        parent->m_thread[i].m_pool = NULL ;
+      }
 
       for ( int offset = 0 ; child < number && ! result ; ) {
 
@@ -465,12 +578,12 @@ int TPI_Split( TPI_ThreadPool local ,
       if ( ! result ) { result = local_thread_pool_run( parent ); }
 
       while ( child-- ) {
-        ThreadPool * const pool = children + child ;
-        pthread_mutex_destroy( & pool->m_active );
-        pool->m_thread->m_pool = NULL ;
+        pthread_mutex_destroy( & children[child].m_active );
       }
 
-      local->m_pool = parent ;
+      for ( int i = 0 ; i < parent->m_thread_size ; ++i ) {
+        parent->m_thread[i].m_pool = parent ;
+      }
     }
 
     pthread_mutex_unlock( & parent->m_active );
@@ -484,10 +597,13 @@ int TPI_Split( TPI_ThreadPool local ,
 
 static void local_thread_pool_start_task( void * arg , TPI_ThreadPool local )
 {
+  const int p_rank = * ((int*) arg );
+
   if ( NULL  != arg &&
        NULL  != local &&
        NULL  != local->m_pool &&
-       local == local->m_pool->m_thread + *( (int*) arg ) ) {
+       local == local->m_pool->m_thread + p_rank &&
+       ! set_affinity( p_rank ) ) {
     local->m_check = & local_thread_pool_check ;
   }
 }
@@ -498,95 +614,125 @@ static void local_thread_pool_terminate_threads( ThreadPool * pool )
 
   pool->m_thread_size = 0 ;
   pool->m_mutex_size = 0 ;
-  pool->m_routine  = NULL ;
-  pool->m_argument = NULL ;
+  pool->m_routine  = & local_thread_pool_die ;
+  pool->m_argument = pool ;
   pool->m_buf_size = 0 ;
+
+  pool->m_thread[0].m_status = 0 ;
 
   for ( int i = 1 ; i < n ; ++i ) {
     ThreadData * const td = pool->m_thread + i ;
     td->m_pool = pool ;
-    pthread_mutex_unlock( & td->m_lock );
+    td->m_status = 1 ; /* Start running */
+  }
 
-    for ( int waiting = 1 ; waiting ; ) {
-      if ( ! pthread_mutex_lock( & td->m_lock ) ) { /* Hard */
-        if ( NULL == td->m_pool ) { waiting = 0 ; }
-        pthread_mutex_unlock( & td->m_lock );
+  for ( int waiting = 1 ; waiting ; ) {
+    waiting = 0 ;
+    for ( int i = 0 ; i < n ; ++i ) {
+      ThreadData * const td = pool->m_thread + i ;
+      if ( td->m_status ) {
+        waiting = 1 ; /* Wait for thread to die */
+      }
+      else {
+        FASTLOCK_LOCK(    & td->m_lock );
+        FASTLOCK_UNLOCK(  & td->m_lock );
+        FASTLOCK_DESTROY( & td->m_lock );
       }
     }
-    pthread_mutex_destroy( & td->m_lock );
   }
 }
 
 static int local_thread_pool_create_threads( int n , ThreadPool * pool )
 {
   int result = pool->m_thread_size ? TPI_ERROR_ACTIVE : 0 ;
+
+  int n_lock = 0 ;
   int n_thread = 0 ;
-  pthread_attr_t thread_attr ;
 
-  if ( ! result && pthread_attr_init( & thread_attr ) ) {
-    result = TPI_ERROR_INTERNAL ;
-  }
-
+  /*------------------------------------------------------------------*/
+  /* Initialize thread data and create all thread run-control locks */
   if ( ! result ) {
-    /* pthread_setconcurrency( n ); */
 
-    pthread_attr_setscope(       & thread_attr, PTHREAD_SCOPE_SYSTEM );
-    pthread_attr_setdetachstate( & thread_attr, PTHREAD_CREATE_DETACHED );
-
-/* GNU runtime rejects this attribute:
-    pthread_attr_setschedpolicy( & thread_attr, SCHED_FIFO );
-*/
-
-    pool->m_routine  = & local_thread_pool_start_task ;
-    pool->m_argument = & n_thread ;
-
-    pool->m_thread->m_check  = & local_thread_pool_check ;
-    pool->m_thread->m_pool   = pool ;
-    pool->m_thread->m_buffer = NULL ;
-
-    for ( n_thread = 1 ; n_thread < n && ! result ; ) {
-      pthread_t pt ;
-
-      ThreadData * const td = pool->m_thread + n_thread ;
+    for ( n_lock = 0 ; n_lock < n && ! result ; ) {
+      ThreadData * const td = pool->m_thread + n_lock ;
 
       td->m_check  = NULL ;
       td->m_pool   = pool ;
       td->m_buffer = NULL ;
+      td->m_status = 1 ;
 
-      if ( pthread_mutex_init( & td->m_lock , NULL ) ) {
-        result = TPI_ERROR_INTERNAL ;
-      }
-      else if ( pthread_create( & pt ,
-                                & thread_attr ,
-                                & local_thread_pool_driver ,
-                                (void *) td ) ) {
-        pthread_mutex_destroy( & td->m_lock );
+      if ( FASTLOCK_INIT( & td->m_lock ) ) {
         result = TPI_ERROR_INTERNAL ;
       }
       else {
-        for ( int waiting = 1 ; waiting && ! result ; ) {
-          if ( ! pthread_mutex_lock( & td->m_lock ) ) { /* Hard */
-            if ( NULL != td->m_pool ) {
-              pthread_mutex_unlock( & td->m_lock ); /* has not run */
+        ++n_lock ;
+      }
+    }
+  }
+  /*------------------------------------------------------------------*/
+  /* Start up all threads and verify they started correctly */
+  if ( ! result ) {
+    pthread_attr_t thread_attr ;
+
+    if ( pthread_attr_init( & thread_attr ) ) {
+      result = TPI_ERROR_INTERNAL ;
+    }
+    else {
+
+      /* pthread_setconcurrency( n ); */
+
+      pthread_attr_setscope(       & thread_attr, PTHREAD_SCOPE_SYSTEM );
+      pthread_attr_setdetachstate( & thread_attr, PTHREAD_CREATE_DETACHED );
+
+/* GNU runtime rejects this realtime-threads attribute:
+      pthread_attr_setschedpolicy( & thread_attr, SCHED_FIFO );
+*/
+
+      pool->m_routine  = & local_thread_pool_start_task ;
+      pool->m_argument = & n_thread ;
+      pool->m_thread->m_check = & local_thread_pool_check ;
+
+      for ( n_thread = 1 ; n_thread < n && ! result ; ) {
+        pthread_t pt ;
+
+        ThreadData * const td = pool->m_thread + n_thread ;
+
+        if ( pthread_create( & pt ,
+                             & thread_attr ,
+                             & local_thread_pool_driver ,
+                             (void *) td ) ) {
+          result = TPI_ERROR_INTERNAL ;
+        }
+        else {
+          for ( int waiting = 1 ; waiting ; ) {
+            if ( ! FASTLOCK_LOCK( & td->m_lock ) ) {
+              if ( ! td->m_status ) { waiting = 0 ; /* Has run */ }
+              FASTLOCK_UNLOCK( & td->m_lock );
             }
-            else if ( & local_thread_pool_check != td->m_check ) {
-              result = TPI_ERROR_INTERNAL ;
-            }
-            else {
-              waiting = 0 ;
-              ++n_thread ;
-            }
+          }
+          if ( & local_thread_pool_check != td->m_check ) {
+            result = TPI_ERROR_INTERNAL ;
+          }
+          else {
+            ++n_thread ;
           }
         }
       }
+      pthread_attr_destroy( & thread_attr );
     }
-    pthread_attr_destroy( & thread_attr );
 
     pool->m_thread_size = n_thread ;
     pool->m_routine  = NULL ;
     pool->m_argument = NULL ;
+  }
 
-    if ( result ) { local_thread_pool_terminate_threads( pool ); }
+  /*------------------------------------------------------------------*/
+  if ( result ) {
+    local_thread_pool_terminate_threads( pool );
+
+    for ( int i = n_thread ; i < n_lock ; ++i ) {
+      FASTLOCK_DESTROY( & pool->m_thread[i].m_lock );
+    }
   }
 
   return result ;
@@ -632,7 +778,11 @@ static int local_thread_pool_root( int n , TPI_ThreadPool * local )
 int TPI_Init( int n , TPI_ThreadPool * local )
 {
   int result = NULL != local ? 0 : TPI_ERROR_NULL ;
+  if ( ! result && set_affinity( 0 ) ) { result = TPI_ERROR_INTERNAL ; }
   if ( ! result ) { result = local_thread_pool_root( n , local ); }
+  if ( result ) {
+    fprintf(stderr,"TPI_Init FAILED: threads not activated\n");
+  }
   return result ;
 }
 
