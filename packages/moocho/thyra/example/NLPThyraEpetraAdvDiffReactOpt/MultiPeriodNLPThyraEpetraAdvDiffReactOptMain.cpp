@@ -321,6 +321,8 @@ int main( int argc, char* argv[] )
         x0 = epetraThyraModel->getNominalValues().get_x();
       double nrm_x0;
       
+/* 2008/02/21: rabartl: I have commented this out since it is causing an MPI error?
+
       *out << "\nTiming a global reduction across just this cluster: ||x0||_1 = ";
       timer.start(true);
       nrm_x0 = Thyra::norm_1(*x0);
@@ -332,16 +334,21 @@ int main( int argc, char* argv[] )
       timer.start(true);
       RTOpPack::ROpNorm1<Scalar> norm_1_op;
       RCP<RTOpPack::ReductTarget> norm_1_targ = norm_1_op.reduct_obj_create();
-      const VectorBase<Scalar>* vecs[] = { &*x0 };
-      Teuchos::dyn_cast<const Thyra::SpmdVectorBase<Scalar> >(*x0).applyOp(
-        &*Teuchos::DefaultComm<Index>::getComm()
-        ,norm_1_op,1,vecs,0,static_cast<VectorBase<Scalar>**>(NULL),&*norm_1_targ
-        ,0,-1,0
+      const Teuchos::RCP<const Teuchos::Comm<Teuchos_Index> > comm
+        = Teuchos::DefaultComm<Index>::getComm();
+      const Teuchos::ArrayView<const Teuchos::Ptr<const VectorBase<Scalar> > >
+        vecs = Teuchos::tuple(Teuchos::ptrInArg(*x0));
+      Teuchos::dyn_cast<const Thyra::SpmdVectorBase<Scalar> >(*x0).applyOpImplWithComm(
+        comm.ptr(),
+        norm_1_op, vecs, Teuchos::null, norm_1_targ.ptr(),
+        0, -1, 0
         );
       nrm_x0 = norm_1_op(*norm_1_targ);
       *out << nrm_x0 << "\n";
       timer.stop();
       *out << "\n    time = " << timer.totalElapsedTime() << " seconds\n";
+
+*/
 
 #ifdef RTOPPACK_SPMD_APPLY_OP_DUMP
       RTOpPack::show_mpi_apply_op_dump = false;
