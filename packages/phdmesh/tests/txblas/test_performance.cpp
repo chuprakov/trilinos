@@ -147,21 +147,28 @@ void task_rand_fill( void * arg , TPI::ThreadPool pool )
 void timing_txblas1(
   ParallelMachine comm ,
   TPI::ThreadPool pool , 
-  const unsigned M ,
   const unsigned Mflop_target )
 {
+  enum { NUM_TEST = 13 };
+  double dt[ NUM_TEST ] , mflops[ NUM_TEST ];
+  const unsigned test_length[ NUM_TEST ] = {
+     1e3 , 2e3 , 5e3 ,
+     1e4 , 2e4 , 5e4 ,
+     1e5 , 2e5 , 5e5 ,
+     1e6 , 2e6 , 5e6 ,
+     1e7 };
+  const unsigned alloc_size = test_length[ NUM_TEST - 1 ] ;
+
   const unsigned p_size = parallel_machine_size( comm );
   const unsigned p_rank = parallel_machine_rank( comm );
 
-  const unsigned m_rem   = M % p_size ;
-  const unsigned m_local = M / p_size + ( p_rank < m_rem ? 1 : 0 );
+  std::vector<double> x_values( alloc_size );
+  std::vector<double> y_values( alloc_size );
 
-  std::vector<double> x_values( m_local );
-  std::vector<double> y_values( m_local );
-
-  if ( x_values.size() != m_local || y_values.size() != m_local ) {
-    std::cout << "timing_test_blas1 failed to allocate "
-              << m_local << std::endl ;
+  if ( x_values.size() != alloc_size ||
+       y_values.size() != alloc_size ) {
+    std::cout << "timing_test_blas1 failed to allocate 2 x "
+              << alloc_size << std::endl ;
     return ;
   }
 
@@ -169,7 +176,7 @@ void timing_txblas1(
     FillWork data ;
     data.x_mag = 1 ;
     data.x_beg = & x_values[0] ;
-    data.x_length = m_local ;
+    data.x_length = alloc_size ;
     TPI::Run( pool , & task_rand_fill , & data );
   }
 
@@ -177,112 +184,395 @@ void timing_txblas1(
     FillWork data ;
     data.x_mag = 1 ;
     data.x_beg = & y_values[0] ;
-    data.x_length = m_local ;
+    data.x_length = alloc_size ;
     TPI::Run( pool , & task_rand_fill , & data );
   }
 
-  parallel_machine_barrier( comm );
+  if ( p_rank == 0 ) {
+    std::cout << "TIMING Mflop target = " << Mflop_target << std::endl ;
+    std::cout << "TIMING vector sizes =" ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << test_length[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+  }
 
   //--------------------------------
-  // standard dot
+  // timing for ddot - cache reuse
 
-  {
-    // ddot = ( 1 mult + 1 add ) * M
-    const double mflop_cycle = ((double) 2 * M ) / 1.0e6 ;
+  parallel_machine_barrier( comm );
+
+  for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+    const unsigned length  = test_length[i_test] ;
+    const unsigned m_rem   = length % p_size ;
+    const unsigned m_local = length / p_size + ( p_rank < m_rem ? 1 : 0 );
+
+    // ddot = ( 1 mult + 1 add ) * length
+    const double mflop_cycle = ((double) 2 * length ) / 1.0e6 ;
     const unsigned ncycle = 1 + (unsigned)( Mflop_target / mflop_cycle );
-    const double mflop_total = mflop_cycle * ncycle ;
 
     double t = wall_time();
 
     for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+      double * const x = & x_values[0] ;
+      double * const y = & y_values[0] ;
       double s ;
-      tddot( pool , & s , m_local , & x_values[0] , & y_values[0] );
+      tddot( pool , & s , m_local , x , y );
       all_reduce( comm , ReduceSum<1>( & s ) );
     }
 
-    double dt = wall_dtime( t );
+    dt[ i_test ] = wall_dtime( t );
+    mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
+  }
 
-    all_reduce( comm , ReduceMax<1>( & dt ) );
+  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
+                     ReduceMin< NUM_TEST >( mflops ) );
 
-    if ( p_rank == 0 ) {
-      std::cout << "TIMING tddot =   "
-                << ( mflop_total / dt ) << " Mflops ( "
-                << mflop_cycle << " * " << ncycle << " / " << dt << " )"
-                << std::endl ;
-      std::cout.flush();
+  if ( p_rank == 0 ) {
+    std::cout << "TIMING tddot[cache reuse] test time (sec) = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << dt[ i_test ];
     }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+
+    std::cout << "TIMING tddot[cache reuse] Mflops = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << mflops[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
   }
 
   //--------------------------------
-  // double-double accumulation dot
+  // timing for ddot - no cache reuse
 
-  {
-    // xddot = ( 1 mult + 7 add + 2 compare ) * M
-    const double mflop_cycle = ((double) 10 * M ) / 1.0e6 ;
+  parallel_machine_barrier( comm );
+
+  for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+    const unsigned length  = test_length[i_test] ;
+    const unsigned m_rem   = length % p_size ;
+    const unsigned m_local = length / p_size + ( p_rank < m_rem ? 1 : 0 );
+    const unsigned m_count = alloc_size / m_local ;
+
+    // ddot = ( 1 mult + 1 add ) * length
+    const double mflop_cycle = ((double) 2 * length ) / 1.0e6 ;
     const unsigned ncycle = 1 + (unsigned)( Mflop_target / mflop_cycle );
-    const double mflop_total = mflop_cycle * ncycle ;
 
     double t = wall_time();
 
     for ( unsigned i = 0 ; i < ncycle ; ++i ) {
-      Summation z ;
-      txddot( pool , z.xdval , m_local , & x_values[0] , & y_values[0] );
-      all_reduce( comm , ReduceSum<1>( & z ) );
+      const unsigned offset = m_local * ( ( 2 * i ) % m_count );
+      double * const x = & x_values[0] + offset ;
+      double * const y = & y_values[0] + offset ;
+      double s ;
+      tddot( pool , & s , m_local , x , y );
+      all_reduce( comm , ReduceSum<1>( & s ) );
     }
 
-    double dt = wall_dtime( t );
+    dt[ i_test ] = wall_dtime( t );
+    mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
+  }
 
-    all_reduce( comm , ReduceMax<1>( & dt ) );
+  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
+                     ReduceMin< NUM_TEST >( mflops ) );
 
-    if ( p_rank == 0 ) {
-      std::cout << "TIMING txddot =  "
-                << ( mflop_total / dt ) << " Mflops ( "
-                << mflop_cycle << " * " << ncycle << " / " << dt << " )"
-                << std::endl ;
-      std::cout.flush();
+  if ( p_rank == 0 ) {
+    std::cout << "TIMING tddot[cached fresh] test time (sec) = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << dt[ i_test ];
     }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+
+    std::cout << "TIMING tddot[cached fresh] Mflops = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << mflops[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
   }
 
   //--------------------------------
-  // standard  y[i] = a * x[i] + b * y[i]
+  // timing for double-double accumulation dot - cache reuse
 
-  {
+  parallel_machine_barrier( comm );
+
+  for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+    const unsigned length  = test_length[i_test] ;
+    const unsigned m_rem   = length % p_size ;
+    const unsigned m_local = length / p_size + ( p_rank < m_rem ? 1 : 0 );
+
+    // xddot = ( 1 mult + 7 add + 2 compare ) * length
+    const double mflop_cycle = ((double) 10 * length ) / 1.0e6 ;
+    const unsigned ncycle = 1 + (unsigned)( Mflop_target / mflop_cycle );
+
+    double t = wall_time();
+
+    for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+      double * const x = & x_values[0] ;
+      double * const y = & y_values[0] ;
+      Summation s ;
+      txddot( pool , s.xdval , m_local , x , y );
+      all_reduce( comm , ReduceSum<1>( & s ) );
+    }
+
+    dt[ i_test ] = wall_dtime( t );
+    mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
+  }
+
+  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
+                     ReduceMin< NUM_TEST >( mflops ) );
+
+  if ( p_rank == 0 ) {
+    std::cout << "TIMING txddot[cache reuse] test time (sec) = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << dt[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+
+    std::cout << "TIMING txddot[cache reuse] Mflops = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << mflops[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+  }
+
+  //--------------------------------
+  // timing for double-double accumulation dot - no cache reuse
+
+  parallel_machine_barrier( comm );
+
+  for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+    const unsigned length  = test_length[i_test] ;
+    const unsigned m_rem   = length % p_size ;
+    const unsigned m_local = length / p_size + ( p_rank < m_rem ? 1 : 0 );
+    const unsigned m_count = alloc_size / m_local ;
+
+    // xddot = ( 1 mult + 7 add + 2 compare ) * length
+    const double mflop_cycle = ((double) 10 * length ) / 1.0e6 ;
+    const unsigned ncycle = 1 + (unsigned)( Mflop_target / mflop_cycle );
+
+    double t = wall_time();
+
+    for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+      const unsigned offset = m_local * ( ( 2 * i ) % m_count );
+      double * const x = & x_values[0] + offset ;
+      double * const y = & y_values[0] + offset ;
+      Summation s ;
+      txddot( pool , s.xdval , m_local , x , y );
+      all_reduce( comm , ReduceSum<1>( & s ) );
+    }
+
+    dt[ i_test ] = wall_dtime( t );
+    mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
+  }
+
+  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
+                     ReduceMin< NUM_TEST >( mflops ) );
+
+  if ( p_rank == 0 ) {
+    std::cout << "TIMING txddot[cache fresh] test time (sec) = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << dt[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+
+    std::cout << "TIMING txddot[cache fresh] Mflops = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << mflops[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+  }
+
+  //--------------------------------
+  // standard  y[i] = a * x[i] + b * y[i] - cache reuse
+
+  parallel_machine_barrier( comm );
+
+  for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+    const unsigned length  = test_length[i_test] ;
+    const unsigned m_rem   = length % p_size ;
+    const unsigned m_local = length / p_size + ( p_rank < m_rem ? 1 : 0 );
+
     // daxpby = 2 mult + 1 add
-    const double mflop_cycle = ((double) 3 * M ) / 1.0e6 ;
+    const double mflop_cycle = ((double) 3 * length ) / 1.0e6 ;
     const unsigned ncycle = 1 + (unsigned)( Mflop_target / mflop_cycle );
-    const double mflop_total = mflop_cycle * ncycle ;
 
     double t = wall_time();
 
     for ( unsigned i = 0 ; i < ncycle ; ++i ) {
-      tdaxpby( pool, m_local, 1.0, & x_values[0], 1.0, & y_values[0], 0 );
+      double * const x = & x_values[0] ;
+      double * const y = & y_values[0] ;
+      tdaxpby( pool, m_local, 1.0, x, 1.0, y, 0 );
     }
 
-    double dt = wall_dtime( t );
+    dt[ i_test ] = wall_dtime( t );
+    mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
+  }
 
-    all_reduce( comm , ReduceMax<1>( & dt ) );
+  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
+                     ReduceMin< NUM_TEST >( mflops ) );
 
-    t = wall_time();
+  if ( p_rank == 0 ) {
+    std::cout << "TIMING tdaxpby[part, cache reuse] test time (sec) = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << dt[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+
+    std::cout << "TIMING tdaxpby[part, cache reuse] Mflops = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << mflops[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+  }
+
+  //--------------------------------
+  // standard  y[i] = a * x[i] + b * y[i] - cache fresh
+
+  parallel_machine_barrier( comm );
+
+  for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+    const unsigned length  = test_length[i_test] ;
+    const unsigned m_rem   = length % p_size ;
+    const unsigned m_local = length / p_size + ( p_rank < m_rem ? 1 : 0 );
+    const unsigned m_count = alloc_size / m_local ;
+
+    // daxpby = 2 mult + 1 add
+    const double mflop_cycle = ((double) 3 * length ) / 1.0e6 ;
+    const unsigned ncycle = 1 + (unsigned)( Mflop_target / mflop_cycle );
+
+    double t = wall_time();
 
     for ( unsigned i = 0 ; i < ncycle ; ++i ) {
-      tdaxpby( pool, m_local, 1.0, & x_values[0], 1.0, & y_values[0], 1 );
+      const unsigned offset = m_local * ( ( 2 * i ) % m_count );
+      double * const x = & x_values[0] + offset ;
+      double * const y = & y_values[0] + offset ;
+      tdaxpby( pool, m_local, 1.0, x, 1.0, y, 0 );
     }
 
-    double dt_block = wall_dtime( t );
+    dt[ i_test ] = wall_dtime( t );
+    mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
+  }
 
-    all_reduce( comm , ReduceMax<1>( & dt_block ) );
+  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
+                     ReduceMin< NUM_TEST >( mflops ) );
 
-    if ( p_rank == 0 ) {
-      std::cout << "TIMING tdaxpby[part]  = "
-                << ( mflop_total / dt ) << " Mflops ( "
-                << mflop_cycle << " * " << ncycle << " / " << dt << " )"
-                << std::endl ;
-      std::cout << "TIMING tdaxpby[block] = "
-                << ( mflop_total / dt_block ) << " Mflops ( "
-                << mflop_cycle << " * " << ncycle << " / " << dt_block << " )"
-                << std::endl ;
-      std::cout.flush();
+  if ( p_rank == 0 ) {
+    std::cout << "TIMING tdaxpby[part, cache fresh] test time (sec) = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << dt[ i_test ];
     }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+
+    std::cout << "TIMING tdaxpby[part, cache fresh] Mflops = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << mflops[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+  }
+
+  //--------------------------------
+  // blocked  y[i] = a * x[i] + b * y[i] - cache reuse
+
+  parallel_machine_barrier( comm );
+
+  for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+    const unsigned length  = test_length[i_test] ;
+    const unsigned m_rem   = length % p_size ;
+    const unsigned m_local = length / p_size + ( p_rank < m_rem ? 1 : 0 );
+
+    // daxpby = 2 mult + 1 add
+    const double mflop_cycle = ((double) 3 * length ) / 1.0e6 ;
+    const unsigned ncycle = 1 + (unsigned)( Mflop_target / mflop_cycle );
+
+    double t = wall_time();
+
+    for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+      double * const x = & x_values[0] ;
+      double * const y = & y_values[0] ;
+      tdaxpby( pool, m_local, 1.0, x, 1.0, y, 1 );
+    }
+
+    dt[ i_test ] = wall_dtime( t );
+    mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
+  }
+
+  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
+                     ReduceMin< NUM_TEST >( mflops ) );
+
+  if ( p_rank == 0 ) {
+    std::cout << "TIMING tdaxpby[block, cache reuse] test time (sec) = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << dt[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+
+    std::cout << "TIMING tdaxpby[block, cache reuse] Mflops = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << mflops[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+  }
+
+  //--------------------------------
+  //--------------------------------
+  // blocked  y[i] = a * x[i] + b * y[i] - cache fresh
+
+  parallel_machine_barrier( comm );
+
+  for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+    const unsigned length  = test_length[i_test] ;
+    const unsigned m_rem   = length % p_size ;
+    const unsigned m_local = length / p_size + ( p_rank < m_rem ? 1 : 0 );
+    const unsigned m_count = alloc_size / m_local ;
+
+    // daxpby = 2 mult + 1 add
+    const double mflop_cycle = ((double) 3 * length ) / 1.0e6 ;
+    const unsigned ncycle = 1 + (unsigned)( Mflop_target / mflop_cycle );
+
+    double t = wall_time();
+
+    for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+      const unsigned offset = m_local * ( ( 2 * i ) % m_count );
+      double * const x = & x_values[0] + offset ;
+      double * const y = & y_values[0] + offset ;
+      tdaxpby( pool, m_local, 1.0, x, 1.0, y, 1 );
+    }
+
+    dt[ i_test ] = wall_dtime( t );
+    mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
+  }
+
+  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
+                     ReduceMin< NUM_TEST >( mflops ) );
+
+  if ( p_rank == 0 ) {
+    std::cout << "TIMING tdaxpby[block, cache fresh] test time (sec) = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << dt[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
+
+    std::cout << "TIMING tdaxpby[block, cache fresh] Mflops = " ;
+    for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+      std::cout << " " << mflops[ i_test ];
+    }
+    std::cout << std::endl << std::endl ;
+    std::cout.flush();
   }
 
   //--------------------------------
@@ -378,13 +668,11 @@ void test_timing_blas1( phdmesh::ParallelMachine comm ,
                        TPI::ThreadPool pool ,
                        std::istream & is )
 {
-  unsigned num = 10000000 ;
   unsigned mflop = 1000 ;
-  if ( is.good() ) { is >> num ; }
   if ( is.good() ) { is >> mflop ; }
-  timing_txblas1( comm , pool , num , mflop );
-  timing_txblas1( comm , pool , num , mflop );
-  timing_txblas1( comm , pool , num , mflop );
+  timing_txblas1( comm , pool , mflop );
+  timing_txblas1( comm , pool , mflop );
+  timing_txblas1( comm , pool , mflop );
 }
 
 //----------------------------------------------------------------------
