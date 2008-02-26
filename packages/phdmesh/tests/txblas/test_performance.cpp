@@ -223,14 +223,12 @@ void timing_txblas1(
         all_reduce( comm , ReduceSum<1>( & s ) );
       }
 
-      const double d = wall_dtime( t );
+      double d = wall_dtime( t );
+      all_reduce( comm , ReduceMax<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
   }
-
-  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
-                     ReduceMin< NUM_TEST >( mflops ) );
 
   if ( p_rank == 0 ) {
     std::cout << "\"TIMING tddot[cache reuse] test time (sec)\"" ;
@@ -275,14 +273,14 @@ void timing_txblas1(
         all_reduce( comm , ReduceSum<1>( & s ) );
       }
 
-      const double d = wall_dtime( t );
+      double d = wall_dtime( t );
+
+      all_reduce( comm , ReduceMax<1>( & d ) );
+      
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
   }
-
-  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
-                     ReduceMin< NUM_TEST >( mflops ) );
 
   if ( p_rank == 0 ) {
     std::cout << "\"TIMING tddot[cache fresh] test time (sec)\"" ;
@@ -325,14 +323,12 @@ void timing_txblas1(
         all_reduce( comm , ReduceSum<1>( & s ) );
       }
 
-      const double d = wall_dtime( t );
+      double d = wall_dtime( t );
+      all_reduce( comm , ReduceMax<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
   }
-
-  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
-                     ReduceMin< NUM_TEST >( mflops ) );
 
   if ( p_rank == 0 ) {
     std::cout << "\"TIMING txddot[cache reuse] test time (sec)\"" ;
@@ -377,14 +373,12 @@ void timing_txblas1(
         all_reduce( comm , ReduceSum<1>( & s ) );
       }
 
-      const double d = wall_dtime( t );
+      double d = wall_dtime( t );
+      all_reduce( comm , ReduceMax<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
   }
-
-  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
-                     ReduceMin< NUM_TEST >( mflops ) );
 
   if ( p_rank == 0 ) {
     std::cout << "\"TIMING txddot[cache fresh] test time (sec)\"" ;
@@ -425,14 +419,12 @@ void timing_txblas1(
         tdaxpby( pool, m_local, 1.0, x, 1.0, y, 0 );
       }
 
-      const double d = wall_dtime( t );
+      double d = wall_dtime( t );
+      all_reduce( comm , ReduceMax<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
   }
-
-  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
-                     ReduceMin< NUM_TEST >( mflops ) );
 
   if ( p_rank == 0 ) {
     std::cout << "\"TIMING tdaxpby[part, cache reuse] test time (sec)\"" ;
@@ -475,14 +467,12 @@ void timing_txblas1(
         tdaxpby( pool, m_local, 1.0, x, 1.0, y, 0 );
       }
 
-      const double d = wall_dtime( t );
+      double d = wall_dtime( t );
+      all_reduce( comm , ReduceMax<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
   }
-
-  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
-                     ReduceMin< NUM_TEST >( mflops ) );
 
   if ( p_rank == 0 ) {
     std::cout << "\"TIMING tdaxpby[part, cache fresh] test time (sec)\"" ;
@@ -522,15 +512,14 @@ void timing_txblas1(
         double * const y = & y_values[0] ;
         tdaxpby( pool, m_local, 1.0, x, 1.0, y, 1 );
       }
-      const double d = wall_dtime( t );
+
+      double d = wall_dtime( t );
+      all_reduce( comm , ReduceMax<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
 
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
   }
-
-  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
-                     ReduceMin< NUM_TEST >( mflops ) );
 
   if ( p_rank == 0 ) {
     std::cout << "\"TIMING tdaxpby[block, cache reuse] test time (sec)\"" ;
@@ -573,14 +562,12 @@ void timing_txblas1(
         double * const y = & y_values[0] + offset ;
         tdaxpby( pool, m_local, 1.0, x, 1.0, y, 1 );
       }
-      const double d = wall_dtime( t );
+      double d = wall_dtime( t );
+      all_reduce( comm , ReduceMax<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
   }
-
-  all_reduce( comm , ReduceMax< NUM_TEST >( dt ) &
-                     ReduceMin< NUM_TEST >( mflops ) );
 
   if ( p_rank == 0 ) {
     std::cout << "\"TIMING tdaxpby[block, cache fresh] test time (sec)\"" ;
