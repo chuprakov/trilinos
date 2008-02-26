@@ -315,7 +315,7 @@ void test_tpi_chunk( ParallelMachine , TPI_ThreadPool pool ,
   enum { NUM_TEST = 6 };
   const unsigned test_num_array[ NUM_TEST ] = { 2 , 5 , 10 , 20 , 50 , 100 };
 
-  struct TestTPI_Chunk data = { NULL , 0 , 0 , 0 , 0 };
+  struct TestTPI_Chunk data = { NULL , NULL , 0 , 0 , 0 , 0 };
   double dt_array[ NUM_TEST ] , mflops_array[ NUM_TEST ];
   double dt_chunk_col[ NUM_TEST ] , mflops_chunk_col[ NUM_TEST ];
   double dt_chunk_row[ NUM_TEST ] , mflops_chunk_row[ NUM_TEST ];
@@ -347,23 +347,29 @@ void test_tpi_chunk( ParallelMachine , TPI_ThreadPool pool ,
 
     data.num_array = test_num_array[ i_test ];
 
-    t = wall_time();
+    for ( unsigned repeat = 0 ; repeat < 3 ; ++repeat ) {
+      t = wall_time();
 
-    if ( locking ) {
-      for ( unsigned i = 0 ; i < ncycle ; ++i ) {
-        data.chunk = 0 ;
-        TPI_Set_lock_size( pool , 1 );
-        TPI_Run( pool , & test_tpi_chunk_array_locking , & data );
+      if ( locking ) {
+        for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+          data.chunk = 0 ;
+          TPI_Set_lock_size( pool , 1 );
+          TPI_Run( pool , & test_tpi_chunk_array_locking , & data );
+        }
+      }
+      else {
+        for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+          data.chunk = 0 ;
+          TPI_Run( pool , & test_tpi_chunk_array_clean , & data );
+        }
+      }
+
+      const double dt = wall_dtime( t );
+
+      if ( 0 == repeat || dt < dt_array[ i_test ] ) {
+        dt_array[ i_test ] = dt ;
       }
     }
-    else {
-      for ( unsigned i = 0 ; i < ncycle ; ++i ) {
-        data.chunk = 0 ;
-        TPI_Run( pool , & test_tpi_chunk_array_clean , & data );
-      }
-    }
-
-    dt_array[ i_test ] = wall_dtime( t );
     mflops_array[ i_test ] = mflop_cycle * ncycle / dt_array[ i_test ];
   }
 
@@ -394,39 +400,53 @@ void test_tpi_chunk( ParallelMachine , TPI_ThreadPool pool ,
       }
     }
 
-    t = wall_time();
+    for ( unsigned repeat = 0 ; repeat < 3 ; ++repeat ) {
+      t = wall_time();
 
-    if ( locking ) {
-      for ( unsigned i = 0 ; i < ncycle ; ++i ) {
-        data.chunk = 0 ;
-        TPI_Set_lock_size( pool , 1 );
-        TPI_Run( pool , & test_tpi_chunk_col_locking , & data );
-      }
-    }
-    else {
-      for ( unsigned i = 0 ; i < ncycle ; ++i ) {
-        data.chunk = 0 ;
-        TPI_Run( pool , & test_tpi_chunk_col_clean , & data );
-      }
-    }
-
-    dt_chunk_col[ i_test ] = wall_dtime( t );
-    mflops_chunk_col[ i_test ] = mflop_cycle * ncycle / dt_chunk_col[ i_test ];
-
-    t = wall_time();
-
-    for ( unsigned i = 0 ; i < ncycle ; ++i ) {
-      data.chunk = 0 ;
       if ( locking ) {
-        TPI_Set_lock_size( pool , 1 );
-        TPI_Run( pool , & test_tpi_chunk_row_locking , & data );
+        for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+          data.chunk = 0 ;
+          TPI_Set_lock_size( pool , 1 );
+          TPI_Run( pool , & test_tpi_chunk_col_locking , & data );
+        }
       }
       else {
-        TPI_Run( pool , & test_tpi_chunk_row_clean , & data );
+        for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+          data.chunk = 0 ;
+          TPI_Run( pool , & test_tpi_chunk_col_clean , & data );
+        }
+      }
+
+      const double dt = wall_dtime( t );
+
+      if ( 0 == repeat || dt < dt_chunk_col[ i_test ] ) {
+        dt_chunk_col[ i_test ] = dt ;
       }
     }
 
-    dt_chunk_row[ i_test ] = wall_dtime( t );
+    mflops_chunk_col[ i_test ] = mflop_cycle * ncycle / dt_chunk_col[ i_test ];
+
+    for ( unsigned repeat = 0 ; repeat < 3 ; ++repeat ) {
+      t = wall_time();
+
+      for ( unsigned i = 0 ; i < ncycle ; ++i ) {
+        data.chunk = 0 ;
+        if ( locking ) {
+          TPI_Set_lock_size( pool , 1 );
+          TPI_Run( pool , & test_tpi_chunk_row_locking , & data );
+        }
+        else {
+          TPI_Run( pool , & test_tpi_chunk_row_clean , & data );
+        }
+      }
+
+      const double dt = wall_dtime( t );
+
+      if ( 0 == repeat || dt < dt_chunk_row[ i_test ] ) {
+        dt_chunk_row[ i_test ] = dt ;
+      }
+    }
+
     mflops_chunk_row[ i_test ] = mflop_cycle * ncycle / dt_chunk_row[ i_test ];
 
     for ( unsigned i = 0 ; i < num_chunks ; ++i ) {
