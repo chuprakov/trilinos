@@ -460,47 +460,47 @@ void test_tpi_chunk( ParallelMachine , TPI_ThreadPool pool ,
   //--------------------------------------------------------------------
 
   std::cout << std::endl
-            << "TIMING MULTIARRAY len_array = " << len_array
+            << "\"TIMING MULTIARRAY len_array = " << len_array
             << " , len_chunk = " << len_chunk
             << " , locking = " << locking
-            << " , target = " << Mflop_target << " Mflops"
+            << " , target = " << Mflop_target << " Mflops\""
             << std::endl ;
-  std::cout << "Arrays =" ;
+  std::cout << "\"Arrays\"" ;
   for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
-    std::cout << " " << test_num_array[ i_test ] ;
+    std::cout << " , " << test_num_array[ i_test ] ;
   }
   std::cout << std::endl << std::endl ;
 
-  std::cout << "FLAT ARRAY test time (sec) = " ;
+  std::cout << "\"FLAT ARRAY test time (sec)\"" ;
   for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
-    std::cout << " " << dt_array[ i_test ] ;
+    std::cout << " , " << dt_array[ i_test ] ;
   }
   std::cout << std::endl << std::endl ;
-  std::cout << "FLAT ARRAY test Mflops = " ;
+  std::cout << "\"FLAT ARRAY test Mflops\"" ;
   for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
-    std::cout << " " << mflops_array[ i_test ] ;
-  }
-  std::cout << std::endl << std::endl ;
-
-  std::cout << "CHUNK COLUMN test time (sec) = " ;
-  for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
-    std::cout << " " << dt_chunk_col[ i_test ] ;
-  }
-  std::cout << std::endl << std::endl ;
-  std::cout << "CHUNK COLUMN test Mflops = " ;
-  for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
-    std::cout << " " << mflops_chunk_col[ i_test ] ;
+    std::cout << " , " << mflops_array[ i_test ] ;
   }
   std::cout << std::endl << std::endl ;
 
-  std::cout << "CHUNK ROW test time (sec) = " ;
+  std::cout << "\"CHUNK COLUMN test time (sec)\"" ;
   for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
-    std::cout << " " << dt_chunk_row[ i_test ] ;
+    std::cout << " , " << dt_chunk_col[ i_test ] ;
   }
   std::cout << std::endl << std::endl ;
-  std::cout << "CHUNK ROW test Mflops = " ;
+  std::cout << "\"CHUNK COLUMN test Mflops\"" ;
   for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
-    std::cout << " " << mflops_chunk_row[ i_test ] ;
+    std::cout << " , " << mflops_chunk_col[ i_test ] ;
+  }
+  std::cout << std::endl << std::endl ;
+
+  std::cout << "\"CHUNK ROW test time (sec)\"" ;
+  for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+    std::cout << " , " << dt_chunk_row[ i_test ] ;
+  }
+  std::cout << std::endl << std::endl ;
+  std::cout << "\"CHUNK ROW test Mflops\"" ;
+  for ( unsigned i_test = 0 ; i_test < NUM_TEST ; ++i_test ) {
+    std::cout << " , " << mflops_chunk_row[ i_test ] ;
   }
   std::cout << std::endl << std::endl ;
   std::cout.flush();
