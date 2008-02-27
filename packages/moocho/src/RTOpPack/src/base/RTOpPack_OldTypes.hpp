@@ -32,6 +32,7 @@
 #define RTOPPACK_OLD_TYPES_HPP
 
 #include "RTOpPack_Types.hpp"
+#include "RTOpPack_SparseSubVectorT.hpp"
 #include "RTOp.h"
 
 namespace RTOpPack {
@@ -53,7 +54,7 @@ public:
     {}
   /** \brief . */
   SubVectorT1B( const ConstSubVectorView<Scalar>& sv )
-    :globalOffset_(sv.globalOffset()), subDim_(sv.subDim()), values_(sv.values()), stride_(sv.stride()) 
+    :globalOffset_(sv.globalOffset()), subDim_(sv.subDim()), values_(sv.values().get()), stride_(sv.stride()) 
     {}
   /** \brief . */
   operator ConstSubVectorView<Scalar>()
@@ -111,7 +112,7 @@ public:
     {}
   /** \brief . */
   MutableSubVectorT1B( const SubVectorView<Scalar>& sv )
-    :SubVectorT1B<Scalar>(MutableSubVectorT1B<Scalar>(sv.globalOffset(),sv.subDim(),sv.values(),sv.stride())) 
+    :SubVectorT1B<Scalar>(MutableSubVectorT1B<Scalar>(sv.globalOffset(),sv.subDim(),sv.values().get(),sv.stride())) 
     {}
   /** \brief . */
   operator SubVectorView<Scalar>()
