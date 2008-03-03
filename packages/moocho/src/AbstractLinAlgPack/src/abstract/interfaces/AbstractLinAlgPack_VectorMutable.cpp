@@ -177,19 +177,21 @@ void VectorMutable::commit_sub_vector( RTOpPack::MutableSubVector* sub_vec_inout
 void VectorMutable::set_sub_vector( const RTOpPack::SparseSubVector& sub_vec )
 {
   RTOp_SparseSubVector spc_sub_vec;
-  if(sub_vec.indices()) {
+  if (!is_null(sub_vec.indices())) {
     RTOp_sparse_sub_vector(
-      sub_vec.globalOffset(), sub_vec.subDim(), sub_vec.subNz()
-      ,sub_vec.values(), sub_vec.valuesStride(), sub_vec.indices(), sub_vec.indicesStride()
-      ,sub_vec.localOffset(), sub_vec.isSorted()
-      ,&spc_sub_vec
+      sub_vec.globalOffset(), sub_vec.subDim(), sub_vec.subNz(),
+      sub_vec.values().get(), sub_vec.valuesStride(),
+      sub_vec.indices().get(), sub_vec.indicesStride(),
+      sub_vec.localOffset(), sub_vec.isSorted(),
+      &spc_sub_vec
       );
   }
   else {
     RTOp_SubVector _sub_vec;
     RTOp_sub_vector(
-      sub_vec.globalOffset(), sub_vec.subDim(), sub_vec.values(), sub_vec.valuesStride()
-      ,&_sub_vec
+      sub_vec.globalOffset(), sub_vec.subDim(),
+      sub_vec.values().get(), sub_vec.valuesStride(),
+      &_sub_vec
       );
     RTOp_sparse_sub_vector_from_dense( &_sub_vec, &spc_sub_vec );
   }
