@@ -142,7 +142,7 @@ include_HEADERS = $(MOOCHO_THYRA_H)
 # special.
 
 execincludedir = $(exec_prefix)/include
-nodist_execinclude_HEADERS = $(MOOCHO_THYRA_H)
+nodist_execinclude_HEADERS =
 
 # --------------------------------------------------------------------
 # Files to be deleted by 'make maintainer-clean'

@@ -2382,7 +2382,7 @@ include_HEADERS = $(MOOCHO_H)
 # not a default installation directory, so we had to create it
 # special.
 execincludedir = $(exec_prefix)/include
-nodist_execinclude_HEADERS = Moocho_Config.h $(MOOCHO_H)
+nodist_execinclude_HEADERS = Moocho_Config.h
 
 # --------------------------------------------------------------------
 # Files to be deleted by 'make maintainer-clean'

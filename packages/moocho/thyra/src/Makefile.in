@@ -336,7 +336,7 @@ include_HEADERS = $(MOOCHO_THYRA_H)
 # not a default installation directory, so we had to create it
 # special.
 execincludedir = $(exec_prefix)/include
-nodist_execinclude_HEADERS = $(MOOCHO_THYRA_H)
+nodist_execinclude_HEADERS = 
 
 # --------------------------------------------------------------------
 # Files to be deleted by 'make maintainer-clean'
