@@ -36,6 +36,12 @@
 #include "FEApp_InitPostOps.hpp"
 #include "FEApp_GlobalFill.hpp"
 
+// #define AGS_BLOCK_DIST_TESTCODE
+#ifdef AGS_BLOCK_DIST_TESTCODE
+#include "FEApp_BlockDiscretization.hpp"
+#endif
+  
+
 FEApp::Application::Application(
 		   const std::vector<double>& coords,
 		   const Teuchos::RCP<const Epetra_Comm>& comm,
@@ -70,6 +76,27 @@ FEApp::Application::Application(
   disc->createMesh();
   disc->createMaps();
   disc->createJacobianGraphs();
+
+
+#ifdef AGS_BLOCK_DIST_TESTCODE
+  // No parallelism over blocks, so spatial partition is unchanged as comm->NumProc()
+  int numStochasticBlocks=3;
+  Teuchos::RCP<EpetraExt::MultiMpiComm> globalComm =
+    Teuchos::rcp(new EpetraExt::MultiMpiComm(MPI_COMM_WORLD, comm->NumProc(), numStochasticBlocks));
+ 
+  FEApp::BlockDiscretization bdisc(globalComm, disc);
+
+  cout << "ORIG  MAP " << *(disc->getMap()) << endl;
+  cout << "BLOCK MAP " << *(bdisc.getMap()) << endl;
+
+  cout << endl;
+
+  cout << "ORIG  GRAPH " << *(disc->getJacobianGraph()) << endl;
+  cout << "BLOCK GRAPH " << *(bdisc.getJacobianGraph()) << endl;
+
+  cout << endl;
+  exit(-1);
+#endif
 
   // Create Epetra objects
   importer = Teuchos::rcp(new Epetra_Import(*(disc->getOverlapMap()), 
