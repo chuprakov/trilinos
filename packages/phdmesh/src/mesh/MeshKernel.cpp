@@ -32,6 +32,7 @@
 #include <sstream>
 #include <algorithm>
 
+#include <mesh/EntityType.hpp>
 #include <mesh/Kernel.hpp>
 #include <mesh/Entity.hpp>
 #include <mesh/Mesh.hpp>
@@ -181,7 +182,7 @@ bool Kernel::valid( const Field<void,0> & f ,
 //----------------------------------------------------------------------
 
 Kernel::Kernel( Mesh & arg_mesh ,
-                EntityType arg_type ,
+                unsigned arg_type ,
                 const unsigned * arg_key )
 : SetvMember<const unsigned * const>( arg_key ),
   m_mesh( arg_mesh ) ,
@@ -346,13 +347,11 @@ void Mesh::destroy_kernel( KernelSet::iterator ik )
 //----------------------------------------------------------------------
 
 KernelSet::iterator
-Mesh::declare_kernel( const EntityType arg_entity_type ,
+Mesh::declare_kernel( const unsigned arg_entity_type ,
                       const PartSet & entity_parts )
 {
   static const char method[] = "phdmesh::Kernel" ;
   const unsigned max = ~((unsigned) 0);
-
-  const unsigned kernel_capacity = m_kernel_capacity[ arg_entity_type ];
 
   KernelSet & kernel_set = m_kernels[ arg_entity_type ];
 
@@ -421,7 +420,7 @@ Mesh::declare_kernel( const EntityType arg_entity_type ,
 
       size_t value_offset = 0 ;
 
-      value_offset += align( sizeof(Entity*) * kernel_capacity );
+      value_offset += align( sizeof(Entity*) * m_kernel_capacity );
 
       for ( unsigned i = 0 ; i < num_fields ; ++i ) {
         const Field<void,0>  & field = * field_set[i] ;
@@ -433,7 +432,7 @@ Mesh::declare_kernel( const EntityType arg_entity_type ,
         field_map[i].m_size = value_size ;
         field_map[i].m_dim  = & dim ;
 
-        value_offset += align( value_size * kernel_capacity );
+        value_offset += align( value_size * m_kernel_capacity );
       }
       field_map[ num_fields ].m_base  = value_offset ;
       field_map[ num_fields ].m_size = 0 ;
@@ -467,7 +466,7 @@ Mesh::declare_kernel( const EntityType arg_entity_type ,
     }
 
     kernel->m_size      = 0 ;
-    kernel->m_capacity  = kernel_capacity ;
+    kernel->m_capacity  = m_kernel_capacity ;
     kernel->m_field_map = field_map ;
     kernel->m_entities  = (Entity **) ptr ;
 
@@ -516,7 +515,7 @@ void Mesh::insert_entity( Entity & e , const PartSet & parts )
 
 void Mesh::remove_entity( KernelSet::iterator ik , unsigned i )
 {
-  const EntityType entity_type = ik->m_entity_type ;
+  const unsigned entity_type = ik->m_entity_type ;
 
   KernelSet & kset = m_kernels[ entity_type ] ;
 

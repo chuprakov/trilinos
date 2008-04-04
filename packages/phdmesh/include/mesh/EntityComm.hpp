@@ -79,9 +79,8 @@ public:
 
   /** Unpack entity information filled by pack_entity. */
   void unpack_entity( CommBuffer & , const Mesh & ,
-                      EntityType    & entity_type ,
-                      unsigned long & entity_id ,
-                      unsigned      & owner_rank ,
+                      entity_key_type & entity_key ,
+                      unsigned        & owner_rank ,
                       std::vector<Part*> & parts ,
                       std::vector<Connect> & connections ,
                       std::vector<unsigned> & send_destinations ) const ;

@@ -32,10 +32,10 @@
 
 //----------------------------------------------------------------------
 
-void test_reduce( phdmesh::ParallelMachine , TPI_ThreadPool , std::istream & );
-void test_accuracy( phdmesh::ParallelMachine, TPI_ThreadPool, std::istream & );
-void test_timing_blas1( phdmesh::ParallelMachine , TPI_ThreadPool , std::istream & );
-void test_timing_mxv( phdmesh::ParallelMachine, TPI_ThreadPool, std::istream & );
+void test_reduce( phdmesh::ParallelMachine , std::istream & );
+void test_accuracy( phdmesh::ParallelMachine, std::istream & );
+void test_timing_blas1( phdmesh::ParallelMachine , std::istream & );
+void test_timing_mxv( phdmesh::ParallelMachine, std::istream & );
 
 //----------------------------------------------------------------------
 

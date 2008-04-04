@@ -29,7 +29,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include <util/TPI.h>
 #include <util/Parallel.hpp>
 #include <util/ParallelComm.hpp>
 #include <util/ParallelReduce.hpp>
@@ -207,7 +206,7 @@ void print_cuts( const std::vector< OctTreeKey > & cut_keys ,
 
 }
 
-void test_oct_tree_comm_part( ParallelMachine comm , TPI_ThreadPool, std::istream & is )
+void test_oct_tree_comm_part( ParallelMachine comm , std::istream & is )
 {
   typedef OctTreeKey OctTreeKey ;
 
@@ -323,7 +322,7 @@ void test_oct_tree_comm_part( ParallelMachine comm , TPI_ThreadPool, std::istrea
   }
 }
 
-void test_oct_tree_part_course( ParallelMachine comm , TPI_ThreadPool, std::istream & is )
+void test_oct_tree_part_course( ParallelMachine comm , std::istream & is )
 {
   typedef OctTreeKey OctTreeKey ;
 
@@ -476,7 +475,7 @@ void oct_tree_part(
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void test_global_box( ParallelMachine comm , TPI_ThreadPool, std::istream & is )
+void test_global_box( ParallelMachine comm , std::istream & is )
 {
   unsigned number = 100 ;
 
@@ -532,8 +531,7 @@ void test_global_box( ParallelMachine comm , TPI_ThreadPool, std::istream & is )
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void test_oct_tree_global_search(
-  ParallelMachine comm , TPI_ThreadPool thread_pool , std::istream & is )
+void test_oct_tree_global_search( ParallelMachine comm , std::istream & is )
 {
   unsigned number = 10000 ;
 
@@ -574,7 +572,7 @@ void test_oct_tree_global_search(
 
   box_global_bounds( comm , number , & boxes[0] , 0 , NULL , global_box );
 
-  oct_tree_proximity_search( comm , thread_pool ,
+  oct_tree_proximity_search( comm ,
                              global_box ,
                              number , & boxes[0] ,
                              number , & boxes[0] ,
@@ -606,7 +604,6 @@ void test_oct_tree_global_search(
 
 void test_oct_tree_global_search_time(
   phdmesh::ParallelMachine comm ,
-  TPI_ThreadPool thread_pool ,
   std::istream & )
 {
   parallel_machine_barrier( comm );
@@ -666,7 +663,7 @@ void test_oct_tree_global_search_time(
 
       box_global_bounds( comm, num_local, & boxes[0], 0, NULL, global_box );
 
-      oct_tree_proximity_search( comm , thread_pool ,
+      oct_tree_proximity_search( comm ,
                                  global_box ,
                                  num_local , & boxes[0] ,
                                  num_local , & boxes[0] ,
@@ -692,7 +689,7 @@ void test_oct_tree_global_search_time(
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void test_oct_tree( ParallelMachine , TPI_ThreadPool, std::istream & )
+void test_oct_tree( ParallelMachine , std::istream & )
 {
   const double tolerance = 1.0e-8 ;
   test_oct_tree_keys();

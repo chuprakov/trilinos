@@ -32,6 +32,7 @@
 #include <util/OctTreeOps.hpp>
 
 #include <mesh/Types.hpp>
+#include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Proximity.hpp>
@@ -55,7 +56,7 @@ struct ProximityBoxes {
   ProximityBoxes( 
     Mesh & M ,
     const ProximitySearch & prox ,
-    const EntityType entity_type ,
+    const unsigned entity_type ,
     std::vector< std::pair<IdentProc,IdentProc> > & proximity );
 
   void fill_boxes();
@@ -104,7 +105,7 @@ void ProximityBoxes::fill_boxes()
 ProximityBoxes::ProximityBoxes(
   Mesh & M ,
   const ProximitySearch & prox ,
-  const EntityType entity_type ,
+  const unsigned entity_type ,
   std::vector< std::pair<IdentProc,IdentProc> > & proximity )
   : m_prox( prox ),
     m_mesh( M ),
@@ -177,7 +178,7 @@ ProximityBoxes::ProximityBoxes(
   unsigned search_stats[6] ;
   unsigned search_tasks ;
 
-  oct_tree_proximity_search( S.parallel() , thread_pool ,
+  oct_tree_proximity_search( S.parallel() ,
                              global_box ,
                              boxes.size() , & boxes[0] , 0 , NULL ,
                              NULL , proximity , search_stats ,
@@ -191,10 +192,9 @@ ProximityBoxes::ProximityBoxes(
 //----------------------------------------------------------------------
 
 void proximity_search(
-  TPI::ThreadPool thread_pool ,
   Mesh & M ,
   const ProximitySearch & prox ,
-  const EntityType entity_type ,
+  const unsigned entity_type ,
   std::vector< std::pair<IdentProc,IdentProc> > & proximity )
 {
   const Schema & S = M.schema();
@@ -285,7 +285,7 @@ void proximity_search(
 
   unsigned search_stats[6] ;
 
-  oct_tree_proximity_search( M.parallel() , thread_pool ,
+  oct_tree_proximity_search( M.parallel() ,
                              global_box ,
                              boxes.size() , & boxes[0] , 0 , NULL ,
                              NULL , proximity , search_stats );

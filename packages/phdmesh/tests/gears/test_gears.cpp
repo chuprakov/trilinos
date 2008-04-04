@@ -87,7 +87,6 @@ void parallel_gather( ParallelMachine ,
 //----------------------------------------------------------------------
 
 void test_gears_face_proximity(
-  TPI::ThreadPool thread_pool ,
   Mesh & M ,
   const Field<double,1> & gear_coordinates ,
   const Field<double,1> & field_proximity ,
@@ -119,7 +118,7 @@ void test_gears_face_proximity(
 
   wt = wall_time();
 
-  proximity_search( thread_pool , M , prox_search , Face , proximity );
+  proximity_search( M , prox_search , Face , proximity );
 
   dt_proximity_search += wall_dtime(wt);
 
@@ -148,7 +147,8 @@ void test_gears_face_proximity(
 
       for ( unsigned j = 0 ; j < 2 ; ++j ) {
         if ( p_rank == d[j].proc ) {
-          Entity & face = * M.get_entity( Face , d[j].ident , method );
+          const entity_key_type key = entity_key( Face , d[j].ident );
+          Entity & face = * M.get_entity( key , method );
           for ( ConnectSpan face_nodes = face.connections( Node );
                 face_nodes ; ++face_nodes ) {
             Entity & node = * face_nodes->entity();
@@ -180,7 +180,7 @@ void test_gears_face_proximity(
       // The range face needs to be shared with the domain processor
 
       EntityProc ep ;
-      ep.first  = M.get_entity( Face , r.ident , method );
+      ep.first  = M.get_entity( entity_key( Face , r.ident ) , method );
       ep.second = d.proc ;
       to_be_shared.push_back( ep );
 
@@ -235,7 +235,6 @@ void test_gears_face_proximity(
 //----------------------------------------------------------------------
 
 void test_gears( ParallelMachine pm ,
-                 TPI::ThreadPool thread_pool ,
                  const unsigned i_end ,
                  const unsigned j_end ,
                  const unsigned k_end ,
@@ -247,9 +246,7 @@ void test_gears( ParallelMachine pm ,
   const unsigned p_rank = parallel_machine_rank( pm );
   const unsigned p_size = parallel_machine_size( pm );
 
-  const unsigned kernel_capacity[ EntityTypeMaximum ] =
-    { 100 , 100 , 100 , 100 , 100 };
-    // { 20 , 20 , 20 , 20 , 20 };
+  const unsigned kernel_capacity = 100 ; // 20 ;
 
   Schema S ;
 
@@ -387,24 +384,26 @@ void test_gears( ParallelMachine pm ,
   }
 
   {
-    unsigned long counts[ EntityTypeMaximum ];
-    unsigned long max_id[ EntityTypeMaximum ];
+    entity_id_type counts[ end_entity_rank ];
+    entity_id_type max_id[ end_entity_rank ];
 
     comm_mesh_stats( M , counts , max_id );
 
     if ( p_rank == 0 ) {
-      std::cout << "N_GEARS Global Counts = " 
-                << "node = " << counts[0] << " "
-                << "edge = " << counts[1] << " "
-                << "face = " << counts[2] << " "
-                << "elem = " << counts[3] << " "
-                << "other = " << counts[4] << std::endl ;
-      std::cout << "N_GEARS Global MaxId  = " 
-                << "node = " << max_id[0] << " "
-                << "edge = " << max_id[1] << " "
-                << "face = " << max_id[2] << " "
-                << "elem = " << max_id[3] << " "
-                << "other = " << max_id[4] << std::endl ;
+      std::cout << "N_GEARS Global Counts { " 
+                << "node = " << counts[0] << " , "
+                << "edge = " << counts[1] << " , "
+                << "face = " << counts[2] << " , "
+                << "elem = " << counts[3] << " , "
+                << "particle = " << counts[4] << " , "
+                << "constraint = " << counts[5] << " }" << std::endl ;
+      std::cout << "N_GEARS Global MaxId { " 
+                << "node = " << max_id[0] << " , "
+                << "edge = " << max_id[1] << " , "
+                << "face = " << max_id[2] << " , "
+                << "elem = " << max_id[3] << " , "
+                << "particle = " << max_id[4] << " , "
+                << "constraint = " << max_id[5] << " }" << std::endl ;
     }
   }
 
@@ -451,7 +450,7 @@ void test_gears( ParallelMachine pm ,
     tmp = & gear_fields.displacement ;  out_fields.push_back( tmp );
     tmp = & field_node_proximity ;      out_fields.push_back( tmp );
 
-    int flags[ EntityTypeMaximum ] = { 0 , 0 , 0 , 1 , 0 };
+    int flags[ EndEntityType ] = { 0 , 0 , 0 , 1 , 0 , 0 };
 
     wt = wall_time();
     exo = new exodus::FileOutput( file_schema, M,
@@ -463,7 +462,7 @@ void test_gears( ParallelMachine pm ,
   EntityProcSet prox_domain ;
   EntityProcSet prox_range ;
 
-  test_gears_face_proximity( thread_pool , M ,
+  test_gears_face_proximity( M ,
                              gear_fields.gear_coord ,
                              field_node_proximity ,
                              proximity_search ,
@@ -548,7 +547,7 @@ void test_gears( ParallelMachine pm ,
         return ;
       }
 
-      test_gears_face_proximity( thread_pool , M ,
+      test_gears_face_proximity( M ,
                                  gear_fields.gear_coord ,
                                  field_node_proximity ,
                                  proximity_search ,
@@ -593,8 +592,7 @@ void test_gears( ParallelMachine pm ,
   }
 }
 
-void test_gears( phdmesh::ParallelMachine comm ,
-                 TPI_ThreadPool thread_pool , std::istream & is )
+void test_gears( phdmesh::ParallelMachine comm , std::istream & is )
 {
   const unsigned p_size = phdmesh::parallel_machine_size( comm );
   std::string sval ;
@@ -619,6 +617,6 @@ void test_gears( phdmesh::ParallelMachine comm ,
     exo_file_name << sval << "_np" << p_size << ".exo" ;
   }
 
-  test_gears( comm , thread_pool , i , j , k , exo_file_name.str() , verify );
+  test_gears( comm , i , j , k , exo_file_name.str() , verify );
 }
 

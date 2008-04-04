@@ -52,11 +52,9 @@ public:
   ~Mesh();
 
   /** Construct mesh for the given Schema, parallel machine, and
-   *  with the specified maximum number of entities per kernel,
-   *  kernel_capacity[ EntityTypeMaximum ].
+   *  with the specified maximum number of entities per kernel.
    */
-  Mesh( const Schema & schema , ParallelMachine parallel ,
-        const unsigned kernel_capacity[] );
+  Mesh( const Schema & schema , ParallelMachine parallel , unsigned );
 
   const Schema & schema() const { return m_schema ; }
 
@@ -77,15 +75,12 @@ public:
 
   //------------------------------------
   /** All kernels of a given entity type */
-  const KernelSet & kernels( EntityType ) const ;
+  const KernelSet & kernels( unsigned type ) const ;
 
   /** All entitities of a given entity type */
-  const EntitySet & entities( EntityType ) const ;
+  const EntitySet & entities( unsigned type ) const ;
 
-  Entity * get_entity( unsigned long key ,
-                       const char * required_by = NULL ) const ;
-
-  Entity * get_entity( EntityType , unsigned long ,
+  Entity * get_entity( entity_key_type ,
                        const char * required_by = NULL ) const ;
 
   //------------------------------------
@@ -93,16 +88,11 @@ public:
    *  If has different parts then merge the existing parts
    *  and the input parts.
    */
-  Entity & declare_entity( EntityType ,
-                           unsigned long ,
+  Entity & declare_entity( entity_key_type ,
                            const std::vector<Part*> & ,
                            int owner = -1 );
 
-  Entity & declare_entity( unsigned long key ,
-                           const std::vector<Part*> & ,
-                           int owner = -1 );
-
-  void change_entity_identifier( Entity & , unsigned long );
+  void change_entity_identifier( Entity & , entity_id_type );
 
   void change_entity_parts( Entity & ,
                             const std::vector<Part*> & add_parts ,
@@ -166,9 +156,9 @@ private:
   ParallelMachine m_parallel_machine ;
   unsigned        m_parallel_size ;
   unsigned        m_parallel_rank ;
-  unsigned        m_kernel_capacity[ EntityTypeMaximum ];
-  KernelSet       m_kernels[  EntityTypeMaximum ];
-  EntitySet       m_entities[ EntityTypeMaximum ];
+  unsigned        m_kernel_capacity ;
+  KernelSet       m_kernels[  end_entity_rank ];
+  EntitySet       m_entities[ end_entity_rank ];
   EntityProcSet   m_shares_all ;
   EntityProcSet   m_aura_domain ;
   EntityProcSet   m_aura_range ;
@@ -176,7 +166,7 @@ private:
   void insert_entity( Entity & , const PartSet & );
   void remove_entity( KernelSet::iterator , unsigned );
 
-  KernelSet::iterator declare_kernel( const EntityType , const PartSet & );
+  KernelSet::iterator declare_kernel( const unsigned , const PartSet & );
   void                destroy_kernel( KernelSet::iterator );
 };
 
@@ -185,12 +175,12 @@ private:
 void partset_entity_count(
   Mesh & mesh ,
   Part & part ,
-  unsigned long * const count /* [ EntityTypeMaximum ] */ );
+  entity_id_type * const count /* [ end_entity_rank ] */ );
 
 void partset_entity_count(
   Mesh & mesh ,
   const PartSet & parts ,
-  unsigned long * const count /* [ EntityTypeMaximum ] */ );
+  entity_id_type * const count /* [ end_entity_rank ] */ );
 
 /** Get all kernels within the given part.
  *  Every kernel will have the part in its superset.

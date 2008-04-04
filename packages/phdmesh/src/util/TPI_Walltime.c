@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------*/
-/*      phdMesh : Parallel Heterogneous Dynamic unstructured Mesh         */
-/*                Copyright (2007) Sandia Corporation                     */
+/*                    TPI: Thread Pool Interface                          */
+/*                Copyright (2008) Sandia Corporation                     */
 /*                                                                        */
 /*  Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive   */
 /*  license for use of this work by or on behalf of the U.S. Government.  */
@@ -24,58 +24,17 @@
  * @author H. Carter Edwards
  */
 
-#include <iostream>
 #include <util/TPI.h>
-#include <util/Parallel.hpp>
 
-extern "C" {
-int test_c_tpi( TPI_ThreadPool );
-int test_c_tpi_split( TPI_ThreadPool );
-}
+#include <stddef.h>
+#include <sys/time.h>
 
-//----------------------------------------------------------------------
-
-using namespace phdmesh ;
-
-void test_tpi( ParallelMachine , TPI_ThreadPool, std::istream & s )
+double TPI_Walltime()
 {
-  {
-    int nthreads = 1 ; 
+  struct timeval tp ;
 
-    if ( s.good() ) { s >> nthreads ; }
+  gettimeofday( &tp , ((struct timezone *) NULL ) );
 
-    TPI_ThreadPool pool ;
-
-    int result = TPI_Init( nthreads , & pool );
-
-    if ( result ) {
-      std::cout << "TPI_Init(" << nthreads << ") FAILED = "
-                << result << std::endl ;
-    }
-
-    if ( ! result ) {
-
-      double t = wall_time();
-
-      result = test_c_tpi( pool );
-
-      double dt = wall_dtime( t );
-
-      std::cout << "TEST_TPI(" << nthreads << ") " ;
-      if ( result ) { std::cout << "FAILED WITH " << result ; }
-      else          { std::cout << "PASSED DT = " << dt ; }
-      std::cout << std::endl ;
-    }
-
-    result = test_c_tpi_split( pool );
-
-    std::cout << "TEST_TPI_SPLIT(" << nthreads << ") " ;
-    if ( result ) { std::cout << "FAILED WITH " << result ; }
-    else          { std::cout << "PASSED" ; }
-    std::cout << std::endl ;
-
-    TPI_Finalize();
-  }
+  return ( (double) tp.tv_sec ) + ( (double) tp.tv_usec ) / 1.0e6 ;
 }
-
 

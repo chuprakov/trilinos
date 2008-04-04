@@ -32,6 +32,7 @@
 #include <util/TPI.h>
 #include <util/ParallelComm.hpp>
 
+#include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
@@ -43,7 +44,7 @@ using namespace phdmesh ;
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void test_simple_mesh( ParallelMachine pm , TPI_ThreadPool, std::istream & )
+void test_simple_mesh( ParallelMachine pm , std::istream & )
 {
   typedef element::Hexahedron Hex ;
 
@@ -81,11 +82,7 @@ void test_simple_mesh( ParallelMachine pm , TPI_ThreadPool, std::istream & )
   //--------------------------------------------------------------------
   // Create mesh bulk data conformal to the schema.
 
-  // Maximum number of entries in a mesh kernel,
-  // { nodes , edges, faces , elements , other }
-
-  const unsigned kernel_capacity[ EntityTypeMaximum ] =
-    { 100 , 100 , 100 , 100 , 100 };
+  const unsigned kernel_capacity = 100 ;
 
   Mesh M( S , pm , kernel_capacity );
 
@@ -98,19 +95,19 @@ void test_simple_mesh( ParallelMachine pm , TPI_ThreadPool, std::istream & )
   // an identifier of zero is reserved for 'undefined'.
 
   // Base of this processor's hex
-  const unsigned long node_id_0 = p_rank * 4 + 1 ;
-  const unsigned long node_id_1 = node_id_0 + 1 ;
-  const unsigned long node_id_2 = node_id_0 + 2 ;
-  const unsigned long node_id_3 = node_id_0 + 3 ;
+  const entity_key_type node_key_0 = entity_key( Node , p_rank * 4 + 1 );
+  const entity_key_type node_key_1 = entity_key( Node , p_rank * 4 + 2 );
+  const entity_key_type node_key_2 = entity_key( Node , p_rank * 4 + 3 );
+  const entity_key_type node_key_3 = entity_key( Node , p_rank * 4 + 4 );
 
   // Top of this processor's hex
-  const unsigned long node_id_4 = node_id_0 + 4 ;
-  const unsigned long node_id_5 = node_id_0 + 5 ;
-  const unsigned long node_id_6 = node_id_0 + 6 ;
-  const unsigned long node_id_7 = node_id_0 + 7 ;
+  const entity_key_type node_key_4 = entity_key( Node , p_rank * 4 + 5 );
+  const entity_key_type node_key_5 = entity_key( Node , p_rank * 4 + 6 );
+  const entity_key_type node_key_6 = entity_key( Node , p_rank * 4 + 7 );
+  const entity_key_type node_key_7 = entity_key( Node , p_rank * 4 + 8 );
 
-  const unsigned long elem_id = p_rank + 1 ;
-  const unsigned long face_id = p_rank + 1 ;
+  const entity_key_type elem_key = entity_key( Element , p_rank + 1 );
+  const entity_key_type face_key = entity_key( Face ,    p_rank + 1 );
 
   // Part membership for the elements and nodes:
   // 'owns_part'  Assume this processor owns everything it declares,
@@ -122,16 +119,16 @@ void test_simple_mesh( ParallelMachine pm , TPI_ThreadPool, std::istream & )
 
   // Declare node and element entities:
 
-  Entity & elem = M.declare_entity( Element , elem_id , add_parts , p_rank );
+  Entity & elem = M.declare_entity( elem_key , add_parts , p_rank );
 
-  Entity & node_0 = M.declare_entity( Node , node_id_0 , add_parts , p_rank );
-  Entity & node_1 = M.declare_entity( Node , node_id_1 , add_parts , p_rank );
-  Entity & node_2 = M.declare_entity( Node , node_id_2 , add_parts , p_rank );
-  Entity & node_3 = M.declare_entity( Node , node_id_3 , add_parts , p_rank );
-  Entity & node_4 = M.declare_entity( Node , node_id_4 , add_parts , p_rank );
-  Entity & node_5 = M.declare_entity( Node , node_id_5 , add_parts , p_rank );
-  Entity & node_6 = M.declare_entity( Node , node_id_6 , add_parts , p_rank );
-  Entity & node_7 = M.declare_entity( Node , node_id_7 , add_parts , p_rank );
+  Entity & node_0 = M.declare_entity( node_key_0 , add_parts , p_rank );
+  Entity & node_1 = M.declare_entity( node_key_1 , add_parts , p_rank );
+  Entity & node_2 = M.declare_entity( node_key_2 , add_parts , p_rank );
+  Entity & node_3 = M.declare_entity( node_key_3 , add_parts , p_rank );
+  Entity & node_4 = M.declare_entity( node_key_4 , add_parts , p_rank );
+  Entity & node_5 = M.declare_entity( node_key_5 , add_parts , p_rank );
+  Entity & node_6 = M.declare_entity( node_key_6 , add_parts , p_rank );
+  Entity & node_7 = M.declare_entity( node_key_7 , add_parts , p_rank );
 
   // Declare element <-> node connections
   // These are required to have unique identifiers
@@ -152,7 +149,7 @@ void test_simple_mesh( ParallelMachine pm , TPI_ThreadPool, std::istream & )
 
   add_parts.push_back( face_part );
   
-  Entity & face = M.declare_entity( Face , face_id , add_parts , p_rank );
+  Entity & face = M.declare_entity( face_key , add_parts , p_rank );
 
   // Declare element <-> face connection
 
@@ -215,8 +212,8 @@ void test_simple_mesh( ParallelMachine pm , TPI_ThreadPool, std::istream & )
 
   // Get the global counts and identifier stats
   {
-    unsigned long counts[ EntityTypeMaximum ];
-    unsigned long max_id[ EntityTypeMaximum ];
+    entity_id_type counts[ end_entity_rank ];
+    entity_id_type max_id[ end_entity_rank ];
 
     comm_mesh_stats( M , counts , max_id );
 
@@ -230,6 +227,7 @@ void test_simple_mesh( ParallelMachine pm , TPI_ThreadPool, std::istream & )
                 << " " << counts[2]
                 << " " << counts[3]
                 << " " << counts[4]
+                << " " << counts[5]
                 << " }" << std::endl ;
       std::cout << "  Global MaxId  = {" 
                 << " " << max_id[0]
@@ -237,6 +235,7 @@ void test_simple_mesh( ParallelMachine pm , TPI_ThreadPool, std::istream & )
                 << " " << max_id[2]
                 << " " << max_id[3]
                 << " " << max_id[4]
+                << " " << max_id[5]
                 << " }" << std::endl ;
     }
 
@@ -251,6 +250,7 @@ void test_simple_mesh( ParallelMachine pm , TPI_ThreadPool, std::istream & )
                   << " " << counts[2]
                   << " " << counts[3]
                   << " " << counts[4]
+                  << " " << counts[5]
                   << " }" << std::endl ;
 
         partset_entity_count( M , S.owns_part() , counts );
@@ -261,6 +261,7 @@ void test_simple_mesh( ParallelMachine pm , TPI_ThreadPool, std::istream & )
                   << " " << counts[2]
                   << " " << counts[3]
                   << " " << counts[4]
+                  << " " << counts[5]
                   << " }" << std::endl ;
 
         std::cout.flush();

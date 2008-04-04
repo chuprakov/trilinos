@@ -33,6 +33,7 @@
 #include <utility>
 #include <vector>
 
+#include <util/Basics.hpp>
 #include <util/Span.hpp>
 
 namespace phdmesh {
@@ -60,24 +61,43 @@ typedef std::vector< EntityProc > EntityProcSet ;
 typedef Span< EntityProcSet::const_iterator > EntityProcSpan ;
 
 //----------------------------------------------------------------------
-/** Types of mesh entities.  Extensible via update to the enumeration */
 
-enum EntityType {
-  Node    = 0 ,
-  Edge    = 1 ,
-  Face    = 2 ,
-  Element = 3 ,
-  Other   = 4 ,
-  EntityTypeMaximum = 5 ,
-  EntityTypeMask = 0x0f };
+typedef uint64_type entity_key_type ;
+typedef uint32_type entity_id_type ;
 
-enum { EntityTypeDigits = 4 ,
-       EntityIdentifierDigits =
-         std::numeric_limits<unsigned long>::digits - EntityTypeDigits };
+enum {
+  entity_key_digits     = std::numeric_limits<entity_key_type>::digits ,
+  entity_rank_digits    = 4 ,
+  entity_id_digits_max  = entity_key_digits - entity_rank_digits ,
+  entity_id_digits_want = std::numeric_limits<entity_id_type>::digits ,
+  entity_id_digits      = entity_id_digits_max < entity_id_digits_want ?
+                          entity_id_digits_max : entity_id_digits_want
+};
 
-/** Query text name for entity type */
 
-const char * entity_type_name( EntityType );
+enum { end_entity_rank = ((unsigned)        1) << entity_rank_digits };
+enum { end_entity_id   = ((entity_key_type) 1) << entity_id_digits };
+
+inline
+entity_key_type entity_key( unsigned rank , entity_id_type id )
+{
+  enum { mask = ( ~((entity_key_type) 0) ) >>
+                ( entity_key_digits - entity_id_digits ) };
+
+  return ( ((entity_key_type) rank) << entity_id_digits_max ) | ( id & mask );
+}
+
+inline
+unsigned entity_rank( entity_key_type key )
+{ return key >> entity_id_digits_max ; }
+
+inline
+entity_id_type entity_id( entity_key_type key )
+{
+  enum { mask = ( ~((entity_key_type) 0) ) >>
+                ( entity_key_digits - entity_id_digits ) };
+  return key & mask ;
+}
 
 } // namespace phdmesh
 

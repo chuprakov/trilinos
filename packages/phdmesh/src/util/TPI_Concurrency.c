@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------*/
-/*      phdMesh : Parallel Heterogneous Dynamic unstructured Mesh         */
-/*                Copyright (2007) Sandia Corporation                     */
+/*                    TPI: Thread Pool Interface                          */
+/*                Copyright (2008) Sandia Corporation                     */
 /*                                                                        */
 /*  Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive   */
 /*  license for use of this work by or on behalf of the U.S. Government.  */
@@ -21,28 +21,42 @@
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
 /**
- * @author  H. Carter Edwards  <hcedwar@sandia.gov>
+ * @author H. Carter Edwards
  */
 
-#ifndef main_TestDriver_hpp
-#define main_TestDriver_hpp
+#include <unistd.h>
+#include <sys/types.h>
 
-#include <map>
-#include <string>
-#include <iosfwd>
+#include <util/TPI.h>
 
-#include <util/Parallel.hpp>
-
-namespace phdmesh {
-
-typedef
-void (*TestSubprogram)( ParallelMachine , std::istream & );
-
-typedef std::map< std::string , TestSubprogram > TestDriverMap ;
-
-int test_driver( ParallelMachine , std::istream & , const TestDriverMap & );
-
-}
-
+#ifndef TPI_NO_SCHED
+#define TPI_NO_SCHED 0
 #endif
+
+/*--------------------------------------------------------------------*/
+
+int TPI_Concurrency()
+{
+#if TPI_NO_SCHED
+  return 0 ;
+#else
+  enum { NTMP = 8 };
+
+  extern int sched_getaffinity( pid_t, unsigned int , unsigned long * );
+
+  int count = 0 ;
+  unsigned long tmp[ NTMP ] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
+
+  if ( ! sched_getaffinity( 0 , sizeof(tmp) , tmp ) ) {
+
+    int i ;
+
+    for ( i = 0 ; i < NTMP ; ++i ) {
+      unsigned long t = tmp[i] ;
+      for ( ; t ; t >>= 1 ) { if ( t & 01 ) { ++count ; } }
+    }
+  }
+  return count ;
+#endif
+}
 

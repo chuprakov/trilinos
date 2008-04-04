@@ -32,6 +32,8 @@
 #include <algorithm>
 
 #include <util/FixedArray.hpp>
+#include <mesh/Types.hpp>
+#include <mesh/EntityType.hpp>
 #include <mesh/Field.hpp>
 #include <mesh/Part.hpp>
 #include <mesh/Schema.hpp>
@@ -187,7 +189,7 @@ Field<void,0>::~Field()
 
 Field<void,0>::Field(
   Schema &            arg_schema ,
-  EntityType          arg_type ,
+  unsigned            arg_type ,
   const std::string & arg_name ,
   unsigned scalar_type ,
   unsigned number_of_dimensions ,
@@ -197,7 +199,7 @@ Field<void,0>::Field(
   m_name( arg_name ),
   m_schema( arg_schema ),
   m_schema_ordinal(0),
-  m_entity_type( arg_type ) ,
+  m_entity_rank( arg_type ) ,
   m_scalar_type( scalar_type ),
   m_num_dim( number_of_dimensions ) ,
   m_num_states( number_of_states ),
@@ -238,7 +240,7 @@ namespace {
 std::ostream &
 get_field_header( std::ostream      & arg_msg ,
                   bool                arg_declare ,
-                  EntityType          arg_entity_type ,
+                  unsigned            arg_entity_type ,
                   const std::string & arg_name ,
                   unsigned            arg_scalar_type ,
                   unsigned            arg_num_dim ,
@@ -266,7 +268,7 @@ get_field_header( std::ostream      & arg_msg ,
 Field<void,0> *
 Schema::get_field(
   bool                arg_declare ,
-  EntityType          arg_entity_type ,
+  unsigned            arg_entity_type ,
   const std::string & arg_name ,
   unsigned            arg_scalar_type ,
   unsigned            arg_num_dim ,
@@ -277,7 +279,7 @@ Schema::get_field(
   // ERROR CHECKING of input parameters:
 
   {
-    const bool bad_entity_type = Other < arg_entity_type ;
+    const bool bad_entity_type = end_entity_rank <= arg_entity_type ;
     const bool bad_num_states  = arg_num_states < 1 ||
                                  MaximumFieldStates < arg_num_states ;
   
@@ -356,7 +358,7 @@ Schema::get_field(
 
 Field<void,0> &
 Schema::declare_field(
-  EntityType          arg_entity_type,
+  unsigned            arg_entity_type,
   const std::string & arg_name ,
   unsigned            arg_scalar_type ,
   unsigned            arg_num_dim ,
@@ -524,7 +526,7 @@ void Schema::declare_field_dimension(
       std::ostringstream msg ;
       msg << method ;
       msg << " FAILED WITH INCOMPATIBLE DIMENSION : " ;
-      msg << entity_type_name( field.m_entity_type );
+      msg << entity_type_name( field.m_entity_rank );
       msg << " Field< " ;
       msg << NumericEnum<>::name( field.m_scalar_type );
       msg << " , " << field.m_num_dim ;
@@ -578,7 +580,7 @@ void Schema::clean_field_dimension()
 {
   static const char method[] = "phdmesh::Schema::clean_field_dimension" ;
 
-  for ( unsigned t = 0 ; t < EntityTypeMaximum ; ++t ) {
+  for ( unsigned t = 0 ; t < end_entity_rank ; ++t ) {
     std::vector< Field<void,0> *> & fm = m_fields[t] ;
 
     for ( std::vector< Field<void,0> *>::iterator
@@ -672,7 +674,7 @@ void Field<void,0>::assert_validity( unsigned ftype ,
   if ( bad_type || bad_ndim || bad_state ) {
     std::ostringstream msg ;
     msg << "phdmesh::" ;
-    msg << entity_type_name( m_entity_type );
+    msg << entity_type_name( m_entity_rank );
     msg << " Field< " ;
     msg << NumericEnum<>::name( m_scalar_type );
     msg << " , " ;

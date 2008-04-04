@@ -30,6 +30,7 @@
 #include <algorithm>
 
 #include <mesh/Entity.hpp>
+#include <mesh/EntityType.hpp>
 #include <mesh/Mesh.hpp>
 
 namespace phdmesh {
@@ -38,8 +39,8 @@ namespace phdmesh {
 
 bool Connect::operator < ( const Connect & r ) const
 {
-  unsigned long lhs =   m_attr ;
-  unsigned long rhs = r.m_attr ;
+  entity_key_type lhs =   m_key ;
+  entity_key_type rhs = r.m_key ;
 
   if ( lhs == rhs ) {
     lhs = NULL !=   m_entity ?   m_entity->key() : 0 ;
@@ -49,30 +50,9 @@ bool Connect::operator < ( const Connect & r ) const
   return lhs < rhs ;
 }
 
-Connect::Connect( Entity & e , unsigned id )
-  : m_attr( attribute( e.entity_type(), id) ) , m_entity(&e)
+Connect::Connect( Entity & e , entity_id_type id )
+  : m_key( entity_key( e.entity_type(), id) ) , m_entity(&e)
 {}
-
-//----------------------------------------------------------------------
-
-unsigned long Entity::create_key( EntityType type , unsigned long id )
-{
-  static const char method[] = "phdmesh::Entity::create_key" ;
-
-  unsigned long key = id & KeyIdentifierMask ;
-
-  if ( 0 == id || id != key ) {
-    std::ostringstream msg ;
-    msg << method << " FAILED, Identifier " << id ;
-    msg << " not in range [1.." ;
-    msg << ((unsigned long) KeyIdentifierMask ) << "]" ;
-    throw std::invalid_argument( msg.str() );
-  }
-
-  key |= ((unsigned long)type) << KeyIdentifierDigits ;
-
-  return key ;
-}
 
 //----------------------------------------------------------------------
 
@@ -85,42 +65,53 @@ struct LessConnect {
 struct LessConnectAttr {
   inline
   bool operator()( const Connect & lhs , const Connect & rhs ) const
-    { return lhs.attribute() < rhs.attribute(); }
+    { return lhs.key() < rhs.key(); }
 
   inline
-  bool operator()( const Connect & lhs , const unsigned rhs ) const
-    { return lhs.attribute() < rhs ; }
+  bool operator()( const Connect & lhs , const entity_key_type rhs ) const
+    { return lhs.key() < rhs ; }
 };
 
 //----------------------------------------------------------------------
 
 std::ostream &
-print_entity_key( std::ostream & os , EntityType type , unsigned long id )
+print_entity_key( std::ostream & os , unsigned type , entity_id_type id )
 {
   const char * const name = entity_type_name( type );
   return os << name << "[" << id << "]" ;
 }
 
 std::ostream &
-print_entity_key( std::ostream & os , unsigned long key )
+print_entity_key( std::ostream & os , entity_key_type key )
 {
-  const EntityType type  = Entity::key_entity_type( key );
-  const unsigned long id = Entity::key_identifier( key );
+  const unsigned type     = entity_rank(key);
+  const entity_id_type id = entity_id(key);
   return print_entity_key( os , type , id );
 }
 
 std::ostream &
 print_connect( std::ostream & os ,
-               unsigned connect_attr ,
-               unsigned long entity_key )
+               entity_key_type patch_key ,
+               entity_key_type entity_key )
 {
-  const EntityType    type   = Connect::entity_type( connect_attr );
-  const unsigned      local  = Connect::identifier( connect_attr );
-  const unsigned long global = Entity::key_identifier( entity_key );
+  const unsigned      patch_type   = entity_rank( patch_key );
+  const unsigned      entity_type  = entity_rank( entity_key );
+  const entity_id_type local  = entity_id( patch_key );
+  const entity_id_type global = entity_id( entity_key );
 
-  const char * name = entity_type_name( type );
+  const char * patch_name = entity_type_name( patch_type );
 
-  os << name << "[" << local << "->" << global << "]" ;
+  os << patch_name << "[" << local << "->" ;
+
+  if ( patch_type == entity_type ) {
+    os << global ;
+  }
+  else {
+    const char * type_name = entity_type_name( entity_type );
+    os << type_name << "[" << global << "] " ;
+  }
+
+  os << global << "]" ;
 
   return os ;
 }
@@ -157,11 +148,12 @@ print_entity( std::ostream & os , const std::string & lead , const Entity & e )
 //----------------------------------------------------------------------
 
 namespace {
-const unsigned long & zero_ul() { static unsigned long z = 0 ; return z ; }
+const entity_key_type & zero_key()
+{ static entity_key_type z = 0 ; return z ; }
 }
 
 Entity::Entity()
-  : SetvMember<unsigned long>( zero_ul() ),
+  : SetvMember< entity_key_type >( zero_key() ),
     m_connect(), m_kernel(), m_kernel_ord(0), m_owner_rank(0)
 {}
 
@@ -181,8 +173,8 @@ Entity::~Entity()
 namespace {
 
 ConnectSpan con_span( const ConnectSet & con ,
-                      const unsigned lo_attr ,
-                      const unsigned hi_attr )
+                      const entity_key_type lo_attr ,
+                      const entity_key_type hi_attr )
 {
   ConnectSet::const_iterator i = con.begin();
   ConnectSet::const_iterator e = con.end();
@@ -195,18 +187,18 @@ ConnectSpan con_span( const ConnectSet & con ,
 
 }
 
-ConnectSpan Entity::connections( EntityType et ) const
+ConnectSpan Entity::connections( unsigned et ) const
 {
-  const unsigned lo_key = Connect::attribute( et ,   0 );
-  const unsigned hi_key = Connect::attribute( et+1 , 0 );
+  const entity_key_type lo_key = entity_key( et , 0 );
+  const entity_key_type hi_key = entity_key( et + 1 , 0 );
 
   return con_span( m_connect , lo_key , hi_key );
 }
 
-ConnectSpan Entity::connections( EntityType et, unsigned id ) const
+ConnectSpan Entity::connections( unsigned et, entity_id_type id ) const
 {
-  const unsigned lo_key = Connect::attribute( et , id );
-  const unsigned hi_key = Connect::attribute( et , id );
+  const entity_key_type lo_key = entity_key( et , id );
+  const entity_key_type hi_key = entity_key( et , id );
 
   return con_span( m_connect , lo_key , hi_key );
 }
@@ -218,7 +210,7 @@ namespace {
 void throw_required_unique( Entity & e_hi ,
                             Entity & e_lo ,
                             Entity & e_lo_exist ,
-                            const unsigned identifier ,
+                            const entity_id_type identifier ,
                             const char * required_unique_by )
 {
   static const char method_name[] = "phdmesh::Mesh::declare_connection" ;
@@ -227,18 +219,48 @@ void throw_required_unique( Entity & e_hi ,
 
   msg << method_name << "( " ;
   print_entity_key( msg , e_hi.key() );
-  msg << "->[" ;
+  msg << "->( " ;
   msg << identifier ;
-  msg << "]->" ;
-  print_entity_key( msg , e_lo.key() );
   msg << " , " ;
-  msg << required_unique_by ;
+  print_entity_key( msg , e_lo.key() );
+  msg << " ) , " ;
+  if ( required_unique_by ) {
+    msg << required_unique_by ;
+  }
+  else {
+    msg << "NULL" ;
+  }
   msg << " ) FAILED : ALREADY HAS " ;
   print_entity_key( msg , e_hi.key() );
-  msg << "->[" ;
+  msg << "->( " ;
   msg << identifier ;
-  msg << "]->" ;
+  msg << " , " ;
   print_entity_key( msg , e_lo_exist.key() );
+  msg << " )" ;
+
+  throw std::invalid_argument(msg.str());
+}
+
+void throw_require_different( Entity & e1 , Entity & e2 ,
+                              const char * required_unique_by )
+{
+  static const char method_name[] = "phdmesh::Mesh::declare_connection" ;
+
+  std::ostringstream msg ;
+
+  msg << method_name << "( " ;
+  print_entity_key( msg , e1.key() );
+  msg << " , " ;
+  print_entity_key( msg , e2.key() );
+  msg << " , " ;
+  if ( required_unique_by ) {
+    msg << required_unique_by ;
+  }
+  else {
+    msg << "NULL" ;
+  }
+  msg << " ) FAILED : Cannot connect entities of the same type; " ;
+  msg << " must introduce a connecting entity of a higher rank." ;
 
   throw std::invalid_argument(msg.str());
 }
@@ -246,11 +268,15 @@ void throw_required_unique( Entity & e_hi ,
 }
 
 void Mesh::declare_connection( Entity & e1 , Entity & e2 ,
-                               const unsigned identifier ,
+                               const entity_id_type identifier ,
                                const char * required_unique_by )
 {
-  const EntityType e1_type = e1.entity_type();
-  const EntityType e2_type = e2.entity_type();
+  const unsigned e1_type = e1.entity_type();
+  const unsigned e2_type = e2.entity_type();
+
+  if ( e1_type == e2_type ) {
+    throw_require_different( e1 , e2 , required_unique_by );
+  }
 
   Entity & e_hi = e1_type == e2_type ? e1 : ( e1_type < e2_type ? e2 : e1 );
   Entity & e_lo = e1_type == e2_type ? e2 : ( e1_type < e2_type ? e1 : e2 );
@@ -265,9 +291,9 @@ void Mesh::declare_connection( Entity & e1 , Entity & e2 ,
 
     if ( e == i || hi_to_lo != *i ) { // Not a duplicate
 
-      if ( required_unique_by && e != i ) {
-        const unsigned attr_hi_to_lo = hi_to_lo.attribute();
-        const unsigned attr_existing = i->attribute();
+      if ( e != i ) {
+        const entity_key_type attr_hi_to_lo = hi_to_lo.key();
+        const entity_key_type attr_existing = i->key();
 
         if ( attr_hi_to_lo == attr_existing ) {
           throw_required_unique( e_hi, e_lo, *i->entity(), identifier,

@@ -26,9 +26,6 @@ TEST_UTIL_EXE = test_util.exe
 TEST_UTIL_SRC_DIR = $(PHDMESH_PATH)/tests/util
 
 TEST_UTIL_OBJ_FILES =	\
-	test_c_tpi.o	\
-	test_tpi.o	\
-	test_tpi_chunk.o	\
 	test_comm_bounds.o	\
 	test_comm.o	\
 	test_comm_all.o	\

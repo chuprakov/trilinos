@@ -41,8 +41,7 @@
 #include <txblas/CR4Matrix.hpp>
 
 extern "C" {
-void tdaxpby( TPI_ThreadPool pool ,
-              unsigned n ,
+void tdaxpby( unsigned n ,
               double a , const double * x ,
               double b , double * y ,
               int block );
@@ -121,7 +120,7 @@ struct FillWork {
 void task_rand_fill( void * arg , TPI::ThreadPool pool )
 {
   const double r_max = RAND_MAX ;
-  int p_rank , p_size ; TPI::Pool_rank( pool , p_rank , p_size );
+  int p_rank , p_size ; TPI::Rank( pool , p_rank , p_size );
 
   FillWork & w = * reinterpret_cast<FillWork*>( arg );
 
@@ -146,29 +145,31 @@ void task_rand_fill( void * arg , TPI::ThreadPool pool )
 
 void timing_txblas1(
   ParallelMachine comm ,
-  TPI::ThreadPool pool , 
   const unsigned Mflop_target )
 {
   enum { NUM_TEST = 13 };
   double dt[ NUM_TEST ] , mflops[ NUM_TEST ];
   const unsigned test_length[ NUM_TEST ] = {
-     1e3 , 2e3 , 5e3 ,
-     1e4 , 2e4 , 5e4 ,
-     1e5 , 2e5 , 5e5 ,
-     1e6 , 2e6 , 5e6 ,
-     1e7 };
+     (unsigned) 1e3 , (unsigned) 2e3 , (unsigned) 5e3 ,
+     (unsigned) 1e4 , (unsigned) 2e4 , (unsigned) 5e4 ,
+     (unsigned) 1e5 , (unsigned) 2e5 , (unsigned) 5e5 ,
+     (unsigned) 1e6 , (unsigned) 2e6 , (unsigned) 5e6 ,
+     (unsigned) 1e7 };
   const unsigned alloc_size = test_length[ NUM_TEST - 1 ] ;
 
   const unsigned p_size = parallel_machine_size( comm );
   const unsigned p_rank = parallel_machine_rank( comm );
 
-  std::vector<double> x_values( alloc_size );
-  std::vector<double> y_values( alloc_size );
+  const unsigned m_alloc_size = alloc_size / p_size +
+                               ( p_rank < ( alloc_size % p_size ) ? 1 : 0 );
 
-  if ( x_values.size() != alloc_size ||
-       y_values.size() != alloc_size ) {
+  std::vector<double> x_values( m_alloc_size );
+  std::vector<double> y_values( m_alloc_size );
+
+  if ( x_values.size() != m_alloc_size ||
+       y_values.size() != m_alloc_size ) {
     std::cout << "timing_test_blas1 failed to allocate 2 x "
-              << alloc_size << std::endl ;
+              << m_alloc_size << std::endl ;
     return ;
   }
 
@@ -176,16 +177,16 @@ void timing_txblas1(
     FillWork data ;
     data.x_mag = 1 ;
     data.x_beg = & x_values[0] ;
-    data.x_length = alloc_size ;
-    TPI::Run( pool , & task_rand_fill , & data );
+    data.x_length = m_alloc_size ;
+    TPI::Run( & task_rand_fill , & data );
   }
 
   {
     FillWork data ;
     data.x_mag = 1 ;
     data.x_beg = & y_values[0] ;
-    data.x_length = alloc_size ;
-    TPI::Run( pool , & task_rand_fill , & data );
+    data.x_length = m_alloc_size ;
+    TPI::Run( & task_rand_fill , & data );
   }
 
   if ( p_rank == 0 ) {
@@ -219,7 +220,7 @@ void timing_txblas1(
         double * const x = & x_values[0] ;
         double * const y = & y_values[0] ;
         double s ;
-        tddot( pool , & s , m_local , x , y );
+        tddot( & s , m_local , x , y );
         all_reduce( comm , ReduceSum<1>( & s ) );
       }
 
@@ -253,7 +254,7 @@ void timing_txblas1(
     const unsigned length  = test_length[i_test] ;
     const unsigned m_rem   = length % p_size ;
     const unsigned m_local = length / p_size + ( p_rank < m_rem ? 1 : 0 );
-    const unsigned m_count = alloc_size / m_local ;
+    const unsigned m_count = m_alloc_size / m_local ;
 
     // ddot = ( 1 mult + 1 add ) * length
     const double mflop_cycle = ((double) 2 * length ) / 1.0e6 ;
@@ -269,7 +270,7 @@ void timing_txblas1(
         double * const x = & x_values[0] + offset ;
         double * const y = & y_values[0] + offset ;
         double s ;
-        tddot( pool , & s , m_local , x , y );
+        tddot( & s , m_local , x , y );
         all_reduce( comm , ReduceSum<1>( & s ) );
       }
 
@@ -319,7 +320,7 @@ void timing_txblas1(
         double * const x = & x_values[0] ;
         double * const y = & y_values[0] ;
         Summation s ;
-        txddot( pool , s.xdval , m_local , x , y );
+        txddot( s.xdval , m_local , x , y );
         all_reduce( comm , ReduceSum<1>( & s ) );
       }
 
@@ -353,7 +354,7 @@ void timing_txblas1(
     const unsigned length  = test_length[i_test] ;
     const unsigned m_rem   = length % p_size ;
     const unsigned m_local = length / p_size + ( p_rank < m_rem ? 1 : 0 );
-    const unsigned m_count = alloc_size / m_local ;
+    const unsigned m_count = m_alloc_size / m_local ;
 
     // xddot = ( 1 mult + 7 add + 2 compare ) * length
     const double mflop_cycle = ((double) 10 * length ) / 1.0e6 ;
@@ -369,7 +370,7 @@ void timing_txblas1(
         double * const x = & x_values[0] + offset ;
         double * const y = & y_values[0] + offset ;
         Summation s ;
-        txddot( pool , s.xdval , m_local , x , y );
+        txddot( s.xdval , m_local , x , y );
         all_reduce( comm , ReduceSum<1>( & s ) );
       }
 
@@ -416,7 +417,7 @@ void timing_txblas1(
       for ( unsigned i = 0 ; i < ncycle ; ++i ) {
         double * const x = & x_values[0] ;
         double * const y = & y_values[0] ;
-        tdaxpby( pool, m_local, 1.0, x, 1.0, y, 0 );
+        tdaxpby( m_local, 1.0, x, 1.0, y, 0 );
       }
 
       double d = wall_dtime( t );
@@ -449,7 +450,7 @@ void timing_txblas1(
     const unsigned length  = test_length[i_test] ;
     const unsigned m_rem   = length % p_size ;
     const unsigned m_local = length / p_size + ( p_rank < m_rem ? 1 : 0 );
-    const unsigned m_count = alloc_size / m_local ;
+    const unsigned m_count = m_alloc_size / m_local ;
 
     // daxpby = 2 mult + 1 add
     const double mflop_cycle = ((double) 3 * length ) / 1.0e6 ;
@@ -464,7 +465,7 @@ void timing_txblas1(
         const unsigned offset = m_local * ( ( 2 * i ) % m_count );
         double * const x = & x_values[0] + offset ;
         double * const y = & y_values[0] + offset ;
-        tdaxpby( pool, m_local, 1.0, x, 1.0, y, 0 );
+        tdaxpby( m_local, 1.0, x, 1.0, y, 0 );
       }
 
       double d = wall_dtime( t );
@@ -510,7 +511,7 @@ void timing_txblas1(
       for ( unsigned i = 0 ; i < ncycle ; ++i ) {
         double * const x = & x_values[0] ;
         double * const y = & y_values[0] ;
-        tdaxpby( pool, m_local, 1.0, x, 1.0, y, 1 );
+        tdaxpby( m_local, 1.0, x, 1.0, y, 1 );
       }
 
       double d = wall_dtime( t );
@@ -545,7 +546,7 @@ void timing_txblas1(
     const unsigned length  = test_length[i_test] ;
     const unsigned m_rem   = length % p_size ;
     const unsigned m_local = length / p_size + ( p_rank < m_rem ? 1 : 0 );
-    const unsigned m_count = alloc_size / m_local ;
+    const unsigned m_count = m_alloc_size / m_local ;
 
     // daxpby = 2 mult + 1 add
     const double mflop_cycle = ((double) 3 * length ) / 1.0e6 ;
@@ -560,7 +561,7 @@ void timing_txblas1(
         const unsigned offset = m_local * ( ( 2 * i ) % m_count );
         double * const x = & x_values[0] + offset ;
         double * const y = & y_values[0] + offset ;
-        tdaxpby( pool, m_local, 1.0, x, 1.0, y, 1 );
+        tdaxpby( m_local, 1.0, x, 1.0, y, 1 );
       }
       double d = wall_dtime( t );
       all_reduce( comm , ReduceMax<1>( & d ) );
@@ -592,7 +593,6 @@ void timing_txblas1(
 //----------------------------------------------------------------------
 
 void timing_txblas_cr_mxv( ParallelMachine comm ,
-                           TPI::ThreadPool pool ,
                            const unsigned M ,
                            const unsigned nband ,
                            const unsigned stride ,
@@ -625,7 +625,7 @@ void timing_txblas_cr_mxv( ParallelMachine comm ,
   test_fill_cr_band( comm, partition, 1, nband, stride, Value,
                      cr_prefix , cr_coli , cr_coef );
 
-  CR_Matrix matrix( comm , pool , partition , cr_prefix , cr_coli , cr_coef );
+  CR_Matrix matrix( comm , partition , cr_prefix , cr_coli , cr_coef );
 
   const double mflop_cycle = ((double) 2 * nz_tot ) / 1.0e6 ;
   const unsigned ncycle = 1 + (unsigned)( Mflop_target / mflop_cycle );
@@ -657,9 +657,7 @@ void timing_txblas_cr_mxv( ParallelMachine comm ,
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void test_timing_mxv( phdmesh::ParallelMachine comm ,
-                      TPI::ThreadPool pool ,
-                      std::istream & is )
+void test_timing_mxv( phdmesh::ParallelMachine comm , std::istream & is )
 {
   unsigned nsize = 1000000 ;
   unsigned nband = 50 ;
@@ -671,16 +669,14 @@ void test_timing_mxv( phdmesh::ParallelMachine comm ,
   if ( is.good() ) { is >> stride ; }
   if ( is.good() ) { is >> mflop ; }
 
-  timing_txblas_cr_mxv(  comm , pool , nsize , nband , stride , mflop , value );
+  timing_txblas_cr_mxv(  comm , nsize , nband , stride , mflop , value );
 }
 
-void test_timing_blas1( phdmesh::ParallelMachine comm ,
-                       TPI::ThreadPool pool ,
-                       std::istream & is )
+void test_timing_blas1( phdmesh::ParallelMachine comm , std::istream & is )
 {
   unsigned mflop = 1000 ;
   if ( is.good() ) { is >> mflop ; }
-  timing_txblas1( comm , pool , mflop );
+  timing_txblas1( comm , mflop );
 }
 
 //----------------------------------------------------------------------

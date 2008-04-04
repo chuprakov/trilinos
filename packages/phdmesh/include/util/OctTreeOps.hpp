@@ -30,7 +30,6 @@
 
 #include <utility>
 #include <vector>
-#include <util/TPI.hpp>
 #include <util/Parallel.hpp>
 #include <util/OctTree.hpp>
 
@@ -101,7 +100,6 @@ void box_global_bounds(
  */
 bool oct_tree_proximity_search(
   ParallelMachine            arg_comm ,
-  TPI::ThreadPool            arg_pool ,
   const float        * const arg_global_box ,
   const unsigned             arg_domain_boxes_number ,
   const IdentProcBox * const arg_domain_boxes ,

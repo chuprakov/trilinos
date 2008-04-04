@@ -82,15 +82,14 @@ void RegenAuraComm::receive_entity(
   const unsigned            send_source ,
   EntityProcSet & receive_info ) const
 {
-  EntityType            entity_type ;
-  unsigned long         entity_id ;
+  entity_key_type       key ;
   unsigned              owner_rank ;
   std::vector<Part*>    parts ;
   std::vector<Connect>  connections ;
   std::vector<unsigned> send_destinations ;
 
   unpack_entity( buffer , receive_mesh ,
-                 entity_type , entity_id , owner_rank ,
+                 key , owner_rank ,
                  parts , connections , send_destinations );
 
   const Schema & S = receive_mesh.schema();
@@ -107,7 +106,7 @@ void RegenAuraComm::receive_entity(
 
   EntityProc ep ;
 
-  ep.first = receive_mesh.get_entity( entity_type , entity_id );
+  ep.first = receive_mesh.get_entity( key );
 
   if ( NULL != ep.first ||
        send_source != owner_rank ||
@@ -116,8 +115,7 @@ void RegenAuraComm::receive_entity(
     throw std::logic_error( msg );
   }
 
-  ep.first = & receive_mesh.declare_entity( entity_type , entity_id ,
-                                            parts , owner_rank );
+  ep.first = & receive_mesh.declare_entity( key , parts , owner_rank );
 
   receive_mesh.declare_connection( *ep.first , connections , name() );
 
@@ -143,7 +141,7 @@ void scrub( Mesh & M , EntityProcSet & new_domain ,
     --i ;
     Entity & aura_entity = *i->first ;
 
-    const EntityType aura_type = aura_entity.entity_type();
+    const unsigned aura_type = aura_entity.entity_type();
 
     if ( aura_entity.kernel().has_superset( uses_part ) ) {
       i->first = NULL ;
@@ -155,7 +153,7 @@ void scrub( Mesh & M , EntityProcSet & new_domain ,
       for ( ConnectSpan aura_con = aura_entity.connections();
             destroy_it && aura_con ; ++aura_con ) {
         Entity & e = * aura_con->entity();
-        const EntityType e_type = aura_con->entity_type();
+        const unsigned e_type = aura_con->entity_type();
 
         if ( e_type < aura_type ) { // Aura Uses this entity
           if ( e.sharing() ) {
@@ -261,13 +259,13 @@ void comm_mesh_regenerate_aura( Mesh & M )
     const EntityProcSet::const_iterator ie = i ;
 
     Entity * const shared_entity = ib->first ;
-    const EntityType shared_type = shared_entity->entity_type();
+    const unsigned shared_type = shared_entity->entity_type();
 
     for ( ConnectSpan shared_entity_con = shared_entity->connections() ;
           shared_entity_con ; ++shared_entity_con ) {
 
       Entity * const e = shared_entity_con->entity();
-      const EntityType e_type = shared_entity_con->entity_type();
+      const unsigned e_type = shared_entity_con->entity_type();
 
       if ( shared_type < e_type && p_rank == e->owner_rank() ) {
 
@@ -319,16 +317,16 @@ void comm_mesh_regenerate_aura( Mesh & M )
     EntityProcSet::iterator j ;
 
     for ( j = new_aura_range.begin() ; j != new_aura_range.end() ; ++j ) {
-      all.send_buffer( j->first->owner_rank() ).skip<unsigned long>(2);
+      all.send_buffer( j->first->owner_rank() ).skip<entity_key_type>(2);
     }
 
     all.allocate_buffers( p_size / 4 , false /* not symmetric */ );
 
     for ( j = new_aura_range.begin() ; j != new_aura_range.end() ; ++j ) {
-      unsigned long data[2] ;
+      entity_key_type data[2] ;
       data[0] = j->first->key();
       data[1] = j->second ;
-      all.send_buffer( j->first->owner_rank() ).pack<unsigned long>(data,2);
+      all.send_buffer( j->first->owner_rank() ).pack<entity_key_type>(data,2);
     }
 
     new_aura_range.clear();
@@ -338,8 +336,8 @@ void comm_mesh_regenerate_aura( Mesh & M )
     for ( unsigned p = 0 ; p < p_size ; ++p ) {
       CommBuffer & buf = all.recv_buffer(p);
       while ( buf.remaining() ) {
-        unsigned long data[2] ;
-        buf.unpack<unsigned long>( data , 2 );
+        entity_key_type data[2] ;
+        buf.unpack<entity_key_type>( data , 2 );
         EntityProc tmp ;
         tmp.first  = M.get_entity( data[0] , method );
         tmp.second = data[1] ;

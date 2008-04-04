@@ -61,21 +61,19 @@ void EntityComm::receive_entity(
   const unsigned            send_source ,
   EntityProcSet & receive_info ) const
 {
-  EntityType            entity_type ;
-  unsigned long         entity_id ;
+  entity_key_type       key ;
   unsigned              owner_rank ;
   std::vector<Part*>    parts ;
   std::vector<Connect>  connections ;
   std::vector<unsigned> send_destinations ;
 
   unpack_entity( buffer , receive_mesh ,
-                 entity_type , entity_id , owner_rank ,
+                 key , owner_rank ,
                  parts , connections , send_destinations );
 
   EntityProc ep ;
 
-  ep.first = & receive_mesh.declare_entity( entity_type , entity_id ,
-                                            parts , owner_rank );
+  ep.first = & receive_mesh.declare_entity( key, parts, owner_rank );
 
   receive_mesh.declare_connection( *ep.first , connections , name() );
 
@@ -94,7 +92,7 @@ void EntityComm::pack_entity(
 {
   const Schema      & recv_schema = recv_mesh.schema();
   const Entity      & entity      = * ibeg->first ;
-  const unsigned long key         = entity.key();
+  const entity_key_type key         = entity.key();
   const unsigned      owner_rank  = entity.owner_rank();
   const Kernel      & kernel      = entity.kernel();
   const Schema      & send_schema = kernel.mesh().schema();
@@ -122,7 +120,7 @@ void EntityComm::pack_entity(
     }
   }
 
-  buf.pack<unsigned long>( key );
+  buf.pack<entity_key_type>( key );
   buf.pack<unsigned>( owner_rank );
 
   // Parts:
@@ -136,11 +134,11 @@ void EntityComm::pack_entity(
   {
     const unsigned rel_size = rel.size();
     buf.pack<unsigned>( rel_size );
-    unsigned long rel_data[2] ;
+    entity_key_type rel_data[2] ;
     for ( ; rel ; ++rel ) {
       rel_data[0] = rel->entity()->key();
-      rel_data[1] = rel->attribute();
-      buf.pack<unsigned long>( rel_data , 2 );
+      rel_data[1] = rel->key();
+      buf.pack<entity_key_type>( rel_data , 2 );
     }
   }
 
@@ -154,8 +152,7 @@ void EntityComm::pack_entity(
 void EntityComm::unpack_entity(
   CommBuffer            & recv_buf ,
   const Mesh            & recv_mesh ,
-  EntityType            & entity_type ,
-  unsigned long         & entity_id ,
+  entity_key_type       & key ,
   unsigned              & owner_rank ,
   std::vector<Part*>    & parts ,
   std::vector<Connect>  & connections ,
@@ -167,12 +164,7 @@ void EntityComm::unpack_entity(
   connections.clear();
   send_destinations.clear();
 
-  {
-    unsigned long key ; recv_buf.unpack<unsigned long>( key );
-
-    entity_type = Entity::key_entity_type( key );
-    entity_id   = Entity::key_identifier( key );
-  }
+  recv_buf.unpack<entity_key_type>( key );
 
   recv_buf.unpack<unsigned>( owner_rank );
 
@@ -192,10 +184,10 @@ void EntityComm::unpack_entity(
 
     connections.reserve( rel_size );
 
-    unsigned long rel_data[2] ;
+    entity_key_type rel_data[2] ;
 
     for ( unsigned j = 0 ; j < rel_size ; ++j ) {
-      recv_buf.unpack<unsigned long>( rel_data , 2 );
+      recv_buf.unpack<entity_key_type>( rel_data , 2 );
 
       Entity * rel_entity = recv_mesh.get_entity( rel_data[0] );
 
@@ -223,7 +215,7 @@ void EntityComm::unpack_entity(
 void EntityComm::pack_field_values(
   CommBuffer & buf , Entity & entity ) const
 {
-  const EntityType entity_type = entity.entity_type();
+  const unsigned entity_type = entity.entity_type();
   const Kernel & kernel = entity.kernel();
   const Mesh   & mesh   = kernel.mesh();
   const Schema & schema = mesh.schema();
@@ -257,7 +249,7 @@ void EntityComm::unpack_field_values(
 {
   static const char method[] = "phdmesh::EntityComm::unpack_field_values" ;
 
-  const EntityType entity_type = entity.entity_type();
+  const unsigned entity_type = entity.entity_type();
   const Kernel & kernel = entity.kernel();
   const Mesh   & mesh   = kernel.mesh();
   const Schema & schema = mesh.schema();

@@ -80,7 +80,7 @@ EntityProcSet::const_iterator
 lower_bound( const EntityProcSet & , Entity & );
 
 EntityProcSet::const_iterator
-lower_bound( const EntityProcSet & , EntityType );
+lower_bound( const EntityProcSet & , unsigned );
 
 EntityProcSet::const_iterator
 lower_bound( const EntityProcSet & , const EntityProc & );
@@ -115,12 +115,12 @@ bool comm_verify( ParallelMachine ,
 //----------------------------------------------------------------------
 /** Global counts and maximum identifiers for a mesh's entities.
  *  Array sizes:
- *    counts[ EntityTypeMaximum ]
- *    max_id[ EntityTypeMaximum ]
+ *    counts[ end_entity_rank ]
+ *    max_id[ end_entity_rank ]
  */
 bool comm_mesh_stats( Mesh & ,
-                      unsigned long * const counts ,
-                      unsigned long * const max_id ,
+                      entity_id_type * const counts ,
+                      entity_id_type * const max_id ,
                       bool local_flag = false );
 
 //----------------------------------------------------------------------

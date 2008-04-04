@@ -32,6 +32,7 @@
 #include <util/TPI.h>
 #include <util/ParallelComm.hpp>
 
+#include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
@@ -170,7 +171,7 @@ Entity * Gear::create_node(
   unsigned long id_gear = identifier( m_z_num, m_rad_num, iz, ir, ia );
   unsigned long id = node_id_base + id_gear ;
 
-  Entity & node = m_mesh->declare_entity(Node,id,parts,p_owner);
+  Entity & node = m_mesh->declare_entity( entity_key(Node,id), parts, p_owner);
 
   double * const gear_data    = node.data( m_gear_coord );
   double * const model_data   = node.data( m_model_coord );
@@ -209,8 +210,8 @@ void Gear::mesh( Mesh & M )
   const unsigned p_size = M.parallel_size();
   const unsigned p_rank = M.parallel_rank();
 
-  unsigned long counts[ EntityTypeMaximum ];
-  unsigned long max_id[ EntityTypeMaximum ];
+  entity_id_type counts[ end_entity_rank ];
+  entity_id_type max_id[ end_entity_rank ];
 
   comm_mesh_stats( M , counts , max_id );
 
@@ -297,7 +298,7 @@ void Gear::mesh( Mesh & M )
           }
 
           Entity & elem =
-            M.declare_entity( Element, elem_id, elem_parts, p_rank );
+            M.declare_entity( entity_key(Element,elem_id),elem_parts,p_rank);
 
           for ( unsigned j = 0 ; j < 8 ; ++j ) {
             M.declare_connection( elem , * node[j] , j );
@@ -337,13 +338,13 @@ void Gear::mesh( Mesh & M )
           node[3] = create_node( face_parts, node_id_base, iz_1, ir  , ia_1 );
 
           Entity & face =
-            M.declare_entity( Face , face_id , face_parts , p_rank );
+            M.declare_entity(entity_key(Face,face_id), face_parts, p_rank);
 
           for ( unsigned j = 0 ; j < 4 ; ++j ) {
             M.declare_connection( face , * node[j] , j );
           }
 
-          Entity & elem = * M.get_entity(Element,elem_id,method);
+          Entity & elem = * M.get_entity(entity_key(Element,elem_id),method);
 
           M.declare_connection( elem , face , face_ord );
         }

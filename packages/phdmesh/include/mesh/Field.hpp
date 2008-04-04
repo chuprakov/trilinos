@@ -44,7 +44,7 @@
 namespace phdmesh {
 
 /** Print the text name for a field, depending on the number of states.
- *  "Field<T,N>( entity_type , name , #states )"
+ *  "Field<T,N>( entity_rank , name , #states )"
  */
 std::ostream & operator << ( std::ostream & , const Field<void,0> & );
 
@@ -82,7 +82,7 @@ public:
   /** Volatile until schema is committed. */
   unsigned schema_ordinal() const { return m_schema_ordinal ; }
 
-  EntityType entity_type() const { return m_entity_type ; }
+  unsigned entity_type() const { return m_entity_rank ; }
 
   const std::string & name() const { return m_name ; }
 
@@ -134,7 +134,7 @@ private:
   Field<void,0> & operator = ( const Field<void,0> & );
 
   Field( Schema & ,
-         EntityType ,
+         unsigned ,
          const std::string & ,
          unsigned scalar_type ,
          unsigned number_of_dimensions ,
@@ -147,7 +147,7 @@ private:
   std::string m_name ;
   Schema    & m_schema ;         // Mesh schema in which this field resides
   unsigned    m_schema_ordinal ; // Ordinal in the field set
-  EntityType  m_entity_type ;    // Type of mesh entities
+  unsigned    m_entity_rank ;    // Type of mesh entities
   unsigned    m_scalar_type ;    // Ordinal in FieldTypes
   unsigned    m_num_dim ;        // Number of dimensions
   unsigned    m_num_states ;     // Number of states of this field

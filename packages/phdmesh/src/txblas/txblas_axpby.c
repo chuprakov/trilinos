@@ -26,6 +26,7 @@
 
 #include <stddef.h>
 #include <math.h>
+#include <util/TPI.h>
 #include <txblas/reduction.h>
 
 struct TaskXY {
@@ -41,28 +42,27 @@ static void task_axpby_work( void * , TPI_ThreadPool );
 static void task_axpby_work_block( void * , TPI_ThreadPool );
 static void task_axpby_work_steal( void * , TPI_ThreadPool );
 
-void tdaxpby( TPI_ThreadPool pool ,
-              unsigned n ,
+void tdaxpby( unsigned n ,
               double a , const double * x ,
               double b , double * y ,
               int block )
 {
-  int p_rank , p_size ;
-  TPI_Pool_rank( pool , & p_rank , & p_size );
+  int p_size ;
+  TPI_Size( & p_size );
 
   {
     unsigned tmp[ p_size ];
     struct TaskXY data = { a , b , x , y , n , tmp };
     for ( int i = 0 ; i < p_size ; ++i ) { tmp[i] = i ; }
     if ( 0 < block ) {
-      TPI_Run( pool , & task_axpby_work_block , & data );
+      TPI_Run( & task_axpby_work_block , & data );
     }
     else if ( block < 0 ) {
-      TPI_Set_lock_size( pool , p_size );
-      TPI_Run( pool , & task_axpby_work_steal , & data );
+      TPI_Set_lock_size( p_size );
+      TPI_Run( & task_axpby_work_steal , & data );
     }
     else {
-      TPI_Run( pool , & task_axpby_work , & data );
+      TPI_Run( & task_axpby_work , & data );
     }
   }
 }
@@ -99,7 +99,7 @@ static void task_axpby_work( void * arg , TPI_ThreadPool pool )
   int p_size ;
   int p_rank ;
 
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+  if ( ! TPI_Rank( pool , & p_rank , & p_size ) ) {
 
     struct TaskXY * const t = (struct TaskXY *) arg ;
 
@@ -119,7 +119,7 @@ static void task_axpby_work_block( void * arg , TPI_ThreadPool pool )
   int p_size ;
   int p_rank ;
 
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+  if ( ! TPI_Rank( pool , & p_rank , & p_size ) ) {
 
     struct TaskXY * const t = (struct TaskXY *) arg ;
 
@@ -156,7 +156,7 @@ static void task_axpby_work_steal( void * arg , TPI_ThreadPool pool )
   int p_size ;
   int p_rank ;
 
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+  if ( ! TPI_Rank( pool , & p_rank , & p_size ) ) {
 
     struct TaskXY * const t = (struct TaskXY *) arg ;
 

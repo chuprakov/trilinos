@@ -47,30 +47,28 @@ private:
   AssembleTask & operator = ( const AssembleTask & );
 public:
   const Mesh                  & mesh ;
-  const EntityType              entity_type ;
+  const unsigned                entity_type ;
   const std::vector<Assemble> & ops ;
 
   KernelSet::const_iterator ik_work ;
 
-  AssembleTask( TPI::ThreadPool ,
-                const Mesh & arg_mesh ,
-                EntityType   arg_entity_type ,
+  AssembleTask( const Mesh & arg_mesh ,
+                unsigned     arg_entity_type ,
                 const std::vector<Assemble> & arg_ops );
 
   void work(TPI::ThreadPool);
 };
 
-AssembleTask::AssembleTask( TPI::ThreadPool pool ,
-                            const Mesh & arg_mesh ,
-                            EntityType   arg_entity_type ,
+AssembleTask::AssembleTask( const Mesh & arg_mesh ,
+                            unsigned     arg_entity_type ,
                             const std::vector<Assemble> & arg_ops )
   : mesh( arg_mesh ),
     entity_type( arg_entity_type ),
     ops( arg_ops ),
     ik_work( arg_mesh.kernels( arg_entity_type ).begin() )
 {
-  TPI::Set_lock_size( pool , 1 );
-  TPI::Run( pool , *this , & AssembleTask::work );
+  TPI::Set_lock_size( 1 );
+  TPI::Run( *this , & AssembleTask::work );
 }
 
 void AssembleTask::work(TPI::ThreadPool pool)
@@ -113,7 +111,7 @@ void AssembleTask::work(TPI::ThreadPool pool)
         if ( data_size ) { // Exists on this kernel
 
           const Field<void,0> & src_field = assemble.src_field();
-          const EntityType      src_type  = src_field.entity_type();
+          const unsigned        src_type  = src_field.entity_type();
 
           unsigned char * dst_ptr = (unsigned char *) k->data( dst_field );
 
@@ -137,8 +135,7 @@ void AssembleTask::work(TPI::ThreadPool pool)
 
 }
 
-void assemble( TPI::ThreadPool pool ,
-               const Mesh & M , const std::vector<Assemble> ops )
+void assemble( const Mesh & M , const std::vector<Assemble> ops )
 {
   static const char method[] = "phdmesh::assemble" ;
 
@@ -148,9 +145,9 @@ void assemble( TPI::ThreadPool pool ,
   const std::vector<Assemble>::const_iterator ia_beg = ops.begin();
         std::vector<Assemble>::const_iterator ia ;
 
-  unsigned dst_type_present[ EntityTypeMaximum ];
+  unsigned dst_type_present[ end_entity_rank ];
 
-  for ( unsigned t = 0 ; t < EntityTypeMaximum ; ++t ) {
+  for ( unsigned t = 0 ; t < end_entity_rank ; ++t ) {
     dst_type_present[t] = 0 ;
   }
 
@@ -179,10 +176,9 @@ void assemble( TPI::ThreadPool pool ,
 
   // Local assembly
 
-  for ( unsigned t = 0 ; t < EntityTypeMaximum ; ++t ) {
+  for ( unsigned t = 0 ; t < end_entity_rank ; ++t ) {
     if ( dst_type_present[ t ] ) {
-      const EntityType entity_type( (EntityType) t );
-      AssembleTask work( pool , M , entity_type , ops );
+      AssembleTask work( M , t , ops );
     }
   }
 }

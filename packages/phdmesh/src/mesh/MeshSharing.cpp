@@ -33,6 +33,7 @@
 #include <util/ParallelIndex.hpp>
 #include <util/ParallelReduce.hpp>
 
+#include <mesh/EntityType.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Comm.hpp>
@@ -43,7 +44,7 @@ namespace {
 
 std::pair< EntityProcSet::const_iterator ,
            EntityProcSet::const_iterator >
-span( const EntityProcSet & v , EntityType entity_type )
+span( const EntityProcSet & v , unsigned entity_type )
 {
   const unsigned t1 = entity_type ;
   const unsigned t2 = t1 + 1 ;
@@ -51,8 +52,8 @@ span( const EntityProcSet & v , EntityType entity_type )
   std::pair< EntityProcSet::const_iterator ,
              EntityProcSet::const_iterator > result ;
 
-  result.first  = lower_bound(v, EntityType(t1) );
-  result.second = lower_bound(v, EntityType(t2) );
+  result.first  = lower_bound(v,t1);
+  result.second = lower_bound(v,t2);
 
   return result ;
 }
@@ -66,7 +67,7 @@ bool comm_verify_shared_entity_values(
   const Mesh & M ,
   const Field<void,0> & f )
 {
-  const EntityType t = f.entity_type();
+  const unsigned t = f.entity_type();
   const unsigned max_size   = f.max_size();
   const unsigned parallel_size = M.parallel_size();
 
@@ -144,22 +145,20 @@ void comm_mesh_discover_sharing( Mesh & M )
   const Schema & S = M.schema();
   const unsigned p_rank = M.parallel_rank();
 
-  std::vector<unsigned long> local ;
+  std::vector< ParallelIndex::key_type > local ;
   std::vector< ParallelIndex::KeyProc > global ;
   EntityProcSet share ;
 
   unsigned count = 0 ;
-  for ( unsigned k = 0 ; k < EntityTypeMaximum ; ++k ) {
-    const EntityType type = EntityType(k) ;
-    const EntitySet & eset = M.entities( type );
+  for ( unsigned k = 0 ; k < end_entity_rank ; ++k ) {
+    const EntitySet & eset = M.entities( k );
     count += eset.size();
   }
 
   local.reserve( count );
 
-  for ( unsigned k = 0 ; k < EntityTypeMaximum ; ++k ) {
-    const EntityType type = EntityType(k) ;
-    const EntitySet & eset = M.entities( type );
+  for ( unsigned k = 0 ; k < end_entity_rank ; ++k ) {
+    const EntitySet & eset = M.entities( k );
 
     const EntitySet::const_iterator e = eset.end();
           EntitySet::const_iterator i ;
@@ -173,7 +172,7 @@ void comm_mesh_discover_sharing( Mesh & M )
   for ( std::vector< ParallelIndex::KeyProc >::iterator
         i = global.begin() ; i != global.end() ; ) {
 
-    const unsigned long key = i->first ;
+    const entity_key_type key = i->first ;
 
     EntityProc ep ;
     ep.first = M.get_entity( key , method );
@@ -240,7 +239,7 @@ bool comm_mesh_scrub_sharing( Mesh & M )
     const EntityProcSet::iterator ie = i ;
 
     Entity * const entity = (--i)->first ;
-    const EntityType entity_type = entity->entity_type();
+    const unsigned entity_type = entity->entity_type();
 
     for ( ; i != shares.begin() && entity == i->first ; --i );
     if ( entity != i->first ) { ++i ; }
@@ -316,7 +315,7 @@ void pack_info( CommAll & all , const EntityProcSet & shares )
 
     Entity & entity = * ep.first ;
     ConnectSpan connect = entity.connections();
-    const unsigned long key = entity.key();
+    const entity_key_type key = entity.key();
     const unsigned p_owner  = entity.owner_rank();
     const unsigned numconnect = connect.size();
 
@@ -328,7 +327,7 @@ void pack_info( CommAll & all , const EntityProcSet & shares )
 
     CommBuffer & b = all.send_buffer( p_send );
 
-    b.pack<unsigned long>( key );
+    b.pack<entity_key_type>( key );
     b.pack<unsigned>( p_owner );
     b.pack<unsigned>( numparts );
     b.pack<unsigned>( numconnect );
@@ -336,10 +335,10 @@ void pack_info( CommAll & all , const EntityProcSet & shares )
     b.pack<unsigned>( & part_ordinals[0] , numparts );
 
     for ( ; connect ; ++connect ) {
-      unsigned long con[2] ;
-      con[0] = connect->attribute();
+      entity_key_type con[2] ;
+      con[0] = connect->key();
       con[1] = connect->entity()->key();
-      b.pack<unsigned long>( con , 2 );
+      b.pack<entity_key_type>( con , 2 );
     }
   }
 }
@@ -353,14 +352,14 @@ bool unpack_info_verify(
     "phdmesh::comm_mesh_verify_parallel_consistency" ;
 
   const unsigned u_zero = 0 ;
-  const unsigned long ul_zero = 0 ;
+  const entity_key_type ul_zero = 0 ;
   bool result = true ;
 
   const EntityProcSet::const_iterator i_end = shares.end();
         EntityProcSet::const_iterator i     = shares.begin();
 
   std::vector<unsigned> recv_ordinal ;
-  std::vector<unsigned long> recv_connect ;
+  std::vector<entity_key_type> recv_connect ;
 
   while ( result && i != i_end ) {
     const EntityProc & ep = *i ; ++i ;
@@ -374,7 +373,7 @@ bool unpack_info_verify(
     Part * const owns_part = & schema.owns_part();
 
     const unsigned connect_size = connect.size();
-    const unsigned long key = entity.key();
+    const entity_key_type key = entity.key();
     const unsigned p_owner  = entity.owner_rank();
     const unsigned p_local  = mesh.parallel_rank();
     const unsigned p_recv   = ep.second ;
@@ -385,7 +384,7 @@ bool unpack_info_verify(
 
     CommBuffer & b = all.recv_buffer( p_recv );
 
-    unsigned long recv_key ;   b.unpack<unsigned long>( recv_key );
+    entity_key_type recv_key ;   b.unpack<entity_key_type>( recv_key );
     unsigned recv_p_owner ;    b.unpack<unsigned>( recv_p_owner );
     unsigned recv_parts_size ; b.unpack<unsigned>( recv_parts_size );
     unsigned recv_connect_size ; b.unpack<unsigned>( recv_connect_size );
@@ -398,8 +397,8 @@ bool unpack_info_verify(
 
     recv_connect.assign( recv_connect_size * 2 , ul_zero );
     {
-      unsigned long * const tmp = & recv_connect[0] ;
-      b.unpack<unsigned long>( tmp , recv_connect_size * 2 );
+      entity_key_type * const tmp = & recv_connect[0] ;
+      b.unpack<entity_key_type>( tmp , recv_connect_size * 2 );
     }
 
     result = recv_key == key && recv_p_owner == p_owner ;
@@ -454,9 +453,9 @@ bool unpack_info_verify(
     for ( unsigned k = 0 ; result && k < recv_connect_size ; ++k , ++ic ) {
       const Connect & con = *ic ;
       const unsigned k2 = k * 2 ;
-      const unsigned      recv_con_attr = recv_connect[k2] ;
-      const unsigned long recv_con_key  = recv_connect[k2+1] ;
-      if ( recv_con_attr != con.attribute() ||
+      const entity_key_type recv_con_attr = recv_connect[k2] ;
+      const entity_key_type recv_con_key  = recv_connect[k2+1] ;
+      if ( recv_con_attr != con.key() ||
            recv_con_key  != con.entity()->key() ) { result = false ; }
     }
 
@@ -498,8 +497,8 @@ bool unpack_info_verify(
       }
       os << " ;" << std::endl << "  Connections =" ;
       for ( unsigned j = 0 ; j < recv_connect_size * 2 ; ) {
-        const unsigned      attr    = recv_connect[j] ; ++j ;
-        const unsigned long con_key = recv_connect[j] ; ++j ;
+        const entity_key_type attr    = recv_connect[j] ; ++j ;
+        const entity_key_type con_key = recv_connect[j] ; ++j ;
         os << std::endl << "    " ;
         print_connect( os , attr , con_key );
       }
@@ -513,7 +512,7 @@ bool unpack_info_verify(
 }
 
 bool verify_parallel_attributes(
-  Mesh & M , EntityType type , std::string & msg )
+  Mesh & M , unsigned type , std::string & msg )
 {
   bool result = true ;
 
@@ -607,11 +606,9 @@ bool comm_mesh_verify_parallel_consistency( Mesh & M )
   std::string msg ;
   int result = 1 ;
 
-  if ( result ) { result = verify_parallel_attributes( M , Node , msg ); }
-  if ( result ) { result = verify_parallel_attributes( M , Edge , msg ); }
-  if ( result ) { result = verify_parallel_attributes( M , Face , msg ); }
-  if ( result ) { result = verify_parallel_attributes( M , Element , msg ); }
-  if ( result ) { result = verify_parallel_attributes( M , Other , msg ); }
+  for ( unsigned i = 0 ; result && i < EndEntityType ; ++i ) {
+    result = verify_parallel_attributes( M , i , msg );
+  }
 
   {
     // Verify all shared entities
@@ -687,15 +684,14 @@ void SharingComm::receive_entity(
   Part * const uses_part = & S.uses_part();
   Part * const owns_part = & S.owns_part();
 
-  EntityType            entity_type ;
-  unsigned long         entity_id ;
+  entity_key_type       key ;
   unsigned              owner_rank ;
   std::vector<Part*>    parts ;
   std::vector<Connect>  connections ;
   std::vector<unsigned> send_dest ;
 
   unpack_entity( buffer , receive_mesh ,
-                 entity_type , entity_id , owner_rank ,
+                 key , owner_rank ,
                  parts , connections , send_dest );
 
   // Must have been sent by the owner.
@@ -713,7 +709,7 @@ void SharingComm::receive_entity(
 
   EntityProc ep ;
 
-  ep.first  = receive_mesh.get_entity( entity_type , entity_id );
+  ep.first  = receive_mesh.get_entity( key );
   ep.second = send_source ;
 
   // If entity exists it must be currently an aura, i.e. not a uses_part
@@ -730,8 +726,7 @@ void SharingComm::receive_entity(
     receive_info.erase( k );
   }
 
-  ep.first = & receive_mesh.declare_entity( entity_type , entity_id ,
-                                            parts , owner_rank );
+  ep.first = & receive_mesh.declare_entity( key , parts , owner_rank );
 
   receive_mesh.declare_connection( *ep.first , connections , name() );
 }
@@ -757,10 +752,10 @@ void pack_sharing( CommAll & all , const EntityProcSet & sharing )
 
     if ( p_rank == ib->first->owner_rank() ) {
       const unsigned n = std::distance( ib , ie ) - 1 ;
-      const unsigned long key = ib->first->key();
+      const entity_key_type key = ib->first->key();
       for ( i = ib ; i != ie ; ++i ) {
         CommBuffer & buf = all.send_buffer( i->second );
-        buf.pack<unsigned long>( key );
+        buf.pack<entity_key_type>( key );
         buf.pack<unsigned>( n );
         if ( n ) {
           for ( j = ib ; j != ie ; ++j ) {
@@ -781,7 +776,7 @@ void unpack_sharing( CommAll & all , Mesh & M ,
   for ( unsigned p = 0 ; p < p_size ; ++p ) {
     CommBuffer & buf = all.recv_buffer( p );
     while ( buf.remaining() ) {
-      unsigned long key ; buf.unpack<unsigned long>( key );
+      entity_key_type key ; buf.unpack<entity_key_type>( key );
       unsigned n ;        buf.unpack<unsigned>( n );
       EntityProc tmp ;
       tmp.first = M.get_entity( key , method );
@@ -828,7 +823,7 @@ void comm_mesh_add_sharing( Mesh & M , const EntityProcSet & add )
 
         if ( p_owner != j->second ) {
           if ( p_owner != p_rank ) {
-            all.send_buffer( p_owner ).skip<unsigned long>(2);
+            all.send_buffer( p_owner ).skip<entity_key_type>(2);
           }
           else if ( not_member( old_shares , *j ) ) { 
             new_shares.push_back( *j );
@@ -844,10 +839,10 @@ void comm_mesh_add_sharing( Mesh & M , const EntityProcSet & add )
         const unsigned p_owner = j->first->owner_rank();
 
         if ( p_owner != j->second && p_owner != p_rank ) {
-          unsigned long data[2] ;
+          entity_key_type data[2] ;
           data[0] = j->first->key();
           data[1] = j->second ;
-          all.send_buffer( p_owner ).pack<unsigned long>(data,2);
+          all.send_buffer( p_owner ).pack<entity_key_type>(data,2);
         }
       }
 
@@ -856,8 +851,8 @@ void comm_mesh_add_sharing( Mesh & M , const EntityProcSet & add )
       for ( unsigned j = 0 ; j < p_size ; ++j ) {
         CommBuffer & buf = all.recv_buffer(j);
         while ( buf.remaining() ) {
-          unsigned long data[2] ;
-          buf.unpack<unsigned long>( data , 2 );
+          entity_key_type data[2] ;
+          buf.unpack<entity_key_type>( data , 2 );
           EntityProc tmp ;
           tmp.first = M.get_entity( data[0] , method );
           tmp.second = data[1] ;

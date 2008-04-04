@@ -31,6 +31,7 @@
 #include <util/ParallelReduce.hpp>
 #include <util/OctTreeOps.hpp>
 
+#include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
@@ -214,7 +215,7 @@ void global_element_cuts( Mesh & M ,
 // Check each non-aura "other" entity against the attached uses-entities.
 // Each entity will be rebalanced to every processor that it 'uses'.
 
-void rebal_other_entities( Mesh & M , EntityProcSet & rebal )
+void rebal_other_entities( Mesh & M , unsigned other , EntityProcSet & rebal )
 {
   static const char method[] = "phdmesh::rebal_other_entities" ;
 
@@ -223,8 +224,8 @@ void rebal_other_entities( Mesh & M , EntityProcSet & rebal )
   const Schema & schema = M.schema();
   const Part & uses_part = schema.uses_part();
 
-  const KernelSet::iterator k_end = M.kernels(Other).end();
-        KernelSet::iterator k     = M.kernels(Other).begin();
+  const KernelSet::iterator k_end = M.kernels( other ).end();
+        KernelSet::iterator k     = M.kernels( other ).begin();
 
   std::vector<unsigned> rebal_procs ;
   EntityProcSet rebal_tmp ;
@@ -243,7 +244,7 @@ void rebal_other_entities( Mesh & M , EntityProcSet & rebal )
         rebal_procs.clear();
 
         for ( ConnectSpan j = entity->connections(); j ; ++j ) {
-          if ( j->entity_type() == Other ) {
+          if ( j->entity_type() == other  ) {
             std::ostringstream msg ;
             msg << "P" << M.parallel_rank();
             msg << ": " << method ;
@@ -384,21 +385,19 @@ void RebalanceComm::receive_entity(
   const unsigned            send_source ,
   EntityProcSet & receive_info ) const
 {
-  EntityType            entity_type ;
-  unsigned long         entity_id ;
+  entity_key_type       key ;
   unsigned              owner_rank ;
   std::vector<Part*>    parts ;
   std::vector<Connect>  connections ;
   std::vector<unsigned> send_dest ;
 
   unpack_entity( buffer , receive_mesh ,
-                 entity_type , entity_id , owner_rank ,
+                 key , owner_rank ,
                  parts , connections , send_dest );
 
   EntityProc ep ;
 
-  ep.first = & receive_mesh.declare_entity( entity_type , entity_id ,
-                                            parts , owner_rank );
+  ep.first = & receive_mesh.declare_entity( key , parts , owner_rank );
 
   receive_mesh.declare_connection( *ep.first , connections , name() );
 
@@ -616,7 +615,8 @@ void comm_mesh_rebalance( Mesh & M ,
   // that they use.  This may lead to more sharing entities.
   // Thus 'rebal' is input and then updated.
 
-  rebal_other_entities( M , rebal );
+  rebal_other_entities( M , Particle , rebal );
+  rebal_other_entities( M , Constraint , rebal );
 
   // 'rebal' now contains the rebalancing (entity,processor) pairs
   // for every non-aura entity.  Can now delete the aura entities.

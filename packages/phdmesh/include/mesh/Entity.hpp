@@ -47,62 +47,40 @@ namespace phdmesh {
  *
  *  Design is for the DomainEntity to own a subset of the relation,
  *    DomainEntity -> { ( RangeEntity , RelationIdentifier ) }
- *
- *  The Connect class consists of ( RangeEntity , Attribute ) where
- *  Attribute is the aggregation of ( EntityType , ConnectType , identifier ).
  */
 
 class Connect {
 private:
-  unsigned m_attr ;
-  Entity * m_entity ;
-
-  enum { e_shift = std::numeric_limits<unsigned>::digits - EntityTypeDigits };
-  enum { e_mask  = EntityTypeMask };
-  enum { i_mask  = ( ~((unsigned)0) ) >> EntityTypeDigits };
+  entity_key_type m_key ;
+  Entity        * m_entity ;
 public:
 
   ~Connect() {}
 
-  Connect() : m_attr(0), m_entity(NULL) {}
+  Connect() : m_key(0), m_entity(NULL) {}
 
-  Connect( const Connect & r ) : m_attr(r.m_attr), m_entity(r.m_entity) {}
+  Connect( const Connect & r ) : m_key(r.m_key), m_entity(r.m_entity) {}
 
   Connect & operator = ( const Connect & r )
-    { m_attr = r.m_attr ; m_entity = r.m_entity ; return *this ; }
+    { m_key = r.m_key ; m_entity = r.m_entity ; return *this ; }
 
   /** Construct with range entity, identifier, and if anonymous */
   Connect( Entity & , unsigned );
 
   Entity * entity() const { return m_entity ; }
 
-  EntityType entity_type() const
-    { return EntityType( ( m_attr >> e_shift ) & e_mask ); }
+  unsigned       entity_type() const { return entity_rank( m_key ); }
+  entity_id_type identifier()  const { return entity_id( m_key ); }
 
-  unsigned identifier() const { return m_attr & i_mask ; }
+  entity_key_type key() const { return m_key ; }
 
   bool operator == ( const Connect & r ) const
-    { return m_attr == r.m_attr && m_entity == r.m_entity ; }
+    { return m_key == r.m_key && m_entity == r.m_entity ; }
 
   bool operator != ( const Connect & r ) const
-    { return m_attr != r.m_attr || m_entity != r.m_entity ; }
+    { return m_key != r.m_key || m_entity != r.m_entity ; }
 
   bool operator < ( const Connect & r ) const ;
-
-  //----------------------------------------
-  // Methods for manipulation of the connection attribute.
-  // Intended for internal use only.
-
-  unsigned attribute() const { return m_attr ; }
-
-  static unsigned attribute( unsigned entity_type , unsigned identifier )
-    { return ((entity_type & e_mask) << e_shift) | (identifier & i_mask) ; }
-
-  static EntityType entity_type( unsigned attr )
-    { return EntityType( ( attr >> e_shift ) & e_mask ); }
-
-  static unsigned identifier( unsigned attr )
-    { return attr & i_mask ; }
 };
 
 typedef std::vector<Connect> ConnectSet ;
@@ -121,7 +99,7 @@ typedef Span< ConnectSet::const_iterator > ConnectSpan ;
 /** A mesh entity has an entity type, identifier, connections, and
  *  resides within a mesh kernel.  The mesh kernel holds its field data.
  */
-class Entity : public SetvMember<unsigned long> {
+class Entity : public SetvMember< entity_key_type > {
 private:
 
   ConnectSet           m_connect ;    // Connections
@@ -130,23 +108,13 @@ private:
   unsigned             m_owner_rank ; // Parallel owner rank
   EntityProcSpan       m_sharing ;
 
-  enum { KeyDigits = std::numeric_limits<unsigned long>::digits };
-  enum { KeyIdentifierDigits = KeyDigits - EntityTypeDigits };
-  enum { KeyIdentifierMask = ( ~((unsigned long)0) ) >> EntityTypeDigits };
-
 public:
 
-  inline static EntityType key_entity_type( unsigned long key )
-    { return EntityType( key >> KeyIdentifierDigits ); }
-
-  inline static unsigned long key_identifier( unsigned long key )
-    { return key & KeyIdentifierMask ; }
-
   /** Entity type */
-  inline EntityType entity_type() const { return key_entity_type(key()); }
+  inline unsigned entity_type() const { return entity_rank( key() ); }
 
   /** Identifier */
-  inline unsigned long identifier() const { return key_identifier(key()); }
+  inline entity_id_type identifier() const { return entity_id( key() ); }
 
   /** Kernel in which this mesh entity resides */
   Kernel & kernel() const { return * m_kernel ; }
@@ -161,9 +129,9 @@ public:
 
   ConnectSpan connections() const { return ConnectSpan( m_connect ); }
 
-  ConnectSpan connections( EntityType ) const ;
+  ConnectSpan connections( unsigned type ) const ;
 
-  ConnectSpan connections( EntityType , unsigned ) const ;
+  ConnectSpan connections( unsigned type , entity_id_type patch_id ) const ;
 
   //------------------------------------
 
@@ -185,8 +153,6 @@ public:
   Entity();
   ~Entity();
 
-  static unsigned long create_key( EntityType type , unsigned long id );
-
 private:
 
   Entity( const Entity & );
@@ -205,14 +171,14 @@ std::ostream &
 print_entity( std::ostream & , const std::string & lead , const Entity & );
 
 std::ostream &
-print_entity_key( std::ostream & , EntityType type , unsigned long id );
+print_entity_key( std::ostream & , unsigned type , entity_id_type id );
 
 std::ostream &
-print_entity_key( std::ostream & , unsigned long key );
+print_entity_key( std::ostream & , entity_key_type key );
 
 std::ostream & print_connect( std::ostream & os ,
-                              unsigned connect_attr ,
-                              unsigned long entity_key );
+                              entity_key_type patch_key ,
+                              entity_key_type entity_key );
 
 std::ostream & operator << ( std::ostream & , const Connect & );
 

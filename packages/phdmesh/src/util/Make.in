@@ -49,7 +49,9 @@ UTIL_INC_FILES =	\
 UTIL_OBJ_FILES =	\
 	CSet.o	\
 	Setv.o	\
-	TPI.o	\
+	TPI_Concurrency.o	\
+	TPI_pthreads.o	\
+	TPI_Walltime.o	\
 	FixedPoolAlloc.o	\
 	Parallel.o	\
 	ParallelComm.o	\

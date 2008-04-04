@@ -64,15 +64,15 @@ struct LessEntityProc {
 
   bool operator()( const EntityProc & lhs , const EntityProc & rhs ) const
     {
-      const unsigned long lhs_key = lhs.first->key();
-      const unsigned long rhs_key = rhs.first->key();
+      const entity_key_type lhs_key = lhs.first->key();
+      const entity_key_type rhs_key = rhs.first->key();
       return lhs_key != rhs_key ? lhs_key < rhs_key : lhs.second < rhs.second ;
     }
 
   bool operator()( const EntityProc & lhs , const Entity & rhs ) const
     {
-      const unsigned long lhs_key = lhs.first->key();
-      const unsigned long rhs_key = rhs.key();
+      const entity_key_type lhs_key = lhs.first->key();
+      const entity_key_type rhs_key = rhs.key();
       return lhs_key < rhs_key ;
     }
 
@@ -101,7 +101,7 @@ void sort_unique( EntityProcSet & v )
 }
 
 EntityProcSet::const_iterator
-lower_bound( const EntityProcSet & v , EntityType t )
+lower_bound( const EntityProcSet & v , unsigned t )
 {
   const EntityProcSet::const_iterator i = v.begin();
   const EntityProcSet::const_iterator e = v.end();
@@ -270,7 +270,7 @@ bool comm_verify( ParallelMachine comm ,
 
   if ( result ) {
     for ( i = v.begin() ; i != i_end ; ++i ) {
-      send_size[ i->second ] += 2 * sizeof(unsigned long);
+      send_size[ i->second ] += 2 * sizeof(entity_key_type);
     }
   }
 
@@ -288,14 +288,13 @@ bool comm_verify( ParallelMachine comm ,
     // Fill buffer
     for ( i = v.begin() ; i != i_end ; ++i ) {
       Entity & e = * i->first ;
-
-      const unsigned long key   = e.key();
-      const unsigned long owner = e.owner_rank();
-      const unsigned      proc  = i->second ;
+      const unsigned  proc  = i->second ;
+      entity_key_type data[2];
+      data[0] = e.key();
+      data[1] = e.owner_rank();
 
       CommBuffer & buf = comm_sparse.send_buffer( proc );
-      buf.pack<unsigned long>( key );
-      buf.pack<unsigned long>( owner );
+      buf.pack<entity_key_type>( data , 2 );
     }
 
     comm_sparse.communicate();
@@ -307,9 +306,9 @@ bool comm_verify( ParallelMachine comm ,
         os << method ;
         os << " parallel inconsistency, P" << p_rank ;
         os << " expected from P" << j ;
-        os << " " << ( send_size[j] / sizeof(unsigned long) ) ;
+        os << " " << send_size[j] ;
         os << " but received " ;
-        os << ( nrecv / sizeof(unsigned long) ) ;
+        os << nrecv ;
         os << " instead" ;
         result = false ;
         msg.append( os.str() );
@@ -320,24 +319,23 @@ bool comm_verify( ParallelMachine comm ,
     for ( i = v.begin() ; result && i != i_end ; ++i ) {
       Entity & e = * i->first ;
 
-      const unsigned long this_key   = e.key();
-      const unsigned long this_owner = e.owner_rank();
-      const unsigned      proc  = i->second ;
+      const entity_key_type this_key   = e.key();
+      const unsigned        this_owner = e.owner_rank();
+      const unsigned        proc  = i->second ;
 
       CommBuffer & buf = comm_sparse.recv_buffer( proc );
-      unsigned long recv_key ;
-      unsigned long recv_owner ;
-      buf.unpack<unsigned long>( recv_key );
-      buf.unpack<unsigned long>( recv_owner );
+      entity_key_type recv_data[2] ;
+      buf.unpack<entity_key_type>( recv_data , 2 );
 
-      if ( this_key != recv_key || this_owner != recv_owner ) {
+      if ( this_key   != recv_data[0] ||
+           this_owner != recv_data[1] ) {
         os << method ;
         os << " parallel inconsistency, P" << p_rank << " has " ;
         print_entity_key( os , this_key );
         os << "].owner(P" << this_owner ;
         os << ") versus " ;
-        print_entity_key( os , recv_key );
-        os << "].owner(P" << recv_owner ;
+        print_entity_key( os , recv_data[0] );
+        os << "].owner(P" << recv_data[1] ;
         os << ")" ;
         result = false ;
         msg.append( os.str() );
@@ -433,8 +431,8 @@ bool comm_verify( ParallelMachine comm ,
 //----------------------------------------------------------------------
 
 bool comm_mesh_stats( Mesh & M ,
-                      unsigned long * const counts ,
-                      unsigned long * const max_id ,
+                      entity_id_type * const counts ,
+                      entity_id_type * const max_id ,
                       bool local_flag )
 {
   // Count locally owned entities
@@ -443,12 +441,12 @@ bool comm_mesh_stats( Mesh & M ,
   ParallelMachine comm = M.parallel();
   Part & owns = S.owns_part();
 
-  for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
+  for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
     counts[i] = 0 ;
     max_id[i] = 0 ;
 
-    const KernelSet & ks = M.kernels(  EntityType(i) );
-    const EntitySet & es = M.entities( EntityType(i) );
+    const KernelSet & ks = M.kernels(  i );
+    const EntitySet & es = M.entities( i );
 
     EntitySet::const_iterator ie ;
     KernelSet::const_iterator ik ;
@@ -466,11 +464,11 @@ bool comm_mesh_stats( Mesh & M ,
     }
   }
 
-  unsigned long flag = local_flag ? 1 : 0 ;
+  unsigned flag = local_flag ? 1 : 0 ;
 
   all_reduce( comm ,
-              ReduceSum<EntityTypeMaximum>( counts ) &
-              ReduceMax<EntityTypeMaximum>( max_id ) &
+              ReduceSum< end_entity_rank >( counts ) &
+              ReduceMax< end_entity_rank >( max_id ) &
               ReduceMax<1>( & flag ) );
 
   return flag ;
@@ -487,7 +485,7 @@ bool comm_mesh_entities(
         EntityProcSet & recv_info ,
   bool local_flag )
 {
-  enum { NUM_COUNT = EntityTypeMaximum + 1 };
+  enum { NUM_COUNT =  end_entity_rank  + 1 };
 
   static const char method[] = "phdmesh::comm_mesh_entities" ;
 
@@ -612,7 +610,7 @@ bool comm_mesh_entities(
       }
     }
 
-    for ( unsigned etype = 0 ; etype < EntityTypeMaximum ; ++etype ) {
+    for ( unsigned etype = 0 ; etype <  end_entity_rank  ; ++etype ) {
       for ( unsigned recv_p = 0 ; recv_p < p_size ; ++recv_p ) {
         const unsigned num = count[ recv_p * NUM_COUNT + etype + 1 ];
         CommBuffer & buf = all.recv_buffer( recv_p );
@@ -645,8 +643,8 @@ bool comm_mesh_field_values(
 
   // Memory required per field
 
-  unsigned fields_size[ EntityTypeMaximum ] ;
-  for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
+  unsigned fields_size[  end_entity_rank  ] ;
+  for ( unsigned i = 0 ; i <  end_entity_rank  ; ++i ) {
     fields_size[i] = 0 ;
   }
 
@@ -656,7 +654,7 @@ bool comm_mesh_field_values(
 
   for ( fi = fb ; fi != fe ; ++fi ) {
     const Field<void,0> & f   = **fi ;
-    const EntityType      et  = f.entity_type();
+    const unsigned        et  = f.entity_type();
     const unsigned      fsize = NumericEnum<>::size(f.numeric_type_ordinal());
 
     fields_size[ et ] += f.max_length() * fsize ;
@@ -678,8 +676,8 @@ bool comm_mesh_field_values(
       unsigned e_size = 0 ;
       for ( fi = fb ; fi != fe ; ++fi ) {
         const Field<void,0> & f = **fi ;
-        const EntityType      fet = f.entity_type();
-        const EntityType      eet = e.entity_type();
+        const unsigned        fet = f.entity_type();
+        const unsigned        eet = e.entity_type();
         if ( fet == eet ) {
           e_size += e.kernel().data_size( f );
         }
@@ -696,8 +694,8 @@ bool comm_mesh_field_values(
       unsigned e_size = 0 ;
       for ( fi = fb ; fi != fe ; ++fi ) {
         const Field<void,0> & f = **fi ;
-        const EntityType      fet = f.entity_type();
-        const EntityType      eet = e.entity_type();
+        const unsigned        fet = f.entity_type();
+        const unsigned        eet = e.entity_type();
         if ( fet == eet ) {
           e_size += e.kernel().data_size( f );
         }
@@ -726,8 +724,8 @@ bool comm_mesh_field_values(
       CommBuffer & b = sparse.send_buffer( p );
       for ( fi = fb ; fi != fe ; ++fi ) {
         const Field<void,0> & f = **fi ;
-        const EntityType      fet = f.entity_type();
-        const EntityType      eet = e.entity_type();
+        const unsigned        fet = f.entity_type();
+        const unsigned        eet = e.entity_type();
         if ( fet == eet ) {
           unsigned char * data = (unsigned char *) e.data( f );
           unsigned data_size = e.kernel().data_size( f );
@@ -751,8 +749,8 @@ bool comm_mesh_field_values(
       CommBuffer & b = sparse.recv_buffer( p );
       for ( fi = fb ; fi != fe ; ++fi ) {
         const Field<void,0> & f = **fi ;
-        const EntityType      fet = f.entity_type();
-        const EntityType      eet = e.entity_type();
+        const unsigned        fet = f.entity_type();
+        const unsigned        eet = e.entity_type();
         if ( fet == eet ) {
           unsigned char * data = (unsigned char *) e.data( f );
           unsigned data_size = e.kernel().data_size( f );

@@ -122,6 +122,10 @@ MPIGM | mpigm )
   export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_MPI\n"
   export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define LINUX64_WS32_GM\n"
   ;;
+NO_SCHED | no_sched )
+  shift 1
+  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define TPI_NO_SCHED\n"
+  ;;
 *)
   echo ${THIS_FILE} 'unknown option = ' ${1}
   exit -1

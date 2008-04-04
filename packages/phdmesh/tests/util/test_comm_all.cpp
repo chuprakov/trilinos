@@ -28,7 +28,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include <util/TPI.h>
 #include <util/ParallelComm.hpp>
 #include <util/ParallelReduce.hpp>
 #include <util/NamedValue.hpp>
@@ -37,7 +36,7 @@ using namespace phdmesh ;
 
 //----------------------------------------------------------------------
 
-void test_comm_all( ParallelMachine comm , TPI_ThreadPool, std::istream & s )
+void test_comm_all( ParallelMachine comm , std::istream & s )
 {
   const unsigned p_size = parallel_machine_size( comm );
   const unsigned p_rank = parallel_machine_rank( comm );

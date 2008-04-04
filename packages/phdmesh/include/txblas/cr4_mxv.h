@@ -27,14 +27,11 @@
 #ifndef txblas_cr4_mxv_h
 #define txblas_cr4_mxv_h
 
-#include <util/TPI.h>
-
 #if defined( __cplusplus )
 extern "C" {
 #endif
 
 void txblas_cr_mxv(
-  TPI_ThreadPool ,
   const unsigned nr ,
   const unsigned pc[] ,
   const unsigned ia[] ,

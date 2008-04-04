@@ -45,7 +45,7 @@ static void txblas_task_cr_mxv( void * data , TPI_ThreadPool pool )
 {
   int p_size , p_rank ;
 
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+  if ( ! TPI_Rank( pool , & p_rank , & p_size ) ) {
 
     txblasTask_cr_Matrix * const t = (txblasTask_cr_Matrix*) data ;
 
@@ -91,7 +91,6 @@ static void txblas_task_cr_mxv( void * data , TPI_ThreadPool pool )
 
 
 void txblas_cr_mxv(
-  TPI_ThreadPool pool ,
   const unsigned nr  /* Number rows */ ,
   const unsigned pc[] ,
   const unsigned ia[] ,
@@ -100,7 +99,7 @@ void txblas_cr_mxv(
         double   y[] )  /* Output vector */
 {
   txblasTask_cr_Matrix data = { nr , pc , ia , a , x , y };
-  TPI_Run( pool , & txblas_task_cr_mxv , & data );
+  TPI_Run( & txblas_task_cr_mxv , & data );
 }
 
 /*--------------------------------------------------------------------*/

@@ -111,7 +111,7 @@ static void task_sum_work( void * arg , TPI_ThreadPool pool )
 {
   int p_size , p_rank ;
 
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+  if ( ! TPI_Rank( pool , & p_rank , & p_size ) ) {
 
     struct TaskX * const t  = (struct TaskX *) arg ;
 
@@ -133,15 +133,14 @@ static void task_sum_work( void * arg , TPI_ThreadPool pool )
   }
 }
 
-void txdsum_add_array( TPI_ThreadPool pool ,
-                       double * s , unsigned n , const double * x )
+void txdsum_add_array( double * s , unsigned n , const double * x )
 {
   struct TaskX data ;
   data.x_sum  = s ;
   data.x_beg  = x ;
   data.number = n ;
-  TPI_Set_lock_size( pool , 1 );
-  TPI_Run( pool , & task_sum_work , & data );
+  TPI_Set_lock_size( 1 );
+  TPI_Run( & task_sum_work , & data );
 }
 
 /*--------------------------------------------------------------------*/
@@ -158,7 +157,7 @@ static void task_norm1_work( void * arg , TPI_ThreadPool pool )
 {
   int p_size , p_rank ;
 
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+  if ( ! TPI_Rank( pool , & p_rank , & p_size ) ) {
 
     struct TaskX * const t  = (struct TaskX *) arg ;
 
@@ -181,15 +180,14 @@ static void task_norm1_work( void * arg , TPI_ThreadPool pool )
   }
 }
 
-void txdnorm1( TPI_ThreadPool pool ,
-               double * s , unsigned n , const double * x )
+void txdnorm1( double * s , unsigned n , const double * x )
 {
   struct TaskX data ;
   data.x_sum  = s ;
   data.x_beg  = x ;
   data.number = n ;
-  TPI_Set_lock_size( pool , 1 );
-  TPI_Run( pool , & task_norm1_work , & data );
+  TPI_Set_lock_size( 1 );
+  TPI_Run( & task_norm1_work , & data );
 }
 
 /*--------------------------------------------------------------------*/
@@ -237,7 +235,7 @@ static void task_xddot_x_work( void * arg , TPI_ThreadPool pool )
 {
   int p_size , p_rank ;
 
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+  if ( ! TPI_Rank( pool , & p_rank , & p_size ) ) {
 
     double partial[2] = { 0 , 0 };
     struct TaskX * const t  = (struct TaskX *) arg ;
@@ -261,14 +259,14 @@ static void task_xddot_x_work( void * arg , TPI_ThreadPool pool )
   }
 }
 
-void txddot1( TPI_ThreadPool pool , double * s , unsigned n , const double * x )
+void txddot1( double * s , unsigned n , const double * x )
 {
   struct TaskX data ;
   data.x_sum  = s ;
   data.x_beg  = x ;
   data.number = n ;
-  TPI_Set_lock_size( pool , 1 );
-  TPI_Run( pool , & task_xddot_x_work , & data );
+  TPI_Set_lock_size( 1 );
+  TPI_Run( & task_xddot_x_work , & data );
 }
 
 /*--------------------------------------------------------------------*/
@@ -304,7 +302,7 @@ static void task_ddot_xy_work_blocking( void * arg , TPI_ThreadPool pool )
 {
   int p_size , p_rank ;
 
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+  if ( ! TPI_Rank( pool , & p_rank , & p_size ) ) {
 
     struct TaskXY * const t = (struct TaskXY *) arg ;
 
@@ -331,7 +329,7 @@ static void task_ddot_xy_work( void * arg , TPI_ThreadPool pool )
 {
   int p_size , p_rank ;
 
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+  if ( ! TPI_Rank( pool , & p_rank , & p_size ) ) {
 
     struct TaskXY * const t = (struct TaskXY *) arg ;
 
@@ -347,19 +345,18 @@ static void task_ddot_xy_work( void * arg , TPI_ThreadPool pool )
   }
 }
 
-void tddot( TPI_ThreadPool pool , 
-            double * s , unsigned n , const double * x , const double * y )
+void tddot( double * s , unsigned n , const double * x , const double * y )
 {
-  int p_rank , p_size ;
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+  int p_size ;
+  if ( ! TPI_Size( & p_size ) ) {
     double tmp[ p_size ];
     struct TaskXY data = { tmp , x , y , n , BLOCKING_SIZE };
     for ( int i = 0 ; i < p_size ; ++i ) { tmp[i] = 0 ; }
     if ( data.block ) {
-      TPI_Run( pool , & task_ddot_xy_work_blocking , & data );
+      TPI_Run( & task_ddot_xy_work_blocking , & data );
     }
     else {
-      TPI_Run( pool , & task_ddot_xy_work , & data );
+      TPI_Run( & task_ddot_xy_work , & data );
     }
     for ( int i = 1 ; i < p_size ; ++i ) { tmp[0] += tmp[i] ; }
     *s = tmp[0] ;
@@ -397,7 +394,7 @@ static void task_xddot_xy_work_blocking( void * arg , TPI_ThreadPool pool )
 {
   int p_size , p_rank ;
 
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+  if ( ! TPI_Rank( pool , & p_rank , & p_size ) ) {
 
     struct TaskXY * const t = (struct TaskXY *) arg ;
 
@@ -429,7 +426,7 @@ static void task_xddot_xy_work( void * arg , TPI_ThreadPool pool )
 {
   int p_size , p_rank ;
 
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+  if ( ! TPI_Rank( pool , & p_rank , & p_size ) ) {
 
     struct TaskXY * const t = (struct TaskXY *) arg ;
 
@@ -455,20 +452,19 @@ static void task_xddot_xy_work( void * arg , TPI_ThreadPool pool )
 }
 
 
-void txddot( TPI_ThreadPool pool , 
-             double * s , unsigned n , const double * x , const double * y )
+void txddot( double * s , unsigned n , const double * x , const double * y )
 {
-  int p_rank , p_size ;
-  if ( ! TPI_Pool_rank( pool , & p_rank , & p_size ) ) {
+  int p_size ;
+  if ( ! TPI_Size( & p_size ) ) {
     const int ntmp = 4 * p_size ;
     double tmp[ ntmp ];
     struct TaskXY data = { tmp , x , y , n , BLOCKING_SIZE };
     for ( int i = 0 ; i < ntmp ; ++i ) { tmp[i] = 0 ; }
     if ( data.block ) {
-      TPI_Run( pool , & task_xddot_xy_work_blocking , & data );
+      TPI_Run( & task_xddot_xy_work_blocking , & data );
     }
     else {
-      TPI_Run( pool , & task_xddot_xy_work , & data );
+      TPI_Run( & task_xddot_xy_work , & data );
     }
     for ( int i = 0 ; i < p_size ; ++i ) {
       xdsum_add_dsum( s , tmp + 4 * i );

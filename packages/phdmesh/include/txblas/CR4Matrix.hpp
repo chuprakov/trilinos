@@ -29,7 +29,6 @@
 #define txblas_CR4Matrix_hpp
 
 #include <vector>
-#include <util/TPI.h>
 #include <util/Parallel.hpp>
 #include <txblas/cr4_mxv.h>
 
@@ -56,7 +55,6 @@ private:
   ParallelMachine       m_comm ;
   unsigned              m_comm_size ;
   unsigned              m_comm_rank ;
-  TPI_ThreadPool        m_pool ;
   bool                  m_sparse ;
   std::vector<int>      m_work_disp ;
   std::vector<int>      m_send_disp ;
@@ -74,7 +72,6 @@ public:
 
   /* The arg_prefix, arg_coli, and arg_coef vectors are taken via 'swap' */
   CR_Matrix( ParallelMachine arg_comm ,
-             TPI_ThreadPool  arg_pool ,
              const std::vector<unsigned> & arg_partition ,
                    std::vector<unsigned> & arg_prefix ,
                    std::vector<unsigned> & arg_coli ,

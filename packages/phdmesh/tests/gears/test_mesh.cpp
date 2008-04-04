@@ -41,9 +41,9 @@
 
 using namespace phdmesh ;
 
-void test_simple_mesh( ParallelMachine , TPI_ThreadPool, std::istream & );
-void test_gears( ParallelMachine , TPI_ThreadPool, std::istream & );
-void test_schema_parts( ParallelMachine , TPI_ThreadPool, std::istream & );
+void test_simple_mesh( ParallelMachine , std::istream & );
+void test_gears( ParallelMachine , std::istream & );
+void test_schema_parts( ParallelMachine , std::istream & );
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------

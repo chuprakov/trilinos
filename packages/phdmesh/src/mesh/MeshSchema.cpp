@@ -32,6 +32,7 @@
 
 #include <util/ParallelComm.hpp>
 #include <util/ParallelReduce.hpp>
+#include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Comm.hpp>
 
@@ -116,7 +117,7 @@ Schema::~Schema()
 {
   // Destroy the fields, used 'new' to allocate so now use 'delete'
 
-  for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
+  for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
     std::vector<Field<void,0> * > & fset = m_fields[i] ;
 
     std::vector<Field<void,0> * >::iterator j = fset.begin();
@@ -264,48 +265,49 @@ void verify_parallel_consistency( const Schema & s , ParallelMachine pm )
 
   if ( is_root ) {
     pack( comm.send_buffer() , s.get_parts() );
-    pack( comm.send_buffer() , s.get_fields( EntityType(0) ) );
-    pack( comm.send_buffer() , s.get_fields( EntityType(1) ) );
-    pack( comm.send_buffer() , s.get_fields( EntityType(2) ) );
-    pack( comm.send_buffer() , s.get_fields( EntityType(3) ) );
-    pack( comm.send_buffer() , s.get_fields( EntityType(4) ) );
+    for ( unsigned i = 0 ; i < EndEntityType ; ++i ) {
+      pack( comm.send_buffer() , s.get_fields( i ) );
+    }
   }
 
   comm.allocate_buffer();
 
   if ( is_root ) {
     pack( comm.send_buffer() , s.get_parts() );
-    pack( comm.send_buffer() , s.get_fields( EntityType(0) ) );
-    pack( comm.send_buffer() , s.get_fields( EntityType(1) ) );
-    pack( comm.send_buffer() , s.get_fields( EntityType(2) ) );
-    pack( comm.send_buffer() , s.get_fields( EntityType(3) ) );
-    pack( comm.send_buffer() , s.get_fields( EntityType(4) ) );
+    for ( unsigned i = 0 ; i < EndEntityType ; ++i ) {
+      pack( comm.send_buffer() , s.get_fields( i ) );
+    }
   }
 
   comm.communicate();
 
-  int ok[6] ;
+  int ok[ EndEntityType + 1 ] ;
 
-  ok[5] = unpack_verify( comm.recv_buffer() , s.get_parts() );
-  ok[0] = unpack_verify( comm.recv_buffer() , s.get_fields( EntityType(0) ) );
-  ok[1] = unpack_verify( comm.recv_buffer() , s.get_fields( EntityType(1) ) );
-  ok[2] = unpack_verify( comm.recv_buffer() , s.get_fields( EntityType(2) ) );
-  ok[3] = unpack_verify( comm.recv_buffer() , s.get_fields( EntityType(3) ) );
-  ok[4] = unpack_verify( comm.recv_buffer() , s.get_fields( EntityType(4) ) );
+  ok[ EndEntityType ] = unpack_verify( comm.recv_buffer() , s.get_parts() );
+
+  for ( unsigned i = 0 ; i < EndEntityType ; ++i ) {
+    ok[i] = unpack_verify( comm.recv_buffer() , s.get_fields( i ) );
+  }
 
   all_reduce( pm , ReduceMin<6>( ok ) );
 
-  if ( ! ( ok[0] && ok[1] && ok[2] && ok[3] && ok[4] && ok[5] ) ) {
+  int ok_all = ok[ EndEntityType ];
+  for ( unsigned i = 0 ; i < EndEntityType ; ++i ) {
+    if ( ! ok[i] ) { ok_all = 0 ; }
+  }
+
+  if ( ! ok_all ) {
     std::ostringstream msg ;
     msg << "P" << p_rank ;
     msg << ": " << method ;
     msg << " : FAILED for:" ;
-    if ( ! ok[5] ) { msg << " Parts ," ; }
-    if ( ! ok[0] ) { msg << " Node Fields ," ; }
-    if ( ! ok[1] ) { msg << " Edge Fields ," ; }
-    if ( ! ok[2] ) { msg << " Face Fields ," ; }
-    if ( ! ok[3] ) { msg << " Element Fields ," ; }
-    if ( ! ok[4] ) { msg << " Other Fields ," ; }
+    if ( ! ok[ EndEntityType ] ) { msg << " Parts ," ; }
+    for ( unsigned i = 0 ; i < EndEntityType ; ++i ) {
+      if ( ! ok[i] ) {
+        msg << " " << entity_type_name(i);
+        msg << " Fields ," ;
+      }
+    }
     throw std::logic_error( msg.str() );
   }
 }

@@ -59,7 +59,7 @@ private:
   };
 
   Mesh      & m_mesh ;        // Mesh in which this kernel resides
-  EntityType  m_entity_type ; // Type of mesh entities
+  unsigned    m_entity_type ; // Type of mesh entities
   unsigned    m_size ;        // Number of entities
   unsigned    m_capacity ;    // Capacity for entities
   DataMap   * m_field_map ;   // Field value data map, shared
@@ -70,7 +70,7 @@ public:
 
   Mesh & mesh() const { return m_mesh ; }
 
-  EntityType entity_type() const { return m_entity_type ; }
+  unsigned entity_type() const { return m_entity_type ; }
 
   /** This kernel's supersets */
   void supersets( PartSet & ) const ;
@@ -152,7 +152,7 @@ private:
   Kernel( const Kernel & );
   Kernel & operator = ( const Kernel & );
 
-  Kernel( Mesh & , EntityType , const unsigned * );
+  Kernel( Mesh & , unsigned , const unsigned * );
 
   void update_state();
 

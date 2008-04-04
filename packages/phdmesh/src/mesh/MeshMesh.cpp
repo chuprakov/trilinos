@@ -41,19 +41,18 @@ namespace phdmesh {
 
 Mesh::Mesh( const Schema & schema ,
             ParallelMachine parallel ,
-            const unsigned kernel_capacity[] )
+             unsigned kernel_capacity )
   : m_schema( schema ),
     m_parallel_machine( parallel ),
     m_parallel_size( parallel_machine_size( parallel ) ),
-    m_parallel_rank( parallel_machine_rank( parallel ) )
+    m_parallel_rank( parallel_machine_rank( parallel ) ),
+    m_kernel_capacity( kernel_capacity )
 {
   static const char method[] = "phdmesh::Mesh::Mesh" ;
 
   m_schema.assert_committed( method );
 
   verify_parallel_consistency( schema , parallel );
-
-  Copy<EntityTypeMaximum>( m_kernel_capacity , kernel_capacity );
 }
 
 Mesh::~Mesh()
@@ -66,7 +65,7 @@ Mesh::~Mesh()
   // Destroy entities, which were allocated by the set itself.
   // Destroy kernels, which were *not* allocated by the set.
 
-  for ( unsigned i = EntityTypeMaximum ; 0 < i ; ) {
+  for ( unsigned i = end_entity_rank ; 0 < i ; ) {
     --i ;
 
     EntitySet & eset = m_entities[i] ;
@@ -86,7 +85,7 @@ Mesh::~Mesh()
 
 void Mesh::update_state()
 {
-  for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
+  for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
 
     KernelSet & kset = m_kernels[ i ] ;
 
@@ -98,11 +97,11 @@ void Mesh::update_state()
 
 //----------------------------------------------------------------------
 
-const EntitySet & Mesh::entities( EntityType entity_type ) const
+const EntitySet & Mesh::entities( unsigned entity_type ) const
 {
   const unsigned i = entity_type ;
 
-  if ( EntityTypeMaximum <= i ) {
+  if ( end_entity_rank <= i ) {
     // Error
     std::string msg( "phdmesh::Mesh::entities FAILED with invalid type" );
     throw std::invalid_argument(msg);
@@ -111,11 +110,11 @@ const EntitySet & Mesh::entities( EntityType entity_type ) const
   return m_entities[ entity_type ];
 }
 
-const KernelSet & Mesh::kernels( EntityType entity_type ) const
+const KernelSet & Mesh::kernels( unsigned entity_type ) const
 {
   const unsigned i = entity_type ;
 
-  if ( EntityTypeMaximum <= i ) {
+  if ( end_entity_rank <= i ) {
     // Error
     std::string msg( "phdmesh::Mesh::kernels FAILED with invalid type" );
     throw std::invalid_argument(msg);
@@ -126,9 +125,10 @@ const KernelSet & Mesh::kernels( EntityType entity_type ) const
 
 //----------------------------------------------------------------------
 
-Entity * Mesh::get_entity( unsigned long key , const char * required_by ) const
+Entity * Mesh::get_entity( entity_key_type key ,
+                           const char * required_by ) const
 {
-  const EntitySet & es = entities( Entity::key_entity_type( key ) );
+  const EntitySet & es = entities( entity_rank( key ) );
   EntitySet::iterator i = es.find( key );
   if ( required_by && i == es.end() ) {
     static const char method[] = "phdmesh::Mesh::get_entity" ;
@@ -141,38 +141,20 @@ Entity * Mesh::get_entity( unsigned long key , const char * required_by ) const
   return i != es.end() ? & * i : (Entity*) NULL ;
 }
 
-Entity * Mesh::get_entity( EntityType t , unsigned long id ,
-                           const char * required_by ) const
-{
-  const EntitySet & es = entities( t );
-  const unsigned long key = Entity::create_key( t , id );
-  EntitySet::iterator i = es.find( key );
-  if ( required_by && i == es.end() ) {
-    static const char method[] = "phdmesh::Mesh::get_entity" ;
-    std::ostringstream msg ;
-    msg << method << "( " ;
-    print_entity_key( msg , t , id );
-    msg << " , " << required_by << " ) FAILED" ;
-    throw std::runtime_error( msg.str() );
-  }
-  return i != es.end() ? & * i : (Entity*) NULL ;
-}
-
-Entity & Mesh::declare_entity( EntityType entity_type ,
-                               unsigned long id ,
+Entity & Mesh::declare_entity( entity_key_type key ,
                                const std::vector<Part*> & parts ,
                                int owner )
 {
   const char method[] = "phdmesh::Mesh::declare_entity" ;
 
-  if ( id == 0 ) {
+  if ( entity_id( key ) == 0 ) {
     std::string msg ;
     msg.append( method );
     msg.append( " FAILED : Not allowed to have identifier = zero" );
     throw std::logic_error( msg );
   }
 
-  unsigned long key  = Entity::create_key( entity_type , id );
+  const unsigned entity_type = entity_rank( key );
   EntitySet   & eset = m_entities[ entity_type ] ;
 
   // Find or create the entity
@@ -202,15 +184,6 @@ Entity & Mesh::declare_entity( EntityType entity_type ,
   change_entity_owner( *result.first , (unsigned) owner );
 
   return * result.first ;
-}
-
-Entity & Mesh::declare_entity( unsigned long key ,
-                               const std::vector<Part*> & parts ,
-                               int owner )
-{
-  const EntityType    t  = Entity::key_entity_type( key );
-  const unsigned long id = Entity::key_identifier( key );
-  return declare_entity( t , id , parts , owner );
 }
 
 //----------------------------------------------------------------------
@@ -337,7 +310,7 @@ void Mesh::change_entity_parts( Entity & e ,
   }
 }
 
-void Mesh::change_entity_identifier( Entity & e , unsigned long id )
+void Mesh::change_entity_identifier( Entity & e , entity_id_type id )
 {
   static const char method[] = "phdmesh::Mesh::change_entity_identifier" ;
 
@@ -345,8 +318,8 @@ void Mesh::change_entity_identifier( Entity & e , unsigned long id )
   bool ok = valid_id ;
 
   if ( ok ) {
-    const EntityType    type = e.entity_type();
-    const unsigned long key  = Entity::create_key( type , id );
+    const unsigned        type = e.entity_type();
+    const entity_key_type key  = entity_key( type , id );
     Entity * const ptr = & e ;
 
     EntitySet & eset = m_entities[ type ] ;
@@ -404,7 +377,7 @@ void Mesh::destroy_entity( Entity * e )
   e->m_kernel     = KernelSet::iterator();
   e->m_kernel_ord = 0 ;
 
-  const EntityType entity_type = e->entity_type();
+  const unsigned  entity_type = e->entity_type();
 
   EntitySet & es = m_entities[ entity_type ];
 
@@ -468,9 +441,9 @@ void verify_set_shares( const Mesh & M )
     // Verify all uses but not owned entities are shared
     // and their owner is one of the shared.
 
-    for ( unsigned t = 0 ; t < EntityTypeMaximum ; ++t ) {
+    for ( unsigned t = 0 ; t < end_entity_rank ; ++t ) {
 
-      const KernelSet & kernels = M.kernels( EntityType(t) );
+      const KernelSet & kernels = M.kernels( t );
 
       const KernelSet::iterator ek = kernels.end();
             KernelSet::iterator ik = kernels.begin();
@@ -571,7 +544,7 @@ void Mesh::set_shares( const EntityProcSet & s )
   {
     const EntityProcSpan ss_empty ;
 
-    for ( unsigned t = 0 ; t < EntityTypeMaximum ; ++t ) {
+    for ( unsigned t = 0 ; t < end_entity_rank ; ++t ) {
       const EntitySet::iterator e = m_entities[t].end();
             EntitySet::iterator i = m_entities[t].begin();
       for ( ; e != i ; ++i ) { i->m_sharing = ss_empty ; }
@@ -656,10 +629,10 @@ void verify_set_aura( const Mesh & M )
     // (2) an entity only appears in the range once
 
     {
-      unsigned entity_count[ EntityTypeMaximum ];
-      unsigned kernel_count[ EntityTypeMaximum ];
+      unsigned entity_count[ end_entity_rank ];
+      unsigned kernel_count[ end_entity_rank ];
 
-      for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
+      for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
         entity_count[i] = 0 ;
         kernel_count[i] = 0 ;
       }
@@ -700,8 +673,8 @@ void verify_set_aura( const Mesh & M )
 
       // Verify aura range count equals not member of uses count.
 
-      for ( unsigned i = 0 ; ok && i < EntityTypeMaximum ; ++i ) {
-        const KernelSet & kset = M.kernels( EntityType(i) );
+      for ( unsigned i = 0 ; ok && i < end_entity_rank ; ++i ) {
+        const KernelSet & kset = M.kernels( i );
         const KernelSet::const_iterator ek = kset.end();
               KernelSet::const_iterator ik = kset.begin();
         for ( ; ik != ek ; ++ik ) {
@@ -807,16 +780,16 @@ void get_kernels_union(
 //----------------------------------------------------------------------
 
 void partset_entity_count(
-  Mesh & mesh , Part & part , unsigned long * const count )
+  Mesh & mesh , Part & part , entity_id_type * const count )
 {
   static const char method[] = "phdmesh::partset_entity_count" ;
 
   mesh.schema().assert_same_schema( method , part.schema() );
 
-  for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
+  for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
     count[i] = 0 ;
 
-    const KernelSet & ks = mesh.kernels(  EntityType(i) );
+    const KernelSet & ks = mesh.kernels( i );
 
     KernelSet::const_iterator ik ;
 
@@ -829,11 +802,11 @@ void partset_entity_count(
 }
 
 void partset_entity_count(
-  Mesh & mesh , const PartSet & parts , unsigned long * const count )
+  Mesh & mesh , const PartSet & parts , entity_id_type * const count )
 {
   static const char method[] = "phdmesh::partset_entity_count" ;
 
-  for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
+  for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
     count[i] = 0 ;
   }
 
@@ -850,8 +823,8 @@ void partset_entity_count(
       }
     }
 
-    for ( unsigned i = 0 ; i < EntityTypeMaximum ; ++i ) {
-      const KernelSet & ks = mesh.kernels(  EntityType(i) );
+    for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
+      const KernelSet & ks = mesh.kernels( i );
 
       KernelSet::const_iterator ik ;
 

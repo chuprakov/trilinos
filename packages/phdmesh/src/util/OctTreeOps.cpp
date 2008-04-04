@@ -504,7 +504,6 @@ public:
   ~ProximitySearch() {}
 
   ProximitySearch(
-    TPI::ThreadPool ,
     bool symmetric ,
     const SearchTree & search_tree ,
     std::set< std::pair<IdentProc,IdentProc> > & relation );
@@ -555,7 +554,6 @@ void ProximitySearch::iterate_tree(TPI::ThreadPool pool)
 }
 
 ProximitySearch::ProximitySearch(
-  TPI::ThreadPool pool ,
   bool symmetric ,
   const SearchTree & search_tree ,
   std::set< std::pair<IdentProc,IdentProc> > & relation )
@@ -565,8 +563,8 @@ ProximitySearch::ProximitySearch(
   m_tree_iter( search_tree.begin() ),
   m_tree_end(  search_tree.end() )
 {
-  TPI::Set_lock_size( pool , NLOCKS );
-  TPI::Run( pool , *this , & ProximitySearch::iterate_tree );
+  TPI::Set_lock_size( NLOCKS );
+  TPI::Run( *this , & ProximitySearch::iterate_tree );
 
   if ( m_tree_iter != m_tree_end ) {
     std::string msg("phdmesh::proximity_search FAILED to complete" );
@@ -1215,7 +1213,6 @@ void oct_tree_partition(
 
 bool oct_tree_proximity_search(
   ParallelMachine            arg_comm ,
-  TPI::ThreadPool            arg_pool ,
   const float        * const arg_global_box ,
   const unsigned             arg_domain_boxes_number ,
   const IdentProcBox * const arg_domain_boxes ,
@@ -1295,7 +1292,7 @@ bool oct_tree_proximity_search(
                               arg_search_tree_stats );
     }
 
-    ProximitySearch( arg_pool, symmetric, search_tree, tmp_relation);
+    ProximitySearch( symmetric, search_tree, tmp_relation);
   }
   else {
     // Communicate search_tree members
@@ -1328,7 +1325,7 @@ bool oct_tree_proximity_search(
                               arg_search_tree_stats );
     }
 
-    ProximitySearch( arg_pool, symmetric, local_tree, local_relation);
+    ProximitySearch( symmetric, local_tree, local_relation);
 
     // Communicate relations back to domain and range processors
 

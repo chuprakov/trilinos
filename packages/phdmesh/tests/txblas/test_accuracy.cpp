@@ -49,7 +49,7 @@ struct FillWork {
 void task_rand_fill( void * arg , TPI::ThreadPool pool )
 {
   const double r_max = RAND_MAX ;
-  int p_rank , p_size ; TPI::Pool_rank( pool , p_rank , p_size );
+  int p_rank , p_size ; TPI::Rank( pool , p_rank , p_size );
 
   FillWork & w = * reinterpret_cast<FillWork*>( arg );
 
@@ -74,7 +74,6 @@ void task_rand_fill( void * arg , TPI::ThreadPool pool )
 //----------------------------------------------------------------------
 
 void test_accuracy_txblas( ParallelMachine comm ,
-                           TPI::ThreadPool pool ,
                            const unsigned M ,
                            const double mag )
 {
@@ -91,7 +90,7 @@ void test_accuracy_txblas( ParallelMachine comm ,
     data.x_mag = mag ;
     data.x_beg = & values[0] ;
     data.x_length = m_local ;
-    TPI::Run( pool , & task_rand_fill , & data );
+    TPI::Run( & task_rand_fill , & data );
   }
 
   const double init = 1 ;
@@ -105,7 +104,7 @@ void test_accuracy_txblas( ParallelMachine comm ,
   std::vector<double>::iterator i ;
 
 
-  txdsum_add_array( pool , z.xdval , m_local , & values[0] );
+  txdsum_add_array( z.xdval , m_local , & values[0] );
 
   for ( i = values.begin() ; i != values.end() ; ++i ) { a += *i ; }
 
@@ -113,7 +112,7 @@ void test_accuracy_txblas( ParallelMachine comm ,
 
   for ( i = values.begin() ; i != values.end() ; ++i ) { *i = - *i ; }
 
-  txdsum_add_array( pool , z.xdval , m_local , & values[0] );
+  txdsum_add_array( z.xdval , m_local , & values[0] );
 
   for ( i = values.begin() ; i != values.end() ; ++i ) { a += *i ; }
 
@@ -135,20 +134,18 @@ void test_accuracy_txblas( ParallelMachine comm ,
 //----------------------------------------------------------------------
 
 void test_accuracy( phdmesh::ParallelMachine comm ,
-                    TPI::ThreadPool pool ,
                     std::istream & is )
 {
   unsigned num = 100000000 ;
   double mag = 1e10 ;
   if ( is.good() ) { is >> num ; }
   if ( is.good() ) { is >> mag ; }
-  test_accuracy_txblas( comm , pool , num , mag );
+  test_accuracy_txblas( comm , num , mag );
 }
 
 //----------------------------------------------------------------------
 
-void test_reduce( ParallelMachine comm , TPI_ThreadPool pool ,
-                  std::istream & is )
+void test_reduce( ParallelMachine comm , std::istream & is )
 {
   const unsigned p_size = parallel_machine_size( comm );
   const unsigned p_rank = parallel_machine_rank( comm );
@@ -191,14 +188,14 @@ void test_reduce( ParallelMachine comm , TPI_ThreadPool pool ,
       a += *i ;
     }
 
-    txdsum_add_array( pool , z , M , & values[0] );
+    txdsum_add_array( z , M , & values[0] );
 
     for ( std::vector<double>::iterator
           i = values_neg.begin() ; i != values_neg.end() ; ++i ) {
       a += *i ;
     }
 
-    txdsum_add_array( pool , z , M , & values_neg[0] );
+    txdsum_add_array( z , M , & values_neg[0] );
 
     xdsum_get_value( z , z );
 

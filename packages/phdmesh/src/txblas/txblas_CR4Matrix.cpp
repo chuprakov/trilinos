@@ -234,16 +234,14 @@ void CR_Matrix::multiply(
       while ( e != s ) { *d++ = *s++ ; }
     }
 
-    txblas_cr_mxv( m_pool ,
-                   m_row_size ,
+    txblas_cr_mxv( m_row_size ,
                    & m_prefix[0] ,
                    & m_coli[0] ,
                    & m_coef[0] ,
                    & x_work[0] , y );
   }
   else {
-    txblas_cr_mxv( m_pool ,
-                   m_row_size ,
+    txblas_cr_mxv( m_row_size ,
                    & m_prefix[0] ,
                    & m_coli[0] ,
                    & m_coef[0] ,
@@ -256,7 +254,6 @@ void CR_Matrix::multiply(
 
 CR_Matrix::CR_Matrix(
  ParallelMachine arg_comm ,
- TPI_ThreadPool  arg_pool ,
  const std::vector<unsigned> & arg_partition ,
        std::vector<unsigned> & arg_prefix ,
        std::vector<unsigned> & arg_coli ,
@@ -264,7 +261,6 @@ CR_Matrix::CR_Matrix(
   : m_comm( arg_comm ),
     m_comm_size( parallel_machine_size( arg_comm ) ),
     m_comm_rank( parallel_machine_rank( arg_comm ) ),
-    m_pool( arg_pool ),
     m_sparse( false ),
     m_work_disp(),
     m_send_disp(),

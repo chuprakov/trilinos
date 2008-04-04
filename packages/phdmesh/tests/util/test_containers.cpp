@@ -28,7 +28,6 @@
 #include <fstream>
 #include <stdexcept>
 #include <set>
-#include <util/TPI.h>
 #include <util/Parallel.hpp>
 #include <util/FixedPoolAlloc.hpp>
 #include <util/NamedValue.hpp>
@@ -192,7 +191,7 @@ void test_parameters()
 
 //----------------------------------------------------------------------
 
-void test_containers( ParallelMachine , TPI_ThreadPool, std::istream & )
+void test_containers( ParallelMachine , std::istream & )
 {
   try {
     test_fixed_pool_buffer();

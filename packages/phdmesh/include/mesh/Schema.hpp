@@ -102,12 +102,12 @@ public:
    *  with the 'required_by' text.
    */
   template<typename T,unsigned NDim>
-  Field<T,NDim> * get_field( EntityType entity_type ,
+  Field<T,NDim> * get_field( unsigned entity_type ,
                              const std::string & name ,
                              const char * required_by = NULL ) const ;
 
   /** Get all fields associated with the given entity type */
-  const std::vector< Field<void,0> *> & get_fields( EntityType t ) const
+  const std::vector< Field<void,0> *> & get_fields( unsigned t ) const
     { return m_fields[ t ]; }
 
   /** Declare a field within the mesh.
@@ -116,7 +116,7 @@ public:
    *  Redeclaration with incompatible parameters throws an exception.
    */
   template<typename T,unsigned NDim>
-  Field<T,NDim> & declare_field( EntityType entity_type ,
+  Field<T,NDim> & declare_field( unsigned entity_type ,
                                  const std::string & name ,
                                  unsigned number_of_states = 1 );
 
@@ -162,16 +162,16 @@ private:
   Part * m_uses_part ;
   Part * m_owns_part ;
 
-  std::vector< Field<void,0> * > m_fields[ EntityTypeMaximum ];
+  std::vector< Field<void,0> * > m_fields[ end_entity_rank ];
 
-  Field<void,0> & declare_field( EntityType ,
+  Field<void,0> & declare_field( unsigned ,
                                  const std::string & ,
                                  unsigned arg_scalar_type ,
                                  unsigned arg_num_dim ,
                                  unsigned arg_num_states );
 
   Field<void,0> * get_field( bool ,
-                             EntityType ,
+                             unsigned ,
                              const std::string & ,
                              unsigned arg_scalar_type ,
                              unsigned arg_num_dim ,
@@ -194,7 +194,7 @@ CSet::Span<T>
 Schema::declare_part_attribute( Part & p , const T * a , bool d )
 {
   assert_not_committed( "phdmesh::Schema::declare_part_attribute" );
-  return p.m_cset.insert<T>( a , d );
+  return p.m_cset.template insert<T>( a , d );
 }
 
 template<class T>
@@ -203,13 +203,13 @@ CSet::Span<T>
 Schema::declare_field_attribute( Field<void,0> & f , const T * a , bool d )
 {
   assert_not_committed( "phdmesh::Schema::declare_field_attribute" );
-  return f.m_cset.insert<T>( a , d );
+  return f.m_cset.template insert<T>( a , d );
 }
 
 template<typename T,unsigned NDim>
 inline
 Field<T,NDim> *
-Schema::get_field( EntityType entity_type ,
+Schema::get_field( unsigned entity_type ,
                    const std::string & name ,
                    const char * required_by ) const
 {
@@ -224,7 +224,7 @@ Schema::get_field( EntityType entity_type ,
 template<typename T,unsigned NDim>
 inline
 Field<T,NDim> &
-Schema::declare_field( EntityType entity_type ,
+Schema::declare_field( unsigned entity_type ,
                        const std::string & name ,
                        unsigned number_of_states )
 {

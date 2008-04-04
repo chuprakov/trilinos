@@ -21,28 +21,31 @@
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
 /**
- * @author  H. Carter Edwards  <hcedwar@sandia.gov>
+ * @author H. Carter Edwards
  */
 
-#ifndef main_TestDriver_hpp
-#define main_TestDriver_hpp
+#ifndef phdmesh_EntityTypes_hpp
+#define phdmesh_EntityTypes_hpp
 
-#include <map>
-#include <string>
-#include <iosfwd>
-
-#include <util/Parallel.hpp>
+//----------------------------------------------------------------------
 
 namespace phdmesh {
 
-typedef
-void (*TestSubprogram)( ParallelMachine , std::istream & );
+enum EntityType {
+  Node = 0 ,
+  Edge = 1 ,
+  Face = 2 ,
+  Element = 3 ,
+  Particle = 4 ,
+  Constraint = 5 ,
+  EndEntityType = 6 };
 
-typedef std::map< std::string , TestSubprogram > TestDriverMap ;
+const char * entity_type_name( unsigned );
+  
+} // namespace phdmesh
 
-int test_driver( ParallelMachine , std::istream & , const TestDriverMap & );
-
-}
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
 
 #endif
 

@@ -28,7 +28,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include <util/TPI.h>
 #include <util/ParallelComm.hpp>
 #include <util/ParallelReduce.hpp>
 
@@ -36,7 +35,7 @@ using namespace phdmesh ;
 
 //----------------------------------------------------------------------
 
-void test_comm_sparse( ParallelMachine comm , TPI_ThreadPool, std::istream & )
+void test_comm_sparse( ParallelMachine comm , std::istream & )
 {
   const unsigned zero = 0 ;
   const unsigned p_size = parallel_machine_size( comm );
@@ -289,7 +288,7 @@ void test_comm_sparse( ParallelMachine comm , TPI_ThreadPool, std::istream & )
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void test_comm_dense( ParallelMachine comm , TPI_ThreadPool, std::istream & )
+void test_comm_dense( ParallelMachine comm , std::istream & )
 {
   const unsigned zero = 0 ;
   const unsigned p_size = parallel_machine_size( comm );

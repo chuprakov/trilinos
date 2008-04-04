@@ -44,8 +44,8 @@ CFLAGS_INC="-I. -I${PHDMESH_PATH}/include"
 CFLAGS_DIAG=""
 CXXFLAGS_DIAG="-qsuppress=1500-029"
 
-export CFLAGS="-qlanglvl=stdc99 ${CFLAGS}   ${CFLAGS_DIAG}   ${CFLAGS_INC}"
-export CXXFLAGS="-qlanglvl=ansi ${CXXFLAGS} ${CXXFLAGS_DIAG} ${CFLAGS_INC}"
+export CFLAGS="-qlanglvl=stdc99 ${CFLAGS} ${CFLAGS_DIAG} ${CFLAGS_INC}"
+export CXXFLAGS="-qlanglvl=strict98 -qlonglong ${CXXFLAGS} ${CXXFLAGS_DIAG} ${CFLAGS_INC}"
 
 export C_LIB_EXT="${C_LIB_EXT}     -lpthread"
 export CXX_LIB_EXT="${CXX_LIB_EXT} -lpthread"

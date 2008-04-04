@@ -35,6 +35,7 @@
 #include <util/ParallelReduce.hpp>
 #include <util/ParallelComm.hpp>
 
+#include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
@@ -252,9 +253,9 @@ Part & FileSchema::declare_part(
 namespace {
 
 struct BlockEntityProc {
-  unsigned long entity_id ;
-  unsigned      block_id ;
-  unsigned      processor ;
+  entity_id_type entity_id ;
+  unsigned       block_id ;
+  unsigned       processor ;
 };
 
 struct LessIndices {
@@ -294,7 +295,7 @@ void assign_contiguous_indices(
 
   // Get the total count, split evenly among processors, and then map
  
-  unsigned long end_id = 1 ;
+  entity_id_type end_id = 1 ;
   {
     const EntitySet & es = M.entities( f.entity_type() );
     if ( ! es.empty() ) {
@@ -310,18 +311,18 @@ void assign_contiguous_indices(
 
   for ( i = entities.begin() ; i != entities.end() ; ++i ) {
     const unsigned p = (unsigned)( p_map * i->second->identifier() );
-    all.send_buffer( p ).skip<unsigned long>(2);
+    all.send_buffer( p ).skip<entity_id_type>(2);
   }
 
   all.allocate_buffers( p_size / 4 );
 
   for ( i = entities.begin() ; i != entities.end() ; ++i ) {
-    unsigned long data[2] ;
+    entity_id_type data[2] ;
     data[0] = i->first ;
     data[1] = i->second->identifier();
 
     const unsigned p = (unsigned)( p_map * data[1] );
-    all.send_buffer( p ).pack<unsigned long>( data , 2);
+    all.send_buffer( p ).pack<entity_id_type>( data , 2);
   }
 
   all.communicate();
@@ -331,8 +332,8 @@ void assign_contiguous_indices(
   for ( unsigned p = 0 ; p < p_size ; ++p ) {
     CommBuffer & buf = all.recv_buffer(p);
     while ( buf.remaining() ) {
-      unsigned long data[2] ;
-      buf.unpack<unsigned long>( data , 2 );
+      entity_id_type data[2] ;
+      buf.unpack<entity_id_type>( data , 2 );
       BlockEntityProc tmp ;
       tmp.block_id  = data[0] ;
       tmp.entity_id = data[1] ;
@@ -346,7 +347,7 @@ void assign_contiguous_indices(
   unique_count = 0 ;
 
   {
-    unsigned long id = 0 ;
+    entity_id_type id = 0 ;
 
     for ( std::vector<BlockEntityProc>::iterator
           j = received.begin() ; j != received.end() ; ++j ) {
@@ -358,11 +359,11 @@ void assign_contiguous_indices(
 
   allgather( p_comm , & unique_count , & global_count[0] , 1 );
 
-  unsigned long count = 0 ;
+  entity_id_type count = 0 ;
 
   for ( unsigned p = 0 ; p < p_rank ; ++p ) { count += global_count[p] ; }
 
-  unsigned long global_index = count ;
+  entity_id_type global_index = count ;
 
   for ( unsigned p = p_rank ; p < p_size ; ++p ) { count += global_count[p] ; }
 
@@ -370,31 +371,31 @@ void assign_contiguous_indices(
   all.reset_buffers();
 
   {
-    unsigned long id = 0 ;
+    entity_id_type id = 0 ;
 
     for ( std::vector<BlockEntityProc>::iterator
           j = received.begin() ; j != received.end() ; ++j ) {
 
       if ( id != j->entity_id ) { id = j->entity_id ; ++global_index ; }
 
-      unsigned long data[2] ;
+      entity_id_type data[2] ;
       data[0] = global_index ;
       data[1] = id ;
-      all.send_buffer( j->processor ).pack<unsigned long>( data , 2 );
+      all.send_buffer( j->processor ).pack<entity_id_type>( data , 2 );
     }
   }
 
   all.communicate();
 
-  unsigned long local_index = 0 ;
+  entity_id_type local_index = 0 ;
 
   for ( i = entities.begin() ; i != entities.end() ; ++i ) {
-    const unsigned long id = i->second->identifier();
+    const entity_id_type id = i->second->identifier();
 
     const unsigned p = (unsigned)( p_map * id );
     CommBuffer & buf = all.recv_buffer( p );
-    unsigned long data[2] ;
-    buf.unpack<unsigned long>( data , 2 );
+    entity_id_type data[2] ;
+    buf.unpack<entity_id_type>( data , 2 );
 
     int * const entity_index = i->second->data(f);
 
@@ -2637,11 +2638,11 @@ FileInput::FileInput(
       for ( unsigned k = 0 ; k < num_items ; ++k ) {
 
         const int elem_index = elem_data_local[ size_elem_data_local++ ];
-        const unsigned long elem_ident =
+        const entity_id_type elem_ident =
             elem_data_local[ size_elem_data_local++ ] ;
+        const entity_key_type elem_key = entity_key( Element , elem_ident );
 
-        Entity & elem = M.declare_entity( Element, elem_ident,
-                                          entity_parts, (int) p_rank );
+        Entity & elem = M.declare_entity(elem_key,entity_parts,(int)p_rank);
 
         * elem.data( FS.m_field_elem_index ) = elem_index ;
 
@@ -2665,10 +2666,10 @@ FileInput::FileInput(
             throw std::logic_error( msg.str() );
           }
 
-          const unsigned long node_ident = iter_node_data->ident ;
+          const entity_id_type node_ident = iter_node_data->ident ;
+          const entity_key_type node_key = entity_key( Node , node_ident );
 
-          Entity & node = M.declare_entity( Node, node_ident,
-                                            entity_parts, (int)p_rank);
+          Entity & node = M.declare_entity(node_key,entity_parts,(int)p_rank);
 
           M.declare_connection( elem , node , j , method );
 

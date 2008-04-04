@@ -49,8 +49,6 @@ int test_driver(
 
   const unsigned p_rank = parallel_machine_rank( comm );
 
-  TPI_ThreadPool pool = NULL ;
-
   int result = 0 ;
 
   try {
@@ -80,15 +78,15 @@ int test_driver(
           else if ( is_key == std::string("threadpool") ) {
             unsigned ntasks = 1 ;
             if ( is_line.good() ) { is_line >> ntasks ; }
-            if ( pool != NULL ) { TPI_Finalize(); }
-            TPI_Init( ntasks , & pool );
+            TPI_Finalize();
+            TPI_Init( ntasks );
           }
           else {
             TestDriverMap::const_iterator iter = dmap.find( is_key );
 
             if ( iter != dmap.end() ) {
               const TestSubprogram ts = (*iter).second ;
-              (*ts)( comm , pool , is_line );
+              (*ts)( comm , is_line );
             }
             else {
               if ( p_rank == 0 ) {

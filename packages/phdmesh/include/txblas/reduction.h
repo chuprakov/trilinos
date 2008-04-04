@@ -28,8 +28,6 @@
 #ifndef txblas_reduction_h
 #define txblas_reduction_h
 
-#include <util/TPI.h>
-
 #if defined( __cplusplus )
 extern "C" {
 #endif
@@ -91,12 +89,10 @@ void xdsum_get_value( double * v2 , const double * s4 );
 void xdsum_add_array( double * s4 , unsigned n , const double * x );
 
 /** Task-parallel summation of a set of numbers. */
-void txdsum_add_array( TPI_ThreadPool ,
-                       double * s4 , unsigned n , const double * x );
+void txdsum_add_array( double * s4 , unsigned n , const double * x );
 
 void xdnorm1(  double * s2 , unsigned , const double * );
-void txdnorm1( TPI_ThreadPool ,
-               double * s2 , unsigned , const double * );
+void txdnorm1( double * s2 , unsigned , const double * );
 
 /** Dot product with itself, equivalent to:
  *    for ( i = 0 ; i < n ; ++i ) {
@@ -106,8 +102,7 @@ void txdnorm1( TPI_ThreadPool ,
  *  thus the negative part is untouched.
  */
 void xddot1(  double * s2 , unsigned , const double * );
-void txddot1( TPI_ThreadPool ,
-              double * s2 , unsigned , const double * );
+void txddot1( double * s2 , unsigned , const double * );
 
 /** Dot product, equivalent to:
  *    for ( i = 0 ; i < n ; ++i ) {
@@ -116,14 +111,12 @@ void txddot1( TPI_ThreadPool ,
  */
 void xddot(   double * s4 , unsigned , const double * , const double * );
 
-void txddot(  TPI_ThreadPool ,
-              double * s4 , unsigned , const double * , const double * );
+void txddot( double * s4 , unsigned , const double * , const double * );
 
 
 double ddot( unsigned , const double * , const double * );
 
-void tddot(  TPI_ThreadPool ,
-             double * s , unsigned , const double * , const double * );
+void tddot( double * s , unsigned , const double * , const double * );
 
 #if defined( __cplusplus )
 } /* extern "C" */

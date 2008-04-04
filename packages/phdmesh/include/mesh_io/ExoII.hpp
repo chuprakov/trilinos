@@ -28,6 +28,7 @@
 #define phdmesh_ExoII_hpp
 
 #include <mesh/Types.hpp>
+#include <mesh/EntityType.hpp>
 
 namespace phdmesh {
 namespace exodus {
@@ -97,7 +98,7 @@ private:
   FileSchema( const FileSchema & );
   FileSchema & operator = ( const FileSchema & );
 
-  std::vector<const FilePart*> m_parts[ EntityTypeMaximum ];
+  std::vector<const FilePart*> m_parts[ Element + 1 ];
 };
 
 //----------------------------------------------------------------------

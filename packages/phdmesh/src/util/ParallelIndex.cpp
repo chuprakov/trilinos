@@ -34,7 +34,8 @@ namespace phdmesh {
 namespace {
 
 inline
-unsigned proc_map( const unsigned proc_size , const unsigned long key )
+unsigned proc_map( const unsigned proc_size ,
+                   const ParallelIndex::key_type key )
 {
   return ( key >> 8 ) % proc_size ;
 }
@@ -61,7 +62,7 @@ typedef
 
 SpanKeyProc
 span( const std::vector< ParallelIndex::KeyProc > & key_proc ,
-      const unsigned long key )
+      const ParallelIndex::key_type key )
 {
   std::vector< ParallelIndex::KeyProc >::const_iterator i = key_proc.begin();
   std::vector< ParallelIndex::KeyProc >::const_iterator j = key_proc.end();
@@ -75,16 +76,17 @@ span( const std::vector< ParallelIndex::KeyProc > & key_proc ,
 
 //----------------------------------------------------------------------
 
-void pack_map( CommAll & all , const std::vector<unsigned long> & local )
+void pack_map( CommAll & all ,
+               const std::vector<ParallelIndex::key_type> & local )
 {
   const unsigned p_size = all.parallel_size();
 
-  std::vector<unsigned long>::const_iterator i ;
+  std::vector<ParallelIndex::key_type>::const_iterator i ;
 
   for ( i = local.begin() ; i != local.end() ; ++i ) {
-    const unsigned long value = *i ;
+    const ParallelIndex::key_type value = *i ;
     const unsigned      proc = proc_map( p_size , value );
-    all.send_buffer( proc ).pack<unsigned long>( value );
+    all.send_buffer( proc ).pack<ParallelIndex::key_type>( value );
   }
 }
 
@@ -95,7 +97,7 @@ void unpack_map( CommAll & all ,
 
   unsigned count = 0 ;
   for ( unsigned p = 0 ; p < p_size ; ++p ) {
-    count += all.recv_buffer( p ).capacity() / sizeof(unsigned long);
+    count += all.recv_buffer( p ).capacity() / sizeof(ParallelIndex::key_type);
   }
 
   key_proc.clear();
@@ -107,7 +109,7 @@ void unpack_map( CommAll & all ,
     CommBuffer & buf = all.recv_buffer( p );
     value.second = p ;
     while ( buf.remaining() ) {
-      buf.unpack<unsigned long>( value.first );
+      buf.unpack<ParallelIndex::key_type>( value.first );
       key_proc.push_back( value );
     }
   }
@@ -118,7 +120,7 @@ void unpack_map( CommAll & all ,
 void pack_query( CommAll & all ,
                  const std::vector< ParallelIndex::KeyProc > & key_proc )
 {
-  unsigned long value[2] ;
+  ParallelIndex::key_type value[2] ;
 
   std::vector< ParallelIndex::KeyProc >::const_iterator i ;
 
@@ -139,7 +141,7 @@ void pack_query( CommAll & all ,
       for ( j = i_beg ; j != i_end ; ++j ) {
         if ( j != i ) {
           value[1] = j->second ;
-          buf.pack<unsigned long>( value , 2 );
+          buf.pack<ParallelIndex::key_type>( value , 2 );
         }
       }
     }
@@ -152,12 +154,12 @@ void unpack_query( CommAll & all ,
   const unsigned p_size = all.parallel_size();
 
   ParallelIndex::KeyProc entry ;
-  unsigned long value[2] ;
+  ParallelIndex::key_type value[2] ;
 
   for ( unsigned p = 0 ; p < p_size ; ++p ) {
     CommBuffer & buf = all.recv_buffer( p );
     while ( buf.remaining() ) {
-      buf.unpack<unsigned long>( value , 2 );
+      buf.unpack<ParallelIndex::key_type>( value , 2 );
       entry.first = value[0] ;
       entry.second = value[1] ;
       key_proc.push_back( entry );
@@ -171,7 +173,7 @@ void pack_query( CommAll & all ,
                  const std::vector< ParallelIndex::KeyProc > & key_proc_map ,
                  const std::vector< ParallelIndex::KeyProc > & query )
 {
-  unsigned long value[2] ;
+  ParallelIndex::key_type value[2] ;
 
   std::vector< ParallelIndex::KeyProc >::const_iterator i ;
 
@@ -187,7 +189,7 @@ void pack_query( CommAll & all ,
 
       for ( j = s.begin() ; j != s.end() ; ++j ) {
         value[1] = j->second ;
-        buf.pack<unsigned long>( value , 2 );
+        buf.pack<ParallelIndex::key_type>( value , 2 );
       }
     }
   }
@@ -202,8 +204,9 @@ void pack_query( CommAll & all ,
 
 ParallelIndex::~ParallelIndex() {}
 
-ParallelIndex::ParallelIndex( ParallelMachine arg_comm ,
-                              const std::vector<unsigned long> & arg_local )
+ParallelIndex::ParallelIndex(
+  ParallelMachine arg_comm ,
+  const std::vector<ParallelIndex::key_type> & arg_local )
   : m_comm( arg_comm ), m_key_proc()
 {
   const unsigned p_size = parallel_machine_size( arg_comm );
@@ -244,7 +247,7 @@ void ParallelIndex::query(
 }
 
 void ParallelIndex::query(
-  const std::vector<unsigned long> & arg_local ,
+  const std::vector<ParallelIndex::key_type> & arg_local ,
   std::vector<ParallelIndex::KeyProc> & arg_global ) const
 {
   const unsigned p_size = parallel_machine_size( m_comm );
