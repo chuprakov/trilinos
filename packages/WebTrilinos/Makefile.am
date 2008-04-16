@@ -109,14 +109,8 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 autom4te.cache/* \
 	$(AUX_DIST) 
 
 all-local:
-	@echo "Trilinos package WebTrilinos built successfully"
-	@echo 
 	@echo "        +----------------------------------------------------+"
 	@echo "        | Trilinos package WebTrilinos built successfully    |"
-	@echo "        |                                                    |"
-	@echo "        | You can type \"make run-tests\" to verify that the   |"
-	@echo "        | c++ examples work, and \"make run-pytests\" to verify|"
-	@echo "        | that the python scripts are ok.                    |"
 	@echo "        |                                                    |"
 	@echo "        | *Note that WebTrilinos must be manually installed* |"
 	@echo "        | *to be operational through a web browser*          |"
