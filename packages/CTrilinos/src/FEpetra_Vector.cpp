@@ -32,14 +32,14 @@ Array<RCP<Epetra_Vector> >& tableOfVectors()
 
 
 //
-// Definitions from FEpetra_Vector.h
+// Definitions from Epetra_Vector.h
 //
 
 
 extern "C" {
 
 
-VectorID FEpetra_Vector_Create( MapID mapID )
+VectorID Epetra_Vector_Create( MapID mapID )
 {
   using Teuchos::rcp;
   const RCP<const Epetra_Map> map = FEpetra::getMap(mapID);
@@ -48,7 +48,7 @@ VectorID FEpetra_Vector_Create( MapID mapID )
 }
 
 
-void FEpetra_Vector_Destroy( VectorID vectorID )
+void Epetra_Vector_Destroy( VectorID vectorID )
 {
   tableOfVectors()[vectorID] = Teuchos::null;
   // 2007/12/18: rabartl: ToDo: Maintain a free list of vectorIDs that can be
@@ -56,19 +56,19 @@ void FEpetra_Vector_Destroy( VectorID vectorID )
 }
 
 
-void FEpetra_Vector_PutScalar( VectorID vectorID, double scalarConstant )
+void Epetra_Vector_PutScalar( VectorID vectorID, double scalarConstant )
 {
   FEpetra::getVector(vectorID)->PutScalar(scalarConstant);
 }
 
 
-void FEpetra_Vector_Random( VectorID vectorID )
+void Epetra_Vector_Random( VectorID vectorID )
 {
   FEpetra::getVector(vectorID)->Random();
 }
 
 
-void FEpetra_Vector_Update(
+void Epetra_Vector_Update(
   VectorID vectorID, double alpha, VectorID vector2ID, double beta
   )
 {
@@ -77,7 +77,7 @@ void FEpetra_Vector_Update(
 }
 
 
-double FEpetra_Vector_Norm2( VectorID vectorID )
+double Epetra_Vector_Norm2( VectorID vectorID )
 {
   double norm2;
   FEpetra::getVector(vectorID)->Norm2(&norm2);
@@ -89,7 +89,7 @@ double FEpetra_Vector_Norm2( VectorID vectorID )
 
 
 //
-// Definitions from FEpetra_Vector_Cpp.hpp
+// Definitions from Epetra_Vector_Cpp.hpp
 //
 
 

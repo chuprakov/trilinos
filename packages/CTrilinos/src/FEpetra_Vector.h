@@ -16,18 +16,18 @@ extern "C" {
 
 typedef int VectorID;
 
-VectorID FEpetra_Vector_Create( MapID mapID );
+VectorID Epetra_Vector_Create( MapID mapID );
 
-void FEpetra_Vector_Destroy( VectorID vectorID );
+void Epetra_Vector_Destroy( VectorID vectorID );
 
-void FEpetra_Vector_PutScalar( VectorID vectorID, double scalarConstant );
+void Epetra_Vector_PutScalar( VectorID vectorID, double scalarConstant );
 
-void FEpetra_Vector_Random( VectorID vectorID );
+void Epetra_Vector_Random( VectorID vectorID );
 
-void FEpetra_Vector_Update(
+void Epetra_Vector_Update(
   VectorID vectorID, double alpha, VectorID vector2ID, double beta );
 
-double FEpetra_Vector_Norm2( VectorID vectorID );
+double Epetra_Vector_Norm2( VectorID vectorID );
 
 
 #ifdef __cplusplus

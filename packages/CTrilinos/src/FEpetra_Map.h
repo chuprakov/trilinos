@@ -12,11 +12,11 @@ extern "C" {
 
 typedef int MapID;
 
-MapID FEpetra_Map_Create( int numGlobalElements );
+MapID Epetra_Map_Create( int numGlobalElements );
 
-void FEpetra_Map_Destroy( MapID mapID );
+void Epetra_Map_Destroy( MapID mapID );
 
-int FEpetra_Map_NumGlobalElements( MapID mapID );
+int Epetra_Map_NumGlobalElements( MapID mapID );
 
 
 #ifdef __cplusplus

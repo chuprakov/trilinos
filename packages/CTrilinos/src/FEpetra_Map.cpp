@@ -31,14 +31,14 @@ Array<RCP<const Epetra_Map> >& tableOfMaps()
 
 
 //
-// Definitions from FEpetra_Map.h
+// Definitions from Epetra_Map.h
 //
 
 
 extern "C" {
 
 
-MapID FEpetra_Map_Create( int numGlobalElements )
+MapID Epetra_Map_Create( int numGlobalElements )
 {
   using Teuchos::rcp;
   Epetra_SerialComm comm;
@@ -47,7 +47,7 @@ MapID FEpetra_Map_Create( int numGlobalElements )
 }
 
 
-void FEpetra_Map_Destroy( MapID mapID )
+void Epetra_Map_Destroy( MapID mapID )
 {
   tableOfMaps()[mapID] = Teuchos::null;
   // 2007/12/18: rabartl: ToDo: Maintain a free list of mapIDs that can be
@@ -55,7 +55,7 @@ void FEpetra_Map_Destroy( MapID mapID )
 }
 
 
-int FEpetra_Map_NumGlobalElements( MapID mapID )
+int Epetra_Map_NumGlobalElements( MapID mapID )
 {
   return FEpetra::getMap(mapID)->NumGlobalElements();
 }
@@ -65,7 +65,7 @@ int FEpetra_Map_NumGlobalElements( MapID mapID )
 
 
 //
-// Definitions from FEpetra_Map_Cpp.hpp
+// Definitions from Epetra_Map_Cpp.hpp
 //
 
 
