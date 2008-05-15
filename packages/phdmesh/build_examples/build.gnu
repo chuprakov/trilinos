@@ -53,7 +53,7 @@ source ${PHDMESH_PATH}/config/gnu opt
 #----------------------------------------------------------------------
 # SNL ACCESS ExodusII and NemesisI configuration, only for 32Bit :
 #
-# source ${PHDMESH_PATH}/config/exodusII  /usr/local/eng_sci/struct/current-gcc
+# source ${PHDMESH_PATH}/config/exodusII  /usr/local/eng_sci/struct/i686/current-gcc
 #
 #----------------------------------------------------------------------
 

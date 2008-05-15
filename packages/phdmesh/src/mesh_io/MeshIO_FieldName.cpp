@@ -24,6 +24,8 @@
  * @author H. Carter Edwards
  */
 
+#if 0
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
@@ -328,4 +330,5 @@ void io_declare_field_name( Field<void,0> & f , const FieldName & d )
 
 }
 
+#endif
 

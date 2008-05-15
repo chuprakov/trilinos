@@ -29,6 +29,7 @@
 
 #include <mesh/Types.hpp>
 #include <mesh/EntityType.hpp>
+#include <mesh/FieldTraits.hpp>
 
 namespace phdmesh {
 namespace exodus {
@@ -46,19 +47,52 @@ class FilePart ;
 
 //----------------------------------------------------------------------
 
+struct ElementAttributes : public DimensionTraits {
+
+  const char * name() const ;
+
+  std::string encode( unsigned size , unsigned index ) const ;
+
+  unsigned decode( unsigned size , const std::string & ) const ;
+
+  static const DimensionTraits * descriptor();
+private:
+  ElementAttributes() {}
+  ElementAttributes( const ElementAttributes & );
+  ElementAttributes & operator = ( const ElementAttributes & );
+};
+
+struct GlobalLocalIndex : public DimensionTraits {
+  const char * name() const ;
+
+  std::string encode( unsigned size , unsigned index ) const ;
+
+  unsigned decode( unsigned size , const std::string & ) const ;
+
+  static const DimensionTraits * descriptor();
+private:
+  GlobalLocalIndex() {}
+  GlobalLocalIndex( const GlobalLocalIndex & );
+  GlobalLocalIndex & operator = ( const GlobalLocalIndex & );
+};
+
 class FileSchema {
 public:
+
+  typedef Field<double,Cartesian>         CoordinateField ;
+  typedef Field<double,ElementAttributes> AttributeField ;
+  typedef Field<int,GlobalLocalIndex>     IndexField ;
 
   ~FileSchema();
 
   FileSchema( Schema                & arg_schema ,
-              const Field<double,1> & arg_node_coordinates ,
-              const Field<double,1> & arg_elem_attributes ,
+              const CoordinateField & arg_node_coordinates ,
+              const AttributeField  & arg_elem_attributes ,
               const unsigned          arg_writer_rank = 0 );
 
   FileSchema( Schema                & arg_schema ,
-              const Field<double,1> & arg_node_coordinates ,
-              const Field<double,1> & arg_elem_attributes ,
+              const CoordinateField & arg_node_coordinates ,
+              const AttributeField  & arg_elem_attributes ,
               const std::string     & arg_file_path ,
               ParallelMachine         arg_comm ,
               const unsigned          arg_writer_rank = 0 );
@@ -83,12 +117,9 @@ public:
   Schema                & m_schema ;
   const unsigned          m_io_rank ;
   const unsigned          m_dimension ;
-  const Field<double,1> & m_field_node_coord ;
-  const Field<double,1> & m_field_elem_attr ;
-  const Field<int,1>    & m_field_node_index ;
-  const Field<int,1>    & m_field_edge_index ;
-  const Field<int,1>    & m_field_face_index ;
-  const Field<int,1>    & m_field_elem_index ;
+  const CoordinateField & m_field_node_coord ;
+  const AttributeField  & m_field_elem_attr ;
+  const IndexField      & m_field_index ;
 
   const std::vector<const FilePart*> & parts( EntityType t ) const
     { return m_parts[t] ; }
@@ -104,10 +135,10 @@ private:
 //----------------------------------------------------------------------
 
 struct FieldIO {
-  const Field<void,0> * m_field ;
-  unsigned              m_offset ;
-  int                   m_var_index ;
-  const FilePart      * m_part ;
+  const FieldBase * m_field ;
+  unsigned          m_offset ;
+  int               m_var_index ;
+  const FilePart  * m_part ;
 };
 
 
@@ -121,7 +152,7 @@ public:
               const std::string & arg_file_path ,
               const std::string & arg_title ,
               const bool          arg_storage_double ,
-              const std::vector< const Field<void,0> * > & ,
+              const std::vector< const FieldBase * > & ,
               const int * const arg_processor = NULL );
 
   /** Write a snapshot of field values */
@@ -162,7 +193,7 @@ public:
 
   FileInput( const FileSchema & , Mesh & ,
              const std::string & arg_file_path ,
-             const std::vector< const Field<void,0> * > & );
+             const std::vector< const FieldBase * > & );
 
   double read();
 

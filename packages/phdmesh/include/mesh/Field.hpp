@@ -34,23 +34,21 @@
 #include <vector>
 
 #include <util/NumericEnum.hpp>
+#include <util/FixedArray.hpp>
 #include <util/CSet.hpp>
 
 #include <mesh/Types.hpp>
-#include <mesh/FieldDim.hpp>
 
 //----------------------------------------------------------------------
 
 namespace phdmesh {
 
-/** Print the text name for a field, depending on the number of states.
- *  "Field<T,N>( entity_rank , name , #states )"
- */
-std::ostream & operator << ( std::ostream & , const Field<void,0> & );
+/** Print the text name for a field, depending on the number of states.  */
+std::ostream & operator << ( std::ostream & , const FieldBase & );
 
 /** Print field and field dimension map entries on new lines. */
 std::ostream & print( std::ostream & ,
-                      const char * const , const Field<void,0> & );
+                      const char * const , const FieldBase & );
 
 //----------------------------------------------------------------------
 /** Field value states.
@@ -74,15 +72,18 @@ const char * field_state_name( FieldState );
 //----------------------------------------------------------------------
 
 template<>
-class Field<void,0> {
+class Field< void , DimensionTraits ,
+                    DimensionTraits , DimensionTraits ,
+                    DimensionTraits , DimensionTraits ,
+                    DimensionTraits , DimensionTraits > {
 public:
+
+  typedef void data_type ;
 
   Schema & schema() const { return m_schema ; }
 
   /** Volatile until schema is committed. */
   unsigned schema_ordinal() const { return m_schema_ordinal ; }
-
-  unsigned entity_type() const { return m_entity_rank ; }
 
   const std::string & name() const { return m_name ; }
 
@@ -91,21 +92,48 @@ public:
 
   unsigned numeric_type_ordinal() const { return m_scalar_type ; }
 
-  unsigned number_of_dimensions() const { return m_num_dim ; }
-
   unsigned number_of_states() const { return m_num_states ; }
 
   FieldState state() const { return m_this_state ; }
 
-  unsigned max_length() const ;
+  unsigned number_of_dimensions() const { return m_num_dim ; }
 
-  unsigned max_size() const ;
+  const DimensionTraits * const * dimension_traits() const
+    { return m_dim_traits ; }
+
+  unsigned max_size( unsigned entity_type ) const ;
+
+  //----------------------------------------
+
+  struct Dim {
+    const Part * part ;
+    unsigned     rank ;
+    unsigned     stride[ MaximumFieldDimension ];
+
+    Dim( unsigned r , const Part & p ) : part( & p ) , rank( r )
+      { Copy<MaximumFieldDimension>( stride , 0u ); }
+
+    Dim() : part( NULL ), rank( 0 )
+      { Copy<MaximumFieldDimension>( stride , 0u ); }
+
+    Dim( const Dim & rhs )
+      : part( rhs.part ), rank( rhs.rank )
+      { Copy< MaximumFieldDimension >( stride , rhs.stride ); }
+
+    Dim & operator = ( const Dim & rhs )
+      {
+        part = rhs.part ;
+        rank = rhs.rank ;
+        Copy< MaximumFieldDimension >( stride , rhs.stride );
+        return *this ;
+      }
+  };
 
   /** Volatile until the schema is committed */
-  const FieldDimension & dimension( const Part & ) const ;
+  const std::vector<Dim> & dimension() const ;
 
   /** Volatile until the schema is committed */
-  const std::vector<FieldDimension> & dimension() const ;
+  const Dim & dimension( unsigned , const Part & ) const ;
 
   //----------------------------------------
 
@@ -113,66 +141,96 @@ public:
   CSet::Span<A> attribute() const { return m_cset.get<A>(); }
 
   //----------------------------------------
-  /** Checked conversion to field of the given specification. */
-  template<typename T, unsigned NDim>
-    const Field<T,NDim> & field( FieldState s = StateNew ) const
-      {
-        assert_validity( NumericEnum<T>::value, NDim, (unsigned) s );
-        return static_cast<const Field<T,NDim> &>( * m_field_states[s]  );
-      }
 
 private:
 
   friend class Schema ;
 
-  void assert_validity( unsigned , unsigned , unsigned ) const ;
+  template< typename Scalar ,
+            class Traits1 , class Traits2 ,
+            class Traits3 , class Traits4 ,
+            class Traits5 , class Traits6 ,
+            class Traits7 >
+    friend class Field ;
 
   ~Field();
 
   Field();
-  Field( const Field<void,0> & );
-  Field<void,0> & operator = ( const Field<void,0> & );
+  Field( const Field & );
+  Field & operator = ( const Field & );
 
   Field( Schema & ,
-         unsigned ,
          const std::string & ,
          unsigned scalar_type ,
-         unsigned number_of_dimensions ,
+         const DimensionTraits * ,
+         const DimensionTraits * ,
+         const DimensionTraits * ,
+         const DimensionTraits * ,
+         const DimensionTraits * ,
+         const DimensionTraits * ,
+         const DimensionTraits * ,
          unsigned number_of_states ,
          FieldState );
 
-  std::vector<FieldDimension> & dimension();
+  std::vector<Dim> & dimension();
 
   CSet        m_cset ;
   std::string m_name ;
   Schema    & m_schema ;         // Mesh schema in which this field resides
   unsigned    m_schema_ordinal ; // Ordinal in the field set
-  unsigned    m_entity_rank ;    // Type of mesh entities
   unsigned    m_scalar_type ;    // Ordinal in FieldTypes
   unsigned    m_num_dim ;        // Number of dimensions
   unsigned    m_num_states ;     // Number of states of this field
   FieldState  m_this_state ;     // Field state of this field
-  std::vector<FieldDimension> m_dim_map ; // Only valid on StateNone
-  Field<void,0> * m_field_states[ MaximumFieldStates ];
+
+  std::vector<Dim>        m_dim_map ; // Only valid on StateNone
+  Field                 * m_field_states[ MaximumFieldStates ];
+  const DimensionTraits * m_dim_traits[ MaximumFieldDimension ];
 };
 
-/** Specify fundamental type and number of dimensions of a field */
+//----------------------------------------------------------------------
 
-template<typename T, unsigned NDim>
-class Field : public Field<void,0> {
-private:
-  enum { OkType = NumericEnum<T>::OK };
-  enum { OkDim  = StaticAssert< NDim <= MaximumFieldDimension >::OK };
+template< typename Scalar ,
+          class Traits1 , class Traits2 ,
+          class Traits3 , class Traits4 ,
+          class Traits5 , class Traits6 ,
+          class Traits7 >
+class Field : public FieldBase {
 public:
 
-  const Field<T,NDim> & operator[]( FieldState state ) const
-    { return Field<void,0>::field<T,NDim>( state ); }
+  typedef Scalar  data_type ;
+  typedef Traits1 dimension_traits_1 ;
+  typedef Traits2 dimension_traits_2 ;
+  typedef Traits3 dimension_traits_3 ;
+  typedef Traits4 dimension_traits_4 ;
+  typedef Traits5 dimension_traits_5 ;
+  typedef Traits6 dimension_traits_6 ;
+  typedef Traits7 dimension_traits_7 ;
+
+  typedef phdmesh::Dimension<Traits1,Traits2,Traits3,Traits4,
+                             Traits5,Traits6,Traits7> Dimension ;
+
+/*
+  typedef phdmesh::Dimension<Traits1,Traits2,Traits3,Traits4,
+                             Traits5,Traits6,Traits7,
+                             EntityDimension> BlockDimension ;
+*/
+
+  Dimension dimension( unsigned entity_type , const Part & part ) const
+    {
+      const FieldBase::Dim & d = FieldBase::dimension( entity_type , part );
+      return Dimension( d.stride );
+    }
+
+  const Field & operator[]( FieldState state ) const
+    { return static_cast<Field &>( * FieldBase::m_field_states[state] ); }
 
 private:
+
   ~Field();
   Field();
-  Field( const Field<T,NDim> & );
-  Field<T,NDim> operator = ( const Field<T,NDim> & );
+  Field( const Field & );
+  Field & operator = ( const Field & );
 };
 
 

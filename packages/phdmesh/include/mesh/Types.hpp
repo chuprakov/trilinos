@@ -35,6 +35,7 @@
 
 #include <util/Basics.hpp>
 #include <util/Span.hpp>
+#include <util/Dimension.hpp>
 
 namespace phdmesh {
 
@@ -43,9 +44,23 @@ namespace phdmesh {
 class Schema ;  // Parts and fields of a mesh
 class Part ;    // Designated subset or part of the mesh
 
-template< typename T , unsigned NDim = 0 > class Field ;
+template< typename Scalar = void ,
+          class Trait1 = DimensionTraits ,
+          class Trait2 = DimensionTraits ,
+          class Trait3 = DimensionTraits ,
+          class Trait4 = DimensionTraits ,
+          class Trait5 = DimensionTraits ,
+          class Trait6 = DimensionTraits ,
+          class Trait7 = DimensionTraits >
+class Field ;
 
-enum { MaximumFieldDimension = 8 };
+typedef
+Field< void , DimensionTraits , DimensionTraits ,
+              DimensionTraits , DimensionTraits ,
+              DimensionTraits , DimensionTraits ,
+              DimensionTraits > FieldBase ;
+
+enum { MaximumFieldDimension = 7 };
 
 //----------------------------------------------------------------------
 

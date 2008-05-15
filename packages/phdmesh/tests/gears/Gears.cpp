@@ -36,7 +36,6 @@
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
-#include <mesh_io/FieldName.hpp>
 
 #include "Gears.hpp"
 
@@ -49,31 +48,28 @@ namespace phdmesh {
 
 GearFields::GearFields( Schema & S )
 : gear_coord(
-    S.declare_field<double,1>( Node, std::string("gear_coordinates"), 1 ) ),
+    S.declare_field<CylindricalField>( std::string("gear_coordinates") ) ),
   model_coord(
-    S.declare_field<double,1>( Node, std::string("model_coordinates"), 1 ) ),
+    S.declare_field<CartesianField>( std::string("model_coordinates") ) ),
   current_coord(
-    S.declare_field<double,1>( Node, std::string("coordinates") , 2 ) ),
+    S.declare_field<CartesianField>( std::string("coordinates") , 2 ) ),
   displacement(
-    S.declare_field<double,1>( Node, std::string("displacement") , 2 ) ),
+    S.declare_field<CartesianField>( std::string("displacement") , 2 ) ),
   element_attr(
-    S.declare_field<double,1>( Element, std::string("element_attribute"), 1 ) ),
+    S.declare_field<AttributeField>( std::string("element_attribute") ) ),
   element_value(
-    S.declare_field<double,2>( Element, std::string("element_value"), 1 ) ),
+    S.declare_field<ElementValueField>( std::string("element_value") ) ),
   node_value(
-    S.declare_field<double,1>( Node, std::string("node_value") , 2 ) )
+    S.declare_field<NodeValueField>( std::string("node_value") , 2 ) )
 {
-  const unsigned n3 = 3 ;
   const Part & universe = S.universal_part();
-  S.declare_field_dimension( gear_coord    , universe , n3 );
-  S.declare_field_dimension( model_coord   , universe , n3 );
-  S.declare_field_dimension( current_coord , universe , n3 );
-  S.declare_field_dimension( displacement  , universe , n3 );
+  const CylindricalField::Dimension cyl_dim( SpatialDimension );
+  const CartesianField::Dimension   car_dim( SpatialDimension );
 
-  io_declare_field_name( gear_coord ,    io_cylindrical_vector() );
-  io_declare_field_name( model_coord ,   io_cartesian_vector() );
-  io_declare_field_name( current_coord , io_cartesian_vector() );
-  io_declare_field_name( displacement ,  io_cartesian_vector() );
+  S.declare_field_size( gear_coord    , Node , universe , cyl_dim );
+  S.declare_field_size( model_coord   , Node , universe , car_dim );
+  S.declare_field_size( current_coord , Node , universe , car_dim );
+  S.declare_field_size( displacement  , Node , universe , car_dim );
 }
 
 //----------------------------------------------------------------------
@@ -116,13 +112,15 @@ Gear::Gear( Schema & S ,
     m_node_value(    gear_fields.node_value )
 {
   enum { NNODE = 8 };
+  enum {  SpatialDimension = GearFields::SpatialDimension };
+  typedef GearFields::ElementValueField ElementValueField ;
+  typedef GearFields::NodeValueField    NodeValueField ;
 
-  S.declare_field_dimension( gear_fields.gear_coord    , m_gear , 3 );
-  S.declare_field_dimension( gear_fields.model_coord   , m_gear , 3 );
-  S.declare_field_dimension( gear_fields.current_coord , m_gear , 3 );
-  S.declare_field_dimension( gear_fields.displacement  , m_gear , 3 );
-  S.declare_field_dimension( gear_fields.element_value , m_gear , 1 , NNODE );
-  S.declare_field_dimension( gear_fields.node_value    , m_gear , 1 );
+  ElementValueField::Dimension elem_value_dim( SpatialDimension , NNODE );
+  NodeValueField   ::Dimension node_value_dim( SpatialDimension );
+
+  S.declare_field_size( gear_fields.element_value , Element , m_gear , elem_value_dim );
+  S.declare_field_size( gear_fields.node_value    , Node , m_gear , node_value_dim );
 
   const double TWO_PI = 2.0 * acos( (double) -1.0 );
 
@@ -397,29 +395,12 @@ void Gear::turn( double turn_angle ) const
 
 namespace {
 
-template<typename T, unsigned NV, unsigned NC>
-bool verify_gather( const Kernel & kernel , const Field<T,1> & field )
+template< unsigned NV , unsigned NC , class FieldType >
+void gather( typename FieldType::data_type * dst ,
+             const Entity & src ,
+             const FieldType & field )
 {
-  bool result = true ;
-  const EntityType con_type = field.entity_type();
-  const FieldDimension dim = dimension( field , kernel );
-  result = NV == dim[0] ;
-  for ( unsigned i = 0 ; result && i < kernel.size() ; ++i ) {
-    ConnectSpan con = kernel[i]->connections( con_type );
-    result = con.size() <= NC ;
-    while ( result && con ) {
-      result = NULL != con->entity()->data( field );
-      ++con ;
-    }
-  }
-  return result ;
-}
-
-
-template<typename T, unsigned NV, unsigned NC>
-void gather( T * dst , const Entity & src , const Field<T,1> & field )
-{
-  ConnectSpan con = src.connections( field.entity_type() );
+  ConnectSpan con = src.connections( Node );
   for ( unsigned n = 0 ; n < NC ; ++n , ++con , dst += NV ) {
     Copy<NV>( dst , con->entity()->data( field ) );
   }
@@ -429,6 +410,7 @@ void gather( T * dst , const Entity & src , const Field<T,1> & field )
 
 void Gear::element_update() const
 {
+  enum { SpatialDimension = GearFields::SpatialDimension };
   enum { NNODE = 8 };
   double nval[ NNODE ];
 
@@ -446,7 +428,7 @@ void Gear::element_update() const
 
       for ( unsigned j = 0 ; j < number ; ++j ) {
 
-        gather<double,1,NNODE>( nval , * k[j] , m_node_value );
+        gather<SpatialDimension,NNODE>( nval , * k[j] , m_node_value );
 
         double tmp = nval[0] + nval[1] + nval[2] + nval[3] +
                      nval[4] + nval[5] + nval[6] + nval[7] ;

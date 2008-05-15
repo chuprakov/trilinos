@@ -30,18 +30,31 @@
 #include <vector>
 #include <util/Parallel.hpp>
 #include <mesh/Types.hpp>
+#include <mesh/FieldTraits.hpp>
+#include <mesh_io/ExoII.hpp>
 
 namespace phdmesh {
 
 struct GearFields {
 
-  Field<double,1> & gear_coord ;
-  Field<double,1> & model_coord ;
-  Field<double,1> & current_coord ;
-  Field<double,1> & displacement ;
-  Field<double,1> & element_attr ;
-  Field<double,2> & element_value ;
-  Field<double,1> & node_value ;
+  enum { SpatialDimension = 3 };
+
+  typedef Field<double,Cartesian>    CartesianField ;
+  typedef Field<double,Cylindrical>  CylindricalField ;
+  typedef exodus::FileSchema::AttributeField AttributeField ;
+
+  typedef Field<double,Cartesian>              NodeValueField ;
+  typedef Field<double,Cartesian,DimensionAny> ElementValueField ;
+
+  CylindricalField & gear_coord ;
+  CartesianField   & model_coord ;
+  CartesianField   & current_coord ;
+  CartesianField   & displacement ;
+
+  AttributeField & element_attr ;
+
+  ElementValueField & element_value ;
+  NodeValueField    & node_value ;
 
   GearFields( Schema & S );
 
@@ -74,12 +87,12 @@ public:
   Mesh * m_mesh ;
   Part & m_gear ;
   Part & m_surf ;
-  const Field<double,1> & m_gear_coord ;
-  const Field<double,1> & m_model_coord ;
-  const Field<double,1> & m_current_coord ;
-  const Field<double,1> & m_displacement ;
-  const Field<double,2> & m_elem_value ;
-  const Field<double,1> & m_node_value ;
+  const GearFields::CylindricalField  & m_gear_coord ;
+  const GearFields::CartesianField    & m_model_coord ;
+  const GearFields::CartesianField    & m_current_coord ;
+  const GearFields::CartesianField    & m_displacement ;
+  const GearFields::ElementValueField & m_elem_value ;
+  const GearFields::NodeValueField    & m_node_value ;
 
 private:
 

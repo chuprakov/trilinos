@@ -41,7 +41,71 @@
 #include <mesh/Comm.hpp>
 
 #include <mesh_io/ExoII.hpp>
-#include <mesh_io/FieldName.hpp>
+
+//----------------------------------------------------------------------
+
+namespace phdmesh {
+namespace exodus {
+
+const DimensionTraits * GlobalLocalIndex::descriptor()
+{ static const GlobalLocalIndex self ; return & self ; }
+
+const char * GlobalLocalIndex::name() const
+{ static const char n[] = "GlobalLocalIndex" ; return n ; }
+
+std::string GlobalLocalIndex::encode( unsigned size , unsigned index ) const
+{
+  static const char g[] = "_global" ;
+  static const char l[] = "_local" ;
+
+  if ( 2 != size || size <= index ) {
+    std::ostringstream msg ;
+    msg << descriptor()->name();
+    msg << " ERROR Size = " << size ;
+    msg << " Index = " << index ;
+    throw std::runtime_error( msg.str() );
+  }
+
+  return std::string( index ? g : l );
+}
+
+unsigned GlobalLocalIndex::decode( unsigned size , const std::string & arg )
+  const
+{
+  static const char g[] = "_global" ;
+  static const char l[] = "_local" ;
+
+  const unsigned index = ! strcasecmp( arg.c_str() , g ) ? 0 : (
+                         ! strcasecmp( arg.c_str() , l ) ? 1 : 2 );
+
+  if ( 2 == index ) {
+    std::ostringstream msg ;
+    msg << descriptor()->name();
+    msg << " ERROR size = " << size ;
+    msg << " label = " << arg ;
+    throw std::runtime_error( msg.str() );
+  }
+
+  return index ;
+}
+
+const DimensionTraits * ElementAttributes::descriptor()
+{ static const ElementAttributes self ; return & self ; }
+
+const char * ElementAttributes::name() const
+{ static const char n[] = "ElementAttributes" ; return n ; }
+
+std::string ElementAttributes::encode( unsigned size , unsigned index ) const
+{ return DimensionAny::descriptor()->encode( size , index ); }
+
+unsigned ElementAttributes::decode( unsigned size ,
+                                    const std::string & arg ) const
+{ return DimensionAny::descriptor()->decode( size , arg ); }
+
+
+}
+}
+
 
 //----------------------------------------------------------------------
 
@@ -110,31 +174,39 @@ public:
 namespace {
 
 // Exodus indices: [ global , local ]
-const Field<int,1> & exo_index( Schema & arg_schema , EntityType arg_type )
+const FileSchema::IndexField & exo_index( Schema & arg_schema )
 {
+  typedef FileSchema::IndexField IndexField ;
+
   static const char name[] = "exodusII_local_index" ;
-  Field<int,1> & f =
-    arg_schema.declare_field<int,1>( arg_type , std::string(name) , 1 );
-  arg_schema.declare_field_dimension( f , arg_schema.universal_part() , 2 );
+
+  const Part & upart = arg_schema.universal_part();
+
+  IndexField & f = arg_schema.declare_field< IndexField >( std::string(name) );
+
+  IndexField::Dimension dim(2);
+
+  arg_schema.declare_field_size( f , Node ,    upart , dim );
+  arg_schema.declare_field_size( f , Edge ,    upart , dim );
+  arg_schema.declare_field_size( f , Face ,    upart , dim );
+  arg_schema.declare_field_size( f , Element , upart , dim );
+
   return f ;
 }
 
 }
 
 FileSchema::FileSchema(
-  Schema                & arg_schema ,
-  const Field<double,1> & arg_node_coordinates ,
-  const Field<double,1> & arg_elem_attributes ,
-  const unsigned          arg_writer_rank )
+  Schema                            & arg_schema ,
+  const FileSchema::CoordinateField & arg_node_coordinates ,
+  const FileSchema::AttributeField  & arg_elem_attributes ,
+  const unsigned                      arg_writer_rank )
   : m_schema( arg_schema ),
     m_io_rank( arg_writer_rank ),
-    m_dimension( arg_node_coordinates.max_length() ),
+    m_dimension( arg_node_coordinates.max_size( Node ) ),
     m_field_node_coord( arg_node_coordinates ),
     m_field_elem_attr(  arg_elem_attributes ),
-    m_field_node_index( exo_index( arg_schema , Node ) ),
-    m_field_edge_index( exo_index( arg_schema , Edge ) ),
-    m_field_face_index( exo_index( arg_schema , Face ) ),
-    m_field_elem_index( exo_index( arg_schema , Element ) )
+    m_field_index( exo_index( arg_schema ) )
 {
 }
 
@@ -154,8 +226,10 @@ const FilePart * internal_declare_part(
   int                 arg_element_dim ,
   int                 arg_number_nodes ,
   int                 arg_number_attr ,
-  const Field<double,1> & arg_attributes )
+  const FileSchema::AttributeField  & arg_attributes )
 {
+  typedef FileSchema::AttributeField AttributeField ;
+
   static const char method[] = "phdmesh::exodus::FileSchema::declare_part" ;
 
   Part & part = arg_schema.declare_part( arg_name );
@@ -166,8 +240,6 @@ const FilePart * internal_declare_part(
 
   if ( attr.empty() ) {
 
-    const unsigned dim = arg_element_dim ;
-
     unsigned n = arg_number_attr ;
 
     if ( ! n ) { // Default number of attributes
@@ -176,14 +248,17 @@ const FilePart * internal_declare_part(
       case SPHERE :
       case TRUSS :
       case SHELL : n = 1 ; break ;
-      case BEAM :  n = dim == 2 ? 3 : ( dim == 3 ? 7 : 0 ); break ;
+      case BEAM :  n = arg_element_dim == 2 ? 3 : (
+                       arg_element_dim == 3 ? 7 : 0 );
+                   break ;
       default:     n = 0 ; break ;
       }
     }
 
     if ( n ) {
-      arg_schema.declare_field_dimension(
-        const_cast<Field<double,1>&>( arg_attributes ) , part , n );
+      AttributeField::Dimension dim(n);
+      arg_schema.declare_field_size(
+        const_cast<AttributeField &>(arg_attributes) , Element , part , dim );
     }
 
     file_part = new FilePart( part, arg_id, arg_type,
@@ -278,8 +353,9 @@ struct LessIndices {
 
 void assign_contiguous_indices(
   Mesh & M ,
+  unsigned entity_type ,
   const std::vector< std::pair<int,const Entity*> > & entities ,
-  const Field<int,1> & f )
+  const FileSchema::IndexField & f )
 {
   static const char method[] = "phdmesh::exodus::assign_contiguous_indices" ;
 
@@ -297,7 +373,7 @@ void assign_contiguous_indices(
  
   entity_id_type end_id = 1 ;
   {
-    const EntitySet & es = M.entities( f.entity_type() );
+    const EntitySet & es = M.entities( entity_type );
     if ( ! es.empty() ) {
       end_id += (-- es.end() )->identifier();
     }
@@ -410,9 +486,10 @@ void assign_contiguous_indices(
   }
 }
 
-void assign_contiguous_indices( Mesh & M , const Field<int,1> & f )
+void assign_contiguous_indices( Mesh & M , unsigned entity_type ,
+                                const FileSchema::IndexField & f )
 {
-  const EntitySet & es = M.entities( f.entity_type() );
+  const EntitySet & es = M.entities( entity_type );
 
   std::vector< std::pair<int,const Entity*> > entities ;
 
@@ -425,7 +502,7 @@ void assign_contiguous_indices( Mesh & M , const Field<int,1> & f )
     entities.push_back( tmp );
   }
 
-  assign_contiguous_indices( M , entities , f );
+  assign_contiguous_indices( M , entity_type , entities , f );
 }
 
 }
@@ -442,9 +519,9 @@ void FileSchema::assign_indices( Mesh & arg_mesh ) const
 
   //--------------------------------------------------------------------
 
-  assign_contiguous_indices( M , m_field_node_index );
-  assign_contiguous_indices( M , m_field_edge_index );
-  assign_contiguous_indices( M , m_field_face_index );
+  assign_contiguous_indices( M , Node , m_field_index );
+  assign_contiguous_indices( M , Edge , m_field_index );
+  assign_contiguous_indices( M , Face , m_field_index );
 
   //--------------------------------------------------------------------
   // Assign element indices by block and then element id order.
@@ -494,7 +571,7 @@ void FileSchema::assign_indices( Mesh & arg_mesh ) const
 
   // Assign element indices in element block order and then element id order
 
-  assign_contiguous_indices( M , entities , m_field_elem_index );
+  assign_contiguous_indices( M , Element , entities , m_field_index );
 }
 
 }
@@ -641,7 +718,7 @@ EntitySet::const_iterator
   chunk( EntitySet::const_iterator i ,
          const EntitySet::const_iterator i_end ,
          Part & part ,
-         const Field<int,1> & field_index ,
+         const FileSchema::IndexField & field_index ,
          const int index_begin ,
          const int index_end ,
          Op & op )
@@ -749,7 +826,7 @@ void WriteNodeIndexCoord::operator()(
           i = send.begin() ; i != send.end() ; ++i ) {
       const Entity & node = **i ;
       int ids[2] ;
-      ids[0] = * node.data( SF.m_field_node_index );
+      ids[0] = * node.data( SF.m_field_index );
       ids[1] =   node.identifier();
       const double * const xyz = node.data( SF.m_field_node_coord );
 
@@ -879,14 +956,14 @@ void WriteElemIndexConnect::operator()(
           i = send.begin() ; i != send.end() ; ++i ) {
       const Entity & elem = **i ;
 
-      send_data[0] = * elem.data( SF.m_field_elem_index );
+      send_data[0] = * elem.data( SF.m_field_index );
       send_data[1] =   elem.identifier();
 
       ConnectSpan con = elem.connections();
 
       for ( unsigned j = 0 ; j < num_nodes_per_elem ; ++j , ++con ) {
         Entity & node = * con->entity();
-        send_data[j+2] = * node.data( SF.m_field_node_index );
+        send_data[j+2] = * node.data( SF.m_field_index );
       }
 
       buf.pack<int>( & send_data[0] , send_data_num );
@@ -958,50 +1035,55 @@ unsigned count( const KernelSet & ks , const PartSet & ps )
   return n ;
 }
 
-std::string variable_name( const Part & p , 
-                           const Field<void,0> & f ,
-                           const unsigned k )
+std::string variable_name( unsigned          r ,
+                           const Part      & p , 
+                           const FieldBase & f ,
+                           const unsigned    k )
 {
-  std::string name ;
+  const unsigned f_num_dim = f.number_of_dimensions();
 
-  const FieldDimension & dim = f.dimension( p );
+  std::string name( f.name() );
 
-  if ( 1 < dim.length() ) {
-    unsigned dimension[ MaximumFieldDimension ];
-    unsigned indices[   MaximumFieldDimension ];
+  if ( f_num_dim ) {
+    unsigned sizes[   MaximumFieldDimension ];
+    unsigned indices[ MaximumFieldDimension ];
 
-    dim.dimension( dimension );
-    dim.indices( k , indices );
+    const FieldBase::Dim & dim = f.dimension( r , p );
 
-    const FieldName * des = io_get_field_name( f );
+    stride_size( f_num_dim , dim.stride , sizes );
+    stride_inv(  f_num_dim , dim.stride , k , indices );
 
-    if ( des == NULL ) { des = & io_array_name(); }
-
-    name = des->encode( f.name() , dim.number_of_dimensions() ,
-                        dimension , indices );
+    for ( unsigned i = 0 ; i < f_num_dim ; ++i ) {
+      std::string tmp = f.dimension_traits()[i]->encode(sizes[i],indices[i]);
+      name.append( tmp );
+    }
   }
-  else {
-    name = f.name();
-  }
+
   return name ;
 }
 
 
-void variable_add( const Field<void,0>                    & field ,
-                   const std::vector<const FilePart *>    & parts ,
-                   std::vector< std::string >             & var_names ,
-                   std::vector< FieldIO > & spec )
+void variable_add( unsigned entity_type ,
+                   const FieldBase                     & field ,
+                   const std::vector<const FilePart *> & parts ,
+                   std::vector< std::string >          & var_names ,
+                   std::vector< FieldIO >              & spec )
 {
   const unsigned size_begin = var_names.size();
+  const unsigned field_num_dim = field.number_of_dimensions();
 
   for ( unsigned j = 0 ; j < parts.size() ; ++j ) {
     Part & p = parts[j]->m_part ;
 
-    const FieldDimension & d = field.dimension( p );
+    const FieldBase::Dim & d = field.dimension( entity_type , p );
 
-    for ( unsigned k = 0 ; k < d.length() ; ++k ) {
-      const std::string name( variable_name( p , field , k ) );
-      var_names.push_back( name );
+    if ( d.part ) { // Exists
+      const unsigned n = stride_size( field_num_dim , d.stride );
+
+      for ( unsigned k = 0 ; k < n ; ++k ) {
+        const std::string name( variable_name(entity_type, p, field, k ) );
+        var_names.push_back( name );
+      }
     }
   }
 
@@ -1026,11 +1108,12 @@ void variable_add( const Field<void,0>                    & field ,
 
     Part & p = parts[j]->m_part ;
 
-    const FieldDimension & d = field.dimension( p );
+    const FieldBase::Dim & d = field.dimension( entity_type , p );
+    const unsigned n = stride_size( field_num_dim , d.stride );
 
-    for ( unsigned k = 0 ; k < d.length() ; ++k ) {
+    for ( unsigned k = 0 ; k < n ; ++k ) {
 
-      const std::string name( variable_name( p , field , k ) );
+      const std::string name( variable_name( entity_type , p , field , k ) );
 
       const std::vector<std::string>::iterator i =
         std::lower_bound( i_beg , var_names.end() , name );
@@ -1053,7 +1136,7 @@ FileOutput::FileOutput(
   const std::string & arg_file_path ,
   const std::string & arg_title ,
   const bool          arg_storage_double ,
-  const std::vector<const Field<void,0> * > & arg_fields ,
+  const std::vector<const FieldBase * > & arg_fields ,
   const int * const arg_processor )
   : m_schema( arg_schema ),
     m_mesh( arg_mesh ),
@@ -1108,40 +1191,51 @@ FileOutput::FileOutput(
     }
   }
 
-  for ( std::vector< const Field<void,0> * >::const_iterator
+  // Universal nodal variables:
+
+  for ( std::vector< const FieldBase * >::const_iterator
         i = arg_fields.begin() ; i != arg_fields.end() ; ++i ) {
 
-    const Field<void,0>  & f = **i ;
-    const FieldDimension & d = f.dimension( universal_part );
+    const FieldBase & f = **i ;
+    const FieldBase::Dim & d = f.dimension( Node , universal_part );
+    const unsigned f_num_dim = f.number_of_dimensions();
 
-    switch( f.entity_type() ) {
-    case Node :
-      if ( d.length() ) { // Universal nodal variable
-        FieldIO tmp ;
+    if ( d.part ) {
+      FieldIO tmp ;
 
-        tmp.m_field     = & f ;
-        tmp.m_part      = NULL ;
-        tmp.m_offset    = 0 ;
-        tmp.m_var_index = 0 ;
+      tmp.m_field     = & f ;
+      tmp.m_part      = NULL ;
+      tmp.m_offset    = 0 ;
+      tmp.m_var_index = 0 ;
 
-        for ( unsigned k = 0 ; k < d.length() ; ++k ) {
-          name_node_var.push_back( variable_name(universal_part, f, k) );
-          tmp.m_offset    = k ;
-          tmp.m_var_index = name_node_var.size();
-          m_field_node_universal.push_back( tmp );
-        }
+      const unsigned n = stride_size( f_num_dim , d.stride );
+
+      for ( unsigned k = 0 ; k < n ; ++k ) {
+        name_node_var.push_back( variable_name(Node, universal_part, f, k) );
+        tmp.m_offset    = k ;
+        tmp.m_var_index = name_node_var.size();
+        m_field_node_universal.push_back( tmp );
       }
-      else { // Node set variable
-        // variable_add( f , node_parts , name_nodeset_var , m_fields );
-      }
-      break ;
+    }
+  }
 
-    case Element :
-      variable_add( f , elem_parts , name_elem_var , m_field_elem );
-      break ;
+  // Element variables:
 
-    default :
-      break ;
+  for ( std::vector< const FieldBase * >::const_iterator
+        i = arg_fields.begin() ; i != arg_fields.end() ; ++i ) {
+
+    const FieldBase & f = **i ;
+
+    bool is_element_var = false ;
+
+    for ( std::vector<FieldBase::Dim>::const_iterator
+          j =  f.dimension().begin() ;
+          j != f.dimension().end() && ! is_element_var ; ++j ) {
+
+      is_element_var = j->rank == Element ;
+    }
+    if ( is_element_var ) {
+      variable_add( Element , f , elem_parts , name_elem_var , m_field_elem );
     }
   }
 
@@ -1378,7 +1472,7 @@ FileOutput::FileOutput(
     const int index_end = index + num_nodes_global ;
 
     chunk( es.begin() , es.end() ,
-           owns_part , FS.m_field_node_index ,
+           owns_part , FS.m_field_index ,
            index , index_end , work );
 
     exo_error = work.exo_error ;
@@ -1405,7 +1499,7 @@ FileOutput::FileOutput(
 
       WriteElemIndexConnect work( *this, * elem_parts[j], index, m_max_buffer );
 
-      i = chunk( i , es.end() , owns_part , FS.m_field_elem_index ,
+      i = chunk( i , es.end() , owns_part , FS.m_field_index ,
                  index , index_end , work );
 
       index = index_end ;
@@ -1434,7 +1528,7 @@ FileOutput::FileOutput(
 namespace {
 
 void pack_entity_proc( const std::vector<const Entity *> & send ,
-                       const Field<int,1>                & f_index ,
+                       const FileSchema::IndexField                & f_index ,
                        CommBuffer & buf )
 {
   double item_buffer[2] ;
@@ -1452,8 +1546,8 @@ void pack_entity_proc( const std::vector<const Entity *> & send ,
 
 template<typename T>
 void pack_entity_data( const std::vector<const Entity *> & send ,
-                       const Field<int,1>                & f_index ,
-                       const Field<T,0>                  & f_data ,
+                       const FileSchema::IndexField      & f_index ,
+                       const FieldBase                   & f_data ,
                        const unsigned                      offset ,
                        CommBuffer & buf )
 {
@@ -1464,48 +1558,48 @@ void pack_entity_data( const std::vector<const Entity *> & send ,
     const Entity & e = **i ;
 
     item_buffer[0] = * e.data( f_index );
-    item_buffer[1] =   e.data( f_data )[ offset ] ;
+    item_buffer[1] = reinterpret_cast<T*>( e.data( f_data ) )[ offset ] ;
 
     buf.pack<double>( item_buffer , 2 );
   }
 }
 
 void pack_entity_data( const std::vector<const Entity *> & send ,
-                       const Field<int,1>                & f_index ,
-                       const Field<void,0>               & f_data ,
+                       const FileSchema::IndexField      & f_index ,
+                       const FieldBase                   & f_data ,
                        const unsigned                      offset ,
                        CommBuffer & buf )
 {
   switch( f_data.numeric_type_ordinal() ) {
   case NumericEnum< signed char >::value :
-    pack_entity_data( send, f_index, f_data.field<signed char,0>(), offset, buf );
+    pack_entity_data<signed char>( send, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< unsigned char >::value :
-    pack_entity_data( send, f_index, f_data.field<unsigned char,0>(), offset, buf );
+    pack_entity_data<unsigned char>( send, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< signed short >::value :
-    pack_entity_data( send, f_index, f_data.field<signed short,0>(), offset, buf );
+    pack_entity_data< signed short >( send, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< unsigned short >::value :
-    pack_entity_data( send, f_index, f_data.field<unsigned short,0>(), offset, buf );
+    pack_entity_data< unsigned short >( send, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< signed int >::value :
-    pack_entity_data( send, f_index, f_data.field<signed int,0>(), offset, buf );
+    pack_entity_data< signed int >( send, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< unsigned int >::value :
-    pack_entity_data( send, f_index, f_data.field<unsigned int,0>(), offset, buf );
+    pack_entity_data< unsigned int >( send, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< signed long >::value :
-    pack_entity_data( send, f_index, f_data.field<signed long,0>(), offset, buf );
+    pack_entity_data< signed long >( send, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< unsigned long >::value :
-    pack_entity_data( send, f_index, f_data.field<unsigned long,0>(), offset, buf );
+    pack_entity_data< unsigned long >( send, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< float >::value :
-    pack_entity_data( send, f_index, f_data.field<float,0>(), offset, buf );
+    pack_entity_data< float >( send, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< double >::value :
-    pack_entity_data( send, f_index, f_data.field<double,0>(), offset, buf );
+    pack_entity_data< double >( send, f_index, f_data, offset, buf );
     break ;
   default : break ;
   }
@@ -1573,12 +1667,12 @@ void WriteNodeValues::operator()(
   CommGather gather( p_comm , p_write , send_size );
 
   if ( field->m_field ) {
-    pack_entity_data( send , SF.m_field_node_index ,
+    pack_entity_data( send , SF.m_field_index ,
                       * field->m_field , field->m_offset ,
                        gather.send_buffer() );
   }
   else {
-    pack_entity_proc( send , SF.m_field_node_index , gather.send_buffer() );
+    pack_entity_proc( send , SF.m_field_index , gather.send_buffer() );
   }
 
   gather.communicate();
@@ -1678,12 +1772,12 @@ void WriteElemValues::operator()(
   CommGather gather( p_comm , p_write , send_size );
 
   if ( field->m_field ) {
-    pack_entity_data( send , SF.m_field_elem_index ,
+    pack_entity_data( send , SF.m_field_index ,
                       * field->m_field , field->m_offset ,
                        gather.send_buffer() );
   }
   else {
-    pack_entity_proc( send , SF.m_field_elem_index , gather.send_buffer() );
+    pack_entity_proc( send , SF.m_field_index , gather.send_buffer() );
   }
 
   gather.communicate();
@@ -1777,7 +1871,7 @@ void FileOutput::write( double time_value )
       const int index_end = index + num_nodes_global ;
 
       chunk( es.begin() , es.end() ,
-             owns_part , FS.m_field_node_index ,
+             owns_part , FS.m_field_index ,
              index , index_end , work );
     }
 
@@ -1816,7 +1910,7 @@ void FileOutput::write( double time_value )
           work.set_field( *k , index , elem_parts[j]->m_identifier );
 
           i = chunk( i , es.end() ,
-                     owns_part , FS.m_field_elem_index ,
+                     owns_part , FS.m_field_index ,
                      index , index_end , work );
 
           if ( ! exo_error ) {
@@ -1828,7 +1922,7 @@ void FileOutput::write( double time_value )
           // Skip elements in this block
           for ( bool flag = true ; flag && i != es.end() ; ) {
             if ( i->kernel().has_superset( owns_part ) ) {
-              flag = i->data(FS.m_field_elem_index)[0] < index_end ;
+              flag = i->data(FS.m_field_index)[0] < index_end ;
             }
             if ( flag ) { ++i ; }
           }
@@ -1875,21 +1969,19 @@ struct exo_elem_block_data {
 
 }
 
-FileSchema::FileSchema( Schema & arg_schema ,
-                        const Field<double,1> & arg_node_coordinates ,
-                        const Field<double,1> & arg_elem_attributes ,
-                        const std::string     & arg_file_path ,
-                        ParallelMachine         arg_comm ,
-                        const unsigned          arg_reader_rank )
+FileSchema::FileSchema(
+  Schema & arg_schema ,
+  const FileSchema::CoordinateField & arg_node_coordinates ,
+  const FileSchema::AttributeField  & arg_elem_attributes ,
+  const std::string     & arg_file_path ,
+  ParallelMachine         arg_comm ,
+  const unsigned          arg_reader_rank )
   : m_schema( arg_schema ),
     m_io_rank( arg_reader_rank ),
-    m_dimension( arg_node_coordinates.max_length() ),
+    m_dimension( arg_node_coordinates.max_size( Node ) ),
     m_field_node_coord( arg_node_coordinates ),
     m_field_elem_attr(  arg_elem_attributes ),
-    m_field_node_index( exo_index( arg_schema , Node ) ),
-    m_field_edge_index( exo_index( arg_schema , Edge ) ),
-    m_field_face_index( exo_index( arg_schema , Face ) ),
-    m_field_elem_index( exo_index( arg_schema , Element ) )
+    m_field_index( exo_index( arg_schema ) )
 {
   static const char method[] = "phdmesh::exodus::FileSchema::FileSchema" ;
 
@@ -2133,7 +2225,7 @@ FileInput::FileInput(
   const FileSchema  & arg_schema ,
         Mesh        & arg_mesh ,
   const std::string & arg_file_path ,
-  const std::vector< const Field<void,0> * > & arg_fields )
+  const std::vector< const FieldBase * > & arg_fields )
   : m_schema( arg_schema ),
     m_mesh( arg_mesh ),
     m_exo_id( 0 ),
@@ -2166,40 +2258,47 @@ FileInput::FileInput(
   std::vector< std::string > name_elem_var ;
   std::vector<int> exist_elem_var ; 
 
-  for ( std::vector< const Field<void,0> * >::const_iterator
+  for ( std::vector< const FieldBase * >::const_iterator
         i = arg_fields.begin() ; i != arg_fields.end() ; ++i ) {
 
-    const Field<void,0>  & f = **i ;
-    const FieldDimension & d = f.dimension( universal_part );
+    const FieldBase  & f = **i ;
+    const FieldBase::Dim & d = f.dimension( Node , universal_part );
+    const unsigned f_num_dim = f.number_of_dimensions();
 
-    switch( f.entity_type() ) {
-    case Node :
-      if ( d.length() ) { // Universal nodal variable
-        FieldIO tmp ;
+    if ( d.part ) {
+      FieldIO tmp ;
 
-        tmp.m_field     = & f ;
-        tmp.m_part      = NULL ;
-        tmp.m_offset    = 0 ;
-        tmp.m_var_index = 0 ;
+      tmp.m_field     = & f ;
+      tmp.m_part      = NULL ;
+      tmp.m_offset    = 0 ;
+      tmp.m_var_index = 0 ;
 
-        for ( unsigned k = 0 ; k < d.length() ; ++k ) {
-          name_node_var.push_back( variable_name(universal_part, f, k) );
-          tmp.m_offset    = k ;
-          tmp.m_var_index = name_node_var.size();
-          m_field_node_universal.push_back( tmp );
-        }
+      const unsigned n = stride_size( f_num_dim, d.stride );
+
+      for ( unsigned k = 0 ; k < n ; ++k ) {
+        name_node_var.push_back( variable_name(Node,universal_part, f, k) );
+        tmp.m_offset    = k ;
+        tmp.m_var_index = name_node_var.size();
+        m_field_node_universal.push_back( tmp );
       }
-      else { // Node set variable
-        // variable_add( f , node_parts , name_nodeset_var , m_fields );
-      }
-      break ;
+    }
+  }
 
-    case Element :
-      variable_add( f , elem_parts , name_elem_var , m_field_elem );
-      break ;
+  for ( std::vector< const FieldBase * >::const_iterator
+        i = arg_fields.begin() ; i != arg_fields.end() ; ++i ) {
 
-    default :
-      break ;
+    const FieldBase & f = **i ;
+
+    bool is_element_var = false ;
+
+    for ( std::vector<FieldBase::Dim>::const_iterator
+          j =  f.dimension().begin() ;
+          j != f.dimension().end() && ! is_element_var ; ++j ) {
+
+      is_element_var = j->rank == Element ;
+    }
+    if ( is_element_var ) {
+      variable_add( Element , f , elem_parts , name_elem_var , m_field_elem );
     }
   }
 
@@ -2644,7 +2743,7 @@ FileInput::FileInput(
 
         Entity & elem = M.declare_entity(elem_key,entity_parts,(int)p_rank);
 
-        * elem.data( FS.m_field_elem_index ) = elem_index ;
+        elem.data( FS.m_field_index )[0] = elem_index ;
 
         for ( int j = 0 ; j < part.m_number_nodes ; ++j ) {
           const int node_index = elem_data_local[ size_elem_data_local++ ];
@@ -2673,7 +2772,7 @@ FileInput::FileInput(
 
           M.declare_connection( elem , node , j , method );
 
-          * node.data( FS.m_field_node_index ) = node_index ;
+          node.data( FS.m_field_index )[0] = node_index ;
 
           double * const node_coord = node.data( FS.m_field_node_coord );
           node_coord[0] = iter_node_data->coord[0] ;
@@ -2709,21 +2808,19 @@ FileInput::FileInput(
 namespace phdmesh {
 namespace exodus {
 
-FileSchema::FileSchema( Schema & arg_schema ,
-                        const Field<double,1> & arg_node_coordinates ,
-                        const Field<double,1> & arg_elem_attributes ,
-                        const std::string     & ,
-                        ParallelMachine         ,
-                        const unsigned          arg_reader_rank )
+FileSchema::FileSchema(
+  Schema & arg_schema ,
+  const FileSchema::CoordinateField & arg_node_coordinates ,
+  const FileSchema::AttributeField  & arg_elem_attributes ,
+  const std::string     & ,
+  ParallelMachine         ,
+  const unsigned          arg_reader_rank )
   : m_schema( arg_schema ),
     m_io_rank( arg_reader_rank ),
-    m_dimension( arg_node_coordinates.max_length() ),
+    m_dimension( arg_node_coordinates.max_size( Node ) ),
     m_field_node_coord( arg_node_coordinates ),
     m_field_elem_attr(  arg_elem_attributes ),
-    m_field_node_index( exo_index( arg_schema , Node ) ),
-    m_field_edge_index( exo_index( arg_schema , Edge ) ),
-    m_field_face_index( exo_index( arg_schema , Face ) ),
-    m_field_elem_index( exo_index( arg_schema , Element ) )
+    m_field_index( exo_index( arg_schema ) )
 {
 }
 
@@ -2735,7 +2832,7 @@ FileOutput::FileOutput(
   const std::string & ,
   const std::string & ,
   const bool ,
-  const std::vector<const Field<void,0> * > & ,
+  const std::vector<const FieldBase * > & ,
   const int * const )
   : m_schema( arg_schema ),
     m_mesh( arg_mesh ),
@@ -2752,7 +2849,7 @@ FileInput::FileInput(
   const FileSchema  & arg_schema ,
         Mesh        & arg_mesh ,
   const std::string & ,
-  const std::vector< const Field<void,0> * > & )
+  const std::vector< const FieldBase * > & )
   : m_schema( arg_schema ),
     m_mesh( arg_mesh ),
     m_exo_id( 0 ),

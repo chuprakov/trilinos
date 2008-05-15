@@ -46,6 +46,9 @@
 
 using namespace phdmesh ;
 
+typedef GearFields::CylindricalField CylindricalField ;
+typedef GearFields::CartesianField   CartesianField ;
+
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
@@ -88,8 +91,8 @@ void parallel_gather( ParallelMachine ,
 
 void test_gears_face_proximity(
   Mesh & M ,
-  const Field<double,1> & gear_coordinates ,
-  const Field<double,1> & field_proximity ,
+  const CylindricalField & gear_coordinates ,
+  const Field<double>  & field_proximity ,
   const ProximitySearch & prox_search ,
   EntityProcSet & domain ,
   EntityProcSet & range ,
@@ -292,10 +295,10 @@ void test_gears( ParallelMachine pm ,
 
   ProximitySearch proximity_search( gear_fields.current_coord , 0.25 );
 
-  Field<double,1> & field_node_proximity =
-    S.declare_field<double,1>( Node , std::string("proximity") , 1 );
+  Field<double> & field_node_proximity =
+    S.declare_field< Field<double> >( std::string("proximity") );
 
-  S.declare_field_dimension( field_node_proximity , S.universal_part() , 1 );
+  S.declare_field_exists( field_node_proximity , Node , S.universal_part() );
 
   //------------------------------
 
@@ -373,8 +376,8 @@ void test_gears( ParallelMachine pm ,
 
   // Copy coordinates to the aura nodes
   {
-    std::vector< const Field<void,0> *> fields ;
-    const Field<void,0> * ptr = NULL ;
+    std::vector< const FieldBase *> fields ;
+    const FieldBase * ptr = NULL ;
 
     ptr = & gear_fields.gear_coord ;    fields.push_back( ptr );
     ptr = & gear_fields.model_coord ;   fields.push_back( ptr );
@@ -408,7 +411,7 @@ void test_gears( ParallelMachine pm ,
   }
 
 
-  if ( verify && ! comm_verify_shared_entity_values( M , gear_fields.gear_coord ) ) {
+  if ( verify && ! comm_verify_shared_entity_values( M , Node , gear_fields.gear_coord ) ) {
     if ( p_rank == 0 ) {
       std::cout << "N_GEARS FAILED for shared values of " ;
       std::cout << gear_fields.gear_coord.name();
@@ -417,7 +420,7 @@ void test_gears( ParallelMachine pm ,
     return ;
   }
 
-  if ( verify && ! comm_verify_shared_entity_values( M , gear_fields.model_coord ) ) {
+  if ( verify && ! comm_verify_shared_entity_values( M , Node , gear_fields.model_coord ) ) {
     if ( p_rank == 0 ) {
       std::cout << "TWO_GEARS FAILED for shared values of " ;
       std::cout << gear_fields.model_coord.name();
@@ -426,7 +429,7 @@ void test_gears( ParallelMachine pm ,
     return ;
   }
 
-  if ( verify && ! comm_verify_shared_entity_values( M , gear_fields.current_coord ) ) {
+  if ( verify && ! comm_verify_shared_entity_values( M , Node , gear_fields.current_coord ) ) {
     if ( p_rank == 0 ) {
       std::cout << "N_GEARS FAILED for shared values of " ;
       std::cout << gear_fields.current_coord.name();
@@ -442,8 +445,8 @@ void test_gears( ParallelMachine pm ,
 
     std::string title( "PHDMESH Gears test problem" );
 
-    std::vector< const Field<void,0> * > out_fields ;
-    const Field<void,0> * tmp ;
+    std::vector< const FieldBase * > out_fields ;
+    const FieldBase * tmp ;
 
     // tmp = & gear_fields.gear_coord ;    out_fields.push_back( tmp );
     // tmp = & gear_fields.current_coord ; out_fields.push_back( tmp );
@@ -517,8 +520,8 @@ void test_gears( ParallelMachine pm ,
 
       // Copy the coordinates to the aura nodes
       {
-        std::vector< const Field<void,0> *> fields ;
-        const Field<void,0> * const ptr = & gear_fields.current_coord ;
+        std::vector< const FieldBase *> fields ;
+        const FieldBase * const ptr = & gear_fields.current_coord ;
         fields.push_back( ptr );
         comm_mesh_field_values( M, M.aura_domain(),
                                    M.aura_range(), fields, false );
@@ -526,7 +529,7 @@ void test_gears( ParallelMachine pm ,
 
       // Check parallel consistency of shared variable
 
-      if ( verify && ! comm_verify_shared_entity_values(M,gear_fields.current_coord) ) {
+      if ( verify && ! comm_verify_shared_entity_values(M,Node,gear_fields.current_coord) ) {
         if ( p_rank == 0 ) {
           std::cout << "N_GEARS FAILED for shared values of " ;
           std::cout << gear_fields.current_coord.name();
@@ -535,10 +538,10 @@ void test_gears( ParallelMachine pm ,
         return ;
       }
 
-      const Field<double,1> & node_current_coord_old =
+      const CartesianField & node_current_coord_old =
         gear_fields.current_coord[ StateOld ];
 
-      if ( verify && ! comm_verify_shared_entity_values(M , node_current_coord_old) ) {
+      if ( verify && ! comm_verify_shared_entity_values(M , Node, node_current_coord_old) ) {
         if ( p_rank == 0 ) {
           std::cout << "N_GEARS FAILED for shared values of " ;
           std::cout << node_current_coord_old.name();

@@ -215,27 +215,25 @@ void EntityComm::unpack_entity(
 void EntityComm::pack_field_values(
   CommBuffer & buf , Entity & entity ) const
 {
-  const unsigned entity_type = entity.entity_type();
   const Kernel & kernel = entity.kernel();
   const Mesh   & mesh   = kernel.mesh();
   const Schema & schema = mesh.schema();
 
-  const std::vector< Field<void,0> * > & fields =
-    schema.get_fields( entity_type );
+  const std::vector< FieldBase * > & fields = schema.get_fields();
 
-  const std::vector< Field<void,0> * >::const_iterator i_end = fields.end();
-  const std::vector< Field<void,0> * >::const_iterator i_beg = fields.begin();
+  const std::vector< FieldBase * >::const_iterator i_end = fields.end();
+  const std::vector< FieldBase * >::const_iterator i_beg = fields.begin();
 
-  std::vector< Field<void,0> * >::const_iterator i ;
+  std::vector< FieldBase * >::const_iterator i ;
 
   for ( i = i_beg ; i_end != i ; ) {
-    const Field<void,0> & f = **i ; ++i ;
+    const FieldBase & f = **i ; ++i ;
     const unsigned data_size = kernel.data_size( f );
     buf.pack<unsigned>( data_size );
   }
 
   for ( i = i_beg ; i_end != i ; ) {
-    const Field<void,0> & f = **i ; ++i ;
+    const FieldBase & f = **i ; ++i ;
     const unsigned data_size = kernel.data_size( f );
     if ( data_size ) {
       unsigned char * const data = (unsigned char *) entity.data( f );
@@ -249,24 +247,22 @@ void EntityComm::unpack_field_values(
 {
   static const char method[] = "phdmesh::EntityComm::unpack_field_values" ;
 
-  const unsigned entity_type = entity.entity_type();
   const Kernel & kernel = entity.kernel();
   const Mesh   & mesh   = kernel.mesh();
   const Schema & schema = mesh.schema();
 
-  const std::vector< Field<void,0> * > & fields =
-    schema.get_fields( entity_type );
+  const std::vector< FieldBase * > & fields = schema.get_fields();
 
-  const std::vector< Field<void,0> * >::const_iterator i_end = fields.end();
-  const std::vector< Field<void,0> * >::const_iterator i_beg = fields.begin();
+  const std::vector< FieldBase * >::const_iterator i_end = fields.end();
+  const std::vector< FieldBase * >::const_iterator i_beg = fields.begin();
 
-  std::vector< Field<void,0> * >::const_iterator i ;
+  std::vector< FieldBase * >::const_iterator i ;
 
   std::ostringstream msg ;
   bool ok = true ;
 
   for ( i = i_beg ; i_end != i ; ) {
-    const Field<void,0> & f = **i ; ++i ;
+    const FieldBase & f = **i ; ++i ;
     const unsigned data_size = kernel.data_size( f );
     unsigned recv_data_size ; buf.unpack<unsigned>( recv_data_size );
     if ( data_size != recv_data_size ) {
@@ -288,7 +284,7 @@ void EntityComm::unpack_field_values(
   }
 
   for ( i = i_beg ; i_end != i ; ) {
-    const Field<void,0> & f = **i ; ++i ;
+    const FieldBase & f = **i ; ++i ;
     const unsigned data_size = kernel.data_size( f );
     if ( data_size ) {
       unsigned char * data = (unsigned char *) entity.data( f );

@@ -117,16 +117,12 @@ Schema::~Schema()
 {
   // Destroy the fields, used 'new' to allocate so now use 'delete'
 
-  for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
-    std::vector<Field<void,0> * > & fset = m_fields[i] ;
+  {
+    std::vector<FieldBase * >::iterator j = m_fields.begin();
 
-    std::vector<Field<void,0> * >::iterator j = fset.begin();
+    for ( ; j != m_fields.end() ; ++j ) { delete *j ; }
 
-    for ( ; j != fset.end() ; ++j ) {
-      delete *j ;
-    }
-
-    fset.clear();
+    m_fields.clear();
   }
 
   // Destroy the parts, used 'new' to allocate so now use 'delete'
@@ -136,9 +132,7 @@ Schema::~Schema()
     std::vector< Part * >::iterator j = parts.begin();
 
     for ( ; j != parts.end() ; ++j ) {
-      if ( *j != & m_universal_part ) {
-        delete *j ;
-      }
+      if ( *j != & m_universal_part ) { delete *j ; }
     }
   }
 }
@@ -238,12 +232,12 @@ bool unpack_verify( CommBuffer & b , const PartSet & pset )
 }
 
 void pack( CommBuffer & ,
-           const std::vector< Field<void,0> * > & )
+           const std::vector< FieldBase * > & )
 {
 }
 
 bool unpack_verify( CommBuffer & ,
-                    const std::vector< Field<void,0> * > & )
+                    const std::vector< FieldBase * > & )
 {
   bool ok = true ;
   return ok ;
@@ -265,49 +259,32 @@ void verify_parallel_consistency( const Schema & s , ParallelMachine pm )
 
   if ( is_root ) {
     pack( comm.send_buffer() , s.get_parts() );
-    for ( unsigned i = 0 ; i < EndEntityType ; ++i ) {
-      pack( comm.send_buffer() , s.get_fields( i ) );
-    }
+    pack( comm.send_buffer() , s.get_fields() );
   }
 
   comm.allocate_buffer();
 
   if ( is_root ) {
     pack( comm.send_buffer() , s.get_parts() );
-    for ( unsigned i = 0 ; i < EndEntityType ; ++i ) {
-      pack( comm.send_buffer() , s.get_fields( i ) );
-    }
+    pack( comm.send_buffer() , s.get_fields() );
   }
 
   comm.communicate();
 
-  int ok[ EndEntityType + 1 ] ;
+  int ok[ 2 ];
 
-  ok[ EndEntityType ] = unpack_verify( comm.recv_buffer() , s.get_parts() );
+  ok[0] = unpack_verify( comm.recv_buffer() , s.get_parts() );
+  ok[1] = unpack_verify( comm.recv_buffer() , s.get_fields() );
 
-  for ( unsigned i = 0 ; i < EndEntityType ; ++i ) {
-    ok[i] = unpack_verify( comm.recv_buffer() , s.get_fields( i ) );
-  }
+  all_reduce( pm , ReduceMin<2>( ok ) );
 
-  all_reduce( pm , ReduceMin<6>( ok ) );
-
-  int ok_all = ok[ EndEntityType ];
-  for ( unsigned i = 0 ; i < EndEntityType ; ++i ) {
-    if ( ! ok[i] ) { ok_all = 0 ; }
-  }
-
-  if ( ! ok_all ) {
+  if ( ! ok[0] || ! ok[1] ) {
     std::ostringstream msg ;
     msg << "P" << p_rank ;
     msg << ": " << method ;
     msg << " : FAILED for:" ;
-    if ( ! ok[ EndEntityType ] ) { msg << " Parts ," ; }
-    for ( unsigned i = 0 ; i < EndEntityType ; ++i ) {
-      if ( ! ok[i] ) {
-        msg << " " << entity_type_name(i);
-        msg << " Fields ," ;
-      }
-    }
+    if ( ! ok[0] ) { msg << " Parts" ; }
+    if ( ! ok[1] ) { msg << " Fields" ; }
     throw std::logic_error( msg.str() );
   }
 }

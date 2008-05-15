@@ -60,123 +60,45 @@ const char * field_state_name( FieldState s )
 
 //----------------------------------------------------------------------
 
-FieldDimension::FieldDimension() : m_part( NULL )
-{
-  const unsigned zero = 0 ;
-  Copy<MaxInfo>( m_info , zero );
-}
-
-FieldDimension::FieldDimension( const FieldDimension & rhs )
-  : m_part( rhs.m_part )
-{
-  Copy<MaxInfo>( m_info , rhs.m_info );
-}
-
-FieldDimension & FieldDimension::operator = ( const FieldDimension & rhs )
-{
-  m_part = rhs.m_part ;
-  Copy<MaxInfo>( m_info , rhs.m_info );
-  return *this ;
-}
-
-FieldDimension::FieldDimension(
-  const Part & p ,
-  unsigned n0 , unsigned n1 , unsigned n2 ,
-  unsigned n3 , unsigned n4 , unsigned n5 ,
-  unsigned n6 , unsigned n7 )
-  : m_part( & p )
-{
-  enum { OK_Dim  = StaticAssert< MaxDim  == 8 >::OK };
-  enum { OK_Info = StaticAssert< MaxInfo == 11 >::OK };
-
-  m_info[0] = 1 ;  m_info[1] = n0 ; m_info[2] = n1 ;
-  m_info[3] = n2 ; m_info[4] = n3 ; m_info[5] = n4 ;
-  m_info[6] = n5 ; m_info[7] = n6 ; m_info[8] = n7 ;
-  m_info[9] = 0 ;  m_info[10] = 0 ;
-
-  for ( unsigned i = 0 ; i < MaxDim ; ++i ) {
-    const unsigned n = i + 1 ;
-    if ( m_info[n] *= m_info[i] ) {
-      m_info[ I_Length ] = m_info[n] ;
-      m_info[ I_NDim ]   = n ;
-    }
-  }
-}
-
-unsigned FieldDimension::dimension( unsigned * const d ) const
-{
-  for ( unsigned i = 0 ; i < m_info[ I_NDim ] ; ++i ) {
-    d[i] = m_info[i+1] / m_info[i] ;
-  }
-  return m_info[ I_NDim ];
-}
-
-bool FieldDimension::indices( unsigned off , unsigned * const ind ) const
-{
-  const bool result = off < length();
-
-  if ( result ) {
-    unsigned n = off ;
-    unsigned i = number_of_dimensions();
-    while ( i ) {
-      --i ;
-      ind[i] = n / m_info[i] ;
-      n %= m_info[i] ;
-    }
-  }
-
-  return result ;
-}
-
-bool FieldDimension::compare_dimension( const FieldDimension & rhs ) const
-{
-  return Compare<MaxInfo>::equal( m_info , rhs.m_info );
-}
-
-//----------------------------------------------------------------------
-
 namespace {
 
 struct LessFieldDimension {
   LessFieldDimension() {}
 
-  bool operator()( const FieldDimension & lhs , const Part & rhs ) const 
+  bool operator()( const FieldBase::Dim & lhs , const FieldBase::Dim & rhs )
   {
-    const unsigned L = lhs.part()->schema_ordinal();
-    const unsigned R = rhs.schema_ordinal();
+    unsigned L = lhs.rank ;
+    unsigned R = rhs.rank ;
+    if ( L == R ) {
+      L = lhs.part->schema_ordinal();
+      R = rhs.part->schema_ordinal();
+    }
     return L < R ;
   }
 };
 
-std::vector<FieldDimension>::iterator
-find( std::vector<FieldDimension> & v , const Part & p )
+std::vector<FieldBase::Dim>::const_iterator
+find( const std::vector<FieldBase::Dim> & v , const FieldBase::Dim & p )
 {
   LessFieldDimension cmp ;
-  std::vector<FieldDimension>::iterator
+  std::vector<FieldBase::Dim>::const_iterator
     i = std::lower_bound( v.begin() , v.end() , p , cmp );
-  if ( i != v.end() && i->part() != & p ) { i = v.end(); }
+  if ( i != v.end() && ( i->part != p.part || i->rank != p.rank ) ) {
+    i = v.end();
+  }
   return i ;
 }
 
-std::vector<FieldDimension>::const_iterator
-find( const std::vector<FieldDimension> & v , const Part & p )
+void insert( std::vector<FieldBase::Dim> & v , const FieldBase::Dim & d )
 {
   LessFieldDimension cmp ;
-  std::vector<FieldDimension>::const_iterator
-    i = std::lower_bound( v.begin() , v.end() , p , cmp );
-  if ( i != v.end() && i->part() != & p ) { i = v.end(); }
-  return i ;
-}
 
-void insert( std::vector<FieldDimension> & v , const FieldDimension & d )
-{
-  LessFieldDimension cmp ;
-  const Part & p = * d.part();
+  std::vector<FieldBase::Dim>::iterator
+    i = std::lower_bound( v.begin() , v.end() , d , cmp );
 
-  std::vector<FieldDimension>::iterator
-    i = std::lower_bound( v.begin() , v.end() , p , cmp );
-
-  if ( i == v.end() || i->part() != d.part() ) { v.insert( i , d ); }
+  if ( i == v.end() || i->part != d.part || i->rank != d.rank ) {
+    v.insert( i , d );
+  }
 }
 
 
@@ -184,36 +106,53 @@ void insert( std::vector<FieldDimension> & v , const FieldDimension & d )
 
 //----------------------------------------------------------------------
 
-Field<void,0>::~Field()
+FieldBase::~Field()
 { }
 
-Field<void,0>::Field(
+FieldBase::Field(
   Schema &            arg_schema ,
-  unsigned            arg_type ,
   const std::string & arg_name ,
   unsigned scalar_type ,
-  unsigned number_of_dimensions ,
+  const DimensionTraits * t1 ,
+  const DimensionTraits * t2 ,
+  const DimensionTraits * t3 ,
+  const DimensionTraits * t4 ,
+  const DimensionTraits * t5 ,
+  const DimensionTraits * t6 ,
+  const DimensionTraits * t7 ,
   unsigned number_of_states ,
   FieldState state )
 : m_cset() ,
   m_name( arg_name ),
   m_schema( arg_schema ),
   m_schema_ordinal(0),
-  m_entity_rank( arg_type ) ,
   m_scalar_type( scalar_type ),
-  m_num_dim( number_of_dimensions ) ,
+  m_num_dim( ( ! t1 ? 0 :
+             ( ! t2 ? 1 :
+             ( ! t3 ? 2 :
+             ( ! t4 ? 3 :
+             ( ! t5 ? 4 :
+             ( ! t6 ? 5 :
+             ( ! t7 ? 6 : 7 )))))))),
   m_num_states( number_of_states ),
   m_this_state( state ),
   m_dim_map()
 {
-  Field<void,0> * const pzero = NULL ;
+  FieldBase * const pzero = NULL ;
   Copy<MaximumFieldStates>( m_field_states , pzero );
+  m_dim_traits[0] = t1 ;
+  m_dim_traits[1] = t2 ;
+  m_dim_traits[2] = t3 ;
+  m_dim_traits[3] = t4 ;
+  m_dim_traits[4] = t5 ;
+  m_dim_traits[5] = t6 ;
+  m_dim_traits[6] = t7 ;
 }
 
-const std::vector<FieldDimension> & Field<void,0>::dimension() const
+const std::vector<FieldBase::Dim> & FieldBase::dimension() const
 { return m_field_states[0]->m_dim_map ; }
 
-std::vector<FieldDimension> & Field<void,0>::dimension()
+std::vector<FieldBase::Dim> & FieldBase::dimension()
 { return m_field_states[0]->m_dim_map ; }
 
 //----------------------------------------------------------------------
@@ -222,7 +161,7 @@ std::vector<FieldDimension> & Field<void,0>::dimension()
 namespace {
 
 struct FieldLessName {
-  bool operator()( const Field<void,0> * lhs , const std::string & rhs ) const
+  bool operator()( const FieldBase * lhs , const std::string & rhs ) const
     {
       const char * const l_name = lhs->name().c_str();
       const char * const r_name = rhs.c_str();
@@ -237,203 +176,228 @@ struct FieldLessName {
 
 namespace {
 
-std::ostream &
-get_field_header( std::ostream      & arg_msg ,
-                  bool                arg_declare ,
-                  unsigned            arg_entity_type ,
-                  const std::string & arg_name ,
-                  unsigned            arg_scalar_type ,
-                  unsigned            arg_num_dim ,
-                  unsigned            arg_num_states ,
-                  const char        * arg_required_by )
+void
+print_field_type( std::ostream          & arg_msg ,
+                  unsigned                arg_scalar_type ,
+                  const DimensionTraits * arg_t1 ,
+                  const DimensionTraits * arg_t2 ,
+                  const DimensionTraits * arg_t3 ,
+                  const DimensionTraits * arg_t4 ,
+                  const DimensionTraits * arg_t5 ,
+                  const DimensionTraits * arg_t6 ,
+                  const DimensionTraits * arg_t7 )
 {
-  if ( arg_declare ) { arg_msg << "phdmesh::Schema::declare_field" ; }
-  else               { arg_msg << "phdmesh::Schema::get_field" ; }
-  arg_msg << "< " ;
+  arg_msg << "Field< " ;
   arg_msg << NumericEnum<>::name( arg_scalar_type );
-  arg_msg << " , " ;
-  arg_msg << arg_num_dim ;
-  arg_msg << " >( " ;
-  arg_msg << entity_type_name( arg_entity_type );
-  arg_msg << " , " ;
-  arg_msg << arg_name ;
-  if ( arg_declare )     { arg_msg << " , " << arg_num_states ; }
-  if ( arg_required_by ) { arg_msg << " , " << arg_required_by ; }
-  arg_msg << " )" ;
-  return arg_msg ;
+  if ( arg_t1 ) { arg_msg << " , " << arg_t1->name();
+  if ( arg_t2 ) { arg_msg << " , " << arg_t2->name();
+  if ( arg_t3 ) { arg_msg << " , " << arg_t3->name();
+  if ( arg_t4 ) { arg_msg << " , " << arg_t4->name();
+  if ( arg_t5 ) { arg_msg << " , " << arg_t5->name();
+  if ( arg_t6 ) { arg_msg << " , " << arg_t6->name();
+  if ( arg_t7 ) { arg_msg << " , " << arg_t7->name();
+  } } } } } } }
+  arg_msg << " >" ;
 }
 
 }
 
-Field<void,0> *
-Schema::get_field(
-  bool                arg_declare ,
-  unsigned            arg_entity_type ,
+FieldBase *
+Schema::get_field_base(
   const std::string & arg_name ,
-  unsigned            arg_scalar_type ,
-  unsigned            arg_num_dim ,
-  unsigned            arg_num_states ,
-  const char * required_by ) const
+  unsigned          arg_scalar_type ,
+  const DimensionTraits * arg_t1 ,
+  const DimensionTraits * arg_t2 ,
+  const DimensionTraits * arg_t3 ,
+  const DimensionTraits * arg_t4 ,
+  const DimensionTraits * arg_t5 ,
+  const DimensionTraits * arg_t6 ,
+  const DimensionTraits * arg_t7 ,
+  int arg_number_states ,
+  const char * arg_required_by ) const
 {
-  //----------------------------------------
-  // ERROR CHECKING of input parameters:
+  static const char declare_method[] = "phdmesh::Schema::declare_field" ;
+  static const char get_method[]     = "phdmesh::Schema::get_field" ;
 
-  {
-    const bool bad_entity_type = end_entity_rank <= arg_entity_type ;
-    const bool bad_num_states  = arg_num_states < 1 ||
-                                 MaximumFieldStates < arg_num_states ;
-  
-    if ( bad_entity_type || ( arg_declare && bad_num_states ) ) {
-      std::ostringstream msg ;
+  // Potential error conditions:
 
-      get_field_header( msg , arg_declare , arg_entity_type , arg_name ,
-                              arg_scalar_type , arg_num_dim , arg_num_states ,
-                              required_by );
+  bool not_found         = false ;
+  bool bad_scalar_type   = false ;
+  bool bad_dimension     = false ;
+  bool bad_number_states = MaximumFieldStates < arg_number_states ;
 
-      msg << " FAILED WITH BAD ARGUMENT" ;
+  // Find the field by name:
 
-      throw std::invalid_argument( msg.str() );
-    }
-  }
+  const std::vector< FieldBase * >::const_iterator e = m_fields.end();
+  const std::vector< FieldBase * >::const_iterator b = m_fields.begin();
 
-  // END ERROR CHECKING
-  //----------------------------------------
-  // ACTUAL WORK:
-
-  const std::vector< Field<void,0> * > & field_set =
-    m_fields[ arg_entity_type ];
-
-  const std::vector< Field<void,0> * >::const_iterator e = field_set.end();
-  const std::vector< Field<void,0> * >::const_iterator b = field_set.begin();
-
-  const std::vector< Field<void,0> * >::const_iterator j =
+  const std::vector< FieldBase * >::const_iterator j =
     std::lower_bound( b, e, arg_name, FieldLessName() );
 
-  Field<void,0> * const field =
+  FieldBase * const field =
      ( j != e && (*j)->name() == arg_name ) ? *j : NULL ;
 
-  //----------------------------------------
-  // ERROR CHECKING for compatibility:
+  // If found check for compatibility:
 
   if ( field != NULL ) {
 
-    const bool bad_type    = arg_scalar_type != field->numeric_type_ordinal();
-    const bool bad_num_dim = arg_num_dim     != field->number_of_dimensions();
-    const bool bad_num_states = arg_num_states != field->number_of_states() ;
+    bad_scalar_type = arg_scalar_type != field->numeric_type_ordinal();
 
-    if ( bad_type || bad_num_dim || ( arg_declare && bad_num_states ) ) {
-      std::ostringstream msg ;
+    bad_dimension = arg_t1 != field->m_dim_traits[0] ||
+                    arg_t2 != field->m_dim_traits[1] ||
+                    arg_t3 != field->m_dim_traits[2] ||
+                    arg_t4 != field->m_dim_traits[3] ||
+                    arg_t5 != field->m_dim_traits[4] ||
+                    arg_t6 != field->m_dim_traits[5] ||
+                    arg_t7 != field->m_dim_traits[6] ;
 
-      get_field_header( msg , arg_declare , arg_entity_type , arg_name ,
-                              arg_scalar_type , arg_num_dim , arg_num_states ,
-                              required_by );
-
-      msg << " FAILED WITH INCOMPATIBLE " ;
-      msg << "Field<" ;
-      msg << NumericEnum<>::name( field->numeric_type_ordinal() );
-      msg << "," ;
-      msg << field->number_of_dimensions();
-      msg << ">[" << arg_num_states << "]" ;
-
-      throw std::invalid_argument( msg.str() );
-    }
+    bad_number_states =
+      ( 0 <= arg_number_states ) &&
+      ( arg_number_states != (int) field->m_num_states );
   }
-  else if ( required_by ) {
+  else if ( arg_required_by ) {
+    not_found = true ;
+  }
+
+  if ( bad_scalar_type || bad_dimension || bad_number_states || not_found ) {
+
+    const char * const method =
+      arg_number_states < 0 ? get_method : declare_method ;
+
     std::ostringstream msg ;
 
-    get_field_header( msg , arg_declare , arg_entity_type , arg_name ,
-                            arg_scalar_type , arg_num_dim , arg_num_states ,
-                            required_by );
-    msg << " FIND FAILURE" ;
+    msg << method << "< " ;
+    print_field_type( msg , arg_scalar_type ,
+                            arg_t1 , arg_t2 , arg_t3 ,
+                            arg_t4 , arg_t5 , arg_t6 , arg_t7 );
+    msg << " >( \"" << arg_name << "\"" ;
+
+    if ( 0 <= arg_number_states ) {
+      msg << " , " << arg_number_states ;
+      if ( bad_number_states ) { msg << " <= NUMBER_OF_STATES IS BAD" ; }
+    }
+
+    if ( arg_required_by ) {
+      msg << " , " << arg_required_by << " <= REQUIRED_BY" ;
+      if ( not_found ) { msg << " BUT NOT FOUND" ; }
+    }
+
+    msg << " )" ;
+ 
+    if ( field != NULL ) {
+      msg << " FOUND INCOMPATIBLE " ;
+      print_field_type( msg , field->numeric_type_ordinal() ,
+                              field->m_dim_traits[0] ,
+                              field->m_dim_traits[1] ,
+                              field->m_dim_traits[2] ,
+                              field->m_dim_traits[3] ,
+                              field->m_dim_traits[4] ,
+                              field->m_dim_traits[5] ,
+                              field->m_dim_traits[6] );
+      msg << "( " << field->m_num_states << " )" ;
+    }
     throw std::runtime_error( msg.str() );
   }
-
-  // END ERROR CHECKING
-  //----------------------------------------
 
   return field ;
 }
 
 //----------------------------------------------------------------------
 
-Field<void,0> &
-Schema::declare_field(
-  unsigned            arg_entity_type,
+FieldBase &
+Schema::declare_field_base(
   const std::string & arg_name ,
   unsigned            arg_scalar_type ,
-  unsigned            arg_num_dim ,
+  const DimensionTraits * arg_t1 ,
+  const DimensionTraits * arg_t2 ,
+  const DimensionTraits * arg_t3 ,
+  const DimensionTraits * arg_t4 ,
+  const DimensionTraits * arg_t5 ,
+  const DimensionTraits * arg_t6 ,
+  const DimensionTraits * arg_t7 ,
   unsigned            arg_num_states )
 {
   static const char method[] = "phdmesh::Schema::declare_field" ;
 
+  static const char reserved_state_suffix[6][5] = {
+    "_OLD" , "_NM1" , "_NM2" , "_NM3" , "_NM4" , "_NM5" };
+
   assert_not_committed( method );
 
-  Field<void,0> * field = get_field( true ,
-                                     arg_entity_type , arg_name ,
-                                     arg_scalar_type , arg_num_dim ,
-                                     arg_num_states , NULL );
+  // Check that the name does not have a reserved suffix
+
+  for ( unsigned i = 0 ; i < 6 ; ++i ) {
+    const int len = arg_name.size() - 4 ;
+    if ( 0 <= len &&
+         ! strcasecmp( arg_name.c_str() + len , reserved_state_suffix[i] ) ) {
+      std::ostringstream msg ;
+      msg << method << "< " ;
+      print_field_type( msg , arg_scalar_type ,
+                              arg_t1 , arg_t2 , arg_t3 ,
+                              arg_t4 , arg_t5 , arg_t6 , arg_t7 );
+      msg << " >( \"" << arg_name ;
+      msg << "\" <= HAS RESERVED STATE SUFFIX \"" ;
+      msg << reserved_state_suffix[i] ;
+      msg << " )" ;
+      throw std::runtime_error( msg.str() );
+    }
+  }
+
+  // Get field and if found verify compatibility
+
+  FieldBase * field = get_field_base( arg_name ,
+                                      arg_scalar_type ,
+                                      arg_t1 , arg_t2 , arg_t3 ,
+                                      arg_t4 , arg_t5 , arg_t6 , arg_t7 ,
+                                      arg_num_states , NULL );
 
   if ( field == NULL ) {
 
-    std::vector< Field<void,0> * > & field_set = m_fields[ arg_entity_type ];
-
-    Field<void,0> * f[ MaximumFieldStates ] ;
+    FieldBase * f[ MaximumFieldStates ] ;
 
     std::string field_names[ MaximumFieldStates ] ;
 
-    switch( arg_num_states ) {
-    case 6 : field_names[5] = arg_name ; field_names[5].append("_nm5");
-    case 5 : field_names[4] = arg_name ; field_names[4].append("_nm4");
-    case 4 : field_names[3] = arg_name ; field_names[3].append("_nm3");
-    case 3 : field_names[2] = arg_name ; field_names[2].append("_nm2");
-             field_names[1] = arg_name ; field_names[1].append("_nm1");
-             break ;
-    case 2 : field_names[1] = arg_name ; field_names[1].append("_old");
-             break ;
-    }
-
     field_names[0] = arg_name ;
+
+    if ( 2 == arg_num_states ) {
+      field_names[1] = arg_name ;
+      field_names[1].append( reserved_state_suffix[0] );
+    }
+    else {
+      for ( unsigned i = 1 ; i < arg_num_states ; ++i ) {
+        field_names[i] = arg_name ;
+        field_names[i].append( reserved_state_suffix[i] );
+      }
+    }
 
     for ( unsigned i = 0 ; i < arg_num_states ; ++i ) {
 
-      const std::vector< Field<void,0> * >::iterator e = field_set.end();
-      const std::vector< Field<void,0> * >::iterator b = field_set.begin();
+      const std::vector< FieldBase * >::iterator e = m_fields.end();
+      const std::vector< FieldBase * >::iterator b = m_fields.begin();
 
-      const std::vector< Field<void,0> * >::iterator
+      const std::vector< FieldBase * >::iterator
         j = std::lower_bound( b, e, field_names[i], FieldLessName() );
 
       if ( j != e && (*j)->name() == field_names[i] ) {
-        Field<void,0> & tmp = **j ;
-        std::ostringstream msg ;
-        msg << method ;
-        msg << " FAILED due to name collision with " ;
-        msg << "Field< " ;
-        msg << NumericEnum<>::name( tmp.numeric_type_ordinal() );
-        msg << " , " ;
-        msg << tmp.number_of_dimensions();
-        msg << " > " ;
-        msg << tmp.name();
-        msg << "( " ;
-        msg << entity_type_name( tmp.entity_type() );
-        msg << " " ;
-        msg << " States[" ;
-        msg << tmp.number_of_states();
-        msg << "] )" ;
-        throw std::runtime_error( msg.str() );
+        std::string msg( method );
+        msg.append(" CATASTROPHIC INTERNAL LOGIC ERROR FOR NAMES" );
+        throw std::logic_error( msg );
       }
 
-      f[i] = new Field<void,0>( *this , arg_entity_type,
-                                field_names[i] ,
-                                arg_scalar_type, arg_num_dim,
-                                arg_num_states , (FieldState) i );
+      f[i] = new FieldBase( *this ,
+                            field_names[i] ,
+                            arg_scalar_type,
+                            arg_t1 , arg_t2 , arg_t3 ,
+                            arg_t4 , arg_t5 , arg_t6 , arg_t7 ,
+                            arg_num_states , (FieldState) i );
 
-      field_set.insert( j , f[i] );
+      m_fields.insert( j , f[i] );
     }
 
     field = f[0] ;
 
     for ( unsigned i = 0 ; i < arg_num_states ; ++i ) {
-      Field<void,0> & tmp = * f[i] ;
+      FieldBase & tmp = * f[i] ;
       for ( unsigned k = 0 ; k < arg_num_states ; ++k ) {
         tmp.m_field_states[k] = f[k] ;
       }
@@ -441,15 +405,14 @@ Schema::declare_field(
 
     // Update ordinals to reflect the newly inserted fields
     {
-      const std::vector< Field<void,0> *>::iterator e = field_set.end();
-            std::vector< Field<void,0> *>::iterator j = field_set.begin();
+      const std::vector< FieldBase *>::iterator e = m_fields.end();
+            std::vector< FieldBase *>::iterator j = m_fields.begin();
       for ( unsigned k = 0 ; j != e ; ++j , ++k ) {
-        Field<void,0> & tmp = **j ;
+        FieldBase & tmp = **j ;
         tmp.m_schema_ordinal = k ;
         if ( tmp.m_field_states[0]->m_schema_ordinal + tmp.m_this_state != k ) {
-          std::string msg ;
-          msg.append( method );
-          msg.append( " FAILED ORDERING OF FIELDS" );
+          std::string msg( method );
+          msg.append(" CATASTROPHIC INTERNAL LOGIC ERROR FOR ORDINALS" );
           throw std::logic_error(msg);
         }
       }
@@ -464,31 +427,47 @@ Schema::declare_field(
 
 namespace {
 
+void print_field_dim( std::ostream & msg ,
+                      const unsigned n ,
+                      const FieldBase::Dim & d )
+{
+  msg << "( " << entity_type_name( d.rank );
+  msg << " , Part[" ;
+  msg << d.part->name();
+  msg << "] , " << d.stride[0] ;
+  for ( unsigned j = 1 ; j < n ; ++j ) {
+    if ( d.stride[j-1] ) {
+      msg << " , " << ( d.stride[j] / d.stride[j-1] );
+    }
+    else {
+      msg << " , ERROR " ;
+    }
+  }
+  msg << ")" ;
+}
+
 void assert_field_dimension_compatible(
   const char * const method ,
-  const char * const field_name ,
-  const FieldDimension & dim_a ,
-  const FieldDimension & dim_b )
+  const FieldBase & field ,
+  const FieldBase::Dim & a ,
+  const FieldBase::Dim & b )
 {
-  if ( ! dim_a.compare_dimension( dim_b ) ) {
+  if ( Compare< MaximumFieldDimension >::not_equal( a.stride , b.stride ) ) {
     std::ostringstream msg ;
-    msg << method ;
-    msg << "[ " ;
-    msg << field_name ;
-    msg << " ]" ;
-    msg << " FAILED: incompatible dimensions : { " ;
+    msg << method << " FOUND INCOMPATIBLE SIZES FOR " ;
+    print_field_type( msg , field.numeric_type_ordinal() ,
+                            field.dimension_traits()[0] ,
+                            field.dimension_traits()[1] ,
+                            field.dimension_traits()[2] ,
+                            field.dimension_traits()[3] ,
+                            field.dimension_traits()[4] ,
+                            field.dimension_traits()[5] ,
+                            field.dimension_traits()[6] );
+    msg << "[" << field.name() << "] " ;
 
-    dim_a.part()->name();
-    for ( unsigned i = 0 ; i < MaximumFieldDimension ; ++i ) {
-      msg << " " << dim_a[i] ;
-    }
-    msg << " } != { " ;
-    dim_b.part()->name();
-    for ( unsigned i = 0 ; i < MaximumFieldDimension ; ++i ) {
-      msg << " " << dim_b[i] ;
-    }
-    msg << " }" ;
-
+    print_field_dim( msg , field.number_of_dimensions() , a );
+    msg << " INCOMPATIBLE WITH " ;
+    print_field_dim( msg , field.number_of_dimensions() , b );
     throw std::runtime_error( msg.str() );
   }
 }
@@ -501,75 +480,68 @@ void assert_field_dimension_compatible(
 // If subset exists then replace it.
 // If exists or superset exists then do nothing.
 
-void Schema::declare_field_dimension(
-  Field<void,0> & field ,
-  const Part & p , unsigned n0 , unsigned n1 , unsigned n2 ,
-                   unsigned n3 , unsigned n4 , unsigned n5 ,
-                   unsigned n6 , unsigned n7 )
+void Schema::declare_field_stride(
+  FieldBase      & arg_field ,
+  unsigned         arg_entity_type ,
+  const Part     & arg_part ,
+  const unsigned * arg_stride )
 {
   static const char method[] = "phdmesh::Schema::declare_field_dimension" ;
 
   assert_not_committed( method );
-  assert_same_schema( method , field.m_schema );
-  assert_same_schema( method , p.m_schema );
+  assert_same_schema( method , arg_field.m_schema );
+  assert_same_schema( method , arg_part.m_schema );
 
-  FieldDimension dim( p , n0 , n1 , n2 , n3 , n4 , n5 , n6 , n7 );
-
-  std::vector<FieldDimension> & dim_map = field.dimension();
-
-  //----------------------------------------
-  // ERROR CHECKING:
+  FieldBase::Dim tmp( arg_entity_type , arg_part );
   {
-    const unsigned dim_number = dim.number_of_dimensions();
-
-    if ( field.number_of_dimensions() != dim_number ) {
-      std::ostringstream msg ;
-      msg << method ;
-      msg << " FAILED WITH INCOMPATIBLE DIMENSION : " ;
-      msg << entity_type_name( field.m_entity_rank );
-      msg << " Field< " ;
-      msg << NumericEnum<>::name( field.m_scalar_type );
-      msg << " , " << field.m_num_dim ;
-      msg << " > " ;
-      msg << field.m_name ;
-      msg << " #Dimensions = " ;
-      msg << dim_number ;
-      throw std::runtime_error( msg.str() );
+    unsigned j ;
+    for ( j = 0 ; j < arg_field.m_num_dim ; ++j ) {
+      tmp.stride[j] = arg_stride[j] ;
+    }
+    for ( ; j < MaximumFieldDimension ; ++j ) {
+      tmp.stride[j] = 0 ;
     }
   }
-  // END ERROR CHECKING
-  //----------------------------------------
-  // Retrieve dimension for this part, also retrieves for supersets.
 
-  const FieldDimension & old_dim = field.dimension( p );
+  // If a dimension is defined for a superset of the part
+  // then that dimension must be compatible and this
+  // declaration is redundant.
 
-  if ( old_dim.length() ) { // This part or a superset already exists
-    assert_field_dimension_compatible( method , field.name().c_str(),
-                                       dim , old_dim );
-  }
-  else {
+  bool redundant  = false ;
 
-    PartSet::const_iterator ip ;
+  std::vector<FieldBase::Dim> & dim_map =
+    arg_field.m_field_states[0]->m_dim_map ;
 
-    // All subsets must be compatible:
+  std::vector<FieldBase::Dim>::iterator i ;
 
-    for ( ip = p.subsets().begin() ; ip != p.subsets().end() ; ++ip ) {
-      const FieldDimension & tmp_dim = field.dimension( **ip );
-      if ( tmp_dim.length() ) {
-        assert_field_dimension_compatible( method, field.name().c_str(),
-                                           dim, tmp_dim );
+  for ( i = dim_map.begin() ; i != dim_map.end() ; ) {
+    bool remove = false ;
+
+    if ( arg_entity_type == i->rank ) {
+
+      const Part & part = * i->part ;
+
+      if ( ( arg_part == part ) || ( contain( arg_part.subsets() , part ) ) ) {
+        redundant = true ;
+      }
+      else if ( contain( arg_part.supersets() , part ) ) {
+        remove = true ;
+      }
+
+      if ( redundant || remove ) {
+        assert_field_dimension_compatible( method , arg_field , tmp , *i );
       }
     }
 
-    // If subset already present then remove it:
-
-    for ( ip = p.subsets().begin() ; ip != p.subsets().end() ; ++ip ) {
-      std::vector<FieldDimension>::iterator itmp = find( dim_map , **ip );
-      if ( itmp != dim_map.end() ) { dim_map.erase( itmp ); }
+    if ( remove ) {
+      i = dim_map.erase( i );
     }
-
-    insert( dim_map , dim );
+    else {
+      ++i ;
+    }
   }
+
+  if ( ! redundant ) { insert( dim_map , tmp ); }
 }
 
 //----------------------------------------------------------------------
@@ -579,33 +551,34 @@ void Schema::declare_field_dimension(
 void Schema::clean_field_dimension()
 {
   static const char method[] = "phdmesh::Schema::clean_field_dimension" ;
+  const int zero = 0 ;
 
-  for ( unsigned t = 0 ; t < end_entity_rank ; ++t ) {
-    std::vector< Field<void,0> *> & fm = m_fields[t] ;
+  for ( std::vector<FieldBase *>::iterator
+        f = m_fields.begin() ; f != m_fields.end() ; ++f ) {
+    FieldBase & field = **f ;
 
-    for ( std::vector< Field<void,0> *>::iterator
-          f = fm.begin() ; f != fm.end() ; ++f ) {
+    std::vector<FieldBase::Dim> & dim_map = field.m_dim_map ;
+    std::vector<int> flag( dim_map.size() , zero );
 
-      std::vector<FieldDimension> & dim_map = (*f)->dimension();
+    for ( size_t i = 0 ; i < dim_map.size() ; ++i ) {
+      const FieldBase::Dim & dim = dim_map[i] ;
+      const PartSet  & sub = dim_map[i].part->subsets();
 
-      for ( std::vector<FieldDimension>::iterator
-            i = dim_map.begin() ; i != dim_map.end() ; ++i ) {
-        FieldDimension & dim = *i ;
-        const PartSet  & sub = dim.part()->subsets();
-
-        std::vector<FieldDimension>::iterator j = dim_map.begin();
-
-        while ( j != dim_map.end() ) {
-          std::vector<FieldDimension>::iterator k = j ; ++j ;
-          if ( i != k ) {
-            if ( contain( sub , * k->part() ) ) {
-              assert_field_dimension_compatible( method,
-                                                 (*f)->m_name.c_str(),
-                                                 dim, *k );
-              dim_map.erase( k );
-            }
-          }
+      for ( size_t j = 0 ; j < dim_map.size() ; ++j ) {
+        if ( i != j &&
+             dim.rank == dim_map[j].rank &&
+             contain( sub , * dim_map[j].part ) ) {
+          assert_field_dimension_compatible( method, field, dim, dim_map[j] );
+          flag[j] = 1 ;
         }
+      }
+    }
+
+    for ( size_t i = dim_map.size() ; i-- ; ) {
+      if ( flag[i] ) {
+        std::vector<FieldBase::Dim>::iterator j = dim_map.begin();
+        std::advance( j , i );
+        dim_map.erase( j );
       }
     }
   }
@@ -615,126 +588,80 @@ void Schema::clean_field_dimension()
 //----------------------------------------------------------------------
 // This part or any superset of this part
 
-const FieldDimension &
-Field<void,0>::dimension( const Part & part ) const
+const FieldBase::Dim &
+FieldBase::dimension( unsigned rank , const Part & part ) const
 {
-  static const FieldDimension empty ;
+  static const FieldBase::Dim empty ;
 
-  const std::vector<FieldDimension> & dim_map = dimension();
+  FieldBase::Dim tmp( rank , part );
 
-  const std::vector<FieldDimension>::const_iterator ie = dim_map.end() ;
+  const std::vector<FieldBase::Dim> & dim_map = dimension();
 
-  std::vector<FieldDimension>::const_iterator i = find( dim_map , part );
+  const std::vector<FieldBase::Dim>::const_iterator ie = dim_map.end() ;
+
+  std::vector<FieldBase::Dim>::const_iterator i = find( dim_map , tmp );
 
   const PartSet::const_iterator ipe = part.supersets().end();
         PartSet::const_iterator ip  = part.supersets().begin() ;
 
   for ( ; i == ie && ip != ipe ; ++ip ) {
-    const Part & p = **ip ;
-    i = find( dim_map , p );
+    tmp.part = *ip ;
+    i = find( dim_map , tmp );
   }
 
   return i == ie ? empty : *i ;
 }
 
-unsigned Field<void,0>::max_length() const
+unsigned FieldBase::max_size( unsigned entity_type ) const
 {
   unsigned max = 0 ;
 
-  const std::vector<FieldDimension> & dim_map = dimension();
+  const std::vector<FieldBase::Dim> & dim_map = dimension();
 
-  const std::vector<FieldDimension>::const_iterator ie = dim_map.end();
-        std::vector<FieldDimension>::const_iterator i  = dim_map.begin();
+  const std::vector<FieldBase::Dim>::const_iterator ie = dim_map.end();
+        std::vector<FieldBase::Dim>::const_iterator i  = dim_map.begin();
 
   for ( ; i != ie ; ++i ) {
-    const unsigned len = i->length();
-    if ( max < len ) { max = len ; }
+    if ( i->rank == entity_type ) {
+      const unsigned len = m_num_dim ? i->stride[ m_num_dim - 1 ] : 1 ;
+      if ( max < len ) { max = len ; }
+    }
   }
 
   return max ;
 }
 
-unsigned Field<void,0>::max_size() const
-{
-  return max_length() * NumericEnum<void>::size( m_scalar_type );
-}
-
 //----------------------------------------------------------------------
 
-void Field<void,0>::assert_validity( unsigned ftype ,
-                                     unsigned ndim ,
-                                     unsigned state ) const
+std::ostream & operator << ( std::ostream & s , const FieldBase & field )
 {
-  enum { vtype = NumericEnum<void>::value };
-
-  const bool bad_type  = vtype != ftype && ftype != m_scalar_type ;
-  const bool bad_ndim  = 0     != ndim  && ndim  != m_num_dim ;
-  const bool bad_state = m_num_states <= state ;
-
-  if ( bad_type || bad_ndim || bad_state ) {
-    std::ostringstream msg ;
-    msg << "phdmesh::" ;
-    msg << entity_type_name( m_entity_rank );
-    msg << " Field< " ;
-    msg << NumericEnum<>::name( m_scalar_type );
-    msg << " , " ;
-    msg << m_num_dim ;
-    msg << " > " ;
-    msg << m_name ;
-    if ( bad_state ) {
-      msg << " [ #States = " ;
-      msg << m_num_states ;
-      msg << " ] " ;
-    }
-    msg << " ERROR INVALID CAST TO Field<" ;
-    msg << NumericEnum<>::name( ftype );
-    msg << " , " ;
-    msg << ndim ;
-    msg << " >" ;
-    if ( bad_state ) {
-      msg << " [ State = " ;
-      msg << field_state_name( FieldState(state) );
-      msg << "(" << state << ")" ;
-    }
-    throw std::runtime_error( msg.str() );
-  }
-}
-
-//----------------------------------------------------------------------
-
-std::ostream & operator << ( std::ostream & s , const Field<void,0> & f )
-{
-  s << "Field< " ;
-  s << NumericEnum<>::name( f.numeric_type_ordinal() );
-  s << " , " ;
-  s << f.number_of_dimensions();
-  s << " >( " ;
-  s << entity_type_name( f.entity_type() );
-  s << " , " ;
-  s << f.name() ;
-  s << " , " ;
-  s << f.number_of_states();
-  s << " )" ;
+  print_field_type( s , field.numeric_type_ordinal() ,
+                        field.dimension_traits()[0] ,
+                        field.dimension_traits()[1] ,
+                        field.dimension_traits()[2] ,
+                        field.dimension_traits()[3] ,
+                        field.dimension_traits()[4] ,
+                        field.dimension_traits()[5] ,
+                        field.dimension_traits()[6] );
+  s << "[ \"" ;
+  s << field.name() ;
+  s << " \" , " ;
+  s << field.number_of_states();
+  s << " ]" ;
   return s ;
 }
 
 std::ostream & print( std::ostream & s ,
-                      const char * const b , const Field<void,0> & f )
+                      const char * const b ,
+                      const FieldBase & field )
 {
-  const std::vector<FieldDimension> & dim_map = f.dimension();
-  s << f ;
+  const std::vector<FieldBase::Dim> & dim_map = field.dimension();
+  s << field ;
   s << " {" ;
-  for ( std::vector<FieldDimension>::const_iterator
+  for ( std::vector<FieldBase::Dim>::const_iterator
         i = dim_map.begin() ; i != dim_map.end() ; ++i ) {
-    const FieldDimension & d = *i ;
     s << std::endl << b << "  " ;
-    s << d.part()->name();
-    s << " ( " << d[0] ;
-    const unsigned n = d.number_of_dimensions();
-    for ( unsigned j = 1 ; j < n ; ++j ) {
-      s << " , " << d[j] ;
-    }
-    s << " )" ;
+    print_field_dim( s , field.number_of_dimensions() , *i );
   }
   s << std::endl << b << "}" ;
   return s ;

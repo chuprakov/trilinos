@@ -96,40 +96,96 @@ public:
 
   //------------------------------------
   /** Get a field, return NULL if it does not exist.
-   *  If T != void or NDim != 0 then an exception will be thrown
+   *  An exception will be thrown
    *  if the field exits and the type or number of dimensions does not match.
    *  If required and not present then throws an exception
    *  with the 'required_by' text.
    */
-  template<typename T,unsigned NDim>
-  Field<T,NDim> * get_field( unsigned entity_type ,
-                             const std::string & name ,
-                             const char * required_by = NULL ) const ;
+  template< class field_type >
+  field_type * get_field( const std::string & name ,
+                          const char * required_by = NULL ) const
+    {
+      typedef typename field_type::data_type Scalar ;
+      typedef typename field_type::dimension_traits_1 Traits1 ;
+      typedef typename field_type::dimension_traits_2 Traits2 ;
+      typedef typename field_type::dimension_traits_3 Traits3 ;
+      typedef typename field_type::dimension_traits_4 Traits4 ;
+      typedef typename field_type::dimension_traits_5 Traits5 ;
+      typedef typename field_type::dimension_traits_6 Traits6 ;
+      typedef typename field_type::dimension_traits_7 Traits7 ;
+
+      return static_cast< field_type * >(
+        get_field_base( name ,
+                        NumericEnum<Scalar>::value ,
+                        Traits1::descriptor() ,
+                        Traits2::descriptor() ,
+                        Traits3::descriptor() ,
+                        Traits4::descriptor() ,
+                        Traits5::descriptor() ,
+                        Traits6::descriptor() ,
+                        Traits7::descriptor() ,
+                        -1 , required_by ) );
+    }
 
   /** Get all fields associated with the given entity type */
-  const std::vector< Field<void,0> *> & get_fields( unsigned t ) const
-    { return m_fields[ t ]; }
+  const std::vector< FieldBase * > & get_fields() const
+    { return m_fields ; }
 
   /** Declare a field within the mesh.
    *  Redeclaration with compatible parameters returns the
    *  previously declared field.
    *  Redeclaration with incompatible parameters throws an exception.
    */
-  template<typename T,unsigned NDim>
-  Field<T,NDim> & declare_field( unsigned entity_type ,
-                                 const std::string & name ,
-                                 unsigned number_of_states = 1 );
+  template< class field_type >
+  field_type & declare_field( const std::string & name ,
+                              unsigned number_of_states = 1 )
+    {
+      typedef typename field_type::data_type Scalar ;
+      typedef typename field_type::dimension_traits_1 Traits1 ;
+      typedef typename field_type::dimension_traits_2 Traits2 ;
+      typedef typename field_type::dimension_traits_3 Traits3 ;
+      typedef typename field_type::dimension_traits_4 Traits4 ;
+      typedef typename field_type::dimension_traits_5 Traits5 ;
+      typedef typename field_type::dimension_traits_6 Traits6 ;
+      typedef typename field_type::dimension_traits_7 Traits7 ;
 
-  /** Declare a field to have a dimension over a given part */
-  void declare_field_dimension( Field<void,0> & field , const Part & ,
-                                unsigned n0 ,     unsigned n1 = 0 ,
-                                unsigned n2 = 0 , unsigned n3 = 0 ,
-                                unsigned n4 = 0 , unsigned n5 = 0 ,
-                                unsigned n6 = 0 , unsigned n7 = 0 );
+      return static_cast< field_type & >(
+        declare_field_base( name ,
+                            NumericEnum<Scalar>::value ,
+                            Traits1::descriptor() ,
+                            Traits2::descriptor() ,
+                            Traits3::descriptor() ,
+                            Traits4::descriptor() ,
+                            Traits5::descriptor() ,
+                            Traits6::descriptor() ,
+                            Traits7::descriptor() ,
+                            number_of_states ) );
+    }
+
+  /** Declare a field to have a size over a given entity type and part.
+   */
+  template< class field_type >
+  void declare_field_size( field_type & arg_field ,
+                           unsigned     arg_entity_type ,
+                           const Part & arg_part ,
+                           const typename field_type::Dimension & arg_dim )
+    {
+      declare_field_stride( arg_field , arg_entity_type , arg_part ,
+                            arg_dim.stride );
+    }
+
+  template< class field_type >
+  void declare_field_exists( field_type & arg_field ,
+                             unsigned     arg_entity_type ,
+                             const Part & arg_part )
+    {
+      declare_field_stride( arg_field , arg_entity_type , arg_part , NULL );
+    }
 
   /** Declare an attribute on a field */
   template<class T>
-  CSet::Span<T> declare_field_attribute( Field<void,0> & , const T * , bool );
+  CSet::Span<T> declare_field_attribute( FieldBase & , const T * , bool );
+
   //------------------------------------
   /** Commit the part and field declarations.
    *  Verifies consistency and assigns ordinals for faster usage.
@@ -158,25 +214,38 @@ private:
   Schema & operator = ( const Schema & );
 
   bool   m_commit ;
-  Part   m_universal_part ;
+  Part   m_universal_part ; /* Subset list contains all other parts */
   Part * m_uses_part ;
   Part * m_owns_part ;
 
-  std::vector< Field<void,0> * > m_fields[ end_entity_rank ];
+  std::vector< FieldBase * > m_fields ;
 
-  Field<void,0> & declare_field( unsigned ,
-                                 const std::string & ,
-                                 unsigned arg_scalar_type ,
-                                 unsigned arg_num_dim ,
-                                 unsigned arg_num_states );
+  void declare_field_stride( FieldBase & ,
+                             unsigned , const Part & ,
+                             const unsigned * );
+  
+  FieldBase & declare_field_base( const std::string & ,
+                                  unsigned arg_scalar_type ,
+                                  const DimensionTraits * ,
+                                  const DimensionTraits * ,
+                                  const DimensionTraits * ,
+                                  const DimensionTraits * ,
+                                  const DimensionTraits * ,
+                                  const DimensionTraits * ,
+                                  const DimensionTraits * ,
+                                  unsigned arg_num_states );
 
-  Field<void,0> * get_field( bool ,
-                             unsigned ,
-                             const std::string & ,
-                             unsigned arg_scalar_type ,
-                             unsigned arg_num_dim ,
-                             unsigned arg_num_states ,
-                             const char * required_by ) const ;
+  FieldBase * get_field_base( const std::string & ,
+                              unsigned arg_scalar_type ,
+                              const DimensionTraits * ,
+                              const DimensionTraits * ,
+                              const DimensionTraits * ,
+                              const DimensionTraits * ,
+                              const DimensionTraits * ,
+                              const DimensionTraits * ,
+                              const DimensionTraits * ,
+                              int arg_num_states ,
+                              const char * required_by ) const ;
 
   void clean_field_dimension();
 };
@@ -200,40 +269,10 @@ Schema::declare_part_attribute( Part & p , const T * a , bool d )
 template<class T>
 inline
 CSet::Span<T>
-Schema::declare_field_attribute( Field<void,0> & f , const T * a , bool d )
+Schema::declare_field_attribute( FieldBase & f , const T * a , bool d )
 {
   assert_not_committed( "phdmesh::Schema::declare_field_attribute" );
   return f.m_cset.template insert<T>( a , d );
-}
-
-template<typename T,unsigned NDim>
-inline
-Field<T,NDim> *
-Schema::get_field( unsigned entity_type ,
-                   const std::string & name ,
-                   const char * required_by ) const
-{
-  enum { ftype = NumericEnum<T>::value };
-
-  Field<void,0> * const f =
-    get_field( false , entity_type , name , ftype , NDim , 0 , required_by );
-
-  return static_cast< Field<T,NDim> *>( f );
-}
-
-template<typename T,unsigned NDim>
-inline
-Field<T,NDim> &
-Schema::declare_field( unsigned entity_type ,
-                       const std::string & name ,
-                       unsigned number_of_states )
-{
-  enum { ftype = NumericEnum<T>::value };
-
-  Field<void,0> & f =
-    declare_field( entity_type, name, ftype, NDim, number_of_states );
-
-  return static_cast<Field<T,NDim> &>( f );
 }
 
 } // namespace phdmesh

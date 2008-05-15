@@ -632,7 +632,7 @@ bool comm_mesh_field_values(
   const Mesh & mesh ,
   const EntityProcSet & domain ,
   const EntityProcSet & range ,
-  const std::vector<const Field<void,0> *> & fields ,
+  const std::vector<const FieldBase *> & fields ,
   bool local_flag )
 {
   if ( fields.empty() ) { return local_flag ; }
@@ -641,24 +641,9 @@ bool comm_mesh_field_values(
   const unsigned parallel_rank = mesh.parallel_rank();
   const bool     asymmetric    = & domain != & range ;
 
-  // Memory required per field
-
-  unsigned fields_size[  end_entity_rank  ] ;
-  for ( unsigned i = 0 ; i <  end_entity_rank  ; ++i ) {
-    fields_size[i] = 0 ;
-  }
-
-  const std::vector<const Field<void,0> *>::const_iterator fe = fields.end();
-  const std::vector<const Field<void,0> *>::const_iterator fb = fields.begin();
-        std::vector<const Field<void,0> *>::const_iterator fi ;
-
-  for ( fi = fb ; fi != fe ; ++fi ) {
-    const Field<void,0> & f   = **fi ;
-    const unsigned        et  = f.entity_type();
-    const unsigned      fsize = NumericEnum<>::size(f.numeric_type_ordinal());
-
-    fields_size[ et ] += f.max_length() * fsize ;
-  }
+  const std::vector<const FieldBase *>::const_iterator fe = fields.end();
+  const std::vector<const FieldBase *>::const_iterator fb = fields.begin();
+        std::vector<const FieldBase *>::const_iterator fi ;
 
   // Sizing for send and receive
 
@@ -675,12 +660,8 @@ bool comm_mesh_field_values(
     if ( asymmetric || parallel_rank == e.owner_rank() ) {
       unsigned e_size = 0 ;
       for ( fi = fb ; fi != fe ; ++fi ) {
-        const Field<void,0> & f = **fi ;
-        const unsigned        fet = f.entity_type();
-        const unsigned        eet = e.entity_type();
-        if ( fet == eet ) {
-          e_size += e.kernel().data_size( f );
-        }
+        const FieldBase & f = **fi ;
+        e_size += e.kernel().data_size( f );
       } 
       send_size[ p ] += e_size ;
     }
@@ -693,12 +674,8 @@ bool comm_mesh_field_values(
     if ( asymmetric || p == e.owner_rank() ) {
       unsigned e_size = 0 ;
       for ( fi = fb ; fi != fe ; ++fi ) {
-        const Field<void,0> & f = **fi ;
-        const unsigned        fet = f.entity_type();
-        const unsigned        eet = e.entity_type();
-        if ( fet == eet ) {
-          e_size += e.kernel().data_size( f );
-        }
+        const FieldBase & f = **fi ;
+        e_size += e.kernel().data_size( f );
       } 
       recv_size[ p ] += e_size ;
     }
@@ -723,12 +700,10 @@ bool comm_mesh_field_values(
     if ( asymmetric || parallel_rank == e.owner_rank() ) {
       CommBuffer & b = sparse.send_buffer( p );
       for ( fi = fb ; fi != fe ; ++fi ) {
-        const Field<void,0> & f = **fi ;
-        const unsigned        fet = f.entity_type();
-        const unsigned        eet = e.entity_type();
-        if ( fet == eet ) {
+        const FieldBase & f = **fi ;
+        unsigned data_size = e.kernel().data_size( f );
+        if ( data_size ) {
           unsigned char * data = (unsigned char *) e.data( f );
-          unsigned data_size = e.kernel().data_size( f );
           b.pack<unsigned char>( data , data_size );
         }
       }
@@ -748,12 +723,10 @@ bool comm_mesh_field_values(
     if ( asymmetric || p == e.owner_rank() ) {
       CommBuffer & b = sparse.recv_buffer( p );
       for ( fi = fb ; fi != fe ; ++fi ) {
-        const Field<void,0> & f = **fi ;
-        const unsigned        fet = f.entity_type();
-        const unsigned        eet = e.entity_type();
-        if ( fet == eet ) {
+        const FieldBase & f = **fi ;
+        unsigned data_size = e.kernel().data_size( f );
+        if ( data_size ) {
           unsigned char * data = (unsigned char *) e.data( f );
-          unsigned data_size = e.kernel().data_size( f );
           b.unpack<unsigned char>( data , data_size );
         }
       }

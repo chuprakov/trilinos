@@ -33,6 +33,7 @@
 #include <util/ParallelComm.hpp>
 
 #include <mesh/EntityType.hpp>
+#include <mesh/FieldTraits.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
@@ -43,6 +44,8 @@ using namespace phdmesh ;
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
+
+typedef Field<double,Cartesian> CoordinateField ;
 
 void test_simple_mesh( ParallelMachine pm , std::istream & )
 {
@@ -70,10 +73,11 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   // Nodal coordinate field dimensioned to 3 everywhere in the mesh
 
-  Field<double,1> & node_coordinates =
-    S.declare_field<double,1>( Node , std::string("coordinates") );
+  CoordinateField & node_coordinates =
+    S.declare_field<CoordinateField>( std::string("coordinates") );
+  CoordinateField::Dimension coord_dim(3);
 
-  S.declare_field_dimension( node_coordinates , *univ_part , 3 );
+  S.declare_field_size( node_coordinates , Node , *univ_part , coord_dim );
   
   // Done defining the schema, commit it.
 

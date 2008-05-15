@@ -55,13 +55,15 @@ class Assemble {
 private:
 
   assemble_function_ptr op ;
-  const Field<void,0> * dst ;
-  const Field<void,0> * src ;
+  const FieldBase * dst ;
+  const FieldBase * src ;
+  unsigned          src_rank ;
 
 public:
 
-  const Field<void,0> & dst_field() const { return *dst ; }
-  const Field<void,0> & src_field() const { return *src ; }
+  unsigned src_type() const { return src_rank ; }
+  const FieldBase & dst_field() const { return *dst ; }
+  const FieldBase & src_field() const { return *src ; }
 
   void operator()( void * v_dst, const void * v_src, const unsigned id ) const
     { (*op)( v_dst , v_src , id ); }
@@ -76,16 +78,15 @@ public:
   Assemble & operator = ( const Assemble & rhs )
     { op = rhs.op ; dst = rhs.dst ; src = rhs.src ; return *this ; }
 
-  template<typename T>
   Assemble( assemble_function_ptr arg_op ,
-            const Field<T,1> & arg_dst ,
-            const Field<T,2> & arg_src )
+            const FieldBase & arg_dst ,
+            const FieldBase & arg_src )
     : op( arg_op ), dst( & arg_dst ), src( & arg_src ) {}
 
   template< template<unsigned,unsigned> class Op , unsigned N , typename T >
   Assemble( const Op<N,0> & ,
-            const Field<T,1> & arg_dst ,
-            const Field<T,2> & arg_src )
+            const FieldBase & arg_dst ,
+            const FieldBase & arg_src )
     : op( & assemble_function< Op<N,0> , T > ),
       dst( & arg_dst ), src( & arg_src ) {}
 };

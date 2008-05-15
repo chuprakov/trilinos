@@ -295,8 +295,9 @@ void proximity_search(
 
 ProximitySearch::~ProximitySearch() {}
 
-ProximitySearch::ProximitySearch( const Field<double,1> & node_coord ,
-                                  const float             box_expansion )
+ProximitySearch::ProximitySearch(
+  const ProximitySearch::CoordinateField & node_coord ,
+  const float box_expansion )
   : m_node_coord( node_coord ),
     m_box_expansion(
       std::numeric_limits<float>::epsilon() * 2 < box_expansion ?

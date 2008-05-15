@@ -26,6 +26,7 @@ UTIL_INC_DIR = $(PHDMESH_PATH)/include/util
 
 UTIL_INC_FILES =	\
 	$(UTIL_INC_DIR)/Basics.hpp	\
+	$(UTIL_INC_DIR)/Dimension.hpp	\
 	$(UTIL_INC_DIR)/FixedArray.hpp	\
 	$(UTIL_INC_DIR)/CSet.hpp	\
 	$(UTIL_INC_DIR)/Setv.hpp	\
@@ -47,6 +48,7 @@ UTIL_INC_FILES =	\
 	$(UTIL_INC_DIR)/TestDriver.hpp
 
 UTIL_OBJ_FILES =	\
+	Dimension.o	\
 	CSet.o	\
 	Setv.o	\
 	TPI_Concurrency.o	\

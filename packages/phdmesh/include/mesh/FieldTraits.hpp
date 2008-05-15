@@ -24,62 +24,50 @@
  * @author H. Carter Edwards
  */
 
-#ifndef phdmesh_Proximity_hpp
-#define phdmesh_ProximityTypes_hpp
+#ifndef phdmesh_FieldTraits_hpp
+#define phdmesh_FieldTraits_hpp
 
 //----------------------------------------------------------------------
 
-#include <mesh/FieldTraits.hpp>
-#include <mesh/Types.hpp>
+#include <util/Dimension.hpp>
+
+//----------------------------------------------------------------------
 
 namespace phdmesh {
 
-class ProximitySearch ;
+struct Cartesian : public DimensionTraits {
 
-/** Global geometric proximity search for same-mesh and same-type entities.
- *  Only the owned entities are included in the search.
- */
-void proximity_search( Mesh & M ,
-                       const ProximitySearch & ,
-                       const unsigned entity_type ,
-                       std::vector< std::pair<IdentProc,IdentProc> > & );
+  const char * name() const ;
 
-class ProximitySearch {
-public:
-  typedef Field<double,Cartesian> CoordinateField ;
+  std::string encode( unsigned size , unsigned index ) const ;
 
-  /** Generate a cartesion box enclosing the entity.
-   *  box[0-2] = min , box[3-5] = max
-   */
-  virtual void box( const Entity & , float * const ) const ;
+  unsigned decode( unsigned size , const std::string & ) const ;
 
-  /** For entities in the partset define a search part id.
-   *  Entities will not be compared for proximity if their
-   *  part ids are not zero and not equal.  This allows 
-   *  connected entities to be filtered out of the search.
-   */
-  virtual int part_id( const Kernel & ) const ;
-
-  virtual ~ProximitySearch() ;
-
-  /** Default behavior is to define a bounding box based
-   *  upon connected nodes.  If a part has a CSet member
-   *  of the ProximitySearch object then the 'part_id'
-   *  is that part's ordinal + 1.
-   */
-  ProximitySearch( const CoordinateField & node_coord ,
-                   const float             box_expansion = 0 );
-
-  const CoordinateField & m_node_coord ;
-  const float             m_box_expansion ;
+  static const DimensionTraits * descriptor();
 
 private:
-  ProximitySearch();
-  ProximitySearch( const ProximitySearch & );
-  ProximitySearch & operator = ( const ProximitySearch & );
+  Cartesian() {}
+  Cartesian( const Cartesian & );
+  Cartesian & operator = ( const Cartesian & );
 };
 
-} // namespace phdmesh
+struct Cylindrical : public DimensionTraits {
+
+  const char * name() const ;
+
+  std::string encode( unsigned size , unsigned index ) const ;
+
+  unsigned decode( unsigned size , const std::string & ) const ;
+
+  static const DimensionTraits * descriptor();
+
+private:
+  Cylindrical() {}
+  Cylindrical( const Cylindrical & );
+  Cylindrical & operator = ( const Cylindrical & );
+};
+
+}
 
 #endif
 

@@ -141,15 +141,14 @@ void Kernel::supersets( std::vector<unsigned> & ps ) const
 
 //----------------------------------------------------------------------
 
-bool Kernel::valid( const Field<void,0> & f ,
+bool Kernel::valid( const FieldBase & f ,
                     unsigned ord ,
                     const char * required_by ) const
 {
   const Schema & schema = m_mesh.schema();
   const bool ok_schema = & schema      == & f.schema() ;
-  const bool ok_type   = m_entity_type ==   f.entity_type();
   const bool ok_ord    = ord < m_size ;
-  const bool ok        = ok_schema && ok_type && ok_ord ;
+  const bool ok        = ok_schema && ok_ord ;
 
   if ( required_by && ! ok ) {
     std::ostringstream msg ;
@@ -162,10 +161,6 @@ bool Kernel::valid( const Field<void,0> & f ,
     msg << " ) FAILED with " ;
     if ( ! ok_schema ) {
       msg << " different Schema" ;
-    }
-    else if ( ! ok_type ) {
-      msg << " different EntityType " ;
-      msg << entity_type_name( m_entity_type ) ;
     }
     else {
       msg << " Ordinal " ;
@@ -197,8 +192,8 @@ Kernel::Kernel( Mesh & arg_mesh ,
 
 void Kernel::zero_fields( Kernel & k_dst , unsigned i_dst )
 {
-  const std::vector<Field<void,0>*> & field_set =
-    k_dst.mesh().schema().get_fields( k_dst.m_entity_type );
+  const std::vector<FieldBase*> & field_set =
+    k_dst.mesh().schema().get_fields();
 
   unsigned char * const p = reinterpret_cast<unsigned char*>(k_dst.m_entities);
   const DataMap *       i = k_dst.m_field_map ;
@@ -216,8 +211,8 @@ void Kernel::copy_fields( Kernel & k_dst , unsigned i_dst ,
 {
   static const char method[] = "phdmesh::Kernel::copy_fields" ;
 
-  const std::vector<Field<void,0>*> & field_set =
-    k_dst.mesh().schema().get_fields( k_dst.m_entity_type );
+  const std::vector<FieldBase*> & field_set =
+    k_dst.mesh().schema().get_fields();
 
   unsigned char * const s = reinterpret_cast<unsigned char*>(k_src.m_entities);
   unsigned char * const d = reinterpret_cast<unsigned char*>(k_dst.m_entities);
@@ -259,27 +254,35 @@ inline size_t align( size_t nb )
   return nb ;
 }
 
-const FieldDimension & dimension( const Field<void,0> & field ,
+const FieldBase::Dim & dimension( const FieldBase & field ,
+                                  unsigned rank ,
                                   const PartSet & parts ,
                                   const char * const method )
 {
-  static const FieldDimension empty ;
+  static const FieldBase::Dim empty ;
 
-  const FieldDimension * dim = & empty ;
+  const FieldBase::Dim * dim = & empty ;
 
   for ( PartSet::const_iterator
         i = parts.begin() ; i != parts.end() ; ++i ) {
 
-    const FieldDimension & tmp = field.dimension( **i );
+    const FieldBase::Dim & tmp = field.dimension( rank , **i );
 
-    if ( tmp.length() ) {
-      if ( dim->length() == 0 ) { dim = & tmp ; } 
+    if ( tmp.part ) {
+      if ( NULL == dim->part ) { dim = & tmp ; } 
 
-      if ( ! tmp.compare_dimension( *dim ) ) { // ERROR
-        std::string msg ;
-        msg.append( method );
-        msg.append( " FAILED WITH INCOMPATIBLE FIELD DIMENSIONS" );
-        throw std::runtime_error( msg );
+      if ( Compare< MaximumFieldDimension >::
+             not_equal( tmp.stride , dim->stride ) ) {
+
+        std::ostringstream msg ;
+        msg << method ;
+        msg << " FAILED WITH INCOMPATIBLE DIMENSIONS FOR " ;
+        msg << field ;
+        msg << " Part[" << tmp.part->name() ;
+        msg << "] and Part[" << dim->part->name() ;
+        msg << "]" ;
+     
+        throw std::runtime_error( msg.str() );
       }
     }
   }
@@ -296,12 +299,12 @@ void Kernel::update_state()
   if ( 0 == kernel_counter( key() ) ) {
 
     const Schema & S = m_mesh.schema();
-    const std::vector<Field<void,0>*> & field_set = S.get_fields(m_entity_type);
+    const std::vector<FieldBase*> & field_set = S.get_fields();
 
     for ( unsigned i = 0 ; i < field_set.size() ; ) {
 
       DataMap * const tmp = m_field_map + i ;
-      const Field<void,0> & field = * field_set[i] ;
+      const FieldBase & field = * field_set[i] ;
       const unsigned num_state = field.number_of_states();
       i += num_state ;
 
@@ -355,8 +358,7 @@ Mesh::declare_kernel( const unsigned arg_entity_type ,
 
   KernelSet & kernel_set = m_kernels[ arg_entity_type ];
 
-  const std::vector< Field<void,0> * > & field_set =
-    m_schema.get_fields( arg_entity_type );
+  const std::vector< FieldBase * > & field_set = m_schema.get_fields();
 
   // Entity parts are complete and contain all supersets
   // Initial key is upper bound key for kernel with these parts
@@ -423,20 +425,25 @@ Mesh::declare_kernel( const unsigned arg_entity_type ,
       value_offset += align( sizeof(Entity*) * m_kernel_capacity );
 
       for ( unsigned i = 0 ; i < num_fields ; ++i ) {
-        const Field<void,0>  & field = * field_set[i] ;
-        const FieldDimension & dim   = dimension( field, entity_parts, method);
+        const FieldBase  & field = * field_set[i] ;
+        const unsigned     field_num_dim = field.number_of_dimensions();
+
+        const FieldBase::Dim & dim =
+          dimension( field, arg_entity_type , entity_parts, method);
+
         const unsigned value_size =
-          NumericEnum<void>::size(field.numeric_type_ordinal()) * dim.length();
+          NumericEnum<void>::size(field.numeric_type_ordinal()) *
+          ( field_num_dim ? dim.stride[ field_num_dim - 1 ] : 1 );
 
         field_map[i].m_base = value_offset ;
         field_map[i].m_size = value_size ;
-        field_map[i].m_dim  = & dim ;
+        field_map[i].m_stride = dim.stride ;
 
         value_offset += align( value_size * m_kernel_capacity );
       }
       field_map[ num_fields ].m_base  = value_offset ;
       field_map[ num_fields ].m_size = 0 ;
-      field_map[ num_fields ].m_dim = NULL ;
+      field_map[ num_fields ].m_stride = NULL ;
     }
 
     // Allocation size:

@@ -64,12 +64,12 @@ span( const EntityProcSet & v , unsigned entity_type )
 //----------------------------------------------------------------------
 
 bool comm_verify_shared_entity_values(
-  const Mesh & M ,
-  const Field<void,0> & f )
+  const Mesh & M , unsigned t , const FieldBase & f )
 {
-  const unsigned t = f.entity_type();
-  const unsigned max_size   = f.max_size();
   const unsigned parallel_size = M.parallel_size();
+
+  const unsigned max_size = f.max_size(t) *
+                            NumericEnum<>::size( f.numeric_type_ordinal() );
 
   const std::pair< EntityProcSet::const_iterator ,
                    EntityProcSet::const_iterator >

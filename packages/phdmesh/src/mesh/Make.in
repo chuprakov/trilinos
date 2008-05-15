@@ -30,6 +30,7 @@ MESH_INC_FILES =	\
 	$(MESH_INC_DIR)/EntityComm.hpp	\
 	$(MESH_INC_DIR)/FieldDim.hpp	\
 	$(MESH_INC_DIR)/Field.hpp	\
+	$(MESH_INC_DIR)/FieldTraits.hpp	\
 	$(MESH_INC_DIR)/Gather.hpp	\
 	$(MESH_INC_DIR)/Kernel.hpp	\
 	$(MESH_INC_DIR)/Mesh.hpp	\
@@ -45,6 +46,7 @@ MESH_OBJ_FILES =	\
 	MeshEntity.o	\
 	MeshEntityComm.o	\
 	MeshField.o	\
+	MeshFieldTraits.o	\
 	MeshKernel.o	\
 	MeshMesh.o	\
 	MeshPart.o	\

@@ -39,6 +39,9 @@
 
 namespace phdmesh {
 
+typedef Field<double,Cartesian> CoordinateField ;
+typedef Field<float>            WeightField ;
+
 //----------------------------------------------------------------------
 
 namespace {
@@ -46,7 +49,7 @@ namespace {
 //----------------------------------------------------------------------
 
 void global_coordinate_bounds( Mesh & M ,
-                               const Field<double,1> & node_coord ,
+                               const CoordinateField & node_coord ,
                                double * const bounds )
 {
   const Schema & schema = M.schema();
@@ -109,7 +112,7 @@ void global_coordinate_bounds( Mesh & M ,
 //----------------------------------------------------------------------
 
 OctTreeKey elem_key( const double * const bounds ,
-                     const Field<double,1> & node_coord ,
+                     const CoordinateField & node_coord ,
                      Entity & elem )
 {
   enum { shift = OctTreeKey::BitsPerWord - OctTreeKey::MaxDepth };
@@ -150,8 +153,8 @@ OctTreeKey elem_key( const double * const bounds ,
 
 void global_element_cuts( Mesh & M ,
                           const double * const bounds ,
-                          const Field<double,1> & node_coord ,
-                          const Field<float,1>  * const elem_weight_field ,
+                          const CoordinateField & node_coord ,
+                          const WeightField  * const elem_weight_field ,
                                 OctTreeKey      * const cut_begin )
 {
   const Schema & schema = M.schema();
@@ -505,8 +508,8 @@ void remove_aura( Mesh & M )
 //----------------------------------------------------------------------
 
 void comm_mesh_rebalance( Mesh & M ,
-                          const Field<double,1> & node_coord_field ,
-                          const Field<float,1>  * const elem_weight_field ,
+                          const CoordinateField & node_coord_field ,
+                          const WeightField  * const elem_weight_field ,
                           std::vector<OctTreeKey> & cut_keys )
 {
   const Schema & schema  = M.schema();
@@ -522,8 +525,8 @@ void comm_mesh_rebalance( Mesh & M ,
   // It is assumed that the shared node_coord_field values are
   // already consistent.
   {
-    const Field<void,0> * const ptr = & node_coord_field ;
-    std::vector< const Field<void,0> *> tmp ;
+    const FieldBase * const ptr = & node_coord_field ;
+    std::vector< const FieldBase *> tmp ;
     tmp.push_back( ptr );
     const EntityProcSet & aura_domain = M.aura_domain();
     const EntityProcSet & aura_range  = M.aura_range();
@@ -553,8 +556,8 @@ void comm_mesh_rebalance( Mesh & M ,
   // elements be up to date.
 
   {
-    std::vector< const Field<void,0> * > tmp ;
-    const Field<void,0> * const tmp_coord = & node_coord_field ;
+    std::vector< const FieldBase * > tmp ;
+    const FieldBase * const tmp_coord = & node_coord_field ;
     tmp.push_back( tmp_coord );
 
     const EntityProcSet & d = M.aura_domain();

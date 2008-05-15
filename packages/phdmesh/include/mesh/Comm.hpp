@@ -57,6 +57,7 @@
 #include <util/Parallel.hpp>
 #include <util/OctTree.hpp>
 #include <mesh/Types.hpp>
+#include <mesh/FieldTraits.hpp>
 #include <mesh/EntityComm.hpp>
 
 //----------------------------------------------------------------------
@@ -156,13 +157,14 @@ bool comm_mesh_field_values(
   const Mesh & mesh ,
   const EntityProcSet & domain ,
   const EntityProcSet & range ,
-  const std::vector< const Field<void,0> *> & fields ,
+  const std::vector< const FieldBase *> & fields ,
   bool local_flag );
 
 //----------------------------------------------------------------------
 /** Verify that the shared entity values are bit-wise identical */
 
-bool comm_verify_shared_entity_values( const Mesh & , const Field<void,0> & f );
+bool comm_verify_shared_entity_values(
+  const Mesh & , unsigned entity_type , const FieldBase & f );
 
 //----------------------------------------------------------------------
 /** Discover the sharing of all mesh entities by searching for
@@ -196,8 +198,8 @@ void comm_mesh_regenerate_aura( Mesh & );
  *  Return the HSFC cut keys used for the rebalance.
  */
 void comm_mesh_rebalance( Mesh & ,
-                          const Field<double,1> & node_coord_field ,
-                          const Field<float,1>  * const elem_weight_field ,
+                          const Field<double,Cartesian> & node_coord_field ,
+                          const Field<float> * const elem_weight_field ,
                           std::vector<OctTreeKey> & cut_keys );
 
 //----------------------------------------------------------------------

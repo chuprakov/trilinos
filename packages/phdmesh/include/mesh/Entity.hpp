@@ -139,13 +139,15 @@ public:
 
   //------------------------------------
   /** Pointer to field value for this mesh entity and field */
-  template<typename T,unsigned NDim> T * data( const Field<T,NDim> & f ) const
+  template< class field_type >
+  typename field_type::data_type * data( const field_type & f ) const
     { return m_kernel->data( f , m_kernel_ord ); }
 
-  unsigned data_size( const Field<void,0> & f ) const
+  unsigned data_size( const FieldBase & f ) const
     { return m_kernel->data_size( f ); }
 
-  const FieldDimension & data_dim( const Field<void,0> & f ) const
+  template< class field_type >
+  typename field_type::Dimension data_dim( const field_type & f ) const
     { return m_kernel->data_dim( f ); }
 
   //------------------------------------

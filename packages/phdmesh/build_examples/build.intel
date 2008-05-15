@@ -30,7 +30,7 @@ source ${PHDMESH_PATH}/config/intel opt mpich
 #----------------------------------------------------------------------
 # SNL ACCESS ExodusII and NemesisI library configuration:
 
-source ${PHDMESH_PATH}/config/exodusII /usr/local/eng_sci/struct/current-gcc
+source ${PHDMESH_PATH}/config/exodusII /usr/local/eng_sci/struct/i686/current
 
 #----------------------------------------------------------------------
 

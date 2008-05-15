@@ -53,9 +53,9 @@ struct KernelLess {
 class Kernel : private SetvMember<const unsigned * const> {
 private:
   struct DataMap {
-    const FieldDimension * m_dim ;
-    unsigned               m_base ;
-    unsigned               m_size ;
+    const unsigned * m_stride ;
+    unsigned         m_base ;
+    unsigned         m_size ;
   };
 
   Mesh      & m_mesh ;        // Mesh in which this kernel resides
@@ -100,45 +100,51 @@ public:
 
   //--------------------------------
   /** Check if compatible, if not and required then throw an exception */
-  bool valid( const Field<void,0> & ,
+  bool valid( const FieldBase & ,
               unsigned = 0 ,
               const char * required_by = NULL ) const ;
 
   /** Pointer to field value, null if valid but does not exist.
    *  No validity checking for best performance.
    */
-  template<typename T,unsigned NDim>
-    T * data( const Field<T,NDim> & f ) const
-      {
-        const DataMap & pd = m_field_map[ f.schema_ordinal() ];
-        unsigned char * const ptr = pd.m_size
-          ? reinterpret_cast<unsigned char*>( m_entities ) + pd.m_base
-          : NULL ;
-        return reinterpret_cast<T*>( ptr );
-      }
+  template< class field_type >
+  typename field_type::data_type * data( const field_type & f ) const
+    {
+      const DataMap & pd = m_field_map[ f.schema_ordinal() ];
+      unsigned char * const ptr = pd.m_size
+        ? reinterpret_cast<unsigned char*>( m_entities ) + pd.m_base
+        : NULL ;
+      return reinterpret_cast<typename field_type::data_type *>( ptr );
+    }
 
   /** Pointer to offset field value, null if valid but does not exist.
    *  No validity checking for best performance.
    */
-  template<typename T,unsigned NDim>
-    T * data( const Field<T,NDim> & f , unsigned i ) const
-      {
-        const DataMap & pd = m_field_map[ f.schema_ordinal() ];
-        unsigned char * const ptr = pd.m_size
-          ? reinterpret_cast<unsigned char*>( m_entities )
-            + pd.m_base + pd.m_size * i 
-          : NULL ;
-        return reinterpret_cast<T*>( ptr );
-      }
+  template< class field_type >
+  typename field_type::data_type *
+    data( const field_type & f , unsigned i ) const
+    {
+      const DataMap & pd = m_field_map[ f.schema_ordinal() ];
+      unsigned char * const ptr = pd.m_size
+        ? reinterpret_cast<unsigned char*>( m_entities )
+          + pd.m_base + pd.m_size * i 
+        : NULL ;
+      return reinterpret_cast<typename field_type::data_type *>( ptr );
+    }
+
+  template< class field_type >
+  typename field_type::Dimension data_dim( const field_type & f ) const
+    {
+      const DataMap & pd = m_field_map[ f.schema_ordinal() ];
+      return typename
+        field_type::Dimension( pd.m_stride , "phdmesh::Kernel::data_dim" );
+    }
 
   /** Per-entity data size for a field.
    *  No validity checking for best performance.
    */
-  unsigned data_size( const Field<void,0> & f ) const
+  unsigned data_size( const FieldBase & f ) const
     { return m_field_map[ f.schema_ordinal() ].m_size ; }
-
-  const FieldDimension & data_dim( const Field<void,0> & f ) const
-    { return * m_field_map[ f.schema_ordinal() ].m_dim ; }
 
   //--------------------------------
 

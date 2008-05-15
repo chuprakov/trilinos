@@ -62,14 +62,14 @@ template <typename T1, typename T2> struct SameType { enum { value = false }; };
 // Selection of an integer type based upon sign and size
 
 template<
-  unsigned N_char  = std::numeric_limits<unsigned char >::digits ,
-  unsigned N_short = std::numeric_limits<unsigned short>::digits ,
-  unsigned N_int   = std::numeric_limits<unsigned int  >::digits ,
-  unsigned N_long  = std::numeric_limits<unsigned long >::digits >
-struct IntegerTypes ;
+  unsigned N_char  = std::numeric_limits< unsigned char  >::digits ,
+  unsigned N_short = std::numeric_limits< unsigned short >::digits ,
+  unsigned N_int   = std::numeric_limits< unsigned int   >::digits ,
+  unsigned N_long  = std::numeric_limits< unsigned long  >::digits >
+struct IntegerFundamentalTypes ;
 
 template<>
-struct IntegerTypes<8,16,32,64> {
+struct IntegerFundamentalTypes<8,16,32,64> {
   typedef signed   char  int8_type ;
   typedef unsigned char  uint8_type ;
   typedef signed   short int16_type ;
@@ -85,7 +85,7 @@ template<
   unsigned N_short ,
   unsigned N_int ,
   unsigned N_long >
-struct IntegerTypes {
+struct IntegerFundamentalTypes {
   typedef signed   char      int8_type ;
   typedef unsigned char      uint8_type ;
   typedef signed   short     int16_type ;
@@ -106,14 +106,26 @@ struct IntegerTypes {
   enum { OK_64 = StaticAssert< 64 == uint64_digits >::OK };
 };
 
-typedef IntegerTypes<>::int8_type    int8_type ;
-typedef IntegerTypes<>::uint8_type   uint8_type ;
-typedef IntegerTypes<>::int16_type   int16_type ;
-typedef IntegerTypes<>::uint16_type  uint16_type ;
-typedef IntegerTypes<>::int32_type   int32_type ;
-typedef IntegerTypes<>::uint32_type  uint32_type ;
-typedef IntegerTypes<>::int64_type   int64_type ;
-typedef IntegerTypes<>::uint64_type  uint64_type ;
+
+typedef IntegerFundamentalTypes<>::int8_type     int8_type ;
+typedef IntegerFundamentalTypes<>::uint8_type    uint8_type ;
+typedef IntegerFundamentalTypes<>::int16_type    int16_type ;
+typedef IntegerFundamentalTypes<>::uint16_type   uint16_type ;
+typedef IntegerFundamentalTypes<>::int32_type    int32_type ;
+typedef IntegerFundamentalTypes<>::uint32_type   uint32_type ;
+typedef IntegerFundamentalTypes<>::int64_type    int64_type ;
+typedef IntegerFundamentalTypes<>::uint64_type   uint64_type ;
+
+
+template< unsigned = sizeof(void*) > struct IntegerPointerType ;
+
+template<>
+struct IntegerPointerType<sizeof(uint32_type)> { typedef uint32_type type; };
+
+template<>
+struct IntegerPointerType<sizeof(uint64_type)> { typedef uint64_type type; };
+
+typedef IntegerPointerType<>::type uint_ptr_type ;
 
 } // namespace phdmesh
 

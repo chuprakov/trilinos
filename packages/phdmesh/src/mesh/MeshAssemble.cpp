@@ -102,30 +102,27 @@ void AssembleTask::work(TPI::ThreadPool pool)
           ia = ia_beg ; ia_end != ia ; ++ia ) {
       const Assemble & assemble = *ia ;
 
-      if ( entity_type == assemble.dst_field().entity_type() ) {
+      const FieldBase & dst_field = assemble.dst_field();
 
-        const Field<void,0> & dst_field = assemble.dst_field();
+      const unsigned data_size = k->data_size( dst_field );
 
-        const unsigned data_size = k->data_size( dst_field );
+      if ( data_size ) { // Exists on this kernel
 
-        if ( data_size ) { // Exists on this kernel
+        const FieldBase & src_field = assemble.src_field();
+        const unsigned    src_type  = assemble.src_type();
 
-          const Field<void,0> & src_field = assemble.src_field();
-          const unsigned        src_type  = src_field.entity_type();
+        unsigned char * dst_ptr = (unsigned char *) k->data( dst_field );
 
-          unsigned char * dst_ptr = (unsigned char *) k->data( dst_field );
+        const Kernel::iterator ie_end = k->end();
+              Kernel::iterator ie     = k->begin();
 
-          const Kernel::iterator ie_end = k->end();
-                Kernel::iterator ie     = k->begin();
+        for ( ; ie_end != ie ; ++ie , dst_ptr += data_size ) {
 
-          for ( ; ie_end != ie ; ++ie , dst_ptr += data_size ) {
-
-            for ( ConnectSpan con = (*ie)->connections( src_type );
-                  con ; ++con ) {
-              const unsigned src_id  = con->identifier();
-              void * const   src_ptr = con->entity()->data(src_field);
-              assemble( dst_ptr , src_ptr , src_id );
-            }
+          for ( ConnectSpan con = (*ie)->connections( src_type );
+                con ; ++con ) {
+            const unsigned src_id  = con->identifier();
+            void * const   src_ptr = con->entity()->data(src_field);
+            assemble( dst_ptr , src_ptr , src_id );
           }
         }
       }
@@ -145,27 +142,19 @@ void assemble( const Mesh & M , const std::vector<Assemble> ops )
   const std::vector<Assemble>::const_iterator ia_beg = ops.begin();
         std::vector<Assemble>::const_iterator ia ;
 
-  unsigned dst_type_present[ end_entity_rank ];
-
-  for ( unsigned t = 0 ; t < end_entity_rank ; ++t ) {
-    dst_type_present[t] = 0 ;
-  }
-
   // Parallel copy for source data
 
   {
-    std::vector< const Field<void,0> * > update_fields ;
+    std::vector< const FieldBase * > update_fields ;
     update_fields.reserve( ops.size() );
 
     for ( ia = ia_beg ; ia_end != ia ; ) {
       const Assemble & op = *ia ; ++ia ;
-      const Field<void,0> * const src_field = & op.src_field();
-      const Field<void,0> * const dst_field = & op.dst_field();
+      const FieldBase * const src_field = & op.src_field();
+      const FieldBase * const dst_field = & op.dst_field();
 
       M.schema().assert_same_schema( method , dst_field->schema() );
       M.schema().assert_same_schema( method , src_field->schema() );
-
-      dst_type_present[ dst_field->entity_type() ] = 1 ;
 
       update_fields.push_back( src_field );
     }
@@ -177,9 +166,7 @@ void assemble( const Mesh & M , const std::vector<Assemble> ops )
   // Local assembly
 
   for ( unsigned t = 0 ; t < end_entity_rank ; ++t ) {
-    if ( dst_type_present[ t ] ) {
-      AssembleTask work( M , t , ops );
-    }
+    AssembleTask work( M , t , ops );
   }
 }
 
