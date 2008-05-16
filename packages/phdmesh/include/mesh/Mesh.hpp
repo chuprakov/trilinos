@@ -175,12 +175,12 @@ private:
 void partset_entity_count(
   Mesh & mesh ,
   Part & part ,
-  entity_id_type * const count /* [ end_entity_rank ] */ );
+  unsigned * const count /* [ end_entity_rank ] */ );
 
 void partset_entity_count(
   Mesh & mesh ,
   const PartSet & parts ,
-  entity_id_type * const count /* [ end_entity_rank ] */ );
+  unsigned * const count /* [ end_entity_rank ] */ );
 
 /** Get all kernels within the given part.
  *  Every kernel will have the part in its superset.

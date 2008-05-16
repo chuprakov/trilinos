@@ -780,7 +780,7 @@ void get_kernels_union(
 //----------------------------------------------------------------------
 
 void partset_entity_count(
-  Mesh & mesh , Part & part , entity_id_type * const count )
+  Mesh & mesh , Part & part , unsigned * const count )
 {
   static const char method[] = "phdmesh::partset_entity_count" ;
 
@@ -802,7 +802,7 @@ void partset_entity_count(
 }
 
 void partset_entity_count(
-  Mesh & mesh , const PartSet & parts , entity_id_type * const count )
+  Mesh & mesh , const PartSet & parts , unsigned * const count )
 {
   static const char method[] = "phdmesh::partset_entity_count" ;
 
