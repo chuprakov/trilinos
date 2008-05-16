@@ -56,8 +56,8 @@ const char * GlobalLocalIndex::name() const
 
 std::string GlobalLocalIndex::encode( unsigned size , unsigned index ) const
 {
-  static const char g[] = "_global" ;
-  static const char l[] = "_local" ;
+  static const char g[] = "global" ;
+  static const char l[] = "local" ;
 
   if ( 2 != size || size <= index ) {
     std::ostringstream msg ;
@@ -73,8 +73,8 @@ std::string GlobalLocalIndex::encode( unsigned size , unsigned index ) const
 unsigned GlobalLocalIndex::decode( unsigned size , const std::string & arg )
   const
 {
-  static const char g[] = "_global" ;
-  static const char l[] = "_local" ;
+  static const char g[] = "global" ;
+  static const char l[] = "local" ;
 
   const unsigned index = ! strcasecmp( arg.c_str() , g ) ? 0 : (
                          ! strcasecmp( arg.c_str() , l ) ? 1 : 2 );
@@ -1056,7 +1056,10 @@ std::string variable_name( unsigned          r ,
 
     for ( unsigned i = 0 ; i < f_num_dim ; ++i ) {
       std::string tmp = f.dimension_traits()[i]->encode(sizes[i],indices[i]);
-      name.append( tmp );
+      if ( tmp.size() ) {
+        name.append( "_" );
+        name.append( tmp );
+      }
     }
   }
 
@@ -1529,7 +1532,7 @@ FileOutput::FileOutput(
 namespace {
 
 void pack_entity_proc( const std::vector<const Entity *> & send ,
-                       const FileSchema::IndexField                & f_index ,
+                       const FileSchema::IndexField      & f_index ,
                        CommBuffer & buf )
 {
   double item_buffer[2] ;

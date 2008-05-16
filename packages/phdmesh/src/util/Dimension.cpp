@@ -107,7 +107,6 @@ std::string DimensionAny::encode( unsigned size , unsigned index ) const
 
   // Pad for alphabetic sorting.
 
-  tmp << '_' ;
   if ( 1000 < size && index < 1000 ) { tmp << '0' ; }
   if (  100 < size && index <  100 ) { tmp << '0' ; }
   if (   10 < size && index <   10 ) { tmp << '0' ; }
@@ -119,12 +118,7 @@ std::string DimensionAny::encode( unsigned size , unsigned index ) const
 unsigned DimensionAny::decode( unsigned size ,
                                const std::string & label ) const
 {
-  unsigned index = 0 ;
-
-  if ( size ) {
-    const char * c = label.c_str();
-    if ( *c == '_' ) { index = atoi( c + 1 ); }
-  }
+  const unsigned index = size ?  atoi( label.c_str() ) : 0 ;
   return index ;
 }
 

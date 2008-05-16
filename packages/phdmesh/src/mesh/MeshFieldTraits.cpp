@@ -41,9 +41,9 @@ const char * Cartesian::name() const
 
 std::string Cartesian::encode( unsigned size , unsigned index ) const
 {
-  static const char x[] = "_x" ;
-  static const char y[] = "_y" ;
-  static const char z[] = "_z" ;
+  static const char x[] = "x" ;
+  static const char y[] = "y" ;
+  static const char z[] = "z" ;
   static const char * label[] = { x , y , z };
 
   if ( size < 2 || 3 < size || size <= index ) {
@@ -59,9 +59,9 @@ std::string Cartesian::encode( unsigned size , unsigned index ) const
 
 unsigned Cartesian::decode( unsigned size , const std::string & arg ) const
 {
-  static const char x[] = "_x" ;
-  static const char y[] = "_y" ;
-  static const char z[] = "_z" ;
+  static const char x[] = "x" ;
+  static const char y[] = "y" ;
+  static const char z[] = "z" ;
   static const char * label[] = { x , y , z };
 
   unsigned index = size ;
@@ -89,9 +89,9 @@ const char * Cylindrical::name() const
 
 std::string Cylindrical::encode( unsigned size , unsigned index ) const
 {
-  static const char r[] = "_r" ;
-  static const char a[] = "_a" ;
-  static const char z[] = "_z" ;
+  static const char r[] = "r" ;
+  static const char a[] = "a" ;
+  static const char z[] = "z" ;
   static const char * label[] = { r , a , z };
 
   if ( 3 < size || size <= index ) {
@@ -107,9 +107,9 @@ std::string Cylindrical::encode( unsigned size , unsigned index ) const
 
 unsigned Cylindrical::decode( unsigned size , const std::string & arg ) const
 {
-  static const char r[] = "_r" ;
-  static const char a[] = "_a" ;
-  static const char z[] = "_z" ;
+  static const char r[] = "r" ;
+  static const char a[] = "a" ;
+  static const char z[] = "z" ;
   static const char * label[] = { r , a , z };
 
   unsigned index = size ;
