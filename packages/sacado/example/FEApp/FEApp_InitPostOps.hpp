@@ -38,9 +38,18 @@
 #include "Epetra_CrsMatrix.h"
 
 #include "FEApp_AbstractInitPostOp.hpp"
-
-#include "Sacado_Fad_DFad.hpp"
+#include "FEApp_TemplateTypes.hpp"
 #include "Sacado_ScalarParameterVector.hpp"
+
+#if SG_ACTIVE
+#include "EpetraExt_BlockVector.h"
+#include "Stokhos_OrthogPolyBasis.hpp"
+#endif
+
+#if SGFAD_ACTIVE
+#include "Stokhos_TripleProduct.hpp"
+#include "EpetraExt_BlockCrsMatrix.h"
+#endif
 
 namespace FEApp {
 
@@ -82,6 +91,9 @@ namespace FEApp {
 			  unsigned int neqn,
 			  std::vector<double>& node_f);
 
+    //! Finalize fill
+    virtual void finalizeFill() {}
+
   private:
     
     //! Private to prohibit copying
@@ -105,7 +117,7 @@ namespace FEApp {
 
   //! Fill operator for Jacobian
   class JacobianOp : 
-    public FEApp::AbstractInitPostOp< Sacado::Fad::DFad<double> > {
+    public FEApp::AbstractInitPostOp< FadType > {
   public:
 
     //! Constructor
@@ -126,24 +138,27 @@ namespace FEApp {
     virtual void elementInit(
 			 const FEApp::AbstractElement& e,
 			 unsigned int neqn,
-			 std::vector< Sacado::Fad::DFad<double> >* elem_xdot,
-			 std::vector< Sacado::Fad::DFad<double> >& elem_x);
+			 std::vector< FadType >* elem_xdot,
+			 std::vector< FadType >& elem_x);
 
     //! Evaluate element post operator
     virtual void elementPost(const FEApp::AbstractElement& e,
 			     unsigned int neqn,
-			     std::vector< Sacado::Fad::DFad<double> >& elem_f);
+			     std::vector< FadType >& elem_f);
 
     //! Evaulate node init operator
     virtual void nodeInit(const FEApp::NodeBC& bc,
 			  unsigned int neqn,
-			  std::vector< Sacado::Fad::DFad<double> >* node_xdot,
-			  std::vector< Sacado::Fad::DFad<double> >& node_x);
+			  std::vector< FadType >* node_xdot,
+			  std::vector< FadType >& node_x);
 
     //! Evaluate node post operator
     virtual void nodePost(const FEApp::NodeBC& bc,
 			  unsigned int neqn,
-			  std::vector< Sacado::Fad::DFad<double> >& node_f);
+			  std::vector< FadType >& node_f);
+
+    //! Finalize fill
+    virtual void finalizeFill() {}
 
   private:
     
@@ -180,7 +195,7 @@ namespace FEApp {
    * alpha*df/dxdot*Vxdot + beta*df/dx*Vx + df/dp*V_p
    */
   class TangentOp : 
-    public FEApp::AbstractInitPostOp< Sacado::Fad::DFad<double> > {
+    public FEApp::AbstractInitPostOp< FadType > {
   public:
 
     //! Constructor
@@ -206,24 +221,27 @@ namespace FEApp {
     virtual void elementInit(
 			 const FEApp::AbstractElement& e,
 			 unsigned int neqn,
-			 std::vector< Sacado::Fad::DFad<double> >* elem_xdot,
-			 std::vector< Sacado::Fad::DFad<double> >& elem_x);
+			 std::vector< FadType >* elem_xdot,
+			 std::vector< FadType >& elem_x);
 
     //! Evaluate element post operator
     virtual void elementPost(const FEApp::AbstractElement& e,
 			     unsigned int neqn,
-			     std::vector< Sacado::Fad::DFad<double> >& elem_f);
+			     std::vector< FadType >& elem_f);
 
     //! Evaulate node init operator
     virtual void nodeInit(const FEApp::NodeBC& bc,
 			  unsigned int neqn,
-			  std::vector< Sacado::Fad::DFad<double> >* node_xdot,
-			  std::vector< Sacado::Fad::DFad<double> >& node_x);
+			  std::vector< FadType >* node_xdot,
+			  std::vector< FadType >& node_x);
 
     //! Evaluate node post operator
     virtual void nodePost(const FEApp::NodeBC& bc,
 			  unsigned int neqn,
-			  std::vector< Sacado::Fad::DFad<double> >& node_f);
+			  std::vector< FadType >& node_f);
+
+    //! Finalize fill
+    virtual void finalizeFill() {}
 
   private:
     
@@ -284,6 +302,205 @@ namespace FEApp {
     int param_offset;
 
   };
+
+#if SG_ACTIVE
+
+  //! Fill operator for Stochastic Galerkin residual
+  class SGResidualOp : public FEApp::AbstractInitPostOp<SGType> {
+  public:
+    
+    //! Constructor
+    /*!
+     * Set xdot to Teuchos::null for steady-state problems
+     */
+    SGResidualOp(
+	 const Teuchos::RCP<const Epetra_Map>& base_map,
+	 const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis,
+	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
+	 const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f);
+
+    //! Destructor
+    virtual ~SGResidualOp();
+    
+    //! Evaulate element init operator
+    virtual void elementInit(const FEApp::AbstractElement& e,
+			     unsigned int neqn,
+			     std::vector<SGType>* elem_xdot,
+			     std::vector<SGType>& elem_x);
+
+    //! Evaluate element post operator
+    virtual void elementPost(const FEApp::AbstractElement& e,
+			     unsigned int neqn,
+			     std::vector<SGType>& elem_f);
+
+    //! Evaulate node init operator
+    virtual void nodeInit(const FEApp::NodeBC& bc,
+			  unsigned int neqn,
+			  std::vector<SGType>* node_xdot,
+			  std::vector<SGType>& node_x);
+
+    //! Evaluate node post operator
+    virtual void nodePost(const FEApp::NodeBC& bc,
+			  unsigned int neqn,
+			  std::vector<SGType>& node_f);
+
+    //! Finalize fill
+    virtual void finalizeFill();
+
+  private:
+    
+    //! Private to prohibit copying
+    SGResidualOp(const SGResidualOp&);
+
+    //! Private to prohibit copying
+    SGResidualOp& operator=(const SGResidualOp&);
+
+  protected:
+
+    //! Number of blocks
+    unsigned int nblock;
+
+    //! Map for base discretization
+    Teuchos::RCP<const Epetra_Map> map;
+
+    //! Stochastic Galerking basis
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> > sg_basis;
+
+    //! SG time derivative vector (may be null)
+    Teuchos::RCP<const EpetraExt::BlockVector> sg_xdot;
+
+    //! SG solution vector
+    Teuchos::RCP<const EpetraExt::BlockVector> sg_x;
+
+    //! SG residual vector
+    Teuchos::RCP<EpetraExt::BlockVector> sg_f;
+
+    //! Time derivative vector (may be null)
+    std::vector< Teuchos::RCP<Epetra_Vector> > xdot;
+
+    //! Solution vector
+    std::vector< Teuchos::RCP<Epetra_Vector> > x;
+
+    //! Residual vector
+    std::vector< Teuchos::RCP<Epetra_Vector> > f;
+
+  };
+
+#endif // SG_ACTIVE
+
+#if SGFAD_ACTIVE
+
+  //! Fill operator for Jacobian
+  class SGJacobianOp : 
+    public FEApp::AbstractInitPostOp< SGFadType > {
+  public:
+
+    //! Constructor
+    /*!
+     * Set xdot to Teuchos::null for steady-state problems
+     */
+    SGJacobianOp(
+         const Teuchos::RCP<const Epetra_Map>& base_map,
+	 const Teuchos::RCP<const Epetra_CrsGraph>& base_graph,
+	 const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis,
+	 const Teuchos::RCP<const Stokhos::TripleProduct< Stokhos::OrthogPolyBasis<double> > >& Cijk,
+	 double alpha, double beta,
+	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
+	 const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f,
+	 const Teuchos::RCP<EpetraExt::BlockCrsMatrix>& sg_overlapped_jac);
+
+    //! Destructor
+    virtual ~SGJacobianOp();
+
+    //! Evaulate element init operator
+    virtual void elementInit(
+			 const FEApp::AbstractElement& e,
+			 unsigned int neqn,
+			 std::vector< SGFadType >* elem_xdot,
+			 std::vector< SGFadType >& elem_x);
+
+    //! Evaluate element post operator
+    virtual void elementPost(const FEApp::AbstractElement& e,
+			     unsigned int neqn,
+			     std::vector< SGFadType >& elem_f);
+
+    //! Evaulate node init operator
+    virtual void nodeInit(const FEApp::NodeBC& bc,
+			  unsigned int neqn,
+			  std::vector< SGFadType >* node_xdot,
+			  std::vector< SGFadType >& node_x);
+
+    //! Evaluate node post operator
+    virtual void nodePost(const FEApp::NodeBC& bc,
+			  unsigned int neqn,
+			  std::vector< SGFadType >& node_f);
+
+    //! Finalize fill
+    virtual void finalizeFill();
+
+  private:
+    
+    //! Private to prohibit copying
+    SGJacobianOp(const SGJacobianOp&);
+    
+    //! Private to prohibit copying
+    SGJacobianOp& operator=(const SGJacobianOp&);
+
+  protected:
+
+    //! Number of blocks
+    unsigned int nblock;
+
+    //! Map for base discretization
+    Teuchos::RCP<const Epetra_Map> map;
+
+    //! Graph for base discretization
+    Teuchos::RCP<const Epetra_CrsGraph> graph;
+
+    //! Stochastic Galerkin basis
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> > sg_basis;
+
+    //! Stochastic Galerkin triple product
+    Teuchos::RCP<const Stokhos::TripleProduct< Stokhos::OrthogPolyBasis<double> > > Cijk;
+
+    //! Coefficient of mass matrix
+    double m_coeff;
+
+    //! Coefficient of Jacobian matrix
+    double j_coeff;
+
+    //! SG time derivative vector (may be null)
+    Teuchos::RCP<const EpetraExt::BlockVector> sg_xdot;
+
+    //! SG solution vector
+    Teuchos::RCP<const EpetraExt::BlockVector> sg_x;
+
+    //! SG residual vector
+    Teuchos::RCP<EpetraExt::BlockVector> sg_f;
+
+    //! SG Jacobian matrix
+    Teuchos::RCP<EpetraExt::BlockCrsMatrix> sg_jac;
+
+    //! Time derivative vector (may be null)
+    std::vector< Teuchos::RCP<Epetra_Vector> > xdot;
+
+    //! Solution vector
+    std::vector< Teuchos::RCP<Epetra_Vector> > x;
+
+    //! Residual vector
+    std::vector< Teuchos::RCP<Epetra_Vector> > f;
+
+    //! Jacobian matrix
+    std::vector< Teuchos::RCP<Epetra_CrsMatrix> > jac;
+
+    //! Temporary Jacobian matrix
+    Teuchos::RCP<Epetra_CrsMatrix> tmp_jac;
+
+  };
+
+#endif // SGFAD_ACTIVE
 
 }
 

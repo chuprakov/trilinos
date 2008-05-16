@@ -74,6 +74,9 @@ namespace FEApp {
 			  unsigned int neqn,
 			  std::vector<ScalarT>& node_f) = 0;
 
+    //! Finalize fill
+    virtual void finalizeFill() = 0;
+
   private:
     
     //! Private to prohibit copying

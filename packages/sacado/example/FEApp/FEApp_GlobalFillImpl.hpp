@@ -124,4 +124,7 @@ computeGlobalFill(FEApp::AbstractInitPostOp<ScalarT>& initPostOp)
     
   }
 
+  // Finalize fill
+  initPostOp.finalizeFill();
+
 }

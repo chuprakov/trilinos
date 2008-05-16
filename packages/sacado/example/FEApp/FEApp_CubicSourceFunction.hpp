@@ -75,8 +75,10 @@ namespace FEApp {
     virtual void
     evaluate(const std::vector<ScalarT>& solution,
 	     std::vector<ScalarT>& value) const {
-      for (unsigned int i=0; i<solution.size(); i++)
+      for (unsigned int i=0; i<solution.size(); i++) {
 	value[i] = alpha*solution[i]*solution[i]*solution[i];
+      }
+      
     }
 
     //! Set nonlinear factor

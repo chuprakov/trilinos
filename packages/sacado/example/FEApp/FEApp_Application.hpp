@@ -52,6 +52,17 @@
 #include "Sacado_ScalarParameterLibrary.hpp"
 #include "Sacado_ScalarParameterVector.hpp"
 
+#if SG_ACTIVE
+#include "EpetraExt_BlockVector.h"
+#include "EpetraExt_BlockCrsMatrix.h"
+#include "Stokhos_OrthogPolyBasis.hpp"
+#include "FEApp_BlockDiscretization.hpp"
+#endif
+
+#if SGFAD_ACTIVE
+#include "Stokhos_TripleProduct.hpp"
+#endif
+
 namespace FEApp {
 
   class Application {
@@ -116,6 +127,26 @@ namespace FEApp {
 			      Epetra_MultiVector* JVx,
 			      Epetra_MultiVector* fVp);
 
+    //! Compute global residual for stochastic Galerkin problem
+    /*!
+     * Set xdot to NULL for steady-state problems
+     */
+    void computeGlobalSGResidual(const Epetra_Vector* sg_xdot,
+				 const Epetra_Vector& sg_x,
+				 const Sacado::ScalarParameterVector* p,
+				 Epetra_Vector& sg_f);
+
+   //! Compute global Jacobian for stochastic Galerkin problem
+    /*!
+     * Set xdot to NULL for steady-state problems
+     */
+    void computeGlobalSGJacobian(double alpha, double beta,
+				 const Epetra_Vector* sg_xdot,
+				 const Epetra_Vector& sg_x,
+				 const Sacado::ScalarParameterVector* p,
+				 Epetra_Vector* sg_f,
+				 Epetra_CrsMatrix& sg_jac); 
+
   private:
     
     //! Private to prohibit copying
@@ -164,6 +195,42 @@ namespace FEApp {
 
     //! Parameter library
     Teuchos::RCP<Sacado::ScalarParameterLibrary> paramLib;
+
+    //! Enable stochastic Galerkin discretization
+    bool enable_sg;
+
+#if SG_ACTIVE
+
+    //! Stochastic Galerking basis
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> > sg_basis;
+
+    //! Stochastic Galerkin triple product
+    Teuchos::RCP<const Stokhos::TripleProduct< Stokhos::OrthogPolyBasis<double> > > Cijk;
+
+    //! Stochastic Galerkin discretization
+    Teuchos::RCP<FEApp::BlockDiscretization> sg_disc;
+
+    //! Initial solution vector
+    Teuchos::RCP<EpetraExt::BlockVector> sg_initial_x;
+
+    //! Importer for overlapped data
+    Teuchos::RCP<Epetra_Import> sg_importer;
+
+    //! Exporter for overlapped data
+    Teuchos::RCP<Epetra_Export> sg_exporter;
+
+    //! Overlapped solution vector
+    Teuchos::RCP<EpetraExt::BlockVector> sg_overlapped_x;
+
+    //! Overlapped time derivative vector
+    Teuchos::RCP<EpetraExt::BlockVector> sg_overlapped_xdot;
+
+    //! Overlapped residual vector
+    Teuchos::RCP<EpetraExt::BlockVector> sg_overlapped_f;
+
+    //! Overlapped Jacobian matrix
+    Teuchos::RCP<EpetraExt::BlockCrsMatrix> sg_overlapped_jac;
+#endif
 
   };
 

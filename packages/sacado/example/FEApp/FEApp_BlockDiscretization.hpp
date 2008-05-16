@@ -33,6 +33,9 @@
 #define FEAPP_BLOCKDISCRETIZATION_HPP
 
 #include <vector>
+#include "FEApp_TemplateTypes.hpp"
+
+#if SG_ACTIVE
 
 #include "EpetraExt_MultiMpiComm.h"
 #include "EpetraExt_BlockVector.h"
@@ -41,6 +44,8 @@
 
 #include "FEApp_AbstractDiscretization.hpp"
 
+#include "Stokhos_OrthogPolyBasis.hpp"
+
 namespace FEApp {
 
   class BlockDiscretization : public FEApp::AbstractDiscretization {
@@ -48,8 +53,9 @@ namespace FEApp {
 
     //! Constructor
     BlockDiscretization(
-		 const Teuchos::RCP<const EpetraExt::MultiMpiComm>& globalComm_,
-		 const Teuchos::RCP<const FEApp::AbstractDiscretization>& underlyingDisc_);
+     const Teuchos::RCP<const EpetraExt::MultiMpiComm>& globalComm_,
+     const Teuchos::RCP<const FEApp::AbstractDiscretization>& underlyingDisc_,
+     const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis_);
 
     //! Destructor
     virtual ~BlockDiscretization();
@@ -86,6 +92,14 @@ namespace FEApp {
     //! Get number of nodes per element
     virtual int getNumNodesPerElement() const;
 
+    //! Get Jacobian
+    Teuchos::RCP<EpetraExt::BlockCrsMatrix> 
+    getJacobian();
+
+    //! Get overlap Jacobian
+    Teuchos::RCP<EpetraExt::BlockCrsMatrix> 
+    getOverlapJacobian();
+
 
   private:
 
@@ -103,20 +117,31 @@ namespace FEApp {
     //! Epetra communicator
     Teuchos::RCP<const EpetraExt::MultiMpiComm> globalComm;
 
+    //! Stochastic Galerkin basis
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> > sg_basis;
+
     //! Unknown Map
-    Teuchos::RCP<Epetra_Map> map;
+    Teuchos::RCP<const Epetra_Map> map;
 
     //! Overlapped unknown map
-    Teuchos::RCP<Epetra_Map> overlap_map;
+    Teuchos::RCP<const Epetra_Map> overlap_map;
 
     //! Jacobian matrix graph
-    Teuchos::RCP<Epetra_CrsGraph> graph;
+    Teuchos::RCP<const Epetra_CrsGraph> graph;
 
     //! Overlapped Jacobian matrix graph
-    Teuchos::RCP<Epetra_CrsGraph> overlap_graph;
+    Teuchos::RCP<const Epetra_CrsGraph> overlap_graph;
+
+    //! Jacobian matrix
+    Teuchos::RCP<EpetraExt::BlockCrsMatrix> jac;
+
+    //! Overlapped Jacobian matrix
+    Teuchos::RCP<EpetraExt::BlockCrsMatrix> overlap_jac;
 
   };
 
 }
+
+#endif // SG_ACTIVE
 
 #endif // FEAPP_CZERODISCRETIZATION_HPP

@@ -36,6 +36,7 @@
 #include "Sacado_mpl_vector.hpp"
 
 // Include all of our AD types
+#include "Sacado_MathFunctions.hpp"
 #include "Sacado_Fad_DFad.hpp"
 
 // Typedef AD types to standard names
@@ -45,6 +46,19 @@ typedef Sacado::Fad::DFad<double> FadType;
 // Define which types we are using
 #define REAL_ACTIVE 1
 #define FAD_ACTIVE 1
+
+// Conditionally enable Stokhos stochastic Galerkin expansions
+#ifdef HAVE_SACADO_STOKHOS
+#include "Sacado_PCE_OrthogPoly.hpp"
+#include "Stokhos_HermiteEBasis.hpp"
+typedef Sacado::PCE::OrthogPoly<double> SGType;
+typedef Sacado::Fad::DFad< Sacado::PCE::OrthogPoly<double> > SGFadType;
+#define SG_ACTIVE 1
+#define SGFAD_ACTIVE 1
+#else
+#define SG_ACTIVE 0
+#define SGFAD_ACTIVE 0
+#endif
 
 // Turn on/off explicit template instantiation
 #define SACADO_ETI
@@ -61,7 +75,17 @@ typedef Sacado::mpl::push_back<ValidTypes1, FadType>::type ValidTypes2;
 #else
 typedef ValidTypes1 ValidTypes2;
 #endif
-typedef ValidTypes2 ValidTypes;
+#if SG_ACTIVE
+typedef Sacado::mpl::push_back<ValidTypes2, SGType>::type ValidTypes3;
+#else
+typedef ValidTypes2 ValidTypes3;
+#endif
+#if SGFAD_ACTIVE
+typedef Sacado::mpl::push_back<ValidTypes3, SGFadType>::type ValidTypes4;
+#else
+typedef ValidTypes3 ValidTypes4;
+#endif
+typedef ValidTypes4 ValidTypes;
 
 // Define macro for explicit template instantiation
 #if REAL_ACTIVE
@@ -76,8 +100,22 @@ typedef ValidTypes2 ValidTypes;
 #define INSTANTIATE_TEMPLATE_CLASS_FAD(name)
 #endif
 
+#if SG_ACTIVE
+#define INSTANTIATE_TEMPLATE_CLASS_SG(name) template class name<SGType>;
+#else
+#define INSTANTIATE_TEMPLATE_CLASS_SG(name)
+#endif
+
+#if SGFAD_ACTIVE
+#define INSTANTIATE_TEMPLATE_CLASS_SGFAD(name) template class name<SGFadType>;
+#else
+#define INSTANTIATE_TEMPLATE_CLASS_SGFAD(name)
+#endif
+
 #define INSTANTIATE_TEMPLATE_CLASS(name) \
   INSTANTIATE_TEMPLATE_CLASS_REAL(name)	 \
-  INSTANTIATE_TEMPLATE_CLASS_FAD(name)
+  INSTANTIATE_TEMPLATE_CLASS_FAD(name)   \
+  INSTANTIATE_TEMPLATE_CLASS_SG(name)	 \
+  INSTANTIATE_TEMPLATE_CLASS_SGFAD(name)
 
 #endif // FEAPP_TEMPLATETYPES_HPP
