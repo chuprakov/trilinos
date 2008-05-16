@@ -368,8 +368,8 @@ void Mesh::change_entity_owner( Entity & e , unsigned owner_rank )
 
 void Mesh::destroy_entity( Entity * e )
 {
-  while ( ! e->m_connect.empty() ) {
-    destroy_connection( * e , * e->m_connect.back().entity() );
+  while ( ! e->m_relation.empty() ) {
+    destroy_relation( * e , * e->m_relation.back().entity() );
   }
 
   remove_entity( e->m_kernel , e->m_kernel_ord );

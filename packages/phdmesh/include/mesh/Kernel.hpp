@@ -29,13 +29,17 @@
 
 //----------------------------------------------------------------------
 
+#include <iosfwd>
+
 #include <util/Setv.hpp>
+#include <mesh/Types.hpp>
 #include <mesh/Part.hpp>
-#include <mesh/Field.hpp>
 
 //----------------------------------------------------------------------
 
 namespace phdmesh {
+
+std::ostream & operator << ( std::ostream & , const Kernel & );
 
 /** A given PartSet, i.e. the intersection of a set of parts,
  *  has one or more associated Kernels.  Each kernel is identified
@@ -99,54 +103,6 @@ public:
   iterator end()   const { return m_entities + m_size ; }
 
   //--------------------------------
-  /** Check if compatible, if not and required then throw an exception */
-  bool valid( const FieldBase & ,
-              unsigned = 0 ,
-              const char * required_by = NULL ) const ;
-
-  /** Pointer to field value, null if valid but does not exist.
-   *  No validity checking for best performance.
-   */
-  template< class field_type >
-  typename field_type::data_type * data( const field_type & f ) const
-    {
-      const DataMap & pd = m_field_map[ f.schema_ordinal() ];
-      unsigned char * const ptr = pd.m_size
-        ? reinterpret_cast<unsigned char*>( m_entities ) + pd.m_base
-        : NULL ;
-      return reinterpret_cast<typename field_type::data_type *>( ptr );
-    }
-
-  /** Pointer to offset field value, null if valid but does not exist.
-   *  No validity checking for best performance.
-   */
-  template< class field_type >
-  typename field_type::data_type *
-    data( const field_type & f , unsigned i ) const
-    {
-      const DataMap & pd = m_field_map[ f.schema_ordinal() ];
-      unsigned char * const ptr = pd.m_size
-        ? reinterpret_cast<unsigned char*>( m_entities )
-          + pd.m_base + pd.m_size * i 
-        : NULL ;
-      return reinterpret_cast<typename field_type::data_type *>( ptr );
-    }
-
-  template< class field_type >
-  typename field_type::Dimension data_dim( const field_type & f ) const
-    {
-      const DataMap & pd = m_field_map[ f.schema_ordinal() ];
-      return typename
-        field_type::Dimension( pd.m_stride , "phdmesh::Kernel::data_dim" );
-    }
-
-  /** Per-entity data size for a field.
-   *  No validity checking for best performance.
-   */
-  unsigned data_size( const FieldBase & f ) const
-    { return m_field_map[ f.schema_ordinal() ].m_size ; }
-
-  //--------------------------------
 
   std::ostream & print( std::ostream & , const std::string & ) const ;
 
@@ -173,6 +129,24 @@ private:
                            Kernel & k_src , unsigned i_src );
 
   static void zero_fields( Kernel & k_dst , unsigned i_dst );
+
+  template< class field_type >
+  friend
+  typename field_type::Dimension
+  field_dimension( const field_type & f , const Kernel & k );
+
+  template< class field_type >
+  friend
+  typename field_type::data_type *
+  field_data( const field_type & f , const Kernel & k );
+
+  template< class field_type >
+  friend
+  typename field_type::data_type *
+  field_data( const field_type & f , const Kernel & k , unsigned i );
+
+  friend
+  unsigned field_data_size( const FieldBase & f , const Kernel & k );
 };
 
 /** The set of mesh kernels is dynamic and potentially large. */

@@ -34,6 +34,7 @@
 
 #include <mesh/EntityType.hpp>
 #include <mesh/FieldTraits.hpp>
+#include <mesh/FieldData.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
@@ -134,20 +135,20 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   Entity & node_6 = M.declare_entity( node_key_6 , add_parts , p_rank );
   Entity & node_7 = M.declare_entity( node_key_7 , add_parts , p_rank );
 
-  // Declare element <-> node connections
+  // Declare element <-> node relations
   // These are required to have unique identifiers
   // by providing the 'method' argument.
   // If non-unique then an exception is thrown that includes
   // the text contained in the 'method' string.
 
-  M.declare_connection( elem , node_0 , 0 , method );
-  M.declare_connection( elem , node_1 , 1 , method );
-  M.declare_connection( elem , node_2 , 2 , method );
-  M.declare_connection( elem , node_3 , 3 , method );
-  M.declare_connection( elem , node_4 , 4 , method );
-  M.declare_connection( elem , node_5 , 5 , method );
-  M.declare_connection( elem , node_6 , 6 , method );
-  M.declare_connection( elem , node_7 , 7 , method );
+  M.declare_relation( elem , node_0 , 0 , method );
+  M.declare_relation( elem , node_1 , 1 , method );
+  M.declare_relation( elem , node_2 , 2 , method );
+  M.declare_relation( elem , node_3 , 3 , method );
+  M.declare_relation( elem , node_4 , 4 , method );
+  M.declare_relation( elem , node_5 , 5 , method );
+  M.declare_relation( elem , node_6 , 6 , method );
+  M.declare_relation( elem , node_7 , 7 , method );
 
   // Declare the face entity:
 
@@ -155,21 +156,21 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   
   Entity & face = M.declare_entity( face_key , add_parts , p_rank );
 
-  // Declare element <-> face connection
+  // Declare element <-> face relation
 
-  M.declare_connection( elem , face , 0 , method );
+  M.declare_relation( elem , face , 0 , method );
 
-  // Declare face <-> node connections
+  // Declare face <-> node relations
 
   StaticAssert< Hex::side<0>::vertex<0>::ordinal == 0 >::ok();
   StaticAssert< Hex::side<0>::vertex<1>::ordinal == 1 >::ok();
   StaticAssert< Hex::side<0>::vertex<2>::ordinal == 5 >::ok();
   StaticAssert< Hex::side<0>::vertex<3>::ordinal == 4 >::ok();
 
-  M.declare_connection( face , node_0 , 0 , method );
-  M.declare_connection( face , node_1 , 1 , method );
-  M.declare_connection( face , node_5 , 2 , method );
-  M.declare_connection( face , node_4 , 3 , method );
+  M.declare_relation( face , node_0 , 0 , method );
+  M.declare_relation( face , node_1 , 1 , method );
+  M.declare_relation( face , node_5 , 2 , method );
+  M.declare_relation( face , node_4 , 3 , method );
 
   // Update the nodes on the face to also be members of the face part.
 
@@ -180,14 +181,23 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   // Set node coordinates:
 
-  double * const node_0_coord = node_0.data( node_coordinates );
-  double * const node_1_coord = node_1.data( node_coordinates );
-  double * const node_2_coord = node_2.data( node_coordinates );
-  double * const node_3_coord = node_3.data( node_coordinates );
-  double * const node_4_coord = node_4.data( node_coordinates );
-  double * const node_5_coord = node_5.data( node_coordinates );
-  double * const node_6_coord = node_6.data( node_coordinates );
-  double * const node_7_coord = node_7.data( node_coordinates );
+  field_data_valid( node_coordinates , node_0 , method );
+  field_data_valid( node_coordinates , node_1 , method );
+  field_data_valid( node_coordinates , node_2 , method );
+  field_data_valid( node_coordinates , node_3 , method );
+  field_data_valid( node_coordinates , node_4 , method );
+  field_data_valid( node_coordinates , node_5 , method );
+  field_data_valid( node_coordinates , node_6 , method );
+  field_data_valid( node_coordinates , node_7 , method );
+
+  double * const node_0_coord = field_data( node_coordinates , node_0 );
+  double * const node_1_coord = field_data( node_coordinates , node_1 );
+  double * const node_2_coord = field_data( node_coordinates , node_2 );
+  double * const node_3_coord = field_data( node_coordinates , node_3 );
+  double * const node_4_coord = field_data( node_coordinates , node_4 );
+  double * const node_5_coord = field_data( node_coordinates , node_5 );
+  double * const node_6_coord = field_data( node_coordinates , node_6 );
+  double * const node_7_coord = field_data( node_coordinates , node_7 );
 
   node_0_coord[0] = 0 ; node_0_coord[1] = 0 ; node_0_coord[2] = p_rank ;
   node_1_coord[0] = 1 ; node_1_coord[1] = 0 ; node_1_coord[2] = p_rank ;

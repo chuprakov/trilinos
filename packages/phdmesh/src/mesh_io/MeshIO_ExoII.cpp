@@ -38,6 +38,7 @@
 #include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
+#include <mesh/FieldData.hpp>
 #include <mesh/Comm.hpp>
 
 #include <mesh_io/ExoII.hpp>
@@ -470,15 +471,15 @@ void assign_contiguous_indices(
 
     const unsigned p = (unsigned)( p_map * id );
     CommBuffer & buf = all.recv_buffer( p );
-    entity_id_type data[2] ;
-    buf.unpack<entity_id_type>( data , 2 );
+    entity_id_type tmp[2] ;
+    buf.unpack<entity_id_type>( tmp , 2 );
 
-    int * const entity_index = i->second->data(f);
+    int * const entity_index = field_data( f , * i->second );
 
-    entity_index[0] = data[0] ; // global index
+    entity_index[0] = tmp[0] ; // global index
     entity_index[1] = ++local_index ; // local index
 
-    if ( id != data[1] ) {
+    if ( id != tmp[1] ) {
       std::ostringstream msg ;
       msg << method << " FAILED" ;
       throw std::runtime_error(msg.str());
@@ -740,7 +741,7 @@ EntitySet::const_iterator
     for ( bool flag = true ; flag && i != i_end ; ) {
       const Entity * const e = & *i ;
       if ( e->kernel().has_superset( part ) ) {
-        flag = e->data(field_index)[0] < index_begin_chunk ;
+        flag = field_data( field_index , *e )[0] < index_begin_chunk ;
       }
       if ( flag ) { ++i ; }
     }
@@ -748,7 +749,7 @@ EntitySet::const_iterator
     for ( bool flag = true ; flag && i != i_end ; ) {
       const Entity * const e = & *i ;
       if ( e->kernel().has_superset( part ) ) {
-        if ( flag = e->data(field_index)[0] < index_end_chunk ) {
+        if ( flag = field_data( field_index , *e )[0] < index_end_chunk ) {
           send_entities.push_back( e );
         }
       }
@@ -826,9 +827,9 @@ void WriteNodeIndexCoord::operator()(
           i = send.begin() ; i != send.end() ; ++i ) {
       const Entity & node = **i ;
       int ids[2] ;
-      ids[0] = * node.data( SF.m_field_index );
+      ids[0] = * field_data( SF.m_field_index , node );
       ids[1] =   node.identifier();
-      const double * const xyz = node.data( SF.m_field_node_coord );
+      const double * const xyz = field_data( SF.m_field_node_coord , node );
 
       buf.pack<int>( ids , 2 );
       buf.pack<double>( xyz , 3 );
@@ -879,7 +880,7 @@ void WriteNodeIndexCoord::operator()(
 
 //----------------------------------------------------------------------
 
-struct WriteElemIndexConnect {
+struct WriteElemIndexRelation {
   FileOutput & output ;
   const FilePart & part ;
   int          index_part ;
@@ -890,9 +891,9 @@ struct WriteElemIndexConnect {
 
   std::vector<int> send_data ;
   std::vector<int> identifiers ;
-  std::vector<int> connectivity ;
+  std::vector<int> relationivity ;
 
-  WriteElemIndexConnect( FileOutput & ,
+  WriteElemIndexRelation( FileOutput & ,
                          const FilePart & ,
                          int ,
                          unsigned max_buffer );
@@ -903,7 +904,7 @@ struct WriteElemIndexConnect {
                    const std::vector<const Entity *> & );
 };
 
-WriteElemIndexConnect::WriteElemIndexConnect(
+WriteElemIndexRelation::WriteElemIndexRelation(
   FileOutput & arg_output ,
   const FilePart   & arg_part ,
   int          arg_index_part ,
@@ -911,7 +912,7 @@ WriteElemIndexConnect::WriteElemIndexConnect(
   : output( arg_output ), part( arg_part ),
     index_part( arg_index_part ), maximum( 0 ),
     writer( false ), exo_error( 0 ), exo_func( NULL ),
-    send_data(), identifiers(), connectivity()
+    send_data(), identifiers(), relationivity()
 {
   const int i_zero = 0 ;
   const Mesh       & M  = output.m_mesh ;
@@ -930,7 +931,7 @@ WriteElemIndexConnect::WriteElemIndexConnect(
   writer = p_rank == p_write ;
 }
 
-void WriteElemIndexConnect::operator()(
+void WriteElemIndexRelation::operator()(
   const int index_begin ,
   const int index_end ,
   const std::vector<const Entity *> & send )
@@ -956,14 +957,14 @@ void WriteElemIndexConnect::operator()(
           i = send.begin() ; i != send.end() ; ++i ) {
       const Entity & elem = **i ;
 
-      send_data[0] = * elem.data( SF.m_field_index );
+      send_data[0] = * field_data( SF.m_field_index , elem );
       send_data[1] =   elem.identifier();
 
-      ConnectSpan con = elem.connections();
+      RelationSpan con = elem.relations();
 
       for ( unsigned j = 0 ; j < num_nodes_per_elem ; ++j , ++con ) {
         Entity & node = * con->entity();
-        send_data[j+2] = * node.data( SF.m_field_index );
+        send_data[j+2] = * field_data( SF.m_field_index , node );
       }
 
       buf.pack<int>( & send_data[0] , send_data_num );
@@ -979,8 +980,8 @@ void WriteElemIndexConnect::operator()(
     const unsigned n = number ;
 
     if ( identifiers.size() < n ) { identifiers.resize( n ); }
-    if ( connectivity.size() < n * part.m_number_nodes ) {
-      connectivity.resize( n * part.m_number_nodes );
+    if ( relationivity.size() < n * part.m_number_nodes ) {
+      relationivity.resize( n * part.m_number_nodes );
     }
 
     for ( unsigned p = 0 ; p < p_size ; ++p ) {
@@ -997,7 +998,7 @@ void WriteElemIndexConnect::operator()(
 
         identifiers[offset] = send_data[1] ;
 
-        int * const node_id = & connectivity[ offset * num_nodes_per_elem ];
+        int * const node_id = & relationivity[ offset * num_nodes_per_elem ];
 
         for ( unsigned j = 0 ; j < num_nodes_per_elem ; ++j ) {
           node_id[j] = send_data[j+2] ;
@@ -1017,7 +1018,7 @@ void WriteElemIndexConnect::operator()(
       exo_func = "ne_put_n_elem_conn" ;
       exo_error =
         ne_put_n_elem_conn( exo_id , block_id ,
-                            index_begin_part , number , & connectivity[0] );
+                            index_begin_part , number , & relationivity[0] );
     }
   }
 }
@@ -1483,7 +1484,7 @@ FileOutput::FileOutput(
   }
 
   //--------------------------------------------------------------------
-  // Write element block identifiers and connectivity,
+  // Write element block identifiers and relationivity,
   // element indices are partitioned by element block.
 
   if ( ! exo_error ) {
@@ -1497,7 +1498,7 @@ FileOutput::FileOutput(
 
       const int index_end = index + global_num_elem_in_block[j] ;
 
-      WriteElemIndexConnect work( *this, * elem_parts[j], index, m_max_buffer );
+      WriteElemIndexRelation work( *this, * elem_parts[j], index, m_max_buffer );
 
       i = chunk( i , es.end() , owns_part , FS.m_field_index ,
                  index , index_end , work );
@@ -1537,7 +1538,7 @@ void pack_entity_proc( const std::vector<const Entity *> & send ,
         i = send.begin() ; i != send.end() ; ++i ) {
     const Entity & e = **i ;
 
-    item_buffer[0] = * e.data( f_index );
+    item_buffer[0] = * field_data( f_index , e );
     item_buffer[1] =   e.owner_rank();
 
     buf.pack<double>( item_buffer , 2 );
@@ -1557,8 +1558,8 @@ void pack_entity_data( const std::vector<const Entity *> & send ,
         i = send.begin() ; i != send.end() ; ++i ) {
     const Entity & e = **i ;
 
-    item_buffer[0] = * e.data( f_index );
-    item_buffer[1] = reinterpret_cast<T*>( e.data( f_data ) )[ offset ] ;
+    item_buffer[0] = * field_data( f_index , e );
+    item_buffer[1] = reinterpret_cast<T*>( field_data(f_data,e) )[ offset ] ;
 
     buf.pack<double>( item_buffer , 2 );
   }
@@ -1922,7 +1923,7 @@ void FileOutput::write( double time_value )
           // Skip elements in this block
           for ( bool flag = true ; flag && i != es.end() ; ) {
             if ( i->kernel().has_superset( owns_part ) ) {
-              flag = i->data(FS.m_field_index)[0] < index_end ;
+              flag = field_data( FS.m_field_index , *i )[0] < index_end ;
             }
             if ( flag ) { ++i ; }
           }
@@ -2053,11 +2054,11 @@ FileSchema::FileSchema(
 
   if ( ! exo_error ) {
 
-    std::vector<exo_elem_block_data> data( num_elem_blk );
+    std::vector<exo_elem_block_data> block_data( num_elem_blk );
 
     {
-      char * begin = reinterpret_cast<char *>( & data[0] );
-      char * end   = reinterpret_cast<char *>( & data[ num_elem_blk ] );
+      char * begin = reinterpret_cast<char *>( & block_data[0] );
+      char * end   = reinterpret_cast<char *>( & block_data[ num_elem_blk ] );
       const unsigned n = end - begin ;
 
       memset( begin , 0 , n );
@@ -2077,8 +2078,8 @@ FileSchema::FileSchema(
       if ( ! exo_error ) {
 
         for ( int i = 0 ; i < num_elem_blk ; ++i ) {
-          data[i].block_id = ids[i] ;
-          names[i] = data[i].name ;
+          block_data[i].block_id = ids[i] ;
+          names[i] = block_data[i].name ;
         }
 
         exo_func = "ex_get_names" ;
@@ -2086,7 +2087,7 @@ FileSchema::FileSchema(
 
         if ( 0 < exo_error ) { // Names are not defined
           for ( int i = 0 ; i < num_elem_blk ; ++i ) {
-            sprintf( data[i].name , "block_%d" , ids[i] );
+            sprintf( block_data[i].name , "block_%d" , ids[i] );
           }
           exo_error = 0 ;
         }
@@ -2097,38 +2098,38 @@ FileSchema::FileSchema(
 
         exo_func = "ex_get_elem_block" ;
         exo_error = ex_get_elem_block( exo_id , ids[i] ,
-                                       data[i].type ,
+                                       block_data[i].type ,
                                        & num_elem_this_blk ,
-                                       & data[i].num_nodes ,
-                                       & data[i].num_attr );
+                                       & block_data[i].num_nodes ,
+                                       & block_data[i].num_attr );
 
         if ( ! exo_error ) {
           for ( unsigned j = 0 ; j < MAX_NUM_ATTR ; ++j ) {
-            names[i] = data[i].attr[j] ;
+            names[i] = block_data[i].attr[j] ;
           }
           exo_func = "ex_get_elem_attr_names" ;
           exo_error = ex_get_elem_attr_names( exo_id , ids[i] , & names[0] );
 
           if ( 0 < exo_error ) {
             for ( unsigned j = 0 ; j < MAX_NUM_ATTR ; ++j ) {
-              data[i].attr[j][0] = 0 ;
+              block_data[i].attr[j][0] = 0 ;
             }
             exo_error = 0 ;
           }
         }
       }
 
-      data[0].error = exo_error ;
+      block_data[0].error = exo_error ;
     }
 
     {
-      char * begin = reinterpret_cast<char *>( & data[0] );
-      char * end   = reinterpret_cast<char *>( & data[ num_elem_blk ] );
+      char * begin = reinterpret_cast<char *>( & block_data[0] );
+      char * end   = reinterpret_cast<char *>( & block_data[ num_elem_blk ] );
       const unsigned n = end - begin ;
 
       broadcast( p_comm , p_read , begin , n );
 
-      exo_error = data[0].error ;
+      exo_error = block_data[0].error ;
     }
 
     if ( ! exo_error ) {
@@ -2136,13 +2137,13 @@ FileSchema::FileSchema(
 
         const FilePart * fp =
           internal_declare_part( m_schema ,
-                                 std::string( data[i].name ) ,
-                                 data[i].block_id ,
+                                 std::string( block_data[i].name ) ,
+                                 block_data[i].block_id ,
                                  Element ,
-                                 element_type( data[i].type ) ,
+                                 element_type( block_data[i].type ) ,
                                  m_dimension ,
-                                 data[i].num_nodes ,
-                                 data[i].num_attr ,
+                                 block_data[i].num_nodes ,
+                                 block_data[i].num_attr ,
                                  m_field_elem_attr );
 
         m_parts[ Element ].push_back( fp );
@@ -2423,7 +2424,7 @@ FileInput::FileInput(
   }
 
   //--------------------------------------------------------------------
-  // Read and scatter element identifiers and connectivity.
+  // Read and scatter element identifiers and relationivity.
   // Element data is partitioned by element block.
   // Determine size of element data and upper bound size of
   // the needed node map.
@@ -2461,14 +2462,14 @@ FileInput::FileInput(
   if ( ! exo_error ) {
 
     std::vector<int> data ;
-    std::vector<int> connect ;
+    std::vector<int> relation ;
     std::vector<int> identifiers ;
     std::vector<unsigned> send_size ;
 
     if ( reader ) { send_size.resize( p_size ); }
 
     // Load element identifiers and
-    // connectivity node indices (not identifiers)
+    // relationivity node indices (not identifiers)
 
     int i = 0 ;
 
@@ -2491,8 +2492,8 @@ FileInput::FileInput(
       }
 
       if ( reader ) {
-        if ( connect.size() < num_item_per_chunk * part.m_number_nodes ) {
-          connect.resize( num_item_per_chunk * part.m_number_nodes );
+        if ( relation.size() < num_item_per_chunk * part.m_number_nodes ) {
+          relation.resize( num_item_per_chunk * part.m_number_nodes );
         }
         if ( has_elem_identifiers && identifiers.size() < num_item_per_chunk ) {
           identifiers.resize( num_item_per_chunk );
@@ -2528,7 +2529,7 @@ FileInput::FileInput(
               index_processor_count( p, p_size, i, number, num_elems_global );
           }
 
-          // Read a 'chunk' worth of element identifiers and connectivity
+          // Read a 'chunk' worth of element identifiers and relationivity
           // Pack into the 'data' array for scattering.
 
           if ( 0 == exo_error ) {
@@ -2536,7 +2537,7 @@ FileInput::FileInput(
             exo_func = "ne_get_n_elem_conn" ;
             exo_error = ne_get_n_elem_conn( m_exo_id , part.m_identifier ,
                                             index_beg_part , number ,
-                                            & connect[0] );
+                                            & relation[0] );
           }
 
           if ( 0 == exo_error && has_elem_identifiers ) {
@@ -2550,7 +2551,7 @@ FileInput::FileInput(
 
           for ( int k = 0 ; k < number ; ++k ) {
             int * const elem_data = & data[ k * num_value ];
-            const int * const conn_data = & connect[ k * part.m_number_nodes ];
+            const int * const conn_data = & relation[ k * part.m_number_nodes ];
             elem_data[0] = index_beg + k ;      // Element index
             elem_data[1] = has_elem_identifiers
                            ? identifiers[k] : index_beg + k ; // Identifier
@@ -2743,7 +2744,7 @@ FileInput::FileInput(
 
         Entity & elem = M.declare_entity(elem_key,entity_parts,(int)p_rank);
 
-        elem.data( FS.m_field_index )[0] = elem_index ;
+        field_data( FS.m_field_index , elem )[0] = elem_index ;
 
         for ( int j = 0 ; j < part.m_number_nodes ; ++j ) {
           const int node_index = elem_data_local[ size_elem_data_local++ ];
@@ -2770,11 +2771,11 @@ FileInput::FileInput(
 
           Entity & node = M.declare_entity(node_key,entity_parts,(int)p_rank);
 
-          M.declare_connection( elem , node , j , method );
+          M.declare_relation( elem , node , j , method );
 
-          node.data( FS.m_field_index )[0] = node_index ;
+          field_data( FS.m_field_index , node )[0] = node_index ;
 
-          double * const node_coord = node.data( FS.m_field_node_coord );
+          double * const node_coord = field_data(FS.m_field_node_coord, node);
           node_coord[0] = iter_node_data->coord[0] ;
           node_coord[1] = iter_node_data->coord[1] ;
           node_coord[2] = iter_node_data->coord[2] ;

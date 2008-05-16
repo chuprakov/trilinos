@@ -82,7 +82,7 @@ public:
                       entity_key_type & entity_key ,
                       unsigned        & owner_rank ,
                       std::vector<Part*> & parts ,
-                      std::vector<Connect> & connections ,
+                      std::vector<Relation> & relations ,
                       std::vector<unsigned> & send_destinations ) const ;
 
   /** Pack an entity's field values into a buffer */

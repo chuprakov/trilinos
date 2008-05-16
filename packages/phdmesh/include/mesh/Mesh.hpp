@@ -105,30 +105,30 @@ public:
 
   void change_entity_owner( Entity & , unsigned );
 
-  /** Declare a connection and its converse between entities in the same mesh.
+  /** Declare a relation and its converse between entities in the same mesh.
    *  The greater entity type 'uses' the lesser entity type.
    *  If 'required_unique_by' is set and declaration is non-unique
    *  then throws an error with the message.
    */
-  void declare_connection( Entity & ,
+  void declare_relation( Entity & ,
                            Entity & ,
                            const unsigned identifier ,
                            const char * required_unique_by = NULL );
 
-  void declare_connection( Entity & , const std::vector<Connect> & ,
+  void declare_relation( Entity & , const std::vector<Relation> & ,
                            const char * required_unique_by = NULL );
 
-  /** Remove all connections between two entities. */
-  void destroy_connection( Entity & , Entity & );
+  /** Remove all relations between two entities. */
+  void destroy_relation( Entity & , Entity & );
 
   /** Destroy an entity */
   void destroy_entity( Entity * );
 
   //------------------------------------
-  /** Symmetric parallel connections for shared mesh entities.  */
+  /** Symmetric parallel relations for shared mesh entities.  */
   const EntityProcSet & shares() const { return m_shares_all ; }
 
-  /** Asymmetric parallel connections for owner-to-aura mesh entities.
+  /** Asymmetric parallel relations for owner-to-aura mesh entities.
    *  Both the domain and the range are fully ordered.
    */
   const EntityProcSet & aura_domain() const { return m_aura_domain ; }

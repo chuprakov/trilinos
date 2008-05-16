@@ -35,6 +35,7 @@
 #include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
+#include <mesh/FieldData.hpp>
 #include <mesh/Comm.hpp>
 
 #include "Gears.hpp"
@@ -171,10 +172,10 @@ Entity * Gear::create_node(
 
   Entity & node = m_mesh->declare_entity( entity_key(Node,id), parts, p_owner);
 
-  double * const gear_data    = node.data( m_gear_coord );
-  double * const model_data   = node.data( m_model_coord );
-  double * const current_data = node.data( m_current_coord );
-  double * const disp_data    = node.data( m_displacement );
+  double * const gear_data    = field_data( m_gear_coord , node );
+  double * const model_data   = field_data( m_model_coord , node );
+  double * const current_data = field_data( m_current_coord , node );
+  double * const disp_data    = field_data( m_displacement , node );
 
   gear_data[0] = radius ;
   gear_data[1] = angle ;
@@ -272,7 +273,7 @@ void Gear::mesh( Mesh & M )
           double c[3] = { 0 , 0 , 0 };
 
           for ( unsigned j = 0 ; j < 8 ; ++j ) {
-            double * const coord_data = node[j]->data( m_model_coord );
+            double * const coord_data = field_data( m_model_coord , *node[j] );
             c[0] += coord_data[0] ;
             c[1] += coord_data[1] ;
             c[2] += coord_data[2] ;
@@ -299,7 +300,7 @@ void Gear::mesh( Mesh & M )
             M.declare_entity( entity_key(Element,elem_id),elem_parts,p_rank);
 
           for ( unsigned j = 0 ; j < 8 ; ++j ) {
-            M.declare_connection( elem , * node[j] , j );
+            M.declare_relation( elem , * node[j] , j );
           }
         }
       }
@@ -339,12 +340,12 @@ void Gear::mesh( Mesh & M )
             M.declare_entity(entity_key(Face,face_id), face_parts, p_rank);
 
           for ( unsigned j = 0 ; j < 4 ; ++j ) {
-            M.declare_connection( face , * node[j] , j );
+            M.declare_relation( face , * node[j] , j );
           }
 
           Entity & elem = * M.get_entity(entity_key(Element,elem_id),method);
 
-          M.declare_connection( elem , face , face_ord );
+          M.declare_relation( elem , face , face_ord );
         }
       }
     }
@@ -365,10 +366,10 @@ void Gear::turn( double turn_angle ) const
     Kernel & k = *ik ;
     if ( k.has_superset( m_gear ) ) {
       const unsigned n = k.size();
-      double * const kernel_gear_data    = k.data( m_gear_coord );
-      double * const kernel_model_data   = k.data( m_model_coord );
-      double * const kernel_current_data = k.data( m_current_coord );
-      double * const kernel_disp_data    = k.data( m_displacement );
+      double * const kernel_gear_data    = field_data( m_gear_coord , k );
+      double * const kernel_model_data   = field_data( m_model_coord , k );
+      double * const kernel_current_data = field_data( m_current_coord , k );
+      double * const kernel_disp_data    = field_data( m_displacement , k );
 
       for ( unsigned i = 0 ; i < n ; ++i ) {
         double * const gear_data    = kernel_gear_data    + i * Length ;
@@ -400,9 +401,9 @@ void gather( typename FieldType::data_type * dst ,
              const Entity & src ,
              const FieldType & field )
 {
-  ConnectSpan con = src.connections( Node );
+  RelationSpan con = src.relations( Node );
   for ( unsigned n = 0 ; n < NC ; ++n , ++con , dst += NV ) {
-    Copy<NV>( dst , con->entity()->data( field ) );
+    Copy<NV>( dst , field_data( field , * con->entity() ) );
   }
 }
 
@@ -424,7 +425,7 @@ void Gear::element_update() const
 
       const unsigned number = k.size();
 
-      double * const kernel_elem_data = k.data( m_elem_value );
+      double * const kernel_elem_data = field_data( m_elem_value , k );
 
       for ( unsigned j = 0 ; j < number ; ++j ) {
 

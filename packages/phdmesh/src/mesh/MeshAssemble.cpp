@@ -27,12 +27,14 @@
 #include <stddef.h>
 #include <util/TPI.hpp>
 #include <util/Basics.hpp>
+
 #include <mesh/Assemble.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Kernel.hpp>
 #include <mesh/Entity.hpp>
+#include <mesh/FieldData.hpp>
 
 namespace phdmesh {
 
@@ -104,24 +106,24 @@ void AssembleTask::work(TPI::ThreadPool pool)
 
       const FieldBase & dst_field = assemble.dst_field();
 
-      const unsigned data_size = k->data_size( dst_field );
+      const unsigned size = field_data_size( dst_field , *k );
 
-      if ( data_size ) { // Exists on this kernel
+      if ( size ) { // Exists on this kernel
 
         const FieldBase & src_field = assemble.src_field();
         const unsigned    src_type  = assemble.src_type();
 
-        unsigned char * dst_ptr = (unsigned char *) k->data( dst_field );
+        unsigned char * dst_ptr = (unsigned char *) field_data(dst_field,*k);
 
         const Kernel::iterator ie_end = k->end();
               Kernel::iterator ie     = k->begin();
 
-        for ( ; ie_end != ie ; ++ie , dst_ptr += data_size ) {
+        for ( ; ie_end != ie ; ++ie , dst_ptr += size ) {
 
-          for ( ConnectSpan con = (*ie)->connections( src_type );
+          for ( RelationSpan con = (*ie)->relations( src_type );
                 con ; ++con ) {
             const unsigned src_id  = con->identifier();
-            void * const   src_ptr = con->entity()->data(src_field);
+            void * const   src_ptr = field_data( src_field, * con->entity() );
             assemble( dst_ptr , src_ptr , src_id );
           }
         }

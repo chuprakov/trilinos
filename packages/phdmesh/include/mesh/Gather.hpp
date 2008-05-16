@@ -37,22 +37,22 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-template<unsigned NValue, unsigned NConnect, typename T, unsigned NDim>
+template<unsigned NValue, unsigned NRelation, typename T, unsigned NDim>
 void gather_direct( T * dst ,
                     const Field<T,NDim> & field ,
                     const Entity ** i ,
                     const Entity ** const j )
 {
   for ( ; i < j ; ++i ) {
-    const ConnectSpan con = (*i)->connections( field.entity_type() );
-    for ( unsigned k = 0 ; k < NConnect ; ++k , dst += NValue ) {
+    const RelationSpan con = (*i)->relations( field.entity_type() );
+    for ( unsigned k = 0 ; k < NRelation ; ++k , dst += NValue ) {
       const T * const s = con.first[k].entity()->data(field);
       Copy<NValue>( dst , s );
     }
   }
 }
 
-template<unsigned NValue, unsigned NConnect, typename T, unsigned NDim>
+template<unsigned NValue, unsigned NRelation, typename T, unsigned NDim>
 const Entity ** gather_direct_verify( const Field<T,NDim> & field ,
                                       const Entity ** i ,
                                       const Entity ** const j )
@@ -60,11 +60,11 @@ const Entity ** gather_direct_verify( const Field<T,NDim> & field ,
   enum { value_size = NValue * sizeof(T) };
 
   for ( bool result = true ; result && i < j ; ++i ) {
-    ConnectSpan con = (*i)->connections( field.entity_type() );
+    RelationSpan con = (*i)->relations( field.entity_type() );
 
-    result = std::distance( con.first , con.second ) < NConnect ;
+    result = std::distance( con.first , con.second ) < NRelation ;
 
-    for ( unsigned k = 0 ; result && k < NConnect ; ++k , ++con.first ) {
+    for ( unsigned k = 0 ; result && k < NRelation ; ++k , ++con.first ) {
       result = k == con.first->identifier();
 
       if ( result ) {
@@ -81,7 +81,7 @@ const Entity ** gather_direct_verify( const Field<T,NDim> & field ,
 
 //----------------------------------------------------------------------
 
-template<unsigned NValue, unsigned NConnect, typename T>
+template<unsigned NValue, unsigned NRelation, typename T>
 void gather_pointer( T * dst ,
                      const Field<T*,1> & field ,
                      const Entity * const * i ,
@@ -89,31 +89,31 @@ void gather_pointer( T * dst ,
 {
   for ( ; i < j ; ++i ) {
     const T * const * const src = (*i)->data( field );
-    for ( unsigned k = 0 ; k < NConnect ; ++k , dst += NValue ) {
+    for ( unsigned k = 0 ; k < NRelation ; ++k , dst += NValue ) {
       Copy<NValue>( dst , src[k] );
     }
   }
 }
 
-template<unsigned NConnect,typename T, unsigned N>
+template<unsigned NRelation,typename T, unsigned N>
 const Entity ** gather_pointer_setup( const Field<T,N>  & src_field ,
                                       const Field<T*,1> & ptr_field ,
                                       const Entity * const * i ,
                                       const Entity * const * const j )
 {
   enum { value_size = NValue * sizeof(T) };
-  enum { ptr_size   = NConnect * sizeof(T*) };
+  enum { ptr_size   = NRelation * sizeof(T*) };
 
   for ( bool result = true ; result && i < j ; ++i ) {
 
-    ConnectSpan con = (*i)->connections( field.entity_type() );
+    RelationSpan con = (*i)->relations( field.entity_type() );
 
-    result = std::distance( con.first , con.second ) < NConnect &&
+    result = std::distance( con.first , con.second ) < NRelation &&
              (*i)->data_size( ptr_field ) == ptr_size ;
 
     const T * const * const p = (*i)->data( ptr_field );
 
-    for ( unsigned k = 0 ; result && k < NConnect ; ++k , ++con.first ) {
+    for ( unsigned k = 0 ; result && k < NRelation ; ++k , ++con.first ) {
       result = k == con.first->identifier();
 
       if ( result ) {

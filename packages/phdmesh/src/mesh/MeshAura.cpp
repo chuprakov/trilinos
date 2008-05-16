@@ -41,7 +41,7 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 // Regenerate the parallel aura of mesh entities that are
-// connected to the shared node mesh entities.
+// relationed to the shared node mesh entities.
 
 namespace {
 
@@ -85,12 +85,12 @@ void RegenAuraComm::receive_entity(
   entity_key_type       key ;
   unsigned              owner_rank ;
   std::vector<Part*>    parts ;
-  std::vector<Connect>  connections ;
+  std::vector<Relation>  relations ;
   std::vector<unsigned> send_destinations ;
 
   unpack_entity( buffer , receive_mesh ,
                  key , owner_rank ,
-                 parts , connections , send_destinations );
+                 parts , relations , send_destinations );
 
   const Schema & S = receive_mesh.schema();
   Part * const owns_part = & S.owns_part();
@@ -117,7 +117,7 @@ void RegenAuraComm::receive_entity(
 
   ep.first = & receive_mesh.declare_entity( key , parts , owner_rank );
 
-  receive_mesh.declare_connection( *ep.first , connections , name() );
+  receive_mesh.declare_relation( *ep.first , relations , name() );
 
   ep.second = owner_rank ;
 
@@ -150,7 +150,7 @@ void scrub( Mesh & M , EntityProcSet & new_domain ,
 
       bool destroy_it = true ;
 
-      for ( ConnectSpan aura_con = aura_entity.connections();
+      for ( RelationSpan aura_con = aura_entity.relations();
             destroy_it && aura_con ; ++aura_con ) {
         Entity & e = * aura_con->entity();
         const unsigned e_type = aura_con->entity_type();
@@ -261,7 +261,7 @@ void comm_mesh_regenerate_aura( Mesh & M )
     Entity * const shared_entity = ib->first ;
     const unsigned shared_type = shared_entity->entity_type();
 
-    for ( ConnectSpan shared_entity_con = shared_entity->connections() ;
+    for ( RelationSpan shared_entity_con = shared_entity->relations() ;
           shared_entity_con ; ++shared_entity_con ) {
 
       Entity * const e = shared_entity_con->entity();
@@ -286,7 +286,7 @@ void comm_mesh_regenerate_aura( Mesh & M )
 
           // and all of the shared_entity->UsedBy->entity->Uses->{entities}
 
-          for ( ConnectSpan jc = e->connections(); jc ; ++jc ) {
+          for ( RelationSpan jc = e->relations(); jc ; ++jc ) {
 
             if ( jc->entity_type() < e_type && shared_entity != jc->entity() ) {
 

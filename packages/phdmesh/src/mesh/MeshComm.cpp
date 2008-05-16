@@ -33,6 +33,7 @@
 
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
+#include <mesh/FieldData.hpp>
 #include <mesh/Comm.hpp>
 #include <mesh/EntityComm.hpp>
 
@@ -289,12 +290,12 @@ bool comm_verify( ParallelMachine comm ,
     for ( i = v.begin() ; i != i_end ; ++i ) {
       Entity & e = * i->first ;
       const unsigned  proc  = i->second ;
-      entity_key_type data[2];
-      data[0] = e.key();
-      data[1] = e.owner_rank();
+      entity_key_type tmp[2];
+      tmp[0] = e.key();
+      tmp[1] = e.owner_rank();
 
       CommBuffer & buf = comm_sparse.send_buffer( proc );
-      buf.pack<entity_key_type>( data , 2 );
+      buf.pack<entity_key_type>( tmp , 2 );
     }
 
     comm_sparse.communicate();
@@ -661,7 +662,7 @@ bool comm_mesh_field_values(
       unsigned e_size = 0 ;
       for ( fi = fb ; fi != fe ; ++fi ) {
         const FieldBase & f = **fi ;
-        e_size += e.kernel().data_size( f );
+        e_size += field_data_size( f , e );
       } 
       send_size[ p ] += e_size ;
     }
@@ -675,7 +676,7 @@ bool comm_mesh_field_values(
       unsigned e_size = 0 ;
       for ( fi = fb ; fi != fe ; ++fi ) {
         const FieldBase & f = **fi ;
-        e_size += e.kernel().data_size( f );
+        e_size += field_data_size( f , e );
       } 
       recv_size[ p ] += e_size ;
     }
@@ -701,10 +702,10 @@ bool comm_mesh_field_values(
       CommBuffer & b = sparse.send_buffer( p );
       for ( fi = fb ; fi != fe ; ++fi ) {
         const FieldBase & f = **fi ;
-        unsigned data_size = e.kernel().data_size( f );
-        if ( data_size ) {
-          unsigned char * data = (unsigned char *) e.data( f );
-          b.pack<unsigned char>( data , data_size );
+        const unsigned size = field_data_size( f , e );
+        if ( size ) {
+          unsigned char * ptr = (unsigned char *) field_data( f , e );
+          b.pack<unsigned char>( ptr , size );
         }
       }
     }
@@ -724,10 +725,10 @@ bool comm_mesh_field_values(
       CommBuffer & b = sparse.recv_buffer( p );
       for ( fi = fb ; fi != fe ; ++fi ) {
         const FieldBase & f = **fi ;
-        unsigned data_size = e.kernel().data_size( f );
-        if ( data_size ) {
-          unsigned char * data = (unsigned char *) e.data( f );
-          b.unpack<unsigned char>( data , data_size );
+        const unsigned size = field_data_size( f , e );
+        if ( size ) {
+          unsigned char * ptr = (unsigned char *) field_data( f , e );
+          b.unpack<unsigned char>( ptr , size );
         }
       }
     }

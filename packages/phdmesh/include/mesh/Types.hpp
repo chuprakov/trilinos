@@ -67,7 +67,7 @@ enum { MaximumFieldDimension = 7 };
 class Mesh ;    // Kernels and entities of a mesh
 class Kernel ;  // Homogeneous collection of mesh entitities
 class Entity ;  // Individual entity within the mesh
-class Connect ; // Connect pair of local mesh entities
+class Relation ; // Relation pair of local mesh entities
 
 typedef std::pair<Entity*,unsigned> EntityProc ; // Entity-processor pair
 

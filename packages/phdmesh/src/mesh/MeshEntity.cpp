@@ -37,7 +37,7 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-bool Connect::operator < ( const Connect & r ) const
+bool Relation::operator < ( const Relation & r ) const
 {
   entity_key_type lhs =   m_key ;
   entity_key_type rhs = r.m_key ;
@@ -50,25 +50,25 @@ bool Connect::operator < ( const Connect & r ) const
   return lhs < rhs ;
 }
 
-Connect::Connect( Entity & e , entity_id_type id )
+Relation::Relation( Entity & e , entity_id_type id )
   : m_key( entity_key( e.entity_type(), id) ) , m_entity(&e)
 {}
 
 //----------------------------------------------------------------------
 
-struct LessConnect {
+struct LessRelation {
   inline
-  bool operator()( const Connect & lhs , const Connect & rhs ) const
+  bool operator()( const Relation & lhs , const Relation & rhs ) const
     { return lhs.operator<(rhs); }
 };
 
-struct LessConnectAttr {
+struct LessRelationAttr {
   inline
-  bool operator()( const Connect & lhs , const Connect & rhs ) const
+  bool operator()( const Relation & lhs , const Relation & rhs ) const
     { return lhs.key() < rhs.key(); }
 
   inline
-  bool operator()( const Connect & lhs , const entity_key_type rhs ) const
+  bool operator()( const Relation & lhs , const entity_key_type rhs ) const
     { return lhs.key() < rhs ; }
 };
 
@@ -90,7 +90,7 @@ print_entity_key( std::ostream & os , entity_key_type key )
 }
 
 std::ostream &
-print_connect( std::ostream & os ,
+print_relation( std::ostream & os ,
                entity_key_type patch_key ,
                entity_key_type entity_key )
 {
@@ -117,7 +117,7 @@ print_connect( std::ostream & os ,
 }
 
 std::ostream &
-operator << ( std::ostream & os , const Connect & con )
+operator << ( std::ostream & os , const Relation & con )
 {
   const char * name = entity_type_name( con.entity_type() );
   const unsigned local_id     = con.identifier();
@@ -135,9 +135,9 @@ std::ostream &
 print_entity( std::ostream & os , const std::string & lead , const Entity & e )
 {
   print_entity_key( os , e.key() );
-  os << " Owner(P" << e.owner_rank() << ") Connections {" ;
+  os << " Owner(P" << e.owner_rank() << ") Relationions {" ;
 
-  for ( ConnectSpan con = e.connections() ; con ; ++con ) {
+  for ( RelationSpan con = e.relations() ; con ; ++con ) {
     os << std::endl << lead << "  " << *con ;
   }
   os << " }" << std::endl ;
@@ -154,7 +154,7 @@ const entity_key_type & zero_key()
 
 Entity::Entity()
   : SetvMember< entity_key_type >( zero_key() ),
-    m_connect(), m_kernel(), m_kernel_ord(0), m_owner_rank(0)
+    m_relation(), m_kernel(), m_kernel_ord(0), m_owner_rank(0)
 {}
 
 Entity::~Entity()
@@ -172,35 +172,35 @@ Entity::~Entity()
 
 namespace {
 
-ConnectSpan con_span( const ConnectSet & con ,
+RelationSpan con_span( const RelationSet & con ,
                       const entity_key_type lo_attr ,
                       const entity_key_type hi_attr )
 {
-  ConnectSet::const_iterator i = con.begin();
-  ConnectSet::const_iterator e = con.end();
+  RelationSet::const_iterator i = con.begin();
+  RelationSet::const_iterator e = con.end();
 
-  i = std::lower_bound( i , e , lo_attr , LessConnectAttr() );
-  e = std::lower_bound( i , e , hi_attr , LessConnectAttr() );
+  i = std::lower_bound( i , e , lo_attr , LessRelationAttr() );
+  e = std::lower_bound( i , e , hi_attr , LessRelationAttr() );
 
-  return ConnectSpan( i , e );
+  return RelationSpan( i , e );
 }
 
 }
 
-ConnectSpan Entity::connections( unsigned et ) const
+RelationSpan Entity::relations( unsigned et ) const
 {
   const entity_key_type lo_key = entity_key( et , 0 );
   const entity_key_type hi_key = entity_key( et + 1 , 0 );
 
-  return con_span( m_connect , lo_key , hi_key );
+  return con_span( m_relation , lo_key , hi_key );
 }
 
-ConnectSpan Entity::connections( unsigned et, entity_id_type id ) const
+RelationSpan Entity::relations( unsigned et, entity_id_type id ) const
 {
   const entity_key_type lo_key = entity_key( et , id );
   const entity_key_type hi_key = entity_key( et , id );
 
-  return con_span( m_connect , lo_key , hi_key );
+  return con_span( m_relation , lo_key , hi_key );
 }
 
 //----------------------------------------------------------------------
@@ -213,7 +213,7 @@ void throw_required_unique( Entity & e_hi ,
                             const entity_id_type identifier ,
                             const char * required_unique_by )
 {
-  static const char method_name[] = "phdmesh::Mesh::declare_connection" ;
+  static const char method_name[] = "phdmesh::Mesh::declare_relation" ;
 
   std::ostringstream msg ;
 
@@ -244,7 +244,7 @@ void throw_required_unique( Entity & e_hi ,
 void throw_require_different( Entity & e1 , Entity & e2 ,
                               const char * required_unique_by )
 {
-  static const char method_name[] = "phdmesh::Mesh::declare_connection" ;
+  static const char method_name[] = "phdmesh::Mesh::declare_relation" ;
 
   std::ostringstream msg ;
 
@@ -259,15 +259,15 @@ void throw_require_different( Entity & e1 , Entity & e2 ,
   else {
     msg << "NULL" ;
   }
-  msg << " ) FAILED : Cannot connect entities of the same type; " ;
-  msg << " must introduce a connecting entity of a higher rank." ;
+  msg << " ) FAILED : Cannot relation entities of the same type; " ;
+  msg << " must introduce a relationing entity of a higher rank." ;
 
   throw std::invalid_argument(msg.str());
 }
 
 }
 
-void Mesh::declare_connection( Entity & e1 , Entity & e2 ,
+void Mesh::declare_relation( Entity & e1 , Entity & e2 ,
                                const entity_id_type identifier ,
                                const char * required_unique_by )
 {
@@ -282,12 +282,12 @@ void Mesh::declare_connection( Entity & e1 , Entity & e2 ,
   Entity & e_lo = e1_type == e2_type ? e2 : ( e1_type < e2_type ? e1 : e2 );
 
   {
-    const ConnectSet::iterator e = e_hi.m_connect.end();
-          ConnectSet::iterator i = e_hi.m_connect.begin();
+    const RelationSet::iterator e = e_hi.m_relation.end();
+          RelationSet::iterator i = e_hi.m_relation.begin();
 
-    const Connect hi_to_lo( e_lo , identifier );
+    const Relation hi_to_lo( e_lo , identifier );
 
-    i = std::lower_bound( i , e , hi_to_lo , LessConnect() );
+    i = std::lower_bound( i , e , hi_to_lo , LessRelation() );
 
     if ( e == i || hi_to_lo != *i ) { // Not a duplicate
 
@@ -301,50 +301,50 @@ void Mesh::declare_connection( Entity & e1 , Entity & e2 ,
         }
       }
 
-      e_hi.m_connect.insert( i , hi_to_lo );
+      e_hi.m_relation.insert( i , hi_to_lo );
     }
   }
 
   {
-    const ConnectSet::iterator e = e_lo.m_connect.end();
-          ConnectSet::iterator i = e_lo.m_connect.begin();
+    const RelationSet::iterator e = e_lo.m_relation.end();
+          RelationSet::iterator i = e_lo.m_relation.begin();
 
-    const Connect lo_to_hi( e_hi , identifier );
+    const Relation lo_to_hi( e_hi , identifier );
 
-    i = std::lower_bound( i , e , lo_to_hi , LessConnect() );
+    i = std::lower_bound( i , e , lo_to_hi , LessRelation() );
 
     if ( e == i || lo_to_hi != *i ) { // Not a duplicate
-      e_lo.m_connect.insert( i , lo_to_hi );
+      e_lo.m_relation.insert( i , lo_to_hi );
     }
   }
 }
 
-void Mesh::declare_connection( Entity & e ,
-                               const std::vector<Connect> & con ,
+void Mesh::declare_relation( Entity & e ,
+                               const std::vector<Relation> & con ,
                                const char * required_unique_by )
 {
-  for ( std::vector<Connect>::const_iterator
+  for ( std::vector<Relation>::const_iterator
         i = con.begin() ; i != con.end() ; ++i ) {
 
     const unsigned r_ident  =   i->identifier();
           Entity & r_entity = * i->entity();
 
-    declare_connection( e , r_entity , r_ident , required_unique_by );
+    declare_relation( e , r_entity , r_ident , required_unique_by );
   }
 }
 
-void Mesh::destroy_connection( Entity & e1 , Entity & e2 )
+void Mesh::destroy_relation( Entity & e1 , Entity & e2 )
 {
-  ConnectSet::iterator i ;
+  RelationSet::iterator i ;
 
-  for ( i = e1.m_connect.end() ; i != e1.m_connect.begin() ; ) {
+  for ( i = e1.m_relation.end() ; i != e1.m_relation.begin() ; ) {
     --i ;
-    if ( & e2 == i->entity() ) { i = e1.m_connect.erase( i ); }
+    if ( & e2 == i->entity() ) { i = e1.m_relation.erase( i ); }
   }
 
-  for ( i = e2.m_connect.end() ; i != e2.m_connect.begin() ; ) {
+  for ( i = e2.m_relation.end() ; i != e2.m_relation.begin() ; ) {
     --i ;
-    if ( & e1 == i->entity() ) { i = e2.m_connect.erase( i ); }
+    if ( & e1 == i->entity() ) { i = e2.m_relation.erase( i ); }
   }
 }
 

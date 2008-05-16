@@ -37,6 +37,7 @@
 #include <mesh/Entity.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/Schema.hpp>
+#include <mesh/FieldData.hpp>
 
 namespace phdmesh {
 
@@ -141,19 +142,23 @@ void Kernel::supersets( std::vector<unsigned> & ps ) const
 
 //----------------------------------------------------------------------
 
-bool Kernel::valid( const FieldBase & f ,
-                    unsigned ord ,
-                    const char * required_by ) const
+bool field_data_valid( const FieldBase & f ,
+                       const Kernel & k ,
+                       unsigned ord ,
+                       const char * required_by )
 {
-  const Schema & schema = m_mesh.schema();
-  const bool ok_schema = & schema      == & f.schema() ;
-  const bool ok_ord    = ord < m_size ;
-  const bool ok        = ok_schema && ok_ord ;
+  const Schema * const k_schema = & k.mesh().schema();
+  const Schema * const f_schema = & f.schema();
+  const bool ok_schema  = k_schema == f_schema ;
+  const bool ok_ord     = ord < k.size() ;
+  const bool exists     = ok_schema && ok_ord && NULL != field_data( f , k );
 
-  if ( required_by && ! ok ) {
+  if ( required_by && ! exists ) {
     std::ostringstream msg ;
-    msg << "phdmesh::Kernel::valid( " ;
+    msg << "phdmesh::field_data_valid( " ;
     msg << f ;
+    msg << " , " ;
+    msg << k ;
     msg << " , " ;
     msg << ord ;
     msg << " , " ;
@@ -162,16 +167,20 @@ bool Kernel::valid( const FieldBase & f ,
     if ( ! ok_schema ) {
       msg << " different Schema" ;
     }
-    else {
+    else if ( ! ok_ord ) {
       msg << " Ordinal " ;
-      msg << m_size ;
-      msg << " <= " ;
       msg << ord ;
+      msg << " >= " ;
+      msg << " size " ;
+      msg << k.size();
+    }
+    else {
+      msg << " no data" ;
     }
     throw std::runtime_error( msg.str() );
   }
 
-  return ok ;
+  return exists ;
 }
 
 //----------------------------------------------------------------------
@@ -565,6 +574,22 @@ void Mesh::remove_entity( KernelSet::iterator ik , unsigned i )
 }
 
 //----------------------------------------------------------------------
+
+std::ostream & operator << ( std::ostream & s , const Kernel & k )
+{
+  const char * const entity_name = entity_type_name( k.entity_type() );
+
+  PartSet parts ; k.supersets( parts );
+
+  s << "Kernel( " << entity_name << " : " ;
+  for ( PartSet::iterator i = parts.begin() ; i != parts.end() ; ++i ) {
+    s << (*i)->name() << " " ;
+  }
+  s << ")" ;
+
+  return s ;
+}
+
 
 std::ostream &
 Kernel::print( std::ostream & os , const std::string & lead ) const

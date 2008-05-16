@@ -34,6 +34,7 @@
 #include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
+#include <mesh/FieldData.hpp>
 #include <mesh/Comm.hpp>
 #include <mesh/EntityComm.hpp>
 
@@ -72,7 +73,7 @@ void global_coordinate_bounds( Mesh & M ,
     const Kernel & kernel = *i ; ++i ;
     if ( kernel.has_superset( owns_part ) ) {
       const unsigned number = kernel.size();
-      const double * coord = kernel.data( node_coord );
+      const double * coord = field_data( node_coord , kernel );
 
       for ( unsigned j = 0 ; j < number ; ++j ) {
         Min<3>( min , coord );
@@ -120,7 +121,7 @@ OctTreeKey elem_key( const double * const bounds ,
 
   const double s = ncell / bounds[3] ;
 
-  ConnectSpan elem_nodes = elem.connections( Node );
+  RelationSpan elem_nodes = elem.relations( Node );
 
   const unsigned num_nodes = elem_nodes.size();
 
@@ -129,7 +130,7 @@ OctTreeKey elem_key( const double * const bounds ,
   while ( elem_nodes ) {
     Entity & node = * elem_nodes->entity(); ++elem_nodes ;
 
-    const double * const coord = node.data( node_coord );
+    const double * const coord = field_data( node_coord , node );
 
     centroid[0] += coord[0] ;
     centroid[1] += coord[1] ;
@@ -194,7 +195,7 @@ void global_element_cuts( Mesh & M ,
 
         if ( elem_weight_field ) {
           const float one = 1.0 ;
-          const float * const w = elem.data( *elem_weight_field );
+          const float * const w = field_data( *elem_weight_field , elem );
           elem_weights[count] = w ? *w : one ;
         }
 
@@ -246,7 +247,7 @@ void rebal_other_entities( Mesh & M , unsigned other , EntityProcSet & rebal )
 
         rebal_procs.clear();
 
-        for ( ConnectSpan j = entity->connections(); j ; ++j ) {
+        for ( RelationSpan j = entity->relations(); j ; ++j ) {
           if ( j->entity_type() == other  ) {
             std::ostringstream msg ;
             msg << "P" << M.parallel_rank();
@@ -260,7 +261,7 @@ void rebal_other_entities( Mesh & M , unsigned other , EntityProcSet & rebal )
           }
         }
 
-        for ( ConnectSpan j = entity->connections(); j ; ++j ) {
+        for ( RelationSpan j = entity->relations(); j ; ++j ) {
           Entity * const con_entity = j->entity();
           EntityProcSet::const_iterator ir =
             lower_bound( rebal , *con_entity );
@@ -279,7 +280,7 @@ void rebal_other_entities( Mesh & M , unsigned other , EntityProcSet & rebal )
         for ( ip = rebal_procs.begin() ; ip != rebal_procs.end() ; ++ip ) {
           EntityProc tmp( entity , *ip );
           rebal_tmp.push_back( tmp );
-          for ( ConnectSpan j = entity->connections(); j ; ++j ) {
+          for ( RelationSpan j = entity->relations(); j ; ++j ) {
             Entity * const con_entity = j->entity();
             EntityProc con_tmp( con_entity , *ip );
             rebal_tmp.push_back( con_tmp );
@@ -315,7 +316,7 @@ void rebal_elem_entities( Mesh & M ,
 
       rebal_procs.clear();
 
-      ConnectSpan elements = entity->connections( Element );
+      RelationSpan elements = entity->relations( Element );
 
       while ( elements ) {
         Entity & elem = * elements->entity(); ++elements ;
@@ -391,18 +392,18 @@ void RebalanceComm::receive_entity(
   entity_key_type       key ;
   unsigned              owner_rank ;
   std::vector<Part*>    parts ;
-  std::vector<Connect>  connections ;
+  std::vector<Relation>  relations ;
   std::vector<unsigned> send_dest ;
 
   unpack_entity( buffer , receive_mesh ,
                  key , owner_rank ,
-                 parts , connections , send_dest );
+                 parts , relations , send_dest );
 
   EntityProc ep ;
 
   ep.first = & receive_mesh.declare_entity( key , parts , owner_rank );
 
-  receive_mesh.declare_connection( *ep.first , connections , name() );
+  receive_mesh.declare_relation( *ep.first , relations , name() );
 
   ep.second = send_source ;
 

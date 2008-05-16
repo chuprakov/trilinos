@@ -56,14 +56,14 @@ public:
   /** For entities in the partset define a search part id.
    *  Entities will not be compared for proximity if their
    *  part ids are not zero and not equal.  This allows 
-   *  connected entities to be filtered out of the search.
+   *  relationed entities to be filtered out of the search.
    */
   virtual int part_id( const Kernel & ) const ;
 
   virtual ~ProximitySearch() ;
 
   /** Default behavior is to define a bounding box based
-   *  upon connected nodes.  If a part has a CSet member
+   *  upon relationed nodes.  If a part has a CSet member
    *  of the ProximitySearch object then the 'part_id'
    *  is that part's ordinal + 1.
    */

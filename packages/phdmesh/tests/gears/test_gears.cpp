@@ -37,6 +37,7 @@
 
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
+#include <mesh/FieldData.hpp>
 #include <mesh/Comm.hpp>
 #include <mesh/Proximity.hpp>
 
@@ -138,8 +139,8 @@ void test_gears_face_proximity(
     KernelSet::const_iterator k ;
     for ( k = k_beg ; k != k_end ; ++k ) {
       unsigned n = k->size();
-      double * const data = k->data( field_proximity );
-      double * const coord = k->data( gear_coordinates );
+      double * const data  = field_data( field_proximity , *k );
+      double * const coord = field_data( gear_coordinates , *k );
       for ( unsigned j = 0 ; j < n ; ++j ) { data[j] = coord[1+j*3] ; }
     }
 
@@ -152,10 +153,10 @@ void test_gears_face_proximity(
         if ( p_rank == d[j].proc ) {
           const entity_key_type key = entity_key( Face , d[j].ident );
           Entity & face = * M.get_entity( key , method );
-          for ( ConnectSpan face_nodes = face.connections( Node );
+          for ( RelationSpan face_nodes = face.relations( Node );
                 face_nodes ; ++face_nodes ) {
             Entity & node = * face_nodes->entity();
-            double * const data = node.data( field_proximity );
+            double * const data = field_data( field_proximity , node );
             *data = 20 ;
           }
         }
@@ -167,7 +168,7 @@ void test_gears_face_proximity(
 
   wt = wall_time();
 
-  // Create an 'Other' entity to connect the domain entity to the range entity
+  // Create an 'Other' entity to relation the domain entity to the range entity
   // This entity will be owned by the domain processor will appear in the
   // 'aura' of the range processor.
   // If the range face is not on the domain processor then share it.
@@ -187,7 +188,7 @@ void test_gears_face_proximity(
       ep.second = d.proc ;
       to_be_shared.push_back( ep );
 
-      for ( ConnectSpan con = ep.first->connections(); con ; ++con ) {
+      for ( RelationSpan con = ep.first->relations(); con ; ++con ) {
         if ( con->entity_type() < Face ) {
           ep.first = con->entity();
           to_be_shared.push_back( ep );

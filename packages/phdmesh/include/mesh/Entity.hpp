@@ -40,7 +40,7 @@
 namespace phdmesh {
 
 //----------------------------------------------------------------------
-/** Connection between mesh entities with attributes.
+/** Relationion between mesh entities with attributes.
  *
  *  Concept is a relation consisting of 
  *    { ( ( DomainEntity , RangeEntity ) , RelationIdentifier ) }
@@ -49,23 +49,23 @@ namespace phdmesh {
  *    DomainEntity -> { ( RangeEntity , RelationIdentifier ) }
  */
 
-class Connect {
+class Relation {
 private:
   entity_key_type m_key ;
   Entity        * m_entity ;
 public:
 
-  ~Connect() {}
+  ~Relation() {}
 
-  Connect() : m_key(0), m_entity(NULL) {}
+  Relation() : m_key(0), m_entity(NULL) {}
 
-  Connect( const Connect & r ) : m_key(r.m_key), m_entity(r.m_entity) {}
+  Relation( const Relation & r ) : m_key(r.m_key), m_entity(r.m_entity) {}
 
-  Connect & operator = ( const Connect & r )
+  Relation & operator = ( const Relation & r )
     { m_key = r.m_key ; m_entity = r.m_entity ; return *this ; }
 
   /** Construct with range entity, identifier, and if anonymous */
-  Connect( Entity & , unsigned );
+  Relation( Entity & , unsigned );
 
   Entity * entity() const { return m_entity ; }
 
@@ -74,35 +74,35 @@ public:
 
   entity_key_type key() const { return m_key ; }
 
-  bool operator == ( const Connect & r ) const
+  bool operator == ( const Relation & r ) const
     { return m_key == r.m_key && m_entity == r.m_entity ; }
 
-  bool operator != ( const Connect & r ) const
+  bool operator != ( const Relation & r ) const
     { return m_key != r.m_key || m_entity != r.m_entity ; }
 
-  bool operator < ( const Connect & r ) const ;
+  bool operator < ( const Relation & r ) const ;
 };
 
-typedef std::vector<Connect> ConnectSet ;
+typedef std::vector<Relation> RelationSet ;
 
-/** Span of a sorted connections for a given domain entity.
+/** Span of a sorted relations for a given domain entity.
  *  Members are sorted by
  *  (1) range entity type,
- *  (2) connection type,
+ *  (2) relation type,
  *  (3) identifier, and
  *  (4) range entity identifier.
  */
-typedef Span< ConnectSet::const_iterator > ConnectSpan ;
+typedef Span< RelationSet::const_iterator > RelationSpan ;
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
-/** A mesh entity has an entity type, identifier, connections, and
+/** A mesh entity has an entity type, identifier, relations, and
  *  resides within a mesh kernel.  The mesh kernel holds its field data.
  */
 class Entity : public SetvMember< entity_key_type > {
 private:
 
-  ConnectSet           m_connect ;    // Connections
+  RelationSet           m_relation ;    // Relationions
   KernelSet::iterator  m_kernel ;     // Containing kernel
   unsigned             m_kernel_ord ; // Ordinal in the kernel
   unsigned             m_owner_rank ; // Parallel owner rank
@@ -127,28 +127,15 @@ public:
 
   //------------------------------------
 
-  ConnectSpan connections() const { return ConnectSpan( m_connect ); }
+  RelationSpan relations() const { return RelationSpan( m_relation ); }
 
-  ConnectSpan connections( unsigned type ) const ;
+  RelationSpan relations( unsigned type ) const ;
 
-  ConnectSpan connections( unsigned type , entity_id_type patch_id ) const ;
+  RelationSpan relations( unsigned type , entity_id_type patch_id ) const ;
 
   //------------------------------------
 
   const EntityProcSpan & sharing() const { return m_sharing ; }
-
-  //------------------------------------
-  /** Pointer to field value for this mesh entity and field */
-  template< class field_type >
-  typename field_type::data_type * data( const field_type & f ) const
-    { return m_kernel->data( f , m_kernel_ord ); }
-
-  unsigned data_size( const FieldBase & f ) const
-    { return m_kernel->data_size( f ); }
-
-  template< class field_type >
-  typename field_type::Dimension data_dim( const field_type & f ) const
-    { return m_kernel->data_dim( f ); }
 
   //------------------------------------
 
@@ -168,7 +155,7 @@ typedef Setv<Entity> EntitySet ;
 
 //----------------------------------------------------------------------
 
-/** Print identifier and connections */
+/** Print identifier and relations */
 std::ostream &
 print_entity( std::ostream & , const std::string & lead , const Entity & );
 
@@ -178,11 +165,11 @@ print_entity_key( std::ostream & , unsigned type , entity_id_type id );
 std::ostream &
 print_entity_key( std::ostream & , entity_key_type key );
 
-std::ostream & print_connect( std::ostream & os ,
+std::ostream & print_relation( std::ostream & os ,
                               entity_key_type patch_key ,
                               entity_key_type entity_key );
 
-std::ostream & operator << ( std::ostream & , const Connect & );
+std::ostream & operator << ( std::ostream & , const Relation & );
 
 } // namespace phdmesh
 

@@ -35,6 +35,7 @@
 #include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
+#include <mesh/FieldData.hpp>
 #include <mesh/Proximity.hpp>
 
 namespace phdmesh {
@@ -313,12 +314,12 @@ void ProximitySearch::box(
     entity_box[0] = entity_box[1] = entity_box[2] =  f_max ;
     entity_box[3] = entity_box[4] = entity_box[5] = - f_max ;
 
-    ConnectSpan jnode = entity.connections( Node );
+    RelationSpan jnode = entity.relations( Node );
 
     for ( ; jnode ; ++jnode ) {
       const Entity & node = * jnode->entity();
 
-      const double * const coord = node.data( m_node_coord );
+      const double * const coord = field_data( m_node_coord , node );
 
       if ( coord[0] < entity_box[0] ) { entity_box[0] = (float) coord[0] ; }
       if ( coord[1] < entity_box[1] ) { entity_box[1] = (float) coord[1] ; }
@@ -351,7 +352,7 @@ void ProximitySearch::box(
   }
   else {
 
-    const double * const coord = entity.data( m_node_coord );
+    const double * const coord = field_data( m_node_coord , entity );
 
     entity_box[0] = entity_box[3] = (float) coord[0] ;
     entity_box[1] = entity_box[4] = (float) coord[1] ;

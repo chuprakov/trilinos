@@ -30,6 +30,7 @@
 
 #include <mesh/Mesh.hpp>
 #include <mesh/Schema.hpp>
+#include <mesh/FieldData.hpp>
 #include <mesh/EntityComm.hpp>
 
 namespace phdmesh {
@@ -64,18 +65,18 @@ void EntityComm::receive_entity(
   entity_key_type       key ;
   unsigned              owner_rank ;
   std::vector<Part*>    parts ;
-  std::vector<Connect>  connections ;
+  std::vector<Relation>  relations ;
   std::vector<unsigned> send_destinations ;
 
   unpack_entity( buffer , receive_mesh ,
                  key , owner_rank ,
-                 parts , connections , send_destinations );
+                 parts , relations , send_destinations );
 
   EntityProc ep ;
 
   ep.first = & receive_mesh.declare_entity( key, parts, owner_rank );
 
-  receive_mesh.declare_connection( *ep.first , connections , name() );
+  receive_mesh.declare_relation( *ep.first , relations , name() );
 
   ep.second = send_source ;
 
@@ -98,7 +99,7 @@ void EntityComm::pack_entity(
   const Schema      & send_schema = kernel.mesh().schema();
   const bool          same_schema = & send_schema == & recv_schema ;
   const unsigned      dest_size   = std::distance( ibeg , iend );
-        ConnectSpan   rel         = entity.connections();
+        RelationSpan   rel         = entity.relations();
 
   std::vector<unsigned> part_ordinals ;
 
@@ -130,7 +131,7 @@ void EntityComm::pack_entity(
     buf.pack<unsigned>( & part_ordinals[0] , n );
   }
 
-  // Connections:
+  // Relationions:
   {
     const unsigned rel_size = rel.size();
     buf.pack<unsigned>( rel_size );
@@ -155,13 +156,13 @@ void EntityComm::unpack_entity(
   entity_key_type       & key ,
   unsigned              & owner_rank ,
   std::vector<Part*>    & parts ,
-  std::vector<Connect>  & connections ,
+  std::vector<Relation>  & relations ,
   std::vector<unsigned> & send_destinations ) const
 {
   const PartSet & recv_schema_parts = recv_mesh.schema().get_parts();
 
   parts.clear();
-  connections.clear();
+  relations.clear();
   send_destinations.clear();
 
   recv_buf.unpack<entity_key_type>( key );
@@ -178,11 +179,11 @@ void EntityComm::unpack_entity(
     }
   }
 
-  // Connections:
+  // Relationions:
   {
     unsigned rel_size ; recv_buf.unpack<unsigned>( rel_size );
 
-    connections.reserve( rel_size );
+    relations.reserve( rel_size );
 
     entity_key_type rel_data[2] ;
 
@@ -192,8 +193,8 @@ void EntityComm::unpack_entity(
       Entity * rel_entity = recv_mesh.get_entity( rel_data[0] );
 
       if ( rel_entity != NULL ) {
-        Connect rel( *rel_entity , (unsigned) rel_data[1] );
-        connections.push_back( rel );
+        Relation rel( *rel_entity , (unsigned) rel_data[1] );
+        relations.push_back( rel );
       }
     }
   }
@@ -228,16 +229,16 @@ void EntityComm::pack_field_values(
 
   for ( i = i_beg ; i_end != i ; ) {
     const FieldBase & f = **i ; ++i ;
-    const unsigned data_size = kernel.data_size( f );
-    buf.pack<unsigned>( data_size );
+    const unsigned size = field_data_size( f , kernel );
+    buf.pack<unsigned>( size );
   }
 
   for ( i = i_beg ; i_end != i ; ) {
     const FieldBase & f = **i ; ++i ;
-    const unsigned data_size = kernel.data_size( f );
-    if ( data_size ) {
-      unsigned char * const data = (unsigned char *) entity.data( f );
-      buf.pack<unsigned char>( data , data_size );
+    const unsigned size = field_data_size( f , kernel );
+    if ( size ) {
+      unsigned char * const ptr = (unsigned char *) field_data( f , entity );
+      buf.pack<unsigned char>( ptr , size );
     }
   }
 }
@@ -263,9 +264,9 @@ void EntityComm::unpack_field_values(
 
   for ( i = i_beg ; i_end != i ; ) {
     const FieldBase & f = **i ; ++i ;
-    const unsigned data_size = kernel.data_size( f );
+    const unsigned size = field_data_size( f , kernel );
     unsigned recv_data_size ; buf.unpack<unsigned>( recv_data_size );
-    if ( data_size != recv_data_size ) {
+    if ( size != recv_data_size ) {
       if ( ok ) {
         msg << "P" << mesh.parallel_rank();
         msg << ": " << method ;
@@ -285,10 +286,10 @@ void EntityComm::unpack_field_values(
 
   for ( i = i_beg ; i_end != i ; ) {
     const FieldBase & f = **i ; ++i ;
-    const unsigned data_size = kernel.data_size( f );
-    if ( data_size ) {
-      unsigned char * data = (unsigned char *) entity.data( f );
-      buf.unpack<unsigned char>( data , data_size );
+    const unsigned size = field_data_size( f , kernel );
+    if ( size ) {
+      unsigned char * ptr = (unsigned char *) field_data( f , entity );
+      buf.unpack<unsigned char>( ptr , size );
     }
   }
 }

@@ -29,25 +29,25 @@
 
 //----------------------------------------------------------------------
 /** @file
- *  @brief Mesh entity connection across processor boundaries.
+ *  @brief Mesh entity relation across processor boundaries.
  *
- *  A parallel entity connection matches a domain mesh entity residing on
+ *  A parallel entity relation matches a domain mesh entity residing on
  *  a domain processor with a range entity residing on a range processor.
  *
  *  { ( ( domain_entity , domain_proc ) , ( range_entity , range_proc ) ) }
  *
- *  This connection is partitioned among processors as follows:
+ *  This relation is partitioned among processors as follows:
  *
  *    on the domain_proc : { ( domain_entity , range_proc )[i] }
  *    on the range_proc  : { ( range_entity , domain_proc )[i] }
  *
- *  Members of the connection should be ordered by
+ *  Members of the relation should be ordered by
  *  domain entity identifer and then by range processor.
  *  Thus on the domain processor members are fully sorted
  *  and can be searched accordingly.
  *  However, on the range processor the ordering is conformal
  *  to the domain processor array.  Thus, for an asymmetric
- *  parallel connection the array on the range processor is
+ *  parallel relation the array on the range processor is
  *  unlikely to be sorted.
  */
 //----------------------------------------------------------------------
@@ -96,7 +96,7 @@ EntityProcSet::iterator
 lower_bound( EntityProcSet & , const EntityProc & );
 
 //----------------------------------------------------------------------
-/** Sanity check on existing or potential parallel connection information.
+/** Sanity check on existing or potential parallel relation information.
  *  If the result is invalid then outputs a string with an explanation.
  *  Symmetric version of verification.
  */
@@ -104,7 +104,7 @@ bool comm_verify( ParallelMachine ,
                   const EntityProcSet & ,
                   std::string & );
 
-/** Sanity check on existing or potential parallel connection information.
+/** Sanity check on existing or potential parallel relation information.
  *  If the result is invalid then outputs a string with an explanation.
  *  Asymmetric version of verification.
  */
