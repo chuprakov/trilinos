@@ -69,8 +69,12 @@ int main( int argc , char **argv )
 
   const unsigned p_rank = phdmesh::parallel_machine_rank( comm );
 
+  /* Last command line argument to ignore the 'sierra' script junk */
+
+  const char * const file_name = 1 < argc ? argv[argc-1] : NULL ;
+
   phdmesh::ParallelInputStream
-    is( comm , ( 0 == p_rank && argc == 2 ? argv[1] : NULL ) );
+    is( comm , ( 0 == p_rank ? file_name : NULL ) );
 
   const int result = phdmesh::test_driver( comm , is , test_map );
 

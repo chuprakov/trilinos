@@ -28,7 +28,6 @@ MESH_INC_FILES =	\
 	$(MESH_INC_DIR)/Comm.hpp	\
 	$(MESH_INC_DIR)/Entity.hpp	\
 	$(MESH_INC_DIR)/EntityComm.hpp	\
-	$(MESH_INC_DIR)/FieldDim.hpp	\
 	$(MESH_INC_DIR)/Field.hpp	\
 	$(MESH_INC_DIR)/FieldTraits.hpp	\
 	$(MESH_INC_DIR)/FieldData.hpp	\

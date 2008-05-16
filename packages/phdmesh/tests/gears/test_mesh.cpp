@@ -65,8 +65,13 @@ int main( int argc , char ** argv )
   int result = -1 ;
 
   try {
+    /* Ignore the 'sierra' script forcing of '-runtest pid'.
+     * Assume the last command line argument is the input file name.
+     */
+    const char * const file_name = 1 < argc ? argv[argc-1] : NULL ;
+
     phdmesh::ParallelInputStream
-      is( comm , ( 0 == p_rank && argc == 2 ? argv[1] : NULL ) );
+      is( comm , ( 0 == p_rank ? file_name : NULL ) );
 
     result = phdmesh::test_driver( comm , is , test_map );
   }
