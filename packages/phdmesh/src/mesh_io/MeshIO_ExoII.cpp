@@ -239,31 +239,32 @@ const FilePart * internal_declare_part(
 
   const FilePart * file_part = NULL ;
 
+  int number_attr = arg_number_attr ;
+
   if ( attr.empty() ) {
 
-    unsigned n = arg_number_attr ;
-
-    if ( ! n ) { // Default number of attributes
+    if ( ! number_attr ) { // Default number of attributes
       switch( arg_element_type ) {
       case CIRCLE :
       case SPHERE :
       case TRUSS :
-      case SHELL : n = 1 ; break ;
-      case BEAM :  n = arg_element_dim == 2 ? 3 : (
-                       arg_element_dim == 3 ? 7 : 0 );
+      case SHELL : number_attr = 1 ; break ;
+      case BEAM :  number_attr = arg_element_dim == 2 ? 3 : (
+                                 arg_element_dim == 3 ? 7 : 0 );
                    break ;
-      default:     n = 0 ; break ;
+      default:     number_attr = 0 ; break ;
       }
     }
 
-    if ( n ) {
-      AttributeField::Dimension dim(n);
+    if ( number_attr ) {
+      AttributeField::Dimension dim(number_attr);
       arg_schema.declare_field_size(
         const_cast<AttributeField &>(arg_attributes) , Element , part , dim );
     }
 
     file_part = new FilePart( part, arg_id, arg_type,
-                              arg_element_type, arg_number_nodes , n );
+                              arg_element_type, arg_number_nodes ,
+                              number_attr );
 
     arg_schema.declare_part_attribute<FilePart>( part , file_part , true );
   }
@@ -277,9 +278,9 @@ const FilePart * internal_declare_part(
          file_part->m_entity_type  != arg_type ||
          file_part->m_element_type != arg_element_type ||
          file_part->m_number_nodes != arg_number_nodes ||
-         file_part->m_number_attr  != arg_number_attr ) {
+         file_part->m_number_attr  != number_attr ) {
     std::ostringstream msg ;
-    msg << method << "FAILED redeclaration (count = " ;
+    msg << method << " FAILED redeclaration (count = " ;
     msg << attr.size();
     msg << ")" ;
     throw std::runtime_error( msg.str() );
@@ -1532,7 +1533,7 @@ FileOutput::FileOutput(
 namespace {
 
 void pack_entity_proc( const std::vector<const Entity *> & send ,
-                       const FileSchema::IndexField      & f_index ,
+                       const FileSchema::IndexField                & f_index ,
                        CommBuffer & buf )
 {
   double item_buffer[2] ;
