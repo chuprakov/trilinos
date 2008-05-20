@@ -54,7 +54,7 @@ common/favicon.ico        common/footer.html \
 common/util.php           common/config.php \
 common/load_images.js     common/header.html \
 common/header.php         common/styles.css \
-common/WebTrilinos_config.h.in common/WebTrilinos_config.h.in~ \
+common/WebTrilinos_config.h.in \
 data/index.html \
 data/HB/index.html \
 data/HB/fidap005.rua \
