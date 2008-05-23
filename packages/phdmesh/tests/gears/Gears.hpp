@@ -43,8 +43,8 @@ struct GearFields {
   typedef Field<double,Cylindrical>  CylindricalField ;
   typedef exodus::FileSchema::AttributeField AttributeField ;
 
-  typedef Field<double,Cartesian>              NodeValueField ;
-  typedef Field<double,Cartesian,DimensionAny> ElementValueField ;
+  typedef Field<double,Cartesian>                    NodeValueField ;
+  typedef Field<double,Cartesian,DimensionAnonymous> ElementValueField ;
 
   CylindricalField & gear_coord ;
   CartesianField   & model_coord ;

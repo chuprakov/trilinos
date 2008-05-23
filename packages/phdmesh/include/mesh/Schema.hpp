@@ -103,33 +103,10 @@ public:
    */
   template< class field_type >
   field_type * get_field( const std::string & name ,
-                          const char * required_by = NULL ) const
-    {
-      typedef typename field_type::data_type Scalar ;
-      typedef typename field_type::dimension_traits_1 Traits1 ;
-      typedef typename field_type::dimension_traits_2 Traits2 ;
-      typedef typename field_type::dimension_traits_3 Traits3 ;
-      typedef typename field_type::dimension_traits_4 Traits4 ;
-      typedef typename field_type::dimension_traits_5 Traits5 ;
-      typedef typename field_type::dimension_traits_6 Traits6 ;
-      typedef typename field_type::dimension_traits_7 Traits7 ;
-
-      return static_cast< field_type * >(
-        get_field_base( name ,
-                        NumericEnum<Scalar>::value ,
-                        Traits1::descriptor() ,
-                        Traits2::descriptor() ,
-                        Traits3::descriptor() ,
-                        Traits4::descriptor() ,
-                        Traits5::descriptor() ,
-                        Traits6::descriptor() ,
-                        Traits7::descriptor() ,
-                        -1 , required_by ) );
-    }
+                          const char * required_by = NULL ) const ;
 
   /** Get all fields associated with the given entity type */
-  const std::vector< FieldBase * > & get_fields() const
-    { return m_fields ; }
+  const std::vector< FieldBase * > & get_fields() const { return m_fields ; }
 
   /** Declare a field within the mesh.
    *  Redeclaration with compatible parameters returns the
@@ -138,49 +115,76 @@ public:
    */
   template< class field_type >
   field_type & declare_field( const std::string & name ,
-                              unsigned number_of_states = 1 )
-    {
-      typedef typename field_type::data_type Scalar ;
-      typedef typename field_type::dimension_traits_1 Traits1 ;
-      typedef typename field_type::dimension_traits_2 Traits2 ;
-      typedef typename field_type::dimension_traits_3 Traits3 ;
-      typedef typename field_type::dimension_traits_4 Traits4 ;
-      typedef typename field_type::dimension_traits_5 Traits5 ;
-      typedef typename field_type::dimension_traits_6 Traits6 ;
-      typedef typename field_type::dimension_traits_7 Traits7 ;
+                              unsigned number_of_states = 1 );
 
-      return static_cast< field_type & >(
-        declare_field_base( name ,
-                            NumericEnum<Scalar>::value ,
-                            Traits1::descriptor() ,
-                            Traits2::descriptor() ,
-                            Traits3::descriptor() ,
-                            Traits4::descriptor() ,
-                            Traits5::descriptor() ,
-                            Traits6::descriptor() ,
-                            Traits7::descriptor() ,
-                            number_of_states ) );
-    }
+  /** Declare a scalar field to exist for a given entity type and Part. */
+  template< class field_type >
+  void declare_field_exists( field_type & arg_field ,
+                             unsigned     arg_entity_type ,
+                             const Part & arg_part );
 
-  /** Declare a field to have a size over a given entity type and part.
-   */
   template< class field_type >
   void declare_field_size( field_type & arg_field ,
                            unsigned     arg_entity_type ,
                            const Part & arg_part ,
-                           const typename field_type::Dimension & arg_dim )
-    {
-      declare_field_stride( arg_field , arg_entity_type , arg_part ,
-                            arg_dim.stride );
-    }
+                           unsigned     arg_n1 );
 
   template< class field_type >
-  void declare_field_exists( field_type & arg_field ,
-                             unsigned     arg_entity_type ,
-                             const Part & arg_part )
-    {
-      declare_field_stride( arg_field , arg_entity_type , arg_part , NULL );
-    }
+  void declare_field_size( field_type & arg_field ,
+                           unsigned     arg_entity_type ,
+                           const Part & arg_part ,
+                           unsigned     arg_n1 ,
+                           unsigned     arg_n2 );
+
+  template< class field_type >
+  void declare_field_size( field_type & arg_field ,
+                           unsigned     arg_entity_type ,
+                           const Part & arg_part ,
+                           unsigned     arg_n1 ,
+                           unsigned     arg_n2 ,
+                           unsigned     arg_n3 );
+
+  template< class field_type >
+  void declare_field_size( field_type & arg_field ,
+                           unsigned     arg_entity_type ,
+                           const Part & arg_part ,
+                           unsigned     arg_n1 ,
+                           unsigned     arg_n2 ,
+                           unsigned     arg_n3 ,
+                           unsigned     arg_n4 );
+
+  template< class field_type >
+  void declare_field_size( field_type & arg_field ,
+                           unsigned     arg_entity_type ,
+                           const Part & arg_part ,
+                           unsigned     arg_n1 ,
+                           unsigned     arg_n2 ,
+                           unsigned     arg_n3 ,
+                           unsigned     arg_n4 ,
+                           unsigned     arg_n5 );
+
+  template< class field_type >
+  void declare_field_size( field_type & arg_field ,
+                           unsigned     arg_entity_type ,
+                           const Part & arg_part ,
+                           unsigned     arg_n1 ,
+                           unsigned     arg_n2 ,
+                           unsigned     arg_n3 ,
+                           unsigned     arg_n4 ,
+                           unsigned     arg_n5 ,
+                           unsigned     arg_n6 );
+
+  template< class field_type >
+  void declare_field_size( field_type & arg_field ,
+                           unsigned     arg_entity_type ,
+                           const Part & arg_part ,
+                           unsigned     arg_n1 ,
+                           unsigned     arg_n2 ,
+                           unsigned     arg_n3 ,
+                           unsigned     arg_n4 ,
+                           unsigned     arg_n5 ,
+                           unsigned     arg_n6 ,
+                           unsigned     arg_n7 );
 
   /** Declare an attribute on a field */
   template<class T>
@@ -256,6 +260,171 @@ private:
 //----------------------------------------------------------------------
 
 namespace phdmesh {
+
+template< class field_type >
+inline
+field_type * Schema::get_field( const std::string & name ,
+                                const char * required_by ) const
+{
+  typedef typename field_type::data_type Scalar ;
+  typedef typename field_type::dimension_traits_1 Traits1 ;
+  typedef typename field_type::dimension_traits_2 Traits2 ;
+  typedef typename field_type::dimension_traits_3 Traits3 ;
+  typedef typename field_type::dimension_traits_4 Traits4 ;
+  typedef typename field_type::dimension_traits_5 Traits5 ;
+  typedef typename field_type::dimension_traits_6 Traits6 ;
+  typedef typename field_type::dimension_traits_7 Traits7 ;
+
+  return static_cast< field_type * >(
+    get_field_base( name ,
+                    NumericEnum<Scalar>::value ,
+                    Traits1::descriptor() ,
+                    Traits2::descriptor() ,
+                    Traits3::descriptor() ,
+                    Traits4::descriptor() ,
+                    Traits5::descriptor() ,
+                    Traits6::descriptor() ,
+                    Traits7::descriptor() ,
+                    -1 , required_by ) );
+}
+
+template< class field_type >
+inline
+field_type & Schema::declare_field( const std::string & name ,
+                                    unsigned number_of_states )
+{
+  typedef typename field_type::data_type Scalar ;
+  typedef typename field_type::dimension_traits_1 Traits1 ;
+  typedef typename field_type::dimension_traits_2 Traits2 ;
+  typedef typename field_type::dimension_traits_3 Traits3 ;
+  typedef typename field_type::dimension_traits_4 Traits4 ;
+  typedef typename field_type::dimension_traits_5 Traits5 ;
+  typedef typename field_type::dimension_traits_6 Traits6 ;
+  typedef typename field_type::dimension_traits_7 Traits7 ;
+
+  return static_cast< field_type & >(
+    declare_field_base( name ,
+                        NumericEnum<Scalar>::value ,
+                        Traits1::descriptor() ,
+                        Traits2::descriptor() ,
+                        Traits3::descriptor() ,
+                        Traits4::descriptor() ,
+                        Traits5::descriptor() ,
+                        Traits6::descriptor() ,
+                        Traits7::descriptor() ,
+                        number_of_states ) );
+}
+
+template< class field_type >
+inline
+void Schema::declare_field_exists(
+  field_type & arg_field ,
+  unsigned     arg_entity_type ,
+  const Part & arg_part )
+{
+  declare_field_stride( arg_field , arg_entity_type , arg_part , NULL );
+}
+
+template< class field_type >
+inline
+void Schema::declare_field_size( field_type & arg_field ,
+                                 unsigned     arg_entity_type ,
+                                 const Part & arg_part ,
+                                 unsigned     arg_n1 )
+{
+  const typename field_type::Dimension dim( arg_n1 );
+  declare_field_stride( arg_field, arg_entity_type, arg_part, dim.stride );
+}
+
+template< class field_type >
+inline
+void Schema::declare_field_size( field_type & arg_field ,
+                                 unsigned     arg_entity_type ,
+                                 const Part & arg_part ,
+                                 unsigned     arg_n1 ,
+                                 unsigned     arg_n2 )
+{
+  const typename field_type::Dimension dim( arg_n1 , arg_n2 );
+  declare_field_stride( arg_field, arg_entity_type, arg_part, dim.stride );
+}
+
+template< class field_type >
+inline
+void Schema::declare_field_size( field_type & arg_field ,
+                                 unsigned     arg_entity_type ,
+                                 const Part & arg_part ,
+                                 unsigned     arg_n1 ,
+                                 unsigned     arg_n2 ,
+                                 unsigned     arg_n3 )
+{
+  const typename field_type::Dimension dim( arg_n1 , arg_n2 , arg_n3 );
+  declare_field_stride( arg_field, arg_entity_type, arg_part, dim.stride );
+}
+
+template< class field_type >
+inline
+void Schema::declare_field_size( field_type & arg_field ,
+                                 unsigned     arg_entity_type ,
+                                 const Part & arg_part ,
+                                 unsigned     arg_n1 ,
+                                 unsigned     arg_n2 ,
+                                 unsigned     arg_n3 ,
+                                 unsigned     arg_n4 )
+{
+  const typename field_type::Dimension dim( arg_n1 , arg_n2 , arg_n3 , arg_n4 );
+  declare_field_stride( arg_field, arg_entity_type, arg_part, dim.stride );
+}
+
+template< class field_type >
+inline
+void Schema::declare_field_size( field_type & arg_field ,
+                                 unsigned     arg_entity_type ,
+                                 const Part & arg_part ,
+                                 unsigned     arg_n1 ,
+                                 unsigned     arg_n2 ,
+                                 unsigned     arg_n3 ,
+                                 unsigned     arg_n4 ,
+                                 unsigned     arg_n5 )
+{
+  const typename field_type::Dimension
+    dim( arg_n1 , arg_n2 , arg_n3 , arg_n4 , arg_n5 );
+  declare_field_stride( arg_field, arg_entity_type, arg_part, dim.stride );
+}
+
+template< class field_type >
+inline
+void Schema::declare_field_size( field_type & arg_field ,
+                                 unsigned     arg_entity_type ,
+                                 const Part & arg_part ,
+                                 unsigned     arg_n1 ,
+                                 unsigned     arg_n2 ,
+                                 unsigned     arg_n3 ,
+                                 unsigned     arg_n4 ,
+                                 unsigned     arg_n5 ,
+                                 unsigned     arg_n6 )
+{
+  const typename field_type::Dimension
+    dim( arg_n1 , arg_n2 , arg_n3 , arg_n4 , arg_n5 , arg_n6 );
+  declare_field_stride( arg_field, arg_entity_type, arg_part, dim.stride );
+}
+
+template< class field_type >
+inline
+void Schema::declare_field_size( field_type & arg_field ,
+                                 unsigned     arg_entity_type ,
+                                 const Part & arg_part ,
+                                 unsigned     arg_n1 ,
+                                 unsigned     arg_n2 ,
+                                 unsigned     arg_n3 ,
+                                 unsigned     arg_n4 ,
+                                 unsigned     arg_n5 ,
+                                 unsigned     arg_n6 ,
+                                 unsigned     arg_n7 )
+{
+  const typename field_type::Dimension
+    dim( arg_n1 , arg_n2 , arg_n3 , arg_n4 , arg_n5 , arg_n6 , arg_n7 );
+  declare_field_stride( arg_field, arg_entity_type, arg_part, dim.stride );
+}
 
 template<class T>
 inline

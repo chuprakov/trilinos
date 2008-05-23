@@ -33,6 +33,8 @@
 
 namespace phdmesh {
 
+//----------------------------------------------------------------------
+
 const DimensionTraits * Cartesian::descriptor()
 { static const Cartesian self ; return & self ; }
 
@@ -80,6 +82,8 @@ unsigned Cartesian::decode( unsigned size , const std::string & arg ) const
   }
   return index ;
 }
+
+//----------------------------------------------------------------------
 
 const DimensionTraits * Cylindrical::descriptor()
 { static const Cylindrical self ; return & self ; }
@@ -129,6 +133,7 @@ unsigned Cylindrical::decode( unsigned size , const std::string & arg ) const
   return index ;
 }
 
+//----------------------------------------------------------------------
 
 }
 

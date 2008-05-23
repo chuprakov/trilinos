@@ -44,10 +44,24 @@ void stride_verify( unsigned n , const unsigned * stride , const char * who )
   }
   if ( ! ok ) {
     std::ostringstream msg ;
-    msg << who ;
+
+    if ( who ) { msg << who ; }
+    else       { msg << "<anonymous>" ; }
+
     msg << " HAS BAD DIMENSION STRIDE = {" ;
-    for ( unsigned i = 0 ; i < n ; ++i ) { msg << stride[i] << " " ; }
+
+    for ( unsigned i = 0 ; i < n ; ++i ) {
+
+      if ( i ) { msg << " ," ; }
+
+      msg << stride[i] << " " ;
+
+      if ( ! stride[i] || ( i && ( stride[i] % stride[i-1] ) ) ) {
+        msg << "IS BAD " ;
+      }
+    }
     msg << "}" ;
+
     throw std::runtime_error( msg.str() );
   }
 }
@@ -89,38 +103,41 @@ unsigned stride_size( unsigned n , const unsigned * stride )
 
 //----------------------------------------------------------------------
 
-
-const DimensionTraits * DimensionAny::descriptor()
-{ static const DimensionAny self ; return & self ; }
-
-const char * DimensionAny::name() const
-{ static const char n[] = "DimensionAny" ; return n ; }
-
-std::string DimensionAny::encode( unsigned size , unsigned index ) const
+std::string DimensionTraits::encode( unsigned size , unsigned index ) const
 {
   std::ostringstream tmp ;
 
   if ( size <= index ) {
-    tmp << "DimensionAny::encode( " << size << " , " << index << " ) ERROR" ;
+    tmp << "DimensionTraits::encode( " << size << " , " << index << " ) ERROR" ;
     throw std::runtime_error( tmp.str() );
   }
 
-  // Pad for alphabetic sorting.
-
-  if ( 1000 < size && index < 1000 ) { tmp << '0' ; }
-  if (  100 < size && index <  100 ) { tmp << '0' ; }
-  if (   10 < size && index <   10 ) { tmp << '0' ; }
   tmp << index ;
 
   return tmp.str();
 }
 
-unsigned DimensionAny::decode( unsigned size ,
-                               const std::string & label ) const
+unsigned DimensionTraits::decode(
+  unsigned size , const std::string & label ) const
 {
-  const unsigned index = size ?  atoi( label.c_str() ) : 0 ;
-  return index ;
+  int index = size ? atoi( label.c_str() ) : 0 ;
+
+  if ( index < 0 || ((int) size ) <= index ) {
+    std::ostringstream tmp ;
+    tmp << "DimensionTraits::decode( " << size << " , " << index << " ) ERROR" ;
+    throw std::runtime_error( tmp.str() );
+  }
+
+  return (unsigned) index ;
 }
+
+//----------------------------------------------------------------------
+
+const DimensionTraits * DimensionAnonymous::descriptor()
+{ static const DimensionAnonymous self ; return & self ; }
+
+const char * DimensionAnonymous::name() const
+{ static const char n[] = "DimensionAnonymous" ; return n ; }
 
 } // namespace phdmesh
 

@@ -39,7 +39,7 @@
 #include <mesh/Mesh.hpp>
 #include <mesh/Comm.hpp>
 
-#include <elem_top/Shape.hpp>
+#include <element/HexahedronTopology.hpp>
 
 using namespace phdmesh ;
 
@@ -50,7 +50,7 @@ typedef Field<double,Cartesian> CoordinateField ;
 
 void test_simple_mesh( ParallelMachine pm , std::istream & )
 {
-  typedef element::Hexahedron Hex ;
+  typedef Hexahedron<> Hex ;
 
   static const char method[] = "test_simple_mesh" ;
 
@@ -76,9 +76,8 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   CoordinateField & node_coordinates =
     S.declare_field<CoordinateField>( std::string("coordinates") );
-  CoordinateField::Dimension coord_dim(3);
 
-  S.declare_field_size( node_coordinates , Node , *univ_part , coord_dim );
+  S.declare_field_size( node_coordinates , Node , *univ_part , 3 );
   
   // Done defining the schema, commit it.
 
@@ -99,17 +98,18 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   // Node and element identifiers must not be zero,
   // an identifier of zero is reserved for 'undefined'.
 
-  // Base of this processor's hex
-  const entity_key_type node_key_0 = entity_key( Node , p_rank * 4 + 1 );
-  const entity_key_type node_key_1 = entity_key( Node , p_rank * 4 + 2 );
-  const entity_key_type node_key_2 = entity_key( Node , p_rank * 4 + 3 );
-  const entity_key_type node_key_3 = entity_key( Node , p_rank * 4 + 4 );
+  const entity_key_type node_key[8] = {
+    // Base of this processor's hex
+    entity_key( Node , p_rank * 4 + 1 ) ,
+    entity_key( Node , p_rank * 4 + 2 ) ,
+    entity_key( Node , p_rank * 4 + 3 ) ,
+    entity_key( Node , p_rank * 4 + 4 ) ,
 
-  // Top of this processor's hex
-  const entity_key_type node_key_4 = entity_key( Node , p_rank * 4 + 5 );
-  const entity_key_type node_key_5 = entity_key( Node , p_rank * 4 + 6 );
-  const entity_key_type node_key_6 = entity_key( Node , p_rank * 4 + 7 );
-  const entity_key_type node_key_7 = entity_key( Node , p_rank * 4 + 8 );
+    // Top of this processor's hex
+    entity_key( Node , p_rank * 4 + 5 ) ,
+    entity_key( Node , p_rank * 4 + 6 ) ,
+    entity_key( Node , p_rank * 4 + 7 ) ,
+    entity_key( Node , p_rank * 4 + 8 ) };
 
   const entity_key_type elem_key = entity_key( Element , p_rank + 1 );
   const entity_key_type face_key = entity_key( Face ,    p_rank + 1 );
@@ -118,43 +118,37 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   // 'owns_part'  Assume this processor owns everything it declares,
   //              will resolve parallel sharing later.
 
-  std::vector<Part*> add_parts , remove_parts ;
+  std::vector<Part*> add_parts ;
   add_parts.push_back( owns_part );
   add_parts.push_back( elem_part );
 
   // Declare node and element entities:
 
-  Entity & elem = M.declare_entity( elem_key , add_parts , p_rank );
+  Entity & elem = M.declare_entity( elem_key );
+  M.change_entity_parts( elem , add_parts );
+  M.change_entity_owner( elem , p_rank );
 
-  Entity & node_0 = M.declare_entity( node_key_0 , add_parts , p_rank );
-  Entity & node_1 = M.declare_entity( node_key_1 , add_parts , p_rank );
-  Entity & node_2 = M.declare_entity( node_key_2 , add_parts , p_rank );
-  Entity & node_3 = M.declare_entity( node_key_3 , add_parts , p_rank );
-  Entity & node_4 = M.declare_entity( node_key_4 , add_parts , p_rank );
-  Entity & node_5 = M.declare_entity( node_key_5 , add_parts , p_rank );
-  Entity & node_6 = M.declare_entity( node_key_6 , add_parts , p_rank );
-  Entity & node_7 = M.declare_entity( node_key_7 , add_parts , p_rank );
+  for ( unsigned i = 0 ; i < 8 ; ++i ) {
+    Entity & node = M.declare_entity( node_key[i] );
+    M.change_entity_parts( node , add_parts );
+    M.change_entity_owner( node , p_rank );
 
-  // Declare element <-> node relations
-  // These are required to have unique identifiers
-  // by providing the 'method' argument.
-  // If non-unique then an exception is thrown that includes
-  // the text contained in the 'method' string.
+    // Declare element <-> node relations
+    // These are required to have unique identifiers
+    // by providing the 'method' argument.
+    // If non-unique then an exception is thrown that includes
+    // the text contained in the 'method' string.
 
-  M.declare_relation( elem , node_0 , 0 , method );
-  M.declare_relation( elem , node_1 , 1 , method );
-  M.declare_relation( elem , node_2 , 2 , method );
-  M.declare_relation( elem , node_3 , 3 , method );
-  M.declare_relation( elem , node_4 , 4 , method );
-  M.declare_relation( elem , node_5 , 5 , method );
-  M.declare_relation( elem , node_6 , 6 , method );
-  M.declare_relation( elem , node_7 , 7 , method );
+    M.declare_relation( elem , node , i , method );
+  }
 
   // Declare the face entity:
 
   add_parts.push_back( face_part );
   
-  Entity & face = M.declare_entity( face_key , add_parts , p_rank );
+  Entity & face = M.declare_entity( face_key );
+  M.change_entity_parts( face , add_parts );
+  M.change_entity_owner( face , p_rank );
 
   // Declare element <-> face relation
 
@@ -167,19 +161,33 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   StaticAssert< Hex::side<0>::vertex<2>::ordinal == 5 >::ok();
   StaticAssert< Hex::side<0>::vertex<3>::ordinal == 4 >::ok();
 
-  M.declare_relation( face , node_0 , 0 , method );
-  M.declare_relation( face , node_1 , 1 , method );
-  M.declare_relation( face , node_5 , 2 , method );
-  M.declare_relation( face , node_4 , 3 , method );
+  const unsigned elem_face_node[4] = {
+    Hex::side<0>::vertex<0>::ordinal ,
+    Hex::side<0>::vertex<1>::ordinal ,
+    Hex::side<0>::vertex<2>::ordinal ,
+    Hex::side<0>::vertex<3>::ordinal };
 
-  // Update the nodes on the face to also be members of the face part.
+  RelationSpan elem_node = elem.relations( Node );
 
-  M.change_entity_parts( node_0 , add_parts , remove_parts );
-  M.change_entity_parts( node_1 , add_parts , remove_parts );
-  M.change_entity_parts( node_5 , add_parts , remove_parts );
-  M.change_entity_parts( node_4 , add_parts , remove_parts );
+  for ( unsigned i = 0 ; i < 4 ; ++i ) {
+    Entity & node = * elem_node[ elem_face_node[i] ].entity();
+    M.declare_relation( face , node , i , method );
+
+    // Update the nodes on the face to also be members of the face part.
+
+    M.change_entity_parts( node , add_parts );
+  }
 
   // Set node coordinates:
+
+  Entity & node_0 = * elem_node[0].entity();
+  Entity & node_1 = * elem_node[1].entity();
+  Entity & node_2 = * elem_node[2].entity();
+  Entity & node_3 = * elem_node[3].entity();
+  Entity & node_4 = * elem_node[4].entity();
+  Entity & node_5 = * elem_node[5].entity();
+  Entity & node_6 = * elem_node[6].entity();
+  Entity & node_7 = * elem_node[7].entity();
 
   field_data_valid( node_coordinates , node_0 , method );
   field_data_valid( node_coordinates , node_1 , method );

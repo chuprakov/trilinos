@@ -74,7 +74,12 @@ void EntityComm::receive_entity(
 
   EntityProc ep ;
 
-  ep.first = & receive_mesh.declare_entity( key, parts, owner_rank );
+  {
+    Entity & entity = receive_mesh.declare_entity( key );
+    receive_mesh.change_entity_parts( entity , parts );
+    receive_mesh.change_entity_owner( entity , owner_rank );
+    ep.first = & entity ;
+  }
 
   receive_mesh.declare_relation( *ep.first , relations , name() );
 
@@ -131,7 +136,7 @@ void EntityComm::pack_entity(
     buf.pack<unsigned>( & part_ordinals[0] , n );
   }
 
-  // Relationions:
+  // Relationships:
   {
     const unsigned rel_size = rel.size();
     buf.pack<unsigned>( rel_size );
@@ -179,7 +184,7 @@ void EntityComm::unpack_entity(
     }
   }
 
-  // Relationions:
+  // Relationships:
   {
     unsigned rel_size ; recv_buf.unpack<unsigned>( rel_size );
 

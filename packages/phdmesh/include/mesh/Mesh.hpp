@@ -88,22 +88,16 @@ public:
    *  If has different parts then merge the existing parts
    *  and the input parts.
    */
-  Entity & declare_entity( entity_key_type ,
-                           const std::vector<Part*> & ,
-                           int owner = -1 );
-
-  void change_entity_identifier( Entity & , entity_id_type );
+  Entity & declare_entity( entity_key_type );
 
   void change_entity_parts( Entity & ,
                             const std::vector<Part*> & add_parts ,
-                            const std::vector<Part*> & remove_parts );
-
-  /** Change all entities within the given kernel */
-  void change_entity_parts( const Kernel & ,
-                            const std::vector<Part*> & add_parts ,
-                            const std::vector<Part*> & remove_parts );
+                            const std::vector<Part*> & remove_parts = 
+                                  std::vector<Part*>() );
 
   void change_entity_owner( Entity & , unsigned );
+
+  void change_entity_identifier( Entity & , entity_id_type );
 
   /** Declare a relation and its converse between entities in the same mesh.
    *  The greater entity type 'uses' the lesser entity type.

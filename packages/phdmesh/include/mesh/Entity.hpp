@@ -40,7 +40,7 @@
 namespace phdmesh {
 
 //----------------------------------------------------------------------
-/** Relationion between mesh entities with attributes.
+/** Relationship between mesh entities with attributes.
  *
  *  Concept is a relation consisting of 
  *    { ( ( DomainEntity , RangeEntity ) , RelationIdentifier ) }
@@ -102,7 +102,7 @@ typedef Span< RelationSet::const_iterator > RelationSpan ;
 class Entity : public SetvMember< entity_key_type > {
 private:
 
-  RelationSet           m_relation ;    // Relationions
+  RelationSet          m_relation ;   // Relationships
   KernelSet::iterator  m_kernel ;     // Containing kernel
   unsigned             m_kernel_ord ; // Ordinal in the kernel
   unsigned             m_owner_rank ; // Parallel owner rank
@@ -110,6 +110,7 @@ private:
 
 public:
 
+  //------------------------------------
   /** Entity type */
   inline unsigned entity_type() const { return entity_rank( key() ); }
 
@@ -122,19 +123,21 @@ public:
   /** Kernel in which this mesh entity resides */
   unsigned kernel_ordinal() const { return m_kernel_ord ; }
 
-  /** Owning parallel rank */
-  unsigned owner_rank() const { return m_owner_rank ; }
-
   //------------------------------------
-
+  /** All relations */
   RelationSpan relations() const { return RelationSpan( m_relation ); }
 
+  /** All relations with entities of a given entity type */
   RelationSpan relations( unsigned type ) const ;
 
+  /** All relations with entities of a given entity type and attribute. */
   RelationSpan relations( unsigned type , entity_id_type patch_id ) const ;
 
   //------------------------------------
+  /** Owning parallel processor rank */
+  unsigned owner_rank() const { return m_owner_rank ; }
 
+  /** Sharing processor information */
   const EntityProcSpan & sharing() const { return m_sharing ; }
 
   //------------------------------------

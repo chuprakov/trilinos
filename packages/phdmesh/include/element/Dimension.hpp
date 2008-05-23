@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------*/
 /*      phdMesh : Parallel Heterogneous Dynamic unstructured Mesh         */
-/*                Copyright (2007) Sandia Corporation                     */
+/*                Copyright (2008) Sandia Corporation                     */
 /*                                                                        */
 /*  Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive   */
 /*  license for use of this work by or on behalf of the U.S. Government.  */
@@ -21,38 +21,50 @@
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
 /**
- * @author H. Carter Edwards
+ * @author H. Carter Edwards  <hcedwar@sandia.gov>
+ * @date   May 2008
  */
 
-#include <elem_top/Topology.hpp>
+#ifndef phdmesh_element_Dimension_hpp
+#define phdmesh_element_Dimension_hpp
+
+#include <util/Dimension.hpp>
 
 namespace phdmesh {
-namespace element {
 
-//----------------------------------------------------------------------
+struct NumberQuadrature : public DimensionTraits {
 
-template<>
-const Topology & topology< Point , 0 >()
-{
-  StaticAssert< Point::number_vertex == 0 &&
-                Point::number_edge   == 0 &&
-                Point::number_side   == 0 &&
-                Point::boundary >::ok();
-  static const Topology top( Point() , 0 , 0 );
-  return top ;
+  const char * name() const ;
+
+  std::string encode( unsigned size , unsigned index ) const ;
+
+  unsigned decode( unsigned size , const std::string & ) const ;
+
+  static const DimensionTraits * descriptor();
+
+private:
+  NumberQuadrature() {}
+  NumberQuadrature( const NumberQuadrature & );
+  NumberQuadrature & operator = ( const NumberQuadrature & );
+};
+
+struct NumberBasis : public DimensionTraits {
+
+  const char * name() const ;
+
+  std::string encode( unsigned size , unsigned index ) const ;
+
+  unsigned decode( unsigned size , const std::string & ) const ;
+
+  static const DimensionTraits * descriptor();
+
+private:
+  NumberBasis() {}
+  NumberBasis( const NumberBasis & );
+  NumberBasis & operator = ( const NumberBasis & );
+};
+
 }
 
-template<>
-const Topology & topology< Sphere , 1 >()
-{
-  StaticAssert< Sphere::number_vertex == 1 &&
-                Sphere::number_edge   == 0 &&
-                Sphere::number_side   == 0 &&
-                ! Sphere::boundary >::ok();
-  static const Topology top( Sphere() , 1 , 1 );
-  return top ;
-}
-
-}
-}
+#endif
 

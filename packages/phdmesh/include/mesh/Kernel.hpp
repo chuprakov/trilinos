@@ -132,8 +132,13 @@ private:
 
   template< class field_type >
   friend
-  typename field_type::Dimension
+  typename field_type::BlockDimension
   field_dimension( const field_type & f , const Kernel & k );
+
+  template< class field_type >
+  friend
+  typename field_type::Dimension
+  field_dimension( const field_type & f , const Entity & e );
 
   template< class field_type >
   friend
@@ -143,7 +148,7 @@ private:
   template< class field_type >
   friend
   typename field_type::data_type *
-  field_data( const field_type & f , const Kernel & k , unsigned i );
+  field_data( const field_type & f , const Entity & e );
 
   friend
   unsigned field_data_size( const FieldBase & f , const Kernel & k );

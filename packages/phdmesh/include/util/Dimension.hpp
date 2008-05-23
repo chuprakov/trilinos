@@ -42,30 +42,29 @@ public:
   /** Encode a descriptive text label for a dimension and index.
    *  Throw an exception for invalid arguments.
    */
-  virtual std::string encode( unsigned size , unsigned index ) const = 0 ;
+  virtual std::string encode( unsigned size , unsigned index ) const ;
 
   /** Decode an index from a dimension and text label.
    *  Throw an exception for invalid arguments.
    */
-  virtual unsigned decode( unsigned size , const std::string & ) const = 0 ;
+  virtual unsigned decode( unsigned size , const std::string & ) const ;
 
   static const DimensionTraits * descriptor() { return NULL ; }
 };
 
-class DimensionAny : public DimensionTraits {
+//----------------------------------------------------------------------
+
+class DimensionAnonymous : public DimensionTraits {
 public:
 
   const char * name() const ;
 
-  std::string encode( unsigned size , unsigned index ) const ;
-  unsigned    decode( unsigned size , const std::string & ) const ;
-
   static const DimensionTraits * descriptor();
 
 private:
-  DimensionAny() {}
-  DimensionAny( const DimensionAny & );
-  DimensionAny & operator = ( const DimensionAny & );
+  DimensionAnonymous() {}
+  DimensionAnonymous( const DimensionAnonymous & );
+  DimensionAnonymous & operator = ( const DimensionAnonymous & );
 };
 
 //----------------------------------------------------------------------
@@ -103,6 +102,9 @@ template< class Trait1 = DimensionTraits ,
           class Trait8 = DimensionTraits >
 class Dimension ;
 
+template< class Dim , class Trait > class DimensionAppend ;
+template< class Dim >               class DimensionTruncate ;
+
 enum { DimensionMaximum = 8 };
 
 void     stride_verify( unsigned , const unsigned *, const char * );
@@ -122,6 +124,8 @@ class Dimension< DimensionTraits, DimensionTraits,
                  DimensionTraits, DimensionTraits> {
 public:
   enum { NumDim = 0 };
+
+  Dimension( const unsigned * const , const char * ) {}
 };
 
 //----------------------------------------------------------------------
@@ -165,7 +169,19 @@ public:
     { stride[0] = rhs.stride[0] ; return *this ; }
 
   Dimension( const unsigned * const n , const char * error_source )
-    { stride_copy( NumDim , stride , n , error_source ); }
+    {
+      stride_verify( NumDim , n , error_source );
+      stride[0] = n[0] ;
+    }
+
+  //--------------------------------
+
+  template< class T >
+  explicit Dimension( const Dimension<Trait1,T> & rhs )
+    { stride[0] = rhs.stride[0] ; }
+
+  Dimension( const Dimension<> & , unsigned n )
+    { stride[0] = n ; }
 };
 
 //----------------------------------------------------------------------
@@ -235,7 +251,26 @@ public:
     }
 
   Dimension( const unsigned * const n , const char * error_source )
-    { stride_copy( NumDim , stride , n , error_source ); }
+    {
+      stride_verify( NumDim , n , error_source );
+      stride[0] = n[0] ;
+      stride[1] = n[1] ;
+    }
+
+  //--------------------------------
+
+  template< class T >
+  explicit Dimension( const Dimension<Trait1,Trait2,T> & rhs )
+    {
+      stride[0] = rhs.stride[0] ;
+      stride[1] = rhs.stride[1] ;
+    }
+
+  Dimension( const Dimension<Trait1> & rhs , unsigned n )
+    {
+      stride[0] = rhs.stride[0] ;
+      stride[1] = n * stride[0] ;
+    }
 };
 
 //----------------------------------------------------------------------
@@ -314,7 +349,29 @@ public:
     }
 
   Dimension( const unsigned * const n , const char * error_source )
-    { stride_copy( NumDim , stride , n , error_source ); }
+    {
+      stride_verify( NumDim , n , error_source );
+      stride[0] = n[0] ;
+      stride[1] = n[1] ;
+      stride[2] = n[2] ;
+    }
+
+  //--------------------------------
+
+  template< class T >
+  explicit Dimension( const Dimension<Trait1,Trait2,Trait3,T> & rhs )
+    {
+      stride[0] = rhs.stride[0] ;
+      stride[1] = rhs.stride[1] ;
+      stride[2] = rhs.stride[2] ;
+    }
+
+  Dimension( const Dimension<Trait1,Trait2> & rhs , unsigned n )
+    {
+      stride[0] = rhs.stride[0] ;
+      stride[1] = rhs.stride[1] ;
+      stride[2] = n * stride[1] ;
+    }
 };
 
 //----------------------------------------------------------------------
@@ -403,7 +460,32 @@ public:
     }
 
   Dimension( const unsigned * const n , const char * error_source )
-    { stride_copy( NumDim , stride , n , error_source ); }
+    {
+      stride_verify( NumDim , n , error_source );
+      stride[0] = n[0] ;
+      stride[1] = n[1] ;
+      stride[2] = n[2] ;
+      stride[3] = n[3] ;
+    }
+
+  //--------------------------------
+
+  template< class T >
+  explicit Dimension( const Dimension<Trait1,Trait2,Trait3,Trait4,T> & rhs )
+    {
+      stride[0] = rhs.stride[0] ;
+      stride[1] = rhs.stride[1] ;
+      stride[2] = rhs.stride[2] ;
+      stride[3] = rhs.stride[3] ;
+    }
+
+  Dimension( const Dimension<Trait1,Trait2,Trait3> & rhs , unsigned n )
+    {
+      stride[0] = rhs.stride[0] ;
+      stride[1] = rhs.stride[1] ;
+      stride[2] = rhs.stride[2] ;
+      stride[3] = n * stride[2] ;
+    }
 };
 
 //----------------------------------------------------------------------
@@ -503,7 +585,36 @@ public:
     }
 
   Dimension( const unsigned * const n , const char * error_source )
-    { stride_copy( NumDim , stride , n , error_source ); }
+    {
+      stride_verify( NumDim , n , error_source );
+      stride[0] = n[0] ;
+      stride[1] = n[1] ;
+      stride[2] = n[2] ;
+      stride[3] = n[3] ;
+      stride[4] = n[4] ;
+    }
+
+  //--------------------------------
+
+  template< class T >
+  explicit Dimension(
+    const Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,T> & rhs )
+    {
+      stride[0] = rhs.stride[0] ;
+      stride[1] = rhs.stride[1] ;
+      stride[2] = rhs.stride[2] ;
+      stride[3] = rhs.stride[3] ;
+      stride[4] = rhs.stride[4] ;
+    }
+
+  Dimension( const Dimension<Trait1,Trait2,Trait3,Trait4> & rhs , unsigned n )
+    {
+      stride[0] = rhs.stride[0] ;
+      stride[1] = rhs.stride[1] ;
+      stride[2] = rhs.stride[2] ;
+      stride[3] = rhs.stride[3] ;
+      stride[4] = n * stride[3] ;
+    }
 };
 
 //----------------------------------------------------------------------
@@ -610,7 +721,40 @@ public:
     }
 
   Dimension( const unsigned * const n , const char * error_source )
-    { stride_copy( NumDim , stride , n , error_source ); }
+    {
+      stride_verify( NumDim , n , error_source );
+      stride[0] = n[0] ;
+      stride[1] = n[1] ;
+      stride[2] = n[2] ;
+      stride[3] = n[3] ;
+      stride[4] = n[4] ;
+      stride[5] = n[5] ;
+    }
+
+  //--------------------------------
+
+  template< class T >
+  explicit Dimension(
+    const Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6,T> & rhs )
+    {
+      stride[0] = rhs.stride[0] ;
+      stride[1] = rhs.stride[1] ;
+      stride[2] = rhs.stride[2] ;
+      stride[3] = rhs.stride[3] ;
+      stride[4] = rhs.stride[4] ;
+      stride[5] = rhs.stride[5] ;
+    }
+
+  Dimension(
+    const Dimension<Trait1,Trait2,Trait3,Trait4,Trait5> & rhs , unsigned n )
+    {
+      stride[0] = rhs.stride[0] ;
+      stride[1] = rhs.stride[1] ;
+      stride[2] = rhs.stride[2] ;
+      stride[3] = rhs.stride[3] ;
+      stride[4] = rhs.stride[4] ;
+      stride[5] = n * stride[4] ;
+    }
 };
 
 //----------------------------------------------------------------------
@@ -724,7 +868,44 @@ public:
     }
 
   Dimension( const unsigned * const n , const char * error_source )
-    { stride_copy( NumDim , stride , n , error_source ); }
+    {
+      stride_verify( NumDim , n , error_source );
+      stride[0] = n[0] ;
+      stride[1] = n[1] ;
+      stride[2] = n[2] ;
+      stride[3] = n[3] ;
+      stride[4] = n[4] ;
+      stride[5] = n[5] ;
+      stride[6] = n[6] ;
+    }
+
+  //--------------------------------
+
+  template< class T >
+  explicit Dimension(
+    const Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6,Trait7,T> & rhs )
+    {
+      stride[0] = rhs.stride[0] ;
+      stride[1] = rhs.stride[1] ;
+      stride[2] = rhs.stride[2] ;
+      stride[3] = rhs.stride[3] ;
+      stride[4] = rhs.stride[4] ;
+      stride[5] = rhs.stride[5] ;
+      stride[6] = rhs.stride[6] ;
+    }
+
+  Dimension(
+    const Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6> & rhs ,
+    unsigned n )
+    {
+      stride[0] = rhs.stride[0] ;
+      stride[1] = rhs.stride[1] ;
+      stride[2] = rhs.stride[2] ;
+      stride[3] = rhs.stride[3] ;
+      stride[4] = rhs.stride[4] ;
+      stride[5] = rhs.stride[5] ;
+      stride[6] = n * stride[5] ;
+    }
 };
 
 //----------------------------------------------------------------------
@@ -847,8 +1028,125 @@ public:
     }
 
   Dimension( const unsigned * const n , const char * error_source )
-    { stride_copy( NumDim , stride , n , error_source ); }
+    {
+      stride_verify( NumDim , n , error_source );
+      stride[0] = n[0] ;
+      stride[1] = n[1] ;
+      stride[2] = n[2] ;
+      stride[3] = n[3] ;
+      stride[4] = n[4] ;
+      stride[5] = n[5] ;
+      stride[6] = n[6] ;
+      stride[7] = n[7] ;
+    }
+
+  //--------------------------------
+
+  struct Truncate {
+    typedef Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6,Trait7> type ;
+  };
+
+  Dimension(
+    const Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6,Trait7> & rhs ,
+    unsigned n )
+    {
+      stride[0] = rhs.stride[0] ;
+      stride[1] = rhs.stride[1] ;
+      stride[2] = rhs.stride[2] ;
+      stride[3] = rhs.stride[3] ;
+      stride[4] = rhs.stride[4] ;
+      stride[5] = rhs.stride[5] ;
+      stride[6] = rhs.stride[6] ;
+      stride[7] = n * stride[6] ;
+    }
 };
+
+//----------------------------------------------------------------------
+
+template< class Trait1 >
+struct DimensionAppend< Dimension<>,Trait1>
+{ typedef Dimension<Trait1> type ; };
+
+template< class Trait1 , class Trait2 >
+struct DimensionAppend< Dimension<Trait1>,Trait2>
+{ typedef Dimension<Trait1,Trait2> type ; };
+
+template< class Trait1 , class Trait2 , class Trait3 >
+struct DimensionAppend< Dimension<Trait1,Trait2>,Trait3>
+{ typedef Dimension<Trait1,Trait2,Trait3> type ; };
+
+template< class Trait1 , class Trait2 , class Trait3 , class Trait4 >
+struct DimensionAppend< Dimension<Trait1,Trait2,Trait3>,Trait4>
+{ typedef Dimension<Trait1,Trait2,Trait3,Trait4> type ; };
+
+template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
+          class Trait5 >
+struct DimensionAppend< Dimension<Trait1,Trait2,Trait3,Trait4>,Trait5>
+{ typedef Dimension<Trait1,Trait2,Trait3,Trait4,Trait5> type ; };
+
+template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
+          class Trait5 , class Trait6 >
+struct DimensionAppend< Dimension<Trait1,Trait2,Trait3,Trait4,Trait5>,Trait6>
+{ typedef Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6> type ; };
+
+template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
+          class Trait5 , class Trait6 , class Trait7 >
+struct DimensionAppend< Dimension<Trait1,Trait2,Trait3,Trait4,
+                                  Trait5,Trait6> , Trait7 >
+{
+  typedef Dimension<Trait1,Trait2,Trait3,Trait4,
+                    Trait5,Trait6,Trait7> type ;
+};
+
+template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
+          class Trait5 , class Trait6 , class Trait7 , class Trait8 >
+struct DimensionAppend< Dimension<Trait1,Trait2,Trait3,Trait4,
+                                  Trait5,Trait6,Trait7> , Trait8 >
+{
+  typedef Dimension<Trait1,Trait2,Trait3,Trait4,
+                    Trait5,Trait6,Trait7,Trait8> type ;
+};
+
+//----------------------------------------------------------------------
+
+template< class Trait1 >
+struct DimensionTruncate< Dimension<Trait1> >
+{ typedef Dimension<> type ; };
+
+template< class Trait1 , class Trait2 >
+struct DimensionTruncate< Dimension<Trait1,Trait2> >
+{ typedef Dimension<Trait1> type ; };
+
+template< class Trait1 , class Trait2 , class Trait3 >
+struct DimensionTruncate< Dimension<Trait1,Trait2,Trait3> >
+{ typedef Dimension<Trait1,Trait2> type ; };
+
+template< class Trait1 , class Trait2 , class Trait3 , class Trait4 >
+struct DimensionTruncate< Dimension<Trait1,Trait2,Trait3,Trait4> >
+{ typedef Dimension<Trait1,Trait2,Trait3> type ; };
+
+template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
+          class Trait5 >
+struct DimensionTruncate< Dimension<Trait1,Trait2,Trait3,Trait4,Trait5> >
+{ typedef Dimension<Trait1,Trait2,Trait3,Trait4> type ; };
+
+template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
+          class Trait5 , class Trait6 >
+struct DimensionTruncate< Dimension<Trait1,Trait2,Trait3,Trait4,
+                                    Trait5,Trait6> >
+{ typedef Dimension<Trait1,Trait2,Trait3,Trait4,Trait5> type ; };
+
+template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
+          class Trait5 , class Trait6 , class Trait7 >
+struct DimensionTruncate< Dimension<Trait1,Trait2,Trait3,Trait4,
+                                    Trait5,Trait6,Trait7> >
+{ typedef Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6> type ; };
+
+template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
+          class Trait5 , class Trait6 , class Trait7 , class Trait8 >
+struct DimensionTruncate< Dimension<Trait1,Trait2,Trait3,Trait4,
+                                    Trait5,Trait6,Trait7,Trait8> >
+{ typedef Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6,Trait7> type ; };
 
 //----------------------------------------------------------------------
 

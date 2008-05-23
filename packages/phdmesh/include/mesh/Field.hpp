@@ -189,6 +189,20 @@ private:
 };
 
 //----------------------------------------------------------------------
+/** The dimension traits for a block of field data for multiple entities.
+ */
+struct Entities : public DimensionTraits {
+  const char * name() const ;
+  static const DimensionTraits * descriptor();
+private:
+  Entities() {}
+  Entities( const Entities & );
+  Entities & operator = ( const Entities & );
+};
+
+//----------------------------------------------------------------------
+// Maximum dimension is one less to allow introduction
+// additional 'Entities' dimension.
 
 template< typename Scalar ,
           class Traits1 , class Traits2 ,
@@ -210,11 +224,7 @@ public:
   typedef phdmesh::Dimension<Traits1,Traits2,Traits3,Traits4,
                              Traits5,Traits6,Traits7> Dimension ;
 
-/*
-  typedef phdmesh::Dimension<Traits1,Traits2,Traits3,Traits4,
-                             Traits5,Traits6,Traits7,
-                             EntityDimension> BlockDimension ;
-*/
+  typedef typename DimensionAppend<Dimension,Entities>::type BlockDimension ;
 
   Dimension dimension( unsigned entity_type , const Part & part ) const
     {

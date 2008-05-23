@@ -35,11 +35,16 @@
 namespace phdmesh {
 
 //----------------------------------------------------------------------
+/** The end of a TypeList is the first encounter with an entry of TypeListEnd.
+ *  Thus all entries after a TypeListEnd entry are ignored.  This allows
+ *  The MakeTypeList<...> template to define TypeLists of the desired length.
+ */
+struct TypeListEnd {};
 
 /** @class  TypeList
  *  @brief  Linked list of types.
  */
-template<typename ValueType, typename ListType>
+template<typename ValueType, typename ListType = TypeListEnd >
 struct TypeList {
   /** Value for the current entry */
   typedef ValueType TypeListValue ;
@@ -47,12 +52,6 @@ struct TypeList {
   /** Remainder of the list */
   typedef ListType  TypeListTail ;
 };
-
-/** The end of a TypeList is the first encounter with an entry of TypeListEnd.
- *  Thus all entries after a TypeListEnd entry are ignored.  This allows
- *  The MakeTypeList<...> template to define TypeLists of the desired length.
- */
-struct TypeListEnd {};
 
 //----------------------------------------------------------------------
 

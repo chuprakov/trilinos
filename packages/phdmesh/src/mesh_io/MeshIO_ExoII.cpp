@@ -96,13 +96,6 @@ const DimensionTraits * ElementAttributes::descriptor()
 const char * ElementAttributes::name() const
 { static const char n[] = "ElementAttributes" ; return n ; }
 
-std::string ElementAttributes::encode( unsigned size , unsigned index ) const
-{ return DimensionAny::descriptor()->encode( size , index ); }
-
-unsigned ElementAttributes::decode( unsigned size ,
-                                    const std::string & arg ) const
-{ return DimensionAny::descriptor()->decode( size , arg ); }
-
 
 }
 }
@@ -185,12 +178,10 @@ const FileSchema::IndexField & exo_index( Schema & arg_schema )
 
   IndexField & f = arg_schema.declare_field< IndexField >( std::string(name) );
 
-  IndexField::Dimension dim(2);
-
-  arg_schema.declare_field_size( f , Node ,    upart , dim );
-  arg_schema.declare_field_size( f , Edge ,    upart , dim );
-  arg_schema.declare_field_size( f , Face ,    upart , dim );
-  arg_schema.declare_field_size( f , Element , upart , dim );
+  arg_schema.declare_field_size( f , Node ,    upart , 2 );
+  arg_schema.declare_field_size( f , Edge ,    upart , 2 );
+  arg_schema.declare_field_size( f , Face ,    upart , 2 );
+  arg_schema.declare_field_size( f , Element , upart , 2 );
 
   return f ;
 }
@@ -219,23 +210,21 @@ FileSchema::~FileSchema() {}
 namespace {
 
 const FilePart * internal_declare_part(
-  Schema            & arg_schema ,
-  const std::string & arg_name ,
-  int                 arg_id ,
-  EntityType          arg_type ,
-  ElementType         arg_element_type ,
-  int                 arg_element_dim ,
-  int                 arg_number_nodes ,
-  int                 arg_number_attr ,
+  Schema    & arg_schema ,
+  Part      & arg_part ,
+  int         arg_id ,
+  EntityType  arg_type ,
+  ElementType arg_element_type ,
+  int         arg_element_dim ,
+  int         arg_number_nodes ,
+  int         arg_number_attr ,
   const FileSchema::AttributeField  & arg_attributes )
 {
   typedef FileSchema::AttributeField AttributeField ;
 
   static const char method[] = "phdmesh::exodus::FileSchema::declare_part" ;
 
-  Part & part = arg_schema.declare_part( arg_name );
-
-  CSet::Span<FilePart> attr = part.attribute<FilePart>();
+  CSet::Span<FilePart> attr = arg_part.attribute<FilePart>();
 
   const FilePart * file_part = NULL ;
 
@@ -257,23 +246,23 @@ const FilePart * internal_declare_part(
     }
 
     if ( number_attr ) {
-      AttributeField::Dimension dim(number_attr);
       arg_schema.declare_field_size(
-        const_cast<AttributeField &>(arg_attributes) , Element , part , dim );
+        const_cast<AttributeField &>(arg_attributes),
+        Element, arg_part, number_attr );
     }
 
-    file_part = new FilePart( part, arg_id, arg_type,
+    file_part = new FilePart( arg_part, arg_id, arg_type,
                               arg_element_type, arg_number_nodes ,
                               number_attr );
 
-    arg_schema.declare_part_attribute<FilePart>( part , file_part , true );
+    arg_schema.declare_part_attribute<FilePart>( arg_part , file_part , true );
   }
   else if ( attr.size() == 1 ) {
     file_part = & *attr ;
   }
 
   if ( file_part == NULL ||
-       & file_part->m_part         != & part ||
+       & file_part->m_part         != & arg_part ||
          file_part->m_identifier   != arg_id ||
          file_part->m_entity_type  != arg_type ||
          file_part->m_element_type != arg_element_type ||
@@ -291,37 +280,33 @@ const FilePart * internal_declare_part(
 
 }
 
-Part & FileSchema::declare_part(
-  const std::string & arg_name ,
-  int                 arg_id ,
-  ElementType         arg_element_type ,
-  unsigned            arg_number_nodes ,
-  unsigned            arg_num_attributes )
+void FileSchema::declare_part(
+  Part      & arg_part ,
+  int         arg_id ,
+  ElementType arg_element_type ,
+  unsigned    arg_number_nodes ,
+  unsigned    arg_num_attributes )
 {
   const FilePart * const fp =
-    internal_declare_part( m_schema , arg_name , arg_id ,
+    internal_declare_part( m_schema , arg_part , arg_id ,
                            Element , arg_element_type , m_dimension ,
                            arg_number_nodes , arg_num_attributes ,
                            m_field_elem_attr );
 
   m_parts[ Element ].push_back( fp );
-
-  return fp->m_part ;
 }
 
-Part & FileSchema::declare_part(
-  const std::string & arg_name ,
-  int                 arg_id ,
-  EntityType          arg_type )
+void FileSchema::declare_part(
+  Part     & arg_part ,
+  int        arg_id ,
+  EntityType arg_type )
 {
   const FilePart * const fp =
-     internal_declare_part( m_schema , arg_name , arg_id ,
+     internal_declare_part( m_schema , arg_part , arg_id ,
                             arg_type , UNDEFINED , m_dimension , 0 , 0 ,
                             m_field_elem_attr );
 
   m_parts[ arg_type ].push_back( fp );
-
-  return fp->m_part ;
 }
 
 //----------------------------------------------------------------------
@@ -1563,7 +1548,8 @@ void pack_entity_data( const std::vector<const Entity *> & send ,
     const Entity & e = **i ;
 
     item_buffer[0] = * field_data( f_index , e );
-    item_buffer[1] = reinterpret_cast<T*>( field_data(f_data,e) )[ offset ] ;
+    item_buffer[1] = (double)
+                     reinterpret_cast<T*>( field_data(f_data,e) )[ offset ] ;
 
     buf.pack<double>( item_buffer , 2 );
   }
@@ -2139,9 +2125,11 @@ FileSchema::FileSchema(
     if ( ! exo_error ) {
       for ( int i = 0 ; i < num_elem_blk ; ++i ) {
 
+        Part & part = m_schema.declare_part( std::string(block_data[i].name) );
+
         const FilePart * fp =
           internal_declare_part( m_schema ,
-                                 std::string( block_data[i].name ) ,
+                                 part ,
                                  block_data[i].block_id ,
                                  Element ,
                                  element_type( block_data[i].type ) ,
@@ -2746,7 +2734,9 @@ FileInput::FileInput(
             elem_data_local[ size_elem_data_local++ ] ;
         const entity_key_type elem_key = entity_key( Element , elem_ident );
 
-        Entity & elem = M.declare_entity(elem_key,entity_parts,(int)p_rank);
+        Entity & elem = M.declare_entity(elem_key);
+        M.change_entity_parts( elem , entity_parts );
+        M.change_entity_owner( elem , (int) p_rank );
 
         field_data( FS.m_field_index , elem )[0] = elem_index ;
 
@@ -2773,7 +2763,9 @@ FileInput::FileInput(
           const entity_id_type node_ident = iter_node_data->ident ;
           const entity_key_type node_key = entity_key( Node , node_ident );
 
-          Entity & node = M.declare_entity(node_key,entity_parts,(int)p_rank);
+          Entity & node = M.declare_entity(node_key);
+          M.change_entity_parts( node , entity_parts );
+          M.change_entity_owner( node , (int) p_rank );
 
           M.declare_relation( elem , node , j , method );
 

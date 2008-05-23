@@ -55,13 +55,28 @@ bool field_data_valid( const FieldBase & f ,
 
 template< class field_type >
 inline
-typename field_type::Dimension
+typename field_type::BlockDimension
 field_dimension( const field_type & f , const Kernel & k )
 {
-  typedef typename field_type::Dimension Dim ;
+  typedef typename field_type::Dimension      Dim ;
+  typedef typename field_type::BlockDimension Block ;
   const Kernel::DataMap & pd = k.m_field_map[ f.schema_ordinal() ];
-  return Dim( pd.m_stride , "phdmesh::field_dimension" );
+  const Dim tmp( pd.m_stride , NULL );
+  return Block( tmp , k.m_size );
 }
+
+template< class field_type >
+inline
+typename field_type::Dimension
+field_dimension( const field_type & f , const Entity & e )
+{
+  typedef typename field_type::Dimension Dim ;
+  const Kernel & k = e.kernel();
+  const Kernel::DataMap & pd = k.m_field_map[ f.schema_ordinal() ];
+  return Dim( pd.m_stride , NULL );
+}
+
+//----------------------------------------------------------------------
 
 template< class field_type >
 inline
@@ -85,10 +100,13 @@ field_data( const field_type & f , const Kernel & k )
 template< class field_type >
 inline
 typename field_type::data_type *
-field_data( const field_type & f , const Kernel & k , unsigned i )
+field_data( const field_type & f , const Entity & e )
 {
   typedef unsigned char                  * byte_p ;
   typedef typename field_type::data_type * data_p ;
+
+  const Kernel & k = e.kernel();
+  const unsigned i = e.kernel_ordinal();
 
   data_p ptr = NULL ;
 
@@ -101,26 +119,14 @@ field_data( const field_type & f , const Kernel & k , unsigned i )
   return ptr ;
 }
 
+//----------------------------------------------------------------------
+
 inline
 unsigned field_data_size( const FieldBase & f , const Kernel & k )
 {
   const Kernel::DataMap & pd = k.m_field_map[ f.schema_ordinal() ];
   return pd.m_size ;
 }
-
-//----------------------------------------------------------------------
-
-template< class field_type >
-inline
-typename field_type::Dimension
-field_dimension( const field_type & f , const Entity & e )
-{ return field_dimension( f , e.kernel() ); }
-
-template< class field_type >
-inline
-typename field_type::data_type *
-field_data( const field_type & f , const Entity & e )
-{ return field_data( f , e.kernel() , e.kernel_ordinal() ); }
 
 inline
 unsigned field_data_size( const FieldBase & f , const Entity & e )

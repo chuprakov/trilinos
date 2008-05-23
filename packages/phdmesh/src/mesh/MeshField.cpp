@@ -42,6 +42,14 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
+const DimensionTraits * Entities::descriptor()
+{ static const Entities self ; return & self ; }
+
+const char * Entities::name() const
+{ static const char n[] = "Entities" ; return n ; }
+
+//----------------------------------------------------------------------
+
 const char * field_state_name( FieldState s )
 {
   static const char * name_list[] = {

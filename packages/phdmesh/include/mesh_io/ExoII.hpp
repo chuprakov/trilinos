@@ -48,13 +48,7 @@ class FilePart ;
 //----------------------------------------------------------------------
 
 struct ElementAttributes : public DimensionTraits {
-
   const char * name() const ;
-
-  std::string encode( unsigned size , unsigned index ) const ;
-
-  unsigned decode( unsigned size , const std::string & ) const ;
-
   static const DimensionTraits * descriptor();
 private:
   ElementAttributes() {}
@@ -98,16 +92,16 @@ public:
               const unsigned          arg_writer_rank = 0 );
 
   /** Declare element part, default number of attributes. */
-  Part & declare_part( const std::string & arg_name ,
-                       int                 arg_id ,
-                       ElementType         arg_element_type ,
-                       unsigned            arg_number_nodes ,
-                       unsigned            arg_num_attributes = 0 );
+  void declare_part( Part      & arg_part ,
+                     int         arg_id ,
+                     ElementType arg_element_type ,
+                     unsigned    arg_number_nodes ,
+                     unsigned    arg_num_attributes = 0 );
 
   /** Declare a node, edge, or face part */
-  Part & declare_part( const std::string & arg_name ,
-                       int                 arg_id ,
-                       EntityType          arg_type );
+  void declare_part( Part     & arg_part ,
+                     int        arg_id ,
+                     EntityType arg_type );
 
   /** Assign contiguous global indices [1..#] to nodes and elements.
    *  Elements are ordered by element block and then by identifier.

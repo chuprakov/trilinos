@@ -141,9 +141,7 @@ Entity * Mesh::get_entity( entity_key_type key ,
   return i != es.end() ? & * i : (Entity*) NULL ;
 }
 
-Entity & Mesh::declare_entity( entity_key_type key ,
-                               const std::vector<Part*> & parts ,
-                               int owner )
+Entity & Mesh::declare_entity( entity_key_type key )
 {
   const char method[] = "phdmesh::Mesh::declare_entity" ;
 
@@ -155,33 +153,10 @@ Entity & Mesh::declare_entity( entity_key_type key ,
   }
 
   const unsigned entity_type = entity_rank( key );
-  EntitySet   & eset = m_entities[ entity_type ] ;
 
-  // Find or create the entity
+  EntitySet & eset = m_entities[ entity_type ] ;
 
   const std::pair< EntitySet::iterator , bool > result = eset.insert( key );
-
-  const bool is_new = result.second ;
-
-  if ( owner < 0 ) {
-    owner = is_new ? parallel_rank() : result.first->owner_rank();
-  }
-
-  PartSet add( parts ) , remove ;
-
-  if ( is_new && add.empty() ) {
-    if ( owner == (int) parallel_rank() ) {
-      Part * const owns_part = & m_schema.owns_part();
-      add.push_back( owns_part );
-    }
-    else {
-      Part * const univ_part = & m_schema.universal_part();
-      add.push_back( univ_part );
-    }
-  }
-
-  change_entity_parts( *result.first , add , remove );
-  change_entity_owner( *result.first , (unsigned) owner );
 
   return * result.first ;
 }

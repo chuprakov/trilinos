@@ -26,7 +26,7 @@ PHDMESH_SRC_DIRS =	\
 		$(PHDMESH_PATH)/src/txblas	\
 		$(PHDMESH_PATH)/src/mesh	\
 		$(PHDMESH_PATH)/src/mesh_io	\
-		$(PHDMESH_PATH)/src/elem_top
+		$(PHDMESH_PATH)/src/element
 
 
 include	\
@@ -34,7 +34,7 @@ include	\
 	$(PHDMESH_PATH)/src/txblas/Make.in	\
 	$(PHDMESH_PATH)/src/mesh/Make.in	\
 	$(PHDMESH_PATH)/src/mesh_io/Make.in	\
-	$(PHDMESH_PATH)/src/elem_top/Make.in
+	$(PHDMESH_PATH)/src/element/Make.in
 
 
 
@@ -42,16 +42,16 @@ vpath %.c   $(PHDMESH_SRC_DIRS)
 vpath %.cpp $(PHDMESH_SRC_DIRS)
 
 src_all     :	util_all     txblas_all	\
-		mesh_all     mesh_io_all     elem_top_all ;
+		mesh_all     mesh_io_all     element_all ;
 
 src_clean   :	util_clean   txblas_clean	\
-		mesh_clean   mesh_io_clean   elem_top_clean ;
+		mesh_clean   mesh_io_clean   element_clean ;
 
 src_install :	util_install txblas_install	\
-		mesh_install mesh_io_install elem_top_install ;
+		mesh_install mesh_io_install element_install ;
 
 src_uninstall : \
 	util_uninstall txblas_uninstall	\
 	mesh_uninstall mesh_io_uninstall	
-	elem_top_uninstall ;
+	element_uninstall ;
 

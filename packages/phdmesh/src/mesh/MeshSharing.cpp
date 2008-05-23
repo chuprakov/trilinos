@@ -471,7 +471,7 @@ bool unpack_info_verify(
       for ( unsigned j = 0 ; j < part_ordinals.size() ; ++j ) {
         os << " " << mesh_parts[ part_ordinals[j] ]->name();
       }
-      os << " ;" << std::endl << "  Relationions =" ;
+      os << " ;" << std::endl << "  Relationships =" ;
       for ( ic = relation.begin() ; ic != relation.end() ; ++ic ) {
         Entity & con_e = * ic->entity();
 
@@ -496,7 +496,7 @@ bool unpack_info_verify(
           os << " " << mesh_parts[ord_recv]->name();
         }
       }
-      os << " ;" << std::endl << "  Relationions =" ;
+      os << " ;" << std::endl << "  Relationships =" ;
       for ( unsigned j = 0 ; j < recv_relation_size * 2 ; ) {
         const entity_key_type attr    = recv_relation[j] ; ++j ;
         const entity_key_type con_key = recv_relation[j] ; ++j ;
@@ -727,7 +727,12 @@ void SharingComm::receive_entity(
     receive_info.erase( k );
   }
 
-  ep.first = & receive_mesh.declare_entity( key , parts , owner_rank );
+  {
+    Entity & entity = receive_mesh.declare_entity( key );
+    receive_mesh.change_entity_parts( entity , parts );
+    receive_mesh.change_entity_owner( entity , owner_rank );
+    ep.first = & entity ;
+  }
 
   receive_mesh.declare_relation( *ep.first , relations , name() );
 }

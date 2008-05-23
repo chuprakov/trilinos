@@ -21,41 +21,42 @@
 #  USA
 #-----------------------------------------------------------------------
 
-ELEM_TOP_INC_DIR = $(PHDMESH_PATH)/include/elem_top
+ELEMENT_INC_DIR = $(PHDMESH_PATH)/include/element
 
-ELEM_TOP_INC_FILES =	\
-	$(ELEM_TOP_INC_DIR)/Shape.hpp	\
-	$(ELEM_TOP_INC_DIR)/Topology.hpp
+ELEMENT_INC_FILES =	\
+	$(ELEMENT_INC_DIR)/HexahedronTopology.hpp	\
+	$(ELEMENT_INC_DIR)/LocalTopology.hpp	\
+	$(ELEMENT_INC_DIR)/PyramidTopology.hpp	\
+	$(ELEMENT_INC_DIR)/QuadrilateralTopology.hpp	\
+	$(ELEMENT_INC_DIR)/TetrahedronTopology.hpp	\
+	$(ELEMENT_INC_DIR)/TriangleTopology.hpp	\
+	$(ELEMENT_INC_DIR)/WedgeTopology.hpp
 
-ELEM_TOP_OBJ_FILES =	\
-	ElementTopology.o	\
-	ElementTopologyLine.o	\
-	ElementTopologyTriangle.o	\
-	ElementTopologyQuadrilateral.o	\
-	ElementTopologyHexahedron.o
+ELEMENT_OBJ_FILES =	\
+	ElementLocalTopology.o
 
-ELEM_TOP_INC_DEPS = $(ELEM_TOP_INC_FILES) $(UTIL_INC_DEPS)
+ELEMENT_INC_DEPS = $(ELEMENT_INC_FILES) $(UTIL_INC_DEPS)
 
-ELEM_TOP_LIB = libphdmesh_elem_top.a
+ELEMENT_LIB = libphdelement_mesh.a
 
-ELEM_TOP_LIB_LINK = -lphdmesh_elem_top
+ELEMENT_LIB_LINK = -lphdelement_mesh
 
-$(ELEM_TOP_OBJ_FILES) : $(ELEM_TOP_INC_DEPS)
+$(ELEMENT_OBJ_FILES) : $(ELEMENT_INC_DEPS)
 
-$(ELEM_TOP_LIB) : $(ELEM_TOP_OBJ_FILES)
+$(ELEMENT_LIB) : $(ELEMENT_OBJ_FILES)
 	rm -f $@
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
-elem_top_all : $(ELEM_TOP_LIB) ;
+element_all : $(ELEMENT_LIB) ;
 
-elem_top_clean : ; rm -f $(ELEM_TOP_LIB) $(ELEM_TOP_OBJ_FILES)
+element_clean : ; rm -f $(ELEMENT_LIB) $(ELEMENT_OBJ_FILES)
 
-elem_top_install : $(ELEM_TOP_LIB) config_install
-	@ cp $(ELEM_TOP_LIB) $(PHDMESH_INSTALL)/$(ELEM_TOP_LIB)
+element_install : $(ELEMENT_LIB) config_install
+	@ cp $(ELEMENT_LIB) $(PHDELEMENT_INSTALL)/$(ELEMENT_LIB)
 
-elem_top_uninstall :
-	@ rm -f $(PHDMESH_INSTALL)/$(ELEM_TOP_LIB)
+element_uninstall :
+	@ rm -f $(PHDELEMENT_INSTALL)/$(ELEMENT_LIB)
 
 #-----------------------------------------------------------------------
 

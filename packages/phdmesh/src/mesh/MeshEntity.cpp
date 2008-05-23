@@ -135,7 +135,7 @@ std::ostream &
 print_entity( std::ostream & os , const std::string & lead , const Entity & e )
 {
   print_entity_key( os , e.key() );
-  os << " Owner(P" << e.owner_rank() << ") Relationions {" ;
+  os << " Owner(P" << e.owner_rank() << ") Relationships {" ;
 
   for ( RelationSpan con = e.relations() ; con ; ++con ) {
     os << std::endl << lead << "  " << *con ;

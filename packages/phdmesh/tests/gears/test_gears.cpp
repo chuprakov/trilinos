@@ -348,7 +348,7 @@ void test_gears( ParallelMachine pm ,
     unsigned j = 1 ;
     for ( std::vector<Gear*>::iterator
           i = gears.begin() ; i != gears.end() ; ++i , ++j ) {
-      file_schema.declare_part( (*i)->m_gear.name() , j , exodus::HEX , 8 );
+      file_schema.declare_part( (*i)->m_gear , j , exodus::HEX , 8 );
     }
   }
 

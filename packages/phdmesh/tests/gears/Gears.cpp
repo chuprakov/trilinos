@@ -64,13 +64,11 @@ GearFields::GearFields( Schema & S )
     S.declare_field<NodeValueField>( std::string("node_value") , 2 ) )
 {
   const Part & universe = S.universal_part();
-  const CylindricalField::Dimension cyl_dim( SpatialDimension );
-  const CartesianField::Dimension   car_dim( SpatialDimension );
 
-  S.declare_field_size( gear_coord    , Node , universe , cyl_dim );
-  S.declare_field_size( model_coord   , Node , universe , car_dim );
-  S.declare_field_size( current_coord , Node , universe , car_dim );
-  S.declare_field_size( displacement  , Node , universe , car_dim );
+  S.declare_field_size( gear_coord    , Node , universe , SpatialDimension );
+  S.declare_field_size( model_coord   , Node , universe , SpatialDimension );
+  S.declare_field_size( current_coord , Node , universe , SpatialDimension );
+  S.declare_field_size( displacement  , Node , universe , SpatialDimension );
 }
 
 //----------------------------------------------------------------------
@@ -117,11 +115,8 @@ Gear::Gear( Schema & S ,
   typedef GearFields::ElementValueField ElementValueField ;
   typedef GearFields::NodeValueField    NodeValueField ;
 
-  ElementValueField::Dimension elem_value_dim( SpatialDimension , NNODE );
-  NodeValueField   ::Dimension node_value_dim( SpatialDimension );
-
-  S.declare_field_size( gear_fields.element_value , Element , m_gear , elem_value_dim );
-  S.declare_field_size( gear_fields.node_value    , Node , m_gear , node_value_dim );
+  S.declare_field_size( gear_fields.element_value , Element , m_gear , SpatialDimension , NNODE );
+  S.declare_field_size( gear_fields.node_value    , Node , m_gear , SpatialDimension );
 
   const double TWO_PI = 2.0 * acos( (double) -1.0 );
 
@@ -170,7 +165,9 @@ Entity * Gear::create_node(
   unsigned long id_gear = identifier( m_z_num, m_rad_num, iz, ir, ia );
   unsigned long id = node_id_base + id_gear ;
 
-  Entity & node = m_mesh->declare_entity( entity_key(Node,id), parts, p_owner);
+  Entity & node = m_mesh->declare_entity( entity_key(Node,id) );
+  m_mesh->change_entity_parts( node , parts );
+  m_mesh->change_entity_owner( node , p_owner );
 
   double * const gear_data    = field_data( m_gear_coord , node );
   double * const model_data   = field_data( m_model_coord , node );
@@ -296,8 +293,9 @@ void Gear::mesh( Mesh & M )
             throw std::logic_error( msg );
           }
 
-          Entity & elem =
-            M.declare_entity( entity_key(Element,elem_id),elem_parts,p_rank);
+          Entity & elem = M.declare_entity( entity_key(Element,elem_id) );
+          M.change_entity_parts( elem , elem_parts );
+          M.change_entity_owner( elem , p_rank );
 
           for ( unsigned j = 0 ; j < 8 ; ++j ) {
             M.declare_relation( elem , * node[j] , j );
@@ -336,8 +334,9 @@ void Gear::mesh( Mesh & M )
           node[2] = create_node( face_parts, node_id_base, iz_1, ir  , ia   );
           node[3] = create_node( face_parts, node_id_base, iz_1, ir  , ia_1 );
 
-          Entity & face =
-            M.declare_entity(entity_key(Face,face_id), face_parts, p_rank);
+          Entity & face = M.declare_entity(entity_key(Face,face_id) );
+          M.change_entity_parts( face , face_parts );
+          M.change_entity_owner( face , p_rank );
 
           for ( unsigned j = 0 ; j < 4 ; ++j ) {
             M.declare_relation( face , * node[j] , j );

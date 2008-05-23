@@ -31,9 +31,10 @@
 
 #include <util/Dimension.hpp>
 
-//----------------------------------------------------------------------
-
 namespace phdmesh {
+
+//----------------------------------------------------------------------
+// Traits for coordinate system dimensions
 
 struct Cartesian : public DimensionTraits {
 
@@ -66,6 +67,8 @@ private:
   Cylindrical( const Cylindrical & );
   Cylindrical & operator = ( const Cylindrical & );
 };
+
+//----------------------------------------------------------------------
 
 }
 
