@@ -37,26 +37,30 @@ namespace phdmesh {
 
 namespace {
 
-template< class TopTraits > const LocalTopology * top_descriptor();
+template< class Traits > struct Descriptor ;
 template< class IList > struct IndexListData ;
 
 //----------------------------------------------------------------------
 
 template<>
-const LocalTopology * top_descriptor<TypeListEnd>()
-{ return (const LocalTopology *) NULL ; }
+struct Descriptor< TypeListEnd >
+{
+  static const LocalTopology * ptr() { return (const LocalTopology *) NULL ; }
+};
 
 template<>
-struct IndexListData< TypeListEnd > { static const unsigned * data(); };
-
-const unsigned * IndexListData< TypeListEnd >::data()
-{ return (const unsigned *) NULL ; }
+struct IndexListData< TypeListEnd >
+{
+  static const unsigned * data() { return (const unsigned *) NULL ; }
+};
 
 //----------------------------------------------------------------------
 
-template< class TopTraits >
-const LocalTopology * top_descriptor()
-{ return TopTraits::descriptor(); }
+template< class Traits >
+struct Descriptor
+{
+  static const LocalTopology * ptr() { return Traits::descriptor(); }
+};
 
 template< unsigned  I0 , unsigned  I1 , unsigned  I2 , unsigned  I3 ,
           unsigned  I4 , unsigned  I5 , unsigned  I6 , unsigned  I7 ,
@@ -91,49 +95,68 @@ struct IndexListData< IndexList<  I0 ,  I1 ,  I2 ,  I3 ,
 
 //----------------------------------------------------------------------
 
-#define BOUNDARY_DATA_ENTRY( N )	\
+#define EDGE_BOUNDARY( N )	\
   {	\
-    top_descriptor< typename TypeListAt< BTypeList , N >::type >() ,	\
-    IndexListData<  typename TypeListAt< BNodeMap ,  N >::type >::data() , \
-    IndexListData<  typename TypeListAt< BNodeMap ,  N >::type >::data() , \
+    Descriptor< typename TypeListAt< EdgeTypes , N >::type >::ptr() ,   \
+    IndexListData< typename TypeListAt< EdgeMaps, N >::type >::data() , \
+    IndexListData< typename TypeListAt< EdgeMaps, N >::type >::data()   \
   }
 
-template< class BTypeList , class BNodeMap >
-const LocalTopology::Boundary * boundary_data()
-{
-  enum { Maximum = 16 , Requested = TypeListLength< BTypeList >::value };
-
-  StaticAssert< Requested <= Maximum >::ok();
-
-  static LocalTopology::Boundary data[ Maximum ] = {
-    BOUNDARY_DATA_ENTRY(  0 ) ,
-    BOUNDARY_DATA_ENTRY(  1 ) ,
-    BOUNDARY_DATA_ENTRY(  2 ) ,
-    BOUNDARY_DATA_ENTRY(  3 ) ,
-    BOUNDARY_DATA_ENTRY(  4 ) ,
-    BOUNDARY_DATA_ENTRY(  5 ) ,
-    BOUNDARY_DATA_ENTRY(  6 ) ,
-    BOUNDARY_DATA_ENTRY(  7 ) ,
-    BOUNDARY_DATA_ENTRY(  8 ) ,
-    BOUNDARY_DATA_ENTRY(  9 ) ,
-    BOUNDARY_DATA_ENTRY( 10 ) ,
-    BOUNDARY_DATA_ENTRY( 11 ) ,
-    BOUNDARY_DATA_ENTRY( 12 ) ,
-    BOUNDARY_DATA_ENTRY( 13 ) ,
-    BOUNDARY_DATA_ENTRY( 14 ) ,
-    BOUNDARY_DATA_ENTRY( 15 )
-  };
-
-  return data ;
-}
-
-#undef BOUNDARY_DATA_ENTRY
-
-//----------------------------------------------------------------------
+#define SIDE_BOUNDARY( N )	\
+  {	\
+    Descriptor< typename TypeListAt< SideTypes , N >::type >::ptr() ,   \
+    IndexListData< typename TypeListAt< SideMaps, N >::type >::data() , \
+    IndexListData< typename TypeListAt< SideMaps, N >::type >::data()   \
+  }
 
 template< class Traits >
 const LocalTopology * local_topology_descriptor()
 {
+  typedef typename Traits::BoundaryEdgeTypeList EdgeTypes ;
+  typedef typename Traits::BoundaryEdgeNodeMap  EdgeMaps ;
+  typedef typename Traits::BoundarySideTypeList SideTypes ;
+  typedef typename Traits::BoundarySideNodeMap  SideMaps ;
+
+  enum { Maximum = 16 };
+
+  static const LocalTopology::Boundary edge[ Maximum ] = {
+    EDGE_BOUNDARY( 0 ) ,
+    EDGE_BOUNDARY( 1 ) ,
+    EDGE_BOUNDARY( 2 ) ,
+    EDGE_BOUNDARY( 3 ) ,
+    EDGE_BOUNDARY( 4 ) ,
+    EDGE_BOUNDARY( 5 ) ,
+    EDGE_BOUNDARY( 6 ) ,
+    EDGE_BOUNDARY( 7 ) ,
+    EDGE_BOUNDARY( 8 ) ,
+    EDGE_BOUNDARY( 9 ) ,
+    EDGE_BOUNDARY( 10 ) ,
+    EDGE_BOUNDARY( 11 ) ,
+    EDGE_BOUNDARY( 12 ) ,
+    EDGE_BOUNDARY( 13 ) ,
+    EDGE_BOUNDARY( 14 ) ,
+    EDGE_BOUNDARY( 15 )
+  };
+
+  static const LocalTopology::Boundary side[ Maximum ] = {
+    SIDE_BOUNDARY( 0 ) ,
+    SIDE_BOUNDARY( 1 ) ,
+    SIDE_BOUNDARY( 2 ) ,
+    SIDE_BOUNDARY( 3 ) ,
+    SIDE_BOUNDARY( 4 ) ,
+    SIDE_BOUNDARY( 5 ) ,
+    SIDE_BOUNDARY( 6 ) ,
+    SIDE_BOUNDARY( 7 ) ,
+    SIDE_BOUNDARY( 8 ) ,
+    SIDE_BOUNDARY( 9 ) ,
+    SIDE_BOUNDARY( 10 ) ,
+    SIDE_BOUNDARY( 11 ) ,
+    SIDE_BOUNDARY( 12 ) ,
+    SIDE_BOUNDARY( 13 ) ,
+    SIDE_BOUNDARY( 14 ) ,
+    SIDE_BOUNDARY( 15 )
+  };
+
   static LocalTopology self = {
     Traits::topological_rank ,
     Traits::minimum_dimension ,
@@ -144,10 +167,7 @@ const LocalTopology * local_topology_descriptor()
     Traits::number_node ,
     Traits::key ,
     Traits::is_boundary ,
-    boundary_data< typename Traits::BoundaryEdgeTypeList ,
-                   typename Traits::BoundaryEdgeNodeMap >() ,
-    boundary_data< typename Traits::BoundarySideTypeList ,
-                   typename Traits::BoundarySideNodeMap >() };
+    edge , side };
 
   return & self ;
 }
