@@ -99,7 +99,7 @@ void txblas_cr_mxv(
         double   y[] )  /* Output vector */
 {
   txblasTask_cr_Matrix data = { nr , pc , ia , a , x , y };
-  TPI_Run( & txblas_task_cr_mxv , & data );
+  TPI_Run( & txblas_task_cr_mxv , & data , 0 );
 }
 
 /*--------------------------------------------------------------------*/

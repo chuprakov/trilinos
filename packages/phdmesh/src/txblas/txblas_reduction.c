@@ -140,7 +140,7 @@ void txdsum_add_array( double * s , unsigned n , const double * x )
   data.x_beg  = x ;
   data.number = n ;
   TPI_Set_lock_size( 1 );
-  TPI_Run( & task_sum_work , & data );
+  TPI_Run( & task_sum_work , & data , 0 );
 }
 
 /*--------------------------------------------------------------------*/
@@ -187,7 +187,7 @@ void txdnorm1( double * s , unsigned n , const double * x )
   data.x_beg  = x ;
   data.number = n ;
   TPI_Set_lock_size( 1 );
-  TPI_Run( & task_norm1_work , & data );
+  TPI_Run( & task_norm1_work , & data , 0 );
 }
 
 /*--------------------------------------------------------------------*/
@@ -266,7 +266,7 @@ void txddot1( double * s , unsigned n , const double * x )
   data.x_beg  = x ;
   data.number = n ;
   TPI_Set_lock_size( 1 );
-  TPI_Run( & task_xddot_x_work , & data );
+  TPI_Run( & task_xddot_x_work , & data , 0 );
 }
 
 /*--------------------------------------------------------------------*/
@@ -353,10 +353,10 @@ void tddot( double * s , unsigned n , const double * x , const double * y )
     struct TaskXY data = { tmp , x , y , n , BLOCKING_SIZE };
     for ( int i = 0 ; i < p_size ; ++i ) { tmp[i] = 0 ; }
     if ( data.block ) {
-      TPI_Run( & task_ddot_xy_work_blocking , & data );
+      TPI_Run( & task_ddot_xy_work_blocking , & data , 0 );
     }
     else {
-      TPI_Run( & task_ddot_xy_work , & data );
+      TPI_Run( & task_ddot_xy_work , & data , 0 );
     }
     for ( int i = 1 ; i < p_size ; ++i ) { tmp[0] += tmp[i] ; }
     *s = tmp[0] ;
@@ -461,10 +461,10 @@ void txddot( double * s , unsigned n , const double * x , const double * y )
     struct TaskXY data = { tmp , x , y , n , BLOCKING_SIZE };
     for ( int i = 0 ; i < ntmp ; ++i ) { tmp[i] = 0 ; }
     if ( data.block ) {
-      TPI_Run( & task_xddot_xy_work_blocking , & data );
+      TPI_Run( & task_xddot_xy_work_blocking , & data , 0 );
     }
     else {
-      TPI_Run( & task_xddot_xy_work , & data );
+      TPI_Run( & task_xddot_xy_work , & data , 0 );
     }
     for ( int i = 0 ; i < p_size ; ++i ) {
       xdsum_add_dsum( s , tmp + 4 * i );

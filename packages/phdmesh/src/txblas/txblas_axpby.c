@@ -55,14 +55,14 @@ void tdaxpby( unsigned n ,
     struct TaskXY data = { a , b , x , y , n , tmp };
     for ( int i = 0 ; i < p_size ; ++i ) { tmp[i] = i ; }
     if ( 0 < block ) {
-      TPI_Run( & task_axpby_work_block , & data );
+      TPI_Run( & task_axpby_work_block , & data , 0 );
     }
     else if ( block < 0 ) {
       TPI_Set_lock_size( p_size );
-      TPI_Run( & task_axpby_work_steal , & data );
+      TPI_Run( & task_axpby_work_steal , & data , 0 );
     }
     else {
-      TPI_Run( & task_axpby_work , & data );
+      TPI_Run( & task_axpby_work , & data , 0 );
     }
   }
 }
