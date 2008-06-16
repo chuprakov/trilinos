@@ -31,6 +31,7 @@
 #include "Teuchos_TestForException.hpp"
 #include "FEApp_QuadraticSourceFunction.hpp"
 #include "FEApp_CubicSourceFunction.hpp"
+#include "FEApp_ExponentialSourceFunction.hpp"
 
 template <typename ScalarT>
 FEApp::SourceFunctionFactory<ScalarT>::SourceFunctionFactory(
@@ -58,6 +59,12 @@ FEApp::SourceFunctionFactory<ScalarT>::create()
     strategy = 
       Teuchos::rcp(new FEApp::CubicSourceFunction<ScalarT>(factor,
 							   paramLib));
+  }
+  else if (method == "Exponential") {
+    double factor = funcParams->get("Nonlinear Factor", 1.0);
+    strategy = 
+      Teuchos::rcp(new FEApp::ExponentialSourceFunction<ScalarT>(factor,
+								 paramLib));
   }
   else {
     TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,
