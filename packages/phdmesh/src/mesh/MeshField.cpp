@@ -33,7 +33,6 @@
 
 #include <util/FixedArray.hpp>
 #include <mesh/Types.hpp>
-#include <mesh/EntityType.hpp>
 #include <mesh/Field.hpp>
 #include <mesh/Part.hpp>
 #include <mesh/Schema.hpp>
@@ -42,11 +41,11 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-const DimensionTraits * Entities::descriptor()
-{ static const Entities self ; return & self ; }
+const DimensionTraits * EntityDimension::descriptor()
+{ static const EntityDimension self ; return & self ; }
 
-const char * Entities::name() const
-{ static const char n[] = "Entities" ; return n ; }
+const char * EntityDimension::name() const
+{ static const char n[] = "EntityDimension" ; return n ; }
 
 //----------------------------------------------------------------------
 
@@ -75,8 +74,8 @@ struct LessFieldDimension {
 
   bool operator()( const FieldBase::Dim & lhs , const FieldBase::Dim & rhs )
   {
-    unsigned L = lhs.rank ;
-    unsigned R = rhs.rank ;
+    unsigned L = lhs.type ;
+    unsigned R = rhs.type ;
     if ( L == R ) {
       L = lhs.part->schema_ordinal();
       R = rhs.part->schema_ordinal();
@@ -91,7 +90,7 @@ find( const std::vector<FieldBase::Dim> & v , const FieldBase::Dim & p )
   LessFieldDimension cmp ;
   std::vector<FieldBase::Dim>::const_iterator
     i = std::lower_bound( v.begin() , v.end() , p , cmp );
-  if ( i != v.end() && ( i->part != p.part || i->rank != p.rank ) ) {
+  if ( i != v.end() && ( i->part != p.part || i->type != p.type ) ) {
     i = v.end();
   }
   return i ;
@@ -104,7 +103,7 @@ void insert( std::vector<FieldBase::Dim> & v , const FieldBase::Dim & d )
   std::vector<FieldBase::Dim>::iterator
     i = std::lower_bound( v.begin() , v.end() , d , cmp );
 
-  if ( i == v.end() || i->part != d.part || i->rank != d.rank ) {
+  if ( i == v.end() || i->part != d.part || i->type != d.type ) {
     v.insert( i , d );
   }
 }
@@ -431,6 +430,38 @@ Schema::declare_field_base(
 }
 
 //----------------------------------------------------------------------
+
+void Schema::declare_field_relation(
+  FieldBase & pointer_field ,
+  relation_stencil_ptr stencil ,
+  FieldBase & referenced_field )
+{
+  static const char method[] = "phdmesh::Schema::declare_field_relation" ;
+
+  static const int offset = NumericEnum<void*>::value -
+                            NumericEnum<void>::value ;
+
+  if ( referenced_field.numeric_type_ordinal() + offset !=
+       pointer_field.numeric_type_ordinal() ) {
+
+    std::string msg( method );
+    msg.append( ": FAILED, " );
+    msg.append( pointer_field.name() );
+    msg.append( " and " );
+    msg.append( referenced_field.name() );
+    msg.append( " have incompatible numerical types." );
+    throw std::invalid_argument( msg );
+  }
+
+  FieldRelation tmp ;
+  tmp.m_root   = & pointer_field ;
+  tmp.m_target = & referenced_field ;
+  tmp.m_function = stencil ;
+
+  m_field_relations.push_back( tmp );
+}
+
+//----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
 namespace {
@@ -439,7 +470,7 @@ void print_field_dim( std::ostream & msg ,
                       const unsigned n ,
                       const FieldBase::Dim & d )
 {
-  msg << "( " << entity_type_name( d.rank );
+  msg << "( " << entity_type_name( d.type );
   msg << " , Part[" ;
   msg << d.part->name();
   msg << "] , " << d.stride[0] ;
@@ -490,7 +521,7 @@ void assert_field_dimension_compatible(
 
 void Schema::declare_field_stride(
   FieldBase      & arg_field ,
-  unsigned         arg_entity_type ,
+  EntityType       arg_entity_type ,
   const Part     & arg_part ,
   const unsigned * arg_stride )
 {
@@ -525,7 +556,7 @@ void Schema::declare_field_stride(
   for ( i = dim_map.begin() ; i != dim_map.end() ; ) {
     bool remove = false ;
 
-    if ( arg_entity_type == i->rank ) {
+    if ( arg_entity_type == i->type ) {
 
       const Part & part = * i->part ;
 
@@ -574,7 +605,7 @@ void Schema::clean_field_dimension()
 
       for ( size_t j = 0 ; j < dim_map.size() ; ++j ) {
         if ( i != j &&
-             dim.rank == dim_map[j].rank &&
+             dim.type == dim_map[j].type &&
              contain( sub , * dim_map[j].part ) ) {
           assert_field_dimension_compatible( method, field, dim, dim_map[j] );
           flag[j] = 1 ;
@@ -597,11 +628,11 @@ void Schema::clean_field_dimension()
 // This part or any superset of this part
 
 const FieldBase::Dim &
-FieldBase::dimension( unsigned rank , const Part & part ) const
+FieldBase::dimension( EntityType etype , const Part & part ) const
 {
   static const FieldBase::Dim empty ;
 
-  FieldBase::Dim tmp( rank , part );
+  FieldBase::Dim tmp( etype , part );
 
   const std::vector<FieldBase::Dim> & dim_map = dimension();
 
@@ -620,7 +651,7 @@ FieldBase::dimension( unsigned rank , const Part & part ) const
   return i == ie ? empty : *i ;
 }
 
-unsigned FieldBase::max_size( unsigned entity_type ) const
+unsigned FieldBase::max_size( EntityType entity_type ) const
 {
   unsigned max = 0 ;
 
@@ -630,7 +661,7 @@ unsigned FieldBase::max_size( unsigned entity_type ) const
         std::vector<FieldBase::Dim>::const_iterator i  = dim_map.begin();
 
   for ( ; i != ie ; ++i ) {
-    if ( i->rank == entity_type ) {
+    if ( i->type == entity_type ) {
       const unsigned len = m_num_dim ? i->stride[ m_num_dim - 1 ] : 1 ;
       if ( max < len ) { max = len ; }
     }

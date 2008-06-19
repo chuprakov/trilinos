@@ -388,8 +388,8 @@ void test_gears( ParallelMachine pm ,
   }
 
   {
-    entity_id_type counts[ end_entity_rank ];
-    entity_id_type max_id[ end_entity_rank ];
+    entity_id_type counts[ EntityTypeEnd ];
+    entity_id_type max_id[ EntityTypeEnd ];
 
     comm_mesh_stats( M , counts , max_id );
 
@@ -454,7 +454,7 @@ void test_gears( ParallelMachine pm ,
     tmp = & gear_fields.displacement ;  out_fields.push_back( tmp );
     tmp = & field_node_proximity ;      out_fields.push_back( tmp );
 
-    int flags[ EndEntityType ] = { 0 , 0 , 0 , 1 , 0 , 0 };
+    int flags[ EntityTypeEnd ] = { 0 , 0 , 0 , 1 , 0 , 0 };
 
     wt = wall_time();
     exo = new exodus::FileOutput( file_schema, M,

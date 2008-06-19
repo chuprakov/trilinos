@@ -45,10 +45,11 @@ typedef
                 IndexList< 2 , 3 , 9 > >::type TetrahedronEdgeNodeMap ;
 
 typedef
-  MakeTypeList< IndexList< 0 , 1 , 3 > ,
-                IndexList< 1 , 2 , 3 > ,
-                IndexList< 0 , 3 , 2 > ,
-                IndexList< 0 , 2 , 1 > >::type TetrahedronSideNodeMap ;
+  MakeTypeList< IndexList< 0 , 1 , 3 ,   4 , 8 , 7 > ,
+                IndexList< 1 , 2 , 3 ,   5 , 9 , 8 > ,
+                IndexList< 0 , 3 , 2 ,   7 , 9 , 6 > ,
+                IndexList< 0 , 2 , 1 ,   6 , 5 , 4 >
+  >::type TetrahedronSideNodeMap ;
 
 template<>
 struct Tetrahedron<0>
@@ -75,17 +76,38 @@ template<>
 struct Tetrahedron<4>
   : public LocalTopologyTraits< 3 , 3 , 3, // Dimension
                                 4 , 4, // #Vertex, #Node
-      MakeTypeList< BoundaryEdge<> ,
-                    BoundaryEdge<> ,
-                    BoundaryEdge<> ,
-                    BoundaryEdge<> ,
-                    BoundaryEdge<> ,
-                    BoundaryEdge<> >::type ,
+      MakeTypeList< BoundaryEdge<2> ,
+                    BoundaryEdge<2> ,
+                    BoundaryEdge<2> ,
+                    BoundaryEdge<2> ,
+                    BoundaryEdge<2> ,
+                    BoundaryEdge<2> >::type ,
       TetrahedronEdgeNodeMap ,
-      MakeTypeList< BoundaryTriangle<> ,
-                    BoundaryTriangle<> ,
-                    BoundaryTriangle<> ,
-                    BoundaryTriangle<> >::type ,
+      MakeTypeList< BoundaryTriangle<3> ,
+                    BoundaryTriangle<3> ,
+                    BoundaryTriangle<3> ,
+                    BoundaryTriangle<3> >::type ,
+      TetrahedronSideNodeMap >
+{
+  typedef Tetrahedron<0> Shape ;
+  static const LocalTopology * descriptor();
+};
+
+template<>
+struct Tetrahedron<10>
+  : public LocalTopologyTraits< 3 , 3 , 3, // Dimension
+                                4 , 10, // #Vertex, #Node
+      MakeTypeList< BoundaryEdge<3> ,
+                    BoundaryEdge<3> ,
+                    BoundaryEdge<3> ,
+                    BoundaryEdge<3> ,
+                    BoundaryEdge<3> ,
+                    BoundaryEdge<3> >::type ,
+      TetrahedronEdgeNodeMap ,
+      MakeTypeList< BoundaryTriangle<6> ,
+                    BoundaryTriangle<6> ,
+                    BoundaryTriangle<6> ,
+                    BoundaryTriangle<6> >::type ,
       TetrahedronSideNodeMap >
 {
   typedef Tetrahedron<0> Shape ;

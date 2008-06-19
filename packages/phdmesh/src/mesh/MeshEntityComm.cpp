@@ -64,24 +64,24 @@ void EntityComm::receive_entity(
 {
   entity_key_type       key ;
   unsigned              owner_rank ;
-  std::vector<Part*>    parts ;
-  std::vector<Relation>  relations ;
+  std::vector<Part*>    add ;
+  std::vector<Relation> relations ;
   std::vector<unsigned> send_destinations ;
 
   unpack_entity( buffer , receive_mesh ,
                  key , owner_rank ,
-                 parts , relations , send_destinations );
+                 add , relations , send_destinations );
 
   EntityProc ep ;
 
   {
     Entity & entity = receive_mesh.declare_entity( key );
-    receive_mesh.change_entity_parts( entity , parts );
+    receive_mesh.change_entity_parts( entity , add );
     receive_mesh.change_entity_owner( entity , owner_rank );
     ep.first = & entity ;
   }
 
-  receive_mesh.declare_relation( *ep.first , relations , name() );
+  receive_mesh.declare_relation( *ep.first , relations );
 
   ep.second = send_source ;
 
@@ -104,7 +104,7 @@ void EntityComm::pack_entity(
   const Schema      & send_schema = kernel.mesh().schema();
   const bool          same_schema = & send_schema == & recv_schema ;
   const unsigned      dest_size   = std::distance( ibeg , iend );
-        RelationSpan   rel         = entity.relations();
+        RelationSpan  rel         = entity.relations();
 
   std::vector<unsigned> part_ordinals ;
 
@@ -140,11 +140,11 @@ void EntityComm::pack_entity(
   {
     const unsigned rel_size = rel.size();
     buf.pack<unsigned>( rel_size );
-    entity_key_type rel_data[2] ;
+    uint64_type rel_data[2] ;
     for ( ; rel ; ++rel ) {
       rel_data[0] = rel->entity()->key();
-      rel_data[1] = rel->key();
-      buf.pack<entity_key_type>( rel_data , 2 );
+      rel_data[1] = rel->attribute();
+      buf.pack<uint64_type>( rel_data , 2 );
     }
   }
 
@@ -161,7 +161,7 @@ void EntityComm::unpack_entity(
   entity_key_type       & key ,
   unsigned              & owner_rank ,
   std::vector<Part*>    & parts ,
-  std::vector<Relation>  & relations ,
+  std::vector<Relation> & relations ,
   std::vector<unsigned> & send_destinations ) const
 {
   const PartSet & recv_schema_parts = recv_mesh.schema().get_parts();
@@ -190,15 +190,15 @@ void EntityComm::unpack_entity(
 
     relations.reserve( rel_size );
 
-    entity_key_type rel_data[2] ;
+    uint64_type rel_data[2] ;
 
     for ( unsigned j = 0 ; j < rel_size ; ++j ) {
-      recv_buf.unpack<entity_key_type>( rel_data , 2 );
+      recv_buf.unpack<uint64_type>( rel_data , 2 );
 
       Entity * rel_entity = recv_mesh.get_entity( rel_data[0] );
 
       if ( rel_entity != NULL ) {
-        Relation rel( *rel_entity , (unsigned) rel_data[1] );
+        Relation rel( (relation_attr_type) rel_data[1] , *rel_entity );
         relations.push_back( rel );
       }
     }

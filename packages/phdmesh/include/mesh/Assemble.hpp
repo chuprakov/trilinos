@@ -61,7 +61,7 @@ private:
 
 public:
 
-  unsigned src_type() const { return src_rank ; }
+  EntityType src_type() const { return EntityType( src_rank ); }
   const FieldBase & dst_field() const { return *dst ; }
   const FieldBase & src_field() const { return *src ; }
 

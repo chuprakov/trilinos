@@ -32,7 +32,7 @@
 
 namespace phdmesh {
 
-struct NumberQuadrature : public DimensionTraits {
+struct QuadratureDimension : public DimensionTraits {
 
   const char * name() const ;
 
@@ -43,12 +43,12 @@ struct NumberQuadrature : public DimensionTraits {
   static const DimensionTraits * descriptor();
 
 private:
-  NumberQuadrature() {}
-  NumberQuadrature( const NumberQuadrature & );
-  NumberQuadrature & operator = ( const NumberQuadrature & );
+  QuadratureDimension() {}
+  QuadratureDimension( const QuadratureDimension & );
+  QuadratureDimension & operator = ( const QuadratureDimension & );
 };
 
-struct NumberBasis : public DimensionTraits {
+struct BasisDimension : public DimensionTraits {
 
   const char * name() const ;
 
@@ -59,9 +59,9 @@ struct NumberBasis : public DimensionTraits {
   static const DimensionTraits * descriptor();
 
 private:
-  NumberBasis() {}
-  NumberBasis( const NumberBasis & );
-  NumberBasis & operator = ( const NumberBasis & );
+  BasisDimension() {}
+  BasisDimension( const BasisDimension & );
+  BasisDimension & operator = ( const BasisDimension & );
 };
 
 }

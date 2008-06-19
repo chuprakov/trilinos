@@ -28,7 +28,6 @@
 #define phdmesh_ExoII_hpp
 
 #include <mesh/Types.hpp>
-#include <mesh/EntityType.hpp>
 #include <mesh/FieldTraits.hpp>
 
 namespace phdmesh {

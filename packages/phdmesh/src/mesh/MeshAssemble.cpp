@@ -111,7 +111,7 @@ void AssembleTask::work(TPI::ThreadPool pool)
       if ( size ) { // Exists on this kernel
 
         const FieldBase & src_field = assemble.src_field();
-        const unsigned    src_type  = assemble.src_type();
+        const EntityType  src_type  = assemble.src_type();
 
         unsigned char * dst_ptr = (unsigned char *) field_data(dst_field,*k);
 
@@ -167,7 +167,7 @@ void assemble( const Mesh & M , const std::vector<Assemble> ops )
 
   // Local assembly
 
-  for ( unsigned t = 0 ; t < end_entity_rank ; ++t ) {
+  for ( unsigned t = 0 ; t < EntityTypeEnd ; ++t ) {
     AssembleTask work( M , t , ops );
   }
 }

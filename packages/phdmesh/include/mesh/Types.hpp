@@ -40,9 +40,10 @@
 namespace phdmesh {
 
 //----------------------------------------------------------------------
+// Mesh meta-data
 
-class Schema ;  // Parts and fields of a mesh
-class Part ;    // Designated subset or part of the mesh
+class Schema ;  // Meta-data description of a mesh
+class Part ;    // Defined subset of the mesh
 
 template< typename Scalar = void ,
           class Trait1 = DimensionTraits ,
@@ -63,11 +64,53 @@ Field< void , DimensionTraits , DimensionTraits ,
 enum { MaximumFieldDimension = 7 };
 
 //----------------------------------------------------------------------
+// Mesh bulk-data
 
-class Mesh ;    // Kernels and entities of a mesh
-class Kernel ;  // Homogeneous collection of mesh entitities
-class Entity ;  // Individual entity within the mesh
+class Mesh ;     // Bulk-data of a mesh
+class Kernel ;   // Homogeneous collection of mesh entitities their field data
+class Entity ;   // Individual entity within the mesh
 class Relation ; // Relation pair of local mesh entities
+
+//----------------------------------------------------------------------
+// Supporting types for entity and relation attributes
+
+typedef uint32_type   entity_id_type ;     // Entity identifier type
+typedef uint64_type   entity_key_type ;    // Entity key type
+typedef uint_ptr_type relation_attr_type ; // Entity relation attribute
+
+/** Extensible definition of types of entities.
+ *  The first four types are required to have values
+ *  corresponding to the topological rank of the entity type.
+ *  The types values must be sequencial and 'EntityTypeEnd'
+ *  must be the last value.
+ */
+enum EntityType {
+  Node       = 0  /* Topological entity rank */ ,
+  Edge       = 1  /* Topological entity rank */ ,
+  Face       = 2  /* Topological entity rank */ ,
+  Element    = 3  /* Topological entity rank */ ,
+  Particle   = 4 ,
+  Constraint = 5 ,
+  EntityTypeEnd = 6 };
+
+/** Number of binary digits used to hold an entity type value */
+enum { entity_key_type_digits = 4 };
+
+const char * entity_type_name( EntityType );
+
+//----------------------------------------------------------------------
+/** A relation stencil maps entity relationships to ordinals.
+ *  If the given relationship is not in the domain of the stencil
+ *  then a negative value must be returned.
+ */
+typedef int ( * relation_stencil_ptr )(
+  EntityType from_type ,
+  EntityType to_type ,
+  unsigned   identifier ,
+  unsigned   kind );
+
+//----------------------------------------------------------------------
+// Parallel bulk-data
 
 typedef std::pair<Entity*,unsigned> EntityProc ; // Entity-processor pair
 
@@ -77,47 +120,7 @@ typedef Span< EntityProcSet::const_iterator > EntityProcSpan ;
 
 //----------------------------------------------------------------------
 
-typedef uint64_type entity_key_type ;
-typedef uint32_type entity_id_type ;
-
-enum {
-  entity_key_digits     = std::numeric_limits<entity_key_type>::digits ,
-  entity_rank_digits    = 4 ,
-  entity_id_digits_max  = entity_key_digits - entity_rank_digits ,
-  entity_id_digits_want = std::numeric_limits<entity_id_type>::digits ,
-  entity_id_digits      = entity_id_digits_max < entity_id_digits_want ?
-                          entity_id_digits_max : entity_id_digits_want
-};
-
-
-enum { end_entity_rank = ((unsigned)        1) << entity_rank_digits };
-enum { end_entity_id   = ((entity_key_type) 1) << entity_id_digits };
-
-inline
-entity_key_type entity_key( unsigned rank , entity_id_type id )
-{
-  enum { mask = ( ~((entity_key_type) 0) ) >>
-                ( entity_key_digits - entity_id_digits ) };
-
-  return ( ((entity_key_type) rank) << entity_id_digits_max ) | ( id & mask );
-}
-
-inline
-unsigned entity_rank( entity_key_type key )
-{ return key >> entity_id_digits_max ; }
-
-inline
-entity_id_type entity_id( entity_key_type key )
-{
-  enum { mask = ( ~((entity_key_type) 0) ) >>
-                ( entity_key_digits - entity_id_digits ) };
-  return key & mask ;
-}
-
 } // namespace phdmesh
-
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
 
 #endif
 

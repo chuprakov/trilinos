@@ -88,11 +88,13 @@ field_data( const field_type & f , const Kernel & k )
 
   data_p ptr = NULL ;
 
-  const Kernel::DataMap & pd = k.m_field_map[ f.schema_ordinal() ];
+  {
+    const Kernel::DataMap & pd = k.m_field_map[ f.schema_ordinal() ];
 
-  if ( pd.m_size ) {
-    ptr = reinterpret_cast<data_p>(
-          reinterpret_cast<byte_p>(k.m_entities) + pd.m_base );
+    if ( pd.m_size ) {
+      ptr = reinterpret_cast<data_p>(
+            reinterpret_cast<byte_p>(k.m_entities) + pd.m_base );
+    }
   }
   return ptr ;
 }
@@ -105,16 +107,18 @@ field_data( const field_type & f , const Entity & e )
   typedef unsigned char                  * byte_p ;
   typedef typename field_type::data_type * data_p ;
 
-  const Kernel & k = e.kernel();
-  const unsigned i = e.kernel_ordinal();
-
   data_p ptr = NULL ;
 
-  const Kernel::DataMap & pd = k.m_field_map[ f.schema_ordinal() ];
+  {
+    const Kernel & k = e.kernel();
+    const unsigned i = e.kernel_ordinal();
 
-  if ( pd.m_size ) {
-    ptr = reinterpret_cast<data_p>(
-          reinterpret_cast<byte_p>(k.m_entities) + pd.m_base + pd.m_size * i );
+    const Kernel::DataMap & pd = k.m_field_map[ f.schema_ordinal() ];
+
+    if ( pd.m_size ) {
+      ptr = reinterpret_cast<data_p>(
+            reinterpret_cast<byte_p>(k.m_entities) + pd.m_base + pd.m_size * i);
+    }
   }
   return ptr ;
 }

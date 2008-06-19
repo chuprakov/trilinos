@@ -29,20 +29,20 @@
 #include <iostream>
 #include <sstream>
 
-#include <mesh/EntityType.hpp>
+#include <mesh/Types.hpp>
 
 namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-const char * entity_type_name( unsigned i )
+const char * entity_type_name( EntityType i )
 {
   static const char * entity_names[] = {
     "NODE" , "EDGE" , "FACE" , "ELEMENT" ,
     "PARTICLE" , "CONSTRAINT" ,
     "UNNAMED_ENTITY" };
 
-  if ( EndEntityType <= i ) { i = EndEntityType ; }
+  if ( EntityTypeEnd <= i ) { i = EntityTypeEnd ; }
 
   return entity_names[ i ];
 }

@@ -29,20 +29,17 @@
 
 //----------------------------------------------------------------------
 
-#include <util/Parallel.hpp>
 #include <mesh/Types.hpp>
 #include <mesh/Part.hpp>
 #include <mesh/Field.hpp>
-
-//----------------------------------------------------------------------
+#include <util/Parallel.hpp>
 
 namespace phdmesh {
 
-/** Parallel Heterogeneous Dynamic Mesh.
- *  An dynamic unstructured mesh of mesh entities with
- *  subsets of parts partitioned into homogeneous kernels.
+//----------------------------------------------------------------------
+/** Description of a Parallel Heterogeneous Dynamic Mesh.
+ *  A collection of parts, fields, part relations, and field relations.
  */
-
 class Schema {
 public:
 
@@ -90,6 +87,20 @@ public:
   /** Declare a superset-subset relationship */
   void declare_part_subset( Part & superset , Part & subset );
 
+  /** Declare a part relationship.
+   *  Given Entity 'e1' and 'e2' with a relation 'e1-to-e2' that
+   *        is in the domain of the relation stencil 'stencil'.
+   *  If   'e1' is a member of 'root_part'
+   *  then 'e2' is a member of 'target_part'.
+   */
+  void declare_part_relation( Part & root_part ,
+                              relation_stencil_ptr stencil ,
+                              Part & target_part );
+
+  /** The collection of part relationships, used internally */
+  const std::vector<PartRelation> & get_part_relations() const
+    { return m_part_relations ; }
+
   /** Declare an attribute on a part */
   template<class T>
   CSet::Span<T> declare_part_attribute( Part & , const T * , bool );
@@ -120,25 +131,25 @@ public:
   /** Declare a scalar field to exist for a given entity type and Part. */
   template< class field_type >
   void declare_field_exists( field_type & arg_field ,
-                             unsigned     arg_entity_type ,
+                             EntityType   arg_entity_type ,
                              const Part & arg_part );
 
   template< class field_type >
   void declare_field_size( field_type & arg_field ,
-                           unsigned     arg_entity_type ,
+                           EntityType   arg_entity_type ,
                            const Part & arg_part ,
                            unsigned     arg_n1 );
 
   template< class field_type >
   void declare_field_size( field_type & arg_field ,
-                           unsigned     arg_entity_type ,
+                           EntityType   arg_entity_type ,
                            const Part & arg_part ,
                            unsigned     arg_n1 ,
                            unsigned     arg_n2 );
 
   template< class field_type >
   void declare_field_size( field_type & arg_field ,
-                           unsigned     arg_entity_type ,
+                           EntityType   arg_entity_type ,
                            const Part & arg_part ,
                            unsigned     arg_n1 ,
                            unsigned     arg_n2 ,
@@ -146,7 +157,7 @@ public:
 
   template< class field_type >
   void declare_field_size( field_type & arg_field ,
-                           unsigned     arg_entity_type ,
+                           EntityType   arg_entity_type ,
                            const Part & arg_part ,
                            unsigned     arg_n1 ,
                            unsigned     arg_n2 ,
@@ -155,7 +166,7 @@ public:
 
   template< class field_type >
   void declare_field_size( field_type & arg_field ,
-                           unsigned     arg_entity_type ,
+                           EntityType   arg_entity_type ,
                            const Part & arg_part ,
                            unsigned     arg_n1 ,
                            unsigned     arg_n2 ,
@@ -165,7 +176,7 @@ public:
 
   template< class field_type >
   void declare_field_size( field_type & arg_field ,
-                           unsigned     arg_entity_type ,
+                           EntityType   arg_entity_type ,
                            const Part & arg_part ,
                            unsigned     arg_n1 ,
                            unsigned     arg_n2 ,
@@ -176,7 +187,7 @@ public:
 
   template< class field_type >
   void declare_field_size( field_type & arg_field ,
-                           unsigned     arg_entity_type ,
+                           EntityType   arg_entity_type ,
                            const Part & arg_part ,
                            unsigned     arg_n1 ,
                            unsigned     arg_n2 ,
@@ -186,6 +197,28 @@ public:
                            unsigned     arg_n6 ,
                            unsigned     arg_n7 );
 
+  /** Declare a field relationship.
+   *  The pointer_field's scalar type must be a pointer to the
+   *  scalar type of the reference_field.  The following
+   *  derived field data relationship maintained.
+   *
+   *  Let   e_root -> Relation( e_target , attribute )
+   *  Let   i = stencil( e_root.entity_type() , attribute );
+   *  Let   Scalar ** ptr = field_data( pointer_field , e_root )
+   *  then  ptr[i] = field_data( referenced_field , e_target )
+   *
+   *  This derived field data relationship is typically used
+   *  to support fast access to field data on entities
+   *  related to the root entity; e.g. field data associated with
+   *  the nodes of an element.
+   */
+  void declare_field_relation( FieldBase & pointer_field ,
+                               relation_stencil_ptr stencil ,
+                               FieldBase & referenced_field ); 
+
+  const std::vector<FieldRelation> & get_field_relations() const
+    { return m_field_relations ; }
+
   /** Declare an attribute on a field */
   template<class T>
   CSet::Span<T> declare_field_attribute( FieldBase & , const T * , bool );
@@ -193,8 +226,7 @@ public:
   //------------------------------------
   /** Commit the part and field declarations.
    *  Verifies consistency and assigns ordinals for faster usage.
-   *  No more declarations (parts, part-subsets, fields, field-dimensions)
-   *  can be made.
+   *  No further declarations can be made.
    */
   void commit();
 
@@ -222,10 +254,12 @@ private:
   Part * m_uses_part ;
   Part * m_owns_part ;
 
-  std::vector< FieldBase * > m_fields ;
+  std::vector< FieldBase * >   m_fields ;
+  std::vector< PartRelation >  m_part_relations ;
+  std::vector< FieldRelation > m_field_relations ;
 
   void declare_field_stride( FieldBase & ,
-                             unsigned , const Part & ,
+                             EntityType , const Part & ,
                              const unsigned * );
   
   FieldBase & declare_field_base( const std::string & ,
@@ -253,6 +287,8 @@ private:
 
   void clean_field_dimension();
 };
+
+void verify_parallel_consistency( const Schema & , ParallelMachine );
 
 } // namespace phdmesh
 
@@ -319,7 +355,7 @@ template< class field_type >
 inline
 void Schema::declare_field_exists(
   field_type & arg_field ,
-  unsigned     arg_entity_type ,
+  EntityType   arg_entity_type ,
   const Part & arg_part )
 {
   declare_field_stride( arg_field , arg_entity_type , arg_part , NULL );
@@ -328,7 +364,7 @@ void Schema::declare_field_exists(
 template< class field_type >
 inline
 void Schema::declare_field_size( field_type & arg_field ,
-                                 unsigned     arg_entity_type ,
+                                 EntityType   arg_entity_type ,
                                  const Part & arg_part ,
                                  unsigned     arg_n1 )
 {
@@ -339,7 +375,7 @@ void Schema::declare_field_size( field_type & arg_field ,
 template< class field_type >
 inline
 void Schema::declare_field_size( field_type & arg_field ,
-                                 unsigned     arg_entity_type ,
+                                 EntityType   arg_entity_type ,
                                  const Part & arg_part ,
                                  unsigned     arg_n1 ,
                                  unsigned     arg_n2 )
@@ -351,7 +387,7 @@ void Schema::declare_field_size( field_type & arg_field ,
 template< class field_type >
 inline
 void Schema::declare_field_size( field_type & arg_field ,
-                                 unsigned     arg_entity_type ,
+                                 EntityType   arg_entity_type ,
                                  const Part & arg_part ,
                                  unsigned     arg_n1 ,
                                  unsigned     arg_n2 ,
@@ -364,7 +400,7 @@ void Schema::declare_field_size( field_type & arg_field ,
 template< class field_type >
 inline
 void Schema::declare_field_size( field_type & arg_field ,
-                                 unsigned     arg_entity_type ,
+                                 EntityType   arg_entity_type ,
                                  const Part & arg_part ,
                                  unsigned     arg_n1 ,
                                  unsigned     arg_n2 ,
@@ -378,7 +414,7 @@ void Schema::declare_field_size( field_type & arg_field ,
 template< class field_type >
 inline
 void Schema::declare_field_size( field_type & arg_field ,
-                                 unsigned     arg_entity_type ,
+                                 EntityType   arg_entity_type ,
                                  const Part & arg_part ,
                                  unsigned     arg_n1 ,
                                  unsigned     arg_n2 ,
@@ -394,7 +430,7 @@ void Schema::declare_field_size( field_type & arg_field ,
 template< class field_type >
 inline
 void Schema::declare_field_size( field_type & arg_field ,
-                                 unsigned     arg_entity_type ,
+                                 EntityType   arg_entity_type ,
                                  const Part & arg_part ,
                                  unsigned     arg_n1 ,
                                  unsigned     arg_n2 ,
@@ -411,7 +447,7 @@ void Schema::declare_field_size( field_type & arg_field ,
 template< class field_type >
 inline
 void Schema::declare_field_size( field_type & arg_field ,
-                                 unsigned     arg_entity_type ,
+                                 EntityType   arg_entity_type ,
                                  const Part & arg_part ,
                                  unsigned     arg_n1 ,
                                  unsigned     arg_n2 ,

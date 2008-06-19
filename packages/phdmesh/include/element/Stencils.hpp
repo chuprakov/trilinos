@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------*/
 /*      phdMesh : Parallel Heterogneous Dynamic unstructured Mesh         */
-/*                Copyright (2007) Sandia Corporation                     */
+/*                Copyright (2008) Sandia Corporation                     */
 /*                                                                        */
 /*  Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive   */
 /*  license for use of this work by or on behalf of the U.S. Government.  */
@@ -21,31 +21,69 @@
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
 /**
- * @author H. Carter Edwards
+ * @author H. Carter Edwards  <hcedwar@sandia.gov>
+ * @date   May 2008
  */
 
-#ifndef phdmesh_EntityTypes_hpp
-#define phdmesh_EntityTypes_hpp
+#ifndef phdmesh_element_Stencils_hpp
+#define phdmesh_element_Stencils_hpp
 
-//----------------------------------------------------------------------
+#include <util/Basics.hpp>
+#include <mesh/Types.hpp>
 
 namespace phdmesh {
+namespace { // To prevent multiple copies for the linker
 
-enum EntityType {
-  Node = 0 ,
-  Edge = 1 ,
-  Face = 2 ,
-  Element = 3 ,
-  Particle = 4 ,
-  Constraint = 5 ,
-  EndEntityType = 6 };
-
-const char * entity_type_name( unsigned );
-  
-} // namespace phdmesh
+enum { ElementStencils_OK =
+         StaticAssert< phdmesh::Node == 0 &&
+                       phdmesh::Edge == 1 &&
+                       phdmesh::Face == 2 &&
+                       phdmesh::Element == 3 >::OK };
 
 //----------------------------------------------------------------------
+
+template< class ElementTraits >
+int element_node_stencil( EntityType , EntityType , unsigned , unsigned );
+
+template<>
+int element_node_stencil<void>( EntityType from_type ,
+                                EntityType to_type ,
+                                unsigned   identifier ,
+                                unsigned   kind )
+{
+  int ordinal = -1 ;
+
+  if ( Element == from_type && Node == to_type && 0 == kind ) {
+    ordinal = (int) identifier ;
+  }
+
+  return ordinal ;
+}
+
+template< class ElementTraits >
+int element_node_stencil( EntityType from_type ,
+                          EntityType to_type ,
+                          unsigned   identifier ,
+                          unsigned   kind )
+{
+  enum { number_node = ElementTraits::number_node };
+
+  int ordinal = -1 ;
+
+  if ( Element == from_type &&
+       Node    == to_type &&
+       0       == kind &&
+       identifier < number_node ) {
+    ordinal = (int) identifier ;
+  }
+
+  return ordinal ;
+}
+
 //----------------------------------------------------------------------
+
+}
+}
 
 #endif
 

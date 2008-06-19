@@ -34,7 +34,25 @@
 namespace phdmesh {
 
 //----------------------------------------------------------------------
-// Traits for coordinate system dimensions
+/** Dimension traits for array of entities */
+
+struct EntityDimension : public DimensionTraits {
+
+  const char * name() const ;
+
+  static const DimensionTraits * descriptor();
+
+private:
+
+  EntityDimension() {}
+
+  EntityDimension( const EntityDimension & );
+
+  EntityDimension & operator = ( const EntityDimension & );
+};
+
+//----------------------------------------------------------------------
+/** Dimension traits for cartesian coordinates */
 
 struct Cartesian : public DimensionTraits {
 
@@ -51,6 +69,9 @@ private:
   Cartesian( const Cartesian & );
   Cartesian & operator = ( const Cartesian & );
 };
+
+//----------------------------------------------------------------------
+/** Dimension traits for cylindrical coordinates */
 
 struct Cylindrical : public DimensionTraits {
 

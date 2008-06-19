@@ -442,7 +442,7 @@ bool comm_mesh_stats( Mesh & M ,
   ParallelMachine comm = M.parallel();
   Part & owns = S.owns_part();
 
-  for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
+  for ( unsigned i = 0 ; i < EntityTypeEnd ; ++i ) {
     counts[i] = 0 ;
     max_id[i] = 0 ;
 
@@ -468,8 +468,8 @@ bool comm_mesh_stats( Mesh & M ,
   unsigned flag = local_flag ? 1 : 0 ;
 
   all_reduce( comm ,
-              ReduceSum< end_entity_rank >( counts ) &
-              ReduceMax< end_entity_rank >( max_id ) &
+              ReduceSum< EntityTypeEnd >( counts ) &
+              ReduceMax< EntityTypeEnd >( max_id ) &
               ReduceMax<1>( & flag ) );
 
   return flag ;
@@ -486,7 +486,7 @@ bool comm_mesh_entities(
         EntityProcSet & recv_info ,
   bool local_flag )
 {
-  enum { NUM_COUNT =  end_entity_rank  + 1 };
+  enum { NUM_COUNT =  EntityTypeEnd  + 1 };
 
   static const char method[] = "phdmesh::comm_mesh_entities" ;
 
@@ -611,7 +611,7 @@ bool comm_mesh_entities(
       }
     }
 
-    for ( unsigned etype = 0 ; etype <  end_entity_rank  ; ++etype ) {
+    for ( unsigned etype = 0 ; etype <  EntityTypeEnd  ; ++etype ) {
       for ( unsigned recv_p = 0 ; recv_p < p_size ; ++recv_p ) {
         const unsigned num = count[ recv_p * NUM_COUNT + etype + 1 ];
         CommBuffer & buf = all.recv_buffer( recv_p );

@@ -34,6 +34,7 @@
 #include <mesh/Mesh.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Comm.hpp>
+#include <mesh/FieldData.hpp>
 
 namespace phdmesh {
 
@@ -65,7 +66,7 @@ Mesh::~Mesh()
   // Destroy entities, which were allocated by the set itself.
   // Destroy kernels, which were *not* allocated by the set.
 
-  for ( unsigned i = end_entity_rank ; 0 < i ; ) {
+  for ( unsigned i = EntityTypeEnd ; 0 < i ; ) {
     --i ;
 
     EntitySet & eset = m_entities[i] ;
@@ -85,7 +86,7 @@ Mesh::~Mesh()
 
 void Mesh::update_state()
 {
-  for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
+  for ( unsigned i = 0 ; i < EntityTypeEnd ; ++i ) {
 
     KernelSet & kset = m_kernels[ i ] ;
 
@@ -101,7 +102,7 @@ const EntitySet & Mesh::entities( unsigned entity_type ) const
 {
   const unsigned i = entity_type ;
 
-  if ( end_entity_rank <= i ) {
+  if ( EntityTypeEnd <= i ) {
     // Error
     std::string msg( "phdmesh::Mesh::entities FAILED with invalid type" );
     throw std::invalid_argument(msg);
@@ -114,7 +115,7 @@ const KernelSet & Mesh::kernels( unsigned entity_type ) const
 {
   const unsigned i = entity_type ;
 
-  if ( end_entity_rank <= i ) {
+  if ( EntityTypeEnd <= i ) {
     // Error
     std::string msg( "phdmesh::Mesh::kernels FAILED with invalid type" );
     throw std::invalid_argument(msg);
@@ -128,7 +129,7 @@ const KernelSet & Mesh::kernels( unsigned entity_type ) const
 Entity * Mesh::get_entity( entity_key_type key ,
                            const char * required_by ) const
 {
-  const EntitySet & es = entities( entity_rank( key ) );
+  const EntitySet & es = entities( phdmesh::entity_type( key ) );
   EntitySet::iterator i = es.find( key );
   if ( required_by && i == es.end() ) {
     static const char method[] = "phdmesh::Mesh::get_entity" ;
@@ -141,6 +142,9 @@ Entity * Mesh::get_entity( entity_key_type key ,
   return i != es.end() ? & * i : (Entity*) NULL ;
 }
 
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+
 Entity & Mesh::declare_entity( entity_key_type key )
 {
   const char method[] = "phdmesh::Mesh::declare_entity" ;
@@ -152,11 +156,21 @@ Entity & Mesh::declare_entity( entity_key_type key )
     throw std::logic_error( msg );
   }
 
-  const unsigned entity_type = entity_rank( key );
+  const unsigned entity_type = phdmesh::entity_type( key );
 
   EntitySet & eset = m_entities[ entity_type ] ;
 
   const std::pair< EntitySet::iterator , bool > result = eset.insert( key );
+
+  if ( result.second ) {
+
+    Part * const owns = & m_schema.owns_part();
+    PartSet add , rem ;
+    add.push_back( owns );
+    internal_change_entity_parts( * result.first , add , rem );
+
+    change_entity_owner( * result.first , m_parallel_rank );
+  }
 
   return * result.first ;
 }
@@ -169,9 +183,43 @@ void Mesh::change_entity_parts( Entity & e ,
 {
   const char method[] = "phdmesh::Mesh::change_entity_parts" ;
 
+  // Do not allow a PartRelation::m_target part to appear in the input
+
+  const std::vector<PartRelation> & part_rel = m_schema.get_part_relations();
+
+  for ( std::vector<PartRelation>::const_iterator
+        i = part_rel.begin() ; i != part_rel.end() ; ++i ) {
+    bool error_add = contain( add_parts , * i->m_target );
+    bool error_rem = contain( remove_parts , * i->m_target );
+    if ( error_add || error_rem ) {
+      std::ostringstream msg ;
+      msg << method ;
+      msg << "( " ;
+      print_entity_key( msg , e.key() );
+      msg << " , " ;
+      if ( error_add ) { msg << "{ " << i->m_target->name() << " }" ; }
+      msg << " , " ;
+      if ( error_rem ) { msg << "{ " << i->m_target->name() << " }" ; }
+      msg << " ) FAILED due to explicit use of this relation-part." ;
+    }
+  }
+
+  internal_change_entity_parts( e , add_parts , remove_parts );
+}
+
+//----------------------------------------------------------------------
+
+void Mesh::internal_change_entity_parts(
+  Entity & e ,
+  const std::vector<Part*> & add_parts ,
+  const std::vector<Part*> & remove_parts )
+{
+  const char method[] = "phdmesh::Mesh::change_entity_parts" ;
+
   PartSet a_parts ;
   PartSet r_parts ;
 
+  //--------------------------------
   // If adding a part then add all supersets of the part
 
   for ( std::vector<Part*>::const_iterator
@@ -187,6 +235,7 @@ void Mesh::change_entity_parts( Entity & e ,
     }
   }
 
+  //--------------------------------
   // If removing a part then remove all subsets of that part.
   // This will include the 'intersection' parts.
 
@@ -202,6 +251,7 @@ void Mesh::change_entity_parts( Entity & e ,
     }
   }
 
+  //--------------------------------
   // Verify that r_parts and a_parts are disjoint and
   // that the remove parts does not contain the universal part.
 
@@ -224,7 +274,7 @@ void Mesh::change_entity_parts( Entity & e ,
     throw std::logic_error( msg );
   }
 
-  // Current kernel membership:
+  //--------------------------------
 
   bool changed = false ;
 
@@ -233,6 +283,7 @@ void Mesh::change_entity_parts( Entity & e ,
   // Start with existing parts:
 
   const KernelSet::iterator ik_old = e.m_kernel ;
+  const unsigned            i_old  = e.m_kernel_ord ;
 
   if ( ik_old ) {
 
@@ -280,10 +331,70 @@ void Mesh::change_entity_parts( Entity & e ,
     }
   }
 
+  //--------------------------------
+
   if ( changed ) {
-    insert_entity( e , parts );
+
+    // Move the entity to the new kernel.
+    {
+      KernelSet::iterator ik = declare_kernel( e.entity_type() , parts );
+
+      // If changing kernels then copy its field values from old to new kernel
+      if ( ik_old ) {
+        Kernel::copy_fields( *ik , ik->m_size , *ik_old , i_old );
+      }
+      else {
+        Kernel::zero_fields( *ik , ik->m_size );
+      }
+
+      // Set the new kernel
+      e.m_kernel     = ik ;
+      e.m_kernel_ord = ik->m_size ;
+      ik->m_entities[ ik->m_size ] = & e ;
+      ++( ik->m_size );
+
+      // If changing kernels then remove the entity from the kernel,
+      if ( ik_old ) { remove_entity( ik_old , i_old ); }
+    }
+
+    // Propogate the changes to related entities:
+
+    {
+      RelationSpan rel = e.relations();
+
+      for ( ; rel ; ++rel ) {
+        if ( rel->forward() ) {
+
+          Entity & e_to = * rel->entity();
+
+          // Deduce parts for 'e_to' - these are the 'add' parts for 'e_to'
+          // Any part that I removed that is not deduced for
+          // 'e_to' must be removed from 'e_to'
+
+          PartSet to_add ;
+          PartSet to_del ;
+
+          deduce_part_relations( e_to , to_add );
+
+          for ( PartSet::iterator
+                j = r_parts.begin() ; j != r_parts.end() ; ++j ) {
+            if ( ! contain( to_add , **j ) ) { to_del.push_back( *j ); }
+          }
+
+          internal_change_entity_parts( e_to , to_add , to_del );
+
+          set_field_relations( e, e_to, rel->identifier(), rel->kind() );
+        }
+        else {
+          Entity & e_from = * rel->entity();
+          set_field_relations( e_from, e, rel->identifier(), rel->kind() );
+        }
+      }
+    }
   }
 }
+
+//----------------------------------------------------------------------
 
 void Mesh::change_entity_identifier( Entity & e , entity_id_type id )
 {
@@ -293,7 +404,7 @@ void Mesh::change_entity_identifier( Entity & e , entity_id_type id )
   bool ok = valid_id ;
 
   if ( ok ) {
-    const unsigned        type = e.entity_type();
+    const EntityType      type = e.entity_type();
     const entity_key_type key  = entity_key( type , id );
     Entity * const ptr = & e ;
 
@@ -416,7 +527,7 @@ void verify_set_shares( const Mesh & M )
     // Verify all uses but not owned entities are shared
     // and their owner is one of the shared.
 
-    for ( unsigned t = 0 ; t < end_entity_rank ; ++t ) {
+    for ( unsigned t = 0 ; t < EntityTypeEnd ; ++t ) {
 
       const KernelSet & kernels = M.kernels( t );
 
@@ -519,7 +630,7 @@ void Mesh::set_shares( const EntityProcSet & s )
   {
     const EntityProcSpan ss_empty ;
 
-    for ( unsigned t = 0 ; t < end_entity_rank ; ++t ) {
+    for ( unsigned t = 0 ; t < EntityTypeEnd ; ++t ) {
       const EntitySet::iterator e = m_entities[t].end();
             EntitySet::iterator i = m_entities[t].begin();
       for ( ; e != i ; ++i ) { i->m_sharing = ss_empty ; }
@@ -604,10 +715,10 @@ void verify_set_aura( const Mesh & M )
     // (2) an entity only appears in the range once
 
     {
-      unsigned entity_count[ end_entity_rank ];
-      unsigned kernel_count[ end_entity_rank ];
+      unsigned entity_count[ EntityTypeEnd ];
+      unsigned kernel_count[ EntityTypeEnd ];
 
-      for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
+      for ( unsigned i = 0 ; i < EntityTypeEnd ; ++i ) {
         entity_count[i] = 0 ;
         kernel_count[i] = 0 ;
       }
@@ -648,7 +759,7 @@ void verify_set_aura( const Mesh & M )
 
       // Verify aura range count equals not member of uses count.
 
-      for ( unsigned i = 0 ; ok && i < end_entity_rank ; ++i ) {
+      for ( unsigned i = 0 ; ok && i < EntityTypeEnd ; ++i ) {
         const KernelSet & kset = M.kernels( i );
         const KernelSet::const_iterator ek = kset.end();
               KernelSet::const_iterator ik = kset.begin();
@@ -761,7 +872,7 @@ void partset_entity_count(
 
   mesh.schema().assert_same_schema( method , part.schema() );
 
-  for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
+  for ( unsigned i = 0 ; i < EntityTypeEnd ; ++i ) {
     count[i] = 0 ;
 
     const KernelSet & ks = mesh.kernels( i );
@@ -781,7 +892,7 @@ void partset_entity_count(
 {
   static const char method[] = "phdmesh::partset_entity_count" ;
 
-  for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
+  for ( unsigned i = 0 ; i < EntityTypeEnd ; ++i ) {
     count[i] = 0 ;
   }
 
@@ -798,7 +909,7 @@ void partset_entity_count(
       }
     }
 
-    for ( unsigned i = 0 ; i < end_entity_rank ; ++i ) {
+    for ( unsigned i = 0 ; i < EntityTypeEnd ; ++i ) {
       const KernelSet & ks = mesh.kernels( i );
 
       KernelSet::const_iterator ik ;

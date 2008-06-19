@@ -32,7 +32,6 @@
 
 #include <util/ParallelComm.hpp>
 #include <util/ParallelReduce.hpp>
-#include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Comm.hpp>
 

@@ -32,7 +32,6 @@
 #include <util/TPI.h>
 #include <util/ParallelComm.hpp>
 
-#include <mesh/EntityType.hpp>
 #include <mesh/FieldTraits.hpp>
 #include <mesh/FieldData.hpp>
 #include <mesh/Schema.hpp>
@@ -139,7 +138,7 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
     // If non-unique then an exception is thrown that includes
     // the text contained in the 'method' string.
 
-    M.declare_relation( elem , node , i , method );
+    M.declare_relation( elem , node , i );
   }
 
   // Declare the face entity:
@@ -152,7 +151,7 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   // Declare element <-> face relation
 
-  M.declare_relation( elem , face , 0 , method );
+  M.declare_relation( elem , face , 0 );
 
   // Declare face <-> node relations
 
@@ -171,7 +170,7 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   for ( unsigned i = 0 ; i < 4 ; ++i ) {
     Entity & node = * elem_node[ elem_face_node[i] ].entity();
-    M.declare_relation( face , node , i , method );
+    M.declare_relation( face , node , i );
 
     // Update the nodes on the face to also be members of the face part.
 
@@ -234,8 +233,8 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   // Get the global counts and identifier stats
   {
-    entity_id_type counts[ end_entity_rank ];
-    entity_id_type max_id[ end_entity_rank ];
+    entity_id_type counts[ EntityTypeEnd ];
+    entity_id_type max_id[ EntityTypeEnd ];
 
     comm_mesh_stats( M , counts , max_id );
 

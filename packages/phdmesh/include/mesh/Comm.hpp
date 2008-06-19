@@ -116,8 +116,8 @@ bool comm_verify( ParallelMachine ,
 //----------------------------------------------------------------------
 /** Global counts and maximum identifiers for a mesh's entities.
  *  Array sizes:
- *    counts[ end_entity_rank ]
- *    max_id[ end_entity_rank ]
+ *    counts[ EntityTypeEnd ]
+ *    max_id[ EntityTypeEnd ]
  */
 bool comm_mesh_stats( Mesh & ,
                       entity_id_type * const counts ,
@@ -164,7 +164,7 @@ bool comm_mesh_field_values(
 /** Verify that the shared entity values are bit-wise identical */
 
 bool comm_verify_shared_entity_values(
-  const Mesh & , unsigned entity_type , const FieldBase & f );
+  const Mesh & , EntityType , const FieldBase & );
 
 //----------------------------------------------------------------------
 /** Discover the sharing of all mesh entities by searching for

@@ -84,13 +84,13 @@ void RegenAuraComm::receive_entity(
 {
   entity_key_type       key ;
   unsigned              owner_rank ;
-  std::vector<Part*>    parts ;
-  std::vector<Relation>  relations ;
+  std::vector<Part*>    add , del ;
+  std::vector<Relation> relations ;
   std::vector<unsigned> send_destinations ;
 
   unpack_entity( buffer , receive_mesh ,
                  key , owner_rank ,
-                 parts , relations , send_destinations );
+                 add , relations , send_destinations );
 
   const Schema & S = receive_mesh.schema();
   Part * const owns_part = & S.owns_part();
@@ -98,10 +98,13 @@ void RegenAuraComm::receive_entity(
 
   // This is an aura, not a member of the owns part or uses part
 
-  std::vector<Part*>::iterator ip = parts.end();
-  while ( ip != parts.begin() ) {
+  del.push_back( owns_part );
+  del.push_back( uses_part );
+
+  std::vector<Part*>::iterator ip = add.end();
+  while ( ip != add.begin() ) {
     --ip ;
-    if ( *ip == owns_part || *ip == uses_part ) { ip = parts.erase( ip ); }
+    if ( *ip == owns_part || *ip == uses_part ) { ip = add.erase( ip ); }
   }
 
   EntityProc ep ;
@@ -117,12 +120,12 @@ void RegenAuraComm::receive_entity(
 
   {
     Entity & entity = receive_mesh.declare_entity( key );
-    receive_mesh.change_entity_parts( entity , parts );
+    receive_mesh.change_entity_parts( entity , add , del );
     receive_mesh.change_entity_owner( entity , owner_rank );
     ep.first = & entity ;
   }
 
-  receive_mesh.declare_relation( *ep.first , relations , name() );
+  receive_mesh.declare_relation( *ep.first , relations );
 
   ep.second = owner_rank ;
 
@@ -264,13 +267,13 @@ void comm_mesh_regenerate_aura( Mesh & M )
     const EntityProcSet::const_iterator ie = i ;
 
     Entity * const shared_entity = ib->first ;
-    const unsigned shared_type = shared_entity->entity_type();
+    const EntityType shared_type = shared_entity->entity_type();
 
     for ( RelationSpan shared_entity_con = shared_entity->relations() ;
           shared_entity_con ; ++shared_entity_con ) {
 
       Entity * const e = shared_entity_con->entity();
-      const unsigned e_type = shared_entity_con->entity_type();
+      const EntityType e_type = shared_entity_con->entity_type();
 
       if ( shared_type < e_type && p_rank == e->owner_rank() ) {
 

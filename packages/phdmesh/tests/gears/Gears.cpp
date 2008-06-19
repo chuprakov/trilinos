@@ -32,11 +32,13 @@
 #include <util/TPI.h>
 #include <util/ParallelComm.hpp>
 
-#include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/FieldData.hpp>
 #include <mesh/Comm.hpp>
+
+#include <element/Declarations.hpp>
+#include <element/HexahedronTopology.hpp>
 
 #include "Gears.hpp"
 
@@ -114,6 +116,8 @@ Gear::Gear( Schema & S ,
   enum {  SpatialDimension = GearFields::SpatialDimension };
   typedef GearFields::ElementValueField ElementValueField ;
   typedef GearFields::NodeValueField    NodeValueField ;
+
+  set_part_local_topology< Hexahedron<8> >( m_gear );
 
   S.declare_field_size( gear_fields.element_value , Element , m_gear , SpatialDimension , NNODE );
   S.declare_field_size( gear_fields.node_value    , Node , m_gear , SpatialDimension );
@@ -206,8 +210,8 @@ void Gear::mesh( Mesh & M )
   const unsigned p_size = M.parallel_size();
   const unsigned p_rank = M.parallel_rank();
 
-  entity_id_type counts[ end_entity_rank ];
-  entity_id_type max_id[ end_entity_rank ];
+  entity_id_type counts[ EntityTypeEnd ];
+  entity_id_type max_id[ EntityTypeEnd ];
 
   comm_mesh_stats( M , counts , max_id );
 
@@ -222,9 +226,9 @@ void Gear::mesh( Mesh & M )
   std::vector<Part*> face_parts ;
 
   {
-    Part * const p_gear   = & m_gear ;
-    Part * const p_surf   = & m_surf ;
-    Part * const p_owns  = & m_schema.owns_part();
+    Part * const p_gear = & m_gear ;
+    Part * const p_surf = & m_surf ;
+    Part * const p_owns = & m_schema.owns_part();
 
     elem_parts.push_back( p_gear );
     elem_parts.push_back( p_owns );

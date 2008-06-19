@@ -32,7 +32,6 @@
 #include <util/OctTreeOps.hpp>
 
 #include <mesh/Types.hpp>
-#include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/FieldData.hpp>

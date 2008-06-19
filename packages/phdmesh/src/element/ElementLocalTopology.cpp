@@ -110,7 +110,7 @@ struct IndexListData< IndexList<  I0 ,  I1 ,  I2 ,  I3 ,
   }
 
 template< class Traits >
-const LocalTopology * local_topology_descriptor()
+const LocalTopology * local_topology_descriptor( const char * name )
 {
   typedef typename Traits::BoundaryEdgeTypeList EdgeTypes ;
   typedef typename Traits::BoundaryEdgeNodeMap  EdgeMaps ;
@@ -158,6 +158,7 @@ const LocalTopology * local_topology_descriptor()
   };
 
   static LocalTopology self = {
+    name ,
     Traits::topological_rank ,
     Traits::minimum_dimension ,
     Traits::maximum_dimension ,
@@ -179,7 +180,7 @@ const LocalTopology * local_topology_descriptor()
 
 #define DECLARE_TOPOLOGY_DESCRIPTOR( T )	\
   const LocalTopology * T::descriptor()	\
-  { return local_topology_descriptor< T >(); }
+  { return local_topology_descriptor< T >( #T ); }
 
 DECLARE_TOPOLOGY_DESCRIPTOR( BoundaryPoint<0> )
 DECLARE_TOPOLOGY_DESCRIPTOR( BoundaryPoint<1> )
@@ -214,21 +215,32 @@ DECLARE_TOPOLOGY_DESCRIPTOR( Triangle<0> )
 DECLARE_TOPOLOGY_DESCRIPTOR( Triangle<3> )
 DECLARE_TOPOLOGY_DESCRIPTOR( Triangle<6> )
 
+DECLARE_TOPOLOGY_DESCRIPTOR( TriangleShell<0> )
+DECLARE_TOPOLOGY_DESCRIPTOR( TriangleShell<3> )
+
 DECLARE_TOPOLOGY_DESCRIPTOR( Quadrilateral<0> )
 DECLARE_TOPOLOGY_DESCRIPTOR( Quadrilateral<4> )
 DECLARE_TOPOLOGY_DESCRIPTOR( Quadrilateral<8> )
 DECLARE_TOPOLOGY_DESCRIPTOR( Quadrilateral<9> )
 
+DECLARE_TOPOLOGY_DESCRIPTOR( QuadrilateralShell<0> )
+DECLARE_TOPOLOGY_DESCRIPTOR( QuadrilateralShell<4> )
+
 //----------------------------------------------------------------------
 
 DECLARE_TOPOLOGY_DESCRIPTOR( Tetrahedron<0> )
 DECLARE_TOPOLOGY_DESCRIPTOR( Tetrahedron<4> )
+DECLARE_TOPOLOGY_DESCRIPTOR( Tetrahedron<10> )
 
 DECLARE_TOPOLOGY_DESCRIPTOR( Pyramid<0> )
 DECLARE_TOPOLOGY_DESCRIPTOR( Pyramid<5> )
+DECLARE_TOPOLOGY_DESCRIPTOR( Pyramid<13> )
+DECLARE_TOPOLOGY_DESCRIPTOR( Pyramid<14> )
 
 DECLARE_TOPOLOGY_DESCRIPTOR( Wedge<0> )
 DECLARE_TOPOLOGY_DESCRIPTOR( Wedge<6> )
+DECLARE_TOPOLOGY_DESCRIPTOR( Wedge<15> )
+DECLARE_TOPOLOGY_DESCRIPTOR( Wedge<18> )
 
 DECLARE_TOPOLOGY_DESCRIPTOR( Hexahedron< 0> )
 DECLARE_TOPOLOGY_DESCRIPTOR( Hexahedron< 8> )

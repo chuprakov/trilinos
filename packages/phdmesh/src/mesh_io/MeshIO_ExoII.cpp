@@ -35,7 +35,6 @@
 #include <util/ParallelReduce.hpp>
 #include <util/ParallelComm.hpp>
 
-#include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/FieldData.hpp>
@@ -1022,7 +1021,7 @@ unsigned count( const KernelSet & ks , const PartSet & ps )
   return n ;
 }
 
-std::string variable_name( unsigned          r ,
+std::string variable_name( EntityType        r ,
                            const Part      & p , 
                            const FieldBase & f ,
                            const unsigned    k )
@@ -1053,7 +1052,7 @@ std::string variable_name( unsigned          r ,
 }
 
 
-void variable_add( unsigned entity_type ,
+void variable_add( EntityType entity_type ,
                    const FieldBase                     & field ,
                    const std::vector<const FilePart *> & parts ,
                    std::vector< std::string >          & var_names ,
@@ -1222,7 +1221,7 @@ FileOutput::FileOutput(
           j =  f.dimension().begin() ;
           j != f.dimension().end() && ! is_element_var ; ++j ) {
 
-      is_element_var = j->rank == Element ;
+      is_element_var = j->type == Element ;
     }
     if ( is_element_var ) {
       variable_add( Element , f , elem_parts , name_elem_var , m_field_elem );
@@ -1547,9 +1546,9 @@ void pack_entity_data( const std::vector<const Entity *> & send ,
         i = send.begin() ; i != send.end() ; ++i ) {
     const Entity & e = **i ;
 
-    item_buffer[0] = * field_data( f_index , e );
-    item_buffer[1] = (double)
-                     reinterpret_cast<T*>( field_data(f_data,e) )[ offset ] ;
+    item_buffer[0] = (double) ( * field_data( f_index , e ) );
+    item_buffer[1] =
+      (double) reinterpret_cast<T*>( field_data(f_data,e) )[ offset ] ;
 
     buf.pack<double>( item_buffer , 2 );
   }
@@ -2288,7 +2287,7 @@ FileInput::FileInput(
           j =  f.dimension().begin() ;
           j != f.dimension().end() && ! is_element_var ; ++j ) {
 
-      is_element_var = j->rank == Element ;
+      is_element_var = j->type == Element ;
     }
     if ( is_element_var ) {
       variable_add( Element , f , elem_parts , name_elem_var , m_field_elem );
@@ -2767,7 +2766,7 @@ FileInput::FileInput(
           M.change_entity_parts( node , entity_parts );
           M.change_entity_owner( node , (int) p_rank );
 
-          M.declare_relation( elem , node , j , method );
+          M.declare_relation( elem , node , j );
 
           field_data( FS.m_field_index , node )[0] = node_index ;
 

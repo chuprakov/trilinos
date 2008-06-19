@@ -38,6 +38,7 @@
 #include <util/CSet.hpp>
 
 #include <mesh/Types.hpp>
+#include <mesh/FieldTraits.hpp>
 
 //----------------------------------------------------------------------
 
@@ -101,44 +102,33 @@ public:
   const DimensionTraits * const * dimension_traits() const
     { return m_dim_traits ; }
 
-  unsigned max_size( unsigned entity_type ) const ;
+  unsigned max_size( EntityType ) const ;
 
   //----------------------------------------
 
+  template<class A>
+  CSet::Span<A> attribute() const { return m_cset.get<A>(); }
+
+  //----------------------------------------
+  /** An internal data structure that should never need to be
+   *  used by a user of the phdMesh package.
+   */
   struct Dim {
     const Part * part ;
-    unsigned     rank ;
+    EntityType   type ;
     unsigned     stride[ MaximumFieldDimension ];
 
-    Dim( unsigned r , const Part & p ) : part( & p ) , rank( r )
-      { Copy<MaximumFieldDimension>( stride , 0u ); }
-
-    Dim() : part( NULL ), rank( 0 )
-      { Copy<MaximumFieldDimension>( stride , 0u ); }
-
-    Dim( const Dim & rhs )
-      : part( rhs.part ), rank( rhs.rank )
-      { Copy< MaximumFieldDimension >( stride , rhs.stride ); }
-
-    Dim & operator = ( const Dim & rhs )
-      {
-        part = rhs.part ;
-        rank = rhs.rank ;
-        Copy< MaximumFieldDimension >( stride , rhs.stride );
-        return *this ;
-      }
+    Dim( EntityType t , const Part & p );
+    Dim();
+    Dim( const Dim & rhs );
+    Dim & operator = ( const Dim & rhs );
   };
 
   /** Volatile until the schema is committed */
   const std::vector<Dim> & dimension() const ;
 
   /** Volatile until the schema is committed */
-  const Dim & dimension( unsigned , const Part & ) const ;
-
-  //----------------------------------------
-
-  template<class A>
-  CSet::Span<A> attribute() const { return m_cset.get<A>(); }
+  const Dim & dimension( EntityType , const Part & ) const ;
 
   //----------------------------------------
 
@@ -189,20 +179,8 @@ private:
 };
 
 //----------------------------------------------------------------------
-/** The dimension traits for a block of field data for multiple entities.
- */
-struct Entities : public DimensionTraits {
-  const char * name() const ;
-  static const DimensionTraits * descriptor();
-private:
-  Entities() {}
-  Entities( const Entities & );
-  Entities & operator = ( const Entities & );
-};
-
-//----------------------------------------------------------------------
 // Maximum dimension is one less to allow introduction
-// additional 'Entities' dimension.
+// additional 'EntityDimension'.
 
 template< typename Scalar ,
           class Traits1 , class Traits2 ,
@@ -212,7 +190,8 @@ template< typename Scalar ,
 class Field : public FieldBase {
 public:
 
-  typedef Scalar  data_type ;
+  typedef Scalar data_type ;
+
   typedef Traits1 dimension_traits_1 ;
   typedef Traits2 dimension_traits_2 ;
   typedef Traits3 dimension_traits_3 ;
@@ -221,17 +200,24 @@ public:
   typedef Traits6 dimension_traits_6 ;
   typedef Traits7 dimension_traits_7 ;
 
+  /** Dimension of field data for a single entity */
   typedef phdmesh::Dimension<Traits1,Traits2,Traits3,Traits4,
                              Traits5,Traits6,Traits7> Dimension ;
 
-  typedef typename DimensionAppend<Dimension,Entities>::type BlockDimension ;
+  /** Dimension of a contiguous block of field data for a
+   *  homogeneous collection of entities. 
+   */
+  typedef typename
+    DimensionAppend<Dimension,EntityDimension>::type BlockDimension ;
 
-  Dimension dimension( unsigned entity_type , const Part & part ) const
+  /** Query field data dimension for a single entity. */
+  Dimension dimension( EntityType entity_type , const Part & part ) const
     {
       const FieldBase::Dim & d = FieldBase::dimension( entity_type , part );
       return Dimension( d.stride );
     }
 
+  /** Query this field for a given field state. */
   const Field & operator[]( FieldState state ) const
     { return static_cast<Field &>( * FieldBase::m_field_states[state] ); }
 
@@ -243,6 +229,75 @@ private:
   Field & operator = ( const Field & );
 };
 
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+
+inline
+FieldBase::Dim::Dim( EntityType t , const Part & p )
+  : part( & p ) , type( t )
+  { Copy<MaximumFieldDimension>( stride , 0u ); }
+
+inline
+FieldBase::Dim::Dim()
+  : part( NULL ), type( EntityTypeEnd )
+  { Copy<MaximumFieldDimension>( stride , 0u ); }
+
+inline
+FieldBase::Dim::Dim( const FieldBase::Dim & rhs )
+  : part( rhs.part ), type( rhs.type )
+  { Copy< MaximumFieldDimension >( stride , rhs.stride ); }
+
+inline
+FieldBase::Dim &
+FieldBase::Dim::operator = ( const FieldBase::Dim & rhs )
+  {
+    part = rhs.part ;
+    type = rhs.type ;
+    Copy< MaximumFieldDimension >( stride , rhs.stride );
+    return *this ;
+  }
+
+//----------------------------------------------------------------------
+/** A field relation for fields that are a pointers to other fields.
+ *
+ *  If Entity 'e1' has a relation to Entity 'e2' that is in the
+ *     domain of the relation stencil 'm_function' AND
+ *     field 'm_root'   has a pointer scalar type 'T *' AND
+ *     field 'm_target' has a scalar type 'T' AND
+ *     field 'm_root'   has field data for Entity 'e1' AND
+ *     field 'm_target' has field data for Entity 'e2' AND
+ *     the 'e1' to 'e2' relation identifier is within the
+ *     the 'm_root' field data size
+ *   then
+ *      field_data(*m_root,e1)[index] == field_data(*m_target,e2)
+ *      where index = (*m_function)( e1.entity_type() ,
+ *                                   e2.entity_type() ,
+ *                                   relation_identifier_e1_to_e2 ,
+ *                                   relation_kind_e1_to_e2 )
+ *
+ *  This data structure is used internally and should never need to be
+ *  used by a user of the phdMesh package.
+ */
+struct FieldRelation {
+  FieldBase          * m_root ;
+  FieldBase          * m_target ;
+  relation_stencil_ptr m_function ;
+
+  FieldRelation() : m_root( NULL ), m_target( NULL ), m_function( NULL ) {}
+
+  FieldRelation( const FieldRelation & rhs )
+    : m_root( rhs.m_root ),
+      m_target( rhs.m_target ),
+      m_function( rhs.m_function ) {}
+
+  FieldRelation & operator = ( const FieldRelation & rhs )
+    {
+      m_root = rhs.m_root ;
+      m_target = rhs.m_target ;
+      m_function = rhs.m_function ;
+      return *this ;
+    }
+};
 
 } // namespace phdmesh
 

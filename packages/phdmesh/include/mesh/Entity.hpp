@@ -27,61 +27,24 @@
 #ifndef phdmesh_Entity_hpp
 #define phdmesh_Entity_hpp
 
-//----------------------------------------------------------------------
-
 #include <limits>
 #include <iosfwd>
 
 #include <util/Span.hpp>
+#include <mesh/Types.hpp>
 #include <mesh/Kernel.hpp>
-
-//----------------------------------------------------------------------
+#include <mesh/Relation.hpp>
 
 namespace phdmesh {
 
 //----------------------------------------------------------------------
-/** Relationship between mesh entities with attributes.
- *
- *  Concept is a relation consisting of 
- *    { ( ( DomainEntity , RangeEntity ) , RelationIdentifier ) }
- *
- *  Design is for the DomainEntity to own a subset of the relation,
- *    DomainEntity -> { ( RangeEntity , RelationIdentifier ) }
- */
+// Functions for encoding / decoding entity keys.
 
-class Relation {
-private:
-  entity_key_type m_key ;
-  Entity        * m_entity ;
-public:
+EntityType      entity_type( entity_key_type );
+entity_id_type  entity_id(   entity_key_type );
+entity_key_type entity_key( EntityType , entity_id_type );
 
-  ~Relation() {}
-
-  Relation() : m_key(0), m_entity(NULL) {}
-
-  Relation( const Relation & r ) : m_key(r.m_key), m_entity(r.m_entity) {}
-
-  Relation & operator = ( const Relation & r )
-    { m_key = r.m_key ; m_entity = r.m_entity ; return *this ; }
-
-  /** Construct with range entity, identifier, and if anonymous */
-  Relation( Entity & , unsigned );
-
-  Entity * entity() const { return m_entity ; }
-
-  unsigned       entity_type() const { return entity_rank( m_key ); }
-  entity_id_type identifier()  const { return entity_id( m_key ); }
-
-  entity_key_type key() const { return m_key ; }
-
-  bool operator == ( const Relation & r ) const
-    { return m_key == r.m_key && m_entity == r.m_entity ; }
-
-  bool operator != ( const Relation & r ) const
-    { return m_key != r.m_key || m_entity != r.m_entity ; }
-
-  bool operator < ( const Relation & r ) const ;
-};
+//----------------------------------------------------------------------
 
 typedef std::vector<Relation> RelationSet ;
 
@@ -94,7 +57,6 @@ typedef std::vector<Relation> RelationSet ;
  */
 typedef Span< RelationSet::const_iterator > RelationSpan ;
 
-//----------------------------------------------------------------------
 //----------------------------------------------------------------------
 /** A mesh entity has an entity type, identifier, relations, and
  *  resides within a mesh kernel.  The mesh kernel holds its field data.
@@ -110,12 +72,9 @@ private:
 
 public:
 
-  //------------------------------------
-  /** Entity type */
-  inline unsigned entity_type() const { return entity_rank( key() ); }
+  EntityType entity_type() const ;
 
-  /** Identifier */
-  inline entity_id_type identifier() const { return entity_id( key() ); }
+  entity_id_type identifier() const ;
 
   /** Kernel in which this mesh entity resides */
   Kernel & kernel() const { return * m_kernel ; }
@@ -127,11 +86,8 @@ public:
   /** All relations */
   RelationSpan relations() const { return RelationSpan( m_relation ); }
 
-  /** All relations with entities of a given entity type */
-  RelationSpan relations( unsigned type ) const ;
-
-  /** All relations with entities of a given entity type and attribute. */
-  RelationSpan relations( unsigned type , entity_id_type patch_id ) const ;
+  /** Relations with entities of a given entity type */
+  RelationSpan relations( EntityType type , unsigned kind = 0 ) const ;
 
   //------------------------------------
   /** Owning parallel processor rank */
@@ -155,7 +111,6 @@ private:
 
 typedef Setv<Entity> EntitySet ;
 
-
 //----------------------------------------------------------------------
 
 /** Print identifier and relations */
@@ -163,21 +118,57 @@ std::ostream &
 print_entity( std::ostream & , const std::string & lead , const Entity & );
 
 std::ostream &
-print_entity_key( std::ostream & , unsigned type , entity_id_type id );
+print_entity_key( std::ostream & , EntityType type , entity_id_type id );
 
 std::ostream &
 print_entity_key( std::ostream & , entity_key_type key );
-
-std::ostream & print_relation( std::ostream & os ,
-                              entity_key_type patch_key ,
-                              entity_key_type entity_key );
-
-std::ostream & operator << ( std::ostream & , const Relation & );
 
 } // namespace phdmesh
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
+
+namespace phdmesh {
+
+enum {
+  entity_key_type_shift  =
+    std::numeric_limits<entity_key_type>::digits - entity_key_type_digits ,
+  entity_id_digits =
+     entity_key_type_shift < std::numeric_limits<entity_id_type>::digits ?
+     entity_key_type_shift : std::numeric_limits<entity_id_type>::digits
+};
+
+enum { entity_id_end = ((entity_key_type) 1) << entity_id_digits };
+
+inline
+entity_key_type entity_key( EntityType type , entity_id_type id )
+{
+  enum { mask = ~((entity_id_type) 0 ) >>
+           ( std::numeric_limits<entity_id_type>::digits - entity_id_digits ) };
+  return ( ((entity_key_type) type) << entity_key_type_shift ) | ( id & mask );
+}
+
+inline
+EntityType entity_type( entity_key_type key )
+{ return EntityType( key >> entity_key_type_shift ); }
+
+inline
+entity_id_type entity_id( entity_key_type key )
+{
+  enum { mask = ~((entity_id_type) 0 ) >>
+           ( std::numeric_limits<entity_id_type>::digits - entity_id_digits ) };
+  return ((entity_id_type) key ) & mask ;
+}
+
+inline
+EntityType Entity::entity_type() const
+{ return phdmesh::entity_type( key() ); }
+
+inline
+entity_id_type Entity::identifier() const
+{ return phdmesh::entity_id( key() ); }
+
+} // namespace phdmesh
 
 #endif
 

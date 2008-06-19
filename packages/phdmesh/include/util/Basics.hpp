@@ -117,15 +117,27 @@ typedef IntegerFundamentalTypes<>::int64_type    int64_type ;
 typedef IntegerFundamentalTypes<>::uint64_type   uint64_type ;
 
 
-template< unsigned = sizeof(void*) > struct IntegerPointerType ;
+template< unsigned > struct IntegerSizeofType ;
 
 template<>
-struct IntegerPointerType<sizeof(uint32_type)> { typedef uint32_type type; };
+struct IntegerSizeofType< sizeof(uint16_type) > {
+  typedef uint16_type unsigned_type ;
+  typedef uint16_type signed_type ;
+};
 
 template<>
-struct IntegerPointerType<sizeof(uint64_type)> { typedef uint64_type type; };
+struct IntegerSizeofType< sizeof(uint32_type) > {
+  typedef uint32_type unsigned_type ;
+  typedef uint32_type signed_type ;
+};
 
-typedef IntegerPointerType<>::type uint_ptr_type ;
+template<>
+struct IntegerSizeofType< sizeof(uint64_type) > {
+  typedef uint64_type unsigned_type ;
+  typedef uint64_type signed_type ;
+};
+
+typedef IntegerSizeofType< sizeof(void*) >::unsigned_type uint_ptr_type ;
 
 } // namespace phdmesh
 

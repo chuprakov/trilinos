@@ -31,7 +31,6 @@
 #include <util/ParallelReduce.hpp>
 #include <util/OctTreeOps.hpp>
 
-#include <mesh/EntityType.hpp>
 #include <mesh/Schema.hpp>
 #include <mesh/Mesh.hpp>
 #include <mesh/FieldData.hpp>
@@ -219,7 +218,7 @@ void global_element_cuts( Mesh & M ,
 // Check each non-aura "other" entity against the attached uses-entities.
 // Each entity will be rebalanced to every processor that it 'uses'.
 
-void rebal_other_entities( Mesh & M , unsigned other , EntityProcSet & rebal )
+void rebal_other_entities( Mesh & M , EntityType other , EntityProcSet & rebal )
 {
   static const char method[] = "phdmesh::rebal_other_entities" ;
 
@@ -391,24 +390,24 @@ void RebalanceComm::receive_entity(
 {
   entity_key_type       key ;
   unsigned              owner_rank ;
-  std::vector<Part*>    parts ;
-  std::vector<Relation>  relations ;
+  std::vector<Part*>    add ;
+  std::vector<Relation> relations ;
   std::vector<unsigned> send_dest ;
 
   unpack_entity( buffer , receive_mesh ,
                  key , owner_rank ,
-                 parts , relations , send_dest );
+                 add , relations , send_dest );
 
   EntityProc ep ;
 
   {
     Entity & entity = receive_mesh.declare_entity( key );
-    receive_mesh.change_entity_parts( entity , parts );
+    receive_mesh.change_entity_parts( entity , add );
     receive_mesh.change_entity_owner( entity , owner_rank );
     ep.first = & entity ;
   }
 
-  receive_mesh.declare_relation( *ep.first , relations , name() );
+  receive_mesh.declare_relation( *ep.first , relations );
 
   ep.second = send_source ;
 

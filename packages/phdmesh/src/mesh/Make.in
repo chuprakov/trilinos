@@ -36,6 +36,7 @@ MESH_INC_FILES =	\
 	$(MESH_INC_DIR)/Mesh.hpp	\
 	$(MESH_INC_DIR)/Part.hpp	\
 	$(MESH_INC_DIR)/Proximity.hpp	\
+	$(MESH_INC_DIR)/Relation.hpp	\
 	$(MESH_INC_DIR)/Schema.hpp	\
 	$(MESH_INC_DIR)/Types.hpp
 
@@ -52,6 +53,7 @@ MESH_OBJ_FILES =	\
 	MeshPart.o	\
 	MeshProximity.o	\
 	MeshRebalance.o	\
+	MeshRelation.o	\
 	MeshSchema.o	\
 	MeshSharing.o	\
 	MeshTestSchema.o	\

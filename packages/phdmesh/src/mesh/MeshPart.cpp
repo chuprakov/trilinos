@@ -386,9 +386,10 @@ Part::~Part()
 Part::Part( Schema & m , const std::string & n , const PartSet & intersect )
   : m_name( n ),
     m_cset(),
+    m_subsets() , m_supersets() , m_intersect() ,
     m_schema( m ) ,
-    m_schema_ordinal( 0 ) ,
-    m_subsets() , m_supersets() , m_intersect()
+    m_schema_ordinal( 0 ),
+    m_relation_target( false )
 {
   static const char method[] = "phdmesh::Part::Part" ;
 
@@ -428,6 +429,42 @@ Part::Part( Schema & m , const std::string & n , const PartSet & intersect )
       m_schema.declare_part_subset( **i , *this );
     }
   }
+}
+
+//----------------------------------------------------------------------
+
+Part & Schema::declare_part( const std::string & p_name )
+{
+  static const char method[] = "phdmesh::Mesh::declare_part" ;
+
+  assert_not_committed( method );
+
+  Part * p = find( m_universal_part.m_subsets , p_name );
+
+  if ( p == NULL ) { p = new Part( *this , p_name , PartSet() ); }
+
+  return *p ;
+}
+
+//----------------------------------------------------------------------
+
+namespace {
+
+void assert_not_relation_target( const char * const method ,
+                                 const char * const what ,
+                                 const Part & part )
+{
+  if ( part.is_relation_target() ) {
+    std::string msg ;
+    msg.append( method );
+    msg.append(" : FAILED, " );
+    msg.append( part.name() );
+    msg.append(" is a part relation target and cannot be a " );
+    msg.append( what );
+    throw std::invalid_argument(msg);
+  }
+}
+
 }
 
 //----------------------------------------------------------------------
@@ -488,6 +525,10 @@ Part & Schema::declare_part( const PartSet & pset )
 
   assert_not_committed( method );
 
+  for ( PartSet::const_iterator i = pset.begin() ; i != pset.end() ; ++i ) {
+    assert_not_relation_target( method , "superset" , **i );
+  }
+
   PartSet pset_clean( pset );
 
   std::string p_name ;
@@ -508,24 +549,14 @@ Part & Schema::declare_part( const PartSet & pset )
   return *p ;
 }
 
-Part & Schema::declare_part( const std::string & p_name )
-{
-  static const char method[] = "phdmesh::Mesh::declare_part" ;
-
-  assert_not_committed( method );
-
-  Part * p = find( m_universal_part.m_subsets , p_name );
-
-  if ( p == NULL ) { p = new Part( *this , p_name , PartSet() ); }
-
-  return *p ;
-}
-
 //----------------------------------------------------------------------
 
 void Schema::declare_part_subset( Part & superset , Part & subset )
 {
   static const char method[] = "phdmesh::Schema::declare_part_subset" ;
+
+  assert_not_relation_target( method , "superset" , superset );
+  assert_not_relation_target( method , "subset" , subset );
 
   if ( ! contain( superset.m_subsets , subset ) ) {
 
@@ -584,6 +615,38 @@ void Schema::declare_part_subset( Part & superset , Part & subset )
       }
     }
   }
+}
+
+//----------------------------------------------------------------------
+
+void Schema::declare_part_relation(
+  Part & root_part ,
+  relation_stencil_ptr stencil ,
+  Part & target_part )
+{
+  static const char method[] = "phdmesh::Schema::declare_part_relation" ;
+
+  assert_not_relation_target( method , "root of part relation" , root_part );
+
+  if ( 0 != target_part.subsets().size() ||
+       0 != target_part.intersection_of().size() ||
+       1 != target_part.supersets().size() ) {
+    std::string msg ;
+    msg.append( method );
+    msg.append( ": FAILED, target " );
+    msg.append( target_part.name() );
+    msg.append( " cannot be a superset or subset" );
+    throw std::runtime_error( msg );
+  }
+
+  target_part.m_relation_target = true ;
+
+  PartRelation tmp ;
+  tmp.m_root = & root_part ;
+  tmp.m_target = & target_part ;
+  tmp.m_function = stencil ;
+
+  m_part_relations.push_back( tmp );
 }
 
 //----------------------------------------------------------------------

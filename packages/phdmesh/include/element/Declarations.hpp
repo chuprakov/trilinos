@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------*/
 /*      phdMesh : Parallel Heterogneous Dynamic unstructured Mesh         */
-/*                Copyright (2007) Sandia Corporation                     */
+/*                Copyright (2008) Sandia Corporation                     */
 /*                                                                        */
 /*  Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive   */
 /*  license for use of this work by or on behalf of the U.S. Government.  */
@@ -21,42 +21,57 @@
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
 /**
- * @author H. Carter Edwards
+ * @author H. Carter Edwards  <hcedwar@sandia.gov>
+ * @date   June 2008
  */
 
-#ifndef phdmesh_Gather_hpp
-#define phdmesh_Gather_hpp
+#ifndef phdmesh_element_Declarations_hpp
+#define phdmesh_element_Declarations_hpp
 
-#include <mesh/FieldData.hpp>
+#include <mesh/Types.hpp>
+#include <element/LocalTopology.hpp>
 
 namespace phdmesh {
 
 //----------------------------------------------------------------------
+/** Attach an element local topology to a Part.
+ *  There is at most one element topology allowed.
+ */
+void set_part_local_topology( Part & , const LocalTopology * singleton );
 
-template< unsigned NType , enum EntityType EType ,
-          unsigned NRel , class field_type >
-bool gather_field_data( const field_type & field ,
-                        const Entity     & entity ,
-                        typename field_type::data_type * dst )
+/** Attach an element local topology to a Part.
+ *  There is at most one element topology allowed.
+ */
+template< class ElementTraits >
+void set_part_local_topology( Part & p )
+{ return set_part_local_topology( p , ElementTraits::descriptor() ); }
+
+const LocalTopology * get_part_local_topology( Part & );
+
+//----------------------------------------------------------------------
+/** Declare an element with nodes conformal to the given local topology. */
+Entity & declare_element( Mesh & mesh ,
+                          const LocalTopology & ,
+                          const unsigned elem_id ,
+                          const unsigned node_id[] );
+
+/** Declare an element with nodes conformal to the given local topology. */
+template< class ElementTraits >
+Entity & declare_element( Mesh & mesh ,
+                          const unsigned elem_id ,
+                          const unsigned node_id[] )
 {
-  typedef typename field_type::data_type T ;
-
-  RelationSpan rel = entity.relations( EType );
-
-  bool result = NRel == (unsigned) rel.size();
-
-  if ( result ) {
-    T * const dst_end = dst + NType * NRel ;
-    for ( const T * src ;
-          ( dst < dst_end ) &&
-          ( src = field_data( field , * rel->entity() ) ) ;
-          ++rel , dst += NType ) {
-      Copy<NType>( dst , src );
-    }
-    result = dst == dst_end ;
-  }
-  return result ;
+  return declare_element( mesh , * ElementTraits::descriptor() ,
+                          elem_id , node_id );
 }
+
+/** Declare an element member of a part with a local topology
+ *  and nodes conformal to that topology.
+ */
+Entity & declare_element( Mesh & mesh ,
+                          Part & part ,
+                          const unsigned elem_id ,
+                          const unsigned node_id[] );
 
 //----------------------------------------------------------------------
 

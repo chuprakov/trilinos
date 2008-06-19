@@ -38,8 +38,6 @@
 
 namespace phdmesh {
 
-void verify_parallel_consistency( const Schema & , ParallelMachine );
-
 //----------------------------------------------------------------------
 /** Parallel Heterogeneous Dynamic Mesh.
  *  An dynamic unstructured mesh of mesh entities with
@@ -85,11 +83,11 @@ public:
 
   //------------------------------------
   /** Create or retrieve entity of the given type and id.
-   *  If has different parts then merge the existing parts
-   *  and the input parts.
+   *  If the entity is created it is assumed to be locally owned.
    */
   Entity & declare_entity( entity_key_type );
 
+  /** Change the entity's part membership by adding and/or removing parts */
   void change_entity_parts( Entity & ,
                             const std::vector<Part*> & add_parts ,
                             const std::vector<Part*> & remove_parts = 
@@ -100,20 +98,17 @@ public:
   void change_entity_identifier( Entity & , entity_id_type );
 
   /** Declare a relation and its converse between entities in the same mesh.
-   *  The greater entity type 'uses' the lesser entity type.
-   *  If 'required_unique_by' is set and declaration is non-unique
-   *  then throws an error with the message.
+   *  This mapping ( e_from , identifier , kind ) -> e_to  must be unique.
    */
-  void declare_relation( Entity & ,
-                           Entity & ,
-                           const unsigned identifier ,
-                           const char * required_unique_by = NULL );
+  void declare_relation( Entity & e_from ,
+                         Entity & e_to ,
+                         const unsigned identifier ,
+                         const unsigned kind = 0 );
 
-  void declare_relation( Entity & , const std::vector<Relation> & ,
-                           const char * required_unique_by = NULL );
+  void declare_relation( Entity & , const std::vector<Relation> & );
 
   /** Remove all relations between two entities. */
-  void destroy_relation( Entity & , Entity & );
+  void destroy_relation( Entity & , Entity & , unsigned kind = 0 );
 
   /** Destroy an entity */
   void destroy_entity( Entity * );
@@ -151,17 +146,26 @@ private:
   unsigned        m_parallel_size ;
   unsigned        m_parallel_rank ;
   unsigned        m_kernel_capacity ;
-  KernelSet       m_kernels[  end_entity_rank ];
-  EntitySet       m_entities[ end_entity_rank ];
+  KernelSet       m_kernels[  EntityTypeEnd ];
+  EntitySet       m_entities[ EntityTypeEnd ];
   EntityProcSet   m_shares_all ;
   EntityProcSet   m_aura_domain ;
   EntityProcSet   m_aura_range ;
 
-  void insert_entity( Entity & , const PartSet & );
+  /*  Entity modification consequences:
+   *  1) Change entity relation => update via part relation => change parts
+   *  2) Change parts => update forward relations via part relation
+   *                  => update via field relation
+   */
+
   void remove_entity( KernelSet::iterator , unsigned );
 
-  KernelSet::iterator declare_kernel( const unsigned , const PartSet & );
+  KernelSet::iterator declare_kernel( const EntityType , const PartSet & );
   void                destroy_kernel( KernelSet::iterator );
+
+  void internal_change_entity_parts( Entity & ,
+                                     const std::vector<Part*> & add_parts ,
+                                     const std::vector<Part*> & remove_parts );
 };
 
 //----------------------------------------------------------------------
@@ -169,12 +173,12 @@ private:
 void partset_entity_count(
   Mesh & mesh ,
   Part & part ,
-  unsigned * const count /* [ end_entity_rank ] */ );
+  unsigned * const count /* [ EntityTypeEnd ] */ );
 
 void partset_entity_count(
   Mesh & mesh ,
   const PartSet & parts ,
-  unsigned * const count /* [ end_entity_rank ] */ );
+  unsigned * const count /* [ EntityTypeEnd ] */ );
 
 /** Get all kernels within the given part.
  *  Every kernel will have the part in its superset.

@@ -45,8 +45,70 @@ namespace phdmesh {
  */
 typedef std::vector<Part*> PartSet ;
 
+/** A Part defines a subset of a to-be-discretized problem domain.
+ *  A Part-defined subset can correspond to geometric subdomains,
+ *  parallel distributed subdomains, types of discretization 
+ *  entities (e.g., hexahedrons, tetrahedrons, ...), or any other
+ *  subsetting need.
+ */
+class Part {
+public:
+
+  /** Mesh schema in which this part resides */
+  Schema & schema() const { return m_schema ; }
+
+  /** Text name of this mesh part */
+  const std::string & name() const { return m_name ; }
+
+  /** Ordinal of this part within the mesh schema */
+  unsigned schema_ordinal() const { return m_schema_ordinal ; }
+
+  /** Parts that are supersets of this part.  */
+  const PartSet & supersets() const { return m_supersets ; }
+
+  /** Parts that are subsets of this part. */
+  const PartSet & subsets() const { return m_subsets ; }
+
+  /** Parts for which this part is defined to be the intersection */
+  const PartSet & intersection_of() const { return m_intersect ; }
+
+  /** A subset of entities may be deduced through relationships
+   *  with other entities.
+   */
+  bool is_relation_target() const { return m_relation_target ; }
+
+  bool operator == ( const Part & rhs ) const { return this == & rhs ; }
+  bool operator != ( const Part & rhs ) const { return this != & rhs ; }
+
+  template<class A>
+  CSet::Span<A> attribute() const { return m_cset.get<A>(); }
+
+private:
+
+  /* Only a mesh Schema can create and delete parts */
+  friend class Schema ;
+
+  /** Construct a part within a given mesh */
+  Part( Schema & , const std::string & , const PartSet & );
+
+  ~Part();
+  Part();
+  Part( const Part & );
+  Part & operator = ( const Part & );
+
+  std::string  m_name ;
+  CSet         m_cset ;
+  PartSet      m_subsets ;
+  PartSet      m_supersets ;
+  PartSet      m_intersect ;
+  Schema     & m_schema ;
+  unsigned     m_schema_ordinal ;
+  bool         m_relation_target ;
+};
+
+//----------------------------------------------------------------------
 /** Order a collection of parts: invoke sort and then unique */
-void order( std::vector<Part*> & );
+void order( PartSet & );
 
 /** Insert a part into a properly ordered collection of parts.
  *  Return if this is a new insertion.
@@ -79,56 +141,34 @@ bool verify( const Part & , std::string & );
 std::ostream & print( std::ostream & , const char * const , const Part & );
 
 //----------------------------------------------------------------------
-/** A part within a mesh.
- *  Parts are derived from component sets.
+/** A part relation defined as follows:
+ *  if Entity 'e1' is a member of part 'm_root' and
+ *     there exists a relation from Entity 'e1' to Entity 'e2' that
+ *     is in the domain of the relation stencil 'm_function'
+ *  then Entity 'e2' is a member of part 'm_target'.
+ *
+ *  This data structure is used internally and should never need to be
+ *  used by a user of the phdMesh package.
  */
-class Part {
-public:
+struct PartRelation {
+  Part               * m_root ;
+  Part               * m_target ;
+  relation_stencil_ptr m_function ;
 
-  /** Mesh schema in which this part resides */
-  Schema & schema() const { return m_schema ; }
+  PartRelation() : m_root( NULL ), m_target( NULL ), m_function( NULL ) {}
 
-  /** Text name of this mesh part */
-  const std::string & name() const { return m_name ; }
+  PartRelation( const PartRelation & rhs )
+    : m_root( rhs.m_root ),
+      m_target( rhs.m_target ),
+      m_function( rhs.m_function ) {}
 
-  /** Ordinal of this part within the mesh schema */
-  unsigned schema_ordinal() const { return m_schema_ordinal ; }
-
-  /** Parts that are supersets of this part.  */
-  const PartSet & supersets() const { return m_supersets ; }
-
-  /** Parts that are subsets of this part. */
-  const PartSet & subsets() const { return m_subsets ; }
-
-  /** Parts for which this part is defined to be the intersection */
-  const PartSet & intersection_of() const { return m_intersect ; }
-
-  bool operator == ( const Part & rhs ) const { return this == & rhs ; }
-  bool operator != ( const Part & rhs ) const { return this != & rhs ; }
-
-  template<class A>
-  CSet::Span<A> attribute() const { return m_cset.get<A>(); }
-
-private:
-
-  /* Only a mesh Schema can create and delete parts */
-  friend class Schema ;
-
-  /** Construct a part within a given mesh */
-  Part( Schema & , const std::string & , const PartSet & );
-
-  ~Part();
-  Part();
-  Part( const Part & );
-  Part & operator = ( const Part & );
-
-  std::string  m_name ;
-  CSet         m_cset ;
-  Schema     & m_schema ;
-  unsigned     m_schema_ordinal ;
-  PartSet      m_subsets ;
-  PartSet      m_supersets ;
-  PartSet      m_intersect ;
+  PartRelation & operator = ( const PartRelation & rhs )
+    {
+      m_root = rhs.m_root ;
+      m_target = rhs.m_target ;
+      m_function = rhs.m_function ;
+      return *this ;
+    }
 };
 
 } // namespace phdmesh

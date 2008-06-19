@@ -43,13 +43,10 @@ template< unsigned NumNode = 0 > struct Sphere ;
 template< unsigned NumNode = 0 > struct Line ;         // 1D only
 
 //----------------------------------------------------------------------
-
-template< class , unsigned > struct IndexListAt ;
-
-//----------------------------------------------------------------------
 /** Traits for an element local topology.
  *
  *  Top::Shape                        The topology traits without nodes
+ *  Top::key                          Unique enumeration key for the topology
  *  Top::number_vertex
  *  Top::number_edge
  *  Top::number_side                  duplicates edges in 2D
@@ -164,6 +161,7 @@ public:
 /** The runtime version of the local topology information */
 
 struct LocalTopology {
+  const char * name ;
   unsigned topological_rank ;
   unsigned minimum_dimension ;
   unsigned maximum_dimension ;

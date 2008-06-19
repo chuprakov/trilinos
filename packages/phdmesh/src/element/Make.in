@@ -30,10 +30,13 @@ ELEMENT_INC_FILES =	\
 	$(ELEMENT_INC_DIR)/QuadrilateralTopology.hpp	\
 	$(ELEMENT_INC_DIR)/TetrahedronTopology.hpp	\
 	$(ELEMENT_INC_DIR)/TriangleTopology.hpp	\
-	$(ELEMENT_INC_DIR)/WedgeTopology.hpp
+	$(ELEMENT_INC_DIR)/WedgeTopology.hpp	\
+	$(ELEMENT_INC_DIR)/Stencils.hpp	\
+	$(ELEMENT_INC_DIR)/Declarations.hpp
 
 ELEMENT_OBJ_FILES =	\
-	ElementLocalTopology.o
+	ElementLocalTopology.o	\
+	ElementDeclarations.o
 
 ELEMENT_INC_DEPS = $(ELEMENT_INC_FILES) $(UTIL_INC_DEPS)
 

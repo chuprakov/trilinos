@@ -32,7 +32,6 @@
 #include <sstream>
 #include <algorithm>
 
-#include <mesh/EntityType.hpp>
 #include <mesh/Kernel.hpp>
 #include <mesh/Entity.hpp>
 #include <mesh/Mesh.hpp>
@@ -186,7 +185,7 @@ bool field_data_valid( const FieldBase & f ,
 //----------------------------------------------------------------------
 
 Kernel::Kernel( Mesh & arg_mesh ,
-                unsigned arg_type ,
+                EntityType arg_type ,
                 const unsigned * arg_key )
 : SetvMember<const unsigned * const>( arg_key ),
   m_mesh( arg_mesh ) ,
@@ -264,7 +263,7 @@ inline size_t align( size_t nb )
 }
 
 const FieldBase::Dim & dimension( const FieldBase & field ,
-                                  unsigned rank ,
+                                  EntityType etype ,
                                   const PartSet & parts ,
                                   const char * const method )
 {
@@ -275,7 +274,7 @@ const FieldBase::Dim & dimension( const FieldBase & field ,
   for ( PartSet::const_iterator
         i = parts.begin() ; i != parts.end() ; ++i ) {
 
-    const FieldBase::Dim & tmp = field.dimension( rank , **i );
+    const FieldBase::Dim & tmp = field.dimension( etype , **i );
 
     if ( tmp.part ) {
       if ( NULL == dim->part ) { dim = & tmp ; } 
@@ -359,7 +358,7 @@ void Mesh::destroy_kernel( KernelSet::iterator ik )
 //----------------------------------------------------------------------
 
 KernelSet::iterator
-Mesh::declare_kernel( const unsigned arg_entity_type ,
+Mesh::declare_kernel( const EntityType arg_entity_type ,
                       const PartSet & entity_parts )
 {
   static const char method[] = "phdmesh::Kernel" ;
@@ -435,14 +434,22 @@ Mesh::declare_kernel( const unsigned arg_entity_type ,
 
       for ( unsigned i = 0 ; i < num_fields ; ++i ) {
         const FieldBase  & field = * field_set[i] ;
-        const unsigned     field_num_dim = field.number_of_dimensions();
+
+        unsigned value_size = 0 ;
 
         const FieldBase::Dim & dim =
           dimension( field, arg_entity_type , entity_parts, method);
 
-        const unsigned value_size =
-          NumericEnum<void>::size(field.numeric_type_ordinal()) *
-          ( field_num_dim ? dim.stride[ field_num_dim - 1 ] : 1 );
+        if ( dim.part ) { // Exists
+
+          const unsigned scalar_size =
+            NumericEnum<void>::size( field.numeric_type_ordinal() );
+
+          const unsigned field_num_dim = field.number_of_dimensions();
+
+          value_size = scalar_size *
+            ( field_num_dim ? dim.stride[ field_num_dim - 1 ] : 1 );
+        }
 
         field_map[i].m_base = value_offset ;
         field_map[i].m_size = value_size ;
@@ -498,33 +505,6 @@ Mesh::declare_kernel( const unsigned arg_entity_type ,
     ik = result.first ;
   }
   return ik ;
-}
-
-//----------------------------------------------------------------------
-
-void Mesh::insert_entity( Entity & e , const PartSet & parts )
-{
-  const KernelSet::iterator ik_old = e.m_kernel ;
-  const unsigned            i_old  = e.m_kernel_ord ;
-
-  KernelSet::iterator ik = declare_kernel( e.entity_type() , parts );
-
-  // If changing kernels then copy its field values from old to new kernel
-  if ( ik_old ) {
-    Kernel::copy_fields( *ik , ik->m_size , *ik_old , i_old );
-  }
-  else {
-    Kernel::zero_fields( *ik , ik->m_size );
-  }
-
-  // Set the new kernel
-  e.m_kernel     = ik ;
-  e.m_kernel_ord = ik->m_size ;
-  ik->m_entities[ ik->m_size ] = & e ;
-  ++( ik->m_size );
-
-  // If changing kernels then remove the entity from the kernel,
-  if ( ik_old ) { remove_entity( ik_old , i_old ); }
 }
 
 //----------------------------------------------------------------------
