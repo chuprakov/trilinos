@@ -37,7 +37,6 @@
 #include "Tpetra_SerialComm.hpp"
 #endif
 #include "Teuchos_ScalarTraits.hpp"
-#include "Tpetra_Object.hpp"
 #include "Tpetra_Import.hpp"
 
 // \author Marzio Sala, ETHZ/COLAB
@@ -54,7 +53,7 @@ namespace Tpetra
   };
 
   template<class OrdinalType, class ScalarType>
-  class CrsMatrix : public Object
+  class CrsMatrix : public Teuchos::Object
   {
     public:
       CrsMatrix(const Comm<OrdinalType, ScalarType>& Comm, 
