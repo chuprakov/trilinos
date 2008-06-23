@@ -46,23 +46,23 @@ class FilePart ;
 
 //----------------------------------------------------------------------
 
-struct ElementAttributes : public DimensionTraits {
+struct ElementAttributes : public DimensionTag {
   const char * name() const ;
-  static const DimensionTraits * descriptor();
+  static const DimensionTag * descriptor();
 private:
   ElementAttributes() {}
   ElementAttributes( const ElementAttributes & );
   ElementAttributes & operator = ( const ElementAttributes & );
 };
 
-struct GlobalLocalIndex : public DimensionTraits {
+struct GlobalLocalIndex : public DimensionTag {
   const char * name() const ;
 
-  std::string encode( unsigned size , unsigned index ) const ;
+  std::string to_string( unsigned size , unsigned index ) const ;
 
-  unsigned decode( unsigned size , const std::string & ) const ;
+  unsigned to_index( unsigned size , const std::string & ) const ;
 
-  static const DimensionTraits * descriptor();
+  static const DimensionTag * descriptor();
 private:
   GlobalLocalIndex() {}
   GlobalLocalIndex( const GlobalLocalIndex & );

@@ -47,13 +47,13 @@
 namespace phdmesh {
 namespace exodus {
 
-const DimensionTraits * GlobalLocalIndex::descriptor()
+const DimensionTag * GlobalLocalIndex::descriptor()
 { static const GlobalLocalIndex self ; return & self ; }
 
 const char * GlobalLocalIndex::name() const
 { static const char n[] = "GlobalLocalIndex" ; return n ; }
 
-std::string GlobalLocalIndex::encode( unsigned size , unsigned index ) const
+std::string GlobalLocalIndex::to_string( unsigned size , unsigned index ) const
 {
   static const char g[] = "global" ;
   static const char l[] = "local" ;
@@ -69,7 +69,7 @@ std::string GlobalLocalIndex::encode( unsigned size , unsigned index ) const
   return std::string( index ? g : l );
 }
 
-unsigned GlobalLocalIndex::decode( unsigned size , const std::string & arg )
+unsigned GlobalLocalIndex::to_index( unsigned size , const std::string & arg )
   const
 {
   static const char g[] = "global" ;
@@ -89,7 +89,7 @@ unsigned GlobalLocalIndex::decode( unsigned size , const std::string & arg )
   return index ;
 }
 
-const DimensionTraits * ElementAttributes::descriptor()
+const DimensionTag * ElementAttributes::descriptor()
 { static const ElementAttributes self ; return & self ; }
 
 const char * ElementAttributes::name() const
@@ -1040,7 +1040,7 @@ std::string variable_name( EntityType        r ,
     stride_inv(  f_num_dim , dim.stride , k , indices );
 
     for ( unsigned i = 0 ; i < f_num_dim ; ++i ) {
-      std::string tmp = f.dimension_traits()[i]->encode(sizes[i],indices[i]);
+      std::string tmp = f.dimension_traits()[i]->to_string(sizes[i],indices[i]);
       if ( tmp.size() ) {
         name.append( "_" );
         name.append( tmp );
@@ -1546,9 +1546,9 @@ void pack_entity_data( const std::vector<const Entity *> & send ,
         i = send.begin() ; i != send.end() ; ++i ) {
     const Entity & e = **i ;
 
-    item_buffer[0] = (double) ( * field_data( f_index , e ) );
+    item_buffer[0] = (double)( * field_data( f_index , e ) );
     item_buffer[1] =
-      (double) reinterpret_cast<T*>( field_data(f_data,e) )[ offset ] ;
+      (double)( reinterpret_cast<T*>( field_data(f_data,e) )[ offset ] );
 
     buf.pack<double>( item_buffer , 2 );
   }
