@@ -35,13 +35,13 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-const DimensionTraits * Cartesian::descriptor()
+const DimensionTag * Cartesian::descriptor()
 { static const Cartesian self ; return & self ; }
 
 const char * Cartesian::name() const
 { static const char n[] = "Cartesian" ; return n ; }
 
-std::string Cartesian::encode( unsigned size , unsigned index ) const
+std::string Cartesian::to_string( unsigned size , unsigned index ) const
 {
   static const char x[] = "x" ;
   static const char y[] = "y" ;
@@ -59,7 +59,7 @@ std::string Cartesian::encode( unsigned size , unsigned index ) const
   return std::string( label[index] );
 }
 
-unsigned Cartesian::decode( unsigned size , const std::string & arg ) const
+unsigned Cartesian::to_index( unsigned size , const std::string & arg ) const
 {
   static const char x[] = "x" ;
   static const char y[] = "y" ;
@@ -85,13 +85,13 @@ unsigned Cartesian::decode( unsigned size , const std::string & arg ) const
 
 //----------------------------------------------------------------------
 
-const DimensionTraits * Cylindrical::descriptor()
+const DimensionTag * Cylindrical::descriptor()
 { static const Cylindrical self ; return & self ; }
 
 const char * Cylindrical::name() const
 { static const char n[] = "Cylindrical" ; return n ; }
 
-std::string Cylindrical::encode( unsigned size , unsigned index ) const
+std::string Cylindrical::to_string( unsigned size , unsigned index ) const
 {
   static const char r[] = "r" ;
   static const char a[] = "a" ;
@@ -109,7 +109,7 @@ std::string Cylindrical::encode( unsigned size , unsigned index ) const
   return std::string( label[index] );
 }
 
-unsigned Cylindrical::decode( unsigned size , const std::string & arg ) const
+unsigned Cylindrical::to_index( unsigned size , const std::string & arg ) const
 {
   static const char r[] = "r" ;
   static const char a[] = "a" ;

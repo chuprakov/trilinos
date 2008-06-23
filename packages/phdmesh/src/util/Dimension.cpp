@@ -103,12 +103,13 @@ unsigned stride_size( unsigned n , const unsigned * stride )
 
 //----------------------------------------------------------------------
 
-std::string DimensionTraits::encode( unsigned size , unsigned index ) const
+std::string DimensionTag::to_string( unsigned size , unsigned index ) const
 {
   std::ostringstream tmp ;
 
   if ( size <= index ) {
-    tmp << "DimensionTraits::encode( " << size << " , " << index << " ) ERROR" ;
+    tmp << "DimensionTag::to_string( "
+        << size << " , " << index << " ) ERROR" ;
     throw std::runtime_error( tmp.str() );
   }
 
@@ -117,14 +118,15 @@ std::string DimensionTraits::encode( unsigned size , unsigned index ) const
   return tmp.str();
 }
 
-unsigned DimensionTraits::decode(
+unsigned DimensionTag::to_index(
   unsigned size , const std::string & label ) const
 {
   int index = size ? atoi( label.c_str() ) : 0 ;
 
   if ( index < 0 || ((int) size ) <= index ) {
     std::ostringstream tmp ;
-    tmp << "DimensionTraits::decode( " << size << " , " << index << " ) ERROR" ;
+    tmp << "DimensionTag::to_index( "
+        << size << " , " << label << " ) ERROR" ;
     throw std::runtime_error( tmp.str() );
   }
 
@@ -133,11 +135,46 @@ unsigned DimensionTraits::decode(
 
 //----------------------------------------------------------------------
 
-const DimensionTraits * DimensionAnonymous::descriptor()
+const DimensionTag * DimensionAnonymous::descriptor()
 { static const DimensionAnonymous self ; return & self ; }
 
 const char * DimensionAnonymous::name() const
 { static const char n[] = "DimensionAnonymous" ; return n ; }
+
+//----------------------------------------------------------------------
+
+void print( std::ostream & s ,
+            const DimensionTag * tag1 ,
+            const DimensionTag * tag2 ,
+            const DimensionTag * tag3 ,
+            const DimensionTag * tag4 ,
+            const DimensionTag * tag5 ,
+            const DimensionTag * tag6 ,
+            const DimensionTag * tag7 ,
+            const DimensionTag * tag8 ,
+            const unsigned * stride )
+{
+  unsigned n = 0 ;
+  s << "Dimension<" ;
+  if ( tag1 ) { s <<        tag1->name(); n = 1 ;
+    if ( tag2 ) { s << "," << tag2->name(); n = 2 ;
+      if ( tag3 ) { s << "," << tag3->name(); n = 3 ;
+        if ( tag4 ) { s << "," << tag4->name(); n = 4 ;
+          if ( tag5 ) { s << "," << tag5->name(); n = 5 ;
+            if ( tag6 ) { s << "," << tag6->name(); n = 6 ;
+              if ( tag7 ) { s << "," << tag7->name(); n = 7 ;
+                if ( tag8 ) { s << "," << tag8->name(); n = 8 ; }}}}}}}}
+  s << ">(" ;
+  if ( n ) {
+    unsigned length[ 8 ];
+    stride_size( n , stride , length );
+    for ( unsigned i = 0 ; i < n ; ++i ) {
+      if ( i ) { s << "," ; }
+      s << length[i] ;
+    }
+  }
+  s << ")" ;
+}
 
 } // namespace phdmesh
 

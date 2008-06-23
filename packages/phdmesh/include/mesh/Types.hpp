@@ -46,20 +46,20 @@ class Schema ;  // Meta-data description of a mesh
 class Part ;    // Defined subset of the mesh
 
 template< typename Scalar = void ,
-          class Trait1 = DimensionTraits ,
-          class Trait2 = DimensionTraits ,
-          class Trait3 = DimensionTraits ,
-          class Trait4 = DimensionTraits ,
-          class Trait5 = DimensionTraits ,
-          class Trait6 = DimensionTraits ,
-          class Trait7 = DimensionTraits >
+          class Trait1 = DimensionTag ,
+          class Trait2 = DimensionTag ,
+          class Trait3 = DimensionTag ,
+          class Trait4 = DimensionTag ,
+          class Trait5 = DimensionTag ,
+          class Trait6 = DimensionTag ,
+          class Trait7 = DimensionTag >
 class Field ;
 
 typedef
-Field< void , DimensionTraits , DimensionTraits ,
-              DimensionTraits , DimensionTraits ,
-              DimensionTraits , DimensionTraits ,
-              DimensionTraits > FieldBase ;
+Field< void , DimensionTag , DimensionTag ,
+              DimensionTag , DimensionTag ,
+              DimensionTag , DimensionTag ,
+              DimensionTag > FieldBase ;
 
 enum { MaximumFieldDimension = 7 };
 

@@ -41,7 +41,7 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-const DimensionTraits * EntityDimension::descriptor()
+const DimensionTag * EntityDimension::descriptor()
 { static const EntityDimension self ; return & self ; }
 
 const char * EntityDimension::name() const
@@ -120,13 +120,13 @@ FieldBase::Field(
   Schema &            arg_schema ,
   const std::string & arg_name ,
   unsigned scalar_type ,
-  const DimensionTraits * t1 ,
-  const DimensionTraits * t2 ,
-  const DimensionTraits * t3 ,
-  const DimensionTraits * t4 ,
-  const DimensionTraits * t5 ,
-  const DimensionTraits * t6 ,
-  const DimensionTraits * t7 ,
+  const DimensionTag * t1 ,
+  const DimensionTag * t2 ,
+  const DimensionTag * t3 ,
+  const DimensionTag * t4 ,
+  const DimensionTag * t5 ,
+  const DimensionTag * t6 ,
+  const DimensionTag * t7 ,
   unsigned number_of_states ,
   FieldState state )
 : m_cset() ,
@@ -147,13 +147,13 @@ FieldBase::Field(
 {
   FieldBase * const pzero = NULL ;
   Copy<MaximumFieldStates>( m_field_states , pzero );
-  m_dim_traits[0] = t1 ;
-  m_dim_traits[1] = t2 ;
-  m_dim_traits[2] = t3 ;
-  m_dim_traits[3] = t4 ;
-  m_dim_traits[4] = t5 ;
-  m_dim_traits[5] = t6 ;
-  m_dim_traits[6] = t7 ;
+  m_dim_tags[0] = t1 ;
+  m_dim_tags[1] = t2 ;
+  m_dim_tags[2] = t3 ;
+  m_dim_tags[3] = t4 ;
+  m_dim_tags[4] = t5 ;
+  m_dim_tags[5] = t6 ;
+  m_dim_tags[6] = t7 ;
 }
 
 const std::vector<FieldBase::Dim> & FieldBase::dimension() const
@@ -186,13 +186,13 @@ namespace {
 void
 print_field_type( std::ostream          & arg_msg ,
                   unsigned                arg_scalar_type ,
-                  const DimensionTraits * arg_t1 ,
-                  const DimensionTraits * arg_t2 ,
-                  const DimensionTraits * arg_t3 ,
-                  const DimensionTraits * arg_t4 ,
-                  const DimensionTraits * arg_t5 ,
-                  const DimensionTraits * arg_t6 ,
-                  const DimensionTraits * arg_t7 )
+                  const DimensionTag * arg_t1 ,
+                  const DimensionTag * arg_t2 ,
+                  const DimensionTag * arg_t3 ,
+                  const DimensionTag * arg_t4 ,
+                  const DimensionTag * arg_t5 ,
+                  const DimensionTag * arg_t6 ,
+                  const DimensionTag * arg_t7 )
 {
   arg_msg << "Field< " ;
   arg_msg << NumericEnum<>::name( arg_scalar_type );
@@ -213,13 +213,13 @@ FieldBase *
 Schema::get_field_base(
   const std::string & arg_name ,
   unsigned          arg_scalar_type ,
-  const DimensionTraits * arg_t1 ,
-  const DimensionTraits * arg_t2 ,
-  const DimensionTraits * arg_t3 ,
-  const DimensionTraits * arg_t4 ,
-  const DimensionTraits * arg_t5 ,
-  const DimensionTraits * arg_t6 ,
-  const DimensionTraits * arg_t7 ,
+  const DimensionTag * arg_t1 ,
+  const DimensionTag * arg_t2 ,
+  const DimensionTag * arg_t3 ,
+  const DimensionTag * arg_t4 ,
+  const DimensionTag * arg_t5 ,
+  const DimensionTag * arg_t6 ,
+  const DimensionTag * arg_t7 ,
   int arg_number_states ,
   const char * arg_required_by ) const
 {
@@ -250,13 +250,13 @@ Schema::get_field_base(
 
     bad_scalar_type = arg_scalar_type != field->numeric_type_ordinal();
 
-    bad_dimension = arg_t1 != field->m_dim_traits[0] ||
-                    arg_t2 != field->m_dim_traits[1] ||
-                    arg_t3 != field->m_dim_traits[2] ||
-                    arg_t4 != field->m_dim_traits[3] ||
-                    arg_t5 != field->m_dim_traits[4] ||
-                    arg_t6 != field->m_dim_traits[5] ||
-                    arg_t7 != field->m_dim_traits[6] ;
+    bad_dimension = arg_t1 != field->m_dim_tags[0] ||
+                    arg_t2 != field->m_dim_tags[1] ||
+                    arg_t3 != field->m_dim_tags[2] ||
+                    arg_t4 != field->m_dim_tags[3] ||
+                    arg_t5 != field->m_dim_tags[4] ||
+                    arg_t6 != field->m_dim_tags[5] ||
+                    arg_t7 != field->m_dim_tags[6] ;
 
     bad_number_states =
       ( 0 <= arg_number_states ) &&
@@ -294,13 +294,13 @@ Schema::get_field_base(
     if ( field != NULL ) {
       msg << " FOUND INCOMPATIBLE " ;
       print_field_type( msg , field->numeric_type_ordinal() ,
-                              field->m_dim_traits[0] ,
-                              field->m_dim_traits[1] ,
-                              field->m_dim_traits[2] ,
-                              field->m_dim_traits[3] ,
-                              field->m_dim_traits[4] ,
-                              field->m_dim_traits[5] ,
-                              field->m_dim_traits[6] );
+                              field->m_dim_tags[0] ,
+                              field->m_dim_tags[1] ,
+                              field->m_dim_tags[2] ,
+                              field->m_dim_tags[3] ,
+                              field->m_dim_tags[4] ,
+                              field->m_dim_tags[5] ,
+                              field->m_dim_tags[6] );
       msg << "( " << field->m_num_states << " )" ;
     }
     throw std::runtime_error( msg.str() );
@@ -315,13 +315,13 @@ FieldBase &
 Schema::declare_field_base(
   const std::string & arg_name ,
   unsigned            arg_scalar_type ,
-  const DimensionTraits * arg_t1 ,
-  const DimensionTraits * arg_t2 ,
-  const DimensionTraits * arg_t3 ,
-  const DimensionTraits * arg_t4 ,
-  const DimensionTraits * arg_t5 ,
-  const DimensionTraits * arg_t6 ,
-  const DimensionTraits * arg_t7 ,
+  const DimensionTag * arg_t1 ,
+  const DimensionTag * arg_t2 ,
+  const DimensionTag * arg_t3 ,
+  const DimensionTag * arg_t4 ,
+  const DimensionTag * arg_t5 ,
+  const DimensionTag * arg_t6 ,
+  const DimensionTag * arg_t7 ,
   unsigned            arg_num_states )
 {
   static const char method[] = "phdmesh::Schema::declare_field" ;

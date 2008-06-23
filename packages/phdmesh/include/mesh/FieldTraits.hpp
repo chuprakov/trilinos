@@ -36,11 +36,11 @@ namespace phdmesh {
 //----------------------------------------------------------------------
 /** Dimension traits for array of entities */
 
-struct EntityDimension : public DimensionTraits {
+struct EntityDimension : public DimensionTag {
 
   const char * name() const ;
 
-  static const DimensionTraits * descriptor();
+  static const DimensionTag * descriptor();
 
 private:
 
@@ -54,15 +54,17 @@ private:
 //----------------------------------------------------------------------
 /** Dimension traits for cartesian coordinates */
 
-struct Cartesian : public DimensionTraits {
+struct Cartesian : public DimensionTag {
+
+  enum { X = 0 , Y = 1 , Z = 2 };
 
   const char * name() const ;
 
-  std::string encode( unsigned size , unsigned index ) const ;
+  std::string to_string( unsigned size , unsigned index ) const ;
 
-  unsigned decode( unsigned size , const std::string & ) const ;
+  unsigned to_index( unsigned size , const std::string & ) const ;
 
-  static const DimensionTraits * descriptor();
+  static const DimensionTag * descriptor();
 
 private:
   Cartesian() {}
@@ -73,15 +75,19 @@ private:
 //----------------------------------------------------------------------
 /** Dimension traits for cylindrical coordinates */
 
-struct Cylindrical : public DimensionTraits {
+struct Cylindrical : public DimensionTag {
+
+  enum { Radius = 0 , R = 0 ,
+         Angle = 1 ,  A = 1 ,
+         Z = 2 };
 
   const char * name() const ;
 
-  std::string encode( unsigned size , unsigned index ) const ;
+  std::string to_string( unsigned size , unsigned index ) const ;
 
-  unsigned decode( unsigned size , const std::string & ) const ;
+  unsigned to_index( unsigned size , const std::string & ) const ;
 
-  static const DimensionTraits * descriptor();
+  static const DimensionTag * descriptor();
 
 private:
   Cylindrical() {}

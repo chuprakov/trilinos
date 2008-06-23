@@ -73,10 +73,10 @@ const char * field_state_name( FieldState );
 //----------------------------------------------------------------------
 
 template<>
-class Field< void , DimensionTraits ,
-                    DimensionTraits , DimensionTraits ,
-                    DimensionTraits , DimensionTraits ,
-                    DimensionTraits , DimensionTraits > {
+class Field< void , DimensionTag ,
+                    DimensionTag , DimensionTag ,
+                    DimensionTag , DimensionTag ,
+                    DimensionTag , DimensionTag > {
 public:
 
   typedef void data_type ;
@@ -99,8 +99,8 @@ public:
 
   unsigned number_of_dimensions() const { return m_num_dim ; }
 
-  const DimensionTraits * const * dimension_traits() const
-    { return m_dim_traits ; }
+  const DimensionTag * const * dimension_traits() const
+    { return m_dim_tags ; }
 
   unsigned max_size( EntityType ) const ;
 
@@ -152,13 +152,13 @@ private:
   Field( Schema & ,
          const std::string & ,
          unsigned scalar_type ,
-         const DimensionTraits * ,
-         const DimensionTraits * ,
-         const DimensionTraits * ,
-         const DimensionTraits * ,
-         const DimensionTraits * ,
-         const DimensionTraits * ,
-         const DimensionTraits * ,
+         const DimensionTag * ,
+         const DimensionTag * ,
+         const DimensionTag * ,
+         const DimensionTag * ,
+         const DimensionTag * ,
+         const DimensionTag * ,
+         const DimensionTag * ,
          unsigned number_of_states ,
          FieldState );
 
@@ -173,9 +173,9 @@ private:
   unsigned    m_num_states ;     // Number of states of this field
   FieldState  m_this_state ;     // Field state of this field
 
-  std::vector<Dim>        m_dim_map ; // Only valid on StateNone
-  Field                 * m_field_states[ MaximumFieldStates ];
-  const DimensionTraits * m_dim_traits[ MaximumFieldDimension ];
+  std::vector<Dim>     m_dim_map ; // Only valid on StateNone
+  Field              * m_field_states[ MaximumFieldStates ];
+  const DimensionTag * m_dim_tags[ MaximumFieldDimension ];
 };
 
 //----------------------------------------------------------------------

@@ -43,7 +43,57 @@ template< unsigned NumNode = 0 > struct Sphere ;
 template< unsigned NumNode = 0 > struct Line ;         // 1D only
 
 //----------------------------------------------------------------------
-/** Traits for an element local topology.
+/** Runtime data for an element local topology.
+ *
+ *  Given 'const LocalTopology & top' then:
+ *
+ *  top.name                 Text name for topology
+ *  top.key                  Unique enumeration key for the topology
+ *  top.number_vertex
+ *  top.number_edge
+ *  top.number_side          duplicates edges in 2D
+ *  top.number_node
+ *  top.is_boundary          if describing an element boundary
+ *  top.topological_rank
+ *  top.mimimum_dimension    minimum valid spatial dimension
+ *  top.maximum_dimension    maximum valid spatial dimension
+ * 
+ *  top.edge[I]                      defined for I < number_edge
+ *  top.edge[I].topology    local topology traits for edge #I
+ *  top.edge[I].vertex[J]   if J < edge<I>::traits::number_vertex
+ *  top.edge[I].node[J]     if J < edge<I>::traits::number_node
+ * 
+ *  top.side[I]             defined for I < number_side
+ *  top.side[I].topology    local topology traits for side #I
+ *  top.side[I].vertex[J]   if J < side<I>::traits::number_vertex
+ *  top.side[I].node[J]     if J < side<I>::traits::number_node
+ *
+ *  The first 'number_vertex' nodes must be placed at the vertices.
+ */
+struct LocalTopology {
+  const char * name ;
+  unsigned topological_rank ;
+  unsigned minimum_dimension ;
+  unsigned maximum_dimension ;
+  unsigned number_vertex ;
+  unsigned number_edge ;
+  unsigned number_side ;
+  unsigned number_node ;
+  unsigned key ;
+  bool     is_boundary ;
+
+  struct Boundary {
+    const LocalTopology * topology ;
+    const unsigned      * vertex ;
+    const unsigned      * node ;
+  };
+
+  const Boundary * edge ;
+  const Boundary * side ;
+};
+
+//----------------------------------------------------------------------
+/** Compile-time traits for an element local topology.
  *
  *  Top::Shape                        The topology traits without nodes
  *  Top::key                          Unique enumeration key for the topology
@@ -57,12 +107,12 @@ template< unsigned NumNode = 0 > struct Line ;         // 1D only
  *  Top::maximum_dimension            maximum valid spatial dimension
  * 
  *  Top::edge<I>                      defined for I < number_edge
- *  Top::edge<I>::traits              local topology traits for edge #I
+ *  Top::edge<I>::topology            local topology traits for edge #I
  *  Top::edge<I>::vertex<J>::ordinal  if J < edge<I>::traits::number_vertex
  *  Top::edge<I>::node<J>::ordinal    if J < edge<I>::traits::number_node
  * 
  *  Top::side<I>                      defined for I < number_side
- *  Top::side<I>::traits              local topology traits for side #I
+ *  Top::side<I>::topology            local topology traits for side #I
  *  Top::side<I>::vertex<J>::ordinal  if J < side<I>::traits::number_vertex
  *  Top::side<I>::node<J>::ordinal    if J < side<I>::traits::number_node
  *
@@ -122,12 +172,12 @@ public:
     typedef typename TypeListAt< BMaps  , I >::type boundary_map ;
   public:
 
-    typedef typename TypeListAt< BTypes , I >::type traits ;
+    typedef typename TypeListAt< BTypes , I >::type topology ;
 
     template< unsigned J >
     class vertex {
     private:
-      enum { OK = StaticAssert< J < traits::number_vertex >::OK };
+      enum { OK = StaticAssert< J < topology::number_vertex >::OK };
     public:
       enum { ordinal = IndexListAt< boundary_map , J >::value };
     };
@@ -135,7 +185,7 @@ public:
     template< unsigned J >
     class node {
     private:
-      enum { OK = StaticAssert< J < traits::number_node >::OK };
+      enum { OK = StaticAssert< J < topology::number_node >::OK };
     public:
       enum { ordinal = IndexListAt< boundary_map , J >::value };
     };
@@ -155,31 +205,6 @@ public:
   typedef SideTypeList BoundarySideTypeList ;
   typedef EdgeNodeMap  BoundaryEdgeNodeMap ;
   typedef SideNodeMap  BoundarySideNodeMap ;
-};
-
-//----------------------------------------------------------------------
-/** The runtime version of the local topology information */
-
-struct LocalTopology {
-  const char * name ;
-  unsigned topological_rank ;
-  unsigned minimum_dimension ;
-  unsigned maximum_dimension ;
-  unsigned number_vertex ;
-  unsigned number_edge ;
-  unsigned number_side ;
-  unsigned number_node ;
-  unsigned key ;
-  bool     is_boundary ;
-
-  struct Boundary {
-    const LocalTopology * traits ;
-    const unsigned      * vertex ;
-    const unsigned      * node ;
-  };
-
-  const Boundary * edge ;
-  const Boundary * side ;
 };
 
 //----------------------------------------------------------------------

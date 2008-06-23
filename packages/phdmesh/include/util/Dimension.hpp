@@ -28,38 +28,40 @@
 #ifndef util_Dimension_hpp
 #define util_Dimension_hpp
 
+#include <iosfwd>
+
 namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-class DimensionTraits {
+class DimensionTag {
 public:
 
-  virtual ~DimensionTraits() {}
+  virtual ~DimensionTag() {}
 
   virtual const char * name() const = 0 ;
 
-  /** Encode a descriptive text label for a dimension and index.
+  /** Generate a descriptive text label for a dimension and index.
    *  Throw an exception for invalid arguments.
    */
-  virtual std::string encode( unsigned size , unsigned index ) const ;
+  virtual std::string to_string( unsigned size , unsigned index ) const ;
 
-  /** Decode an index from a dimension and text label.
+  /** Generate an index from a dimension and text label.
    *  Throw an exception for invalid arguments.
    */
-  virtual unsigned decode( unsigned size , const std::string & ) const ;
+  virtual unsigned to_index( unsigned size , const std::string & ) const ;
 
-  static const DimensionTraits * descriptor() { return NULL ; }
+  static const DimensionTag * descriptor() { return NULL ; }
 };
 
 //----------------------------------------------------------------------
 
-class DimensionAnonymous : public DimensionTraits {
+class DimensionAnonymous : public DimensionTag {
 public:
 
   const char * name() const ;
 
-  static const DimensionTraits * descriptor();
+  static const DimensionTag * descriptor();
 
 private:
   DimensionAnonymous() {}
@@ -92,18 +94,18 @@ private:
  *    unsigned total_size = map.size();
  *
  */
-template< class Trait1 = DimensionTraits ,
-          class Trait2 = DimensionTraits ,
-          class Trait3 = DimensionTraits ,
-          class Trait4 = DimensionTraits ,
-          class Trait5 = DimensionTraits ,
-          class Trait6 = DimensionTraits ,
-          class Trait7 = DimensionTraits ,
-          class Trait8 = DimensionTraits >
+template< class Tag1 = DimensionTag ,
+          class Tag2 = DimensionTag ,
+          class Tag3 = DimensionTag ,
+          class Tag4 = DimensionTag ,
+          class Tag5 = DimensionTag ,
+          class Tag6 = DimensionTag ,
+          class Tag7 = DimensionTag ,
+          class Tag8 = DimensionTag >
 class Dimension ;
 
-template< class Dim , class Trait > class DimensionAppend ;
-template< class Dim >               class DimensionTruncate ;
+template< class Dim , class Tag > class DimensionAppend ;
+template< class Dim >             class DimensionTruncate ;
 
 enum { DimensionMaximum = 8 };
 
@@ -118,24 +120,26 @@ unsigned stride_size( unsigned , const unsigned * );
 //----------------------------------------------------------------------
 
 template<>
-class Dimension< DimensionTraits, DimensionTraits,
-                 DimensionTraits, DimensionTraits,
-                 DimensionTraits, DimensionTraits,
-                 DimensionTraits, DimensionTraits> {
+class Dimension< DimensionTag, DimensionTag,
+                 DimensionTag, DimensionTag,
+                 DimensionTag, DimensionTag,
+                 DimensionTag, DimensionTag> {
 public:
   enum { NumDim = 0 };
+
+  unsigned stride[ NumDim ];
 
   Dimension( const unsigned * const , const char * ) {}
 };
 
 //----------------------------------------------------------------------
 
-template< class Trait1 >
-class Dimension< Trait1 ,
-                 DimensionTraits ,
-                 DimensionTraits , DimensionTraits ,
-                 DimensionTraits , DimensionTraits ,
-                 DimensionTraits , DimensionTraits > {
+template< class Tag1 >
+class Dimension< Tag1 ,
+                 DimensionTag ,
+                 DimensionTag , DimensionTag ,
+                 DimensionTag , DimensionTag ,
+                 DimensionTag , DimensionTag > {
 public:
   enum { NumDim = 1 };
 
@@ -177,7 +181,7 @@ public:
   //--------------------------------
 
   template< class T >
-  explicit Dimension( const Dimension<Trait1,T> & rhs )
+  explicit Dimension( const Dimension<Tag1,T> & rhs )
     { stride[0] = rhs.stride[0] ; }
 
   Dimension( const Dimension<> & , unsigned n )
@@ -186,11 +190,11 @@ public:
 
 //----------------------------------------------------------------------
 
-template< class Trait1 , class Trait2 >
-class Dimension< Trait1 , Trait2 ,
-                 DimensionTraits , DimensionTraits ,
-                 DimensionTraits , DimensionTraits ,
-                 DimensionTraits , DimensionTraits > {
+template< class Tag1 , class Tag2 >
+class Dimension< Tag1 , Tag2 ,
+                 DimensionTag , DimensionTag ,
+                 DimensionTag , DimensionTag ,
+                 DimensionTag , DimensionTag > {
 public:
   enum { NumDim = 2 };
 
@@ -260,13 +264,13 @@ public:
   //--------------------------------
 
   template< class T >
-  explicit Dimension( const Dimension<Trait1,Trait2,T> & rhs )
+  explicit Dimension( const Dimension<Tag1,Tag2,T> & rhs )
     {
       stride[0] = rhs.stride[0] ;
       stride[1] = rhs.stride[1] ;
     }
 
-  Dimension( const Dimension<Trait1> & rhs , unsigned n )
+  Dimension( const Dimension<Tag1> & rhs , unsigned n )
     {
       stride[0] = rhs.stride[0] ;
       stride[1] = n * stride[0] ;
@@ -275,11 +279,11 @@ public:
 
 //----------------------------------------------------------------------
 
-template< class Trait1 , class Trait2 , class Trait3 >
-class Dimension< Trait1 , Trait2 , Trait3 ,
-                 DimensionTraits ,
-                 DimensionTraits , DimensionTraits ,
-                 DimensionTraits , DimensionTraits > {
+template< class Tag1 , class Tag2 , class Tag3 >
+class Dimension< Tag1 , Tag2 , Tag3 ,
+                 DimensionTag ,
+                 DimensionTag , DimensionTag ,
+                 DimensionTag , DimensionTag > {
 public:
   enum { NumDim = 3 };
 
@@ -359,14 +363,14 @@ public:
   //--------------------------------
 
   template< class T >
-  explicit Dimension( const Dimension<Trait1,Trait2,Trait3,T> & rhs )
+  explicit Dimension( const Dimension<Tag1,Tag2,Tag3,T> & rhs )
     {
       stride[0] = rhs.stride[0] ;
       stride[1] = rhs.stride[1] ;
       stride[2] = rhs.stride[2] ;
     }
 
-  Dimension( const Dimension<Trait1,Trait2> & rhs , unsigned n )
+  Dimension( const Dimension<Tag1,Tag2> & rhs , unsigned n )
     {
       stride[0] = rhs.stride[0] ;
       stride[1] = rhs.stride[1] ;
@@ -376,10 +380,10 @@ public:
 
 //----------------------------------------------------------------------
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 >
-class Dimension< Trait1 , Trait2 , Trait3 , Trait4 ,
-                 DimensionTraits , DimensionTraits ,
-                 DimensionTraits , DimensionTraits > {
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 >
+class Dimension< Tag1 , Tag2 , Tag3 , Tag4 ,
+                 DimensionTag , DimensionTag ,
+                 DimensionTag , DimensionTag > {
 public:
   enum { NumDim = 4 };
 
@@ -471,7 +475,7 @@ public:
   //--------------------------------
 
   template< class T >
-  explicit Dimension( const Dimension<Trait1,Trait2,Trait3,Trait4,T> & rhs )
+  explicit Dimension( const Dimension<Tag1,Tag2,Tag3,Tag4,T> & rhs )
     {
       stride[0] = rhs.stride[0] ;
       stride[1] = rhs.stride[1] ;
@@ -479,7 +483,7 @@ public:
       stride[3] = rhs.stride[3] ;
     }
 
-  Dimension( const Dimension<Trait1,Trait2,Trait3> & rhs , unsigned n )
+  Dimension( const Dimension<Tag1,Tag2,Tag3> & rhs , unsigned n )
     {
       stride[0] = rhs.stride[0] ;
       stride[1] = rhs.stride[1] ;
@@ -490,10 +494,10 @@ public:
 
 //----------------------------------------------------------------------
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
-          class Trait5 >
-class Dimension< Trait1 , Trait2 , Trait3 , Trait4 , Trait5 ,
-                 DimensionTraits , DimensionTraits , DimensionTraits > {
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 >
+class Dimension< Tag1 , Tag2 , Tag3 , Tag4 , Tag5 ,
+                 DimensionTag , DimensionTag , DimensionTag > {
 public:
   enum { NumDim = 5 };
 
@@ -598,7 +602,7 @@ public:
 
   template< class T >
   explicit Dimension(
-    const Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,T> & rhs )
+    const Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,T> & rhs )
     {
       stride[0] = rhs.stride[0] ;
       stride[1] = rhs.stride[1] ;
@@ -607,7 +611,7 @@ public:
       stride[4] = rhs.stride[4] ;
     }
 
-  Dimension( const Dimension<Trait1,Trait2,Trait3,Trait4> & rhs , unsigned n )
+  Dimension( const Dimension<Tag1,Tag2,Tag3,Tag4> & rhs , unsigned n )
     {
       stride[0] = rhs.stride[0] ;
       stride[1] = rhs.stride[1] ;
@@ -619,10 +623,10 @@ public:
 
 //----------------------------------------------------------------------
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
-          class Trait5 , class Trait6 >
-class Dimension< Trait1 , Trait2 , Trait3 , Trait4 ,
-                 Trait5 , Trait6 , DimensionTraits , DimensionTraits > {
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 >
+class Dimension< Tag1 , Tag2 , Tag3 , Tag4 ,
+                 Tag5 , Tag6 , DimensionTag , DimensionTag > {
 public:
   enum { NumDim = 6 };
 
@@ -735,7 +739,7 @@ public:
 
   template< class T >
   explicit Dimension(
-    const Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6,T> & rhs )
+    const Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,T> & rhs )
     {
       stride[0] = rhs.stride[0] ;
       stride[1] = rhs.stride[1] ;
@@ -746,7 +750,7 @@ public:
     }
 
   Dimension(
-    const Dimension<Trait1,Trait2,Trait3,Trait4,Trait5> & rhs , unsigned n )
+    const Dimension<Tag1,Tag2,Tag3,Tag4,Tag5> & rhs , unsigned n )
     {
       stride[0] = rhs.stride[0] ;
       stride[1] = rhs.stride[1] ;
@@ -759,10 +763,10 @@ public:
 
 //----------------------------------------------------------------------
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
-          class Trait5 , class Trait6 , class Trait7 >
-class Dimension< Trait1 , Trait2 , Trait3 , Trait4 ,
-                 Trait5 , Trait6 , Trait7 , DimensionTraits > {
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 , class Tag7 >
+class Dimension< Tag1 , Tag2 , Tag3 , Tag4 ,
+                 Tag5 , Tag6 , Tag7 , DimensionTag > {
 public:
   enum { NumDim = 7 };
 
@@ -883,7 +887,7 @@ public:
 
   template< class T >
   explicit Dimension(
-    const Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6,Trait7,T> & rhs )
+    const Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,T> & rhs )
     {
       stride[0] = rhs.stride[0] ;
       stride[1] = rhs.stride[1] ;
@@ -895,7 +899,7 @@ public:
     }
 
   Dimension(
-    const Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6> & rhs ,
+    const Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6> & rhs ,
     unsigned n )
     {
       stride[0] = rhs.stride[0] ;
@@ -910,8 +914,8 @@ public:
 
 //----------------------------------------------------------------------
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
-          class Trait5 , class Trait6 , class Trait7 , class Trait8 >
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 , class Tag7 , class Tag8 >
 class Dimension {
 public:
   enum { NumDim = 8 };
@@ -1043,11 +1047,11 @@ public:
   //--------------------------------
 
   struct Truncate {
-    typedef Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6,Trait7> type ;
+    typedef Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> type ;
   };
 
   Dimension(
-    const Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6,Trait7> & rhs ,
+    const Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> & rhs ,
     unsigned n )
     {
       stride[0] = rhs.stride[0] ;
@@ -1063,92 +1067,113 @@ public:
 
 //----------------------------------------------------------------------
 
-template< class Trait1 >
-struct DimensionAppend< Dimension<>,Trait1>
-{ typedef Dimension<Trait1> type ; };
+template< class Tag1 >
+struct DimensionAppend< Dimension<>, Tag1>
+{ typedef Dimension<Tag1> type ; };
 
-template< class Trait1 , class Trait2 >
-struct DimensionAppend< Dimension<Trait1>,Trait2>
-{ typedef Dimension<Trait1,Trait2> type ; };
+template< class Tag1 , class Tag2 >
+struct DimensionAppend< Dimension<Tag1>, Tag2>
+{ typedef Dimension<Tag1,Tag2> type ; };
 
-template< class Trait1 , class Trait2 , class Trait3 >
-struct DimensionAppend< Dimension<Trait1,Trait2>,Trait3>
-{ typedef Dimension<Trait1,Trait2,Trait3> type ; };
+template< class Tag1 , class Tag2 , class Tag3 >
+struct DimensionAppend< Dimension<Tag1,Tag2>, Tag3>
+{ typedef Dimension<Tag1,Tag2,Tag3> type ; };
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 >
-struct DimensionAppend< Dimension<Trait1,Trait2,Trait3>,Trait4>
-{ typedef Dimension<Trait1,Trait2,Trait3,Trait4> type ; };
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 >
+struct DimensionAppend< Dimension<Tag1,Tag2,Tag3>, Tag4>
+{ typedef Dimension<Tag1,Tag2,Tag3,Tag4> type ; };
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
-          class Trait5 >
-struct DimensionAppend< Dimension<Trait1,Trait2,Trait3,Trait4>,Trait5>
-{ typedef Dimension<Trait1,Trait2,Trait3,Trait4,Trait5> type ; };
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 , class Tag5 >
+struct DimensionAppend< Dimension<Tag1,Tag2,Tag3,Tag4>, Tag5>
+{ typedef Dimension<Tag1,Tag2,Tag3,Tag4,Tag5> type ; };
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
-          class Trait5 , class Trait6 >
-struct DimensionAppend< Dimension<Trait1,Trait2,Trait3,Trait4,Trait5>,Trait6>
-{ typedef Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6> type ; };
+template< class Tag1 , class Tag2 , class Tag3 ,
+          class Tag4 , class Tag5 , class Tag6 >
+struct DimensionAppend< Dimension<Tag1,Tag2,Tag3,Tag4,Tag5>, Tag6>
+{ typedef Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6> type ; };
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
-          class Trait5 , class Trait6 , class Trait7 >
-struct DimensionAppend< Dimension<Trait1,Trait2,Trait3,Trait4,
-                                  Trait5,Trait6> , Trait7 >
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 , class Tag7 >
+struct DimensionAppend< Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6> , Tag7 >
 {
-  typedef Dimension<Trait1,Trait2,Trait3,Trait4,
-                    Trait5,Trait6,Trait7> type ;
+  typedef Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> type ;
 };
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
-          class Trait5 , class Trait6 , class Trait7 , class Trait8 >
-struct DimensionAppend< Dimension<Trait1,Trait2,Trait3,Trait4,
-                                  Trait5,Trait6,Trait7> , Trait8 >
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 , class Tag7 , class Tag8 >
+struct DimensionAppend< Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> , Tag8 >
 {
-  typedef Dimension<Trait1,Trait2,Trait3,Trait4,
-                    Trait5,Trait6,Trait7,Trait8> type ;
+  typedef Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8> type ;
 };
 
 //----------------------------------------------------------------------
 
-template< class Trait1 >
-struct DimensionTruncate< Dimension<Trait1> >
+template< class Tag1 >
+struct DimensionTruncate< Dimension<Tag1> >
 { typedef Dimension<> type ; };
 
-template< class Trait1 , class Trait2 >
-struct DimensionTruncate< Dimension<Trait1,Trait2> >
-{ typedef Dimension<Trait1> type ; };
+template< class Tag1 , class Tag2 >
+struct DimensionTruncate< Dimension<Tag1,Tag2> >
+{ typedef Dimension<Tag1> type ; };
 
-template< class Trait1 , class Trait2 , class Trait3 >
-struct DimensionTruncate< Dimension<Trait1,Trait2,Trait3> >
-{ typedef Dimension<Trait1,Trait2> type ; };
+template< class Tag1 , class Tag2 , class Tag3 >
+struct DimensionTruncate< Dimension<Tag1,Tag2,Tag3> >
+{ typedef Dimension<Tag1,Tag2> type ; };
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 >
-struct DimensionTruncate< Dimension<Trait1,Trait2,Trait3,Trait4> >
-{ typedef Dimension<Trait1,Trait2,Trait3> type ; };
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 >
+struct DimensionTruncate< Dimension<Tag1,Tag2,Tag3,Tag4> >
+{ typedef Dimension<Tag1,Tag2,Tag3> type ; };
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
-          class Trait5 >
-struct DimensionTruncate< Dimension<Trait1,Trait2,Trait3,Trait4,Trait5> >
-{ typedef Dimension<Trait1,Trait2,Trait3,Trait4> type ; };
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 , class Tag5 >
+struct DimensionTruncate< Dimension<Tag1,Tag2,Tag3,Tag4,Tag5> >
+{ typedef Dimension<Tag1,Tag2,Tag3,Tag4> type ; };
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
-          class Trait5 , class Trait6 >
-struct DimensionTruncate< Dimension<Trait1,Trait2,Trait3,Trait4,
-                                    Trait5,Trait6> >
-{ typedef Dimension<Trait1,Trait2,Trait3,Trait4,Trait5> type ; };
+template< class Tag1 , class Tag2 , class Tag3 ,
+          class Tag4 , class Tag5 , class Tag6 >
+struct DimensionTruncate< Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6> >
+{ typedef Dimension<Tag1,Tag2,Tag3,Tag4,Tag5> type ; };
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
-          class Trait5 , class Trait6 , class Trait7 >
-struct DimensionTruncate< Dimension<Trait1,Trait2,Trait3,Trait4,
-                                    Trait5,Trait6,Trait7> >
-{ typedef Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6> type ; };
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 , class Tag7 >
+struct DimensionTruncate< Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> >
+{ typedef Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6> type ; };
 
-template< class Trait1 , class Trait2 , class Trait3 , class Trait4 ,
-          class Trait5 , class Trait6 , class Trait7 , class Trait8 >
-struct DimensionTruncate< Dimension<Trait1,Trait2,Trait3,Trait4,
-                                    Trait5,Trait6,Trait7,Trait8> >
-{ typedef Dimension<Trait1,Trait2,Trait3,Trait4,Trait5,Trait6,Trait7> type ; };
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 , class Tag7 , class Tag8 >
+struct DimensionTruncate< Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8> >
+{ typedef Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> type ; };
 
 //----------------------------------------------------------------------
+
+void print( std::ostream & ,
+            const DimensionTag * ,
+            const DimensionTag * ,
+            const DimensionTag * ,
+            const DimensionTag * ,
+            const DimensionTag * ,
+            const DimensionTag * ,
+            const DimensionTag * ,
+            const DimensionTag * ,
+            const unsigned * );
+
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 , class Tag7 , class Tag8 >
+inline
+std::ostream & operator <<
+  ( std::ostream & s ,
+    const Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8> & d )
+{
+  print( s , Tag1::descriptor() ,
+             Tag2::Descriptor() ,
+             Tag3::Descriptor() ,
+             Tag4::Descriptor() ,
+             Tag5::Descriptor() ,
+             Tag6::Descriptor() ,
+             Tag7::Descriptor() ,
+             Tag8::Descriptor() ,
+             d.stride() );
+  return s ;
+}
 
 }
 

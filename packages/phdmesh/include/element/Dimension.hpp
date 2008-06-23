@@ -32,7 +32,7 @@
 
 namespace phdmesh {
 
-struct QuadratureDimension : public DimensionTraits {
+struct QuadratureTag : public DimensionTag {
 
   const char * name() const ;
 
@@ -40,15 +40,15 @@ struct QuadratureDimension : public DimensionTraits {
 
   unsigned decode( unsigned size , const std::string & ) const ;
 
-  static const DimensionTraits * descriptor();
+  static const DimensionTag * descriptor();
 
 private:
-  QuadratureDimension() {}
-  QuadratureDimension( const QuadratureDimension & );
-  QuadratureDimension & operator = ( const QuadratureDimension & );
+  QuadratureTag() {}
+  QuadratureTag( const QuadratureTag & );
+  QuadratureTag & operator = ( const QuadratureTag & );
 };
 
-struct BasisDimension : public DimensionTraits {
+struct BasisTag : public DimensionTag {
 
   const char * name() const ;
 
@@ -56,12 +56,12 @@ struct BasisDimension : public DimensionTraits {
 
   unsigned decode( unsigned size , const std::string & ) const ;
 
-  static const DimensionTraits * descriptor();
+  static const DimensionTag * descriptor();
 
 private:
-  BasisDimension() {}
-  BasisDimension( const BasisDimension & );
-  BasisDimension & operator = ( const BasisDimension & );
+  BasisTag() {}
+  BasisTag( const BasisTag & );
+  BasisTag & operator = ( const BasisTag & );
 };
 
 }
