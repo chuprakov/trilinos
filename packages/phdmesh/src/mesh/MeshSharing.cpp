@@ -680,6 +680,9 @@ void SharingComm::receive_entity(
 {
   // receive_info is the new_aura_range
 
+  static const char method[] = "phdmesh::SharingComm::receive_entity" ;
+
+  const unsigned local_rank = receive_mesh.parallel_rank();
   const Schema & S = receive_mesh.schema();
   Part * const uses_part = & S.uses_part();
   Part * const owns_part = & S.owns_part();
@@ -690,6 +693,12 @@ void SharingComm::receive_entity(
   std::vector<Relation> relations ;
   std::vector<unsigned> send_dest ;
 
+  if ( send_source == local_rank ) {
+    std::string msg( method );
+    msg.append(" FAILED, Received from local-processor" );
+    throw std::logic_error( msg );
+  }
+
   unpack_entity( buffer , receive_mesh ,
                  key , owner_rank ,
                  add , relations , send_dest );
@@ -697,7 +706,8 @@ void SharingComm::receive_entity(
   // Must have been sent by the owner.
 
   if ( send_source != owner_rank ) {
-    std::string msg( "phdmesh::SharingComm::receive_entity FAILED owner" );
+    std::string msg( method );
+    msg.append( " FAILED, Received from non-owner processor" );
     throw std::logic_error( msg );
   }
 
@@ -723,10 +733,10 @@ void SharingComm::receive_entity(
 
     if ( ep.first->kernel().has_superset( *uses_part ) ||
          k == receive_info.end() || k->first != ep.first ) {
-      std::string msg( "phdmesh::SharingComm::receive_entity FAILED aura" );
+      std::string msg( method );
+      msg.append( "FAILED, entity exists but is not an aura" );
       throw std::logic_error( msg );
     }
-
     receive_info.erase( k );
   }
 

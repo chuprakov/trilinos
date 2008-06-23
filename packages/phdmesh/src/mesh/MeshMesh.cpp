@@ -211,8 +211,8 @@ void Mesh::change_entity_parts( Entity & e ,
 
 void Mesh::internal_change_entity_parts(
   Entity & e ,
-  const std::vector<Part*> & add_parts ,
-  const std::vector<Part*> & remove_parts )
+  const PartSet & add_parts ,
+  const PartSet & remove_parts )
 {
   const char method[] = "phdmesh::Mesh::change_entity_parts" ;
 
@@ -336,61 +336,28 @@ void Mesh::internal_change_entity_parts(
   if ( changed ) {
 
     // Move the entity to the new kernel.
-    {
-      KernelSet::iterator ik = declare_kernel( e.entity_type() , parts );
+    KernelSet::iterator ik = declare_kernel( e.entity_type() , parts );
 
-      // If changing kernels then copy its field values from old to new kernel
-      if ( ik_old ) {
-        Kernel::copy_fields( *ik , ik->m_size , *ik_old , i_old );
-      }
-      else {
-        Kernel::zero_fields( *ik , ik->m_size );
-      }
-
-      // Set the new kernel
-      e.m_kernel     = ik ;
-      e.m_kernel_ord = ik->m_size ;
-      ik->m_entities[ ik->m_size ] = & e ;
-      ++( ik->m_size );
-
-      // If changing kernels then remove the entity from the kernel,
-      if ( ik_old ) { remove_entity( ik_old , i_old ); }
+    // If changing kernels then copy its field values from old to new kernel
+    if ( ik_old ) {
+      Kernel::copy_fields( *ik , ik->m_size , *ik_old , i_old );
+    }
+    else {
+      Kernel::zero_fields( *ik , ik->m_size );
     }
 
-    // Propogate the changes to related entities:
+    // Set the new kernel
+    e.m_kernel     = ik ;
+    e.m_kernel_ord = ik->m_size ;
+    ik->m_entities[ ik->m_size ] = & e ;
+    ++( ik->m_size );
 
-    {
-      RelationSpan rel = e.relations();
+    // If changing kernels then remove the entity from the kernel,
+    if ( ik_old ) { remove_entity( ik_old , i_old ); }
 
-      for ( ; rel ; ++rel ) {
-        if ( rel->forward() ) {
+    // Propagate part changes through the entity's relations.
 
-          Entity & e_to = * rel->entity();
-
-          // Deduce parts for 'e_to' - these are the 'add' parts for 'e_to'
-          // Any part that I removed that is not deduced for
-          // 'e_to' must be removed from 'e_to'
-
-          PartSet to_add ;
-          PartSet to_del ;
-
-          deduce_part_relations( e_to , to_add );
-
-          for ( PartSet::iterator
-                j = r_parts.begin() ; j != r_parts.end() ; ++j ) {
-            if ( ! contain( to_add , **j ) ) { to_del.push_back( *j ); }
-          }
-
-          internal_change_entity_parts( e_to , to_add , to_del );
-
-          set_field_relations( e, e_to, rel->identifier(), rel->kind() );
-        }
-        else {
-          Entity & e_from = * rel->entity();
-          set_field_relations( e_from, e, rel->identifier(), rel->kind() );
-        }
-      }
-    }
+    internal_propagate_part_changes( e , r_parts );
   }
 }
 

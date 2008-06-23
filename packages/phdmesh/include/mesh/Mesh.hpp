@@ -164,8 +164,10 @@ private:
   void                destroy_kernel( KernelSet::iterator );
 
   void internal_change_entity_parts( Entity & ,
-                                     const std::vector<Part*> & add_parts ,
-                                     const std::vector<Part*> & remove_parts );
+                                     const PartSet & add_parts ,
+                                     const PartSet & remove_parts );
+
+  void internal_propagate_part_changes( Entity & , const PartSet & removed );
 };
 
 //----------------------------------------------------------------------

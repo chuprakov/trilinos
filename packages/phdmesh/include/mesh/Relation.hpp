@@ -114,28 +114,6 @@ print_relation( std::ostream & , relation_attr_type , entity_key_type );
 
 std::ostream & operator << ( std::ostream & , const Relation & );
 
-//----------------------------------------------------------------------
-/** Deduce what Part 'e_to' should be a member of based upon
- *  the Parts that 'e_from' is a member of and the relationship
- *  between 'e_from' and 'e_to'.
- *  The parallel distribution parts 'owns' and 'uses' are
- *  excluded from the deduction algorithm.
- */
-void deduce_part_relations( const Entity & e_from ,
-                            const Entity & e_to ,
-                            const unsigned ident ,
-                            const unsigned kind ,
-                            PartSet & to_parts );
-
-/** Deduce what Part 'e_to' should be a member of based upon
- *  all relations for which 'e_to' is the 'to' entity.
- */
-void deduce_part_relations( const Entity & e_to , PartSet & to_parts );
-
-void set_field_relations( Entity & e_from ,
-                          Entity & e_to ,
-                          const unsigned ident ,
-                          const unsigned kind );
 }
 
 //----------------------------------------------------------------------

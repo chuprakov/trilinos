@@ -51,6 +51,43 @@ typedef GearFields::CylindricalField CylindricalField ;
 typedef GearFields::CartesianField   CartesianField ;
 
 //----------------------------------------------------------------------
+
+void test_gears( ParallelMachine pm ,
+                 const unsigned i_end ,
+                 const unsigned j_end ,
+                 const unsigned k_end ,
+                 const std::string & exo_file_name ,
+                 const bool verify );
+
+void test_gears( phdmesh::ParallelMachine comm , std::istream & is )
+{
+  const unsigned p_size = phdmesh::parallel_machine_size( comm );
+  std::string sval ;
+  bool verify = false ;
+  unsigned i = 2 ;
+  unsigned j = 3 ;
+  unsigned k = 1 ;
+
+  if ( is.good() ) {
+    is >> i ; is >> j ; is >> k ;
+    is >> sval ;
+  }
+
+  if ( is.good() && sval == std::string("verify") ) {
+    verify = true ;
+    is >> sval ;
+  }
+
+  std::ostringstream exo_file_name ;
+
+  if ( is.good() && sval == std::string("output") ) {
+    exo_file_name << sval << "_np" << p_size << ".exo" ;
+  }
+
+  test_gears( comm , i , j , k , exo_file_name.str() , verify );
+}
+
+//----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
 namespace {
@@ -93,10 +130,10 @@ void parallel_gather( ParallelMachine ,
 void test_gears_face_proximity(
   Mesh & M ,
   const CylindricalField & gear_coordinates ,
-  const Field<double>  & field_proximity ,
-  const ProximitySearch & prox_search ,
-  EntityProcSet & domain ,
-  EntityProcSet & range ,
+  const Field<double>    & field_proximity ,
+  const ProximitySearch  & prox_search ,
+  EntityProcSet          & domain ,
+  EntityProcSet          & range ,
   const bool verify ,
   double & dt_proximity_search ,
   double & dt_ghosting )
@@ -141,6 +178,10 @@ void test_gears_face_proximity(
       unsigned n = k->size();
       double * const data  = field_data( field_proximity , *k );
       double * const coord = field_data( gear_coordinates , *k );
+
+      // Set "proximity" output scalar to the angle value (radians)
+      // so that visualization can "see" the rotation of the gears.
+
       for ( unsigned j = 0 ; j < n ; ++j ) { data[j] = coord[1+j*3] ; }
     }
 
@@ -278,15 +319,20 @@ void test_gears( ParallelMachine pm ,
   const unsigned angle_num = (unsigned) ( TWO_PI / elem_h );
   const unsigned rad_num   = (unsigned) ( 1 + ( rad_max - rad_min ) / elem_h );
   const unsigned z_num     = (unsigned) ( 1 + ( z_max   - z_min )   / elem_h );
-  const unsigned tot_num   = angle_num * ( rad_num - 1 ) * ( z_num - 1 );
+  const unsigned elem_gear = angle_num * ( rad_num - 1 ) * ( z_num - 1 );
+  const unsigned num_gear  = k_end * j_end * i_end ;
+  const unsigned num_elem  = elem_gear * num_gear ;
 
   if ( p_rank == 0 ) {
     std::cout << std::endl
-              << "N_GEARS meshing: #Angles = " << angle_num
-              << " , #Radial = " << rad_num
-              << " , #Thickness = " << z_num
-              << " , Elements/gear = " << tot_num
-              << std::endl ;
+              << "GEARS meshing:" << std::endl
+              << "  #Processors = " << p_size    << std::endl
+              << "  #Elements   = " << num_elem  << std::endl
+              << "  #Gears      = " << num_gear  << std::endl
+              << "  #Elem/gear  = " << elem_gear << std::endl
+              << "  #Angles     = " << angle_num << std::endl
+              << "  #Radial     = " << rad_num   << std::endl
+              << "  #Thickness  = " << z_num     << std::endl ;
   }
   
   //------------------------------
@@ -356,7 +402,7 @@ void test_gears( ParallelMachine pm ,
 
   //------------------------------
 
-  Mesh M(S,pm,kernel_capacity);
+  Mesh M( S , pm , kernel_capacity );
 
   double wt = wall_time();
 
@@ -387,31 +433,6 @@ void test_gears( ParallelMachine pm ,
     comm_mesh_field_values( M, M.aura_domain(), M.aura_range(), fields, false );
   }
 
-  {
-    entity_id_type counts[ EntityTypeEnd ];
-    entity_id_type max_id[ EntityTypeEnd ];
-
-    comm_mesh_stats( M , counts , max_id );
-
-    if ( p_rank == 0 ) {
-      std::cout << "N_GEARS Global Counts { " 
-                << "node = " << counts[0] << " , "
-                << "edge = " << counts[1] << " , "
-                << "face = " << counts[2] << " , "
-                << "elem = " << counts[3] << " , "
-                << "particle = " << counts[4] << " , "
-                << "constraint = " << counts[5] << " }" << std::endl ;
-      std::cout << "N_GEARS Global MaxId { " 
-                << "node = " << max_id[0] << " , "
-                << "edge = " << max_id[1] << " , "
-                << "face = " << max_id[2] << " , "
-                << "elem = " << max_id[3] << " , "
-                << "particle = " << max_id[4] << " , "
-                << "constraint = " << max_id[5] << " }" << std::endl ;
-    }
-  }
-
-
   if ( verify && ! comm_verify_shared_entity_values( M , Node , gear_fields.gear_coord ) ) {
     if ( p_rank == 0 ) {
       std::cout << "N_GEARS FAILED for shared values of " ;
@@ -438,6 +459,37 @@ void test_gears( ParallelMachine pm ,
     }
     return ;
   }
+
+  //------------------------------
+  {
+    entity_id_type counts[ EntityTypeEnd ];
+    entity_id_type max_id[ EntityTypeEnd ];
+
+    comm_mesh_stats( M , counts , max_id );
+
+    if ( p_rank == 0 ) {
+      std::cout << "N_GEARS Meshing completed and verified" << std::endl ;
+
+      std::cout << "N_GEARS Global Counts { " 
+                << "node = " << counts[0] << " , "
+                << "edge = " << counts[1] << " , "
+                << "face = " << counts[2] << " , "
+                << "elem = " << counts[3] << " , "
+                << "particle = " << counts[4] << " , "
+                << "constraint = " << counts[5] << " }" << std::endl ;
+
+      std::cout << "N_GEARS Global MaxId { " 
+                << "node = " << max_id[0] << " , "
+                << "edge = " << max_id[1] << " , "
+                << "face = " << max_id[2] << " , "
+                << "elem = " << max_id[3] << " , "
+                << "particle = " << max_id[4] << " , "
+                << "constraint = " << max_id[5] << " }" << std::endl ;
+
+      std::cout.flush();
+    }
+  }
+  //------------------------------
 
   exodus::FileOutput * exo = NULL ;
 
@@ -488,29 +540,22 @@ void test_gears( ParallelMachine pm ,
     return ;
   }
 
-  if ( p_rank == 0 ) {
-    std::cout << "N_GEARS Rebalance successful" << std::endl ;
-    for ( unsigned i = 0 ; i < p_size ; ++i ) {
-      std::cout << "  P" << i << ": cut = " << rebal_cut_keys[i] << std::endl ;
-    }
-
-    std::cout.flush();
-  }
-
   //------------------------------
   // Turn the gears in opposite directions by the same amount
 
   dt_proximity = 0 ;
   dt_ghosting = 0 ;
 
-  const unsigned nsteps = 120 ;
+  const unsigned nsteps = 121 ;
 
   {
-    for ( unsigned i = 0 ; i <= nsteps ; ++i ) {
+    for ( unsigned i = 0 ; i < nsteps ; ++i ) {
 
       M.update_state();
 
-      const double angle = ( TWO_PI * i ) / ( (double) nsteps );
+      // Final step returns to the original position:
+
+      const double angle = ( TWO_PI * i ) / ( (double) ( nsteps - 1 ) );
 
       // Set coordinates[ STATE_NEW ] to turned coordinates
 
@@ -584,43 +629,20 @@ void test_gears( ParallelMachine pm ,
 
   //------------------------------
 
+  dt_proximity /= nsteps ;
+  dt_ghosting  /= nsteps ;
+  dt_exo_write /= nsteps ;
+
   if ( p_rank == 0 ) {
-    std::cout << "N_GEARS " << nsteps
-              << ", mesh = " << dt_mesh_gen 
-              << ", rebal = " << dt_rebalance 
-              << ", search = " << dt_proximity 
-              << ", ghost = " << dt_ghosting
-              << ", write = " << dt_exo_write
+    std::cout << "N_GEARS Performance results:" << std::endl
+              << "  #Steps        = " << nsteps << std::endl
+              << "  Meshing       = " << dt_mesh_gen  << " sec" << std::endl
+              << "  Rebalance     = " << dt_rebalance << " sec" << std::endl
+              << "  Search/step   = " << dt_proximity << " sec" << std::endl
+              << "  Ghosting/step = " << dt_ghosting  << " sec" << std::endl
+              << "  Writing/step  = " << dt_exo_write << " sec" << std::endl
               << std::endl ;
     std::cout.flush();
   }
-}
-
-void test_gears( phdmesh::ParallelMachine comm , std::istream & is )
-{
-  const unsigned p_size = phdmesh::parallel_machine_size( comm );
-  std::string sval ;
-  bool verify = false ;
-  unsigned i = 2 ;
-  unsigned j = 3 ;
-  unsigned k = 1 ;
-
-  if ( is.good() ) {
-    is >> i ; is >> j ; is >> k ;
-    is >> sval ;
-  }
-
-  if ( is.good() && sval == std::string("verify") ) {
-    verify = true ;
-    is >> sval ;
-  }
-
-  std::ostringstream exo_file_name ;
-
-  if ( is.good() && sval == std::string("output") ) {
-    exo_file_name << sval << "_np" << p_size << ".exo" ;
-  }
-
-  test_gears( comm , i , j , k , exo_file_name.str() , verify );
 }
 

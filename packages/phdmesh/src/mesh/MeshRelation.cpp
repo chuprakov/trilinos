@@ -209,9 +209,10 @@ RelationSpan con_span( const RelationSet & con ,
 
 RelationSpan Entity::relations( EntityType et , unsigned kind ) const
 {
+  const EntityType et_next = EntityType( et + 1 );
   const relation_attr_type
-    lo_attr = relation_attr( et , 0 , kind ),
-    hi_attr = relation_attr( et , 0 , kind + 1 );
+    lo_attr = relation_attr( et ,      0 , kind ),
+    hi_attr = relation_attr( et_next , 0 , kind );
 
   RelationSet::const_iterator i = m_relation.begin();
   RelationSet::const_iterator e = m_relation.end();
@@ -258,6 +259,101 @@ bool in_closure( const Entity & e_from , const Entity & e )
 //----------------------------------------------------------------------
 
 namespace {
+
+// What are this entity's part memberships that can be deduced from
+// this entity's relationship.
+
+void deduce_part_relations( const Entity & e_from ,
+                            const Entity & e_to ,
+                            const unsigned ident ,
+                            const unsigned kind ,
+                            PartSet & to_parts )
+{
+  const EntityType t_to   = e_to.entity_type();
+  const EntityType t_from = e_from.entity_type();
+  const Kernel   & k_to   = e_to.kernel();
+  const Kernel   & k_from = e_from.kernel();
+  const Mesh     & mesh   = k_to.mesh();
+  const Schema   & schema = mesh.schema();
+
+  Part * const univ_part = & schema.universal_part();
+  Part * const uses_part = & schema.uses_part();
+  Part * const owns_part = & schema.owns_part();
+
+  const std::vector<PartRelation> & part_rel = schema.get_part_relations();
+
+  // All parts of 'e_from'
+
+  PartSet tmp ;
+
+  k_from.supersets( tmp );
+
+  for ( PartSet::iterator i = tmp.begin() ; i != tmp.end() ; ++i ) {
+    if ( *i != univ_part && *i != uses_part && *i != owns_part ) {
+      insert( to_parts , **i );
+    }
+  }
+
+  for ( std::vector<PartRelation>::const_iterator
+        j = part_rel.begin() ; j != part_rel.end() ; ++j ) {
+    const PartRelation & stencil = *j ;
+
+    if ( contain( tmp , * stencil.m_root ) &&
+         0 <= (*stencil.m_function)( t_from , t_to , ident , kind ) ) {
+      insert( to_parts , * stencil.m_target );
+    }
+  }
+}
+
+//----------------------------------------------------------------------
+
+void deduce_part_relations( const Entity & e_to , PartSet & to_parts )
+{
+  RelationSpan rel = e_to.relations();
+
+  for ( ; rel ; ++rel ) if ( rel->converse() ) {
+    deduce_part_relations( * rel->entity() , e_to ,
+                             rel->identifier() , rel->kind() , to_parts );
+  }
+}
+
+//----------------------------------------------------------------------
+
+void set_field_relations( Entity & e_from ,
+                          Entity & e_to ,
+                          const unsigned ident ,
+                          const unsigned kind )
+{
+  const std::vector<FieldRelation> & field_rels =
+    e_from.kernel().mesh().schema().get_field_relations();
+
+  for ( std::vector<FieldRelation>::const_iterator 
+        j = field_rels.begin() ; j != field_rels.end() ; ++j ) {
+
+    const FieldRelation & fr = *j ;
+
+    void ** const ptr =
+      reinterpret_cast<void**>( field_data( * fr.m_root , e_from ) );
+
+    if ( ptr ) {
+
+      void * const src = field_data( * fr.m_target , e_to );
+
+      const int number =
+        field_data_size(*fr.m_root,e_from) / sizeof(void*);
+
+      const int offset =
+         (*fr.m_function)( e_from.entity_type() , 
+                           e_to.entity_type() , ident , kind );
+
+      if ( 0 <= offset && offset < number ) {
+        ptr[ offset ] = src ;
+      }
+    }
+  }
+}
+
+//----------------------------------------------------------------------
 
 void print_declare_relation( std::ostream & msg ,
                              Entity & e_from ,
@@ -358,42 +454,6 @@ void Mesh::declare_relation( Entity & entity ,
 
 //----------------------------------------------------------------------
 
-void set_field_relations( Entity & e_from ,
-                          Entity & e_to ,
-                          const unsigned ident ,
-                          const unsigned kind )
-{
-  const std::vector<FieldRelation> & field_rels =
-    e_from.kernel().mesh().schema().get_field_relations();
-
-  for ( std::vector<FieldRelation>::const_iterator 
-        j = field_rels.begin() ; j != field_rels.end() ; ++j ) {
-
-    const FieldRelation & fr = *j ;
-
-    void ** const ptr =
-      reinterpret_cast<void**>( field_data( * fr.m_root , e_from ) );
-
-    if ( ptr ) {
-
-      void * const src = field_data( * fr.m_target , e_to );
-
-      const int number =
-        field_data_size(*fr.m_root,e_from) / sizeof(void*);
-
-      const int offset =
-         (*fr.m_function)( e_from.entity_type() , 
-                           e_to.entity_type() , ident , kind );
-
-      if ( 0 <= offset && offset < number ) {
-        ptr[ offset ] = src ;
-      }
-    }
-  }
-}
-
-//----------------------------------------------------------------------
-
 namespace {
 
 void clear_field_relations( Entity & e_from ,
@@ -472,7 +532,7 @@ void Mesh::destroy_relation( Entity & e1 , Entity & e2 , unsigned kind )
 
     deduce_part_relations( e_to , add );
 
-    // Eliminate the 'add' from the accumlated 'del'
+    // Eliminate the 'add' from the accumulated 'del'
 
     for ( PartSet::iterator j = del.end() ; j != del.begin() ; ) {
       --j ;
@@ -486,58 +546,53 @@ void Mesh::destroy_relation( Entity & e1 , Entity & e2 , unsigned kind )
 }
 
 //----------------------------------------------------------------------
-// What are this entity's part memberships that can be deduced from
-// this entity's relationship.
+// Deduce propagation of changes to a part to the related 'to' entities
 
-void deduce_part_relations( const Entity & e_from ,
-                            const Entity & e_to ,
-                            const unsigned ident ,
-                            const unsigned kind ,
-                            PartSet & to_parts )
+void Mesh::internal_propagate_part_changes(
+  Entity        & entity ,
+  const PartSet & removed )
 {
-  const EntityType t_to   = e_to.entity_type();
-  const EntityType t_from = e_from.entity_type();
-  const Kernel   & k_to   = e_to.kernel();
-  const Kernel   & k_from = e_from.kernel();
-  const Mesh     & mesh   = k_to.mesh();
-  const Schema   & schema = mesh.schema();
+  Part * const owns_part = & m_schema.owns_part();
+  Part * const uses_part = & m_schema.uses_part();
+  Part * const univ_part = & m_schema.universal_part();
 
-  Part * const univ_part = & schema.universal_part();
-  Part * const uses_part = & schema.uses_part();
-  Part * const owns_part = & schema.owns_part();
+  RelationSpan rel = entity.relations();
 
-  const std::vector<PartRelation> & part_rel = schema.get_part_relations();
+  for ( ; rel ; ++rel ) {
+    if ( rel->forward() ) {
 
-  // All parts of 'e_from'
+      Entity & e_to = * rel->entity();
 
-  PartSet tmp ;
+      // Deduce parts for 'e_to' - these are the 'add' parts for 'e_to'
+      // Any non-parallel part that I removed that is not deduced for
+      // 'e_to' must be removed from 'e_to'
 
-  k_from.supersets( tmp );
+      PartSet to_add ;
+      PartSet to_del ;
 
-  for ( PartSet::iterator i = tmp.begin() ; i != tmp.end() ; ++i ) {
-    if ( *i != univ_part && *i != uses_part && *i != owns_part ) {
-      insert( to_parts , **i );
+      deduce_part_relations( e_to , to_add );
+
+      for ( PartSet::const_iterator
+            j = removed.begin() ; j != removed.end() ; ++j ) {
+        Part * const p = *j ;
+
+        if ( p != owns_part &&
+             p != uses_part &&
+             p != univ_part &&
+             ! contain( to_add , *p ) ) {
+          to_del.push_back( p );
+        }
+      }
+
+      internal_change_entity_parts( e_to , to_add , to_del );
+
+      set_field_relations( entity, e_to, rel->identifier(), rel->kind() );
     }
-  }
+    else {
+      Entity & e_from = * rel->entity();
 
-  for ( std::vector<PartRelation>::const_iterator
-        j = part_rel.begin() ; j != part_rel.end() ; ++j ) {
-    const PartRelation & stencil = *j ;
-
-    if ( contain( tmp , * stencil.m_root ) &&
-         0 <= (*stencil.m_function)( t_from , t_to , ident , kind ) ) {
-      insert( to_parts , * stencil.m_target );
+      set_field_relations( e_from, entity, rel->identifier(), rel->kind() );
     }
-  }
-}
-
-void deduce_part_relations( const Entity & e_to , PartSet & to_parts )
-{
-  RelationSpan rel = e_to.relations();
-
-  for ( ; rel ; ++rel ) if ( rel->converse() ) {
-    deduce_part_relations( * rel->entity() , e_to ,
-                             rel->identifier() , rel->kind() , to_parts );
   }
 }
 
