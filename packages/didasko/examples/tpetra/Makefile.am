@@ -28,46 +28,47 @@
 
 include $(top_builddir)/Makefile.export.didasko
 
-EXAMPLE = ex1  ex2  ex3  ex4  ex5 ex6 ex7 ex8 ex9
+EXAMPLE = 
+#EXAMPLE = ex1  ex2  ex3  ex4  ex5 ex6 ex7 ex8 ex9
 EXEEXT = .exe
 
 noinst_PROGRAMS = $(EXAMPLE)
 
-ex1_SOURCES = $(srcdir)/ex1.cpp
-ex1_CXXFLAGS = $(EXPORT_INCLUDES) 
-ex1_LDADD = $(EXPORT_LIBS)
+# ex1_SOURCES = $(srcdir)/ex1.cpp
+# ex1_CXXFLAGS = $(EXPORT_INCLUDES) 
+# ex1_LDADD = $(EXPORT_LIBS)
 
-ex2_SOURCES = $(srcdir)/ex2.cpp
-ex2_CXXFLAGS = $(EXPORT_INCLUDES) 
-ex2_LDADD = $(EXPORT_LIBS)
+# ex2_SOURCES = $(srcdir)/ex2.cpp
+# ex2_CXXFLAGS = $(EXPORT_INCLUDES) 
+# ex2_LDADD = $(EXPORT_LIBS)
 
-ex3_SOURCES = $(srcdir)/ex3.cpp
-ex3_CXXFLAGS = $(EXPORT_INCLUDES) 
-ex3_LDADD = $(EXPORT_LIBS)
+# ex3_SOURCES = $(srcdir)/ex3.cpp
+# ex3_CXXFLAGS = $(EXPORT_INCLUDES) 
+# ex3_LDADD = $(EXPORT_LIBS)
 
-ex4_SOURCES = $(srcdir)/ex4.cpp
-ex4_CXXFLAGS = $(EXPORT_INCLUDES) 
-ex4_LDADD = $(EXPORT_LIBS)
+# ex4_SOURCES = $(srcdir)/ex4.cpp
+# ex4_CXXFLAGS = $(EXPORT_INCLUDES) 
+# ex4_LDADD = $(EXPORT_LIBS)
 
-ex5_SOURCES = $(srcdir)/ex5.cpp
-ex5_CXXFLAGS = $(EXPORT_INCLUDES) 
-ex5_LDADD = $(EXPORT_LIBS)
+# ex5_SOURCES = $(srcdir)/ex5.cpp
+# ex5_CXXFLAGS = $(EXPORT_INCLUDES) 
+# ex5_LDADD = $(EXPORT_LIBS)
 
-ex6_SOURCES = $(srcdir)/ex6.cpp
-ex6_CXXFLAGS = $(EXPORT_INCLUDES) 
-ex6_LDADD = $(EXPORT_LIBS)
+# ex6_SOURCES = $(srcdir)/ex6.cpp
+# ex6_CXXFLAGS = $(EXPORT_INCLUDES) 
+# ex6_LDADD = $(EXPORT_LIBS)
 
-ex7_SOURCES = $(srcdir)/ex7.cpp
-ex7_CXXFLAGS = $(EXPORT_INCLUDES) 
-ex7_LDADD = $(EXPORT_LIBS)
+# ex7_SOURCES = $(srcdir)/ex7.cpp
+# ex7_CXXFLAGS = $(EXPORT_INCLUDES) 
+# ex7_LDADD = $(EXPORT_LIBS)
 
-ex8_SOURCES = $(srcdir)/ex8.cpp
-ex8_CXXFLAGS = $(EXPORT_INCLUDES) 
-ex8_LDADD = $(EXPORT_LIBS)
+# ex8_SOURCES = $(srcdir)/ex8.cpp
+# ex8_CXXFLAGS = $(EXPORT_INCLUDES) 
+# ex8_LDADD = $(EXPORT_LIBS)
 
-ex9_SOURCES = $(srcdir)/ex9.cpp
-ex9_CXXFLAGS = $(EXPORT_INCLUDES) 
-ex9_LDADD = $(EXPORT_LIBS)
+# ex9_SOURCES = $(srcdir)/ex9.cpp
+# ex9_CXXFLAGS = $(EXPORT_INCLUDES) 
+# ex9_LDADD = $(EXPORT_LIBS)
 
 if USING_GNUMAKE
 EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(DIDASKO_INCLUDES))
