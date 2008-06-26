@@ -37,7 +37,7 @@
 
 #if SG_ACTIVE
 
-#include "EpetraExt_MultiMpiComm.h"
+#include "Epetra_Comm.h"
 #include "EpetraExt_BlockVector.h"
 #include "EpetraExt_BlockCrsMatrix.h"
 #include "EpetraExt_BlockUtility.h"
@@ -53,7 +53,7 @@ namespace FEApp {
 
     //! Constructor
     BlockDiscretization(
-     const Teuchos::RCP<const EpetraExt::MultiMpiComm>& globalComm_,
+     const Teuchos::RCP<const Epetra_Comm>& comm,
      const Teuchos::RCP<const FEApp::AbstractDiscretization>& underlyingDisc_,
      const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis_);
 
@@ -115,7 +115,7 @@ namespace FEApp {
     Teuchos::RCP<const FEApp::AbstractDiscretization> underlyingDisc;
 
     //! Epetra communicator
-    Teuchos::RCP<const EpetraExt::MultiMpiComm> globalComm;
+    Teuchos::RCP<const Epetra_Comm> globalComm;
 
     //! Stochastic Galerkin basis
     Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> > sg_basis;

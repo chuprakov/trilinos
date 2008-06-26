@@ -101,14 +101,8 @@ FEApp::Application::Application(
     sg_basis = params->get< Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> > >("Stochastic Galerkin basis");
     Cijk = params->get< Teuchos::RCP<const Stokhos::TripleProduct< Stokhos::OrthogPolyBasis<double> > > >("Stochastic Galerkin triple product");
 
-    // No parallelism over blocks, so spatial partition is unchanged 
-    // as comm->NumProc()
-    unsigned int num_sg_blocks = sg_basis->size();
-    Teuchos::RCP<EpetraExt::MultiMpiComm> globalComm =
-      Teuchos::rcp(new EpetraExt::MultiMpiComm(MPI_COMM_WORLD, 
-					       comm->NumProc(), 
-					       num_sg_blocks));
-    sg_disc = Teuchos::rcp(new FEApp::BlockDiscretization(globalComm, disc,
+    
+    sg_disc = Teuchos::rcp(new FEApp::BlockDiscretization(comm, disc,
 							  sg_basis));
 
     // Create Epetra objects

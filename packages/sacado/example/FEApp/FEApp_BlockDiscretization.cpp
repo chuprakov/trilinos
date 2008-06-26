@@ -32,23 +32,44 @@
 
 #include "FEApp_BlockDiscretization.hpp"
 
+#ifdef HAVE_MPI
+#include "EpetraExt_MultiMpiComm.h"
+#endif
+
 #if SG_ACTIVE
 
 FEApp::BlockDiscretization::BlockDiscretization(
-    const Teuchos::RCP<const EpetraExt::MultiMpiComm>& globalComm_,
+    const Teuchos::RCP<const Epetra_Comm>& comm,
     const Teuchos::RCP<const FEApp::AbstractDiscretization>& underlyingDisc_,
     const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis_ ) :
   underlyingDisc(underlyingDisc_),
-  globalComm(globalComm_),
   sg_basis(sg_basis_)
 {
+
+#ifdef HAVE_MPI
+  // No parallelism over blocks, so spatial partition is unchanged 
+  // as comm->NumProc()
+  unsigned int num_sg_blocks = sg_basis->size();
+  Teuchos::RCP<EpetraExt::MultiMpiComm> multiComm =
+    Teuchos::rcp(new EpetraExt::MultiMpiComm(MPI_COMM_WORLD, 
+					     comm->NumProc(), 
+					     num_sg_blocks));
 
   // Create block matrix and graph from underlyingDisc and
   // the block information stored in globalComm
 
-  int numBlockRows =  globalComm->NumTimeSteps();
-  int myBlockRows  =  globalComm->NumTimeStepsOnDomain();
-  int myFirstBlockRow = globalComm->FirstTimeStepOnDomain();
+  int numBlockRows =  multiComm->NumTimeSteps();
+  int myBlockRows  =  multiComm->NumTimeStepsOnDomain();
+  int myFirstBlockRow = multiComm->FirstTimeStepOnDomain();
+  globalComm = multiComm;
+#else
+  int numBlockRows =  1;
+  int myBlockRows  =  1;
+  int myFirstBlockRow = 0;
+  globalComm = comm;
+#endif
+
+  
 
   // DENSE STENCIL for Stochastic Galerkin
   // For 3 blocks on 2 procs, this should be:
