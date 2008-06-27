@@ -152,7 +152,7 @@
     ARGS = 
       --nD=100
       --nI=100
-      --ignore-constriants
+      --ignore-constraints
       --xo=0.1
       --xIl=0.01
        ;
@@ -816,6 +816,34 @@
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --num-procs-per-cluster=2 --skip-solve;
     COMM = MPI(2,4,6,8);
+}
+
+#
+# DiagonalQuadraticResponseOnlyOpt.exe
+#
+
+(FRAMEWORK,INSTALL,DiagonalQuadraticResponseOnlyOpt) {
+    TESTS = ../thyra/example/DiagonalQuadraticResponseOnlyOpt/DiagonalQuadraticResponseOnlyOpt.exe;
+    ARGS = --local-dim=10000 --pt=0.0 --p0=2.0;
+    COMM = SERIAL, MPI(1);
+}
+
+(FRAMEWORK,INSTALL,DiagonalQuadraticResponseOnlyOpt) {
+    TESTS = ../thyra/example/DiagonalQuadraticResponseOnlyOpt/DiagonalQuadraticResponseOnlyOpt.exe;
+    ARGS = --local-dim=10000 --pt=0.0 --p0=2.0;
+    COMM = SERIAL, MPI(2);
+}
+
+(FRAMEWORK,INSTALL,DiagonalQuadraticResponseOnlyOpt) {
+    TESTS = ../thyra/example/DiagonalQuadraticResponseOnlyOpt/DiagonalQuadraticResponseOnlyOpt.exe;
+    ARGS = --local-dim=10000 --pt=0.0 --p0=2.0;
+    COMM = SERIAL, MPI(3);
+}
+
+(FRAMEWORK,INSTALL,DiagonalQuadraticResponseOnlyOpt) {
+    TESTS = ../thyra/example/DiagonalQuadraticResponseOnlyOpt/DiagonalQuadraticResponseOnlyOpt.exe;
+    ARGS = --local-dim=10000 --pt=0.0 --p0=2.0;
+    COMM = SERIAL, MPI(4);
 }
 
 #

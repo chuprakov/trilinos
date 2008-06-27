@@ -32,6 +32,7 @@
 #include "MoochoPack_MoochoSolver.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_StandardCatchMacros.hpp"
+#include "Teuchos_GlobalMPISession.hpp"
 
 int main( int argc, char* argv[] )
 {
@@ -44,6 +45,8 @@ int main( int argc, char* argv[] )
   typedef nlpip::value_type value_type;
   using Teuchos::CommandLineProcessor;
   bool success = true;
+
+  Teuchos::GlobalMPISession mpiSession(&argc, &argv);
 
   try {
 

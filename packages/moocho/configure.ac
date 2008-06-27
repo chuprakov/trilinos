@@ -330,6 +330,7 @@ AC_CONFIG_FILES([
     thyra/example/NLPThyraEpetraModelEval4DOpt/external/Makefile
     thyra/example/NLPThyraEpetraModelEval4DOpt/external/Makefile.external.stub
     thyra/example/DiagonalTransientInversion/Makefile
+    thyra/example/DiagonalQuadraticResponseOnlyOpt/Makefile
     thyra/example/generate-sample-output.pl.stub
     thyra/src/Makefile
     ])

@@ -39,7 +39,8 @@ if ENABLE_MOOCHO_STRATIMIKOS
 if ENABLE_THYRA_EPETRAEXT
 MOOCHO_STRATIMIKOS_EXAMPLES = \
   NLPThyraEpetraModelEval4DOpt \
-  NLPThyraEpetraAdvDiffReactOpt
+  NLPThyraEpetraAdvDiffReactOpt \
+  DiagonalQuadraticResponseOnlyOpt
 endif
 if ENABLE_MOOCHO_RYTHMOS
 MOOCHO_RYTHMOS_EXAMPLES = \
