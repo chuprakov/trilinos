@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -381,3 +383,5 @@ void MeritFunc_ModifiedL1LargerSteps_AddedStep::print_step( const Algorithm& alg
 }
 
 }	// end namespace MoochoPack
+
+#endif // 0

@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -168,3 +170,5 @@ void ReducedHessianExactStd_Step::print_step(
 }
 
 }	// end namespace MoochoPack 
+
+#endif // 0

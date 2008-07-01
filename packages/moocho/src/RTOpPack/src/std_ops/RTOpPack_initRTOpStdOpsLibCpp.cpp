@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -138,3 +140,5 @@ void RTOpPack::initRTOpStdOpsLibCpp( RTOpPack::RTOpServer<RTOp_value_type> *op_s
   add_op_factory(op_server,RTOp_TOp_set_sub_vector_vtbl);
   add_op_factory(op_server,RTOp_TOp_sign_vtbl);
 }
+
+#endif // 0

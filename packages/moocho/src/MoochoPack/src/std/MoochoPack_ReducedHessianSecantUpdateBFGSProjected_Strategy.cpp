@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -570,3 +572,5 @@ void ReducedHessianSecantUpdateBFGSProjected_Strategy::print_step( std::ostream&
 }
 
 }  // end namespace MoochoPack
+
+#endif // 0

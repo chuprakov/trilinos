@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -522,3 +524,5 @@ void MoochoPack::LineSearchWatchDog_Step::print_step( const Algorithm& algo
     << L << "    throw line_search_failure\n"
     << L << "end\n";
 }
+
+#endif // 0

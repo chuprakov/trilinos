@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -304,3 +306,5 @@ value_type MeritFunc_PenaltyParamsUpdateWithMult_AddedStep::kkt_near_sol() const
 
 
 }	// end namespace MoochoPack
+
+#endif // 0

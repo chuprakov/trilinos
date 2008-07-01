@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -322,3 +324,5 @@ void MatrixSymPosDefBandedChol::update_factorization() const
 }
 
 } // end namespace ConstrainedOptPack
+
+#endif // 0

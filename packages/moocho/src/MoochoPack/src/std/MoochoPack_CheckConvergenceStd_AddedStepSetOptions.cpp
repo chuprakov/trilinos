@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -93,3 +95,5 @@ void CheckConvergenceStd_AddedStepSetOptions::setOption(
 }
 
 }	// end namespace MoochoPack 
+
+#endif // 0

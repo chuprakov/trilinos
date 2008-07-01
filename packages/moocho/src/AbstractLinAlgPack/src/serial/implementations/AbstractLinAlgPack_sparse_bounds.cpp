@@ -1,3 +1,4 @@
+#if 0
 // @HEADER
 // ***********************************************************************
 // 
@@ -62,3 +63,6 @@ AbstractLinAlgPack::num_bounds( const SpVectorSlice& bl, const SpVectorSlice& bu
   }
   return num_bounds;
 }
+
+
+#endif // 0

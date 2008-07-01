@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -84,3 +86,5 @@ void MoochoPack::NumFixedDepIndep_AddedStep::print_step( const Algorithm& algo
     << L << "*** Counts the number of fixed variables from "
         "the dependent and independent sets\n";
 }
+
+#endif // 0

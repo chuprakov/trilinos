@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -480,3 +482,5 @@ void MatrixHessianSuperBasic::assert_initialized() const
 }
 
 } // end namespace ConstrainedOptPack
+
+#endif // 0

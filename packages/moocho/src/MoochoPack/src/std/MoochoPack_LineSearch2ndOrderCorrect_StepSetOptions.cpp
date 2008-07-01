@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -131,3 +133,5 @@ void LineSearch2ndOrderCorrect_StepSetOptions::setOption(
 }
 
 }	// end namespace MoochoPack 
+
+#endif // 0

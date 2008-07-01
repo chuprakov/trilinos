@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -173,3 +175,5 @@ void CheckBasisFromCPy_Step::print_step( const Algorithm& algo, poss_type step_p
 }
 
 }	// end namespace MoochoPack 
+
+#endif // 0

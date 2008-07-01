@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -260,3 +262,5 @@ void MatrixSymPosDefInvCholFactor::unserialize( std::istream &in )
 }
 
 }	// end namespace ConstrainedOptPack
+
+#endif // 0

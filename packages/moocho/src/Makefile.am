@@ -480,9 +480,6 @@ ABSTRACT_LIN_ALG_PACK_HPP = \
   $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOutFunc.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOutFuncDecl.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOutFuncDef.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixWithPartitionedView.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixWithPartitionedViewSubclass.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixBasisNonbasisStd.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixCOORTmplItfc.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSparseCOORSerial.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSymDiagSparseStd.hpp\
@@ -510,10 +507,8 @@ ABSTRACT_LIN_ALG_PACK_HPP = \
   $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_rank_2_chol_update.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_sparse_bounds.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_sparse_bounds_diff.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_ConvertToCSC.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_GenPermMatrixSliceOp.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_LinAlgOpPackHack.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixBasisNonbasis.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixConvertToSparse.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixConvertToSparseEncap.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixExtractInvCholFactor.hpp\
@@ -836,8 +831,6 @@ MOOCHO_PACK_HPP = \
   $(srcdir)/MoochoPack/src/std/MoochoPack_CheckDescentQuasiNormalStep_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_CheckSkipBFGSUpdateStd_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_CheckSkipBFGSUpdateStd_StepSetOptions.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_CrossTermExactStd_Step.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_DampenCrossTermStd_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandlerSelectNew_Strategy.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandlerStd_Strategy.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandlerVarReductPerm_Strategy.hpp \
@@ -853,26 +846,17 @@ MOOCHO_PACK_HPP = \
   $(srcdir)/MoochoPack/src/std/MoochoPack_FeasibilityStep_Strategy.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_InitFinDiffReducedHessian_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_InitFinDiffReducedHessian_StepSetOptions.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearch2ndOrderCorrect_Step.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearch2ndOrderCorrect_StepSetOptions.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchDirect_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFailureNewDecompositionSelection_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFilter_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFilter_StepSetOptions.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFullStepAfterKIter_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFullStep_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchNLE_Step.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchWatchDog_Step.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchWatchDog_StepSetOptions.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_DummyUpdate_Step.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_ModifiedL1LargerSteps_AddedStep.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateGuts_AddedStep.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateWithMult_AddedStep.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdate_AddedStep.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoAlgorithmStepNames.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerConsoleStd.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerStatsStd.hpp \
@@ -880,8 +864,6 @@ MOOCHO_PACK_HPP = \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerXMLSummary.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_NewDecompositionSelectionStd_Strategy.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_NewDecompositionSelection_Strategy.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_NumFixedDepIndep_AddedStep.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_PBFGS_helpers.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_PostEvalNewPointBarrier_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_PostProcessBarrierLineSearch_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_PreEvalNewPointBarrier_Step.hpp \
@@ -890,10 +872,8 @@ MOOCHO_PACK_HPP = \
   $(srcdir)/MoochoPack/src/std/MoochoPack_QuasiNewtonStats.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_QuasiNormalStepStd_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_QuasiRangeSpaceStepStd_Strategy.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_QuasiRangeSpaceStepTailoredApproach_Strategy.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_QuasiRangeSpaceStep_Strategy.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedGradientStd_Step.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianExactStd_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSecantUpdateBFGSFull_Strategy.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSecantUpdateStd_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSecantUpdate_Strategy.hpp \
@@ -907,9 +887,7 @@ MOOCHO_PACK_HPP = \
   $(srcdir)/MoochoPack/src/std/MoochoPack_UpdateBarrierParameter_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_UpdateReducedSigma_Step.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_act_set_stats.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_active_set_change.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_d_bounds_iter_quant.hpp \
-  $(srcdir)/MoochoPack/src/std/MoochoPack_get_init_fixed_free_indep.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_qp_solver_stats.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_quasi_newton_stats.hpp
 

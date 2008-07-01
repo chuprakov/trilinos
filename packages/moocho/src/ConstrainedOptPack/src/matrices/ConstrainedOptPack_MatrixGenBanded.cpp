@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -187,3 +189,5 @@ void MatrixGenBanded::assert_initialized() const
 }
 
 } // end namespace ConstrainedOptPack
+
+#endif // 0

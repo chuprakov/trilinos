@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -129,3 +131,5 @@ void QPSchurInitKKTSystemHessianRelaxed::initialize_kkt_system(
 }
 
 } // end namesapce ConstrainedOptPack
+
+#endif // 0

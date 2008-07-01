@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -78,3 +80,5 @@ void MoochoPack::LineSearchFullStepAfterKIter_Step::print_step( const Algorithm&
   line_search().print_step(algo,step_poss,type,assoc_step_poss,out,L + "    " );
   out	<< L << "end\n";
 }
+
+#endif // 0

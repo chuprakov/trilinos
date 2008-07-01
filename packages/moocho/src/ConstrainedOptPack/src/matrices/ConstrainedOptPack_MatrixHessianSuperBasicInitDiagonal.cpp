@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -96,3 +98,5 @@ void MatrixHessianSuperBasicInitDiagonal::init_diagonal(
 }
 
 } // end namespace ConstrainedOptPack
+
+#endif // 0

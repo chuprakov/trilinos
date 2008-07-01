@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -79,3 +81,5 @@ void LineSearchWatchDog_StepSetOptions::setOption(
 }
 
 }	// end namespace MoochoPack 
+
+#endif // 0

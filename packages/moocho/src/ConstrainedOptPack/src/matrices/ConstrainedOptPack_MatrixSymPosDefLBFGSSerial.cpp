@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -1113,3 +1115,5 @@ void comp_Cb( const DMatrixSlice& Lb, const DVectorSlice& Db_diag
 }
 
 }	// end namespace
+
+#endif // 0

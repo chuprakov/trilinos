@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -324,3 +326,5 @@ value_type MatrixHessianRelaxed::transVtMtV(
 }
 
 }	// end namespace ConstrainedOptPack
+
+#endif // 0

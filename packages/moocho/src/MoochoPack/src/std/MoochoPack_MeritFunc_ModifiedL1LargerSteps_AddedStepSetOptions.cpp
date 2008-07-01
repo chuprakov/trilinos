@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -97,3 +99,5 @@ void MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions::setOption(
 }
 
 }	// end namespace MoochoPack 
+
+#endif // 0

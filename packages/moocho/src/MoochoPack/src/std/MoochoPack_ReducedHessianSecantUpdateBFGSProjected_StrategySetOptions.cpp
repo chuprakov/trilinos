@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -83,3 +85,5 @@ void ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions::setOption(
 }
 
 }	// end namespace MoochoPack 
+
+#endif // 0

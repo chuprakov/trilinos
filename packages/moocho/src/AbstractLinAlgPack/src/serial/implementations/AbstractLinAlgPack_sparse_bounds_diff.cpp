@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -56,3 +58,5 @@ void AbstractLinAlgPack::imp_sparse_bnd_diff(
   if( sign < 0 )
     DenseLinAlgPack::Vt_S( r, -1.0 );
 }
+
+#endif // 0

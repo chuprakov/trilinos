@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -130,3 +132,5 @@ void MoochoPack::CalcLambdaIndepStd_AddedStep::print_step( const Algorithm& algo
     << L << "lambda_k(equ_decomp) = - inv(Gc_k(:,equ_decomp)'*Y_k)\n"
     << L << "                        * (Y_k'*(Gf_k + nu_k) + U_k'*lambda_k(equ_undecomp))\n";
 }
+
+#endif // 0

@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -181,3 +183,5 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 }
 
 } // end namesapce ConstrainedOptPack
+
+#endif // 0

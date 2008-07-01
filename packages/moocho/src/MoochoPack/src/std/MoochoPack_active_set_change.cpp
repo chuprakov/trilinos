@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -148,3 +150,5 @@ void MoochoPack::active_set_change(
       << "num_indep_drops = "		<< *num_drops_indep		<< endl;
   }
 }
+
+#endif // 0

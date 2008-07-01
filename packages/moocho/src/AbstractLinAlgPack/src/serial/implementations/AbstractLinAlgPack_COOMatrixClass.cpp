@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -77,3 +79,5 @@ void AbstractLinAlgPack::COOMatrix::initialize(std::istream& istrm) {
   read_coo_into_valarrays(istrm,rows_,cols_,nz_,val_,ivect_ref_.obj()
     ,jvect_ref_.obj());
 }
+
+#endif // 0

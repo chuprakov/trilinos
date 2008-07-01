@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -246,3 +248,5 @@ void MatrixSymDiagStd::V_InvMtV(
 }
 
 } // end namespace AbstractLinAlgPack
+
+#endif // 0

@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -105,3 +107,5 @@ void QuasiRangeSpaceStepTailoredApproach_Strategy::print_step( std::ostream& out
 }
 
 } // end namespace MoochoPack
+
+#endif // 0

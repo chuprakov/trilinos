@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -341,3 +343,5 @@ void PBFGSPack::choose_fixed_free(
 }
 
 } // end namespace MoochoPack
+
+#endif // 0

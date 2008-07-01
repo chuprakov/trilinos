@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -453,3 +455,5 @@ void MatrixKKTFullSpaceRelaxed::validate_and_set_matrices(
 
 
 }	// end namespace ConstrainedOptPack
+
+#endif // 0

@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -130,3 +132,5 @@ void MoochoPack::DampenCrossTermStd_Step::print_step( const Algorithm& algo
     << L << "       <= - frac_descent * rGf_k'*inv(rHL_k)*rGf_k\n"
     << L << "end\n";
 }
+
+#endif // 0

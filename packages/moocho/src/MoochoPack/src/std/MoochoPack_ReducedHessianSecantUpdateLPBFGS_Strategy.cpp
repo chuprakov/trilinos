@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -439,3 +441,5 @@ void ReducedHessianSecantUpdateLPBFGS_Strategy::print_step( std::ostream& out, c
 }
 
 }  // end namespace MoochoPack
+
+#endif // 0

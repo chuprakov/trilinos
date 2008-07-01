@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -46,3 +48,5 @@ std::ostream& AbstractLinAlgPack::output(std::ostream& o, const COOMatrix& coom)
 
   return o;
 }
+
+#endif // 0

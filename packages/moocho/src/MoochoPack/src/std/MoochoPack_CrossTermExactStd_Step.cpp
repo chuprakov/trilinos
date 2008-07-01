@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -84,3 +86,5 @@ void MoochoPack::CrossTermExactStd_Step::print_step( const Algorithm& algo
     << L << "*** Evaluate the exact reduced QP cross term\n"
     << L << "w_k = Z_k' * HL_k * Ypy_k\n";
 }
+
+#endif // 0

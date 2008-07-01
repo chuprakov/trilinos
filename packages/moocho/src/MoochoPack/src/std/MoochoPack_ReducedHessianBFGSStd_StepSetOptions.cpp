@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -106,3 +108,5 @@ void ReducedHessianBFGSStd_StepSetOptions::setOption(
 }
 
 }	// end namespace MoochoPack 
+
+#endif // 0

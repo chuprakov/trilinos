@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -88,3 +90,5 @@ void MoochoPack::ActSetStats_AddedStep::print_step( const Algorithm& algo
     << L << "Given nu_km1 and nu_k update:\n"
     << L << "    act_set_stats_k(num_active,num_adds,num_drops,num_active_indep,num_adds_indep,num_drops_indep)\n";
 }
+
+#endif // 0

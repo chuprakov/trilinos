@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -67,3 +69,5 @@ void MeritFunc_PenaltyParamUpdateWithMult_AddedStep::print_min_mu_step(
 }
 
 }	// end namespace MoochoPack
+
+#endif // 0

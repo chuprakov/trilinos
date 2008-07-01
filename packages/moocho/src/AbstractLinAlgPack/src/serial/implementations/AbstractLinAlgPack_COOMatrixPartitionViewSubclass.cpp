@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -125,3 +127,5 @@ void COOMatrixPartitionViewSubclass::Mp_StMtM(DMatrixSlice* gms_lhs, value_type 
 }
 
 }	// end namespace AbstractLinAlgPack
+
+#endif // 0

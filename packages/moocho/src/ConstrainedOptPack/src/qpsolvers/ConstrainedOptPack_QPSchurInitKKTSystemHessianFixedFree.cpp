@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -223,3 +225,5 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 }
 
 } // end namesapce ConstrainedOptPack
+
+#endif // 0

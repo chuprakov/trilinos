@@ -1,3 +1,5 @@
+#if 0
+
 // @HEADER
 // ***********************************************************************
 // 
@@ -72,3 +74,5 @@ void AbstractLinAlgPack::read_coo_into_valarrays(std::istream& istrm, size_type&
     istrm >> *p_jvect;										// Read in jk
   }
 }
+
+#endif // 0
