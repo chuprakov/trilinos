@@ -31,6 +31,12 @@
 #include <fstream>
 #include <algorithm>
 
+#include "Moocho_ConfigDefs.hpp"
+
+
+#ifdef HAVE_MOOCHO_MA28
+
+
 #include "AbstractLinAlgPack_DirectSparseSolverMA28.hpp"
 #include "AbstractLinAlgPack_MatrixScaling_Strategy.hpp"
 #include "AbstractLinAlgPack_VectorDenseEncap.hpp"
@@ -609,3 +615,6 @@ void DirectSparseSolverMA28::ThrowIFlagException(index_type iflag)
 }
 
 }	// end namespace AbstractLinAlgPack 
+
+
+#endif // HAVE_MOOCHO_MA28

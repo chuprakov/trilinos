@@ -28,6 +28,10 @@
 
 #include <assert.h>
 
+#include "Moocho_ConfigDefs.hpp"
+
+#ifdef HAVE_MOOCHO_MA28
+
 #include "AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
 
@@ -117,3 +121,5 @@ void DirectSparseSolverMA28SetOptions::setOption(
 }
 
 }	// end namespace AbstractLinAlgPack 
+
+#endif // HAVE_MOOCHO_MA28
