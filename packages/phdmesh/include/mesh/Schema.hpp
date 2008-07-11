@@ -303,24 +303,24 @@ field_type * Schema::get_field( const std::string & name ,
                                 const char * required_by ) const
 {
   typedef typename field_type::data_type Scalar ;
-  typedef typename field_type::dimension_traits_1 Traits1 ;
-  typedef typename field_type::dimension_traits_2 Traits2 ;
-  typedef typename field_type::dimension_traits_3 Traits3 ;
-  typedef typename field_type::dimension_traits_4 Traits4 ;
-  typedef typename field_type::dimension_traits_5 Traits5 ;
-  typedef typename field_type::dimension_traits_6 Traits6 ;
-  typedef typename field_type::dimension_traits_7 Traits7 ;
+  typedef typename field_type::dimension_tag_1 Tag1 ;
+  typedef typename field_type::dimension_tag_2 Tag2 ;
+  typedef typename field_type::dimension_tag_3 Tag3 ;
+  typedef typename field_type::dimension_tag_4 Tag4 ;
+  typedef typename field_type::dimension_tag_5 Tag5 ;
+  typedef typename field_type::dimension_tag_6 Tag6 ;
+  typedef typename field_type::dimension_tag_7 Tag7 ;
 
   return static_cast< field_type * >(
     get_field_base( name ,
                     NumericEnum<Scalar>::value ,
-                    Traits1::descriptor() ,
-                    Traits2::descriptor() ,
-                    Traits3::descriptor() ,
-                    Traits4::descriptor() ,
-                    Traits5::descriptor() ,
-                    Traits6::descriptor() ,
-                    Traits7::descriptor() ,
+                    Tag1::descriptor() ,
+                    Tag2::descriptor() ,
+                    Tag3::descriptor() ,
+                    Tag4::descriptor() ,
+                    Tag5::descriptor() ,
+                    Tag6::descriptor() ,
+                    Tag7::descriptor() ,
                     -1 , required_by ) );
 }
 
@@ -330,24 +330,24 @@ field_type & Schema::declare_field( const std::string & name ,
                                     unsigned number_of_states )
 {
   typedef typename field_type::data_type Scalar ;
-  typedef typename field_type::dimension_traits_1 Traits1 ;
-  typedef typename field_type::dimension_traits_2 Traits2 ;
-  typedef typename field_type::dimension_traits_3 Traits3 ;
-  typedef typename field_type::dimension_traits_4 Traits4 ;
-  typedef typename field_type::dimension_traits_5 Traits5 ;
-  typedef typename field_type::dimension_traits_6 Traits6 ;
-  typedef typename field_type::dimension_traits_7 Traits7 ;
+  typedef typename field_type::dimension_tag_1 Tag1 ;
+  typedef typename field_type::dimension_tag_2 Tag2 ;
+  typedef typename field_type::dimension_tag_3 Tag3 ;
+  typedef typename field_type::dimension_tag_4 Tag4 ;
+  typedef typename field_type::dimension_tag_5 Tag5 ;
+  typedef typename field_type::dimension_tag_6 Tag6 ;
+  typedef typename field_type::dimension_tag_7 Tag7 ;
 
   return static_cast< field_type & >(
     declare_field_base( name ,
                         NumericEnum<Scalar>::value ,
-                        Traits1::descriptor() ,
-                        Traits2::descriptor() ,
-                        Traits3::descriptor() ,
-                        Traits4::descriptor() ,
-                        Traits5::descriptor() ,
-                        Traits6::descriptor() ,
-                        Traits7::descriptor() ,
+                        Tag1::descriptor() ,
+                        Tag2::descriptor() ,
+                        Tag3::descriptor() ,
+                        Tag4::descriptor() ,
+                        Tag5::descriptor() ,
+                        Tag6::descriptor() ,
+                        Tag7::descriptor() ,
                         number_of_states ) );
 }
 

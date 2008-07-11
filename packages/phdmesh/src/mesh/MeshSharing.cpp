@@ -642,7 +642,7 @@ bool comm_mesh_verify_parallel_consistency( Mesh & M )
   // If an error occured collect the messages on
   // processor zero and output to standard error stream.
 
-  if ( ! result ) { all_write( M.parallel() , std::cerr , msg ); }
+  if ( ! result ) { all_write_string( M.parallel() , std::cerr , msg ); }
 
   return result ;
 }

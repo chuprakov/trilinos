@@ -29,6 +29,7 @@
 #define util_Dimension_hpp
 
 #include <iosfwd>
+#include <string>
 
 namespace phdmesh {
 
@@ -52,21 +53,6 @@ public:
   virtual unsigned to_index( unsigned size , const std::string & ) const ;
 
   static const DimensionTag * descriptor() { return NULL ; }
-};
-
-//----------------------------------------------------------------------
-
-class DimensionAnonymous : public DimensionTag {
-public:
-
-  const char * name() const ;
-
-  static const DimensionTag * descriptor();
-
-private:
-  DimensionAnonymous() {}
-  DimensionAnonymous( const DimensionAnonymous & );
-  DimensionAnonymous & operator = ( const DimensionAnonymous & );
 };
 
 //----------------------------------------------------------------------
@@ -127,7 +113,7 @@ class Dimension< DimensionTag, DimensionTag,
 public:
   enum { NumDim = 0 };
 
-  unsigned stride[ NumDim ];
+//  unsigned stride[ NumDim ];
 
   Dimension( const unsigned * const , const char * ) {}
 };

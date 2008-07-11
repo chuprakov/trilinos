@@ -32,11 +32,13 @@ ELEMENT_INC_FILES =	\
 	$(ELEMENT_INC_DIR)/TriangleTopology.hpp	\
 	$(ELEMENT_INC_DIR)/WedgeTopology.hpp	\
 	$(ELEMENT_INC_DIR)/Stencils.hpp	\
-	$(ELEMENT_INC_DIR)/Declarations.hpp
+	$(ELEMENT_INC_DIR)/Declarations.hpp	\
+	$(ELEMENT_INC_DIR)/Dimensions.hpp
 
 ELEMENT_OBJ_FILES =	\
 	ElementLocalTopology.o	\
-	ElementDeclarations.o
+	ElementDeclarations.o	\
+	ElementDimensions.o
 
 ELEMENT_INC_DEPS = $(ELEMENT_INC_FILES) $(UTIL_INC_DEPS)
 

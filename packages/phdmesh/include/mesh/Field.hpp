@@ -99,7 +99,7 @@ public:
 
   unsigned number_of_dimensions() const { return m_num_dim ; }
 
-  const DimensionTag * const * dimension_traits() const
+  const DimensionTag * const * dimension_tags() const
     { return m_dim_tags ; }
 
   unsigned max_size( EntityType ) const ;
@@ -117,6 +117,9 @@ public:
     const Part * part ;
     EntityType   type ;
     unsigned     stride[ MaximumFieldDimension ];
+/*
+    DimensionNoTag dim ;
+*/
 
     Dim( EntityType t , const Part & p );
     Dim();
@@ -136,11 +139,10 @@ private:
 
   friend class Schema ;
 
-  template< typename Scalar ,
-            class Traits1 , class Traits2 ,
-            class Traits3 , class Traits4 ,
-            class Traits5 , class Traits6 ,
-            class Traits7 >
+  template< typename Scalar , class Tag1 , class Tag2 ,
+                              class Tag3 , class Tag4 ,
+                              class Tag5 , class Tag6 ,
+                              class Tag7 >
     friend class Field ;
 
   ~Field();
@@ -182,27 +184,23 @@ private:
 // Maximum dimension is one less to allow introduction
 // additional 'EntityDimension'.
 
-template< typename Scalar ,
-          class Traits1 , class Traits2 ,
-          class Traits3 , class Traits4 ,
-          class Traits5 , class Traits6 ,
-          class Traits7 >
+template< typename Scalar , class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+                            class Tag5 , class Tag6 , class Tag7 >
 class Field : public FieldBase {
 public:
 
   typedef Scalar data_type ;
 
-  typedef Traits1 dimension_traits_1 ;
-  typedef Traits2 dimension_traits_2 ;
-  typedef Traits3 dimension_traits_3 ;
-  typedef Traits4 dimension_traits_4 ;
-  typedef Traits5 dimension_traits_5 ;
-  typedef Traits6 dimension_traits_6 ;
-  typedef Traits7 dimension_traits_7 ;
+  typedef Tag1 dimension_tag_1 ;
+  typedef Tag2 dimension_tag_2 ;
+  typedef Tag3 dimension_tag_3 ;
+  typedef Tag4 dimension_tag_4 ;
+  typedef Tag5 dimension_tag_5 ;
+  typedef Tag6 dimension_tag_6 ;
+  typedef Tag7 dimension_tag_7 ;
 
   /** Dimension of field data for a single entity */
-  typedef phdmesh::Dimension<Traits1,Traits2,Traits3,Traits4,
-                             Traits5,Traits6,Traits7> Dimension ;
+  typedef phdmesh::Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> Dimension ;
 
   /** Dimension of a contiguous block of field data for a
    *  homogeneous collection of entities. 

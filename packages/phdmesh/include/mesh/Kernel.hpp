@@ -57,6 +57,9 @@ struct KernelLess {
 class Kernel : private SetvMember<const unsigned * const> {
 private:
   struct DataMap {
+/*
+    const DimensionNoTag * m_dim ;
+*/
     const unsigned * m_stride ;
     unsigned         m_base ;
     unsigned         m_size ;

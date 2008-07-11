@@ -45,14 +45,13 @@ namespace phdmesh {
 class Schema ;  // Meta-data description of a mesh
 class Part ;    // Defined subset of the mesh
 
-template< typename Scalar = void ,
-          class Trait1 = DimensionTag ,
-          class Trait2 = DimensionTag ,
-          class Trait3 = DimensionTag ,
-          class Trait4 = DimensionTag ,
-          class Trait5 = DimensionTag ,
-          class Trait6 = DimensionTag ,
-          class Trait7 = DimensionTag >
+template< typename Scalar = void , class Tag1 = DimensionTag ,
+                                   class Tag2 = DimensionTag ,
+                                   class Tag3 = DimensionTag ,
+                                   class Tag4 = DimensionTag ,
+                                   class Tag5 = DimensionTag ,
+                                   class Tag6 = DimensionTag ,
+                                   class Tag7 = DimensionTag >
 class Field ;
 
 typedef
@@ -85,10 +84,10 @@ typedef uint_ptr_type relation_attr_type ; // Entity relation attribute
  *  must be the last value.
  */
 enum EntityType {
-  Node       = 0  /* Topological entity rank */ ,
-  Edge       = 1  /* Topological entity rank */ ,
-  Face       = 2  /* Topological entity rank */ ,
-  Element    = 3  /* Topological entity rank */ ,
+  Node       = 0 ,
+  Edge       = 1 ,
+  Face       = 2 ,
+  Element    = 3 ,
   Particle   = 4 ,
   Constraint = 5 ,
   EntityTypeEnd = 6 };

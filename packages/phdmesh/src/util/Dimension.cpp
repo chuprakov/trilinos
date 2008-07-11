@@ -135,14 +135,6 @@ unsigned DimensionTag::to_index(
 
 //----------------------------------------------------------------------
 
-const DimensionTag * DimensionAnonymous::descriptor()
-{ static const DimensionAnonymous self ; return & self ; }
-
-const char * DimensionAnonymous::name() const
-{ static const char n[] = "DimensionAnonymous" ; return n ; }
-
-//----------------------------------------------------------------------
-
 void print( std::ostream & s ,
             const DimensionTag * tag1 ,
             const DimensionTag * tag2 ,

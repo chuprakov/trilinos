@@ -25,59 +25,46 @@
  * @date   June 2008
  */
 
-#ifndef phdmesh_element_Declarations_hpp
-#define phdmesh_element_Declarations_hpp
+#ifndef phdmesh_element_Dimension_hpp
+#define phdmesh_element_Dimension_hpp
 
-#include <mesh/Types.hpp>
-#include <element/LocalTopology.hpp>
+#include <util/Dimension.hpp>
 
 namespace phdmesh {
 
 //----------------------------------------------------------------------
-/** Attach an element local topology to a Part.
- *  There is at most one element topology allowed.
- */
-void set_part_local_topology( Part & , const LocalTopology * singleton );
 
-/** Attach an element local topology to a Part.
- *  There is at most one element topology allowed.
- */
-template< class ElementTraits >
-void set_part_local_topology( Part & p )
-{ return set_part_local_topology( p , ElementTraits::descriptor() ); }
-
-const LocalTopology * get_part_local_topology( Part & );
+class ElementNode : public DimensionTag {
+public:
+  const char * name() const ;
+  static const DimensionTag * descriptor();
+private:
+  ElementNode() {}
+  ElementNode( const ElementNode & );
+  ElementNode & operator = ( const ElementNode & );
+};
 
 //----------------------------------------------------------------------
-/** Declare an element with nodes conformal to the given local topology. */
-Entity & declare_element( Mesh & mesh ,
-                          const LocalTopology & ,
-                          const unsigned elem_id ,
-                          const unsigned node_id[] );
 
-/** Declare an element with nodes conformal to the given local topology. */
-template< class ElementTraits >
-Entity & declare_element( Mesh & mesh ,
-                          const unsigned elem_id ,
-                          const unsigned node_id[] )
-{
-  return declare_element( mesh , * ElementTraits::descriptor() ,
-                          elem_id , node_id );
-}
-
-/** Declare an element member of a part with a local topology
- *  and nodes conformal to that topology.
- */
-Entity & declare_element( Mesh & mesh ,
-                          Part & part ,
-                          const unsigned elem_id ,
-                          const unsigned node_id[] );
+struct QuadratureTag : public DimensionTag {
+  const char * name() const ;
+  static const DimensionTag * descriptor();
+private:
+  QuadratureTag() {}
+  QuadratureTag( const QuadratureTag & );
+  QuadratureTag & operator = ( const QuadratureTag & );
+};
 
 //----------------------------------------------------------------------
-/* The element must have a topology. */
 
-Entity & declare_element_side( Mesh & mesh ,   const unsigned global_side_id ,
-                               Entity & elem , const unsigned local_side_id );
+struct BasisTag : public DimensionTag {
+  const char * name() const ;
+  static const DimensionTag * descriptor();
+private:
+  BasisTag() {}
+  BasisTag( const BasisTag & );
+  BasisTag & operator = ( const BasisTag & );
+};
 
 //----------------------------------------------------------------------
 

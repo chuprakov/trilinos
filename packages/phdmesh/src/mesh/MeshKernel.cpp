@@ -334,6 +334,23 @@ void Kernel::update_state()
 
 //----------------------------------------------------------------------
 
+namespace {
+
+void * local_malloc( size_t n )
+{
+  void * const ptr = malloc( n );
+
+  if ( NULL == ptr ) {
+    std::ostringstream msg ;
+    msg << "phdmesh::Kernel FAILED malloc( " << n << " )" ;
+    throw std::runtime_error( msg.str() );
+  }
+
+  return ptr ;
+}
+
+}
+
 Kernel::~Kernel()
 {}
 
@@ -426,7 +443,7 @@ Mesh::declare_kernel( const EntityType arg_entity_type ,
     }
     else {
       field_map = reinterpret_cast<Kernel::DataMap*>(
-                    malloc( sizeof(Kernel::DataMap) * ( num_fields + 1 ) ) );
+                  local_malloc( sizeof(Kernel::DataMap) * ( num_fields + 1 )));
 
       size_t value_offset = 0 ;
 
@@ -474,7 +491,7 @@ Mesh::declare_kernel( const EntityType arg_entity_type ,
 
     // All fields checked and sized, Ready to allocate
 
-    unsigned char * ptr = (unsigned char *) malloc( size );
+    unsigned char * ptr = (unsigned char *) local_malloc( size );
 
     kernel = (Kernel *) ptr ; ptr += align( sizeof(Kernel) );
 
@@ -536,11 +553,17 @@ void Mesh::remove_entity( KernelSet::iterator ik , unsigned i )
 
     // Copy last entity in jk to ik slot i
 
+    Entity * const entity = jk->m_entities[ jk->m_size - 1 ];
+
     Kernel::copy_fields( *ik , i , *jk , jk->m_size - 1 );
 
-    ik->m_entities[i] = jk->m_entities[ jk->m_size - 1 ];
-    ik->m_entities[i]->m_kernel     = ik ;
-    ik->m_entities[i]->m_kernel_ord = i ;
+    ik->m_entities[i] = entity ;
+    entity->m_kernel     = ik ;
+    entity->m_kernel_ord = i ;
+
+    // Entity field data has relocated
+
+    internal_propagate_relocation( *entity );
   }
 
   --( jk->m_size );

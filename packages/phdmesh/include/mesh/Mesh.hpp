@@ -168,6 +168,8 @@ private:
                                      const PartSet & remove_parts );
 
   void internal_propagate_part_changes( Entity & , const PartSet & removed );
+
+  void internal_propagate_relocation( Entity & );
 };
 
 //----------------------------------------------------------------------

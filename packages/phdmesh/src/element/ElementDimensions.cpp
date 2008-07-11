@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------*/
 /*      phdMesh : Parallel Heterogneous Dynamic unstructured Mesh         */
-/*                Copyright (2008) Sandia Corporation                     */
+/*                Copyright (2007) Sandia Corporation                     */
 /*                                                                        */
 /*  Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive   */
 /*  license for use of this work by or on behalf of the U.S. Government.  */
@@ -21,50 +21,30 @@
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
 /**
- * @author H. Carter Edwards  <hcedwar@sandia.gov>
- * @date   May 2008
+ * @author H. Carter Edwards
  */
 
-#ifndef phdmesh_element_Dimension_hpp
-#define phdmesh_element_Dimension_hpp
-
-#include <util/Dimension.hpp>
+#include <element/Dimensions.hpp>
 
 namespace phdmesh {
 
-struct QuadratureTag : public DimensionTag {
+const char * ElementNode::name() const
+{ static const char n[] = "ElementNode" ; return n ; }
 
-  const char * name() const ;
+const DimensionTag * ElementNode::descriptor()
+{ static const ElementNode self ; return & self ; }
 
-  std::string encode( unsigned size , unsigned index ) const ;
+const char * QuadratureTag::name() const
+{ static const char n[] = "Quadrature" ; return n ; }
 
-  unsigned decode( unsigned size , const std::string & ) const ;
+const DimensionTag * QuadratureTag::descriptor()
+{ static const QuadratureTag self ; return & self ; }
 
-  static const DimensionTag * descriptor();
+const char * BasisTag::name() const
+{ static const char n[] = "Basis" ; return n ; }
 
-private:
-  QuadratureTag() {}
-  QuadratureTag( const QuadratureTag & );
-  QuadratureTag & operator = ( const QuadratureTag & );
-};
+const DimensionTag * BasisTag::descriptor()
+{ static const BasisTag self ; return & self ; }
 
-struct BasisTag : public DimensionTag {
-
-  const char * name() const ;
-
-  std::string encode( unsigned size , unsigned index ) const ;
-
-  unsigned decode( unsigned size , const std::string & ) const ;
-
-  static const DimensionTag * descriptor();
-
-private:
-  BasisTag() {}
-  BasisTag( const BasisTag & );
-  BasisTag & operator = ( const BasisTag & );
-};
-
-}
-
-#endif
+} // namespace phdmesh
 

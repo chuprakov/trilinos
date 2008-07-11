@@ -1034,18 +1034,29 @@ std::string variable_name( EntityType        r ,
     unsigned sizes[   MaximumFieldDimension ];
     unsigned indices[ MaximumFieldDimension ];
 
+
     const FieldBase::Dim & dim = f.dimension( r , p );
 
     stride_size( f_num_dim , dim.stride , sizes );
     stride_inv(  f_num_dim , dim.stride , k , indices );
 
+/*
+    const DimensionNoTag & dim = f.dimension( r , p ).dim ;
+    dim.size( sizes );
+    dim.inverse( k , indices );
+*/
+
     for ( unsigned i = 0 ; i < f_num_dim ; ++i ) {
-      std::string tmp = f.dimension_traits()[i]->to_string(sizes[i],indices[i]);
+      std::string tmp = f.dimension_tags()[i]->to_string(sizes[i],indices[i]);
       if ( tmp.size() ) {
         name.append( "_" );
         name.append( tmp );
       }
     }
+
+
+
+
   }
 
   return name ;
@@ -1068,6 +1079,9 @@ void variable_add( EntityType entity_type ,
 
     if ( d.part ) { // Exists
       const unsigned n = stride_size( field_num_dim , d.stride );
+/*
+      const unsigned n = d.dim.size();
+*/
 
       for ( unsigned k = 0 ; k < n ; ++k ) {
         const std::string name( variable_name(entity_type, p, field, k ) );

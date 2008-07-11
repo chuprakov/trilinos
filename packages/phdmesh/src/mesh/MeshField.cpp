@@ -495,13 +495,13 @@ void assert_field_dimension_compatible(
     std::ostringstream msg ;
     msg << method << " FOUND INCOMPATIBLE SIZES FOR " ;
     print_field_type( msg , field.numeric_type_ordinal() ,
-                            field.dimension_traits()[0] ,
-                            field.dimension_traits()[1] ,
-                            field.dimension_traits()[2] ,
-                            field.dimension_traits()[3] ,
-                            field.dimension_traits()[4] ,
-                            field.dimension_traits()[5] ,
-                            field.dimension_traits()[6] );
+                            field.dimension_tags()[0] ,
+                            field.dimension_tags()[1] ,
+                            field.dimension_tags()[2] ,
+                            field.dimension_tags()[3] ,
+                            field.dimension_tags()[4] ,
+                            field.dimension_tags()[5] ,
+                            field.dimension_tags()[6] );
     msg << "[" << field.name() << "] " ;
 
     print_field_dim( msg , field.number_of_dimensions() , a );
@@ -675,13 +675,13 @@ unsigned FieldBase::max_size( EntityType entity_type ) const
 std::ostream & operator << ( std::ostream & s , const FieldBase & field )
 {
   print_field_type( s , field.numeric_type_ordinal() ,
-                        field.dimension_traits()[0] ,
-                        field.dimension_traits()[1] ,
-                        field.dimension_traits()[2] ,
-                        field.dimension_traits()[3] ,
-                        field.dimension_traits()[4] ,
-                        field.dimension_traits()[5] ,
-                        field.dimension_traits()[6] );
+                        field.dimension_tags()[0] ,
+                        field.dimension_tags()[1] ,
+                        field.dimension_tags()[2] ,
+                        field.dimension_tags()[3] ,
+                        field.dimension_tags()[4] ,
+                        field.dimension_tags()[5] ,
+                        field.dimension_tags()[6] );
   s << "[ \"" ;
   s << field.name() ;
   s << " \" , " ;

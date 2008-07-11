@@ -94,8 +94,8 @@ relation_attr( EntityType arg_entity_type ,
   };
 
   const bool bad_type = (unsigned) EntityTypeEnd <= (unsigned) arg_entity_type ;
-  const bool bad_id   = id_end   <= arg_identifier ;
-  const bool bad_kind = kind_end <= arg_kind ;
+  const bool bad_id   = id_end   <= (relation_attr_type) arg_identifier ;
+  const bool bad_kind = kind_end <= (relation_attr_type) arg_kind ;
 
   if ( bad_type || bad_id || bad_kind ) {
     std::ostringstream msg ;
@@ -585,6 +585,24 @@ void Mesh::internal_propagate_part_changes(
       }
 
       internal_change_entity_parts( e_to , to_add , to_del );
+
+      set_field_relations( entity, e_to, rel->identifier(), rel->kind() );
+    }
+    else {
+      Entity & e_from = * rel->entity();
+
+      set_field_relations( e_from, entity, rel->identifier(), rel->kind() );
+    }
+  }
+}
+
+void Mesh::internal_propagate_relocation( Entity & entity )
+{
+  RelationSpan rel = entity.relations();
+
+  for ( ; rel ; ++rel ) {
+    if ( rel->forward() ) {
+      Entity & e_to = * rel->entity();
 
       set_field_relations( entity, e_to, rel->identifier(), rel->kind() );
     }

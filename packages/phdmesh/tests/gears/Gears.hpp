@@ -28,10 +28,12 @@
 #define gears_Gears_hpp
 
 #include <vector>
+
 #include <util/Parallel.hpp>
 #include <mesh/Types.hpp>
 #include <mesh/FieldTraits.hpp>
 #include <mesh_io/ExoII.hpp>
+#include <element/Dimensions.hpp>
 
 namespace phdmesh {
 
@@ -43,8 +45,8 @@ struct GearFields {
   typedef Field<double,Cylindrical>  CylindricalField ;
   typedef exodus::FileSchema::AttributeField AttributeField ;
 
-  typedef Field<double,Cartesian>                    NodeValueField ;
-  typedef Field<double,Cartesian,DimensionAnonymous> ElementValueField ;
+  typedef Field<double,Cartesian>          NodeValueField ;
+  typedef Field<double,Cartesian,BasisTag> ElementValueField ;
 
   CylindricalField & gear_coord ;
   CartesianField   & model_coord ;

@@ -35,6 +35,8 @@
 
 namespace phdmesh {
 
+//----------------------------------------------------------------------
+
 const LocalTopology * get_part_local_topology( Part & p )
 {
   const LocalTopology * top = NULL ;
@@ -89,14 +91,56 @@ void set_part_local_topology( Part & p , const LocalTopology * singleton )
   }
 }
 
+//----------------------------------------------------------------------
+
+const LocalTopology * get_local_topology( Kernel & kernel )
+{
+  const LocalTopology * top = NULL ;
+  PartSet parts ;
+  kernel.supersets( parts );
+
+  PartSet::iterator i = parts.begin() ;
+
+  for ( ; NULL == top && i != parts.end() ; ++i ) {
+    top = get_part_local_topology( **i );
+  }
+
+  bool ok = true ;
+
+  for ( ; ok && i != parts.end() ; ++i ) {
+    const LocalTopology * const tmp = get_part_local_topology( **i );
+    ok = tmp == NULL || tmp == top ;
+  }
+
+  if ( ! ok ) {
+    std::ostringstream msg ;
+    msg << "phdmesh::get_local_topology( Kernel[" ;
+    for ( i = parts.begin() ; i != parts.end() ; ++i ) {
+      const LocalTopology * const tmp = get_part_local_topology( **i );
+      msg << " " << (*i)->name();
+      if ( top ) { msg << "->" << tmp->name ; }
+      msg << " ] ) FAILED WITH MULTIPLE LOCAL TOPOLOGIES" ;
+      throw std::runtime_error( msg.str() );
+    }
+  }
+
+  return top ;
+}
+
+const LocalTopology * get_local_topology( Entity & entity )
+{ return get_local_topology( entity.kernel() ); }
+
+//----------------------------------------------------------------------
 
 Entity & declare_element( Mesh & mesh ,
                           const LocalTopology & top ,
                           const unsigned elem_id ,
                           const unsigned node_id[] )
 {
-  const entity_key_type key =
-    entity_key( (EntityType) top.topological_rank , elem_id );
+  const EntityType type =
+    ! top.is_boundary ? Element : EntityType( top.topological_rank );
+
+  const entity_key_type key = entity_key( type , elem_id );
 
   Entity & elem = mesh.declare_entity( key );
 
@@ -138,6 +182,60 @@ Entity & declare_element( Mesh & mesh ,
   }
 
   return elem ;
+}
+
+//----------------------------------------------------------------------
+
+Entity & declare_element_side( Mesh   & mesh , const unsigned global_side_id ,
+                               Entity & elem , const unsigned local_side_id )
+{
+  static const char method[] = "phdmesh::declare_element_side" ;
+
+  const LocalTopology * const elem_top = get_local_topology( elem );
+
+  const LocalTopology * const side_top =
+    ( elem_top && local_side_id < elem_top->number_side )
+    ? elem_top->side[ local_side_id ].topology : NULL ;
+
+  if ( NULL == side_top ) {
+     std::ostringstream msg ;
+     msg << method << "( mesh , "
+         << global_side_id
+         << " , " ;
+     print_entity_key( msg , elem.key() );
+     msg << " , "
+         << local_side_id
+         << " ) FAILED" ;
+     if ( NULL == elem_top ) {
+       msg << " Cannot discern element topology" ;
+     }
+     else {
+       msg << " Local side id exceeds " ;
+       msg << elem_top->name ;
+       msg << ".number_side = " ;
+       msg << elem_top->number_side ;
+     }
+     throw std::runtime_error( msg.str() );
+   }
+
+  const unsigned * const side_node_map =
+    elem_top->side[ local_side_id ].node ;
+
+  EntityType side_type = (EntityType) side_top->topological_rank ;
+
+  Entity & side =
+    mesh.declare_entity( entity_key( side_type, global_side_id ) );
+
+  RelationSpan rel = elem.relations( Node );
+
+  for ( unsigned i = 0 ; i < side_top->number_node ; ++i ) {
+    Entity & node = * rel[ side_node_map[i] ].entity();
+    mesh.declare_relation( side , node , i );
+  }
+
+  mesh.declare_relation( elem , side , local_side_id );
+
+  return side ;
 }
 
 }

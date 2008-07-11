@@ -24,12 +24,12 @@
  * @author H. Carter Edwards
  */
 
+#include <util/ParallelReduce.hpp>
+
 #include <stdlib.h>
 #include <stdexcept>
 #include <sstream>
 #include <vector>
-
-#include <util/ParallelReduce.hpp>
 
 namespace phdmesh {
 
@@ -37,9 +37,9 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-void all_write( ParallelMachine arg_comm ,
-                std::ostream &  arg_root_os ,
-                const std::string & arg_msg )
+void all_write_string( ParallelMachine arg_comm ,
+                       std::ostream &  arg_root_os ,
+                       const std::string & arg_msg )
 {
   const int i_zero = 0 ;
   const int p_root = 0 ;
@@ -181,9 +181,9 @@ void all_reduce_bor( ParallelMachine comm ,
 
 #else
 
-void all_write( ParallelMachine ,
-                std::ostream &  arg_root_os ,
-                const std::string & arg_msg )
+void all_write_string( ParallelMachine ,
+                       std::ostream &  arg_root_os ,
+                       const std::string & arg_msg )
 {
   arg_root_os << arg_msg ;
 }

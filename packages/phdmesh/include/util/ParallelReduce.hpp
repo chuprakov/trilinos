@@ -30,8 +30,9 @@
 
 #include <cstddef>
 #include <iosfwd>
-#include <util/FixedArray.hpp>
+#include <string>
 #include <util/Parallel.hpp>
+#include <util/FixedArray.hpp>
 
 //------------------------------------------------------------------------
 
@@ -40,9 +41,9 @@ namespace phdmesh {
 /** Write string from any or all processors
  *  to the ostream on the root processor.
  */
-void all_write( ParallelMachine     arg_comm ,
-                std::ostream      & arg_root_os ,
-                const std::string & arg_msg );
+void all_write_string( ParallelMachine ,
+                       std::ostream & ,
+                       const std::string & );
 
 void all_reduce_sum( ParallelMachine ,
                      const double * local , double * global , unsigned count );
