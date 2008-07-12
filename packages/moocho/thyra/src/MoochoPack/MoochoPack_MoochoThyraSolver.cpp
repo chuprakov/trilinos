@@ -229,7 +229,7 @@ void MoochoThyraSolver::readParameters( std::ostream *out_arg )
   if(out.get()) *out << "\nMoochoThyraSolver::readParameters(...):\n";
   Teuchos::OSTab tab2(out);
   Teuchos::RCP<Teuchos::ParameterList>
-    paramList = this->getParameterList();
+    paramList = this->getNonconstParameterList();
   if(!paramList.get()) {
     if(out.get()) *out << "\nCreating a new Teuchos::ParameterList ...\n";
     paramList = Teuchos::rcp(new Teuchos::ParameterList("MoochoThyraSolver"));
@@ -313,7 +313,7 @@ void MoochoThyraSolver::setParameterList(
 }
 
 Teuchos::RCP<Teuchos::ParameterList>
-MoochoThyraSolver::getParameterList()
+MoochoThyraSolver::getNonconstParameterList()
 {
   return paramList_;
 }

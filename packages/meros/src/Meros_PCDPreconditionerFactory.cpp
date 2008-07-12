@@ -203,7 +203,7 @@ void PCDPreconditionerFactory
 }
 
 Teuchos::RCP<Teuchos::ParameterList>
-PCDPreconditionerFactory::getParameterList()
+PCDPreconditionerFactory::getNonconstParameterList()
 {
   return paramList_;
 }

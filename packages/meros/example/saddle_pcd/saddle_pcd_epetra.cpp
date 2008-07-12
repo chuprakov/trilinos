@@ -395,8 +395,7 @@ int main(int argc, char *argv[])
       if(DEBUG > 0)
 	{
 	  // Print out the parameters we've set.
-	  aztecSaddleLowsFactory->getParameterList()->print(cerr, 0, 
-							    true, false);
+	  aztecSaddleLowsFactory->getParameterList()->print(cerr, 0, true, false);
 	}
 
  

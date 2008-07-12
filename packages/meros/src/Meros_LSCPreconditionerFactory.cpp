@@ -160,7 +160,7 @@ void LSCPreconditionerFactory
 }
 
 Teuchos::RCP<Teuchos::ParameterList>
-LSCPreconditionerFactory::getParameterList()
+LSCPreconditionerFactory::getNonconstParameterList()
 {
   return paramList_;
 }

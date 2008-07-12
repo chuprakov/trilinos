@@ -159,7 +159,7 @@ void SIMPLEPreconditionerFactory
 }
 
 Teuchos::RCP<Teuchos::ParameterList>
-SIMPLEPreconditionerFactory::getParameterList()
+SIMPLEPreconditionerFactory::getNonconstParameterList()
 {
   return paramList_;
 }
