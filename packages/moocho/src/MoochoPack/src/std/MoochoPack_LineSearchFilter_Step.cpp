@@ -43,11 +43,61 @@
 #include "AbstractLinAlgPack_VectorMutableSubView.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "Teuchos_as.hpp"
 
 //#define FILTER_DEBUG_OUT 1
 
-namespace MoochoPack 
-{
+
+namespace {
+
+
+class RemoveFilterEntryPred {
+public:
+
+  RemoveFilterEntryPred(
+    const MoochoPack::value_type &f_with_boundary,
+    const MoochoPack::value_type &theta_with_boundary,
+    const Teuchos::RCP<std::ostream> &out
+    )
+    :f_with_boundary_(f_with_boundary),
+     theta_with_boundary_(theta_with_boundary),
+     out_(out)
+    {}
+
+  bool operator()(const MoochoPack::FilterEntry &entry)
+    {
+      if (
+        entry.f >= f_with_boundary_
+        &&
+        entry.theta >= theta_with_boundary_
+        )
+      {
+        if (!is_null(out_)) {
+          *out_
+            << "\nRemoving from the filter the redundant point:"
+            << "\n  f_with_boundary     = " << entry.f
+            << "\n  theta_with_boundary = " << entry.theta
+            << "\n  iteration added     = " << entry.iter
+            << std::endl;
+        }
+        return true;
+      }
+      return false;
+    }
+
+private:
+
+  const MoochoPack::value_type f_with_boundary_;
+  const MoochoPack::value_type theta_with_boundary_;
+  const Teuchos::RCP<std::ostream> out_;
+
+};
+
+
+} // namespace
+
+
+namespace MoochoPack {
 
 // This must exist somewhere already, ask Ross
 value_type MIN(value_type x, value_type y)
@@ -210,7 +260,12 @@ bool LineSearchFilter_Step::do_step(
     if (filter_iq.updated_k(-1)) {
       Filter_T& filter = filter_iq.get_k(-1);
       if (!filter.empty()) {
-        for (Filter_T::iterator entry = filter.begin(); entry != filter.end(); entry++) {	
+        for (
+          Filter_T::iterator entry = filter.begin();
+          entry != filter.end();
+          ++entry
+          )
+        {	
           out << "|" << setw(25) << entry->f
               << " " << setw(25) << entry->theta
               << "|\n";
@@ -415,7 +470,11 @@ bool LineSearchFilter_Step::do_step(
   if (filter_iq.updated_k(0))
   {    
     Filter_T& current_filter = filter_iq.get_k(0);
-    for (Filter_T::iterator entry = current_filter.begin(); entry != current_filter.end(); entry++)
+    for (
+      Filter_T::iterator entry = current_filter.begin();
+      entry != current_filter.end();
+      ++entry
+      )
     {
       fout << "         <FilterPoint iter=\"" << entry->iter 
            << "\" f=\"" << entry->f 
@@ -433,7 +492,7 @@ bool LineSearchFilter_Step::do_step(
   // Output the alpha curve
   fout << "      <AlphaCurve>" << std::endl;
   value_type alpha_tmp = 1.0;
-  for (int i=0; i<10 || alpha_tmp > alpha_k; i++)
+  for (int i = 0; i < 10 || alpha_tmp > alpha_k; ++i)
   {
     UpdatePoint(s.d().get_k(0), alpha_tmp, x_iq, f_iq, c_iq, h_iq, *nlp_);
     if (ValidatePoint(x_iq, f_iq, c_iq, h_iq, false))
@@ -575,7 +634,11 @@ bool LineSearchFilter_Step::CheckFilterAcceptability(
   {
     const Filter_T &current_filter = filter_iq.get_k(-1);
     
-    for (Filter_T::const_iterator entry = current_filter.begin(); entry != current_filter.end(); entry++)
+    for (
+      Filter_T::const_iterator entry = current_filter.begin();
+      entry != current_filter.end();
+      ++entry
+      )
     {	
       if (f >= entry->f && theta >= entry->theta)
       {
@@ -768,6 +831,8 @@ void LineSearchFilter_Step::AugmentFilter(
   ) const
 {
 
+  using Teuchos::as;
+
   const value_type
     f_with_boundary = f-gamma_f_used*theta,
     theta_with_boundary = (1.0-gamma_theta())*theta;
@@ -781,28 +846,15 @@ void LineSearchFilter_Step::AugmentFilter(
   
   UpdateFilter(s);
   Filter_T& current_filter = filter_(s).get_k(0);
-    
-  if (!current_filter.empty())
-  {
-    for (Filter_T::iterator entry = current_filter.begin(); entry != current_filter.end(); entry++)
-    {	
-      if ((*entry).f >= f_with_boundary
-          && (*entry).theta >= theta_with_boundary)
-      {
-        Filter_T::iterator store = entry;
-        if(static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-          out << "\nRemoving from the filter the redundant point:"
-              << "\n  f_with_boundary     = " << entry->f
-              << "\n  theta_with_boundary = " << entry->theta
-              << "\n  iteration added     = " << entry->iter
-              << std::endl;
-        }
-         store--;
-        current_filter.erase(entry);
-        entry = store;
-      }
-    }
-  }
+
+  // Remove current filter entries that are not longer needed
+  current_filter.remove_if(
+    RemoveFilterEntryPred(
+      f_with_boundary, theta_with_boundary,
+      as<int>(olevel) >= as<int>(PRINT_ALGORITHM_STEPS)
+      ? Teuchos::rcpFromRef(out) : Teuchos::null
+      )
+    );
 
   // Now append the current point
   current_filter.push_front(FilterEntry(f_with_boundary, theta_with_boundary, s.k()));

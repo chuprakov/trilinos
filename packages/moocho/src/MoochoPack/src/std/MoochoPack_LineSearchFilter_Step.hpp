@@ -53,7 +53,10 @@ public:
   int iter;
 };
 
+// It is critical that an std::list be used because of the way iterators are
+// used!
 typedef std::list< FilterEntry > Filter_T;
+
 const std::string FILTER_IQ_STRING = "LS_FilterEntries";
 
 /** \brief Filter line-search step class.
