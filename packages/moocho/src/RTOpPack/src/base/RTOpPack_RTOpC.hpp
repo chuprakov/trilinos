@@ -125,7 +125,7 @@ public:
   /** \brief . */
   bool coord_invariant() const;
   /** \brief . */
-  const char* op_name() const;
+  const std::string op_name() const;
   /** \brief . */
   void apply_op(
     const int   num_vecs,       const ConstSubVectorView<Scalar>         sub_vecs[]

@@ -211,7 +211,7 @@ bool RTOpC::coord_invariant() const
   return false; // We have to assume this to be safe!
 }
 
-const char* RTOpC::op_name() const
+const std::string RTOpC::op_name() const
 {
   const char* op_name = NULL;
   TEST_FOR_EXCEPTION(
