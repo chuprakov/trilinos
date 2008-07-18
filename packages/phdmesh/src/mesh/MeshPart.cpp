@@ -33,6 +33,7 @@
 
 #include <mesh/Part.hpp>
 #include <mesh/Schema.hpp>
+#include <mesh/Entity.hpp>
 
 namespace phdmesh {
 
@@ -40,7 +41,18 @@ namespace phdmesh {
 
 namespace {
 
+inline
+bool equal_no_case( const std::string & lhs ,
+                    const std::string & rhs )
+{
+  const char * const lhs_c_str = lhs.c_str();
+  const char * const rhs_c_str = rhs.c_str();
+  return 0 == strcasecmp( lhs_c_str , rhs_c_str );
+}
+
 struct PartLess {
+
+  inline
   bool operator()( const Part * lhs , const Part & rhs ) const
   {
     const unsigned l = lhs->schema_ordinal();
@@ -48,38 +60,14 @@ struct PartLess {
     return l < r ;
   }
 
+  inline
   bool operator()( const Part * lhs , const Part * rhs ) const
   {
     const unsigned l = lhs->schema_ordinal();
     const unsigned r = rhs->schema_ordinal();
     return l < r ;
   }
-
-  bool operator()( const Part * lhs , const std::string & rhs ) const
-  {
-    const char * const lhs_c_str = lhs->name().c_str();
-    const char * const rhs_c_str = rhs.c_str();
-    return strcasecmp( lhs_c_str , rhs_c_str ) < 0 ;
-  }
 };
-
-PartSet::iterator
-lower_bound( PartSet & parts , const std::string & name )
-{
-  const PartSet::iterator e = parts.end();
-  const PartSet::iterator i = parts.begin();
-
-  return std::lower_bound( i , e , name, PartLess() );
-}
-
-PartSet::const_iterator
-lower_bound( const PartSet & parts , const std::string & name )
-{
-  const PartSet::const_iterator e = parts.end();
-  const PartSet::const_iterator i = parts.begin();
-
-  return std::lower_bound( i , e , name, PartLess() );
-}
 
 }
 
@@ -87,9 +75,11 @@ lower_bound( const PartSet & parts , const std::string & name )
 
 Part * find( const PartSet & parts , const std::string & name )
 {
-  const PartSet::const_iterator i = lower_bound( parts , name );
+  PartSet::const_iterator i = parts.begin();
 
-  return ( i != parts.end() ) && ( name == (*i)->name() ) ? *i : (Part*) NULL ;
+  while ( i != parts.end() && ! equal_no_case((*i)->name(),name) ) { ++i ; }
+
+  return i != parts.end() ? *i : (Part*) NULL ;
 }
 
 //----------------------------------------------------------------------
@@ -383,55 +373,17 @@ bool intersect( const Part & a , const Part & b )
 Part::~Part()
 {}
 
-Part::Part( Schema & m , const std::string & n , const PartSet & intersect )
+// The constructor must only be called by
+// the 'Schema::declare_part( const std::string & )' method.
+
+Part::Part( Schema & m , const std::string & n , unsigned ordinal )
   : m_name( n ),
     m_cset(),
     m_subsets() , m_supersets() , m_intersect() ,
     m_schema( m ) ,
-    m_schema_ordinal( 0 ),
+    m_schema_ordinal( ordinal ),
     m_relation_target( false )
-{
-  static const char method[] = "phdmesh::Part::Part" ;
-
-  Part * const universal = const_cast<Part*>( & m.universal_part() );
-
-  if ( universal != this ) {
-    m_supersets.push_back( universal );
-  }
-
-  PartSet & all_parts = universal->m_subsets ;
-
-  {
-    PartSet::iterator i = lower_bound( all_parts , n );
-
-    if ( i != all_parts.end() && (*i)->m_name == n ) {
-      std::string msg ;
-      msg.append( method );
-      msg.append( "( <schema> , " );
-      msg.append( n );
-      msg.append( " ) : FAILED, duplicate part in schema." );
-      throw std::invalid_argument( msg );
-    }
-
-    Part * const tmp = this ;
-    all_parts.insert( i , tmp );
-  }
-
-  // Update the mesh parts' ordinals
-  for ( unsigned j = 0 ; j < all_parts.size() ; ++j ) {
-    all_parts[j]->m_schema_ordinal = j ;
-  }
-
-  if ( ! intersect.empty() ) {
-    m_intersect = intersect ;
-    PartSet::const_iterator i ;
-    for ( i = intersect.begin() ; i != intersect.end() ; ++i ) {
-      m_schema.declare_part_subset( **i , *this );
-    }
-  }
-}
-
-//----------------------------------------------------------------------
+{}
 
 Part & Schema::declare_part( const std::string & p_name )
 {
@@ -439,9 +391,18 @@ Part & Schema::declare_part( const std::string & p_name )
 
   assert_not_committed( method );
 
-  Part * p = find( m_universal_part.m_subsets , p_name );
+  Part * const u = & m_universal_part ;
 
-  if ( p == NULL ) { p = new Part( *this , p_name , PartSet() ); }
+  Part * p = find( u->m_subsets , p_name );
+
+  if ( p == NULL ) {
+    const unsigned ord = m_universal_part.m_subsets.size();
+
+    p = new Part( *this , p_name , ord );
+
+    u->m_subsets  .push_back( p );
+    p->m_supersets.push_back( u );
+  }
 
   return *p ;
 }
@@ -537,12 +498,19 @@ Part & Schema::declare_part( const PartSet & pset )
 
   Part * p = find( m_universal_part.m_subsets , p_name );
 
-  if ( p == NULL ) { p = new Part( *this , p_name , pset_clean ); }
-
-  if ( pset_clean != p->intersection_of() ) {
+  if ( p == NULL ) {
+    Part & p_new = declare_part( p_name );
+    p_new.m_intersect = pset_clean ; // Copy
+    PartSet::iterator i ;
+    for ( i = pset_clean.begin() ; i != pset_clean.end() ; ++i ) {
+      declare_part_subset( **i , p_new );
+    }
+    p = & p_new ;
+  }
+  else if ( pset_clean != p->m_intersect ) {
     std::string msg ;
     msg.append(method);
-    msg.append(" : FAILED, Redundant incompatible intersection.");
+    msg.append(" : FAILED, Redundant incompatible intersection declaration.");
     throw std::invalid_argument(msg);
   }
 

@@ -84,7 +84,7 @@ void RegenAuraComm::receive_entity(
 {
   entity_key_type       key ;
   unsigned              owner_rank ;
-  std::vector<Part*>    add , del ;
+  std::vector<Part*>    add ;
   std::vector<Relation> relations ;
   std::vector<unsigned> send_destinations ;
 
@@ -98,10 +98,8 @@ void RegenAuraComm::receive_entity(
 
   // This is an aura, not a member of the owns part or uses part
 
-  del.push_back( owns_part );
-  del.push_back( uses_part );
-
   std::vector<Part*>::iterator ip = add.end();
+
   while ( ip != add.begin() ) {
     --ip ;
     if ( *ip == owns_part || *ip == uses_part ) { ip = add.erase( ip ); }
@@ -118,12 +116,7 @@ void RegenAuraComm::receive_entity(
     throw std::logic_error( msg );
   }
 
-  {
-    Entity & entity = receive_mesh.declare_entity( key );
-    receive_mesh.change_entity_parts( entity , add , del );
-    receive_mesh.change_entity_owner( entity , owner_rank );
-    ep.first = & entity ;
-  }
+  ep.first = & receive_mesh.declare_entity( key , add , owner_rank );
 
   receive_mesh.declare_relation( *ep.first , relations );
 

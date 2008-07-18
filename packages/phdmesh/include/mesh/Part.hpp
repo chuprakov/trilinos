@@ -41,7 +41,7 @@
 namespace phdmesh {
 
 /** Supersets and subsets of parts are of the same schema and
- *  maintained in case-insensitive alphabetical order.
+ *  maintained in ordinal order.
  */
 typedef std::vector<Part*> PartSet ;
 
@@ -81,7 +81,7 @@ public:
   bool operator != ( const Part & rhs ) const { return this != & rhs ; }
 
   template<class A>
-  CSet::Span<A> attribute() const { return m_cset.get<A>(); }
+  CSet::Span<A> attribute() const { return m_cset.template get<A>(); }
 
 private:
 
@@ -89,21 +89,21 @@ private:
   friend class Schema ;
 
   /** Construct a part within a given mesh */
-  Part( Schema & , const std::string & , const PartSet & );
+  Part( Schema & , const std::string & , unsigned );
 
   ~Part();
   Part();
   Part( const Part & );
   Part & operator = ( const Part & );
 
-  std::string  m_name ;
-  CSet         m_cset ;
-  PartSet      m_subsets ;
-  PartSet      m_supersets ;
-  PartSet      m_intersect ;
-  Schema     & m_schema ;
-  unsigned     m_schema_ordinal ;
-  bool         m_relation_target ;
+  const std::string m_name ;
+  CSet              m_cset ;
+  PartSet           m_subsets ;
+  PartSet           m_supersets ;
+  PartSet           m_intersect ;
+  Schema          & m_schema ;
+  const unsigned    m_schema_ordinal ;
+  bool              m_relation_target ;
 };
 
 //----------------------------------------------------------------------

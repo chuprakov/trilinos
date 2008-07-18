@@ -400,12 +400,7 @@ void RebalanceComm::receive_entity(
 
   EntityProc ep ;
 
-  {
-    Entity & entity = receive_mesh.declare_entity( key );
-    receive_mesh.change_entity_parts( entity , add );
-    receive_mesh.change_entity_owner( entity , owner_rank );
-    ep.first = & entity ;
-  }
+  ep.first = & receive_mesh.declare_entity( key , add , owner_rank );
 
   receive_mesh.declare_relation( *ep.first , relations );
 

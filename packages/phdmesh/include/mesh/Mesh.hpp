@@ -85,7 +85,9 @@ public:
   /** Create or retrieve entity of the given type and id.
    *  If the entity is created it is assumed to be locally owned.
    */
-  Entity & declare_entity( entity_key_type );
+  Entity & declare_entity( entity_key_type ,
+                           const std::vector<Part*> & ,
+                           int parallel_owner = -1 /* default to local */ );
 
   /** Change the entity's part membership by adding and/or removing parts */
   void change_entity_parts( Entity & ,
@@ -160,8 +162,11 @@ private:
 
   void remove_entity( KernelSet::iterator , unsigned );
 
-  KernelSet::iterator declare_kernel( const EntityType , const PartSet & );
-  void                destroy_kernel( KernelSet::iterator );
+  KernelSet::iterator declare_kernel( const EntityType ,
+                                      const unsigned ,
+                                      const unsigned[] );
+
+  void destroy_kernel( KernelSet::iterator );
 
   void internal_change_entity_parts( Entity & ,
                                      const PartSet & add_parts ,

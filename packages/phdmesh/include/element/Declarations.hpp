@@ -49,6 +49,8 @@ void set_part_local_topology( Part & p )
 const LocalTopology * get_part_local_topology( Part & );
 
 //----------------------------------------------------------------------
+
+#if 0
 /** Declare an element with nodes conformal to the given local topology. */
 Entity & declare_element( Mesh & mesh ,
                           const LocalTopology & ,
@@ -65,6 +67,13 @@ Entity & declare_element( Mesh & mesh ,
                           elem_id , node_id );
 }
 
+Entity & declare_element( Mesh & mesh ,
+                          const LocalTopology & ,
+                          const unsigned elem_id ,
+                          Entity * node[] );
+
+#endif
+
 /** Declare an element member of a part with a local topology
  *  and nodes conformal to that topology.
  */
@@ -72,6 +81,11 @@ Entity & declare_element( Mesh & mesh ,
                           Part & part ,
                           const unsigned elem_id ,
                           const unsigned node_id[] );
+
+Entity & declare_element( Mesh & mesh ,
+                          Part & part ,
+                          const unsigned elem_id ,
+                          Entity * node[] );
 
 //----------------------------------------------------------------------
 /* The element must have a topology. */

@@ -123,14 +123,10 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   // Declare node and element entities:
 
-  Entity & elem = M.declare_entity( elem_key );
-  M.change_entity_parts( elem , add_parts );
-  M.change_entity_owner( elem , p_rank );
+  Entity & elem = M.declare_entity( elem_key , add_parts );
 
   for ( unsigned i = 0 ; i < 8 ; ++i ) {
-    Entity & node = M.declare_entity( node_key[i] );
-    M.change_entity_parts( node , add_parts );
-    M.change_entity_owner( node , p_rank );
+    Entity & node = M.declare_entity( node_key[i] , add_parts );
 
     // Declare element <-> node relations
     // These are required to have unique identifiers
@@ -145,9 +141,7 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   add_parts.push_back( face_part );
   
-  Entity & face = M.declare_entity( face_key );
-  M.change_entity_parts( face , add_parts );
-  M.change_entity_owner( face , p_rank );
+  Entity & face = M.declare_entity( face_key , add_parts );
 
   // Declare element <-> face relation
 

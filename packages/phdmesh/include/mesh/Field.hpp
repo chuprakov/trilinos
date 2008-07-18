@@ -83,7 +83,6 @@ public:
 
   Schema & schema() const { return m_schema ; }
 
-  /** Volatile until schema is committed. */
   unsigned schema_ordinal() const { return m_schema_ordinal ; }
 
   const std::string & name() const { return m_name ; }
@@ -107,24 +106,34 @@ public:
   //----------------------------------------
 
   template<class A>
-  CSet::Span<A> attribute() const { return m_cset.get<A>(); }
+  CSet::Span<A> attribute() const { return m_cset.template get<A>(); }
 
   //----------------------------------------
   /** An internal data structure that should never need to be
    *  used by a user of the phdMesh package.
    */
   struct Dim {
-    const Part * part ;
-    EntityType   type ;
-    unsigned     stride[ MaximumFieldDimension ];
+    unsigned key ; /* ( Entity type , part ordinal ) */
+    unsigned stride[ MaximumFieldDimension ];
 /*
     DimensionNoTag dim ;
 */
 
-    Dim( EntityType t , const Part & p );
     Dim();
     Dim( const Dim & rhs );
     Dim & operator = ( const Dim & rhs );
+
+    Dim( EntityType t , unsigned );
+    EntityType type() const ;
+    unsigned   ordinal() const ;
+
+    static unsigned key_value( EntityType , unsigned );
+
+    bool operator < ( const Dim & rhs ) const { return key < rhs.key ; }
+    bool operator < ( const entity_key_type rhs ) const { return key < rhs ; }
+  private:
+    enum { ord_digits = std::numeric_limits<unsigned>::digits -
+                        entity_key_type_digits };
   };
 
   /** Volatile until the schema is committed */
@@ -231,29 +240,41 @@ private:
 //----------------------------------------------------------------------
 
 inline
-FieldBase::Dim::Dim( EntityType t , const Part & p )
-  : part( & p ) , type( t )
-  { Copy<MaximumFieldDimension>( stride , 0u ); }
-
-inline
 FieldBase::Dim::Dim()
-  : part( NULL ), type( EntityTypeEnd )
-  { Copy<MaximumFieldDimension>( stride , 0u ); }
+  : key(0) { Copy<MaximumFieldDimension>( stride , 0u ); }
 
 inline
 FieldBase::Dim::Dim( const FieldBase::Dim & rhs )
-  : part( rhs.part ), type( rhs.type )
-  { Copy< MaximumFieldDimension >( stride , rhs.stride ); }
+  : key( rhs.key ) { Copy< MaximumFieldDimension >( stride , rhs.stride ); }
 
 inline
 FieldBase::Dim &
 FieldBase::Dim::operator = ( const FieldBase::Dim & rhs )
   {
-    part = rhs.part ;
-    type = rhs.type ;
+    key = rhs.key ;
     Copy< MaximumFieldDimension >( stride , rhs.stride );
     return *this ;
   }
+
+inline
+unsigned FieldBase::Dim::key_value( EntityType t , unsigned ord )
+{ return ( ((unsigned)t) << ord_digits ) | ord ; }
+
+inline
+FieldBase::Dim::Dim( EntityType t , unsigned ord )
+  : key( key_value(t,ord) ) { Copy< MaximumFieldDimension >( stride , 0u ); }
+
+inline
+EntityType
+FieldBase::Dim::type() const
+{ return EntityType( key >> ord_digits ); }
+
+inline
+unsigned FieldBase::Dim::ordinal() const
+{
+  enum { mask = ~( ~(0u) << ord_digits ) };
+  return key & mask ;
+}
 
 //----------------------------------------------------------------------
 /** A field relation for fields that are a pointers to other fields.

@@ -74,13 +74,18 @@ void Schema::assert_same_schema( const char * method ,
 
 Schema::Schema()
   : m_commit( false ),
-    m_universal_part( *this , std::string( "{UNIVERSAL}" ) , PartSet() ),
+    m_universal_part( *this , std::string( "{UNIVERSAL}" ) , 0 ),
     m_uses_part( NULL ),
     m_owns_part( NULL )
 {
   // Declare remaining predefined parts
   const std::string uses_part_name( "{USES}" );
   const std::string owns_part_name( "{OWNS}" );
+
+  {
+    Part * u = & m_universal_part ;
+    m_universal_part.m_subsets.push_back( u );
+  }
 
   m_uses_part = & declare_part( uses_part_name );
   m_owns_part = & declare_part( owns_part_name );

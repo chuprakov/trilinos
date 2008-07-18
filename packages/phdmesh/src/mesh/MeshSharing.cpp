@@ -321,9 +321,10 @@ void pack_info( CommAll & all , const EntityProcSet & shares )
 
     const unsigned p_send = ep.second ;
 
-    std::vector<unsigned> part_ordinals ;
-    entity.kernel().supersets( part_ordinals );
-    const unsigned numparts = part_ordinals.size();
+    const std::pair<const unsigned * , const unsigned *> part_ordinals =
+      entity.kernel().superset_part_ordinals();
+
+    const unsigned numparts = part_ordinals.second - part_ordinals.first ;
 
     CommBuffer & b = all.send_buffer( p_send );
 
@@ -332,7 +333,7 @@ void pack_info( CommAll & all , const EntityProcSet & shares )
     b.pack<unsigned>( numparts );
     b.pack<unsigned>( numrelation );
 
-    b.pack<unsigned>( & part_ordinals[0] , numparts );
+    b.pack<unsigned>( part_ordinals.first , numparts );
 
     for ( ; relation ; ++relation ) {
       uint64_type con[2] ;
@@ -378,9 +379,10 @@ bool unpack_info_verify(
     const unsigned p_local  = mesh.parallel_rank();
     const unsigned p_recv   = ep.second ;
 
-    std::vector<unsigned> part_ordinals ;
-    kernel.supersets( part_ordinals );
-    const unsigned parts_size = part_ordinals.size();
+    const std::pair<const unsigned * , const unsigned * >
+      part_ordinals = kernel.superset_part_ordinals();
+
+    const unsigned parts_size = part_ordinals.second - part_ordinals.first ;
 
     CommBuffer & b = all.recv_buffer( p_recv );
 
@@ -418,7 +420,7 @@ bool unpack_info_verify(
           result = false ;
         }
         else {
-          Part * const part_this = mesh_parts[ part_ordinals[ j_this ] ] ;
+          Part * const part_this = mesh_parts[ part_ordinals.first[ j_this ] ] ;
           Part * const part_recv = mesh_parts[ ord_recv ];
 
           if ( owns_part == part_this ) {
@@ -467,8 +469,9 @@ bool unpack_info_verify(
       os << "  P" << p_local << " : " ;
       print_entity_key( os , key );
       os << ".{ Owner = P" << p_owner << " ; Parts =" ;
-      for ( unsigned j = 0 ; j < part_ordinals.size() ; ++j ) {
-        os << " " << mesh_parts[ part_ordinals[j] ]->name();
+      for ( const unsigned * j = part_ordinals.first ;
+                             j < part_ordinals.second ; ++j ) {
+        os << " " << mesh_parts[ *j ]->name();
       }
       os << " ;" << std::endl << "  Relationships =" ;
       for ( ic = relation.begin() ; ic != relation.end() ; ++ic ) {
@@ -689,7 +692,7 @@ void SharingComm::receive_entity(
 
   entity_key_type       key ;
   unsigned              owner_rank ;
-  std::vector<Part*>    add , del ;
+  std::vector<Part*>    add ;
   std::vector<Relation> relations ;
   std::vector<unsigned> send_dest ;
 
@@ -712,8 +715,6 @@ void SharingComm::receive_entity(
   }
 
   // Remove owns part
-
-  del.push_back( owns_part );
 
   {
     std::vector<Part*>::iterator ip = add.begin() ;
@@ -740,12 +741,7 @@ void SharingComm::receive_entity(
     receive_info.erase( k );
   }
 
-  {
-    Entity & entity = receive_mesh.declare_entity( key );
-    receive_mesh.change_entity_parts( entity , add , del );
-    receive_mesh.change_entity_owner( entity , owner_rank );
-    ep.first = & entity ;
-  }
+  ep.first = & receive_mesh.declare_entity( key , add , owner_rank );
 
   receive_mesh.declare_relation( *ep.first , relations );
 }

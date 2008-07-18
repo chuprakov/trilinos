@@ -74,12 +74,7 @@ void EntityComm::receive_entity(
 
   EntityProc ep ;
 
-  {
-    Entity & entity = receive_mesh.declare_entity( key );
-    receive_mesh.change_entity_parts( entity , add );
-    receive_mesh.change_entity_owner( entity , owner_rank );
-    ep.first = & entity ;
-  }
+  ep.first = & receive_mesh.declare_entity( key , add , owner_rank );
 
   receive_mesh.declare_relation( *ep.first , relations );
 
@@ -98,7 +93,7 @@ void EntityComm::pack_entity(
 {
   const Schema      & recv_schema = recv_mesh.schema();
   const Entity      & entity      = * ibeg->first ;
-  const entity_key_type key         = entity.key();
+  const entity_key_type key       = entity.key();
   const unsigned      owner_rank  = entity.owner_rank();
   const Kernel      & kernel      = entity.kernel();
   const Schema      & send_schema = kernel.mesh().schema();
@@ -106,17 +101,17 @@ void EntityComm::pack_entity(
   const unsigned      dest_size   = std::distance( ibeg , iend );
         RelationSpan  rel         = entity.relations();
 
-  std::vector<unsigned> part_ordinals ;
+  const std::pair<const unsigned * , const unsigned * >
+    tmp = entity.kernel().superset_part_ordinals();
 
-  entity.kernel().supersets( part_ordinals );
+  std::vector<unsigned> part_ordinals( tmp.first , tmp.second );
 
   if ( ! same_schema ) { // Map the parts by name
-    const PartSet & send_parts = send_schema.get_parts();
     std::vector<unsigned>::iterator i = part_ordinals.begin();
 
     while ( i != part_ordinals.end() ) {
-      Part * const send_p = send_parts[ *i ];
-      Part * const recv_p = recv_schema.get_part( send_p->name() );
+      Part &       send_p = send_schema.get_part( *i );
+      Part * const recv_p = recv_schema.get_part( send_p.name() );
       if ( recv_p != NULL ) {
         *i = recv_p->schema_ordinal(); ++i ;
       }
@@ -164,7 +159,7 @@ void EntityComm::unpack_entity(
   std::vector<Relation> & relations ,
   std::vector<unsigned> & send_destinations ) const
 {
-  const PartSet & recv_schema_parts = recv_mesh.schema().get_parts();
+  const Schema & recv_schema = recv_mesh.schema();
 
   parts.clear();
   relations.clear();
@@ -179,7 +174,7 @@ void EntityComm::unpack_entity(
     unsigned n ; recv_buf.unpack<unsigned>( n );
     for ( ; n ; --n ) {
       unsigned ordinal ; recv_buf.unpack<unsigned>( ordinal );
-      Part * const p = recv_schema_parts[ ordinal ];
+      Part * const p = & recv_schema.get_part( ordinal );
       parts.push_back( p );
     }
   }

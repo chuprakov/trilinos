@@ -68,10 +68,10 @@ public:
   Part * get_part( const std::string & ,
                    const char * required_by = NULL ) const ;
 
-  /** Query all parts of the mesh.
-   *  Once the mesh is commited the parts will know
-   *  their ordinals within this vector.
-   */
+  /** Get an existing part by its ordinal */
+  Part & get_part( unsigned ) const ;
+
+  /** Query all parts of the mesh ordered by the parts' ordinal. */
   const PartSet & get_parts() const { return m_universal_part.subsets(); }
 
   /** Declare a part of the given name.
@@ -296,6 +296,10 @@ void verify_parallel_consistency( const Schema & , ParallelMachine );
 //----------------------------------------------------------------------
 
 namespace phdmesh {
+
+inline
+Part & Schema::get_part( unsigned ord ) const
+{ return * m_universal_part.m_subsets[ord] ; }
 
 template< class field_type >
 inline

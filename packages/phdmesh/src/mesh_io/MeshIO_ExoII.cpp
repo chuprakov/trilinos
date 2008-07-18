@@ -1077,7 +1077,7 @@ void variable_add( EntityType entity_type ,
 
     const FieldBase::Dim & d = field.dimension( entity_type , p );
 
-    if ( d.part ) { // Exists
+    if ( d.stride[0] ) { // Exists
       const unsigned n = stride_size( field_num_dim , d.stride );
 /*
       const unsigned n = d.dim.size();
@@ -1203,7 +1203,7 @@ FileOutput::FileOutput(
     const FieldBase::Dim & d = f.dimension( Node , universal_part );
     const unsigned f_num_dim = f.number_of_dimensions();
 
-    if ( d.part ) {
+    if ( d.stride[0] ) {
       FieldIO tmp ;
 
       tmp.m_field     = & f ;
@@ -1235,7 +1235,7 @@ FileOutput::FileOutput(
           j =  f.dimension().begin() ;
           j != f.dimension().end() && ! is_element_var ; ++j ) {
 
-      is_element_var = j->type == Element ;
+      is_element_var = entity_type( j->key ) == Element ;
     }
     if ( is_element_var ) {
       variable_add( Element , f , elem_parts , name_elem_var , m_field_elem );
@@ -1531,7 +1531,7 @@ FileOutput::FileOutput(
 namespace {
 
 void pack_entity_proc( const std::vector<const Entity *> & send ,
-                       const FileSchema::IndexField                & f_index ,
+                       const FileSchema::IndexField      & f_index ,
                        CommBuffer & buf )
 {
   double item_buffer[2] ;
@@ -1547,6 +1547,11 @@ void pack_entity_proc( const std::vector<const Entity *> & send ,
   }
 }
 
+// Work-around for shoddy pathscale compiler:
+
+void pack_data_2( const double * const b , CommBuffer & buf )
+{ buf.pack<double>( b , 2 ); }
+
 template<typename T>
 void pack_entity_data( const std::vector<const Entity *> & send ,
                        const FileSchema::IndexField      & f_index ,
@@ -1559,12 +1564,12 @@ void pack_entity_data( const std::vector<const Entity *> & send ,
   for ( std::vector<const Entity *>::const_iterator
         i = send.begin() ; i != send.end() ; ++i ) {
     const Entity & e = **i ;
+    T * const data = reinterpret_cast<T*>( field_data(f_data,e) );
 
     item_buffer[0] = (double)( * field_data( f_index , e ) );
-    item_buffer[1] =
-      (double)( reinterpret_cast<T*>( field_data(f_data,e) )[ offset ] );
+    item_buffer[1] = (double)( data[ offset ] );
 
-    buf.pack<double>( item_buffer , 2 );
+    pack_data_2( item_buffer , buf );
   }
 }
 
@@ -2271,7 +2276,7 @@ FileInput::FileInput(
     const FieldBase::Dim & d = f.dimension( Node , universal_part );
     const unsigned f_num_dim = f.number_of_dimensions();
 
-    if ( d.part ) {
+    if ( d.stride[0] ) {
       FieldIO tmp ;
 
       tmp.m_field     = & f ;
@@ -2301,7 +2306,7 @@ FileInput::FileInput(
           j =  f.dimension().begin() ;
           j != f.dimension().end() && ! is_element_var ; ++j ) {
 
-      is_element_var = j->type == Element ;
+      is_element_var = entity_type( j->key ) == Element ;
     }
     if ( is_element_var ) {
       variable_add( Element , f , elem_parts , name_elem_var , m_field_elem );
@@ -2747,9 +2752,7 @@ FileInput::FileInput(
             elem_data_local[ size_elem_data_local++ ] ;
         const entity_key_type elem_key = entity_key( Element , elem_ident );
 
-        Entity & elem = M.declare_entity(elem_key);
-        M.change_entity_parts( elem , entity_parts );
-        M.change_entity_owner( elem , (int) p_rank );
+        Entity & elem = M.declare_entity( elem_key , entity_parts );
 
         field_data( FS.m_field_index , elem )[0] = elem_index ;
 
@@ -2776,9 +2779,7 @@ FileInput::FileInput(
           const entity_id_type node_ident = iter_node_data->ident ;
           const entity_key_type node_key = entity_key( Node , node_ident );
 
-          Entity & node = M.declare_entity(node_key);
-          M.change_entity_parts( node , entity_parts );
-          M.change_entity_owner( node , (int) p_rank );
+          Entity & node = M.declare_entity( node_key, entity_parts );
 
           M.declare_relation( elem , node , j );
 

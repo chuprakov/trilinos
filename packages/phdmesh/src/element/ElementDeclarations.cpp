@@ -133,23 +133,43 @@ const LocalTopology * get_local_topology( Entity & entity )
 //----------------------------------------------------------------------
 
 Entity & declare_element( Mesh & mesh ,
-                          const LocalTopology & top ,
+                          Part & part ,
                           const unsigned elem_id ,
-                          const unsigned node_id[] )
+                          Entity * node[] )
 {
+  static const char method[] = "phdmesh::declare_element" ;
+
+  const LocalTopology * const top = get_part_local_topology( part );
+
+  if ( top == NULL ) {
+    std::ostringstream msg ;
+    msg << method ;
+    msg << "( mesh , " ;
+    msg << part.name();
+    msg << " , " ;
+    msg << elem_id ;
+    msg << " , node[] ) ERROR, Part does not have a local topology" ;
+    throw std::runtime_error( msg.str() );
+  }
+
   const EntityType type =
-    ! top.is_boundary ? Element : EntityType( top.topological_rank );
+    ! top->is_boundary ? Element : EntityType( top->topological_rank );
+
+  PartSet add ;
+
+  { Part * const tmp = & part ; add.push_back( tmp ); }
 
   const entity_key_type key = entity_key( type , elem_id );
 
-  Entity & elem = mesh.declare_entity( key );
+  Entity & elem = mesh.declare_entity( key , add );
 
-  for ( unsigned i = 0 ; i < top.number_node ; ++i ) {
-    Entity & node = mesh.declare_entity( entity_key( Node , node_id[i] ) );
-    mesh.declare_relation( elem , node , i );
+  for ( unsigned i = 0 ; i < top->number_node ; ++i ) {
+    mesh.declare_relation( elem , * node[i] , i );
   }
   return elem ;
 }
+
+//----------------------------------------------------------------------
 
 Entity & declare_element( Mesh & mesh ,
                           Part & part ,
@@ -171,16 +191,24 @@ Entity & declare_element( Mesh & mesh ,
     throw std::runtime_error( msg.str() );
   }
 
-  Entity & elem = declare_element( mesh , *top , elem_id , node_id );
+  const EntityType type =
+    ! top->is_boundary ? Element : EntityType( top->topological_rank );
 
-  {
-    PartSet add ;
-    Part * const tmp = & part ;
-    add.push_back( tmp );
+  PartSet add ;
 
-    mesh.change_entity_parts( elem , add );
+  { Part * const tmp = & part ; add.push_back( tmp ); }
+
+  const entity_key_type key = entity_key( type , elem_id );
+
+  Entity & elem = mesh.declare_entity( key , add );
+
+  for ( unsigned i = 0 ; i < top->number_node ; ++i ) {
+    const entity_key_type node_key = entity_key( Node , node_id[i] );
+
+    Entity & node = mesh.declare_entity( node_key , add );
+
+    mesh.declare_relation( elem , node , i );
   }
-
   return elem ;
 }
 
@@ -221,10 +249,10 @@ Entity & declare_element_side( Mesh   & mesh , const unsigned global_side_id ,
   const unsigned * const side_node_map =
     elem_top->side[ local_side_id ].node ;
 
-  EntityType side_type = (EntityType) side_top->topological_rank ;
+  const EntityType      side_type = (EntityType) side_top->topological_rank ;
+  const entity_key_type side_key  = entity_key( side_type, global_side_id );
 
-  Entity & side =
-    mesh.declare_entity( entity_key( side_type, global_side_id ) );
+  Entity & side = mesh.declare_entity( side_key , PartSet() );
 
   RelationSpan rel = elem.relations( Node );
 

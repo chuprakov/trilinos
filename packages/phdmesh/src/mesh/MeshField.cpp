@@ -69,45 +69,29 @@ const char * field_state_name( FieldState s )
 
 namespace {
 
-struct LessFieldDimension {
-  LessFieldDimension() {}
-
-  bool operator()( const FieldBase::Dim & lhs , const FieldBase::Dim & rhs )
-  {
-    unsigned L = lhs.type ;
-    unsigned R = rhs.type ;
-    if ( L == R ) {
-      L = lhs.part->schema_ordinal();
-      R = rhs.part->schema_ordinal();
-    }
-    return L < R ;
-  }
+struct DimLess {
+  bool operator()( const FieldBase::Dim & lhs , const unsigned rhs ) const
+    { return lhs < rhs ; }
 };
 
 std::vector<FieldBase::Dim>::const_iterator
-find( const std::vector<FieldBase::Dim> & v , const FieldBase::Dim & p )
+find( const std::vector<FieldBase::Dim> & v , unsigned key )
 {
-  LessFieldDimension cmp ;
   std::vector<FieldBase::Dim>::const_iterator
-    i = std::lower_bound( v.begin() , v.end() , p , cmp );
-  if ( i != v.end() && ( i->part != p.part || i->type != p.type ) ) {
-    i = v.end();
-  }
+    i = std::lower_bound( v.begin() , v.end() , key , DimLess() );
+
+  if ( i != v.end() && i->key != key ) { i = v.end(); }
+
   return i ;
 }
 
 void insert( std::vector<FieldBase::Dim> & v , const FieldBase::Dim & d )
 {
-  LessFieldDimension cmp ;
-
   std::vector<FieldBase::Dim>::iterator
-    i = std::lower_bound( v.begin() , v.end() , d , cmp );
+    i = std::lower_bound( v.begin() , v.end() , d );
 
-  if ( i == v.end() || i->part != d.part || i->type != d.type ) {
-    v.insert( i , d );
-  }
+  if ( i == v.end() || i->key != d.key ) { v.insert( i , d ); }
 }
-
 
 }
 
@@ -467,13 +451,16 @@ void Schema::declare_field_relation(
 namespace {
 
 void print_field_dim( std::ostream & msg ,
-                      const unsigned n ,
+                      const FieldBase & f ,
                       const FieldBase::Dim & d )
 {
-  msg << "( " << entity_type_name( d.type );
-  msg << " , Part[" ;
-  msg << d.part->name();
-  msg << "] , " << d.stride[0] ;
+  const Part   & p = f.schema().get_part( d.ordinal() );
+  const unsigned n = f.number_of_dimensions();
+
+  msg << "( " << entity_type_name( d.type() );
+  msg << " , " ;
+  msg << p.name();
+  msg << " , " << d.stride[0] ;
   for ( unsigned j = 1 ; j < n ; ++j ) {
     if ( d.stride[j-1] ) {
       msg << " , " << ( d.stride[j] / d.stride[j-1] );
@@ -504,9 +491,9 @@ void assert_field_dimension_compatible(
                             field.dimension_tags()[6] );
     msg << "[" << field.name() << "] " ;
 
-    print_field_dim( msg , field.number_of_dimensions() , a );
+    print_field_dim( msg , field , a );
     msg << " INCOMPATIBLE WITH " ;
-    print_field_dim( msg , field.number_of_dimensions() , b );
+    print_field_dim( msg , field , b );
     throw std::runtime_error( msg.str() );
   }
 }
@@ -531,15 +518,15 @@ void Schema::declare_field_stride(
   assert_same_schema( method , arg_field.m_schema );
   assert_same_schema( method , arg_part.m_schema );
 
-  FieldBase::Dim tmp( arg_entity_type , arg_part );
-  {
-    unsigned j ;
-    for ( j = 0 ; j < arg_field.m_num_dim ; ++j ) {
+  FieldBase::Dim tmp( arg_entity_type , arg_part.schema_ordinal() );
+
+  if ( arg_field.m_num_dim ) {
+    for ( unsigned j = 0 ; j < arg_field.m_num_dim ; ++j ) {
       tmp.stride[j] = arg_stride[j] ;
     }
-    for ( ; j < MaximumFieldDimension ; ++j ) {
-      tmp.stride[j] = 0 ;
-    }
+  }
+  else {
+    tmp.stride[0] = 1 ; // For scalar fields
   }
 
   // If a dimension is defined for a superset of the part
@@ -556,9 +543,9 @@ void Schema::declare_field_stride(
   for ( i = dim_map.begin() ; i != dim_map.end() ; ) {
     bool remove = false ;
 
-    if ( arg_entity_type == i->type ) {
+    if ( arg_entity_type == i->type() ) {
 
-      const Part & part = * i->part ;
+      const Part & part = get_part( i->ordinal() );
 
       if ( ( arg_part == part ) || ( contain( arg_part.subsets() , part ) ) ) {
         redundant = true ;
@@ -601,12 +588,14 @@ void Schema::clean_field_dimension()
 
     for ( size_t i = 0 ; i < dim_map.size() ; ++i ) {
       const FieldBase::Dim & dim = dim_map[i] ;
-      const PartSet  & sub = dim_map[i].part->subsets();
+      const EntityType type = dim.type();
+      const Part     & part = get_part( dim.ordinal() );
+      const PartSet  & sub = part.subsets();
 
       for ( size_t j = 0 ; j < dim_map.size() ; ++j ) {
-        if ( i != j &&
-             dim.type == dim_map[j].type &&
-             contain( sub , * dim_map[j].part ) ) {
+        const Part     & p = get_part( dim_map[j].ordinal() );
+        const EntityType t = dim_map[j].type();
+        if ( i != j && type == t && contain( sub , p ) ) {
           assert_field_dimension_compatible( method, field, dim, dim_map[j] );
           flag[j] = 1 ;
         }
@@ -632,36 +621,33 @@ FieldBase::dimension( EntityType etype , const Part & part ) const
 {
   static const FieldBase::Dim empty ;
 
-  FieldBase::Dim tmp( etype , part );
-
   const std::vector<FieldBase::Dim> & dim_map = dimension();
-
   const std::vector<FieldBase::Dim>::const_iterator ie = dim_map.end() ;
-
-  std::vector<FieldBase::Dim>::const_iterator i = find( dim_map , tmp );
+        std::vector<FieldBase::Dim>::const_iterator i ;
 
   const PartSet::const_iterator ipe = part.supersets().end();
         PartSet::const_iterator ip  = part.supersets().begin() ;
 
-  for ( ; i == ie && ip != ipe ; ++ip ) {
-    tmp.part = *ip ;
-    i = find( dim_map , tmp );
+  unsigned key = Dim::key_value( etype , part.schema_ordinal() );
+
+  while ( ie == ( i = find( dim_map , key ) ) && ipe != ip ) {
+    key = Dim::key_value( etype , (*ip)->schema_ordinal() );
+    ++ip ;
   }
 
-  return i == ie ? empty : *i ;
+  return ie == i ? empty : *i ;
 }
 
-unsigned FieldBase::max_size( EntityType entity_type ) const
+unsigned FieldBase::max_size( EntityType etype ) const
 {
   unsigned max = 0 ;
 
   const std::vector<FieldBase::Dim> & dim_map = dimension();
-
   const std::vector<FieldBase::Dim>::const_iterator ie = dim_map.end();
         std::vector<FieldBase::Dim>::const_iterator i  = dim_map.begin();
 
   for ( ; i != ie ; ++i ) {
-    if ( i->type == entity_type ) {
+    if ( i->type() == etype ) {
       const unsigned len = m_num_dim ? i->stride[ m_num_dim - 1 ] : 1 ;
       if ( max < len ) { max = len ; }
     }
@@ -700,7 +686,7 @@ std::ostream & print( std::ostream & s ,
   for ( std::vector<FieldBase::Dim>::const_iterator
         i = dim_map.begin() ; i != dim_map.end() ; ++i ) {
     s << std::endl << b << "  " ;
-    print_field_dim( s , field.number_of_dimensions() , *i );
+    print_field_dim( s , field , *i );
   }
   s << std::endl << b << "}" ;
   return s ;

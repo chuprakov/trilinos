@@ -1627,7 +1627,12 @@ void oct_tree_partition_fine(
         }
         tmp_key.set_index( d , ( ki.index(d) + kj.index(d) + 1 ) / 2 );
       }
-      Copy<2>( & local_tmp[ p * 2 ] , tmp_key.value() );
+      { // Work-around for shoddy pathscale compiler:
+              unsigned * const dst = & local_tmp[ p * 2 ];
+        const unsigned * const src = tmp_key.value();
+        Copy<2>( dst , src );
+        // Copy<2>( & local_tmp[ p * 2 ] , tmp_key.value() );
+      }
     }
 
     all_reduce_bor( comm , & local_tmp[0] , & global_tmp[0] , 2 * p_size );

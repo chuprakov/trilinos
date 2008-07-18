@@ -276,31 +276,50 @@ void deduce_part_relations( const Entity & e_from ,
   const Mesh     & mesh   = k_to.mesh();
   const Schema   & schema = mesh.schema();
 
-  Part * const univ_part = & schema.universal_part();
-  Part * const uses_part = & schema.uses_part();
-  Part * const owns_part = & schema.owns_part();
+  const unsigned univ_part_ord = schema.universal_part().schema_ordinal();
+  const unsigned uses_part_ord = schema.uses_part().schema_ordinal();
+  const unsigned owns_part_ord = schema.owns_part().schema_ordinal();
 
   const std::vector<PartRelation> & part_rel = schema.get_part_relations();
 
-  // All parts of 'e_from'
+  const std::pair<const unsigned *, const unsigned *>
+    kernel_superset_ordinals = k_from.superset_part_ordinals();
 
-  PartSet tmp ;
+  if ( to_parts.empty() ) {
+    to_parts.reserve( kernel_superset_ordinals.second -
+                      kernel_superset_ordinals.first );
 
-  k_from.supersets( tmp );
+    for ( const unsigned * i = kernel_superset_ordinals.first ;
+                           i < kernel_superset_ordinals.second ; ++i ) {
+      if ( univ_part_ord != *i && uses_part_ord != *i && owns_part_ord != *i ){
+        Part * const p = & schema.get_part( *i );
+        to_parts.push_back( p );
+      }
+    }
+  }
+  else {
 
-  for ( PartSet::iterator i = tmp.begin() ; i != tmp.end() ; ++i ) {
-    if ( *i != univ_part && *i != uses_part && *i != owns_part ) {
-      insert( to_parts , **i );
+    for ( const unsigned * i = kernel_superset_ordinals.first ;
+                           i < kernel_superset_ordinals.second ; ++i ) {
+      if ( univ_part_ord != *i && uses_part_ord != *i && owns_part_ord != *i ){
+        insert( to_parts , schema.get_part( *i ) );
+      }
     }
   }
 
+  // Now the part-relation based contributions:
+
   for ( std::vector<PartRelation>::const_iterator
         j = part_rel.begin() ; j != part_rel.end() ; ++j ) {
+
     const PartRelation & stencil = *j ;
 
-    if ( contain( tmp , * stencil.m_root ) &&
-         0 <= (*stencil.m_function)( t_from , t_to , ident , kind ) ) {
-      insert( to_parts , * stencil.m_target );
+    for ( const unsigned * i = kernel_superset_ordinals.first ;
+                           i < kernel_superset_ordinals.second ; ++i ) {
+      if ( *i == stencil.m_root->schema_ordinal() &&
+            0 <= (*stencil.m_function)( t_from , t_to , ident , kind ) ) {
+          insert( to_parts , * stencil.m_target );
+      }
     }
   }
 }
@@ -422,17 +441,15 @@ void Mesh::declare_relation( Entity & e_from ,
     }
   }
 
-  set_field_relations( e_from , e_to , identifier , kind );
-
   {
     PartSet add , del ;
 
     deduce_part_relations( e_from , e_to , identifier , kind , add );
 
-    if ( ! add.empty() ) {
-      internal_change_entity_parts( e_to , add , del );
-    }
+    internal_change_entity_parts( e_to , add , del );
   }
+
+  set_field_relations( e_from , e_to , identifier , kind );
 }
 
 void Mesh::declare_relation( Entity & entity ,
@@ -495,7 +512,7 @@ void Mesh::destroy_relation( Entity & e1 , Entity & e2 , unsigned kind )
   // When removing a relationship may need to
   // remove part membership and set field relation pointer to NULL
 
-  PartSet add , del ;
+  PartSet del ;
   bool to_e1 = false ;
 
   RelationSet::iterator i ;
@@ -527,21 +544,26 @@ void Mesh::destroy_relation( Entity & e1 , Entity & e2 , unsigned kind )
     }
   }
 
+  Entity & e_to = to_e1 ? e1 : e2 ;
+
+  {
+    PartSet keep ;
+
+    deduce_part_relations( e_to , keep );
+
+    if ( ! keep.empty() ) {
+      // Eliminate the 'keep' from the accumulated 'del'
+
+      for ( PartSet::iterator j = del.end() ; j != del.begin() ; ) {
+        --j ;
+        if ( contain( keep , **j ) ) { j = del.erase( j ); }
+      }
+    }
+  }
+
   if ( ! del.empty() ) {
-    Entity & e_to = to_e1 ? e1 : e2 ;
-
-    deduce_part_relations( e_to , add );
-
-    // Eliminate the 'add' from the accumulated 'del'
-
-    for ( PartSet::iterator j = del.end() ; j != del.begin() ; ) {
-      --j ;
-      if ( contain( add , **j ) ) { j = del.erase( j ); }
-    }
-
-    if ( ! del.empty() ) {
-      internal_change_entity_parts( e_to , add , del );
-    }
+    PartSet add ;
+    internal_change_entity_parts( e_to , add , del );
   }
 }
 
@@ -552,46 +574,73 @@ void Mesh::internal_propagate_part_changes(
   Entity        & entity ,
   const PartSet & removed )
 {
+  const EntityType etype = entity.entity_type();
   Part * const owns_part = & m_schema.owns_part();
   Part * const uses_part = & m_schema.uses_part();
-  Part * const univ_part = & m_schema.universal_part();
 
   RelationSpan rel = entity.relations();
 
   for ( ; rel ; ++rel ) {
+    const unsigned rel_ident = rel->identifier();
+    const unsigned rel_kind  = rel->kind();
+
     if ( rel->forward() ) {
 
       Entity & e_to = * rel->entity();
 
-      // Deduce parts for 'e_to' - these are the 'add' parts for 'e_to'
-      // Any non-parallel part that I removed that is not deduced for
-      // 'e_to' must be removed from 'e_to'
-
-      PartSet to_add ;
       PartSet to_del ;
+      PartSet to_add ;
 
-      deduce_part_relations( e_to , to_add );
+      if ( ! removed.empty() ) {
 
-      for ( PartSet::const_iterator
-            j = removed.begin() ; j != removed.end() ; ++j ) {
-        Part * const p = *j ;
+        const EntityType t_to = e_to.entity_type();
 
-        if ( p != owns_part &&
-             p != uses_part &&
-             p != univ_part &&
-             ! contain( to_add , *p ) ) {
-          to_del.push_back( p );
+        // Deduce parts for 'e_to' from all upward relations.
+        // Any non-parallel part that I removed that is not deduced for
+        // 'e_to' must be removed from 'e_to'
+
+        deduce_part_relations( e_to , to_add );
+
+        to_del.reserve( removed.size() );
+
+        for ( PartSet::const_iterator
+              j = removed.begin() ; j != removed.end() ; ++j ) {
+          Part * const p = *j ;
+
+          if ( p != owns_part && p != uses_part && ! contain( to_add , *p ) ) {
+
+            to_del.push_back( p );
+
+            // What if removing a part with a part-relation ?
+
+            const std::vector<PartRelation> & part_rel =
+              m_schema.get_part_relations();
+
+            for ( std::vector<PartRelation>::const_iterator
+                  k = part_rel.begin() ; k != part_rel.end() ; ++k ) {
+
+              const PartRelation & stencil = *k ;
+
+              if ( p == stencil.m_root &&
+                   0 <= (*stencil.m_function)(etype,t_to,rel_ident,rel_kind) &&
+                   ! contain( to_add , * stencil.m_target ) ) {
+              }
+            }
+          }
         }
+      }
+      else {
+        deduce_part_relations( entity , e_to , rel_ident , rel_kind , to_add );
       }
 
       internal_change_entity_parts( e_to , to_add , to_del );
 
-      set_field_relations( entity, e_to, rel->identifier(), rel->kind() );
+      set_field_relations( entity, e_to, rel_ident , rel_kind );
     }
     else {
       Entity & e_from = * rel->entity();
 
-      set_field_relations( e_from, entity, rel->identifier(), rel->kind() );
+      set_field_relations( e_from, entity, rel_ident, rel_kind );
     }
   }
 }

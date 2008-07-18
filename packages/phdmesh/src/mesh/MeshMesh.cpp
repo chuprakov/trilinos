@@ -77,7 +77,11 @@ Mesh::~Mesh()
     }
     eset.clear();
 
-    while ( kset.size() ) { destroy_kernel( kset.begin() ); }
+    while ( kset.size() ) {
+      KernelSet::iterator ik = kset.end();
+      --ik ;
+      destroy_kernel( ik );
+    }
   }
 }
 
@@ -145,31 +149,82 @@ Entity * Mesh::get_entity( entity_key_type key ,
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-Entity & Mesh::declare_entity( entity_key_type key )
+Entity & Mesh::declare_entity( entity_key_type key ,
+                               const std::vector<Part*> & parts ,
+                               int new_owner )
 {
   const char method[] = "phdmesh::Mesh::declare_entity" ;
 
-  if ( entity_id( key ) == 0 ) {
-    std::string msg ;
-    msg.append( method );
-    msg.append( " FAILED : Not allowed to have identifier = zero" );
-    throw std::logic_error( msg );
+  const bool bad_key = 0 == entity_id( key );
+  const bool bad_own = ((int) m_parallel_size ) <= new_owner ;
+
+  if ( bad_key || bad_own ) {
+    std::ostringstream msg ;
+    msg << method ;
+    msg << "( " ;
+    print_entity_key( msg , key );
+    if ( bad_key ) { msg << " : BAD VALUE" ; }
+    msg << " , {" ;
+    for ( std::vector<Part*>::const_iterator
+          i = parts.begin() ; i != parts.end() ; ++i ) {
+      msg << " " << (*i)->name();
+    }
+    msg << " } , " ;
+    msg << new_owner ;
+    if ( bad_own ) { msg << " : BAD VALUE" ; }
+    msg << " ) FAILED" ;
+    throw std::runtime_error( msg.str() );
   }
 
-  const unsigned entity_type = phdmesh::entity_type( key );
-
-  EntitySet & eset = m_entities[ entity_type ] ;
+  EntitySet & eset = m_entities[ entity_type( key ) ] ;
 
   const std::pair< EntitySet::iterator , bool > result = eset.insert( key );
 
-  if ( result.second ) {
+  // Determine whether to change the parts,
+  // which is an expensive operation.
 
-    Part * const owns = & m_schema.owns_part();
-    PartSet add , rem ;
-    add.push_back( owns );
-    internal_change_entity_parts( * result.first , add , rem );
+  const KernelSet::const_iterator k = result.first->m_kernel ;
 
-    change_entity_owner( * result.first , m_parallel_rank );
+  std::vector<Part*> add ;
+  std::vector<Part*> rem ;
+
+  Part * const owns = & m_schema.owns_part();
+
+  if ( result.second ) { // New entity, must add all parts
+    add.reserve( parts.size() + 1 );
+    add.assign( parts.begin() , parts.end() );
+
+    // If owner is not given then it is the local processor
+
+    if ( new_owner < 0 ) { new_owner = m_parallel_rank ; }
+
+    if ( new_owner == (int) m_parallel_rank ) { add.push_back( owns ); }
+  }
+  else { // Existing entity
+
+    if ( ! k->member_all( parts ) ) { // Must add parts
+      add.reserve( parts.size() + 1 );
+      add.assign( parts.begin() , parts.end() );
+    }
+
+    const unsigned current_owner = result.first->m_owner_rank ;
+
+    if ( new_owner < 0 ) { new_owner = current_owner ; }
+
+    if ( new_owner != (int) current_owner ) {
+      if ( new_owner == (int) m_parallel_rank ) { // Change to local owner
+        add.push_back( owns );
+      }
+      else { // Change to remote owner
+        rem.push_back( owns );
+      }
+    }
+  }
+
+  result.first->m_owner_rank = new_owner ;
+
+  if ( ! add.empty() || ! rem.empty() ) {
+    change_entity_parts( * result.first , add , rem );
   }
 
   return * result.first ;
@@ -183,162 +238,269 @@ void Mesh::change_entity_parts( Entity & e ,
 {
   const char method[] = "phdmesh::Mesh::change_entity_parts" ;
 
-  // Do not allow a PartRelation::m_target part to appear in the input
+  // Change required if:
+  // (1) Entity not a member of a kernel
+  // (2) Kernel is not a member of all add_parts
+  // (3) Kernel is a member of any remove_parts
 
-  const std::vector<PartRelation> & part_rel = m_schema.get_part_relations();
+  const KernelSet::iterator k = e.m_kernel ;  
 
-  for ( std::vector<PartRelation>::const_iterator
-        i = part_rel.begin() ; i != part_rel.end() ; ++i ) {
-    bool error_add = contain( add_parts , * i->m_target );
-    bool error_rem = contain( remove_parts , * i->m_target );
-    if ( error_add || error_rem ) {
-      std::ostringstream msg ;
-      msg << method ;
-      msg << "( " ;
-      print_entity_key( msg , e.key() );
-      msg << " , " ;
-      if ( error_add ) { msg << "{ " << i->m_target->name() << " }" ; }
-      msg << " , " ;
-      if ( error_rem ) { msg << "{ " << i->m_target->name() << " }" ; }
-      msg << " ) FAILED due to explicit use of this relation-part." ;
+  const bool require_change = ( ! k ) ||
+                              ( ! k->member_all( add_parts ) ) ||
+                              (   k->member_any( remove_parts ) );
+
+  if ( require_change ) {
+
+    // Include supersets of add parts and subsets of removed parts.
+
+    PartSet a_parts( add_parts );
+    PartSet r_parts( remove_parts );
+
+    order( a_parts );
+    order( r_parts );
+
+    for ( PartSet::const_iterator
+          ir = remove_parts.begin(); ir != remove_parts.end() ; ++ir ) {
+      Part & rp = **ir ;
+
+      for ( std::vector<Part*>::const_iterator
+              jp =  rp.subsets().begin() ;
+              jp != rp.subsets().end() ; ++jp ) {
+        insert( r_parts , **jp );
+      }
     }
-  }
 
-  internal_change_entity_parts( e , add_parts , remove_parts );
+    for ( PartSet::const_iterator
+          ia = add_parts.begin(); ia != add_parts.end() ; ++ia ) {
+      Part & ap = **ia ;
+
+      for ( std::vector<Part*>::const_iterator
+              jp =  ap.supersets().begin() ;
+              jp != ap.supersets().end() ; ++jp ) {
+        insert( a_parts , **jp );
+      }
+    }
+
+    // Do not allow an intersection-part to explicitly appear
+
+    for ( std::vector<Part*>::const_iterator
+          i = a_parts.begin() ; i != a_parts.end() ; ++i ) {
+      if ( ! (*i)->intersection_of().empty() ) {
+        std::ostringstream msg ;
+        msg << method ;
+        msg << "( " ;
+        print_entity_key( msg , e.key() );
+        msg << " , { " ;
+        msg << (*i)->name();
+        msg << " } , ) FAILED due to explicit use of this intersection-part." ;
+        throw std::runtime_error( msg.str() );
+      }
+    }
+
+    for ( std::vector<Part*>::const_iterator
+          i = r_parts.begin() ; i != r_parts.end() ; ++i ) {
+      if ( ! (*i)->intersection_of().empty() ) {
+        std::ostringstream msg ;
+        msg << method ;
+        msg << "( " ;
+        print_entity_key( msg , e.key() );
+        msg << " , , { " ;
+        msg << (*i)->name();
+        msg << " } ) FAILED due to explicit use of this intersection-part." ;
+        throw std::runtime_error( msg.str() );
+      }
+    }
+
+    // Do not allow a PartRelation::m_target part to appear in the input
+
+    const std::vector<PartRelation> & part_rel = m_schema.get_part_relations();
+
+    for ( std::vector<PartRelation>::const_iterator
+          i = part_rel.begin() ; i != part_rel.end() ; ++i ) {
+      bool error_add = contain( a_parts , * i->m_target );
+      bool error_rem = contain( r_parts , * i->m_target );
+      if ( error_add || error_rem ) {
+        std::ostringstream msg ;
+        msg << method ;
+        msg << "( " ;
+        print_entity_key( msg , e.key() );
+        msg << " , " ;
+        if ( error_add ) { msg << "{ " << i->m_target->name() << " }" ; }
+        msg << " , " ;
+        if ( error_rem ) { msg << "{ " << i->m_target->name() << " }" ; }
+        msg << " ) FAILED due to explicit use of this relation-part." ;
+        throw std::runtime_error( msg.str() );
+      }
+    }
+
+    internal_change_entity_parts( e , a_parts , r_parts );
+  }
 }
 
 //----------------------------------------------------------------------
 
+namespace {
+
+void merge_in( std::vector<unsigned> & vec , const PartSet & parts )
+{
+  std::vector<unsigned>::iterator i = vec.begin();
+  PartSet::const_iterator ip = parts.begin() ;
+
+  for ( ; i != vec.end() && ip != parts.end() ; ++i ) {
+
+    const unsigned ord = (*ip)->schema_ordinal();
+
+    if ( ord <= *i ) {
+      if ( ord < *i ) { i = vec.insert( i , ord ); }
+      // Now have: ord == *i
+      ++ip ;
+    }
+  }
+
+  for ( ; ip != parts.end() ; ++ip ) {
+    const unsigned ord = (*ip)->schema_ordinal();
+    vec.push_back( ord );
+  }
+}
+
+}
+
+// The 'add_parts' and 'rem_parts' are completely disjoint.
+
 void Mesh::internal_change_entity_parts(
   Entity & e ,
   const PartSet & add_parts ,
-  const PartSet & remove_parts )
+  const PartSet & rem_parts )
 {
-  const char method[] = "phdmesh::Mesh::change_entity_parts" ;
-
-  PartSet a_parts ;
-  PartSet r_parts ;
-
-  //--------------------------------
-  // If adding a part then add all supersets of the part
-
-  for ( std::vector<Part*>::const_iterator
-          ip =  add_parts.begin() ;
-          ip != add_parts.end() ; ++ip ) {
-    Part * const ap = *ip ;
-    insert( a_parts , *ap );
- 
-    for ( std::vector<Part*>::const_iterator
-            jp =  ap->supersets().begin() ;
-            jp != ap->supersets().end() ; ++jp ) {
-      insert( a_parts , **jp );
-    }
-  }
-
-  //--------------------------------
-  // If removing a part then remove all subsets of that part.
-  // This will include the 'intersection' parts.
-
-  for ( std::vector<Part*>::const_iterator
-          ip =  remove_parts.begin() ;
-          ip != remove_parts.end() ; ++ip ) {
-    Part * const rp = *ip ;
-    insert( r_parts , *rp );
-    for ( std::vector<Part*>::const_iterator
-            jp =  rp->subsets().begin() ;
-            jp != rp->subsets().end() ; ++jp ) {
-      insert( r_parts , **jp );
-    }
-  }
-
-  //--------------------------------
-  // Verify that r_parts and a_parts are disjoint and
-  // that the remove parts does not contain the universal part.
-
-  if ( intersect( a_parts , r_parts ) ||
-       contain( r_parts , m_schema.universal_part() ) ) {
-    std::string msg ;
-    msg.append( method );
-    msg.append( " FAILED : Bad combination of add_parts and remove_parts" );
-    msg.append( " add_parts = {" );
-    for ( PartSet::iterator i = a_parts.begin() ; i != a_parts.end() ; ++i ) {
-      msg.append( " " );
-      msg.append( (*i)->name() );
-    }
-    msg.append( " }  remove_parts = {" );
-    for ( PartSet::iterator i = r_parts.begin() ; i != r_parts.end() ; ++i ) {
-      msg.append( " " );
-      msg.append( (*i)->name() );
-    }
-    msg.append( " }" );
-    throw std::logic_error( msg );
-  }
-
-  //--------------------------------
-
-  bool changed = false ;
-
-  std::vector<Part*> parts ;
-
-  // Start with existing parts:
+  // Change if:
+  // (1) no kernel
+  // (2) any add_parts are not in the kernel
+  // (3) any rem_parts are in the kernel
 
   const KernelSet::iterator ik_old = e.m_kernel ;
   const unsigned            i_old  = e.m_kernel_ord ;
 
-  if ( ik_old ) {
+  const bool require_change =
+    ( ! ik_old ) ||
+    ( ! ik_old->member_all( add_parts ) ) ||
+    (   ik_old->member_any( rem_parts ) ) ;
 
-    ik_old->supersets( parts );
+  if ( require_change ) {
 
-    // Remove parts:
+    Part * const univ_part = & m_schema.universal_part();
 
-    PartSet::iterator j = parts.begin();
-    PartSet::iterator i = r_parts.begin() ;
-    for ( ; i != r_parts.end() && j != parts.end() ; ++i ) {
-      Part * const i_part = *i ;
-      const unsigned i_ord = i_part->schema_ordinal();
+    //----------------------------------
+#if 0
+    // Verify ordered and complete:
+    for ( PartSet::const_iterator
+          i = add_parts.begin() ; i != add_parts.end() ; ++i ) {
 
-      while ( j != parts.end() && (*j)->schema_ordinal() < i_ord ) { ++j ; }
+      bool ok = add_parts.begin() == i ||
+                (i[-1])->schema_ordinal() < (*i)->schema_ordinal() ;
 
-      if ( j != parts.end() && *j == i_part ) {
-        j = parts.erase( j );
-        changed = true ;
-      }
-    }
-  }
-
-  // Add parts:
-  for ( PartSet::iterator
-          i = a_parts.begin() ;
-          i != a_parts.end() ; ++i ) {
-    Part & p = **i ;
-
-    if ( ! contain( parts , p ) ) {
-      // Add this part, check if any 'intersection' subsets
-      // now fall within the collection of parts.
-
-      insert( parts , p );
+      const PartSet super = (*i)->supersets();
 
       for ( PartSet::const_iterator
-              j = p.subsets().begin() ;
-              j != p.subsets().end() ; ++j ) {
-        Part & p_sub = **j ;
-        if ( contain( parts , p_sub.intersection_of() ) ) {
-          insert( parts , p_sub );
-        }
+            ip = super.begin() ; ok && ip != super.end() ; ++ip ) {
+        if ( univ_part != *ip ) { ok = contain( add_parts , **ip ); }
       }
 
-      changed = true ;
+      if ( ! ok ) {
+        std::ostringstream msg ;
+        msg << "internal_change_entity_parts:" ;
+        for ( PartSet::const_iterator j =
+              add_parts.begin() ; j != add_parts.end() ; ++j ) {
+          if ( j == i ) {
+            msg << " FAILED( " ;
+            msg << " " << (*j)->name() << "[" << (*j)->schema_ordinal() << "]" ;
+            msg << " )" ;
+          }
+          else {
+            msg << " " << (*j)->name() << "[" << (*j)->schema_ordinal() << "]" ;
+          }
+        }
+        throw std::logic_error( msg.str() );
+      }
     }
-  }
 
-  //--------------------------------
+    //----------------------------------
 
-  if ( changed ) {
+    for ( PartSet::const_iterator
+          i = rem_parts.begin() ; i != rem_parts.end() ; ++i ) {
+      const PartSet & sub = (*i)->subsets();
+      if ( ! sub.empty() && ! contain( rem_parts , sub ) ) {
+        std::ostringstream msg ;
+        msg << "internal_change_entity_parts:" ;
+        for ( PartSet::const_iterator
+              j = rem_parts.begin() ; j != rem_parts.end() ; ++j ) {
+          if ( j == i ) {
+            msg << " FAILED( " << (*j)->name() << " )" ;
+          }
+          else {
+            msg << " " << (*j)->name();
+          }
+        }
+        throw std::logic_error( msg.str() );
+      }
+    }
 
+#endif
+    //----------------------------------
+
+    PartSet parts_removed ;
+
+    std::vector<unsigned> parts_total ;
+
+    if ( ! ik_old ) {
+      const unsigned univ_ord = univ_part->schema_ordinal();
+
+      parts_total.reserve( add_parts.size() + 1 );
+
+      parts_total.push_back( univ_ord );
+    }
+    else {
+      // Keep any of the existing kernel's parts
+      // that are not a remove part.
+      // This will include the 'intersection' parts.
+      //
+      // These parts are properly ordered and unique.
+
+      const std::pair<const unsigned *, const unsigned*>
+        kernel_parts = ik_old->superset_part_ordinals();
+
+      const unsigned number_parts = kernel_parts.second - kernel_parts.first ;
+
+      parts_total.reserve( number_parts + add_parts.size() );
+
+      if ( rem_parts.empty() ) {
+        parts_total.assign( kernel_parts.first , kernel_parts.second );
+      }
+      else {
+        for ( const unsigned * ik = kernel_parts.first ;
+                               ik < kernel_parts.second ; ++ik ) {
+
+          Part * const p = & m_schema.get_part( *ik );
+
+          if ( ! contain( rem_parts , *p ) ) {
+            parts_total.push_back( *ik );
+          }
+          else {
+            parts_removed.push_back( p );
+          }
+        }
+      }
+    }
+
+    merge_in( parts_total , add_parts );
+
+    //--------------------------------
     // Move the entity to the new kernel.
-    KernelSet::iterator ik = declare_kernel( e.entity_type() , parts );
+
+    KernelSet::iterator ik =
+      declare_kernel( e.entity_type(), parts_total.size(), & parts_total[0] );
 
     // If changing kernels then copy its field values from old to new kernel
+
     if ( ik_old ) {
       Kernel::copy_fields( *ik , ik->m_size , *ik_old , i_old );
     }
@@ -357,7 +519,7 @@ void Mesh::internal_change_entity_parts(
 
     // Propagate part changes through the entity's relations.
 
-    internal_propagate_part_changes( e , r_parts );
+    internal_propagate_part_changes( e , parts_removed );
   }
 }
 

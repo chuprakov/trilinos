@@ -56,6 +56,13 @@ struct KernelLess {
  */
 class Kernel : private SetvMember<const unsigned * const> {
 private:
+  friend class Mesh ;
+  friend class Setv<Kernel,KernelLess> ;
+  friend class SetvIter<Kernel,true> ;
+  friend class SetvIter<Kernel,false> ;
+  friend class SetvIter<const Kernel,true> ;
+  friend class SetvIter<const Kernel,false> ;
+
   struct DataMap {
 /*
     const DimensionNoTag * m_dim ;
@@ -69,6 +76,8 @@ private:
   EntityType  m_entity_type ; // Type of mesh entities
   unsigned    m_size ;        // Number of entities
   unsigned    m_capacity ;    // Capacity for entities
+  unsigned    m_alloc_size ;  // Allocation size of this kernel
+  Setv<Kernel,KernelLess>::iterator m_kernel ;
   DataMap   * m_field_map ;   // Field value data map, shared
   Entity   ** m_entities ;    // Array of entity pointers,
                               // begining of field value memory.
@@ -81,9 +90,6 @@ public:
 
   /** This kernel's supersets */
   void supersets( PartSet & ) const ;
-
-  /** This kernel's supersets' schema ordinals */
-  void supersets( std::vector<unsigned> & ) const ;
 
   /** The given part is a superset of this kernel */
   bool has_superset( const Part & ) const ;
@@ -106,6 +112,28 @@ public:
   iterator end()   const { return m_entities + m_size ; }
 
   //--------------------------------
+  /** Kernel is a member of the given part */
+  bool member( const Part & ) const ;
+
+  /** Kernel is a member of all of the given parts. */
+  bool member_all( const std::vector<Part*> & ) const ;
+
+  /** Kernel is a member of any of the given parts. */
+  bool member_any( const std::vector<Part*> & ) const ;
+
+  //--------------------------------
+  /** Query kernel's supersets' ordinals.
+   *  Predominantly an internally used function where the performance 
+   *  penalty for filling a vector of Part pointers is too costly.
+   */
+  std::pair<const unsigned *, const unsigned *>
+    superset_part_ordinals() const
+    {
+      const unsigned * const k = key();
+      return std::pair<const unsigned *, const unsigned *>( k + 1 , k + k[0] );
+    }
+
+  unsigned allocation_size() const { return m_alloc_size ; }
 
   std::ostream & print( std::ostream & , const std::string & ) const ;
 
@@ -120,13 +148,6 @@ private:
   Kernel( Mesh & , EntityType , const unsigned * );
 
   void update_state();
-
-  friend class Mesh ;
-  friend class Setv<Kernel,KernelLess> ;
-  friend class SetvIter<Kernel,true> ;
-  friend class SetvIter<Kernel,false> ;
-  friend class SetvIter<const Kernel,true> ;
-  friend class SetvIter<const Kernel,false> ;
 
   static void copy_fields( Kernel & k_dst , unsigned i_dst ,
                            Kernel & k_src , unsigned i_src );

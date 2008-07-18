@@ -56,11 +56,12 @@ void memory_zero( unsigned char * dst , unsigned n )
 
 namespace {
 
+inline
 unsigned kernel_counter( const unsigned * const key )
 { return key[ *key ]; }
 
 // The part count and parts are equal
-bool kernel_equal( const unsigned * lhs , const unsigned * rhs )
+bool kernel_part_equal( const unsigned * lhs , const unsigned * rhs )
 {
   bool result = true ;
   {
@@ -75,6 +76,59 @@ bool kernel_equal( const unsigned * lhs , const unsigned * rhs )
 
 }
 
+//----------------------------------------------------------------------
+
+bool Kernel::member( const Part & part ) const
+{
+  const unsigned * const key_base = key();
+  const unsigned * const i_beg = key_base + 1 ;
+  const unsigned * const i_end = key_base + key_base[0] ;
+
+  const unsigned ord = part.schema_ordinal();
+  const unsigned * const i = std::lower_bound( i_beg , i_end , ord );
+
+  return i_end != i && ord == *i ;
+}
+
+bool Kernel::member_all( const std::vector<Part*> & parts ) const
+{
+  const unsigned * const key_base = key();
+  const unsigned * const i_beg = key_base + 1 ;
+  const unsigned * const i_end = key_base + key_base[0] ;
+
+  const std::vector<Part*>::const_iterator ip_end = parts.end();
+        std::vector<Part*>::const_iterator ip     = parts.begin() ; 
+
+  bool result_all = true ;
+
+  for ( ; result_all && ip_end != ip ; ++ip ) {
+    const unsigned ord = (*ip)->schema_ordinal();
+    const unsigned * const i = std::lower_bound( i_beg , i_end , ord );
+    result_all = i_end != i && ord == *i ;
+  }
+  return result_all ;
+}
+
+bool Kernel::member_any( const std::vector<Part*> & parts ) const
+{
+  const unsigned * const key_base = key();
+  const unsigned * const i_beg = key_base + 1 ;
+  const unsigned * const i_end = key_base + key_base[0] ;
+
+  const std::vector<Part*>::const_iterator ip_end = parts.end();
+        std::vector<Part*>::const_iterator ip     = parts.begin() ; 
+
+  bool result_none = true ;
+
+  for ( ; result_none && ip_end != ip ; ++ip ) {
+    const unsigned ord = (*ip)->schema_ordinal();
+    const unsigned * const i = std::lower_bound( i_beg , i_end , ord );
+    result_none = i_end == i || ord != *i ;
+  }
+  return ! result_none ;
+}
+
+//----------------------------------------------------------------------
 // The part count and part ordinals are less
 bool KernelLess::operator()( const unsigned * lhs ,
                              const unsigned * rhs ) const
@@ -87,18 +141,20 @@ bool KernelLess::operator()( const unsigned * lhs ,
 bool Kernel::has_superset( const Part & p ) const
 {
   const unsigned ordinal = p.schema_ordinal();
-  const unsigned *       key_beg = key();
-  const unsigned * const key_end = key_beg + *key_beg ; ++key_beg ;
 
-  key_beg = std::lower_bound( key_beg , key_end , ordinal );
+  std::pair<const unsigned *, const unsigned *> 
+    part_ord = superset_part_ordinals();
 
-  return key_beg < key_end && ordinal == *key_beg ;
+  part_ord.first =
+    std::lower_bound( part_ord.first , part_ord.second , ordinal );
+
+  return part_ord.first < part_ord.second && ordinal == *part_ord.first ;
 }
 
 bool Kernel::has_superset( const PartSet & ps ) const
 {
-  const unsigned *       key_beg = key();
-  const unsigned * const key_end = key_beg + *key_beg ; ++key_beg ;
+  std::pair<const unsigned *, const unsigned *> 
+    part_ord = superset_part_ordinals();
 
   bool result = ! ps.empty();
 
@@ -107,9 +163,10 @@ bool Kernel::has_superset( const PartSet & ps ) const
 
     const unsigned ordinal = (*i)->schema_ordinal();
 
-    key_beg = std::lower_bound( key_beg , key_end , ordinal );
+    part_ord.first =
+      std::lower_bound( part_ord.first , part_ord.second , ordinal );
 
-    result = key_beg < key_end && ordinal == *key_beg ;
+    result = part_ord.first < part_ord.second && ordinal == *part_ord.first ;
   }
   return result ;
 }
@@ -117,25 +174,15 @@ bool Kernel::has_superset( const PartSet & ps ) const
 void Kernel::supersets( PartSet & ps ) const
 {
   const Schema & schema = m_mesh.schema();
-  const PartSet & parts = schema.get_parts();
 
-  const unsigned * key_val = key();
-  const unsigned n = *key_val - 1 ; ++key_val ;
+  std::pair<const unsigned *, const unsigned *> 
+    part_ord = superset_part_ordinals();
 
-  ps.resize( n );
-  for ( unsigned i = 0 ; i < n ; ++i , ++key_val ) {
-    ps[i] = parts[ *key_val ];
-  }
-}
+  ps.resize( part_ord.second - part_ord.first );
 
-void Kernel::supersets( std::vector<unsigned> & ps ) const
-{
-  const unsigned * key_val = key();
-  const unsigned n = *key_val - 1 ; ++key_val ;
-
-  ps.resize( n );
-  for ( unsigned i = 0 ; i < n ; ++i , ++key_val ) {
-    ps[i] = *key_val ;
+  for ( unsigned i = 0 ;
+        part_ord.first < part_ord.second ; ++(part_ord.first) , ++i ) {
+    ps[i] = & schema.get_part( * part_ord.first );
   }
 }
 
@@ -192,6 +239,9 @@ Kernel::Kernel( Mesh & arg_mesh ,
   m_entity_type( arg_type ),
   m_size( 0 ),
   m_capacity( 0 ),
+  m_alloc_size( 0 ),
+  m_kernel(),
+  m_field_map( NULL ),
   m_entities( NULL )
 {}
 
@@ -262,32 +312,46 @@ inline size_t align( size_t nb )
   return nb ;
 }
 
+struct DimLess {
+  bool operator()( const FieldBase::Dim & lhs , const unsigned rhs ) const
+    { return lhs < rhs ; }
+};
+
 const FieldBase::Dim & dimension( const FieldBase & field ,
                                   EntityType etype ,
-                                  const PartSet & parts ,
+                                  const unsigned num_part_ord ,
+                                  const unsigned part_ord[] ,
                                   const char * const method )
 {
   static const FieldBase::Dim empty ;
 
   const FieldBase::Dim * dim = & empty ;
 
-  for ( PartSet::const_iterator
-        i = parts.begin() ; i != parts.end() ; ++i ) {
+  const std::vector<FieldBase::Dim> & dim_map = field.dimension();
+  const std::vector<FieldBase::Dim>::const_iterator iend = dim_map.end();
+        std::vector<FieldBase::Dim>::const_iterator ibeg = dim_map.begin();
 
-    const FieldBase::Dim & tmp = field.dimension( etype , **i );
+  for ( unsigned i = 0 ; i < num_part_ord && iend != ibeg ; ++i ) {
 
-    if ( tmp.part ) {
-      if ( NULL == dim->part ) { dim = & tmp ; } 
+    const unsigned key = FieldBase::Dim::key_value( etype , part_ord[i] );
+
+    ibeg = std::lower_bound( ibeg , iend , key , DimLess() );
+
+    if ( iend != ibeg && ibeg->key == key ) {
+      if ( dim == & empty ) { dim = & *ibeg ; }
 
       if ( Compare< MaximumFieldDimension >::
-             not_equal( tmp.stride , dim->stride ) ) {
+             not_equal( ibeg->stride , dim->stride ) ) {
+
+        Part & p_old = field.schema().get_part( ibeg->ordinal() );
+        Part & p_new = field.schema().get_part( dim->ordinal() );
 
         std::ostringstream msg ;
         msg << method ;
         msg << " FAILED WITH INCOMPATIBLE DIMENSIONS FOR " ;
         msg << field ;
-        msg << " Part[" << tmp.part->name() ;
-        msg << "] and Part[" << dim->part->name() ;
+        msg << " Part[" << p_old.name() ;
+        msg << "] and Part[" << p_new.name() ;
         msg << "]" ;
      
         throw std::runtime_error( msg.str() );
@@ -373,53 +437,83 @@ void Mesh::destroy_kernel( KernelSet::iterator ik )
 }
 
 //----------------------------------------------------------------------
+// The input part ordinals are complete and contain all supersets.
 
 KernelSet::iterator
 Mesh::declare_kernel( const EntityType arg_entity_type ,
-                      const PartSet & entity_parts )
+                      const unsigned part_size ,
+                      const unsigned part_ord[] )
 {
+  enum { KEY_TMP_BUFFER_SIZE = 32 };
+
   static const char method[] = "phdmesh::Kernel" ;
+
   const unsigned max = ~((unsigned) 0);
 
   KernelSet & kernel_set = m_kernels[ arg_entity_type ];
 
   const std::vector< FieldBase * > & field_set = m_schema.get_fields();
 
-  // Entity parts are complete and contain all supersets
-  // Initial key is upper bound key for kernel with these parts
+  const unsigned num_fields = field_set.size();
 
-  const unsigned key_size = entity_parts.size() + 2 ;
+  //----------------------------------
+  // For performance try not to allocate a temporary.
 
-  std::vector<unsigned> key_tmp( key_size );
-  key_tmp[0] = key_size - 1 ;
-  key_tmp[ key_tmp[0] ] = max ;
-  for ( unsigned i = 0 ; i < entity_parts.size() ; ++i ) {
-    key_tmp[i+1] = entity_parts[i]->schema_ordinal();
+  unsigned key_tmp_buffer[ KEY_TMP_BUFFER_SIZE ];
+
+  std::vector<unsigned> key_tmp_vector ;
+
+  const unsigned key_size = 2 + part_size ;
+
+  unsigned * const key =
+    ( key_size <= KEY_TMP_BUFFER_SIZE )
+    ? key_tmp_buffer
+    : ( key_tmp_vector.resize( key_size ) , & key_tmp_vector[0] );
+
+  //----------------------------------
+  // Key layout:
+  // { part_size + 1 , { part_ordinals } , family_count }
+  // Thus family_count = key[ key[0] ]
+  //
+  // for upper bound search use the maximum key.
+
+  key[ key[0] = part_size + 1 ] = max ;
+
+  {
+    unsigned * const k = key + 1 ;
+    for ( unsigned i = 0 ; i < part_size ; ++i ) { k[i] = part_ord[i] ; }
   }
 
-  // Does this kernel already exist?
+  //----------------------------------
+  // Look for the last kernel in this family:
 
-  const unsigned * const key = & key_tmp[0] ;
+  const unsigned * const key_const = key ;
 
-  KernelSet::iterator ik = kernel_set.upper_bound( key );
+  KernelSet::iterator ik = kernel_set.upper_bound( key_const );
 
-  // Key value for first kernel with these parts
-
-  key_tmp[ key[0] ] = 0 ;
-
-  Kernel * const match_kernel =
-    ( ik != kernel_set.begin() ) && kernel_equal( (--ik)->key() , key )
+  Kernel * const last_kernel =
+    ( ik != kernel_set.begin() ) && kernel_part_equal( (--ik)->key() , key )
     ? ( & * ik ) : NULL ;
 
-  Kernel * kernel = NULL ;
+  Kernel          * kernel    = NULL ;
+  Kernel::DataMap * field_map = NULL ;
 
-  if ( match_kernel != NULL ) {
-    const size_t cap = ik->capacity();
-    if ( ik->size() < cap ) {
-      kernel = match_kernel ;
+  if ( last_kernel == NULL ) { // First kernel in this family
+    key[ key[0] ] = 0 ; // Set the key's family count to zero
+  }
+  else { // Last kernel present, can it hold one more entity?
+
+    field_map = last_kernel->m_field_map ;
+
+    const unsigned last_count = last_kernel->key()[ key[0] ];
+
+    const size_t cap = last_kernel->capacity();
+
+    if ( last_kernel->size() < cap ) {
+      kernel = last_kernel ;
     }
-    else if ( match_kernel->key()[ key[0] ] < max ) {
-      key_tmp[ key[0] ] = 1 + match_kernel->key()[ key[0] ] ;
+    else if ( last_count < max ) {
+      key[ key[0] ] = 1 + last_count ; // Increment the key's family count.
     }
     else {
       // ERROR insane number of kernels!
@@ -430,55 +524,54 @@ Mesh::declare_kernel( const EntityType arg_entity_type ,
     }
   }
 
-  // If it does not exist must allocate and insert
+  //----------------------------------
+  // Family's field map does not exist, create it:
 
-  if ( kernel == NULL ) {
+  if ( NULL == field_map ) {
 
-    const unsigned num_fields = field_set.size();
+    field_map = reinterpret_cast<Kernel::DataMap*>(
+                local_malloc( sizeof(Kernel::DataMap) * ( num_fields + 1 )));
 
-    Kernel::DataMap * field_map = NULL ;
+    size_t value_offset = 0 ;
 
-    if ( match_kernel != NULL ) {
-      field_map = match_kernel->m_field_map ;
-    }
-    else {
-      field_map = reinterpret_cast<Kernel::DataMap*>(
-                  local_malloc( sizeof(Kernel::DataMap) * ( num_fields + 1 )));
+    value_offset += align( sizeof(Entity*) * m_kernel_capacity );
 
-      size_t value_offset = 0 ;
+    for ( unsigned i = 0 ; i < num_fields ; ++i ) {
+      const FieldBase  & field = * field_set[i] ;
 
-      value_offset += align( sizeof(Entity*) * m_kernel_capacity );
+      unsigned value_size = 0 ;
 
-      for ( unsigned i = 0 ; i < num_fields ; ++i ) {
-        const FieldBase  & field = * field_set[i] ;
+      const FieldBase::Dim & dim =
+        dimension( field, arg_entity_type, key[0] - 1, key + 1, method);
 
-        unsigned value_size = 0 ;
+      if ( dim.stride[0] ) { // Exists
 
-        const FieldBase::Dim & dim =
-          dimension( field, arg_entity_type , entity_parts, method);
+        const unsigned scalar_size =
+          NumericEnum<void>::size( field.numeric_type_ordinal() );
 
-        if ( dim.part ) { // Exists
+        const unsigned field_num_dim = field.number_of_dimensions();
 
-          const unsigned scalar_size =
-            NumericEnum<void>::size( field.numeric_type_ordinal() );
-
-          const unsigned field_num_dim = field.number_of_dimensions();
-
-          value_size = scalar_size *
-            ( field_num_dim ? dim.stride[ field_num_dim - 1 ] : 1 );
-        }
-
-        field_map[i].m_base = value_offset ;
-        field_map[i].m_size = value_size ;
-        field_map[i].m_stride = dim.stride ;
-
-        value_offset += align( value_size * m_kernel_capacity );
+        value_size = scalar_size *
+          ( field_num_dim ? dim.stride[ field_num_dim - 1 ] : 1 );
       }
-      field_map[ num_fields ].m_base  = value_offset ;
-      field_map[ num_fields ].m_size = 0 ;
-      field_map[ num_fields ].m_stride = NULL ;
-    }
 
+      field_map[i].m_base = value_offset ;
+      field_map[i].m_size = value_size ;
+      field_map[i].m_stride = dim.stride ;
+
+      value_offset += align( value_size * m_kernel_capacity );
+    }
+    field_map[ num_fields ].m_base  = value_offset ;
+    field_map[ num_fields ].m_size = 0 ;
+    field_map[ num_fields ].m_stride = NULL ;
+  }
+
+  //----------------------------------
+
+  if ( NULL == kernel ) {
+
+    // Required kernel does not exist, must allocate and insert
+    //
     // Allocation size:
     //   sizeof(Kernel) +
     //   key_size * sizeof(unsigned) +
@@ -505,10 +598,11 @@ Mesh::declare_kernel( const EntityType arg_entity_type ,
       new(kernel) Kernel( *this , arg_entity_type , new_key );
     }
 
-    kernel->m_size      = 0 ;
-    kernel->m_capacity  = m_kernel_capacity ;
-    kernel->m_field_map = field_map ;
-    kernel->m_entities  = (Entity **) ptr ;
+    kernel->m_size       = 0 ;
+    kernel->m_capacity   = m_kernel_capacity ;
+    kernel->m_alloc_size = size ;
+    kernel->m_field_map  = field_map ;
+    kernel->m_entities   = (Entity **) ptr ;
 
     std::pair<KernelSet::iterator,bool> result = kernel_set.insert( kernel );
 
@@ -520,7 +614,17 @@ Mesh::declare_kernel( const EntityType arg_entity_type ,
     }
 
     ik = result.first ;
+
+    KernelSet::iterator
+      first_kernel = last_kernel ? last_kernel->m_kernel : ik ;
+
+    first_kernel->m_kernel = ik ; // New last kernel
+
+    ik->m_kernel = first_kernel ;
   }
+
+  //----------------------------------
+
   return ik ;
 }
 
@@ -528,36 +632,24 @@ Mesh::declare_kernel( const EntityType arg_entity_type ,
 
 void Mesh::remove_entity( KernelSet::iterator ik , unsigned i )
 {
-  const unsigned entity_type = ik->m_entity_type ;
+  const KernelSet::iterator first =
+    kernel_counter( ik->key() ) ? ik->m_kernel : ik ;
 
-  KernelSet & kset = m_kernels[ entity_type ] ;
-
-  // Find the last compatible kernel and move the
-  // last entity up to fill in the gap.
-  // Compatible entities have the same part list (key.first)
-  // and incrementing ordinals (key.second).
-  // Thus the next kernel with a zero ordinal will have
-  // a different part list.
-
-  const KernelSet::iterator ek = kset.end();
-
-  KernelSet::iterator jk = ik ;
-  while ( ++jk != ek && kernel_counter( jk->key() ) );
-  --jk ;
+  const KernelSet::iterator last = first->m_kernel ;
 
   // Only move if not the last entity being removed
 
-  if ( jk != ik || ik->m_size != i + 1 ) {
+  if ( last != ik || ik->m_size != i + 1 ) {
 
     // Not the same kernel or not the last entity
 
-    // Copy last entity in jk to ik slot i
+    // Copy last entity in last to ik slot i
 
-    Entity * const entity = jk->m_entities[ jk->m_size - 1 ];
+    Entity * const entity = last->m_entities[ last->m_size - 1 ];
 
-    Kernel::copy_fields( *ik , i , *jk , jk->m_size - 1 );
+    Kernel::copy_fields( *ik , i , *last , last->m_size - 1 );
 
-    ik->m_entities[i] = entity ;
+    ik->m_entities[i]    = entity ;
     entity->m_kernel     = ik ;
     entity->m_kernel_ord = i ;
 
@@ -566,13 +658,16 @@ void Mesh::remove_entity( KernelSet::iterator ik , unsigned i )
     internal_propagate_relocation( *entity );
   }
 
-  --( jk->m_size );
+  --( last->m_size );
 
-  if ( jk->m_size != 0 ) {
-    jk->m_entities[ jk->m_size ] = NULL ;
+  if ( last->m_size != 0 ) {
+    last->m_entities[ last->m_size ] = NULL ;
   }
   else {
-    destroy_kernel( jk );
+
+    if ( first != last ) { --( first->m_kernel ); }
+
+    destroy_kernel( last );
   }
 }
 
@@ -598,7 +693,6 @@ std::ostream &
 Kernel::print( std::ostream & os , const std::string & lead ) const
 {
   const Schema & schema = m_mesh.schema();
-  const PartSet & parts = schema.get_parts();
   const char * const entity_name = entity_type_name( m_entity_type );
 
   const unsigned * k = key();
@@ -607,7 +701,7 @@ Kernel::print( std::ostream & os , const std::string & lead ) const
   os << lead
      << "Kernel(" << entity_name << " : " ;
   for ( unsigned i = 1 ; i < n ; ++i , ++k ) {
-    const std::string & name = parts[ *k ]->name(); os << " " << name ;
+    const std::string & name = schema.get_part( *k ).name(); os << " " << name ;
   }
 
   os << " " << *k << " ){ "

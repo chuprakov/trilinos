@@ -153,8 +153,6 @@ Entity * Gear::create_node(
   const unsigned ir ,
   const unsigned ia ) const
 {
-  const unsigned p_owner = m_mesh->parallel_rank();
-
   const double angle     = m_ang_inc * ia ;
   const double cos_angle = cos( angle );
   const double sin_angle = sin( angle );
@@ -169,9 +167,7 @@ Entity * Gear::create_node(
   unsigned long id_gear = identifier( m_z_num, m_rad_num, iz, ir, ia );
   unsigned long id = node_id_base + id_gear ;
 
-  Entity & node = m_mesh->declare_entity( entity_key(Node,id) );
-  m_mesh->change_entity_parts( node , parts );
-  m_mesh->change_entity_owner( node , p_owner );
+  Entity & node = m_mesh->declare_entity( entity_key(Node,id) , parts );
 
   double * const gear_data    = field_data( m_gear_coord , node );
   double * const model_data   = field_data( m_model_coord , node );
@@ -297,9 +293,8 @@ void Gear::mesh( Mesh & M )
             throw std::logic_error( msg );
           }
 
-          Entity & elem = M.declare_entity( entity_key(Element,elem_id) );
-          M.change_entity_parts( elem , elem_parts );
-          M.change_entity_owner( elem , p_rank );
+          Entity & elem =
+            M.declare_entity( entity_key(Element,elem_id), elem_parts );
 
           for ( unsigned j = 0 ; j < 8 ; ++j ) {
             M.declare_relation( elem , * node[j] , j );
@@ -338,9 +333,8 @@ void Gear::mesh( Mesh & M )
           node[2] = create_node( face_parts, node_id_base, iz_1, ir  , ia   );
           node[3] = create_node( face_parts, node_id_base, iz_1, ir  , ia_1 );
 
-          Entity & face = M.declare_entity(entity_key(Face,face_id) );
-          M.change_entity_parts( face , face_parts );
-          M.change_entity_owner( face , p_rank );
+          Entity & face =
+            M.declare_entity( entity_key(Face,face_id), face_parts );
 
           for ( unsigned j = 0 ; j < 4 ; ++j ) {
             M.declare_relation( face , * node[j] , j );
