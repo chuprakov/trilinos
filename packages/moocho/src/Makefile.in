@@ -129,6 +129,7 @@ am__libmoocho_a_SOURCES_DIST = $(srcdir)/MoochoUtilities/src/FortranTypes_CppFor
 	$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c \
 	$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c \
 	$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_mpi.c \
 	$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c \
 	$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c \
 	$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c \
@@ -441,8 +442,9 @@ am__objects_3 = IterationPack_Algorithm.$(OBJEXT) \
 	IterationPack_print_algorithm_step.$(OBJEXT)
 am__objects_4 = RTOp.$(OBJEXT) RTOpToMPI.$(OBJEXT) \
 	RTOp_SparseSubVector.$(OBJEXT) RTOp_apply_op_mpi.$(OBJEXT) \
-	RTOp_apply_op_serial.$(OBJEXT) RTOp_obj_free_free.$(OBJEXT) \
-	RTOp_obj_index_vtbl.$(OBJEXT) RTOp_obj_null_vtbl.$(OBJEXT) \
+	RTOp_apply_op_serial.$(OBJEXT) RTOp_mpi.$(OBJEXT) \
+	RTOp_obj_free_free.$(OBJEXT) RTOp_obj_index_vtbl.$(OBJEXT) \
+	RTOp_obj_null_vtbl.$(OBJEXT) \
 	RTOp_obj_value_index_vtbl.$(OBJEXT) \
 	RTOp_obj_value_value_vtbl.$(OBJEXT) \
 	RTOp_obj_value_vtbl.$(OBJEXT) RTOp_obj_values_vtbl.$(OBJEXT) \
@@ -783,9 +785,11 @@ am__include_HEADERS_DIST = $(srcdir)/Moocho_ConfigDefs.hpp \
 	$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.hpp \
 	$(srcdir)/RTOpPack/src/base/RTOp.h \
 	$(srcdir)/RTOpPack/src/base/RTOpToMPI.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_MPI_config.h \
 	$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.h \
 	$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.h \
 	$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_mpi.h \
 	$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.h \
 	$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.h \
 	$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.h \
@@ -1443,9 +1447,11 @@ ITERATION_PACK_CPP = \
 RTOP_PACK_BASE_H = \
   $(srcdir)/RTOpPack/src/base/RTOp.h\
   $(srcdir)/RTOpPack/src/base/RTOpToMPI.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_MPI_config.h\
   $(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.h\
   $(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.h\
   $(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_mpi.h\
   $(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.h\
   $(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.h\
   $(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.h\
@@ -1465,6 +1471,7 @@ RTOP_PACK_BASE_C = \
   $(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c\
   $(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c\
   $(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_mpi.c\
   $(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c\
   $(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c\
   $(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c\
@@ -2739,6 +2746,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_TOp_sign.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_apply_op_mpi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_apply_op_serial.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_mpi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_obj_free_free.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_obj_index_vtbl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_obj_null_vtbl.Po@am__quote@
@@ -2838,6 +2846,20 @@ RTOp_apply_op_serial.obj: $(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c' object='RTOp_apply_op_serial.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_apply_op_serial.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c'; fi`
+
+RTOp_mpi.o: $(srcdir)/RTOpPack/src/base/RTOp_mpi.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_mpi.o -MD -MP -MF $(DEPDIR)/RTOp_mpi.Tpo -c -o RTOp_mpi.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_mpi.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_mpi.c
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/RTOp_mpi.Tpo $(DEPDIR)/RTOp_mpi.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_mpi.c' object='RTOp_mpi.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_mpi.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_mpi.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_mpi.c
+
+RTOp_mpi.obj: $(srcdir)/RTOpPack/src/base/RTOp_mpi.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_mpi.obj -MD -MP -MF $(DEPDIR)/RTOp_mpi.Tpo -c -o RTOp_mpi.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_mpi.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_mpi.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_mpi.c'; fi`
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/RTOp_mpi.Tpo $(DEPDIR)/RTOp_mpi.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_mpi.c' object='RTOp_mpi.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_mpi.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_mpi.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_mpi.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_mpi.c'; fi`
 
 RTOp_obj_free_free.o: $(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_free_free.o -MD -MP -MF $(DEPDIR)/RTOp_obj_free_free.Tpo -c -o RTOp_obj_free_free.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c

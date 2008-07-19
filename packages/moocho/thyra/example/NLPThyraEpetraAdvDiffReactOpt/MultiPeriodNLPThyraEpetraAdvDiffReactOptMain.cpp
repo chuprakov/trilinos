@@ -10,7 +10,6 @@
 #include "Thyra_DefaultScaledAdjointLinearOp.hpp"
 #include "Thyra_DefaultMultipliedLinearOp.hpp"
 #include "Thyra_TestingTools.hpp"
-#include "RTOpPack_MPI_apply_op_decl.hpp"
 #include "Teuchos_OpaqueWrapper.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"

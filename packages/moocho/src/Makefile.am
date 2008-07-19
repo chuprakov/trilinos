@@ -146,9 +146,11 @@ ITERATION_PACK_CPP = \
 RTOP_PACK_BASE_H = \
   $(srcdir)/RTOpPack/src/base/RTOp.h\
   $(srcdir)/RTOpPack/src/base/RTOpToMPI.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_MPI_config.h\
   $(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.h\
   $(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.h\
   $(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_mpi.h\
   $(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.h\
   $(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.h\
   $(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.h\
@@ -168,6 +170,7 @@ RTOP_PACK_BASE_C = \
   $(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c\
   $(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c\
   $(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_mpi.c\
   $(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c\
   $(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c\
   $(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c\

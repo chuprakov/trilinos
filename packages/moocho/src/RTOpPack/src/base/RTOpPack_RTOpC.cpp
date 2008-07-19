@@ -30,6 +30,7 @@
 // RTOpPack_RTOpC.cpp
 
 #include "RTOpPack_RTOpC.hpp"
+#include "Teuchos_Workspace.hpp"
 
 namespace {
 
