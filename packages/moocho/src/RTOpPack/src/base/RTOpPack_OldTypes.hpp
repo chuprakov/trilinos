@@ -43,38 +43,40 @@ template<class Scalar>
 class SubVectorT1B {
 public:
   /** \brief . */
-  SubVectorT1B() : globalOffset_(0), subDim_(0), values_(NULL), stride_(0) {}
+  SubVectorT1B() : globalOffset_(0), subDim_(0), values_(Teuchos::null), stride_(0) {}
   /** \brief . */
   SubVectorT1B(Teuchos_Index globalOffset, Teuchos_Index subDim, const Scalar *values, ptrdiff_t stride)
-    :globalOffset_(globalOffset), subDim_(subDim), values_(values), stride_(stride) 
+    :globalOffset_(globalOffset), subDim_(subDim), values_(values,0,subDim*stride,false), stride_(stride) 
     {}
   /** \brief . */
   SubVectorT1B( const SubVectorT1B<Scalar>& sv )
-    :globalOffset_(sv.globalOffset()), subDim_(sv.subDim()), values_(sv.values()), stride_(sv.stride()) 
+    :globalOffset_(sv.globalOffset()), subDim_(sv.subDim()), values_(sv.arcp_values()), stride_(sv.stride()) 
     {}
   /** \brief . */
   SubVectorT1B( const ConstSubVectorView<Scalar>& sv )
-    :globalOffset_(sv.globalOffset()), subDim_(sv.subDim()), values_(sv.values().get()), stride_(sv.stride()) 
+    :globalOffset_(sv.globalOffset()), subDim_(sv.subDim()), values_(sv.values()), stride_(sv.stride()) 
     {}
   /** \brief . */
   operator ConstSubVectorView<Scalar>()
-    { return ConstSubVectorView<Scalar>(globalOffset(),subDim(),values(),stride()); }
+    { return ConstSubVectorView<Scalar>(globalOffset(),subDim(),arcp_values(),stride()); }
   /** \brief . */
   void initialize(Teuchos_Index globalOffset, Teuchos_Index subDim, const Scalar *values, ptrdiff_t stride)
-    { globalOffset_=globalOffset; subDim_=subDim; values_=values; stride_=stride;  }
+    { globalOffset_=globalOffset; subDim_=subDim; values_=Teuchos::arcp(values,0,subDim*stride,false); stride_=stride; }
   /** \brief . */
   void set_uninitialized()
-    { globalOffset_ = 0; subDim_=0; values_=NULL; stride_ = 0; }
+    { globalOffset_ = 0; subDim_=0; values_=Teuchos::null; stride_ = 0; }
   /** \brief . */
   void setGlobalOffset(Teuchos_Index globalOffset) { globalOffset_ = globalOffset; } 
   /** \brief . */
-  Teuchos_Index   globalOffset() const { return globalOffset_; }
+  Teuchos_Index globalOffset() const { return globalOffset_; }
   /** \brief . */
-  Teuchos_Index   subDim()       const { return subDim_;  }
+  Teuchos_Index subDim() const { return subDim_; }
   /** \brief . */
-  const Scalar*     values()       const { return values_;  }
+  const Scalar* values() const { return values_.get(); }
   /** \brief . */
-  ptrdiff_t         stride()       const { return stride_;  }
+  const Teuchos::ArrayRCP<const Scalar> arcp_values() const { return values_; }
+  /** \brief . */
+  ptrdiff_t stride() const { return stride_; }
   /// Zero-based indexing (Preconditions: <tt>values()!=NULL && (0 <= i < subDim())</tt>)
   const Scalar& operator[](Teuchos_Index i) const
     {
@@ -89,10 +91,10 @@ public:
   /// One-based indexing (Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>)
   const Scalar& operator()(Teuchos_Index i) const { return (*this)[i-1]; }
 private:
-  Teuchos_Index     globalOffset_;
-  Teuchos_Index     subDim_;
-  const Scalar      *values_;
-  ptrdiff_t         stride_;
+  Teuchos_Index globalOffset_;
+  Teuchos_Index subDim_;
+  Teuchos::ArrayRCP<const Scalar> values_;
+  ptrdiff_t stride_;
 };
 
 /** \brief Class for a mutable sub-vector.
@@ -112,11 +114,11 @@ public:
     {}
   /** \brief . */
   MutableSubVectorT1B( const SubVectorView<Scalar>& sv )
-    :SubVectorT1B<Scalar>(MutableSubVectorT1B<Scalar>(sv.globalOffset(),sv.subDim(),sv.values().get(),sv.stride())) 
+    :SubVectorT1B<Scalar>(ConstSubVectorView<Scalar>(sv))
     {}
   /** \brief . */
   operator SubVectorView<Scalar>()
-    { return SubVectorView<Scalar>(this->globalOffset(),this->subDim(),this->values(),this->stride()); }
+    { return SubVectorView<Scalar>(this->globalOffset(),this->subDim(),this->arcp_values(),this->stride()); }
   /** \brief . */
   void initialize(Teuchos_Index globalOffset, Teuchos_Index subDim, Scalar *values, ptrdiff_t stride)
     { SubVectorT1B<Scalar>::initialize(globalOffset, subDim, values, stride); }
@@ -124,7 +126,9 @@ public:
   void set_uninitialized()
     { SubVectorT1B<Scalar>::set_uninitialized(); }
   /** \brief . */
-  Scalar* values() const { return const_cast<Scalar*>(SubVectorT1B<Scalar>::values());  }
+  Scalar* values() const { return const_cast<Scalar*>(SubVectorT1B<Scalar>::values()); }
+  /** \brief . */
+  const Teuchos::ArrayRCP<Scalar> arcp_values() const { return Teuchos::arcp_const_cast<Scalar>(SubVectorT1B<Scalar>::arcp_values()); }
   /// Zero-based indexing (Preconditions: <tt>values()!=NULL && (0 <= i < subDim())</tt>)
   Scalar& operator[](Teuchos_Index i) const { return const_cast<Scalar&>(SubVectorT1B<Scalar>::operator[](i)); } // Is range changed in subclass!
   /// One-based indexing (Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>)
@@ -171,12 +175,12 @@ public:
     {}
 /*
   SubMultiVectorT1B( const ConstSubMultiVectorView<Scalar>& smv )
-    :globalOffset_(smv.globalOffset()), subDim_(smv.subDim())
-    ,colOffset_(smv.colOffset()), numSubCols_(smv.numSubCols())
-    ,values_(smv.values()), leadingDim_(smv.leadingDim())
-    {}
+  :globalOffset_(smv.globalOffset()), subDim_(smv.subDim())
+  ,colOffset_(smv.colOffset()), numSubCols_(smv.numSubCols())
+  ,values_(smv.values()), leadingDim_(smv.leadingDim())
+  {}
   operator ConstSubMultiVectorView<Scalar>()
-    { return ConstSubMultiVectorView<Scalar>(globalOffset(),subDim(),colOffset(),numSubCols(),values(),leadingDim()); }
+  { return ConstSubMultiVectorView<Scalar>(globalOffset(),subDim(),colOffset(),numSubCols(),values(),leadingDim()); }
 */
   /** \brief . */
   void initialize(
@@ -185,7 +189,7 @@ public:
     ,const Scalar *values, Teuchos_Index leadingDim
     )
     { globalOffset_=globalOffset; subDim_=subDim; colOffset_=colOffset; numSubCols_=numSubCols;
-    values_=values; leadingDim_=leadingDim; }
+      values_=values; leadingDim_=leadingDim; }
   /** \brief . */
   void set_uninitialized()
     { globalOffset_ = 0; subDim_=0; colOffset_=0, numSubCols_=0; values_=NULL; leadingDim_=0; }
@@ -259,15 +263,15 @@ public:
     {}
 /*
   MutableSubMultiVectorT1B( const SubMultiVectorView<Scalar>& smv )
-    :SubMultiVectorT1B<Scalar>(
-      MutableSubMultiVectorT1B<Scalar>(
-        smv.globalOffset(),smv.subDim(),smv.colOffset(),smv.numSubCols()
-        ,smv.values(),smv.leadingDim()
-        )
-      )
-    {}
+  :SubMultiVectorT1B<Scalar>(
+  MutableSubMultiVectorT1B<Scalar>(
+  smv.globalOffset(),smv.subDim(),smv.colOffset(),smv.numSubCols()
+  ,smv.values(),smv.leadingDim()
+  )
+  )
+  {}
   operator SubMultiVectorView<Scalar>()
-    { return SubMultiVectorView<Scalar>(this->globalOffset(),this->subDim(),this->colOffset(),this->numSubCols(),this->values(),this->leadingDim()); }
+  { return SubMultiVectorView<Scalar>(this->globalOffset(),this->subDim(),this->colOffset(),this->numSubCols(),this->values(),this->leadingDim()); }
 */
   /** \brief . */
   void initialize(

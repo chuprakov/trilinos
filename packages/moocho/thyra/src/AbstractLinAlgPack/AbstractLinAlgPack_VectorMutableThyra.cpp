@@ -35,6 +35,7 @@
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
+#include "Teuchos_as.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -94,6 +95,7 @@ void VectorMutableThyra::apply_op(
   ,const index_type          global_offset
   ) const
 {
+  using Teuchos::as;
   using Teuchos::dyn_cast;
   namespace mmp = MemMngPack;
   using Teuchos::Workspace;
@@ -110,14 +112,14 @@ void VectorMutableThyra::apply_op(
   // Convert the non-mutable vectors into non-mutable Thyra vectors
   Workspace< Teuchos::RCP<const Thyra::VectorBase<value_type> > > thyra_vecs_sptr(wss,num_vecs);
   Workspace<const Thyra::VectorBase<value_type>*> thyra_vecs(wss,num_vecs);
-  for(int k = 0; k < num_vecs; ++k ) {
+  for(int k = 0; k < as<int>(num_vecs); ++k ) {
     get_thyra_vector( space_, *vecs[k], &thyra_vecs_sptr[k] );
     thyra_vecs[k] = &*thyra_vecs_sptr[k];
   }
   // Convert the mutable vetors into mutable Thyra vectors
   Workspace< Teuchos::RCP<Thyra::VectorBase<value_type> > > targ_thyra_vecs_sptr(wss,num_targ_vecs);
   Workspace<Thyra::VectorBase<value_type>*> targ_thyra_vecs(wss,num_targ_vecs);
-  for(int k = 0; k < num_targ_vecs; ++k ) {
+  for(int k = 0; k < as<int>(num_targ_vecs); ++k ) {
     get_thyra_vector( space_, targ_vecs[k], &targ_thyra_vecs_sptr[k] );
     targ_thyra_vecs[k] = &*targ_thyra_vecs_sptr[k];
   }
@@ -130,10 +132,10 @@ void VectorMutableThyra::apply_op(
     ,first_ele-1,sub_dim==0?-1:sub_dim,global_offset
     );
   // Free/commit the Thyra vector views
-  for(int k = 0; k < num_vecs; ++k ) {
+  for(int k = 0; k < as<int>(num_vecs); ++k ) {
     free_thyra_vector( space_, *vecs[k], &thyra_vecs_sptr[k] );
   }
-  for(int k = 0; k < num_targ_vecs; ++k ) {
+  for(int k = 0; k < as<int>(num_targ_vecs); ++k ) {
     commit_thyra_vector( space_, targ_vecs[k], &targ_thyra_vecs_sptr[k] );
   }
 }
