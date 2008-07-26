@@ -1,7 +1,0 @@
-
-
-(FRAMEWORK, INSTALL) {
-    TESTS = ./simpleEpetraExternCInterface.exe;
-    ARGS = ;
-    COMM = MPI,SERIAL;
-}
