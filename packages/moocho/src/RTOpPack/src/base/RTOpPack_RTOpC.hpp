@@ -65,72 +65,45 @@ public:
   //@{
 
   /** \brief . */
-  void get_reduct_type_num_entries(
-    int*   num_values
-    ,int*  num_indexes
-    ,int*  num_chars
+  void get_reduct_type_num_entries_impl(
+    const Teuchos::Ptr<int> &num_values,
+    const Teuchos::Ptr<int> &num_indexes,
+    const Teuchos::Ptr<int> &num_chars
     ) const;
   /** \brief . */
-  Teuchos::RCP<ReductTarget> reduct_obj_create() const;
+  Teuchos::RCP<ReductTarget> reduct_obj_create_impl() const;
   /** \brief . */
-  void reduce_reduct_objs(
-    const ReductTarget& _in_reduct_obj, ReductTarget* _inout_reduct_obj
+  void reduce_reduct_objs_impl(
+    const ReductTarget &in_reduct_obj,
+    const Teuchos::Ptr<ReductTarget> &inout_reduct_obj
     ) const;
   /** \brief . */
-  void reduct_obj_reinit( ReductTarget* reduct_obj ) const;
-  /** \brief . */
-  void extract_reduct_obj_state(
-    const ReductTarget     &reduct_obj
-    ,int                      num_values
-    ,primitive_value_type     value_data[]
-    ,int                      num_indexes
-    ,index_type               index_data[]
-    ,int                      num_chars
-    ,char_type                char_data[]
+  void reduct_obj_reinit_impl(
+    const Teuchos::Ptr<ReductTarget> &reduct_obj
     ) const;
   /** \brief . */
-  void load_reduct_obj_state(
-    int                            num_values
-    ,const primitive_value_type    value_data[]
-    ,int                           num_indexes
-    ,const index_type              index_data[]
-    ,int                           num_chars
-    ,const char_type               char_data[]
-    ,ReductTarget               *reduct_obj
+  void extract_reduct_obj_state_impl(
+    const ReductTarget &reduct_obj,
+    const Teuchos::ArrayView<primitive_value_type> &value_data,
+    const Teuchos::ArrayView<index_type> &index_data,
+    const Teuchos::ArrayView<char_type> &char_data
     ) const;
   /** \brief . */
-  void get_op_type_num_entries(
-    int*  num_values
-    ,int* num_indexes
-    ,int* num_chars
+  void load_reduct_obj_state_impl(
+    const Teuchos::ArrayView<const primitive_value_type> &value_data,
+    const Teuchos::ArrayView<const index_type> &index_data,
+    const Teuchos::ArrayView<const char_type> &char_data,
+    const Teuchos::Ptr<ReductTarget> &reduct_obj
     ) const;
   /** \brief . */
-  void extract_op_state(
-    int                             num_values
-    ,primitive_value_type           value_data[]
-    ,int                            num_indexes
-    ,index_type                     index_data[]
-    ,int                            num_chars
-    ,char_type                      char_data[]
-    ) const;
+  bool coord_invariant_impl() const;
   /** \brief . */
-  void load_op_state(
-    int                           num_values
-    ,const primitive_value_type   value_data[]
-    ,int                          num_indexes
-    ,const index_type             index_data[]
-    ,int                          num_chars
-    ,const char_type              char_data[]
-    );
+  const std::string op_name_impl() const;
   /** \brief . */
-  bool coord_invariant() const;
-  /** \brief . */
-  const std::string op_name() const;
-  /** \brief . */
-  void apply_op(
-    const int   num_vecs,       const ConstSubVectorView<Scalar>         sub_vecs[]
-    ,const int  num_targ_vecs,  const SubVectorView<Scalar>  targ_sub_vecs[]
-    ,ReductTarget *_reduct_obj
+  void apply_op_impl(
+    const Teuchos::ArrayView<const ConstSubVectorView<Scalar> > &sub_vecs,
+    const Teuchos::ArrayView<const SubVectorView<Scalar> > &targ_sub_vecs,
+    const Teuchos::Ptr<ReductTarget> &reduct_obj
     ) const;
 
   //@}
