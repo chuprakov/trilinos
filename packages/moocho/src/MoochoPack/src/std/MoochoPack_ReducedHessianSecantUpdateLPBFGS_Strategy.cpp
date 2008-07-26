@@ -351,17 +351,17 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
                     << ( sXTyX_cond ? " <= " : " > " ) << " project_error_tol = "
                     << project_error_tol;
                   if( sXTyX_cond ) {
-                    out	<< "\n(s_X'*rHL_XX*s_X/s_R'*rHL_RR*s_R) = (" << sXTBXXsX << " << sRTBRRsR
-                      << ") = " << (sXTBXXsX/sRTBRRsR)
-                      << ( sXTBXXsX_cond ? " <= " : " > " ) << " project_error_tol = "
-                      << project_error_tol;
+                    out	<< "\n(s_X'*rHL_XX*s_X/s_R'*rHL_RR*s_R) = (" << sXTBXXsX
+                        << ") = " << (sXTBXXsX/sRTBRRsR)
+                        << ( sXTBXXsX_cond ? " <= " : " > " ) << " project_error_tol = "
+                        << project_error_tol;
                   }
                   out << ( do_update
-                       ? "\n\nAttemping to add this previous update where B = rHL_RR ...\n"
-                       : "\n\nCan not add this previous update ...\n" );
+                    ? "\n\nAttemping to add this previous update where B = rHL_RR ...\n"
+                    : "\n\nCan not add this previous update ...\n" );
                 }
                 if( do_update ) {
-                    // ( rHL_RR, s_bfgs_R, y_bfgs_R ) -> rHL_RR (this should not throw an exception!)
+                  // ( rHL_RR, s_bfgs_R, y_bfgs_R ) -> rHL_RR (this should not throw an exception!)
                   try {
                     proj_bfgs_updater().bfgs_update().perform_update(
                       &s_bfgs_R(),&y_bfgs_R(),false,out,olevel,algo->algo_cntr().check_results()
