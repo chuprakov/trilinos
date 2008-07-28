@@ -319,6 +319,7 @@ nodist_execinclude_HEADERS = CTrilinos_Config.h
 # Files to be deleted by 'make maintainer-clean'
 # --------------------------------------------------------------------
 MAINTAINERCLEANFILES = Makefile.in 
+EXTRA_DIST = CTrilinos_version.h CTrilinos_version.c
 all: CTrilinos_Config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 

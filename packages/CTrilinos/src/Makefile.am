@@ -146,3 +146,6 @@ nodist_execinclude_HEADERS = CTrilinos_Config.h
 # --------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in 
+
+
+EXTRA_DIST = CTrilinos_version.h CTrilinos_version.c
