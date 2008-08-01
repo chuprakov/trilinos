@@ -41,7 +41,8 @@
 FEApp::BlockDiscretization::BlockDiscretization(
     const Teuchos::RCP<const Epetra_Comm>& comm,
     const Teuchos::RCP<const FEApp::AbstractDiscretization>& underlyingDisc_,
-    const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis_ ) :
+    const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis_,
+     bool makeJacobian) :
   underlyingDisc(underlyingDisc_),
   sg_basis(sg_basis_)
 {
@@ -69,8 +70,6 @@ FEApp::BlockDiscretization::BlockDiscretization(
   globalComm = comm;
 #endif
 
-  
-
   // DENSE STENCIL for Stochastic Galerkin
   // For 3 blocks on 2 procs, this should be:
   // Proc  nBR  mBR  mFBR     Stencil      Index
@@ -86,41 +85,29 @@ FEApp::BlockDiscretization::BlockDiscretization(
      rowIndex[i] = (i + myFirstBlockRow);
    }
 
-   //Construct BlockGraphs from underlying graphs and stencils
-   jac = Teuchos::rcp(new EpetraExt::BlockCrsMatrix(
+   if (makeJacobian) {
+     //Construct BlockGraphs from underlying graphs and stencils
+     jac = Teuchos::rcp(new EpetraExt::BlockCrsMatrix(
 				  *(underlyingDisc->getJacobianGraph()),
 				  rowStencil, rowIndex, *globalComm));
-   overlap_jac = Teuchos::rcp(new EpetraExt::BlockCrsMatrix(
+     overlap_jac = Teuchos::rcp(new EpetraExt::BlockCrsMatrix(
 				  *(underlyingDisc->getOverlapJacobianGraph()),
 				  rowStencil, rowIndex, *globalComm));
-   graph = Teuchos::rcp(&(jac->Graph()),false);
-   overlap_graph = Teuchos::rcp(&(overlap_jac->Graph()),false);
-   map = Teuchos::rcp(&(jac->RowMatrixRowMap()),false);
-   overlap_map = Teuchos::rcp(&(overlap_jac->RowMatrixRowMap()),false);
-
-//    graph = Teuchos::RCP<Epetra_CrsGraph>(
-//        EpetraExt::BlockUtility::GenerateBlockGraph(
-//                   *(underlyingDisc->getJacobianGraph()),
-//                   rowStencil, rowIndex, *globalComm));
-
-//    overlap_graph = Teuchos::RCP<Epetra_CrsGraph>(
-//        EpetraExt::BlockUtility::GenerateBlockGraph(
-//                   *(underlyingDisc->getOverlapJacobianGraph()),
-//                   rowStencil, rowIndex, *globalComm));
-
-//    //Temporarily constructing CrsMatrix from graph, so the Epetra_Map
-//    // can be pulled out. I only see how to get Epetra_BlockMap from the graph
-
-//    Epetra_CrsMatrix* mat;
-
-//    mat = Teuchos::rcp(new EpetraExt::BlockCrsMatrix(View, *graph);
-//    map =  Teuchos::RCP<Epetra_Map>(new Epetra_Map(mat->RowMatrixRowMap()));
-//    delete mat;
-
-//    mat = new Epetra_CrsMatrix(View, *overlap_graph);
-//    overlap_map =  Teuchos::RCP<Epetra_Map>(new Epetra_Map(mat->RowMatrixRowMap()));
-//    delete mat;
-
+     graph = Teuchos::rcp(&(jac->Graph()),false);
+     overlap_graph = Teuchos::rcp(&(overlap_jac->Graph()),false);
+     map = Teuchos::rcp(&(jac->RowMatrixRowMap()),false);
+     overlap_map = Teuchos::rcp(&(overlap_jac->RowMatrixRowMap()),false);
+   }
+   else {
+     map = Teuchos::rcp(EpetraExt::BlockUtility::GenerateBlockMap(
+						  *(underlyingDisc->getMap()),
+						  rowIndex,
+						  *globalComm));
+     overlap_map = Teuchos::rcp(EpetraExt::BlockUtility::GenerateBlockMap(
+					    *(underlyingDisc->getOverlapMap()),
+					    rowIndex,
+					    *globalComm));
+   }
 }
 
 FEApp::BlockDiscretization::~BlockDiscretization()

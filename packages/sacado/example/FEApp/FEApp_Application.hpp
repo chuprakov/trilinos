@@ -48,6 +48,7 @@
 #include "FEApp_AbstractDiscretization.hpp"
 #include "FEApp_AbstractProblem.hpp"
 #include "FEApp_TemplateTypes.hpp"
+#include "FEApp_InitPostOps.hpp"
 
 #include "Sacado_ScalarParameterLibrary.hpp"
 #include "Sacado_ScalarParameterVector.hpp"
@@ -92,6 +93,12 @@ namespace FEApp {
     //! Return whether problem is transient
     bool isTransient() const;
 
+    //! Create new W operator
+    Teuchos::RCP<Epetra_Operator> createW() const;
+
+    //! Create new preconditioner operator
+    Teuchos::RCP<Epetra_Operator> createPrec() const;
+
     //! Compute global residual
     /*!
      * Set xdot to NULL for steady-state problems
@@ -110,8 +117,19 @@ namespace FEApp {
 			       const Epetra_Vector& x,
 			       const Sacado::ScalarParameterVector* p,
 			       Epetra_Vector* f,
-			       Epetra_CrsMatrix& jac);
+			       Epetra_Operator& jac);
 
+    //! Compute global Preconditioner
+    /*!
+     * Set xdot to NULL for steady-state problems
+     */
+    void computeGlobalPreconditioner(double alpha, double beta,
+				     const Epetra_Vector* xdot,
+				     const Epetra_Vector& x,
+				     const Sacado::ScalarParameterVector* p,
+				     Epetra_Vector* f,
+				     Epetra_Operator& jac);
+    
     //! Compute global Tangent
     /*!
      * Set xdot to NULL for steady-state problems
@@ -136,7 +154,7 @@ namespace FEApp {
 				 const Sacado::ScalarParameterVector* p,
 				 Epetra_Vector& sg_f);
 
-   //! Compute global Jacobian for stochastic Galerkin problem
+    //! Compute global Jacobian for stochastic Galerkin problem
     /*!
      * Set xdot to NULL for steady-state problems
      */
@@ -145,7 +163,18 @@ namespace FEApp {
 				 const Epetra_Vector& sg_x,
 				 const Sacado::ScalarParameterVector* p,
 				 Epetra_Vector* sg_f,
-				 Epetra_CrsMatrix& sg_jac); 
+				 Epetra_Operator& sg_jac); 
+
+    //! Compute global Preconditioner for stochastic Galerkin problem
+    /*!
+     * Set xdot to NULL for steady-state problems
+     */
+    void computeGlobalSGPreconditioner(double alpha, double beta,
+				       const Epetra_Vector* sg_xdot,
+				       const Epetra_Vector& sg_x,
+				       const Sacado::ScalarParameterVector* p,
+				       Epetra_Vector* sg_f,
+				       Epetra_Operator& sg_jac); 
 
   private:
     
@@ -201,11 +230,15 @@ namespace FEApp {
 
 #if SG_ACTIVE
 
+    //! Solver method
+    std::string sg_solver_method;
+
     //! Stochastic Galerking basis
     Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> > sg_basis;
 
+     typedef SGType::expansion_type::tp_type tp_type;
     //! Stochastic Galerkin triple product
-    Teuchos::RCP<const Stokhos::TripleProduct< Stokhos::OrthogPolyBasis<double> > > Cijk;
+    Teuchos::RCP<const tp_type> Cijk;
 
     //! Stochastic Galerkin discretization
     Teuchos::RCP<FEApp::BlockDiscretization> sg_disc;
@@ -230,6 +263,19 @@ namespace FEApp {
 
     //! Overlapped Jacobian matrix
     Teuchos::RCP<EpetraExt::BlockCrsMatrix> sg_overlapped_jac;
+
+    //! SG Residual fill op
+    Teuchos::RCP<FEApp::SGResidualOp> sg_res_fill_op;
+
+    //! SG Jacobian fill op
+    Teuchos::RCP<FEApp::SGJacobianOp> sg_full_jac_fill_op;
+
+    //! SG Matrix Free Jacobian fill op
+    Teuchos::RCP<FEApp::SGMatrixFreeJacobianOp> sg_mf_jac_fill_op;
+
+    //! SG Preconditioner parameters
+    Teuchos::RCP<Teuchos::ParameterList> precParams;
+
 #endif
 
   };

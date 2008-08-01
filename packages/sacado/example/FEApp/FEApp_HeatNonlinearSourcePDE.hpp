@@ -35,6 +35,7 @@
 #include "Teuchos_RCP.hpp"
 
 #include "FEApp_AbstractPDE.hpp"
+#include "FEApp_FunctionFactory.hpp"
 #include "FEApp_SourceFunctionFactory.hpp"
 #include "Sacado_ScalarParameterLibrary.hpp"
 
@@ -45,7 +46,8 @@ namespace FEApp {
   public:
   
     //! Constructor
-    HeatNonlinearSourcePDE(const Teuchos::RCP< const FEApp::AbstractSourceFunction<ScalarT> >& src_func);
+    HeatNonlinearSourcePDE(const Teuchos::RCP< const FEApp::AbstractFunction<ScalarT> >& mat_func,
+			   const Teuchos::RCP< const FEApp::AbstractSourceFunction<ScalarT> >& src_func);
 
     //! Destructor
     virtual ~HeatNonlinearSourcePDE();
@@ -73,6 +75,9 @@ namespace FEApp {
     HeatNonlinearSourcePDE& operator=(const HeatNonlinearSourcePDE&);
 
   protected:
+
+    //! Pointer to material function
+    Teuchos::RCP< const FEApp::AbstractFunction<ScalarT> > mat;
     
     //! Pointer to source function
     Teuchos::RCP< const FEApp::AbstractSourceFunction<ScalarT> > source;
@@ -101,6 +106,9 @@ namespace FEApp {
     //! Discretized time derivative
     std::vector<ScalarT> udot;
 
+    //! Material function values
+    std::vector<ScalarT> a;
+
     //! Source function values
     std::vector<ScalarT> f;
 
@@ -111,17 +119,22 @@ namespace FEApp {
     HeatNonlinearSourcePDE_TemplateBuilder(
 		const Teuchos::RCP<Teuchos::ParameterList>& params_,
 	        const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) :
-      params(Teuchos::rcp(&(params_->sublist("Source Function")),false)),
+      mat_params(Teuchos::rcp(&(params_->sublist("Material Function")),false)),
+      src_params(Teuchos::rcp(&(params_->sublist("Source Function")),false)),
       pl(paramLib) {}
     template <typename T>
     Teuchos::RCP<FEApp::AbstractPDE_NTBase> build() const {
-      FEApp::SourceFunctionFactory<T> factory(params, pl);
+      FEApp::FunctionFactory<T> matFactory(mat_params, pl);
+      Teuchos::RCP< FEApp::AbstractFunction<T> > mat =
+	matFactory.create();
+      FEApp::SourceFunctionFactory<T> srcFactory(src_params, pl);
       Teuchos::RCP< FEApp::AbstractSourceFunction<T> > source =
-	factory.create();
-      return Teuchos::rcp( new FEApp::HeatNonlinearSourcePDE<T>(source));
+	srcFactory.create();
+      return Teuchos::rcp( new FEApp::HeatNonlinearSourcePDE<T>(mat, source));
     }
   protected:
-    Teuchos::RCP<Teuchos::ParameterList> params;
+    Teuchos::RCP<Teuchos::ParameterList> mat_params;
+    Teuchos::RCP<Teuchos::ParameterList> src_params;
     Teuchos::RCP<Sacado::ScalarParameterLibrary> pl;
   };
 

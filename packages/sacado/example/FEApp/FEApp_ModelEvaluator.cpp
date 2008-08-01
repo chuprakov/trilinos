@@ -116,8 +116,7 @@ FEApp::ModelEvaluator::get_p_init(int l) const
 Teuchos::RCP<Epetra_Operator>
 FEApp::ModelEvaluator::create_W() const
 {
-  return 
-    Teuchos::rcp(new Epetra_CrsMatrix(::Copy, *(app->getJacobianGraph())));
+  return app->createW();
 }
 
 EpetraExt::ModelEvaluator::InArgs
@@ -179,22 +178,25 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
   //
   // Get the output arguments
   //
-  Teuchos::RCP<Epetra_Vector> f_out = outArgs.get_f();
+  //Teuchos::RCP<Epetra_Vector> f_out = outArgs.get_f();
+  EpetraExt::ModelEvaluator::Evaluation<Epetra_Vector> f_out = outArgs.get_f();
   Teuchos::RCP<Epetra_Operator> W_out = outArgs.get_W();
   Teuchos::RCP<Epetra_MultiVector> dfdp_out;
   if (outArgs.Np() > 0)
     dfdp_out = outArgs.get_DfDp(0).getMultiVector();
-
-  // Cast W to a CrsMatrix, throw an exception if this fails
-  Teuchos::RCP<Epetra_CrsMatrix> W_out_crs = 
-    Teuchos::rcp_dynamic_cast<Epetra_CrsMatrix>(W_out, true);
   
   //
   // Compute the functions
   //
   if(W_out != Teuchos::null) {
-    app->computeGlobalJacobian(alpha, beta, x_dot, x, sacado_param_vec.get(),
-			       f_out.get(), *W_out_crs);
+    if (f_out.getType() == EVAL_TYPE_EXACT ||
+	f_out.getType() == EVAL_TYPE_APPROX_DERIV)
+      app->computeGlobalJacobian(alpha, beta, x_dot, x, sacado_param_vec.get(),
+				 f_out.get(), *W_out);
+    else
+      app->computeGlobalPreconditioner(alpha, beta, x_dot, x, 
+				       sacado_param_vec.get(), f_out.get(), 
+				       *W_out);
   }
   else if (dfdp_out != Teuchos::null) {
     Teuchos::Array<int> p_indexes = 

@@ -29,65 +29,59 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef FEAPP_ABSTRACTELEMENT_HPP
-#define FEAPP_ABSTRACTELEMENT_HPP
+#ifndef FEAPP_FUNCTIONFACTORY_HPP
+#define FEAPP_FUNCTIONFACTORY_HPP
 
-#include <vector>
+#include "Teuchos_ParameterList.hpp"
+#include "Teuchos_RCP.hpp"
 
 #include "FEApp_AbstractFunction.hpp"
+
+#include "Sacado_ScalarParameterLibrary.hpp"
 
 namespace FEApp {
 
   /*!
-   * \brief Abstract interface for representing a 1-D element
+   * \brief A factory class to instantiate AbstractFunction objects
    */
-  class AbstractElement {
+  template <typename ScalarT>
+  class FunctionFactory {
   public:
-  
+
     //! Default constructor
-    AbstractElement() {};
+    FunctionFactory(
+	       const Teuchos::RCP<Teuchos::ParameterList>& funcParams,
+	       const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib);
 
     //! Destructor
-    virtual ~AbstractElement() {};
+    virtual ~FunctionFactory() {}
 
-    //! Get the number of nodes the element requires
-    virtual unsigned int numNodes() const = 0;
-
-    //! Create the nodes for this element
-    virtual void createNodes(double x_left, double x_right,
-			     unsigned int first_node_gid) = 0;
-
-    //! Return GID of ith node
-    virtual unsigned int nodeGID(unsigned int i) const = 0;
-  
-    //! Evaluate all shape functions at a set of points in (-1,1)
-    virtual void 
-    evaluateShapes(const std::vector<double>& xi,
-		   std::vector< std::vector<double> >& phi) const = 0;
-
-    //! Evaluate all shape function derivatives at a set of points in (-1,1)
-    virtual void
-    evaluateShapeDerivs(const std::vector<double>& xi,
-			std::vector< std::vector<double> >& dphidxi) const = 0;
-
-    /*! 
-     * \brief Evaluate Jacobian of element transformation at a set of points 
-     * in (-1,1)
-     */
-    virtual void 
-    evaluateJacobian(const std::vector<double>& xi,
-		     std::vector<double>& jac) const = 0;
+    virtual Teuchos::RCP< FEApp::AbstractFunction<ScalarT> >
+    create();
 
   private:
 
     //! Private to prohibit copying
-    AbstractElement(const AbstractElement&);
-    
+    FunctionFactory(const FunctionFactory&);
+
     //! Private to prohibit copying
-    AbstractElement& operator=(const AbstractElement&);
+    FunctionFactory& operator=(const FunctionFactory&);
+
+  protected:
+
+    //! Parameter list specifying what strategy to create
+    Teuchos::RCP<Teuchos::ParameterList> funcParams;
+
+    //! Parameter library
+    Teuchos::RCP<Sacado::ScalarParameterLibrary> paramLib;
 
   };
 
 }
 
-#endif // FEAPP_ABSTRACTELEMENT_HPP
+// Include implementation
+#ifndef SACADO_ETI
+#include "FEApp_FunctionFactoryImpl.hpp"
+#endif 
+
+#endif // FEAPP_FUNCTIONFACTORY_HPP

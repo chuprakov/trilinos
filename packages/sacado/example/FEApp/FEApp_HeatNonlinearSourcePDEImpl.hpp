@@ -31,7 +31,9 @@
 
 template <typename ScalarT>
 FEApp::HeatNonlinearSourcePDE<ScalarT>::
-HeatNonlinearSourcePDE(const Teuchos::RCP< const FEApp::AbstractSourceFunction<ScalarT> >& src_func) : 
+HeatNonlinearSourcePDE(const Teuchos::RCP< const FEApp::AbstractFunction<ScalarT> >& mat_func,
+		       const Teuchos::RCP< const FEApp::AbstractSourceFunction<ScalarT> >& src_func) :
+  mat(mat_func),
   source(src_func),
   num_qp(0),
   num_nodes(0),
@@ -41,6 +43,7 @@ HeatNonlinearSourcePDE(const Teuchos::RCP< const FEApp::AbstractSourceFunction<S
   u(),
   du(),
   udot(),
+  a(),
   f()
 {
 }
@@ -73,6 +76,7 @@ init(unsigned int numQuadPoints, unsigned int numNodes)
   u.resize(num_qp);
   du.resize(num_qp);
   udot.resize(num_qp);
+  a.resize(num_qp);
   f.resize(num_qp);
 
   for (unsigned int i=0; i<num_qp; i++) {
@@ -106,6 +110,9 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
   // Evaluate Jacobian of transformation to standard element
   element.evaluateJacobian(xi, jac);
 
+  // Evaluate material values
+  mat->evaluate(xi, a);
+
   // Compute u
   for (unsigned int qp=0; qp<num_qp; qp++) {
     u[qp] = 0.0;
@@ -127,7 +134,7 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
     residual[node] = 0.0;
     for (unsigned int qp=0; qp<num_qp; qp++) {
       residual[node] += 
-	w[qp]*jac[qp]*(-(1.0/(jac[qp]*jac[qp]))*du[qp]*dphi[qp][node] + 
+	w[qp]*jac[qp]*(-(1.0/(jac[qp]*jac[qp]))*a[qp]*du[qp]*dphi[qp][node] + 
 		       phi[qp][node]*(f[qp] - udot[qp]));
     }
   }

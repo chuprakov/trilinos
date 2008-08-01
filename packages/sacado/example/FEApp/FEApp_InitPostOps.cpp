@@ -621,15 +621,13 @@ FEApp::SGResidualOp::SGResidualOp(
   sg_x(sg_overlapped_x),
   sg_f(sg_overlapped_f),
   xdot(sg_xdot != Teuchos::null ? nblock : 0),
-  x(nblock),
-  f(nblock)
+  x(nblock)
 {
   for (unsigned int block=0; block<nblock; block++) {
     // Allocate vectors for blocks
     if (sg_xdot != Teuchos::null)
       xdot[block] = Teuchos::rcp(new Epetra_Vector(*map));
     x[block] = Teuchos::rcp(new Epetra_Vector(*map));
-    f[block] = Teuchos::rcp(new Epetra_Vector(*map));
 
     // Extract blocks
     sg_x->ExtractBlockValues(*x[block], block);
@@ -640,6 +638,22 @@ FEApp::SGResidualOp::SGResidualOp(
 
 FEApp::SGResidualOp::~SGResidualOp()
 {
+}
+
+void
+FEApp::SGResidualOp::reset(
+	  const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+	  const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x)
+{
+  sg_xdot = sg_overlapped_xdot;
+  sg_x = sg_overlapped_x;
+
+  // Extract blocks
+  for (unsigned int block=0; block<nblock; block++) {
+    sg_x->ExtractBlockValues(*x[block], block);
+    if (sg_xdot != Teuchos::null)
+      sg_xdot->ExtractBlockValues(*xdot[block], block);
+  }
 }
 
 void
@@ -700,6 +714,7 @@ FEApp::SGResidualOp::elementPost(const FEApp::AbstractElement& e,
 
   int row;
   unsigned int lrow;
+  double c;
 
   for (unsigned int block=0; block<nblock; block++) {
 
@@ -708,7 +723,8 @@ FEApp::SGResidualOp::elementPost(const FEApp::AbstractElement& e,
       for (unsigned int eq_row=0; eq_row<neqn; eq_row++) {
 	lrow = neqn*node_row+eq_row;
 	row = static_cast<int>(e.nodeGID(node_row)*neqn + eq_row);
-	f[block]->SumIntoGlobalValue(row, 0, elem_f[lrow].coeff(block));
+	c =  elem_f[lrow].coeff(block);
+	sg_f->BlockSumIntoGlobalValues(1, &c, &row, block);
       }
     }
 
@@ -761,6 +777,9 @@ FEApp::SGResidualOp::nodePost(const FEApp::NodeBC& bc,
   // Global ID of first DOF
   unsigned int firstDOF = node_GID*neqn;
 
+  double c;
+  double zero = 0.0;
+
   // Residual offsets
   const std::vector<unsigned int>& offsets = bc.getOffsets();
 
@@ -769,10 +788,12 @@ FEApp::SGResidualOp::nodePost(const FEApp::NodeBC& bc,
     // Replace global residual
     for (unsigned int j=0; j<offsets.size(); j++) {
       int row = static_cast<int>(firstDOF + offsets[j]);
-      if (bc.isOwned())
-	f[block]->ReplaceGlobalValue(row, 0, node_f[offsets[j]].coeff(block));
+      if (bc.isOwned()) {
+	c =  node_f[offsets[j]].coeff(block);
+	sg_f->BlockReplaceGlobalValues(1, &c, &row, block);
+      }
       else if (bc.isShared())
-	f[block]->ReplaceGlobalValue(row, 0, 0.0);
+	sg_f->BlockReplaceGlobalValues(1, &zero, &row, block);
     }
 
   }
@@ -781,9 +802,9 @@ FEApp::SGResidualOp::nodePost(const FEApp::NodeBC& bc,
 void
 FEApp::SGResidualOp::finalizeFill()
 {
-  // Load Epetra vectors into block vector
-  for (unsigned int block=0; block<nblock; block++) 
-    sg_f->LoadBlockValues(*f[block], block);
+//   // Load Epetra vectors into block vector
+//   for (unsigned int block=0; block<nblock; block++) 
+//     sg_f->LoadBlockValues(*f[block], block);
 }
   
 #endif // SG_ACTIVE
@@ -794,7 +815,7 @@ FEApp::SGJacobianOp::SGJacobianOp(
        const Teuchos::RCP<const Epetra_Map>& base_map,
        const Teuchos::RCP<const Epetra_CrsGraph>& base_graph,
        const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis_,
-       const Teuchos::RCP<const Stokhos::TripleProduct< Stokhos::OrthogPolyBasis<double> > >& Cijk_,
+       const Teuchos::RCP<const FEApp::SGJacobianOp::tp_type>& Cijk_,
        double alpha, double beta,
        const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
        const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
@@ -812,29 +833,42 @@ FEApp::SGJacobianOp::SGJacobianOp(
   sg_f(sg_overlapped_f),
   sg_jac(sg_overlapped_jac),
   xdot(sg_xdot != Teuchos::null ? nblock : 0),
-  x(nblock),
-  f(sg_f != Teuchos::null ? nblock : 0),
-  jac(nblock)
+  x(nblock)
 {
   for (unsigned int block=0; block<nblock; block++) {
     // Allocate vectors for blocks
     if (sg_xdot != Teuchos::null)
       xdot[block] = Teuchos::rcp(new Epetra_Vector(*map));
     x[block] = Teuchos::rcp(new Epetra_Vector(*map));
-    if (sg_f != Teuchos::null)
-      f[block] = Teuchos::rcp(new Epetra_Vector(*map));
-    jac[block] = Teuchos::rcp(new Epetra_CrsMatrix(Copy, *graph));
 
     // Extract blocks
     sg_x->ExtractBlockValues(*x[block], block);
     if (sg_xdot != Teuchos::null)
       sg_xdot->ExtractBlockValues(*xdot[block], block);
   }
-  tmp_jac = Teuchos::rcp(new Epetra_CrsMatrix(Copy, *graph));
 }
 
 FEApp::SGJacobianOp::~SGJacobianOp()
 {
+}
+
+void
+FEApp::SGJacobianOp::reset(
+	  double alpha, double beta,
+	  const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+	  const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x)
+{
+  m_coeff = alpha;
+  j_coeff = beta;
+  sg_xdot = sg_overlapped_xdot;
+  sg_x = sg_overlapped_x;
+
+  // Extract blocks
+  for (unsigned int block=0; block<nblock; block++) {
+    sg_x->ExtractBlockValues(*x[block], block);
+    if (sg_xdot != Teuchos::null)
+      sg_xdot->ExtractBlockValues(*xdot[block], block);
+  }
 }
 
 void
@@ -893,53 +927,58 @@ FEApp::SGJacobianOp::elementPost(const FEApp::AbstractElement& e,
   // Sum element residual and Jacobian into global residual, Jacobian
   // Loop over nodes in element
   int row, col;
-  unsigned int lrow, lcol;
-  double c;
-
-  for (unsigned int block=0; block<nblock; block++) {
+  unsigned int lrow, lcol, nl, i, j;
+  double v1, v2, cijk;
   
-    for (unsigned int node_row=0; node_row<nnode; node_row++) {
+  for (unsigned int node_row=0; node_row<nnode; node_row++) {
 
-      // Loop over equations per node
-      for (unsigned int eq_row=0; eq_row<neqn; eq_row++) {
-	lrow = neqn*node_row+eq_row;
+    // Loop over equations per node
+    for (unsigned int eq_row=0; eq_row<neqn; eq_row++) {
+      lrow = neqn*node_row+eq_row;
 
-	// Global row
-	row = static_cast<int>(e.nodeGID(node_row)*neqn + eq_row);
+      // Global row
+      row = static_cast<int>(e.nodeGID(node_row)*neqn + eq_row);
 
-	// Sum residual
-	if (sg_f != Teuchos::null)
-	  f[block]->SumIntoGlobalValue(row, 0, 
-				       elem_f[lrow].val().coeff(block));
+      // Sum residual
+      if (sg_f != Teuchos::null)
+	for (unsigned int k=0; k<nblock; k++) {
+	  v1 = elem_f[lrow].val().coeff(k);
+	  sg_f->BlockSumIntoGlobalValues(1, &v1, &row, k);
+	}
       
-	// Check derivative array is nonzero
-	if (elem_f[lrow].hasFastAccess()) {
+      // Check derivative array is nonzero
+      if (elem_f[lrow].hasFastAccess()) {
 
-	  // Loop over nodes in element
-	  for (unsigned int node_col=0; node_col<nnode; node_col++){
+	// Loop over nodes in element
+	for (unsigned int node_col=0; node_col<nnode; node_col++){
 	    
-	    // Loop over equations per node
-	    for (unsigned int eq_col=0; eq_col<neqn; eq_col++) {
-	      lcol = neqn*node_col+eq_col;
+	  // Loop over equations per node
+	  for (unsigned int eq_col=0; eq_col<neqn; eq_col++) {
+	    lcol = neqn*node_col+eq_col;
 	      
-	      // Global column
-	      col = static_cast<int>(e.nodeGID(node_col)*neqn + eq_col);
+	    // Global column
+	    col = static_cast<int>(e.nodeGID(node_col)*neqn + eq_col);
 
-	      // Sum Jacobian
-	      c = elem_f[lrow].fastAccessDx(lcol).coeff(block);
-	      jac[block]->SumIntoGlobalValues(row, 1, &c, &col);
+	    // Sum Jacobian
+	    for (unsigned int k=0; k<nblock; k++) {
+	      v1 = elem_f[lrow].fastAccessDx(lcol).coeff(k);
+	      nl = Cijk->num_values(k);
+	      for (unsigned int l=0; l<nl; l++) {
+		Cijk->triple_value(k,l,i,j,cijk); 
+		v2 = v1 * cijk / Cijk->norm_squared(i);
+		sg_jac->BlockSumIntoGlobalValues(row, 1, &v2, &col, i, j);
+	      }
+	    } // SG blocks
 
-	    } // column equations
-	    
-	  } // column nodes
+	  } // column equations
+	  
+	} // column nodes
 	
-	} // has fast access
+      } // has fast access
       
-      } // row equations
+    } // row equations
       
-    } // row node
-
-  } // SG blocks
+  } // row node
 
 }
 
@@ -992,7 +1031,299 @@ FEApp::SGJacobianOp::nodePost(const FEApp::NodeBC& bc,
   int num_entries;
   double* row_view = 0;
   int row, col;
+  unsigned int nl, i, j;
+  double v1, v2, cijk, zero;
+  zero = 0.0;
+
+  // Loop over equations per node
+  for (unsigned int eq_row=0; eq_row<offsets.size(); eq_row++) {
+
+    // Global row
+    row = static_cast<int>(firstDOF + offsets[eq_row]);
+    
+    // Replace residual
+    if (sg_f != Teuchos::null) {
+      if (bc.isOwned()) {
+	for (unsigned int k=0; k<nblock; k++) {
+	  v1 = node_f[offsets[eq_row]].val().coeff(k);
+	  sg_f->BlockReplaceGlobalValues(1, &v1, &row, k);
+	}
+      }
+      else if (bc.isShared()) {
+	for (unsigned int k=0; k<nblock; k++)
+	  sg_f->BlockReplaceGlobalValues(1, &zero, &row, k);
+      }
+    }
+
+    // Always zero out row (This takes care of the not-owned case)
+    // Do this for each SG block
+    if (bc.isOwned() || bc.isShared()) {
+      for (unsigned int i=0; i<nblock; i++)
+	for (unsigned int j=0; j<nblock; j++) {
+	  sg_jac->BlockExtractGlobalRowView(row, num_entries, row_view, i, j);
+	  for (int k=0; k<num_entries; k++)
+	    row_view[k] = 0.0;
+	}
+    }
+	
+    // Check derivative array is nonzero
+    if (node_f[offsets[eq_row]].hasFastAccess()) {
+	    
+      // Loop over equations per node
+      for (unsigned int eq_col=0; eq_col<neqn; eq_col++) {
+	      
+	// Global column
+	col = static_cast<int>(firstDOF + eq_col);
+
+	// Replace Jacobian
+	if (bc.isOwned()) {
+	  for (unsigned int k=0; k<nblock; k++) {
+	    v1 = node_f[eq_row].fastAccessDx(eq_col).coeff(k);
+	    nl = Cijk->num_values(k);
+	    for (unsigned int l=0; l<nl; l++) {
+	      Cijk->triple_value(k,l,i,j,cijk); 
+	      v2 = v1 * cijk / Cijk->norm_squared(i);
+	      sg_jac->BlockSumIntoGlobalValues(row, 1, &v2, &col, i, j);
+	    }
+	  }
+	} // SG blocks
+
+      } // column equations
+      
+    } // has fast access
+    
+  } // row equations
+
+}
+
+void
+FEApp::SGJacobianOp::finalizeFill()
+{
+}
+
+FEApp::SGMatrixFreeJacobianOp::SGMatrixFreeJacobianOp(
+       const Teuchos::RCP<const Epetra_Map>& base_map,
+       const Teuchos::RCP<const Epetra_CrsGraph>& base_graph,
+       const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis_,
+       double alpha, double beta,
+       const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+       const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
+       const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f) :
+  nblock(sg_basis_->size()),
+  map(base_map),
+  graph(base_graph),
+  sg_basis(sg_basis_),
+  m_coeff(alpha),
+  j_coeff(beta),
+  sg_xdot(sg_overlapped_xdot),
+  sg_x(sg_overlapped_x),
+  sg_f(sg_overlapped_f),
+  xdot(sg_xdot != Teuchos::null ? nblock : 0),
+  x(nblock),
+  jac(nblock)
+{
+  for (unsigned int block=0; block<nblock; block++) {
+    // Allocate vectors for blocks
+    if (sg_xdot != Teuchos::null)
+      xdot[block] = Teuchos::rcp(new Epetra_Vector(*map));
+    x[block] = Teuchos::rcp(new Epetra_Vector(*map));
+    jac[block] = Teuchos::rcp(new Epetra_CrsMatrix(Copy, *graph));
+
+    // Extract blocks
+    sg_x->ExtractBlockValues(*x[block], block);
+    if (sg_xdot != Teuchos::null)
+      sg_xdot->ExtractBlockValues(*xdot[block], block);
+  }
+}
+
+FEApp::SGMatrixFreeJacobianOp::~SGMatrixFreeJacobianOp()
+{
+}
+
+void
+FEApp::SGMatrixFreeJacobianOp::reset(
+	  double alpha, double beta,
+	  const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+	  const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x)
+{
+  m_coeff = alpha;
+  j_coeff = beta;
+  sg_xdot = sg_overlapped_xdot;
+  sg_x = sg_overlapped_x;
+
+  // Extract blocks
+  for (unsigned int block=0; block<nblock; block++) {
+    sg_x->ExtractBlockValues(*x[block], block);
+    if (sg_xdot != Teuchos::null)
+      sg_xdot->ExtractBlockValues(*xdot[block], block);
+    jac[block]->PutScalar(0.0);
+  }
+}
+
+std::vector< Teuchos::RCP<Epetra_CrsMatrix> >&
+FEApp::SGMatrixFreeJacobianOp::getJacobianBlocks()
+{
+  return jac;
+}
+
+
+void
+FEApp::SGMatrixFreeJacobianOp::elementInit(const FEApp::AbstractElement& e,
+				 unsigned int neqn,
+				 std::vector< SGFadType >* elem_xdot,
+				 std::vector< SGFadType >& elem_x)
+{
+  // Global node ID
+  unsigned int node_GID;
+
+  // Local ID of first DOF
+  unsigned int firstDOF;
+
+  // Number of nodes
+  unsigned int nnode = e.numNodes();
+
+  // Number of dof
+  unsigned int ndof = nnode*neqn;
+
+  // Copy element solution
+  for (unsigned int i=0; i<nnode; i++) {
+    node_GID = e.nodeGID(i);
+    firstDOF = map->LID(node_GID*neqn);
+    for (unsigned int j=0; j<neqn; j++) {
+      elem_x[neqn*i+j] = SGFadType(ndof, 0.0);
+      elem_x[neqn*i+j].fastAccessDx(neqn*i+j) = j_coeff;
+      elem_x[neqn*i+j].val().resize(nblock);
+      elem_x[neqn*i+j].val().copyForWrite();
+      for (unsigned int block=0; block<nblock; block++)
+	elem_x[neqn*i+j].val().fastAccessCoeff(block) = 
+	  (*x[block])[firstDOF+j];
+      if (elem_xdot != NULL) {
+	(*elem_xdot)[neqn*i+j] = SGFadType(ndof, 0.0);
+	(*elem_xdot)[neqn*i+j].fastAccessDx(neqn*i+j) = m_coeff;
+	(*elem_xdot)[neqn*i+j].val().resize(nblock);
+	(*elem_xdot)[neqn*i+j].val().copyForWrite();
+	for (unsigned int block=0; block<nblock; block++)
+	  (*elem_xdot)[neqn*i+j].val().fastAccessCoeff(block) = 
+	    (*xdot[block])[firstDOF+j];
+      }
+	
+    }
+  }
+
+}
+
+void
+FEApp::SGMatrixFreeJacobianOp::elementPost(const FEApp::AbstractElement& e,
+				 unsigned int neqn,
+				 std::vector< SGFadType >& elem_f)
+{
+  // Number of nodes
+  unsigned int nnode = e.numNodes();
+
+  // Sum element residual and Jacobian into global residual, Jacobian
+  // Loop over nodes in element
+  int row, col;
+  unsigned int lrow, lcol;
   double c;
+  
+  for (unsigned int node_row=0; node_row<nnode; node_row++) {
+    
+    // Loop over equations per node
+    for (unsigned int eq_row=0; eq_row<neqn; eq_row++) {
+      lrow = neqn*node_row+eq_row;
+      
+      // Global row
+      row = static_cast<int>(e.nodeGID(node_row)*neqn + eq_row);
+
+      // Sum residual
+      if (sg_f != Teuchos::null) 
+	for (unsigned int block=0; block<nblock; block++) {
+	  c = elem_f[lrow].val().coeff(block);
+	  sg_f->BlockSumIntoGlobalValues(1, &c, &row, block);
+	}
+      
+      // Check derivative array is nonzero
+      if (elem_f[lrow].hasFastAccess()) {
+
+	// Loop over nodes in element
+	for (unsigned int node_col=0; node_col<nnode; node_col++){
+	    
+	  // Loop over equations per node
+	  for (unsigned int eq_col=0; eq_col<neqn; eq_col++) {
+	    lcol = neqn*node_col+eq_col;
+	      
+	    // Global column
+	    col = static_cast<int>(e.nodeGID(node_col)*neqn + eq_col);
+
+	    // Sum Jacobian
+	     for (unsigned int block=0; block<nblock; block++) {
+	       c = elem_f[lrow].fastAccessDx(lcol).coeff(block);
+	       jac[block]->SumIntoGlobalValues(row, 1, &c, &col);
+	     }
+
+	  } // column equations
+	    
+	} // column nodes
+	
+      } // has fast access
+      
+    } // row equations
+      
+  } // row node
+
+}
+
+void
+FEApp::SGMatrixFreeJacobianOp::nodeInit(const FEApp::NodeBC& bc,
+			      unsigned int neqn,
+			      std::vector< SGFadType >* node_xdot,
+			      std::vector< SGFadType >& node_x)
+{
+  // Global node ID
+  unsigned int node_GID = bc.getNodeGID();
+
+  // Local ID of first DOF
+  unsigned int firstDOF = map->LID(node_GID*neqn);
+
+  // Copy element solution
+  for (unsigned int j=0; j<neqn; j++) {
+    node_x[j] = SGFadType(neqn, 0.0);
+    node_x[j].fastAccessDx(j) = j_coeff;
+    node_x[j].val().resize(nblock);
+    node_x[j].val().copyForWrite();
+    for (unsigned int block=0; block<nblock; block++)
+      node_x[j].val().fastAccessCoeff(block) = (*x[block])[firstDOF+j];
+    if (node_xdot != NULL) {
+      (*node_xdot)[j] = SGFadType(neqn, 0.0);
+      (*node_xdot)[j].fastAccessDx(j) = m_coeff;
+      (*node_xdot)[j].val().resize(nblock);
+      (*node_xdot)[j].val().copyForWrite();
+      for (unsigned int block=0; block<nblock; block++)
+	(*node_xdot)[j].val().fastAccessCoeff(block) = 
+	  (*xdot[block])[firstDOF+j];
+    }
+  }
+}
+
+void
+FEApp::SGMatrixFreeJacobianOp::nodePost(const FEApp::NodeBC& bc,
+			      unsigned int neqn,
+			      std::vector< SGFadType >& node_f)
+{
+  // Global node ID
+  unsigned int node_GID = bc.getNodeGID();
+
+  // Global ID of first DOF
+  unsigned int firstDOF = node_GID*neqn;
+
+  // Residual offsets
+  const std::vector<unsigned int>& offsets = bc.getOffsets();
+
+  int num_entries;
+  double* row_view = 0;
+  int row, col;
+  double c;
+  double zero = 0.0;
 
   for (unsigned int block=0; block<nblock; block++) {
 
@@ -1006,10 +1337,10 @@ FEApp::SGJacobianOp::nodePost(const FEApp::NodeBC& bc,
       if (sg_f != Teuchos::null) {
 	if (bc.isOwned()) {
 	  c = node_f[offsets[eq_row]].val().coeff(block);
-	  f[block]->ReplaceGlobalValue(row, 0, c);
+	  sg_f->BlockReplaceGlobalValues(1, &c, &row, block);
 	}
 	else if (bc.isShared())
-	  f[block]->ReplaceGlobalValue(row, 0, 0.0);
+	  sg_f->BlockReplaceGlobalValues(1, &zero, &row, block);
       }
 
       // Always zero out row (This takes care of the not-owned case)
@@ -1045,35 +1376,8 @@ FEApp::SGJacobianOp::nodePost(const FEApp::NodeBC& bc,
 }
 
 void
-FEApp::SGJacobianOp::finalizeFill()
+FEApp::SGMatrixFreeJacobianOp::finalizeFill()
 {
-  // Load Epetra vectors into block vector
-  if (sg_f != Teuchos::null)
-    for (unsigned int block=0; block<nblock; block++) 
-      sg_f->LoadBlockValues(*f[block], block);
-
-  // Load Epetra matrices into block matrix
-  double c;
-  EpetraExt::MatrixMatrix mm;
-  for (unsigned int blockr=0; blockr<nblock; blockr++) {
-    for (unsigned int blockc=0; blockc<nblock; blockc++) {
-      tmp_jac->PutScalar(0.0);
-      for (unsigned int block=0; block<nblock; block++) {
-	c = Cijk->triple_value(blockr, blockc, block);
-	mm.Add(*jac[block], false, c, *tmp_jac, 1.0);
-      }
-      tmp_jac->Scale(1.0 / Cijk->norm_squared(blockr));
-      sg_jac->LoadBlock(*tmp_jac, blockr, blockc);
-    }
-  }
-
-//   for (unsigned int block=0; block<nblock; block++) {
-//     std::cout << "Jacobian block " << block << std::endl;
-//     jac[block]->Print(std::cout);
-//   }
-
-//   std::cout << "SG Jacobian " << std::endl;
-//     sg_jac->Print(std::cout);
 }
 
 #endif // SGFAD_ACTIVE

@@ -29,65 +29,41 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef FEAPP_ABSTRACTELEMENT_HPP
-#define FEAPP_ABSTRACTELEMENT_HPP
+#ifndef FEAPP_ABSTRACTFUNCTION_HPP
+#define FEAPP_ABSTRACTFUNCTION_HPP
 
 #include <vector>
-
-#include "FEApp_AbstractFunction.hpp"
 
 namespace FEApp {
 
   /*!
-   * \brief Abstract interface for representing a 1-D element
+   * \brief Abstract interface for representing a PDE material function
    */
-  class AbstractElement {
+  template <typename ScalarT>
+  class AbstractFunction {
   public:
   
     //! Default constructor
-    AbstractElement() {};
+    AbstractFunction() {};
 
     //! Destructor
-    virtual ~AbstractElement() {};
+    virtual ~AbstractFunction() {};
 
-    //! Get the number of nodes the element requires
-    virtual unsigned int numNodes() const = 0;
-
-    //! Create the nodes for this element
-    virtual void createNodes(double x_left, double x_right,
-			     unsigned int first_node_gid) = 0;
-
-    //! Return GID of ith node
-    virtual unsigned int nodeGID(unsigned int i) const = 0;
-  
-    //! Evaluate all shape functions at a set of points in (-1,1)
-    virtual void 
-    evaluateShapes(const std::vector<double>& xi,
-		   std::vector< std::vector<double> >& phi) const = 0;
-
-    //! Evaluate all shape function derivatives at a set of points in (-1,1)
+    //! Evaluate function at quadrature points
     virtual void
-    evaluateShapeDerivs(const std::vector<double>& xi,
-			std::vector< std::vector<double> >& dphidxi) const = 0;
-
-    /*! 
-     * \brief Evaluate Jacobian of element transformation at a set of points 
-     * in (-1,1)
-     */
-    virtual void 
-    evaluateJacobian(const std::vector<double>& xi,
-		     std::vector<double>& jac) const = 0;
+    evaluate(const std::vector<double>& quad_points,
+	     std::vector<ScalarT>& value) const = 0;
 
   private:
-
-    //! Private to prohibit copying
-    AbstractElement(const AbstractElement&);
     
     //! Private to prohibit copying
-    AbstractElement& operator=(const AbstractElement&);
+    AbstractFunction(const AbstractFunction&);
+
+    //! Private to prohibit copying
+    AbstractFunction& operator=(const AbstractFunction&);
 
   };
 
 }
 
-#endif // FEAPP_ABSTRACTELEMENT_HPP
+#endif // FEAPP_ABSTRACTFUNCTION_HPP

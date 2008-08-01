@@ -29,10 +29,10 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef FEAPP_EXPONENTIALSOURCEFUNCTION_HPP
-#define FEAPP_EXPONENTIALSOURCEFUNCTION_HPP
+#ifndef FEAPP_CONSTANTFUNCTION_HPP
+#define FEAPP_CONSTANTFUNCTION_HPP
 
-#include "FEApp_AbstractSourceFunction.hpp"
+#include "FEApp_AbstractFunction.hpp"
 
 #include "Teuchos_RCP.hpp"
 #include "Sacado_ScalarParameterLibrary.hpp"
@@ -41,88 +41,86 @@
 
 namespace FEApp {
 
-  template <typename ScalarT> class ExponentialNonlinearFactorParameter;
+  template <typename ScalarT> class ConstantFunctionParameter;
 
   /*!
-   * \brief A cubic PDE source function
+   * \brief A constant PDE function
    */
   template <typename ScalarT>
-  class ExponentialSourceFunction : 
-    public FEApp::AbstractSourceFunction<ScalarT> {
+  class ConstantFunction : 
+    public FEApp::AbstractFunction<ScalarT> {
   public:
   
     //! Default constructor
-    ExponentialSourceFunction(
-	       const ScalarT& factor,
+    ConstantFunction(
+	       const ScalarT& value,
 	       const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) : 
-      alpha(factor) 
+      val(value) 
     {
-      // Add nonlinear factor to parameter library
-      std::string name = "Exponential Source Function Nonlinear Factor";
+      // Add val to parameter library
+      std::string name = "Constant Function Value";
       if (!paramLib->isParameter(name))
 	paramLib->addParameterFamily(name, true, false);
       if (!paramLib->template isParameterForType<ScalarT>(name)) {
-	Teuchos::RCP< ExponentialNonlinearFactorParameter<ScalarT> > tmp = 
-	  Teuchos::rcp(new ExponentialNonlinearFactorParameter<ScalarT>(Teuchos::rcp(this,false)));
+	Teuchos::RCP< ConstantFunctionParameter<ScalarT> > tmp = 
+	  Teuchos::rcp(new ConstantFunctionParameter<ScalarT>(Teuchos::rcp(this,false)));
 	paramLib->template addEntry<ScalarT>(name, tmp);
       }
     };
 
     //! Destructor
-    virtual ~ExponentialSourceFunction() {};
+    virtual ~ConstantFunction() {};
 
-    //! Evaluate source function
+    //! Evaluate function
     virtual void
-    evaluate(const std::vector<ScalarT>& solution,
+    evaluate(const std::vector<double>& quad_points,
 	     std::vector<ScalarT>& value) const {
-      for (unsigned int i=0; i<solution.size(); i++) {
-	value[i] = -std::exp(alpha)*std::exp(solution[i]);
-	//value[i] = -1.0;
+      for (unsigned int i=0; i<quad_points.size(); i++) {
+	value[i] = val;
       }
-      
     }
 
-    //! Set nonlinear factor
-    void setFactor(const ScalarT& val, bool mark_constant) { 
-      alpha = val;
-      if (mark_constant) Sacado::MarkConstant<ScalarT>::eval(alpha); 
+    //! Set value
+    void setValue(const ScalarT& value, bool mark_constant) { 
+      val = value; 
+      if (mark_constant) Sacado::MarkConstant<ScalarT>::eval(val); 
     }
 
-    //! Get nonlinear factor
-    const ScalarT& getFactor() const { return alpha; }
+    //! Get value
+    const ScalarT& getValue() const { return val; }
 
   private:
 
     //! Private to prohibit copying
-    ExponentialSourceFunction(const ExponentialSourceFunction&);
+    ConstantFunction(const ConstantFunction&);
 
     //! Private to prohibit copying
-    ExponentialSourceFunction& operator=(const ExponentialSourceFunction&);
+    ConstantFunction& operator=(const ConstantFunction&);
 
   protected:
   
-    //! Factor
-    ScalarT alpha;
+    //! Value
+    ScalarT val;
 
   };
 
   /*!
    * @brief Parameter class for sensitivity/stability analysis representing
-   * the nonlinear factor in the cubic source function
+   * the value in the constant function
    */
   template <typename ScalarT>
-  class ExponentialNonlinearFactorParameter : 
+  class ConstantFunctionParameter : 
     public Sacado::ScalarParameterEntry<ScalarT> {
 
   public:
 
     //! Constructor
-    ExponentialNonlinearFactorParameter(
-			const Teuchos::RCP< ExponentialSourceFunction<ScalarT> >& s) 
-      : srcFunc(s) {}
+    ConstantFunctionParameter(
+		  const Teuchos::RCP< ConstantFunction<ScalarT> >& s) : 
+      func(s) {}
 
     //! Destructor
-    virtual ~ExponentialNonlinearFactorParameter() {}
+    virtual ~ConstantFunctionParameter() {}
 
     //! Set real parameter value
     virtual void setRealValue(double value) { 
@@ -130,22 +128,22 @@ namespace FEApp {
 
     //! Set parameter this object represents to \em value
     virtual void setValueAsConstant(const ScalarT& value) { 
-      srcFunc->setFactor(value, true); }
+      func->setValue(value, true); }
     
     //! Set parameter this object represents to \em value
     virtual void setValueAsIndependent(const ScalarT& value) { 
-      srcFunc->setFactor(value, false); }
+      func->setValue(value, false); }
     
     //! Get parameter value this object represents
-    virtual const ScalarT& getValue() const { return srcFunc->getFactor(); }
+    virtual const ScalarT& getValue() const { return func->getValue(); }
     
   protected:  
     
     //! Pointer to source function
-    Teuchos::RCP< ExponentialSourceFunction<ScalarT> > srcFunc;
+    Teuchos::RCP< ConstantFunction<ScalarT> > func;
 
   };
 
 }
 
-#endif // FEAPP_CUBICSOURCEFUNCTION_HPP
+#endif // FEAPP_CONSTANTFUNCTION_HPP

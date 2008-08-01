@@ -55,7 +55,8 @@ namespace FEApp {
     BlockDiscretization(
      const Teuchos::RCP<const Epetra_Comm>& comm,
      const Teuchos::RCP<const FEApp::AbstractDiscretization>& underlyingDisc_,
-     const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis_);
+     const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis_,
+     bool makeJacobian);
 
     //! Destructor
     virtual ~BlockDiscretization();
