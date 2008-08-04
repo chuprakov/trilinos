@@ -101,7 +101,10 @@ int main( int argc, char* argv[] )
     int myPoints = globalComm->NumTimeStepsOnDomain();
     int myFirstPoint = globalComm->FirstTimeStepOnDomain();
 
-    Teuchos::RCP<Epetra_MpiComm> epetra_comm = Teuchos::rcp(&globalComm->SubDomainComm(),false);
+    Teuchos::RCP<Epetra_MpiComm> epetra_comm =
+      Teuchos::rcp_dynamic_cast<Epetra_MpiComm>(
+        Teuchos::rcp(&globalComm->SubDomainComm(),false)
+        );
 
     // Create the single-point EpetraExt::ModelEvaluator object
     Teuchos::RCP<EpetraMultiPointModelEval4DOpt>
