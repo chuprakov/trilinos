@@ -84,8 +84,6 @@ UTIL_H = \
 	$(srcdir)/../include/util/ParallelReduce.hpp \
 	$(srcdir)/../include/util/Reference.hpp \
 	$(srcdir)/../include/util/Setv.hpp \
-	$(srcdir)/../include/util/TPI.hpp \
-	$(srcdir)/../include/util/TPI.h \
 	$(srcdir)/../include/util/TestDriver.hpp \
 	$(srcdir)/../include/util/TypeList.hpp \
 	$(srcdir)/../include/util/ValueIO.hpp
@@ -104,17 +102,14 @@ UTIL = \
 	$(srcdir)/util/ParallelReduce.cpp \
 	$(srcdir)/util/Reference.cpp \
 	$(srcdir)/util/Setv.cpp \
-	$(srcdir)/util/TPI.c \
 	$(srcdir)/util/TestDriver.cpp \
 	$(srcdir)/util/ValueIO.cpp
 
 MESHIO_H = \
-	$(srcdir)/../include/mesh_io/ExoII.hpp \
-	$(srcdir)/../include/mesh_io/FieldName.hpp 
+	$(srcdir)/../include/mesh_io/ExoII.hpp
 
 MESHIO = \
-	$(srcdir)/mesh_io/MeshIO_ExoII.cpp \
-	$(srcdir)/mesh_io/MeshIO_FieldName.cpp
+	$(srcdir)/mesh_io/MeshIO_ExoII.cpp
 
 TXBLAS_H = \
 	$(srcdir)/../include/txblas/CR4Matrix.hpp \

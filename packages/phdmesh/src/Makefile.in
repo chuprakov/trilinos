@@ -105,7 +105,7 @@ am__objects_1 = MeshAssemble.$(OBJEXT) MeshAura.$(OBJEXT) \
 am_libphdmesh_mesh_a_OBJECTS = $(am__objects_1)
 libphdmesh_mesh_a_OBJECTS = $(am_libphdmesh_mesh_a_OBJECTS)
 libphdmesh_meshio_a_DEPENDENCIES =
-am__objects_2 = MeshIO_ExoII.$(OBJEXT) MeshIO_FieldName.$(OBJEXT)
+am__objects_2 = MeshIO_ExoII.$(OBJEXT)
 am_libphdmesh_meshio_a_OBJECTS = $(am__objects_2)
 libphdmesh_meshio_a_OBJECTS = $(am_libphdmesh_meshio_a_OBJECTS)
 libphdmesh_txblas_a_DEPENDENCIES =
@@ -119,7 +119,7 @@ am__objects_4 = CSet.$(OBJEXT) FixedPoolAlloc.$(OBJEXT) \
 	OctTreeOps.$(OBJEXT) ParallelComm.$(OBJEXT) Parallel.$(OBJEXT) \
 	ParallelIndex.$(OBJEXT) ParallelInputStream.$(OBJEXT) \
 	ParallelReduce.$(OBJEXT) Reference.$(OBJEXT) Setv.$(OBJEXT) \
-	TPI.$(OBJEXT) TestDriver.$(OBJEXT) ValueIO.$(OBJEXT)
+	TestDriver.$(OBJEXT) ValueIO.$(OBJEXT)
 am_libphdmesh_util_a_OBJECTS = $(am__objects_4)
 libphdmesh_util_a_OBJECTS = $(am_libphdmesh_util_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -313,8 +313,6 @@ UTIL_H = \
 	$(srcdir)/../include/util/ParallelReduce.hpp \
 	$(srcdir)/../include/util/Reference.hpp \
 	$(srcdir)/../include/util/Setv.hpp \
-	$(srcdir)/../include/util/TPI.hpp \
-	$(srcdir)/../include/util/TPI.h \
 	$(srcdir)/../include/util/TestDriver.hpp \
 	$(srcdir)/../include/util/TypeList.hpp \
 	$(srcdir)/../include/util/ValueIO.hpp
@@ -333,17 +331,14 @@ UTIL = \
 	$(srcdir)/util/ParallelReduce.cpp \
 	$(srcdir)/util/Reference.cpp \
 	$(srcdir)/util/Setv.cpp \
-	$(srcdir)/util/TPI.c \
 	$(srcdir)/util/TestDriver.cpp \
 	$(srcdir)/util/ValueIO.cpp
 
 MESHIO_H = \
-	$(srcdir)/../include/mesh_io/ExoII.hpp \
-	$(srcdir)/../include/mesh_io/FieldName.hpp 
+	$(srcdir)/../include/mesh_io/ExoII.hpp
 
 MESHIO = \
-	$(srcdir)/mesh_io/MeshIO_ExoII.cpp \
-	$(srcdir)/mesh_io/MeshIO_FieldName.cpp
+	$(srcdir)/mesh_io/MeshIO_ExoII.cpp
 
 TXBLAS_H = \
 	$(srcdir)/../include/txblas/CR4Matrix.hpp \
@@ -552,7 +547,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshEntityComm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshField.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshIO_ExoII.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshIO_FieldName.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshKernel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshMesh.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshPart.Po@am__quote@
@@ -572,7 +566,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParallelReduce.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Reference.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Setv.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TPI.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestDriver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ValueIO.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/txblas_CR4Matrix.Po@am__quote@
@@ -635,20 +628,6 @@ txblas_reduction.obj: $(srcdir)/txblas/txblas_reduction.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/txblas/txblas_reduction.c' object='txblas_reduction.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o txblas_reduction.obj `if test -f '$(srcdir)/txblas/txblas_reduction.c'; then $(CYGPATH_W) '$(srcdir)/txblas/txblas_reduction.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/txblas/txblas_reduction.c'; fi`
-
-TPI.o: $(srcdir)/util/TPI.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT TPI.o -MD -MP -MF $(DEPDIR)/TPI.Tpo -c -o TPI.o `test -f '$(srcdir)/util/TPI.c' || echo '$(srcdir)/'`$(srcdir)/util/TPI.c
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/TPI.Tpo $(DEPDIR)/TPI.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/util/TPI.c' object='TPI.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o TPI.o `test -f '$(srcdir)/util/TPI.c' || echo '$(srcdir)/'`$(srcdir)/util/TPI.c
-
-TPI.obj: $(srcdir)/util/TPI.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT TPI.obj -MD -MP -MF $(DEPDIR)/TPI.Tpo -c -o TPI.obj `if test -f '$(srcdir)/util/TPI.c'; then $(CYGPATH_W) '$(srcdir)/util/TPI.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/TPI.c'; fi`
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/TPI.Tpo $(DEPDIR)/TPI.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/util/TPI.c' object='TPI.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o TPI.obj `if test -f '$(srcdir)/util/TPI.c'; then $(CYGPATH_W) '$(srcdir)/util/TPI.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/TPI.c'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -873,20 +852,6 @@ MeshIO_ExoII.obj: $(srcdir)/mesh_io/MeshIO_ExoII.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh_io/MeshIO_ExoII.cpp' object='MeshIO_ExoII.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshIO_ExoII.obj `if test -f '$(srcdir)/mesh_io/MeshIO_ExoII.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh_io/MeshIO_ExoII.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh_io/MeshIO_ExoII.cpp'; fi`
-
-MeshIO_FieldName.o: $(srcdir)/mesh_io/MeshIO_FieldName.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshIO_FieldName.o -MD -MP -MF $(DEPDIR)/MeshIO_FieldName.Tpo -c -o MeshIO_FieldName.o `test -f '$(srcdir)/mesh_io/MeshIO_FieldName.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh_io/MeshIO_FieldName.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshIO_FieldName.Tpo $(DEPDIR)/MeshIO_FieldName.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh_io/MeshIO_FieldName.cpp' object='MeshIO_FieldName.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshIO_FieldName.o `test -f '$(srcdir)/mesh_io/MeshIO_FieldName.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh_io/MeshIO_FieldName.cpp
-
-MeshIO_FieldName.obj: $(srcdir)/mesh_io/MeshIO_FieldName.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshIO_FieldName.obj -MD -MP -MF $(DEPDIR)/MeshIO_FieldName.Tpo -c -o MeshIO_FieldName.obj `if test -f '$(srcdir)/mesh_io/MeshIO_FieldName.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh_io/MeshIO_FieldName.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh_io/MeshIO_FieldName.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshIO_FieldName.Tpo $(DEPDIR)/MeshIO_FieldName.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh_io/MeshIO_FieldName.cpp' object='MeshIO_FieldName.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshIO_FieldName.obj `if test -f '$(srcdir)/mesh_io/MeshIO_FieldName.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh_io/MeshIO_FieldName.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh_io/MeshIO_FieldName.cpp'; fi`
 
 txblas_CR4Matrix.o: $(srcdir)/txblas/txblas_CR4Matrix.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT txblas_CR4Matrix.o -MD -MP -MF $(DEPDIR)/txblas_CR4Matrix.Tpo -c -o txblas_CR4Matrix.o `test -f '$(srcdir)/txblas/txblas_CR4Matrix.cpp' || echo '$(srcdir)/'`$(srcdir)/txblas/txblas_CR4Matrix.cpp
