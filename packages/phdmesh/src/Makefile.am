@@ -37,13 +37,30 @@ all-local:
 # the list of all source and any other header files.
 # ------------------------------------------------------------------------
 
+ELEMENT_H = \
+	$(srcdir)/../include/element/Declarations.hpp \
+	$(srcdir)/../include/element/Dimensions.hpp \
+	$(srcdir)/../include/element/HexahedronTopology.hpp \
+	$(srcdir)/../include/element/LocalTopology.hpp \
+	$(srcdir)/../include/element/PyramidTopology.hpp \
+	$(srcdir)/../include/element/QuadrilateralTopology.hpp \
+	$(srcdir)/../include/element/Stencils.hpp \
+	$(srcdir)/../include/element/TetrahedronTopology.hpp \
+	$(srcdir)/../include/element/TriangleTopology.hpp \
+	$(srcdir)/../include/element/WedgeTopology.hpp
+ 
+ELEMENT = \
+	$(srcdir)/element/ElementDeclarations.cpp \
+	$(srcdir)/element/ElementDimensions.cpp \
+	$(srcdir)/element/ElementLocalTopology.cpp
+
 MESH_H = \
 	$(srcdir)/../include/mesh/Assemble.hpp \
 	$(srcdir)/../include/mesh/Comm.hpp \
 	$(srcdir)/../include/mesh/Entity.hpp \
 	$(srcdir)/../include/mesh/EntityComm.hpp \
-	$(srcdir)/../include/mesh/FieldDim.hpp \
 	$(srcdir)/../include/mesh/Field.hpp \
+	$(srcdir)/../include/mesh/FieldData.hpp \
 	$(srcdir)/../include/mesh/Gather.hpp \
 	$(srcdir)/../include/mesh/Kernel.hpp \
 	$(srcdir)/../include/mesh/Mesh.hpp \
@@ -59,11 +76,13 @@ MESH = \
 	$(srcdir)/mesh/MeshEntity.cpp \
 	$(srcdir)/mesh/MeshEntityComm.cpp \
 	$(srcdir)/mesh/MeshField.cpp \
+	$(srcdir)/mesh/MeshFieldTraits.cpp \
 	$(srcdir)/mesh/MeshKernel.cpp \
 	$(srcdir)/mesh/MeshMesh.cpp \
 	$(srcdir)/mesh/MeshPart.cpp \
 	$(srcdir)/mesh/MeshProximity.cpp \
 	$(srcdir)/mesh/MeshRebalance.cpp \
+	$(srcdir)/mesh/MeshRelation.cpp \
 	$(srcdir)/mesh/MeshSchema.cpp \
 	$(srcdir)/mesh/MeshSharing.cpp \
 	$(srcdir)/mesh/MeshTypes.cpp
@@ -71,6 +90,7 @@ MESH = \
 UTIL_H = \
 	$(srcdir)/../include/util/Basics.hpp \
 	$(srcdir)/../include/util/CSet.hpp \
+	$(srcdir)/../include/util/Dimension.hpp \
 	$(srcdir)/../include/util/FixedArray.hpp \
 	$(srcdir)/../include/util/FixedPoolAlloc.hpp \
 	$(srcdir)/../include/util/NamedValue.hpp \
@@ -90,6 +110,7 @@ UTIL_H = \
 
 UTIL = \
 	$(srcdir)/util/CSet.cpp \
+	$(srcdir)/util/Dimension.cpp \
 	$(srcdir)/util/FixedPoolAlloc.cpp \
 	$(srcdir)/util/NamedValue.cpp \
 	$(srcdir)/util/NumericEnum.cpp \
@@ -140,18 +161,20 @@ AM_CPPFLAGS = $(EXPORT_INCLUDES)
 # ------------------------------------------------------------------------
 # New_Package library specifications
 # ------------------------------------------------------------------------
-PHDMESH_LIB = libphdmesh_util.a libphdmesh_mesh.a \
+PHDMESH_LIB = libphdelement_mesh.a libphdmesh_util.a libphdmesh_mesh.a \
 	libphdmesh_meshio.a libphdmesh_txblas.a
 
 
 #np# replace new_package with the name of the package being autotool'ed here
 PHDMESH_H = \
+	$(ELEMENT_H) \
 	$(UTIL_H) \
 	$(MESH_H) \
 	$(MESHIO_H) \
 	$(TXBLAS_H)
 
-#np# replace new_package with the name of the package being autotool'ed here
+libphdelement_mesh_a_SOURCES = $(ELEMENT)
+
 libphdmesh_util_a_SOURCES = $(UTIL)
 
 libphdmesh_mesh_a_SOURCES = $(MESH)
@@ -172,6 +195,7 @@ libphdmesh_txblas_a_SOURCES = $(TXBLAS)
 
 if USE_ALTERNATE_AR
 
+libphdelement_mesh_a_AR = $(ALTERNATE_AR)
 libphdmesh_util_a_AR = $(ALTERNATE_AR)
 libphdmesh_mesh_a_AR = $(ALTERNATE_AR)
 libphdmesh_meshio_a_AR = $(ALTERNATE_AR)
@@ -179,6 +203,7 @@ libphdmesh_txblas_a_AR = $(ALTERNATE_AR)
 
 else
 
+libphdelement_mesh_a_AR = $(AR) cru
 libphdmesh_util_a_AR = $(AR) cru
 libphdmesh_mesh_a_AR = $(AR) cru
 libphdmesh_meshio_a_AR = $(AR) cru
@@ -191,6 +216,7 @@ endif
 # be sure to include these, and this is the hack to do it.
 # ------------------------------------------------------------------------
 
+libphdelement_mesh_a_LIBADD = $(XTRALDADD)
 libphdmesh_util_a_LIBADD = $(XTRALDADD)
 libphdmesh_mesh_a_LIBADD = $(XTRALDADD)
 libphdmesh_meshio_a_LIBADD = $(XTRALDADD)

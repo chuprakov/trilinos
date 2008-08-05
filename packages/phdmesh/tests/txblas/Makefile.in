@@ -83,9 +83,8 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_test_txblas_exe_OBJECTS = test_sparse_mxv.$(OBJEXT) \
-	test_fill_cr4.$(OBJEXT) test_txblas.$(OBJEXT) \
-	test_reduce.$(OBJEXT)
+am_test_txblas_exe_OBJECTS = test_accuracy.$(OBJEXT) \
+	test_txblas.$(OBJEXT) test_performance.$(OBJEXT)
 test_txblas_exe_OBJECTS = $(am_test_txblas_exe_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)/src@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -214,9 +213,8 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-test_txblas_exe_SOURCES = $(srcdir)/test_sparse_mxv.cpp \
-     $(srcdir)/test_fill_cr4.cpp $(srcdir)/test_txblas.cpp \
-     $(srcdir)/test_reduce.cpp
+test_txblas_exe_SOURCES = $(srcdir)/test_accuracy.cpp \
+     $(srcdir)/test_txblas.cpp $(srcdir)/test_performance.cpp
 
 test_txblas_exe_DEPENDENCIES = $(top_builddir)/src/libphdmesh_txblas.a $(top_builddir)/src/libphdmesh_util.a
 test_txblas_exe_LDADD = $(PHDMESH_LIBS)
@@ -288,9 +286,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_fill_cr4.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_reduce.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_sparse_mxv.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_accuracy.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_performance.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_txblas.Po@am__quote@
 
 .cpp.o:
@@ -307,33 +304,19 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
-test_sparse_mxv.o: $(srcdir)/test_sparse_mxv.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_sparse_mxv.o -MD -MP -MF $(DEPDIR)/test_sparse_mxv.Tpo -c -o test_sparse_mxv.o `test -f '$(srcdir)/test_sparse_mxv.cpp' || echo '$(srcdir)/'`$(srcdir)/test_sparse_mxv.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_sparse_mxv.Tpo $(DEPDIR)/test_sparse_mxv.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_sparse_mxv.cpp' object='test_sparse_mxv.o' libtool=no @AMDEPBACKSLASH@
+test_accuracy.o: $(srcdir)/test_accuracy.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_accuracy.o -MD -MP -MF $(DEPDIR)/test_accuracy.Tpo -c -o test_accuracy.o `test -f '$(srcdir)/test_accuracy.cpp' || echo '$(srcdir)/'`$(srcdir)/test_accuracy.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_accuracy.Tpo $(DEPDIR)/test_accuracy.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_accuracy.cpp' object='test_accuracy.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_sparse_mxv.o `test -f '$(srcdir)/test_sparse_mxv.cpp' || echo '$(srcdir)/'`$(srcdir)/test_sparse_mxv.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_accuracy.o `test -f '$(srcdir)/test_accuracy.cpp' || echo '$(srcdir)/'`$(srcdir)/test_accuracy.cpp
 
-test_sparse_mxv.obj: $(srcdir)/test_sparse_mxv.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_sparse_mxv.obj -MD -MP -MF $(DEPDIR)/test_sparse_mxv.Tpo -c -o test_sparse_mxv.obj `if test -f '$(srcdir)/test_sparse_mxv.cpp'; then $(CYGPATH_W) '$(srcdir)/test_sparse_mxv.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_sparse_mxv.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_sparse_mxv.Tpo $(DEPDIR)/test_sparse_mxv.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_sparse_mxv.cpp' object='test_sparse_mxv.obj' libtool=no @AMDEPBACKSLASH@
+test_accuracy.obj: $(srcdir)/test_accuracy.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_accuracy.obj -MD -MP -MF $(DEPDIR)/test_accuracy.Tpo -c -o test_accuracy.obj `if test -f '$(srcdir)/test_accuracy.cpp'; then $(CYGPATH_W) '$(srcdir)/test_accuracy.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_accuracy.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_accuracy.Tpo $(DEPDIR)/test_accuracy.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_accuracy.cpp' object='test_accuracy.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_sparse_mxv.obj `if test -f '$(srcdir)/test_sparse_mxv.cpp'; then $(CYGPATH_W) '$(srcdir)/test_sparse_mxv.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_sparse_mxv.cpp'; fi`
-
-test_fill_cr4.o: $(srcdir)/test_fill_cr4.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_fill_cr4.o -MD -MP -MF $(DEPDIR)/test_fill_cr4.Tpo -c -o test_fill_cr4.o `test -f '$(srcdir)/test_fill_cr4.cpp' || echo '$(srcdir)/'`$(srcdir)/test_fill_cr4.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_fill_cr4.Tpo $(DEPDIR)/test_fill_cr4.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_fill_cr4.cpp' object='test_fill_cr4.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_fill_cr4.o `test -f '$(srcdir)/test_fill_cr4.cpp' || echo '$(srcdir)/'`$(srcdir)/test_fill_cr4.cpp
-
-test_fill_cr4.obj: $(srcdir)/test_fill_cr4.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_fill_cr4.obj -MD -MP -MF $(DEPDIR)/test_fill_cr4.Tpo -c -o test_fill_cr4.obj `if test -f '$(srcdir)/test_fill_cr4.cpp'; then $(CYGPATH_W) '$(srcdir)/test_fill_cr4.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_fill_cr4.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_fill_cr4.Tpo $(DEPDIR)/test_fill_cr4.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_fill_cr4.cpp' object='test_fill_cr4.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_fill_cr4.obj `if test -f '$(srcdir)/test_fill_cr4.cpp'; then $(CYGPATH_W) '$(srcdir)/test_fill_cr4.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_fill_cr4.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_accuracy.obj `if test -f '$(srcdir)/test_accuracy.cpp'; then $(CYGPATH_W) '$(srcdir)/test_accuracy.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_accuracy.cpp'; fi`
 
 test_txblas.o: $(srcdir)/test_txblas.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_txblas.o -MD -MP -MF $(DEPDIR)/test_txblas.Tpo -c -o test_txblas.o `test -f '$(srcdir)/test_txblas.cpp' || echo '$(srcdir)/'`$(srcdir)/test_txblas.cpp
@@ -349,19 +332,19 @@ test_txblas.obj: $(srcdir)/test_txblas.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_txblas.obj `if test -f '$(srcdir)/test_txblas.cpp'; then $(CYGPATH_W) '$(srcdir)/test_txblas.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_txblas.cpp'; fi`
 
-test_reduce.o: $(srcdir)/test_reduce.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_reduce.o -MD -MP -MF $(DEPDIR)/test_reduce.Tpo -c -o test_reduce.o `test -f '$(srcdir)/test_reduce.cpp' || echo '$(srcdir)/'`$(srcdir)/test_reduce.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_reduce.Tpo $(DEPDIR)/test_reduce.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_reduce.cpp' object='test_reduce.o' libtool=no @AMDEPBACKSLASH@
+test_performance.o: $(srcdir)/test_performance.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_performance.o -MD -MP -MF $(DEPDIR)/test_performance.Tpo -c -o test_performance.o `test -f '$(srcdir)/test_performance.cpp' || echo '$(srcdir)/'`$(srcdir)/test_performance.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_performance.Tpo $(DEPDIR)/test_performance.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_performance.cpp' object='test_performance.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_reduce.o `test -f '$(srcdir)/test_reduce.cpp' || echo '$(srcdir)/'`$(srcdir)/test_reduce.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_performance.o `test -f '$(srcdir)/test_performance.cpp' || echo '$(srcdir)/'`$(srcdir)/test_performance.cpp
 
-test_reduce.obj: $(srcdir)/test_reduce.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_reduce.obj -MD -MP -MF $(DEPDIR)/test_reduce.Tpo -c -o test_reduce.obj `if test -f '$(srcdir)/test_reduce.cpp'; then $(CYGPATH_W) '$(srcdir)/test_reduce.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_reduce.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_reduce.Tpo $(DEPDIR)/test_reduce.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_reduce.cpp' object='test_reduce.obj' libtool=no @AMDEPBACKSLASH@
+test_performance.obj: $(srcdir)/test_performance.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_performance.obj -MD -MP -MF $(DEPDIR)/test_performance.Tpo -c -o test_performance.obj `if test -f '$(srcdir)/test_performance.cpp'; then $(CYGPATH_W) '$(srcdir)/test_performance.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_performance.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_performance.Tpo $(DEPDIR)/test_performance.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_performance.cpp' object='test_performance.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_reduce.obj `if test -f '$(srcdir)/test_reduce.cpp'; then $(CYGPATH_W) '$(srcdir)/test_reduce.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_reduce.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_performance.obj `if test -f '$(srcdir)/test_performance.cpp'; then $(CYGPATH_W) '$(srcdir)/test_performance.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_performance.cpp'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \

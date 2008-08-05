@@ -28,9 +28,9 @@ include $(top_builddir)/Makefile.export.phdmesh
 bin_PROGRAMS = test_util.exe
 
 test_util_exe_SOURCES = $(srcdir)/test_comm_all.cpp \
-    $(srcdir)/test_c_tpi.c $(srcdir)/test_comm_bounds.cpp \
+    $(srcdir)/test_comm_bounds.cpp \
     $(srcdir)/test_octtree.cpp $(srcdir)/test_comm.cpp \
-    $(srcdir)/test_tpi.cpp $(srcdir)/test_containers.cpp \
+    $(srcdir)/test_containers.cpp \
     $(srcdir)/test_util.cpp
 
 test_util_exe_DEPENDENCIES = $(top_builddir)/src/libphdmesh_util.a

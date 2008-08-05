@@ -36,7 +36,7 @@ test_mesh_exe_DEPENDENCIES = $(top_builddir)/src/libphdmesh_mesh.a $(top_builddi
 
 test_mesh_exe_LDADD = $(PHDMESH_LIBS)
 
-AM_CPPFLAGS = $(PHDMESH_INCLUDES)
+AM_CPPFLAGS = -I$(srcdir)/ $(PHDMESH_INCLUDES)
 
 EXTRA_DIST = $(srcdir)/test_mesh.i
 

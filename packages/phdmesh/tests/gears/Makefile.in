@@ -225,7 +225,7 @@ test_mesh_exe_SOURCES = $(srcdir)/MeshTestSchema.cpp \
 
 test_mesh_exe_DEPENDENCIES = $(top_builddir)/src/libphdmesh_mesh.a $(top_builddir)/src/libphdmesh_util.a
 test_mesh_exe_LDADD = $(PHDMESH_LIBS)
-AM_CPPFLAGS = $(PHDMESH_INCLUDES)
+AM_CPPFLAGS = -I$(srcdir)/ $(PHDMESH_INCLUDES)
 EXTRA_DIST = $(srcdir)/test_mesh.i
 all: all-am
 

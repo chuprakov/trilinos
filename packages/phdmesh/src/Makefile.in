@@ -95,32 +95,39 @@ libLIBRARIES_INSTALL = $(INSTALL_DATA)
 LIBRARIES = $(lib_LIBRARIES)
 AR = ar
 ARFLAGS = cru
+libphdelement_mesh_a_DEPENDENCIES =
+am__objects_1 = ElementDeclarations.$(OBJEXT) \
+	ElementDimensions.$(OBJEXT) ElementLocalTopology.$(OBJEXT)
+am_libphdelement_mesh_a_OBJECTS = $(am__objects_1)
+libphdelement_mesh_a_OBJECTS = $(am_libphdelement_mesh_a_OBJECTS)
 libphdmesh_mesh_a_DEPENDENCIES =
-am__objects_1 = MeshAssemble.$(OBJEXT) MeshAura.$(OBJEXT) \
+am__objects_2 = MeshAssemble.$(OBJEXT) MeshAura.$(OBJEXT) \
 	MeshComm.$(OBJEXT) MeshEntity.$(OBJEXT) \
 	MeshEntityComm.$(OBJEXT) MeshField.$(OBJEXT) \
-	MeshKernel.$(OBJEXT) MeshMesh.$(OBJEXT) MeshPart.$(OBJEXT) \
-	MeshProximity.$(OBJEXT) MeshRebalance.$(OBJEXT) \
+	MeshFieldTraits.$(OBJEXT) MeshKernel.$(OBJEXT) \
+	MeshMesh.$(OBJEXT) MeshPart.$(OBJEXT) MeshProximity.$(OBJEXT) \
+	MeshRebalance.$(OBJEXT) MeshRelation.$(OBJEXT) \
 	MeshSchema.$(OBJEXT) MeshSharing.$(OBJEXT) MeshTypes.$(OBJEXT)
-am_libphdmesh_mesh_a_OBJECTS = $(am__objects_1)
+am_libphdmesh_mesh_a_OBJECTS = $(am__objects_2)
 libphdmesh_mesh_a_OBJECTS = $(am_libphdmesh_mesh_a_OBJECTS)
 libphdmesh_meshio_a_DEPENDENCIES =
-am__objects_2 = MeshIO_ExoII.$(OBJEXT)
-am_libphdmesh_meshio_a_OBJECTS = $(am__objects_2)
+am__objects_3 = MeshIO_ExoII.$(OBJEXT)
+am_libphdmesh_meshio_a_OBJECTS = $(am__objects_3)
 libphdmesh_meshio_a_OBJECTS = $(am_libphdmesh_meshio_a_OBJECTS)
 libphdmesh_txblas_a_DEPENDENCIES =
-am__objects_3 = txblas_axpby.$(OBJEXT) txblas_CR4Matrix.$(OBJEXT) \
+am__objects_4 = txblas_axpby.$(OBJEXT) txblas_CR4Matrix.$(OBJEXT) \
 	txblas_cr4_mxv.$(OBJEXT) txblas_reduction.$(OBJEXT)
-am_libphdmesh_txblas_a_OBJECTS = $(am__objects_3)
+am_libphdmesh_txblas_a_OBJECTS = $(am__objects_4)
 libphdmesh_txblas_a_OBJECTS = $(am_libphdmesh_txblas_a_OBJECTS)
 libphdmesh_util_a_DEPENDENCIES =
-am__objects_4 = CSet.$(OBJEXT) FixedPoolAlloc.$(OBJEXT) \
-	NamedValue.$(OBJEXT) NumericEnum.$(OBJEXT) OctTree.$(OBJEXT) \
-	OctTreeOps.$(OBJEXT) ParallelComm.$(OBJEXT) Parallel.$(OBJEXT) \
+am__objects_5 = CSet.$(OBJEXT) Dimension.$(OBJEXT) \
+	FixedPoolAlloc.$(OBJEXT) NamedValue.$(OBJEXT) \
+	NumericEnum.$(OBJEXT) OctTree.$(OBJEXT) OctTreeOps.$(OBJEXT) \
+	ParallelComm.$(OBJEXT) Parallel.$(OBJEXT) \
 	ParallelIndex.$(OBJEXT) ParallelInputStream.$(OBJEXT) \
 	ParallelReduce.$(OBJEXT) Reference.$(OBJEXT) Setv.$(OBJEXT) \
 	TestDriver.$(OBJEXT) ValueIO.$(OBJEXT)
-am_libphdmesh_util_a_OBJECTS = $(am__objects_4)
+am_libphdmesh_util_a_OBJECTS = $(am__objects_5)
 libphdmesh_util_a_OBJECTS = $(am_libphdmesh_util_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -134,11 +141,12 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(libphdmesh_mesh_a_SOURCES) $(libphdmesh_meshio_a_SOURCES) \
-	$(libphdmesh_txblas_a_SOURCES) $(libphdmesh_util_a_SOURCES)
-DIST_SOURCES = $(libphdmesh_mesh_a_SOURCES) \
+SOURCES = $(libphdelement_mesh_a_SOURCES) $(libphdmesh_mesh_a_SOURCES) \
 	$(libphdmesh_meshio_a_SOURCES) $(libphdmesh_txblas_a_SOURCES) \
 	$(libphdmesh_util_a_SOURCES)
+DIST_SOURCES = $(libphdelement_mesh_a_SOURCES) \
+	$(libphdmesh_mesh_a_SOURCES) $(libphdmesh_meshio_a_SOURCES) \
+	$(libphdmesh_txblas_a_SOURCES) $(libphdmesh_util_a_SOURCES)
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
 nodist_execincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(include_HEADERS) $(nodist_execinclude_HEADERS)
@@ -266,13 +274,30 @@ top_srcdir = @top_srcdir@
 # might someday be needed by some other code outside New_Package. The first is
 # the list of all source and any other header files.
 # ------------------------------------------------------------------------
+ELEMENT_H = \
+	$(srcdir)/../include/element/Declarations.hpp \
+	$(srcdir)/../include/element/Dimensions.hpp \
+	$(srcdir)/../include/element/HexahedronTopology.hpp \
+	$(srcdir)/../include/element/LocalTopology.hpp \
+	$(srcdir)/../include/element/PyramidTopology.hpp \
+	$(srcdir)/../include/element/QuadrilateralTopology.hpp \
+	$(srcdir)/../include/element/Stencils.hpp \
+	$(srcdir)/../include/element/TetrahedronTopology.hpp \
+	$(srcdir)/../include/element/TriangleTopology.hpp \
+	$(srcdir)/../include/element/WedgeTopology.hpp
+
+ELEMENT = \
+	$(srcdir)/element/ElementDeclarations.cpp \
+	$(srcdir)/element/ElementDimensions.cpp \
+	$(srcdir)/element/ElementLocalTopology.cpp
+
 MESH_H = \
 	$(srcdir)/../include/mesh/Assemble.hpp \
 	$(srcdir)/../include/mesh/Comm.hpp \
 	$(srcdir)/../include/mesh/Entity.hpp \
 	$(srcdir)/../include/mesh/EntityComm.hpp \
-	$(srcdir)/../include/mesh/FieldDim.hpp \
 	$(srcdir)/../include/mesh/Field.hpp \
+	$(srcdir)/../include/mesh/FieldData.hpp \
 	$(srcdir)/../include/mesh/Gather.hpp \
 	$(srcdir)/../include/mesh/Kernel.hpp \
 	$(srcdir)/../include/mesh/Mesh.hpp \
@@ -288,11 +313,13 @@ MESH = \
 	$(srcdir)/mesh/MeshEntity.cpp \
 	$(srcdir)/mesh/MeshEntityComm.cpp \
 	$(srcdir)/mesh/MeshField.cpp \
+	$(srcdir)/mesh/MeshFieldTraits.cpp \
 	$(srcdir)/mesh/MeshKernel.cpp \
 	$(srcdir)/mesh/MeshMesh.cpp \
 	$(srcdir)/mesh/MeshPart.cpp \
 	$(srcdir)/mesh/MeshProximity.cpp \
 	$(srcdir)/mesh/MeshRebalance.cpp \
+	$(srcdir)/mesh/MeshRelation.cpp \
 	$(srcdir)/mesh/MeshSchema.cpp \
 	$(srcdir)/mesh/MeshSharing.cpp \
 	$(srcdir)/mesh/MeshTypes.cpp
@@ -300,6 +327,7 @@ MESH = \
 UTIL_H = \
 	$(srcdir)/../include/util/Basics.hpp \
 	$(srcdir)/../include/util/CSet.hpp \
+	$(srcdir)/../include/util/Dimension.hpp \
 	$(srcdir)/../include/util/FixedArray.hpp \
 	$(srcdir)/../include/util/FixedPoolAlloc.hpp \
 	$(srcdir)/../include/util/NamedValue.hpp \
@@ -319,6 +347,7 @@ UTIL_H = \
 
 UTIL = \
 	$(srcdir)/util/CSet.cpp \
+	$(srcdir)/util/Dimension.cpp \
 	$(srcdir)/util/FixedPoolAlloc.cpp \
 	$(srcdir)/util/NamedValue.cpp \
 	$(srcdir)/util/NumericEnum.cpp \
@@ -359,24 +388,24 @@ AM_CPPFLAGS = $(EXPORT_INCLUDES)
 # ------------------------------------------------------------------------
 # New_Package library specifications
 # ------------------------------------------------------------------------
-PHDMESH_LIB = libphdmesh_util.a libphdmesh_mesh.a \
+PHDMESH_LIB = libphdelement_mesh.a libphdmesh_util.a libphdmesh_mesh.a \
 	libphdmesh_meshio.a libphdmesh_txblas.a
 
 
 #np# replace new_package with the name of the package being autotool'ed here
 PHDMESH_H = \
+	$(ELEMENT_H) \
 	$(UTIL_H) \
 	$(MESH_H) \
 	$(MESHIO_H) \
 	$(TXBLAS_H)
 
-
-#np# replace new_package with the name of the package being autotool'ed here
+libphdelement_mesh_a_SOURCES = $(ELEMENT)
 libphdmesh_util_a_SOURCES = $(UTIL)
 libphdmesh_mesh_a_SOURCES = $(MESH)
 libphdmesh_meshio_a_SOURCES = $(MESHIO)
 libphdmesh_txblas_a_SOURCES = $(TXBLAS)
-@USE_ALTERNATE_AR_FALSE@libphdmesh_util_a_AR = $(AR) cru
+@USE_ALTERNATE_AR_FALSE@libphdelement_mesh_a_AR = $(AR) cru
 
 #We need the following to support separate build directories
 #AM_CPPFLAGS=-I$(builddir)/src
@@ -387,6 +416,8 @@ libphdmesh_txblas_a_SOURCES = $(TXBLAS)
 # SPECIAL NOTE: Why is the "else" there?  For some reason, automake
 # fails to define <lib>_AR of USE_ALTERNATE_AR is false, so we have to
 # define it manually.
+@USE_ALTERNATE_AR_TRUE@libphdelement_mesh_a_AR = $(ALTERNATE_AR)
+@USE_ALTERNATE_AR_FALSE@libphdmesh_util_a_AR = $(AR) cru
 @USE_ALTERNATE_AR_TRUE@libphdmesh_util_a_AR = $(ALTERNATE_AR)
 @USE_ALTERNATE_AR_FALSE@libphdmesh_mesh_a_AR = $(AR) cru
 @USE_ALTERNATE_AR_TRUE@libphdmesh_mesh_a_AR = $(ALTERNATE_AR)
@@ -399,6 +430,7 @@ libphdmesh_txblas_a_SOURCES = $(TXBLAS)
 # Some C++ compilers create extra .o-files for templates. We need to
 # be sure to include these, and this is the hack to do it.
 # ------------------------------------------------------------------------
+libphdelement_mesh_a_LIBADD = $(XTRALDADD)
 libphdmesh_util_a_LIBADD = $(XTRALDADD)
 libphdmesh_mesh_a_LIBADD = $(XTRALDADD)
 libphdmesh_meshio_a_LIBADD = $(XTRALDADD)
@@ -515,6 +547,10 @@ uninstall-libLIBRARIES:
 
 clean-libLIBRARIES:
 	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+libphdelement_mesh.a: $(libphdelement_mesh_a_OBJECTS) $(libphdelement_mesh_a_DEPENDENCIES) 
+	-rm -f libphdelement_mesh.a
+	$(libphdelement_mesh_a_AR) libphdelement_mesh.a $(libphdelement_mesh_a_OBJECTS) $(libphdelement_mesh_a_LIBADD)
+	$(RANLIB) libphdelement_mesh.a
 libphdmesh_mesh.a: $(libphdmesh_mesh_a_OBJECTS) $(libphdmesh_mesh_a_DEPENDENCIES) 
 	-rm -f libphdmesh_mesh.a
 	$(libphdmesh_mesh_a_AR) libphdmesh_mesh.a $(libphdmesh_mesh_a_OBJECTS) $(libphdmesh_mesh_a_LIBADD)
@@ -539,6 +575,10 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CSet.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Dimension.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElementDeclarations.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElementDimensions.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElementLocalTopology.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FixedPoolAlloc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshAssemble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshAura.Po@am__quote@
@@ -546,12 +586,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshEntity.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshEntityComm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshField.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshFieldTraits.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshIO_ExoII.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshKernel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshMesh.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshPart.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshProximity.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshRebalance.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshRelation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshSchema.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshSharing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshTypes.Po@am__quote@
@@ -643,6 +685,48 @@ txblas_reduction.obj: $(srcdir)/txblas/txblas_reduction.c
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
+ElementDeclarations.o: $(srcdir)/element/ElementDeclarations.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ElementDeclarations.o -MD -MP -MF $(DEPDIR)/ElementDeclarations.Tpo -c -o ElementDeclarations.o `test -f '$(srcdir)/element/ElementDeclarations.cpp' || echo '$(srcdir)/'`$(srcdir)/element/ElementDeclarations.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ElementDeclarations.Tpo $(DEPDIR)/ElementDeclarations.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/element/ElementDeclarations.cpp' object='ElementDeclarations.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ElementDeclarations.o `test -f '$(srcdir)/element/ElementDeclarations.cpp' || echo '$(srcdir)/'`$(srcdir)/element/ElementDeclarations.cpp
+
+ElementDeclarations.obj: $(srcdir)/element/ElementDeclarations.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ElementDeclarations.obj -MD -MP -MF $(DEPDIR)/ElementDeclarations.Tpo -c -o ElementDeclarations.obj `if test -f '$(srcdir)/element/ElementDeclarations.cpp'; then $(CYGPATH_W) '$(srcdir)/element/ElementDeclarations.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/element/ElementDeclarations.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ElementDeclarations.Tpo $(DEPDIR)/ElementDeclarations.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/element/ElementDeclarations.cpp' object='ElementDeclarations.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ElementDeclarations.obj `if test -f '$(srcdir)/element/ElementDeclarations.cpp'; then $(CYGPATH_W) '$(srcdir)/element/ElementDeclarations.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/element/ElementDeclarations.cpp'; fi`
+
+ElementDimensions.o: $(srcdir)/element/ElementDimensions.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ElementDimensions.o -MD -MP -MF $(DEPDIR)/ElementDimensions.Tpo -c -o ElementDimensions.o `test -f '$(srcdir)/element/ElementDimensions.cpp' || echo '$(srcdir)/'`$(srcdir)/element/ElementDimensions.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ElementDimensions.Tpo $(DEPDIR)/ElementDimensions.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/element/ElementDimensions.cpp' object='ElementDimensions.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ElementDimensions.o `test -f '$(srcdir)/element/ElementDimensions.cpp' || echo '$(srcdir)/'`$(srcdir)/element/ElementDimensions.cpp
+
+ElementDimensions.obj: $(srcdir)/element/ElementDimensions.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ElementDimensions.obj -MD -MP -MF $(DEPDIR)/ElementDimensions.Tpo -c -o ElementDimensions.obj `if test -f '$(srcdir)/element/ElementDimensions.cpp'; then $(CYGPATH_W) '$(srcdir)/element/ElementDimensions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/element/ElementDimensions.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ElementDimensions.Tpo $(DEPDIR)/ElementDimensions.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/element/ElementDimensions.cpp' object='ElementDimensions.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ElementDimensions.obj `if test -f '$(srcdir)/element/ElementDimensions.cpp'; then $(CYGPATH_W) '$(srcdir)/element/ElementDimensions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/element/ElementDimensions.cpp'; fi`
+
+ElementLocalTopology.o: $(srcdir)/element/ElementLocalTopology.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ElementLocalTopology.o -MD -MP -MF $(DEPDIR)/ElementLocalTopology.Tpo -c -o ElementLocalTopology.o `test -f '$(srcdir)/element/ElementLocalTopology.cpp' || echo '$(srcdir)/'`$(srcdir)/element/ElementLocalTopology.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ElementLocalTopology.Tpo $(DEPDIR)/ElementLocalTopology.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/element/ElementLocalTopology.cpp' object='ElementLocalTopology.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ElementLocalTopology.o `test -f '$(srcdir)/element/ElementLocalTopology.cpp' || echo '$(srcdir)/'`$(srcdir)/element/ElementLocalTopology.cpp
+
+ElementLocalTopology.obj: $(srcdir)/element/ElementLocalTopology.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ElementLocalTopology.obj -MD -MP -MF $(DEPDIR)/ElementLocalTopology.Tpo -c -o ElementLocalTopology.obj `if test -f '$(srcdir)/element/ElementLocalTopology.cpp'; then $(CYGPATH_W) '$(srcdir)/element/ElementLocalTopology.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/element/ElementLocalTopology.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ElementLocalTopology.Tpo $(DEPDIR)/ElementLocalTopology.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/element/ElementLocalTopology.cpp' object='ElementLocalTopology.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ElementLocalTopology.obj `if test -f '$(srcdir)/element/ElementLocalTopology.cpp'; then $(CYGPATH_W) '$(srcdir)/element/ElementLocalTopology.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/element/ElementLocalTopology.cpp'; fi`
+
 MeshAssemble.o: $(srcdir)/mesh/MeshAssemble.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshAssemble.o -MD -MP -MF $(DEPDIR)/MeshAssemble.Tpo -c -o MeshAssemble.o `test -f '$(srcdir)/mesh/MeshAssemble.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshAssemble.cpp
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshAssemble.Tpo $(DEPDIR)/MeshAssemble.Po
@@ -727,6 +811,20 @@ MeshField.obj: $(srcdir)/mesh/MeshField.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshField.obj `if test -f '$(srcdir)/mesh/MeshField.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshField.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshField.cpp'; fi`
 
+MeshFieldTraits.o: $(srcdir)/mesh/MeshFieldTraits.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshFieldTraits.o -MD -MP -MF $(DEPDIR)/MeshFieldTraits.Tpo -c -o MeshFieldTraits.o `test -f '$(srcdir)/mesh/MeshFieldTraits.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshFieldTraits.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshFieldTraits.Tpo $(DEPDIR)/MeshFieldTraits.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshFieldTraits.cpp' object='MeshFieldTraits.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshFieldTraits.o `test -f '$(srcdir)/mesh/MeshFieldTraits.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshFieldTraits.cpp
+
+MeshFieldTraits.obj: $(srcdir)/mesh/MeshFieldTraits.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshFieldTraits.obj -MD -MP -MF $(DEPDIR)/MeshFieldTraits.Tpo -c -o MeshFieldTraits.obj `if test -f '$(srcdir)/mesh/MeshFieldTraits.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshFieldTraits.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshFieldTraits.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshFieldTraits.Tpo $(DEPDIR)/MeshFieldTraits.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshFieldTraits.cpp' object='MeshFieldTraits.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshFieldTraits.obj `if test -f '$(srcdir)/mesh/MeshFieldTraits.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshFieldTraits.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshFieldTraits.cpp'; fi`
+
 MeshKernel.o: $(srcdir)/mesh/MeshKernel.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshKernel.o -MD -MP -MF $(DEPDIR)/MeshKernel.Tpo -c -o MeshKernel.o `test -f '$(srcdir)/mesh/MeshKernel.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshKernel.cpp
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshKernel.Tpo $(DEPDIR)/MeshKernel.Po
@@ -796,6 +894,20 @@ MeshRebalance.obj: $(srcdir)/mesh/MeshRebalance.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshRebalance.cpp' object='MeshRebalance.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshRebalance.obj `if test -f '$(srcdir)/mesh/MeshRebalance.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshRebalance.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshRebalance.cpp'; fi`
+
+MeshRelation.o: $(srcdir)/mesh/MeshRelation.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshRelation.o -MD -MP -MF $(DEPDIR)/MeshRelation.Tpo -c -o MeshRelation.o `test -f '$(srcdir)/mesh/MeshRelation.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshRelation.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshRelation.Tpo $(DEPDIR)/MeshRelation.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshRelation.cpp' object='MeshRelation.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshRelation.o `test -f '$(srcdir)/mesh/MeshRelation.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshRelation.cpp
+
+MeshRelation.obj: $(srcdir)/mesh/MeshRelation.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshRelation.obj -MD -MP -MF $(DEPDIR)/MeshRelation.Tpo -c -o MeshRelation.obj `if test -f '$(srcdir)/mesh/MeshRelation.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshRelation.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshRelation.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshRelation.Tpo $(DEPDIR)/MeshRelation.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshRelation.cpp' object='MeshRelation.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshRelation.obj `if test -f '$(srcdir)/mesh/MeshRelation.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshRelation.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshRelation.cpp'; fi`
 
 MeshSchema.o: $(srcdir)/mesh/MeshSchema.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshSchema.o -MD -MP -MF $(DEPDIR)/MeshSchema.Tpo -c -o MeshSchema.o `test -f '$(srcdir)/mesh/MeshSchema.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshSchema.cpp
@@ -880,6 +992,20 @@ CSet.obj: $(srcdir)/util/CSet.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/CSet.cpp' object='CSet.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CSet.obj `if test -f '$(srcdir)/util/CSet.cpp'; then $(CYGPATH_W) '$(srcdir)/util/CSet.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/CSet.cpp'; fi`
+
+Dimension.o: $(srcdir)/util/Dimension.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Dimension.o -MD -MP -MF $(DEPDIR)/Dimension.Tpo -c -o Dimension.o `test -f '$(srcdir)/util/Dimension.cpp' || echo '$(srcdir)/'`$(srcdir)/util/Dimension.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Dimension.Tpo $(DEPDIR)/Dimension.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/Dimension.cpp' object='Dimension.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Dimension.o `test -f '$(srcdir)/util/Dimension.cpp' || echo '$(srcdir)/'`$(srcdir)/util/Dimension.cpp
+
+Dimension.obj: $(srcdir)/util/Dimension.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Dimension.obj -MD -MP -MF $(DEPDIR)/Dimension.Tpo -c -o Dimension.obj `if test -f '$(srcdir)/util/Dimension.cpp'; then $(CYGPATH_W) '$(srcdir)/util/Dimension.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/Dimension.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Dimension.Tpo $(DEPDIR)/Dimension.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/Dimension.cpp' object='Dimension.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Dimension.obj `if test -f '$(srcdir)/util/Dimension.cpp'; then $(CYGPATH_W) '$(srcdir)/util/Dimension.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/Dimension.cpp'; fi`
 
 FixedPoolAlloc.o: $(srcdir)/util/FixedPoolAlloc.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FixedPoolAlloc.o -MD -MP -MF $(DEPDIR)/FixedPoolAlloc.Tpo -c -o FixedPoolAlloc.o `test -f '$(srcdir)/util/FixedPoolAlloc.cpp' || echo '$(srcdir)/'`$(srcdir)/util/FixedPoolAlloc.cpp

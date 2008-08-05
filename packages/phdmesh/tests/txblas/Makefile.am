@@ -27,9 +27,8 @@ include $(top_builddir)/Makefile.export.phdmesh
 
 bin_PROGRAMS = test_txblas.exe
 
-test_txblas_exe_SOURCES = $(srcdir)/test_sparse_mxv.cpp \
-     $(srcdir)/test_fill_cr4.cpp $(srcdir)/test_txblas.cpp \
-     $(srcdir)/test_reduce.cpp
+test_txblas_exe_SOURCES = $(srcdir)/test_accuracy.cpp \
+     $(srcdir)/test_txblas.cpp $(srcdir)/test_performance.cpp
 
 test_txblas_exe_DEPENDENCIES = $(top_builddir)/src/libphdmesh_txblas.a $(top_builddir)/src/libphdmesh_util.a
 

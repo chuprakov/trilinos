@@ -84,17 +84,13 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_test_util_exe_OBJECTS = test_comm_all.$(OBJEXT) \
-	test_c_tpi.$(OBJEXT) test_comm_bounds.$(OBJEXT) \
-	test_octtree.$(OBJEXT) test_comm.$(OBJEXT) test_tpi.$(OBJEXT) \
-	test_containers.$(OBJEXT) test_util.$(OBJEXT)
+	test_comm_bounds.$(OBJEXT) test_octtree.$(OBJEXT) \
+	test_comm.$(OBJEXT) test_containers.$(OBJEXT) \
+	test_util.$(OBJEXT)
 test_util_exe_OBJECTS = $(am_test_util_exe_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)/src@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -220,9 +216,9 @@ target_vendor = @target_vendor@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 test_util_exe_SOURCES = $(srcdir)/test_comm_all.cpp \
-    $(srcdir)/test_c_tpi.c $(srcdir)/test_comm_bounds.cpp \
+    $(srcdir)/test_comm_bounds.cpp \
     $(srcdir)/test_octtree.cpp $(srcdir)/test_comm.cpp \
-    $(srcdir)/test_tpi.cpp $(srcdir)/test_containers.cpp \
+    $(srcdir)/test_containers.cpp \
     $(srcdir)/test_util.cpp
 
 test_util_exe_DEPENDENCIES = $(top_builddir)/src/libphdmesh_util.a
@@ -232,7 +228,7 @@ EXTRA_DIST = $(srcdir)/test_util.i
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .cpp .o .obj
+.SUFFIXES: .cpp .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -295,42 +291,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_c_tpi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_comm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_comm_all.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_comm_bounds.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_containers.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_octtree.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_tpi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_util.Po@am__quote@
-
-.c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c $<
-
-.c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-
-test_c_tpi.o: $(srcdir)/test_c_tpi.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test_c_tpi.o -MD -MP -MF $(DEPDIR)/test_c_tpi.Tpo -c -o test_c_tpi.o `test -f '$(srcdir)/test_c_tpi.c' || echo '$(srcdir)/'`$(srcdir)/test_c_tpi.c
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/test_c_tpi.Tpo $(DEPDIR)/test_c_tpi.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/test_c_tpi.c' object='test_c_tpi.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test_c_tpi.o `test -f '$(srcdir)/test_c_tpi.c' || echo '$(srcdir)/'`$(srcdir)/test_c_tpi.c
-
-test_c_tpi.obj: $(srcdir)/test_c_tpi.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test_c_tpi.obj -MD -MP -MF $(DEPDIR)/test_c_tpi.Tpo -c -o test_c_tpi.obj `if test -f '$(srcdir)/test_c_tpi.c'; then $(CYGPATH_W) '$(srcdir)/test_c_tpi.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_c_tpi.c'; fi`
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/test_c_tpi.Tpo $(DEPDIR)/test_c_tpi.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/test_c_tpi.c' object='test_c_tpi.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test_c_tpi.obj `if test -f '$(srcdir)/test_c_tpi.c'; then $(CYGPATH_W) '$(srcdir)/test_c_tpi.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_c_tpi.c'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -401,20 +367,6 @@ test_comm.obj: $(srcdir)/test_comm.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_comm.cpp' object='test_comm.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_comm.obj `if test -f '$(srcdir)/test_comm.cpp'; then $(CYGPATH_W) '$(srcdir)/test_comm.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_comm.cpp'; fi`
-
-test_tpi.o: $(srcdir)/test_tpi.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_tpi.o -MD -MP -MF $(DEPDIR)/test_tpi.Tpo -c -o test_tpi.o `test -f '$(srcdir)/test_tpi.cpp' || echo '$(srcdir)/'`$(srcdir)/test_tpi.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_tpi.Tpo $(DEPDIR)/test_tpi.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_tpi.cpp' object='test_tpi.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_tpi.o `test -f '$(srcdir)/test_tpi.cpp' || echo '$(srcdir)/'`$(srcdir)/test_tpi.cpp
-
-test_tpi.obj: $(srcdir)/test_tpi.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_tpi.obj -MD -MP -MF $(DEPDIR)/test_tpi.Tpo -c -o test_tpi.obj `if test -f '$(srcdir)/test_tpi.cpp'; then $(CYGPATH_W) '$(srcdir)/test_tpi.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_tpi.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_tpi.Tpo $(DEPDIR)/test_tpi.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_tpi.cpp' object='test_tpi.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_tpi.obj `if test -f '$(srcdir)/test_tpi.cpp'; then $(CYGPATH_W) '$(srcdir)/test_tpi.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_tpi.cpp'; fi`
 
 test_containers.o: $(srcdir)/test_containers.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_containers.o -MD -MP -MF $(DEPDIR)/test_containers.Tpo -c -o test_containers.o `test -f '$(srcdir)/test_containers.cpp' || echo '$(srcdir)/'`$(srcdir)/test_containers.cpp
