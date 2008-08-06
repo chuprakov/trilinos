@@ -32,7 +32,7 @@
 #include <algorithm>
 
 #include <mesh/Part.hpp>
-#include <mesh/Schema.hpp>
+#include <mesh/MetaData.hpp>
 #include <mesh/Entity.hpp>
 
 namespace phdmesh {
@@ -55,16 +55,16 @@ struct PartLess {
   inline
   bool operator()( const Part * lhs , const Part & rhs ) const
   {
-    const unsigned l = lhs->schema_ordinal();
-    const unsigned r = rhs.schema_ordinal();
+    const unsigned l = lhs->mesh_meta_data_ordinal();
+    const unsigned r = rhs.mesh_meta_data_ordinal();
     return l < r ;
   }
 
   inline
   bool operator()( const Part * lhs , const Part * rhs ) const
   {
-    const unsigned l = lhs->schema_ordinal();
-    const unsigned r = rhs->schema_ordinal();
+    const unsigned l = lhs->mesh_meta_data_ordinal();
+    const unsigned r = rhs->mesh_meta_data_ordinal();
     return l < r ;
   }
 };
@@ -90,7 +90,7 @@ bool verify( const Part & p , std::string & msg )
 
   // Superset/subset consistency
 
-  const Part    & universal = p.schema().universal_part();
+  const Part    & universal = p.mesh_meta_data().universal_part();
   const PartSet & supersets = p.supersets();
   const PartSet & subsets   = p.subsets();
   const PartSet & intersection = p.intersection_of();
@@ -234,7 +234,7 @@ print( std::ostream & os , const char * const lead , const Part & p )
   os << "Part[ " ;
   os << p.name() ;
   os << " , " ;
-  os << p.schema_ordinal() ;
+  os << p.mesh_meta_data_ordinal() ;
   os << " ] {" ;
   os << std::endl ;
 
@@ -374,20 +374,20 @@ Part::~Part()
 {}
 
 // The constructor must only be called by
-// the 'Schema::declare_part( const std::string & )' method.
+// the 'MeshMetaData::declare_part( const std::string & )' method.
 
-Part::Part( Schema & m , const std::string & n , unsigned ordinal )
+Part::Part( MeshMetaData & m , const std::string & n , unsigned ordinal )
   : m_name( n ),
     m_cset(),
     m_subsets() , m_supersets() , m_intersect() ,
-    m_schema( m ) ,
-    m_schema_ordinal( ordinal ),
+    m_mesh_meta_data( m ) ,
+    m_mesh_meta_data_ordinal( ordinal ),
     m_relation_target( false )
 {}
 
-Part & Schema::declare_part( const std::string & p_name )
+Part & MeshMetaData::declare_part( const std::string & p_name )
 {
-  static const char method[] = "phdmesh::Mesh::declare_part" ;
+  static const char method[] = "phdmesh::MeshBulkData::declare_part" ;
 
   assert_not_committed( method );
 
@@ -480,9 +480,9 @@ void clean_intersection( const char * const method ,
 
 }
 
-Part & Schema::declare_part( const PartSet & pset )
+Part & MeshMetaData::declare_part( const PartSet & pset )
 {
-  static const char method[] = "phdmesh::Mesh::declare_part" ;
+  static const char method[] = "phdmesh::MeshBulkData::declare_part" ;
 
   assert_not_committed( method );
 
@@ -519,9 +519,9 @@ Part & Schema::declare_part( const PartSet & pset )
 
 //----------------------------------------------------------------------
 
-void Schema::declare_part_subset( Part & superset , Part & subset )
+void MeshMetaData::declare_part_subset( Part & superset , Part & subset )
 {
-  static const char method[] = "phdmesh::Schema::declare_part_subset" ;
+  static const char method[] = "phdmesh::MeshMetaData::declare_part_subset" ;
 
   assert_not_relation_target( method , "superset" , superset );
   assert_not_relation_target( method , "subset" , subset );
@@ -529,8 +529,8 @@ void Schema::declare_part_subset( Part & superset , Part & subset )
   if ( ! contain( superset.m_subsets , subset ) ) {
 
     assert_not_committed( method );
-    assert_same_schema(   method , superset.schema() );
-    assert_same_schema(   method , subset.schema() );
+    assert_same_mesh_meta_data(   method , superset.mesh_meta_data() );
+    assert_same_mesh_meta_data(   method , subset.mesh_meta_data() );
 
     if ( & m_universal_part == & subset ||
          & superset         == & subset ||
@@ -587,12 +587,12 @@ void Schema::declare_part_subset( Part & superset , Part & subset )
 
 //----------------------------------------------------------------------
 
-void Schema::declare_part_relation(
+void MeshMetaData::declare_part_relation(
   Part & root_part ,
   relation_stencil_ptr stencil ,
   Part & target_part )
 {
-  static const char method[] = "phdmesh::Schema::declare_part_relation" ;
+  static const char method[] = "phdmesh::MeshMetaData::declare_part_relation" ;
 
   assert_not_relation_target( method , "root of part relation" , root_part );
 
@@ -619,7 +619,7 @@ void Schema::declare_part_relation(
 
 //----------------------------------------------------------------------
 
-Part * Schema::get_part( const std::string & p_name ,
+Part * MeshMetaData::get_part( const std::string & p_name ,
                          const char * required_by ) const
 {
   const PartSet & all_parts = m_universal_part.m_subsets ;
@@ -627,7 +627,7 @@ Part * Schema::get_part( const std::string & p_name ,
   Part * const p = find( all_parts , p_name );
 
   if ( required_by && NULL == p ) { // ERROR
-    static const char method[] = "phdmesh::Mesh::get_part" ;
+    static const char method[] = "phdmesh::MeshBulkData::get_part" ;
     std::string msg ;
     msg.append( method )
        .append( "( " )

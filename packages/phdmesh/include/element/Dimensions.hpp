@@ -28,27 +28,53 @@
 #ifndef phdmesh_element_Dimension_hpp
 #define phdmesh_element_Dimension_hpp
 
-#include <util/Dimension.hpp>
+#include <util/Array.hpp>
+#include <mesh/Field.hpp>
+#include <mesh/MetaData.hpp>
+#include <element/Stencils.hpp>
 
 namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-class ElementNode : public DimensionTag {
+class ElementNode : public ArrayDimTag {
 public:
   const char * name() const ;
-  static const DimensionTag * descriptor();
+  static const ElementNode & descriptor();
 private:
   ElementNode() {}
   ElementNode( const ElementNode & );
   ElementNode & operator = ( const ElementNode & );
 };
 
+typedef Field<double*,ElementNode> ElementNodePointerField ;
+
+template< class NodeField >
+inline
+ElementNodePointerField &
+declare_element_node_pointer_field(
+  MeshMetaData & md , const std::string & s ,
+  NodeField & node_field )
+{
+  const unsigned num_states = node_field.number_of_states();
+
+  ElementNodePointerField & f =
+    md.template declare_field< ElementNodePointerField >( s, num_states );
+
+  for ( unsigned i = 0 ; i < num_states ; ++i ) {
+    FieldState state = (FieldState) i;
+    md.declare_field_relation(
+      f[ state ] , & element_node_stencil<void> , node_field[ state ] );
+  }
+  
+  return f ;
+}
+
 //----------------------------------------------------------------------
 
-struct QuadratureTag : public DimensionTag {
+struct QuadratureTag : public ArrayDimTag {
   const char * name() const ;
-  static const DimensionTag * descriptor();
+  static const QuadratureTag & descriptor();
 private:
   QuadratureTag() {}
   QuadratureTag( const QuadratureTag & );
@@ -57,9 +83,9 @@ private:
 
 //----------------------------------------------------------------------
 
-struct BasisTag : public DimensionTag {
+struct BasisTag : public ArrayDimTag {
   const char * name() const ;
-  static const DimensionTag * descriptor();
+  static const BasisTag & descriptor();
 private:
   BasisTag() {}
   BasisTag( const BasisTag & );

@@ -44,17 +44,18 @@ namespace phdmesh {
  *  subsets of parts partitioned into homogeneous kernels.
  */
 
-class Mesh {
+class MeshBulkData {
 public:
 
-  ~Mesh();
+  ~MeshBulkData();
 
-  /** Construct mesh for the given Schema, parallel machine, and
+  /** Construct mesh for the given MeshMetaData, parallel machine, and
    *  with the specified maximum number of entities per kernel.
    */
-  Mesh( const Schema & schema , ParallelMachine parallel , unsigned );
+  MeshBulkData( const MeshMetaData & mesh_meta_data ,
+                ParallelMachine parallel , unsigned = 1000);
 
-  const Schema & schema() const { return m_schema ; }
+  const MeshMetaData & mesh_meta_data() const { return m_mesh_meta_data ; }
 
   ParallelMachine parallel() const { return m_parallel_machine ; }
   unsigned parallel_size()   const { return m_parallel_size ; }
@@ -117,42 +118,46 @@ public:
 
   //------------------------------------
   /** Symmetric parallel relations for shared mesh entities.  */
-  const EntityProcSet & shares() const { return m_shares_all ; }
+  const std::vector<EntityProc> & shares() const { return m_shares_all ; }
 
-  /** Asymmetric parallel relations for owner-to-aura mesh entities.
-   *  Both the domain and the range are fully ordered.
+  /** Asymmetric parallel relations for owner-to-ghosted mesh entities.
+   *  Both the source and the destination are fully ordered.
    */
-  const EntityProcSet & aura_domain() const { return m_aura_domain ; }
-  const EntityProcSet & aura_range()  const { return m_aura_range ; }
+  const std::vector<EntityProc> & ghost_source() const
+    { return m_aura_domain ; }
+
+  const std::vector<EntityProc> & ghost_destination() const
+    { return m_aura_range ; }
 
   /** The input must be symmetric, fully ordered, and
    *  each mesh entity must be a member of the 'uses_part'.
    */
-  void set_shares( const EntityProcSet & );
+  void set_shares( const std::vector<EntityProc> & );
 
   /** The domain and range inputs must be asymmetric, fully ordered, and
    *  each mesh entity must not be a member of the 'uses_part'.
    *  Domain entities must be owns and range entries must match
    *  the 'owner_field' value.
    */
-  void set_aura( const EntityProcSet & , const EntityProcSet & );
+  void set_ghosting( const std::vector<EntityProc> & ,
+                     const std::vector<EntityProc> & );
 
 private:
 
-  Mesh();
-  Mesh( const Mesh & );
-  Mesh & operator = ( const Mesh & );
+  MeshBulkData();
+  MeshBulkData( const MeshBulkData & );
+  MeshBulkData & operator = ( const MeshBulkData & );
 
-  const Schema  & m_schema ;
-  ParallelMachine m_parallel_machine ;
-  unsigned        m_parallel_size ;
-  unsigned        m_parallel_rank ;
-  unsigned        m_kernel_capacity ;
-  KernelSet       m_kernels[  EntityTypeEnd ];
-  EntitySet       m_entities[ EntityTypeEnd ];
-  EntityProcSet   m_shares_all ;
-  EntityProcSet   m_aura_domain ;
-  EntityProcSet   m_aura_range ;
+  const MeshMetaData      & m_mesh_meta_data ;
+  ParallelMachine           m_parallel_machine ;
+  unsigned                  m_parallel_size ;
+  unsigned                  m_parallel_rank ;
+  unsigned                  m_kernel_capacity ;
+  KernelSet                 m_kernels[  EntityTypeEnd ];
+  EntitySet                 m_entities[ EntityTypeEnd ];
+  std::vector<EntityProc>   m_shares_all ;
+  std::vector<EntityProc>   m_aura_domain ;
+  std::vector<EntityProc>   m_aura_range ;
 
   /*  Entity modification consequences:
    *  1) Change entity relation => update via part relation => change parts
@@ -179,40 +184,54 @@ private:
 
 //----------------------------------------------------------------------
 
-void partset_entity_count(
-  Mesh & mesh ,
+/** Count entities of each type that are owned by the mesh and
+   members of the specified part.
+
+  \param mesh
+  \param part
+  \param count is an array of length number-of-entity-types (EntityTypeEnd).
+*/
+void count_entities(
+  MeshBulkData & mesh ,
   Part & part ,
   unsigned * const count /* [ EntityTypeEnd ] */ );
 
-void partset_entity_count(
-  Mesh & mesh ,
+/** Count entities of each type that are owned by the mesh and
+   members of the specified part.
+
+  \param mesh
+  \param part
+  \param count is an array of length number-of-entity-types (EntityTypeEnd).
+*/
+void count_entities(
+  MeshBulkData & mesh ,
   const PartSet & parts ,
   unsigned * const count /* [ EntityTypeEnd ] */ );
 
 /** Get all kernels within the given part.
  *  Every kernel will have the part in its superset.
  */
-void get_kernels( const KernelSet & , Part & , std::vector<Kernel*> & );
+void get_kernels( const KernelSet & , Part & , std::vector<const Kernel*> & );
 
 /** Get all kernels within all of the given parts.
  *  The input PartSet must be properly ordered,
  *  e.g. via the 'phdmesh::order( PartSet & )' function.
  *  Every kernel will have all of the parts in its superset.
  *  It is more efficient to pre-define an intersection part
- *  in the schema and then use the get_kernels function.
+ *  in the mesh_meta_data and then use the get_kernels function.
  */
 void get_kernels_intersect( const KernelSet & ,
                             const PartSet & ,
-                            std::vector<Kernel*> & );
+                            std::vector<const Kernel*> & );
 
 /** Get all kernels within at least one of the given parts.
  *  Every kernel will have at least one of the parts in its superset.
  *  It is more efficient to pre-define a superset part
- *  in the schema and then use the get_kernels function.
+ *  in the mesh_meta_data and then use the get_kernels function.
  */
 void get_kernels_union( const KernelSet & ,
                         const PartSet & ,
-                        std::vector<Kernel*> & );
+                        std::vector<const Kernel*> & );
 
 } // namespace phdmesh
 

@@ -35,8 +35,8 @@
 #include <util/ParallelReduce.hpp>
 #include <util/OctTreeOps.hpp>
 
-#include <mesh/Schema.hpp>
-#include <mesh/Mesh.hpp>
+#include <mesh/MetaData.hpp>
+#include <mesh/BulkData.hpp>
 #include <mesh/FieldData.hpp>
 #include <mesh/Comm.hpp>
 #include <mesh/Proximity.hpp>
@@ -128,12 +128,12 @@ void parallel_gather( ParallelMachine ,
 //----------------------------------------------------------------------
 
 void test_gears_face_proximity(
-  Mesh & M ,
+  MeshBulkData & M ,
   const CylindricalField & gear_coordinates ,
   const Field<double>    & field_proximity ,
   const ProximitySearch  & prox_search ,
-  EntityProcSet          & domain ,
-  EntityProcSet          & range ,
+  std::vector<EntityProc>          & domain ,
+  std::vector<EntityProc>          & range ,
   const bool verify ,
   double & dt_proximity_search ,
   double & dt_ghosting )
@@ -214,7 +214,7 @@ void test_gears_face_proximity(
   // 'aura' of the range processor.
   // If the range face is not on the domain processor then share it.
 
-  EntityProcSet to_be_shared ;
+  std::vector<EntityProc> to_be_shared ;
 
   for ( i = i_beg ; i_end != i ; ++i ) {
     const IdentProc & d = i->first ;
@@ -240,7 +240,7 @@ void test_gears_face_proximity(
 
   sort_unique( to_be_shared );
 
-  const EntityProcSet sharing_A( M.shares() );
+  const std::vector<EntityProc> sharing_A( M.shares() );
 
   comm_mesh_add_sharing( M , to_be_shared );
 
@@ -293,7 +293,7 @@ void test_gears( ParallelMachine pm ,
 
   const unsigned kernel_capacity = 100 ; // 20 ;
 
-  Schema S ;
+  MeshMetaData S ;
 
   GearFields gear_fields( S );
 
@@ -345,7 +345,7 @@ void test_gears( ParallelMachine pm ,
   Field<double> & field_node_proximity =
     S.declare_field< Field<double> >( std::string("proximity") );
 
-  S.declare_field_exists( field_node_proximity , Node , S.universal_part() );
+  S.put_field( field_node_proximity , Node , S.universal_part() );
 
   //------------------------------
 
@@ -394,7 +394,7 @@ void test_gears( ParallelMachine pm ,
     unsigned j = 1 ;
     for ( std::vector<Gear*>::iterator
           i = gears.begin() ; i != gears.end() ; ++i , ++j ) {
-      file_schema.declare_part( (*i)->m_gear , j , exodus::HEX , 8 );
+      file_schema.declare_part( (*i)->m_gear , j );
     }
   }
 
@@ -402,7 +402,7 @@ void test_gears( ParallelMachine pm ,
 
   //------------------------------
 
-  Mesh M( S , pm , kernel_capacity );
+  MeshBulkData M( S , pm , kernel_capacity );
 
   double wt = wall_time();
 
@@ -430,7 +430,7 @@ void test_gears( ParallelMachine pm ,
     ptr = & gear_fields.model_coord ;   fields.push_back( ptr );
     ptr = & gear_fields.current_coord ; fields.push_back( ptr );
 
-    comm_mesh_field_values( M, M.aura_domain(), M.aura_range(), fields, false );
+    communicate_field_data( M, M.ghost_source(), M.ghost_destination(), fields, false );
   }
 
   if ( verify && ! comm_verify_shared_entity_values( M , Node , gear_fields.gear_coord ) ) {
@@ -515,8 +515,8 @@ void test_gears( ParallelMachine pm ,
     dt_exo_write += wall_dtime(wt);
   }
 
-  EntityProcSet prox_domain ;
-  EntityProcSet prox_range ;
+  std::vector<EntityProc> prox_domain ;
+  std::vector<EntityProc> prox_range ;
 
   test_gears_face_proximity( M ,
                              gear_fields.gear_coord ,
@@ -569,8 +569,8 @@ void test_gears( ParallelMachine pm ,
         std::vector< const FieldBase *> fields ;
         const FieldBase * const ptr = & gear_fields.current_coord ;
         fields.push_back( ptr );
-        comm_mesh_field_values( M, M.aura_domain(),
-                                   M.aura_range(), fields, false );
+        communicate_field_data( M, M.ghost_source(),
+                                   M.ghost_destination(), fields, false );
       }
 
       // Check parallel consistency of shared variable

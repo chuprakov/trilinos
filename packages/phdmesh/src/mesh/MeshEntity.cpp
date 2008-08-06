@@ -30,7 +30,7 @@
 #include <algorithm>
 
 #include <mesh/Entity.hpp>
-#include <mesh/Mesh.hpp>
+#include <mesh/BulkData.hpp>
 
 namespace phdmesh {
 

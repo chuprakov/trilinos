@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------*/
 /*      phdMesh : Parallel Heterogneous Dynamic unstructured Mesh         */
-/*                Copyright (2008) Sandia Corporation                     */
+/*                Copyright (2007) Sandia Corporation                     */
 /*                                                                        */
 /*  Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive   */
 /*  license for use of this work by or on behalf of the U.S. Government.  */
@@ -21,59 +21,37 @@
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
 /**
- * @author H. Carter Edwards  <hcedwar@sandia.gov>
- * @date   June 2008
+ * @author H. Carter Edwards
  */
 
-#ifndef phdmesh_element_Declarations_hpp
-#define phdmesh_element_Declarations_hpp
+#ifndef phdmesh_Basic_Topologies_hpp
+#define phdmesh_Basic_Topologies_hpp
 
-#include <mesh/Types.hpp>
 #include <element/CellTopology.hpp>
 
 namespace phdmesh {
 
 //----------------------------------------------------------------------
-/** Attach an cell topology to a Part.
- *  There is at most one cell topology allowed.
- */
-void set_cell_topology( Part & , const CellTopology * singleton );
-
-/** Attach an element local topology to a Part.
- *  There is at most one element topology allowed.
- */
-template< class Traits >
-void set_cell_topology( Part & p )
-{ return set_cell_topology( p , cell_topology<Traits>() ); }
-
-const CellTopology * get_cell_topology( const Part & );
-const CellTopology * get_cell_topology( const Kernel & );
-const CellTopology * get_cell_topology( const Entity & );
-
-//----------------------------------------------------------------------
-/** Declare an element member of a part with a cell topology
- *  and nodes conformal to that topology.
- */
-Entity & declare_element( MeshBulkData & mesh ,
-                          Part & part ,
-                          const unsigned elem_id ,
-                          const unsigned node_id[] );
-
-Entity & declare_element( MeshBulkData & mesh ,
-                          Part & part ,
-                          const unsigned elem_id ,
-                          Entity * node[] );
-
-//----------------------------------------------------------------------
-/* The element must have a topology. */
-
-Entity & declare_element_side( MeshBulkData & mesh ,
-                               const unsigned global_side_id ,
-                               Entity & elem , const unsigned local_side_id );
-
+// Node   < Dim = 0, Vertices = 0, Nodes = 0 >
+// Line   < Dim = 1, Vertices = 2, Nodes = 2 >
+//
+// Line_3 < Dim = 1, Vertices = 2, Nodes = 3 >
+//
+//     [0]----[3]----[2]----[4]----[1]  ---> Positive direction
 //----------------------------------------------------------------------
 
-}
+typedef CellTopologyTraits<0,0,0> Node_Traits ;
+
+template< unsigned Nodes = 2 > struct Line ;
+
+template<> struct Line<2> : public CellTopologyTraits<1,2,2> {};
+template<> struct Line<3> : public CellTopologyTraits<1,2,3> {};
+
+template<> const CellTopology * cell_topology< Node_Traits >();
+template<> const CellTopology * cell_topology< Line<> >();
+template<> const CellTopology * cell_topology< Line<3> >();
+
+} // namespace phdmesh
 
 #endif
 

@@ -58,7 +58,7 @@ struct GearFields {
   ElementValueField & element_value ;
   NodeValueField    & node_value ;
 
-  GearFields( Schema & S );
+  GearFields( MeshMetaData & S );
 
 private:
   GearFields();
@@ -68,7 +68,7 @@ private:
 
 class Gear {
 public:
-  Gear( Schema & S ,
+  Gear( MeshMetaData & S ,
         const std::string & name ,
         const GearFields & gear_fields ,
         const double   center[] ,
@@ -81,12 +81,12 @@ public:
         const unsigned angle_num ,
         const int      turn_direction );
 
-  void mesh( Mesh & );
+  void mesh( MeshBulkData & );
   void turn( double turn_angle ) const ;
   void element_update() const ;
 
-  Schema & m_schema ;
-  Mesh * m_mesh ;
+  MeshMetaData & m_mesh_meta_data ;
+  MeshBulkData * m_mesh ;
   Part & m_gear ;
   Part & m_surf ;
   const GearFields::CylindricalField  & m_gear_coord ;

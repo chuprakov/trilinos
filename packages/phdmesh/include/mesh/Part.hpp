@@ -40,7 +40,7 @@
 
 namespace phdmesh {
 
-/** Supersets and subsets of parts are of the same schema and
+/** Supersets and subsets of parts are of the same mesh_meta_data and
  *  maintained in ordinal order.
  */
 typedef std::vector<Part*> PartSet ;
@@ -54,14 +54,14 @@ typedef std::vector<Part*> PartSet ;
 class Part {
 public:
 
-  /** Mesh schema in which this part resides */
-  Schema & schema() const { return m_schema ; }
+  /** MeshBulkData mesh_meta_data in which this part resides */
+  MeshMetaData & mesh_meta_data() const { return m_mesh_meta_data ; }
 
   /** Text name of this mesh part */
   const std::string & name() const { return m_name ; }
 
-  /** Ordinal of this part within the mesh schema */
-  unsigned schema_ordinal() const { return m_schema_ordinal ; }
+  /** Ordinal of this part within the mesh mesh_meta_data */
+  unsigned mesh_meta_data_ordinal() const { return m_mesh_meta_data_ordinal ; }
 
   /** Parts that are supersets of this part.  */
   const PartSet & supersets() const { return m_supersets ; }
@@ -85,11 +85,11 @@ public:
 
 private:
 
-  /* Only a mesh Schema can create and delete parts */
-  friend class Schema ;
+  /* Only a MeshMetaData can create and delete parts */
+  friend class MeshMetaData ;
 
   /** Construct a part within a given mesh */
-  Part( Schema & , const std::string & , unsigned );
+  Part( MeshMetaData & , const std::string & , unsigned );
 
   ~Part();
   Part();
@@ -101,8 +101,8 @@ private:
   PartSet           m_subsets ;
   PartSet           m_supersets ;
   PartSet           m_intersect ;
-  Schema          & m_schema ;
-  const unsigned    m_schema_ordinal ;
+  MeshMetaData          & m_mesh_meta_data ;
+  const unsigned    m_mesh_meta_data_ordinal ;
   bool              m_relation_target ;
 };
 
@@ -148,7 +148,7 @@ std::ostream & print( std::ostream & , const char * const , const Part & );
  *  then Entity 'e2' is a member of part 'm_target'.
  *
  *  This data structure is used internally and should never need to be
- *  used by a user of the phdMesh package.
+ *  used by a user of the phdMeshBulkData package.
  */
 struct PartRelation {
   Part               * m_root ;

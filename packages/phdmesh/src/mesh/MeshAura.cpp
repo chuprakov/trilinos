@@ -31,8 +31,8 @@
 
 #include <util/ParallelComm.hpp>
 
-#include <mesh/Schema.hpp>
-#include <mesh/Mesh.hpp>
+#include <mesh/MetaData.hpp>
+#include <mesh/BulkData.hpp>
 #include <mesh/Comm.hpp>
 #include <mesh/EntityComm.hpp>
 
@@ -45,10 +45,10 @@ namespace phdmesh {
 
 namespace {
 
-bool not_member( const EntityProcSet & aura_domain ,
+bool not_member( const std::vector<EntityProc> & aura_domain ,
                  const EntityProc & ep )
 {
-  const EntityProcSet::const_iterator
+  const std::vector<EntityProc>::const_iterator
     i = lower_bound( aura_domain , ep );
 
   return i == aura_domain.end() || ep != *i ;
@@ -68,9 +68,9 @@ public:
 
   void receive_entity(
     CommBuffer & buffer ,
-    Mesh & receive_mesh ,
+    MeshBulkData & receive_mesh ,
     const unsigned send_source ,
-    EntityProcSet & receive_info ) const ;
+    std::vector<EntityProc> & receive_info ) const ;
 };
 
 const char * RegenAuraComm::name() const
@@ -78,9 +78,9 @@ const char * RegenAuraComm::name() const
 
 void RegenAuraComm::receive_entity(
   CommBuffer              & buffer ,
-  Mesh                    & receive_mesh ,
+  MeshBulkData                    & receive_mesh ,
   const unsigned            send_source ,
-  EntityProcSet & receive_info ) const
+  std::vector<EntityProc> & receive_info ) const
 {
   entity_key_type       key ;
   unsigned              owner_rank ;
@@ -92,9 +92,9 @@ void RegenAuraComm::receive_entity(
                  key , owner_rank ,
                  add , relations , send_destinations );
 
-  const Schema & S = receive_mesh.schema();
-  Part * const owns_part = & S.owns_part();
-  Part * const uses_part = & S.uses_part();
+  const MeshMetaData & S = receive_mesh.mesh_meta_data();
+  Part * const owns_part = & S.locally_owned_part();
+  Part * const uses_part = & S.locally_used_part();
 
   // This is an aura, not a member of the owns part or uses part
 
@@ -127,16 +127,16 @@ void RegenAuraComm::receive_entity(
 
 //----------------------------------------------------------------------
 
-void scrub( Mesh & M , EntityProcSet & new_domain ,
-                       EntityProcSet & new_range )
+void scrub( MeshBulkData & M , std::vector<EntityProc> & new_domain ,
+                       std::vector<EntityProc> & new_range )
 {
   static const char method[] = "phdmesh::comm_mesh_regenerate_aura::scrub" ;
 
-  Part & uses_part = M.schema().uses_part();
+  Part & uses_part = M.mesh_meta_data().locally_used_part();
   const unsigned p_rank = M.parallel_rank();
   const unsigned p_size = M.parallel_size();
 
-  EntityProcSet::iterator i ;
+  std::vector<EntityProc>::iterator i ;
 
   for ( i = new_range.end() ; i != new_range.begin() ; ) {
     --i ;
@@ -231,7 +231,7 @@ void scrub( Mesh & M , EntityProcSet & new_domain ,
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void comm_mesh_regenerate_aura( Mesh & M )
+void comm_mesh_regenerate_aura( MeshBulkData & M )
 {
   static const char method[] = "phdmesh::comm_mesh_regenerate_aura" ;
 
@@ -239,25 +239,25 @@ void comm_mesh_regenerate_aura( Mesh & M )
   const unsigned p_size = M.parallel_size();
   const unsigned p_rank = M.parallel_rank();
 
-  const EntityProcSet & shares = M.shares();
+  const std::vector<EntityProc> & shares = M.shares();
 
-  EntityProcSet old_aura_domain( M.aura_domain() );
-  EntityProcSet old_aura_range(  M.aura_range() );
+  std::vector<EntityProc> old_aura_domain( M.ghost_source() );
+  std::vector<EntityProc> old_aura_range(  M.ghost_destination() );
 
   scrub( M , old_aura_domain , old_aura_range );
 
   // Run the shared entities and push all 'UsedBy' entities
   // into the send vector.
 
-  EntityProcSet new_aura_domain ;
-  EntityProcSet new_aura_range ;
+  std::vector<EntityProc> new_aura_domain ;
+  std::vector<EntityProc> new_aura_range ;
 
-  for ( EntityProcSet::const_iterator
+  for ( std::vector<EntityProc>::const_iterator
         i = shares.begin() ; i != shares.end() ; ) {
 
-    const EntityProcSet::const_iterator ib = i ;
+    const std::vector<EntityProc>::const_iterator ib = i ;
     for ( ; i != shares.end() && ib->first == i->first ; ++i );
-    const EntityProcSet::const_iterator ie = i ;
+    const std::vector<EntityProc>::const_iterator ie = i ;
 
     Entity * const shared_entity = ib->first ;
     const EntityType shared_type = shared_entity->entity_type();
@@ -273,7 +273,7 @@ void comm_mesh_regenerate_aura( Mesh & M )
         // "shared_entity->UsedBy->e" and 'e' is locally owned
         // Send to each shares processor
 
-        for ( EntityProcSet::const_iterator
+        for ( std::vector<EntityProc>::const_iterator
               j = ib ; j != ie ; ++j ) {
           EntityProc entry ;
 
@@ -315,7 +315,7 @@ void comm_mesh_regenerate_aura( Mesh & M )
   {
     CommAll all( M.parallel() );
 
-    EntityProcSet::iterator j ;
+    std::vector<EntityProc>::iterator j ;
 
     for ( j = new_aura_range.begin() ; j != new_aura_range.end() ; ++j ) {
       all.send_buffer( j->first->owner_rank() ).skip<entity_key_type>(2);
@@ -351,7 +351,7 @@ void comm_mesh_regenerate_aura( Mesh & M )
 
   sort_unique( new_aura_domain );
 
-  comm_mesh_entities( mgr , M , M , new_aura_domain , new_aura_range , false );
+  communicate_entities( mgr , M , M , new_aura_domain , new_aura_range , false );
 
   new_aura_domain.insert( new_aura_domain.end() , old_aura_domain.begin() ,
                                                   old_aura_domain.end() );
@@ -362,7 +362,7 @@ void comm_mesh_regenerate_aura( Mesh & M )
   sort_unique( new_aura_domain );
   sort_unique( new_aura_range );
 
-  M.set_aura( new_aura_domain , new_aura_range );
+  M.set_ghosting( new_aura_domain , new_aura_range );
 }
 
 //----------------------------------------------------------------------

@@ -29,9 +29,9 @@
 #include <util/Basics.hpp>
 
 #include <mesh/Assemble.hpp>
-#include <mesh/Mesh.hpp>
+#include <mesh/BulkData.hpp>
 #include <mesh/Comm.hpp>
-#include <mesh/Schema.hpp>
+#include <mesh/MetaData.hpp>
 #include <mesh/Kernel.hpp>
 #include <mesh/Entity.hpp>
 #include <mesh/FieldData.hpp>
@@ -48,20 +48,20 @@ private:
   AssembleTask( const AssembleTask & );
   AssembleTask & operator = ( const AssembleTask & );
 public:
-  const Mesh                  & mesh ;
+  const MeshBulkData                  & mesh ;
   const unsigned                entity_type ;
   const std::vector<Assemble> & ops ;
 
   KernelSet::const_iterator ik_work ;
 
-  AssembleTask( const Mesh & arg_mesh ,
+  AssembleTask( const MeshBulkData & arg_mesh ,
                 unsigned     arg_entity_type ,
                 const std::vector<Assemble> & arg_ops );
 
   void work(TPI::ThreadPool);
 };
 
-AssembleTask::AssembleTask( const Mesh & arg_mesh ,
+AssembleTask::AssembleTask( const MeshBulkData & arg_mesh ,
                             unsigned     arg_entity_type ,
                             const std::vector<Assemble> & arg_ops )
   : mesh( arg_mesh ),
@@ -80,8 +80,8 @@ void AssembleTask::work(TPI::ThreadPool pool)
   
   const KernelSet::const_iterator ik_end = mesh.kernels( entity_type ).end();
 
-  const Schema & schema = mesh.schema();
-  Part & uses = schema.uses_part();
+  const MeshMetaData & mesh_meta_data = mesh.mesh_meta_data();
+  Part & uses = mesh_meta_data.locally_used_part();
 
   for(;;) {
     // Get work:
@@ -134,7 +134,7 @@ void AssembleTask::work(TPI::ThreadPool pool)
 
 }
 
-void assemble( const Mesh & M , const std::vector<Assemble> ops )
+void assemble( const MeshBulkData & M , const std::vector<Assemble> ops )
 {
   static const char method[] = "phdmesh::assemble" ;
 
@@ -155,13 +155,13 @@ void assemble( const Mesh & M , const std::vector<Assemble> ops )
       const FieldBase * const src_field = & op.src_field();
       const FieldBase * const dst_field = & op.dst_field();
 
-      M.schema().assert_same_schema( method , dst_field->schema() );
-      M.schema().assert_same_schema( method , src_field->schema() );
+      M.mesh_meta_data().assert_same_mesh_meta_data( method , dst_field->mesh_meta_data() );
+      M.mesh_meta_data().assert_same_mesh_meta_data( method , src_field->mesh_meta_data() );
 
       update_fields.push_back( src_field );
     }
 
-    comm_mesh_field_values( M , M.aura_domain() , M.aura_range() ,
+    communicate_field_data( M , M.ghost_source() , M.ghost_destination() ,
                             update_fields , false );
   }
 

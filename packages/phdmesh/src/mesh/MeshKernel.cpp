@@ -34,8 +34,8 @@
 
 #include <mesh/Kernel.hpp>
 #include <mesh/Entity.hpp>
-#include <mesh/Mesh.hpp>
-#include <mesh/Schema.hpp>
+#include <mesh/BulkData.hpp>
+#include <mesh/MetaData.hpp>
 #include <mesh/FieldData.hpp>
 
 namespace phdmesh {
@@ -84,7 +84,7 @@ bool Kernel::member( const Part & part ) const
   const unsigned * const i_beg = key_base + 1 ;
   const unsigned * const i_end = key_base + key_base[0] ;
 
-  const unsigned ord = part.schema_ordinal();
+  const unsigned ord = part.mesh_meta_data_ordinal();
   const unsigned * const i = std::lower_bound( i_beg , i_end , ord );
 
   return i_end != i && ord == *i ;
@@ -102,7 +102,7 @@ bool Kernel::member_all( const std::vector<Part*> & parts ) const
   bool result_all = true ;
 
   for ( ; result_all && ip_end != ip ; ++ip ) {
-    const unsigned ord = (*ip)->schema_ordinal();
+    const unsigned ord = (*ip)->mesh_meta_data_ordinal();
     const unsigned * const i = std::lower_bound( i_beg , i_end , ord );
     result_all = i_end != i && ord == *i ;
   }
@@ -121,7 +121,7 @@ bool Kernel::member_any( const std::vector<Part*> & parts ) const
   bool result_none = true ;
 
   for ( ; result_none && ip_end != ip ; ++ip ) {
-    const unsigned ord = (*ip)->schema_ordinal();
+    const unsigned ord = (*ip)->mesh_meta_data_ordinal();
     const unsigned * const i = std::lower_bound( i_beg , i_end , ord );
     result_none = i_end == i || ord != *i ;
   }
@@ -140,7 +140,7 @@ bool KernelLess::operator()( const unsigned * lhs ,
 
 bool Kernel::has_superset( const Part & p ) const
 {
-  const unsigned ordinal = p.schema_ordinal();
+  const unsigned ordinal = p.mesh_meta_data_ordinal();
 
   std::pair<const unsigned *, const unsigned *> 
     part_ord = superset_part_ordinals();
@@ -161,7 +161,7 @@ bool Kernel::has_superset( const PartSet & ps ) const
   for ( PartSet::const_iterator
         i = ps.begin() ; result && i != ps.end() ; ++i ) {
 
-    const unsigned ordinal = (*i)->schema_ordinal();
+    const unsigned ordinal = (*i)->mesh_meta_data_ordinal();
 
     part_ord.first =
       std::lower_bound( part_ord.first , part_ord.second , ordinal );
@@ -173,7 +173,7 @@ bool Kernel::has_superset( const PartSet & ps ) const
 
 void Kernel::supersets( PartSet & ps ) const
 {
-  const Schema & schema = m_mesh.schema();
+  const MeshMetaData & mesh_meta_data = m_mesh.mesh_meta_data();
 
   std::pair<const unsigned *, const unsigned *> 
     part_ord = superset_part_ordinals();
@@ -182,7 +182,7 @@ void Kernel::supersets( PartSet & ps ) const
 
   for ( unsigned i = 0 ;
         part_ord.first < part_ord.second ; ++(part_ord.first) , ++i ) {
-    ps[i] = & schema.get_part( * part_ord.first );
+    ps[i] = & mesh_meta_data.get_part( * part_ord.first );
   }
 }
 
@@ -193,11 +193,11 @@ bool field_data_valid( const FieldBase & f ,
                        unsigned ord ,
                        const char * required_by )
 {
-  const Schema * const k_schema = & k.mesh().schema();
-  const Schema * const f_schema = & f.schema();
-  const bool ok_schema  = k_schema == f_schema ;
+  const MeshMetaData * const k_mesh_meta_data = & k.mesh().mesh_meta_data();
+  const MeshMetaData * const f_mesh_meta_data = & f.mesh_meta_data();
+  const bool ok_mesh_meta_data  = k_mesh_meta_data == f_mesh_meta_data ;
   const bool ok_ord     = ord < k.size() ;
-  const bool exists     = ok_schema && ok_ord && NULL != field_data( f , k );
+  const bool exists     = ok_mesh_meta_data && ok_ord && NULL != field_data( f , k );
 
   if ( required_by && ! exists ) {
     std::ostringstream msg ;
@@ -210,8 +210,8 @@ bool field_data_valid( const FieldBase & f ,
     msg << " , " ;
     msg << required_by ;
     msg << " ) FAILED with " ;
-    if ( ! ok_schema ) {
-      msg << " different Schema" ;
+    if ( ! ok_mesh_meta_data ) {
+      msg << " different MeshMetaData" ;
     }
     else if ( ! ok_ord ) {
       msg << " Ordinal " ;
@@ -231,7 +231,7 @@ bool field_data_valid( const FieldBase & f ,
 
 //----------------------------------------------------------------------
 
-Kernel::Kernel( Mesh & arg_mesh ,
+Kernel::Kernel( MeshBulkData & arg_mesh ,
                 EntityType arg_type ,
                 const unsigned * arg_key )
 : SetvMember<const unsigned * const>( arg_key ),
@@ -251,7 +251,7 @@ Kernel::Kernel( Mesh & arg_mesh ,
 void Kernel::zero_fields( Kernel & k_dst , unsigned i_dst )
 {
   const std::vector<FieldBase*> & field_set =
-    k_dst.mesh().schema().get_fields();
+    k_dst.mesh().mesh_meta_data().get_fields();
 
   unsigned char * const p = reinterpret_cast<unsigned char*>(k_dst.m_entities);
   const DataMap *       i = k_dst.m_field_map ;
@@ -270,7 +270,7 @@ void Kernel::copy_fields( Kernel & k_dst , unsigned i_dst ,
   static const char method[] = "phdmesh::Kernel::copy_fields" ;
 
   const std::vector<FieldBase*> & field_set =
-    k_dst.mesh().schema().get_fields();
+    k_dst.mesh().mesh_meta_data().get_fields();
 
   unsigned char * const s = reinterpret_cast<unsigned char*>(k_src.m_entities);
   unsigned char * const d = reinterpret_cast<unsigned char*>(k_dst.m_entities);
@@ -343,8 +343,8 @@ const FieldBase::Dim & dimension( const FieldBase & field ,
       if ( Compare< MaximumFieldDimension >::
              not_equal( ibeg->stride , dim->stride ) ) {
 
-        Part & p_old = field.schema().get_part( ibeg->ordinal() );
-        Part & p_new = field.schema().get_part( dim->ordinal() );
+        Part & p_old = field.mesh_meta_data().get_part( ibeg->ordinal() );
+        Part & p_new = field.mesh_meta_data().get_part( dim->ordinal() );
 
         std::ostringstream msg ;
         msg << method ;
@@ -370,7 +370,7 @@ void Kernel::update_state()
 {
   if ( 0 == kernel_counter( key() ) ) {
 
-    const Schema & S = m_mesh.schema();
+    const MeshMetaData & S = m_mesh.mesh_meta_data();
     const std::vector<FieldBase*> & field_set = S.get_fields();
 
     for ( unsigned i = 0 ; i < field_set.size() ; ) {
@@ -418,7 +418,7 @@ void * local_malloc( size_t n )
 Kernel::~Kernel()
 {}
 
-void Mesh::destroy_kernel( KernelSet::iterator ik )
+void MeshBulkData::destroy_kernel( KernelSet::iterator ik )
 {
   Kernel * const k = & * ik ;
 
@@ -440,7 +440,7 @@ void Mesh::destroy_kernel( KernelSet::iterator ik )
 // The input part ordinals are complete and contain all supersets.
 
 KernelSet::iterator
-Mesh::declare_kernel( const EntityType arg_entity_type ,
+MeshBulkData::declare_kernel( const EntityType arg_entity_type ,
                       const unsigned part_size ,
                       const unsigned part_ord[] )
 {
@@ -452,7 +452,7 @@ Mesh::declare_kernel( const EntityType arg_entity_type ,
 
   KernelSet & kernel_set = m_kernels[ arg_entity_type ];
 
-  const std::vector< FieldBase * > & field_set = m_schema.get_fields();
+  const std::vector< FieldBase * > & field_set = m_mesh_meta_data.get_fields();
 
   const unsigned num_fields = field_set.size();
 
@@ -630,7 +630,7 @@ Mesh::declare_kernel( const EntityType arg_entity_type ,
 
 //----------------------------------------------------------------------
 
-void Mesh::remove_entity( KernelSet::iterator ik , unsigned i )
+void MeshBulkData::remove_entity( KernelSet::iterator ik , unsigned i )
 {
   const KernelSet::iterator first =
     kernel_counter( ik->key() ) ? ik->m_kernel : ik ;
@@ -692,7 +692,7 @@ std::ostream & operator << ( std::ostream & s , const Kernel & k )
 std::ostream &
 Kernel::print( std::ostream & os , const std::string & lead ) const
 {
-  const Schema & schema = m_mesh.schema();
+  const MeshMetaData & mesh_meta_data = m_mesh.mesh_meta_data();
   const char * const entity_name = entity_type_name( m_entity_type );
 
   const unsigned * k = key();
@@ -701,7 +701,7 @@ Kernel::print( std::ostream & os , const std::string & lead ) const
   os << lead
      << "Kernel(" << entity_name << " : " ;
   for ( unsigned i = 1 ; i < n ; ++i , ++k ) {
-    const std::string & name = schema.get_part( *k ).name(); os << " " << name ;
+    const std::string & name = mesh_meta_data.get_part( *k ).name(); os << " " << name ;
   }
 
   os << " " << *k << " ){ "

@@ -28,8 +28,8 @@
 #include <stdexcept>
 #include <sstream>
 
-#include <mesh/Mesh.hpp>
-#include <mesh/Schema.hpp>
+#include <mesh/BulkData.hpp>
+#include <mesh/MetaData.hpp>
 #include <mesh/FieldData.hpp>
 #include <mesh/EntityComm.hpp>
 
@@ -49,18 +49,18 @@ const char * EntityComm::name() const
 
 void EntityComm::send_entity(
   CommBuffer & buffer ,
-  const Mesh & receive_mesh ,
-  const EntityProcSet::const_iterator ibeg ,
-  const EntityProcSet::const_iterator iend ) const
+  const MeshBulkData & receive_mesh ,
+  const std::vector<EntityProc>::const_iterator ibeg ,
+  const std::vector<EntityProc>::const_iterator iend ) const
 {
   pack_entity( buffer , receive_mesh , ibeg , iend );
 }
 
 void EntityComm::receive_entity(
   CommBuffer              & buffer ,
-  Mesh                    & receive_mesh ,
+  MeshBulkData                    & receive_mesh ,
   const unsigned            send_source ,
-  EntityProcSet & receive_info ) const
+  std::vector<EntityProc> & receive_info ) const
 {
   entity_key_type       key ;
   unsigned              owner_rank ;
@@ -87,17 +87,17 @@ void EntityComm::receive_entity(
 
 void EntityComm::pack_entity(
   CommBuffer & buf ,
-  const Mesh & recv_mesh ,
-  const EntityProcSet::const_iterator ibeg ,
-  const EntityProcSet::const_iterator iend ) const
+  const MeshBulkData & recv_mesh ,
+  const std::vector<EntityProc>::const_iterator ibeg ,
+  const std::vector<EntityProc>::const_iterator iend ) const
 {
-  const Schema      & recv_schema = recv_mesh.schema();
+  const MeshMetaData      & recv_mesh_meta_data = recv_mesh.mesh_meta_data();
   const Entity      & entity      = * ibeg->first ;
   const entity_key_type key       = entity.key();
   const unsigned      owner_rank  = entity.owner_rank();
   const Kernel      & kernel      = entity.kernel();
-  const Schema      & send_schema = kernel.mesh().schema();
-  const bool          same_schema = & send_schema == & recv_schema ;
+  const MeshMetaData      & send_mesh_meta_data = kernel.mesh().mesh_meta_data();
+  const bool          same_mesh_meta_data = & send_mesh_meta_data == & recv_mesh_meta_data ;
   const unsigned      dest_size   = std::distance( ibeg , iend );
         RelationSpan  rel         = entity.relations();
 
@@ -106,14 +106,14 @@ void EntityComm::pack_entity(
 
   std::vector<unsigned> part_ordinals( tmp.first , tmp.second );
 
-  if ( ! same_schema ) { // Map the parts by name
+  if ( ! same_mesh_meta_data ) { // Map the parts by name
     std::vector<unsigned>::iterator i = part_ordinals.begin();
 
     while ( i != part_ordinals.end() ) {
-      Part &       send_p = send_schema.get_part( *i );
-      Part * const recv_p = recv_schema.get_part( send_p.name() );
+      Part &       send_p = send_mesh_meta_data.get_part( *i );
+      Part * const recv_p = recv_mesh_meta_data.get_part( send_p.name() );
       if ( recv_p != NULL ) {
-        *i = recv_p->schema_ordinal(); ++i ;
+        *i = recv_p->mesh_meta_data_ordinal(); ++i ;
       }
       else {
         i = part_ordinals.erase(i);
@@ -145,21 +145,21 @@ void EntityComm::pack_entity(
 
   // Processors:
   buf.pack<unsigned>( dest_size );
-  for ( EntityProcSet::const_iterator i = ibeg ; i != iend ; ++i ) {
+  for ( std::vector<EntityProc>::const_iterator i = ibeg ; i != iend ; ++i ) {
     buf.pack<unsigned>( i->second );
   }
 }
 
 void EntityComm::unpack_entity(
   CommBuffer            & recv_buf ,
-  const Mesh            & recv_mesh ,
+  const MeshBulkData            & recv_mesh ,
   entity_key_type       & key ,
   unsigned              & owner_rank ,
   std::vector<Part*>    & parts ,
   std::vector<Relation> & relations ,
   std::vector<unsigned> & send_destinations ) const
 {
-  const Schema & recv_schema = recv_mesh.schema();
+  const MeshMetaData & recv_mesh_meta_data = recv_mesh.mesh_meta_data();
 
   parts.clear();
   relations.clear();
@@ -174,7 +174,7 @@ void EntityComm::unpack_entity(
     unsigned n ; recv_buf.unpack<unsigned>( n );
     for ( ; n ; --n ) {
       unsigned ordinal ; recv_buf.unpack<unsigned>( ordinal );
-      Part * const p = & recv_schema.get_part( ordinal );
+      Part * const p = & recv_mesh_meta_data.get_part( ordinal );
       parts.push_back( p );
     }
   }
@@ -217,10 +217,10 @@ void EntityComm::pack_field_values(
   CommBuffer & buf , Entity & entity ) const
 {
   const Kernel & kernel = entity.kernel();
-  const Mesh   & mesh   = kernel.mesh();
-  const Schema & schema = mesh.schema();
+  const MeshBulkData   & mesh   = kernel.mesh();
+  const MeshMetaData & mesh_meta_data = mesh.mesh_meta_data();
 
-  const std::vector< FieldBase * > & fields = schema.get_fields();
+  const std::vector< FieldBase * > & fields = mesh_meta_data.get_fields();
 
   const std::vector< FieldBase * >::const_iterator i_end = fields.end();
   const std::vector< FieldBase * >::const_iterator i_beg = fields.begin();
@@ -249,10 +249,10 @@ void EntityComm::unpack_field_values(
   static const char method[] = "phdmesh::EntityComm::unpack_field_values" ;
 
   const Kernel & kernel = entity.kernel();
-  const Mesh   & mesh   = kernel.mesh();
-  const Schema & schema = mesh.schema();
+  const MeshBulkData   & mesh   = kernel.mesh();
+  const MeshMetaData & mesh_meta_data = mesh.mesh_meta_data();
 
-  const std::vector< FieldBase * > & fields = schema.get_fields();
+  const std::vector< FieldBase * > & fields = mesh_meta_data.get_fields();
 
   const std::vector< FieldBase * >::const_iterator i_end = fields.end();
   const std::vector< FieldBase * >::const_iterator i_beg = fields.begin();

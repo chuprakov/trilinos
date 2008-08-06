@@ -34,11 +34,11 @@
 
 #include <mesh/FieldTraits.hpp>
 #include <mesh/FieldData.hpp>
-#include <mesh/Schema.hpp>
-#include <mesh/Mesh.hpp>
+#include <mesh/MetaData.hpp>
+#include <mesh/BulkData.hpp>
 #include <mesh/Comm.hpp>
 
-#include <element/HexahedronTopology.hpp>
+#include <element/Hexahedron_Topologies.hpp>
 
 using namespace phdmesh ;
 
@@ -57,12 +57,12 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   const unsigned p_size = parallel_machine_size( pm );
 
   //--------------------------------------------------------------------
-  // Define a mesh schema: the parts and fields.
+  // Define a mesh mesh_meta_data: the parts and fields.
 
-  Schema S ;
+  MeshMetaData S ;
 
   // Get some of the predefined parts for later use...
-  Part * const owns_part = & S.owns_part();
+  Part * const owns_part = & S.locally_owned_part();
   Part * const univ_part = & S.universal_part();
 
   // Declare a part for the element block and side set,
@@ -76,18 +76,18 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   CoordinateField & node_coordinates =
     S.declare_field<CoordinateField>( std::string("coordinates") );
 
-  S.declare_field_size( node_coordinates , Node , *univ_part , 3 );
+  S.put_field( node_coordinates , Node , *univ_part , 3 );
   
-  // Done defining the schema, commit it.
+  // Done defining the mesh_meta_data, commit it.
 
   S.commit();
 
   //--------------------------------------------------------------------
-  // Create mesh bulk data conformal to the schema.
+  // Create mesh bulk data conformal to the mesh_meta_data.
 
   const unsigned kernel_capacity = 100 ;
 
-  Mesh M( S , pm , kernel_capacity );
+  MeshBulkData M( S , pm , kernel_capacity );
 
   // Define a trivial mesh, stack of hex elements
   // with one hex element per processor ordered by
@@ -149,16 +149,16 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   // Declare face <-> node relations
 
-  StaticAssert< Hex::side<0>::vertex<0>::ordinal == 0 >::ok();
-  StaticAssert< Hex::side<0>::vertex<1>::ordinal == 1 >::ok();
-  StaticAssert< Hex::side<0>::vertex<2>::ordinal == 5 >::ok();
-  StaticAssert< Hex::side<0>::vertex<3>::ordinal == 4 >::ok();
+  StaticAssert< Hex::side<0,0>::node == 0 >::ok();
+  StaticAssert< Hex::side<0,1>::node == 1 >::ok();
+  StaticAssert< Hex::side<0,2>::node == 5 >::ok();
+  StaticAssert< Hex::side<0,3>::node == 4 >::ok();
 
   const unsigned elem_face_node[4] = {
-    Hex::side<0>::vertex<0>::ordinal ,
-    Hex::side<0>::vertex<1>::ordinal ,
-    Hex::side<0>::vertex<2>::ordinal ,
-    Hex::side<0>::vertex<3>::ordinal };
+    Hex::side<0,0>::node ,
+    Hex::side<0,1>::node ,
+    Hex::side<0,2>::node ,
+    Hex::side<0,3>::node };
 
   RelationSpan elem_node = elem.relations( Node );
 
@@ -257,7 +257,7 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
     for ( unsigned p = 0 ; p < p_size ; ++p ) {
       parallel_machine_barrier( pm );
       if ( p_rank == p ) {
-        partset_entity_count( M , S.uses_part() , counts );
+        count_entities( M , S.locally_used_part() , counts );
 
         std::cout << "  P" << p_rank << " Uses  Counts = {" 
                   << " " << counts[0]
@@ -268,7 +268,7 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
                   << " " << counts[5]
                   << " }" << std::endl ;
 
-        partset_entity_count( M , S.owns_part() , counts );
+        count_entities( M , S.locally_owned_part() , counts );
 
         std::cout << "  P" << p_rank << " Owns  Counts = {" 
                   << " " << counts[0]

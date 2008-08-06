@@ -27,28 +27,28 @@
 #include <stdexcept>
 #include <sstream>
 
-#include <mesh/Schema.hpp>
+#include <mesh/MetaData.hpp>
 #include <mesh/Part.hpp>
-#include <mesh/Mesh.hpp>
+#include <mesh/BulkData.hpp>
 #include <mesh/Entity.hpp>
-#include <element/LocalTopology.hpp>
+#include <element/CellTopology.hpp>
 
 namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-const LocalTopology * get_part_local_topology( Part & p )
+const CellTopology * get_cell_topology( const Part & p )
 {
-  const LocalTopology * top = NULL ;
+  const CellTopology * top = NULL ;
 
-  CSet::Span<LocalTopology> span = p.attribute<LocalTopology>();
+  CSet::Span<CellTopology> span = p.attribute<CellTopology>();
 
   if ( 1 == span.size() ) {
     top = & *span ;
   }
   else if ( 1 < span.size() ) {
     std::ostringstream msg ;
-    msg << "phdmesh::get_part_local_topology( " ;
+    msg << "phdmesh::get_cell_topology( " ;
     msg << p.name();
     msg << " ) ERROR, too many topologies { " ;
     for ( ; span ; ++span ) {
@@ -60,11 +60,11 @@ const LocalTopology * get_part_local_topology( Part & p )
   return top ;
 }
 
-void set_part_local_topology( Part & p , const LocalTopology * singleton )
+void set_cell_topology( Part & p , const CellTopology * singleton )
 {
-  static const char method[] = "phdmesh::set_part_local_topology" ;
+  static const char method[] = "phdmesh::set_cell_topology" ;
 
-  CSet::Span<LocalTopology> span = p.attribute<LocalTopology>();
+  CSet::Span<CellTopology> span = p.attribute<CellTopology>();
 
   const bool error_null   = singleton == NULL ;
   const bool error_size   = 1 < span.size();
@@ -87,36 +87,36 @@ void set_part_local_topology( Part & p , const LocalTopology * singleton )
   }
 
   if ( span.empty() ) {
-    p.schema().declare_part_attribute( p , singleton , false );
+    p.mesh_meta_data().declare_part_attribute( p , singleton , false );
   }
 }
 
 //----------------------------------------------------------------------
 
-const LocalTopology * get_local_topology( Kernel & kernel )
+const CellTopology * get_cell_topology( const Kernel & kernel )
 {
-  const LocalTopology * top = NULL ;
+  const CellTopology * top = NULL ;
   PartSet parts ;
   kernel.supersets( parts );
 
   PartSet::iterator i = parts.begin() ;
 
   for ( ; NULL == top && i != parts.end() ; ++i ) {
-    top = get_part_local_topology( **i );
+    top = get_cell_topology( **i );
   }
 
   bool ok = true ;
 
   for ( ; ok && i != parts.end() ; ++i ) {
-    const LocalTopology * const tmp = get_part_local_topology( **i );
+    const CellTopology * const tmp = get_cell_topology( **i );
     ok = tmp == NULL || tmp == top ;
   }
 
   if ( ! ok ) {
     std::ostringstream msg ;
-    msg << "phdmesh::get_local_topology( Kernel[" ;
+    msg << "phdmesh::get_cell_topology( Kernel[" ;
     for ( i = parts.begin() ; i != parts.end() ; ++i ) {
-      const LocalTopology * const tmp = get_part_local_topology( **i );
+      const CellTopology * const tmp = get_cell_topology( **i );
       msg << " " << (*i)->name();
       if ( top ) { msg << "->" << tmp->name ; }
       msg << " ] ) FAILED WITH MULTIPLE LOCAL TOPOLOGIES" ;
@@ -127,19 +127,19 @@ const LocalTopology * get_local_topology( Kernel & kernel )
   return top ;
 }
 
-const LocalTopology * get_local_topology( Entity & entity )
-{ return get_local_topology( entity.kernel() ); }
+const CellTopology * get_cell_topology( const Entity & entity )
+{ return get_cell_topology( entity.kernel() ); }
 
 //----------------------------------------------------------------------
 
-Entity & declare_element( Mesh & mesh ,
+Entity & declare_element( MeshBulkData & mesh ,
                           Part & part ,
                           const unsigned elem_id ,
                           Entity * node[] )
 {
   static const char method[] = "phdmesh::declare_element" ;
 
-  const LocalTopology * const top = get_part_local_topology( part );
+  const CellTopology * const top = get_cell_topology( part );
 
   if ( top == NULL ) {
     std::ostringstream msg ;
@@ -152,8 +152,7 @@ Entity & declare_element( Mesh & mesh ,
     throw std::runtime_error( msg.str() );
   }
 
-  const EntityType type =
-    ! top->is_boundary ? Element : EntityType( top->topological_rank );
+  const EntityType type = Element ;
 
   PartSet add ;
 
@@ -171,14 +170,14 @@ Entity & declare_element( Mesh & mesh ,
 
 //----------------------------------------------------------------------
 
-Entity & declare_element( Mesh & mesh ,
+Entity & declare_element( MeshBulkData & mesh ,
                           Part & part ,
                           const unsigned elem_id ,
                           const unsigned node_id[] )
 {
   static const char method[] = "phdmesh::declare_element" ;
 
-  const LocalTopology * const top = get_part_local_topology( part );
+  const CellTopology * const top = get_cell_topology( part );
 
   if ( top == NULL ) {
     std::ostringstream msg ;
@@ -191,8 +190,7 @@ Entity & declare_element( Mesh & mesh ,
     throw std::runtime_error( msg.str() );
   }
 
-  const EntityType type =
-    ! top->is_boundary ? Element : EntityType( top->topological_rank );
+  const EntityType type = Element ;
 
   PartSet add ;
 
@@ -214,14 +212,17 @@ Entity & declare_element( Mesh & mesh ,
 
 //----------------------------------------------------------------------
 
-Entity & declare_element_side( Mesh   & mesh , const unsigned global_side_id ,
-                               Entity & elem , const unsigned local_side_id )
+Entity & declare_element_side(
+  MeshBulkData & mesh ,
+  const unsigned global_side_id ,
+  Entity & elem ,
+  const unsigned local_side_id )
 {
   static const char method[] = "phdmesh::declare_element_side" ;
 
-  const LocalTopology * const elem_top = get_local_topology( elem );
+  const CellTopology * const elem_top = get_cell_topology( elem );
 
-  const LocalTopology * const side_top =
+  const CellTopology * const side_top =
     ( elem_top && local_side_id < elem_top->number_side )
     ? elem_top->side[ local_side_id ].topology : NULL ;
 
@@ -238,7 +239,7 @@ Entity & declare_element_side( Mesh   & mesh , const unsigned global_side_id ,
        msg << " Cannot discern element topology" ;
      }
      else {
-       msg << " Local side id exceeds " ;
+       msg << " Cell side id exceeds " ;
        msg << elem_top->name ;
        msg << ".number_side = " ;
        msg << elem_top->number_side ;
@@ -246,13 +247,16 @@ Entity & declare_element_side( Mesh   & mesh , const unsigned global_side_id ,
      throw std::runtime_error( msg.str() );
    }
 
-  const unsigned * const side_node_map =
-    elem_top->side[ local_side_id ].node ;
+  const unsigned * const side_node_map = elem_top->side[ local_side_id ].node ;
 
-  const EntityType      side_type = (EntityType) side_top->topological_rank ;
+  const EntityType      side_type = (EntityType) side_top->dimension ;
   const entity_key_type side_key  = entity_key( side_type, global_side_id );
 
-  Entity & side = mesh.declare_entity( side_key , PartSet() );
+  PartSet parts ;
+
+  elem.kernel().supersets( parts );
+
+  Entity & side = mesh.declare_entity( side_key , parts , elem.owner_rank() );
 
   RelationSpan rel = elem.relations( Node );
 

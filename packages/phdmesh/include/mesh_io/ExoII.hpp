@@ -33,36 +33,27 @@
 namespace phdmesh {
 namespace exodus {
 
-enum ElementType {
-  CIRCLE /* Attributes: radius */ ,
-  SPHERE /* Attributes: radius */ ,
-  TRUSS  /* Attributes: cross-section area */ ,
-  BEAM   /* Attributes: cross-section area and moments */ ,
-  SHELL  /* Attributes: thickness */ ,
-  QUAD , TRIANGLE , PYRAMID , TETRA , WEDGE , HEX ,
-  UNDEFINED };
-
 class FilePart ;
 
 //----------------------------------------------------------------------
 
-struct ElementAttributes : public DimensionTag {
+struct ElementAttributes : public ArrayDimTag {
   const char * name() const ;
-  static const DimensionTag * descriptor();
+  static const ElementAttributes & descriptor();
 private:
   ElementAttributes() {}
   ElementAttributes( const ElementAttributes & );
   ElementAttributes & operator = ( const ElementAttributes & );
 };
 
-struct GlobalLocalIndex : public DimensionTag {
+struct GlobalLocalIndex : public ArrayDimTag {
   const char * name() const ;
 
-  std::string to_string( unsigned size , unsigned index ) const ;
+  std::string to_string( size_t size , int index ) const ;
 
-  unsigned to_index( unsigned size , const std::string & ) const ;
+  int to_index( size_t size , const std::string & ) const ;
 
-  static const DimensionTag * descriptor();
+  static const GlobalLocalIndex & descriptor();
 private:
   GlobalLocalIndex() {}
   GlobalLocalIndex( const GlobalLocalIndex & );
@@ -78,12 +69,12 @@ public:
 
   ~FileSchema();
 
-  FileSchema( Schema                & arg_schema ,
+  FileSchema( MeshMetaData          & arg_schema ,
               const CoordinateField & arg_node_coordinates ,
               const AttributeField  & arg_elem_attributes ,
               const unsigned          arg_writer_rank = 0 );
 
-  FileSchema( Schema                & arg_schema ,
+  FileSchema( MeshMetaData          & arg_schema ,
               const CoordinateField & arg_node_coordinates ,
               const AttributeField  & arg_elem_attributes ,
               const std::string     & arg_file_path ,
@@ -91,11 +82,7 @@ public:
               const unsigned          arg_writer_rank = 0 );
 
   /** Declare element part, default number of attributes. */
-  void declare_part( Part      & arg_part ,
-                     int         arg_id ,
-                     ElementType arg_element_type ,
-                     unsigned    arg_number_nodes ,
-                     unsigned    arg_num_attributes = 0 );
+  void declare_part( Part & arg_part , int arg_id );
 
   /** Declare a node, edge, or face part */
   void declare_part( Part     & arg_part ,
@@ -105,9 +92,9 @@ public:
   /** Assign contiguous global indices [1..#] to nodes and elements.
    *  Elements are ordered by element block and then by identifier.
    */
-  void assign_indices( Mesh & ) const ;
+  void assign_indices( MeshBulkData & ) const ;
 
-  Schema                & m_schema ;
+  MeshMetaData          & m_schema ;
   const unsigned          m_io_rank ;
   const unsigned          m_dimension ;
   const CoordinateField & m_field_node_coord ;
@@ -141,7 +128,7 @@ public:
 
   /** Create an output file for a collection of fields. */
   FileOutput( const FileSchema & ,
-              const Mesh & ,
+              const MeshBulkData & ,
               const std::string & arg_file_path ,
               const std::string & arg_title ,
               const bool          arg_storage_double ,
@@ -152,7 +139,7 @@ public:
   void write( double );
 
   const FileSchema & m_schema ;
-  const Mesh       & m_mesh ;
+  const MeshBulkData       & m_mesh ;
 
   int exo_id() const { return m_exo_id ; }
   int exo_step() const { return m_counter ; }
@@ -184,14 +171,14 @@ class FileInput {
 public:
   ~FileInput();
 
-  FileInput( const FileSchema & , Mesh & ,
+  FileInput( const FileSchema & , MeshBulkData & ,
              const std::string & arg_file_path ,
              const std::vector< const FieldBase * > & );
 
   double read();
 
   const FileSchema & m_schema ;
-        Mesh       & m_mesh ;
+        MeshBulkData       & m_mesh ;
 
   int exo_id() const { return m_exo_id ; }
   int exo_step() const { return m_counter ; }

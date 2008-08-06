@@ -49,14 +49,14 @@ struct KernelLess {
   bool operator()( const unsigned * lhs , const unsigned * rhs ) const ;
 };
 
-/** Mesh kernel - a homogeneous collection of mesh entities and
+/** MeshBulkData kernel - a homogeneous collection of mesh entities and
  *  their field values.
  *  Homogeneous in that all entities are of the same entity type
  *  and are members of the same set of parts.
  */
 class Kernel : private SetvMember<const unsigned * const> {
 private:
-  friend class Mesh ;
+  friend class MeshBulkData ;
   friend class Setv<Kernel,KernelLess> ;
   friend class SetvIter<Kernel,true> ;
   friend class SetvIter<Kernel,false> ;
@@ -64,27 +64,24 @@ private:
   friend class SetvIter<const Kernel,false> ;
 
   struct DataMap {
-/*
-    const DimensionNoTag * m_dim ;
-*/
-    const unsigned * m_stride ;
-    unsigned         m_base ;
-    unsigned         m_size ;
+    const size_t * m_stride ;
+    size_t         m_base ;
+    size_t         m_size ;
   };
 
-  Mesh      & m_mesh ;        // Mesh in which this kernel resides
-  EntityType  m_entity_type ; // Type of mesh entities
-  unsigned    m_size ;        // Number of entities
-  unsigned    m_capacity ;    // Capacity for entities
-  unsigned    m_alloc_size ;  // Allocation size of this kernel
+  MeshBulkData & m_mesh ;        // MeshBulkData in which this kernel resides
+  EntityType     m_entity_type ; // Type of mesh entities
+  unsigned       m_size ;        // Number of entities
+  unsigned       m_capacity ;    // Capacity for entities
+  unsigned       m_alloc_size ;  // Allocation size of this kernel
   Setv<Kernel,KernelLess>::iterator m_kernel ;
-  DataMap   * m_field_map ;   // Field value data map, shared
-  Entity   ** m_entities ;    // Array of entity pointers,
-                              // begining of field value memory.
+  DataMap      * m_field_map ;   // Field value data map, shared
+  Entity      ** m_entities ;    // Array of entity pointers,
+                                 // begining of field value memory.
 
 public:
 
-  Mesh & mesh() const { return m_mesh ; }
+  MeshBulkData & mesh() const { return m_mesh ; }
 
   EntityType entity_type() const { return m_entity_type ; }
 
@@ -145,7 +142,7 @@ private:
   Kernel( const Kernel & );
   Kernel & operator = ( const Kernel & );
 
-  Kernel( Mesh & , EntityType , const unsigned * );
+  Kernel( MeshBulkData & , EntityType , const unsigned * );
 
   void update_state();
 
@@ -153,6 +150,7 @@ private:
                            Kernel & k_src , unsigned i_src );
 
   static void zero_fields( Kernel & k_dst , unsigned i_dst );
+
 
   template< class field_type >
   friend
@@ -163,6 +161,18 @@ private:
   friend
   typename field_type::Dimension
   field_dimension( const field_type & f , const Entity & e );
+
+
+  template< class field_type >
+  friend
+  typename field_type::KernelArray
+  field_array( const field_type & f , const Kernel & k );
+
+  template< class field_type >
+  friend
+  typename field_type::EntityArray
+  field_array( const field_type & f , const Entity & e );
+
 
   template< class field_type >
   friend

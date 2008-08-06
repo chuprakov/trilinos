@@ -32,8 +32,8 @@
 #include <util/OctTreeOps.hpp>
 
 #include <mesh/Types.hpp>
-#include <mesh/Schema.hpp>
-#include <mesh/Mesh.hpp>
+#include <mesh/MetaData.hpp>
+#include <mesh/BulkData.hpp>
 #include <mesh/FieldData.hpp>
 #include <mesh/Proximity.hpp>
 
@@ -47,14 +47,14 @@ namespace {
 
 struct ProximityBoxes {
   const ProximitySearch   & m_prox ;
-  const Mesh              & m_mesh ;
-  const Schema            & m_schema ;
+  const MeshBulkData              & m_mesh ;
+  const MeshMetaData            & m_mesh_meta_data ;
   KernelSet::const_iterator m_iter ;
   KernelSet::const_iterator m_iter_end ;
   std::vector<IdentProcBox> m_boxes ;
 
   ProximityBoxes( 
-    Mesh & M ,
+    MeshBulkData & M ,
     const ProximitySearch & prox ,
     const unsigned entity_type ,
     std::vector< std::pair<IdentProc,IdentProc> > & proximity );
@@ -64,8 +64,8 @@ struct ProximityBoxes {
 
 void ProximityBoxes::fill_boxes()
 {
-  Part & owns_part = m_schema.owns_part();
-  const unsigned p_rank = m_schema.parallel_rank();
+  Part & owns_part = m_mesh_meta_data.locally_owned_part();
+  const unsigned p_rank = m_mesh_meta_data.parallel_rank();
 
   for(;;) {
     Kernel * kernel = NULL ;
@@ -103,15 +103,15 @@ void ProximityBoxes::fill_boxes()
 
 
 ProximityBoxes::ProximityBoxes(
-  Mesh & M ,
+  MeshBulkData & M ,
   const ProximitySearch & prox ,
   const unsigned entity_type ,
   std::vector< std::pair<IdentProc,IdentProc> > & proximity )
   : m_prox( prox ),
     m_mesh( M ),
-    m_schema( M.schema() )
+    m_mesh_meta_data( M.mesh_meta_data() )
 {
-  const Schema & S = M.schema();
+  const MeshMetaData & S = M.mesh_meta_data();
   const unsigned p_rank = S.parallel_rank();
 
   const KernelSet & kernels = m_mesh.kernels( entity_type );
@@ -119,7 +119,7 @@ ProximityBoxes::ProximityBoxes(
   // Iterate surfaces and generate bounding boxes
 
   {
-    Part & owns_part = m_schema.owns_part();
+    Part & owns_part = m_mesh_meta_data.locally_owned_part();
 
     const KernelSet::const_iterator i_end = kernels.end();
           KernelSet::const_iterator i     = kernels.begin();
@@ -192,12 +192,12 @@ ProximityBoxes::ProximityBoxes(
 //----------------------------------------------------------------------
 
 void proximity_search(
-  Mesh & M ,
+  MeshBulkData & M ,
   const ProximitySearch & prox ,
   const unsigned entity_type ,
   std::vector< std::pair<IdentProc,IdentProc> > & proximity )
 {
-  const Schema & S = M.schema();
+  const MeshMetaData & S = M.mesh_meta_data();
   const unsigned p_rank = M.parallel_rank();
 
   // Iterate surfaces and generate bounding boxes
@@ -205,7 +205,7 @@ void proximity_search(
   std::vector<IdentProcBox> boxes ;
 
   {
-    Part & owns_part = S.owns_part();
+    Part & owns_part = S.locally_owned_part();
 
     const KernelSet & kernels = M.kernels( entity_type );
 
@@ -373,7 +373,7 @@ int ProximitySearch::part_id( const Kernel & kernel ) const
     if ( tmp.size() == 1 && this == & *tmp ) { part = *i ; }
   }
 
-  return part != NULL ? part->schema_ordinal() + 1 : 0 ;
+  return part != NULL ? part->mesh_meta_data_ordinal() + 1 : 0 ;
 }
 
 } // namespace phdmesh

@@ -73,17 +73,14 @@ const char * field_state_name( FieldState );
 //----------------------------------------------------------------------
 
 template<>
-class Field< void , DimensionTag ,
-                    DimensionTag , DimensionTag ,
-                    DimensionTag , DimensionTag ,
-                    DimensionTag , DimensionTag > {
+class Field< void , void , void , void , void , void , void , void > {
 public:
 
   typedef void data_type ;
 
-  Schema & schema() const { return m_schema ; }
+  MeshMetaData & mesh_meta_data() const { return m_mesh_meta_data ; }
 
-  unsigned schema_ordinal() const { return m_schema_ordinal ; }
+  unsigned mesh_meta_data_ordinal() const { return m_mesh_meta_data_ordinal ; }
 
   const std::string & name() const { return m_name ; }
 
@@ -98,7 +95,7 @@ public:
 
   unsigned number_of_dimensions() const { return m_num_dim ; }
 
-  const DimensionTag * const * dimension_tags() const
+  const ArrayDimTag * const * dimension_tags() const
     { return m_dim_tags ; }
 
   unsigned max_size( EntityType ) const ;
@@ -110,14 +107,11 @@ public:
 
   //----------------------------------------
   /** An internal data structure that should never need to be
-   *  used by a user of the phdMesh package.
+   *  used by a user of the phdMeshBulkData package.
    */
   struct Dim {
-    unsigned key ; /* ( Entity type , part ordinal ) */
-    unsigned stride[ MaximumFieldDimension ];
-/*
-    DimensionNoTag dim ;
-*/
+    size_t key ; /* ( Entity type , part ordinal ) */
+    size_t stride[ MaximumFieldDimension ];
 
     Dim();
     Dim( const Dim & rhs );
@@ -127,26 +121,27 @@ public:
     EntityType type() const ;
     unsigned   ordinal() const ;
 
-    static unsigned key_value( EntityType , unsigned );
+    static size_t key_value( EntityType , unsigned );
 
     bool operator < ( const Dim & rhs ) const { return key < rhs.key ; }
-    bool operator < ( const entity_key_type rhs ) const { return key < rhs ; }
+    bool operator < ( const size_t rhs_key ) const { return key < rhs_key ; }
+
   private:
-    enum { ord_digits = std::numeric_limits<unsigned>::digits -
+    enum { ord_digits = std::numeric_limits<size_t>::digits -
                         entity_key_type_digits };
   };
 
-  /** Volatile until the schema is committed */
+  /** Volatile until the mesh_meta_data is committed */
   const std::vector<Dim> & dimension() const ;
 
-  /** Volatile until the schema is committed */
+  /** Volatile until the mesh_meta_data is committed */
   const Dim & dimension( EntityType , const Part & ) const ;
 
   //----------------------------------------
 
 private:
 
-  friend class Schema ;
+  friend class MeshMetaData ;
 
   template< typename Scalar , class Tag1 , class Tag2 ,
                               class Tag3 , class Tag4 ,
@@ -160,16 +155,16 @@ private:
   Field( const Field & );
   Field & operator = ( const Field & );
 
-  Field( Schema & ,
+  Field( MeshMetaData & ,
          const std::string & ,
          unsigned scalar_type ,
-         const DimensionTag * ,
-         const DimensionTag * ,
-         const DimensionTag * ,
-         const DimensionTag * ,
-         const DimensionTag * ,
-         const DimensionTag * ,
-         const DimensionTag * ,
+         const ArrayDimTag * ,
+         const ArrayDimTag * ,
+         const ArrayDimTag * ,
+         const ArrayDimTag * ,
+         const ArrayDimTag * ,
+         const ArrayDimTag * ,
+         const ArrayDimTag * ,
          unsigned number_of_states ,
          FieldState );
 
@@ -177,16 +172,16 @@ private:
 
   CSet        m_cset ;
   std::string m_name ;
-  Schema    & m_schema ;         // Mesh schema in which this field resides
-  unsigned    m_schema_ordinal ; // Ordinal in the field set
+  MeshMetaData    & m_mesh_meta_data ;         // MeshBulkData mesh_meta_data in which this field resides
+  unsigned    m_mesh_meta_data_ordinal ; // Ordinal in the field set
   unsigned    m_scalar_type ;    // Ordinal in FieldTypes
   unsigned    m_num_dim ;        // Number of dimensions
   unsigned    m_num_states ;     // Number of states of this field
   FieldState  m_this_state ;     // Field state of this field
 
-  std::vector<Dim>     m_dim_map ; // Only valid on StateNone
-  Field              * m_field_states[ MaximumFieldStates ];
-  const DimensionTag * m_dim_tags[ MaximumFieldDimension ];
+  std::vector<Dim>    m_dim_map ; // Only valid on StateNone
+  Field             * m_field_states[ MaximumFieldStates ];
+  const ArrayDimTag * m_dim_tags[ MaximumFieldDimension ];
 };
 
 //----------------------------------------------------------------------
@@ -200,32 +195,27 @@ public:
 
   typedef Scalar data_type ;
 
-  typedef Tag1 dimension_tag_1 ;
-  typedef Tag2 dimension_tag_2 ;
-  typedef Tag3 dimension_tag_3 ;
-  typedef Tag4 dimension_tag_4 ;
-  typedef Tag5 dimension_tag_5 ;
-  typedef Tag6 dimension_tag_6 ;
-  typedef Tag7 dimension_tag_7 ;
+  typedef Tag1 array_dim_tag_1 ;
+  typedef Tag2 array_dim_tag_2 ;
+  typedef Tag3 array_dim_tag_3 ;
+  typedef Tag4 array_dim_tag_4 ;
+  typedef Tag5 array_dim_tag_5 ;
+  typedef Tag6 array_dim_tag_6 ;
+  typedef Tag7 array_dim_tag_7 ;
 
-  /** Dimension of field data for a single entity */
-  typedef phdmesh::Dimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> Dimension ;
+  /** Array of field data for a single entity. */
+  typedef ArrayFortran<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag7,Tag7>
+    EntityArray ;
 
-  /** Dimension of a contiguous block of field data for a
-   *  homogeneous collection of entities. 
-   */
-  typedef typename
-    DimensionAppend<Dimension,EntityDimension>::type BlockDimension ;
-
-  /** Query field data dimension for a single entity. */
-  Dimension dimension( EntityType entity_type , const Part & part ) const
-    {
-      const FieldBase::Dim & d = FieldBase::dimension( entity_type , part );
-      return Dimension( d.stride );
-    }
+  /** Array of field data for a kernel of entities. */
+  typedef typename EntityArray::template Append<EntityDimension>::type
+    KernelArray ;
 
   /** Query this field for a given field state. */
   const Field & operator[]( FieldState state ) const
+    { return static_cast<Field &>( * FieldBase::m_field_states[state] ); }
+
+  Field & operator[]( FieldState state )
     { return static_cast<Field &>( * FieldBase::m_field_states[state] ); }
 
 private:
@@ -241,7 +231,7 @@ private:
 
 inline
 FieldBase::Dim::Dim()
-  : key(0) { Copy<MaximumFieldDimension>( stride , 0u ); }
+  : key(0) { Copy<MaximumFieldDimension>( stride , (size_t) 0 ); }
 
 inline
 FieldBase::Dim::Dim( const FieldBase::Dim & rhs )
@@ -257,12 +247,13 @@ FieldBase::Dim::operator = ( const FieldBase::Dim & rhs )
   }
 
 inline
-unsigned FieldBase::Dim::key_value( EntityType t , unsigned ord )
-{ return ( ((unsigned)t) << ord_digits ) | ord ; }
+size_t FieldBase::Dim::key_value( EntityType t , unsigned ord )
+{ return ( ((size_t)t) << ord_digits ) | ord ; }
 
 inline
 FieldBase::Dim::Dim( EntityType t , unsigned ord )
-  : key( key_value(t,ord) ) { Copy< MaximumFieldDimension >( stride , 0u ); }
+  : key( key_value(t,ord) )
+    { Copy< MaximumFieldDimension >( stride , (size_t) 0 ); }
 
 inline
 EntityType
@@ -272,7 +263,7 @@ FieldBase::Dim::type() const
 inline
 unsigned FieldBase::Dim::ordinal() const
 {
-  enum { mask = ~( ~(0u) << ord_digits ) };
+  enum { mask = ~( ~((size_t)0) << ord_digits ) };
   return key & mask ;
 }
 
@@ -295,7 +286,7 @@ unsigned FieldBase::Dim::ordinal() const
  *                                   relation_kind_e1_to_e2 )
  *
  *  This data structure is used internally and should never need to be
- *  used by a user of the phdMesh package.
+ *  used by a user of the phdMeshBulkData package.
  */
 struct FieldRelation {
   FieldBase          * m_root ;

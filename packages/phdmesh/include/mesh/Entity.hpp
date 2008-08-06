@@ -30,7 +30,7 @@
 #include <limits>
 #include <iosfwd>
 
-#include <util/Span.hpp>
+#include <util/PairIter.hpp>
 #include <mesh/Types.hpp>
 #include <mesh/Kernel.hpp>
 #include <mesh/Relation.hpp>
@@ -46,8 +46,6 @@ entity_key_type entity_key( EntityType , entity_id_type );
 
 //----------------------------------------------------------------------
 
-typedef std::vector<Relation> RelationSet ;
-
 /** Span of a sorted relations for a given domain entity.
  *  Members are sorted by
  *  (1) range entity type,
@@ -55,7 +53,7 @@ typedef std::vector<Relation> RelationSet ;
  *  (3) identifier, and
  *  (4) range entity identifier.
  */
-typedef Span< RelationSet::const_iterator > RelationSpan ;
+typedef PairIter< std::vector<Relation>::const_iterator > RelationSpan ;
 
 //----------------------------------------------------------------------
 /** A mesh entity has an entity type, identifier, relations, and
@@ -64,11 +62,11 @@ typedef Span< RelationSet::const_iterator > RelationSpan ;
 class Entity : public SetvMember< entity_key_type > {
 private:
 
-  RelationSet          m_relation ;   // Relationships
-  KernelSet::iterator  m_kernel ;     // Containing kernel
-  unsigned             m_kernel_ord ; // Ordinal in the kernel
-  unsigned             m_owner_rank ; // Parallel owner rank
-  EntityProcSpan       m_sharing ;
+  std::vector<Relation> m_relation ;   // Relationships
+  KernelSet::iterator   m_kernel ;     // Containing kernel
+  unsigned              m_kernel_ord ; // Ordinal in the kernel
+  unsigned              m_owner_rank ; // Parallel owner rank
+  EntityProcSpan        m_sharing ;
 
 public:
 
@@ -106,7 +104,7 @@ private:
   Entity( const Entity & );
   Entity & operator = ( const Entity & );
 
-  friend class Mesh ;
+  friend class MeshBulkData ;
 };
 
 typedef Setv<Entity> EntitySet ;

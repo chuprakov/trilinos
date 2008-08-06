@@ -24,21 +24,22 @@
 ELEMENT_INC_DIR = $(PHDMESH_PATH)/include/element
 
 ELEMENT_INC_FILES =	\
-	$(ELEMENT_INC_DIR)/HexahedronTopology.hpp	\
-	$(ELEMENT_INC_DIR)/LocalTopology.hpp	\
-	$(ELEMENT_INC_DIR)/PyramidTopology.hpp	\
-	$(ELEMENT_INC_DIR)/QuadrilateralTopology.hpp	\
-	$(ELEMENT_INC_DIR)/TetrahedronTopology.hpp	\
-	$(ELEMENT_INC_DIR)/TriangleTopology.hpp	\
-	$(ELEMENT_INC_DIR)/WedgeTopology.hpp	\
-	$(ELEMENT_INC_DIR)/Stencils.hpp	\
+	$(ELEMENT_INC_DIR)/Basic_Topologies.hpp	\
+	$(ELEMENT_INC_DIR)/CellTopology.hpp	\
 	$(ELEMENT_INC_DIR)/Declarations.hpp	\
-	$(ELEMENT_INC_DIR)/Dimensions.hpp
+	$(ELEMENT_INC_DIR)/Dimensions.hpp	\
+	$(ELEMENT_INC_DIR)/Hexahedron_Topologies.hpp	\
+	$(ELEMENT_INC_DIR)/Pyramid_Topologies.hpp	\
+	$(ELEMENT_INC_DIR)/Quadrilateral_Topologies.hpp	\
+	$(ELEMENT_INC_DIR)/Stencils.hpp	\
+	$(ELEMENT_INC_DIR)/Tetrahedron_Topologies.hpp	\
+	$(ELEMENT_INC_DIR)/Triangle_Topologies.hpp	\
+	$(ELEMENT_INC_DIR)/Wedge_Topologies.hpp
 
 ELEMENT_OBJ_FILES =	\
-	ElementLocalTopology.o	\
 	ElementDeclarations.o	\
-	ElementDimensions.o
+	ElementDimensions.o	\
+	ElementTopologies.o
 
 ELEMENT_INC_DEPS = $(ELEMENT_INC_FILES) $(UTIL_INC_DEPS)
 

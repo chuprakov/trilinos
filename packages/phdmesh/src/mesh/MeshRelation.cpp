@@ -29,8 +29,8 @@
 #include <sstream>
 #include <algorithm>
 
-#include <mesh/Schema.hpp>
-#include <mesh/Mesh.hpp>
+#include <mesh/MetaData.hpp>
+#include <mesh/BulkData.hpp>
 #include <mesh/Entity.hpp>
 #include <mesh/Kernel.hpp>
 #include <mesh/Relation.hpp>
@@ -88,9 +88,12 @@ relation_attr( EntityType arg_entity_type ,
                unsigned   arg_kind ,
                bool       arg_converse )
 {
+  // Substract one from the id_end to quiet the GNU-4.2 compiler warning
+  // when using 64bit relation attribute and 32bit identifier
+
   enum {
-    id_end   = ( (relation_attr_type) 1 ) << relation_attr_identifier_digits ,
-    kind_end = ( (relation_attr_type) 1 ) << relation_attr_kind_digits
+    id_end   = (((relation_attr_type)1) << relation_attr_identifier_digits)-1,
+    kind_end = ( (relation_attr_type)1) << relation_attr_kind_digits
   };
 
   const bool bad_type = (unsigned) EntityTypeEnd <= (unsigned) arg_entity_type ;
@@ -194,12 +197,12 @@ struct LessEntityPointer {
 
 }
 
-RelationSpan con_span( const RelationSet & con ,
+RelationSpan con_span( const std::vector<Relation> & con ,
                        const relation_attr_type lo_attr ,
                        const relation_attr_type hi_attr )
 {
-  RelationSet::const_iterator i = con.begin();
-  RelationSet::const_iterator e = con.end();
+  std::vector<Relation>::const_iterator i = con.begin();
+  std::vector<Relation>::const_iterator e = con.end();
 
   i = std::lower_bound( i , e , lo_attr , LessRelation() );
   e = std::lower_bound( i , e , hi_attr , LessRelation() );
@@ -214,8 +217,8 @@ RelationSpan Entity::relations( EntityType et , unsigned kind ) const
     lo_attr = relation_attr( et ,      0 , kind ),
     hi_attr = relation_attr( et_next , 0 , kind );
 
-  RelationSet::const_iterator i = m_relation.begin();
-  RelationSet::const_iterator e = m_relation.end();
+  std::vector<Relation>::const_iterator i = m_relation.begin();
+  std::vector<Relation>::const_iterator e = m_relation.end();
 
   i = std::lower_bound( i , e , lo_attr , LessRelation() );
   e = std::lower_bound( i , e , hi_attr , LessRelation() );
@@ -273,14 +276,14 @@ void deduce_part_relations( const Entity & e_from ,
   const EntityType t_from = e_from.entity_type();
   const Kernel   & k_to   = e_to.kernel();
   const Kernel   & k_from = e_from.kernel();
-  const Mesh     & mesh   = k_to.mesh();
-  const Schema   & schema = mesh.schema();
+  const MeshBulkData     & mesh   = k_to.mesh();
+  const MeshMetaData   & mesh_meta_data = mesh.mesh_meta_data();
 
-  const unsigned univ_part_ord = schema.universal_part().schema_ordinal();
-  const unsigned uses_part_ord = schema.uses_part().schema_ordinal();
-  const unsigned owns_part_ord = schema.owns_part().schema_ordinal();
+  const unsigned univ_part_ord = mesh_meta_data.universal_part().mesh_meta_data_ordinal();
+  const unsigned uses_part_ord = mesh_meta_data.locally_used_part().mesh_meta_data_ordinal();
+  const unsigned owns_part_ord = mesh_meta_data.locally_owned_part().mesh_meta_data_ordinal();
 
-  const std::vector<PartRelation> & part_rel = schema.get_part_relations();
+  const std::vector<PartRelation> & part_rel = mesh_meta_data.get_part_relations();
 
   const std::pair<const unsigned *, const unsigned *>
     kernel_superset_ordinals = k_from.superset_part_ordinals();
@@ -292,7 +295,7 @@ void deduce_part_relations( const Entity & e_from ,
     for ( const unsigned * i = kernel_superset_ordinals.first ;
                            i < kernel_superset_ordinals.second ; ++i ) {
       if ( univ_part_ord != *i && uses_part_ord != *i && owns_part_ord != *i ){
-        Part * const p = & schema.get_part( *i );
+        Part * const p = & mesh_meta_data.get_part( *i );
         to_parts.push_back( p );
       }
     }
@@ -302,7 +305,7 @@ void deduce_part_relations( const Entity & e_from ,
     for ( const unsigned * i = kernel_superset_ordinals.first ;
                            i < kernel_superset_ordinals.second ; ++i ) {
       if ( univ_part_ord != *i && uses_part_ord != *i && owns_part_ord != *i ){
-        insert( to_parts , schema.get_part( *i ) );
+        insert( to_parts , mesh_meta_data.get_part( *i ) );
       }
     }
   }
@@ -316,7 +319,7 @@ void deduce_part_relations( const Entity & e_from ,
 
     for ( const unsigned * i = kernel_superset_ordinals.first ;
                            i < kernel_superset_ordinals.second ; ++i ) {
-      if ( *i == stencil.m_root->schema_ordinal() &&
+      if ( *i == stencil.m_root->mesh_meta_data_ordinal() &&
             0 <= (*stencil.m_function)( t_from , t_to , ident , kind ) ) {
           insert( to_parts , * stencil.m_target );
       }
@@ -344,7 +347,7 @@ void set_field_relations( Entity & e_from ,
                           const unsigned kind )
 {
   const std::vector<FieldRelation> & field_rels =
-    e_from.kernel().mesh().schema().get_field_relations();
+    e_from.kernel().mesh().mesh_meta_data().get_field_relations();
 
   for ( std::vector<FieldRelation>::const_iterator 
         j = field_rels.begin() ; j != field_rels.end() ; ++j ) {
@@ -380,7 +383,7 @@ void print_declare_relation( std::ostream & msg ,
                              const unsigned identifier ,
                              const unsigned kind )
 {
-  static const char method[] = "phdmesh::Mesh::declare_relation" ;
+  static const char method[] = "phdmesh::MeshBulkData::declare_relation" ;
 
   msg << method ;
   msg << "( " ;
@@ -396,7 +399,7 @@ void print_declare_relation( std::ostream & msg ,
 
 }
 
-void Mesh::declare_relation( Entity & e_from ,
+void MeshBulkData::declare_relation( Entity & e_from ,
                              Entity & e_to ,
                              const unsigned identifier ,
                              const unsigned kind )
@@ -410,8 +413,8 @@ void Mesh::declare_relation( Entity & e_from ,
 
   {
     const Relation forward( e_to , identifier , kind , false );
-    const RelationSet::iterator e = e_from.m_relation.end();
-          RelationSet::iterator i = e_from.m_relation.begin();
+    const std::vector<Relation>::iterator e = e_from.m_relation.end();
+          std::vector<Relation>::iterator i = e_from.m_relation.begin();
 
     i = std::lower_bound( i , e , forward , LessRelation() );
 
@@ -431,8 +434,8 @@ void Mesh::declare_relation( Entity & e_from ,
 
   {
     const Relation converse( e_from , identifier , kind , true );
-    const RelationSet::iterator e = e_to.m_relation.end();
-          RelationSet::iterator i = e_to.m_relation.begin();
+    const std::vector<Relation>::iterator e = e_to.m_relation.end();
+          std::vector<Relation>::iterator i = e_to.m_relation.begin();
 
     i = std::lower_bound( i , e , converse , LessRelation() );
 
@@ -452,7 +455,7 @@ void Mesh::declare_relation( Entity & e_from ,
   set_field_relations( e_from , e_to , identifier , kind );
 }
 
-void Mesh::declare_relation( Entity & entity ,
+void MeshBulkData::declare_relation( Entity & entity ,
                              const std::vector<Relation> & rel )
 {
   std::vector<Relation>::const_iterator i ;
@@ -480,7 +483,7 @@ void clear_field_relations( Entity & e_from ,
                           
 {
   const std::vector<FieldRelation> & field_rels =
-    e_from.kernel().mesh().schema().get_field_relations();
+    e_from.kernel().mesh().mesh_meta_data().get_field_relations();
 
   for ( std::vector<FieldRelation>::const_iterator 
         j = field_rels.begin() ; j != field_rels.end() ; ++j ) {
@@ -507,7 +510,7 @@ void clear_field_relations( Entity & e_from ,
 
 }
 
-void Mesh::destroy_relation( Entity & e1 , Entity & e2 , unsigned kind )
+void MeshBulkData::destroy_relation( Entity & e1 , Entity & e2 , unsigned kind )
 {
   // When removing a relationship may need to
   // remove part membership and set field relation pointer to NULL
@@ -515,7 +518,7 @@ void Mesh::destroy_relation( Entity & e1 , Entity & e2 , unsigned kind )
   PartSet del ;
   bool to_e1 = false ;
 
-  RelationSet::iterator i ;
+  std::vector<Relation>::iterator i ;
 
   for ( i = e1.m_relation.end() ; i != e1.m_relation.begin() ; ) {
     --i ;
@@ -570,13 +573,13 @@ void Mesh::destroy_relation( Entity & e1 , Entity & e2 , unsigned kind )
 //----------------------------------------------------------------------
 // Deduce propagation of changes to a part to the related 'to' entities
 
-void Mesh::internal_propagate_part_changes(
+void MeshBulkData::internal_propagate_part_changes(
   Entity        & entity ,
   const PartSet & removed )
 {
   const EntityType etype = entity.entity_type();
-  Part * const owns_part = & m_schema.owns_part();
-  Part * const uses_part = & m_schema.uses_part();
+  Part * const owns_part = & m_mesh_meta_data.locally_owned_part();
+  Part * const uses_part = & m_mesh_meta_data.locally_used_part();
 
   RelationSpan rel = entity.relations();
 
@@ -614,7 +617,7 @@ void Mesh::internal_propagate_part_changes(
             // What if removing a part with a part-relation ?
 
             const std::vector<PartRelation> & part_rel =
-              m_schema.get_part_relations();
+              m_mesh_meta_data.get_part_relations();
 
             for ( std::vector<PartRelation>::const_iterator
                   k = part_rel.begin() ; k != part_rel.end() ; ++k ) {
@@ -645,7 +648,7 @@ void Mesh::internal_propagate_part_changes(
   }
 }
 
-void Mesh::internal_propagate_relocation( Entity & entity )
+void MeshBulkData::internal_propagate_relocation( Entity & entity )
 {
   RelationSpan rel = entity.relations();
 

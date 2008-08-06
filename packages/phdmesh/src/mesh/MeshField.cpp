@@ -35,14 +35,14 @@
 #include <mesh/Types.hpp>
 #include <mesh/Field.hpp>
 #include <mesh/Part.hpp>
-#include <mesh/Schema.hpp>
+#include <mesh/MetaData.hpp>
 
 namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-const DimensionTag * EntityDimension::descriptor()
-{ static const EntityDimension self ; return & self ; }
+const EntityDimension & EntityDimension::descriptor()
+{ static const EntityDimension self ; return self ; }
 
 const char * EntityDimension::name() const
 { static const char n[] = "EntityDimension" ; return n ; }
@@ -101,22 +101,22 @@ FieldBase::~Field()
 { }
 
 FieldBase::Field(
-  Schema &            arg_schema ,
+  MeshMetaData &            arg_mesh_meta_data ,
   const std::string & arg_name ,
   unsigned scalar_type ,
-  const DimensionTag * t1 ,
-  const DimensionTag * t2 ,
-  const DimensionTag * t3 ,
-  const DimensionTag * t4 ,
-  const DimensionTag * t5 ,
-  const DimensionTag * t6 ,
-  const DimensionTag * t7 ,
+  const ArrayDimTag * t1 ,
+  const ArrayDimTag * t2 ,
+  const ArrayDimTag * t3 ,
+  const ArrayDimTag * t4 ,
+  const ArrayDimTag * t5 ,
+  const ArrayDimTag * t6 ,
+  const ArrayDimTag * t7 ,
   unsigned number_of_states ,
   FieldState state )
 : m_cset() ,
   m_name( arg_name ),
-  m_schema( arg_schema ),
-  m_schema_ordinal(0),
+  m_mesh_meta_data( arg_mesh_meta_data ),
+  m_mesh_meta_data_ordinal(0),
   m_scalar_type( scalar_type ),
   m_num_dim( ( ! t1 ? 0 :
              ( ! t2 ? 1 :
@@ -170,13 +170,13 @@ namespace {
 void
 print_field_type( std::ostream          & arg_msg ,
                   unsigned                arg_scalar_type ,
-                  const DimensionTag * arg_t1 ,
-                  const DimensionTag * arg_t2 ,
-                  const DimensionTag * arg_t3 ,
-                  const DimensionTag * arg_t4 ,
-                  const DimensionTag * arg_t5 ,
-                  const DimensionTag * arg_t6 ,
-                  const DimensionTag * arg_t7 )
+                  const ArrayDimTag * arg_t1 ,
+                  const ArrayDimTag * arg_t2 ,
+                  const ArrayDimTag * arg_t3 ,
+                  const ArrayDimTag * arg_t4 ,
+                  const ArrayDimTag * arg_t5 ,
+                  const ArrayDimTag * arg_t6 ,
+                  const ArrayDimTag * arg_t7 )
 {
   arg_msg << "Field< " ;
   arg_msg << NumericEnum<>::name( arg_scalar_type );
@@ -194,21 +194,21 @@ print_field_type( std::ostream          & arg_msg ,
 }
 
 FieldBase *
-Schema::get_field_base(
+MeshMetaData::get_field_base(
   const std::string & arg_name ,
   unsigned          arg_scalar_type ,
-  const DimensionTag * arg_t1 ,
-  const DimensionTag * arg_t2 ,
-  const DimensionTag * arg_t3 ,
-  const DimensionTag * arg_t4 ,
-  const DimensionTag * arg_t5 ,
-  const DimensionTag * arg_t6 ,
-  const DimensionTag * arg_t7 ,
+  const ArrayDimTag * arg_t1 ,
+  const ArrayDimTag * arg_t2 ,
+  const ArrayDimTag * arg_t3 ,
+  const ArrayDimTag * arg_t4 ,
+  const ArrayDimTag * arg_t5 ,
+  const ArrayDimTag * arg_t6 ,
+  const ArrayDimTag * arg_t7 ,
   int arg_number_states ,
   const char * arg_required_by ) const
 {
-  static const char declare_method[] = "phdmesh::Schema::declare_field" ;
-  static const char get_method[]     = "phdmesh::Schema::get_field" ;
+  static const char declare_method[] = "phdmesh::MeshMetaData::declare_field" ;
+  static const char get_method[]     = "phdmesh::MeshMetaData::get_field" ;
 
   // Potential error conditions:
 
@@ -296,19 +296,19 @@ Schema::get_field_base(
 //----------------------------------------------------------------------
 
 FieldBase &
-Schema::declare_field_base(
+MeshMetaData::declare_field_base(
   const std::string & arg_name ,
   unsigned            arg_scalar_type ,
-  const DimensionTag * arg_t1 ,
-  const DimensionTag * arg_t2 ,
-  const DimensionTag * arg_t3 ,
-  const DimensionTag * arg_t4 ,
-  const DimensionTag * arg_t5 ,
-  const DimensionTag * arg_t6 ,
-  const DimensionTag * arg_t7 ,
+  const ArrayDimTag * arg_t1 ,
+  const ArrayDimTag * arg_t2 ,
+  const ArrayDimTag * arg_t3 ,
+  const ArrayDimTag * arg_t4 ,
+  const ArrayDimTag * arg_t5 ,
+  const ArrayDimTag * arg_t6 ,
+  const ArrayDimTag * arg_t7 ,
   unsigned            arg_num_states )
 {
-  static const char method[] = "phdmesh::Schema::declare_field" ;
+  static const char method[] = "phdmesh::MeshMetaData::declare_field" ;
 
   static const char reserved_state_suffix[6][5] = {
     "_OLD" , "_NM1" , "_NM2" , "_NM3" , "_NM4" , "_NM5" };
@@ -400,8 +400,8 @@ Schema::declare_field_base(
             std::vector< FieldBase *>::iterator j = m_fields.begin();
       for ( unsigned k = 0 ; j != e ; ++j , ++k ) {
         FieldBase & tmp = **j ;
-        tmp.m_schema_ordinal = k ;
-        if ( tmp.m_field_states[0]->m_schema_ordinal + tmp.m_this_state != k ) {
+        tmp.m_mesh_meta_data_ordinal = k ;
+        if ( tmp.m_field_states[0]->m_mesh_meta_data_ordinal + tmp.m_this_state != k ) {
           std::string msg( method );
           msg.append(" CATASTROPHIC INTERNAL LOGIC ERROR FOR ORDINALS" );
           throw std::logic_error(msg);
@@ -415,12 +415,12 @@ Schema::declare_field_base(
 
 //----------------------------------------------------------------------
 
-void Schema::declare_field_relation(
+void MeshMetaData::declare_field_relation(
   FieldBase & pointer_field ,
   relation_stencil_ptr stencil ,
   FieldBase & referenced_field )
 {
-  static const char method[] = "phdmesh::Schema::declare_field_relation" ;
+  static const char method[] = "phdmesh::MeshMetaData::declare_field_relation" ;
 
   static const int offset = NumericEnum<void*>::value -
                             NumericEnum<void>::value ;
@@ -454,7 +454,7 @@ void print_field_dim( std::ostream & msg ,
                       const FieldBase & f ,
                       const FieldBase::Dim & d )
 {
-  const Part   & p = f.schema().get_part( d.ordinal() );
+  const Part   & p = f.mesh_meta_data().get_part( d.ordinal() );
   const unsigned n = f.number_of_dimensions();
 
   msg << "( " << entity_type_name( d.type() );
@@ -506,19 +506,19 @@ void assert_field_dimension_compatible(
 // If subset exists then replace it.
 // If exists or superset exists then do nothing.
 
-void Schema::declare_field_stride(
+void MeshMetaData::declare_field_stride(
   FieldBase      & arg_field ,
   EntityType       arg_entity_type ,
   const Part     & arg_part ,
   const unsigned * arg_stride )
 {
-  static const char method[] = "phdmesh::Schema::declare_field_dimension" ;
+  static const char method[] = "phdmesh::MeshMetaData::declare_field_dimension" ;
 
   assert_not_committed( method );
-  assert_same_schema( method , arg_field.m_schema );
-  assert_same_schema( method , arg_part.m_schema );
+  assert_same_mesh_meta_data( method , arg_field.m_mesh_meta_data );
+  assert_same_mesh_meta_data( method , arg_part.m_mesh_meta_data );
 
-  FieldBase::Dim tmp( arg_entity_type , arg_part.schema_ordinal() );
+  FieldBase::Dim tmp( arg_entity_type , arg_part.mesh_meta_data_ordinal() );
 
   if ( arg_field.m_num_dim ) {
     for ( unsigned j = 0 ; j < arg_field.m_num_dim ; ++j ) {
@@ -574,9 +574,9 @@ void Schema::declare_field_stride(
 // If a part and one of its subset parts show up in the dimension map
 // verify compatibility of dimensions and delete the subset part.
 
-void Schema::clean_field_dimension()
+void MeshMetaData::clean_field_dimension()
 {
-  static const char method[] = "phdmesh::Schema::clean_field_dimension" ;
+  static const char method[] = "phdmesh::MeshMetaData::clean_field_dimension" ;
   const int zero = 0 ;
 
   for ( std::vector<FieldBase *>::iterator
@@ -628,10 +628,10 @@ FieldBase::dimension( EntityType etype , const Part & part ) const
   const PartSet::const_iterator ipe = part.supersets().end();
         PartSet::const_iterator ip  = part.supersets().begin() ;
 
-  unsigned key = Dim::key_value( etype , part.schema_ordinal() );
+  unsigned key = Dim::key_value( etype , part.mesh_meta_data_ordinal() );
 
   while ( ie == ( i = find( dim_map , key ) ) && ipe != ip ) {
-    key = Dim::key_value( etype , (*ip)->schema_ordinal() );
+    key = Dim::key_value( etype , (*ip)->mesh_meta_data_ordinal() );
     ++ip ;
   }
 

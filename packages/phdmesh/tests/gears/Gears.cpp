@@ -32,13 +32,13 @@
 #include <util/TPI.h>
 #include <util/ParallelComm.hpp>
 
-#include <mesh/Schema.hpp>
-#include <mesh/Mesh.hpp>
+#include <mesh/MetaData.hpp>
+#include <mesh/BulkData.hpp>
 #include <mesh/FieldData.hpp>
 #include <mesh/Comm.hpp>
 
 #include <element/Declarations.hpp>
-#include <element/HexahedronTopology.hpp>
+#include <element/Hexahedron_Topologies.hpp>
 
 #include "Gears.hpp"
 
@@ -49,7 +49,7 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-GearFields::GearFields( Schema & S )
+GearFields::GearFields( MeshMetaData & S )
 : gear_coord(
     S.declare_field<CylindricalField>( std::string("gear_coordinates") ) ),
   model_coord(
@@ -67,10 +67,10 @@ GearFields::GearFields( Schema & S )
 {
   const Part & universe = S.universal_part();
 
-  S.declare_field_size( gear_coord    , Node , universe , SpatialDimension );
-  S.declare_field_size( model_coord   , Node , universe , SpatialDimension );
-  S.declare_field_size( current_coord , Node , universe , SpatialDimension );
-  S.declare_field_size( displacement  , Node , universe , SpatialDimension );
+  S.put_field( gear_coord    , Node , universe , SpatialDimension );
+  S.put_field( model_coord   , Node , universe , SpatialDimension );
+  S.put_field( current_coord , Node , universe , SpatialDimension );
+  S.put_field( displacement  , Node , universe , SpatialDimension );
 }
 
 //----------------------------------------------------------------------
@@ -89,7 +89,7 @@ identifier( unsigned nthick ,  // Number of entities through the thickness
 
 }
 
-Gear::Gear( Schema & S ,
+Gear::Gear( MeshMetaData & S ,
             const std::string & name ,
             const GearFields & gear_fields ,
             const double center[] ,
@@ -101,7 +101,7 @@ Gear::Gear( Schema & S ,
             const unsigned z_num ,
             const unsigned angle_num ,
             const int      turn_dir )
-  : m_schema( S ),
+  : m_mesh_meta_data( S ),
     m_mesh( NULL ),
     m_gear( S.declare_part(std::string("Gear_").append(name)) ),
     m_surf( S.declare_part(std::string("Surf_").append(name)) ),
@@ -117,10 +117,10 @@ Gear::Gear( Schema & S ,
   typedef GearFields::ElementValueField ElementValueField ;
   typedef GearFields::NodeValueField    NodeValueField ;
 
-  set_part_local_topology< Hexahedron<8> >( m_gear );
+  set_cell_topology< Hexahedron<> >( m_gear );
 
-  S.declare_field_size( gear_fields.element_value , Element , m_gear , SpatialDimension , NNODE );
-  S.declare_field_size( gear_fields.node_value    , Node , m_gear , SpatialDimension );
+  S.put_field( gear_fields.element_value , Element , m_gear , SpatialDimension , NNODE );
+  S.put_field( gear_fields.node_value    , Node , m_gear , SpatialDimension );
 
   const double TWO_PI = 2.0 * acos( (double) -1.0 );
 
@@ -195,7 +195,7 @@ Entity * Gear::create_node(
 
 //----------------------------------------------------------------------
 
-void Gear::mesh( Mesh & M )
+void Gear::mesh( MeshBulkData & M )
 {
   static const char method[] = "phdmesh::Gear::mesh" ;
 
@@ -224,7 +224,7 @@ void Gear::mesh( Mesh & M )
   {
     Part * const p_gear = & m_gear ;
     Part * const p_surf = & m_surf ;
-    Part * const p_owns = & m_schema.owns_part();
+    Part * const p_owns = & m_mesh_meta_data.locally_owned_part();
 
     elem_parts.push_back( p_gear );
     elem_parts.push_back( p_owns );

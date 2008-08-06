@@ -30,7 +30,7 @@
 #include <algorithm>
 
 #include <util/TPI.h>
-#include <mesh/Schema.hpp>
+#include <mesh/MetaData.hpp>
 
 using namespace phdmesh ;
 
@@ -50,11 +50,11 @@ void require( bool condition , const char * const method ,
   }
 }
 
-void require_get( Schema & schema , const Part * part )
+void require_get( MeshMetaData & mesh_meta_data , const Part * part )
 {
   static const char method[] = "phdmesh::test::schema_parts::require_get" ;
 
-  require( part == schema.get_part( part->name() ) ,
+  require( part == mesh_meta_data.get_part( part->name() ) ,
            method , "part = get_part( part->name()" );
 }
 
@@ -66,39 +66,39 @@ void test_schema_parts( ParallelMachine comm , std::istream & )
 
   if ( 0 < parallel_machine_rank( comm ) ) { return ; }
 
-  Schema schema ;
+  MeshMetaData mesh_meta_data ;
 
   // Should have exactly five predefined parts
 
-  require( schema.get_parts().size() == 3 , method , "predefined parts" );
+  require( mesh_meta_data.get_parts().size() == 3 , method , "predefined parts" );
 
-  const Part & universal = schema.universal_part();
-  const Part & uses      = schema.uses_part();
-  const Part & owns      = schema.owns_part();
+  const Part & universal = mesh_meta_data.universal_part();
+  const Part & uses      = mesh_meta_data.locally_used_part();
+  const Part & owns      = mesh_meta_data.locally_owned_part();
 
-  require_get( schema , & universal );
-  require_get( schema , & uses );
-  require_get( schema , & owns );
+  require_get( mesh_meta_data , & universal );
+  require_get( mesh_meta_data , & uses );
+  require_get( mesh_meta_data , & owns );
 
   //--------------------------------------------------------------------
   // Parts and subsets
 
-  Part & a     = schema.declare_part( std::string("a") );
-  Part & a_a   = schema.declare_part( std::string("a_a") );
-  Part & a_b   = schema.declare_part( std::string("a_b") );
-  Part & a_b_c = schema.declare_part( std::string("a_b_c") );
-  Part & b     = schema.declare_part( std::string("b") );
-  Part & b_a   = schema.declare_part( std::string("b_a") );
-  Part & b_b   = schema.declare_part( std::string("b_b") );
-  Part & b_b_c = schema.declare_part( std::string("b_b_c") );
+  Part & a     = mesh_meta_data.declare_part( std::string("a") );
+  Part & a_a   = mesh_meta_data.declare_part( std::string("a_a") );
+  Part & a_b   = mesh_meta_data.declare_part( std::string("a_b") );
+  Part & a_b_c = mesh_meta_data.declare_part( std::string("a_b_c") );
+  Part & b     = mesh_meta_data.declare_part( std::string("b") );
+  Part & b_a   = mesh_meta_data.declare_part( std::string("b_a") );
+  Part & b_b   = mesh_meta_data.declare_part( std::string("b_b") );
+  Part & b_b_c = mesh_meta_data.declare_part( std::string("b_b_c") );
 
-  schema.declare_part_subset( a , a_a );
-  schema.declare_part_subset( a , a_b );
-  schema.declare_part_subset( a_b , a_b_c );
+  mesh_meta_data.declare_part_subset( a , a_a );
+  mesh_meta_data.declare_part_subset( a , a_b );
+  mesh_meta_data.declare_part_subset( a_b , a_b_c );
 
-  schema.declare_part_subset( b , b_a );
-  schema.declare_part_subset( b , b_b );
-  schema.declare_part_subset( b_b , b_b_c );
+  mesh_meta_data.declare_part_subset( b , b_a );
+  mesh_meta_data.declare_part_subset( b , b_b );
+  mesh_meta_data.declare_part_subset( b_b , b_b_c );
 
   PartSet x_intersect ;
   {
@@ -109,12 +109,12 @@ void test_schema_parts( ParallelMachine comm , std::istream & )
     tmp = & b_b_c ; x_intersect.push_back( tmp );
   }
 
-  Part & x = schema.declare_part( x_intersect );
+  Part & x = mesh_meta_data.declare_part( x_intersect );
 
-  Part & y = schema.declare_part( std::string("y") );
+  Part & y = mesh_meta_data.declare_part( std::string("y") );
 
-  schema.declare_part_subset( a_b_c , y );
-  schema.declare_part_subset( b_b_c , y );
+  mesh_meta_data.declare_part_subset( a_b_c , y );
+  mesh_meta_data.declare_part_subset( b_b_c , y );
 
   //--------------------------------------------------------------------
   // Test expectations:
@@ -161,7 +161,7 @@ void test_schema_parts( ParallelMachine comm , std::istream & )
   // Test errors:
 
   try {
-    schema.declare_part_subset( a_b , a );
+    mesh_meta_data.declare_part_subset( a_b , a );
     require( false , method , "accepted circular a_b > a" );
   }
   catch(...) {
@@ -169,7 +169,7 @@ void test_schema_parts( ParallelMachine comm , std::istream & )
   }
 
   try {
-    schema.declare_part_subset( a_b_c , a );
+    mesh_meta_data.declare_part_subset( a_b_c , a );
     require( false , method , "accepted circular a_b_c > a" );
   }
   catch(...) {
@@ -178,7 +178,7 @@ void test_schema_parts( ParallelMachine comm , std::istream & )
 
   //--------------------------------------------------------------------
 
-  schema.commit();
+  mesh_meta_data.commit();
 
   std::cout << std::endl ;
   print( std::cout , NULL , a );

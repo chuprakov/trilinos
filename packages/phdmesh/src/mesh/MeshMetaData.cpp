@@ -32,47 +32,47 @@
 
 #include <util/ParallelComm.hpp>
 #include <util/ParallelReduce.hpp>
-#include <mesh/Schema.hpp>
+#include <mesh/MetaData.hpp>
 #include <mesh/Comm.hpp>
 
 namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-void Schema::assert_not_committed( const char * method ) const
+void MeshMetaData::assert_not_committed( const char * method ) const
 {
   if ( m_commit ) {
     std::string msg ;
     msg.append( method )
-       .append( " FAILED: mesh Schema has been committed." );
+       .append( " FAILED: mesh MeshMetaData has been committed." );
     throw std::logic_error( msg );
   }
 }
 
-void Schema::assert_committed( const char * method ) const
+void MeshMetaData::assert_committed( const char * method ) const
 {
   if ( ! m_commit ) {
     std::string msg ;
     msg.append( method )
-       .append( " FAILED: mesh Schema has not been committed." );
+       .append( " FAILED: mesh MeshMetaData has not been committed." );
     throw std::logic_error( msg );
   }
 }
 
-void Schema::assert_same_schema( const char * method ,
-                                 const Schema & rhs ) const
+void MeshMetaData::assert_same_mesh_meta_data( const char * method ,
+                                 const MeshMetaData & rhs ) const
 {
   if ( this != & rhs ) {
     std::string msg ;
     msg.append( method )
-       .append( " FAILED Different schema." );
+       .append( " FAILED Different mesh_meta_data." );
     throw std::logic_error( msg );
   }
 }
 
 //----------------------------------------------------------------------
 
-Schema::Schema()
+MeshMetaData::MeshMetaData()
   : m_commit( false ),
     m_universal_part( *this , std::string( "{UNIVERSAL}" ) , 0 ),
     m_uses_part( NULL ),
@@ -93,9 +93,9 @@ Schema::Schema()
   declare_part_subset( * m_uses_part , * m_owns_part );
 }
 
-void Schema::commit()
+void MeshMetaData::commit()
 {
-  static const char method[] = "phdmesh::Schema::commit" ;
+  static const char method[] = "phdmesh::MeshMetaData::commit" ;
 
   assert_not_committed( method );
 
@@ -117,7 +117,7 @@ void Schema::commit()
   m_commit = true ; // Cannot add or change parts or fields now
 }
 
-Schema::~Schema()
+MeshMetaData::~MeshMetaData()
 {
   // Destroy the fields, used 'new' to allocate so now use 'delete'
 
@@ -159,7 +159,7 @@ void pack( CommBuffer & b , const PartSet & pset )
     const char * const name_ptr = p.name().c_str();
 
     {
-      const unsigned ord = p.schema_ordinal();
+      const unsigned ord = p.mesh_meta_data_ordinal();
       b.pack<unsigned>( ord );
     }
 
@@ -170,14 +170,14 @@ void pack( CommBuffer & b , const PartSet & pset )
     b.pack<unsigned>( subset_size );
     for ( j = subsets.begin() ; j != subsets.end() ; ++j ) {
       const Part & s = **j ;
-      const unsigned ord = s.schema_ordinal();
+      const unsigned ord = s.mesh_meta_data_ordinal();
       b.pack<unsigned>( ord );
     }
     const unsigned intersect_size = intersect.size();
     b.pack<unsigned>( intersect_size );
     for ( j = intersect.begin() ; j != intersect.end() ; ++j ) {
       const Part & s = **j ;
-      const unsigned ord = s.schema_ordinal();
+      const unsigned ord = s.mesh_meta_data_ordinal();
       b.pack<unsigned>( ord );
     }
   }
@@ -200,7 +200,7 @@ bool unpack_verify( CommBuffer & b , const PartSet & pset )
 
     if ( ok ) {
       b.unpack<unsigned>( b_tmp );
-      ok = b_tmp == p.schema_ordinal();
+      ok = b_tmp == p.mesh_meta_data_ordinal();
     }
 
     if ( ok ) {
@@ -219,7 +219,7 @@ bool unpack_verify( CommBuffer & b , const PartSet & pset )
     for ( j = subsets.begin() ; ok && j != subsets.end() ; ++j ) {
       const Part & s = **j ;
       b.unpack<unsigned>( b_tmp );
-      ok = b_tmp == s.schema_ordinal();
+      ok = b_tmp == s.mesh_meta_data_ordinal();
     }
 
     if ( ok ) {
@@ -229,7 +229,7 @@ bool unpack_verify( CommBuffer & b , const PartSet & pset )
     for ( j = intersect.begin() ; ok && j != intersect.end() ; ++j ) {
       const Part & s = **j ;
       b.unpack<unsigned>( b_tmp );
-      ok = b_tmp == s.schema_ordinal();
+      ok = b_tmp == s.mesh_meta_data_ordinal();
     }
   }
   return ok ;
@@ -251,9 +251,9 @@ bool unpack_verify( CommBuffer & ,
 
 //----------------------------------------------------------------------
 
-void verify_parallel_consistency( const Schema & s , ParallelMachine pm )
+void verify_parallel_consistency( const MeshMetaData & s , ParallelMachine pm )
 {
-  static const char method[] = "phdmesh::verify_parallel_consistency(Schema)" ;
+  static const char method[] = "phdmesh::verify_parallel_consistency(MeshMetaData)" ;
 
   const unsigned p_rank = parallel_machine_rank( pm );
 

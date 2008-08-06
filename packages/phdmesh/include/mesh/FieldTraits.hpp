@@ -29,42 +29,21 @@
 
 //----------------------------------------------------------------------
 
-#include <util/Dimension.hpp>
+#include <util/Array.hpp>
 
 namespace phdmesh {
 
 //----------------------------------------------------------------------
-/** Dimension traits for array of entities */
+/** Dimension traits for cartesian vector. */
 
-struct EntityDimension : public DimensionTag {
-
-  const char * name() const ;
-
-  static const DimensionTag * descriptor();
-
-private:
-
-  EntityDimension() {}
-
-  EntityDimension( const EntityDimension & );
-
-  EntityDimension & operator = ( const EntityDimension & );
-};
-
-//----------------------------------------------------------------------
-/** Dimension traits for cartesian coordinates */
-
-struct Cartesian : public DimensionTag {
+struct Cartesian : public ArrayDimTag {
 
   enum { X = 0 , Y = 1 , Z = 2 };
 
   const char * name() const ;
-
-  std::string to_string( unsigned size , unsigned index ) const ;
-
-  unsigned to_index( unsigned size , const std::string & ) const ;
-
-  static const DimensionTag * descriptor();
+  std::string to_string( size_t size , int index ) const ;
+  int         to_index(  size_t size , const std::string & ) const ;
+  static const Cartesian & descriptor();
 
 private:
   Cartesian() {}
@@ -73,26 +52,74 @@ private:
 };
 
 //----------------------------------------------------------------------
-/** Dimension traits for cylindrical coordinates */
+/** Dimension traits for cylindrical vector */
 
-struct Cylindrical : public DimensionTag {
+struct Cylindrical : public ArrayDimTag {
 
   enum { Radius = 0 , R = 0 ,
          Angle = 1 ,  A = 1 ,
          Z = 2 };
 
   const char * name() const ;
-
-  std::string to_string( unsigned size , unsigned index ) const ;
-
-  unsigned to_index( unsigned size , const std::string & ) const ;
-
-  static const DimensionTag * descriptor();
+  std::string to_string( size_t size , int index ) const ;
+  int         to_index(  size_t size , const std::string & ) const ;
+  static const Cylindrical & descriptor();
 
 private:
   Cylindrical() {}
   Cylindrical( const Cylindrical & );
   Cylindrical & operator = ( const Cylindrical & );
+};
+
+//----------------------------------------------------------------------
+
+struct FullTensor : public ArrayDimTag {
+
+  enum { XX = 0 , XY = 3 , XZ = 6 ,
+         YX = 1 , YY = 4 , YZ = 7 ,
+         ZX = 2 , ZY = 5 , ZZ = 8 };
+
+  const char * name() const ;
+  std::string to_string( size_t, int) const  ;
+  int         to_index(  size_t, const std::string & ) const  ;
+  static const FullTensor & descriptor();
+
+private:
+  FullTensor() {}
+  FullTensor( const FullTensor & );
+  FullTensor & operator = ( const FullTensor & );
+};
+
+//----------------------------------------------------------------------
+
+struct SymmetricTensor : public ArrayDimTag {
+
+  enum { XX = 0 , YY = 1 , ZZ = 2, XY = 3, YZ = 4, XZ = 5 };
+
+  const char * name() const  ;
+  std::string to_string( size_t, int) const  ;
+  int         to_index(  size_t , const std::string & ) const ;
+  static const SymmetricTensor & descriptor();
+
+private:
+  SymmetricTensor() {}
+  SymmetricTensor( const SymmetricTensor & );
+  SymmetricTensor & operator = ( const SymmetricTensor & );
+};
+
+//----------------------------------------------------------------------
+/** Dimension traits for array of entities */
+
+struct EntityDimension : public ArrayDimTag {
+
+  const char * name() const ;
+
+  static const EntityDimension & descriptor();
+
+private:
+  EntityDimension() {}
+  EntityDimension( const EntityDimension & );
+  EntityDimension & operator = ( const EntityDimension & );
 };
 
 //----------------------------------------------------------------------

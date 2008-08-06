@@ -60,7 +60,7 @@ field_dimension( const field_type & f , const Kernel & k )
 {
   typedef typename field_type::Dimension      Dim ;
   typedef typename field_type::BlockDimension Block ;
-  const Kernel::DataMap & pd = k.m_field_map[ f.schema_ordinal() ];
+  const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
 
   unsigned stride[ Block::NumDim ];
   Copy< Dim::NumDim >( stride , pd.m_stride );
@@ -80,7 +80,7 @@ field_dimension( const field_type & f , const Entity & e )
 {
   typedef typename field_type::Dimension Dim ;
   const Kernel & k = e.kernel();
-  const Kernel::DataMap & pd = k.m_field_map[ f.schema_ordinal() ];
+  const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
   return Dim( pd.m_stride , "field_dimension" );
 /*
   return Dim( pd.m_dim );
@@ -100,7 +100,7 @@ field_data( const field_type & f , const Kernel & k )
   data_p ptr = NULL ;
 
   {
-    const Kernel::DataMap & pd = k.m_field_map[ f.schema_ordinal() ];
+    const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
 
     if ( pd.m_size ) {
       ptr = reinterpret_cast<data_p>(
@@ -124,7 +124,7 @@ field_data( const field_type & f , const Entity & e )
     const Kernel & k = e.kernel();
     const unsigned i = e.kernel_ordinal();
 
-    const Kernel::DataMap & pd = k.m_field_map[ f.schema_ordinal() ];
+    const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
 
     if ( pd.m_size ) {
       ptr = reinterpret_cast<data_p>(
@@ -136,10 +136,52 @@ field_data( const field_type & f , const Entity & e )
 
 //----------------------------------------------------------------------
 
+template< class field_type >
+inline
+typename field_type::KernelArray
+field_array( const field_type & f , const Kernel & k )
+{
+  typedef typename field_type::KernelArray array_t ;
+  typedef unsigned char                  * byte_p ;
+  typedef typename field_type::data_type * data_p ;
+
+  const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
+
+  const data_p ptr = pd.m_size ?
+    reinterpret_cast<data_p>(
+    reinterpret_cast<byte_p>(k.m_entities) + pd.m_base ) : (data_p) NULL ;
+
+  return array_t( ptr , ArrayStride() , pd.m_stride , k.size() );
+}
+
+template< class field_type >
+inline
+typename field_type::EntityArray
+field_array( const field_type & f , const Entity & e )
+{
+  typedef typename field_type::EntityArray array_t ;
+  typedef unsigned char                  * byte_p ;
+  typedef typename field_type::data_type * data_p ;
+
+  const Kernel & k = e.kernel();
+
+  const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
+
+  const data_p ptr = pd.m_size ?
+    reinterpret_cast<data_p>(
+    reinterpret_cast<byte_p>(k.m_entities) + pd.m_base +
+                                             pd.m_size * e.kernel_ordinal() ) :
+    (data_p) NULL ;
+
+  return array_t( ptr , ArrayStride() , pd.m_stride );
+}
+
+//----------------------------------------------------------------------
+
 inline
 unsigned field_data_size( const FieldBase & f , const Kernel & k )
 {
-  const Kernel::DataMap & pd = k.m_field_map[ f.schema_ordinal() ];
+  const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
   return pd.m_size ;
 }
 

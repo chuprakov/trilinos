@@ -34,38 +34,31 @@
 #include <vector>
 
 #include <util/Basics.hpp>
-#include <util/Span.hpp>
-#include <util/Dimension.hpp>
+#include <util/PairIter.hpp>
 
 namespace phdmesh {
 
 //----------------------------------------------------------------------
 // Mesh meta-data
 
-class Schema ;  // Meta-data description of a mesh
-class Part ;    // Defined subset of the mesh
+class MeshMetaData ;  // Meta-data description of a mesh
+class Part ;          // Defined subset of the mesh
 
-template< typename Scalar = void , class Tag1 = DimensionTag ,
-                                   class Tag2 = DimensionTag ,
-                                   class Tag3 = DimensionTag ,
-                                   class Tag4 = DimensionTag ,
-                                   class Tag5 = DimensionTag ,
-                                   class Tag6 = DimensionTag ,
-                                   class Tag7 = DimensionTag >
+template< typename Scalar = void ,
+          class Tag1 = void , class Tag2 = void ,
+          class Tag3 = void , class Tag4 = void ,
+          class Tag5 = void , class Tag6 = void ,
+          class Tag7 = void >
 class Field ;
 
-typedef
-Field< void , DimensionTag , DimensionTag ,
-              DimensionTag , DimensionTag ,
-              DimensionTag , DimensionTag ,
-              DimensionTag > FieldBase ;
+typedef Field< void, void, void, void, void, void, void, void > FieldBase ;
 
 enum { MaximumFieldDimension = 7 };
 
 //----------------------------------------------------------------------
 // Mesh bulk-data
 
-class Mesh ;     // Bulk-data of a mesh
+class MeshBulkData ;     // Bulk-data of a mesh
 class Kernel ;   // Homogeneous collection of mesh entitities their field data
 class Entity ;   // Individual entity within the mesh
 class Relation ; // Relation pair of local mesh entities
@@ -113,9 +106,7 @@ typedef int ( * relation_stencil_ptr )(
 
 typedef std::pair<Entity*,unsigned> EntityProc ; // Entity-processor pair
 
-typedef std::vector< EntityProc > EntityProcSet ;
-
-typedef Span< EntityProcSet::const_iterator > EntityProcSpan ;
+typedef PairIter< std::vector< EntityProc >::const_iterator > EntityProcSpan ;
 
 //----------------------------------------------------------------------
 

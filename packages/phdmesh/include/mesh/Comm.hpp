@@ -29,7 +29,7 @@
 
 //----------------------------------------------------------------------
 /** @file
- *  @brief Mesh entity relation across processor boundaries.
+ *  @brief MeshBulkData entity relation across processor boundaries.
  *
  *  A parallel entity relation matches a domain mesh entity residing on
  *  a domain processor with a range entity residing on a range processor.
@@ -67,33 +67,33 @@ namespace phdmesh {
 //----------------------------------------------------------------------
 /** Sort and unique an EntityProc array.
  */
-void sort_unique( EntityProcSet & );
+void sort_unique( std::vector<EntityProc> & );
 
 /** Sanity check locally for non-null, same-mesh, off-processor,
  *  and proper ordering.  Return an error string if a problem.
  */
-bool verify( const EntityProcSet & , std::string & );
+bool verify( const std::vector<EntityProc> & , std::string & );
 
 /** Find the first entry corresponding to the given entity.
  *  The array must be properly sorted.
  */
-EntityProcSet::const_iterator
-lower_bound( const EntityProcSet & , Entity & );
+std::vector<EntityProc>::const_iterator
+lower_bound( const std::vector<EntityProc> & , Entity & );
 
-EntityProcSet::const_iterator
-lower_bound( const EntityProcSet & , unsigned );
+std::vector<EntityProc>::const_iterator
+lower_bound( const std::vector<EntityProc> & , unsigned );
 
-EntityProcSet::const_iterator
-lower_bound( const EntityProcSet & , const EntityProc & );
+std::vector<EntityProc>::const_iterator
+lower_bound( const std::vector<EntityProc> & , const EntityProc & );
 
 /** Find the first entry corresponding to the given entity.
  *  The array must be properly sorted.
  */
-EntityProcSet::iterator
-lower_bound( EntityProcSet & , Entity & );
+std::vector<EntityProc>::iterator
+lower_bound( std::vector<EntityProc> & , Entity & );
 
-EntityProcSet::iterator
-lower_bound( EntityProcSet & , const EntityProc & );
+std::vector<EntityProc>::iterator
+lower_bound( std::vector<EntityProc> & , const EntityProc & );
 
 //----------------------------------------------------------------------
 /** Sanity check on existing or potential parallel relation information.
@@ -101,7 +101,7 @@ lower_bound( EntityProcSet & , const EntityProc & );
  *  Symmetric version of verification.
  */
 bool comm_verify( ParallelMachine ,
-                  const EntityProcSet & ,
+                  const std::vector<EntityProc> & ,
                   std::string & );
 
 /** Sanity check on existing or potential parallel relation information.
@@ -109,8 +109,8 @@ bool comm_verify( ParallelMachine ,
  *  Asymmetric version of verification.
  */
 bool comm_verify( ParallelMachine ,
-                  const EntityProcSet & ,
-                  const EntityProcSet & ,
+                  const std::vector<EntityProc> & ,
+                  const std::vector<EntityProc> & ,
                   std::string & );
 
 //----------------------------------------------------------------------
@@ -119,7 +119,7 @@ bool comm_verify( ParallelMachine ,
  *    counts[ EntityTypeEnd ]
  *    max_id[ EntityTypeEnd ]
  */
-bool comm_mesh_stats( Mesh & ,
+bool comm_mesh_stats( MeshBulkData & ,
                       entity_id_type * const counts ,
                       entity_id_type * const max_id ,
                       bool local_flag = false );
@@ -129,23 +129,23 @@ bool comm_mesh_stats( Mesh & ,
  *  Received mesh entities are identified in 'recv'.
  */
 void comm_copy(
-  Mesh & send_mesh ,
-  Mesh & recv_mesh ,
-  const EntityProcSet & send ,
-        EntityProcSet & recv );
+  MeshBulkData & send_mesh ,
+  MeshBulkData & recv_mesh ,
+  const std::vector<EntityProc> & send ,
+        std::vector<EntityProc> & recv );
 
 //----------------------------------------------------------------------
 /** Communicate mesh entities from the send mesh to the receive mesh.
  *  The mesh manager is used to map parts between different meshes
  *  and incorporate received mesh entities into the receive mesh.
  */
-bool comm_mesh_entities(
+bool communicate_entities(
   const EntityComm & manager ,
-  Mesh & send_mesh ,
-  Mesh & recv_mesh ,
-  const EntityProcSet & send ,
-        EntityProcSet & recv ,
-  bool local_flag );
+  MeshBulkData & send_mesh ,
+  MeshBulkData & recv_mesh ,
+  const std::vector<EntityProc> & send ,
+        std::vector<EntityProc> & recv ,
+  bool local_flag = false );
 
 //----------------------------------------------------------------------
 /** Communicate field values from domain to range.
@@ -153,31 +153,31 @@ bool comm_mesh_entities(
  *  All fields and mesh entities must belong to the same mesh.
  *  If symmetric ( & domain == & range) then from owned to not owned.
  */
-bool comm_mesh_field_values(
-  const Mesh & mesh ,
-  const EntityProcSet & domain ,
-  const EntityProcSet & range ,
+bool communicate_field_data(
+  const MeshBulkData & mesh ,
+  const std::vector<EntityProc> & domain ,
+  const std::vector<EntityProc> & range ,
   const std::vector< const FieldBase *> & fields ,
-  bool local_flag );
+  bool local_flag = false );
 
 //----------------------------------------------------------------------
 /** Verify that the shared entity values are bit-wise identical */
 
 bool comm_verify_shared_entity_values(
-  const Mesh & , EntityType , const FieldBase & );
+  const MeshBulkData & , EntityType , const FieldBase & );
 
 //----------------------------------------------------------------------
 /** Discover the sharing of all mesh entities by searching for
  *  duplicate identifiers on different processors.
  */
-void comm_mesh_discover_sharing( Mesh & );
+void comm_mesh_discover_sharing( MeshBulkData & );
 
-void comm_mesh_add_sharing( Mesh & , const EntityProcSet & );
+void comm_mesh_add_sharing( MeshBulkData & , const std::vector<EntityProc> & );
 
 /** Scrub shared entities of any that are 
  *  not owned and not used by an owned entity.
  */
-bool comm_mesh_scrub_sharing( Mesh & M );
+bool comm_mesh_scrub_sharing( MeshBulkData & M );
 
 //----------------------------------------------------------------------
 /** Verify parallel consistency of mesh entities' identifiers,
@@ -185,19 +185,19 @@ bool comm_mesh_scrub_sharing( Mesh & M );
  *  Return false on all processors if an error is detected
  *  and log the error to 'std::cerr'.
  */
-bool comm_mesh_verify_parallel_consistency( Mesh & M );
+bool comm_mesh_verify_parallel_consistency( MeshBulkData & M );
 
 //----------------------------------------------------------------------
 /** Generate all aura entities attached to shared nodes.  */
-void comm_mesh_regenerate_aura( Mesh & );
+void comm_mesh_regenerate_aura( MeshBulkData & );
 
 //----------------------------------------------------------------------
 /** Rebalance the mesh using the HSFC algorithm.
  *  The shared node coordinate field values must be consistent.
- *  Mesh entity sharing and local auras are updated.
+ *  MeshBulkData entity sharing and local auras are updated.
  *  Return the HSFC cut keys used for the rebalance.
  */
-void comm_mesh_rebalance( Mesh & ,
+void comm_mesh_rebalance( MeshBulkData & ,
                           const Field<double,Cartesian> & node_coord_field ,
                           const Field<float> * const elem_weight_field ,
                           std::vector<OctTreeKey> & cut_keys );

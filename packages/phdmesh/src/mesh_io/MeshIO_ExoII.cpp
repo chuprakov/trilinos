@@ -35,32 +35,40 @@
 #include <util/ParallelReduce.hpp>
 #include <util/ParallelComm.hpp>
 
-#include <mesh/Schema.hpp>
-#include <mesh/Mesh.hpp>
+#include <mesh/MetaData.hpp>
+#include <mesh/BulkData.hpp>
 #include <mesh/FieldData.hpp>
 #include <mesh/Comm.hpp>
 
 #include <mesh_io/ExoII.hpp>
+
+#include <element/Declarations.hpp>
+#include <element/Hexahedron_Topologies.hpp>
+#include <element/Tetrahedron_Topologies.hpp>
+#include <element/Pyramid_Topologies.hpp>
+#include <element/Triangle_Topologies.hpp>
+#include <element/Quadrilateral_Topologies.hpp>
+#include <element/Wedge_Topologies.hpp>
 
 //----------------------------------------------------------------------
 
 namespace phdmesh {
 namespace exodus {
 
-const DimensionTag * GlobalLocalIndex::descriptor()
-{ static const GlobalLocalIndex self ; return & self ; }
+const GlobalLocalIndex & GlobalLocalIndex::descriptor()
+{ static const GlobalLocalIndex self ; return self ; }
 
 const char * GlobalLocalIndex::name() const
 { static const char n[] = "GlobalLocalIndex" ; return n ; }
 
-std::string GlobalLocalIndex::to_string( unsigned size , unsigned index ) const
+std::string GlobalLocalIndex::to_string( size_t size , int index ) const
 {
   static const char g[] = "global" ;
   static const char l[] = "local" ;
 
-  if ( 2 != size || size <= index ) {
+  if ( 2 != size || ( (int) size ) <= index ) {
     std::ostringstream msg ;
-    msg << descriptor()->name();
+    msg << descriptor().name();
     msg << " ERROR Size = " << size ;
     msg << " Index = " << index ;
     throw std::runtime_error( msg.str() );
@@ -69,7 +77,7 @@ std::string GlobalLocalIndex::to_string( unsigned size , unsigned index ) const
   return std::string( index ? g : l );
 }
 
-unsigned GlobalLocalIndex::to_index( unsigned size , const std::string & arg )
+int GlobalLocalIndex::to_index( size_t size , const std::string & arg )
   const
 {
   static const char g[] = "global" ;
@@ -80,7 +88,7 @@ unsigned GlobalLocalIndex::to_index( unsigned size , const std::string & arg )
 
   if ( 2 == index ) {
     std::ostringstream msg ;
-    msg << descriptor()->name();
+    msg << descriptor().name();
     msg << " ERROR size = " << size ;
     msg << " label = " << arg ;
     throw std::runtime_error( msg.str() );
@@ -89,8 +97,8 @@ unsigned GlobalLocalIndex::to_index( unsigned size , const std::string & arg )
   return index ;
 }
 
-const DimensionTag * ElementAttributes::descriptor()
-{ static const ElementAttributes self ; return & self ; }
+const ElementAttributes & ElementAttributes::descriptor()
+{ static const ElementAttributes self ; return self ; }
 
 const char * ElementAttributes::name() const
 { static const char n[] = "ElementAttributes" ; return n ; }
@@ -135,6 +143,15 @@ void allgather( phdmesh::ParallelMachine ,
 namespace phdmesh {
 namespace exodus {
 
+enum ElementType {
+  CIRCLE /* Attributes: radius */ ,
+  SPHERE /* Attributes: radius */ ,
+  TRUSS  /* Attributes: cross-section area */ ,
+  BEAM   /* Attributes: cross-section area and moments */ ,
+  SHELL  /* Attributes: thickness */ ,
+  QUAD , TRIANGLE , PYRAMID , TETRA , WEDGE , HEX ,
+  UNDEFINED };
+
 //----------------------------------------------------------------------
 
 class FilePart {
@@ -167,20 +184,20 @@ public:
 namespace {
 
 // Exodus indices: [ global , local ]
-const FileSchema::IndexField & exo_index( Schema & arg_schema )
+const FileSchema::IndexField & exo_index( MeshMetaData & arg_mesh_meta_data )
 {
   typedef FileSchema::IndexField IndexField ;
 
   static const char name[] = "exodusII_local_index" ;
 
-  const Part & upart = arg_schema.universal_part();
+  const Part & upart = arg_mesh_meta_data.universal_part();
 
-  IndexField & f = arg_schema.declare_field< IndexField >( std::string(name) );
+  IndexField & f = arg_mesh_meta_data.declare_field< IndexField >( std::string(name) );
 
-  arg_schema.declare_field_size( f , Node ,    upart , 2 );
-  arg_schema.declare_field_size( f , Edge ,    upart , 2 );
-  arg_schema.declare_field_size( f , Face ,    upart , 2 );
-  arg_schema.declare_field_size( f , Element , upart , 2 );
+  arg_mesh_meta_data.put_field( f , Node ,    upart , 2 );
+  arg_mesh_meta_data.put_field( f , Edge ,    upart , 2 );
+  arg_mesh_meta_data.put_field( f , Face ,    upart , 2 );
+  arg_mesh_meta_data.put_field( f , Element , upart , 2 );
 
   return f ;
 }
@@ -188,16 +205,16 @@ const FileSchema::IndexField & exo_index( Schema & arg_schema )
 }
 
 FileSchema::FileSchema(
-  Schema                            & arg_schema ,
+  MeshMetaData                            & arg_mesh_meta_data ,
   const FileSchema::CoordinateField & arg_node_coordinates ,
   const FileSchema::AttributeField  & arg_elem_attributes ,
   const unsigned                      arg_writer_rank )
-  : m_schema( arg_schema ),
+  : m_schema( arg_mesh_meta_data ),
     m_io_rank( arg_writer_rank ),
     m_dimension( arg_node_coordinates.max_size( Node ) ),
     m_field_node_coord( arg_node_coordinates ),
     m_field_elem_attr(  arg_elem_attributes ),
-    m_field_index( exo_index( arg_schema ) )
+    m_field_index( exo_index( arg_mesh_meta_data ) )
 {
 }
 
@@ -209,14 +226,14 @@ FileSchema::~FileSchema() {}
 namespace {
 
 const FilePart * internal_declare_part(
-  Schema    & arg_schema ,
-  Part      & arg_part ,
-  int         arg_id ,
-  EntityType  arg_type ,
-  ElementType arg_element_type ,
-  int         arg_element_dim ,
-  int         arg_number_nodes ,
-  int         arg_number_attr ,
+  MeshMetaData & arg_mesh_meta_data ,
+  Part         & arg_part ,
+  int            arg_id ,
+  EntityType     arg_type ,
+  ElementType    arg_element_type ,
+  int            arg_element_dim ,
+  int            arg_number_nodes ,
+  int            arg_number_attr ,
   const FileSchema::AttributeField  & arg_attributes )
 {
   typedef FileSchema::AttributeField AttributeField ;
@@ -245,7 +262,7 @@ const FilePart * internal_declare_part(
     }
 
     if ( number_attr ) {
-      arg_schema.declare_field_size(
+      arg_mesh_meta_data.put_field(
         const_cast<AttributeField &>(arg_attributes),
         Element, arg_part, number_attr );
     }
@@ -254,7 +271,7 @@ const FilePart * internal_declare_part(
                               arg_element_type, arg_number_nodes ,
                               number_attr );
 
-    arg_schema.declare_part_attribute<FilePart>( arg_part , file_part , true );
+    arg_mesh_meta_data.declare_part_attribute<FilePart>( arg_part , file_part , true );
   }
   else if ( attr.size() == 1 ) {
     file_part = & *attr ;
@@ -279,17 +296,84 @@ const FilePart * internal_declare_part(
 
 }
 
-void FileSchema::declare_part(
-  Part      & arg_part ,
-  int         arg_id ,
-  ElementType arg_element_type ,
-  unsigned    arg_number_nodes ,
-  unsigned    arg_num_attributes )
+void FileSchema::declare_part( Part & arg_part , int arg_id )
 {
+  const CellTopology * const top = get_cell_topology( arg_part );
+
+  if ( NULL == top ) {
+    std::ostringstream msg ;
+    msg << "phdmesh::exodus::FileSchema::declare_part( " ;
+    msg << arg_part.name();
+    msg << " , " ;
+    msg << arg_id ;
+    msg << " ) FAILED, Part does not have a CellTopology" ;
+    throw std::runtime_error( msg.str() );
+  }
+
+  ElementType element_type = UNDEFINED ;
+
+  switch( top->key ) {
+  case Hexahedron<>::key :
+  case Hexahedron<20>::key :
+  case Hexahedron<27>::key :
+    element_type = HEX ;
+    break ;
+
+  case Pyramid<>::key :
+  case Pyramid<13>::key :
+  case Pyramid<14>::key :
+    element_type = PYRAMID ;
+    break ;
+
+  case Quadrilateral<>::key :
+  case Quadrilateral<8>::key :
+  case Quadrilateral<9>::key :
+    element_type = QUAD ;
+    break ;
+
+  case ShellQuadrilateral<>::key :
+  case ShellQuadrilateral<8>::key :
+  case ShellQuadrilateral<9>::key :
+  case ShellTriangle<>::key :
+  case ShellTriangle<6>::key :
+    element_type = SHELL ;
+    break ;
+
+  case Tetrahedron<>::key :
+  case Tetrahedron<10>::key :
+    element_type = TETRA ;
+    break ;
+
+  case Triangle<>::key :
+  case Triangle<6>::key :
+    element_type = TRIANGLE ;
+    break ;
+
+  case Wedge<>::key :
+  case Wedge<15>::key :
+  case Wedge<18>::key :
+    element_type = WEDGE ;
+    break ;
+
+  default:
+    {
+      std::ostringstream msg ;
+      msg << "phdmesh::exodus::FileSchema::declare_part( " ;
+      msg << arg_part.name();
+      msg << " , " ;
+      msg << arg_id ;
+      msg << " ) FAILED, Part has unsupported CellTopology = " ;
+      msg << top->name ;
+      throw std::runtime_error( msg.str() );
+    }
+  }
+
+  const unsigned number_nodes = top->number_node ;
+
   const FilePart * const fp =
     internal_declare_part( m_schema , arg_part , arg_id ,
-                           Element , arg_element_type , m_dimension ,
-                           arg_number_nodes , arg_num_attributes ,
+                           Element , element_type , m_dimension ,
+                           number_nodes , 0 ,
                            m_field_elem_attr );
 
   m_parts[ Element ].push_back( fp );
@@ -338,7 +422,7 @@ struct LessIndices {
 };
 
 void assign_contiguous_indices(
-  Mesh & M ,
+  MeshBulkData & M ,
   unsigned entity_type ,
   const std::vector< std::pair<int,const Entity*> > & entities ,
   const FileSchema::IndexField & f )
@@ -472,7 +556,7 @@ void assign_contiguous_indices(
   }
 }
 
-void assign_contiguous_indices( Mesh & M , unsigned entity_type ,
+void assign_contiguous_indices( MeshBulkData & M , unsigned entity_type ,
                                 const FileSchema::IndexField & f )
 {
   const EntitySet & es = M.entities( entity_type );
@@ -494,14 +578,14 @@ void assign_contiguous_indices( Mesh & M , unsigned entity_type ,
 }
 
 
-void FileSchema::assign_indices( Mesh & arg_mesh ) const
+void FileSchema::assign_indices( MeshBulkData & arg_mesh ) const
 {
   static const char method[] = "phdmesh::FileSchema::assign_indices" ;
 
-  Mesh & M = arg_mesh ;
-  const Schema & S = m_schema ;
+  MeshBulkData & M = arg_mesh ;
+  const MeshMetaData & S = m_schema ;
 
-  S.assert_same_schema( method , M.schema() );
+  S.assert_same_mesh_meta_data( method , M.mesh_meta_data() );
 
   //--------------------------------------------------------------------
 
@@ -687,7 +771,7 @@ ElementType element_type( const char * label )
 
 FileOutput::~FileOutput()
 {
-  const Mesh       & M  = m_mesh ;
+  const MeshBulkData       & M  = m_mesh ;
   const FileSchema & FS = m_schema ;
   const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = FS.m_io_rank ;
@@ -734,9 +818,8 @@ EntitySet::const_iterator
     for ( bool flag = true ; flag && i != i_end ; ) {
       const Entity * const e = & *i ;
       if ( e->kernel().has_superset( part ) ) {
-        if ( flag = field_data( field_index , *e )[0] < index_end_chunk ) {
-          send_entities.push_back( e );
-        }
+        flag = field_data( field_index , *e )[0] < index_end_chunk ;
+        if ( flag ) { send_entities.push_back( e ); }
       }
       if ( flag ) { ++i ; }
     }
@@ -781,7 +864,7 @@ WriteNodeIndexCoord::WriteNodeIndexCoord(
     identifiers(),
     coord_x_y_z()
 {
-  const Mesh       & M  = output.m_mesh ;
+  const MeshBulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = SF.m_io_rank ;
@@ -794,7 +877,7 @@ void WriteNodeIndexCoord::operator()(
   const int index_end ,
   const std::vector<const Entity *> & send )
 {
-  const Mesh       & M  = output.m_mesh ;
+  const MeshBulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_size = M.parallel_size();
@@ -900,7 +983,7 @@ WriteElemIndexRelation::WriteElemIndexRelation(
     send_data(), identifiers(), relationivity()
 {
   const int i_zero = 0 ;
-  const Mesh       & M  = output.m_mesh ;
+  const MeshBulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = SF.m_io_rank ;
@@ -921,7 +1004,7 @@ void WriteElemIndexRelation::operator()(
   const int index_end ,
   const std::vector<const Entity *> & send )
 {
-  const Mesh       & M  = output.m_mesh ;
+  const MeshBulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_size = M.parallel_size();
@@ -1031,32 +1114,26 @@ std::string variable_name( EntityType        r ,
   std::string name( f.name() );
 
   if ( f_num_dim ) {
-    unsigned sizes[   MaximumFieldDimension ];
-    unsigned indices[ MaximumFieldDimension ];
-
+    size_t sizes[   MaximumFieldDimension ];
+    int    indices[ MaximumFieldDimension ];
 
     const FieldBase::Dim & dim = f.dimension( r , p );
 
-    stride_size( f_num_dim , dim.stride , sizes );
-    stride_inv(  f_num_dim , dim.stride , k , indices );
-
-/*
-    const DimensionNoTag & dim = f.dimension( r , p ).dim ;
-    dim.size( sizes );
-    dim.inverse( k , indices );
-*/
+    array_stride_to_natural_sizes( f_num_dim , dim.stride , sizes );
+    array_stride_to_natural_index( f_num_dim , dim.stride , k , indices );
 
     for ( unsigned i = 0 ; i < f_num_dim ; ++i ) {
-      std::string tmp = f.dimension_tags()[i]->to_string(sizes[i],indices[i]);
+
+      // Natural, as opposed to Fortran, ordering of dimensions:
+      const ArrayDimTag & tag = * f.dimension_tags()[ ( f_num_dim - 1 ) - i ];
+
+      std::string tmp = tag.to_string(sizes[i],indices[i]);
+
       if ( tmp.size() ) {
         name.append( "_" );
         name.append( tmp );
       }
     }
-
-
-
-
   }
 
   return name ;
@@ -1078,10 +1155,7 @@ void variable_add( EntityType entity_type ,
     const FieldBase::Dim & d = field.dimension( entity_type , p );
 
     if ( d.stride[0] ) { // Exists
-      const unsigned n = stride_size( field_num_dim , d.stride );
-/*
-      const unsigned n = d.dim.size();
-*/
+      const unsigned n = array_stride_size( field_num_dim , d.stride );
 
       for ( unsigned k = 0 ; k < n ; ++k ) {
         const std::string name( variable_name(entity_type, p, field, k ) );
@@ -1112,7 +1186,7 @@ void variable_add( EntityType entity_type ,
     Part & p = parts[j]->m_part ;
 
     const FieldBase::Dim & d = field.dimension( entity_type , p );
-    const unsigned n = stride_size( field_num_dim , d.stride );
+    const unsigned n = array_stride_size( field_num_dim , d.stride );
 
     for ( unsigned k = 0 ; k < n ; ++k ) {
 
@@ -1135,7 +1209,7 @@ void variable_add( EntityType entity_type ,
 
 FileOutput::FileOutput(
   const FileSchema  & arg_schema ,
-  const Mesh        & arg_mesh ,
+  const MeshBulkData        & arg_mesh ,
   const std::string & arg_file_path ,
   const std::string & arg_title ,
   const bool          arg_storage_double ,
@@ -1151,8 +1225,8 @@ FileOutput::FileOutput(
 
   const int i_zero = 0 ;
 
-  const Mesh       & M  = arg_mesh ;
-  const Schema     & SM = M.schema();
+  const MeshBulkData       & M  = arg_mesh ;
+  const MeshMetaData     & SM = M.mesh_meta_data();
   const FileSchema & FS = arg_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_rank = M.parallel_rank();
@@ -1161,7 +1235,7 @@ FileOutput::FileOutput(
   const bool writer = p_write == p_rank ;
 
   const Part & universal_part = SM.universal_part();
-        Part & owns_part      = SM.owns_part();
+        Part & owns_part      = SM.locally_owned_part();
 
   const std::vector<const FilePart *> & node_parts = FS.parts( Node );
   const std::vector<const FilePart *> & edge_parts = FS.parts( Edge );
@@ -1211,7 +1285,7 @@ FileOutput::FileOutput(
       tmp.m_offset    = 0 ;
       tmp.m_var_index = 0 ;
 
-      const unsigned n = stride_size( f_num_dim , d.stride );
+      const unsigned n = array_stride_size( f_num_dim , d.stride );
 
       for ( unsigned k = 0 ; k < n ; ++k ) {
         name_node_var.push_back( variable_name(Node, universal_part, f, k) );
@@ -1646,7 +1720,7 @@ WriteNodeValues::WriteNodeValues(
     exo_func( NULL ),
     recv_buffer()
 {
-  const Mesh       & M  = output.m_mesh ;
+  const MeshBulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = SF.m_io_rank ;
@@ -1663,7 +1737,7 @@ void WriteNodeValues::operator()(
   const int index_end ,
   const std::vector<const Entity *> & send )
 {
-  const Mesh       & M  = output.m_mesh ;
+  const MeshBulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_size = M.parallel_size();
@@ -1751,7 +1825,7 @@ WriteElemValues::WriteElemValues(
     exo_func( NULL ),
     recv_buffer()
 {
-  const Mesh       & M  = output.m_mesh ;
+  const MeshBulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = SF.m_io_rank ;
@@ -1768,7 +1842,7 @@ void WriteElemValues::operator()(
   const int index_end ,
   const std::vector<const Entity *> & send )
 {
-  const Mesh       & M  = output.m_mesh ;
+  const MeshBulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_size = M.parallel_size();
@@ -1830,8 +1904,8 @@ void FileOutput::write( double time_value )
 {
   static const char method[] = "phdmesh::exodus::FieldIO::wrote" ;
 
-  const Mesh       & M  = m_mesh ;
-  const Schema     & SM = M.schema();
+  const MeshBulkData       & M  = m_mesh ;
+  const MeshMetaData     & SM = M.mesh_meta_data();
   const FileSchema & FS = m_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_rank = M.parallel_rank() ;
@@ -1849,7 +1923,7 @@ void FileOutput::write( double time_value )
 
   const bool writer = p_write == p_rank ;
 
-  Part & owns_part = SM.owns_part();
+  Part & owns_part = SM.locally_owned_part();
 
   int exo_error = 0 ;
   const char * exo_func = NULL ;
@@ -1979,18 +2053,18 @@ struct exo_elem_block_data {
 }
 
 FileSchema::FileSchema(
-  Schema & arg_schema ,
+  MeshMetaData & arg_mesh_meta_data ,
   const FileSchema::CoordinateField & arg_node_coordinates ,
   const FileSchema::AttributeField  & arg_elem_attributes ,
   const std::string     & arg_file_path ,
   ParallelMachine         arg_comm ,
   const unsigned          arg_reader_rank )
-  : m_schema( arg_schema ),
+  : m_schema( arg_mesh_meta_data ),
     m_io_rank( arg_reader_rank ),
     m_dimension( arg_node_coordinates.max_size( Node ) ),
     m_field_node_coord( arg_node_coordinates ),
     m_field_elem_attr(  arg_elem_attributes ),
-    m_field_index( exo_index( arg_schema ) )
+    m_field_index( exo_index( arg_mesh_meta_data ) )
 {
   static const char method[] = "phdmesh::exodus::FileSchema::FileSchema" ;
 
@@ -2143,14 +2217,94 @@ FileSchema::FileSchema(
     if ( ! exo_error ) {
       for ( int i = 0 ; i < num_elem_blk ; ++i ) {
 
+        ElementType et = element_type( block_data[i].type );
+
         Part & part = m_schema.declare_part( std::string(block_data[i].name) );
+
+        const CellTopology * top = NULL ;
+
+        switch( et ) {
+        case CIRCLE    :
+        case SPHERE    :
+        case TRUSS     :
+        case BEAM      :
+          break ;
+
+        case SHELL :
+          switch( block_data[i].num_nodes ) {
+          case 3 : top = cell_topology< ShellTriangle<> >(); break ;
+          case 6 : top = cell_topology< ShellTriangle<6> >(); break ;
+          case 4 : top = cell_topology< ShellQuadrilateral<> >(); break ;
+          case 8 : top = cell_topology< ShellQuadrilateral<8> >(); break;
+          case 9 : top = cell_topology< ShellQuadrilateral<9> >(); break;
+          }
+          break ;
+
+        case QUAD :
+          switch( block_data[i].num_nodes ) {
+          case 4 : top = cell_topology< Quadrilateral<> >(); break ;
+          case 8 : top = cell_topology< Quadrilateral<8> >(); break;
+          case 9 : top = cell_topology< Quadrilateral<9> >(); break;
+          }
+          break ;
+
+        case TRIANGLE :
+          switch( block_data[i].num_nodes ) {
+          case 3 : top = cell_topology< Triangle<> >(); break ;
+          case 6 : top = cell_topology< Triangle<6> >(); break ;
+          }
+          break ;
+
+        case PYRAMID :
+          switch( block_data[i].num_nodes ) {
+          case  5 : top = cell_topology< Pyramid<> >(); break ;
+          case 13 : top = cell_topology< Pyramid<13> >(); break ;
+          case 14 : top = cell_topology< Pyramid<14> >(); break ;
+          }
+          break ;
+
+        case TETRA :
+          switch( block_data[i].num_nodes ) {
+          case  4 : top = cell_topology< Tetrahedron<> >(); break ;
+          case 10 : top = cell_topology< Tetrahedron<10> >(); break ;
+          }
+          break ;
+
+        case WEDGE :
+          switch( block_data[i].num_nodes ) {
+          case  6 : top = cell_topology< Wedge<> >(); break ;
+          case 15 : top = cell_topology< Wedge<15> >(); break ;
+          case 18 : top = cell_topology< Wedge<18> >(); break ;
+          }
+          break ;
+
+        case HEX :
+          switch( block_data[i].num_nodes ) {
+          case  8 : top = cell_topology< Hexahedron<> >(); break ;
+          case 20 : top = cell_topology< Hexahedron<20> >(); break ;
+          case 27 : top = cell_topology< Hexahedron<27> >(); break ;
+          }
+          break ;
+
+        case UNDEFINED : break ;
+        }
+
+        if ( NULL == top ) {
+          std::ostringstream msg ;
+          msg << "phdmesh::exodus::FileSchema FAILED, Read unknown element type from ExodusII : type = " ;
+          msg << block_data[i].type ;
+          msg << " , nodes = " ;
+          msg << block_data[i].num_nodes ;
+          throw std::runtime_error( msg.str() );
+        }
+
+        set_cell_topology( part , top );
 
         const FilePart * fp =
           internal_declare_part( m_schema ,
                                  part ,
                                  block_data[i].block_id ,
-                                 Element ,
-                                 element_type( block_data[i].type ) ,
+                                 Element , et ,
                                  m_dimension ,
                                  block_data[i].num_nodes ,
                                  block_data[i].num_attr ,
@@ -2224,7 +2378,7 @@ struct less_NodeData {
 
 FileInput::~FileInput()
 {
-  const Mesh       & M  = m_mesh ;
+  const MeshBulkData       & M  = m_mesh ;
   const FileSchema & FS = m_schema ;
   const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_read = FS.m_io_rank ;
@@ -2234,7 +2388,7 @@ FileInput::~FileInput()
 
 FileInput::FileInput(
   const FileSchema  & arg_schema ,
-        Mesh        & arg_mesh ,
+        MeshBulkData        & arg_mesh ,
   const std::string & arg_file_path ,
   const std::vector< const FieldBase * > & arg_fields )
   : m_schema( arg_schema ),
@@ -2245,8 +2399,8 @@ FileInput::FileInput(
 {
   static const char method[] = "phdmesh::exodus::FileInput::FileInput" ;
 
-        Mesh       & M  = arg_mesh ;
-  const Schema     & SM = M.schema();
+        MeshBulkData       & M  = arg_mesh ;
+  const MeshMetaData     & SM = M.mesh_meta_data();
   const FileSchema & FS = arg_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_size = M.parallel_size();
@@ -2256,7 +2410,7 @@ FileInput::FileInput(
   const bool reader = p_read == p_rank ;
 
   const Part & universal_part = SM.universal_part();
-        Part & owns_part      = SM.owns_part();
+        Part & owns_part      = SM.locally_owned_part();
 
   // const std::vector<const FilePart *> & node_parts = FS.parts( Node );
   // const std::vector<const FilePart *> & edge_parts = FS.parts( Edge );
@@ -2284,7 +2438,7 @@ FileInput::FileInput(
       tmp.m_offset    = 0 ;
       tmp.m_var_index = 0 ;
 
-      const unsigned n = stride_size( f_num_dim, d.stride );
+      const unsigned n = array_stride_size( f_num_dim, d.stride );
 
       for ( unsigned k = 0 ; k < n ; ++k ) {
         name_node_var.push_back( variable_name(Node,universal_part, f, k) );
@@ -2820,18 +2974,18 @@ namespace phdmesh {
 namespace exodus {
 
 FileSchema::FileSchema(
-  Schema & arg_schema ,
+  MeshMetaData & arg_mesh_meta_data ,
   const FileSchema::CoordinateField & arg_node_coordinates ,
   const FileSchema::AttributeField  & arg_elem_attributes ,
   const std::string     & ,
   ParallelMachine         ,
   const unsigned          arg_reader_rank )
-  : m_schema( arg_schema ),
+  : m_schema( arg_mesh_meta_data ),
     m_io_rank( arg_reader_rank ),
     m_dimension( arg_node_coordinates.max_size( Node ) ),
     m_field_node_coord( arg_node_coordinates ),
     m_field_elem_attr(  arg_elem_attributes ),
-    m_field_index( exo_index( arg_schema ) )
+    m_field_index( exo_index( arg_mesh_meta_data ) )
 {
 }
 
@@ -2839,7 +2993,7 @@ FileOutput::~FileOutput() {}
 
 FileOutput::FileOutput(
   const FileSchema  & arg_schema ,
-  const Mesh        & arg_mesh ,
+  const MeshBulkData        & arg_mesh ,
   const std::string & ,
   const std::string & ,
   const bool ,
@@ -2858,7 +3012,7 @@ FileInput::~FileInput() { }
 
 FileInput::FileInput(
   const FileSchema  & arg_schema ,
-        Mesh        & arg_mesh ,
+        MeshBulkData        & arg_mesh ,
   const std::string & ,
   const std::vector< const FieldBase * > & )
   : m_schema( arg_schema ),

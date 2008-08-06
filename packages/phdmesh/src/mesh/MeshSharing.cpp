@@ -33,8 +33,8 @@
 #include <util/ParallelIndex.hpp>
 #include <util/ParallelReduce.hpp>
 
-#include <mesh/Mesh.hpp>
-#include <mesh/Schema.hpp>
+#include <mesh/BulkData.hpp>
+#include <mesh/MetaData.hpp>
 #include <mesh/FieldData.hpp>
 #include <mesh/Comm.hpp>
 
@@ -42,15 +42,15 @@ namespace phdmesh {
 
 namespace {
 
-std::pair< EntityProcSet::const_iterator ,
-           EntityProcSet::const_iterator >
-span( const EntityProcSet & v , unsigned entity_type )
+std::pair< std::vector<EntityProc>::const_iterator ,
+           std::vector<EntityProc>::const_iterator >
+span( const std::vector<EntityProc> & v , unsigned entity_type )
 {
   const unsigned t1 = entity_type ;
   const unsigned t2 = t1 + 1 ;
 
-  std::pair< EntityProcSet::const_iterator ,
-             EntityProcSet::const_iterator > result ;
+  std::pair< std::vector<EntityProc>::const_iterator ,
+             std::vector<EntityProc>::const_iterator > result ;
 
   result.first  = lower_bound(v,t1);
   result.second = lower_bound(v,t2);
@@ -64,18 +64,18 @@ span( const EntityProcSet & v , unsigned entity_type )
 //----------------------------------------------------------------------
 
 bool comm_verify_shared_entity_values(
-  const Mesh & M , EntityType t , const FieldBase & f )
+  const MeshBulkData & M , EntityType t , const FieldBase & f )
 {
   const unsigned parallel_size = M.parallel_size();
 
   const unsigned max_size = f.max_size(t) *
                             NumericEnum<>::size( f.numeric_type_ordinal() );
 
-  const std::pair< EntityProcSet::const_iterator ,
-                   EntityProcSet::const_iterator >
+  const std::pair< std::vector<EntityProc>::const_iterator ,
+                   std::vector<EntityProc>::const_iterator >
     shares = span( M.shares() , t );
 
-  EntityProcSet::const_iterator ic ;
+  std::vector<EntityProc>::const_iterator ic ;
 
   ParallelMachine comm = M.parallel();
 
@@ -138,16 +138,16 @@ bool comm_verify_shared_entity_values(
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void comm_mesh_discover_sharing( Mesh & M )
+void comm_mesh_discover_sharing( MeshBulkData & M )
 {
   static const char method[] = "phdmesh::comm_mesh_discover_sharing" ;
 
-  const Schema & S = M.schema();
+  const MeshMetaData & S = M.mesh_meta_data();
   const unsigned p_rank = M.parallel_rank();
 
   std::vector< ParallelIndex::key_type > local ;
   std::vector< ParallelIndex::KeyProc > global ;
-  EntityProcSet share ;
+  std::vector<EntityProc> share ;
 
   unsigned count = 0 ;
   for ( unsigned k = 0 ; k < EntityTypeEnd ; ++k ) {
@@ -187,10 +187,10 @@ void comm_mesh_discover_sharing( Mesh & M )
 
   // Now revise ownership
 
-  Part * const owns_part = & S.owns_part();
+  Part * const owns_part = & S.locally_owned_part();
 
-  const EntityProcSet::iterator ipe = share.end();
-        EntityProcSet::iterator ip ;
+  const std::vector<EntityProc>::iterator ipe = share.end();
+        std::vector<EntityProc>::iterator ip ;
 
   for ( ip = share.begin() ; ip != ipe ; ) {
     Entity * const entity = ip->first ;
@@ -224,19 +224,19 @@ void comm_mesh_discover_sharing( Mesh & M )
 // from the sharing and the processor.  If sharing changes then regenerate
 // the aura.
 
-bool comm_mesh_scrub_sharing( Mesh & M )
+bool comm_mesh_scrub_sharing( MeshBulkData & M )
 {
   const unsigned p_size = M.parallel_size();
   const unsigned p_rank = M.parallel_rank();
 
-  EntityProcSet shares( M.shares() );
+  std::vector<EntityProc> shares( M.shares() );
 
   bool changed = false ;
 
-  EntityProcSet::iterator i ;
+  std::vector<EntityProc>::iterator i ;
 
   for ( i = shares.end() ; i != shares.begin() ; ) {
-    const EntityProcSet::iterator ie = i ;
+    const std::vector<EntityProc>::iterator ie = i ;
 
     Entity * const entity = (--i)->first ;
     const EntityType entity_type = entity->entity_type();
@@ -254,7 +254,7 @@ bool comm_mesh_scrub_sharing( Mesh & M )
     }
 
     if ( destroy_it ) {
-      EntityProcSet::iterator ib = i ;
+      std::vector<EntityProc>::iterator ib = i ;
       for ( ; ib != ie ; ++ib ) { ib->first = NULL ; }
       M.destroy_entity( entity );
       changed = true ;
@@ -305,10 +305,10 @@ bool comm_mesh_scrub_sharing( Mesh & M )
 
 namespace {
 
-void pack_info( CommAll & all , const EntityProcSet & shares )
+void pack_info( CommAll & all , const std::vector<EntityProc> & shares )
 {
-  const EntityProcSet::const_iterator i_end = shares.end();
-        EntityProcSet::const_iterator i     = shares.begin();
+  const std::vector<EntityProc>::const_iterator i_end = shares.end();
+        std::vector<EntityProc>::const_iterator i     = shares.begin();
 
   while ( i != i_end ) {
     const EntityProc & ep = *i ; ++i ;
@@ -346,7 +346,7 @@ void pack_info( CommAll & all , const EntityProcSet & shares )
 
 bool unpack_info_verify(
   CommAll & all ,
-  const EntityProcSet & shares ,
+  const std::vector<EntityProc> & shares ,
   std::string & error_msg )
 {
   static const char method[] =
@@ -356,8 +356,8 @@ bool unpack_info_verify(
   const uint64_type ul_zero = 0 ;
   bool result = true ;
 
-  const EntityProcSet::const_iterator i_end = shares.end();
-        EntityProcSet::const_iterator i     = shares.begin();
+  const std::vector<EntityProc>::const_iterator i_end = shares.end();
+        std::vector<EntityProc>::const_iterator i     = shares.begin();
 
   std::vector<unsigned> recv_ordinal ;
   std::vector<uint64_type> recv_relation ;
@@ -367,11 +367,11 @@ bool unpack_info_verify(
 
     Entity & entity = * ep.first ;
     Kernel & kernel = entity.kernel();
-    Mesh   & mesh   = kernel.mesh();
-    const Schema & schema = mesh.schema();
-    const PartSet & mesh_parts = schema.get_parts();
+    MeshBulkData   & mesh   = kernel.mesh();
+    const MeshMetaData & mesh_meta_data = mesh.mesh_meta_data();
+    const PartSet & mesh_parts = mesh_meta_data.get_parts();
     const RelationSpan relation = entity.relations();
-    Part * const owns_part = & schema.owns_part();
+    Part * const owns_part = & mesh_meta_data.locally_owned_part();
 
     const unsigned relation_size = relation.size();
     const entity_key_type key = entity.key();
@@ -515,20 +515,20 @@ bool unpack_info_verify(
 }
 
 bool verify_parallel_attributes(
-  Mesh & M , unsigned type , std::string & msg )
+  MeshBulkData & M , unsigned type , std::string & msg )
 {
   bool result = true ;
 
-  const Schema & S = M.schema();
+  const MeshMetaData & S = M.mesh_meta_data();
   const unsigned p_rank = M.parallel_rank();
-  Part & uses_part = S.uses_part();
-  Part & owns_part = S.owns_part();
+  Part & uses_part = S.locally_used_part();
+  Part & owns_part = S.locally_owned_part();
 
   const EntitySet & es = M.entities( type );
 
-  std::pair< EntityProcSet::const_iterator ,
-             EntityProcSet::const_iterator >
-    aura_span = span( M.aura_range() , type );
+  std::pair< std::vector<EntityProc>::const_iterator ,
+             std::vector<EntityProc>::const_iterator >
+    aura_span = span( M.ghost_destination() , type );
 
   // Iterate everything in identifier ordering.
 
@@ -599,7 +599,7 @@ bool verify_parallel_attributes(
 
 }
 
-bool comm_mesh_verify_parallel_consistency( Mesh & M )
+bool comm_mesh_verify_parallel_consistency( MeshBulkData & M )
 {
   // Exchange the shared entities' identifiers, part mesh ordinals, and
   // owner processor.  Should be fully consistent modulo the owner part.
@@ -616,7 +616,7 @@ bool comm_mesh_verify_parallel_consistency( Mesh & M )
   {
     // Verify all shared entities
 
-    const EntityProcSet & shares = M.shares();
+    const std::vector<EntityProc> & shares = M.shares();
 
     CommAll all_info( M.parallel() );
 
@@ -633,7 +633,7 @@ bool comm_mesh_verify_parallel_consistency( Mesh & M )
 
   // Verify consistency of aura
 
-  if ( ! comm_verify( M.parallel(), M.aura_domain(), M.aura_range(), msg) ) {
+  if ( ! comm_verify( M.parallel(), M.ghost_source(), M.ghost_destination(), msg) ) {
     result = false ;
   }
 
@@ -667,9 +667,9 @@ public:
 
   void receive_entity(
     CommBuffer & buffer ,
-    Mesh & receive_mesh ,
+    MeshBulkData & receive_mesh ,
     const unsigned send_source ,
-    EntityProcSet & receive_info ) const ;
+    std::vector<EntityProc> & receive_info ) const ;
 };
 
 const char * SharingComm::name() const
@@ -677,18 +677,18 @@ const char * SharingComm::name() const
 
 void SharingComm::receive_entity(
   CommBuffer & buffer ,
-  Mesh & receive_mesh ,
+  MeshBulkData & receive_mesh ,
   const unsigned send_source ,
-  EntityProcSet & receive_info ) const
+  std::vector<EntityProc> & receive_info ) const
 {
   // receive_info is the new_aura_range
 
   static const char method[] = "phdmesh::SharingComm::receive_entity" ;
 
   const unsigned local_rank = receive_mesh.parallel_rank();
-  const Schema & S = receive_mesh.schema();
-  Part * const uses_part = & S.uses_part();
-  Part * const owns_part = & S.owns_part();
+  const MeshMetaData & S = receive_mesh.mesh_meta_data();
+  Part * const uses_part = & S.locally_used_part();
+  Part * const owns_part = & S.locally_owned_part();
 
   entity_key_type       key ;
   unsigned              owner_rank ;
@@ -730,7 +730,7 @@ void SharingComm::receive_entity(
   // If entity exists it must be currently an aura, i.e. not a uses_part
 
   if ( NULL != ep.first ) {
-    EntityProcSet::iterator k = lower_bound( receive_info , *ep.first );
+    std::vector<EntityProc>::iterator k = lower_bound( receive_info , *ep.first );
 
     if ( ep.first->kernel().has_superset( *uses_part ) ||
          k == receive_info.end() || k->first != ep.first ) {
@@ -746,24 +746,24 @@ void SharingComm::receive_entity(
   receive_mesh.declare_relation( *ep.first , relations );
 }
 
-bool not_member( const EntityProcSet & s , const EntityProc & m )
+bool not_member( const std::vector<EntityProc> & s , const EntityProc & m )
 {
-  const EntityProcSet::const_iterator i = lower_bound( s , m );
+  const std::vector<EntityProc>::const_iterator i = lower_bound( s , m );
   return i == s.end() || m != *i ;
 }
 
 // Owner packs sharing
 
-void pack_sharing( CommAll & all , const EntityProcSet & sharing )
+void pack_sharing( CommAll & all , const std::vector<EntityProc> & sharing )
 {
   const unsigned p_rank = all.parallel_rank();
 
-  EntityProcSet::const_iterator i , j ;
+  std::vector<EntityProc>::const_iterator i , j ;
 
   for ( i = sharing.begin() ; i != sharing.end() ; ) {
-    const EntityProcSet::const_iterator ib = i ;
+    const std::vector<EntityProc>::const_iterator ib = i ;
     for ( ; i != sharing.end() && i->first == ib->first ; ++i );
-    const EntityProcSet::const_iterator ie = i ;
+    const std::vector<EntityProc>::const_iterator ie = i ;
 
     if ( p_rank == ib->first->owner_rank() ) {
       const unsigned n = std::distance( ib , ie ) - 1 ;
@@ -782,8 +782,8 @@ void pack_sharing( CommAll & all , const EntityProcSet & sharing )
   }
 }
 
-void unpack_sharing( CommAll & all , Mesh & M ,
-                     EntityProcSet & sharing ,
+void unpack_sharing( CommAll & all , MeshBulkData & M ,
+                     std::vector<EntityProc> & sharing ,
                      const char * method )
 {
   const unsigned p_size = all.parallel_size();
@@ -808,7 +808,7 @@ void unpack_sharing( CommAll & all , Mesh & M ,
 
 }
 
-void comm_mesh_add_sharing( Mesh & M , const EntityProcSet & add )
+void comm_mesh_add_sharing( MeshBulkData & M , const std::vector<EntityProc> & add )
 {
   static const char method[] = "phdmesh::comm_mesh_add_sharing" ;
 
@@ -816,22 +816,22 @@ void comm_mesh_add_sharing( Mesh & M , const EntityProcSet & add )
   const unsigned p_rank = M.parallel_rank();
   const unsigned p_size = M.parallel_size();
 
-  const EntityProcSet & old_shares = M.shares();
+  const std::vector<EntityProc> & old_shares = M.shares();
 
-  EntityProcSet new_shares ;
+  std::vector<EntityProc> new_shares ;
 
   //--------------------------------------------------------------------
   // Have the owners send the to-be-shared entities to the
   // specified processors.  If an aura relationship exists
   // then remove it and replace it with a shared relationship.
   {
-    EntityProcSet new_aura_domain( M.aura_domain() );
-    EntityProcSet new_aura_range(  M.aura_range() );
+    std::vector<EntityProc> new_aura_domain( M.ghost_source() );
+    std::vector<EntityProc> new_aura_range(  M.ghost_destination() );
 
     {
       CommAll all( M.parallel() );
 
-      for ( EntityProcSet::const_iterator
+      for ( std::vector<EntityProc>::const_iterator
             j = add.begin() ; j != add.end() ; ++j ) {
 
         const unsigned p_owner = j->first->owner_rank();
@@ -848,7 +848,7 @@ void comm_mesh_add_sharing( Mesh & M , const EntityProcSet & add )
 
       all.allocate_buffers( p_size / 4 , false /* not symmetric */ );
 
-      for ( EntityProcSet::const_iterator
+      for ( std::vector<EntityProc>::const_iterator
             j = add.begin() ; j != add.end() ; ++j ) {
 
         const unsigned p_owner = j->first->owner_rank();
@@ -882,10 +882,10 @@ void comm_mesh_add_sharing( Mesh & M , const EntityProcSet & add )
 
     // Change the newly shared mesh entities on the owner processor
     // Remove from the aura_domain.
-    for ( EntityProcSet::iterator
+    for ( std::vector<EntityProc>::iterator
           i = new_shares.begin() ; i != new_shares.end() ; ++i ) {
 
-      const EntityProcSet::iterator k = lower_bound( new_aura_domain , *i );
+      const std::vector<EntityProc>::iterator k = lower_bound( new_aura_domain , *i );
 
       if ( k != new_aura_domain.end() && *k == *i ) {
         new_aura_domain.erase( k );
@@ -895,11 +895,11 @@ void comm_mesh_add_sharing( Mesh & M , const EntityProcSet & add )
     // Communicate new-shared mesh entities from owner to sharing processors.
     // Remove from the aura_range, if present.
 
-    comm_mesh_entities( mgr, M, M, new_shares, new_aura_range, false );
+    communicate_entities( mgr, M, M, new_shares, new_aura_range, false );
 
     // Some aura entities have become shared entities.
 
-    M.set_aura( new_aura_domain , new_aura_range );
+    M.set_ghosting( new_aura_domain , new_aura_range );
   }
   // Shared mesh entities are now in place.
   //--------------------------------------------------------------------

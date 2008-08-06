@@ -35,102 +35,188 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-const DimensionTag * Cartesian::descriptor()
-{ static const Cartesian self ; return & self ; }
+namespace {
 
-const char * Cartesian::name() const
-{ static const char n[] = "Cartesian" ; return n ; }
-
-std::string Cartesian::to_string( unsigned size , unsigned index ) const
+unsigned get_index( const char * const func ,
+                    const unsigned number_names ,
+                    const char * const * names ,
+                    const unsigned size ,
+                    const char * const select )
 {
-  static const char x[] = "x" ;
-  static const char y[] = "y" ;
-  static const char z[] = "z" ;
-  static const char * label[] = { x , y , z };
+  unsigned index = size < number_names ? 0 : size ;
 
-  if ( size < 2 || 3 < size || size <= index ) {
-    std::ostringstream msg ;
-    msg << Cartesian::descriptor()->name();
-    msg << " ERROR Size = " << size ;
-    msg << " Index = " << index ;
-    throw std::runtime_error( msg.str() );
-  }
-
-  return std::string( label[index] );
-}
-
-unsigned Cartesian::to_index( unsigned size , const std::string & arg ) const
-{
-  static const char x[] = "x" ;
-  static const char y[] = "y" ;
-  static const char z[] = "z" ;
-  static const char * label[] = { x , y , z };
-
-  unsigned index = size ;
-
-  if ( 1 < size && size < 4 ) {
-    const char * const c = arg.c_str();
-    for ( index = 0 ; index < size && strcasecmp(c,label[index]) ; ++index );
-  }
+  for ( ; index < size && strcasecmp(select,names[index]) ; ++index );
 
   if ( index == size ) {
     std::ostringstream msg ;
-    msg << Cartesian::descriptor()->name();
+    msg << func ;
     msg << " ERROR size = " << size ;
-    msg << " label = " << arg ;
+    msg << " label = " << select ;
     throw std::runtime_error( msg.str() );
   }
   return index ;
+}
+
+const char * get_string( const char * const func ,
+                         const unsigned number_names ,
+                         const char * const * names ,
+                         const unsigned size ,
+                         const unsigned index )
+{
+  if ( size < number_names || size <= index ) {
+    std::ostringstream msg ;
+    msg << func ;
+    msg << " ERROR size = " << size ;
+    msg << " index = " << index ;
+    throw std::runtime_error( msg.str() );
+  }
+
+  return names[index];
+}
+
 }
 
 //----------------------------------------------------------------------
 
-const DimensionTag * Cylindrical::descriptor()
-{ static const Cylindrical self ; return & self ; }
+const Cartesian & Cartesian::descriptor()
+{ static const Cartesian self ; return self ; }
+
+const char * Cartesian::name() const
+{ static const char n[] = "Cartesian" ; return n ; }
+
+std::string Cartesian::to_string( size_t size , int index ) const
+{
+  static const char x[] = "x" ;
+  static const char y[] = "y" ;
+  static const char z[] = "z" ;
+  static const char * label[] = { x , y , z };
+
+  return std::string( get_string( Cartesian::descriptor().name() ,
+                                  3 , label , size , index ) );
+}
+
+int Cartesian::to_index( size_t size , const std::string & arg ) const
+{
+  static const char x[] = "x" ;
+  static const char y[] = "y" ;
+  static const char z[] = "z" ;
+  static const char * label[] = { x , y , z };
+
+  return get_index( Cartesian::descriptor().name() ,
+                    3 , label , size , arg.c_str() );
+}
+
+//----------------------------------------------------------------------
+
+const Cylindrical & Cylindrical::descriptor()
+{ static const Cylindrical self ; return self ; }
 
 const char * Cylindrical::name() const
 { static const char n[] = "Cylindrical" ; return n ; }
 
-std::string Cylindrical::to_string( unsigned size , unsigned index ) const
+std::string Cylindrical::to_string( size_t size , int index ) const
 {
   static const char r[] = "r" ;
   static const char a[] = "a" ;
   static const char z[] = "z" ;
   static const char * label[] = { r , a , z };
 
-  if ( 3 < size || size <= index ) {
-    std::ostringstream msg ;
-    msg << Cylindrical::descriptor()->name();
-    msg << " ERROR Size = " << size ;
-    msg << " Index = " << index ;
-    throw std::runtime_error( msg.str() );
-  }
-
-  return std::string( label[index] );
+  return std::string( get_string( Cylindrical::descriptor().name() ,
+                                  3 , label , size , index ) );
 }
 
-unsigned Cylindrical::to_index( unsigned size , const std::string & arg ) const
+int Cylindrical::to_index( size_t size , const std::string & arg ) const
 {
   static const char r[] = "r" ;
   static const char a[] = "a" ;
   static const char z[] = "z" ;
   static const char * label[] = { r , a , z };
 
-  unsigned index = size ;
+  return get_index( Cylindrical::descriptor().name() ,
+                    3 , label , size , arg.c_str() );
+}
 
-  if ( 1 < size && size < 4 ) {
-    const char * const c = arg.c_str();
-    for ( index = 0 ; index < size && strcasecmp(c,label[index]) ; ++index );
-  }
+//----------------------------------------------------------------------
 
-  if ( index == size ) {
-    std::ostringstream msg ;
-    msg << Cylindrical::descriptor()->name();
-    msg << " ERROR size = " << size ;
-    msg << " label = " << arg ;
-    throw std::runtime_error( msg.str() );
-  }
-  return index ;
+const FullTensor & FullTensor::descriptor()
+{ static const FullTensor self ; return self ; }
+
+const char * FullTensor::name() const
+{ static const char n[] = "FullTensor" ; return n ; }
+
+std::string FullTensor::to_string( size_t size , int index ) const
+{
+  static const char xx[] = "xx" ;
+  static const char yx[] = "yx" ;
+  static const char zx[] = "zx" ;
+  static const char xy[] = "xy" ;
+  static const char yy[] = "yy" ;
+  static const char zy[] = "zy" ;
+  static const char xz[] = "xz" ;
+  static const char yz[] = "yz" ;
+  static const char zz[] = "zz" ;
+  static const char * label[] = { xx , yx , zx , xy , yy , zy , xz , yz , zz };
+
+  return std::string( get_string( FullTensor::descriptor().name() ,
+                                  9 , label , size , index ) );
+}
+
+int FullTensor::to_index( size_t size , const std::string & arg ) const
+{
+  static const char xx[] = "xx" ;
+  static const char yx[] = "yx" ;
+  static const char zx[] = "zx" ;
+  static const char xy[] = "xy" ;
+  static const char yy[] = "yy" ;
+  static const char zy[] = "zy" ;
+  static const char xz[] = "xz" ;
+  static const char yz[] = "yz" ;
+  static const char zz[] = "zz" ;
+  static const char * label[] = { xx , yx , zx , xy , yy , zy , xz , yz , zz };
+
+  return get_index( FullTensor::descriptor().name() ,
+                    9 , label , size , arg.c_str() );
+}
+
+//----------------------------------------------------------------------
+
+const SymmetricTensor & SymmetricTensor::descriptor()
+{ static const SymmetricTensor self ; return self ; }
+
+const char * SymmetricTensor::name() const
+{ static const char n[] = "SymmetricTensor" ; return n ; }
+
+std::string SymmetricTensor::to_string( size_t size , int index ) const
+{
+  static const char xx[] = "xx" ;
+  static const char yx[] = "yx" ;
+  static const char zx[] = "zx" ;
+  static const char xy[] = "xy" ;
+  static const char yy[] = "yy" ;
+  static const char zy[] = "zy" ;
+  static const char xz[] = "xz" ;
+  static const char yz[] = "yz" ;
+  static const char zz[] = "zz" ;
+  static const char * label[] = { xx , yx , zx , xy , yy , zy , xz , yz , zz };
+
+  return std::string( get_string( SymmetricTensor::descriptor().name() ,
+                                  9 , label , size , index ) );
+}
+
+int SymmetricTensor::to_index( size_t size , const std::string & arg ) const
+{
+  static const char xx[] = "xx" ;
+  static const char yy[] = "yy" ;
+  static const char zz[] = "zz" ;
+
+  static const char xy[] = "xy" ;
+  static const char yz[] = "yz" ;
+  static const char xz[] = "xz" ;
+
+  static const char * label[] = { xx , yy , zz , xy , yz , xz };
+
+  return get_index( SymmetricTensor::descriptor().name() ,
+                    6 , label , size , arg.c_str() );
 }
 
 //----------------------------------------------------------------------

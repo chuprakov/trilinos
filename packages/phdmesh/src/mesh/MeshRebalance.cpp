@@ -31,8 +31,8 @@
 #include <util/ParallelReduce.hpp>
 #include <util/OctTreeOps.hpp>
 
-#include <mesh/Schema.hpp>
-#include <mesh/Mesh.hpp>
+#include <mesh/MetaData.hpp>
+#include <mesh/BulkData.hpp>
 #include <mesh/FieldData.hpp>
 #include <mesh/Comm.hpp>
 #include <mesh/EntityComm.hpp>
@@ -48,12 +48,12 @@ namespace {
 
 //----------------------------------------------------------------------
 
-void global_coordinate_bounds( Mesh & M ,
+void global_coordinate_bounds( MeshBulkData & M ,
                                const CoordinateField & node_coord ,
                                double * const bounds )
 {
-  const Schema & schema = M.schema();
-  Part & owns_part = schema.owns_part();
+  const MeshMetaData & mesh_meta_data = M.mesh_meta_data();
+  Part & owns_part = mesh_meta_data.locally_owned_part();
 
   double min[3] , max[3] ;
   {
@@ -151,14 +151,14 @@ OctTreeKey elem_key( const double * const bounds ,
 
 //----------------------------------------------------------------------
 
-void global_element_cuts( Mesh & M ,
+void global_element_cuts( MeshBulkData & M ,
                           const double * const bounds ,
                           const CoordinateField & node_coord ,
                           const WeightField  * const elem_weight_field ,
                                 OctTreeKey      * const cut_begin )
 {
-  const Schema & schema = M.schema();
-  const Part & owns_part = schema.owns_part();
+  const MeshMetaData & mesh_meta_data = M.mesh_meta_data();
+  const Part & owns_part = mesh_meta_data.locally_owned_part();
 
   const KernelSet & elem_kernels = M.kernels( Element );
   const KernelSet::const_iterator i_end = elem_kernels.end();
@@ -218,20 +218,20 @@ void global_element_cuts( Mesh & M ,
 // Check each non-aura "other" entity against the attached uses-entities.
 // Each entity will be rebalanced to every processor that it 'uses'.
 
-void rebal_other_entities( Mesh & M , EntityType other , EntityProcSet & rebal )
+void rebal_other_entities( MeshBulkData & M , EntityType other , std::vector<EntityProc> & rebal )
 {
   static const char method[] = "phdmesh::rebal_other_entities" ;
 
   sort_unique( rebal );
 
-  const Schema & schema = M.schema();
-  const Part & uses_part = schema.uses_part();
+  const MeshMetaData & mesh_meta_data = M.mesh_meta_data();
+  const Part & uses_part = mesh_meta_data.locally_used_part();
 
   const KernelSet::iterator k_end = M.kernels( other ).end();
         KernelSet::iterator k     = M.kernels( other ).begin();
 
   std::vector<unsigned> rebal_procs ;
-  EntityProcSet rebal_tmp ;
+  std::vector<EntityProc> rebal_tmp ;
 
   while ( k != k_end ) {
     Kernel & kernel = *k ; ++k ;
@@ -262,7 +262,7 @@ void rebal_other_entities( Mesh & M , EntityType other , EntityProcSet & rebal )
 
         for ( RelationSpan j = entity->relations(); j ; ++j ) {
           Entity * const con_entity = j->entity();
-          EntityProcSet::const_iterator ir =
+          std::vector<EntityProc>::const_iterator ir =
             lower_bound( rebal , *con_entity );
           while ( ir != rebal.end() && ir->first == con_entity ) {
             rebal_procs.push_back( ir->second );
@@ -296,12 +296,12 @@ void rebal_other_entities( Mesh & M , EntityType other , EntityProcSet & rebal )
 
 // Check each non-aura element-entity against the attached elements:
 
-void rebal_elem_entities( Mesh & M ,
+void rebal_elem_entities( MeshBulkData & M ,
                           EntityType t ,
-                          EntityProcSet & rebal )
+                          std::vector<EntityProc> & rebal )
 {
-  const Schema & schema = M.schema();
-  const Part & uses_part = schema.uses_part();
+  const MeshMetaData & mesh_meta_data = M.mesh_meta_data();
+  const Part & uses_part = mesh_meta_data.locally_used_part();
 
   const EntitySet::iterator i_end = M.entities(t).end();
         EntitySet::iterator i     = M.entities(t).begin();
@@ -347,15 +347,15 @@ public:
 
   const char * name() const ;
 
-  void send_entity( CommBuffer & , const Mesh & ,
-                    const EntityProcSet::const_iterator ,
-                    const EntityProcSet::const_iterator ) const ;
+  void send_entity( CommBuffer & , const MeshBulkData & ,
+                    const std::vector<EntityProc>::const_iterator ,
+                    const std::vector<EntityProc>::const_iterator ) const ;
 
   void receive_entity(
     CommBuffer              & buffer ,
-    Mesh                    & receive_mesh ,
+    MeshBulkData                    & receive_mesh ,
     const unsigned            send_source ,
-    EntityProcSet & receive_info ) const ;
+    std::vector<EntityProc> & receive_info ) const ;
 
 private:
   RebalanceComm( const RebalanceComm & );
@@ -367,14 +367,14 @@ const char * RebalanceComm::name() const
 
 void RebalanceComm::send_entity(
   CommBuffer & buf ,
-  const Mesh & recv_mesh ,
-  const EntityProcSet::const_iterator ib ,
-  const EntityProcSet::const_iterator ie ) const 
+  const MeshBulkData & recv_mesh ,
+  const std::vector<EntityProc>::const_iterator ib ,
+  const std::vector<EntityProc>::const_iterator ie ) const 
 {
   // Only the current owner sends an entity:
 
   Entity & entity = * ib->first ;
-  Part & owns_part = recv_mesh.schema().owns_part();
+  Part & owns_part = recv_mesh.mesh_meta_data().locally_owned_part();
 
   if ( entity.kernel().has_superset( owns_part ) ) {
     pack_entity(       buf , recv_mesh , ib , ie );
@@ -384,9 +384,9 @@ void RebalanceComm::send_entity(
 
 void RebalanceComm::receive_entity(
   CommBuffer              & buffer ,
-  Mesh                    & receive_mesh ,
+  MeshBulkData                    & receive_mesh ,
   const unsigned            send_source ,
-  EntityProcSet & receive_info ) const
+  std::vector<EntityProc> & receive_info ) const
 {
   entity_key_type       key ;
   unsigned              owner_rank ;
@@ -415,16 +415,16 @@ void RebalanceComm::receive_entity(
   unpack_field_values( buffer , * ep.first );
 }
 
-void destroy_not_retained( Mesh & M , EntityProcSet & rebal )
+void destroy_not_retained( MeshBulkData & M , std::vector<EntityProc> & rebal )
 {
   const unsigned p_rank = M.parallel_rank();
 
   // Iterating backwards, the 'rebal' array must be sorted and unique
 
-  EntityProcSet::iterator i = rebal.end();
+  std::vector<EntityProc>::iterator i = rebal.end();
 
   while ( i != rebal.begin() ) {
-    const EntityProcSet::iterator j = i ;
+    const std::vector<EntityProc>::iterator j = i ;
 
     Entity * const entity = (--i)->first ;
 
@@ -437,7 +437,7 @@ void destroy_not_retained( Mesh & M , EntityProcSet & rebal )
       flag = i != rebal.begin();
 
       if ( flag ) {
-        EntityProcSet::iterator k = i ;
+        std::vector<EntityProc>::iterator k = i ;
 
         flag = entity == (--k)->first ;
 
@@ -456,12 +456,12 @@ void destroy_not_retained( Mesh & M , EntityProcSet & rebal )
 
 //----------------------------------------------------------------------
 
-void remove_aura( Mesh & M )
+void remove_aura( MeshBulkData & M )
 {
-  Part & uses_part = M.schema().uses_part();
+  Part & uses_part = M.mesh_meta_data().locally_used_part();
 
-  for ( Span< std::vector< EntityProc >::const_iterator >
-        span( M.aura_range() ) ; span ; ++span ) {
+  for ( PairIter< std::vector< EntityProc >::const_iterator >
+        span( M.ghost_destination() ) ; span ; ++span ) {
     Entity * const e = span->first ;
     if ( e->kernel().has_superset( uses_part ) ) {
       std::string msg("phdmesh::remove_aura corrupted aura");
@@ -470,8 +470,8 @@ void remove_aura( Mesh & M )
     M.destroy_entity( e );
   }
 
-  const EntityProcSet tmp ;
-  M.set_aura( tmp , tmp );
+  const std::vector<EntityProc> tmp ;
+  M.set_ghosting( tmp , tmp );
 }
 
 }
@@ -507,14 +507,14 @@ void remove_aura( Mesh & M )
 //
 //----------------------------------------------------------------------
 
-void comm_mesh_rebalance( Mesh & M ,
+void comm_mesh_rebalance( MeshBulkData & M ,
                           const CoordinateField & node_coord_field ,
                           const WeightField  * const elem_weight_field ,
                           std::vector<OctTreeKey> & cut_keys )
 {
-  const Schema & schema  = M.schema();
-  Part * const uses_part = & schema.uses_part();
-  Part * const owns_part = & schema.owns_part();
+  const MeshMetaData & mesh_meta_data  = M.mesh_meta_data();
+  Part * const uses_part = & mesh_meta_data.locally_used_part();
+  Part * const owns_part = & mesh_meta_data.locally_owned_part();
 
   const unsigned p_size = M.parallel_size();
   const unsigned p_rank = M.parallel_rank();
@@ -528,9 +528,9 @@ void comm_mesh_rebalance( Mesh & M ,
     const FieldBase * const ptr = & node_coord_field ;
     std::vector< const FieldBase *> tmp ;
     tmp.push_back( ptr );
-    const EntityProcSet & aura_domain = M.aura_domain();
-    const EntityProcSet & aura_range  = M.aura_range();
-    comm_mesh_field_values( M , aura_domain , aura_range , tmp , false );
+    const std::vector<EntityProc> & aura_domain = M.ghost_source();
+    const std::vector<EntityProc> & aura_range  = M.ghost_destination();
+    communicate_field_data( M , aura_domain , aura_range , tmp , false );
   }
   //--------------------------------------------------------------------
   // Generate global oct-tree keys for local element centroids
@@ -560,10 +560,10 @@ void comm_mesh_rebalance( Mesh & M ,
     const FieldBase * const tmp_coord = & node_coord_field ;
     tmp.push_back( tmp_coord );
 
-    const EntityProcSet & d = M.aura_domain();
-    const EntityProcSet & r = M.aura_range();
+    const std::vector<EntityProc> & d = M.ghost_source();
+    const std::vector<EntityProc> & r = M.ghost_destination();
 
-    comm_mesh_field_values( M , d , r , tmp , false );
+    communicate_field_data( M , d , r , tmp , false );
   }
 
   {
@@ -583,7 +583,7 @@ void comm_mesh_rebalance( Mesh & M ,
   //--------------------------------------------------------------------
   // Fill 'rebal' with all uses entities' rebalancing processors
 
-  EntityProcSet rebal ;
+  std::vector<EntityProc> rebal ;
 
   rebal_elem_entities( M , Node , rebal );
   rebal_elem_entities( M , Edge , rebal );
@@ -636,9 +636,9 @@ void comm_mesh_rebalance( Mesh & M ,
 
   {
     const RebalanceComm manager ;
-    EntityProcSet recv_rebal ;
+    std::vector<EntityProc> recv_rebal ;
 
-    comm_mesh_entities( manager , M , M , rebal , recv_rebal , false );
+    communicate_entities( manager , M , M , rebal , recv_rebal , false );
 
     // Destroy not-retained entities, they have been packed.
     // Remove the corresponding entries in 'rebal'
@@ -657,7 +657,7 @@ void comm_mesh_rebalance( Mesh & M ,
 
   { // Set parallel ownership and sharing parts.
 
-    EntityProcSet::iterator ish ;
+    std::vector<EntityProc>::iterator ish ;
 
     for ( ish = rebal.begin() ; ish != rebal.end() ; ) {
       Entity & e = * ish->first ;

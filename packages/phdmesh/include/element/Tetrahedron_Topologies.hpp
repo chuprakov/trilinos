@@ -24,15 +24,15 @@
  * @author H. Carter Edwards
  */
 
-#ifndef phdmesh_TetrahedronTopology_hpp
-#define phdmesh_TetrahedronTopology_hpp
+#ifndef phdmesh_Tetrahedron_Topologies_hpp
+#define phdmesh_Tetrahedron_Topologies_hpp
 
-#include <element/LocalTopology.hpp>
-#include <element/TriangleTopology.hpp>
+#include <element/CellTopology.hpp>
+#include <element/Triangle_Topologies.hpp>
 
 namespace phdmesh {
 
-template< unsigned NumNode = 0 > struct Tetrahedron ;  // 3D only
+template< unsigned = 4 > struct Tetrahedron ;
 
 //----------------------------------------------------------------------
 
@@ -51,68 +51,38 @@ typedef
                 IndexList< 0 , 2 , 1 ,   6 , 5 , 4 >
   >::type TetrahedronSideNodeMap ;
 
-template<>
-struct Tetrahedron<0>
-  : public LocalTopologyTraits< 3 , 3 , 3, // Dimension
-                                4 , 0, // #Vertex, #Node
-      MakeTypeList< BoundaryEdge<> ,
-                    BoundaryEdge<> ,
-                    BoundaryEdge<> ,
-                    BoundaryEdge<> ,
-                    BoundaryEdge<> ,
-                    BoundaryEdge<> >::type ,
-      TetrahedronEdgeNodeMap ,
-      MakeTypeList< BoundaryTriangle<> ,
-                    BoundaryTriangle<> ,
-                    BoundaryTriangle<> ,
-                    BoundaryTriangle<> >::type ,
-      TetrahedronSideNodeMap >
-{
-  typedef Tetrahedron<0> Shape ;
-  static const LocalTopology * descriptor();
-};
+template<> struct Tetrahedron<4> : public
+  CellTopologyTraits< 3 , 4 , 4 ,
+                      MakeTypeList< Line<>  ,
+                                    Line<>  ,
+                                    Line<>  ,
+                                    Line<>  ,
+                                    Line<>  ,
+                                    Line<>  >::type ,
+                      TetrahedronEdgeNodeMap ,
+                      MakeTypeList< Triangle<>  ,
+                                    Triangle<>  ,
+                                    Triangle<>  ,
+                                    Triangle<>  >::type ,
+                      TetrahedronSideNodeMap > {};
 
-template<>
-struct Tetrahedron<4>
-  : public LocalTopologyTraits< 3 , 3 , 3, // Dimension
-                                4 , 4, // #Vertex, #Node
-      MakeTypeList< BoundaryEdge<2> ,
-                    BoundaryEdge<2> ,
-                    BoundaryEdge<2> ,
-                    BoundaryEdge<2> ,
-                    BoundaryEdge<2> ,
-                    BoundaryEdge<2> >::type ,
-      TetrahedronEdgeNodeMap ,
-      MakeTypeList< BoundaryTriangle<3> ,
-                    BoundaryTriangle<3> ,
-                    BoundaryTriangle<3> ,
-                    BoundaryTriangle<3> >::type ,
-      TetrahedronSideNodeMap >
-{
-  typedef Tetrahedron<0> Shape ;
-  static const LocalTopology * descriptor();
-};
+template<> struct Tetrahedron<10> : public
+  CellTopologyTraits< 3 , 4 , 10 ,
+                      MakeTypeList< Line<3>  ,
+                                    Line<3>  ,
+                                    Line<3>  ,
+                                    Line<3>  ,
+                                    Line<3>  ,
+                                    Line<3>  >::type ,
+                      TetrahedronEdgeNodeMap ,
+                      MakeTypeList< Triangle<6>  ,
+                                    Triangle<6>  ,
+                                    Triangle<6>  ,
+                                    Triangle<6>  >::type ,
+                      TetrahedronSideNodeMap > {};
 
-template<>
-struct Tetrahedron<10>
-  : public LocalTopologyTraits< 3 , 3 , 3, // Dimension
-                                4 , 10, // #Vertex, #Node
-      MakeTypeList< BoundaryEdge<3> ,
-                    BoundaryEdge<3> ,
-                    BoundaryEdge<3> ,
-                    BoundaryEdge<3> ,
-                    BoundaryEdge<3> ,
-                    BoundaryEdge<3> >::type ,
-      TetrahedronEdgeNodeMap ,
-      MakeTypeList< BoundaryTriangle<6> ,
-                    BoundaryTriangle<6> ,
-                    BoundaryTriangle<6> ,
-                    BoundaryTriangle<6> >::type ,
-      TetrahedronSideNodeMap >
-{
-  typedef Tetrahedron<0> Shape ;
-  static const LocalTopology * descriptor();
-};
+template<> const CellTopology * cell_topology< Tetrahedron<> >();
+template<> const CellTopology * cell_topology< Tetrahedron<10> >();
 
 //----------------------------------------------------------------------
 
