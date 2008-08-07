@@ -178,6 +178,11 @@ public:
     {}
 };
 
+struct FilePartLess {
+  bool operator()( const FilePart * lhs , int rhs ) const
+    { return lhs->m_identifier < rhs ; }
+};
+
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
@@ -298,6 +303,25 @@ const FilePart * internal_declare_part(
 
 void FileSchema::declare_part( Part & arg_part , int arg_id )
 {
+  std::vector< const FilePart * >::iterator
+    i = std::lower_bound( m_parts[Element].begin() ,
+                          m_parts[Element].end() ,
+                          arg_id , FilePartLess() );
+
+  if ( i != m_parts[ Element ].end() && (*i)->m_identifier == arg_id ) {
+    std::ostringstream msg ;
+    msg << "phdmesh::exodus::FileSchema::declare_part( " ;
+    msg << arg_part.name() ;
+    msg << " , " ;
+    msg << arg_id ;
+    msg << " ) FAILED, already called declare_part( " ;
+    msg << (*i)->m_part.name() ;
+    msg << " , " ;
+    msg << arg_id ;
+    msg << " )" ;
+    throw std::runtime_error( msg.str() );
+  }
+
   const CellTopology * const top = get_cell_topology( arg_part );
 
   if ( NULL == top ) {
@@ -376,7 +400,7 @@ void FileSchema::declare_part( Part & arg_part , int arg_id )
                            number_nodes , 0 ,
                            m_field_elem_attr );
 
-  m_parts[ Element ].push_back( fp );
+  m_parts[ Element ].insert( i , fp );
 }
 
 void FileSchema::declare_part(
@@ -384,12 +408,35 @@ void FileSchema::declare_part(
   int        arg_id ,
   EntityType arg_type )
 {
+  std::vector< const FilePart * >::iterator
+    i = std::lower_bound( m_parts[ arg_type ].begin() ,
+                          m_parts[ arg_type ].end() ,
+                          arg_id , FilePartLess() );
+
+  if ( i != m_parts[ arg_type ].end() && (*i)->m_identifier == arg_id ) {
+    std::ostringstream msg ;
+    msg << "phdmesh::exodus::FileSchema::declare_part( " ;
+    msg << arg_part.name() ;
+    msg << " , " ;
+    msg << arg_id ;
+    msg << " , " ;
+    msg << entity_type_name( arg_type );
+    msg << " ) FAILED, already called declare_part( " ;
+    msg << (*i)->m_part.name() ;
+    msg << " , " ;
+    msg << arg_id ;
+    msg << " , " ;
+    msg << entity_type_name( arg_type );
+    msg << " )" ;
+    throw std::runtime_error( msg.str() );
+  }
+
   const FilePart * const fp =
      internal_declare_part( m_schema , arg_part , arg_id ,
                             arg_type , UNDEFINED , m_dimension , 0 , 0 ,
                             m_field_elem_attr );
 
-  m_parts[ arg_type ].push_back( fp );
+  m_parts[ arg_type ].insert( i , fp );
 }
 
 //----------------------------------------------------------------------
@@ -784,52 +831,33 @@ FileOutput::~FileOutput()
 namespace {
 
 template<class Op>
-EntitySet::const_iterator
-  chunk( EntitySet::const_iterator i ,
-         const EntitySet::const_iterator i_end ,
-         Part & part ,
-         const FileSchema::IndexField & field_index ,
-         const int index_begin ,
-         const int index_end ,
-         Op & op )
+void chunk( const std::vector<const Entity*> & entities ,
+            const FileSchema::IndexField & field_index ,
+            const int index_begin ,
+            const int index_end ,
+            Op & op )
 {
   const int maximum = op.max();
 
-  std::vector<const Entity *> send_entities ;
+  const std::vector<const Entity *>::const_iterator i_end = entities.end();
+        std::vector<const Entity *>::const_iterator i = entities.begin();
 
-  int index_begin_chunk = index_begin ;
+  int index = index_begin ;
 
-  while ( index_begin_chunk < index_end ) {
+  while ( index < index_end ) {
 
-    const int index_end_chunk =
-      index_end < index_begin_chunk + maximum ?
-      index_end : index_begin_chunk + maximum ;
+    const int index_end_chunk = index_end < index + maximum ?
+                                index_end : index + maximum ;
 
-    send_entities.clear();
+    const std::vector<const Entity *>::const_iterator i_beg = i ;
 
-    for ( bool flag = true ; flag && i != i_end ; ) {
-      const Entity * const e = & *i ;
-      if ( e->kernel().has_superset( part ) ) {
-        flag = field_data( field_index , *e )[0] < index_begin_chunk ;
-      }
-      if ( flag ) { ++i ; }
-    }
+    while ( i != i_end &&
+            field_data( field_index , **i )[0] < index_end_chunk ) { ++i ; }
 
-    for ( bool flag = true ; flag && i != i_end ; ) {
-      const Entity * const e = & *i ;
-      if ( e->kernel().has_superset( part ) ) {
-        flag = field_data( field_index , *e )[0] < index_end_chunk ;
-        if ( flag ) { send_entities.push_back( e ); }
-      }
-      if ( flag ) { ++i ; }
-    }
+    op( index , index_end_chunk , i_beg , i );
 
-    op( index_begin_chunk , index_end_chunk , send_entities );
-
-    index_begin_chunk = index_end_chunk ;
+    index = index_end_chunk ;
   }
-
-  return i ;
 }
 
 //----------------------------------------------------------------------
@@ -849,7 +877,8 @@ struct WriteNodeIndexCoord {
   unsigned max() const { return maximum ; }
 
   void operator()( const int , const int ,
-                   const std::vector<const Entity *> & );
+                   const std::vector<const Entity *>::const_iterator ,
+                   const std::vector<const Entity *>::const_iterator );
 
   WriteNodeIndexCoord( FileOutput & arg_output , unsigned );
 };
@@ -875,16 +904,17 @@ WriteNodeIndexCoord::WriteNodeIndexCoord(
 void WriteNodeIndexCoord::operator()(
   const int index_begin ,
   const int index_end ,
-  const std::vector<const Entity *> & send )
+  const std::vector<const Entity *>::const_iterator send_begin ,
+  const std::vector<const Entity *>::const_iterator send_end )
 {
-  const MeshBulkData       & M  = output.m_mesh ;
+  const MeshBulkData & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_size = M.parallel_size();
   const unsigned  p_write = SF.m_io_rank ;
 
   const unsigned send_size =
-     ( sizeof(int) * 2 + sizeof(double) * 3 ) * send.size();
+     ( sizeof(int) * 2 + sizeof(double) * 3 ) * ( send_end - send_begin );
 
   CommGather gather( p_comm , p_write , send_size );
 
@@ -892,7 +922,7 @@ void WriteNodeIndexCoord::operator()(
     CommBuffer & buf = gather.send_buffer();
 
     for ( std::vector<const Entity *>::const_iterator
-          i = send.begin() ; i != send.end() ; ++i ) {
+          i = send_begin ; i != send_end ; ++i ) {
       const Entity & node = **i ;
       int ids[2] ;
       ids[0] = * field_data( SF.m_field_index , node );
@@ -969,7 +999,8 @@ struct WriteElemIndexRelation {
   unsigned max() const { return maximum ; }
 
   void operator()( const int , const int ,
-                   const std::vector<const Entity *> & );
+                   const std::vector<const Entity *>::const_iterator ,
+                   const std::vector<const Entity *>::const_iterator );
 };
 
 WriteElemIndexRelation::WriteElemIndexRelation(
@@ -1002,7 +1033,8 @@ WriteElemIndexRelation::WriteElemIndexRelation(
 void WriteElemIndexRelation::operator()(
   const int index_begin ,
   const int index_end ,
-  const std::vector<const Entity *> & send )
+  const std::vector<const Entity *>::const_iterator send_begin ,
+  const std::vector<const Entity *>::const_iterator send_end )
 {
   const MeshBulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
@@ -1014,7 +1046,8 @@ void WriteElemIndexRelation::operator()(
   const unsigned num_nodes_per_elem = part.m_number_nodes ;
   const unsigned send_data_num      = num_nodes_per_elem + 2 ;
 
-  const unsigned send_size = sizeof(int) * send_data_num * send.size();
+  const unsigned send_size =
+    sizeof(int) * send_data_num * ( send_end - send_begin );
 
   CommGather gather( p_comm , p_write , send_size );
 
@@ -1022,13 +1055,22 @@ void WriteElemIndexRelation::operator()(
     CommBuffer & buf = gather.send_buffer();
 
     for ( std::vector<const Entity *>::const_iterator
-          i = send.begin() ; i != send.end() ; ++i ) {
+          i = send_begin ; i != send_end ; ++i ) {
       const Entity & elem = **i ;
 
       send_data[0] = * field_data( SF.m_field_index , elem );
       send_data[1] =   elem.identifier();
 
-      RelationSpan con = elem.relations();
+      RelationSpan con = elem.relations( Node );
+
+      if ( con.size() < (int) num_nodes_per_elem ) {
+        std::ostringstream msg ;
+        msg << "P" << M.parallel_rank();
+        msg << ": phdmesh::exodus::WriteElemIndexRelation FAILED, " ;
+        msg << "expected " << num_nodes_per_elem ;
+        msg << " but given " << con.size();
+        throw std::runtime_error( msg.str() );
+      }
 
       for ( unsigned j = 0 ; j < num_nodes_per_elem ; ++j , ++con ) {
         Entity & node = * con->entity();
@@ -1203,13 +1245,78 @@ void variable_add( EntityType entity_type ,
   }
 }
 
+
+struct EntityLess {
+  bool operator()( const Entity * const lhs , const Entity * const rhs )
+    { return lhs->identifier() < rhs->identifier(); }
+};
+
+void get_entities(
+  std::vector< const Entity * > & tmp ,
+  const MeshBulkData & mesh ,
+  EntityType type ,
+  Part & part )
+{
+  const KernelSet & ks = mesh.kernels( type );
+
+  size_t count = 0 ;
+
+  for ( KernelSet::const_iterator ik = ks.begin() ; ik != ks.end() ; ++ik ) {
+    if ( ik->has_superset( part ) ) { count += ik->size(); }
+  }
+
+  tmp.assign( count , NULL );
+
+  count = 0 ;
+  for ( KernelSet::const_iterator ik = ks.begin() ; ik != ks.end() ; ++ik ) {
+    if ( ik->has_superset( part ) ) {
+      for ( unsigned i = 0 ; i < ik->size() ; ++i , ++count ) {
+        tmp[ count ] = (*ik)[i] ;
+      }
+    }
+  }
+
+  std::sort( tmp.begin() , tmp.end() , EntityLess() );
+}
+
+void get_entities(
+  std::vector< const Entity * > & tmp ,
+  const MeshBulkData & mesh ,
+  EntityType type ,
+  Part & part1 ,
+  Part & part2 )
+{
+  const KernelSet & ks = mesh.kernels( type );
+
+  size_t count = 0 ;
+
+  for ( KernelSet::const_iterator ik = ks.begin() ; ik != ks.end() ; ++ik ) {
+    if ( ik->has_superset( part1 ) &&
+         ik->has_superset( part2 ) ) { count += ik->size(); }
+  }
+
+  tmp.assign( count , NULL );
+
+  count = 0 ;
+  for ( KernelSet::const_iterator ik = ks.begin() ; ik != ks.end() ; ++ik ) {
+    if ( ik->has_superset( part1 ) &&
+         ik->has_superset( part2 ) ) {
+      for ( unsigned i = 0 ; i < ik->size() ; ++i , ++count ) {
+        tmp[ count ] = (*ik)[i] ;
+      }
+    }
+  }
+
+  std::sort( tmp.begin() , tmp.end() , EntityLess() );
+}
+
 }
 
 //----------------------------------------------------------------------
 
 FileOutput::FileOutput(
   const FileSchema  & arg_schema ,
-  const MeshBulkData        & arg_mesh ,
+  const MeshBulkData & arg_mesh ,
   const std::string & arg_file_path ,
   const std::string & arg_title ,
   const bool          arg_storage_double ,
@@ -1543,14 +1650,13 @@ FileOutput::FileOutput(
   if ( ! exo_error ) {
     WriteNodeIndexCoord work( *this , m_max_buffer );
 
-    const EntitySet & es = M.entities( Node );
-
     const int index = 1 ;
     const int index_end = index + num_nodes_global ;
 
-    chunk( es.begin() , es.end() ,
-           owns_part , FS.m_field_index ,
-           index , index_end , work );
+    std::vector< const Entity * > tmp ;
+    get_entities( tmp , M , Node , owns_part );
+
+    chunk( tmp , FS.m_field_index , index , index_end , work );
 
     exo_error = work.exo_error ;
 
@@ -1560,13 +1666,10 @@ FileOutput::FileOutput(
   }
 
   //--------------------------------------------------------------------
-  // Write element block identifiers and relationivity,
+  // Write element block identifiers and relations,
   // element indices are partitioned by element block.
 
   if ( ! exo_error ) {
-    const EntitySet & es = M.entities( Element );
-
-    EntitySet::const_iterator i = es.begin();
 
     int index = 1 ;
 
@@ -1574,10 +1677,12 @@ FileOutput::FileOutput(
 
       const int index_end = index + global_num_elem_in_block[j] ;
 
-      WriteElemIndexRelation work( *this, * elem_parts[j], index, m_max_buffer );
+      WriteElemIndexRelation work(*this, * elem_parts[j], index, m_max_buffer);
 
-      i = chunk( i , es.end() , owns_part , FS.m_field_index ,
-                 index , index_end , work );
+      std::vector<const Entity *> tmp ;
+      get_entities( tmp , M , Element , owns_part , elem_parts[j]->m_part );
+
+      chunk( tmp , FS.m_field_index , index , index_end , work );
 
       index = index_end ;
 
@@ -1604,14 +1709,16 @@ FileOutput::FileOutput(
 
 namespace {
 
-void pack_entity_proc( const std::vector<const Entity *> & send ,
-                       const FileSchema::IndexField      & f_index ,
-                       CommBuffer & buf )
+void pack_entity_proc(
+  const std::vector<const Entity *>::const_iterator send_begin ,
+  const std::vector<const Entity *>::const_iterator send_end ,
+  const FileSchema::IndexField      & f_index ,
+  CommBuffer & buf )
 {
   double item_buffer[2] ;
 
   for ( std::vector<const Entity *>::const_iterator
-        i = send.begin() ; i != send.end() ; ++i ) {
+        i = send_begin ; i != send_end ; ++i ) {
     const Entity & e = **i ;
 
     item_buffer[0] = * field_data( f_index , e );
@@ -1627,16 +1734,18 @@ void pack_data_2( const double * const b , CommBuffer & buf )
 { buf.pack<double>( b , 2 ); }
 
 template<typename T>
-void pack_entity_data( const std::vector<const Entity *> & send ,
-                       const FileSchema::IndexField      & f_index ,
-                       const FieldBase                   & f_data ,
-                       const unsigned                      offset ,
-                       CommBuffer & buf )
+void pack_entity_data(
+  const std::vector<const Entity *>::const_iterator ib ,
+  const std::vector<const Entity *>::const_iterator ie ,
+  const FileSchema::IndexField      & f_index ,
+  const FieldBase                   & f_data ,
+  const unsigned                      offset ,
+  CommBuffer & buf )
 {
   double item_buffer[2] ;
 
   for ( std::vector<const Entity *>::const_iterator
-        i = send.begin() ; i != send.end() ; ++i ) {
+        i = ib ; i != ie ; ++i ) {
     const Entity & e = **i ;
     T * const data = reinterpret_cast<T*>( field_data(f_data,e) );
 
@@ -1647,42 +1756,44 @@ void pack_entity_data( const std::vector<const Entity *> & send ,
   }
 }
 
-void pack_entity_data( const std::vector<const Entity *> & send ,
-                       const FileSchema::IndexField      & f_index ,
-                       const FieldBase                   & f_data ,
-                       const unsigned                      offset ,
-                       CommBuffer & buf )
+void pack_entity_data(
+  const std::vector<const Entity *>::const_iterator ib ,
+  const std::vector<const Entity *>::const_iterator ie ,
+  const FileSchema::IndexField      & f_index ,
+  const FieldBase                   & f_data ,
+  const unsigned                      offset ,
+  CommBuffer & buf )
 {
   switch( f_data.numeric_type_ordinal() ) {
   case NumericEnum< signed char >::value :
-    pack_entity_data<signed char>( send, f_index, f_data, offset, buf );
+    pack_entity_data<signed char>( ib,ie, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< unsigned char >::value :
-    pack_entity_data<unsigned char>( send, f_index, f_data, offset, buf );
+    pack_entity_data<unsigned char>( ib,ie, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< signed short >::value :
-    pack_entity_data< signed short >( send, f_index, f_data, offset, buf );
+    pack_entity_data< signed short >( ib,ie, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< unsigned short >::value :
-    pack_entity_data< unsigned short >( send, f_index, f_data, offset, buf );
+    pack_entity_data< unsigned short >( ib,ie, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< signed int >::value :
-    pack_entity_data< signed int >( send, f_index, f_data, offset, buf );
+    pack_entity_data< signed int >( ib,ie, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< unsigned int >::value :
-    pack_entity_data< unsigned int >( send, f_index, f_data, offset, buf );
+    pack_entity_data< unsigned int >( ib,ie, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< signed long >::value :
-    pack_entity_data< signed long >( send, f_index, f_data, offset, buf );
+    pack_entity_data< signed long >( ib,ie, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< unsigned long >::value :
-    pack_entity_data< unsigned long >( send, f_index, f_data, offset, buf );
+    pack_entity_data< unsigned long >( ib,ie, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< float >::value :
-    pack_entity_data< float >( send, f_index, f_data, offset, buf );
+    pack_entity_data< float >( ib,ie, f_index, f_data, offset, buf );
     break ;
   case NumericEnum< double >::value :
-    pack_entity_data< double >( send, f_index, f_data, offset, buf );
+    pack_entity_data< double >( ib,ie, f_index, f_data, offset, buf );
     break ;
   default : break ;
   }
@@ -1703,7 +1814,8 @@ struct WriteNodeValues {
   unsigned max() const { return maximum ; }
 
   void operator()( const int , const int ,
-                   const std::vector<const Entity *> & );
+                   const std::vector<const Entity *>::const_iterator ,
+                   const std::vector<const Entity *>::const_iterator );
 
   WriteNodeValues( FileOutput & , unsigned );
 
@@ -1735,7 +1847,8 @@ WriteNodeValues::WriteNodeValues(
 void WriteNodeValues::operator()(
   const int index_begin ,
   const int index_end ,
-  const std::vector<const Entity *> & send )
+  const std::vector<const Entity *>::const_iterator send_begin ,
+  const std::vector<const Entity *>::const_iterator send_end )
 {
   const MeshBulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
@@ -1743,19 +1856,20 @@ void WriteNodeValues::operator()(
   const unsigned  p_size = M.parallel_size();
   const unsigned  p_write = SF.m_io_rank ;
 
-  const unsigned send_size = 2 * sizeof(double) * send.size();
+  const unsigned send_size = 2 * sizeof(double) * ( send_end - send_begin );
 
   double item_buffer[2] ;
 
   CommGather gather( p_comm , p_write , send_size );
 
   if ( field->m_field ) {
-    pack_entity_data( send , SF.m_field_index ,
+    pack_entity_data( send_begin , send_end , SF.m_field_index ,
                       * field->m_field , field->m_offset ,
                        gather.send_buffer() );
   }
   else {
-    pack_entity_proc( send , SF.m_field_index , gather.send_buffer() );
+    pack_entity_proc( send_begin, send_end,
+                      SF.m_field_index , gather.send_buffer() );
   }
 
   gather.communicate();
@@ -1805,7 +1919,8 @@ struct WriteElemValues {
   unsigned max() const { return maximum ; }
 
   void operator()( const int , const int ,
-                   const std::vector<const Entity *> & );
+                   const std::vector<const Entity *>::const_iterator ,
+                   const std::vector<const Entity *>::const_iterator );
 
   WriteElemValues( FileOutput & , unsigned );
 
@@ -1840,7 +1955,8 @@ WriteElemValues::WriteElemValues(
 void WriteElemValues::operator()(
   const int index_begin ,
   const int index_end ,
-  const std::vector<const Entity *> & send )
+  const std::vector<const Entity *>::const_iterator send_begin ,
+  const std::vector<const Entity *>::const_iterator send_end )
 {
   const MeshBulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
@@ -1848,19 +1964,20 @@ void WriteElemValues::operator()(
   const unsigned  p_size = M.parallel_size();
   const unsigned  p_write = SF.m_io_rank ;
 
-  const unsigned send_size = 2 * sizeof(double) * send.size();
+  const unsigned send_size = 2 * sizeof(double) * ( send_end - send_begin );
 
   double item_buffer[2] ;
 
   CommGather gather( p_comm , p_write , send_size );
 
   if ( field->m_field ) {
-    pack_entity_data( send , SF.m_field_index ,
+    pack_entity_data( send_begin, send_end, SF.m_field_index ,
                       * field->m_field , field->m_offset ,
                        gather.send_buffer() );
   }
   else {
-    pack_entity_proc( send , SF.m_field_index , gather.send_buffer() );
+    pack_entity_proc( send_begin, send_end,
+                      SF.m_field_index , gather.send_buffer() );
   }
 
   gather.communicate();
@@ -1948,14 +2065,13 @@ void FileOutput::write( double time_value )
 
       work.set_field( *i );
 
-      const EntitySet & es = M.entities( Node );
-
       const int index = 1 ;
       const int index_end = index + num_nodes_global ;
 
-      chunk( es.begin() , es.end() ,
-             owns_part , FS.m_field_index ,
-             index , index_end , work );
+      std::vector< const Entity * > tmp ;
+      get_entities( tmp , M , Node , owns_part );
+
+      chunk( tmp , FS.m_field_index , index , index_end , work );
     }
 
     exo_func  = work.exo_func ;
@@ -1966,8 +2082,6 @@ void FileOutput::write( double time_value )
 
   if ( ! exo_error ) {
     // Iteration: Variables, element blocks, element chunking
-
-    const EntitySet & es = M.entities( Element );
 
     const int * const global_num_elem_in_block =
       & m_global_counts[ 4 + num_node_parts + num_edge_parts + num_face_parts ];
@@ -1980,8 +2094,6 @@ void FileOutput::write( double time_value )
 
       const FilePart * const part = k->m_part ;
 
-      EntitySet::const_iterator i = es.begin();
-
       int index = 1 ;
 
       for ( unsigned j = 0 ; j < num_elem_parts ; ++j ) {
@@ -1992,22 +2104,14 @@ void FileOutput::write( double time_value )
 
           work.set_field( *k , index , elem_parts[j]->m_identifier );
 
-          i = chunk( i , es.end() ,
-                     owns_part , FS.m_field_index ,
-                     index , index_end , work );
+          std::vector<const Entity *> tmp ;
+          get_entities( tmp , M , Element, owns_part , elem_parts[j]->m_part );
+
+          chunk( tmp , FS.m_field_index , index , index_end , work );
 
           if ( ! exo_error ) {
             exo_error = work.exo_error ;
             exo_func  = work.exo_func ;
-          }
-        }
-        else {
-          // Skip elements in this block
-          for ( bool flag = true ; flag && i != es.end() ; ) {
-            if ( i->kernel().has_superset( owns_part ) ) {
-              flag = field_data( FS.m_field_index , *i )[0] < index_end ;
-            }
-            if ( flag ) { ++i ; }
           }
         }
         index = index_end ;
