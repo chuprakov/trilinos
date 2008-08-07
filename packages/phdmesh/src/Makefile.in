@@ -274,80 +274,92 @@ top_srcdir = @top_srcdir@
 # might someday be needed by some other code outside New_Package. The first is
 # the list of all source and any other header files.
 # ------------------------------------------------------------------------
+
 ELEMENT_H = \
+	$(srcdir)/../include/element/Basic_Topologies.hpp \
+	$(srcdir)/../include/element/CellTopology.hpp \
 	$(srcdir)/../include/element/Declarations.hpp \
 	$(srcdir)/../include/element/Dimensions.hpp \
-	$(srcdir)/../include/element/HexahedronTopology.hpp \
-	$(srcdir)/../include/element/LocalTopology.hpp \
-	$(srcdir)/../include/element/PyramidTopology.hpp \
-	$(srcdir)/../include/element/QuadrilateralTopology.hpp \
+	$(srcdir)/../include/element/Hexahedron_Topologies.hpp \
+	$(srcdir)/../include/element/Pyramid_Topologies.hpp \
+	$(srcdir)/../include/element/Quadrilateral_Topologies.hpp \
 	$(srcdir)/../include/element/Stencils.hpp \
-	$(srcdir)/../include/element/TetrahedronTopology.hpp \
-	$(srcdir)/../include/element/TriangleTopology.hpp \
-	$(srcdir)/../include/element/WedgeTopology.hpp
-
+	$(srcdir)/../include/element/Tetrahedron_Topologies.hpp \
+	$(srcdir)/../include/element/Triangle_Topologies.hpp \
+	$(srcdir)/../include/element/Wedge_Topologies.hpp
+ 
 ELEMENT = \
 	$(srcdir)/element/ElementDeclarations.cpp \
 	$(srcdir)/element/ElementDimensions.cpp \
-	$(srcdir)/element/ElementLocalTopology.cpp
+	$(srcdir)/element/ElementTopologies.cpp
 
 MESH_H = \
 	$(srcdir)/../include/mesh/Assemble.hpp \
+	$(srcdir)/../include/mesh/BulkData.hpp \
 	$(srcdir)/../include/mesh/Comm.hpp \
 	$(srcdir)/../include/mesh/Entity.hpp \
 	$(srcdir)/../include/mesh/EntityComm.hpp \
 	$(srcdir)/../include/mesh/Field.hpp \
+	$(srcdir)/../include/mesh/FieldDeclarations.hpp \
 	$(srcdir)/../include/mesh/FieldData.hpp \
+	$(srcdir)/../include/mesh/FieldTraits.hpp \
 	$(srcdir)/../include/mesh/Gather.hpp \
 	$(srcdir)/../include/mesh/Kernel.hpp \
-	$(srcdir)/../include/mesh/Mesh.hpp \
+	$(srcdir)/../include/mesh/MetaData.hpp \
 	$(srcdir)/../include/mesh/Part.hpp \
 	$(srcdir)/../include/mesh/Proximity.hpp \
-	$(srcdir)/../include/mesh/Schema.hpp \
+	$(srcdir)/../include/mesh/Relation.hpp \
 	$(srcdir)/../include/mesh/Types.hpp
 
 MESH = \
 	$(srcdir)/mesh/MeshAssemble.cpp \
 	$(srcdir)/mesh/MeshAura.cpp \
+	$(srcdir)/mesh/MeshBulkData.cpp \
 	$(srcdir)/mesh/MeshComm.cpp \
 	$(srcdir)/mesh/MeshEntity.cpp \
 	$(srcdir)/mesh/MeshEntityComm.cpp \
 	$(srcdir)/mesh/MeshField.cpp \
 	$(srcdir)/mesh/MeshFieldTraits.cpp \
 	$(srcdir)/mesh/MeshKernel.cpp \
-	$(srcdir)/mesh/MeshMesh.cpp \
+	$(srcdir)/mesh/MeshMetaData.cpp \
 	$(srcdir)/mesh/MeshPart.cpp \
 	$(srcdir)/mesh/MeshProximity.cpp \
 	$(srcdir)/mesh/MeshRebalance.cpp \
 	$(srcdir)/mesh/MeshRelation.cpp \
-	$(srcdir)/mesh/MeshSchema.cpp \
 	$(srcdir)/mesh/MeshSharing.cpp \
 	$(srcdir)/mesh/MeshTypes.cpp
 
 UTIL_H = \
+	$(srcdir)/../include/util/Array.hpp \
+	$(srcdir)/../include/util/ArrayHelper.hpp \
+	$(srcdir)/../include/util/ArrayVector.hpp \
 	$(srcdir)/../include/util/Basics.hpp \
 	$(srcdir)/../include/util/CSet.hpp \
-	$(srcdir)/../include/util/Dimension.hpp \
 	$(srcdir)/../include/util/FixedArray.hpp \
 	$(srcdir)/../include/util/FixedPoolAlloc.hpp \
+	$(srcdir)/../include/util/IndexList.hpp \
 	$(srcdir)/../include/util/NamedValue.hpp \
 	$(srcdir)/../include/util/NumericEnum.hpp \
 	$(srcdir)/../include/util/OctTree.hpp \
 	$(srcdir)/../include/util/OctTreeOps.hpp \
-	$(srcdir)/../include/util/ParallelComm.hpp \
+	$(srcdir)/../include/util/PairIter.hpp \
 	$(srcdir)/../include/util/Parallel.hpp \
+	$(srcdir)/../include/util/ParallelComm.hpp \
 	$(srcdir)/../include/util/ParallelIndex.hpp \
 	$(srcdir)/../include/util/ParallelInputStream.hpp \
 	$(srcdir)/../include/util/ParallelReduce.hpp \
 	$(srcdir)/../include/util/Reference.hpp \
 	$(srcdir)/../include/util/Setv.hpp \
+	$(srcdir)/../include/util/Span.hpp \
 	$(srcdir)/../include/util/TestDriver.hpp \
+	$(srcdir)/../include/util/TPI.h \
+	$(srcdir)/../include/util/TPI.hpp \
 	$(srcdir)/../include/util/TypeList.hpp \
 	$(srcdir)/../include/util/ValueIO.hpp
 
 UTIL = \
+	$(srcdir)/util/Array.cpp \
 	$(srcdir)/util/CSet.cpp \
-	$(srcdir)/util/Dimension.cpp \
 	$(srcdir)/util/FixedPoolAlloc.cpp \
 	$(srcdir)/util/NamedValue.cpp \
 	$(srcdir)/util/NumericEnum.cpp \
@@ -361,6 +373,9 @@ UTIL = \
 	$(srcdir)/util/Reference.cpp \
 	$(srcdir)/util/Setv.cpp \
 	$(srcdir)/util/TestDriver.cpp \
+	$(srcdir)/util/TPI_Concurrency.cpp \
+	$(srcdir)/util/TPI_pthreads.cpp \
+	$(srcdir)/util/TPI_Walltime.cpp \
 	$(srcdir)/util/ValueIO.cpp
 
 MESHIO_H = \

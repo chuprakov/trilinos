@@ -271,31 +271,6 @@ template<> struct ArrayHelper<1>
   static void stride_append( size_t * const dst ,
                              const size_t * , const size_t n )
     { dst[0] = n ; }
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Truncate {
-    typedef void natural_type ;
-    typedef void fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 ,
-            class TA >
-  struct Append {
-    typedef ArrayNatural<Scalar,TA,T1> natural_type ;
-    typedef ArrayFortran<Scalar,T1,TA> fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Reverse {
-    typedef ArrayNatural<Scalar,T1> natural_type ;
-    typedef ArrayFortran<Scalar,T1> fortran_type ;
-  };
 };
 
 template<> struct ArrayHelper<2>
@@ -334,31 +309,6 @@ template<> struct ArrayHelper<2>
       dst[0] = src[0] ;
       dst[1] = n * dst[0] ;
     }
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Truncate {
-    typedef ArrayNatural<Scalar,T2> natural_type ;
-    typedef ArrayFortran<Scalar,T1> fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 ,
-            class TA >
-  struct Append {
-    typedef ArrayNatural<Scalar,TA,T1,T2> natural_type ;
-    typedef ArrayFortran<Scalar,T1,T2,TA> fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Reverse {
-    typedef ArrayNatural<Scalar,T2,T1> natural_type ;
-    typedef ArrayFortran<Scalar,T2,T1> fortran_type ;
-  };
 };
 
 template<> struct ArrayHelper<3>
@@ -402,31 +352,6 @@ template<> struct ArrayHelper<3>
       dst[1] = src[1] ;
       dst[2] = n * dst[1] ;
     }
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Truncate {
-    typedef ArrayNatural<Scalar,T2,T3> natural_type ;
-    typedef ArrayFortran<Scalar,T1,T2> fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 ,
-            class TA >
-  struct Append {
-    typedef ArrayNatural<Scalar,TA,T1,T2,T3> natural_type ;
-    typedef ArrayFortran<Scalar,T1,T2,T3,TA> fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Reverse {
-    typedef ArrayNatural<Scalar,T3,T2,T1> natural_type ;
-    typedef ArrayFortran<Scalar,T3,T2,T1> fortran_type ;
-  };
 };
 
 template<> struct ArrayHelper<4>
@@ -476,31 +401,6 @@ template<> struct ArrayHelper<4>
       dst[2] = src[2] ;
       dst[3] = n * dst[2] ;
     }
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Truncate {
-    typedef ArrayNatural<Scalar,T2,T3,T4> natural_type ;
-    typedef ArrayFortran<Scalar,T1,T2,T3> fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 ,
-            class TA >
-  struct Append {
-    typedef ArrayNatural<Scalar,TA,T1,T2,T3,T4> natural_type ;
-    typedef ArrayFortran<Scalar,T1,T2,T3,T4,TA> fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Reverse {
-    typedef ArrayNatural<Scalar,T4,T3,T2,T1> natural_type ;
-    typedef ArrayFortran<Scalar,T4,T3,T2,T1> fortran_type ;
-  };
 };
 
 template<> struct ArrayHelper<5> 
@@ -555,31 +455,6 @@ template<> struct ArrayHelper<5>
       dst[3] = src[3] ;
       dst[4] = n * dst[3] ;
     }
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Truncate {
-    typedef ArrayNatural<Scalar,T2,T3,T4,T5> natural_type ;
-    typedef ArrayFortran<Scalar,T1,T2,T3,T4> fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 ,
-            class TA >
-  struct Append {
-    typedef ArrayNatural<Scalar,TA,T1,T2,T3,T4,T5> natural_type ;
-    typedef ArrayFortran<Scalar,T1,T2,T3,T4,T5,TA> fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Reverse {
-    typedef ArrayNatural<Scalar,T5,T4,T3,T2,T1> natural_type ;
-    typedef ArrayFortran<Scalar,T5,T4,T3,T2,T1> fortran_type ;
-  };
 };
 
 template<> struct ArrayHelper<6>
@@ -638,31 +513,6 @@ template<> struct ArrayHelper<6>
       dst[4] = src[4] ;
       dst[5] = n * dst[4] ;
     }
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Truncate {
-    typedef ArrayNatural<Scalar,T2,T3,T4,T5,T6> natural_type ;
-    typedef ArrayFortran<Scalar,T1,T2,T3,T4,T5> fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 ,
-            class TA >
-  struct Append {
-    typedef ArrayNatural<Scalar,TA,T1,T2,T3,T4,T5,T6> natural_type ;
-    typedef ArrayFortran<Scalar,T1,T2,T3,T4,T5,T6,TA> fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Reverse {
-    typedef ArrayNatural<Scalar,T6,T5,T4,T3,T2,T1> natural_type ;
-    typedef ArrayFortran<Scalar,T6,T5,T4,T3,T2,T1> fortran_type ;
-  };
 };
 
 template<> struct ArrayHelper<7>
@@ -726,31 +576,6 @@ template<> struct ArrayHelper<7>
       dst[5] = src[5] ;
       dst[6] = n * dst[5] ;
     }
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Truncate {
-    typedef ArrayNatural<Scalar,T2,T3,T4,T5,T6,T7> natural_type ;
-    typedef ArrayFortran<Scalar,T1,T2,T3,T4,T5,T6> fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 ,
-            class TA >
-  struct Append {
-    typedef ArrayNatural<Scalar,TA,T1,T2,T3,T4,T5,T6,T7> natural_type ;
-    typedef ArrayFortran<Scalar,T1,T2,T3,T4,T5,T6,T7,TA> fortran_type ;
-  };
-
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Reverse {
-    typedef ArrayNatural<Scalar,T7,T6,T5,T4,T3,T2,T1,void> natural_type ;
-    typedef ArrayFortran<Scalar,T7,T6,T5,T4,T3,T2,T1,void> fortran_type ;
-  };
 };
 
 template<> struct ArrayHelper<8>
@@ -824,31 +649,196 @@ template<> struct ArrayHelper<8>
       }
       for ( ; i < 8 ; ++i ) { dst[i] = NULL ; } 
     }
+};
 
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Truncate {
-    typedef ArrayNatural<Scalar,T2,T3,T4,T5,T6,T7,T8> natural_type ;
-    typedef ArrayFortran<Scalar,T1,T2,T3,T4,T5,T6,T7> fortran_type ;
-  };
+//----------------------------------------------------------------------
 
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 ,
-            class T >
-  struct Append {
-    typedef void natural_type ;
-    typedef void fortran_type ;
-  };
+template< typename Scalar , class T1 , class T2 , class T3 , class T4 ,
+                            class T5 , class T6 , class T7 , class T8 >
+struct ArrayReverse ;
 
-  template< typename Scalar ,
-            class T1 , class T2 , class T3 , class T4 ,
-            class T5 , class T6 , class T7 , class T8 >
-  struct Reverse {
-    typedef ArrayNatural<Scalar,T8,T7,T6,T5,T4,T3,T2,T1> natural_type ;
-    typedef ArrayFortran<Scalar,T8,T7,T6,T5,T4,T3,T2,T1> fortran_type ;
-  };
+template< typename Scalar , class T1 >
+struct ArrayReverse<Scalar,T1,void,void,void,void,void,void,void> {
+  typedef ArrayNatural<Scalar,T1> natural_type ;
+  typedef ArrayFortran<Scalar,T1> fortran_type ;
+};
+
+template< typename Scalar , class T1 , class T2 >
+struct ArrayReverse<Scalar,T1,T2,void,void,void,void,void,void> {
+  typedef ArrayNatural<Scalar,T2,T1> natural_type ;
+  typedef ArrayFortran<Scalar,T2,T1> fortran_type ;
+};
+
+template< typename Scalar , class T1 , class T2 , class T3 >
+struct ArrayReverse<Scalar,T1,T2,T3,void,void,void,void,void> {
+  typedef ArrayNatural<Scalar,T3,T2,T1> natural_type ;
+  typedef ArrayFortran<Scalar,T3,T2,T1> fortran_type ;
+};
+
+template< typename Scalar , class T1 , class T2 , class T3 , class T4 >
+struct ArrayReverse<Scalar,T1,T2,T3,T4,void,void,void,void> {
+  typedef ArrayNatural<Scalar,T4,T3,T2,T1> natural_type ;
+  typedef ArrayFortran<Scalar,T4,T3,T2,T1> fortran_type ;
+};
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 , class T5 >
+struct ArrayReverse<Scalar,T1,T2,T3,T4,T5,void,void,void> {
+  typedef ArrayNatural<Scalar,T5,T4,T3,T2,T1> natural_type ;
+  typedef ArrayFortran<Scalar,T5,T4,T3,T2,T1> fortran_type ;
+};
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 ,
+          class T5 , class T6 >
+struct ArrayReverse<Scalar,T1,T2,T3,T4,T5,T6,void,void> {
+  typedef ArrayNatural<Scalar,T6,T5,T4,T3,T2,T1> natural_type ;
+  typedef ArrayFortran<Scalar,T6,T5,T4,T3,T2,T1> fortran_type ;
+};
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 ,
+          class T5 , class T6 , class T7 >
+struct ArrayReverse<Scalar,T1,T2,T3,T4,T5,T6,T7,void> {
+  typedef ArrayNatural<Scalar,T7,T6,T5,T4,T3,T2,T1> natural_type ;
+  typedef ArrayFortran<Scalar,T7,T6,T5,T4,T3,T2,T1> fortran_type ;
+};
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 ,
+          class T5 , class T6 , class T7 , class T8 >
+struct ArrayReverse {
+  typedef ArrayNatural<Scalar,T8,T7,T6,T5,T4,T3,T2,T1> natural_type ;
+  typedef ArrayFortran<Scalar,T8,T7,T6,T5,T4,T3,T2,T1> fortran_type ;
+};
+
+//----------------------------------------------------------------------
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 ,
+          class T5 , class T6 , class T7 , class T8 >
+struct ArrayTruncate ;
+
+template< typename Scalar >
+struct ArrayTruncate<Scalar,void,void,void,void,void,void,void,void> {
+  typedef void natural_type ;
+  typedef void fortran_type ;
+};
+
+template< typename Scalar , class T1 >
+struct ArrayTruncate<Scalar,T1,void,void,void,void,void,void,void> {
+  typedef void natural_type ;
+  typedef void fortran_type ;
+};
+
+template< typename Scalar , class T1 , class T2 >
+struct ArrayTruncate<Scalar,T1,T2,void,void,void,void,void,void> {
+  typedef ArrayNatural<Scalar,T2> natural_type ;
+  typedef ArrayFortran<Scalar,T1> fortran_type ;
+};
+
+template< typename Scalar , class T1 , class T2 , class T3 >
+struct ArrayTruncate<Scalar,T1,T2,T3,void,void,void,void,void> {
+  typedef ArrayNatural<Scalar,T2,T3> natural_type ;
+  typedef ArrayFortran<Scalar,T1,T2> fortran_type ;
+};
+
+template< typename Scalar , class T1 , class T2 , class T3 , class T4 >
+struct ArrayTruncate<Scalar,T1,T2,T3,T4,void,void,void,void> {
+  typedef ArrayNatural<Scalar,T2,T3,T4> natural_type ;
+  typedef ArrayFortran<Scalar,T1,T2,T3> fortran_type ;
+};
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 , class T5 >
+struct ArrayTruncate<Scalar,T1,T2,T3,T4,T5,void,void,void> {
+  typedef ArrayNatural<Scalar,T2,T3,T4,T5> natural_type ;
+  typedef ArrayFortran<Scalar,T1,T2,T3,T4> fortran_type ;
+};
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 ,
+          class T5 , class T6 >
+struct ArrayTruncate<Scalar,T1,T2,T3,T4,T5,T6,void,void> {
+  typedef ArrayNatural<Scalar,T2,T3,T4,T5,T6> natural_type ;
+  typedef ArrayFortran<Scalar,T1,T2,T3,T4,T5> fortran_type ;
+};
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 ,
+          class T5 , class T6 , class T7 >
+struct ArrayTruncate<Scalar,T1,T2,T3,T4,T5,T6,T7,void> {
+  typedef ArrayNatural<Scalar,T2,T3,T4,T5,T6,T7> natural_type ;
+  typedef ArrayFortran<Scalar,T1,T2,T3,T4,T5,T6> fortran_type ;
+};
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 ,
+          class T5 , class T6 , class T7 , class T8 >
+struct ArrayTruncate {
+  typedef ArrayNatural<Scalar,T2,T3,T4,T5,T6,T7,T8> natural_type ;
+  typedef ArrayFortran<Scalar,T1,T2,T3,T4,T5,T6,T7> fortran_type ;
+};
+
+//----------------------------------------------------------------------
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 ,
+          class T5 , class T6 , class T7 , class TA >
+struct ArrayAppend ;
+
+template< typename Scalar , class TA >
+struct ArrayAppend<Scalar,void,void,void,void,void,void,void,TA> {
+  typedef ArrayNatural<Scalar,TA> natural_type ;
+  typedef ArrayFortran<Scalar,TA> fortran_type ;
+};
+
+template< typename Scalar , class T1 , class TA >
+struct ArrayAppend<Scalar,T1,void,void,void,void,void,void,TA> {
+  typedef ArrayNatural<Scalar,TA,T1>    natural_type ;
+  typedef ArrayFortran<Scalar,   T1,TA> fortran_type ;
+};
+
+template< typename Scalar , class T1 , class T2 , class TA >
+struct ArrayAppend<Scalar,T1,T2,void,void,void,void,void,TA> {
+  typedef ArrayNatural<Scalar,TA,T1,T2>    natural_type ;
+  typedef ArrayFortran<Scalar,   T1,T2,TA> fortran_type ;
+};
+
+template< typename Scalar , class T1 , class T2 , class T3 , class TA >
+struct ArrayAppend<Scalar,T1,T2,T3,void,void,void,void,TA> {
+  typedef ArrayNatural<Scalar,TA,T1,T2,T3>    natural_type ;
+  typedef ArrayFortran<Scalar,   T1,T2,T3,TA> fortran_type ;
+};
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 , class TA >
+struct ArrayAppend<Scalar,T1,T2,T3,T4,void,void,void,TA> {
+  typedef ArrayNatural<Scalar,TA,T1,T2,T3,T4>    natural_type ;
+  typedef ArrayFortran<Scalar,   T1,T2,T3,T4,TA> fortran_type ;
+};
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 , class T5 , class TA >
+struct ArrayAppend<Scalar,T1,T2,T3,T4,T5,void,void,TA> {
+  typedef ArrayNatural<Scalar,TA,T1,T2,T3,T4,T5>    natural_type ;
+  typedef ArrayFortran<Scalar,   T1,T2,T3,T4,T5,TA> fortran_type ;
+};
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 ,
+          class T5 , class T6 , class TA >
+struct ArrayAppend<Scalar,T1,T2,T3,T4,T5,T6,void,TA> {
+  typedef ArrayNatural<Scalar,TA,T1,T2,T3,T4,T5,T6>    natural_type ;
+  typedef ArrayFortran<Scalar,   T1,T2,T3,T4,T5,T6,TA> fortran_type ;
+};
+
+template< typename Scalar ,
+          class T1 , class T2 , class T3 , class T4 ,
+          class T5 , class T6 , class T7 , class TA >
+struct ArrayAppend {
+  typedef ArrayNatural<Scalar,TA,T1,T2,T3,T4,T5,T6,T7>    natural_type ;
+  typedef ArrayFortran<Scalar,   T1,T2,T3,T4,T5,T6,T7,TA> fortran_type ;
 };
 
 //----------------------------------------------------------------------

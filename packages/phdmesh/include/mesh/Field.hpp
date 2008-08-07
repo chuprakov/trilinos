@@ -204,11 +204,12 @@ public:
   typedef Tag7 array_dim_tag_7 ;
 
   /** Array of field data for a single entity. */
-  typedef ArrayFortran<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag7,Tag7>
+  typedef ArrayFortran<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
     EntityArray ;
 
   /** Array of field data for a kernel of entities. */
-  typedef typename EntityArray::template Append<EntityDimension>::type
+  typedef typename ArrayAppend<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,
+                                      EntityDimension>::fortran_type
     KernelArray ;
 
   /** Query this field for a given field state. */

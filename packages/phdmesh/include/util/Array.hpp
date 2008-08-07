@@ -285,8 +285,8 @@ public:
   //----------------------------------
   // Copy a reverse-map array
 
-  typedef typename Helper::template
-    Reverse<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::fortran_type
+  typedef typename
+    ArrayReverse<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::fortran_type
       ReverseType ;
 
   ArrayNatural( const ReverseType & rhs )
@@ -302,8 +302,8 @@ public:
   //----------------------------------
   // Truncated view
 
-  typedef typename Helper::template
-    Truncate<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::natural_type
+  typedef typename
+    ArrayTruncate<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::natural_type
       TruncatedViewType ;
 
   TruncatedViewType truncated_view( index_type i ) const
@@ -410,16 +410,6 @@ public:
       array_bounds_check_rank_is_equal<Rank,1>();
       m_stride[0] = n1 ;
     }
-
-  //----------------------------------
-  // Other:
-
-  template< class TA >
-  struct Append {
-    typedef typename Helper::template
-      Append<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8,TA>::natural_type
-        type ;
-  };
 };
 
 //----------------------------------------------------------------------
@@ -612,8 +602,8 @@ public:
   //----------------------------------
   // Copy a reverse-map array
 
-  typedef typename Helper::template
-    Reverse<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::natural_type
+  typedef typename
+    ArrayReverse<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::natural_type
       ReverseType ;
 
   ArrayFortran( const ReverseType & rhs )
@@ -629,8 +619,8 @@ public:
   //----------------------------------
   // Truncated view
 
-  typedef typename Helper::template
-    Truncate<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::fortran_type
+  typedef typename
+    ArrayTruncate<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::fortran_type
       TruncatedViewType ;
 
   TruncatedViewType truncated_view( index_type i ) const
@@ -738,16 +728,6 @@ public:
       array_bounds_check_rank_is_equal<Rank,1>();
       m_stride[0] = n1 ;
     }
-
-  //----------------------------------
-  // Other:
-
-  template< class TA >
-  struct Append {
-    typedef typename Helper::template
-      Append<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8,TA>::fortran_type
-        type ;
-  };
 };
 
 //----------------------------------------------------------------------
@@ -1002,11 +982,6 @@ public:
       array_stride_from_natural_sizes( m_rank , m_stride , & arg_size[0] );
       array_stride_natural_tag( m_rank , & arg_tag[0] , m_tag );
     }
-
-  //----------------------------------
-
-  template< class TA >
-  struct Append { typedef ArrayNatural< Scalar , TA > type ; };
 };
 
 //----------------------------------------------------------------------
@@ -1258,11 +1233,6 @@ public:
       array_stride_from_fortran_sizes( m_rank , m_stride , & arg_size[0] );
       array_stride_fortran_tag( m_rank , & arg_tag[0] , m_tag );
     }
-
-  //----------------------------------
-
-  template< class TA >
-  struct Append { typedef ArrayFortran< Scalar , TA > type ; };
 };
 
 //----------------------------------------------------------------------

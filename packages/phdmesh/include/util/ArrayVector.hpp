@@ -229,8 +229,8 @@ public:
 
   //----------------------------------
 
-  typedef typename Helper::template
-    Truncate<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::natural_type
+  typedef typename
+    ArrayTruncate<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::natural_type
       TruncatedViewType ;
 
   TruncatedViewType truncated_view( index_type i ) const
@@ -329,16 +329,6 @@ public:
 
   explicit ArrayNatural( size_type n1 )
     : m_vec() { resize(n1); }
-
-  //----------------------------------
-  // Other:
-
-  template< class TA >
-  struct Append {
-    typedef typename Helper::template
-      Append<std::vector<Scalar>,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8,TA>::natural_type
-        type ;
-  };
 };
 
 //----------------------------------------------------------------------
@@ -536,8 +526,8 @@ public:
   //----------------------------------
   // Truncated view
 
-  typedef typename Helper::template
-    Truncate<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::fortran_type
+  typedef typename
+    ArrayTruncate<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::fortran_type
       TruncatedViewType ;
 
   TruncatedViewType truncated_view( index_type i ) const
@@ -636,16 +626,6 @@ public:
 
   explicit ArrayFortran( size_type n1 )
     : m_vec() { resize(n1); }
-
-  //----------------------------------
-  // Other:
-
-  template< class TA >
-  struct Append {
-    typedef typename Helper::template
-      Append<std::vector<Scalar>,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8,TA>::fortran_type
-        type ;
-  };
 };
 
 //----------------------------------------------------------------------
