@@ -29,5 +29,5 @@ all-local:
 
 SUBDIRS = util gears txblas 
 
-EXTRA_DIST = definition
+#EXTRA_DIST = definition
 
