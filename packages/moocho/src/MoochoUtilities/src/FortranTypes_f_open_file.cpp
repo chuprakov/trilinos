@@ -30,23 +30,25 @@
 #include "FortranTypes_CppFortranStrings.hpp"
 #include "Teuchos_TestForException.hpp"
 
-namespace {
 
 typedef FortranTypes::f_int	f_int;
 
+
 extern "C" {
+
 
 FORTRAN_FUNC_DECL_UL_(f_int,FOR_OPEN_FILE,for_open_file) ( const f_int& iunit
   , const f_int i_file[], const f_int& i_file_len, const f_int& istatus
   , const f_int& iform, const f_int& iblank, const f_int& iaccess
   , const f_int& irecl );
 
+
 FORTRAN_FUNC_DECL_UL_(void,FOR_CLOSE_FILE,for_close_file) (
   const f_int& iunit, const f_int& keep );
 
+
 }	// end extern "C"
 
-} // namespace
 
 void FortranTypes::f_open_file( const f_int iunit, const char file[]
   , EOpenStatus status, EOpenForm form, EOpenBlank blank
@@ -81,6 +83,7 @@ void FortranTypes::f_open_file( const f_int iunit, const char file[]
       << "returned and IOSTAT = " << result );
   }
 }
+
 
 void FortranTypes::f_close_file( const f_int iunit, bool keep )
 {
