@@ -1,0 +1,102 @@
+\section{Getting Started}
+
+\subsection{Downloading Meros and Trilinos}
+Meros is a package within the Trilinos Project and currently can be
+downloaded and built with Trilinos.
+The Trilinos software, including Meros, can be downloaded from
+\begin{itemize}
+\item[]
+  {\tt http://trilinos.sandia.gov/}. 
+\end{itemize}
+Follow the download instructions on
+the web site.
+
+
+
+\subsection{Licensing}
+Meros is available for download (through Trilinos) under the GNU
+Lesser General Public License~\cite{gnuLGPL}.
+
+
+\subsection{Configuration, Compilation, and Installation}
+\begin{itemize}
+\item System and software requirements
+\item Configuring and building Trilinos in general
+\item Configuring and building Meros within Trilinos
+\item Testing your build
+\end{itemize}
+
+
+
+Using the instructions here, your build of trilinos will have the following
+libraries: aztecoo, epetra, epetraext, ML, newpackage,
+nox teuchos, and thyra.
+\begin{itemize}
+\item \verb!cd! into the trilinos~directory.
+\item Make a build directory, e.g., \verb!mkdir LINUX!.
+\item \verb!cd LINUX!.
+\item Configure trilinos:
+  \begin{enumerate}
+  \item   If you do not want to use MPI:
+\begin{verbatim} 
+{ ../configure --enable-teuchos --enable-amesos} 
+\end{verbatim}
+  \item To use MPI:
+\begin{verbatim} 
+{ ../configure  --enable-teuchos \\
+  --enable-amesos --with-mpi-compilers=/usr/local/mpich/bin} 
+\end{verbatim}
+where your path to the mpi-compilers is specified.
+  \end{enumerate}
+
+\item Build trilinos: \verb!make!.
+\item If your build finished without errors, you should see the directory\\
+\verb!Trilinos/LINUX/packages/!, with subdirectories below that for
+each individual library.   Meros's subdirectory, \verb!meros!, should contain
+files \verb!config.log!, \verb!config.status!, \verb!Makefile!, and
+\verb!Makefile.export!, and directories \verb!src! and \verb!examples!.
+Directory \verb!src! contains object files and \verb!libmeros.a!.
+Directory \verb!examples! contains executables with extension \verb!.exe!,
+symbolic links to the corresponding source code, and object files.
+Directory \verb!test! is intended primarily for developers and can be ignored.
+\item Look in \verb!Trilinos/LINUX/packages/meros/examples! for
+examples of how to use Meros. File
+\verb!Trilinos/packages/meros/examples/README! suggests how to use the
+examples.
+\end{itemize}
+
+
+Sample configure script for Meros:
+
+\begin{verbatim}
+BUILD_DIR=`pwd`
+
+../configure \
+--enable-mpi \
+--with-mpi-compilers="/usr/local/mpich-1.2.7_gcc3.4.3/bin" \
+CXXFLAGS="-g -O0 -Wreturn-type" \
+--with-libs="-lexpat" \
+--disable-default-packages \
+--enable-teuchos --enable-teuchos-extended \
+--enable-teuchos-complex --enable-teuchos-abc --enable-teuchos-expat \
+--enable-thyra \
+--enable-thyra-examples \
+--enable-epetra \
+--enable-epetra-thyra \
+--enable-epetraext \
+--enable-epetraext-thyra \
+--enable-ml \
+--enable-ml-thyra \
+--enable-aztecoo \
+--enable-aztecoo-thyra \
+--enable-ifpack \
+--enable-ifpack-thyra \
+--enable-nox \
+--enable-stratimikos \
+--enable-meros \
+--enable-meros-examples \
+--with-gnumake \
+--with-install="/usr/bin/install -c -p" \
+--prefix=$BUILD_DIR
+\end{verbatim}
+

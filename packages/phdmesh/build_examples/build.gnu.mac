@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#----------------------------------------------------------------------
+# Paths
+
+export PHDMESH_PATH="${HOME}/Trilinos/packages/phdmesh"
+
+#----------------------------------------------------------------------
+# The configuration is dependent upon this file
+
+export PHDMESH_CONFIG_DEPS=$0
+
+#----------------------------------------------------------------------
+# Compiler and linker configuration:
+
+MPI_PATH="/usr/local/brisc/mpich"
+
+export PATH="${MPI_PATH}/bin:${PATH}"
+
+export DYLD_LIBRARY_PATH=${MPI_PATH}/lib:$DYLD_LIBRARY_PATH
+
+source ${PHDMESH_PATH}/config/gnu opt mpichxx 
+
+#----------------------------------------------------------------------
+
+echo `which ${CXX}` ${CXXFLAGS}
+echo `which ${CC}` ${CFLAGS}
+
+make -f ${PHDMESH_PATH}/Make.in $*
+
+#----------------------------------------------------------------------
+
+

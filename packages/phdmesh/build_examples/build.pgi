@@ -1,0 +1,40 @@
+#!/bin/bash
+
+#----------------------------------------------------------------------
+# Paths
+
+export PHDMESH_PATH="${HOME}/Trilinos/packages/phdmesh"
+
+#----------------------------------------------------------------------
+# The configuration is dependent upon this file
+
+export PHDMESH_CONFIG_DEPS=$0
+
+#----------------------------------------------------------------------
+# Compiler and linker configuration, SNL LAN:
+
+export LM_LICENSE_FILE=7496@sass4000:7496@sass4002:7496@sass4004
+
+PGI_HOME="/usr/local/pgi_64/linux86-64/6.1"
+
+MPICH_HOME="/usr/local/mpi/mpich/64Bit/1.2.7/pgi-6.0"
+
+# Enable PGI-MPI installation to accept as large a message as possible, 200 Mb
+
+export P4_GLOBMEMSIZE 268435456
+
+export PATH="${MPICH_HOME}/bin:${PGI_HOME}/bin:${PATH}"
+
+source ${PHDMESH_PATH}/config/pgi opt mpi
+
+#----------------------------------------------------------------------
+# SNL ACCESS ExodusII and NemesisI library configuration:
+
+# source ${PHDMESH_PATH}/config/exodusII /usr/local/eng_sci/struct/current-gcc
+
+#----------------------------------------------------------------------
+
+make -f ${PHDMESH_PATH}/Make.in $*
+
+#----------------------------------------------------------------------
+

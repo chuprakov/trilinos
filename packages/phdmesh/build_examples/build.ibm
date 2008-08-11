@@ -1,0 +1,32 @@
+#!/bin/bash
+
+ARGS=$*
+
+#----------------------------------------------------------------------
+# Paths
+
+export PHDMESH_PATH="${HOME}/Trilinos/packages/phdmesh"
+
+#----------------------------------------------------------------------
+# The configuration is dependent upon this file
+
+export PHDMESH_CONFIG_DEPS=$0
+
+#----------------------------------------------------------------------
+# Compiler and linker configuration, SNL sais028:
+
+export PATH="/usr/vacpp/bin:${PATH}"
+
+source ${PHDMESH_PATH}/config/ibm opt 
+
+#----------------------------------------------------------------------
+# SNL ACCESS ExodusII and NemesisI library configuration:
+
+# source ${PHDMESH_PATH}/config/exodusII /usr/local/eng_sci/struct/current-gcc
+
+#----------------------------------------------------------------------
+
+gmake -f ${PHDMESH_PATH}/Make.in ${ARGS}
+
+#----------------------------------------------------------------------
+

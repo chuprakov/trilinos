@@ -1,0 +1,113 @@
+% Meros User's Guide
+%
+% Formatted for Sandia SAND Report
+\typeout{Using SANDmath LaTeX Package: 6/12/2007, VEH}
+
+\documentclass[oneeqnum,onefignum,onetabnum,10pt]{SANDreport}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{epsfig}
+\usepackage{ifthen}
+
+\usepackage{mathptmx}
+
+\usepackage{theorem}
+\usepackage{latexsym}
+\usepackage{thp}
+\usepackage{subfigure}
+\def\vdown{\\[4pt]}
+
+\setlength{\topmargin}{0in}
+\setlength{\oddsidemargin}{.10in}
+\setlength{\evensidemargin}{.10in}
+\setlength{\headheight}{1pt}
+\setlength{\headsep}{10pt}
+\setlength{\topskip}{1pt}
+\setlength{\textheight}{8.5in}
+\setlength{\textwidth}{6.25in}
+
+\definecolor{AztecOOBlue}{rgb}{0,0,0}
+\def\TrilinosTM{{\color{AztecOOBlue} \bf
+      \textsf{Trilinos}}\textsuperscript{\tiny{\texttrademark}}}
+\def\MerosTM{{\color{AztecOOBlue} \bf
+      \textsf{Meros}}\textsuperscript{\tiny{\texttrademark}}}
+\newcommand{\InlineCommand}[1]{
+  {\hspace{0.01 in}} {\tt #1} {\hspace{0.01 in}}}
+
+\input{epsf}
+
+\title{DRAFT: Meros User's Guide\footnote{For \MerosTM{} Version 2.0 in
+\TrilinosTM{} Release 8.0}}
+
+%\thanks{This work was partially supported
+%by the DOE Office of Science MICS Program and by the ASC Program at
+%Sandia National Laboratories.  Sandia is a multiprogram laboratory
+%operated by Sandia Corporation, a Lockheed Martin Company, for the
+%United States Department of Energy's National Nuclear Security
+%Administration under contract DE-AC04-94AL85000.}}
+
+\author{
+Victoria E. Howle\thanks{Sandia National Laboratories, PO Box 969, MS 9159
+    Livermore, CA 94551, {\tt vehowle}\protect@{\tt sandia.gov}.}
+  \and
+  Robert Shuttleworth\thanks{Applied Mathematics and Scientific Computing Program and Center for Scientific
+Computation and Mathematical Modeling,
+University of Maryland, College Park, MD 20742. {\tt rshuttle}\protect@{\tt math.umd.edu}}
+  \and
+  Ray Tuminaro\thanks{Sandia National Laboratories, PO Box 969, MS 9159,
+    Livermore, CA 94551, {\tt rstumin}\protect@{\tt sandia.gov}.}
+}
+
+\date{}
+
+\SANDnum{SAND2007-xxxx}
+\SANDprintDate{August 2007}
+\SANDauthor{Victoria E. Howle, Robert Shuttleworth, Ray Tuminaro}
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+meros abstract
+\end{abstract}
+
+
+
+
+\bibliographystyle{siam}
+%\pagestyle{plain}
+
+\SANDmain
+
+\clearpage
+\tableofcontents
+%\listoffigures
+%\listoftables
+
+%\section{Notation}
+%\begin{verbatim} 
+%% a_really_long_command 
+%\end{verbatim}
+%The character \verb!%! indicates any LINUX or UNIX shell prompt.
+%Function names are shown as {\sf LSCSchurFactory}.  Names of packages
+%or libraries as reported in small caps, as {\sc Epetra}. Mathematical
+%entities are shown in italics.
+
+\input{ug_start}
+
+%\input{ug_intro}
+
+\input{ug_methods}
+
+\input{ug_examples}
+
+\appendix
+
+\input{ug_appendices}
+
+\bibliography{merosrefs}
+    
+%\include{SANDdistribution}
+
+\end{document}
