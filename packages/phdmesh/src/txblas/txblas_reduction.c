@@ -196,11 +196,13 @@ static void dot1_unroll( double * s , const double * x , const size_t n )
 {
   enum { NB = 8 };
 
-  for ( const double * const x_blk = x + n % NB ; x_blk != x ; ++x ) {
+  const double * const x_blk = x + n % NB ;
+  for ( ; x_blk != x ; ++x ) {
     double a = *x ; a *= a ; SUM_ADD( s , a );
   }
 
-  for ( const double * const x_end = x + n ; x_end != x ; x += NB ) {
+  const double * const x_end = x + n ;
+  for ( ; x_end != x ; x += NB ) {
     double a0 = x[0] ;
     double a1 = x[1] ;
     double a2 = x[2] ;
@@ -351,14 +353,15 @@ void tddot( double * s , unsigned n , const double * x , const double * y )
   if ( ! TPI_Size( & p_size ) ) {
     double tmp[ p_size ];
     struct TaskXY data = { tmp , x , y , n , BLOCKING_SIZE };
-    for ( int i = 0 ; i < p_size ; ++i ) { tmp[i] = 0 ; }
+    int i ;
+    for ( i = 0 ; i < p_size ; ++i ) { tmp[i] = 0 ; }
     if ( data.block ) {
       TPI_Run( & task_ddot_xy_work_blocking , & data , 0 );
     }
     else {
       TPI_Run( & task_ddot_xy_work , & data , 0 );
     }
-    for ( int i = 1 ; i < p_size ; ++i ) { tmp[0] += tmp[i] ; }
+    for ( i = 1 ; i < p_size ; ++i ) { tmp[0] += tmp[i] ; }
     *s = tmp[0] ;
   }
 }
@@ -459,14 +462,15 @@ void txddot( double * s , unsigned n , const double * x , const double * y )
     const int ntmp = 4 * p_size ;
     double tmp[ ntmp ];
     struct TaskXY data = { tmp , x , y , n , BLOCKING_SIZE };
-    for ( int i = 0 ; i < ntmp ; ++i ) { tmp[i] = 0 ; }
+    int i ;
+    for ( i = 0 ; i < ntmp ; ++i ) { tmp[i] = 0 ; }
     if ( data.block ) {
       TPI_Run( & task_xddot_xy_work_blocking , & data , 0 );
     }
     else {
       TPI_Run( & task_xddot_xy_work , & data , 0 );
     }
-    for ( int i = 0 ; i < p_size ; ++i ) {
+    for ( i = 0 ; i < p_size ; ++i ) {
       xdsum_add_dsum( s , tmp + 4 * i );
     }
   }

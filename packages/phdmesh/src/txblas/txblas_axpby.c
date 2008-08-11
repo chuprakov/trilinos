@@ -53,7 +53,8 @@ void tdaxpby( unsigned n ,
   {
     unsigned tmp[ p_size ];
     struct TaskXY data = { a , b , x , y , n , tmp };
-    for ( int i = 0 ; i < p_size ; ++i ) { tmp[i] = i ; }
+    int i ;
+    for ( i = 0 ; i < p_size ; ++i ) { tmp[i] = i ; }
     if ( 0 < block ) {
       TPI_Run( & task_axpby_work_block , & data , 0 );
     }
@@ -134,7 +135,8 @@ static void task_axpby_work_block( void * arg , TPI_ThreadPool pool )
 
       int len ;
 
-      for ( unsigned i = BLOCK * p_rank ; 0 < ( len = num - i ) ; i += inc ) {
+      unsigned i ;
+      for ( i = BLOCK * p_rank ; 0 < ( len = num - i ) ; i += inc ) {
         daxpby_work( ( BLOCK < len ? BLOCK : len ) , a , x + i , b , y + i );
       }
     }
@@ -169,7 +171,8 @@ static void task_axpby_work_steal( void * arg , TPI_ThreadPool pool )
     unsigned * const all_iter = t->iter ;
     unsigned * const my_iter  = all_iter + p_size ;
 
-    for ( unsigned i = 0 ; i < n ; ) {
+    unsigned i ;
+    for ( i = 0 ; i < n ; ) {
       TPI_Lock( pool , p_rank );
       i = *my_iter * BLOCK ; *my_iter += p_size ;
       TPI_Unlock( pool , p_rank );
@@ -181,9 +184,11 @@ static void task_axpby_work_steal( void * arg , TPI_ThreadPool pool )
 
     /* Finished my work, steal work from someone else */
 
-    for ( int working = 1 ; working ; ) {
+    int working ; 
+    int p = 0 ;
+    for ( working = 1 ; working ; ) {
       working = 0 ;
-      for ( int p = 0 ; p < p_size ; ++p ) {
+      for ( p = 0 ; p < p_size ; ++p ) {
         if ( all_iter[p] * BLOCK < n ) {
           if ( ! TPI_Trylock( pool , p ) ) {
             const unsigned i = all_iter[p] * BLOCK ;
