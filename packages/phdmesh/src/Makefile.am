@@ -135,9 +135,9 @@ UTIL = \
 	$(srcdir)/util/Reference.cpp \
 	$(srcdir)/util/Setv.cpp \
 	$(srcdir)/util/TestDriver.cpp \
-	$(srcdir)/util/TPI_Concurrency.cpp \
-	$(srcdir)/util/TPI_pthreads.cpp \
-	$(srcdir)/util/TPI_Walltime.cpp \
+	$(srcdir)/util/TPI_Concurrency.c \
+	$(srcdir)/util/TPI_pthreads.cp\
+	$(srcdir)/util/TPI_Walltime.c \
 	$(srcdir)/util/ValueIO.cpp
 
 MESHIO_H = \
