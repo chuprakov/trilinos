@@ -980,7 +980,7 @@ public:
       m_rank( arg_size.size() == arg_tag.size() ? arg_size.size() : 0 )
     {
       array_stride_from_natural_sizes( m_rank , m_stride , & arg_size[0] );
-      array_stride_natural_tag( m_rank , & arg_tag[0] , m_tag );
+      array_stride_natural_tag( m_rank , m_tag , & arg_tag[0] );
     }
 };
 
@@ -1231,7 +1231,7 @@ public:
       m_rank( arg_size.size() == arg_tag.size() ? arg_size.size() : 0 )
     {
       array_stride_from_fortran_sizes( m_rank , m_stride , & arg_size[0] );
-      array_stride_fortran_tag( m_rank , & arg_tag[0] , m_tag );
+      array_stride_fortran_tag( m_rank , m_tag , & arg_tag[0] );
     }
 };
 
