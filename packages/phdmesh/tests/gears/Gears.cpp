@@ -199,8 +199,6 @@ void Gear::mesh( MeshBulkData & M )
 {
   static const char method[] = "phdmesh::Gear::mesh" ;
 
-  const double TWO_PI = 2.0 * acos( (double) -1.0 );
-
   m_mesh = & M ;
 
   const unsigned p_size = M.parallel_size();
@@ -262,8 +260,10 @@ void Gear::mesh( MeshBulkData & M )
           node[6] = create_node( elem_parts, node_id_base, iz_1, ir_1, ia   );
           node[7] = create_node( elem_parts, node_id_base, iz_1, ir_1, ia_1 );
 
+#if 0
           // Centroid of the element for verification
 
+          const double TWO_PI = 2.0 * acos( (double) -1.0 );
           const double angle = m_ang_inc * ( 0.5 + (double) ia );
           const double z = m_center[2] + m_z_min + m_z_inc * (0.5 + (double)iz);
 
@@ -292,6 +292,7 @@ void Gear::mesh( MeshBulkData & M )
             msg.append("problem setup element centroid error" );
             throw std::logic_error( msg );
           }
+#endif
 
           Entity & elem =
             M.declare_entity( entity_key(Element,elem_id), elem_parts );
