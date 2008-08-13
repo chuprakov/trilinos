@@ -136,7 +136,7 @@ UTIL = \
 	$(srcdir)/util/Setv.cpp \
 	$(srcdir)/util/TestDriver.cpp \
 	$(srcdir)/util/TPI_Concurrency.c \
-	$(srcdir)/util/TPI_pthreads.cp\
+	$(srcdir)/util/TPI_pthreads.c \
 	$(srcdir)/util/TPI_Walltime.c \
 	$(srcdir)/util/ValueIO.cpp
 
