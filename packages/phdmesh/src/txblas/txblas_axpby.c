@@ -171,14 +171,16 @@ static void task_axpby_work_steal( void * arg , TPI_ThreadPool pool )
     unsigned * const all_iter = t->iter ;
     unsigned * const my_iter  = all_iter + p_size ;
 
-    unsigned i ;
-    for ( i = 0 ; i < n ; ) {
-      TPI_Lock( pool , p_rank );
-      i = *my_iter * BLOCK ; *my_iter += p_size ;
-      TPI_Unlock( pool , p_rank );
-      if ( i < n ) {
-        const unsigned len = BLOCK < n - i ? BLOCK : n - i ;
-        daxpby_work( len, a, x + i, b, y + i );
+    {
+      unsigned i ;
+      for ( i = 0 ; i < n ; ) {
+        TPI_Lock( pool , p_rank );
+        i = *my_iter * BLOCK ; *my_iter += p_size ;
+        TPI_Unlock( pool , p_rank );
+        if ( i < n ) {
+          const unsigned len = BLOCK < n - i ? BLOCK : n - i ;
+          daxpby_work( len, a, x + i, b, y + i );
+        }
       }
     }
 
