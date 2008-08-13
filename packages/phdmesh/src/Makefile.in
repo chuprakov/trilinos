@@ -97,17 +97,18 @@ AR = ar
 ARFLAGS = cru
 libphdelement_mesh_a_DEPENDENCIES =
 am__objects_1 = ElementDeclarations.$(OBJEXT) \
-	ElementDimensions.$(OBJEXT) ElementLocalTopology.$(OBJEXT)
+	ElementDimensions.$(OBJEXT) ElementTopologies.$(OBJEXT)
 am_libphdelement_mesh_a_OBJECTS = $(am__objects_1)
 libphdelement_mesh_a_OBJECTS = $(am_libphdelement_mesh_a_OBJECTS)
 libphdmesh_mesh_a_DEPENDENCIES =
 am__objects_2 = MeshAssemble.$(OBJEXT) MeshAura.$(OBJEXT) \
-	MeshComm.$(OBJEXT) MeshEntity.$(OBJEXT) \
+	MeshBulkData.$(OBJEXT) MeshComm.$(OBJEXT) MeshEntity.$(OBJEXT) \
 	MeshEntityComm.$(OBJEXT) MeshField.$(OBJEXT) \
 	MeshFieldTraits.$(OBJEXT) MeshKernel.$(OBJEXT) \
-	MeshMesh.$(OBJEXT) MeshPart.$(OBJEXT) MeshProximity.$(OBJEXT) \
-	MeshRebalance.$(OBJEXT) MeshRelation.$(OBJEXT) \
-	MeshSchema.$(OBJEXT) MeshSharing.$(OBJEXT) MeshTypes.$(OBJEXT)
+	MeshMetaData.$(OBJEXT) MeshPart.$(OBJEXT) \
+	MeshProximity.$(OBJEXT) MeshRebalance.$(OBJEXT) \
+	MeshRelation.$(OBJEXT) MeshSharing.$(OBJEXT) \
+	MeshTypes.$(OBJEXT)
 am_libphdmesh_mesh_a_OBJECTS = $(am__objects_2)
 libphdmesh_mesh_a_OBJECTS = $(am_libphdmesh_mesh_a_OBJECTS)
 libphdmesh_meshio_a_DEPENDENCIES =
@@ -120,13 +121,15 @@ am__objects_4 = txblas_axpby.$(OBJEXT) txblas_CR4Matrix.$(OBJEXT) \
 am_libphdmesh_txblas_a_OBJECTS = $(am__objects_4)
 libphdmesh_txblas_a_OBJECTS = $(am_libphdmesh_txblas_a_OBJECTS)
 libphdmesh_util_a_DEPENDENCIES =
-am__objects_5 = CSet.$(OBJEXT) Dimension.$(OBJEXT) \
+am__objects_5 = Array.$(OBJEXT) CSet.$(OBJEXT) \
 	FixedPoolAlloc.$(OBJEXT) NamedValue.$(OBJEXT) \
 	NumericEnum.$(OBJEXT) OctTree.$(OBJEXT) OctTreeOps.$(OBJEXT) \
 	ParallelComm.$(OBJEXT) Parallel.$(OBJEXT) \
 	ParallelIndex.$(OBJEXT) ParallelInputStream.$(OBJEXT) \
 	ParallelReduce.$(OBJEXT) Reference.$(OBJEXT) Setv.$(OBJEXT) \
-	TestDriver.$(OBJEXT) ValueIO.$(OBJEXT)
+	TestDriver.$(OBJEXT) TPI_Concurrency.$(OBJEXT) \
+	TPI_pthreads.$(OBJEXT) TPI_Walltime.$(OBJEXT) \
+	ValueIO.$(OBJEXT)
 am_libphdmesh_util_a_OBJECTS = $(am__objects_5)
 libphdmesh_util_a_OBJECTS = $(am_libphdmesh_util_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -274,7 +277,6 @@ top_srcdir = @top_srcdir@
 # might someday be needed by some other code outside New_Package. The first is
 # the list of all source and any other header files.
 # ------------------------------------------------------------------------
-
 ELEMENT_H = \
 	$(srcdir)/../include/element/Basic_Topologies.hpp \
 	$(srcdir)/../include/element/CellTopology.hpp \
@@ -287,7 +289,7 @@ ELEMENT_H = \
 	$(srcdir)/../include/element/Tetrahedron_Topologies.hpp \
 	$(srcdir)/../include/element/Triangle_Topologies.hpp \
 	$(srcdir)/../include/element/Wedge_Topologies.hpp
- 
+
 ELEMENT = \
 	$(srcdir)/element/ElementDeclarations.cpp \
 	$(srcdir)/element/ElementDimensions.cpp \
@@ -373,9 +375,9 @@ UTIL = \
 	$(srcdir)/util/Reference.cpp \
 	$(srcdir)/util/Setv.cpp \
 	$(srcdir)/util/TestDriver.cpp \
-	$(srcdir)/util/TPI_Concurrency.cpp \
-	$(srcdir)/util/TPI_pthreads.cpp \
-	$(srcdir)/util/TPI_Walltime.cpp \
+	$(srcdir)/util/TPI_Concurrency.c \
+	$(srcdir)/util/TPI_pthreads.c \
+	$(srcdir)/util/TPI_Walltime.c \
 	$(srcdir)/util/ValueIO.cpp
 
 MESHIO_H = \
@@ -589,14 +591,15 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CSet.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Dimension.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElementDeclarations.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElementDimensions.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElementLocalTopology.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElementTopologies.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FixedPoolAlloc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshAssemble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshAura.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshBulkData.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshComm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshEntity.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshEntityComm.Po@am__quote@
@@ -604,12 +607,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshFieldTraits.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshIO_ExoII.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshKernel.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshMesh.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshMetaData.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshPart.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshProximity.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshRebalance.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshRelation.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshSchema.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshSharing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshTypes.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NamedValue.Po@am__quote@
@@ -623,6 +625,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParallelReduce.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Reference.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Setv.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TPI_Concurrency.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TPI_Walltime.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TPI_pthreads.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestDriver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ValueIO.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/txblas_CR4Matrix.Po@am__quote@
@@ -686,6 +691,48 @@ txblas_reduction.obj: $(srcdir)/txblas/txblas_reduction.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o txblas_reduction.obj `if test -f '$(srcdir)/txblas/txblas_reduction.c'; then $(CYGPATH_W) '$(srcdir)/txblas/txblas_reduction.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/txblas/txblas_reduction.c'; fi`
 
+TPI_Concurrency.o: $(srcdir)/util/TPI_Concurrency.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT TPI_Concurrency.o -MD -MP -MF $(DEPDIR)/TPI_Concurrency.Tpo -c -o TPI_Concurrency.o `test -f '$(srcdir)/util/TPI_Concurrency.c' || echo '$(srcdir)/'`$(srcdir)/util/TPI_Concurrency.c
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/TPI_Concurrency.Tpo $(DEPDIR)/TPI_Concurrency.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/util/TPI_Concurrency.c' object='TPI_Concurrency.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o TPI_Concurrency.o `test -f '$(srcdir)/util/TPI_Concurrency.c' || echo '$(srcdir)/'`$(srcdir)/util/TPI_Concurrency.c
+
+TPI_Concurrency.obj: $(srcdir)/util/TPI_Concurrency.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT TPI_Concurrency.obj -MD -MP -MF $(DEPDIR)/TPI_Concurrency.Tpo -c -o TPI_Concurrency.obj `if test -f '$(srcdir)/util/TPI_Concurrency.c'; then $(CYGPATH_W) '$(srcdir)/util/TPI_Concurrency.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/TPI_Concurrency.c'; fi`
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/TPI_Concurrency.Tpo $(DEPDIR)/TPI_Concurrency.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/util/TPI_Concurrency.c' object='TPI_Concurrency.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o TPI_Concurrency.obj `if test -f '$(srcdir)/util/TPI_Concurrency.c'; then $(CYGPATH_W) '$(srcdir)/util/TPI_Concurrency.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/TPI_Concurrency.c'; fi`
+
+TPI_pthreads.o: $(srcdir)/util/TPI_pthreads.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT TPI_pthreads.o -MD -MP -MF $(DEPDIR)/TPI_pthreads.Tpo -c -o TPI_pthreads.o `test -f '$(srcdir)/util/TPI_pthreads.c' || echo '$(srcdir)/'`$(srcdir)/util/TPI_pthreads.c
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/TPI_pthreads.Tpo $(DEPDIR)/TPI_pthreads.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/util/TPI_pthreads.c' object='TPI_pthreads.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o TPI_pthreads.o `test -f '$(srcdir)/util/TPI_pthreads.c' || echo '$(srcdir)/'`$(srcdir)/util/TPI_pthreads.c
+
+TPI_pthreads.obj: $(srcdir)/util/TPI_pthreads.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT TPI_pthreads.obj -MD -MP -MF $(DEPDIR)/TPI_pthreads.Tpo -c -o TPI_pthreads.obj `if test -f '$(srcdir)/util/TPI_pthreads.c'; then $(CYGPATH_W) '$(srcdir)/util/TPI_pthreads.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/TPI_pthreads.c'; fi`
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/TPI_pthreads.Tpo $(DEPDIR)/TPI_pthreads.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/util/TPI_pthreads.c' object='TPI_pthreads.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o TPI_pthreads.obj `if test -f '$(srcdir)/util/TPI_pthreads.c'; then $(CYGPATH_W) '$(srcdir)/util/TPI_pthreads.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/TPI_pthreads.c'; fi`
+
+TPI_Walltime.o: $(srcdir)/util/TPI_Walltime.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT TPI_Walltime.o -MD -MP -MF $(DEPDIR)/TPI_Walltime.Tpo -c -o TPI_Walltime.o `test -f '$(srcdir)/util/TPI_Walltime.c' || echo '$(srcdir)/'`$(srcdir)/util/TPI_Walltime.c
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/TPI_Walltime.Tpo $(DEPDIR)/TPI_Walltime.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/util/TPI_Walltime.c' object='TPI_Walltime.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o TPI_Walltime.o `test -f '$(srcdir)/util/TPI_Walltime.c' || echo '$(srcdir)/'`$(srcdir)/util/TPI_Walltime.c
+
+TPI_Walltime.obj: $(srcdir)/util/TPI_Walltime.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT TPI_Walltime.obj -MD -MP -MF $(DEPDIR)/TPI_Walltime.Tpo -c -o TPI_Walltime.obj `if test -f '$(srcdir)/util/TPI_Walltime.c'; then $(CYGPATH_W) '$(srcdir)/util/TPI_Walltime.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/TPI_Walltime.c'; fi`
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/TPI_Walltime.Tpo $(DEPDIR)/TPI_Walltime.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/util/TPI_Walltime.c' object='TPI_Walltime.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o TPI_Walltime.obj `if test -f '$(srcdir)/util/TPI_Walltime.c'; then $(CYGPATH_W) '$(srcdir)/util/TPI_Walltime.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/TPI_Walltime.c'; fi`
+
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
@@ -728,19 +775,19 @@ ElementDimensions.obj: $(srcdir)/element/ElementDimensions.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ElementDimensions.obj `if test -f '$(srcdir)/element/ElementDimensions.cpp'; then $(CYGPATH_W) '$(srcdir)/element/ElementDimensions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/element/ElementDimensions.cpp'; fi`
 
-ElementLocalTopology.o: $(srcdir)/element/ElementLocalTopology.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ElementLocalTopology.o -MD -MP -MF $(DEPDIR)/ElementLocalTopology.Tpo -c -o ElementLocalTopology.o `test -f '$(srcdir)/element/ElementLocalTopology.cpp' || echo '$(srcdir)/'`$(srcdir)/element/ElementLocalTopology.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ElementLocalTopology.Tpo $(DEPDIR)/ElementLocalTopology.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/element/ElementLocalTopology.cpp' object='ElementLocalTopology.o' libtool=no @AMDEPBACKSLASH@
+ElementTopologies.o: $(srcdir)/element/ElementTopologies.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ElementTopologies.o -MD -MP -MF $(DEPDIR)/ElementTopologies.Tpo -c -o ElementTopologies.o `test -f '$(srcdir)/element/ElementTopologies.cpp' || echo '$(srcdir)/'`$(srcdir)/element/ElementTopologies.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ElementTopologies.Tpo $(DEPDIR)/ElementTopologies.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/element/ElementTopologies.cpp' object='ElementTopologies.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ElementLocalTopology.o `test -f '$(srcdir)/element/ElementLocalTopology.cpp' || echo '$(srcdir)/'`$(srcdir)/element/ElementLocalTopology.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ElementTopologies.o `test -f '$(srcdir)/element/ElementTopologies.cpp' || echo '$(srcdir)/'`$(srcdir)/element/ElementTopologies.cpp
 
-ElementLocalTopology.obj: $(srcdir)/element/ElementLocalTopology.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ElementLocalTopology.obj -MD -MP -MF $(DEPDIR)/ElementLocalTopology.Tpo -c -o ElementLocalTopology.obj `if test -f '$(srcdir)/element/ElementLocalTopology.cpp'; then $(CYGPATH_W) '$(srcdir)/element/ElementLocalTopology.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/element/ElementLocalTopology.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ElementLocalTopology.Tpo $(DEPDIR)/ElementLocalTopology.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/element/ElementLocalTopology.cpp' object='ElementLocalTopology.obj' libtool=no @AMDEPBACKSLASH@
+ElementTopologies.obj: $(srcdir)/element/ElementTopologies.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ElementTopologies.obj -MD -MP -MF $(DEPDIR)/ElementTopologies.Tpo -c -o ElementTopologies.obj `if test -f '$(srcdir)/element/ElementTopologies.cpp'; then $(CYGPATH_W) '$(srcdir)/element/ElementTopologies.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/element/ElementTopologies.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ElementTopologies.Tpo $(DEPDIR)/ElementTopologies.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/element/ElementTopologies.cpp' object='ElementTopologies.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ElementLocalTopology.obj `if test -f '$(srcdir)/element/ElementLocalTopology.cpp'; then $(CYGPATH_W) '$(srcdir)/element/ElementLocalTopology.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/element/ElementLocalTopology.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ElementTopologies.obj `if test -f '$(srcdir)/element/ElementTopologies.cpp'; then $(CYGPATH_W) '$(srcdir)/element/ElementTopologies.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/element/ElementTopologies.cpp'; fi`
 
 MeshAssemble.o: $(srcdir)/mesh/MeshAssemble.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshAssemble.o -MD -MP -MF $(DEPDIR)/MeshAssemble.Tpo -c -o MeshAssemble.o `test -f '$(srcdir)/mesh/MeshAssemble.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshAssemble.cpp
@@ -769,6 +816,20 @@ MeshAura.obj: $(srcdir)/mesh/MeshAura.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshAura.cpp' object='MeshAura.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshAura.obj `if test -f '$(srcdir)/mesh/MeshAura.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshAura.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshAura.cpp'; fi`
+
+MeshBulkData.o: $(srcdir)/mesh/MeshBulkData.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshBulkData.o -MD -MP -MF $(DEPDIR)/MeshBulkData.Tpo -c -o MeshBulkData.o `test -f '$(srcdir)/mesh/MeshBulkData.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshBulkData.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshBulkData.Tpo $(DEPDIR)/MeshBulkData.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshBulkData.cpp' object='MeshBulkData.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshBulkData.o `test -f '$(srcdir)/mesh/MeshBulkData.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshBulkData.cpp
+
+MeshBulkData.obj: $(srcdir)/mesh/MeshBulkData.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshBulkData.obj -MD -MP -MF $(DEPDIR)/MeshBulkData.Tpo -c -o MeshBulkData.obj `if test -f '$(srcdir)/mesh/MeshBulkData.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshBulkData.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshBulkData.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshBulkData.Tpo $(DEPDIR)/MeshBulkData.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshBulkData.cpp' object='MeshBulkData.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshBulkData.obj `if test -f '$(srcdir)/mesh/MeshBulkData.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshBulkData.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshBulkData.cpp'; fi`
 
 MeshComm.o: $(srcdir)/mesh/MeshComm.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshComm.o -MD -MP -MF $(DEPDIR)/MeshComm.Tpo -c -o MeshComm.o `test -f '$(srcdir)/mesh/MeshComm.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshComm.cpp
@@ -854,19 +915,19 @@ MeshKernel.obj: $(srcdir)/mesh/MeshKernel.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshKernel.obj `if test -f '$(srcdir)/mesh/MeshKernel.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshKernel.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshKernel.cpp'; fi`
 
-MeshMesh.o: $(srcdir)/mesh/MeshMesh.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshMesh.o -MD -MP -MF $(DEPDIR)/MeshMesh.Tpo -c -o MeshMesh.o `test -f '$(srcdir)/mesh/MeshMesh.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshMesh.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshMesh.Tpo $(DEPDIR)/MeshMesh.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshMesh.cpp' object='MeshMesh.o' libtool=no @AMDEPBACKSLASH@
+MeshMetaData.o: $(srcdir)/mesh/MeshMetaData.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshMetaData.o -MD -MP -MF $(DEPDIR)/MeshMetaData.Tpo -c -o MeshMetaData.o `test -f '$(srcdir)/mesh/MeshMetaData.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshMetaData.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshMetaData.Tpo $(DEPDIR)/MeshMetaData.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshMetaData.cpp' object='MeshMetaData.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshMesh.o `test -f '$(srcdir)/mesh/MeshMesh.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshMesh.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshMetaData.o `test -f '$(srcdir)/mesh/MeshMetaData.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshMetaData.cpp
 
-MeshMesh.obj: $(srcdir)/mesh/MeshMesh.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshMesh.obj -MD -MP -MF $(DEPDIR)/MeshMesh.Tpo -c -o MeshMesh.obj `if test -f '$(srcdir)/mesh/MeshMesh.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshMesh.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshMesh.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshMesh.Tpo $(DEPDIR)/MeshMesh.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshMesh.cpp' object='MeshMesh.obj' libtool=no @AMDEPBACKSLASH@
+MeshMetaData.obj: $(srcdir)/mesh/MeshMetaData.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshMetaData.obj -MD -MP -MF $(DEPDIR)/MeshMetaData.Tpo -c -o MeshMetaData.obj `if test -f '$(srcdir)/mesh/MeshMetaData.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshMetaData.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshMetaData.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshMetaData.Tpo $(DEPDIR)/MeshMetaData.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshMetaData.cpp' object='MeshMetaData.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshMesh.obj `if test -f '$(srcdir)/mesh/MeshMesh.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshMesh.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshMesh.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshMetaData.obj `if test -f '$(srcdir)/mesh/MeshMetaData.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshMetaData.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshMetaData.cpp'; fi`
 
 MeshPart.o: $(srcdir)/mesh/MeshPart.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshPart.o -MD -MP -MF $(DEPDIR)/MeshPart.Tpo -c -o MeshPart.o `test -f '$(srcdir)/mesh/MeshPart.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshPart.cpp
@@ -924,20 +985,6 @@ MeshRelation.obj: $(srcdir)/mesh/MeshRelation.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshRelation.obj `if test -f '$(srcdir)/mesh/MeshRelation.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshRelation.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshRelation.cpp'; fi`
 
-MeshSchema.o: $(srcdir)/mesh/MeshSchema.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshSchema.o -MD -MP -MF $(DEPDIR)/MeshSchema.Tpo -c -o MeshSchema.o `test -f '$(srcdir)/mesh/MeshSchema.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshSchema.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshSchema.Tpo $(DEPDIR)/MeshSchema.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshSchema.cpp' object='MeshSchema.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshSchema.o `test -f '$(srcdir)/mesh/MeshSchema.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshSchema.cpp
-
-MeshSchema.obj: $(srcdir)/mesh/MeshSchema.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshSchema.obj -MD -MP -MF $(DEPDIR)/MeshSchema.Tpo -c -o MeshSchema.obj `if test -f '$(srcdir)/mesh/MeshSchema.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshSchema.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshSchema.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshSchema.Tpo $(DEPDIR)/MeshSchema.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshSchema.cpp' object='MeshSchema.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshSchema.obj `if test -f '$(srcdir)/mesh/MeshSchema.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshSchema.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshSchema.cpp'; fi`
-
 MeshSharing.o: $(srcdir)/mesh/MeshSharing.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshSharing.o -MD -MP -MF $(DEPDIR)/MeshSharing.Tpo -c -o MeshSharing.o `test -f '$(srcdir)/mesh/MeshSharing.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshSharing.cpp
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshSharing.Tpo $(DEPDIR)/MeshSharing.Po
@@ -994,6 +1041,20 @@ txblas_CR4Matrix.obj: $(srcdir)/txblas/txblas_CR4Matrix.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o txblas_CR4Matrix.obj `if test -f '$(srcdir)/txblas/txblas_CR4Matrix.cpp'; then $(CYGPATH_W) '$(srcdir)/txblas/txblas_CR4Matrix.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/txblas/txblas_CR4Matrix.cpp'; fi`
 
+Array.o: $(srcdir)/util/Array.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Array.o -MD -MP -MF $(DEPDIR)/Array.Tpo -c -o Array.o `test -f '$(srcdir)/util/Array.cpp' || echo '$(srcdir)/'`$(srcdir)/util/Array.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Array.Tpo $(DEPDIR)/Array.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/Array.cpp' object='Array.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Array.o `test -f '$(srcdir)/util/Array.cpp' || echo '$(srcdir)/'`$(srcdir)/util/Array.cpp
+
+Array.obj: $(srcdir)/util/Array.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Array.obj -MD -MP -MF $(DEPDIR)/Array.Tpo -c -o Array.obj `if test -f '$(srcdir)/util/Array.cpp'; then $(CYGPATH_W) '$(srcdir)/util/Array.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/Array.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Array.Tpo $(DEPDIR)/Array.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/Array.cpp' object='Array.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Array.obj `if test -f '$(srcdir)/util/Array.cpp'; then $(CYGPATH_W) '$(srcdir)/util/Array.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/Array.cpp'; fi`
+
 CSet.o: $(srcdir)/util/CSet.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CSet.o -MD -MP -MF $(DEPDIR)/CSet.Tpo -c -o CSet.o `test -f '$(srcdir)/util/CSet.cpp' || echo '$(srcdir)/'`$(srcdir)/util/CSet.cpp
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/CSet.Tpo $(DEPDIR)/CSet.Po
@@ -1007,20 +1068,6 @@ CSet.obj: $(srcdir)/util/CSet.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/CSet.cpp' object='CSet.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CSet.obj `if test -f '$(srcdir)/util/CSet.cpp'; then $(CYGPATH_W) '$(srcdir)/util/CSet.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/CSet.cpp'; fi`
-
-Dimension.o: $(srcdir)/util/Dimension.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Dimension.o -MD -MP -MF $(DEPDIR)/Dimension.Tpo -c -o Dimension.o `test -f '$(srcdir)/util/Dimension.cpp' || echo '$(srcdir)/'`$(srcdir)/util/Dimension.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Dimension.Tpo $(DEPDIR)/Dimension.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/Dimension.cpp' object='Dimension.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Dimension.o `test -f '$(srcdir)/util/Dimension.cpp' || echo '$(srcdir)/'`$(srcdir)/util/Dimension.cpp
-
-Dimension.obj: $(srcdir)/util/Dimension.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Dimension.obj -MD -MP -MF $(DEPDIR)/Dimension.Tpo -c -o Dimension.obj `if test -f '$(srcdir)/util/Dimension.cpp'; then $(CYGPATH_W) '$(srcdir)/util/Dimension.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/Dimension.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Dimension.Tpo $(DEPDIR)/Dimension.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/Dimension.cpp' object='Dimension.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Dimension.obj `if test -f '$(srcdir)/util/Dimension.cpp'; then $(CYGPATH_W) '$(srcdir)/util/Dimension.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/Dimension.cpp'; fi`
 
 FixedPoolAlloc.o: $(srcdir)/util/FixedPoolAlloc.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FixedPoolAlloc.o -MD -MP -MF $(DEPDIR)/FixedPoolAlloc.Tpo -c -o FixedPoolAlloc.o `test -f '$(srcdir)/util/FixedPoolAlloc.cpp' || echo '$(srcdir)/'`$(srcdir)/util/FixedPoolAlloc.cpp
