@@ -441,8 +441,8 @@ void MeshBulkData::destroy_kernel( KernelSet::iterator ik )
 
 KernelSet::iterator
 MeshBulkData::declare_kernel( const EntityType arg_entity_type ,
-                      const unsigned part_size ,
-                      const unsigned part_ord[] )
+                              const unsigned part_size ,
+                              const unsigned part_ord[] )
 {
   enum { KEY_TMP_BUFFER_SIZE = 32 };
 
@@ -669,6 +669,113 @@ void MeshBulkData::remove_entity( KernelSet::iterator ik , unsigned i )
 
     destroy_kernel( last );
   }
+}
+
+//----------------------------------------------------------------------
+
+namespace {
+
+struct LessEntityPointer {
+  bool operator()( const Entity * const lhs , const Entity * const rhs ) const
+    { return lhs->key() < rhs->key() ; }
+};
+
+}
+
+bool MeshBulkData::internal_sort_kernel_entities()
+{
+  bool change = false ;
+
+  for ( unsigned type = 0 ; type < EntityTypeEnd ; ++type ) {
+    KernelSet & ks = m_kernels[type] ;
+
+    // bk == first kernel in the family
+    KernelSet::iterator bk = ks.begin();
+
+    while ( bk != ks.end() ) {
+
+      KernelSet::iterator ik_vacant = bk->m_kernel ; // Last kernel
+      unsigned            ie_vacant = ik_vacant->size();
+
+      if ( ik_vacant->capacity() <= ie_vacant ) {
+        // Have to create a kernel just for the scratch space...
+        const unsigned * const key = bk->key();
+        ik_vacant = declare_kernel( (EntityType) type, key[0]-1 , key+1 );
+        ie_vacant = 0 ;
+      }
+
+      ik_vacant->m_entities[ ie_vacant ] = NULL ;
+
+      // ek == end kernel for the family
+      KernelSet::iterator ek = bk->m_kernel ; ++ek ;
+
+      size_t count = 0 ;
+      for ( KernelSet::iterator ik = bk ; ik != ek ; ++ik ) {
+        count += ik->size();
+      }
+
+      std::vector<Entity*> entities( count );
+
+      std::vector<Entity*>::iterator j = entities.begin();
+
+      for ( KernelSet::iterator ik = bk ; ik != ek ; ++ik ) {
+        const size_t n = ik->size();
+        for ( unsigned i = 0 ; i < n ; ++i , ++j ) {
+          *j = ik->m_entities[i] ;
+        }
+      }
+
+      std::sort( entities.begin() , entities.end() , LessEntityPointer() );
+
+      j = entities.begin();
+
+      bool change_this_family = false ;
+
+      for ( KernelSet::iterator ik = bk ; ik != ek ; ++ik ) {
+        const size_t n = ik->size();
+        for ( unsigned i = 0 ; i < n ; ++i , ++j ) {
+          Entity * const current = ik->m_entities[i] ;
+
+          if ( current != *j ) {
+
+            if ( current ) {
+              // Move current entity to the vacant spot
+              Kernel::copy_fields( *ik_vacant , ie_vacant , *ik, i );
+              current->m_kernel     = ik_vacant ;
+              current->m_kernel_ord = ie_vacant ;
+              ik_vacant->m_entities[ ie_vacant ] = current ;
+            }
+
+            // Set the vacant spot to where the required entity is now.
+            ik_vacant = (*j)->m_kernel ;
+            ie_vacant = (*j)->m_kernel_ord ;
+            ik_vacant->m_entities[ ie_vacant ] = NULL ;
+
+            // Move required entity to the required spot
+            Kernel::copy_fields( *ik, i, *ik_vacant , ie_vacant );
+            (*j)->m_kernel     = ik ;
+            (*j)->m_kernel_ord = i ;
+            ik->m_entities[i] = *j ;
+
+            change_this_family = true ;
+          }
+
+          // Once a change has occured then need to propagate the
+          // relocation for the remainder of the family.
+          // This allows the propagation to be performed once per
+          // entity as opposed to both times the entity is moved.
+
+          if ( change_this_family ) { internal_propagate_relocation( **j ); }
+        }
+      }
+
+      if ( change_this_family ) { change = true ; }
+
+      bk = ek ;
+    }
+  }
+
+  return change ;
 }
 
 //----------------------------------------------------------------------

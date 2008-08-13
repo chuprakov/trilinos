@@ -120,7 +120,7 @@ OctTreeKey elem_key( const double * const bounds ,
 
   const double s = ncell / bounds[3] ;
 
-  RelationSpan elem_nodes = elem.relations( Node );
+  PairIterRelation elem_nodes = elem.relations( Node );
 
   const unsigned num_nodes = elem_nodes.size();
 
@@ -246,7 +246,7 @@ void rebal_other_entities( MeshBulkData & M , EntityType other , std::vector<Ent
 
         rebal_procs.clear();
 
-        for ( RelationSpan j = entity->relations(); j ; ++j ) {
+        for ( PairIterRelation j = entity->relations(); j ; ++j ) {
           if ( j->entity_type() == other  ) {
             std::ostringstream msg ;
             msg << "P" << M.parallel_rank();
@@ -260,7 +260,7 @@ void rebal_other_entities( MeshBulkData & M , EntityType other , std::vector<Ent
           }
         }
 
-        for ( RelationSpan j = entity->relations(); j ; ++j ) {
+        for ( PairIterRelation j = entity->relations(); j ; ++j ) {
           Entity * const con_entity = j->entity();
           std::vector<EntityProc>::const_iterator ir =
             lower_bound( rebal , *con_entity );
@@ -279,7 +279,7 @@ void rebal_other_entities( MeshBulkData & M , EntityType other , std::vector<Ent
         for ( ip = rebal_procs.begin() ; ip != rebal_procs.end() ; ++ip ) {
           EntityProc tmp( entity , *ip );
           rebal_tmp.push_back( tmp );
-          for ( RelationSpan j = entity->relations(); j ; ++j ) {
+          for ( PairIterRelation j = entity->relations(); j ; ++j ) {
             Entity * const con_entity = j->entity();
             EntityProc con_tmp( con_entity , *ip );
             rebal_tmp.push_back( con_tmp );
@@ -315,7 +315,7 @@ void rebal_elem_entities( MeshBulkData & M ,
 
       rebal_procs.clear();
 
-      RelationSpan elements = entity->relations( Element );
+      PairIterRelation elements = entity->relations( Element );
 
       while ( elements ) {
         Entity & elem = * elements->entity(); ++elements ;

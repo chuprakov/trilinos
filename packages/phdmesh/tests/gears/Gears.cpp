@@ -398,7 +398,7 @@ void gather( typename FieldType::data_type * dst ,
              const Entity & src ,
              const FieldType & field )
 {
-  RelationSpan con = src.relations( Node );
+  PairIterRelation con = src.relations( Node );
   for ( unsigned n = 0 ; n < NC ; ++n , ++con , dst += NV ) {
     Copy<NV>( dst , field_data( field , * con->entity() ) );
   }

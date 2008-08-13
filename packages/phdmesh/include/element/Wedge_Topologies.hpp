@@ -76,7 +76,8 @@ template<> struct Wedge<6> : public
                                     Quadrilateral<>  ,
                                     Triangle<>  ,
                                     Triangle<>  >::type ,
-                      WedgeFaceNodeMap > {};
+                      WedgeFaceNodeMap >
+{ typedef Wedge<6> base ; };
 
 template<> struct Wedge<15> : public
   CellTopologyTraits< 3 , 6 , 15 ,
@@ -95,7 +96,8 @@ template<> struct Wedge<15> : public
                                     Quadrilateral<8>  ,
                                     Triangle<6>  ,
                                     Triangle<6>  >::type ,
-                      WedgeFaceNodeMap > {};
+                      WedgeFaceNodeMap >
+{ typedef Wedge<6> base ; };
 
 template<> struct Wedge<18> : public
   CellTopologyTraits< 3 , 6 , 18 ,
@@ -114,7 +116,8 @@ template<> struct Wedge<18> : public
                                     Quadrilateral<9>  ,
                                     Triangle<6>  ,
                                     Triangle<6>  >::type ,
-                      WedgeFaceNodeMap > {};
+                      WedgeFaceNodeMap >
+{ typedef Wedge<6> base ; };
 
 template<> const CellTopology * cell_topology< Wedge<> >();
 template<> const CellTopology * cell_topology< Wedge<15> >();

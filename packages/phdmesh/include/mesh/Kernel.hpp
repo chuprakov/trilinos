@@ -124,6 +124,7 @@ public:
    *  penalty for filling a vector of Part pointers is too costly.
    */
   std::pair<const unsigned *, const unsigned *>
+// PairIter<const unsigned *>
     superset_part_ordinals() const
     {
       const unsigned * const k = key();
@@ -150,17 +151,6 @@ private:
                            Kernel & k_src , unsigned i_src );
 
   static void zero_fields( Kernel & k_dst , unsigned i_dst );
-
-
-  template< class field_type >
-  friend
-  typename field_type::BlockDimension
-  field_dimension( const field_type & f , const Kernel & k );
-
-  template< class field_type >
-  friend
-  typename field_type::Dimension
-  field_dimension( const field_type & f , const Entity & e );
 
 
   template< class field_type >

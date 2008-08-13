@@ -197,7 +197,7 @@ struct LessEntityPointer {
 
 }
 
-RelationSpan con_span( const std::vector<Relation> & con ,
+PairIterRelation con_span( const std::vector<Relation> & con ,
                        const relation_attr_type lo_attr ,
                        const relation_attr_type hi_attr )
 {
@@ -207,10 +207,10 @@ RelationSpan con_span( const std::vector<Relation> & con ,
   i = std::lower_bound( i , e , lo_attr , LessRelation() );
   e = std::lower_bound( i , e , hi_attr , LessRelation() );
 
-  return RelationSpan( i , e );
+  return PairIterRelation( i , e );
 }
 
-RelationSpan Entity::relations( EntityType et , unsigned kind ) const
+PairIterRelation Entity::relations( EntityType et , unsigned kind ) const
 {
   const EntityType et_next = EntityType( et + 1 );
   const relation_attr_type
@@ -223,12 +223,12 @@ RelationSpan Entity::relations( EntityType et , unsigned kind ) const
   i = std::lower_bound( i , e , lo_attr , LessRelation() );
   e = std::lower_bound( i , e , hi_attr , LessRelation() );
 
-  return RelationSpan( i , e );
+  return PairIterRelation( i , e );
 }
 
 void closure( const Entity & e_from , std::vector<Entity*> & eset )
 {
-  RelationSpan rel = e_from.relations();
+  PairIterRelation rel = e_from.relations();
   for ( ; rel ; ++rel ) {
     if ( rel->forward() ) {
       Entity * const e = rel->entity();
@@ -245,7 +245,7 @@ void closure( const Entity & e_from , std::vector<Entity*> & eset )
 
 bool in_closure( const Entity & e_from , const Entity & e )
 {
-  RelationSpan rel = e_from.relations();
+  PairIterRelation rel = e_from.relations();
 
   bool not_in_closure = & e_from != & e ;
 
@@ -331,7 +331,7 @@ void deduce_part_relations( const Entity & e_from ,
 
 void deduce_part_relations( const Entity & e_to , PartSet & to_parts )
 {
-  RelationSpan rel = e_to.relations();
+  PairIterRelation rel = e_to.relations();
 
   for ( ; rel ; ++rel ) if ( rel->converse() ) {
     deduce_part_relations( * rel->entity() , e_to ,
@@ -378,13 +378,12 @@ void set_field_relations( Entity & e_from ,
 //----------------------------------------------------------------------
 
 void print_declare_relation( std::ostream & msg ,
+                             const char * method ,
                              Entity & e_from ,
                              Entity & e_to ,
                              const unsigned identifier ,
                              const unsigned kind )
 {
-  static const char method[] = "phdmesh::MeshBulkData::declare_relation" ;
-
   msg << method ;
   msg << "( " ;
   print_entity_key( msg , e_from.key() );
@@ -400,13 +399,15 @@ void print_declare_relation( std::ostream & msg ,
 }
 
 void MeshBulkData::declare_relation( Entity & e_from ,
-                             Entity & e_to ,
-                             const unsigned identifier ,
-                             const unsigned kind )
+                                     Entity & e_to ,
+                                     const unsigned identifier ,
+                                     const unsigned kind )
 {
+  static const char method[] = "phdmesh::MeshBulkData::declare_relation" ;
+
   if ( in_closure( e_to , e_from ) ) {
     std::ostringstream msg ;
-    print_declare_relation( msg , e_from , e_to , identifier , kind );
+    print_declare_relation( msg , method , e_from , e_to , identifier , kind );
     msg << " FAILED DUE TO CIRCULAR CLOSURE." ;
     throw std::runtime_error( msg.str() );
   }
@@ -422,7 +423,7 @@ void MeshBulkData::declare_relation( Entity & e_from ,
 
       if ( e != i && forward.attribute() == i->attribute() ) {
         std::ostringstream msg ;
-        print_declare_relation( msg , e_from , e_to , identifier , kind );
+        print_declare_relation( msg, method, e_from, e_to, identifier, kind );
         msg << " FAILED, ALREADY HAS THIS RELATION TO " ;
         print_entity_key( msg , i->entity()->key() );
         throw std::runtime_error(msg.str());
@@ -456,7 +457,7 @@ void MeshBulkData::declare_relation( Entity & e_from ,
 }
 
 void MeshBulkData::declare_relation( Entity & entity ,
-                             const std::vector<Relation> & rel )
+                                     const std::vector<Relation> & rel )
 {
   std::vector<Relation>::const_iterator i ;
   for ( i = rel.begin() ; i != rel.end() ; ++i ) {
@@ -581,7 +582,7 @@ void MeshBulkData::internal_propagate_part_changes(
   Part * const owns_part = & m_mesh_meta_data.locally_owned_part();
   Part * const uses_part = & m_mesh_meta_data.locally_used_part();
 
-  RelationSpan rel = entity.relations();
+  PairIterRelation rel = entity.relations();
 
   for ( ; rel ; ++rel ) {
     const unsigned rel_ident = rel->identifier();
@@ -650,7 +651,7 @@ void MeshBulkData::internal_propagate_part_changes(
 
 void MeshBulkData::internal_propagate_relocation( Entity & entity )
 {
-  RelationSpan rel = entity.relations();
+  PairIterRelation rel = entity.relations();
 
   for ( ; rel ; ++rel ) {
     if ( rel->forward() ) {

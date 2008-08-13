@@ -66,7 +66,7 @@ int element_node_stencil( EntityType from_type ,
                           unsigned   identifier ,
                           unsigned   kind )
 {
-  enum { number_node = TopologyTraits::template subcell<0>::number };
+  enum { number_node = TopologyTraits::node_count };
 
   int ordinal = -1 ;
 

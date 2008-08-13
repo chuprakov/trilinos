@@ -194,7 +194,7 @@ void test_gears_face_proximity(
         if ( p_rank == d[j].proc ) {
           const entity_key_type key = entity_key( Face , d[j].ident );
           Entity & face = * M.get_entity( key , method );
-          for ( RelationSpan face_nodes = face.relations( Node );
+          for ( PairIterRelation face_nodes = face.relations( Node );
                 face_nodes ; ++face_nodes ) {
             Entity & node = * face_nodes->entity();
             double * const data = field_data( field_proximity , node );
@@ -229,7 +229,7 @@ void test_gears_face_proximity(
       ep.second = d.proc ;
       to_be_shared.push_back( ep );
 
-      for ( RelationSpan con = ep.first->relations(); con ; ++con ) {
+      for ( PairIterRelation con = ep.first->relations(); con ; ++con ) {
         if ( con->entity_type() < Face ) {
           ep.first = con->entity();
           to_be_shared.push_back( ep );

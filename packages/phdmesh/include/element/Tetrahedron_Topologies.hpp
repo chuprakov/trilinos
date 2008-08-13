@@ -64,7 +64,8 @@ template<> struct Tetrahedron<4> : public
                                     Triangle<>  ,
                                     Triangle<>  ,
                                     Triangle<>  >::type ,
-                      TetrahedronSideNodeMap > {};
+                      TetrahedronSideNodeMap >
+{ typedef Tetrahedron<4> base ; };
 
 template<> struct Tetrahedron<10> : public
   CellTopologyTraits< 3 , 4 , 10 ,
@@ -79,7 +80,8 @@ template<> struct Tetrahedron<10> : public
                                     Triangle<6>  ,
                                     Triangle<6>  ,
                                     Triangle<6>  >::type ,
-                      TetrahedronSideNodeMap > {};
+                      TetrahedronSideNodeMap >
+{ typedef Tetrahedron<4> base ; };
 
 template<> const CellTopology * cell_topology< Tetrahedron<> >();
 template<> const CellTopology * cell_topology< Tetrahedron<10> >();

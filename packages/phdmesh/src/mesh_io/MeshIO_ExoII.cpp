@@ -392,7 +392,7 @@ void FileSchema::declare_part( Part & arg_part , int arg_id )
     }
   }
 
-  const unsigned number_nodes = top->number_node ;
+  const unsigned number_nodes = top->node_count ;
 
   const FilePart * const fp =
     internal_declare_part( m_schema , arg_part , arg_id ,
@@ -1061,7 +1061,7 @@ void WriteElemIndexRelation::operator()(
       send_data[0] = * field_data( SF.m_field_index , elem );
       send_data[1] =   elem.identifier();
 
-      RelationSpan con = elem.relations( Node );
+      PairIterRelation con = elem.relations( Node );
 
       if ( con.size() < (int) num_nodes_per_elem ) {
         std::ostringstream msg ;
@@ -1265,7 +1265,10 @@ void get_entities(
     if ( ik->has_superset( part ) ) { count += ik->size(); }
   }
 
-  tmp.assign( count , NULL );
+  {
+    const Entity * const en = NULL ;
+    tmp.assign( count , en );
+  }
 
   count = 0 ;
   for ( KernelSet::const_iterator ik = ks.begin() ; ik != ks.end() ; ++ik ) {
@@ -1295,7 +1298,10 @@ void get_entities(
          ik->has_superset( part2 ) ) { count += ik->size(); }
   }
 
-  tmp.assign( count , NULL );
+  {
+    const Entity * const en = NULL ;
+    tmp.assign( count , en );
+  }
 
   count = 0 ;
   for ( KernelSet::const_iterator ik = ks.begin() ; ik != ks.end() ; ++ik ) {

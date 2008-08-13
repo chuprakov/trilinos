@@ -53,7 +53,7 @@ entity_key_type entity_key( EntityType , entity_id_type );
  *  (3) identifier, and
  *  (4) range entity identifier.
  */
-typedef PairIter< std::vector<Relation>::const_iterator > RelationSpan ;
+typedef PairIter< std::vector<Relation>::const_iterator > PairIterRelation ;
 
 //----------------------------------------------------------------------
 /** A mesh entity has an entity type, identifier, relations, and
@@ -82,10 +82,10 @@ public:
 
   //------------------------------------
   /** All relations */
-  RelationSpan relations() const { return RelationSpan( m_relation ); }
+  PairIterRelation relations() const { return PairIterRelation( m_relation ); }
 
   /** Relations with entities of a given entity type */
-  RelationSpan relations( EntityType type , unsigned kind = 0 ) const ;
+  PairIterRelation relations( EntityType type , unsigned kind = 0 ) const ;
 
   //------------------------------------
   /** Owning parallel processor rank */

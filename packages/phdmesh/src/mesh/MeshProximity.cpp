@@ -313,7 +313,7 @@ void ProximitySearch::box(
     entity_box[0] = entity_box[1] = entity_box[2] =  f_max ;
     entity_box[3] = entity_box[4] = entity_box[5] = - f_max ;
 
-    RelationSpan jnode = entity.relations( Node );
+    PairIterRelation jnode = entity.relations( Node );
 
     for ( ; jnode ; ++jnode ) {
       const Entity & node = * jnode->entity();

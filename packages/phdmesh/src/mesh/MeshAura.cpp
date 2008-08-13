@@ -151,7 +151,7 @@ void scrub( MeshBulkData & M , std::vector<EntityProc> & new_domain ,
 
       bool destroy_it = true ;
 
-      for ( RelationSpan aura_con = aura_entity.relations();
+      for ( PairIterRelation aura_con = aura_entity.relations();
             destroy_it && aura_con ; ++aura_con ) {
         Entity & e = * aura_con->entity();
         const unsigned e_type = aura_con->entity_type();
@@ -262,7 +262,7 @@ void comm_mesh_regenerate_aura( MeshBulkData & M )
     Entity * const shared_entity = ib->first ;
     const EntityType shared_type = shared_entity->entity_type();
 
-    for ( RelationSpan shared_entity_con = shared_entity->relations() ;
+    for ( PairIterRelation shared_entity_con = shared_entity->relations() ;
           shared_entity_con ; ++shared_entity_con ) {
 
       Entity * const e = shared_entity_con->entity();
@@ -287,7 +287,7 @@ void comm_mesh_regenerate_aura( MeshBulkData & M )
 
           // and all of the shared_entity->UsedBy->entity->Uses->{entities}
 
-          for ( RelationSpan jc = e->relations(); jc ; ++jc ) {
+          for ( PairIterRelation jc = e->relations(); jc ; ++jc ) {
 
             if ( jc->entity_type() < e_type && shared_entity != jc->entity() ) {
 

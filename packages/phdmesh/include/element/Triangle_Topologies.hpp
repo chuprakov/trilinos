@@ -85,14 +85,16 @@ template<> struct Triangle<3> : public
                             MakeTypeList< Line<>  ,
                                           Line<>  ,
                                           Line<>  >::type ,
-                            TriangleEdgeNodeMap > {};
+                            TriangleEdgeNodeMap >
+{ typedef Triangle<3> base ; };
 
 template<> struct Triangle<6> : public
   CellTopologyTraits< 2 , 3 , 6 ,
                             MakeTypeList< Line<3>  ,
                                           Line<3>  ,
                                           Line<3>  >::type ,
-                            TriangleEdgeNodeMap > {};
+                            TriangleEdgeNodeMap >
+{ typedef Triangle<3> base ; };
 
 template<> const CellTopology * cell_topology< Triangle<> >();
 template<> const CellTopology * cell_topology< Triangle<6> >();
@@ -112,7 +114,8 @@ template<> struct ShellTriangle<3> : public
                             TriangleEdgeNodeMap ,
                             MakeTypeList< Triangle<>  ,
                                           Triangle<>  >::type ,
-                            ShellTriangleFaceNodeMap > {};
+                            ShellTriangleFaceNodeMap >
+{ typedef ShellTriangle<3> base ; };
 
 template<> struct ShellTriangle<6> : public
   CellTopologyTraits< 3 , 3 , 6 ,
@@ -122,7 +125,8 @@ template<> struct ShellTriangle<6> : public
                             TriangleEdgeNodeMap ,
                             MakeTypeList< Triangle<6>  ,
                                           Triangle<6>  >::type ,
-                            ShellTriangleFaceNodeMap > {};
+                            ShellTriangleFaceNodeMap >
+{ typedef ShellTriangle<3> base ; };
 
 template<> const CellTopology * cell_topology< ShellTriangle<> >();
 template<> const CellTopology * cell_topology< ShellTriangle<6> >();

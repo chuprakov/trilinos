@@ -89,7 +89,8 @@ template<> struct Quadrilateral<4> : public
                                           Line<>  ,
                                           Line<>  ,
                                           Line<>  >::type ,
-                            QuadrilateralEdgeNodeMap > {};
+                            QuadrilateralEdgeNodeMap >
+{ typedef Quadrilateral<4> base ; };
 
 template<> struct Quadrilateral<8> : public
   CellTopologyTraits< 2 , 4 , 8 ,
@@ -97,7 +98,8 @@ template<> struct Quadrilateral<8> : public
                                           Line<3>  ,
                                           Line<3>  ,
                                           Line<3>  >::type ,
-                            QuadrilateralEdgeNodeMap > {};
+                            QuadrilateralEdgeNodeMap >
+{ typedef Quadrilateral<4> base ; };
 
 template<> struct Quadrilateral<9> : public
   CellTopologyTraits< 2 , 4 , 9 ,
@@ -105,7 +107,8 @@ template<> struct Quadrilateral<9> : public
                                           Line<3>  ,
                                           Line<3>  ,
                                           Line<3>  >::type ,
-                            QuadrilateralEdgeNodeMap > {};
+                            QuadrilateralEdgeNodeMap >
+{ typedef Quadrilateral<4> base ; };
 
 template<> const CellTopology * cell_topology< Quadrilateral<> >();
 template<> const CellTopology * cell_topology< Quadrilateral<8> >();
@@ -127,7 +130,8 @@ template<> struct ShellQuadrilateral<4> : public
                             QuadrilateralEdgeNodeMap ,
                             MakeTypeList< Quadrilateral<>  ,
                                           Quadrilateral<>  >::type ,
-                            ShellQuadrilateralFaceNodeMap > {};
+                            ShellQuadrilateralFaceNodeMap >
+{ typedef ShellQuadrilateral<4> base ; };
 
 template<> struct ShellQuadrilateral<8> : public
   CellTopologyTraits< 3 , 4 , 8 ,
@@ -138,7 +142,8 @@ template<> struct ShellQuadrilateral<8> : public
                             QuadrilateralEdgeNodeMap ,
                             MakeTypeList< Quadrilateral<8>  ,
                                           Quadrilateral<8>  >::type ,
-                            ShellQuadrilateralFaceNodeMap > {};
+                            ShellQuadrilateralFaceNodeMap >
+{ typedef ShellQuadrilateral<4> base ; };
 
 template<> struct ShellQuadrilateral<9> : public
   CellTopologyTraits< 3 , 4 , 9 ,
@@ -149,7 +154,8 @@ template<> struct ShellQuadrilateral<9> : public
                             QuadrilateralEdgeNodeMap ,
                             MakeTypeList< Quadrilateral<9>  ,
                                           Quadrilateral<9>  >::type ,
-                            ShellQuadrilateralFaceNodeMap > {};
+                            ShellQuadrilateralFaceNodeMap >
+{ typedef ShellQuadrilateral<4> base ; };
 
 template<> const CellTopology * cell_topology< ShellQuadrilateral<> >();
 template<> const CellTopology * cell_topology< ShellQuadrilateral<8> >();

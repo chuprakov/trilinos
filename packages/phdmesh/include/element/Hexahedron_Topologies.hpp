@@ -120,18 +120,18 @@ template< unsigned = 8 > struct Hexahedron ;
 //----------------------------------------------------------------------
 
 typedef
-  MakeTypeList< IndexList< 0 , 1 ,   8 ,  27 , 28 > ,
-                IndexList< 1 , 2 ,   9 ,  29 , 30 > ,
-                IndexList< 2 , 3 ,  10 ,  31 , 32 > ,
-                IndexList< 3 , 0 ,  11 ,  33 , 34 > ,
-                IndexList< 4 , 5 ,  16 ,  43 , 44 > ,
-                IndexList< 5 , 6 ,  17 ,  45 , 46 > ,
-                IndexList< 6 , 7 ,  18 ,  47 , 48 > ,
-                IndexList< 7 , 4 ,  19 ,  49 , 50 > ,
-                IndexList< 0 , 4 ,  12 ,  35 , 39 > ,
-                IndexList< 1 , 5 ,  13 ,  36 , 40 > ,
-                IndexList< 2 , 6 ,  14 ,  37 , 41 > ,
-                IndexList< 3 , 7 ,  15 ,  38 , 42 > >::type
+  MakeTypeList< IndexList< 0 , 1 ,   8 > ,
+                IndexList< 1 , 2 ,   9 > ,
+                IndexList< 2 , 3 ,  10 > ,
+                IndexList< 3 , 0 ,  11 > ,
+                IndexList< 4 , 5 ,  16 > ,
+                IndexList< 5 , 6 ,  17 > ,
+                IndexList< 6 , 7 ,  18 > ,
+                IndexList< 7 , 4 ,  19 > ,
+                IndexList< 0 , 4 ,  12 > ,
+                IndexList< 1 , 5 ,  13 > ,
+                IndexList< 2 , 6 ,  14 > ,
+                IndexList< 3 , 7 ,  15 > >::type
   HexahedronEdgeNodeMap ;
 
 typedef
@@ -166,7 +166,10 @@ template<> struct Hexahedron<8> : public
                                     Quadrilateral<>  ,
                                     Quadrilateral<>  ,
                                     Quadrilateral<>  >::type ,
-                      HexahedronFaceNodeMap > {};
+                      HexahedronFaceNodeMap >
+{
+  typedef Hexahedron<8> base ;
+};
 
 template<> struct Hexahedron<20> : public
   CellTopologyTraits< 3 , 8 , 20 ,
@@ -189,7 +192,10 @@ template<> struct Hexahedron<20> : public
                                     Quadrilateral<8>  ,
                                     Quadrilateral<8>  ,
                                     Quadrilateral<8>  >::type ,
-                      HexahedronFaceNodeMap > {};
+                      HexahedronFaceNodeMap >
+{
+  typedef Hexahedron<8> base ;
+};
 
 template<> struct Hexahedron<27> : public
   CellTopologyTraits< 3 , 8 , 27 ,
@@ -212,7 +218,10 @@ template<> struct Hexahedron<27> : public
                                     Quadrilateral<9>  ,
                                     Quadrilateral<9>  ,
                                     Quadrilateral<9>  >::type ,
-                      HexahedronFaceNodeMap > {};
+                      HexahedronFaceNodeMap >
+{
+  typedef Hexahedron<8> base ;
+};
 
 template<> const CellTopology * cell_topology< Hexahedron<8> >();
 template<> const CellTopology * cell_topology< Hexahedron<20> >();

@@ -55,42 +55,6 @@ bool field_data_valid( const FieldBase & f ,
 
 template< class field_type >
 inline
-typename field_type::BlockDimension
-field_dimension( const field_type & f , const Kernel & k )
-{
-  typedef typename field_type::Dimension      Dim ;
-  typedef typename field_type::BlockDimension Block ;
-  const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
-
-  unsigned stride[ Block::NumDim ];
-  Copy< Dim::NumDim >( stride , pd.m_stride );
-  stride[ Dim::NumDim ] = stride[ Dim::NumDim - 1 ] * k.m_size ;
-  return Block( stride , "field_dimension" );
-
-/*
-  return Block( pd.m_dim , k.m_size );
-*/
-
-}
-
-template< class field_type >
-inline
-typename field_type::Dimension
-field_dimension( const field_type & f , const Entity & e )
-{
-  typedef typename field_type::Dimension Dim ;
-  const Kernel & k = e.kernel();
-  const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
-  return Dim( pd.m_stride , "field_dimension" );
-/*
-  return Dim( pd.m_dim );
-*/
-}
-
-//----------------------------------------------------------------------
-
-template< class field_type >
-inline
 typename field_type::data_type *
 field_data( const field_type & f , const Kernel & k )
 {

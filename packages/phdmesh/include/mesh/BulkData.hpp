@@ -83,6 +83,22 @@ public:
                        const char * required_by = NULL ) const ;
 
   //------------------------------------
+  /** Synchronize changes that have occured since the previous
+   *  call to synchronize_changes.  This must be a parallel synchronous
+   *  call and can be a heavyweight operation.
+   *
+   *  It is intended that mesh changes will have some kind of
+   *  tracking/notification mechanism that is "flushed" when this
+   *  method is invoked.  Currently this method simply reorders the
+   *  entities within the kernels so that their ordering after this
+   *  method invocation is independent of the order in which they
+   *  were changed.
+   *  
+   *  \return The count of how many times the method has performed work.
+   */
+  size_t synchronize_changes();
+
+  //------------------------------------
   /** Create or retrieve entity of the given type and id.
    *  If the entity is created it is assumed to be locally owned.
    */
@@ -153,6 +169,7 @@ private:
   unsigned                  m_parallel_size ;
   unsigned                  m_parallel_rank ;
   unsigned                  m_kernel_capacity ;
+  size_t                    m_sync_change_count ;
   KernelSet                 m_kernels[  EntityTypeEnd ];
   EntitySet                 m_entities[ EntityTypeEnd ];
   std::vector<EntityProc>   m_shares_all ;
@@ -180,6 +197,9 @@ private:
   void internal_propagate_part_changes( Entity & , const PartSet & removed );
 
   void internal_propagate_relocation( Entity & );
+
+  /** Return if any changes were made */
+  bool internal_sort_kernel_entities();
 };
 
 //----------------------------------------------------------------------

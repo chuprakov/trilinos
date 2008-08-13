@@ -162,7 +162,7 @@ Entity & declare_element( MeshBulkData & mesh ,
 
   Entity & elem = mesh.declare_entity( key , add );
 
-  for ( unsigned i = 0 ; i < top->number_node ; ++i ) {
+  for ( unsigned i = 0 ; i < top->node_count ; ++i ) {
     mesh.declare_relation( elem , * node[i] , i );
   }
   return elem ;
@@ -200,7 +200,7 @@ Entity & declare_element( MeshBulkData & mesh ,
 
   Entity & elem = mesh.declare_entity( key , add );
 
-  for ( unsigned i = 0 ; i < top->number_node ; ++i ) {
+  for ( unsigned i = 0 ; i < top->node_count ; ++i ) {
     const entity_key_type node_key = entity_key( Node , node_id[i] );
 
     Entity & node = mesh.declare_entity( node_key , add );
@@ -223,7 +223,7 @@ Entity & declare_element_side(
   const CellTopology * const elem_top = get_cell_topology( elem );
 
   const CellTopology * const side_top =
-    ( elem_top && local_side_id < elem_top->number_side )
+    ( elem_top && local_side_id < elem_top->side_count )
     ? elem_top->side[ local_side_id ].topology : NULL ;
 
   if ( NULL == side_top ) {
@@ -241,8 +241,8 @@ Entity & declare_element_side(
      else {
        msg << " Cell side id exceeds " ;
        msg << elem_top->name ;
-       msg << ".number_side = " ;
-       msg << elem_top->number_side ;
+       msg << ".side_count = " ;
+       msg << elem_top->side_count ;
      }
      throw std::runtime_error( msg.str() );
    }
@@ -258,9 +258,9 @@ Entity & declare_element_side(
 
   Entity & side = mesh.declare_entity( side_key , parts , elem.owner_rank() );
 
-  RelationSpan rel = elem.relations( Node );
+  PairIterRelation rel = elem.relations( Node );
 
-  for ( unsigned i = 0 ; i < side_top->number_node ; ++i ) {
+  for ( unsigned i = 0 ; i < side_top->node_count ; ++i ) {
     Entity & node = * rel[ side_node_map[i] ].entity();
     mesh.declare_relation( side , node , i );
   }

@@ -44,8 +44,11 @@ typedef CellTopologyTraits<0,0,0> Node_Traits ;
 
 template< unsigned Nodes = 2 > struct Line ;
 
-template<> struct Line<2> : public CellTopologyTraits<1,2,2> {};
-template<> struct Line<3> : public CellTopologyTraits<1,2,3> {};
+template<> struct Line<2> : public CellTopologyTraits<1,2,2>
+{ typedef Line<2> base ; };
+
+template<> struct Line<3> : public CellTopologyTraits<1,2,3>
+{ typedef Line<2> base ; };
 
 template<> const CellTopology * cell_topology< Node_Traits >();
 template<> const CellTopology * cell_topology< Line<> >();

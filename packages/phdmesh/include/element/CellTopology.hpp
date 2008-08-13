@@ -42,21 +42,31 @@ namespace phdmesh {
  *  vertices.  In this case the vertices must be ordered first.
  *
  *  Given a CellTopology object 'top' the attributes are accessed as follows.
+ *
+ *  - top.base                       ; Base (non-extended) topology
  *  - top.name
  *  - top.key
  *  - top.dimension
- *  - top.number_vertex
- *  - top.number_node
- *  - top.number_edge
- *  - top.number_face
- *  - top.number_side
+ *  - top.vertex_count
+ *  - top.node_count
+ *  - top.edge_count
+ *  - top.face_count
+ *  - top.side_count
  *
- *  - top.subcell_number[Dim]        ; number of subcells of dimension Dim
+ *  - top.subcell_homogeneity        ; subcell[Dim] are homogeneous
+ *  - top.subcell_count[Dim]         ; number of subcells of dimension Dim
  *  - top.subcell[Dim][Ord].topology ; topology of subcell
  *  - top.subcell[Dim][Ord].node[I]  ; node number of subcell's node I
  *
+ *  For 2D or 3D cells:
  *  - top.side[Ord].topology         ; subcell[dimension-1][Ord].topology
  *  - top.side[Ord].node[I]          ; subcell[dimension-1][Ord].node[I]
+ *  - top.edge[Ord].topology         ; subcell[1][Ord].topology
+ *  - top.edge[Ord].node[I]          ; subcell[1][Ord].node[I]
+ *
+ *  For 3D cells:
+ *  - top.face[Ord].topology         ; subcell[2][Ord].topology
+ *  - top.face[Ord].node[I]          ; subcell[2][Ord].node[I]
  *
  * Nodes, edges, faces, and sides are subcells with a particular dimension.
  *  - node has Dim == 0
@@ -65,6 +75,11 @@ namespace phdmesh {
  *  - side has Dim == top.dimension - 1.
  */
 struct CellTopology {
+  /** \brief Base, a.k.a. not-extended, version of this topology
+   *         where vertex_count == edge_count.
+   */
+  const CellTopology * base ;
+
   /** \brief Intuitive name for this topology */
   const char * name ;
 
@@ -77,15 +92,21 @@ struct CellTopology {
   /** \brief Number of vertices.
    *  For non-extended topology the number of Cell^0 subcells.
    */
-  unsigned number_vertex ;
-  unsigned number_node ;
-  unsigned number_edge ;
-  unsigned number_face ;
-  unsigned number_side ;
+  unsigned vertex_count ;
+  unsigned node_count ;
+  unsigned edge_count ;
+  unsigned face_count ;
+  unsigned side_count ;
+
+  /** \brief Flag if the subcells of a given dimension are homogeneous */
+  unsigned subcell_homogeneity ;
+
+  /** \brief Number of subcells of each dimension. */
+  unsigned subcell_count[4] ;
 
   /** \brief Subcell information.
-   *  - required: 0 <= Ord <= number_subcell[Dim]
-   *  - required: 0 <= J   <  subcell[Dim][Ord]->subcell_number[0]
+   *  - required: 0 <= Ord <= subcell_count[Dim]
+   *  - required: 0 <= J   <  subcell[Dim][Ord]->subcell_count[0]
    *  - subcell[Dim][Ord].topology
    *  - subcell[Dim][Ord].node[J]
    */
@@ -97,13 +118,12 @@ struct CellTopology {
     const unsigned * node ;
   };
 
-  /** \brief Number of subcells of each dimension. */
-  unsigned subcell_number[4] ;
-
   /** \brief Subcells of each dimension */
   const struct Subcell * subcell[4] ;
 
   const struct Subcell * side ;
+  const struct Subcell * edge ;
+  const struct Subcell * face ;
 };
 
 template< class Traits >
@@ -118,18 +138,23 @@ std::ostream & operator << ( std::ostream & , const CellTopology & );
  * Given a CellTopologyTraits 'Top' the attributes are accessed as follows.
  *  - Top::key
  *  - Top::dimension
- *  - Top::number_vertex
- *  - top::number_node
- *  - top::number_edge
- *  - top::number_face
- *  - top::number_side
+ *  - Top::vertex_count
+ *  - top::node_count
+ *  - top::edge_count
+ *  - top::face_count
+ *  - top::side_count
+ *  - top::subcell_homogeneity
  *
- *  - Top::subcell<Dim>::number       ;  number of subcells of dimension Dim
+ *  - Top::subcell<Dim>::count        ;  number of subcells of dimension Dim
  *  - Top::subcell<Dim,Ord>::topology ;  topology traits of subcell
  *  - Top::subcell<Dim,Ord,I>::node   ;  node number of subcell's node I
  *
  *  - Top::side<Ord>::topology        ; subcell<dimension-1,Ord>::topology
  *  - Top::side<Ord,I>::node          ; subcell<dimension-1,Ord,I>::.node
+ *  - Top::edge<Ord>::topology        ; subcell<1,Ord>::topology
+ *  - Top::edge<Ord,I>::node          ; subcell<1,Ord,I>::.node
+ *  - Top::face<Ord>::topology        ; subcell<2,Ord>::topology
+ *  - Top::face<Ord,I>::node          ; subcell<2,Ord,I>::.node
  */
 template< unsigned Dimension ,
           unsigned Number_Vertex ,
@@ -158,12 +183,11 @@ struct SubcellNodeIndex< CellTop , CellMap , Index , false >
 template< class CellTop , class CellMap , unsigned Index >
 struct SubcellNodeIndex< CellTop , CellMap , Index , true >
 {
-  enum { value = Index < CellTop::template subcell<0>::number
+  enum { value = Index < CellTop::template subcell<0>::count
                ? IndexListAt< CellMap , Index >::value : -1 };
 };
 
 //----------------------------------------------------------------------
-// Self-subcell reference
 
 template< unsigned SubcellDim , unsigned SubcellOrd , unsigned NodeIndex ,
           unsigned Dimension ,
@@ -172,6 +196,9 @@ template< unsigned SubcellDim , unsigned SubcellOrd , unsigned NodeIndex ,
           class FaceList , class FaceMaps >
 struct SubcellTopologyTraits ;
 
+//----------------------------------------------------------------------
+// Self-subcell reference
+
 template< unsigned NodeIndex ,
           unsigned NV , unsigned NN ,
           class EList , class EMaps ,
@@ -179,7 +206,7 @@ template< unsigned NodeIndex ,
 struct SubcellTopologyTraits<0,0,NodeIndex, 0,NV,NN,EList,EMaps,FList,FMaps>
 {
   typedef CellTopologyTraits<0,NV,NN,EList,EMaps,FList,FMaps> topology ;
-  enum { number = 1 };
+  enum { count = 1 };
   enum { node = NodeIndex < NN ? (int) NodeIndex : -1 };
 };
 
@@ -190,7 +217,7 @@ template< unsigned NodeIndex ,
 struct SubcellTopologyTraits<1,0,NodeIndex, 1,NV,NN,EList,EMaps,FList,FMaps>
 {
   typedef CellTopologyTraits<1,NV,NN,EList,EMaps,FList,FMaps> topology ;
-  enum { number = 1 };
+  enum { count = 1 };
   enum { node = NodeIndex < NN ? (int) NodeIndex : -1 };
 };
 
@@ -201,7 +228,7 @@ template< unsigned NodeIndex ,
 struct SubcellTopologyTraits<2,0,NodeIndex, 2,NV,NN,EList,EMaps,FList,FMaps>
 {
   typedef CellTopologyTraits<2,NV,NN,EList,EMaps,FList,FMaps> topology ;
-  enum { number = 1 };
+  enum { count = 1 };
   enum { node = NodeIndex < NN ? (int) NodeIndex : -1 };
 };
 
@@ -212,7 +239,7 @@ template< unsigned NodeIndex ,
 struct SubcellTopologyTraits<3,0,NodeIndex, 3,NV,NN,EList,EMaps,FList,FMaps>
 {
   typedef CellTopologyTraits<3,NV,NN,EList,EMaps,FList,FMaps> topology ;
-  enum { number = 1 };
+  enum { count = 1 };
   enum { node = NodeIndex < NN ? (int) NodeIndex : -1 };
 };
 
@@ -225,8 +252,8 @@ template< unsigned SubcellOrd ,
           class FList , class FMaps >
 struct SubcellTopologyTraits<0,SubcellOrd,0, D,NV,NN,EList,EMaps,FList,FMaps>
 {
-  typedef CellTopologyTraits<0,0,1> topology ;
-  enum { number = NN };
+  typedef CellTopologyTraits<0,0,0> topology ;
+  enum { count = NN };
   enum { node = SubcellOrd < NN ? (int) SubcellOrd : -1 };
 };
 
@@ -245,10 +272,10 @@ public:
 
   typedef typename TypeListAt<EList,SubcellOrd>::type topology ;
 
-  enum { number = TypeListLength<EList>::value };
+  enum { count = TypeListLength<EList>::value };
 
   enum { node = SubcellNodeIndex< topology , node_map , NodeIndex ,
-                                  SubcellOrd < number >::value };
+                                  SubcellOrd < count >::value };
 };
 
 // Face-subcell reference:
@@ -266,25 +293,50 @@ public:
 
   typedef typename TypeListAt<FList,SubcellOrd>::type topology ;
 
-  enum { number = TypeListLength<FList>::value };
+  enum { count = TypeListLength<FList>::value };
 
   enum { node = SubcellNodeIndex< topology , node_map , NodeIndex ,
-                                  SubcellOrd < number >::value };
+                                  SubcellOrd < count >::value };
 };
 
-template< unsigned SubcellOrd , unsigned NodeIndex ,
-          unsigned D , unsigned NV , unsigned NN ,
-          class EList , class EMaps ,
-          class FList , class FMaps >
-struct SubcellTopologyTraits< 3, SubcellOrd, NodeIndex,
-                              D,NV,NN,EList,EMaps,FList,FMaps>
+//----------------------------------------------------------------------
+// Only partially specialized subcell references are valid.
+
+template< unsigned SubcellDim , unsigned SubcellOrd , unsigned NodeIndex ,
+          unsigned Dimension ,
+          unsigned Number_Vertex , unsigned Number_Node ,
+          class EdgeList , class EdgeMaps ,
+          class FaceList , class FaceMaps >
+struct SubcellTopologyTraits
 {
-public:
-
   typedef void topology ;
-
-  enum { number = 0 };
+  enum { count = 0 };
   enum { node = -1 };
+};
+
+//----------------------------------------------------------------------
+
+template< class ListType > struct TypeListHomogeneous ;
+
+template<>
+struct TypeListHomogeneous<TypeListEnd> {
+  enum { value = true };
+};
+
+template< class T >
+struct TypeListHomogeneous< TypeList<T,TypeListEnd> > {
+  enum { value = true };
+};
+
+template< class T , class Tail >
+struct TypeListHomogeneous< TypeList< T, TypeList< T , Tail > > > {
+  enum { value = TypeListHomogeneous< TypeList<T,Tail> >::value };
+};
+
+template< class ListType >
+struct TypeListHomogeneous 
+{
+  enum { value = false };
 };
 
 //----------------------------------------------------------------------
@@ -297,42 +349,61 @@ struct CellTopologyTraits {
   typedef CellTopologyTraits< Dimension, Number_Vertex, Number_Node,
                               EdgeList, EdgeMaps, FaceList, FaceMaps > Traits ;
 
-  enum { dimension     = Dimension ,
-         number_vertex = Number_Vertex ,
-         number_node   = Number_Node ,
-         number_edge   = TypeListLength<EdgeList>::value ,
-         number_face   = TypeListLength<FaceList>::value ,
-         number_side   = Dimension == 3 ? number_face : (
-                         Dimension == 2 ? number_edge : 0 ),
-         key           = ( dimension     << 28 ) |
-                         ( number_face   << 24 ) |
-                         ( number_edge   << 20 ) |
-                         ( number_vertex << 16 ) |
-                         ( number_node ) };
+  enum { dimension    = Dimension ,
+         vertex_count = Number_Vertex ,
+         node_count   = Number_Node ,
+         edge_count   = TypeListLength<EdgeList>::value ,
+         face_count   = TypeListLength<FaceList>::value ,
+         side_count   = Dimension == 3 ? face_count : (
+                        Dimension == 2 ? edge_count : 0 ),
+         key          = ( dimension    << 28 ) |
+                        ( face_count   << 24 ) |
+                        ( edge_count   << 20 ) |
+                        ( vertex_count << 16 ) |
+                        ( node_count ) };
+
+  enum { subcell_homogeneity = TypeListHomogeneous<EdgeList>::value &&
+                               TypeListHomogeneous<FaceList>::value };
 
   template< unsigned Dim, unsigned Ord = 0, unsigned J = 0 >
   struct subcell :
     public SubcellTopologyTraits< Dim , Ord , J ,
-                                  dimension , number_vertex , number_node ,
+                                  dimension , vertex_count , node_count ,
                                   EdgeList , EdgeMaps ,
                                   FaceList , FaceMaps > {};
 
   template< unsigned Ord = 0 , unsigned J = 0 >
   struct side :
-    public SubcellTopologyTraits< dimension - 1 , Ord , J ,
-                                  dimension , number_vertex , number_node ,
+    public SubcellTopologyTraits< ( 1 < dimension ? dimension - 1 : 4 ) ,
+                                  Ord , J ,
+                                  dimension , vertex_count , node_count ,
                                   EdgeList , EdgeMaps ,
                                   FaceList , FaceMaps > {};
+
+  template< unsigned Ord = 0 , unsigned J = 0 >
+  struct edge :
+    public SubcellTopologyTraits< ( 1 < dimension ? 1 : 4 ) , Ord , J ,
+                                  dimension , vertex_count , node_count ,
+                                  EdgeList , EdgeMaps ,
+                                  TypeListEnd , TypeListEnd > {};
+
+  template< unsigned Ord = 0 , unsigned J = 0 >
+  struct face :
+    public SubcellTopologyTraits< ( 2 < dimension ? 2 : 4 ) , Ord , J ,
+                                  dimension , vertex_count , node_count ,
+                                  EdgeList , EdgeMaps ,
+                                  TypeListEnd , TypeListEnd > {};
+
 private:
 
   enum { nedge_map = TypeListLength<EdgeMaps>::value ,
          nface_map = TypeListLength<FaceMaps>::value };
 
-  enum { OK_edge = StaticAssert< (int) number_edge == (int) nedge_map >::OK };
-  enum { OK_face = StaticAssert< (int) number_face == (int) nface_map >::OK };
+  enum { OK_edge = StaticAssert< (int) edge_count == (int) nedge_map >::OK };
+  enum { OK_face = StaticAssert< (int) face_count == (int) nface_map >::OK };
   enum { OK_key  = StaticAssert< ( 0 == Dimension     >> 4 ) &&
-                                 ( 0 == number_face   >> 4 ) &&
-                                 ( 0 == number_edge   >> 4 ) &&
+                                 ( 0 == face_count   >> 4 ) &&
+                                 ( 0 == edge_count   >> 4 ) &&
                                  ( 0 == Number_Vertex >> 4 ) &&
                                  ( 0 == Number_Node   >> 16 ) >::OK };
 };

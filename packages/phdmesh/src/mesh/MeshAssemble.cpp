@@ -120,7 +120,7 @@ void AssembleTask::work(TPI::ThreadPool pool)
 
         for ( ; ie_end != ie ; ++ie , dst_ptr += size ) {
 
-          for ( RelationSpan con = (*ie)->relations( src_type );
+          for ( PairIterRelation con = (*ie)->relations( src_type );
                 con ; ++con ) {
             const unsigned src_id  = con->identifier();
             void * const   src_ptr = field_data( src_field, * con->entity() );

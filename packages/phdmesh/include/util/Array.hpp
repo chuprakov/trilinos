@@ -60,6 +60,11 @@ template< typename Scalar ,
           class Tag7 = void , class Tag8 = void >
 class ArrayFortran ;
 
+template< class Tag1 = void , class Tag2 = void ,
+          class Tag3 = void , class Tag4 = void ,
+          class Tag5 = void , class Tag6 = void ,
+          class Tag7 = void , class Tag8 = void >
+class ArrayDimension ;
 
 class ArrayDimTag ;
 
@@ -94,6 +99,74 @@ private:
 //----------------------------------------------------------------------
 
 /** \cond */
+
+template<>
+class ArrayDimension<void,void,void,void,void,void,void,void> {
+public:
+  size_t              rank ;
+  size_t              dimension[8];
+  const ArrayDimTag * tags[8];
+};
+
+template< class Tag1 >
+class ArrayDimension<Tag1,void,void,void,void,void,void,void> {
+public:
+  enum { Rank = 1 };
+  size_t dimension[ Rank ];
+};
+
+template< class Tag1 , class Tag2 >
+class ArrayDimension<Tag1,Tag2,void,void,void,void,void,void> {
+public:
+  enum { Rank = 2 };
+  size_t dimension[ Rank ];
+};
+
+template< class Tag1 , class Tag2 , class Tag3 >
+class ArrayDimension<Tag1,Tag2,Tag3,void,void,void,void,void> {
+public:
+  enum { Rank = 3 };
+  size_t dimension[ Rank ];
+};
+
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 >
+class ArrayDimension<Tag1,Tag2,Tag3,Tag4,void,void,void,void> {
+public:
+  enum { Rank = 4 };
+  size_t dimension[ Rank ];
+};
+
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 >
+class ArrayDimension<Tag1,Tag2,Tag3,Tag4,Tag5,void,void,void> {
+public:
+  enum { Rank = 5 };
+  size_t dimension[ Rank ];
+};
+
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 >
+class ArrayDimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,void,void> {
+public:
+  enum { Rank = 6 };
+  size_t dimension[ Rank ];
+};
+
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 , class Tag7 >
+class ArrayDimension<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,void> {
+public:
+  enum { Rank = 7 };
+  size_t dimension[ Rank ];
+};
+
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 , class Tag7 , class Tag8 >
+class ArrayDimension {
+public:
+  enum { Rank = 8 };
+  size_t dimension[ Rank ];
+};
 
 //----------------------------------------------------------------------
 

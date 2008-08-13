@@ -246,7 +246,7 @@ bool comm_mesh_scrub_sharing( MeshBulkData & M )
 
     bool destroy_it = p_rank != entity->owner_rank();
 
-    for ( RelationSpan
+    for ( PairIterRelation
           con = entity->relations() ; con && destroy_it ; ++con ) {
 
       destroy_it = ! ( entity_type < con->entity_type() &&
@@ -314,7 +314,7 @@ void pack_info( CommAll & all , const std::vector<EntityProc> & shares )
     const EntityProc & ep = *i ; ++i ;
 
     Entity & entity = * ep.first ;
-    RelationSpan relation = entity.relations();
+    PairIterRelation relation = entity.relations();
     const entity_key_type key = entity.key();
     const unsigned p_owner  = entity.owner_rank();
     const unsigned numrelation = relation.size();
@@ -370,7 +370,7 @@ bool unpack_info_verify(
     MeshBulkData   & mesh   = kernel.mesh();
     const MeshMetaData & mesh_meta_data = mesh.mesh_meta_data();
     const PartSet & mesh_parts = mesh_meta_data.get_parts();
-    const RelationSpan relation = entity.relations();
+    const PairIterRelation relation = entity.relations();
     Part * const owns_part = & mesh_meta_data.locally_owned_part();
 
     const unsigned relation_size = relation.size();
@@ -448,7 +448,7 @@ bool unpack_info_verify(
 
     if ( relation_size != recv_relation_size ) { result = false ; }
 
-    RelationSpan::iterator ic ;
+    PairIterRelation::iterator ic ;
 
     ic = relation.begin();
 

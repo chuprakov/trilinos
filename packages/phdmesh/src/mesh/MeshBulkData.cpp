@@ -47,7 +47,8 @@ MeshBulkData::MeshBulkData( const MeshMetaData & mesh_meta_data ,
     m_parallel_machine( parallel ),
     m_parallel_size( parallel_machine_size( parallel ) ),
     m_parallel_rank( parallel_machine_rank( parallel ) ),
-    m_kernel_capacity( kernel_capacity )
+    m_kernel_capacity( kernel_capacity ),
+    m_sync_change_count( 0 )
 {
   static const char method[] = "phdmesh::MeshBulkData::Mesh" ;
 
@@ -102,6 +103,38 @@ void MeshBulkData::update_state()
 
 //----------------------------------------------------------------------
 
+size_t MeshBulkData::synchronize_changes()
+{
+  int change = 0 ;
+
+  // Synchronize changes to entities or relations. 
+  // For example, if changes are accumulated and processed
+  // via batch-oriented call-backs then these call-backs are
+  // invoked here.
+
+
+
+
+  // The very last operation performed is to sort the kernel entities.
+  // This does not change the entities, relations, or field data.
+  // However, it insures that the ordering of entities and kernels
+  // is independent of the order in which a set of changes were
+  // performed.
+
+  if ( internal_sort_kernel_entities() ) { change = 1 ; }
+
+  // If any change has occured on any process
+  // then increment the change counter.
+
+  all_reduce( m_parallel_machine , ReduceMax<1>( & change ) );
+
+  if ( change ) { ++m_sync_change_count ; }
+
+  return m_sync_change_count ;
+}
+
+//----------------------------------------------------------------------
+
 const EntitySet & MeshBulkData::entities( unsigned entity_type ) const
 {
   const unsigned i = entity_type ;
@@ -131,7 +164,7 @@ const KernelSet & MeshBulkData::kernels( unsigned entity_type ) const
 //----------------------------------------------------------------------
 
 Entity * MeshBulkData::get_entity( entity_key_type key ,
-                           const char * required_by ) const
+                                   const char * required_by ) const
 {
   const EntitySet & es = entities( phdmesh::entity_type( key ) );
   EntitySet::iterator i = es.find( key );
@@ -150,8 +183,8 @@ Entity * MeshBulkData::get_entity( entity_key_type key ,
 //----------------------------------------------------------------------
 
 Entity & MeshBulkData::declare_entity( entity_key_type key ,
-                               const std::vector<Part*> & parts ,
-                               int new_owner )
+                                       const std::vector<Part*> & parts ,
+                                       int new_owner )
 {
   const char method[] = "phdmesh::MeshBulkData::declare_entity" ;
 
@@ -232,9 +265,10 @@ Entity & MeshBulkData::declare_entity( entity_key_type key ,
 
 //----------------------------------------------------------------------
 
-void MeshBulkData::change_entity_parts( Entity & e ,
-                                const std::vector<Part*> & add_parts ,
-                                const std::vector<Part*> & remove_parts )
+void MeshBulkData::change_entity_parts(
+  Entity & e ,
+  const std::vector<Part*> & add_parts ,
+  const std::vector<Part*> & remove_parts )
 {
   const char method[] = "phdmesh::MeshBulkData::change_entity_parts" ;
 
@@ -527,7 +561,8 @@ void MeshBulkData::internal_change_entity_parts(
 
 void MeshBulkData::change_entity_identifier( Entity & e , entity_id_type id )
 {
-  static const char method[] = "phdmesh::MeshBulkData::change_entity_identifier" ;
+  static const char method[] =
+    "phdmesh::MeshBulkData::change_entity_identifier" ;
 
   const bool valid_id = id != 0 ;
   bool ok = valid_id ;
@@ -923,7 +958,9 @@ void verify_set_ghosting( const MeshBulkData & M )
 
 }
 
-void MeshBulkData::set_ghosting( const std::vector<EntityProc> & d , const std::vector<EntityProc> & r )
+void MeshBulkData::set_ghosting(
+  const std::vector<EntityProc> & d ,
+  const std::vector<EntityProc> & r )
 {
   m_aura_domain = d ;
   m_aura_range  = r ;

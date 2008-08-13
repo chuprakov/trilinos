@@ -76,7 +76,8 @@ template<> struct Pyramid<5> : public
                                     Triangle<>  ,
                                     Triangle<>  ,
                                     Quadrilateral<>  >::type ,
-                      PyramidFaceNodeMap > {};
+                      PyramidFaceNodeMap >
+{ typedef Pyramid<5> base ; };
 
 template<> struct Pyramid<13> : public
   CellTopologyTraits< 3 , 5 , 13 ,
@@ -94,7 +95,8 @@ template<> struct Pyramid<13> : public
                                     Triangle<6>  ,
                                     Triangle<6>  ,
                                     Quadrilateral<8>  >::type ,
-                      PyramidFaceNodeMap > {};
+                      PyramidFaceNodeMap >
+{ typedef Pyramid<5> base ; };
 
 template<> struct Pyramid<14> : public
   CellTopologyTraits< 3 , 5 , 14 ,
@@ -112,7 +114,8 @@ template<> struct Pyramid<14> : public
                                     Triangle<6>  ,
                                     Triangle<6>  ,
                                     Quadrilateral<9>  >::type ,
-                      PyramidFaceNodeMap > {};
+                      PyramidFaceNodeMap >
+{ typedef Pyramid<5> base ; };
 
 template<> const CellTopology * cell_topology< Pyramid<> >();
 template<> const CellTopology * cell_topology< Pyramid<13> >();

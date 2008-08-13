@@ -99,7 +99,7 @@ void EntityComm::pack_entity(
   const MeshMetaData      & send_mesh_meta_data = kernel.mesh().mesh_meta_data();
   const bool          same_mesh_meta_data = & send_mesh_meta_data == & recv_mesh_meta_data ;
   const unsigned      dest_size   = std::distance( ibeg , iend );
-        RelationSpan  rel         = entity.relations();
+        PairIterRelation  rel         = entity.relations();
 
   const std::pair<const unsigned * , const unsigned * >
     tmp = entity.kernel().superset_part_ordinals();

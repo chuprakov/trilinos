@@ -41,7 +41,7 @@ bool gather_field_data( const field_type & field ,
 {
   typedef typename field_type::data_type T ;
 
-  RelationSpan rel = entity.relations( EType );
+  PairIterRelation rel = entity.relations( EType );
 
   bool result = NRel == (unsigned) rel.size();
 

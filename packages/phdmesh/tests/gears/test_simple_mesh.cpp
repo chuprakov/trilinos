@@ -160,7 +160,7 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
     Hex::side<0,2>::node ,
     Hex::side<0,3>::node };
 
-  RelationSpan elem_node = elem.relations( Node );
+  PairIterRelation elem_node = elem.relations( Node );
 
   for ( unsigned i = 0 ; i < 4 ; ++i ) {
     Entity & node = * elem_node[ elem_face_node[i] ].entity();
