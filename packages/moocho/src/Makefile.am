@@ -859,6 +859,7 @@ MOOCHO_PACK_HPP = \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateGuts_AddedStep.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateWithMult_AddedStep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdate_AddedStep.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoAlgorithmStepNames.hpp \
   $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerConsoleStd.hpp \
