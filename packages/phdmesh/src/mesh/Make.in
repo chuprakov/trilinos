@@ -32,6 +32,7 @@ MESH_INC_FILES =	\
 	$(MESH_INC_DIR)/FieldData.hpp	\
 	$(MESH_INC_DIR)/FieldDeclarations.hpp	\
 	$(MESH_INC_DIR)/Field.hpp	\
+	$(MESH_INC_DIR)/FieldParallel.hpp	\
 	$(MESH_INC_DIR)/FieldTraits.hpp	\
 	$(MESH_INC_DIR)/Gather.hpp	\
 	$(MESH_INC_DIR)/Kernel.hpp	\
@@ -49,6 +50,7 @@ MESH_OBJ_FILES =	\
 	MeshEntityComm.o	\
 	MeshEntity.o	\
 	MeshField.o	\
+	MeshFieldParallel.o	\
 	MeshFieldTraits.o	\
 	MeshKernel.o	\
 	MeshMetaData.o	\

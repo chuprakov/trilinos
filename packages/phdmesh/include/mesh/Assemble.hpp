@@ -29,8 +29,12 @@
 
 #include <cstddef>
 #include <vector>
+
 #include <util/Basics.hpp>
+
 #include <mesh/Types.hpp>
+#include <mesh/BulkData.hpp>
+#include <mesh/Comm.hpp>
 
 namespace phdmesh {
 

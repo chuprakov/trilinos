@@ -627,59 +627,46 @@ bool communicate_entities(
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
-// Heterogeneity?
 
-bool communicate_field_data(
+#if 0 
+
+namespace {
+
+template< typename T >
+void sum_into( unsigned number ,
+               const FieldBase & field , Entity & e , CommBuffer & b )
+{
+  T * const ptr = (T *) field_data( field , e );
+
+  for ( unsigned i = 0 ; i < number ; ++i ) {
+    T tmp ;
+    b.unpack<T>( & tmp , 1 );
+    ptr[i] += tmp ;
+  }
+}
+
+}
+
+
+bool parallel_sum_field_data(
   const MeshBulkData & mesh ,
-  const std::vector<EntityProc> & domain ,
-  const std::vector<EntityProc> & range ,
-  const std::vector<const FieldBase *> & fields ,
+  const std::vector<EntityProc> & shared ,
+  const FieldBase & field ,
   bool local_flag )
 {
-  if ( fields.empty() ) { return local_flag ; }
-
   const unsigned parallel_size = mesh.parallel_size();
-  const unsigned parallel_rank = mesh.parallel_rank();
-  const bool     asymmetric    = & domain != & range ;
-
-  const std::vector<const FieldBase *>::const_iterator fe = fields.end();
-  const std::vector<const FieldBase *>::const_iterator fb = fields.begin();
-        std::vector<const FieldBase *>::const_iterator fi ;
 
   // Sizing for send and receive
 
   const unsigned zero = 0 ;
   std::vector<unsigned> send_size( parallel_size , zero );
-  std::vector<unsigned> recv_size( parallel_size , zero );
 
   std::vector<EntityProc>::const_iterator i ;
 
-  for ( i = domain.begin() ; i != domain.end() ; ++i ) {
+  for ( i = shared.begin() ; i != shared.end() ; ++i ) {
     Entity       & e = * i->first ;
     const unsigned p = i->second ;
-
-    if ( asymmetric || parallel_rank == e.owner_rank() ) {
-      unsigned e_size = 0 ;
-      for ( fi = fb ; fi != fe ; ++fi ) {
-        const FieldBase & f = **fi ;
-        e_size += field_data_size( f , e );
-      } 
-      send_size[ p ] += e_size ;
-    }
-  }
-
-  for ( i = range.begin() ; i != range.end() ; ++i ) {
-    Entity       & e = * i->first ;
-    const unsigned p = i->second ;
-
-    if ( asymmetric || p == e.owner_rank() ) {
-      unsigned e_size = 0 ;
-      for ( fi = fb ; fi != fe ; ++fi ) {
-        const FieldBase & f = **fi ;
-        e_size += field_data_size( f , e );
-      } 
-      recv_size[ p ] += e_size ;
-    }
+    send_size[ p ] += field_data_size( field , e );
   }
 
   // Allocate send and receive buffers:
@@ -688,26 +675,23 @@ bool communicate_field_data(
 
   {
     const unsigned * const s_size = & send_size[0] ;
-    const unsigned * const r_size = & recv_size[0] ;
-    sparse.allocate_buffers( mesh.parallel(), parallel_size / 4 , s_size, r_size);
+    sparse.allocate_buffers( mesh.parallel(),
+                             parallel_size / 4 , s_size, s_size);
   }
 
   // Pack for send:
 
-  for ( i = domain.begin() ; i != domain.end() ; ++i ) {
+  for ( i = shared.begin() ; i != shared.end() ; ++i ) {
     Entity       & e = * i->first ;
     const unsigned p = i->second ;
 
-    if ( asymmetric || parallel_rank == e.owner_rank() ) {
-      CommBuffer & b = sparse.send_buffer( p );
-      for ( fi = fb ; fi != fe ; ++fi ) {
-        const FieldBase & f = **fi ;
-        const unsigned size = field_data_size( f , e );
-        if ( size ) {
-          unsigned char * ptr = (unsigned char *) field_data( f , e );
-          b.pack<unsigned char>( ptr , size );
-        }
-      }
+    CommBuffer & b = sparse.send_buffer( p );
+
+    const unsigned size = field_data_size( field , e );
+
+    if ( size ) {
+      unsigned char * ptr = (unsigned char *) field_data( field , e );
+      b.pack<unsigned char>( ptr , size );
     }
   }
 
@@ -715,21 +699,26 @@ bool communicate_field_data(
 
   sparse.communicate();
 
-  // Unpack for recv:
+  // Unpack and sum for recv:
 
-  for ( i = range.begin() ; i != range.end() ; ++i ) {
+  for ( i = shared.begin() ; i != shared.end() ; ++i ) {
     Entity       & e = * i->first ;
     const unsigned p = i->second ;
 
-    if ( asymmetric || p == e.owner_rank() ) {
-      CommBuffer & b = sparse.recv_buffer( p );
-      for ( fi = fb ; fi != fe ; ++fi ) {
-        const FieldBase & f = **fi ;
-        const unsigned size = field_data_size( f , e );
-        if ( size ) {
-          unsigned char * ptr = (unsigned char *) field_data( f , e );
-          b.unpack<unsigned char>( ptr , size );
-        }
+    CommBuffer & b = sparse.recv_buffer( p );
+
+    const unsigned size = field_data_size( field , e );
+
+    if ( size ) {
+      if ( field.type_is<double>() ) {
+        sum_into<double>( size / sizeof(double) , field , e , b );
+      }
+      else if ( field.type_is<int>() ) {
+        sum_into<int>( size / sizeof(int) , field , e , b );
+      }
+      else {
+        std::string msg( "phdmesh::parallel_sum_field_data FAILED, given unsupported field data type");
+        throw std::runtime_error(msg);
       }
     }
   }
@@ -737,7 +726,8 @@ bool communicate_field_data(
   return local_flag ;
 }
 
-//----------------------------------------------------------------------
+#endif
+
 //----------------------------------------------------------------------
 
 }

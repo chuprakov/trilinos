@@ -313,7 +313,7 @@ inline size_t align( size_t nb )
 }
 
 struct DimLess {
-  bool operator()( const FieldBase::Dim & lhs , const unsigned rhs ) const
+  bool operator()( const FieldBase::Dim & lhs , const size_t rhs ) const
     { return lhs < rhs ; }
 };
 
@@ -333,7 +333,7 @@ const FieldBase::Dim & dimension( const FieldBase & field ,
 
   for ( unsigned i = 0 ; i < num_part_ord && iend != ibeg ; ++i ) {
 
-    const unsigned key = FieldBase::Dim::key_value( etype , part_ord[i] );
+    const size_t key = FieldBase::Dim::key_value( etype , part_ord[i] );
 
     ibeg = std::lower_bound( ibeg , iend , key , DimLess() );
 

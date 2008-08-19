@@ -37,6 +37,7 @@
 #include <mesh/FieldData.hpp>
 #include <mesh/Comm.hpp>
 
+#include <element/Stencils.hpp>
 #include <element/Declarations.hpp>
 #include <element/Hexahedron_Topologies.hpp>
 
@@ -60,10 +61,10 @@ GearFields::GearFields( MeshMetaData & S )
     S.declare_field<CartesianField>( std::string("displacement") , 2 ) ),
   element_attr(
     S.declare_field<AttributeField>( std::string("element_attribute") ) ),
-  element_value(
-    S.declare_field<ElementValueField>( std::string("element_value") ) ),
-  node_value(
-    S.declare_field<NodeValueField>( std::string("node_value") , 2 ) )
+  test_value(
+    S.declare_field<CartesianField>( std::string("test_value") ) ),
+  elem_node_test_value(
+    S.declare_field<ElementNodePointerField>( std::string("test_pointer") ) )
 {
   const Part & universe = S.universal_part();
 
@@ -71,6 +72,7 @@ GearFields::GearFields( MeshMetaData & S )
   S.put_field( model_coord   , Node , universe , SpatialDimension );
   S.put_field( current_coord , Node , universe , SpatialDimension );
   S.put_field( displacement  , Node , universe , SpatialDimension );
+  S.put_field( test_value  ,   Node , universe , SpatialDimension );
 }
 
 //----------------------------------------------------------------------
@@ -109,18 +111,29 @@ Gear::Gear( MeshMetaData & S ,
     m_model_coord(   gear_fields.model_coord ),
     m_current_coord( gear_fields.current_coord ),
     m_displacement(  gear_fields.displacement ),
-    m_elem_value(    gear_fields.element_value ),
-    m_node_value(    gear_fields.node_value )
+    m_test_value(    gear_fields.test_value ),
+    m_elem_node_test_value( gear_fields.elem_node_test_value )
 {
-  enum { NNODE = 8 };
-  enum {  SpatialDimension = GearFields::SpatialDimension };
-  typedef GearFields::ElementValueField ElementValueField ;
-  typedef GearFields::NodeValueField    NodeValueField ;
+  typedef Hexahedron<> Hex ;
+  enum { SpatialDimension = GearFields::SpatialDimension };
 
-  set_cell_topology< Hexahedron<> >( m_gear );
+  set_cell_topology< Hex >( m_gear );
 
-  S.put_field( gear_fields.element_value , Element , m_gear , SpatialDimension , NNODE );
-  S.put_field( gear_fields.node_value    , Node , m_gear , SpatialDimension );
+  // A test value for each element:
+
+  S.put_field( gear_fields.test_value , Element , m_gear , SpatialDimension );
+
+  // An element->node->test_value pointer field:
+
+  S.put_field( gear_fields.elem_node_test_value, Element, m_gear,
+               Hex::node_count );
+
+  m_mesh_meta_data.declare_field_relation(
+    gear_fields.elem_node_test_value ,
+    & element_node_stencil< Hex > ,
+    gear_fields.test_value );
+
+  // Meshing parameters for this gear:
 
   const double TWO_PI = 2.0 * acos( (double) -1.0 );
 
@@ -260,7 +273,8 @@ void Gear::mesh( MeshBulkData & M )
           node[6] = create_node( elem_parts, node_id_base, iz_1, ir_1, ia   );
           node[7] = create_node( elem_parts, node_id_base, iz_1, ir_1, ia_1 );
 
-#if 0
+#if 0 /* VERIFY_CENTROID */
+
           // Centroid of the element for verification
 
           const double TWO_PI = 2.0 * acos( (double) -1.0 );
@@ -385,56 +399,6 @@ void Gear::turn( double turn_angle ) const
         disp_data[0] = current_data[0] - model_data[0] ;
         disp_data[1] = current_data[1] - model_data[1] ;
         disp_data[2] = current_data[2] - model_data[2] ;
-      }
-    }
-  }
-}
-
-//----------------------------------------------------------------------
-
-namespace {
-
-template< unsigned NV , unsigned NC , class FieldType >
-void gather( typename FieldType::data_type * dst ,
-             const Entity & src ,
-             const FieldType & field )
-{
-  PairIterRelation con = src.relations( Node );
-  for ( unsigned n = 0 ; n < NC ; ++n , ++con , dst += NV ) {
-    Copy<NV>( dst , field_data( field , * con->entity() ) );
-  }
-}
-
-}
-
-void Gear::element_update() const
-{
-  enum { SpatialDimension = GearFields::SpatialDimension };
-  enum { NNODE = 8 };
-  double nval[ NNODE ];
-
-  const KernelSet & ks = m_mesh->kernels( Element );
-  const KernelSet::iterator ek = ks.end();
-        KernelSet::iterator ik = ks.begin();
-
-  for ( ; ik != ek ; ++ik ) {
-    Kernel & k = *ik ;
-    if ( k.has_superset( m_gear ) ) {
-
-      const unsigned number = k.size();
-
-      double * const kernel_elem_data = field_data( m_elem_value , k );
-
-      for ( unsigned j = 0 ; j < number ; ++j ) {
-
-        gather<SpatialDimension,NNODE>( nval , * k[j] , m_node_value );
-
-        double tmp = nval[0] + nval[1] + nval[2] + nval[3] +
-                     nval[4] + nval[5] + nval[6] + nval[7] ;
-
-        tmp /= (double) NNODE ;
-
-        Copy<NNODE>( kernel_elem_data + NNODE * j , tmp );
       }
     }
   }

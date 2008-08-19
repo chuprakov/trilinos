@@ -32,7 +32,9 @@
 #include <util/Parallel.hpp>
 #include <mesh/Types.hpp>
 #include <mesh/FieldTraits.hpp>
+
 #include <mesh_io/ExoII.hpp>
+
 #include <element/Dimensions.hpp>
 
 namespace phdmesh {
@@ -41,22 +43,17 @@ struct GearFields {
 
   enum { SpatialDimension = 3 };
 
-  typedef Field<double,Cartesian>    CartesianField ;
-  typedef Field<double,Cylindrical>  CylindricalField ;
+  typedef Field<double,Cartesian>            CartesianField ;
+  typedef Field<double,Cylindrical>          CylindricalField ;
   typedef exodus::FileSchema::AttributeField AttributeField ;
-
-  typedef Field<double,Cartesian>          NodeValueField ;
-  typedef Field<double,Cartesian,BasisTag> ElementValueField ;
 
   CylindricalField & gear_coord ;
   CartesianField   & model_coord ;
   CartesianField   & current_coord ;
   CartesianField   & displacement ;
-
-  AttributeField & element_attr ;
-
-  ElementValueField & element_value ;
-  NodeValueField    & node_value ;
+  AttributeField   & element_attr ;
+  CartesianField   & test_value ;
+  ElementNodePointerField & elem_node_test_value ;
 
   GearFields( MeshMetaData & S );
 
@@ -83,7 +80,6 @@ public:
 
   void mesh( MeshBulkData & );
   void turn( double turn_angle ) const ;
-  void element_update() const ;
 
   MeshMetaData & m_mesh_meta_data ;
   MeshBulkData * m_mesh ;
@@ -93,8 +89,8 @@ public:
   const GearFields::CartesianField    & m_model_coord ;
   const GearFields::CartesianField    & m_current_coord ;
   const GearFields::CartesianField    & m_displacement ;
-  const GearFields::ElementValueField & m_elem_value ;
-  const GearFields::NodeValueField    & m_node_value ;
+  const GearFields::CartesianField    & m_test_value ;
+  const ElementNodePointerField       & m_elem_node_test_value ;
 
 private:
 

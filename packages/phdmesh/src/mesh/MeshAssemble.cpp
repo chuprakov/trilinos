@@ -35,6 +35,7 @@
 #include <mesh/Kernel.hpp>
 #include <mesh/Entity.hpp>
 #include <mesh/FieldData.hpp>
+#include <mesh/FieldParallel.hpp>
 
 namespace phdmesh {
 

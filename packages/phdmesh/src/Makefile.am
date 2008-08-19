@@ -64,6 +64,7 @@ MESH_H = \
 	$(srcdir)/../include/mesh/Field.hpp \
 	$(srcdir)/../include/mesh/FieldDeclarations.hpp \
 	$(srcdir)/../include/mesh/FieldData.hpp \
+	$(srcdir)/../include/mesh/FieldParallel.hpp \
 	$(srcdir)/../include/mesh/FieldTraits.hpp \
 	$(srcdir)/../include/mesh/Gather.hpp \
 	$(srcdir)/../include/mesh/Kernel.hpp \
@@ -81,6 +82,7 @@ MESH = \
 	$(srcdir)/mesh/MeshEntity.cpp \
 	$(srcdir)/mesh/MeshEntityComm.cpp \
 	$(srcdir)/mesh/MeshField.cpp \
+	$(srcdir)/mesh/MeshFieldParallel.cpp \
 	$(srcdir)/mesh/MeshFieldTraits.cpp \
 	$(srcdir)/mesh/MeshKernel.cpp \
 	$(srcdir)/mesh/MeshMetaData.cpp \

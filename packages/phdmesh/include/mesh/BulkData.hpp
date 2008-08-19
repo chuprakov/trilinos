@@ -134,7 +134,8 @@ public:
 
   //------------------------------------
   /** Symmetric parallel relations for shared mesh entities.  */
-  const std::vector<EntityProc> & shares() const { return m_shares_all ; }
+  const std::vector<EntityProc> & shared_entities() const
+    { return m_shares_all ; }
 
   /** Asymmetric parallel relations for owner-to-ghosted mesh entities.
    *  Both the source and the destination are fully ordered.
@@ -231,7 +232,8 @@ void count_entities(
 /** Get all kernels within the given part.
  *  Every kernel will have the part in its superset.
  */
-void get_kernels( const KernelSet & , Part & , std::vector<const Kernel*> & );
+void get_kernels( const MeshBulkData & , EntityType , Part & ,
+                  std::vector<const Kernel*> & );
 
 /** Get all kernels within all of the given parts.
  *  The input PartSet must be properly ordered,
@@ -240,7 +242,7 @@ void get_kernels( const KernelSet & , Part & , std::vector<const Kernel*> & );
  *  It is more efficient to pre-define an intersection part
  *  in the mesh_meta_data and then use the get_kernels function.
  */
-void get_kernels_intersect( const KernelSet & ,
+void get_kernels_intersect( const MeshBulkData & , EntityType ,
                             const PartSet & ,
                             std::vector<const Kernel*> & );
 
@@ -249,8 +251,7 @@ void get_kernels_intersect( const KernelSet & ,
  *  It is more efficient to pre-define a superset part
  *  in the mesh_meta_data and then use the get_kernels function.
  */
-void get_kernels_union( const KernelSet & ,
-                        const PartSet & ,
+void get_kernels_union( const MeshBulkData & , EntityType , const PartSet & ,
                         std::vector<const Kernel*> & );
 
 } // namespace phdmesh

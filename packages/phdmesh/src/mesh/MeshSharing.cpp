@@ -73,7 +73,7 @@ bool comm_verify_shared_entity_values(
 
   const std::pair< std::vector<EntityProc>::const_iterator ,
                    std::vector<EntityProc>::const_iterator >
-    shares = span( M.shares() , t );
+    shares = span( M.shared_entities() , t );
 
   std::vector<EntityProc>::const_iterator ic ;
 
@@ -229,7 +229,7 @@ bool comm_mesh_scrub_sharing( MeshBulkData & M )
   const unsigned p_size = M.parallel_size();
   const unsigned p_rank = M.parallel_rank();
 
-  std::vector<EntityProc> shares( M.shares() );
+  std::vector<EntityProc> shares( M.shared_entities() );
 
   bool changed = false ;
 
@@ -616,7 +616,7 @@ bool comm_mesh_verify_parallel_consistency( MeshBulkData & M )
   {
     // Verify all shared entities
 
-    const std::vector<EntityProc> & shares = M.shares();
+    const std::vector<EntityProc> & shares = M.shared_entities();
 
     CommAll all_info( M.parallel() );
 
@@ -816,7 +816,7 @@ void comm_mesh_add_sharing( MeshBulkData & M , const std::vector<EntityProc> & a
   const unsigned p_rank = M.parallel_rank();
   const unsigned p_size = M.parallel_size();
 
-  const std::vector<EntityProc> & old_shares = M.shares();
+  const std::vector<EntityProc> & old_shares = M.shared_entities();
 
   std::vector<EntityProc> new_shares ;
 

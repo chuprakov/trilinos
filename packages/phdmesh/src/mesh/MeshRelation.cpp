@@ -354,8 +354,7 @@ void set_field_relations( Entity & e_from ,
 
     const FieldRelation & fr = *j ;
 
-    void ** const ptr =
-      reinterpret_cast<void**>( field_data( * fr.m_root , e_from ) );
+    void ** const ptr = (void**) field_data( * fr.m_root , e_from );
 
     if ( ptr ) {
 
@@ -491,8 +490,7 @@ void clear_field_relations( Entity & e_from ,
 
     const FieldRelation & fr = *j ;
 
-    void ** const ptr =
-      reinterpret_cast<void**>( field_data( * fr.m_root , e_from ) );
+    void ** const ptr = (void**) field_data( * fr.m_root , e_from );
 
     if ( ptr ) {
 

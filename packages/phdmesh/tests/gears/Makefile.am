@@ -29,6 +29,7 @@ bin_PROGRAMS = test_mesh.exe
 
 test_mesh_exe_SOURCES = $(srcdir)/MeshTestSchema.cpp \
      $(srcdir)/Gears.cpp $(srcdir)/test_gears.cpp \
+     $(srcdir)/test_mean_value.cpp	\
      $(srcdir)/test_simple_mesh.cpp $(srcdir)/Gears.hpp \
      $(srcdir)/test_mesh.cpp
 

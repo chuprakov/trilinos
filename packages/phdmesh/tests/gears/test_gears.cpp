@@ -38,6 +38,7 @@
 #include <mesh/MetaData.hpp>
 #include <mesh/BulkData.hpp>
 #include <mesh/FieldData.hpp>
+#include <mesh/FieldParallel.hpp>
 #include <mesh/Comm.hpp>
 #include <mesh/Proximity.hpp>
 
@@ -51,6 +52,11 @@ typedef GearFields::CylindricalField CylindricalField ;
 typedef GearFields::CartesianField   CartesianField ;
 
 //----------------------------------------------------------------------
+
+void test_diffuse_field(
+  MeshBulkData                  & mesh ,
+  const CartesianField          & arg_field ,
+  const ElementNodePointerField & arg_field_ptr );
 
 void test_gears( ParallelMachine pm ,
                  const unsigned i_end ,
@@ -240,7 +246,7 @@ void test_gears_face_proximity(
 
   sort_unique( to_be_shared );
 
-  const std::vector<EntityProc> sharing_A( M.shares() );
+  const std::vector<EntityProc> sharing_A( M.shared_entities() );
 
   comm_mesh_add_sharing( M , to_be_shared );
 
@@ -264,7 +270,7 @@ void test_gears_face_proximity(
     throw std::runtime_error(std::string("N_GEARS"));
   }
 
-  unsigned flag = M.shares() == sharing_A ;
+  unsigned flag = M.shared_entities() == sharing_A ;
 
   all_reduce( M.parallel() , ReduceMin<1>( & flag ) );
 
@@ -300,11 +306,10 @@ void test_gears( ParallelMachine pm ,
   double dt_rebalance = 0 ;
   double dt_proximity = 0 ;
   double dt_ghosting = 0 ;
+  double dt_diffuse  = 0 ;
   double dt_exo_write = 0 ;
 
   //------------------------------
-  // Six circular gears with a 'z' axis of rotation.
-  // They are spaced every 60 degrees about the origin
 
   const double sqrt_3 = sqrt( 3.0 );
 
@@ -366,7 +371,6 @@ void test_gears( ParallelMachine pm ,
         else { // Even
           center[0] = i * 3 + ( 1 - i % 2 );
         }
-
 
         std::ostringstream name ; name << "G_" << i << "_" << j << "_" << k ;
 
@@ -430,7 +434,9 @@ void test_gears( ParallelMachine pm ,
     ptr = & gear_fields.model_coord ;   fields.push_back( ptr );
     ptr = & gear_fields.current_coord ; fields.push_back( ptr );
 
-    communicate_field_data( M, M.ghost_source(), M.ghost_destination(), fields, false );
+    communicate_field_data( M, M.ghost_source(),
+                               M.ghost_destination(),
+                               fields, false );
   }
 
   if ( verify && ! comm_verify_shared_entity_values( M , Node , gear_fields.gear_coord ) ) {
@@ -596,6 +602,19 @@ void test_gears( ParallelMachine pm ,
         return ;
       }
 
+      // Average node value to element and then average back to nodes;
+      // requires ghost elements.
+
+      {
+        double tmp = wall_time();
+
+        test_diffuse_field( M , gear_fields.test_value ,
+                                gear_fields.elem_node_test_value );
+        dt_diffuse += wall_dtime( tmp );
+      }
+
+      // 
+
       test_gears_face_proximity( M ,
                                  gear_fields.gear_coord ,
                                  field_node_proximity ,
@@ -631,6 +650,7 @@ void test_gears( ParallelMachine pm ,
 
   dt_proximity /= nsteps ;
   dt_ghosting  /= nsteps ;
+  dt_diffuse   /= nsteps ;
   dt_exo_write /= nsteps ;
 
   if ( p_rank == 0 ) {
@@ -638,6 +658,7 @@ void test_gears( ParallelMachine pm ,
               << "  #Steps        = " << nsteps << std::endl
               << "  Meshing       = " << dt_mesh_gen  << " sec" << std::endl
               << "  Rebalance     = " << dt_rebalance << " sec" << std::endl
+              << "  Diffuse/step  = " << dt_diffuse   << " sec" << std::endl
               << "  Search/step   = " << dt_proximity << " sec" << std::endl
               << "  Ghosting/step = " << dt_ghosting  << " sec" << std::endl
               << "  Writing/step  = " << dt_exo_write << " sec" << std::endl

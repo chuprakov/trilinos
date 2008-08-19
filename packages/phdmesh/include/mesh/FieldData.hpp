@@ -67,8 +67,7 @@ field_data( const field_type & f , const Kernel & k )
     const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
 
     if ( pd.m_size ) {
-      ptr = reinterpret_cast<data_p>(
-            reinterpret_cast<byte_p>(k.m_entities) + pd.m_base );
+      ptr = (data_p)( ((byte_p)(k.m_entities)) + pd.m_base );
     }
   }
   return ptr ;
@@ -91,8 +90,7 @@ field_data( const field_type & f , const Entity & e )
     const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
 
     if ( pd.m_size ) {
-      ptr = reinterpret_cast<data_p>(
-            reinterpret_cast<byte_p>(k.m_entities) + pd.m_base + pd.m_size * i);
+      ptr = (data_p)( ((byte_p)(k.m_entities)) + pd.m_base + pd.m_size * i );
     }
   }
   return ptr ;
@@ -112,8 +110,7 @@ field_array( const field_type & f , const Kernel & k )
   const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
 
   const data_p ptr = pd.m_size ?
-    reinterpret_cast<data_p>(
-    reinterpret_cast<byte_p>(k.m_entities) + pd.m_base ) : (data_p) NULL ;
+    (data_p)( ((byte_p)(k.m_entities) + pd.m_base )) : (data_p) NULL ;
 
   return array_t( ptr , ArrayStride() , pd.m_stride , k.size() );
 }
@@ -131,11 +128,10 @@ field_array( const field_type & f , const Entity & e )
 
   const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
 
-  const data_p ptr = pd.m_size ?
-    reinterpret_cast<data_p>(
-    reinterpret_cast<byte_p>(k.m_entities) + pd.m_base +
-                                             pd.m_size * e.kernel_ordinal() ) :
-    (data_p) NULL ;
+  const data_p ptr =
+    pd.m_size ? (data_p)( ((byte_p)(k.m_entities)) +
+                           pd.m_base + pd.m_size * e.kernel_ordinal() )
+              : (data_p) NULL ;
 
   return array_t( ptr , ArrayStride() , pd.m_stride );
 }

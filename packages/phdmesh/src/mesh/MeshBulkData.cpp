@@ -645,7 +645,7 @@ void verify_set_shares( const MeshBulkData & M )
 
   std::string msg ;
 
-  const std::vector<EntityProc> & shares = M.shares();
+  const std::vector<EntityProc> & shares = M.shared_entities();
 
   // Parallel verification
 
@@ -971,10 +971,12 @@ void MeshBulkData::set_ghosting(
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void get_kernels( const KernelSet & ks ,
+void get_kernels( const MeshBulkData & mesh ,
+                  EntityType type ,
                   Part & part ,
                   std::vector<const Kernel*> & kernels )
 {
+  const KernelSet & ks = mesh.kernels( type );
   kernels.clear();
 
   const KernelSet::const_iterator ie = ks.end();
@@ -989,10 +991,12 @@ void get_kernels( const KernelSet & ks ,
 }
 
 void get_kernels_intersect(
-  const KernelSet & ks ,
+  const MeshBulkData & mesh ,
+  EntityType type ,
   const std::vector<Part*> & parts ,
   std::vector<const Kernel*> & kernels )
 {
+  const KernelSet & ks = mesh.kernels( type );
   kernels.clear();
 
   const KernelSet::const_iterator ie = ks.end();
@@ -1007,10 +1011,12 @@ void get_kernels_intersect(
 }
 
 void get_kernels_union(
-  const KernelSet & ks ,
+  const MeshBulkData & mesh ,
+  EntityType type ,
   const std::vector<Part*> & parts ,
   std::vector<const Kernel*> & kernels )
 {
+  const KernelSet & ks = mesh.kernels( type );
   kernels.clear();
 
   const KernelSet::const_iterator ie = ks.end();

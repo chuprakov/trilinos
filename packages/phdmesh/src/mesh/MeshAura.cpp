@@ -239,7 +239,7 @@ void comm_mesh_regenerate_aura( MeshBulkData & M )
   const unsigned p_size = M.parallel_size();
   const unsigned p_rank = M.parallel_rank();
 
-  const std::vector<EntityProc> & shares = M.shares();
+  const std::vector<EntityProc> & shares = M.shared_entities();
 
   std::vector<EntityProc> old_aura_domain( M.ghost_source() );
   std::vector<EntityProc> old_aura_range(  M.ghost_destination() );

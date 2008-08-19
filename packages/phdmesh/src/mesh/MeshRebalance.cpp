@@ -28,12 +28,14 @@
 #include <algorithm>
 #include <stdexcept>
 
+#include <util/ParallelComm.hpp>
 #include <util/ParallelReduce.hpp>
 #include <util/OctTreeOps.hpp>
 
 #include <mesh/MetaData.hpp>
 #include <mesh/BulkData.hpp>
 #include <mesh/FieldData.hpp>
+#include <mesh/FieldParallel.hpp>
 #include <mesh/Comm.hpp>
 #include <mesh/EntityComm.hpp>
 

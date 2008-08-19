@@ -57,7 +57,6 @@
 #include <util/Parallel.hpp>
 #include <util/OctTree.hpp>
 #include <mesh/Types.hpp>
-#include <mesh/FieldTraits.hpp>
 #include <mesh/EntityComm.hpp>
 
 //----------------------------------------------------------------------
@@ -145,19 +144,6 @@ bool communicate_entities(
   MeshBulkData & recv_mesh ,
   const std::vector<EntityProc> & send ,
         std::vector<EntityProc> & recv ,
-  bool local_flag = false );
-
-//----------------------------------------------------------------------
-/** Communicate field values from domain to range.
- *  The fields array must be identical on all processors.
- *  All fields and mesh entities must belong to the same mesh.
- *  If symmetric ( & domain == & range) then from owned to not owned.
- */
-bool communicate_field_data(
-  const MeshBulkData & mesh ,
-  const std::vector<EntityProc> & domain ,
-  const std::vector<EntityProc> & range ,
-  const std::vector< const FieldBase *> & fields ,
   bool local_flag = false );
 
 //----------------------------------------------------------------------
