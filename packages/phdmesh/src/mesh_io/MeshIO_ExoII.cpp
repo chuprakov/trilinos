@@ -1056,7 +1056,7 @@ void WriteElemIndexRelation::operator()(
 
       PairIterRelation con = elem.relations( Node );
 
-      if ( con.size() < (int) num_nodes_per_elem ) {
+      if ( con.size() < num_nodes_per_elem ) {
         std::ostringstream msg ;
         msg << "P" << M.parallel_rank();
         msg << ": phdmesh::exodus::WriteElemIndexRelation FAILED, " ;

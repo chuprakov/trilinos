@@ -151,7 +151,7 @@ void ParallelReduceField< ReduceOp , Type ,  Tag1,  Tag2,  Tag3 ,
 
     for ( ; ptr < ptr_end ; ++ptr ) {
       Type tmp ;
-      b.unpack<unsigned char>( (unsigned char *)(&tmp), sizeof(Type) );
+      b.template unpack<unsigned char>( (unsigned char *)(&tmp), sizeof(Type) );
       ReduceOp( ptr , & tmp );
     }
   }
