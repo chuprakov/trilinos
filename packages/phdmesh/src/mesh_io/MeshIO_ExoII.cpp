@@ -245,13 +245,11 @@ const FilePart * internal_declare_part(
 
   static const char method[] = "phdmesh::exodus::FileSchema::declare_part" ;
 
-  CSet::Span<FilePart> attr = arg_part.attribute<FilePart>();
-
-  const FilePart * file_part = NULL ;
+  const FilePart * file_part = arg_part.attribute<FilePart>();
 
   int number_attr = arg_number_attr ;
 
-  if ( attr.empty() ) {
+  if ( ! file_part ) {
 
     if ( ! number_attr ) { // Default number of attributes
       switch( arg_element_type ) {
@@ -278,9 +276,6 @@ const FilePart * internal_declare_part(
 
     arg_mesh_meta_data.declare_part_attribute<FilePart>( arg_part , file_part , true );
   }
-  else if ( attr.size() == 1 ) {
-    file_part = & *attr ;
-  }
 
   if ( file_part == NULL ||
        & file_part->m_part         != & arg_part ||
@@ -290,9 +285,7 @@ const FilePart * internal_declare_part(
          file_part->m_number_nodes != arg_number_nodes ||
          file_part->m_number_attr  != number_attr ) {
     std::ostringstream msg ;
-    msg << method << " FAILED redeclaration (count = " ;
-    msg << attr.size();
-    msg << ")" ;
+    msg << method << " FAILED redeclaration" ;
     throw std::runtime_error( msg.str() );
   }
 
@@ -1145,7 +1138,7 @@ unsigned count( const KernelSet & ks , const PartSet & ps )
   }
   return n ;
 }
-
+ 
 std::string variable_name( EntityType        r ,
                            const Part      & p , 
                            const FieldBase & f ,
@@ -1387,8 +1380,8 @@ FileOutput::FileOutput(
         i = arg_fields.begin() ; i != arg_fields.end() ; ++i ) {
 
     const FieldBase & f = **i ;
-    const FieldBase::Dim & d = f.dimension( Node , universal_part );
     const unsigned f_num_dim = f.number_of_dimensions();
+    const FieldBase::Dim & d = f.dimension( Node , universal_part );
 
     if ( d.stride[0] ) {
       FieldIO tmp ;
@@ -1398,13 +1391,22 @@ FileOutput::FileOutput(
       tmp.m_offset    = 0 ;
       tmp.m_var_index = 0 ;
 
-      const unsigned n = array_stride_size( f_num_dim , d.stride );
-
-      for ( unsigned k = 0 ; k < n ; ++k ) {
-        name_node_var.push_back( variable_name(Node, universal_part, f, k) );
-        tmp.m_offset    = k ;
+      if ( ! f_num_dim ) {
+        // Scalar
+        name_node_var.push_back( f.name() );
+        tmp.m_offset    = 0 ;
         tmp.m_var_index = name_node_var.size();
         m_field_node_universal.push_back( tmp );
+      }
+      else {
+        const unsigned n = array_stride_size( f_num_dim , d.stride );
+
+        for ( unsigned k = 0 ; k < n ; ++k ) {
+          name_node_var.push_back( variable_name(Node, universal_part, f, k) );
+          tmp.m_offset    = k ;
+          tmp.m_var_index = name_node_var.size();
+          m_field_node_universal.push_back( tmp );
+        }
       }
     }
   }

@@ -81,7 +81,7 @@ public:
   bool operator != ( const Part & rhs ) const { return this != & rhs ; }
 
   template<class A>
-  CSet::Span<A> attribute() const { return m_cset.template get<A>(); }
+  const A * attribute() const { return m_cset.template get<A>(); }
 
 private:
 

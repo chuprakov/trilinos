@@ -417,6 +417,10 @@ public:
   //----------------------------------
   // Class specific constructors:
 
+  ArrayNatural( value_type * arg_ptr , const size_type * arg_dim )
+    : m_ptr( arg_ptr )
+    { array_stride_from_natural_sizes( Rank , m_stride , arg_dim ); }
+
   ArrayNatural( value_type * arg_ptr ,
          size_type n1 , size_type n2 , size_type n3 , size_type n4 ,
          size_type n5 , size_type n6 , size_type n7 , size_type n8 )
@@ -733,6 +737,10 @@ public:
 
   //----------------------------------
   // Class specific constructors:
+
+  ArrayFortran( value_type * arg_ptr , const size_type * arg_dim )
+    : m_ptr( arg_ptr )
+    { array_stride_from_fortran_sizes( Rank , m_stride , arg_dim ); }
 
   ArrayFortran( value_type * arg_ptr ,
          size_type n1 , size_type n2 , size_type n3 , size_type n4 ,

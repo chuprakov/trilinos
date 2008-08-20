@@ -66,7 +66,7 @@ private:
   KernelSet::iterator   m_kernel ;     // Containing kernel
   unsigned              m_kernel_ord ; // Ordinal in the kernel
   unsigned              m_owner_rank ; // Parallel owner rank
-  EntityProcSpan        m_sharing ;
+  PairIterEntityProc        m_sharing ;
 
 public:
 
@@ -92,7 +92,7 @@ public:
   unsigned owner_rank() const { return m_owner_rank ; }
 
   /** Sharing processor information */
-  const EntityProcSpan & sharing() const { return m_sharing ; }
+  const PairIterEntityProc & sharing() const { return m_sharing ; }
 
   //------------------------------------
 

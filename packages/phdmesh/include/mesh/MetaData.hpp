@@ -101,9 +101,12 @@ public:
   const std::vector<PartRelation> & get_part_relations() const
     { return m_part_relations ; }
 
-  /** Declare an attribute on a part */
+  /** Declare an attribute on a part.
+   *  Return the attribute of that type,
+   *  which may be an already existing value.
+   */
   template<class T>
-  CSet::Span<T> declare_part_attribute( Part & , const T * , bool );
+  const T * declare_part_attribute( Part & , const T * , bool );
 
   //------------------------------------
   /** Get a field, return NULL if it does not exist.
@@ -219,9 +222,12 @@ public:
   const std::vector<FieldRelation> & get_field_relations() const
     { return m_field_relations ; }
 
-  /** Declare an attribute on a field */
+  /** Declare an attribute on a field.
+   *  Return the attribute of that type,
+   *  which may be an already existing value.
+   */
   template<class T>
-  CSet::Span<T> declare_field_attribute( FieldBase & , const T * , bool );
+  const T * declare_field_attribute( FieldBase & , const T * , bool );
 
   //------------------------------------
   /** Commit the part and field declarations.
@@ -480,7 +486,7 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
 
 template<class T>
 inline
-CSet::Span<T>
+const T *
 MeshMetaData::declare_part_attribute( Part & p , const T * a , bool d )
 {
   assert_not_committed( "phdmesh::MeshMetaData::declare_part_attribute" );
@@ -489,7 +495,7 @@ MeshMetaData::declare_part_attribute( Part & p , const T * a , bool d )
 
 template<class T>
 inline
-CSet::Span<T>
+const T *
 MeshMetaData::declare_field_attribute( FieldBase & f , const T * a , bool d )
 {
   assert_not_committed( "phdmesh::MeshMetaData::declare_field_attribute" );

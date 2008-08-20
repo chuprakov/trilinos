@@ -734,7 +734,7 @@ void verify_set_shares( const MeshBulkData & M )
                 ok = false ;
               }
 
-              EntityProcSpan ss = (*i)->sharing();
+              PairIterEntityProc ss = (*i)->sharing();
 
               if ( ss.empty() ) {
                 print_entity_key( os , (*i)->key() );
@@ -792,7 +792,7 @@ void MeshBulkData::set_shares( const std::vector<EntityProc> & s )
   // Clear the entities' sharing in preparation for setting it.
 
   {
-    const EntityProcSpan ss_empty ;
+    const PairIterEntityProc ss_empty ;
 
     for ( unsigned t = 0 ; t < EntityTypeEnd ; ++t ) {
       const EntitySet::iterator e = m_entities[t].end();
@@ -809,7 +809,7 @@ void MeshBulkData::set_shares( const std::vector<EntityProc> & s )
   while ( is != es ) {
     const std::vector<EntityProc>::iterator js = is ;
     for ( ; is != es && js->first == is->first ; ++is );
-    js->first->m_sharing = EntityProcSpan( js , is );
+    js->first->m_sharing = PairIterEntityProc( js , is );
   }
 
   // Verify 

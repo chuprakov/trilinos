@@ -61,78 +61,73 @@ bool less_cset::operator()( const std::type_info & lhs ,
                             const Manager        & rhs ) const
 { return lhs.before( *rhs.first ) && lhs != *rhs.first ; }
 
-std::pair<size_t,size_t>
-span( const std::vector< Manager > & v , const std::type_info & t )
+
+std::vector< Manager >::const_iterator
+lower_bound( const std::vector< Manager > & v , const std::type_info & t )
 {
   std::vector< Manager >::const_iterator i = v.begin();
   std::vector< Manager >::const_iterator j = v.end();
 
-  i = std::lower_bound( i , j , t , less_cset() );
-  j = std::upper_bound( i , j , t , less_cset() );
+  return std::lower_bound( i , j , t , less_cset() );
+}
 
-  std::pair<size_t,size_t> result ;
+std::vector< Manager >::iterator
+lower_bound( std::vector< Manager > & v , const std::type_info & t )
+{
+  std::vector< Manager >::iterator i = v.begin();
+  std::vector< Manager >::iterator j = v.end();
 
-  result.first  = i - v.begin();
-  result.second = j - v.begin();
-
-  return result ;
+  return std::lower_bound( i , j , t , less_cset() );
 }
 
 }
 
 //----------------------------------------------------------------------
 
-std::pair<const void*const*,const void*const*>
-CSet::p_get( const std::type_info & t ) const
+const void * CSet::p_get( const std::type_info & t ) const
 {
-  const void * const * b = NULL ;
-  const void * const * e = NULL ;
+  const void * result = NULL ;
 
-  const std::pair<size_t,size_t> s = span( m_manager , t );
+  const std::vector< Manager >::const_iterator im = lower_bound(m_manager,t);
 
-  if ( s.first < s.second ) {
-    b = & m_value[ s.first ];
-    e = & m_value[ s.second ];
+  if ( im < m_manager.end() && t == * im->first ) {
+    const size_t offset = im - m_manager.begin();
+    result = m_value[ offset ];
   }
-  return SpanVoid( b , e );
+
+  return result ;
 }
 
-std::pair<const void*const*,const void*const*>
+const void *
 CSet::p_insert( const Manager & m , const void * v )
 {
-  std::pair<size_t,size_t> s = span( m_manager , * m.first );
-  size_t i ;
+  std::vector< Manager >::iterator im = lower_bound( m_manager , * m.first );
 
-  for ( i = s.first ; i < s.second && v != m_value[i] ; ++i );
+  const size_t offset = im - m_manager.begin();
 
-  if ( i == s.second ) {
-    std::vector<Manager>    ::iterator im = m_manager.begin();
-    std::vector<const void*>::iterator iv = m_value  .begin();
-    std::advance( im , s.second );
-    std::advance( iv , s.second );
+  std::vector<const void *>::iterator iv = m_value.begin();
+  std::advance( iv , offset );
 
-    m_manager.insert( im , m );
-    m_value  .insert( iv , v );
-    ++s.second ;
+  if ( im == m_manager.end() || * m.first != * im->first ) {
+    im = m_manager.insert( im , m );
+    iv = m_value  .insert( iv , v );
   }
-  const void * const * const b = & m_value[ s.first ];
-  const void * const * const e = & m_value[ s.second ];
-  return SpanVoid( b , e );
+
+  return *iv ;
 }
 
 bool CSet::p_remove( const std::type_info & t , const void * v )
 {
-  bool result ;
+  const std::vector< Manager >::iterator im = lower_bound( m_manager , t );
 
-  std::pair<size_t,size_t> s = span( m_manager , t );
+  const size_t offset = im - m_manager.begin();
 
-  for ( ; s.first < s.second && v != m_value[s.first] ; ++s.first );
+  std::vector<const void *>::iterator iv = m_value.begin();
+  std::advance( iv , offset );
 
-  if ( ( result = s.first < s.second ) ) {
-    std::vector<Manager>    ::iterator im = m_manager.begin();
-    std::vector<const void*>::iterator iv = m_value  .begin();
-    std::advance( im , s.first );
-    std::advance( iv , s.first );
+  const bool result = im != m_manager.end() && t == * im->first && v == * iv ;
+
+  if ( result ) {
     m_manager.erase( im );
     m_value  .erase( iv );
   }
@@ -235,9 +230,9 @@ public:
 
 int cset()
 {
-  CSet s ;
-  CSet::Span<A> sa ;
-  CSet::Span<B> sb ;
+  const A * sa ;
+  const B * sb ;
+  bool flag ;
 
   U * u = new U();
   V * v = new V();
@@ -245,63 +240,41 @@ int cset()
   X * x = new X();
   Y * y = new Y();
 
-  std::cout << "s.insert<A>(u,true) " << std::endl ; s.insert<A>(u,true);
-  std::cout << "s.insert<B>(v,true) " << std::endl ; s.insert<B>(v,true);
-  std::cout << "s.insert<B>(w,true) " << std::endl ; s.insert<B>(w,true);
-  std::cout << "s.insert<A>(x) "      << std::endl ; s.insert<A>(x);
-  std::cout << "s.insert<B>(x) "      << std::endl ; s.insert<B>(x);
+  {
+    CSet cs ;
 
-  sa = s.get<A>();
-  sb = s.get<B>();
+    sa = cs.insert<A>(u,true);
+    std::cout << "cs.insert<A>(u,true)->name() = " << sa->name() << std::endl ;
 
-  std::cout
-    << "s.get<A>().size() == " << sa.size() << std::endl 
-    << "s.get<B>().size() == " << sb.size() << std::endl ;
+    sb = cs.insert<B>(v,true);
+    std::cout << "cs.insert<B>(v,true)->name() = " << sb->name() << std::endl ;
 
-  for ( unsigned i = 0 ; i < sa.size() ; ++i ) {
-    std::cout << "s.get<A>()[" << i << "].name() == "
-              << sa[i].name() << std::endl ;
+    // Should not replace:
+    sb = cs.insert<B>(w,true);
+    std::cout << "cs.insert<B>(w,true)->name() = " << sb->name() << std::endl ;
+
+    flag = cs.remove<A>( u );
+    std::cout << "s.remove<A>(u) = " << flag << std::endl ;
+
+    flag = cs.remove<B>( v );
+    std::cout << "s.remove<B>(v) = " << flag << std::endl ;
+
+    sa = cs.insert<A>(x);
+    sb = cs.insert<B>(x);
+    std::cout << "s.insert<A>(x)->name() = " << sa->name() << std::endl ;
+    std::cout << "s.insert<B>(x)->name() = " << sb->name() << std::endl ;
+
+    sa = cs.insert<A>(y);
+    sb = cs.insert<B>(y);
+    std::cout << "s.insert<A>(y)->name() = " << sa->name() << std::endl ;
+    std::cout << "s.insert<B>(y)->name() = " << sb->name() << std::endl ;
   }
-  for ( unsigned i = 0 ; i < sb.size() ; ++i ) {
-    std::cout << "s.get<B>()[" << i << "].name() == "
-              << sb[i].name() << std::endl ;
-  }
-
-  std::cout << "s.remove( <last A> )" << std::endl ; s.remove(& sa.back());
-
-  sa = s.get<A>();
-  sb = s.get<B>();
-
-  std::cout << "s.remove( <last B> )" << std::endl ; s.remove(& sb.back());
-
-  sa = s.get<A>();
-  sb = s.get<B>();
 
   delete x ; x = NULL ;
-
-  for ( unsigned i = 0 ; i < sa.size() ; ++i ) {
-    std::cout << "s.get<A>()[" << i << "].name() == "
-              << sa[i].name() << std::endl ;
-  }
-  for ( unsigned i = 0 ; i < sb.size() ; ++i ) {
-    std::cout << "s.get<B>()[" << i << "].name() == "
-              << sb[i].name() << std::endl ;
-  }
-
-  std::cout << "s.insert<A>(y,true) " << std::endl ; s.insert<A>(y,true);
-  std::cout << "s.insert<B>(y) "      << std::endl ; s.insert<B>(y);
-
-  sa = s.get<A>();
-  sb = s.get<B>();
-
-  for ( unsigned i = 0 ; i < sa.size() ; ++i ) {
-    std::cout << "s.get<A>()[" << i << "].name() == "
-              << sa[i].name() << std::endl ;
-  }
-  for ( unsigned i = 0 ; i < sb.size() ; ++i ) {
-    std::cout << "sb.get<A>()[" << i << "].name() == "
-              << sb[i].name() << std::endl ;
-  }
+  delete y ; y = NULL ;
+  delete w ; w = NULL ;
+  delete v ; v = NULL ;
+  delete u ; u = NULL ;
 
   return 0 ;
 }

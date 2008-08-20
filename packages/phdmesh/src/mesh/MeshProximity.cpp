@@ -369,8 +369,8 @@ int ProximitySearch::part_id( const Kernel & kernel ) const
 
   PartSet::iterator i ;
   for ( i = part_set.begin() ; part == NULL && i != part_set.end() ; ++i ) {
-    CSet::Span<ProximitySearch> tmp = (*i)->attribute<ProximitySearch>();
-    if ( tmp.size() == 1 && this == & *tmp ) { part = *i ; }
+    const ProximitySearch * const tmp = (*i)->attribute<ProximitySearch>();
+    if ( this == tmp ) { part = *i ; }
   }
 
   return part != NULL ? part->mesh_meta_data_ordinal() + 1 : 0 ;

@@ -114,7 +114,6 @@ UTIL_H = \
 	$(srcdir)/../include/util/ParallelReduce.hpp \
 	$(srcdir)/../include/util/Reference.hpp \
 	$(srcdir)/../include/util/Setv.hpp \
-	$(srcdir)/../include/util/Span.hpp \
 	$(srcdir)/../include/util/TestDriver.hpp \
 	$(srcdir)/../include/util/TPI.h \
 	$(srcdir)/../include/util/TPI.hpp \

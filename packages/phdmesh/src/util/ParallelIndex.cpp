@@ -25,7 +25,7 @@
  */
 
 #include <algorithm>
-#include <util/Span.hpp>
+#include <util/PairIter.hpp>
 #include <util/ParallelComm.hpp>
 #include <util/ParallelIndex.hpp>
 
@@ -57,10 +57,10 @@ void sort_unique( std::vector<ParallelIndex::KeyProc> & key_proc )
 }
 
 typedef
-  Span< std::vector< ParallelIndex::KeyProc >::const_iterator >
-    SpanKeyProc ;
+  PairIter< std::vector< ParallelIndex::KeyProc >::const_iterator >
+    PairIterKeyProc ;
 
-SpanKeyProc
+PairIterKeyProc
 span( const std::vector< ParallelIndex::KeyProc > & key_proc ,
       const ParallelIndex::key_type key )
 {
@@ -71,7 +71,7 @@ span( const std::vector< ParallelIndex::KeyProc > & key_proc ,
 
   for ( j = i ; j != key_proc.end() && j->first == key ; ++j );
 
-  return SpanKeyProc( i , j );
+  return PairIterKeyProc( i , j );
 }
 
 //----------------------------------------------------------------------
@@ -180,7 +180,7 @@ void pack_query( CommAll & all ,
   for ( i = query.begin() ; i != query.end() ; ) {
     value[0] = i->first ;
 
-    const SpanKeyProc s = span( key_proc_map , value[0] );
+    const PairIterKeyProc s = span( key_proc_map , value[0] );
 
     for ( ; i != query.end() && value[0] == i->first ; ++i ) {
       CommBuffer & buf = all.send_buffer( i->second );

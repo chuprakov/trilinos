@@ -38,56 +38,28 @@ namespace phdmesh {
 //----------------------------------------------------------------------
 
 const CellTopology * get_cell_topology( const Part & p )
-{
-  const CellTopology * top = NULL ;
-
-  CSet::Span<CellTopology> span = p.attribute<CellTopology>();
-
-  if ( 1 == span.size() ) {
-    top = & *span ;
-  }
-  else if ( 1 < span.size() ) {
-    std::ostringstream msg ;
-    msg << "phdmesh::get_cell_topology( " ;
-    msg << p.name();
-    msg << " ) ERROR, too many topologies { " ;
-    for ( ; span ; ++span ) {
-      msg << span->name << " " ;
-    }
-    msg << "}" ;
-    throw std::runtime_error( msg.str() );
-  }
-  return top ;
-}
+{ return p.attribute<CellTopology>(); }
 
 void set_cell_topology( Part & p , const CellTopology * singleton )
 {
   static const char method[] = "phdmesh::set_cell_topology" ;
 
-  CSet::Span<CellTopology> span = p.attribute<CellTopology>();
+  MeshMetaData & m = p.mesh_meta_data();
 
-  const bool error_null   = singleton == NULL ;
-  const bool error_size   = 1 < span.size();
-  const bool error_change = span.size() == 1 && singleton != & *span ;
+  const CellTopology * t = NULL ;
 
-  if ( error_size || error_change || error_null ) {
+  if ( singleton == NULL ||
+       singleton != ( t = m.declare_part_attribute(p,singleton,false) ) ) {
     std::ostringstream msg ;
     msg << method ;
     msg << "( " ;
     msg << p.name();
     msg << " , " ;
-    if ( error_null ) { msg << "NULL" ; }
-    else              { msg << singleton->name ; }
-    msg << " ) ERROR, current topologies { " ;
-    for ( ; span ; ++span ) {
-      msg << span->name << " " ;
-    }
-    msg << "}" ;
+    if ( singleton ) { msg << singleton->name ; }
+    else             { msg << "NULL" ; }
+    msg << " ) ERROR" ;
+    if ( t ) { msg << "Existing topology = " << t->name ; }
     throw std::runtime_error( msg.str() );
-  }
-
-  if ( span.empty() ) {
-    p.mesh_meta_data().declare_part_attribute( p , singleton , false );
   }
 }
 

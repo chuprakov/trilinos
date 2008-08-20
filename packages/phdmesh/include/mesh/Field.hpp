@@ -103,7 +103,7 @@ public:
   //----------------------------------------
 
   template<class A>
-  CSet::Span<A> attribute() const { return m_cset.template get<A>(); }
+  const A * attribute() const { return m_cset.template get<A>(); }
 
   //----------------------------------------
   /** An internal data structure that should never need to be

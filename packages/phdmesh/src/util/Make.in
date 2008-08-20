@@ -45,7 +45,6 @@ UTIL_INC_FILES =	\
 	$(UTIL_INC_DIR)/ParallelInputStream.hpp	\
 	$(UTIL_INC_DIR)/Reference.hpp	\
 	$(UTIL_INC_DIR)/Setv.hpp	\
-	$(UTIL_INC_DIR)/Span.hpp	\
 	$(UTIL_INC_DIR)/TestDriver.hpp	\
 	$(UTIL_INC_DIR)/TPI.h	\
 	$(UTIL_INC_DIR)/TPI.hpp	\

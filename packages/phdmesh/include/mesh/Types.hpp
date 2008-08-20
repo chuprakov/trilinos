@@ -106,7 +106,7 @@ typedef int ( * relation_stencil_ptr )(
 
 typedef std::pair<Entity*,unsigned> EntityProc ; // Entity-processor pair
 
-typedef PairIter< std::vector< EntityProc >::const_iterator > EntityProcSpan ;
+typedef PairIter< std::vector< EntityProc >::const_iterator > PairIterEntityProc ;
 
 //----------------------------------------------------------------------
 
