@@ -53,13 +53,26 @@ bool field_data_valid( const FieldBase & f ,
 
 //----------------------------------------------------------------------
 
+inline
+unsigned field_data_size( const FieldBase & f , const Kernel & k )
+{
+  const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
+  return pd.m_size ;
+}
+
+inline
+unsigned field_data_size( const FieldBase & f , const Entity & e )
+{ return field_data_size( f , e.kernel() ); }
+
+//----------------------------------------------------------------------
+
 template< class field_type >
 inline
-typename field_type::data_type *
+typename FieldTraits< field_type >::data_type *
 field_data( const field_type & f , const Kernel & k )
 {
-  typedef unsigned char                  * byte_p ;
-  typedef typename field_type::data_type * data_p ;
+  typedef unsigned char * byte_p ;
+  typedef typename FieldTraits< field_type >::data_type * data_p ;
 
   data_p ptr = NULL ;
 
@@ -75,11 +88,11 @@ field_data( const field_type & f , const Kernel & k )
 
 template< class field_type >
 inline
-typename field_type::data_type *
+typename FieldTraits< field_type >::data_type *
 field_data( const field_type & f , const Entity & e )
 {
-  typedef unsigned char                  * byte_p ;
-  typedef typename field_type::data_type * data_p ;
+  typedef unsigned char * byte_p ;
+  typedef typename FieldTraits< field_type >::data_type * data_p ;
 
   data_p ptr = NULL ;
 
@@ -98,56 +111,130 @@ field_data( const field_type & f , const Entity & e )
 
 //----------------------------------------------------------------------
 
-template< class field_type >
-inline
-typename field_type::KernelArray
-field_array( const field_type & f , const Kernel & k )
+template< typename Scalar >
+struct EntityArray< Field<Scalar,void,void,void,void,void,void,void> >
+  : public Array<Scalar,RankZero,void,void,void,void,void,void,void>
 {
-  typedef typename field_type::KernelArray array_t ;
-  typedef unsigned char                  * byte_p ;
-  typedef typename field_type::data_type * data_p ;
+  typedef Field<Scalar,void,void,void,void,void,void,void> field_type ;
+  typedef Array<Scalar,RankZero,void,void,void,void,void,void,void> array_type ;
 
-  const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
+  EntityArray( const field_type & f , const Entity & e )
+    {
+      typedef unsigned char * byte_p ;
+      typedef Scalar * data_p ;
+      enum { R = array_type::Rank };
 
-  const data_p ptr = pd.m_size ?
-    (data_p)( ((byte_p)(k.m_entities) + pd.m_base )) : (data_p) NULL ;
+      const Kernel & k = e.kernel();
 
-  return array_t( ptr , ArrayStride() , pd.m_stride , k.size() );
-}
+      const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
 
-template< class field_type >
-inline
-typename field_type::EntityArray
-field_array( const field_type & f , const Entity & e )
+      if ( pd.m_size ) {
+        array_type::m_ptr = (data_p)(
+                (byte_p)(k.m_entities) + pd.m_base +
+                                         pd.m_size * e.kernel_ordinal() );
+      }
+    }
+private:
+  EntityArray();
+  EntityArray( const EntityArray & );
+  EntityArray & operator = ( const EntityArray & );
+};
+
+template< typename Scalar ,
+          class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 , class Tag7 >
+struct EntityArray< Field<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> >
+  : public Array<Scalar,FortranOrder,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
 {
-  typedef typename field_type::EntityArray array_t ;
-  typedef unsigned char                  * byte_p ;
-  typedef typename field_type::data_type * data_p ;
+  typedef Field<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> field_type ;
+  typedef
+    Array<Scalar,FortranOrder,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> array_type ;
 
-  const Kernel & k = e.kernel();
+  EntityArray( const field_type & f , const Entity & e )
+    {
+      typedef unsigned char * byte_p ;
+      typedef Scalar * data_p ;
+      enum { R = array_type::Rank };
 
-  const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
+      const Kernel & k = e.kernel();
 
-  const data_p ptr =
-    pd.m_size ? (data_p)( ((byte_p)(k.m_entities)) +
-                           pd.m_base + pd.m_size * e.kernel_ordinal() )
-              : (data_p) NULL ;
+      const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
 
-  return array_t( ptr , ArrayStride() , pd.m_stride );
-}
+      if ( pd.m_size ) {
+        array_type::m_ptr = (data_p)(
+                (byte_p)(k.m_entities) + pd.m_base +
+                                         pd.m_size * e.kernel_ordinal() );
+        Copy< R >( array_type::m_stride , pd.m_stride );
+      }
+    }
+private:
+  EntityArray();
+  EntityArray( const EntityArray & );
+  EntityArray & operator = ( const EntityArray & );
+};
 
-//----------------------------------------------------------------------
-
-inline
-unsigned field_data_size( const FieldBase & f , const Kernel & k )
+template< typename Scalar >
+struct KernelArray< Field<Scalar,void,void,void,void,void,void,void> >
+  : public
+      Array<Scalar,FortranOrder,EntityDimension,void,void,void,void,void,void> 
 {
-  const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
-  return pd.m_size ;
-}
+  typedef Field<Scalar,void,void,void,void,void,void,void> field_type ;
+  typedef
+    Array<Scalar,FortranOrder,EntityDimension,void,void,void,void,void,void> 
+      array_type ;
 
-inline
-unsigned field_data_size( const FieldBase & f , const Entity & e )
-{ return field_data_size( f , e.kernel() ); }
+  KernelArray( const field_type & f , const Kernel & k )
+    {
+      typedef unsigned char * byte_p ;
+      typedef Scalar * data_p ;
+      enum { R = array_type::Rank };
+
+      const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
+
+      if ( pd.m_size ) {
+        array_type::m_ptr = (data_p)( (byte_p)(k.m_entities) + pd.m_base );
+        array_type::m_stride[0] = k.size();
+      }
+    }
+private:
+  KernelArray();
+  KernelArray( const KernelArray & );
+  KernelArray & operator = ( const KernelArray & );
+};
+
+template< typename Scalar ,
+          class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 , class Tag7 >
+struct KernelArray< Field<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> >
+  : public ArrayAppend<
+      Array<Scalar,FortranOrder,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> ,
+      EntityDimension >::type
+{
+  typedef Field<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> field_type ;
+  typedef typename ArrayAppend<
+    Array<Scalar,FortranOrder,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> ,
+    EntityDimension >::type array_type ;
+
+  KernelArray( const field_type & f , const Kernel & k )
+    {
+      typedef unsigned char * byte_p ;
+      typedef Scalar * data_p ;
+      enum { R = array_type::Rank };
+
+      const Kernel::DataMap & pd = k.m_field_map[ f.mesh_meta_data_ordinal() ];
+
+      if ( pd.m_size ) {
+        array_type::m_ptr = (data_p)( (byte_p)(k.m_entities) + pd.m_base );
+
+        Copy< R - 1 >( array_type::m_stride , pd.m_stride );
+        array_type::m_stride[R-1] = array_type::m_stride[R-2] * k.size();
+      }
+    }
+private:
+  KernelArray();
+  KernelArray( const KernelArray & );
+  KernelArray & operator = ( const KernelArray & );
+};
 
 //----------------------------------------------------------------------
 

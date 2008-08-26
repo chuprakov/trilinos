@@ -29,7 +29,7 @@
 
 //----------------------------------------------------------------------
 
-#include <util/FixedArray.hpp>
+#include <util/SimpleArrayOps.hpp>
 #include <util/Parallel.hpp>
 #include <util/ParallelComm.hpp>
 

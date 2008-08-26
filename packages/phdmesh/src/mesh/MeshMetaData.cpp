@@ -112,7 +112,7 @@ void MeshMetaData::commit()
     }
   }
 
-  clean_field_dimension();
+  clean_field_restrictions();
 
   m_commit = true ; // Cannot add or change parts or fields now
 }

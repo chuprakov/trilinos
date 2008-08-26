@@ -41,9 +41,9 @@ struct Cartesian : public ArrayDimTag {
   enum { X = 0 , Y = 1 , Z = 2 };
 
   const char * name() const ;
-  std::string to_string( size_t size , int index ) const ;
-  int         to_index(  size_t size , const std::string & ) const ;
-  static const Cartesian & descriptor();
+  std::string to_string( size_t size , unsigned index ) const ;
+  unsigned    to_index(  size_t size , const std::string & ) const ;
+  static const Cartesian & tag();
 
 private:
   Cartesian() {}
@@ -61,9 +61,9 @@ struct Cylindrical : public ArrayDimTag {
          Z = 2 };
 
   const char * name() const ;
-  std::string to_string( size_t size , int index ) const ;
-  int         to_index(  size_t size , const std::string & ) const ;
-  static const Cylindrical & descriptor();
+  std::string to_string( size_t size , unsigned index ) const ;
+  unsigned    to_index(  size_t size , const std::string & ) const ;
+  static const Cylindrical & tag();
 
 private:
   Cylindrical() {}
@@ -80,9 +80,9 @@ struct FullTensor : public ArrayDimTag {
          ZX = 2 , ZY = 5 , ZZ = 8 };
 
   const char * name() const ;
-  std::string to_string( size_t, int) const  ;
-  int         to_index(  size_t, const std::string & ) const  ;
-  static const FullTensor & descriptor();
+  std::string to_string( size_t, unsigned) const  ;
+  unsigned    to_index(  size_t, const std::string & ) const  ;
+  static const FullTensor & tag();
 
 private:
   FullTensor() {}
@@ -97,9 +97,9 @@ struct SymmetricTensor : public ArrayDimTag {
   enum { XX = 0 , YY = 1 , ZZ = 2, XY = 3, YZ = 4, XZ = 5 };
 
   const char * name() const  ;
-  std::string to_string( size_t, int) const  ;
-  int         to_index(  size_t , const std::string & ) const ;
-  static const SymmetricTensor & descriptor();
+  std::string to_string( size_t, unsigned) const  ;
+  unsigned    to_index(  size_t , const std::string & ) const ;
+  static const SymmetricTensor & tag();
 
 private:
   SymmetricTensor() {}
@@ -114,7 +114,7 @@ struct EntityDimension : public ArrayDimTag {
 
   const char * name() const ;
 
-  static const EntityDimension & descriptor();
+  static const EntityDimension & tag();
 
 private:
   EntityDimension() {}

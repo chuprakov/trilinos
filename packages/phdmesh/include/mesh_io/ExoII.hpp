@@ -39,7 +39,7 @@ class FilePart ;
 
 struct ElementAttributes : public ArrayDimTag {
   const char * name() const ;
-  static const ElementAttributes & descriptor();
+  static const ElementAttributes & tag();
 private:
   ElementAttributes() {}
   ElementAttributes( const ElementAttributes & );
@@ -49,11 +49,11 @@ private:
 struct GlobalLocalIndex : public ArrayDimTag {
   const char * name() const ;
 
-  std::string to_string( size_t size , int index ) const ;
+  std::string to_string( size_t size , unsigned index ) const ;
 
-  int to_index( size_t size , const std::string & ) const ;
+  unsigned to_index( size_t size , const std::string & ) const ;
 
-  static const GlobalLocalIndex & descriptor();
+  static const GlobalLocalIndex & tag();
 private:
   GlobalLocalIndex() {}
   GlobalLocalIndex( const GlobalLocalIndex & );

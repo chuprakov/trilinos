@@ -30,7 +30,7 @@
 #include <cmath>
 
 #include <util/TPI.h>
-#include <util/FixedArray.hpp>
+#include <util/SimpleArrayOps.hpp>
 #include <util/ParallelComm.hpp>
 
 #include <mesh/FieldTraits.hpp>
@@ -117,11 +117,8 @@ void ElementMeanValueOp::run( void * arg , TPI_ThreadPool pool )
     if ( ik->has_superset( owns ) ) {
       const Kernel & k = *ik ;
 
-      Field<double*,ElementNode>::KernelArray
-        node_array = field_array( op.m_field_ptr , k );
-
-      Field<double,Cartesian>::KernelArray
-        elem_array = field_array( op.m_field , k );
+      KernelArray< Field<double*,ElementNode> > node_array(op.m_field_ptr, k);
+      KernelArray< Field<double,Cartesian> > elem_array( op.m_field , k );
 
       switch( elem_array.dimension<0>() ) {
       case 3 :
@@ -190,8 +187,7 @@ void NodeMeanValueOp::run( void * arg , TPI_ThreadPool pool )
     if ( ik->has_superset( uses ) ) {
       const Kernel & k = *ik ;
 
-      Field<double,Cartesian>::KernelArray
-        node_array = field_array( op.m_node_field , k );
+      KernelArray< Field<double,Cartesian> > node_array( op.m_node_field , k );
 
       const unsigned length = node_array.dimension<0>();
       const unsigned count  = node_array.dimension<1>();
@@ -203,8 +199,8 @@ void NodeMeanValueOp::run( void * arg , TPI_ThreadPool pool )
         for ( unsigned j = 0 ; j < num_elem ; ++j ) {
           Entity & elem = * rel[j].entity();
 
-          Field<double,Cartesian>::EntityArray
-            elem_array = field_array( op.m_elem_field , elem );
+          EntityArray< Field<double,Cartesian> >
+            elem_array( op.m_elem_field , elem );
 
           for ( unsigned m = 0 ; m < length ; ++m ) {
             node_array(m,i) += elem_array(m);

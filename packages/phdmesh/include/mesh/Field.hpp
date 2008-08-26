@@ -34,7 +34,7 @@
 #include <vector>
 
 #include <util/NumericEnum.hpp>
-#include <util/FixedArray.hpp>
+#include <util/SimpleArrayOps.hpp>
 #include <util/CSet.hpp>
 
 #include <mesh/Types.hpp>
@@ -58,12 +58,13 @@ std::ostream & print( std::ostream & ,
 enum FieldState {
   /* Exactly one state  */    StateNone = 0 ,
   /* Exactly two states */    StateNew  = 0 ,
+                              StateNP1  = 0  /* N+1 */ ,
                               StateOld  = 1 ,
-  /* Three or more states */  StateNM1  = 1  /* N-1 */ ,
-                              StateNM2  = 2  /* N-2 */ ,
-                              StateNM3  = 3  /* N-3 */ ,
-                              StateNM4  = 4  /* N-4 */ ,
-                              StateNM5  = 5  /* N-5 */ };
+  /* Three or more states */  StateN    = 1 ,
+                              StateNM1  = 2  /* N-1 */ ,
+                              StateNM2  = 3  /* N-2 */ ,
+                              StateNM3  = 4  /* N-3 */ ,
+                              StateNM4  = 5  /* N-4 */ };
 
 enum { MaximumFieldStates = 6 };
 
@@ -75,8 +76,6 @@ const char * field_state_name( FieldState );
 template<>
 class Field< void , void , void , void , void , void , void , void > {
 public:
-
-  typedef void data_type ;
 
   MeshMetaData & mesh_meta_data() const { return m_mesh_meta_data ; }
 
@@ -93,7 +92,7 @@ public:
 
   FieldState state() const { return m_this_state ; }
 
-  unsigned number_of_dimensions() const { return m_num_dim ; }
+  unsigned rank() const { return m_rank ; }
 
   const ArrayDimTag * const * dimension_tags() const
     { return m_dim_tags ; }
@@ -109,21 +108,21 @@ public:
   /** An internal data structure that should never need to be
    *  used by a user of the phdMeshBulkData package.
    */
-  struct Dim {
+  struct Restriction {
     size_t key ; /* ( Entity type , part ordinal ) */
     size_t stride[ MaximumFieldDimension ];
 
-    Dim();
-    Dim( const Dim & rhs );
-    Dim & operator = ( const Dim & rhs );
+    Restriction();
+    Restriction( const Restriction & rhs );
+    Restriction & operator = ( const Restriction & rhs );
 
-    Dim( EntityType t , unsigned );
+    Restriction( EntityType t , unsigned );
     EntityType type() const ;
     unsigned   ordinal() const ;
 
     static size_t key_value( EntityType , unsigned );
 
-    bool operator < ( const Dim & rhs ) const { return key < rhs.key ; }
+    bool operator < ( const Restriction & rhs ) const { return key < rhs.key ; }
     bool operator < ( const size_t rhs_key ) const { return key < rhs_key ; }
 
   private:
@@ -132,10 +131,10 @@ public:
   };
 
   /** Volatile until the mesh_meta_data is committed */
-  const std::vector<Dim> & dimension() const ;
+  const std::vector<Restriction> & restrictions() const ;
 
   /** Volatile until the mesh_meta_data is committed */
-  const Dim & dimension( EntityType , const Part & ) const ;
+  const Restriction & restriction( EntityType , const Part & ) const ;
 
   //----------------------------------------
 
@@ -168,49 +167,28 @@ private:
          unsigned number_of_states ,
          FieldState );
 
-  std::vector<Dim> & dimension();
+  std::vector<Restriction> & restrictions();
 
   CSet        m_cset ;
   std::string m_name ;
-  MeshMetaData    & m_mesh_meta_data ;         // MeshBulkData mesh_meta_data in which this field resides
+  MeshMetaData    & m_mesh_meta_data ;   // in which this field resides
   unsigned    m_mesh_meta_data_ordinal ; // Ordinal in the field set
   unsigned    m_scalar_type ;    // Ordinal in FieldTypes
-  unsigned    m_num_dim ;        // Number of dimensions
+  unsigned    m_rank ;           // Number of dimensions
   unsigned    m_num_states ;     // Number of states of this field
   FieldState  m_this_state ;     // Field state of this field
 
-  std::vector<Dim>    m_dim_map ; // Only valid on StateNone
+  std::vector<Restriction> m_dim_map ; // Only valid on StateNone
   Field             * m_field_states[ MaximumFieldStates ];
   const ArrayDimTag * m_dim_tags[ MaximumFieldDimension ];
 };
 
 //----------------------------------------------------------------------
-// Maximum dimension is one less to allow introduction
-// additional 'EntityDimension'.
 
 template< typename Scalar , class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
                             class Tag5 , class Tag6 , class Tag7 >
 class Field : public FieldBase {
 public:
-
-  typedef Scalar data_type ;
-
-  typedef Tag1 array_dim_tag_1 ;
-  typedef Tag2 array_dim_tag_2 ;
-  typedef Tag3 array_dim_tag_3 ;
-  typedef Tag4 array_dim_tag_4 ;
-  typedef Tag5 array_dim_tag_5 ;
-  typedef Tag6 array_dim_tag_6 ;
-  typedef Tag7 array_dim_tag_7 ;
-
-  /** Array of field data for a single entity. */
-  typedef ArrayFortran<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
-    EntityArray ;
-
-  /** Array of field data for a kernel of entities. */
-  typedef typename ArrayAppend<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,
-                                      EntityDimension>::fortran_type
-    KernelArray ;
 
   /** Query this field for a given field state. */
   const Field & operator[]( FieldState state ) const
@@ -230,17 +208,34 @@ private:
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
+template< typename Scalar ,
+          class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 , class Tag7 >
+struct FieldTraits< Field<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> >
+{
+  typedef Scalar data_type ;
+  typedef Tag1   tag1 ;
+  typedef Tag2   tag2 ;
+  typedef Tag3   tag3 ;
+  typedef Tag4   tag4 ;
+  typedef Tag5   tag5 ;
+  typedef Tag6   tag6 ;
+  typedef Tag7   tag7 ;
+};
+
+//----------------------------------------------------------------------
+
 inline
-FieldBase::Dim::Dim()
+FieldBase::Restriction::Restriction()
   : key(0) { Copy<MaximumFieldDimension>( stride , (size_t) 0 ); }
 
 inline
-FieldBase::Dim::Dim( const FieldBase::Dim & rhs )
+FieldBase::Restriction::Restriction( const FieldBase::Restriction & rhs )
   : key( rhs.key ) { Copy< MaximumFieldDimension >( stride , rhs.stride ); }
 
 inline
-FieldBase::Dim &
-FieldBase::Dim::operator = ( const FieldBase::Dim & rhs )
+FieldBase::Restriction &
+FieldBase::Restriction::operator = ( const FieldBase::Restriction & rhs )
   {
     key = rhs.key ;
     Copy< MaximumFieldDimension >( stride , rhs.stride );
@@ -248,21 +243,21 @@ FieldBase::Dim::operator = ( const FieldBase::Dim & rhs )
   }
 
 inline
-size_t FieldBase::Dim::key_value( EntityType t , unsigned ord )
+size_t FieldBase::Restriction::key_value( EntityType t , unsigned ord )
 { return ( ((size_t)t) << ord_digits ) | ord ; }
 
 inline
-FieldBase::Dim::Dim( EntityType t , unsigned ord )
+FieldBase::Restriction::Restriction( EntityType t , unsigned ord )
   : key( key_value(t,ord) )
     { Copy< MaximumFieldDimension >( stride , (size_t) 0 ); }
 
 inline
 EntityType
-FieldBase::Dim::type() const
+FieldBase::Restriction::type() const
 { return EntityType( key >> ord_digits ); }
 
 inline
-unsigned FieldBase::Dim::ordinal() const
+unsigned FieldBase::Restriction::ordinal() const
 {
   enum { mask = ~( ~((size_t)0) << ord_digits ) };
   return key & mask ;

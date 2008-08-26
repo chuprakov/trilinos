@@ -25,8 +25,8 @@
  * @date   November 2006
  */
 
-#ifndef util_FixedArray_hpp
-#define util_FixedArray_hpp
+#ifndef util_SimpleArrayOps_hpp
+#define util_SimpleArrayOps_hpp
 
 namespace phdmesh {
 

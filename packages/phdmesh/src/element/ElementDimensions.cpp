@@ -31,19 +31,19 @@ namespace phdmesh {
 const char * ElementNode::name() const
 { static const char n[] = "ElementNode" ; return n ; }
 
-const ElementNode & ElementNode::descriptor()
+const ElementNode & ElementNode::tag()
 { static const ElementNode self ; return self ; }
 
 const char * QuadratureTag::name() const
 { static const char n[] = "Quadrature" ; return n ; }
 
-const QuadratureTag & QuadratureTag::descriptor()
+const QuadratureTag & QuadratureTag::tag()
 { static const QuadratureTag self ; return self ; }
 
 const char * BasisTag::name() const
 { static const char n[] = "Basis" ; return n ; }
 
-const BasisTag & BasisTag::descriptor()
+const BasisTag & BasisTag::tag()
 { static const BasisTag self ; return self ; }
 
 } // namespace phdmesh

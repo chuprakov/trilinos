@@ -313,27 +313,27 @@ inline size_t align( size_t nb )
 }
 
 struct DimLess {
-  bool operator()( const FieldBase::Dim & lhs , const size_t rhs ) const
+  bool operator()( const FieldBase::Restriction & lhs , const size_t rhs ) const
     { return lhs < rhs ; }
 };
 
-const FieldBase::Dim & dimension( const FieldBase & field ,
+const FieldBase::Restriction & dimension( const FieldBase & field ,
                                   EntityType etype ,
                                   const unsigned num_part_ord ,
                                   const unsigned part_ord[] ,
                                   const char * const method )
 {
-  static const FieldBase::Dim empty ;
+  static const FieldBase::Restriction empty ;
 
-  const FieldBase::Dim * dim = & empty ;
+  const FieldBase::Restriction * dim = & empty ;
 
-  const std::vector<FieldBase::Dim> & dim_map = field.dimension();
-  const std::vector<FieldBase::Dim>::const_iterator iend = dim_map.end();
-        std::vector<FieldBase::Dim>::const_iterator ibeg = dim_map.begin();
+  const std::vector<FieldBase::Restriction> & dim_map = field.restrictions();
+  const std::vector<FieldBase::Restriction>::const_iterator iend = dim_map.end();
+        std::vector<FieldBase::Restriction>::const_iterator ibeg = dim_map.begin();
 
   for ( unsigned i = 0 ; i < num_part_ord && iend != ibeg ; ++i ) {
 
-    const size_t key = FieldBase::Dim::key_value( etype , part_ord[i] );
+    const size_t key = FieldBase::Restriction::key_value( etype , part_ord[i] );
 
     ibeg = std::lower_bound( ibeg , iend , key , DimLess() );
 
@@ -541,7 +541,7 @@ MeshBulkData::declare_kernel( const EntityType arg_entity_type ,
 
       unsigned value_size = 0 ;
 
-      const FieldBase::Dim & dim =
+      const FieldBase::Restriction & dim =
         dimension( field, arg_entity_type, key[0] - 1, key + 1, method);
 
       if ( dim.stride[0] ) { // Exists
@@ -549,7 +549,7 @@ MeshBulkData::declare_kernel( const EntityType arg_entity_type ,
         const unsigned scalar_size =
           NumericEnum<void>::size( field.numeric_type_ordinal() );
 
-        const unsigned field_num_dim = field.number_of_dimensions();
+        const unsigned field_num_dim = field.rank();
 
         value_size = scalar_size *
           ( field_num_dim ? dim.stride[ field_num_dim - 1 ] : 1 );

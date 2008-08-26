@@ -264,9 +264,9 @@ private:
   std::vector< PartRelation >  m_part_relations ;
   std::vector< FieldRelation > m_field_relations ;
 
-  void declare_field_stride( FieldBase & ,
-                             EntityType , const Part & ,
-                             const unsigned * );
+  void declare_field_restriction( FieldBase & ,
+                                  EntityType , const Part & ,
+                                  const size_t * );
   
   FieldBase & declare_field_base( const std::string & ,
                                   unsigned arg_scalar_type ,
@@ -291,7 +291,7 @@ private:
                               int arg_num_states ,
                               const char * required_by ) const ;
 
-  void clean_field_dimension();
+  void clean_field_restrictions();
 };
 
 void verify_parallel_consistency( const MeshMetaData & , ParallelMachine );
@@ -312,25 +312,27 @@ inline
 field_type * MeshMetaData::get_field( const std::string & name ,
                                       const char * required_by ) const
 {
-  typedef typename field_type::data_type Scalar ;
-  typedef typename field_type::array_dim_tag_1 Tag1 ;
-  typedef typename field_type::array_dim_tag_2 Tag2 ;
-  typedef typename field_type::array_dim_tag_3 Tag3 ;
-  typedef typename field_type::array_dim_tag_4 Tag4 ;
-  typedef typename field_type::array_dim_tag_5 Tag5 ;
-  typedef typename field_type::array_dim_tag_6 Tag6 ;
-  typedef typename field_type::array_dim_tag_7 Tag7 ;
+  typedef FieldTraits< field_type > Traits ;
+
+  typedef typename Traits::data_type Scalar ;
+  typedef typename Traits::tag1 Tag1 ;
+  typedef typename Traits::tag2 Tag2 ;
+  typedef typename Traits::tag3 Tag3 ;
+  typedef typename Traits::tag4 Tag4 ;
+  typedef typename Traits::tag5 Tag5 ;
+  typedef typename Traits::tag6 Tag6 ;
+  typedef typename Traits::tag7 Tag7 ;
 
   return static_cast< field_type * >(
     get_field_base( name ,
                     NumericEnum<Scalar>::value ,
-                    array_tag_descriptor<Tag1>() ,
-                    array_tag_descriptor<Tag2>() ,
-                    array_tag_descriptor<Tag3>() ,
-                    array_tag_descriptor<Tag4>() ,
-                    array_tag_descriptor<Tag5>() ,
-                    array_tag_descriptor<Tag6>() ,
-                    array_tag_descriptor<Tag7>() ,
+                    array_dim_tag<Tag1>() ,
+                    array_dim_tag<Tag2>() ,
+                    array_dim_tag<Tag3>() ,
+                    array_dim_tag<Tag4>() ,
+                    array_dim_tag<Tag5>() ,
+                    array_dim_tag<Tag6>() ,
+                    array_dim_tag<Tag7>() ,
                     -1 , required_by ) );
 }
 
@@ -339,25 +341,27 @@ inline
 field_type & MeshMetaData::declare_field( const std::string & name ,
                                           unsigned number_of_states )
 {
-  typedef typename field_type::data_type Scalar ;
-  typedef typename field_type::array_dim_tag_1 Tag1 ;
-  typedef typename field_type::array_dim_tag_2 Tag2 ;
-  typedef typename field_type::array_dim_tag_3 Tag3 ;
-  typedef typename field_type::array_dim_tag_4 Tag4 ;
-  typedef typename field_type::array_dim_tag_5 Tag5 ;
-  typedef typename field_type::array_dim_tag_6 Tag6 ;
-  typedef typename field_type::array_dim_tag_7 Tag7 ;
+  typedef FieldTraits< field_type > Traits ;
+
+  typedef typename Traits::data_type Scalar ;
+  typedef typename Traits::tag1 Tag1 ;
+  typedef typename Traits::tag2 Tag2 ;
+  typedef typename Traits::tag3 Tag3 ;
+  typedef typename Traits::tag4 Tag4 ;
+  typedef typename Traits::tag5 Tag5 ;
+  typedef typename Traits::tag6 Tag6 ;
+  typedef typename Traits::tag7 Tag7 ;
 
   return static_cast< field_type & >(
     declare_field_base( name ,
                         NumericEnum<Scalar>::value ,
-                        array_tag_descriptor<Tag1>() ,
-                        array_tag_descriptor<Tag2>() ,
-                        array_tag_descriptor<Tag3>() ,
-                        array_tag_descriptor<Tag4>() ,
-                        array_tag_descriptor<Tag5>() ,
-                        array_tag_descriptor<Tag6>() ,
-                        array_tag_descriptor<Tag7>() ,
+                        array_dim_tag<Tag1>() ,
+                        array_dim_tag<Tag2>() ,
+                        array_dim_tag<Tag3>() ,
+                        array_dim_tag<Tag4>() ,
+                        array_dim_tag<Tag5>() ,
+                        array_dim_tag<Tag6>() ,
+                        array_dim_tag<Tag7>() ,
                         number_of_states ) );
 }
 
@@ -368,7 +372,7 @@ field_type & MeshMetaData::put_field(
   EntityType   arg_entity_type ,
   const Part & arg_part )
 {
-  declare_field_stride( arg_field , arg_entity_type , arg_part , NULL );
+  declare_field_restriction( arg_field , arg_entity_type , arg_part , NULL );
   return arg_field ;
 }
 
@@ -379,8 +383,8 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
                                       const Part & arg_part ,
                                       unsigned     arg_n1 )
 {
-  unsigned stride[8] = { arg_n1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
-  declare_field_stride( arg_field, arg_entity_type, arg_part, stride );
+  size_t stride[8] = { arg_n1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
+  declare_field_restriction( arg_field, arg_entity_type, arg_part, stride );
   return arg_field ;
 }
 
@@ -392,9 +396,10 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
                                       unsigned     arg_n1 ,
                                       unsigned     arg_n2 )
 {
-  unsigned stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
-  ARRAY_STRIDE_FORTRAN_2( stride , arg_n1 , arg_n2 );
-  declare_field_stride( arg_field, arg_entity_type, arg_part, stride );
+  size_t stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
+  stride[1] = arg_n2 * (
+  stride[0] = arg_n1 );
+  declare_field_restriction( arg_field, arg_entity_type, arg_part, stride );
   return arg_field ;
 }
 
@@ -407,9 +412,11 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
                                       unsigned     arg_n2 ,
                                       unsigned     arg_n3 )
 {
-  unsigned stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
-  ARRAY_STRIDE_FORTRAN_3( stride , arg_n1 , arg_n2 , arg_n3 );
-  declare_field_stride( arg_field, arg_entity_type, arg_part, stride );
+  size_t stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
+  stride[2] = arg_n3 * (
+  stride[1] = arg_n2 * (
+  stride[0] = arg_n1 ));
+  declare_field_restriction( arg_field, arg_entity_type, arg_part, stride );
   return arg_field ;
 }
 
@@ -423,9 +430,12 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
                                       unsigned     arg_n3 ,
                                       unsigned     arg_n4 )
 {
-  unsigned stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
-  ARRAY_STRIDE_FORTRAN_4( stride , arg_n1 , arg_n2 , arg_n3 , arg_n4 );
-  declare_field_stride( arg_field, arg_entity_type, arg_part, stride );
+  size_t stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
+  stride[3] = arg_n4 * (
+  stride[2] = arg_n3 * (
+  stride[1] = arg_n2 * (
+  stride[0] = arg_n1 )));
+  declare_field_restriction( arg_field, arg_entity_type, arg_part, stride );
   return arg_field ;
 }
 
@@ -440,9 +450,13 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
                                       unsigned     arg_n4 ,
                                       unsigned     arg_n5 )
 {
-  unsigned stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
-  ARRAY_STRIDE_FORTRAN_5( stride , arg_n1 , arg_n2 , arg_n3 , arg_n4 , arg_n5 );
-  declare_field_stride( arg_field, arg_entity_type, arg_part, stride );
+  size_t stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
+  stride[4] = arg_n5 * (
+  stride[3] = arg_n4 * (
+  stride[2] = arg_n3 * (
+  stride[1] = arg_n2 * (
+  stride[0] = arg_n1 ))));
+  declare_field_restriction( arg_field, arg_entity_type, arg_part, stride );
   return arg_field ;
 }
 
@@ -458,9 +472,14 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
                                       unsigned     arg_n5 ,
                                       unsigned     arg_n6 )
 {
-  unsigned stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
-  ARRAY_STRIDE_FORTRAN_6(stride,arg_n1,arg_n2,arg_n3,arg_n4,arg_n5,arg_n6);
-  declare_field_stride( arg_field, arg_entity_type, arg_part, stride );
+  size_t stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
+  stride[5] = arg_n6 * (
+  stride[4] = arg_n5 * (
+  stride[3] = arg_n4 * (
+  stride[2] = arg_n3 * (
+  stride[1] = arg_n2 * (
+  stride[0] = arg_n1 )))));
+  declare_field_restriction( arg_field, arg_entity_type, arg_part, stride );
   return arg_field ;
 }
 
@@ -477,10 +496,15 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
                                       unsigned     arg_n6 ,
                                       unsigned     arg_n7 )
 {
-  unsigned stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
-  ARRAY_STRIDE_FORTRAN_7(stride,arg_n1,arg_n2,arg_n3,
-                                arg_n4,arg_n5,arg_n6,arg_n7);
-  declare_field_stride( arg_field, arg_entity_type, arg_part, stride );
+  size_t stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
+  stride[6] = arg_n7 * (
+  stride[5] = arg_n6 * (
+  stride[4] = arg_n5 * (
+  stride[3] = arg_n4 * (
+  stride[2] = arg_n3 * (
+  stride[1] = arg_n2 * (
+  stride[0] = arg_n1 ))))));
+  declare_field_restriction( arg_field, arg_entity_type, arg_part, stride );
   return arg_field ;
 }
 

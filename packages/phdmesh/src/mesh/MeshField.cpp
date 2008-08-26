@@ -31,7 +31,7 @@
 #include <sstream>
 #include <algorithm>
 
-#include <util/FixedArray.hpp>
+#include <util/SimpleArrayOps.hpp>
 #include <mesh/Types.hpp>
 #include <mesh/Field.hpp>
 #include <mesh/Part.hpp>
@@ -41,7 +41,7 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-const EntityDimension & EntityDimension::descriptor()
+const EntityDimension & EntityDimension::tag()
 { static const EntityDimension self ; return self ; }
 
 const char * EntityDimension::name() const
@@ -54,14 +54,14 @@ const char * field_state_name( FieldState s )
   static const char * name_list[] = {
     "StateNew" ,
     "StateOld" ,
+    "StateNM1" ,
     "StateNM2" ,
     "StateNM3" ,
     "StateNM4" ,
-    "StateNM5" ,
     "ERROR" };
 
   unsigned i = s ;
-  if ( StateNM4 < i ) { i = 6 ; }
+  if ( StateNM4 < i ) { i = MaximumFieldStates ; }
   return name_list[i] ;
 }
 
@@ -70,14 +70,15 @@ const char * field_state_name( FieldState s )
 namespace {
 
 struct DimLess {
-  bool operator()( const FieldBase::Dim & lhs , const unsigned rhs ) const
+  bool operator()( const FieldBase::Restriction & lhs ,
+                   const unsigned rhs ) const
     { return lhs < rhs ; }
 };
 
-std::vector<FieldBase::Dim>::const_iterator
-find( const std::vector<FieldBase::Dim> & v , unsigned key )
+std::vector<FieldBase::Restriction>::const_iterator
+find( const std::vector<FieldBase::Restriction> & v , unsigned key )
 {
-  std::vector<FieldBase::Dim>::const_iterator
+  std::vector<FieldBase::Restriction>::const_iterator
     i = std::lower_bound( v.begin() , v.end() , key , DimLess() );
 
   if ( i != v.end() && i->key != key ) { i = v.end(); }
@@ -85,9 +86,10 @@ find( const std::vector<FieldBase::Dim> & v , unsigned key )
   return i ;
 }
 
-void insert( std::vector<FieldBase::Dim> & v , const FieldBase::Dim & d )
+void insert( std::vector<FieldBase::Restriction> & v ,
+             const FieldBase::Restriction & d )
 {
-  std::vector<FieldBase::Dim>::iterator
+  std::vector<FieldBase::Restriction>::iterator
     i = std::lower_bound( v.begin() , v.end() , d );
 
   if ( i == v.end() || i->key != d.key ) { v.insert( i , d ); }
@@ -118,13 +120,13 @@ FieldBase::Field(
   m_mesh_meta_data( arg_mesh_meta_data ),
   m_mesh_meta_data_ordinal(0),
   m_scalar_type( scalar_type ),
-  m_num_dim( ( ! t1 ? 0 :
-             ( ! t2 ? 1 :
-             ( ! t3 ? 2 :
-             ( ! t4 ? 3 :
-             ( ! t5 ? 4 :
-             ( ! t6 ? 5 :
-             ( ! t7 ? 6 : 7 )))))))),
+  m_rank( ( ! t1 ? 0 :
+          ( ! t2 ? 1 :
+          ( ! t3 ? 2 :
+          ( ! t4 ? 3 :
+          ( ! t5 ? 4 :
+          ( ! t6 ? 5 :
+          ( ! t7 ? 6 : 7 )))))))),
   m_num_states( number_of_states ),
   m_this_state( state ),
   m_dim_map()
@@ -140,10 +142,10 @@ FieldBase::Field(
   m_dim_tags[6] = t7 ;
 }
 
-const std::vector<FieldBase::Dim> & FieldBase::dimension() const
+const std::vector<FieldBase::Restriction> & FieldBase::restrictions() const
 { return m_field_states[0]->m_dim_map ; }
 
-std::vector<FieldBase::Dim> & FieldBase::dimension()
+std::vector<FieldBase::Restriction> & FieldBase::restrictions()
 { return m_field_states[0]->m_dim_map ; }
 
 //----------------------------------------------------------------------
@@ -151,14 +153,12 @@ std::vector<FieldBase::Dim> & FieldBase::dimension()
 
 namespace {
 
-struct FieldLessName {
-  bool operator()( const FieldBase * lhs , const std::string & rhs ) const
-    {
-      const char * const l_name = lhs->name().c_str();
-      const char * const r_name = rhs.c_str();
-      return strcasecmp( l_name , r_name ) < 0 ;
-    }
-};
+bool equal_field_name( const FieldBase * lhs , const std::string & rhs )
+{
+  const char * const l_name = lhs->name().c_str();
+  const char * const r_name = rhs.c_str();
+  return 0 == strcasecmp( l_name , r_name );
+}
 
 }
 
@@ -220,13 +220,11 @@ MeshMetaData::get_field_base(
   // Find the field by name:
 
   const std::vector< FieldBase * >::const_iterator e = m_fields.end();
-  const std::vector< FieldBase * >::const_iterator b = m_fields.begin();
+        std::vector< FieldBase * >::const_iterator j = m_fields.begin();
 
-  const std::vector< FieldBase * >::const_iterator j =
-    std::lower_bound( b, e, arg_name, FieldLessName() );
+  for ( ; j != e && ! equal_field_name( *j , arg_name ) ; ++j );
 
-  FieldBase * const field =
-     ( j != e && (*j)->name() == arg_name ) ? *j : NULL ;
+  FieldBase * const field = ( j != e ) ? *j : NULL ;
 
   // If found check for compatibility:
 
@@ -311,7 +309,7 @@ MeshMetaData::declare_field_base(
   static const char method[] = "phdmesh::MeshMetaData::declare_field" ;
 
   static const char reserved_state_suffix[6][5] = {
-    "_OLD" , "_NM1" , "_NM2" , "_NM3" , "_NM4" , "_NM5" };
+    "_OLD" , "_N" , "_NM1" , "_NM2" , "_NM3" , "_NM4" };
 
   assert_not_committed( method );
 
@@ -364,14 +362,15 @@ MeshMetaData::declare_field_base(
     for ( unsigned i = 0 ; i < arg_num_states ; ++i ) {
 
       const std::vector< FieldBase * >::iterator e = m_fields.end();
-      const std::vector< FieldBase * >::iterator b = m_fields.begin();
+            std::vector< FieldBase * >::iterator j = m_fields.begin();
 
-      const std::vector< FieldBase * >::iterator
-        j = std::lower_bound( b, e, field_names[i], FieldLessName() );
+      for ( ; j != e && ! equal_field_name( *j , field_names[i] ) ; ++j );
 
-      if ( j != e && (*j)->name() == field_names[i] ) {
+      if ( j != e ) {
         std::string msg( method );
-        msg.append(" CATASTROPHIC INTERNAL LOGIC ERROR FOR NAMES" );
+        msg.append(" CATASTROPHIC INTERNAL LOGIC ERROR FOR FIELD NAME \"" );
+        msg.append( field_names[i] );
+        msg.append( "\"");
         throw std::logic_error( msg );
       }
 
@@ -382,7 +381,9 @@ MeshMetaData::declare_field_base(
                             arg_t4 , arg_t5 , arg_t6 , arg_t7 ,
                             arg_num_states , (FieldState) i );
 
-      m_fields.insert( j , f[i] );
+      f[i]->m_mesh_meta_data_ordinal = m_fields.size();
+
+      m_fields.push_back( f[i] );
     }
 
     field = f[0] ;
@@ -391,21 +392,6 @@ MeshMetaData::declare_field_base(
       FieldBase & tmp = * f[i] ;
       for ( unsigned k = 0 ; k < arg_num_states ; ++k ) {
         tmp.m_field_states[k] = f[k] ;
-      }
-    }
-
-    // Update ordinals to reflect the newly inserted fields
-    {
-      const std::vector< FieldBase *>::iterator e = m_fields.end();
-            std::vector< FieldBase *>::iterator j = m_fields.begin();
-      for ( unsigned k = 0 ; j != e ; ++j , ++k ) {
-        FieldBase & tmp = **j ;
-        tmp.m_mesh_meta_data_ordinal = k ;
-        if ( tmp.m_field_states[0]->m_mesh_meta_data_ordinal + tmp.m_this_state != k ) {
-          std::string msg( method );
-          msg.append(" CATASTROPHIC INTERNAL LOGIC ERROR FOR ORDINALS" );
-          throw std::logic_error(msg);
-        }
       }
     }
   }
@@ -452,10 +438,10 @@ namespace {
 
 void print_field_dim( std::ostream & msg ,
                       const FieldBase & f ,
-                      const FieldBase::Dim & d )
+                      const FieldBase::Restriction & d )
 {
   const Part   & p = f.mesh_meta_data().get_part( d.ordinal() );
-  const unsigned n = f.number_of_dimensions();
+  const unsigned n = f.rank();
 
   msg << "( " << entity_type_name( d.type() );
   msg << " , " ;
@@ -475,8 +461,8 @@ void print_field_dim( std::ostream & msg ,
 void assert_field_dimension_compatible(
   const char * const method ,
   const FieldBase & field ,
-  const FieldBase::Dim & a ,
-  const FieldBase::Dim & b )
+  const FieldBase::Restriction & a ,
+  const FieldBase::Restriction & b )
 {
   if ( Compare< MaximumFieldDimension >::not_equal( a.stride , b.stride ) ) {
     std::ostringstream msg ;
@@ -506,24 +492,24 @@ void assert_field_dimension_compatible(
 // If subset exists then replace it.
 // If exists or superset exists then do nothing.
 
-void MeshMetaData::declare_field_stride(
-  FieldBase      & arg_field ,
-  EntityType       arg_entity_type ,
-  const Part     & arg_part ,
-  const unsigned * arg_stride )
+void MeshMetaData::declare_field_restriction(
+  FieldBase    & arg_field ,
+  EntityType     arg_entity_type ,
+  const Part   & arg_part ,
+  const size_t * arg_stride )
 {
-  static const char method[] = "phdmesh::MeshMetaData::declare_field_dimension" ;
+  static const char method[] =
+    "phdmesh::MeshMetaData::declare_field_restriction" ;
 
   assert_not_committed( method );
   assert_same_mesh_meta_data( method , arg_field.m_mesh_meta_data );
   assert_same_mesh_meta_data( method , arg_part.m_mesh_meta_data );
 
-  FieldBase::Dim tmp( arg_entity_type , arg_part.mesh_meta_data_ordinal() );
+  FieldBase::Restriction tmp( arg_entity_type ,
+                              arg_part.mesh_meta_data_ordinal() );
 
-  if ( arg_field.m_num_dim ) {
-    for ( unsigned j = 0 ; j < arg_field.m_num_dim ; ++j ) {
-      tmp.stride[j] = arg_stride[j] ;
-    }
+  if ( arg_field.m_rank ) {
+    Copy<7>( tmp.stride , arg_stride );
   }
   else {
     tmp.stride[0] = 1 ; // For scalar fields
@@ -535,10 +521,10 @@ void MeshMetaData::declare_field_stride(
 
   bool redundant  = false ;
 
-  std::vector<FieldBase::Dim> & dim_map =
+  std::vector<FieldBase::Restriction> & dim_map =
     arg_field.m_field_states[0]->m_dim_map ;
 
-  std::vector<FieldBase::Dim>::iterator i ;
+  std::vector<FieldBase::Restriction>::iterator i ;
 
   for ( i = dim_map.begin() ; i != dim_map.end() ; ) {
     bool remove = false ;
@@ -574,20 +560,20 @@ void MeshMetaData::declare_field_stride(
 // If a part and one of its subset parts show up in the dimension map
 // verify compatibility of dimensions and delete the subset part.
 
-void MeshMetaData::clean_field_dimension()
+void MeshMetaData::clean_field_restrictions()
 {
-  static const char method[] = "phdmesh::MeshMetaData::clean_field_dimension" ;
+  static const char method[] = "phdmesh::MeshMetaData::clean_field_restrictions" ;
   const int zero = 0 ;
 
   for ( std::vector<FieldBase *>::iterator
         f = m_fields.begin() ; f != m_fields.end() ; ++f ) {
     FieldBase & field = **f ;
 
-    std::vector<FieldBase::Dim> & dim_map = field.m_dim_map ;
+    std::vector<FieldBase::Restriction> & dim_map = field.m_dim_map ;
     std::vector<int> flag( dim_map.size() , zero );
 
     for ( size_t i = 0 ; i < dim_map.size() ; ++i ) {
-      const FieldBase::Dim & dim = dim_map[i] ;
+      const FieldBase::Restriction & dim = dim_map[i] ;
       const EntityType type = dim.type();
       const Part     & part = get_part( dim.ordinal() );
       const PartSet  & sub = part.subsets();
@@ -604,7 +590,7 @@ void MeshMetaData::clean_field_dimension()
 
     for ( size_t i = dim_map.size() ; i-- ; ) {
       if ( flag[i] ) {
-        std::vector<FieldBase::Dim>::iterator j = dim_map.begin();
+        std::vector<FieldBase::Restriction>::iterator j = dim_map.begin();
         std::advance( j , i );
         dim_map.erase( j );
       }
@@ -616,22 +602,22 @@ void MeshMetaData::clean_field_dimension()
 //----------------------------------------------------------------------
 // This part or any superset of this part
 
-const FieldBase::Dim &
-FieldBase::dimension( EntityType etype , const Part & part ) const
+const FieldBase::Restriction &
+FieldBase::restriction( EntityType etype , const Part & part ) const
 {
-  static const FieldBase::Dim empty ;
+  static const FieldBase::Restriction empty ;
 
-  const std::vector<FieldBase::Dim> & dim_map = dimension();
-  const std::vector<FieldBase::Dim>::const_iterator ie = dim_map.end() ;
-        std::vector<FieldBase::Dim>::const_iterator i ;
+  const std::vector<FieldBase::Restriction> & dim_map = restrictions();
+  const std::vector<FieldBase::Restriction>::const_iterator ie = dim_map.end() ;
+        std::vector<FieldBase::Restriction>::const_iterator i ;
 
   const PartSet::const_iterator ipe = part.supersets().end();
         PartSet::const_iterator ip  = part.supersets().begin() ;
 
-  unsigned key = Dim::key_value( etype , part.mesh_meta_data_ordinal() );
+  size_t key = Restriction::key_value( etype , part.mesh_meta_data_ordinal() );
 
   while ( ie == ( i = find( dim_map , key ) ) && ipe != ip ) {
-    key = Dim::key_value( etype , (*ip)->mesh_meta_data_ordinal() );
+    key = Restriction::key_value( etype , (*ip)->mesh_meta_data_ordinal() );
     ++ip ;
   }
 
@@ -642,13 +628,13 @@ unsigned FieldBase::max_size( EntityType etype ) const
 {
   unsigned max = 0 ;
 
-  const std::vector<FieldBase::Dim> & dim_map = dimension();
-  const std::vector<FieldBase::Dim>::const_iterator ie = dim_map.end();
-        std::vector<FieldBase::Dim>::const_iterator i  = dim_map.begin();
+  const std::vector<FieldBase::Restriction> & dim_map = restrictions();
+  const std::vector<FieldBase::Restriction>::const_iterator ie= dim_map.end();
+        std::vector<FieldBase::Restriction>::const_iterator i = dim_map.begin();
 
   for ( ; i != ie ; ++i ) {
     if ( i->type() == etype ) {
-      const unsigned len = m_num_dim ? i->stride[ m_num_dim - 1 ] : 1 ;
+      const unsigned len = m_rank ? i->stride[ m_rank - 1 ] : 1 ;
       if ( max < len ) { max = len ; }
     }
   }
@@ -680,10 +666,10 @@ std::ostream & print( std::ostream & s ,
                       const char * const b ,
                       const FieldBase & field )
 {
-  const std::vector<FieldBase::Dim> & dim_map = field.dimension();
+  const std::vector<FieldBase::Restriction> & dim_map = field.restrictions();
   s << field ;
   s << " {" ;
-  for ( std::vector<FieldBase::Dim>::const_iterator
+  for ( std::vector<FieldBase::Restriction>::const_iterator
         i = dim_map.begin() ; i != dim_map.end() ; ++i ) {
     s << std::endl << b << "  " ;
     print_field_dim( s , field , *i );

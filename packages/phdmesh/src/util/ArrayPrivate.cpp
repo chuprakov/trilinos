@@ -22,13 +22,11 @@
 /*------------------------------------------------------------------------*/
 /**
  * @author H. Carter Edwards  <hcedwar@sandia.gov>
- * @date   June 2008
  */
 
 #include <stdlib.h>
 #include <stdexcept>
 #include <sstream>
-
 
 #define ARRAY_BOUNDS_CHECKING
 
@@ -38,41 +36,46 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-void array_stride_tag_natural_tag(
-  const int rank , const ArrayDimTag ** const dst ,
-                   const ArrayDimTag * const * const src )
+ArrayDimTag::~ArrayDimTag() {}
+
+std::string ArrayDimTag::to_string( size_t n , unsigned i ) const
 {
-  for ( int i = 0 ; i < rank ; ++i ) { dst[i] = src[ ( rank - 1 ) - i ]; }
+  array_check_index( n , i );
+  std::ostringstream s ;
+  s << i ;
+  return s.str();
 }
 
-void array_stride_tag_fortran_tag(
-  const int rank , const ArrayDimTag ** const dst ,
-                   const ArrayDimTag * const * const src )
+unsigned ArrayDimTag::to_index( size_t n , const std::string & s ) const
 {
-  for ( int i = 0 ; i < rank ; ++i ) { dst[i] = src[i] ; }
+  const int i = atoi( s.c_str() );
+  array_check_index( n , i );
+  return i ;
 }
 
-size_t array_stride_size( const int rank , const size_t * const stride )
+//----------------------------------------------------------------------
+
+size_t array_stride_size( unsigned rank , const size_t * const stride )
 {
   return 0 < rank ? stride[ rank - 1 ] : 0 ;
 }
 
-void array_stride_from_natural_sizes(
-  const int rank , size_t * const stride , const size_t * const size )
+void array_stride_from_natural_dimensions(
+  unsigned rank , size_t * const stride , const unsigned * const size )
 {
   size_t n = 1 ;
   for ( int i = 0 ; i < rank ; ++i ) { stride[i] = n *= size[(rank-1)-i]; }
 }
 
-void array_stride_from_fortran_sizes(
-  const int rank , size_t * const stride , const size_t * const size )
+void array_stride_from_fortran_dimensions(
+  unsigned rank , size_t * const stride , const unsigned * const size )
 {
   size_t n = 1 ;
   for ( int i = 0 ; i < rank ; ++i ) { stride[i] = n *= size[i] ; }
 }
 
-void array_stride_to_natural_sizes(
-  const int rank , const size_t * const stride , size_t * const size )
+void array_stride_to_natural_dimensions(
+  unsigned rank , const size_t * const stride , unsigned * const size )
 {
   if ( 0 < rank ) {
     size[ rank - 1 ] = stride[0] ;
@@ -82,8 +85,8 @@ void array_stride_to_natural_sizes(
   }
 }
 
-void array_stride_to_fortran_sizes(
-  const int rank , const size_t * const stride , size_t * const size )
+void array_stride_to_fortran_dimensions(
+  unsigned rank , const size_t * const stride , unsigned * const size )
 {
   if ( 0 < rank ) {
     size[0] = stride[0] ;
@@ -93,9 +96,9 @@ void array_stride_to_fortran_sizes(
   }
 }
 
-void array_stride_to_natural_index(
-  const int rank , const size_t * const stride ,
-  const int offset , int * const index )
+void array_stride_to_natural_indices(
+  unsigned rank , const size_t * const stride ,
+  size_t offset , unsigned * const index )
 {
   if ( 0 < rank ) {
     int tmp = offset ;
@@ -107,9 +110,9 @@ void array_stride_to_natural_index(
   }
 }
 
-void array_stride_to_fortran_index(
-  const int rank , const size_t * const stride ,
-  const int offset , int * const index )
+void array_stride_to_fortran_indices(
+  unsigned rank , const size_t * const stride ,
+  size_t offset , unsigned * const index )
 {
   if ( 0 < rank ) {
     int tmp = offset ;
@@ -123,52 +126,61 @@ void array_stride_to_fortran_index(
 
 //----------------------------------------------------------------------
 
-ArrayDimTag::~ArrayDimTag() {}
-
-std::string ArrayDimTag::to_string( size_t n , int i ) const
+void array_check_rank( unsigned rank , unsigned test_rank )
 {
-  array_bounds_checking( n , i );
-  std::ostringstream s ;
-  s << i ;
-  return s.str();
-}
-
-int ArrayDimTag::to_index( size_t n , const std::string & s ) const
-{
-  const int i = atoi( s.c_str() );
-  array_bounds_checking( n , i );
-  return i ;
-}
-
-void array_bounds_checking( int arg_size , int arg_ord )
-{
-  if ( arg_ord < 0 || arg_size <= arg_ord ) {
+  if ( rank != test_rank ) {
     std::ostringstream msg ;
-    msg << "ARRAY BOUNDS ERROR: Array[" << arg_size ;
-    msg << "] ordinal error " << arg_ord ;
-    msg << " ; TO DEBUG SET BREAKPOINT IN FILE " ;
+    msg << "ARRAY RANK ERROR: ( Rank = " << rank ;
+    msg << " ) <= ( test_rank = " << test_rank ;
+    msg << " ); THROWN IN FILE " ;
     msg << __FILE__ << " AT LINE " << __LINE__ ;
     throw std::runtime_error( msg.str() );
   }
 }
 
-void array_bounds_checking( const bool arg_natural ,
-                            const int arg_rank ,
-                            const size_t * const arg_stride ,
-                            const int arg_i1 ,
-                            const int arg_i2 ,
-                            const int arg_i3 ,
-                            const int arg_i4 ,
-                            const int arg_i5 ,
-                            const int arg_i6 ,
-                            const int arg_i7 ,
-                            const int arg_i8 )
+void array_check_ordinal( unsigned rank , unsigned test_ordinal )
 {
-  const int indices[8] =
+  if ( rank <= test_ordinal ) {
+    std::ostringstream msg ;
+    msg << "ARRAY ORDINAL ERROR: ( Rank = " << rank ;
+    msg << " ) <= ( ordinal = " << test_ordinal ;
+    msg << " ); THROWN IN FILE " ;
+    msg << __FILE__ << " AT LINE " << __LINE__ ;
+    throw std::runtime_error( msg.str() );
+  }
+}
+
+void array_check_index( size_t size , unsigned test_ordinal )
+{
+  if ( size <= test_ordinal ) {
+    std::ostringstream msg ;
+    msg << "ARRAY INDEX ERROR: ( Size = " << size ;
+    msg << " ) <= ( ordinal = " << test_ordinal ;
+    msg << " ); THROWN IN FILE " ;
+    msg << __FILE__ << " AT LINE " << __LINE__ ;
+    throw std::runtime_error( msg.str() );
+  }
+}
+
+//----------------------------------------------------------------------
+
+void array_check_indices( const bool arg_natural ,
+                          const unsigned arg_rank ,
+                          const size_t * const arg_stride ,
+                          const unsigned arg_i1 ,
+                          const unsigned arg_i2 ,
+                          const unsigned arg_i3 ,
+                          const unsigned arg_i4 ,
+                          const unsigned arg_i5 ,
+                          const unsigned arg_i6 ,
+                          const unsigned arg_i7 ,
+                          const unsigned arg_i8 )
+{
+  const unsigned indices[8] =
     { arg_i1 , arg_i2 , arg_i3 , arg_i4 ,
       arg_i5 , arg_i6 , arg_i7 , arg_i8 };
 
-  int sizes[8] ;
+  size_t sizes[8] ;
 
   if ( arg_natural ) {
     for ( int ord = 0 ; ord < arg_rank ; ++ord ) {
@@ -185,23 +197,23 @@ void array_bounds_checking( const bool arg_natural ,
   bool ok = true ;
 
   for ( int ord = 0 ; ok && ord < arg_rank ; ++ord ) {
-    ok = 0 <= indices[ord] && indices[ord] < sizes[ord] ;
+    ok = indices[ord] < sizes[ord] ;
   }
 
   if ( ! ok ) {
     std::ostringstream msg ;
-    msg << "ARRAY BOUNDS ERROR : Array(" ;
+    msg << "ARRAY INDICES ERROR : Array(" ;
     for ( int ord = 0 ; ord < arg_rank ; ++ord ) {
       if ( ord ) { msg << "," ; }
       msg << sizes[ord] ;
     }
-    msg << ") index error (" ;
+    msg << ") given index (" ;
     for ( int ord = 0 ; ord < arg_rank ; ++ord ) {
       if ( ord ) { msg << "," ; }
       msg << indices[ord] ;
     }
     msg << ")" ;
-    msg << " ; TO DEBUG SET BREAKPOINT IN FILE " ;
+    msg << " ; THROWN IN FILE " ;
     msg << __FILE__ << " AT LINE " << __LINE__ ;
     throw std::runtime_error( msg.str() );
   }

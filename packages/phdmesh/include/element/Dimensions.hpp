@@ -40,7 +40,7 @@ namespace phdmesh {
 class ElementNode : public ArrayDimTag {
 public:
   const char * name() const ;
-  static const ElementNode & descriptor();
+  static const ElementNode & tag();
 private:
   ElementNode() {}
   ElementNode( const ElementNode & );
@@ -74,7 +74,7 @@ declare_element_node_pointer_field(
 
 struct QuadratureTag : public ArrayDimTag {
   const char * name() const ;
-  static const QuadratureTag & descriptor();
+  static const QuadratureTag & tag();
 private:
   QuadratureTag() {}
   QuadratureTag( const QuadratureTag & );
@@ -85,7 +85,7 @@ private:
 
 struct BasisTag : public ArrayDimTag {
   const char * name() const ;
-  static const BasisTag & descriptor();
+  static const BasisTag & tag();
 private:
   BasisTag() {}
   BasisTag( const BasisTag & );

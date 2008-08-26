@@ -55,20 +55,20 @@
 namespace phdmesh {
 namespace exodus {
 
-const GlobalLocalIndex & GlobalLocalIndex::descriptor()
+const GlobalLocalIndex & GlobalLocalIndex::tag()
 { static const GlobalLocalIndex self ; return self ; }
 
 const char * GlobalLocalIndex::name() const
 { static const char n[] = "GlobalLocalIndex" ; return n ; }
 
-std::string GlobalLocalIndex::to_string( size_t size , int index ) const
+std::string GlobalLocalIndex::to_string( size_t size , unsigned index ) const
 {
   static const char g[] = "global" ;
   static const char l[] = "local" ;
 
-  if ( 2 != size || ( (int) size ) <= index ) {
+  if ( 2 != size || size <= index ) {
     std::ostringstream msg ;
-    msg << descriptor().name();
+    msg << tag().name();
     msg << " ERROR Size = " << size ;
     msg << " Index = " << index ;
     throw std::runtime_error( msg.str() );
@@ -77,7 +77,7 @@ std::string GlobalLocalIndex::to_string( size_t size , int index ) const
   return std::string( index ? g : l );
 }
 
-int GlobalLocalIndex::to_index( size_t size , const std::string & arg )
+unsigned GlobalLocalIndex::to_index( size_t size , const std::string & arg )
   const
 {
   static const char g[] = "global" ;
@@ -88,7 +88,7 @@ int GlobalLocalIndex::to_index( size_t size , const std::string & arg )
 
   if ( 2 == index ) {
     std::ostringstream msg ;
-    msg << descriptor().name();
+    msg << tag().name();
     msg << " ERROR size = " << size ;
     msg << " label = " << arg ;
     throw std::runtime_error( msg.str() );
@@ -97,7 +97,7 @@ int GlobalLocalIndex::to_index( size_t size , const std::string & arg )
   return index ;
 }
 
-const ElementAttributes & ElementAttributes::descriptor()
+const ElementAttributes & ElementAttributes::tag()
 { static const ElementAttributes self ; return self ; }
 
 const char * ElementAttributes::name() const
@@ -1144,18 +1144,18 @@ std::string variable_name( EntityType        r ,
                            const FieldBase & f ,
                            const unsigned    k )
 {
-  const unsigned f_num_dim = f.number_of_dimensions();
+  const unsigned f_num_dim = f.rank();
 
   std::string name( f.name() );
 
   if ( f_num_dim ) {
-    size_t sizes[   MaximumFieldDimension ];
-    int    indices[ MaximumFieldDimension ];
+    unsigned sizes[   MaximumFieldDimension ];
+    unsigned indices[ MaximumFieldDimension ];
 
-    const FieldBase::Dim & dim = f.dimension( r , p );
+    const FieldBase::Restriction & dim = f.restriction( r , p );
 
-    array_stride_to_natural_sizes( f_num_dim , dim.stride , sizes );
-    array_stride_to_natural_index( f_num_dim , dim.stride , k , indices );
+    array_stride_to_natural_dimensions( f_num_dim , dim.stride , sizes );
+    array_stride_to_natural_indices( f_num_dim , dim.stride , k , indices );
 
     for ( unsigned i = 0 ; i < f_num_dim ; ++i ) {
 
@@ -1182,12 +1182,12 @@ void variable_add( EntityType entity_type ,
                    std::vector< FieldIO >              & spec )
 {
   const unsigned size_begin = var_names.size();
-  const unsigned field_num_dim = field.number_of_dimensions();
+  const unsigned field_num_dim = field.rank();
 
   for ( unsigned j = 0 ; j < parts.size() ; ++j ) {
     Part & p = parts[j]->m_part ;
 
-    const FieldBase::Dim & d = field.dimension( entity_type , p );
+    const FieldBase::Restriction & d = field.restriction( entity_type , p );
 
     if ( d.stride[0] ) { // Exists
       const unsigned n = array_stride_size( field_num_dim , d.stride );
@@ -1220,7 +1220,7 @@ void variable_add( EntityType entity_type ,
 
     Part & p = parts[j]->m_part ;
 
-    const FieldBase::Dim & d = field.dimension( entity_type , p );
+    const FieldBase::Restriction & d = field.restriction( entity_type , p );
     const unsigned n = array_stride_size( field_num_dim , d.stride );
 
     for ( unsigned k = 0 ; k < n ; ++k ) {
@@ -1380,8 +1380,8 @@ FileOutput::FileOutput(
         i = arg_fields.begin() ; i != arg_fields.end() ; ++i ) {
 
     const FieldBase & f = **i ;
-    const unsigned f_num_dim = f.number_of_dimensions();
-    const FieldBase::Dim & d = f.dimension( Node , universal_part );
+    const unsigned f_num_dim = f.rank();
+    const FieldBase::Restriction & d = f.restriction( Node , universal_part );
 
     if ( d.stride[0] ) {
       FieldIO tmp ;
@@ -1420,9 +1420,9 @@ FileOutput::FileOutput(
 
     bool is_element_var = false ;
 
-    for ( std::vector<FieldBase::Dim>::const_iterator
-          j =  f.dimension().begin() ;
-          j != f.dimension().end() && ! is_element_var ; ++j ) {
+    for ( std::vector<FieldBase::Restriction>::const_iterator
+          j =  f.restrictions().begin() ;
+          j != f.restrictions().end() && ! is_element_var ; ++j ) {
 
       is_element_var = entity_type( j->key ) == Element ;
     }
@@ -2539,8 +2539,8 @@ FileInput::FileInput(
         i = arg_fields.begin() ; i != arg_fields.end() ; ++i ) {
 
     const FieldBase  & f = **i ;
-    const FieldBase::Dim & d = f.dimension( Node , universal_part );
-    const unsigned f_num_dim = f.number_of_dimensions();
+    const FieldBase::Restriction & d = f.restriction( Node , universal_part );
+    const unsigned f_num_dim = f.rank();
 
     if ( d.stride[0] ) {
       FieldIO tmp ;
@@ -2568,9 +2568,9 @@ FileInput::FileInput(
 
     bool is_element_var = false ;
 
-    for ( std::vector<FieldBase::Dim>::const_iterator
-          j =  f.dimension().begin() ;
-          j != f.dimension().end() && ! is_element_var ; ++j ) {
+    for ( std::vector<FieldBase::Restriction>::const_iterator
+          j =  f.restrictions().begin() ;
+          j != f.restrictions().end() && ! is_element_var ; ++j ) {
 
       is_element_var = entity_type( j->key ) == Element ;
     }

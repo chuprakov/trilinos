@@ -32,7 +32,7 @@
 #include <iosfwd>
 #include <string>
 #include <util/Parallel.hpp>
-#include <util/FixedArray.hpp>
+#include <util/SimpleArrayOps.hpp>
 
 //------------------------------------------------------------------------
 

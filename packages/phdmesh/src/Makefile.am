@@ -95,7 +95,7 @@ MESH = \
 
 UTIL_H = \
 	$(srcdir)/../include/util/Array.hpp \
-	$(srcdir)/../include/util/ArrayHelper.hpp \
+	$(srcdir)/../include/util/ArrayPrivate.hpp \
 	$(srcdir)/../include/util/ArrayVector.hpp \
 	$(srcdir)/../include/util/Basics.hpp \
 	$(srcdir)/../include/util/CSet.hpp \
@@ -121,7 +121,7 @@ UTIL_H = \
 	$(srcdir)/../include/util/ValueIO.hpp
 
 UTIL = \
-	$(srcdir)/util/Array.cpp \
+	$(srcdir)/util/ArrayPrivate.cpp \
 	$(srcdir)/util/CSet.cpp \
 	$(srcdir)/util/FixedPoolAlloc.cpp \
 	$(srcdir)/util/NamedValue.cpp \

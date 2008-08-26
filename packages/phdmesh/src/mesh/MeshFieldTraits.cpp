@@ -78,73 +78,73 @@ const char * get_string( const char * const func ,
 
 //----------------------------------------------------------------------
 
-const Cartesian & Cartesian::descriptor()
+const Cartesian & Cartesian::tag()
 { static const Cartesian self ; return self ; }
 
 const char * Cartesian::name() const
 { static const char n[] = "Cartesian" ; return n ; }
 
-std::string Cartesian::to_string( size_t size , int index ) const
+std::string Cartesian::to_string( size_t size , unsigned index ) const
 {
   static const char x[] = "x" ;
   static const char y[] = "y" ;
   static const char z[] = "z" ;
   static const char * label[] = { x , y , z };
 
-  return std::string( get_string( Cartesian::descriptor().name() ,
+  return std::string( get_string( Cartesian::tag().name() ,
                                   3 , label , size , index ) );
 }
 
-int Cartesian::to_index( size_t size , const std::string & arg ) const
+unsigned Cartesian::to_index( size_t size , const std::string & arg ) const
 {
   static const char x[] = "x" ;
   static const char y[] = "y" ;
   static const char z[] = "z" ;
   static const char * label[] = { x , y , z };
 
-  return get_index( Cartesian::descriptor().name() ,
+  return get_index( Cartesian::tag().name() ,
                     3 , label , size , arg.c_str() );
 }
 
 //----------------------------------------------------------------------
 
-const Cylindrical & Cylindrical::descriptor()
+const Cylindrical & Cylindrical::tag()
 { static const Cylindrical self ; return self ; }
 
 const char * Cylindrical::name() const
 { static const char n[] = "Cylindrical" ; return n ; }
 
-std::string Cylindrical::to_string( size_t size , int index ) const
+std::string Cylindrical::to_string( size_t size , unsigned index ) const
 {
   static const char r[] = "r" ;
   static const char a[] = "a" ;
   static const char z[] = "z" ;
   static const char * label[] = { r , a , z };
 
-  return std::string( get_string( Cylindrical::descriptor().name() ,
+  return std::string( get_string( Cylindrical::tag().name() ,
                                   3 , label , size , index ) );
 }
 
-int Cylindrical::to_index( size_t size , const std::string & arg ) const
+unsigned Cylindrical::to_index( size_t size , const std::string & arg ) const
 {
   static const char r[] = "r" ;
   static const char a[] = "a" ;
   static const char z[] = "z" ;
   static const char * label[] = { r , a , z };
 
-  return get_index( Cylindrical::descriptor().name() ,
+  return get_index( Cylindrical::tag().name() ,
                     3 , label , size , arg.c_str() );
 }
 
 //----------------------------------------------------------------------
 
-const FullTensor & FullTensor::descriptor()
+const FullTensor & FullTensor::tag()
 { static const FullTensor self ; return self ; }
 
 const char * FullTensor::name() const
 { static const char n[] = "FullTensor" ; return n ; }
 
-std::string FullTensor::to_string( size_t size , int index ) const
+std::string FullTensor::to_string( size_t size , unsigned index ) const
 {
   static const char xx[] = "xx" ;
   static const char yx[] = "yx" ;
@@ -157,11 +157,11 @@ std::string FullTensor::to_string( size_t size , int index ) const
   static const char zz[] = "zz" ;
   static const char * label[] = { xx , yx , zx , xy , yy , zy , xz , yz , zz };
 
-  return std::string( get_string( FullTensor::descriptor().name() ,
+  return std::string( get_string( FullTensor::tag().name() ,
                                   9 , label , size , index ) );
 }
 
-int FullTensor::to_index( size_t size , const std::string & arg ) const
+unsigned FullTensor::to_index( size_t size , const std::string & arg ) const
 {
   static const char xx[] = "xx" ;
   static const char yx[] = "yx" ;
@@ -174,19 +174,19 @@ int FullTensor::to_index( size_t size , const std::string & arg ) const
   static const char zz[] = "zz" ;
   static const char * label[] = { xx , yx , zx , xy , yy , zy , xz , yz , zz };
 
-  return get_index( FullTensor::descriptor().name() ,
+  return get_index( FullTensor::tag().name() ,
                     9 , label , size , arg.c_str() );
 }
 
 //----------------------------------------------------------------------
 
-const SymmetricTensor & SymmetricTensor::descriptor()
+const SymmetricTensor & SymmetricTensor::tag()
 { static const SymmetricTensor self ; return self ; }
 
 const char * SymmetricTensor::name() const
 { static const char n[] = "SymmetricTensor" ; return n ; }
 
-std::string SymmetricTensor::to_string( size_t size , int index ) const
+std::string SymmetricTensor::to_string( size_t size , unsigned index ) const
 {
   static const char xx[] = "xx" ;
   static const char yx[] = "yx" ;
@@ -199,11 +199,11 @@ std::string SymmetricTensor::to_string( size_t size , int index ) const
   static const char zz[] = "zz" ;
   static const char * label[] = { xx , yx , zx , xy , yy , zy , xz , yz , zz };
 
-  return std::string( get_string( SymmetricTensor::descriptor().name() ,
+  return std::string( get_string( SymmetricTensor::tag().name() ,
                                   9 , label , size , index ) );
 }
 
-int SymmetricTensor::to_index( size_t size , const std::string & arg ) const
+unsigned SymmetricTensor::to_index( size_t size , const std::string & arg ) const
 {
   static const char xx[] = "xx" ;
   static const char yy[] = "yy" ;
@@ -215,7 +215,7 @@ int SymmetricTensor::to_index( size_t size , const std::string & arg ) const
 
   static const char * label[] = { xx , yy , zz , xy , yz , xz };
 
-  return get_index( SymmetricTensor::descriptor().name() ,
+  return get_index( SymmetricTensor::tag().name() ,
                     6 , label , size , arg.c_str() );
 }
 

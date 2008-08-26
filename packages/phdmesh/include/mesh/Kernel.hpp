@@ -124,7 +124,6 @@ public:
    *  penalty for filling a vector of Part pointers is too costly.
    */
   std::pair<const unsigned *, const unsigned *>
-// PairIter<const unsigned *>
     superset_part_ordinals() const
     {
       const unsigned * const k = key();
@@ -152,30 +151,21 @@ private:
 
   static void zero_fields( Kernel & k_dst , unsigned i_dst );
 
-
   template< class field_type >
   friend
-  typename field_type::KernelArray
-  field_array( const field_type & f , const Kernel & k );
-
-  template< class field_type >
-  friend
-  typename field_type::EntityArray
-  field_array( const field_type & f , const Entity & e );
-
-
-  template< class field_type >
-  friend
-  typename field_type::data_type *
+  typename FieldTraits< field_type >::data_type *
   field_data( const field_type & f , const Kernel & k );
 
   template< class field_type >
   friend
-  typename field_type::data_type *
+  typename FieldTraits< field_type >::data_type *
   field_data( const field_type & f , const Entity & e );
 
   friend
   unsigned field_data_size( const FieldBase & f , const Kernel & k );
+
+  template< class field_type > friend struct EntityArray ;
+  template< class field_type > friend struct KernelArray ;
 };
 
 /** The set of mesh kernels is dynamic and potentially large. */

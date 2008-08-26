@@ -63,6 +63,10 @@ class Kernel ;   // Homogeneous collection of mesh entitities their field data
 class Entity ;   // Individual entity within the mesh
 class Relation ; // Relation pair of local mesh entities
 
+template< class FieldType > struct EntityArray ;
+template< class FieldType > struct KernelArray ;
+template< class FieldType > struct FieldTraits ;
+
 //----------------------------------------------------------------------
 // Supporting types for entity and relation attributes
 
