@@ -37,9 +37,9 @@ template< unsigned NType , enum EntityType EType ,
           unsigned NRel , class field_type >
 bool gather_field_data( const field_type & field ,
                         const Entity     & entity ,
-                        typename field_type::data_type * dst )
+                        typename FieldTraits< field_type >::data_type * dst )
 {
-  typedef typename field_type::data_type T ;
+  typedef typename FieldTraits< field_type >::data_type T ;
 
   PairIterRelation rel = entity.relations( EType );
 

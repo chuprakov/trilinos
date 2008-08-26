@@ -188,7 +188,6 @@ struct Descriptor<
       top.vertex_count     = Number_Vertex ;
       top.node_count       = Number_Node ;
       top.edge_count       = EdgeArray::N ;
-      top.face_count       = FaceArray::N ;
       top.side_count       = Traits::side_count ;
       top.subcell_homogeneity = Traits::subcell_homogeneity ;
       top.subcell_count[0] = Number_Node ;
@@ -201,7 +200,6 @@ struct Descriptor<
       top.subcell[3]       = & self ;
       top.side             = faces.array ;
       top.edge             = edges.array ;
-      top.face             = faces.array ;
     };
 };
 
@@ -237,7 +235,6 @@ struct Descriptor<
       top.vertex_count     = Number_Vertex ;
       top.node_count       = Number_Node ;
       top.edge_count       = EdgeArray::N ;
-      top.face_count       = 0 ;
       top.side_count       = Traits::side_count ;
       top.subcell_homogeneity = Traits::subcell_homogeneity ;
       top.subcell_count[0] = Number_Node ;
@@ -250,7 +247,6 @@ struct Descriptor<
       top.subcell[3]       = NULL ;
       top.side             = edges.array ;
       top.edge             = edges.array ;
-      top.face             = NULL ;
     };
 };
 
@@ -280,7 +276,6 @@ struct Descriptor<
       top.vertex_count     = 2 ;
       top.node_count       = Number_Node ;
       top.edge_count       = 0 ;
-      top.face_count       = 0 ;
       top.side_count       = Traits::side_count ;
       top.subcell_homogeneity = Traits::subcell_homogeneity ;
       top.subcell_count[0] = Number_Node ;
@@ -293,7 +288,6 @@ struct Descriptor<
       top.subcell[3]       = NULL ;
       top.side             = NULL ;
       top.edge             = NULL ;
-      top.face             = NULL ;
     };
 };
 
@@ -323,7 +317,6 @@ struct Descriptor<
       top.vertex_count     = 0 ;
       top.node_count       = 0 ;
       top.edge_count       = 0 ;
-      top.face_count       = 0 ;
       top.side_count       = Traits::side_count ;
       top.subcell_homogeneity = Traits::subcell_homogeneity ;
       top.subcell_count[0] = 1 ;
@@ -336,7 +329,6 @@ struct Descriptor<
       top.subcell[3]       = NULL ;
       top.side             = NULL ;
       top.edge             = NULL ;
-      top.face             = NULL ;
     };
 };
 

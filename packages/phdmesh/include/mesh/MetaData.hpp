@@ -270,24 +270,14 @@ private:
   
   FieldBase & declare_field_base( const std::string & ,
                                   unsigned arg_scalar_type ,
-                                  const ArrayDimTag * ,
-                                  const ArrayDimTag * ,
-                                  const ArrayDimTag * ,
-                                  const ArrayDimTag * ,
-                                  const ArrayDimTag * ,
-                                  const ArrayDimTag * ,
-                                  const ArrayDimTag * ,
+                                  unsigned arg_rank ,
+                                  const ArrayDimTag * const *,
                                   unsigned arg_num_states );
 
   FieldBase * get_field_base( const std::string & ,
                               unsigned arg_scalar_type ,
-                              const ArrayDimTag * ,
-                              const ArrayDimTag * ,
-                              const ArrayDimTag * ,
-                              const ArrayDimTag * ,
-                              const ArrayDimTag * ,
-                              const ArrayDimTag * ,
-                              const ArrayDimTag * ,
+                              unsigned arg_rank ,
+                              const ArrayDimTag * const *,
                               int arg_num_states ,
                               const char * required_by ) const ;
 
@@ -314,25 +304,11 @@ field_type * MeshMetaData::get_field( const std::string & name ,
 {
   typedef FieldTraits< field_type > Traits ;
 
-  typedef typename Traits::data_type Scalar ;
-  typedef typename Traits::tag1 Tag1 ;
-  typedef typename Traits::tag2 Tag2 ;
-  typedef typename Traits::tag3 Tag3 ;
-  typedef typename Traits::tag4 Tag4 ;
-  typedef typename Traits::tag5 Tag5 ;
-  typedef typename Traits::tag6 Tag6 ;
-  typedef typename Traits::tag7 Tag7 ;
-
   return static_cast< field_type * >(
     get_field_base( name ,
-                    NumericEnum<Scalar>::value ,
-                    array_dim_tag<Tag1>() ,
-                    array_dim_tag<Tag2>() ,
-                    array_dim_tag<Tag3>() ,
-                    array_dim_tag<Tag4>() ,
-                    array_dim_tag<Tag5>() ,
-                    array_dim_tag<Tag6>() ,
-                    array_dim_tag<Tag7>() ,
+                    Traits::Numeric ,
+                    Traits::Rank ,
+                    Traits::tags() ,
                     -1 , required_by ) );
 }
 
@@ -343,25 +319,11 @@ field_type & MeshMetaData::declare_field( const std::string & name ,
 {
   typedef FieldTraits< field_type > Traits ;
 
-  typedef typename Traits::data_type Scalar ;
-  typedef typename Traits::tag1 Tag1 ;
-  typedef typename Traits::tag2 Tag2 ;
-  typedef typename Traits::tag3 Tag3 ;
-  typedef typename Traits::tag4 Tag4 ;
-  typedef typename Traits::tag5 Tag5 ;
-  typedef typename Traits::tag6 Tag6 ;
-  typedef typename Traits::tag7 Tag7 ;
-
   return static_cast< field_type & >(
     declare_field_base( name ,
-                        NumericEnum<Scalar>::value ,
-                        array_dim_tag<Tag1>() ,
-                        array_dim_tag<Tag2>() ,
-                        array_dim_tag<Tag3>() ,
-                        array_dim_tag<Tag4>() ,
-                        array_dim_tag<Tag5>() ,
-                        array_dim_tag<Tag6>() ,
-                        array_dim_tag<Tag7>() ,
+                        Traits::Numeric ,
+                        Traits::Rank ,
+                        Traits::tags() ,
                         number_of_states ) );
 }
 
@@ -372,6 +334,10 @@ field_type & MeshMetaData::put_field(
   EntityType   arg_entity_type ,
   const Part & arg_part )
 {
+#if 0
+  typedef FieldTraits< field_type > Traits ;
+  Traits t ;
+#endif
   declare_field_restriction( arg_field , arg_entity_type , arg_part , NULL );
   return arg_field ;
 }
@@ -383,8 +349,13 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
                                       const Part & arg_part ,
                                       unsigned     arg_n1 )
 {
+#if 0
+  FieldTraits< field_type > tmp( arg_n1 );
+  declare_field_restriction( arg_field, arg_entity_type, arg_part, tmp.stride );
+#else
   size_t stride[8] = { arg_n1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
   declare_field_restriction( arg_field, arg_entity_type, arg_part, stride );
+#endif
   return arg_field ;
 }
 
@@ -396,10 +367,15 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
                                       unsigned     arg_n1 ,
                                       unsigned     arg_n2 )
 {
+#if 0
+  FieldTraits< field_type > tmp( arg_n1 , arg_n2 );
+  declare_field_restriction( arg_field, arg_entity_type, arg_part, tmp.stride );
+#else
   size_t stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
   stride[1] = arg_n2 * (
   stride[0] = arg_n1 );
   declare_field_restriction( arg_field, arg_entity_type, arg_part, stride );
+#endif
   return arg_field ;
 }
 
@@ -412,11 +388,16 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
                                       unsigned     arg_n2 ,
                                       unsigned     arg_n3 )
 {
+#if 0
+  FieldTraits< field_type > tmp( arg_n1 , arg_n2 , arg_n3 );
+  declare_field_restriction( arg_field, arg_entity_type, arg_part, tmp.stride );
+#else
   size_t stride[8] = { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
   stride[2] = arg_n3 * (
   stride[1] = arg_n2 * (
   stride[0] = arg_n1 ));
   declare_field_restriction( arg_field, arg_entity_type, arg_part, stride );
+#endif
   return arg_field ;
 }
 

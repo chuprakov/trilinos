@@ -64,14 +64,14 @@ void array_stride_from_natural_dimensions(
   unsigned rank , size_t * const stride , const unsigned * const size )
 {
   size_t n = 1 ;
-  for ( int i = 0 ; i < rank ; ++i ) { stride[i] = n *= size[(rank-1)-i]; }
+  for ( unsigned i = 0 ; i < rank ; ++i ) { stride[i] = n *= size[(rank-1)-i]; }
 }
 
 void array_stride_from_fortran_dimensions(
   unsigned rank , size_t * const stride , const unsigned * const size )
 {
   size_t n = 1 ;
-  for ( int i = 0 ; i < rank ; ++i ) { stride[i] = n *= size[i] ; }
+  for ( unsigned i = 0 ; i < rank ; ++i ) { stride[i] = n *= size[i] ; }
 }
 
 void array_stride_to_natural_dimensions(
@@ -79,7 +79,7 @@ void array_stride_to_natural_dimensions(
 {
   if ( 0 < rank ) {
     size[ rank - 1 ] = stride[0] ;
-    for ( int i = 1 ; i < rank ; ++i ) {
+    for ( unsigned i = 1 ; i < rank ; ++i ) {
       size[ ( rank - 1 ) - i ] = stride[i] / stride[i-1] ;
     }
   }
@@ -90,7 +90,7 @@ void array_stride_to_fortran_dimensions(
 {
   if ( 0 < rank ) {
     size[0] = stride[0] ;
-    for ( int i = 1 ; i < rank ; ++i ) {
+    for ( unsigned i = 1 ; i < rank ; ++i ) {
       size[i] = stride[i] / stride[i-1] ;
     }
   }
@@ -101,8 +101,8 @@ void array_stride_to_natural_indices(
   size_t offset , unsigned * const index )
 {
   if ( 0 < rank ) {
-    int tmp = offset ;
-    for ( int i = rank - 1 ; 0 < i ; ) {
+    size_t tmp = offset ;
+    for ( unsigned i = rank - 1 ; 0 < i ; ) {
       index[ ( rank - 1 ) - i ] = tmp / stride[i-1] ;
       tmp %= stride[i-1] ;
     }
@@ -115,8 +115,8 @@ void array_stride_to_fortran_indices(
   size_t offset , unsigned * const index )
 {
   if ( 0 < rank ) {
-    int tmp = offset ;
-    for ( int i = rank - 1 ; 0 < i ; ) {
+    size_t tmp = offset ;
+    for ( unsigned i = rank - 1 ; 0 < i ; ) {
       index[i] = tmp / stride[i-1] ;
       tmp %= stride[i-1] ;
     }
@@ -183,32 +183,32 @@ void array_check_indices( const bool arg_natural ,
   size_t sizes[8] ;
 
   if ( arg_natural ) {
-    for ( int ord = 0 ; ord < arg_rank ; ++ord ) {
-      const int i = ( arg_rank - 1 ) - ord ;
+    for ( unsigned ord = 0 ; ord < arg_rank ; ++ord ) {
+      const unsigned i = ( arg_rank - 1 ) - ord ;
       sizes[ord] = i ? arg_stride[i] / arg_stride[i-1] : arg_stride[i];
     }
   }
   else {
-    for ( int ord = 0 ; ord < arg_rank ; ++ord ) {
+    for ( unsigned ord = 0 ; ord < arg_rank ; ++ord ) {
       sizes[ord] = ord ? arg_stride[ord] / arg_stride[ord-1] : arg_stride[ord];
     }
   }
 
   bool ok = true ;
 
-  for ( int ord = 0 ; ok && ord < arg_rank ; ++ord ) {
+  for ( unsigned ord = 0 ; ok && ord < arg_rank ; ++ord ) {
     ok = indices[ord] < sizes[ord] ;
   }
 
   if ( ! ok ) {
     std::ostringstream msg ;
     msg << "ARRAY INDICES ERROR : Array(" ;
-    for ( int ord = 0 ; ord < arg_rank ; ++ord ) {
+    for ( unsigned ord = 0 ; ord < arg_rank ; ++ord ) {
       if ( ord ) { msg << "," ; }
       msg << sizes[ord] ;
     }
     msg << ") given index (" ;
-    for ( int ord = 0 ; ord < arg_rank ; ++ord ) {
+    for ( unsigned ord = 0 ; ord < arg_rank ; ++ord ) {
       if ( ord ) { msg << "," ; }
       msg << indices[ord] ;
     }

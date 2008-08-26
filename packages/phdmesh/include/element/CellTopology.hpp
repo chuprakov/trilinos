@@ -50,7 +50,6 @@ namespace phdmesh {
  *  - top.vertex_count
  *  - top.node_count
  *  - top.edge_count
- *  - top.face_count
  *  - top.side_count
  *
  *  - top.subcell_homogeneity        ; subcell[Dim] are homogeneous
@@ -64,14 +63,9 @@ namespace phdmesh {
  *  - top.edge[Ord].topology         ; subcell[1][Ord].topology
  *  - top.edge[Ord].node[I]          ; subcell[1][Ord].node[I]
  *
- *  For 3D cells:
- *  - top.face[Ord].topology         ; subcell[2][Ord].topology
- *  - top.face[Ord].node[I]          ; subcell[2][Ord].node[I]
- *
- * Nodes, edges, faces, and sides are subcells with a particular dimension.
+ * Nodes, edges, and sides are subcells with a particular dimension.
  *  - node has Dim == 0
  *  - edge has Dim == 1 when top.dimension >= 2
- *  - face has Dim == 2 when top.dimension == 3
  *  - side has Dim == top.dimension - 1.
  */
 struct CellTopology {
@@ -95,7 +89,6 @@ struct CellTopology {
   unsigned vertex_count ;
   unsigned node_count ;
   unsigned edge_count ;
-  unsigned face_count ;
   unsigned side_count ;
 
   /** \brief Flag if the subcells of a given dimension are homogeneous */
@@ -123,7 +116,6 @@ struct CellTopology {
 
   const struct Subcell * side ;
   const struct Subcell * edge ;
-  const struct Subcell * face ;
 };
 
 template< class Traits >
@@ -141,7 +133,6 @@ std::ostream & operator << ( std::ostream & , const CellTopology & );
  *  - Top::vertex_count
  *  - top::node_count
  *  - top::edge_count
- *  - top::face_count
  *  - top::side_count
  *  - top::subcell_homogeneity
  *
@@ -153,8 +144,6 @@ std::ostream & operator << ( std::ostream & , const CellTopology & );
  *  - Top::side<Ord,I>::node          ; subcell<dimension-1,Ord,I>::.node
  *  - Top::edge<Ord>::topology        ; subcell<1,Ord>::topology
  *  - Top::edge<Ord,I>::node          ; subcell<1,Ord,I>::.node
- *  - Top::face<Ord>::topology        ; subcell<2,Ord>::topology
- *  - Top::face<Ord,I>::node          ; subcell<2,Ord,I>::.node
  */
 template< unsigned Dimension ,
           unsigned Number_Vertex ,
@@ -383,13 +372,6 @@ struct CellTopologyTraits {
   template< unsigned Ord = 0 , unsigned J = 0 >
   struct edge :
     public SubcellTopologyTraits< ( 1 < dimension ? 1 : 4 ) , Ord , J ,
-                                  dimension , vertex_count , node_count ,
-                                  EdgeList , EdgeMaps ,
-                                  TypeListEnd , TypeListEnd > {};
-
-  template< unsigned Ord = 0 , unsigned J = 0 >
-  struct face :
-    public SubcellTopologyTraits< ( 2 < dimension ? 2 : 4 ) , Ord , J ,
                                   dimension , vertex_count , node_count ,
                                   EdgeList , EdgeMaps ,
                                   TypeListEnd , TypeListEnd > {};

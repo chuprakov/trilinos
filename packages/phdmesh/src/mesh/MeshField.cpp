@@ -106,13 +106,8 @@ FieldBase::Field(
   MeshMetaData &            arg_mesh_meta_data ,
   const std::string & arg_name ,
   unsigned scalar_type ,
-  const ArrayDimTag * t1 ,
-  const ArrayDimTag * t2 ,
-  const ArrayDimTag * t3 ,
-  const ArrayDimTag * t4 ,
-  const ArrayDimTag * t5 ,
-  const ArrayDimTag * t6 ,
-  const ArrayDimTag * t7 ,
+  unsigned rank ,
+  const ArrayDimTag * const * tags ,
   unsigned number_of_states ,
   FieldState state )
 : m_cset() ,
@@ -120,26 +115,16 @@ FieldBase::Field(
   m_mesh_meta_data( arg_mesh_meta_data ),
   m_mesh_meta_data_ordinal(0),
   m_scalar_type( scalar_type ),
-  m_rank( ( ! t1 ? 0 :
-          ( ! t2 ? 1 :
-          ( ! t3 ? 2 :
-          ( ! t4 ? 3 :
-          ( ! t5 ? 4 :
-          ( ! t6 ? 5 :
-          ( ! t7 ? 6 : 7 )))))))),
+  m_rank( rank ),
   m_num_states( number_of_states ),
   m_this_state( state ),
   m_dim_map()
 {
   FieldBase * const pzero = NULL ;
   Copy<MaximumFieldStates>( m_field_states , pzero );
-  m_dim_tags[0] = t1 ;
-  m_dim_tags[1] = t2 ;
-  m_dim_tags[2] = t3 ;
-  m_dim_tags[3] = t4 ;
-  m_dim_tags[4] = t5 ;
-  m_dim_tags[5] = t6 ;
-  m_dim_tags[6] = t7 ;
+  unsigned i = 0 ;
+  for ( ; i < rank ; ++i ) { m_dim_tags[i] = tags[i] ; }
+  for ( ; i < MaximumFieldDimension ; ++i ) { m_dim_tags[i] = NULL ; }
 }
 
 const std::vector<FieldBase::Restriction> & FieldBase::restrictions() const
@@ -170,24 +155,14 @@ namespace {
 void
 print_field_type( std::ostream          & arg_msg ,
                   unsigned                arg_scalar_type ,
-                  const ArrayDimTag * arg_t1 ,
-                  const ArrayDimTag * arg_t2 ,
-                  const ArrayDimTag * arg_t3 ,
-                  const ArrayDimTag * arg_t4 ,
-                  const ArrayDimTag * arg_t5 ,
-                  const ArrayDimTag * arg_t6 ,
-                  const ArrayDimTag * arg_t7 )
+                  unsigned                arg_rank ,
+                  const ArrayDimTag * const * arg_tags )
 {
   arg_msg << "Field< " ;
   arg_msg << NumericEnum<>::name( arg_scalar_type );
-  if ( arg_t1 ) { arg_msg << " , " << arg_t1->name();
-  if ( arg_t2 ) { arg_msg << " , " << arg_t2->name();
-  if ( arg_t3 ) { arg_msg << " , " << arg_t3->name();
-  if ( arg_t4 ) { arg_msg << " , " << arg_t4->name();
-  if ( arg_t5 ) { arg_msg << " , " << arg_t5->name();
-  if ( arg_t6 ) { arg_msg << " , " << arg_t6->name();
-  if ( arg_t7 ) { arg_msg << " , " << arg_t7->name();
-  } } } } } } }
+  for ( unsigned i = 0 ; i < arg_rank ; ++i ) {
+    arg_msg << " , " << arg_tags[i]->name();
+  }
   arg_msg << " >" ;
 }
 
@@ -197,13 +172,8 @@ FieldBase *
 MeshMetaData::get_field_base(
   const std::string & arg_name ,
   unsigned          arg_scalar_type ,
-  const ArrayDimTag * arg_t1 ,
-  const ArrayDimTag * arg_t2 ,
-  const ArrayDimTag * arg_t3 ,
-  const ArrayDimTag * arg_t4 ,
-  const ArrayDimTag * arg_t5 ,
-  const ArrayDimTag * arg_t6 ,
-  const ArrayDimTag * arg_t7 ,
+  unsigned          arg_rank ,
+  const ArrayDimTag * const * arg_tags ,
   int arg_number_states ,
   const char * arg_required_by ) const
 {
@@ -232,13 +202,11 @@ MeshMetaData::get_field_base(
 
     bad_scalar_type = arg_scalar_type != field->numeric_type_ordinal();
 
-    bad_dimension = arg_t1 != field->m_dim_tags[0] ||
-                    arg_t2 != field->m_dim_tags[1] ||
-                    arg_t3 != field->m_dim_tags[2] ||
-                    arg_t4 != field->m_dim_tags[3] ||
-                    arg_t5 != field->m_dim_tags[4] ||
-                    arg_t6 != field->m_dim_tags[5] ||
-                    arg_t7 != field->m_dim_tags[6] ;
+    bad_dimension = arg_rank != field->m_rank ;
+
+    for ( unsigned i = 0 ; i < arg_rank && ! bad_dimension ; ++i ) {
+      bad_dimension = arg_tags[i] != field->m_dim_tags[i] ;
+    }
 
     bad_number_states =
       ( 0 <= arg_number_states ) &&
@@ -256,9 +224,7 @@ MeshMetaData::get_field_base(
     std::ostringstream msg ;
 
     msg << method << "< " ;
-    print_field_type( msg , arg_scalar_type ,
-                            arg_t1 , arg_t2 , arg_t3 ,
-                            arg_t4 , arg_t5 , arg_t6 , arg_t7 );
+    print_field_type( msg , arg_scalar_type , arg_rank , arg_tags );
     msg << " >( \"" << arg_name << "\"" ;
 
     if ( 0 <= arg_number_states ) {
@@ -276,13 +242,8 @@ MeshMetaData::get_field_base(
     if ( field != NULL ) {
       msg << " FOUND INCOMPATIBLE " ;
       print_field_type( msg , field->numeric_type_ordinal() ,
-                              field->m_dim_tags[0] ,
-                              field->m_dim_tags[1] ,
-                              field->m_dim_tags[2] ,
-                              field->m_dim_tags[3] ,
-                              field->m_dim_tags[4] ,
-                              field->m_dim_tags[5] ,
-                              field->m_dim_tags[6] );
+                              field->m_rank ,
+                              field->m_dim_tags );
       msg << "( " << field->m_num_states << " )" ;
     }
     throw std::runtime_error( msg.str() );
@@ -297,13 +258,8 @@ FieldBase &
 MeshMetaData::declare_field_base(
   const std::string & arg_name ,
   unsigned            arg_scalar_type ,
-  const ArrayDimTag * arg_t1 ,
-  const ArrayDimTag * arg_t2 ,
-  const ArrayDimTag * arg_t3 ,
-  const ArrayDimTag * arg_t4 ,
-  const ArrayDimTag * arg_t5 ,
-  const ArrayDimTag * arg_t6 ,
-  const ArrayDimTag * arg_t7 ,
+  unsigned            arg_rank ,
+  const ArrayDimTag * const * arg_tags ,
   unsigned            arg_num_states )
 {
   static const char method[] = "phdmesh::MeshMetaData::declare_field" ;
@@ -321,9 +277,7 @@ MeshMetaData::declare_field_base(
          ! strcasecmp( arg_name.c_str() + len , reserved_state_suffix[i] ) ) {
       std::ostringstream msg ;
       msg << method << "< " ;
-      print_field_type( msg , arg_scalar_type ,
-                              arg_t1 , arg_t2 , arg_t3 ,
-                              arg_t4 , arg_t5 , arg_t6 , arg_t7 );
+      print_field_type( msg , arg_scalar_type , arg_rank , arg_tags );
       msg << " >( \"" << arg_name ;
       msg << "\" <= HAS RESERVED STATE SUFFIX \"" ;
       msg << reserved_state_suffix[i] ;
@@ -336,8 +290,7 @@ MeshMetaData::declare_field_base(
 
   FieldBase * field = get_field_base( arg_name ,
                                       arg_scalar_type ,
-                                      arg_t1 , arg_t2 , arg_t3 ,
-                                      arg_t4 , arg_t5 , arg_t6 , arg_t7 ,
+                                      arg_rank , arg_tags ,
                                       arg_num_states , NULL );
 
   if ( field == NULL ) {
@@ -377,8 +330,7 @@ MeshMetaData::declare_field_base(
       f[i] = new FieldBase( *this ,
                             field_names[i] ,
                             arg_scalar_type,
-                            arg_t1 , arg_t2 , arg_t3 ,
-                            arg_t4 , arg_t5 , arg_t6 , arg_t7 ,
+                            arg_rank , arg_tags ,
                             arg_num_states , (FieldState) i );
 
       f[i]->m_mesh_meta_data_ordinal = m_fields.size();
@@ -468,13 +420,7 @@ void assert_field_dimension_compatible(
     std::ostringstream msg ;
     msg << method << " FOUND INCOMPATIBLE SIZES FOR " ;
     print_field_type( msg , field.numeric_type_ordinal() ,
-                            field.dimension_tags()[0] ,
-                            field.dimension_tags()[1] ,
-                            field.dimension_tags()[2] ,
-                            field.dimension_tags()[3] ,
-                            field.dimension_tags()[4] ,
-                            field.dimension_tags()[5] ,
-                            field.dimension_tags()[6] );
+                            field.rank(), field.dimension_tags() );
     msg << "[" << field.name() << "] " ;
 
     print_field_dim( msg , field , a );
@@ -647,13 +593,7 @@ unsigned FieldBase::max_size( EntityType etype ) const
 std::ostream & operator << ( std::ostream & s , const FieldBase & field )
 {
   print_field_type( s , field.numeric_type_ordinal() ,
-                        field.dimension_tags()[0] ,
-                        field.dimension_tags()[1] ,
-                        field.dimension_tags()[2] ,
-                        field.dimension_tags()[3] ,
-                        field.dimension_tags()[4] ,
-                        field.dimension_tags()[5] ,
-                        field.dimension_tags()[6] );
+                        field.rank() , field.dimension_tags() );
   s << "[ \"" ;
   s << field.name() ;
   s << " \" , " ;

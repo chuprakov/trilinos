@@ -468,19 +468,20 @@ template< class Tag >
 inline
 const ArrayDimTag * array_dim_tag() { return & Tag::tag(); }
 
-template< class ArrayType >
-const ArrayDimTag * const * array_tags()
+template< class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 , class Tag7 , class Tag8 >
+const ArrayDimTag * const * array_dim_tags()
 {
   static const ArrayDimTag * t[8] =
     {
-      array_dim_tag< typename ArrayTagAt<ArrayType,0>::type >() ,
-      array_dim_tag< typename ArrayTagAt<ArrayType,1>::type >() ,
-      array_dim_tag< typename ArrayTagAt<ArrayType,2>::type >() ,
-      array_dim_tag< typename ArrayTagAt<ArrayType,3>::type >() ,
-      array_dim_tag< typename ArrayTagAt<ArrayType,4>::type >() ,
-      array_dim_tag< typename ArrayTagAt<ArrayType,5>::type >() ,
-      array_dim_tag< typename ArrayTagAt<ArrayType,6>::type >() ,
-      array_dim_tag< typename ArrayTagAt<ArrayType,7>::type >()
+      array_dim_tag< Tag1 >() ,
+      array_dim_tag< Tag2 >() ,
+      array_dim_tag< Tag3 >() ,
+      array_dim_tag< Tag4 >() ,
+      array_dim_tag< Tag5 >() ,
+      array_dim_tag< Tag6 >() ,
+      array_dim_tag< Tag7 >() ,
+      array_dim_tag< Tag8 >()
     };
 
   return t ;

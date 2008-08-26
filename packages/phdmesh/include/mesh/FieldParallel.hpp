@@ -138,12 +138,12 @@ void ParallelReduceField< ReduceOp , Type ,  Tag1,  Tag2,  Tag3 ,
                                      Tag4 ,  Tag5,  Tag6,  Tag7 >::
   operator()( const std::vector<EntityProc> & shared , CommAll & sparse ) const
 {
-  typedef typename field_type::EntityArray array_type ;
+  typedef EntityArray< field_type > array_type ;
 
   for ( std::vector<EntityProc>::const_iterator
         i = shared.begin(); i != shared.end() ; ++i ) {
 
-    array_type array     = field_array( field , * i->first );
+    array_type array( field , * i->first );
     Type * ptr           = array.contiguous_data();
     Type * const ptr_end = ptr + array.size();
 

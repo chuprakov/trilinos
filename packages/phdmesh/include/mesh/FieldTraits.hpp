@@ -75,6 +75,7 @@ private:
 
 struct FullTensor : public ArrayDimTag {
 
+  enum { Size = 9 };
   enum { XX = 0 , XY = 3 , XZ = 6 ,
          YX = 1 , YY = 4 , YZ = 7 ,
          ZX = 2 , ZY = 5 , ZZ = 8 };
@@ -94,6 +95,7 @@ private:
 
 struct SymmetricTensor : public ArrayDimTag {
 
+  enum { Size = 6 };
   enum { XX = 0 , YY = 1 , ZZ = 2, XY = 3, YZ = 4, XZ = 5 };
 
   const char * name() const  ;

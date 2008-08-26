@@ -203,7 +203,7 @@ public:
     {
       array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
-      return array_tags<Array>()[ ordinal ];
+      return array_dim_tags<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>()[ordinal];
     }
 
   //----------------------------------
@@ -411,7 +411,7 @@ public:
     {
       array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
-      return array_tags<Array>()[ ordinal ];
+      return array_dim_tags<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,void>()[ordinal];
     }
 
   //----------------------------------
@@ -615,7 +615,7 @@ public:
     {
       array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
-      return array_tags<Array>()[ ordinal ];
+      return array_dim_tags<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,void,void>()[ordinal];
     }
 
   //----------------------------------
@@ -811,7 +811,7 @@ public:
     {
       array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
-      return array_tags<Array>()[ ordinal ];
+      return array_dim_tags<Tag1,Tag2,Tag3,Tag4,Tag5,void,void,void>()[ordinal];
     }
 
   //----------------------------------
@@ -1002,7 +1002,7 @@ public:
     {
       array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
-      return array_tags<Array>()[ ordinal ];
+      return array_dim_tags<Tag1,Tag2,Tag3,Tag4,void,void,void,void>()[ordinal];
     }
 
   //----------------------------------
@@ -1184,7 +1184,7 @@ public:
     {
       array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
-      return array_tags<Array>()[ ordinal ];
+      return array_dim_tags<Tag1,Tag2,Tag3,void,void,void,void,void>()[ordinal];
     }
 
   //----------------------------------
@@ -1359,7 +1359,7 @@ public:
     {
       array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
-      return array_tags<Array>()[ ordinal ];
+      return array_dim_tags<Tag1,Tag2,void,void,void,void,void,void>()[ordinal];
     }
 
   //----------------------------------
@@ -1527,7 +1527,7 @@ public:
     {
       array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
-      return array_tags<Array>()[ ordinal ];
+      return array_dim_tags<Tag1,void,void,void,void,void,void,void>()[ordinal];
     }
 
   //----------------------------------

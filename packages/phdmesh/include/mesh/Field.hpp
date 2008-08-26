@@ -146,7 +146,7 @@ private:
                               class Tag3 , class Tag4 ,
                               class Tag5 , class Tag6 ,
                               class Tag7 >
-    friend class Field ;
+    friend class phdmesh::Field ;
 
   ~Field();
 
@@ -157,13 +157,8 @@ private:
   Field( MeshMetaData & ,
          const std::string & ,
          unsigned scalar_type ,
-         const ArrayDimTag * ,
-         const ArrayDimTag * ,
-         const ArrayDimTag * ,
-         const ArrayDimTag * ,
-         const ArrayDimTag * ,
-         const ArrayDimTag * ,
-         const ArrayDimTag * ,
+         unsigned rank ,
+         const ArrayDimTag * const * ,
          unsigned number_of_states ,
          FieldState );
 
@@ -205,8 +200,354 @@ private:
   Field & operator = ( const Field & );
 };
 
+}
+
 //----------------------------------------------------------------------
+/** \cond */
+// Internal implementation details to follow.
 //----------------------------------------------------------------------
+
+namespace phdmesh {
+
+template< typename Scalar >
+struct FieldTraits< Field<Scalar,void,void,void,void,void,void,void> >
+{
+  typedef Scalar data_type ;
+
+  enum { Numeric = NumericEnum< data_type >::value };
+  enum { Rank = 0 };
+  size_t * const stride ;
+
+  FieldTraits() : stride(NULL) {}
+
+  static const ArrayDimTag * const * tags()
+    { return array_dim_tags<void,void,void,void,void,void,void,void>(); }
+};
+
+template< typename Scalar , class Tag1 >
+struct FieldTraits< Field<Scalar,Tag1,void,void,void,void,void,void> >
+{
+  typedef Scalar data_type ;
+  // typedef Tag1   tag1 ;
+
+  enum { Numeric = NumericEnum< data_type >::value };
+  enum { Rank = 1 };
+  size_t stride[ Rank ];
+
+  FieldTraits() { stride[0] = Tag1::Size ; }
+  FieldTraits( const size_t & n1 ) { stride[0] = n1 ; }
+
+  static const ArrayDimTag * const * tags()
+    { return array_dim_tags<Tag1,void,void,void,void,void,void,void>(); }
+};
+
+template< typename Scalar ,
+          class Tag1 , class Tag2 >
+struct FieldTraits< Field<Scalar,Tag1,Tag2,void,void,void,void,void> >
+{
+  typedef Scalar data_type ;
+  // typedef Tag1   tag1 ;
+  // typedef Tag2   tag2 ;
+
+  enum { Numeric = NumericEnum< data_type >::value };
+  enum { Rank = 2 };
+  size_t stride[ Rank ];
+
+  FieldTraits()
+    {
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  );
+    }
+
+  FieldTraits( const size_t & n2 )
+    {
+      stride[1] = n2 * (
+      stride[0] = Tag1::Size  );
+    }
+
+  FieldTraits( const size_t & n1 , const size_t & n2 )
+    {
+      stride[1] = n2 * (
+      stride[0] = n1 );
+    }
+
+  static const ArrayDimTag * const * tags()
+    { return array_dim_tags<Tag1,Tag2,void,void,void,void,void,void>(); }
+};
+
+template< typename Scalar ,
+          class Tag1 , class Tag2 , class Tag3 >
+struct FieldTraits< Field<Scalar,Tag1,Tag2,Tag3,void,void,void,void> >
+{
+  typedef Scalar data_type ;
+  typedef Tag1   tag1 ;
+  typedef Tag2   tag2 ;
+  typedef Tag3   tag3 ;
+
+  enum { Numeric = NumericEnum< data_type >::value };
+  enum { Rank = 3 };
+  size_t stride[ Rank ];
+
+  FieldTraits()
+    {
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  ));
+    }
+
+  FieldTraits( const size_t & n3 )
+    {
+      stride[2] = n3 * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  ));
+    }
+
+  FieldTraits( const size_t & n2 , const size_t & n3 )
+    {
+      stride[2] = n3 * (
+      stride[1] = n2 * (
+      stride[0] = Tag1::Size  ));
+    }
+
+  FieldTraits( const size_t & n1 , const size_t & n2 , const size_t & n3 )
+    {
+      stride[2] = n3 * (
+      stride[1] = n2 * (
+      stride[0] = n1 ));
+    }
+
+  static const ArrayDimTag * const * tags()
+    { return array_dim_tags<Tag1,Tag2,Tag3,void,void,void,void,void>(); }
+};
+
+template< typename Scalar ,
+          class Tag1 , class Tag2 , class Tag3 , class Tag4 >
+struct FieldTraits< Field<Scalar,Tag1,Tag2,Tag3,Tag4,void,void,void> >
+{
+  typedef Scalar data_type ;
+  typedef Tag1   tag1 ;
+  typedef Tag2   tag2 ;
+  typedef Tag3   tag3 ;
+  typedef Tag4   tag4 ;
+
+  enum { Numeric = NumericEnum< data_type >::value };
+  enum { Rank = 4 };
+  size_t stride[ Rank ];
+
+  FieldTraits()
+    {
+      stride[3] = Tag4::Size  * (
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  )));
+    }
+
+  FieldTraits( const size_t & n4 )
+    {
+      stride[2] = n4 * (
+      stride[2] = Tag3::Size * (
+      stride[1] = Tag2::Size * (
+      stride[0] = Tag1::Size )));
+    }
+
+  FieldTraits( const size_t & n3 , const size_t & n4 )
+    {
+      stride[2] = n4 * (
+      stride[2] = n3 * (
+      stride[1] = Tag2::Size * (
+      stride[0] = Tag1::Size )));
+    }
+
+  FieldTraits( const size_t & n2 , const size_t & n3 , const size_t & n4 )
+    {
+      stride[2] = n4 * (
+      stride[2] = n3 * (
+      stride[1] = n2 * (
+      stride[0] = Tag1::Size )));
+    }
+
+  FieldTraits( const size_t & n1 , const size_t & n2 ,
+               const size_t & n3 , const size_t & n4 )
+    {
+      stride[2] = n4 * (
+      stride[2] = n3 * (
+      stride[1] = n2 * (
+      stride[0] = n1 )));
+    }
+
+  static const ArrayDimTag * const * tags()
+    { return array_dim_tags<Tag1,Tag2,Tag3,Tag4,void,void,void,void>(); }
+};
+
+template< typename Scalar ,
+          class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 >
+struct FieldTraits< Field<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,void,void> >
+{
+  typedef Scalar data_type ;
+  typedef Tag1   tag1 ;
+  typedef Tag2   tag2 ;
+  typedef Tag3   tag3 ;
+  typedef Tag4   tag4 ;
+  typedef Tag5   tag5 ;
+
+  enum { Numeric = NumericEnum< data_type >::value };
+  enum { Rank = 5 };
+  size_t stride[ Rank ];
+
+  FieldTraits()
+    {
+      stride[4] = Tag5::Size  * (
+      stride[3] = Tag4::Size  * (
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  ))));
+    }
+
+  FieldTraits( const size_t & n5 )
+    {
+      stride[4] = n5 * (
+      stride[3] = Tag4::Size  * (
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  ))));
+    }
+
+  FieldTraits( const size_t & n4 , const size_t & n5 )
+    {
+      stride[4] = n5 * (
+      stride[3] = n4 * (
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  ))));
+    }
+
+  FieldTraits( const size_t & n3 , const size_t & n4 , const size_t & n5 )
+    {
+      stride[4] = n5 * (
+      stride[3] = n4 * (
+      stride[2] = n3 * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  ))));
+    }
+
+  FieldTraits( const size_t & n2 , const size_t & n3 ,
+               const size_t & n4 , const size_t & n5 )
+    {
+      stride[4] = n5 * (
+      stride[3] = n4 * (
+      stride[2] = n3 * (
+      stride[1] = n2 * (
+      stride[0] = Tag1::Size  ))));
+    }
+
+  FieldTraits( const size_t & n1 , const size_t & n2 , const size_t & n3 ,
+               const size_t & n4 , const size_t & n5 )
+    {
+      stride[4] = n5 * (
+      stride[3] = n4 * (
+      stride[2] = n3 * (
+      stride[1] = n2 * (
+      stride[0] = n1 ))));
+    }
+
+  static const ArrayDimTag * const * tags()
+    { return array_dim_tags<Tag1,Tag2,Tag3,Tag4,Tag5,void,void,void>(); }
+};
+
+template< typename Scalar ,
+          class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
+          class Tag5 , class Tag6 >
+struct FieldTraits< Field<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,void> >
+{
+  typedef Scalar data_type ;
+  typedef Tag1   tag1 ;
+  typedef Tag2   tag2 ;
+  typedef Tag3   tag3 ;
+  typedef Tag4   tag4 ;
+  typedef Tag5   tag5 ;
+  typedef Tag6   tag6 ;
+
+  enum { Numeric = NumericEnum< data_type >::value };
+  enum { Rank = 6 };
+  size_t stride[ Rank ];
+
+  FieldTraits()
+    {
+      stride[5] = Tag6::Size  * (
+      stride[4] = Tag5::Size  * (
+      stride[3] = Tag4::Size  * (
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  )))));
+    }
+
+  FieldTraits( const size_t & n6 )
+    {
+      stride[5] = n6 * (
+      stride[4] = Tag5::Size  * (
+      stride[3] = Tag4::Size  * (
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  )))));
+    }
+
+  FieldTraits( const size_t & n5 , const size_t & n6 )
+    {
+      stride[5] = n6 * (
+      stride[4] = n5 * (
+      stride[3] = Tag4::Size  * (
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  )))));
+    }
+
+  FieldTraits( const size_t & n4 , const size_t & n5 , const size_t & n6 )
+    {
+      stride[5] = n6 * (
+      stride[4] = n5 * (
+      stride[3] = n4 * (
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  )))));
+    }
+
+  FieldTraits( const size_t & n3 ,
+               const size_t & n4 , const size_t & n5 , const size_t & n6 )
+    {
+      stride[5] = n6 * (
+      stride[4] = n5 * (
+      stride[3] = n4 * (
+      stride[2] = n3 * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  )))));
+    }
+
+  FieldTraits( const size_t & n2 , const size_t & n3 ,
+               const size_t & n4 , const size_t & n5 , const size_t & n6 )
+    {
+      stride[5] = n6 * (
+      stride[4] = n5 * (
+      stride[3] = n4 * (
+      stride[2] = n3 * (
+      stride[1] = n2 * (
+      stride[0] = Tag1::Size  )))));
+    }
+
+  FieldTraits( const size_t & n1 , const size_t & n2 , const size_t & n3 ,
+               const size_t & n4 , const size_t & n5 , const size_t & n6 )
+    {
+      stride[5] = n6 * (
+      stride[4] = n5 * (
+      stride[3] = n4 * (
+      stride[2] = n3 * (
+      stride[1] = n2 * (
+      stride[0] = n1 )))));
+    }
+
+  static const ArrayDimTag * const * tags()
+    { return array_dim_tags<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,void,void>(); }
+};
 
 template< typename Scalar ,
           class Tag1 , class Tag2 , class Tag3 , class Tag4 ,
@@ -221,8 +562,110 @@ struct FieldTraits< Field<Scalar,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> >
   typedef Tag5   tag5 ;
   typedef Tag6   tag6 ;
   typedef Tag7   tag7 ;
+
+  enum { Numeric = NumericEnum< data_type >::value };
+  enum { Rank = 7 };
+  size_t stride[ Rank ];
+
+  FieldTraits()
+    {
+      stride[6] = Tag7::Size  * (
+      stride[5] = Tag6::Size  * (
+      stride[4] = Tag5::Size  * (
+      stride[3] = Tag4::Size  * (
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  ))))));
+    }
+
+  FieldTraits( const size_t & n7 )
+    {
+      stride[6] = n7 * (
+      stride[5] = Tag6::Size  * (
+      stride[4] = Tag5::Size  * (
+      stride[3] = Tag4::Size  * (
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  ))))));
+    }
+
+  FieldTraits( const size_t & n6 , const size_t & n7 )
+    {
+      stride[6] = n7 * (
+      stride[5] = n6 * (
+      stride[4] = Tag5::Size  * (
+      stride[3] = Tag4::Size  * (
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  ))))));
+    }
+
+  FieldTraits( const size_t & n5 , const size_t & n6 , const size_t & n7 )
+    {
+      stride[6] = n7 * (
+      stride[5] = n6 * (
+      stride[4] = n5 * (
+      stride[3] = Tag4::Size  * (
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  ))))));
+    }
+
+  FieldTraits( const size_t & n4 , const size_t & n5 ,
+               const size_t & n6 , const size_t & n7 )
+    {
+      stride[6] = n7 * (
+      stride[5] = n6 * (
+      stride[4] = n5 * (
+      stride[3] = n4 * (
+      stride[2] = Tag3::Size  * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  ))))));
+    }
+
+  FieldTraits( const size_t & n3 , const size_t & n4 , const size_t & n5 ,
+               const size_t & n6 , const size_t & n7 )
+    {
+      stride[6] = n7 * (
+      stride[5] = n6 * (
+      stride[4] = n5 * (
+      stride[3] = n4 * (
+      stride[2] = n3 * (
+      stride[1] = Tag2::Size  * (
+      stride[0] = Tag1::Size  ))))));
+    }
+
+  FieldTraits( const size_t & n2 , const size_t & n3 ,
+               const size_t & n4 , const size_t & n5 ,
+               const size_t & n6 , const size_t & n7 )
+    {
+      stride[6] = n7 * (
+      stride[5] = n6 * (
+      stride[4] = n5 * (
+      stride[3] = n4 * (
+      stride[2] = n3 * (
+      stride[1] = n2 * (
+      stride[0] = Tag1::Size  ))))));
+    }
+
+  FieldTraits( const size_t & n1 , const size_t & n2 , const size_t & n3 ,
+               const size_t & n4 , const size_t & n5 ,
+               const size_t & n6 , const size_t & n7 )
+    {
+      stride[6] = n7 * (
+      stride[5] = n6 * (
+      stride[4] = n5 * (
+      stride[3] = n4 * (
+      stride[2] = n3 * (
+      stride[1] = n2 * (
+      stride[0] = n1 ))))));
+    }
+
+  static const ArrayDimTag * const * tags()
+    { return array_dim_tags<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,void>(); }
 };
 
+//----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
 inline
