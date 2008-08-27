@@ -37,7 +37,7 @@
 # This must be the first line in configure.ac.
 # Optional 3rd argument is email address for bugs.
 
-AC_INIT(phdmesh, 1.0d, hcedwar@sandia.gov)
+AC_INIT(phdmesh, 1.0, hcedwar@sandia.gov)
 
 echo "----------------------------------------"
 echo "Running phdMesh Configure Script"
