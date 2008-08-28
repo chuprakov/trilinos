@@ -38,6 +38,9 @@ namespace phdmesh {
 
 struct Cartesian : public ArrayDimTag {
 
+  /** Default to 3D */
+  enum { Size = 3 };
+
   enum { X = 0 , Y = 1 , Z = 2 };
 
   const char * name() const ;
@@ -51,9 +54,6 @@ private:
   Cartesian( const Cartesian & );
   Cartesian & operator = ( const Cartesian & );
 };
-
-struct Cartesian_3D : public Cartesian { enum { Size = 3 }; };
-struct Cartesian_2D : public Cartesian { enum { Size = 2 }; };
 
 //----------------------------------------------------------------------
 /** Dimension traits for cylindrical vector */
