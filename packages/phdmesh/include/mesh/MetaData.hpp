@@ -266,7 +266,7 @@ private:
 
   void declare_field_restriction( FieldBase & ,
                                   EntityType , const Part & ,
-                                  const size_t * );
+                                  const unsigned * );
   
   FieldBase & declare_field_base( const std::string & ,
                                   unsigned arg_scalar_type ,

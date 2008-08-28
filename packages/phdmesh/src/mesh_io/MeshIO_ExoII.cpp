@@ -61,7 +61,7 @@ const GlobalLocalIndex & GlobalLocalIndex::tag()
 const char * GlobalLocalIndex::name() const
 { static const char n[] = "GlobalLocalIndex" ; return n ; }
 
-std::string GlobalLocalIndex::to_string( size_t size , unsigned index ) const
+std::string GlobalLocalIndex::to_string( unsigned size , unsigned index ) const
 {
   static const char g[] = "global" ;
   static const char l[] = "local" ;
@@ -77,7 +77,7 @@ std::string GlobalLocalIndex::to_string( size_t size , unsigned index ) const
   return std::string( index ? g : l );
 }
 
-unsigned GlobalLocalIndex::to_index( size_t size , const std::string & arg )
+unsigned GlobalLocalIndex::to_index( unsigned size , const std::string & arg )
   const
 {
   static const char g[] = "global" ;
@@ -1149,12 +1149,12 @@ std::string variable_name( EntityType        r ,
   std::string name( f.name() );
 
   if ( f_num_dim ) {
-    unsigned sizes[   MaximumFieldDimension ];
+    unsigned dims[   MaximumFieldDimension ];
     unsigned indices[ MaximumFieldDimension ];
 
     const FieldBase::Restriction & dim = f.restriction( r , p );
 
-    array_stride_to_natural_dimensions( f_num_dim , dim.stride , sizes );
+    array_stride_to_natural_dimensions( f_num_dim , dim.stride , dims );
     array_stride_to_natural_indices( f_num_dim , dim.stride , k , indices );
 
     for ( unsigned i = 0 ; i < f_num_dim ; ++i ) {
@@ -1162,7 +1162,7 @@ std::string variable_name( EntityType        r ,
       // Natural, as opposed to Fortran, ordering of dimensions:
       const ArrayDimTag & tag = * f.dimension_tags()[ ( f_num_dim - 1 ) - i ];
 
-      std::string tmp = tag.to_string(sizes[i],indices[i]);
+      std::string tmp = tag.to_string(dims[i],indices[i]);
 
       if ( tmp.size() ) {
         name.append( "_" );
@@ -1252,7 +1252,7 @@ void get_entities(
 {
   const KernelSet & ks = mesh.kernels( type );
 
-  size_t count = 0 ;
+  unsigned count = 0 ;
 
   for ( KernelSet::const_iterator ik = ks.begin() ; ik != ks.end() ; ++ik ) {
     if ( ik->has_superset( part ) ) { count += ik->size(); }
@@ -1284,7 +1284,7 @@ void get_entities(
 {
   const KernelSet & ks = mesh.kernels( type );
 
-  size_t count = 0 ;
+  unsigned count = 0 ;
 
   for ( KernelSet::const_iterator ik = ks.begin() ; ik != ks.end() ; ++ik ) {
     if ( ik->has_superset( part1 ) &&

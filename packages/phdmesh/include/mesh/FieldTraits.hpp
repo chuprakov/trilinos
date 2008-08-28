@@ -41,15 +41,19 @@ struct Cartesian : public ArrayDimTag {
   enum { X = 0 , Y = 1 , Z = 2 };
 
   const char * name() const ;
-  std::string to_string( size_t size , unsigned index ) const ;
-  unsigned    to_index(  size_t size , const std::string & ) const ;
+  std::string to_string( unsigned size , unsigned index ) const ;
+  unsigned    to_index(  unsigned size , const std::string & ) const ;
   static const Cartesian & tag();
 
-private:
+protected:
   Cartesian() {}
+private:
   Cartesian( const Cartesian & );
   Cartesian & operator = ( const Cartesian & );
 };
+
+struct Cartesian_3D : public Cartesian { enum { Size = 3 }; };
+struct Cartesian_2D : public Cartesian { enum { Size = 2 }; };
 
 //----------------------------------------------------------------------
 /** Dimension traits for cylindrical vector */
@@ -61,8 +65,8 @@ struct Cylindrical : public ArrayDimTag {
          Z = 2 };
 
   const char * name() const ;
-  std::string to_string( size_t size , unsigned index ) const ;
-  unsigned    to_index(  size_t size , const std::string & ) const ;
+  std::string to_string( unsigned size , unsigned index ) const ;
+  unsigned    to_index(  unsigned size , const std::string & ) const ;
   static const Cylindrical & tag();
 
 private:
@@ -81,8 +85,8 @@ struct FullTensor : public ArrayDimTag {
          ZX = 2 , ZY = 5 , ZZ = 8 };
 
   const char * name() const ;
-  std::string to_string( size_t, unsigned) const  ;
-  unsigned    to_index(  size_t, const std::string & ) const  ;
+  std::string to_string( unsigned, unsigned) const  ;
+  unsigned    to_index(  unsigned, const std::string & ) const  ;
   static const FullTensor & tag();
 
 private:
@@ -99,8 +103,8 @@ struct SymmetricTensor : public ArrayDimTag {
   enum { XX = 0 , YY = 1 , ZZ = 2, XY = 3, YZ = 4, XZ = 5 };
 
   const char * name() const  ;
-  std::string to_string( size_t, unsigned) const  ;
-  unsigned    to_index(  size_t , const std::string & ) const ;
+  std::string to_string( unsigned, unsigned) const  ;
+  unsigned    to_index(  unsigned , const std::string & ) const ;
   static const SymmetricTensor & tag();
 
 private:

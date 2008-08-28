@@ -62,8 +62,6 @@ enum ArrayOrder { NaturalOrder , FortranOrder , RankZero };
  *  Members of an Array type include the following.
  *  - Types:
  *    -# value_type ;   Type for the array's members.
- *    -# size_type  ;   Type for the dimensions.
- *    -# index_type ;   Type for the indices.
  *    -# Tag<Ordinal>::type ; TagN where N = Ordinal + 1
  *
  *  - Enumerations for compile-time traits:
@@ -77,15 +75,15 @@ enum ArrayOrder { NaturalOrder , FortranOrder , RankZero };
  *    -# bool natural() const ; 
  *    -# bool reverse() const ; 
  *    -# bool contiguous() const ; 
- *    -# size_type dimension<Ordinal>() const ;
- *    -# size_type dimension( unsigned ordinal ) const ;
- *    -# void dimensions( std::vector<size_type> & ) const ;
+ *    -# unsigned dimension<Ordinal>() const ;
+ *    -# unsigned dimension( unsigned ordinal ) const ;
+ *    -# void dimensions( std::vector<unsigned> & ) const ;
  *
  *  - Member data access functions:
  *    -# value_type * contiguous_data() const ; If data is contiguous
- *    -# value_type & operator[]( const size_type & ) const ;\n
+ *    -# value_type & operator[]( size_type ) const ;\n
  *       Member access by fully-ordered offset.
- *    -# value_type & operator()( const index_type & i1 , ... ) const ;\n
+ *    -# value_type & operator()( const unsigned i1 , ... ) const ;\n
  *       Member access by multi-index of the proper rank.
  *
  *  - Constructors and assignment operators:
@@ -103,7 +101,7 @@ enum ArrayOrder { NaturalOrder , FortranOrder , RankZero };
  *       multidimension array argument to generate an array view of the storage.
  *
  *  - Truncation function:
- *    -# Array::Truncate truncate( const index_type & i ) const ;\n
+ *    -# Array::Truncate truncate( const unsigned i ) const ;\n
  *       Generates an array view into the existing array which
  *       is offset by "i" in the slowest changing dimension
  *       (first Natural or last Fortran dimnension) and has the
@@ -131,21 +129,39 @@ template< class ArrayType , class Tag > struct ArrayAppend ;
  *  const MyTag & MyTag::tag() { static const MyTag t ; return t ; }
  */
 struct ArrayDimTag {
+
   /** Name of the tag, typically the name of the derived class */
   virtual const char * name() const = 0 ;
 
   /** Given a dimension and index produce a string for output. */
-  virtual std::string to_string( size_t dimension , unsigned index ) const ;
+  virtual std::string to_string( unsigned dimension ,
+                                 unsigned index ) const ;
 
   /** Given a dimension and input strige produce an index */
-  virtual unsigned to_index( size_t , const std::string & ) const ;
-
+  virtual unsigned to_index( unsigned , const std::string & ) const ; 
 protected:
   virtual ~ArrayDimTag();
   ArrayDimTag() {}
 private:
   ArrayDimTag( const ArrayDimTag & );
   ArrayDimTag & operator = ( const ArrayDimTag & );
+};
+
+/** \class  ArrayDimension
+ *  \brief  An anonymous array dimension tag,
+ *          which is NOT the recommended usage.
+ */
+struct ArrayDimension : public ArrayDimTag {
+
+  const char * name() const ;
+
+  static const ArrayDimension & tag();
+
+private:
+  ~ArrayDimension();
+  ArrayDimension() {}
+  ArrayDimension( const ArrayDimension & );
+  ArrayDimension & operator = ( const ArrayDimension & );
 };
 
 }
@@ -170,8 +186,7 @@ class Array
 public:
 
   typedef Scalar              value_type ;
-  typedef unsigned            index_type ;
-  typedef size_t              size_type ;
+  typedef unsigned            size_type ;
   typedef const ArrayDimTag * tag_type ;
 
   //----------------------------------
@@ -188,10 +203,7 @@ public:
 
   //----------------------------------
 
-  typedef
-    Array< Scalar , ( Natural ? FortranOrder : NaturalOrder ) ,
-          Tag8,Tag7,Tag6,Tag5,Tag4,Tag3,Tag2,Tag1>
-      ReverseType ;
+  typedef typename ArrayReverse< Array >::type ReverseType ;
 
   //----------------------------------
   // ArrayType::Tag<K>::type 
@@ -199,9 +211,8 @@ public:
   template < unsigned ordinal >
   struct Tag { typedef typename ArrayTagAt<Array,ordinal>::type type ; };
 
-  tag_type tag( const unsigned & ordinal ) const
+  tag_type tag( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return array_dim_tags<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>()[ordinal];
     }
@@ -211,22 +222,20 @@ public:
   size_type size() const { return m_stride[ Rank - 1 ]; }
 
   // ArrayType::dimension<K>();
-  template < unsigned ordinal > size_type dimension() const
+  template < unsigned ordinal > unsigned dimension() const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal_is_less<ordinal,Rank>();
       return ArrayStrideDim<array_order,Rank,ordinal>::dimension(m_stride);
     }
 
   // ArrayType::dimension(K);
-  size_type dimension( const index_type & ordinal ) const
+  unsigned dimension( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return ArrayStrideDim<array_order,Rank>::dimension(m_stride,ordinal);
     }
 
-  void dimensions( std::vector<size_type> & n )
+  void dimensions( std::vector<unsigned> & n )
     {
       n.resize( Rank );
       for ( unsigned i = 0 ; i < Rank ; ++i ) { n[i] = dimension(i); }
@@ -239,26 +248,17 @@ public:
   /** \brief Access member via full ordering of members. */
   value_type & operator[]( size_type i ) const
     {
-      ARRAY_CHECK( array_check_index(size(),i) );
+      ARRAY_CHECK( array_check_offset(size(),i) );
       return m_ptr[ i ];
     }
 
   /** \brief Access member via Rank 8 multi-index */
-  value_type & operator()( const index_type & i1 , const index_type & i2 ,
-                           const index_type & i3 , const index_type & i4 ,
-                           const index_type & i5 , const index_type & i6 ,
-                           const index_type & i7 , const index_type & i8 ) const
-    {
-      array_check_order_known<array_order>();
-      ARRAY_CHECK(array_check_indices(Natural,Rank,m_stride,i1,i2,i3,i4,i5,i6,i7,i8));
-      return m_ptr[ Natural ? ( i8               + i7 * m_stride[0] +
-                                i6 * m_stride[1] + i5 * m_stride[2] +
-                                i4 * m_stride[3] + i3 * m_stride[4] +
-                                i2 * m_stride[5] + i1 * m_stride[6] )
-                            : ( i1               + i2 * m_stride[0] +
-                                i3 * m_stride[1] + i4 * m_stride[2] +
-                                i5 * m_stride[3] + i6 * m_stride[4] +
-                                i7 * m_stride[5] + i8 * m_stride[6] ) ];
+  value_type & operator()( const unsigned i1 , const unsigned i2 ,
+                           const unsigned i3 , const unsigned i4 ,
+                           const unsigned i5 , const unsigned i6 ,
+                           const unsigned i7 , const unsigned i8 ) const
+    { return m_ptr[
+        array_offset<array_order,Rank>(m_stride,i1,i2,i3,i4,i5,i6,i7,i8) ];
     }
 
   //----------------------------------
@@ -291,7 +291,7 @@ public:
 
   typedef typename ArrayTruncate<Array>::type TruncateType ;
 
-  TruncateType truncate( const index_type & i ) const
+  TruncateType truncate( const unsigned i ) const
     {
       TruncateType tmp ;
       tmp.m_ptr = m_ptr + m_stride[ Rank - 2 ] * i ;
@@ -303,57 +303,21 @@ public:
   // Class specific constructors:
 
   Array( value_type * arg_ptr ,
-         const size_type & n1 , const size_type & n2 ,
-         const size_type & n3 , const size_type & n4 ,
-         const size_type & n5 , const size_type & n6 ,
-         const size_type & n7 , const size_type & n8 )
+         const unsigned n1 , const unsigned n2 ,
+         const unsigned n3 , const unsigned n4 ,
+         const unsigned n5 , const unsigned n6 ,
+         const unsigned n7 , const unsigned n8 )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[7] = n1 * (
-        m_stride[6] = n2 * (
-        m_stride[5] = n3 * (
-        m_stride[4] = n4 * (
-        m_stride[3] = n5 * (
-        m_stride[2] = n6 * (
-        m_stride[1] = n7 * (
-        m_stride[0] = n8 )))))));
-      }
-      else {
-        m_stride[7] = n8 * (
-        m_stride[6] = n7 * (
-        m_stride[5] = n6 * (
-        m_stride[4] = n5 * (
-        m_stride[3] = n4 * (
-        m_stride[2] = n3 * (
-        m_stride[1] = n2 * (
-        m_stride[0] = n1 )))))));
-      }
+      Array<void,array_order,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::
+        assign( m_stride , n1 , n2 , n3 , n4 , n5 , n6 , n7 , n8 );
     }
 
-  Array( value_type * arg_ptr , const size_type * const dims )
+  Array( value_type * arg_ptr , const unsigned * const dims )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[7] = dims[0] * (
-        m_stride[6] = dims[1] * (
-        m_stride[5] = dims[2] * (
-        m_stride[4] = dims[3] * (
-        m_stride[3] = dims[4] * (
-        m_stride[2] = dims[5] * (
-        m_stride[1] = dims[6] * (
-        m_stride[0] = dims[7] )))))));
-      }
-      else {
-        m_stride[7] = dims[7] * (
-        m_stride[6] = dims[6] * (
-        m_stride[5] = dims[5] * (
-        m_stride[4] = dims[4] * (
-        m_stride[3] = dims[3] * (
-        m_stride[2] = dims[2] * (
-        m_stride[1] = dims[1] * (
-        m_stride[0] = dims[0] )))))));
-      }
+      Array<void,array_order,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,Tag8>::
+        assign( m_stride , dims );
     }
 
 protected:
@@ -378,8 +342,7 @@ class Array<Scalar,array_order,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,void>
 public:
 
   typedef Scalar              value_type ;
-  typedef unsigned            index_type ;
-  typedef size_t              size_type ;
+  typedef unsigned            size_type ;
   typedef const ArrayDimTag * tag_type ;
 
   //----------------------------------
@@ -396,10 +359,7 @@ public:
 
   //----------------------------------
 
-  typedef
-    Array< Scalar , ( Natural ? FortranOrder : NaturalOrder ) ,
-           Tag7,Tag6,Tag5,Tag4,Tag3,Tag2,Tag1>
-      ReverseType ;
+  typedef typename ArrayReverse< Array >::type ReverseType ;
 
   //----------------------------------
   // ArrayType::Tag<K>::type 
@@ -407,9 +367,8 @@ public:
   template < unsigned ordinal >
   struct Tag { typedef typename ArrayTagAt<Array,ordinal>::type type ; };
 
-  tag_type tag( const unsigned & ordinal ) const
+  tag_type tag( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return array_dim_tags<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,void>()[ordinal];
     }
@@ -419,22 +378,20 @@ public:
   size_type size() const { return m_stride[ Rank - 1 ]; }
 
   // ArrayType::dimension<K>();
-  template < unsigned ordinal > size_type dimension() const
+  template < unsigned ordinal > unsigned dimension() const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal_is_less<ordinal,Rank>();
       return ArrayStrideDim<array_order,Rank,ordinal>::dimension(m_stride);
     }
 
   // ArrayType::dimension(K);
-  size_type dimension( const index_type & ordinal ) const
+  unsigned dimension( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return ArrayStrideDim<array_order,Rank>::dimension(m_stride,ordinal);
     }
 
-  void dimensions( std::vector<size_type> & n )
+  void dimensions( std::vector<unsigned> & n )
     {
       n.resize( Rank );
       for ( unsigned i = 0 ; i < Rank ; ++i ) { n[i] = dimension(i); }
@@ -447,26 +404,17 @@ public:
   /** \brief Access member via full ordering of members. */
   value_type & operator[]( size_type i ) const
     {
-      ARRAY_CHECK( array_check_index(size(),i) );
+      ARRAY_CHECK( array_check_offset(size(),i) );
       return m_ptr[ i ];
     }
 
   /** \brief Access member via Rank 7 multi-index */
-  value_type & operator()( const index_type & i1 , const index_type & i2 ,
-                           const index_type & i3 , const index_type & i4 ,
-                           const index_type & i5 , const index_type & i6 ,
-                           const index_type & i7 ) const
-    {
-      array_check_order_known<array_order>();
-      ARRAY_CHECK(array_check_indices(Natural,Rank,m_stride,i1,i2,i3,i4,i5,i6,i7));
-      return m_ptr[ Natural ? ( i7               + i6 * m_stride[0] +
-                                i5 * m_stride[1] + i4 * m_stride[2] +
-                                i3 * m_stride[3] + i2 * m_stride[4] +
-                                i1 * m_stride[5] )
-                            : ( i1               + i2 * m_stride[0] +
-                                i3 * m_stride[1] + i4 * m_stride[2] +
-                                i5 * m_stride[3] + i6 * m_stride[4] +
-                                i7 * m_stride[5] ) ];
+  value_type & operator()( const unsigned i1 , const unsigned i2 ,
+                           const unsigned i3 , const unsigned i4 ,
+                           const unsigned i5 , const unsigned i6 ,
+                           const unsigned i7 ) const
+    { return m_ptr[
+        array_offset<array_order,Rank>(m_stride,i1,i2,i3,i4,i5,i6,i7) ];
     }
 
   //----------------------------------
@@ -499,7 +447,7 @@ public:
 
   typedef typename ArrayTruncate<Array>::type TruncateType ;
 
-  TruncateType truncate( const index_type & i ) const
+  TruncateType truncate( const unsigned i ) const
     {
       TruncateType tmp ;
       tmp.m_ptr = m_ptr + m_stride[ Rank - 2 ] * i ;
@@ -511,53 +459,21 @@ public:
   // Class specific constructors:
 
   Array( value_type * arg_ptr ,
-         const size_type & n1 , const size_type & n2 ,
-         const size_type & n3 , const size_type & n4 ,
-         const size_type & n5 , const size_type & n6 ,
-         const size_type & n7 )
+         const unsigned n1 , const unsigned n2 ,
+         const unsigned n3 , const unsigned n4 ,
+         const unsigned n5 , const unsigned n6 ,
+         const unsigned n7 )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[6] = n1 * (
-        m_stride[5] = n2 * (
-        m_stride[4] = n3 * (
-        m_stride[3] = n4 * (
-        m_stride[2] = n5 * (
-        m_stride[1] = n6 * (
-        m_stride[0] = n7 ))))));
-      }
-      else {
-        m_stride[6] = n7 * (
-        m_stride[5] = n6 * (
-        m_stride[4] = n5 * (
-        m_stride[3] = n4 * (
-        m_stride[2] = n3 * (
-        m_stride[1] = n2 * (
-        m_stride[0] = n1 ))))));
-      }
+      Array<void,array_order,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,void>::
+        assign( m_stride , n1 , n2 , n3 , n4 , n5 , n6 , n7 );
     }
 
-  Array( value_type * arg_ptr , const size_type * const dims )
+  Array( value_type * arg_ptr , const unsigned * const dims )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[6] = dims[0] * (
-        m_stride[5] = dims[1] * (
-        m_stride[4] = dims[2] * (
-        m_stride[3] = dims[3] * (
-        m_stride[2] = dims[4] * (
-        m_stride[1] = dims[5] * (
-        m_stride[0] = dims[6] ))))));
-      }
-      else {
-        m_stride[6] = dims[6] * (
-        m_stride[5] = dims[5] * (
-        m_stride[4] = dims[4] * (
-        m_stride[3] = dims[3] * (
-        m_stride[2] = dims[2] * (
-        m_stride[1] = dims[1] * (
-        m_stride[0] = dims[0] ))))));
-      }
+      Array<void,array_order,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7,void>::
+        assign( m_stride , dims );
     }
 
 protected:
@@ -582,8 +498,7 @@ class Array<Scalar,array_order,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,void,void>
 public:
 
   typedef Scalar              value_type ;
-  typedef unsigned            index_type ;
-  typedef size_t              size_type ;
+  typedef unsigned            size_type ;
   typedef const ArrayDimTag * tag_type ;
 
   //----------------------------------
@@ -600,10 +515,7 @@ public:
 
   //----------------------------------
 
-  typedef
-    Array< Scalar , ( Natural ? FortranOrder : NaturalOrder ) ,
-           Tag6,Tag5,Tag4,Tag3,Tag2,Tag1>
-      ReverseType ;
+  typedef typename ArrayReverse< Array >::type ReverseType ;
 
   //----------------------------------
   // ArrayType::Tag<K>::type 
@@ -611,9 +523,8 @@ public:
   template < unsigned ordinal >
   struct Tag { typedef typename ArrayTagAt<Array,ordinal>::type type ; };
 
-  tag_type tag( const unsigned & ordinal ) const
+  tag_type tag( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return array_dim_tags<Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,void,void>()[ordinal];
     }
@@ -623,22 +534,20 @@ public:
   size_type size() const { return m_stride[ Rank - 1 ]; }
 
   // ArrayType::dimension<K>();
-  template < unsigned ordinal > size_type dimension() const
+  template < unsigned ordinal > unsigned dimension() const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal_is_less<ordinal,Rank>();
       return ArrayStrideDim<array_order,Rank,ordinal>::dimension(m_stride);
     }
 
   // ArrayType::dimension(K);
-  size_type dimension( const index_type & ordinal ) const
+  unsigned dimension( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return ArrayStrideDim<array_order,Rank>::dimension(m_stride,ordinal);
     }
 
-  void dimensions( std::vector<size_type> & n )
+  void dimensions( std::vector<unsigned> & n )
     {
       n.resize( Rank );
       for ( unsigned i = 0 ; i < Rank ; ++i ) { n[i] = dimension(i); }
@@ -651,23 +560,16 @@ public:
   /** \brief Access member via full ordering of members. */
   value_type & operator[]( size_type i ) const
     {
-      ARRAY_CHECK( array_check_index(size(),i) );
+      ARRAY_CHECK( array_check_offset(size(),i) );
       return m_ptr[ i ];
     }
 
   /** \brief Access member via Rank 6 multi-index */
-  value_type & operator()( const index_type & i1 , const index_type & i2 ,
-                           const index_type & i3 , const index_type & i4 ,
-                           const index_type & i5 , const index_type & i6 ) const
-    {
-      array_check_order_known<array_order>();
-      ARRAY_CHECK(array_check_indices(Natural,Rank,m_stride,i1,i2,i3,i4,i5,i6));
-      return m_ptr[ Natural ? ( i6               + i5 * m_stride[0] +
-                                i4 * m_stride[1] + i3 * m_stride[2] +
-                                i2 * m_stride[3] + i1 * m_stride[4] )
-                            : ( i1               + i2 * m_stride[0] +
-                                i3 * m_stride[1] + i4 * m_stride[2] +
-                                i5 * m_stride[3] + i6 * m_stride[4] ) ];
+  value_type & operator()( const unsigned i1 , const unsigned i2 ,
+                           const unsigned i3 , const unsigned i4 ,
+                           const unsigned i5 , const unsigned i6 ) const
+    { return m_ptr[
+        array_offset<array_order,Rank>(m_stride,i1,i2,i3,i4,i5,i6) ];
     }
 
   //----------------------------------
@@ -700,7 +602,7 @@ public:
 
   typedef typename ArrayTruncate<Array>::type TruncateType ;
 
-  TruncateType truncate( const index_type & i ) const
+  TruncateType truncate( const unsigned i ) const
     {
       TruncateType tmp ;
       tmp.m_ptr = m_ptr + m_stride[ Rank - 2 ] * i ;
@@ -712,48 +614,20 @@ public:
   // Class specific constructors:
 
   Array( value_type * arg_ptr ,
-         const size_type & n1 , const size_type & n2 ,
-         const size_type & n3 , const size_type & n4 ,
-         const size_type & n5 , const size_type & n6 )
+         const unsigned n1 , const unsigned n2 ,
+         const unsigned n3 , const unsigned n4 ,
+         const unsigned n5 , const unsigned n6 )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[5] = n1 * (
-        m_stride[4] = n2 * (
-        m_stride[3] = n3 * (
-        m_stride[2] = n4 * (
-        m_stride[1] = n5 * (
-        m_stride[0] = n6 )))));
-      }
-      else {
-        m_stride[5] = n6 * (
-        m_stride[4] = n5 * (
-        m_stride[3] = n4 * (
-        m_stride[2] = n3 * (
-        m_stride[1] = n2 * (
-        m_stride[0] = n1 )))));
-      }
+      Array<void,array_order,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,void,void>::
+        assign( m_stride , n1 , n2 , n3 , n4 , n5 , n6 );
     }
 
-  Array( value_type * arg_ptr , const size_type * const dims )
+  Array( value_type * arg_ptr , const unsigned * const dims )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[5] = dims[0] * (
-        m_stride[4] = dims[1] * (
-        m_stride[3] = dims[2] * (
-        m_stride[2] = dims[3] * (
-        m_stride[1] = dims[4] * (
-        m_stride[0] = dims[5] )))));
-      }
-      else {
-        m_stride[5] = dims[5] * (
-        m_stride[4] = dims[4] * (
-        m_stride[3] = dims[3] * (
-        m_stride[2] = dims[2] * (
-        m_stride[1] = dims[1] * (
-        m_stride[0] = dims[0] )))));
-      }
+      Array<void,array_order,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,void,void>::
+        assign( m_stride , dims );
     }
 
 protected:
@@ -778,8 +652,7 @@ class Array<Scalar,array_order,Tag1,Tag2,Tag3,Tag4,Tag5,void,void,void>
 public:
 
   typedef Scalar              value_type ;
-  typedef unsigned            index_type ;
-  typedef size_t              size_type ;
+  typedef unsigned            size_type ;
   typedef const ArrayDimTag * tag_type ;
 
   //----------------------------------
@@ -796,10 +669,7 @@ public:
 
   //----------------------------------
 
-  typedef
-    Array< Scalar , ( Natural ? FortranOrder : NaturalOrder ) ,
-           Tag5,Tag4,Tag3,Tag2,Tag1>
-      ReverseType ;
+  typedef typename ArrayReverse< Array >::type ReverseType ;
 
   //----------------------------------
   // ArrayType::Tag<K>::type 
@@ -807,9 +677,8 @@ public:
   template < unsigned ordinal >
   struct Tag { typedef typename ArrayTagAt<Array,ordinal>::type type ; };
 
-  tag_type tag( const unsigned & ordinal ) const
+  tag_type tag( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return array_dim_tags<Tag1,Tag2,Tag3,Tag4,Tag5,void,void,void>()[ordinal];
     }
@@ -819,22 +688,20 @@ public:
   size_type size() const { return m_stride[ Rank - 1 ]; }
 
   // ArrayType::dimension<K>();
-  template < unsigned ordinal > size_type dimension() const
+  template < unsigned ordinal > unsigned dimension() const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal_is_less<ordinal,Rank>();
       return ArrayStrideDim<array_order,Rank,ordinal>::dimension(m_stride);
     }
 
   // ArrayType::dimension(K);
-  size_type dimension( const index_type & ordinal ) const
+  unsigned dimension( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return ArrayStrideDim<array_order,Rank>::dimension(m_stride,ordinal);
     }
 
-  void dimensions( std::vector<size_type> & n )
+  void dimensions( std::vector<unsigned> & n )
     {
       n.resize( Rank );
       for ( unsigned i = 0 ; i < Rank ; ++i ) { n[i] = dimension(i); }
@@ -847,24 +714,15 @@ public:
   /** \brief Access member via full ordering of members. */
   value_type & operator[]( size_type i ) const
     {
-      ARRAY_CHECK( array_check_index(size(),i) );
+      ARRAY_CHECK( array_check_offset(size(),i) );
       return m_ptr[ i ];
     }
 
   /** \brief Access member via Rank 5 multi-index */
-  value_type & operator()( const index_type & i1 , const index_type & i2 ,
-                           const index_type & i3 , const index_type & i4 ,
-                           const index_type & i5 ) const
-    {
-      array_check_order_known<array_order>();
-      ARRAY_CHECK(array_check_indices(Natural,Rank,m_stride,i1,i2,i3,i4,i5));
-      return m_ptr[ Natural ? ( i5               + i4 * m_stride[0] +
-                                i3 * m_stride[1] + i2 * m_stride[2] +
-                                i1 * m_stride[3] )
-                            : ( i1               + i2 * m_stride[0] +
-                                i3 * m_stride[1] + i4 * m_stride[2] +
-                                i5 * m_stride[3] ) ];
-    }
+  value_type & operator()( const unsigned i1 , const unsigned i2 ,
+                           const unsigned i3 , const unsigned i4 ,
+                           const unsigned i5 ) const
+    { return m_ptr[ array_offset<array_order,Rank>(m_stride,i1,i2,i3,i4,i5) ]; }
 
   //----------------------------------
   // Required constructors and assignment operators:
@@ -896,7 +754,7 @@ public:
 
   typedef typename ArrayTruncate<Array>::type TruncateType ;
 
-  TruncateType truncate( const index_type & i ) const
+  TruncateType truncate( const unsigned i ) const
     {
       TruncateType tmp ;
       tmp.m_ptr = m_ptr + m_stride[ Rank - 2 ] * i ;
@@ -908,44 +766,20 @@ public:
   // Class specific constructors:
 
   Array( value_type * arg_ptr ,
-         const size_type & n1 , const size_type & n2 ,
-         const size_type & n3 , const size_type & n4 ,
-         const size_type & n5 )
+         const unsigned n1 , const unsigned n2 ,
+         const unsigned n3 , const unsigned n4 ,
+         const unsigned n5 )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[4] = n1 * (
-        m_stride[3] = n2 * (
-        m_stride[2] = n3 * (
-        m_stride[1] = n4 * (
-        m_stride[0] = n5 ))));
-      }
-      else {
-        m_stride[4] = n5 * (
-        m_stride[3] = n4 * (
-        m_stride[2] = n3 * (
-        m_stride[1] = n2 * (
-        m_stride[0] = n1 ))));
-      }
+      Array<void,array_order,Tag1,Tag2,Tag3,Tag4,Tag5,void,void,void>::
+        assign( m_stride , n1 , n2 , n3 , n4 , n5 );
     }
 
-  Array( value_type * arg_ptr , const size_type * const dims )
+  Array( value_type * arg_ptr , const unsigned * const dims )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[4] = dims[0] * (
-        m_stride[3] = dims[1] * (
-        m_stride[2] = dims[2] * (
-        m_stride[1] = dims[3] * (
-        m_stride[0] = dims[4] ))));
-      }
-      else {
-        m_stride[4] = dims[4] * (
-        m_stride[3] = dims[3] * (
-        m_stride[2] = dims[2] * (
-        m_stride[1] = dims[1] * (
-        m_stride[0] = dims[0] ))));
-      }
+      Array<void,array_order,Tag1,Tag2,Tag3,Tag4,Tag5,void,void,void>::
+        assign( m_stride , dims );
     }
 
 protected:
@@ -969,8 +803,7 @@ class Array<Scalar,array_order,Tag1,Tag2,Tag3,Tag4,void,void,void,void>
 public:
 
   typedef Scalar              value_type ;
-  typedef unsigned            index_type ;
-  typedef size_t              size_type ;
+  typedef unsigned            size_type ;
   typedef const ArrayDimTag * tag_type ;
 
   //----------------------------------
@@ -987,10 +820,7 @@ public:
 
   //----------------------------------
 
-  typedef
-    Array< Scalar , ( Natural ? FortranOrder : NaturalOrder ) ,
-           Tag4,Tag3,Tag2,Tag1>
-      ReverseType ;
+  typedef typename ArrayReverse< Array >::type ReverseType ;
 
   //----------------------------------
   // ArrayType::Tag<K>::type 
@@ -998,9 +828,8 @@ public:
   template < unsigned ordinal >
   struct Tag { typedef typename ArrayTagAt<Array,ordinal>::type type ; };
 
-  tag_type tag( const unsigned & ordinal ) const
+  tag_type tag( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return array_dim_tags<Tag1,Tag2,Tag3,Tag4,void,void,void,void>()[ordinal];
     }
@@ -1010,22 +839,20 @@ public:
   size_type size() const { return m_stride[ Rank - 1 ]; }
 
   // ArrayType::dimension<K>();
-  template < unsigned ordinal > size_type dimension() const
+  template < unsigned ordinal > unsigned dimension() const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal_is_less<ordinal,Rank>();
       return ArrayStrideDim<array_order,Rank,ordinal>::dimension(m_stride);
     }
 
   // ArrayType::dimension(K);
-  size_type dimension( const index_type & ordinal ) const
+  unsigned dimension( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return ArrayStrideDim<array_order,Rank>::dimension(m_stride,ordinal);
     }
 
-  void dimensions( std::vector<size_type> & n )
+  void dimensions( std::vector<unsigned> & n )
     {
       n.resize( Rank );
       for ( unsigned i = 0 ; i < Rank ; ++i ) { n[i] = dimension(i); }
@@ -1038,21 +865,14 @@ public:
   /** \brief Access member via full ordering of members. */
   value_type & operator[]( size_type i ) const
     {
-      ARRAY_CHECK( array_check_index(size(),i) );
+      ARRAY_CHECK( array_check_offset(size(),i) );
       return m_ptr[ i ];
     }
 
   /** \brief Access member via Rank 4 multi-index */
-  value_type & operator()( const index_type & i1 , const index_type & i2 ,
-                           const index_type & i3 , const index_type & i4 ) const
-    {
-      array_check_order_known<array_order>();
-      ARRAY_CHECK(array_check_indices(Natural,Rank,m_stride,i1,i2,i3,i4));
-      return m_ptr[ Natural ? ( i4               + i3 * m_stride[0] +
-                                i2 * m_stride[1] + i1 * m_stride[2] )
-                            : ( i1               + i2 * m_stride[0] +
-                                i3 * m_stride[1] + i4 * m_stride[2] ) ];
-    }
+  value_type & operator()( const unsigned i1 , const unsigned i2 ,
+                           const unsigned i3 , const unsigned i4 ) const
+    { return m_ptr[ array_offset<array_order,Rank>(m_stride,i1,i2,i3,i4) ]; }
 
   //----------------------------------
   // Required constructors and assignment operators:
@@ -1084,7 +904,7 @@ public:
 
   typedef typename ArrayTruncate<Array>::type TruncateType ;
 
-  TruncateType truncate( const index_type & i ) const
+  TruncateType truncate( const unsigned i ) const
     {
       TruncateType tmp ;
       tmp.m_ptr = m_ptr + m_stride[ Rank - 2 ] * i ;
@@ -1096,39 +916,19 @@ public:
   // Class specific constructors:
 
   Array( value_type * arg_ptr ,
-         const size_type & n1 , const size_type & n2 ,
-         const size_type & n3 , const size_type & n4 )
+         const unsigned n1 , const unsigned n2 ,
+         const unsigned n3 , const unsigned n4 )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[3] = n1 * (
-        m_stride[2] = n2 * (
-        m_stride[1] = n3 * (
-        m_stride[0] = n4 )));
-      }
-      else {
-        m_stride[3] = n4 * (
-        m_stride[2] = n3 * (
-        m_stride[1] = n2 * (
-        m_stride[0] = n1 )));
-      }
+      Array<void,array_order,Tag1,Tag2,Tag3,Tag4,void,void,void,void>::
+        assign( m_stride , n1 , n2 , n3 , n4 );
     }
 
-  Array( value_type * arg_ptr , const size_type * const dims )
+  Array( value_type * arg_ptr , const unsigned * const dims )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[3] = dims[0] * (
-        m_stride[2] = dims[1] * (
-        m_stride[1] = dims[2] * (
-        m_stride[0] = dims[3] )));
-      }
-      else {
-        m_stride[3] = dims[3] * (
-        m_stride[2] = dims[2] * (
-        m_stride[1] = dims[1] * (
-        m_stride[0] = dims[0] )));
-      }
+      Array<void,array_order,Tag1,Tag2,Tag3,Tag4,void,void,void,void>::
+        assign( m_stride , dims );
     }
 
 protected:
@@ -1152,8 +952,7 @@ class Array<Scalar,array_order,Tag1,Tag2,Tag3,void,void,void,void,void>
 public:
 
   typedef Scalar              value_type ;
-  typedef unsigned            index_type ;
-  typedef size_t              size_type ;
+  typedef unsigned            size_type ;
   typedef const ArrayDimTag * tag_type ;
 
   //----------------------------------
@@ -1170,9 +969,7 @@ public:
 
   //----------------------------------
 
-  typedef
-    Array< Scalar, ( Natural ? FortranOrder : NaturalOrder ), Tag3,Tag2,Tag1>
-      ReverseType ;
+  typedef typename ArrayReverse< Array >::type ReverseType ;
 
   //----------------------------------
   // ArrayType::Tag<K>::type 
@@ -1180,9 +977,8 @@ public:
   template < unsigned ordinal >
   struct Tag { typedef typename ArrayTagAt<Array,ordinal>::type type ; };
 
-  tag_type tag( const unsigned & ordinal ) const
+  tag_type tag( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return array_dim_tags<Tag1,Tag2,Tag3,void,void,void,void,void>()[ordinal];
     }
@@ -1192,22 +988,20 @@ public:
   size_type size() const { return m_stride[ Rank - 1 ]; }
 
   // ArrayType::dimension<K>();
-  template < unsigned ordinal > size_type dimension() const
+  template < unsigned ordinal > unsigned dimension() const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal_is_less<ordinal,Rank>();
       return ArrayStrideDim<array_order,Rank,ordinal>::dimension(m_stride);
     }
 
   // ArrayType::dimension(K);
-  size_type dimension( const index_type & ordinal ) const
+  unsigned dimension( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return ArrayStrideDim<array_order,Rank>::dimension(m_stride,ordinal);
     }
 
-  void dimensions( std::vector<size_type> & n )
+  void dimensions( std::vector<unsigned> & n )
     {
       n.resize( Rank );
       for ( unsigned i = 0 ; i < Rank ; ++i ) { n[i] = dimension(i); }
@@ -1220,19 +1014,14 @@ public:
   /** \brief Access member via full ordering of members. */
   value_type & operator[]( size_type i ) const
     {
-      ARRAY_CHECK( array_check_index(size(),i) );
+      ARRAY_CHECK( array_check_offset(size(),i) );
       return m_ptr[ i ];
     }
 
   /** \brief Access member via Rank 3 multi-index */
-  value_type & operator()( const index_type & i1 , const index_type & i2 ,
-                           const index_type & i3 ) const
-    {
-      array_check_order_known<array_order>();
-      ARRAY_CHECK(array_check_indices(Natural,Rank,m_stride,i1,i2,i3));
-      return m_ptr[ Natural ? ( i3 + i2 * m_stride[0] + i1 * m_stride[1] )
-                            : ( i1 + i2 * m_stride[0] + i3 * m_stride[1] ) ];
-    }
+  value_type & operator()( const unsigned i1 , const unsigned i2 ,
+                           const unsigned i3 ) const
+    { return m_ptr[ array_offset<array_order,Rank>(m_stride,i1,i2,i3) ]; }
 
   //----------------------------------
   // Required constructors and assignment operators:
@@ -1264,7 +1053,7 @@ public:
 
   typedef typename ArrayTruncate<Array>::type TruncateType ;
 
-  TruncateType truncate( const index_type & i ) const
+  TruncateType truncate( const unsigned i ) const
     {
       TruncateType tmp ;
       tmp.m_ptr = m_ptr + m_stride[ Rank - 2 ] * i ;
@@ -1276,35 +1065,19 @@ public:
   // Class specific constructors:
 
   Array( value_type * arg_ptr ,
-         const size_type & n1 , const size_type & n2 ,
-         const size_type & n3 )
+         const unsigned n1 , const unsigned n2 ,
+         const unsigned n3 )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[2] = n1 * (
-        m_stride[1] = n2 * (
-        m_stride[0] = n3 ));
-      }
-      else {
-        m_stride[2] = n3 * (
-        m_stride[1] = n2 * (
-        m_stride[0] = n1 ));
-      }
+      Array<void,array_order,Tag1,Tag2,Tag3,void,void,void,void,void>::
+        assign( m_stride , n1 , n2 , n3 );
     }
 
-  Array( value_type * arg_ptr , const size_type * const dims )
+  Array( value_type * arg_ptr , const unsigned * const dims )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[2] = dims[0] * (
-        m_stride[1] = dims[1] * (
-        m_stride[0] = dims[2] ));
-      }
-      else {
-        m_stride[2] = dims[2] * (
-        m_stride[1] = dims[1] * (
-        m_stride[0] = dims[0] ));
-      }
+      Array<void,array_order,Tag1,Tag2,Tag3,void,void,void,void,void>::
+        assign( m_stride , dims );
     }
 
 protected:
@@ -1327,8 +1100,7 @@ class Array<Scalar,array_order,Tag1,Tag2,void,void,void,void,void,void>
 public:
 
   typedef Scalar              value_type ;
-  typedef unsigned            index_type ;
-  typedef size_t              size_type ;
+  typedef unsigned            size_type ;
   typedef const ArrayDimTag * tag_type ;
 
   //----------------------------------
@@ -1345,9 +1117,7 @@ public:
 
   //----------------------------------
 
-  typedef
-    Array< Scalar, ( Natural ? FortranOrder : NaturalOrder ), Tag2,Tag1>
-      ReverseType ;
+  typedef typename ArrayReverse< Array >::type ReverseType ;
 
   //----------------------------------
   // ArrayType::Tag<K>::type 
@@ -1355,9 +1125,8 @@ public:
   template < unsigned ordinal >
   struct Tag { typedef typename ArrayTagAt<Array,ordinal>::type type ; };
 
-  tag_type tag( const unsigned & ordinal ) const
+  tag_type tag( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return array_dim_tags<Tag1,Tag2,void,void,void,void,void,void>()[ordinal];
     }
@@ -1367,22 +1136,20 @@ public:
   size_type size() const { return m_stride[ Rank - 1 ]; }
 
   // ArrayType::dimension<K>();
-  template < unsigned ordinal > size_type dimension() const
+  template < unsigned ordinal > unsigned dimension() const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal_is_less<ordinal,Rank>();
       return ArrayStrideDim<array_order,Rank,ordinal>::dimension(m_stride);
     }
 
   // ArrayType::dimension(K);
-  size_type dimension( const index_type & ordinal ) const
+  unsigned dimension( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return ArrayStrideDim<array_order,Rank>::dimension(m_stride,ordinal);
     }
 
-  void dimensions( std::vector<size_type> & n )
+  void dimensions( std::vector<unsigned> & n )
     {
       n.resize( Rank );
       for ( unsigned i = 0 ; i < Rank ; ++i ) { n[i] = dimension(i); }
@@ -1395,18 +1162,13 @@ public:
   /** \brief Access member via full ordering of members. */
   value_type & operator[]( size_type i ) const
     {
-      ARRAY_CHECK( array_check_index(size(),i) );
+      ARRAY_CHECK( array_check_offset(size(),i) );
       return m_ptr[ i ];
     }
 
   /** \brief Access member via Rank 2 multi-index */
-  value_type & operator()( const index_type & i1 , const index_type & i2 ) const
-    {
-      array_check_order_known<array_order>();
-      ARRAY_CHECK(array_check_indices(Natural,Rank,m_stride,i1,i2));
-      return m_ptr[ Natural ? ( i2 + i1 * m_stride[0] )
-                            : ( i1 + i2 * m_stride[0] ) ];
-    }
+  value_type & operator()( const unsigned i1 , const unsigned i2 ) const
+    { return m_ptr[ array_offset<array_order,Rank>(m_stride,i1,i2) ]; }
 
   //----------------------------------
   // Required constructors and assignment operators:
@@ -1438,7 +1200,7 @@ public:
 
   typedef typename ArrayTruncate<Array>::type TruncateType ;
 
-  TruncateType truncate( const index_type & i ) const
+  TruncateType truncate( const unsigned i ) const
     {
       TruncateType tmp ;
       tmp.m_ptr = m_ptr + m_stride[ Rank - 2 ] * i ;
@@ -1449,30 +1211,18 @@ public:
   //----------------------------------
   // Class specific constructors:
 
-  Array( value_type * arg_ptr , const size_type & n1 , const size_type & n2 )
+  Array( value_type * arg_ptr , const unsigned n1 , const unsigned n2 )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[1] = n1 * (
-        m_stride[0] = n2 );
-      }
-      else {
-        m_stride[1] = n2 * (
-        m_stride[0] = n1 );
-      }
+      Array<void,array_order,Tag1,Tag2,void,void,void,void,void,void>::
+        assign( m_stride , n1 , n2 );
     }
 
-  Array( value_type * arg_ptr , const size_type * const dims )
+  Array( value_type * arg_ptr , const unsigned * const dims )
     : m_ptr( arg_ptr )
     {
-      if ( Natural ) {
-        m_stride[1] = dims[0] * (
-        m_stride[0] = dims[1] );
-      }
-      else {
-        m_stride[1] = dims[1] * (
-        m_stride[0] = dims[0] );
-      }
+      Array<void,array_order,Tag1,Tag2,void,void,void,void,void,void>::
+        assign( m_stride , dims );
     }
 
 protected:
@@ -1495,8 +1245,7 @@ class Array<Scalar,array_order,Tag1,void,void,void,void,void,void,void>
 public:
 
   typedef Scalar              value_type ;
-  typedef unsigned            index_type ;
-  typedef size_t              size_type ;
+  typedef unsigned            size_type ;
   typedef const ArrayDimTag * tag_type ;
 
   //----------------------------------
@@ -1513,9 +1262,7 @@ public:
 
   //----------------------------------
 
-  typedef
-    Array< Scalar, ( Natural ? FortranOrder : NaturalOrder ), Tag1>
-      ReverseType ;
+  typedef typename ArrayReverse< Array >::type ReverseType ;
 
   //----------------------------------
   // ArrayType::Tag<K>::type 
@@ -1523,9 +1270,8 @@ public:
   template < unsigned ordinal >
   struct Tag { typedef typename ArrayTagAt<Array,ordinal>::type type ; };
 
-  tag_type tag( const unsigned & ordinal ) const
+  tag_type tag( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return array_dim_tags<Tag1,void,void,void,void,void,void,void>()[ordinal];
     }
@@ -1535,22 +1281,20 @@ public:
   size_type size() const { return m_stride[ Rank - 1 ]; }
 
   // ArrayType::dimension<K>();
-  template < unsigned ordinal > size_type dimension() const
+  template < unsigned ordinal > unsigned dimension() const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal_is_less<ordinal,Rank>();
       return ArrayStrideDim<array_order,Rank,ordinal>::dimension(m_stride);
     }
 
   // ArrayType::dimension(K);
-  size_type dimension( const index_type & ordinal ) const
+  unsigned dimension( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( Rank , ordinal );
       return ArrayStrideDim<array_order,Rank>::dimension(m_stride,ordinal);
     }
 
-  void dimensions( std::vector<size_type> & n )
+  void dimensions( std::vector<unsigned> & n )
     {
       n.resize( Rank );
       for ( unsigned i = 0 ; i < Rank ; ++i ) { n[i] = dimension(i); }
@@ -1563,16 +1307,13 @@ public:
   /** \brief Access member via full ordering of members. */
   value_type & operator[]( size_type i ) const
     {
-      ARRAY_CHECK( array_check_index(size(),i) );
+      ARRAY_CHECK( array_check_offset(size(),i) );
       return m_ptr[ i ];
     }
 
   /** \brief Access member via Rank 1 multi-index */
-  value_type & operator()( const index_type & i1 ) const
-    {
-      ARRAY_CHECK(array_check_indices(Natural,Rank,m_stride,i1));
-      return m_ptr[ i1 ];
-    }
+  value_type & operator()( const unsigned i1 ) const
+    { return m_ptr[ array_offset<array_order,Rank>(m_stride,i1) ]; }
 
   //----------------------------------
   // Required constructors and assignment operators:
@@ -1604,7 +1345,7 @@ public:
 
   typedef typename ArrayTruncate<Array>::type TruncateType ;
 
-  TruncateType truncate( const index_type & i ) const
+  TruncateType truncate( const unsigned i ) const
     {
       TruncateType tmp ;
       tmp.m_ptr = m_ptr + m_stride[ Rank - 2 ] * i ;
@@ -1615,13 +1356,19 @@ public:
   //----------------------------------
   // Class specific constructors:
 
-  Array( value_type * arg_ptr , const size_type & n1 )
+  Array( value_type * arg_ptr , const unsigned n1 )
     : m_ptr( arg_ptr )
-    { m_stride[0] = n1 ; }
+    {
+      Array<void,array_order,Tag1,void,void,void,void,void,void,void>::
+        assign( m_stride , n1 );
+    }
 
-  Array( value_type * arg_ptr , const size_type * const dims )
+  Array( value_type * arg_ptr , const unsigned * const dims )
     : m_ptr( arg_ptr )
-    { m_stride[0] = dims[0] ; }
+    {
+      Array<void,array_order,Tag1,void,void,void,void,void,void,void>::
+        assign( m_stride , dims );
+    }
 
 protected:
 
@@ -1643,8 +1390,7 @@ class Array<Scalar,RankZero,void,void,void,void,void,void,void,void>
 public:
 
   typedef Scalar              value_type ;
-  typedef unsigned            index_type ;
-  typedef size_t              size_type ;
+  typedef unsigned            size_type ;
   typedef const ArrayDimTag * tag_type ;
 
   //----------------------------------
@@ -1705,8 +1451,7 @@ class Array<Scalar,array_order,void,void,void,void,void,void,void,void>
 public:
 
   typedef Scalar              value_type ;
-  typedef unsigned            index_type ;
-  typedef size_t              size_type ;
+  typedef unsigned            size_type ;
   typedef const ArrayDimTag * tag_type ;
 
   //----------------------------------
@@ -1722,16 +1467,12 @@ public:
 
   //----------------------------------
 
-  typedef
-    Array< Scalar , ( Natural ? FortranOrder : NaturalOrder ) ,
-           void,void,void,void,void,void,void,void>
-      ReverseType ;
+  typedef typename ArrayReverse< Array >::type ReverseType ;
 
   //----------------------------------
 
-  tag_type tag( const unsigned & ordinal ) const
+  tag_type tag( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( m_rank , ordinal );
       const int i = Natural ? ( m_rank - 1 ) - ordinal : ordinal ;
       return m_tag[i];
@@ -1742,15 +1483,14 @@ public:
   size_type size() const { return m_stride[ m_rank - 1 ]; }
 
   // ArrayType::dimension(K);
-  size_type dimension( const index_type & ordinal ) const
+  unsigned dimension( const unsigned ordinal ) const
     {
-      array_check_order_known<array_order>();
       array_check_ordinal( m_rank , ordinal );
       const int i = Natural ? ( m_rank - 1 ) - ordinal : ordinal ;
       return i ? m_stride[i] / m_stride[i-1] : m_stride[i] ;
     }
 
-  void dimensions( std::vector<size_type> & n )
+  void dimensions( std::vector<unsigned> & n )
     {
       n.resize( m_rank );
       for ( unsigned i = 0 ; i < m_rank ; ++i ) { n[i] = dimension(i); }
@@ -1763,114 +1503,72 @@ public:
   /** \brief Access member via full ordering of members. */
   value_type & operator[]( size_type i ) const
     {
-      ARRAY_CHECK( array_check_index(size(),i) );
+      ARRAY_CHECK( array_check_offset(size(),i) );
       return m_ptr[ i ];
     }
 
   //----------------------------------
   /** \brief Access member via Rank 8 multi-index */
-  value_type & operator()( const index_type & i1 , const index_type & i2 ,
-                           const index_type & i3 , const index_type & i4 ,
-                           const index_type & i5 , const index_type & i6 ,
-                           const index_type & i7 , const index_type & i8 ) const
+  value_type & operator()( const unsigned i1 , const unsigned i2 ,
+                           const unsigned i3 , const unsigned i4 ,
+                           const unsigned i5 , const unsigned i6 ,
+                           const unsigned i7 , const unsigned i8 ) const
     {
-      array_check_order_known<array_order>();
       ARRAY_CHECK( array_check_rank( m_rank , 8 ) );
-      ARRAY_CHECK(array_check_indices(Natural,m_rank,m_stride,i1,i2,i3,i4,i5,i6,i7,i8));
-      return m_ptr[ Natural ? ( i8               + i7 * m_stride[0] +
-                                i6 * m_stride[1] + i5 * m_stride[2] +
-                                i4 * m_stride[3] + i3 * m_stride[4] +
-                                i2 * m_stride[5] + i1 * m_stride[6] )
-                            : ( i1               + i2 * m_stride[0] +
-                                i3 * m_stride[1] + i4 * m_stride[2] +
-                                i5 * m_stride[3] + i6 * m_stride[4] +
-                                i7 * m_stride[5] + i8 * m_stride[6] ) ];
+      return m_ptr[
+        array_offset<array_order,8>(m_stride,i1,i2,i3,i4,i5,i6,i7,i8) ];
     }
 
-  value_type & operator()( const index_type & i1 , const index_type & i2 ,
-                           const index_type & i3 , const index_type & i4 ,
-                           const index_type & i5 , const index_type & i6 ,
-                           const index_type & i7 ) const
+  value_type & operator()( const unsigned i1 , const unsigned i2 ,
+                           const unsigned i3 , const unsigned i4 ,
+                           const unsigned i5 , const unsigned i6 ,
+                           const unsigned i7 ) const
     {
-      array_check_order_known<array_order>();
       ARRAY_CHECK( array_check_rank( m_rank , 7 ) );
-      ARRAY_CHECK(array_check_indices(Natural,m_rank,m_stride,i1,i2,i3,i4,i5,i6,i7));
-      return m_ptr[ Natural ? ( i7               + i6 * m_stride[0] +
-                                i5 * m_stride[1] + i4 * m_stride[2] +
-                                i3 * m_stride[3] + i2 * m_stride[4] +
-                                i1 * m_stride[5] )
-                            : ( i1               + i2 * m_stride[0] +
-                                i3 * m_stride[1] + i4 * m_stride[2] +
-                                i5 * m_stride[3] + i6 * m_stride[4] +
-                                i7 * m_stride[5] ) ];
+      return m_ptr[
+        array_offset<array_order,7>(m_stride,i1,i2,i3,i4,i5,i6,i7) ];
     }
 
-  value_type & operator()( const index_type & i1 , const index_type & i2 ,
-                           const index_type & i3 , const index_type & i4 ,
-                           const index_type & i5 , const index_type & i6 ) const
+  value_type & operator()( const unsigned i1 , const unsigned i2 ,
+                           const unsigned i3 , const unsigned i4 ,
+                           const unsigned i5 , const unsigned i6 ) const
     {
-      array_check_order_known<array_order>();
       ARRAY_CHECK( array_check_rank( m_rank , 6 ) );
-      ARRAY_CHECK(array_check_indices(Natural,m_rank,m_stride,i1,i2,i3,i4,i5,i6));
-      return m_ptr[ Natural ? ( i6               + i5 * m_stride[0] +
-                                i4 * m_stride[1] + i3 * m_stride[2] +
-                                i2 * m_stride[3] + i1 * m_stride[4] )
-                            : ( i1               + i2 * m_stride[0] +
-                                i3 * m_stride[1] + i4 * m_stride[2] +
-                                i5 * m_stride[3] + i6 * m_stride[4] ) ];
+      return m_ptr[ array_offset<array_order,6>(m_stride,i1,i2,i3,i4,i5,i6) ];
     }
 
-  value_type & operator()( const index_type & i1 , const index_type & i2 ,
-                           const index_type & i3 , const index_type & i4 ,
-                           const index_type & i5 ) const
+  value_type & operator()( const unsigned i1 , const unsigned i2 ,
+                           const unsigned i3 , const unsigned i4 ,
+                           const unsigned i5 ) const
     {
-      array_check_order_known<array_order>();
       ARRAY_CHECK( array_check_rank( m_rank , 5 ) );
-      ARRAY_CHECK(array_check_indices(Natural,m_rank,m_stride,i1,i2,i3,i4,i5));
-      return m_ptr[ Natural ? ( i5               + i4 * m_stride[0] +
-                                i3 * m_stride[1] + i2 * m_stride[2] +
-                                i1 * m_stride[3] )
-                            : ( i1               + i2 * m_stride[0] +
-                                i3 * m_stride[1] + i4 * m_stride[2] +
-                                i5 * m_stride[3] ) ];
+      return m_ptr[ array_offset<array_order,5>(m_stride,i1,i2,i3,i4,i5) ];
     }
 
-  value_type & operator()( const index_type & i1 , const index_type & i2 ,
-                           const index_type & i3 , const index_type & i4 ) const
+  value_type & operator()( const unsigned i1 , const unsigned i2 ,
+                           const unsigned i3 , const unsigned i4 ) const
     {
-      array_check_order_known<array_order>();
       ARRAY_CHECK( array_check_rank( m_rank , 4 ) );
-      ARRAY_CHECK(array_check_indices(Natural,m_rank,m_stride,i1,i2,i3,i4));
-      return m_ptr[ Natural ? ( i4               + i3 * m_stride[0] +
-                                i2 * m_stride[1] + i1 * m_stride[2] )
-                            : ( i1               + i2 * m_stride[0] +
-                                i3 * m_stride[1] + i4 * m_stride[2] ) ];
+      return m_ptr[ array_offset<array_order,4>(m_stride,i1,i2,i3,i4) ];
     }
 
-  value_type & operator()( const index_type & i1 , const index_type & i2 ,
-                           const index_type & i3 ) const
+  value_type & operator()( const unsigned i1 , const unsigned i2 ,
+                           const unsigned i3 ) const
     {
-      array_check_order_known<array_order>();
       ARRAY_CHECK( array_check_rank( m_rank , 3 ) );
-      ARRAY_CHECK(array_check_indices(Natural,m_rank,m_stride,i1,i2,i3));
-      return m_ptr[ Natural ? ( i3 + i2 * m_stride[0] + i1 * m_stride[1] )
-                            : ( i1 + i2 * m_stride[0] + i3 * m_stride[1] ) ];
+      return m_ptr[ array_offset<array_order,3>(m_stride,i1,i2,i3) ];
     }
 
-  value_type & operator()( const index_type & i1 , const index_type & i2 ) const
+  value_type & operator()( const unsigned i1 , const unsigned i2 ) const
     {
-      array_check_order_known<array_order>();
       ARRAY_CHECK( array_check_rank( m_rank , 2 ) );
-      ARRAY_CHECK(array_check_indices(Natural,m_rank,m_stride,i1,i2));
-      return m_ptr[ Natural ? ( i2 + i1 * m_stride[0] )
-                            : ( i1 + i2 * m_stride[0] ) ];
+      return m_ptr[ array_offset<array_order,2>(m_stride,i1,i2) ];
     }
 
-  value_type & operator()( const index_type & i1 ) const
+  value_type & operator()( const unsigned i1 ) const
     {
-      ARRAY_CHECK(array_check_indices(Natural,m_rank,m_stride,i1));
       ARRAY_CHECK( array_check_rank( m_rank , 1 ) );
-      return m_ptr[ i1 ];
+      return m_ptr[ array_offset<array_order,1>(m_stride,i1) ];
     }
 
   //----------------------------------
@@ -1886,7 +1584,7 @@ public:
   Array( const Array & rhs )
     : m_ptr( rhs.m_ptr ), m_rank( rhs.m_rank )
     {
-      Copy<8>( m_stride , rhs.m_ptr );
+      Copy<8>( m_stride , rhs.m_stride );
       Copy<8>( m_tag , rhs.m_tag );
     }
 
@@ -1894,7 +1592,7 @@ public:
     {
       m_ptr = rhs.m_ptr ;
       m_rank = rhs.m_rank ;
-      Copy<8>( m_stride , rhs.m_ptr );
+      Copy<8>( m_stride , rhs.m_stride );
       Copy<8>( m_tag , rhs.m_tag );
       return *this ;
     }
@@ -1910,7 +1608,7 @@ public:
     {
       m_ptr = rhs.m_ptr ;
       m_rank = rhs.m_rank ;
-      Copy<8>( m_stride , rhs.m_ptr );
+      Copy<8>( m_stride , rhs.m_stride );
       Copy<8>( m_tag , rhs.m_tag );
       return *this ;
     }
@@ -1943,13 +1641,13 @@ public:
   //----------------------------------
   // Truncated view
 
-  Array truncate( const index_type & i ) const
+  Array truncate( const unsigned i ) const
     {
       Array tmp ;
       if ( 1 < m_rank ) {
         tmp.m_ptr  = m_ptr + m_stride[ m_rank - 2 ] * i ;
         tmp.m_rank = m_rank - 1 ;
-        size_t k ;
+        unsigned k ;
         for ( k = 0 ; k < m_rank - 1 ; ++k ) { tmp.m_stride[i] = m_stride[i] ; }
         for (       ; k < 8          ; ++k ) { tmp.m_stride[i] = 0 ; }
         for ( k = 0 ; k < m_rank - 1 ; ++k ) { tmp.m_tag[i] = m_tag[i] ; }
@@ -1962,22 +1660,22 @@ public:
   // Class specific constructors:
 
   Array( value_type * ptr ,
-         const size_type rank ,
-         const size_type * const dims ,
+         const unsigned rank ,
+         const unsigned * const dims ,
          const tag_type  * const tags )
     : m_ptr( ptr ), m_rank( rank )
     {
       if ( Natural ) {
-        size_t n = 1 ;
-        size_t i ;
+        size_type n = 1 ;
+        unsigned i ;
         for ( i = 0 ; i < rank ; ++i ) { m_stride[i] = n *= dims[(rank-1)-i]; }
         for (       ; i < 8    ; ++i ) { m_stride[i] = 0 ; }
         for ( i = 0 ; i < rank ; ++i ) { m_tag[i] = tags[(rank-1)-i]; }
         for (       ; i < 8    ; ++i ) { m_tag[i] = NULL ; }
       }
       else {
-        size_t n = 1 ;
-        size_t i ;
+        size_type n = 1 ;
+        unsigned i ;
         for ( i = 0 ; i < rank ; ++i ) { m_stride[i] = n *= dims[i] ; }
         for (       ; i < 8    ; ++i ) { m_stride[i] = 0 ; }
         for ( i = 0 ; i < rank ; ++i ) { m_tag[i] = tags[i]; }
@@ -1988,7 +1686,7 @@ public:
 protected:
 
   Scalar  * m_ptr ;
-  size_type m_rank ;
+  unsigned  m_rank ;
   size_type m_stride[8];
   tag_type  m_tag[8] ;
 

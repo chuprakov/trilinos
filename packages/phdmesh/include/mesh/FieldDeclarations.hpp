@@ -67,51 +67,52 @@ declare_symmetric_tensor_field_on_all_elements( MeshMetaData & , const std::stri
 //----------------------------------------------------------------------
 // Scalar fields:
 
-template< typename Type >
-Field<Type> & put_field_on_all_nodes( Field<Type> & );
+template< class FieldType >
+FieldType &
+put_field_on_all_nodes( FieldType & );
 
-template< typename Type >
-Field<Type> & put_field_on_all_elements( Field<Type> & );
+template< typename FieldType >
+FieldType & put_field_on_all_elements( FieldType & );
 
-template< typename Type >
-Field<Type> & put_field_on_nodes( Field<Type> & , Part & );
+template< typename FieldType >
+FieldType & put_field_on_nodes( FieldType & , Part & );
 
-template< typename Type >
-Field<Type> & put_field_on_elements( Field<Type> &, Part & );
+template< typename FieldType >
+FieldType & put_field_on_elements( FieldType &, Part & );
 
 //----------------------------------------------------------------------
 // 1D Array fields:
 
-template< typename Type , class T1 >
-Field<Type,T1> & put_field_on_all_nodes( Field<Type,T1> & , unsigned n1 );
+template< typename FieldType >
+FieldType & put_field_on_all_nodes( FieldType & , unsigned n1 );
 
-template< typename Type , class T1 >
-Field<Type,T1> & put_field_on_all_elements( Field<Type,T1> & , unsigned n1 );
+template< typename FieldType >
+FieldType & put_field_on_all_elements( FieldType & , unsigned n1 );
 
-template< typename Type , class T1 >
-Field<Type,T1> & put_field_on_nodes( Field<Type,T1> & , Part & , unsigned n1 );
+template< typename FieldType >
+FieldType & put_field_on_nodes( FieldType & , Part & , unsigned n1 );
 
-template< typename Type , class T1 >
-Field<Type,T1> & put_field_on_elements( Field<Type,T1> &, Part &, unsigned n1 );
+template< typename FieldType >
+FieldType & put_field_on_elements( FieldType &, Part &, unsigned n1 );
 
 //----------------------------------------------------------------------
 // 2D Array fields:
 
-template< typename Type , class T1 , class T2 >
-Field<Type,T1,T2> &
-put_field_on_all_nodes( Field<Type,T1,T2> &, unsigned n1 , unsigned n2 );
+template< typename FieldType >
+FieldType &
+put_field_on_all_nodes( FieldType &, unsigned n1 , unsigned n2 );
 
-template< typename Type , class T1 , class T2 >
-Field<Type,T1,T2> &
-put_field_on_all_elements( Field<Type,T1,T2> &, unsigned n1, unsigned n2);
+template< typename FieldType >
+FieldType &
+put_field_on_all_elements( FieldType &, unsigned n1, unsigned n2);
 
-template< typename Type , class T1 , class T2 >
-Field<Type,T1,T2> &
-put_field_on_nodes( Field<Type,T1,T2> &, Part &, unsigned n1, unsigned n2);
+template< typename FieldType >
+FieldType &
+put_field_on_nodes( FieldType &, Part &, unsigned n1, unsigned n2);
 
-template< typename Type , class T1 , class T2 >
-Field<Type,T1,T2> &
-put_field_on_elements( Field<Type,T1,T2> &, Part &, unsigned n1, unsigned n2 );
+template< typename FieldType >
+FieldType &
+put_field_on_elements( FieldType &, Part &, unsigned n1, unsigned n2 );
 
 }
 
@@ -122,63 +123,63 @@ put_field_on_elements( Field<Type,T1,T2> &, Part &, unsigned n1, unsigned n2 );
 
 namespace phdmesh {
 
-template< typename Type >
+template< typename FieldType >
 inline
-Field<Type> & put_field_on_nodes( Field<Type> & f , Part & p )
+FieldType & put_field_on_nodes( FieldType & f , Part & p )
 { f.mesh_meta_data().put_field( f , Node , p );  return f ; }
 
-template< typename Type , class T1 >
+template< typename FieldType >
 inline
-Field<Type,T1> &
-put_field_on_nodes( Field<Type,T1> & f , Part & p , unsigned n1 )
+FieldType &
+put_field_on_nodes( FieldType & f , Part & p , unsigned n1 )
 { f.mesh_meta_data().put_field( f , Node , p , n1 );  return f ; }
 
-template< typename Type , class T1 , class T2 >
+template< typename FieldType >
 inline
-Field<Type,T1,T2> &
-put_field_on_nodes( Field<Type,T1,T2> & f , Part & p ,
+FieldType &
+put_field_on_nodes( FieldType & f , Part & p ,
                     unsigned n1 , unsigned n2 )
 { f.mesh_meta_data().put_field( f , Node , p , n1 , n2 );  return f ; }
 
 //----------------------------------------------------------------------
 
-template< typename Type >
+template< typename FieldType >
 inline
-Field<Type> & put_field_on_elements( Field<Type> & f , Part & p )
+FieldType & put_field_on_elements( FieldType & f , Part & p )
 { f.mesh_meta_data().put_field( f , Element , p );  return f ; }
 
-template< typename Type , class T1 >
+template< typename FieldType >
 inline
-Field<Type,T1> &
-put_field_on_elements( Field<Type,T1> & f , Part & p , unsigned n1 )
+FieldType &
+put_field_on_elements( FieldType & f , Part & p , unsigned n1 )
 { f.mesh_meta_data().put_field( f , Element , p , n1 );  return f ; }
 
-template< typename Type , class T1 , class T2 >
+template< typename FieldType >
 inline
-Field<Type,T1,T2> &
-put_field_on_elements( Field<Type,T1,T2> & f , Part & p ,
+FieldType &
+put_field_on_elements( FieldType & f , Part & p ,
                                 unsigned n1 , unsigned n2 )
 { f.mesh_meta_data().put_field( f , Element , p , n1 , n2 );  return f ; }
 
 //----------------------------------------------------------------------
 
-template< typename Type >
+template< typename FieldType >
 inline
-Field<Type> & put_field_on_all_nodes( Field<Type> & f )
+FieldType & put_field_on_all_nodes( FieldType & f )
 { put_field_on_nodes( f , f.mesh_meta_data().universal_part() );  return f ; }
 
-template< typename Type , class T1 >
+template< typename FieldType >
 inline
-Field<Type,T1> & put_field_on_all_nodes( Field<Type,T1> & f , unsigned n1 )
+FieldType & put_field_on_all_nodes( FieldType & f , unsigned n1 )
 {
   put_field_on_nodes( f , f.mesh_meta_data().universal_part() , n1 );
   return f ;
 }
 
-template< typename Type , class T1 , class T2 >
+template< typename FieldType >
 inline
-Field<Type,T1,T2> &
-put_field_on_all_nodes( Field<Type,T1,T2> & f , unsigned n1 , unsigned n2 )
+FieldType &
+put_field_on_all_nodes( FieldType & f , unsigned n1 , unsigned n2 )
 {
   put_field_on_nodes( f , f.mesh_meta_data().universal_part() , n1 , n2 );
  return f ;
@@ -186,19 +187,19 @@ put_field_on_all_nodes( Field<Type,T1,T2> & f , unsigned n1 , unsigned n2 )
 
 //----------------------------------------------------------------------
 
-template< typename Type >
+template< typename FieldType >
 inline
-Field<Type> & put_field_on_all_elements( Field<Type> & f )
+FieldType & put_field_on_all_elements( FieldType & f )
 { put_field_on_elements( f , f.mesh_meta_data().universal_part() );  return f ; }
 
-template< typename Type , class T1 >
+template< typename FieldType >
 inline
-Field<Type,T1> & put_field_on_all_elements( Field<Type,T1> & f , unsigned n1 )
+FieldType & put_field_on_all_elements( FieldType & f , unsigned n1 )
 { put_field_on_elements( f , f.mesh_meta_data().universal_part() , n1 );  return f ; }
 
-template< typename Type , class T1 , class T2 >
+template< typename FieldType >
 inline
-Field<Type,T1,T2> & put_field_on_all_elements( Field<Type,T1,T2> & f ,
+FieldType & put_field_on_all_elements( FieldType & f ,
                                 unsigned n1 , unsigned n2 )
 { put_field_on_elements( f , f.mesh_meta_data().universal_part() , n1 , n2 );  return f ; }
 

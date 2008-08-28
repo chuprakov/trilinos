@@ -304,16 +304,17 @@ void Kernel::copy_fields( Kernel & k_dst , unsigned i_dst ,
 
 namespace {
 
-inline size_t align( size_t nb )
+inline unsigned align( unsigned nb )
 {
   enum { BYTE_ALIGN = 16 };
-  const size_t gap = nb % BYTE_ALIGN ;
+  const unsigned gap = nb % BYTE_ALIGN ;
   if ( gap ) { nb += BYTE_ALIGN - gap ; }
   return nb ;
 }
 
 struct DimLess {
-  bool operator()( const FieldBase::Restriction & lhs , const size_t rhs ) const
+  bool operator()( const FieldBase::Restriction & lhs ,
+                   const unsigned & rhs ) const
     { return lhs < rhs ; }
 };
 
@@ -333,7 +334,7 @@ const FieldBase::Restriction & dimension( const FieldBase & field ,
 
   for ( unsigned i = 0 ; i < num_part_ord && iend != ibeg ; ++i ) {
 
-    const size_t key = FieldBase::Restriction::key_value( etype , part_ord[i] );
+    const unsigned key = FieldBase::Restriction::key_value( etype , part_ord[i] );
 
     ibeg = std::lower_bound( ibeg , iend , key , DimLess() );
 
@@ -507,7 +508,7 @@ MeshBulkData::declare_kernel( const EntityType arg_entity_type ,
 
     const unsigned last_count = last_kernel->key()[ key[0] ];
 
-    const size_t cap = last_kernel->capacity();
+    const unsigned cap = last_kernel->capacity();
 
     if ( last_kernel->size() < cap ) {
       kernel = last_kernel ;
@@ -532,7 +533,7 @@ MeshBulkData::declare_kernel( const EntityType arg_entity_type ,
     field_map = reinterpret_cast<Kernel::DataMap*>(
                 local_malloc( sizeof(Kernel::DataMap) * ( num_fields + 1 )));
 
-    size_t value_offset = 0 ;
+    unsigned value_offset = 0 ;
 
     value_offset += align( sizeof(Entity*) * m_kernel_capacity );
 
@@ -578,9 +579,9 @@ MeshBulkData::declare_kernel( const EntityType arg_entity_type ,
     //   sizeof(Entity*) * capacity() +
     //   sum[number_of_fields]( fieldsize * capacity )
 
-    const size_t size = align( sizeof(Kernel) ) +
-                        align( sizeof(unsigned) * key_size ) +
-                        field_map[ num_fields ].m_base ;
+    const unsigned size = align( sizeof(Kernel) ) +
+                          align( sizeof(unsigned) * key_size ) +
+                          field_map[ num_fields ].m_base ;
 
     // All fields checked and sized, Ready to allocate
 
@@ -709,7 +710,7 @@ bool MeshBulkData::internal_sort_kernel_entities()
       // ek == end kernel for the family
       KernelSet::iterator ek = bk->m_kernel ; ++ek ;
 
-      size_t count = 0 ;
+      unsigned count = 0 ;
       for ( KernelSet::iterator ik = bk ; ik != ek ; ++ik ) {
         count += ik->size();
       }
@@ -719,7 +720,7 @@ bool MeshBulkData::internal_sort_kernel_entities()
       std::vector<Entity*>::iterator j = entities.begin();
 
       for ( KernelSet::iterator ik = bk ; ik != ek ; ++ik ) {
-        const size_t n = ik->size();
+        const unsigned n = ik->size();
         for ( unsigned i = 0 ; i < n ; ++i , ++j ) {
           *j = ik->m_entities[i] ;
         }
@@ -732,7 +733,7 @@ bool MeshBulkData::internal_sort_kernel_entities()
       bool change_this_family = false ;
 
       for ( KernelSet::iterator ik = bk ; ik != ek ; ++ik ) {
-        const size_t n = ik->size();
+        const unsigned n = ik->size();
         for ( unsigned i = 0 ; i < n ; ++i , ++j ) {
           Entity * const current = ik->m_entities[i] ;
 

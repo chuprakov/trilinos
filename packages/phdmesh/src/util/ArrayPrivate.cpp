@@ -38,7 +38,8 @@ namespace phdmesh {
 
 ArrayDimTag::~ArrayDimTag() {}
 
-std::string ArrayDimTag::to_string( size_t n , unsigned i ) const
+std::string ArrayDimTag::to_string( unsigned n ,
+                                    unsigned i ) const
 {
   array_check_index( n , i );
   std::ostringstream s ;
@@ -46,87 +47,113 @@ std::string ArrayDimTag::to_string( size_t n , unsigned i ) const
   return s.str();
 }
 
-unsigned ArrayDimTag::to_index( size_t n , const std::string & s ) const
+unsigned ArrayDimTag::to_index( unsigned n ,
+                                        const std::string & s ) const
 {
   const int i = atoi( s.c_str() );
   array_check_index( n , i );
   return i ;
 }
 
+ArrayDimension::~ArrayDimension() {}
+
+const char * ArrayDimension::name() const
+{ static const char n[] = "anonymous" ; return n ; }
+
+const ArrayDimension & ArrayDimension::tag()
+{ static const ArrayDimension self ; return self ; }
+
 //----------------------------------------------------------------------
 
-size_t array_stride_size( unsigned rank , const size_t * const stride )
-{
-  return 0 < rank ? stride[ rank - 1 ] : 0 ;
-}
-
 void array_stride_from_natural_dimensions(
-  unsigned rank , size_t * const stride , const unsigned * const size )
+  const unsigned rank ,
+        unsigned * const stride ,
+  const unsigned * const dim )
 {
-  size_t n = 1 ;
-  for ( unsigned i = 0 ; i < rank ; ++i ) { stride[i] = n *= size[(rank-1)-i]; }
+  unsigned n = 1 ;
+  for ( unsigned i = 0 ; i < rank ; ++i )
+    { stride[i] = n *= dim[(rank-1)-i]; }
 }
 
-void array_stride_from_fortran_dimensions(
-  unsigned rank , size_t * const stride , const unsigned * const size )
-{
-  size_t n = 1 ;
-  for ( unsigned i = 0 ; i < rank ; ++i ) { stride[i] = n *= size[i] ; }
-}
+unsigned array_stride_size(
+  const unsigned  rank ,
+  const unsigned * const stride )
+{ return 0 < rank ? stride[ rank - 1 ] : 0 ; }
 
 void array_stride_to_natural_dimensions(
-  unsigned rank , const size_t * const stride , unsigned * const size )
+  const unsigned   rank ,
+  const unsigned  * const stride ,
+        unsigned * const dim )
 {
   if ( 0 < rank ) {
-    size[ rank - 1 ] = stride[0] ;
+    dim[ rank - 1 ] = stride[0] ;
     for ( unsigned i = 1 ; i < rank ; ++i ) {
-      size[ ( rank - 1 ) - i ] = stride[i] / stride[i-1] ;
-    }
-  }
-}
-
-void array_stride_to_fortran_dimensions(
-  unsigned rank , const size_t * const stride , unsigned * const size )
-{
-  if ( 0 < rank ) {
-    size[0] = stride[0] ;
-    for ( unsigned i = 1 ; i < rank ; ++i ) {
-      size[i] = stride[i] / stride[i-1] ;
+      dim[ ( rank - 1 ) - i ] = stride[i] / stride[i-1] ;
     }
   }
 }
 
 void array_stride_to_natural_indices(
-  unsigned rank , const size_t * const stride ,
-  size_t offset , unsigned * const index )
+  const unsigned   rank ,
+  const unsigned  * const stride ,
+  const unsigned    offset ,
+        unsigned * const indices )
 {
   if ( 0 < rank ) {
-    size_t tmp = offset ;
+    unsigned tmp = offset ;
     for ( unsigned i = rank - 1 ; 0 < i ; ) {
-      index[ ( rank - 1 ) - i ] = tmp / stride[i-1] ;
+      indices[ ( rank - 1 ) - i ] = tmp / stride[i-1] ;
       tmp %= stride[i-1] ;
     }
-    index[ rank - 1 ] = tmp ;
-  }
-}
-
-void array_stride_to_fortran_indices(
-  unsigned rank , const size_t * const stride ,
-  size_t offset , unsigned * const index )
-{
-  if ( 0 < rank ) {
-    size_t tmp = offset ;
-    for ( unsigned i = rank - 1 ; 0 < i ; ) {
-      index[i] = tmp / stride[i-1] ;
-      tmp %= stride[i-1] ;
-    }
-    index[0] = tmp ;
+    indices[ rank - 1 ] = tmp ;
   }
 }
 
 //----------------------------------------------------------------------
 
-void array_check_rank( unsigned rank , unsigned test_rank )
+void array_stride_from_fortran_dimensions(
+  const unsigned rank ,
+        unsigned * const stride ,
+  const unsigned * const dim )
+{
+  unsigned n = 1 ;
+  for ( unsigned i = 0 ; i < rank ; ++i )
+    { stride[i] = n *= dim[i] ; }
+}
+
+void array_stride_to_fortran_dimensions(
+  const unsigned rank ,
+  const unsigned * const stride ,
+        unsigned * const dim )
+{
+  if ( 0 < rank ) {
+    dim[0] = stride[0] ;
+    for ( unsigned i = 1 ; i < rank ; ++i ) {
+      dim[i] = stride[i] / stride[i-1] ;
+    }
+  }
+}
+
+void array_stride_to_fortran_indices(
+  const unsigned rank ,
+  const unsigned * const stride ,
+  const unsigned offset ,
+        unsigned * const indices )
+{
+  if ( 0 < rank ) {
+    unsigned tmp = offset ;
+    for ( unsigned i = rank - 1 ; 0 < i ; ) {
+      indices[i] = tmp / stride[i-1] ;
+      tmp %= stride[i-1] ;
+    }
+    indices[0] = tmp ;
+  }
+}
+
+//----------------------------------------------------------------------
+
+void array_check_rank( const unsigned rank ,
+                       const unsigned test_rank )
 {
   if ( rank != test_rank ) {
     std::ostringstream msg ;
@@ -138,7 +165,8 @@ void array_check_rank( unsigned rank , unsigned test_rank )
   }
 }
 
-void array_check_ordinal( unsigned rank , unsigned test_ordinal )
+void array_check_ordinal( const unsigned rank ,
+                          const unsigned test_ordinal )
 {
   if ( rank <= test_ordinal ) {
     std::ostringstream msg ;
@@ -150,12 +178,26 @@ void array_check_ordinal( unsigned rank , unsigned test_ordinal )
   }
 }
 
-void array_check_index( size_t size , unsigned test_ordinal )
+void array_check_index( const unsigned dim ,
+                        const unsigned index )
 {
-  if ( size <= test_ordinal ) {
+  if ( dim <= index ) {
     std::ostringstream msg ;
-    msg << "ARRAY INDEX ERROR: ( Size = " << size ;
-    msg << " ) <= ( ordinal = " << test_ordinal ;
+    msg << "ARRAY INDEX ERROR: ( Dim = " << dim ;
+    msg << " ) <= ( index = " << index ;
+    msg << " ); THROWN IN FILE " ;
+    msg << __FILE__ << " AT LINE " << __LINE__ ;
+    throw std::runtime_error( msg.str() );
+  }
+}
+
+void array_check_offset( const unsigned size ,
+                         const unsigned test_offset )
+{
+  if ( size <= test_offset ) {
+    std::ostringstream msg ;
+    msg << "ARRAY OFFSET ERROR: ( Size = " << size ;
+    msg << " ) <= ( ordinal = " << test_offset ;
     msg << " ); THROWN IN FILE " ;
     msg << __FILE__ << " AT LINE " << __LINE__ ;
     throw std::runtime_error( msg.str() );
@@ -166,7 +208,7 @@ void array_check_index( size_t size , unsigned test_ordinal )
 
 void array_check_indices( const bool arg_natural ,
                           const unsigned arg_rank ,
-                          const size_t * const arg_stride ,
+                          const unsigned * const arg_stride ,
                           const unsigned arg_i1 ,
                           const unsigned arg_i2 ,
                           const unsigned arg_i3 ,
@@ -180,7 +222,7 @@ void array_check_indices( const bool arg_natural ,
     { arg_i1 , arg_i2 , arg_i3 , arg_i4 ,
       arg_i5 , arg_i6 , arg_i7 , arg_i8 };
 
-  size_t sizes[8] ;
+  unsigned sizes[8] ;
 
   if ( arg_natural ) {
     for ( unsigned ord = 0 ; ord < arg_rank ; ++ord ) {

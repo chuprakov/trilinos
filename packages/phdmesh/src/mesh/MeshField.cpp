@@ -442,7 +442,7 @@ void MeshMetaData::declare_field_restriction(
   FieldBase    & arg_field ,
   EntityType     arg_entity_type ,
   const Part   & arg_part ,
-  const size_t * arg_stride )
+  const unsigned * arg_stride )
 {
   static const char method[] =
     "phdmesh::MeshMetaData::declare_field_restriction" ;
@@ -518,13 +518,13 @@ void MeshMetaData::clean_field_restrictions()
     std::vector<FieldBase::Restriction> & dim_map = field.m_dim_map ;
     std::vector<int> flag( dim_map.size() , zero );
 
-    for ( size_t i = 0 ; i < dim_map.size() ; ++i ) {
+    for ( unsigned i = 0 ; i < dim_map.size() ; ++i ) {
       const FieldBase::Restriction & dim = dim_map[i] ;
       const EntityType type = dim.type();
       const Part     & part = get_part( dim.ordinal() );
       const PartSet  & sub = part.subsets();
 
-      for ( size_t j = 0 ; j < dim_map.size() ; ++j ) {
+      for ( unsigned j = 0 ; j < dim_map.size() ; ++j ) {
         const Part     & p = get_part( dim_map[j].ordinal() );
         const EntityType t = dim_map[j].type();
         if ( i != j && type == t && contain( sub , p ) ) {
@@ -534,7 +534,7 @@ void MeshMetaData::clean_field_restrictions()
       }
     }
 
-    for ( size_t i = dim_map.size() ; i-- ; ) {
+    for ( unsigned i = dim_map.size() ; i-- ; ) {
       if ( flag[i] ) {
         std::vector<FieldBase::Restriction>::iterator j = dim_map.begin();
         std::advance( j , i );
@@ -560,7 +560,7 @@ FieldBase::restriction( EntityType etype , const Part & part ) const
   const PartSet::const_iterator ipe = part.supersets().end();
         PartSet::const_iterator ip  = part.supersets().begin() ;
 
-  size_t key = Restriction::key_value( etype , part.mesh_meta_data_ordinal() );
+  unsigned key = Restriction::key_value(etype,part.mesh_meta_data_ordinal());
 
   while ( ie == ( i = find( dim_map , key ) ) && ipe != ip ) {
     key = Restriction::key_value( etype , (*ip)->mesh_meta_data_ordinal() );

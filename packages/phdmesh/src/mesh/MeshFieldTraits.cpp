@@ -84,7 +84,7 @@ const Cartesian & Cartesian::tag()
 const char * Cartesian::name() const
 { static const char n[] = "Cartesian" ; return n ; }
 
-std::string Cartesian::to_string( size_t size , unsigned index ) const
+std::string Cartesian::to_string( unsigned size , unsigned index ) const
 {
   static const char x[] = "x" ;
   static const char y[] = "y" ;
@@ -95,7 +95,7 @@ std::string Cartesian::to_string( size_t size , unsigned index ) const
                                   3 , label , size , index ) );
 }
 
-unsigned Cartesian::to_index( size_t size , const std::string & arg ) const
+unsigned Cartesian::to_index( unsigned size , const std::string & arg ) const
 {
   static const char x[] = "x" ;
   static const char y[] = "y" ;
@@ -114,7 +114,7 @@ const Cylindrical & Cylindrical::tag()
 const char * Cylindrical::name() const
 { static const char n[] = "Cylindrical" ; return n ; }
 
-std::string Cylindrical::to_string( size_t size , unsigned index ) const
+std::string Cylindrical::to_string( unsigned size , unsigned index ) const
 {
   static const char r[] = "r" ;
   static const char a[] = "a" ;
@@ -125,7 +125,7 @@ std::string Cylindrical::to_string( size_t size , unsigned index ) const
                                   3 , label , size , index ) );
 }
 
-unsigned Cylindrical::to_index( size_t size , const std::string & arg ) const
+unsigned Cylindrical::to_index( unsigned size , const std::string & arg ) const
 {
   static const char r[] = "r" ;
   static const char a[] = "a" ;
@@ -144,7 +144,7 @@ const FullTensor & FullTensor::tag()
 const char * FullTensor::name() const
 { static const char n[] = "FullTensor" ; return n ; }
 
-std::string FullTensor::to_string( size_t size , unsigned index ) const
+std::string FullTensor::to_string( unsigned size , unsigned index ) const
 {
   static const char xx[] = "xx" ;
   static const char yx[] = "yx" ;
@@ -161,7 +161,7 @@ std::string FullTensor::to_string( size_t size , unsigned index ) const
                                   9 , label , size , index ) );
 }
 
-unsigned FullTensor::to_index( size_t size , const std::string & arg ) const
+unsigned FullTensor::to_index( unsigned size , const std::string & arg ) const
 {
   static const char xx[] = "xx" ;
   static const char yx[] = "yx" ;
@@ -186,7 +186,7 @@ const SymmetricTensor & SymmetricTensor::tag()
 const char * SymmetricTensor::name() const
 { static const char n[] = "SymmetricTensor" ; return n ; }
 
-std::string SymmetricTensor::to_string( size_t size , unsigned index ) const
+std::string SymmetricTensor::to_string( unsigned size , unsigned index ) const
 {
   static const char xx[] = "xx" ;
   static const char yx[] = "yx" ;
@@ -203,7 +203,8 @@ std::string SymmetricTensor::to_string( size_t size , unsigned index ) const
                                   9 , label , size , index ) );
 }
 
-unsigned SymmetricTensor::to_index( size_t size , const std::string & arg ) const
+unsigned SymmetricTensor::to_index(
+  unsigned size , const std::string & arg ) const
 {
   static const char xx[] = "xx" ;
   static const char yy[] = "yy" ;

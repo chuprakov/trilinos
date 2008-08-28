@@ -64,9 +64,9 @@ private:
   friend class SetvIter<const Kernel,false> ;
 
   struct DataMap {
-    const size_t * m_stride ;
-    size_t         m_base ;
-    size_t         m_size ;
+    const unsigned * m_stride ;
+    unsigned         m_base ;
+    unsigned         m_size ;
   };
 
   MeshBulkData & m_mesh ;        // MeshBulkData in which this kernel resides

@@ -49,9 +49,9 @@ private:
 struct GlobalLocalIndex : public ArrayDimTag {
   const char * name() const ;
 
-  std::string to_string( size_t size , unsigned index ) const ;
+  std::string to_string( unsigned size , unsigned index ) const ;
 
-  unsigned to_index( size_t size , const std::string & ) const ;
+  unsigned to_index( unsigned size , const std::string & ) const ;
 
   static const GlobalLocalIndex & tag();
 private:

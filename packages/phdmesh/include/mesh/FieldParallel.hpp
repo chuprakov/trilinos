@@ -56,7 +56,7 @@ bool communicate_field_data(
 void communicate_field_data(
   ParallelMachine ,
   const std::vector<EntityProc> & ,
-  const size_t field_count ,
+  const unsigned field_count ,
   const FieldBase * fields[] ,
   CommAll & sparse );
 
