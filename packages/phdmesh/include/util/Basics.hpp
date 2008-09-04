@@ -31,33 +31,26 @@
 #include <limits>
 #include <phdmesh_config.h>
 
+/** \file */
+
 namespace phdmesh {
 
 //----------------------------------------------------------------------
-// Compile time assertion
-//     enum { ok = StaticAssert< logical_expression >::OK };
-//     StaticAssert< logical_expression >::ok();
-//  For logical_expression == true  it generates a valid no-op
-//  For logical_expression == false it generates a compile error
+/** \class StaticAssert
+ *  \brief  Compiler-enforced value of 'expression == true'
+ *
+ *  If 'expression == true' then the specialization defines
+ *  - <B> enum { OK = true };                </B>
+ *  - <B> static bool ok() { return true ; } </B>
+ */
+template< bool expression > struct StaticAssert {};
 
-template<bool> struct StaticAssert ;
-
+/** \if */
 template<> struct StaticAssert<true> {
   enum { OK = true };
   static bool ok() { return true ; }
 };
-
-template<> struct StaticAssert<false> {};
-
-//----------------------------------------------------------------------
-// Compile time comparison of types
-
-template<typename T1, typename T2> struct SameType ;
-
-template<typename T> struct SameType<T,T> { enum { value = true }; };
-
-template <typename T1, typename T2> struct SameType { enum { value = false }; };
-
+/** \endif */
 //----------------------------------------------------------------------
 // Selection of an integer type based upon sign and size
 

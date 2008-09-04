@@ -143,6 +143,24 @@ void allgather( phdmesh::ParallelMachine ,
 namespace phdmesh {
 namespace exodus {
 
+void verify_node_coordinate_field( const FieldBase & f )
+{
+  static const char method[] = "phdmesh::exodus::FileSchema::FileSchema" ;
+
+  // Verify the node coordinate field
+
+  const bool bad_type = ! f.type_is<double>();
+  const bool bad_rank = 1 != f.rank();
+
+  if ( bad_type || bad_rank ) {
+    std::ostringstream msg ;
+    msg << method << " FAILED with bad node coordinates field: " << f ;
+    throw std::runtime_error( msg.str() );
+  }
+}
+
+//----------------------------------------------------------------------
+
 enum ElementType {
   CIRCLE /* Attributes: radius */ ,
   SPHERE /* Attributes: radius */ ,
@@ -210,8 +228,8 @@ const FileSchema::IndexField & exo_index( MeshMetaData & arg_mesh_meta_data )
 }
 
 FileSchema::FileSchema(
-  MeshMetaData                            & arg_mesh_meta_data ,
-  const FileSchema::CoordinateField & arg_node_coordinates ,
+  MeshMetaData                      & arg_mesh_meta_data ,
+  const FieldBase                   & arg_node_coordinates ,
   const FileSchema::AttributeField  & arg_elem_attributes ,
   const unsigned                      arg_writer_rank )
   : m_schema( arg_mesh_meta_data ),
@@ -221,6 +239,7 @@ FileSchema::FileSchema(
     m_field_elem_attr(  arg_elem_attributes ),
     m_field_index( exo_index( arg_mesh_meta_data ) )
 {
+  verify_node_coordinate_field( arg_node_coordinates );
 }
 
 FileSchema::~FileSchema() {}
@@ -274,7 +293,8 @@ const FilePart * internal_declare_part(
                               arg_element_type, arg_number_nodes ,
                               number_attr );
 
-    arg_mesh_meta_data.declare_part_attribute<FilePart>( arg_part , file_part , true );
+    arg_mesh_meta_data.declare_part_attribute<FilePart>(
+      arg_part , file_part , true );
   }
 
   if ( file_part == NULL ||
@@ -920,10 +940,11 @@ void WriteNodeIndexCoord::operator()(
       int ids[2] ;
       ids[0] = * field_data( SF.m_field_index , node );
       ids[1] =   node.identifier();
-      const double * const xyz = field_data( SF.m_field_node_coord , node );
+      const double * const coord =
+        (double *) field_data( SF.m_field_node_coord , node );
 
       buf.pack<int>( ids , 2 );
-      buf.pack<double>( xyz , 3 );
+      buf.pack<double>( coord , 3 );
     }
   }
 
@@ -1542,22 +1563,21 @@ FileOutput::FileOutput(
 
     // Put the model nodal coordinate names:
     if ( ! exo_error ) {
-      char coord_name_x[ Maximum_Name_Length ] ;
-      char coord_name_y[ Maximum_Name_Length ] ;
-      char coord_name_z[ Maximum_Name_Length ] ;
+      char coord_name_0[ Maximum_Name_Length ] ;
+      char coord_name_1[ Maximum_Name_Length ] ;
+      char coord_name_2[ Maximum_Name_Length ] ;
 
-      char * coord_names[3] ;
+      char * coord_names[3] = { coord_name_0 , coord_name_1 , coord_name_2 };
 
-      coord_names[0] = coord_name_x ;
-      coord_names[1] = coord_name_y ;
-      coord_names[2] = coord_name_z ;
+      const ArrayDimTag & dim_tag = *FS.m_field_node_coord.dimension_tags()[0];
 
-      strcpy( coord_name_x , FS.m_field_node_coord.name().c_str() );
-      strcpy( coord_name_y , FS.m_field_node_coord.name().c_str() );
-      strcpy( coord_name_z , FS.m_field_node_coord.name().c_str() );
-      strcat( coord_name_x , "_x" );
-      strcat( coord_name_y , "_y" );
-      strcat( coord_name_z , "_z" );
+      const std::string & coord_name_base = FS.m_field_node_coord.name();
+
+      for ( int i = 0 ; i < num_dim ; ++i ) {
+        strcpy( coord_names[i] , coord_name_base.c_str() );
+        strcat( coord_names[i] , "_" );
+        strcat( coord_names[i] , dim_tag.to_string( num_dim , i ).c_str() );
+      }
 
       exo_func = "ex_put_coord_names" ;
       exo_error = ex_put_coord_names( m_exo_id , coord_names );
@@ -2166,7 +2186,7 @@ struct exo_elem_block_data {
 
 FileSchema::FileSchema(
   MeshMetaData & arg_mesh_meta_data ,
-  const FileSchema::CoordinateField & arg_node_coordinates ,
+  const FieldBase & arg_node_coordinates ,
   const FileSchema::AttributeField  & arg_elem_attributes ,
   const std::string     & arg_file_path ,
   ParallelMachine         arg_comm ,
@@ -2183,6 +2203,10 @@ FileSchema::FileSchema(
   ParallelMachine p_comm = arg_comm ;
   const unsigned  p_rank = parallel_machine_rank( arg_comm );
   const unsigned  p_read = arg_reader_rank ;
+
+  //--------------------------------------------------------------------
+
+  verify_node_coordinate_field( arg_node_coordinates );
 
   //--------------------------------------------------------------------
 
@@ -3051,7 +3075,9 @@ FileInput::FileInput(
 
           field_data( FS.m_field_index , node )[0] = node_index ;
 
-          double * const node_coord = field_data(FS.m_field_node_coord, node);
+          double * const node_coord =
+            (double *) field_data(FS.m_field_node_coord, node);
+
           node_coord[0] = iter_node_data->coord[0] ;
           node_coord[1] = iter_node_data->coord[1] ;
           node_coord[2] = iter_node_data->coord[2] ;
@@ -3087,7 +3113,7 @@ namespace exodus {
 
 FileSchema::FileSchema(
   MeshMetaData & arg_mesh_meta_data ,
-  const FileSchema::CoordinateField & arg_node_coordinates ,
+  const FieldBase & arg_node_coordinates ,
   const FileSchema::AttributeField  & arg_elem_attributes ,
   const std::string     & ,
   ParallelMachine         ,
@@ -3099,6 +3125,7 @@ FileSchema::FileSchema(
     m_field_elem_attr(  arg_elem_attributes ),
     m_field_index( exo_index( arg_mesh_meta_data ) )
 {
+  verify_node_coordinate_field( arg_node_coordinates );
 }
 
 FileOutput::~FileOutput() {}

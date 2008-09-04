@@ -29,6 +29,7 @@
 #define util_NumericEnum_hpp
 
 #include <complex>
+#include <util/Basics.hpp>
 #include <util/TypeList.hpp>
 
 namespace phdmesh {

@@ -63,19 +63,18 @@ private:
 class FileSchema {
 public:
 
-  typedef Field<double,Cartesian>         CoordinateField ;
   typedef Field<double,ElementAttributes> AttributeField ;
   typedef Field<int,GlobalLocalIndex>     IndexField ;
 
   ~FileSchema();
 
   FileSchema( MeshMetaData          & arg_schema ,
-              const CoordinateField & arg_node_coordinates ,
+              const FieldBase       & arg_node_coordinates ,
               const AttributeField  & arg_elem_attributes ,
               const unsigned          arg_writer_rank = 0 );
 
   FileSchema( MeshMetaData          & arg_schema ,
-              const CoordinateField & arg_node_coordinates ,
+              const FieldBase       & arg_node_coordinates ,
               const AttributeField  & arg_elem_attributes ,
               const std::string     & arg_file_path ,
               ParallelMachine         arg_comm ,
@@ -97,7 +96,7 @@ public:
   MeshMetaData          & m_schema ;
   const unsigned          m_io_rank ;
   const unsigned          m_dimension ;
-  const CoordinateField & m_field_node_coord ;
+  const FieldBase       & m_field_node_coord ;
   const AttributeField  & m_field_elem_attr ;
   const IndexField      & m_field_index ;
 
