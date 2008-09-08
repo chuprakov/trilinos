@@ -20,12 +20,6 @@
 /*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307   */
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
-/**
- * @author H. Carter Edwards  <hcedwar@sandia.gov>
- *
- *  'TypeList' templates significantly enhanced from
- *  Alexandrescu's "Modern C++ Design" book.
- */
 
 #ifndef util_TypeList_h
 #define util_TypeList_h
@@ -35,8 +29,12 @@ namespace phdmesh {
 /** \defgroup  TypeListModule  Linked-list of types
  *  \brief     Linked-list of compile-time types and
  *             supporting compile-time operations.
+ *
+ *  \author H. Carter Edwards  <hcedwar@sandia.gov>
+ *
+ *  'TypeList' templates significantly enhanced from
+ *  Alexandrescu's "Modern C++ Design" book.
  */
-
 //----------------------------------------------------------------------
 /** \class  SameType
  *  \brief  Member <b> enum { value = ... }; </b>
