@@ -84,8 +84,7 @@ void global_coordinate_bounds( MeshBulkData & M ,
     }
   }
 
-  all_reduce( M.parallel() , ReduceMin<3>( min ) &
-                                  ReduceMax<3>( max ) );
+  all_reduce( M.parallel() , Min<3>( min ) , Max<3>( max ) );
 
   // A bounding cube:
 

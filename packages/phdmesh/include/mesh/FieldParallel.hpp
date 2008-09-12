@@ -152,7 +152,7 @@ void ParallelReduceField< ReduceOp , Type ,  Tag1,  Tag2,  Tag3 ,
     for ( ; ptr < ptr_end ; ++ptr ) {
       Type tmp ;
       b.template unpack<unsigned char>( (unsigned char *)(&tmp), sizeof(Type) );
-      ReduceOp( ptr , & tmp );
+      ReduceOp::op( ptr , & tmp );
     }
   }
 }
@@ -163,29 +163,29 @@ void ParallelReduceField< ReduceOp , Type ,  Tag1,  Tag2,  Tag3 ,
 
 template< class Type , class Tag1, class Tag2, class Tag3 ,
           class Tag4 , class Tag5, class Tag6, class Tag7 >
-ParallelReduceField<Sum<1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
+ParallelReduceField<Op::Sum<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
 inline
 sum( const Field<Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> & f )
 {
-  return ParallelReduceField<Sum<1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>( f );
+  return ParallelReduceField<Op::Sum<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>( f );
 }
 
 template< class Type , class Tag1, class Tag2, class Tag3 ,
           class Tag4 , class Tag5, class Tag6, class Tag7 >
-ParallelReduceField<Max<1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
+ParallelReduceField<Op::Max<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
 inline
 max( const Field<Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> & f )
 {
-  return ParallelReduceField<Max<1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>( f );
+  return ParallelReduceField<Op::Max<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>( f );
 }
 
 template< class Type , class Tag1, class Tag2, class Tag3 ,
           class Tag4 , class Tag5, class Tag6, class Tag7 >
-ParallelReduceField<Min<1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
+ParallelReduceField<Op::Min<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
 inline
 min( const Field<Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> & f )
 {
-  return ParallelReduceField<Min<1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>( f );
+  return ParallelReduceField<Op::Min<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>( f );
 }
 
 }

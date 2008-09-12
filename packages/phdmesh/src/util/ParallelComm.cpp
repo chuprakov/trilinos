@@ -606,10 +606,10 @@ bool CommBroadcast::allocate_buffer( const bool local_flag )
   unsigned root_send_size = m_root_rank == m_rank ? m_buffer.size() : 0 ;
   unsigned flag = local_flag ;
 
-  all_reduce( m_comm , ReduceMin<1>( & root_rank_min ) &
-                       ReduceMax<1>( & root_rank_max ) &
-                       ReduceMax<1>( & root_send_size ) &
-                       ReduceBitOr<1>( & flag ) );
+  all_reduce( m_comm , Min<1>( & root_rank_min ) ,
+                       Max<1>( & root_rank_max ) ,
+                       Max<1>( & root_send_size ) ,
+                       BitOr<1>( & flag ) );
 
   if ( root_rank_min != root_rank_max ) {
     std::string msg ;

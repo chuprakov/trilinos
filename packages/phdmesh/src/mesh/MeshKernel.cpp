@@ -341,8 +341,7 @@ const FieldBase::Restriction & dimension( const FieldBase & field ,
     if ( iend != ibeg && ibeg->key == key ) {
       if ( dim == & empty ) { dim = & *ibeg ; }
 
-      if ( Compare< MaximumFieldDimension >::
-             not_equal( ibeg->stride , dim->stride ) ) {
+      if ( NotEqual< MaximumFieldDimension >( ibeg->stride , dim->stride ) ) {
 
         Part & p_old = field.mesh_meta_data().get_part( ibeg->ordinal() );
         Part & p_new = field.mesh_meta_data().get_part( dim->ordinal() );

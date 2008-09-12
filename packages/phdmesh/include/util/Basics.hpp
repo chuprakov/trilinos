@@ -20,85 +20,103 @@
 /*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307   */
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
-/**
- * @author H. Carter Edwards  <hcedwar@sandia.gov>
- * @date   November 2006
- */
 
 #ifndef util_Basics_hpp
 #define util_Basics_hpp
 
-#include <limits>
-#include <phdmesh_config.h>
-
-/** \file */
-
 namespace phdmesh {
+
+/**
+ * \{
+ * \author H. Carter Edwards  <hcedwar@sandia.gov>
+ * \date   November 2006
+ */
 
 //----------------------------------------------------------------------
 /** \class StaticAssert
  *  \brief  Compiler-enforced value of 'expression == true'
  *
  *  If 'expression == true' then the specialization defines
- *  - <B> enum { OK = true };                </B>
- *  - <B> static bool ok() { return true ; } </B>
+ *  - <b> enum { OK = true };                </b>
+ *  - <b> static bool ok() { return true ; } </b>
  */
 template< bool expression > struct StaticAssert {};
 
-/** \if */
 template<> struct StaticAssert<true> {
   enum { OK = true };
   static bool ok() { return true ; }
 };
-/** \endif */
+
 //----------------------------------------------------------------------
 // Selection of an integer type based upon sign and size
 
+#ifndef DOXYGEN_COMPILE
+
 template<
-  unsigned N_char  = std::numeric_limits< unsigned char  >::digits ,
-  unsigned N_short = std::numeric_limits< unsigned short >::digits ,
-  unsigned N_int   = std::numeric_limits< unsigned int   >::digits ,
-  unsigned N_long  = std::numeric_limits< unsigned long  >::digits >
+  unsigned size_char  = sizeof( unsigned char  ) ,
+  unsigned size_short = sizeof( unsigned short ) ,
+  unsigned size_int   = sizeof( unsigned int   ) ,
+  unsigned size_long  = sizeof( unsigned long  ) ,
+  unsigned size_ptr   = sizeof( void * ) >
 struct IntegerFundamentalTypes ;
 
 template<>
-struct IntegerFundamentalTypes<8,16,32,64> {
-  typedef signed   char  int8_type ;
-  typedef unsigned char  uint8_type ;
-  typedef signed   short int16_type ;
-  typedef unsigned short uint16_type ;
-  typedef signed   int   int32_type ;
-  typedef unsigned int   uint32_type ;
-  typedef signed   long  int64_type ;
-  typedef unsigned long  uint64_type ;
+struct IntegerFundamentalTypes<1,2,4,8,4> {
+  typedef signed   char   int8_type ;
+  typedef unsigned char   uint8_type ;
+  typedef signed   short  int16_type ;
+  typedef unsigned short  uint16_type ;
+  typedef signed   int    int32_type ;
+  typedef unsigned int    uint32_type ;
+  typedef signed   long   int64_type ;
+  typedef unsigned long   uint64_type ;
+  typedef signed   int    intptr_type ;
+  typedef unsigned int    uintptr_type ;
 };
 
-template<
-  unsigned N_char ,
-  unsigned N_short ,
-  unsigned N_int ,
-  unsigned N_long >
-struct IntegerFundamentalTypes {
-  typedef signed   char      int8_type ;
-  typedef unsigned char      uint8_type ;
-  typedef signed   short     int16_type ;
-  typedef unsigned short     uint16_type ;
-  typedef signed   int       int32_type ;
-  typedef unsigned int       uint32_type ;
-  typedef signed   long long int64_type ;
-  typedef unsigned long long uint64_type ;
-
-  enum { uint8_digits  = std::numeric_limits<uint8_type >::digits };
-  enum { uint16_digits = std::numeric_limits<uint16_type>::digits };
-  enum { uint32_digits = std::numeric_limits<uint32_type>::digits };
-  enum { uint64_digits = std::numeric_limits<uint64_type>::digits };
-
-  enum { OK_8  = StaticAssert<  8 == uint8_digits  >::OK };
-  enum { OK_16 = StaticAssert< 16 == uint16_digits >::OK };
-  enum { OK_32 = StaticAssert< 32 == uint32_digits >::OK };
-  enum { OK_64 = StaticAssert< 64 == uint64_digits >::OK };
+template<>
+struct IntegerFundamentalTypes<1,2,4,8,8> {
+  typedef signed   char   int8_type ;
+  typedef unsigned char   uint8_type ;
+  typedef signed   short  int16_type ;
+  typedef unsigned short  uint16_type ;
+  typedef signed   int    int32_type ;
+  typedef unsigned int    uint32_type ;
+  typedef signed   long   int64_type ;
+  typedef unsigned long   uint64_type ;
+  typedef signed   long   intptr_type ;
+  typedef unsigned long   uintptr_type ;
 };
 
+template<>
+struct IntegerFundamentalTypes<1,2,4,4,4> {
+  typedef signed   char       int8_type ;
+  typedef unsigned char       uint8_type ;
+  typedef signed   short      int16_type ;
+  typedef unsigned short      uint16_type ;
+  typedef signed   int        int32_type ;
+  typedef unsigned int        uint32_type ;
+  typedef signed   long long  int64_type ;
+  typedef unsigned long long  uint64_type ;
+  typedef signed   long       intptr_type ;
+  typedef unsigned long       uintptr_type ;
+};
+
+template<>
+struct IntegerFundamentalTypes<1,2,4,4,8> {
+  typedef signed   char       int8_type ;
+  typedef unsigned char       uint8_type ;
+  typedef signed   short      int16_type ;
+  typedef unsigned short      uint16_type ;
+  typedef signed   int        int32_type ;
+  typedef unsigned int        uint32_type ;
+  typedef signed   long long  int64_type ;
+  typedef unsigned long long  uint64_type ;
+  typedef signed   long long  intptr_type ;
+  typedef unsigned long long  uintptr_type ;
+};
+
+#endif /* DOXYGEN_COMPILE */
 
 typedef IntegerFundamentalTypes<>::int8_type     int8_type ;
 typedef IntegerFundamentalTypes<>::uint8_type    uint8_type ;
@@ -108,29 +126,10 @@ typedef IntegerFundamentalTypes<>::int32_type    int32_type ;
 typedef IntegerFundamentalTypes<>::uint32_type   uint32_type ;
 typedef IntegerFundamentalTypes<>::int64_type    int64_type ;
 typedef IntegerFundamentalTypes<>::uint64_type   uint64_type ;
+typedef IntegerFundamentalTypes<>::intptr_type   intptr_type ;
+typedef IntegerFundamentalTypes<>::uintptr_type  uintptr_type ;
 
-
-template< unsigned > struct IntegerSizeofType ;
-
-template<>
-struct IntegerSizeofType< sizeof(uint16_type) > {
-  typedef uint16_type unsigned_type ;
-  typedef uint16_type signed_type ;
-};
-
-template<>
-struct IntegerSizeofType< sizeof(uint32_type) > {
-  typedef uint32_type unsigned_type ;
-  typedef uint32_type signed_type ;
-};
-
-template<>
-struct IntegerSizeofType< sizeof(uint64_type) > {
-  typedef uint64_type unsigned_type ;
-  typedef uint64_type signed_type ;
-};
-
-typedef IntegerSizeofType< sizeof(void*) >::unsigned_type uint_ptr_type ;
+/** \} */
 
 } // namespace phdmesh
 

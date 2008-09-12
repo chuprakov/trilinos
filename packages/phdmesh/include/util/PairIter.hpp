@@ -20,10 +20,6 @@
 /*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307   */
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
-/**
- * @author H. Carter Edwards  <hcedwar@sandia.gov>
- * @date   November 2007
- */
 
 #ifndef util_PairIter_hpp
 #define util_PairIter_hpp
@@ -33,19 +29,25 @@
 
 namespace phdmesh {
 
-/** @class PairIter
- *  Iterate a span of a container defined by begin and end iterators.
- *  Provides forward iterator and const container-like functionality.
+/**
+ *  \brief  Pair of begin and end iterators wrapped to provide
+ *          a container-like view of the span.
+ *
+ *  \author H. Carter Edwards  <hcedwar@sandia.gov>
+ *  \date   November 2007
  */
-
 template< class IterType ,
           class IterCategory =
              typename std::iterator_traits< IterType >::iterator_category >
-class PairIter ;
+class PairIter {};
 
 //----------------------------------------------------------------------
 // Specialized for random access iterators, others TBD.
 
+/**
+ *  \brief  Pair of begin and end iterators wrapped to provide
+ *          a container-like view of the span.
+ */
 template< class IterType >
 class PairIter< IterType , std::random_access_iterator_tag > 
   : public std::pair< IterType , IterType >
@@ -139,5 +141,5 @@ public:
 
 } // namespace phdmesh
 
-#endif
+#endif /* util_PairIter_hpp */
 

@@ -347,7 +347,7 @@ bool comm_verify( ParallelMachine comm ,
 
     {
       unsigned flag = result ;
-      all_reduce( comm , ReduceMin<1>( & flag ) );
+      all_reduce( comm , Min<1>( & flag ) );
       result = flag ;
     }
   }
@@ -421,7 +421,7 @@ bool comm_verify( ParallelMachine comm ,
 
     {
       unsigned flag = result ;
-      all_reduce( comm , ReduceBitAnd<1>( & flag ) );
+      all_reduce( comm , BitAnd<1>( & flag ) );
       result = flag ;
     }
   }
@@ -468,9 +468,9 @@ bool comm_mesh_stats( MeshBulkData & M ,
   unsigned flag = local_flag ? 1 : 0 ;
 
   all_reduce( comm ,
-              ReduceSum< EntityTypeEnd >( counts ) &
-              ReduceMax< EntityTypeEnd >( max_id ) &
-              ReduceMax<1>( & flag ) );
+              Sum< EntityTypeEnd >( counts ) ,
+              Max< EntityTypeEnd >( max_id ) ,
+              Max<1>( & flag ) );
 
   return flag ;
 }

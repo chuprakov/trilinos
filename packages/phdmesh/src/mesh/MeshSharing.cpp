@@ -130,7 +130,7 @@ bool comm_verify_shared_entity_values(
     }
   }
 
-  all_reduce( comm , ReduceMin<1>( & ok ) );
+  all_reduce( comm , Min<1>( & ok ) );
 
   return ok ;
 }
@@ -639,7 +639,7 @@ bool comm_mesh_verify_parallel_consistency( MeshBulkData & M )
 
   // Global reduction of result flag:
 
-  all_reduce( M.parallel() , ReduceMin<1>( & result ) );
+  all_reduce( M.parallel() , Min<1>( & result ) );
 
   //--------------------------------------------------------------------
   // If an error occured collect the messages on

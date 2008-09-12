@@ -110,11 +110,11 @@ void all_write_string( ParallelMachine arg_comm ,
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void all_reduce( ParallelMachine  arg_comm ,
-                 ParallelReduceOp arg_op ,
-                 void           * arg_in ,
-                 void           * arg_out ,
-                 unsigned         arg_len )
+void all_reduce_internal( ParallelMachine  arg_comm ,
+                          ParallelReduceOp arg_op ,
+                          void           * arg_in ,
+                          void           * arg_out ,
+                          unsigned         arg_len )
 {
   MPI_Op mpi_op = MPI_OP_NULL ;
 
@@ -215,11 +215,11 @@ void all_reduce_bor( ParallelMachine ,
 
 //----------------------------------------------------------------------
 
-void all_reduce( ParallelMachine ,
-                 ParallelReduceOp ,
-                 void   * arg_in ,
-                 void   * arg_out ,
-                 unsigned arg_len )
+void all_reduce_internal( ParallelMachine ,
+                          ParallelReduceOp ,
+                          void   * arg_in ,
+                          void   * arg_out ,
+                          unsigned arg_len )
 {
   unsigned char * i = reinterpret_cast<unsigned char *>( arg_in );
   unsigned char * o = reinterpret_cast<unsigned char *>( arg_out );

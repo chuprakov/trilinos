@@ -31,6 +31,9 @@
 
 namespace phdmesh {
 
+/** \brief Compile-time list of indices.
+ *  \ingroup util_module
+ */
 template< unsigned  I0 = 0 , unsigned  I1 = 0 ,
           unsigned  I2 = 0 , unsigned  I3 = 0 ,
           unsigned  I4 = 0 , unsigned  I5 = 0 ,
@@ -49,7 +52,11 @@ template< unsigned  I0 = 0 , unsigned  I1 = 0 ,
           unsigned I30 = 0 , unsigned I31 = 0 >
 struct IndexList {};
 
-template< class List , unsigned J > struct IndexListAt ;
+/** \brief Access member of compile-time list of indices. <br>
+ *         Defines <b> enum { value = index_at_J }; </b> 
+ *  \ingroup util_module
+ */
+template< class List , unsigned J > struct IndexListAt {};
 
 #define INDEX_LIST_AT_SPECIALIZATION( J , K )	\
   template< unsigned  I0 , unsigned  I1 ,	\
@@ -110,7 +117,7 @@ INDEX_LIST_AT_SPECIALIZATION( 31 , I31 )
 
 #undef INDEX_LIST_AT_SPECIALIZATION
 
-}
+} // namespace phdmesh
 
 #endif
 

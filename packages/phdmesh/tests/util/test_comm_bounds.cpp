@@ -105,7 +105,7 @@ void test_comm_bounds( ParallelMachine comm , std::istream & )
         error = 2 ;
       }
 
-      all_reduce( comm , ReduceMax<1>( & error ) );
+      all_reduce( comm , Max<1>( & error ) );
 
       if ( ! error ) {
         if ( p_rank == 0 ) {

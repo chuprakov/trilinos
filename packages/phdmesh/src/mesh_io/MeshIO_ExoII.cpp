@@ -509,7 +509,7 @@ void assign_contiguous_indices(
     }
   }
 
-  all_reduce( p_comm , ReduceMax<1>( & end_id ) );
+  all_reduce( p_comm , Max<1>( & end_id ) );
 
   const double p_map = ((double) p_size) / ((double) end_id) ;
 

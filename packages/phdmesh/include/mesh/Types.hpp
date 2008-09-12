@@ -72,7 +72,7 @@ template< class FieldType > struct FieldTraits ;
 
 typedef uint32_type   entity_id_type ;     // Entity identifier type
 typedef uint64_type   entity_key_type ;    // Entity key type
-typedef uint_ptr_type relation_attr_type ; // Entity relation attribute
+typedef uintptr_type  relation_attr_type ; // Entity relation attribute
 
 /** Extensible definition of types of entities.
  *  The first four types are required to have values

@@ -272,7 +272,7 @@ void test_gears_face_proximity(
 
   unsigned flag = M.shared_entities() == sharing_A ;
 
-  all_reduce( M.parallel() , ReduceMin<1>( & flag ) );
+  all_reduce( M.parallel() , Min<1>( & flag ) );
 
   if ( ! flag ) {
     if ( p_rank == 0 ) {

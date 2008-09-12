@@ -72,13 +72,13 @@ public:
     { Copy<NWord>( m_value , k.m_value ); return *this ; }
 
   bool operator == ( const OctTreeKey & k ) const
-    { return Compare<NWord>::equal( m_value , k.m_value ); }
+    { return Equal<NWord>( m_value , k.m_value ); }
 
   bool operator != ( const OctTreeKey & k ) const
-    { return Compare<NWord>::not_equal( m_value , k.m_value ); }
+    { return Equal<NWord>( m_value , k.m_value ); }
 
   bool operator < ( const OctTreeKey & k ) const
-    { return Compare<NWord>::less( m_value , k.m_value ); }
+    { return Less<NWord>( m_value , k.m_value ); }
 
   /** Query depth of this key */
   unsigned depth() const ;

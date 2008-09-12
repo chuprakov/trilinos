@@ -35,11 +35,12 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 /**
- * @class CSet
- * @brief Set of entities of arbitrary types.
+ * \class CSet
+ * \brief Set of entities of arbitrary types.
  *
  *  Example usage of the three methods:
  *
+ * <PRE>
  *  class A { ... };
  *  class B { ... };
  *
@@ -62,9 +63,8 @@ namespace phdmesh {
  *    cset.remove<B>( b ); // Remove never deletes
  *    delete b ;
  *  }
+ * </PRE>
  */
-//----------------------------------------------------------------------
-
 class CSet {
 public:
 
@@ -109,6 +109,9 @@ private:
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
+
+#ifndef DOXYGEN_COMPILE
+
 // Inlined template methods have casting.
 
 namespace phdmesh {
@@ -143,6 +146,8 @@ bool CSet::remove( const T * arg_value )
 
 } // namespace phdmesh
 
-#endif
+#endif /* DOXYGEN_COMPILE */
+
+#endif /* util_CSet_hpp */
 
 

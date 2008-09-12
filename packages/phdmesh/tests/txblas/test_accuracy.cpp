@@ -108,7 +108,7 @@ void test_accuracy_txblas( ParallelMachine comm ,
 
   for ( i = values.begin() ; i != values.end() ; ++i ) { a += *i ; }
 
-  all_reduce( comm , ReduceSum<1>( & z ) & ReduceSum<1>( & a ) );
+  all_reduce( comm , Sum<1>( & z ) , Sum<1>( & a ) );
 
   for ( i = values.begin() ; i != values.end() ; ++i ) { *i = - *i ; }
 
@@ -116,7 +116,7 @@ void test_accuracy_txblas( ParallelMachine comm ,
 
   for ( i = values.begin() ; i != values.end() ; ++i ) { a += *i ; }
 
-  all_reduce( comm , ReduceSum<1>( & z ) & ReduceSum<1>( & a ) );
+  all_reduce( comm , Sum<1>( & z ) , Sum<1>( & a ) );
 
 
   const double z_val = z.value();
@@ -202,7 +202,7 @@ void test_reduce( ParallelMachine comm , std::istream & is )
     const int local_flag = z[0] < a0 || a0 < z[0] ;
     int flag = local_flag ;
 
-    all_reduce( comm , ReduceMax<1>( & flag ) );
+    all_reduce( comm , Max<1>( & flag ) );
 
     if ( flag ) {
       if ( local_flag ) {
@@ -229,10 +229,10 @@ void test_reduce( ParallelMachine comm , std::istream & is )
   dval[4] = p_rank + 1 ;
   aval += dval[1] ;
 
-  all_reduce( comm , ReduceSum<5>( dval ) &
-                     ReduceMax<3>( ival ) &
-                     ReduceSum<1>( & aval ) &
-                     ReduceBitOr<1>( & flag ) );
+  all_reduce( comm , Sum<5>( dval ) ,
+                     Max<3>( ival ) ,
+                     Sum<1>( & aval ) ,
+                     BitOr<1>( & flag ) );
 
   const double sum_ranks = ( p_size * ( p_size + 1 ) ) / 2 ;
 

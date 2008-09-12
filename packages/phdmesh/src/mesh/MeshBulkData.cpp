@@ -126,7 +126,7 @@ size_t MeshBulkData::synchronize_changes()
   // If any change has occured on any process
   // then increment the change counter.
 
-  all_reduce( m_parallel_machine , ReduceMax<1>( & change ) );
+  all_reduce( m_parallel_machine , Max<1>( & change ) );
 
   if ( change ) { ++m_sync_change_count ; }
 
@@ -774,7 +774,7 @@ void verify_set_shares( const MeshBulkData & M )
   {
     // Global reduce on the error flag, are any of the flag false ?
     unsigned flag = ok ;
-    all_reduce( M.parallel() , ReduceMin<1>( & flag ) );
+    all_reduce( M.parallel() , Min<1>( & flag ) );
     ok = flag ;
   }
 
@@ -946,7 +946,7 @@ void verify_set_ghosting( const MeshBulkData & M )
   {
     // Global reduce on the error flag, are any of the flag false ?
     unsigned flag = ok ;
-    all_reduce( M.parallel() , ReduceMin<1>( & flag ) );
+    all_reduce( M.parallel() , Min<1>( & flag ) );
     ok = flag ;
   }
 

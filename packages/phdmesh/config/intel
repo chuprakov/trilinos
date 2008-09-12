@@ -40,14 +40,15 @@ export CC="icc"
 export CXX="icc"
 export LDCXX="${CXX}"
 
-# -wd141  = suppress warning of unnamed prototype parameters
-# -wd444  = suppress warning of base class without virtual destructor
+# -wd141  = suppress warning: unnamed prototype parameters
+# -wd383  = suppress warning: value copied to 'const' temporary
+# -wd444  = suppress warning: base class without virtual destructor
 # -wd981  = suppress warning: order of operations
-# -wd1418 = suppress warning rfunctions declared without prior prototype
+# -wd1418 = suppress warning: rfunctions declared without prior prototype
 # -wd1419 - suppress warning: external declaration in 'main' file
 
 CFLAGS_INC="-I. -I${PHDMESH_PATH}/include"
-CFLAGS_DIAG="-strict-ansi -Wall -Wcheck -Werror -wd981 -wd1418 -wd1419 -wd141"
+CFLAGS_DIAG="-strict-ansi -Wall -Wcheck -Werror -wd141 -wd383 -wd981 -wd1418 -wd1419"
 
 export CFLAGS="-std=c99 ${CFLAGS} ${CFLAGS_DIAG} ${CFLAGS_INC}"
 export CXXFLAGS="${CXXFLAGS} ${CFLAGS_DIAG} -wd444 ${CFLAGS_INC}"

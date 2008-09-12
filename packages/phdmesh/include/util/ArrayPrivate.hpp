@@ -32,22 +32,32 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
+/** \addtogroup mdarray_module
+ *  \{
+ */
+
+/** \brief  Return the total number of members from the array stride */
 unsigned array_stride_size(
   const unsigned  rank ,
   const unsigned * const stride );
 
+/** \brief  Generate natural dimension from array stride */
 void array_stride_to_natural_dimensions(
   const unsigned   rank ,
   const unsigned * const stride ,
         unsigned * const dim );
 
+/** \brief  Generate natural indices from array stride */
 void array_stride_to_natural_indices(
   const unsigned   rank ,
   const unsigned * const stride ,
   const unsigned   offset ,
         unsigned * const indices );
 
+
 //----------------------------------------------------------------------
+
+#ifndef DOXYGEN_COMPILE
 
 void array_check_rank( const unsigned rank ,
                        const unsigned test_rank );
@@ -680,8 +690,6 @@ const ArrayDimTag * const * array_dim_tags()
 
 }
 
-//----------------------------------------------------------------------
-/** \cond */
 //----------------------------------------------------------------------
 
 template< ArrayOrder array_order , unsigned rank >
@@ -2239,7 +2247,11 @@ struct Array<void,RankZero,void,void,void,void,void,void,void,void>
 
 //----------------------------------------------------------------------
 
-}
+#endif /* DOXYGEN_COMPILE */
+
+/** \} */
+
+} // namespace phdmesh
 
 #endif
 

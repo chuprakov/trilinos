@@ -115,7 +115,7 @@ double sum( ParallelMachine comm , unsigned n , const double * x )
 {
   Summation s ;
   txdsum_add_array( s.xdval , n , x );
-  all_reduce( comm , ReduceSum<1>( & s ) );
+  all_reduce( comm , Sum<1>( & s ) );
   return s.value();
 }
 
@@ -124,7 +124,7 @@ double dot( ParallelMachine comm , unsigned n , const double * x )
 {
   Summation s ;
   txddot1( s.xdval , n , x );
-  all_reduce( comm , ReduceSum<1>( & s ) );
+  all_reduce( comm , Sum<1>( & s ) );
   return s.xdval[0] ;
 }
 
@@ -133,7 +133,7 @@ double dot( ParallelMachine comm , unsigned n , const double * x , const double 
 {
   Summation s ;
   txddot( s.xdval , n , x , y );
-  all_reduce( comm , ReduceSum<1>( & s ) );
+  all_reduce( comm , Sum<1>( & s ) );
   return s.value();
 }
 
@@ -148,7 +148,7 @@ double norm1( ParallelMachine comm , unsigned n , const double * x )
 {
   Summation s ;
   txdnorm1( s.xdval , n , x );
-  all_reduce( comm , ReduceSum<1>( & s ) );
+  all_reduce( comm , Sum<1>( & s ) );
   return s.xdval[0] ;
 }
 

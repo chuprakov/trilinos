@@ -20,18 +20,22 @@
 /*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307   */
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
-/**
- * @author H. Carter Edwards  <hcedwar@sandia.gov>
- * @date   November 2006
- */
 
-#ifndef util_Setv_h
-#define util_Setv_h
+#ifndef util_Setv_hpp
+#define util_Setv_hpp
 
-/*--------------------------------------------------------------------*/
+#include <utility>
+#include <iterator>
+#include <functional>
+
+namespace phdmesh {
+
 /**
- * @author H. Carter Edwards  <hcedwar@sandia.gov>
- * @brief  Enhanced alternative to 'std::set' or 'std::map'.
+ * \defgroup util_setv  Setv: an alternative to std::set or std::map
+ *
+ * \author H. Carter Edwards  <hcedwar@sandia.gov>
+ * \brief  Enhanced alternative to 'std::set' or 'std::map'.
+ * \date   November 2006
  *
  *   The 'Setv' alternative to the 'std::set' or 'std::map' template
  *   classes allows explicit memory management of the members of the
@@ -39,16 +43,14 @@
  *   for the implementation.  Explicit memory management may be
  *   advantageous in complex data structures that have members with
  *   large memory requirements or pointers to members.
- */
-
-// ---------------------------------------------------------------------
-// Acknowledgements:
-//
-//   Most all of the algorithms in this class were obtained from
-// the Hewlett-Packard source for the Standard Template Library,
-// thus the inclusion of Hewlett-Packard's copyright notice.
-// ---------------------------------------------------------------------
-/*
+ *
+ * ---------------------------------------------------------------------
+ * Acknowledgements:
+ *
+ *   Most all of the algorithms in this class were obtained from
+ * the Hewlett-Packard source for the Standard Template Library,
+ * thus the inclusion of Hewlett-Packard's copyright notice.
+ *
  * Copyright (c) 1994
  * Hewlett-Packard Company
  *
@@ -60,31 +62,28 @@
  * representations about the suitability of this software for any
  * purpose.  It is provided "as is" without express or implied warranty.
  *
+ * ---------------------------------------------------------------------
+ *
+ * Red-black tree class, designed for use in implementing STL
+ * associative containers (set, multiset, map, and multimap).
+ * The insertion and deletion algorithms are based on those in Cormen,
+ * Leiserson, and Rivest, Introduction to Algorithms (MIT Press, 1990),
+ * except that
+ *
+ * (1) the header cell is maintained with links not only to the root
+ * but also to the leftmost node of the tree, to enable constant time
+ * begin(), and to the rightmost node of the tree, to enable linear time
+ * performance when used with the generic set algorithms (set_union,
+ * etc.);
+ * 
+ * (2) when a node being deleted has two children its successor node is
+ * relinked into its place, rather than copied, so that the only
+ * iterators invalidated are those referring to the deleted node.
  */
-/*
-Red-black tree class, designed for use in implementing STL
-associative containers (set, multiset, map, and multimap).
-The insertion and deletion algorithms are based on those in Cormen,
-Leiserson, and Rivest, Introduction to Algorithms (MIT Press, 1990),
-except that
-
-(1) the header cell is maintained with links not only to the root
-but also to the leftmost node of the tree, to enable constant time
-begin(), and to the rightmost node of the tree, to enable linear time
-performance when used with the generic set algorithms (set_union,
-etc.);
-
-(2) when a node being deleted has two children its successor node is
-relinked into its place, rather than copied, so that the only
-iterators invalidated are those referring to the deleted node.
-*/
+// ---------------------------------------------------------------------
 // ---------------------------------------------------------------------
 
-#include <utility>
-#include <iterator>
-#include <functional>
-
-namespace phdmesh {
+#ifndef DOXYGEN_COMPILE
 
 template < typename KeyType > class SetvMember ;
 
@@ -92,7 +91,6 @@ template < class ValueType , bool Forward > class SetvIter ;
 
 template < class ValueType, class KeyCompare, class Allocator > class Setv ;
 
-// ---------------------------------------------------------------------
 // ---------------------------------------------------------------------
 
 template<>
@@ -116,19 +114,26 @@ private:
 template<bool Forward>
 SetvMember<void> * setv_iterate( const SetvMember<void> * );
 
-template<> SetvMember<void> * setv_iterate<true>(  const SetvMember<void> * );
-template<> SetvMember<void> * setv_iterate<false>( const SetvMember<void> * );
+template<>
+SetvMember<void> * setv_iterate<true>(  const SetvMember<void> * );
+
+template<>
+SetvMember<void> * setv_iterate<false>( const SetvMember<void> * );
+
+#endif /* DOXYGEN_COMPILE */
 
 // ---------------------------------------------------------------------
-/** Base class for Setv members.
+// ---------------------------------------------------------------------
+/** \brief Base class for Setv members.
+ *  \ingroup util_setv_module
+ *
  *  Objects stored in a Setv container must be derived from this
  *  template base class with the key type for the container.
  *
+ *  <PRE>
  *  class MyValueClass : public SetvMember<MyKeyType> { ... };
- *
- *  The key can only be changed by the 'Setv' class.
+ *  </PRE>
  */
-
 template < typename KeyType >
 class SetvMember : private SetvMember<void> {
 public:
@@ -154,6 +159,7 @@ public:
 
 private:
 
+  /** Assignment operator is not allowed */
   SetvMember<key_type> & operator = ( const SetvMember<key_type> & m );
 
   key_type m_key ;
@@ -163,8 +169,11 @@ private:
 };
 
 //----------------------------------------------------------------------
-/** @class SetvIter
- *  Template class for the Setv iterator types.
+/** \class SetvIter
+ *  \brief Template class for the Setv bidirectional iterators.
+ *  \ingroup util_setv_module
+ *  \param Type     The type of entity.
+ *  \param Forward  If the iterator is forward (versus backward).
  */
 template < class Type , bool Forward>
 class SetvIter : public std::iterator<std::bidirectional_iterator_tag,Type>
@@ -180,42 +189,49 @@ private:
 
 public:
 
-  /** [EXTENSION] Conversion to bool: true if a dereferenceable iterator */
+  /** \brief  Return true if iterator is to a valid entity. */
   operator bool () const { return n && n->parent ; }
 
-  // Constructors & assignment operator
-
+  /** \brief Default constructor to NULL entity */
   SetvIter() : n(NULL) {}
 
-  /** Copy from other similar iterators.
-   *  Compilation will fail when assigning non-const to const.
+  /** \brief Copy from other similar iterators.
+   *         Compilation will fail when assigning non-const to const.
    */
   template<class T,bool F> SetvIter( const SetvIter<T,F> & x ) : n(x.n) {}
 
-  /** Assign from other similar iterators.
-   *  Compilation will fail when assigning non-const to const.
+  /** \brief Assign from other similar iterators.
+   *         Compilation will fail when assigning non-const to const.
    */
   template<class T,bool F>
     SetvIter<Type,Forward> & operator = ( const SetvIter<T,F> & x )
       { n = x.n ; return *this ; }
 
+  /** \brief  Return if pointing to the same entity */
   template<class T,bool F>
     bool operator == ( const SetvIter<T,F> & y ) const { return n == y.n ; }
 
+  /** \brief  Return if not pointing to the same entity */
   template<class T,bool F>
     bool operator != ( const SetvIter<T,F> & y ) const { return n != y.n ; }
 
+  /** \brief  Reference to a valid entity, null otherwise */
   Type & operator * () const
     { return *(operator bool() ? n : reinterpret_cast<Type*>(NULL) ); }
+
+  /** \brief  Pointer to a valid entity, null otherwise */
   Type * operator ->() const
     { return  (operator bool() ? n : reinterpret_cast<Type*>(NULL) ); }
 
+  /** \brief  Increment to the next entity */
   SetvIter<Type,Forward> & operator++()
     { n = static_cast<Type*>( setv_iterate<Forward>(n) ); return *this ; }
 
+  /** \brief  Decrement to the previous entity */
   SetvIter<Type,Forward> & operator--()
     { n = static_cast<Type*>( setv_iterate<!Forward>(n) ); return *this ; }
 
+  /** \brief  Return this iterator and then increment to the next entity */
   SetvIter<Type,Forward> operator++(int)
     {
       Type * const t = n ;
@@ -223,6 +239,7 @@ public:
       return SetvIter<Type,Forward>(t);
     }
 
+  /** \brief  Return this iterator and then decrement to the previous entity */
   SetvIter<Type,Forward> operator--(int)
     {
       Type * const t = n ;
@@ -232,6 +249,8 @@ public:
 };
 
 //----------------------------------------------------------------------
+
+#ifndef DOXYGEN_COMPILE
 
 template<>
 class Setv<void,void,void> : private SetvMember<void> {
@@ -279,18 +298,40 @@ private:
   // rightmost == m_right_end.left
 };
 
-//----------------------------------------------------------------------
+#endif /* DOXYGEN_COMPILE */
 
+//----------------------------------------------------------------------
+/** \ingroup util_setv_module
+ *  \brief Associative container of explictly managed entities.
+ *
+ *  This associative container is conceptually similar to the
+ *  std::set container.  However, its members may be explicitly
+ *  managed by the user as opposed to the container always
+ *  creating internal copies of entities.
+ *
+ *  \param ValueType   Member type that must be derived from
+ *                     the SetvMember class.
+ *  \param KeyCompare  Comparison operator for the KeyType provided
+ *                     to the SetvMember< KeyType > template class.
+ */
 template < class ValueType ,
            class KeyCompare = std::less<typename ValueType::key_type> ,
            class Allocator = std::allocator<ValueType> >
 class Setv : private Setv<void,void,void> {
 public:
-  // Types:
+  /** \brief  Type of the comparison keys, obtained from the member class */
   typedef typename ValueType::key_type key_type ;
-  typedef ValueType                    value_type ;
-  typedef KeyCompare                   key_compare ;
-  typedef Allocator                    allocator_type ;
+
+  /** \brief  Type of the members */
+  typedef ValueType   value_type ;
+
+  /** \brief  Key comparison operator */
+  typedef KeyCompare  key_compare ;
+
+  /** \brief  Allocator class */
+  typedef Allocator   allocator_type ;
+
+#ifndef DOXYGEN_COMPILE
 
   typedef typename allocator_type::reference       reference ;
   typedef typename allocator_type::const_reference const_reference ;
@@ -298,10 +339,6 @@ public:
   typedef typename allocator_type::const_pointer   const_pointer ;
   typedef typename allocator_type::size_type       size_type ;
   typedef typename allocator_type::difference_type difference_type ;
-
-  // Iterators are bidirectional and have as an extension a
-  // conversion-to-bool operator that returns true for a
-  // dereferencable iterator.
 
   typedef SetvIter<      value_type,true>  iterator ;
   typedef SetvIter<const value_type,true>  const_iterator ;
@@ -319,23 +356,29 @@ public:
       }
   };
 
-  // Construct/copy/destroy:
+#endif /* DOXYGEN_COMPILE */
 
   ~Setv();
 
+  /** \brief Construct with comparison and allocator */
   Setv( const key_compare    & arg_compare = key_compare(),
         const allocator_type & arg_alloc = allocator_type() )
     : Setv<void,void,void>(),
       alloc(arg_alloc), key_less(arg_compare), value_less() {}
 
+  /** \brief Copy construction */
   Setv( const Setv<value_type,key_compare,allocator_type> & );
 
+  /** \brief Assignment */
   Setv<value_type,key_compare,allocator_type> & operator =
     ( const Setv<value_type,key_compare,allocator_type> & );
 
+  /** \brief Allocator */
   allocator_type get_allocator() const { return alloc ; }
 
-  // Iterators:
+  /** \name Iteration
+   *  \{
+   */
   iterator begin() const
     { return iterator(
         static_cast<value_type*>( Setv<void,void,void>::nBegin() ) ); }
@@ -352,22 +395,22 @@ public:
     { return reverse_iterator(
         static_cast<value_type*>( Setv<void,void,void>::nREnd() ) ); }
 
-  // Capacity:
-  bool      empty() const { return Setv<void,void,void>::size() == 0 ; }
-  size_type size()  const { return Setv<void,void,void>::size() ; }
-  size_type max_size() const { return alloc.max_size(); }
+  /** \} */
 
-  // Modifiers (single member only):
+  /** \name Setv modifiers
+   *  \{
+   */
 
-  /** [EXTENSION] Inserts the given value with key() == key
+  /** \brief  Inserts the given entity with key() == key
    *
-   *  If return.second == true then the value was removed
-   *  from its existing container, had its key() set to 'key',
-   *  and was inserted into this container.  If value == NULL
-   *  then a value is allocated.
+   *  If return.second == true then the input entity
+   *  - was removed from its previous container,
+   *  - was allocated if the input value was NULL,
+   *  - had its key() set to 'key', and
+   *  - was inserted into this container.
    *
    *  If return.second == false then an existing value
-   *  was found and returned, and the input value is untouched.
+   *  was found and returned and the input value is untouched.
    *
    *  The value must be individually deallocatable via the allocator_type,
    *  i.e. allocator.deallocate(value,1) is valid.
@@ -375,49 +418,62 @@ public:
   std::pair<iterator,bool>
     insert( const key_type & key , value_type * value = NULL );
 
-  /** [EXTENSION]  Inserts the given value with its key already set */
+  /** \brief  Insert the given entity with its key already set */
   std::pair<iterator,bool> insert( value_type * );
 
-  /** Retrieve or create a value with the given key */
-  value_type & operator[]( const key_type & key );
-
-  /** Destroys member */
+  /** \brief  Destroys the member referenced by the iterator */
   void erase( iterator position );
 
-  /** [EXTENSION] Destroys member */
+  /** \brief  Destroys the member referenced by the pointer */
   void erase( value_type * );
 
-  /** Destroys member */
+  /** \brief  Destroys the member referenced by the key */
   size_type erase( const key_type & );
 
-  /** [EXTENSION] Removes member from container but does not deallocate
-   *  The caller assumes responsibility for the value.
+  /** \brief  Removes the member from container but does not destroy it.
+   *          The caller assumes responsibility for the entity.
    */
   void remove( value_type & v )
     { Setv<void,void,void>::remove( &v ); }
 
-  // Modifiers: whole container:
-
-  // void swap( Setv<value_type,key_compare,allocator_type> & );
-
-  /** Destroys all member according to allocator_type */
+  /** \brief Destroys all members */
   void clear();
+  /** \} */
 
-  // Observers:
+  /** \brief  Query if container is empty */
+  bool      empty() const { return Setv<void,void,void>::size() == 0 ; }
+
+  /** \brief  Query number of members */
+  size_type size()  const { return Setv<void,void,void>::size() ; }
+
+  /** \brief  Query capacity */
+  size_type max_size() const { return alloc.max_size(); }
+
+  /** \brief  Comparison operator for key type */
   key_compare   key_comp()   const { return key_less ; }
+
+  /** \brief  Comparison operator for key type via the value type */
   value_compare value_comp() const { return value_less ; }
 
-  // Set operations:
+  /** \brief  Retrieve or create a value with the given key */
+  value_type & operator[]( const key_type & key );
+
+  /** \brief  Find a member with a given key */
   iterator  find(  const key_type & ) const ;
+
+  /** \brief  Count number of members with a given key, zero or one */
   size_type count( const key_type & ) const ;
 
+  /** \brief  First member with key equal to or greater than the given key */
   iterator  lower_bound( const key_type & ) const ;
+
+  /** \brief  Last member with key greater than or equal to the given key */
   iterator  upper_bound( const key_type & ) const ;
 
-  /** [EXTENSION] Verify that iteration of the container is properly ordered */
+  /** \brief Verify that iteration of the container is properly ordered */
   bool verify_ordering() const ;
 
-  /** [EXTENSION] Return the container of this member [extension] */
+  /** \brief  Query the container for a given member */
   static
   Setv<value_type,key_compare,allocator_type> * container( const value_type & );
 
@@ -430,11 +486,13 @@ private:
   value_compare  value_less ;
 };
 
-}
+} // namespace phdmesh
 
 // ---------------------------------------------------------------------
 // ---------------------------------------------------------------------
 // Implementation from here forward
+
+#ifndef DOXYGEN_COMPILE
 
 namespace phdmesh {
 
@@ -670,7 +728,8 @@ bool Setv<T,C,M>::verify_ordering() const
 
 // ---------------------------------------------------------------------
 
-}
+} // namespace phdmesh
 
-#endif
+#endif /* DOXYGEN_COMPILE */
 
+#endif /* util_Setv_hpp */

@@ -416,7 +416,7 @@ void assert_field_dimension_compatible(
   const FieldBase::Restriction & a ,
   const FieldBase::Restriction & b )
 {
-  if ( Compare< MaximumFieldDimension >::not_equal( a.stride , b.stride ) ) {
+  if ( NotEqual< MaximumFieldDimension >( a.stride , b.stride ) ) {
     std::ostringstream msg ;
     msg << method << " FOUND INCOMPATIBLE SIZES FOR " ;
     print_field_type( msg , field.numeric_type_ordinal() ,

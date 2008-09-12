@@ -111,7 +111,7 @@ void test_comm_all( ParallelMachine comm , std::istream & s )
   double dt_max = wall_dtime( t );
   double dt_min = dt_max ;
 
-  all_reduce( comm , ReduceMin<1>( & dt_min ) & ReduceMax<1>( & dt_max ) );
+  all_reduce( comm , Min<1>( & dt_min ) , Max<1>( & dt_max ) );
 
   dt_max /= num_cycle.value ;
   dt_min /= num_cycle.value ;

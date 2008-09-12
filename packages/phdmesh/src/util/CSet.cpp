@@ -141,8 +141,9 @@ CSet::~CSet()
 {
   const size_t n = m_manager.size();
   for ( size_t i = 0 ; i < n ; ++i ) {
-    if ( m_manager[i].second ) {
-      (*m_manager[i].second)( const_cast<void*>( m_value[i] ) );
+    const DeleteFunction del = m_manager[i].second ;
+    if ( del ) {
+      (*del)( const_cast<void*>( m_value[i] ) );
     }
   }
 }

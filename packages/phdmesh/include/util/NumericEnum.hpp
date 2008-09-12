@@ -20,10 +20,6 @@
 /*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307   */
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
-/**
- * @author H. Carter Edwards  <hcedwar@sandia.gov>
- * @date   October 2007
- */
 
 #ifndef util_NumericEnum_hpp
 #define util_NumericEnum_hpp
@@ -34,7 +30,30 @@
 
 namespace phdmesh {
 
-/** List of numeric types, with 'void' as undefined */
+/** \defgroup util_numeric_enum  Enumeration of Numeric Types
+ *  \brief   A TypeList based enumeration of numeric types.
+ *  \author  H. Carter Edwards  <hcedwar@sandia.gov>
+ *  \date    October 2007
+ *
+ *  A TypeList is used instead of declaring an <b> enum </b>
+ *  so that the integer values are clearly defined and extension of the
+ *  list is robust.
+ *
+ *  An enumeration value for a type is given by:
+ *  <b> NumericEnum< Type >::value </b>.
+ *  Thus a switch statement for a numeric type is formed as follows.
+ *
+ *  switch( my_value ) { <br>
+ *  case NumericEnum< int >::value : ... ; break ; <br>
+ *  case NumericEnum< float >::value : ... ; break ; <br>
+ *  case NumericEnum< double >::value : ... ; break ; <br>
+ *  default: ... ; <br>
+ *  } <br>
+ *
+ *  \{
+ */
+
+#ifndef DOXYGEN_COMPILE
 
 typedef TypeList<          void ,
         TypeList< signed   char ,
@@ -67,41 +86,65 @@ typedef TypeList<          void ,
         TypeListEnd > > > > > > > > > > > > >
                     > > > > > > > > > > > > > NumericTypeList ;
 
+#endif /* DOXYGEN_COMPILE */
+
 template<typename Type = void> struct NumericEnum ;
 
+/** \brief  Map the integer value associated with a numeric scalar type
+ *          to a text name or byte size.
+ */
 template<>
 struct NumericEnum<void> {
-  enum { OK = StaticAssert< TypeListUnique<NumericTypeList>::value >::OK };
 
   enum { length  = TypeListLength<NumericTypeList>::value };
   enum { minimum = 1 };
   enum { maximum = length - 1 };
 
+  /** \brief  Text name Type where where ordinal = NumericEnum<Type>::value */
   static const char * name( unsigned ordinal );
+
+  /** \brief  sizeof(Type) where ordinal = NumericEnum<Type>::value */
   static unsigned     size( unsigned ordinal );
 
-  enum { value = 0 };
+  enum { value = TypeListIndex< NumericTypeList , void>::value };
+
+private:
+
+  enum { OK = StaticAssert< TypeListUnique<NumericTypeList>::value >::OK };
 };
 
+/** \brief  Map a numeric scalar Type to an integer value */
 template<typename Type>
 struct NumericEnum {
-  enum { value = TypeListIndex< NumericTypeList , Type>::value };
 
+  /** \brief  Unique integer value for numeric scalar Type, if known.
+   *          Is -1 if the type is unknown.
+   */
+  enum { value
+#ifndef DOXYGEN_COMPILE
+               = TypeListIndex<NumericTypeList,Type>::value
+#endif
+  };
+
+private:
   enum { OK = StaticAssert<
                0 < (int) value &&
                    (int) value < (int) NumericEnum<void>::length >::OK };
 };
 
+/** \brief  Inverse map of a numeric scalar type to an integer value */
 template<unsigned Ordinal>
 struct NumericType {
+#ifndef DOXYGEN_COMPILE
+  typedef typename TypeListAt< NumericTypeList , Ordinal >::type type ;
+#endif
 private:
   enum { OK = StaticAssert< Ordinal < NumericEnum<>::length >::OK };
-public:
-  typedef typename TypeListAt< NumericTypeList , Ordinal >::type type ;
 };
 
+/** \} */
 
-}
+} // namespace phdmesh
 
 #endif
 

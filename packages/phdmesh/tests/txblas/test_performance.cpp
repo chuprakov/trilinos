@@ -221,11 +221,11 @@ void timing_txblas1(
         double * const y = & y_values[0] ;
         double s ;
         tddot( & s , m_local , x , y );
-        all_reduce( comm , ReduceSum<1>( & s ) );
+        all_reduce( comm , Sum<1>( & s ) );
       }
 
       double d = wall_dtime( t );
-      all_reduce( comm , ReduceMax<1>( & d ) );
+      all_reduce( comm , Max<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
@@ -271,12 +271,12 @@ void timing_txblas1(
         double * const y = & y_values[0] + offset ;
         double s ;
         tddot( & s , m_local , x , y );
-        all_reduce( comm , ReduceSum<1>( & s ) );
+        all_reduce( comm , Sum<1>( & s ) );
       }
 
       double d = wall_dtime( t );
 
-      all_reduce( comm , ReduceMax<1>( & d ) );
+      all_reduce( comm , Max<1>( & d ) );
       
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
@@ -321,11 +321,11 @@ void timing_txblas1(
         double * const y = & y_values[0] ;
         Summation s ;
         txddot( s.xdval , m_local , x , y );
-        all_reduce( comm , ReduceSum<1>( & s ) );
+        all_reduce( comm , Sum<1>( & s ) );
       }
 
       double d = wall_dtime( t );
-      all_reduce( comm , ReduceMax<1>( & d ) );
+      all_reduce( comm , Max<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
@@ -371,11 +371,11 @@ void timing_txblas1(
         double * const y = & y_values[0] + offset ;
         Summation s ;
         txddot( s.xdval , m_local , x , y );
-        all_reduce( comm , ReduceSum<1>( & s ) );
+        all_reduce( comm , Sum<1>( & s ) );
       }
 
       double d = wall_dtime( t );
-      all_reduce( comm , ReduceMax<1>( & d ) );
+      all_reduce( comm , Max<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
@@ -421,7 +421,7 @@ void timing_txblas1(
       }
 
       double d = wall_dtime( t );
-      all_reduce( comm , ReduceMax<1>( & d ) );
+      all_reduce( comm , Max<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
@@ -469,7 +469,7 @@ void timing_txblas1(
       }
 
       double d = wall_dtime( t );
-      all_reduce( comm , ReduceMax<1>( & d ) );
+      all_reduce( comm , Max<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
@@ -515,7 +515,7 @@ void timing_txblas1(
       }
 
       double d = wall_dtime( t );
-      all_reduce( comm , ReduceMax<1>( & d ) );
+      all_reduce( comm , Max<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
 
@@ -564,7 +564,7 @@ void timing_txblas1(
         tdaxpby( m_local, 1.0, x, 1.0, y, 1 );
       }
       double d = wall_dtime( t );
-      all_reduce( comm , ReduceMax<1>( & d ) );
+      all_reduce( comm , Max<1>( & d ) );
       if ( 0 == repeat || d < dt[ i_test ] ) { dt[ i_test ] = d ; }
     }
     mflops[ i_test ] = mflop_cycle * ncycle / dt[ i_test ];
@@ -639,7 +639,7 @@ void timing_txblas_cr_mxv( ParallelMachine comm ,
 
   double dt =  wall_dtime( t );
 
-  all_reduce( comm , ReduceMax<1>( & dt ) );
+  all_reduce( comm , Max<1>( & dt ) );
 
   if ( p_rank == 0 ) {
     std::cout << "\"TIMING CR_MXV\" , " ;

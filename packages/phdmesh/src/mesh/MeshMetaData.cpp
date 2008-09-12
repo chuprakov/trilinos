@@ -280,7 +280,7 @@ void verify_parallel_consistency( const MeshMetaData & s , ParallelMachine pm )
   ok[0] = unpack_verify( comm.recv_buffer() , s.get_parts() );
   ok[1] = unpack_verify( comm.recv_buffer() , s.get_fields() );
 
-  all_reduce( pm , ReduceMin<2>( ok ) );
+  all_reduce( pm , Min<2>( ok ) );
 
   if ( ! ok[0] || ! ok[1] ) {
     std::ostringstream msg ;

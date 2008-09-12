@@ -111,9 +111,7 @@ void search_tree_statistics( ParallelMachine  arg_comm ,
   if ( min[0] == huge ) { min[0] = 0 ; }
   if ( min[1] == huge ) { min[1] = 0 ; }
 
-  all_reduce( arg_comm , ReduceMin<2>( min ) &
-                         ReduceMax<2>( max ) &
-                         ReduceSum<2>( avg ) );
+  all_reduce( arg_comm , Min<2>( min ) , Max<2>( max ) , Sum<2>( avg ) );
 
   const unsigned p_size = parallel_machine_size( arg_comm );
 
@@ -1130,8 +1128,8 @@ void box_global_bounds(
 
   //------------------------------------
 
-  all_reduce( arg_comm , ReduceMin<Dim>( arg_global_box ) &
-                         ReduceMax<Dim>( arg_global_box + Dim ) );
+  all_reduce( arg_comm , Min<Dim>( arg_global_box ) ,
+                         Max<Dim>( arg_global_box + Dim ) );
 
   // Scale up and down by epsilon
 

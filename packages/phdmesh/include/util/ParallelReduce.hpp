@@ -64,18 +64,10 @@ void all_reduce_bor( ParallelMachine ,
  *    ParallelMachine comm = ... ;
  *    double a[5] ;
  *    int    b[3] ;
- *    all_reduce( comm , ReduceSum<5>( a ) & ReduceMax<3>( b ) );
+ *    all_reduce( comm , Sum<5>( a ) , Max<3>( b ) , ... );
  *
- *  Reduction options include:
- *    ReduceSum   <N>( T * )   // Summation
- *    ReduceProd  <N>( T * )   // Product
- *    ReduceMax   <N>( T * )   // Maximum
- *    ReduceMin   <N>( T * )   // Minimum
- *    ReduceBitOr <N>( T * )   // Bit-wise OR
- *    ReduceBitAnd<N>( T * )   // Bit-wise AND
+ *  Reduction options include Sum, Prod, Max, Min, BitOr, and BitAnd
  */
-template < class ReduceOp >
-void all_reduce( ParallelMachine , const ReduceOp & );
 
 }
 
@@ -83,143 +75,171 @@ void all_reduce( ParallelMachine , const ReduceOp & );
 //----------------------------------------------------------------------
 
 namespace phdmesh {
-namespace {
-// Blank namespace so that this class produces local symbols,
-// avoiding complaints from a linker of multiple-define symbols.
-
-struct ReduceEnd {
-  struct WorkType {};
-  void copyin(  WorkType & ) const {}
-  void copyout( WorkType & ) const {}
-  static void op( WorkType & , WorkType & ) {}
-};
-
-// Workhorse class for aggregating reduction operations.
-
-template <class Op, typename T, class Next>
-struct Reduce {
-
-  typedef T Type ;
-  enum { N = Op::N };
-
-  struct WorkType {
-    typename Next::WorkType m_next ;
-    Type                    m_value[N];
-  };
-
-  Next   m_next ;
-  Type * m_value ;
-
-  // Copy values into buffer:
-  void copyin( WorkType & w ) const
-    { Copy<N>( w.m_value , m_value ); m_next.copyin( w.m_next ); }
-      
-  // Copy value out from buffer:
-  void copyout( WorkType & w ) const
-    { Copy<N>( m_value , w.m_value ); m_next.copyout( w.m_next ); }
-
-  // Reduction function
-  static void op( WorkType & out , WorkType & in )
-    { Op( out.m_value , in.m_value ); Next::op( out.m_next , in.m_next ); }
-
-  // Aggregate reduction operations, use '&' for left-to-right evaluation
-  template<class OpB, typename TB>
-  Reduce<OpB, TB, Reduce<Op,T,Next> >
-    operator & ( const Reduce<OpB,TB,ReduceEnd> & rhs )
-      { return Reduce<OpB, TB, Reduce<Op,T,Next> >( rhs , *this ); }
-
-  // Constructor for aggregation:
-  Reduce( const Reduce<Op,T, ReduceEnd> & arg_val , const Next & arg_next )
-    : m_next( arg_next ), m_value( arg_val.m_value ) {}
-
-  // Constructor for aggregate member:
-  explicit Reduce( Type * arg_value )
-   : m_next(), m_value( arg_value ) {}
-
-  static void void_op( void*inv, void*inoutv, int*, ParallelDatatype*);
-};
-
-template <class Op, typename T, class Next>
-void Reduce<Op,T,Next>::void_op( void*inv, void*inoutv,int*,ParallelDatatype*)
-{
-  op( * reinterpret_cast<WorkType*>( inoutv ) ,
-      * reinterpret_cast<WorkType*>( inv ) );
-}
-
-}
-}
-
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
-
-namespace phdmesh {
-
-template<unsigned N, typename T>
-inline
-Reduce< Sum<N> , T, ReduceEnd> ReduceSum( T * value )
-{ return Reduce< Sum<N>, T, ReduceEnd >( value ); }
-
-template<unsigned N, typename T>
-inline
-Reduce< Prod<N>, T, ReduceEnd > ReduceProd( T * value )
-{ return Reduce< Prod<N>, T, ReduceEnd >( value ); }
-
-template<unsigned N, typename T>
-inline
-Reduce< Max<N>, T, ReduceEnd> ReduceMax( T * value )
-{ return Reduce< Max<N>, T, ReduceEnd>( value ); }
-
-template<unsigned N, typename T>
-inline
-Reduce< Min<N>, T, ReduceEnd> ReduceMin( T * value )
-{ return Reduce<Min<N>, T, ReduceEnd>( value ); }
-
-template<unsigned N, typename T>
-inline
-Reduce< BitOr<N>, T, ReduceEnd> ReduceBitOr( T * value )
-{ return Reduce< BitOr<N>, T, ReduceEnd>( value ); }
-
-template<unsigned N, typename T>
-inline
-Reduce< BitAnd<N>, T, ReduceEnd> ReduceBitAnd( T * value )
-{ return Reduce< BitAnd<N>, T, ReduceEnd>( value ); }
-
-//----------------------------------------------------------------------
-// all_reduce( comm , ReduceSum<5>( A ) & ReduceMax<3>( B ) );
 
 extern "C" {
 typedef void (*ParallelReduceOp)
   ( void * inv , void * outv , int * , ParallelDatatype * );
 }
 
-void all_reduce( ParallelMachine  arg_comm ,
-                 ParallelReduceOp arg_op ,
-                 void           * arg_in ,
-                 void           * arg_out ,
-                 unsigned         arg_len );
+void all_reduce_internal( ParallelMachine  arg_comm ,
+                          ParallelReduceOp arg_op ,
+                          void           * arg_in ,
+                          void           * arg_out ,
+                          unsigned         arg_len );
 
 namespace {
 
-template < class ReduceOp >
-void all_reduce_driver( ParallelMachine comm , const ReduceOp & op )
+// Blank namespace so that this class produces local symbols,
+// avoiding complaints from a linker of multiple-define symbols.
+
+struct ReduceEnd {
+  struct BufferType {};
+  void copyin(  BufferType & ) const {}
+  void copyout( BufferType & ) const {}
+  static void op( BufferType & , BufferType & ) {}
+};
+
+// Workhorse class for aggregating reduction operations.
+
+template < class Oper , class Next = ReduceEnd >
+struct Reduce {
+  typedef typename Oper::type Type ;
+  enum { N = Oper::N };
+
+  struct BufferType {
+    Type                      m_value[N];
+    typename Next::BufferType m_next ;
+  };
+
+  Next   m_next ;
+  Type * m_ptr ;
+
+  Next & set( const Oper & arg ) { m_ptr = arg.ptr ; return m_next ; }
+
+  void reduce( ParallelMachine comm ) const ;
+
+  void copyin( BufferType & b ) const
+    { Copy<N>( b.m_value , m_ptr ); m_next.copyin( b.m_next ); }
+
+  void copyout( BufferType & b ) const
+    { Copy<N>( m_ptr , b.m_value ); m_next.copyout( b.m_next ); }
+
+  static void op( BufferType & dst , BufferType & src )
+    { Oper::op(dst.m_value,src.m_value); Next::op(dst.m_next,src.m_next); }
+
+  static void void_op( void*inv, void*inoutv, int*, ParallelDatatype*);
+};
+
+template <class Oper, class Next>
+void Reduce<Oper,Next>::void_op( void*inv, void*inoutv,int*,ParallelDatatype*)
 {
-  typedef typename ReduceOp::WorkType WorkType ;
-
-  WorkType inbuf , outbuf ;
-
-  ParallelReduceOp f =
-    reinterpret_cast<ParallelReduceOp>( & ReduceOp::void_op );
-  op.copyin( inbuf );
-  all_reduce( comm , f , & inbuf, & outbuf, sizeof(WorkType) );
-  op.copyout( outbuf );
+  op( * reinterpret_cast<BufferType*>( inoutv ) ,
+      * reinterpret_cast<BufferType*>( inv ) );
 }
 
+template <class Oper, class Next>
+void Reduce<Oper,Next>::reduce( ParallelMachine comm ) const
+{
+  ParallelReduceOp f = reinterpret_cast<ParallelReduceOp>( & void_op );
+  BufferType inbuf , outbuf ;
+  copyin( inbuf );
+  all_reduce_internal( comm , f , & inbuf , & outbuf , sizeof(BufferType) );
+  copyout( outbuf );
 }
 
-template < class ReduceOp >
+} // namespace
+} // namespace phdmesh
+
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+
+namespace phdmesh {
+
+template < class Op1 >
 inline
-void all_reduce( ParallelMachine comm , const ReduceOp & op )
-{ all_reduce_driver<ReduceOp>( comm , op ); }
+void all_reduce( ParallelMachine comm , const Op1 & op1 )
+{
+  Reduce< Op1 > work ;
+  work.set( op1 );
+  work.reduce( comm );
+}
+
+template < class Op1 , class Op2 >
+inline
+void all_reduce( ParallelMachine comm , const Op1 & op1 ,
+                                        const Op2 & op2 )
+{
+  Reduce< Op1 ,
+  Reduce< Op2 > > work ;
+  work.set( op1 ).set( op2 );
+  work.reduce( comm );
+}
+
+template < class Op1 , class Op2 , class Op3 >
+inline
+void all_reduce( ParallelMachine comm , const Op1 & op1 ,
+                                        const Op2 & op2 ,
+                                        const Op3 & op3 )
+{
+  Reduce< Op1 ,
+  Reduce< Op2 ,
+  Reduce< Op3 > > > work ;
+  work.set( op1 ).set( op2 ).set( op3 );
+  work.reduce( comm );
+}
+
+template < class Op1 , class Op2 , class Op3 , class Op4 >
+inline
+void all_reduce( ParallelMachine comm , const Op1 & op1 ,
+                                        const Op2 & op2 ,
+                                        const Op3 & op3 ,
+                                        const Op4 & op4 )
+{
+  Reduce< Op1 ,
+  Reduce< Op2 ,
+  Reduce< Op3 ,
+  Reduce< Op4 > > > > work ;
+  work.set( op1 ).set( op2 ).set( op3 ).set( op4 );
+  work.reduce( comm );
+}
+
+template < class Op1 , class Op2 , class Op3 , class Op4 ,
+           class Op5 >
+inline
+void all_reduce( ParallelMachine comm , const Op1 & op1 ,
+                                        const Op2 & op2 ,
+                                        const Op3 & op3 ,
+                                        const Op4 & op4 ,
+                                        const Op5 & op5 )
+{
+  Reduce< Op1 ,
+  Reduce< Op2 ,
+  Reduce< Op3 ,
+  Reduce< Op4 ,
+  Reduce< Op5 > > > > > work ;
+  work.set( op1 ).set( op2 ).set( op3 ).set( op4 ).set( op5 );
+  work.reduce( comm );
+}
+
+template < class Op1 , class Op2 , class Op3 , class Op4 ,
+           class Op5 , class Op6 >
+inline
+void all_reduce( ParallelMachine comm , const Op1 & op1 ,
+                                        const Op2 & op2 ,
+                                        const Op3 & op3 ,
+                                        const Op4 & op4 ,
+                                        const Op5 & op5 ,
+                                        const Op6 & op6 )
+{
+  Reduce< Op1 ,
+  Reduce< Op2 ,
+  Reduce< Op3 ,
+  Reduce< Op4 ,
+  Reduce< Op5 ,
+  Reduce< Op6 > > > > > > work ;
+  work.set( op1 ).set( op2 ).set( op3 ).set( op4 ).set( op5 ).set( op6 );
+  work.reduce( comm );
+}
 
 }
 
