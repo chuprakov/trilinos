@@ -1,0 +1,13 @@
+================================================================================
+
+MOOCHO : Release Notes for Trilinos 9.0
+
+================================================================================
+
+Mostly minor changes which include:
+
+(*) Added response-only DiagonalQuadraticResponseOnlyOpt exampled based on an
+EpetraExt::ModelEvaluator.  This is to show users how to run MOOCHO on an
+unconstrained problem in parallel.
+
+(*) Cleaned out some junk
