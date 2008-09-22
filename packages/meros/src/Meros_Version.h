@@ -37,7 +37,7 @@ namespace Meros {
   // using std::string;
   
   std::string Meros_Version() { 
-    return("Meros Version 1.2 Development - 9/07/2007"); 
+    return("Meros Version 1.0 - 9/22/2008"); 
     
   }
   
