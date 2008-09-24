@@ -42,8 +42,9 @@ ACLOCAL_AMFLAGS = -I config
 ## Additional files to be included in distribution for 'make dist'
 ## #######################################################################
 EXTRA_DIST = \
-config/strip_dup_incl_paths.pl config/strip_dup_libs.pl \
-bootstrap 
+config/strip_dup_incl_paths.pl   config/strip_dup_libs.pl \
+config/replace-install-prefix.pl config/token-replace.pl \
+config/generate-makeoptions.pl   bootstrap 
 #
 #       I believe that by switching to AUX_DIR(../../config) one 
 #       could get rid of these.
