@@ -46,10 +46,10 @@ UTIL_INC_FILES =	\
 	$(UTIL_INC_DIR)/TestDriver.hpp	\
 	$(UTIL_INC_DIR)/TPI.h	\
 	$(UTIL_INC_DIR)/TPI.hpp	\
-	$(UTIL_INC_DIR)/TypeList.hpp
+	$(UTIL_INC_DIR)/TypeList.hpp	\
+	$(UTIL_INC_DIR)/TypeName.hpp
 
 UTIL_OBJ_FILES =	\
-	TypeName.o	\
 	ArrayPrivate.o	\
 	CSet.o	\
 	FixedPoolAlloc.o	\
@@ -66,7 +66,8 @@ UTIL_OBJ_FILES =	\
 	TestDriver.o	\
 	TPI_Concurrency.o	\
 	TPI_pthreads.o	\
-	TPI_Walltime.o
+	TPI_Walltime.o	\
+	TypeName.o
 
 UTIL_INC_DEPS = $(UTIL_INC_FILES) $(CONFIG_FILE)
 
