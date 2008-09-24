@@ -112,13 +112,12 @@ UTIL_H = \
 	$(srcdir)/../include/util/ParallelIndex.hpp \
 	$(srcdir)/../include/util/ParallelInputStream.hpp \
 	$(srcdir)/../include/util/ParallelReduce.hpp \
-	$(srcdir)/../include/util/Reference.hpp \
 	$(srcdir)/../include/util/Setv.hpp \
 	$(srcdir)/../include/util/TestDriver.hpp \
 	$(srcdir)/../include/util/TPI.h \
 	$(srcdir)/../include/util/TPI.hpp \
 	$(srcdir)/../include/util/TypeList.hpp \
-	$(srcdir)/../include/util/ValueIO.hpp
+	$(srcdir)/../include/util/TypeName.hpp
 
 UTIL = \
 	$(srcdir)/util/ArrayPrivate.cpp \
@@ -133,13 +132,12 @@ UTIL = \
 	$(srcdir)/util/ParallelIndex.cpp \
 	$(srcdir)/util/ParallelInputStream.cpp \
 	$(srcdir)/util/ParallelReduce.cpp \
-	$(srcdir)/util/Reference.cpp \
 	$(srcdir)/util/Setv.cpp \
 	$(srcdir)/util/TestDriver.cpp \
 	$(srcdir)/util/TPI_Concurrency.c \
 	$(srcdir)/util/TPI_pthreads.c \
 	$(srcdir)/util/TPI_Walltime.c \
-	$(srcdir)/util/ValueIO.cpp
+	$(srcdir)/util/TypeName.cpp
 
 MESHIO_H = \
 	$(srcdir)/../include/mesh_io/ExoII.hpp
