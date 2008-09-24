@@ -33,7 +33,7 @@
 
 namespace phdmesh {
 
-#if defined( PHDMESH_HAS_MPI )
+#if defined( HAVE_MPI )
 
 //----------------------------------------------------------------------
 

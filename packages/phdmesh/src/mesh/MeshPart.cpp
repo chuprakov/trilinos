@@ -374,9 +374,9 @@ Part::~Part()
 {}
 
 // The constructor must only be called by
-// the 'MeshMetaData::declare_part( const std::string & )' method.
+// the 'MetaData::declare_part( const std::string & )' method.
 
-Part::Part( MeshMetaData & m , const std::string & n , unsigned ordinal )
+Part::Part( MetaData & m , const std::string & n , unsigned ordinal )
   : m_name( n ),
     m_cset(),
     m_subsets() , m_supersets() , m_intersect() ,
@@ -385,9 +385,9 @@ Part::Part( MeshMetaData & m , const std::string & n , unsigned ordinal )
     m_relation_target( false )
 {}
 
-Part & MeshMetaData::declare_part( const std::string & p_name )
+Part & MetaData::declare_part( const std::string & p_name )
 {
-  static const char method[] = "phdmesh::MeshBulkData::declare_part" ;
+  static const char method[] = "phdmesh::BulkData::declare_part" ;
 
   assert_not_committed( method );
 
@@ -480,9 +480,9 @@ void clean_intersection( const char * const method ,
 
 }
 
-Part & MeshMetaData::declare_part( const PartSet & pset )
+Part & MetaData::declare_part( const PartSet & pset )
 {
-  static const char method[] = "phdmesh::MeshBulkData::declare_part" ;
+  static const char method[] = "phdmesh::BulkData::declare_part" ;
 
   assert_not_committed( method );
 
@@ -519,9 +519,9 @@ Part & MeshMetaData::declare_part( const PartSet & pset )
 
 //----------------------------------------------------------------------
 
-void MeshMetaData::declare_part_subset( Part & superset , Part & subset )
+void MetaData::declare_part_subset( Part & superset , Part & subset )
 {
-  static const char method[] = "phdmesh::MeshMetaData::declare_part_subset" ;
+  static const char method[] = "phdmesh::MetaData::declare_part_subset" ;
 
   assert_not_relation_target( method , "superset" , superset );
   assert_not_relation_target( method , "subset" , subset );
@@ -587,12 +587,12 @@ void MeshMetaData::declare_part_subset( Part & superset , Part & subset )
 
 //----------------------------------------------------------------------
 
-void MeshMetaData::declare_part_relation(
+void MetaData::declare_part_relation(
   Part & root_part ,
   relation_stencil_ptr stencil ,
   Part & target_part )
 {
-  static const char method[] = "phdmesh::MeshMetaData::declare_part_relation" ;
+  static const char method[] = "phdmesh::MetaData::declare_part_relation" ;
 
   assert_not_relation_target( method , "root of part relation" , root_part );
 
@@ -619,7 +619,7 @@ void MeshMetaData::declare_part_relation(
 
 //----------------------------------------------------------------------
 
-Part * MeshMetaData::get_part( const std::string & p_name ,
+Part * MetaData::get_part( const std::string & p_name ,
                          const char * required_by ) const
 {
   const PartSet & all_parts = m_universal_part.m_subsets ;
@@ -627,7 +627,7 @@ Part * MeshMetaData::get_part( const std::string & p_name ,
   Part * const p = find( all_parts , p_name );
 
   if ( required_by && NULL == p ) { // ERROR
-    static const char method[] = "phdmesh::MeshBulkData::get_part" ;
+    static const char method[] = "phdmesh::BulkData::get_part" ;
     std::string msg ;
     msg.append( method )
        .append( "( " )

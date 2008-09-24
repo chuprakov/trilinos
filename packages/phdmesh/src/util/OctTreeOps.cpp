@@ -26,6 +26,7 @@
  * @date   January 2007
  */
 
+#include <iostream>
 #include <map>
 #include <set>
 #include <list>
@@ -42,7 +43,7 @@
 namespace phdmesh {
 namespace {
 
-#if defined( PHDMESH_HAS_MPI )
+#if defined( HAVE_MPI )
 
 void all_gather( ParallelMachine comm ,
                  const float * local , float * global , unsigned count )
@@ -519,35 +520,47 @@ void ProximitySearch::iterate_tree(TPI::ThreadPool pool)
 {
   enum { N_WORK = 32 };
 
-  SetInsertBuffer< std::set< std::pair<IdentProc,IdentProc> > >
-    tmp( m_relation , pool , 1 );
+  try {
+    SetInsertBuffer< std::set< std::pair<IdentProc,IdentProc> > >
+      tmp( m_relation , pool , 1 );
 
-  const SearchTree::const_iterator i_tree_end = m_tree_end ;
+    const SearchTree::const_iterator i_tree_end = m_tree_end ;
 
-  unsigned n_work = N_WORK ;
+    unsigned n_work = N_WORK ;
 
-  while ( n_work ) {
+    while ( n_work ) {
 
-    n_work = 0 ;
+      n_work = 0 ;
 
-    SearchTree::const_iterator i_beg , i_end ;
+      SearchTree::const_iterator i_beg , i_end ;
 
-    { // Get work:
-      TPI::LockGuard get_work_lock( pool , 0 );
+      { // Get work:
+        TPI::LockGuard get_work_lock( pool , 0 );
 
-      i_end = i_beg = m_tree_iter ;
+        i_end = i_beg = m_tree_iter ;
 
-      while ( n_work < N_WORK && i_tree_end != i_end ) { ++i_end ; ++n_work ; }
+        while ( n_work < N_WORK && i_tree_end != i_end ) {
+          ++i_end ; ++n_work ;
+        }
     
-      m_tree_iter = i_end ;
+        m_tree_iter = i_end ;
 
-    } // get_work_lock is released
+      } // get_work_lock is released
 
-    // Perform work:
+      // Perform work:
 
-    for ( ; i_beg != i_end ; ++i_beg ) {
-      (*m_search)( i_beg , i_tree_end , tmp );
+      for ( ; i_beg != i_end ; ++i_beg ) {
+        (*m_search)( i_beg , i_tree_end , tmp );
+      }
     }
+  }
+  catch ( const std::exception & x ) {
+    std::cerr << x.what() << std::endl ;
+    std::cerr.flush();
+  }
+  catch ( ... ) {
+    std::cerr << "ProximitySearch::iterate_tree FAILED" << std::endl ;
+    std::cerr.flush();
   }
 }
 

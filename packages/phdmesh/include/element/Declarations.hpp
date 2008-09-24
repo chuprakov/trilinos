@@ -54,12 +54,12 @@ const CellTopology * get_cell_topology( const Entity & );
 /** Declare an element member of a part with a cell topology
  *  and nodes conformal to that topology.
  */
-Entity & declare_element( MeshBulkData & mesh ,
+Entity & declare_element( BulkData & mesh ,
                           Part & part ,
                           const unsigned elem_id ,
                           const unsigned node_id[] );
 
-Entity & declare_element( MeshBulkData & mesh ,
+Entity & declare_element( BulkData & mesh ,
                           Part & part ,
                           const unsigned elem_id ,
                           Entity * node[] );
@@ -67,7 +67,7 @@ Entity & declare_element( MeshBulkData & mesh ,
 //----------------------------------------------------------------------
 /* The element must have a topology. */
 
-Entity & declare_element_side( MeshBulkData & mesh ,
+Entity & declare_element_side( BulkData & mesh ,
                                const unsigned global_side_id ,
                                Entity & elem , const unsigned local_side_id );
 

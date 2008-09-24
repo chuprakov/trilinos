@@ -42,7 +42,7 @@ export CXXFLAGS="${CXXFLAGS} ${EXODUSII_INC}"
 export C_LIB_EXT="${C_LIB_EXT} ${EXODUSII_LIB}"
 export CXX_LIB_EXT="${CXX_LIB_EXT} ${EXODUSII_LIB}"
 
-export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_SNL_EXODUSII\n"
+export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define HAVE_SNL_EXODUSII\n"
 
 #-----------------------------------------------------------------------
 

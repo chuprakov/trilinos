@@ -68,7 +68,7 @@ public:
 
   void receive_entity(
     CommBuffer & buffer ,
-    MeshBulkData & receive_mesh ,
+    BulkData & receive_mesh ,
     const unsigned send_source ,
     std::vector<EntityProc> & receive_info ) const ;
 };
@@ -78,7 +78,7 @@ const char * RegenAuraComm::name() const
 
 void RegenAuraComm::receive_entity(
   CommBuffer              & buffer ,
-  MeshBulkData                    & receive_mesh ,
+  BulkData                    & receive_mesh ,
   const unsigned            send_source ,
   std::vector<EntityProc> & receive_info ) const
 {
@@ -92,7 +92,7 @@ void RegenAuraComm::receive_entity(
                  key , owner_rank ,
                  add , relations , send_destinations );
 
-  const MeshMetaData & S = receive_mesh.mesh_meta_data();
+  const MetaData & S = receive_mesh.mesh_meta_data();
   Part * const owns_part = & S.locally_owned_part();
   Part * const uses_part = & S.locally_used_part();
 
@@ -127,7 +127,7 @@ void RegenAuraComm::receive_entity(
 
 //----------------------------------------------------------------------
 
-void scrub( MeshBulkData & M , std::vector<EntityProc> & new_domain ,
+void scrub( BulkData & M , std::vector<EntityProc> & new_domain ,
                        std::vector<EntityProc> & new_range )
 {
   static const char method[] = "phdmesh::comm_mesh_regenerate_aura::scrub" ;
@@ -231,7 +231,7 @@ void scrub( MeshBulkData & M , std::vector<EntityProc> & new_domain ,
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void comm_mesh_regenerate_aura( MeshBulkData & M )
+void comm_mesh_regenerate_aura( BulkData & M )
 {
   static const char method[] = "phdmesh::comm_mesh_regenerate_aura" ;
 

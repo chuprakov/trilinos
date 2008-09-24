@@ -70,7 +70,7 @@ MPI | mpi )
   export CC="mpcc"
   export CXX="mpCC"
   export LDCXX="${CXX}"
-  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_MPI\n"
+  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define HAVE_MPI\n"
   ;;
 *)
   echo ${THIS_FILE} 'unknown option $1 =' ${1}

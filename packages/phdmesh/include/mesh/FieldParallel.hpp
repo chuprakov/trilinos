@@ -46,7 +46,7 @@ namespace phdmesh {
  *  If symmetric ( & domain == & range) then from owned to not owned.
  */
 bool communicate_field_data(
-  const MeshBulkData & mesh ,
+  const BulkData & mesh ,
   const std::vector<EntityProc> & domain ,
   const std::vector<EntityProc> & range ,
   const std::vector< const FieldBase *> & fields ,
@@ -74,7 +74,7 @@ namespace {
  *  where the operations are: sum, max, min
  */
 template< class OpField >
-void parallel_reduce( const MeshBulkData & mesh ,
+void parallel_reduce( const BulkData & mesh ,
                       const OpField      & op )
 {
   const FieldBase * fields[1] = { & op.field };
@@ -95,7 +95,7 @@ void parallel_reduce( const MeshBulkData & mesh ,
  *    parallel_reduce( mesh , sum( fieldA ) , max( fieldB ) );
  */
 template< class OpField1 , class OpField2 >
-void parallel_reduce( const MeshBulkData & mesh ,
+void parallel_reduce( const BulkData & mesh ,
                       const OpField1     & op1 ,
                       const OpField2     & op2 )
 {
@@ -163,29 +163,32 @@ void ParallelReduceField< ReduceOp , Type ,  Tag1,  Tag2,  Tag3 ,
 
 template< class Type , class Tag1, class Tag2, class Tag3 ,
           class Tag4 , class Tag5, class Tag6, class Tag7 >
-ParallelReduceField<Op::Sum<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
+ParallelReduceField<impl::Sum<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
 inline
 sum( const Field<Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> & f )
 {
-  return ParallelReduceField<Op::Sum<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>( f );
+  return ParallelReduceField<impl::Sum<Type,1>,
+                             Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>( f );
 }
 
 template< class Type , class Tag1, class Tag2, class Tag3 ,
           class Tag4 , class Tag5, class Tag6, class Tag7 >
-ParallelReduceField<Op::Max<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
+ParallelReduceField<impl::Max<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
 inline
 max( const Field<Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> & f )
 {
-  return ParallelReduceField<Op::Max<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>( f );
+  return ParallelReduceField<impl::Max<Type,1>,
+                             Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>( f );
 }
 
 template< class Type , class Tag1, class Tag2, class Tag3 ,
           class Tag4 , class Tag5, class Tag6, class Tag7 >
-ParallelReduceField<Op::Min<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
+ParallelReduceField<impl::Min<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>
 inline
 min( const Field<Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7> & f )
 {
-  return ParallelReduceField<Op::Min<Type,1>,Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>( f );
+  return ParallelReduceField<impl::Min<Type,1>,
+                             Type,Tag1,Tag2,Tag3,Tag4,Tag5,Tag6,Tag7>( f );
 }
 
 }

@@ -35,7 +35,7 @@
 //----------------------------------------------------------------------
 // Parallel machine
 
-#if defined( PHDMESH_HAS_MPI )
+#if defined( HAVE_MPI )
 
 #include <mpi.h>
 

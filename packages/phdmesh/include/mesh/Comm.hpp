@@ -29,7 +29,7 @@
 
 //----------------------------------------------------------------------
 /** @file
- *  @brief MeshBulkData entity relation across processor boundaries.
+ *  @brief BulkData entity relation across processor boundaries.
  *
  *  A parallel entity relation matches a domain mesh entity residing on
  *  a domain processor with a range entity residing on a range processor.
@@ -118,7 +118,7 @@ bool comm_verify( ParallelMachine ,
  *    counts[ EntityTypeEnd ]
  *    max_id[ EntityTypeEnd ]
  */
-bool comm_mesh_stats( MeshBulkData & ,
+bool comm_mesh_stats( BulkData & ,
                       entity_id_type * const counts ,
                       entity_id_type * const max_id ,
                       bool local_flag = false );
@@ -128,8 +128,8 @@ bool comm_mesh_stats( MeshBulkData & ,
  *  Received mesh entities are identified in 'recv'.
  */
 void comm_copy(
-  MeshBulkData & send_mesh ,
-  MeshBulkData & recv_mesh ,
+  BulkData & send_mesh ,
+  BulkData & recv_mesh ,
   const std::vector<EntityProc> & send ,
         std::vector<EntityProc> & recv );
 
@@ -140,8 +140,8 @@ void comm_copy(
  */
 bool communicate_entities(
   const EntityComm & manager ,
-  MeshBulkData & send_mesh ,
-  MeshBulkData & recv_mesh ,
+  BulkData & send_mesh ,
+  BulkData & recv_mesh ,
   const std::vector<EntityProc> & send ,
         std::vector<EntityProc> & recv ,
   bool local_flag = false );
@@ -150,20 +150,20 @@ bool communicate_entities(
 /** Verify that the shared entity values are bit-wise identical */
 
 bool comm_verify_shared_entity_values(
-  const MeshBulkData & , EntityType , const FieldBase & );
+  const BulkData & , EntityType , const FieldBase & );
 
 //----------------------------------------------------------------------
 /** Discover the sharing of all mesh entities by searching for
  *  duplicate identifiers on different processors.
  */
-void comm_mesh_discover_sharing( MeshBulkData & );
+void comm_mesh_discover_sharing( BulkData & );
 
-void comm_mesh_add_sharing( MeshBulkData & , const std::vector<EntityProc> & );
+void comm_mesh_add_sharing( BulkData & , const std::vector<EntityProc> & );
 
 /** Scrub shared entities of any that are 
  *  not owned and not used by an owned entity.
  */
-bool comm_mesh_scrub_sharing( MeshBulkData & M );
+bool comm_mesh_scrub_sharing( BulkData & M );
 
 //----------------------------------------------------------------------
 /** Verify parallel consistency of mesh entities' identifiers,
@@ -171,19 +171,19 @@ bool comm_mesh_scrub_sharing( MeshBulkData & M );
  *  Return false on all processors if an error is detected
  *  and log the error to 'std::cerr'.
  */
-bool comm_mesh_verify_parallel_consistency( MeshBulkData & M );
+bool comm_mesh_verify_parallel_consistency( BulkData & M );
 
 //----------------------------------------------------------------------
 /** Generate all aura entities attached to shared nodes.  */
-void comm_mesh_regenerate_aura( MeshBulkData & );
+void comm_mesh_regenerate_aura( BulkData & );
 
 //----------------------------------------------------------------------
 /** Rebalance the mesh using the HSFC algorithm.
  *  The shared node coordinate field values must be consistent.
- *  MeshBulkData entity sharing and local auras are updated.
+ *  BulkData entity sharing and local auras are updated.
  *  Return the HSFC cut keys used for the rebalance.
  */
-void comm_mesh_rebalance( MeshBulkData & ,
+void comm_mesh_rebalance( BulkData & ,
                           const Field<double,Cartesian> & node_coord_field ,
                           const Field<float> * const elem_weight_field ,
                           std::vector<OctTreeKey> & cut_keys );

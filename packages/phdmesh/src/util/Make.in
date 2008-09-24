@@ -41,16 +41,15 @@ UTIL_INC_FILES =	\
 	$(UTIL_INC_DIR)/ParallelIndex.hpp	\
 	$(UTIL_INC_DIR)/ParallelReduce.hpp	\
 	$(UTIL_INC_DIR)/ParallelInputStream.hpp	\
-	$(UTIL_INC_DIR)/Reference.hpp	\
 	$(UTIL_INC_DIR)/Setv.hpp	\
 	$(UTIL_INC_DIR)/SimpleArrayOps.hpp	\
 	$(UTIL_INC_DIR)/TestDriver.hpp	\
 	$(UTIL_INC_DIR)/TPI.h	\
 	$(UTIL_INC_DIR)/TPI.hpp	\
-	$(UTIL_INC_DIR)/TypeList.hpp	\
-	$(UTIL_INC_DIR)/ValueIO.hpp
+	$(UTIL_INC_DIR)/TypeList.hpp
 
 UTIL_OBJ_FILES =	\
+	TypeName.o	\
 	ArrayPrivate.o	\
 	CSet.o	\
 	FixedPoolAlloc.o	\
@@ -63,13 +62,11 @@ UTIL_OBJ_FILES =	\
 	ParallelReduce.o	\
 	ParallelIndex.o	\
 	ParallelInputStream.o	\
-	Reference.o	\
 	Setv.o	\
 	TestDriver.o	\
 	TPI_Concurrency.o	\
 	TPI_pthreads.o	\
-	TPI_Walltime.o	\
-	ValueIO.o
+	TPI_Walltime.o
 
 UTIL_INC_DEPS = $(UTIL_INC_FILES) $(CONFIG_FILE)
 

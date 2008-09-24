@@ -41,7 +41,7 @@ namespace phdmesh {
 //----------------------------------------------------------------------
 // Mesh meta-data
 
-class MeshMetaData ;  // Meta-data description of a mesh
+class MetaData ;  // Meta-data description of a mesh
 class Part ;          // Defined subset of the mesh
 
 template< typename Scalar = void ,
@@ -58,7 +58,7 @@ enum { MaximumFieldDimension = 7 };
 //----------------------------------------------------------------------
 // Mesh bulk-data
 
-class MeshBulkData ;     // Bulk-data of a mesh
+class BulkData ;     // Bulk-data of a mesh
 class Kernel ;   // Homogeneous collection of mesh entitities their field data
 class Entity ;   // Individual entity within the mesh
 class Relation ; // Relation pair of local mesh entities

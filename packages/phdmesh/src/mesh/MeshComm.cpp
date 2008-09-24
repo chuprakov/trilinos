@@ -211,7 +211,7 @@ bool verify( const std::vector<EntityProc> & v , std::string & msg )
     }
 
     if ( result ) {
-      MeshBulkData   & M = v[0].first->kernel().mesh();
+      BulkData   & M = v[0].first->kernel().mesh();
       const unsigned p_size = M.parallel_size();
 
       for ( i = v.begin() ; result && i != e ; ++i ) {
@@ -431,14 +431,14 @@ bool comm_verify( ParallelMachine comm ,
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-bool comm_mesh_stats( MeshBulkData & M ,
+bool comm_mesh_stats( BulkData & M ,
                       entity_id_type * const counts ,
                       entity_id_type * const max_id ,
                       bool local_flag )
 {
   // Count locally owned entities
 
-  const MeshMetaData & S = M.mesh_meta_data();
+  const MetaData & S = M.mesh_meta_data();
   ParallelMachine comm = M.parallel();
   Part & owns = S.locally_owned_part();
 
@@ -480,8 +480,8 @@ bool comm_mesh_stats( MeshBulkData & M ,
 
 bool communicate_entities(
   const EntityComm & manager ,
-  MeshBulkData & send_mesh ,
-  MeshBulkData & recv_mesh ,
+  BulkData & send_mesh ,
+  BulkData & recv_mesh ,
   const std::vector<EntityProc> & send ,
         std::vector<EntityProc> & recv_info ,
   bool local_flag )
@@ -649,7 +649,7 @@ void sum_into( unsigned number ,
 
 
 bool parallel_sum_field_data(
-  const MeshBulkData & mesh ,
+  const BulkData & mesh ,
   const std::vector<EntityProc> & shared ,
   const FieldBase & field ,
   bool local_flag )

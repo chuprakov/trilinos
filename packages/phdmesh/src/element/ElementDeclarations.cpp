@@ -44,7 +44,7 @@ void set_cell_topology( Part & p , const CellTopology * singleton )
 {
   static const char method[] = "phdmesh::set_cell_topology" ;
 
-  MeshMetaData & m = p.mesh_meta_data();
+  MetaData & m = p.mesh_meta_data();
 
   const CellTopology * t = NULL ;
 
@@ -104,7 +104,7 @@ const CellTopology * get_cell_topology( const Entity & entity )
 
 //----------------------------------------------------------------------
 
-Entity & declare_element( MeshBulkData & mesh ,
+Entity & declare_element( BulkData & mesh ,
                           Part & part ,
                           const unsigned elem_id ,
                           Entity * node[] )
@@ -142,7 +142,7 @@ Entity & declare_element( MeshBulkData & mesh ,
 
 //----------------------------------------------------------------------
 
-Entity & declare_element( MeshBulkData & mesh ,
+Entity & declare_element( BulkData & mesh ,
                           Part & part ,
                           const unsigned elem_id ,
                           const unsigned node_id[] )
@@ -185,7 +185,7 @@ Entity & declare_element( MeshBulkData & mesh ,
 //----------------------------------------------------------------------
 
 Entity & declare_element_side(
-  MeshBulkData & mesh ,
+  BulkData & mesh ,
   const unsigned global_side_id ,
   Entity & elem ,
   const unsigned local_side_id )

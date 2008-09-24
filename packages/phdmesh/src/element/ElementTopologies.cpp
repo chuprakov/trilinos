@@ -394,6 +394,23 @@ const CellTopology * cell_topology< Line<3> >()
   return & self.top ;
 }
 
+template<>
+const CellTopology * cell_topology< ShellLine<2> >()
+{
+  static const char name[] = "ShellLine" ;
+  static const Descriptor< ShellLine<2>::Traits > self( NULL , name );
+  return & self.top ;
+}
+
+template<>
+const CellTopology * cell_topology< ShellLine<3> >()
+{
+  static const char name[] = "ShellLine_3" ;
+  static const Descriptor< ShellLine<3>::Traits >
+    self( cell_topology< ShellLine<2> >() , name );
+  return & self.top ;
+}
+
 //----------------------------------------------------------------------
 
 template<>

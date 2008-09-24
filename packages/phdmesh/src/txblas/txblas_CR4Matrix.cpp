@@ -60,7 +60,7 @@ void simple_partition( ParallelMachine comm ,
 
 namespace {
 
-#if defined( PHDMESH_HAS_MPI )
+#if defined( HAVE_MPI )
 
 #define PARALLEL_DATATYPE_DOUBLE   MPI_DOUBLE
 #define PARALLEL_DATATYPE_UNSIGNED MPI_UNSIGNED

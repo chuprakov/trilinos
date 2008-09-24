@@ -173,7 +173,7 @@ bool Kernel::has_superset( const PartSet & ps ) const
 
 void Kernel::supersets( PartSet & ps ) const
 {
-  const MeshMetaData & mesh_meta_data = m_mesh.mesh_meta_data();
+  const MetaData & mesh_meta_data = m_mesh.mesh_meta_data();
 
   std::pair<const unsigned *, const unsigned *> 
     part_ord = superset_part_ordinals();
@@ -193,8 +193,8 @@ bool field_data_valid( const FieldBase & f ,
                        unsigned ord ,
                        const char * required_by )
 {
-  const MeshMetaData * const k_mesh_meta_data = & k.mesh().mesh_meta_data();
-  const MeshMetaData * const f_mesh_meta_data = & f.mesh_meta_data();
+  const MetaData * const k_mesh_meta_data = & k.mesh().mesh_meta_data();
+  const MetaData * const f_mesh_meta_data = & f.mesh_meta_data();
   const bool ok_mesh_meta_data  = k_mesh_meta_data == f_mesh_meta_data ;
   const bool ok_ord     = ord < k.size() ;
   const bool exists     = ok_mesh_meta_data && ok_ord && NULL != field_data( f , k );
@@ -211,7 +211,7 @@ bool field_data_valid( const FieldBase & f ,
     msg << required_by ;
     msg << " ) FAILED with " ;
     if ( ! ok_mesh_meta_data ) {
-      msg << " different MeshMetaData" ;
+      msg << " different MetaData" ;
     }
     else if ( ! ok_ord ) {
       msg << " Ordinal " ;
@@ -231,7 +231,7 @@ bool field_data_valid( const FieldBase & f ,
 
 //----------------------------------------------------------------------
 
-Kernel::Kernel( MeshBulkData & arg_mesh ,
+Kernel::Kernel( BulkData & arg_mesh ,
                 EntityType arg_type ,
                 const unsigned * arg_key )
 : SetvMember<const unsigned * const>( arg_key ),
@@ -370,7 +370,7 @@ void Kernel::update_state()
 {
   if ( 0 == kernel_counter( key() ) ) {
 
-    const MeshMetaData & S = m_mesh.mesh_meta_data();
+    const MetaData & S = m_mesh.mesh_meta_data();
     const std::vector<FieldBase*> & field_set = S.get_fields();
 
     for ( unsigned i = 0 ; i < field_set.size() ; ) {
@@ -418,7 +418,7 @@ void * local_malloc( size_t n )
 Kernel::~Kernel()
 {}
 
-void MeshBulkData::destroy_kernel( KernelSet::iterator ik )
+void BulkData::destroy_kernel( KernelSet::iterator ik )
 {
   Kernel * const k = & * ik ;
 
@@ -440,7 +440,7 @@ void MeshBulkData::destroy_kernel( KernelSet::iterator ik )
 // The input part ordinals are complete and contain all supersets.
 
 KernelSet::iterator
-MeshBulkData::declare_kernel( const EntityType arg_entity_type ,
+BulkData::declare_kernel( const EntityType arg_entity_type ,
                               const unsigned part_size ,
                               const unsigned part_ord[] )
 {
@@ -630,7 +630,7 @@ MeshBulkData::declare_kernel( const EntityType arg_entity_type ,
 
 //----------------------------------------------------------------------
 
-void MeshBulkData::remove_entity( KernelSet::iterator ik , unsigned i )
+void BulkData::remove_entity( KernelSet::iterator ik , unsigned i )
 {
   const KernelSet::iterator first =
     kernel_counter( ik->key() ) ? ik->m_kernel : ik ;
@@ -682,7 +682,7 @@ struct LessEntityPointer {
 
 }
 
-bool MeshBulkData::internal_sort_kernel_entities()
+bool BulkData::internal_sort_kernel_entities()
 {
   bool change = false ;
 
@@ -799,7 +799,7 @@ std::ostream & operator << ( std::ostream & s , const Kernel & k )
 std::ostream &
 Kernel::print( std::ostream & os , const std::string & lead ) const
 {
-  const MeshMetaData & mesh_meta_data = m_mesh.mesh_meta_data();
+  const MetaData & mesh_meta_data = m_mesh.mesh_meta_data();
   const char * const entity_name = entity_type_name( m_entity_type );
 
   const unsigned * k = key();

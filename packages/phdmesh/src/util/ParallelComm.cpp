@@ -36,7 +36,7 @@ namespace phdmesh {
 
 //-----------------------------------------------------------------------
 
-#if defined( PHDMESH_HAS_MPI )
+#if defined( HAVE_MPI )
 
 enum { PHDMESH_MPI_TAG_SIZING = 0 , PHDMESH_MPI_TAG_DATA = 1 };
 
@@ -654,7 +654,7 @@ CommBuffer & CommBroadcast::send_buffer()
 
 void CommBroadcast::communicate()
 {
-#if defined( PHDMESH_HAS_MPI )
+#if defined( HAVE_MPI )
   {
     const int count = m_buffer.capacity();
     void * const buf = m_buffer.buffer();
@@ -719,7 +719,7 @@ CommGather::CommGather( ParallelMachine comm ,
   m_send.m_ptr = m_send.m_beg ;
   m_send.m_end = m_send.m_beg + send_size ;
 
-#if defined( PHDMESH_HAS_MPI )
+#if defined( HAVE_MPI )
 
   if ( 1 < m_size ) {
 
@@ -751,7 +751,7 @@ CommGather::CommGather( ParallelMachine comm ,
 
 void CommGather::communicate()
 {
-#if defined( PHDMESH_HAS_MPI )
+#if defined( HAVE_MPI )
 
   if ( 1 < m_size ) {
 
@@ -773,7 +773,7 @@ void CommGather::communicate()
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-#if defined( PHDMESH_HAS_MPI )
+#if defined( HAVE_MPI )
 
 bool comm_dense_sizes( ParallelMachine comm ,
                        const unsigned * const send_size ,

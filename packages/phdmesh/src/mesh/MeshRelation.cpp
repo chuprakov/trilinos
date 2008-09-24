@@ -276,8 +276,8 @@ void deduce_part_relations( const Entity & e_from ,
   const EntityType t_from = e_from.entity_type();
   const Kernel   & k_to   = e_to.kernel();
   const Kernel   & k_from = e_from.kernel();
-  const MeshBulkData     & mesh   = k_to.mesh();
-  const MeshMetaData   & mesh_meta_data = mesh.mesh_meta_data();
+  const BulkData     & mesh   = k_to.mesh();
+  const MetaData   & mesh_meta_data = mesh.mesh_meta_data();
 
   const unsigned univ_part_ord = mesh_meta_data.universal_part().mesh_meta_data_ordinal();
   const unsigned uses_part_ord = mesh_meta_data.locally_used_part().mesh_meta_data_ordinal();
@@ -397,12 +397,12 @@ void print_declare_relation( std::ostream & msg ,
 
 }
 
-void MeshBulkData::declare_relation( Entity & e_from ,
+void BulkData::declare_relation( Entity & e_from ,
                                      Entity & e_to ,
                                      const unsigned identifier ,
                                      const unsigned kind )
 {
-  static const char method[] = "phdmesh::MeshBulkData::declare_relation" ;
+  static const char method[] = "phdmesh::BulkData::declare_relation" ;
 
   if ( in_closure( e_to , e_from ) ) {
     std::ostringstream msg ;
@@ -455,7 +455,7 @@ void MeshBulkData::declare_relation( Entity & e_from ,
   set_field_relations( e_from , e_to , identifier , kind );
 }
 
-void MeshBulkData::declare_relation( Entity & entity ,
+void BulkData::declare_relation( Entity & entity ,
                                      const std::vector<Relation> & rel )
 {
   std::vector<Relation>::const_iterator i ;
@@ -509,7 +509,7 @@ void clear_field_relations( Entity & e_from ,
 
 }
 
-void MeshBulkData::destroy_relation( Entity & e1 , Entity & e2 , unsigned kind )
+void BulkData::destroy_relation( Entity & e1 , Entity & e2 , unsigned kind )
 {
   // When removing a relationship may need to
   // remove part membership and set field relation pointer to NULL
@@ -572,7 +572,7 @@ void MeshBulkData::destroy_relation( Entity & e1 , Entity & e2 , unsigned kind )
 //----------------------------------------------------------------------
 // Deduce propagation of changes to a part to the related 'to' entities
 
-void MeshBulkData::internal_propagate_part_changes(
+void BulkData::internal_propagate_part_changes(
   Entity        & entity ,
   const PartSet & removed )
 {
@@ -647,7 +647,7 @@ void MeshBulkData::internal_propagate_part_changes(
   }
 }
 
-void MeshBulkData::internal_propagate_relocation( Entity & entity )
+void BulkData::internal_propagate_relocation( Entity & entity )
 {
   PairIterRelation rel = entity.relations();
 

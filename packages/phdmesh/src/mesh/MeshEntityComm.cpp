@@ -49,7 +49,7 @@ const char * EntityComm::name() const
 
 void EntityComm::send_entity(
   CommBuffer & buffer ,
-  const MeshBulkData & receive_mesh ,
+  const BulkData & receive_mesh ,
   const std::vector<EntityProc>::const_iterator ibeg ,
   const std::vector<EntityProc>::const_iterator iend ) const
 {
@@ -58,7 +58,7 @@ void EntityComm::send_entity(
 
 void EntityComm::receive_entity(
   CommBuffer              & buffer ,
-  MeshBulkData                    & receive_mesh ,
+  BulkData                    & receive_mesh ,
   const unsigned            send_source ,
   std::vector<EntityProc> & receive_info ) const
 {
@@ -87,16 +87,16 @@ void EntityComm::receive_entity(
 
 void EntityComm::pack_entity(
   CommBuffer & buf ,
-  const MeshBulkData & recv_mesh ,
+  const BulkData & recv_mesh ,
   const std::vector<EntityProc>::const_iterator ibeg ,
   const std::vector<EntityProc>::const_iterator iend ) const
 {
-  const MeshMetaData      & recv_mesh_meta_data = recv_mesh.mesh_meta_data();
+  const MetaData      & recv_mesh_meta_data = recv_mesh.mesh_meta_data();
   const Entity      & entity      = * ibeg->first ;
   const entity_key_type key       = entity.key();
   const unsigned      owner_rank  = entity.owner_rank();
   const Kernel      & kernel      = entity.kernel();
-  const MeshMetaData      & send_mesh_meta_data = kernel.mesh().mesh_meta_data();
+  const MetaData      & send_mesh_meta_data = kernel.mesh().mesh_meta_data();
   const bool          same_mesh_meta_data = & send_mesh_meta_data == & recv_mesh_meta_data ;
   const unsigned      dest_size   = std::distance( ibeg , iend );
         PairIterRelation  rel         = entity.relations();
@@ -152,14 +152,14 @@ void EntityComm::pack_entity(
 
 void EntityComm::unpack_entity(
   CommBuffer            & recv_buf ,
-  const MeshBulkData            & recv_mesh ,
+  const BulkData            & recv_mesh ,
   entity_key_type       & key ,
   unsigned              & owner_rank ,
   std::vector<Part*>    & parts ,
   std::vector<Relation> & relations ,
   std::vector<unsigned> & send_destinations ) const
 {
-  const MeshMetaData & recv_mesh_meta_data = recv_mesh.mesh_meta_data();
+  const MetaData & recv_mesh_meta_data = recv_mesh.mesh_meta_data();
 
   parts.clear();
   relations.clear();
@@ -217,8 +217,8 @@ void EntityComm::pack_field_values(
   CommBuffer & buf , Entity & entity ) const
 {
   const Kernel & kernel = entity.kernel();
-  const MeshBulkData   & mesh   = kernel.mesh();
-  const MeshMetaData & mesh_meta_data = mesh.mesh_meta_data();
+  const BulkData   & mesh   = kernel.mesh();
+  const MetaData & mesh_meta_data = mesh.mesh_meta_data();
 
   const std::vector< FieldBase * > & fields = mesh_meta_data.get_fields();
 
@@ -249,8 +249,8 @@ void EntityComm::unpack_field_values(
   static const char method[] = "phdmesh::EntityComm::unpack_field_values" ;
 
   const Kernel & kernel = entity.kernel();
-  const MeshBulkData   & mesh   = kernel.mesh();
-  const MeshMetaData & mesh_meta_data = mesh.mesh_meta_data();
+  const BulkData   & mesh   = kernel.mesh();
+  const MetaData & mesh_meta_data = mesh.mesh_meta_data();
 
   const std::vector< FieldBase * > & fields = mesh_meta_data.get_fields();
 

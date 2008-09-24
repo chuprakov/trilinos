@@ -110,7 +110,7 @@ const char * ElementAttributes::name() const
 
 //----------------------------------------------------------------------
 
-#if defined( PHDMESH_HAS_MPI )
+#if defined( HAVE_MPI )
 
 #include <mpi.h>
 
@@ -161,37 +161,23 @@ void verify_node_coordinate_field( const FieldBase & f )
 
 //----------------------------------------------------------------------
 
-enum ElementType {
-  CIRCLE /* Attributes: radius */ ,
-  SPHERE /* Attributes: radius */ ,
-  TRUSS  /* Attributes: cross-section area */ ,
-  BEAM   /* Attributes: cross-section area and moments */ ,
-  SHELL  /* Attributes: thickness */ ,
-  QUAD , TRIANGLE , PYRAMID , TETRA , WEDGE , HEX ,
-  UNDEFINED };
-
-//----------------------------------------------------------------------
-
 class FilePart {
 public:
-  Part            & m_part ;
-  const int         m_identifier ;
-  const EntityType  m_entity_type ;
-  const ElementType m_element_type ;
-  const int         m_number_nodes ;
-  const int         m_number_attr ;
+  Part               & m_part ;
+  const int            m_identifier ;
+  const EntityType     m_entity_type ;
+  const CellTopology * m_topology ;
+  const int            m_number_attr ;
 
   FilePart( Part      & arg_part ,
             int         arg_id ,
             EntityType  arg_entity_type ,
-            ElementType arg_element_type ,
-            int         arg_number_nodes ,
+            const CellTopology * arg_topology ,
             int         arg_number_attributes )
     : m_part( arg_part ),
       m_identifier( arg_id ),
       m_entity_type( arg_entity_type ),
-      m_element_type( arg_element_type ),
-      m_number_nodes( arg_number_nodes ),
+      m_topology( arg_topology ),
       m_number_attr( arg_number_attributes )
     {}
 };
@@ -207,7 +193,7 @@ struct FilePartLess {
 namespace {
 
 // Exodus indices: [ global , local ]
-const FileSchema::IndexField & exo_index( MeshMetaData & arg_mesh_meta_data )
+const FileSchema::IndexField & exo_index( MetaData & arg_mesh_meta_data )
 {
   typedef FileSchema::IndexField IndexField ;
 
@@ -228,7 +214,7 @@ const FileSchema::IndexField & exo_index( MeshMetaData & arg_mesh_meta_data )
 }
 
 FileSchema::FileSchema(
-  MeshMetaData                      & arg_mesh_meta_data ,
+  MetaData                      & arg_mesh_meta_data ,
   const FieldBase                   & arg_node_coordinates ,
   const FileSchema::AttributeField  & arg_elem_attributes ,
   const unsigned                      arg_writer_rank )
@@ -249,14 +235,141 @@ FileSchema::~FileSchema() {}
 
 namespace {
 
+void map_to_exodus( const CellTopology & top ,
+                    const unsigned space_dim ,
+                    std::string & element_type ,
+                    int & number_attributes )
+{
+  number_attributes = 0 ;
+
+  switch( top.key ) {
+  case Node_Traits::key :
+    break ;
+
+  case Line<2>::key :
+    if ( 1 < space_dim ) {
+      element_type.assign( "BEAM_2" );
+      number_attributes = space_dim == 2 ? 3 : (
+                          space_dim == 3 ? 7 : 0 );
+    }
+    break ;
+
+  case Line<3>::key :
+    if ( 1 < space_dim ) {
+      element_type.assign( "BEAM_3" );
+      number_attributes = space_dim == 2 ? 3 : (
+                          space_dim == 3 ? 7 : 0 );
+    }
+    break ;
+
+  case ShellLine<2>::key :
+    element_type.assign( "SHELL_2" );
+    number_attributes = 1 ;
+    break ;
+
+  case ShellLine<3>::key :
+    element_type.assign( "SHELL_3" );
+    number_attributes = 1 ;
+    break ;
+
+  case Triangle<3>::key :
+    element_type.assign( "TRIANGLE_3" );
+    break ;
+
+  case Triangle<6>::key :
+    element_type.assign( "TRIANGLE_6" );
+    break ;
+
+  case ShellTriangle<3>::key :
+    element_type.assign( "TRIANGLE_3" );
+    number_attributes = 1 ;
+    break ;
+
+  case ShellTriangle<6>::key :
+    element_type.assign( "TRIANGLE_6" );
+    number_attributes = 1 ;
+    break ;
+
+  case Quadrilateral<4>::key :
+    element_type.assign( "QUAD_4" );
+    break ;
+
+  case Quadrilateral<8>::key :
+    element_type.assign( "QUAD_8" );
+    break ;
+
+  case Quadrilateral<9>::key :
+    element_type.assign( "QUAD_9" );
+    break ;
+
+  case ShellQuadrilateral<4>::key :
+    element_type.assign( "SHELL_4" );
+    number_attributes = 1 ;
+    break ;
+
+  case ShellQuadrilateral<8>::key :
+    element_type.assign( "SHELL_8" );
+    number_attributes = 1 ;
+    break ;
+
+  case ShellQuadrilateral<9>::key :
+    element_type.assign( "SHELL_9" );
+    number_attributes = 1 ;
+    break ;
+
+  case Tetrahedron< 4>::key :
+    element_type.assign( "TETRA_4" );
+    break ;
+
+  case Tetrahedron<10>::key :
+    element_type.assign( "TETRA_10" );
+    break ;
+
+  case Pyramid< 5>::key :
+    element_type.assign( "PYRAMID_5" );
+    break ;
+
+  case Pyramid<13>::key :
+    element_type.assign( "PYRAMID_13" );
+    break ;
+
+  case Pyramid<14>::key :
+    element_type.assign( "PYRAMID_14" );
+    break ;
+
+  case Wedge< 6>::key :
+    element_type.assign( "WEDGE_6" );
+    break ;
+
+  case Wedge<15>::key :
+    element_type.assign( "WEDGE_15" );
+    break ;
+
+  case Wedge<18>::key :
+    element_type.assign( "WEDGE_18" );
+    break ;
+
+  case Hexahedron< 8>::key :
+    element_type.assign( "HEX_8" );
+    break ;
+
+  case Hexahedron<20>::key :
+    element_type.assign( "HEX_20" );
+    break ;
+
+  case Hexahedron<27>::key :
+    element_type.assign( "HEX_27" );
+    break ;
+  }
+}
+
 const FilePart * internal_declare_part(
-  MeshMetaData & arg_mesh_meta_data ,
+  MetaData & arg_mesh_meta_data ,
   Part         & arg_part ,
   int            arg_id ,
   EntityType     arg_type ,
-  ElementType    arg_element_type ,
-  int            arg_element_dim ,
-  int            arg_number_nodes ,
+  const CellTopology * arg_topology ,
+  int            arg_space_dim ,
   int            arg_number_attr ,
   const FileSchema::AttributeField  & arg_attributes )
 {
@@ -264,34 +377,28 @@ const FilePart * internal_declare_part(
 
   static const char method[] = "phdmesh::exodus::FileSchema::declare_part" ;
 
+  std::string element_type ;
+  int number_attributes = 0 ;
+
+  if ( arg_topology ) {
+    map_to_exodus( * arg_topology , arg_space_dim ,
+                   element_type , number_attributes );
+  }
+
   const FilePart * file_part = arg_part.attribute<FilePart>();
 
-  int number_attr = arg_number_attr ;
+  if ( ! arg_number_attr ) { arg_number_attr = number_attributes ; }
 
   if ( ! file_part ) {
 
-    if ( ! number_attr ) { // Default number of attributes
-      switch( arg_element_type ) {
-      case CIRCLE :
-      case SPHERE :
-      case TRUSS :
-      case SHELL : number_attr = 1 ; break ;
-      case BEAM :  number_attr = arg_element_dim == 2 ? 3 : (
-                                 arg_element_dim == 3 ? 7 : 0 );
-                   break ;
-      default:     number_attr = 0 ; break ;
-      }
-    }
-
-    if ( number_attr ) {
+    if ( arg_number_attr ) {
       arg_mesh_meta_data.put_field(
         const_cast<AttributeField &>(arg_attributes),
-        Element, arg_part, number_attr );
+        Element, arg_part, arg_number_attr );
     }
 
     file_part = new FilePart( arg_part, arg_id, arg_type,
-                              arg_element_type, arg_number_nodes ,
-                              number_attr );
+                              arg_topology, arg_number_attr );
 
     arg_mesh_meta_data.declare_part_attribute<FilePart>(
       arg_part , file_part , true );
@@ -301,9 +408,8 @@ const FilePart * internal_declare_part(
        & file_part->m_part         != & arg_part ||
          file_part->m_identifier   != arg_id ||
          file_part->m_entity_type  != arg_type ||
-         file_part->m_element_type != arg_element_type ||
-         file_part->m_number_nodes != arg_number_nodes ||
-         file_part->m_number_attr  != number_attr ) {
+         file_part->m_topology     != arg_topology ||
+         file_part->m_number_attr  != arg_number_attr ) {
     std::ostringstream msg ;
     msg << method << " FAILED redeclaration" ;
     throw std::runtime_error( msg.str() );
@@ -347,71 +453,10 @@ void FileSchema::declare_part( Part & arg_part , int arg_id )
     throw std::runtime_error( msg.str() );
   }
 
-  ElementType element_type = UNDEFINED ;
-
-  switch( top->key ) {
-  case Hexahedron<>::key :
-  case Hexahedron<20>::key :
-  case Hexahedron<27>::key :
-    element_type = HEX ;
-    break ;
-
-  case Pyramid<>::key :
-  case Pyramid<13>::key :
-  case Pyramid<14>::key :
-    element_type = PYRAMID ;
-    break ;
-
-  case Quadrilateral<>::key :
-  case Quadrilateral<8>::key :
-  case Quadrilateral<9>::key :
-    element_type = QUAD ;
-    break ;
-
-  case ShellQuadrilateral<>::key :
-  case ShellQuadrilateral<8>::key :
-  case ShellQuadrilateral<9>::key :
-  case ShellTriangle<>::key :
-  case ShellTriangle<6>::key :
-    element_type = SHELL ;
-    break ;
-
-  case Tetrahedron<>::key :
-  case Tetrahedron<10>::key :
-    element_type = TETRA ;
-    break ;
-
-  case Triangle<>::key :
-  case Triangle<6>::key :
-    element_type = TRIANGLE ;
-    break ;
-
-  case Wedge<>::key :
-  case Wedge<15>::key :
-  case Wedge<18>::key :
-    element_type = WEDGE ;
-    break ;
-
-  default:
-    {
-      std::ostringstream msg ;
-      msg << "phdmesh::exodus::FileSchema::declare_part( " ;
-      msg << arg_part.name();
-      msg << " , " ;
-      msg << arg_id ;
-      msg << " ) FAILED, Part has unsupported CellTopology = " ;
-      msg << top->name ;
-      throw std::runtime_error( msg.str() );
-    }
-  }
-
-  const unsigned number_nodes = top->node_count ;
-
   const FilePart * const fp =
     internal_declare_part( m_schema , arg_part , arg_id ,
-                           Element , element_type , m_dimension ,
-                           number_nodes , 0 ,
-                           m_field_elem_attr );
+                           Element , top , m_dimension ,
+                           0 , m_field_elem_attr );
 
   m_parts[ Element ].insert( i , fp );
 }
@@ -446,8 +491,8 @@ void FileSchema::declare_part(
 
   const FilePart * const fp =
      internal_declare_part( m_schema , arg_part , arg_id ,
-                            arg_type , UNDEFINED , m_dimension , 0 , 0 ,
-                            m_field_elem_attr );
+                            arg_type , NULL , m_dimension ,
+                            0 , m_field_elem_attr );
 
   m_parts[ arg_type ].insert( i , fp );
 }
@@ -482,7 +527,7 @@ struct LessIndices {
 };
 
 void assign_contiguous_indices(
-  MeshBulkData & M ,
+  BulkData & M ,
   unsigned entity_type ,
   const std::vector< std::pair<int,const Entity*> > & entities ,
   const FileSchema::IndexField & f )
@@ -616,7 +661,7 @@ void assign_contiguous_indices(
   }
 }
 
-void assign_contiguous_indices( MeshBulkData & M , unsigned entity_type ,
+void assign_contiguous_indices( BulkData & M , unsigned entity_type ,
                                 const FileSchema::IndexField & f )
 {
   const EntitySet & es = M.entities( entity_type );
@@ -638,12 +683,12 @@ void assign_contiguous_indices( MeshBulkData & M , unsigned entity_type ,
 }
 
 
-void FileSchema::assign_indices( MeshBulkData & arg_mesh ) const
+void FileSchema::assign_indices( BulkData & arg_mesh ) const
 {
   static const char method[] = "phdmesh::FileSchema::assign_indices" ;
 
-  MeshBulkData & M = arg_mesh ;
-  const MeshMetaData & S = m_schema ;
+  BulkData & M = arg_mesh ;
+  const MetaData & S = m_schema ;
 
   S.assert_same_mesh_meta_data( method , M.mesh_meta_data() );
 
@@ -710,12 +755,14 @@ void FileSchema::assign_indices( MeshBulkData & arg_mesh ) const
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-#if defined( PHDMESH_HAS_SNL_EXODUSII )
+#if defined( HAVE_SNL_EXODUSII )
 
 #include <exodusII.h>
 #include <ne_nemesisI.h>
 
-#if defined( PHDMESH_HAS_MPI )
+enum { Maximum_Name_Length = MAX_STR_LENGTH };
+
+#if defined( HAVE_MPI )
 
 namespace {
 
@@ -788,50 +835,11 @@ void scatter( phdmesh::ParallelMachine ,
 namespace phdmesh {
 namespace exodus {
 
-enum { Maximum_Name_Length = MAX_STR_LENGTH };
-
-namespace {
-
-const char name_circle[]   = "CIRCLE" ;
-const char name_sphere[]   = "SPHERE" ;
-const char name_truss[]    = "TRUSS" ;
-const char name_beam[]     = "BEAM" ;
-const char name_shell[]    = "SHELL" ;
-const char name_quad[]     = "QUAD" ;
-const char name_triangle[] = "TRIANGLE" ;
-const char name_pyramid[]  = "PYRAMID" ;
-const char name_tetra[]    = "TETRA" ;
-const char name_wedge[]    = "WEDGE" ;
-const char name_hex[]      = "HEX" ;
-const char name_undefined[] = "UNDEFIEND" ;
-
-const char * element_labels[] = {
-  name_circle , name_sphere , name_truss , name_beam , name_shell ,
-  name_quad , name_triangle ,
-  name_pyramid , name_tetra , name_wedge , name_hex ,
-  name_undefined
-};
-
-ElementType element_type( const char * label )
-{
-  ElementType type = UNDEFINED ;
-
-  for ( unsigned i = 0 ; type == UNDEFINED && i < UNDEFINED ; ++i ) {
-    const unsigned n = strlen( element_labels[i] );
-    if ( ! strncmp( element_labels[i] , label , n ) ) {
-      type = ElementType(i);
-    }
-  }
-  return type ;
-}
-
-}
-
 //----------------------------------------------------------------------
 
 FileOutput::~FileOutput()
 {
-  const MeshBulkData       & M  = m_mesh ;
+  const BulkData       & M  = m_mesh ;
   const FileSchema & FS = m_schema ;
   const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = FS.m_io_rank ;
@@ -906,7 +914,7 @@ WriteNodeIndexCoord::WriteNodeIndexCoord(
     identifiers(),
     coord_x_y_z()
 {
-  const MeshBulkData       & M  = output.m_mesh ;
+  const BulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = SF.m_io_rank ;
@@ -920,7 +928,7 @@ void WriteNodeIndexCoord::operator()(
   const std::vector<const Entity *>::const_iterator send_begin ,
   const std::vector<const Entity *>::const_iterator send_end )
 {
-  const MeshBulkData & M  = output.m_mesh ;
+  const BulkData & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_size = M.parallel_size();
@@ -1028,12 +1036,12 @@ WriteElemIndexRelation::WriteElemIndexRelation(
     send_data(), identifiers(), relationivity()
 {
   const int i_zero = 0 ;
-  const MeshBulkData       & M  = output.m_mesh ;
+  const BulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = SF.m_io_rank ;
 
-  const unsigned send_data_num = part.m_number_nodes + 2 ;
+  const unsigned send_data_num = part.m_topology->node_count + 2 ;
 
   // Two buffers: communication and file data
 
@@ -1050,14 +1058,14 @@ void WriteElemIndexRelation::operator()(
   const std::vector<const Entity *>::const_iterator send_begin ,
   const std::vector<const Entity *>::const_iterator send_end )
 {
-  const MeshBulkData       & M  = output.m_mesh ;
+  const BulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_size = M.parallel_size();
   const unsigned  p_write = SF.m_io_rank ;
 
   const unsigned block_id           = part.m_identifier ;
-  const unsigned num_nodes_per_elem = part.m_number_nodes ;
+  const unsigned num_nodes_per_elem = part.m_topology->node_count ;
   const unsigned send_data_num      = num_nodes_per_elem + 2 ;
 
   const unsigned send_size =
@@ -1104,8 +1112,8 @@ void WriteElemIndexRelation::operator()(
     const unsigned n = number ;
 
     if ( identifiers.size() < n ) { identifiers.resize( n ); }
-    if ( relationivity.size() < n * part.m_number_nodes ) {
-      relationivity.resize( n * part.m_number_nodes );
+    if ( relationivity.size() < n * part.m_topology->node_count ) {
+         relationivity.resize( n * part.m_topology->node_count );
     }
 
     for ( unsigned p = 0 ; p < p_size ; ++p ) {
@@ -1267,7 +1275,7 @@ struct EntityLess {
 
 void get_entities(
   std::vector< const Entity * > & tmp ,
-  const MeshBulkData & mesh ,
+  const BulkData & mesh ,
   EntityType type ,
   Part & part )
 {
@@ -1298,7 +1306,7 @@ void get_entities(
 
 void get_entities(
   std::vector< const Entity * > & tmp ,
-  const MeshBulkData & mesh ,
+  const BulkData & mesh ,
   EntityType type ,
   Part & part1 ,
   Part & part2 )
@@ -1336,7 +1344,7 @@ void get_entities(
 
 FileOutput::FileOutput(
   const FileSchema  & arg_schema ,
-  const MeshBulkData & arg_mesh ,
+  const BulkData & arg_mesh ,
   const std::string & arg_file_path ,
   const std::string & arg_title ,
   const bool          arg_storage_double ,
@@ -1352,8 +1360,8 @@ FileOutput::FileOutput(
 
   const int i_zero = 0 ;
 
-  const MeshBulkData       & M  = arg_mesh ;
-  const MeshMetaData     & SM = M.mesh_meta_data();
+  const BulkData       & M  = arg_mesh ;
+  const MetaData     & SM = M.mesh_meta_data();
   const FileSchema & FS = arg_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_rank = M.parallel_rank();
@@ -1598,12 +1606,18 @@ FileOutput::FileOutput(
       for ( int i = 0 ; i < num_elem_blk ; ++i ) {
         const FilePart   & fp = * elem_parts[i] ;
         elem_blk_id[i]        = fp.m_identifier ;
-        num_nodes_per_elem[i] = fp.m_number_nodes ;
+        num_nodes_per_elem[i] = fp.m_topology->node_count ;
         num_attr[i]           = fp.m_number_attr ;
         elem_type[i]          = & tmp[ i * Maximum_Name_Length ] ;
         elem_blk_name[i]      = const_cast<char*>( fp.m_part.name().c_str() );
 
-        strcpy( elem_type[i] , element_labels[ fp.m_element_type ] );
+        std::string tmp_elem_type ;
+        int tmp_num_attr = 0 ;
+
+        map_to_exodus( * fp.m_topology , num_dim ,
+                       tmp_elem_type , tmp_num_attr );
+
+        strcpy( elem_type[i] , tmp_elem_type.c_str() );
       }
 
       exo_func = "ex_put_concat_elem_block" ;
@@ -1860,7 +1874,7 @@ WriteNodeValues::WriteNodeValues(
     exo_func( NULL ),
     recv_buffer()
 {
-  const MeshBulkData       & M  = output.m_mesh ;
+  const BulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = SF.m_io_rank ;
@@ -1878,7 +1892,7 @@ void WriteNodeValues::operator()(
   const std::vector<const Entity *>::const_iterator send_begin ,
   const std::vector<const Entity *>::const_iterator send_end )
 {
-  const MeshBulkData       & M  = output.m_mesh ;
+  const BulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_size = M.parallel_size();
@@ -1968,7 +1982,7 @@ WriteElemValues::WriteElemValues(
     exo_func( NULL ),
     recv_buffer()
 {
-  const MeshBulkData       & M  = output.m_mesh ;
+  const BulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_write = SF.m_io_rank ;
@@ -1986,7 +2000,7 @@ void WriteElemValues::operator()(
   const std::vector<const Entity *>::const_iterator send_begin ,
   const std::vector<const Entity *>::const_iterator send_end )
 {
-  const MeshBulkData       & M  = output.m_mesh ;
+  const BulkData       & M  = output.m_mesh ;
   const FileSchema & SF = output.m_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_size = M.parallel_size();
@@ -2049,8 +2063,8 @@ void FileOutput::write( double time_value )
 {
   static const char method[] = "phdmesh::exodus::FieldIO::wrote" ;
 
-  const MeshBulkData       & M  = m_mesh ;
-  const MeshMetaData     & SM = M.mesh_meta_data();
+  const BulkData       & M  = m_mesh ;
+  const MetaData     & SM = M.mesh_meta_data();
   const FileSchema & FS = m_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_rank = M.parallel_rank() ;
@@ -2166,9 +2180,155 @@ void FileOutput::write( double time_value )
 
 namespace {
 
+std::pair< const CellTopology * , int >
+map_from_exodus( const char * const element_type ,
+                 const int node_count ,
+                 const int space_dim )
+{
+  std::pair< const CellTopology * , int > result ;
+  result.first = NULL ;
+  result.second = 0 ;
 
+  if ( 0 == strncasecmp( "CIRCLE" , element_type , 3 ) ) {
+    result.second = 1 ;
+  }
+  else if ( 0 == strncasecmp( "SPHERE" , element_type , 3 ) ) {
+    result.second = 1 ;
+  }
+  else if ( 0 == strncasecmp( "TRUSS" , element_type , 3 ) ) {
+    if ( node_count == 2 ) {
+      result.first  = cell_topology< Line<2> >();
+      result.second = 1 ;
+    }
+    else if ( node_count == 3 ) {
+      result.first  = cell_topology< Line<3> >();
+      result.second = 1 ;
+    }
+  }
+  else if ( 0 == strncasecmp( "BEAM" , element_type , 3 ) ) {
+    if ( node_count == 2 ) {
+      result.first  = cell_topology< Line<2> >();
+      result.second = space_dim == 2 ? 3 : (
+                      space_dim == 3 ? 7 : 0 );
+    }
+    else if ( node_count == 3 ) {
+      result.first  = cell_topology< Line<3> >();
+      result.second = space_dim == 2 ? 3 : (
+                      space_dim == 3 ? 7 : 0 );
+    }
+  }
+  else if ( 0 == strncasecmp( "SHELL" , element_type , 3 ) ) {
+     if ( node_count == 2 ) {
+       result.first  = cell_topology< ShellLine<2> >();
+       result.second = 1 ;
+     }
+     else if ( node_count == 3 ) {
+       result.first  = cell_topology< ShellLine<3> >();
+       result.second = 1 ;
+     }
+     else if ( node_count == 4 ) {
+       result.first  = cell_topology< ShellQuadrilateral<4> >();
+       result.second = 1 ;
+     }
+     else if ( node_count == 8 ) {
+       result.first  = cell_topology< ShellQuadrilateral<8> >();
+       result.second = 1 ;
+     }
+     else if ( node_count == 9 ) {
+       result.first  = cell_topology< ShellQuadrilateral<9> >();
+       result.second = 1 ;
+     }
+  }
+  else if ( 0 == strncasecmp( "QUAD" , element_type , 3 ) ) {
+    if ( space_dim == 2 ) {
+      if ( node_count == 4 ) {
+        result.first = cell_topology< Quadrilateral<4> >();
+      }
+      else if ( node_count == 8 ) {
+        result.first = cell_topology< Quadrilateral<8> >();
+      }
+      else if ( node_count == 9 ) {
+        result.first = cell_topology< Quadrilateral<9> >();
+      }
+    }
+    else if ( space_dim == 3 ) {
+      if ( node_count == 4 ) {
+        result.first  = cell_topology< ShellQuadrilateral<4> >();
+        result.second = 1 ;
+      }
+      else if ( node_count == 8 ) {
+        result.first  = cell_topology< ShellQuadrilateral<8> >();
+        result.second = 1 ;
+      }
+      else if ( node_count == 9 ) {
+        result.first  = cell_topology< ShellQuadrilateral<9> >();
+        result.second = 1 ;
+      }
+    }
+  }
+  else if ( 0 == strncasecmp( "TRIANGLE" , element_type , 3 ) ) {
+    if ( space_dim == 2 ) {
+      if ( node_count == 3 ) {
+        result.first = cell_topology< Triangle<3> >();
+      }
+      else if ( node_count == 6 ) {
+        result.first = cell_topology< Triangle<6> >();
+      }
+    }
+    else if ( space_dim == 3 ) {
+      if ( node_count == 3 ) {
+        result.first = cell_topology< ShellTriangle<3> >();
+      }
+      else if ( node_count == 6 ) {
+        result.first = cell_topology< ShellTriangle<6> >();
+      }
+    }
+  }
+  else if ( 0 == strncasecmp( "PYRAMID" , element_type , 3 ) ) {
+    if ( node_count == 5 ) {
+      result.first = cell_topology< Pyramid<5> >();
+    }
+    else if ( node_count == 13 ) {
+      result.first = cell_topology< Pyramid<13> >();
+    }
+    else if ( node_count == 14 ) {
+      result.first = cell_topology< Pyramid<14> >();
+    }
+  }
+  else if ( 0 == strncasecmp( "TETRA" , element_type , 3 ) ) {
+    if ( node_count == 4 ) {
+      result.first = cell_topology< Tetrahedron<4> >();
+    }
+    else if ( node_count == 10 ) {
+      result.first = cell_topology< Tetrahedron<10> >();
+    }
+  }
+  else if ( 0 == strncasecmp( "WEDGE" , element_type , 3 ) ) {
+    if ( node_count == 6 ) {
+      result.first = cell_topology< Wedge<6> >();
+    }
+    else if ( node_count == 15 ) {
+      result.first = cell_topology< Wedge<15> >();
+    }
+    else if ( node_count == 18 ) {
+      result.first = cell_topology< Wedge<18> >();
+    }
+  }
+  else if ( 0 == strncasecmp( "HEX" , element_type , 3 ) ) {
+    if ( node_count == 8 ) {
+      result.first = cell_topology< Hexahedron<8> >();
+    }
+    else if ( node_count == 20 ) {
+      result.first = cell_topology< Hexahedron<20> >();
+    }
+    else if ( node_count == 27 ) {
+      result.first = cell_topology< Hexahedron<27> >();
+    }
+  }
 
-
+  return result ;
+}
+ 
 
 enum { MAX_NUM_ATTR = 8 };
 
@@ -2185,7 +2345,7 @@ struct exo_elem_block_data {
 }
 
 FileSchema::FileSchema(
-  MeshMetaData & arg_mesh_meta_data ,
+  MetaData & arg_mesh_meta_data ,
   const FieldBase & arg_node_coordinates ,
   const FileSchema::AttributeField  & arg_elem_attributes ,
   const std::string     & arg_file_path ,
@@ -2353,84 +2513,23 @@ FileSchema::FileSchema(
     if ( ! exo_error ) {
       for ( int i = 0 ; i < num_elem_blk ; ++i ) {
 
-        ElementType et = element_type( block_data[i].type );
+        std::pair< const CellTopology * , int > elem_info =
+          map_from_exodus( block_data[i].type ,
+                           block_data[i].num_nodes ,
+                           num_dim );
 
         Part & part = m_schema.declare_part( std::string(block_data[i].name) );
 
-        const CellTopology * top = NULL ;
+        const CellTopology * top = elem_info.first ;
 
-        switch( et ) {
-        case CIRCLE    :
-        case SPHERE    :
-        case TRUSS     :
-        case BEAM      :
-          break ;
-
-        case SHELL :
-          switch( block_data[i].num_nodes ) {
-          case 3 : top = cell_topology< ShellTriangle<> >(); break ;
-          case 6 : top = cell_topology< ShellTriangle<6> >(); break ;
-          case 4 : top = cell_topology< ShellQuadrilateral<> >(); break ;
-          case 8 : top = cell_topology< ShellQuadrilateral<8> >(); break;
-          case 9 : top = cell_topology< ShellQuadrilateral<9> >(); break;
-          }
-          break ;
-
-        case QUAD :
-          switch( block_data[i].num_nodes ) {
-          case 4 : top = cell_topology< Quadrilateral<> >(); break ;
-          case 8 : top = cell_topology< Quadrilateral<8> >(); break;
-          case 9 : top = cell_topology< Quadrilateral<9> >(); break;
-          }
-          break ;
-
-        case TRIANGLE :
-          switch( block_data[i].num_nodes ) {
-          case 3 : top = cell_topology< Triangle<> >(); break ;
-          case 6 : top = cell_topology< Triangle<6> >(); break ;
-          }
-          break ;
-
-        case PYRAMID :
-          switch( block_data[i].num_nodes ) {
-          case  5 : top = cell_topology< Pyramid<> >(); break ;
-          case 13 : top = cell_topology< Pyramid<13> >(); break ;
-          case 14 : top = cell_topology< Pyramid<14> >(); break ;
-          }
-          break ;
-
-        case TETRA :
-          switch( block_data[i].num_nodes ) {
-          case  4 : top = cell_topology< Tetrahedron<> >(); break ;
-          case 10 : top = cell_topology< Tetrahedron<10> >(); break ;
-          }
-          break ;
-
-        case WEDGE :
-          switch( block_data[i].num_nodes ) {
-          case  6 : top = cell_topology< Wedge<> >(); break ;
-          case 15 : top = cell_topology< Wedge<15> >(); break ;
-          case 18 : top = cell_topology< Wedge<18> >(); break ;
-          }
-          break ;
-
-        case HEX :
-          switch( block_data[i].num_nodes ) {
-          case  8 : top = cell_topology< Hexahedron<> >(); break ;
-          case 20 : top = cell_topology< Hexahedron<20> >(); break ;
-          case 27 : top = cell_topology< Hexahedron<27> >(); break ;
-          }
-          break ;
-
-        case UNDEFINED : break ;
-        }
-
-        if ( NULL == top ) {
+        if ( NULL == top || elem_info.second != block_data[i].num_attr ) {
           std::ostringstream msg ;
           msg << "phdmesh::exodus::FileSchema FAILED, Read unknown element type from ExodusII : type = " ;
           msg << block_data[i].type ;
           msg << " , nodes = " ;
           msg << block_data[i].num_nodes ;
+          msg << " , attr = " ;
+          msg << block_data[i].num_attr ;
           throw std::runtime_error( msg.str() );
         }
 
@@ -2440,9 +2539,8 @@ FileSchema::FileSchema(
           internal_declare_part( m_schema ,
                                  part ,
                                  block_data[i].block_id ,
-                                 Element , et ,
+                                 Element , top ,
                                  m_dimension ,
-                                 block_data[i].num_nodes ,
                                  block_data[i].num_attr ,
                                  m_field_elem_attr );
 
@@ -2514,7 +2612,7 @@ struct less_NodeData {
 
 FileInput::~FileInput()
 {
-  const MeshBulkData       & M  = m_mesh ;
+  const BulkData       & M  = m_mesh ;
   const FileSchema & FS = m_schema ;
   const unsigned  p_rank = M.parallel_rank();
   const unsigned  p_read = FS.m_io_rank ;
@@ -2524,7 +2622,7 @@ FileInput::~FileInput()
 
 FileInput::FileInput(
   const FileSchema  & arg_schema ,
-        MeshBulkData        & arg_mesh ,
+        BulkData        & arg_mesh ,
   const std::string & arg_file_path ,
   const std::vector< const FieldBase * > & arg_fields )
   : m_schema( arg_schema ),
@@ -2535,8 +2633,8 @@ FileInput::FileInput(
 {
   static const char method[] = "phdmesh::exodus::FileInput::FileInput" ;
 
-        MeshBulkData       & M  = arg_mesh ;
-  const MeshMetaData     & SM = M.mesh_meta_data();
+        BulkData       & M  = arg_mesh ;
+  const MetaData     & SM = M.mesh_meta_data();
   const FileSchema & FS = arg_schema ;
   ParallelMachine p_comm = M.parallel();
   const unsigned  p_size = M.parallel_size();
@@ -2742,14 +2840,14 @@ FileInput::FileInput(
       const FilePart & part = * elem_parts[i_blk] ;
 
       const unsigned num_elem_this_blk = elem_blk_counts[i_blk] ;
-      const unsigned num_value = 2 + part.m_number_nodes ;
+      const unsigned num_value = 2 + part.m_topology->node_count ;
       const unsigned num_items =
         index_processor_count( p_rank, p_size,
                                i, num_elem_this_blk, num_elems_global );
       i += num_elem_this_blk ;
 
       size_elem_data_local += num_value * num_items ;
-      size_needed_local_nodes += part.m_number_nodes * num_items ;
+      size_needed_local_nodes += part.m_topology->node_count * num_items ;
     }
   }
 
@@ -2777,7 +2875,7 @@ FileInput::FileInput(
       const FilePart & part = * elem_parts[i_blk] ;
 
       const unsigned num_elem_this_blk = elem_blk_counts[i_blk] ;
-      const unsigned num_value = 2 + part.m_number_nodes ;
+      const unsigned num_value = 2 + part.m_topology->node_count ;
       const unsigned index_part = 1 + i ;
 
       unsigned num_item_per_chunk =
@@ -2792,8 +2890,8 @@ FileInput::FileInput(
       }
 
       if ( reader ) {
-        if ( relation.size() < num_item_per_chunk * part.m_number_nodes ) {
-          relation.resize( num_item_per_chunk * part.m_number_nodes );
+        if ( relation.size() < num_item_per_chunk * part.m_topology->node_count ) {
+          relation.resize( num_item_per_chunk * part.m_topology->node_count );
         }
         if ( has_elem_identifiers && identifiers.size() < num_item_per_chunk ) {
           identifiers.resize( num_item_per_chunk );
@@ -2851,11 +2949,11 @@ FileInput::FileInput(
 
           for ( int k = 0 ; k < number ; ++k ) {
             int * const elem_data = & data[ k * num_value ];
-            const int * const conn_data = & relation[ k * part.m_number_nodes ];
+            const int * const conn_data = & relation[ k * part.m_topology->node_count ];
             elem_data[0] = index_beg + k ;      // Element index
             elem_data[1] = has_elem_identifiers
                            ? identifiers[k] : index_beg + k ; // Identifier
-            for ( int j = 0 ; j < part.m_number_nodes ; ++j ) {
+            for ( unsigned j = 0 ; j < part.m_topology->node_count ; ++j ) {
               elem_data[2+j] = conn_data[ j ];  // Element-node index
             }
           }
@@ -2868,7 +2966,7 @@ FileInput::FileInput(
         for ( unsigned k = 0 ; k < recv_count ; ) {
           elem_data_local[ size_elem_data_local++ ] = data[k++] ; // Index
           elem_data_local[ size_elem_data_local++ ] = data[k++] ; // Id
-          for ( int j = 0 ; j < part.m_number_nodes ; ++j ) {
+          for ( unsigned j = 0 ; j < part.m_topology->node_count ; ++j ) {
             const int node_index = data[k++] ;
             elem_data_local[ size_elem_data_local++ ] = node_index ;
             needed_local_nodes[ size_needed_local_nodes++ ] = node_index ;
@@ -3046,7 +3144,7 @@ FileInput::FileInput(
 
         field_data( FS.m_field_index , elem )[0] = elem_index ;
 
-        for ( int j = 0 ; j < part.m_number_nodes ; ++j ) {
+        for ( unsigned j = 0 ; j < part.m_topology->node_count ; ++j ) {
           const int node_index = elem_data_local[ size_elem_data_local++ ];
 
           // Find the node data
@@ -3112,7 +3210,7 @@ namespace phdmesh {
 namespace exodus {
 
 FileSchema::FileSchema(
-  MeshMetaData & arg_mesh_meta_data ,
+  MetaData & arg_mesh_meta_data ,
   const FieldBase & arg_node_coordinates ,
   const FileSchema::AttributeField  & arg_elem_attributes ,
   const std::string     & ,
@@ -3132,7 +3230,7 @@ FileOutput::~FileOutput() {}
 
 FileOutput::FileOutput(
   const FileSchema  & arg_schema ,
-  const MeshBulkData        & arg_mesh ,
+  const BulkData        & arg_mesh ,
   const std::string & ,
   const std::string & ,
   const bool ,
@@ -3151,7 +3249,7 @@ FileInput::~FileInput() { }
 
 FileInput::FileInput(
   const FileSchema  & arg_schema ,
-        MeshBulkData        & arg_mesh ,
+        BulkData        & arg_mesh ,
   const std::string & ,
   const std::vector< const FieldBase * > & )
   : m_schema( arg_schema ),

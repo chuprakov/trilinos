@@ -96,7 +96,7 @@ istream & operator >> ( istream & s , vector<T> & v )
 
 namespace {
 
-void test_parameters()
+void test_named_value()
 {
   NamedValue<double> pd("d");
   NamedValue<std::vector<double> > pdv("d_vec") ;
@@ -132,29 +132,33 @@ void test_parameters()
   ps.value.insert( pi3 );
   ps.value.insert( pui3 );
 
-  NamedValue<> * r_pi  = ps.value.find<int>( pi.name );
-  NamedValue<> * r_pdv = ps.value.find<double>( pdv.name );
+  NamedValue<> * r_pi  = ps.value.find( pi.name );
+  NamedValue<> * r_pdv = ps.value.find( pdv.name );
 
-  r_pi->reference.put<int>() = 10 ;
-  r_pdv->reference.put<double>(0) = 10 ;
-  r_pdv->reference.put<double>(1) = 20 ;
+  r_pi->put<int>() = 10 ;
+  r_pdv->put<double>(0) = 10 ;
+  r_pdv->put<double>(1) = 20 ;
 
   {
     std::ofstream ofile( "scratch_test_container" , std::ios::out );
-    ofile << ps.value ;
+    ps.write( ofile );
   }
   {
     pi.value = -1 ;
-    r_pi->reference.put<int>() = -1 ;
-    r_pdv->reference.put<double>(0) = -1 ;
-    r_pdv->reference.put<double>(1) = -1 ;
+    r_pi->put<int>() = -1 ;
+    r_pdv->put<double>(0) = -1 ;
+    r_pdv->put<double>(1) = -1 ;
 
-    std::cout << ps.name << " = " << ps.value << std::endl ;
+    std::cout << ps.name << " = " ;
+    ps.write( std::cout );
+    std::cout << std::endl ;
 
     std::ifstream ifile( "scratch_test_container" );
-    ifile >> ps.value ;
+    ps.read( ifile );
 
-    std::cout << ps.name << " = " << ps.value << std::endl ;
+    std::cout << ps.name << " = " ;
+    ps.write( std::cout );
+    std::cout << std::endl ;
   }
 
   try {
@@ -166,7 +170,7 @@ void test_parameters()
     ps_nest2.value.insert( pi3 );
 
     std::string path("nest1.nest2.pi3");
-    NamedValue<> * test_find = ps.value.find<int>( path , '.' );
+    NamedValue<> * test_find = ps.value.find( path , '.' );
     if ( test_find != & pi3 ) {
       std::cout << "  FAILED to find " << path << std::endl ;
     }
@@ -174,7 +178,12 @@ void test_parameters()
       std::cout << "  SUCCESSFULLY found " << path << std::endl ;
     }
 
-    std::cout << ps.name << " = " << ps.value << std::endl ;
+    std::cout << ps.name << " = " ;
+    ps.write( std::cout );
+    std::cout << std::endl ;
+
+    ps.tell( std::cout );
+    std::cout << std::endl ;
 
     ps_nest3.value.insert( ps );
     ps_nest2.value.insert( ps_nest3 );
@@ -184,7 +193,9 @@ void test_parameters()
               << "  " << x.what() << std::endl << std::endl ;
   }
 
-  std::cout << ps.name << " = " << ps.value << std::endl ;
+  std::cout << ps.name << " = " ;
+  ps.write( std::cout );
+  std::cout << std::endl ;
 }
 
 }
@@ -195,7 +206,7 @@ void test_containers( ParallelMachine , std::istream & )
 {
   try {
     test_fixed_pool_buffer();
-    test_parameters();
+    test_named_value();
     std::cout << "TEST_CONTAINERS PASSED" << std::endl ;
   }
   catch( const std::exception & x ) {

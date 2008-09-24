@@ -59,7 +59,7 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
   //--------------------------------------------------------------------
   // Define a mesh mesh_meta_data: the parts and fields.
 
-  MeshMetaData S ;
+  MetaData S ;
 
   // Get some of the predefined parts for later use...
   Part * const owns_part = & S.locally_owned_part();
@@ -87,7 +87,7 @@ void test_simple_mesh( ParallelMachine pm , std::istream & )
 
   const unsigned kernel_capacity = 100 ;
 
-  MeshBulkData M( S , pm , kernel_capacity );
+  BulkData M( S , pm , kernel_capacity );
 
   // Define a trivial mesh, stack of hex elements
   // with one hex element per processor ordered by

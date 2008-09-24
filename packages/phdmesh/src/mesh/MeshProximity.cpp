@@ -47,14 +47,14 @@ namespace {
 
 struct ProximityBoxes {
   const ProximitySearch   & m_prox ;
-  const MeshBulkData              & m_mesh ;
-  const MeshMetaData            & m_mesh_meta_data ;
+  const BulkData              & m_mesh ;
+  const MetaData            & m_mesh_meta_data ;
   KernelSet::const_iterator m_iter ;
   KernelSet::const_iterator m_iter_end ;
   std::vector<IdentProcBox> m_boxes ;
 
   ProximityBoxes( 
-    MeshBulkData & M ,
+    BulkData & M ,
     const ProximitySearch & prox ,
     const unsigned entity_type ,
     std::vector< std::pair<IdentProc,IdentProc> > & proximity );
@@ -103,7 +103,7 @@ void ProximityBoxes::fill_boxes()
 
 
 ProximityBoxes::ProximityBoxes(
-  MeshBulkData & M ,
+  BulkData & M ,
   const ProximitySearch & prox ,
   const unsigned entity_type ,
   std::vector< std::pair<IdentProc,IdentProc> > & proximity )
@@ -111,7 +111,7 @@ ProximityBoxes::ProximityBoxes(
     m_mesh( M ),
     m_mesh_meta_data( M.mesh_meta_data() )
 {
-  const MeshMetaData & S = M.mesh_meta_data();
+  const MetaData & S = M.mesh_meta_data();
   const unsigned p_rank = S.parallel_rank();
 
   const KernelSet & kernels = m_mesh.kernels( entity_type );
@@ -192,12 +192,12 @@ ProximityBoxes::ProximityBoxes(
 //----------------------------------------------------------------------
 
 void proximity_search(
-  MeshBulkData & M ,
+  BulkData & M ,
   const ProximitySearch & prox ,
   const unsigned entity_type ,
   std::vector< std::pair<IdentProc,IdentProc> > & proximity )
 {
-  const MeshMetaData & S = M.mesh_meta_data();
+  const MetaData & S = M.mesh_meta_data();
   const unsigned p_rank = M.parallel_rank();
 
   // Iterate surfaces and generate bounding boxes

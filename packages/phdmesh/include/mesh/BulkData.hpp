@@ -44,18 +44,18 @@ namespace phdmesh {
  *  subsets of parts partitioned into homogeneous kernels.
  */
 
-class MeshBulkData {
+class BulkData {
 public:
 
-  ~MeshBulkData();
+  ~BulkData();
 
-  /** Construct mesh for the given MeshMetaData, parallel machine, and
+  /** Construct mesh for the given MetaData, parallel machine, and
    *  with the specified maximum number of entities per kernel.
    */
-  MeshBulkData( const MeshMetaData & mesh_meta_data ,
+  BulkData( const MetaData & mesh_meta_data ,
                 ParallelMachine parallel , unsigned = 1000);
 
-  const MeshMetaData & mesh_meta_data() const { return m_mesh_meta_data ; }
+  const MetaData & mesh_meta_data() const { return m_mesh_meta_data ; }
 
   ParallelMachine parallel() const { return m_parallel_machine ; }
   unsigned parallel_size()   const { return m_parallel_size ; }
@@ -161,11 +161,11 @@ public:
 
 private:
 
-  MeshBulkData();
-  MeshBulkData( const MeshBulkData & );
-  MeshBulkData & operator = ( const MeshBulkData & );
+  BulkData();
+  BulkData( const BulkData & );
+  BulkData & operator = ( const BulkData & );
 
-  const MeshMetaData      & m_mesh_meta_data ;
+  const MetaData      & m_mesh_meta_data ;
   ParallelMachine           m_parallel_machine ;
   unsigned                  m_parallel_size ;
   unsigned                  m_parallel_rank ;
@@ -213,7 +213,7 @@ private:
   \param count is an array of length number-of-entity-types (EntityTypeEnd).
 */
 void count_entities(
-  MeshBulkData & mesh ,
+  BulkData & mesh ,
   Part & part ,
   unsigned * const count /* [ EntityTypeEnd ] */ );
 
@@ -225,14 +225,14 @@ void count_entities(
   \param count is an array of length number-of-entity-types (EntityTypeEnd).
 */
 void count_entities(
-  MeshBulkData & mesh ,
+  BulkData & mesh ,
   const PartSet & parts ,
   unsigned * const count /* [ EntityTypeEnd ] */ );
 
 /** Get all kernels within the given part.
  *  Every kernel will have the part in its superset.
  */
-void get_kernels( const MeshBulkData & , EntityType , Part & ,
+void get_kernels( const BulkData & , EntityType , Part & ,
                   std::vector<const Kernel*> & );
 
 /** Get all kernels within all of the given parts.
@@ -242,7 +242,7 @@ void get_kernels( const MeshBulkData & , EntityType , Part & ,
  *  It is more efficient to pre-define an intersection part
  *  in the mesh_meta_data and then use the get_kernels function.
  */
-void get_kernels_intersect( const MeshBulkData & , EntityType ,
+void get_kernels_intersect( const BulkData & , EntityType ,
                             const PartSet & ,
                             std::vector<const Kernel*> & );
 
@@ -251,7 +251,7 @@ void get_kernels_intersect( const MeshBulkData & , EntityType ,
  *  It is more efficient to pre-define a superset part
  *  in the mesh_meta_data and then use the get_kernels function.
  */
-void get_kernels_union( const MeshBulkData & , EntityType , const PartSet & ,
+void get_kernels_union( const BulkData & , EntityType , const PartSet & ,
                         std::vector<const Kernel*> & );
 
 } // namespace phdmesh

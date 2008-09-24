@@ -54,7 +54,7 @@ typedef GearFields::CartesianField   CartesianField ;
 //----------------------------------------------------------------------
 
 void test_diffuse_field(
-  MeshBulkData                  & mesh ,
+  BulkData                  & mesh ,
   const CartesianField          & arg_field ,
   const ElementNodePointerField & arg_field_ptr );
 
@@ -100,7 +100,7 @@ namespace {
 
 #if 0
 
-#if defined( PHDMESH_HAS_MPI )
+#if defined( HAVE_MPI )
 
 void parallel_gather( ParallelMachine comm ,
                       unsigned        rank ,
@@ -134,7 +134,7 @@ void parallel_gather( ParallelMachine ,
 //----------------------------------------------------------------------
 
 void test_gears_face_proximity(
-  MeshBulkData & M ,
+  BulkData & M ,
   const CylindricalField & gear_coordinates ,
   const Field<double>    & field_proximity ,
   const ProximitySearch  & prox_search ,
@@ -299,7 +299,7 @@ void test_gears( ParallelMachine pm ,
 
   const unsigned kernel_capacity = 100 ; // 20 ;
 
-  MeshMetaData S ;
+  MetaData S ;
 
   GearFields gear_fields( S );
 
@@ -406,7 +406,7 @@ void test_gears( ParallelMachine pm ,
 
   //------------------------------
 
-  MeshBulkData M( S , pm , kernel_capacity );
+  BulkData M( S , pm , kernel_capacity );
 
   double wt = wall_time();
 

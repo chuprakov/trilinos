@@ -33,7 +33,7 @@
 namespace phdmesh {
 namespace {
 
-#if defined( PHDMESH_HAS_MPI )
+#if defined( HAVE_MPI )
 
 void broadcast( ParallelMachine comm , void * buf , int n )
 { MPI_Bcast( buf , n , MPI_BYTE , 0 , comm ); }

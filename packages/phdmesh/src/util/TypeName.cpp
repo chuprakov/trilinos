@@ -21,39 +21,48 @@
 /*  USA                                                                   */
 /*------------------------------------------------------------------------*/
 /**
- * @author H. Carter Edwards
+ * @author H. Carter Edwards  <hcedwar@sandia.gov>
+ * @date   October 2007
  */
 
-#include <string>
-#include <stdexcept>
+#define TYPE_NAME_VALUE( T ) \
+const char * TypeName< T >::value() { static const char v[] = # T ; return v ; }
 
-#include <util/Reference.hpp>
+#include <util/TypeName.hpp>
 
 namespace phdmesh {
 
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
+TYPE_NAME_VALUE( void )
+TYPE_NAME_VALUE( char )
+TYPE_NAME_VALUE( unsigned char )
+TYPE_NAME_VALUE( short )
+TYPE_NAME_VALUE( unsigned short )
+TYPE_NAME_VALUE( int )
+TYPE_NAME_VALUE( unsigned int )
+TYPE_NAME_VALUE( long )
+TYPE_NAME_VALUE( unsigned long )
 
-void Reference<void>::throw_type( const std::type_info & t ) const
-{
-  std::string msg ;
-  msg.append( "phdmesh::Reference<>[typeid(" )
-     .append( type.name() )
-     .append( ") != argument_typeid(" )
-     .append( t.name() )
-     .append( ")" );
-  throw std::runtime_error( msg );
-}
+TYPE_NAME_VALUE( float )
+TYPE_NAME_VALUE( double )
+TYPE_NAME_VALUE( std::complex<float> )
+TYPE_NAME_VALUE( std::complex<double> )
 
-//----------------------------------------------------------------------
+TYPE_NAME_VALUE( void * )
+TYPE_NAME_VALUE( char * )
+TYPE_NAME_VALUE( unsigned char * )
+TYPE_NAME_VALUE( short * )
+TYPE_NAME_VALUE( unsigned short * )
+TYPE_NAME_VALUE( int * )
+TYPE_NAME_VALUE( unsigned int * )
+TYPE_NAME_VALUE( long * )
+TYPE_NAME_VALUE( unsigned long * )
 
-Reference<void>::~Reference() {}
+TYPE_NAME_VALUE( float * )
+TYPE_NAME_VALUE( double * )
+TYPE_NAME_VALUE( std::complex<float> * )
+TYPE_NAME_VALUE( std::complex<double> * )
 
-//----------------------------------------------------------------------
+TYPE_NAME_VALUE( std::string )
 
 } // namespace phdmesh
-
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
-
 

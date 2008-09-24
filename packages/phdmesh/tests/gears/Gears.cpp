@@ -50,7 +50,7 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-GearFields::GearFields( MeshMetaData & S )
+GearFields::GearFields( MetaData & S )
 : gear_coord(
     S.declare_field<CylindricalField>( std::string("gear_coordinates") ) ),
   model_coord(
@@ -91,7 +91,7 @@ identifier( unsigned nthick ,  // Number of entities through the thickness
 
 }
 
-Gear::Gear( MeshMetaData & S ,
+Gear::Gear( MetaData & S ,
             const std::string & name ,
             const GearFields & gear_fields ,
             const double center[] ,
@@ -208,7 +208,7 @@ Entity * Gear::create_node(
 
 //----------------------------------------------------------------------
 
-void Gear::mesh( MeshBulkData & M )
+void Gear::mesh( BulkData & M )
 {
   static const char method[] = "phdmesh::Gear::mesh" ;
 

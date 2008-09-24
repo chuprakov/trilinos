@@ -62,8 +62,10 @@ template< unsigned N , typename T > bool GreaterEqual( const T * , const T * );
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
+#ifndef DOXYGEN_COMPILE
+
 namespace phdmesh {
-namespace Op {
+namespace impl {
 
 template< typename T, unsigned n , unsigned i = 0 > struct Copy ;
 template< typename T, unsigned n , unsigned i = 0 > struct Sum ;
@@ -227,10 +229,10 @@ struct Copy {
   enum { N = n };
 
   static void op( T * dst , const T * src )
-    { dst[i] = src[i] ; Op::Copy<T,N,i+1>::op(dst,src); }
+    { dst[i] = src[i] ; impl::Copy<T,N,i+1>::op(dst,src); }
 
   static void op( T * dst , const T & src )
-    { dst[i] = src ; Op::Copy<T,N,i+1>::op(dst,src); }
+    { dst[i] = src ; impl::Copy<T,N,i+1>::op(dst,src); }
 
   Copy() : ptr(0) {}
   Copy( T * p ) : ptr(p) {}
@@ -246,10 +248,10 @@ struct Sum {
   enum { N = n };
 
   static void op( T * dst , const T * src )
-    { dst[i] += src[i] ; Op::Sum<T,N,i+1>::op(dst,src); }
+    { dst[i] += src[i] ; impl::Sum<T,N,i+1>::op(dst,src); }
 
   static void op( T * dst , const T & a , const T * src )
-    { dst[i] += a * src[i] ; Op::Sum<T,N,i+1>::op(dst,a,src); }
+    { dst[i] += a * src[i] ; impl::Sum<T,N,i+1>::op(dst,a,src); }
 
   Sum() : ptr(0) {}
   Sum( T * p ) : ptr(p) {}
@@ -265,7 +267,7 @@ struct Prod {
   enum { N = n };
 
   static void op( T * dst , const T * src )
-    { dst[i] *= src[i] ; Op::Prod<T,N,i+1>::op(dst,src); }
+    { dst[i] *= src[i] ; impl::Prod<T,N,i+1>::op(dst,src); }
 
   Prod() : ptr(0) {}
   Prod( T * p ) : ptr(p) {}
@@ -281,7 +283,7 @@ struct BitOr {
   enum { N = n };
 
   static void op( T * dst , const T * src )
-    { dst[i] |= src[i] ; Op::BitOr<T,N,i+1>::op(dst,src); }
+    { dst[i] |= src[i] ; impl::BitOr<T,N,i+1>::op(dst,src); }
 
   BitOr() : ptr(0) {}
   BitOr( T * p ) : ptr(p) {}
@@ -297,7 +299,7 @@ struct BitAnd {
   enum { N = n };
 
   static void op( T * dst , const T * src )
-    { dst[i] |= src[i] ; Op::BitAnd<T,N,i+1>::op(dst,src); }
+    { dst[i] |= src[i] ; impl::BitAnd<T,N,i+1>::op(dst,src); }
 
   BitAnd() : ptr(0) {}
   BitAnd( T * p ) : ptr(p) {}
@@ -314,7 +316,7 @@ struct Max {
 
   static void op( T * dst , const T * src )
     { if ( dst[i] < src[i] ) { dst[i] = src[i] ; }
-      Op::Max<T,N,i+1>::op(dst,src); }
+      impl::Max<T,N,i+1>::op(dst,src); }
 
   Max() : ptr(0) {}
   Max( T * p ) : ptr(p) {}
@@ -331,7 +333,7 @@ struct Min {
 
   static void op( T * dst , const T * src )
     { if ( src[i] < dst[i] ) { dst[i] = src[i] ; }
-      Op::Min<T,N,i+1>::op(dst,src); }
+      impl::Min<T,N,i+1>::op(dst,src); }
 
   Min() : ptr(0) {}
   Min( T * p ) : ptr(p) {}
@@ -345,157 +347,200 @@ struct Min {
 template< typename T , unsigned n , unsigned i >
 struct InnerProduct {
   static T op( const T * x , const T * y )
-    { return x[i] * y[i] + Op::InnerProduct<T,n,i+1>::op( x , y ); }
+    { return x[i] * y[i] + impl::InnerProduct<T,n,i+1>::op( x , y ); }
 };
 
 template< typename T , unsigned n , unsigned i >
 struct Equal {
   static bool op( const T * x , const T * y )
-    { return x[i] == y[i] && Op::Equal<T,n,i+1>::op(x,y); }
+    { return x[i] == y[i] && impl::Equal<T,n,i+1>::op(x,y); }
 };
 
 template< typename T , unsigned n , unsigned i >
 struct NotEqual {
   static bool op( const T * x , const T * y )
-    { return x[i] != y[i] || Op::NotEqual<T,n,i+1>::op(x,y); }
+    { return x[i] != y[i] || impl::NotEqual<T,n,i+1>::op(x,y); }
 };
 
 template< typename T , unsigned n , unsigned i >
 struct Less {
   static bool op( const T * const lhs , const T * const rhs )
     { return lhs[i] != rhs[i] ? lhs[i] < rhs[i]
-                              : Op::Less<T,n,i+1>::op(lhs,rhs); }
+                              : impl::Less<T,n,i+1>::op(lhs,rhs); }
 };
 
 template< typename T , unsigned n , unsigned i >
 struct LessEqual {
   static bool op( const T * const lhs , const T * const rhs )
     { return lhs[i] != rhs[i] ? lhs[i] < rhs[i]
-                              : Op::LessEqual<T,n,i+1>::op(lhs,rhs); }
+                              : impl::LessEqual<T,n,i+1>::op(lhs,rhs); }
 };
 
 template< typename T , unsigned n , unsigned i >
 struct Greater {
   static bool op( const T * const lhs , const T * const rhs )
     { return lhs[i] != rhs[i] ? lhs[i] > rhs[i]
-                              : Op::Greater<T,n,i+1>::op(lhs,rhs); }
+                              : impl::Greater<T,n,i+1>::op(lhs,rhs); }
 };
 
 template< typename T , unsigned n , unsigned i >
 struct GreaterEqual {
   static bool op( const T * const lhs , const T * const rhs )
     { return lhs[i] != rhs[i] ? lhs[i] > rhs[i]
-                              : Op::GreaterEqual<T,n,i+1>::op(lhs,rhs); }
+                              : impl::GreaterEqual<T,n,i+1>::op(lhs,rhs); }
 };
 
-} // namespace Op
-} // namespace phdmesh
+} // namespace impl
 
 //-----------------------------------
+
+template< unsigned N , typename T >
+inline
+impl::Copy<T,N> Copy( T * dst )
+{ return impl::Copy<T,N,0>( dst ); }
+
+template< unsigned N , typename T >
+inline
+impl::Sum<T,N> Sum( T * dst )
+{ return impl::Sum<T,N,0>( dst ); }
+
+template< unsigned N , typename T >
+inline
+impl::Prod<T,N> Prod( T * dst )
+{ return impl::Prod<T,N,0>( dst ); }
+
+template< unsigned N , typename T >
+inline
+impl::Max<T,N> Max( T * dst )
+{ return impl::Max<T,N,0>( dst ); }
+
+template< unsigned N , typename T >
+inline
+impl::Min<T,N> Min( T * dst )
+{ return impl::Min<T,N,0>( dst ); }
+
+template< unsigned N , typename T >
+inline
+impl::BitOr<T,N> BitOr( T * dst )
+{ return impl::BitOr<T,N,0>( dst ); }
+
+template< unsigned N , typename T >
+inline
+impl::BitAnd<T,N> BitAnd( T * dst )
+{ return impl::BitAnd<T,N,0>( dst ); }
+
+} // namespace phdmesh
+
+#endif /* DOXYGEN_COMPILE */
+
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
 
 namespace phdmesh {
 
+/** \brief dst[k] = src[k] , k = 0..N-1 */
 template< unsigned N , typename T >
+inline
 void Copy( T * dst , const T * src )
-{ Op::Copy<T,N,0>::op( dst , src ); }
+{ impl::Copy<T,N,0>::op( dst , src ); }
 
+/** \brief dst[k] = src , k = 0..N-1 */
 template< unsigned N , typename T >
+inline
 void Copy( T * dst , const T & src )
-{ Op::Copy<T,N,0>::op( dst , src ); }
+{ impl::Copy<T,N,0>::op( dst , src ); }
 
+/** \brief dst[k] += src[k] , k = 0..N-1 */
 template< unsigned N , typename T >
+inline
 void Sum( T * dst , const T * src )
-{ Op::Sum<T,N,0>::op( dst , src ); }
+{ impl::Sum<T,N,0>::op( dst , src ); }
 
+/** \brief dst[k] += a * src[k] , k = 0..N-1 */
 template< unsigned N , typename T >
+inline
 void Sum( T * dst , const T & a , const T * src )
-{ Op::Sum<T,N,0>::op( dst , a , src ); }
+{ impl::Sum<T,N,0>::op( dst , a , src ); }
 
+/** \brief dst[k] *= src[k] , k = 0..N-1 */
 template< unsigned N , typename T >
+inline
 void Prod( T * dst , const T * src )
-{ Op::Prod<T,N,0>::op( dst , src ); }
+{ impl::Prod<T,N,0>::op( dst , src ); }
 
+/** \brief dst[k] = max( dst[k] , src[k] ) , k = 0..N-1 */
 template< unsigned N , typename T >
+inline
 void Max( T * dst , const T * src )
-{ Op::Max<T,N,0>::op( dst , src ); }
+{ impl::Max<T,N,0>::op( dst , src ); }
 
+/** \brief dst[k] = min( dst[k] , src[k] ) , k = 0..N-1 */
 template< unsigned N , typename T >
+inline
 void Min( T * dst , const T * src )
-{ Op::Min<T,N,0>::op( dst , src ); }
+{ impl::Min<T,N,0>::op( dst , src ); }
 
+/** \brief dst[k] |= src[k] , k = 0..N-1 */
 template< unsigned N , typename T >
+inline
 void BitOr( T * dst , const T * src )
-{ Op::BitOr<T,N,0>::op( dst , src ); }
+{ impl::BitOr<T,N,0>::op( dst , src ); }
 
+/** \brief dst[k] &= src[k] , k = 0..N-1 */
 template< unsigned N , typename T >
+inline
 void BitAnd( T * dst , const T * src )
-{ Op::BitAnd<T,N,0>::op( dst , src ); }
+{ impl::BitAnd<T,N,0>::op( dst , src ); }
 
 //-----------------------------------
 
+/** \brief return sum_k( x[k] * y[k] ) */
 template< unsigned N , typename T >
-Op::Copy<T,N> Copy( T * dst )
-{ return Op::Copy<T,N,0>( dst ); }
-
-template< unsigned N , typename T >
-Op::Sum<T,N> Sum( T * dst )
-{ return Op::Sum<T,N,0>( dst ); }
-
-template< unsigned N , typename T >
-Op::Prod<T,N> Prod( T * dst )
-{ return Op::Prod<T,N,0>( dst ); }
-
-template< unsigned N , typename T >
-Op::Max<T,N> Max( T * dst )
-{ return Op::Max<T,N,0>( dst ); }
-
-template< unsigned N , typename T >
-Op::Min<T,N> Min( T * dst )
-{ return Op::Min<T,N,0>( dst ); }
-
-template< unsigned N , typename T >
-Op::BitOr<T,N> BitOr( T * dst )
-{ return Op::BitOr<T,N,0>( dst ); }
-
-template< unsigned N , typename T >
-Op::BitAnd<T,N> BitAnd( T * dst )
-{ return Op::BitAnd<T,N,0>( dst ); }
-
-//-----------------------------------
-
-template< unsigned N , typename T >
+inline
 T InnerProduct( const T * x , const T * y )
-{ return Op::InnerProduct<T,N,0>::op( x , y ); }
+{ return impl::InnerProduct<T,N,0>::op( x , y ); }
 
+/** \brief return x[k] == y[k] , k == 0..N-1 */
 template< unsigned N , typename T >
+inline
 bool Equal( const T * x , const T * y )
-{ return Op::Equal<T,N,0>::op( x , y ); }
+{ return impl::Equal<T,N,0>::op( x , y ); }
 
+/** \brief return ! ( x[k] == y[k] , k == 0..N-1 ) */
 template< unsigned N , typename T >
+inline
 bool NotEqual( const T * x , const T * y )
-{ return Op::NotEqual<T,N,0>::op( x , y ); }
+{ return impl::NotEqual<T,N,0>::op( x , y ); }
 
+/** \brief return x[k] < y[k] , first k such that x[k] != y[k] */
 template< unsigned N , typename T >
+inline
 bool Less( const T * x , const T * y )
-{ return Op::Less<T,N,0>::op( x , y ); }
+{ return impl::Less<T,N,0>::op( x , y ); }
 
+/** \brief return x[k] <= y[k] , first k such that x[k] != y[k] */
 template< unsigned N , typename T >
+inline
 bool LessEqual( const T * x , const T * y )
-{ return Op::LessEqual<T,N,0>::op( x , y ); }
+{ return impl::LessEqual<T,N,0>::op( x , y ); }
 
+/** \brief return x[k] > y[k] , first k such that x[k] != y[k] */
 template< unsigned N , typename T >
+inline
 bool Greater( const T * x , const T * y )
-{ return Op::Greater<T,N,0>::op( x , y ); }
+{ return impl::Greater<T,N,0>::op( x , y ); }
 
+/** \brief return x[k] => y[k] , first k such that x[k] != y[k] */
 template< unsigned N , typename T >
+inline
 bool GreaterEqual( const T * x , const T * y )
-{ return Op::GreaterEqual<T,N,0>::op( x , y ); }
+{ return impl::GreaterEqual<T,N,0>::op( x , y ); }
 
 } // namespace phdmesh
 
-//-----------------------------------
-
 /** \} */
 
-#endif
+//-----------------------------------
+
+#endif /* util_SimpleArrayOps_hpp */
 

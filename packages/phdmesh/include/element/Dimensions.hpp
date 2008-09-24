@@ -53,7 +53,7 @@ template< class NodeField >
 inline
 ElementNodePointerField &
 declare_element_node_pointer_field(
-  MeshMetaData & md , const std::string & s ,
+  MetaData & md , const std::string & s ,
   NodeField & node_field )
 {
   const unsigned num_states = node_field.number_of_states();

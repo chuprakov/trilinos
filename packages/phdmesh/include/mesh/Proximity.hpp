@@ -39,7 +39,7 @@ class ProximitySearch ;
 /** Global geometric proximity search for same-mesh and same-type entities.
  *  Only the owned entities are included in the search.
  */
-void proximity_search( MeshBulkData & M ,
+void proximity_search( BulkData & M ,
                        const ProximitySearch & ,
                        const unsigned entity_type ,
                        std::vector< std::pair<IdentProc,IdentProc> > & );

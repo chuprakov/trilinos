@@ -49,14 +49,14 @@ struct KernelLess {
   bool operator()( const unsigned * lhs , const unsigned * rhs ) const ;
 };
 
-/** MeshBulkData kernel - a homogeneous collection of mesh entities and
+/** BulkData kernel - a homogeneous collection of mesh entities and
  *  their field values.
  *  Homogeneous in that all entities are of the same entity type
  *  and are members of the same set of parts.
  */
 class Kernel : private SetvMember<const unsigned * const> {
 private:
-  friend class MeshBulkData ;
+  friend class BulkData ;
   friend class Setv<Kernel,KernelLess> ;
   friend class SetvIter<Kernel,true> ;
   friend class SetvIter<Kernel,false> ;
@@ -69,7 +69,7 @@ private:
     unsigned         m_size ;
   };
 
-  MeshBulkData & m_mesh ;        // MeshBulkData in which this kernel resides
+  BulkData & m_mesh ;        // BulkData in which this kernel resides
   EntityType     m_entity_type ; // Type of mesh entities
   unsigned       m_size ;        // Number of entities
   unsigned       m_capacity ;    // Capacity for entities
@@ -81,7 +81,7 @@ private:
 
 public:
 
-  MeshBulkData & mesh() const { return m_mesh ; }
+  BulkData & mesh() const { return m_mesh ; }
 
   EntityType entity_type() const { return m_entity_type ; }
 
@@ -142,7 +142,7 @@ private:
   Kernel( const Kernel & );
   Kernel & operator = ( const Kernel & );
 
-  Kernel( MeshBulkData & , EntityType , const unsigned * );
+  Kernel( BulkData & , EntityType , const unsigned * );
 
   void update_state();
 

@@ -41,28 +41,28 @@ typedef Field<double, SymmetricTensor> SymmetricTensorField ;
 // Declaring fields of these fundemental types:
 
 ScalarField &
-declare_scalar_field_on_all_nodes( MeshMetaData & , const std::string & );
+declare_scalar_field_on_all_nodes( MetaData & , const std::string & );
 
 ScalarField &
-declare_scalar_field_on_all_elements( MeshMetaData & , const std::string & );
+declare_scalar_field_on_all_elements( MetaData & , const std::string & );
 
 VectorField &
-declare_vector_field_on_all_nodes( MeshMetaData & , const std::string & , unsigned );
+declare_vector_field_on_all_nodes( MetaData & , const std::string & , unsigned );
 
 VectorField &
-declare_vector_field_on_all_elements( MeshMetaData & , const std::string & , unsigned );
+declare_vector_field_on_all_elements( MetaData & , const std::string & , unsigned );
 
 FullTensorField &
-declare_full_tensor_field_on_all_nodes( MeshMetaData & , const std::string & , unsigned );
+declare_full_tensor_field_on_all_nodes( MetaData & , const std::string & , unsigned );
 
 FullTensorField &
-declare_full_tensor_field_on_all_elements( MeshMetaData & , const std::string & , unsigned );
+declare_full_tensor_field_on_all_elements( MetaData & , const std::string & , unsigned );
 
 SymmetricTensorField &
-declare_symmetric_tensor_field_on_all_nodes( MeshMetaData & , const std::string & , unsigned );
+declare_symmetric_tensor_field_on_all_nodes( MetaData & , const std::string & , unsigned );
 
 SymmetricTensorField &
-declare_symmetric_tensor_field_on_all_elements( MeshMetaData & , const std::string & , unsigned );
+declare_symmetric_tensor_field_on_all_elements( MetaData & , const std::string & , unsigned );
 
 //----------------------------------------------------------------------
 // Scalar fields:
@@ -207,7 +207,7 @@ FieldType & put_field_on_all_elements( FieldType & f ,
 
 inline
 ScalarField &
-declare_scalar_field_on_all_nodes( MeshMetaData & md , const std::string & n )
+declare_scalar_field_on_all_nodes( MetaData & md , const std::string & n )
 {
   return md.put_field( md.declare_field<ScalarField>(n) ,
                        Node , md.universal_part() );
@@ -215,7 +215,7 @@ declare_scalar_field_on_all_nodes( MeshMetaData & md , const std::string & n )
 
 inline
 ScalarField &
-declare_scalar_field_on_all_elements( MeshMetaData & md ,
+declare_scalar_field_on_all_elements( MetaData & md ,
                                       const std::string & n )
 {
   return md.put_field( md.declare_field<ScalarField>(n) ,
@@ -225,7 +225,7 @@ declare_scalar_field_on_all_elements( MeshMetaData & md ,
 inline
 VectorField &
 declare_vector_field_on_all_nodes(
-  MeshMetaData & md , const std::string & s , unsigned n1 )
+  MetaData & md , const std::string & s , unsigned n1 )
 {
   return md.put_field( md.declare_field<VectorField>(s),
                        Node , md.universal_part() , n1 );
@@ -234,7 +234,7 @@ declare_vector_field_on_all_nodes(
 inline
 VectorField &
 declare_vector_field_on_all_elements(
-  MeshMetaData & md , const std::string & s , unsigned n1 )
+  MetaData & md , const std::string & s , unsigned n1 )
 {
   return md.put_field( md.declare_field<VectorField>(s),
                        Element , md.universal_part() , n1 );
@@ -243,7 +243,7 @@ declare_vector_field_on_all_elements(
 inline
 FullTensorField &
 declare_full_tensor_field_on_all_nodes(
-  MeshMetaData & md , const std::string & s , unsigned n1 )
+  MetaData & md , const std::string & s , unsigned n1 )
 {
   return md.put_field( md.declare_field<FullTensorField>(s),
                        Node , md.universal_part() , n1 );
@@ -252,7 +252,7 @@ declare_full_tensor_field_on_all_nodes(
 inline
 FullTensorField &
 declare_full_tensor_field_on_all_elements(
-  MeshMetaData & md , const std::string & s , unsigned n1 )
+  MetaData & md , const std::string & s , unsigned n1 )
 {
   return md.put_field( md.declare_field<FullTensorField>(s),
                        Element , md.universal_part() , n1 );
@@ -261,7 +261,7 @@ declare_full_tensor_field_on_all_elements(
 inline
 SymmetricTensorField &
 declare_symmetric_tensor_field_on_all_nodes(
-  MeshMetaData & md , const std::string & s , unsigned n1 )
+  MetaData & md , const std::string & s , unsigned n1 )
 {
   return md.put_field( md.declare_field<SymmetricTensorField>(s),
                        Node , md.universal_part() , n1 );
@@ -270,7 +270,7 @@ declare_symmetric_tensor_field_on_all_nodes(
 inline
 SymmetricTensorField &
 declare_symmetric_tensor_field_on_all_elements(
-  MeshMetaData & md , const std::string & s , unsigned n1 )
+  MetaData & md , const std::string & s , unsigned n1 )
 {
   return md.put_field( md.declare_field<SymmetricTensorField>(s) ,
                        Element , md.universal_part() , n1 );

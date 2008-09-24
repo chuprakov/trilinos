@@ -81,14 +81,14 @@ MPICH | mpich )
   export CC="mpicc"
   export CXX="mpiCC"
   export LDCXX=${CXX}
-  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_MPI\n"
+  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define HAVE_MPI\n"
   ;;
 MPICHXX | mpichxx )
   shift 1
   export CC="mpicc"
   export CXX="mpicxx"
   export LDCXX=${CXX}
-  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_MPI\n"
+  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define HAVE_MPI\n"
   export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define MPICH_SKIP_MPICXX\n"
   ;;
 PURIFY | purify )
@@ -109,7 +109,7 @@ MPICH_PURIFY | mpich_purify )
   export LDCXX="purify g++"
   export C_LIB_EXT="${C_LIB_EXT} ${MPICH_C_LIB}"
   export CXX_LIB_EXT="${CXX_LIB_EXT} ${MPICH_CXX_LIB}"
-  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_MPI\n"
+  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define HAVE_MPI\n"
   ;;
 MPIGM | mpigm )
   MPIGM_LIB="-L${2} -lgm"
@@ -119,7 +119,7 @@ MPIGM | mpigm )
   export LDCXX=${CXX}
   export C_LIB_EXT="${C_LIB_EXT} ${MPIGM_LIB}"
   export CXX_LIB_EXT="${CXX_LIB_EXT} ${MPIGM_LIB}"
-  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_MPI\n"
+  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define HAVE_MPI\n"
   export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define LINUX64_WS32_GM\n"
   ;;
 NO_SCHED | no_sched )

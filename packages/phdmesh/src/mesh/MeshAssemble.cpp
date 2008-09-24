@@ -49,20 +49,20 @@ private:
   AssembleTask( const AssembleTask & );
   AssembleTask & operator = ( const AssembleTask & );
 public:
-  const MeshBulkData                  & mesh ;
+  const BulkData                  & mesh ;
   const unsigned                entity_type ;
   const std::vector<Assemble> & ops ;
 
   KernelSet::const_iterator ik_work ;
 
-  AssembleTask( const MeshBulkData & arg_mesh ,
+  AssembleTask( const BulkData & arg_mesh ,
                 unsigned     arg_entity_type ,
                 const std::vector<Assemble> & arg_ops );
 
   void work(TPI::ThreadPool);
 };
 
-AssembleTask::AssembleTask( const MeshBulkData & arg_mesh ,
+AssembleTask::AssembleTask( const BulkData & arg_mesh ,
                             unsigned     arg_entity_type ,
                             const std::vector<Assemble> & arg_ops )
   : mesh( arg_mesh ),
@@ -81,7 +81,7 @@ void AssembleTask::work(TPI::ThreadPool pool)
   
   const KernelSet::const_iterator ik_end = mesh.kernels( entity_type ).end();
 
-  const MeshMetaData & mesh_meta_data = mesh.mesh_meta_data();
+  const MetaData & mesh_meta_data = mesh.mesh_meta_data();
   Part & uses = mesh_meta_data.locally_used_part();
 
   for(;;) {
@@ -135,7 +135,7 @@ void AssembleTask::work(TPI::ThreadPool pool)
 
 }
 
-void assemble( const MeshBulkData & M , const std::vector<Assemble> ops )
+void assemble( const BulkData & M , const std::vector<Assemble> ops )
 {
   static const char method[] = "phdmesh::assemble" ;
 

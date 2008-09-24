@@ -73,7 +73,7 @@ void mean_value( const size_t count ,
 
 struct ElementMeanValueOp {
 
-  MeshBulkData                     & m_mesh ;
+  BulkData                     & m_mesh ;
   const Field<double,Cartesian>    & m_field ;
   const Field<double*,ElementNode> & m_field_ptr ;
 
@@ -81,13 +81,13 @@ struct ElementMeanValueOp {
 
   ElementMeanValueOp( const Field<double,Cartesian>     & arg_field ,
                       const Field<double*,ElementNode>  & arg_field_ptr ,
-                      MeshBulkData & arg_mesh );
+                      BulkData & arg_mesh );
 };
 
 ElementMeanValueOp::ElementMeanValueOp(
   const Field<double,Cartesian>     & arg_field ,
   const Field<double*,ElementNode>  & arg_field_ptr ,
-  MeshBulkData & arg_mesh )
+  BulkData & arg_mesh )
 : m_mesh( arg_mesh ),
   m_field( arg_field ),
   m_field_ptr( arg_field_ptr )
@@ -143,7 +143,7 @@ namespace {
 
 struct NodeMeanValueOp {
 
-  MeshBulkData                  & m_mesh ;
+  BulkData                  & m_mesh ;
   const Field<double,Cartesian> & m_node_field ;
   const Field<double,Cartesian> & m_elem_field ;
 
@@ -151,13 +151,13 @@ struct NodeMeanValueOp {
 
   NodeMeanValueOp( const Field<double,Cartesian> & arg_node_field ,
                    const Field<double,Cartesian> & arg_elem_field ,
-                   MeshBulkData & arg_mesh );
+                   BulkData & arg_mesh );
 };
 
 NodeMeanValueOp::NodeMeanValueOp(
   const Field<double,Cartesian> & arg_node_field ,
   const Field<double,Cartesian> & arg_elem_field ,
-  MeshBulkData & arg_mesh )
+  BulkData & arg_mesh )
 : m_mesh( arg_mesh ),
   m_node_field( arg_node_field ),
   m_elem_field( arg_elem_field )
@@ -224,7 +224,7 @@ void NodeMeanValueOp::run( void * arg , TPI_ThreadPool pool )
 // Average a field to the element and then back to the node:
 
 void test_diffuse_field(
-  MeshBulkData & mesh ,
+  BulkData & mesh ,
   const Field<double,Cartesian> & arg_field ,
   const ElementNodePointerField & arg_field_ptr )
 {

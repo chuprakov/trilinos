@@ -39,28 +39,28 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-void MeshMetaData::assert_not_committed( const char * method ) const
+void MetaData::assert_not_committed( const char * method ) const
 {
   if ( m_commit ) {
     std::string msg ;
     msg.append( method )
-       .append( " FAILED: mesh MeshMetaData has been committed." );
+       .append( " FAILED: mesh MetaData has been committed." );
     throw std::logic_error( msg );
   }
 }
 
-void MeshMetaData::assert_committed( const char * method ) const
+void MetaData::assert_committed( const char * method ) const
 {
   if ( ! m_commit ) {
     std::string msg ;
     msg.append( method )
-       .append( " FAILED: mesh MeshMetaData has not been committed." );
+       .append( " FAILED: mesh MetaData has not been committed." );
     throw std::logic_error( msg );
   }
 }
 
-void MeshMetaData::assert_same_mesh_meta_data( const char * method ,
-                                 const MeshMetaData & rhs ) const
+void MetaData::assert_same_mesh_meta_data( const char * method ,
+                                 const MetaData & rhs ) const
 {
   if ( this != & rhs ) {
     std::string msg ;
@@ -72,7 +72,7 @@ void MeshMetaData::assert_same_mesh_meta_data( const char * method ,
 
 //----------------------------------------------------------------------
 
-MeshMetaData::MeshMetaData()
+MetaData::MetaData()
   : m_commit( false ),
     m_universal_part( *this , std::string( "{UNIVERSAL}" ) , 0 ),
     m_uses_part( NULL ),
@@ -93,9 +93,9 @@ MeshMetaData::MeshMetaData()
   declare_part_subset( * m_uses_part , * m_owns_part );
 }
 
-void MeshMetaData::commit()
+void MetaData::commit()
 {
-  static const char method[] = "phdmesh::MeshMetaData::commit" ;
+  static const char method[] = "phdmesh::MetaData::commit" ;
 
   assert_not_committed( method );
 
@@ -117,7 +117,7 @@ void MeshMetaData::commit()
   m_commit = true ; // Cannot add or change parts or fields now
 }
 
-MeshMetaData::~MeshMetaData()
+MetaData::~MetaData()
 {
   // Destroy the fields, used 'new' to allocate so now use 'delete'
 
@@ -251,9 +251,9 @@ bool unpack_verify( CommBuffer & ,
 
 //----------------------------------------------------------------------
 
-void verify_parallel_consistency( const MeshMetaData & s , ParallelMachine pm )
+void verify_parallel_consistency( const MetaData & s , ParallelMachine pm )
 {
-  static const char method[] = "phdmesh::verify_parallel_consistency(MeshMetaData)" ;
+  static const char method[] = "phdmesh::verify_parallel_consistency(MetaData)" ;
 
   const unsigned p_rank = parallel_machine_rank( pm );
 

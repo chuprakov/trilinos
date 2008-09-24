@@ -40,7 +40,7 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 
-MeshBulkData::MeshBulkData( const MeshMetaData & mesh_meta_data ,
+BulkData::BulkData( const MetaData & mesh_meta_data ,
             ParallelMachine parallel ,
              unsigned kernel_capacity )
   : m_mesh_meta_data( mesh_meta_data ),
@@ -50,14 +50,14 @@ MeshBulkData::MeshBulkData( const MeshMetaData & mesh_meta_data ,
     m_kernel_capacity( kernel_capacity ),
     m_sync_change_count( 0 )
 {
-  static const char method[] = "phdmesh::MeshBulkData::Mesh" ;
+  static const char method[] = "phdmesh::BulkData::Mesh" ;
 
   m_mesh_meta_data.assert_committed( method );
 
   verify_parallel_consistency( mesh_meta_data , parallel );
 }
 
-MeshBulkData::~MeshBulkData()
+BulkData::~BulkData()
 {
   m_shares_all.clear();
   m_aura_domain.clear();
@@ -89,7 +89,7 @@ MeshBulkData::~MeshBulkData()
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void MeshBulkData::update_state()
+void BulkData::update_state()
 {
   for ( unsigned i = 0 ; i < EntityTypeEnd ; ++i ) {
 
@@ -103,7 +103,7 @@ void MeshBulkData::update_state()
 
 //----------------------------------------------------------------------
 
-size_t MeshBulkData::synchronize_changes()
+size_t BulkData::synchronize_changes()
 {
   int change = 0 ;
 
@@ -135,26 +135,26 @@ size_t MeshBulkData::synchronize_changes()
 
 //----------------------------------------------------------------------
 
-const EntitySet & MeshBulkData::entities( unsigned entity_type ) const
+const EntitySet & BulkData::entities( unsigned entity_type ) const
 {
   const unsigned i = entity_type ;
 
   if ( EntityTypeEnd <= i ) {
     // Error
-    std::string msg( "phdmesh::MeshBulkData::entities FAILED with invalid type" );
+    std::string msg( "phdmesh::BulkData::entities FAILED with invalid type" );
     throw std::invalid_argument(msg);
   }
 
   return m_entities[ entity_type ];
 }
 
-const KernelSet & MeshBulkData::kernels( unsigned entity_type ) const
+const KernelSet & BulkData::kernels( unsigned entity_type ) const
 {
   const unsigned i = entity_type ;
 
   if ( EntityTypeEnd <= i ) {
     // Error
-    std::string msg( "phdmesh::MeshBulkData::kernels FAILED with invalid type" );
+    std::string msg( "phdmesh::BulkData::kernels FAILED with invalid type" );
     throw std::invalid_argument(msg);
   }
 
@@ -163,13 +163,13 @@ const KernelSet & MeshBulkData::kernels( unsigned entity_type ) const
 
 //----------------------------------------------------------------------
 
-Entity * MeshBulkData::get_entity( entity_key_type key ,
+Entity * BulkData::get_entity( entity_key_type key ,
                                    const char * required_by ) const
 {
   const EntitySet & es = entities( phdmesh::entity_type( key ) );
   EntitySet::iterator i = es.find( key );
   if ( required_by && i == es.end() ) {
-    static const char method[] = "phdmesh::MeshBulkData::get_entity" ;
+    static const char method[] = "phdmesh::BulkData::get_entity" ;
     std::ostringstream msg ;
     msg << method << "( " ;
     print_entity_key( msg , key );
@@ -182,11 +182,11 @@ Entity * MeshBulkData::get_entity( entity_key_type key ,
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-Entity & MeshBulkData::declare_entity( entity_key_type key ,
+Entity & BulkData::declare_entity( entity_key_type key ,
                                        const std::vector<Part*> & parts ,
                                        int new_owner )
 {
-  const char method[] = "phdmesh::MeshBulkData::declare_entity" ;
+  const char method[] = "phdmesh::BulkData::declare_entity" ;
 
   const bool bad_key = 0 == entity_id( key );
   const bool bad_own = ((int) m_parallel_size ) <= new_owner ;
@@ -265,12 +265,12 @@ Entity & MeshBulkData::declare_entity( entity_key_type key ,
 
 //----------------------------------------------------------------------
 
-void MeshBulkData::change_entity_parts(
+void BulkData::change_entity_parts(
   Entity & e ,
   const std::vector<Part*> & add_parts ,
   const std::vector<Part*> & remove_parts )
 {
-  const char method[] = "phdmesh::MeshBulkData::change_entity_parts" ;
+  const char method[] = "phdmesh::BulkData::change_entity_parts" ;
 
   // Change required if:
   // (1) Entity not a member of a kernel
@@ -401,7 +401,7 @@ void merge_in( std::vector<unsigned> & vec , const PartSet & parts )
 
 // The 'add_parts' and 'rem_parts' are completely disjoint.
 
-void MeshBulkData::internal_change_entity_parts(
+void BulkData::internal_change_entity_parts(
   Entity & e ,
   const PartSet & add_parts ,
   const PartSet & rem_parts )
@@ -559,10 +559,10 @@ void MeshBulkData::internal_change_entity_parts(
 
 //----------------------------------------------------------------------
 
-void MeshBulkData::change_entity_identifier( Entity & e , entity_id_type id )
+void BulkData::change_entity_identifier( Entity & e , entity_id_type id )
 {
   static const char method[] =
-    "phdmesh::MeshBulkData::change_entity_identifier" ;
+    "phdmesh::BulkData::change_entity_identifier" ;
 
   const bool valid_id = id != 0 ;
   bool ok = valid_id ;
@@ -595,9 +595,9 @@ void MeshBulkData::change_entity_identifier( Entity & e , entity_id_type id )
   }
 }
 
-void MeshBulkData::change_entity_owner( Entity & e , unsigned owner_rank )
+void BulkData::change_entity_owner( Entity & e , unsigned owner_rank )
 {
-  static const char method[] = "phdmesh::MeshBulkData::change_entity_owner" ;
+  static const char method[] = "phdmesh::BulkData::change_entity_owner" ;
 
   if ( parallel_size() <= owner_rank ) {
     std::ostringstream msg ;
@@ -616,7 +616,7 @@ void MeshBulkData::change_entity_owner( Entity & e , unsigned owner_rank )
 
 //----------------------------------------------------------------------
 
-void MeshBulkData::destroy_entity( Entity * e )
+void BulkData::destroy_entity( Entity * e )
 {
   while ( ! e->m_relation.empty() ) {
     destroy_relation( * e , * e->m_relation.back().entity() );
@@ -639,9 +639,9 @@ void MeshBulkData::destroy_entity( Entity * e )
 
 namespace {
 
-void verify_set_shares( const MeshBulkData & M )
+void verify_set_shares( const BulkData & M )
 {
-  static const char method[] = "phdmesh::MeshBulkData::set_shares" ;
+  static const char method[] = "phdmesh::BulkData::set_shares" ;
 
   std::string msg ;
 
@@ -785,7 +785,7 @@ void verify_set_shares( const MeshBulkData & M )
 
 }
 
-void MeshBulkData::set_shares( const std::vector<EntityProc> & s )
+void BulkData::set_shares( const std::vector<EntityProc> & s )
 {
   m_shares_all = s ;
 
@@ -822,9 +822,9 @@ void MeshBulkData::set_shares( const std::vector<EntityProc> & s )
 
 namespace {
 
-void verify_set_ghosting( const MeshBulkData & M )
+void verify_set_ghosting( const BulkData & M )
 {
-  static const char method[] = "phdmesh::MeshBulkData::set_ghosting" ;
+  static const char method[] = "phdmesh::BulkData::set_ghosting" ;
 
   std::string msg ;
 
@@ -958,7 +958,7 @@ void verify_set_ghosting( const MeshBulkData & M )
 
 }
 
-void MeshBulkData::set_ghosting(
+void BulkData::set_ghosting(
   const std::vector<EntityProc> & d ,
   const std::vector<EntityProc> & r )
 {
@@ -971,7 +971,7 @@ void MeshBulkData::set_ghosting(
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void get_kernels( const MeshBulkData & mesh ,
+void get_kernels( const BulkData & mesh ,
                   EntityType type ,
                   Part & part ,
                   std::vector<const Kernel*> & kernels )
@@ -991,7 +991,7 @@ void get_kernels( const MeshBulkData & mesh ,
 }
 
 void get_kernels_intersect(
-  const MeshBulkData & mesh ,
+  const BulkData & mesh ,
   EntityType type ,
   const std::vector<Part*> & parts ,
   std::vector<const Kernel*> & kernels )
@@ -1011,7 +1011,7 @@ void get_kernels_intersect(
 }
 
 void get_kernels_union(
-  const MeshBulkData & mesh ,
+  const BulkData & mesh ,
   EntityType type ,
   const std::vector<Part*> & parts ,
   std::vector<const Kernel*> & kernels )
@@ -1039,7 +1039,7 @@ void get_kernels_union(
 //----------------------------------------------------------------------
 
 void count_entities(
-  MeshBulkData & mesh , Part & part , unsigned * const count )
+  BulkData & mesh , Part & part , unsigned * const count )
 {
   static const char method[] = "phdmesh::count_entities" ;
 
@@ -1061,7 +1061,7 @@ void count_entities(
 }
 
 void count_entities(
-  MeshBulkData & mesh , const PartSet & parts , unsigned * const count )
+  BulkData & mesh , const PartSet & parts , unsigned * const count )
 {
   static const char method[] = "phdmesh::count_entities" ;
 

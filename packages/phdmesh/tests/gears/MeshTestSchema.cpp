@@ -50,7 +50,7 @@ void require( bool condition , const char * const method ,
   }
 }
 
-void require_get( MeshMetaData & mesh_meta_data , const Part * part )
+void require_get( MetaData & mesh_meta_data , const Part * part )
 {
   static const char method[] = "phdmesh::test::schema_parts::require_get" ;
 
@@ -66,7 +66,7 @@ void test_schema_parts( ParallelMachine comm , std::istream & )
 
   if ( 0 < parallel_machine_rank( comm ) ) { return ; }
 
-  MeshMetaData mesh_meta_data ;
+  MetaData mesh_meta_data ;
 
   // Should have exactly five predefined parts
 

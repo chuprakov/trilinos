@@ -35,49 +35,40 @@ namespace phdmesh {
 
 //----------------------------------------------------------------------
 /**
- * \class CSet
  * \brief Set of entities of arbitrary types.
- *
- *  Example usage of the three methods:
- *
- * <PRE>
- *  class A { ... };
- *  class B { ... };
- *
- *  CSet cset ;
- *
- *  // Insert pointers to objects:
- *
- *  cset.insert<A>( new A ); // Do not delete on destruction
- *  cset.insert<B>( new B , true ); // Delete on destruction
- *
- *  // Query the collection of objects of a given type:
- *
- *  const A * sa = cset.get<A>();
- *  const B * sb = cset.get<B>();
- *
- *  // Remove a member:
- *
- *  {
- *    B * b = ... ;
- *    cset.remove<B>( b ); // Remove never deletes
- *    delete b ;
- *  }
- * </PRE>
  */
 class CSet {
 public:
 
-  /** Get member conforming to the given type. */
+  /** \brief  Get member conforming to the given type <b> T </b>.
+   *          Return NULL if there is no member of that type.
+   */
   template<class T> const T * get() const ;
 
-  /** Insert and optionally request deletion upon destruction.
-   *  If already exists then return existing member, insert fails.
+  /** \brief  Insert a member of a given type <b> T </b>.
+   *          Option to transfer ownership of that member.
+   *
+   *  If a member of the given type already exists then the
+   *  insertion operation fails and the existing member is
+   *  returned.  If the insertion succeeds then the inserted
+   *  member is returned.  For example:
+   *
+   *  <PRE>
+   *    CSet & container = ... ;
+   *    const A * const a = new A();
+   *    if ( a == container.insert( a ) ) { ... };
+   *  </PRE>
+   *
+   *  If the delete_on_destruction parameter is true then the delete
+   *  function will be applied to the inserted member by the
+   *  conainter's destructor.
    */
-  template<class T> const T * insert( const T * , bool = false );
+  template<class T>
+  const T * insert( const T * , bool delete_on_destruction = false );
 
-  /** Erase a member without deleting.
-   *  Return if the remove operation was successful.
+  /** \brief  Remove a member of the given type without deleting it.
+   *          The caller assumes responsibility for the removed member.
+   *          Return if the remove operation was successful.
    */
   template<class T> bool remove( const T * );
 
@@ -128,13 +119,13 @@ const T * CSet::get() const
 
 template<class T>
 inline
-const T * CSet::insert( const T * arg_value , bool arg_delete )
+const T * CSet::insert( const T * arg_value , bool delete_on_destruction )
 {
   Manager m ;
   m.first = & typeid(T);
   m.second = NULL ;
 
-  if ( arg_delete ) { m.second = & cset_member_delete<T> ; }
+  if ( delete_on_destruction ) { m.second = & cset_member_delete<T> ; }
 
   return (const T *) p_insert( m , arg_value );
 }

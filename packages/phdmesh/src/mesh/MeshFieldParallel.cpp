@@ -42,7 +42,7 @@ namespace phdmesh {
 // Heterogeneity?
 
 bool communicate_field_data(
-  const MeshBulkData & mesh ,
+  const BulkData & mesh ,
   const std::vector<EntityProc> & domain ,
   const std::vector<EntityProc> & range ,
   const std::vector<const FieldBase *> & fields ,

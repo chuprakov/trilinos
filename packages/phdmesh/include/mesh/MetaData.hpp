@@ -24,8 +24,8 @@
  * @author H. Carter Edwards
  */
 
-#ifndef phdmesh_MeshMetaData_hpp
-#define phdmesh_MeshMetaData_hpp
+#ifndef phdmesh_MetaData_hpp
+#define phdmesh_MetaData_hpp
 
 //----------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ namespace phdmesh {
 /** Description of a Parallel Heterogeneous Dynamic Mesh.
  *  A collection of parts, fields, part relations, and field relations.
  */
-class MeshMetaData {
+class MetaData {
 public:
 
   //------------------------------------
@@ -242,18 +242,18 @@ public:
 
   void assert_not_committed( const char * ) const ;
 
-  void assert_same_mesh_meta_data( const char * , const MeshMetaData & ) const ;
+  void assert_same_mesh_meta_data( const char * , const MetaData & ) const ;
 
   bool is_commit() const { return m_commit ; }
 
-  ~MeshMetaData();
+  ~MetaData();
 
-  MeshMetaData();
+  MetaData();
 
 private:
 
-  MeshMetaData( const MeshMetaData & );
-  MeshMetaData & operator = ( const MeshMetaData & );
+  MetaData( const MetaData & );
+  MetaData & operator = ( const MetaData & );
 
   bool   m_commit ;
   Part   m_universal_part ; /* Subset list contains all other parts */
@@ -284,7 +284,7 @@ private:
   void clean_field_restrictions();
 };
 
-void verify_parallel_consistency( const MeshMetaData & , ParallelMachine );
+void verify_parallel_consistency( const MetaData & , ParallelMachine );
 
 } // namespace phdmesh
 
@@ -294,12 +294,12 @@ void verify_parallel_consistency( const MeshMetaData & , ParallelMachine );
 namespace phdmesh {
 
 inline
-Part & MeshMetaData::get_part( unsigned ord ) const
+Part & MetaData::get_part( unsigned ord ) const
 { return * m_universal_part.m_subsets[ord] ; }
 
 template< class field_type >
 inline
-field_type * MeshMetaData::get_field( const std::string & name ,
+field_type * MetaData::get_field( const std::string & name ,
                                       const char * required_by ) const
 {
   typedef FieldTraits< field_type > Traits ;
@@ -314,7 +314,7 @@ field_type * MeshMetaData::get_field( const std::string & name ,
 
 template< class field_type >
 inline
-field_type & MeshMetaData::declare_field( const std::string & name ,
+field_type & MetaData::declare_field( const std::string & name ,
                                           unsigned number_of_states )
 {
   typedef FieldTraits< field_type > Traits ;
@@ -329,7 +329,7 @@ field_type & MeshMetaData::declare_field( const std::string & name ,
 
 template< class field_type >
 inline
-field_type & MeshMetaData::put_field(
+field_type & MetaData::put_field(
   field_type & arg_field ,
   EntityType   arg_entity_type ,
   const Part & arg_part )
@@ -341,7 +341,7 @@ field_type & MeshMetaData::put_field(
 
 template< class field_type >
 inline
-field_type & MeshMetaData::put_field( field_type & arg_field ,
+field_type & MetaData::put_field( field_type & arg_field ,
                                       EntityType   arg_entity_type ,
                                       const Part & arg_part ,
                                       unsigned     arg_n1 )
@@ -353,7 +353,7 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
 
 template< class field_type >
 inline
-field_type & MeshMetaData::put_field( field_type & arg_field ,
+field_type & MetaData::put_field( field_type & arg_field ,
                                       EntityType   arg_entity_type ,
                                       const Part & arg_part ,
                                       unsigned     arg_n1 ,
@@ -366,7 +366,7 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
 
 template< class field_type >
 inline
-field_type & MeshMetaData::put_field( field_type & arg_field ,
+field_type & MetaData::put_field( field_type & arg_field ,
                                       EntityType   arg_entity_type ,
                                       const Part & arg_part ,
                                       unsigned     arg_n1 ,
@@ -380,7 +380,7 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
 
 template< class field_type >
 inline
-field_type & MeshMetaData::put_field( field_type & arg_field ,
+field_type & MetaData::put_field( field_type & arg_field ,
                                       EntityType   arg_entity_type ,
                                       const Part & arg_part ,
                                       unsigned     arg_n1 ,
@@ -395,7 +395,7 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
 
 template< class field_type >
 inline
-field_type & MeshMetaData::put_field( field_type & arg_field ,
+field_type & MetaData::put_field( field_type & arg_field ,
                                       EntityType   arg_entity_type ,
                                       const Part & arg_part ,
                                       unsigned     arg_n1 ,
@@ -411,7 +411,7 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
 
 template< class field_type >
 inline
-field_type & MeshMetaData::put_field( field_type & arg_field ,
+field_type & MetaData::put_field( field_type & arg_field ,
                                       EntityType   arg_entity_type ,
                                       const Part & arg_part ,
                                       unsigned     arg_n1 ,
@@ -429,7 +429,7 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
 
 template< class field_type >
 inline
-field_type & MeshMetaData::put_field( field_type & arg_field ,
+field_type & MetaData::put_field( field_type & arg_field ,
                                       EntityType   arg_entity_type ,
                                       const Part & arg_part ,
                                       unsigned     arg_n1 ,
@@ -449,18 +449,18 @@ field_type & MeshMetaData::put_field( field_type & arg_field ,
 template<class T>
 inline
 const T *
-MeshMetaData::declare_part_attribute( Part & p , const T * a , bool d )
+MetaData::declare_part_attribute( Part & p , const T * a , bool d )
 {
-  assert_not_committed( "phdmesh::MeshMetaData::declare_part_attribute" );
+  assert_not_committed( "phdmesh::MetaData::declare_part_attribute" );
   return p.m_cset.template insert<T>( a , d );
 }
 
 template<class T>
 inline
 const T *
-MeshMetaData::declare_field_attribute( FieldBase & f , const T * a , bool d )
+MetaData::declare_field_attribute( FieldBase & f , const T * a , bool d )
 {
-  assert_not_committed( "phdmesh::MeshMetaData::declare_field_attribute" );
+  assert_not_committed( "phdmesh::MetaData::declare_field_attribute" );
   return f.m_cset.template insert<T>( a , d );
 }
 

@@ -54,7 +54,7 @@ public:
    */
   virtual void send_entity(
     CommBuffer & buffer ,
-    const MeshBulkData & receive_mesh ,
+    const BulkData & receive_mesh ,
     const std::vector<EntityProc>::const_iterator ibeg ,
     const std::vector<EntityProc>::const_iterator iend ) const ;
 
@@ -65,7 +65,7 @@ public:
    */
   virtual void receive_entity(
     CommBuffer & buffer ,
-    MeshBulkData & receive_mesh ,
+    BulkData & receive_mesh ,
     const unsigned send_source ,
     std::vector<EntityProc> & receive_info ) const ;
 
@@ -73,12 +73,12 @@ public:
    *  Parts are mapped from the send mesh to the receive mesh.
    *  Include the span of destination processors.
    */
-  void pack_entity( CommBuffer & , const MeshBulkData & ,
+  void pack_entity( CommBuffer & , const BulkData & ,
                     const std::vector<EntityProc>::const_iterator ,
                     const std::vector<EntityProc>::const_iterator ) const ;
 
   /** Unpack entity information filled by pack_entity. */
-  void unpack_entity( CommBuffer & , const MeshBulkData & ,
+  void unpack_entity( CommBuffer & , const BulkData & ,
                       entity_key_type & entity_key ,
                       unsigned        & owner_rank ,
                       std::vector<Part*> & parts ,

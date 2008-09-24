@@ -54,8 +54,8 @@ typedef std::vector<Part*> PartSet ;
 class Part {
 public:
 
-  /** MeshBulkData mesh_meta_data in which this part resides */
-  MeshMetaData & mesh_meta_data() const { return m_mesh_meta_data ; }
+  /** MetaData in which this part resides */
+  MetaData & mesh_meta_data() const { return m_mesh_meta_data ; }
 
   /** Text name of this mesh part */
   const std::string & name() const { return m_name ; }
@@ -85,11 +85,11 @@ public:
 
 private:
 
-  /* Only a MeshMetaData can create and delete parts */
-  friend class MeshMetaData ;
+  /* Only a MetaData can create and delete parts */
+  friend class MetaData ;
 
   /** Construct a part within a given mesh */
-  Part( MeshMetaData & , const std::string & , unsigned );
+  Part( MetaData & , const std::string & , unsigned );
 
   ~Part();
   Part();
@@ -101,7 +101,7 @@ private:
   PartSet           m_subsets ;
   PartSet           m_supersets ;
   PartSet           m_intersect ;
-  MeshMetaData          & m_mesh_meta_data ;
+  MetaData          & m_mesh_meta_data ;
   const unsigned    m_mesh_meta_data_ordinal ;
   bool              m_relation_target ;
 };
@@ -148,7 +148,7 @@ std::ostream & print( std::ostream & , const char * const , const Part & );
  *  then Entity 'e2' is a member of part 'm_target'.
  *
  *  This data structure is used internally and should never need to be
- *  used by a user of the phdMeshBulkData package.
+ *  used by a user of the phdBulkData package.
  */
 struct PartRelation {
   Part               * m_root ;

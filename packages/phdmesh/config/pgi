@@ -69,14 +69,14 @@ MPI | mpi )
   export CC="mpicc"
   export CXX="mpiCC"
   export LDCXX="${CXX}"
-  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_MPI\n"
+  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define HAVE_MPI\n"
   ;;
 MPICH | mpich )
   shift 1
   export CC="mpicc"
   export CXX="mpiCC"
   export LDCXX="${CXX}"
-  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_MPI\n"
+  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define HAVE_MPI\n"
   export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define MPICH_SKIP_MPICXX\n"
   ;;
 REDSTORM | redstorm )
@@ -84,7 +84,7 @@ REDSTORM | redstorm )
   export CC="cc"
   export CXX="CC"
   export LDCXX="${CXX}"
-  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define PHDMESH_HAS_MPI\n"
+  export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define HAVE_MPI\n"
   export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define MPICH_SKIP_MPICXX\n"
   export PHDMESH_DEFINES="${PHDMESH_DEFINES}#define NO_PTHREADS\n"
   LIB_PTHREADS=""

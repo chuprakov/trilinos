@@ -50,11 +50,11 @@ namespace {
 
 //----------------------------------------------------------------------
 
-void global_coordinate_bounds( MeshBulkData & M ,
+void global_coordinate_bounds( BulkData & M ,
                                const CoordinateField & node_coord ,
                                double * const bounds )
 {
-  const MeshMetaData & mesh_meta_data = M.mesh_meta_data();
+  const MetaData & mesh_meta_data = M.mesh_meta_data();
   Part & owns_part = mesh_meta_data.locally_owned_part();
 
   double min[3] , max[3] ;
@@ -152,13 +152,13 @@ OctTreeKey elem_key( const double * const bounds ,
 
 //----------------------------------------------------------------------
 
-void global_element_cuts( MeshBulkData & M ,
+void global_element_cuts( BulkData & M ,
                           const double * const bounds ,
                           const CoordinateField & node_coord ,
                           const WeightField  * const elem_weight_field ,
                                 OctTreeKey      * const cut_begin )
 {
-  const MeshMetaData & mesh_meta_data = M.mesh_meta_data();
+  const MetaData & mesh_meta_data = M.mesh_meta_data();
   const Part & owns_part = mesh_meta_data.locally_owned_part();
 
   const KernelSet & elem_kernels = M.kernels( Element );
@@ -219,13 +219,13 @@ void global_element_cuts( MeshBulkData & M ,
 // Check each non-aura "other" entity against the attached uses-entities.
 // Each entity will be rebalanced to every processor that it 'uses'.
 
-void rebal_other_entities( MeshBulkData & M , EntityType other , std::vector<EntityProc> & rebal )
+void rebal_other_entities( BulkData & M , EntityType other , std::vector<EntityProc> & rebal )
 {
   static const char method[] = "phdmesh::rebal_other_entities" ;
 
   sort_unique( rebal );
 
-  const MeshMetaData & mesh_meta_data = M.mesh_meta_data();
+  const MetaData & mesh_meta_data = M.mesh_meta_data();
   const Part & uses_part = mesh_meta_data.locally_used_part();
 
   const KernelSet::iterator k_end = M.kernels( other ).end();
@@ -297,11 +297,11 @@ void rebal_other_entities( MeshBulkData & M , EntityType other , std::vector<Ent
 
 // Check each non-aura element-entity against the attached elements:
 
-void rebal_elem_entities( MeshBulkData & M ,
+void rebal_elem_entities( BulkData & M ,
                           EntityType t ,
                           std::vector<EntityProc> & rebal )
 {
-  const MeshMetaData & mesh_meta_data = M.mesh_meta_data();
+  const MetaData & mesh_meta_data = M.mesh_meta_data();
   const Part & uses_part = mesh_meta_data.locally_used_part();
 
   const EntitySet::iterator i_end = M.entities(t).end();
@@ -348,13 +348,13 @@ public:
 
   const char * name() const ;
 
-  void send_entity( CommBuffer & , const MeshBulkData & ,
+  void send_entity( CommBuffer & , const BulkData & ,
                     const std::vector<EntityProc>::const_iterator ,
                     const std::vector<EntityProc>::const_iterator ) const ;
 
   void receive_entity(
     CommBuffer              & buffer ,
-    MeshBulkData                    & receive_mesh ,
+    BulkData                    & receive_mesh ,
     const unsigned            send_source ,
     std::vector<EntityProc> & receive_info ) const ;
 
@@ -368,7 +368,7 @@ const char * RebalanceComm::name() const
 
 void RebalanceComm::send_entity(
   CommBuffer & buf ,
-  const MeshBulkData & recv_mesh ,
+  const BulkData & recv_mesh ,
   const std::vector<EntityProc>::const_iterator ib ,
   const std::vector<EntityProc>::const_iterator ie ) const 
 {
@@ -385,7 +385,7 @@ void RebalanceComm::send_entity(
 
 void RebalanceComm::receive_entity(
   CommBuffer              & buffer ,
-  MeshBulkData                    & receive_mesh ,
+  BulkData                    & receive_mesh ,
   const unsigned            send_source ,
   std::vector<EntityProc> & receive_info ) const
 {
@@ -416,7 +416,7 @@ void RebalanceComm::receive_entity(
   unpack_field_values( buffer , * ep.first );
 }
 
-void destroy_not_retained( MeshBulkData & M , std::vector<EntityProc> & rebal )
+void destroy_not_retained( BulkData & M , std::vector<EntityProc> & rebal )
 {
   const unsigned p_rank = M.parallel_rank();
 
@@ -457,7 +457,7 @@ void destroy_not_retained( MeshBulkData & M , std::vector<EntityProc> & rebal )
 
 //----------------------------------------------------------------------
 
-void remove_aura( MeshBulkData & M )
+void remove_aura( BulkData & M )
 {
   Part & uses_part = M.mesh_meta_data().locally_used_part();
 
@@ -508,12 +508,12 @@ void remove_aura( MeshBulkData & M )
 //
 //----------------------------------------------------------------------
 
-void comm_mesh_rebalance( MeshBulkData & M ,
+void comm_mesh_rebalance( BulkData & M ,
                           const CoordinateField & node_coord_field ,
                           const WeightField  * const elem_weight_field ,
                           std::vector<OctTreeKey> & cut_keys )
 {
-  const MeshMetaData & mesh_meta_data  = M.mesh_meta_data();
+  const MetaData & mesh_meta_data  = M.mesh_meta_data();
   Part * const uses_part = & mesh_meta_data.locally_used_part();
   Part * const owns_part = & mesh_meta_data.locally_owned_part();
 

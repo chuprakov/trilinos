@@ -64,7 +64,7 @@ span( const std::vector<EntityProc> & v , unsigned entity_type )
 //----------------------------------------------------------------------
 
 bool comm_verify_shared_entity_values(
-  const MeshBulkData & M , EntityType t , const FieldBase & f )
+  const BulkData & M , EntityType t , const FieldBase & f )
 {
   const unsigned parallel_size = M.parallel_size();
 
@@ -138,11 +138,11 @@ bool comm_verify_shared_entity_values(
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void comm_mesh_discover_sharing( MeshBulkData & M )
+void comm_mesh_discover_sharing( BulkData & M )
 {
   static const char method[] = "phdmesh::comm_mesh_discover_sharing" ;
 
-  const MeshMetaData & S = M.mesh_meta_data();
+  const MetaData & S = M.mesh_meta_data();
   const unsigned p_rank = M.parallel_rank();
 
   std::vector< ParallelIndex::key_type > local ;
@@ -224,7 +224,7 @@ void comm_mesh_discover_sharing( MeshBulkData & M )
 // from the sharing and the processor.  If sharing changes then regenerate
 // the aura.
 
-bool comm_mesh_scrub_sharing( MeshBulkData & M )
+bool comm_mesh_scrub_sharing( BulkData & M )
 {
   const unsigned p_size = M.parallel_size();
   const unsigned p_rank = M.parallel_rank();
@@ -367,8 +367,8 @@ bool unpack_info_verify(
 
     Entity & entity = * ep.first ;
     Kernel & kernel = entity.kernel();
-    MeshBulkData   & mesh   = kernel.mesh();
-    const MeshMetaData & mesh_meta_data = mesh.mesh_meta_data();
+    BulkData   & mesh   = kernel.mesh();
+    const MetaData & mesh_meta_data = mesh.mesh_meta_data();
     const PartSet & mesh_parts = mesh_meta_data.get_parts();
     const PairIterRelation relation = entity.relations();
     Part * const owns_part = & mesh_meta_data.locally_owned_part();
@@ -515,11 +515,11 @@ bool unpack_info_verify(
 }
 
 bool verify_parallel_attributes(
-  MeshBulkData & M , unsigned type , std::string & msg )
+  BulkData & M , unsigned type , std::string & msg )
 {
   bool result = true ;
 
-  const MeshMetaData & S = M.mesh_meta_data();
+  const MetaData & S = M.mesh_meta_data();
   const unsigned p_rank = M.parallel_rank();
   Part & uses_part = S.locally_used_part();
   Part & owns_part = S.locally_owned_part();
@@ -599,7 +599,7 @@ bool verify_parallel_attributes(
 
 }
 
-bool comm_mesh_verify_parallel_consistency( MeshBulkData & M )
+bool comm_mesh_verify_parallel_consistency( BulkData & M )
 {
   // Exchange the shared entities' identifiers, part mesh ordinals, and
   // owner processor.  Should be fully consistent modulo the owner part.
@@ -667,7 +667,7 @@ public:
 
   void receive_entity(
     CommBuffer & buffer ,
-    MeshBulkData & receive_mesh ,
+    BulkData & receive_mesh ,
     const unsigned send_source ,
     std::vector<EntityProc> & receive_info ) const ;
 };
@@ -677,7 +677,7 @@ const char * SharingComm::name() const
 
 void SharingComm::receive_entity(
   CommBuffer & buffer ,
-  MeshBulkData & receive_mesh ,
+  BulkData & receive_mesh ,
   const unsigned send_source ,
   std::vector<EntityProc> & receive_info ) const
 {
@@ -686,7 +686,7 @@ void SharingComm::receive_entity(
   static const char method[] = "phdmesh::SharingComm::receive_entity" ;
 
   const unsigned local_rank = receive_mesh.parallel_rank();
-  const MeshMetaData & S = receive_mesh.mesh_meta_data();
+  const MetaData & S = receive_mesh.mesh_meta_data();
   Part * const uses_part = & S.locally_used_part();
   Part * const owns_part = & S.locally_owned_part();
 
@@ -782,7 +782,7 @@ void pack_sharing( CommAll & all , const std::vector<EntityProc> & sharing )
   }
 }
 
-void unpack_sharing( CommAll & all , MeshBulkData & M ,
+void unpack_sharing( CommAll & all , BulkData & M ,
                      std::vector<EntityProc> & sharing ,
                      const char * method )
 {
@@ -808,7 +808,7 @@ void unpack_sharing( CommAll & all , MeshBulkData & M ,
 
 }
 
-void comm_mesh_add_sharing( MeshBulkData & M , const std::vector<EntityProc> & add )
+void comm_mesh_add_sharing( BulkData & M , const std::vector<EntityProc> & add )
 {
   static const char method[] = "phdmesh::comm_mesh_add_sharing" ;
 

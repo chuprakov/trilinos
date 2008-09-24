@@ -77,7 +77,7 @@ template<>
 class Field< void , void , void , void , void , void , void , void > {
 public:
 
-  MeshMetaData & mesh_meta_data() const { return m_mesh_meta_data ; }
+  MetaData & mesh_meta_data() const { return m_mesh_meta_data ; }
 
   unsigned mesh_meta_data_ordinal() const { return m_mesh_meta_data_ordinal ; }
 
@@ -106,7 +106,7 @@ public:
 
   //----------------------------------------
   /** An internal data structure that should never need to be
-   *  used by a user of the phdMeshBulkData package.
+   *  used by a user of the phdBulkData package.
    */
   struct Restriction {
     unsigned key ; /* ( Entity type , part ordinal ) */
@@ -140,7 +140,7 @@ public:
 
 private:
 
-  friend class MeshMetaData ;
+  friend class MetaData ;
 
   template< typename Scalar , class Tag1 , class Tag2 ,
                               class Tag3 , class Tag4 ,
@@ -154,7 +154,7 @@ private:
   Field( const Field & );
   Field & operator = ( const Field & );
 
-  Field( MeshMetaData & ,
+  Field( MetaData & ,
          const std::string & ,
          unsigned scalar_type ,
          unsigned rank ,
@@ -166,7 +166,7 @@ private:
 
   CSet        m_cset ;
   std::string m_name ;
-  MeshMetaData & m_mesh_meta_data ;   // in which this field resides
+  MetaData & m_mesh_meta_data ;   // in which this field resides
   unsigned    m_mesh_meta_data_ordinal ; // Ordinal in the field set
   unsigned    m_scalar_type ;    // Ordinal in FieldTypes
   unsigned    m_rank ;           // Number of dimensions
@@ -350,7 +350,7 @@ unsigned FieldBase::Restriction::ordinal() const
  *                                   relation_kind_e1_to_e2 )
  *
  *  This data structure is used internally and should never need to be
- *  used by a user of the phdMeshBulkData package.
+ *  used by a user of the phdBulkData package.
  */
 struct FieldRelation {
   FieldBase          * m_root ;

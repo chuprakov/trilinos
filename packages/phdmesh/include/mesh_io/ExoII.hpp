@@ -68,12 +68,12 @@ public:
 
   ~FileSchema();
 
-  FileSchema( MeshMetaData          & arg_schema ,
+  FileSchema( MetaData          & arg_schema ,
               const FieldBase       & arg_node_coordinates ,
               const AttributeField  & arg_elem_attributes ,
               const unsigned          arg_writer_rank = 0 );
 
-  FileSchema( MeshMetaData          & arg_schema ,
+  FileSchema( MetaData          & arg_schema ,
               const FieldBase       & arg_node_coordinates ,
               const AttributeField  & arg_elem_attributes ,
               const std::string     & arg_file_path ,
@@ -91,9 +91,9 @@ public:
   /** Assign contiguous global indices [1..#] to nodes and elements.
    *  Elements are ordered by element block and then by identifier.
    */
-  void assign_indices( MeshBulkData & ) const ;
+  void assign_indices( BulkData & ) const ;
 
-  MeshMetaData          & m_schema ;
+  MetaData          & m_schema ;
   const unsigned          m_io_rank ;
   const unsigned          m_dimension ;
   const FieldBase       & m_field_node_coord ;
@@ -127,7 +127,7 @@ public:
 
   /** Create an output file for a collection of fields. */
   FileOutput( const FileSchema & ,
-              const MeshBulkData & ,
+              const BulkData & ,
               const std::string & arg_file_path ,
               const std::string & arg_title ,
               const bool          arg_storage_double ,
@@ -138,7 +138,7 @@ public:
   void write( double );
 
   const FileSchema & m_schema ;
-  const MeshBulkData       & m_mesh ;
+  const BulkData       & m_mesh ;
 
   int exo_id() const { return m_exo_id ; }
   int exo_step() const { return m_counter ; }
@@ -170,14 +170,14 @@ class FileInput {
 public:
   ~FileInput();
 
-  FileInput( const FileSchema & , MeshBulkData & ,
+  FileInput( const FileSchema & , BulkData & ,
              const std::string & arg_file_path ,
              const std::vector< const FieldBase * > & );
 
   double read();
 
   const FileSchema & m_schema ;
-        MeshBulkData       & m_mesh ;
+        BulkData       & m_mesh ;
 
   int exo_id() const { return m_exo_id ; }
   int exo_step() const { return m_counter ; }

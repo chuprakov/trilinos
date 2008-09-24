@@ -103,7 +103,7 @@ FieldBase::~Field()
 { }
 
 FieldBase::Field(
-  MeshMetaData &            arg_mesh_meta_data ,
+  MetaData &            arg_mesh_meta_data ,
   const std::string & arg_name ,
   unsigned scalar_type ,
   unsigned rank ,
@@ -169,7 +169,7 @@ print_field_type( std::ostream          & arg_msg ,
 }
 
 FieldBase *
-MeshMetaData::get_field_base(
+MetaData::get_field_base(
   const std::string & arg_name ,
   unsigned          arg_scalar_type ,
   unsigned          arg_rank ,
@@ -177,8 +177,8 @@ MeshMetaData::get_field_base(
   int arg_number_states ,
   const char * arg_required_by ) const
 {
-  static const char declare_method[] = "phdmesh::MeshMetaData::declare_field" ;
-  static const char get_method[]     = "phdmesh::MeshMetaData::get_field" ;
+  static const char declare_method[] = "phdmesh::MetaData::declare_field" ;
+  static const char get_method[]     = "phdmesh::MetaData::get_field" ;
 
   // Potential error conditions:
 
@@ -255,14 +255,14 @@ MeshMetaData::get_field_base(
 //----------------------------------------------------------------------
 
 FieldBase &
-MeshMetaData::declare_field_base(
+MetaData::declare_field_base(
   const std::string & arg_name ,
   unsigned            arg_scalar_type ,
   unsigned            arg_rank ,
   const ArrayDimTag * const * arg_tags ,
   unsigned            arg_num_states )
 {
-  static const char method[] = "phdmesh::MeshMetaData::declare_field" ;
+  static const char method[] = "phdmesh::MetaData::declare_field" ;
 
   static const char reserved_state_suffix[6][5] = {
     "_OLD" , "_N" , "_NM1" , "_NM2" , "_NM3" , "_NM4" };
@@ -353,12 +353,12 @@ MeshMetaData::declare_field_base(
 
 //----------------------------------------------------------------------
 
-void MeshMetaData::declare_field_relation(
+void MetaData::declare_field_relation(
   FieldBase & pointer_field ,
   relation_stencil_ptr stencil ,
   FieldBase & referenced_field )
 {
-  static const char method[] = "phdmesh::MeshMetaData::declare_field_relation" ;
+  static const char method[] = "phdmesh::MetaData::declare_field_relation" ;
 
   static const int offset = NumericEnum<void*>::value -
                             NumericEnum<void>::value ;
@@ -438,14 +438,14 @@ void assert_field_dimension_compatible(
 // If subset exists then replace it.
 // If exists or superset exists then do nothing.
 
-void MeshMetaData::declare_field_restriction(
+void MetaData::declare_field_restriction(
   FieldBase    & arg_field ,
   EntityType     arg_entity_type ,
   const Part   & arg_part ,
   const unsigned * arg_stride )
 {
   static const char method[] =
-    "phdmesh::MeshMetaData::declare_field_restriction" ;
+    "phdmesh::MetaData::declare_field_restriction" ;
 
   assert_not_committed( method );
   assert_same_mesh_meta_data( method , arg_field.m_mesh_meta_data );
@@ -506,9 +506,9 @@ void MeshMetaData::declare_field_restriction(
 // If a part and one of its subset parts show up in the dimension map
 // verify compatibility of dimensions and delete the subset part.
 
-void MeshMetaData::clean_field_restrictions()
+void MetaData::clean_field_restrictions()
 {
-  static const char method[] = "phdmesh::MeshMetaData::clean_field_restrictions" ;
+  static const char method[] = "phdmesh::MetaData::clean_field_restrictions" ;
   const int zero = 0 ;
 
   for ( std::vector<FieldBase *>::iterator

@@ -29,7 +29,7 @@
 /*--------------------------------------------------------------------*/
 /* Parallel operations */
 
-#if defined( PHDMESH_HAS_MPI )
+#if defined( HAVE_MPI )
 
 namespace phdmesh {
 
@@ -110,7 +110,7 @@ double wall_time()
 
 }
 
-#elif defined( PHDMESH_HAS_MPI )
+#elif defined( HAVE_MPI )
 
 namespace phdmesh {
 

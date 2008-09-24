@@ -104,7 +104,7 @@ private:
   Entity( const Entity & );
   Entity & operator = ( const Entity & );
 
-  friend class MeshBulkData ;
+  friend class BulkData ;
 };
 
 typedef Setv<Entity> EntitySet ;

@@ -43,6 +43,7 @@ namespace phdmesh {
 typedef CellTopologyTraits<0,0,0> Node_Traits ;
 
 template< unsigned Nodes = 2 > struct Line ;
+template< unsigned Nodes = 2 > struct ShellLine ;
 
 template<> struct Line<2> : public CellTopologyTraits<1,2,2>
 { typedef Line<2> base ; };
@@ -50,9 +51,31 @@ template<> struct Line<2> : public CellTopologyTraits<1,2,2>
 template<> struct Line<3> : public CellTopologyTraits<1,2,3>
 { typedef Line<2> base ; };
 
+
+typedef
+  MakeTypeList< IndexList< 0 , 1 , 2 > ,
+                IndexList< 1 , 0 , 2 > >::type
+    ShellLineEdgeNodeMap ;
+
+template<> struct ShellLine<2> : public
+  CellTopologyTraits< 2 , 2 , 2 ,
+                      MakeTypeList< Line<> , Line<> >::type ,
+                      ShellLineEdgeNodeMap >
+{ typedef ShellLine<2> base ; };
+
+template<> struct ShellLine<3> : public
+  CellTopologyTraits< 2 , 2 , 3 ,
+                      MakeTypeList< Line<> , Line<> >::type ,
+                      ShellLineEdgeNodeMap >
+{ typedef ShellLine<2> base ; };
+
 template<> const CellTopology * cell_topology< Node_Traits >();
-template<> const CellTopology * cell_topology< Line<> >();
+
+template<> const CellTopology * cell_topology< Line<2> >();
 template<> const CellTopology * cell_topology< Line<3> >();
+
+template<> const CellTopology * cell_topology< ShellLine<2> >();
+template<> const CellTopology * cell_topology< ShellLine<3> >();
 
 } // namespace phdmesh
 
