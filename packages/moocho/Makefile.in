@@ -778,7 +778,7 @@ sample-output:
 	cd thyra/example/NLPThyraEpetraAdvDiffReactOpt/external; make sample-makefile
 	cd thyra/example/NLPThyraEpetraModelEval4DOpt/external; make sample-makefile
 
-@USING_EXPORT_MAKEFILES_TRUE@install-exec-hook:	
+@USING_EXPORT_MAKEFILES_TRUE@install-exec-hook:
 @USING_EXPORT_MAKEFILES_TRUE@	cp $(top_builddir)/Makefile.export.moocho $(exec_prefix)/include/.
 @USING_EXPORT_MAKEFILES_TRUE@	$(PERL_EXE) $(top_srcdir)/config/replace-install-prefix.pl \
 @USING_EXPORT_MAKEFILES_TRUE@		--exec-prefix=$(exec_prefix) \
@@ -788,10 +788,15 @@ sample-output:
 @USING_EXPORT_MAKEFILES_TRUE@		--my-abs-lib-dirs=@abs_top_builddir@/src:@abs_top_builddir@/thyra/src \
 @USING_EXPORT_MAKEFILES_TRUE@		--dep-package-abs-builddirs=@abs_top_builddir@/../rtop:@abs_top_builddir@/../thyra:@abs_top_builddir@/../epetraext:@abs_top_builddir@/../stratimikos
 @USING_EXPORT_MAKEFILES_TRUE@	$(PERL_EXE) $(top_srcdir)/config/generate-makeoptions.pl $(top_builddir)/src/Makefile MOOCHO > $(exec_prefix)/include/Makefile.export.moocho.macros
+@USING_EXPORT_MAKEFILES_TRUE@	cd $(top_builddir)/thyra/example/NLPThyraEpetraAdvDiffReactOpt/external && $(MAKE) install
+@USING_EXPORT_MAKEFILES_TRUE@	cd $(top_builddir)/thyra/example/NLPThyraEpetraModelEval4DOpt/external && $(MAKE) install
+@USING_EXPORT_MAKEFILES_TRUE@	cd $(top_builddir)/example/ExampleNLPBanded/external && $(MAKE) install
+@USING_EXPORT_MAKEFILES_TRUE@	cd $(top_builddir)/example/NLPWBCounterExample/external && $(MAKE) install
 
 @USING_EXPORT_MAKEFILES_TRUE@uninstall-hook:
 @USING_EXPORT_MAKEFILES_TRUE@	rm -f $(exec_prefix)/include/Makefile.export.moocho
 @USING_EXPORT_MAKEFILES_TRUE@	rm -f $(exec_prefix)/include/Makefile.export.moocho.macros
+@USING_EXPORT_MAKEFILES_TRUE@	rm -f $(exec_prefix)/example/moocho
 
 @USING_EXPORT_MAKEFILES_FALSE@install-exec-hook:
 

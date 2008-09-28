@@ -28,6 +28,7 @@
 
 install-data-local:
 	$(mkinstalldirs) $(exec_prefix)/example/moocho/ExampleNLPBanded ; \
+	$(mkinstalldirs) $(exec_prefix)/example/moocho/ExampleNLPBanded/input_files ; \
 	$(INSTALL_DATA) $(srcdir)/../ExampleNLPBandedMain.cpp $(exec_prefix)/example/moocho/ExampleNLPBanded/. ; \
 	$(INSTALL_DATA) $(srcdir)/../NLPInterfacePack_ExampleNLPBanded.cpp $(exec_prefix)/example/moocho/ExampleNLPBanded/. ; \
 	$(INSTALL_DATA) $(srcdir)/../NLPInterfacePack_ExampleNLPBanded.hpp $(exec_prefix)/example/moocho/ExampleNLPBanded/. ; \

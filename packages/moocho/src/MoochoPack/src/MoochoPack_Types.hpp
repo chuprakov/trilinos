@@ -31,9 +31,12 @@
 
 #include "ConstrainedOptPack_Types.hpp"
 #include "IterationPack_Types.hpp"
+#include "Teuchos_RCP.hpp"
 #include "Teuchos_VerbosityLevel.hpp"
 
 namespace MoochoPack {
+
+using Teuchos::RCP;
 
 // using types from ConstrainedOptPack
 #include "ConstrainedOptPack_PublicTypes.ud"

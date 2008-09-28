@@ -35,6 +35,7 @@
 #include "StopWatchPack_stopwatch.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_TypeNameTraits.hpp"
+#include "Teuchos_GlobalMPISession.hpp"
 
 #ifdef HAVE_MPI
 #include "mpi.h"

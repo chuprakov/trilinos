@@ -27,7 +27,7 @@
 # @HEADER
 
 install-data-local:
-	$(mkinstalldirs) $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt ; \
+	$(mkinstalldirs) $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/input_files ; \
 	$(INSTALL_DATA) $(srcdir)/../NLPThyraEpetraAdvDiffReactOptMain.cpp $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/. ; \
 	$(INSTALL_DATA) $(top_srcdir)/../thyra/example/operator_vector/sillyModifiedGramSchmidt.hpp \
            $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/. ; \
@@ -45,7 +45,7 @@ install-data-local:
            $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/. ; \
 	$(INSTALL_DATA) $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.* \
            $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/. ; \
-	cp ../_run-varied-tests.pl $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/run-varied-tests.pl ; \
+	cp $(srcdir)/../run-varied-tests.pl $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/run-varied-tests.pl ; \
 	chmod a+x $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/run-varied-tests.pl ; \
 	$(INSTALL_DATA) $(top_srcdir)/src/MoochoPack/configurations/sample_option_files/Moocho.sample.opt \
            $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraAdvDiffReactOpt/input_files/. ; \
