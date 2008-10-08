@@ -96,10 +96,8 @@ MESH = \
 UTIL_H = \
 	$(srcdir)/../include/util/Array.hpp \
 	$(srcdir)/../include/util/ArrayPrivate.hpp \
-	$(srcdir)/../include/util/ArrayVector.hpp \
 	$(srcdir)/../include/util/Basics.hpp \
 	$(srcdir)/../include/util/CSet.hpp \
-	$(srcdir)/../include/util/FixedArray.hpp \
 	$(srcdir)/../include/util/FixedPoolAlloc.hpp \
 	$(srcdir)/../include/util/IndexList.hpp \
 	$(srcdir)/../include/util/NamedValue.hpp \

@@ -37,7 +37,7 @@
 # This must be the first line in configure.ac.
 # Optional 3rd argument is email address for bugs.
 
-AC_INIT(phdmesh, 1.0d, hcedwar@sandia.gov)
+AC_INIT(phdmesh, 1.1d, hcedwar@sandia.gov)
 
 echo "----------------------------------------"
 echo "Running phdMesh Configure Script"
@@ -99,6 +99,10 @@ AC_PREREQ(2.61)
 # ------------------------------------------------------------------------
 
 TAC_ARG_CONFIG_MPI
+# phdmesh has a custom macro for MPI
+if test "X${HAVE_PKG_MPI}" = "Xyes"; then
+   AC_DEFINE(PHDMESH_HAS_MPI,,[define if we want to use MPI])
+fi
 
 # ------------------------------------------------------------------------
 # Checks for programs
@@ -134,7 +138,7 @@ TAC_ARG_CHECK_MPI
 # Determine how to build C programs using POSIX
 # ------------------------------------------------------------------------
 
-ACX_PTHREAD
+ACX_PTHREAD(,AC_DEFINE(NO_PTHREADS,,[define if pthreads is not available]))
 
 # ------------------------------------------------------------------------
 # Checks for header files
@@ -156,8 +160,8 @@ TAC_ARG_ENABLE_EXPORT_MAKEFILES(yes)
 # Checks for special package flags
 # ------------------------------------------------------------------------
 
-# Per Carter, phdMesh now unconditionally requires threads
-#TAC_ARG_ENABLE_OPTION(threads, [enable shared memory threads], PHDMESH_HAS_PTHREADS, no)
+# Use ExodusII libraries conditionally for mesh IO
+TAC_ARG_ENABLE_FEATURE_SUB2( phdmesh, exodus, [Enable ExodusII support for phdmesh mesh IO], PHDMESH_HAS_SNL_EXODUSII, no)
 #AM_CONDITIONAL(HAVE_THREADS, [test "X$ac_cv_use_pdmesh_has_threads" != "Xno"])
 
 # ------------------------------------------------------------------------

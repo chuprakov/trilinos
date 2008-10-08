@@ -69,6 +69,7 @@ am__aclocal_m4_deps = $(top_srcdir)/config/acx_pthread.m4 \
 	$(top_srcdir)/config/tac_arg_config_mpi.m4 \
 	$(top_srcdir)/config/tac_arg_enable_export-makefiles.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature.m4 \
+	$(top_srcdir)/config/tac_arg_enable_feature_sub2.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature_sub_check.m4 \
 	$(top_srcdir)/config/tac_arg_with_ar.m4 \
 	$(top_srcdir)/config/tac_arg_with_flags.m4 \
@@ -231,7 +232,9 @@ ACLOCAL_AMFLAGS = -I config
 #       could get rid of these.
 #
 EXTRA_DIST = \
-bootstrap 
+config/strip_dup_incl_paths.pl   config/strip_dup_libs.pl \
+config/replace-install-prefix.pl config/token-replace.pl \
+config/generate-makeoptions.pl   bootstrap 
 
 #
 #       I believe that by switching to AUX_DIR(../../config) one 

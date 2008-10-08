@@ -67,6 +67,7 @@ am__aclocal_m4_deps = $(top_srcdir)/config/acx_pthread.m4 \
 	$(top_srcdir)/config/tac_arg_config_mpi.m4 \
 	$(top_srcdir)/config/tac_arg_enable_export-makefiles.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature.m4 \
+	$(top_srcdir)/config/tac_arg_enable_feature_sub2.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature_sub_check.m4 \
 	$(top_srcdir)/config/tac_arg_with_ar.m4 \
 	$(top_srcdir)/config/tac_arg_with_flags.m4 \
@@ -84,8 +85,8 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_test_mesh_exe_OBJECTS = MeshTestSchema.$(OBJEXT) Gears.$(OBJEXT) \
-	test_gears.$(OBJEXT) test_simple_mesh.$(OBJEXT) \
-	test_mesh.$(OBJEXT)
+	test_gears.$(OBJEXT) test_mean_value.$(OBJEXT) \
+	test_simple_mesh.$(OBJEXT) test_mesh.$(OBJEXT)
 test_mesh_exe_OBJECTS = $(am_test_mesh_exe_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)/src@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -220,6 +221,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 test_mesh_exe_SOURCES = $(srcdir)/MeshTestSchema.cpp \
      $(srcdir)/Gears.cpp $(srcdir)/test_gears.cpp \
+     $(srcdir)/test_mean_value.cpp	\
      $(srcdir)/test_simple_mesh.cpp $(srcdir)/Gears.hpp \
      $(srcdir)/test_mesh.cpp
 
@@ -296,6 +298,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Gears.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshTestSchema.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gears.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mean_value.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mesh.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_simple_mesh.Po@am__quote@
 
@@ -354,6 +357,20 @@ test_gears.obj: $(srcdir)/test_gears.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_gears.cpp' object='test_gears.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_gears.obj `if test -f '$(srcdir)/test_gears.cpp'; then $(CYGPATH_W) '$(srcdir)/test_gears.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_gears.cpp'; fi`
+
+test_mean_value.o: $(srcdir)/test_mean_value.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_mean_value.o -MD -MP -MF $(DEPDIR)/test_mean_value.Tpo -c -o test_mean_value.o `test -f '$(srcdir)/test_mean_value.cpp' || echo '$(srcdir)/'`$(srcdir)/test_mean_value.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_mean_value.Tpo $(DEPDIR)/test_mean_value.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_mean_value.cpp' object='test_mean_value.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_mean_value.o `test -f '$(srcdir)/test_mean_value.cpp' || echo '$(srcdir)/'`$(srcdir)/test_mean_value.cpp
+
+test_mean_value.obj: $(srcdir)/test_mean_value.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_mean_value.obj -MD -MP -MF $(DEPDIR)/test_mean_value.Tpo -c -o test_mean_value.obj `if test -f '$(srcdir)/test_mean_value.cpp'; then $(CYGPATH_W) '$(srcdir)/test_mean_value.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_mean_value.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_mean_value.Tpo $(DEPDIR)/test_mean_value.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_mean_value.cpp' object='test_mean_value.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_mean_value.obj `if test -f '$(srcdir)/test_mean_value.cpp'; then $(CYGPATH_W) '$(srcdir)/test_mean_value.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_mean_value.cpp'; fi`
 
 test_simple_mesh.o: $(srcdir)/test_simple_mesh.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_simple_mesh.o -MD -MP -MF $(DEPDIR)/test_simple_mesh.Tpo -c -o test_simple_mesh.o `test -f '$(srcdir)/test_simple_mesh.cpp' || echo '$(srcdir)/'`$(srcdir)/test_simple_mesh.cpp

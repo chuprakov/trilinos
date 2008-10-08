@@ -70,6 +70,7 @@ am__aclocal_m4_deps = $(top_srcdir)/config/acx_pthread.m4 \
 	$(top_srcdir)/config/tac_arg_config_mpi.m4 \
 	$(top_srcdir)/config/tac_arg_enable_export-makefiles.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature.m4 \
+	$(top_srcdir)/config/tac_arg_enable_feature_sub2.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature_sub_check.m4 \
 	$(top_srcdir)/config/tac_arg_with_ar.m4 \
 	$(top_srcdir)/config/tac_arg_with_flags.m4 \
@@ -104,8 +105,8 @@ libphdmesh_mesh_a_DEPENDENCIES =
 am__objects_2 = MeshAssemble.$(OBJEXT) MeshAura.$(OBJEXT) \
 	MeshBulkData.$(OBJEXT) MeshComm.$(OBJEXT) MeshEntity.$(OBJEXT) \
 	MeshEntityComm.$(OBJEXT) MeshField.$(OBJEXT) \
-	MeshFieldTraits.$(OBJEXT) MeshKernel.$(OBJEXT) \
-	MeshMetaData.$(OBJEXT) MeshPart.$(OBJEXT) \
+	MeshFieldParallel.$(OBJEXT) MeshFieldTraits.$(OBJEXT) \
+	MeshKernel.$(OBJEXT) MeshMetaData.$(OBJEXT) MeshPart.$(OBJEXT) \
 	MeshProximity.$(OBJEXT) MeshRebalance.$(OBJEXT) \
 	MeshRelation.$(OBJEXT) MeshSharing.$(OBJEXT) \
 	MeshTypes.$(OBJEXT)
@@ -121,15 +122,14 @@ am__objects_4 = txblas_axpby.$(OBJEXT) txblas_CR4Matrix.$(OBJEXT) \
 am_libphdmesh_txblas_a_OBJECTS = $(am__objects_4)
 libphdmesh_txblas_a_OBJECTS = $(am_libphdmesh_txblas_a_OBJECTS)
 libphdmesh_util_a_DEPENDENCIES =
-am__objects_5 = Array.$(OBJEXT) CSet.$(OBJEXT) \
+am__objects_5 = ArrayPrivate.$(OBJEXT) CSet.$(OBJEXT) \
 	FixedPoolAlloc.$(OBJEXT) NamedValue.$(OBJEXT) \
 	NumericEnum.$(OBJEXT) OctTree.$(OBJEXT) OctTreeOps.$(OBJEXT) \
 	ParallelComm.$(OBJEXT) Parallel.$(OBJEXT) \
 	ParallelIndex.$(OBJEXT) ParallelInputStream.$(OBJEXT) \
-	ParallelReduce.$(OBJEXT) Reference.$(OBJEXT) Setv.$(OBJEXT) \
-	TestDriver.$(OBJEXT) TPI_Concurrency.$(OBJEXT) \
-	TPI_pthreads.$(OBJEXT) TPI_Walltime.$(OBJEXT) \
-	ValueIO.$(OBJEXT)
+	ParallelReduce.$(OBJEXT) Setv.$(OBJEXT) TestDriver.$(OBJEXT) \
+	TPI_Concurrency.$(OBJEXT) TPI_pthreads.$(OBJEXT) \
+	TPI_Walltime.$(OBJEXT) TypeName.$(OBJEXT)
 am_libphdmesh_util_a_OBJECTS = $(am__objects_5)
 libphdmesh_util_a_OBJECTS = $(am_libphdmesh_util_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -304,6 +304,7 @@ MESH_H = \
 	$(srcdir)/../include/mesh/Field.hpp \
 	$(srcdir)/../include/mesh/FieldDeclarations.hpp \
 	$(srcdir)/../include/mesh/FieldData.hpp \
+	$(srcdir)/../include/mesh/FieldParallel.hpp \
 	$(srcdir)/../include/mesh/FieldTraits.hpp \
 	$(srcdir)/../include/mesh/Gather.hpp \
 	$(srcdir)/../include/mesh/Kernel.hpp \
@@ -321,6 +322,7 @@ MESH = \
 	$(srcdir)/mesh/MeshEntity.cpp \
 	$(srcdir)/mesh/MeshEntityComm.cpp \
 	$(srcdir)/mesh/MeshField.cpp \
+	$(srcdir)/mesh/MeshFieldParallel.cpp \
 	$(srcdir)/mesh/MeshFieldTraits.cpp \
 	$(srcdir)/mesh/MeshKernel.cpp \
 	$(srcdir)/mesh/MeshMetaData.cpp \
@@ -333,11 +335,9 @@ MESH = \
 
 UTIL_H = \
 	$(srcdir)/../include/util/Array.hpp \
-	$(srcdir)/../include/util/ArrayHelper.hpp \
-	$(srcdir)/../include/util/ArrayVector.hpp \
+	$(srcdir)/../include/util/ArrayPrivate.hpp \
 	$(srcdir)/../include/util/Basics.hpp \
 	$(srcdir)/../include/util/CSet.hpp \
-	$(srcdir)/../include/util/FixedArray.hpp \
 	$(srcdir)/../include/util/FixedPoolAlloc.hpp \
 	$(srcdir)/../include/util/IndexList.hpp \
 	$(srcdir)/../include/util/NamedValue.hpp \
@@ -350,17 +350,15 @@ UTIL_H = \
 	$(srcdir)/../include/util/ParallelIndex.hpp \
 	$(srcdir)/../include/util/ParallelInputStream.hpp \
 	$(srcdir)/../include/util/ParallelReduce.hpp \
-	$(srcdir)/../include/util/Reference.hpp \
 	$(srcdir)/../include/util/Setv.hpp \
-	$(srcdir)/../include/util/Span.hpp \
 	$(srcdir)/../include/util/TestDriver.hpp \
 	$(srcdir)/../include/util/TPI.h \
 	$(srcdir)/../include/util/TPI.hpp \
 	$(srcdir)/../include/util/TypeList.hpp \
-	$(srcdir)/../include/util/ValueIO.hpp
+	$(srcdir)/../include/util/TypeName.hpp
 
 UTIL = \
-	$(srcdir)/util/Array.cpp \
+	$(srcdir)/util/ArrayPrivate.cpp \
 	$(srcdir)/util/CSet.cpp \
 	$(srcdir)/util/FixedPoolAlloc.cpp \
 	$(srcdir)/util/NamedValue.cpp \
@@ -372,13 +370,12 @@ UTIL = \
 	$(srcdir)/util/ParallelIndex.cpp \
 	$(srcdir)/util/ParallelInputStream.cpp \
 	$(srcdir)/util/ParallelReduce.cpp \
-	$(srcdir)/util/Reference.cpp \
 	$(srcdir)/util/Setv.cpp \
 	$(srcdir)/util/TestDriver.cpp \
 	$(srcdir)/util/TPI_Concurrency.c \
 	$(srcdir)/util/TPI_pthreads.c \
 	$(srcdir)/util/TPI_Walltime.c \
-	$(srcdir)/util/ValueIO.cpp
+	$(srcdir)/util/TypeName.cpp
 
 MESHIO_H = \
 	$(srcdir)/../include/mesh_io/ExoII.hpp
@@ -591,7 +588,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Array.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ArrayPrivate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CSet.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElementDeclarations.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElementDimensions.Po@am__quote@
@@ -604,6 +601,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshEntity.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshEntityComm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshField.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshFieldParallel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshFieldTraits.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshIO_ExoII.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeshKernel.Po@am__quote@
@@ -623,13 +621,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParallelIndex.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParallelInputStream.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParallelReduce.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Reference.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Setv.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TPI_Concurrency.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TPI_Walltime.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TPI_pthreads.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestDriver.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ValueIO.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TypeName.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/txblas_CR4Matrix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/txblas_axpby.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/txblas_cr4_mxv.Po@am__quote@
@@ -887,6 +884,20 @@ MeshField.obj: $(srcdir)/mesh/MeshField.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshField.obj `if test -f '$(srcdir)/mesh/MeshField.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshField.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshField.cpp'; fi`
 
+MeshFieldParallel.o: $(srcdir)/mesh/MeshFieldParallel.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshFieldParallel.o -MD -MP -MF $(DEPDIR)/MeshFieldParallel.Tpo -c -o MeshFieldParallel.o `test -f '$(srcdir)/mesh/MeshFieldParallel.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshFieldParallel.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshFieldParallel.Tpo $(DEPDIR)/MeshFieldParallel.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshFieldParallel.cpp' object='MeshFieldParallel.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshFieldParallel.o `test -f '$(srcdir)/mesh/MeshFieldParallel.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshFieldParallel.cpp
+
+MeshFieldParallel.obj: $(srcdir)/mesh/MeshFieldParallel.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshFieldParallel.obj -MD -MP -MF $(DEPDIR)/MeshFieldParallel.Tpo -c -o MeshFieldParallel.obj `if test -f '$(srcdir)/mesh/MeshFieldParallel.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshFieldParallel.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshFieldParallel.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshFieldParallel.Tpo $(DEPDIR)/MeshFieldParallel.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/mesh/MeshFieldParallel.cpp' object='MeshFieldParallel.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MeshFieldParallel.obj `if test -f '$(srcdir)/mesh/MeshFieldParallel.cpp'; then $(CYGPATH_W) '$(srcdir)/mesh/MeshFieldParallel.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/mesh/MeshFieldParallel.cpp'; fi`
+
 MeshFieldTraits.o: $(srcdir)/mesh/MeshFieldTraits.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MeshFieldTraits.o -MD -MP -MF $(DEPDIR)/MeshFieldTraits.Tpo -c -o MeshFieldTraits.o `test -f '$(srcdir)/mesh/MeshFieldTraits.cpp' || echo '$(srcdir)/'`$(srcdir)/mesh/MeshFieldTraits.cpp
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/MeshFieldTraits.Tpo $(DEPDIR)/MeshFieldTraits.Po
@@ -1041,19 +1052,19 @@ txblas_CR4Matrix.obj: $(srcdir)/txblas/txblas_CR4Matrix.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o txblas_CR4Matrix.obj `if test -f '$(srcdir)/txblas/txblas_CR4Matrix.cpp'; then $(CYGPATH_W) '$(srcdir)/txblas/txblas_CR4Matrix.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/txblas/txblas_CR4Matrix.cpp'; fi`
 
-Array.o: $(srcdir)/util/Array.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Array.o -MD -MP -MF $(DEPDIR)/Array.Tpo -c -o Array.o `test -f '$(srcdir)/util/Array.cpp' || echo '$(srcdir)/'`$(srcdir)/util/Array.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Array.Tpo $(DEPDIR)/Array.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/Array.cpp' object='Array.o' libtool=no @AMDEPBACKSLASH@
+ArrayPrivate.o: $(srcdir)/util/ArrayPrivate.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ArrayPrivate.o -MD -MP -MF $(DEPDIR)/ArrayPrivate.Tpo -c -o ArrayPrivate.o `test -f '$(srcdir)/util/ArrayPrivate.cpp' || echo '$(srcdir)/'`$(srcdir)/util/ArrayPrivate.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ArrayPrivate.Tpo $(DEPDIR)/ArrayPrivate.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/ArrayPrivate.cpp' object='ArrayPrivate.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Array.o `test -f '$(srcdir)/util/Array.cpp' || echo '$(srcdir)/'`$(srcdir)/util/Array.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ArrayPrivate.o `test -f '$(srcdir)/util/ArrayPrivate.cpp' || echo '$(srcdir)/'`$(srcdir)/util/ArrayPrivate.cpp
 
-Array.obj: $(srcdir)/util/Array.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Array.obj -MD -MP -MF $(DEPDIR)/Array.Tpo -c -o Array.obj `if test -f '$(srcdir)/util/Array.cpp'; then $(CYGPATH_W) '$(srcdir)/util/Array.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/Array.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Array.Tpo $(DEPDIR)/Array.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/Array.cpp' object='Array.obj' libtool=no @AMDEPBACKSLASH@
+ArrayPrivate.obj: $(srcdir)/util/ArrayPrivate.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ArrayPrivate.obj -MD -MP -MF $(DEPDIR)/ArrayPrivate.Tpo -c -o ArrayPrivate.obj `if test -f '$(srcdir)/util/ArrayPrivate.cpp'; then $(CYGPATH_W) '$(srcdir)/util/ArrayPrivate.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/ArrayPrivate.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ArrayPrivate.Tpo $(DEPDIR)/ArrayPrivate.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/ArrayPrivate.cpp' object='ArrayPrivate.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Array.obj `if test -f '$(srcdir)/util/Array.cpp'; then $(CYGPATH_W) '$(srcdir)/util/Array.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/Array.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ArrayPrivate.obj `if test -f '$(srcdir)/util/ArrayPrivate.cpp'; then $(CYGPATH_W) '$(srcdir)/util/ArrayPrivate.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/ArrayPrivate.cpp'; fi`
 
 CSet.o: $(srcdir)/util/CSet.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CSet.o -MD -MP -MF $(DEPDIR)/CSet.Tpo -c -o CSet.o `test -f '$(srcdir)/util/CSet.cpp' || echo '$(srcdir)/'`$(srcdir)/util/CSet.cpp
@@ -1209,20 +1220,6 @@ ParallelReduce.obj: $(srcdir)/util/ParallelReduce.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ParallelReduce.obj `if test -f '$(srcdir)/util/ParallelReduce.cpp'; then $(CYGPATH_W) '$(srcdir)/util/ParallelReduce.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/ParallelReduce.cpp'; fi`
 
-Reference.o: $(srcdir)/util/Reference.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Reference.o -MD -MP -MF $(DEPDIR)/Reference.Tpo -c -o Reference.o `test -f '$(srcdir)/util/Reference.cpp' || echo '$(srcdir)/'`$(srcdir)/util/Reference.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Reference.Tpo $(DEPDIR)/Reference.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/Reference.cpp' object='Reference.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Reference.o `test -f '$(srcdir)/util/Reference.cpp' || echo '$(srcdir)/'`$(srcdir)/util/Reference.cpp
-
-Reference.obj: $(srcdir)/util/Reference.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Reference.obj -MD -MP -MF $(DEPDIR)/Reference.Tpo -c -o Reference.obj `if test -f '$(srcdir)/util/Reference.cpp'; then $(CYGPATH_W) '$(srcdir)/util/Reference.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/Reference.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Reference.Tpo $(DEPDIR)/Reference.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/Reference.cpp' object='Reference.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Reference.obj `if test -f '$(srcdir)/util/Reference.cpp'; then $(CYGPATH_W) '$(srcdir)/util/Reference.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/Reference.cpp'; fi`
-
 Setv.o: $(srcdir)/util/Setv.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Setv.o -MD -MP -MF $(DEPDIR)/Setv.Tpo -c -o Setv.o `test -f '$(srcdir)/util/Setv.cpp' || echo '$(srcdir)/'`$(srcdir)/util/Setv.cpp
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/Setv.Tpo $(DEPDIR)/Setv.Po
@@ -1251,19 +1248,19 @@ TestDriver.obj: $(srcdir)/util/TestDriver.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TestDriver.obj `if test -f '$(srcdir)/util/TestDriver.cpp'; then $(CYGPATH_W) '$(srcdir)/util/TestDriver.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/TestDriver.cpp'; fi`
 
-ValueIO.o: $(srcdir)/util/ValueIO.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ValueIO.o -MD -MP -MF $(DEPDIR)/ValueIO.Tpo -c -o ValueIO.o `test -f '$(srcdir)/util/ValueIO.cpp' || echo '$(srcdir)/'`$(srcdir)/util/ValueIO.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ValueIO.Tpo $(DEPDIR)/ValueIO.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/ValueIO.cpp' object='ValueIO.o' libtool=no @AMDEPBACKSLASH@
+TypeName.o: $(srcdir)/util/TypeName.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT TypeName.o -MD -MP -MF $(DEPDIR)/TypeName.Tpo -c -o TypeName.o `test -f '$(srcdir)/util/TypeName.cpp' || echo '$(srcdir)/'`$(srcdir)/util/TypeName.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/TypeName.Tpo $(DEPDIR)/TypeName.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/TypeName.cpp' object='TypeName.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ValueIO.o `test -f '$(srcdir)/util/ValueIO.cpp' || echo '$(srcdir)/'`$(srcdir)/util/ValueIO.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TypeName.o `test -f '$(srcdir)/util/TypeName.cpp' || echo '$(srcdir)/'`$(srcdir)/util/TypeName.cpp
 
-ValueIO.obj: $(srcdir)/util/ValueIO.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ValueIO.obj -MD -MP -MF $(DEPDIR)/ValueIO.Tpo -c -o ValueIO.obj `if test -f '$(srcdir)/util/ValueIO.cpp'; then $(CYGPATH_W) '$(srcdir)/util/ValueIO.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/ValueIO.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ValueIO.Tpo $(DEPDIR)/ValueIO.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/ValueIO.cpp' object='ValueIO.obj' libtool=no @AMDEPBACKSLASH@
+TypeName.obj: $(srcdir)/util/TypeName.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT TypeName.obj -MD -MP -MF $(DEPDIR)/TypeName.Tpo -c -o TypeName.obj `if test -f '$(srcdir)/util/TypeName.cpp'; then $(CYGPATH_W) '$(srcdir)/util/TypeName.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/TypeName.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/TypeName.Tpo $(DEPDIR)/TypeName.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/util/TypeName.cpp' object='TypeName.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ValueIO.obj `if test -f '$(srcdir)/util/ValueIO.cpp'; then $(CYGPATH_W) '$(srcdir)/util/ValueIO.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/ValueIO.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TypeName.obj `if test -f '$(srcdir)/util/TypeName.cpp'; then $(CYGPATH_W) '$(srcdir)/util/TypeName.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/util/TypeName.cpp'; fi`
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(includedir)" || $(MKDIR_P) "$(DESTDIR)$(includedir)"

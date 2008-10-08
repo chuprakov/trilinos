@@ -50,7 +50,7 @@ SHELL=/bin/bash
 
 #-----------------------------------------------------------------------
 
-PHDMESH_VERSION = 0.1a
+PHDMESH_VERSION = 1.1d
 PHDMESH_PACKAGE = phdmesh
 
 config    :	config_all ;
