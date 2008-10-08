@@ -87,7 +87,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_test_util_exe_OBJECTS = test_comm_all.$(OBJEXT) \
 	test_comm_bounds.$(OBJEXT) test_octtree.$(OBJEXT) \
 	test_comm.$(OBJEXT) test_containers.$(OBJEXT) \
-	test_util.$(OBJEXT)
+	test_array.$(OBJEXT) test_util.$(OBJEXT)
 test_util_exe_OBJECTS = $(am_test_util_exe_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)/src@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -220,6 +220,7 @@ test_util_exe_SOURCES = $(srcdir)/test_comm_all.cpp \
     $(srcdir)/test_comm_bounds.cpp \
     $(srcdir)/test_octtree.cpp $(srcdir)/test_comm.cpp \
     $(srcdir)/test_containers.cpp \
+    $(srcdir)/test_array.cpp \
     $(srcdir)/test_util.cpp
 
 test_util_exe_DEPENDENCIES = $(top_builddir)/src/libphdmesh_util.a
@@ -292,6 +293,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_comm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_comm_all.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_comm_bounds.Po@am__quote@
@@ -382,6 +384,20 @@ test_containers.obj: $(srcdir)/test_containers.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_containers.cpp' object='test_containers.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_containers.obj `if test -f '$(srcdir)/test_containers.cpp'; then $(CYGPATH_W) '$(srcdir)/test_containers.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_containers.cpp'; fi`
+
+test_array.o: $(srcdir)/test_array.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_array.o -MD -MP -MF $(DEPDIR)/test_array.Tpo -c -o test_array.o `test -f '$(srcdir)/test_array.cpp' || echo '$(srcdir)/'`$(srcdir)/test_array.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_array.Tpo $(DEPDIR)/test_array.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_array.cpp' object='test_array.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_array.o `test -f '$(srcdir)/test_array.cpp' || echo '$(srcdir)/'`$(srcdir)/test_array.cpp
+
+test_array.obj: $(srcdir)/test_array.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_array.obj -MD -MP -MF $(DEPDIR)/test_array.Tpo -c -o test_array.obj `if test -f '$(srcdir)/test_array.cpp'; then $(CYGPATH_W) '$(srcdir)/test_array.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_array.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/test_array.Tpo $(DEPDIR)/test_array.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/test_array.cpp' object='test_array.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test_array.obj `if test -f '$(srcdir)/test_array.cpp'; then $(CYGPATH_W) '$(srcdir)/test_array.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/test_array.cpp'; fi`
 
 test_util.o: $(srcdir)/test_util.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test_util.o -MD -MP -MF $(DEPDIR)/test_util.Tpo -c -o test_util.o `test -f '$(srcdir)/test_util.cpp' || echo '$(srcdir)/'`$(srcdir)/test_util.cpp
