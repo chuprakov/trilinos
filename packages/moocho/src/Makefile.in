@@ -2346,7 +2346,7 @@ include_HEADERS = $(MOOCHO_H)
 # to install it in the machine-dependent directory. However, that is
 # not a default installation directory, so we had to create it
 # special.
-execincludedir = $(exec_prefix)/include
+execincludedir = $(includedir)
 nodist_execinclude_HEADERS = Moocho_Config.h
 
 # --------------------------------------------------------------------
@@ -7442,16 +7442,16 @@ all-local:
 # ------------------------------------------------------------------------
 
 install-data-local:
-	$(mkinstalldirs) $(exec_prefix)/tools/moocho ; \
-	$(mkinstalldirs) $(exec_prefix)/tools/moocho/Shared ; \
-	$(mkinstalldirs) $(exec_prefix)/tools/moocho/MamaJama ; \
-	$(mkinstalldirs) $(exec_prefix)/tools/moocho/IpConfig ; \
-	cp $(srcdir)/MoochoPack/configurations/generate-opt-file.pl $(exec_prefix)/tools/moocho/. ; \
+	$(mkinstalldirs) $(DESTDIR)$(exec_prefix)/tools/moocho ; \
+	$(mkinstalldirs) $(DESTDIR)$(exec_prefix)/tools/moocho/Shared ; \
+	$(mkinstalldirs) $(DESTDIR)$(exec_prefix)/tools/moocho/MamaJama ; \
+	$(mkinstalldirs) $(DESTDIR)$(exec_prefix)/tools/moocho/IpConfig ; \
+	cp $(srcdir)/MoochoPack/configurations/generate-opt-file.pl $(DESTDIR)$(exec_prefix)/tools/moocho/. ; \
 	chmod a+x $(exec_prefix)/tools/moocho/generate-opt-file.pl ; \
-	cp $(srcdir)/MoochoPack/configurations/Moocho.opt.MoochoSolver $(exec_prefix)/tools/moocho/. ; \
-	cp $(srcdir)/MoochoPack/configurations/Shared/Moocho.opt.DecompositionSystemStateStepBuilderStd $(exec_prefix)/tools/moocho/Shared/. ; \
-	cp $(srcdir)/MoochoPack/configurations/MamaJama/Moocho.opt.NLPAlgoConfigMamaJama $(exec_prefix)/tools/moocho/MamaJama/. ; \
-	cp $(srcdir)/MoochoPack/configurations/IpConfig/Moocho.opt.NLPAlgoConfigIP $(exec_prefix)/tools/moocho/IpConfig/.
+	cp $(srcdir)/MoochoPack/configurations/Moocho.opt.MoochoSolver $(DESTDIR)$(exec_prefix)/tools/moocho/. ; \
+	cp $(srcdir)/MoochoPack/configurations/Shared/Moocho.opt.DecompositionSystemStateStepBuilderStd $(DESTDIR)$(exec_prefix)/tools/moocho/Shared/. ; \
+	cp $(srcdir)/MoochoPack/configurations/MamaJama/Moocho.opt.NLPAlgoConfigMamaJama $(DESTDIR)$(exec_prefix)/tools/moocho/MamaJama/. ; \
+	cp $(srcdir)/MoochoPack/configurations/IpConfig/Moocho.opt.NLPAlgoConfigIP $(DESTDIR)$(exec_prefix)/tools/moocho/IpConfig/.
 
 #
 # Specify locations of include files within Trilinos

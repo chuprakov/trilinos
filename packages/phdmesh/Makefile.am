@@ -76,7 +76,8 @@ all-local:
 if USING_EXPORT_MAKEFILES
 
 install-exec-hook:
-	cp $(top_builddir)/Makefile.export.phdmesh $(exec_prefix)/include/.
+	mkdir -p $(DESTDIR)$(includedir)
+	cp $(top_builddir)/Makefile.export.phdmesh $(DESTDIR)$(includedir)/.
 	$(PERL_EXE) $(top_srcdir)/config/replace-install-prefix.pl \
 		--exec-prefix=$(exec_prefix) \
 		--my-export-makefile=Makefile.export.phdmesh \
@@ -84,11 +85,11 @@ install-exec-hook:
 		--my-abs-incl-dirs=@abs_top_builddir@/src:@abs_top_srcdir@/src \
 		--my-abs-lib-dirs=@abs_top_builddir@/src
 	$(PERL_EXE) $(top_srcdir)/config/generate-makeoptions.pl $(top_builddir)/src/Makefile \
-		PHDMESH > $(exec_prefix)/include/Makefile.export.phdmesh.macros
+		PHDMESH > $(DESTDIR)$(includedir)/Makefile.export.phdmesh.macros
 
 uninstall-hook:
-	rm -f $(exec_prefix)/include/Makefile.export.phdmesh
-	rm -f $(exec_prefix)/include/Makefile.export.phdmesh.macros
+	rm -f $(includedir)/Makefile.export.phdmesh
+	rm -f $(includedir)/Makefile.export.phdmesh.macros
 
 else
 

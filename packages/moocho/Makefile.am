@@ -209,7 +209,8 @@ sample-output:
 if USING_EXPORT_MAKEFILES
 
 install-exec-hook:	
-	cp $(top_builddir)/Makefile.export.moocho $(exec_prefix)/include/.
+	mkdir -p $(DESTDIR)$(includedir)
+	cp $(top_builddir)/Makefile.export.moocho $(DESTDIR)$(includedir)/.
 	$(PERL_EXE) $(top_srcdir)/config/replace-install-prefix.pl \
 		--exec-prefix=$(exec_prefix) \
 		--my-export-makefile=Makefile.export.moocho \
@@ -217,11 +218,11 @@ install-exec-hook:
 		--my-abs-incl-dirs=@abs_top_builddir@/src:@abs_top_srcdir@/src \
 		--my-abs-lib-dirs=@abs_top_builddir@/src:@abs_top_builddir@/thyra/src \
 		--dep-package-abs-builddirs=@abs_top_builddir@/../rtop:@abs_top_builddir@/../thyra:@abs_top_builddir@/../epetraext:@abs_top_builddir@/../stratimikos
-	$(PERL_EXE) $(top_srcdir)/config/generate-makeoptions.pl $(top_builddir)/src/Makefile MOOCHO > $(exec_prefix)/include/Makefile.export.moocho.macros
+	$(PERL_EXE) $(top_srcdir)/config/generate-makeoptions.pl $(top_builddir)/src/Makefile MOOCHO > $(DESTDIR)$(includedir)/Makefile.export.moocho.macros
 
 uninstall-hook:
-	rm -f $(exec_prefix)/include/Makefile.export.moocho
-	rm -f $(exec_prefix)/include/Makefile.export.moocho.macros
+	rm -f $(includedir)/Makefile.export.moocho
+	rm -f $(includedir)/Makefile.export.moocho.macros
 
 else 
 
