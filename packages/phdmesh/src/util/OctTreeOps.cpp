@@ -26,6 +26,7 @@
  * @date   January 2007
  */
 
+#include <iostream>
 #include <map>
 #include <set>
 #include <list>
@@ -521,35 +522,52 @@ void ProximitySearch::iterate_tree(TPI::ThreadPool pool)
 {
   enum { N_WORK = 32 };
 
-  SetInsertBuffer< std::set< std::pair<IdentProc,IdentProc> > >
-    tmp( m_relation , pool , 1 );
+  try {
+    SetInsertBuffer< std::set< std::pair<IdentProc,IdentProc> > >
+      tmp( m_relation , pool , 1 );
 
-  const SearchTree::const_iterator i_tree_end = m_tree_end ;
+    const SearchTree::const_iterator i_tree_end = m_tree_end ;
 
-  unsigned n_work = N_WORK ;
+    unsigned n_work = N_WORK ;
 
-  while ( n_work ) {
+    while ( n_work ) {
 
-    n_work = 0 ;
+      n_work = 0 ;
 
-    SearchTree::const_iterator i_beg , i_end ;
+      SearchTree::const_iterator i_beg , i_end ;
 
-    { // Get work:
-      TPI::LockGuard get_work_lock( pool , 0 );
+      { // Get work:
+        TPI::LockGuard get_work_lock( pool , 0 );
 
-      i_end = i_beg = m_tree_iter ;
+        i_end = i_beg = m_tree_iter ;
 
-      while ( n_work < N_WORK && i_tree_end != i_end ) { ++i_end ; ++n_work ; }
+        while ( n_work < N_WORK && i_tree_end != i_end ) { ++i_end; ++n_work; }
     
-      m_tree_iter = i_end ;
+        m_tree_iter = i_end ;
 
-    } // get_work_lock is released
+      } // get_work_lock is released
 
-    // Perform work:
+      // Perform work:
 
-    for ( ; i_beg != i_end ; ++i_beg ) {
-      (*m_search)( i_beg , i_tree_end , tmp );
+      for ( ; i_beg != i_end ; ++i_beg ) {
+        (*m_search)( i_beg , i_tree_end , tmp );
+      }
     }
+/*
+    if ( m_tree_iter != m_tree_end ) {
+      std::cerr << "ProximitySearch::iterate_tree FAILED iteration"
+                << std::endl ;
+      std::cerr.flush();
+    }
+*/
+  }
+  catch ( const std::exception & x ) {
+    std::cerr << x.what() << std::endl ;
+    std::cerr.flush();
+  }
+  catch ( ... ) {
+    std::cerr << "ProximitySearch::iterate_tree FAILED" << std::endl ;
+    std::cerr.flush();
   }
 }
 
@@ -563,6 +581,12 @@ ProximitySearch::ProximitySearch(
   m_tree_iter( search_tree.begin() ),
   m_tree_end(  search_tree.end() )
 {
+/*
+  std::cout << "ProximitySearch tree size = " << search_tree.size()
+            << std::endl ;
+  std::cout.flush();
+*/
+
   TPI::Set_lock_size( NLOCKS );
   TPI::Run( *this , & ProximitySearch::iterate_tree );
 
