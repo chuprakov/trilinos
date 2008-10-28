@@ -474,7 +474,7 @@ include_HEADERS = $(PHDMESH_H)
 # special.
 
 # All Trilinos headers are now installed in the same directory
-execincludedir = $(exec_prefix)/include
+execincludedir = $(includedir)
 nodist_execinclude_HEADERS = phdmesh_config.h
 
 # ------------------------------------------------------------------------
