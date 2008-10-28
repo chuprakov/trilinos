@@ -281,7 +281,7 @@ include_HEADERS = $(MEROS_H)
 # not a default installation directory, so we had to create it
 # special.
 
-execincludedir = $(exec_prefix)/include
+execincludedir = $(includedir)
 nodist_execinclude_HEADERS = Meros_Config.h
 
 # ------------------------------------------------------------------------

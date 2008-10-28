@@ -190,7 +190,8 @@ runtests-mpi :
 if USING_EXPORT_MAKEFILES
 
 install-exec-hook:
-	cp $(top_builddir)/Makefile.export.meros $(exec_prefix)/include/.
+	mkdir -p $(DESTDIR)$(includedir)
+	cp $(top_builddir)/Makefile.export.meros $(DESTDIR)$(includedir)/.
 	$(PERL_EXE) $(top_srcdir)/config/replace-install-prefix.pl \
                 --exec-prefix=$(exec_prefix) \
                 --my-export-makefile=Makefile.export.meros \
@@ -198,11 +199,11 @@ install-exec-hook:
                 --my-abs-incl-dirs=@abs_top_builddir@/src:@abs_top_srcdir@/src \
                 --my-abs-lib-dirs=@abs_top_builddir@/src \
                 --dep-package-abs-builddirs=@abs_top_builddir@/../stratimikos
-	$(PERL_EXE) $(top_srcdir)/config/generate-makeoptions.pl $(top_builddir)/src/Makefile MEROS > $(exec_prefix)/include/Makefile.export.meros.macros
+	$(PERL_EXE) $(top_srcdir)/config/generate-makeoptions.pl $(top_builddir)/src/Makefile MEROS > $(DESTDIR)$(includedir)/Makefile.export.meros.macros
 
 uninstall-hook:
-	rm -f $(exec_prefix)/include/Makefile.export.meros
-	rm -f $(exec_prefix)/include/Makefile.export.meros.macros
+	rm -f $(includedir)/Makefile.export.meros
+	rm -f $(includedir)/Makefile.export.meros.macros
 
 else
 
