@@ -276,7 +276,7 @@ bool DenseLinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
     v3(0);
     result = false;	
   }
-  catch(std::out_of_range) {
+  catch(const std::out_of_range&) {
     result = true;
   }
   if(out) *out << "v3(0) threw std::out_of_range : " << result << std::endl;
@@ -287,7 +287,7 @@ bool DenseLinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
     v3(n+1);
     result = false;	
   }
-  catch(std::out_of_range) {
+  catch(const std::out_of_range&) {
     result = true;
   }
   if(out) *out << "v3(n+1) threw std::out_of_range : " << result << std::endl;
@@ -298,7 +298,7 @@ bool DenseLinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
     vs3(0);
     result = false;	
   }
-  catch(std::out_of_range) {
+  catch(const std::out_of_range &) {
     result = true;
   }
   if(out) *out << "vs3(0) threw std::out_of_range : " << result << std::endl;
@@ -309,7 +309,7 @@ bool DenseLinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
     vs3(n+1);
     result = false;	
   }
-  catch(std::out_of_range) {
+  catch(const std::out_of_range&) {
     result = true;
   }
   if(out) *out << "vs3(n+1) threw std::out_of_range : " << result << std::endl;

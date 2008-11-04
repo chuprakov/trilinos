@@ -273,7 +273,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
         S_chol_.augment_update(t,alpha,force_refactorization,add_eigen_val,pivot_tols);
         update_successful = true;
       }
-      catch(MSADU::WrongInertiaUpdateException) {
+      catch(const MSADU::WrongInertiaUpdateException&) {
         if( add_eigen_val != MSADU::EIGEN_VAL_UNKNOWN )
           throw; // The client specified the new inertia and it was wrong so throw execepiton.
         // If the client did not know that inertia then we can't fault them so we will
