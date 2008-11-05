@@ -633,14 +633,18 @@ The last option tells ML to use the Aztec preconditioning function as a
 smoother. Aztec requires an integer vector \verb!options! and a double
 vector \verb!params!. Those can be defined as follows:
 \begin{verbatim}
-  int options[AZ_OPTIONS_SIZE];
-  double params[AZ_PARAMS_SIZE];
+  Teuchos::RCP<vector<int>> options = rcp(new vector<int>(AZ_OPTIONS_SIZE));
+  Teuchos::RCP<vector<double>> params = rcp(new vector<double>(AZ_PARAMS_SIZE));
   AZ_defaults(options,params);
-  options[AZ_precond] = AZ_dom_decomp;
-  options[AZ_subdomain_solve] = AZ_icc;
-  MLList.set("smoother: aztec options", options);
-  MLList.set("smoother: aztec params", params);
+  AZ_defaults(&(*options)[0],&(*params)[0]);
+  (*options)[AZ_precond] = AZ_dom_decomp;
+  (*options)[AZ_subdomain_solve] = AZ_icc;
+
+  MLList.set("smoother: Aztec options", options);
+  MLList.set("smoother: Aztec params", params);
 \end{verbatim}
+The last two commands set the Teuchos reference-counted pointers,
+{\tt options} and {\tt params}, in the parameter list.
 Note that {\sl all} Aztec preconditioners can be used as smoothers for
 ML. 
 At this point we can create the ML preconditioner as
