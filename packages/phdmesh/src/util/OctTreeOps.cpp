@@ -553,13 +553,6 @@ void ProximitySearch::iterate_tree(TPI::ThreadPool pool)
         (*m_search)( i_beg , i_tree_end , tmp );
       }
     }
-/*
-    if ( m_tree_iter != m_tree_end ) {
-      std::cerr << "ProximitySearch::iterate_tree FAILED iteration"
-                << std::endl ;
-      std::cerr.flush();
-    }
-*/
   }
   catch ( const std::exception & x ) {
     std::cerr << x.what() << std::endl ;
@@ -581,18 +574,15 @@ ProximitySearch::ProximitySearch(
   m_tree_iter( search_tree.begin() ),
   m_tree_end(  search_tree.end() )
 {
-/*
-  std::cout << "ProximitySearch tree size = " << search_tree.size()
-            << std::endl ;
-  std::cout.flush();
-*/
-
-  TPI::Set_lock_size( NLOCKS );
-  TPI::Run( *this , & ProximitySearch::iterate_tree );
-
   if ( m_tree_iter != m_tree_end ) {
-    std::string msg("phdmesh::proximity_search FAILED to complete" );
-    throw std::runtime_error(msg);
+
+    TPI::Set_lock_size( NLOCKS );
+    TPI::Run( *this , & ProximitySearch::iterate_tree );
+
+    if ( m_tree_iter != m_tree_end ) {
+      std::string msg("phdmesh::proximity_search FAILED to complete" );
+      throw std::runtime_error(msg);
+    }
   }
 }
 
