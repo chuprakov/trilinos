@@ -37,17 +37,24 @@
 #include "FEApp_AbstractPDE_NTBase.hpp"
 #include "FEApp_AbstractElement.hpp"
 #include "FEApp_AbstractQuadrature.hpp"
+#include "FEApp_TemplateTypes.hpp"
 
 #include "Sacado_TemplateManager.hpp"
+#include "Sacado_mpl_placeholders.hpp"
+
+using namespace Sacado::mpl::placeholders;
 
 namespace FEApp {
 
   /*!
    * \brief Abstract interface for representing a discretized 1-D PDE.
    */
-  template <typename ScalarT>
+  template <typename EvalT>
   class AbstractPDE : public FEApp::AbstractPDE_NTBase {
   public:
+
+    //! Scalar type
+    typedef typename FEApp::EvaluationTraits::apply<EvalT>::type ScalarT;
   
     //! Default constructor
     AbstractPDE() {};
@@ -58,10 +65,10 @@ namespace FEApp {
     //! Evaluate discretized PDE element-level residual
     virtual void
     evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
-			    const FEApp::AbstractElement& element,
-			    const std::vector<ScalarT>* dot,
-			    const std::vector<ScalarT>& solution,
-			    std::vector<ScalarT>& residual) = 0;
+                            const FEApp::AbstractElement& element,
+                            const std::vector<ScalarT>* dot,
+                            const std::vector<ScalarT>& solution,
+                            std::vector<ScalarT>& residual) = 0;
 
   private:
     
@@ -76,7 +83,7 @@ namespace FEApp {
   template <typename TypeSeq>
   class AbstractPDE_TemplateManager : 
     public Sacado::TemplateManager<TypeSeq, FEApp::AbstractPDE_NTBase,
-				   AbstractPDE> {
+                                   AbstractPDE<_> > {
   public:
     AbstractPDE_TemplateManager() {}
     ~AbstractPDE_TemplateManager() {}

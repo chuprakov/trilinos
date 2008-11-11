@@ -46,8 +46,7 @@ namespace FEApp {
   public:
 
     //! Default constructor
-    QuadratureFactory(
-	       const Teuchos::RCP<Teuchos::ParameterList>& quadParams);
+    QuadratureFactory(const Teuchos::RCP<Teuchos::ParameterList>& quadParams);
 
     //! Destructor
     virtual ~QuadratureFactory() {}

@@ -41,30 +41,33 @@
 
 namespace FEApp {
 
-  template <typename ScalarT> class ConstantFunctionParameter;
+  template <typename EvalT> class ConstantFunctionParameter;
 
   /*!
    * \brief A constant PDE function
    */
-  template <typename ScalarT>
+  template <typename EvalT>
   class ConstantFunction : 
-    public FEApp::AbstractFunction<ScalarT> {
+    public FEApp::AbstractFunction<EvalT> {
   public:
+
+    //! Scalar type
+    typedef typename FEApp::AbstractFunction<EvalT>::ScalarT ScalarT;
   
     //! Default constructor
     ConstantFunction(
 	       const ScalarT& value,
-	       const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) : 
+	       const Teuchos::RCP<ParamLib>& paramLib) : 
       val(value) 
     {
       // Add val to parameter library
       std::string name = "Constant Function Value";
       if (!paramLib->isParameter(name))
-	paramLib->addParameterFamily(name, true, false);
-      if (!paramLib->template isParameterForType<ScalarT>(name)) {
-	Teuchos::RCP< ConstantFunctionParameter<ScalarT> > tmp = 
-	  Teuchos::rcp(new ConstantFunctionParameter<ScalarT>(Teuchos::rcp(this,false)));
-	paramLib->template addEntry<ScalarT>(name, tmp);
+        paramLib->addParameterFamily(name, true, false);
+      if (!paramLib->template isParameterForType<EvalT>(name)) {
+        Teuchos::RCP< ConstantFunctionParameter<EvalT> > tmp = 
+          Teuchos::rcp(new ConstantFunctionParameter<EvalT>(Teuchos::rcp(this,false)));
+        paramLib->template addEntry<EvalT>(name, tmp);
       }
     };
 
@@ -76,7 +79,7 @@ namespace FEApp {
     evaluate(const std::vector<double>& quad_points,
 	     std::vector<ScalarT>& value) const {
       for (unsigned int i=0; i<quad_points.size(); i++) {
-	value[i] = val;
+        value[i] = val;
       }
     }
 
@@ -108,31 +111,33 @@ namespace FEApp {
    * @brief Parameter class for sensitivity/stability analysis representing
    * the value in the constant function
    */
-  template <typename ScalarT>
+  template <typename EvalT>
   class ConstantFunctionParameter : 
-    public Sacado::ScalarParameterEntry<ScalarT> {
+    public Sacado::ScalarParameterEntry<EvalT,EvaluationTraits> {
 
   public:
 
+    //! Scalar type
+    typedef typename Sacado::ScalarParameterEntry<EvalT,EvaluationTraits>::ScalarT ScalarT;
+
     //! Constructor
-    ConstantFunctionParameter(
-		  const Teuchos::RCP< ConstantFunction<ScalarT> >& s) : 
-      func(s) {}
+    ConstantFunctionParameter(const Teuchos::RCP< ConstantFunction<EvalT> >& s)
+      : func(s) {}
 
     //! Destructor
     virtual ~ConstantFunctionParameter() {}
 
     //! Set real parameter value
     virtual void setRealValue(double value) { 
-      setValueAsConstant(ScalarT(value)); }
+      func->setValue(value, true); }
 
     //! Set parameter this object represents to \em value
-    virtual void setValueAsConstant(const ScalarT& value) { 
-      func->setValue(value, true); }
-    
-    //! Set parameter this object represents to \em value
-    virtual void setValueAsIndependent(const ScalarT& value) { 
+    virtual void setValue(const ScalarT& value) { 
       func->setValue(value, false); }
+
+    //! Get real parameter value
+    virtual double getRealValue() const { 
+      return Sacado::Value<ScalarT>::eval(func->getValue()); }
     
     //! Get parameter value this object represents
     virtual const ScalarT& getValue() const { return func->getValue(); }
@@ -140,7 +145,7 @@ namespace FEApp {
   protected:  
     
     //! Pointer to source function
-    Teuchos::RCP< ConstantFunction<ScalarT> > func;
+    Teuchos::RCP< ConstantFunction<EvalT> > func;
 
   };
 

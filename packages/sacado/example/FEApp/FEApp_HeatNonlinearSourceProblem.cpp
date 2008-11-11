@@ -34,8 +34,8 @@
 
 FEApp::HeatNonlinearSourceProblem::
 HeatNonlinearSourceProblem(
-	      const Teuchos::RCP<Teuchos::ParameterList>& params_,
-              const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib_) :
+	            const Teuchos::RCP<Teuchos::ParameterList>& params_,
+              const Teuchos::RCP<ParamLib>& paramLib_) :
   params(params_),
   paramLib(paramLib_)
 {
@@ -58,10 +58,10 @@ numEquations() const
 void
 FEApp::HeatNonlinearSourceProblem:: 
 buildProblem(const Epetra_Map& dofMap,
-	     const Epetra_Map& overlapped_dofMap,
-	     FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM,
-	     std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
-	     const Teuchos::RCP<Epetra_Vector>& u)
+             const Epetra_Map& overlapped_dofMap,
+             FEApp::AbstractPDE_TemplateManager<EvalTypes>& pdeTM,
+             std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
+             const Teuchos::RCP<Epetra_Vector>& u)
 {
   // Build PDE equations
   FEApp::HeatNonlinearSourcePDE_TemplateBuilder pdeBuilder(params, paramLib);
@@ -69,16 +69,16 @@ buildProblem(const Epetra_Map& dofMap,
 
   // Build boundary conditions
   FEApp::ConstantNodeBCStrategy_TemplateBuilder leftBuilder(0, 0, leftBC, 1,
-							    paramLib);
+                                                            paramLib);
   FEApp::ConstantNodeBCStrategy_TemplateBuilder rightBuilder(0, 0, rightBC, 2,
-							     paramLib);
+                                                             paramLib);
   int left_node = dofMap.MinAllGID();
   int right_node = dofMap.MaxAllGID();
   bcs.resize(2);
   bcs[0] = Teuchos::rcp(new FEApp::NodeBC(dofMap, overlapped_dofMap,
-					  left_node, 1, leftBuilder));
+                                          left_node, 1, leftBuilder));
   bcs[1] = Teuchos::rcp(new FEApp::NodeBC(dofMap, overlapped_dofMap,
-					  right_node, 1, rightBuilder));
+                                          right_node, 1, rightBuilder));
 
   // Build initial solution
   u->PutScalar(1.0);

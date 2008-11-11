@@ -34,6 +34,7 @@
 
 #include "Sacado_ScalarParameterEntry.hpp"
 #include "Sacado_Traits.hpp"
+#include "FEApp_TemplateTypes.hpp"
 
 namespace FEApp {
 
@@ -41,11 +42,14 @@ namespace FEApp {
    * @brief Parameter class for sensitivity/stability analysis representing
    * alpha in the brusselator problem
    */
-  template <typename ScalarT>
+  template <typename EvalT>
   class BrusselatorAlphaParameter : 
-    public Sacado::ScalarParameterEntry<ScalarT> {
+    public Sacado::ScalarParameterEntry<EvalT,EvaluationTraits> {
 
   public:
+
+    //! Scalar type
+    typedef typename Sacado::ScalarParameterEntry<EvalT,EvaluationTraits>::ScalarT ScalarT;
 
     //! Constructor
     BrusselatorAlphaParameter(const ScalarT& value) : val(value) {}
@@ -55,15 +59,15 @@ namespace FEApp {
 
     //! Set real parameter value
     virtual void setRealValue(double value) { 
-      setValueAsConstant(ScalarT(value)); }
-
-    //! Set parameter this object represents to \em value
-    virtual void setValueAsConstant(const ScalarT& value) { 
       val = value; Sacado::MarkConstant<ScalarT>::eval(val); }
     
     //! Set parameter this object represents to \em value
-    virtual void setValueAsIndependent(const ScalarT& value) { 
+    virtual void setValue(const ScalarT& value) { 
       val = value; }
+
+    //! Get real parameter value
+    virtual double getRealValue() const {
+      return Sacado::Value<ScalarT>::eval(val); }
     
     //! Get parameter value this object represents
     virtual const ScalarT& getValue() const { return val; }
@@ -79,11 +83,14 @@ namespace FEApp {
    * @brief Parameter class for sensitivity/stability analysis representing
    * beta in the brusselator problem
    */
-  template <typename ScalarT>
+  template <typename EvalT>
   class BrusselatorBetaParameter : 
-    public Sacado::ScalarParameterEntry<ScalarT> {
+    public Sacado::ScalarParameterEntry<EvalT,EvaluationTraits> {
 
   public:
+
+    //! Scalar type
+    typedef typename Sacado::ScalarParameterEntry<EvalT,EvaluationTraits>::ScalarT ScalarT;
 
     //! Constructor
     BrusselatorBetaParameter(const ScalarT& value) : val(value) {}
@@ -93,15 +100,15 @@ namespace FEApp {
 
     //! Set real parameter value
     virtual void setRealValue(double value) { 
-      setValueAsConstant(ScalarT(value)); }
-
-    //! Set parameter this object represents to \em value
-    virtual void setValueAsConstant(const ScalarT& value) { 
       val = value; Sacado::MarkConstant<ScalarT>::eval(val); }
     
     //! Set parameter this object represents to \em value
-    virtual void setValueAsIndependent(const ScalarT& value) { 
+    virtual void setValue(const ScalarT& value) { 
       val = value; }
+
+    //! Get real parameter value
+    virtual double getRealValue() const {
+      return Sacado::Value<ScalarT>::eval(val); }
     
     //! Get parameter value this object represents
     virtual const ScalarT& getValue() const { return val; }

@@ -33,45 +33,45 @@
 #include "FEApp_CubicSourceFunction.hpp"
 #include "FEApp_ExponentialSourceFunction.hpp"
 
-template <typename ScalarT>
-FEApp::SourceFunctionFactory<ScalarT>::SourceFunctionFactory(
+template <typename EvalT>
+FEApp::SourceFunctionFactory<EvalT>::SourceFunctionFactory(
 	    const Teuchos::RCP<Teuchos::ParameterList>& funcParams_,
-	    const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib_) :
+	    const Teuchos::RCP<ParamLib>& paramLib_) :
   funcParams(funcParams_), paramLib(paramLib_)
 {
 }
 
-template <typename ScalarT>
-Teuchos::RCP< FEApp::AbstractSourceFunction<ScalarT> >
-FEApp::SourceFunctionFactory<ScalarT>::create()
+template <typename EvalT>
+Teuchos::RCP< FEApp::AbstractSourceFunction<EvalT> >
+FEApp::SourceFunctionFactory<EvalT>::create()
 {
-  Teuchos::RCP< FEApp::AbstractSourceFunction<ScalarT> > strategy;
+  Teuchos::RCP< FEApp::AbstractSourceFunction<EvalT> > strategy;
 
   std::string& method = funcParams->get("Name", "Quadratic");
   if (method == "Quadratic") {
     double factor = funcParams->get("Nonlinear Factor", 1.0);
     strategy = 
-      Teuchos::rcp(new FEApp::QuadraticSourceFunction<ScalarT>(factor,
-							       paramLib));
+      Teuchos::rcp(new FEApp::QuadraticSourceFunction<EvalT>(factor,
+                                                             paramLib));
   }
   else if (method == "Cubic") {
     double factor = funcParams->get("Nonlinear Factor", 1.0);
     strategy = 
-      Teuchos::rcp(new FEApp::CubicSourceFunction<ScalarT>(factor,
-							   paramLib));
+      Teuchos::rcp(new FEApp::CubicSourceFunction<EvalT>(factor,
+                                                         paramLib));
   }
   else if (method == "Exponential") {
     double factor = funcParams->get("Nonlinear Factor", 1.0);
     strategy = 
-      Teuchos::rcp(new FEApp::ExponentialSourceFunction<ScalarT>(factor,
-								 paramLib));
+      Teuchos::rcp(new FEApp::ExponentialSourceFunction<EvalT>(factor,
+                                                               paramLib));
   }
   else {
     TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,
-		       std::endl << 
-		       "Error!  Unknown source function " << method << 
-		       "!" << std::endl << "Supplied parameter list is " << 
-		       std::endl << *funcParams);
+                       std::endl << 
+                       "Error!  Unknown source function " << method << 
+                       "!" << std::endl << "Supplied parameter list is " << 
+                       std::endl << *funcParams);
   }
 
   return strategy;

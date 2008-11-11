@@ -29,12 +29,12 @@
 // ***********************************************************************
 // @HEADER
 
-template <typename ScalarT>
-FEApp::GlobalFill<ScalarT>::
+template <typename EvalT>
+FEApp::GlobalFill<EvalT>::
 GlobalFill(
       const Teuchos::RCP<const FEApp::Mesh>& elementMesh,
       const Teuchos::RCP<const FEApp::AbstractQuadrature>& quadRule,
-      const Teuchos::RCP< FEApp::AbstractPDE<ScalarT> >& pdeEquations,
+      const Teuchos::RCP< FEApp::AbstractPDE<EvalT> >& pdeEquations,
       const std::vector< Teuchos::RCP<FEApp::NodeBC> >& nodeBCs,
       bool is_transient):
   mesh(elementMesh),
@@ -66,8 +66,8 @@ GlobalFill(
   node_f.resize(neqn);
 }
 
-template <typename ScalarT>
-FEApp::GlobalFill<ScalarT>::
+template <typename EvalT>
+FEApp::GlobalFill<EvalT>::
 ~GlobalFill()
 {
   if (transient) {
@@ -76,10 +76,10 @@ FEApp::GlobalFill<ScalarT>::
   }
 }
 
-template <typename ScalarT>
+template <typename EvalT>
 void
-FEApp::GlobalFill<ScalarT>::
-computeGlobalFill(FEApp::AbstractInitPostOp<ScalarT>& initPostOp)
+FEApp::GlobalFill<EvalT>::
+computeGlobalFill(FEApp::AbstractInitPostOp<EvalT>& initPostOp)
 {
   // Loop over elements
   Teuchos::RCP<const FEApp::AbstractElement> e;
@@ -108,14 +108,14 @@ computeGlobalFill(FEApp::AbstractInitPostOp<ScalarT>& initPostOp)
 
       // Zero out node residual
       for (unsigned int j=0; j<neqn; j++)
-	node_f[j] = 0.0;
+        node_f[j] = 0.0;
 
       // Initialize node solution
       initPostOp.nodeInit(*bc[i], neqn, node_xdot, node_x);
 
       // Compute node residual
-      bc[i]->getStrategy<ScalarT>()->evaluateResidual(node_xdot, node_x, 
-						      node_f);
+      bc[i]->getStrategy<EvalT>()->evaluateResidual(node_xdot, node_x, 
+                                                    node_f);
 
       // Post-process node residual
       initPostOp.nodePost(*bc[i], neqn, node_f);

@@ -34,7 +34,7 @@
 
 #include "FEApp_TemplateTypes.hpp"
 
-#if SGFAD_ACTIVE
+#if SG_ACTIVE
 
 #include "Teuchos_RCP.hpp"
 
@@ -57,10 +57,11 @@ namespace FEApp {
     typedef SGType::expansion_type::tp_type tp_type;
 
     //! Constructor 
-    SGMatrixFreeOp(const Teuchos::RCP<const Epetra_Map>& base_map,
-		   const Teuchos::RCP<const Epetra_Map>& sg_map,
-		   const Teuchos::RCP<const tp_type >& Cijk,
-		   const Teuchos::RCP<std::vector< Teuchos::RCP<Epetra_CrsMatrix> > >& jacs);
+    SGMatrixFreeOp(
+     const Teuchos::RCP<const Epetra_Map>& base_map,
+     const Teuchos::RCP<const Epetra_Map>& sg_map,
+     const Teuchos::RCP<const tp_type >& Cijk,
+     const Teuchos::RCP<std::vector< Teuchos::RCP<Epetra_CrsMatrix> > >& jacs);
     
     //! Destructor
     virtual ~SGMatrixFreeOp();
@@ -77,14 +78,14 @@ namespace FEApp {
      * Epetra_MultiVector Input in Result as described above.
      */
     virtual int Apply(const Epetra_MultiVector& Input, 
-		      Epetra_MultiVector& Result) const;
+                      Epetra_MultiVector& Result) const;
 
     /*! 
      * \brief Returns the result of the inverse of the operator applied to a 
      * Epetra_MultiVector Input in Result as described above.
      */
     virtual int ApplyInverse(const Epetra_MultiVector& X, 
-			     Epetra_MultiVector& Y) const;
+                             Epetra_MultiVector& Y) const;
     
     //! Returns an approximate infinity norm of the operator matrix.
     virtual double NormInf() const;
@@ -169,6 +170,6 @@ namespace FEApp {
   
 } // namespace FEApp
 
-#endif // SGFAD_ACTIVE
+#endif // SG_ACTIVE
 
 #endif // FEAPP_SGMATRIXFREEOP_HPP

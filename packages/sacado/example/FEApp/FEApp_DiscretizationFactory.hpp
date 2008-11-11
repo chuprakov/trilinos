@@ -57,8 +57,8 @@ namespace FEApp {
 
     virtual Teuchos::RCP<FEApp::AbstractDiscretization>
     create(const std::vector<double>& coords,
-	   unsigned int num_equations,
-	   const Teuchos::RCP<const Epetra_Comm>& epetra_comm);
+           unsigned int num_equations,
+           const Teuchos::RCP<const Epetra_Comm>& epetra_comm);
 
   private:
 

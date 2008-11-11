@@ -41,13 +41,17 @@
 
 namespace FEApp {
 
-  template <typename ScalarT>
-  class HeatNonlinearSourcePDE : public FEApp::AbstractPDE<ScalarT> {
+  template <typename EvalT>
+  class HeatNonlinearSourcePDE : public FEApp::AbstractPDE<EvalT> {
   public:
+
+    //! Scalar type
+    typedef typename FEApp::AbstractPDE<EvalT>::ScalarT ScalarT;
   
     //! Constructor
-    HeatNonlinearSourcePDE(const Teuchos::RCP< const FEApp::AbstractFunction<ScalarT> >& mat_func,
-			   const Teuchos::RCP< const FEApp::AbstractSourceFunction<ScalarT> >& src_func);
+    HeatNonlinearSourcePDE(
+      const Teuchos::RCP< const FEApp::AbstractFunction<EvalT> >& mat_func,
+			const Teuchos::RCP< const FEApp::AbstractSourceFunction<EvalT> >& src_func);
 
     //! Destructor
     virtual ~HeatNonlinearSourcePDE();
@@ -61,10 +65,10 @@ namespace FEApp {
     //! Evaluate discretized PDE element-level residual
     virtual void
     evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
-			    const FEApp::AbstractElement& element,
-			    const std::vector<ScalarT>* dot,
-			    const std::vector<ScalarT>& solution,
-			    std::vector<ScalarT>& residual);
+                            const FEApp::AbstractElement& element,
+                            const std::vector<ScalarT>* dot,
+                            const std::vector<ScalarT>& solution,
+                            std::vector<ScalarT>& residual);
 
   private:
 
@@ -77,10 +81,10 @@ namespace FEApp {
   protected:
 
     //! Pointer to material function
-    Teuchos::RCP< const FEApp::AbstractFunction<ScalarT> > mat;
+    Teuchos::RCP< const FEApp::AbstractFunction<EvalT> > mat;
     
     //! Pointer to source function
-    Teuchos::RCP< const FEApp::AbstractSourceFunction<ScalarT> > source;
+    Teuchos::RCP< const FEApp::AbstractSourceFunction<EvalT> > source;
 
     //! Number of quad points
     unsigned int num_qp;
@@ -118,7 +122,7 @@ namespace FEApp {
   public:
     HeatNonlinearSourcePDE_TemplateBuilder(
 		const Teuchos::RCP<Teuchos::ParameterList>& params_,
-	        const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) :
+	        const Teuchos::RCP<ParamLib>& paramLib) :
       mat_params(Teuchos::rcp(&(params_->sublist("Material Function")),false)),
       src_params(Teuchos::rcp(&(params_->sublist("Source Function")),false)),
       pl(paramLib) {}
@@ -126,16 +130,16 @@ namespace FEApp {
     Teuchos::RCP<FEApp::AbstractPDE_NTBase> build() const {
       FEApp::FunctionFactory<T> matFactory(mat_params, pl);
       Teuchos::RCP< FEApp::AbstractFunction<T> > mat =
-	matFactory.create();
+        matFactory.create();
       FEApp::SourceFunctionFactory<T> srcFactory(src_params, pl);
       Teuchos::RCP< FEApp::AbstractSourceFunction<T> > source =
-	srcFactory.create();
+        srcFactory.create();
       return Teuchos::rcp( new FEApp::HeatNonlinearSourcePDE<T>(mat, source));
     }
   protected:
     Teuchos::RCP<Teuchos::ParameterList> mat_params;
     Teuchos::RCP<Teuchos::ParameterList> src_params;
-    Teuchos::RCP<Sacado::ScalarParameterLibrary> pl;
+    Teuchos::RCP<ParamLib> pl;
   };
 
 }

@@ -34,7 +34,7 @@
 
 #include "FEApp_SGMatrixFreeOp.hpp"
 
-#if SGFAD_ACTIVE
+#if SG_ACTIVE
 
 FEApp::SGMatrixFreeOp::SGMatrixFreeOp(
    const Teuchos::RCP<const Epetra_Map>& base_map_,
@@ -78,7 +78,7 @@ FEApp::SGMatrixFreeOp::SetUseTranspose(bool UseTranspose)
 
 int 
 FEApp::SGMatrixFreeOp::Apply(const Epetra_MultiVector& Input, 
-			     Epetra_MultiVector& Result) const
+                             Epetra_MultiVector& Result) const
 {
   int m = Input.NumVectors();
   if (sg_input == Teuchos::null || sg_input->NumVectors() != m) {

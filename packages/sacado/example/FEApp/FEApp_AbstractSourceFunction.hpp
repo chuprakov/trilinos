@@ -33,15 +33,19 @@
 #define FEAPP_ABSTRACTSOURCEFUNCTION_HPP
 
 #include <vector>
+#include "FEApp_TemplateTypes.hpp"
 
 namespace FEApp {
 
   /*!
    * \brief Abstract interface for representing a PDE source function
    */
-  template <typename ScalarT>
+  template <typename EvalT>
   class AbstractSourceFunction {
   public:
+
+    //! Scalar type
+    typedef typename FEApp::EvaluationTraits::apply<EvalT>::type ScalarT;
   
     //! Default constructor
     AbstractSourceFunction() {};
@@ -52,7 +56,7 @@ namespace FEApp {
     //! Evaluate source function
     virtual void
     evaluate(const std::vector<ScalarT>& solution,
-	     std::vector<ScalarT>& value) const = 0;
+             std::vector<ScalarT>& value) const = 0;
 
   private:
     

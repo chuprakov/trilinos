@@ -40,14 +40,17 @@
 
 namespace FEApp {
 
-  template <typename ScalarT>
-  class BrusselatorPDE : public FEApp::AbstractPDE<ScalarT> {
+  template <typename EvalT>
+  class BrusselatorPDE : public FEApp::AbstractPDE<EvalT> {
   public:
+
+    //! Scalar type
+    typedef typename FEApp::AbstractPDE<EvalT>::ScalarT ScalarT;
   
     //! Constructor
     BrusselatorPDE(
-	 double alpha, double beta, double D1, double D2,
-	 const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib);
+                double alpha, double beta, double D1, double D2,
+                const Teuchos::RCP<ParamLib>& paramLib);
 
     //! Destructor
     virtual ~BrusselatorPDE();
@@ -61,10 +64,10 @@ namespace FEApp {
     //! Evaluate discretized PDE element-level residual
     virtual void
     evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
-			    const FEApp::AbstractElement& element,
-			    const std::vector<ScalarT>* dot,
-			    const std::vector<ScalarT>& solution,
-			    std::vector<ScalarT>& residual);
+                            const FEApp::AbstractElement& element,
+                            const std::vector<ScalarT>* dot,
+                            const std::vector<ScalarT>& solution,
+                            std::vector<ScalarT>& residual);
 
   private:
     
@@ -114,15 +117,15 @@ namespace FEApp {
     double D1, D2;
 
     //! Parameter library
-    Teuchos::RCP<Sacado::ScalarParameterLibrary> pl;
+    Teuchos::RCP<ParamLib> pl;
 
   };
 
   class BrusselatorPDE_TemplateBuilder {
   public:
     BrusselatorPDE_TemplateBuilder(
-	double alpha_, double beta_, double D1_, double D2_,
-	const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) :
+          double alpha_, double beta_, double D1_, double D2_,
+          const Teuchos::RCP<ParamLib>& paramLib) :
       alpha(alpha_), beta(beta_), D1(D1_), D2(D2_), pl(paramLib) {}
     template <typename T>
     Teuchos::RCP<FEApp::AbstractPDE_NTBase> build() const {
@@ -130,7 +133,7 @@ namespace FEApp {
     }
   protected:
     double alpha, beta, D1, D2;
-    Teuchos::RCP<Sacado::ScalarParameterLibrary> pl;
+    Teuchos::RCP<ParamLib> pl;
   };
 
 }

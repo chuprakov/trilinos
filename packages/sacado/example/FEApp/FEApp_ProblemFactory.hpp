@@ -49,8 +49,8 @@ namespace FEApp {
 
     //! Default constructor
     ProblemFactory(
-	const Teuchos::RCP<Teuchos::ParameterList>& problemParams,
-	const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib);
+               const Teuchos::RCP<Teuchos::ParameterList>& problemParams,
+               const Teuchos::RCP<ParamLib>& paramLib);
 
     //! Destructor
     virtual ~ProblemFactory() {}
@@ -72,7 +72,7 @@ namespace FEApp {
     Teuchos::RCP<Teuchos::ParameterList> problemParams;
 
     //! Parameter library
-    Teuchos::RCP<Sacado::ScalarParameterLibrary> paramLib;
+    Teuchos::RCP<ParamLib> paramLib;
 
   };
 

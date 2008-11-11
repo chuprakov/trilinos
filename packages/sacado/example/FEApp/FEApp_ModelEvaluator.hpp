@@ -50,7 +50,8 @@ namespace FEApp {
     // Constructor
     ModelEvaluator(
        const Teuchos::RCP<FEApp::Application>& app,
-       const Teuchos::RCP< Teuchos::Array<std::string> >& free_param_names = Teuchos::null);
+       const Teuchos::RCP< Teuchos::Array<std::string> >& free_param_names = 
+       Teuchos::null);
 
     /** \name Overridden from EpetraExt::ModelEvaluator . */
     //@{
@@ -97,7 +98,7 @@ namespace FEApp {
     Teuchos::RCP< Teuchos::Array<std::string> > param_names;
 
     //! Sacado parameter vector
-    Teuchos::RCP<Sacado::ScalarParameterVector> sacado_param_vec;
+    Teuchos::RCP<ParamVec> sacado_param_vec;
 
     //! Epetra map for parameter vector
     Teuchos::RCP<Epetra_LocalMap> epetra_param_map;

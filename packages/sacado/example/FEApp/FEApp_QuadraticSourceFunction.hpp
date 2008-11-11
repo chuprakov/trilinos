@@ -41,30 +41,33 @@
 
 namespace FEApp {
 
-  template <typename ScalarT> class QuadraticNonlinearFactorParameter;
+  template <typename EvalT> class QuadraticNonlinearFactorParameter;
 
   /*!
    * \brief A quadratic PDE source function
    */
-  template <typename ScalarT>
+  template <typename EvalT>
   class QuadraticSourceFunction : 
-    public FEApp::AbstractSourceFunction<ScalarT> {
+    public FEApp::AbstractSourceFunction<EvalT> {
   public:
+
+    //! Scalar type
+    typedef typename FEApp::AbstractSourceFunction<EvalT>::ScalarT ScalarT;
   
     //! Default constructor
     QuadraticSourceFunction(
 	       const ScalarT& factor,
-	       const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) : 
+	       const Teuchos::RCP<ParamLib>& paramLib) : 
       alpha(factor) 
     {
       // Add nonlinear factor to parameter library
       std::string name = "Quadratic Source Function Nonlinear Factor";
       if (!paramLib->isParameter(name))
-	paramLib->addParameterFamily(name, true, false);
-      if (!paramLib->template isParameterForType<ScalarT>(name)) {
-	Teuchos::RCP< QuadraticNonlinearFactorParameter<ScalarT> > tmp = 
-	  Teuchos::rcp(new QuadraticNonlinearFactorParameter<ScalarT>(Teuchos::rcp(this,false)));
-	paramLib->template addEntry<ScalarT>(name, tmp);
+        paramLib->addParameterFamily(name, true, false);
+      if (!paramLib->template isParameterForType<EvalT>(name)) {
+        Teuchos::RCP< QuadraticNonlinearFactorParameter<EvalT> > tmp = 
+          Teuchos::rcp(new QuadraticNonlinearFactorParameter<EvalT>(Teuchos::rcp(this,false)));
+        paramLib->template addEntry<EvalT>(name, tmp);
       }
     };
 
@@ -74,9 +77,9 @@ namespace FEApp {
     //! Evaluate source function
     virtual void
     evaluate(const std::vector<ScalarT>& solution,
-	     std::vector<ScalarT>& value) const {
+             std::vector<ScalarT>& value) const {
       for (unsigned int i=0; i<solution.size(); i++)
-	value[i] = alpha*solution[i]*solution[i];
+        value[i] = alpha*solution[i]*solution[i];
     }
 
     //! Set nonlinear factor
@@ -107,15 +110,18 @@ namespace FEApp {
    * @brief Parameter class for sensitivity/stability analysis representing
    * the nonlinear factor in the quadratic source function
    */
-  template <typename ScalarT>
+  template <typename EvalT>
   class QuadraticNonlinearFactorParameter : 
-    public Sacado::ScalarParameterEntry<ScalarT> {
+    public Sacado::ScalarParameterEntry<EvalT,EvaluationTraits> {
 
   public:
 
+    //! Scalar type
+    typedef typename Sacado::ScalarParameterEntry<EvalT,EvaluationTraits>::ScalarT ScalarT;
+
     //! Constructor
     QuadraticNonlinearFactorParameter(
-		  const Teuchos::RCP< QuadraticSourceFunction<ScalarT> >& s) : 
+		  const Teuchos::RCP< QuadraticSourceFunction<EvalT> >& s) : 
       srcFunc(s) {}
 
     //! Destructor
@@ -123,15 +129,15 @@ namespace FEApp {
 
     //! Set real parameter value
     virtual void setRealValue(double value) { 
-      setValueAsConstant(ScalarT(value)); }
-
-    //! Set parameter this object represents to \em value
-    virtual void setValueAsConstant(const ScalarT& value) { 
       srcFunc->setFactor(value, true); }
     
     //! Set parameter this object represents to \em value
-    virtual void setValueAsIndependent(const ScalarT& value) { 
+    virtual void setValue(const ScalarT& value) { 
       srcFunc->setFactor(value, false); }
+
+     //! Get real parameter value
+    virtual double getRealValue() const { 
+      return Sacado::Value<ScalarT>::eval(srcFunc->getFactor()); }
     
     //! Get parameter value this object represents
     virtual const ScalarT& getValue() const { return srcFunc->getFactor(); }
@@ -139,7 +145,7 @@ namespace FEApp {
   protected:  
     
     //! Pointer to source function
-    Teuchos::RCP< QuadraticSourceFunction<ScalarT> > srcFunc;
+    Teuchos::RCP< QuadraticSourceFunction<EvalT> > srcFunc;
 
   };
 

@@ -37,18 +37,21 @@
 
 namespace FEApp {
 
-  template <typename ScalarT>
+  template <typename EvalT>
   class ConstantNodeBCStrategy : 
-    public FEApp::AbstractNodeBCStrategy<ScalarT> {
+    public FEApp::AbstractNodeBCStrategy<EvalT> {
   public:
+
+    //! Scalar type
+    typedef typename FEApp::AbstractNodeBCStrategy<EvalT>::ScalarT ScalarT;
 
     //! Constructor
     ConstantNodeBCStrategy(
-		unsigned int solution_index, 
-		unsigned int residual_index,
-		const ScalarT& value,
-		unsigned int bc_id,
-		const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib);
+		             unsigned int solution_index, 
+                 unsigned int residual_index,
+                 const ScalarT& value,
+                 unsigned int bc_id,
+		             const Teuchos::RCP<ParamLib>& paramLib);
 
     //! Destructor
     virtual ~ConstantNodeBCStrategy();
@@ -58,14 +61,14 @@ namespace FEApp {
 
     //! Evaluate BC residual
     virtual void evaluateResidual(const std::vector<ScalarT>* dot,
-				  const std::vector<ScalarT>& solution,
-				  std::vector<ScalarT>& residual) const;
+                                  const std::vector<ScalarT>& solution,
+                                  std::vector<ScalarT>& residual) const;
 
     //! Set value of BC
     void setValue(const ScalarT& value, bool mark_constant);
 
     //! Get value of BC
-    const ScalarT& getValue() const;
+    const ScalarT& getValue() const { return val; }
 
   private:
     
@@ -98,38 +101,41 @@ namespace FEApp {
 	       unsigned int residual_index,
 	       double value,
 	       unsigned int bc_id,
-	       const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) :
+	       const Teuchos::RCP<ParamLib>& paramLib) :
       sol_index(solution_index), res_index(residual_index), val(value),
       bcid(bc_id), pl(paramLib) {}
     template <typename T>
     Teuchos::RCP<FEApp::AbstractNodeBCStrategy_NTBase> build() const {
       return Teuchos::rcp( new ConstantNodeBCStrategy<T>(sol_index, 
-							 res_index, 
-							 val,
-							 bcid,
-							 pl));
+                                                         res_index, 
+                                                         val,
+                                                         bcid,
+                                                         pl));
     }
   protected:
     unsigned int sol_index;
     unsigned int res_index;
     double val;
     unsigned int bcid;
-    Teuchos::RCP<Sacado::ScalarParameterLibrary> pl;
+    Teuchos::RCP<ParamLib> pl;
   };
 
   /*!
    * @brief Parameter class for sensitivity/stability analysis representing
    * value of a constant node BC
    */
-  template <typename ScalarT>
+  template <typename EvalT>
   class ConstantNodeBCParameter : 
-    public Sacado::ScalarParameterEntry<ScalarT> {
+    public Sacado::ScalarParameterEntry<EvalT,EvaluationTraits> {
 
   public:
 
+    //! Scalar type
+    typedef typename Sacado::ScalarParameterEntry<EvalT,EvaluationTraits>::ScalarT ScalarT;
+
     //! Constructor
     ConstantNodeBCParameter(
-		   const Teuchos::RCP< ConstantNodeBCStrategy<ScalarT> >& s) : 
+		   const Teuchos::RCP< ConstantNodeBCStrategy<EvalT> >& s) : 
       bc(s) {}
 
     //! Destructor
@@ -137,15 +143,15 @@ namespace FEApp {
 
     //! Set real parameter value
     virtual void setRealValue(double value) { 
-      setValueAsConstant(ScalarT(value)); }
-
-    //! Set parameter this object represents to \em value
-    virtual void setValueAsConstant(const ScalarT& value) { 
       bc->setValue(value, true); }
     
     //! Set parameter this object represents to \em value
-    virtual void setValueAsIndependent(const ScalarT& value) { 
+    virtual void setValue(const ScalarT& value) { 
       bc->setValue(value, false); }
+
+    //! Get real parameter value
+    virtual double getRealValue() const {
+      return Sacado::Value<ScalarT>::eval(bc->getValue()); }
     
     //! Get parameter value this object represents
     virtual const ScalarT& getValue() const { return bc->getValue(); }
@@ -153,7 +159,7 @@ namespace FEApp {
   protected:  
     
     //! Pointer to source function
-    Teuchos::RCP< ConstantNodeBCStrategy<ScalarT> > bc;
+    Teuchos::RCP< ConstantNodeBCStrategy<EvalT> > bc;
 
   };
 

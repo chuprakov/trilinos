@@ -29,10 +29,11 @@
 // ***********************************************************************
 // @HEADER
 
-template <typename ScalarT>
-FEApp::HeatNonlinearSourcePDE<ScalarT>::
-HeatNonlinearSourcePDE(const Teuchos::RCP< const FEApp::AbstractFunction<ScalarT> >& mat_func,
-		       const Teuchos::RCP< const FEApp::AbstractSourceFunction<ScalarT> >& src_func) :
+template <typename EvalT>
+FEApp::HeatNonlinearSourcePDE<EvalT>::
+HeatNonlinearSourcePDE(
+  const Teuchos::RCP< const FEApp::AbstractFunction<EvalT> >& mat_func,
+  const Teuchos::RCP< const FEApp::AbstractSourceFunction<EvalT> >& src_func) :
   mat(mat_func),
   source(src_func),
   num_qp(0),
@@ -48,23 +49,23 @@ HeatNonlinearSourcePDE(const Teuchos::RCP< const FEApp::AbstractFunction<ScalarT
 {
 }
 
-template <typename ScalarT>
-FEApp::HeatNonlinearSourcePDE<ScalarT>::
+template <typename EvalT>
+FEApp::HeatNonlinearSourcePDE<EvalT>::
 ~HeatNonlinearSourcePDE()
 {
 }
 
-template <typename ScalarT>
+template <typename EvalT>
 unsigned int 
-FEApp::HeatNonlinearSourcePDE<ScalarT>::
+FEApp::HeatNonlinearSourcePDE<EvalT>::
 numEquations() const
 {
   return 1;
 }
 
-template <typename ScalarT>
+template <typename EvalT>
 void
-FEApp::HeatNonlinearSourcePDE<ScalarT>::
+FEApp::HeatNonlinearSourcePDE<EvalT>::
 init(unsigned int numQuadPoints, unsigned int numNodes)
 {
   num_qp = numQuadPoints;
@@ -85,14 +86,14 @@ init(unsigned int numQuadPoints, unsigned int numNodes)
   }
 }
 
-template <typename ScalarT>
+template <typename EvalT>
 void
-FEApp::HeatNonlinearSourcePDE<ScalarT>::
+FEApp::HeatNonlinearSourcePDE<EvalT>::
 evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
-			const FEApp::AbstractElement& element,
-			const std::vector<ScalarT>* dot,
-			const std::vector<ScalarT>& solution,
-			std::vector<ScalarT>& residual)
+                        const FEApp::AbstractElement& element,
+                        const std::vector<ScalarT>* dot,
+                        const std::vector<ScalarT>& solution,
+                        std::vector<ScalarT>& residual)
  {
   
   // Quadrature points
@@ -122,7 +123,7 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
       u[qp] += solution[node] * phi[qp][node];
       du[qp] += solution[node] * dphi[qp][node];
       if (dot != NULL)
-	udot[qp] += (*dot)[node] * phi[qp][node];
+        udot[qp] += (*dot)[node] * phi[qp][node];
     }
   }
 
@@ -134,8 +135,8 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
     residual[node] = 0.0;
     for (unsigned int qp=0; qp<num_qp; qp++) {
       residual[node] += 
-	w[qp]*jac[qp]*(-(1.0/(jac[qp]*jac[qp]))*a[qp]*du[qp]*dphi[qp][node] + 
-		       phi[qp][node]*(f[qp] - udot[qp]));
+        w[qp]*jac[qp]*(-(1.0/(jac[qp]*jac[qp]))*a[qp]*du[qp]*dphi[qp][node] + 
+                       phi[qp][node]*(f[qp] - udot[qp]));
     }
   }
 

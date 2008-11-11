@@ -35,17 +35,24 @@
 #include <vector>
 
 #include "FEApp_AbstractNodeBCStrategy_NTBase.hpp"
+#include "FEApp_TemplateTypes.hpp"
 
 #include "Sacado_TemplateManager.hpp"
+#include "Sacado_mpl_placeholders.hpp"
+
+using namespace Sacado::mpl::placeholders;
 
 namespace FEApp {
 
   /*!
    * \brief Abstract interface for a nodal boundary condition
    */
-  template <typename ScalarT>
+  template <typename EvalT>
   class AbstractNodeBCStrategy : public FEApp::AbstractNodeBCStrategy_NTBase {
   public:
+
+    //! Scalar type
+    typedef typename FEApp::EvaluationTraits::apply<EvalT>::type ScalarT;
 
     //! Constructor
     AbstractNodeBCStrategy() {};
@@ -55,8 +62,8 @@ namespace FEApp {
 
     //! Evaluate BC residual
     virtual void evaluateResidual(const std::vector<ScalarT>* dot,
-				  const std::vector<ScalarT>& solution,
-				  std::vector<ScalarT>& residual) const = 0;
+                                  const std::vector<ScalarT>& solution,
+                                  std::vector<ScalarT>& residual) const = 0;
 
   private:
 
@@ -71,8 +78,8 @@ namespace FEApp {
   template <typename TypeSeq>
   class AbstractNodeBCStrategy_TemplateManager : 
     public Sacado::TemplateManager<TypeSeq, 
-				   FEApp::AbstractNodeBCStrategy_NTBase,
-				   AbstractNodeBCStrategy> {
+                                   FEApp::AbstractNodeBCStrategy_NTBase,
+                                   AbstractNodeBCStrategy<_> > {
   public:
     AbstractNodeBCStrategy_TemplateManager() {}
     ~AbstractNodeBCStrategy_TemplateManager() {}

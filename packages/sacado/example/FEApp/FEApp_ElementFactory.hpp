@@ -46,8 +46,7 @@ namespace FEApp {
   public:
 
     //! Default constructor
-    ElementFactory(
-	      const Teuchos::RCP<Teuchos::ParameterList>& elemParams);
+    ElementFactory(const Teuchos::RCP<Teuchos::ParameterList>& elemParams);
 
     //! Destructor
     virtual ~ElementFactory() {}

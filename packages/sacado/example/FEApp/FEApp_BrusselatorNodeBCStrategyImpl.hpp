@@ -31,11 +31,12 @@
 
 #include "FEApp_BrusselatorParameters.hpp"
 
-template <typename ScalarT>
-FEApp::BrusselatorNodeBCStrategy<ScalarT>::
+template <typename EvalT>
+FEApp::BrusselatorNodeBCStrategy<EvalT>::
 BrusselatorNodeBCStrategy(
-       const ScalarT& alpha_, const ScalarT& beta_,
-       const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) :
+        const ScalarT& alpha_, 
+        const ScalarT& beta_,
+        const Teuchos::RCP<ParamLib>& paramLib) :
   alpha(alpha_),
   beta(beta_),
   offsets(2),
@@ -48,46 +49,46 @@ BrusselatorNodeBCStrategy(
   std::string name = "Brusselator Alpha";
   if (!pl->isParameter(name))
     pl->addParameterFamily(name, true, false);
-  if (!pl->template isParameterForType<ScalarT>(name)) {
-    Teuchos::RCP< BrusselatorAlphaParameter<ScalarT> > tmpa = 
-      Teuchos::rcp(new BrusselatorAlphaParameter<ScalarT>(alpha));
-    pl->template addEntry<ScalarT>(name, tmpa);
+  if (!pl->template isParameterForType<EvalT>(name)) {
+    Teuchos::RCP< BrusselatorAlphaParameter<EvalT> > tmpa = 
+      Teuchos::rcp(new BrusselatorAlphaParameter<EvalT>(alpha));
+    pl->template addEntry<EvalT>(name, tmpa);
   }
 
   // Add "beta" to parameter library
   name = "Brusselator Beta";
   if (!pl->isParameter(name))
     pl->addParameterFamily(name, true, false);
-  if (!pl->template isParameterForType<ScalarT>(name)) {
-    Teuchos::RCP< BrusselatorBetaParameter<ScalarT> > tmpb = 
-      Teuchos::rcp(new BrusselatorBetaParameter<ScalarT>(beta));
-    pl->template addEntry<ScalarT>(name, tmpb);
+  if (!pl->template isParameterForType<EvalT>(name)) {
+    Teuchos::RCP< BrusselatorBetaParameter<EvalT> > tmpb = 
+      Teuchos::rcp(new BrusselatorBetaParameter<EvalT>(beta));
+    pl->template addEntry<EvalT>(name, tmpb);
   }
 }
 
-template <typename ScalarT>
-FEApp::BrusselatorNodeBCStrategy<ScalarT>::
+template <typename EvalT>
+FEApp::BrusselatorNodeBCStrategy<EvalT>::
 ~BrusselatorNodeBCStrategy()
 {
 }
 
-template <typename ScalarT>
+template <typename EvalT>
 const std::vector<unsigned int>&
-FEApp::BrusselatorNodeBCStrategy<ScalarT>::
+FEApp::BrusselatorNodeBCStrategy<EvalT>::
 getOffsets() const
 {
   return offsets;
 }
 
-template <typename ScalarT>
+template <typename EvalT>
 void
-FEApp::BrusselatorNodeBCStrategy<ScalarT>::
+FEApp::BrusselatorNodeBCStrategy<EvalT>::
 evaluateResidual(const std::vector<ScalarT>* dot,
-		 const std::vector<ScalarT>& solution,
-		 std::vector<ScalarT>& residual) const
+                 const std::vector<ScalarT>& solution,
+                 std::vector<ScalarT>& residual) const
 {
-  alpha = pl->template getValue<ScalarT>("Brusselator Alpha");
-  beta = pl->template getValue<ScalarT>("Brusselator Beta");
+  alpha = pl->template getValue<EvalT>("Brusselator Alpha");
+  beta = pl->template getValue<EvalT>("Brusselator Beta");
 
   residual[0] = solution[0] - alpha;
   residual[1] = solution[1] - beta/alpha;

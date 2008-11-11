@@ -51,8 +51,8 @@ namespace FEApp {
   
     //! Default constructor
     BrusselatorProblem(
-	const Teuchos::RCP<Teuchos::ParameterList>& params,
-	const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib);
+              const Teuchos::RCP<Teuchos::ParameterList>& params,
+              const Teuchos::RCP<ParamLib>& paramLib);
 
     //! Destructor
     virtual ~BrusselatorProblem();
@@ -63,10 +63,10 @@ namespace FEApp {
     //! Build the PDE instantiations, boundary conditions, and initial solution
     virtual void 
     buildProblem(const Epetra_Map& dofMap,
-		 const Epetra_Map& overlapped_dofMap,
-		 FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM,
-		 std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
-		 const Teuchos::RCP<Epetra_Vector>& u);
+                 const Epetra_Map& overlapped_dofMap,
+                 FEApp::AbstractPDE_TemplateManager<EvalTypes>& pdeTM,
+                 std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
+                 const Teuchos::RCP<Epetra_Vector>& u);
 
   private:
 
@@ -82,7 +82,7 @@ namespace FEApp {
     double alpha, beta, D1, D2;
 
     //! Parameter library
-    Teuchos::RCP<Sacado::ScalarParameterLibrary> paramLib;
+    Teuchos::RCP<ParamLib> paramLib;
 
   };
 

@@ -44,51 +44,47 @@
 #if SG_ACTIVE
 #include "EpetraExt_BlockVector.h"
 #include "Stokhos_OrthogPolyBasis.hpp"
-#endif
-
-#if SGFAD_ACTIVE
 #include "EpetraExt_BlockCrsMatrix.h"
 #endif
 
 namespace FEApp {
 
   //! Fill operator for residual
-  class ResidualOp : public FEApp::AbstractInitPostOp<double> {
+  class ResidualOp : public FEApp::AbstractInitPostOp<FEApp::ResidualType> {
   public:
     
     //! Constructor
     /*!
      * Set xdot to Teuchos::null for steady-state problems
      */
-    ResidualOp(
-	    const Teuchos::RCP<const Epetra_Vector>& overlapped_xdot,
-	    const Teuchos::RCP<const Epetra_Vector>& overlapped_x,
-	    const Teuchos::RCP<Epetra_Vector>& overlapped_f);
+    ResidualOp(const Teuchos::RCP<const Epetra_Vector>& overlapped_xdot,
+               const Teuchos::RCP<const Epetra_Vector>& overlapped_x,
+               const Teuchos::RCP<Epetra_Vector>& overlapped_f);
 
     //! Destructor
     virtual ~ResidualOp();
     
     //! Evaulate element init operator
     virtual void elementInit(const FEApp::AbstractElement& e,
-			     unsigned int neqn,
-			     std::vector<double>* elem_xdot,
-			     std::vector<double>& elem_x);
+                             unsigned int neqn,
+                             std::vector<double>* elem_xdot,
+                             std::vector<double>& elem_x);
 
     //! Evaluate element post operator
     virtual void elementPost(const FEApp::AbstractElement& e,
-			     unsigned int neqn,
-			     std::vector<double>& elem_f);
+                             unsigned int neqn,
+                             std::vector<double>& elem_f);
 
     //! Evaulate node init operator
     virtual void nodeInit(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector<double>* node_xdot,
-			  std::vector<double>& node_x);
+                          unsigned int neqn,
+                          std::vector<double>* node_xdot,
+                          std::vector<double>& node_x);
 
     //! Evaluate node post operator
     virtual void nodePost(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector<double>& node_f);
+                          unsigned int neqn,
+                          std::vector<double>& node_f);
 
     //! Finalize fill
     virtual void finalizeFill() {}
@@ -116,45 +112,43 @@ namespace FEApp {
 
   //! Fill operator for Jacobian
   class JacobianOp : 
-    public FEApp::AbstractInitPostOp< FadType > {
+    public FEApp::AbstractInitPostOp<FEApp::JacobianType> {
   public:
 
     //! Constructor
     /*!
      * Set xdot to Teuchos::null for steady-state problems
      */
-    JacobianOp(
-	    double alpha, double beta,
-	    const Teuchos::RCP<const Epetra_Vector>& overlapped_xdot,
-	    const Teuchos::RCP<const Epetra_Vector>& overlapped_x,
-	    const Teuchos::RCP<Epetra_Vector>& overlapped_f,
-	    const Teuchos::RCP<Epetra_CrsMatrix>& overlapped_jac);
+    JacobianOp(double alpha, double beta,
+               const Teuchos::RCP<const Epetra_Vector>& overlapped_xdot,
+               const Teuchos::RCP<const Epetra_Vector>& overlapped_x,
+               const Teuchos::RCP<Epetra_Vector>& overlapped_f,
+               const Teuchos::RCP<Epetra_CrsMatrix>& overlapped_jac);
 
     //! Destructor
     virtual ~JacobianOp();
 
     //! Evaulate element init operator
-    virtual void elementInit(
-			 const FEApp::AbstractElement& e,
-			 unsigned int neqn,
-			 std::vector< FadType >* elem_xdot,
-			 std::vector< FadType >& elem_x);
+    virtual void elementInit(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector< FadType >* elem_xdot,
+                             std::vector< FadType >& elem_x);
 
     //! Evaluate element post operator
     virtual void elementPost(const FEApp::AbstractElement& e,
-			     unsigned int neqn,
-			     std::vector< FadType >& elem_f);
+                             unsigned int neqn,
+                             std::vector< FadType >& elem_f);
 
     //! Evaulate node init operator
     virtual void nodeInit(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector< FadType >* node_xdot,
-			  std::vector< FadType >& node_x);
+                          unsigned int neqn,
+                          std::vector< FadType >* node_xdot,
+                          std::vector< FadType >& node_x);
 
     //! Evaluate node post operator
     virtual void nodePost(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector< FadType >& node_f);
+                          unsigned int neqn,
+                          std::vector< FadType >& node_f);
 
     //! Finalize fill
     virtual void finalizeFill() {}
@@ -194,7 +188,7 @@ namespace FEApp {
    * alpha*df/dxdot*Vxdot + beta*df/dx*Vx + df/dp*V_p
    */
   class TangentOp : 
-    public FEApp::AbstractInitPostOp< FadType > {
+    public FEApp::AbstractInitPostOp<FEApp::TangentType> {
   public:
 
     //! Constructor
@@ -202,42 +196,41 @@ namespace FEApp {
      * Set xdot to Teuchos::null for steady-state problems
      */
     TangentOp(
-	double alpha, double beta, bool sum_derivs,
-	const Teuchos::RCP<const Epetra_Vector>& overlapped_xdot,
-	const Teuchos::RCP<const Epetra_Vector>& overlapped_x,
-	const Teuchos::RCP<Sacado::ScalarParameterVector>& p,
-	const Teuchos::RCP<const Epetra_MultiVector>& overlapped_Vx,
-	const Teuchos::RCP<const Epetra_MultiVector>& overlapped_Vxdot,
-	const Teuchos::RCP<const Teuchos::SerialDenseMatrix<int,double> >& Vp,
-	const Teuchos::RCP<Epetra_Vector>& overlapped_f,
-	const Teuchos::RCP<Epetra_MultiVector>& overlapped_JV,
-	const Teuchos::RCP<Epetra_MultiVector>& overlapped_fp);
+	       double alpha, double beta, bool sum_derivs,
+         const Teuchos::RCP<const Epetra_Vector>& overlapped_xdot,
+         const Teuchos::RCP<const Epetra_Vector>& overlapped_x,
+         const Teuchos::RCP<ParamVec>& p,
+         const Teuchos::RCP<const Epetra_MultiVector>& overlapped_Vx,
+         const Teuchos::RCP<const Epetra_MultiVector>& overlapped_Vxdot,
+	       const Teuchos::RCP<const Teuchos::SerialDenseMatrix<int,double> >& Vp,
+         const Teuchos::RCP<Epetra_Vector>& overlapped_f,
+         const Teuchos::RCP<Epetra_MultiVector>& overlapped_JV,
+         const Teuchos::RCP<Epetra_MultiVector>& overlapped_fp);
 
     //! Destructor
     virtual ~TangentOp();
 
     //! Evaulate element init operator
-    virtual void elementInit(
-			 const FEApp::AbstractElement& e,
-			 unsigned int neqn,
-			 std::vector< FadType >* elem_xdot,
-			 std::vector< FadType >& elem_x);
+    virtual void elementInit(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector< FadType >* elem_xdot,
+                             std::vector< FadType >& elem_x);
 
     //! Evaluate element post operator
     virtual void elementPost(const FEApp::AbstractElement& e,
-			     unsigned int neqn,
-			     std::vector< FadType >& elem_f);
+                             unsigned int neqn,
+                             std::vector< FadType >& elem_f);
 
     //! Evaulate node init operator
     virtual void nodeInit(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector< FadType >* node_xdot,
-			  std::vector< FadType >& node_x);
+                          unsigned int neqn,
+                          std::vector< FadType >* node_xdot,
+                          std::vector< FadType >& node_x);
 
     //! Evaluate node post operator
     virtual void nodePost(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector< FadType >& node_f);
+                          unsigned int neqn,
+                          std::vector< FadType >& node_f);
 
     //! Finalize fill
     virtual void finalizeFill() {}
@@ -268,7 +261,7 @@ namespace FEApp {
     Teuchos::RCP<const Epetra_Vector> x;
 
     //! Parameter vector for parameter derivatives
-    Teuchos::RCP<Sacado::ScalarParameterVector> params;
+    Teuchos::RCP<ParamVec> params;
 
     //! Seed matrix for state variables
     Teuchos::RCP<const Epetra_MultiVector> Vx;
@@ -305,7 +298,8 @@ namespace FEApp {
 #if SG_ACTIVE
 
   //! Fill operator for Stochastic Galerkin residual
-  class SGResidualOp : public FEApp::AbstractInitPostOp<SGType> {
+  class SGResidualOp : 
+    public FEApp::AbstractInitPostOp<FEApp::SGResidualType> {
   public:
     
     //! Constructor
@@ -313,41 +307,41 @@ namespace FEApp {
      * Set xdot to Teuchos::null for steady-state problems
      */
     SGResidualOp(
-	 const Teuchos::RCP<const Epetra_Map>& base_map,
-	 const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis,
-	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
-	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
-	 const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f);
+	      const Teuchos::RCP<const Epetra_Map>& base_map,
+	      const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis,
+        const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+        const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
+        const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f);
 
     //! Destructor
     virtual ~SGResidualOp();
 
     //! Reset operator for new fill
     virtual void reset(
-	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
-	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x);
+	        const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+          const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x);
     
     //! Evaulate element init operator
     virtual void elementInit(const FEApp::AbstractElement& e,
-			     unsigned int neqn,
-			     std::vector<SGType>* elem_xdot,
-			     std::vector<SGType>& elem_x);
+                             unsigned int neqn,
+                             std::vector<SGType>* elem_xdot,
+                             std::vector<SGType>& elem_x);
 
     //! Evaluate element post operator
     virtual void elementPost(const FEApp::AbstractElement& e,
-			     unsigned int neqn,
-			     std::vector<SGType>& elem_f);
+                             unsigned int neqn,
+                             std::vector<SGType>& elem_f);
 
     //! Evaulate node init operator
     virtual void nodeInit(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector<SGType>* node_xdot,
-			  std::vector<SGType>& node_x);
+                          unsigned int neqn,
+                          std::vector<SGType>* node_xdot,
+                          std::vector<SGType>& node_x);
 
     //! Evaluate node post operator
     virtual void nodePost(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector<SGType>& node_f);
+                          unsigned int neqn,
+                          std::vector<SGType>& node_f);
 
     //! Finalize fill
     virtual void finalizeFill();
@@ -388,13 +382,9 @@ namespace FEApp {
 
   };
 
-#endif // SG_ACTIVE
-
-#if SGFAD_ACTIVE
-
   //! Fill operator for Jacobian
   class SGJacobianOp : 
-    public FEApp::AbstractInitPostOp< SGFadType > {
+    public FEApp::AbstractInitPostOp<FEApp::SGJacobianType> {
   public:
 
     typedef SGType::expansion_type::tp_type tp_type;
@@ -405,46 +395,45 @@ namespace FEApp {
      */
     SGJacobianOp(
          const Teuchos::RCP<const Epetra_Map>& base_map,
-	 const Teuchos::RCP<const Epetra_CrsGraph>& base_graph,
-	 const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis,
-	 const Teuchos::RCP<const tp_type >& Cijk,
-	 double alpha, double beta,
-	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
-	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
-	 const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f,
-	 const Teuchos::RCP<EpetraExt::BlockCrsMatrix>& sg_overlapped_jac);
+         const Teuchos::RCP<const Epetra_CrsGraph>& base_graph,
+	       const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis,
+         const Teuchos::RCP<const tp_type >& Cijk,
+         double alpha, double beta,
+         const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+         const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
+         const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f,
+         const Teuchos::RCP<EpetraExt::BlockCrsMatrix>& sg_overlapped_jac);
 
     //! Destructor
     virtual ~SGJacobianOp();
 
     //! Reset operator for new fill
     virtual void reset(
-	 double alpha, double beta,
-	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
-	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x);
+          double alpha, double beta,
+	        const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+          const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x);
 
     //! Evaulate element init operator
-    virtual void elementInit(
-			 const FEApp::AbstractElement& e,
-			 unsigned int neqn,
-			 std::vector< SGFadType >* elem_xdot,
-			 std::vector< SGFadType >& elem_x);
+    virtual void elementInit(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector< SGFadType >* elem_xdot,
+                             std::vector< SGFadType >& elem_x);
 
     //! Evaluate element post operator
     virtual void elementPost(const FEApp::AbstractElement& e,
-			     unsigned int neqn,
-			     std::vector< SGFadType >& elem_f);
+                             unsigned int neqn,
+                             std::vector< SGFadType >& elem_f);
 
     //! Evaulate node init operator
     virtual void nodeInit(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector< SGFadType >* node_xdot,
-			  std::vector< SGFadType >& node_x);
-
+                          unsigned int neqn,
+                          std::vector< SGFadType >* node_xdot,
+                          std::vector< SGFadType >& node_x);
+    
     //! Evaluate node post operator
     virtual void nodePost(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector< SGFadType >& node_f);
+                          unsigned int neqn,
+                          std::vector< SGFadType >& node_f);
 
     //! Finalize fill
     virtual void finalizeFill();
@@ -502,7 +491,7 @@ namespace FEApp {
 
     //! Fill operator for Jacobian
   class SGMatrixFreeJacobianOp : 
-    public FEApp::AbstractInitPostOp< SGFadType > {
+    public FEApp::AbstractInitPostOp<FEApp::SGJacobianType> {
   public:
 
     typedef SGType::expansion_type::tp_type tp_type;
@@ -513,48 +502,47 @@ namespace FEApp {
      */
     SGMatrixFreeJacobianOp(
          const Teuchos::RCP<const Epetra_Map>& base_map,
-	 const Teuchos::RCP<const Epetra_CrsGraph>& base_graph,
-	 const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis,
-	 double alpha, double beta,
-	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
-	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
-	 const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f);
+         const Teuchos::RCP<const Epetra_CrsGraph>& base_graph,
+	       const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis,
+         double alpha, double beta,
+         const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+         const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
+         const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f);
 
     //! Destructor
     virtual ~SGMatrixFreeJacobianOp();
 
     //! Reset operator for new fill
     virtual void reset(
-	 double alpha, double beta,
-	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
-	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x);
+	        double alpha, double beta,
+	        const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+          const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x);
 
     //! Get Jacobian blocks
     virtual std::vector< Teuchos::RCP<Epetra_CrsMatrix> >&
     getJacobianBlocks();
 
     //! Evaulate element init operator
-    virtual void elementInit(
-			 const FEApp::AbstractElement& e,
-			 unsigned int neqn,
-			 std::vector< SGFadType >* elem_xdot,
-			 std::vector< SGFadType >& elem_x);
+    virtual void elementInit(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector< SGFadType >* elem_xdot,
+                             std::vector< SGFadType >& elem_x);
 
     //! Evaluate element post operator
     virtual void elementPost(const FEApp::AbstractElement& e,
-			     unsigned int neqn,
-			     std::vector< SGFadType >& elem_f);
+                             unsigned int neqn,
+                             std::vector< SGFadType >& elem_f);
 
     //! Evaulate node init operator
     virtual void nodeInit(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector< SGFadType >* node_xdot,
-			  std::vector< SGFadType >& node_x);
+                          unsigned int neqn,
+                          std::vector< SGFadType >* node_xdot,
+                          std::vector< SGFadType >& node_x);
 
     //! Evaluate node post operator
     virtual void nodePost(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector< SGFadType >& node_f);
+                          unsigned int neqn,
+                          std::vector< SGFadType >& node_f);
 
     //! Finalize fill
     virtual void finalizeFill();
@@ -610,7 +598,7 @@ namespace FEApp {
 
   };
 
-#endif // SGFAD_ACTIVE
+#endif // SG_ACTIVE
 
 }
 

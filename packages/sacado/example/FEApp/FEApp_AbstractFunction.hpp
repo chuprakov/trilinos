@@ -33,15 +33,19 @@
 #define FEAPP_ABSTRACTFUNCTION_HPP
 
 #include <vector>
+#include "FEApp_TemplateTypes.hpp"
 
 namespace FEApp {
 
   /*!
    * \brief Abstract interface for representing a PDE material function
    */
-  template <typename ScalarT>
+  template <typename EvalT>
   class AbstractFunction {
   public:
+
+    //! Scalar type
+    typedef typename FEApp::EvaluationTraits::apply<EvalT>::type ScalarT;
   
     //! Default constructor
     AbstractFunction() {};
@@ -52,7 +56,7 @@ namespace FEApp {
     //! Evaluate function at quadrature points
     virtual void
     evaluate(const std::vector<double>& quad_points,
-	     std::vector<ScalarT>& value) const = 0;
+             std::vector<ScalarT>& value) const = 0;
 
   private:
     

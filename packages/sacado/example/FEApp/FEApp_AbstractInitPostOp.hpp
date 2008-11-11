@@ -36,15 +36,16 @@
 
 #include "FEApp_AbstractElement.hpp"
 #include "FEApp_NodeBC.hpp"
+#include "FEApp_TemplateTypes.hpp"
 
 namespace FEApp {
 
-  template <typename ScalarT>
+  template <typename EvalT>
   class AbstractInitPostOp {
   public:
-    
-    //! Fill type
-    typedef ScalarT fill_type;
+
+    //! Scalar type
+    typedef typename FEApp::EvaluationTraits::apply<EvalT>::type ScalarT;
 
     //! Constructor
     AbstractInitPostOp() {};
@@ -54,25 +55,25 @@ namespace FEApp {
 
     //! Evaulate element init operator
     virtual void elementInit(const FEApp::AbstractElement& e,
-			  unsigned int neqn,
-			  std::vector<ScalarT>* elem_xdot,
-			  std::vector<ScalarT>& elem_x) = 0;
+                             unsigned int neqn,
+                             std::vector<ScalarT>* elem_xdot,
+                             std::vector<ScalarT>& elem_x) = 0;
 
     //! Evaluate element post operator
     virtual void elementPost(const FEApp::AbstractElement& e,
-			     unsigned int neqn,
-			     std::vector<ScalarT>& elem_f) = 0;
+                             unsigned int neqn,
+                             std::vector<ScalarT>& elem_f) = 0;
 
     //! Evaulate node init operator
     virtual void nodeInit(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector<ScalarT>* node_xdot,
-			  std::vector<ScalarT>& node_x) = 0;
+                          unsigned int neqn,
+                          std::vector<ScalarT>* node_xdot,
+                          std::vector<ScalarT>& node_x) = 0;
 
     //! Evaluate node post operator
     virtual void nodePost(const FEApp::NodeBC& bc,
-			  unsigned int neqn,
-			  std::vector<ScalarT>& node_f) = 0;
+                          unsigned int neqn,
+                          std::vector<ScalarT>& node_f) = 0;
 
     //! Finalize fill
     virtual void finalizeFill() = 0;

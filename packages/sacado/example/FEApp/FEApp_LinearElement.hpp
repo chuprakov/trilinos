@@ -53,7 +53,7 @@ namespace FEApp {
 
     //! Create the nodes for this element
     virtual void createNodes(double x_left, double x_right,
-			     unsigned int first_node_gid);
+                             unsigned int first_node_gid);
 
     //! Return GID of ith node
     virtual unsigned int nodeGID(unsigned int i) const;
@@ -61,12 +61,12 @@ namespace FEApp {
     //! Evaluate all shape functions at a set of points in (-1,1)
     virtual void 
     evaluateShapes(const std::vector<double>& xi,
-		   std::vector< std::vector<double> >& phi) const;
+                   std::vector< std::vector<double> >& phi) const;
 
     //! Evaluate all shape function derivatives at a set of points in (-1,1)
     virtual void
     evaluateShapeDerivs(const std::vector<double>& xi,
-			std::vector< std::vector<double> >& dphidxi) const;
+                        std::vector< std::vector<double> >& dphidxi) const;
 
     /*
      * \brief Evaluate Jacobian of element transformation at a set of 
@@ -74,7 +74,7 @@ namespace FEApp {
      */
     virtual void 
     evaluateJacobian(const std::vector<double>& xi,
-		     std::vector<double>& jac) const;
+                     std::vector<double>& jac) const;
 
   private:
 

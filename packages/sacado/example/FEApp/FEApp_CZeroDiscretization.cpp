@@ -93,20 +93,20 @@ FEApp::CZeroDiscretization::createMaps()
     overlap_dof_GID[i] = overlap_dof_GID_base + i;
   overlap_map = 
     Teuchos::rcp(new Epetra_Map(-1, overlapNumMyDOF, &(overlap_dof_GID[0]), 
-				0, *comm));
+                                0, *comm));
   
   // Create non-overlap DOF map
   if (myPID == 0) {
     int numMyDOF = overlapNumMyNodes*neq;
     map = 
       Teuchos::rcp(new Epetra_Map(-1, numMyDOF, &(overlap_dof_GID[0]), 
-				  0, *comm));
+                                  0, *comm));
   }
   else {
     int numMyDOF = (overlapNumMyNodes - 1)*neq;
     map = 
       Teuchos::rcp(new Epetra_Map(-1, numMyDOF, &(overlap_dof_GID[neq]), 
-				  0, *comm));
+                                  0, *comm));
   }
 }
 
@@ -116,10 +116,10 @@ FEApp::CZeroDiscretization::createJacobianGraphs()
   // Generate matrix graphs
   graph = 
     Teuchos::rcp(new Epetra_CrsGraph(Copy, *map, neq*nodes_per_element, 
-				     false));
+                                     false));
   overlap_graph = 
     Teuchos::rcp(new Epetra_CrsGraph(Copy, *overlap_map, 
-				     neq*nodes_per_element, false));
+                                     neq*nodes_per_element, false));
   int row, col;
   
   // Loop over elements
@@ -133,34 +133,34 @@ FEApp::CZeroDiscretization::createJacobianGraphs()
       // Loop over equations per node
       for (unsigned int eq_row=0; eq_row<neq; eq_row++) {
 
-	// Matrix row
-	row = static_cast<int>(e->nodeGID(node_row)*neq + eq_row);
+        // Matrix row
+        row = static_cast<int>(e->nodeGID(node_row)*neq + eq_row);
 
-	// Loop over nodes in element
-	for (unsigned int node_col=0; node_col<nodes_per_element; 
-	     node_col++){
-	    
-	  // Loop over equations per node
-	  for (unsigned int eq_col=0; eq_col<neq; eq_col++) {
-	      
-	    // Matrix column
-	    col = static_cast<int>(e->nodeGID(node_col)*neq + eq_col);
-
-	    // Add column indices
-	    overlap_graph->InsertGlobalIndices(row, 1, &col);
-
-	  } // column equations
-
-	} // column nodes
-
+        // Loop over nodes in element
+        for (unsigned int node_col=0; node_col<nodes_per_element; 
+             node_col++){
+          
+          // Loop over equations per node
+          for (unsigned int eq_col=0; eq_col<neq; eq_col++) {
+            
+            // Matrix column
+            col = static_cast<int>(e->nodeGID(node_col)*neq + eq_col);
+            
+            // Add column indices
+            overlap_graph->InsertGlobalIndices(row, 1, &col);
+            
+          } // column equations
+          
+        } // column nodes
+        
       } // row equations
       
     } // row node
     
   } // element
-
+  
   overlap_graph->FillComplete();
-
+  
   Epetra_Export exporter(*overlap_map, *map);
   graph->Export(*overlap_graph, exporter, Insert);
   graph->FillComplete();

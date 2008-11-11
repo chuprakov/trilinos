@@ -40,14 +40,15 @@ FEApp::ModelEvaluator::ModelEvaluator(
     param_names(free_param_names)
 {
   // Initialize Sacado parameter vector
-  sacado_param_vec = Teuchos::rcp(new Sacado::ScalarParameterVector);
+  sacado_param_vec = Teuchos::rcp(new ParamVec);
   if (param_names != Teuchos::null)
-    app->getParamLib()->fillVector(*param_names, *sacado_param_vec);
+    app->getParamLib()->fillVector<FEApp::ResidualType>(*param_names, 
+                                                        *sacado_param_vec);
 
   // Create Epetra map for parameter vector
   const Epetra_Comm& comm = app->getMap()->Comm();
   epetra_param_map = Teuchos::rcp(new Epetra_LocalMap(sacado_param_vec->size(),
-						      0, comm));
+                                                      0, comm));
 
   // Create Epetra vector for parameters
   epetra_param_vec = Teuchos::rcp(new Epetra_Vector(*epetra_param_map));
@@ -76,10 +77,10 @@ Teuchos::RCP<const Epetra_Map>
 FEApp::ModelEvaluator::get_p_map(int l) const
 {
   TEST_FOR_EXCEPTION(l != 0, Teuchos::Exceptions::InvalidParameter,
-		     std::endl << 
-		     "Error!  FEApp::ModelEvaluator::get_p_map() only " <<
-		     " supports 1 parameter vector.  Supplied index l = " << 
-		     l << std::endl);
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_p_map() only " <<
+                     " supports 1 parameter vector.  Supplied index l = " << 
+                     l << std::endl);
 
   return epetra_param_map;
 }
@@ -88,10 +89,10 @@ Teuchos::RCP<const Teuchos::Array<std::string> >
 FEApp::ModelEvaluator::get_p_names(int l) const
 {
   TEST_FOR_EXCEPTION(l != 0, Teuchos::Exceptions::InvalidParameter,
-		     std::endl << 
-		     "Error!  FEApp::ModelEvaluator::get_p_names() only " <<
-		     " supports 1 parameter vector.  Supplied index l = " << 
-		     l << std::endl);
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_p_names() only " <<
+                     " supports 1 parameter vector.  Supplied index l = " << 
+                     l << std::endl);
   return param_names;
 }
 
@@ -105,10 +106,10 @@ Teuchos::RCP<const Epetra_Vector>
 FEApp::ModelEvaluator::get_p_init(int l) const
 {
   TEST_FOR_EXCEPTION(l != 0, Teuchos::Exceptions::InvalidParameter,
-		     std::endl << 
-		     "Error!  FEApp::ModelEvaluator::get_p_init() only " <<
-		     " supports 1 parameter vector.  Supplied index l = " << 
-		     l << std::endl);
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_p_init() only " <<
+                     " supports 1 parameter vector.  Supplied index l = " << 
+                     l << std::endl);
   
   return epetra_param_vec;
 }
@@ -190,13 +191,13 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
   //
   if(W_out != Teuchos::null) {
     if (f_out.getType() == EVAL_TYPE_EXACT ||
-	f_out.getType() == EVAL_TYPE_APPROX_DERIV)
+        f_out.getType() == EVAL_TYPE_APPROX_DERIV)
       app->computeGlobalJacobian(alpha, beta, x_dot, x, sacado_param_vec.get(),
-				 f_out.get(), *W_out);
+                                 f_out.get(), *W_out);
     else
       app->computeGlobalPreconditioner(alpha, beta, x_dot, x, 
-				       sacado_param_vec.get(), f_out.get(), 
-				       *W_out);
+                                       sacado_param_vec.get(), f_out.get(), 
+                                       *W_out);
   }
   else if (dfdp_out != Teuchos::null) {
     Teuchos::Array<int> p_indexes = 
@@ -205,13 +206,13 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
     Teuchos::Array<std::string> p_names(n_params);
     for (unsigned int i=0; i<n_params; i++)
       p_names[i] = (*param_names)[p_indexes[i]];
-    Sacado::ScalarParameterVector p_vec;
-    app->getParamLib()->fillVector(p_names, p_vec);
+    ParamVec p_vec;
+    app->getParamLib()->fillVector<FEApp::ResidualType>(p_names, p_vec);
     for (unsigned int i=0; i<p_vec.size(); i++)
       p_vec[i].baseValue = (*p)[p_indexes[i]];
   
     app->computeGlobalTangent(0.0, 0.0, false, x_dot, x, &p_vec,
-			      NULL, NULL, f_out.get(), NULL, dfdp_out.get());
+                              NULL, NULL, f_out.get(), NULL, dfdp_out.get());
   }
   else if(f_out != Teuchos::null ) {
     app->computeGlobalResidual(x_dot, x, sacado_param_vec.get(), *f_out);

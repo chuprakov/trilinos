@@ -31,11 +31,11 @@
 
 #include "FEApp_BrusselatorParameters.hpp"
 
-template <typename ScalarT>
-FEApp::BrusselatorPDE<ScalarT>::
+template <typename EvalT>
+FEApp::BrusselatorPDE<EvalT>::
 BrusselatorPDE(
        double alpha_, double beta_, double D1_, double D2_,
-       const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) : 
+       const Teuchos::RCP<ParamLib>& paramLib) : 
   num_qp(0),
   num_nodes(0),
   phi(),
@@ -57,40 +57,40 @@ BrusselatorPDE(
   std::string name = "Brusselator Alpha";
   if (!pl->isParameter(name))
     pl->addParameterFamily(name, true, false);
-  if (!pl->template isParameterForType<ScalarT>(name)) {
-    Teuchos::RCP< BrusselatorAlphaParameter<ScalarT> > tmpa = 
-      Teuchos::rcp(new BrusselatorAlphaParameter<ScalarT>(alpha));
-    pl->template addEntry<ScalarT>(name, tmpa);
+  if (!pl->template isParameterForType<EvalT>(name)) {
+    Teuchos::RCP< BrusselatorAlphaParameter<EvalT> > tmpa = 
+      Teuchos::rcp(new BrusselatorAlphaParameter<EvalT>(alpha));
+    pl->template addEntry<EvalT>(name, tmpa);
   }
 
   // Add "beta" to parameter library
   name = "Brusselator Beta";
   if (!pl->isParameter(name))
     pl->addParameterFamily(name, true, false);
-  if (!pl->template isParameterForType<ScalarT>(name)) {
-    Teuchos::RCP< BrusselatorBetaParameter<ScalarT> > tmpb = 
-      Teuchos::rcp(new BrusselatorBetaParameter<ScalarT>(beta));
-    pl->template addEntry<ScalarT>(name, tmpb);
+  if (!pl->template isParameterForType<EvalT>(name)) {
+    Teuchos::RCP< BrusselatorBetaParameter<EvalT> > tmpb = 
+      Teuchos::rcp(new BrusselatorBetaParameter<EvalT>(beta));
+    pl->template addEntry<EvalT>(name, tmpb);
   }
 }
 
-template <typename ScalarT>
-FEApp::BrusselatorPDE<ScalarT>::
+template <typename EvalT>
+FEApp::BrusselatorPDE<EvalT>::
 ~BrusselatorPDE()
 {
 }
 
-template <typename ScalarT>
+template <typename EvalT>
 unsigned int 
-FEApp::BrusselatorPDE<ScalarT>::
+FEApp::BrusselatorPDE<EvalT>::
 numEquations() const
 {
   return 2;
 }
 
-template <typename ScalarT>
+template <typename EvalT>
 void
-FEApp::BrusselatorPDE<ScalarT>::
+FEApp::BrusselatorPDE<EvalT>::
 init(unsigned int numQuadPoints, unsigned int numNodes)
 {
   num_qp = numQuadPoints;
@@ -112,9 +112,9 @@ init(unsigned int numQuadPoints, unsigned int numNodes)
   }
 }
 
-template <typename ScalarT>
+template <typename EvalT>
 void
-FEApp::BrusselatorPDE<ScalarT>::
+FEApp::BrusselatorPDE<EvalT>::
 evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
 			const FEApp::AbstractElement& element,
 			const std::vector<ScalarT>* dot,
@@ -122,8 +122,8 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
 			std::vector<ScalarT>& residual)
 {
   // Get alpha, beta
-  alpha = pl->template getValue<ScalarT>("Brusselator Alpha");
-  beta = pl->template getValue<ScalarT>("Brusselator Beta");
+  alpha = pl->template getValue<EvalT>("Brusselator Alpha");
+  beta = pl->template getValue<EvalT>("Brusselator Beta");
   
    // Quadrature points
   const std::vector<double>& xi = quadRule.quadPoints();
@@ -155,8 +155,8 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
       dT[qp] += solution[2*node] * dphi[qp][node];
       dC[qp] += solution[2*node+1] * dphi[qp][node];
       if (dot != NULL) {
-	Tdot[qp] += (*dot)[2*node] * phi[qp][node];
-	Cdot[qp] += (*dot)[2*node+1] * phi[qp][node];
+        Tdot[qp] += (*dot)[2*node] * phi[qp][node];
+        Cdot[qp] += (*dot)[2*node+1] * phi[qp][node];
       }
     }
 
@@ -169,14 +169,14 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
 
     for (unsigned int qp=0; qp<num_qp; qp++) {
       residual[2*node] += 
-	w[qp]*jac[qp]*(-(1.0/(jac[qp]*jac[qp]))*D1*dT[qp]*dphi[qp][node] + 
-		       phi[qp][node]*(alpha - (beta+1.0)*T[qp] + 
-				      T[qp]*T[qp]*C[qp] - 
-				      Tdot[qp]));
+        w[qp]*jac[qp]*(-(1.0/(jac[qp]*jac[qp]))*D1*dT[qp]*dphi[qp][node] + 
+                       phi[qp][node]*(alpha - (beta+1.0)*T[qp] + 
+                                      T[qp]*T[qp]*C[qp] - 
+                                      Tdot[qp]));
       residual[2*node+1] += 
-	w[qp]*jac[qp]*(-(1.0/(jac[qp]*jac[qp]))*D2*dC[qp]*dphi[qp][node] + 
-		       phi[qp][node]*(beta*T[qp] - T[qp]*T[qp]*C[qp] - 
-				      Cdot[qp]));
+        w[qp]*jac[qp]*(-(1.0/(jac[qp]*jac[qp]))*D2*dC[qp]*dphi[qp][node] + 
+                       phi[qp][node]*(beta*T[qp] - T[qp]*T[qp]*C[qp] - 
+                                      Cdot[qp]));
     }
   }
 

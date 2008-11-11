@@ -31,14 +31,14 @@
 
 #include <sstream>
 
-template <typename ScalarT>
-FEApp::ConstantNodeBCStrategy<ScalarT>::
+template <typename EvalT>
+FEApp::ConstantNodeBCStrategy<EvalT>::
 ConstantNodeBCStrategy(
-		unsigned int solution_index, 
-		unsigned int residual_index,
-		const ScalarT& value,
-		unsigned int bc_id,
-		const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) :
+		           unsigned int solution_index, 
+               unsigned int residual_index,
+               const ScalarT& value,
+               unsigned int bc_id,
+		           const Teuchos::RCP<ParamLib>& paramLib) :
   sol_index(solution_index),
   res_index(residual_index),
   val(value),
@@ -52,51 +52,43 @@ ConstantNodeBCStrategy(
   std::string name = ss.str();
   if (!paramLib->isParameter(name))
     paramLib->addParameterFamily(name, true, false);
-  if (!paramLib->template isParameterForType<ScalarT>(name)) {
-    Teuchos::RCP< ConstantNodeBCParameter<ScalarT> > tmp = 
-      Teuchos::rcp(new ConstantNodeBCParameter<ScalarT>(Teuchos::rcp(this,false)));
-    paramLib->template addEntry<ScalarT>(name, tmp);
+  if (!paramLib->template isParameterForType<EvalT>(name)) {
+    Teuchos::RCP< ConstantNodeBCParameter<EvalT> > tmp = 
+      Teuchos::rcp(new ConstantNodeBCParameter<EvalT>(Teuchos::rcp(this,false)));
+    paramLib->template addEntry<EvalT>(name, tmp);
   }
 }
 
-template <typename ScalarT>
-FEApp::ConstantNodeBCStrategy<ScalarT>::
+template <typename EvalT>
+FEApp::ConstantNodeBCStrategy<EvalT>::
 ~ConstantNodeBCStrategy()
 {
 }
 
-template <typename ScalarT>
+template <typename EvalT>
 const std::vector<unsigned int>&
-FEApp::ConstantNodeBCStrategy<ScalarT>::
+FEApp::ConstantNodeBCStrategy<EvalT>::
 getOffsets() const
 {
   return offsets;
 }
 
-template <typename ScalarT>
+template <typename EvalT>
 void
-FEApp::ConstantNodeBCStrategy<ScalarT>::
+FEApp::ConstantNodeBCStrategy<EvalT>::
 evaluateResidual(const std::vector<ScalarT>* dot,
-		 const std::vector<ScalarT>& solution,
-		 std::vector<ScalarT>& residual) const
+                 const std::vector<ScalarT>& solution,
+                 std::vector<ScalarT>& residual) const
 {
   residual[res_index] = solution[sol_index] - val;
 }
 
-template <typename ScalarT>
+template <typename EvalT>
 void
-FEApp::ConstantNodeBCStrategy<ScalarT>::
+FEApp::ConstantNodeBCStrategy<EvalT>::
 setValue(const ScalarT& value, bool mark_constant)
 {
   val = value;
   if (mark_constant)
     Sacado::MarkConstant<ScalarT>::eval(val);
-}
-
-template <typename ScalarT>
-const ScalarT&
-FEApp::ConstantNodeBCStrategy<ScalarT>::
-getValue() const
-{
-  return val;
 }

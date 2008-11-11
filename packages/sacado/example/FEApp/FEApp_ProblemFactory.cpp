@@ -35,7 +35,7 @@
 
 FEApp::ProblemFactory::ProblemFactory(
        const Teuchos::RCP<Teuchos::ParameterList>& problemParams_,
-       const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib_) :
+       const Teuchos::RCP<ParamLib>& paramLib_) :
   problemParams(problemParams_),
   paramLib(paramLib_)
 {
@@ -49,19 +49,19 @@ FEApp::ProblemFactory::create()
   std::string& method = problemParams->get("Name", "Brusselator");
   if (method == "Brusselator") {
     strategy = Teuchos::rcp(new FEApp::BrusselatorProblem(problemParams, 
-							  paramLib));
+                                                          paramLib));
   }
   else if (method == "Heat Nonlinear Source") {
     strategy = 
       Teuchos::rcp(new FEApp::HeatNonlinearSourceProblem(problemParams,
-							 paramLib));
+                                                         paramLib));
   }
   else {
     TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,
-		       std::endl << 
-		       "Error!  Unknown problem " << method << 
-		       "!" << std::endl << "Supplied parameter list is " << 
-		       std::endl << *problemParams);
+                       std::endl << 
+                       "Error!  Unknown problem " << method << 
+                       "!" << std::endl << "Supplied parameter list is " << 
+                       std::endl << *problemParams);
   }
 
   return strategy;

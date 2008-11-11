@@ -40,25 +40,25 @@ FEApp::DiscretizationFactory::DiscretizationFactory(
 
 Teuchos::RCP<FEApp::AbstractDiscretization>
 FEApp::DiscretizationFactory::create(
-		  const std::vector<double>& coords,
-		  unsigned int num_equations,
-	          const Teuchos::RCP<const Epetra_Comm>& epetra_comm)
+                           const std::vector<double>& coords,
+                           unsigned int num_equations,
+                           const Teuchos::RCP<const Epetra_Comm>& epetra_comm)
 {
   Teuchos::RCP<FEApp::AbstractDiscretization> strategy;
 
   std::string& method = discParams->get("Method", "C Zero");
   if (method == "C Zero") {
     strategy = Teuchos::rcp(new FEApp::CZeroDiscretization(coords, 
-							   num_equations, 
-							   epetra_comm,
-							   discParams));
+                                                           num_equations, 
+                                                           epetra_comm,
+                                                           discParams));
   }
   else {
     TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,
-		       std::endl << 
-		       "Error!  Unknown discretization method " << method << 
-		       "!" << std::endl << "Supplied parameter list is " << 
-		       std::endl << *discParams);
+                       std::endl << 
+                       "Error!  Unknown discretization method " << method << 
+                       "!" << std::endl << "Supplied parameter list is " << 
+                       std::endl << *discParams);
   }
 
   return strategy;

@@ -46,11 +46,10 @@ namespace FEApp {
   public:
 
     //! Constructor
-    CZeroDiscretization(
-		 const std::vector<double>& coords,
-		 unsigned int num_equations,
-		 const Teuchos::RCP<const Epetra_Comm>& epetra_comm,
-		 const Teuchos::RCP<Teuchos::ParameterList>& params);
+    CZeroDiscretization(const std::vector<double>& coords,
+                        unsigned int num_equations,
+                        const Teuchos::RCP<const Epetra_Comm>& epetra_comm,
+                        const Teuchos::RCP<Teuchos::ParameterList>& params);
 
     //! Destructor
     virtual ~CZeroDiscretization();

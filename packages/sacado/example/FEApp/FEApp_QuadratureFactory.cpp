@@ -52,21 +52,21 @@ FEApp::QuadratureFactory::create()
     }
     else {
       TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,
-			 std::endl << 
-			 "Error!  Number of quadrature points = " << 
-			 num_points << 
-			 " is not supported for Gaussian quadrature!" << 
-			 std::endl << "Supplied parameter list is " << 
-			 std::endl << *quadParams);
+                         std::endl << 
+                         "Error!  Number of quadrature points = " << 
+                         num_points << 
+                         " is not supported for Gaussian quadrature!" << 
+                         std::endl << "Supplied parameter list is " << 
+                         std::endl << *quadParams);
     }
   }
   else {
     TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,
-		       std::endl << 
-		       "Error!  Unknown quadrature method " << method << 
-		       "!" << std::endl << "Supplied parameter list is " << 
-		       std::endl << *quadParams);
+                       std::endl << 
+                       "Error!  Unknown quadrature method " << method << 
+                       "!" << std::endl << "Supplied parameter list is " << 
+                       std::endl << *quadParams);
   }
-
+  
   return strategy;
 }

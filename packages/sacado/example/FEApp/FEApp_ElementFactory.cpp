@@ -49,10 +49,10 @@ FEApp::ElementFactory::create()
   }
   else {
     TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,
-		       std::endl << 
-		       "Error!  Unknown element method " << method << 
-		       "!" << std::endl << "Supplied parameter list is " << 
-		       std::endl << *elemParams);
+                       std::endl << 
+                       "Error!  Unknown element method " << method << 
+                       "!" << std::endl << "Supplied parameter list is " << 
+                       std::endl << *elemParams);
   }
 
   return strategy;

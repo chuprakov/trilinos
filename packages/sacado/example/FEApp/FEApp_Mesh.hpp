@@ -56,8 +56,7 @@ namespace FEApp {
     ~Mesh();
 
     //! Add a new element
-    void addElement(
-		 const Teuchos::RCP<FEApp::AbstractElement>& element);
+    void addElement(const Teuchos::RCP<FEApp::AbstractElement>& element);
 
     //! Return number of elements
     unsigned int numElements() const;

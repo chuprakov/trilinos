@@ -36,6 +36,7 @@
 
 #include "Teuchos_RCP.hpp"
 
+#include "FEApp_TemplateTypes.hpp"
 #include "FEApp_AbstractPDE.hpp"
 #include "FEApp_AbstractQuadrature.hpp"
 #include "FEApp_NodeBC.hpp"
@@ -44,15 +45,18 @@
 
 namespace FEApp {
 
-  template <typename ScalarT>
+  template <typename EvalT>
   class GlobalFill {
   public:
+
+    //! Scalar type
+    typedef typename FEApp::EvaluationTraits::apply<EvalT>::type ScalarT;
     
     //! Constructor
     GlobalFill(
       const Teuchos::RCP<const FEApp::Mesh>& elementMesh,
       const Teuchos::RCP<const FEApp::AbstractQuadrature>& quadRule,
-      const Teuchos::RCP< FEApp::AbstractPDE<ScalarT> >& pdeEquations,
+      const Teuchos::RCP< FEApp::AbstractPDE<EvalT> >& pdeEquations,
       const std::vector< Teuchos::RCP<FEApp::NodeBC> >& nodeBCs,
       bool is_transient);
   
@@ -60,7 +64,7 @@ namespace FEApp {
     ~GlobalFill();
 
     //! Compute global fill
-    void computeGlobalFill(FEApp::AbstractInitPostOp<ScalarT>& initPostOp);
+    void computeGlobalFill(FEApp::AbstractInitPostOp<EvalT>& initPostOp);
 
   private:
 
@@ -79,7 +83,7 @@ namespace FEApp {
     Teuchos::RCP<const FEApp::AbstractQuadrature> quad;
 
     //! PDE Equations
-    Teuchos::RCP< FEApp::AbstractPDE<ScalarT> > pde;
+    Teuchos::RCP< FEApp::AbstractPDE<EvalT> > pde;
 
     //! Node boundary conditions
     std::vector< Teuchos::RCP<FEApp::NodeBC> > bc;

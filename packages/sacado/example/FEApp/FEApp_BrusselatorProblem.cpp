@@ -35,7 +35,7 @@
 FEApp::BrusselatorProblem::
 BrusselatorProblem(
       const Teuchos::RCP<Teuchos::ParameterList>& params,
-      const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib_) :
+      const Teuchos::RCP<ParamLib>& paramLib_) :
   paramLib(paramLib_)
 {
   alpha = params->get("alpha", 1.0);
@@ -59,19 +59,19 @@ numEquations() const
 void
 FEApp::BrusselatorProblem::
 buildProblem(const Epetra_Map& dofMap,
-	     const Epetra_Map& overlapped_dofMap,
-	     FEApp::AbstractPDE_TemplateManager<ValidTypes>& pdeTM,
-	     std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
-	     const Teuchos::RCP<Epetra_Vector>& u)
+             const Epetra_Map& overlapped_dofMap,
+             FEApp::AbstractPDE_TemplateManager<EvalTypes>& pdeTM,
+             std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
+             const Teuchos::RCP<Epetra_Vector>& u)
 {
   // Build PDE equations
   FEApp::BrusselatorPDE_TemplateBuilder pdeBuilder(alpha, beta, D1, D2, 
-						   paramLib);
+                                                   paramLib);
   pdeTM.buildObjects(pdeBuilder);
 
   // Build boundary conditions
   FEApp::BrusselatorNodeBCStrategy_TemplateBuilder bcBuilder(alpha, beta,
-							     paramLib);
+                                                             paramLib);
   int left_node = dofMap.MinAllGID();
   int right_node = 
     (dofMap.MaxAllGID() - dofMap.MinAllGID())/2 + dofMap.MinAllGID();

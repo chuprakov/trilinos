@@ -44,19 +44,19 @@ namespace FEApp {
   /*!
    * \brief A factory class to instantiate AbstractFunction objects
    */
-  template <typename ScalarT>
+  template <typename EvalT>
   class FunctionFactory {
   public:
 
     //! Default constructor
     FunctionFactory(
 	       const Teuchos::RCP<Teuchos::ParameterList>& funcParams,
-	       const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib);
+	       const Teuchos::RCP<ParamLib>& paramLib);
 
     //! Destructor
     virtual ~FunctionFactory() {}
 
-    virtual Teuchos::RCP< FEApp::AbstractFunction<ScalarT> >
+    virtual Teuchos::RCP< FEApp::AbstractFunction<EvalT> >
     create();
 
   private:
@@ -73,7 +73,7 @@ namespace FEApp {
     Teuchos::RCP<Teuchos::ParameterList> funcParams;
 
     //! Parameter library
-    Teuchos::RCP<Sacado::ScalarParameterLibrary> paramLib;
+    Teuchos::RCP<ParamLib> paramLib;
 
   };
 

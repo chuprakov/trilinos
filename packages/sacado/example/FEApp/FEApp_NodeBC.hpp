@@ -48,10 +48,10 @@ namespace FEApp {
     //! Constructor
     template <typename BuilderT>
     NodeBC(const Epetra_Map& dofMap, 
-	   const Epetra_Map& overlapped_dofMap,
-	   unsigned int gid,
-	   unsigned int neqn,
-	   const BuilderT& builder) : global_node_id(gid) {
+           const Epetra_Map& overlapped_dofMap,
+           unsigned int gid,
+           unsigned int neqn,
+           const BuilderT& builder) : global_node_id(gid) {
       strategyTM.buildObjects(builder);
       is_owned = dofMap.MyGID(gid*neqn);
       is_shared = overlapped_dofMap.MyGID(gid*neqn) && !is_owned;
@@ -74,9 +74,9 @@ namespace FEApp {
     bool isShared() const { return is_shared; }
 
     //! Get strategy
-    template <typename ScalarT>
-    Teuchos::RCP< FEApp::AbstractNodeBCStrategy<ScalarT> >
-    getStrategy() { return strategyTM.getAsObject<ScalarT>(); }
+    template <typename EvalT>
+    Teuchos::RCP< FEApp::AbstractNodeBCStrategy<EvalT> >
+    getStrategy() { return strategyTM.getAsObject<EvalT>(); }
 
   private:
 
@@ -92,7 +92,7 @@ namespace FEApp {
     unsigned int global_node_id;
 
     //! Template manager storing instantiations of strategies
-    AbstractNodeBCStrategy_TemplateManager<ValidTypes> strategyTM;
+    AbstractNodeBCStrategy_TemplateManager<EvalTypes> strategyTM;
 
     //! Is BC owned on this proc
     bool is_owned;

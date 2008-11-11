@@ -31,32 +31,32 @@
 #include "Teuchos_TestForException.hpp"
 #include "FEApp_ConstantFunction.hpp"
 
-template <typename ScalarT>
-FEApp::FunctionFactory<ScalarT>::FunctionFactory(
+template <typename EvalT>
+FEApp::FunctionFactory<EvalT>::FunctionFactory(
 	    const Teuchos::RCP<Teuchos::ParameterList>& funcParams_,
-	    const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib_) :
+	    const Teuchos::RCP<ParamLib>& paramLib_) :
   funcParams(funcParams_), paramLib(paramLib_)
 {
 }
 
-template <typename ScalarT>
-Teuchos::RCP< FEApp::AbstractFunction<ScalarT> >
-FEApp::FunctionFactory<ScalarT>::create()
+template <typename EvalT>
+Teuchos::RCP< FEApp::AbstractFunction<EvalT> >
+FEApp::FunctionFactory<EvalT>::create()
 {
-  Teuchos::RCP< FEApp::AbstractFunction<ScalarT> > strategy;
+  Teuchos::RCP< FEApp::AbstractFunction<EvalT> > strategy;
 
   std::string& method = funcParams->get("Name", "Constant");
   if (method == "Constant") {
     double value = funcParams->get("Constant Value", 1.0);
     strategy = 
-      Teuchos::rcp(new FEApp::ConstantFunction<ScalarT>(value, paramLib));
+      Teuchos::rcp(new FEApp::ConstantFunction<EvalT>(value, paramLib));
   }
   else {
     TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,
-		       std::endl << 
-		       "Error!  Unknown function " << method << 
-		       "!" << std::endl << "Supplied parameter list is " << 
-		       std::endl << *funcParams);
+                       std::endl << 
+                       "Error!  Unknown function " << method << 
+                       "!" << std::endl << "Supplied parameter list is " << 
+                       std::endl << *funcParams);
   }
 
   return strategy;

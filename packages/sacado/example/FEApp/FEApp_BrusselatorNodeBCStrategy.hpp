@@ -40,15 +40,18 @@
 
 namespace FEApp {
 
-  template <typename ScalarT>
+  template <typename EvalT>
   class BrusselatorNodeBCStrategy : 
-    public FEApp::AbstractNodeBCStrategy<ScalarT> {
+    public FEApp::AbstractNodeBCStrategy<EvalT> {
   public:
+
+    //! Scalar type
+    typedef typename FEApp::AbstractNodeBCStrategy<EvalT>::ScalarT ScalarT;
 
     //! Constructor
     BrusselatorNodeBCStrategy(
-	 const ScalarT& alpha, const ScalarT& beta,
-	 const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib);
+                const ScalarT& alpha, const ScalarT& beta,
+                const Teuchos::RCP<ParamLib>& paramLib);
 
     //! Destructor
     virtual ~BrusselatorNodeBCStrategy();
@@ -58,8 +61,8 @@ namespace FEApp {
 
     //! Evaluate BC residual
     virtual void evaluateResidual(const std::vector<ScalarT>* dot,
-				  const std::vector<ScalarT>& solution,
-				  std::vector<ScalarT>& residual) const;
+                                  const std::vector<ScalarT>& solution,
+                                  std::vector<ScalarT>& residual) const;
 
   private:
     
@@ -81,7 +84,7 @@ namespace FEApp {
     std::vector<unsigned int> offsets;
 
     //! Parameter library
-    Teuchos::RCP<Sacado::ScalarParameterLibrary> pl;
+    Teuchos::RCP<ParamLib> pl;
 
   };
 
@@ -89,7 +92,7 @@ namespace FEApp {
   public:
     BrusselatorNodeBCStrategy_TemplateBuilder(
         double alpha, double beta,
-        const Teuchos::RCP<Sacado::ScalarParameterLibrary>& paramLib) :
+        const Teuchos::RCP<ParamLib>& paramLib) :
       a(alpha), b(beta), pl(paramLib) {}
     template <typename T>
     Teuchos::RCP<FEApp::AbstractNodeBCStrategy_NTBase> build() const {
@@ -97,7 +100,7 @@ namespace FEApp {
     }
   protected:
     double a, b;
-    Teuchos::RCP<Sacado::ScalarParameterLibrary> pl;
+    Teuchos::RCP<ParamLib> pl;
   };
 
 }

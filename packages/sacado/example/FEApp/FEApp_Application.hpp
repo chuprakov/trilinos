@@ -88,7 +88,7 @@ namespace FEApp {
     Teuchos::RCP<const Epetra_Vector> getInitialSolution() const;
 
     //! Get parameter library
-    Teuchos::RCP<Sacado::ScalarParameterLibrary> getParamLib();
+    Teuchos::RCP<ParamLib> getParamLib();
 
     //! Return whether problem is transient
     bool isTransient() const;
@@ -104,77 +104,77 @@ namespace FEApp {
      * Set xdot to NULL for steady-state problems
      */
     void computeGlobalResidual(const Epetra_Vector* xdot,
-			       const Epetra_Vector& x,
-			       const Sacado::ScalarParameterVector* p,
-			       Epetra_Vector& f);
+                               const Epetra_Vector& x,
+                               const ParamVec* p,
+                               Epetra_Vector& f);
 
     //! Compute global Jacobian
     /*!
      * Set xdot to NULL for steady-state problems
      */
     void computeGlobalJacobian(double alpha, double beta,
-			       const Epetra_Vector* xdot,
-			       const Epetra_Vector& x,
-			       const Sacado::ScalarParameterVector* p,
-			       Epetra_Vector* f,
-			       Epetra_Operator& jac);
+                               const Epetra_Vector* xdot,
+                               const Epetra_Vector& x,
+                               const ParamVec* p,
+                               Epetra_Vector* f,
+                               Epetra_Operator& jac);
 
     //! Compute global Preconditioner
     /*!
      * Set xdot to NULL for steady-state problems
      */
     void computeGlobalPreconditioner(double alpha, double beta,
-				     const Epetra_Vector* xdot,
-				     const Epetra_Vector& x,
-				     const Sacado::ScalarParameterVector* p,
-				     Epetra_Vector* f,
-				     Epetra_Operator& jac);
+                                     const Epetra_Vector* xdot,
+                                     const Epetra_Vector& x,
+                                     const ParamVec* p,
+                                     Epetra_Vector* f,
+                                     Epetra_Operator& jac);
     
     //! Compute global Tangent
     /*!
      * Set xdot to NULL for steady-state problems
      */
     void computeGlobalTangent(double alpha, double beta,
-			      bool sum_derivs,
-			      const Epetra_Vector* xdot,
-			      const Epetra_Vector& x,
-			      Sacado::ScalarParameterVector* p,
-			      const Epetra_MultiVector* Vx,
-			      const Teuchos::SerialDenseMatrix<int,double>* Vp,
-			      Epetra_Vector* f,
-			      Epetra_MultiVector* JVx,
-			      Epetra_MultiVector* fVp);
+                              bool sum_derivs,
+                              const Epetra_Vector* xdot,
+                              const Epetra_Vector& x,
+                              ParamVec* p,
+                              const Epetra_MultiVector* Vx,
+                              const Teuchos::SerialDenseMatrix<int,double>* Vp,
+                              Epetra_Vector* f,
+                              Epetra_MultiVector* JVx,
+                              Epetra_MultiVector* fVp);
 
     //! Compute global residual for stochastic Galerkin problem
     /*!
      * Set xdot to NULL for steady-state problems
      */
     void computeGlobalSGResidual(const Epetra_Vector* sg_xdot,
-				 const Epetra_Vector& sg_x,
-				 const Sacado::ScalarParameterVector* p,
-				 Epetra_Vector& sg_f);
+                                 const Epetra_Vector& sg_x,
+                                 const ParamVec* p,
+                                 Epetra_Vector& sg_f);
 
     //! Compute global Jacobian for stochastic Galerkin problem
     /*!
      * Set xdot to NULL for steady-state problems
      */
     void computeGlobalSGJacobian(double alpha, double beta,
-				 const Epetra_Vector* sg_xdot,
-				 const Epetra_Vector& sg_x,
-				 const Sacado::ScalarParameterVector* p,
-				 Epetra_Vector* sg_f,
-				 Epetra_Operator& sg_jac); 
+                                 const Epetra_Vector* sg_xdot,
+                                 const Epetra_Vector& sg_x,
+                                 const ParamVec* p,
+                                 Epetra_Vector* sg_f,
+                                 Epetra_Operator& sg_jac); 
 
     //! Compute global Preconditioner for stochastic Galerkin problem
     /*!
      * Set xdot to NULL for steady-state problems
      */
     void computeGlobalSGPreconditioner(double alpha, double beta,
-				       const Epetra_Vector* sg_xdot,
-				       const Epetra_Vector& sg_x,
-				       const Sacado::ScalarParameterVector* p,
-				       Epetra_Vector* sg_f,
-				       Epetra_Operator& sg_jac); 
+                                       const Epetra_Vector* sg_xdot,
+                                       const Epetra_Vector& sg_x,
+                                       const ParamVec* p,
+                                       Epetra_Vector* sg_f,
+                                       Epetra_Operator& sg_jac); 
 
   private:
     
@@ -199,7 +199,7 @@ namespace FEApp {
     Teuchos::RCP<const FEApp::AbstractQuadrature> quad;
 
     //! PDE equations
-    FEApp::AbstractPDE_TemplateManager<ValidTypes> pdeTM;
+    FEApp::AbstractPDE_TemplateManager<EvalTypes> pdeTM;
 
     //! Initial solution vector
     Teuchos::RCP<Epetra_Vector> initial_x;
@@ -223,7 +223,7 @@ namespace FEApp {
     Teuchos::RCP<Epetra_CrsMatrix> overlapped_jac;
 
     //! Parameter library
-    Teuchos::RCP<Sacado::ScalarParameterLibrary> paramLib;
+    Teuchos::RCP<ParamLib> paramLib;
 
     //! Enable stochastic Galerkin discretization
     bool enable_sg;
