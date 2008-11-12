@@ -25,52 +25,92 @@
 #define util_TypeName_hpp
 
 #include <complex>
+#include <vector>
 #include <string>
 
 namespace phdmesh {
 
 template< typename T >
 struct TypeName {
-  static const char * value() { return typeid(T).name(); }
+  static std::string value() { return std::string( typeid(T).name() ); }
 };
 
-template<> struct TypeName< void >           { static const char * value(); };
-template<> struct TypeName< char >           { static const char * value(); };
-template<> struct TypeName< unsigned char >  { static const char * value(); };
-template<> struct TypeName< short >          { static const char * value(); };
-template<> struct TypeName< unsigned short > { static const char * value(); };
-template<> struct TypeName< int >            { static const char * value(); };
-template<> struct TypeName< unsigned int >   { static const char * value(); };
-template<> struct TypeName< long >           { static const char * value(); };
-template<> struct TypeName< unsigned long >  { static const char * value(); };
-template<> struct TypeName< float >          { static const char * value(); };
-template<> struct TypeName< double >         { static const char * value(); };
+//----------------------------------------------------------------------
 
-template<> struct TypeName< void * >           { static const char * value(); };
-template<> struct TypeName< char * >           { static const char * value(); };
-template<> struct TypeName< unsigned char * >  { static const char * value(); };
-template<> struct TypeName< short * >          { static const char * value(); };
-template<> struct TypeName< unsigned short * > { static const char * value(); };
-template<> struct TypeName< int * >            { static const char * value(); };
-template<> struct TypeName< unsigned int * >   { static const char * value(); };
-template<> struct TypeName< long * >           { static const char * value(); };
-template<> struct TypeName< unsigned long * >  { static const char * value(); };
-template<> struct TypeName< float * >          { static const char * value(); };
-template<> struct TypeName< double * >         { static const char * value(); };
+#define GENERATE_SIMPLE_TYPE_NAME_VALUE( T ) \
+  template<> struct TypeName< T > { \
+    static std::string value() { return std::string( # T ); } \
+  }
 
-template<>
-struct TypeName< std::complex<float> > { static const char * value(); };
+GENERATE_SIMPLE_TYPE_NAME_VALUE( void );
+GENERATE_SIMPLE_TYPE_NAME_VALUE( char );
+GENERATE_SIMPLE_TYPE_NAME_VALUE( unsigned char );
+GENERATE_SIMPLE_TYPE_NAME_VALUE( short );
+GENERATE_SIMPLE_TYPE_NAME_VALUE( unsigned short );
+GENERATE_SIMPLE_TYPE_NAME_VALUE( int );
+GENERATE_SIMPLE_TYPE_NAME_VALUE( unsigned int );
+GENERATE_SIMPLE_TYPE_NAME_VALUE( long );
+GENERATE_SIMPLE_TYPE_NAME_VALUE( unsigned long );
+GENERATE_SIMPLE_TYPE_NAME_VALUE( float );
+GENERATE_SIMPLE_TYPE_NAME_VALUE( double );
+GENERATE_SIMPLE_TYPE_NAME_VALUE( std::complex<float> );
+GENERATE_SIMPLE_TYPE_NAME_VALUE( std::complex<double> );
+GENERATE_SIMPLE_TYPE_NAME_VALUE( std::string );
 
-template<>
-struct TypeName< std::complex<double> > { static const char * value(); };
+//----------------------------------------------------------------------
 
-template<>
-struct TypeName< std::complex<float> * > { static const char * value(); };
+template< typename T >
+struct TypeName< const T >
+{
+  static std::string value()
+    { return std::string( "const ").append( TypeName<T>::value() ); }
+};
 
-template<>
-struct TypeName< std::complex<double> * > { static const char * value(); };
+template< typename T >
+struct TypeName< T * >
+{
+  static std::string value()
+    { return std::string( TypeName<T>::value() ).append( " *" ); }
+};
 
-template<> struct TypeName< std::string > { static const char * value(); };
+template< typename T >
+struct TypeName< T & >
+{
+  static std::string value()
+    { return std::string( TypeName<T>::value() ).append( " &" ); }
+};
+
+//----------------------------------------------------------------------
+
+std::string type_name_array( const std::string & , unsigned );
+
+template< typename T , unsigned N >
+struct TypeName< T[N] >
+{
+  static std::string value()
+    { return type_name_array( TypeName<T>::value() , N ); }
+};
+
+template< typename T >
+std::string type_name_array( unsigned n )
+{ return type_name_array( TypeName<T>::value() , n ); }
+
+//----------------------------------------------------------------------
+
+std::string type_name_vector( const std::string & , unsigned = 0 );
+
+template< typename T >
+struct TypeName< std::vector<T> >
+{
+  static std::string value()
+    { return type_name_vector( TypeName<T>::value() ); }
+};
+
+template< typename T >
+std::string type_name_vector( unsigned n = 0 )
+{ return type_name_vector( TypeName<T>::value() , n ); }
+
+//----------------------------------------------------------------------
 
 } // namespace phdmesh
 

@@ -51,10 +51,14 @@ namespace phdmesh {
 
 class NamedValueSet {
 public:
-  const std::vector< NamedValue<> * > get() const { return m_members ; }
-  NamedValue<> * find( const std::string & s , const char sep = '.' ) const ;
-  NamedValue<> & insert( NamedValue<> & );
-  void remove( NamedValue<> & );
+  const std::vector< NamedValue<void> * > get() const { return m_members ; }
+
+  NamedValue<void> *
+    find( const std::string & s , const char sep = '.' ) const ;
+
+  NamedValue<void> * insert( NamedValue<void> * );
+
+  void remove( NamedValue<void> * );
   void clear();
 
   ~NamedValueSet();
@@ -62,7 +66,7 @@ public:
 private:
   NamedValueSet( const NamedValueSet & );
   NamedValueSet & operator = ( const NamedValueSet & );
-  std::vector< NamedValue<> * > m_members ;
+  std::vector< NamedValue<void> * > m_members ;
 };
 
 //----------------------------------------------------------------------
@@ -257,7 +261,7 @@ unsigned unpack_value( void * b , T & v )
  * \brief  NamedValue to an ordinary value.
  */
 template< typename T >
-class NamedValue : public NamedValue<> {
+class NamedValue : public NamedValue<void> {
 public:
 
   T value ;
@@ -265,11 +269,13 @@ public:
   ~NamedValue() {}
 
   /** \brief  Constructor */
-  NamedValue( const std::string & n ) : NamedValue<>( n , typeid(T) ) {}
+  NamedValue( const std::string & n ) : NamedValue<void>( n , typeid(T) ) {}
+  NamedValue( const std::string & n , const T & v )
+    : NamedValue<void>( n , typeid(T) ), value(v) {}
 
   /** \brief  Tell the type to a stream */
   void tell( std::ostream & s ) const
-    { s << TypeName<T>::value() << " " << name ; }
+    { s << name << " = " << TypeName<T>::value(); }
 
   /** \brief  Write value to stream */
   void write( std::ostream & s ) const { s << value ; }
@@ -297,7 +303,7 @@ private:
  * \brief  NamedValue to an ordinary reference.
  */
 template< typename T >
-class NamedValue< T & > : public NamedValue<> {
+class NamedValue< T & > : public NamedValue<void> {
 public:
 
   T & ref ;
@@ -306,11 +312,11 @@ public:
 
   /** \brief  Constructor */
   NamedValue( const std::string & n , T & v )
-    : NamedValue<>( n , typeid(T) ), ref(v) {}
+    : NamedValue<void>( n , typeid(T) ), ref(v) {}
 
   /** \brief  Tell the type to a stream */
   void tell( std::ostream & s ) const
-    { s << TypeName<T>::value() << " & " << name ; }
+    { s << name << " = " << TypeName<T &>::value(); }
 
   /** \brief  Write value to stream */
   void write( std::ostream & s ) const { s << ref ; }
@@ -338,12 +344,12 @@ private:
  * \brief  NamedValue to an ordinary constant value.
  */
 template< typename T >
-class NamedValue< const T & > : public NamedValue<> {
+class NamedValue< const T & > : public NamedValue<void> {
 public:
   const T & ref ;
 
   NamedValue( const std::string & n , const T & v )
-    : NamedValue<>( n , typeid(T) ), ref(v) {}
+    : NamedValue<void>( n , typeid(T) ), ref(v) {}
 
   ~NamedValue() {}
 
@@ -352,7 +358,7 @@ public:
   unsigned read( std::istream & ) { return 0 ; }
 
   void tell( std::ostream & s ) const
-    { s << "const " << TypeName<T>::value() << " & " << name ; }
+    { s << name << " = " << TypeName<const T &>::value(); }
 
   unsigned pack( void * b ) const { return pack_value( b , ref ); }
 
@@ -376,11 +382,11 @@ private:
  * \brief  NamedValue to a fixed size array.
  */
 template< typename T , unsigned N >
-class NamedValue< T[N] > : public NamedValue<> {
+class NamedValue< T[N] > : public NamedValue<void> {
 public:
   T value[N] ;
 
-  NamedValue( const std::string & n ) : NamedValue<>( n , typeid(T) ) {}
+  NamedValue( const std::string & n ) : NamedValue<void>( n , typeid(T) ) {}
 
   ~NamedValue() {}
 
@@ -389,7 +395,7 @@ public:
   unsigned read( std::istream & s ) { return read_array<T>(s,value,N); }
 
   void tell( std::ostream & s ) const
-    { s << TypeName<T>::value() << " " << name << "[" << N << "]" ; }
+    { s << name << " = " << TypeName<T[N]>::value(); }
 
   unsigned pack(   void * b ) const { return pack_array<T>( b , value, N); }
   unsigned unpack( void * b )       { return unpack_array<T>(b, value, N); }
@@ -411,13 +417,13 @@ private:
  * \brief  NamedValue to a fixed size array of ordinary values.
  */
 template< typename T >
-class NamedValue< T * > : public NamedValue<> {
+class NamedValue< T * > : public NamedValue<void> {
 public:
   T * const      ref ;
   const unsigned size ;
 
   NamedValue( const std::string & n , T * v , unsigned s )
-    : NamedValue<>( n , typeid(T) ), ref(v), size(s) {}
+    : NamedValue<void>( n , typeid(T) ), ref(v), size(s) {}
 
   ~NamedValue() {}
 
@@ -427,7 +433,7 @@ public:
     { return read_array<T>(s,ref,size); }
 
   void tell( std::ostream & s ) const
-    { s << TypeName<T>::value() << "[" << size << "] * " << name ; }
+    { s << name << " = " << type_name_array<T>(size) << " *" ; }
 
   unsigned pack(   void * b ) const { return pack_array<T>(  b,ref,size); }
   unsigned unpack( void * b )       { return unpack_array<T>(b,ref,size); }
@@ -449,13 +455,13 @@ private:
  * \brief  NamedValue to a const fixed size array of ordinary values .
  */
 template< typename T >
-class NamedValue< const T * > : public NamedValue<> {
+class NamedValue< const T * > : public NamedValue<void> {
 public:
   const T * const ref ;
   const unsigned  size ;
 
   NamedValue( const std::string & n , const T * v , unsigned s )
-    : NamedValue<>( n , typeid(T) ), ref(v), size(s) {}
+    : NamedValue<void>( n , typeid(T) ), ref(v), size(s) {}
 
   ~NamedValue() {}
 
@@ -463,7 +469,7 @@ public:
   unsigned read( std::istream & ){ return 0 ; }
 
   void tell( std::ostream & s ) const
-    { s << "const " << TypeName<T>::value() << "[" << size << "] * " << name ; }
+    { s << name << " = " << type_name_array<const T>(size) << " *" ; }
 
   unsigned pack( void * b ) const { return pack_array<T>(b,ref,size); }
   unsigned unpack( void * b ) { return 0 ; }
@@ -485,16 +491,19 @@ private:
  *  \brief  NamedValue to a std::vector
  */
 template< typename T >
-class NamedValue< std::vector<T> > : public NamedValue<> {
+class NamedValue< std::vector<T> > : public NamedValue<void> {
 public:
   std::vector<T> value ;
 
-  NamedValue( const std::string & n ) : NamedValue<>( n , typeid(T) ) {}
+  NamedValue( const std::string & n ) : NamedValue<void>( n , typeid(T) ) {}
+
+  NamedValue( const std::string & n , const std::vector<T> & v )
+    : NamedValue<void>( n , typeid(T) ), value(v) {}
 
   ~NamedValue() {}
 
   void tell( std::ostream & s ) const
-    { s << "std::vector<" << TypeName<T>::value() << "> " << name ; }
+    { s << name << " = " << type_name_vector<T>( value.size() ); }
 
   void write( std::ostream & s ) const
     { write_array<T>( s , & value[0] , value.size() ); }
@@ -526,17 +535,17 @@ private:
 };
 
 template< typename T >
-class NamedValue< std::vector<T> & > : public NamedValue<> {
+class NamedValue< std::vector<T> & > : public NamedValue<void> {
 public:
   std::vector<T> & ref ;
 
   NamedValue( const std::string & n , std::vector<T> & v )
-    : NamedValue<>( n , typeid(T) ), ref(v) {}
+    : NamedValue<void>( n , typeid(T) ), ref(v) {}
 
   ~NamedValue() {}
 
   void tell( std::ostream & s ) const
-    { s << "std::vector<" << TypeName<T>::value() << "> & " << name ; }
+    { s << name << " = " << type_name_vector<T>( ref.size() ) << " &" ; }
 
   void write( std::ostream & s ) const
     { write_array<T>( s , & ref[0] , ref.size() ); }
@@ -572,20 +581,17 @@ private:
  *  \brief  NamedValue to a const std::vector
  */
 template< typename T >
-class NamedValue< const std::vector<T> & > : public NamedValue<> {
+class NamedValue< const std::vector<T> & > : public NamedValue<void> {
 public:
   const std::vector<T> & ref ;
 
   explicit NamedValue( const std::string & n , const std::vector<T> & arg )
-    : NamedValue<>( n , typeid(T) ), ref(arg) {}
+    : NamedValue<void>( n , typeid(T) ), ref(arg) {}
 
   ~NamedValue() {}
 
   void tell( std::ostream & s ) const
-    {
-      s << "const std::vector<" << TypeName<T>::value() << "> & "
-        << name << "(" << ref.size() << ")" ;
-    }
+    { s << name << " = " << type_name_vector<const T>( ref.size() ) << " &" ; }
 
   void write( std::ostream & s ) const
     { write_array<T>( s , & ref[0] , ref.size() ); }
@@ -595,8 +601,6 @@ public:
   unsigned pack( void * b ) const { return pack_vector<T>( b , ref ); }
 
   unsigned unpack( void * b ) { return 0 ; }
-
-private:
 
 private:
 

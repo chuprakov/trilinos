@@ -54,9 +54,9 @@ void test_comm_all( ParallelMachine comm , std::istream & s )
   max_msg_length.value = 1000 ;
 
   NamedValueSet input_values ;
-  input_values.insert( dense_flag );
-  input_values.insert( max_msg_length );
-  input_values.insert( neighbor_template );
+  input_values.insert( & dense_flag );
+  input_values.insert( & max_msg_length );
+  input_values.insert( & neighbor_template );
 
   s >> input_values ;
 

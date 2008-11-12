@@ -45,8 +45,8 @@ public:
    */
   template<class T> const T * get() const ;
 
-  /** \brief  Insert a member of a given type <b> T </b>.
-   *          Option to transfer ownership of that member.
+  /** \brief  Insert a member of a given type <b> T </b> and
+   *          invoke the <b> delete </b> operator on destruction.
    *
    *  If a member of the given type already exists then the
    *  insertion operation fails and the existing member is
@@ -56,15 +56,28 @@ public:
    *  <PRE>
    *    CSet & container = ... ;
    *    const A * const a = new A();
-   *    if ( a == container.insert( a ) ) { ... };
+   *    if ( a == container.insert_with_delete( a ) ) { ... };
    *  </PRE>
-   *
-   *  If the delete_on_destruction parameter is true then the delete
-   *  function will be applied to the inserted member by the
-   *  conainter's destructor.
    */
   template<class T>
-  const T * insert( const T * , bool delete_on_destruction = false );
+  const T * insert_with_delete( const T * );
+
+  /** \brief  Insert a member of a given type <b> T </b> but
+   *          never invoke the <b> delete </b> operator.
+   *
+   *  If a member of the given type already exists then the
+   *  insertion operation fails and the existing member is
+   *  returned.  If the insertion succeeds then the inserted
+   *  member is returned.  For example:
+   *
+   *  <PRE>
+   *    CSet & container = ... ;
+   *    const A * const a = new A();
+   *    if ( a == container.insert_with_delete( a ) ) { ... };
+   *  </PRE>
+   */
+  template<class T>
+  const T * insert_no_delete( const T * );
 
   /** \brief  Remove a member of the given type without deleting it.
    *          The caller assumes responsibility for the removed member.
@@ -119,14 +132,21 @@ const T * CSet::get() const
 
 template<class T>
 inline
-const T * CSet::insert( const T * arg_value , bool delete_on_destruction )
+const T * CSet::insert_with_delete( const T * arg_value )
 {
   Manager m ;
-  m.first = & typeid(T);
+  m.first  = & typeid(T);
+  m.second = & cset_member_delete<T> ;
+  return (const T *) p_insert( m , arg_value );
+}
+
+template<class T>
+inline
+const T * CSet::insert_no_delete( const T * arg_value )
+{
+  Manager m ;
+  m.first  = & typeid(T);
   m.second = NULL ;
-
-  if ( delete_on_destruction ) { m.second = & cset_member_delete<T> ; }
-
   return (const T *) p_insert( m , arg_value );
 }
 

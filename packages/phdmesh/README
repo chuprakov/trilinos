@@ -93,7 +93,8 @@ The package requires:
           gmake -f ${PHDMESH_PATH}/Make.in $@
 
 3) Make targets are identified in ${PHDMESH_PATH}/Make.in
-
+   A typical build command is 'build_script all -j 4'
+   which builds all executables using four parallel processes.
 
 If a new compilers, or new compiler options, are introduced please
 introduce created or updated ${PHDMESH_PATH}/config scripts into the

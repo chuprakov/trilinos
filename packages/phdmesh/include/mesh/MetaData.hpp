@@ -106,7 +106,10 @@ public:
    *  which may be an already existing value.
    */
   template<class T>
-  const T * declare_part_attribute( Part & , const T * , bool );
+  const T * declare_attribute_with_delete( Part & , const T * );
+
+  template<class T>
+  const T * declare_attribute_no_delete( Part & , const T * );
 
   //------------------------------------
   /** Get a field, return NULL if it does not exist.
@@ -227,7 +230,10 @@ public:
    *  which may be an already existing value.
    */
   template<class T>
-  const T * declare_field_attribute( FieldBase & , const T * , bool );
+  const T * declare_attribute_with_delete( FieldBase & , const T * );
+
+  template<class T>
+  const T * declare_attribute_no_delete( FieldBase & , const T * );
 
   //------------------------------------
   /** Commit the part and field declarations.
@@ -449,19 +455,37 @@ field_type & MetaData::put_field( field_type & arg_field ,
 template<class T>
 inline
 const T *
-MetaData::declare_part_attribute( Part & p , const T * a , bool d )
+MetaData::declare_attribute_with_delete( Part & p , const T * a )
 {
-  assert_not_committed( "phdmesh::MetaData::declare_part_attribute" );
-  return p.m_cset.template insert<T>( a , d );
+  assert_not_committed( "phdmesh::MetaData::declare_attribute_with_delete" );
+  return p.m_cset.template insert_with_delete<T>( a );
 }
 
 template<class T>
 inline
 const T *
-MetaData::declare_field_attribute( FieldBase & f , const T * a , bool d )
+MetaData::declare_attribute_no_delete( Part & p , const T * a )
 {
-  assert_not_committed( "phdmesh::MetaData::declare_field_attribute" );
-  return f.m_cset.template insert<T>( a , d );
+  assert_not_committed( "phdmesh::MetaData::declare_attribute_no_delete" );
+  return p.m_cset.template insert_no_delete<T>( a );
+}
+
+template<class T>
+inline
+const T *
+MetaData::declare_attribute_with_delete( FieldBase & f , const T * a )
+{
+  assert_not_committed( "phdmesh::MetaData::declare_attribute_with_delete" );
+  return f.m_cset.template insert_with_delete<T>( a );
+}
+
+template<class T>
+inline
+const T *
+MetaData::declare_attribute_no_delete( FieldBase & f , const T * a )
+{
+  assert_not_committed( "phdmesh::MetaData::declare_attribute_no_delete" );
+  return f.m_cset.template insert_no_delete<T>( a );
 }
 
 } // namespace phdmesh

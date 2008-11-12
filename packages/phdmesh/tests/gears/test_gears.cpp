@@ -56,7 +56,8 @@ typedef GearFields::CartesianField   CartesianField ;
 void test_diffuse_field(
   BulkData                  & mesh ,
   const CartesianField          & arg_field ,
-  const ElementNodePointerField & arg_field_ptr );
+  const ElementNodePointerField & arg_field_ptr ,
+  bool split_kernel );
 
 void test_gears( ParallelMachine pm ,
                  const unsigned i_end ,
@@ -307,6 +308,7 @@ void test_gears( ParallelMachine pm ,
   double dt_proximity = 0 ;
   double dt_ghosting = 0 ;
   double dt_diffuse  = 0 ;
+  double dt_diffuse_split = 0 ;
   double dt_exo_write = 0 ;
 
   //------------------------------
@@ -382,9 +384,8 @@ void test_gears( ParallelMachine pm ,
 
         gears[ k * j_end * i_end + j * i_end + i ] = g ;
 
-        S.declare_part_attribute<ProximitySearch>( g->m_surf ,
-                                                   & proximity_search ,
-                                                   false );
+        S.declare_attribute_no_delete<ProximitySearch>( g->m_surf ,
+                                                        & proximity_search );
       }
     }
   }
@@ -609,8 +610,14 @@ void test_gears( ParallelMachine pm ,
         double tmp = wall_time();
 
         test_diffuse_field( M , gear_fields.test_value ,
-                                gear_fields.elem_node_test_value );
+                                gear_fields.elem_node_test_value ,
+                                false );
         dt_diffuse += wall_dtime( tmp );
+
+        test_diffuse_field( M , gear_fields.test_value ,
+                                gear_fields.elem_node_test_value ,
+                                true );
+        dt_diffuse_split += wall_dtime( tmp );
       }
 
       // 
@@ -651,6 +658,7 @@ void test_gears( ParallelMachine pm ,
   dt_proximity /= nsteps ;
   dt_ghosting  /= nsteps ;
   dt_diffuse   /= nsteps ;
+  dt_diffuse_split  /= nsteps ;
   dt_exo_write /= nsteps ;
 
   if ( p_rank == 0 ) {
@@ -659,6 +667,7 @@ void test_gears( ParallelMachine pm ,
               << "  Meshing       = " << dt_mesh_gen  << " sec" << std::endl
               << "  Rebalance     = " << dt_rebalance << " sec" << std::endl
               << "  Diffuse/step  = " << dt_diffuse   << " sec" << std::endl
+              << "  DiffuseSplit/step = " << dt_diffuse_split   << " sec" << std::endl
               << "  Search/step   = " << dt_proximity << " sec" << std::endl
               << "  Ghosting/step = " << dt_ghosting  << " sec" << std::endl
               << "  Writing/step  = " << dt_exo_write << " sec" << std::endl

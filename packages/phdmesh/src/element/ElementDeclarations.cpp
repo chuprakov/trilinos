@@ -49,7 +49,7 @@ void set_cell_topology( Part & p , const CellTopology * singleton )
   const CellTopology * t = NULL ;
 
   if ( singleton == NULL ||
-       singleton != ( t = m.declare_part_attribute(p,singleton,false) ) ) {
+       singleton != ( t = m.declare_attribute_no_delete(p,singleton) ) ) {
     std::ostringstream msg ;
     msg << method ;
     msg << "( " ;

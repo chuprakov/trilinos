@@ -574,12 +574,14 @@ ProximitySearch::ProximitySearch(
   m_tree_iter( search_tree.begin() ),
   m_tree_end(  search_tree.end() )
 {
-  TPI::Set_lock_size( NLOCKS );
-  TPI::Run( *this , & ProximitySearch::iterate_tree );
-
   if ( m_tree_iter != m_tree_end ) {
-    std::string msg("phdmesh::proximity_search FAILED to complete" );
-    throw std::runtime_error(msg);
+    TPI::Set_lock_size( NLOCKS );
+    TPI::Run( *this , & ProximitySearch::iterate_tree );
+
+    if ( m_tree_iter != m_tree_end ) {
+      std::string msg("phdmesh::proximity_search FAILED to complete" );
+      throw std::runtime_error(msg);
+    }
   }
 }
 

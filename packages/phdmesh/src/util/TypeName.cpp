@@ -25,10 +25,32 @@
  * @date   October 2007
  */
 
+#include <sstream>
+#include <util/TypeName.hpp>
+
+namespace phdmesh {
+
+std::string type_name_array( const std::string & type , unsigned n )
+{
+  std::ostringstream tmp ;
+  tmp << type << "[" << n << "]" ;
+  return tmp.str();
+}
+
+std::string type_name_vector( const std::string & type , unsigned n )
+{
+  std::ostringstream tmp ;
+  tmp << "std::vector< " << type << " >" ;
+  if ( n ) { tmp << "(" << n << ")" ; }
+  return tmp.str();
+}
+
+}
+
+#if 0
+
 #define TYPE_NAME_VALUE( T ) \
 const char * TypeName< T >::value() { static const char v[] = # T ; return v ; }
-
-#include <util/TypeName.hpp>
 
 namespace phdmesh {
 
@@ -65,4 +87,6 @@ TYPE_NAME_VALUE( std::complex<double> * )
 TYPE_NAME_VALUE( std::string )
 
 } // namespace phdmesh
+
+#endif
 

@@ -400,8 +400,8 @@ const FilePart * internal_declare_part(
     file_part = new FilePart( arg_part, arg_id, arg_type,
                               arg_topology, arg_number_attr );
 
-    arg_mesh_meta_data.declare_part_attribute<FilePart>(
-      arg_part , file_part , true );
+    arg_mesh_meta_data.declare_attribute_with_delete<FilePart>(
+      arg_part , file_part );
   }
 
   if ( file_part == NULL ||
