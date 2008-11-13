@@ -110,7 +110,7 @@ int AbstractLinAlgPack::exampleNLPDiagSetup(
     comm = Teuchos::rcp(new Epetra_SerialComm());
 #endif
     Teuchos::RCP<Epetra_Map> map = Teuchos::rcp(new Epetra_Map(*n,0,*comm));
-    Teuchos::set_extra_data( comm, "comm", &map );
+    Teuchos::set_extra_data(comm, "comm", Teuchos::outArg(map));
     *vec_space = Teuchos::rcp(new VectorSpaceTSFCore(Teuchos::rcp(new TSFCore::EpetraVectorSpace(map))));
   }
   else {

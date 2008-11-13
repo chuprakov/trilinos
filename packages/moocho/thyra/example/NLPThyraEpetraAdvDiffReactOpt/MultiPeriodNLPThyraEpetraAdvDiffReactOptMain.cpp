@@ -40,6 +40,7 @@ int main( int argc, char* argv[] )
   using Teuchos::rcp_implicit_cast;
   using Teuchos::null;
   using Teuchos::RCP;
+  using Teuchos::outArg;
   using Teuchos::Array;
   using Teuchos::tuple;
   using Teuchos::ParameterList;
@@ -224,7 +225,7 @@ int main( int argc, char* argv[] )
     RCP<Epetra_Comm> comm = Teuchos::null;
 #ifdef HAVE_MPI
     comm = Teuchos::rcp(new Epetra_MpiComm(*intraClusterMpiComm));
-    Teuchos::set_extra_data(intraClusterMpiComm,"mpiComm",&comm);
+    Teuchos::set_extra_data(intraClusterMpiComm, "mpiComm", outArg(comm));
 #else
     comm = Teuchos::rcp(new Epetra_SerialComm());
 #endif
