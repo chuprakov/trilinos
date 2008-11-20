@@ -1,3 +1,5 @@
+PACKAGE_NAME=WebTrilinos
+
 (FRAMEWORK, INSTALL, WebTrilinosTests) {
     DIRS = ../c++/epetra,
            ../c++/amesos.

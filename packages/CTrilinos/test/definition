@@ -1,4 +1,4 @@
-
+PACKAGE_NAME=CTrilinos
 
 (FRAMEWORK, INSTALL) {
     TESTS = ./simpleEpetraExternCInterface.exe;
