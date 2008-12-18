@@ -293,10 +293,10 @@ void test_gears( ParallelMachine pm ,
 
   const unsigned kernel_capacity = 100 ; // 20 ;
 
-  MeshMetaData S ;
-
-  GearFields gear_fields( S );
-
+  double wt = wall_time();
+  double dt_max ;
+  double dt_min ;
+ 
   double dt_rebalance = 0 ;
   double dt_proximity = 0 ;
   double dt_ghosting = 0 ;
@@ -333,8 +333,14 @@ void test_gears( ParallelMachine pm ,
               << "  #Angles     = " << angle_num << std::endl
               << "  #Radial     = " << rad_num   << std::endl
               << "  #Thickness  = " << z_num     << std::endl ;
+    std::cout.flush();
   }
-  
+  //------------------------------
+
+  MeshMetaData S ;
+
+  GearFields gear_fields( S );
+
   //------------------------------
   // Proximity search.
   // Tag the surface parts with the proximity search object.
@@ -404,17 +410,46 @@ void test_gears( ParallelMachine pm ,
 
   MeshBulkData M( S , pm , kernel_capacity );
 
-  double wt = wall_time();
+  dt_max = dt_min = wall_dtime( wt ); 
+  all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) ); 
+  if ( p_rank == 0 ) {
+    std::cout << "dTime min,max = "  
+              << dt_min << " , " << dt_max << " sec " << std::endl
+              << "Problem setup completed, begin internal meshing"
+              << std::endl ;
+    std::cout.flush(); 
+  }
 
   for ( std::vector<Gear*>::iterator
         i = gears.begin() ; i != gears.end() ; ++i ) {
     (*i)->mesh( M );
   }
 
+  dt_max = dt_min = wall_dtime( wt );
+  all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) );
+  if ( p_rank == 0 ) {  
+    std::cout << "dTime min,max = "  
+              << dt_min << " , " << dt_max << " sec " << std::endl
+              << "Local meshing completed, begin parallel resolution"
+              << std::endl ;
+    std::cout.flush(); 
+  }      
+  double dt_mesh_local = dt_max ;
+
   comm_mesh_discover_sharing( M );
   comm_mesh_regenerate_aura( M );
 
-  double dt_mesh_gen = wall_dtime( wt );
+  dt_max = dt_min = wall_dtime( wt );
+  all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) );
+  if ( p_rank == 0 ) {
+    std::cout << "dTime min,max = "
+              << dt_min << " , " << dt_max << " sec " << std::endl
+              << "Parallel meshing resolution completed, begin consistency check"
+              << std::endl ;
+    std::cout.flush();
+  }
+ 
+  double dt_mesh_gen = dt_mesh_local + dt_max ;
 
   if ( verify && ! comm_mesh_verify_parallel_consistency( M ) ) {
     std::cout << "N_GEARS Failed parallel consistency" << std::endl ;
@@ -467,7 +502,13 @@ void test_gears( ParallelMachine pm ,
 
     comm_mesh_stats( M , counts , max_id );
 
+    dt_max = dt_min = wall_dtime( wt );
+    all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) );
+ 
     if ( p_rank == 0 ) {
+      std::cout << "dTime min,max = "
+                << dt_min << " , " << dt_max << " sec " << std::endl ;
+
       std::cout << "N_GEARS Meshing completed and verified" << std::endl ;
 
       std::cout << "N_GEARS Global Counts { " 
@@ -508,11 +549,19 @@ void test_gears( ParallelMachine pm ,
 
     int flags[ EntityTypeEnd ] = { 0 , 0 , 0 , 1 , 0 , 0 };
 
-    wt = wall_time();
     exo = new exodus::FileOutput( file_schema, M,
                                   exo_file_name , title,
                                   false , out_fields, flags);
-    dt_exo_write += wall_dtime(wt);
+
+    dt_exo_write += dt_max = dt_min = wall_dtime( wt );
+    all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) );
+ 
+    if ( p_rank == 0 ) {
+      std::cout << "dTime min,max = "
+                << dt_min << " , " << dt_max << " sec " << std::endl
+                << "ExodusII output initialized" << std::endl ;
+      std::cout.flush();
+    }
   }
 
   std::vector<EntityProc> prox_domain ;
@@ -526,18 +575,45 @@ void test_gears( ParallelMachine pm ,
                              verify ,
                              dt_proximity , dt_ghosting );
 
-  wt = wall_time();
+  dt_max = dt_min = wall_dtime( wt );
+  all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) );
+ 
+  if ( p_rank == 0 ) {
+    std::cout << "dTime min,max = "
+              << dt_min << " , " << dt_max << " sec " << std::endl
+              << "Initial proximity test completed" << std::endl ;
+    std::cout.flush();
+  }
 
   std::vector<OctTreeKey> rebal_cut_keys ;
 
   comm_mesh_rebalance( M , gear_fields.current_coord , NULL , rebal_cut_keys );
 
-  dt_rebalance = wall_dtime( wt );
+  dt_rebalance = dt_max = dt_min = wall_dtime( wt );
+  all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) );
+ 
+  if ( p_rank == 0 ) {
+    std::cout << "dTime min,max = "
+              << dt_min << " , " << dt_max << " sec " << std::endl
+              << "Initial rebalance completed" << std::endl ;
+    std::cout.flush();
+  }
 
   if ( verify && ! comm_mesh_verify_parallel_consistency( M ) ) {
     std::cout << "N_GEARS Failed parallel rebalance consistency"
               << std::endl ;
     return ;
+  }
+
+  dt_max = dt_min = wall_dtime( wt );
+  all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) );
+ 
+  if ( p_rank == 0 ) {
+    std::cout << "dTime min,max = "
+              << dt_min << " , " << dt_max << " sec " << std::endl
+              << "Rebalance verification completed" << std::endl
+              << "Begin main loop" << std::endl ;
+    std::cout.flush();
   }
 
   //------------------------------
@@ -604,15 +680,25 @@ void test_gears( ParallelMachine pm ,
                                  verify ,
                                  dt_proximity , dt_ghosting );
 
+
       // Surface in proximity are added to the Aura
 
 
 
 
       if ( NULL != exo ) {
-        wt = wall_time();
+        double tmp = wall_time();
         exo->write( 0.0 );
-        dt_exo_write += wall_dtime( wt );
+        dt_exo_write += wall_dtime( tmp );
+      }
+
+      dt_max = dt_min = wall_dtime( wt );
+      all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) );
+ 
+      if ( p_rank == 0 ) {
+        std::cout << "Step " << i << " completed, dTime min,max = "
+                  << dt_min << " , " << dt_max << " sec " << std::endl ;
+        std::cout.flush();
       }
     }
   }
