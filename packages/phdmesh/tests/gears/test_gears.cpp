@@ -341,6 +341,10 @@ void test_gears( ParallelMachine pm ,
 
   GearFields gear_fields( S );
 
+  std::vector<EntityProc> prox_domain ;
+  std::vector<EntityProc> prox_range ;
+  std::vector<OctTreeKey> rebal_cut_keys ;
+
   //------------------------------
   // Proximity search.
   // Tag the surface parts with the proximity search object.
@@ -414,7 +418,7 @@ void test_gears( ParallelMachine pm ,
   all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) ); 
   if ( p_rank == 0 ) {
     std::cout << "dTime min,max = "  
-              << dt_min << " , " << dt_max << " sec " << std::endl
+              << dt_min << " , " << dt_max << " sec : "
               << "Problem setup completed, begin internal meshing"
               << std::endl ;
     std::cout.flush(); 
@@ -429,7 +433,7 @@ void test_gears( ParallelMachine pm ,
   all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) );
   if ( p_rank == 0 ) {  
     std::cout << "dTime min,max = "  
-              << dt_min << " , " << dt_max << " sec " << std::endl
+              << dt_min << " , " << dt_max << " sec : "
               << "Local meshing completed, begin parallel resolution"
               << std::endl ;
     std::cout.flush(); 
@@ -443,7 +447,7 @@ void test_gears( ParallelMachine pm ,
   all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) );
   if ( p_rank == 0 ) {
     std::cout << "dTime min,max = "
-              << dt_min << " , " << dt_max << " sec " << std::endl
+              << dt_min << " , " << dt_max << " sec : "
               << "Parallel meshing resolution completed, begin consistency check"
               << std::endl ;
     std::cout.flush();
@@ -507,25 +511,26 @@ void test_gears( ParallelMachine pm ,
  
     if ( p_rank == 0 ) {
       std::cout << "dTime min,max = "
-                << dt_min << " , " << dt_max << " sec " << std::endl ;
+                << dt_min << " , " << dt_max << " sec : "
+                << "N_GEARS Meshing completed and verified" << std::endl ;
 
-      std::cout << "N_GEARS Meshing completed and verified" << std::endl ;
+      if ( verify ) {
+        std::cout << "  N_GEARS Global Counts { " 
+                  << "node = " << counts[0] << " , "
+                  << "edge = " << counts[1] << " , "
+                  << "face = " << counts[2] << " , "
+                  << "elem = " << counts[3] << " , "
+                  << "particle = " << counts[4] << " , "
+                  << "constraint = " << counts[5] << " }" << std::endl ;
 
-      std::cout << "N_GEARS Global Counts { " 
-                << "node = " << counts[0] << " , "
-                << "edge = " << counts[1] << " , "
-                << "face = " << counts[2] << " , "
-                << "elem = " << counts[3] << " , "
-                << "particle = " << counts[4] << " , "
-                << "constraint = " << counts[5] << " }" << std::endl ;
-
-      std::cout << "N_GEARS Global MaxId { " 
-                << "node = " << max_id[0] << " , "
-                << "edge = " << max_id[1] << " , "
-                << "face = " << max_id[2] << " , "
-                << "elem = " << max_id[3] << " , "
-                << "particle = " << max_id[4] << " , "
-                << "constraint = " << max_id[5] << " }" << std::endl ;
+        std::cout << "  N_GEARS Global MaxId { " 
+                  << "node = " << max_id[0] << " , "
+                  << "edge = " << max_id[1] << " , "
+                  << "face = " << max_id[2] << " , "
+                  << "elem = " << max_id[3] << " , "
+                  << "particle = " << max_id[4] << " , "
+                  << "constraint = " << max_id[5] << " }" << std::endl ;
+      }
 
       std::cout.flush();
     }
@@ -558,34 +563,31 @@ void test_gears( ParallelMachine pm ,
  
     if ( p_rank == 0 ) {
       std::cout << "dTime min,max = "
-                << dt_min << " , " << dt_max << " sec " << std::endl
+                << dt_min << " , " << dt_max << " sec : "
                 << "ExodusII output initialized" << std::endl ;
       std::cout.flush();
     }
   }
 
-  std::vector<EntityProc> prox_domain ;
-  std::vector<EntityProc> prox_range ;
+  if ( verify ) {
+    test_gears_face_proximity( M ,
+                               gear_fields.gear_coord ,
+                               field_node_proximity ,
+                               proximity_search ,
+                               prox_domain , prox_range ,
+                               verify ,
+                               dt_proximity , dt_ghosting );
 
-  test_gears_face_proximity( M ,
-                             gear_fields.gear_coord ,
-                             field_node_proximity ,
-                             proximity_search ,
-                             prox_domain , prox_range ,
-                             verify ,
-                             dt_proximity , dt_ghosting );
-
-  dt_max = dt_min = wall_dtime( wt );
-  all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) );
+    dt_max = dt_min = wall_dtime( wt );
+    all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) );
  
-  if ( p_rank == 0 ) {
-    std::cout << "dTime min,max = "
-              << dt_min << " , " << dt_max << " sec " << std::endl
-              << "Initial proximity test completed" << std::endl ;
-    std::cout.flush();
+    if ( p_rank == 0 ) {
+      std::cout << "dTime min,max = "
+                << dt_min << " , " << dt_max << " sec : "
+                << "Initial proximity test completed" << std::endl ;
+      std::cout.flush();
+    }
   }
-
-  std::vector<OctTreeKey> rebal_cut_keys ;
 
   comm_mesh_rebalance( M , gear_fields.current_coord , NULL , rebal_cut_keys );
 
@@ -594,7 +596,7 @@ void test_gears( ParallelMachine pm ,
  
   if ( p_rank == 0 ) {
     std::cout << "dTime min,max = "
-              << dt_min << " , " << dt_max << " sec " << std::endl
+              << dt_min << " , " << dt_max << " sec : "
               << "Initial rebalance completed" << std::endl ;
     std::cout.flush();
   }
@@ -610,7 +612,7 @@ void test_gears( ParallelMachine pm ,
  
   if ( p_rank == 0 ) {
     std::cout << "dTime min,max = "
-              << dt_min << " , " << dt_max << " sec " << std::endl
+              << dt_min << " , " << dt_max << " sec : "
               << "Rebalance verification completed" << std::endl
               << "Begin main loop" << std::endl ;
     std::cout.flush();
@@ -696,8 +698,9 @@ void test_gears( ParallelMachine pm ,
       all_reduce( pm , ReduceMax<1>( & dt_max ) & ReduceMin<1>( & dt_min ) );
  
       if ( p_rank == 0 ) {
-        std::cout << "Step " << i << " completed, dTime min,max = "
-                  << dt_min << " , " << dt_max << " sec " << std::endl ;
+        std::cout << "dTime min,max = "
+                  << dt_min << " , " << dt_max << " sec : "
+                  << "Step " << i << " completed" << std::endl ;
         std::cout.flush();
       }
     }
