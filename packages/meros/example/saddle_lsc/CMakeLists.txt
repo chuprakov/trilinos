@@ -1,13 +1,13 @@
 
-INCLUDE(Trilinos_Add_Executable_And_Test)
+INCLUDE(PackageAddExecutableAndTest)
 
-TRILINOS_ADD_EXECUTABLE(
+PACKAGE_ADD_EXECUTABLE(
   saddle_lsc
   SOURCES saddle_lsc.cpp
   COMM serial mpi
   )
 
-TRILINOS_ADD_EXECUTABLE(
+PACKAGE_ADD_EXECUTABLE(
   saddle_lsc_epetra
   SOURCES saddle_lsc_epetra.cpp
   COMM serial mpi
