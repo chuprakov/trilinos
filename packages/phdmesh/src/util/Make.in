@@ -69,9 +69,11 @@ UTIL_OBJ_FILES =	\
 	Setv.o	\
 	TestDriver.o	\
 	TPI_Concurrency.o	\
-	TPI_pthreads.o	\
 	TPI_Walltime.o	\
-	ValueIO.o
+	ValueIO.o	\
+	TPI_pthreads.o
+
+# If no pthreads then change above TPI_pthreads.o to TPI_noop.o
 
 UTIL_INC_DEPS = $(UTIL_INC_FILES) $(CONFIG_FILE)
 

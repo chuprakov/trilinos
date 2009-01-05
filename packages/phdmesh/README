@@ -61,6 +61,8 @@ build strategy is to-be-done.
 The package requires:
   a) C++ compiler that is compliant with the 1998 standard and
   b) C   compiler that is compliant with the 1999 standard.
+  c) By default the standard 'pthreads' library, see util/src/Make.in 
+     if the standard 'pthreads' library is not available.
 
 1) Create a directory in which the build will be performed, e.g. BUILD_DIR.
 
