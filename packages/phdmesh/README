@@ -112,6 +112,13 @@ Three test executables and example source code may be built.
 
 Tests have been run with gnu, intel, sun, and ibm compilers.
 
+Each test source directory contains example input files.
+The ${PHDMESH_PATH}/tests/gears/scaling.i input file defines a
+benchmark for weak parallel scaling of a parallel geometric
+proximity search algorithm.  This benchmark performs a global
+geometric proximity search for the surface facets of a grid
+of internally-meshed counter-rotating "gears."
+
 #-----------------------------------------------------------------------
 
 Using the Libraries
