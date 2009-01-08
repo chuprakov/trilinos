@@ -1,3 +1,4 @@
+Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
 
 Echoing the command-line:
 
@@ -29,11 +30,11 @@ Usage: ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReact
   --geom-file-base                         string  Base name of geometry file to read the mesh from.
                                                    (default: --geom-file-base="")
   --np                                     int     The number of optimization parameters p (If < 0 then all of boundary is used)
-                                                   (default: --np=-1)
+                                                   (default: --np=1)
   --normalize-basis                        bool    Normalize the basis for the parameters p or not.
   --no-normalize-basis                             (default: --no-normalize-basis)
   --beta                                   double  Regularization.
-                                                   (default: --beta=1)
+                                                   (default: --beta=0)
   --reaction-rate                          double  The rate of the reaction
                                                    (default: --reaction-rate=1)
   --x0                                     double  Initial guess for the state.
@@ -66,4 +67,3 @@ Usage: ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReact
   --hide-doc                                       (default: --show-doc)
   --xml-format                             bool    Show MoochoPack::MoochoThyraSolver parameters in XML or human-readable format.
   --readable-format                                (default: --readable-format)
-Teuchos::GlobalMPISession::GlobalMPISession(): started serial run

@@ -216,11 +216,11 @@ options_group NLPAlgoConfigMamaJama {
 *    lbfgs_auto_scaling = true;  *** (default)
 *    lbfgs_auto_scaling = false;
 *    hessian_initialization = AUTO;                       *** Let the solver decide dynamically [default]
-*    hessian_initialization = SERIALIZE;                  *** rHL_{0} read from file (see ReducedHessianSerialization)
-*    hessian_initialization = IDENTITY;                   *** rHL_{0} = I
-*    hessian_initialization = FINITE_DIFF_SCALE_IDENTITY; *** rHL_{0} = ||fd|| * I
-*    hessian_initialization = FINITE_DIFF_DIAGONAL;       *** rHL_{0} = diag(max(fd(i),small),i)
-*    hessian_initialization = FINITE_DIFF_DIAGONAL_ABS;   *** rHL_{0} = diag(abs(fd(i))
+*    hessian_initialization = SERIALIZE;                  *** rHL_(0) read from file (see ReducedHessianSerialization)
+*    hessian_initialization = IDENTITY;                   *** rHL_(0) = I
+*    hessian_initialization = FINITE_DIFF_SCALE_IDENTITY; *** rHL_(0) = ||fd|| * I
+*    hessian_initialization = FINITE_DIFF_DIAGONAL;       *** rHL_(0) = diag(max(fd(i),small),i)
+*    hessian_initialization = FINITE_DIFF_DIAGONAL_ABS;   *** rHL_(0) = diag(abs(fd(i))
 *** QP solvers
 *    qp_solver = AUTO;    *** Let the solver decide dynamically
 *    qp_solver = QPKWIK;  *** Primal-dual, active set, QR
@@ -239,7 +239,7 @@ options_group NLPAlgoConfigMamaJama {
 *    line_search_method = FILTER;             *** [default] Use the Filter line search method
 *    merit_function_type = AUTO;              *** [line_search_method != NONE] Let solver decide
 *    merit_function_type = L1;                *** [line_search_method != NONE] phi(x) = f(x) + mu*||c(x)||1
-*    merit_function_type = MODIFIED_L1;       *** [line_search_method != NONE] phi(x) = f(x) + sum{mu(j),|cj(x)|,j}
+*    merit_function_type = MODIFIED_L1;       *** [line_search_method != NONE] phi(x) = f(x) + sum(mu(j),|cj(x)|,j)
 *    merit_function_type = MODIFIED_L1_INCR;  *** [line_search_method != NONE] Like MODIFIED_L1 except mu(j) are altered in order to take larger steps
 *    l1_penalty_parameter_update = AUTO;      *** [merit_function_type == L1] let solver decide
 *    l1_penalty_parameter_update = WITH_MULT; *** [merit_function_type == L1] Use Lagrange multipliers to update mu
@@ -290,6 +290,28 @@ options_group CheckConvergenceStd {
 *    scale_comp_error_by   = SCALE_BY_ONE;        *** [default]
 *    scale_opt_error_by_Gf = true; *** [default]
 *    scale_opt_error_by_Gf = false;
+}
+
+options_group TangentialStepWithInequStd {
+*    warm_start_frac = 0.8; *** [default]
+*    warm_start_frac = 0.0; *** Never do a warm start
+*    warm_start_frac = 1.0; *** Do a warm start as soon a possible
+*    qp_testing = QP_TEST_DEFAULT; *** [default] Test if check_results==true
+*    qp_testing = QP_TEST;         *** Always test
+*    qp_testing = QP_NO_TEST;      *** Never test
+*    primal_feasible_point_error = true; *** [default] Throw exception on PRIMAL_FEASIBLE_POINT
+*    primal_feasible_point_error = false; *** No throw exception on PRIMAL_FEASIBLE_POINT
+*    dual_feasible_point_error = true; *** [default] Throw exception on DUAL_FEASIBLE_POINT
+*    dual_feasible_point_error = false; *** No throw exception on DUAL_FEASIBLE_POINT
+}
+
+options_group QPSolverRelaxedTester {
+*    opt_warning_tol   = 1e-10;  *** [default] Tolerances for optimality conditions
+*    opt_error_tol     = 1e-5;   *** [default]
+*    feas_warning_tol  = 1e-10;  *** [default] Tolerances for feasibility
+*    feas_error_tol    = 1e-5;   *** [default]
+*    comp_warning_tol  = 1e-10;  *** [default] Tolerances for complementarity
+*    comp_error_tol    = 1e-5;   *** [default]
 }
 
 options_group QPSolverRelaxedQPSchur {

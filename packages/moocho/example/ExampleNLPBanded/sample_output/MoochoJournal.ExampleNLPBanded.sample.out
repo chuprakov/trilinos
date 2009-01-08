@@ -41,6 +41,10 @@ end_options
 
 *** Setting up to run MOOCHO on the NLP using a configuration object of type 'MoochoPack::NLPAlgoConfigMamaJama' ...
 
+*****************************
+*** MoochoSolver::solve() ***
+*****************************
+
 test_nlp = true: Testing the NLP! ...
 
 Testing the supported NLPFirstOrder interface ...
@@ -157,9 +161,7 @@ End DecompositionSystemVarReductImp::get_basis_matrices(...)
 
 Using a direct sparse solver to set a new basis ...
 
-Using MA28 to analyze and factor a new matrix ...
-
-Calling ma28ad(...) ...
+Using LAPACK xGETRF to analyze and factor a new matrix ...
 
 ***********************************************************
 *** DecompositionSystemVarReductImp::update_decomp(...) ***
@@ -178,8 +180,8 @@ f_k                      = 1.5025000000e+01
 ||c_k||inf               = 1.1997308452e+02
 
 Gf(var_indep)_k =
-  5
-   0.1:1 0.1:2 0.1:3 0.1:4 0.1:5
+ 5
+  0.1:1 0.1:2 0.1:3 0.1:4 0.1:5
 
 (0) 2: "QuasiNormalStep"
 
@@ -197,8 +199,8 @@ num_basis_k was updated so the basis changed so we will skip this check
 (0) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 1.3756107364e-11 / (1.1997308452e+02 + 2.2250738585e-308)
-     = 1.1465994576e-13
+     = 1.3784529074e-11 / (1.1997308452e+02 + 2.2250738585e-308)
+     = 1.1489684648e-13
 
 num_basis_k was updated so the basis changed so we will skip this check
     reset min ||R*py+c||/||c|| to current value + epsilon(2.2204460493e-16)
@@ -208,8 +210,8 @@ num_basis_k was updated so the basis changed so we will skip this check
 ||rGf||inf = 1.0809594644e+01
 
 rGf_k =
-  5
-   -10.8086:1 -10.8091:2 -10.8091:3 -10.8091:4 -10.8096:5
+ 5
+  -10.8086:1 -10.8091:2 -10.8091:3 -10.8091:4 -10.8096:5
 
 (0) 4.-1: "CheckSkipBFGSUpdate"
 
@@ -222,96 +224,40 @@ Initializing rHL = eye(n-r) (k = 0)...
 cond_inf(rHL_k) = 1.0000000000e+00
 
 rHL_k = 
-  Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
-    5 5
-     1:1:1 0:1:2 1:1:3 0:1:4 0:1:5
-     0:2:1 1:2:2 0:2:3 1:2:4 0:2:5
-     0:3:1 0:3:2 1:3:3 0:3:4 1:3:5
-     0:4:1 0:4:2 0:4:3 1:4:4 0:4:5
-     0:5:1 0:5:2 0:5:3 0:5:4 1:5:5
-  Matrix scaling M = scale*U'*U, scale = 1
-  Upper cholesky factor U (ignore lower nonzeros):
-    5 5
-     1:1:1 0:1:2 0:1:3 0:1:4 0:1:5
-     0:2:1 1:2:2 0:2:3 0:2:4 0:2:5
-     1:3:1 0:3:2 1:3:3 0:3:4 0:3:5
-     0:4:1 1:4:2 0:4:3 1:4:4 0:4:5
-     0:5:1 0:5:2 1:5:3 0:5:4 1:5:5
+ Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
+  5 5
+   1:1:1 0:1:2 1:1:3 0:1:4 0:1:5
+   0:2:1 1:2:2 0:2:3 1:2:4 0:2:5
+   0:3:1 0:3:2 1:3:3 0:3:4 1:3:5
+   0:4:1 0:4:2 0:4:3 1:4:4 0:4:5
+   0:5:1 0:5:2 0:5:3 0:5:4 1:5:5
+ Matrix scaling M = scale*U'*U, scale = 1
+ Upper cholesky factor U (ignore lower nonzeros):
+  5 5
+   1:1:1 0:1:2 0:1:3 0:1:4 0:1:5
+   0:2:1 1:2:2 0:2:3 0:2:4 0:2:5
+   1:3:1 0:3:2 1:3:3 0:3:4 0:3:5
+   0:4:1 1:4:2 0:4:3 1:4:4 0:4:5
+   0:5:1 0:5:2 1:5:3 0:5:4 1:5:5
 
 (0) 5.-1: "SetDBoundsStd"
 
 (0) 5: "TangentialStep"
 
 qp_grad_k = 
-  5
-   -10.8086:1 -10.8091:2 -10.8091:3 -10.8091:4 -10.8096:5
+ 5
+  -10.8086:1 -10.8091:2 -10.8091:3 -10.8091:4 -10.8096:5
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa10670
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xe2c76b0
     ||Ypy_k(var_indep)||inf = 5.2360290589e-01
 
-Using bounds on full Z*pz ...
+Using simple bounds on pz ...
 
 There are no finite bounds on dependent variables.  There will be no extra inequality constraints added on D*pz ...
 
-*** Entering QPSchur::solve_qp(...)
-
-*** Warm start info
-
-Number of variables                                          = 6
-Number of initially fixed variables (not in Ko)              = 1
-Number of changes to the initial KKT system (num_act_change) = 0
-
-    Number of initially fixed variables freed from a bound   = 0
-    Number of initially free variables fixed to a bound      = 0
-    Number of general equality constraints added             = 0
-    Number of general inequality constraints added           = 0
-
-Solution to the initial KKT system, vo = inv(Ko)*fo:
-
-||vo||inf = 1.0809594644e+01
-
-***
-*** Removing constriants until we are dual feasible
-***
-
-*** Start by removing constraints within the Schur complement first
-
-There where 0 constraints dropped from the schur complement from the initial guess of the active set.
-
-Current guess for unknowns x:
-
-||x||inf = 1.0809594644e+01
-
-*** Second, free initially fixed variables not in Ko
-
-There where 0 initially fixed variables not in Ko that were freed and added to the schur complement.
-
-*** Starting Primal-Dual Iterations ***
-
-We think we have found the solution and are not currently using iterative refinement
-and iter_refine_at_solution==true so perform iterative refinement ...
-
-Iterative refinement did not alter the unknowns so exit with this solution...
-
-Recomputing final mu_D_hat at the solution ...
-
-*** Solution found!
-
-Number of QP iteratons                                = 0
-Number of iterative refinement residual calculations  = 1
-Number of iterative refinement solves                 = 0
-
-||x||inf                = 1.0809594644e+01
-mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+10
-min(|mu(i)|)            = 1.0000000000e+10
-lambda_breve.nz()       = 0
-max(|lambda_breve(i)|)  = 0.0000000000e+00
-min(|lambda_breve(i)|)  = 0.0000000000e+00
-
-*** Leaving QPSchur::solve_qp(...)
+Calling QPKWIK to solve QP problem ...
 
 ||pz_k||inf    = 1.0809594644e+01
 nu_k.nz()      = 0
@@ -319,24 +265,33 @@ max(|nu_k(i)|) = 0.0000000000e+00
 ||Zpz_k||2     = 1.1032346914e+02
 
 pz_k = 
-  5
-   10.8086:1 10.8091:2 10.8091:3 10.8091:4 10.8096:5
+ 5
+  10.8086:1 10.8091:2 10.8091:3 10.8091:4 10.8096:5
+
+nu_k(var_indep) = 
+ 5
+  0:1 0:2 0:3 0:4 0:5
+
+Zpz(var_indep)_k = 
+ 5
+  10.8086:1 10.8091:2 10.8091:3 10.8091:4 10.8096:5
+
 
 (0) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (-1.3242740238e-12)/(1.1999603325e+00 * 1.1032346914e+02 + 2.2250738585e-308)
-  = -1.0003294638e-14
+  = (-1.3207213101e-12)/(1.1999603325e+00 * 1.1032346914e+02 + 2.2250738585e-308)
+  = -9.9764581665e-15
 
-||d||inf = 1.0285991738e+01
+||d_k||inf            = 1.0285991738e+01
 
 (0) 7: "CalcReducedGradLagrangian"
 
 ||rGL_k||inf = 1.0809594644e+01
 
 rGL_k = 
-  5
-   -10.8086:1 -10.8091:2 -10.8091:3 -10.8091:4 -10.8096:5
+ 5
+  -10.8086:1 -10.8091:2 -10.8091:3 -10.8091:4 -10.8096:5
 
 (0) 8: "CheckConvergence"
 
@@ -399,8 +354,8 @@ Augmenting the filter with the point:
 ||x(var_indep)_k||inf = 7.4287448361e-01
 
 x(var_indep)_k = 
-  5
-   0.742812:1 0.742843:2 0.742843:3 0.742843:4 0.742874:5
+ 5
+  0.742812:1 0.742843:2 0.742843:3 0.742843:4 0.742874:5
 
 Updating the decomposition ...
 
@@ -424,7 +379,7 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using MA28 to factor a new matrix ...
+Using LAPACK xGETRF to refactor the basis matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
@@ -437,8 +392,8 @@ f_k                      = 2.1820737219e+00
 ||c_k||inf               = 6.9682547090e+01
 
 Gf(var_indep)_k =
-  5
-   0.742812:1 0.742843:2 0.742843:3 0.742843:4 0.742874:5
+ 5
+  0.742812:1 0.742843:2 0.742843:3 0.742843:4 0.742874:5
 
 (1) 2: "QuasiNormalStep"
 
@@ -453,16 +408,16 @@ beta = ||py||/||c|| = 2.3333541435e-04
 (1) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 6.9633188104e-13 / (6.9682547090e+01 + 2.2250738585e-308)
-     = 9.9929165928e-15
+     = 6.8212102633e-13 / (6.9682547090e+01 + 2.2250738585e-308)
+     = 9.7889795195e-15
 
 (1) 3: "ReducedGradient"
 
 ||rGf||inf = 3.7462461296e-01
 
 rGf_k =
-  5
-   0.374625:1 0.374464:2 0.374464:3 0.374464:4 0.374303:5
+ 5
+  0.374625:1 0.374464:2 0.374464:3 0.374464:4 0.374303:5
 
 (1) 4.-1: "CheckSkipBFGSUpdate"
 
@@ -482,33 +437,25 @@ Performing Secant update ...
 ||s_bfgs||inf = 6.7559966523e-01
 
 y_bfgs =
-  5
-   11.1832:1 11.1836:2 11.1836:3 11.1836:4 11.1839:5
+ 5
+  11.1832:1 11.1836:2 11.1836:3 11.1836:4 11.1839:5
 
 s_bfgs =
-  5
-   0.675537:1 0.675568:2 0.675568:3 0.675568:4 0.6756:5
+ 5
+  0.675537:1 0.675568:2 0.675568:3 0.675568:4 0.6756:5
 
 Rescaling the initial identity matrix before the update as:
 Iscale = (y'*y)/(y'*s) = (6.2535947673e+02)/(3.7776268532e+01) = 1.6554294562e+01
 B =  Iscale * eye(n-r) ...
 
 B after rescaling = 
-  Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
-    5 5
-     16.5543:1:1 0:1:2 4.0687:1:3 0:1:4 0:1:5
-     0:2:1 16.5543:2:2 0:2:3 4.0687:2:4 0:2:5
-     0:3:1 0:3:2 16.5543:3:3 0:3:4 4.0687:3:5
-     0:4:1 0:4:2 0:4:3 16.5543:4:4 0:4:5
-     0:5:1 0:5:2 0:5:3 0:5:4 16.5543:5:5
-  Matrix scaling M = scale*U'*U, scale = 1
-  Upper cholesky factor U (ignore lower nonzeros):
-    5 5
-     4.0687:1:1 0:1:2 0:1:3 0:1:4 0:1:5
-     0:2:1 4.0687:2:2 0:2:3 0:2:4 0:2:5
-     16.5543:3:1 0:3:2 4.0687:3:3 0:3:4 0:3:5
-     0:4:1 16.5543:4:2 0:4:3 4.0687:4:4 0:4:5
-     0:5:1 0:5:2 16.5543:5:3 0:5:4 4.0687:5:5
+ Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
+  5 5
+   16.5543:1:1 0:1:2 1:1:3 0:1:4 0:1:5
+   0:2:1 16.5543:2:2 0:2:3 1:2:4 0:2:5
+   0:3:1 0:3:2 16.5543:3:3 0:3:4 1:3:5
+   0:4:1 0:4:2 0:4:3 16.5543:4:4 0:4:5
+   0:5:1 0:5:2 0:5:3 0:5:4 16.5543:5:5
 
 Considering the dampened update ...
 
@@ -516,117 +463,61 @@ s_bfgs'*y_bfgs = 3.7776268532e+01 >=  s_bfgs' * B * s_bfgs = 3.7776268535e+01
 Perform the undamped update ...
 
 B after the BFGS update = 
-  Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
-    5 5
-     16.5544:1:1 2.23614:1:2 4.0687:1:3 2.85463e-09:1:4 1.95474e-09:1:5
-     5.27915e-05:2:1 16.5543:2:2 2.00002:2:3 4.0687:2:4 1.05485e-09:2:5
-     5.27878e-05:3:1 1.1783e-08:3:2 16.5543:3:3 1.73208:3:4 4.0687:3:5
-     5.27841e-05:4:1 8.12156e-09:4:2 4.46017e-09:4:3 16.5543:4:4 1.41425:4:5
-     -4.02538e-09:5:1 -5.27841e-05:5:2 -5.27878e-05:5:3 -5.27914e-05:5:4 16.5542:5:5
-  Matrix scaling M = scale*U'*U, scale = 1
-  Upper cholesky factor U (ignore lower nonzeros):
-    5 5
-     4.06871:1:1 1.2975e-05:1:2 1.29741e-05:1:3 1.29732e-05:1:4 -9.89349e-10:1:5
-     2.23614:2:1 4.0687:2:2 2.85463e-09:2:3 1.95474e-09:2:4 -1.29732e-05:2:5
-     16.5543:3:1 2.00002:3:2 4.0687:3:3 1.05485e-09:3:4 -1.29741e-05:3:5
-     1.1783e-08:4:1 16.5543:4:2 1.73208:4:3 4.0687:4:4 -1.2975e-05:4:5
-     8.12156e-09:5:1 4.46017e-09:5:2 16.5543:5:3 1.41425:5:4 4.06868:5:5
+ Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
+  5 5
+   16.5544:1:1 0:1:2 1:1:3 0:1:4 0:1:5
+   5.27915e-05:2:1 16.5543:2:2 0:2:3 1:2:4 0:2:5
+   5.27878e-05:3:1 1.1783e-08:3:2 16.5543:3:3 0:3:4 1:3:5
+   5.27841e-05:4:1 8.12156e-09:4:2 4.46017e-09:4:3 16.5543:4:4 0:4:5
+   -4.02538e-09:5:1 -5.27841e-05:5:2 -5.27878e-05:5:3 -5.27914e-05:5:4 16.5542:5:5
 
 ||rHL_k||inf    = 1.6554558493e+01
 
 cond_inf(rHL_k) = 1.0000318885e+00
 
 rHL_k = 
-  Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
-    5 5
-     16.5544:1:1 2.23614:1:2 4.0687:1:3 2.85463e-09:1:4 1.95474e-09:1:5
-     5.27915e-05:2:1 16.5543:2:2 2.00002:2:3 4.0687:2:4 1.05485e-09:2:5
-     5.27878e-05:3:1 1.1783e-08:3:2 16.5543:3:3 1.73208:3:4 4.0687:3:5
-     5.27841e-05:4:1 8.12156e-09:4:2 4.46017e-09:4:3 16.5543:4:4 1.41425:4:5
-     -4.02538e-09:5:1 -5.27841e-05:5:2 -5.27878e-05:5:3 -5.27914e-05:5:4 16.5542:5:5
-  Matrix scaling M = scale*U'*U, scale = 1
-  Upper cholesky factor U (ignore lower nonzeros):
-    5 5
-     4.06871:1:1 1.2975e-05:1:2 1.29741e-05:1:3 1.29732e-05:1:4 -9.89349e-10:1:5
-     2.23614:2:1 4.0687:2:2 2.85463e-09:2:3 1.95474e-09:2:4 -1.29732e-05:2:5
-     16.5543:3:1 2.00002:3:2 4.0687:3:3 1.05485e-09:3:4 -1.29741e-05:3:5
-     1.1783e-08:4:1 16.5543:4:2 1.73208:4:3 4.0687:4:4 -1.2975e-05:4:5
-     8.12156e-09:5:1 4.46017e-09:5:2 16.5543:5:3 1.41425:5:4 4.06868:5:5
+ Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
+  5 5
+   16.5544:1:1 0:1:2 4.0687:1:3 2.85463e-09:1:4 1.95474e-09:1:5
+   5.27915e-05:2:1 16.5543:2:2 0:2:3 4.0687:2:4 1.05485e-09:2:5
+   5.27878e-05:3:1 1.1783e-08:3:2 16.5543:3:3 0:3:4 4.0687:3:5
+   5.27841e-05:4:1 8.12156e-09:4:2 4.46017e-09:4:3 16.5543:4:4 0:4:5
+   -4.02538e-09:5:1 -5.27841e-05:5:2 -5.27878e-05:5:3 -5.27914e-05:5:4 16.5542:5:5
+ Matrix scaling M = scale*U'*U, scale = 1
+ Upper cholesky factor U (ignore lower nonzeros):
+  5 5
+   4.06871:1:1 1.2975e-05:1:2 1.29741e-05:1:3 1.29732e-05:1:4 -9.8935e-10:1:5
+   0:2:1 4.0687:2:2 2.85463e-09:2:3 1.95474e-09:2:4 -1.29732e-05:2:5
+   16.5543:3:1 0:3:2 4.0687:3:3 1.05485e-09:3:4 -1.29741e-05:3:5
+   1.1783e-08:4:1 16.5543:4:2 0:4:3 4.0687:4:4 -1.2975e-05:4:5
+   8.12156e-09:5:1 4.46017e-09:5:2 16.5543:5:3 0:5:4 4.06868:5:5
 
 (1) 5.-1: "SetDBoundsStd"
+
+dl(var_indep)_k = 
+ 5
+  -0.742802:1 -0.742833:2 -0.742833:3 -0.742833:4 -0.742864:5
+
+du(var_indep)_k = 
+ 5
+  1e+50:1 1e+50:2 1e+50:3 1e+50:4 1e+50:5
 
 (1) 5: "TangentialStep"
 
 qp_grad_k = 
-  5
-   0.374625:1 0.374464:2 0.374464:3 0.374464:4 0.374303:5
+ 5
+  0.374625:1 0.374464:2 0.374464:3 0.374464:4 0.374303:5
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa10670
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xe2c76b0
     ||Ypy_k(var_indep)||inf = 2.5901993894e-01
 
-Using bounds on full Z*pz ...
+Using simple bounds on pz ...
 
 There are no finite bounds on dependent variables.  There will be no extra inequality constraints added on D*pz ...
 
-*** Entering QPSchur::solve_qp(...)
-
-*** Warm start info
-
-Number of variables                                          = 6
-Number of initially fixed variables (not in Ko)              = 1
-Number of changes to the initial KKT system (num_act_change) = 0
-
-    Number of initially fixed variables freed from a bound   = 0
-    Number of initially free variables fixed to a bound      = 0
-    Number of general equality constraints added             = 0
-    Number of general inequality constraints added           = 0
-
-Solution to the initial KKT system, vo = inv(Ko)*fo:
-
-||vo||inf = 2.2629695306e-02
-
-***
-*** Removing constriants until we are dual feasible
-***
-
-*** Start by removing constraints within the Schur complement first
-
-There where 0 constraints dropped from the schur complement from the initial guess of the active set.
-
-Current guess for unknowns x:
-
-||x||inf = 2.2629695306e-02
-
-*** Second, free initially fixed variables not in Ko
-
-There where 0 initially fixed variables not in Ko that were freed and added to the schur complement.
-
-*** Starting Primal-Dual Iterations ***
-
-We think we have found the solution and are not currently using iterative refinement
-and iter_refine_at_solution==true so perform iterative refinement ...
-
-Iterative refinement did not alter the unknowns so exit with this solution...
-
-Recomputing final mu_D_hat at the solution ...
-
-*** Solution found!
-
-Number of QP iteratons                                = 0
-Number of iterative refinement residual calculations  = 1
-Number of iterative refinement solves                 = 0
-
-||x||inf                = 2.2629695306e-02
-mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+10
-min(|mu(i)|)            = 1.0000000000e+10
-lambda_breve.nz()       = 0
-max(|lambda_breve(i)|)  = 0.0000000000e+00
-min(|lambda_breve(i)|)  = 0.0000000000e+00
-
-*** Leaving QPSchur::solve_qp(...)
+Calling QPKWIK to solve QP problem ...
 
 ||pz_k||inf    = 2.2629695306e-02
 nu_k.nz()      = 0
@@ -634,24 +525,39 @@ max(|nu_k(i)|) = 0.0000000000e+00
 ||Zpz_k||2     = 6.0331754008e-02
 
 pz_k = 
-  5
-   -0.0226297:1 -0.0226203:2 -0.0226203:3 -0.0226203:4 -0.022611:5
+ 5
+  -0.0226297:1 -0.0226203:2 -0.0226203:3 -0.0226203:4 -0.022611:5
+
+nu_k(var_indep) = 
+ 5
+  0:1 0:2 0:3 0:4 0:5
+
+Zpz(var_indep)_k = 
+ 5
+  -0.0226297:1 -0.0226203:2 -0.0226203:3 -0.0226203:4 -0.022611:5
+
 
 (1) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (-1.9654416983e-15)/(1.0621477516e+00 * 6.0331754008e-02 + 2.2250738585e-308)
-  = -3.0671094914e-14
+  = (-1.9637069748e-15)/(1.0621477516e+00 * 6.0331754008e-02 + 2.2250738585e-308)
+  = -3.0644024221e-14
 
-||d||inf = 2.8163092161e-01
+||d_k||inf            = 2.8163092161e-01
+||d(var_dep)_k||inf   = 1.5659094503e-02
+||d(var_indep)_k||inf = 2.8163092161e-01
+
+d(var_indep)_k = 
+ 5
+  -0.281457:1 -0.281544:2 -0.281544:3 -0.281544:4 -0.281631:5
 
 (1) 7: "CalcReducedGradLagrangian"
 
 ||rGL_k||inf = 3.7462461296e-01
 
 rGL_k = 
-  5
-   0.374625:1 0.374464:2 0.374464:3 0.374464:4 0.374303:5
+ 5
+  0.374625:1 0.374464:2 0.374464:3 0.374464:4 0.374303:5
 
 (1) 8: "CheckConvergence"
 
@@ -715,8 +621,8 @@ Removing from the filter the redundant point:
 ||x(var_indep)_k||inf = 4.6135478069e-01
 
 x(var_indep)_k = 
-  5
-   0.461355:1 0.461299:2 0.461299:3 0.461299:4 0.461244:5
+ 5
+  0.461355:1 0.461299:2 0.461299:3 0.461299:4 0.461244:5
 
 Updating the decomposition ...
 
@@ -740,7 +646,7 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using MA28 to factor a new matrix ...
+Using LAPACK xGETRF to refactor the basis matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
@@ -753,8 +659,8 @@ f_k                      = 6.1576438692e-01
 ||c_k||inf               = 1.5830011682e+01
 
 Gf(var_indep)_k =
-  5
-   0.461355:1 0.461299:2 0.461299:3 0.461299:4 0.461244:5
+ 5
+  0.461355:1 0.461299:2 0.461299:3 0.461299:4 0.461244:5
 
 (2) 2: "QuasiNormalStep"
 
@@ -769,16 +675,16 @@ beta = ||py||/||c|| = 4.4441320608e-04
 (2) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 2.1316282073e-14 / (1.5830011682e+01 + 2.2250738585e-308)
-     = 1.3465739950e-15
+     = 2.3092638912e-14 / (1.5830011682e+01 + 2.2250738585e-308)
+     = 1.4587884946e-15
 
 (2) 3: "ReducedGradient"
 
 ||rGf||inf = 4.1554627380e-01
 
 rGf_k =
-  5
-   0.415546:1 0.415437:2 0.415437:3 0.415437:4 0.415329:5
+ 5
+  0.415546:1 0.415437:2 0.415437:3 0.415437:4 0.415329:5
 
 (2) 4.-1: "CheckSkipBFGSUpdate"
 
@@ -797,78 +703,30 @@ The matrix rHL_k has already been updated so leave it
 
 (2) 5.-1: "SetDBoundsStd"
 
+dl(var_indep)_k = 
+ 5
+  -0.461345:1 -0.461289:2 -0.461289:3 -0.461289:4 -0.461234:5
+
+du(var_indep)_k = 
+ 5
+  1e+50:1 1e+50:2 1e+50:3 1e+50:4 1e+50:5
+
 (2) 5: "TangentialStep"
 
 qp_grad_k = 
-  5
-   0.415546:1 0.415437:2 0.415437:3 0.415437:4 0.415329:5
+ 5
+  0.415546:1 0.415437:2 0.415437:3 0.415437:4 0.415329:5
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa10670
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xe2c76b0
     ||Ypy_k(var_indep)||inf = 4.3200066153e-02
 
-Using bounds on full Z*pz ...
+Using simple bounds on pz ...
 
 There are no finite bounds on dependent variables.  There will be no extra inequality constraints added on D*pz ...
 
-*** Entering QPSchur::solve_qp(...)
-
-*** Warm start info
-
-Number of variables                                          = 6
-Number of initially fixed variables (not in Ko)              = 1
-Number of changes to the initial KKT system (num_act_change) = 0
-
-    Number of initially fixed variables freed from a bound   = 0
-    Number of initially free variables fixed to a bound      = 0
-    Number of general equality constraints added             = 0
-    Number of general inequality constraints added           = 0
-
-Solution to the initial KKT system, vo = inv(Ko)*fo:
-
-||vo||inf = 2.5101622321e-02
-
-***
-*** Removing constriants until we are dual feasible
-***
-
-*** Start by removing constraints within the Schur complement first
-
-There where 0 constraints dropped from the schur complement from the initial guess of the active set.
-
-Current guess for unknowns x:
-
-||x||inf = 2.5101622321e-02
-
-*** Second, free initially fixed variables not in Ko
-
-There where 0 initially fixed variables not in Ko that were freed and added to the schur complement.
-
-*** Starting Primal-Dual Iterations ***
-
-We think we have found the solution and are not currently using iterative refinement
-and iter_refine_at_solution==true so perform iterative refinement ...
-
-Iterative refinement did not alter the unknowns so exit with this solution...
-
-Recomputing final mu_D_hat at the solution ...
-
-*** Solution found!
-
-Number of QP iteratons                                = 0
-Number of iterative refinement residual calculations  = 1
-Number of iterative refinement solves                 = 0
-
-||x||inf                = 2.5101622321e-02
-mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+10
-min(|mu(i)|)            = 1.0000000000e+10
-lambda_breve.nz()       = 0
-max(|lambda_breve(i)|)  = 0.0000000000e+00
-min(|lambda_breve(i)|)  = 0.0000000000e+00
-
-*** Leaving QPSchur::solve_qp(...)
+Calling QPKWIK to solve QP problem ...
 
 ||pz_k||inf    = 2.5101622321e-02
 nu_k.nz()      = 0
@@ -876,24 +734,39 @@ max(|nu_k(i)|) = 0.0000000000e+00
 ||Zpz_k||2     = 5.7849459762e-02
 
 pz_k = 
-  5
-   -0.0251016:1 -0.0250955:2 -0.0250955:3 -0.0250955:4 -0.0250893:5
+ 5
+  -0.0251016:1 -0.0250955:2 -0.0250955:3 -0.0250955:4 -0.0250893:5
+
+nu_k(var_indep) = 
+ 5
+  0:1 0:2 0:3 0:4 0:5
+
+Zpz(var_indep)_k = 
+ 5
+  -0.0251016:1 -0.0250955:2 -0.0250955:3 -0.0250955:4 -0.0250893:5
+
 
 (2) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (-3.2569433261e-16)/(3.9705009790e-01 * 5.7849459762e-02 + 2.2250738585e-308)
-  = -1.4179652459e-14
+  = (-3.2656169435e-16)/(3.9705009790e-01 * 5.7849459762e-02 + 2.2250738585e-308)
+  = -1.4217414516e-14
 
-||d||inf = 6.8289342521e-02
+||d_k||inf            = 6.8289342521e-02
+||d(var_dep)_k||inf   = 6.7783028666e-03
+||d(var_indep)_k||inf = 6.8289342521e-02
+
+d(var_indep)_k = 
+ 5
+  -0.0682077:1 -0.0682485:2 -0.0682485:3 -0.0682485:4 -0.0682893:5
 
 (2) 7: "CalcReducedGradLagrangian"
 
 ||rGL_k||inf = 4.1554627380e-01
 
 rGL_k = 
-  5
-   0.415546:1 0.415437:2 0.415437:3 0.415437:4 0.415329:5
+ 5
+  0.415546:1 0.415437:2 0.415437:3 0.415437:4 0.415329:5
 
 (2) 8: "CheckConvergence"
 
@@ -957,8 +830,8 @@ Removing from the filter the redundant point:
 ||x(var_indep)_k||inf = 3.9314710830e-01
 
 x(var_indep)_k = 
-  5
-   0.393147:1 0.393051:2 0.393051:3 0.393051:4 0.392954:5
+ 5
+  0.393147:1 0.393051:2 0.393051:3 0.393051:4 0.392954:5
 
 Updating the decomposition ...
 
@@ -982,7 +855,7 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using MA28 to factor a new matrix ...
+Using LAPACK xGETRF to refactor the basis matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
@@ -995,8 +868,8 @@ f_k                      = 3.8695300275e-01
 ||c_k||inf               = 1.3445285133e+00
 
 Gf(var_indep)_k =
-  5
-   0.393147:1 0.393051:2 0.393051:3 0.393051:4 0.392954:5
+ 5
+  0.393147:1 0.393051:2 0.393051:3 0.393051:4 0.392954:5
 
 (3) 2: "QuasiNormalStep"
 
@@ -1011,16 +884,16 @@ beta = ||py||/||c|| = 5.1947607941e-04
 (3) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 8.8817841970e-16 / (1.3445285133e+00 + 2.2250738585e-308)
-     = 6.6058726977e-16
+     = 1.1102230246e-15 / (1.3445285133e+00 + 2.2250738585e-308)
+     = 8.2573408721e-16
 
 (3) 3: "ReducedGradient"
 
 ||rGf||inf = 3.9272839189e-01
 
 rGf_k =
-  5
-   0.392728:1 0.392631:2 0.392631:3 0.392631:4 0.392533:5
+ 5
+  0.392728:1 0.392631:2 0.392631:3 0.392631:4 0.392533:5
 
 (3) 4.-1: "CheckSkipBFGSUpdate"
 
@@ -1039,78 +912,30 @@ The matrix rHL_k has already been updated so leave it
 
 (3) 5.-1: "SetDBoundsStd"
 
+dl(var_indep)_k = 
+ 5
+  -0.393137:1 -0.393041:2 -0.393041:3 -0.393041:4 -0.392944:5
+
+du(var_indep)_k = 
+ 5
+  1e+50:1 1e+50:2 1e+50:3 1e+50:4 1e+50:5
+
 (3) 5: "TangentialStep"
 
 qp_grad_k = 
-  5
-   0.392728:1 0.392631:2 0.392631:3 0.392631:4 0.392533:5
+ 5
+  0.392728:1 0.392631:2 0.392631:3 0.392631:4 0.392533:5
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa10670
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xe2c76b0
     ||Ypy_k(var_indep)||inf = 4.2053082371e-04
 
-Using bounds on full Z*pz ...
+Using simple bounds on pz ...
 
 There are no finite bounds on dependent variables.  There will be no extra inequality constraints added on D*pz ...
 
-*** Entering QPSchur::solve_qp(...)
-
-*** Warm start info
-
-Number of variables                                          = 6
-Number of initially fixed variables (not in Ko)              = 1
-Number of changes to the initial KKT system (num_act_change) = 0
-
-    Number of initially fixed variables freed from a bound   = 0
-    Number of initially free variables fixed to a bound      = 0
-    Number of general equality constraints added             = 0
-    Number of general inequality constraints added           = 0
-
-Solution to the initial KKT system, vo = inv(Ko)*fo:
-
-||vo||inf = 2.3723277979e-02
-
-***
-*** Removing constriants until we are dual feasible
-***
-
-*** Start by removing constraints within the Schur complement first
-
-There where 0 constraints dropped from the schur complement from the initial guess of the active set.
-
-Current guess for unknowns x:
-
-||x||inf = 2.3723277979e-02
-
-*** Second, free initially fixed variables not in Ko
-
-There where 0 initially fixed variables not in Ko that were freed and added to the schur complement.
-
-*** Starting Primal-Dual Iterations ***
-
-We think we have found the solution and are not currently using iterative refinement
-and iter_refine_at_solution==true so perform iterative refinement ...
-
-Iterative refinement did not alter the unknowns so exit with this solution...
-
-Recomputing final mu_D_hat at the solution ...
-
-*** Solution found!
-
-Number of QP iteratons                                = 0
-Number of iterative refinement residual calculations  = 1
-Number of iterative refinement solves                 = 0
-
-||x||inf                = 2.3723277979e-02
-mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+10
-min(|mu(i)|)            = 1.0000000000e+10
-lambda_breve.nz()       = 0
-max(|lambda_breve(i)|)  = 0.0000000000e+00
-min(|lambda_breve(i)|)  = 0.0000000000e+00
-
-*** Leaving QPSchur::solve_qp(...)
+Calling QPKWIK to solve QP problem ...
 
 ||pz_k||inf    = 2.3723277979e-02
 nu_k.nz()      = 0
@@ -1118,24 +943,39 @@ max(|nu_k(i)|) = 0.0000000000e+00
 ||Zpz_k||2     = 5.3050520400e-02
 
 pz_k = 
-  5
-   -0.0237233:1 -0.0237178:2 -0.0237178:3 -0.0237178:4 -0.0237123:5
+ 5
+  -0.0237233:1 -0.0237178:2 -0.0237178:3 -0.0237178:4 -0.0237123:5
+
+nu_k(var_indep) = 
+ 5
+  0:1 0:2 0:3 0:4 0:5
+
+Zpz(var_indep)_k = 
+ 5
+  -0.0237233:1 -0.0237178:2 -0.0237178:3 -0.0237178:4 -0.0237123:5
+
 
 (3) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (-1.0587911841e-18)/(3.8222397636e-02 * 5.3050520400e-02 + 2.2250738585e-308)
-  = -5.2215896857e-16
+  = (-9.2326591251e-19)/(3.8222397636e-02 * 5.3050520400e-02 + 2.2250738585e-308)
+  = -4.5532262059e-16
 
-||d||inf = 2.4141742846e-02
+||d_k||inf            = 2.4141742846e-02
+||d(var_dep)_k||inf   = 6.7465659398e-04
+||d(var_indep)_k||inf = 2.4141742846e-02
+
+d(var_indep)_k = 
+ 5
+  -0.0241417:1 -0.0241373:2 -0.0241373:3 -0.0241373:4 -0.0241328:5
 
 (3) 7: "CalcReducedGradLagrangian"
 
 ||rGL_k||inf = 3.9272839189e-01
 
 rGL_k = 
-  5
-   0.392728:1 0.392631:2 0.392631:3 0.392631:4 0.392533:5
+ 5
+  0.392728:1 0.392631:2 0.392631:3 0.392631:4 0.392533:5
 
 (3) 8: "CheckConvergence"
 
@@ -1199,8 +1039,8 @@ Removing from the filter the redundant point:
 ||x(var_indep)_k||inf = 3.6900536545e-01
 
 x(var_indep)_k = 
-  5
-   0.369005:1 0.368913:2 0.368913:3 0.368913:4 0.368821:5
+ 5
+  0.369005:1 0.368913:2 0.368913:3 0.368913:4 0.368821:5
 
 Updating the decomposition ...
 
@@ -1224,7 +1064,7 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using MA28 to factor a new matrix ...
+Using LAPACK xGETRF to refactor the basis matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
@@ -1237,8 +1077,8 @@ f_k                      = 3.4024364074e-01
 ||c_k||inf               = 4.4987367193e-02
 
 Gf(var_indep)_k =
-  5
-   0.369005:1 0.368913:2 0.368913:3 0.368913:4 0.368821:5
+ 5
+  0.369005:1 0.368913:2 0.368913:3 0.368913:4 0.368821:5
 
 (4) 2: "QuasiNormalStep"
 
@@ -1261,8 +1101,8 @@ beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
 ||rGf||inf = 3.6900485363e-01
 
 rGf_k =
-  5
-   0.369005:1 0.368913:2 0.368913:3 0.368913:4 0.368821:5
+ 5
+  0.369005:1 0.368913:2 0.368913:3 0.368913:4 0.368821:5
 
 (4) 4.-1: "CheckSkipBFGSUpdate"
 
@@ -1282,12 +1122,12 @@ Performing Secant update ...
 ||s_bfgs||inf = 2.3723277979e-02
 
 y_bfgs =
-  5
-   -0.0237235:1 -0.023718:2 -0.023718:3 -0.023718:4 -0.0237125:5
+ 5
+  -0.0237235:1 -0.023718:2 -0.023718:3 -0.023718:4 -0.0237125:5
 
 s_bfgs =
-  5
-   -0.0237233:1 -0.0237178:2 -0.0237178:3 -0.0237178:4 -0.0237123:5
+ 5
+  -0.0237233:1 -0.0237178:2 -0.0237178:3 -0.0237178:4 -0.0237123:5
 
 Considering the dampened update ...
 
@@ -1297,121 +1137,65 @@ theta = 8.5143334100e-01
 y_bfgs = theta*y_bfgs + (1-theta)*B*s_bfgs ...
 ||y_bfgs||inf = 7.8545356511e-02
 y_bfgs =
-  5
-   -0.0785454:1 -0.0785262:2 -0.0785262:3 -0.0785262:4 -0.078507:5
+ 5
+  -0.0785454:1 -0.0785262:2 -0.0785262:3 -0.0785262:4 -0.078507:5
 
 B after the BFGS update = 
-  Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
-    5 5
-     13.9044:1:1 4.58126:1:2 3.66071:1:3 -0.861437:1:4 -0.861437:1:5
-     -2.64929:2:1 13.9056:2:2 3.6874:2:3 3.55791:2:4 -1.0949:2:5
-     -2.64929:3:1 -2.64869:3:2 13.9056:3:3 2.79243:3:4 3.38525:3:5
-     -2.64929:4:1 -2.64869:4:2 -2.64869:4:3 13.9056:4:4 1.89695:4:5
-     -2.64869:5:1 -2.64808:5:2 -2.64808:5:3 -2.64808:5:4 13.9068:5:5
-  Matrix scaling M = scale*U'*U, scale = 1
-  Upper cholesky factor U (ignore lower nonzeros):
-    5 5
-     3.72886:1:1 -0.710484:1:2 -0.710484:1:3 -0.710484:1:4 -0.710321:1:5
-     4.58126:2:1 3.66071:2:2 -0.861437:2:3 -0.861437:2:4 -0.86124:2:5
-     13.9056:3:1 3.6874:3:2 3.55791:3:3 -1.0949:3:4 -1.09465:3:5
-     -2.64869:4:1 13.9056:4:2 2.79243:4:3 3.38525:4:4 -1.50452:4:5
-     -2.64869:5:1 -2.64869:5:2 13.9056:5:3 1.89695:5:4 3.03294:5:5
+ Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
+  5 5
+   13.9044:1:1 0:1:2 4.0687:1:3 2.85463e-09:1:4 1.95474e-09:1:5
+   -2.64929:2:1 13.9056:2:2 0:2:3 4.0687:2:4 1.05485e-09:2:5
+   -2.64929:3:1 -2.64869:3:2 13.9056:3:3 0:3:4 4.0687:3:5
+   -2.64929:4:1 -2.64869:4:2 -2.64869:4:3 13.9056:4:4 0:4:5
+   -2.64869:5:1 -2.64808:5:2 -2.64808:5:3 -2.64808:5:4 13.9068:5:5
 
 ||rHL_k||inf    = 2.4499747866e+01
 
 cond_inf(rHL_k) = 7.4011738690e+00
 
 rHL_k = 
-  Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
-    5 5
-     13.9044:1:1 4.58126:1:2 3.66071:1:3 -0.861437:1:4 -0.861437:1:5
-     -2.64929:2:1 13.9056:2:2 3.6874:2:3 3.55791:2:4 -1.0949:2:5
-     -2.64929:3:1 -2.64869:3:2 13.9056:3:3 2.79243:3:4 3.38525:3:5
-     -2.64929:4:1 -2.64869:4:2 -2.64869:4:3 13.9056:4:4 1.89695:4:5
-     -2.64869:5:1 -2.64808:5:2 -2.64808:5:3 -2.64808:5:4 13.9068:5:5
-  Matrix scaling M = scale*U'*U, scale = 1
-  Upper cholesky factor U (ignore lower nonzeros):
-    5 5
-     3.72886:1:1 -0.710484:1:2 -0.710484:1:3 -0.710484:1:4 -0.710321:1:5
-     4.58126:2:1 3.66071:2:2 -0.861437:2:3 -0.861437:2:4 -0.86124:2:5
-     13.9056:3:1 3.6874:3:2 3.55791:3:3 -1.0949:3:4 -1.09465:3:5
-     -2.64869:4:1 13.9056:4:2 2.79243:4:3 3.38525:4:4 -1.50452:4:5
-     -2.64869:5:1 -2.64869:5:2 13.9056:5:3 1.89695:5:4 3.03294:5:5
+ Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
+  5 5
+   13.9044:1:1 0:1:2 3.66071:1:3 -0.861437:1:4 -0.861437:1:5
+   -2.64929:2:1 13.9056:2:2 0:2:3 3.55791:2:4 -1.0949:2:5
+   -2.64929:3:1 -2.64869:3:2 13.9056:3:3 0:3:4 3.38525:3:5
+   -2.64929:4:1 -2.64869:4:2 -2.64869:4:3 13.9056:4:4 0:4:5
+   -2.64869:5:1 -2.64808:5:2 -2.64808:5:3 -2.64808:5:4 13.9068:5:5
+ Matrix scaling M = scale*U'*U, scale = 1
+ Upper cholesky factor U (ignore lower nonzeros):
+  5 5
+   3.72886:1:1 -0.710484:1:2 -0.710484:1:3 -0.710484:1:4 -0.710321:1:5
+   0:2:1 3.66071:2:2 -0.861437:2:3 -0.861437:2:4 -0.86124:2:5
+   13.9056:3:1 0:3:2 3.55791:3:3 -1.0949:3:4 -1.09465:3:5
+   -2.64869:4:1 13.9056:4:2 0:4:3 3.38525:4:4 -1.50452:4:5
+   -2.64869:5:1 -2.64869:5:2 13.9056:5:3 0:5:4 3.03294:5:5
 
 (4) 5.-1: "SetDBoundsStd"
+
+dl(var_indep)_k = 
+ 5
+  -0.368995:1 -0.368903:2 -0.368903:3 -0.368903:4 -0.368811:5
+
+du(var_indep)_k = 
+ 5
+  1e+50:1 1e+50:2 1e+50:3 1e+50:4 1e+50:5
 
 (4) 5: "TangentialStep"
 
 qp_grad_k = 
-  5
-   0.369005:1 0.368913:2 0.368913:3 0.368913:4 0.368821:5
+ 5
+  0.369005:1 0.368913:2 0.368913:3 0.368913:4 0.368821:5
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa10670
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xe2c76b0
     ||Ypy_k(var_indep)||inf = 5.1410422885e-07
 
-Using bounds on full Z*pz ...
+Using simple bounds on pz ...
 
 There are no finite bounds on dependent variables.  There will be no extra inequality constraints added on D*pz ...
 
-*** Entering QPSchur::solve_qp(...)
-
-*** Warm start info
-
-Number of variables                                          = 6
-Number of initially fixed variables (not in Ko)              = 1
-Number of changes to the initial KKT system (num_act_change) = 0
-
-    Number of initially fixed variables freed from a bound   = 0
-    Number of initially free variables fixed to a bound      = 0
-    Number of general equality constraints added             = 0
-    Number of general inequality constraints added           = 0
-
-Solution to the initial KKT system, vo = inv(Ko)*fo:
-
-||vo||inf = 1.1145113136e-01
-
-***
-*** Removing constriants until we are dual feasible
-***
-
-*** Start by removing constraints within the Schur complement first
-
-There where 0 constraints dropped from the schur complement from the initial guess of the active set.
-
-Current guess for unknowns x:
-
-||x||inf = 1.1145113136e-01
-
-*** Second, free initially fixed variables not in Ko
-
-There where 0 initially fixed variables not in Ko that were freed and added to the schur complement.
-
-*** Starting Primal-Dual Iterations ***
-
-We think we have found the solution and are not currently using iterative refinement
-and iter_refine_at_solution==true so perform iterative refinement ...
-
-Iterative refinement did not alter the unknowns so exit with this solution...
-
-Recomputing final mu_D_hat at the solution ...
-
-*** Solution found!
-
-Number of QP iteratons                                = 0
-Number of iterative refinement residual calculations  = 1
-Number of iterative refinement solves                 = 0
-
-||x||inf                = 1.1145113136e-01
-mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+10
-min(|mu(i)|)            = 1.0000000000e+10
-lambda_breve.nz()       = 0
-max(|lambda_breve(i)|)  = 0.0000000000e+00
-min(|lambda_breve(i)|)  = 0.0000000000e+00
-
-*** Leaving QPSchur::solve_qp(...)
+Calling QPKWIK to solve QP problem ...
 
 ||pz_k||inf    = 1.1145113136e-01
 nu_k.nz()      = 0
@@ -1419,24 +1203,39 @@ max(|nu_k(i)|) = 0.0000000000e+00
 ||Zpz_k||2     = 2.4915426691e-01
 
 pz_k = 
-  5
-   -0.111451:1 -0.111425:2 -0.111425:3 -0.111425:4 -0.111399:5
+ 5
+  -0.111451:1 -0.111425:2 -0.111425:3 -0.111425:4 -0.111399:5
+
+nu_k(var_indep) = 
+ 5
+  0:1 0:2 0:3 0:4 0:5
+
+Zpz(var_indep)_k = 
+ 5
+  -0.111451:1 -0.111425:2 -0.111425:3 -0.111425:4 -0.111399:5
+
 
 (4) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (-1.0005576689e-20)/(1.3249505872e-03 * 2.4915426691e-01 + 2.2250738585e-308)
-  = -3.0309174910e-17
+  = (-1.0164395367e-20)/(1.3249505872e-03 * 2.4915426691e-01 + 2.2250738585e-308)
+  = -3.0790272924e-17
 
-||d||inf = 1.1145164318e-01
+||d_k||inf            = 1.1145164318e-01
+||d(var_dep)_k||inf   = 2.0274247521e-05
+||d(var_indep)_k||inf = 1.1145164318e-01
+
+d(var_indep)_k = 
+ 5
+  -0.111452:1 -0.111426:2 -0.111426:3 -0.111426:4 -0.1114:5
 
 (4) 7: "CalcReducedGradLagrangian"
 
 ||rGL_k||inf = 3.6900485363e-01
 
 rGL_k = 
-  5
-   0.369005:1 0.368913:2 0.368913:3 0.368913:4 0.368821:5
+ 5
+  0.369005:1 0.368913:2 0.368913:3 0.368913:4 0.368821:5
 
 (4) 8: "CheckConvergence"
 
@@ -1500,8 +1299,8 @@ Removing from the filter the redundant point:
 ||x(var_indep)_k||inf = 2.5755372227e-01
 
 x(var_indep)_k = 
-  5
-   0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257422:5
+ 5
+  0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257422:5
 
 Updating the decomposition ...
 
@@ -1525,7 +1324,7 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using MA28 to factor a new matrix ...
+Using LAPACK xGETRF to refactor the basis matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
@@ -1538,8 +1337,8 @@ f_k                      = 1.6574989579e-01
 ||c_k||inf               = 6.1791102848e-03
 
 Gf(var_indep)_k =
-  5
-   0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257422:5
+ 5
+  0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257422:5
 
 (5) 2: "QuasiNormalStep"
 
@@ -1554,16 +1353,16 @@ beta = ||py||/||c|| = 6.3788086213e-04
 (5) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 5.2041704279e-18 / (6.1791102848e-03 + 2.2250738585e-308)
-     = 8.4222002652e-16
+     = 6.0715321659e-18 / (6.1791102848e-03 + 2.2250738585e-308)
+     = 9.8259003094e-16
 
 (5) 3: "ReducedGradient"
 
 ||rGf||inf = 2.5755370750e-01
 
 rGf_k =
-  5
-   0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257422:5
+ 5
+  0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257422:5
 
 (5) 4.-1: "CheckSkipBFGSUpdate"
 
@@ -1583,12 +1382,12 @@ Performing Secant update ...
 ||s_bfgs||inf = 1.1145113136e-01
 
 y_bfgs =
-  5
-   -0.111451:1 -0.111425:2 -0.111425:3 -0.111425:4 -0.111399:5
+ 5
+  -0.111451:1 -0.111425:2 -0.111425:3 -0.111425:4 -0.111399:5
 
 s_bfgs =
-  5
-   -0.111451:1 -0.111425:2 -0.111425:3 -0.111425:4 -0.111399:5
+ 5
+  -0.111451:1 -0.111425:2 -0.111425:3 -0.111425:4 -0.111399:5
 
 Considering the dampened update ...
 
@@ -1596,146 +1395,105 @@ s_bfgs'*y_bfgs = 6.2077810439e-02 >=  s_bfgs' * B * s_bfgs = 2.0553084537e-01
 Perform the undamped update ...
 
 B after the BFGS update = 
-  Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
-    5 5
-     13.442:1:1 8.19625:1:2 3.56695:1:3 -1.07406:1:4 -1.07406:1:5
-     -3.11158:2:1 13.4434:2:2 6.42804:2:3 3.4014:2:4 -1.4655:2:5
-     -3.11158:3:1 -3.11086:3:2 13.4434:3:3 4.65375:3:4 3.0695:3:5
-     -3.11158:4:1 -3.11086:4:2 -3.11086:4:3 13.4434:4:4 2.86651:4:5
-     -3.11086:5:1 -3.11013:5:2 -3.11013:5:3 -3.11013:5:4 13.4449:5:5
-  Matrix scaling M = scale*U'*U, scale = 1
-  Upper cholesky factor U (ignore lower nonzeros):
-    5 5
-     3.66633:1:1 -0.848692:1:2 -0.848692:1:3 -0.848692:1:4 -0.848494:1:5
-     8.19625:2:1 3.56695:2:2 -1.07406:2:3 -1.07406:2:4 -1.07381:2:5
-     13.4434:3:1 6.42804:3:2 3.4014:3:3 -1.4655:3:4 -1.46516:3:5
-     -3.11086:4:1 13.4434:4:2 4.65375:4:3 3.0695:4:4 -2.3231:4:5
-     -3.11086:5:1 -3.11086:5:2 13.4434:5:3 2.86651:5:4 2.00709:5:5
+ Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
+  5 5
+   13.442:1:1 0:1:2 3.66071:1:3 -0.861437:1:4 -0.861437:1:5
+   -3.11158:2:1 13.4434:2:2 0:2:3 3.55791:2:4 -1.0949:2:5
+   -3.11158:3:1 -3.11086:3:2 13.4434:3:3 0:3:4 3.38525:3:5
+   -3.11158:4:1 -3.11086:4:2 -3.11086:4:3 13.4434:4:4 0:4:5
+   -3.11086:5:1 -3.11013:5:2 -3.11013:5:3 -3.11013:5:4 13.4449:5:5
 
 ||rHL_k||inf    = 2.5886144627e+01
 
 cond_inf(rHL_k) = 2.5891815803e+01
 
 rHL_k = 
-  Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
-    5 5
-     13.442:1:1 8.19625:1:2 3.56695:1:3 -1.07406:1:4 -1.07406:1:5
-     -3.11158:2:1 13.4434:2:2 6.42804:2:3 3.4014:2:4 -1.4655:2:5
-     -3.11158:3:1 -3.11086:3:2 13.4434:3:3 4.65375:3:4 3.0695:3:5
-     -3.11158:4:1 -3.11086:4:2 -3.11086:4:3 13.4434:4:4 2.86651:4:5
-     -3.11086:5:1 -3.11013:5:2 -3.11013:5:3 -3.11013:5:4 13.4449:5:5
-  Matrix scaling M = scale*U'*U, scale = 1
-  Upper cholesky factor U (ignore lower nonzeros):
-    5 5
-     3.66633:1:1 -0.848692:1:2 -0.848692:1:3 -0.848692:1:4 -0.848494:1:5
-     8.19625:2:1 3.56695:2:2 -1.07406:2:3 -1.07406:2:4 -1.07381:2:5
-     13.4434:3:1 6.42804:3:2 3.4014:3:3 -1.4655:3:4 -1.46516:3:5
-     -3.11086:4:1 13.4434:4:2 4.65375:4:3 3.0695:4:4 -2.3231:4:5
-     -3.11086:5:1 -3.11086:5:2 13.4434:5:3 2.86651:5:4 2.00709:5:5
+ Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
+  5 5
+   13.442:1:1 0:1:2 3.56695:1:3 -1.07406:1:4 -1.07406:1:5
+   -3.11158:2:1 13.4434:2:2 0:2:3 3.4014:2:4 -1.4655:2:5
+   -3.11158:3:1 -3.11086:3:2 13.4434:3:3 0:3:4 3.0695:3:5
+   -3.11158:4:1 -3.11086:4:2 -3.11086:4:3 13.4434:4:4 0:4:5
+   -3.11086:5:1 -3.11013:5:2 -3.11013:5:3 -3.11013:5:4 13.4449:5:5
+ Matrix scaling M = scale*U'*U, scale = 1
+ Upper cholesky factor U (ignore lower nonzeros):
+  5 5
+   3.66633:1:1 -0.848692:1:2 -0.848692:1:3 -0.848692:1:4 -0.848494:1:5
+   0:2:1 3.56695:2:2 -1.07406:2:3 -1.07406:2:4 -1.07381:2:5
+   13.4434:3:1 0:3:2 3.4014:3:3 -1.4655:3:4 -1.46516:3:5
+   -3.11086:4:1 13.4434:4:2 0:4:3 3.0695:4:4 -2.3231:4:5
+   -3.11086:5:1 -3.11086:5:2 13.4434:5:3 0:5:4 2.00709:5:5
 
 (5) 5.-1: "SetDBoundsStd"
+
+dl(var_indep)_k = 
+ 5
+  -0.257544:1 -0.257478:2 -0.257478:3 -0.257478:4 -0.257412:5
+
+du(var_indep)_k = 
+ 5
+  1e+50:1 1e+50:2 1e+50:3 1e+50:4 1e+50:5
 
 (5) 5: "TangentialStep"
 
 qp_grad_k = 
-  5
-   0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257422:5
+ 5
+  0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257422:5
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa10670
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xe2c76b0
     ||Ypy_k(var_indep)||inf = 1.4826932622e-08
 
-Using bounds on full Z*pz ...
+Using simple bounds on pz ...
 
 There are no finite bounds on dependent variables.  There will be no extra inequality constraints added on D*pz ...
 
-*** Entering QPSchur::solve_qp(...)
-
-*** Warm start info
-
-Number of variables                                          = 6
-Number of initially fixed variables (not in Ko)              = 1
-Number of changes to the initial KKT system (num_act_change) = 0
-
-    Number of initially fixed variables freed from a bound   = 0
-    Number of initially free variables fixed to a bound      = 0
-    Number of general equality constraints added             = 0
-    Number of general inequality constraints added           = 0
-
-Solution to the initial KKT system, vo = inv(Ko)*fo:
-
-||vo||inf = 2.5754814772e-01
-
-***
-*** Removing constriants until we are dual feasible
-***
-
-*** Start by removing constraints within the Schur complement first
-
-There where 0 constraints dropped from the schur complement from the initial guess of the active set.
-
-Current guess for unknowns x:
-
-||x||inf = 2.5754814772e-01
-
-*** Second, free initially fixed variables not in Ko
-
-There where 0 initially fixed variables not in Ko that were freed and added to the schur complement.
-
-*** Starting Primal-Dual Iterations ***
-
-We think we have found the solution and are not currently using iterative refinement
-and iter_refine_at_solution==true so perform iterative refinement ...
-
-Iterative refinement did not alter the unknowns so exit with this solution...
-
-Recomputing final mu_D_hat at the solution ...
-
-*** Solution found!
-
-Number of QP iteratons                                = 1
-Number of iterative refinement residual calculations  = 1
-Number of iterative refinement solves                 = 0
-
-||x||inf                = 2.5753641905e-01
-mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+10
-min(|mu(i)|)            = 1.0000000000e+10
-lambda_breve.nz()       = 1
-max(|lambda_breve(i)|)  = 6.2413617786e-05
-min(|lambda_breve(i)|)  = 6.2413617786e-05
-
-*** Leaving QPSchur::solve_qp(...)
+Calling QPKWIK to solve QP problem ...
 
 ||pz_k||inf    = 2.5753641905e-01
 nu_k.nz()      = 1
-max(|nu_k(i)|) = 6.2413617786e-05
+max(|nu_k(i)|) = 6.2413617790e-05
 ||Zpz_k||2     = 5.7573213689e-01
 
 pz_k = 
-  5
-   -0.257536:1 -0.257476:2 -0.257476:3 -0.257476:4 -0.257412:5
+ 5
+  -0.257536:1 -0.257476:2 -0.257476:3 -0.257476:4 -0.257412:5
+
+nu_k(var_indep) = 
+ 5
+  0:1 0:2 0:3 0:4 -6.24136e-05:5
+
+Zpz(var_indep)_k = 
+ 5
+  -0.257536:1 -0.257476:2 -0.257476:3 -0.257476:4 -0.257412:5
+
 
 (5) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (3.3583532870e-22)/(2.1569444240e-04 * 5.7573213689e-01 + 2.2250738585e-308)
-  = 2.7043752531e-18
+  = (4.9217246447e-22)/(2.1569444240e-04 * 5.7573213689e-01 + 2.2250738585e-308)
+  = 3.9633085606e-18
 
-||d||inf = 2.5753643382e-01
+||d_k||inf            = 2.5753643382e-01
+||d(var_dep)_k||inf   = 2.3277613186e-06
+||d(var_indep)_k||inf = 2.5753643382e-01
+
+d(var_indep)_k = 
+ 5
+  -0.257536:1 -0.257476:2 -0.257476:3 -0.257476:4 -0.257412:5
 
 (5) 7: "CalcReducedGradLagrangian"
 
 rGL_k = 
-  5
-   0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257359:5
+ 5
+  0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257359:5
 
 ||rGL_k||inf = 2.5755370750e-01
 
 rGL_k = 
-  5
-   0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257359:5
+ 5
+  0.257554:1 0.257488:2 0.257488:3 0.257488:4 0.257359:5
 
 (5) 8: "CheckConvergence"
 
@@ -1745,7 +1503,7 @@ scale_comp_factor = 1.0000000000e+00 (scale_comp_error_by = SCALE_BY_ONE)
 opt_scale_factor = 1.2575537223e+00 (scale_opt_error_by_Gf = true)
 opt_kkt_err_k    = 2.0480533192e-01 > opt_tol  = 1.0000000000e-02
 feas_kkt_err_k   = 6.1791102848e-03 > feas_tol = 1.0000000000e-07
-comp_kkt_err_k   = 1.6066000962e-05 > comp_tol = 1.0000000000e-06
+comp_kkt_err_k   = 1.6066000963e-05 > comp_tol = 1.0000000000e-06
 step_err         = 2.0479159598e-01 > step_tol = 1.0000000000e-02
 
 Have not found the solution yet, have to keep going (k = 5) :-(
@@ -1799,8 +1557,8 @@ Removing from the filter the redundant point:
 ||x(var_indep)_k||inf = 1.7288455117e-05
 
 x(var_indep)_k = 
-  5
-   1.72885e-05:1 1.17603e-05:2 1.176e-05:3 1.17596e-05:4 1e-05:5
+ 5
+  1.72885e-05:1 1.17603e-05:2 1.176e-05:3 1.17596e-05:4 1e-05:5
 
 Updating the decomposition ...
 
@@ -1824,7 +1582,7 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using MA28 to factor a new matrix ...
+Using LAPACK xGETRF to refactor the basis matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
@@ -1837,8 +1595,8 @@ f_k                      = 4.3078479209e-09
 ||c_k||inf               = 1.6001110173e-03
 
 Gf(var_indep)_k =
-  5
-   1.72885e-05:1 1.17603e-05:2 1.176e-05:3 1.17596e-05:4 1e-05:5
+ 5
+  1.72885e-05:1 1.17603e-05:2 1.176e-05:3 1.17596e-05:4 1e-05:5
 
 (6) 2: "QuasiNormalStep"
 
@@ -1853,16 +1611,16 @@ beta = ||py||/||c|| = 1.0085393716e-03
 (6) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 1.5178830415e-18 / (1.6001110173e-03 + 2.2250738585e-308)
-     = 9.4861108079e-16
+     = 1.3010426070e-18 / (1.6001110173e-03 + 2.2250738585e-308)
+     = 8.1309521210e-16
 
 (6) 3: "ReducedGradient"
 
 ||rGf||inf = 1.7285338958e-05
 
 rGf_k =
-  5
-   1.72853e-05:1 1.17572e-05:2 1.17568e-05:3 1.17565e-05:4 9.99687e-06:5
+ 5
+  1.72853e-05:1 1.17572e-05:2 1.17568e-05:3 1.17565e-05:4 9.99687e-06:5
 
 (6) 4.-1: "CheckSkipBFGSUpdate"
 
@@ -1882,12 +1640,12 @@ Performing Secant update ...
 ||s_bfgs||inf = 2.5753641905e-01
 
 y_bfgs =
-  5
-   -0.257536:1 -0.257476:2 -0.257476:3 -0.257476:4 -0.257412:5
+ 5
+  -0.257536:1 -0.257476:2 -0.257476:3 -0.257476:4 -0.257412:5
 
 s_bfgs =
-  5
-   -0.257536:1 -0.257476:2 -0.257476:3 -0.257476:4 -0.257412:5
+ 5
+  -0.257536:1 -0.257476:2 -0.257476:3 -0.257476:4 -0.257412:5
 
 Considering the dampened update ...
 
@@ -1895,117 +1653,61 @@ s_bfgs'*y_bfgs = 3.3146748967e-01 >=  s_bfgs' * B * s_bfgs = 3.3146752990e-01
 Perform the undamped update ...
 
 B after the BFGS update = 
-  Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
-    5 5
-     13.442:1:1 8.19621:1:2 3.56695:1:3 -1.07407:1:4 -1.07407:1:5
-     -3.11161:2:1 13.4434:2:2 6.428:2:3 3.4014:2:4 -1.46552:2:5
-     -3.11161:3:1 -3.11088:3:2 13.4434:3:3 4.65371:3:4 3.06949:3:5
-     -3.11161:4:1 -3.11088:4:2 -3.11088:4:3 13.4434:4:4 2.86646:4:5
-     -3.11083:5:1 -3.1101:5:2 -3.1101:5:3 -3.1101:5:4 13.445:5:5
-  Matrix scaling M = scale*U'*U, scale = 1
-  Upper cholesky factor U (ignore lower nonzeros):
-    5 5
-     3.66633:1:1 -0.848699:1:2 -0.848699:1:3 -0.848699:1:4 -0.848487:1:5
-     8.19621:2:1 3.56695:2:2 -1.07407:2:3 -1.07407:2:4 -1.07381:2:5
-     13.4434:3:1 6.428:3:2 3.4014:3:3 -1.46552:3:4 -1.46515:3:5
-     -3.11088:4:1 13.4434:4:2 4.65371:4:3 3.06949:4:4 -2.32311:4:5
-     -3.11088:5:1 -3.11088:5:2 13.4434:5:3 2.86646:5:4 2.0071:5:5
+ Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
+  5 5
+   13.442:1:1 0:1:2 3.56695:1:3 -1.07406:1:4 -1.07406:1:5
+   -3.11161:2:1 13.4434:2:2 0:2:3 3.4014:2:4 -1.4655:2:5
+   -3.11161:3:1 -3.11088:3:2 13.4434:3:3 0:3:4 3.0695:3:5
+   -3.11161:4:1 -3.11088:4:2 -3.11088:4:3 13.4434:4:4 0:4:5
+   -3.11083:5:1 -3.1101:5:2 -3.1101:5:3 -3.1101:5:4 13.445:5:5
 
 ||rHL_k||inf    = 2.5886103889e+01
 
 cond_inf(rHL_k) = 2.5891882950e+01
 
 rHL_k = 
-  Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
-    5 5
-     13.442:1:1 8.19621:1:2 3.56695:1:3 -1.07407:1:4 -1.07407:1:5
-     -3.11161:2:1 13.4434:2:2 6.428:2:3 3.4014:2:4 -1.46552:2:5
-     -3.11161:3:1 -3.11088:3:2 13.4434:3:3 4.65371:3:4 3.06949:3:5
-     -3.11161:4:1 -3.11088:4:2 -3.11088:4:3 13.4434:4:4 2.86646:4:5
-     -3.11083:5:1 -3.1101:5:2 -3.1101:5:3 -3.1101:5:4 13.445:5:5
-  Matrix scaling M = scale*U'*U, scale = 1
-  Upper cholesky factor U (ignore lower nonzeros):
-    5 5
-     3.66633:1:1 -0.848699:1:2 -0.848699:1:3 -0.848699:1:4 -0.848487:1:5
-     8.19621:2:1 3.56695:2:2 -1.07407:2:3 -1.07407:2:4 -1.07381:2:5
-     13.4434:3:1 6.428:3:2 3.4014:3:3 -1.46552:3:4 -1.46515:3:5
-     -3.11088:4:1 13.4434:4:2 4.65371:4:3 3.06949:4:4 -2.32311:4:5
-     -3.11088:5:1 -3.11088:5:2 13.4434:5:3 2.86646:5:4 2.0071:5:5
+ Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
+  5 5
+   13.442:1:1 0:1:2 3.56695:1:3 -1.07407:1:4 -1.07407:1:5
+   -3.11161:2:1 13.4434:2:2 0:2:3 3.4014:2:4 -1.46552:2:5
+   -3.11161:3:1 -3.11088:3:2 13.4434:3:3 0:3:4 3.06949:3:5
+   -3.11161:4:1 -3.11088:4:2 -3.11088:4:3 13.4434:4:4 0:4:5
+   -3.11083:5:1 -3.1101:5:2 -3.1101:5:3 -3.1101:5:4 13.445:5:5
+ Matrix scaling M = scale*U'*U, scale = 1
+ Upper cholesky factor U (ignore lower nonzeros):
+  5 5
+   3.66633:1:1 -0.848699:1:2 -0.848699:1:3 -0.848699:1:4 -0.848487:1:5
+   0:2:1 3.56695:2:2 -1.07407:2:3 -1.07407:2:4 -1.07381:2:5
+   13.4434:3:1 0:3:2 3.4014:3:3 -1.46552:3:4 -1.46515:3:5
+   -3.11088:4:1 13.4434:4:2 0:4:3 3.06949:4:4 -2.32311:4:5
+   -3.11088:5:1 -3.11088:5:2 13.4434:5:3 0:5:4 2.0071:5:5
 
 (6) 5.-1: "SetDBoundsStd"
+
+dl(var_indep)_k = 
+ 5
+  -7.28846e-06:1 -1.76034e-06:2 -1.75996e-06:3 -1.75958e-06:4 -1.00001e-17:5
+
+du(var_indep)_k = 
+ 5
+  1e+50:1 1e+50:2 1e+50:3 1e+50:4 1e+50:5
 
 (6) 5: "TangentialStep"
 
 qp_grad_k = 
-  5
-   1.72853e-05:1 1.17572e-05:2 1.17568e-05:3 1.17565e-05:4 9.99687e-06:5
+ 5
+  1.72853e-05:1 1.17572e-05:2 1.17568e-05:3 1.17565e-05:4 9.99687e-06:5
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa10670
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xe2c76b0
     ||Ypy_k(var_indep)||inf = 3.1252363232e-09
 
-Using bounds on full Z*pz ...
+Using simple bounds on pz ...
 
 There are no finite bounds on dependent variables.  There will be no extra inequality constraints added on D*pz ...
 
-*** Entering QPSchur::solve_qp(...)
-
-*** Warm start info
-
-Number of variables                                          = 6
-Number of initially fixed variables (not in Ko)              = 1
-Number of changes to the initial KKT system (num_act_change) = 0
-
-    Number of initially fixed variables freed from a bound   = 0
-    Number of initially free variables fixed to a bound      = 0
-    Number of general equality constraints added             = 0
-    Number of general inequality constraints added           = 0
-
-Solution to the initial KKT system, vo = inv(Ko)*fo:
-
-||vo||inf = 1.2802099303e-05
-
-***
-*** Removing constriants until we are dual feasible
-***
-
-*** Start by removing constraints within the Schur complement first
-
-There where 0 constraints dropped from the schur complement from the initial guess of the active set.
-
-Current guess for unknowns x:
-
-||x||inf = 1.2802099303e-05
-
-*** Second, free initially fixed variables not in Ko
-
-There where 0 initially fixed variables not in Ko that were freed and added to the schur complement.
-
-*** Starting Primal-Dual Iterations ***
-
-We think we have found the solution and are not currently using iterative refinement
-and iter_refine_at_solution==true so perform iterative refinement ...
-
-Iterative refinement did not alter the unknowns so exit with this solution...
-
-Recomputing final mu_D_hat at the solution ...
-
-*** Solution found!
-
-Number of QP iteratons                                = 4
-Number of iterative refinement residual calculations  = 1
-Number of iterative refinement solves                 = 0
-
-||x||inf                = 2.5052443219e-06
-mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+10
-min(|mu(i)|)            = 1.0000000000e+10
-lambda_breve.nz()       = 4
-max(|lambda_breve(i)|)  = 3.4224117743e-05
-min(|lambda_breve(i)|)  = 6.8491983453e-06
-
-*** Leaving QPSchur::solve_qp(...)
+Calling QPKWIK to solve QP problem ...
 
 ||pz_k||inf    = 2.5052443219e-06
 nu_k.nz()      = 4
@@ -2013,28 +1715,43 @@ max(|nu_k(i)|) = 3.4224117743e-05
 ||Zpz_k||2     = 3.9415350433e-06
 
 pz_k = 
-  5
-   -2.50524e-06:1 -1.75722e-06:2 -1.75684e-06:3 -1.75645e-06:4 3.12524e-09:5
+ 5
+  -2.50524e-06:1 -1.75722e-06:2 -1.75684e-06:3 -1.75645e-06:4 3.12524e-09:5
+
+nu_k(var_indep) = 
+ 5
+  0:1 -6.8492e-06:2 -6.85516e-06:3 -6.86113e-06:4 -3.42241e-05:5
+
+Zpz(var_indep)_k = 
+ 5
+  -2.50524e-06:1 -1.75722e-06:2 -1.75684e-06:3 -1.75645e-06:4 3.12524e-09:5
+
 
 (6) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (2.3364611713e-28)/(8.8328450816e-05 * 3.9415350433e-06 + 2.2250738585e-308)
-  = 6.7110822651e-19
+  = (1.7579272235e-28)/(8.8328450816e-05 * 3.9415350433e-06 + 2.2250738585e-308)
+  = 5.0493431509e-19
 
-||d||inf = 2.5083604808e-06
+||d_k||inf            = 2.5083604808e-06
+||d(var_dep)_k||inf   = 1.6137749700e-06
+||d(var_indep)_k||inf = 2.5083604808e-06
+
+d(var_indep)_k = 
+ 5
+  -2.50836e-06:1 -1.76034e-06:2 -1.75996e-06:3 -1.75958e-06:4 -1.00001e-17:5
 
 (6) 7: "CalcReducedGradLagrangian"
 
 rGL_k = 
-  5
-   1.72853e-05:1 4.90802e-06:2 4.90168e-06:3 4.89533e-06:4 -2.42272e-05:5
+ 5
+  1.72853e-05:1 4.90802e-06:2 4.90168e-06:3 4.89533e-06:4 -2.42272e-05:5
 
 ||rGL_k||inf = 2.4227242979e-05
 
 rGL_k = 
-  5
-   1.72853e-05:1 4.90802e-06:2 4.90168e-06:3 4.89533e-06:4 -2.42272e-05:5
+ 5
+  1.72853e-05:1 4.90802e-06:2 4.90168e-06:3 4.89533e-06:4 -2.42272e-05:5
 
 (6) 8: "CheckConvergence"
 
@@ -2044,7 +1761,7 @@ scale_comp_factor = 1.0000000000e+00 (scale_comp_error_by = SCALE_BY_ONE)
 opt_scale_factor = 1.0000172885e+00 (scale_opt_error_by_Gf = true)
 opt_kkt_err_k    = 2.4226824135e-05 < opt_tol  = 1.0000000000e-02
 feas_kkt_err_k   = 1.6001110173e-03 > feas_tol = 1.0000000000e-07
-comp_kkt_err_k   = 1.2072668760e-11 < comp_tol = 1.0000000000e-06
+comp_kkt_err_k   = 1.2072668757e-11 < comp_tol = 1.0000000000e-06
 step_err         = 2.5083171159e-06 < step_tol = 1.0000000000e-02
 
 Have not found the solution yet, have to keep going (k = 6) :-(
@@ -2084,7 +1801,7 @@ Point was accepted - augmenting the filter ...
 
 Augmenting the filter with the point:
   f_with_boundary = f_kp1 - gamma_f_used*theta_kp1 = 3.0922559878e-10 - 1.0000000000e-05*4.8949810733e-09 = 3.0917664897e-10
-  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-05)*4.8949810733e-09 = 4.8949321234e-09
+  theta_with_boundary = (1-gamma_theta)*theta_kp1 = (1-1.0000000000e-05)*4.8949810733e-09 = 4.8949321235e-09
 
 (7) 1: "EvalNewPoint"
 
@@ -2093,8 +1810,8 @@ Augmenting the filter with the point:
 ||x(var_indep)_k||inf = 1.4780094636e-05
 
 x(var_indep)_k = 
-  5
-   1.47801e-05:1 1e-05:2 1e-05:3 1e-05:4 1e-05:5
+ 5
+  1.47801e-05:1 1e-05:2 1e-05:3 1e-05:4 1e-05:5
 
 Updating the decomposition ...
 
@@ -2118,7 +1835,7 @@ Updating the basis matrix C and other matices using the BasisSystem object ...
 
 Using a direct sparse solver to update basis ...
 
-Using MA28 to factor a new matrix ...
+Using LAPACK xGETRF to refactor the basis matrix ...
 
 End DecompositionSystemVarReductImp::update_decomp(...)
 
@@ -2131,8 +1848,8 @@ f_k                      = 3.0922559878e-10
 ||c_k||inf               = 7.9473675342e-09
 
 Gf(var_indep)_k =
-  5
-   1.47801e-05:1 1e-05:2 1e-05:3 1e-05:4 1e-05:5
+ 5
+  1.47801e-05:1 1e-05:2 1e-05:3 1e-05:4 1e-05:5
 
 (7) 2: "QuasiNormalStep"
 
@@ -2147,16 +1864,16 @@ beta = ||py||/||c|| = 1.0172368246e-03
 (7) 2.2: "CheckDecompositionFromRPy"
 
 beta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)
-     = 8.2718061255e-24 / (7.9473675342e-09 + 2.2250738585e-308)
-     = 1.0408234035e-15
+     = 6.6174449004e-24 / (7.9473675342e-09 + 2.2250738585e-308)
+     = 8.3265872278e-16
 
 (7) 3: "ReducedGradient"
 
 ||rGf||inf = 1.4780094636e-05
 
 rGf_k =
-  5
-   1.47801e-05:1 1e-05:2 1e-05:3 1e-05:4 1e-05:5
+ 5
+  1.47801e-05:1 1e-05:2 1e-05:3 1e-05:4 1e-05:5
 
 (7) 4.-1: "CheckSkipBFGSUpdate"
 
@@ -2176,12 +1893,12 @@ Performing Secant update ...
 ||s_bfgs||inf = 2.5052443219e-06
 
 y_bfgs =
-  5
-   -2.50524e-06:1 -1.75722e-06:2 -1.75684e-06:3 -1.75645e-06:4 3.12524e-09:5
+ 5
+  -2.50524e-06:1 -1.75722e-06:2 -1.75684e-06:3 -1.75645e-06:4 3.12524e-09:5
 
 s_bfgs =
-  5
-   -2.50524e-06:1 -1.75722e-06:2 -1.75684e-06:3 -1.75645e-06:4 3.12524e-09:5
+ 5
+  -2.50524e-06:1 -1.75722e-06:2 -1.75684e-06:3 -1.75645e-06:4 3.12524e-09:5
 
 Considering the dampened update ...
 
@@ -2189,146 +1906,105 @@ s_bfgs'*y_bfgs = 1.5535698401e-11 >=  s_bfgs' * B * s_bfgs = 6.9214067476e-11
 Perform the undamped update ...
 
 B after the BFGS update = 
-  Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
-    5 5
-     9.52915:1:1 4.85671:1:2 3.40139:1:3 -1.46521:1:4 -1.4649:1:5
-     -4.05396:2:1 13.2941:2:2 4.64731:2:3 3.06997:2:4 -2.32186:2:5
-     -4.05244:3:1 -3.25975:3:2 13.295:3:3 2.86352:3:4 2.00916:3:5
-     -4.05091:4:1 -3.25934:4:2 -3.25893:4:3 13.2958:4:4 0.00177507:4:5
-     2.93911:5:1 -1.39248:5:2 -1.3947:5:3 -1.39693:5:4 4.96462:5:5
-  Matrix scaling M = scale*U'*U, scale = 1
-  Upper cholesky factor U (ignore lower nonzeros):
-    5 5
-     3.08693:1:1 -1.31326:1:2 -1.31277:1:3 -1.31228:1:4 0.952114:1:5
-     4.85671:2:1 3.40139:2:2 -1.46521:2:3 -1.4649:2:4 -0.0417781:2:5
-     13.2941:3:1 4.64731:3:2 3.06997:3:3 -2.32186:3:4 -0.0671046:3:5
-     -3.25975:4:1 13.295:4:2 2.86352:4:3 2.00916:4:4 -0.181417:4:5
-     -3.25934:5:1 -3.25893:5:2 13.2958:5:3 0.00177507:5:4 2.00473:5:5
+ Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
+  5 5
+   9.52915:1:1 0:1:2 3.56695:1:3 -1.07407:1:4 -1.07407:1:5
+   -4.05396:2:1 13.2941:2:2 0:2:3 3.4014:2:4 -1.46552:2:5
+   -4.05244:3:1 -3.25975:3:2 13.295:3:3 0:3:4 3.06949:3:5
+   -4.05091:4:1 -3.25934:4:2 -3.25893:4:3 13.2958:4:4 0:4:5
+   2.93911:5:1 -1.39248:5:2 -1.3947:5:3 -1.39693:5:4 4.96462:5:5
 
 ||rHL_k||inf    = 2.4625571263e+01
 
 cond_inf(rHL_k) = 3.1556895452e+01
 
 rHL_k = 
-  Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
-    5 5
-     9.52915:1:1 4.85671:1:2 3.40139:1:3 -1.46521:1:4 -1.4649:1:5
-     -4.05396:2:1 13.2941:2:2 4.64731:2:3 3.06997:2:4 -2.32186:2:5
-     -4.05244:3:1 -3.25975:3:2 13.295:3:3 2.86352:3:4 2.00916:3:5
-     -4.05091:4:1 -3.25934:4:2 -3.25893:4:3 13.2958:4:4 0.00177507:4:5
-     2.93911:5:1 -1.39248:5:2 -1.3947:5:3 -1.39693:5:4 4.96462:5:5
-  Matrix scaling M = scale*U'*U, scale = 1
-  Upper cholesky factor U (ignore lower nonzeros):
-    5 5
-     3.08693:1:1 -1.31326:1:2 -1.31277:1:3 -1.31228:1:4 0.952114:1:5
-     4.85671:2:1 3.40139:2:2 -1.46521:2:3 -1.4649:2:4 -0.0417781:2:5
-     13.2941:3:1 4.64731:3:2 3.06997:3:3 -2.32186:3:4 -0.0671046:3:5
-     -3.25975:4:1 13.295:4:2 2.86352:4:3 2.00916:4:4 -0.181417:4:5
-     -3.25934:5:1 -3.25893:5:2 13.2958:5:3 0.00177507:5:4 2.00473:5:5
+ Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):
+  5 5
+   9.52915:1:1 0:1:2 3.40139:1:3 -1.46521:1:4 -1.4649:1:5
+   -4.05396:2:1 13.2941:2:2 0:2:3 3.06997:2:4 -2.32186:2:5
+   -4.05244:3:1 -3.25975:3:2 13.295:3:3 0:3:4 2.00916:3:5
+   -4.05091:4:1 -3.25934:4:2 -3.25893:4:3 13.2958:4:4 0:4:5
+   2.93911:5:1 -1.39248:5:2 -1.3947:5:3 -1.39693:5:4 4.96462:5:5
+ Matrix scaling M = scale*U'*U, scale = 1
+ Upper cholesky factor U (ignore lower nonzeros):
+  5 5
+   3.08693:1:1 -1.31326:1:2 -1.31277:1:3 -1.31228:1:4 0.952114:1:5
+   0:2:1 3.40139:2:2 -1.46521:2:3 -1.4649:2:4 -0.0417781:2:5
+   13.2941:3:1 0:3:2 3.06997:3:3 -2.32186:3:4 -0.0671046:3:5
+   -3.25975:4:1 13.295:4:2 0:4:3 2.00916:4:4 -0.181417:4:5
+   -3.25934:5:1 -3.25893:5:2 13.2958:5:3 0:5:4 2.00473:5:5
 
 (7) 5.-1: "SetDBoundsStd"
+
+dl(var_indep)_k = 
+ 5
+  -4.78009e-06:1 0:2 0:3 0:4 0:5
+
+du(var_indep)_k = 
+ 5
+  1e+50:1 1e+50:2 1e+50:3 1e+50:4 1e+50:5
 
 (7) 5: "TangentialStep"
 
 qp_grad_k = 
-  5
-   1.47801e-05:1 1e-05:2 1e-05:3 1e-05:4 1e-05:5
+ 5
+  1.47801e-05:1 1e-05:2 1e-05:3 1e-05:4 1e-05:5
 
 Determine if we can use simple bounds on pz ...
     m = 3000
-    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xa10670
+    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = 0xe2c76b0
     ||Ypy_k(var_indep)||inf = 7.8420208892e-20
 
-Using bounds on full Z*pz ...
+Using simple bounds on pz ...
 
 There are no finite bounds on dependent variables.  There will be no extra inequality constraints added on D*pz ...
 
-*** Entering QPSchur::solve_qp(...)
-
-*** Warm start info
-
-Number of variables                                          = 6
-Number of initially fixed variables (not in Ko)              = 1
-Number of changes to the initial KKT system (num_act_change) = 0
-
-    Number of initially fixed variables freed from a bound   = 0
-    Number of initially free variables fixed to a bound      = 0
-    Number of general equality constraints added             = 0
-    Number of general inequality constraints added           = 0
-
-Solution to the initial KKT system, vo = inv(Ko)*fo:
-
-||vo||inf = 1.4012954527e-05
-
-***
-*** Removing constriants until we are dual feasible
-***
-
-*** Start by removing constraints within the Schur complement first
-
-There where 0 constraints dropped from the schur complement from the initial guess of the active set.
-
-Current guess for unknowns x:
-
-||x||inf = 1.4012954527e-05
-
-*** Second, free initially fixed variables not in Ko
-
-There where 0 initially fixed variables not in Ko that were freed and added to the schur complement.
-
-*** Starting Primal-Dual Iterations ***
-
-We think we have found the solution and are not currently using iterative refinement
-and iter_refine_at_solution==true so perform iterative refinement ...
-
-Iterative refinement did not alter the unknowns so exit with this solution...
-
-Recomputing final mu_D_hat at the solution ...
-
-*** Solution found!
-
-Number of QP iteratons                                = 4
-Number of iterative refinement residual calculations  = 1
-Number of iterative refinement solves                 = 0
-
-||x||inf                = 1.5510400571e-06
-mu.nz()                 = 1
-max(|mu(i)|)            = 1.0000000000e+10
-min(|mu(i)|)            = 1.0000000000e+10
-lambda_breve.nz()       = 4
-max(|lambda_breve(i)|)  = 1.6287853298e-05
-min(|lambda_breve(i)|)  = 5.4413183992e-06
-
-*** Leaving QPSchur::solve_qp(...)
+Calling QPKWIK to solve QP problem ...
 
 ||pz_k||inf    = 1.5510400571e-06
 nu_k.nz()      = 4
-max(|nu_k(i)|) = 1.6287853298e-05
+max(|nu_k(i)|) = 1.6287853297e-05
 ||Zpz_k||2     = 1.5510400571e-06
 
 pz_k = 
-  5
-   -1.55104e-06:1 3.8283e-20:2 4.07317e-20:3 4.12873e-20:4 2.20718e-21:5
+ 5
+  -1.55104e-06:1 3.86837e-20:2 3.86646e-20:3 3.86426e-20:4 4.74479e-35:5
+
+nu_k(var_indep) = 
+ 5
+  0:1 -1.62879e-05:2 -1.62855e-05:3 -1.62831e-05:4 -5.44132e-06:5
+
+Zpz(var_indep)_k = 
+ 5
+  -1.55104e-06:1 3.86837e-20:2 3.86646e-20:3 3.86426e-20:4 4.74479e-35:5
+
 
 (7) 6: "CalcDFromYPYZPZ"
 
 (Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)
-  = (-2.6997482175e-39)/(3.1177993328e-10 * 1.5510400571e-06 + 2.2250738585e-308)
-  = -5.5828002506e-24
+  = (-3.6810718738e-39)/(3.1177993328e-10 * 1.5510400571e-06 + 2.2250738585e-308)
+  = -7.6120761359e-24
 
-||d||inf = 1.5510400571e-06
+||d_k||inf            = 1.5510400571e-06
+||d(var_dep)_k||inf   = 8.0843298368e-12
+||d(var_indep)_k||inf = 1.5510400571e-06
+
+d(var_indep)_k = 
+ 5
+  -1.55104e-06:1 0:2 0:3 0:4 0:5
 
 (7) 7: "CalcReducedGradLagrangian"
 
 rGL_k = 
-  5
-   1.47801e-05:1 -6.28785e-06:2 -6.28549e-06:3 -6.28313e-06:4 4.55868e-06:5
+ 5
+  1.47801e-05:1 -6.28785e-06:2 -6.28549e-06:3 -6.28313e-06:4 4.55868e-06:5
 
 ||rGL_k||inf = 1.4780094636e-05
 
 rGL_k = 
-  5
-   1.47801e-05:1 -6.28785e-06:2 -6.28549e-06:3 -6.28313e-06:4 4.55868e-06:5
+ 5
+  1.47801e-05:1 -6.28785e-06:2 -6.28549e-06:3 -6.28313e-06:4 4.55868e-06:5
 
 (7) 8: "CheckConvergence"
 

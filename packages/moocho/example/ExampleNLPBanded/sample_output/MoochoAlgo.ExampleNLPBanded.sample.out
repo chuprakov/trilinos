@@ -81,13 +81,16 @@ num_lbfgs_updates_stored < 0 : setting num_lbfgs_updates_stored = 10
 
 hessian_initialization == AUTO: setting hessian_initialization = IDENTITY
 
-qp_solver_type == AUTO: setting qp_solver_type = QPSCHUR
+qp_solver_type == AUTO: setting qp_solver_type = QPKWIK
 
 l1_penalty_param_update == AUTO: setting l1_penalty_param_update = MULT_FREE
 
 full_steps_after_k < 0 : the line search will never be turned off after so many iterations
 
 *** End setting default options
+
+qp_solver == QPKWIK and nlp.num_bounded_x() == 5 > 0:
+Setting quasi_newton == BFGS...
 
 The BasisSystem object with concreate type 'AbstractLinAlgPack::BasisSystemPermDirectSparse' supports the BasisSystemPerm interface.
 Using DecompositionSystemVarReductPermStd to support basis permutations ...
@@ -482,7 +485,17 @@ zeta                      21    IterationPack::IterQuantityAccessContiguous<doub
       bu = du_k - Ypy_k
       etaL = 0.0
       *** Determine if we can use simple bounds on pz or not
-      if m==0 or (Z_k is a variable reduction null space matrix and ||Ypy_k(var_indep)||inf == 0) then
+      if num_bounded(bl_k(var_dep),bu_k(var_dep)) > 0 then
+        bounded_var_dep = true
+      else
+        bounded_var_dep = false
+      end
+      if( m==0
+          or
+          ( Z_k is a variable reduction null space matrix
+            and
+            ( ||Ypy_k(var_indep)||inf == 0 or bounded_var_dep==false ) )
+        ) then
         use_simple_pz_bounds = true
       else
         use_simple_pz_bounds = false
@@ -491,26 +504,26 @@ zeta                      21    IterationPack::IterQuantityAccessContiguous<doub
       qp_g = qp_grad_k
       qp_G = rHL_k
       if (use_simple_pz_bounds == true) then
-        qp_dL = bl(var_indep),  qp_dU = bu(var_indep)
+        qp_dL = bl(var_indep), qp_dU = bu(var_indep))
         if (m > 0) then
-          qp_E  = Z_k.D,          qp_b  = Ypy_k(var_dep)
-          qp_eL = bl(var_dep),    qp_eU = bu(var_dep)
+          qp_E  = Z_k.D,       qp_b  = Ypy_k(var_dep)
+          qp_eL = bl(var_dep), qp_eU = bu(var_dep)
         end
       elseif (use_simple_pz_bounds == false) then
-        qp_dL = -inf,           qp_dU = +inf
-        qp_E  = Z_k,            qp_b  = Ypy_k
-        qp_eL = bl,             qp_eU = bu
+        qp_dL = -inf,  qp_dU = +inf
+        qp_E  = Z_k,   qp_b  = Ypy_k
+        qp_eL = bl,    qp_eU = bu
       end
       if (m > r) then
-        qp_F  = V_k,            qp_f  = Uy_k*py_k + c_k(equ_undecomp)
+        qp_F  = V_k,     qp_f  = Uy_k*py_k + c_k(equ_undecomp)
       else
-        qp_F  = empty,          qp_f  = empty
+        qp_F  = empty,   qp_f  = empty
       end
       Given active-set statistics (act_set_stats_km1)
         frac_same = max(num_active-num_adds-num_drops,0)/(num_active)
       Use a warm start when frac_same >= warm_start_frac
       Solve the following QP to compute qp_d, qp_eta, qp_Ed = qp_E * qp_d
-      ,qp_nu, qp_mu and qp_lambda (ConstrainedOptPack::QPSolverRelaxedQPSchur):
+      ,qp_nu, qp_mu and qp_lambda (ConstrainedOptPack::QPSolverRelaxedQPKWIK):
         min  qp_g' * qp_d + 1/2 * qp_d' * qp_G * qp_d + M(eta)
         qp_d <: R^(n-r)
         s.t.

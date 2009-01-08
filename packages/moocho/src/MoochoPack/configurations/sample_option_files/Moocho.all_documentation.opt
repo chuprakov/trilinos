@@ -716,11 +716,11 @@ options_group NLPAlgoConfigMamaJama {
      *** hessian approximation will be use for LBFGS.
 
 *    hessian_initialization = AUTO;                       *** Let the solver decide dynamically [default]
-*    hessian_initialization = SERIALIZE;                  *** rHL_{0} read from file (see ReducedHessianSerialization)
-*    hessian_initialization = IDENTITY;                   *** rHL_{0} = I
-*    hessian_initialization = FINITE_DIFF_SCALE_IDENTITY; *** rHL_{0} = ||fd|| * I
-*    hessian_initialization = FINITE_DIFF_DIAGONAL;       *** rHL_{0} = diag(max(fd(i),small),i)
-*    hessian_initialization = FINITE_DIFF_DIAGONAL_ABS;   *** rHL_{0} = diag(abs(fd(i))
+*    hessian_initialization = SERIALIZE;                  *** rHL_(0) read from file (see ReducedHessianSerialization)
+*    hessian_initialization = IDENTITY;                   *** rHL_(0) = I
+*    hessian_initialization = FINITE_DIFF_SCALE_IDENTITY; *** rHL_(0) = ||fd|| * I
+*    hessian_initialization = FINITE_DIFF_DIAGONAL;       *** rHL_(0) = diag(max(fd(i),small),i)
+*    hessian_initialization = FINITE_DIFF_DIAGONAL_ABS;   *** rHL_(0) = diag(abs(fd(i))
      *** [exact_reduced_hessian == false] Determines how the quasi-newton hessian is initialized.
      *** ToDo: Finis documentation!
 
@@ -763,7 +763,7 @@ options_group NLPAlgoConfigMamaJama {
 
 *    merit_function_type = AUTO;              *** [line_search_method != NONE] Let solver decide
 *    merit_function_type = L1;                *** [line_search_method != NONE] phi(x) = f(x) + mu*||c(x)||1
-*    merit_function_type = MODIFIED_L1;       *** [line_search_method != NONE] phi(x) = f(x) + sum{mu(j),|cj(x)|,j}
+*    merit_function_type = MODIFIED_L1;       *** [line_search_method != NONE] phi(x) = f(x) + sum(mu(j),|cj(x)|,j)
 *    merit_function_type = MODIFIED_L1_INCR;  *** [line_search_method != NONE] Like MODIFIED_L1 except mu(j) are altered in order to take larger steps
      *** Determines the type of merit function used when the line search
      *** method uses a merit function.
@@ -872,6 +872,57 @@ options_group CheckConvergenceStd {
      *** is scaled by the gradient of the objective function or not.
      *** true  : Scale ||rGL_k||inf or ||GL_k|| by an additional 1/(1+||Gf||inf)
      *** false : Scale ||rGL_k||inf or ||GL_k|| by an additional 1 (i.e. no extra scaling)
+
+}
+
+****************************************************************
+*** Options for the TangentalStepWithInequStd_Step
+***
+*** This used for NLPs that have bounds.
+***
+options_group TangentialStepWithInequStd {
+
+*    warm_start_frac = 0.8; *** [default]
+*    warm_start_frac = 0.0; *** Never do a warm start
+*    warm_start_frac = 1.0; *** Do a warm start as soon a possible
+     *** (+dbl) Determines the number of inequality constraints that
+     *** must be the same any two rSQP iterations in order for
+     *** a warm start to be used on the next rSQP iteration.
+
+*    qp_testing = QP_TEST_DEFAULT; *** [default] Test if check_results==true
+*    qp_testing = QP_TEST;         *** Always test
+*    qp_testing = QP_NO_TEST;      *** Never test
+     *** Determines if the postconditions for the QP solve are checked
+     *** or not.
+
+*    primal_feasible_point_error = true; *** [default] Throw exception on PRIMAL_FEASIBLE_POINT
+*    primal_feasible_point_error = false; *** No throw exception on PRIMAL_FEASIBLE_POINT
+
+*    dual_feasible_point_error = true; *** [default] Throw exception on DUAL_FEASIBLE_POINT
+*    dual_feasible_point_error = false; *** No throw exception on DUAL_FEASIBLE_POINT
+
+}
+
+********************************************************************
+*** Options for the QPSolverRelaxedTester object that is used
+*** to test the QP solution.
+***
+*** This is only used when the NLP has bounds and a QP solver is used.
+*** This sets testing options for the TangentalStepWithInequalStd_Step
+*** object.
+***	
+*** See the MoochoAlgo.opt file for details.
+***
+options_group QPSolverRelaxedTester {
+
+*    opt_warning_tol   = 1e-10;  *** [default] Tolerances for optimality conditions
+*    opt_error_tol     = 1e-5;   *** [default]
+
+*    feas_warning_tol  = 1e-10;  *** [default] Tolerances for feasibility
+*    feas_error_tol    = 1e-5;   *** [default]
+
+*    comp_warning_tol  = 1e-10;  *** [default] Tolerances for complementarity
+*    comp_error_tol    = 1e-5;   *** [default]
 
 }
 
@@ -996,6 +1047,7 @@ options_group QPSolverRelaxedQPSchur {
 *    print_level = OUTPUT_ITER_STEPS;
 *    print_level = OUTPUT_ACT_SET;
 *    print_level = OUTPUT_ITER_QUANTITIES;
+
 }
 
 ********************************************************************

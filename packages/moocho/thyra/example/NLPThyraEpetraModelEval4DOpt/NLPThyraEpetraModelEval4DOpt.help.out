@@ -1,3 +1,4 @@
+Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
 
 Echoing the command-line:
 
@@ -58,4 +59,5 @@ Usage: ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOp
                                             (default: --xU0=1e+50)
   --xU1                             double  No documentation
                                             (default: --xU1=1e+50)
-Teuchos::GlobalMPISession::GlobalMPISession(): started serial run
+  --support-derivs                  bool    No documentation
+  --no-support-derivs                       (default: --support-derivs)
