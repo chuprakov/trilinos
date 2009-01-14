@@ -14,7 +14,7 @@ int main( int argc, char* argv[] )
    * Data declarations (how old-school is this!)
    */
 
-  int numGlobalElements, numGlobalElements_rtn;
+  int numGlobalElements, numGlobalElements_rtn,numMyElements;
   MapID mapID;
   VectorID xID, bID;
   double bnorm, xnorm, expected_bnorm, expected_xnorm, bnorm_err, xnorm_err, err_tol;
@@ -31,6 +31,8 @@ int main( int argc, char* argv[] )
   numGlobalElements_rtn = Epetra_Map_NumGlobalElements(mapID);
   printf( "NumGlobalElements = %d\n", numGlobalElements_rtn );
   assert( numGlobalElements == numGlobalElements_rtn );
+  numMyElements = Epetra_Map_NumMyElements(mapID);
+  printf( "NumMyElements = %d\n", numMyElements);
   
   /* Create vectors */
   xID = Epetra_Vector_Create(mapID);

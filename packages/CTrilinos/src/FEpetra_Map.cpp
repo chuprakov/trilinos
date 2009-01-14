@@ -63,6 +63,7 @@ int Epetra_Map_NumGlobalElements( MapID mapID )
 int Epetra_Map_NumMyElements( MapID mapID )
 {
   return FEpetra::getMap(mapID)->NumMyElements();
+}
 
 
 } // extern "C"
