@@ -18,6 +18,8 @@ void Epetra_Map_Destroy( MapID mapID );
 
 int Epetra_Map_NumGlobalElements( MapID mapID );
 
+int Epetra_Map_NumMyElements( MapID mapID );
+
 
 #ifdef __cplusplus
 } /* extern "C" */
