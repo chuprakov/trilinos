@@ -48,6 +48,7 @@
 namespace NLPInterfacePack {
 
 NLPDirectThyraModelEvaluator::NLPDirectThyraModelEvaluator()
+  :DfDp_is_const_(false)
 {}
 
 NLPDirectThyraModelEvaluator::NLPDirectThyraModelEvaluator(
@@ -57,6 +58,7 @@ NLPDirectThyraModelEvaluator::NLPDirectThyraModelEvaluator(
   ,const objDirecFiniteDiffCalculator_ptr_t objDirecFiniteDiffCalculator
   ,const conDirecFiniteDiffCalculator_ptr_t conDirecFiniteDiffCalculator
   )
+  :DfDp_is_const_(false)
 {
   initialize(
     model,p_idx,g_idx
@@ -88,6 +90,7 @@ void NLPDirectThyraModelEvaluator::initialize(
       " column-oriented multi-vector if not using finite differences!"
       );
   }
+  DfDp_is_const_  = false;
 }
 
 // Overridden public members from NLP
@@ -280,12 +283,14 @@ void NLPDirectThyraModelEvaluator::calc_point(
   Teuchos::RCP<Thyra::VectorBase<value_type> > thyra_py;
   RCP<MatrixOp> D_used = rcp(D,false);
   RCP<Thyra::MultiVectorBase<value_type> > thyra_D;
+
   if( py || ( ( rGf || D ) && conDirecFiniteDiffCalculator_.get() ) ) {
     space_c = &dyn_cast<const VectorSpaceThyra>(c->space()),
       space_xD = &dyn_cast<const VectorSpaceThyra>(py->space());
     get_thyra_vector(*space_c,*c,&thyra_c);
     get_thyra_vector(*space_xD,py,&thyra_py);
   }
+
   if( D || rGf ) {
     if(!D) D_used = this->factory_D()->create();
     thyra_D =
@@ -295,12 +300,13 @@ void NLPDirectThyraModelEvaluator::calc_point(
           )
         );
   }
+
   if(
     ( rGf || D )
     &&
-    conDirecFiniteDiffCalculator_.get()
+    !is_null(conDirecFiniteDiffCalculator_)
     &&
-    ( new_thyra_N || DfDp_is_const() )
+    ( new_thyra_N || !DfDp_is_const() )
     )
   {
     if(out.get() && trace)

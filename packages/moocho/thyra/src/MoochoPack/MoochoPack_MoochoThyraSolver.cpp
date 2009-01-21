@@ -142,6 +142,9 @@ const std::string LumpedParametersSettings_name = "Lumped Parameters Settings";
 const std::string OutputFileTag_name = "Output File Tag";
 const std::string OutputFileTag_default = "";
 
+const std::string OutputOnAllProcesses_name = "Output On All Processes";
+const bool OutputOnAllProcesses_default = false;
+
 const std::string ShowModelEvaluatorTrace_name = "Show Model Evaluator Trace";
 const bool ShowModelEvaluatorTrace_default = "false";
 
@@ -261,6 +264,7 @@ void MoochoThyraSolver::setParameterList(
   Teuchos::RCP<Teuchos::ParameterList> const& paramList
   )
 {
+  typedef MoochoPack::MoochoSolver MS;
   TEST_FOR_EXCEPT(!paramList.get());
   paramList->validateParameters(*getValidParameters(),0); // Just validate my level!
   paramList_ = paramList;
@@ -289,6 +293,11 @@ void MoochoThyraSolver::setParameterList(
   outputFileTag_ = paramList->get(
     OutputFileTag_name,OutputFileTag_default);
   solver_.set_output_file_tag(outputFileTag_);
+  solver_.set_output_context("",
+    paramList_->get(OutputOnAllProcesses_name, OutputOnAllProcesses_default)
+    ? MS::OUTPUT_TO_BLACK_HOLE_FALSE
+    : MS::OUTPUT_TO_BLACK_HOLE_DEFAULT
+    );
   showModelEvaluatorTrace_ = paramList->get(
     ShowModelEvaluatorTrace_name,ShowModelEvaluatorTrace_default);
   x_reader_.setParameterList(
@@ -439,6 +448,10 @@ MoochoThyraSolver::getValidParameters() const
       "passed into the set_output_context(...) function on the underlying\n"
       "MoochoPack::MoochoSolver object.  Therefore, this same parameter\n"
       "can be set in code as well without going through the parameter list.");
+    pl->set(OutputOnAllProcesses_name, OutputOnAllProcesses_default,
+      "If set to true, then the console output and all MOOCHO files will be\n"
+      "written for every process.  This helps in debugging very hard\n"
+      "parallel problems.");
     pl->set(ShowModelEvaluatorTrace_name,ShowModelEvaluatorTrace_default
       ,"Determine if a trace of the objective function will be shown or not\n"
       "when the NLP is evaluated."
