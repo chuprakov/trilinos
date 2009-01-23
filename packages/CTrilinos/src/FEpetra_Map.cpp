@@ -60,6 +60,7 @@ int Epetra_Map_NumGlobalElements( MapID mapID )
   return FEpetra::getMap(mapID)->NumGlobalElements();
 }
 
+
 int Epetra_Map_NumMyElements( MapID mapID )
 {
   return FEpetra::getMap(mapID)->NumMyElements();
