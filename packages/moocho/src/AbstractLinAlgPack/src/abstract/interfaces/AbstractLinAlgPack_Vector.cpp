@@ -26,10 +26,6 @@
 // ***********************************************************************
 // @HEADER
 
-#include <assert.h>
-
-#include <limits>
-#include <ostream>
 
 #include "AbstractLinAlgPack_VectorMutable.hpp"
 #include "AbstractLinAlgPack_VectorSubView.hpp"
@@ -44,10 +40,18 @@
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_FancyOStream.hpp"
 
+#include <limits>
+#include <ostream>
+
+#include <assert.h>
+
+
 // Uncomment to ignore cache of reduction data
 //#define ALAP_VECTOR_IGNORE_CACHE_DATA
 
+
 namespace {
+
 
 // get element operator
 static RTOpPack::RTOpC                               sum_op;
@@ -66,6 +70,7 @@ static RTOpPack::RTOpC                               norm_inf_op;
 static Teuchos::RCP<RTOpPack::ReductTarget>  norm_inf_targ;
 // get sub-vector operator
 static RTOpPack::RTOpC                               get_sub_vector_op;
+
 
 // Simple class for an object that will initialize the RTOp_Server and operators.
 class init_rtop_server_t {
@@ -91,21 +96,27 @@ public:
   }
 }; 
 
+
 // When the program starts, this object will be created
 init_rtop_server_t  init_rtop_server;
 
+
 } // end namespace
 
+
 namespace AbstractLinAlgPack {
+
 
 Vector::Vector()
   :num_nonzeros_(-1), norm_1_(-1.0), norm_2_(-1.0), norm_inf_(-1.0) // uninitalized
 {}
 
+
 index_type Vector::dim() const
 {
   return this->space().dim();
 }
+
 
 index_type Vector::nz() const
 {
@@ -122,9 +133,10 @@ index_type Vector::nz() const
   return num_nonzeros_;
 }
 
+
 std::ostream& Vector::output(
-  std::ostream& out_arg, bool print_dim , bool newline
-  ,index_type global_offset
+  std::ostream& out_arg, bool print_dim, bool newline,
+  index_type global_offset
   ) const
 {
   Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
@@ -137,6 +149,7 @@ std::ostream& Vector::output(
   return out_arg;
 }
 
+
 VectorMutable::vec_mut_ptr_t Vector::clone() const
 {
   vec_mut_ptr_t
@@ -144,6 +157,7 @@ VectorMutable::vec_mut_ptr_t Vector::clone() const
   *vec = *this;
   return vec;
 }
+
 
 value_type Vector::get_ele(index_type i) const
 {
@@ -155,6 +169,7 @@ value_type Vector::get_ele(index_type i) const
     );
    return RTOp_ROp_sum_val(sum_op(*sum_targ));
 }
+
 
 value_type Vector::norm_1() const
 {
@@ -171,6 +186,7 @@ value_type Vector::norm_1() const
   return norm_1_;
 }
 
+
 value_type Vector::norm_2() const
 {
 #ifdef ALAP_VECTOR_IGNORE_CACHE_DATA
@@ -186,6 +202,7 @@ value_type Vector::norm_2() const
   return norm_2_;
 }
 
+
 value_type Vector::norm_inf() const
 {
 #ifdef ALAP_VECTOR_IGNORE_CACHE_DATA
@@ -200,6 +217,7 @@ value_type Vector::norm_inf() const
   }
   return norm_inf_;
 }
+
 
 value_type Vector::inner_product(  const Vector& v ) const
 {
@@ -225,6 +243,7 @@ Vector::sub_view( const Range1D& rng_in ) const
       vec_ptr_t( this, false )
       ,rng ) );
 }
+
 
 void Vector::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec_inout ) const
 {
@@ -261,6 +280,7 @@ void Vector::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec
   std::free(reduct_obj_raw); // Now *sub_vec owns the values[] and indices[] arrays!
 }
 
+
 void Vector::free_sub_vector( RTOpPack::SubVector* sub_vec ) const
 {
   // Free sub_vec if needed (note this is dependent on the implemenation of this operator class!)
@@ -269,13 +289,16 @@ void Vector::free_sub_vector( RTOpPack::SubVector* sub_vec ) const
   sub_vec->set_uninitialized();
 }
 
+
 void Vector::has_changed() const
 {
   num_nonzeros_= -1;  // uninitalized;
   norm_1_ = norm_2_ = norm_inf_ = -1.0;
 }
 
+
 // protected
+
 
 void Vector::finalize_apply_op(
   const size_t num_targ_vecs, VectorMutable** targ_vecs
@@ -285,9 +308,12 @@ void Vector::finalize_apply_op(
     targ_vecs[k]->has_changed();
 }
 
+
 } // end namespace AbstractLinAlgPack
 
+
 // nonmember functions
+
 
 void AbstractLinAlgPack::apply_op(
   const RTOpPack::RTOp       &op
