@@ -44,7 +44,7 @@
 #include "Thyra_SolveSupportTypes.hpp"
 #include "Thyra_LinearOpBase.hpp"
 #include "Thyra_Vector.hpp"
-##include "Thyra_VectorSpace.hpp"
+#include "Thyra_VectorSpace.hpp"
 #include "Thyra_LinearOperator.hpp"
 #include "Thyra_SpmdVectorBase.hpp"
 #include "Thyra_DefaultZeroLinearOp.hpp"
