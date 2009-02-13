@@ -63,6 +63,7 @@ NLPThyraEpetraMultiPointModelEval4DOpt_LDADD = $(common_ldadd)
 
 test_lumped_param_model.py: $(builddir)/_test_lumped_param_model.py.stub
 	cp $(builddir)/_test_lumped_param_model.py.stub test_lumped_param_model.py
+	perl -i -pe 's/MOOCHO_NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt/g' test_lumped_param_model.py
 	chmod a+x test_lumped_param_model.py
 
 moochoThyraFdNand.xml: $(srcdir)/_moochoThyraFdNand.xml

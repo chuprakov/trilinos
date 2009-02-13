@@ -32,7 +32,7 @@ def createRunCommand(
   moochoThyraParams
   ):
   cmnd = \
-       "./NLPThyraEpetraModelEval4DOpt.exe" + \
+       "./MOOCHO_NLPThyraEpetraModelEval4DOpt.exe" + \
        "  " + otherArgs + \
        "  --moocho-extra-options=\"" + moochOptions + "\"" + \
        "  --extra-moocho-thyra-params=\"" + moochoThyraParams + "\"" + \
@@ -61,10 +61,10 @@ def runCase(
 
   try:
     os.symlink(
-      moochoBaseBuildDir + "/thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe",
-      "NLPThyraEpetraModelEval4DOpt.exe" )
+      moochoBaseBuildDir + "/thyra/example/NLPThyraEpetraModelEval4DOpt/MOOCHO_NLPThyraEpetraModelEval4DOpt.exe",
+      "MOOCHO_NLPThyraEpetraModelEval4DOpt.exe" )
   except OSError:
-    print "Symbolic link to NLPThyraEpetraModelEval4DOpt.exe already exists!"
+    print "Symbolic link to MOOCHO_NLPThyraEpetraModelEval4DOpt.exe already exists!"
     
 
   cmnd = createRunCommand(otherArgs,moochOptions,moochoThyraParams );
