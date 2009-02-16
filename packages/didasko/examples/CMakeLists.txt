@@ -1,0 +1,59 @@
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../src)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/../src)
+
+IF(HAVE_DIDASKO_AMESOS)
+  ADD_SUBDIRECTORY(amesos)
+ENDIF()
+
+IF(HAVE_DIDASKO_ANASAZI)
+  ADD_SUBDIRECTORY(anasazi)
+ENDIF()
+
+IF(HAVE_DIDASKO_AZTECOO)
+  ADD_SUBDIRECTORY(aztecoo)
+ENDIF()
+
+IF(HAVE_DIDASKO_BELOS)
+  ADD_SUBDIRECTORY(belos)
+ENDIF()
+
+IF(HAVE_DIDASKO_EPETRA)
+  ADD_SUBDIRECTORY(epetra)
+ENDIF()
+
+#Commented out because this relies on zoltan, even though no zoltan
+#dependency is listed and there is actually a compile error when the
+#proper defines are given to compile the test. The auto tools version
+#of this test is not giving the proper defines and as such the code
+#has been short circuited to not actually do anything.
+#IF(HAVE_DIDASKO_EPETRAEXT)
+#  ADD_SUBDIRECTORY(epetraext)
+#ENDIF()
+
+#commented out because the definition file has these directories excluded
+#IF(HAVE_DIDASKO_IFPACK)
+#  ADD_SUBDIRECTORY(ifpack)
+#ENDIF()
+
+IF(HAVE_DIDASKO_ML)
+  ADD_SUBDIRECTORY(ml)
+ENDIF()
+
+IF(HAVE_DIDASKO_NOX)
+  ADD_SUBDIRECTORY(nox)
+ENDIF()
+
+IF(HAVE_DIDASKO_TEUCHOS)
+  ADD_SUBDIRECTORY(teuchos)
+ENDIF()
+
+#commented out because the definition file has these directories excluded
+#IF(HAVE_DIDASKO_TRIUTILS)
+#  ADD_SUBDIRECTORY(triutils)
+#ENDIF()
+
+#commented out because this is not listed in the defintion file and there is a compile
+#error with the ex1.cpp test.
+#IF(HAVE_DIDASKO_TPETRA)
+#  ADD_SUBDIRECTORY(tpetra)
+#ENDIF()
