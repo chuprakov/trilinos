@@ -12,6 +12,7 @@ PACKAGE(MOOCHO)
 # B) Set up package-specific options
 #
 
+
 #
 # C) Add the libraries, tests, and examples
 #

@@ -26,6 +26,12 @@
 // ***********************************************************************
 // @HEADER
 
+#include "Moocho_ConfigDefs.hpp"
+
+
+#ifdef HAVE_MOOCHO_MA28
+
+
 #include "AbstractLinAlgPack_MA28Solver.hpp"
 
 // Initialize static variables
@@ -84,3 +90,6 @@ void MA28_Cpp::MA28Solver::get_common_block_data() {
   // now this is the easiest thing to do.
   common_blocks_ = ma28_common_blocks_;
 }
+
+
+#endif // HAVE_MOOCHO_MA28
