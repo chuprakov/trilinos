@@ -12,10 +12,7 @@ PACKAGE(Meros)
 # B) Set up package-specific options
 #
 
-#ADD_OPTION_AND_DEFINE(${PACKAGE_NAME}_ENABLE_Experimental
-#  HAVE_KOKKOS_EXPERIMENTAL
-#  "Enable experimental."
-#  OFF )
+# Nothing to do here
 
 #
 # C) Add the libraries, tests, and examples
