@@ -50,15 +50,21 @@ all-local:
 #
 CTRILINOS_SRC_H = \
   $(srcdir)/FEpetra_Map.h \
-  $(srcdir)/FEpetra_Vector.h
+  $(srcdir)/FEpetra_Vector.h \
+  $(srcdir)/FEpetra_MpiComm.h \
+  $(srcdir)/FEpetra_SerialComm.h
 
 CTRILINOS_SRC_HPP = \
   $(srcdir)/FEpetra_Map_Cpp.hpp \
-  $(srcdir)/FEpetra_Vector_Cpp.hpp
+  $(srcdir)/FEpetra_Vector_Cpp.hpp \
+  $(srcdir)/FEpetra_MpiComm_Cpp.hpp \
+  $(srcdir)/FEpetra_SerialComm_Cpp.hpp
 
 CTRILINOS_SRC = \
   $(srcdir)/FEpetra_Map.cpp \
-  $(srcdir)/FEpetra_Vector.cpp
+  $(srcdir)/FEpetra_Vector.cpp \
+  $(srcdir)/FEpetra_MpiComm.cpp \
+  $(srcdir)/FEpetra_SerialComm.cpp
 
 
 #Specify locations of include files within Trilinos

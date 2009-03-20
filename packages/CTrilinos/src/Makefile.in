@@ -100,7 +100,8 @@ AR = ar
 ARFLAGS = cru
 am__DEPENDENCIES_1 =
 libctrilinos_a_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am__objects_1 = FEpetra_Map.$(OBJEXT) FEpetra_Vector.$(OBJEXT)
+am__objects_1 = FEpetra_Map.$(OBJEXT) FEpetra_Vector.$(OBJEXT) \
+	FEpetra_MpiComm.$(OBJEXT) FEpetra_SerialComm.$(OBJEXT)
 am_libctrilinos_a_OBJECTS = $(am__objects_1)
 libctrilinos_a_OBJECTS = $(am_libctrilinos_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -246,15 +247,21 @@ top_srcdir = @top_srcdir@
 #
 CTRILINOS_SRC_H = \
   $(srcdir)/FEpetra_Map.h \
-  $(srcdir)/FEpetra_Vector.h
+  $(srcdir)/FEpetra_Vector.h \
+  $(srcdir)/FEpetra_MpiComm.h \
+  $(srcdir)/FEpetra_SerialComm.h
 
 CTRILINOS_SRC_HPP = \
   $(srcdir)/FEpetra_Map_Cpp.hpp \
-  $(srcdir)/FEpetra_Vector_Cpp.hpp
+  $(srcdir)/FEpetra_Vector_Cpp.hpp \
+  $(srcdir)/FEpetra_MpiComm_Cpp.hpp \
+  $(srcdir)/FEpetra_SerialComm_Cpp.hpp
 
 CTRILINOS_SRC = \
   $(srcdir)/FEpetra_Map.cpp \
-  $(srcdir)/FEpetra_Vector.cpp
+  $(srcdir)/FEpetra_Vector.cpp \
+  $(srcdir)/FEpetra_MpiComm.cpp \
+  $(srcdir)/FEpetra_SerialComm.cpp
 
 @USING_GNUMAKE_FALSE@EXPORT_INCLUDES = $(CTRILINOS_INCLUDES)
 @USING_GNUMAKE_TRUE@EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(CTRILINOS_INCLUDES))
@@ -412,6 +419,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FEpetra_Map.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FEpetra_MpiComm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FEpetra_SerialComm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FEpetra_Vector.Po@am__quote@
 
 .cpp.o:
@@ -455,6 +464,34 @@ FEpetra_Vector.obj: $(srcdir)/FEpetra_Vector.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/FEpetra_Vector.cpp' object='FEpetra_Vector.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FEpetra_Vector.obj `if test -f '$(srcdir)/FEpetra_Vector.cpp'; then $(CYGPATH_W) '$(srcdir)/FEpetra_Vector.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/FEpetra_Vector.cpp'; fi`
+
+FEpetra_MpiComm.o: $(srcdir)/FEpetra_MpiComm.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FEpetra_MpiComm.o -MD -MP -MF $(DEPDIR)/FEpetra_MpiComm.Tpo -c -o FEpetra_MpiComm.o `test -f '$(srcdir)/FEpetra_MpiComm.cpp' || echo '$(srcdir)/'`$(srcdir)/FEpetra_MpiComm.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/FEpetra_MpiComm.Tpo $(DEPDIR)/FEpetra_MpiComm.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/FEpetra_MpiComm.cpp' object='FEpetra_MpiComm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FEpetra_MpiComm.o `test -f '$(srcdir)/FEpetra_MpiComm.cpp' || echo '$(srcdir)/'`$(srcdir)/FEpetra_MpiComm.cpp
+
+FEpetra_MpiComm.obj: $(srcdir)/FEpetra_MpiComm.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FEpetra_MpiComm.obj -MD -MP -MF $(DEPDIR)/FEpetra_MpiComm.Tpo -c -o FEpetra_MpiComm.obj `if test -f '$(srcdir)/FEpetra_MpiComm.cpp'; then $(CYGPATH_W) '$(srcdir)/FEpetra_MpiComm.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/FEpetra_MpiComm.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/FEpetra_MpiComm.Tpo $(DEPDIR)/FEpetra_MpiComm.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/FEpetra_MpiComm.cpp' object='FEpetra_MpiComm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FEpetra_MpiComm.obj `if test -f '$(srcdir)/FEpetra_MpiComm.cpp'; then $(CYGPATH_W) '$(srcdir)/FEpetra_MpiComm.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/FEpetra_MpiComm.cpp'; fi`
+
+FEpetra_SerialComm.o: $(srcdir)/FEpetra_SerialComm.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FEpetra_SerialComm.o -MD -MP -MF $(DEPDIR)/FEpetra_SerialComm.Tpo -c -o FEpetra_SerialComm.o `test -f '$(srcdir)/FEpetra_SerialComm.cpp' || echo '$(srcdir)/'`$(srcdir)/FEpetra_SerialComm.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/FEpetra_SerialComm.Tpo $(DEPDIR)/FEpetra_SerialComm.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/FEpetra_SerialComm.cpp' object='FEpetra_SerialComm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FEpetra_SerialComm.o `test -f '$(srcdir)/FEpetra_SerialComm.cpp' || echo '$(srcdir)/'`$(srcdir)/FEpetra_SerialComm.cpp
+
+FEpetra_SerialComm.obj: $(srcdir)/FEpetra_SerialComm.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FEpetra_SerialComm.obj -MD -MP -MF $(DEPDIR)/FEpetra_SerialComm.Tpo -c -o FEpetra_SerialComm.obj `if test -f '$(srcdir)/FEpetra_SerialComm.cpp'; then $(CYGPATH_W) '$(srcdir)/FEpetra_SerialComm.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/FEpetra_SerialComm.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/FEpetra_SerialComm.Tpo $(DEPDIR)/FEpetra_SerialComm.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/FEpetra_SerialComm.cpp' object='FEpetra_SerialComm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FEpetra_SerialComm.obj `if test -f '$(srcdir)/FEpetra_SerialComm.cpp'; then $(CYGPATH_W) '$(srcdir)/FEpetra_SerialComm.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/FEpetra_SerialComm.cpp'; fi`
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(includedir)" || $(MKDIR_P) "$(DESTDIR)$(includedir)"
