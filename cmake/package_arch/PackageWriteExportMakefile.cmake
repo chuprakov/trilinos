@@ -1,7 +1,8 @@
 #############################################################################
 #
 # Function to generate an export makefile, simplifying the building of
-# clients of Trilinos.
+# clients of Trilinos. This function will also build an example of a 
+# client's makefile that includes the export makefile.. 
 # 
 # This function can be called any time after the processing of 
 # dependency-based enabling of packages and TPLs. 
@@ -23,12 +24,14 @@
 # (3) Prepend the command-line prefix (e.g., "-l") to each library name.  
 # (4) Form a command-line string from the library names, e.g., 
 #         "-lfoo -lbar -lsnafu"
+#     If necessary, write an RPATH specification.
 # (5) Reverse the TPL lib list order, remove duplicates, and reverse again. 
 #     This step is needed because several packages may list the same TPLs. 
 #     The removals must proceed in reverse order on order to preserve the
 #     correct dependency order.
 # (6) Form command-line strings for the TPL libs and includes.
 # (7) Use PACKAGE_CONFIGURE_FILE to splice everything into the export makefile
+#     and client makefile.
 #     
 # Possible issues for the future:
 # (1) I've had to assume "-I" for the include path prefix. This might not
@@ -44,20 +47,40 @@
 #     TPL setup process. 
 #
 # Kevin Long, Texas Tech University
+# kevin.long@ttu.edu
 #
 #############################################################################
 
 
-FUNCTION(WRITE_EXPORT_MAKEFILE Proj EMFName)
+FUNCTION(PACKAGE_WRITE_EXPORT_MAKEFILE Proj PACKAGE EMFName CMFName)
 # Input arguments:
 #   (*) Proj    -- name of project, e.g., "Trilinos"
-#   (*) EMFName -- name of export makefile, e.g., "Makefile.export" 
+#   (*) PACKAGE -- name of the package calling this function, e.g., "Epetra"
+#   (*) EMFName -- name of export makefile, e.g., "Makefile.export"
+#   (*) CMFName -- name of client makefile, e.g., "Makefile.client" 
 
 
 # Get the list of all packages, assumed to be in order of dependency
 # (most-dependent packages last). The Trilinos cmake system specifies 
-# that the master list of packages be in this order.
+# that the master list of packages be in this order, so this assumption
+# should be valid unless there's an error in the Trilinos package file.
   SET(PACK_LIST ${${Proj}_PACKAGES})
+
+# Remove from the package list all packages after ${PACKAGE} in the dependency
+# chain. This way each package can create its own minimalist export makefile
+# with no upstream libraries. 
+  SET(TMP_PACK_LIST)
+  SET(SKIP FALSE)
+  FOREACH(PACK_NAME ${PACK_LIST})
+    IF(NOT SKIP)
+      LIST(APPEND TMP_PACK_LIST ${PACK_NAME})
+      IF(PACKAGE STREQUAL ${PACK_NAME})
+        SET(SKIP TRUE)
+      ENDIF()
+    ENDIF()
+  ENDFOREACH()
+
+  SET(PACK_LIST ${TMP_PACK_LIST})
 
 
 # Reverse the order of the package list, letting us loop 
@@ -120,7 +143,9 @@ FUNCTION(WRITE_EXPORT_MAKEFILE Proj EMFName)
   ENDFOREACH()
 
 # ------------------------------------
-# --------- End main loop
+# --------- End main loop over packages. At this point, we need
+# --------- to set up strings to be written to the command lines
+# --------- in the export makefile
 # ------------------------------------
 
   # Prepend the library command-line flag (e.g., "-l" on unix systems) to
@@ -138,7 +163,16 @@ FUNCTION(WRITE_EXPORT_MAKEFILE Proj EMFName)
     SET(LIB_STR "${LIB_STR} ${LIB}")
   ENDFOREACH()
 
-  # Remove duplicates from the TPL list, preserving dependency order.
+  # Write the specification of the rpath if necessary. This is only needed
+  # if we're building shared libraries. 
+  IF(BUILD_SHARED_LIBS)
+    SET(SHARED_LIB_RPATH_COMMAND ${CMAKE_SHARED_LIBRARY_RUNTIME_CXX_FLAG}${CMAKE_INSTALL_PREFIX}/lib)
+  ENDIF()
+
+  # Remove duplicates from the TPL list. To preserve dependency order the
+  # last entry in the list must be the one that remains. For example, if the
+  # list contains [lapack,fred,blas,joe,bob,joe,lapack,blas] the stripped
+  # list will be [fred,bob,joe,lapack,blas].
   IF (TPL_LIB_LIST)
     LIST(REVERSE TPL_LIB_LIST)
     LIST(REMOVE_DUPLICATES TPL_LIB_LIST)
@@ -153,7 +187,7 @@ FUNCTION(WRITE_EXPORT_MAKEFILE Proj EMFName)
     SET(TPL_LIB_STR "${TPL_LIB_STR} ${LIB}")
   ENDFOREACH()
 
-
+ 
 
   # Gather TPL includes into a single string as would appear on the 
   # linker command line. 
@@ -176,9 +210,43 @@ FUNCTION(WRITE_EXPORT_MAKEFILE Proj EMFName)
     PRINT_VAR(TPL_INCLUDE_STR)
   ENDIF()
 
+  # Get compiler flags
+  PACKAGE_ARCH_DEFINE_STANDARD_COMPILE_FLAGS_VARS()
+
+  # Find the directory name associated with a package. Try the package name
+  # and an all-lower-case version of the package name. 
+  STRING(TOLOWER ${PACKAGE} LOWER_CASE_PACKAGE)
+  IF(EXISTS ${PROJECT_SOURCE_DIR}/packages/${PACKAGE})
+    SET(PACKAGE_DIR_NAME ${PACKAGE})
+  ELSEIF(EXISTS ${PROJECT_SOURCE_DIR}/packages/${LOWER_CASE_PACKAGE} )
+    SET(PACKAGE_DIR_NAME ${LOWER_CASE_PACKAGE})
+  ELSE()
+    MESSAGE(SEND_ERROR "PackageWriteExportMakefile could not find ${PROJECT_SOURCE_DIR}/packages/${PACKAGE} or ${PROJECT_SOURCE_DIR}/packages/${LOWER_CASE_PACKAGE}")
+  ENDIF()
+
+
+  # Generate an all-caps version of the package name. This will be used
+  # in package-specific variables inside the export makefile, in keeping
+  # with usual makefile naming style.
+  STRING(TOUPPER ${PACKAGE} CAPS_PACKAGE_NAME)
+
+  # Generate a note discouraging editing of the export makefile
+  SET(DISCOURAGE_EDITING "Do not edit: This file was generated automatically by CMake.")
 
   # Splice the library, include, and compiler information into the export
   # makefile. 
-  PACKAGE_CONFIGURE_FILE(${EMFName})
+  ### WARNING: hardwired "/" separator here.
+  CONFIGURE_FILE(
+    ${PROJECT_SOURCE_DIR}/cmake/${EMFName}.in 
+    ${CMAKE_CURRENT_BINARY_DIR}/${EMFName}
+    )
+
+  # Splice the path and package name information into the client makefile
+  CONFIGURE_FILE(
+    ${PROJECT_SOURCE_DIR}/cmake/${CMFName}.in 
+    ${CMAKE_CURRENT_BINARY_DIR}/${CMFName}
+    )
+
+
 
 ENDFUNCTION()
