@@ -22,13 +22,13 @@ namespace {
 #ifdef __cplusplus
 extern "C" {
 #endif
-  MpiCommID Epetra_MpiComm_Create(MPI_Comm comm){
+  FEpetra_MpiCommID Epetra_MpiComm_Create(MPI_Comm comm){
     using Teuchos::rcp;
     tableOfMpiComms().push_back(rcp(new Epetra_MpiComm(comm)));
     return tableOfMpiComms().size() - 1;
   }
   
-  void Epetra_Comm_Destroy( MpiCommID id ){
+  void Epetra_Comm_Destroy( FEpetra_MpiCommID id ){
     tableOfMpiComms()[id] = Teuchos::null;
   }
 #ifdef __cplusplus
@@ -41,6 +41,6 @@ extern "C" {
 
 
 const Teuchos::RCP<const Epetra_MpiComm>
-FEpetra::getMpiComm( MpiCommID id ){
+FEpetra::getMpiComm( FEpetra_MpiCommID id ){
   return tableOfMpiComms()[id];
 }

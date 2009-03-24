@@ -9,8 +9,7 @@ class Epetra_MpiComm;
 namespace FEpetra{
   // using Teuchos::RCP;
 
-  const Teuchos::RCP<const Epetra_MpiComm> getMpiComm( MpiCommID id );
+  const Teuchos::RCP<const Epetra_MpiComm> getMpiComm( FEpetra_MpiCommID id );
 } // namespace FEpetra
 
-#endif // FEPETRA_MPICOMM_CPP_HPP
-~                                         
+#endif // FEPETRA_MPICOMM_CPP_HPP        

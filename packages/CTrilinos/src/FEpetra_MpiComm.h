@@ -6,11 +6,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  typedef int MpiCommID;
+  typedef int FEpetra_MpiCommID;
 
-  MpiCommID Epetra_MpiComm_Create(MPI_Comm comm);
+  FEpetra_MpiCommID Epetra_MpiComm_Create(MPI_Comm comm);
 
-  void Epetra_MpiComm_Destroy( MpiCommID id );
+  void Epetra_MpiComm_Destroy( FEpetra_MpiCommID id );
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
