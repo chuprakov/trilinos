@@ -22,15 +22,15 @@ namespace {
 #ifdef __cplusplus
 extern "C" {
 #endif
-  SerialCommID Epetra_SerialComm_Create(){
+  FEpetra_SerialCommID Epetra_SerialComm_Create(){
     using Teuchos::rcp;
     Epetra_SerialComm  serialComm;
-    tableOfComms().push_back(rcp(new Epetra_SerialComm(serialComm)));
-    return tableOfComms().size() - 1;
+    tableOfSerialComms().push_back(rcp(new Epetra_SerialComm(serialComm)));
+    return tableOfSerialComms().size() - 1;
   }
 
-  void Epetra_Comm_Destroy( SerialCommID id ){
-    tableOfComms()[id] = Teuchos::null;
+  void Epetra_Comm_Destroy( FEpetra_SerialCommID id ){
+    tableOfSerialComms()[id] = Teuchos::null;
   }
 #ifdef __cplusplus
 } // extern "C"
@@ -40,6 +40,6 @@ extern "C" {
 // Definitions from Epetra_SerialComm_Cpp.hpp
 //
 const Teuchos::RCP<const Epetra_SerialComm> 
-FEpetra::getSerialComm( SerialCommID id ){
+FEpetra::getSerialComm( FEpetra_SerialCommID id ){
   return tableOfSerialComms()[id];
 }

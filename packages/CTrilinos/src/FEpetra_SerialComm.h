@@ -5,11 +5,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  typedef int SerialCommID;
+  typedef int FEpetra_SerialCommID;
 
-  SerialCommID Epetra_SerialComm_Create();
+  FEpetra_SerialCommID Epetra_SerialComm_Create();
 
-  void Epetra_SerialComm_Destroy( SerialCommID id);
+  void Epetra_SerialComm_Destroy( FEpetra_SerialCommID id);
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
