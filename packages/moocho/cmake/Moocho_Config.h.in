@@ -1,3 +1,0 @@
-#cmakedefine HAVE_MOOCHO_MA28
-#cmakedefine HAVE_MOOCHO_THYRA
-#cmakedefine HAVE_MPI

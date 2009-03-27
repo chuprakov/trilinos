@@ -1,7 +1,0 @@
-PACKAGE_NAME=CTrilinos
-
-(FRAMEWORK, INSTALL) {
-    TESTS = ./simpleEpetraExternCInterface.exe;
-    ARGS = ;
-    COMM = MPI,SERIAL;
-}
