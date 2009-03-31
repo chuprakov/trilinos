@@ -197,17 +197,17 @@ public:
   /// Difference
   difference_type operator-(const row_col_iterator<T>& itr) const;
   /// itr1 < itr2
-  bool operator<( const row_col_iterator<T>& itr);
+  bool operator<( const row_col_iterator<T>& itr) const;
   /// itr1 <= itr2
-  bool operator<=( const row_col_iterator<T>& itr);
+  bool operator<=( const row_col_iterator<T>& itr) const;
   /// itr1 > itr 2
-  bool operator>( const row_col_iterator<T>& itr);
+  bool operator>( const row_col_iterator<T>& itr) const;
   /// itr1 >= itr2
-  bool operator>=( const row_col_iterator<T>& itr);
+  bool operator>=( const row_col_iterator<T>& itr) const;
   /// itr1 == itr2
-  bool operator==( const row_col_iterator<T>& itr);
+  bool operator==( const row_col_iterator<T>& itr) const;
   /// itr1 != itr2
-  bool operator!=( const row_col_iterator<T>& itr);
+  bool operator!=( const row_col_iterator<T>& itr) const;
   /// !itr (check for null)
   bool operator!() const;
   
@@ -447,7 +447,7 @@ row_col_iterator<T>::operator-(const row_col_iterator<T>& itr) const
 
 template< class T >
 inline
-bool row_col_iterator<T>::operator<( const row_col_iterator<T>& itr)
+bool row_col_iterator<T>::operator<( const row_col_iterator<T>& itr) const
 {
   return ( value_.row_i_ptr() && itr.value_.row_i_ptr() )
       &&  ( value_.row_i_ptr() < itr.value_.row_i_ptr() );
@@ -455,7 +455,7 @@ bool row_col_iterator<T>::operator<( const row_col_iterator<T>& itr)
 
 template< class T >
 inline
-bool row_col_iterator<T>::operator<=( const row_col_iterator<T>& itr)
+bool row_col_iterator<T>::operator<=( const row_col_iterator<T>& itr) const
 {
   return ( value_.row_i_ptr() && itr.value_.row_i_ptr() )
       &&  ( value_.row_i_ptr() <= itr.value_.row_i_ptr() );
@@ -463,7 +463,7 @@ bool row_col_iterator<T>::operator<=( const row_col_iterator<T>& itr)
 
 template< class T >
 inline
-bool row_col_iterator<T>::operator>( const row_col_iterator<T>& itr)
+bool row_col_iterator<T>::operator>( const row_col_iterator<T>& itr) const
 {
   return ( value_.row_i_ptr() && itr.value_.row_i_ptr() )
       &&  ( value_.row_i_ptr() > itr.value_.row_i_ptr() );
@@ -471,7 +471,7 @@ bool row_col_iterator<T>::operator>( const row_col_iterator<T>& itr)
 
 template< class T >
 inline
-bool row_col_iterator<T>::operator>=( const row_col_iterator<T>& itr)
+bool row_col_iterator<T>::operator>=( const row_col_iterator<T>& itr) const
 {
   return ( value_.row_i_ptr() && itr.value_.row_i_ptr() )
       &&  ( value_.row_i_ptr() >= itr.value_.row_i_ptr() );
@@ -479,7 +479,7 @@ bool row_col_iterator<T>::operator>=( const row_col_iterator<T>& itr)
 
 template< class T >
 inline
-bool row_col_iterator<T>::operator==( const row_col_iterator<T>& itr)
+bool row_col_iterator<T>::operator==( const row_col_iterator<T>& itr) const
 {
   return ( value_.row_i_ptr() && itr.value_.row_i_ptr() )
       &&  ( value_.row_i_ptr() == itr.value_.row_i_ptr() );
@@ -487,7 +487,7 @@ bool row_col_iterator<T>::operator==( const row_col_iterator<T>& itr)
 
 template< class T >
 inline
-bool row_col_iterator<T>::operator!=( const row_col_iterator<T>& itr)
+bool row_col_iterator<T>::operator!=( const row_col_iterator<T>& itr) const
 {
   return ( value_.row_i_ptr() && itr.value_.row_i_ptr() )
       &&  ( value_.row_i_ptr() != itr.value_.row_i_ptr() );
