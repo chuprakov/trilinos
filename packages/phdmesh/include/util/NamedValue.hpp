@@ -32,7 +32,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <limits>
+#include <cstring>
 #include <util/TypeName.hpp>
+
+using std::memcpy;
 
 namespace phdmesh {
 

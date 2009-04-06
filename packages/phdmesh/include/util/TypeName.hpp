@@ -27,6 +27,7 @@
 #include <complex>
 #include <vector>
 #include <string>
+#include <typeinfo>
 
 namespace phdmesh {
 
