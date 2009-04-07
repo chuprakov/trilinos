@@ -5,7 +5,7 @@ INCLUDE(PackageLibraryMacros)
 # A) Package-specific configuration options
 #
 
-PACKAGE_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
+PACKAGE_CONFIGURE_FILE(phdmesh_config.h)
 
 #
 # B) Define the header and source files (and directories)
@@ -18,7 +18,7 @@ PACKAGE_CONFIGURE_FILE(${PACKAGE_NAME}_config.h)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 SET(HEADERS
-  ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h
+  ${CMAKE_CURRENT_BINARY_DIR}/phdmesh_config.h
   )
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
