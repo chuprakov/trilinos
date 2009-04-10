@@ -48,22 +48,40 @@ all-local:
 # with EXTRA_ are included in some builds (typically controlled by 
 # --with-xyz or --without-xyz)
 #
+
+if HAVE_MPI
+  MPI_SRC_H = \
+    $(srcdir)/FEpetra_MpiComm.h
+
+  MPI_SRC_HPP = \
+    $(srcdir)/FEpetra_MpiComm_Cpp.hpp
+
+  MPI_SRC = \
+    $(srcdir)/FEpetra_MpiComm.cpp
+else
+  MPI_SRC_H =
+
+  MPI_SRC_HPP =
+
+  MPI_SRC =
+endif
+
 CTRILINOS_SRC_H = \
   $(srcdir)/FEpetra_Map.h \
   $(srcdir)/FEpetra_Vector.h \
-  $(srcdir)/FEpetra_MpiComm.h \
+  $(MPI_SRC_H) \
   $(srcdir)/FEpetra_SerialComm.h
 
 CTRILINOS_SRC_HPP = \
   $(srcdir)/FEpetra_Map_Cpp.hpp \
   $(srcdir)/FEpetra_Vector_Cpp.hpp \
-  $(srcdir)/FEpetra_MpiComm_Cpp.hpp \
+  $(MPI_SRC_HPP) \
   $(srcdir)/FEpetra_SerialComm_Cpp.hpp
 
 CTRILINOS_SRC = \
   $(srcdir)/FEpetra_Map.cpp \
   $(srcdir)/FEpetra_Vector.cpp \
-  $(srcdir)/FEpetra_MpiComm.cpp \
+  $(MPI_SRC) \
   $(srcdir)/FEpetra_SerialComm.cpp
 
 

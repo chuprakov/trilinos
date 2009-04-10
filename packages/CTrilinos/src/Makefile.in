@@ -66,8 +66,9 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 subdir = src
-DIST_COMMON = $(include_HEADERS) $(srcdir)/CTrilinos_Config.h.in \
-	$(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = $(am__include_HEADERS_DIST) \
+	$(srcdir)/CTrilinos_Config.h.in $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/config/tac_arg_check_mpi.m4 \
 	$(top_srcdir)/config/tac_arg_config_mpi.m4 \
@@ -100,9 +101,13 @@ AR = ar
 ARFLAGS = cru
 am__DEPENDENCIES_1 =
 libctrilinos_a_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am__objects_1 = FEpetra_Map.$(OBJEXT) FEpetra_Vector.$(OBJEXT) \
-	FEpetra_MpiComm.$(OBJEXT) FEpetra_SerialComm.$(OBJEXT)
-am_libctrilinos_a_OBJECTS = $(am__objects_1)
+am__libctrilinos_a_SOURCES_DIST = $(srcdir)/FEpetra_Map.cpp \
+	$(srcdir)/FEpetra_Vector.cpp $(srcdir)/FEpetra_MpiComm.cpp \
+	$(srcdir)/FEpetra_SerialComm.cpp
+@HAVE_MPI_TRUE@am__objects_1 = FEpetra_MpiComm.$(OBJEXT)
+am__objects_2 = FEpetra_Map.$(OBJEXT) FEpetra_Vector.$(OBJEXT) \
+	$(am__objects_1) FEpetra_SerialComm.$(OBJEXT)
+am_libctrilinos_a_OBJECTS = $(am__objects_2)
 libctrilinos_a_OBJECTS = $(am_libctrilinos_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -113,7 +118,13 @@ CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 SOURCES = $(libctrilinos_a_SOURCES)
-DIST_SOURCES = $(libctrilinos_a_SOURCES)
+DIST_SOURCES = $(am__libctrilinos_a_SOURCES_DIST)
+am__include_HEADERS_DIST = $(srcdir)/CTrilinos_ConfigDefs.h \
+	$(srcdir)/FEpetra_Map_Cpp.hpp $(srcdir)/FEpetra_Vector_Cpp.hpp \
+	$(srcdir)/FEpetra_MpiComm_Cpp.hpp \
+	$(srcdir)/FEpetra_SerialComm_Cpp.hpp $(srcdir)/FEpetra_Map.h \
+	$(srcdir)/FEpetra_Vector.h $(srcdir)/FEpetra_MpiComm.h \
+	$(srcdir)/FEpetra_SerialComm.h
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
 nodist_execincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(include_HEADERS) $(nodist_execinclude_HEADERS)
@@ -230,6 +241,7 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+@HAVE_MPI_FALSE@MPI_SRC_H = 
 
 # ------------------------------------------------------------------------
 # For each category, create two variables - NAME and NAME_H. The
@@ -245,22 +257,33 @@ top_srcdir = @top_srcdir@
 # with EXTRA_ are included in some builds (typically controlled by 
 # --with-xyz or --without-xyz)
 #
+@HAVE_MPI_TRUE@MPI_SRC_H = \
+@HAVE_MPI_TRUE@    $(srcdir)/FEpetra_MpiComm.h
+
+@HAVE_MPI_FALSE@MPI_SRC_HPP = 
+@HAVE_MPI_TRUE@MPI_SRC_HPP = \
+@HAVE_MPI_TRUE@    $(srcdir)/FEpetra_MpiComm_Cpp.hpp
+
+@HAVE_MPI_FALSE@MPI_SRC = 
+@HAVE_MPI_TRUE@MPI_SRC = \
+@HAVE_MPI_TRUE@    $(srcdir)/FEpetra_MpiComm.cpp
+
 CTRILINOS_SRC_H = \
   $(srcdir)/FEpetra_Map.h \
   $(srcdir)/FEpetra_Vector.h \
-  $(srcdir)/FEpetra_MpiComm.h \
+  $(MPI_SRC_H) \
   $(srcdir)/FEpetra_SerialComm.h
 
 CTRILINOS_SRC_HPP = \
   $(srcdir)/FEpetra_Map_Cpp.hpp \
   $(srcdir)/FEpetra_Vector_Cpp.hpp \
-  $(srcdir)/FEpetra_MpiComm_Cpp.hpp \
+  $(MPI_SRC_HPP) \
   $(srcdir)/FEpetra_SerialComm_Cpp.hpp
 
 CTRILINOS_SRC = \
   $(srcdir)/FEpetra_Map.cpp \
   $(srcdir)/FEpetra_Vector.cpp \
-  $(srcdir)/FEpetra_MpiComm.cpp \
+  $(MPI_SRC) \
   $(srcdir)/FEpetra_SerialComm.cpp
 
 @USING_GNUMAKE_FALSE@EXPORT_INCLUDES = $(CTRILINOS_INCLUDES)
