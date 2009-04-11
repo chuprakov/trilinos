@@ -1,4 +1,5 @@
 INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(PackageAddAdvancedTest)
 INCLUDE(PackageCopyFilesToBinaryDir)
 
 
@@ -66,31 +67,150 @@ PACKAGE_COPY_FILES_TO_BINARY_DIR(ThyraNLPThyraEpetraModelEval4DOptCopyFiles
   )
 
 
+#
+# Advanded test for parameter lumping
+# 
+
+
 ASSERT_DEFINED(PYTHONINTERP_FOUND)
 IF (PYTHONINTERP_FOUND)
 
-  ASSERT_DEFINED(PACKAGE_SOURCE_DIR)
-  SET(abs_top_srcdir ${PACKAGE_SOURCE_DIR})
-
-  ASSERT_DEFINED(PACKAGE_BINARY_DIR)
-  SET(abs_top_builddir ${PACKAGE_BINARY_DIR})
+  MULTILINE_SET( MOOCHO_OPTIONS 
+    "MoochoSolver{test_nlp=false}:"
+    "NLPSolverClientInterface{opt_tol=1e-10,feas_tol=1e-10,max_iter=7}"
+    )
   
-  CONFIGURE_FILE(
-    ${CMAKE_CURRENT_SOURCE_DIR}/_test_lumped_param_model.py.stub.in
-    ${CMAKE_CURRENT_BINARY_DIR}/test_lumped_param_model.py
+  MULTILINE_SET( MESSAGE_A
+    "A) This is the original problem with no basis lumping which has a near zero\n"
+    "objective value of 1e-17 and a parameter solution of {2.0,0.0}."
+    )
+  
+  MULTILINE_SET( MESSAGE_B
+    "B) This test shows that if you pick an inital guess for p where the\n"
+    "single-column basis representation can indeed represent the solution, then\n"
+    "you can in fact find the true optimal value for the full parameter solution.\n"
+    "The true solution is {2.0,0.0}.  If you simply add a scalar multiple of the\n"
+    "single basis column B={0.707107,0.707107}, then you will get the optimal\n"
+    "solution of {2.0,0.0} with the reduced parameter of p=x(var_indep)={-1.0}\n"
+    "which is what we see in the MoochoJournal.out file!.\n"
+    )
+  
+  MULTILINE_SET( MESSAGE_C
+    "C) This test shows that if you pick an inital guess for p where the\n"
+    "single-column basis representation can not represent the solution, then you\n"
+    "do not get the same answer to the fully parameterized optimization problem.\n"
+    "In this case, the solution gives the final objective function value of 1.2\n"
+    "and not about 1e-17!\n"
+    )
+  
+  MULTILINE_SET( MESSAGE_D
+    "D) This test shows that with a full-rank basis, you can solve the\n"
+    "optimization problem for the the same as without the parameter lumping.\n"
+    "In this problem we compute the original parameters p_orig={2.0,0.0} using\n"
+    "the affine approximation parameters p=x(var_indep)={2.12132,-4.94975}.\n"
+    "This is good confirmation that this capability is working correctly!\n"
+    )
+  
+  SET( THYRA_COMPARE_VECTORS
+    "${PROJECT_SOURCE_DIR}/packages/thyra/test/operator_vector/compare-thyra-spmd-multivector-files.py"
+    )
+  
+  PACKAGE_ADD_ADVANCED_TEST(
+    NLPThyraEpetraModelEval4DOpt_lumped_param
+    COMM serial mpi
+    OVERALL_NUM_MPI_PROCS 1
+    OVERALL_WORKING_DIRECTORY TEST_NAME
+    TEST_0 EXEC NLPThyraEpetraModelEval4DOpt
+      MESSAGE "${MESSAGE_A}"
+      WORKING_DIRECTORY nonlumped
+      ARGS
+        --p00=4.0 --p01=-5.0
+        --moocho-extra-options="${MOOCHO_OPTIONS}"
+        --moocho-thyra-params-file="../../lumped_param_nonlumped.xml"
+        --echo-command-line
+    TEST_1 EXEC NLPThyraEpetraModelEval4DOpt
+      MESSAGE "${MESSAGE_B}"
+      WORKING_DIRECTORY param1opt
+      ARGS
+        --p00=2.707107 --p01=0.707107
+        --moocho-extra-options="${MOOCHO_OPTIONS}"
+        --moocho-thyra-params-file="../../lumped_param_param1opt.xml"
+        --echo-command-line
+    TEST_2 CMND ${PYTHON_EXECUTABLE}
+      ARGS
+        "${THYRA_COMPARE_VECTORS}"
+        --file1=nonlumped/p.out.01.00 --file2=param1opt/p.out.01.00 --norm-type=inf
+        --min-norm-err=0.0 --max-norm-err=1e-10 --dump
+    TEST_3 EXEC NLPThyraEpetraModelEval4DOpt
+      MESSAGE "${MESSAGE_C}"
+      WORKING_DIRECTORY param1nonopt
+      ARGS
+        --p00=4.0 --p01=0.0
+        --moocho-extra-options="${MOOCHO_OPTIONS}"
+        --moocho-thyra-params-file="../../lumped_param_param1opt.xml"
+        --echo-command-line
+    TEST_4 CMND ${PYTHON_EXECUTABLE}
+      ARGS
+        "${THYRA_COMPARE_VECTORS}"
+        --file1=nonlumped/p.out.01.00 --file2=param1nonopt/p.out.01.00 --norm-type=inf
+        --min-norm-err=1.0 --max-norm-err=1.1 --dump
+    TEST_5 EXEC NLPThyraEpetraModelEval4DOpt
+      MESSAGE "${MESSAGE_D}"
+      WORKING_DIRECTORY param2opt
+      ARGS
+        --p00=4.0 --p01=-5.0
+        --moocho-extra-options="${MOOCHO_OPTIONS}"
+        --moocho-thyra-params-file="../../lumped_param_param2opt.xml"
+        --echo-command-line
+    TEST_6 CMND ${PYTHON_EXECUTABLE}
+      ARGS
+        "${THYRA_COMPARE_VECTORS}"
+        --file1=nonlumped/p.out.01.00 --file2=param2opt/p.out.01.00 --norm-type=inf
+        --min-norm-err=0.0 --max-norm-err=1e-10 --dump
+    )
+  
+  
+  PACKAGE_COPY_FILES_TO_BINARY_DIR( NLPThyraEpetraModelEval4DOptCopyFiles_lumped_param
+    DEST_FILES
+      lumped_param_nonlumped.xml
+      lumped_param_param1opt.xml
+      lumped_param_param2opt.xml
     )
 
-  PACKAGE_ADD_TEST(
-    ${PYTHON_EXECUTABLE}
-    NOEXEPREFIX
-    NOEXESUFFIX
-    NAME NLPThyraEpetraModelEval4DOpt_lumped_param_python
-    ARGS test_lumped_param_model.py
-    COMM serial
-    STANDARD_PASS_OUTPUT
-    )
+ENDIF(PYTHONINTERP_FOUND)
 
-ENDIF()
+
+# Deprecated python version of the driver
+#ASSERT_DEFINED(PYTHONINTERP_FOUND)
+#IF (PYTHONINTERP_FOUND)
+#
+#  ASSERT_DEFINED(PACKAGE_SOURCE_DIR)
+#  SET(abs_top_srcdir ${PACKAGE_SOURCE_DIR})
+#
+#  ASSERT_DEFINED(PACKAGE_BINARY_DIR)
+#  SET(abs_top_builddir ${PACKAGE_BINARY_DIR})
+#  
+#  CONFIGURE_FILE(
+#    ${CMAKE_CURRENT_SOURCE_DIR}/_test_lumped_param_model.py.stub.in
+#    ${CMAKE_CURRENT_BINARY_DIR}/test_lumped_param_model.py
+#    )
+#
+#  PACKAGE_ADD_TEST(
+#    ${PYTHON_EXECUTABLE}
+#    NOEXEPREFIX
+#    NOEXESUFFIX
+#    NAME NLPThyraEpetraModelEval4DOpt_lumped_param_python
+#    ARGS test_lumped_param_model.py
+#    COMM serial
+#    STANDARD_PASS_OUTPUT
+#    )
+#
+#ENDIF()
+
+
+#
+# Multiperiod test
+#
 
 
 ASSERT_DEFINED(${PACKAGE_NAME}_ENABLE_MPI)
