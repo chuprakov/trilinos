@@ -17,24 +17,6 @@ MULTILINE_SET( XML_PARAMS_FWD_SOLVE
   "<ParameterList><Parameter name='Solve Mode' type='string' value='Forward Solve'/></ParameterList>"
   )
 
-MULTILINE_SET( XML_PARAMS_DIRECT_LUMPED_PARAMS
-  "<ParameterList>"
-  "  <Parameter name='NLP Type' type='std::string' value='Direct'/>"
-  "  <Parameter name='Use Parameter Lumping' type='bool' value='1'/>"
-  "  <Parameter name='Show Model Evaluator Trace' type='bool' value='0'/>"
-  "  <ParameterList name='Lumped Parameters Settings'>"
-  "    <Parameter name='Number of Basis Columns' type='int' value='1'/>"
-  "    <Parameter name='Ignore Parameter Bounds' type='bool' value='1'/>"
-  "    <Parameter name='Dump Basis Matrix' type='bool' value='1'/>"
-  "    <ParameterList name='VerboseObject'>"
-  "      <Parameter name='Verbosity Level' type='std::string' value='high'/>"
-  "    </ParameterList>"
-  "  </ParameterList>"
-  "  <Parameter name='Parameters Solution File Base Name' type='std::string' value='p.out'/>"
-  "  <Parameter name='State Solution File Base Name' type='std::string' value='x.out'/>"
-  "</ParameterList>"
-  )
-
 PACKAGE_ADD_EXECUTABLE_AND_TEST(
   NLPThyraEpetraModelEval4DOpt
   SOURCES
@@ -54,7 +36,6 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     "--x00=2.0 --xL0=1.1 --x01=2.0 --xL1=1.1"
     "--x00=0.5 --xU0=0.6 --x01=0.5 --xU1=0.6"
     "--moocho-thyra-params-file=moochoThyraFdNand.xml --no-support-derivs --p00=1.0"
-    "--p00=4.0 --p01=-5.0 --extra-moocho-thyra-params=\"${XML_PARAMS_DIRECT_LUMPED_PARAMS}\""
   COMM serial mpi
   NUM_MPI_PROCS 1
   )
@@ -178,34 +159,6 @@ IF (PYTHONINTERP_FOUND)
     )
 
 ENDIF(PYTHONINTERP_FOUND)
-
-
-# Deprecated python version of the driver
-#ASSERT_DEFINED(PYTHONINTERP_FOUND)
-#IF (PYTHONINTERP_FOUND)
-#
-#  ASSERT_DEFINED(PACKAGE_SOURCE_DIR)
-#  SET(abs_top_srcdir ${PACKAGE_SOURCE_DIR})
-#
-#  ASSERT_DEFINED(PACKAGE_BINARY_DIR)
-#  SET(abs_top_builddir ${PACKAGE_BINARY_DIR})
-#  
-#  CONFIGURE_FILE(
-#    ${CMAKE_CURRENT_SOURCE_DIR}/_test_lumped_param_model.py.stub.in
-#    ${CMAKE_CURRENT_BINARY_DIR}/test_lumped_param_model.py
-#    )
-#
-#  PACKAGE_ADD_TEST(
-#    ${PYTHON_EXECUTABLE}
-#    NOEXEPREFIX
-#    NOEXESUFFIX
-#    NAME NLPThyraEpetraModelEval4DOpt_lumped_param_python
-#    ARGS test_lumped_param_model.py
-#    COMM serial
-#    STANDARD_PASS_OUTPUT
-#    )
-#
-#ENDIF()
 
 
 #

@@ -265,8 +265,8 @@ for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
 
 chdir "..";
 
-print "\nEnd Result: TEST PASSED\n" if $rtn==0;
-print "\nEnd Result: TEST FAILED\n" if $rtn!=0;
+print "\nFINAL END RESULT: TEST PASSED\n" if $rtn==0;
+print "\nFINAL END RESULT: TEST FAILED\n" if $rtn!=0;
 
 exit $rtn;
 
