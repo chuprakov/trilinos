@@ -25,20 +25,31 @@
 // 
 // ***********************************************************************
 // @HEADER
+
+
 #include <iostream>
 
 #include "DenseLinAlgPack_TestDenseLinAlgPack.hpp"
+#include "Teuchos_GlobalMPISession.hpp"
+#include "Teuchos_StandardCatchMacros.hpp"
 
-int main() {
+int main(int argc, char* argv[]) {
 
-//	DenseLinAlgPack::TestingPack::TestVectorBasicOp(std::cout);
-//	DenseLinAlgPack::TestingPack::TestGenMatrixBasicOp(std::cout);
-//	DenseLinAlgPack::TestingPack::TestDenseLinAlgPackIO(std::cin,std::cout);
-//	DenseLinAlgPack::TestingPack::TestPivotVecMat(std::cout);
-  bool result = DenseLinAlgPack::TestingPack::TestDenseLinAlgPack( &std::cout );
-  if(result)
-    std::cerr << "DenseLinAlgPack checks out!\n";
-  else
-    std::cerr << "Oops!  At least one of the tests for DenseLinAlgPack failed!\n";
-  return ( result == true ? 0 : -1 );
+  bool success = true;
+
+  Teuchos::GlobalMPISession mpiSession(&argc,&argv);
+
+  try {
+
+    const bool result = DenseLinAlgPack::TestingPack::TestDenseLinAlgPack( &std::cout );
+    if (!result) success = false;
+
+  } // end try
+  TEUCHOS_STANDARD_CATCH_STATEMENTS(true, std::cerr, success);
+  
+  if(success)
+    std::cout << "\nEnd Result: TEST PASSED" << std::endl;
+    
+  return success == true ? 0 : 1;
+
 }

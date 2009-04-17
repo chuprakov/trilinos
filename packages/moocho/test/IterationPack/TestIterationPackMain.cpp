@@ -30,20 +30,30 @@
 
 #include "IterationPack_TestIterationPack.hpp"
 #include "TestingHelperPack_update_success.hpp"
+#include "Teuchos_GlobalMPISession.hpp"
+#include "Teuchos_StandardCatchMacros.hpp"
 
-int main() {
+int main(int argc, char* argv[]) {
+
   using TestingHelperPack::update_success;
   using namespace IterationPack::TestingPack;
 
   std::ostream* out = &std::cout;
 
   bool success = true;
-  update_success( TestIterationPack(out), &success );
 
-  if( success )
-    std::cerr << "IterationPack seems to check out!\n";
-  else
-    std::cerr << "Oops! At least one of the tests in IterationPack failed!\n";
+  Teuchos::GlobalMPISession mpiSession(&argc,&argv);
+
+  try {
+
+    update_success( TestIterationPack(out), &success );
+
+  } // end try
+  TEUCHOS_STANDARD_CATCH_STATEMENTS(true, std::cerr, success);
+  
+  if(success)
+    std::cout << "\nEnd Result: TEST PASSED" << std::endl;
     
-  return success == true ? 0 : -1;
+  return success == true ? 0 : 1;
+
 }

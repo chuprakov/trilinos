@@ -30,6 +30,7 @@
 
 #include "NLPInterfacePack_NLPWBCounterExample.hpp"
 #include "MoochoPack_MoochoSolver.hpp"
+#include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_StandardCatchMacros.hpp"
 
@@ -39,6 +40,8 @@ int main( int argc, char* argv[] )
   using NLPInterfacePack::NLPWBCounterExample;
   using Teuchos::CommandLineProcessor;
   bool success = true;
+
+  Teuchos::GlobalMPISession mpiSession(&argc, &argv);
 
   try {
 

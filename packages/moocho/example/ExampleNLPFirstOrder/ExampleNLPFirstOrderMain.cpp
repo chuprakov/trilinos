@@ -37,10 +37,11 @@
 #include "NLPInterfacePack_ExampleNLPFirstOrderRun.hpp"
 #include "AbstractLinAlgPack_exampleNLPDiagSetup.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_oblackholestream.hpp"
 
-int main(int argc, char* argv[] ) {
+int main(int argc, char* argv[]) {
 
   using std::endl;
   using std::setw;
@@ -51,34 +52,13 @@ int main(int argc, char* argv[] ) {
   namespace NLPIP = NLPInterfacePack;
   namespace rsqp = MoochoPack;
   using rsqp::MoochoSolver;
-
   using AbstractLinAlgPack::VectorSpace;
+  using Teuchos::GlobalMPISession;
 
-  using Teuchos::Workspace;
-  Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
+  GlobalMPISession mpiSession(&argc, &argv);
 
-  int err = 0;
-
-/*
-  // Print out the input arguments
-  printf("argc = %d\n",argc);
-  {for( int i = 0; i < argc; ++i) {
-    printf("argv[%d] = %s\n",i,argv[i]);
-  }}
-*/
   // Get an idea of what processors we have.
-  MPI_Init(&argc,&argv);
-  int num_proc, proc_rank;
-  MPI_Comm_size( MPI_COMM_WORLD, &num_proc );
-  MPI_Comm_rank( MPI_COMM_WORLD, &proc_rank );
-/*
-  // Print out the input arguments
-  printf("\nproc_rank = %d\n",proc_rank);
-  printf("argc = %d\n",argc);
-  {for( int i = 0; i < argc; ++i) {
-    printf("argv[%d] = %s\n",i,argv[i]);
-  }}
-*/
+  const int proc_rank = GlobalMPISession::getRank();
 
   // Define program return values
   const int
@@ -107,7 +87,8 @@ int main(int argc, char* argv[] ) {
     bool dep_bounded;
     
     VectorSpace::space_ptr_t    vec_space;
-    const int err = AbstractLinAlgPack::exampleNLPDiagSetup(argc,argv,MPI_COMM_WORLD,&vec_space,&n,&xo,&has_bounds,&dep_bounded);
+    const int err = AbstractLinAlgPack::exampleNLPDiagSetup(
+      argc, argv, MPI_COMM_WORLD, &vec_space, &n, &xo, &has_bounds, &dep_bounded);
     if(err) return err;
     
 
@@ -152,8 +133,6 @@ int main(int argc, char* argv[] ) {
     eout << "\nCaught an unknown exception on process " << proc_rank<< "\n";
     prog_return = PROG_EXCEPTION;
   }
-
-   MPI_Finalize();
 
   return prog_return;
 }
