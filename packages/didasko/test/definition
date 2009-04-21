@@ -9,7 +9,7 @@ PACKAGE_NAME=Didasko
            ../examples/epetraext,
            ../examples/aztecoo,
           #../examples/ifpack,
-           ../examples/amesos
+           ../examples/amesos,
            ../examples/teuchos,
           #../examples/triutils,
            ../examples/ml,
