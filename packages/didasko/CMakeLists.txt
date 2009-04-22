@@ -25,8 +25,6 @@ ADD_SUBDIRECTORY(src)
 
 PACKAGE_ADD_EXAMPLE_DIRECTORIES(examples)
 
-#PACKAGE_ADD_TEST_DIRECTORIES(test)
-
 #
 # D) Do standard postprocessing
 #

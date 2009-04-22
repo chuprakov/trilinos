@@ -26,14 +26,13 @@ ENDIF()
 #proper defines are given to compile the test. The auto tools version
 #of this test is not giving the proper defines and as such the code
 #has been short circuited to not actually do anything.
-#IF(HAVE_DIDASKO_EPETRAEXT)
-#  ADD_SUBDIRECTORY(epetraext)
-#ENDIF()
+IF(HAVE_DIDASKO_EPETRAEXT)
+  ADD_SUBDIRECTORY(epetraext)
+ENDIF()
 
-#commented out because the definition file has these directories excluded
-#IF(HAVE_DIDASKO_IFPACK)
-#  ADD_SUBDIRECTORY(ifpack)
-#ENDIF()
+IF(HAVE_DIDASKO_IFPACK)
+  ADD_SUBDIRECTORY(ifpack)
+ENDIF()
 
 IF(HAVE_DIDASKO_ML)
   ADD_SUBDIRECTORY(ml)
@@ -47,13 +46,10 @@ IF(HAVE_DIDASKO_TEUCHOS)
   ADD_SUBDIRECTORY(teuchos)
 ENDIF()
 
-#commented out because the definition file has these directories excluded
-#IF(HAVE_DIDASKO_TRIUTILS)
-#  ADD_SUBDIRECTORY(triutils)
-#ENDIF()
+IF(HAVE_DIDASKO_TRIUTILS)
+  ADD_SUBDIRECTORY(triutils)
+ENDIF()
 
-#commented out because this is not listed in the defintion file and there is a compile
-#error with the ex1.cpp test.
-#IF(HAVE_DIDASKO_TPETRA)
-#  ADD_SUBDIRECTORY(tpetra)
-#ENDIF()
+IF(HAVE_DIDASKO_TPETRA)
+  ADD_SUBDIRECTORY(tpetra)
+ENDIF()
