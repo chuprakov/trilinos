@@ -9,7 +9,7 @@ INCLUDE(PackageLibraryMacros)
 # A) Package-specific configuration options
 #
 
-IF(HAVE_DIDASKO_EPETRAEXT AND Trilinos_ENABLE_Zoltan)
+IF(HAVE_DIDASKO_EPETRAEXT AND ${PACKGE_NAME}_ENABLE_ZoltanTpl)
   SET(HAVE_ZOLTAN ON)
 ENDIF()
 
