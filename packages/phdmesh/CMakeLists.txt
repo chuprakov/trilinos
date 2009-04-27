@@ -32,8 +32,11 @@ ENDIF()
 
 #Checking for the pthread library. Not sure why there is
 #a positive and negative define though.
-CHECK_INCLUDE_FILE_CXX(pthread.h HAVE_PTHREAD)
-IF(NOT HAVE_PTHREAD)
+IF(${PACKAGE_NAME}_ENABLE_Pthread)
+  MESSAGE("--  Building with thread support")
+  SET(HAVE_PTHREAD TRUE)
+ELSE()
+  MESSAGE("--  Building without thread support")
   SET(NO_PTHREADS TRUE)
 ENDIF()
 
