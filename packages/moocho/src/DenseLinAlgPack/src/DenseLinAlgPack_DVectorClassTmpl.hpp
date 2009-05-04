@@ -463,7 +463,7 @@ public:
   typedef ptrdiff_t								difference_type;
   typedef value_type*								iterator;
   typedef const value_type*						const_iterator;
-#if defined(_INTEL_CXX) || defined(_WINDOWS)
+#if 0 /* defined(_INTEL_CXX) || defined(_WINDOWS) */
   typedef std::reverse_iterator<iterator, value_type
     , value_type&, value_type*, difference_type>		reverse_iterator;
   typedef std::reverse_iterator<const_iterator

@@ -44,7 +44,13 @@ class MatrixSymOpNonsingSerial
   , virtual public MatrixSymNonsingSerial
   , virtual public AbstractLinAlgPack::MatrixOpNonsing      // doxygen needs full name
   , virtual public AbstractLinAlgPack::MatrixSymOpNonsing   // ""
-{};
+{
+  // These overrides are needed for MS Visual C++ 2008
+  virtual mat_mut_ptr_t clone() { return MatrixOp::clone(); }
+  virtual mat_ptr_t clone() const { return MatrixOp::clone(); }
+  virtual mat_mns_mut_ptr_t clone_mns() { return MatrixNonsing::clone_mns(); }
+  virtual mat_mns_ptr_t clone_mns() const { return MatrixNonsing::clone_mns(); }
+};
 
 }	// end namespace AbstractLinAlgPack
 
