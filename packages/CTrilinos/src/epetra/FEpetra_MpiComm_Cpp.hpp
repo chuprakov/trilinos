@@ -1,3 +1,5 @@
+#ifdef HAVE_MPI
+
 #ifndef FEPETRA_MPICOMM_CPP_HPP
 #define FEPETRA_MPICOMM_CPP_HPP
 
@@ -13,3 +15,5 @@ namespace FEpetra{
 } // namespace FEpetra
 
 #endif // FEPETRA_MPICOMM_CPP_HPP        
+
+#endif /* HAVE_MPI */

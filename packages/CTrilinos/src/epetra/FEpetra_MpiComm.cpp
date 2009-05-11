@@ -1,3 +1,5 @@
+#ifdef HAVE_MPI
+
 #include "FEpetra_MpiComm.h"
 #include "FEpetra_MpiComm_Cpp.hpp"
 #include "Epetra_CombineMode.h"
@@ -44,3 +46,5 @@ const Teuchos::RCP<const Epetra_MpiComm>
 FEpetra::getMpiComm( FEpetra_MpiCommID id ){
   return tableOfMpiComms()[id];
 }
+
+#endif /* HAVE_MPI */

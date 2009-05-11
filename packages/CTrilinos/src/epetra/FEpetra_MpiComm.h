@@ -1,3 +1,5 @@
+#ifdef HAVE_MPI
+
 /* True C header file! */
 #ifndef FEPETRA_MPICOMM_H
 #define FEPETRA_MPICOMM_H
@@ -16,3 +18,5 @@ extern "C" {
 #endif
 
 #endif /* FEPETRA_MPICOMM_H */
+
+#endif /* HAVE_MPI */
