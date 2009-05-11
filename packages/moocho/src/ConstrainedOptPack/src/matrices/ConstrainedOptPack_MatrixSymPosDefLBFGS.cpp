@@ -156,10 +156,10 @@ MatrixSymPosDefLBFGS::MatrixSymPosDefLBFGS(
 }
 
 void MatrixSymPosDefLBFGS::initial_setup(
-    size_type   m
-  ,bool       maintain_original
-  ,bool       maintain_inverse
-  ,bool       auto_rescaling
+  size_type m,
+  bool maintain_original,
+  bool maintain_inverse,
+  bool auto_rescaling
   )
 {
   // Validate input
@@ -177,6 +177,7 @@ void MatrixSymPosDefLBFGS::initial_setup(
   m_                 = m;
   n_                 = 0; // make uninitialized
   num_secant_updates_= 0;
+  auto_rescaling_    = auto_rescaling;
 }
 
 // Overridden from MatrixOp
