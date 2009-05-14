@@ -47,6 +47,7 @@
 #include "FEApp_AbstractQuadrature.hpp"
 #include "FEApp_AbstractDiscretization.hpp"
 #include "FEApp_AbstractProblem.hpp"
+#include "FEApp_GlobalFill.hpp"
 #include "FEApp_TemplateTypes.hpp"
 #include "FEApp_InitPostOps.hpp"
 
@@ -57,14 +58,24 @@
 #include "EpetraExt_BlockVector.h"
 #include "EpetraExt_BlockCrsMatrix.h"
 #include "Stokhos_OrthogPolyBasis.hpp"
+#include "Stokhos_Quadrature.hpp"
 #include "FEApp_BlockDiscretization.hpp"
 #endif
 
-#if SGFAD_ACTIVE
-#include "Stokhos_TripleProduct.hpp"
-#endif
-
 namespace FEApp {
+
+  //! A class to represent a generic preconditioner factory.
+  /*!
+   * This is a temporary hack for stochastic Galerkin methods that need to
+   * deal more directly with preconditioners, but allows FEApp to be independent
+   * of any preconditioner code.  A better solution will be to use Thyra.
+   */
+  class PreconditionerFactory {
+  public:
+    PreconditionerFactory() {}
+    virtual ~PreconditionerFactory() {}
+    virtual Teuchos::RCP<Epetra_Operator> compute(const Teuchos::RCP<Epetra_Operator>& mat) = 0;
+  };
 
   class Application {
   public:
@@ -186,6 +197,9 @@ namespace FEApp {
 
   protected:
 
+    //! Parameter list
+    Teuchos::RCP<Teuchos::ParameterList> params;
+
     //! Is problem transient
     bool transient;
     
@@ -234,9 +248,12 @@ namespace FEApp {
     std::string sg_solver_method;
 
     //! Stochastic Galerking basis
-    Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> > sg_basis;
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > sg_basis;
 
-     typedef SGType::expansion_type::tp_type tp_type;
+    //! Stochastic Galerking quadrature
+    Teuchos::RCP<const Stokhos::Quadrature<int,double> > sg_quad;
+
+    typedef Stokhos::Sparse3Tensor<int,double> tp_type;
     //! Stochastic Galerkin triple product
     Teuchos::RCP<const tp_type> Cijk;
 
@@ -273,8 +290,17 @@ namespace FEApp {
     //! SG Matrix Free Jacobian fill op
     Teuchos::RCP<FEApp::SGMatrixFreeJacobianOp> sg_mf_jac_fill_op;
 
-    //! SG Preconditioner parameters
-    Teuchos::RCP<Teuchos::ParameterList> precParams;
+    //! SG Preconditioner factory
+    Teuchos::RCP<FEApp::PreconditionerFactory> precFactory;
+
+    //! Mean Jacobian for preconditioner
+    Teuchos::RCP<Epetra_Operator> mean_jac;
+
+    //! SG Residual global fill object
+    Teuchos::RCP< FEApp::GlobalFill<FEApp::SGResidualType> > sg_res_global_fill;
+
+    //! SG Jacobian global fill object
+    Teuchos::RCP< FEApp::GlobalFill<FEApp::SGJacobianType> > sg_jac_global_fill;
 
 #endif
 

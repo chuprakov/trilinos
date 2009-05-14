@@ -32,6 +32,8 @@
 #ifndef FEAPP_TEMPLATETYPES_HPP
 #define FEAPP_TEMPLATETYPES_HPP
 
+#include "Sacado_ConfigDefs.h"
+
 // Conditionally enable Stokhos stochastic Galerkin expansions
 #ifdef HAVE_SACADO_STOKHOS
 #define SG_ACTIVE 1
@@ -47,7 +49,6 @@
 #include "Sacado_Fad_DFad.hpp"
 #if SG_ACTIVE
 #include "Sacado_PCE_OrthogPoly.hpp"
-#include "Stokhos_HermiteEBasis.hpp"
 #endif
 
 // Include ScalarParameterLibrary to specialize traits
@@ -78,12 +79,17 @@ namespace FEApp {
     template <class EvalT> struct apply {};
   };
 
-  template <> struct EvaluationTraits::apply<ResidualType>   { typedef RealType   type; };
-  template <> struct EvaluationTraits::apply<JacobianType>   { typedef FadType    type; };
-  template <> struct EvaluationTraits::apply<TangentType>    { typedef FadType    type; };
+  template <> struct EvaluationTraits::apply<ResidualType> { 
+    typedef RealType type; };
+  template <> struct EvaluationTraits::apply<JacobianType> { 
+    typedef FadType type; };
+  template <> struct EvaluationTraits::apply<TangentType> { 
+    typedef FadType type; };
 #if SG_ACTIVE
-  template <> struct EvaluationTraits::apply<SGResidualType> { typedef SGRealType type; };
-  template <> struct EvaluationTraits::apply<SGJacobianType> { typedef SGFadType  type; };
+  template <> struct EvaluationTraits::apply<SGResidualType> { 
+    typedef SGType type; };
+  template <> struct EvaluationTraits::apply<SGJacobianType> { 
+    typedef SGFadType  type; };
 #endif
 }
 

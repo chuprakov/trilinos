@@ -33,17 +33,18 @@
 #include "FEApp_ProblemFactory.hpp"
 #include "FEApp_QuadratureFactory.hpp"
 #include "FEApp_DiscretizationFactory.hpp"
-#include "FEApp_GlobalFill.hpp"
-#include "FEApp_SGMatrixFreeOp.hpp"
-#include "FEApp_SGMeanPrecOp.hpp"
-
+#include "FEApp_SGGaussQuadResidualGlobalFill.hpp"
+#include "FEApp_SGGaussQuadJacobianGlobalFill.hpp"
+#include "Stokhos_MatrixFreeEpetraOp.hpp"
+#include "Stokhos_MeanEpetraOp.hpp"
 #include "Teuchos_TimeMonitor.hpp"
 
 FEApp::Application::Application(
 		   const std::vector<double>& coords,
 		   const Teuchos::RCP<const Epetra_Comm>& comm,
-		   const Teuchos::RCP<Teuchos::ParameterList>& params,
+		   const Teuchos::RCP<Teuchos::ParameterList>& params_,
 		   bool is_transient) :
+  params(params_),
   transient(is_transient)
 {
   // Create parameter library
@@ -102,7 +103,8 @@ FEApp::Application::Application(
   enable_sg = params->get("Enable Stochastic Galerkin",false);
   if (enable_sg) {
     sg_solver_method = params->get("SG Solver Method", "Fully Assembled");
-    sg_basis = params->get< Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> > >("Stochastic Galerkin basis");
+    sg_basis = params->get< Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > >("Stochastic Galerkin basis");
+    sg_quad = params->get< Teuchos::RCP<const Stokhos::Quadrature<int,double> > >("Stochastic Galerkin quadrature");
     Cijk = params->get< Teuchos::RCP<const tp_type> >("Stochastic Galerkin triple product");
 
     bool makeJacobian = sg_solver_method == "Fully Assembled";
@@ -131,8 +133,7 @@ FEApp::Application::Application(
     if (sg_solver_method == "Fully Assembled")
       sg_overlapped_jac = sg_disc->getOverlapJacobian();
     else if (sg_solver_method == "Matrix Free Mean Prec")
-      precParams = Teuchos::rcp(&(params->sublist("SG Preconditioner")),
-                                false);
+      precFactory = params->get<Teuchos::RCP<FEApp::PreconditionerFactory> >("SG Preconditioner Factory");
   }
 #endif
 }
@@ -198,17 +199,18 @@ FEApp::Application::createW() const
     }
     else if (sg_solver_method == "Matrix Free Mean Prec") {
       unsigned int sz = sg_basis->size();
-      Teuchos::RCP<std::vector< Teuchos::RCP<Epetra_CrsMatrix> > > jacs = 
-        Teuchos::rcp(new std::vector< Teuchos::RCP<Epetra_CrsMatrix> >(sz));
+      Teuchos::RCP<std::vector< Teuchos::RCP<Epetra_Operator> > > jacs = 
+        Teuchos::rcp(new std::vector< Teuchos::RCP<Epetra_Operator> >(sz));
       for (unsigned int i=0; i<sz; i++)
         (*jacs)[i] = 
-          Teuchos::rcp(new  Epetra_CrsMatrix(::Copy, 
-                                             *(disc->getJacobianGraph())));
+          Teuchos::rcp(new Epetra_CrsMatrix(::Copy, 
+					    *(disc->getJacobianGraph())));
       return 
-        Teuchos::rcp(new FEApp::SGMatrixFreeOp(disc->getMap(),
-                                               sg_disc->getMap(),
-                                               Cijk,
-                                               jacs));
+        Teuchos::rcp(new Stokhos::MatrixFreeEpetraOp(disc->getMap(),
+						     sg_disc->getMap(),
+						     sg_basis,
+						     Cijk,
+						     jacs));
     }
   }
   else
@@ -229,15 +231,10 @@ FEApp::Application::createPrec() const
     }
     else if (sg_solver_method == "Matrix Free Mean Prec") {
       unsigned int sz = sg_basis->size();
-      Teuchos::RCP<Epetra_CrsMatrix> mean_jac = 
-        Teuchos::rcp(new  Epetra_CrsMatrix(::Copy, 
-                                           *(disc->getJacobianGraph())));
-      return 
-        Teuchos::rcp(new FEApp::SGMeanPrecOp(disc->getMap(),
-                                             sg_disc->getMap(),
-                                             sz,
-                                             mean_jac,
-                                             precParams));
+      return Teuchos::rcp(new Stokhos::MeanEpetraOp(disc->getMap(),
+						    sg_disc->getMap(),
+						    sz,
+						    Teuchos::null));
     }
   }
   else
@@ -548,35 +545,75 @@ FEApp::Application::computeGlobalSGResidual(
     sg_overlapped_xdot->Import(*sg_xdot, *sg_importer, Insert);
 
   // Set parameters
-  if (p != NULL) {
-    for (unsigned int i=0; i<p->size(); ++i) {
-      (*p)[i].family->setRealValueForAllTypes((*p)[i].baseValue);
-    }
-  }
+//   if (p != NULL) {
+//     for (unsigned int i=0; i<p->size(); ++i) {
+//       (*p)[i].family->setRealValueForAllTypes((*p)[i].baseValue);
+//     }
+//   }
 
   // Zero out overlapped residual
   sg_overlapped_f->PutScalar(0.0);
   sg_f.PutScalar(0.0);
 
-  // Create residual init/post op
-  if (sg_res_fill_op == Teuchos::null)
-    sg_res_fill_op = 
-      Teuchos::rcp(new FEApp::SGResidualOp(disc->getOverlapMap(),
-                                           sg_basis,
-                                           sg_overlapped_xdot, 
-                                           sg_overlapped_x, 
-                                           sg_overlapped_f));
-  else
-    sg_res_fill_op->reset(sg_overlapped_xdot, sg_overlapped_x);
+  std::string method = params->get("SG Method", "AD");
+  if (method == "AD") {
 
-  // Get template PDE instantiation
-  Teuchos::RCP< FEApp::AbstractPDE<FEA::SGResidualType> > pde = 
-    pdeTM.getAsObject<FEApp::SGResidualType>();
+    // Create residual init/post op
+    if (sg_res_fill_op == Teuchos::null)
+      sg_res_fill_op = 
+        Teuchos::rcp(new FEApp::SGResidualOp(disc->getOverlapMap(),
+                                             sg_basis,
+                                             sg_overlapped_xdot, 
+                                             sg_overlapped_x, 
+                                             sg_overlapped_f));
+    else
+      sg_res_fill_op->reset(sg_overlapped_xdot, sg_overlapped_x);
+    
+    // Get template PDE instantiation
+    Teuchos::RCP< FEApp::AbstractPDE<FEApp::SGResidualType> > pde = 
+      pdeTM.getAsObject<FEApp::SGResidualType>();
 
-  // Do global fill
-  FEApp::GlobalFill<FEApp::SGResidualType> globalFill(disc->getMesh(), quad, 
-                                                      pde, bc, transient);
-  globalFill.computeGlobalFill(*sg_res_fill_op);
+    // Instantiate global fill
+    if (sg_res_global_fill == Teuchos::null) 
+      sg_res_global_fill = 
+        Teuchos::rcp(new FEApp::GlobalFill<FEApp::SGResidualType>(disc->getMesh(), quad, pde, bc, transient));
+
+    // Do global fill
+    sg_res_global_fill->computeGlobalFill(*sg_res_fill_op);
+  }
+
+  else if (method == "Gauss Quadrature") {
+    // Create residual init/post op
+    if (sg_res_fill_op == Teuchos::null)
+      sg_res_fill_op = 
+        Teuchos::rcp(new FEApp::SGResidualOp(disc->getOverlapMap(),
+                                             sg_basis,
+                                             sg_overlapped_xdot, 
+                                             sg_overlapped_x, 
+                                             sg_overlapped_f));
+    else
+      sg_res_fill_op->reset(sg_overlapped_xdot, sg_overlapped_x);
+
+    // Get template PDE instantiation
+    Teuchos::RCP< FEApp::AbstractPDE<FEApp::SGResidualType> > pde = 
+      pdeTM.getAsObject<FEApp::SGResidualType>();
+    Teuchos::RCP< FEApp::AbstractPDE<FEApp::ResidualType> > res_pde = 
+      pdeTM.getAsObject<FEApp::ResidualType>();
+    
+    // Instantiate global fill
+    if (sg_res_global_fill == Teuchos::null)
+      sg_res_global_fill = 
+        Teuchos::rcp(new FEApp::SGGaussQuadResidualGlobalFill(disc->getMesh(), 
+                                                              quad, pde, bc, 
+                                                              transient,
+                                                              sg_basis,
+							      sg_quad,
+                                                              res_pde,
+                                                              p));
+
+    // Do global fill
+    sg_res_global_fill->computeGlobalFill(*sg_res_fill_op);
+  }
 
   // Assemble global residual
   sg_f.Export(*sg_overlapped_f, *sg_exporter, Add);
@@ -592,7 +629,7 @@ FEApp::Application::computeGlobalSGJacobian(
 				      Epetra_Vector* sg_f,
 				      Epetra_Operator& sg_jacOp)
 {
-#if SGFAD_ACTIVE
+#if SG_ACTIVE
   TEUCHOS_FUNC_TIME_MONITOR("FEApp::Application::computeGlobalSGJacobian");
 
   // Scatter x to the overlapped distrbution
@@ -603,11 +640,11 @@ FEApp::Application::computeGlobalSGJacobian(
     sg_overlapped_xdot->Import(*sg_xdot, *sg_importer, Insert);
 
   // Set parameters
-  if (p != NULL) {
-    for (unsigned int i=0; i<p->size(); ++i) {
-      (*p)[i].family->setRealValueForAllTypes((*p)[i].baseValue);
-    }
-  }
+//   if (p != NULL) {
+//     for (unsigned int i=0; i<p->size(); ++i) {
+//       (*p)[i].family->setRealValueForAllTypes((*p)[i].baseValue);
+//     }
+//   }
 
   // Zero out overlapped residual
   Teuchos::RCP<EpetraExt::BlockVector> sg_overlapped_ff;
@@ -617,30 +654,33 @@ FEApp::Application::computeGlobalSGJacobian(
     sg_f->PutScalar(0.0);
   }
 
-  // Create Jacobian init/post op
-  Teuchos::RCP<FEApp::AbstractInitPostOp<FEApp::SGJacobianType> > jac_fill_op;
-  if (sg_solver_method == "Fully Assembled") {
-    sg_overlapped_jac->PutScalar(0.0);
-    if (sg_full_jac_fill_op == Teuchos::null)
-      sg_full_jac_fill_op = 
-        Teuchos::rcp(new FEApp::SGJacobianOp(disc->getOverlapMap(),
-                                             disc->getOverlapJacobianGraph(),
-                                             sg_basis,
-                                             Cijk,
-                                             alpha, beta, 
-                                             sg_overlapped_xdot, 
-                                             sg_overlapped_x, 
-                                             sg_overlapped_ff, 
-                                             sg_overlapped_jac));
-    else
-      sg_full_jac_fill_op->reset(alpha, beta, sg_overlapped_xdot, 
-                                 sg_overlapped_x);
-    jac_fill_op = sg_full_jac_fill_op;
-  }
-  else if (sg_solver_method == "Matrix Free Mean Prec") {
-    if (sg_mf_jac_fill_op == Teuchos::null)
-      sg_mf_jac_fill_op = 
-        Teuchos::rcp(new FEApp::SGMatrixFreeJacobianOp(
+  std::string method = params->get("SG Method", "AD");
+  if (method == "AD" || method == "Gauss Quadrature") {
+
+    // Create Jacobian init/post op
+    Teuchos::RCP<FEApp::AbstractInitPostOp<FEApp::SGJacobianType> > jac_fill_op;
+    if (sg_solver_method == "Fully Assembled") {
+      sg_overlapped_jac->PutScalar(0.0);
+      if (sg_full_jac_fill_op == Teuchos::null)
+        sg_full_jac_fill_op = 
+          Teuchos::rcp(new FEApp::SGJacobianOp(disc->getOverlapMap(),
+                                               disc->getOverlapJacobianGraph(),
+                                               sg_basis,
+                                               Cijk,
+                                               alpha, beta, 
+                                               sg_overlapped_xdot, 
+                                               sg_overlapped_x, 
+                                               sg_overlapped_ff, 
+                                               sg_overlapped_jac));
+      else
+        sg_full_jac_fill_op->reset(alpha, beta, sg_overlapped_xdot, 
+                                   sg_overlapped_x);
+      jac_fill_op = sg_full_jac_fill_op;
+    }
+    else if (sg_solver_method == "Matrix Free Mean Prec") {
+      if (sg_mf_jac_fill_op == Teuchos::null)
+        sg_mf_jac_fill_op = 
+          Teuchos::rcp(new FEApp::SGMatrixFreeJacobianOp(
                                             disc->getOverlapMap(),
                                             disc->getOverlapJacobianGraph(),
                                             sg_basis,
@@ -648,21 +688,40 @@ FEApp::Application::computeGlobalSGJacobian(
                                             sg_overlapped_xdot, 
                                             sg_overlapped_x, 
                                             sg_overlapped_ff));
-    else
-      sg_mf_jac_fill_op->reset(alpha, beta, sg_overlapped_xdot, 
-                               sg_overlapped_x);
-    jac_fill_op = sg_mf_jac_fill_op;
+      else
+        sg_mf_jac_fill_op->reset(alpha, beta, sg_overlapped_xdot, 
+                                 sg_overlapped_x);
+      jac_fill_op = sg_mf_jac_fill_op;
+    }
+
+    // Get template PDE instantiation
+    Teuchos::RCP< FEApp::AbstractPDE<FEApp::SGJacobianType> > pde = 
+      pdeTM.getAsObject<FEApp::SGJacobianType>();
+
+    // Do global fill
+    if (sg_jac_global_fill == Teuchos::null) {
+      if (method == "AD") {
+	if (sg_jac_global_fill == Teuchos::null)
+	  sg_jac_global_fill = 
+	    Teuchos::rcp(new FEApp::GlobalFill<FEApp::SGJacobianType>(disc->getMesh(), quad, pde, bc,transient));
+      }
+      else if (method == "Gauss Quadrature") {
+        Teuchos::RCP< FEApp::AbstractPDE<FEApp::JacobianType> > jac_pde = 
+          pdeTM.getAsObject<FEApp::JacobianType>();
+	if (sg_jac_global_fill == Teuchos::null)
+	  sg_jac_global_fill = 
+	    Teuchos::rcp(new FEApp::SGGaussQuadJacobianGlobalFill(
+                                                         disc->getMesh(), 
+                                                         quad, pde, bc, 
+                                                         transient,
+                                                         sg_basis,
+							 sg_quad,
+                                                         jac_pde,
+                                                         p, alpha, beta));
+      }
+    }
+    sg_jac_global_fill->computeGlobalFill(*jac_fill_op);
   }
-
-  // Get template PDE instantiation
-  Teuchos::RCP< FEApp::AbstractPDE<FEApp::SGJacobianType> > pde = 
-    pdeTM.getAsObject<FEApp::SGJacobianType>();
-
-  // Do global fill
-  FEApp::GlobalFill<SGJacobianOp::fill_type> globalFill(disc->getMesh(), 
-                                                        quad, pde, bc, 
-                                                        transient);
-  globalFill.computeGlobalFill(*jac_fill_op);
   
   // Assemble global residual
   if (sg_f != NULL)
@@ -679,20 +738,23 @@ FEApp::Application::computeGlobalSGJacobian(
     sg_jac.FillComplete(true);
   }
   else if (sg_solver_method == "Matrix Free Mean Prec") {
-    // Cast sg_jacOp to an FEApp::SGMatrixFreeOp
-    FEApp::SGMatrixFreeOp& sg_jac = 
-      dynamic_cast<FEApp::SGMatrixFreeOp&>(sg_jacOp);
+    // Cast sg_jacOp to an Stokhos::MatrixFreeEpetraOp
+    Stokhos::MatrixFreeEpetraOp& sg_jac = 
+      dynamic_cast<Stokhos::MatrixFreeEpetraOp&>(sg_jacOp);
     
     // Assemble block Jacobians
-    std::vector< Teuchos::RCP<Epetra_CrsMatrix> > jacs = 
-      sg_jac.getJacobianBlocks();
+    std::vector< Teuchos::RCP<Epetra_Operator> > jacs = 
+      sg_jac.getOperatorBlocks();
     std::vector< Teuchos::RCP<Epetra_CrsMatrix> > ov_jacs = 
       sg_mf_jac_fill_op->getJacobianBlocks();
+    Teuchos::RCP<Epetra_CrsMatrix> jac;
     for (unsigned int i=0; i<jacs.size(); i++) {
-      jacs[i]->PutScalar(0.0);
-      jacs[i]->Export(*ov_jacs[i], *exporter, Add);
-      jacs[i]->FillComplete(true);
+      jac = Teuchos::rcp_dynamic_cast<Epetra_CrsMatrix>(jacs[i]);
+      jac->PutScalar(0.0);
+      jac->Export(*ov_jacs[i], *exporter, Add);
+      jac->FillComplete(true);
     }
+    mean_jac = jacs[0];
   }
 #endif
 }
@@ -706,7 +768,7 @@ FEApp::Application::computeGlobalSGPreconditioner(
 				      Epetra_Vector* sg_f,
 				      Epetra_Operator& sg_jacOp)
 {
-#if SGFAD_ACTIVE
+#if SG_ACTIVE
   TEUCHOS_FUNC_TIME_MONITOR("FEApp::Application::computeGlobalSGPreconditioner");
   
   // We are assuming we have a valid and up-to-date fill
@@ -727,18 +789,14 @@ FEApp::Application::computeGlobalSGPreconditioner(
   }
   else if (sg_solver_method == "Matrix Free Mean Prec") {
     // Cast sg_jacOp to an FEApp::SGMeanPrecOp
-    FEApp::SGMeanPrecOp& sg_jac = 
-      dynamic_cast<FEApp::SGMeanPrecOp&>(sg_jacOp);
-    
-    // Assemble mean Jacobian
-    Teuchos::RCP<Epetra_CrsMatrix> mean_jac = 
-      sg_jac.getMeanJacobian();
-    std::vector< Teuchos::RCP<Epetra_CrsMatrix> > ov_jacs = 
-      sg_mf_jac_fill_op->getJacobianBlocks();
-    mean_jac->PutScalar(0.0);
-    mean_jac->Export(*ov_jacs[0], *exporter, Add);
-    mean_jac->FillComplete(true);
-    sg_jac.reset();
+    Stokhos::MeanEpetraOp& sg_jac = 
+      dynamic_cast<Stokhos::MeanEpetraOp&>(sg_jacOp);
+
+    // Compute preconditioner
+    Teuchos::RCP<Epetra_Operator> prec = precFactory->compute(mean_jac);    
+    sg_jac.setMeanOperator(prec);
   }
 #endif
 }
+
+

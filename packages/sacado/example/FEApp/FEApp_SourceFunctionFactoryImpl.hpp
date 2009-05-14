@@ -28,10 +28,12 @@
 // 
 // ***********************************************************************
 // @HEADER
+#include <sstream>
 #include "Teuchos_TestForException.hpp"
 #include "FEApp_QuadraticSourceFunction.hpp"
 #include "FEApp_CubicSourceFunction.hpp"
 #include "FEApp_ExponentialSourceFunction.hpp"
+#include "FEApp_MultiVariateExponentialSourceFunction.hpp"
 
 template <typename EvalT>
 FEApp::SourceFunctionFactory<EvalT>::SourceFunctionFactory(
@@ -65,6 +67,18 @@ FEApp::SourceFunctionFactory<EvalT>::create()
     strategy = 
       Teuchos::rcp(new FEApp::ExponentialSourceFunction<EvalT>(factor,
                                                                paramLib));
+  }
+  else if (method == "Multi-Variate Exponential") {
+    unsigned int numdims = funcParams->template get<unsigned int>("Nonlinear Factor Dimensions", 1);
+    std::vector<ScalarT> factor(numdims);
+    for (unsigned int i=0; i<numdims; i++) {
+      std::stringstream ss;
+      ss << "Nonlinear Factor " << i;
+      factor[i] = funcParams->get(ss.str(), 1.0);
+    }
+    strategy = 
+      Teuchos::rcp(new FEApp::MultiVariateExponentialSourceFunction<EvalT>(factor,
+                                                                           paramLib));
   }
   else {
     TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,

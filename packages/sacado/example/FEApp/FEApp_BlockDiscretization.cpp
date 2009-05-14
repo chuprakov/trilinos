@@ -41,7 +41,7 @@
 FEApp::BlockDiscretization::BlockDiscretization(
     const Teuchos::RCP<const Epetra_Comm>& comm,
     const Teuchos::RCP<const FEApp::AbstractDiscretization>& underlyingDisc_,
-    const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis_,
+    const Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> >& sg_basis_,
      bool makeJacobian) :
   underlyingDisc(underlyingDisc_),
   sg_basis(sg_basis_)

@@ -29,68 +29,70 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef FEAPP_ABSTRACTINITPOSTOP_HPP
-#define FEAPP_ABSTRACTINITPOSTOP_HPP
+#ifndef FEAPP_SGGQGLOBALFILL_HPP
+#define FEAPP_SGGQGLOBALFILL_HPP
 
-#include <vector>
-
-#include "FEApp_AbstractElement.hpp"
-#include "FEApp_NodeBC.hpp"
 #include "FEApp_TemplateTypes.hpp"
+#if SG_ACTIVE
+
+#include "FEApp_GlobalFill.hpp"
+#include "Stokhos_OrthogPolyBasis.hpp"
+#include "Stokhos_Quadrature.hpp"
+#include "Sacado_ScalarParameterVector.hpp"
 
 namespace FEApp {
 
   template <typename EvalT>
-  class AbstractInitPostOp {
+  class SGGQGlobalFill : public GlobalFill<EvalT> {
   public:
 
     //! Scalar type
     typedef typename FEApp::EvaluationTraits::apply<EvalT>::type ScalarT;
-
+    
     //! Constructor
-    AbstractInitPostOp() {};
-
+    SGGQGlobalFill(
+      const Teuchos::RCP<const FEApp::Mesh>& elementMesh,
+      const Teuchos::RCP<const FEApp::AbstractQuadrature>& quadRule,
+      const Teuchos::RCP< FEApp::AbstractPDE<EvalT> >& pdeEquations,
+      const std::vector< Teuchos::RCP<FEApp::NodeBC> >& nodeBCs,
+      bool is_transient,
+      const Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> >& sgBasis,
+      const Teuchos::RCP<const Stokhos::Quadrature<int,double> >& sgQuad,
+      const Teuchos::RCP<const ParamVec>& pvec);
+  
     //! Destructor
-    virtual ~AbstractInitPostOp() {};
+    virtual ~SGGQGlobalFill();
 
-    //! Set Gauss point index
-    virtual void setQuadPointIndex(unsigned int index) {};
-
-    //! Evaulate element init operator
-    virtual void elementInit(const FEApp::AbstractElement& e,
-                             unsigned int neqn,
-                             std::vector<ScalarT>* elem_xdot,
-                             std::vector<ScalarT>& elem_x) = 0;
-
-    //! Evaluate element post operator
-    virtual void elementPost(const FEApp::AbstractElement& e,
-                             unsigned int neqn,
-                             std::vector<ScalarT>& elem_f) = 0;
-
-    //! Evaulate node init operator
-    virtual void nodeInit(const FEApp::NodeBC& bc,
-                          unsigned int neqn,
-                          std::vector<ScalarT>* node_xdot,
-                          std::vector<ScalarT>& node_x) = 0;
-
-    //! Evaluate node post operator
-    virtual void nodePost(const FEApp::NodeBC& bc,
-                          unsigned int neqn,
-                          std::vector<ScalarT>& node_f) = 0;
-
-    //! Finalize fill
-    virtual void finalizeFill() = 0;
+    //! Compute global fill
+    virtual void 
+    computeGlobalFill(FEApp::AbstractInitPostOp<EvalT>& initPostOp);
 
   private:
-    
-    //! Private to prohibit copying
-    AbstractInitPostOp(const AbstractInitPostOp&);
 
     //! Private to prohibit copying
-    AbstractInitPostOp& operator=(const AbstractInitPostOp&);
+    SGGQGlobalFill(const SGGQGlobalFill&);
+
+    //! Private to prohibit copying
+    SGGQGlobalFill& operator=(const SGGQGlobalFill&);
+
+  protected:
+
+    //! Stochastic Galerking basis
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > sg_basis;
+
+    //! Stochastic Galerkin quadrature
+    Teuchos::RCP<const Stokhos::Quadrature<int,double> > sg_quad;
+    
+    //! Parameter vector
+    Teuchos::RCP<const ParamVec> p;
 
   };
 
 }
 
-#endif // FEAPP_ABSTRACTINITPOSTOP_HPP
+// Include implementation
+#include "FEApp_SGGQGlobalFillImpl.hpp"
+
+#endif // SG_ACTIVE
+
+#endif // SGGQRESIDUALGLOBALFILL_HPP

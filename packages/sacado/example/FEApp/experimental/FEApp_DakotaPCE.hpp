@@ -29,62 +29,56 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef FEAPP_SOURCEFUNCTIONFACTORY_HPP
-#define FEAPP_SOURCEFUNCTIONFACTORY_HPP
+#ifndef FEAPP_DAKOTAPCE_HPP
+#define FEAPP_DAKOTAPCE_HPP
 
-#include "Teuchos_ParameterList.hpp"
+// Dakota includes
+
+#include "system_defs.h"
+#include "ParallelLibrary.H"
+#include "ProblemDescDB.H"
+#include "DakotaStrategy.H"
+#include "DakotaModel.H"
+#include "DakotaInterface.H"
+//#include "DirectApplicInterface.H"
+
+//Trilinos includes
 #include "Teuchos_RCP.hpp"
 
-#include "FEApp_AbstractSourceFunction.hpp"
-
-#include "Sacado_ScalarParameterLibrary.hpp"
+//TriKota includes
+#include "FEApp_DakotaElementInterface.hpp"
 
 namespace FEApp {
 
-  /*!
-   * \brief A factory class to instantiate AbstractSourceFunction objects
-   */
-  template <typename EvalT>
-  class SourceFunctionFactory {
+  class DakotaPCE {
   public:
 
-    //! Scalar type
-    typedef typename FEApp::AbstractSourceFunction<EvalT>::ScalarT ScalarT;
+    // Constructor and destructor
+    
+    DakotaPCE(const char* dakota_in="dakota.in",  
+	      const char* dakota_out="dakota.out",
+	      const char* dakota_err="dakota.err",
+	      const char* dakota_restart_out="dakota_restart.out");
 
-    //! Default constructor
-    SourceFunctionFactory(
-	       const Teuchos::RCP<Teuchos::ParameterList>& funcParams,
-	       const Teuchos::RCP<ParamLib>& paramLib);
+    ~DakotaPCE() {};
+    
+    MPI_Comm getAnalysisComm(); 
 
-    //! Destructor
-    virtual ~SourceFunctionFactory() {}
-
-    virtual Teuchos::RCP< FEApp::AbstractSourceFunction<EvalT> >
-    create();
-
-  private:
-
-    //! Private to prohibit copying
-    SourceFunctionFactory(const SourceFunctionFactory&);
-
-    //! Private to prohibit copying
-    SourceFunctionFactory& operator=(const SourceFunctionFactory&);
-
+    Dakota::ProblemDescDB& getProblemDescDB();
+    
+    Model getDakotaModel();
+    
+    void run(Teuchos::RCP<FEApp::DakotaElementInterface> elemInterface);
+    
   protected:
+    
+    Dakota::ParallelLibrary parallel_lib;
+    Dakota::ProblemDescDB problem_db;
+    Dakota::Strategy selected_strategy;
 
-    //! Parameter list specifying what strategy to create
-    Teuchos::RCP<Teuchos::ParameterList> funcParams;
+  }; // end of class DakotaPCE
 
-    //! Parameter library
-    Teuchos::RCP<ParamLib> paramLib;
+} // namespace FEApp
 
-  };
+#endif //  FEAPP_DAKOTAPCE_HPP
 
-}
-
-// Include implementation
-#ifndef SACADO_ETI
-#include "FEApp_SourceFunctionFactoryImpl.hpp"
-#endif 
-
-#endif // FEAPP_SOURCEFUNCTIONFACTORY_HPP

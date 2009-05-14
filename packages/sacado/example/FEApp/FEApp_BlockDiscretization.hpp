@@ -55,7 +55,7 @@ namespace FEApp {
     BlockDiscretization(
      const Teuchos::RCP<const Epetra_Comm>& comm,
      const Teuchos::RCP<const FEApp::AbstractDiscretization>& underlyingDisc_,
-     const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis_,
+     const Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> >& sg_basis_,
      bool makeJacobian);
 
     //! Destructor
@@ -119,7 +119,7 @@ namespace FEApp {
     Teuchos::RCP<const Epetra_Comm> globalComm;
 
     //! Stochastic Galerkin basis
-    Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> > sg_basis;
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > sg_basis;
 
     //! Unknown Map
     Teuchos::RCP<const Epetra_Map> map;

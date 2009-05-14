@@ -29,103 +29,78 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef FEAPP_GLOBALFILL_HPP
-#define FEAPP_GLOBALFILL_HPP
-
-#include <vector>
-
-#include "Teuchos_RCP.hpp"
+#ifndef FEAPP_SGDAKOTARESIDUALGLOBALFILL_HPP
+#define FEAPP_SGDAKOTARESIDUALGLOBALFILL_HPP
 
 #include "FEApp_TemplateTypes.hpp"
-#include "FEApp_AbstractPDE.hpp"
-#include "FEApp_AbstractQuadrature.hpp"
-#include "FEApp_NodeBC.hpp"
-#include "FEApp_Mesh.hpp"
-#include "FEApp_AbstractInitPostOp.hpp"
+#if SG_ACTIVE
+
+#include "Stokhos_ConfigDefs.h"
+#ifdef HAVE_DAKOTA
+
+#include "FEApp_GlobalFill.hpp"
+#include "Stokhos_OrthogPolyBasis.hpp"
+#include "Sacado_ScalarParameterVector.hpp"
+
+// Dakota includes
+#include "system_defs.h"
+#include "ParallelLibrary.H"
+#include "ProblemDescDB.H"
+#include "DakotaStrategy.H"
+#include "DakotaModel.H"
+#include "FEApp_DakotaElementResidualInterface.hpp"
 
 namespace FEApp {
 
-  template <typename EvalT>
-  class GlobalFill {
+  class SGDakotaResidualGlobalFill : public GlobalFill<SGResidualType> {
   public:
 
     //! Scalar type
-    typedef typename FEApp::EvaluationTraits::apply<EvalT>::type ScalarT;
+    typedef FEApp::EvaluationTraits::apply<SGResidualType>::type ScalarT;
     
     //! Constructor
-    GlobalFill(
+    SGDakotaResidualGlobalFill(
       const Teuchos::RCP<const FEApp::Mesh>& elementMesh,
       const Teuchos::RCP<const FEApp::AbstractQuadrature>& quadRule,
-      const Teuchos::RCP< FEApp::AbstractPDE<EvalT> >& pdeEquations,
+      const Teuchos::RCP< FEApp::AbstractPDE<SGResidualType> >& pdeEquations,
       const std::vector< Teuchos::RCP<FEApp::NodeBC> >& nodeBCs,
-      bool is_transient);
+      bool is_transient,
+      const Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> >& sgBasis,
+      const Teuchos::RCP< FEApp::AbstractPDE<ResidualType> >& resPDEEquations,
+      const ParamVec* pvec);
   
     //! Destructor
-    virtual ~GlobalFill();
+    virtual ~SGDakotaResidualGlobalFill();
 
     //! Compute global fill
     virtual void 
-    computeGlobalFill(FEApp::AbstractInitPostOp<EvalT>& initPostOp);
+    computeGlobalFill(FEApp::AbstractInitPostOp<SGResidualType>& initPostOp);
 
   private:
 
     //! Private to prohibit copying
-    GlobalFill(const GlobalFill&);
+    SGDakotaResidualGlobalFill(const SGDakotaResidualGlobalFill&);
 
     //! Private to prohibit copying
-    GlobalFill& operator=(const GlobalFill&);
+    SGDakotaResidualGlobalFill& operator=(const SGDakotaResidualGlobalFill&);
 
   protected:
     
-    //! Element mesh
-    Teuchos::RCP<const FEApp::Mesh> mesh;
-
-    //! Quadrature rule
-    Teuchos::RCP<const FEApp::AbstractQuadrature> quad;
-
-    //! PDE Equations
-    Teuchos::RCP< FEApp::AbstractPDE<EvalT> > pde;
-
-    //! Node boundary conditions
-    std::vector< Teuchos::RCP<FEApp::NodeBC> > bc;
-
-    //! Are we transient?
-    bool transient;
-
-    //! Number of nodes per element
-    unsigned int nnode;
-
-    //! Number of PDE equations
-    unsigned int neqn;
-
-    //! Number of element-level DOF
-    unsigned int ndof;
-
-    //! Element solution variables
-    std::vector<ScalarT> elem_x;
-
-    //! Element time derivative variables
-    std::vector<ScalarT>* elem_xdot;
-
-    //! Element residual variables
-    std::vector<ScalarT> elem_f;
-
-    //! Node solution variables
-    std::vector<ScalarT> node_x;
-
-    //! Node time derivative variables
-    std::vector<ScalarT>* node_xdot;
-
-    //! Node residual variables
-    std::vector<ScalarT> node_f;
-
+    //! Stochastic Galerking basis
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > sg_basis;
+    Teuchos::RCP< FEApp::AbstractPDE<ResidualType> > residPDE;
+    const ParamVec* p;
+    unsigned int sg_size;
+    Dakota::ParallelLibrary parallel_lib;
+    Dakota::ProblemDescDB problem_db;
+    Dakota::Strategy selected_strategy;
+    FEApp::DakotaElementResidualInterface *elemInterface;
   };
 
 }
 
-// Include implementation
-#ifndef SACADO_ETI
-#include "FEApp_GlobalFillImpl.hpp"
-#endif 
+#endif // HAVE_DAKOTA
 
-#endif // FEAPP_GLOBALFILL_HPP
+#endif // SG_ACTIVE
+
+#endif // SGDAKOTARESIDUALGLOBALFILL_HPP

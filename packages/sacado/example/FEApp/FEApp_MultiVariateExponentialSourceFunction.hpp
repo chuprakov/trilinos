@@ -29,8 +29,10 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef FEAPP_EXPONENTIALSOURCEFUNCTION_HPP
-#define FEAPP_EXPONENTIALSOURCEFUNCTION_HPP
+#ifndef FEAPP_MULTIVARIATEEXPONENTIALSOURCEFUNCTION_HPP
+#define FEAPP_MULTIVARIATEEXPONENTIALSOURCEFUNCTION_HPP
+
+#include <sstream>
 
 #include "FEApp_AbstractSourceFunction.hpp"
 
@@ -41,13 +43,14 @@
 
 namespace FEApp {
 
-  template <typename EvalT> class ExponentialNonlinearFactorParameter;
+  template <typename EvalT> 
+  class MultiVariateExponentialNonlinearFactorParameter;
 
   /*!
    * \brief An exponential PDE source function
    */
   template <typename EvalT>
-  class ExponentialSourceFunction : 
+  class MultiVariateExponentialSourceFunction : 
     public FEApp::AbstractSourceFunction<EvalT> {
   public:
 
@@ -55,57 +58,65 @@ namespace FEApp {
     typedef typename FEApp::AbstractSourceFunction<EvalT>::ScalarT ScalarT;
   
     //! Default constructor
-    ExponentialSourceFunction(
-	       const ScalarT& factor,
+    MultiVariateExponentialSourceFunction(
+         const std::vector<ScalarT>& factor,
 	       const Teuchos::RCP<ParamLib>& paramLib) : 
       alpha(factor) 
     {
       // Add nonlinear factor to parameter library
-      std::string name = "Exponential Source Function Nonlinear Factor";
-      if (!paramLib->isParameter(name))
-        paramLib->addParameterFamily(name, true, false);
-      if (!paramLib->template isParameterForType<EvalT>(name)) {
-        Teuchos::RCP< ExponentialNonlinearFactorParameter<EvalT> > tmp = 
-          Teuchos::rcp(new ExponentialNonlinearFactorParameter<EvalT>(Teuchos::rcp(this,false)));
-        paramLib->template addEntry<EvalT>(name, tmp);
+      for (unsigned int i=0; i<factor.size(); i++) {
+        std::stringstream ss;
+        ss << "Exponential Source Function Nonlinear Factor " << i;
+        std::string name = ss.str();
+        if (!paramLib->isParameter(name))
+          paramLib->addParameterFamily(name, true, false);
+        if (!paramLib->template isParameterForType<EvalT>(name)) {
+          Teuchos::RCP< MultiVariateExponentialNonlinearFactorParameter<EvalT> > tmp = 
+            Teuchos::rcp(new MultiVariateExponentialNonlinearFactorParameter<EvalT>(Teuchos::rcp(this,false),i));
+          paramLib->template addEntry<EvalT>(name, tmp);
+        }
       }
     };
 
     //! Destructor
-    virtual ~ExponentialSourceFunction() {};
+    virtual ~MultiVariateExponentialSourceFunction() {};
 
     //! Evaluate source function
     virtual void
     evaluate(const std::vector<ScalarT>& solution,
              std::vector<ScalarT>& value) const {
+      ScalarT a = 0.0;
+      for (unsigned int j=0; j<alpha.size(); j++)
+	a += alpha[j];
+      a /= static_cast<double>(alpha.size());
       for (unsigned int i=0; i<solution.size(); i++) {
-        value[i] = std::exp(alpha)*std::exp(solution[i]);
+        value[i] = std::exp(a+solution[i]);
         //value[i] = -1.0;
       }
       
     }
 
     //! Set nonlinear factor
-    void setFactor(const ScalarT& val, bool mark_constant) { 
-      alpha = val;
-      if (mark_constant) Sacado::MarkConstant<ScalarT>::eval(alpha); 
+    void setFactor(unsigned int i, const ScalarT& val, bool mark_constant) { 
+      alpha[i] = val;
+      if (mark_constant) Sacado::MarkConstant<ScalarT>::eval(alpha[i]); 
     }
 
     //! Get nonlinear factor
-    const ScalarT& getFactor() const { return alpha; }
+    const ScalarT& getFactor(unsigned int i) const { return alpha[i]; }
 
   private:
 
     //! Private to prohibit copying
-    ExponentialSourceFunction(const ExponentialSourceFunction&);
+    MultiVariateExponentialSourceFunction(const MultiVariateExponentialSourceFunction&);
 
     //! Private to prohibit copying
-    ExponentialSourceFunction& operator=(const ExponentialSourceFunction&);
+    MultiVariateExponentialSourceFunction& operator=(const MultiVariateExponentialSourceFunction&);
 
   protected:
   
     //! Factor
-    ScalarT alpha;
+    std::vector<ScalarT> alpha;
 
   };
 
@@ -114,7 +125,7 @@ namespace FEApp {
    * the nonlinear factor in the cubic source function
    */
   template <typename EvalT>
-  class ExponentialNonlinearFactorParameter : 
+  class MultiVariateExponentialNonlinearFactorParameter : 
     public Sacado::ScalarParameterEntry<EvalT,EvaluationTraits> {
 
   public:
@@ -123,35 +134,40 @@ namespace FEApp {
     typedef typename Sacado::ScalarParameterEntry<EvalT,EvaluationTraits>::ScalarT ScalarT;
 
     //! Constructor
-    ExponentialNonlinearFactorParameter(
-			const Teuchos::RCP< ExponentialSourceFunction<EvalT> >& s) 
-      : srcFunc(s) {}
+    MultiVariateExponentialNonlinearFactorParameter(
+        const Teuchos::RCP< MultiVariateExponentialSourceFunction<EvalT> >& s,
+        unsigned int i) 
+      : srcFunc(s), index(i) {}
 
     //! Destructor
-    virtual ~ExponentialNonlinearFactorParameter() {}
+    virtual ~MultiVariateExponentialNonlinearFactorParameter() {}
 
     //! Set real parameter value
     virtual void setRealValue(double value) { 
-      srcFunc->setFactor(value, true); }
+      srcFunc->setFactor(index, value, true); }
     
     //! Set parameter this object represents to \em value
     virtual void setValue(const ScalarT& value) { 
-      srcFunc->setFactor(value, false); }
+      srcFunc->setFactor(index, value, false); }
 
     //! Get real parameter value
     virtual double getRealValue() const {
-      return Sacado::ScalarValue<ScalarT>::eval(srcFunc->getFactor()); }
+      return Sacado::ScalarValue<ScalarT>::eval(srcFunc->getFactor(index)); }
     
     //! Get parameter value this object represents
-    virtual const ScalarT& getValue() const { return srcFunc->getFactor(); }
+    virtual const ScalarT& getValue() const { 
+      return srcFunc->getFactor(index); }
     
   protected:  
     
     //! Pointer to source function
-    Teuchos::RCP< ExponentialSourceFunction<EvalT> > srcFunc;
+    Teuchos::RCP< MultiVariateExponentialSourceFunction<EvalT> > srcFunc;
+
+    //! Index of factor
+    unsigned int index;
 
   };
 
 }
 
-#endif // FEAPP_CUBICSOURCEFUNCTION_HPP
+#endif // FEAPP_MULTIVARIATEEXPONENTIALSOURCEFUNCTION_HPP

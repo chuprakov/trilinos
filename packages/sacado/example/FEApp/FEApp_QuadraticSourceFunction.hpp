@@ -137,7 +137,7 @@ namespace FEApp {
 
      //! Get real parameter value
     virtual double getRealValue() const { 
-      return Sacado::Value<ScalarT>::eval(srcFunc->getFactor()); }
+      return Sacado::ScalarValue<ScalarT>::eval(srcFunc->getFactor()); }
     
     //! Get parameter value this object represents
     virtual const ScalarT& getValue() const { return srcFunc->getFactor(); }

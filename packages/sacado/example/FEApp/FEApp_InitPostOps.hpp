@@ -44,6 +44,7 @@
 #if SG_ACTIVE
 #include "EpetraExt_BlockVector.h"
 #include "Stokhos_OrthogPolyBasis.hpp"
+#include "Stokhos_Quadrature.hpp"
 #include "EpetraExt_BlockCrsMatrix.h"
 #endif
 
@@ -307,18 +308,18 @@ namespace FEApp {
      * Set xdot to Teuchos::null for steady-state problems
      */
     SGResidualOp(
-	      const Teuchos::RCP<const Epetra_Map>& base_map,
-	      const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis,
-        const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
-        const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
-        const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f);
+     const Teuchos::RCP<const Epetra_Map>& base_map,
+     const Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> >& sg_basis,
+     const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+     const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
+     const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f);
 
     //! Destructor
     virtual ~SGResidualOp();
 
     //! Reset operator for new fill
     virtual void reset(
-	        const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+	  const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
           const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x);
     
     //! Evaulate element init operator
@@ -363,7 +364,7 @@ namespace FEApp {
     Teuchos::RCP<const Epetra_Map> map;
 
     //! Stochastic Galerking basis
-    Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> > sg_basis;
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > sg_basis;
 
     //! SG time derivative vector (may be null)
     Teuchos::RCP<const EpetraExt::BlockVector> sg_xdot;
@@ -387,30 +388,28 @@ namespace FEApp {
     public FEApp::AbstractInitPostOp<FEApp::SGJacobianType> {
   public:
 
-    typedef SGType::expansion_type::tp_type tp_type;
-
     //! Constructor
     /*!
      * Set xdot to Teuchos::null for steady-state problems
      */
     SGJacobianOp(
-         const Teuchos::RCP<const Epetra_Map>& base_map,
-         const Teuchos::RCP<const Epetra_CrsGraph>& base_graph,
-	       const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis,
-         const Teuchos::RCP<const tp_type >& Cijk,
-         double alpha, double beta,
-         const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
-         const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
-         const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f,
-         const Teuchos::RCP<EpetraExt::BlockCrsMatrix>& sg_overlapped_jac);
-
+      const Teuchos::RCP<const Epetra_Map>& base_map,
+      const Teuchos::RCP<const Epetra_CrsGraph>& base_graph,
+      const Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> >& sg_basis,
+      const Teuchos::RCP<const Stokhos::Sparse3Tensor<int,double> >& Cijk,
+      double alpha, double beta,
+      const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+      const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
+      const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f,
+      const Teuchos::RCP<EpetraExt::BlockCrsMatrix>& sg_overlapped_jac);
+    
     //! Destructor
     virtual ~SGJacobianOp();
 
     //! Reset operator for new fill
     virtual void reset(
           double alpha, double beta,
-	        const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+	  const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
           const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x);
 
     //! Evaulate element init operator
@@ -458,10 +457,10 @@ namespace FEApp {
     Teuchos::RCP<const Epetra_CrsGraph> graph;
 
     //! Stochastic Galerkin basis
-    Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> > sg_basis;
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > sg_basis;
 
     //! Stochastic Galerkin triple product
-    Teuchos::RCP<const tp_type> Cijk;
+    Teuchos::RCP<const Stokhos::Sparse3Tensor<int,double> > Cijk;
 
     //! Coefficient of mass matrix
     double m_coeff;
@@ -494,29 +493,27 @@ namespace FEApp {
     public FEApp::AbstractInitPostOp<FEApp::SGJacobianType> {
   public:
 
-    typedef SGType::expansion_type::tp_type tp_type;
-
     //! Constructor
     /*!
      * Set xdot to Teuchos::null for steady-state problems
      */
     SGMatrixFreeJacobianOp(
-         const Teuchos::RCP<const Epetra_Map>& base_map,
-         const Teuchos::RCP<const Epetra_CrsGraph>& base_graph,
-	       const Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> >& sg_basis,
-         double alpha, double beta,
-         const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
-         const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
-         const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f);
+      const Teuchos::RCP<const Epetra_Map>& base_map,
+      const Teuchos::RCP<const Epetra_CrsGraph>& base_graph,
+      const Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> >& sg_basis,
+      double alpha, double beta,
+      const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+      const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
+      const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f);
 
     //! Destructor
     virtual ~SGMatrixFreeJacobianOp();
 
     //! Reset operator for new fill
     virtual void reset(
-	        double alpha, double beta,
-	        const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
-          const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x);
+	 double alpha, double beta,
+	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x);
 
     //! Get Jacobian blocks
     virtual std::vector< Teuchos::RCP<Epetra_CrsMatrix> >&
@@ -567,7 +564,7 @@ namespace FEApp {
     Teuchos::RCP<const Epetra_CrsGraph> graph;
 
     //! Stochastic Galerkin basis
-    Teuchos::RCP<const Stokhos::OrthogPolyBasis<double> > sg_basis;
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > sg_basis;
 
     //! Coefficient of mass matrix
     double m_coeff;
@@ -595,6 +592,473 @@ namespace FEApp {
 
     //! Jacobian matrix
     std::vector< Teuchos::RCP<Epetra_CrsMatrix> > jac;
+
+  };
+
+  //! Fill operator for residual
+  class SGGQResidualOp : 
+    public FEApp::AbstractInitPostOp<FEApp::ResidualType> {
+  public:
+    
+    //! Constructor
+    /*!
+     * Set xdot to Teuchos::null for steady-state problems
+     */
+    SGGQResidualOp(
+      const Teuchos::RCP<const Epetra_Map>& base_map,
+      const Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> >& sg_basis,
+      const Teuchos::RCP<const Stokhos::Quadrature<int,double> >& sg_quad,
+      const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+      const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
+      const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f);
+
+    //! Destructor
+    virtual ~SGGQResidualOp();
+
+    //! Set Quad point index
+    virtual void setQuadPointIndex(unsigned int index);
+    
+    //! Evaulate element init operator
+    virtual void elementInit(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector<double>* elem_xdot,
+                             std::vector<double>& elem_x);
+
+    //! Evaluate element post operator
+    virtual void elementPost(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector<double>& elem_f);
+
+    //! Evaulate node init operator
+    virtual void nodeInit(const FEApp::NodeBC& bc,
+                          unsigned int neqn,
+                          std::vector<double>* node_xdot,
+                          std::vector<double>& node_x);
+
+    //! Evaluate node post operator
+    virtual void nodePost(const FEApp::NodeBC& bc,
+                          unsigned int neqn,
+                          std::vector<double>& node_f);
+
+    //! Finalize fill
+    virtual void finalizeFill();
+
+  private:
+    
+    //! Private to prohibit copying
+    SGGQResidualOp(const SGGQResidualOp&);
+
+    //! Private to prohibit copying
+    SGGQResidualOp& operator=(const SGGQResidualOp&);
+
+  protected:
+
+    //! Map for base discretization
+    Teuchos::RCP<const Epetra_Map> map;
+
+    //! Stochastic Galerking basis
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > sg_basis;
+
+    //! Stochastic Galerkin quadrature
+    Teuchos::RCP<const Stokhos::Quadrature<int,double> > sg_quad;
+
+    //! SG time derivative vector (may be null)
+    Teuchos::RCP<const EpetraExt::BlockVector> sg_xdot;
+
+    //! SG solution vector
+    Teuchos::RCP<const EpetraExt::BlockVector> sg_x;
+
+    //! SG residual vector
+    Teuchos::RCP<EpetraExt::BlockVector> sg_f;
+
+    //! Array of Quad points
+    const std::vector< std::vector<double> >& quad_points;
+
+    //! Array of Quad weights
+    const std::vector<double>& quad_weights;
+
+    //! Values of basis at Quad points
+    const std::vector< std::vector<double> >& quad_values;
+
+    //! Norms of basis vectors
+    const std::vector<double>& norms;
+
+    //! Size of SG basis
+    unsigned int nblock;
+
+    //! Size of deterministic problem
+    unsigned int n;
+
+    //! Index of current Quad points
+    unsigned int quad_index;
+
+  };
+
+  //! Fill operator for Jacobian
+  class SGGQJacobianOp : 
+    public FEApp::AbstractInitPostOp<FEApp::JacobianType> {
+  public:
+
+    //! Constructor
+    /*!
+     * Set xdot to Teuchos::null for steady-state problems
+     */
+    SGGQJacobianOp(
+     const Teuchos::RCP<const Epetra_Map>& base_map,
+     const Teuchos::RCP<const Epetra_CrsGraph>& base_graph,
+     const Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> >& sg_basis,
+     const Teuchos::RCP<const Stokhos::Quadrature<int,double> >& sg_quad,
+     double alpha, double beta,
+     const Teuchos::RCP<const EpetraExt::BlockVector>& overlapped_xdot,
+     const Teuchos::RCP<const EpetraExt::BlockVector>& overlapped_x,
+     const Teuchos::RCP<EpetraExt::BlockVector>& overlapped_f);
+
+    //! Destructor
+    virtual ~SGGQJacobianOp();
+
+    //! Reset operator for new fill
+    virtual void reset(
+	 double alpha, double beta,
+	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x);
+
+    //! Set Quad point index
+    virtual void setQuadPointIndex(unsigned int index);
+
+    //! Get Jacobian blocks
+    virtual std::vector< Teuchos::RCP<Epetra_CrsMatrix> >&
+    getJacobianBlocks();
+
+    //! Evaulate element init operator
+    virtual void elementInit(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector< FadType >* elem_xdot,
+                             std::vector< FadType >& elem_x);
+
+    //! Evaluate element post operator
+    virtual void elementPost(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector< FadType >& elem_f);
+
+    //! Evaulate node init operator
+    virtual void nodeInit(const FEApp::NodeBC& bc,
+                          unsigned int neqn,
+                          std::vector< FadType >* node_xdot,
+                          std::vector< FadType >& node_x);
+
+    //! Evaluate node post operator
+    virtual void nodePost(const FEApp::NodeBC& bc,
+                          unsigned int neqn,
+                          std::vector< FadType >& node_f);
+
+    //! Finalize fill
+    virtual void finalizeFill();
+
+  private:
+    
+    //! Private to prohibit copying
+    SGGQJacobianOp(const SGGQJacobianOp&);
+    
+    //! Private to prohibit copying
+    SGGQJacobianOp& operator=(const SGGQJacobianOp&);
+
+  protected:
+
+     //! Map for base discretization
+    Teuchos::RCP<const Epetra_Map> map;
+
+    //! Graph for base discretization
+    Teuchos::RCP<const Epetra_CrsGraph> graph;
+
+    //! Stochastic Galerking basis
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > sg_basis;
+
+    //! Stochastic Galerkin quadrature
+    Teuchos::RCP<const Stokhos::Quadrature<int,double> > sg_quad;
+
+    //! Coefficient of mass matrix
+    double m_coeff;
+
+    //! Coefficient of Jacobian matrix
+    double j_coeff;
+
+    //! SG time derivative vector (may be null)
+    Teuchos::RCP<const EpetraExt::BlockVector> sg_xdot;
+
+    //! SG solution vector
+    Teuchos::RCP<const EpetraExt::BlockVector> sg_x;
+
+    //! SG residual vector
+    Teuchos::RCP<EpetraExt::BlockVector> sg_f;
+
+    //! Array of Quad points
+    const std::vector< std::vector<double> >& quad_points;
+
+    //! Array of Quad weights
+    const std::vector<double>& quad_weights;
+
+    //! Values of basis at Quad points
+    const std::vector< std::vector<double> >& quad_values;
+
+    //! Norms of basis vectors
+    const std::vector<double>& norms;
+
+    //! Size of SG basis
+    unsigned int nblock;
+
+    //! Size of deterministic problem
+    unsigned int n;
+
+    //! Index of current Quad points
+    unsigned int quad_index;
+
+    //! Jacobian matrix
+    std::vector< Teuchos::RCP<Epetra_CrsMatrix> > jac;
+
+  };
+
+  //! Fill operator for residual
+  class SGGQResidualOp2 : 
+    public FEApp::AbstractInitPostOp<FEApp::ResidualType> {
+  public:
+    
+    //! Constructor
+    /*!
+     * Set xdot to Teuchos::null for steady-state problems
+     */
+    SGGQResidualOp2(
+     const Teuchos::RCP<const Epetra_Map>& base_map,
+     const Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> >& sg_basis,
+     const Teuchos::RCP<const Stokhos::Quadrature<int,double> >& sg_quad,
+     const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+     const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x,
+     const Teuchos::RCP<EpetraExt::BlockVector>& sg_overlapped_f);
+
+    //! Destructor
+    virtual ~SGGQResidualOp2();
+
+    //! Reset operator for new fill
+    virtual void reset(
+	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x);
+
+    //! Set Quad point index
+    virtual void setQuadPointIndex(unsigned int index);
+    
+    //! Evaulate element init operator
+    virtual void elementInit(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector<double>* elem_xdot,
+                             std::vector<double>& elem_x);
+
+    //! Evaluate element post operator
+    virtual void elementPost(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector<double>& elem_f);
+
+    //! Evaulate node init operator
+    virtual void nodeInit(const FEApp::NodeBC& bc,
+                          unsigned int neqn,
+                          std::vector<double>* node_xdot,
+                          std::vector<double>& node_x);
+
+    //! Evaluate node post operator
+    virtual void nodePost(const FEApp::NodeBC& bc,
+                          unsigned int neqn,
+                          std::vector<double>& node_f);
+
+    //! Finalize fill
+    virtual void finalizeFill();
+
+  private:
+    
+    //! Private to prohibit copying
+    SGGQResidualOp2(const SGGQResidualOp2&);
+
+    //! Private to prohibit copying
+    SGGQResidualOp2& operator=(const SGGQResidualOp2&);
+
+  protected:
+
+    //! Map for base discretization
+    Teuchos::RCP<const Epetra_Map> map;
+
+    //! Stochastic Galerking basis
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > sg_basis;
+
+    //! Stochastic Galerkin quadrature
+    Teuchos::RCP<const Stokhos::Quadrature<int,double> > sg_quad;
+
+    //! SG time derivative vector (may be null)
+    Teuchos::RCP<const EpetraExt::BlockVector> sg_xdot;
+
+    //! SG solution vector
+    Teuchos::RCP<const EpetraExt::BlockVector> sg_x;
+
+    //! SG residual vector
+    Teuchos::RCP<EpetraExt::BlockVector> sg_f;
+
+    //! Array of Quad points
+    const std::vector< std::vector<double> >& quad_points;
+
+    //! Array of Quad weights
+    const std::vector<double>& quad_weights;
+
+    //! Values of basis at Quad points
+    const std::vector< std::vector<double> >& quad_values;
+
+    //! Norms of basis vectors
+    const std::vector<double>& norms;
+
+    //! Size of SG basis
+    unsigned int nblock;
+
+    //! Size of deterministic problem
+    unsigned int n;
+
+    //! Number of quad points
+    unsigned int ngp;
+
+    //! Index of current Quad points
+    unsigned int quad_index;
+
+    //! Current x vector
+    Teuchos::RCP<Epetra_Vector> x;
+
+    //! Current xdot vector
+    Teuchos::RCP<Epetra_Vector> xdot;
+
+    //! residual at all quad points
+    std::vector<double> f;
+
+  };
+
+  //! Fill operator for Jacobian
+  class SGGQJacobianOp2 : 
+    public FEApp::AbstractInitPostOp<FEApp::JacobianType> {
+  public:
+
+    //! Constructor
+    /*!
+     * Set xdot to Teuchos::null for steady-state problems
+     */
+    SGGQJacobianOp2(
+     const Teuchos::RCP<const Epetra_Map>& base_map,
+     const Teuchos::RCP<const Epetra_CrsGraph>& base_graph,
+     const Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> >& sg_basis,
+     const Teuchos::RCP<const Stokhos::Quadrature<int,double> >& sg_quad,
+     double alpha, double beta,
+     const Teuchos::RCP<const EpetraExt::BlockVector>& overlapped_xdot,
+     const Teuchos::RCP<const EpetraExt::BlockVector>& overlapped_x,
+     const Teuchos::RCP<EpetraExt::BlockVector>& overlapped_f);
+
+    //! Destructor
+    virtual ~SGGQJacobianOp2();
+
+    //! Reset operator for new fill
+    virtual void reset(
+	 double alpha, double beta,
+	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_xdot,
+	 const Teuchos::RCP<const EpetraExt::BlockVector>& sg_overlapped_x);
+
+    //! Set Quad point index
+    virtual void setQuadPointIndex(unsigned int index);
+
+    //! Get Jacobian blocks
+    virtual std::vector< Teuchos::RCP<Epetra_CrsMatrix> >&
+    getJacobianBlocks();
+
+    //! Evaulate element init operator
+    virtual void elementInit(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector< FadType >* elem_xdot,
+                             std::vector< FadType >& elem_x);
+
+    //! Evaluate element post operator
+    virtual void elementPost(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector< FadType >& elem_f);
+
+    //! Evaulate node init operator
+    virtual void nodeInit(const FEApp::NodeBC& bc,
+                          unsigned int neqn,
+                          std::vector< FadType >* node_xdot,
+                          std::vector< FadType >& node_x);
+
+    //! Evaluate node post operator
+    virtual void nodePost(const FEApp::NodeBC& bc,
+                          unsigned int neqn,
+                          std::vector< FadType >& node_f);
+
+    //! Finalize fill
+    virtual void finalizeFill();
+
+  private:
+    
+    //! Private to prohibit copying
+    SGGQJacobianOp2(const SGGQJacobianOp2&);
+    
+    //! Private to prohibit copying
+    SGGQJacobianOp2& operator=(const SGGQJacobianOp2&);
+
+  protected:
+
+     //! Map for base discretization
+    Teuchos::RCP<const Epetra_Map> map;
+
+    //! Graph for base discretization
+    Teuchos::RCP<const Epetra_CrsGraph> graph;
+
+    //! Stochastic Galerking basis
+    Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > sg_basis;
+
+    //! Stochastic Galerkin quadrature
+    Teuchos::RCP<const Stokhos::Quadrature<int,double> > sg_quad;
+
+    //! Coefficient of mass matrix
+    double m_coeff;
+
+    //! Coefficient of Jacobian matrix
+    double j_coeff;
+
+    //! SG time derivative vector (may be null)
+    Teuchos::RCP<const EpetraExt::BlockVector> sg_xdot;
+
+    //! SG solution vector
+    Teuchos::RCP<const EpetraExt::BlockVector> sg_x;
+
+    //! SG residual vector
+    Teuchos::RCP<EpetraExt::BlockVector> sg_f;
+
+    //! Array of Quad points
+    const std::vector< std::vector<double> >& quad_points;
+
+    //! Array of Quad weights
+    const std::vector<double>& quad_weights;
+
+    //! Values of basis at Quad points
+    const std::vector< std::vector<double> >& quad_values;
+
+    //! Norms of basis vectors
+    const std::vector<double>& norms;
+
+    //! Size of SG basis
+    unsigned int nblock;
+
+    //! Size of deterministic problem
+    unsigned int n;
+
+    //! Index of current Quad points
+    unsigned int quad_index;
+
+    //! Jacobian matrix
+    std::vector< Teuchos::RCP<Epetra_CrsMatrix> > jac;
+
+    //! Current x vector
+    Teuchos::RCP<Epetra_Vector> x;
+
+    //! Current xdot vector
+    Teuchos::RCP<Epetra_Vector> xdot;
 
   };
 

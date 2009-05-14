@@ -95,7 +95,6 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
                         const std::vector<ScalarT>& solution,
                         std::vector<ScalarT>& residual)
  {
-  
   // Quadrature points
   const std::vector<double>& xi = quadRule.quadPoints();
 

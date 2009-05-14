@@ -18,6 +18,7 @@ APPEND_SET(HEADERS
   FEApp_QuadraticSourceFunction.hpp
   FEApp_CubicSourceFunction.hpp
   FEApp_ExponentialSourceFunction.hpp
+  FEApp_MultiVariateExponentialSourceFunction.hpp
   FEApp_SourceFunctionFactory.hpp
   FEApp_SourceFunctionFactoryImpl.hpp
   FEApp_AbstractFunction.hpp
@@ -54,8 +55,8 @@ APPEND_SET(HEADERS
   FEApp_DiscretizationFactory.hpp
   FEApp_Application.hpp
   FEApp_ModelEvaluator.hpp
-  FEApp_SGMatrixFreeOp.hpp
-  FEApp_SGMeanPrecOp.hpp
+  FEApp_SGGaussQuadResidualGlobalFill.hpp
+  FEApp_SGGaussQuadJacobianGlobalFill.hpp
   ) 
 
 APPEND_SET(SOURCES
@@ -80,8 +81,8 @@ APPEND_SET(SOURCES
   FEApp_DiscretizationFactory.cpp
   FEApp_Application.cpp
   FEApp_ModelEvaluator.cpp
-  FEApp_SGMatrixFreeOp.cpp
-  FEApp_SGMeanPrecOp.cpp
+  FEApp_SGGaussQuadResidualGlobalFill.cpp
+  FEApp_SGGaussQuadJacobianGlobalFill.cpp
   )
 
 IF(Sacado_ENABLE_FEApp)
