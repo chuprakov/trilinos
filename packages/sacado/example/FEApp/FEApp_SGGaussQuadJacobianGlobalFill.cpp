@@ -31,6 +31,8 @@
 
 #include "FEApp_SGGaussQuadJacobianGlobalFill.hpp"
 
+#if SG_ACTIVE
+
 FEApp::SGGaussQuadJacobianGlobalFill::
 SGGaussQuadJacobianGlobalFill(
       const Teuchos::RCP<const FEApp::Mesh>& elementMesh,
@@ -209,3 +211,5 @@ computeGlobalFill(FEApp::AbstractInitPostOp<FEApp::SGJacobianType>& initPostOp)
   initPostOp.finalizeFill();
 
 }
+
+#endif

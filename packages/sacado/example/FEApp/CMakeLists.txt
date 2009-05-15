@@ -51,12 +51,9 @@ APPEND_SET(HEADERS
   FEApp_GlobalFillImpl.hpp
   FEApp_AbstractDiscretization.hpp
   FEApp_CZeroDiscretization.hpp
-  FEApp_BlockDiscretization.hpp
   FEApp_DiscretizationFactory.hpp
   FEApp_Application.hpp
   FEApp_ModelEvaluator.hpp
-  FEApp_SGGaussQuadResidualGlobalFill.hpp
-  FEApp_SGGaussQuadJacobianGlobalFill.hpp
   ) 
 
 APPEND_SET(SOURCES
@@ -77,13 +74,23 @@ APPEND_SET(SOURCES
   FEApp_InitPostOps.cpp
   FEApp_GlobalFill.cpp
   FEApp_CZeroDiscretization.cpp
-  FEApp_BlockDiscretization.cpp
   FEApp_DiscretizationFactory.cpp
   FEApp_Application.cpp
   FEApp_ModelEvaluator.cpp
-  FEApp_SGGaussQuadResidualGlobalFill.cpp
-  FEApp_SGGaussQuadJacobianGlobalFill.cpp
   )
+
+IF(Sacado_ENABLE_Stokhos)
+  APPEND_SET(HEADERS
+    FEApp_BlockDiscretization.hpp
+    FEApp_SGGaussQuadResidualGlobalFill.hpp
+    FEApp_SGGaussQuadJacobianGlobalFill.hpp
+  )
+  APPEND_SET(SOURCES
+    FEApp_BlockDiscretization.cpp
+    FEApp_SGGaussQuadResidualGlobalFill.cpp
+    FEApp_SGGaussQuadJacobianGlobalFill.cpp
+  )
+ENDIF()
 
 IF(Sacado_ENABLE_FEApp)
 

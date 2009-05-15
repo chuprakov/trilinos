@@ -33,10 +33,12 @@
 #include "FEApp_ProblemFactory.hpp"
 #include "FEApp_QuadratureFactory.hpp"
 #include "FEApp_DiscretizationFactory.hpp"
+#if SG_ACTIVE
 #include "FEApp_SGGaussQuadResidualGlobalFill.hpp"
 #include "FEApp_SGGaussQuadJacobianGlobalFill.hpp"
 #include "Stokhos_MatrixFreeEpetraOp.hpp"
 #include "Stokhos_MeanEpetraOp.hpp"
+#endif
 #include "Teuchos_TimeMonitor.hpp"
 
 FEApp::Application::Application(
