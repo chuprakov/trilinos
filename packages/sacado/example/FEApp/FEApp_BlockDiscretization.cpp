@@ -34,6 +34,8 @@
 
 #ifdef HAVE_MPI
 #include "EpetraExt_MultiMpiComm.h"
+#else
+#include "EpetraExt_MultiSerialComm.h"
 #endif
 
 #if SG_ACTIVE
@@ -47,28 +49,25 @@ FEApp::BlockDiscretization::BlockDiscretization(
   sg_basis(sg_basis_)
 {
 
+  unsigned int num_sg_blocks = sg_basis->size();
 #ifdef HAVE_MPI
   // No parallelism over blocks, so spatial partition is unchanged 
   // as comm->NumProc()
-  unsigned int num_sg_blocks = sg_basis->size();
-  Teuchos::RCP<EpetraExt::MultiMpiComm> multiComm =
+  Teuchos::RCP<EpetraExt::MultiComm> multiComm =
     Teuchos::rcp(new EpetraExt::MultiMpiComm(MPI_COMM_WORLD, 
 					     comm->NumProc(), 
 					     num_sg_blocks));
+#else
+  Teuchos::RCP<EpetraExt::MultiComm> multiComm =
+    Teuchos::rcp(new EpetraExt::MultiSerialComm(num_sg_blocks));
+#endif
 
   // Create block matrix and graph from underlyingDisc and
   // the block information stored in globalComm
-
   int numBlockRows =  multiComm->NumTimeSteps();
   int myBlockRows  =  multiComm->NumTimeStepsOnDomain();
   int myFirstBlockRow = multiComm->FirstTimeStepOnDomain();
   globalComm = multiComm;
-#else
-  int numBlockRows =  1;
-  int myBlockRows  =  1;
-  int myFirstBlockRow = 0;
-  globalComm = comm;
-#endif
 
   // DENSE STENCIL for Stochastic Galerkin
   // For 3 blocks on 2 procs, this should be:
