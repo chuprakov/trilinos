@@ -10,6 +10,7 @@
 
 
 #include "mpi.h"
+#include "CEpetra_Comm.h"
 #include "CTrilinos_enums.h"
 
 
@@ -25,6 +26,9 @@ CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Create ( MPI_Comm comm );
 
 CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Duplicate ( 
   CT_Epetra_MpiComm_ID_t CommID );
+
+CT_Epetra_Comm_ID_t Epetra_MpiComm_Clone ( 
+  CT_Epetra_MpiComm_ID_t selfID );
 
 void Epetra_MpiComm_Destroy ( CT_Epetra_MpiComm_ID_t * selfID );
 
@@ -112,6 +116,9 @@ int Epetra_MpiComm_NumProc ( CT_Epetra_MpiComm_ID_t selfID );
 int Epetra_MpiComm_GetMpiTag ( CT_Epetra_MpiComm_ID_t selfID );
 
 MPI_Comm Epetra_MpiComm_GetMpiComm ( CT_Epetra_MpiComm_ID_t selfID );
+
+void Epetra_MpiComm_Assign ( 
+  CT_Epetra_MpiComm_ID_t selfID, CT_Epetra_MpiComm_ID_t CommID );
 
 
 #ifdef __cplusplus

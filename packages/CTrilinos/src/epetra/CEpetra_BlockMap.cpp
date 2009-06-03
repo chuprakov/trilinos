@@ -341,9 +341,25 @@ int Epetra_BlockMap_PointToElementList_Fill (
         PointToElementList);
 }
 
+CT_Epetra_Comm_ID_t Epetra_BlockMap_Comm ( 
+  CT_Epetra_BlockMap_ID_t selfID )
+{
+    return CEpetra::storeComm(
+        &( CEpetra::getBlockMap(selfID)->Comm() ));
+}
+
 char Epetra_BlockMap_IsOneToOne ( CT_Epetra_BlockMap_ID_t selfID )
 {
     return CEpetra::getBlockMap(selfID)->IsOneToOne();
+}
+
+void Epetra_BlockMap_Assign ( 
+  CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t mapID )
+{
+    const Teuchos::RCP<Epetra_BlockMap> 
+        pmap = CEpetra::getBlockMap(mapID);
+
+    *( CEpetra::getBlockMap(selfID) ) = *pmap;
 }
 
 
@@ -359,6 +375,12 @@ const Teuchos::RCP<Epetra_BlockMap>
 CEpetra::getBlockMap( CT_Epetra_BlockMap_ID_t id )
 {
     return tableOfBlockMaps().get(id);
+}
+
+CT_Epetra_BlockMap_ID_t
+CEpetra::storeBlockMap( const Epetra_BlockMap *pobj )
+{
+    return tableOfBlockMaps().store(pobj);
 }
 
 void

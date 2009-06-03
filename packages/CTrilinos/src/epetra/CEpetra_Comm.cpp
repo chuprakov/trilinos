@@ -38,6 +38,12 @@ CT_Epetra_Comm_ID_t Epetra_Comm_Cast (
     return CTrilinos::cast(tableOfComms(), id);
 }
 
+CT_Epetra_Comm_ID_t Epetra_Comm_Clone ( CT_Epetra_Comm_ID_t selfID )
+{
+    return CEpetra::storeComm(
+        CEpetra::getComm(selfID)->Clone());
+}
+
 void Epetra_Comm_Destroy ( CT_Epetra_Comm_ID_t * selfID )
 {
     tableOfComms().remove(selfID);
@@ -208,6 +214,12 @@ const Teuchos::RCP<Epetra_Comm>
 CEpetra::getComm( CT_Epetra_Comm_ID_t id )
 {
     return tableOfComms().get(id);
+}
+
+CT_Epetra_Comm_ID_t
+CEpetra::storeComm( const Epetra_Comm *pobj )
+{
+    return tableOfComms().store(pobj);
 }
 
 void

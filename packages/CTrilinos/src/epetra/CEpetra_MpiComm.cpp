@@ -2,6 +2,7 @@
 
 
 #include "mpi.h"
+#include "CEpetra_Comm_Cpp.hpp"
 #include "CEpetra_MpiComm_Cpp.hpp"
 #include "CEpetra_MpiComm.h"
 #include "Epetra_MpiComm.h"
@@ -56,6 +57,13 @@ CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Duplicate (
 
     return tableOfMpiComms().store(new Epetra_MpiComm(*pComm));
 
+}
+
+CT_Epetra_Comm_ID_t Epetra_MpiComm_Clone ( 
+  CT_Epetra_MpiComm_ID_t selfID )
+{
+    return CEpetra::storeComm(
+        CEpetra::getMpiComm(selfID)->Clone());
 }
 
 void Epetra_MpiComm_Destroy ( CT_Epetra_MpiComm_ID_t * selfID )
@@ -238,6 +246,15 @@ MPI_Comm Epetra_MpiComm_GetMpiComm ( CT_Epetra_MpiComm_ID_t selfID )
     return CEpetra::getMpiComm(selfID)->GetMpiComm();
 }
 
+void Epetra_MpiComm_Assign ( 
+  CT_Epetra_MpiComm_ID_t selfID, CT_Epetra_MpiComm_ID_t CommID )
+{
+    const Teuchos::RCP<Epetra_MpiComm> 
+        pComm = CEpetra::getMpiComm(CommID);
+
+    *( CEpetra::getMpiComm(selfID) ) = *pComm;
+}
+
 
 } // extern "C"
 
@@ -251,6 +268,12 @@ const Teuchos::RCP<Epetra_MpiComm>
 CEpetra::getMpiComm( CT_Epetra_MpiComm_ID_t id )
 {
     return tableOfMpiComms().get(id);
+}
+
+CT_Epetra_MpiComm_ID_t
+CEpetra::storeMpiComm( const Epetra_MpiComm *pobj )
+{
+    return tableOfMpiComms().store(pobj);
 }
 
 void

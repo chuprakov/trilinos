@@ -89,6 +89,15 @@ void Epetra_Map_Destroy ( CT_Epetra_Map_ID_t * selfID )
     tableOfMaps().remove(selfID);
 }
 
+void Epetra_Map_Assign ( 
+  CT_Epetra_Map_ID_t selfID, CT_Epetra_Map_ID_t mapID )
+{
+    const Teuchos::RCP<Epetra_Map> 
+        pmap = CEpetra::getMap(mapID);
+
+    *( CEpetra::getMap(selfID) ) = *pmap;
+}
+
 
 } // extern "C"
 
@@ -102,6 +111,12 @@ const Teuchos::RCP<Epetra_Map>
 CEpetra::getMap( CT_Epetra_Map_ID_t id )
 {
     return tableOfMaps().get(id);
+}
+
+CT_Epetra_Map_ID_t
+CEpetra::storeMap( const Epetra_Map *pobj )
+{
+    return tableOfMaps().store(pobj);
 }
 
 void

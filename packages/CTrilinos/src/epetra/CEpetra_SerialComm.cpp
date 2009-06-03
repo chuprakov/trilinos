@@ -1,3 +1,4 @@
+#include "CEpetra_Comm_Cpp.hpp"
 #include "CEpetra_SerialComm_Cpp.hpp"
 #include "CEpetra_SerialComm.h"
 #include "Epetra_SerialComm.h"
@@ -52,6 +53,13 @@ CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Duplicate (
 
     return tableOfSerialComms().store(new Epetra_SerialComm(*pComm));
 
+}
+
+CT_Epetra_Comm_ID_t Epetra_SerialComm_Clone ( 
+  CT_Epetra_SerialComm_ID_t selfID )
+{
+    return CEpetra::storeComm(
+        CEpetra::getSerialComm(selfID)->Clone());
 }
 
 void Epetra_SerialComm_Destroy ( 
@@ -227,6 +235,15 @@ int Epetra_SerialComm_NumProc ( CT_Epetra_SerialComm_ID_t selfID )
     return CEpetra::getSerialComm(selfID)->NumProc();
 }
 
+void Epetra_SerialComm_Assign ( 
+  CT_Epetra_SerialComm_ID_t selfID, CT_Epetra_SerialComm_ID_t CommID )
+{
+    const Teuchos::RCP<Epetra_SerialComm> 
+        pComm = CEpetra::getSerialComm(CommID);
+
+    *( CEpetra::getSerialComm(selfID) ) = *pComm;
+}
+
 
 } // extern "C"
 
@@ -240,6 +257,12 @@ const Teuchos::RCP<Epetra_SerialComm>
 CEpetra::getSerialComm( CT_Epetra_SerialComm_ID_t id )
 {
     return tableOfSerialComms().get(id);
+}
+
+CT_Epetra_SerialComm_ID_t
+CEpetra::storeSerialComm( const Epetra_SerialComm *pobj )
+{
+    return tableOfSerialComms().store(pobj);
 }
 
 void

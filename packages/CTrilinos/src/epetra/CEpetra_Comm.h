@@ -17,6 +17,8 @@ extern "C" {
 CT_Epetra_Comm_ID_t Epetra_Comm_Cast(
   CTrilinos_Object_ID_t id );
 
+CT_Epetra_Comm_ID_t Epetra_Comm_Clone ( CT_Epetra_Comm_ID_t selfID );
+
 void Epetra_Comm_Destroy ( CT_Epetra_Comm_ID_t * selfID );
 
 void Epetra_Comm_Barrier ( CT_Epetra_Comm_ID_t selfID );

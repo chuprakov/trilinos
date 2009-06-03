@@ -165,6 +165,10 @@ int Epetra_MultiVector_SetSeed (
 unsigned int Epetra_MultiVector_Seed ( 
   CT_Epetra_MultiVector_ID_t selfID );
 
+void Epetra_MultiVector_Assign ( 
+  CT_Epetra_MultiVector_ID_t selfID, 
+  CT_Epetra_MultiVector_ID_t SourceID );
+
 int Epetra_MultiVector_NumVectors ( 
   CT_Epetra_MultiVector_ID_t selfID );
 

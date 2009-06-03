@@ -148,7 +148,13 @@ int Epetra_BlockMap_FirstPointInElementList_Fill (
 int Epetra_BlockMap_PointToElementList_Fill ( 
   CT_Epetra_BlockMap_ID_t selfID, int * PointToElementList );
 
+CT_Epetra_Comm_ID_t Epetra_BlockMap_Comm ( 
+  CT_Epetra_BlockMap_ID_t selfID );
+
 char Epetra_BlockMap_IsOneToOne ( CT_Epetra_BlockMap_ID_t selfID );
+
+void Epetra_BlockMap_Assign ( 
+  CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t mapID );
 
 
 #ifdef __cplusplus

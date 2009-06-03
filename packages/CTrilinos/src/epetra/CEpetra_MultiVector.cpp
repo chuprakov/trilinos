@@ -1,6 +1,6 @@
 #include "CEpetra_BlockMap_Cpp.hpp"
-#include "CEpetra_MultiVector_Cpp.hpp"
 #include "Epetra_DataAccess.h"
+#include "CEpetra_MultiVector_Cpp.hpp"
 #include "CEpetra_MultiVector.h"
 #include "Epetra_MultiVector.h"
 #include "Teuchos_RCP.hpp"
@@ -398,6 +398,16 @@ unsigned int Epetra_MultiVector_Seed (
     return CEpetra::getMultiVector(selfID)->Seed();
 }
 
+void Epetra_MultiVector_Assign ( 
+  CT_Epetra_MultiVector_ID_t selfID, 
+  CT_Epetra_MultiVector_ID_t SourceID )
+{
+    const Teuchos::RCP<Epetra_MultiVector> 
+        pSource = CEpetra::getMultiVector(SourceID);
+
+    *( CEpetra::getMultiVector(selfID) ) = *pSource;
+}
+
 int Epetra_MultiVector_NumVectors ( 
   CT_Epetra_MultiVector_ID_t selfID )
 {
@@ -472,6 +482,12 @@ const Teuchos::RCP<Epetra_MultiVector>
 CEpetra::getMultiVector( CT_Epetra_MultiVector_ID_t id )
 {
     return tableOfMultiVectors().get(id);
+}
+
+CT_Epetra_MultiVector_ID_t
+CEpetra::storeMultiVector( const Epetra_MultiVector *pobj )
+{
+    return tableOfMultiVectors().store(pobj);
 }
 
 void

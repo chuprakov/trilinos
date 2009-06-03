@@ -6,6 +6,7 @@
 #define CEPETRA_SERIALCOMM_H
 
 
+#include "CEpetra_Comm.h"
 #include "CTrilinos_enums.h"
 
 
@@ -21,6 +22,9 @@ CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Create (  );
 
 CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Duplicate ( 
   CT_Epetra_SerialComm_ID_t CommID );
+
+CT_Epetra_Comm_ID_t Epetra_SerialComm_Clone ( 
+  CT_Epetra_SerialComm_ID_t selfID );
 
 void Epetra_SerialComm_Destroy ( 
   CT_Epetra_SerialComm_ID_t * selfID );
@@ -106,6 +110,9 @@ int Epetra_SerialComm_ScanSum_Long (
 int Epetra_SerialComm_MyPID ( CT_Epetra_SerialComm_ID_t selfID );
 
 int Epetra_SerialComm_NumProc ( CT_Epetra_SerialComm_ID_t selfID );
+
+void Epetra_SerialComm_Assign ( 
+  CT_Epetra_SerialComm_ID_t selfID, CT_Epetra_SerialComm_ID_t CommID );
 
 
 #ifdef __cplusplus

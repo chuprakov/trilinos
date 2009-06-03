@@ -1,7 +1,7 @@
 #include "CEpetra_BlockMap_Cpp.hpp"
-#include "CEpetra_Vector_Cpp.hpp"
 #include "Epetra_DataAccess.h"
 #include "CEpetra_MultiVector_Cpp.hpp"
+#include "CEpetra_Vector_Cpp.hpp"
 #include "CEpetra_Vector.h"
 #include "Epetra_Vector.h"
 #include "Teuchos_RCP.hpp"
@@ -193,6 +193,12 @@ const Teuchos::RCP<Epetra_Vector>
 CEpetra::getVector( CT_Epetra_Vector_ID_t id )
 {
     return tableOfVectors().get(id);
+}
+
+CT_Epetra_Vector_ID_t
+CEpetra::storeVector( const Epetra_Vector *pobj )
+{
+    return tableOfVectors().store(pobj);
 }
 
 void

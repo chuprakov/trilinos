@@ -34,6 +34,9 @@ CT_Epetra_Map_ID_t Epetra_Map_Duplicate ( CT_Epetra_Map_ID_t mapID );
 
 void Epetra_Map_Destroy ( CT_Epetra_Map_ID_t * selfID );
 
+void Epetra_Map_Assign ( 
+  CT_Epetra_Map_ID_t selfID, CT_Epetra_Map_ID_t mapID );
+
 
 #ifdef __cplusplus
 } /* extern "C" */
