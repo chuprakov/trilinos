@@ -51,6 +51,8 @@ namespace FEApp {
     ModelEvaluator(
        const Teuchos::RCP<FEApp::Application>& app,
        const Teuchos::RCP< Teuchos::Array<std::string> >& free_param_names = 
+       Teuchos::null,
+       const Teuchos::RCP< Teuchos::Array<std::string> >& sg_param_names = 
        Teuchos::null);
 
     /** \name Overridden from EpetraExt::ModelEvaluator . */
@@ -95,16 +97,24 @@ namespace FEApp {
     Teuchos::RCP<FEApp::Application> app;
 
     //! List of free parameter names
-    Teuchos::RCP< Teuchos::Array<std::string> > param_names;
+    Teuchos::Array< Teuchos::RCP< Teuchos::Array<std::string> > > param_names;
 
     //! Sacado parameter vector
-    Teuchos::RCP<ParamVec> sacado_param_vec;
+    Teuchos::Array< Teuchos::RCP<ParamVec> > sacado_param_vec;
 
     //! Epetra map for parameter vector
-    Teuchos::RCP<Epetra_LocalMap> epetra_param_map;
+    Teuchos::Array< Teuchos::RCP<Epetra_LocalMap> > epetra_param_map;
 
     //! Epetra parameter vector
-    Teuchos::RCP<Epetra_Vector> epetra_param_vec;
+    Teuchos::Array< Teuchos::RCP<Epetra_Vector> > epetra_param_vec;
+
+    //! Whether we are support SG
+    bool supports_sg;
+
+#if SG_ACTIVE
+    //! Stochastic Galerkin parameters
+    mutable Teuchos::Array<SGType> p_sg_vals;
+#endif
 
   };
 

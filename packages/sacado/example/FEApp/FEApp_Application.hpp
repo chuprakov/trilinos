@@ -59,23 +59,11 @@
 #include "EpetraExt_BlockCrsMatrix.h"
 #include "Stokhos_OrthogPolyBasis.hpp"
 #include "Stokhos_Quadrature.hpp"
-#include "FEApp_BlockDiscretization.hpp"
+#include "Stokhos_VectorOrthogPoly.hpp"
+#include "Stokhos_VectorOrthogPolyTraitsEpetra.hpp"
 #endif
 
 namespace FEApp {
-
-  //! A class to represent a generic preconditioner factory.
-  /*!
-   * This is a temporary hack for stochastic Galerkin methods that need to
-   * deal more directly with preconditioners, but allows FEApp to be independent
-   * of any preconditioner code.  A better solution will be to use Thyra.
-   */
-  class PreconditionerFactory {
-  public:
-    PreconditionerFactory() {}
-    virtual ~PreconditionerFactory() {}
-    virtual Teuchos::RCP<Epetra_Operator> compute(const Teuchos::RCP<Epetra_Operator>& mat) = 0;
-  };
 
   class Application {
   public:
@@ -114,32 +102,35 @@ namespace FEApp {
     /*!
      * Set xdot to NULL for steady-state problems
      */
-    void computeGlobalResidual(const Epetra_Vector* xdot,
-                               const Epetra_Vector& x,
-                               const ParamVec* p,
-                               Epetra_Vector& f);
+    void computeGlobalResidual(
+		      const Epetra_Vector* xdot,
+		      const Epetra_Vector& x,
+		      const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+		      Epetra_Vector& f);
 
     //! Compute global Jacobian
     /*!
      * Set xdot to NULL for steady-state problems
      */
-    void computeGlobalJacobian(double alpha, double beta,
-                               const Epetra_Vector* xdot,
-                               const Epetra_Vector& x,
-                               const ParamVec* p,
-                               Epetra_Vector* f,
-                               Epetra_Operator& jac);
-
+    void computeGlobalJacobian(
+			 double alpha, double beta,
+			 const Epetra_Vector* xdot,
+			 const Epetra_Vector& x,
+			 const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+			 Epetra_Vector* f,
+			 Epetra_Operator& jac);
+    
     //! Compute global Preconditioner
     /*!
      * Set xdot to NULL for steady-state problems
      */
-    void computeGlobalPreconditioner(double alpha, double beta,
-                                     const Epetra_Vector* xdot,
-                                     const Epetra_Vector& x,
-                                     const ParamVec* p,
-                                     Epetra_Vector* f,
-                                     Epetra_Operator& jac);
+    void computeGlobalPreconditioner(
+			    double alpha, double beta,
+			    const Epetra_Vector* xdot,
+			    const Epetra_Vector& x,
+			    const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+			    Epetra_Vector* f,
+			    Epetra_Operator& jac);
     
     //! Compute global Tangent
     /*!
@@ -149,43 +140,43 @@ namespace FEApp {
                               bool sum_derivs,
                               const Epetra_Vector* xdot,
                               const Epetra_Vector& x,
-                              ParamVec* p,
+			      const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+                              ParamVec* deriv_p,
                               const Epetra_MultiVector* Vx,
                               const Teuchos::SerialDenseMatrix<int,double>* Vp,
                               Epetra_Vector* f,
                               Epetra_MultiVector* JVx,
                               Epetra_MultiVector* fVp);
 
+#if SG_ACTIVE
+
     //! Compute global residual for stochastic Galerkin problem
     /*!
      * Set xdot to NULL for steady-state problems
      */
-    void computeGlobalSGResidual(const Epetra_Vector* sg_xdot,
-                                 const Epetra_Vector& sg_x,
-                                 const ParamVec* p,
-                                 Epetra_Vector& sg_f);
+    void computeGlobalSGResidual(
+		        const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
+			const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+			const ParamVec* p,
+			const ParamVec* sg_p,
+			const Teuchos::Array<SGType>* sg_p_vals,
+			Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_f);
 
     //! Compute global Jacobian for stochastic Galerkin problem
     /*!
      * Set xdot to NULL for steady-state problems
      */
-    void computeGlobalSGJacobian(double alpha, double beta,
-                                 const Epetra_Vector* sg_xdot,
-                                 const Epetra_Vector& sg_x,
-                                 const ParamVec* p,
-                                 Epetra_Vector* sg_f,
-                                 Epetra_Operator& sg_jac); 
+    void computeGlobalSGJacobian(
+			double alpha, double beta,
+			const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
+			const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+			const ParamVec* p,
+			const ParamVec* sg_p,
+			const Teuchos::Array<SGType>* sg_p_vals,
+			Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_f,
+			Stokhos::VectorOrthogPoly<Epetra_Operator>& sg_jac);
 
-    //! Compute global Preconditioner for stochastic Galerkin problem
-    /*!
-     * Set xdot to NULL for steady-state problems
-     */
-    void computeGlobalSGPreconditioner(double alpha, double beta,
-                                       const Epetra_Vector* sg_xdot,
-                                       const Epetra_Vector& sg_x,
-                                       const ParamVec* p,
-                                       Epetra_Vector* sg_f,
-                                       Epetra_Operator& sg_jac); 
+#endif
 
   private:
     
@@ -239,13 +230,7 @@ namespace FEApp {
     //! Parameter library
     Teuchos::RCP<ParamLib> paramLib;
 
-    //! Enable stochastic Galerkin discretization
-    bool enable_sg;
-
 #if SG_ACTIVE
-
-    //! Solver method
-    std::string sg_solver_method;
 
     //! Stochastic Galerking basis
     Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > sg_basis;
@@ -253,48 +238,17 @@ namespace FEApp {
     //! Stochastic Galerking quadrature
     Teuchos::RCP<const Stokhos::Quadrature<int,double> > sg_quad;
 
-    typedef Stokhos::Sparse3Tensor<int,double> tp_type;
-    //! Stochastic Galerkin triple product
-    Teuchos::RCP<const tp_type> Cijk;
+    //! SG overlapped solution vector
+    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >  sg_overlapped_x;
 
-    //! Stochastic Galerkin discretization
-    Teuchos::RCP<FEApp::BlockDiscretization> sg_disc;
+    //! SG overlapped time derivative vector
+    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> > sg_overlapped_xdot;
 
-    //! Initial solution vector
-    Teuchos::RCP<EpetraExt::BlockVector> sg_initial_x;
-
-    //! Importer for overlapped data
-    Teuchos::RCP<Epetra_Import> sg_importer;
-
-    //! Exporter for overlapped data
-    Teuchos::RCP<Epetra_Export> sg_exporter;
-
-    //! Overlapped solution vector
-    Teuchos::RCP<EpetraExt::BlockVector> sg_overlapped_x;
-
-    //! Overlapped time derivative vector
-    Teuchos::RCP<EpetraExt::BlockVector> sg_overlapped_xdot;
-
-    //! Overlapped residual vector
-    Teuchos::RCP<EpetraExt::BlockVector> sg_overlapped_f;
+    //! SG overlapped residual vector
+    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> > sg_overlapped_f;
 
     //! Overlapped Jacobian matrix
-    Teuchos::RCP<EpetraExt::BlockCrsMatrix> sg_overlapped_jac;
-
-    //! SG Residual fill op
-    Teuchos::RCP<FEApp::SGResidualOp> sg_res_fill_op;
-
-    //! SG Jacobian fill op
-    Teuchos::RCP<FEApp::SGJacobianOp> sg_full_jac_fill_op;
-
-    //! SG Matrix Free Jacobian fill op
-    Teuchos::RCP<FEApp::SGMatrixFreeJacobianOp> sg_mf_jac_fill_op;
-
-    //! SG Preconditioner factory
-    Teuchos::RCP<FEApp::PreconditionerFactory> precFactory;
-
-    //! Mean Jacobian for preconditioner
-    Teuchos::RCP<Epetra_Operator> mean_jac;
+    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_CrsMatrix> > sg_overlapped_jac;
 
     //! SG Residual global fill object
     Teuchos::RCP< FEApp::GlobalFill<FEApp::SGResidualType> > sg_res_global_fill;
