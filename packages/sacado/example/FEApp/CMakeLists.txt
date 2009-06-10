@@ -81,12 +81,10 @@ APPEND_SET(SOURCES
 
 IF(Sacado_ENABLE_Stokhos)
   APPEND_SET(HEADERS
-    FEApp_BlockDiscretization.hpp
     FEApp_SGGaussQuadResidualGlobalFill.hpp
     FEApp_SGGaussQuadJacobianGlobalFill.hpp
   )
   APPEND_SET(SOURCES
-    FEApp_BlockDiscretization.cpp
     FEApp_SGGaussQuadResidualGlobalFill.cpp
     FEApp_SGGaussQuadJacobianGlobalFill.cpp
   )
