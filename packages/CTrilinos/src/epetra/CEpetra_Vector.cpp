@@ -51,16 +51,6 @@ CT_Epetra_Vector_ID_t Epetra_Vector_Create (
 
 }
 
-CT_Epetra_Vector_ID_t Epetra_Vector_Create_AndZero ( 
-  CT_Epetra_BlockMap_ID_t MapID )
-{
-    const Teuchos::RCP<Epetra_BlockMap> 
-        pMap = CEpetra::getBlockMap(MapID);
-
-    return tableOfVectors().store(new Epetra_Vector(*pMap,  true));
-
-}
-
 CT_Epetra_Vector_ID_t Epetra_Vector_Duplicate ( 
   CT_Epetra_Vector_ID_t SourceID )
 {

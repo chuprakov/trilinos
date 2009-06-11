@@ -23,9 +23,6 @@ CT_Epetra_Vector_ID_t Epetra_Vector_Cast(
 CT_Epetra_Vector_ID_t Epetra_Vector_Create ( 
   CT_Epetra_BlockMap_ID_t MapID, boolean zeroOut );
 
-CT_Epetra_Vector_ID_t Epetra_Vector_Create_AndZero ( 
-  CT_Epetra_BlockMap_ID_t MapID );
-
 CT_Epetra_Vector_ID_t Epetra_Vector_Duplicate ( 
   CT_Epetra_Vector_ID_t SourceID );
 

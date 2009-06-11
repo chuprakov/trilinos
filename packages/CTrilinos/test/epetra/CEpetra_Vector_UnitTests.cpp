@@ -26,8 +26,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Cast )
   CT_Epetra_BlockMap_ID_t MapID = UnitTest_Create_BlockMapCast(9);
 
   /* This cast should be allowed */
-  ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_Create_AndZero(
-       MapID));
+  ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_Create(
+       MapID, TRUE));
   ECHO(CT_Epetra_Vector_ID_t dupID = Epetra_Vector_Cast(selfID));
 
   /* This cast should be allowed */
@@ -36,8 +36,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Cast )
 
   /* This cast should not be allowed */
   ECHO(int NumVectors = 3);
-  ECHO(CT_Epetra_MultiVector_ID_t mvecID2 = Epetra_MultiVector_Create_AndZero(
-       MapID, NumVectors));
+  ECHO(CT_Epetra_MultiVector_ID_t mvecID2 = Epetra_MultiVector_Create(
+       MapID, NumVectors, TRUE));
   TEST_THROW(Epetra_Vector_Cast(mvecID2), Teuchos::m_bad_cast);
 
   /* Now check the result of the call to the wrapper function */
@@ -60,27 +60,6 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Create )
   ECHO(boolean zeroOut = FALSE);
   ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_Create(
        MapID, zeroOut));
-
-  /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_Vector_ID);
-  TEST_EQUALITY_CONST(selfID.index, 0);
-}
-
-
-/**********************************************************************
-CT_Epetra_Vector_ID_t Epetra_Vector_Create_AndZero ( 
-  CT_Epetra_BlockMap_ID_t MapID );
- **********************************************************************/
-
-TEUCHOS_UNIT_TEST( Epetra_Vector , Create_AndZero )
-{
-  ECHO(CEpetra_Test_CleanSlate());
-
-  /* Create everything we need to pass to the constructor */
-  CT_Epetra_BlockMap_ID_t MapID = UnitTest_Create_BlockMapCast(9);
-
-  ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_Create_AndZero(
-       MapID));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.type, CT_Epetra_Vector_ID);
@@ -144,8 +123,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , FromSource )
   CT_Epetra_BlockMap_ID_t MapID = UnitTest_Create_BlockMapCast(9);
 
   ECHO(int NumVectors = 3);
-  ECHO(CT_Epetra_MultiVector_ID_t SourceID = Epetra_MultiVector_Create_AndZero(
-       MapID, NumVectors));
+  ECHO(CT_Epetra_MultiVector_ID_t SourceID = Epetra_MultiVector_Create(
+       MapID, NumVectors, TRUE));
 
   ECHO(int Index = 1);
   ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_FromSource(

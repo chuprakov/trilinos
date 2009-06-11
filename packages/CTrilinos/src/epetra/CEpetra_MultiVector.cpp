@@ -51,17 +51,6 @@ CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create (
 
 }
 
-CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_AndZero ( 
-  CT_Epetra_BlockMap_ID_t MapID, int NumVectors )
-{
-    const Teuchos::RCP<Epetra_BlockMap> 
-        pMap = CEpetra::getBlockMap(MapID);
-
-    return tableOfMultiVectors().store(new Epetra_MultiVector(
-        *pMap, NumVectors,  true));
-
-}
-
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Duplicate ( 
   CT_Epetra_MultiVector_ID_t SourceID )
 {
@@ -431,7 +420,7 @@ int Epetra_MultiVector_Stride ( CT_Epetra_MultiVector_ID_t selfID )
     return CEpetra::getMultiVector(selfID)->Stride();
 }
 
-char Epetra_MultiVector_ConstantStride ( 
+boolean Epetra_MultiVector_ConstantStride ( 
   CT_Epetra_MultiVector_ID_t selfID )
 {
     return CEpetra::getMultiVector(selfID)->ConstantStride();

@@ -67,6 +67,6 @@ UnitTest_Create_BlockMapCast(int NumGlobalElements)
 CT_Epetra_Vector_ID_t
 UnitTest_Create_Vector(int NumGlobalElements)
 {
-  return Epetra_Vector_Create_AndZero(UnitTest_Create_BlockMapCast(NumGlobalElements));
+  return Epetra_Vector_Create(UnitTest_Create_BlockMapCast(NumGlobalElements), true);
 }
 

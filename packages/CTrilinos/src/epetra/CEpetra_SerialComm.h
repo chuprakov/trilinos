@@ -7,6 +7,10 @@
 
 
 #include "CEpetra_Comm.h"
+#include "CEpetra_Distributor.h"
+#include "CEpetra_Directory.h"
+#include "CEpetra_BlockMap.h"
+#include "CEpetra_SerialCommData.h"
 #include "CTrilinos_enums.h"
 
 
@@ -110,6 +114,15 @@ int Epetra_SerialComm_ScanSum_Long (
 int Epetra_SerialComm_MyPID ( CT_Epetra_SerialComm_ID_t selfID );
 
 int Epetra_SerialComm_NumProc ( CT_Epetra_SerialComm_ID_t selfID );
+
+CT_Epetra_Distributor_ID_t Epetra_SerialComm_CreateDistributor ( 
+  CT_Epetra_SerialComm_ID_t selfID );
+
+CT_Epetra_Directory_ID_t Epetra_SerialComm_CreateDirectory ( 
+  CT_Epetra_SerialComm_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID );
+
+CT_Epetra_SerialCommData_ID_t Epetra_SerialComm_DataPtr ( 
+  CT_Epetra_SerialComm_ID_t selfID );
 
 void Epetra_SerialComm_Assign ( 
   CT_Epetra_SerialComm_ID_t selfID, CT_Epetra_SerialComm_ID_t CommID );

@@ -7,6 +7,7 @@
 
 
 #include "CEpetra_Comm.h"
+#include "CEpetra_BlockMapData.h"
 #include "CTrilinos_enums.h"
 
 
@@ -57,10 +58,10 @@ int Epetra_BlockMap_FindLocalElementID (
   CT_Epetra_BlockMap_ID_t selfID, int PointID, int * ElementID, 
   int * ElementOffset );
 
-char Epetra_BlockMap_MyGID ( 
+boolean Epetra_BlockMap_MyGID ( 
   CT_Epetra_BlockMap_ID_t selfID, int GID_in );
 
-char Epetra_BlockMap_MyLID ( 
+boolean Epetra_BlockMap_MyLID ( 
   CT_Epetra_BlockMap_ID_t selfID, int LID_in );
 
 int Epetra_BlockMap_MinAllGID ( CT_Epetra_BlockMap_ID_t selfID );
@@ -111,20 +112,21 @@ int Epetra_BlockMap_MinElementSize (
 int Epetra_BlockMap_MaxElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-char Epetra_BlockMap_UniqueGIDs ( CT_Epetra_BlockMap_ID_t selfID );
-
-char Epetra_BlockMap_ConstantElementSize ( 
+boolean Epetra_BlockMap_UniqueGIDs ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-char Epetra_BlockMap_SameAs ( 
+boolean Epetra_BlockMap_ConstantElementSize ( 
+  CT_Epetra_BlockMap_ID_t selfID );
+
+boolean Epetra_BlockMap_SameAs ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID );
 
-char Epetra_BlockMap_PointSameAs ( 
+boolean Epetra_BlockMap_PointSameAs ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID );
 
-char Epetra_BlockMap_LinearMap ( CT_Epetra_BlockMap_ID_t selfID );
+boolean Epetra_BlockMap_LinearMap ( CT_Epetra_BlockMap_ID_t selfID );
 
-char Epetra_BlockMap_DistributedGlobal ( 
+boolean Epetra_BlockMap_DistributedGlobal ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
 int * Epetra_BlockMap_MyGlobalElements ( 
@@ -151,10 +153,14 @@ int Epetra_BlockMap_PointToElementList_Fill (
 CT_Epetra_Comm_ID_t Epetra_BlockMap_Comm ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-char Epetra_BlockMap_IsOneToOne ( CT_Epetra_BlockMap_ID_t selfID );
+boolean Epetra_BlockMap_IsOneToOne ( 
+  CT_Epetra_BlockMap_ID_t selfID );
 
 void Epetra_BlockMap_Assign ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t mapID );
+
+CT_Epetra_BlockMapData_ID_t Epetra_BlockMap_DataPtr ( 
+  CT_Epetra_BlockMap_ID_t selfID );
 
 
 #ifdef __cplusplus

@@ -22,9 +22,6 @@ CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Cast(
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create ( 
   CT_Epetra_BlockMap_ID_t MapID, int NumVectors, boolean zeroOut );
 
-CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_AndZero ( 
-  CT_Epetra_BlockMap_ID_t MapID, int NumVectors );
-
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Duplicate ( 
   CT_Epetra_MultiVector_ID_t SourceID );
 
@@ -180,7 +177,7 @@ int Epetra_MultiVector_GlobalLength (
 
 int Epetra_MultiVector_Stride ( CT_Epetra_MultiVector_ID_t selfID );
 
-char Epetra_MultiVector_ConstantStride ( 
+boolean Epetra_MultiVector_ConstantStride ( 
   CT_Epetra_MultiVector_ID_t selfID );
 
 int Epetra_MultiVector_ReplaceMap ( 

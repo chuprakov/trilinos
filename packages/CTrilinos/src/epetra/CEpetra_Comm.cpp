@@ -1,3 +1,6 @@
+#include "CEpetra_Distributor_Cpp.hpp"
+#include "CEpetra_Directory_Cpp.hpp"
+#include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_Comm_Cpp.hpp"
 #include "CEpetra_Comm.h"
 #include "Epetra_Comm.h"
@@ -199,6 +202,24 @@ int Epetra_Comm_MyPID ( CT_Epetra_Comm_ID_t selfID )
 int Epetra_Comm_NumProc ( CT_Epetra_Comm_ID_t selfID )
 {
     return CEpetra::getComm(selfID)->NumProc();
+}
+
+CT_Epetra_Distributor_ID_t Epetra_Comm_CreateDistributor ( 
+  CT_Epetra_Comm_ID_t selfID )
+{
+    return CEpetra::storeDistributor(
+        CEpetra::getComm(selfID)->CreateDistributor());
+}
+
+CT_Epetra_Directory_ID_t Epetra_Comm_CreateDirectory ( 
+  CT_Epetra_Comm_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID )
+{
+    const Teuchos::RCP<Epetra_BlockMap> 
+        pMap = CEpetra::getBlockMap(MapID);
+
+    return CEpetra::storeDirectory(
+        CEpetra::getComm(selfID)->CreateDirectory(
+            *pMap));
 }
 
 

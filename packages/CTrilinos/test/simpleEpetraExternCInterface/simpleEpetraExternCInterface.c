@@ -53,7 +53,7 @@ int main( int argc, char* argv[] )
   printf( "NumMyElements = %d\n", numMyElements);
   
   /* Create vectors and cast to multivectors */
-  xID = Epetra_Vector_Create_AndZero(bmapID);
+  xID = Epetra_Vector_Create(bmapID, TRUE);
   bID = Epetra_Vector_Create(bmapID, FALSE);
 
   mbID = Epetra_MultiVector_Cast(bID);

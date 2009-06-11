@@ -1,4 +1,5 @@
 #include "CEpetra_Comm_Cpp.hpp"
+#include "CEpetra_BlockMapData_Cpp.hpp"
 #include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_BlockMap.h"
 #include "Epetra_BlockMap.h"
@@ -138,13 +139,13 @@ int Epetra_BlockMap_FindLocalElementID (
         PointID, *ElementID, *ElementOffset);
 }
 
-char Epetra_BlockMap_MyGID ( 
+boolean Epetra_BlockMap_MyGID ( 
   CT_Epetra_BlockMap_ID_t selfID, int GID_in )
 {
     return CEpetra::getBlockMap(selfID)->MyGID(GID_in);
 }
 
-char Epetra_BlockMap_MyLID ( 
+boolean Epetra_BlockMap_MyLID ( 
   CT_Epetra_BlockMap_ID_t selfID, int LID_in )
 {
     return CEpetra::getBlockMap(selfID)->MyLID(LID_in);
@@ -256,18 +257,19 @@ int Epetra_BlockMap_MaxElementSize (
     return CEpetra::getBlockMap(selfID)->MaxElementSize();
 }
 
-char Epetra_BlockMap_UniqueGIDs ( CT_Epetra_BlockMap_ID_t selfID )
+boolean Epetra_BlockMap_UniqueGIDs ( 
+  CT_Epetra_BlockMap_ID_t selfID )
 {
     return CEpetra::getBlockMap(selfID)->UniqueGIDs();
 }
 
-char Epetra_BlockMap_ConstantElementSize ( 
+boolean Epetra_BlockMap_ConstantElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
     return CEpetra::getBlockMap(selfID)->ConstantElementSize();
 }
 
-char Epetra_BlockMap_SameAs ( 
+boolean Epetra_BlockMap_SameAs ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID )
 {
     const Teuchos::RCP<Epetra_BlockMap> 
@@ -276,7 +278,7 @@ char Epetra_BlockMap_SameAs (
     return CEpetra::getBlockMap(selfID)->SameAs(*pMap);
 }
 
-char Epetra_BlockMap_PointSameAs ( 
+boolean Epetra_BlockMap_PointSameAs ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID )
 {
     const Teuchos::RCP<Epetra_BlockMap> 
@@ -285,12 +287,12 @@ char Epetra_BlockMap_PointSameAs (
     return CEpetra::getBlockMap(selfID)->PointSameAs(*pMap);
 }
 
-char Epetra_BlockMap_LinearMap ( CT_Epetra_BlockMap_ID_t selfID )
+boolean Epetra_BlockMap_LinearMap ( CT_Epetra_BlockMap_ID_t selfID )
 {
     return CEpetra::getBlockMap(selfID)->LinearMap();
 }
 
-char Epetra_BlockMap_DistributedGlobal ( 
+boolean Epetra_BlockMap_DistributedGlobal ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
     return CEpetra::getBlockMap(selfID)->DistributedGlobal();
@@ -348,7 +350,8 @@ CT_Epetra_Comm_ID_t Epetra_BlockMap_Comm (
         &( CEpetra::getBlockMap(selfID)->Comm() ));
 }
 
-char Epetra_BlockMap_IsOneToOne ( CT_Epetra_BlockMap_ID_t selfID )
+boolean Epetra_BlockMap_IsOneToOne ( 
+  CT_Epetra_BlockMap_ID_t selfID )
 {
     return CEpetra::getBlockMap(selfID)->IsOneToOne();
 }
@@ -360,6 +363,13 @@ void Epetra_BlockMap_Assign (
         pmap = CEpetra::getBlockMap(mapID);
 
     *( CEpetra::getBlockMap(selfID) ) = *pmap;
+}
+
+CT_Epetra_BlockMapData_ID_t Epetra_BlockMap_DataPtr ( 
+  CT_Epetra_BlockMap_ID_t selfID )
+{
+    return CEpetra::storeBlockMapData(
+        CEpetra::getBlockMap(selfID)->DataPtr());
 }
 
 

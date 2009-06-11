@@ -1,4 +1,8 @@
 #include "CEpetra_Comm_Cpp.hpp"
+#include "CEpetra_Distributor_Cpp.hpp"
+#include "CEpetra_Directory_Cpp.hpp"
+#include "CEpetra_BlockMap_Cpp.hpp"
+#include "CEpetra_SerialCommData_Cpp.hpp"
 #include "CEpetra_SerialComm_Cpp.hpp"
 #include "CEpetra_SerialComm.h"
 #include "Epetra_SerialComm.h"
@@ -233,6 +237,31 @@ int Epetra_SerialComm_MyPID ( CT_Epetra_SerialComm_ID_t selfID )
 int Epetra_SerialComm_NumProc ( CT_Epetra_SerialComm_ID_t selfID )
 {
     return CEpetra::getSerialComm(selfID)->NumProc();
+}
+
+CT_Epetra_Distributor_ID_t Epetra_SerialComm_CreateDistributor ( 
+  CT_Epetra_SerialComm_ID_t selfID )
+{
+    return CEpetra::storeDistributor(
+        CEpetra::getSerialComm(selfID)->CreateDistributor());
+}
+
+CT_Epetra_Directory_ID_t Epetra_SerialComm_CreateDirectory ( 
+  CT_Epetra_SerialComm_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID )
+{
+    const Teuchos::RCP<Epetra_BlockMap> 
+        pMap = CEpetra::getBlockMap(MapID);
+
+    return CEpetra::storeDirectory(
+        CEpetra::getSerialComm(selfID)->CreateDirectory(
+            *pMap));
+}
+
+CT_Epetra_SerialCommData_ID_t Epetra_SerialComm_DataPtr ( 
+  CT_Epetra_SerialComm_ID_t selfID )
+{
+    return CEpetra::storeSerialCommData(
+        CEpetra::getSerialComm(selfID)->DataPtr());
 }
 
 void Epetra_SerialComm_Assign ( 

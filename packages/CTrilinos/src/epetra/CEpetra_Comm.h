@@ -6,6 +6,9 @@
 #define CEPETRA_COMM_H
 
 
+#include "CEpetra_Distributor.h"
+#include "CEpetra_Directory.h"
+#include "CEpetra_BlockMap.h"
 #include "CTrilinos_enums.h"
 
 
@@ -97,6 +100,12 @@ int Epetra_Comm_ScanSum_Long (
 int Epetra_Comm_MyPID ( CT_Epetra_Comm_ID_t selfID );
 
 int Epetra_Comm_NumProc ( CT_Epetra_Comm_ID_t selfID );
+
+CT_Epetra_Distributor_ID_t Epetra_Comm_CreateDistributor ( 
+  CT_Epetra_Comm_ID_t selfID );
+
+CT_Epetra_Directory_ID_t Epetra_Comm_CreateDirectory ( 
+  CT_Epetra_Comm_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID );
 
 
 #ifdef __cplusplus
