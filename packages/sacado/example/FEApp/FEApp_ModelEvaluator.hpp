@@ -67,6 +67,9 @@ namespace FEApp {
     //! Return parameter vector map
     Teuchos::RCP<const Epetra_Map> get_p_map(int l) const;
 
+    //! Return response function map
+    Teuchos::RCP<const Epetra_Map> get_g_map(int j) const;
+
     //! Return array of parameter names
     Teuchos::RCP<const Teuchos::Array<std::string> > 
     get_p_names(int l) const;
@@ -107,6 +110,12 @@ namespace FEApp {
 
     //! Epetra parameter vector
     Teuchos::Array< Teuchos::RCP<Epetra_Vector> > epetra_param_vec;
+
+    //! Supports parameters
+    bool supports_p;
+
+    //! Supports response functions
+    bool supports_g;
 
     //! Whether we are support SG
     bool supports_sg;

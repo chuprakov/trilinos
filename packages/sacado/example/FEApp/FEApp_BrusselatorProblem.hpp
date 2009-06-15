@@ -62,11 +62,13 @@ namespace FEApp {
 
     //! Build the PDE instantiations, boundary conditions, and initial solution
     virtual void 
-    buildProblem(const Epetra_Map& dofMap,
-                 const Epetra_Map& overlapped_dofMap,
-                 FEApp::AbstractPDE_TemplateManager<EvalTypes>& pdeTM,
-                 std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
-                 const Teuchos::RCP<Epetra_Vector>& u);
+    buildProblem(
+       const Epetra_Map& dofMap,
+       const Epetra_Map& overlapped_dofMap,
+       FEApp::AbstractPDE_TemplateManager<EvalTypes>& pdeTM,
+       std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
+       std::vector< Teuchos::RCP<FEApp::AbstractResponseFunction> >& responses,
+       const Teuchos::RCP<Epetra_Vector>& u);
 
   private:
 

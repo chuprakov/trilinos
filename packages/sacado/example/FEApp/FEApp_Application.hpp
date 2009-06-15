@@ -80,6 +80,9 @@ namespace FEApp {
     //! Get DOF map
     Teuchos::RCP<const Epetra_Map> getMap() const;
 
+    //! Get response map
+    Teuchos::RCP<const Epetra_Map> getResponseMap() const;
+
     //! Get Jacobian graph
     Teuchos::RCP<const Epetra_CrsGraph> getJacobianGraph() const;
 
@@ -148,6 +151,46 @@ namespace FEApp {
                               Epetra_MultiVector* JVx,
                               Epetra_MultiVector* fVp);
 
+    //! Evaluate response functions
+    /*!
+     * Set xdot to NULL for steady-state problems
+     */
+    void 
+    evaluateResponses(const Epetra_Vector* xdot,
+                      const Epetra_Vector& x,
+                      const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+                      Epetra_Vector& g);
+
+    //! Evaluate tangent = dg/dx*dx/dp + dg/dxdot*dxdot/dp + dg/dp
+    /*!
+     * Set xdot, dxdot_dp to NULL for steady-state problems
+     */
+    void 
+    evaluateResponseTangents(
+	   const Epetra_Vector* xdot,
+	   const Epetra_Vector& x,
+	   const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+	   const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
+	   const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dxdot_dp,
+	   const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dx_dp,
+	   Epetra_Vector* g,
+	   const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& gt);
+
+    //! Evaluate gradient = dg/dx, dg/dxdot, dg/dp
+    /*!
+     * Set xdot, dg_dxdot to NULL for steady-state problems
+     */
+    void 
+    evaluateResponseGradients(
+	    const Epetra_Vector* xdot,
+	    const Epetra_Vector& x,
+	    const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+	    const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
+	    Epetra_Vector* g,
+	    Epetra_MultiVector* dg_dx,
+	    Epetra_MultiVector* dg_dxdot,
+	    const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dg_dp);
+
 #if SG_ACTIVE
 
     //! Compute global residual for stochastic Galerkin problem
@@ -175,6 +218,18 @@ namespace FEApp {
 			const Teuchos::Array<SGType>* sg_p_vals,
 			Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_f,
 			Stokhos::VectorOrthogPoly<Epetra_Operator>& sg_jac);
+
+    //! Evaluate stochastic Galerkin response functions
+    /*!
+     * Set xdot to NULL for steady-state problems
+     */
+    void 
+    evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
+			const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+			const ParamVec* p,
+			const ParamVec* sg_p,
+			const Teuchos::Array<SGType>* sg_p_vals,
+			Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_g);
 
 #endif
 
@@ -229,6 +284,12 @@ namespace FEApp {
 
     //! Parameter library
     Teuchos::RCP<ParamLib> paramLib;
+
+    //! Response functions
+    std::vector< Teuchos::RCP<FEApp::AbstractResponseFunction> > responses;
+
+    //! Map for combined response functions
+    Teuchos::RCP<Epetra_Map> response_map;
 
 #if SG_ACTIVE
 

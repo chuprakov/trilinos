@@ -58,11 +58,13 @@ numEquations() const
 
 void
 FEApp::BrusselatorProblem::
-buildProblem(const Epetra_Map& dofMap,
-             const Epetra_Map& overlapped_dofMap,
-             FEApp::AbstractPDE_TemplateManager<EvalTypes>& pdeTM,
-             std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
-             const Teuchos::RCP<Epetra_Vector>& u)
+buildProblem(
+    const Epetra_Map& dofMap,
+    const Epetra_Map& overlapped_dofMap,
+    FEApp::AbstractPDE_TemplateManager<EvalTypes>& pdeTM,
+    std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
+    std::vector< Teuchos::RCP<FEApp::AbstractResponseFunction> >& responses,
+    const Teuchos::RCP<Epetra_Vector>& u)
 {
   // Build PDE equations
   FEApp::BrusselatorPDE_TemplateBuilder pdeBuilder(alpha, beta, D1, D2, 
@@ -80,6 +82,9 @@ buildProblem(const Epetra_Map& dofMap,
 					  left_node, 2, bcBuilder));
   bcs[1] = Teuchos::rcp(new FEApp::NodeBC(dofMap, overlapped_dofMap,
 					  right_node, 2, bcBuilder));
+
+  // Currently no responses
+  responses.resize(0);
 
   // Build initial solution
 //   for (int i=0; i<u->MyLength()/2; i++) {

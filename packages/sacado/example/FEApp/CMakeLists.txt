@@ -52,6 +52,10 @@ APPEND_SET(HEADERS
   FEApp_AbstractDiscretization.hpp
   FEApp_CZeroDiscretization.hpp
   FEApp_DiscretizationFactory.hpp
+  FEApp_AbstractResponseFunction.hpp
+  FEApp_BoundaryFlux1DResponseFunction.hpp
+  FEApp_SolutionAverageResponseFunction.hpp
+  FEApp_SolutionTwoNormResponseFunction.hpp
   FEApp_Application.hpp
   FEApp_ModelEvaluator.hpp
   ) 
@@ -75,6 +79,9 @@ APPEND_SET(SOURCES
   FEApp_GlobalFill.cpp
   FEApp_CZeroDiscretization.cpp
   FEApp_DiscretizationFactory.cpp
+  FEApp_BoundaryFlux1DResponseFunction.cpp
+  FEApp_SolutionAverageResponseFunction.cpp
+  FEApp_SolutionTwoNormResponseFunction.cpp
   FEApp_Application.cpp
   FEApp_ModelEvaluator.cpp
   )

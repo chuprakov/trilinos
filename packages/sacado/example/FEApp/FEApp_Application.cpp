@@ -33,6 +33,7 @@
 #include "FEApp_ProblemFactory.hpp"
 #include "FEApp_QuadratureFactory.hpp"
 #include "FEApp_DiscretizationFactory.hpp"
+#include "Epetra_LocalMap.h"
 #if SG_ACTIVE
 #include "FEApp_SGGaussQuadResidualGlobalFill.hpp"
 #include "FEApp_SGGaussQuadJacobianGlobalFill.hpp"
@@ -94,12 +95,20 @@ FEApp::Application::Application(
   // Initialize problem
   initial_x = Teuchos::rcp(new Epetra_Vector(*(disc->getMap())));
   problem->buildProblem(*(disc->getMap()), *(disc->getOverlapMap()), 
-                        pdeTM, bc, initial_x);
+                        pdeTM, bc, responses, initial_x);
   typedef FEApp::AbstractPDE_TemplateManager<EvalTypes>::iterator iterator;
   int nqp = quad->numPoints();
   int nn = disc->getNumNodesPerElement();
   for (iterator it = pdeTM.begin(); it != pdeTM.end(); ++it)
     it->init(nqp, nn);
+
+  // Create response map
+  unsigned int total_num_responses = 0;
+  for (unsigned int i=0; i<responses.size(); i++)
+    total_num_responses += responses[i]->numResponses();
+  if (total_num_responses > 0)
+    response_map = Teuchos::rcp(new Epetra_LocalMap(total_num_responses, 0,
+                                                    *comm));
 
 #if SG_ACTIVE
   bool enable_sg = params->get("Enable Stochastic Galerkin",false);
@@ -133,6 +142,12 @@ Teuchos::RCP<const Epetra_Map>
 FEApp::Application::getMap() const
 {
   return disc->getMap();
+}
+
+Teuchos::RCP<const Epetra_Map>
+FEApp::Application::getResponseMap() const
+{
+  return response_map;
 }
 
 Teuchos::RCP<const Epetra_CrsGraph>
@@ -450,6 +465,148 @@ FEApp::Application::computeGlobalTangent(
     fVp->Export(*overlapped_fVp, *exporter, Add);
 }
 
+void
+FEApp::Application::
+evaluateResponses(const Epetra_Vector* xdot,
+                  const Epetra_Vector& x,
+                  const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+                  Epetra_Vector& g)
+{
+  const Epetra_Comm& comm = x.Map().Comm();
+  unsigned int offset = 0;
+  for (unsigned int i=0; i<responses.size(); i++) {
+
+    // Create Epetra_Map for response function
+    unsigned int num_responses = responses[i]->numResponses();
+    Epetra_LocalMap local_response_map(num_responses, 0, comm);
+
+    // Create Epetra_Vector for response function
+    Epetra_Vector local_g(local_response_map);
+
+    // Evaluate response function
+    responses[i]->evaluateResponses(xdot, x, p, local_g);
+
+    // Copy result into combined result
+    for (unsigned int j=0; j<num_responses; j++)
+      g[offset+j] = local_g[j];
+
+    // Increment offset in combined result
+    offset += num_responses;
+  }
+}
+
+void
+FEApp::Application::
+evaluateResponseTangents(
+	   const Epetra_Vector* xdot,
+	   const Epetra_Vector& x,
+	   const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+	   const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
+	   const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dxdot_dp,
+	   const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dx_dp,
+	   Epetra_Vector* g,
+	   const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& gt)
+{
+  const Epetra_Comm& comm = x.Map().Comm();
+  unsigned int offset = 0;
+  Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> > local_gt(gt.size());
+  for (unsigned int i=0; i<responses.size(); i++) {
+
+    // Create Epetra_Map for response function
+    unsigned int num_responses = responses[i]->numResponses();
+    Epetra_LocalMap local_response_map(num_responses, 0, comm);
+
+    // Create Epetra_Vectors for response function
+    Teuchos::RCP<Epetra_Vector> local_g;
+    if (g != NULL)
+      local_g = Teuchos::rcp(new Epetra_Vector(local_response_map));
+    for (unsigned int j=0; j<gt.size(); j++)
+      if (gt[j] != Teuchos::null)
+	local_gt[j] = Teuchos::rcp(new Epetra_MultiVector(local_response_map, 
+							  gt[j]->NumVectors()));
+
+    // Evaluate response function
+    responses[i]->evaluateTangents(xdot, x, p, deriv_p, dxdot_dp, dx_dp, 
+				   local_g.get(), local_gt);
+
+    // Copy results into combined result
+    for (unsigned int j=0; j<num_responses; j++) {
+      if (g != NULL)
+        (*g)[offset+j] = (*local_g)[j];
+      for (unsigned int l=0; l<gt.size(); l++)
+	if (gt[l] != Teuchos::null)
+	  for (int k=0; k<gt[l]->NumVectors(); k++)
+	    (*gt[l])[k][offset+j] = (*local_gt[l])[k][j];
+    }
+
+    // Increment offset in combined result
+    offset += num_responses;
+  }
+}
+
+void
+FEApp::Application::
+evaluateResponseGradients(
+	    const Epetra_Vector* xdot,
+	    const Epetra_Vector& x,
+	    const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+	    const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
+	    Epetra_Vector* g,
+	    Epetra_MultiVector* dg_dx,
+	    Epetra_MultiVector* dg_dxdot,
+	    const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dg_dp)
+{
+  const Epetra_Comm& comm = x.Map().Comm();
+  unsigned int offset = 0;
+  Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> > local_dgdp(dg_dp.size());
+  for (unsigned int i=0; i<responses.size(); i++) {
+
+    // Create Epetra_Map for response function
+    unsigned int num_responses = responses[i]->numResponses();
+    Epetra_LocalMap local_response_map(num_responses, 0, comm);
+
+    // Create Epetra_Vectors for response function
+    Teuchos::RCP<Epetra_Vector> local_g;
+    if (g != NULL)
+      local_g = Teuchos::rcp(new Epetra_Vector(local_response_map));
+    Teuchos::RCP<Epetra_MultiVector> local_dgdx;
+    if (dg_dx != NULL)
+      local_dgdx = Teuchos::rcp(new Epetra_MultiVector(dg_dx->Map(), 
+                                                       num_responses));
+    Teuchos::RCP<Epetra_MultiVector> local_dgdxdot;
+    if (dg_dxdot != NULL)
+      local_dgdxdot = Teuchos::rcp(new Epetra_MultiVector(dg_dxdot->Map(), 
+                                                          num_responses));
+
+    for (unsigned int j=0; j<dg_dp.size(); j++)
+      if (dg_dp[j] != Teuchos::null)
+	local_dgdp[j] = Teuchos::rcp(new Epetra_MultiVector(local_response_map, 
+							    dg_dp[j]->NumVectors()));
+
+    // Evaluate response function
+    responses[i]->evaluateGradients(xdot, x, p, deriv_p, local_g.get(), 
+                                    local_dgdx.get(), local_dgdxdot.get(), 
+                                    local_dgdp);
+
+    // Copy results into combined result
+    for (unsigned int j=0; j<num_responses; j++) {
+      if (g != NULL)
+        (*g)[offset+j] = (*local_g)[j];
+      if (dg_dx != NULL)
+        (*dg_dx)(offset+j)->Update(1.0, *((*local_dgdx)(j)), 0.0);
+      if (dg_dxdot != NULL)
+        (*dg_dxdot)(offset+j)->Update(1.0, *((*local_dgdxdot)(j)), 0.0);
+      for (unsigned int l=0; l<dg_dp.size(); l++)
+	if (dg_dp[l] != Teuchos::null)
+	  for (int k=0; k<dg_dp[l]->NumVectors(); k++)
+	    (*dg_dp[l])[k][offset+j] = (*local_dgdp[l])[k][j];
+    }
+
+    // Increment offset in combined result
+    offset += num_responses;
+  }
+}
+
 #if SG_ACTIVE
 void
 FEApp::Application::computeGlobalSGResidual(
@@ -629,6 +786,45 @@ FEApp::Application::computeGlobalSGJacobian(
     jac->PutScalar(0.0);
     jac->Export((*sg_overlapped_jac)[i], *exporter, Add);
     jac->FillComplete(true);
+  }
+}
+
+void
+FEApp::Application::
+evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
+		    const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+		    const ParamVec* p,
+		    const ParamVec* sg_p,
+		    const Teuchos::Array<SGType>* sg_p_vals,
+		    Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_g)
+{
+  TEUCHOS_FUNC_TIME_MONITOR("FEApp::Application::evaluateSGResponses");
+
+  const Epetra_Comm& comm = sg_x[0].Map().Comm();
+  unsigned int offset = 0;
+  Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > basis = 
+    sg_x.basis();
+  for (unsigned int i=0; i<responses.size(); i++) {
+
+    // Create Epetra_Map for response function
+    unsigned int num_responses = responses[i]->numResponses();
+    Epetra_LocalMap local_response_map(num_responses, 0, comm);
+
+    // Create Epetra_Vector for response function
+    Stokhos::VectorOrthogPoly<Epetra_Vector> local_sg_g(basis,
+							local_response_map);
+
+    // Evaluate response function
+    responses[i]->evaluateSGResponses(sg_xdot, sg_x, p, sg_p, sg_p_vals,
+				      local_sg_g);
+
+    // Copy result into combined result
+    for (int k=0; k<sg_g.size(); k++)
+      for (unsigned int j=0; j<num_responses; j++)
+	sg_g[k][offset+j] = local_sg_g[k][j];
+
+    // Increment offset in combined result
+    offset += num_responses;
   }
 }
 

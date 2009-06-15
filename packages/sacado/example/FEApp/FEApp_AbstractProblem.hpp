@@ -40,6 +40,7 @@
 
 #include "FEApp_NodeBC.hpp"
 #include "FEApp_AbstractPDE.hpp"
+#include "FEApp_AbstractResponseFunction.hpp"
 #include "FEApp_TemplateTypes.hpp"
 
 namespace FEApp {
@@ -62,11 +63,13 @@ namespace FEApp {
 
     //! Build the PDE instantiations, boundary conditions, and initial solution
     virtual void 
-    buildProblem(const Epetra_Map& dofMap,
-                 const Epetra_Map& overlapped_dofMap,
-                 FEApp::AbstractPDE_TemplateManager<EvalTypes>& pdeTM,
-                 std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
-                 const Teuchos::RCP<Epetra_Vector>& u) = 0;
+    buildProblem(
+       const Epetra_Map& dofMap,
+       const Epetra_Map& overlapped_dofMap,
+       FEApp::AbstractPDE_TemplateManager<EvalTypes>& pdeTM,
+       std::vector< Teuchos::RCP<FEApp::NodeBC> >& bcs,
+       std::vector< Teuchos::RCP<FEApp::AbstractResponseFunction> >& responses,
+       const Teuchos::RCP<Epetra_Vector>& u) = 0;
 
   private:
 
