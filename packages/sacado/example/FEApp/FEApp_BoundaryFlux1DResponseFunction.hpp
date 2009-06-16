@@ -91,7 +91,7 @@ namespace FEApp {
 	  Epetra_MultiVector* dg_dxdot,
 	  const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dg_dp);
 
-#ifdef SG_ACTIVE
+#if SG_ACTIVE
     //! Evaluate stochastic Galerkin responses
     virtual void 
     evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,

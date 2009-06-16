@@ -119,7 +119,7 @@ evaluateGradients(
       dg_dp[j]->PutScalar(0.0);
 }
 
-#ifdef SG_ACTIVE
+#if SG_ACTIVE
 void
 FEApp::SolutionTwoNormResponseFunction::
 evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,

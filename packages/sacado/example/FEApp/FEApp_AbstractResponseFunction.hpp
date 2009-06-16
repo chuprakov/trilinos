@@ -36,7 +36,7 @@
 #include "Teuchos_RCP.hpp"
 #include "FEApp_TemplateTypes.hpp"
 #include "Epetra_Vector.h"
-#ifdef SG_ACTIVE
+#if SG_ACTIVE
 #include "Stokhos_VectorOrthogPoly.hpp"
 #include "Stokhos_VectorOrthogPolyTraitsEpetra.hpp"
 #endif
@@ -89,7 +89,7 @@ namespace FEApp {
 	  Epetra_MultiVector* dg_dxdot,
 	  const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dg_dp) = 0;
 
-#ifdef SG_ACTIVE
+#if SG_ACTIVE
     //! Evaluate stochastic Galerkin responses
     virtual void 
     evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
