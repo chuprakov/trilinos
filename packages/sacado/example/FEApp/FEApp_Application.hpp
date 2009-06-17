@@ -72,7 +72,8 @@ namespace FEApp {
     Application(const std::vector<double>& coords,
 		const Teuchos::RCP<const Epetra_Comm>& comm,
 		const Teuchos::RCP<Teuchos::ParameterList>& params,
-		bool is_transient);
+		bool is_transient,
+		const Epetra_Vector* initial_soln = NULL);
 
     //! Destructor
     ~Application();

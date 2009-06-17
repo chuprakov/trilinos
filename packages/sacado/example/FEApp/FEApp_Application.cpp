@@ -46,7 +46,8 @@ FEApp::Application::Application(
 		   const std::vector<double>& coords,
 		   const Teuchos::RCP<const Epetra_Comm>& comm,
 		   const Teuchos::RCP<Teuchos::ParameterList>& params_,
-		   bool is_transient) :
+		   bool is_transient,
+		   const Epetra_Vector* initial_soln) :
   params(params_),
   transient(is_transient)
 {
@@ -96,6 +97,8 @@ FEApp::Application::Application(
   initial_x = Teuchos::rcp(new Epetra_Vector(*(disc->getMap())));
   problem->buildProblem(*(disc->getMap()), *(disc->getOverlapMap()), 
                         pdeTM, bc, responses, initial_x);
+  if (initial_soln != NULL)
+    initial_x->Scale(1.0, *initial_soln);
   typedef FEApp::AbstractPDE_TemplateManager<EvalTypes>::iterator iterator;
   int nqp = quad->numPoints();
   int nn = disc->getNumNodesPerElement();
