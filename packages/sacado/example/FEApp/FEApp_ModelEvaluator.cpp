@@ -40,7 +40,8 @@ FEApp::ModelEvaluator::ModelEvaluator(
   : app(app_),
     supports_p(false),
     supports_g(false),
-    supports_sg(false)
+    supports_sg(false),
+    eval_W_with_f(false)
 {
   // Compute number of parameter vectors
   int num_param_vecs = 0;
@@ -196,7 +197,8 @@ FEApp::ModelEvaluator::get_p_init(int l) const
 Teuchos::RCP<Epetra_Operator>
 FEApp::ModelEvaluator::create_W() const
 {
-  return app->createW();
+  my_W = app->createW();
+  return my_W;
 }
 
 EpetraExt::ModelEvaluator::InArgs
@@ -307,7 +309,12 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
   bool f_computed = false;
 
   // W matrix
-  if (W_out != Teuchos::null) {
+  if (f_out != Teuchos::null && eval_W_with_f) {
+    app->computeGlobalJacobian(alpha, beta, x_dot.get(), *x, sacado_param_vec,
+                                 f_out.get(), *my_W);
+    f_computed = true;
+  }
+  else if (W_out != Teuchos::null && !eval_W_with_f) {
     if (f_out.getType() == EVAL_TYPE_EXACT ||
         f_out.getType() == EVAL_TYPE_APPROX_DERIV)
       app->computeGlobalJacobian(alpha, beta, x_dot.get(), *x, sacado_param_vec,

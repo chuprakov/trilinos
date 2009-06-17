@@ -125,6 +125,12 @@ namespace FEApp {
     mutable Teuchos::Array<SGType> p_sg_vals;
 #endif
 
+    //! Whether to always evaluate W with f
+    bool eval_W_with_f;
+
+    //! W pointer for evaluating W with f
+    mutable Teuchos::RCP<Epetra_Operator> my_W;
+
   };
 
 }
