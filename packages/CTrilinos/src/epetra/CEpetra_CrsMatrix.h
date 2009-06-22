@@ -289,16 +289,16 @@ CT_Epetra_Comm_ID_t Epetra_CrsMatrix_Comm (
   CT_Epetra_CrsMatrix_ID_t selfID );
 
 int Epetra_CrsMatrix_LRID ( 
-  CT_Epetra_CrsMatrix_ID_t selfID,  int GRID_in );
+  CT_Epetra_CrsMatrix_ID_t selfID, int GRID_in );
 
 int Epetra_CrsMatrix_GRID ( 
-  CT_Epetra_CrsMatrix_ID_t selfID,  int LRID_in );
+  CT_Epetra_CrsMatrix_ID_t selfID, int LRID_in );
 
 int Epetra_CrsMatrix_LCID ( 
-  CT_Epetra_CrsMatrix_ID_t selfID,  int GCID_in );
+  CT_Epetra_CrsMatrix_ID_t selfID, int GCID_in );
 
 int Epetra_CrsMatrix_GCID ( 
-  CT_Epetra_CrsMatrix_ID_t selfID,  int LCID_in );
+  CT_Epetra_CrsMatrix_ID_t selfID, int LCID_in );
 
 boolean Epetra_CrsMatrix_MyGRID ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int GRID_in );
@@ -338,6 +338,12 @@ boolean Epetra_CrsMatrix_UseTranspose (
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_OperatorDomainMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID );
 
+CT_Epetra_Map_ID_t Epetra_CrsMatrix_OperatorRangeMap ( 
+  CT_Epetra_CrsMatrix_ID_t selfID );
+
+int Epetra_CrsMatrix_NumMyRowEntries ( 
+  CT_Epetra_CrsMatrix_ID_t selfID, int MyRow, int * NumEntries );
+
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_RowMatrixRowMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID );
 
@@ -346,6 +352,9 @@ CT_Epetra_Map_ID_t Epetra_CrsMatrix_RowMatrixColMap (
 
 CT_Epetra_Import_ID_t Epetra_CrsMatrix_RowMatrixImporter ( 
   CT_Epetra_CrsMatrix_ID_t selfID );
+
+double * Epetra_CrsMatrix_getRow ( 
+  CT_Epetra_CrsMatrix_ID_t selfID, int Loc );
 
 int Epetra_CrsMatrix_ExtractCrsDataPointers ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int ** IndexOffset, int ** Indices, 

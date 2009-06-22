@@ -57,6 +57,9 @@ void Epetra_CompObject_UpdateFlops_Double (
 void Epetra_CompObject_UpdateFlops_Float ( 
   CT_Epetra_CompObject_ID_t selfID, float Flops_in );
 
+void Epetra_CompObject_Assign ( 
+  CT_Epetra_CompObject_ID_t selfID, CT_Epetra_CompObject_ID_t srcID );
+
 
 #ifdef __cplusplus
 } /* extern "C" */

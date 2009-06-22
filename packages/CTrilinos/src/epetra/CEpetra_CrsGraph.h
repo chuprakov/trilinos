@@ -232,6 +232,12 @@ int Epetra_CrsGraph_GRID (
 int Epetra_CrsGraph_LCID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int GCID_in );
 
+int Epetra_CrsGraph_GCID ( 
+  CT_Epetra_CrsGraph_ID_t selfID, int LCID_in );
+
+boolean Epetra_CrsGraph_MyGRID ( 
+  CT_Epetra_CrsGraph_ID_t selfID, int GRID_in );
+
 boolean Epetra_CrsGraph_MyLRID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int LRID_in );
 
@@ -240,6 +246,9 @@ boolean Epetra_CrsGraph_MyGCID (
 
 boolean Epetra_CrsGraph_MyLCID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int LCID_in );
+
+int * Epetra_CrsGraph_getRow ( 
+  CT_Epetra_CrsGraph_ID_t selfID, int Loc );
 
 void Epetra_CrsGraph_Assign ( 
   CT_Epetra_CrsGraph_ID_t selfID, CT_Epetra_CrsGraph_ID_t SourceID );

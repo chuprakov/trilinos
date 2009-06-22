@@ -278,10 +278,12 @@ CT_Epetra_MpiCommData_ID_t Epetra_MpiComm_DataPtr (
 void Epetra_MpiComm_Assign ( 
   CT_Epetra_MpiComm_ID_t selfID, CT_Epetra_MpiComm_ID_t CommID )
 {
+    Epetra_MpiComm& self = *( CEpetra::getMpiComm(selfID) );
+
     const Teuchos::RCP<Epetra_MpiComm> 
         pComm = CEpetra::getMpiComm(CommID);
 
-    *( CEpetra::getMpiComm(selfID) ) = *pComm;
+    self = *pComm;
 }
 
 

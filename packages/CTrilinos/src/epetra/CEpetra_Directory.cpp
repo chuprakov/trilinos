@@ -1,3 +1,4 @@
+#include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_Directory_Cpp.hpp"
 #include "CEpetra_Directory.h"
 #include "Epetra_Directory.h"
@@ -41,6 +42,19 @@ CT_Epetra_Directory_ID_t Epetra_Directory_Cast (
 void Epetra_Directory_Destroy ( CT_Epetra_Directory_ID_t * selfID )
 {
     tableOfDirectorys().remove(selfID);
+}
+
+int Epetra_Directory_GetDirectoryEntries ( 
+  CT_Epetra_Directory_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID, 
+  const int NumEntries, const int * GlobalEntries, int * Procs, 
+  int * LocalEntries, int * EntrySizes, 
+  boolean high_rank_sharing_procs )
+{
+    const Teuchos::RCP<Epetra_BlockMap> 
+        pMap = CEpetra::getBlockMap(MapID);
+
+    return CEpetra::getDirectory(selfID)->GetDirectoryEntries(
+        *pMap, NumEntries, GlobalEntries, Procs, LocalEntries, EntrySizes, high_rank_sharing_procs);
 }
 
 boolean Epetra_Directory_GIDsAllUniquelyOwned ( 

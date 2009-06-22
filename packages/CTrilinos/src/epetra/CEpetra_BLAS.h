@@ -49,35 +49,35 @@ double Epetra_BLAS_NRM2_Double (
   const int INCX );
 
 void Epetra_BLAS_SCAL_Float ( 
-  CT_Epetra_BLAS_ID_t selfID,  const int N, const float ALPHA, 
+  CT_Epetra_BLAS_ID_t selfID, const int N, const float ALPHA, 
   float * X, const int INCX );
 
 void Epetra_BLAS_SCAL_Double ( 
-  CT_Epetra_BLAS_ID_t selfID,  const int N, const double ALPHA, 
+  CT_Epetra_BLAS_ID_t selfID, const int N, const double ALPHA, 
   double * X, const int INCX );
 
 void Epetra_BLAS_COPY_Float ( 
-  CT_Epetra_BLAS_ID_t selfID,  const int N, const float * X, 
-  float * Y, const int INCX, const int INCY );
+  CT_Epetra_BLAS_ID_t selfID, const int N, const float * X, float * Y, 
+  const int INCX, const int INCY );
 
 void Epetra_BLAS_COPY_Double ( 
-  CT_Epetra_BLAS_ID_t selfID,  const int N, const double * X, 
+  CT_Epetra_BLAS_ID_t selfID, const int N, const double * X, 
   double * Y, const int INCX, const int INCY );
 
 int Epetra_BLAS_IAMAX_Float ( 
-  CT_Epetra_BLAS_ID_t selfID,  const int N, const float * X, 
+  CT_Epetra_BLAS_ID_t selfID, const int N, const float * X, 
   const int INCX );
 
 int Epetra_BLAS_IAMAX_Double ( 
-  CT_Epetra_BLAS_ID_t selfID,  const int N, const double * X, 
+  CT_Epetra_BLAS_ID_t selfID, const int N, const double * X, 
   const int INCX );
 
 void Epetra_BLAS_AXPY_Float ( 
-  CT_Epetra_BLAS_ID_t selfID,  const int N, const float ALPHA, 
+  CT_Epetra_BLAS_ID_t selfID, const int N, const float ALPHA, 
   const float * X, float * Y, const int INCX, const int INCY );
 
 void Epetra_BLAS_AXPY_Double ( 
-  CT_Epetra_BLAS_ID_t selfID,  const int N, const double ALPHA, 
+  CT_Epetra_BLAS_ID_t selfID, const int N, const double ALPHA, 
   const double * X, double * Y, const int INCX, const int INCY );
 
 void Epetra_BLAS_GEMV_Float ( 

@@ -92,10 +92,12 @@ void Epetra_Map_Destroy ( CT_Epetra_Map_ID_t * selfID )
 void Epetra_Map_Assign ( 
   CT_Epetra_Map_ID_t selfID, CT_Epetra_Map_ID_t mapID )
 {
+    Epetra_Map& self = *( CEpetra::getMap(selfID) );
+
     const Teuchos::RCP<Epetra_Map> 
         pmap = CEpetra::getMap(mapID);
 
-    *( CEpetra::getMap(selfID) ) = *pmap;
+    self = *pmap;
 }
 
 

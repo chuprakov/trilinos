@@ -8,6 +8,7 @@
 
 #include "CEpetra_BlockMap.h"
 #include "Epetra_DataAccess.h"
+#include "CEpetra_Vector.h"
 #include "CTrilinos_enums.h"
 
 
@@ -165,6 +166,12 @@ unsigned int Epetra_MultiVector_Seed (
 void Epetra_MultiVector_Assign ( 
   CT_Epetra_MultiVector_ID_t selfID, 
   CT_Epetra_MultiVector_ID_t SourceID );
+
+double * Epetra_MultiVector_getArray ( 
+  CT_Epetra_MultiVector_ID_t selfID, int i );
+
+CT_Epetra_Vector_ID_t Epetra_MultiVector_getVector ( 
+  CT_Epetra_MultiVector_ID_t selfID, int i );
 
 int Epetra_MultiVector_NumVectors ( 
   CT_Epetra_MultiVector_ID_t selfID );

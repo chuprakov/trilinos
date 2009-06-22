@@ -129,6 +129,17 @@ void Epetra_CompObject_UpdateFlops_Float (
     CEpetra::getCompObject(selfID)->UpdateFlops(Flops_in);
 }
 
+void Epetra_CompObject_Assign ( 
+  CT_Epetra_CompObject_ID_t selfID, CT_Epetra_CompObject_ID_t srcID )
+{
+    Epetra_CompObject& self = *( CEpetra::getCompObject(selfID) );
+
+    const Teuchos::RCP<Epetra_CompObject> 
+        psrc = CEpetra::getCompObject(srcID);
+
+    self = *psrc;
+}
+
 
 } // extern "C"
 

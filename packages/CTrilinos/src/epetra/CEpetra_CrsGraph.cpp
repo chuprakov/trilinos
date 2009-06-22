@@ -516,6 +516,18 @@ int Epetra_CrsGraph_LCID (
     return CEpetra::getCrsGraph(selfID)->LCID(GCID_in);
 }
 
+int Epetra_CrsGraph_GCID ( 
+  CT_Epetra_CrsGraph_ID_t selfID, int LCID_in )
+{
+    return CEpetra::getCrsGraph(selfID)->GCID(LCID_in);
+}
+
+boolean Epetra_CrsGraph_MyGRID ( 
+  CT_Epetra_CrsGraph_ID_t selfID, int GRID_in )
+{
+    return CEpetra::getCrsGraph(selfID)->MyGRID(GRID_in);
+}
+
 boolean Epetra_CrsGraph_MyLRID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int LRID_in )
 {
@@ -534,13 +546,23 @@ boolean Epetra_CrsGraph_MyLCID (
     return CEpetra::getCrsGraph(selfID)->MyLCID(LCID_in);
 }
 
+int * Epetra_CrsGraph_getRow ( 
+  CT_Epetra_CrsGraph_ID_t selfID, int Loc )
+{
+    Epetra_CrsGraph& self = *( CEpetra::getCrsGraph(selfID) );
+
+    return self[Loc];
+}
+
 void Epetra_CrsGraph_Assign ( 
   CT_Epetra_CrsGraph_ID_t selfID, CT_Epetra_CrsGraph_ID_t SourceID )
 {
+    Epetra_CrsGraph& self = *( CEpetra::getCrsGraph(selfID) );
+
     const Teuchos::RCP<Epetra_CrsGraph> 
         pSource = CEpetra::getCrsGraph(SourceID);
 
-    *( CEpetra::getCrsGraph(selfID) ) = *pSource;
+    self = *pSource;
 }
 
 CT_Epetra_BlockMap_ID_t Epetra_CrsGraph_ImportMap ( 

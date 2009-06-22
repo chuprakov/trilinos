@@ -72,10 +72,12 @@ void Epetra_Flops_Destroy ( CT_Epetra_Flops_ID_t * selfID )
 void Epetra_Flops_Assign ( 
   CT_Epetra_Flops_ID_t selfID, CT_Epetra_Flops_ID_t srcID )
 {
+    Epetra_Flops& self = *( CEpetra::getFlops(selfID) );
+
     const Teuchos::RCP<Epetra_Flops> 
         psrc = CEpetra::getFlops(srcID);
 
-    *( CEpetra::getFlops(selfID) ) = *psrc;
+    self = *psrc;
 }
 
 

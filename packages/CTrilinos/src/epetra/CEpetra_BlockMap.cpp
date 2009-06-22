@@ -359,10 +359,12 @@ boolean Epetra_BlockMap_IsOneToOne (
 void Epetra_BlockMap_Assign ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t mapID )
 {
+    Epetra_BlockMap& self = *( CEpetra::getBlockMap(selfID) );
+
     const Teuchos::RCP<Epetra_BlockMap> 
         pmap = CEpetra::getBlockMap(mapID);
 
-    *( CEpetra::getBlockMap(selfID) ) = *pmap;
+    self = *pmap;
 }
 
 CT_Epetra_BlockMapData_ID_t Epetra_BlockMap_DataPtr ( 

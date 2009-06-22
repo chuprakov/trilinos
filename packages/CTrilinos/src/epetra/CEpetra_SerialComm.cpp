@@ -267,10 +267,12 @@ CT_Epetra_SerialCommData_ID_t Epetra_SerialComm_DataPtr (
 void Epetra_SerialComm_Assign ( 
   CT_Epetra_SerialComm_ID_t selfID, CT_Epetra_SerialComm_ID_t CommID )
 {
+    Epetra_SerialComm& self = *( CEpetra::getSerialComm(selfID) );
+
     const Teuchos::RCP<Epetra_SerialComm> 
         pComm = CEpetra::getSerialComm(CommID);
 
-    *( CEpetra::getSerialComm(selfID) ) = *pComm;
+    self = *pComm;
 }
 
 

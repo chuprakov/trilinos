@@ -164,6 +164,14 @@ int Epetra_Vector_ExtractView (
     return CEpetra::getVector(selfID)->ExtractView(V);
 }
 
+double Epetra_Vector_getElement ( 
+  CT_Epetra_Vector_ID_t selfID, int index )
+{
+    Epetra_Vector& self = *( CEpetra::getVector(selfID) );
+
+    return self[index];
+}
+
 int Epetra_Vector_ResetView ( 
   CT_Epetra_Vector_ID_t selfID, double * Values_in )
 {

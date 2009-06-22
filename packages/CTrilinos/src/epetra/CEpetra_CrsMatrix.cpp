@@ -129,10 +129,12 @@ void Epetra_CrsMatrix_Destroy ( CT_Epetra_CrsMatrix_ID_t * selfID )
 void Epetra_CrsMatrix_Assign ( 
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_CrsMatrix_ID_t srcID )
 {
+    Epetra_CrsMatrix& self = *( CEpetra::getCrsMatrix(selfID) );
+
     const Teuchos::RCP<Epetra_CrsMatrix> 
         psrc = CEpetra::getCrsMatrix(srcID);
 
-    *( CEpetra::getCrsMatrix(selfID) ) = *psrc;
+    self = *psrc;
 }
 
 int Epetra_CrsMatrix_PutScalar ( 
@@ -679,25 +681,25 @@ CT_Epetra_Comm_ID_t Epetra_CrsMatrix_Comm (
 }
 
 int Epetra_CrsMatrix_LRID ( 
-  CT_Epetra_CrsMatrix_ID_t selfID,  int GRID_in )
+  CT_Epetra_CrsMatrix_ID_t selfID, int GRID_in )
 {
     return CEpetra::getCrsMatrix(selfID)->LRID(GRID_in);
 }
 
 int Epetra_CrsMatrix_GRID ( 
-  CT_Epetra_CrsMatrix_ID_t selfID,  int LRID_in )
+  CT_Epetra_CrsMatrix_ID_t selfID, int LRID_in )
 {
     return CEpetra::getCrsMatrix(selfID)->GRID(LRID_in);
 }
 
 int Epetra_CrsMatrix_LCID ( 
-  CT_Epetra_CrsMatrix_ID_t selfID,  int GCID_in )
+  CT_Epetra_CrsMatrix_ID_t selfID, int GCID_in )
 {
     return CEpetra::getCrsMatrix(selfID)->LCID(GCID_in);
 }
 
 int Epetra_CrsMatrix_GCID ( 
-  CT_Epetra_CrsMatrix_ID_t selfID,  int LCID_in )
+  CT_Epetra_CrsMatrix_ID_t selfID, int LCID_in )
 {
     return CEpetra::getCrsMatrix(selfID)->GCID(LCID_in);
 }
@@ -788,6 +790,20 @@ CT_Epetra_Map_ID_t Epetra_CrsMatrix_OperatorDomainMap (
         &( CEpetra::getCrsMatrix(selfID)->OperatorDomainMap() ));
 }
 
+CT_Epetra_Map_ID_t Epetra_CrsMatrix_OperatorRangeMap ( 
+  CT_Epetra_CrsMatrix_ID_t selfID )
+{
+    return CEpetra::storeMap(
+        &( CEpetra::getCrsMatrix(selfID)->OperatorRangeMap() ));
+}
+
+int Epetra_CrsMatrix_NumMyRowEntries ( 
+  CT_Epetra_CrsMatrix_ID_t selfID, int MyRow, int * NumEntries )
+{
+    return CEpetra::getCrsMatrix(selfID)->NumMyRowEntries(
+        MyRow, *NumEntries);
+}
+
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_RowMatrixRowMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
@@ -807,6 +823,14 @@ CT_Epetra_Import_ID_t Epetra_CrsMatrix_RowMatrixImporter (
 {
     return CEpetra::storeImport(
         CEpetra::getCrsMatrix(selfID)->RowMatrixImporter());
+}
+
+double * Epetra_CrsMatrix_getRow ( 
+  CT_Epetra_CrsMatrix_ID_t selfID, int Loc )
+{
+    Epetra_CrsMatrix& self = *( CEpetra::getCrsMatrix(selfID) );
+
+    return self[Loc];
 }
 
 int Epetra_CrsMatrix_ExtractCrsDataPointers ( 

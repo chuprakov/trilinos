@@ -1,5 +1,6 @@
 #include "CEpetra_BlockMap_Cpp.hpp"
 #include "Epetra_DataAccess.h"
+#include "CEpetra_Vector_Cpp.hpp"
 #include "CEpetra_MultiVector_Cpp.hpp"
 #include "CEpetra_MultiVector.h"
 #include "Epetra_MultiVector.h"
@@ -391,10 +392,28 @@ void Epetra_MultiVector_Assign (
   CT_Epetra_MultiVector_ID_t selfID, 
   CT_Epetra_MultiVector_ID_t SourceID )
 {
+    Epetra_MultiVector& self = *( CEpetra::getMultiVector(selfID) );
+
     const Teuchos::RCP<Epetra_MultiVector> 
         pSource = CEpetra::getMultiVector(SourceID);
 
-    *( CEpetra::getMultiVector(selfID) ) = *pSource;
+    self = *pSource;
+}
+
+double * Epetra_MultiVector_getArray ( 
+  CT_Epetra_MultiVector_ID_t selfID, int i )
+{
+    Epetra_MultiVector& self = *( CEpetra::getMultiVector(selfID) );
+
+    return self[i];
+}
+
+CT_Epetra_Vector_ID_t Epetra_MultiVector_getVector ( 
+  CT_Epetra_MultiVector_ID_t selfID, int i )
+{
+    Epetra_MultiVector& self = *( CEpetra::getMultiVector(selfID) );
+
+    return CEpetra::storeVector(self(i));
 }
 
 int Epetra_MultiVector_NumVectors ( 
