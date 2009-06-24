@@ -27,6 +27,8 @@ class Table
 
     CTrilinos_Object_ID_t store(T* pobj);
 
+    CTrilinos_Object_ID_t store(const T* pobj);
+
     template <class Told>
     CTrilinos_Object_ID_t store(Told* pobj);
 
@@ -84,14 +86,25 @@ CTrilinos_Object_ID_t Table<T>::store(T* pobj)
 }
 
 template <class T>
+CTrilinos_Object_ID_t Table<T>::store(const T* pobj)
+{
+    return store(const_cast<T*>(pobj));
+}
+
+template <class T>
 template <class Told>
 CTrilinos_Object_ID_t Table<T>::store(Told* pobj)
 { /* prevent adding wrong types */
+    T* pbase = dynamic_cast<T*>(pobj);
+    if (pbase != NULL) {
+        return store(pbase);
+    } else {
+        throw CTrilinosTypeMismatchError(tstr);
+    }
+
     CTrilinos_Object_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
-
-    throw CTrilinosTypeMismatchError(tstr);
 
     return id;
 }

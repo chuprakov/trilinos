@@ -2,6 +2,7 @@
 #include "CEpetra_Comm.h"
 #include "CEpetra_Directory.h"
 #include "CEpetra_Distributor.h"
+#include "CEpetra_Map.h"
 #include "Epetra_SerialComm.h"
 #include "CEpetra_SerialComm.h"
 #include "CEpetra_SerialComm_Cpp.hpp"
@@ -254,6 +255,24 @@ CT_Epetra_Distributor_ID_t Epetra_SerialComm_CreateDistributor (
 CT_Epetra_Directory_ID_t Epetra_SerialComm_CreateDirectory ( 
   CT_Epetra_SerialComm_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , CreateDirectory )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+  ECHO(CT_Epetra_Comm_ID_t CommID = Epetra_Comm_Cast(selfID));
+
+  ECHO(int NumGlobalElements = 9);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_SerialComm_CreateDirectory(selfID, MapID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(dirID.type, CT_Epetra_Directory_ID);
+  TEST_EQUALITY_CONST(dirID.index, 0);
+}
 
 /**********************************************************************
 void Epetra_SerialComm_Assign ( 

@@ -50,16 +50,27 @@ TEUCHOS_UNIT_TEST( Table, store )
   TEST_EQUALITY_CONST(is_null(table.get(id)), false);
 }
 
-TEUCHOS_UNIT_TEST( Table, storeWrong )
+TEUCHOS_UNIT_TEST( Table, storeBase )
 {
   ECHO(Table<T2> table(CONSTRUCTOR(CLASS_ENUM(T2))));
-  TEST_THROW(table.store(new T1), CTrilinosTypeMismatchError);
+  ECHO(CTrilinos_Object_ID_t id = table.store(new T1));
+  TEST_EQUALITY_CONST(id.index, 0);
+  TEST_EQUALITY(id.type, CLASS_ENUM(T2));
+  TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.get(id)), false);
+}
+
+TEUCHOS_UNIT_TEST( Table, storeWrong )
+{
+  ECHO(Table<T4> table(CONSTRUCTOR(CLASS_ENUM(T4))));
+  TEST_THROW(table.store(new T3), CTrilinosTypeMismatchError);
 }
 
 TEUCHOS_UNIT_TEST( Table, storeNull )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
-  TEST_THROW(table.store(NULL), NullReferenceError); 
+  ECHO(T* pobj = NULL);
+  TEST_THROW(table.store(pobj), NullReferenceError); 
 }
 
 
