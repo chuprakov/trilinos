@@ -1,5 +1,12 @@
-#include "CEpetra_SerialComm.h"
+#include "CEpetra_BlockMap.h"
 #include "CEpetra_Comm.h"
+#include "CEpetra_Directory.h"
+#include "CEpetra_Distributor.h"
+#include "CEpetra_SerialCommData.h"
+#include "Epetra_SerialComm.h"
+#include "CEpetra_SerialComm.h"
+#include "CEpetra_SerialComm_Cpp.hpp"
+#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
 
@@ -32,7 +39,6 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , Cast )
   /* If no exceptions thrown, then test was successful */
 }
 
-
 /**********************************************************************
 CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Create (  );
  **********************************************************************/
@@ -47,7 +53,6 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , Create )
   TEST_EQUALITY(selfID.type, CT_Epetra_SerialComm_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
-
 
 /**********************************************************************
 CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Duplicate ( 
@@ -68,6 +73,10 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , Duplicate )
   TEST_EQUALITY_CONST(dupID.index, 1);
 }
 
+/**********************************************************************
+CT_Epetra_Comm_ID_t Epetra_SerialComm_Clone ( 
+  CT_Epetra_SerialComm_ID_t selfID );
+ **********************************************************************/
 
 /**********************************************************************
 void Epetra_SerialComm_Destroy ( 
@@ -87,11 +96,9 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , Destroy )
   TEST_EQUALITY_CONST(selfID.index, -1);
 }
 
-
 /**********************************************************************
 void Epetra_SerialComm_Barrier ( CT_Epetra_SerialComm_ID_t selfID );
  **********************************************************************/
-
 
 /**********************************************************************
 int Epetra_SerialComm_Broadcast_Double ( 
@@ -99,13 +106,11 @@ int Epetra_SerialComm_Broadcast_Double (
   int Root );
  **********************************************************************/
 
-
 /**********************************************************************
 int Epetra_SerialComm_Broadcast_Int ( 
   CT_Epetra_SerialComm_ID_t selfID, int * MyVals, int Count, 
   int Root );
  **********************************************************************/
-
 
 /**********************************************************************
 int Epetra_SerialComm_Broadcast_Long ( 
@@ -113,13 +118,11 @@ int Epetra_SerialComm_Broadcast_Long (
   int Root );
  **********************************************************************/
 
-
 /**********************************************************************
 int Epetra_SerialComm_Broadcast_Char ( 
   CT_Epetra_SerialComm_ID_t selfID, char * MyVals, int Count, 
   int Root );
  **********************************************************************/
-
 
 /**********************************************************************
 int Epetra_SerialComm_GatherAll_Double ( 
@@ -127,13 +130,11 @@ int Epetra_SerialComm_GatherAll_Double (
   int Count );
  **********************************************************************/
 
-
 /**********************************************************************
 int Epetra_SerialComm_GatherAll_Int ( 
   CT_Epetra_SerialComm_ID_t selfID, int * MyVals, int * AllVals, 
   int Count );
  **********************************************************************/
-
 
 /**********************************************************************
 int Epetra_SerialComm_GatherAll_Long ( 
@@ -141,13 +142,11 @@ int Epetra_SerialComm_GatherAll_Long (
   int Count );
  **********************************************************************/
 
-
 /**********************************************************************
 int Epetra_SerialComm_SumAll_Double ( 
   CT_Epetra_SerialComm_ID_t selfID, double * PartialSums, 
   double * GlobalSums, int Count );
  **********************************************************************/
-
 
 /**********************************************************************
 int Epetra_SerialComm_SumAll_Int ( 
@@ -155,13 +154,11 @@ int Epetra_SerialComm_SumAll_Int (
   int * GlobalSums, int Count );
  **********************************************************************/
 
-
 /**********************************************************************
 int Epetra_SerialComm_SumAll_Long ( 
   CT_Epetra_SerialComm_ID_t selfID, long * PartialSums, 
   long * GlobalSums, int Count );
  **********************************************************************/
-
 
 /**********************************************************************
 int Epetra_SerialComm_MaxAll_Double ( 
@@ -169,13 +166,11 @@ int Epetra_SerialComm_MaxAll_Double (
   double * GlobalMaxs, int Count );
  **********************************************************************/
 
-
 /**********************************************************************
 int Epetra_SerialComm_MaxAll_Int ( 
   CT_Epetra_SerialComm_ID_t selfID, int * PartialMaxs, 
   int * GlobalMaxs, int Count );
  **********************************************************************/
-
 
 /**********************************************************************
 int Epetra_SerialComm_MaxAll_Long ( 
@@ -183,13 +178,11 @@ int Epetra_SerialComm_MaxAll_Long (
   long * GlobalMaxs, int Count );
  **********************************************************************/
 
-
 /**********************************************************************
 int Epetra_SerialComm_MinAll_Double ( 
   CT_Epetra_SerialComm_ID_t selfID, double * PartialMins, 
   double * GlobalMins, int Count );
  **********************************************************************/
-
 
 /**********************************************************************
 int Epetra_SerialComm_MinAll_Int ( 
@@ -197,13 +190,11 @@ int Epetra_SerialComm_MinAll_Int (
   int * GlobalMins, int Count );
  **********************************************************************/
 
-
 /**********************************************************************
 int Epetra_SerialComm_MinAll_Long ( 
   CT_Epetra_SerialComm_ID_t selfID, long * PartialMins, 
   long * GlobalMins, int Count );
  **********************************************************************/
-
 
 /**********************************************************************
 int Epetra_SerialComm_ScanSum_Double ( 
@@ -211,20 +202,17 @@ int Epetra_SerialComm_ScanSum_Double (
   double * ScanSums, int Count );
  **********************************************************************/
 
-
 /**********************************************************************
 int Epetra_SerialComm_ScanSum_Int ( 
   CT_Epetra_SerialComm_ID_t selfID, int * MyVals, int * ScanSums, 
   int Count );
  **********************************************************************/
 
-
 /**********************************************************************
 int Epetra_SerialComm_ScanSum_Long ( 
   CT_Epetra_SerialComm_ID_t selfID, long * MyVals, long * ScanSums, 
   int Count );
  **********************************************************************/
-
 
 /**********************************************************************
 int Epetra_SerialComm_MyPID ( CT_Epetra_SerialComm_ID_t selfID );
@@ -242,7 +230,6 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , MyPID )
   TEST_EQUALITY_CONST(ret, 0);
 }
 
-
 /**********************************************************************
 int Epetra_SerialComm_NumProc ( CT_Epetra_SerialComm_ID_t selfID );
  **********************************************************************/
@@ -259,6 +246,25 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , NumProc )
   TEST_EQUALITY_CONST(ret, 1);
 }
 
+/**********************************************************************
+CT_Epetra_Distributor_ID_t Epetra_SerialComm_CreateDistributor ( 
+  CT_Epetra_SerialComm_ID_t selfID );
+ **********************************************************************/
+
+/**********************************************************************
+CT_Epetra_Directory_ID_t Epetra_SerialComm_CreateDirectory ( 
+  CT_Epetra_SerialComm_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID );
+ **********************************************************************/
+
+/**********************************************************************
+CT_Epetra_SerialCommData_ID_t Epetra_SerialComm_DataPtr ( 
+  CT_Epetra_SerialComm_ID_t selfID );
+ **********************************************************************/
+
+/**********************************************************************
+void Epetra_SerialComm_Assign ( 
+  CT_Epetra_SerialComm_ID_t selfID, CT_Epetra_SerialComm_ID_t CommID );
+ **********************************************************************/
 
 /**********************************************************************/
 
