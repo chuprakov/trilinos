@@ -6,7 +6,6 @@
 #include "CEpetra_Distributor_Cpp.hpp"
 #include "CEpetra_Directory_Cpp.hpp"
 #include "CEpetra_BlockMap_Cpp.hpp"
-#include "CEpetra_MpiCommData_Cpp.hpp"
 #include "CEpetra_MpiComm_Cpp.hpp"
 #include "CEpetra_MpiComm.h"
 #include "Epetra_MpiComm.h"
@@ -266,13 +265,6 @@ int Epetra_MpiComm_GetMpiTag ( CT_Epetra_MpiComm_ID_t selfID )
 MPI_Comm Epetra_MpiComm_GetMpiComm ( CT_Epetra_MpiComm_ID_t selfID )
 {
     return CEpetra::getMpiComm(selfID)->GetMpiComm();
-}
-
-CT_Epetra_MpiCommData_ID_t Epetra_MpiComm_DataPtr ( 
-  CT_Epetra_MpiComm_ID_t selfID )
-{
-    return CEpetra::storeMpiCommData(
-        CEpetra::getMpiComm(selfID)->DataPtr());
 }
 
 void Epetra_MpiComm_Assign ( 

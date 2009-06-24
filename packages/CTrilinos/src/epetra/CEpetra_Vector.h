@@ -76,9 +76,6 @@ int Epetra_Vector_ExtractView (
 double Epetra_Vector_getElement ( 
   CT_Epetra_Vector_ID_t selfID, int index );
 
-int Epetra_Vector_ResetView ( 
-  CT_Epetra_Vector_ID_t selfID, double * Values_in );
-
 
 #ifdef __cplusplus
 } /* extern "C" */

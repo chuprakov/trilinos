@@ -454,29 +454,6 @@ int Epetra_MultiVector_ReplaceMap (
     return CEpetra::getMultiVector(selfID)->ReplaceMap(*pmap);
 }
 
-int Epetra_MultiVector_ResetView ( 
-  CT_Epetra_MultiVector_ID_t selfID, double ** ArrayOfPointers )
-{
-    return CEpetra::getMultiVector(selfID)->ResetView(ArrayOfPointers);
-}
-
-double * Epetra_MultiVector_Values ( 
-  CT_Epetra_MultiVector_ID_t selfID )
-{
-    return CEpetra::getMultiVector(selfID)->Values();
-}
-
-double ** Epetra_MultiVector_Pointers ( 
-  CT_Epetra_MultiVector_ID_t selfID )
-{
-    return CEpetra::getMultiVector(selfID)->Pointers();
-}
-
-int Epetra_MultiVector_Reduce ( CT_Epetra_MultiVector_ID_t selfID )
-{
-    return CEpetra::getMultiVector(selfID)->Reduce();
-}
-
 
 } // extern "C"
 

@@ -172,12 +172,6 @@ double Epetra_Vector_getElement (
     return self[index];
 }
 
-int Epetra_Vector_ResetView ( 
-  CT_Epetra_Vector_ID_t selfID, double * Values_in )
-{
-    return CEpetra::getVector(selfID)->ResetView(Values_in);
-}
-
 
 } // extern "C"
 

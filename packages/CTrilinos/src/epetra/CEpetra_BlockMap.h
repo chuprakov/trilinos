@@ -7,7 +7,6 @@
 
 
 #include "CEpetra_Comm.h"
-#include "CEpetra_BlockMapData.h"
 #include "CTrilinos_enums.h"
 
 
@@ -158,9 +157,6 @@ boolean Epetra_BlockMap_IsOneToOne (
 
 void Epetra_BlockMap_Assign ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t mapID );
-
-CT_Epetra_BlockMapData_ID_t Epetra_BlockMap_DataPtr ( 
-  CT_Epetra_BlockMap_ID_t selfID );
 
 
 #ifdef __cplusplus

@@ -1,5 +1,4 @@
 #include "CEpetra_Comm_Cpp.hpp"
-#include "CEpetra_BlockMapData_Cpp.hpp"
 #include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_BlockMap.h"
 #include "Epetra_BlockMap.h"
@@ -365,13 +364,6 @@ void Epetra_BlockMap_Assign (
         pmap = CEpetra::getBlockMap(mapID);
 
     self = *pmap;
-}
-
-CT_Epetra_BlockMapData_ID_t Epetra_BlockMap_DataPtr ( 
-  CT_Epetra_BlockMap_ID_t selfID )
-{
-    return CEpetra::storeBlockMapData(
-        CEpetra::getBlockMap(selfID)->DataPtr());
 }
 
 

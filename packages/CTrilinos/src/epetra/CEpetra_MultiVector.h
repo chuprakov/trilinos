@@ -190,17 +190,6 @@ boolean Epetra_MultiVector_ConstantStride (
 int Epetra_MultiVector_ReplaceMap ( 
   CT_Epetra_MultiVector_ID_t selfID, CT_Epetra_BlockMap_ID_t mapID );
 
-int Epetra_MultiVector_ResetView ( 
-  CT_Epetra_MultiVector_ID_t selfID, double ** ArrayOfPointers );
-
-double * Epetra_MultiVector_Values ( 
-  CT_Epetra_MultiVector_ID_t selfID );
-
-double ** Epetra_MultiVector_Pointers ( 
-  CT_Epetra_MultiVector_ID_t selfID );
-
-int Epetra_MultiVector_Reduce ( CT_Epetra_MultiVector_ID_t selfID );
-
 
 #ifdef __cplusplus
 } /* extern "C" */

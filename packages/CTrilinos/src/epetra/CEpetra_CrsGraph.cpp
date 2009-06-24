@@ -3,7 +3,6 @@
 #include "CEpetra_Import_Cpp.hpp"
 #include "CEpetra_Export_Cpp.hpp"
 #include "CEpetra_Comm_Cpp.hpp"
-#include "CEpetra_CrsGraphData_Cpp.hpp"
 #include "CEpetra_CrsGraph_Cpp.hpp"
 #include "CEpetra_CrsGraph.h"
 #include "Epetra_CrsGraph.h"
@@ -589,20 +588,6 @@ int Epetra_CrsGraph_TransformToLocal_UsingMaps (
 
     return CEpetra::getCrsGraph(selfID)->TransformToLocal(
         &(*pDomainMap), &(*pRangeMap));
-}
-
-CT_Epetra_CrsGraphData_ID_t Epetra_CrsGraph_DataPtr ( 
-  CT_Epetra_CrsGraph_ID_t selfID )
-{
-    return CEpetra::storeCrsGraphData(
-        CEpetra::getCrsGraph(selfID)->DataPtr());
-}
-
-void Epetra_CrsGraph_SortGhostsAssociatedWithEachProcessor ( 
-  CT_Epetra_CrsGraph_ID_t selfID, boolean Flag )
-{
-    CEpetra::getCrsGraph(selfID)->SortGhostsAssociatedWithEachProcessor(
-        Flag);
 }
 
 

@@ -2,7 +2,6 @@
 #include "CEpetra_Distributor_Cpp.hpp"
 #include "CEpetra_Directory_Cpp.hpp"
 #include "CEpetra_BlockMap_Cpp.hpp"
-#include "CEpetra_SerialCommData_Cpp.hpp"
 #include "CEpetra_SerialComm_Cpp.hpp"
 #include "CEpetra_SerialComm.h"
 #include "Epetra_SerialComm.h"
@@ -255,13 +254,6 @@ CT_Epetra_Directory_ID_t Epetra_SerialComm_CreateDirectory (
     return CEpetra::storeDirectory(
         CEpetra::getSerialComm(selfID)->CreateDirectory(
             *pMap));
-}
-
-CT_Epetra_SerialCommData_ID_t Epetra_SerialComm_DataPtr ( 
-  CT_Epetra_SerialComm_ID_t selfID )
-{
-    return CEpetra::storeSerialCommData(
-        CEpetra::getSerialComm(selfID)->DataPtr());
 }
 
 void Epetra_SerialComm_Assign ( 

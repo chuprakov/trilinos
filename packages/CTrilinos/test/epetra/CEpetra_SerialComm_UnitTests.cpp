@@ -2,7 +2,6 @@
 #include "CEpetra_Comm.h"
 #include "CEpetra_Directory.h"
 #include "CEpetra_Distributor.h"
-#include "CEpetra_SerialCommData.h"
 #include "Epetra_SerialComm.h"
 #include "CEpetra_SerialComm.h"
 #include "CEpetra_SerialComm_Cpp.hpp"
@@ -254,11 +253,6 @@ CT_Epetra_Distributor_ID_t Epetra_SerialComm_CreateDistributor (
 /**********************************************************************
 CT_Epetra_Directory_ID_t Epetra_SerialComm_CreateDirectory ( 
   CT_Epetra_SerialComm_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID );
- **********************************************************************/
-
-/**********************************************************************
-CT_Epetra_SerialCommData_ID_t Epetra_SerialComm_DataPtr ( 
-  CT_Epetra_SerialComm_ID_t selfID );
  **********************************************************************/
 
 /**********************************************************************

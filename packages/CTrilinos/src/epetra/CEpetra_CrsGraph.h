@@ -11,7 +11,6 @@
 #include "CEpetra_Import.h"
 #include "CEpetra_Export.h"
 #include "CEpetra_Comm.h"
-#include "CEpetra_CrsGraphData.h"
 #include "CTrilinos_enums.h"
 
 
@@ -262,12 +261,6 @@ int Epetra_CrsGraph_TransformToLocal (
 int Epetra_CrsGraph_TransformToLocal_UsingMaps ( 
   CT_Epetra_CrsGraph_ID_t selfID, CT_Epetra_BlockMap_ID_t DomainMapID, 
   CT_Epetra_BlockMap_ID_t RangeMapID );
-
-CT_Epetra_CrsGraphData_ID_t Epetra_CrsGraph_DataPtr ( 
-  CT_Epetra_CrsGraph_ID_t selfID );
-
-void Epetra_CrsGraph_SortGhostsAssociatedWithEachProcessor ( 
-  CT_Epetra_CrsGraph_ID_t selfID, boolean Flag );
 
 
 #ifdef __cplusplus

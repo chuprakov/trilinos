@@ -14,7 +14,6 @@
 #include "CEpetra_Distributor.h"
 #include "CEpetra_Directory.h"
 #include "CEpetra_BlockMap.h"
-#include "CEpetra_MpiCommData.h"
 #include "CTrilinos_enums.h"
 
 
@@ -126,9 +125,6 @@ CT_Epetra_Directory_ID_t Epetra_MpiComm_CreateDirectory (
 int Epetra_MpiComm_GetMpiTag ( CT_Epetra_MpiComm_ID_t selfID );
 
 MPI_Comm Epetra_MpiComm_GetMpiComm ( CT_Epetra_MpiComm_ID_t selfID );
-
-CT_Epetra_MpiCommData_ID_t Epetra_MpiComm_DataPtr ( 
-  CT_Epetra_MpiComm_ID_t selfID );
 
 void Epetra_MpiComm_Assign ( 
   CT_Epetra_MpiComm_ID_t selfID, CT_Epetra_MpiComm_ID_t CommID );

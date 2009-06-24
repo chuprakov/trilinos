@@ -356,13 +356,6 @@ CT_Epetra_Import_ID_t Epetra_CrsMatrix_RowMatrixImporter (
 double * Epetra_CrsMatrix_getRow ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int Loc );
 
-int Epetra_CrsMatrix_ExtractCrsDataPointers ( 
-  CT_Epetra_CrsMatrix_ID_t selfID, int ** IndexOffset, int ** Indices, 
-  double ** Values_in );
-
-int Epetra_CrsMatrix_SortGhostsAssociatedWithEachProcessor ( 
-  CT_Epetra_CrsMatrix_ID_t selfID, boolean Flag );
-
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_ImportMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID );
 
