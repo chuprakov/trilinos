@@ -116,6 +116,104 @@ cast( Table<T> &destTable, CTrilinos_Object_ID_t id )
     return newid;
 }
 
+template <class T1, class T2>
+bool
+isSameObject( const Teuchos::RCP<T1> &rcp1, const Teuchos::RCP<T2> &rcp2 )
+{
+    return (rcp1.shares_resource(rcp2));
+}
+
+template <class T>
+bool
+isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
+{
+    bool shares = false;
+
+    switch (id.type) {
+    case CT_Epetra_Distributor_ID:
+        shares = rcp.shares_resource(CEpetra::getDistributor(id));
+        break;
+    case CT_Epetra_SerialComm_ID:
+        shares = rcp.shares_resource(CEpetra::getSerialComm(id));
+        break;
+    case CT_Epetra_BLAS_ID:
+        shares = rcp.shares_resource(CEpetra::getBLAS(id));
+        break;
+    case CT_Epetra_Comm_ID:
+        shares = rcp.shares_resource(CEpetra::getComm(id));
+        break;
+    case CT_Epetra_Operator_ID:
+        shares = rcp.shares_resource(CEpetra::getOperator(id));
+        break;
+    case CT_Epetra_MultiVector_ID:
+        shares = rcp.shares_resource(CEpetra::getMultiVector(id));
+        break;
+    case CT_Epetra_OffsetIndex_ID:
+        shares = rcp.shares_resource(CEpetra::getOffsetIndex(id));
+        break;
+    case CT_Epetra_Object_ID:
+        shares = rcp.shares_resource(CEpetra::getObject(id));
+        break;
+    case CT_Epetra_RowMatrix_ID:
+        shares = rcp.shares_resource(CEpetra::getRowMatrix(id));
+        break;
+    case CT_Epetra_CompObject_ID:
+        shares = rcp.shares_resource(CEpetra::getCompObject(id));
+        break;
+    case CT_Epetra_Directory_ID:
+        shares = rcp.shares_resource(CEpetra::getDirectory(id));
+        break;
+    case CT_Epetra_Flops_ID:
+        shares = rcp.shares_resource(CEpetra::getFlops(id));
+        break;
+    case CT_Epetra_SrcDistObject_ID:
+        shares = rcp.shares_resource(CEpetra::getSrcDistObject(id));
+        break;
+#ifdef HAVE_MPI
+    case CT_Epetra_MpiComm_ID:
+        shares = rcp.shares_resource(CEpetra::getMpiComm(id));
+        break;
+#endif /* HAVE_MPI */
+    case CT_Epetra_CrsMatrix_ID:
+        shares = rcp.shares_resource(CEpetra::getCrsMatrix(id));
+        break;
+    case CT_Epetra_CrsGraph_ID:
+        shares = rcp.shares_resource(CEpetra::getCrsGraph(id));
+        break;
+    case CT_Epetra_DistObject_ID:
+        shares = rcp.shares_resource(CEpetra::getDistObject(id));
+        break;
+    case CT_Epetra_Export_ID:
+        shares = rcp.shares_resource(CEpetra::getExport(id));
+        break;
+    case CT_Epetra_Vector_ID:
+        shares = rcp.shares_resource(CEpetra::getVector(id));
+        break;
+    case CT_Epetra_Map_ID:
+        shares = rcp.shares_resource(CEpetra::getMap(id));
+        break;
+    case CT_Epetra_BlockMap_ID:
+        shares = rcp.shares_resource(CEpetra::getBlockMap(id));
+        break;
+    case CT_Epetra_Import_ID:
+        shares = rcp.shares_resource(CEpetra::getImport(id));
+        break;
+    default:
+        break;
+    }
+
+    return shares;
+}
+
+template <class T>
+bool
+isSameObject( CTrilinos_Object_ID_t id, const Teuchos::RCP<T> &rcp )
+{
+    return isSameObject(rcp, id);
+}
+
+bool isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 );
+
 
 } // namespace CTrilinos
 

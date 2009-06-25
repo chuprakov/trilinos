@@ -51,6 +51,7 @@ APPEND_SET(HEADERS
 # Set sources
 
 APPEND_SET(SOURCES
+  ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_utils.cpp
   )
 
 #

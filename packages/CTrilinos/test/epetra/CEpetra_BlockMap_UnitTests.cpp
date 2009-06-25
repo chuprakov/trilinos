@@ -1,10 +1,12 @@
 #include "CEpetra_Comm.h"
+#include "CEpetra_Map.h"
 #include "Epetra_BlockMap.h"
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_BlockMap_Cpp.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
+#include "CTrilinos_utils.hpp"
 
 #include "CEpetra_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
@@ -17,6 +19,27 @@ namespace {
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Cast ( 
   CTrilinos_Object_ID_t id );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_BlockMap , Cast )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+
+  ECHO(int NumGlobalElements = 8);
+  ECHO(int ElementSize = 2);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t selfID = Epetra_BlockMap_Create(
+       NumGlobalElements, ElementSize, IndexBase, CommID));
+
+  /* This cast should be allowed */
+  ECHO(CT_Epetra_BlockMap_ID_t bmapID = Epetra_BlockMap_Cast(selfID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, bmapID), true);
+
+  /* This cast should not be allowed */
+  TEST_THROW(Epetra_Map_Cast(selfID), Teuchos::m_bad_cast);
+}
 
 /**********************************************************************
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create ( 
@@ -40,6 +63,10 @@ TEUCHOS_UNIT_TEST( Epetra_BlockMap , Create )
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.type, CT_Epetra_BlockMap_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
+
+  TEST_EQUALITY(Epetra_BlockMap_NumGlobalElements(selfID), NumGlobalElements);
+  TEST_EQUALITY(Epetra_BlockMap_ElementSize_Const(selfID), ElementSize);
+  TEST_EQUALITY(Epetra_BlockMap_IndexBase(selfID), IndexBase);
 }
 
 /**********************************************************************
@@ -67,9 +94,50 @@ CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Duplicate (
   CT_Epetra_BlockMap_ID_t mapID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_BlockMap , Duplicate )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+
+  ECHO(int NumGlobalElements = 8);
+  ECHO(int ElementSize = 2);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t selfID = Epetra_BlockMap_Create(
+       NumGlobalElements, ElementSize, IndexBase, CommID));
+
+  ECHO(CT_Epetra_BlockMap_ID_t dupID = Epetra_BlockMap_Duplicate(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(dupID.type, CT_Epetra_BlockMap_ID);
+  TEST_EQUALITY_CONST(dupID.index, 1);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
+}
+
 /**********************************************************************
 void Epetra_BlockMap_Destroy ( CT_Epetra_BlockMap_ID_t * selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_BlockMap , Destroy )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+
+  ECHO(int NumGlobalElements = 8);
+  ECHO(int ElementSize = 4);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t selfID = Epetra_BlockMap_Create(
+       NumGlobalElements, ElementSize, IndexBase, CommID));
+
+  ECHO(Epetra_BlockMap_Destroy(&selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY_CONST(selfID.index, -1);
+}
 
 /**********************************************************************
 int Epetra_BlockMap_RemoteIDList ( 
@@ -136,6 +204,23 @@ int Epetra_BlockMap_NumGlobalElements (
   CT_Epetra_BlockMap_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_BlockMap , NumGlobalElements )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+
+  ECHO(int NumGlobalElements = 13);
+  ECHO(int ElementSize = 3);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t selfID = Epetra_BlockMap_Create(
+       NumGlobalElements, ElementSize, IndexBase, CommID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(Epetra_BlockMap_NumGlobalElements(selfID), NumGlobalElements);
+}
+
 /**********************************************************************
 int Epetra_BlockMap_NumMyElements ( CT_Epetra_BlockMap_ID_t selfID );
  **********************************************************************/
@@ -150,6 +235,23 @@ int Epetra_BlockMap_ElementSize_Const (
   CT_Epetra_BlockMap_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_BlockMap , ElementSize_Const )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+
+  ECHO(int NumGlobalElements = 12);
+  ECHO(int ElementSize = 4);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t selfID = Epetra_BlockMap_Create(
+       NumGlobalElements, ElementSize, IndexBase, CommID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(Epetra_BlockMap_ElementSize_Const(selfID), ElementSize);
+}
+
 /**********************************************************************
 int Epetra_BlockMap_ElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID, int LID );
@@ -163,6 +265,23 @@ int Epetra_BlockMap_FirstPointInElement (
 /**********************************************************************
 int Epetra_BlockMap_IndexBase ( CT_Epetra_BlockMap_ID_t selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_BlockMap , IndexBase )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+
+  ECHO(int NumGlobalElements = 9);
+  ECHO(int ElementSize = 1);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t selfID = Epetra_BlockMap_Create(
+       NumGlobalElements, ElementSize, IndexBase, CommID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(Epetra_BlockMap_IndexBase(selfID), IndexBase);
+}
 
 /**********************************************************************
 int Epetra_BlockMap_NumGlobalPoints ( 
@@ -202,6 +321,23 @@ boolean Epetra_BlockMap_UniqueGIDs (
 boolean Epetra_BlockMap_ConstantElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_BlockMap , ConstantElementSize )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+
+  ECHO(int NumGlobalElements = 12);
+  ECHO(int ElementSize = 4);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t selfID = Epetra_BlockMap_Create(
+       NumGlobalElements, ElementSize, IndexBase, CommID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(Epetra_BlockMap_ConstantElementSize(selfID), TRUE);
+}
 
 /**********************************************************************
 boolean Epetra_BlockMap_SameAs ( 
@@ -271,6 +407,32 @@ boolean Epetra_BlockMap_IsOneToOne (
 void Epetra_BlockMap_Assign ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t mapID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_BlockMap , Assign )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create a map to duplicate */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int IndexBase = 0);
+  ECHO(int ElementSize1 = 3);
+  ECHO(int NumGlobalElements1 = 4);
+  ECHO(CT_Epetra_BlockMap_ID_t  mapID = Epetra_BlockMap_Create(
+       NumGlobalElements1, ElementSize1, IndexBase, CommID));
+
+  /* Create the one to operate on */
+  ECHO(int ElementSize2 = 2);
+  ECHO(int NumGlobalElements2 = 6);
+  ECHO(CT_Epetra_BlockMap_ID_t selfID = Epetra_BlockMap_Create(
+       NumGlobalElements2, ElementSize2, IndexBase, CommID));
+
+  /* Check the initial state */
+  TEST_EQUALITY(Epetra_BlockMap_NumGlobalElements(selfID), NumGlobalElements2);
+
+  /* Test out the wrapper and check that it worked */
+  ECHO(Epetra_BlockMap_Assign(selfID, mapID));
+  TEST_EQUALITY(Epetra_BlockMap_NumGlobalElements(selfID), NumGlobalElements1);
+}
 
 /**********************************************************************/
 

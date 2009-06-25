@@ -6,6 +6,7 @@
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
+#include "CTrilinos_utils.hpp"
 
 #include "CEpetra_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
@@ -33,11 +34,14 @@ TEUCHOS_UNIT_TEST( Epetra_Map , Cast )
   ECHO(CT_Epetra_Map_ID_t selfID = Epetra_Map_Create(
        NumGlobalElements, IndexBase, CommID));
   ECHO(CT_Epetra_Map_ID_t dupID = Epetra_Map_Cast(selfID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
 
-  /* This cast should be allowed */
+  /* These casts should be allowed */
   ECHO(CT_Epetra_BlockMap_ID_t bmapID = Epetra_BlockMap_Cast(selfID));
   TEST_EQUALITY(Epetra_BlockMap_NumGlobalElements(bmapID), NumGlobalElements);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, bmapID), true);
   ECHO(CT_Epetra_Map_ID_t mapID = Epetra_Map_Cast(bmapID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(bmapID, mapID), true);
 
   /* This cast should not be allowed */
   ECHO(CT_Epetra_BlockMap_ID_t bmapID2 = Epetra_BlockMap_Create(
@@ -129,9 +133,9 @@ TEUCHOS_UNIT_TEST( Epetra_Map , Duplicate )
 {
   ECHO(CEpetra_Test_CleanSlate());
 
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 4);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(CT_Epetra_Map_ID_t selfID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
 
   ECHO(CT_Epetra_Map_ID_t dupID = Epetra_Map_Duplicate(selfID));
@@ -139,6 +143,7 @@ TEUCHOS_UNIT_TEST( Epetra_Map , Duplicate )
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(dupID.type, CT_Epetra_Map_ID);
   TEST_EQUALITY_CONST(dupID.index, 1);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
 }
 
 /**********************************************************************
@@ -149,9 +154,9 @@ TEUCHOS_UNIT_TEST( Epetra_Map , Destroy )
 {
   ECHO(CEpetra_Test_CleanSlate());
 
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 6);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(CT_Epetra_Map_ID_t selfID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
 
   ECHO(Epetra_Map_Destroy(&selfID));
@@ -165,6 +170,29 @@ TEUCHOS_UNIT_TEST( Epetra_Map , Destroy )
 void Epetra_Map_Assign ( 
   CT_Epetra_Map_ID_t selfID, CT_Epetra_Map_ID_t mapID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_Map , Assign )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create a map to duplicate */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int IndexBase = 0);
+  ECHO(int NumGlobalElements1 = 4);
+  ECHO(CT_Epetra_Map_ID_t  mapID = Epetra_Map_Create(NumGlobalElements1, IndexBase, CommID));
+
+  /* Create the one to operate on */
+  ECHO(int NumGlobalElements2 = 5);
+  ECHO(CT_Epetra_Map_ID_t selfID = Epetra_Map_Create(NumGlobalElements2, IndexBase, CommID));
+
+  /* Check the initial state */
+  ECHO(CT_Epetra_BlockMap_ID_t bselfID = Epetra_BlockMap_Cast(selfID));
+  TEST_EQUALITY(Epetra_BlockMap_NumGlobalElements(bselfID), NumGlobalElements2);
+
+  /* Test out the wrapper and check that it worked */
+  ECHO(Epetra_Map_Assign(selfID, mapID));
+  TEST_EQUALITY(Epetra_BlockMap_NumGlobalElements(bselfID), NumGlobalElements1);
+}
 
 /**********************************************************************/
 

@@ -1,9 +1,11 @@
+#include "CEpetra_Comm.h"
 #include "Epetra_BLAS.h"
 #include "CEpetra_BLAS.h"
 #include "CEpetra_BLAS_Cpp.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
+#include "CTrilinos_utils.hpp"
 
 #include "CEpetra_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
@@ -16,18 +18,68 @@ namespace {
 CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Object_ID_t id );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_BLAS , Cast )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_BLAS_ID_t selfID = Epetra_BLAS_Create());
+
+  /* This cast should be allowed */
+  ECHO(CT_Epetra_BLAS_ID_t blasID = Epetra_BLAS_Cast(selfID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, blasID), true);
+
+  /* This cast should not be allowed */
+  TEST_THROW(Epetra_Comm_Cast(selfID), Teuchos::m_bad_cast);
+}
+
 /**********************************************************************
 CT_Epetra_BLAS_ID_t Epetra_BLAS_Create (  );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_BLAS , Create )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_BLAS_ID_t selfID = Epetra_BLAS_Create());
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Epetra_BLAS_ID);
+  TEST_EQUALITY_CONST(selfID.index, 0);
+}
 
 /**********************************************************************
 CT_Epetra_BLAS_ID_t Epetra_BLAS_Duplicate ( 
   CT_Epetra_BLAS_ID_t BLASID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_BLAS , Duplicate )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_BLAS_ID_t selfID = Epetra_BLAS_Create());
+  ECHO(CT_Epetra_BLAS_ID_t dupID = Epetra_BLAS_Duplicate(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(dupID.type, CT_Epetra_BLAS_ID);
+  TEST_EQUALITY_CONST(dupID.index, 1);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
+}
+
 /**********************************************************************
 void Epetra_BLAS_Destroy ( CT_Epetra_BLAS_ID_t * selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_BLAS , Destroy )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_BLAS_ID_t selfID = Epetra_BLAS_Create());
+  ECHO(Epetra_BLAS_Destroy(&selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY_CONST(selfID.index, -1);
+}
 
 /**********************************************************************
 float Epetra_BLAS_ASUM_Float ( 

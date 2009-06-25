@@ -9,6 +9,7 @@
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
+#include "CTrilinos_utils.hpp"
 
 #include "CEpetra_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
@@ -28,13 +29,14 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , Cast )
 
   /* This cast should be allowed */
   ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
-  ECHO(CT_Epetra_SerialComm_ID_t dupID = Epetra_SerialComm_Cast(
-       selfID));
+  ECHO(CT_Epetra_SerialComm_ID_t dupID = Epetra_SerialComm_Cast(selfID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
 
-  /* This cast should be allowed */
+  /* These casts should be allowed */
   ECHO(CT_Epetra_Comm_ID_t commID = Epetra_Comm_Cast(selfID));
-  ECHO(CT_Epetra_SerialComm_ID_t serialcommID = Epetra_SerialComm_Cast(
-       commID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, commID), true);
+  ECHO(CT_Epetra_SerialComm_ID_t serialcommID = Epetra_SerialComm_Cast(commID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(commID, serialcommID), true);
 
   /* If no exceptions thrown, then test was successful */
 }
@@ -71,6 +73,7 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , Duplicate )
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(dupID.type, CT_Epetra_SerialComm_ID);
   TEST_EQUALITY_CONST(dupID.index, 1);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
 }
 
 /**********************************************************************

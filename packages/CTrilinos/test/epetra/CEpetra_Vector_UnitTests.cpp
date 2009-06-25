@@ -8,6 +8,7 @@
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
+#include "CTrilinos_utils.hpp"
 
 #include "CEpetra_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
@@ -36,8 +37,11 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Cast )
 
   /* These casts should be allowed */
   ECHO(CT_Epetra_Vector_ID_t dupID = Epetra_Vector_Cast(selfID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
   ECHO(CT_Epetra_MultiVector_ID_t mvecID = Epetra_MultiVector_Cast(selfID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, mvecID), true);
   ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Cast(mvecID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(mvecID, vecID), true);
 
   /* This cast should not be allowed */
   ECHO(int NumVectors = 3);
@@ -93,6 +97,7 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Duplicate )
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.type, CT_Epetra_Vector_ID);
   TEST_EQUALITY_CONST(selfID.index, 1);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, SourceID), false);
 }
 
 /**********************************************************************
