@@ -9,10 +9,6 @@
 \usepackage{graphicx}
 \usepackage{latexsym}
 \input{rab_commands}
-\newcommand{\mychapter}[1]{\section{#1}}
-\newcommand{\mysection}[1]{\subsection{#1}}
-\newcommand{\mysubsection}[1]{\subsubsection{#1}}
-\newcommand{\mysubsubsection}[1]{\subsubsection*{#1}}
 
 % ---------------------------------------------------------------------------- %
 % Set the title, author, and date
@@ -33,8 +29,8 @@ Energy under Contract DE-AC04-94AL85000.}, Albuquerque NM 87185 USA, \\ }
 % ---------------------------------------------------------------------------- %
 % These are mandatory
 %
-\SANDnum{SAND2009-xxx}	% e.g. \SANDnum{SAND2009-xxx}
-\SANDprintDate{May 2009}
+\SANDnum{SAND2009-3969}	% e.g. \SANDnum{SAND2009-xxx}
+\SANDprintDate{Jine 2009}
 \SANDauthor{Roscoe A. Bartlett} % One line, separated by commas
 
 % ---------------------------------------------------------------------------- %
@@ -2036,7 +2032,7 @@ the NLP interface).  See the MOOCHO Reference Manual
 {}\cite{ref:moochorefguide} for more details.
 
 %
-\subsection{Summary}
+\section{Summary}
 %
 
 MOOCHO currently implements several variates of reduced-space quasi-Newton
@@ -2047,37 +2043,6 @@ problems and massively parallel simulation-constrained problems can be
 addressed with MOOCHO.  Parallel simulation-constrained problems can be
 represented through Thyra and can utilize a great deal of the parallel (and
 serial) linear solver capability present through Trilinos.
-
-%
-% Example stuff from the SAND-report template
-%
-
-%    \chapter{Introduction}\label{Intro}
-%
-%	\begin{table}[ht]
-%	    \centering
-%	    \caption[Short Title]{Full caption}
-%	    \bigskip
-%
-%	    \begin{tabular}{|l|c|l|c|}
-%	    \end{tabular}
-%	    \label{tab:1}
-%	\end{table}
-%
-%	\begin{figure}[ht]
-%	    \centering
-%	    \subfigure[Short title]{
-%		\label{fig:sub:1}
-%		\includegraphics[keepaspectratio=true, width= in]{filename}
-%	    }
-%	    \subfigure[Short title]{
-%		\label{fig:sub:2}
-%		\includegraphics[keepaspectratio=true, width= in]{filename}
-%	    }
-%	    \caption{Full caption.}
-%	    \label{fig:1}
-%     	\end{figure}
-
 
 
 % ---------------------------------------------------------------------- %
@@ -2100,37 +2065,7 @@ serial) linear solver capability present through Trilinos.
 
 % \printindex
 
-%
-%\begin{SANDdistribution}[NM]% or [CA]
-%
-
-% \SANDdistCRADA	% If this report is about CRADA work
-% \SANDdistPatent	% If this report has a Patent Caution or Patent Interest
-% \SANDdistLDRD	% If this report is about LDRD work
-
-% External Address Format: {num copies}{Address}
-%\SANDdistExternal{}{}
-\bigskip
-
-% The following MUST BE between the external and internal distributions!
-% \SANDdistClassified % If this report is classified
-
-% Internal Address Format: {num copies}{Mail stop}{Name}{Org}
-%\SANDdistInternal{}{}{}{}
-
-% Mail Channel Address Format: {num copies}{Mail Channel}{Name}{Org}
-%\SANDdistInternalM{}{}{}{}
-
-%
-%\end{SANDdistribution}
-%
-
-% The second printing
-%\begin{SANDreDistribution}
-%    \SANDdistExternal{}{}
-%    \bigskip
-%    \SANDdistInternal{}{}{}{}
-%    \SANDdistInternalM{}{}{}{}
-%\end{SANDreDistribution}
+\begin{SANDdistribution}[NM]
+\end{SANDdistribution}
 
 \end{document}
