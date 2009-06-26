@@ -240,7 +240,7 @@ CEpetra::getComm( CT_Epetra_Comm_ID_t id )
 CT_Epetra_Comm_ID_t
 CEpetra::storeComm( const Epetra_Comm *pobj )
 {
-    return tableOfComms().store(pobj);
+    return tableOfComms().storeCopy(pobj);
 }
 
 void

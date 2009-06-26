@@ -118,7 +118,7 @@ CEpetra::getMap( CT_Epetra_Map_ID_t id )
 CT_Epetra_Map_ID_t
 CEpetra::storeMap( const Epetra_Map *pobj )
 {
-    return tableOfMaps().store(pobj);
+    return tableOfMaps().storeCopy(pobj);
 }
 
 void

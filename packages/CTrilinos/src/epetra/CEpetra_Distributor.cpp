@@ -163,7 +163,7 @@ CEpetra::getDistributor( CT_Epetra_Distributor_ID_t id )
 CT_Epetra_Distributor_ID_t
 CEpetra::storeDistributor( const Epetra_Distributor *pobj )
 {
-    return tableOfDistributors().store(pobj);
+    return tableOfDistributors().storeCopy(pobj);
 }
 
 void

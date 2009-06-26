@@ -153,7 +153,7 @@ CEpetra::getDistObject( CT_Epetra_DistObject_ID_t id )
 CT_Epetra_DistObject_ID_t
 CEpetra::storeDistObject( const Epetra_DistObject *pobj )
 {
-    return tableOfDistObjects().store(pobj);
+    return tableOfDistObjects().storeCopy(pobj);
 }
 
 void

@@ -70,7 +70,7 @@ CEpetra::getSrcDistObject( CT_Epetra_SrcDistObject_ID_t id )
 CT_Epetra_SrcDistObject_ID_t
 CEpetra::storeSrcDistObject( const Epetra_SrcDistObject *pobj )
 {
-    return tableOfSrcDistObjects().store(pobj);
+    return tableOfSrcDistObjects().storeCopy(pobj);
 }
 
 void

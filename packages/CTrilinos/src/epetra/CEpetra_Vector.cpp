@@ -190,7 +190,7 @@ CEpetra::getVector( CT_Epetra_Vector_ID_t id )
 CT_Epetra_Vector_ID_t
 CEpetra::storeVector( const Epetra_Vector *pobj )
 {
-    return tableOfVectors().store(pobj);
+    return tableOfVectors().storeCopy(pobj);
 }
 
 void

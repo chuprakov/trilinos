@@ -608,7 +608,7 @@ CEpetra::getCrsGraph( CT_Epetra_CrsGraph_ID_t id )
 CT_Epetra_CrsGraph_ID_t
 CEpetra::storeCrsGraph( const Epetra_CrsGraph *pobj )
 {
-    return tableOfCrsGraphs().store(pobj);
+    return tableOfCrsGraphs().storeCopy(pobj);
 }
 
 void

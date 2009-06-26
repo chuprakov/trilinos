@@ -252,7 +252,7 @@ CEpetra::getRowMatrix( CT_Epetra_RowMatrix_ID_t id )
 CT_Epetra_RowMatrix_ID_t
 CEpetra::storeRowMatrix( const Epetra_RowMatrix *pobj )
 {
-    return tableOfRowMatrixs().store(pobj);
+    return tableOfRowMatrixs().storeCopy(pobj);
 }
 
 void

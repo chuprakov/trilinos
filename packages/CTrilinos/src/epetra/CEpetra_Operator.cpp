@@ -138,7 +138,7 @@ CEpetra::getOperator( CT_Epetra_Operator_ID_t id )
 CT_Epetra_Operator_ID_t
 CEpetra::storeOperator( const Epetra_Operator *pobj )
 {
-    return tableOfOperators().store(pobj);
+    return tableOfOperators().storeCopy(pobj);
 }
 
 void

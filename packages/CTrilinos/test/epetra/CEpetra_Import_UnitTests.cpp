@@ -21,6 +21,42 @@ CT_Epetra_Import_ID_t Epetra_Import_Cast (
   CTrilinos_Object_ID_t id );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST ( Epetra_Import , Cast )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Set up communication */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumProc = Epetra_Comm_NumProc(CommID));
+  ECHO(int MyPID = Epetra_Comm_MyPID(CommID));
+
+  /* Create the source map */
+  ECHO(int IndexBase = 0);
+  ECHO(const int NumMyElements = 4);
+  ECHO(int NumGlobalElements = NumMyElements * NumProc);
+  ECHO(int off = NumMyElements*MyPID);
+  int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off, 3+off};
+  ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
+       NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
+  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+
+  /* Create the target map */
+  ECHO(int off2 = NumMyElements*(NumProc-MyPID));
+  int GetMyGlobalElements[NumMyElements] = {off2-1, off2-2, off2-3, off2-4};
+  ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
+       NumGlobalElements, NumMyElements, GetMyGlobalElements, IndexBase, CommID));
+  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+
+  /* Create an importer */
+  ECHO(CT_Epetra_Import_ID_t selfID = Epetra_Import_Create(btarID, bsrcID));
+
+  /* These casts should be allowed */
+  ECHO(CT_Epetra_Object_ID_t objID = Epetra_Object_Cast(selfID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, objID), true);
+  ECHO(CT_Epetra_Import_ID_t impID = Epetra_Import_Cast(objID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(objID, impID), true);
+}
+
 /**********************************************************************
 CT_Epetra_Import_ID_t Epetra_Import_Create ( 
   CT_Epetra_BlockMap_ID_t TargetMapID, 
@@ -193,10 +229,78 @@ CT_Epetra_BlockMap_ID_t Epetra_Import_SourceMap (
   CT_Epetra_Import_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST ( Epetra_Import , SourceMap )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Set up communication */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumProc = Epetra_Comm_NumProc(CommID));
+  ECHO(int MyPID = Epetra_Comm_MyPID(CommID));
+
+  /* Create the source map */
+  ECHO(int IndexBase = 0);
+  ECHO(const int NumMyElements = 4);
+  ECHO(int NumGlobalElements = NumMyElements * NumProc);
+  ECHO(int off = NumMyElements*MyPID);
+  int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off, 3+off};
+  ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
+       NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
+  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+
+  /* Create the target map */
+  ECHO(int off2 = NumMyElements*(NumProc-MyPID));
+  int GetMyGlobalElements[NumMyElements] = {off2-1, off2-2, off2-3, off2-4};
+  ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
+       NumGlobalElements, NumMyElements, GetMyGlobalElements, IndexBase, CommID));
+  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+
+  /* Create an importer */
+  ECHO(CT_Epetra_Import_ID_t selfID = Epetra_Import_Create(btarID, bsrcID));
+
+  /* Get the source map using wrapper */
+  ECHO(CT_Epetra_BlockMap_ID_t bsrcID2 = Epetra_Import_SourceMap(selfID));
+  TEST_EQUALITY(Epetra_BlockMap_NumGlobalElements(bsrcID2), NumGlobalElements);
+}
+
 /**********************************************************************
 CT_Epetra_BlockMap_ID_t Epetra_Import_TargetMap ( 
   CT_Epetra_Import_ID_t selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST ( Epetra_Import , TargetMap )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Set up communication */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumProc = Epetra_Comm_NumProc(CommID));
+  ECHO(int MyPID = Epetra_Comm_MyPID(CommID));
+
+  /* Create the source map */
+  ECHO(int IndexBase = 0);
+  ECHO(const int NumMyElements = 4);
+  ECHO(int NumGlobalElements = NumMyElements * NumProc);
+  ECHO(int off = NumMyElements*MyPID);
+  int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off, 3+off};
+  ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
+       NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
+  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+
+  /* Create the target map */
+  ECHO(int off2 = NumMyElements*(NumProc-MyPID));
+  int GetMyGlobalElements[NumMyElements] = {off2-1, off2-2, off2-3, off2-4};
+  ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
+       NumGlobalElements, NumMyElements, GetMyGlobalElements, IndexBase, CommID));
+  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+
+  /* Create an importer */
+  ECHO(CT_Epetra_Import_ID_t selfID = Epetra_Import_Create(btarID, bsrcID));
+
+  /* Get the source map using wrapper */
+  ECHO(CT_Epetra_BlockMap_ID_t btarID2 = Epetra_Import_TargetMap(selfID));
+  TEST_EQUALITY(Epetra_BlockMap_NumGlobalElements(btarID2), NumGlobalElements);
+}
 
 /**********************************************************************
 CT_Epetra_Distributor_ID_t Epetra_Import_Distributor ( 

@@ -98,7 +98,7 @@ CEpetra::getFlops( CT_Epetra_Flops_ID_t id )
 CT_Epetra_Flops_ID_t
 CEpetra::storeFlops( const Epetra_Flops *pobj )
 {
-    return tableOfFlopss().store(pobj);
+    return tableOfFlopss().storeCopy(pobj);
 }
 
 void

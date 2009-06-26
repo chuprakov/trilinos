@@ -163,7 +163,7 @@ CEpetra::getExport( CT_Epetra_Export_ID_t id )
 CT_Epetra_Export_ID_t
 CEpetra::storeExport( const Epetra_Export *pobj )
 {
-    return tableOfExports().store(pobj);
+    return tableOfExports().storeCopy(pobj);
 }
 
 void

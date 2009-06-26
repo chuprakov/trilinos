@@ -285,7 +285,7 @@ CEpetra::getSerialComm( CT_Epetra_SerialComm_ID_t id )
 CT_Epetra_SerialComm_ID_t
 CEpetra::storeSerialComm( const Epetra_SerialComm *pobj )
 {
-    return tableOfSerialComms().store(pobj);
+    return tableOfSerialComms().storeCopy(pobj);
 }
 
 void

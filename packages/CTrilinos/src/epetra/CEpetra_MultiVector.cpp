@@ -472,7 +472,7 @@ CEpetra::getMultiVector( CT_Epetra_MultiVector_ID_t id )
 CT_Epetra_MultiVector_ID_t
 CEpetra::storeMultiVector( const Epetra_MultiVector *pobj )
 {
-    return tableOfMultiVectors().store(pobj);
+    return tableOfMultiVectors().storeCopy(pobj);
 }
 
 void

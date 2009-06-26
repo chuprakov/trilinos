@@ -255,7 +255,7 @@ CEpetra::getBLAS( CT_Epetra_BLAS_ID_t id )
 CT_Epetra_BLAS_ID_t
 CEpetra::storeBLAS( const Epetra_BLAS *pobj )
 {
-    return tableOfBLASs().store(pobj);
+    return tableOfBLASs().storeCopy(pobj);
 }
 
 void

@@ -98,7 +98,7 @@ CEpetra::getObject( CT_Epetra_Object_ID_t id )
 CT_Epetra_Object_ID_t
 CEpetra::storeObject( const Epetra_Object *pobj )
 {
-    return tableOfObjects().store(pobj);
+    return tableOfObjects().storeCopy(pobj);
 }
 
 void

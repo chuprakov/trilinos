@@ -128,7 +128,7 @@ CEpetra::getOffsetIndex( CT_Epetra_OffsetIndex_ID_t id )
 CT_Epetra_OffsetIndex_ID_t
 CEpetra::storeOffsetIndex( const Epetra_OffsetIndex *pobj )
 {
-    return tableOfOffsetIndexs().store(pobj);
+    return tableOfOffsetIndexs().storeCopy(pobj);
 }
 
 void

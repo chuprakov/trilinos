@@ -12,6 +12,7 @@ namespace CTrilinos
 {
 
 using Teuchos::RCP;
+using Teuchos::rcp;
 
 
 template <class T>
@@ -31,6 +32,13 @@ class Table
 
     template <class Told>
     CTrilinos_Object_ID_t store(Told* pobj);
+
+    CTrilinos_Object_ID_t storeCopy(T* pobj);
+
+    CTrilinos_Object_ID_t storeCopy(const T* pobj);
+
+    template <class Told>
+    CTrilinos_Object_ID_t storeCopy(Told* pobj);
 
     int remove(CTrilinos_Object_ID_t * id);
 
@@ -95,16 +103,53 @@ template <class T>
 template <class Told>
 CTrilinos_Object_ID_t Table<T>::store(Told* pobj)
 { /* prevent adding wrong types */
-    T* pbase = dynamic_cast<T*>(pobj);
-    if (pbase != NULL) {
-        return store(pbase);
+    CTrilinos_Object_ID_t id;
+    id.type = CT_Invalid_ID;
+    id.index = -1;
+
+    T* pnew = dynamic_cast<T*>(pobj);
+    if (pnew != NULL) {
+        id = store(pnew);
     } else {
         throw CTrilinosTypeMismatchError(tstr);
     }
 
+    return id;
+}
+
+template <class T>
+CTrilinos_Object_ID_t Table<T>::storeCopy(T* pobj)
+{
     CTrilinos_Object_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
+
+    if ((id.index = sot.storeNew(pobj, false)) != -1)
+        id.type = ttype;
+
+    return id;
+}
+
+template <class T>
+CTrilinos_Object_ID_t Table<T>::storeCopy(const T* pobj)
+{
+    return storeCopy(const_cast<T*>(pobj));
+}
+
+template <class T>
+template <class Told>
+CTrilinos_Object_ID_t Table<T>::storeCopy(Told* pobj)
+{ /* prevent adding wrong types */
+    CTrilinos_Object_ID_t id;
+    id.type = CT_Invalid_ID;
+    id.index = -1;
+
+    T* pnew = dynamic_cast<T*>(pobj);
+    if (pnew != NULL) {
+        id = storeCopy(pnew);
+    } else {
+        throw CTrilinosTypeMismatchError(tstr);
+    }
 
     return id;
 }

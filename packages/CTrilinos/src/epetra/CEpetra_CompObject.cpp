@@ -158,7 +158,7 @@ CEpetra::getCompObject( CT_Epetra_CompObject_ID_t id )
 CT_Epetra_CompObject_ID_t
 CEpetra::storeCompObject( const Epetra_CompObject *pobj )
 {
-    return tableOfCompObjects().store(pobj);
+    return tableOfCompObjects().storeCopy(pobj);
 }
 
 void

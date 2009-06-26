@@ -384,7 +384,7 @@ CEpetra::getBlockMap( CT_Epetra_BlockMap_ID_t id )
 CT_Epetra_BlockMap_ID_t
 CEpetra::storeBlockMap( const Epetra_BlockMap *pobj )
 {
-    return tableOfBlockMaps().store(pobj);
+    return tableOfBlockMaps().storeCopy(pobj);
 }
 
 void

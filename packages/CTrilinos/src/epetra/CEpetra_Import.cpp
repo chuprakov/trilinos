@@ -163,7 +163,7 @@ CEpetra::getImport( CT_Epetra_Import_ID_t id )
 CT_Epetra_Import_ID_t
 CEpetra::storeImport( const Epetra_Import *pobj )
 {
-    return tableOfImports().store(pobj);
+    return tableOfImports().storeCopy(pobj);
 }
 
 void

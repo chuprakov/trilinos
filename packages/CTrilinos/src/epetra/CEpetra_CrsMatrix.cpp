@@ -877,7 +877,7 @@ CEpetra::getCrsMatrix( CT_Epetra_CrsMatrix_ID_t id )
 CT_Epetra_CrsMatrix_ID_t
 CEpetra::storeCrsMatrix( const Epetra_CrsMatrix *pobj )
 {
-    return tableOfCrsMatrixs().store(pobj);
+    return tableOfCrsMatrixs().storeCopy(pobj);
 }
 
 void

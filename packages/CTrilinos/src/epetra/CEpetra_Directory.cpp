@@ -81,7 +81,7 @@ CEpetra::getDirectory( CT_Epetra_Directory_ID_t id )
 CT_Epetra_Directory_ID_t
 CEpetra::storeDirectory( const Epetra_Directory *pobj )
 {
-    return tableOfDirectorys().store(pobj);
+    return tableOfDirectorys().storeCopy(pobj);
 }
 
 void

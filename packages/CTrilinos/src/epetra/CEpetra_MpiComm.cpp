@@ -296,7 +296,7 @@ CEpetra::getMpiComm( CT_Epetra_MpiComm_ID_t id )
 CT_Epetra_MpiComm_ID_t
 CEpetra::storeMpiComm( const Epetra_MpiComm *pobj )
 {
-    return tableOfMpiComms().store(pobj);
+    return tableOfMpiComms().storeCopy(pobj);
 }
 
 void

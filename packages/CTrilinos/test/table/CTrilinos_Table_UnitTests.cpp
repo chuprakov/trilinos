@@ -74,6 +74,45 @@ TEUCHOS_UNIT_TEST( Table, storeNull )
 }
 
 
+/* Table::storeCopy() */
+
+TEUCHOS_UNIT_TEST( Table, storeCopy )
+{
+  ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
+  ECHO(T *pobj = new T);
+  ECHO(CTrilinos_Object_ID_t id = table.storeCopy(pobj));
+  TEST_EQUALITY_CONST(id.index, 0);
+  TEST_EQUALITY(id.type, CLASS_ENUM(T));
+  TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.get(id)), false);
+}
+
+TEUCHOS_UNIT_TEST( Table, storeCopyBase )
+{
+  ECHO(Table<T2> table(CONSTRUCTOR(CLASS_ENUM(T2))));
+  ECHO(T1 *pobj = new T1);
+  ECHO(CTrilinos_Object_ID_t id = table.storeCopy(pobj));
+  TEST_EQUALITY_CONST(id.index, 0);
+  TEST_EQUALITY(id.type, CLASS_ENUM(T2));
+  TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.get(id)), false);
+}
+
+TEUCHOS_UNIT_TEST( Table, storeCopyWrong )
+{
+  ECHO(Table<T4> table(CONSTRUCTOR(CLASS_ENUM(T4))));
+  ECHO(T3 *pobj = new T3);
+  TEST_THROW(table.storeCopy(pobj), CTrilinosTypeMismatchError);
+}
+
+TEUCHOS_UNIT_TEST( Table, storeCopyNull )
+{
+  ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
+  ECHO(T* pobj = NULL);
+  TEST_THROW(table.storeCopy(pobj), NullReferenceError); 
+}
+
+
 /* Table::remove() */
 
 TEUCHOS_UNIT_TEST( Table, remove )
