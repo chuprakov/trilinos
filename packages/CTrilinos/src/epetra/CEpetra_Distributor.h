@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 
 /* True C header file! */
 

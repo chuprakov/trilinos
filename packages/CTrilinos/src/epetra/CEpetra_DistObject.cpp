@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_SrcDistObject_Cpp.hpp"
 #include "CEpetra_Import_Cpp.hpp"
 #include "CEpetra_OffsetIndex_Cpp.hpp"

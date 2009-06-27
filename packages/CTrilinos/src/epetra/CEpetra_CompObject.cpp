@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_Flops_Cpp.hpp"
 #include "CEpetra_CompObject_Cpp.hpp"
 #include "CEpetra_CompObject.h"

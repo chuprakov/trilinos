@@ -21,6 +21,7 @@
 #include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_Import_Cpp.hpp"
 
+#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_Table.hpp"
 

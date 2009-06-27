@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_Vector_Cpp.hpp"
 #include "CEpetra_MultiVector_Cpp.hpp"
 #include "CEpetra_Map_Cpp.hpp"

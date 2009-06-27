@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_CrsGraph_Cpp.hpp"
 #include "CEpetra_Import_Cpp.hpp"
 #include "CEpetra_Export_Cpp.hpp"

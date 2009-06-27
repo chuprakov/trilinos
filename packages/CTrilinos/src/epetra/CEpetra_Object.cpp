@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_Object_Cpp.hpp"
 #include "CEpetra_Object.h"
 #include "Epetra_Object.h"

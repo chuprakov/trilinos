@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_Distributor_Cpp.hpp"
 #include "CEpetra_Distributor.h"
 #include "Epetra_Distributor.h"

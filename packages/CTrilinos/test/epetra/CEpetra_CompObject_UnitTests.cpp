@@ -88,55 +88,238 @@ void Epetra_CompObject_SetFlopCounter (
   CT_Epetra_Flops_ID_t FlopCounter_inID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_CompObject , SetFlopCounter )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
+
+  ECHO(CT_Epetra_Flops_ID_t fID = Epetra_Flops_Create());
+  ECHO(Epetra_CompObject_SetFlopCounter(selfID, fID));
+
+  /* Now check the result of the call to the wrapper function */
+  ECHO(CT_Epetra_Flops_ID_t fID2 = Epetra_CompObject_GetFlopCounter(selfID));
+  TEST_EQUALITY_CONST(CEpetra::getFlops(fID2).is_null(), false);
+}
+
 /**********************************************************************
 void Epetra_CompObject_SetFlopCounter_Matching ( 
   CT_Epetra_CompObject_ID_t selfID, 
   CT_Epetra_CompObject_ID_t CompObjectID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_CompObject , SetFlopCounter_Matching )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_CompObject_ID_t compID = Epetra_CompObject_Create());
+  ECHO(CT_Epetra_Flops_ID_t fID = Epetra_Flops_Create());
+  ECHO(Epetra_CompObject_SetFlopCounter(compID, fID));
+
+  ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
+  ECHO(Epetra_CompObject_SetFlopCounter_Matching(selfID, compID));
+
+  /* Now check the result of the call to the wrapper function */
+  ECHO(CT_Epetra_Flops_ID_t fID2 = Epetra_CompObject_GetFlopCounter(selfID));
+  TEST_EQUALITY_CONST(CEpetra::getFlops(fID2).is_null(), false);
+}
+
 /**********************************************************************
 void Epetra_CompObject_UnsetFlopCounter ( 
   CT_Epetra_CompObject_ID_t selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_CompObject , UnsetFlopCounter )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
+  ECHO(CT_Epetra_Flops_ID_t fID = Epetra_Flops_Create());
+  ECHO(Epetra_CompObject_SetFlopCounter(selfID, fID));
+
+  ECHO(Epetra_CompObject_UnsetFlopCounter(selfID));
+
+  /* Get an RCP to the CompObject outside of CTrilinos */
+  ECHO(Teuchos::RCP<Epetra_CompObject> rcp1 = CEpetra::getCompObject(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY_CONST(rcp1->GetFlopCounter(), NULL);
+}
 
 /**********************************************************************
 CT_Epetra_Flops_ID_t Epetra_CompObject_GetFlopCounter ( 
   CT_Epetra_CompObject_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_CompObject , GetFlopCounter )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
+  ECHO(CT_Epetra_Flops_ID_t fID = Epetra_Flops_Create());
+  ECHO(Epetra_CompObject_SetFlopCounter(selfID, fID));
+
+  ECHO(CT_Epetra_Flops_ID_t fID2 = Epetra_CompObject_GetFlopCounter(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY_CONST(CEpetra::getFlops(fID2).is_null(), false);
+}
+
 /**********************************************************************
 void Epetra_CompObject_ResetFlops ( 
   CT_Epetra_CompObject_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_CompObject , ResetFlops )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
+
+  ECHO(CT_Epetra_Flops_ID_t fID = Epetra_Flops_Create());
+  ECHO(Epetra_CompObject_SetFlopCounter(selfID, fID));
+
+  ECHO(int f = 10);
+  ECHO(Epetra_CompObject_UpdateFlops_Int(selfID, f));
+  ECHO(double f2 = Epetra_CompObject_Flops(selfID));
+  TEST_EQUALITY(f2, f);
+
+  ECHO(Epetra_CompObject_ResetFlops(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  ECHO(double f3 = Epetra_CompObject_Flops(selfID));
+  TEST_EQUALITY_CONST(f3, 0.0);
+}
+
 /**********************************************************************
 double Epetra_CompObject_Flops ( CT_Epetra_CompObject_ID_t selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_CompObject , Flops )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
+
+  ECHO(CT_Epetra_Flops_ID_t fID = Epetra_Flops_Create());
+  ECHO(Epetra_CompObject_SetFlopCounter(selfID, fID));
+
+  ECHO(double f = 101.3);
+  ECHO(Epetra_CompObject_UpdateFlops_Double(selfID, f));
+  ECHO(double f2 = Epetra_CompObject_Flops(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(f2, f);
+}
 
 /**********************************************************************
 void Epetra_CompObject_UpdateFlops_Int ( 
   CT_Epetra_CompObject_ID_t selfID, int Flops_in );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_CompObject , UpdateFlops_Int )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
+
+  ECHO(CT_Epetra_Flops_ID_t fID = Epetra_Flops_Create());
+  ECHO(Epetra_CompObject_SetFlopCounter(selfID, fID));
+
+  ECHO(int f = 435);
+  ECHO(Epetra_CompObject_UpdateFlops_Int(selfID, f));
+
+  /* Now check the result of the call to the wrapper function */
+  ECHO(double f2 = Epetra_CompObject_Flops(selfID));
+  TEST_EQUALITY(f2, f);
+}
+
 /**********************************************************************
 void Epetra_CompObject_UpdateFlops_Long ( 
   CT_Epetra_CompObject_ID_t selfID, long int Flops_in );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_CompObject , UpdateFlops_Long )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
+
+  ECHO(CT_Epetra_Flops_ID_t fID = Epetra_Flops_Create());
+  ECHO(Epetra_CompObject_SetFlopCounter(selfID, fID));
+
+  ECHO(long f = 4357654);
+  ECHO(Epetra_CompObject_UpdateFlops_Long(selfID, f));
+
+  /* Now check the result of the call to the wrapper function */
+  ECHO(double f2 = Epetra_CompObject_Flops(selfID));
+  TEST_EQUALITY(f2, f);
+}
 
 /**********************************************************************
 void Epetra_CompObject_UpdateFlops_Double ( 
   CT_Epetra_CompObject_ID_t selfID, double Flops_in );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_CompObject , UpdateFlops_Double )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
+
+  ECHO(CT_Epetra_Flops_ID_t fID = Epetra_Flops_Create());
+  ECHO(Epetra_CompObject_SetFlopCounter(selfID, fID));
+
+  ECHO(double f = 95.4632);
+  ECHO(Epetra_CompObject_UpdateFlops_Double(selfID, f));
+
+  /* Now check the result of the call to the wrapper function */
+  ECHO(double f2 = Epetra_CompObject_Flops(selfID));
+  TEST_EQUALITY(f2, f);
+}
+
 /**********************************************************************
 void Epetra_CompObject_UpdateFlops_Float ( 
   CT_Epetra_CompObject_ID_t selfID, float Flops_in );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_CompObject , UpdateFlops_Float )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
+
+  ECHO(CT_Epetra_Flops_ID_t fID = Epetra_Flops_Create());
+  ECHO(Epetra_CompObject_SetFlopCounter(selfID, fID));
+
+  ECHO(float f = 15.4);
+  ECHO(Epetra_CompObject_UpdateFlops_Float(selfID, f));
+
+  /* Now check the result of the call to the wrapper function */
+  ECHO(double f2 = Epetra_CompObject_Flops(selfID));
+  TEST_EQUALITY(f2, f);
+}
+
 /**********************************************************************
 void Epetra_CompObject_Assign ( 
   CT_Epetra_CompObject_ID_t selfID, CT_Epetra_CompObject_ID_t srcID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_CompObject , Assign )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_CompObject_ID_t compID = Epetra_CompObject_Create());
+  ECHO(CT_Epetra_Flops_ID_t fID = Epetra_Flops_Create());
+  ECHO(Epetra_CompObject_SetFlopCounter(compID, fID));
+
+  ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
+  ECHO(Epetra_CompObject_Assign(selfID, compID));
+
+  /* Now check the result of the call to the wrapper function */
+  ECHO(CT_Epetra_Flops_ID_t fID2 = Epetra_CompObject_GetFlopCounter(selfID));
+  TEST_EQUALITY_CONST(CEpetra::getFlops(fID2).is_null(), false);
+}
 
 /**********************************************************************/
 

@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_BLAS_Cpp.hpp"
 #include "CEpetra_BLAS.h"
 #include "Epetra_BLAS.h"

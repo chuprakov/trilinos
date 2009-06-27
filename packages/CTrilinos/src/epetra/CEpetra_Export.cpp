@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_Distributor_Cpp.hpp"
 #include "CEpetra_Export_Cpp.hpp"

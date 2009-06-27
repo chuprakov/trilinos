@@ -4,6 +4,9 @@
 #define CTRILINOS_ENUMS_H
 
 
+#include "CTrilinos_config.h"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -62,7 +65,9 @@ typedef CTrilinos_Object_ID_t CT_Epetra_CompObject_ID_t ;
 typedef CTrilinos_Object_ID_t CT_Epetra_Directory_ID_t ;
 typedef CTrilinos_Object_ID_t CT_Epetra_Flops_ID_t ;
 typedef CTrilinos_Object_ID_t CT_Epetra_SrcDistObject_ID_t ;
+#ifdef HAVE_MPI
 typedef CTrilinos_Object_ID_t CT_Epetra_MpiComm_ID_t ;
+#endif /* HAVE_MPI */
 typedef CTrilinos_Object_ID_t CT_Epetra_CrsMatrix_ID_t ;
 typedef CTrilinos_Object_ID_t CT_Epetra_CrsGraph_ID_t ;
 typedef CTrilinos_Object_ID_t CT_Epetra_DistObject_ID_t ;

@@ -225,6 +225,28 @@ TEUCHOS_UNIT_TEST( Epetra_BlockMap , NumGlobalElements )
 int Epetra_BlockMap_NumMyElements ( CT_Epetra_BlockMap_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_BlockMap , NumMyElements )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumProc = Epetra_Comm_NumProc(CommID));
+
+  ECHO(int NumGlobalElements = 13);
+  ECHO(int ElementSize = 3);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t selfID = Epetra_BlockMap_Create(
+       NumGlobalElements, ElementSize, IndexBase, CommID));
+
+  /* Now check the result of the call to the wrapper function */
+  int sum = 0;
+  for (int i=0; i<NumProc; i++) {
+    sum += Epetra_BlockMap_NumMyElements(selfID);
+  }
+  TEST_EQUALITY(sum, NumGlobalElements);
+}
+
 /**********************************************************************
 int Epetra_BlockMap_MyGlobalElements_Fill ( 
   CT_Epetra_BlockMap_ID_t selfID, int * MyGlobalElementList );

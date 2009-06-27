@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_BlockMap_Cpp.hpp"
 #include "Epetra_DataAccess.h"
 #include "CEpetra_Vector_Cpp.hpp"
