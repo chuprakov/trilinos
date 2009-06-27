@@ -11,7 +11,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -22,7 +22,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -33,7 +33,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -44,7 +44,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -55,7 +55,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -66,7 +66,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -77,7 +77,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -88,7 +88,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -99,7 +99,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -110,7 +110,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -121,7 +121,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -132,7 +132,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -143,7 +143,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -154,7 +154,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -165,7 +165,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -176,7 +176,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -187,7 +187,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -198,7 +198,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -209,7 +209,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -220,7 +220,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -231,7 +231,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -242,7 +242,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
@@ -253,7 +253,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     CEpetra_UnitTestHelpers.cpp
     ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 3
+  NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
   )
 
