@@ -1143,11 +1143,9 @@ TEUCHOS_UNIT_TEST ( Epetra_Import , Distributor )
   /* Create an importer */
   ECHO(CT_Epetra_Import_ID_t selfID = Epetra_Import_Create(btarID, bsrcID));
 
+  /* 06/29/09: THE COMMAND BELOW DOESN'T WORK, APPARENTLY DUE TO A BUG IN
+   *           EPETRA ITSELF (SEVERAL EPETRA TESTS RESULT IN EXCEPTIONS */
   ECHO(CT_Epetra_Distributor_ID_t dID = Epetra_Import_Distributor(selfID));
-
-
-  /* ??? WHY DOESN'T THIS WORK ??? */
-
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(dID.type, CT_Epetra_Distributor_ID);

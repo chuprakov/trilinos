@@ -371,11 +371,97 @@ int Epetra_Vector_ReplaceGlobalValues_BlockPos (
   double * Values, int * Indices );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_Vector , ReplaceGlobalValues_BlockPos )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 4);
+  ECHO(int ElementSize = 3);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Create(
+       NumGlobalElements, ElementSize, IndexBase, CommID));
+
+  /* Create a vector using CTrilinos and duplicate it outside */
+  ECHO(CT_Epetra_Vector_ID_t vID = Epetra_Vector_Create(MapID, TRUE));
+  ECHO(Teuchos::RCP<Epetra_Vector> rcpV = CEpetra::getVector(vID));
+  ECHO(Epetra_Vector *v2 = new Epetra_Vector(*rcpV));
+
+  /* Set up the problem */
+  ECHO(const int NumEntries = 3);
+  ECHO(int BlockOffset = 1);
+  double vals[NumEntries] = {7.4, 21.0, 8.5};
+  int inds[NumEntries] = {0, 1, 3};
+
+  /* Try out the CTrilinos interface */
+  ECHO(int ret = Epetra_Vector_ReplaceGlobalValues_BlockPos(
+       vID, NumEntries, BlockOffset, vals, inds));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Do the same thing to the control vector */
+  ECHO(ret = v2->ReplaceGlobalValues(NumEntries, BlockOffset, vals, inds));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Figure out how many elements on this processor */
+  ECHO(int NumMyElements = v2->MyLength());
+
+  /* Compare the two vectors */
+  bool match = true;
+  for (int i=0; i<NumMyElements; i++) {
+    if ((*rcpV)[i] != (*v2)[i]) match = false;
+  }
+
+  TEST_EQUALITY_CONST(match, true);
+}
+
 /**********************************************************************
 int Epetra_Vector_ReplaceMyValues_BlockPos ( 
   CT_Epetra_Vector_ID_t selfID, int NumEntries, int BlockOffset, 
   double * Values, int * Indices );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_Vector , ReplaceMyValues_BlockPos )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumMyElements = 2);
+  ECHO(int ElementSize = 3);
+  ECHO(int NumGlobalElements = -1);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Create_Linear(
+       NumGlobalElements, NumMyElements, ElementSize, IndexBase, CommID));
+
+  /* Create a vector using CTrilinos and duplicate it outside */
+  ECHO(CT_Epetra_Vector_ID_t vID = Epetra_Vector_Create(MapID, TRUE));
+  ECHO(Teuchos::RCP<Epetra_Vector> rcpV = CEpetra::getVector(vID));
+  ECHO(Epetra_Vector *v2 = new Epetra_Vector(*rcpV));
+
+  /* Set up the problem */
+  ECHO(const int NumEntries = 1);
+  ECHO(int BlockOffset = 2);
+  double vals[NumEntries] = {5.2};
+  int inds[NumEntries] = {0};
+
+  /* Try out the CTrilinos interface */
+  ECHO(int ret = Epetra_Vector_ReplaceMyValues_BlockPos(
+       vID, NumEntries, BlockOffset, vals, inds));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Do the same thing to the control vector */
+  ECHO(ret = v2->ReplaceMyValues(NumEntries, BlockOffset, vals, inds));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors */
+  bool match = true;
+  for (int i=0; i<NumMyElements; i++) {
+    if ((*rcpV)[i] != (*v2)[i]) match = false;
+  }
+
+  TEST_EQUALITY_CONST(match, true);
+}
 
 /**********************************************************************
 int Epetra_Vector_SumIntoGlobalValues_BlockPos ( 
@@ -383,11 +469,128 @@ int Epetra_Vector_SumIntoGlobalValues_BlockPos (
   double * Values, int * Indices );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_Vector , SumIntoGlobalValues_BlockPos )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 5);
+  ECHO(int ElementSize = 2);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Create(
+       NumGlobalElements, ElementSize, IndexBase, CommID));
+
+  /* Create a vector using CTrilinos and initialize it as desired */
+  ECHO(CT_Epetra_Vector_ID_t vID = Epetra_Vector_Create(MapID, TRUE));
+  ECHO(Teuchos::RCP<Epetra_Vector> rcpV = CEpetra::getVector(vID));
+
+  ECHO(const int NumEntries0 = 3);
+  ECHO(int BlockOffset0 = 0);
+  double vals0[NumEntries0] = {21.0, 8.5, 6.7};
+  int inds0[NumEntries0] = {0, 3, 4};
+  ECHO(int ret = rcpV->ReplaceGlobalValues(NumEntries0, BlockOffset0, vals0, inds0));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  ECHO(const int NumEntries1 = 2);
+  ECHO(int BlockOffset1 = 1);
+  double vals1[NumEntries1] = {7.2, 0.1};
+  int inds1[NumEntries1] = {2, 4};
+  ECHO(ret = rcpV->ReplaceGlobalValues(NumEntries1, BlockOffset1, vals1, inds1));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Duplicate CTrilinos vector outside */
+  ECHO(Epetra_Vector *v2 = new Epetra_Vector(*rcpV));
+
+  /* Set up the problem */
+  ECHO(const int NumEntries = 4);
+  ECHO(int BlockOffset = 0);
+  double vals[NumEntries] = {5.1, -2.0, 3.6, 1.1};
+  int inds[NumEntries] = {0, 2, 3, 4};
+
+  /* Try out the CTrilinos interface */
+  ECHO(ret = Epetra_Vector_SumIntoGlobalValues_BlockPos(
+       vID, NumEntries, BlockOffset, vals, inds));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Do the same thing to the control vector */
+  ECHO(ret = v2->SumIntoGlobalValues(NumEntries, BlockOffset, vals, inds));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Figure out how many elements on this processor */
+  ECHO(int NumMyElements = v2->MyLength());
+
+  /* Compare the two vectors */
+  bool match = true;
+  for (int i=0; i<NumMyElements; i++) {
+    if ((*rcpV)[i] != (*v2)[i]) match = false;
+  }
+
+  TEST_EQUALITY_CONST(match, true);
+}
+
 /**********************************************************************
 int Epetra_Vector_SumIntoMyValues_BlockPos ( 
   CT_Epetra_Vector_ID_t selfID, int NumEntries, int BlockOffset, 
   double * Values, int * Indices );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_Vector , SumIntoMyValues_BlockPos )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumMyElements = 5);
+  ECHO(int NumGlobalElements = -1);
+  ECHO(int ElementSize = 2);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Create_Linear(
+       NumGlobalElements, NumMyElements, ElementSize, IndexBase, CommID));
+
+  /* Create a vector using CTrilinos and initialize it as desired */
+  ECHO(CT_Epetra_Vector_ID_t vID = Epetra_Vector_Create(MapID, TRUE));
+  ECHO(Teuchos::RCP<Epetra_Vector> rcpV = CEpetra::getVector(vID));
+
+  ECHO(const int NumEntries0 = 2);
+  ECHO(int BlockOffset0 = 0);
+  double vals0[NumEntries0] = {1.5, 6.9};
+  int inds0[NumEntries0] = {1, 4};
+  ECHO(int ret = rcpV->ReplaceGlobalValues(NumEntries0, BlockOffset0, vals0, inds0));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  ECHO(const int NumEntries1 = 3);
+  ECHO(int BlockOffset1 = 1);
+  double vals1[NumEntries1] = {3.9, 23.2, 7.3};
+  int inds1[NumEntries1] = {0, 2, 4};
+  ECHO(ret = rcpV->ReplaceGlobalValues(NumEntries1, BlockOffset1, vals1, inds1));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Duplicate CTrilinos vector outside */
+  ECHO(Epetra_Vector *v2 = new Epetra_Vector(*rcpV));
+
+  /* Set up the problem */
+  ECHO(const int NumEntries = 2);
+  ECHO(int BlockOffset = 1);
+  double vals[NumEntries] = {-2.0, 5.1};
+  int inds[NumEntries] = {0, 1};
+
+  /* Try out the CTrilinos interface */
+  ECHO(ret = Epetra_Vector_SumIntoMyValues_BlockPos(vID, NumEntries, BlockOffset, vals, inds));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Do the same thing to the control vector */
+  ECHO(ret = v2->SumIntoMyValues(NumEntries, BlockOffset, vals, inds));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors */
+  bool match = true;
+  for (int i=0; i<NumMyElements; i++) {
+    if ((*rcpV)[i] != (*v2)[i]) match = false;
+  }
+
+  TEST_EQUALITY_CONST(match, true);
+}
 
 /**********************************************************************
 int Epetra_Vector_ExtractCopy ( 

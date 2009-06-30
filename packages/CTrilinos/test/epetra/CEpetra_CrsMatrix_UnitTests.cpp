@@ -33,11 +33,51 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow (
   const int * NumEntriesPerRow, boolean StaticProfile );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Create_VarPerRow )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(const int NumGlobalElements = 4);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_Map_ID_t MapID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
+
+  int NumIndicesPerRow[NumGlobalElements] = {3, 2, 6, 4};
+  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_CrsMatrix_ID_t selfID = Epetra_CrsMatrix_Create_VarPerRow(
+       CV, MapID, NumIndicesPerRow, false));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Epetra_CrsMatrix_ID);
+  TEST_EQUALITY_CONST(selfID.index, 0);
+}
+
 /**********************************************************************
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create ( 
   Epetra_DataAccess CV, CT_Epetra_Map_ID_t RowMapID, 
   int NumEntriesPerRow, boolean StaticProfile );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Create )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 5);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_Map_ID_t MapID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
+
+  ECHO(int NumIndicesPerRow = 7);
+  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_CrsMatrix_ID_t selfID = Epetra_CrsMatrix_Create(
+       CV, MapID, NumIndicesPerRow, false));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Epetra_CrsMatrix_ID);
+  TEST_EQUALITY_CONST(selfID.index, 0);
+}
 
 /**********************************************************************
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow_WithColMap ( 
@@ -63,9 +103,63 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Duplicate (
   CT_Epetra_CrsMatrix_ID_t MatrixID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Duplicate )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 4);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_Map_ID_t MapID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
+
+  /* Create the source matrix */
+  ECHO(int NumIndicesPerRow = 4);
+  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_CrsMatrix_ID_t selfID = Epetra_CrsMatrix_Create(
+       CV, MapID, NumIndicesPerRow, false));
+
+  /* Initialize the source matrix */
+  ECHO(double val = 1.0);
+  ECHO(int ret = Epetra_CrsMatrix_PutScalar(selfID, val));
+  TEST_EQUALITY(ret, 0);
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(selfID, true));
+  TEST_EQUALITY(ret, 0);
+
+  /* Call wrapper to duplicate the matrix */
+  ECHO(CT_Epetra_CrsMatrix_ID_t dupID = Epetra_CrsMatrix_Duplicate(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(dupID.type, CT_Epetra_CrsMatrix_ID);
+  TEST_EQUALITY_CONST(dupID.index, 1);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
+}
+
 /**********************************************************************
 void Epetra_CrsMatrix_Destroy ( CT_Epetra_CrsMatrix_ID_t * selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Destroy )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 6);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_Map_ID_t MapID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
+
+  ECHO(int NumIndicesPerRow = 3);
+  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_CrsMatrix_ID_t selfID = Epetra_CrsMatrix_Create(
+       CV, MapID, NumIndicesPerRow, false));
+
+  ECHO(Epetra_CrsMatrix_Destroy(&selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY_CONST(selfID.index, -1);
+}
 
 /**********************************************************************
 void Epetra_CrsMatrix_Assign ( 

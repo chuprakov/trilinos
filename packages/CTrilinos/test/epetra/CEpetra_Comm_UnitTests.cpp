@@ -167,9 +167,33 @@ int Epetra_Comm_ScanSum_Long (
 int Epetra_Comm_MyPID ( CT_Epetra_Comm_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_Comm , MyPID )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_Comm_ID_t selfID = UnitTest_Create_Comm());
+
+  ECHO(int ret = Epetra_Comm_MyPID(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  /* ... */
+}
+
 /**********************************************************************
 int Epetra_Comm_NumProc ( CT_Epetra_Comm_ID_t selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_Comm , NumProc )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_Comm_ID_t selfID = UnitTest_Create_Comm());
+
+  ECHO(int ret = Epetra_Comm_NumProc(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  /* ... */
+}
 
 /**********************************************************************
 CT_Epetra_Distributor_ID_t Epetra_Comm_CreateDistributor ( 
@@ -180,6 +204,24 @@ CT_Epetra_Distributor_ID_t Epetra_Comm_CreateDistributor (
 CT_Epetra_Directory_ID_t Epetra_Comm_CreateDirectory ( 
   CT_Epetra_Comm_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_Comm , CreateDirectory )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_Comm_ID_t selfID = UnitTest_Create_Comm());
+
+  ECHO(int NumGlobalElements = 9);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, selfID)));
+  ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_Comm_CreateDirectory(selfID, MapID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(dirID.type, CT_Epetra_Directory_ID);
+  TEST_EQUALITY_CONST(dirID.index, 0);
+}
+
 
 /**********************************************************************/
 

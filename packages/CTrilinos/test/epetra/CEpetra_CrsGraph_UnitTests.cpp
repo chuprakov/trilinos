@@ -29,11 +29,53 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow (
   const int * NumIndicesPerRow, boolean StaticProfile );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Create_VarPerRow )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(const int NumGlobalElements = 4);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+
+  int NumIndicesPerRow[NumGlobalElements] = {3, 2, 6, 4};
+  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create_VarPerRow(
+       CV, MapID, NumIndicesPerRow, false));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Epetra_CrsGraph_ID);
+  TEST_EQUALITY_CONST(selfID.index, 0);
+}
+
 /**********************************************************************
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create ( 
   Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   int NumIndicesPerRow, boolean StaticProfile );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Create )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 5);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+
+  ECHO(int NumIndicesPerRow = 7);
+  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
+       CV, MapID, NumIndicesPerRow, false));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Epetra_CrsGraph_ID);
+  TEST_EQUALITY_CONST(selfID.index, 0);
+}
 
 /**********************************************************************
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow_WithColMap ( 
@@ -54,9 +96,56 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Duplicate (
   CT_Epetra_CrsGraph_ID_t GraphID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Duplicate )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 6);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+
+  ECHO(int NumIndicesPerRow = 3);
+  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
+       CV, MapID, NumIndicesPerRow, false));
+
+  ECHO(CT_Epetra_CrsGraph_ID_t dupID = Epetra_CrsGraph_Duplicate(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(dupID.type, CT_Epetra_CrsGraph_ID);
+  TEST_EQUALITY_CONST(dupID.index, 1);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
+}
+
 /**********************************************************************
 void Epetra_CrsGraph_Destroy ( CT_Epetra_CrsGraph_ID_t * selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Destroy )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 6);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+
+  ECHO(int NumIndicesPerRow = 3);
+  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
+       CV, MapID, NumIndicesPerRow, false));
+
+  ECHO(Epetra_CrsGraph_Destroy(&selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY_CONST(selfID.index, -1);
+}
 
 /**********************************************************************
 int Epetra_CrsGraph_InsertGlobalIndices ( 

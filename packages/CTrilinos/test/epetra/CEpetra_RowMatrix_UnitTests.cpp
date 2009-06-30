@@ -26,6 +26,39 @@ CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix_Cast (
 void Epetra_RowMatrix_Destroy ( CT_Epetra_RowMatrix_ID_t * selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_RowMatrix , Destroy )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 4);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_Map_ID_t MapID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
+
+  /* Create the source matrix */
+  ECHO(int NumIndicesPerRow = 4);
+  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
+       CV, MapID, NumIndicesPerRow, false));
+
+  /* Initialize the source matrix */
+  ECHO(double val = 1.0);
+  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID, val));
+  TEST_EQUALITY(ret, 0);
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, true));
+  TEST_EQUALITY(ret, 0);
+
+  /* Cast it to a row matrix */
+  ECHO(CT_Epetra_RowMatrix_ID_t selfID = Epetra_RowMatrix_Cast(crsID));
+
+  ECHO(Epetra_RowMatrix_Destroy(&selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY_CONST(selfID.index, -1);
+}
+
 /**********************************************************************
 int Epetra_RowMatrix_NumMyRowEntries ( 
   CT_Epetra_RowMatrix_ID_t selfID, int MyRow, int * NumEntries );
