@@ -20,9 +20,15 @@ extern "C" {
 CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject_Cast(
   CTrilinos_Object_ID_t id );
 
+/* Original C++ prototype:
+   virtual ~Epetra_SrcDistObject();
+*/
 void Epetra_SrcDistObject_Destroy ( 
   CT_Epetra_SrcDistObject_ID_t * selfID );
 
+/* Original C++ prototype:
+   virtual const Epetra_BlockMap & Map() const = 0;
+*/
 CT_Epetra_BlockMap_ID_t Epetra_SrcDistObject_Map ( 
   CT_Epetra_SrcDistObject_ID_t selfID );
 
