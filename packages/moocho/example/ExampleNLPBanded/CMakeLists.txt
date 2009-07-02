@@ -53,6 +53,10 @@ PACKAGE_ADD_TEST( ExampleNLPBanded
     --nD=100 --nI=100 --ignore-constraints --xo=0.1 --xIl=0.01
     --moocho-extra-options="NLPAlgoConfigMamaJama{qp_solver=QPSCHUR}"
 
+  POSTFIX_AND_ARGS_13  nD4_nI4_bw2_mI0_ds3_xIl_qpschur_check
+    --nD=4 --nI=4 --bw=2 --mI=0 --xo=0.1 --diag-scal=1e+3 --xIl=0.01
+    --moocho-extra-options="NLPSolverClientInterface{check_results=true}:NLPAlgoConfigMamaJama{qp_solver=QPSCHUR}"
+
   NUM_MPI_PROCS 1
 
   )
