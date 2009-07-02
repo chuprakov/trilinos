@@ -36,19 +36,19 @@
 
 #include "Teuchos_RCP.hpp"
 #include "Sacado_ScalarParameterLibrary.hpp"
-#include "Sacado_ScalarParameterEntry.hpp"
+#include "Sacado_ParameterRegistration.hpp"
 #include "Sacado_Traits.hpp"
 
-namespace FEApp {
 
-  template <typename EvalT> class ExponentialNonlinearFactorParameter;
+namespace FEApp {
 
   /*!
    * \brief An exponential PDE source function
    */
   template <typename EvalT>
   class ExponentialSourceFunction : 
-    public FEApp::AbstractSourceFunction<EvalT> {
+    public FEApp::AbstractSourceFunction<EvalT>,
+    public Sacado::ParameterAccessor<EvalT, FEApp::EvaluationTraits> {
   public:
 
     //! Scalar type
@@ -62,16 +62,10 @@ namespace FEApp {
     {
       // Add nonlinear factor to parameter library
       std::string name = "Exponential Source Function Nonlinear Factor";
-      if (!paramLib->isParameter(name))
-        paramLib->addParameterFamily(name, true, false);
-      if (!paramLib->template isParameterForType<EvalT>(name)) {
-        Teuchos::RCP< ExponentialNonlinearFactorParameter<EvalT> > tmp = 
-          Teuchos::rcp(new ExponentialNonlinearFactorParameter<EvalT>(Teuchos::rcp(this,false)));
-        paramLib->template addEntry<EvalT>(name, tmp);
-      }
+      new Sacado::ParameterRegistration<EvalT, FEApp::EvaluationTraits>(name, this, paramLib);
     };
 
-    //! Destructor
+    // !Destructor
     virtual ~ExponentialSourceFunction() {};
 
     //! Evaluate source function
@@ -82,17 +76,14 @@ namespace FEApp {
         value[i] = std::exp(alpha)*std::exp(solution[i]);
         //value[i] = -1.0;
       }
-      
-    }
+    };
 
-    //! Set nonlinear factor
-    void setFactor(const ScalarT& val, bool mark_constant) { 
-      alpha = val;
-      if (mark_constant) Sacado::MarkConstant<ScalarT>::eval(alpha); 
-    }
-
-    //! Get nonlinear factor
-    const ScalarT& getFactor() const { return alpha; }
+    //! Parameter access method for use by the Parameter Library
+    ScalarT& getValue(const std::string &n) {
+      // For multiple parameters in the same file, can distinguish by string
+      // if (n == "Exponential Source Function Nonlinear Factor") 
+      return alpha;
+    };
 
   private:
 
@@ -108,50 +99,6 @@ namespace FEApp {
     ScalarT alpha;
 
   };
-
-  /*!
-   * @brief Parameter class for sensitivity/stability analysis representing
-   * the nonlinear factor in the cubic source function
-   */
-  template <typename EvalT>
-  class ExponentialNonlinearFactorParameter : 
-    public Sacado::ScalarParameterEntry<EvalT,EvaluationTraits> {
-
-  public:
-
-    //! Scalar type
-    typedef typename Sacado::ScalarParameterEntry<EvalT,EvaluationTraits>::ScalarT ScalarT;
-
-    //! Constructor
-    ExponentialNonlinearFactorParameter(
-			const Teuchos::RCP< ExponentialSourceFunction<EvalT> >& s) 
-      : srcFunc(s) {}
-
-    //! Destructor
-    virtual ~ExponentialNonlinearFactorParameter() {}
-
-    //! Set real parameter value
-    virtual void setRealValue(double value) { 
-      srcFunc->setFactor(value, true); }
-    
-    //! Set parameter this object represents to \em value
-    virtual void setValue(const ScalarT& value) { 
-      srcFunc->setFactor(value, false); }
-
-    //! Get real parameter value
-    virtual double getRealValue() const {
-      return Sacado::ScalarValue<ScalarT>::eval(srcFunc->getFactor()); }
-    
-    //! Get parameter value this object represents
-    virtual const ScalarT& getValue() const { return srcFunc->getFactor(); }
-    
-  protected:  
-    
-    //! Pointer to source function
-    Teuchos::RCP< ExponentialSourceFunction<EvalT> > srcFunc;
-
-  };
-
 }
 
 #endif // FEAPP_CUBICSOURCEFUNCTION_HPP

@@ -36,19 +36,18 @@
 
 #include "Teuchos_RCP.hpp"
 #include "Sacado_ScalarParameterLibrary.hpp"
-#include "Sacado_ScalarParameterEntry.hpp"
+#include "Sacado_ParameterRegistration.hpp"
 #include "Sacado_Traits.hpp"
 
 namespace FEApp {
-
-  template <typename EvalT> class ConstantFunctionParameter;
 
   /*!
    * \brief A constant PDE function
    */
   template <typename EvalT>
   class ConstantFunction : 
-    public FEApp::AbstractFunction<EvalT> {
+    public FEApp::AbstractFunction<EvalT>,
+    public Sacado::ParameterAccessor<EvalT, FEApp::EvaluationTraits> {
   public:
 
     //! Scalar type
@@ -62,13 +61,8 @@ namespace FEApp {
     {
       // Add val to parameter library
       std::string name = "Constant Function Value";
-      if (!paramLib->isParameter(name))
-        paramLib->addParameterFamily(name, true, false);
-      if (!paramLib->template isParameterForType<EvalT>(name)) {
-        Teuchos::RCP< ConstantFunctionParameter<EvalT> > tmp = 
-          Teuchos::rcp(new ConstantFunctionParameter<EvalT>(Teuchos::rcp(this,false)));
-        paramLib->template addEntry<EvalT>(name, tmp);
-      }
+      // Register this name and *this* class with the Parameter Library
+      new Sacado::ParameterRegistration<EvalT, FEApp::EvaluationTraits>(name, this, paramLib);
     };
 
     //! Destructor
@@ -81,16 +75,19 @@ namespace FEApp {
       for (unsigned int i=0; i<quad_points.size(); i++) {
         value[i] = val;
       }
-    }
+    };
 
-    //! Set value
-    void setValue(const ScalarT& value, bool mark_constant) { 
-      val = value; 
-      if (mark_constant) Sacado::MarkConstant<ScalarT>::eval(val); 
-    }
-
-    //! Get value
-    const ScalarT& getValue() const { return val; }
+    //! Accessor to the parameter for use by the Parameter Library
+    ScalarT& getValue(const std::string &n) {
+      if (n == "Constant Function Value") return val;
+      else {
+        TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,
+                       std::endl <<
+                       "Error! Logic error in setting paramter " << n
+                       << " in FEApp_ConstantFunction.hpp" << std::endl)
+        return val;
+      }
+    };
 
   private:
 
@@ -106,49 +103,6 @@ namespace FEApp {
     ScalarT val;
 
   };
-
-  /*!
-   * @brief Parameter class for sensitivity/stability analysis representing
-   * the value in the constant function
-   */
-  template <typename EvalT>
-  class ConstantFunctionParameter : 
-    public Sacado::ScalarParameterEntry<EvalT,EvaluationTraits> {
-
-  public:
-
-    //! Scalar type
-    typedef typename Sacado::ScalarParameterEntry<EvalT,EvaluationTraits>::ScalarT ScalarT;
-
-    //! Constructor
-    ConstantFunctionParameter(const Teuchos::RCP< ConstantFunction<EvalT> >& s)
-      : func(s) {}
-
-    //! Destructor
-    virtual ~ConstantFunctionParameter() {}
-
-    //! Set real parameter value
-    virtual void setRealValue(double value) { 
-      func->setValue(value, true); }
-
-    //! Set parameter this object represents to \em value
-    virtual void setValue(const ScalarT& value) { 
-      func->setValue(value, false); }
-
-    //! Get real parameter value
-    virtual double getRealValue() const { 
-      return Sacado::ScalarValue<ScalarT>::eval(func->getValue()); }
-    
-    //! Get parameter value this object represents
-    virtual const ScalarT& getValue() const { return func->getValue(); }
-    
-  protected:  
-    
-    //! Pointer to source function
-    Teuchos::RCP< ConstantFunction<EvalT> > func;
-
-  };
-
 }
 
 #endif // FEAPP_CONSTANTFUNCTION_HPP
