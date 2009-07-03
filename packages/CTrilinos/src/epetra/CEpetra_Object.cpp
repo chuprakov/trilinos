@@ -82,6 +82,13 @@ const char * Epetra_Object_Label ( CT_Epetra_Object_ID_t selfID )
     return CEpetra::getObject(selfID)->Label();
 }
 
+int Epetra_Object_ReportError ( 
+  CT_Epetra_Object_ID_t selfID, const char * Message, int ErrorCode )
+{
+    return CEpetra::getObject(selfID)->ReportError(
+        CTrilinos::cptr2str(Message), ErrorCode);
+}
+
 
 } // extern "C"
 
