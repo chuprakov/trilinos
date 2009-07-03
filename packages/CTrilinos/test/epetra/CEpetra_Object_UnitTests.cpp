@@ -141,6 +141,13 @@ TEUCHOS_UNIT_TEST ( Epetra_Object , Label )
   TEST_EQUALITY_CONST(strcmp(Label, Label2), 0);
 }
 
+/**********************************************************************
+int Epetra_Object_ReportError ( 
+  CT_Epetra_Object_ID_t selfID, const char * Message, int ErrorCode );
+ **********************************************************************/
+
+
+
 /**********************************************************************/
 
 //

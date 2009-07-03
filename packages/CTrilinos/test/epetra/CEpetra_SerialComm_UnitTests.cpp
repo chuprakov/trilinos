@@ -67,8 +67,7 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , Duplicate )
 
   ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
 
-  ECHO(CT_Epetra_SerialComm_ID_t dupID = Epetra_SerialComm_Duplicate(
-       selfID));
+  ECHO(CT_Epetra_SerialComm_ID_t dupID = Epetra_SerialComm_Duplicate(selfID));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(dupID.type, CT_Epetra_SerialComm_ID);
@@ -80,6 +79,20 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , Duplicate )
 CT_Epetra_Comm_ID_t Epetra_SerialComm_Clone ( 
   CT_Epetra_SerialComm_ID_t selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , Clone )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(CT_Epetra_Comm_ID_t dupID = Epetra_SerialComm_Clone(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(dupID.type, CT_Epetra_Comm_ID);
+  TEST_EQUALITY_CONST(dupID.index, 0);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
+}
 
 /**********************************************************************
 void Epetra_SerialComm_Destroy ( 
@@ -103,11 +116,34 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , Destroy )
 void Epetra_SerialComm_Barrier ( CT_Epetra_SerialComm_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , Barrier )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(Epetra_SerialComm_Barrier(selfID));
+}
+
 /**********************************************************************
 int Epetra_SerialComm_Broadcast_Double ( 
   CT_Epetra_SerialComm_ID_t selfID, double * MyVals, int Count, 
   int Root );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , Broadcast_Double )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+  ECHO(int Root = Epetra_SerialComm_MyPID(selfID));
+
+  ECHO(const int Count = 6);
+  double MyVals[Count] = {4.6, 2.6, 3.1, 7.7, -0.5, 1.0};
+
+  ECHO(int ret = Epetra_SerialComm_Broadcast_Double(selfID, MyVals, Count, Root));
+  TEST_EQUALITY_CONST(ret, 0);
+}
 
 /**********************************************************************
 int Epetra_SerialComm_Broadcast_Int ( 
@@ -115,11 +151,39 @@ int Epetra_SerialComm_Broadcast_Int (
   int Root );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , Broadcast_Int )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+  ECHO(int Root = Epetra_SerialComm_MyPID(selfID));
+
+  ECHO(const int Count = 5);
+  int MyVals[Count] = {7, 2, 5, 8, 4};
+
+  ECHO(int ret = Epetra_SerialComm_Broadcast_Int(selfID, MyVals, Count, Root));
+  TEST_EQUALITY_CONST(ret, 0);
+}
+
 /**********************************************************************
 int Epetra_SerialComm_Broadcast_Long ( 
   CT_Epetra_SerialComm_ID_t selfID, long * MyVals, int Count, 
   int Root );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , Broadcast_Long )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+  ECHO(int Root = Epetra_SerialComm_MyPID(selfID));
+
+  ECHO(const int Count = 4);
+  long MyVals[Count] = {27, 22, 25, 24};
+
+  ECHO(int ret = Epetra_SerialComm_Broadcast_Long(selfID, MyVals, Count, Root));
+  TEST_EQUALITY_CONST(ret, 0);
+}
 
 /**********************************************************************
 int Epetra_SerialComm_Broadcast_Char ( 
@@ -127,11 +191,46 @@ int Epetra_SerialComm_Broadcast_Char (
   int Root );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , Broadcast_Char )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+  ECHO(int Root = Epetra_SerialComm_MyPID(selfID));
+
+  ECHO(const int Count = 4);
+  char MyVals[Count] = {'d', 'o', 'n', 'e'};
+
+  ECHO(int ret = Epetra_SerialComm_Broadcast_Char(selfID, MyVals, Count, Root));
+  TEST_EQUALITY_CONST(ret, 0);
+}
+
 /**********************************************************************
 int Epetra_SerialComm_GatherAll_Double ( 
   CT_Epetra_SerialComm_ID_t selfID, double * MyVals, double * AllVals, 
   int Count );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , GatherAll_Double )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 6);
+  double MyVals[Count] = {4.6, 2.6, 3.1, 7.7, -0.5, 1.0};
+  double AllVals[Count];
+
+  ECHO(int ret = Epetra_SerialComm_GatherAll_Double(selfID, MyVals, AllVals, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (MyVals[i] != AllVals[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
 
 /**********************************************************************
 int Epetra_SerialComm_GatherAll_Int ( 
@@ -139,11 +238,53 @@ int Epetra_SerialComm_GatherAll_Int (
   int Count );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , GatherAll_Int )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 5);
+  int MyVals[Count] = {7, 2, 5, 8, 4};
+  int AllVals[Count];
+
+  ECHO(int ret = Epetra_SerialComm_GatherAll_Int(selfID, MyVals, AllVals, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (MyVals[i] != AllVals[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
+
 /**********************************************************************
 int Epetra_SerialComm_GatherAll_Long ( 
   CT_Epetra_SerialComm_ID_t selfID, long * MyVals, long * AllVals, 
   int Count );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , GatherAll_Long )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 4);
+  long MyVals[Count] = {27, 22, 25, 24};
+  long AllVals[Count];
+
+  ECHO(int ret = Epetra_SerialComm_GatherAll_Long(selfID, MyVals, AllVals, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (MyVals[i] != AllVals[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
 
 /**********************************************************************
 int Epetra_SerialComm_SumAll_Double ( 
@@ -151,11 +292,53 @@ int Epetra_SerialComm_SumAll_Double (
   double * GlobalSums, int Count );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , SumAll_Double )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 6);
+  double PartialSums[Count] = {4.6, 2.6, 3.1, 7.7, -0.5, 1.0};
+  double GlobalSums[Count];
+
+  ECHO(int ret = Epetra_SerialComm_SumAll_Double(selfID, PartialSums, GlobalSums, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (PartialSums[i] != GlobalSums[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
+
 /**********************************************************************
 int Epetra_SerialComm_SumAll_Int ( 
   CT_Epetra_SerialComm_ID_t selfID, int * PartialSums, 
   int * GlobalSums, int Count );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , SumAll_Int )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 5);
+  int PartialSums[Count] = {7, 2, 5, 8, 4};
+  int GlobalSums[Count];
+
+  ECHO(int ret = Epetra_SerialComm_SumAll_Int(selfID, PartialSums, GlobalSums, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (PartialSums[i] != GlobalSums[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
 
 /**********************************************************************
 int Epetra_SerialComm_SumAll_Long ( 
@@ -163,11 +346,53 @@ int Epetra_SerialComm_SumAll_Long (
   long * GlobalSums, int Count );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , SumAll_Long )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 4);
+  long PartialSums[Count] = {27, 22, 25, 24};
+  long GlobalSums[Count];
+
+  ECHO(int ret = Epetra_SerialComm_SumAll_Long(selfID, PartialSums, GlobalSums, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (PartialSums[i] != GlobalSums[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
+
 /**********************************************************************
 int Epetra_SerialComm_MaxAll_Double ( 
   CT_Epetra_SerialComm_ID_t selfID, double * PartialMaxs, 
   double * GlobalMaxs, int Count );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , MaxAll_Double )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 6);
+  double PartialMaxs[Count] = {4.6, 2.6, 3.1, 7.7, -0.5, 1.0};
+  double GlobalMaxs[Count];
+
+  ECHO(int ret = Epetra_SerialComm_MaxAll_Double(selfID, PartialMaxs, GlobalMaxs, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (PartialMaxs[i] != GlobalMaxs[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
 
 /**********************************************************************
 int Epetra_SerialComm_MaxAll_Int ( 
@@ -175,11 +400,53 @@ int Epetra_SerialComm_MaxAll_Int (
   int * GlobalMaxs, int Count );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , MaxAll_Int )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 5);
+  int PartialMaxs[Count] = {7, 2, 5, 8, 4};
+  int GlobalMaxs[Count];
+
+  ECHO(int ret = Epetra_SerialComm_MaxAll_Int(selfID, PartialMaxs, GlobalMaxs, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (PartialMaxs[i] != GlobalMaxs[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
+
 /**********************************************************************
 int Epetra_SerialComm_MaxAll_Long ( 
   CT_Epetra_SerialComm_ID_t selfID, long * PartialMaxs, 
   long * GlobalMaxs, int Count );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , MaxAll_Long )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 4);
+  long PartialMaxs[Count] = {27, 22, 25, 24};
+  long GlobalMaxs[Count];
+
+  ECHO(int ret = Epetra_SerialComm_MaxAll_Long(selfID, PartialMaxs, GlobalMaxs, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (PartialMaxs[i] != GlobalMaxs[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
 
 /**********************************************************************
 int Epetra_SerialComm_MinAll_Double ( 
@@ -187,11 +454,53 @@ int Epetra_SerialComm_MinAll_Double (
   double * GlobalMins, int Count );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , MinAll_Double )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 6);
+  double PartialMins[Count] = {4.6, 2.6, 3.1, 7.7, -0.5, 1.0};
+  double GlobalMins[Count];
+
+  ECHO(int ret = Epetra_SerialComm_MinAll_Double(selfID, PartialMins, GlobalMins, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (PartialMins[i] != GlobalMins[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
+
 /**********************************************************************
 int Epetra_SerialComm_MinAll_Int ( 
   CT_Epetra_SerialComm_ID_t selfID, int * PartialMins, 
   int * GlobalMins, int Count );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , MinAll_Int )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 5);
+  int PartialMins[Count] = {7, 2, 5, 8, 4};
+  int GlobalMins[Count];
+
+  ECHO(int ret = Epetra_SerialComm_MinAll_Int(selfID, PartialMins, GlobalMins, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (PartialMins[i] != GlobalMins[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
 
 /**********************************************************************
 int Epetra_SerialComm_MinAll_Long ( 
@@ -199,11 +508,53 @@ int Epetra_SerialComm_MinAll_Long (
   long * GlobalMins, int Count );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , MinAll_Long )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 4);
+  long PartialMins[Count] = {27, 22, 25, 24};
+  long GlobalMins[Count];
+
+  ECHO(int ret = Epetra_SerialComm_MinAll_Long(selfID, PartialMins, GlobalMins, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (PartialMins[i] != GlobalMins[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
+
 /**********************************************************************
 int Epetra_SerialComm_ScanSum_Double ( 
   CT_Epetra_SerialComm_ID_t selfID, double * MyVals, 
   double * ScanSums, int Count );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , ScanSum_Double )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 6);
+  double MyVals[Count] = {4.6, 2.6, 3.1, 7.7, -0.5, 1.0};
+  double ScanSums[Count];
+
+  ECHO(int ret = Epetra_SerialComm_ScanSum_Double(selfID, MyVals, ScanSums, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (MyVals[i] != ScanSums[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
 
 /**********************************************************************
 int Epetra_SerialComm_ScanSum_Int ( 
@@ -211,11 +562,53 @@ int Epetra_SerialComm_ScanSum_Int (
   int Count );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , ScanSum_Int )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 5);
+  int MyVals[Count] = {7, 2, 5, 8, 4};
+  int ScanSums[Count];
+
+  ECHO(int ret = Epetra_SerialComm_ScanSum_Int(selfID, MyVals, ScanSums, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (MyVals[i] != ScanSums[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
+
 /**********************************************************************
 int Epetra_SerialComm_ScanSum_Long ( 
   CT_Epetra_SerialComm_ID_t selfID, long * MyVals, long * ScanSums, 
   int Count );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , ScanSum_Long )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(const int Count = 4);
+  long MyVals[Count] = {27, 22, 25, 24};
+  long ScanSums[Count];
+
+  ECHO(int ret = Epetra_SerialComm_ScanSum_Long(selfID, MyVals, ScanSums, Count));
+  TEST_EQUALITY_CONST(ret, 0);
+
+  /* Compare the two vectors (no change when serial) */
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (MyVals[i] != ScanSums[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
 
 /**********************************************************************
 int Epetra_SerialComm_MyPID ( CT_Epetra_SerialComm_ID_t selfID );
@@ -254,6 +647,19 @@ CT_Epetra_Distributor_ID_t Epetra_SerialComm_CreateDistributor (
   CT_Epetra_SerialComm_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , CreateDistributor )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(CT_Epetra_Distributor_ID_t disID = Epetra_SerialComm_CreateDistributor(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(disID.type, CT_Epetra_Distributor_ID);
+  TEST_EQUALITY_CONST(disID.index, 0);
+}
+
 /**********************************************************************
 CT_Epetra_Directory_ID_t Epetra_SerialComm_CreateDirectory ( 
   CT_Epetra_SerialComm_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID );
@@ -281,6 +687,20 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , CreateDirectory )
 void Epetra_SerialComm_Assign ( 
   CT_Epetra_SerialComm_ID_t selfID, CT_Epetra_SerialComm_ID_t CommID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_SerialComm , Assign )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_SerialComm_ID_t commID = Epetra_SerialComm_Create());
+  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
+
+  ECHO(Epetra_SerialComm_Assign(selfID, commID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, commID), false);
+}
+
 
 /**********************************************************************/
 

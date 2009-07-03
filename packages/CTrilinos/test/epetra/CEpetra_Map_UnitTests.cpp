@@ -110,12 +110,12 @@ TEUCHOS_UNIT_TEST( Epetra_Map , Create_Arbitrary )
   /* Create everything we need to pass to the constructor */
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
 
-  ECHO(int NumMyElements = 4);
+  ECHO(const int NumMyElements = 4);
   ECHO(int NumProc = Epetra_Comm_NumProc(CommID));
   ECHO(int NumGlobalElements = NumMyElements * NumProc);
   ECHO(int MyPID = Epetra_Comm_MyPID(CommID));
   ECHO(int off = NumMyElements*MyPID);
-  int MyGlobalElements[] = {0+off, 1+off, 2+off, 3+off};
+  int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off, 3+off};
   ECHO(int IndexBase = 0);
   ECHO(CT_Epetra_Map_ID_t selfID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));

@@ -25,27 +25,108 @@ CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Cast (
   CTrilinos_Object_ID_t id );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_MpiComm , Cast )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* This cast should be allowed */
+  ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
+  ECHO(CT_Epetra_MpiComm_ID_t dupID = Epetra_MpiComm_Cast(selfID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
+
+  /* These casts should be allowed */
+  ECHO(CT_Epetra_Comm_ID_t commID = Epetra_Comm_Cast(selfID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, commID), true);
+  ECHO(CT_Epetra_MpiComm_ID_t mpicommID = Epetra_MpiComm_Cast(commID));
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(commID, mpicommID), true);
+
+  /* If no exceptions thrown, then test was successful */
+}
+
 /**********************************************************************
 CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Create ( MPI_Comm comm );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_MpiComm , Create )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Epetra_MpiComm_ID);
+  TEST_EQUALITY_CONST(selfID.index, 0);
+}
 
 /**********************************************************************
 CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Duplicate ( 
   CT_Epetra_MpiComm_ID_t CommID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_MpiComm , Duplicate )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
+
+  ECHO(CT_Epetra_MpiComm_ID_t dupID = Epetra_MpiComm_Duplicate(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(dupID.type, CT_Epetra_MpiComm_ID);
+  TEST_EQUALITY_CONST(dupID.index, 1);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
+}
+
 /**********************************************************************
 CT_Epetra_Comm_ID_t Epetra_MpiComm_Clone ( 
   CT_Epetra_MpiComm_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_MpiComm , Clone )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
+
+  ECHO(CT_Epetra_Comm_ID_t dupID = Epetra_MpiComm_Clone(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(dupID.type, CT_Epetra_Comm_ID);
+  TEST_EQUALITY_CONST(dupID.index, 0);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
+}
+
 /**********************************************************************
 void Epetra_MpiComm_Destroy ( CT_Epetra_MpiComm_ID_t * selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_MpiComm , Destroy )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
+
+  ECHO(Epetra_MpiComm_Destroy(&selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY_CONST(selfID.index, -1);
+}
+
 /**********************************************************************
 void Epetra_MpiComm_Barrier ( CT_Epetra_MpiComm_ID_t selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_MpiComm , Barrier )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
+
+  ECHO(Epetra_MpiComm_Barrier(selfID));
+
+  /* ??? */
+}
 
 /**********************************************************************
 int Epetra_MpiComm_Broadcast_Double ( 
@@ -162,23 +243,90 @@ int Epetra_MpiComm_ScanSum_Long (
 MPI_Comm Epetra_MpiComm_Comm ( CT_Epetra_MpiComm_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_MpiComm , Comm )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
+
+  ECHO(MPI_Comm c = Epetra_MpiComm_Comm(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  /* ??? */
+}
+
 /**********************************************************************
 int Epetra_MpiComm_MyPID ( CT_Epetra_MpiComm_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_MpiComm , MyPID )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
+
+  ECHO(int ret = Epetra_MpiComm_MyPID(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  /* ??? */
+}
+
 /**********************************************************************
 int Epetra_MpiComm_NumProc ( CT_Epetra_MpiComm_ID_t selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_MpiComm , NumProc )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
+
+  ECHO(int ret = Epetra_MpiComm_NumProc(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  /* ??? */
+}
 
 /**********************************************************************
 CT_Epetra_Distributor_ID_t Epetra_MpiComm_CreateDistributor ( 
   CT_Epetra_MpiComm_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_MpiComm , CreateDistributor )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
+
+  ECHO(CT_Epetra_Distributor_ID_t disID = Epetra_MpiComm_CreateDistributor(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(disID.type, CT_Epetra_Distributor_ID);
+  TEST_EQUALITY_CONST(disID.index, 0);
+}
+
 /**********************************************************************
 CT_Epetra_Directory_ID_t Epetra_MpiComm_CreateDirectory ( 
   CT_Epetra_MpiComm_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_MpiComm , CreateDirectory )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
+  ECHO(CT_Epetra_Comm_ID_t CommID = Epetra_Comm_Cast(selfID));
+
+  ECHO(int NumGlobalElements = 9);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_MpiComm_CreateDirectory(selfID, MapID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(dirID.type, CT_Epetra_Directory_ID);
+  TEST_EQUALITY_CONST(dirID.index, 0);
+}
 
 /**********************************************************************
 int Epetra_MpiComm_GetMpiTag ( CT_Epetra_MpiComm_ID_t selfID );
@@ -192,6 +340,19 @@ MPI_Comm Epetra_MpiComm_GetMpiComm ( CT_Epetra_MpiComm_ID_t selfID );
 void Epetra_MpiComm_Assign ( 
   CT_Epetra_MpiComm_ID_t selfID, CT_Epetra_MpiComm_ID_t CommID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_MpiComm , Assign )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_MpiComm_ID_t commID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
+  ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
+
+  ECHO(Epetra_MpiComm_Assign(selfID, commID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, commID), false);
+}
 
 /**********************************************************************/
 

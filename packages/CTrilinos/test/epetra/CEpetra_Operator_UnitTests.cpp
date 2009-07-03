@@ -39,13 +39,13 @@ TEUCHOS_UNIT_TEST( Epetra_Operator , Destroy )
   ECHO(int NumIndicesPerRow = 4);
   ECHO(Epetra_DataAccess CV = Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Initialize the source matrix */
   ECHO(double val = 1.0);
   ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID, val));
   TEST_EQUALITY(ret, 0);
-  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, true));
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, TRUE));
   TEST_EQUALITY(ret, 0);
 
   /* Cast it to an operator */
@@ -62,6 +62,47 @@ TEUCHOS_UNIT_TEST( Epetra_Operator , Destroy )
 int Epetra_Operator_SetUseTranspose ( 
   CT_Epetra_Operator_ID_t selfID, boolean UseTranspose );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_Operator , SetUseTranspose )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 4);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_Map_ID_t MapID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
+
+  /* Create the source matrix */
+  ECHO(int NumIndicesPerRow = 4);
+  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
+       CV, MapID, NumIndicesPerRow, FALSE));
+
+  /* Initialize the source matrix */
+  ECHO(double val = 1.0);
+  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID, val));
+  TEST_EQUALITY(ret, 0);
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, TRUE));
+  TEST_EQUALITY(ret, 0);
+
+  /* Cast it to an operator */
+  ECHO(CT_Epetra_Operator_ID_t selfID = Epetra_Operator_Cast(crsID));
+
+  /* Test true */
+  ECHO(boolean tr = TRUE);
+  ECHO(ret = Epetra_Operator_SetUseTranspose(selfID, tr));
+  TEST_EQUALITY_CONST(ret, 0);
+  ECHO(boolean tr2 = Epetra_Operator_UseTranspose(selfID));
+  TEST_EQUALITY(tr, tr2);
+
+  /* Test false */
+  ECHO(tr = FALSE);
+  ECHO(ret = Epetra_Operator_SetUseTranspose(selfID, tr));
+  TEST_EQUALITY_CONST(ret, 0);
+  ECHO(tr2 = Epetra_Operator_UseTranspose(selfID));
+  TEST_EQUALITY(tr, tr2);
+}
 
 /**********************************************************************
 int Epetra_Operator_Apply ( 
@@ -88,6 +129,47 @@ const char * Epetra_Operator_Label (
 boolean Epetra_Operator_UseTranspose ( 
   CT_Epetra_Operator_ID_t selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_Operator , UseTranspose )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 4);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_Map_ID_t MapID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
+
+  /* Create the source matrix */
+  ECHO(int NumIndicesPerRow = 4);
+  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
+       CV, MapID, NumIndicesPerRow, FALSE));
+
+  /* Initialize the source matrix */
+  ECHO(double val = 1.0);
+  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID, val));
+  TEST_EQUALITY(ret, 0);
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, TRUE));
+  TEST_EQUALITY(ret, 0);
+
+  /* Cast it to an operator */
+  ECHO(CT_Epetra_Operator_ID_t selfID = Epetra_Operator_Cast(crsID));
+
+  /* Test true */
+  ECHO(boolean tr = TRUE);
+  ECHO(ret = Epetra_Operator_SetUseTranspose(selfID, tr));
+  TEST_EQUALITY_CONST(ret, 0);
+  ECHO(boolean tr2 = Epetra_Operator_UseTranspose(selfID));
+  TEST_EQUALITY(tr, tr2);
+
+  /* Test false */
+  ECHO(tr = FALSE);
+  ECHO(ret = Epetra_Operator_SetUseTranspose(selfID, tr));
+  TEST_EQUALITY_CONST(ret, 0);
+  ECHO(tr2 = Epetra_Operator_UseTranspose(selfID));
+  TEST_EQUALITY(tr, tr2);
+}
 
 /**********************************************************************
 boolean Epetra_Operator_HasNormInf ( 
