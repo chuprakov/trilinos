@@ -271,7 +271,7 @@ int main( int argc, char **argv )
   // Solve the nonlinesar system
   NOX::StatusTest::StatusType status = solver->solve();
 
-  if( NOX::StatusTest::Converged  != status )
+  if( NOX::StatusTest::Converged  == status )
     cout << "\n" << "-- NOX solver converged --" << "\n";
   else
     cout << "\n" << "-- NOX solver did not converge --" << "\n";

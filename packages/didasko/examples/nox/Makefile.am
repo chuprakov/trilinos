@@ -28,7 +28,7 @@
 
 include $(top_builddir)/Makefile.export.didasko
 
-EXAMPLE = ex1 ex2
+EXAMPLE = ex1 ex2 
 EXEEXT = .exe
 
 noinst_PROGRAMS = $(EXAMPLE)

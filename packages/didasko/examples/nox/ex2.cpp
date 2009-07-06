@@ -228,7 +228,8 @@ public:
     // add diagonal contributions
     for( int i=0 ; i<NumMyElements; ++i ) {
       // Put in the diagonal entry
-      f[i] += lambda_*exp(x[i]);
+
+      f[i] += lambda_*exp(x[i]);   
     }
   }
 
@@ -244,7 +245,9 @@ public:
   
     for( int i=0 ; i<NumMyElements; ++i ) {
       // Put in the diagonal entry
-      double newdiag = diag + lambda_*exp(x[i]);
+
+      double newdiag = diag + lambda_*exp(x[i]); 
+
       Matrix_->ReplaceGlobalValues(MyGlobalElements[i], 1, 
 				   &newdiag, MyGlobalElements+i);
     }
@@ -426,17 +429,20 @@ int main( int argc, char **argv )
   Teuchos::RCP<NOX::Solver::Generic> solver = 
     NOX::Solver::buildSolver(grpPtr, combo, nlParamsPtr);
 
-  // Solve the nonlinesar system
+  // Solve the nonlinear system
   NOX::StatusTest::StatusType status = solver->solve();
 
-  if( NOX::StatusTest::Converged  != status )
+if( Comm.MyPID() == 0 )   
+  if( NOX::StatusTest::Converged  == status )
     cout << "\n" << "-- NOX solver converged --" << "\n";
   else
     cout << "\n" << "-- NOX solver did not converge --" << "\n";
-
+ 
   // Print the answer
+  if( Comm.MyPID() == 0 ) {
   cout << "\n" << "-- Parameter List From Solver --" << "\n";
   solver->getList().print(cout);
+  }
 
   // Get the Epetra_Vector with the final solution from the solver
   const NOX::Epetra::Group & finalGroup = 
