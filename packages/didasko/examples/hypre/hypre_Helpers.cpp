@@ -30,16 +30,24 @@
 #include "Teuchos_UnitTestHarness.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_Array.hpp"
+#include "Teuchos_RCP.hpp"
 #include <iostream>
 #include <fstream>
+#include "Galeri_Maps.h"
+#include "Galeri_CrsMatrices.h"
+#include "Galeri_Utils.h"
+#include "Ifpack_Hypre.h"
 
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
 #include <vector>
+#include <sstream>
 #include <map>
 
-EpetraExt_HypreIJMatrix::EpetraExt_HypreIJMatrix MatrixConstructor(const int N, const int type)
+using Teuchos::RCP;
+using Teuchos::rcp;
+EpetraExt_HypreIJMatrix::EpetraExt_HypreIJMatrix CreateHypre(const int N)
 {
   HYPRE_IJMatrix Matrix;
   int ierr = 0;
@@ -65,92 +73,56 @@ EpetraExt_HypreIJMatrix::EpetraExt_HypreIJMatrix MatrixConstructor(const int N, 
     std::cin >> ierr;
   }
   
-  if(type == 0){
-    // Set values
-    int rows[1];
-    int cols[1];
-    double values[1];
-    int ncols = 1;
-    for(i = ilower; i < iupper; i++) {
-      rows[0] = i;
-      cols[0] = i;
-      values[0] = 1.0;
-      ierr += HYPRE_IJMatrixSetValues(Matrix, 1, &ncols, rows, cols, values);
+  srand(time(NULL));
+  int rows[1];
+  for(i = ilower; i < iupper; i++) {
+    int ncols = (int)(1+( (double)rand()/(double)RAND_MAX ) * 0.5*(N-1));
+    TEST_FOR_EXCEPTION(ncols <= 0, std::logic_error, "ncols is negative");
+    Teuchos::Array<int> cols; cols.resize(ncols);
+    Teuchos::Array<double> values; values.resize(ncols);
+    for(int j = 0; j < ncols; j++){
+      int index = 0;
+      if(i-(ncols/2) >= 0 && i+(ncols/2) < N){
+        index = j + i - (ncols/2);
+      } else if (i-(ncols/2) < 0){
+        index = j + i;
+      } else{
+        index = j + i - (ncols-1);
+        }
+      
+      cols[j] = index;
+      double currVal =  ( (double)rand()/(double)RAND_MAX ) * 100;
+      values[j] = currVal;
     }
-  } else if(type == 1){
-    srand(time(NULL));
-    // Set values
-    int rows[1];
-    int cols[1];
-    double values[1];
-    int ncols = 1;
-    for(i = ilower; i < iupper; i++) {
-      rows[0] = i;
-      cols[0] = i;
-      values[0] =  ( (double)rand()/(double)RAND_MAX ) * 100;
-      ierr += HYPRE_IJMatrixSetValues(Matrix, 1, &ncols, rows, cols, values);
-    }
-    
-  } else if(type == 2){
-    // Set values
-    int rows[1];
-    Teuchos::Array<int> cols; cols.resize(N);
-    Teuchos::Array<double> values; values.resize(N);
-    int ncols = N;
-    for(i = ilower; i < iupper; i++) {
-      for(int j = 0; j < N; j++){
-        cols[j] = j;
-        values[j] = j;
-      }
-      rows[0] = i;
-      ierr += HYPRE_IJMatrixSetValues(Matrix, 1, &ncols, rows, &cols[0], &values[0]);
-    }
-  } else if(type == 3){
-    srand(time(NULL));
-    int rows[1];
-    Teuchos::Array<int> cols; cols.resize(N);
-    Teuchos::Array<double> values; values.resize(N);
-    int ncols = N;
-    for(i = ilower; i < iupper; i++) {
-      for(int j = 0; j < N; j++){
-        cols[j] = j;
-        double currVal =  ( (double)rand()/(double)RAND_MAX ) * 100;
-        values[j] = currVal;
-      }
-      rows[0] = i;
-      ierr += HYPRE_IJMatrixSetValues(Matrix, 1, &ncols, rows, &cols[0], &values[0]);
-    }
-  } else {
-    srand(time(NULL));
-    int rows[1];
-    for(i = ilower; i < iupper; i++) {
-      int ncols = (int)(1+( (double)rand()/(double)RAND_MAX ) * 0.5*(N-1));
-      TEST_FOR_EXCEPTION(ncols <= 0, std::logic_error, "ncols is negative");
-      Teuchos::Array<int> cols; cols.resize(ncols);
-      Teuchos::Array<double> values; values.resize(ncols);
-      for(int j = 0; j < ncols; j++){
-        int index = 0;
-        if(i-(ncols/2) >= 0 && i+(ncols/2) < N){
-          index = j + i - (ncols/2);
-        } else if (i-(ncols/2) < 0){
-          index = j + i;
-        } else{
-          index = j + i - (ncols-1);
-          }
-        
-        cols[j] = index;
-        double currVal =  ( (double)rand()/(double)RAND_MAX ) * 100;
-        values[j] = currVal;
-      }
-      rows[0] = i;
-      ierr += HYPRE_IJMatrixSetValues(Matrix, 1, &ncols, rows, &cols[0], &values[0]);
-    }
+    rows[0] = i;
+    ierr += HYPRE_IJMatrixSetValues(Matrix, 1, &ncols, rows, &cols[0], &values[0]);
   }
   // Assemble
   ierr += HYPRE_IJMatrixAssemble(Matrix);
   EpetraExt_HypreIJMatrix RetMat(Matrix);
   //Don't HYPRE_IJMatrixDestroy(Matrix);
   return RetMat;
+}
+
+Epetra_CrsMatrix::Epetra_CrsMatrix CreateCrs(int N){
+
+  Epetra_MpiComm Comm(MPI_COMM_WORLD);
+
+  RCP<Epetra_Map>            Map;
+  //Epetra_Map*            Map;
+  // pointer to the matrix to be created
+  RCP<Epetra_CrsMatrix>      Matrix;
+  //Epetra_CrsMatrix* Matrix;
+  // container for parameters
+  Teuchos::ParameterList GaleriList;
+  int nx = N * Comm.NumProc();
+  int ny = N * Comm.NumProc();
+  GaleriList.set("nx", nx);
+  GaleriList.set("ny", ny);
+
+  Map = rcp(Galeri::CreateMap("Cartesian2D", Comm, GaleriList));
+  Matrix   = rcp(Galeri::CreateCrsMatrix("Biharmonic2D", Map.get(), GaleriList));
+  return *Matrix.get();
 }
 
 Epetra_CrsMatrix::Epetra_CrsMatrix GetCrsMatrix(EpetraExt_HypreIJMatrix &Matrix)
@@ -215,28 +187,75 @@ bool EquivalentVectors(Epetra_MultiVector &Y1, Epetra_MultiVector &Y2, const dou
 
 bool EquivalentMatrices(Epetra_RowMatrix &HypreMatrix, Epetra_RowMatrix &CrsMatrix, const double tol){
   bool retVal = true;
-  for(int j = 0; j < HypreMatrix.NumMyRows(); j++){
+  int MyPID = HypreMatrix.Comm().MyPID();
+  if(HypreMatrix.NumMyRows() != CrsMatrix.NumMyRows()){
+    printf("Different number of local rows.");
+    return false;
+  }
+  if(HypreMatrix.NumMyCols() != CrsMatrix.NumMyCols()){
+    printf("Different number of local columns.");
+    return false;
+  }
+  for(int j = 0; j < HypreMatrix.NumGlobalRows(); j++){
+    int hyp_j = HypreMatrix.RowMatrixRowMap().LID(j);
+    int crs_j = CrsMatrix.RowMatrixRowMap().LID(j);
+    if(hyp_j < 0 || crs_j < 0){
+      continue;
+    }
     
-    int NumEntries;
+    int NumEntries = HypreMatrix.NumMyCols();
     int entries1;
     int entries2;
-    HypreMatrix.NumMyRowEntries(j,NumEntries);
 
     Teuchos::Array<double> Y1_vals; Y1_vals.resize(NumEntries);
     Teuchos::Array<double> Y2_vals; Y2_vals.resize(NumEntries);
     Teuchos::Array<int> indices1; indices1.resize(NumEntries);
     Teuchos::Array<int> indices2; indices2.resize(NumEntries);
      
-    HypreMatrix.ExtractMyRowCopy(j,NumEntries, entries1, &Y1_vals[0], &indices1[0]);
-    CrsMatrix.ExtractMyRowCopy(j,NumEntries, entries2, &Y2_vals[0], &indices2[0]);
-
-    std::map<int,double> Y1map;
-    std::map<int,double> Y2map;
-    for (int i=0; i < NumEntries ; ++i) {
-      Y1map[indices1[i]] = Y1_vals[i]; 
-      Y2map[indices2[i]] = Y2_vals[i]; 
+    HypreMatrix.ExtractMyRowCopy(hyp_j,NumEntries, entries1, &Y1_vals[0], &indices1[0]);
+    CrsMatrix.ExtractMyRowCopy(crs_j,NumEntries, entries2, &Y2_vals[0], &indices2[0]);
+    if(entries1 != entries2){
+      printf("Row[%d], Differing number of entries %d != %d\n", j, entries1, entries2);
     }
-    retVal = retVal && (Y1map == Y2map);
+    for(int i = 0; i < entries1; i++){
+      indices1[i] = HypreMatrix.RowMatrixColMap().GID(indices1[i]);
+      indices2[i] = CrsMatrix.RowMatrixColMap().GID(indices2[i]);
+    }
+    for(int i = 1; i < entries1; ++i){
+      int value = indices1[i];
+      double my_val = Y1_vals[i];
+      int jj = i-1;
+      while(jj >= 0 && indices1[jj] > value){
+        indices1[jj+1] = indices1[jj];
+        Y1_vals[jj+1] = Y1_vals[jj];
+        jj = jj-1;
+      }
+      indices1[jj+1] = value;
+      Y1_vals[jj+1] = my_val;
+    }
+    for(int i = 1; i < entries2; ++i){
+      int value = indices2[i];
+      double my_val = Y2_vals[i];
+      int jj = i-1;
+      while(jj >= 0 && indices2[jj] > value){
+        indices2[jj+1] = indices2[jj];
+        Y2_vals[jj+1] = Y2_vals[jj];
+        jj = jj-1;
+      }
+      indices2[jj+1] = value;
+      Y2_vals[jj+1] = my_val;
+    }
+    
+    for(int i = 0; i < entries1; i++){
+      if(indices1[i] != indices2[i]){
+        printf("indices[%d], %d != %d\n", i, indices1[i], indices2[i]);
+        retVal = false;
+      }
+      if(fabs(Y1_vals[i] - Y2_vals[i]) > tol){
+        printf("Failed at %d\n", i);
+        retVal = false;
+      }
+    }
   }
   Teuchos::Array<int> vals; vals.resize(HypreMatrix.Comm().NumProc());
   int my_vals[1]; my_vals[0] = (int)retVal;
@@ -247,14 +266,7 @@ bool EquivalentMatrices(Epetra_RowMatrix &HypreMatrix, Epetra_RowMatrix &CrsMatr
     }
   }
   if(retVal == false){
-    printf("[%d]Failed matrix equivalency test.\n", HypreMatrix.Comm().MyPID());
-    if(HypreMatrix.Comm().MyPID() == 0){
-      //std::ofstream outfile("Matrices.txt");
-      
-      //HypreMatrix.Print(outfile);
-      //CrsMatrix.Print(outfile);
-      //outfile.close();
-    }
+    printf("[%d]Failed matrix equivalency test.\n", MyPID);
   }
   return retVal;
 }
