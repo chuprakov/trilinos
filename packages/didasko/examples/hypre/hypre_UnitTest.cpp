@@ -108,21 +108,27 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, Ifpack ){
   Epetra_MultiVector B(preconditioner->OperatorDomainMap(), numVec);
   preconditioner->Apply(KnownX, B);
 
-  Teuchos::ParameterList list("New List");
-  RCP<FunctionParameter> functs[2];
-  functs[0] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetMaxIter, 1000)); /* max iterations */
-  functs[1] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetTol, 1e-9)); /* conv. tolerance */
-  list.set("NumFunctions", 2);
-  list.set<RCP<FunctionParameter>*>("Functions", functs);
-  list.set("SolveOrPrecondition", Solver);
-  list.set("SetPreconditioner", true);
-  preconditioner->SetParameters(list);
+  //Teuchos::ParameterList list("New List");
+  //RCP<FunctionParameter> functs[2];
+  //functs[0] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetMaxIter, 1000)); /* max iterations */
+  //functs[1] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetTol, 1e-9)); /* conv. tolerance */
+  //list.set("NumFunctions", 2);
+  //list.set<RCP<FunctionParameter>*>("Functions", functs);
+  //list.set("SolveOrPrecondition", Solver);
+  //list.set("SetPreconditioner", true);
+  //preconditioner->SetParameters(list);
+  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, PCG); // Use a PCG Solver
+  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Preconditioner, Euclid); // Use a Euclid Preconditioner (but not really used)
+  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, &HYPRE_ParCSRPCGSetMaxIter, 1000); // Set maximum iterations
+  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, &HYPRE_ParCSRPCGSetTol, 1e-9); // Set a tolerance
+  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver); // Solve the problem
+  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(false); // Don't use the preconditioner
   preconditioner->Initialize();
   preconditioner->Compute();
   preconditioner->ApplyInverse(B, X);
   TEST_EQUALITY(EquivalentVectors(X, KnownX, tol*10*pow(10.0,NumProc)), true);
   if(MyPID == 0) printf("Time spent in Compute() = %f\n",preconditioner->ComputeTime()); 
-  if(MyPID == 0) printf("Time spent in ApplyInverse()() = %f\n",preconditioner->ApplyInverseTime()); 
+  if(MyPID == 0) printf("Time spent in ApplyInverse() = %f\n",preconditioner->ApplyInverseTime()); 
 }
 
 TEUCHOS_UNIT_TEST( Ifpack_Hypre, EpetraExt ){
@@ -141,15 +147,16 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, EpetraExt ){
   KnownX.Random();
   Epetra_MultiVector B(Hyp_Matrix.RowMatrixRowMap(), numVec);
   Hyp_Matrix.Multiply(false, KnownX, B);
-  Hyp_Matrix.SetParameter(Solver, 10, HYPRE_ParCSRPCGSetMaxIter);
-  Hyp_Matrix.SetPreconditioner();
+  Hyp_Matrix.SetParameter(Solver, HYPRE_ParCSRPCGSetMaxIter, 1000);
+  Hyp_Matrix.SetParameter(Solver, HYPRE_ParCSRPCGSetTol, 1e-9);
+  Hyp_Matrix.SetParameter(false);
   Hyp_Matrix.ApplyInverse(B, X);
   TEST_EQUALITY(EquivalentVectors(X, KnownX, tol*10*pow(10.0,NumProc)), true);
 
   int numIters;
   double residual;
-  Hyp_Matrix.SetParameter(Solver, &residual, &HYPRE_ParCSRPCGGetFinalRelativeResidualNorm);
-  Hyp_Matrix.SetParameter(Solver, &numIters, &HYPRE_ParCSRPCGGetNumIterations);
+  Hyp_Matrix.SetParameter(Solver, &HYPRE_ParCSRPCGGetFinalRelativeResidualNorm, &residual);
+  Hyp_Matrix.SetParameter(Solver, &HYPRE_ParCSRPCGGetNumIterations, &numIters);
   if(MyPID == 0) printf("It took %d iterations, and achieved %e residual.\n", numIters, residual);
   /* This proves the problem is in the maps of the vectors
   X.PutScalar(0.0);
