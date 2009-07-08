@@ -164,21 +164,29 @@ bool EquivalentVectors(Epetra_MultiVector &Y1, Epetra_MultiVector &Y2, const dou
       printf("Vectors are not same size on local processor.\n");
       return false;
     }
-    Teuchos::Array<double> Y1_vals; Y1_vals.resize(Y1.MyLength());
-    Teuchos::Array<double> Y2_vals; Y2_vals.resize(Y2.MyLength());
-    (*Y1(j)).ExtractCopy(&Y1_vals[0]);
-    (*Y2(j)).ExtractCopy(&Y2_vals[0]);
-    
-    for(int i = 0; i < Y1.MyLength(); i++){
-      if(fabs(Y1_vals[i] - Y2_vals[i]) > tol){
+    for(int i = 0; i < Y1.GlobalLength(); i++){
+      int Y1_local = Y1.Map().LID(i);
+      int Y2_local = Y2.Map().LID(i);
+      if(Y1_local < 0 || Y2_local < 0){
+        continue;
+      }
+      if(fabs((*Y1(j))[Y1_local] - (*Y2(j))[Y2_local]) > tol){
         printf("Vector number[%d] ", j);
-        printf("Val1[%d] = %f != Val2[%d] = %f\n", i, Y1_vals[i], i, Y2_vals[i]);
+        printf("Val1[%d] = %f != Val2[%d] = %f\n", i, (*Y1(j))[Y1_local], i, (*Y2(j))[Y2_local]);
         retVal = false;
       }
     }
   }
+  Teuchos::Array<int> vals; vals.resize(Y1.Comm().NumProc());
+  int my_vals[1]; my_vals[0] = (int)retVal;
+  Y1.Comm().GatherAll(my_vals, &vals[0], 1);
+  for(int i = 0; i < Y1.Comm().NumProc(); i++){
+    if(vals[i] == false){
+      retVal = false;
+    }
+  }
   if(retVal == false){
-    printf("Failed equivalent vectors.\n");
+    printf("[%d]Failed vector equivalency test.\n", Y1.Comm().MyPID());
   }
   return retVal;
 }
