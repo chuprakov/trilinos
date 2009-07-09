@@ -70,27 +70,33 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, AztecOO ){
   TEST_EQUALITY(EquivalentMatrices(Hyp_Matrix, Crs_Matrix, tol), true);
 
   int numVec = 2;
-  Epetra_MultiVector X(Crs_Matrix.RowMatrixRowMap(), numVec);
-  Epetra_MultiVector KnownX(Crs_Matrix.RowMatrixRowMap(), numVec);
+  Epetra_MultiVector X(Hyp_Matrix.RowMatrixRowMap(), numVec);
+  Epetra_MultiVector KnownX(Hyp_Matrix.RowMatrixRowMap(), numVec);
   KnownX.Random();
-  Epetra_MultiVector B(Crs_Matrix.RowMatrixRowMap(), numVec);
-  Crs_Matrix.Multiply(false, KnownX, B);
+  Epetra_MultiVector B(Hyp_Matrix.RowMatrixRowMap(), numVec);
+  Hyp_Matrix.Multiply(false, KnownX, B);
 
   Epetra_LinearProblem Problem(&Hyp_Matrix, &X, &B);
   AztecOO solver(Problem);
+  Hyp_Matrix.SetParameter(Solver, &HYPRE_ParCSRPCGSetMaxIter, 1000);
+  Hyp_Matrix.SetParameter(Solver, &HYPRE_ParCSRPCGSetTol, 1e-9);
   solver.SetPrecOperator(&Hyp_Matrix);
   solver.Iterate(1000, tol);
-  //TEST_EQUALITY(EquivalentVectors(X, KnownX, tol*10*pow(10.0,NumProc)), true);
+  TEST_EQUALITY(EquivalentVectors(X, KnownX, tol*10*pow(10.0,NumProc)), true);
   
   X.PutScalar(0.0);
   Epetra_LinearProblem Problem2(&Crs_Matrix, &X, &B);
   AztecOO solver2(Problem2);
-  Teuchos::ParameterList list("Empty List");
-  preconditioner.SetParameters(list);
+  preconditioner.SetParameter(Solver, PCG); // Use a PCG Solver
+  preconditioner.SetParameter(Preconditioner, Euclid); // Use a Euclid Preconditioner (but not really used)
+  preconditioner.SetParameter(Solver, &HYPRE_ParCSRPCGSetMaxIter, 1000); // Set maximum iterations
+  preconditioner.SetParameter(Solver, &HYPRE_ParCSRPCGSetTol, 1e-9); // Set a tolerance
+  preconditioner.SetParameter(Solver); // Solve the problem
+  preconditioner.SetParameter(false); // Don't use the preconditioner
   preconditioner.Initialize();
   preconditioner.Compute();
   solver2.SetPrecOperator(&preconditioner);
-  //TEST_EQUALITY(EquivalentVectors(X, KnownX, tol*10*pow(10.0,NumProc)), true);
+  TEST_EQUALITY(EquivalentVectors(X, KnownX, tol*10*pow(10.0,NumProc)), true);
 
 }*/
 TEUCHOS_UNIT_TEST( Ifpack_Hypre, Ifpack ){
@@ -118,11 +124,11 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, Ifpack ){
   //list.set("SetPreconditioner", true);
   //preconditioner->SetParameters(list);
   (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, PCG); // Use a PCG Solver
-  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Preconditioner, Euclid); // Use a Euclid Preconditioner (but not really used)
+  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Preconditioner, ParaSails); // Use a ParaSails Preconditioner
   (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, &HYPRE_ParCSRPCGSetMaxIter, 1000); // Set maximum iterations
   (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, &HYPRE_ParCSRPCGSetTol, 1e-9); // Set a tolerance
   (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver); // Solve the problem
-  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(false); // Don't use the preconditioner
+  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(true); // Don't use the preconditioner
   preconditioner->Initialize();
   preconditioner->Compute();
   preconditioner->ApplyInverse(B, X);

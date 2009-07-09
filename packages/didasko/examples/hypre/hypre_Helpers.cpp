@@ -121,7 +121,7 @@ Epetra_CrsMatrix::Epetra_CrsMatrix CreateCrs(int N){
   GaleriList.set("ny", ny);
 
   Map = rcp(Galeri::CreateMap("Cartesian2D", Comm, GaleriList));
-  Matrix   = rcp(Galeri::CreateCrsMatrix("Biharmonic2D", Map.get(), GaleriList));
+  Matrix   = rcp(Galeri::CreateCrsMatrix("Laplace2D", Map.get(), GaleriList));
   return *Matrix.get();
 }
 
