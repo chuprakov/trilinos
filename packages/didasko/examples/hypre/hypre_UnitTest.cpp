@@ -112,26 +112,28 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, Ifpack ){
   Epetra_MultiVector KnownX(preconditioner->OperatorRangeMap(), numVec);
   KnownX.Random();
   Epetra_MultiVector B(preconditioner->OperatorDomainMap(), numVec);
-  preconditioner->Apply(KnownX, B);
+  TEST_EQUALITY(preconditioner->Apply(KnownX, B), 0);
 
-  //Teuchos::ParameterList list("New List");
-  //RCP<FunctionParameter> functs[2];
-  //functs[0] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetMaxIter, 1000)); /* max iterations */
-  //functs[1] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetTol, 1e-9)); /* conv. tolerance */
-  //list.set("NumFunctions", 2);
-  //list.set<RCP<FunctionParameter>*>("Functions", functs);
-  //list.set("SolveOrPrecondition", Solver);
-  //list.set("SetPreconditioner", true);
-  //preconditioner->SetParameters(list);
-  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, PCG); // Use a PCG Solver
-  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Preconditioner, ParaSails); // Use a ParaSails Preconditioner
-  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, &HYPRE_ParCSRPCGSetMaxIter, 1000); // Set maximum iterations
-  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, &HYPRE_ParCSRPCGSetTol, 1e-9); // Set a tolerance
-  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver); // Solve the problem
-  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(true); // Don't use the preconditioner
-  preconditioner->Initialize();
-  preconditioner->Compute();
-  preconditioner->ApplyInverse(B, X);
+  Teuchos::ParameterList list("New List");
+  RCP<FunctionParameter> functs[2];
+  functs[0] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetMaxIter, 1000)); /* max iterations */
+  functs[1] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetTol, 1e-9)); /* conv. tolerance */
+  list.set("NumFunctions", 2);
+  list.set<RCP<FunctionParameter>*>("Functions", functs);
+  list.set("SolveOrPrecondition", Solver);
+  list.set("Solver", PCG);
+  list.set("Preconditioner", ParaSails);
+  list.set("SetPreconditioner", true);
+  TEST_EQUALITY(preconditioner->SetParameters(list), 0);
+  //(dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, PCG); // Use a PCG Solver
+  //(dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Preconditioner, ParaSails); // Use a ParaSails Preconditioner
+  //(dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, &HYPRE_ParCSRPCGSetMaxIter, 1000); // Set maximum iterations
+  //(dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, &HYPRE_ParCSRPCGSetTol, 1e-9); // Set a tolerance
+  //(dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver); // Solve the problem
+  //(dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(true); // Use the preconditioner
+  //preconditioner->Initialize();
+  TEST_EQUALITY(preconditioner->Compute(),0);
+  TEST_EQUALITY(preconditioner->ApplyInverse(B, X),0);
   TEST_EQUALITY(EquivalentVectors(X, KnownX, tol*10*pow(10.0,NumProc)), true);
   if(MyPID == 0) printf("Time spent in Compute() = %f\n",preconditioner->ComputeTime()); 
   if(MyPID == 0) printf("Time spent in ApplyInverse() = %f\n",preconditioner->ApplyInverseTime()); 
