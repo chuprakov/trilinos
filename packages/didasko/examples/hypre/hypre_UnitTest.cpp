@@ -115,10 +115,12 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, Ifpack ){
   TEST_EQUALITY(preconditioner->Apply(KnownX, B), 0);
 
   Teuchos::ParameterList list("New List");
-  RCP<FunctionParameter> functs[2];
+  RCP<FunctionParameter> functs[4];
   functs[0] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetMaxIter, 1000)); /* max iterations */
   functs[1] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetTol, 1e-9)); /* conv. tolerance */
-  list.set("NumFunctions", 2);
+  functs[2] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetLogging, 1));
+  functs[3] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetPrintLevel, 2));
+  list.set("NumFunctions", 4);
   list.set<RCP<FunctionParameter>*>("Functions", functs);
   list.set("SolveOrPrecondition", Solver);
   list.set("Solver", PCG);
@@ -137,6 +139,12 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, Ifpack ){
   TEST_EQUALITY(EquivalentVectors(X, KnownX, tol*10*pow(10.0,NumProc)), true);
   if(MyPID == 0) printf("Time spent in Compute() = %f\n",preconditioner->ComputeTime()); 
   if(MyPID == 0) printf("Time spent in ApplyInverse() = %f\n",preconditioner->ApplyInverseTime()); 
+  int numIters;
+  double residual;
+  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, &HYPRE_ParCSRPCGGetNumIterations, &numIters); 
+  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, &HYPRE_ParCSRPCGGetFinalRelativeResidualNorm, &residual); 
+  (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->CallFunctions();
+  if(MyPID == 0) printf("It took %d iterations, and achieved %e residual.\n", numIters, residual);
 }
 
 TEUCHOS_UNIT_TEST( Ifpack_Hypre, EpetraExt ){
