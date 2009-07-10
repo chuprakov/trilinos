@@ -200,10 +200,6 @@ bool EquivalentMatrices(Epetra_RowMatrix &HypreMatrix, Epetra_RowMatrix &CrsMatr
     printf("Different number of local rows.");
     return false;
   }
-  if(HypreMatrix.NumMyCols() != CrsMatrix.NumMyCols()){
-    printf("Different number of local columns.");
-    return false;
-  }
   for(int j = 0; j < HypreMatrix.NumGlobalRows(); j++){
     int hyp_j = HypreMatrix.RowMatrixRowMap().LID(j);
     int crs_j = CrsMatrix.RowMatrixRowMap().LID(j);

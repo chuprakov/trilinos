@@ -112,15 +112,17 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, Ifpack ){
   Epetra_MultiVector KnownX(preconditioner->OperatorRangeMap(), numVec);
   KnownX.Random();
   Epetra_MultiVector B(preconditioner->OperatorDomainMap(), numVec);
+  preconditioner->Initialize();
   TEST_EQUALITY(preconditioner->Apply(KnownX, B), 0);
 
   Teuchos::ParameterList list("New List");
-  RCP<FunctionParameter> functs[4];
-  functs[0] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetMaxIter, 1000)); /* max iterations */
-  functs[1] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetTol, 1e-9)); /* conv. tolerance */
+  RCP<FunctionParameter> functs[5];
+  functs[0] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetMaxIter, 1000));
+  functs[1] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetTol, 1e-9));
   functs[2] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetLogging, 1));
-  functs[3] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetPrintLevel, 2));
-  list.set("NumFunctions", 4);
+  functs[3] = rcp(new FunctionParameter(Solver, &HYPRE_PCGSetPrintLevel, 0));
+  functs[4] = rcp(new FunctionParameter(Preconditioner, &HYPRE_ParaSailsSetLogging, 0));
+  list.set("NumFunctions", 5);
   list.set<RCP<FunctionParameter>*>("Functions", functs);
   list.set("SolveOrPrecondition", Solver);
   list.set("Solver", PCG);

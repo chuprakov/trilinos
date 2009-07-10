@@ -19,7 +19,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
   hypre_test
   SOURCES DIDASKO_Hypre_UnitTest.cpp hypre_UnitTest.cpp hypre_Helpers.cpp
   COMM serial mpi
-  NUM_MPI_PROCS 1-3
+  NUM_MPI_PROCS 1-4
   )
 
 ENDIF (${PACKAGE_NAME}_ENABLE_Galeri)
