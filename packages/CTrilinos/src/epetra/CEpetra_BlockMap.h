@@ -17,7 +17,7 @@ extern "C" {
 #endif
 
 
-CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Cast(
+CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Cast ( 
   CTrilinos_Object_ID_t id );
 
 /* Original C++ prototype:

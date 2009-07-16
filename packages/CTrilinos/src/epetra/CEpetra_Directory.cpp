@@ -35,7 +35,7 @@ Table<Epetra_Directory>& tableOfDirectorys()
 extern "C" {
 
 
-CT_Epetra_Directory_ID_t Epetra_Directory_Cast (
+CT_Epetra_Directory_ID_t Epetra_Directory_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfDirectorys(), id);

@@ -8,8 +8,8 @@
 #define CEPETRA_CRSGRAPH_H
 
 
-#include "CEpetra_BlockMap.h"
 #include "Epetra_DataAccess.h"
+#include "CEpetra_BlockMap.h"
 #include "CEpetra_Import.h"
 #include "CEpetra_Export.h"
 #include "CEpetra_Comm.h"
@@ -21,7 +21,7 @@ extern "C" {
 #endif
 
 
-CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Cast(
+CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Cast ( 
   CTrilinos_Object_ID_t id );
 
 /* Original C++ prototype:

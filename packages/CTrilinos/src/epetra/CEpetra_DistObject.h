@@ -8,10 +8,10 @@
 #define CEPETRA_DISTOBJECT_H
 
 
+#include "Epetra_CombineMode.h"
 #include "CEpetra_SrcDistObject.h"
 #include "CEpetra_Import.h"
 #include "CEpetra_OffsetIndex.h"
-#include "Epetra_CombineMode.h"
 #include "CEpetra_Export.h"
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_Comm.h"
@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 
-CT_Epetra_DistObject_ID_t Epetra_DistObject_Cast(
+CT_Epetra_DistObject_ID_t Epetra_DistObject_Cast ( 
   CTrilinos_Object_ID_t id );
 
 /* Original C++ prototype:

@@ -19,7 +19,7 @@ extern "C" {
 #endif
 
 
-CT_Epetra_Operator_ID_t Epetra_Operator_Cast(
+CT_Epetra_Operator_ID_t Epetra_Operator_Cast ( 
   CTrilinos_Object_ID_t id );
 
 /* Original C++ prototype:

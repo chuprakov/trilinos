@@ -1,9 +1,9 @@
 #include "CTrilinos_config.h"
 
+#include "Epetra_CombineMode.h"
 #include "CEpetra_SrcDistObject_Cpp.hpp"
 #include "CEpetra_Import_Cpp.hpp"
 #include "CEpetra_OffsetIndex_Cpp.hpp"
-#include "Epetra_CombineMode.h"
 #include "CEpetra_Export_Cpp.hpp"
 #include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_Comm_Cpp.hpp"
@@ -41,7 +41,7 @@ Table<Epetra_DistObject>& tableOfDistObjects()
 extern "C" {
 
 
-CT_Epetra_DistObject_ID_t Epetra_DistObject_Cast (
+CT_Epetra_DistObject_ID_t Epetra_DistObject_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfDistObjects(), id);

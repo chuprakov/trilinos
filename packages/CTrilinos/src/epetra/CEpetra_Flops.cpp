@@ -34,8 +34,7 @@ Table<Epetra_Flops>& tableOfFlopss()
 extern "C" {
 
 
-CT_Epetra_Flops_ID_t Epetra_Flops_Cast (
-  CTrilinos_Object_ID_t id )
+CT_Epetra_Flops_ID_t Epetra_Flops_Cast ( CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfFlopss(), id);
 }

@@ -36,7 +36,7 @@ Table<Epetra_Import>& tableOfImports()
 extern "C" {
 
 
-CT_Epetra_Import_ID_t Epetra_Import_Cast (
+CT_Epetra_Import_ID_t Epetra_Import_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfImports(), id);

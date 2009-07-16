@@ -43,7 +43,7 @@ Table<Epetra_MpiComm>& tableOfMpiComms()
 extern "C" {
 
 
-CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Cast (
+CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfMpiComms(), id);

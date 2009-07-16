@@ -35,8 +35,7 @@ Table<Epetra_Map>& tableOfMaps()
 extern "C" {
 
 
-CT_Epetra_Map_ID_t Epetra_Map_Cast (
-  CTrilinos_Object_ID_t id )
+CT_Epetra_Map_ID_t Epetra_Map_Cast ( CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfMaps(), id);
 }

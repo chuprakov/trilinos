@@ -35,7 +35,7 @@ Table<Epetra_CompObject>& tableOfCompObjects()
 extern "C" {
 
 
-CT_Epetra_CompObject_ID_t Epetra_CompObject_Cast (
+CT_Epetra_CompObject_ID_t Epetra_CompObject_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfCompObjects(), id);

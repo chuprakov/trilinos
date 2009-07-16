@@ -8,8 +8,8 @@
 #define CEPETRA_VECTOR_H
 
 
-#include "CEpetra_BlockMap.h"
 #include "Epetra_DataAccess.h"
+#include "CEpetra_BlockMap.h"
 #include "CEpetra_MultiVector.h"
 #include "CTrilinos_enums.h"
 
@@ -19,7 +19,7 @@ extern "C" {
 #endif
 
 
-CT_Epetra_Vector_ID_t Epetra_Vector_Cast(
+CT_Epetra_Vector_ID_t Epetra_Vector_Cast ( 
   CTrilinos_Object_ID_t id );
 
 /* Original C++ prototype:

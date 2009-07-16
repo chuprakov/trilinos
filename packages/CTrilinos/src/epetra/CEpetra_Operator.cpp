@@ -37,7 +37,7 @@ Table<Epetra_Operator>& tableOfOperators()
 extern "C" {
 
 
-CT_Epetra_Operator_ID_t Epetra_Operator_Cast (
+CT_Epetra_Operator_ID_t Epetra_Operator_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfOperators(), id);

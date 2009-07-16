@@ -18,7 +18,7 @@ extern "C" {
 #endif
 
 
-CT_Epetra_Import_ID_t Epetra_Import_Cast(
+CT_Epetra_Import_ID_t Epetra_Import_Cast ( 
   CTrilinos_Object_ID_t id );
 
 /* Original C++ prototype:

@@ -16,8 +16,7 @@ extern "C" {
 #endif
 
 
-CT_Epetra_Flops_ID_t Epetra_Flops_Cast(
-  CTrilinos_Object_ID_t id );
+CT_Epetra_Flops_ID_t Epetra_Flops_Cast ( CTrilinos_Object_ID_t id );
 
 /* Original C++ prototype:
    Epetra_Flops(void);

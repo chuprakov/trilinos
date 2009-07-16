@@ -37,7 +37,7 @@ Table<Epetra_OffsetIndex>& tableOfOffsetIndexs()
 extern "C" {
 
 
-CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Cast (
+CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfOffsetIndexs(), id);

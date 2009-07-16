@@ -34,7 +34,7 @@ Table<Epetra_Distributor>& tableOfDistributors()
 extern "C" {
 
 
-CT_Epetra_Distributor_ID_t Epetra_Distributor_Cast (
+CT_Epetra_Distributor_ID_t Epetra_Distributor_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfDistributors(), id);

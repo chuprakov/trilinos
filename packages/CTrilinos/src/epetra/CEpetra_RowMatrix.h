@@ -20,7 +20,7 @@ extern "C" {
 #endif
 
 
-CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix_Cast(
+CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix_Cast ( 
   CTrilinos_Object_ID_t id );
 
 /* Original C++ prototype:

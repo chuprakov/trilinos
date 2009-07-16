@@ -35,7 +35,7 @@ Table<Epetra_BlockMap>& tableOfBlockMaps()
 extern "C" {
 
 
-CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Cast (
+CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfBlockMaps(), id);

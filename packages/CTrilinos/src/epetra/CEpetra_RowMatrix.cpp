@@ -38,7 +38,7 @@ Table<Epetra_RowMatrix>& tableOfRowMatrixs()
 extern "C" {
 
 
-CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix_Cast (
+CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfRowMatrixs(), id);

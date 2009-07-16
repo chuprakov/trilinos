@@ -1,7 +1,7 @@
 #include "CTrilinos_config.h"
 
-#include "CEpetra_BlockMap_Cpp.hpp"
 #include "Epetra_DataAccess.h"
+#include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_Import_Cpp.hpp"
 #include "CEpetra_Export_Cpp.hpp"
 #include "CEpetra_Comm_Cpp.hpp"
@@ -39,7 +39,7 @@ Table<Epetra_CrsGraph>& tableOfCrsGraphs()
 extern "C" {
 
 
-CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Cast (
+CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfCrsGraphs(), id);

@@ -8,8 +8,8 @@
 #define CEPETRA_CRSMATRIX_H
 
 
-#include "CEpetra_Map.h"
 #include "Epetra_DataAccess.h"
+#include "CEpetra_Map.h"
 #include "CEpetra_CrsGraph.h"
 #include "CEpetra_Vector.h"
 #include "CEpetra_MultiVector.h"
@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 
-CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Cast(
+CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Cast ( 
   CTrilinos_Object_ID_t id );
 
 /* Original C++ prototype:

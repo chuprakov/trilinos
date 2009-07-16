@@ -38,7 +38,7 @@ Table<Epetra_SerialComm>& tableOfSerialComms()
 extern "C" {
 
 
-CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Cast (
+CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfSerialComms(), id);

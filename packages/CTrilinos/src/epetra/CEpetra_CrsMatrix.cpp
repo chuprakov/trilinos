@@ -1,7 +1,7 @@
 #include "CTrilinos_config.h"
 
-#include "CEpetra_Map_Cpp.hpp"
 #include "Epetra_DataAccess.h"
+#include "CEpetra_Map_Cpp.hpp"
 #include "CEpetra_CrsGraph_Cpp.hpp"
 #include "CEpetra_Vector_Cpp.hpp"
 #include "CEpetra_MultiVector_Cpp.hpp"
@@ -43,7 +43,7 @@ Table<Epetra_CrsMatrix>& tableOfCrsMatrixs()
 extern "C" {
 
 
-CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Cast (
+CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfCrsMatrixs(), id);

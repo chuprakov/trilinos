@@ -17,8 +17,7 @@ extern "C" {
 #endif
 
 
-CT_Epetra_Map_ID_t Epetra_Map_Cast(
-  CTrilinos_Object_ID_t id );
+CT_Epetra_Map_ID_t Epetra_Map_Cast ( CTrilinos_Object_ID_t id );
 
 /* Original C++ prototype:
    Epetra_Map(int NumGlobalElements, int IndexBase, const Epetra_Comm& Comm);

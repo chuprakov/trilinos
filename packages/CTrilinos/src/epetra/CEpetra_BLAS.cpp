@@ -34,8 +34,7 @@ Table<Epetra_BLAS>& tableOfBLASs()
 extern "C" {
 
 
-CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast (
-  CTrilinos_Object_ID_t id )
+CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfBLASs(), id);
 }

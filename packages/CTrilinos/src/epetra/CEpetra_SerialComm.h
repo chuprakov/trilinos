@@ -20,7 +20,7 @@ extern "C" {
 #endif
 
 
-CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Cast(
+CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Cast ( 
   CTrilinos_Object_ID_t id );
 
 /* Original C++ prototype:

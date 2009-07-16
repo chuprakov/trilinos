@@ -19,7 +19,7 @@ extern "C" {
 #endif
 
 
-CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Cast(
+CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Cast ( 
   CTrilinos_Object_ID_t id );
 
 /* Original C++ prototype:

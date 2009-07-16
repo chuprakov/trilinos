@@ -35,7 +35,7 @@ Table<Epetra_SrcDistObject>& tableOfSrcDistObjects()
 extern "C" {
 
 
-CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject_Cast (
+CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfSrcDistObjects(), id);

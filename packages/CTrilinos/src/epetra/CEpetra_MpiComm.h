@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 
-CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Cast(
+CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Cast ( 
   CTrilinos_Object_ID_t id );
 
 /* Original C++ prototype:

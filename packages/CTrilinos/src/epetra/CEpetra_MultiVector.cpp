@@ -1,7 +1,7 @@
 #include "CTrilinos_config.h"
 
-#include "CEpetra_BlockMap_Cpp.hpp"
 #include "Epetra_DataAccess.h"
+#include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_Vector_Cpp.hpp"
 #include "CEpetra_MultiVector_Cpp.hpp"
 #include "CEpetra_MultiVector.h"
@@ -37,7 +37,7 @@ Table<Epetra_MultiVector>& tableOfMultiVectors()
 extern "C" {
 
 
-CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Cast (
+CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Cast ( 
   CTrilinos_Object_ID_t id )
 {
     return CTrilinos::cast(tableOfMultiVectors(), id);
