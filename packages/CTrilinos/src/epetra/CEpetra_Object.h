@@ -57,7 +57,8 @@ const char * Epetra_Object_Label ( CT_Epetra_Object_ID_t selfID );
    virtual int ReportError(const string Message, int ErrorCode) const;
 */
 int Epetra_Object_ReportError ( 
-  CT_Epetra_Object_ID_t selfID, const char * Message, int ErrorCode );
+  CT_Epetra_Object_ID_t selfID, const char * const Message, 
+  int ErrorCode );
 
 
 #ifdef __cplusplus

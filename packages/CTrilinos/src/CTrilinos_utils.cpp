@@ -86,7 +86,7 @@ isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
 }
 
 
-char *str2cptr( std::string s )
+const char *str2cptr( std::string s )
 {
     char *pc = NULL;
     pc = new char [s.size()+1];
@@ -95,14 +95,7 @@ char *str2cptr( std::string s )
 }
 
 
-std::string cptr2str( char *pc )
-{
-    std::string s(pc);
-    return s;
-}
-
-
-const std::string cptr2str( const char *pc )
+std::string cptr2str( const char *pc )
 {
     std::string s(pc);
     return s;

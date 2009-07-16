@@ -217,11 +217,9 @@ isSameObject( CTrilinos_Object_ID_t id, const Teuchos::RCP<T> &rcp )
 
 bool isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 );
 
-char *str2cptr( std::string s );
+const char *str2cptr( std::string s );
 
-std::string cptr2str( char *pc );
-
-const std::string cptr2str( const char *pc );
+std::string cptr2str( const char *pc );
 
 
 } // namespace CTrilinos
