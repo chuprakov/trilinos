@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_OffsetIndex.h"
 #include "Epetra_OffsetIndex.h"
 #include "Teuchos_RCP.hpp"

@@ -1,3 +1,6 @@
+#include "CTrilinos_config.h"
+
+
 #ifdef HAVE_MPI
 
 

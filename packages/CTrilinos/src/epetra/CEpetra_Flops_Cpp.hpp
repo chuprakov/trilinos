@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_Flops.h"
 #include "Epetra_Flops.h"
 #include "Teuchos_RCP.hpp"

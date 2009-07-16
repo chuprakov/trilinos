@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_CrsMatrix.h"
 #include "Epetra_CrsMatrix.h"
 #include "Teuchos_RCP.hpp"

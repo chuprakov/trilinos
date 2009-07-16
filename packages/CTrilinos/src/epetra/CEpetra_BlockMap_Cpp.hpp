@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_BlockMap.h"
 #include "Epetra_BlockMap.h"
 #include "Teuchos_RCP.hpp"

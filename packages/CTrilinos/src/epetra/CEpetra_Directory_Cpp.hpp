@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_Directory.h"
 #include "Epetra_Directory.h"
 #include "Teuchos_RCP.hpp"

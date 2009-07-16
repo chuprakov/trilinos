@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_Object.h"
 #include "Epetra_Object.h"
 #include "Teuchos_RCP.hpp"
