@@ -20,7 +20,8 @@ using CTrilinos::Table;
 
 Table<Epetra_Import>& tableOfImports()
 {
-    static Table<Epetra_Import> loc_tableOfImports(CT_Epetra_Import_ID, "CT_Epetra_Import_ID");
+    static Table<Epetra_Import>
+        loc_tableOfImports(CT_Epetra_Import_ID, "CT_Epetra_Import_ID");
     return loc_tableOfImports;
 }
 
@@ -39,7 +40,14 @@ extern "C" {
 CT_Epetra_Import_ID_t Epetra_Import_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfImports(), id);
+    return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
+        CTrilinos::cast(tableOfImports(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_Import_Abstract ( 
+  CT_Epetra_Import_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Import_ID_t>(id);
 }
 
 CT_Epetra_Import_ID_t Epetra_Import_Create ( 
@@ -51,8 +59,9 @@ CT_Epetra_Import_ID_t Epetra_Import_Create (
     const Teuchos::RCP<Epetra_BlockMap> 
         pSourceMap = CEpetra::getBlockMap(SourceMapID);
 
-    return tableOfImports().store(new Epetra_Import(
-        *pTargetMap, *pSourceMap));
+    return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
+        tableOfImports().store(new Epetra_Import(
+        *pTargetMap, *pSourceMap)));
 
 }
 
@@ -62,13 +71,18 @@ CT_Epetra_Import_ID_t Epetra_Import_Duplicate (
     const Teuchos::RCP<Epetra_Import> 
         pImporter = CEpetra::getImport(ImporterID);
 
-    return tableOfImports().store(new Epetra_Import(*pImporter));
+    return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
+        tableOfImports().store(new Epetra_Import(
+        *pImporter)));
 
 }
 
 void Epetra_Import_Destroy ( CT_Epetra_Import_ID_t * selfID )
 {
-    tableOfImports().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_Import_ID_t>(*selfID);
+    tableOfImports().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_Import_ID_t>(id);
 }
 
 int Epetra_Import_NumSameIDs ( CT_Epetra_Import_ID_t selfID )
@@ -159,13 +173,21 @@ CT_Epetra_Distributor_ID_t Epetra_Import_Distributor (
 const Teuchos::RCP<Epetra_Import>
 CEpetra::getImport( CT_Epetra_Import_ID_t id )
 {
+    return tableOfImports().get(
+        CTrilinos::abstractType<CT_Epetra_Import_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_Import>
+CEpetra::getImport( CTrilinos_Object_ID_t id )
+{
     return tableOfImports().get(id);
 }
 
 CT_Epetra_Import_ID_t
 CEpetra::storeImport( const Epetra_Import *pobj )
 {
-    return tableOfImports().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
+        tableOfImports().storeCopy(pobj));
 }
 
 void

@@ -22,6 +22,9 @@ using Teuchos::RCP;
 const RCP<Epetra_SerialComm>
 getSerialComm( CT_Epetra_SerialComm_ID_t id );
 
+const RCP<Epetra_SerialComm>
+getSerialComm( CTrilinos_Object_ID_t id );
+
 CT_Epetra_SerialComm_ID_t
 storeSerialComm( const Epetra_SerialComm *pobj );
 

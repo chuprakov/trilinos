@@ -22,6 +22,9 @@ using Teuchos::RCP;
 const RCP<Epetra_MultiVector>
 getMultiVector( CT_Epetra_MultiVector_ID_t id );
 
+const RCP<Epetra_MultiVector>
+getMultiVector( CTrilinos_Object_ID_t id );
+
 CT_Epetra_MultiVector_ID_t
 storeMultiVector( const Epetra_MultiVector *pobj );
 

@@ -22,6 +22,9 @@ using Teuchos::RCP;
 const RCP<Epetra_Distributor>
 getDistributor( CT_Epetra_Distributor_ID_t id );
 
+const RCP<Epetra_Distributor>
+getDistributor( CTrilinos_Object_ID_t id );
+
 CT_Epetra_Distributor_ID_t
 storeDistributor( const Epetra_Distributor *pobj );
 

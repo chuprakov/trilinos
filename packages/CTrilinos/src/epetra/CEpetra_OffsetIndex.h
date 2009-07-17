@@ -22,6 +22,9 @@ extern "C" {
 CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Cast ( 
   CTrilinos_Object_ID_t id );
 
+CTrilinos_Object_ID_t Epetra_OffsetIndex_Abstract ( 
+  CT_Epetra_OffsetIndex_ID_t id );
+
 /* Original C++ prototype:
    Epetra_OffsetIndex( const Epetra_CrsGraph & SourceGraph, const Epetra_CrsGraph & TargetGraph, Epetra_Import & Importer );
 */

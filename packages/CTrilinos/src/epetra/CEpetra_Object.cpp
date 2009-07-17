@@ -18,7 +18,8 @@ using CTrilinos::Table;
 
 Table<Epetra_Object>& tableOfObjects()
 {
-    static Table<Epetra_Object> loc_tableOfObjects(CT_Epetra_Object_ID, "CT_Epetra_Object_ID");
+    static Table<Epetra_Object>
+        loc_tableOfObjects(CT_Epetra_Object_ID, "CT_Epetra_Object_ID");
     return loc_tableOfObjects;
 }
 
@@ -37,22 +38,31 @@ extern "C" {
 CT_Epetra_Object_ID_t Epetra_Object_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfObjects(), id);
+    return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
+        CTrilinos::cast(tableOfObjects(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_Object_Abstract ( 
+  CT_Epetra_Object_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Object_ID_t>(id);
 }
 
 CT_Epetra_Object_ID_t Epetra_Object_Create ( 
   int TracebackModeIn, boolean set_label )
 {
-    return tableOfObjects().store(new Epetra_Object(
-        TracebackModeIn, set_label));
+    return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
+        tableOfObjects().store(new Epetra_Object(
+        TracebackModeIn, set_label)));
 
 }
 
 CT_Epetra_Object_ID_t Epetra_Object_Create_WithLabel ( 
   const char * const Label, int TracebackModeIn )
 {
-    return tableOfObjects().store(new Epetra_Object(
-        Label, TracebackModeIn));
+    return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
+        tableOfObjects().store(new Epetra_Object(
+        Label, TracebackModeIn)));
 
 }
 
@@ -62,13 +72,18 @@ CT_Epetra_Object_ID_t Epetra_Object_Duplicate (
     const Teuchos::RCP<Epetra_Object> 
         pObject = CEpetra::getObject(ObjectID);
 
-    return tableOfObjects().store(new Epetra_Object(*pObject));
+    return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
+        tableOfObjects().store(new Epetra_Object(
+        *pObject)));
 
 }
 
 void Epetra_Object_Destroy ( CT_Epetra_Object_ID_t * selfID )
 {
-    tableOfObjects().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_Object_ID_t>(*selfID);
+    tableOfObjects().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_Object_ID_t>(id);
 }
 
 void Epetra_Object_SetLabel ( 
@@ -102,13 +117,21 @@ int Epetra_Object_ReportError (
 const Teuchos::RCP<Epetra_Object>
 CEpetra::getObject( CT_Epetra_Object_ID_t id )
 {
+    return tableOfObjects().get(
+        CTrilinos::abstractType<CT_Epetra_Object_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_Object>
+CEpetra::getObject( CTrilinos_Object_ID_t id )
+{
     return tableOfObjects().get(id);
 }
 
 CT_Epetra_Object_ID_t
 CEpetra::storeObject( const Epetra_Object *pobj )
 {
-    return tableOfObjects().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
+        tableOfObjects().storeCopy(pobj));
 }
 
 void

@@ -96,6 +96,7 @@ CTrilinos_Object_ID_t Table<T>::store(T* pobj)
 template <class T>
 CTrilinos_Object_ID_t Table<T>::store(const T* pobj)
 {
+//    throw CTrilinosTypeMismatchError("DEBUGGING1");
     return store(const_cast<T*>(pobj));
 }
 
@@ -133,6 +134,7 @@ CTrilinos_Object_ID_t Table<T>::storeCopy(T* pobj)
 template <class T>
 CTrilinos_Object_ID_t Table<T>::storeCopy(const T* pobj)
 {
+//    throw CTrilinosTypeMismatchError("DEBUGGING2");
     return storeCopy(const_cast<T*>(pobj));
 }
 

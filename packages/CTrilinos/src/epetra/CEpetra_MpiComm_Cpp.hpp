@@ -26,6 +26,9 @@ using Teuchos::RCP;
 const RCP<Epetra_MpiComm>
 getMpiComm( CT_Epetra_MpiComm_ID_t id );
 
+const RCP<Epetra_MpiComm>
+getMpiComm( CTrilinos_Object_ID_t id );
+
 CT_Epetra_MpiComm_ID_t
 storeMpiComm( const Epetra_MpiComm *pobj );
 

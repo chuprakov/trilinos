@@ -21,7 +21,8 @@ using CTrilinos::Table;
 
 Table<Epetra_Comm>& tableOfComms()
 {
-    static Table<Epetra_Comm> loc_tableOfComms(CT_Epetra_Comm_ID, "CT_Epetra_Comm_ID");
+    static Table<Epetra_Comm>
+        loc_tableOfComms(CT_Epetra_Comm_ID, "CT_Epetra_Comm_ID");
     return loc_tableOfComms;
 }
 
@@ -39,7 +40,14 @@ extern "C" {
 
 CT_Epetra_Comm_ID_t Epetra_Comm_Cast ( CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfComms(), id);
+    return CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(
+        CTrilinos::cast(tableOfComms(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_Comm_Abstract ( 
+  CT_Epetra_Comm_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id);
 }
 
 CT_Epetra_Comm_ID_t Epetra_Comm_Clone ( CT_Epetra_Comm_ID_t selfID )
@@ -50,7 +58,10 @@ CT_Epetra_Comm_ID_t Epetra_Comm_Clone ( CT_Epetra_Comm_ID_t selfID )
 
 void Epetra_Comm_Destroy ( CT_Epetra_Comm_ID_t * selfID )
 {
-    tableOfComms().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(*selfID);
+    tableOfComms().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(id);
 }
 
 void Epetra_Comm_Barrier ( CT_Epetra_Comm_ID_t selfID )
@@ -235,13 +246,21 @@ CT_Epetra_Directory_ID_t Epetra_Comm_CreateDirectory (
 const Teuchos::RCP<Epetra_Comm>
 CEpetra::getComm( CT_Epetra_Comm_ID_t id )
 {
+    return tableOfComms().get(
+        CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_Comm>
+CEpetra::getComm( CTrilinos_Object_ID_t id )
+{
     return tableOfComms().get(id);
 }
 
 CT_Epetra_Comm_ID_t
 CEpetra::storeComm( const Epetra_Comm *pobj )
 {
-    return tableOfComms().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(
+        tableOfComms().storeCopy(pobj));
 }
 
 void

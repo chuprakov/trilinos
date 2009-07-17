@@ -29,7 +29,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Object , Cast )
   ECHO(CT_Epetra_Object_ID_t selfID = Epetra_Object_Create(TracebackModeIn, set_label));
 
   /* This cast should be allowed */
-  ECHO(CT_Epetra_Object_ID_t dupID = Epetra_Object_Cast(selfID));
+  ECHO(CT_Epetra_Object_ID_t dupID = Epetra_Object_Cast(Epetra_Object_Abstract(selfID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
 }
 

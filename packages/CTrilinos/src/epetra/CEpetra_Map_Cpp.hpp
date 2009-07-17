@@ -22,6 +22,9 @@ using Teuchos::RCP;
 const RCP<Epetra_Map>
 getMap( CT_Epetra_Map_ID_t id );
 
+const RCP<Epetra_Map>
+getMap( CTrilinos_Object_ID_t id );
+
 CT_Epetra_Map_ID_t
 storeMap( const Epetra_Map *pobj );
 

@@ -22,6 +22,9 @@ extern "C" {
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Cast ( 
   CTrilinos_Object_ID_t id );
 
+CTrilinos_Object_ID_t Epetra_MultiVector_Abstract ( 
+  CT_Epetra_MultiVector_ID_t id );
+
 /* Original C++ prototype:
    Epetra_MultiVector(const Epetra_BlockMap& Map, int NumVectors, bool zeroOut = true);
 */

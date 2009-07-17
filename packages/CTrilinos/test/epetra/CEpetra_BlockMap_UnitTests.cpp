@@ -34,11 +34,11 @@ TEUCHOS_UNIT_TEST( Epetra_BlockMap , Cast )
        NumGlobalElements, ElementSize, IndexBase, CommID));
 
   /* This cast should be allowed */
-  ECHO(CT_Epetra_BlockMap_ID_t bmapID = Epetra_BlockMap_Cast(selfID));
+  ECHO(CT_Epetra_BlockMap_ID_t bmapID = Epetra_BlockMap_Cast(Epetra_BlockMap_Abstract(selfID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, bmapID), true);
 
   /* This cast should not be allowed */
-  TEST_THROW(Epetra_Map_Cast(selfID), Teuchos::m_bad_cast);
+  TEST_THROW(Epetra_Map_Cast(Epetra_BlockMap_Abstract(selfID)), Teuchos::m_bad_cast);
 }
 
 /**********************************************************************

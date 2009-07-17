@@ -18,7 +18,8 @@ using CTrilinos::Table;
 
 Table<Epetra_Flops>& tableOfFlopss()
 {
-    static Table<Epetra_Flops> loc_tableOfFlopss(CT_Epetra_Flops_ID, "CT_Epetra_Flops_ID");
+    static Table<Epetra_Flops>
+        loc_tableOfFlopss(CT_Epetra_Flops_ID, "CT_Epetra_Flops_ID");
     return loc_tableOfFlopss;
 }
 
@@ -36,12 +37,20 @@ extern "C" {
 
 CT_Epetra_Flops_ID_t Epetra_Flops_Cast ( CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfFlopss(), id);
+    return CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(
+        CTrilinos::cast(tableOfFlopss(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_Flops_Abstract ( 
+  CT_Epetra_Flops_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(id);
 }
 
 CT_Epetra_Flops_ID_t Epetra_Flops_Create (  )
 {
-    return tableOfFlopss().store(new Epetra_Flops());
+    return CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(
+        tableOfFlopss().store(new Epetra_Flops()));
 
 }
 
@@ -51,7 +60,9 @@ CT_Epetra_Flops_ID_t Epetra_Flops_Duplicate (
     const Teuchos::RCP<Epetra_Flops> 
         pFlops_in = CEpetra::getFlops(Flops_inID);
 
-    return tableOfFlopss().store(new Epetra_Flops(*pFlops_in));
+    return CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(
+        tableOfFlopss().store(new Epetra_Flops(
+        *pFlops_in)));
 
 }
 
@@ -67,7 +78,10 @@ void Epetra_Flops_ResetFlops ( CT_Epetra_Flops_ID_t selfID )
 
 void Epetra_Flops_Destroy ( CT_Epetra_Flops_ID_t * selfID )
 {
-    tableOfFlopss().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(*selfID);
+    tableOfFlopss().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(id);
 }
 
 void Epetra_Flops_Assign ( 
@@ -93,13 +107,21 @@ void Epetra_Flops_Assign (
 const Teuchos::RCP<Epetra_Flops>
 CEpetra::getFlops( CT_Epetra_Flops_ID_t id )
 {
+    return tableOfFlopss().get(
+        CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_Flops>
+CEpetra::getFlops( CTrilinos_Object_ID_t id )
+{
     return tableOfFlopss().get(id);
 }
 
 CT_Epetra_Flops_ID_t
 CEpetra::storeFlops( const Epetra_Flops *pobj )
 {
-    return tableOfFlopss().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(
+        tableOfFlopss().storeCopy(pobj));
 }
 
 void

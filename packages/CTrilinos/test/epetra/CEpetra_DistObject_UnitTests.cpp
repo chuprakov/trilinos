@@ -33,22 +33,22 @@ TEUCHOS_UNIT_TEST( Epetra_DistObject , Cast )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 6);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(boolean zeroOut = FALSE);
   ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Create(MapID, zeroOut));
 
-  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(vecID));
+  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(Epetra_Vector_Abstract(vecID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(vecID, selfID), true);
   TEST_EQUALITY(selfID.type, CT_Epetra_DistObject_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 
   /* These casts should be valid */
-  ECHO(CT_Epetra_DistObject_ID_t dupID = Epetra_DistObject_Cast(selfID));
+  ECHO(CT_Epetra_DistObject_ID_t dupID = Epetra_DistObject_Cast(Epetra_DistObject_Abstract(selfID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
-  ECHO(CT_Epetra_SrcDistObject_ID_t sdoID = Epetra_SrcDistObject_Cast(selfID));
+  ECHO(CT_Epetra_SrcDistObject_ID_t sdoID = Epetra_SrcDistObject_Cast(Epetra_DistObject_Abstract(selfID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, sdoID), true);
-  ECHO(CT_Epetra_DistObject_ID_t dupID2 = Epetra_DistObject_Cast(sdoID));
+  ECHO(CT_Epetra_DistObject_ID_t dupID2 = Epetra_DistObject_Cast(Epetra_SrcDistObject_Abstract(sdoID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(dupID2, sdoID), true);
 }
 
@@ -65,11 +65,11 @@ TEUCHOS_UNIT_TEST( Epetra_DistObject , Destroy )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 6);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(boolean zeroOut = FALSE);
   ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Create(MapID, zeroOut));
-  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(vecID));
+  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(Epetra_Vector_Abstract(vecID)))
 
   ECHO(Epetra_DistObject_Destroy(&selfID));
 
@@ -119,11 +119,11 @@ TEUCHOS_UNIT_TEST( Epetra_DistObject , Map )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 9);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(boolean zeroOut = FALSE);
   ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Create(MapID, zeroOut));
-  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(vecID));
+  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(Epetra_Vector_Abstract(vecID)));
 
   ECHO(CT_Epetra_BlockMap_ID_t mapID = Epetra_DistObject_Map(selfID));
 
@@ -146,11 +146,11 @@ TEUCHOS_UNIT_TEST( Epetra_DistObject , Comm )
   ECHO(int NumProc = Epetra_Comm_NumProc(CommID));
   ECHO(int NumGlobalElements = 7);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(boolean zeroOut = FALSE);
   ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Create(MapID, zeroOut));
-  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(vecID));
+  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(Epetra_Vector_Abstract(vecID)));
 
   ECHO(CT_Epetra_Comm_ID_t cID = Epetra_DistObject_Comm(selfID));
 
@@ -173,11 +173,11 @@ TEUCHOS_UNIT_TEST( Epetra_DistObject , DistributedGlobal )
   ECHO(int NumProc = Epetra_Comm_NumProc(CommID));
   ECHO(int NumGlobalElements = 7);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(boolean zeroOut = FALSE);
   ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Create(MapID, zeroOut));
-  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(vecID));
+  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(Epetra_Vector_Abstract(vecID)));
 
   ECHO(boolean dg = Epetra_DistObject_DistributedGlobal(selfID));
 

@@ -21,7 +21,8 @@ using CTrilinos::Table;
 
 Table<Epetra_Vector>& tableOfVectors()
 {
-    static Table<Epetra_Vector> loc_tableOfVectors(CT_Epetra_Vector_ID, "CT_Epetra_Vector_ID");
+    static Table<Epetra_Vector>
+        loc_tableOfVectors(CT_Epetra_Vector_ID, "CT_Epetra_Vector_ID");
     return loc_tableOfVectors;
 }
 
@@ -40,7 +41,14 @@ extern "C" {
 CT_Epetra_Vector_ID_t Epetra_Vector_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfVectors(), id);
+    return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
+        CTrilinos::cast(tableOfVectors(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_Vector_Abstract ( 
+  CT_Epetra_Vector_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Vector_ID_t>(id);
 }
 
 CT_Epetra_Vector_ID_t Epetra_Vector_Create ( 
@@ -49,7 +57,9 @@ CT_Epetra_Vector_ID_t Epetra_Vector_Create (
     const Teuchos::RCP<Epetra_BlockMap> 
         pMap = CEpetra::getBlockMap(MapID);
 
-    return tableOfVectors().store(new Epetra_Vector(*pMap, zeroOut));
+    return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
+        tableOfVectors().store(new Epetra_Vector(
+        *pMap, zeroOut)));
 
 }
 
@@ -59,7 +69,9 @@ CT_Epetra_Vector_ID_t Epetra_Vector_Duplicate (
     const Teuchos::RCP<Epetra_Vector> 
         pSource = CEpetra::getVector(SourceID);
 
-    return tableOfVectors().store(new Epetra_Vector(*pSource));
+    return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
+        tableOfVectors().store(new Epetra_Vector(
+        *pSource)));
 
 }
 
@@ -69,7 +81,9 @@ CT_Epetra_Vector_ID_t Epetra_Vector_Create_FromArray (
     const Teuchos::RCP<Epetra_BlockMap> 
         pMap = CEpetra::getBlockMap(MapID);
 
-    return tableOfVectors().store(new Epetra_Vector(CV, *pMap, V));
+    return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
+        tableOfVectors().store(new Epetra_Vector(
+        CV, *pMap, V)));
 
 }
 
@@ -80,14 +94,18 @@ CT_Epetra_Vector_ID_t Epetra_Vector_FromSource (
     const Teuchos::RCP<Epetra_MultiVector> 
         pSource = CEpetra::getMultiVector(SourceID);
 
-    return tableOfVectors().store(new Epetra_Vector(
-        CV, *pSource, Index));
+    return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
+        tableOfVectors().store(new Epetra_Vector(
+        CV, *pSource, Index)));
 
 }
 
 void Epetra_Vector_Destroy ( CT_Epetra_Vector_ID_t * selfID )
 {
-    tableOfVectors().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_Vector_ID_t>(*selfID);
+    tableOfVectors().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(id);
 }
 
 int Epetra_Vector_ReplaceGlobalValues ( 
@@ -186,13 +204,21 @@ double Epetra_Vector_getElement (
 const Teuchos::RCP<Epetra_Vector>
 CEpetra::getVector( CT_Epetra_Vector_ID_t id )
 {
+    return tableOfVectors().get(
+        CTrilinos::abstractType<CT_Epetra_Vector_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_Vector>
+CEpetra::getVector( CTrilinos_Object_ID_t id )
+{
     return tableOfVectors().get(id);
 }
 
 CT_Epetra_Vector_ID_t
 CEpetra::storeVector( const Epetra_Vector *pobj )
 {
-    return tableOfVectors().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
+        tableOfVectors().storeCopy(pobj));
 }
 
 void

@@ -21,7 +21,8 @@ using CTrilinos::Table;
 
 Table<Epetra_Operator>& tableOfOperators()
 {
-    static Table<Epetra_Operator> loc_tableOfOperators(CT_Epetra_Operator_ID, "CT_Epetra_Operator_ID");
+    static Table<Epetra_Operator>
+        loc_tableOfOperators(CT_Epetra_Operator_ID, "CT_Epetra_Operator_ID");
     return loc_tableOfOperators;
 }
 
@@ -40,12 +41,22 @@ extern "C" {
 CT_Epetra_Operator_ID_t Epetra_Operator_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfOperators(), id);
+    return CTrilinos::concreteType<CT_Epetra_Operator_ID_t>(
+        CTrilinos::cast(tableOfOperators(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_Operator_Abstract ( 
+  CT_Epetra_Operator_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Operator_ID_t>(id);
 }
 
 void Epetra_Operator_Destroy ( CT_Epetra_Operator_ID_t * selfID )
 {
-    tableOfOperators().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_Operator_ID_t>(*selfID);
+    tableOfOperators().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_Operator_ID_t>(id);
 }
 
 int Epetra_Operator_SetUseTranspose ( 
@@ -134,13 +145,21 @@ CT_Epetra_Map_ID_t Epetra_Operator_OperatorRangeMap (
 const Teuchos::RCP<Epetra_Operator>
 CEpetra::getOperator( CT_Epetra_Operator_ID_t id )
 {
+    return tableOfOperators().get(
+        CTrilinos::abstractType<CT_Epetra_Operator_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_Operator>
+CEpetra::getOperator( CTrilinos_Object_ID_t id )
+{
     return tableOfOperators().get(id);
 }
 
 CT_Epetra_Operator_ID_t
 CEpetra::storeOperator( const Epetra_Operator *pobj )
 {
-    return tableOfOperators().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_Operator_ID_t>(
+        tableOfOperators().storeCopy(pobj));
 }
 
 void

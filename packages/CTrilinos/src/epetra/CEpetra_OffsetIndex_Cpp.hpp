@@ -22,6 +22,9 @@ using Teuchos::RCP;
 const RCP<Epetra_OffsetIndex>
 getOffsetIndex( CT_Epetra_OffsetIndex_ID_t id );
 
+const RCP<Epetra_OffsetIndex>
+getOffsetIndex( CTrilinos_Object_ID_t id );
+
 CT_Epetra_OffsetIndex_ID_t
 storeOffsetIndex( const Epetra_OffsetIndex *pobj );
 

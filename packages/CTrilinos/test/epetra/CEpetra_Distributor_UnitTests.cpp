@@ -29,7 +29,7 @@ TEUCHOS_UNIT_TEST( Epetra_Distributor , Cast )
   TEST_EQUALITY_CONST(selfID.index, 0);
 
   /* This cast should be allowed */
-  ECHO(CT_Epetra_Distributor_ID_t dupID = Epetra_Distributor_Cast(selfID));
+  ECHO(CT_Epetra_Distributor_ID_t dupID = Epetra_Distributor_Cast(Epetra_Distributor_Abstract(selfID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
 }
 

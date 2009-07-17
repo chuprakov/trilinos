@@ -31,13 +31,13 @@ TEUCHOS_UNIT_TEST( Epetra_MpiComm , Cast )
 
   /* This cast should be allowed */
   ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
-  ECHO(CT_Epetra_MpiComm_ID_t dupID = Epetra_MpiComm_Cast(selfID));
+  ECHO(CT_Epetra_MpiComm_ID_t dupID = Epetra_MpiComm_Cast(Epetra_MpiComm_Abstract(selfID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
 
   /* These casts should be allowed */
-  ECHO(CT_Epetra_Comm_ID_t commID = Epetra_Comm_Cast(selfID));
+  ECHO(CT_Epetra_Comm_ID_t commID = Epetra_Comm_Cast(Epetra_MpiComm_Abstract(selfID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, commID), true);
-  ECHO(CT_Epetra_MpiComm_ID_t mpicommID = Epetra_MpiComm_Cast(commID));
+  ECHO(CT_Epetra_MpiComm_ID_t mpicommID = Epetra_MpiComm_Cast(Epetra_Comm_Abstract(commID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(commID, mpicommID), true);
 
   /* If no exceptions thrown, then test was successful */
@@ -315,12 +315,12 @@ TEUCHOS_UNIT_TEST( Epetra_MpiComm , CreateDirectory )
   ECHO(CEpetra_Test_CleanSlate());
 
   ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
-  ECHO(CT_Epetra_Comm_ID_t CommID = Epetra_Comm_Cast(selfID));
+  ECHO(CT_Epetra_Comm_ID_t CommID = Epetra_Comm_Cast(Epetra_MpiComm_Abstract(selfID)));
 
   ECHO(int NumGlobalElements = 9);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_MpiComm_CreateDirectory(selfID, MapID));
 
   /* Now check the result of the call to the wrapper function */

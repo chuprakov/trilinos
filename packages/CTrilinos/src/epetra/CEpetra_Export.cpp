@@ -20,7 +20,8 @@ using CTrilinos::Table;
 
 Table<Epetra_Export>& tableOfExports()
 {
-    static Table<Epetra_Export> loc_tableOfExports(CT_Epetra_Export_ID, "CT_Epetra_Export_ID");
+    static Table<Epetra_Export>
+        loc_tableOfExports(CT_Epetra_Export_ID, "CT_Epetra_Export_ID");
     return loc_tableOfExports;
 }
 
@@ -39,7 +40,14 @@ extern "C" {
 CT_Epetra_Export_ID_t Epetra_Export_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfExports(), id);
+    return CTrilinos::concreteType<CT_Epetra_Export_ID_t>(
+        CTrilinos::cast(tableOfExports(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_Export_Abstract ( 
+  CT_Epetra_Export_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Export_ID_t>(id);
 }
 
 CT_Epetra_Export_ID_t Epetra_Export_Create ( 
@@ -51,8 +59,9 @@ CT_Epetra_Export_ID_t Epetra_Export_Create (
     const Teuchos::RCP<Epetra_BlockMap> 
         pTargetMap = CEpetra::getBlockMap(TargetMapID);
 
-    return tableOfExports().store(new Epetra_Export(
-        *pSourceMap, *pTargetMap));
+    return CTrilinos::concreteType<CT_Epetra_Export_ID_t>(
+        tableOfExports().store(new Epetra_Export(
+        *pSourceMap, *pTargetMap)));
 
 }
 
@@ -62,13 +71,18 @@ CT_Epetra_Export_ID_t Epetra_Export_Duplicate (
     const Teuchos::RCP<Epetra_Export> 
         pExporter = CEpetra::getExport(ExporterID);
 
-    return tableOfExports().store(new Epetra_Export(*pExporter));
+    return CTrilinos::concreteType<CT_Epetra_Export_ID_t>(
+        tableOfExports().store(new Epetra_Export(
+        *pExporter)));
 
 }
 
 void Epetra_Export_Destroy ( CT_Epetra_Export_ID_t * selfID )
 {
-    tableOfExports().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_Export_ID_t>(*selfID);
+    tableOfExports().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_Export_ID_t>(id);
 }
 
 int Epetra_Export_NumSameIDs ( CT_Epetra_Export_ID_t selfID )
@@ -159,13 +173,21 @@ CT_Epetra_Distributor_ID_t Epetra_Export_Distributor (
 const Teuchos::RCP<Epetra_Export>
 CEpetra::getExport( CT_Epetra_Export_ID_t id )
 {
+    return tableOfExports().get(
+        CTrilinos::abstractType<CT_Epetra_Export_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_Export>
+CEpetra::getExport( CTrilinos_Object_ID_t id )
+{
     return tableOfExports().get(id);
 }
 
 CT_Epetra_Export_ID_t
 CEpetra::storeExport( const Epetra_Export *pobj )
 {
-    return tableOfExports().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_Export_ID_t>(
+        tableOfExports().storeCopy(pobj));
 }
 
 void

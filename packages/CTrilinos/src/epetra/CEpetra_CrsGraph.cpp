@@ -23,7 +23,8 @@ using CTrilinos::Table;
 
 Table<Epetra_CrsGraph>& tableOfCrsGraphs()
 {
-    static Table<Epetra_CrsGraph> loc_tableOfCrsGraphs(CT_Epetra_CrsGraph_ID, "CT_Epetra_CrsGraph_ID");
+    static Table<Epetra_CrsGraph>
+        loc_tableOfCrsGraphs(CT_Epetra_CrsGraph_ID, "CT_Epetra_CrsGraph_ID");
     return loc_tableOfCrsGraphs;
 }
 
@@ -42,7 +43,14 @@ extern "C" {
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfCrsGraphs(), id);
+    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
+        CTrilinos::cast(tableOfCrsGraphs(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_CrsGraph_Abstract ( 
+  CT_Epetra_CrsGraph_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_CrsGraph_ID_t>(id);
 }
 
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow ( 
@@ -52,8 +60,9 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow (
     const Teuchos::RCP<Epetra_BlockMap> 
         pRowMap = CEpetra::getBlockMap(RowMapID);
 
-    return tableOfCrsGraphs().store(new Epetra_CrsGraph(
-        CV, *pRowMap, NumIndicesPerRow, StaticProfile));
+    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
+        tableOfCrsGraphs().store(new Epetra_CrsGraph(
+        CV, *pRowMap, NumIndicesPerRow, StaticProfile)));
 
 }
 
@@ -64,8 +73,9 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create (
     const Teuchos::RCP<Epetra_BlockMap> 
         pRowMap = CEpetra::getBlockMap(RowMapID);
 
-    return tableOfCrsGraphs().store(new Epetra_CrsGraph(
-        CV, *pRowMap, NumIndicesPerRow, StaticProfile));
+    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
+        tableOfCrsGraphs().store(new Epetra_CrsGraph(
+        CV, *pRowMap, NumIndicesPerRow, StaticProfile)));
 
 }
 
@@ -79,8 +89,9 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow_WithColMap (
     const Teuchos::RCP<Epetra_BlockMap> 
         pColMap = CEpetra::getBlockMap(ColMapID);
 
-    return tableOfCrsGraphs().store(new Epetra_CrsGraph(
-        CV, *pRowMap, *pColMap, NumIndicesPerRow, StaticProfile));
+    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
+        tableOfCrsGraphs().store(new Epetra_CrsGraph(
+        CV, *pRowMap, *pColMap, NumIndicesPerRow, StaticProfile)));
 
 }
 
@@ -94,8 +105,9 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_With_ColMap (
     const Teuchos::RCP<Epetra_BlockMap> 
         pColMap = CEpetra::getBlockMap(ColMapID);
 
-    return tableOfCrsGraphs().store(new Epetra_CrsGraph(
-        CV, *pRowMap, *pColMap, NumIndicesPerRow, StaticProfile));
+    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
+        tableOfCrsGraphs().store(new Epetra_CrsGraph(
+        CV, *pRowMap, *pColMap, NumIndicesPerRow, StaticProfile)));
 
 }
 
@@ -105,13 +117,18 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Duplicate (
     const Teuchos::RCP<Epetra_CrsGraph> 
         pGraph = CEpetra::getCrsGraph(GraphID);
 
-    return tableOfCrsGraphs().store(new Epetra_CrsGraph(*pGraph));
+    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
+        tableOfCrsGraphs().store(new Epetra_CrsGraph(
+        *pGraph)));
 
 }
 
 void Epetra_CrsGraph_Destroy ( CT_Epetra_CrsGraph_ID_t * selfID )
 {
-    tableOfCrsGraphs().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_CrsGraph_ID_t>(*selfID);
+    tableOfCrsGraphs().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(id);
 }
 
 int Epetra_CrsGraph_InsertGlobalIndices ( 
@@ -604,13 +621,21 @@ int Epetra_CrsGraph_TransformToLocal_UsingMaps (
 const Teuchos::RCP<Epetra_CrsGraph>
 CEpetra::getCrsGraph( CT_Epetra_CrsGraph_ID_t id )
 {
+    return tableOfCrsGraphs().get(
+        CTrilinos::abstractType<CT_Epetra_CrsGraph_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_CrsGraph>
+CEpetra::getCrsGraph( CTrilinos_Object_ID_t id )
+{
     return tableOfCrsGraphs().get(id);
 }
 
 CT_Epetra_CrsGraph_ID_t
 CEpetra::storeCrsGraph( const Epetra_CrsGraph *pobj )
 {
-    return tableOfCrsGraphs().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
+        tableOfCrsGraphs().storeCopy(pobj));
 }
 
 void

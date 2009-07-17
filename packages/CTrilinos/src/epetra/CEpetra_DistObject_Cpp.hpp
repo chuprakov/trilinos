@@ -22,6 +22,9 @@ using Teuchos::RCP;
 const RCP<Epetra_DistObject>
 getDistObject( CT_Epetra_DistObject_ID_t id );
 
+const RCP<Epetra_DistObject>
+getDistObject( CTrilinos_Object_ID_t id );
+
 CT_Epetra_DistObject_ID_t
 storeDistObject( const Epetra_DistObject *pobj );
 

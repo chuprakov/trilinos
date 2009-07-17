@@ -22,6 +22,9 @@ using Teuchos::RCP;
 const RCP<Epetra_CompObject>
 getCompObject( CT_Epetra_CompObject_ID_t id );
 
+const RCP<Epetra_CompObject>
+getCompObject( CTrilinos_Object_ID_t id );
+
 CT_Epetra_CompObject_ID_t
 storeCompObject( const Epetra_CompObject *pobj );
 

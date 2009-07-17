@@ -20,6 +20,9 @@ extern "C" {
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Cast ( 
   CTrilinos_Object_ID_t id );
 
+CTrilinos_Object_ID_t Epetra_BlockMap_Abstract ( 
+  CT_Epetra_BlockMap_ID_t id );
+
 /* Original C++ prototype:
    Epetra_BlockMap(int NumGlobalElements, int ElementSize, int IndexBase, const Epetra_Comm& Comm);
 */

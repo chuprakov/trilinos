@@ -21,7 +21,8 @@ using CTrilinos::Table;
 
 Table<Epetra_OffsetIndex>& tableOfOffsetIndexs()
 {
-    static Table<Epetra_OffsetIndex> loc_tableOfOffsetIndexs(CT_Epetra_OffsetIndex_ID, "CT_Epetra_OffsetIndex_ID");
+    static Table<Epetra_OffsetIndex>
+        loc_tableOfOffsetIndexs(CT_Epetra_OffsetIndex_ID, "CT_Epetra_OffsetIndex_ID");
     return loc_tableOfOffsetIndexs;
 }
 
@@ -40,7 +41,14 @@ extern "C" {
 CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfOffsetIndexs(), id);
+    return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
+        CTrilinos::cast(tableOfOffsetIndexs(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_OffsetIndex_Abstract ( 
+  CT_Epetra_OffsetIndex_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(id);
 }
 
 CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromImporter ( 
@@ -55,8 +63,9 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromImporter (
     const Teuchos::RCP<Epetra_Import> 
         pImporter = CEpetra::getImport(ImporterID);
 
-    return tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
-        *pSourceGraph, *pTargetGraph, *pImporter));
+    return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
+        tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
+        *pSourceGraph, *pTargetGraph, *pImporter)));
 
 }
 
@@ -72,8 +81,9 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromExporter (
     const Teuchos::RCP<Epetra_Export> 
         pExporter = CEpetra::getExport(ExporterID);
 
-    return tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
-        *pSourceGraph, *pTargetGraph, *pExporter));
+    return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
+        tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
+        *pSourceGraph, *pTargetGraph, *pExporter)));
 
 }
 
@@ -83,15 +93,19 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Duplicate (
     const Teuchos::RCP<Epetra_OffsetIndex> 
         pIndexor = CEpetra::getOffsetIndex(IndexorID);
 
-    return tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
-        *pIndexor));
+    return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
+        tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
+        *pIndexor)));
 
 }
 
 void Epetra_OffsetIndex_Destroy ( 
   CT_Epetra_OffsetIndex_ID_t * selfID )
 {
-    tableOfOffsetIndexs().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(*selfID);
+    tableOfOffsetIndexs().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(id);
 }
 
 int ** Epetra_OffsetIndex_SameOffsets ( 
@@ -124,13 +138,21 @@ int ** Epetra_OffsetIndex_RemoteOffsets (
 const Teuchos::RCP<Epetra_OffsetIndex>
 CEpetra::getOffsetIndex( CT_Epetra_OffsetIndex_ID_t id )
 {
+    return tableOfOffsetIndexs().get(
+        CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_OffsetIndex>
+CEpetra::getOffsetIndex( CTrilinos_Object_ID_t id )
+{
     return tableOfOffsetIndexs().get(id);
 }
 
 CT_Epetra_OffsetIndex_ID_t
 CEpetra::storeOffsetIndex( const Epetra_OffsetIndex *pobj )
 {
-    return tableOfOffsetIndexs().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
+        tableOfOffsetIndexs().storeCopy(pobj));
 }
 
 void

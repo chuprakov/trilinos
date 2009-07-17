@@ -22,7 +22,8 @@ using CTrilinos::Table;
 
 Table<Epetra_SerialComm>& tableOfSerialComms()
 {
-    static Table<Epetra_SerialComm> loc_tableOfSerialComms(CT_Epetra_SerialComm_ID, "CT_Epetra_SerialComm_ID");
+    static Table<Epetra_SerialComm>
+        loc_tableOfSerialComms(CT_Epetra_SerialComm_ID, "CT_Epetra_SerialComm_ID");
     return loc_tableOfSerialComms;
 }
 
@@ -41,12 +42,20 @@ extern "C" {
 CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfSerialComms(), id);
+    return CTrilinos::concreteType<CT_Epetra_SerialComm_ID_t>(
+        CTrilinos::cast(tableOfSerialComms(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_SerialComm_Abstract ( 
+  CT_Epetra_SerialComm_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_SerialComm_ID_t>(id);
 }
 
 CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Create (  )
 {
-    return tableOfSerialComms().store(new Epetra_SerialComm());
+    return CTrilinos::concreteType<CT_Epetra_SerialComm_ID_t>(
+        tableOfSerialComms().store(new Epetra_SerialComm()));
 
 }
 
@@ -56,7 +65,9 @@ CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Duplicate (
     const Teuchos::RCP<Epetra_SerialComm> 
         pComm = CEpetra::getSerialComm(CommID);
 
-    return tableOfSerialComms().store(new Epetra_SerialComm(*pComm));
+    return CTrilinos::concreteType<CT_Epetra_SerialComm_ID_t>(
+        tableOfSerialComms().store(new Epetra_SerialComm(
+        *pComm)));
 
 }
 
@@ -70,7 +81,10 @@ CT_Epetra_Comm_ID_t Epetra_SerialComm_Clone (
 void Epetra_SerialComm_Destroy ( 
   CT_Epetra_SerialComm_ID_t * selfID )
 {
-    tableOfSerialComms().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_SerialComm_ID_t>(*selfID);
+    tableOfSerialComms().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_SerialComm_ID_t>(id);
 }
 
 void Epetra_SerialComm_Barrier ( CT_Epetra_SerialComm_ID_t selfID )
@@ -281,13 +295,21 @@ void Epetra_SerialComm_Assign (
 const Teuchos::RCP<Epetra_SerialComm>
 CEpetra::getSerialComm( CT_Epetra_SerialComm_ID_t id )
 {
+    return tableOfSerialComms().get(
+        CTrilinos::abstractType<CT_Epetra_SerialComm_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_SerialComm>
+CEpetra::getSerialComm( CTrilinos_Object_ID_t id )
+{
     return tableOfSerialComms().get(id);
 }
 
 CT_Epetra_SerialComm_ID_t
 CEpetra::storeSerialComm( const Epetra_SerialComm *pobj )
 {
-    return tableOfSerialComms().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_SerialComm_ID_t>(
+        tableOfSerialComms().storeCopy(pobj));
 }
 
 void

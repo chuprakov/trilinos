@@ -18,7 +18,8 @@ using CTrilinos::Table;
 
 Table<Epetra_BLAS>& tableOfBLASs()
 {
-    static Table<Epetra_BLAS> loc_tableOfBLASs(CT_Epetra_BLAS_ID, "CT_Epetra_BLAS_ID");
+    static Table<Epetra_BLAS>
+        loc_tableOfBLASs(CT_Epetra_BLAS_ID, "CT_Epetra_BLAS_ID");
     return loc_tableOfBLASs;
 }
 
@@ -36,12 +37,20 @@ extern "C" {
 
 CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfBLASs(), id);
+    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
+        CTrilinos::cast(tableOfBLASs(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_BLAS_Abstract ( 
+  CT_Epetra_BLAS_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id);
 }
 
 CT_Epetra_BLAS_ID_t Epetra_BLAS_Create (  )
 {
-    return tableOfBLASs().store(new Epetra_BLAS());
+    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
+        tableOfBLASs().store(new Epetra_BLAS()));
 
 }
 
@@ -51,13 +60,18 @@ CT_Epetra_BLAS_ID_t Epetra_BLAS_Duplicate (
     const Teuchos::RCP<Epetra_BLAS> 
         pBLAS = CEpetra::getBLAS(BLASID);
 
-    return tableOfBLASs().store(new Epetra_BLAS(*pBLAS));
+    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
+        tableOfBLASs().store(new Epetra_BLAS(
+        *pBLAS)));
 
 }
 
 void Epetra_BLAS_Destroy ( CT_Epetra_BLAS_ID_t * selfID )
 {
-    tableOfBLASs().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(*selfID);
+    tableOfBLASs().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(id);
 }
 
 float Epetra_BLAS_ASUM_Float ( 
@@ -250,13 +264,21 @@ void Epetra_BLAS_TRMM_Double (
 const Teuchos::RCP<Epetra_BLAS>
 CEpetra::getBLAS( CT_Epetra_BLAS_ID_t id )
 {
+    return tableOfBLASs().get(
+        CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_BLAS>
+CEpetra::getBLAS( CTrilinos_Object_ID_t id )
+{
     return tableOfBLASs().get(id);
 }
 
 CT_Epetra_BLAS_ID_t
 CEpetra::storeBLAS( const Epetra_BLAS *pobj )
 {
-    return tableOfBLASs().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
+        tableOfBLASs().storeCopy(pobj));
 }
 
 void

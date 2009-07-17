@@ -33,20 +33,20 @@ TEUCHOS_UNIT_TEST( Epetra_Map , Cast )
   /* This cast should be allowed */
   ECHO(CT_Epetra_Map_ID_t selfID = Epetra_Map_Create(
        NumGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_Map_ID_t dupID = Epetra_Map_Cast(selfID));
+  ECHO(CT_Epetra_Map_ID_t dupID = Epetra_Map_Cast(Epetra_Map_Abstract(selfID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
 
   /* These casts should be allowed */
-  ECHO(CT_Epetra_BlockMap_ID_t bmapID = Epetra_BlockMap_Cast(selfID));
+  ECHO(CT_Epetra_BlockMap_ID_t bmapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(selfID)));
   TEST_EQUALITY(Epetra_BlockMap_NumGlobalElements(bmapID), NumGlobalElements);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, bmapID), true);
-  ECHO(CT_Epetra_Map_ID_t mapID = Epetra_Map_Cast(bmapID));
+  ECHO(CT_Epetra_Map_ID_t mapID = Epetra_Map_Cast(Epetra_BlockMap_Abstract(bmapID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(bmapID, mapID), true);
 
   /* This cast should not be allowed */
   ECHO(CT_Epetra_BlockMap_ID_t bmapID2 = Epetra_BlockMap_Create(
        NumGlobalElements, ElementSize, IndexBase, CommID));
-  TEST_THROW(Epetra_Map_Cast(bmapID2), Teuchos::m_bad_cast);
+  TEST_THROW(Epetra_Map_Cast(Epetra_BlockMap_Abstract(bmapID2)), Teuchos::m_bad_cast);
 }
 
 /**********************************************************************
@@ -186,7 +186,7 @@ TEUCHOS_UNIT_TEST( Epetra_Map , Assign )
   ECHO(CT_Epetra_Map_ID_t selfID = Epetra_Map_Create(NumGlobalElements2, IndexBase, CommID));
 
   /* Check the initial state */
-  ECHO(CT_Epetra_BlockMap_ID_t bselfID = Epetra_BlockMap_Cast(selfID));
+  ECHO(CT_Epetra_BlockMap_ID_t bselfID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(selfID)));
   TEST_EQUALITY(Epetra_BlockMap_NumGlobalElements(bselfID), NumGlobalElements2);
 
   /* Test out the wrapper and check that it worked */

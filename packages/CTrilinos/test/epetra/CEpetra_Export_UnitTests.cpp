@@ -37,22 +37,22 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , Cast )
   int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off, 3+off};
   ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
   /* Create the target map */
   ECHO(int off2 = NumMyElements*(NumProc-MyPID));
   int GetMyGlobalElements[NumMyElements] = {off2-1, off2-2, off2-3, off2-4};
   ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, GetMyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
   /* Create an exporter */
   ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
 
   /* These casts should be allowed */
-  ECHO(CT_Epetra_Object_ID_t objID = Epetra_Object_Cast(selfID));
+  ECHO(CT_Epetra_Object_ID_t objID = Epetra_Object_Cast(Epetra_Export_Abstract(selfID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, objID), true);
-  ECHO(CT_Epetra_Export_ID_t impID = Epetra_Export_Cast(objID));
+  ECHO(CT_Epetra_Export_ID_t impID = Epetra_Export_Cast(Epetra_Object_Abstract(objID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(objID, impID), true);
 }
 
@@ -79,14 +79,14 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , Create )
   int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off, 3+off};
   ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
   /* Create the target map */
   ECHO(int off2 = NumMyElements*(NumProc-MyPID));
   int GetMyGlobalElements[NumMyElements] = {off2-1, off2-2, off2-3, off2-4};
   ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, GetMyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
   /* Create an exporter */
   ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -118,14 +118,14 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , Duplicate )
   int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off, 3+off};
   ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
   /* Create the target map */
   ECHO(int off2 = NumMyElements*(NumProc-MyPID));
   int GetMyGlobalElements[NumMyElements] = {off2-1, off2-2, off2-3, off2-4};
   ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, GetMyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
   /* Create an exporter */
   ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -160,14 +160,14 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , Destroy )
   int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off, 3+off};
   ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
   /* Create the target map */
   ECHO(int off2 = NumMyElements*(NumProc-MyPID));
   int GetMyGlobalElements[NumMyElements] = {off2-1, off2-2, off2-3, off2-4};
   ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, GetMyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
   /* Create an exporter */
   ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -204,7 +204,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , NumSameIDs )
     int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off};
     ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
     /* Create the target map */
     ECHO(const int NumMyElements2 = 5);
@@ -228,7 +228,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , NumSameIDs )
     }
     ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements2, NumMyElements2, MyGlobalElements2, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
     /* Create an exporter */
     ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -278,7 +278,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , NumPermuteIDs )
     int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off};
     ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
     /* Create the target map */
     ECHO(const int NumMyElements2 = 5);
@@ -302,7 +302,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , NumPermuteIDs )
     }
     ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements2, NumMyElements2, MyGlobalElements2, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
     /* Create an exporter */
     ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -352,7 +352,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , PermuteFromLIDs )
     int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off};
     ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
     /* Create the target map */
     ECHO(const int NumMyElements2 = 5);
@@ -376,7 +376,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , PermuteFromLIDs )
     }
     ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements2, NumMyElements2, MyGlobalElements2, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
     /* Create an exporter */
     ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -433,7 +433,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , PermuteToLIDs )
     int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off};
     ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
     /* Create the target map */
     ECHO(const int NumMyElements2 = 5);
@@ -457,7 +457,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , PermuteToLIDs )
     }
     ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements2, NumMyElements2, MyGlobalElements2, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
     /* Create an exporter */
     ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -514,7 +514,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , NumRemoteIDs )
     int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off};
     ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
     /* Create the target map */
     ECHO(const int NumMyElements2 = 5);
@@ -538,7 +538,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , NumRemoteIDs )
     }
     ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements2, NumMyElements2, MyGlobalElements2, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
     /* Create an exporter */
     ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -588,7 +588,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , RemoteLIDs )
     int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off};
     ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
     /* Create the target map */
     ECHO(const int NumMyElements2 = 5);
@@ -612,7 +612,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , RemoteLIDs )
     }
     ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements2, NumMyElements2, MyGlobalElements2, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
     /* Create an exporter */
     ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -669,7 +669,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , NumExportIDs )
     int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off};
     ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
     /* Create the target map */
     ECHO(const int NumMyElements2 = 5);
@@ -693,7 +693,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , NumExportIDs )
     }
     ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements2, NumMyElements2, MyGlobalElements2, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
     /* Create an exporter */
     ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -743,7 +743,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , ExportLIDs )
     int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off};
     ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
     /* Create the target map */
     ECHO(const int NumMyElements2 = 5);
@@ -767,7 +767,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , ExportLIDs )
     }
     ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements2, NumMyElements2, MyGlobalElements2, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
     /* Create an exporter */
     ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -824,7 +824,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , ExportPIDs )
     int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off};
     ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
     /* Create the target map */
     ECHO(const int NumMyElements2 = 5);
@@ -848,7 +848,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , ExportPIDs )
     }
     ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements2, NumMyElements2, MyGlobalElements2, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
     /* Create an exporter */
     ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -905,7 +905,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , NumSend )
     int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off};
     ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
     /* Create the target map */
     ECHO(const int NumMyElements2 = 5);
@@ -929,7 +929,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , NumSend )
     }
     ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements2, NumMyElements2, MyGlobalElements2, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
     /* Create an exporter */
     ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -979,7 +979,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , NumRecv )
     int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off};
     ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+    ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
     /* Create the target map */
     ECHO(const int NumMyElements2 = 5);
@@ -1003,7 +1003,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , NumRecv )
     }
     ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
          NumGlobalElements2, NumMyElements2, MyGlobalElements2, IndexBase, CommID));
-    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+    ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
     /* Create an exporter */
     ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -1050,14 +1050,14 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , SourceMap )
   int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off, 3+off};
   ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
   /* Create the target map */
   ECHO(int off2 = NumMyElements*(NumProc-MyPID));
   int GetMyGlobalElements[NumMyElements] = {off2-1, off2-2, off2-3, off2-4};
   ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, GetMyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
   /* Create an exporter */
   ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -1089,14 +1089,14 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , TargetMap )
   int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off, 3+off};
   ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
   /* Create the target map */
   ECHO(int off2 = NumMyElements*(NumProc-MyPID));
   int GetMyGlobalElements[NumMyElements] = {off2-1, off2-2, off2-3, off2-4};
   ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, GetMyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
   /* Create an exporter */
   ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
@@ -1128,14 +1128,14 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , Distributor )
   int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off, 3+off};
   ECHO(CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(srcID));
+  ECHO(CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID)));
 
   /* Create the target map */
   ECHO(int off2 = NumMyElements*(NumProc-MyPID));
   int GetMyGlobalElements[NumMyElements] = {off2-1, off2-2, off2-3, off2-4};
   ECHO(CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, GetMyGlobalElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(tarID));
+  ECHO(CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID)));
 
   /* Create an exporter */
   ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));

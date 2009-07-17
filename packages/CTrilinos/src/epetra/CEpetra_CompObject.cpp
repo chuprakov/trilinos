@@ -19,7 +19,8 @@ using CTrilinos::Table;
 
 Table<Epetra_CompObject>& tableOfCompObjects()
 {
-    static Table<Epetra_CompObject> loc_tableOfCompObjects(CT_Epetra_CompObject_ID, "CT_Epetra_CompObject_ID");
+    static Table<Epetra_CompObject>
+        loc_tableOfCompObjects(CT_Epetra_CompObject_ID, "CT_Epetra_CompObject_ID");
     return loc_tableOfCompObjects;
 }
 
@@ -38,12 +39,20 @@ extern "C" {
 CT_Epetra_CompObject_ID_t Epetra_CompObject_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfCompObjects(), id);
+    return CTrilinos::concreteType<CT_Epetra_CompObject_ID_t>(
+        CTrilinos::cast(tableOfCompObjects(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_CompObject_Abstract ( 
+  CT_Epetra_CompObject_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_CompObject_ID_t>(id);
 }
 
 CT_Epetra_CompObject_ID_t Epetra_CompObject_Create (  )
 {
-    return tableOfCompObjects().store(new Epetra_CompObject());
+    return CTrilinos::concreteType<CT_Epetra_CompObject_ID_t>(
+        tableOfCompObjects().store(new Epetra_CompObject()));
 
 }
 
@@ -53,14 +62,19 @@ CT_Epetra_CompObject_ID_t Epetra_CompObject_Duplicate (
     const Teuchos::RCP<Epetra_CompObject> 
         pSource = CEpetra::getCompObject(SourceID);
 
-    return tableOfCompObjects().store(new Epetra_CompObject(*pSource));
+    return CTrilinos::concreteType<CT_Epetra_CompObject_ID_t>(
+        tableOfCompObjects().store(new Epetra_CompObject(
+        *pSource)));
 
 }
 
 void Epetra_CompObject_Destroy ( 
   CT_Epetra_CompObject_ID_t * selfID )
 {
-    tableOfCompObjects().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_CompObject_ID_t>(*selfID);
+    tableOfCompObjects().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_CompObject_ID_t>(id);
 }
 
 void Epetra_CompObject_SetFlopCounter ( 
@@ -154,13 +168,21 @@ void Epetra_CompObject_Assign (
 const Teuchos::RCP<Epetra_CompObject>
 CEpetra::getCompObject( CT_Epetra_CompObject_ID_t id )
 {
+    return tableOfCompObjects().get(
+        CTrilinos::abstractType<CT_Epetra_CompObject_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_CompObject>
+CEpetra::getCompObject( CTrilinos_Object_ID_t id )
+{
     return tableOfCompObjects().get(id);
 }
 
 CT_Epetra_CompObject_ID_t
 CEpetra::storeCompObject( const Epetra_CompObject *pobj )
 {
-    return tableOfCompObjects().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_CompObject_ID_t>(
+        tableOfCompObjects().storeCopy(pobj));
 }
 
 void

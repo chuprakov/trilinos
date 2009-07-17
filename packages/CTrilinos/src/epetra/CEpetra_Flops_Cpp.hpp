@@ -22,6 +22,9 @@ using Teuchos::RCP;
 const RCP<Epetra_Flops>
 getFlops( CT_Epetra_Flops_ID_t id );
 
+const RCP<Epetra_Flops>
+getFlops( CTrilinos_Object_ID_t id );
+
 CT_Epetra_Flops_ID_t
 storeFlops( const Epetra_Flops *pobj );
 

@@ -27,7 +27,8 @@ using CTrilinos::Table;
 
 Table<Epetra_MpiComm>& tableOfMpiComms()
 {
-    static Table<Epetra_MpiComm> loc_tableOfMpiComms(CT_Epetra_MpiComm_ID, "CT_Epetra_MpiComm_ID");
+    static Table<Epetra_MpiComm>
+        loc_tableOfMpiComms(CT_Epetra_MpiComm_ID, "CT_Epetra_MpiComm_ID");
     return loc_tableOfMpiComms;
 }
 
@@ -46,12 +47,21 @@ extern "C" {
 CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfMpiComms(), id);
+    return CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(
+        CTrilinos::cast(tableOfMpiComms(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_MpiComm_Abstract ( 
+  CT_Epetra_MpiComm_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_MpiComm_ID_t>(id);
 }
 
 CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Create ( MPI_Comm comm )
 {
-    return tableOfMpiComms().store(new Epetra_MpiComm(comm));
+    return CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(
+        tableOfMpiComms().store(new Epetra_MpiComm(
+        comm)));
 
 }
 
@@ -61,7 +71,9 @@ CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Duplicate (
     const Teuchos::RCP<Epetra_MpiComm> 
         pComm = CEpetra::getMpiComm(CommID);
 
-    return tableOfMpiComms().store(new Epetra_MpiComm(*pComm));
+    return CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(
+        tableOfMpiComms().store(new Epetra_MpiComm(
+        *pComm)));
 
 }
 
@@ -74,7 +86,10 @@ CT_Epetra_Comm_ID_t Epetra_MpiComm_Clone (
 
 void Epetra_MpiComm_Destroy ( CT_Epetra_MpiComm_ID_t * selfID )
 {
-    tableOfMpiComms().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_MpiComm_ID_t>(*selfID);
+    tableOfMpiComms().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(id);
 }
 
 void Epetra_MpiComm_Barrier ( CT_Epetra_MpiComm_ID_t selfID )
@@ -293,13 +308,21 @@ void Epetra_MpiComm_Assign (
 const Teuchos::RCP<Epetra_MpiComm>
 CEpetra::getMpiComm( CT_Epetra_MpiComm_ID_t id )
 {
+    return tableOfMpiComms().get(
+        CTrilinos::abstractType<CT_Epetra_MpiComm_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_MpiComm>
+CEpetra::getMpiComm( CTrilinos_Object_ID_t id )
+{
     return tableOfMpiComms().get(id);
 }
 
 CT_Epetra_MpiComm_ID_t
 CEpetra::storeMpiComm( const Epetra_MpiComm *pobj )
 {
-    return tableOfMpiComms().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(
+        tableOfMpiComms().storeCopy(pobj));
 }
 
 void

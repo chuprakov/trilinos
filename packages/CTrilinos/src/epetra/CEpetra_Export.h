@@ -21,6 +21,9 @@ extern "C" {
 CT_Epetra_Export_ID_t Epetra_Export_Cast ( 
   CTrilinos_Object_ID_t id );
 
+CTrilinos_Object_ID_t Epetra_Export_Abstract ( 
+  CT_Epetra_Export_ID_t id );
+
 /* Original C++ prototype:
    Epetra_Export( const Epetra_BlockMap & SourceMap, const Epetra_BlockMap & TargetMap );
 */

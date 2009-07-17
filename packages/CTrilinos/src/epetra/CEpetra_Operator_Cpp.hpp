@@ -22,6 +22,9 @@ using Teuchos::RCP;
 const RCP<Epetra_Operator>
 getOperator( CT_Epetra_Operator_ID_t id );
 
+const RCP<Epetra_Operator>
+getOperator( CTrilinos_Object_ID_t id );
+
 CT_Epetra_Operator_ID_t
 storeOperator( const Epetra_Operator *pobj );
 

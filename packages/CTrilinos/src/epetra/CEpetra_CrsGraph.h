@@ -24,6 +24,9 @@ extern "C" {
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Cast ( 
   CTrilinos_Object_ID_t id );
 
+CTrilinos_Object_ID_t Epetra_CrsGraph_Abstract ( 
+  CT_Epetra_CrsGraph_ID_t id );
+
 /* Original C++ prototype:
    Epetra_CrsGraph(Epetra_DataAccess CV, const Epetra_BlockMap& RowMap, const int* NumIndicesPerRow, bool StaticProfile = false);
 */

@@ -22,6 +22,9 @@ using Teuchos::RCP;
 const RCP<Epetra_Export>
 getExport( CT_Epetra_Export_ID_t id );
 
+const RCP<Epetra_Export>
+getExport( CTrilinos_Object_ID_t id );
+
 CT_Epetra_Export_ID_t
 storeExport( const Epetra_Export *pobj );
 

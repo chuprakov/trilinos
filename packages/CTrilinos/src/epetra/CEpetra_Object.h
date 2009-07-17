@@ -19,6 +19,9 @@ extern "C" {
 CT_Epetra_Object_ID_t Epetra_Object_Cast ( 
   CTrilinos_Object_ID_t id );
 
+CTrilinos_Object_ID_t Epetra_Object_Abstract ( 
+  CT_Epetra_Object_ID_t id );
+
 /* Original C++ prototype:
    Epetra_Object(int TracebackModeIn = -1, bool set_label = true);
 */

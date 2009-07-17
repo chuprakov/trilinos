@@ -27,10 +27,10 @@ TEUCHOS_UNIT_TEST( Epetra_CompObject , Cast )
   ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
 
   /* This cast should be allowed */
-  ECHO(CT_Epetra_CompObject_ID_t coID = Epetra_CompObject_Cast(selfID));
+  ECHO(CT_Epetra_CompObject_ID_t coID = Epetra_CompObject_Cast(Epetra_CompObject_Abstract(selfID)));
 
   /* This cast should not be allowed */
-  TEST_THROW(Epetra_Comm_Cast(selfID), Teuchos::m_bad_cast);
+  TEST_THROW(Epetra_Comm_Cast(Epetra_CompObject_Abstract(selfID)), Teuchos::m_bad_cast);
 }
 
 /**********************************************************************

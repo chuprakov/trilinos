@@ -50,7 +50,7 @@ TEUCHOS_UNIT_TEST( Epetra_RowMatrix , Destroy )
   TEST_EQUALITY(ret, 0);
 
   /* Cast it to a row matrix */
-  ECHO(CT_Epetra_RowMatrix_ID_t selfID = Epetra_RowMatrix_Cast(crsID));
+  ECHO(CT_Epetra_RowMatrix_ID_t selfID = Epetra_RowMatrix_Cast(Epetra_CrsMatrix_Abstract(crsID)));
 
   ECHO(Epetra_RowMatrix_Destroy(&selfID));
 

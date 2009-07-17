@@ -4,6 +4,22 @@
 namespace CTrilinos {
 
 
+const char *str2cptr( std::string s )
+{
+    char *pc = NULL;
+    pc = new char [s.size()+1];
+    strcpy(pc, s.c_str());
+    return pc;
+}
+
+
+std::string cptr2str( const char *pc )
+{
+    std::string s(pc);
+    return s;
+}
+
+
 bool
 isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
 {
@@ -83,22 +99,6 @@ isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
     }
 
     return shares;
-}
-
-
-const char *str2cptr( std::string s )
-{
-    char *pc = NULL;
-    pc = new char [s.size()+1];
-    strcpy(pc, s.c_str());
-    return pc;
-}
-
-
-std::string cptr2str( const char *pc )
-{
-    std::string s(pc);
-    return s;
 }
 
 

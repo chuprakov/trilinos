@@ -240,8 +240,8 @@ TEUCHOS_UNIT_TEST( Epetra_Comm , CreateDirectory )
 
   ECHO(int NumGlobalElements = 9);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, selfID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, selfID))));
   ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_Comm_CreateDirectory(selfID, MapID));
 
   /* Now check the result of the call to the wrapper function */

@@ -19,7 +19,8 @@ using CTrilinos::Table;
 
 Table<Epetra_Directory>& tableOfDirectorys()
 {
-    static Table<Epetra_Directory> loc_tableOfDirectorys(CT_Epetra_Directory_ID, "CT_Epetra_Directory_ID");
+    static Table<Epetra_Directory>
+        loc_tableOfDirectorys(CT_Epetra_Directory_ID, "CT_Epetra_Directory_ID");
     return loc_tableOfDirectorys;
 }
 
@@ -38,12 +39,22 @@ extern "C" {
 CT_Epetra_Directory_ID_t Epetra_Directory_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfDirectorys(), id);
+    return CTrilinos::concreteType<CT_Epetra_Directory_ID_t>(
+        CTrilinos::cast(tableOfDirectorys(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_Directory_Abstract ( 
+  CT_Epetra_Directory_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Directory_ID_t>(id);
 }
 
 void Epetra_Directory_Destroy ( CT_Epetra_Directory_ID_t * selfID )
 {
-    tableOfDirectorys().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_Directory_ID_t>(*selfID);
+    tableOfDirectorys().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_Directory_ID_t>(id);
 }
 
 int Epetra_Directory_GetDirectoryEntries ( 
@@ -77,13 +88,21 @@ boolean Epetra_Directory_GIDsAllUniquelyOwned (
 const Teuchos::RCP<Epetra_Directory>
 CEpetra::getDirectory( CT_Epetra_Directory_ID_t id )
 {
+    return tableOfDirectorys().get(
+        CTrilinos::abstractType<CT_Epetra_Directory_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_Directory>
+CEpetra::getDirectory( CTrilinos_Object_ID_t id )
+{
     return tableOfDirectorys().get(id);
 }
 
 CT_Epetra_Directory_ID_t
 CEpetra::storeDirectory( const Epetra_Directory *pobj )
 {
-    return tableOfDirectorys().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_Directory_ID_t>(
+        tableOfDirectorys().storeCopy(pobj));
 }
 
 void

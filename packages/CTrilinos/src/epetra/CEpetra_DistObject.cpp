@@ -25,7 +25,8 @@ using CTrilinos::Table;
 
 Table<Epetra_DistObject>& tableOfDistObjects()
 {
-    static Table<Epetra_DistObject> loc_tableOfDistObjects(CT_Epetra_DistObject_ID, "CT_Epetra_DistObject_ID");
+    static Table<Epetra_DistObject>
+        loc_tableOfDistObjects(CT_Epetra_DistObject_ID, "CT_Epetra_DistObject_ID");
     return loc_tableOfDistObjects;
 }
 
@@ -44,13 +45,23 @@ extern "C" {
 CT_Epetra_DistObject_ID_t Epetra_DistObject_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfDistObjects(), id);
+    return CTrilinos::concreteType<CT_Epetra_DistObject_ID_t>(
+        CTrilinos::cast(tableOfDistObjects(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_DistObject_Abstract ( 
+  CT_Epetra_DistObject_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(id);
 }
 
 void Epetra_DistObject_Destroy ( 
   CT_Epetra_DistObject_ID_t * selfID )
 {
-    tableOfDistObjects().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(*selfID);
+    tableOfDistObjects().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_DistObject_ID_t>(id);
 }
 
 int Epetra_DistObject_Import ( 
@@ -149,13 +160,21 @@ boolean Epetra_DistObject_DistributedGlobal (
 const Teuchos::RCP<Epetra_DistObject>
 CEpetra::getDistObject( CT_Epetra_DistObject_ID_t id )
 {
+    return tableOfDistObjects().get(
+        CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_DistObject>
+CEpetra::getDistObject( CTrilinos_Object_ID_t id )
+{
     return tableOfDistObjects().get(id);
 }
 
 CT_Epetra_DistObject_ID_t
 CEpetra::storeDistObject( const Epetra_DistObject *pobj )
 {
-    return tableOfDistObjects().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_DistObject_ID_t>(
+        tableOfDistObjects().storeCopy(pobj));
 }
 
 void

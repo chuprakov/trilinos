@@ -22,6 +22,9 @@ using Teuchos::RCP;
 const RCP<Epetra_CrsMatrix>
 getCrsMatrix( CT_Epetra_CrsMatrix_ID_t id );
 
+const RCP<Epetra_CrsMatrix>
+getCrsMatrix( CTrilinos_Object_ID_t id );
+
 CT_Epetra_CrsMatrix_ID_t
 storeCrsMatrix( const Epetra_CrsMatrix *pobj );
 

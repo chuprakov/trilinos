@@ -19,7 +19,8 @@ using CTrilinos::Table;
 
 Table<Epetra_BlockMap>& tableOfBlockMaps()
 {
-    static Table<Epetra_BlockMap> loc_tableOfBlockMaps(CT_Epetra_BlockMap_ID, "CT_Epetra_BlockMap_ID");
+    static Table<Epetra_BlockMap>
+        loc_tableOfBlockMaps(CT_Epetra_BlockMap_ID, "CT_Epetra_BlockMap_ID");
     return loc_tableOfBlockMaps;
 }
 
@@ -38,7 +39,14 @@ extern "C" {
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfBlockMaps(), id);
+    return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(
+        CTrilinos::cast(tableOfBlockMaps(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_BlockMap_Abstract ( 
+  CT_Epetra_BlockMap_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(id);
 }
 
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create ( 
@@ -48,8 +56,9 @@ CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create (
     const Teuchos::RCP<Epetra_Comm> 
         pComm = CEpetra::getComm(CommID);
 
-    return tableOfBlockMaps().store(new Epetra_BlockMap(
-        NumGlobalElements, ElementSize, IndexBase, *pComm));
+    return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(
+        tableOfBlockMaps().store(new Epetra_BlockMap(
+        NumGlobalElements, ElementSize, IndexBase, *pComm)));
 
 }
 
@@ -60,8 +69,9 @@ CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create_Linear (
     const Teuchos::RCP<Epetra_Comm> 
         pComm = CEpetra::getComm(CommID);
 
-    return tableOfBlockMaps().store(new Epetra_BlockMap(
-        NumGlobalElements, NumMyElements, ElementSize, IndexBase, *pComm));
+    return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(
+        tableOfBlockMaps().store(new Epetra_BlockMap(
+        NumGlobalElements, NumMyElements, ElementSize, IndexBase, *pComm)));
 
 }
 
@@ -73,8 +83,9 @@ CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create_Arbitrary (
     const Teuchos::RCP<Epetra_Comm> 
         pComm = CEpetra::getComm(CommID);
 
-    return tableOfBlockMaps().store(new Epetra_BlockMap(
-        NumGlobalElements, NumMyElements, MyGlobalElements, ElementSize, IndexBase, *pComm));
+    return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(
+        tableOfBlockMaps().store(new Epetra_BlockMap(
+        NumGlobalElements, NumMyElements, MyGlobalElements, ElementSize, IndexBase, *pComm)));
 
 }
 
@@ -86,8 +97,9 @@ CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create_Variable (
     const Teuchos::RCP<Epetra_Comm> 
         pComm = CEpetra::getComm(CommID);
 
-    return tableOfBlockMaps().store(new Epetra_BlockMap(
-        NumGlobalElements, NumMyElements, MyGlobalElements, ElementSizeList, IndexBase, *pComm));
+    return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(
+        tableOfBlockMaps().store(new Epetra_BlockMap(
+        NumGlobalElements, NumMyElements, MyGlobalElements, ElementSizeList, IndexBase, *pComm)));
 
 }
 
@@ -97,13 +109,18 @@ CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Duplicate (
     const Teuchos::RCP<Epetra_BlockMap> 
         pmap = CEpetra::getBlockMap(mapID);
 
-    return tableOfBlockMaps().store(new Epetra_BlockMap(*pmap));
+    return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(
+        tableOfBlockMaps().store(new Epetra_BlockMap(
+        *pmap)));
 
 }
 
 void Epetra_BlockMap_Destroy ( CT_Epetra_BlockMap_ID_t * selfID )
 {
-    tableOfBlockMaps().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(*selfID);
+    tableOfBlockMaps().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(id);
 }
 
 int Epetra_BlockMap_RemoteIDList ( 
@@ -380,13 +397,21 @@ void Epetra_BlockMap_Assign (
 const Teuchos::RCP<Epetra_BlockMap>
 CEpetra::getBlockMap( CT_Epetra_BlockMap_ID_t id )
 {
+    return tableOfBlockMaps().get(
+        CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_BlockMap>
+CEpetra::getBlockMap( CTrilinos_Object_ID_t id )
+{
     return tableOfBlockMaps().get(id);
 }
 
 CT_Epetra_BlockMap_ID_t
 CEpetra::storeBlockMap( const Epetra_BlockMap *pobj )
 {
-    return tableOfBlockMaps().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(
+        tableOfBlockMaps().storeCopy(pobj));
 }
 
 void

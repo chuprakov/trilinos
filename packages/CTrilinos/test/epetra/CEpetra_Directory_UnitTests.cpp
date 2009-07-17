@@ -30,16 +30,16 @@ TEUCHOS_UNIT_TEST( Epetra_Directory , Cast )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 7);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(CT_Epetra_Directory_ID_t selfID = Epetra_Comm_CreateDirectory(CommID, MapID));
 
   /* This cast should be allowed */
-  ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_Directory_Cast(selfID));
+  ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_Directory_Cast(Epetra_Directory_Abstract(selfID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dirID), true);
 
   /* This cast should not be allowed */
-  TEST_THROW(Epetra_BlockMap_Cast(selfID), Teuchos::m_bad_cast);
+  TEST_THROW(Epetra_BlockMap_Cast(Epetra_Directory_Abstract(selfID)), Teuchos::m_bad_cast);
 }
 
 /**********************************************************************
@@ -54,8 +54,8 @@ TEUCHOS_UNIT_TEST( Epetra_Directory , Destroy )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 9);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(CT_Epetra_Directory_ID_t selfID = Epetra_Comm_CreateDirectory(CommID, MapID));
 
   ECHO(Epetra_Directory_Destroy(&selfID));
@@ -81,8 +81,8 @@ TEUCHOS_UNIT_TEST( Epetra_Directory , GetDirectoryEntries )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 11);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(CT_Epetra_Directory_ID_t selfID = Epetra_Comm_CreateDirectory(CommID, MapID));
 
   /* Now get a reference to the real object */
@@ -130,8 +130,8 @@ TEUCHOS_UNIT_TEST( Epetra_Directory , GIDsAllUniquelyOwned )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 5);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(CT_Epetra_Directory_ID_t selfID = Epetra_Comm_CreateDirectory(CommID, MapID));
 
   /* Now get a reference to the real object */

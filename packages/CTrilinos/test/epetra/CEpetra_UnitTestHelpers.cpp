@@ -57,9 +57,9 @@ CT_Epetra_Comm_ID_t
 UnitTest_Create_Comm()
 {
 #ifdef EPETRA_MPI
-  return Epetra_Comm_Cast(Epetra_MpiComm_Create(MPI_COMM_WORLD));
+  return Epetra_Comm_Cast(Epetra_MpiComm_Abstract(Epetra_MpiComm_Create(MPI_COMM_WORLD)));
 #else /* EPETRA_MPI */
-  return Epetra_Comm_Cast(Epetra_SerialComm_Create());
+  return Epetra_Comm_Cast(Epetra_SerialComm_Abstract(Epetra_SerialComm_Create()));
 #endif /* EPETRA_MPI */
 }
 

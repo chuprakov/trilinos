@@ -19,7 +19,8 @@ using CTrilinos::Table;
 
 Table<Epetra_SrcDistObject>& tableOfSrcDistObjects()
 {
-    static Table<Epetra_SrcDistObject> loc_tableOfSrcDistObjects(CT_Epetra_SrcDistObject_ID, "CT_Epetra_SrcDistObject_ID");
+    static Table<Epetra_SrcDistObject>
+        loc_tableOfSrcDistObjects(CT_Epetra_SrcDistObject_ID, "CT_Epetra_SrcDistObject_ID");
     return loc_tableOfSrcDistObjects;
 }
 
@@ -38,13 +39,23 @@ extern "C" {
 CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfSrcDistObjects(), id);
+    return CTrilinos::concreteType<CT_Epetra_SrcDistObject_ID_t>(
+        CTrilinos::cast(tableOfSrcDistObjects(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_SrcDistObject_Abstract ( 
+  CT_Epetra_SrcDistObject_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_SrcDistObject_ID_t>(id);
 }
 
 void Epetra_SrcDistObject_Destroy ( 
   CT_Epetra_SrcDistObject_ID_t * selfID )
 {
-    tableOfSrcDistObjects().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_SrcDistObject_ID_t>(*selfID);
+    tableOfSrcDistObjects().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_SrcDistObject_ID_t>(id);
 }
 
 CT_Epetra_BlockMap_ID_t Epetra_SrcDistObject_Map ( 
@@ -66,13 +77,21 @@ CT_Epetra_BlockMap_ID_t Epetra_SrcDistObject_Map (
 const Teuchos::RCP<Epetra_SrcDistObject>
 CEpetra::getSrcDistObject( CT_Epetra_SrcDistObject_ID_t id )
 {
+    return tableOfSrcDistObjects().get(
+        CTrilinos::abstractType<CT_Epetra_SrcDistObject_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_SrcDistObject>
+CEpetra::getSrcDistObject( CTrilinos_Object_ID_t id )
+{
     return tableOfSrcDistObjects().get(id);
 }
 
 CT_Epetra_SrcDistObject_ID_t
 CEpetra::storeSrcDistObject( const Epetra_SrcDistObject *pobj )
 {
-    return tableOfSrcDistObjects().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_SrcDistObject_ID_t>(
+        tableOfSrcDistObjects().storeCopy(pobj));
 }
 
 void

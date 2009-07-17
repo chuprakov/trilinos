@@ -49,7 +49,7 @@ TEUCHOS_UNIT_TEST( Epetra_Operator , Destroy )
   TEST_EQUALITY(ret, 0);
 
   /* Cast it to an operator */
-  ECHO(CT_Epetra_Operator_ID_t selfID = Epetra_Operator_Cast(crsID));
+  ECHO(CT_Epetra_Operator_ID_t selfID = Epetra_Operator_Cast(Epetra_CrsMatrix_Abstract(crsID)));
 
   ECHO(Epetra_Operator_Destroy(&selfID));
 
@@ -87,7 +87,7 @@ TEUCHOS_UNIT_TEST( Epetra_Operator , SetUseTranspose )
   TEST_EQUALITY(ret, 0);
 
   /* Cast it to an operator */
-  ECHO(CT_Epetra_Operator_ID_t selfID = Epetra_Operator_Cast(crsID));
+  ECHO(CT_Epetra_Operator_ID_t selfID = Epetra_Operator_Cast(Epetra_CrsMatrix_Abstract(crsID)));
 
   /* Test true */
   ECHO(boolean tr = TRUE);
@@ -154,7 +154,7 @@ TEUCHOS_UNIT_TEST( Epetra_Operator , UseTranspose )
   TEST_EQUALITY(ret, 0);
 
   /* Cast it to an operator */
-  ECHO(CT_Epetra_Operator_ID_t selfID = Epetra_Operator_Cast(crsID));
+  ECHO(CT_Epetra_Operator_ID_t selfID = Epetra_Operator_Cast(Epetra_CrsMatrix_Abstract(crsID)));
 
   /* Test true */
   ECHO(boolean tr = TRUE);

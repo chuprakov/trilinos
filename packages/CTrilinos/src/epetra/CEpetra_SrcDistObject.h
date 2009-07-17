@@ -20,6 +20,9 @@ extern "C" {
 CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject_Cast ( 
   CTrilinos_Object_ID_t id );
 
+CTrilinos_Object_ID_t Epetra_SrcDistObject_Abstract ( 
+  CT_Epetra_SrcDistObject_ID_t id );
+
 /* Original C++ prototype:
    virtual ~Epetra_SrcDistObject();
 */

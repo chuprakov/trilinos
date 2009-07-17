@@ -18,7 +18,8 @@ using CTrilinos::Table;
 
 Table<Epetra_Distributor>& tableOfDistributors()
 {
-    static Table<Epetra_Distributor> loc_tableOfDistributors(CT_Epetra_Distributor_ID, "CT_Epetra_Distributor_ID");
+    static Table<Epetra_Distributor>
+        loc_tableOfDistributors(CT_Epetra_Distributor_ID, "CT_Epetra_Distributor_ID");
     return loc_tableOfDistributors;
 }
 
@@ -37,7 +38,14 @@ extern "C" {
 CT_Epetra_Distributor_ID_t Epetra_Distributor_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfDistributors(), id);
+    return CTrilinos::concreteType<CT_Epetra_Distributor_ID_t>(
+        CTrilinos::cast(tableOfDistributors(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_Distributor_Abstract ( 
+  CT_Epetra_Distributor_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(id);
 }
 
 CT_Epetra_Distributor_ID_t Epetra_Distributor_Clone ( 
@@ -50,7 +58,10 @@ CT_Epetra_Distributor_ID_t Epetra_Distributor_Clone (
 void Epetra_Distributor_Destroy ( 
   CT_Epetra_Distributor_ID_t * selfID )
 {
-    tableOfDistributors().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(*selfID);
+    tableOfDistributors().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_Distributor_ID_t>(id);
 }
 
 int Epetra_Distributor_CreateFromSends ( 
@@ -159,13 +170,21 @@ int Epetra_Distributor_DoReversePosts_VarLen (
 const Teuchos::RCP<Epetra_Distributor>
 CEpetra::getDistributor( CT_Epetra_Distributor_ID_t id )
 {
+    return tableOfDistributors().get(
+        CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_Distributor>
+CEpetra::getDistributor( CTrilinos_Object_ID_t id )
+{
     return tableOfDistributors().get(id);
 }
 
 CT_Epetra_Distributor_ID_t
 CEpetra::storeDistributor( const Epetra_Distributor *pobj )
 {
-    return tableOfDistributors().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_Distributor_ID_t>(
+        tableOfDistributors().storeCopy(pobj));
 }
 
 void

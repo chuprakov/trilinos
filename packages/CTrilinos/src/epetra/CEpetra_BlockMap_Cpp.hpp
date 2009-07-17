@@ -22,6 +22,9 @@ using Teuchos::RCP;
 const RCP<Epetra_BlockMap>
 getBlockMap( CT_Epetra_BlockMap_ID_t id );
 
+const RCP<Epetra_BlockMap>
+getBlockMap( CTrilinos_Object_ID_t id );
+
 CT_Epetra_BlockMap_ID_t
 storeBlockMap( const Epetra_BlockMap *pobj );
 

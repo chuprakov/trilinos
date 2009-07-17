@@ -22,7 +22,8 @@ using CTrilinos::Table;
 
 Table<Epetra_RowMatrix>& tableOfRowMatrixs()
 {
-    static Table<Epetra_RowMatrix> loc_tableOfRowMatrixs(CT_Epetra_RowMatrix_ID, "CT_Epetra_RowMatrix_ID");
+    static Table<Epetra_RowMatrix>
+        loc_tableOfRowMatrixs(CT_Epetra_RowMatrix_ID, "CT_Epetra_RowMatrix_ID");
     return loc_tableOfRowMatrixs;
 }
 
@@ -41,12 +42,22 @@ extern "C" {
 CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfRowMatrixs(), id);
+    return CTrilinos::concreteType<CT_Epetra_RowMatrix_ID_t>(
+        CTrilinos::cast(tableOfRowMatrixs(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_RowMatrix_Abstract ( 
+  CT_Epetra_RowMatrix_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_RowMatrix_ID_t>(id);
 }
 
 void Epetra_RowMatrix_Destroy ( CT_Epetra_RowMatrix_ID_t * selfID )
 {
-    tableOfRowMatrixs().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_RowMatrix_ID_t>(*selfID);
+    tableOfRowMatrixs().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_RowMatrix_ID_t>(id);
 }
 
 int Epetra_RowMatrix_NumMyRowEntries ( 
@@ -248,13 +259,21 @@ CT_Epetra_Import_ID_t Epetra_RowMatrix_RowMatrixImporter (
 const Teuchos::RCP<Epetra_RowMatrix>
 CEpetra::getRowMatrix( CT_Epetra_RowMatrix_ID_t id )
 {
+    return tableOfRowMatrixs().get(
+        CTrilinos::abstractType<CT_Epetra_RowMatrix_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_RowMatrix>
+CEpetra::getRowMatrix( CTrilinos_Object_ID_t id )
+{
     return tableOfRowMatrixs().get(id);
 }
 
 CT_Epetra_RowMatrix_ID_t
 CEpetra::storeRowMatrix( const Epetra_RowMatrix *pobj )
 {
-    return tableOfRowMatrixs().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_RowMatrix_ID_t>(
+        tableOfRowMatrixs().storeCopy(pobj));
 }
 
 void

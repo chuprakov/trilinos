@@ -37,12 +37,12 @@ int main( int argc, char* argv[] )
   
   /* Create a serial comm and cast to comm */
   scommID = Epetra_SerialComm_Create();
-  commID = Epetra_Comm_Cast(scommID);
+  commID = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(scommID));
 
   /* Create a map and cast to block map */
   numGlobalElements = 4;
   mapID = Epetra_Map_Create(numGlobalElements, 0, commID);
-  bmapID = Epetra_BlockMap_Cast(mapID);
+  bmapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(mapID));
 
   /* Check the properties of the map */
   numGlobalElements_rtn = Epetra_BlockMap_NumGlobalElements(bmapID);
@@ -56,8 +56,8 @@ int main( int argc, char* argv[] )
   xID = Epetra_Vector_Create(bmapID, TRUE);
   bID = Epetra_Vector_Create(bmapID, FALSE);
 
-  mbID = Epetra_MultiVector_Cast(bID);
-  mxID = Epetra_MultiVector_Cast(xID);
+  mbID = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(bID));
+  mxID = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(xID));
 
   /* Do some vector operations */
   Epetra_MultiVector_PutScalar(mbID, 2.0);

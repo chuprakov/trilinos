@@ -119,6 +119,38 @@ cast( Table<T> &destTable, CTrilinos_Object_ID_t id )
     return newid;
 }
 
+template <typename T>
+CTrilinos_Object_ID_t
+abstractType( T id )
+{
+    CTrilinos_Object_ID_t newid;
+
+    newid.type = id.type;
+    newid.index = id.index;
+
+    return newid;
+}
+
+template <typename T>
+T
+concreteType( CTrilinos_Object_ID_t id )
+{
+    T newid;
+
+    newid.type = id.type;
+    newid.index = id.index;
+
+    return newid;
+}
+
+const char *str2cptr( std::string s );
+
+std::string cptr2str( const char *pc );
+
+/* isSameObject(abstracted_id, abstracted_id) */
+bool isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 );
+
+/* isSameObject(RCP, RCP) */
 template <class T1, class T2>
 bool
 isSameObject( const Teuchos::RCP<T1> &rcp1, const Teuchos::RCP<T2> &rcp2 )
@@ -126,6 +158,7 @@ isSameObject( const Teuchos::RCP<T1> &rcp1, const Teuchos::RCP<T2> &rcp2 )
     return (rcp1.shares_resource(rcp2));
 }
 
+/* isSameObject(RCP, abstracted_id) */
 template <class T>
 bool
 isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
@@ -208,18 +241,32 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
     return shares;
 }
 
-template <class T>
+/* isSameObject(RCP, specific_id) */
+template <class T, typename S>
 bool
-isSameObject( CTrilinos_Object_ID_t id, const Teuchos::RCP<T> &rcp )
+isSameObject( const Teuchos::RCP<T> &rcp, S id )
 {
-    return isSameObject(rcp, id);
+    return isSameObject<T>(rcp, abstractType<S>(id));
 }
 
-bool isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 );
+/* isSameObject(specific_id, RCP) */
+template <typename S, class T>
+bool
+isSameObject( S id, const Teuchos::RCP<T> &rcp )
+{
+    return isSameObject<T>(rcp, abstractType<S>(id));
+}
 
-const char *str2cptr( std::string s );
+/* isSameObject(specific_id, specific_id) */
+template <typename S1, typename S2>
+bool
+isSameObject( S1 id1, S2 id2 )
+{
+    CTrilinos_Object_ID_t id1a = abstractType<S1>(id1);
+    CTrilinos_Object_ID_t id2a = abstractType<S2>(id2);
 
-std::string cptr2str( const char *pc );
+    return isSameObject(id1a, id2a);
+}
 
 
 } // namespace CTrilinos

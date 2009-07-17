@@ -22,6 +22,9 @@ using Teuchos::RCP;
 const RCP<Epetra_CrsGraph>
 getCrsGraph( CT_Epetra_CrsGraph_ID_t id );
 
+const RCP<Epetra_CrsGraph>
+getCrsGraph( CTrilinos_Object_ID_t id );
+
 CT_Epetra_CrsGraph_ID_t
 storeCrsGraph( const Epetra_CrsGraph *pobj );
 

@@ -24,11 +24,11 @@ TEUCHOS_UNIT_TEST( Epetra_Flops , Cast )
   ECHO(CT_Epetra_Flops_ID_t selfID = Epetra_Flops_Create());
 
   /* This cast should be allowed */
-  ECHO(CT_Epetra_Flops_ID_t dupID = Epetra_Flops_Cast(selfID));
+  ECHO(CT_Epetra_Flops_ID_t dupID = Epetra_Flops_Cast(Epetra_Flops_Abstract(selfID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
 
   /* This cast should not be allowed */
-  TEST_THROW(Epetra_CompObject_Cast(selfID), Teuchos::m_bad_cast);
+  TEST_THROW(Epetra_CompObject_Cast(Epetra_Flops_Abstract(selfID)), Teuchos::m_bad_cast);
 }
 
 /**********************************************************************

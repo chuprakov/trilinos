@@ -28,6 +28,9 @@ extern "C" {
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Cast ( 
   CTrilinos_Object_ID_t id );
 
+CTrilinos_Object_ID_t Epetra_CrsMatrix_Abstract ( 
+  CT_Epetra_CrsMatrix_ID_t id );
+
 /* Original C++ prototype:
    Epetra_CrsMatrix(Epetra_DataAccess CV, const Epetra_Map& RowMap, const int* NumEntriesPerRow, bool StaticProfile = false);
 */

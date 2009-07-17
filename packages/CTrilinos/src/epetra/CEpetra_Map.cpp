@@ -19,7 +19,8 @@ using CTrilinos::Table;
 
 Table<Epetra_Map>& tableOfMaps()
 {
-    static Table<Epetra_Map> loc_tableOfMaps(CT_Epetra_Map_ID, "CT_Epetra_Map_ID");
+    static Table<Epetra_Map>
+        loc_tableOfMaps(CT_Epetra_Map_ID, "CT_Epetra_Map_ID");
     return loc_tableOfMaps;
 }
 
@@ -37,7 +38,13 @@ extern "C" {
 
 CT_Epetra_Map_ID_t Epetra_Map_Cast ( CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::cast(tableOfMaps(), id);
+    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
+        CTrilinos::cast(tableOfMaps(), id));
+}
+
+CTrilinos_Object_ID_t Epetra_Map_Abstract ( CT_Epetra_Map_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id);
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Create ( 
@@ -46,8 +53,9 @@ CT_Epetra_Map_ID_t Epetra_Map_Create (
     const Teuchos::RCP<Epetra_Comm> 
         pComm = CEpetra::getComm(CommID);
 
-    return tableOfMaps().store(new Epetra_Map(
-        NumGlobalElements, IndexBase, *pComm));
+    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
+        tableOfMaps().store(new Epetra_Map(
+        NumGlobalElements, IndexBase, *pComm)));
 
 }
 
@@ -58,8 +66,9 @@ CT_Epetra_Map_ID_t Epetra_Map_Create_Linear (
     const Teuchos::RCP<Epetra_Comm> 
         pComm = CEpetra::getComm(CommID);
 
-    return tableOfMaps().store(new Epetra_Map(
-        NumGlobalElements, NumMyElements, IndexBase, *pComm));
+    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
+        tableOfMaps().store(new Epetra_Map(
+        NumGlobalElements, NumMyElements, IndexBase, *pComm)));
 
 }
 
@@ -71,8 +80,9 @@ CT_Epetra_Map_ID_t Epetra_Map_Create_Arbitrary (
     const Teuchos::RCP<Epetra_Comm> 
         pComm = CEpetra::getComm(CommID);
 
-    return tableOfMaps().store(new Epetra_Map(
-        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, *pComm));
+    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
+        tableOfMaps().store(new Epetra_Map(
+        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, *pComm)));
 
 }
 
@@ -81,13 +91,18 @@ CT_Epetra_Map_ID_t Epetra_Map_Duplicate ( CT_Epetra_Map_ID_t mapID )
     const Teuchos::RCP<Epetra_Map> 
         pmap = CEpetra::getMap(mapID);
 
-    return tableOfMaps().store(new Epetra_Map(*pmap));
+    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
+        tableOfMaps().store(new Epetra_Map(
+        *pmap)));
 
 }
 
 void Epetra_Map_Destroy ( CT_Epetra_Map_ID_t * selfID )
 {
-    tableOfMaps().remove(selfID);
+    CTrilinos_Object_ID_t id =
+        CTrilinos::abstractType<CT_Epetra_Map_ID_t>(*selfID);
+    tableOfMaps().remove(&id);
+    *selfID = CTrilinos::concreteType<CT_Epetra_Map_ID_t>(id);
 }
 
 void Epetra_Map_Assign ( 
@@ -113,13 +128,21 @@ void Epetra_Map_Assign (
 const Teuchos::RCP<Epetra_Map>
 CEpetra::getMap( CT_Epetra_Map_ID_t id )
 {
+    return tableOfMaps().get(
+        CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id));
+}
+
+const Teuchos::RCP<Epetra_Map>
+CEpetra::getMap( CTrilinos_Object_ID_t id )
+{
     return tableOfMaps().get(id);
 }
 
 CT_Epetra_Map_ID_t
 CEpetra::storeMap( const Epetra_Map *pobj )
 {
-    return tableOfMaps().storeCopy(pobj);
+    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
+        tableOfMaps().storeCopy(pobj));
 }
 
 void

@@ -20,6 +20,9 @@ extern "C" {
 CT_Epetra_Directory_ID_t Epetra_Directory_Cast ( 
   CTrilinos_Object_ID_t id );
 
+CTrilinos_Object_ID_t Epetra_Directory_Abstract ( 
+  CT_Epetra_Directory_ID_t id );
+
 /* Original C++ prototype:
    virtual ~Epetra_Directory();
 */

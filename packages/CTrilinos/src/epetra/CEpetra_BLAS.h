@@ -18,6 +18,9 @@ extern "C" {
 
 CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Object_ID_t id );
 
+CTrilinos_Object_ID_t Epetra_BLAS_Abstract ( 
+  CT_Epetra_BLAS_ID_t id );
+
 /* Original C++ prototype:
    Epetra_BLAS(void);
 */

@@ -30,24 +30,24 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Cast )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 9);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(boolean zeroOut = TRUE);
   ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_Create(MapID, zeroOut));
 
   /* These casts should be allowed */
-  ECHO(CT_Epetra_Vector_ID_t dupID = Epetra_Vector_Cast(selfID));
+  ECHO(CT_Epetra_Vector_ID_t dupID = Epetra_Vector_Cast(Epetra_Vector_Abstract(selfID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
-  ECHO(CT_Epetra_MultiVector_ID_t mvecID = Epetra_MultiVector_Cast(selfID));
+  ECHO(CT_Epetra_MultiVector_ID_t mvecID = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(selfID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, mvecID), true);
-  ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Cast(mvecID));
+  ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Cast(Epetra_MultiVector_Abstract(mvecID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(mvecID, vecID), true);
 
   /* This cast should not be allowed */
   ECHO(int NumVectors = 3);
   ECHO(CT_Epetra_MultiVector_ID_t mvecID2 = Epetra_MultiVector_Create(
        MapID, NumVectors, TRUE));
-  TEST_THROW(Epetra_Vector_Cast(mvecID2), Teuchos::m_bad_cast);
+  TEST_THROW(Epetra_Vector_Cast(Epetra_MultiVector_Abstract(mvecID2)), Teuchos::m_bad_cast);
 }
 
 /**********************************************************************
@@ -63,8 +63,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Create )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 7);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(boolean zeroOut = FALSE);
   ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_Create(MapID, zeroOut));
 
@@ -86,8 +86,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Duplicate )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 8);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(boolean zeroOut = TRUE);
   ECHO(CT_Epetra_Vector_ID_t SourceID = Epetra_Vector_Create(MapID, zeroOut));
 
@@ -113,8 +113,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Create_FromArray )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(const int NumGlobalElements = 6);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   double V[NumGlobalElements] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
   ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_Create_FromArray(Copy, MapID, V));
 
@@ -137,8 +137,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , FromSource )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 9);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(int NumVectors = 3);
   ECHO(boolean zeroOut = TRUE);
   ECHO(CT_Epetra_MultiVector_ID_t SourceID = Epetra_MultiVector_Create(MapID, NumVectors, zeroOut));
@@ -162,8 +162,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Destroy )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 13);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   ECHO(boolean zeroOut = TRUE);
   ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_Create(MapID, zeroOut));
 
@@ -189,8 +189,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , ReplaceGlobalValues )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 11);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
 
   /* Create a vector using CTrilinos and duplicate it outside */
   ECHO(CT_Epetra_Vector_ID_t vID = Epetra_Vector_Create(MapID, TRUE));
@@ -237,7 +237,7 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , ReplaceMyValues )
   ECHO(int IndexBase = 0);
   ECHO(CT_Epetra_Map_ID_t mID = Epetra_Map_Create_Linear(
        NumGlobalElements, NumMyElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(mID));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(mID)));
 
   /* Create a vector using CTrilinos and duplicate it outside */
   ECHO(CT_Epetra_Vector_ID_t vID = Epetra_Vector_Create(MapID, TRUE));
@@ -278,8 +278,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , SumIntoGlobalValues )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 11);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
 
   /* Create a vector using CTrilinos and initialize it as desired */
   ECHO(CT_Epetra_Vector_ID_t vID = Epetra_Vector_Create(MapID, TRUE));
@@ -332,7 +332,7 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , SumIntoMyValues )
   ECHO(int IndexBase = 0);
   ECHO(CT_Epetra_Map_ID_t mID = Epetra_Map_Create_Linear(
        NumGlobalElements, NumMyElements, IndexBase, CommID));
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(mID));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(mID)));
 
   /* Create a vector using CTrilinos and initialize it as desired */
   ECHO(CT_Epetra_Vector_ID_t vID = Epetra_Vector_Create(MapID, TRUE));
@@ -605,8 +605,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , ExtractCopy )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 7);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
 
   /* Create a vector using CTrilinos */
   ECHO(CT_Epetra_Vector_ID_t vID = Epetra_Vector_Create(MapID, TRUE));
@@ -616,7 +616,7 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , ExtractCopy )
   ECHO(Epetra_Vector_ReplaceGlobalValues(vID, NumEntries, vals, inds));
 
   /* Figure out how many elements on this processor */
-  ECHO(CT_Epetra_MultiVector_ID_t mvID = Epetra_MultiVector_Cast(vID));
+  ECHO(CT_Epetra_MultiVector_ID_t mvID = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(vID)));
   ECHO(int NumMyElements = Epetra_MultiVector_MyLength(mvID));
 
   /* Try out the CTrilinos interface */
@@ -646,8 +646,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , ExtractView )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 7);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
 
   /* Create a vector using CTrilinos */
   ECHO(CT_Epetra_Vector_ID_t vID = Epetra_Vector_Create(MapID, TRUE));
@@ -683,8 +683,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , getElement )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 7);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID)));
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
 
   /* Create a vector using CTrilinos */
   ECHO(CT_Epetra_Vector_ID_t vID = Epetra_Vector_Create(MapID, TRUE));
