@@ -21,6 +21,17 @@ extern "C" {
 #endif
 
 
+/* Functions Epetra_CrsGraph_Cast() and Epetra_CrsGraph_Abstract()
+   are used for casting CTrilinos objects from one type to another.
+   The former function performs a dynamic cast on the underlying object
+   and stores an RCP to it in the Epetra_CrsGraph table, while
+   the latter only converts the type of the struct that references the
+   object so that an object of any type can be passed to the former
+   function (use the _Abstract() function corresponding to the type
+   of the object that will be casted, not the type to which it will
+   be casted).
+*/
+
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Cast ( 
   CTrilinos_Object_ID_t id );
 

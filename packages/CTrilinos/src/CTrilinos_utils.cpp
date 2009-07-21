@@ -4,6 +4,8 @@
 namespace CTrilinos {
 
 
+/* convert struct from specific type to generic CTrilinos_Object_ID_t
+ * but keep the content in tact */
 const char *str2cptr( std::string s )
 {
     char *pc = NULL;
@@ -13,6 +15,8 @@ const char *str2cptr( std::string s )
 }
 
 
+/* convert struct from generic CTrilinos_Object_ID_t to specific type
+ * but keep the content in tact */
 std::string cptr2str( const char *pc )
 {
     std::string s(pc);
@@ -20,6 +24,7 @@ std::string cptr2str( const char *pc )
 }
 
 
+/* isSameObject(generic_id, generic_id) */
 bool
 isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
 {

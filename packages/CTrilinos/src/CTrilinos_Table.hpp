@@ -20,59 +20,82 @@ class Table
 {
   public:
 
-    Table(CTrilinos_Type_ID_t type, std::string str);
+    /* constructor -- use is_const = true if table will store
+     * objects of type const T instead of T */
+    Table(CTrilinos_Type_ID_t type, std::string str, bool is_const = false);
 
+    /* destructor */
     ~Table();
 
+    /* retrieve the object */
     const RCP<T> get(CTrilinos_Object_ID_t id);
 
+    /* store an object of type T */
     CTrilinos_Object_ID_t store(T* pobj);
 
-    CTrilinos_Object_ID_t store(const T* pobj);
-
+    /* store an object whose base class is T */
     template <class Told>
     CTrilinos_Object_ID_t store(Told* pobj);
 
+    /* store a copy of an object of type T */
     CTrilinos_Object_ID_t storeCopy(T* pobj);
 
-    CTrilinos_Object_ID_t storeCopy(const T* pobj);
-
+    /* store a copy of an object whose base class is T */
     template <class Told>
     CTrilinos_Object_ID_t storeCopy(Told* pobj);
 
+    /* remove an object from the table and invalidate the id struct */
     int remove(CTrilinos_Object_ID_t * id);
 
+    /* dump the table's contents but keep it's properties */
     void purge();
 
+    /* cast the object to type T and store a copy */
     template <class Told>
     CTrilinos_Object_ID_t cast(const RCP<Told> & rold);
 
   private:
 
+    /* table for storing objects */
     Teuchos::SimpleObjectTable<T> sot;
 
-    CTrilinos_Type_ID_t ttype;
-    std::string tstr;
-
+    /* properties of the table */
+    CTrilinos_Type_ID_t ttype;  /* enum value for stored objects */
+    std::string tstr;           /* string form of enum (for exception msgs) */
+    bool tconst;                /* if table holds const T */
 };
 
+
+/* constructor -- use is_const = true if table will store
+ * objects of type const T instead of T */
 template <class T>
-Table<T>::Table(CTrilinos_Type_ID_t type, std::string str)
+Table<T>::Table(CTrilinos_Type_ID_t type, std::string str, bool is_const)
+  : ttype(type),
+    tconst(is_const)
 {
-  ttype = type;
-  tstr = str;
+    /* assemble exception error message for future use */
+    std::string tmp1 = "Expected type ";
+    std::string tmp2 = "(const)";
+    std::string tmp3 = "(non-const)";
+    if (is_const) {
+      tstr = tmp1 + str + tmp2;
+    } else {
+      tstr = tmp1 + str + tmp3;
+    }
 }
 
+/* destructor */
 template <class T>
 Table<T>::~Table()
 {
   purge();
 }
 
+/* retrieve the object */
 template <class T>
 const RCP<T> Table<T>::get(CTrilinos_Object_ID_t id)
 {
-    if (id.type == ttype) {
+    if ((id.type == ttype) && (id.is_const == tconst)) {
         return sot.getRCP(id.index);
     } else {
         throw CTrilinosTypeMismatchError(tstr);
@@ -80,12 +103,14 @@ const RCP<T> Table<T>::get(CTrilinos_Object_ID_t id)
     }
 }
 
+/* store an object of type T */
 template <class T>
 CTrilinos_Object_ID_t Table<T>::store(T* pobj)
 {
     CTrilinos_Object_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
+    id.is_const = tconst;
 
     if ((id.index = sot.storeNew(pobj)) != -1)
         id.type = ttype;
@@ -93,13 +118,7 @@ CTrilinos_Object_ID_t Table<T>::store(T* pobj)
     return id;
 }
 
-template <class T>
-CTrilinos_Object_ID_t Table<T>::store(const T* pobj)
-{
-//    throw CTrilinosTypeMismatchError("DEBUGGING1");
-    return store(const_cast<T*>(pobj));
-}
-
+/* store an object whose base class is T */
 template <class T>
 template <class Told>
 CTrilinos_Object_ID_t Table<T>::store(Told* pobj)
@@ -107,6 +126,7 @@ CTrilinos_Object_ID_t Table<T>::store(Told* pobj)
     CTrilinos_Object_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
+    id.is_const = tconst;
 
     T* pnew = dynamic_cast<T*>(pobj);
     if (pnew != NULL) {
@@ -118,12 +138,14 @@ CTrilinos_Object_ID_t Table<T>::store(Told* pobj)
     return id;
 }
 
+/* store a copy of an object of type T */
 template <class T>
 CTrilinos_Object_ID_t Table<T>::storeCopy(T* pobj)
 {
     CTrilinos_Object_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
+    id.is_const = tconst;
 
     if ((id.index = sot.storeNew(pobj, false)) != -1)
         id.type = ttype;
@@ -131,13 +153,7 @@ CTrilinos_Object_ID_t Table<T>::storeCopy(T* pobj)
     return id;
 }
 
-template <class T>
-CTrilinos_Object_ID_t Table<T>::storeCopy(const T* pobj)
-{
-//    throw CTrilinosTypeMismatchError("DEBUGGING2");
-    return storeCopy(const_cast<T*>(pobj));
-}
-
+/* store a copy of an object whose base class is T */
 template <class T>
 template <class Told>
 CTrilinos_Object_ID_t Table<T>::storeCopy(Told* pobj)
@@ -145,6 +161,7 @@ CTrilinos_Object_ID_t Table<T>::storeCopy(Told* pobj)
     CTrilinos_Object_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
+    id.is_const = tconst;
 
     T* pnew = dynamic_cast<T*>(pobj);
     if (pnew != NULL) {
@@ -156,12 +173,13 @@ CTrilinos_Object_ID_t Table<T>::storeCopy(Told* pobj)
     return id;
 }
 
+/* remove an object from the table and invalidate the id struct */
 template <class T>
 int Table<T>::remove(CTrilinos_Object_ID_t * id)
 {
     int ret = -1;
 
-    if (id->type == ttype) {
+    if ((id->type == ttype) && (id->is_const == tconst)) {
         ret = (sot.removeRCP(id->index) < 0 ? -1 : 0);
         if (ret == 0) id->type = CT_Invalid_ID;
     } else {
@@ -171,12 +189,14 @@ int Table<T>::remove(CTrilinos_Object_ID_t * id)
     return ret;
 }
 
+/* dump the table's contents but keep it's properties */
 template <class T>
 void Table<T>::purge()
 {
     sot.purge();
 }
 
+/* cast the object to type T and store a copy */
 template <class T>
 template <class Told>
 CTrilinos_Object_ID_t Table<T>::cast(const RCP<Told> & rold)
@@ -184,6 +204,7 @@ CTrilinos_Object_ID_t Table<T>::cast(const RCP<Told> & rold)
     CTrilinos_Object_ID_t newid;
     newid.type = CT_Invalid_ID;
     newid.index = -1;
+    newid.is_const = tconst;
 
     newid.index = sot.storeCastedRCP(rold);
 
@@ -192,6 +213,7 @@ CTrilinos_Object_ID_t Table<T>::cast(const RCP<Told> & rold)
 
     return newid;
 }
+
 
 } // namespace CTrilinos
 

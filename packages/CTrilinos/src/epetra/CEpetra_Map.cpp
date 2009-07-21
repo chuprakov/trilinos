@@ -17,11 +17,20 @@ using Teuchos::RCP;
 using CTrilinos::Table;
 
 
+/* table to hold objects of type Epetra_Map */
 Table<Epetra_Map>& tableOfMaps()
 {
     static Table<Epetra_Map>
-        loc_tableOfMaps(CT_Epetra_Map_ID, "CT_Epetra_Map_ID");
+        loc_tableOfMaps(CT_Epetra_Map_ID, "CT_Epetra_Map_ID", false);
     return loc_tableOfMaps;
+}
+
+/* table to hold objects of type const Epetra_Map */
+Table<const Epetra_Map>& tableOfConstMaps()
+{
+    static Table<const Epetra_Map>
+        loc_tableOfConstMaps(CT_Epetra_Map_ID, "CT_Epetra_Map_ID", true);
+    return loc_tableOfConstMaps;
 }
 
 
@@ -38,8 +47,13 @@ extern "C" {
 
 CT_Epetra_Map_ID_t Epetra_Map_Cast ( CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-        CTrilinos::cast(tableOfMaps(), id));
+    CTrilinos_Object_ID_t newid;
+    if (id.is_const) {
+        newid = CTrilinos::cast(tableOfConstMaps(), id);
+    } else {
+        newid = CTrilinos::cast(tableOfMaps(), id);
+    }
+    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(newid);
 }
 
 CTrilinos_Object_ID_t Epetra_Map_Abstract ( CT_Epetra_Map_ID_t id )
@@ -50,26 +64,18 @@ CTrilinos_Object_ID_t Epetra_Map_Abstract ( CT_Epetra_Map_ID_t id )
 CT_Epetra_Map_ID_t Epetra_Map_Create ( 
   int NumGlobalElements, int IndexBase, CT_Epetra_Comm_ID_t CommID )
 {
-    const Teuchos::RCP<Epetra_Comm> 
-        pComm = CEpetra::getComm(CommID);
-
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-        tableOfMaps().store(new Epetra_Map(
-        NumGlobalElements, IndexBase, *pComm)));
-
+            tableOfMaps().store(new Epetra_Map(
+            NumGlobalElements, IndexBase, *CEpetra::getComm(CommID))));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Create_Linear ( 
   int NumGlobalElements, int NumMyElements, int IndexBase, 
   CT_Epetra_Comm_ID_t CommID )
 {
-    const Teuchos::RCP<Epetra_Comm> 
-        pComm = CEpetra::getComm(CommID);
-
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-        tableOfMaps().store(new Epetra_Map(
-        NumGlobalElements, NumMyElements, IndexBase, *pComm)));
-
+            tableOfMaps().store(new Epetra_Map(
+            NumGlobalElements, NumMyElements, IndexBase, *CEpetra::getComm(CommID))));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Create_Arbitrary ( 
@@ -77,32 +83,28 @@ CT_Epetra_Map_ID_t Epetra_Map_Create_Arbitrary (
   const int * MyGlobalElements, int IndexBase, 
   CT_Epetra_Comm_ID_t CommID )
 {
-    const Teuchos::RCP<Epetra_Comm> 
-        pComm = CEpetra::getComm(CommID);
-
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-        tableOfMaps().store(new Epetra_Map(
-        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, *pComm)));
-
+            tableOfMaps().store(new Epetra_Map(
+            NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, *CEpetra::getComm(CommID))));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Duplicate ( CT_Epetra_Map_ID_t mapID )
 {
-    const Teuchos::RCP<Epetra_Map> 
-        pmap = CEpetra::getMap(mapID);
-
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-        tableOfMaps().store(new Epetra_Map(
-        *pmap)));
-
+            tableOfMaps().store(new Epetra_Map(
+            *CEpetra::getMap(mapID))));
 }
 
 void Epetra_Map_Destroy ( CT_Epetra_Map_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t id =
-        CTrilinos::abstractType<CT_Epetra_Map_ID_t>(*selfID);
-    tableOfMaps().remove(&id);
-    *selfID = CTrilinos::concreteType<CT_Epetra_Map_ID_t>(id);
+    CTrilinos_Object_ID_t aid
+            = CTrilinos::abstractType<CT_Epetra_Map_ID_t>(*selfID);
+    if (selfID->is_const) {
+        tableOfConstMaps().remove(&aid);
+    } else {
+        tableOfMaps().remove(&aid);
+    }
+    *selfID = CTrilinos::concreteType<CT_Epetra_Map_ID_t>(aid);
 }
 
 void Epetra_Map_Assign ( 
@@ -110,10 +112,7 @@ void Epetra_Map_Assign (
 {
     Epetra_Map& self = *( CEpetra::getMap(selfID) );
 
-    const Teuchos::RCP<Epetra_Map> 
-        pmap = CEpetra::getMap(mapID);
-
-    self = *pmap;
+    self = *CEpetra::getMap(mapID);
 }
 
 
@@ -125,30 +124,70 @@ void Epetra_Map_Assign (
 //
 
 
+/* get Epetra_Map from non-const table using CT_Epetra_Map_ID */
 const Teuchos::RCP<Epetra_Map>
 CEpetra::getMap( CT_Epetra_Map_ID_t id )
 {
-    return tableOfMaps().get(
-        CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id));
+    CTrilinos_Object_ID_t aid
+            = CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id);
+    return tableOfMaps().get(aid);
 }
 
+/* get Epetra_Map from non-const table using CTrilinos_Object_ID_t */
 const Teuchos::RCP<Epetra_Map>
 CEpetra::getMap( CTrilinos_Object_ID_t id )
 {
     return tableOfMaps().get(id);
 }
 
-CT_Epetra_Map_ID_t
-CEpetra::storeMap( const Epetra_Map *pobj )
+/* get const Epetra_Map from either the const or non-const table
+ * using CT_Epetra_Map_ID */
+const Teuchos::RCP<const Epetra_Map>
+CEpetra::getConstMap( CT_Epetra_Map_ID_t id )
 {
-    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-        tableOfMaps().storeCopy(pobj));
+    CTrilinos_Object_ID_t aid
+            = CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id);
+    if (id.is_const) {
+        return tableOfConstMaps().get(aid);
+    } else {
+        return tableOfMaps().get(aid);
+    }
 }
 
+/* get const Epetra_Map from either the const or non-const table
+ * using CTrilinos_Object_ID_t */
+const Teuchos::RCP<const Epetra_Map>
+CEpetra::getConstMap( CTrilinos_Object_ID_t id )
+{
+    if (id.is_const) {
+        return tableOfConstMaps().get(id);
+    } else {
+        return tableOfMaps().get(id);
+    }
+}
+
+/* store Epetra_Map in non-const table */
+CT_Epetra_Map_ID_t
+CEpetra::storeMap( Epetra_Map *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
+            tableOfMaps().storeCopy(pobj));
+}
+
+/* store const Epetra_Map in const table */
+CT_Epetra_Map_ID_t
+CEpetra::storeConstMap( const Epetra_Map *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
+            tableOfConstMaps().storeCopy(pobj));
+}
+
+/* dump contents of Epetra_Map and const Epetra_Map tables */
 void
-CEpetra::purgeMapTable(  )
+CEpetra::purgeMapTables(  )
 {
     tableOfMaps().purge();
+    tableOfConstMaps().purge();
 }
 
 

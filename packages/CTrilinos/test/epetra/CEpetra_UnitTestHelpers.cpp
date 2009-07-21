@@ -27,30 +27,30 @@
 
 void CEpetra_Test_CleanSlate()
 {
-  CEpetra::purgeCommTable();
-  CEpetra::purgeSerialCommTable();
+  CEpetra::purgeCommTables();
+  CEpetra::purgeSerialCommTables();
 #ifdef HAVE_MPI
-  CEpetra::purgeMpiCommTable();
+  CEpetra::purgeMpiCommTables();
 #endif /* HAVE_MPI */
-  CEpetra::purgeBlockMapTable();
-  CEpetra::purgeMapTable();
-  CEpetra::purgeObjectTable();
-  CEpetra::purgeDistributorTable();
-  CEpetra::purgeDirectoryTable();
-  CEpetra::purgeImportTable();
-  CEpetra::purgeExportTable();
-  CEpetra::purgeOffsetIndexTable();
-  CEpetra::purgeDistObjectTable();
-  CEpetra::purgeSrcDistObjectTable();
-  CEpetra::purgeBLASTable();
-  CEpetra::purgeFlopsTable();
-  CEpetra::purgeCompObjectTable();
-  CEpetra::purgeMultiVectorTable();
-  CEpetra::purgeVectorTable();
-  CEpetra::purgeCrsGraphTable();
-  CEpetra::purgeCrsMatrixTable();
-  CEpetra::purgeOperatorTable();
-  CEpetra::purgeRowMatrixTable();
+  CEpetra::purgeBlockMapTables();
+  CEpetra::purgeMapTables();
+  CEpetra::purgeObjectTables();
+  CEpetra::purgeDistributorTables();
+  CEpetra::purgeDirectoryTables();
+  CEpetra::purgeImportTables();
+  CEpetra::purgeExportTables();
+  CEpetra::purgeOffsetIndexTables();
+  CEpetra::purgeDistObjectTables();
+  CEpetra::purgeSrcDistObjectTables();
+  CEpetra::purgeBLASTables();
+  CEpetra::purgeFlopsTables();
+  CEpetra::purgeCompObjectTables();
+  CEpetra::purgeMultiVectorTables();
+  CEpetra::purgeVectorTables();
+  CEpetra::purgeCrsGraphTables();
+  CEpetra::purgeCrsMatrixTables();
+  CEpetra::purgeOperatorTables();
+  CEpetra::purgeRowMatrixTables();
 }
 
 CT_Epetra_Comm_ID_t

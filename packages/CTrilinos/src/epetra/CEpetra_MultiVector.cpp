@@ -19,11 +19,20 @@ using Teuchos::RCP;
 using CTrilinos::Table;
 
 
+/* table to hold objects of type Epetra_MultiVector */
 Table<Epetra_MultiVector>& tableOfMultiVectors()
 {
     static Table<Epetra_MultiVector>
-        loc_tableOfMultiVectors(CT_Epetra_MultiVector_ID, "CT_Epetra_MultiVector_ID");
+        loc_tableOfMultiVectors(CT_Epetra_MultiVector_ID, "CT_Epetra_MultiVector_ID", false);
     return loc_tableOfMultiVectors;
+}
+
+/* table to hold objects of type const Epetra_MultiVector */
+Table<const Epetra_MultiVector>& tableOfConstMultiVectors()
+{
+    static Table<const Epetra_MultiVector>
+        loc_tableOfConstMultiVectors(CT_Epetra_MultiVector_ID, "CT_Epetra_MultiVector_ID", true);
+    return loc_tableOfConstMultiVectors;
 }
 
 
@@ -41,8 +50,13 @@ extern "C" {
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Cast ( 
   CTrilinos_Object_ID_t id )
 {
-    return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
-        CTrilinos::cast(tableOfMultiVectors(), id));
+    CTrilinos_Object_ID_t newid;
+    if (id.is_const) {
+        newid = CTrilinos::cast(tableOfConstMultiVectors(), id);
+    } else {
+        newid = CTrilinos::cast(tableOfMultiVectors(), id);
+    }
+    return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(newid);
 }
 
 CTrilinos_Object_ID_t Epetra_MultiVector_Abstract ( 
@@ -54,86 +68,66 @@ CTrilinos_Object_ID_t Epetra_MultiVector_Abstract (
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create ( 
   CT_Epetra_BlockMap_ID_t MapID, int NumVectors, boolean zeroOut )
 {
-    const Teuchos::RCP<Epetra_BlockMap> 
-        pMap = CEpetra::getBlockMap(MapID);
-
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
-        tableOfMultiVectors().store(new Epetra_MultiVector(
-        *pMap, NumVectors, zeroOut)));
-
+            tableOfMultiVectors().store(new Epetra_MultiVector(
+            *CEpetra::getBlockMap(MapID), NumVectors, zeroOut)));
 }
 
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Duplicate ( 
   CT_Epetra_MultiVector_ID_t SourceID )
 {
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pSource = CEpetra::getMultiVector(SourceID);
-
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
-        tableOfMultiVectors().store(new Epetra_MultiVector(
-        *pSource)));
-
+            tableOfMultiVectors().store(new Epetra_MultiVector(
+            *CEpetra::getMultiVector(SourceID))));
 }
 
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_From2DA ( 
   Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t MapID, double * A, 
   int MyLDA, int NumVectors )
 {
-    const Teuchos::RCP<Epetra_BlockMap> 
-        pMap = CEpetra::getBlockMap(MapID);
-
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
-        tableOfMultiVectors().store(new Epetra_MultiVector(
-        CV, *pMap, A, MyLDA, NumVectors)));
-
+            tableOfMultiVectors().store(new Epetra_MultiVector(
+            CV, *CEpetra::getBlockMap(MapID), A, MyLDA, NumVectors)));
 }
 
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_FromAOP ( 
   Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t MapID, 
   double ** ArrayOfPointers, int NumVectors )
 {
-    const Teuchos::RCP<Epetra_BlockMap> 
-        pMap = CEpetra::getBlockMap(MapID);
-
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
-        tableOfMultiVectors().store(new Epetra_MultiVector(
-        CV, *pMap, ArrayOfPointers, NumVectors)));
-
+            tableOfMultiVectors().store(new Epetra_MultiVector(
+            CV, *CEpetra::getBlockMap(MapID), ArrayOfPointers, NumVectors)));
 }
 
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_FromList ( 
   Epetra_DataAccess CV, CT_Epetra_MultiVector_ID_t SourceID, 
   int * Indices, int NumVectors )
 {
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pSource = CEpetra::getMultiVector(SourceID);
-
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
-        tableOfMultiVectors().store(new Epetra_MultiVector(
-        CV, *pSource, Indices, NumVectors)));
-
+            tableOfMultiVectors().store(new Epetra_MultiVector(
+            CV, *CEpetra::getMultiVector(SourceID), Indices, NumVectors)));
 }
 
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_FromRange ( 
   Epetra_DataAccess CV, CT_Epetra_MultiVector_ID_t SourceID, 
   int StartIndex, int NumVectors )
 {
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pSource = CEpetra::getMultiVector(SourceID);
-
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
-        tableOfMultiVectors().store(new Epetra_MultiVector(
-        CV, *pSource, StartIndex, NumVectors)));
-
+            tableOfMultiVectors().store(new Epetra_MultiVector(
+            CV, *CEpetra::getMultiVector(SourceID), StartIndex, NumVectors)));
 }
 
 void Epetra_MultiVector_Destroy ( 
   CT_Epetra_MultiVector_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t id =
-        CTrilinos::abstractType<CT_Epetra_MultiVector_ID_t>(*selfID);
-    tableOfMultiVectors().remove(&id);
-    *selfID = CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(id);
+    CTrilinos_Object_ID_t aid
+            = CTrilinos::abstractType<CT_Epetra_MultiVector_ID_t>(*selfID);
+    if (selfID->is_const) {
+        tableOfConstMultiVectors().remove(&aid);
+    } else {
+        tableOfMultiVectors().remove(&aid);
+    }
+    *selfID = CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(aid);
 }
 
 int Epetra_MultiVector_ReplaceGlobalValue ( 
@@ -141,7 +135,7 @@ int Epetra_MultiVector_ReplaceGlobalValue (
   double ScalarValue )
 {
     return CEpetra::getMultiVector(selfID)->ReplaceGlobalValue(
-        GlobalRow, VectorIndex, ScalarValue);
+            GlobalRow, VectorIndex, ScalarValue);
 }
 
 int Epetra_MultiVector_ReplaceGlobalValue_BlockPos ( 
@@ -149,7 +143,7 @@ int Epetra_MultiVector_ReplaceGlobalValue_BlockPos (
   int BlockRowOffset, int VectorIndex, double ScalarValue )
 {
     return CEpetra::getMultiVector(selfID)->ReplaceGlobalValue(
-        GlobalBlockRow, BlockRowOffset, VectorIndex, ScalarValue);
+            GlobalBlockRow, BlockRowOffset, VectorIndex, ScalarValue);
 }
 
 int Epetra_MultiVector_SumIntoGlobalValue ( 
@@ -157,7 +151,7 @@ int Epetra_MultiVector_SumIntoGlobalValue (
   double ScalarValue )
 {
     return CEpetra::getMultiVector(selfID)->SumIntoGlobalValue(
-        GlobalRow, VectorIndex, ScalarValue);
+            GlobalRow, VectorIndex, ScalarValue);
 }
 
 int Epetra_MultiVector_SumIntoGlobalValue_BlockPos ( 
@@ -165,7 +159,7 @@ int Epetra_MultiVector_SumIntoGlobalValue_BlockPos (
   int BlockRowOffset, int VectorIndex, double ScalarValue )
 {
     return CEpetra::getMultiVector(selfID)->SumIntoGlobalValue(
-        GlobalBlockRow, BlockRowOffset, VectorIndex, ScalarValue);
+            GlobalBlockRow, BlockRowOffset, VectorIndex, ScalarValue);
 }
 
 int Epetra_MultiVector_ReplaceMyValue ( 
@@ -173,7 +167,7 @@ int Epetra_MultiVector_ReplaceMyValue (
   double ScalarValue )
 {
     return CEpetra::getMultiVector(selfID)->ReplaceMyValue(
-        MyRow, VectorIndex, ScalarValue);
+            MyRow, VectorIndex, ScalarValue);
 }
 
 int Epetra_MultiVector_ReplaceMyValue_BlockPos ( 
@@ -181,7 +175,7 @@ int Epetra_MultiVector_ReplaceMyValue_BlockPos (
   int BlockRowOffset, int VectorIndex, double ScalarValue )
 {
     return CEpetra::getMultiVector(selfID)->ReplaceMyValue(
-        MyBlockRow, BlockRowOffset, VectorIndex, ScalarValue);
+            MyBlockRow, BlockRowOffset, VectorIndex, ScalarValue);
 }
 
 int Epetra_MultiVector_SumIntoMyValue ( 
@@ -189,7 +183,7 @@ int Epetra_MultiVector_SumIntoMyValue (
   double ScalarValue )
 {
     return CEpetra::getMultiVector(selfID)->SumIntoMyValue(
-        MyRow, VectorIndex, ScalarValue);
+            MyRow, VectorIndex, ScalarValue);
 }
 
 int Epetra_MultiVector_SumIntoMyValue_BlockPos ( 
@@ -197,7 +191,7 @@ int Epetra_MultiVector_SumIntoMyValue_BlockPos (
   int BlockRowOffset, int VectorIndex, double ScalarValue )
 {
     return CEpetra::getMultiVector(selfID)->SumIntoMyValue(
-        MyBlockRow, BlockRowOffset, VectorIndex, ScalarValue);
+            MyBlockRow, BlockRowOffset, VectorIndex, ScalarValue);
 }
 
 int Epetra_MultiVector_PutScalar ( 
@@ -214,55 +208,49 @@ int Epetra_MultiVector_Random ( CT_Epetra_MultiVector_ID_t selfID )
 int Epetra_MultiVector_ExtractCopy_Fill2DA ( 
   CT_Epetra_MultiVector_ID_t selfID, double * A, int MyLDA )
 {
-    return CEpetra::getMultiVector(selfID)->ExtractCopy(A, MyLDA);
+    return CEpetra::getConstMultiVector(selfID)->ExtractCopy(A, MyLDA);
 }
 
 int Epetra_MultiVector_ExtractCopy_FillAOP ( 
   CT_Epetra_MultiVector_ID_t selfID, double ** ArrayOfPointers )
 {
-    return CEpetra::getMultiVector(selfID)->ExtractCopy(
-        ArrayOfPointers);
+    return CEpetra::getConstMultiVector(selfID)->ExtractCopy(
+            ArrayOfPointers);
 }
 
 int Epetra_MultiVector_ExtractView_Set2DA ( 
   CT_Epetra_MultiVector_ID_t selfID, double ** A, int * MyLDA )
 {
-    return CEpetra::getMultiVector(selfID)->ExtractView(A, MyLDA);
+    return CEpetra::getConstMultiVector(selfID)->ExtractView(A, MyLDA);
 }
 
 int Epetra_MultiVector_ExtractView_SetAOP ( 
   CT_Epetra_MultiVector_ID_t selfID, double *** ArrayOfPointers )
 {
-    return CEpetra::getMultiVector(selfID)->ExtractView(
-        ArrayOfPointers);
+    return CEpetra::getConstMultiVector(selfID)->ExtractView(
+            ArrayOfPointers);
 }
 
 int Epetra_MultiVector_Dot ( 
   CT_Epetra_MultiVector_ID_t selfID, CT_Epetra_MultiVector_ID_t AID, 
   double * Result )
 {
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pA = CEpetra::getMultiVector(AID);
-
-    return CEpetra::getMultiVector(selfID)->Dot(*pA, Result);
+    return CEpetra::getConstMultiVector(selfID)->Dot(
+            *CEpetra::getMultiVector(AID), Result);
 }
 
 int Epetra_MultiVector_Abs ( 
   CT_Epetra_MultiVector_ID_t selfID, CT_Epetra_MultiVector_ID_t AID )
 {
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pA = CEpetra::getMultiVector(AID);
-
-    return CEpetra::getMultiVector(selfID)->Abs(*pA);
+    return CEpetra::getMultiVector(selfID)->Abs(
+            *CEpetra::getMultiVector(AID));
 }
 
 int Epetra_MultiVector_Reciprocal ( 
   CT_Epetra_MultiVector_ID_t selfID, CT_Epetra_MultiVector_ID_t AID )
 {
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pA = CEpetra::getMultiVector(AID);
-
-    return CEpetra::getMultiVector(selfID)->Reciprocal(*pA);
+    return CEpetra::getMultiVector(selfID)->Reciprocal(
+            *CEpetra::getMultiVector(AID));
 }
 
 int Epetra_MultiVector_Scale_Self ( 
@@ -275,21 +263,16 @@ int Epetra_MultiVector_Scale (
   CT_Epetra_MultiVector_ID_t selfID, double ScalarA, 
   CT_Epetra_MultiVector_ID_t AID )
 {
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pA = CEpetra::getMultiVector(AID);
-
-    return CEpetra::getMultiVector(selfID)->Scale(ScalarA, *pA);
+    return CEpetra::getMultiVector(selfID)->Scale(
+            ScalarA, *CEpetra::getMultiVector(AID));
 }
 
 int Epetra_MultiVector_Update_WithA ( 
   CT_Epetra_MultiVector_ID_t selfID, double ScalarA, 
   CT_Epetra_MultiVector_ID_t AID, double ScalarThis )
 {
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pA = CEpetra::getMultiVector(AID);
-
     return CEpetra::getMultiVector(selfID)->Update(
-        ScalarA, *pA, ScalarThis);
+            ScalarA, *CEpetra::getMultiVector(AID), ScalarThis);
 }
 
 int Epetra_MultiVector_Update_WithAB ( 
@@ -297,60 +280,52 @@ int Epetra_MultiVector_Update_WithAB (
   CT_Epetra_MultiVector_ID_t AID, double ScalarB, 
   CT_Epetra_MultiVector_ID_t BID, double ScalarThis )
 {
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pA = CEpetra::getMultiVector(AID);
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pB = CEpetra::getMultiVector(BID);
-
     return CEpetra::getMultiVector(selfID)->Update(
-        ScalarA, *pA, ScalarB, *pB, ScalarThis);
+            ScalarA, *CEpetra::getMultiVector(AID), ScalarB, *CEpetra::getMultiVector(BID), ScalarThis);
 }
 
 int Epetra_MultiVector_Norm1 ( 
   CT_Epetra_MultiVector_ID_t selfID, double * Result )
 {
-    return CEpetra::getMultiVector(selfID)->Norm1(Result);
+    return CEpetra::getConstMultiVector(selfID)->Norm1(Result);
 }
 
 int Epetra_MultiVector_Norm2 ( 
   CT_Epetra_MultiVector_ID_t selfID, double * Result )
 {
-    return CEpetra::getMultiVector(selfID)->Norm2(Result);
+    return CEpetra::getConstMultiVector(selfID)->Norm2(Result);
 }
 
 int Epetra_MultiVector_NormInf ( 
   CT_Epetra_MultiVector_ID_t selfID, double * Result )
 {
-    return CEpetra::getMultiVector(selfID)->NormInf(Result);
+    return CEpetra::getConstMultiVector(selfID)->NormInf(Result);
 }
 
 int Epetra_MultiVector_NormWeighted ( 
   CT_Epetra_MultiVector_ID_t selfID, 
   CT_Epetra_MultiVector_ID_t WeightsID, double * Result )
 {
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pWeights = CEpetra::getMultiVector(WeightsID);
-
-    return CEpetra::getMultiVector(selfID)->NormWeighted(
-        *pWeights, Result);
+    return CEpetra::getConstMultiVector(selfID)->NormWeighted(
+            *CEpetra::getMultiVector(WeightsID), Result);
 }
 
 int Epetra_MultiVector_MinValue ( 
   CT_Epetra_MultiVector_ID_t selfID, double * Result )
 {
-    return CEpetra::getMultiVector(selfID)->MinValue(Result);
+    return CEpetra::getConstMultiVector(selfID)->MinValue(Result);
 }
 
 int Epetra_MultiVector_MaxValue ( 
   CT_Epetra_MultiVector_ID_t selfID, double * Result )
 {
-    return CEpetra::getMultiVector(selfID)->MaxValue(Result);
+    return CEpetra::getConstMultiVector(selfID)->MaxValue(Result);
 }
 
 int Epetra_MultiVector_MeanValue ( 
   CT_Epetra_MultiVector_ID_t selfID, double * Result )
 {
-    return CEpetra::getMultiVector(selfID)->MeanValue(Result);
+    return CEpetra::getConstMultiVector(selfID)->MeanValue(Result);
 }
 
 int Epetra_MultiVector_Multiply_Matrix ( 
@@ -358,13 +333,8 @@ int Epetra_MultiVector_Multiply_Matrix (
   double ScalarAB, CT_Epetra_MultiVector_ID_t AID, 
   CT_Epetra_MultiVector_ID_t BID, double ScalarThis )
 {
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pA = CEpetra::getMultiVector(AID);
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pB = CEpetra::getMultiVector(BID);
-
     return CEpetra::getMultiVector(selfID)->Multiply(
-        TransA, TransB, ScalarAB, *pA, *pB, ScalarThis);
+            TransA, TransB, ScalarAB, *CEpetra::getMultiVector(AID), *CEpetra::getMultiVector(BID), ScalarThis);
 }
 
 int Epetra_MultiVector_Multiply_ByEl ( 
@@ -372,13 +342,8 @@ int Epetra_MultiVector_Multiply_ByEl (
   CT_Epetra_MultiVector_ID_t AID, CT_Epetra_MultiVector_ID_t BID, 
   double ScalarThis )
 {
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pA = CEpetra::getMultiVector(AID);
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pB = CEpetra::getMultiVector(BID);
-
     return CEpetra::getMultiVector(selfID)->Multiply(
-        ScalarAB, *pA, *pB, ScalarThis);
+            ScalarAB, *CEpetra::getMultiVector(AID), *CEpetra::getMultiVector(BID), ScalarThis);
 }
 
 int Epetra_MultiVector_ReciprocalMultiply ( 
@@ -386,13 +351,8 @@ int Epetra_MultiVector_ReciprocalMultiply (
   CT_Epetra_MultiVector_ID_t AID, CT_Epetra_MultiVector_ID_t BID, 
   double ScalarThis )
 {
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pA = CEpetra::getMultiVector(AID);
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pB = CEpetra::getMultiVector(BID);
-
     return CEpetra::getMultiVector(selfID)->ReciprocalMultiply(
-        ScalarAB, *pA, *pB, ScalarThis);
+            ScalarAB, *CEpetra::getMultiVector(AID), *CEpetra::getMultiVector(BID), ScalarThis);
 }
 
 int Epetra_MultiVector_SetSeed ( 
@@ -413,16 +373,13 @@ void Epetra_MultiVector_Assign (
 {
     Epetra_MultiVector& self = *( CEpetra::getMultiVector(selfID) );
 
-    const Teuchos::RCP<Epetra_MultiVector> 
-        pSource = CEpetra::getMultiVector(SourceID);
-
-    self = *pSource;
+    self = *CEpetra::getMultiVector(SourceID);
 }
 
 double * Epetra_MultiVector_getArray ( 
   CT_Epetra_MultiVector_ID_t selfID, int i )
 {
-    Epetra_MultiVector& self = *( CEpetra::getMultiVector(selfID) );
+    const Epetra_MultiVector& self = *( CEpetra::getConstMultiVector(selfID) );
 
     return self[i];
 }
@@ -430,47 +387,45 @@ double * Epetra_MultiVector_getArray (
 CT_Epetra_Vector_ID_t Epetra_MultiVector_getVector ( 
   CT_Epetra_MultiVector_ID_t selfID, int i )
 {
-    Epetra_MultiVector& self = *( CEpetra::getMultiVector(selfID) );
+    const Epetra_MultiVector& self = *( CEpetra::getConstMultiVector(selfID) );
 
-    return CEpetra::storeVector(self(i));
+    return CEpetra::storeConstVector(self(i));
 }
 
 int Epetra_MultiVector_NumVectors ( 
   CT_Epetra_MultiVector_ID_t selfID )
 {
-    return CEpetra::getMultiVector(selfID)->NumVectors();
+    return CEpetra::getConstMultiVector(selfID)->NumVectors();
 }
 
 int Epetra_MultiVector_MyLength ( 
   CT_Epetra_MultiVector_ID_t selfID )
 {
-    return CEpetra::getMultiVector(selfID)->MyLength();
+    return CEpetra::getConstMultiVector(selfID)->MyLength();
 }
 
 int Epetra_MultiVector_GlobalLength ( 
   CT_Epetra_MultiVector_ID_t selfID )
 {
-    return CEpetra::getMultiVector(selfID)->GlobalLength();
+    return CEpetra::getConstMultiVector(selfID)->GlobalLength();
 }
 
 int Epetra_MultiVector_Stride ( CT_Epetra_MultiVector_ID_t selfID )
 {
-    return CEpetra::getMultiVector(selfID)->Stride();
+    return CEpetra::getConstMultiVector(selfID)->Stride();
 }
 
 boolean Epetra_MultiVector_ConstantStride ( 
   CT_Epetra_MultiVector_ID_t selfID )
 {
-    return CEpetra::getMultiVector(selfID)->ConstantStride();
+    return CEpetra::getConstMultiVector(selfID)->ConstantStride();
 }
 
 int Epetra_MultiVector_ReplaceMap ( 
   CT_Epetra_MultiVector_ID_t selfID, CT_Epetra_BlockMap_ID_t mapID )
 {
-    const Teuchos::RCP<Epetra_BlockMap> 
-        pmap = CEpetra::getBlockMap(mapID);
-
-    return CEpetra::getMultiVector(selfID)->ReplaceMap(*pmap);
+    return CEpetra::getMultiVector(selfID)->ReplaceMap(
+            *CEpetra::getBlockMap(mapID));
 }
 
 
@@ -482,30 +437,70 @@ int Epetra_MultiVector_ReplaceMap (
 //
 
 
+/* get Epetra_MultiVector from non-const table using CT_Epetra_MultiVector_ID */
 const Teuchos::RCP<Epetra_MultiVector>
 CEpetra::getMultiVector( CT_Epetra_MultiVector_ID_t id )
 {
-    return tableOfMultiVectors().get(
-        CTrilinos::abstractType<CT_Epetra_MultiVector_ID_t>(id));
+    CTrilinos_Object_ID_t aid
+            = CTrilinos::abstractType<CT_Epetra_MultiVector_ID_t>(id);
+    return tableOfMultiVectors().get(aid);
 }
 
+/* get Epetra_MultiVector from non-const table using CTrilinos_Object_ID_t */
 const Teuchos::RCP<Epetra_MultiVector>
 CEpetra::getMultiVector( CTrilinos_Object_ID_t id )
 {
     return tableOfMultiVectors().get(id);
 }
 
-CT_Epetra_MultiVector_ID_t
-CEpetra::storeMultiVector( const Epetra_MultiVector *pobj )
+/* get const Epetra_MultiVector from either the const or non-const table
+ * using CT_Epetra_MultiVector_ID */
+const Teuchos::RCP<const Epetra_MultiVector>
+CEpetra::getConstMultiVector( CT_Epetra_MultiVector_ID_t id )
 {
-    return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
-        tableOfMultiVectors().storeCopy(pobj));
+    CTrilinos_Object_ID_t aid
+            = CTrilinos::abstractType<CT_Epetra_MultiVector_ID_t>(id);
+    if (id.is_const) {
+        return tableOfConstMultiVectors().get(aid);
+    } else {
+        return tableOfMultiVectors().get(aid);
+    }
 }
 
+/* get const Epetra_MultiVector from either the const or non-const table
+ * using CTrilinos_Object_ID_t */
+const Teuchos::RCP<const Epetra_MultiVector>
+CEpetra::getConstMultiVector( CTrilinos_Object_ID_t id )
+{
+    if (id.is_const) {
+        return tableOfConstMultiVectors().get(id);
+    } else {
+        return tableOfMultiVectors().get(id);
+    }
+}
+
+/* store Epetra_MultiVector in non-const table */
+CT_Epetra_MultiVector_ID_t
+CEpetra::storeMultiVector( Epetra_MultiVector *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
+            tableOfMultiVectors().storeCopy(pobj));
+}
+
+/* store const Epetra_MultiVector in const table */
+CT_Epetra_MultiVector_ID_t
+CEpetra::storeConstMultiVector( const Epetra_MultiVector *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
+            tableOfConstMultiVectors().storeCopy(pobj));
+}
+
+/* dump contents of Epetra_MultiVector and const Epetra_MultiVector tables */
 void
-CEpetra::purgeMultiVectorTable(  )
+CEpetra::purgeMultiVectorTables(  )
 {
     tableOfMultiVectors().purge();
+    tableOfConstMultiVectors().purge();
 }
 
 

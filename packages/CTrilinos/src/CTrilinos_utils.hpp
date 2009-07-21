@@ -42,6 +42,7 @@ cast( Table<T> &destTable, CTrilinos_Object_ID_t id )
     CTrilinos_Object_ID_t newid;
     newid.type = CT_Invalid_ID;
     newid.index = -1;
+    newid.is_const = id.is_const;
 
     switch (id.type) {
     case CT_Epetra_Distributor_ID:
@@ -119,6 +120,8 @@ cast( Table<T> &destTable, CTrilinos_Object_ID_t id )
     return newid;
 }
 
+/* convert struct from specific type to generic CTrilinos_Object_ID_t
+ * but keep the content in tact */
 template <typename T>
 CTrilinos_Object_ID_t
 abstractType( T id )
@@ -127,10 +130,13 @@ abstractType( T id )
 
     newid.type = id.type;
     newid.index = id.index;
+    newid.is_const = id.is_const;
 
     return newid;
 }
 
+/* convert struct from generic CTrilinos_Object_ID_t to specific type
+ * but keep the content in tact */
 template <typename T>
 T
 concreteType( CTrilinos_Object_ID_t id )
@@ -139,15 +145,18 @@ concreteType( CTrilinos_Object_ID_t id )
 
     newid.type = id.type;
     newid.index = id.index;
+    newid.is_const = id.is_const;
 
     return newid;
 }
 
+/* convert string to const char * since C does not support former */
 const char *str2cptr( std::string s );
 
+/* convert const char * to string since C does not support latter */
 std::string cptr2str( const char *pc );
 
-/* isSameObject(abstracted_id, abstracted_id) */
+/* isSameObject(generic_id, generic_id) */
 bool isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 );
 
 /* isSameObject(RCP, RCP) */
@@ -158,7 +167,7 @@ isSameObject( const Teuchos::RCP<T1> &rcp1, const Teuchos::RCP<T2> &rcp2 )
     return (rcp1.shares_resource(rcp2));
 }
 
-/* isSameObject(RCP, abstracted_id) */
+/* isSameObject(RCP, generic_id) */
 template <class T>
 bool
 isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )

@@ -83,6 +83,19 @@ TEUCHOS_UNIT_TEST( Table, storeCopy )
   ECHO(CTrilinos_Object_ID_t id = table.storeCopy(pobj));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T));
+  TEST_EQUALITY(id.is_const, FALSE);
+  TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.get(id)), false);
+}
+
+TEUCHOS_UNIT_TEST( Table, storeConstCopy )
+{
+  ECHO(Table<const T> table(CONSTRUCTOR(CLASS_ENUM(T)), TRUE));
+  ECHO(const T *pobj = new T);
+  ECHO(CTrilinos_Object_ID_t id = table.storeCopy(pobj));
+  TEST_EQUALITY_CONST(id.index, 0);
+  TEST_EQUALITY(id.type, CLASS_ENUM(T));
+  TEST_EQUALITY(id.is_const, TRUE);
   TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
   TEST_EQUALITY_CONST(is_null(table.get(id)), false);
 }
@@ -94,6 +107,19 @@ TEUCHOS_UNIT_TEST( Table, storeCopyBase )
   ECHO(CTrilinos_Object_ID_t id = table.storeCopy(pobj));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T2));
+  TEST_EQUALITY(id.is_const, FALSE);
+  TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.get(id)), false);
+}
+
+TEUCHOS_UNIT_TEST( Table, storeConstCopyBase )
+{
+  ECHO(Table<const T2> table(CONSTRUCTOR(CLASS_ENUM(T2)), TRUE));
+  ECHO(const T1 *pobj = new T1);
+  ECHO(CTrilinos_Object_ID_t id = table.storeCopy(pobj));
+  TEST_EQUALITY_CONST(id.index, 0);
+  TEST_EQUALITY(id.type, CLASS_ENUM(T2));
+  TEST_EQUALITY(id.is_const, TRUE);
   TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
   TEST_EQUALITY_CONST(is_null(table.get(id)), false);
 }
@@ -105,10 +131,39 @@ TEUCHOS_UNIT_TEST( Table, storeCopyWrong )
   TEST_THROW(table.storeCopy(pobj), CTrilinosTypeMismatchError);
 }
 
+/* storeCopyWrongConst below should NOT compile --> OK */
+/*
+TEUCHOS_UNIT_TEST( Table, storeCopyWrongConst )
+{
+  ECHO(Table<T2> table(CONSTRUCTOR(CLASS_ENUM(T2))));
+  ECHO(const T1 *pobj = new T1);
+  TEST_THROW(table.storeCopy(pobj), CTrilinosTypeMismatchError);
+}
+*/
+
+TEUCHOS_UNIT_TEST( Table, storeCopyCastConst )
+{
+  ECHO(Table<const T2> table(CONSTRUCTOR(CLASS_ENUM(T2)), TRUE));
+  ECHO(T1 *pobj = new T1);
+  ECHO(CTrilinos_Object_ID_t id = table.storeCopy(pobj));
+  TEST_EQUALITY_CONST(id.index, 0);
+  TEST_EQUALITY(id.type, CLASS_ENUM(T2));
+  TEST_EQUALITY(id.is_const, TRUE);
+  TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.get(id)), false);
+}
+
 TEUCHOS_UNIT_TEST( Table, storeCopyNull )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
   ECHO(T* pobj = NULL);
+  TEST_THROW(table.storeCopy(pobj), NullReferenceError); 
+}
+
+TEUCHOS_UNIT_TEST( Table, storeConstCopyNull )
+{
+  ECHO(Table<const T> table(CONSTRUCTOR(CLASS_ENUM(T)), TRUE));
+  ECHO(const T* pobj = NULL);
   TEST_THROW(table.storeCopy(pobj), NullReferenceError); 
 }
 
@@ -134,6 +189,7 @@ TEUCHOS_UNIT_TEST( Table, removeInvalid )
   ECHO(CTrilinos_Object_ID_t id);
   ECHO(id.index = -1);
   ECHO(id.type = CLASS_ENUM(T));
+  ECHO(id.is_const = false);
   TEST_THROW(table.remove(&id), RangeError);
 }
 
@@ -146,6 +202,29 @@ TEUCHOS_UNIT_TEST( Table, removeWrong )
   ECHO(CTrilinos_Object_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = CLASS_ENUM(T4));
+  ECHO(id.is_const = false);
+  TEST_THROW(table.remove(&id), CTrilinosTypeMismatchError);
+}
+
+TEUCHOS_UNIT_TEST( Table, removeWrongConst1 )
+{
+  ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
+  ECHO(CTrilinos_Object_ID_t id1 = table.store(new T));
+  ECHO(CTrilinos_Object_ID_t id);
+  ECHO(id.index = id1.index);
+  ECHO(id.type = id1.type);
+  ECHO(id.is_const = true);
+  TEST_THROW(table.remove(&id), CTrilinosTypeMismatchError);
+}
+
+TEUCHOS_UNIT_TEST( Table, removeWrongConst2 )
+{
+  ECHO(Table<const T> table(CONSTRUCTOR(CLASS_ENUM(T)), TRUE));
+  ECHO(CTrilinos_Object_ID_t id1 = table.store(new T));
+  ECHO(CTrilinos_Object_ID_t id);
+  ECHO(id.index = id1.index);
+  ECHO(id.type = id1.type);
+  ECHO(id.is_const = false);
   TEST_THROW(table.remove(&id), CTrilinosTypeMismatchError);
 }
 
@@ -169,6 +248,7 @@ TEUCHOS_UNIT_TEST( Table, getInvalid )
   ECHO(CTrilinos_Object_ID_t id);
   ECHO(id.index = 0);
   ECHO(id.type = CLASS_ENUM(T));
+  ECHO(id.is_const = false);
   TEST_THROW(table.get(id), RangeError);
 }
 
@@ -181,6 +261,29 @@ TEUCHOS_UNIT_TEST( Table, getWrong )
   ECHO(CTrilinos_Object_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = CLASS_ENUM(T4));
+  ECHO(id.is_const = false);
+  TEST_THROW(table.get(id), CTrilinosTypeMismatchError);
+}
+
+TEUCHOS_UNIT_TEST( Table, getWrongConst1 )
+{
+  ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
+  ECHO(CTrilinos_Object_ID_t id1 = table.store(new T));
+  ECHO(CTrilinos_Object_ID_t id);
+  ECHO(id.index = id1.index);
+  ECHO(id.type = id1.type);
+  ECHO(id.is_const = true);
+  TEST_THROW(table.get(id), CTrilinosTypeMismatchError);
+}
+
+TEUCHOS_UNIT_TEST( Table, getWrongConst2 )
+{
+  ECHO(Table<const T> table(CONSTRUCTOR(CLASS_ENUM(T)), TRUE));
+  ECHO(CTrilinos_Object_ID_t id1 = table.store(new T));
+  ECHO(CTrilinos_Object_ID_t id);
+  ECHO(id.index = id1.index);
+  ECHO(id.type = id1.type);
+  ECHO(id.is_const = false);
   TEST_THROW(table.get(id), CTrilinosTypeMismatchError);
 }
 
@@ -198,6 +301,30 @@ TEUCHOS_UNIT_TEST( Table, cast )
   TEST_EQUALITY(id2.type, CLASS_ENUM(T2));
   TEST_EQUALITY_CONST(id2.index, 0);
 }
+
+TEUCHOS_UNIT_TEST( Table, castConst )
+{
+  ECHO(Table<T1> table1(CONSTRUCTOR(CLASS_ENUM(T1))));
+  ECHO(Table<const T2> table2(CONSTRUCTOR(CLASS_ENUM(T2)), TRUE));
+
+  ECHO(CTrilinos_Object_ID_t id1 = table1.store(new T1));
+  ECHO(CTrilinos_Object_ID_t id2 = table2.cast(table1.get(id1)));
+
+  TEST_EQUALITY(id2.type, CLASS_ENUM(T2));
+  TEST_EQUALITY_CONST(id2.index, 0);
+}
+
+/* castBadConst below should NOT compile --> OK */
+/*
+TEUCHOS_UNIT_TEST( Table, castBadConst )
+{
+  ECHO(Table<const T1> table1(CONSTRUCTOR(CLASS_ENUM(T1)), TRUE));
+  ECHO(Table<T2> table2(CONSTRUCTOR(CLASS_ENUM(T2))));
+
+  ECHO(CTrilinos_Object_ID_t id1 = table1.store(new T1));
+  TEST_THROW(table2.cast(table1.get(id1)), CTrilinosTypeMismatchError);
+}
+*/
 
 TEUCHOS_UNIT_TEST( Table, castBad )
 {
