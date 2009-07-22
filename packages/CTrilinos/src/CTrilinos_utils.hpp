@@ -6,16 +6,16 @@
 #include "CEpetra_Comm_Cpp.hpp"
 #include "CEpetra_Operator_Cpp.hpp"
 #include "CEpetra_MultiVector_Cpp.hpp"
-#include "CEpetra_Object_Cpp.hpp"
 #include "CEpetra_OffsetIndex_Cpp.hpp"
+#include "CEpetra_Object_Cpp.hpp"
 #include "CEpetra_RowMatrix_Cpp.hpp"
 #include "CEpetra_CompObject_Cpp.hpp"
 #include "CEpetra_Directory_Cpp.hpp"
 #include "CEpetra_Flops_Cpp.hpp"
 #include "CEpetra_SrcDistObject_Cpp.hpp"
 #include "CEpetra_MpiComm_Cpp.hpp"
-#include "CEpetra_CrsGraph_Cpp.hpp"
 #include "CEpetra_CrsMatrix_Cpp.hpp"
+#include "CEpetra_CrsGraph_Cpp.hpp"
 #include "CEpetra_DistObject_Cpp.hpp"
 #include "CEpetra_Vector_Cpp.hpp"
 #include "CEpetra_Export_Cpp.hpp"
@@ -63,11 +63,11 @@ cast( Table<T> &destTable, CTrilinos_Object_ID_t id )
     case CT_Epetra_MultiVector_ID:
         newid = destTable.cast(CEpetra::getMultiVector(id));
         break;
-    case CT_Epetra_Object_ID:
-        newid = destTable.cast(CEpetra::getObject(id));
-        break;
     case CT_Epetra_OffsetIndex_ID:
         newid = destTable.cast(CEpetra::getOffsetIndex(id));
+        break;
+    case CT_Epetra_Object_ID:
+        newid = destTable.cast(CEpetra::getObject(id));
         break;
     case CT_Epetra_RowMatrix_ID:
         newid = destTable.cast(CEpetra::getRowMatrix(id));
@@ -89,11 +89,11 @@ cast( Table<T> &destTable, CTrilinos_Object_ID_t id )
         newid = destTable.cast(CEpetra::getMpiComm(id));
         break;
 #endif /* HAVE_MPI */
-    case CT_Epetra_CrsGraph_ID:
-        newid = destTable.cast(CEpetra::getCrsGraph(id));
-        break;
     case CT_Epetra_CrsMatrix_ID:
         newid = destTable.cast(CEpetra::getCrsMatrix(id));
+        break;
+    case CT_Epetra_CrsGraph_ID:
+        newid = destTable.cast(CEpetra::getCrsGraph(id));
         break;
     case CT_Epetra_DistObject_ID:
         newid = destTable.cast(CEpetra::getDistObject(id));
@@ -193,11 +193,11 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
     case CT_Epetra_MultiVector_ID:
         shares = rcp.shares_resource(CEpetra::getMultiVector(id));
         break;
-    case CT_Epetra_Object_ID:
-        shares = rcp.shares_resource(CEpetra::getObject(id));
-        break;
     case CT_Epetra_OffsetIndex_ID:
         shares = rcp.shares_resource(CEpetra::getOffsetIndex(id));
+        break;
+    case CT_Epetra_Object_ID:
+        shares = rcp.shares_resource(CEpetra::getObject(id));
         break;
     case CT_Epetra_RowMatrix_ID:
         shares = rcp.shares_resource(CEpetra::getRowMatrix(id));
@@ -219,11 +219,11 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
         shares = rcp.shares_resource(CEpetra::getMpiComm(id));
         break;
 #endif /* HAVE_MPI */
-    case CT_Epetra_CrsGraph_ID:
-        shares = rcp.shares_resource(CEpetra::getCrsGraph(id));
-        break;
     case CT_Epetra_CrsMatrix_ID:
         shares = rcp.shares_resource(CEpetra::getCrsMatrix(id));
+        break;
+    case CT_Epetra_CrsGraph_ID:
+        shares = rcp.shares_resource(CEpetra::getCrsGraph(id));
         break;
     case CT_Epetra_DistObject_ID:
         shares = rcp.shares_resource(CEpetra::getDistObject(id));

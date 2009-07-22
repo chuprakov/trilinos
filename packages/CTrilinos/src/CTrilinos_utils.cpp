@@ -49,11 +49,11 @@ isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
     case CT_Epetra_MultiVector_ID:
         shares = isSameObject(CEpetra::getMultiVector(id1), id2);
         break;
-    case CT_Epetra_Object_ID:
-        shares = isSameObject(CEpetra::getObject(id1), id2);
-        break;
     case CT_Epetra_OffsetIndex_ID:
         shares = isSameObject(CEpetra::getOffsetIndex(id1), id2);
+        break;
+    case CT_Epetra_Object_ID:
+        shares = isSameObject(CEpetra::getObject(id1), id2);
         break;
     case CT_Epetra_RowMatrix_ID:
         shares = isSameObject(CEpetra::getRowMatrix(id1), id2);
@@ -75,11 +75,11 @@ isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
         shares = isSameObject(CEpetra::getMpiComm(id1), id2);
         break;
 #endif /* HAVE_MPI */
-    case CT_Epetra_CrsGraph_ID:
-        shares = isSameObject(CEpetra::getCrsGraph(id1), id2);
-        break;
     case CT_Epetra_CrsMatrix_ID:
         shares = isSameObject(CEpetra::getCrsMatrix(id1), id2);
+        break;
+    case CT_Epetra_CrsGraph_ID:
+        shares = isSameObject(CEpetra::getCrsGraph(id1), id2);
         break;
     case CT_Epetra_DistObject_ID:
         shares = isSameObject(CEpetra::getDistObject(id1), id2);

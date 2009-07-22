@@ -51,8 +51,8 @@ typedef enum {
     CT_Epetra_CrsMatrix_ID, 
     CT_Epetra_CrsGraph_ID, 
     CT_Epetra_DistObject_ID, 
-    CT_Epetra_Export_ID, 
     CT_Epetra_Vector_ID, 
+    CT_Epetra_Export_ID, 
     CT_Epetra_Map_ID, 
     CT_Epetra_BlockMap_ID, 
     CT_Epetra_Import_ID
@@ -116,13 +116,13 @@ typedef struct {
     CTrilinos_Type_ID_t type;	/* Data type of the object */
     int index;			/* Array index of the object */
     boolean is_const;		/* Whether or not object was declared const */
-} CT_Epetra_Object_ID_t;
+} CT_Epetra_OffsetIndex_ID_t;
 
 typedef struct {
     CTrilinos_Type_ID_t type;	/* Data type of the object */
     int index;			/* Array index of the object */
     boolean is_const;		/* Whether or not object was declared const */
-} CT_Epetra_OffsetIndex_ID_t;
+} CT_Epetra_Object_ID_t;
 
 typedef struct {
     CTrilinos_Type_ID_t type;	/* Data type of the object */
@@ -166,13 +166,13 @@ typedef struct {
     CTrilinos_Type_ID_t type;	/* Data type of the object */
     int index;			/* Array index of the object */
     boolean is_const;		/* Whether or not object was declared const */
-} CT_Epetra_CrsGraph_ID_t;
+} CT_Epetra_CrsMatrix_ID_t;
 
 typedef struct {
     CTrilinos_Type_ID_t type;	/* Data type of the object */
     int index;			/* Array index of the object */
     boolean is_const;		/* Whether or not object was declared const */
-} CT_Epetra_CrsMatrix_ID_t;
+} CT_Epetra_CrsGraph_ID_t;
 
 typedef struct {
     CTrilinos_Type_ID_t type;	/* Data type of the object */
