@@ -46,4 +46,4 @@ INPUT                  = ../src index.doc
 
 EXAMPLE_PATH           = ../example
 
-GENERATE_TAGFILE       = ../../common/tag_files/Optika.tag
+GENERATE_TAGFILE       = ../../common/tag_files/optika.tag

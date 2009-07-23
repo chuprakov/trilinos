@@ -35,5 +35,5 @@ IGNORE_PREFIX          =
 #
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = NO
-GENERATE_TAGFILE       = ../../common/tag_files/OptikaBrowser.tag
+GENERATE_TAGFILE       = ../../common/tag_files/optika.tag
 #
