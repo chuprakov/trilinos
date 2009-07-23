@@ -2,9 +2,6 @@
 \htmlonly
 \endhtmlonly
 
-\section Optika_outline Outline
-
-
 \section Optika_intro Introduction 
 The Optika package is intended to give Trilinos Developers an 
 easy way to construct a GUI for their program. Through the use of Teuchos ParameterLists,
