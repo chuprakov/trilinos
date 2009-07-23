@@ -8,13 +8,13 @@ else
 fi
 
 echo
-echo "Generating main Optika doxygen documentation ..."
+echo "Generating main optika doxygen documentation ..."
 echo
 
 doxygen DoxyfileWeb
 
 echo
-echo "Generating doxygen browser documentation for all of Optika ..."
+echo "Generating doxygen browser documentation for all of optika ..."
 echo
 
 doxygen ../browser/doc/Doxyfile

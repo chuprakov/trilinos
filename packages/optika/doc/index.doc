@@ -1,8 +1,9 @@
-/*! \mainpage Trilinos/packages/Optika
+/*! \mainpage Trilinos/packages/optika
 \htmlonly
 \endhtmlonly
 
 \section Optika_outline Outline
+
 
 \section Optika_intro Introduction 
 The Optika package is intended to give Trilinos Developers an 
@@ -27,12 +28,11 @@ installation directory you will have to compile trilinos using these cmake argum
 	<li> -DQT\_BINARY\_DIR:STRING=directory containing your qt binaries</li>
 	</ul>
 
-\section Optika_bowser Browse all of Optika as a single doxygen collection
 
 You can browse all of Optika as a <A HREF="../../browser/doc/html/index.html">single
 doxygen collection</A>. Warning, this is not the recommended way to learn
 about Optika software.  However, this is a good way to browse the <a
-href="../../browser/doc/html/dirs.html">directory structure of Optika</a>, to <a
+href="../../browser/doc/html/dirs.html">directory structure of optika</a>, to <a
 href="../../browser/doc/html/files.html">locate files</a>, etc.
 
 

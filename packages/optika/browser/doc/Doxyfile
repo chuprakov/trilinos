@@ -1,7 +1,8 @@
-
+#
 # Note: all relative paths are relative to package/doc!
 #
 @INCLUDE = Doxyfile.options
+@INCLUDE = epetra/doc/BrowserTagFiles # Requires @INCLUDE_PAH=$(TRILINOS_HOME)/packages
 #
 # Override some options from Doxyfile.options
 #
@@ -12,7 +13,7 @@ EXTRACT_LOCAL_CLASSES  = YES
 #
 # Package options
 #
-PROJECT_NAME           = "Optika Package Browser (Single Doxygen Collection)"
+PROJECT_NAME           = "Optika GUI Toolik"
 OUTPUT_DIRECTORY       = ../browser/doc
 #
 # What and how documentation is extracted
@@ -20,11 +21,12 @@ OUTPUT_DIRECTORY       = ../browser/doc
 INPUT                  = ../browser/doc/index.doc \
                          ../src \
                          ../example \
+                         ../test
 FILE_PATTERNS          = *.h *c *.hpp *.cpp groups.doc
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_PATTERNS       = *.x *.o *.out
-EXAMPLE_PATH           = 
+EXAMPLE_PATH           =
 EXAMPLE_PATTERNS       =
 IMAGE_PATH             =
 INPUT_FILTER           = 
@@ -35,5 +37,5 @@ IGNORE_PREFIX          =
 #
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = NO
-GENERATE_TAGFILE       = ../../common/tag_files/optika.tag
+GENERATE_TAGFILE       = ../../common/tag_files/optikaBrowser.tag
 #
