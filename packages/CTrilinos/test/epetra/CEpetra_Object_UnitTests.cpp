@@ -146,7 +146,20 @@ int Epetra_Object_ReportError (
   CT_Epetra_Object_ID_t selfID, const char * Message, int ErrorCode );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST ( Epetra_Object , ReportError )
+{
+  ECHO(CEpetra_Test_CleanSlate());
 
+  ECHO(const char * Label = "This is ONLY a test object; please ignore errors");
+  ECHO(int TracebackModeIn = 1);
+  ECHO(CT_Epetra_Object_ID_t selfID = Epetra_Object_Create_WithLabel(Label, TracebackModeIn));
+
+  ECHO(const char * msg = "This is ONLY a test error message; please ignore");
+  ECHO(int code = -5);
+  ECHO(int ret = Epetra_Object_ReportError(selfID, msg, code));
+
+  TEST_EQUALITY(ret, code);
+}
 
 /**********************************************************************/
 

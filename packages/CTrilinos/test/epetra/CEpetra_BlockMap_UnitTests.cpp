@@ -512,9 +512,51 @@ int Epetra_BlockMap_NumGlobalPoints (
   CT_Epetra_BlockMap_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_BlockMap , NumGlobalPoints )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+
+  ECHO(int NumGlobalElements = 13);
+  ECHO(int ElementSize = 3);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t selfID = Epetra_BlockMap_Create(
+       NumGlobalElements, ElementSize, IndexBase, CommID));
+
+  ECHO(int pts = Epetra_BlockMap_NumGlobalPoints(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  ECHO(int ngp = NumGlobalElements*ElementSize);
+  TEST_EQUALITY(pts, ngp);
+}
+
 /**********************************************************************
 int Epetra_BlockMap_NumMyPoints ( CT_Epetra_BlockMap_ID_t selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_BlockMap , NumMyPoints )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+
+  ECHO(int NumGlobalElements = 13);
+  ECHO(int ElementSize = 3);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t selfID = Epetra_BlockMap_Create(
+       NumGlobalElements, ElementSize, IndexBase, CommID));
+
+  ECHO(int pts = Epetra_BlockMap_NumMyPoints(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  ECHO(int myels = Epetra_BlockMap_NumMyElements(selfID));
+
+  ECHO(int nmp = myels*ElementSize);
+  TEST_EQUALITY(pts, nmp);
+}
 
 /**********************************************************************
 int Epetra_BlockMap_MinMyElementSize ( 

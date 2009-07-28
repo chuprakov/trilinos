@@ -352,15 +352,76 @@ int Epetra_MultiVector_NumVectors (
   CT_Epetra_MultiVector_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_MultiVector , NumVectors )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 7);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
+  ECHO(int NumVectors = 4);
+  ECHO(boolean zeroOut = FALSE);
+  ECHO(CT_Epetra_MultiVector_ID_t selfID = Epetra_MultiVector_Create(MapID, NumVectors, zeroOut));
+
+  ECHO(int num = Epetra_MultiVector_NumVectors(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(num, NumVectors);
+}
+
 /**********************************************************************
 int Epetra_MultiVector_MyLength ( 
   CT_Epetra_MultiVector_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_MultiVector , MyLength )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 7);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
+  ECHO(int NumVectors = 4);
+  ECHO(boolean zeroOut = FALSE);
+  ECHO(CT_Epetra_MultiVector_ID_t selfID = Epetra_MultiVector_Create(MapID, NumVectors, zeroOut));
+
+  ECHO(int len = Epetra_MultiVector_MyLength(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  ECHO(int mine = Epetra_BlockMap_NumMyElements(MapID));
+  TEST_EQUALITY(len, mine);
+}
+
 /**********************************************************************
 int Epetra_MultiVector_GlobalLength ( 
   CT_Epetra_MultiVector_ID_t selfID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_MultiVector , GlobalLength )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 7);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
+  ECHO(int NumVectors = 4);
+  ECHO(boolean zeroOut = FALSE);
+  ECHO(CT_Epetra_MultiVector_ID_t selfID = Epetra_MultiVector_Create(MapID, NumVectors, zeroOut));
+
+  ECHO(int len = Epetra_MultiVector_GlobalLength(selfID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(len, NumGlobalElements);
+}
 
 /**********************************************************************
 int Epetra_MultiVector_Stride ( CT_Epetra_MultiVector_ID_t selfID );

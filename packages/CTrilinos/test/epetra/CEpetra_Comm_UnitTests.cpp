@@ -68,10 +68,45 @@ TEUCHOS_UNIT_TEST( Epetra_Comm , Destroy )
 void Epetra_Comm_Barrier ( CT_Epetra_Comm_ID_t selfID );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_Comm , Barrier )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_Comm_ID_t selfID = UnitTest_Create_Comm());
+
+  ECHO(Epetra_Comm_Barrier(selfID));
+}
+
 /**********************************************************************
 int Epetra_Comm_Broadcast_Double ( 
   CT_Epetra_Comm_ID_t selfID, double * MyVals, int Count, int Root );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_Comm , Broadcast_Double )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_Comm_ID_t selfID = UnitTest_Create_Comm());
+  ECHO(int MyPID = Epetra_Comm_MyPID(selfID));
+
+  ECHO(int Root = 0);
+  ECHO(const int Count = 6);
+  double tmpMyVals[Count] = {4.6, 2.6, 3.1, 7.7, -0.5, 1.0};
+  double MyVals[Count];
+  if (MyPID == Root) {
+    for (int i=0; i<Count; i++) {
+      MyVals[i] = tmpMyVals[i];
+    }
+  }
+
+  ECHO(int ret = Epetra_Comm_Broadcast_Double(selfID, MyVals, Count, Root));
+  TEST_EQUALITY_CONST(ret, 0);
+  bool match = true;
+  for (int i=0; i<Count; i++) {
+    if (MyVals[i] != tmpMyVals[i]) match = false;
+  }
+  TEST_EQUALITY_CONST(match, true);
+}
 
 /**********************************************************************
 int Epetra_Comm_Broadcast_Int ( 
@@ -93,6 +128,30 @@ int Epetra_Comm_GatherAll_Double (
   CT_Epetra_Comm_ID_t selfID, double * MyVals, double * AllVals, 
   int Count );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_Comm , GatherAll_Double )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_Comm_ID_t selfID = UnitTest_Create_Comm());
+  ECHO(int NumProc = Epetra_Comm_NumProc(selfID));
+  ECHO(int MyPID = Epetra_Comm_MyPID(selfID));
+
+  ECHO(const int Count = 2);
+  double MyVals[Count] = {4.6, 3.1};
+  for (int i=0; i<Count; i++) {
+    MyVals[i] += MyPID;
+  }
+
+  ECHO(int AllCount = NumProc * Count);
+  double *AllVals = (double *)malloc(AllCount * sizeof(double));
+  TEST_INEQUALITY(AllVals, NULL);
+
+  if (AllVals != NULL) {
+    ECHO(int ret = Epetra_Comm_GatherAll_Double(selfID, MyVals, AllVals, Count));
+    TEST_EQUALITY_CONST(ret, 0);
+  }
+}
 
 /**********************************************************************
 int Epetra_Comm_GatherAll_Int ( 
