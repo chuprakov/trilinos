@@ -90,8 +90,7 @@ namespace FEApp {
 	a += alpha[j];
       a /= static_cast<double>(alpha.size());
       for (unsigned int i=0; i<solution.size(); i++) {
-        value[i] = std::exp(a+solution[i]);
-        //value[i] = a*solution[i];
+        value[i] = a*std::exp(solution[i]);
       }
       
     }

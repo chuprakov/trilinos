@@ -73,8 +73,7 @@ namespace FEApp {
     evaluate(const std::vector<ScalarT>& solution,
              std::vector<ScalarT>& value) const {
       for (unsigned int i=0; i<solution.size(); i++) {
-        value[i] = std::exp(alpha)*std::exp(solution[i]);
-        //value[i] = -1.0;
+        value[i] = alpha*std::exp(solution[i]);
       }
     };
 
