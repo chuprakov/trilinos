@@ -265,7 +265,7 @@ FEApp::ModelEvaluator::createOutArgs() const
     outArgs.setSupports(OUT_ARG_f_sg,true);
     outArgs.setSupports(OUT_ARG_W_sg,true);
     if (supports_g)
-      outArgs.set_Ng_sg(1);
+      outArgs.set_Np_Ng_sg(0, 1);
   }
 
   return outArgs;
@@ -335,16 +335,22 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
 	Teuchos::Array<int> p_indexes = 
 	  outArgs.get_DfDp(i).getDerivativeMultiVector().getParamIndexes();
 	unsigned int n_params = p_indexes.size();
-	Teuchos::Array<std::string> p_names(n_params);
-	for (unsigned int j=0; j<n_params; j++)
-	  p_names[j] = (*(param_names[i]))[p_indexes[j]];
-	ParamVec p_vec;
-	app->getParamLib()->fillVector<FEApp::ResidualType>(p_names, p_vec);
-	for (unsigned int j=0; j<p_vec.size(); j++)
-	  p_vec[j].baseValue = (*(sacado_param_vec[i]))[p_indexes[j]].baseValue;
+	Teuchos::RCP<ParamVec> p_vec;
+	if (n_params > 0) {
+	  Teuchos::Array<std::string> p_names(n_params);
+	  for (unsigned int j=0; j<n_params; j++)
+	    p_names[j] = (*(param_names[i]))[p_indexes[j]];
+	  p_vec = Teuchos::rcp(new ParamVec);
+	  app->getParamLib()->fillVector<FEApp::ResidualType>(p_names, *p_vec);
+	  for (unsigned int j=0; j<p_vec->size(); j++)
+	    (*p_vec)[j].baseValue = 
+	      (*(sacado_param_vec[i]))[p_indexes[j]].baseValue;
+	}
+	else
+	  p_vec = Teuchos::rcp(sacado_param_vec[0].get(), false);
   
 	app->computeGlobalTangent(0.0, 0.0, false, x_dot.get(), *x, 
-				  sacado_param_vec, &p_vec,
+				  sacado_param_vec, p_vec.get(),
 				  NULL, NULL, f_out.get(), NULL, 
 				  dfdp_out.get());
 
