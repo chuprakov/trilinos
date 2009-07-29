@@ -16,14 +16,17 @@ workflow within their program:
 	\end{enumerate}
 
 \section Compile Notes
-In order to compile Optika you must have Qt installed. You can either download Qt directly from the website (http://www.qtsoftware.com) or if you are on Linux, you can use your package manager.
-If you use your package manager, may sure you download the Qt developement package (usually something like qt4-devel) and that it is Qt version 4.5 or higher. If you download Qt directly and put it some where other than the default
-installation directory you will have to compile trilinos using these cmake arguments:
-	<ul>
-	<li> -DQT\_INCLUDE\_DIRS:STRING=directory containing your qt include files</li>
-	<li> -DQT\_LIBRARY\_DIRS:STRING=directory containing your qt libraries</li>
-	<li> -DQT\_BINARY\_DIR:STRING=directory containing your qt binaries</li>
-	</ul>
+In order to compile Optika you must have Qt installed. You can either download Qt directly from the website (http://www.qtsoftware.com)
+or if you are on Linux, you can use your package manager.  If you use your package manager, may sure you download the Qt developement package 
+(usually something like qt4-devel) and that it is Qt version 4.5 or higher. If you download Qt directly and put it some where other than the default
+installation directory, the simpilest way to ensure that optika finds it is by putting the path to the qmake executable in your $PATH variable.
+For example, lets assume that I installed qt to a directory in my home directory called qt4.5, then I would issue the following command:
+<code>
+For BASH:
+$  export $PATH=/home/kurtis/qt4.5/bin:$PATH
+For TSCH:
+$  set path=( /home/kurtis/qt4.5/bin $path)
+</code>
 
 
 You can browse all of Optika as a <A HREF="../../browser/doc/html/index.html">single
