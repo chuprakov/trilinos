@@ -26,11 +26,9 @@
 // ***********************************************************************
 //@HEADER
 
-#ifndef EpetraExt_HYPRE_HELPERS_HPP
-#define EpetraExt_HYPRE_HELPERS_HPP
+#ifndef EUCLID_HELPERS_HPP
+#define EUCLID_HELPERS_HPP
 
-#include "HYPRE_IJ_mv.h"
-#include "EpetraExt_HypreIJMatrix.h"
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_RowMatrix.h"
 #include "Epetra_MultiVector.h"
@@ -38,15 +36,10 @@
 
 #include <string>
 
-EpetraExt_HypreIJMatrix::EpetraExt_HypreIJMatrix* newHypreMatrix(int N);
 
 Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N);
 
-Epetra_CrsMatrix::Epetra_CrsMatrix* GetCrsMatrix(EpetraExt_HypreIJMatrix &Matrix);
-
 bool EquivalentVectors(Epetra_MultiVector &X, Epetra_MultiVector &Y, double tol);
 
-bool EquivalentMatrices(Epetra_RowMatrix &HypreMatrix, Epetra_RowMatrix &CrsMatrix,double tol);
-
-#endif // EpetraExt_HYPRE_HELPERS_HPP
+#endif // EUCLID_HELPERS_HPP
 

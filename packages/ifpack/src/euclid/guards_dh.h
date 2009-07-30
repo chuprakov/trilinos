@@ -1,52 +1,58 @@
-//@HEADER
+/*@HEADER
 // ***********************************************************************
-// 
-//     EpetraExt: Epetra Extended - Linear Algebra Services Package
+//
+//       Ifpack: Object-Oriented Algebraic Preconditioner Package
 //                 Copyright (2009) Sandia Corporation
-// 
+//
 // Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
 // license for use of this work by or on behalf of the U.S. Government.
-// 
+//
 // This library is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as
 // published by the Free Software Foundation; either version 2.1 of the
 // License, or (at your option) any later version.
-//  
+//
 // This library is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
-// Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
-// 
+// Questions? Contact Michael A. Heroux (maherou@sandia.gov)
+//
 // ***********************************************************************
 //@HEADER
+*/
 
-#ifndef EpetraExt_HYPRE_HELPERS_HPP
-#define EpetraExt_HYPRE_HELPERS_HPP
+#ifndef GUARDS_DH
+#define GUARDS_DH
 
-#include "HYPRE_IJ_mv.h"
-#include "EpetraExt_HypreIJMatrix.h"
-#include "Epetra_CrsMatrix.h"
-#include "Epetra_RowMatrix.h"
-#include "Epetra_MultiVector.h"
-#include "Epetra_Vector.h"
+#include "euclid_common.h"
 
-#include <string>
 
-EpetraExt_HypreIJMatrix::EpetraExt_HypreIJMatrix* newHypreMatrix(int N);
+/*
+   This file defines the INITIALIZE_DH and FINALIZE_DH macros
+*/
 
-Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N);
+#define  INITIALIZE_DH(argc, argv, help) \
+            MPI_Init(&argc,&argv);  \
+            comm_dh = MPI_COMM_WORLD;    \
+            MPI_Errhandler_set(comm_dh, MPI_ERRORS_RETURN); \
+            EuclidInitialize(argc, argv, help); \
+            dh_StartFunc(__FUNC__, __FILE__, __LINE__, 1); \
+            {
 
-Epetra_CrsMatrix::Epetra_CrsMatrix* GetCrsMatrix(EpetraExt_HypreIJMatrix &Matrix);
 
-bool EquivalentVectors(Epetra_MultiVector &X, Epetra_MultiVector &Y, double tol);
+#define  FINALIZE_DH \
+            } \
+            dh_EndFunc(__FUNC__, 1); \
+            EuclidFinalize(); \
+            MPI_Finalize(); 
 
-bool EquivalentMatrices(Epetra_RowMatrix &HypreMatrix, Epetra_RowMatrix &CrsMatrix,double tol);
 
-#endif // EpetraExt_HYPRE_HELPERS_HPP
 
+
+#endif /* #ifndef GUARDS_DH */

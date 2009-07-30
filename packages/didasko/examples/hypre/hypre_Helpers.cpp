@@ -47,7 +47,7 @@
 
 using Teuchos::RCP;
 using Teuchos::rcp;
-EpetraExt_HypreIJMatrix::EpetraExt_HypreIJMatrix CreateHypre(const int N)
+EpetraExt_HypreIJMatrix::EpetraExt_HypreIJMatrix* newHypreMatrix(const int N)
 {
   HYPRE_IJMatrix Matrix;
   int ierr = 0;
@@ -99,19 +99,19 @@ EpetraExt_HypreIJMatrix::EpetraExt_HypreIJMatrix CreateHypre(const int N)
   }
   // Assemble
   ierr += HYPRE_IJMatrixAssemble(Matrix);
-  EpetraExt_HypreIJMatrix RetMat(Matrix);
+  EpetraExt_HypreIJMatrix* RetMat = new EpetraExt_HypreIJMatrix(Matrix);
   //Don't HYPRE_IJMatrixDestroy(Matrix);
   return RetMat;
 }
 
-Epetra_CrsMatrix::Epetra_CrsMatrix CreateCrs(int N){
+Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N){
 
   Epetra_MpiComm Comm(MPI_COMM_WORLD);
 
   RCP<Epetra_Map>            Map;
   //Epetra_Map*            Map;
   // pointer to the matrix to be created
-  RCP<Epetra_CrsMatrix>      Matrix;
+  Epetra_CrsMatrix*      Matrix;
   //Epetra_CrsMatrix* Matrix;
   // container for parameters
   Teuchos::ParameterList GaleriList;
@@ -121,31 +121,31 @@ Epetra_CrsMatrix::Epetra_CrsMatrix CreateCrs(int N){
   GaleriList.set("ny", ny);
 
   Map = rcp(Galeri::CreateMap("Cartesian2D", Comm, GaleriList));
-  Matrix   = rcp(Galeri::CreateCrsMatrix("Laplace2D", Map.get(), GaleriList));
-  return *Matrix.get();
+  Matrix   = Galeri::CreateCrsMatrix("Laplace2D", Map.get(), GaleriList);
+  return Matrix;
 }
 
-Epetra_CrsMatrix::Epetra_CrsMatrix GetCrsMatrix(EpetraExt_HypreIJMatrix &Matrix)
+Epetra_CrsMatrix::Epetra_CrsMatrix* GetCrsMatrix(EpetraExt_HypreIJMatrix *Matrix)
 {
-  int N = Matrix.NumGlobalRows();
-  Epetra_CrsMatrix TestMat(Copy, Matrix.RowMatrixRowMap(), Matrix.RowMatrixColMap(), N, false);
+  int N = Matrix->NumGlobalRows();
+  Epetra_CrsMatrix* TestMat = new Epetra_CrsMatrix(Copy, Matrix->RowMatrixRowMap(), Matrix->RowMatrixColMap(), N, false);
   
-  for(int i = 0; i < Matrix.NumMyRows(); i++){
+  for(int i = 0; i < Matrix->NumMyRows(); i++){
     int entries;
-    Matrix.NumMyRowEntries(i,entries);
+    Matrix->NumMyRowEntries(i,entries);
     Teuchos::Array<double> Values; Values.resize(entries);
     Teuchos::Array<int> Indices; Indices.resize(entries);
     int NumEntries;
-    Matrix.ExtractMyRowCopy(i,entries,NumEntries,&Values[0], &Indices[0]);
+    Matrix->ExtractMyRowCopy(i,entries,NumEntries,&Values[0], &Indices[0]);
     for(int j = 0; j < NumEntries; j++){
       double currVal[1];
       currVal[0] = Values[j];
       int currInd[1];
-      currInd[0] = Matrix.RowMatrixColMap().GID(Indices[j]);
-      TestMat.InsertGlobalValues(Matrix.RowMatrixRowMap().GID(i), 1, currVal, currInd);
+      currInd[0] = Matrix->RowMatrixColMap().GID(Indices[j]);
+      TestMat->InsertGlobalValues(Matrix->RowMatrixRowMap().GID(i), 1, currVal, currInd);
     }
   }
-  TestMat.FillComplete();
+  TestMat->FillComplete();
   return TestMat;
 }
 

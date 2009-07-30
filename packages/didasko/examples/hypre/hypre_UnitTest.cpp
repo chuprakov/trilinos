@@ -64,6 +64,7 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, AztecOO ){
 
   Epetra_CrsMatrix Crs_Matrix = CreateCrs(3);
   Ifpack_Hypre preconditioner(&Crs_Matrix);
+  preconditioner.Initialize();
   int NumProc = Crs_Matrix.Comm().NumProc();
   HYPRE_IJMatrix hypre_mat = preconditioner.HypreMatrix();
   EpetraExt_HypreIJMatrix Hyp_Matrix(hypre_mat);
@@ -88,31 +89,33 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, AztecOO ){
   Epetra_LinearProblem Problem2(&Crs_Matrix, &X, &B);
   AztecOO solver2(Problem2);
   preconditioner.SetParameter(Solver, PCG); // Use a PCG Solver
-  preconditioner.SetParameter(Preconditioner, Euclid); // Use a Euclid Preconditioner (but not really used)
+  preconditioner.SetParameter(Preconditioner, ParaSails); // Use a Euclid Preconditioner (but not really used)
   preconditioner.SetParameter(Solver, &HYPRE_ParCSRPCGSetMaxIter, 1000); // Set maximum iterations
   preconditioner.SetParameter(Solver, &HYPRE_ParCSRPCGSetTol, 1e-9); // Set a tolerance
   preconditioner.SetParameter(Solver); // Solve the problem
-  preconditioner.SetParameter(false); // Don't use the preconditioner
-  preconditioner.Initialize();
-  preconditioner.Compute();
+  preconditioner.SetParameter(true); // Don't use the preconditioner
   solver2.SetPrecOperator(&preconditioner);
+  preconditioner.Compute();
+  preconditioner.Condest(Ifpack_Cheap, 1550, 1e-9, &Crs_Matrix);
+  cout << endl << preconditioner << endl;
+  solver2.Iterate(1000, tol);
   TEST_EQUALITY(EquivalentVectors(X, KnownX, tol*10*pow(10.0,NumProc)), true);
 
 }*/
 TEUCHOS_UNIT_TEST( Ifpack_Hypre, Ifpack ){
 
-  Epetra_CrsMatrix Crs_Matrix = CreateCrs(3);
+  Epetra_CrsMatrix* Crs_Matrix = newCrsMatrix(4);
   Ifpack Factory;
-  RCP<Ifpack_Preconditioner> preconditioner= rcp(Factory.Create("Hypre", &Crs_Matrix));
-  int NumProc = Crs_Matrix.Comm().NumProc();
-  int MyPID = Crs_Matrix.Comm().MyPID();
+  RCP<Ifpack_Preconditioner> preconditioner= rcp(Factory.Create("Hypre", Crs_Matrix));
+  int NumProc = Crs_Matrix->Comm().NumProc();
+  int MyPID = Crs_Matrix->Comm().MyPID();
 
   int numVec = 2;
   Epetra_MultiVector X(preconditioner->OperatorRangeMap(), numVec);
   Epetra_MultiVector KnownX(preconditioner->OperatorRangeMap(), numVec);
-  KnownX.Random();
+  TEST_EQUALITY(KnownX.Random(), 0);
   Epetra_MultiVector B(preconditioner->OperatorDomainMap(), numVec);
-  preconditioner->Initialize();
+  TEST_EQUALITY(preconditioner->Initialize(), 0);
   TEST_EQUALITY(preconditioner->Apply(KnownX, B), 0);
 
   Teuchos::ParameterList list("New List");
@@ -135,29 +138,29 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, Ifpack ){
   //(dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, &HYPRE_ParCSRPCGSetTol, 1e-9); // Set a tolerance
   //(dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver); // Solve the problem
   //(dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(true); // Use the preconditioner
-  //preconditioner->Initialize();
   TEST_EQUALITY(preconditioner->Compute(),0);
+  preconditioner->Condest(Ifpack_Cheap, 1000, 1e-9, Crs_Matrix);
   TEST_EQUALITY(preconditioner->ApplyInverse(B, X),0);
   TEST_EQUALITY(EquivalentVectors(X, KnownX, tol*10*pow(10.0,NumProc)), true);
-  if(MyPID == 0) printf("Time spent in Compute() = %f\n",preconditioner->ComputeTime()); 
-  if(MyPID == 0) printf("Time spent in ApplyInverse() = %f\n",preconditioner->ApplyInverseTime()); 
+  cout << *preconditioner;
   int numIters;
   double residual;
   (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, &HYPRE_ParCSRPCGGetNumIterations, &numIters); 
   (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->SetParameter(Solver, &HYPRE_ParCSRPCGGetFinalRelativeResidualNorm, &residual); 
   (dynamic_cast<Ifpack_Hypre*> (preconditioner.get()))->CallFunctions();
   if(MyPID == 0) printf("It took %d iterations, and achieved %e residual.\n", numIters, residual);
+  delete Crs_Matrix;
 }
 
 TEUCHOS_UNIT_TEST( Ifpack_Hypre, EpetraExt ){
   
-  Epetra_CrsMatrix Crs_Matrix = CreateCrs(3);
-  Ifpack_Hypre preconditioner(&Crs_Matrix);
-  int NumProc = Crs_Matrix.Comm().NumProc();
-  int MyPID = Crs_Matrix.Comm().MyPID();
+  Epetra_CrsMatrix* Crs_Matrix = newCrsMatrix(3);
+  Ifpack_Hypre preconditioner(Crs_Matrix);
+  int NumProc = Crs_Matrix->Comm().NumProc();
+  int MyPID = Crs_Matrix->Comm().MyPID();
   HYPRE_IJMatrix hypre_mat = preconditioner.HypreMatrix();
   EpetraExt_HypreIJMatrix Hyp_Matrix(hypre_mat);
-  EquivalentMatrices(Hyp_Matrix, Crs_Matrix, tol);
+  EquivalentMatrices(Hyp_Matrix, *Crs_Matrix, tol);
 
   int numVec = 2;
   Epetra_MultiVector X(Hyp_Matrix.RowMatrixRowMap(), numVec);
@@ -192,4 +195,5 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, EpetraExt ){
   preconditioner.ApplyInverse(B, X);
   TEST_EQUALITY(EquivalentVectors(X, KnownX, tol*10*pow(10.0,NumProc)), true);
   */
+  delete Crs_Matrix;
 }

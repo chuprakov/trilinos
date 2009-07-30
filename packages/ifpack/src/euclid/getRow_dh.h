@@ -1,52 +1,55 @@
-//@HEADER
+/*@HEADER
 // ***********************************************************************
-// 
-//     EpetraExt: Epetra Extended - Linear Algebra Services Package
+//
+//       Ifpack: Object-Oriented Algebraic Preconditioner Package
 //                 Copyright (2009) Sandia Corporation
-// 
+//
 // Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
 // license for use of this work by or on behalf of the U.S. Government.
-// 
+//
 // This library is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as
 // published by the Free Software Foundation; either version 2.1 of the
 // License, or (at your option) any later version.
-//  
+//
 // This library is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-//  
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
-// Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
-// 
+// Questions? Contact Michael A. Heroux (maherou@sandia.gov)
+//
 // ***********************************************************************
 //@HEADER
+*/
 
-#ifndef EpetraExt_HYPRE_HELPERS_HPP
-#define EpetraExt_HYPRE_HELPERS_HPP
+#ifndef GET_ROW_DH
+#define GET_ROW_DH
 
-#include "HYPRE_IJ_mv.h"
-#include "EpetraExt_HypreIJMatrix.h"
-#include "Epetra_CrsMatrix.h"
-#include "Epetra_RowMatrix.h"
-#include "Epetra_MultiVector.h"
-#include "Epetra_Vector.h"
+#include "euclid_common.h"
+#include "call_epetra.h"
 
-#include <string>
+/* "row" refers to global row number */
 
-EpetraExt_HypreIJMatrix::EpetraExt_HypreIJMatrix* newHypreMatrix(int N);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N);
+extern void EuclidGetDimensions(void *A, int *beg_row, int *rowsLocal, int *rowsGlobal);
+extern void EuclidGetRow(void *A, int row, int *len, int **ind, double **val);
+extern void EuclidRestoreRow(void *A, int row, int *len, int **ind, double **val);
 
-Epetra_CrsMatrix::Epetra_CrsMatrix* GetCrsMatrix(EpetraExt_HypreIJMatrix &Matrix);
+extern int EuclidReadLocalNz(void *A);
 
-bool EquivalentVectors(Epetra_MultiVector &X, Epetra_MultiVector &Y, double tol);
+extern void PrintMatUsingGetRow(void* A, int beg_row, int m,
+                          int *n2o_row, int *n2o_col, char *filename);
 
-bool EquivalentMatrices(Epetra_RowMatrix &HypreMatrix, Epetra_RowMatrix &CrsMatrix,double tol);
-
-#endif // EpetraExt_HYPRE_HELPERS_HPP
+#ifdef __cplusplus
+}
+#endif
+#endif
 
