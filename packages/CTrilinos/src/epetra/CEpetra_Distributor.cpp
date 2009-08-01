@@ -73,7 +73,7 @@ void Epetra_Distributor_Destroy (
   CT_Epetra_Distributor_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstDistributors().remove(&aid);
     } else {
@@ -88,7 +88,7 @@ int Epetra_Distributor_CreateFromSends (
   int * NumRemoteIDs )
 {
     return CEpetra::getDistributor(selfID)->CreateFromSends(
-            NumExportIDs, ExportPIDs, Deterministic, *NumRemoteIDs);
+        NumExportIDs, ExportPIDs, Deterministic, *NumRemoteIDs);
 }
 
 int Epetra_Distributor_CreateFromRecvs ( 
@@ -98,7 +98,7 @@ int Epetra_Distributor_CreateFromRecvs (
   int ** ExportPIDs )
 {
     return CEpetra::getDistributor(selfID)->CreateFromRecvs(
-            NumRemoteIDs, RemoteGIDs, RemotePIDs, Deterministic, *NumExportIDs, *ExportGIDs, *ExportPIDs);
+        NumRemoteIDs, RemoteGIDs, RemotePIDs, Deterministic, *NumExportIDs, *ExportGIDs, *ExportPIDs);
 }
 
 int Epetra_Distributor_Do ( 
@@ -106,7 +106,7 @@ int Epetra_Distributor_Do (
   int * len_import_objs, char ** import_objs )
 {
     return CEpetra::getDistributor(selfID)->Do(
-            export_objs, obj_size, *len_import_objs, *import_objs);
+        export_objs, obj_size, *len_import_objs, *import_objs);
 }
 
 int Epetra_Distributor_DoReverse ( 
@@ -114,7 +114,7 @@ int Epetra_Distributor_DoReverse (
   int * len_import_objs, char ** import_objs )
 {
     return CEpetra::getDistributor(selfID)->DoReverse(
-            export_objs, obj_size, *len_import_objs, *import_objs);
+        export_objs, obj_size, *len_import_objs, *import_objs);
 }
 
 int Epetra_Distributor_DoPosts ( 
@@ -122,7 +122,7 @@ int Epetra_Distributor_DoPosts (
   int * len_import_objs, char ** import_objs )
 {
     return CEpetra::getDistributor(selfID)->DoPosts(
-            export_objs, obj_size, *len_import_objs, *import_objs);
+        export_objs, obj_size, *len_import_objs, *import_objs);
 }
 
 int Epetra_Distributor_DoWaits ( CT_Epetra_Distributor_ID_t selfID )
@@ -135,7 +135,7 @@ int Epetra_Distributor_DoReversePosts (
   int * len_import_objs, char ** import_objs )
 {
     return CEpetra::getDistributor(selfID)->DoReversePosts(
-            export_objs, obj_size, *len_import_objs, *import_objs);
+        export_objs, obj_size, *len_import_objs, *import_objs);
 }
 
 int Epetra_Distributor_DoReverseWaits ( 
@@ -149,7 +149,7 @@ int Epetra_Distributor_Do_VarLen (
   int ** sizes, int * len_import_objs, char ** import_objs )
 {
     return CEpetra::getDistributor(selfID)->Do(
-            export_objs, obj_size, *sizes, *len_import_objs, *import_objs);
+        export_objs, obj_size, *sizes, *len_import_objs, *import_objs);
 }
 
 int Epetra_Distributor_DoReverse_VarLen ( 
@@ -157,7 +157,7 @@ int Epetra_Distributor_DoReverse_VarLen (
   int ** sizes, int * len_import_objs, char ** import_objs )
 {
     return CEpetra::getDistributor(selfID)->DoReverse(
-            export_objs, obj_size, *sizes, *len_import_objs, *import_objs);
+        export_objs, obj_size, *sizes, *len_import_objs, *import_objs);
 }
 
 int Epetra_Distributor_DoPosts_VarLen ( 
@@ -165,7 +165,7 @@ int Epetra_Distributor_DoPosts_VarLen (
   int ** sizes, int * len_import_objs, char ** import_objs )
 {
     return CEpetra::getDistributor(selfID)->DoPosts(
-            export_objs, obj_size, *sizes, *len_import_objs, *import_objs);
+        export_objs, obj_size, *sizes, *len_import_objs, *import_objs);
 }
 
 int Epetra_Distributor_DoReversePosts_VarLen ( 
@@ -173,7 +173,7 @@ int Epetra_Distributor_DoReversePosts_VarLen (
   int ** sizes, int * len_import_objs, char ** import_objs )
 {
     return CEpetra::getDistributor(selfID)->DoReversePosts(
-            export_objs, obj_size, *sizes, *len_import_objs, *import_objs);
+        export_objs, obj_size, *sizes, *len_import_objs, *import_objs);
 }
 
 

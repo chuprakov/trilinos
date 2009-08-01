@@ -64,15 +64,15 @@ CTrilinos_Object_ID_t Epetra_Flops_Abstract (
 CT_Epetra_Flops_ID_t Epetra_Flops_Create (  )
 {
     return CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(
-            tableOfFlopss().store(new Epetra_Flops()));
+        tableOfFlopss().store(new Epetra_Flops()));
 }
 
 CT_Epetra_Flops_ID_t Epetra_Flops_Duplicate ( 
   CT_Epetra_Flops_ID_t Flops_inID )
 {
     return CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(
-            tableOfFlopss().store(new Epetra_Flops(
-            *CEpetra::getFlops(Flops_inID))));
+        tableOfFlopss().store(new Epetra_Flops(
+        *CEpetra::getFlops(Flops_inID))));
 }
 
 double Epetra_Flops_Flops ( CT_Epetra_Flops_ID_t selfID )
@@ -88,7 +88,7 @@ void Epetra_Flops_ResetFlops ( CT_Epetra_Flops_ID_t selfID )
 void Epetra_Flops_Destroy ( CT_Epetra_Flops_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstFlopss().remove(&aid);
     } else {

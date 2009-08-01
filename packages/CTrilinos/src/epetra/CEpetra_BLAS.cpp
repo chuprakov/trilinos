@@ -64,21 +64,21 @@ CTrilinos_Object_ID_t Epetra_BLAS_Abstract (
 CT_Epetra_BLAS_ID_t Epetra_BLAS_Create (  )
 {
     return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
-            tableOfBLASs().store(new Epetra_BLAS()));
+        tableOfBLASs().store(new Epetra_BLAS()));
 }
 
 CT_Epetra_BLAS_ID_t Epetra_BLAS_Duplicate ( 
   CT_Epetra_BLAS_ID_t BLASID )
 {
     return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
-            tableOfBLASs().store(new Epetra_BLAS(
-            *CEpetra::getBLAS(BLASID))));
+        tableOfBLASs().store(new Epetra_BLAS(
+        *CEpetra::getBLAS(BLASID))));
 }
 
 void Epetra_BLAS_Destroy ( CT_Epetra_BLAS_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstBLASs().remove(&aid);
     } else {
@@ -192,7 +192,7 @@ void Epetra_BLAS_GEMV_Float (
   const int INCY )
 {
     CEpetra::getConstBLAS(selfID)->GEMV(
-            TRANS, M, N, ALPHA, A, LDA, X, BETA, Y, INCX, INCY);
+        TRANS, M, N, ALPHA, A, LDA, X, BETA, Y, INCX, INCY);
 }
 
 void Epetra_BLAS_GEMV_Double ( 
@@ -202,7 +202,7 @@ void Epetra_BLAS_GEMV_Double (
   const int INCY )
 {
     CEpetra::getConstBLAS(selfID)->GEMV(
-            TRANS, M, N, ALPHA, A, LDA, X, BETA, Y, INCX, INCY);
+        TRANS, M, N, ALPHA, A, LDA, X, BETA, Y, INCX, INCY);
 }
 
 void Epetra_BLAS_GEMM_Float ( 
@@ -212,7 +212,7 @@ void Epetra_BLAS_GEMM_Float (
   const float BETA, float * C, const int LDC )
 {
     CEpetra::getConstBLAS(selfID)->GEMM(
-            TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC);
+        TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC);
 }
 
 void Epetra_BLAS_GEMM_Double ( 
@@ -222,7 +222,7 @@ void Epetra_BLAS_GEMM_Double (
   const double BETA, double * C, const int LDC )
 {
     CEpetra::getConstBLAS(selfID)->GEMM(
-            TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC);
+        TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC);
 }
 
 void Epetra_BLAS_SYMM_Float ( 
@@ -232,7 +232,7 @@ void Epetra_BLAS_SYMM_Float (
   float * C, const int LDC )
 {
     CEpetra::getConstBLAS(selfID)->SYMM(
-            SIDE, UPLO, M, N, ALPHA, A, LDA, B, LDB, BETA, C, LDC);
+        SIDE, UPLO, M, N, ALPHA, A, LDA, B, LDB, BETA, C, LDC);
 }
 
 void Epetra_BLAS_SYMM_Double ( 
@@ -242,7 +242,7 @@ void Epetra_BLAS_SYMM_Double (
   const double BETA, double * C, const int LDC )
 {
     CEpetra::getConstBLAS(selfID)->SYMM(
-            SIDE, UPLO, M, N, ALPHA, A, LDA, B, LDB, BETA, C, LDC);
+        SIDE, UPLO, M, N, ALPHA, A, LDA, B, LDB, BETA, C, LDC);
 }
 
 void Epetra_BLAS_TRMM_Float ( 
@@ -252,7 +252,7 @@ void Epetra_BLAS_TRMM_Float (
   const int LDB )
 {
     CEpetra::getConstBLAS(selfID)->TRMM(
-            SIDE, UPLO, TRANSA, DIAG, M, N, ALPHA, A, LDA, B, LDB);
+        SIDE, UPLO, TRANSA, DIAG, M, N, ALPHA, A, LDA, B, LDB);
 }
 
 void Epetra_BLAS_TRMM_Double ( 
@@ -262,7 +262,7 @@ void Epetra_BLAS_TRMM_Double (
   const int LDB )
 {
     CEpetra::getConstBLAS(selfID)->TRMM(
-            SIDE, UPLO, TRANSA, DIAG, M, N, ALPHA, A, LDA, B, LDB);
+        SIDE, UPLO, TRANSA, DIAG, M, N, ALPHA, A, LDA, B, LDB);
 }
 
 

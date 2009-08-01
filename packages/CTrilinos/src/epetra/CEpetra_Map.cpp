@@ -65,8 +65,8 @@ CT_Epetra_Map_ID_t Epetra_Map_Create (
   int NumGlobalElements, int IndexBase, CT_Epetra_Comm_ID_t CommID )
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-            tableOfMaps().store(new Epetra_Map(
-            NumGlobalElements, IndexBase, *CEpetra::getComm(CommID))));
+        tableOfMaps().store(new Epetra_Map(
+        NumGlobalElements, IndexBase, *CEpetra::getComm(CommID))));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Create_Linear ( 
@@ -74,8 +74,8 @@ CT_Epetra_Map_ID_t Epetra_Map_Create_Linear (
   CT_Epetra_Comm_ID_t CommID )
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-            tableOfMaps().store(new Epetra_Map(
-            NumGlobalElements, NumMyElements, IndexBase, *CEpetra::getComm(CommID))));
+        tableOfMaps().store(new Epetra_Map(
+        NumGlobalElements, NumMyElements, IndexBase, *CEpetra::getComm(CommID))));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Create_Arbitrary ( 
@@ -84,21 +84,21 @@ CT_Epetra_Map_ID_t Epetra_Map_Create_Arbitrary (
   CT_Epetra_Comm_ID_t CommID )
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-            tableOfMaps().store(new Epetra_Map(
-            NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, *CEpetra::getComm(CommID))));
+        tableOfMaps().store(new Epetra_Map(
+        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, *CEpetra::getComm(CommID))));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Duplicate ( CT_Epetra_Map_ID_t mapID )
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-            tableOfMaps().store(new Epetra_Map(
-            *CEpetra::getMap(mapID))));
+        tableOfMaps().store(new Epetra_Map(
+        *CEpetra::getMap(mapID))));
 }
 
 void Epetra_Map_Destroy ( CT_Epetra_Map_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_Map_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_Map_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstMaps().remove(&aid);
     } else {

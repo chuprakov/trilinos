@@ -99,7 +99,8 @@ TEUCHOS_UNIT_TEST( Epetra_RowMatrix , NumMyRowEntries )
   /* Check the number of non-zero entries in Row */
   ECHO(int nz = 0);
   ECHO(ret = Epetra_RowMatrix_NumMyRowEntries(selfID, Row, &nz));
-  TEST_EQUALITY(Count, nz);
+  TEST_EQUALITY_CONST(ret, 0);
+  TEST_EQUALITY(nz, Count);
 }
 
 /**********************************************************************

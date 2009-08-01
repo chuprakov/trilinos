@@ -66,7 +66,7 @@ CTrilinos_Object_ID_t Epetra_Directory_Abstract (
 void Epetra_Directory_Destroy ( CT_Epetra_Directory_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_Directory_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_Directory_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstDirectorys().remove(&aid);
     } else {
@@ -82,13 +82,13 @@ int Epetra_Directory_GetDirectoryEntries (
   boolean high_rank_sharing_procs )
 {
     return CEpetra::getConstDirectory(selfID)->GetDirectoryEntries(
-            *CEpetra::getBlockMap(MapID), NumEntries, GlobalEntries, Procs, LocalEntries, EntrySizes, high_rank_sharing_procs);
+        *CEpetra::getBlockMap(MapID), NumEntries, GlobalEntries, Procs, LocalEntries, EntrySizes, high_rank_sharing_procs);
 }
 
 boolean Epetra_Directory_GIDsAllUniquelyOwned ( 
   CT_Epetra_Directory_ID_t selfID )
 {
-    return CEpetra::getConstDirectory(selfID)->GIDsAllUniquelyOwned();
+    return         CEpetra::getConstDirectory(selfID)->GIDsAllUniquelyOwned();
 }
 
 

@@ -66,22 +66,22 @@ CTrilinos_Object_ID_t Epetra_CompObject_Abstract (
 CT_Epetra_CompObject_ID_t Epetra_CompObject_Create (  )
 {
     return CTrilinos::concreteType<CT_Epetra_CompObject_ID_t>(
-            tableOfCompObjects().store(new Epetra_CompObject()));
+        tableOfCompObjects().store(new Epetra_CompObject()));
 }
 
 CT_Epetra_CompObject_ID_t Epetra_CompObject_Duplicate ( 
   CT_Epetra_CompObject_ID_t SourceID )
 {
     return CTrilinos::concreteType<CT_Epetra_CompObject_ID_t>(
-            tableOfCompObjects().store(new Epetra_CompObject(
-            *CEpetra::getCompObject(SourceID))));
+        tableOfCompObjects().store(new Epetra_CompObject(
+        *CEpetra::getCompObject(SourceID))));
 }
 
 void Epetra_CompObject_Destroy ( 
   CT_Epetra_CompObject_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_CompObject_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_CompObject_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstCompObjects().remove(&aid);
     } else {
@@ -95,7 +95,7 @@ void Epetra_CompObject_SetFlopCounter (
   CT_Epetra_Flops_ID_t FlopCounter_inID )
 {
     CEpetra::getCompObject(selfID)->SetFlopCounter(
-            *CEpetra::getFlops(FlopCounter_inID));
+        *CEpetra::getFlops(FlopCounter_inID));
 }
 
 void Epetra_CompObject_SetFlopCounter_Matching ( 
@@ -103,7 +103,7 @@ void Epetra_CompObject_SetFlopCounter_Matching (
   CT_Epetra_CompObject_ID_t CompObjectID )
 {
     CEpetra::getCompObject(selfID)->SetFlopCounter(
-            *CEpetra::getCompObject(CompObjectID));
+        *CEpetra::getCompObject(CompObjectID));
 }
 
 void Epetra_CompObject_UnsetFlopCounter ( 

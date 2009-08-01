@@ -69,22 +69,22 @@ CT_Epetra_Export_ID_t Epetra_Export_Create (
   CT_Epetra_BlockMap_ID_t TargetMapID )
 {
     return CTrilinos::concreteType<CT_Epetra_Export_ID_t>(
-            tableOfExports().store(new Epetra_Export(
-            *CEpetra::getBlockMap(SourceMapID), *CEpetra::getBlockMap(TargetMapID))));
+        tableOfExports().store(new Epetra_Export(
+        *CEpetra::getBlockMap(SourceMapID), *CEpetra::getBlockMap(TargetMapID))));
 }
 
 CT_Epetra_Export_ID_t Epetra_Export_Duplicate ( 
   CT_Epetra_Export_ID_t ExporterID )
 {
     return CTrilinos::concreteType<CT_Epetra_Export_ID_t>(
-            tableOfExports().store(new Epetra_Export(
-            *CEpetra::getExport(ExporterID))));
+        tableOfExports().store(new Epetra_Export(
+        *CEpetra::getExport(ExporterID))));
 }
 
 void Epetra_Export_Destroy ( CT_Epetra_Export_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_Export_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_Export_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstExports().remove(&aid);
     } else {

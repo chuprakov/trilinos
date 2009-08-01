@@ -73,7 +73,7 @@ void Epetra_DistObject_Destroy (
   CT_Epetra_DistObject_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstDistObjects().remove(&aid);
     } else {
@@ -88,7 +88,7 @@ int Epetra_DistObject_Import (
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     return CEpetra::getDistObject(selfID)->Import(
-            *CEpetra::getSrcDistObject(AID), *CEpetra::getImport(ImporterID), CombineMode, &(*CEpetra::getConstOffsetIndex(IndexorID)));
+        *CEpetra::getSrcDistObject(AID), *CEpetra::getImport(ImporterID), CombineMode, CEpetra::getConstOffsetIndex(IndexorID).getRawPtr());
 }
 
 int Epetra_DistObject_Import_UsingExporter ( 
@@ -97,7 +97,7 @@ int Epetra_DistObject_Import_UsingExporter (
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     return CEpetra::getDistObject(selfID)->Import(
-            *CEpetra::getSrcDistObject(AID), *CEpetra::getExport(ExporterID), CombineMode, &(*CEpetra::getConstOffsetIndex(IndexorID)));
+        *CEpetra::getSrcDistObject(AID), *CEpetra::getExport(ExporterID), CombineMode, CEpetra::getConstOffsetIndex(IndexorID).getRawPtr());
 }
 
 int Epetra_DistObject_Export_UsingImporter ( 
@@ -106,7 +106,7 @@ int Epetra_DistObject_Export_UsingImporter (
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     return CEpetra::getDistObject(selfID)->Export(
-            *CEpetra::getSrcDistObject(AID), *CEpetra::getImport(ImporterID), CombineMode, &(*CEpetra::getConstOffsetIndex(IndexorID)));
+        *CEpetra::getSrcDistObject(AID), *CEpetra::getImport(ImporterID), CombineMode, CEpetra::getConstOffsetIndex(IndexorID).getRawPtr());
 }
 
 int Epetra_DistObject_Export ( 
@@ -115,7 +115,7 @@ int Epetra_DistObject_Export (
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     return CEpetra::getDistObject(selfID)->Export(
-            *CEpetra::getSrcDistObject(AID), *CEpetra::getExport(ExporterID), CombineMode, &(*CEpetra::getConstOffsetIndex(IndexorID)));
+        *CEpetra::getSrcDistObject(AID), *CEpetra::getExport(ExporterID), CombineMode, CEpetra::getConstOffsetIndex(IndexorID).getRawPtr());
 }
 
 CT_Epetra_BlockMap_ID_t Epetra_DistObject_Map ( 
@@ -135,7 +135,7 @@ CT_Epetra_Comm_ID_t Epetra_DistObject_Comm (
 boolean Epetra_DistObject_DistributedGlobal ( 
   CT_Epetra_DistObject_ID_t selfID )
 {
-    return CEpetra::getConstDistObject(selfID)->DistributedGlobal();
+    return         CEpetra::getConstDistObject(selfID)->DistributedGlobal();
 }
 
 

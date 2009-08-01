@@ -68,7 +68,7 @@ CTrilinos_Object_ID_t Epetra_Operator_Abstract (
 void Epetra_Operator_Destroy ( CT_Epetra_Operator_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_Operator_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_Operator_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstOperators().remove(&aid);
     } else {
@@ -88,7 +88,7 @@ int Epetra_Operator_Apply (
   CT_Epetra_MultiVector_ID_t YID )
 {
     return CEpetra::getConstOperator(selfID)->Apply(
-            *CEpetra::getMultiVector(XID), *CEpetra::getMultiVector(YID));
+        *CEpetra::getMultiVector(XID), *CEpetra::getMultiVector(YID));
 }
 
 int Epetra_Operator_ApplyInverse ( 
@@ -96,7 +96,7 @@ int Epetra_Operator_ApplyInverse (
   CT_Epetra_MultiVector_ID_t YID )
 {
     return CEpetra::getConstOperator(selfID)->ApplyInverse(
-            *CEpetra::getMultiVector(XID), *CEpetra::getMultiVector(YID));
+        *CEpetra::getMultiVector(XID), *CEpetra::getMultiVector(YID));
 }
 
 double Epetra_Operator_NormInf ( CT_Epetra_Operator_ID_t selfID )
@@ -113,13 +113,13 @@ const char * Epetra_Operator_Label (
 boolean Epetra_Operator_UseTranspose ( 
   CT_Epetra_Operator_ID_t selfID )
 {
-    return CEpetra::getConstOperator(selfID)->UseTranspose();
+    return         CEpetra::getConstOperator(selfID)->UseTranspose();
 }
 
 boolean Epetra_Operator_HasNormInf ( 
   CT_Epetra_Operator_ID_t selfID )
 {
-    return CEpetra::getConstOperator(selfID)->HasNormInf();
+    return         CEpetra::getConstOperator(selfID)->HasNormInf();
 }
 
 CT_Epetra_Comm_ID_t Epetra_Operator_Comm ( 

@@ -69,22 +69,22 @@ CT_Epetra_Import_ID_t Epetra_Import_Create (
   CT_Epetra_BlockMap_ID_t SourceMapID )
 {
     return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
-            tableOfImports().store(new Epetra_Import(
-            *CEpetra::getBlockMap(TargetMapID), *CEpetra::getBlockMap(SourceMapID))));
+        tableOfImports().store(new Epetra_Import(
+        *CEpetra::getBlockMap(TargetMapID), *CEpetra::getBlockMap(SourceMapID))));
 }
 
 CT_Epetra_Import_ID_t Epetra_Import_Duplicate ( 
   CT_Epetra_Import_ID_t ImporterID )
 {
     return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
-            tableOfImports().store(new Epetra_Import(
-            *CEpetra::getImport(ImporterID))));
+        tableOfImports().store(new Epetra_Import(
+        *CEpetra::getImport(ImporterID))));
 }
 
 void Epetra_Import_Destroy ( CT_Epetra_Import_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_Import_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_Import_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstImports().remove(&aid);
     } else {

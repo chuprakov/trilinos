@@ -67,7 +67,7 @@ void Epetra_SrcDistObject_Destroy (
   CT_Epetra_SrcDistObject_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_SrcDistObject_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_SrcDistObject_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstSrcDistObjects().remove(&aid);
     } else {

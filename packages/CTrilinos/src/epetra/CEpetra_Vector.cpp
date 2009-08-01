@@ -69,24 +69,24 @@ CT_Epetra_Vector_ID_t Epetra_Vector_Create (
   CT_Epetra_BlockMap_ID_t MapID, boolean zeroOut )
 {
     return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
-            tableOfVectors().store(new Epetra_Vector(
-            *CEpetra::getBlockMap(MapID), zeroOut)));
+        tableOfVectors().store(new Epetra_Vector(
+        *CEpetra::getBlockMap(MapID), zeroOut)));
 }
 
 CT_Epetra_Vector_ID_t Epetra_Vector_Duplicate ( 
   CT_Epetra_Vector_ID_t SourceID )
 {
     return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
-            tableOfVectors().store(new Epetra_Vector(
-            *CEpetra::getVector(SourceID))));
+        tableOfVectors().store(new Epetra_Vector(
+        *CEpetra::getVector(SourceID))));
 }
 
 CT_Epetra_Vector_ID_t Epetra_Vector_Create_FromArray ( 
   Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t MapID, double * V )
 {
     return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
-            tableOfVectors().store(new Epetra_Vector(
-            CV, *CEpetra::getBlockMap(MapID), V)));
+        tableOfVectors().store(new Epetra_Vector(
+        CV, *CEpetra::getBlockMap(MapID), V)));
 }
 
 CT_Epetra_Vector_ID_t Epetra_Vector_FromSource ( 
@@ -94,14 +94,14 @@ CT_Epetra_Vector_ID_t Epetra_Vector_FromSource (
   int Index )
 {
     return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
-            tableOfVectors().store(new Epetra_Vector(
-            CV, *CEpetra::getMultiVector(SourceID), Index)));
+        tableOfVectors().store(new Epetra_Vector(
+        CV, *CEpetra::getMultiVector(SourceID), Index)));
 }
 
 void Epetra_Vector_Destroy ( CT_Epetra_Vector_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_Vector_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_Vector_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstVectors().remove(&aid);
     } else {
@@ -115,7 +115,7 @@ int Epetra_Vector_ReplaceGlobalValues (
   int * Indices )
 {
     return CEpetra::getVector(selfID)->ReplaceGlobalValues(
-            NumEntries, Values, Indices);
+        NumEntries, Values, Indices);
 }
 
 int Epetra_Vector_ReplaceMyValues ( 
@@ -123,7 +123,7 @@ int Epetra_Vector_ReplaceMyValues (
   int * Indices )
 {
     return CEpetra::getVector(selfID)->ReplaceMyValues(
-            NumEntries, Values, Indices);
+        NumEntries, Values, Indices);
 }
 
 int Epetra_Vector_SumIntoGlobalValues ( 
@@ -131,7 +131,7 @@ int Epetra_Vector_SumIntoGlobalValues (
   int * Indices )
 {
     return CEpetra::getVector(selfID)->SumIntoGlobalValues(
-            NumEntries, Values, Indices);
+        NumEntries, Values, Indices);
 }
 
 int Epetra_Vector_SumIntoMyValues ( 
@@ -139,7 +139,7 @@ int Epetra_Vector_SumIntoMyValues (
   int * Indices )
 {
     return CEpetra::getVector(selfID)->SumIntoMyValues(
-            NumEntries, Values, Indices);
+        NumEntries, Values, Indices);
 }
 
 int Epetra_Vector_ReplaceGlobalValues_BlockPos ( 
@@ -147,7 +147,7 @@ int Epetra_Vector_ReplaceGlobalValues_BlockPos (
   double * Values, int * Indices )
 {
     return CEpetra::getVector(selfID)->ReplaceGlobalValues(
-            NumEntries, BlockOffset, Values, Indices);
+        NumEntries, BlockOffset, Values, Indices);
 }
 
 int Epetra_Vector_ReplaceMyValues_BlockPos ( 
@@ -155,7 +155,7 @@ int Epetra_Vector_ReplaceMyValues_BlockPos (
   double * Values, int * Indices )
 {
     return CEpetra::getVector(selfID)->ReplaceMyValues(
-            NumEntries, BlockOffset, Values, Indices);
+        NumEntries, BlockOffset, Values, Indices);
 }
 
 int Epetra_Vector_SumIntoGlobalValues_BlockPos ( 
@@ -163,7 +163,7 @@ int Epetra_Vector_SumIntoGlobalValues_BlockPos (
   double * Values, int * Indices )
 {
     return CEpetra::getVector(selfID)->SumIntoGlobalValues(
-            NumEntries, BlockOffset, Values, Indices);
+        NumEntries, BlockOffset, Values, Indices);
 }
 
 int Epetra_Vector_SumIntoMyValues_BlockPos ( 
@@ -171,7 +171,7 @@ int Epetra_Vector_SumIntoMyValues_BlockPos (
   double * Values, int * Indices )
 {
     return CEpetra::getVector(selfID)->SumIntoMyValues(
-            NumEntries, BlockOffset, Values, Indices);
+        NumEntries, BlockOffset, Values, Indices);
 }
 
 int Epetra_Vector_ExtractCopy ( 

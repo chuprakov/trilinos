@@ -66,30 +66,30 @@ CT_Epetra_Object_ID_t Epetra_Object_Create (
   int TracebackModeIn, boolean set_label )
 {
     return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
-            tableOfObjects().store(new Epetra_Object(
-            TracebackModeIn, set_label)));
+        tableOfObjects().store(new Epetra_Object(
+        TracebackModeIn, set_label)));
 }
 
 CT_Epetra_Object_ID_t Epetra_Object_Create_WithLabel ( 
   const char * const Label, int TracebackModeIn )
 {
     return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
-            tableOfObjects().store(new Epetra_Object(
-            Label, TracebackModeIn)));
+        tableOfObjects().store(new Epetra_Object(
+        Label, TracebackModeIn)));
 }
 
 CT_Epetra_Object_ID_t Epetra_Object_Duplicate ( 
   CT_Epetra_Object_ID_t ObjectID )
 {
     return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
-            tableOfObjects().store(new Epetra_Object(
-            *CEpetra::getObject(ObjectID))));
+        tableOfObjects().store(new Epetra_Object(
+        *CEpetra::getObject(ObjectID))));
 }
 
 void Epetra_Object_Destroy ( CT_Epetra_Object_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_Object_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_Object_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstObjects().remove(&aid);
     } else {
@@ -114,7 +114,7 @@ int Epetra_Object_ReportError (
   int ErrorCode )
 {
     return CEpetra::getConstObject(selfID)->ReportError(
-            CTrilinos::cptr2str(Message), ErrorCode);
+        CTrilinos::cptr2str(Message), ErrorCode);
 }
 
 

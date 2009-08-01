@@ -71,8 +71,8 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromImporter (
   CT_Epetra_Import_ID_t ImporterID )
 {
     return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
-            tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
-            *CEpetra::getCrsGraph(SourceGraphID), *CEpetra::getCrsGraph(TargetGraphID), *CEpetra::getImport(ImporterID))));
+        tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
+        *CEpetra::getCrsGraph(SourceGraphID), *CEpetra::getCrsGraph(TargetGraphID), *CEpetra::getImport(ImporterID))));
 }
 
 CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromExporter ( 
@@ -81,23 +81,23 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromExporter (
   CT_Epetra_Export_ID_t ExporterID )
 {
     return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
-            tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
-            *CEpetra::getCrsGraph(SourceGraphID), *CEpetra::getCrsGraph(TargetGraphID), *CEpetra::getExport(ExporterID))));
+        tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
+        *CEpetra::getCrsGraph(SourceGraphID), *CEpetra::getCrsGraph(TargetGraphID), *CEpetra::getExport(ExporterID))));
 }
 
 CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Duplicate ( 
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
-            tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
-            *CEpetra::getOffsetIndex(IndexorID))));
+        tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
+        *CEpetra::getOffsetIndex(IndexorID))));
 }
 
 void Epetra_OffsetIndex_Destroy ( 
   CT_Epetra_OffsetIndex_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(*selfID);
+        = CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstOffsetIndexs().remove(&aid);
     } else {
