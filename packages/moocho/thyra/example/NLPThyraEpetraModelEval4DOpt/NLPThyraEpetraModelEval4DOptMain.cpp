@@ -92,7 +92,7 @@ int main( int argc, char* argv[] )
     // Create the EpetraExt::ModelEvaluator object
 
     Teuchos::RCP<EpetraModelEval4DOpt>
-      epetraModel = rcp(new EpetraModelEval4DOpt(xt0,xt1,pt0,pt1,d,x00,x01,p00,p01));
+      epetraModel = Teuchos::rcp(new EpetraModelEval4DOpt(xt0,xt1,pt0,pt1,d,x00,x01,p00,p01));
     epetraModel->setSupportDerivs(supportDerivs);
     epetraModel->set_p_bounds(pL0,pL1,pU0,pU1);
     epetraModel->set_x_bounds(xL0,xL1,xU0,xU1);
@@ -103,7 +103,7 @@ int main( int argc, char* argv[] )
       lowsFactory = lowsfCreator.createLinearSolveStrategy("");
 
     Teuchos::RCP<Thyra::EpetraModelEvaluator>
-      epetraThyraModel = rcp(new Thyra::EpetraModelEvaluator());
+      epetraThyraModel = Teuchos::rcp(new Thyra::EpetraModelEvaluator());
     
     epetraThyraModel->initialize(epetraModel,lowsFactory);
     
