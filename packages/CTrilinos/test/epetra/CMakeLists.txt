@@ -1,4 +1,9 @@
 INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(AddSubdirectories)
+
+ADD_SUBDIRECTORIES(
+  RowMatrix
+  )
 
 
 #INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})

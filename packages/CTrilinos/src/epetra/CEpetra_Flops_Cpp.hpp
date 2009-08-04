@@ -1,13 +1,13 @@
 #include "CTrilinos_config.h"
 
+#ifndef CEPETRA_FLOPS_CPP_HPP
+#define CEPETRA_FLOPS_CPP_HPP
+
+
 #include "CEpetra_Flops.h"
 #include "Epetra_Flops.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-#ifndef CEPETRA_FLOPS_CPP_HPP
-#define CEPETRA_FLOPS_CPP_HPP
 
 
 class Epetra_Flops;

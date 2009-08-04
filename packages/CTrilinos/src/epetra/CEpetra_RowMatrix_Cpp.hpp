@@ -1,13 +1,13 @@
 #include "CTrilinos_config.h"
 
+#ifndef CEPETRA_ROWMATRIX_CPP_HPP
+#define CEPETRA_ROWMATRIX_CPP_HPP
+
+
 #include "CEpetra_RowMatrix.h"
 #include "Epetra_RowMatrix.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-#ifndef CEPETRA_ROWMATRIX_CPP_HPP
-#define CEPETRA_ROWMATRIX_CPP_HPP
 
 
 class Epetra_RowMatrix;

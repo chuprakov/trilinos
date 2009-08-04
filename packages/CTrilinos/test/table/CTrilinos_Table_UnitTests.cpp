@@ -5,6 +5,13 @@
 
 #include "Teuchos_UnitTestHarness.hpp"
 
+#include "CEpetra_SerialComm.h"
+#include "CEpetra_Comm.h"
+#include "CEpetra_Vector.h"
+#include "Epetra_SerialComm.h"
+#include "Epetra_Comm.h"
+#include "Epetra_Vector.h"
+
 
 #define JOIN_SET_0(A, B, C) A ## B ## C
 #define JOIN_SET(A, B, C)   JOIN_SET_0(A, B, C)

@@ -1,5 +1,6 @@
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 #include "Teuchos_RCP.hpp"
 

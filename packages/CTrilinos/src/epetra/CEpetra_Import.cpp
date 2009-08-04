@@ -7,7 +7,7 @@
 #include "Epetra_Import.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -70,7 +70,8 @@ CT_Epetra_Import_ID_t Epetra_Import_Create (
 {
     return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
         tableOfImports().store(new Epetra_Import(
-        *CEpetra::getBlockMap(TargetMapID), *CEpetra::getBlockMap(SourceMapID))));
+        *CEpetra::getConstBlockMap(TargetMapID), 
+        *CEpetra::getConstBlockMap(SourceMapID))));
 }
 
 CT_Epetra_Import_ID_t Epetra_Import_Duplicate ( 
@@ -78,7 +79,7 @@ CT_Epetra_Import_ID_t Epetra_Import_Duplicate (
 {
     return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
         tableOfImports().store(new Epetra_Import(
-        *CEpetra::getImport(ImporterID))));
+        *CEpetra::getConstImport(ImporterID))));
 }
 
 void Epetra_Import_Destroy ( CT_Epetra_Import_ID_t * selfID )

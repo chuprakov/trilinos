@@ -5,7 +5,7 @@
 #include "Epetra_Flops.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -72,7 +72,7 @@ CT_Epetra_Flops_ID_t Epetra_Flops_Duplicate (
 {
     return CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(
         tableOfFlopss().store(new Epetra_Flops(
-        *CEpetra::getFlops(Flops_inID))));
+        *CEpetra::getConstFlops(Flops_inID))));
 }
 
 double Epetra_Flops_Flops ( CT_Epetra_Flops_ID_t selfID )
@@ -102,7 +102,7 @@ void Epetra_Flops_Assign (
 {
     Epetra_Flops& self = *( CEpetra::getFlops(selfID) );
 
-    self = *CEpetra::getFlops(srcID);
+    self = *CEpetra::getConstFlops(srcID);
 }
 
 

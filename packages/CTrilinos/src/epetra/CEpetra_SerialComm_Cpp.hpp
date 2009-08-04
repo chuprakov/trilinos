@@ -1,13 +1,13 @@
 #include "CTrilinos_config.h"
 
+#ifndef CEPETRA_SERIALCOMM_CPP_HPP
+#define CEPETRA_SERIALCOMM_CPP_HPP
+
+
 #include "CEpetra_SerialComm.h"
 #include "Epetra_SerialComm.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-#ifndef CEPETRA_SERIALCOMM_CPP_HPP
-#define CEPETRA_SERIALCOMM_CPP_HPP
 
 
 class Epetra_SerialComm;

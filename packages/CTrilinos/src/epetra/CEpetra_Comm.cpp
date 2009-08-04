@@ -8,7 +8,7 @@
 #include "Epetra_Comm.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -256,7 +256,7 @@ CT_Epetra_Directory_ID_t Epetra_Comm_CreateDirectory (
 {
     return CEpetra::storeDirectory(
         CEpetra::getConstComm(selfID)->CreateDirectory(
-            *CEpetra::getBlockMap(MapID)));
+            *CEpetra::getConstBlockMap(MapID)));
 }
 
 

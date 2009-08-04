@@ -7,6 +7,7 @@
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 
 #include "CEpetra_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
@@ -1140,14 +1141,15 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , Distributor )
   /* Create an exporter */
   ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
 
-  /* 06/29/09: THE COMMAND BELOW DOESN'T WORK, APPARENTLY DUE TO A BUG IN
-   *           EPETRA ITSELF (SEVERAL EPETRA TESTS RESULT IN EXCEPTIONS */
-  ECHO(CT_Epetra_Distributor_ID_t dID = Epetra_Export_Distributor(selfID));
+  /* No distributor will exist if not distributedglobal */
+  if (Epetra_BlockMap_DistributedGlobal(bsrcID) == TRUE) {
+    ECHO(CT_Epetra_Distributor_ID_t dID = Epetra_Export_Distributor(selfID));
 
-  /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(dID.type, CT_Epetra_Distributor_ID);
-  TEST_EQUALITY_CONST(dID.index, 0);
-  TEST_INEQUALITY(CEpetra::getDistributor(dID), Teuchos::null);
+    /* Now check the result of the call to the wrapper function */
+    TEST_EQUALITY(dID.type, CT_Epetra_Distributor_ID);
+    TEST_EQUALITY_CONST(dID.index, 0);
+    TEST_EQUALITY_CONST(CEpetra::getDistributor(dID).is_null(), false);
+  }
 }
 
 

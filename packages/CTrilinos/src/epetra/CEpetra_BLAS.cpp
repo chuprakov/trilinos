@@ -5,7 +5,7 @@
 #include "Epetra_BLAS.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -72,7 +72,7 @@ CT_Epetra_BLAS_ID_t Epetra_BLAS_Duplicate (
 {
     return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
         tableOfBLASs().store(new Epetra_BLAS(
-        *CEpetra::getBLAS(BLASID))));
+        *CEpetra::getConstBLAS(BLASID))));
 }
 
 void Epetra_BLAS_Destroy ( CT_Epetra_BLAS_ID_t * selfID )

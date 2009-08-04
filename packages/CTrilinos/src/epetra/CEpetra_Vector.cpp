@@ -8,7 +8,7 @@
 #include "Epetra_Vector.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -70,7 +70,7 @@ CT_Epetra_Vector_ID_t Epetra_Vector_Create (
 {
     return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
         tableOfVectors().store(new Epetra_Vector(
-        *CEpetra::getBlockMap(MapID), zeroOut)));
+        *CEpetra::getConstBlockMap(MapID), zeroOut)));
 }
 
 CT_Epetra_Vector_ID_t Epetra_Vector_Duplicate ( 
@@ -78,7 +78,7 @@ CT_Epetra_Vector_ID_t Epetra_Vector_Duplicate (
 {
     return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
         tableOfVectors().store(new Epetra_Vector(
-        *CEpetra::getVector(SourceID))));
+        *CEpetra::getConstVector(SourceID))));
 }
 
 CT_Epetra_Vector_ID_t Epetra_Vector_Create_FromArray ( 
@@ -86,7 +86,7 @@ CT_Epetra_Vector_ID_t Epetra_Vector_Create_FromArray (
 {
     return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
         tableOfVectors().store(new Epetra_Vector(
-        CV, *CEpetra::getBlockMap(MapID), V)));
+        CV, *CEpetra::getConstBlockMap(MapID), V)));
 }
 
 CT_Epetra_Vector_ID_t Epetra_Vector_FromSource ( 
@@ -95,7 +95,7 @@ CT_Epetra_Vector_ID_t Epetra_Vector_FromSource (
 {
     return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
         tableOfVectors().store(new Epetra_Vector(
-        CV, *CEpetra::getMultiVector(SourceID), Index)));
+        CV, *CEpetra::getConstMultiVector(SourceID), Index)));
 }
 
 void Epetra_Vector_Destroy ( CT_Epetra_Vector_ID_t * selfID )

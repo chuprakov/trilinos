@@ -45,6 +45,7 @@ APPEND_SET(HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_enums.h
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_exceptions.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_utils.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_utils_templ.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_Table.hpp
   )
 

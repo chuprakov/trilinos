@@ -1,13 +1,13 @@
 #include "CTrilinos_config.h"
 
+#ifndef CEPETRA_IMPORT_CPP_HPP
+#define CEPETRA_IMPORT_CPP_HPP
+
+
 #include "CEpetra_Import.h"
 #include "Epetra_Import.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-#ifndef CEPETRA_IMPORT_CPP_HPP
-#define CEPETRA_IMPORT_CPP_HPP
 
 
 class Epetra_Import;

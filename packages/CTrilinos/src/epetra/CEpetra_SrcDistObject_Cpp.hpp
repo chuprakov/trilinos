@@ -1,13 +1,13 @@
 #include "CTrilinos_config.h"
 
+#ifndef CEPETRA_SRCDISTOBJECT_CPP_HPP
+#define CEPETRA_SRCDISTOBJECT_CPP_HPP
+
+
 #include "CEpetra_SrcDistObject.h"
 #include "Epetra_SrcDistObject.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-#ifndef CEPETRA_SRCDISTOBJECT_CPP_HPP
-#define CEPETRA_SRCDISTOBJECT_CPP_HPP
 
 
 class Epetra_SrcDistObject;

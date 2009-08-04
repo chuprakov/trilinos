@@ -8,7 +8,7 @@
 #include "Epetra_OffsetIndex.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -72,7 +72,9 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromImporter (
 {
     return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
         tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
-        *CEpetra::getCrsGraph(SourceGraphID), *CEpetra::getCrsGraph(TargetGraphID), *CEpetra::getImport(ImporterID))));
+        *CEpetra::getConstCrsGraph(SourceGraphID), 
+        *CEpetra::getConstCrsGraph(TargetGraphID), 
+        *CEpetra::getImport(ImporterID))));
 }
 
 CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromExporter ( 
@@ -82,7 +84,9 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromExporter (
 {
     return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
         tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
-        *CEpetra::getCrsGraph(SourceGraphID), *CEpetra::getCrsGraph(TargetGraphID), *CEpetra::getExport(ExporterID))));
+        *CEpetra::getConstCrsGraph(SourceGraphID), 
+        *CEpetra::getConstCrsGraph(TargetGraphID), 
+        *CEpetra::getExport(ExporterID))));
 }
 
 CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Duplicate ( 
@@ -90,7 +94,7 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Duplicate (
 {
     return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
         tableOfOffsetIndexs().store(new Epetra_OffsetIndex(
-        *CEpetra::getOffsetIndex(IndexorID))));
+        *CEpetra::getConstOffsetIndex(IndexorID))));
 }
 
 void Epetra_OffsetIndex_Destroy ( 

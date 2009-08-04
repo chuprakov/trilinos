@@ -1,9 +1,7 @@
-#include "CEpetra_CrsGraph.h"
-#include "CEpetra_Export.h"
-#include "CEpetra_Import.h"
-#include "Epetra_OffsetIndex.h"
-#include "CEpetra_OffsetIndex.h"
-#include "CEpetra_OffsetIndex_Cpp.hpp"
+#include "CEpetra_Comm.h"
+#include "Epetra_Time.h"
+#include "CEpetra_Time.h"
+#include "CEpetra_Time_Cpp.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
@@ -17,48 +15,40 @@
 namespace {
 
 
+
 /**********************************************************************
-CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Cast ( 
-  CTrilinos_Object_ID_t id );
+CT_Epetra_Time_ID_t Epetra_Time_Cast ( CTrilinos_Object_ID_t id );
  **********************************************************************/
 
 /**********************************************************************
-CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromImporter ( 
-  CT_Epetra_CrsGraph_ID_t SourceGraphID, 
-  CT_Epetra_CrsGraph_ID_t TargetGraphID, 
-  CT_Epetra_Import_ID_t ImporterID );
+CT_Epetra_Time_ID_t Epetra_Time_Create ( 
+  CT_Epetra_Comm_ID_t CommID );
  **********************************************************************/
 
 /**********************************************************************
-CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromExporter ( 
-  CT_Epetra_CrsGraph_ID_t SourceGraphID, 
-  CT_Epetra_CrsGraph_ID_t TargetGraphID, 
-  CT_Epetra_Export_ID_t ExporterID );
+CT_Epetra_Time_ID_t Epetra_Time_Duplicate ( 
+  CT_Epetra_Time_ID_t TimeID );
  **********************************************************************/
 
 /**********************************************************************
-CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Duplicate ( 
-  CT_Epetra_OffsetIndex_ID_t IndexorID );
+double Epetra_Time_WallTime ( CT_Epetra_Time_ID_t selfID );
  **********************************************************************/
 
 /**********************************************************************
-void Epetra_OffsetIndex_Destroy ( 
-  CT_Epetra_OffsetIndex_ID_t * selfID );
+void Epetra_Time_ResetStartTime ( CT_Epetra_Time_ID_t selfID );
  **********************************************************************/
 
 /**********************************************************************
-int ** Epetra_OffsetIndex_SameOffsets ( 
-  CT_Epetra_OffsetIndex_ID_t selfID );
+double Epetra_Time_ElapsedTime ( CT_Epetra_Time_ID_t selfID );
  **********************************************************************/
 
 /**********************************************************************
-int ** Epetra_OffsetIndex_PermuteOffsets ( 
-  CT_Epetra_OffsetIndex_ID_t selfID );
+void Epetra_Time_Destroy ( CT_Epetra_Time_ID_t * selfID );
  **********************************************************************/
 
 /**********************************************************************
-int ** Epetra_OffsetIndex_RemoteOffsets ( 
-  CT_Epetra_OffsetIndex_ID_t selfID );
+void Epetra_Time_Assign ( 
+  CT_Epetra_Time_ID_t selfID, CT_Epetra_Time_ID_t srcID );
  **********************************************************************/
 
 /**********************************************************************/

@@ -1,13 +1,13 @@
 #include "CTrilinos_config.h"
 
+#ifndef CEPETRA_CRSGRAPH_CPP_HPP
+#define CEPETRA_CRSGRAPH_CPP_HPP
+
+
 #include "CEpetra_CrsGraph.h"
 #include "Epetra_CrsGraph.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-#ifndef CEPETRA_CRSGRAPH_CPP_HPP
-#define CEPETRA_CRSGRAPH_CPP_HPP
 
 
 class Epetra_CrsGraph;

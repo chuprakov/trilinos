@@ -9,7 +9,7 @@
 #include "Epetra_SerialComm.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -77,7 +77,7 @@ CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Duplicate (
 {
     return CTrilinos::concreteType<CT_Epetra_SerialComm_ID_t>(
         tableOfSerialComms().store(new Epetra_SerialComm(
-        *CEpetra::getSerialComm(CommID))));
+        *CEpetra::getConstSerialComm(CommID))));
 }
 
 CT_Epetra_Comm_ID_t Epetra_SerialComm_Clone ( 
@@ -279,7 +279,7 @@ CT_Epetra_Directory_ID_t Epetra_SerialComm_CreateDirectory (
 {
     return CEpetra::storeDirectory(
         CEpetra::getConstSerialComm(selfID)->CreateDirectory(
-            *CEpetra::getBlockMap(MapID)));
+            *CEpetra::getConstBlockMap(MapID)));
 }
 
 void Epetra_SerialComm_Assign ( 
@@ -287,7 +287,7 @@ void Epetra_SerialComm_Assign (
 {
     Epetra_SerialComm& self = *( CEpetra::getSerialComm(selfID) );
 
-    self = *CEpetra::getSerialComm(CommID);
+    self = *CEpetra::getConstSerialComm(CommID);
 }
 
 

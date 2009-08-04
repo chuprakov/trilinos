@@ -5,7 +5,7 @@
 #include "Epetra_Object.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -83,7 +83,7 @@ CT_Epetra_Object_ID_t Epetra_Object_Duplicate (
 {
     return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
         tableOfObjects().store(new Epetra_Object(
-        *CEpetra::getObject(ObjectID))));
+        *CEpetra::getConstObject(ObjectID))));
 }
 
 void Epetra_Object_Destroy ( CT_Epetra_Object_ID_t * selfID )

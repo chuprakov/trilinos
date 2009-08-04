@@ -1,13 +1,13 @@
 #include "CTrilinos_config.h"
 
+#ifndef CEPETRA_MAP_CPP_HPP
+#define CEPETRA_MAP_CPP_HPP
+
+
 #include "CEpetra_Map.h"
 #include "Epetra_Map.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-#ifndef CEPETRA_MAP_CPP_HPP
-#define CEPETRA_MAP_CPP_HPP
 
 
 class Epetra_Map;

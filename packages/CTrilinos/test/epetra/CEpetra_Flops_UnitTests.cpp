@@ -5,6 +5,7 @@
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 
 #include "CEpetra_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"

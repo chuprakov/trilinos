@@ -1,13 +1,13 @@
 #include "CTrilinos_config.h"
 
+#ifndef CEPETRA_OPERATOR_CPP_HPP
+#define CEPETRA_OPERATOR_CPP_HPP
+
+
 #include "CEpetra_Operator.h"
 #include "Epetra_Operator.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-#ifndef CEPETRA_OPERATOR_CPP_HPP
-#define CEPETRA_OPERATOR_CPP_HPP
 
 
 class Epetra_Operator;

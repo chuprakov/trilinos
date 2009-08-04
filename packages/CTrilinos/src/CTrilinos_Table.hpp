@@ -1,11 +1,16 @@
-#include "Teuchos_RCP.hpp"
-#include "Teuchos_SimpleObjectTable.hpp"
-#include "CTrilinos_enums.h"
-#include "CTrilinos_exceptions.hpp"
-
-
 #ifndef CTRILINOS_TABLE_HPP
 #define CTRILINOS_TABLE_HPP
+
+
+#include <string>
+#include <typeinfo>
+
+#include "Teuchos_RCP.hpp"
+#include "Teuchos_SimpleObjectTable.hpp"
+#include "Teuchos_Exceptions.hpp"
+#include "CTrilinos_enums.h"
+#include "CTrilinos_exceptions.hpp"
+#include "CTrilinos_utils.hpp"
 
 
 namespace CTrilinos
@@ -14,6 +19,8 @@ namespace CTrilinos
 using Teuchos::RCP;
 using Teuchos::rcp;
 
+/* stringify the enum name -- defined in CTrilinos_utils.cpp */
+std::string enum2str( CTrilinos_Type_ID_t ty );
 
 template <class T>
 class Table
@@ -56,12 +63,19 @@ class Table
 
   private:
 
+    /* build full exception msg on the fly */
+    std::string typeMismatchMsg(CTrilinos_Object_ID_t id, std::string act);
+
+    /* build full exception msg on the fly */
+    std::string badCastMsg(std::string type, std::string act);
+
     /* table for storing objects */
     Teuchos::SimpleObjectTable<T> sot;
 
     /* properties of the table */
     CTrilinos_Type_ID_t ttype;  /* enum value for stored objects */
-    std::string tstr;           /* string form of enum (for exception msgs) */
+    std::string tstr;           /* string for exception msgs */
+    std::string tstr2;          /* string for exception msgs */
     bool tconst;                /* if table holds const T */
 };
 
@@ -74,13 +88,17 @@ Table<T>::Table(CTrilinos_Type_ID_t type, std::string str, bool is_const)
     tconst(is_const)
 {
     /* assemble exception error message for future use */
-    std::string tmp1 = "Expected type ";
-    std::string tmp2 = "(const)";
-    std::string tmp3 = "(non-const)";
+    std::string tmp1 = "[CTrilinos::Table]: Expected type ";
+    std::string tmp2 = " (const)";
+    std::string tmp3 = " (non-const)";
+    std::string tmp4 = "; found ";
+    std::string tmp5 = typeid(T).name();
     if (is_const) {
-      tstr = tmp1 + str + tmp2;
+      tstr = tmp1 + str + tmp2 + tmp4;
+      tstr2 = tmp1 + tmp5 + tmp2 + tmp4;
     } else {
-      tstr = tmp1 + str + tmp3;
+      tstr = tmp1 + str + tmp3 + tmp4;
+      tstr2 = tmp1 + tmp5 + tmp3 + tmp4;
     }
 }
 
@@ -98,7 +116,7 @@ const RCP<T> Table<T>::get(CTrilinos_Object_ID_t id)
     if ((id.type == ttype) && (id.is_const == tconst)) {
         return sot.getRCP(id.index);
     } else {
-        throw CTrilinosTypeMismatchError(tstr);
+        throw CTrilinosTypeMismatchError(typeMismatchMsg(id, std::string("get()")));
         return Teuchos::null;
     }
 }
@@ -107,6 +125,9 @@ const RCP<T> Table<T>::get(CTrilinos_Object_ID_t id)
 template <class T>
 CTrilinos_Object_ID_t Table<T>::store(T* pobj)
 {
+    if (pobj == NULL)
+        throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
+
     CTrilinos_Object_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
@@ -123,6 +144,9 @@ template <class T>
 template <class Told>
 CTrilinos_Object_ID_t Table<T>::store(Told* pobj)
 { /* prevent adding wrong types */
+    if (pobj == NULL)
+        throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
+
     CTrilinos_Object_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
@@ -132,7 +156,7 @@ CTrilinos_Object_ID_t Table<T>::store(Told* pobj)
     if (pnew != NULL) {
         id = store(pnew);
     } else {
-        throw CTrilinosTypeMismatchError(tstr);
+        throw CTrilinosTypeMismatchError(badCastMsg(typeid(*pobj).name(), std::string("store()")));
     }
 
     return id;
@@ -142,6 +166,9 @@ CTrilinos_Object_ID_t Table<T>::store(Told* pobj)
 template <class T>
 CTrilinos_Object_ID_t Table<T>::storeCopy(T* pobj)
 {
+    if (pobj == NULL)
+        throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
+
     CTrilinos_Object_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
@@ -158,6 +185,9 @@ template <class T>
 template <class Told>
 CTrilinos_Object_ID_t Table<T>::storeCopy(Told* pobj)
 { /* prevent adding wrong types */
+    if (pobj == NULL)
+        throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
+
     CTrilinos_Object_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
@@ -167,7 +197,7 @@ CTrilinos_Object_ID_t Table<T>::storeCopy(Told* pobj)
     if (pnew != NULL) {
         id = storeCopy(pnew);
     } else {
-        throw CTrilinosTypeMismatchError(tstr);
+        throw CTrilinosTypeMismatchError(badCastMsg(typeid(*pobj).name(), std::string("storeCopy()")));
     }
 
     return id;
@@ -183,7 +213,7 @@ int Table<T>::remove(CTrilinos_Object_ID_t * id)
         ret = (sot.removeRCP(id->index) < 0 ? -1 : 0);
         if (ret == 0) id->type = CT_Invalid_ID;
     } else {
-        throw CTrilinosTypeMismatchError(tstr);
+        throw CTrilinosTypeMismatchError(typeMismatchMsg(*id, std::string("remove()")));
     }
 
     return ret;
@@ -212,6 +242,34 @@ CTrilinos_Object_ID_t Table<T>::cast(const RCP<Told> & rold)
         newid.type = ttype;
 
     return newid;
+}
+
+/* build full exception msg on the fly */
+template <class T>
+std::string Table<T>::typeMismatchMsg(CTrilinos_Object_ID_t id, std::string act)
+{
+    std::string s = enum2str(id.type);
+
+    if (id.is_const) {
+      std::string tmp = " (const)";
+      s += tmp;
+    } else {
+      std::string tmp = " (non-const)";
+      s += tmp;
+    }
+    std::string tmp = " when attempting to " + act;
+    s += tmp;
+
+    return (tstr + s);
+}
+
+/* build full exception msg on the fly */
+template <class T>
+std::string Table<T>::badCastMsg(std::string type, std::string act)
+{
+    std::string s = type + " when attempting to " + act;
+
+    return (tstr2 + s);
 }
 
 

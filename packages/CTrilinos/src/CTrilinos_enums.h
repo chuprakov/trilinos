@@ -55,7 +55,9 @@ typedef enum {
     CT_Epetra_Export_ID, 
     CT_Epetra_Map_ID, 
     CT_Epetra_BlockMap_ID, 
-    CT_Epetra_Import_ID
+    CT_Epetra_Import_ID, 
+    CT_Epetra_Time_ID, 
+    CT_Epetra_JadMatrix_ID
 } CTrilinos_Type_ID_t;
 
 /* The type in the struct below is actually used to identify the table in
@@ -209,6 +211,18 @@ typedef struct {
     int index;			/* Array index of the object */
     boolean is_const;		/* Whether or not object was declared const */
 } CT_Epetra_Import_ID_t;
+
+typedef struct {
+    CTrilinos_Type_ID_t type;	/* Data type of the object */
+    int index;			/* Array index of the object */
+    boolean is_const;		/* Whether or not object was declared const */
+} CT_Epetra_Time_ID_t;
+
+typedef struct {
+    CTrilinos_Type_ID_t type;	/* Data type of the object */
+    int index;			/* Array index of the object */
+    boolean is_const;		/* Whether or not object was declared const */
+} CT_Epetra_JadMatrix_ID_t;
 
 
 

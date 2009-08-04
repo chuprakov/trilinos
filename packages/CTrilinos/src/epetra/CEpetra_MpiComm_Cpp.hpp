@@ -4,14 +4,14 @@
 #ifdef HAVE_MPI
 
 
+#ifndef CEPETRA_MPICOMM_CPP_HPP
+#define CEPETRA_MPICOMM_CPP_HPP
+
+
 #include "CEpetra_MpiComm.h"
 #include "Epetra_MpiComm.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-#ifndef CEPETRA_MPICOMM_CPP_HPP
-#define CEPETRA_MPICOMM_CPP_HPP
 
 
 class Epetra_MpiComm;

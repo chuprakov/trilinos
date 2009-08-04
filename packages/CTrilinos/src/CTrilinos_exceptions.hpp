@@ -1,8 +1,8 @@
-#include "Teuchos_Exceptions.hpp"
-
-
 #ifndef CTRILINOS_EXCEPTIONS_HPP
 #define CTRILINOS_EXCEPTIONS_HPP
+
+
+#include "Teuchos_Exceptions.hpp"
 
 
 namespace CTrilinos {

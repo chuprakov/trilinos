@@ -5,7 +5,7 @@
 #include "Epetra_Distributor.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -98,7 +98,8 @@ int Epetra_Distributor_CreateFromRecvs (
   int ** ExportPIDs )
 {
     return CEpetra::getDistributor(selfID)->CreateFromRecvs(
-        NumRemoteIDs, RemoteGIDs, RemotePIDs, Deterministic, *NumExportIDs, *ExportGIDs, *ExportPIDs);
+        NumRemoteIDs, RemoteGIDs, RemotePIDs, Deterministic, 
+        *NumExportIDs, *ExportGIDs, *ExportPIDs);
 }
 
 int Epetra_Distributor_Do ( 

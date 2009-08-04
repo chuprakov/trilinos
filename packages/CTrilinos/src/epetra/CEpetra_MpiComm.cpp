@@ -14,7 +14,7 @@
 #include "Epetra_MpiComm.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -83,7 +83,7 @@ CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Duplicate (
 {
     return CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(
         tableOfMpiComms().store(new Epetra_MpiComm(
-        *CEpetra::getMpiComm(CommID))));
+        *CEpetra::getConstMpiComm(CommID))));
 }
 
 CT_Epetra_Comm_ID_t Epetra_MpiComm_Clone ( 
@@ -286,7 +286,7 @@ CT_Epetra_Directory_ID_t Epetra_MpiComm_CreateDirectory (
 {
     return CEpetra::storeDirectory(
         CEpetra::getConstMpiComm(selfID)->CreateDirectory(
-            *CEpetra::getBlockMap(MapID)));
+            *CEpetra::getConstBlockMap(MapID)));
 }
 
 int Epetra_MpiComm_GetMpiTag ( CT_Epetra_MpiComm_ID_t selfID )
@@ -304,7 +304,7 @@ void Epetra_MpiComm_Assign (
 {
     Epetra_MpiComm& self = *( CEpetra::getMpiComm(selfID) );
 
-    self = *CEpetra::getMpiComm(CommID);
+    self = *CEpetra::getConstMpiComm(CommID);
 }
 
 

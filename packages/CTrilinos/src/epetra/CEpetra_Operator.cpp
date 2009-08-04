@@ -8,7 +8,7 @@
 #include "Epetra_Operator.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -88,7 +88,8 @@ int Epetra_Operator_Apply (
   CT_Epetra_MultiVector_ID_t YID )
 {
     return CEpetra::getConstOperator(selfID)->Apply(
-        *CEpetra::getMultiVector(XID), *CEpetra::getMultiVector(YID));
+        *CEpetra::getConstMultiVector(XID), 
+        *CEpetra::getMultiVector(YID));
 }
 
 int Epetra_Operator_ApplyInverse ( 
@@ -96,7 +97,8 @@ int Epetra_Operator_ApplyInverse (
   CT_Epetra_MultiVector_ID_t YID )
 {
     return CEpetra::getConstOperator(selfID)->ApplyInverse(
-        *CEpetra::getMultiVector(XID), *CEpetra::getMultiVector(YID));
+        *CEpetra::getConstMultiVector(XID), 
+        *CEpetra::getMultiVector(YID));
 }
 
 double Epetra_Operator_NormInf ( CT_Epetra_Operator_ID_t selfID )
@@ -113,13 +115,13 @@ const char * Epetra_Operator_Label (
 boolean Epetra_Operator_UseTranspose ( 
   CT_Epetra_Operator_ID_t selfID )
 {
-    return         CEpetra::getConstOperator(selfID)->UseTranspose();
+    return CEpetra::getConstOperator(selfID)->UseTranspose();
 }
 
 boolean Epetra_Operator_HasNormInf ( 
   CT_Epetra_Operator_ID_t selfID )
 {
-    return         CEpetra::getConstOperator(selfID)->HasNormInf();
+    return CEpetra::getConstOperator(selfID)->HasNormInf();
 }
 
 CT_Epetra_Comm_ID_t Epetra_Operator_Comm ( 

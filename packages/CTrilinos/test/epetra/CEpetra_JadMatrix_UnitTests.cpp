@@ -1,9 +1,8 @@
-#include "CEpetra_CrsGraph.h"
-#include "CEpetra_Export.h"
-#include "CEpetra_Import.h"
-#include "Epetra_OffsetIndex.h"
-#include "CEpetra_OffsetIndex.h"
-#include "CEpetra_OffsetIndex_Cpp.hpp"
+#include "CEpetra_MultiVector.h"
+#include "CEpetra_RowMatrix.h"
+#include "Epetra_JadMatrix.h"
+#include "CEpetra_JadMatrix.h"
+#include "CEpetra_JadMatrix_Cpp.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
@@ -17,48 +16,61 @@
 namespace {
 
 
+
 /**********************************************************************
-CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Cast ( 
+CT_Epetra_JadMatrix_ID_t Epetra_JadMatrix_Cast ( 
   CTrilinos_Object_ID_t id );
  **********************************************************************/
 
 /**********************************************************************
-CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromImporter ( 
-  CT_Epetra_CrsGraph_ID_t SourceGraphID, 
-  CT_Epetra_CrsGraph_ID_t TargetGraphID, 
-  CT_Epetra_Import_ID_t ImporterID );
+CT_Epetra_JadMatrix_ID_t Epetra_JadMatrix_Create ( 
+  CT_Epetra_RowMatrix_ID_t MatrixID );
  **********************************************************************/
 
 /**********************************************************************
-CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromExporter ( 
-  CT_Epetra_CrsGraph_ID_t SourceGraphID, 
-  CT_Epetra_CrsGraph_ID_t TargetGraphID, 
-  CT_Epetra_Export_ID_t ExporterID );
+void Epetra_JadMatrix_Destroy ( CT_Epetra_JadMatrix_ID_t * selfID );
  **********************************************************************/
 
 /**********************************************************************
-CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Duplicate ( 
-  CT_Epetra_OffsetIndex_ID_t IndexorID );
+int Epetra_JadMatrix_UpdateValues ( 
+  CT_Epetra_JadMatrix_ID_t selfID, CT_Epetra_RowMatrix_ID_t MatrixID, 
+  boolean CheckStructure );
  **********************************************************************/
 
 /**********************************************************************
-void Epetra_OffsetIndex_Destroy ( 
-  CT_Epetra_OffsetIndex_ID_t * selfID );
+int Epetra_JadMatrix_ExtractMyRowCopy ( 
+  CT_Epetra_JadMatrix_ID_t selfID, int MyRow, int Length, 
+  int * NumEntries, double * Values, int * Indices );
  **********************************************************************/
 
 /**********************************************************************
-int ** Epetra_OffsetIndex_SameOffsets ( 
-  CT_Epetra_OffsetIndex_ID_t selfID );
+int Epetra_JadMatrix_ExtractMyEntryView ( 
+  CT_Epetra_JadMatrix_ID_t selfID, int CurEntry, double * * Value, 
+  int * RowIndex, int * ColIndex );
  **********************************************************************/
 
 /**********************************************************************
-int ** Epetra_OffsetIndex_PermuteOffsets ( 
-  CT_Epetra_OffsetIndex_ID_t selfID );
+int Epetra_JadMatrix_ExtractMyEntryView_Const ( 
+  CT_Epetra_JadMatrix_ID_t selfID, int CurEntry, 
+  double const ** Value, int * RowIndex, int * ColIndex );
  **********************************************************************/
 
 /**********************************************************************
-int ** Epetra_OffsetIndex_RemoteOffsets ( 
-  CT_Epetra_OffsetIndex_ID_t selfID );
+int Epetra_JadMatrix_NumMyRowEntries ( 
+  CT_Epetra_JadMatrix_ID_t selfID, int MyRow, int * NumEntries );
+ **********************************************************************/
+
+/**********************************************************************
+int Epetra_JadMatrix_Multiply ( 
+  CT_Epetra_JadMatrix_ID_t selfID, boolean TransA, 
+  CT_Epetra_MultiVector_ID_t XID, CT_Epetra_MultiVector_ID_t YID );
+ **********************************************************************/
+
+/**********************************************************************
+int Epetra_JadMatrix_Solve ( 
+  CT_Epetra_JadMatrix_ID_t selfID, boolean Upper, boolean Trans, 
+  boolean UnitDiagonal, CT_Epetra_MultiVector_ID_t XID, 
+  CT_Epetra_MultiVector_ID_t YID );
  **********************************************************************/
 
 /**********************************************************************/

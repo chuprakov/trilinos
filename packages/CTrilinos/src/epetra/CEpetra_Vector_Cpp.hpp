@@ -1,13 +1,13 @@
 #include "CTrilinos_config.h"
 
+#ifndef CEPETRA_VECTOR_CPP_HPP
+#define CEPETRA_VECTOR_CPP_HPP
+
+
 #include "CEpetra_Vector.h"
 #include "Epetra_Vector.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-#ifndef CEPETRA_VECTOR_CPP_HPP
-#define CEPETRA_VECTOR_CPP_HPP
 
 
 class Epetra_Vector;

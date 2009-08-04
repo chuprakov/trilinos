@@ -6,7 +6,7 @@
 #include "Epetra_Directory.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -82,13 +82,15 @@ int Epetra_Directory_GetDirectoryEntries (
   boolean high_rank_sharing_procs )
 {
     return CEpetra::getConstDirectory(selfID)->GetDirectoryEntries(
-        *CEpetra::getBlockMap(MapID), NumEntries, GlobalEntries, Procs, LocalEntries, EntrySizes, high_rank_sharing_procs);
+        *CEpetra::getConstBlockMap(MapID), NumEntries, 
+        GlobalEntries, Procs, LocalEntries, EntrySizes, 
+        high_rank_sharing_procs);
 }
 
 boolean Epetra_Directory_GIDsAllUniquelyOwned ( 
   CT_Epetra_Directory_ID_t selfID )
 {
-    return         CEpetra::getConstDirectory(selfID)->GIDsAllUniquelyOwned();
+    return CEpetra::getConstDirectory(selfID)->GIDsAllUniquelyOwned();
 }
 
 

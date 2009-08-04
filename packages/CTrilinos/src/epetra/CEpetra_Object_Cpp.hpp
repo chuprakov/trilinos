@@ -1,13 +1,13 @@
 #include "CTrilinos_config.h"
 
+#ifndef CEPETRA_OBJECT_CPP_HPP
+#define CEPETRA_OBJECT_CPP_HPP
+
+
 #include "CEpetra_Object.h"
 #include "Epetra_Object.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-#ifndef CEPETRA_OBJECT_CPP_HPP
-#define CEPETRA_OBJECT_CPP_HPP
 
 
 class Epetra_Object;

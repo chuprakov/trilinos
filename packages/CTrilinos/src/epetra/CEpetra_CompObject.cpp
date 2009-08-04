@@ -6,7 +6,7 @@
 #include "Epetra_CompObject.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -74,7 +74,7 @@ CT_Epetra_CompObject_ID_t Epetra_CompObject_Duplicate (
 {
     return CTrilinos::concreteType<CT_Epetra_CompObject_ID_t>(
         tableOfCompObjects().store(new Epetra_CompObject(
-        *CEpetra::getCompObject(SourceID))));
+        *CEpetra::getConstCompObject(SourceID))));
 }
 
 void Epetra_CompObject_Destroy ( 
@@ -95,7 +95,7 @@ void Epetra_CompObject_SetFlopCounter (
   CT_Epetra_Flops_ID_t FlopCounter_inID )
 {
     CEpetra::getCompObject(selfID)->SetFlopCounter(
-        *CEpetra::getFlops(FlopCounter_inID));
+        *CEpetra::getConstFlops(FlopCounter_inID));
 }
 
 void Epetra_CompObject_SetFlopCounter_Matching ( 
@@ -103,7 +103,7 @@ void Epetra_CompObject_SetFlopCounter_Matching (
   CT_Epetra_CompObject_ID_t CompObjectID )
 {
     CEpetra::getCompObject(selfID)->SetFlopCounter(
-        *CEpetra::getCompObject(CompObjectID));
+        *CEpetra::getConstCompObject(CompObjectID));
 }
 
 void Epetra_CompObject_UnsetFlopCounter ( 
@@ -159,7 +159,7 @@ void Epetra_CompObject_Assign (
 {
     Epetra_CompObject& self = *( CEpetra::getCompObject(selfID) );
 
-    self = *CEpetra::getCompObject(srcID);
+    self = *CEpetra::getConstCompObject(srcID);
 }
 
 

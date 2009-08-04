@@ -6,7 +6,7 @@
 #include "Epetra_Map.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
 
@@ -66,7 +66,7 @@ CT_Epetra_Map_ID_t Epetra_Map_Create (
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
         tableOfMaps().store(new Epetra_Map(
-        NumGlobalElements, IndexBase, *CEpetra::getComm(CommID))));
+        NumGlobalElements, IndexBase, *CEpetra::getConstComm(CommID))));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Create_Linear ( 
@@ -75,7 +75,8 @@ CT_Epetra_Map_ID_t Epetra_Map_Create_Linear (
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
         tableOfMaps().store(new Epetra_Map(
-        NumGlobalElements, NumMyElements, IndexBase, *CEpetra::getComm(CommID))));
+        NumGlobalElements, NumMyElements, IndexBase, 
+        *CEpetra::getConstComm(CommID))));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Create_Arbitrary ( 
@@ -85,14 +86,15 @@ CT_Epetra_Map_ID_t Epetra_Map_Create_Arbitrary (
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
         tableOfMaps().store(new Epetra_Map(
-        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, *CEpetra::getComm(CommID))));
+        NumGlobalElements, NumMyElements, MyGlobalElements, 
+        IndexBase, *CEpetra::getConstComm(CommID))));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Duplicate ( CT_Epetra_Map_ID_t mapID )
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
         tableOfMaps().store(new Epetra_Map(
-        *CEpetra::getMap(mapID))));
+        *CEpetra::getConstMap(mapID))));
 }
 
 void Epetra_Map_Destroy ( CT_Epetra_Map_ID_t * selfID )
@@ -112,7 +114,7 @@ void Epetra_Map_Assign (
 {
     Epetra_Map& self = *( CEpetra::getMap(selfID) );
 
-    self = *CEpetra::getMap(mapID);
+    self = *CEpetra::getConstMap(mapID);
 }
 
 

@@ -9,6 +9,7 @@
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 
 #include "CEpetra_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
@@ -21,6 +22,37 @@ namespace {
 CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix_Cast ( 
   CTrilinos_Object_ID_t id );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_RowMatrix , Cast )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 4);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_Map_ID_t MapID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
+
+  /* Create the source matrix */
+  ECHO(int NumIndicesPerRow = 4);
+  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
+       CV, MapID, NumIndicesPerRow, false));
+
+  /* Initialize the source matrix */
+  ECHO(double val = 1.0);
+  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID, val));
+  TEST_EQUALITY(ret, 0);
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, true));
+  TEST_EQUALITY(ret, 0);
+
+  /* Cast it to a row matrix */
+  ECHO(CT_Epetra_RowMatrix_ID_t selfID = Epetra_RowMatrix_Cast(Epetra_CrsMatrix_Abstract(crsID)));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Epetra_RowMatrix_ID);
+  TEST_EQUALITY_CONST(selfID.index, 0);
+}
 
 /**********************************************************************
 void Epetra_RowMatrix_Destroy ( CT_Epetra_RowMatrix_ID_t * selfID );
@@ -63,45 +95,6 @@ TEUCHOS_UNIT_TEST( Epetra_RowMatrix , Destroy )
 int Epetra_RowMatrix_NumMyRowEntries ( 
   CT_Epetra_RowMatrix_ID_t selfID, int MyRow, int * NumEntries );
  **********************************************************************/
-
-TEUCHOS_UNIT_TEST( Epetra_RowMatrix , NumMyRowEntries )
-{  /* number of non-zero entries in this row */
-  ECHO(CEpetra_Test_CleanSlate());
-
-  /* Create everything we need to pass to the constructor */
-  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
-  ECHO(int NumGlobalElements = 4);
-  ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_Map_ID_t MapID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
-
-  /* Create the source matrix */
-  ECHO(int NumIndicesPerRow = 4);
-  ECHO(Epetra_DataAccess CV = Copy);
-  ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
-       CV, MapID, NumIndicesPerRow, false));
-
-  /* Initialize the source matrix */
-  ECHO(double val = 0.0);
-  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID, val));
-  TEST_EQUALITY(ret, 0);
-  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, true));
-  TEST_EQUALITY(ret, 0);
-  ECHO(int Row = 1);
-  ECHO(const int Count = 3);
-  double Values[Count] = {4.1, 9.6, 0.1};
-  int Indices[Count] = {0, 2, 3};
-  ECHO(ret = Epetra_CrsMatrix_ReplaceMyValues(crsID, Row, Count, Values, Indices));
-  TEST_EQUALITY(ret, 0);
-
-  /* Cast it to a row matrix */
-  ECHO(CT_Epetra_RowMatrix_ID_t selfID = Epetra_RowMatrix_Cast(Epetra_CrsMatrix_Abstract(crsID)));
-
-  /* Check the number of non-zero entries in Row */
-  ECHO(int nz = 0);
-  ECHO(ret = Epetra_RowMatrix_NumMyRowEntries(selfID, Row, &nz));
-  TEST_EQUALITY_CONST(ret, 0);
-  TEST_EQUALITY(nz, Count);
-}
 
 /**********************************************************************
 int Epetra_RowMatrix_MaxNumEntries ( 

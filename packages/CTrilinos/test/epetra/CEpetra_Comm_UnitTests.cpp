@@ -4,10 +4,12 @@
 #include "Epetra_Comm.h"
 #include "CEpetra_Comm.h"
 #include "CEpetra_Comm_Cpp.hpp"
+#include "CEpetra_Distributor_Cpp.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 
 #include "CEpetra_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
@@ -249,7 +251,8 @@ TEUCHOS_UNIT_TEST( Epetra_Comm , MyPID )
   ECHO(int ret = Epetra_Comm_MyPID(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  /* ... */
+  ECHO(bool valid = (ret >= 0));
+  TEST_EQUALITY_CONST(valid, true);
 }
 
 /**********************************************************************
@@ -265,7 +268,8 @@ TEUCHOS_UNIT_TEST( Epetra_Comm , NumProc )
   ECHO(int ret = Epetra_Comm_NumProc(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  /* ... */
+  ECHO(bool valid = (ret >= 1));
+  TEST_EQUALITY_CONST(valid, true);
 }
 
 /**********************************************************************
@@ -284,6 +288,10 @@ TEUCHOS_UNIT_TEST( Epetra_Comm , CreateDistributor )
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(disID.type, CT_Epetra_Distributor_ID);
   TEST_EQUALITY_CONST(disID.index, 0);
+
+  /* Check more thoroughly */
+  ECHO(Teuchos::RCP<Epetra_Distributor> r = CEpetra::getDistributor(disID));
+  TEST_EQUALITY_CONST(r.is_null(), false);
 }
 
 /**********************************************************************

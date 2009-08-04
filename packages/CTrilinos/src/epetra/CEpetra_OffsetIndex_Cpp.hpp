@@ -1,13 +1,13 @@
 #include "CTrilinos_config.h"
 
+#ifndef CEPETRA_OFFSETINDEX_CPP_HPP
+#define CEPETRA_OFFSETINDEX_CPP_HPP
+
+
 #include "CEpetra_OffsetIndex.h"
 #include "Epetra_OffsetIndex.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-#ifndef CEPETRA_OFFSETINDEX_CPP_HPP
-#define CEPETRA_OFFSETINDEX_CPP_HPP
 
 
 class Epetra_OffsetIndex;

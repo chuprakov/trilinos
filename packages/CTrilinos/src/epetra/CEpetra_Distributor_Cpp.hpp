@@ -1,13 +1,13 @@
 #include "CTrilinos_config.h"
 
+#ifndef CEPETRA_DISTRIBUTOR_CPP_HPP
+#define CEPETRA_DISTRIBUTOR_CPP_HPP
+
+
 #include "CEpetra_Distributor.h"
 #include "Epetra_Distributor.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-#ifndef CEPETRA_DISTRIBUTOR_CPP_HPP
-#define CEPETRA_DISTRIBUTOR_CPP_HPP
 
 
 class Epetra_Distributor;
