@@ -8,6 +8,12 @@ INCLUDE(AddOptionAndDefine)
 
 PACKAGE(Phdmesh)
 
+IF(NOT HAVE_SYS_TIME_H)
+  SET(PHDMESH_NO_SYS_TIME TRUE)
+ELSE()
+  SET(PHDMESH_NO_SYS_TIME FALSE)
+ENDIF()
+
 #
 # B) Set up package-specific options
 #

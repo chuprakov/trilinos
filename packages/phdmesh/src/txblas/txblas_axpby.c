@@ -28,6 +28,7 @@
 #include <math.h>
 #include <util/TPI.h>
 #include <txblas/reduction.h>
+#include "malloc.h"
 
 struct TaskXY {
   const double   alpha ;
@@ -51,7 +52,7 @@ void tdaxpby( unsigned n ,
   TPI_Size( & p_size );
 
   {
-    unsigned tmp[ p_size ];
+    unsigned *tmp = malloc( p_size );
     struct TaskXY data = { a , b , x , y , n , tmp };
     int i ;
     for ( i = 0 ; i < p_size ; ++i ) { tmp[i] = i ; }
@@ -65,6 +66,7 @@ void tdaxpby( unsigned n ,
     else {
       TPI_Run( & task_axpby_work , & data , 0 );
     }
+    free(tmp);
   }
 }
 
@@ -186,6 +188,7 @@ static void task_axpby_work_steal( void * arg , TPI_ThreadPool pool )
 
     /* Finished my work, steal work from someone else */
 
+    {
     int working ; 
     int p = 0 ;
     for ( working = 1 ; working ; ) {
@@ -204,6 +207,7 @@ static void task_axpby_work_steal( void * arg , TPI_ThreadPool pool )
           working = 1 ;
         }
       }
+    }
     }
   }
 }

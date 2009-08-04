@@ -32,6 +32,7 @@
 #include <sstream>
 #include <stdexcept>
 
+#include <strings.h>
 #include <util/ParallelReduce.hpp>
 #include <util/ParallelComm.hpp>
 
@@ -185,6 +186,10 @@ public:
 struct FilePartLess {
   bool operator()( const FilePart * lhs , int rhs ) const
     { return lhs->m_identifier < rhs ; }
+  bool operator()( int lhs, const FilePart * rhs ) const
+    { return lhs < rhs->m_identifier; }
+  bool operator()( const FilePart * lhs, const FilePart * rhs ) const
+    { return lhs->m_identifier < rhs->m_identifier; }
 };
 
 //----------------------------------------------------------------------

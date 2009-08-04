@@ -128,8 +128,8 @@ struct NumericEnum {
 
 private:
   enum { OK = StaticAssert<
-               0 < (int) value &&
-                   (int) value < (int) NumericEnum<void>::length >::OK };
+         (0 < (int) value) &&
+         ((int) value < (int) NumericEnum<void>::length) >::OK };
 };
 
 /** \brief  Inverse map of a numeric scalar type to an integer value */

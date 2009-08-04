@@ -28,6 +28,7 @@
 #include <math.h>
 #include <util/TPI.h>
 #include <txblas/reduction.h>
+#include <malloc.h>
 
 #define BLOCKING_SIZE 0
 
@@ -97,8 +98,9 @@ static
 void add_array( double * const s , const double * x , const double * const xe )
 {
   while ( xe != x ) {
+    double * p;
     double   a = *x ; ++x ;
-    double * p = s ;
+    p = s ;
     if ( a < 0 ) { a = -a ; p += 2 ; }
     SUM_ADD( p , a );
   }
@@ -201,7 +203,7 @@ static void dot1_unroll( double * s , const double * x , const size_t n )
     double a = *x ; a *= a ; SUM_ADD( s , a );
   }
 
-  const double * const x_end = x + n ;
+  {const double * const x_end = x + n ;
   for ( ; x_end != x ; x += NB ) {
     double a0 = x[0] ;
     double a1 = x[1] ;
@@ -228,6 +230,7 @@ static void dot1_unroll( double * s , const double * x , const size_t n )
     SUM_ADD( s , a6 );
     SUM_ADD( s , a7 );
   }
+  }
 }
 
 void xddot1( double * s2 , unsigned n , const double * x )
@@ -253,10 +256,12 @@ static void task_xddot_x_work( void * arg , TPI_ThreadPool pool )
 
     {
       TPI_Lock(pool,0);
+      {
       double * const v = t->x_sum ;
       SUM_ADD( v , partial[0] );
       SUM_ADD( v , partial[1] );
       TPI_Unlock(pool,0);
+      }
     }
   }
 }
@@ -351,7 +356,7 @@ void tddot( double * s , unsigned n , const double * x , const double * y )
 {
   int p_size ;
   if ( ! TPI_Size( & p_size ) ) {
-    double tmp[ p_size ];
+    double* tmp = malloc( p_size * sizeof(double));
     struct TaskXY data = { tmp , x , y , n , BLOCKING_SIZE };
     int i ;
     for ( i = 0 ; i < p_size ; ++i ) { tmp[i] = 0 ; }
@@ -363,6 +368,7 @@ void tddot( double * s , unsigned n , const double * x , const double * y )
     }
     for ( i = 1 ; i < p_size ; ++i ) { tmp[0] += tmp[i] ; }
     *s = tmp[0] ;
+    free(tmp);
   }
 }
 
@@ -416,12 +422,14 @@ static void task_xddot_xy_work_blocking( void * arg , TPI_ThreadPool pool )
       xddot( s_local , ( block_size < n ? block_size : n ) , x , y );
     }
 
+    {
     double * const xy_sum = t->xy_sum + 4 * p_rank ;
 
     xy_sum[0] = s_local[0] ;
     xy_sum[1] = s_local[1] ;
     xy_sum[2] = s_local[2] ;
     xy_sum[3] = s_local[3] ;
+    }
   }
 }
 
@@ -445,12 +453,14 @@ static void task_xddot_xy_work( void * arg , TPI_ThreadPool pool )
 
     xddot( s_local , n_local , x , y );
 
+    {
     double * const xy_sum = t->xy_sum + 4 * p_rank ;
 
     xy_sum[0] = s_local[0] ;
     xy_sum[1] = s_local[1] ;
     xy_sum[2] = s_local[2] ;
     xy_sum[3] = s_local[3] ;
+    }
   }
 }
 
@@ -459,9 +469,10 @@ void txddot( double * s , unsigned n , const double * x , const double * y )
 {
   int p_size ;
   if ( ! TPI_Size( & p_size ) ) {
+    double* tmp;
     const int ntmp = 4 * p_size ;
-    double tmp[ ntmp ];
-    struct TaskXY data = { tmp , x , y , n , BLOCKING_SIZE };
+    tmp = malloc(ntmp * sizeof(double));
+    {struct TaskXY data = { tmp , x , y , n , BLOCKING_SIZE };
     int i ;
     for ( i = 0 ; i < ntmp ; ++i ) { tmp[i] = 0 ; }
     if ( data.block ) {
@@ -473,6 +484,8 @@ void txddot( double * s , unsigned n , const double * x , const double * y )
     for ( i = 0 ; i < p_size ; ++i ) {
       xdsum_add_dsum( s , tmp + 4 * i );
     }
+    }
+    free(tmp);
   }
 }
 

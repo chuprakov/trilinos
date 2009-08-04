@@ -77,10 +77,23 @@ struct LessEntityProc {
       return lhs_key < rhs_key ;
     }
 
+  bool operator()( const Entity & lhs, const EntityProc & rhs  ) const
+    {
+      const entity_key_type rhs_key = rhs.first->key();
+      const entity_key_type lhs_key = lhs.key();
+      return lhs_key < rhs_key ;
+    }
+  
   bool operator()( const EntityProc & lhs , const unsigned rhs ) const
     {
       const unsigned lhs_type = lhs.first->entity_type();
       return lhs_type < rhs ;
+    }
+  
+  bool operator()( const unsigned lhs, const EntityProc & rhs  ) const
+    {
+      const unsigned rhs_type = rhs.first->entity_type();
+      return lhs < rhs_type;
     }
 };
 
