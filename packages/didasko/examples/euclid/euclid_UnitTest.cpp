@@ -61,13 +61,15 @@ const double tol = 1E-7;
 const int numVec = 1;
 
 TEUCHOS_UNIT_TEST( Ifpack_Hypre, Euclid){
-  RCP<Epetra_CrsMatrix> Matrix = rcp(newCrsMatrix(10));
+  RCP<Epetra_CrsMatrix> Matrix = rcp(newCrsMatrix(27));
   //cout << endl << *Matrix << endl;
   Ifpack_Euclid preconditioner(Matrix.get());
   TEST_EQUALITY(preconditioner.Initialize(),0);
   TEST_EQUALITY(preconditioner.SetParameter("setmem", 0),0);
+  TEST_EQUALITY(preconditioner.SetParameter("setstats", 1), 0);
+  TEST_EQUALITY(preconditioner.SetParameter("setlevel", 2), 0);
   TEST_EQUALITY(preconditioner.Compute(),0);
-  TEST_INEQUALITY(preconditioner.Condest(Ifpack_Cheap, 1550, 1e-9, Matrix.get()),-1);
+  TEST_EQUALITY(preconditioner.Condest(Ifpack_Cheap, 1550, 1e-11, Matrix.get()),-1);
   cout << endl << preconditioner << endl;
   Epetra_MultiVector KnownX(Matrix->OperatorDomainMap(), numVec);
   KnownX.Random();
@@ -76,11 +78,15 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, Euclid){
   TEST_EQUALITY(preconditioner.Apply(KnownX, B), 0);
 
   Epetra_MultiVector X(Matrix->OperatorRangeMap(), numVec);
+  TEST_EQUALITY(X.ReplaceMap(preconditioner.OperatorRangeMap()),0);
+  TEST_EQUALITY(B.ReplaceMap(preconditioner.OperatorRangeMap()),0);
+  TEST_EQUALITY(KnownX.ReplaceMap(preconditioner.OperatorRangeMap()),0);
   AztecOO Solver(Matrix.get(), &X, &B);
   TEST_EQUALITY(Solver.SetPrecOperator(&preconditioner),0);
   Solver.Iterate(1000, 1E-9);
   //TEST_EQUALITY(preconditioner.ApplyInverse(B,X),0);
   TEST_EQUALITY(EquivalentVectors(X, KnownX, tol), true);
   cout << endl << preconditioner << endl;
+  cout << endl << X << endl;
 }
 

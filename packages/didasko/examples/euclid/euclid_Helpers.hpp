@@ -35,6 +35,8 @@
 #include "Epetra_Vector.h"
 
 #include <string>
+#include <iostream>
+#include <fstream>
 
 
 Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N);

@@ -57,15 +57,15 @@ Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N){
   // pointer to the matrix to be created
   Epetra_CrsMatrix*      Matrix;
   // container for parameters
-  /*Teuchos::ParameterList GaleriList;
+  Teuchos::ParameterList GaleriList;
   int nx = N * Comm.NumProc();
   int ny = N * Comm.NumProc();
   GaleriList.set("nx", nx);
   GaleriList.set("ny", ny);
 
   Map = rcp(Galeri::CreateMap("Cartesian2D", Comm, GaleriList));
-  Matrix   = Galeri::CreateCrsMatrix("Laplace2D", Map.get(), GaleriList);*/
-  
+  Matrix   = Galeri::CreateCrsMatrix("Laplace2D", Map.get(), GaleriList);
+ /* 
   Map = rcp(new Epetra_Map(N*Comm.NumProc(), N, 0, Comm));
   Matrix = new Epetra_CrsMatrix(Copy, *Map, 3);
 
@@ -101,7 +101,7 @@ Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N){
       values[1] = 4.0;
       Matrix->InsertGlobalValues(i, 2, &values[0], &indices[0]);
     }
-  }
+  }*/
 
   ierr += Matrix->FillComplete();
   if(ierr != 0){
@@ -111,45 +111,46 @@ Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N){
 }
 
 
-bool EquivalentVectors(Epetra_MultiVector &Y1, Epetra_MultiVector &Y2, const double tol){
-  
+bool EquivalentVectors(Epetra_MultiVector &X, Epetra_MultiVector &Y, const double tol){
   bool retVal = true;
+  string fileName;
+  stringstream out;
+  out << "Failure." << X.Comm().MyPID();
+  fileName = out.str();
+  ofstream myfile;
   
-  int num_vectors = Y1.NumVectors();
-  if(Y2.NumVectors() != num_vectors){
+  int num_vectors = X.NumVectors();
+  if(Y.NumVectors() != num_vectors){
     printf("Multivectors do not have same number of vectors.\n");
     return false;
   }
   
   for(int j = 0; j < num_vectors; j++){
-    if(Y1.MyLength() != Y2.MyLength()){
+    if(X.MyLength() != Y.MyLength()){
       printf("Vectors are not same size on local processor.\n");
       return false;
     }
-    for(int i = 0; i < Y1.GlobalLength(); i++){
-      int Y1_local = Y1.Map().LID(i);
-      int Y2_local = Y2.Map().LID(i);
-      if(Y1_local < 0 || Y2_local < 0){
-        continue;
-      }
-      if(fabs((*Y1(j))[Y1_local] - (*Y2(j))[Y2_local]) > tol){
-        printf("Vector number[%d] ", j);
-        printf("Val1[%d] = %f != Val2[%d] = %f\n", i, (*Y1(j))[Y1_local], i, (*Y2(j))[Y2_local]);
-        retVal = false;
+    for(int i = 0; i < Y.MyLength(); i++){
+      if(fabs(X[j][i] - Y[j][i]) > tol){
+        if(retVal == true) {
+          myfile.open(fileName.c_str());
+          myfile << setw(8) << "Vector" << setw(8) << "Entry" << setw(12) << "X" << setw(12) << "Y\n";
+        }
+        myfile << setw(8) << j << setw(8) << i << setw(12) << X[j][i] << setw(12) << Y[j][i] << endl;    
+        retVal = false;      
       }
     }
   }
-  Teuchos::Array<int> vals; vals.resize(Y1.Comm().NumProc());
+  if(retVal == false) myfile.close();
+  Teuchos::Array<int> vals; vals.resize(X.Comm().NumProc());
   int my_vals[1]; my_vals[0] = (int)retVal;
-  Y1.Comm().GatherAll(my_vals, &vals[0], 1);
-  for(int i = 0; i < Y1.Comm().NumProc(); i++){
+  X.Comm().GatherAll(my_vals, &vals[0], 1);
+  for(int i = 0; i < X.Comm().NumProc(); i++){
     if(vals[i] == false){
       retVal = false;
     }
   }
-  if(retVal == false){
-    printf("[%d]Failed vector equivalency test.\n", Y1.Comm().MyPID());
-  }
+  if(!retVal && !Y.Comm().MyPID()) printf("See Failure file for details\n");
   return retVal;
 }
 
