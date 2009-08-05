@@ -27,7 +27,11 @@
 #include <util/TPI.h>
 
 #include <stddef.h>
+#ifdef _MSC_VER
+#include "gettimeofday.c"
+#else
 #include <sys/time.h>
+#endif
 
 double TPI_Walltime()
 {
