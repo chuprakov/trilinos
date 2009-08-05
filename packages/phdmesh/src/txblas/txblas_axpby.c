@@ -28,7 +28,7 @@
 #include <math.h>
 #include <util/TPI.h>
 #include <txblas/reduction.h>
-#include "malloc.h"
+#include "stdlib.h"
 
 struct TaskXY {
   const double   alpha ;
