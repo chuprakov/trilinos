@@ -45,24 +45,13 @@ int main(int argc, char* argv[])
   
   /* 
    * Validators are useful for making sure that an input has only a particular set of values.
-   * For the "Solver" option, we will create a validator that will automatically create
-   * documentation for this parameter but will also help in validation. Here we use a 
-   * StringToIntegralParameterEntryValidator and a tuple to specify which string values
+   * For the "Solver" option, we will create a validator. Here we use a 
+   * StringValidator and a tuple to specify which string values
    * are valid for the "Solver" option.
    */
-  Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
-    solverValidator = Teuchos::rcp(
-      new Teuchos::StringToIntegralParameterEntryValidator<int>(
-        Teuchos::tuple<std::string>( "GMRES", "CG", "TFQMR" )
-        ,"Solver"
-        )
-      );
-  My_List->set(
-    "Solver"
-    ,"GMRES"
-    ,"The type of solver to use."
-    ,solverValidator
-    );
+  Teuchos::RCP<Optika::StringValidator> solverValidator = 
+     Teuchos::RCP<Optika::StringValidator>(new Optika::StringValidator(Teuchos::tuple<std::string>("GMRES", "CG", "TFQMR")));
+  My_List->set( "Solver", "GMRES", "The type of solver to use.", solverValidator);
 
   /* 
    * The TivaBuean Package can also handle arrays.

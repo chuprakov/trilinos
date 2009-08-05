@@ -227,6 +227,10 @@ Teuchos::RCP<const Teuchos::ParameterEntryValidator> TreeModel::getValidator(con
 	return itemEntry(index)->validator();
 }
 
+Teuchos::RCP<const Teuchos::ParameterList> TreeModel::getCurrentParameters(){
+	return validParameters;
+}
+
 QModelIndex TreeModel::findParameterEntryIndex(const Teuchos::ParameterEntry *parameterEntry, const std::string parameterName){
 	QString targetName = QString::fromStdString(parameterName);
 	QList<QModelIndex> potentialMatches = match(index(0,0), Qt::DisplayRole, QString::fromStdString(parameterName),

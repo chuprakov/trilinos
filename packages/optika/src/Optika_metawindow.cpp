@@ -77,12 +77,21 @@ void SearchWidget::previous(){
 MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, QString fileName){
 	model = new TreeModel(validParameters, fileName);
 	initilization();
+}
 
+MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>), QString fileName){
+	model = new TreeModel(validParameters, fileName);
+	initilization(customFunc);
 }
 
 MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet, QString fileName){
 	model = new TreeModel(validParameters, dependencySheet, fileName);
 	initilization();
+} 
+
+MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>), QString fileName){
+	model = new TreeModel(validParameters, dependencySheet, fileName);
+	initilization(customFunc);
 } 
 
 MetaWindow::~MetaWindow(){
@@ -106,14 +115,15 @@ void MetaWindow::closeEvent(QCloseEvent *event){
 	qApp->quit();
 }
 
-void MetaWindow::initilization(){
+void MetaWindow::initilization(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)){
+	this->customFunc = customFunc;
 	delegate = new Delegate;
 	view = new TreeView(model, delegate);
 	view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
 	searchWidget = new SearchWidget(model, view, this);
 	searchWidget->hide();
 	QPushButton *submitButton = new QPushButton(tr("Submit"), this);
-	connect(submitButton, SIGNAL(clicked(bool)), this, SLOT(close()));
+	connect(submitButton, SIGNAL(clicked(bool)), this, SLOT(submit()));
 	QWidget *centerWidget = new QWidget(this);
 	QGridLayout *centerWidgetLayout = new QGridLayout(centerWidget);
 	centerWidgetLayout->addWidget(view,0,0);
@@ -383,8 +393,14 @@ void MetaWindow::initiateSearch(){
 	searchWidget->show();
 }
 
-
-
+void MetaWindow::submit(){
+	if(customFunc == 0){
+		close();
+	}
+	else{
+		(*customFunc)(model->getCurrentParameters());	
+	}
 }
 
+}
 

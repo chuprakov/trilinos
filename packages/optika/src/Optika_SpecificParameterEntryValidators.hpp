@@ -547,36 +547,41 @@ public:
 	/**
 	 * Constructs a FileNameValidator.
 	 */
-	FileNameValidator():ParameterEntryValidator(){}
+	FileNameValidator();
 
-	Teuchos::RCP<const Teuchos::Array<std::string> > validStringValues() const{
-		return Teuchos::null;
-	}
+	Teuchos::RCP<const Teuchos::Array<std::string> > validStringValues() const;
 
-	void validate(Teuchos::ParameterEntry const &entry, std::string const &paramName, std::string const &sublistName) const{
-		Teuchos::any anyValue = entry.getAny(true);
-		if(!(anyValue.type() == typeid(std::string) )){
-			const std::string &entryName = entry.getAny(false).typeName();
-			std::stringstream oss;
-			std::string msg;
-			oss << "Aww shoot! Sorry bud, but it looks like the \"" << paramName << "\"" <<
-			" parameter in the \"" << sublistName << "\" sublist didn't quite work out.\n" <<
-			"No need to fret though. I'm sure it's just a small mistake. Maybe the information below "<<
-			"can help you figure out what went wrong.\n\n"
-			"Error: The value that you entered was the wrong type." <<
-			"Parameter: " << paramName << "\n" << 
-			"Type specified: " << entryName << "\n" <<
-			"Type accepted: " << typeid(std::string).name() << "\n";
-			msg = oss.str();
-			throw Teuchos::Exceptions::InvalidParameterType(msg);
-		}
-	}
+	void validate(Teuchos::ParameterEntry const &entry, std::string const &paramName, std::string const &sublistName) const;
 
-	void printDoc(std::string const &docString, std::ostream &out) const{
-		Teuchos::StrUtils::printLines(out,"# ",docString);
-		out << "#  Validator Used: \n";
-		out << "#	FileName Validator\n";
-	}
+	void printDoc(std::string const &docString, std::ostream &out) const;
+};
+
+/**
+ * A simple validator that only allows certain string values to be choosen.
+ */
+class StringValidator : public Teuchos::ParameterEntryValidator{
+public:
+	/**
+	 * Constructs a StringValidator.
+	 */
+	StringValidator(Teuchos::Array<std::string> validStrings);
+
+	/**
+	 * Sets the Array of valid strings and returns what the current array of valid
+	 * string now is.
+	 *
+	 * @param validStrings What the array for the valid strings should contain.
+	 * @return What the arry for the valid strings now conatians.
+	 */
+	const Teuchos::Array<std::string> setValidStrings(Teuchos::Array<std::string> validStrings);
+
+	Teuchos::RCP<const Teuchos::Array<std::string> > validStringValues() const;
+
+	void validate(Teuchos::ParameterEntry const &entry, std::string const &paramName, std::string const &sublistName) const;
+
+	void printDoc(std::string const &docString, std::ostream &out) const;
+private:
+	Teuchos::Array<std::string> validStrings;
 };
 
 /**
@@ -608,7 +613,6 @@ protected:
 /**
  * A wrapper class for Arrays using a StringToIntegralParameterEntryValidator.
  */
-template <class S>
 class ArrayStringValidator: public ArrayValidator{
 public:
 	/**
@@ -617,7 +621,7 @@ public:
 	 * @param prototypeValidator The StringToIntegralParameterEntryValidator that should be used
 	 * on each entry in the Array.
 	 */
-	ArrayStringValidator<S>(Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<S> > prototypeValidator)
+	ArrayStringValidator(Teuchos::RCP<Teuchos::ParameterEntryValidator> prototypeValidator)
 	:ArrayValidator(prototypeValidator){}
 	
 	/**
@@ -625,25 +629,29 @@ public:
 	 *
 	 * @return The prototype validator being used by the ArrayStringValidator.
 	 */
-	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<S> > getPrototype() const{
-		return Teuchos::rcp_static_cast<Teuchos::StringToIntegralParameterEntryValidator<S> >(prototypeValidator);
+	Teuchos::RCP<Teuchos::ParameterEntryValidator> getPrototype() const{
+		return prototypeValidator;
 	}
 
 	void validate(Teuchos::ParameterEntry const &entry, std::string const &paramName, std::string const &sublistName) const{
 		Teuchos::any anyValue = entry.getAny(true);
 		if(anyValue.type() == typeid(Teuchos::Array<std::string>)){
-			Teuchos::Array<std::string> extracted = Teuchos::any_cast<Teuchos::Array<std::string> >(anyValue);
+			Teuchos::Array<std::string> extracted = Teuchos::getValue<Teuchos::Array<std::string> >(entry);
+			
+			std::string currentString;
+			Teuchos::RCP< const Teuchos::Array<std::string> > validStrings = validStringValues();
 			for(unsigned int i = 0; i<extracted.size(); i++){
-				std::string currentString = extracted[i];
-				Teuchos::RCP< const Teuchos::Array<std::string> > validStrings = validStringValues();
-				bool valid = false;
-				for(unsigned int j=0; j<validStrings->size(); j++){
+				currentString = extracted[i];
+				//bool valid = false;
+				Teuchos::Array<std::string>::const_iterator it = std::find(validStrings->begin(), validStrings->end(), currentString);
+			/*	for(unsigned int j=0; j<validStrings->size(); j++){
 					if((*validStrings)[j] == currentString){
 						valid = true;
 						break;
 					}
-				}
-				if(!valid){
+				}*/
+				//if(!valid){
+				if(it == validStrings->end()){
 					std::stringstream oss;
 					std::string msg;
 					oss << "Aww shoot! Sorry bud, but it looks like the \"" << paramName << "\"" <<
@@ -675,7 +683,7 @@ public:
 			"Error: The value you entered was the wrong type" <<
 			"Parameter: " << paramName << "\n" <<
 			"Type specified: " << entryName << "\n" <<
-			"Type accepted: " << typeid(Teuchos::Array<S>).name() << "\n";
+			"Type accepted: " << typeid(Teuchos::Array<std::string>).name() << "\n";
 			msg = oss.str();
 			throw Teuchos::Exceptions::InvalidParameterType(msg);
 		}
@@ -814,6 +822,8 @@ public:
 		prototypeValidator->printDoc(toPrint, out);
 	}
 };
+
+
 
 
 

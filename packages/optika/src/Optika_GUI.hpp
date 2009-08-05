@@ -13,6 +13,16 @@ namespace Optika{
 
 	/**
 	 * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
+	 * All user input will be stored in it. Also runs the function specified whenever the user hits the submit
+	 * button.
+	 *
+	 * @param validParameters A list of parameters from which the users may specify values.
+	 * @param customFunc Custom function to run whenever the user clicks the submit button.
+	 */
+	void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
+
+	/**
+	 * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
 	 * All user input will be stored in it.
 	 *
 	 * @param validParameters A list of parameters from which the users may specify values.
@@ -20,6 +30,19 @@ namespace Optika{
 	 * ParameterList.
 	 */
 	void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet);
+
+	/**
+	 * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
+	 * All user input will be stored in it. Also runs the function specified whenever the user hits the submit
+	 * button.
+	 *
+	 * @param validParameters A list of parameters from which the users may specify values.
+	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
+	 * ParameterList.
+	 * @param customFunc Custom function to run whenever the user clicks the submit button.
+	 */
+	void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
+
 }
 
 

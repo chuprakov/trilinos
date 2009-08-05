@@ -96,19 +96,13 @@ int main(){
   My_List->set("Double", (double)4.5, "double tester", doubleVali);
 
   /*
-   * This validator comes from the teuchos package. It is called the StringToIntegralParameterEntryValidator.
-   * Amoung other things, you may specify a list of acceptable values for a specific string parameter. The template 
-   * arugment doesn't really matter as far as the GUI is concerened, so go ahead and use what ever your particular 
-   * program calls for. Here we use int as the template argument. This validator is for the Solver parameter and 
-   * allows only the values GMRES, CG, and TFQMR to be supplied by the user.
+   * This validator is simple called a StringValidator. It takes a Teuchos tuple containg strings
+   * and then makes sure what ever parameter it applied to is only ever set to one of those values.
+   * Note: A Teuchos StringToIntegralParameterEntryValidator would also do the trick here, but they're
+   * a little more complicated to use.
    */
-  Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
-    solverValidator = Teuchos::rcp(
-      new Teuchos::StringToIntegralParameterEntryValidator<int>(
-        Teuchos::tuple<std::string>( "GMRES", "CG", "TFQMR" )
-        ,"Solver"
-        )
-      );
+  Teuchos::RCP<Optika::StringValidator> solverValidator = Teuchos::RCP<Optika::StringValidator>(
+  	new Optika::StringValidator(Teuchos::tuple<std::string>( "GMRES", "CG", "TFQMR" )));
   My_List->set("Solver", "GMRES", "The type of solver to use.", solverValidator);
   
   /*
@@ -124,7 +118,7 @@ int main(){
    * The ArrayNumberValidator takes an ordinary EnhancedNumberValidator as an argument for its constructor, and then uses that
    * validator to validate each entry in the array.
    *
-   * If you would like to emulate the functionality of the StringToIntegralParameterEntryValidator for an array, use the
+   * If you would like to emulate the functionality of the StringValidator for an array, use the
    * ArrayStringValidator wrapper class.
    *
    * If you would like to emulate the functionality of the FileNameValidator for an array, use the ArrayFileNameValidator
@@ -136,34 +130,22 @@ int main(){
   Teuchos::Array<std::string> stringArray(10,"Option1");
   Teuchos::Array<std::string> filenameArray(3,"~/");
 
-  My_List->set("IntArray",
-  	intArray,
-	"intarray tester", 
+  My_List->set("IntArray", intArray, "intarray tester", 
 	Teuchos::RCP<Optika::ArrayNumberValidator<int> >(new Optika::ArrayNumberValidator<int>(
 	  Teuchos::RCP<Optika::EnhancedNumberValidator<int> >(
 	  	new Optika::EnhancedNumberValidator<int>(0,20,5)	
 	))));
 
 
-  Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
-    optionsValidator = Teuchos::rcp(
-      new Teuchos::StringToIntegralParameterEntryValidator<int>(
-        Teuchos::tuple<std::string>( "Option1", "Option2", "Option3", "Option4" )
-        ,"Options"
-        )
-      );
+  Teuchos::RCP<Optika::StringValidator> optionsValidator = Teuchos::RCP<Optika::StringValidator>(
+  	new Optika::StringValidator(Teuchos::tuple<std::string>("Option1", "Option2", "Option3", "Option4" )));
 
-  My_List->set("StringArray", 
-  	stringArray,
-	"string tester", 
-  	Teuchos::RCP<Optika::ArrayStringValidator<int> >(new Optika::ArrayStringValidator<int>(optionsValidator))); 
+  My_List->set("StringArray", stringArray, "string tester", 
+  	Teuchos::RCP<Optika::ArrayStringValidator>(new Optika::ArrayStringValidator(optionsValidator))); 
 
-  Teuchos::RCP<Optika::FileNameValidator> arrayFilnameVali = 
-  	Teuchos::rcp(new Optika::FileNameValidator);
+  Teuchos::RCP<Optika::FileNameValidator> arrayFilnameVali = Teuchos::rcp(new Optika::FileNameValidator);
   
-  My_List->set("Filename Array", 
-  	filenameArray,
-	"filename array tester",
+  My_List->set("Filename Array", filenameArray, "filename array tester",
   	Teuchos::RCP<Optika::ArrayFileNameValidator>(new Optika::ArrayFileNameValidator(arrayFilnameVali)));
 
   /*

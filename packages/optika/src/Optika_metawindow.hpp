@@ -89,6 +89,18 @@ public:
 	 * Constructs a MainWindow object.
 	 * 
 	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
+	 * @param customFunc The function to run whenever the user clicks the submit button.
+	 * @param fileName The name of a save file that may store previous values used by a user for the 
+	 * Parameter List specified by validParameters.
+	 */
+	MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, 
+	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>),
+	QString fileName=QString());
+
+	/**
+	 * Constructs a MainWindow object.
+	 * 
+	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
 	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
 	 * ParameterList.
 	 * @param fileName The name of a save file that may store previous values used by a user for the 
@@ -96,6 +108,21 @@ public:
 	 */
 	MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, 
 	Teuchos::RCP<DependencySheet> dependencySheet,
+	QString fileName=QString());
+
+	/**
+	 * Constructs a MainWindow object.
+	 * 
+	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
+	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
+	 * ParameterList.
+	 * @param customFunc The function to run whenever the user clicks the submit button.
+	 * @param fileName The name of a save file that may store previous values used by a user for the 
+	 * Parameter List specified by validParameters.
+	 */
+	MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, 
+	Teuchos::RCP<DependencySheet> dependencySheet,
+	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>),
 	QString fileName=QString());
 
 	/**
@@ -119,6 +146,8 @@ private:
 	SearchWidget *searchWidget;
 	QAction *resetAct, *loadAct, *saveAct, *saveAsAct, *quitAct, *aboutAct, *searchAct;
 	QMenu *fileMenu, *recentMenu, *helpMenu;
+
+	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>);
 
 	/**
 	 * Load and save directory paths
@@ -147,8 +176,10 @@ private:
 
 	/**
 	 * Common initialization shared by both constructors.
+	 *
+	 * @param customFunc The function to run whenever the user clicks the submit button.
 	 */
-	void initilization();
+	void initilization(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)=0);
 
 	/**
 	 * Creates all the menus for the metawindow.
@@ -226,6 +257,7 @@ private slots:
 	 * Starts a search for a parituclar Parameter or ParameterList.
 	 */
 	void initiateSearch();
+	void submit();
 };
 
 

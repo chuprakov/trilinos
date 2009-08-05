@@ -154,6 +154,7 @@ public:
 		return Teuchos::any_cast<Teuchos::Array<S> >(itemEntry(index)->getAny()); 
 	}
 
+	Teuchos::RCP<const Teuchos::ParameterList> getCurrentParameters();
 signals:
 	/**
 	 * Emitted when a row should be hidden.

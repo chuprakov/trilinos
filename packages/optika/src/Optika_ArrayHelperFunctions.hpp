@@ -1,5 +1,5 @@
-#ifndef OPTIKA_DOESPARAMETERCONTAINARRAY_HPP_
-#define OPTIKA_DOESPARAMETERCONTAINARRAY_HPP_
+#ifndef OPTIKA_ARRAYHELPERFUNCTIONS_HPP_
+#define OPTIKA_ARRAYHELPERFUNCTIONS_HPP_
 #include <QStringList>
 #include <QVariant>
 #include "Optika_Types.hpp"
@@ -58,4 +58,4 @@ template <>
 Teuchos::Array<std::string> fromStringToArray<std::string>(QString arrayString);
 
 }
-#endif /* OPTIKA_DOESPARAMETERCONTAINARRAY_HPP_ */
+#endif /* OPTIKA_ARRAYHELPERFUNCTIONS_HPP_ */
