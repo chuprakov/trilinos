@@ -52,10 +52,10 @@ using Teuchos::rcp;
 Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N){
   int ierr = 0;
   Epetra_MpiComm Comm(MPI_COMM_WORLD);
-
+  
   RCP<Epetra_Map>            Map;
   // pointer to the matrix to be created
-  Epetra_CrsMatrix*      Matrix;
+  Epetra_CrsMatrix*      Matrix;/*
   // container for parameters
   Teuchos::ParameterList GaleriList;
   int nx = N * Comm.NumProc();
@@ -65,7 +65,7 @@ Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N){
 
   Map = rcp(Galeri::CreateMap("Cartesian2D", Comm, GaleriList));
   Matrix   = Galeri::CreateCrsMatrix("Laplace2D", Map.get(), GaleriList);
- /* 
+ */ 
   Map = rcp(new Epetra_Map(N*Comm.NumProc(), N, 0, Comm));
   Matrix = new Epetra_CrsMatrix(Copy, *Map, 3);
 
@@ -101,7 +101,7 @@ Epetra_CrsMatrix::Epetra_CrsMatrix* newCrsMatrix(int N){
       values[1] = 4.0;
       Matrix->InsertGlobalValues(i, 2, &values[0], &indices[0]);
     }
-  }*/
+  }
 
   ierr += Matrix->FillComplete();
   if(ierr != 0){
