@@ -61,20 +61,19 @@ using Teuchos::rcp;
 const double tol = 1E-7;
 /*
 TEUCHOS_UNIT_TEST( Ifpack_Hypre, AztecOO ){
-
-  Epetra_CrsMatrix Crs_Matrix = CreateCrs(3);
-  Ifpack_Hypre preconditioner(&Crs_Matrix);
+  Epetra_CrsMatrix* Crs_Matrix = newCrsMatrix(3);
+  Ifpack_Hypre preconditioner(Crs_Matrix);
   preconditioner.Initialize();
-  int NumProc = Crs_Matrix.Comm().NumProc();
+  int NumProc = Crs_Matrix->Comm().NumProc();
   HYPRE_IJMatrix hypre_mat = preconditioner.HypreMatrix();
   EpetraExt_HypreIJMatrix Hyp_Matrix(hypre_mat);
-  TEST_EQUALITY(EquivalentMatrices(Hyp_Matrix, Crs_Matrix, tol), true);
+  TEST_EQUALITY(EquivalentMatrices(Hyp_Matrix, *Crs_Matrix, tol), true);
 
-  int numVec = 2;
-  Epetra_MultiVector X(Hyp_Matrix.RowMatrixRowMap(), numVec);
-  Epetra_MultiVector KnownX(Hyp_Matrix.RowMatrixRowMap(), numVec);
+  int numVec = 1;
+  Epetra_MultiVector X(Hyp_Matrix.OperatorDomainMap(), numVec);
+  Epetra_MultiVector KnownX(Hyp_Matrix.OperatorDomainMap(), numVec);
   KnownX.Random();
-  Epetra_MultiVector B(Hyp_Matrix.RowMatrixRowMap(), numVec);
+  Epetra_MultiVector B(Hyp_Matrix.OperatorRangeMap(), numVec);
   Hyp_Matrix.Multiply(false, KnownX, B);
 
   Epetra_LinearProblem Problem(&Hyp_Matrix, &X, &B);
@@ -86,7 +85,7 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, AztecOO ){
   TEST_EQUALITY(EquivalentVectors(X, KnownX, tol*10*pow(10.0,NumProc)), true);
   
   X.PutScalar(0.0);
-  Epetra_LinearProblem Problem2(&Crs_Matrix, &X, &B);
+  Epetra_LinearProblem Problem2(Crs_Matrix, &X, &B);
   AztecOO solver2(Problem2);
   preconditioner.SetParameter(Solver, PCG); // Use a PCG Solver
   preconditioner.SetParameter(Preconditioner, ParaSails); // Use a Euclid Preconditioner (but not really used)
@@ -96,12 +95,12 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, AztecOO ){
   preconditioner.SetParameter(true); // Don't use the preconditioner
   solver2.SetPrecOperator(&preconditioner);
   preconditioner.Compute();
-  preconditioner.Condest(Ifpack_Cheap, 1550, 1e-9, &Crs_Matrix);
+  preconditioner.Condest(Ifpack_Cheap, 1550, 1e-9, Crs_Matrix);
   cout << endl << preconditioner << endl;
   solver2.Iterate(1000, tol);
   TEST_EQUALITY(EquivalentVectors(X, KnownX, tol*10*pow(10.0,NumProc)), true);
-
 }*/
+
 TEUCHOS_UNIT_TEST( Ifpack_Hypre, Ifpack ){
 
   Epetra_CrsMatrix* Crs_Matrix = newCrsMatrix(4);

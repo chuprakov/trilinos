@@ -77,7 +77,7 @@ TEUCHOS_UNIT_TEST( Ifpack_Hypre, Euclid){
   Epetra_MultiVector B(Matrix->RangeMap(), numVec);
   TEST_EQUALITY(Matrix->Apply(KnownX, B), 0);
 
-  Epetra_MultiVector X(Matrix->RangeMap(), numVec);
+  Epetra_MultiVector X(Matrix->DomainMap(), numVec);
 
   AztecOO Solver(Matrix.get(), &X, &B);
   TEST_EQUALITY(Solver.SetPrecOperator(&preconditioner),0);
