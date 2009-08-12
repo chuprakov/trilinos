@@ -28,12 +28,17 @@ public:
 
 	/**
 	 * Constructs an empty DependencySheet with the name DEP_ANONYMOUS.
+	 * 
+	 * @param rootList The Parameter List containing all parameters and sublists
+	 * for which this Dependency will keep track of dependencies.
 	 */
 	DependencySheet(Teuchos::RCP<Teuchos::ParameterList> rootList);
 
 	/**
 	 * Constructs a DependencySheet.
 	 *
+	 * @param rootList The Parameter List containing all parameters and sublists
+	 * for which this Dependency will keep track of dependencies.
 	 * @param name Name of the Dependency Sheet.
 	 */
 	DependencySheet(Teuchos::RCP<Teuchos::ParameterList> rootList, const std::string &name);
@@ -58,7 +63,7 @@ public:
 	 * Determines whether or not a parameter is depended upon by any another
 	 * parameters or parameter lists.
 	 *
-	 * @parameter name The paramteter to be checked for dependents.
+	 * @param name The paramteter to be checked for dependents.
 	 * @return True if the parameter you're checking has other dependents, false otherwise.
 	 */
 	bool hasDependents(const Teuchos::ParameterEntry *dependee) const;

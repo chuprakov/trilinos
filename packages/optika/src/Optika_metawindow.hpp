@@ -147,6 +147,9 @@ private:
 	QAction *resetAct, *loadAct, *saveAct, *saveAsAct, *quitAct, *aboutAct, *searchAct;
 	QMenu *fileMenu, *recentMenu, *helpMenu;
 
+	/*
+	 * The custom function to run when the user hits the submit button.
+	 */
 	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>);
 
 	/**
@@ -257,6 +260,10 @@ private slots:
 	 * Starts a search for a parituclar Parameter or ParameterList.
 	 */
 	void initiateSearch();
+	
+	/**
+	 * What should happen when the user clicks the submit button.
+	 */
 	void submit();
 };
 

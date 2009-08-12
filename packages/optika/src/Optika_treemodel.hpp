@@ -116,7 +116,8 @@ public:
 	/**
 	 * Returns the type of item located at the specified QModelIndex.
 	 *
-	 * @param The index of the TreeItem.
+	 * @param index The index of the TreeItem.
+	 * @return The type of the item at the index.
 	 */
 	QString itemType(const QModelIndex &index) const;
 
@@ -140,20 +141,27 @@ public:
 	/**
 	 * Gets the validator for a particular TreeItem.
 	 *
-	 * @index The index of the TreeItem whose validators is sought.
+	 * @param index The index of the TreeItem whose validators is sought.
+	 * @return The validator at the given index.
 	 */
 	Teuchos::RCP<const Teuchos::ParameterEntryValidator> getValidator(const QModelIndex &index) const;
 
 	/**
 	 * Gets the array for a particular TreeItem.
 	 *
-	 * @index The index of the TreeItem whose arrays is sought.
+	 * @param index The index of the TreeItem whose arrays is sought.
+	 * @return The array at the given index.
 	 */
 	template <class S>
 	Teuchos::Array<S> getArray(const QModelIndex& index){
 		return Teuchos::any_cast<Teuchos::Array<S> >(itemEntry(index)->getAny()); 
 	}
 
+	/**
+	 * Get a ParameterList containing all of the parameters at their current settings.
+	 *
+	 * @return A ParameterList containing all of the parameters at their current settings.
+	 */
 	Teuchos::RCP<const Teuchos::ParameterList> getCurrentParameters();
 signals:
 	/**
