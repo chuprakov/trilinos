@@ -2,7 +2,16 @@
 
 namespace Optika{
 
-FileNameValidator::FileNameValidator():ParameterEntryValidator(){}
+FileNameValidator::FileNameValidator(bool mustAlreadyExist):ParameterEntryValidator(),mustAlreadyExist(mustAlreadyExist){}
+
+bool FileNameValidator::fileMustExist() const{
+	return mustAlreadyExist;
+}
+
+bool FileNameValidator::setFileMustExist(bool shouldFileExist){
+	this->mustAlreadyExist = shouldFileExist;
+	return mustAlreadyExist;
+}
 
 Teuchos::RCP<const Teuchos::Array<std::string> > FileNameValidator::validStringValues() const{
 	return Teuchos::null;

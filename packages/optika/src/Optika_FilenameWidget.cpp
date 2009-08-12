@@ -8,7 +8,8 @@
 namespace Optika{
 
 
-FilenameWidget::FilenameWidget(QString currentFileName, QWidget *parent):QWidget(parent){
+FilenameWidget::FilenameWidget(QString currentFileName, bool mustAlreadyExist, QWidget *parent):QWidget(parent){
+	this->mustAlreadyExist = mustAlreadyExist;
 	this->currentFileName = currentFileName;
 	QPushButton *changeButton = new QPushButton("Change Path",this);
 	connect(changeButton, SIGNAL(clicked(bool)), this, SLOT(getNewFileName()));
@@ -36,7 +37,12 @@ void FilenameWidget::getNewFileName(){
 	else{
 		defaultPath = currentFileName;
 	}
-	setCurrentFileName(QFileDialog::getSaveFileName(this, tr("File"), defaultPath));
+	if(mustAlreadyExist){
+		setCurrentFileName(QFileDialog::getOpenFileName(this, tr("File"), defaultPath));
+	}
+	else{
+		setCurrentFileName(QFileDialog::getSaveFileName(this, tr("File"), defaultPath));
+	}
 }
 
 

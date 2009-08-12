@@ -547,13 +547,19 @@ public:
 	/**
 	 * Constructs a FileNameValidator.
 	 */
-	FileNameValidator();
+	FileNameValidator(bool mustAlreadyExist=false);
+
+	bool fileMustExist() const;
+
+	bool setFileMustExist(bool shouldFileExist);
 
 	Teuchos::RCP<const Teuchos::Array<std::string> > validStringValues() const;
 
 	void validate(Teuchos::ParameterEntry const &entry, std::string const &paramName, std::string const &sublistName) const;
 
 	void printDoc(std::string const &docString, std::ostream &out) const;
+private:
+	bool mustAlreadyExist;
 };
 
 /**
@@ -629,7 +635,7 @@ public:
 	 *
 	 * @return The prototype validator being used by the ArrayStringValidator.
 	 */
-	Teuchos::RCP<Teuchos::ParameterEntryValidator> getPrototype() const{
+	Teuchos::RCP<const Teuchos::ParameterEntryValidator> getPrototype() const{
 		return prototypeValidator;
 	}
 
@@ -642,15 +648,7 @@ public:
 			Teuchos::RCP< const Teuchos::Array<std::string> > validStrings = validStringValues();
 			for(unsigned int i = 0; i<extracted.size(); i++){
 				currentString = extracted[i];
-				//bool valid = false;
 				Teuchos::Array<std::string>::const_iterator it = std::find(validStrings->begin(), validStrings->end(), currentString);
-			/*	for(unsigned int j=0; j<validStrings->size(); j++){
-					if((*validStrings)[j] == currentString){
-						valid = true;
-						break;
-					}
-				}*/
-				//if(!valid){
 				if(it == validStrings->end()){
 					std::stringstream oss;
 					std::string msg;
@@ -719,7 +717,7 @@ public:
 	 *
 	 * @return The prototype validator being used by the ArrayNumberValidator.
 	 */
-	Teuchos::RCP<EnhancedNumberValidator<S> > getPrototype() const{
+	Teuchos::RCP<const EnhancedNumberValidator<S> > getPrototype() const{
 		return Teuchos::rcp_static_cast<EnhancedNumberValidator<S> > (prototypeValidator);
 	}
 
@@ -792,7 +790,7 @@ public:
 	 *
 	 * @return The prototype validator being used by the ArrayFileNameValidator.
 	 */
-	Teuchos::RCP<FileNameValidator> getPrototype() const{
+	Teuchos::RCP<const FileNameValidator> getPrototype() const{
 		return Teuchos::rcp_static_cast<FileNameValidator>(prototypeValidator);
 	}
 

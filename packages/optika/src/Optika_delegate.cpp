@@ -76,7 +76,13 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 			if(currentPath.size() == 0){
 				currentPath = QDir::homePath();
 			}
-			QString filename = QFileDialog::getSaveFileName(parent, paramName, currentPath);
+			QString filename;
+			if(Teuchos::rcp_dynamic_cast<const FileNameValidator>(paramValidator)->fileMustExist()){
+				filename = QFileDialog::getOpenFileName(parent, paramName, currentPath);
+			}
+			else{
+				filename = QFileDialog::getSaveFileName(parent, paramName, currentPath);
+			}
 			if(filename != ""){
 				((TreeModel*)(index.model()))->setData(index, filename);
 			}

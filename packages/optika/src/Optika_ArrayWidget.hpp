@@ -203,7 +203,7 @@ private:
 	QWidget* getEditorWidget(){
 		QSpinBox *newSpin = new QSpinBox(this);
 		Teuchos::RCP<const EnhancedNumberValidator<int> > validator = Teuchos::null;
-		if(!entryValidator.is_null()){
+		if(!Teuchos::is_null(entryValidator)){
 			validator = Teuchos::rcp_dynamic_cast<const ArrayNumberValidator<int> >(entryValidator,true)->getPrototype();
 		}
 		EnhancedNumberValidator<int>::applyToSpinBox(validator, newSpin);
@@ -257,7 +257,7 @@ private:
 	QWidget* getEditorWidget(){
 		QSpinBox *newSpin = new QSpinBox(this);
 		Teuchos::RCP<const EnhancedNumberValidator<short> > validator = Teuchos::null;
-		if(!entryValidator.is_null()){
+		if(!Teuchos::is_null(entryValidator)){
 			validator = Teuchos::rcp_dynamic_cast<const ArrayNumberValidator<short> >(entryValidator,true)->getPrototype();
 		}
 		EnhancedNumberValidator<short>::applyToSpinBox(validator, newSpin);
@@ -310,7 +310,7 @@ private:
 	QWidget* getEditorWidget(){
 		QSpinBox *newSpin = new QwwLongSpinBox(this);
 		Teuchos::RCP<const EnhancedNumberValidator<long long int> > validator = null;
-		if(!entryValidator.is_null()){
+		if(!Teuchos::is_null(entryValidator)){
 			validator = Teuchos::rcp_dynamic_cast<const EnhancedNumberValidator<long long int> >(entryValidator,true);
 		}
 		EnhancedNumberValidator<long long int>::applyToSpinBox(validator, newSpin);
@@ -362,7 +362,7 @@ private:
 	QWidget* getEditorWidget(){
 		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
 		Teuchos::RCP<const EnhancedNumberValidator<double> > validator = Teuchos::null;
-		if(!entryValidator.is_null()){
+		if(!Teuchos::is_null(entryValidator)){
 			validator = Teuchos::rcp_dynamic_cast<const ArrayNumberValidator<double> >(entryValidator,true)->getPrototype();
 		}
 		EnhancedNumberValidator<double>::applyToSpinBox(validator, newSpin);
@@ -417,7 +417,7 @@ private:
 	QWidget* getEditorWidget(){
 		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
 		Teuchos::RCP<const EnhancedNumberValidator<float> > validator = Teuchos::null;
-		if(!entryValidator.is_null()){
+		if(!Teuchos::is_null(entryValidator)){
 			validator = Teuchos::rcp_dynamic_cast<const ArrayNumberValidator<float> >(entryValidator,true)->getPrototype();
 		}
 		EnhancedNumberValidator<float>::applyToSpinBox(validator, newSpin);
@@ -496,7 +496,7 @@ private:
 			return new QLineEdit(this);
 		}
 		else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator))){
-			return new FilenameWidget("", this);
+			return new FilenameWidget("", Teuchos::rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator)->getPrototype()->fileMustExist(), this);
 		}
 		else if(entryValidator->validStringValues()->size() != 0){
 			Teuchos::RCP<const Teuchos::Array<std::string> > options = entryValidator->validStringValues();

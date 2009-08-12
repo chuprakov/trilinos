@@ -1,5 +1,5 @@
-#ifndef TIVABUEAN_FILENAMEWIDGET_HPP_
-#define TIVABUEAN_FILENAMEWIDGET_HPP_
+#ifndef OPTIKA_FILENAMEWIDGET_HPP_
+#define OPTIKA_FILENAMEWIDGET_HPP_
 #include <QWidget>
 class QLabel;
 
@@ -20,7 +20,7 @@ public:
 	 * initialized.
 	 * @param parent The parent widget.
 	 */
-	FilenameWidget(QString currentFileName=QString(), QWidget* parent=0);
+	FilenameWidget(QString currentFileName=QString(), bool mustAlreadyExist=false, QWidget* parent=0);
 
 	/**
 	 * Gets the current filename in the widget.
@@ -51,10 +51,11 @@ private:
 	 * The label describing the file path.
 	 */
 	QLabel *pathLabel;
+	bool mustAlreadyExist;
 
 };
 
 
 }
 
-#endif //TIVABUEAN_FILENAMEWIDGET_HPP_
+#endif //OPTIKA_FILENAMEWIDGET_HPP_
