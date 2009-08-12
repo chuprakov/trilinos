@@ -23,12 +23,12 @@ Optika_treeitem.hpp Optika_Types.hpp Optika_ValidatorFactory.hpp)
 
 
 SET(MOC_HDRS Optika_metawindow.hpp Optika_treemodel.hpp
-Optika_delegate.hpp Optika_ArrayWidget.hpp Optika_FilenameWidget.hpp
+Optika_delegate.hpp Optika_ArrayWidget.hpp Optika_FileNameWidget.hpp
 Optika_treeview.hpp)
 
 SET(SRCS Optika_delegate.cpp Optika_Dependency.cpp 
 Optika_DependencySheet.cpp Optika_ArrayHelperFunctions.cpp 
-Optika_FilenameWidget.cpp Optika_GUI.cpp Optika_metawindow.cpp 
+Optika_FileNameWidget.cpp Optika_GUI.cpp Optika_metawindow.cpp 
 Optika_StandardDependencies.cpp Optika_treeitem.cpp 
 Optika_treemodel.cpp Optika_treeview.cpp Optika_Types.cpp
 Optika_ValidatorFactory.cpp Optika_SpecificParameterEntryValidators.cpp)

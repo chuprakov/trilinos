@@ -13,7 +13,7 @@
 #include <QLabel>
 #include <vector>
 #include "Optika_treemodel.hpp"
-#include "Optika_FilenameWidget.hpp"
+#include "Optika_FileNameWidget.hpp"
 
 namespace Optika {
 
@@ -455,7 +455,7 @@ public:
 				toReturn.push_back(((QLineEdit*)(*it))->text().toStdString());
 			}
 			else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator))){
-				toReturn.push_back(((FilenameWidget*)(*it))->getCurrentFileName().toStdString());
+				toReturn.push_back(((FileNameWidget*)(*it))->getCurrentFileName().toStdString());
 			}
 			else if(entryValidator->validStringValues()->size() !=0){
 				toReturn.push_back(((QComboBox*)(*it))->currentText().toStdString());
@@ -475,7 +475,7 @@ public:
 				static_cast<QLineEdit*>(*it)->setText(valueList.at(i));
 			}
 			else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator))){
-				static_cast<FilenameWidget*>(*it)->setCurrentFileName(valueList.at(i));
+				static_cast<FileNameWidget*>(*it)->setCurrentFileName(valueList.at(i));
 			}
 			else if(entryValidator->validStringValues()->size() !=0){
 				int currentIndex = static_cast<QComboBox*>(*it)->findText(valueList.at(i));
@@ -496,7 +496,7 @@ private:
 			return new QLineEdit(this);
 		}
 		else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator))){
-			return new FilenameWidget("", Teuchos::rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator)->getPrototype()->fileMustExist(), this);
+			return new FileNameWidget("", Teuchos::rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator)->getPrototype()->fileMustExist(), this);
 		}
 		else if(entryValidator->validStringValues()->size() != 0){
 			Teuchos::RCP<const Teuchos::Array<std::string> > options = entryValidator->validStringValues();

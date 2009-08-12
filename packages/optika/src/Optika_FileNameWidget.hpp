@@ -10,17 +10,17 @@ namespace Optika{
  *  to select a file through a QFileDialog. The label displays
  *  the currently selected file.
  */
-class FilenameWidget : public QWidget{
+class FileNameWidget : public QWidget{
 	Q_OBJECT
 public:
 	/**
-	 * Constructs a FilenameWidget
+	 * Constructs a FileNameWidget
 	 *
 	 * @param currentFileName The Filename with which the widget should be 
 	 * initialized.
 	 * @param parent The parent widget.
 	 */
-	FilenameWidget(QString currentFileName=QString(), bool mustAlreadyExist=false, QWidget* parent=0);
+	FileNameWidget(QString currentFileName=QString(), bool mustAlreadyExist=false, QWidget* parent=0);
 
 	/**
 	 * Gets the current filename in the widget.

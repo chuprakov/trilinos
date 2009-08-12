@@ -1,4 +1,4 @@
-#include "Optika_FilenameWidget.hpp"
+#include "Optika_FileNameWidget.hpp"
 #include <QPushButton>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -8,7 +8,7 @@
 namespace Optika{
 
 
-FilenameWidget::FilenameWidget(QString currentFileName, bool mustAlreadyExist, QWidget *parent):QWidget(parent){
+FileNameWidget::FileNameWidget(QString currentFileName, bool mustAlreadyExist, QWidget *parent):QWidget(parent){
 	this->mustAlreadyExist = mustAlreadyExist;
 	this->currentFileName = currentFileName;
 	QPushButton *changeButton = new QPushButton("Change Path",this);
@@ -20,16 +20,16 @@ FilenameWidget::FilenameWidget(QString currentFileName, bool mustAlreadyExist, Q
 	setLayout(layout);
 }
 
-QString FilenameWidget::getCurrentFileName(){
+QString FileNameWidget::getCurrentFileName(){
 	return currentFileName;
 }
 
-void FilenameWidget::setCurrentFileName(QString newName){
+void FileNameWidget::setCurrentFileName(QString newName){
 	currentFileName = newName;
 	pathLabel->setText(newName);	
 }
 
-void FilenameWidget::getNewFileName(){
+void FileNameWidget::getNewFileName(){
 	QString defaultPath;
 	if(currentFileName == ""){
 		defaultPath = QDir::homePath();
