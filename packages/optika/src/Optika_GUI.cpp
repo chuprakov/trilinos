@@ -2,7 +2,6 @@
 #include <QtGui>
 #include "Optika_GUI.hpp"
 #include <iostream>
-#include <pthread.h>
 namespace Optika{
 
 void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters){
