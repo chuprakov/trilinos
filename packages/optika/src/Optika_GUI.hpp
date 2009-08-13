@@ -43,6 +43,29 @@ namespace Optika{
 	 */
 	void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
 
+class OptikaGUI{
+public:
+	OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters);
+	OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet);
+
+	void exec();
+
+	void setWindowTitle(std::string title);
+	void setWindowIcon(std::string filePath);
+	void setStyleSheet(std::string filePath);
+	void setCustomFunction(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
+
+	std::string getWindowTitle();
+	std::string getWindowIcon();
+	std::string getStyleSheet();
+
+private:
+	Teuchos::RCP<Teuchos::ParameterList> validParameters;
+	Teuchos::RCP<DependencySheet> dependencySheet;
+	std::string title, iconFilePath, styleSheetFilePath;
+	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>);
+};
+
 }
 
 
