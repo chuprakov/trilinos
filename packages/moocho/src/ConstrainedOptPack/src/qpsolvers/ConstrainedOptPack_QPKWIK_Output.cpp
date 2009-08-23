@@ -26,6 +26,13 @@
 // ***********************************************************************
 // @HEADER
 
+
+#include "Moocho_ConfigDefs.hpp"
+
+
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK
+
+
 #include "ConstrainedOptPack_QPKWIK_Output.hpp"
 #include "Teuchos_F77_wrappers.h"
 
@@ -214,6 +221,11 @@ FORTRAN_FUNC_DECL_UL_(void,QPKWIK_PRINT_ITERATION_INFO,qpkwik_print_iteration_in
   output("ITEMPP",ITEMPP);
 }
 
+
 }	// end extern "C"
 
+
 }	// end namespace QPKWIK_Print_Decl
+
+
+#endif // CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK

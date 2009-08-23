@@ -57,9 +57,17 @@
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_FancyOStream.hpp"
 
+#ifdef HAVE_MOOCHO_FORTRAN
+#  define ALAP_DCHUD_DECL FORTRAN_FUNC_DECL_UL( void, DCHUD, dchud )
+#  define ALAP_DCHUD_CALL FORTRAN_FUNC_CALL_UL( DCHUD, dchud )
+#else
+#  define ALAP_DCHUD_DECL void dchud_c
+#  define ALAP_DCHUD_CALL dchud_c
+#endif
+
 // Helper functions
 extern "C" {
-  FORTRAN_FUNC_DECL_UL( void, DCHUD, dchud ) ( FortranTypes::f_dbl_prec* R
+  ALAP_DCHUD_DECL ( FortranTypes::f_dbl_prec* R
     , const FortranTypes::f_int& LDR, const FortranTypes::f_int& P
     , FortranTypes::f_dbl_prec* X, FortranTypes::f_dbl_prec* Z
     , const FortranTypes::f_int& LDZ, const FortranTypes::f_int& NZ
@@ -1376,7 +1384,7 @@ void MatrixSymPosDefCholFactor::delete_update(
         u23 = U.row(jd)(U_rng);
         // Update U33
         value_type dummy;
-        FORTRAN_FUNC_CALL_UL( DCHUD, dchud ) (
+        ALAP_DCHUD_CALL (
           U33.col_ptr(1), U33.max_rows()
           ,U_rng.size(), u23.start_ptr(), &dummy, 1, 0, &dummy
           ,&dummy, c.start_ptr(), s.start_ptr() );

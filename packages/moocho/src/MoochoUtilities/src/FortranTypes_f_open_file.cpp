@@ -26,6 +26,13 @@
 // ***********************************************************************
 // @HEADER
 
+
+#include "Moocho_Config.h"
+
+
+#ifdef HAVE_MOOCHO_FORTRAN
+
+
 #include "FortranTypes_f_open_file.hpp"
 #include "FortranTypes_CppFortranStrings.hpp"
 #include "Teuchos_TestForException.hpp"
@@ -89,3 +96,6 @@ void FortranTypes::f_close_file( const f_int iunit, bool keep )
 {
   FORTRAN_FUNC_CALL_UL_(FOR_CLOSE_FILE,for_close_file)( iunit, keep ? 1 : 0 ); 
 }
+
+
+#endif // HAVE_MOOCHO_FORTRAN

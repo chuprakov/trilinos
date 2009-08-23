@@ -26,6 +26,13 @@
 // ***********************************************************************
 // @HEADER
 
+
+#include "Moocho_ConfigDefs.hpp"
+
+
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK
+
+
 #include <assert.h>
 
 #include <vector>
@@ -605,4 +612,9 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
   return qp_stats_.solution_type();
 }
 
+
 }	// end namespace ConstrainedOptPack
+
+
+#endif // CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK
+
