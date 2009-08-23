@@ -194,7 +194,7 @@ private:
 inline
 void ExampleNLPObjGrad::assert_is_initialized() const
 {
-    using NLPInterfacePack::NLP;
+  typedef NLPInterfacePack::NLP NLP;
   TEST_FOR_EXCEPTION(
     !is_initialized(), NLP::UnInitialized
     ,"ExampleNLPObjGrad::assert_is_initialized() : Error, "

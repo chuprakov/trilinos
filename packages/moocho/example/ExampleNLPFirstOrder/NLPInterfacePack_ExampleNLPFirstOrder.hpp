@@ -127,7 +127,7 @@ private:
 inline
 void ExampleNLPFirstOrder::assert_is_initialized() const
 {
-    using NLPInterfacePack::NLP;
+  typedef NLPInterfacePack::NLP NLP;
   if( !is_initialized() )
     throw NLP::UnInitialized("ExampleNLPFirstOrder::assert_is_initialized() : Error, "
       "ExampleNLPFirstOrder::initialize() has not been called yet." );

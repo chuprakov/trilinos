@@ -178,7 +178,7 @@ private:
 inline
 void ExampleNLPDirect::assert_is_initialized() const
 {
-    using NLPInterfacePack::NLP;
+  typedef NLPInterfacePack::NLP NLP;
   if( !is_initialized() )
     throw NLP::UnInitialized("ExampleNLPDirect::assert_is_initialized() : Error, "
       "ExampleNLPDirect::initialize() has not been called yet." );
