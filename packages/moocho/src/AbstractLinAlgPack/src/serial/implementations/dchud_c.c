@@ -1,8 +1,14 @@
 /* translated by f2c from dchud.f and hand modified. */
 
-#include "Teuchos_BLAS_wrappers.hpp"
+#include "Moocho_Config.h"
 
+
+#if !defined(HAVE_MOOCHO_FORTRAN)
+
+
+#include "Teuchos_BLAS_wrappers.hpp"
 #include <math.h>
+
 
 void dchud_c(double r__[], int *ldr, int *p,
   double x[], double z__[], int *ldz, int *nz,
@@ -102,3 +108,5 @@ L70:
 
 } /* dchud_ */
 
+
+#endif // !defined(HAVE_MOOCHO_FORTRAN)

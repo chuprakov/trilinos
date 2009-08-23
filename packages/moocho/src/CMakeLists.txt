@@ -94,12 +94,15 @@ APPEND_GLOB(SOURCES ${DIR}/*.cpp)
 SET_AND_INC_DIRS(DIR ${CMAKE_CURRENT_SOURCE_DIR}/AbstractLinAlgPack/src/serial/implementations)
 APPEND_GLOB(HEADERS ${DIR}/*.hpp)
 APPEND_GLOB(SOURCES ${DIR}/*.cpp)
+APPEND_GLOB(SOURCES ${DIR}/*.c)
 ASSERT_DEFINED(${PROJECT_NAME}_ENABLE_Fortran)
 IF (${PROJECT_NAME}_ENABLE_Fortran)
   APPEND_SET(SOURCES ${DIR}/dchud.f)
-ELSE()
-  APPEND_SET(SOURCES ${DIR}/dchud_c.c)
 ENDIF()
+
+# NOTE: Above, dchud_c.c will not build if Fortran is enabled since it is
+# internally ifdefed!  The code is structured this way so that the SIERRA BJAM
+# build will work with Fortran enabled by default.
 
 SET_AND_INC_DIRS(DIR ${CMAKE_CURRENT_SOURCE_DIR}/AbstractLinAlgPack/src/serial/solvers)
 APPEND_GLOB(HEADERS ${DIR}/*.hpp)
