@@ -600,9 +600,11 @@ FEApp::TangentOp::nodePost(const FEApp::NodeBC& bc,
 #if SG_ACTIVE
 
 FEApp::SGResidualOp::SGResidualOp(
+   const Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> >& expansion_,
    const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& xdot_,
    const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& x_,
    const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >& f_) :
+  expansion(expansion_),
   nblock(x_->size()),
   xdot(xdot_),
   x(x_),
@@ -632,13 +634,12 @@ FEApp::SGResidualOp::elementInit(const FEApp::AbstractElement& e,
   // Allocate appropriate sizes for coefficients
   for (unsigned int i=0; i<nnode; i++) {
     for (unsigned int j=0; j<neqn; j++) {
-      if (elem_x[neqn*i+j].size() != nblock)
-        elem_x[neqn*i+j].resize(nblock);
-      if (elem_xdot != NULL && (*elem_xdot)[neqn*i+j].size() != nblock)
-        (*elem_xdot)[neqn*i+j].resize(nblock);
+      elem_x[neqn*i+j].reset(expansion);
       elem_x[neqn*i+j].copyForWrite();
-      if (elem_xdot != NULL)
+      if (elem_xdot != NULL) {
+        (*elem_xdot)[neqn*i+j].reset(expansion);
         (*elem_xdot)[neqn*i+j].copyForWrite();
+      }
     }
   }
 
@@ -698,13 +699,12 @@ FEApp::SGResidualOp::nodeInit(const FEApp::NodeBC& bc,
 
   // Allocate appropriate sizes for coefficients
   for (unsigned int j=0; j<neqn; j++) {
-    if (node_x[j].size() != nblock)
-      node_x[j].resize(nblock);
-    if (node_xdot != NULL && node_x[j].size() != nblock)
-      (*node_xdot)[j].resize(nblock);
+    node_x[j].reset(expansion);
     node_x[j].copyForWrite();
-    if (node_xdot != NULL)
+    if (node_xdot != NULL) {
+      (*node_xdot)[j].reset(expansion);
       (*node_xdot)[j].copyForWrite();
+    }
   }
 
   for (int block=0; block<nblock; block++) {
@@ -754,11 +754,13 @@ FEApp::SGResidualOp::finalizeFill()
 }
 
 FEApp::SGJacobianOp::SGJacobianOp(
+   const Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> >& expansion_,
    double alpha, double beta,
    const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& xdot_,
    const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& x_,
    const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >& f_,
    const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_CrsMatrix> >& jac_) :
+  expansion(expansion_),
   nblock(x_->size()),
   m_coeff(alpha),
   j_coeff(beta),
@@ -798,7 +800,7 @@ FEApp::SGJacobianOp::elementInit(const FEApp::AbstractElement& e,
     for (unsigned int j=0; j<neqn; j++) {
       elem_x[neqn*i+j] = SGFadType(ndof, 0.0);
       elem_x[neqn*i+j].fastAccessDx(neqn*i+j) = j_coeff;
-      elem_x[neqn*i+j].val().resize(nblock);
+      elem_x[neqn*i+j].val().reset(expansion);
       elem_x[neqn*i+j].val().copyForWrite();
       for (int block=0; block<nblock; block++)
         elem_x[neqn*i+j].val().fastAccessCoeff(block) = 
@@ -806,7 +808,7 @@ FEApp::SGJacobianOp::elementInit(const FEApp::AbstractElement& e,
       if (elem_xdot != NULL) {
         (*elem_xdot)[neqn*i+j] = SGFadType(ndof, 0.0);
         (*elem_xdot)[neqn*i+j].fastAccessDx(neqn*i+j) = m_coeff;
-        (*elem_xdot)[neqn*i+j].val().resize(nblock);
+        (*elem_xdot)[neqn*i+j].val().reset(expansion);
         (*elem_xdot)[neqn*i+j].val().copyForWrite();
         for (int block=0; block<nblock; block++)
           (*elem_xdot)[neqn*i+j].val().fastAccessCoeff(block) = 
@@ -896,14 +898,14 @@ FEApp::SGJacobianOp::nodeInit(const FEApp::NodeBC& bc,
   for (unsigned int j=0; j<neqn; j++) {
     node_x[j] = SGFadType(neqn, 0.0);
     node_x[j].fastAccessDx(j) = j_coeff;
-    node_x[j].val().resize(nblock);
+    node_x[j].val().reset(expansion);
     node_x[j].val().copyForWrite();
     for (int block=0; block<nblock; block++)
       node_x[j].val().fastAccessCoeff(block) = (*x)[block][firstDOF+j];
     if (node_xdot != NULL) {
       (*node_xdot)[j] = SGFadType(neqn, 0.0);
       (*node_xdot)[j].fastAccessDx(j) = m_coeff;
-      (*node_xdot)[j].val().resize(nblock);
+      (*node_xdot)[j].val().reset(expansion);
       (*node_xdot)[j].val().copyForWrite();
       for (int block=0; block<nblock; block++)
         (*node_xdot)[j].val().fastAccessCoeff(block) = 

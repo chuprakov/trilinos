@@ -420,7 +420,7 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
       if (epetra_p_sg != Teuchos::null) {
 	for (unsigned int i=0; i<p_sg_vals.size(); i++) {
 	  int num_sg_blocks = epetra_p_sg->size();
-	  p_sg_vals[i].resize(num_sg_blocks);
+	  p_sg_vals[i].reset(app->getStochasticExpansion());
 	  p_sg_vals[i].copyForWrite();
 	  for (int j=0; j<num_sg_blocks; j++) {
 	    p_sg_vals[i].fastAccessCoeff(j) = (*epetra_p_sg)[j][i];

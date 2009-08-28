@@ -116,8 +116,9 @@ FEApp::Application::Application(
 #if SG_ACTIVE
   bool enable_sg = params->get("Enable Stochastic Galerkin",false);
   if (enable_sg) {
-    sg_basis = params->get< Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > >("Stochastic Galerkin basis");
+    sg_expansion = params->get< Teuchos::RCP<Stokhos::OrthogPolyExpansion<int,double> > >("Stochastic Galerkin expansion");
     sg_quad = params->get< Teuchos::RCP<const Stokhos::Quadrature<int,double> > >("Stochastic Galerkin quadrature");
+    sg_basis = sg_expansion->getBasis();
 
     // Create Epetra orthogonal polynomial objects
     sg_overlapped_x = 
@@ -653,7 +654,9 @@ FEApp::Application::computeGlobalSGResidual(
 
   // Create residual init/post op
   Teuchos::RCP<FEApp::SGResidualOp> sg_res_fill_op = 
-    Teuchos::rcp(new FEApp::SGResidualOp(sg_overlapped_xdot, sg_overlapped_x, 
+    Teuchos::rcp(new FEApp::SGResidualOp(sg_expansion, 
+					 sg_overlapped_xdot, 
+					 sg_overlapped_x, 
 					 sg_overlapped_f));
     
   // Get template PDE instantiation
@@ -740,7 +743,8 @@ FEApp::Application::computeGlobalSGJacobian(
   if (sg_f != NULL)
     sg_overlapped_ff = sg_overlapped_f;
   Teuchos::RCP<FEApp::SGJacobianOp> sg_jac_fill_op = 
-    Teuchos::rcp(new FEApp::SGJacobianOp(alpha, beta, 
+    Teuchos::rcp(new FEApp::SGJacobianOp(sg_expansion,
+					 alpha, beta, 
 					 sg_overlapped_xdot, 
 					 sg_overlapped_x, 
 					 sg_overlapped_ff, 

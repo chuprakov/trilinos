@@ -88,10 +88,10 @@ namespace FEApp {
     const ParamVec* p;
     double alpha;
     double beta;
-    const std::vector< std::vector<double> >& quad_points;
-    const std::vector<double>& quad_weights;
-    const std::vector< std::vector<double> >& quad_values;
-    const std::vector<double>& norms;
+    const Teuchos::Array< Teuchos::Array<double> >& quad_points;
+    const Teuchos::Array<double>& quad_weights;
+    const Teuchos::Array< Teuchos::Array<double> >& quad_values;
+    const Teuchos::Array<double>& norms;
     unsigned int sg_size;
     unsigned int nqp;
     std::vector<FadType> x;

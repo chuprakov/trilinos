@@ -306,6 +306,7 @@ namespace FEApp {
      * Set xdot to Teuchos::null for steady-state problems
      */
     SGResidualOp(
+    const Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> >& expansion,
     const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& xdot,
     const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& x,
     const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >& f);
@@ -348,6 +349,9 @@ namespace FEApp {
 
   protected:
 
+    //! Expansion
+    Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> > expansion;
+
     //! Number of blocks
     int nblock;
 
@@ -372,6 +376,7 @@ namespace FEApp {
      * Set xdot to Teuchos::null for steady-state problems
      */
     SGJacobianOp(
+    const Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> >& expansion,
     double alpha, double beta,
     const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& xdot,
     const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& x,
@@ -415,6 +420,9 @@ namespace FEApp {
     SGJacobianOp& operator=(const SGJacobianOp&);
 
   protected:
+    
+    //! Expansion
+    Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> > expansion;
 
     //! Number of blocks
     int nblock;

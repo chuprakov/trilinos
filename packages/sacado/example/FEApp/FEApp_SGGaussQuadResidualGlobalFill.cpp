@@ -75,10 +75,6 @@ SGGaussQuadResidualGlobalFill(
     xdotqp.resize(ndof*nqp);
     sg_xdot.resize(ndof*sg_size);
   }
-  for (unsigned int j=0; j<ndof; j++) {
-    elem_f[j].copyForWrite();
-    elem_f[j].resize(sg_size);
-  }
 
   for (unsigned int qp=0; qp<nqp; qp++)
     for (unsigned int i=0; i<sg_size; i++) {
@@ -109,6 +105,7 @@ computeGlobalFill(FEApp::AbstractInitPostOp<FEApp::SGResidualType>& initPostOp)
 	    &qv[0], sg_size, &sg_p[0], sg_size, 0.0, &pqp[0], nqp);
 
   // Loop over elements
+  bool first = true;
   Teuchos::RCP<const FEApp::AbstractElement> e;
   for (FEApp::Mesh::const_iterator eit=mesh->begin(); eit!=mesh->end(); ++eit){
     e = *eit;
@@ -156,6 +153,15 @@ computeGlobalFill(FEApp::AbstractInitPostOp<FEApp::SGResidualType>& initPostOp)
       for (unsigned int i=0; i<ndof; i++)
         fqp[i*nqp+qp] = f[i]*quad_weights[qp];
 
+    }
+
+    // Reset expansion in f
+    if (first) {
+      for (unsigned int j=0; j<ndof; j++) {
+	elem_f[j].copyForWrite();
+	elem_f[j].reset(elem_x[j].expansion());
+      }
+      first = false;
     }
 
     // Compute integrals

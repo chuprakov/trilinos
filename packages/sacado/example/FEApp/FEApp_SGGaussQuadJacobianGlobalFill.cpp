@@ -86,10 +86,6 @@ SGGaussQuadJacobianGlobalFill(
       (*xdot)[i].fastAccessDx(i) = alpha;
     }
     elem_f[i].resize(ndof);
-    for (unsigned int j=0; j<ndof; j++) {
-      elem_f[i].fastAccessDx(j).copyForWrite();
-      elem_f[i].fastAccessDx(j).resize(sg_size);
-    }
   }
 
   for (unsigned int qp=0; qp<nqp; qp++)
@@ -120,6 +116,7 @@ computeGlobalFill(FEApp::AbstractInitPostOp<FEApp::SGJacobianType>& initPostOp)
 	    &qv[0], sg_size, &sg_p[0], sg_size, 0.0, &pqp[0], nqp);
 
   // Loop over elements
+  bool first = true;
   Teuchos::RCP<const FEApp::AbstractElement> e;
   for (FEApp::Mesh::const_iterator eit=mesh->begin(); eit!=mesh->end(); ++eit){
     e = *eit;
@@ -168,6 +165,16 @@ computeGlobalFill(FEApp::AbstractInitPostOp<FEApp::SGJacobianType>& initPostOp)
 	for (unsigned int j=0; j<ndof; j++)
 	  fqp[(i*ndof+j)*nqp+qp] = f[i].fastAccessDx(j)*quad_weights[qp];
 
+    }
+
+    // Reset expansion in f
+    if (first) {
+      for (unsigned int i=0; i<ndof; i++)
+	for (unsigned int j=0; j<ndof; j++) {
+	  elem_f[i].fastAccessDx(j).copyForWrite();
+	  elem_f[i].fastAccessDx(j).reset(elem_x[i].val().expansion());
+	}
+      first = false;
     }
 
     blas.GEMM(Teuchos::NO_TRANS, Teuchos::NO_TRANS, sg_size, ndof*ndof, nqp, 

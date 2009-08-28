@@ -194,6 +194,9 @@ namespace FEApp {
 
 #if SG_ACTIVE
 
+    Teuchos::RCP<Stokhos::OrthogPolyExpansion<int,double> >
+    getStochasticExpansion() { return sg_expansion; }
+
     //! Compute global residual for stochastic Galerkin problem
     /*!
      * Set xdot to NULL for steady-state problems
@@ -299,6 +302,9 @@ namespace FEApp {
 
     //! Stochastic Galerking quadrature
     Teuchos::RCP<const Stokhos::Quadrature<int,double> > sg_quad;
+
+    //! Stochastic Galerking expansion
+    Teuchos::RCP<Stokhos::OrthogPolyExpansion<int,double> > sg_expansion;
 
     //! SG overlapped solution vector
     Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >  sg_overlapped_x;
