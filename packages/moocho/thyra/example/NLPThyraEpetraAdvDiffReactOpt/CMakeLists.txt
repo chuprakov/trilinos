@@ -178,91 +178,105 @@ IF (PERL_FOUND)
     "${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_NLPThyraEpetraAdvDiffReactOpt.exe")
 
 
-  PACKAGE_ADD_TEST( ${PERL_EXECUTABLE}  NOEXEPREFIX  NOEXESUFFIX
+  # Helper function to add run-varied-tests cases.  This function is needed so
+  # that we can use the PACKAGE_ADD_ADVANDED_TEST(...) function with
+  # OVERALL_WORKING_DIRECTORY TESTNAME.  This is needed so that each test will
+  # create its own working directory.  Before, each test would create and
+  # write to the working directory run_tests and when running tests in
+  # parallel, they would clober each other.  Now, they can all run
+  # independently.
 
-    NAME run-varied-tests
+  FUNCTION(ADD_RUN_VARIED_TESTS_CASE  POSTFIX_NAME)
+    PACKAGE_ADD_ADVANCED_TEST( run-varied-tests_fdobj_bb_direct_testing
+      TEST_0
+       CMND ${PERL_EXECUTABLE}
+       ARGS "${CMAKE_CURRENT_BINARY_DIR}/run-varied-tests.pl" --exe="${EXE_PATH}"
+         ${ARGN}
+        PASS_REGULAR_EXPRESSION "FINAL END RESULT: TEST PASSED"
+      OVERALL_WORKING_DIRECTORY TEST_NAME
+      COMM serial
+      )
+  ENDFUNCTION()
 
-    POSTFIX_AND_ARGS_0  fdobj_bb_direct
-      run-varied-tests.pl
-      --exe="${EXE_PATH}" --beta=0.0 --reaction-rate=1e-2
-      --local-nx=5 --global-ny=5 --starting-num-procs=1 --max-num-procs=1
-      --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
-      --p0=1.0 --p-solu-scale=20.0 --do-analytic
-      --do-finite-diff --use-finite-diff-obj
-      --fd-step-len=1e-8 --do-black-box --bb-fd-step-len=1e-7
-      --use-direct --fwd-newton-tol=1e-10
-      --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
 
-    POSTFIX_AND_ARGS_1  fdobjcon_direct
-      run-varied-tests.pl
-      --exe="${EXE_PATH}" --beta=0.0 --reaction-rate=1e-2
-      --local-nx=5 --global-ny=5 --starting-num-procs=1 --max-num-procs=1
-      --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
-      --p0=1.0 --p-solu-scale=20.0 --do-analytic
-      --do-finite-diff --use-finite-diff-obj --use-finite-diff-con
-      --fd-step-len=1e-8
-      --use-direct --fwd-newton-tol=1e-10
-      --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
+  # Test cases
 
-    POSTFIX_AND_ARGS_2  fdobjcon_direct_defaultobj
-      run-varied-tests.pl
-      --exe="${EXE_PATH}" --beta=0.0 --reaction-rate=1e-2
-      --local-nx=5 --global-ny=5 --starting-num-procs=1 --max-num-procs=1
-      --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
-      --p0=1.0 --p-solu-scale=20.0 --do-analytic --use-default-inv-obj
-      --do-finite-diff --use-finite-diff-obj --use-finite-diff-con
-      --fd-step-len=1e-8
-      --use-direct --fwd-newton-tol=1e-10
-      --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
 
-    POSTFIX_AND_ARGS_3  fdobj_direct
-      run-varied-tests.pl
-      --exe="${EXE_PATH}" --beta=0.0 --reaction-rate=1e-2
-      --local-nx=5 --global-ny=5 --starting-num-procs=1
-      --max-num-procs=1 --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
-      --p0=1.0 --p-solu-scale=20.0 --do-analytic
-      --do-finite-diff --use-finite-diff-obj
-      --fd-step-len=1e-8
-      --use-direct --fwd-newton-tol=1e-10
-      --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
+  ADD_RUN_VARIED_TESTS_CASE( fdobj_bb_direct
+    --beta=0.0 --reaction-rate=1e-2
+    --local-nx=5 --global-ny=5 --starting-num-procs=1 --max-num-procs=1
+    --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
+    --p0=1.0 --p-solu-scale=20.0 --do-analytic
+    --do-finite-diff --use-finite-diff-obj
+    --fd-step-len=1e-8 --do-black-box --bb-fd-step-len=1e-7
+    --use-direct --fwd-newton-tol=1e-10
+    --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
+    )
 
-    POSTFIX_AND_ARGS_4  fdobj_direct_defaultobj
-      run-varied-tests.pl
-      --exe="${EXE_PATH}" --beta=0.0 --reaction-rate=1e-2
-      --local-nx=5 --global-ny=5 --starting-num-procs=1
-      --max-num-procs=1 --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
-      --p0=1.0 --p-solu-scale=20.0 --do-analytic --use-default-inv-obj
-      --do-finite-diff --use-finite-diff-obj
-      --fd-step-len=1e-8
-      --use-direct --fwd-newton-tol=1e-10
-      --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
+  ADD_RUN_VARIED_TESTS_CASE( fdobjcon_direct
+    --beta=0.0 --reaction-rate=1e-2
+    --local-nx=5 --global-ny=5 --starting-num-procs=1 --max-num-procs=1
+    --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
+    --p0=1.0 --p-solu-scale=20.0 --do-analytic
+    --do-finite-diff --use-finite-diff-obj --use-finite-diff-con
+    --fd-step-len=1e-8
+    --use-direct --fwd-newton-tol=1e-10
+    --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
+    )
 
-    POSTFIX_AND_ARGS_5  fdcon_direct
-      run-varied-tests.pl
-      --exe="${EXE_PATH}" --beta=0.0 --reaction-rate=1e-2
-      --local-nx=5 --global-ny=5 --starting-num-procs=1 --max-num-procs=1
-      --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
-      --p0=1.0 --p-solu-scale=20.0 --do-analytic
-      --do-finite-diff --use-finite-diff-con
-      --fd-step-len=1e-8
-      --use-direct --fwd-newton-tol=1e-10
-      --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
+  ADD_RUN_VARIED_TESTS_CASE( fdobjcon_direct_defaultobj
+    --beta=0.0 --reaction-rate=1e-2
+    --local-nx=5 --global-ny=5 --starting-num-procs=1 --max-num-procs=1
+    --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
+    --p0=1.0 --p-solu-scale=20.0 --do-analytic --use-default-inv-obj
+    --do-finite-diff --use-finite-diff-obj --use-finite-diff-con
+    --fd-step-len=1e-8
+    --use-direct --fwd-newton-tol=1e-10
+    --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
+    )
 
-    POSTFIX_AND_ARGS_6  fdcon_direct_defaultobj
-      run-varied-tests.pl
-      --exe="${EXE_PATH}" --beta=0.0 --reaction-rate=1e-2
-      --local-nx=5 --global-ny=5 --starting-num-procs=1 --max-num-procs=1
-      --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
-      --p0=1.0 --p-solu-scale=20.0 --do-analytic --use-default-inv-obj
-      --do-finite-diff --use-finite-diff-con
-      --fd-step-len=1e-8
-      --use-direct --fwd-newton-tol=1e-10
-      --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
-   
-    COMM serial
+  ADD_RUN_VARIED_TESTS_CASE( fdobj_direct
+    --beta=0.0 --reaction-rate=1e-2
+    --local-nx=5 --global-ny=5 --starting-num-procs=1
+    --max-num-procs=1 --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
+    --p0=1.0 --p-solu-scale=20.0 --do-analytic
+    --do-finite-diff --use-finite-diff-obj
+    --fd-step-len=1e-8
+    --use-direct --fwd-newton-tol=1e-10
+    --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
+    )
 
-    PASS_REGULAR_EXPRESSION "FINAL END RESULT: TEST PASSED"
+  ADD_RUN_VARIED_TESTS_CASE( fdobj_direct_defaultobj
+    --beta=0.0 --reaction-rate=1e-2
+    --local-nx=5 --global-ny=5 --starting-num-procs=1
+    --max-num-procs=1 --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
+    --p0=1.0 --p-solu-scale=20.0 --do-analytic --use-default-inv-obj
+    --do-finite-diff --use-finite-diff-obj
+    --fd-step-len=1e-8
+    --use-direct --fwd-newton-tol=1e-10
+    --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
+    )
 
+  ADD_RUN_VARIED_TESTS_CASE( fdcon_direct
+    --beta=0.0 --reaction-rate=1e-2
+    --local-nx=5 --global-ny=5 --starting-num-procs=1 --max-num-procs=1
+    --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
+    --p0=1.0 --p-solu-scale=20.0 --do-analytic
+    --do-finite-diff --use-finite-diff-con
+    --fd-step-len=1e-8
+    --use-direct --fwd-newton-tol=1e-10
+    --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
+    )
+
+  ADD_RUN_VARIED_TESTS_CASE( fdcon_direct_defaultobj
+    --beta=0.0 --reaction-rate=1e-2
+    --local-nx=5 --global-ny=5 --starting-num-procs=1 --max-num-procs=1
+    --starting-model-np=3 --use-amesos --solve-fwd-prob --x0=0.001
+    --p0=1.0 --p-solu-scale=20.0 --do-analytic --use-default-inv-obj
+    --do-finite-diff --use-finite-diff-con
+    --fd-step-len=1e-8
+    --use-direct --fwd-newton-tol=1e-10
+    --extra-args="--linear-solver-params-used-file=linear-solver.used.xml"
     )
 
 
