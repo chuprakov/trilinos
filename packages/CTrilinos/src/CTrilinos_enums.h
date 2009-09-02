@@ -20,8 +20,12 @@ extern "C" {
 
 #ifdef __cplusplus
 typedef bool boolean;
+#ifndef FALSE
 #define FALSE false
+#endif
+#ifndef TRUE
 #define TRUE true
+#endif
 #else
 typedef enum { FALSE=0, TRUE=1 } boolean;
 #endif
