@@ -16,7 +16,7 @@
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 
-#include "CEpetra_UnitTestHelpers.hpp"
+#include "CTrilinos_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
 
 

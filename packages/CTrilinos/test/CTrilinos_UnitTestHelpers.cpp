@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_Comm_Cpp.hpp"
 #include "CEpetra_SerialComm_Cpp.hpp"
 #ifdef HAVE_MPI
@@ -36,7 +38,7 @@
 #include "CEpetra_SerialComm.h"
 #include "CEpetra_Comm.h"
 
-#include "CEpetra_UnitTestHelpers.hpp"
+#include "CTrilinos_UnitTestHelpers.hpp"
 
 void CEpetra_Test_CleanSlate()
 {
@@ -68,8 +70,10 @@ void CEpetra_Test_CleanSlate()
   CEpetra::purgeJadMatrixTables();
   CEpetra::purgeLinearProblemTables();
   CEpetra::purgeLAPACKTables();
+#ifdef HAVE_CTRILINOS_AMESOS
   CAmesos::purgeAmesosTables();
   CAmesos::purgeBaseSolverTables();
+#endif
   CTeuchos::purgeanyTables();
   CTeuchos::purgeCommandLineProcessorTables();
   CTeuchos::purgeParameterEntryTables();

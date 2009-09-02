@@ -8,7 +8,7 @@
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
 
-#include "CTeuchos_UnitTestHelpers.hpp"
+#include "CTrilinos_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
 
 
