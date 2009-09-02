@@ -9,7 +9,7 @@
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
 
-#include "CEpetra_UnitTestHelpers.hpp"
+#include "CTeuchos_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
 
 
@@ -45,13 +45,13 @@ void Teuchos_ParameterEntry_setAnyValue (
 
 /**********************************************************************
 void Teuchos_ParameterEntry_setDocString ( 
-  CT_Teuchos_ParameterEntry_ID_t selfID, char docString[] );
+  CT_Teuchos_ParameterEntry_ID_t selfID, const char docString[] );
  **********************************************************************/
 
 /**********************************************************************
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterEntry_setList ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, boolean isDefault, 
-  char docString[] );
+  const char docString[] );
  **********************************************************************/
 
 /**********************************************************************

@@ -92,7 +92,7 @@ void Teuchos_ParameterEntry_setAnyValue (
 }
 
 void Teuchos_ParameterEntry_setDocString ( 
-  CT_Teuchos_ParameterEntry_ID_t selfID, char docString[] )
+  CT_Teuchos_ParameterEntry_ID_t selfID, const char docString[] )
 {
     CTeuchos::getParameterEntry(selfID)->setDocString(std::string(
         docString));
@@ -100,7 +100,7 @@ void Teuchos_ParameterEntry_setDocString (
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterEntry_setList ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, boolean isDefault, 
-  char docString[] )
+  const char docString[] )
 {
     return CTeuchos::storeParameterList(
         &( CTeuchos::getParameterEntry(selfID)->setList(isDefault, 

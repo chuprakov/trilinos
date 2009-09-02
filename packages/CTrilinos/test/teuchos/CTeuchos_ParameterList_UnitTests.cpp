@@ -8,7 +8,7 @@
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
 
-#include "CEpetra_UnitTestHelpers.hpp"
+#include "CTeuchos_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
 
 
@@ -32,7 +32,7 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Create (  );
 
 /**********************************************************************
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Create_WithName ( 
-  char name[] );
+  const char name[] );
  **********************************************************************/
 
 /**********************************************************************
@@ -47,7 +47,7 @@ void Teuchos_ParameterList_Destroy (
 
 /**********************************************************************
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setName ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
@@ -75,114 +75,115 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_disableRecursiveValidation (
 
 /**********************************************************************
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
-  CT_Teuchos_ParameterList_ID_t valueID, char docString[] );
+  CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
+  CT_Teuchos_ParameterList_ID_t valueID, char const docString[] );
  **********************************************************************/
 
 /**********************************************************************
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setEntry ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   CT_Teuchos_ParameterEntry_ID_t entryID );
  **********************************************************************/
 
 /**********************************************************************
 double Teuchos_ParameterList_get_double_def ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   double def_value );
  **********************************************************************/
 
 /**********************************************************************
 int Teuchos_ParameterList_get_int_def ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], int def_value );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
+  int def_value );
  **********************************************************************/
 
 /**********************************************************************
 const char * Teuchos_ParameterList_get_char_def ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   char def_value[] );
  **********************************************************************/
 
 /**********************************************************************
 const char * Teuchos_ParameterList_get_const_char_def ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   const char def_value[] );
  **********************************************************************/
 
 /**********************************************************************
 double Teuchos_ParameterList_get_double ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 int Teuchos_ParameterList_get_int ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 double Teuchos_ParameterList_get_double_const ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 int Teuchos_ParameterList_get_int_const ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 double * Teuchos_ParameterList_getPtr_double ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 int * Teuchos_ParameterList_getPtr_int ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 const double * Teuchos_ParameterList_getPtr_double_const ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 const int * Teuchos_ParameterList_getPtr_int_const ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntry ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntry_const ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntryPtr ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntryPtr_const ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 boolean Teuchos_ParameterList_remove ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
+  CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
   boolean throwIfNotExists );
  **********************************************************************/
 
 /**********************************************************************
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
-  boolean mustAlreadyExist, char docString[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
+  boolean mustAlreadyExist, const char docString[] );
  **********************************************************************/
 
 /**********************************************************************
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist_existing ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
@@ -192,32 +193,34 @@ const char * Teuchos_ParameterList_name_it (
 
 /**********************************************************************
 boolean Teuchos_ParameterList_isParameter ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 boolean Teuchos_ParameterList_isSublist ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 boolean Teuchos_ParameterList_isType_double ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 boolean Teuchos_ParameterList_isType_int ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
  **********************************************************************/
 
 /**********************************************************************
 boolean Teuchos_ParameterList_isType_double_type ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], double * ptr );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
+  double * ptr );
  **********************************************************************/
 
 /**********************************************************************
 boolean Teuchos_ParameterList_isType_int_type ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], int * ptr );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
+  int * ptr );
  **********************************************************************/
 
 /**********************************************************************

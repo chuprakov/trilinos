@@ -43,7 +43,7 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Create (  );
    ParameterList(const std::string &name);
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Create_WithName ( 
-  char name[] );
+  const char name[] );
 
 /* Original C++ prototype:
    ParameterList(const ParameterList& source);
@@ -61,7 +61,7 @@ void Teuchos_ParameterList_Destroy (
    ParameterList& setName( const std::string &name );
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setName ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    ParameterList& operator=(const ParameterList& source);
@@ -94,134 +94,135 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_disableRecursiveValidation (
    ParameterList& set( std::string const& name, ParameterList const& value, std::string const& docString = "" );
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
-  CT_Teuchos_ParameterList_ID_t valueID, char docString[] );
+  CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
+  CT_Teuchos_ParameterList_ID_t valueID, char const docString[] );
 
 /* Original C++ prototype:
    ParameterList& setEntry(const std::string& name, const ParameterEntry& entry);
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setEntry ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   CT_Teuchos_ParameterEntry_ID_t entryID );
 
 /* Original C++ prototype:
    template<typename T> T& get(const std::string& name, T def_value);
 */
 double Teuchos_ParameterList_get_double_def ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   double def_value );
 
 /* Original C++ prototype:
    template<typename T> T& get(const std::string& name, T def_value);
 */
 int Teuchos_ParameterList_get_int_def ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], int def_value );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
+  int def_value );
 
 /* Original C++ prototype:
    std::string& get(const std::string& name, char def_value[]);
 */
 const char * Teuchos_ParameterList_get_char_def ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   char def_value[] );
 
 /* Original C++ prototype:
    std::string& get(const std::string& name, const char def_value[]);
 */
 const char * Teuchos_ParameterList_get_const_char_def ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   const char def_value[] );
 
 /* Original C++ prototype:
    template<typename T> T& get(const std::string& name);
 */
 double Teuchos_ParameterList_get_double ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    template<typename T> T& get(const std::string& name);
 */
 int Teuchos_ParameterList_get_int ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    template<typename T> const T& get(const std::string& name) const;
 */
 double Teuchos_ParameterList_get_double_const ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    template<typename T> const T& get(const std::string& name) const;
 */
 int Teuchos_ParameterList_get_int_const ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    template<typename T> inline T* getPtr(const std::string& name);
 */
 double * Teuchos_ParameterList_getPtr_double ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    template<typename T> inline T* getPtr(const std::string& name);
 */
 int * Teuchos_ParameterList_getPtr_int ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    template<typename T> inline const T* getPtr(const std::string& name) const;
 */
 const double * Teuchos_ParameterList_getPtr_double_const ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    template<typename T> inline const T* getPtr(const std::string& name) const;
 */
 const int * Teuchos_ParameterList_getPtr_int_const ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    ParameterEntry& getEntry(const std::string& name);
 */
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntry ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    inline const ParameterEntry& getEntry(const std::string& name) const;
 */
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntry_const ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    inline ParameterEntry* getEntryPtr(const std::string& name);
 */
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntryPtr ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    inline const ParameterEntry* getEntryPtr(const std::string& name) const;
 */
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntryPtr_const ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    bool remove( std::string const& name, bool throwIfNotExists = true );
 */
 boolean Teuchos_ParameterList_remove ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
+  CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
   boolean throwIfNotExists );
 
 /* Original C++ prototype:
    ParameterList& sublist( const std::string& name, bool mustAlreadyExist = false ,const std::string& docString = "" );
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], 
-  boolean mustAlreadyExist, char docString[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
+  boolean mustAlreadyExist, const char docString[] );
 
 /* Original C++ prototype:
    const ParameterList& sublist(const std::string& name) const;
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist_existing ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    const std::string& name() const;
@@ -233,37 +234,39 @@ const char * Teuchos_ParameterList_name_it (
    bool isParameter(const std::string& name) const;
 */
 boolean Teuchos_ParameterList_isParameter ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    bool isSublist(const std::string& name) const;
 */
 boolean Teuchos_ParameterList_isSublist ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    template<typename T> bool isType(const std::string& name) const;
 */
 boolean Teuchos_ParameterList_isType_double ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    template<typename T> bool isType(const std::string& name) const;
 */
 boolean Teuchos_ParameterList_isType_int ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[] );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /* Original C++ prototype:
    template<typename T> bool isType(const std::string& name, T* ptr) const;
 */
 boolean Teuchos_ParameterList_isType_double_type ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], double * ptr );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
+  double * ptr );
 
 /* Original C++ prototype:
    template<typename T> bool isType(const std::string& name, T* ptr) const;
 */
 boolean Teuchos_ParameterList_isType_int_type ( 
-  CT_Teuchos_ParameterList_ID_t selfID, char name[], int * ptr );
+  CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
+  int * ptr );
 
 /* Original C++ prototype:
    std::string currentParametersString() const;
