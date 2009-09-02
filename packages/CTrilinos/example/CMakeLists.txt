@@ -1,0 +1,8 @@
+
+INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(AddSubdirectories)
+
+ADD_SUBDIRECTORIES(
+  verySimple
+  amesos
+  )

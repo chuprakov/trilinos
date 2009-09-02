@@ -1,0 +1,249 @@
+\section{Methods}
+\label{index_methods}
+%Adding a citation to test bib\cite{ElmanSilvesterWathen.book}.  
+\subsection{Overview}
+Outline:
+\begin{itemize}
+\item Overview of problems Meros is intended to solve and the methods
+  included
+\item Overview of PreconditionerFactory and how Meros extends from
+  Thyra
+\end{itemize}
+
+
+Meros is a segregated preconditioning package within
+Trilinos~\cite{Trilinos-Overview}.  Meros
+provides scalable block preconditioning for problems that couple
+simultaneous solution variables such as Navier-Strokes problems.
+
+The initial focus of Meros is on preconditioners for the
+incompressible Navier-Stokes equations:
+\begin{equation} \label{NS}
+  \begin{array}{rcl}
+    \eta {\bf u}_t -\nu \nabla^2 {\bf u}
+    + ({\bf u} \cdot {\rm grad})\, {\bf u} +
+    {\rm grad}\, p &= &{\bf f} \\
+    -{\rm div}\, {\bf u} &= &0
+  \end{array}
+\end{equation}
+on $\Omega \subset \mathbb{R}^d$, $d=2$ or $3$.  Here, ${\bf u}$
+is the $d$-dimensional velocity field, which is assumed to satisfy
+suitable boundary conditions on $\partial \Omega$, $p$ is the
+pressure, and $\nu$ is the kinematic viscosity, which is
+inversely proportional to the Reynolds number.  
+The value $\eta=0$ corresponds to the steady-state problem and $\eta=1$
+to the  case of unsteady flow. 
+Linearization and discretization of (\ref{NS}) by finite elements, finite 
+differences or finite volumes leads to a sequence of linear systems of 
+equations of the form
+\begin{equation} \label{NSdiscretelinearStabilized}
+\left[  
+  \begin{array}{lc}
+    F  & \ B^T   \\ B  & -C
+  \end{array}
+ \right]
+  \begin{bmatrix}
+    {\bf u}\\ p
+  \end{bmatrix}
+  =
+  \begin{bmatrix}
+    {\bf f}\\ g
+  \end{bmatrix}.
+\end{equation}
+These systems, which are the primary focus of the Meros
+preconditioners, must be solved 
+at each step of a nonlinear (Picard or Newton) iteration, or at
+each time step.   Here, $B$ and $B^T$ are matrices corresponding
+to discrete divergence and gradient operators, respectively and
+$F$ operates on the discrete velocity space. 
+
+This guide describes the use of a block preconditioner within the
+Meros package.  The block preconditioners can be used to solve block
+linear systems of the type in (\ref{NSdiscretelinearStabilized}).
+We will denote the velocity
+and pressure degrees of freedom as $v$ and $p$ respectively.
+
+The user must supply the four subblocks $F$, $B^T$, $B$, and $C$. If
+the matrix $C$ is not provided, it is assumed to be the zero matrix.
+$F$ is the convection-diffusion-like operator of size $v \times v$,
+$B^T$ the pressure gradient of size $v \times p$ , $B$ the divergence
+operator of size $p \times v$ , and $C$ is a stabilization matrix of
+size $p \times p$.  Depending on the discretization $C$ might be the
+zero matrix. For {\em div-stable} discretizations, $C=0$.  For mixed
+approximation methods that do not uniformly satisfy a discrete inf-sup
+condition, the matrix $C$ is a nonzero {\em stabilization operator}.
+
+Block preconditioners a useful for a number of reasons:
+
+
+\begin{itemize}
+\item Want the scalability and mesh-independence of multigrid 
+\item Difficult to apply multigrid to the whole system 
+\item Segregate blocks and apply multigrid separately to subproblems 
+\item Requires a good Schur complement approximation 
+\end{itemize}
+
+
+
+Meros 1.0 includes the following classes of methods:
+
+\begin{itemize}
+\item Approximate Commutator Methods
+\begin{enumerate}
+ \item Pressure Convection-Diffusion (Fp) methods 
+ \item Least Squares Commutator (LSC) methods 
+\end{enumerate}
+\item Pressure-Projection Methods
+\begin{enumerate}
+ \item SIMPLE - Semi Implicit Methods for Pressure Linked Equations 
+ \item SIMPLEC 
+\end{enumerate}
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+This guide describes the use of a block preconditioner within the
+Meros package.  The block preconditioners in Meros are designed for
+block linear systems of the type
+$$ A = 
+\begin{bmatrix}
+F & B^T \\
+B & C
+\end{bmatrix}
+\begin{bmatrix}
+u \\
+p
+\end{bmatrix}
+=
+\begin{bmatrix}
+f \\
+g
+\end{bmatrix}
+$$
+that usually arise from linearization and discretization of the
+incompressible Navier-Stokes equations. When using Meros, the sub
+matrices $F, B, B^T, C$ and the vectors $f$ and $g$ are user supplied
+and $u$ and $p$ are vectors to be computed.  Meros is intended to be
+used on large block sparse linear systems arising from partial
+differential equation (PDE) discretizations.  While technically any
+block linear system can be considered, Meros should be used on linear
+systems that correspond to things that work well with multigrid
+methods (e.g. elliptic PDEs).
+
+
+
+The methods in Meros are based on an LDU
+factorization of the saddlepoint system. The LDU factors of a saddle
+point system are given as follows:
+
+$ \begin{bmatrix} A & B^T \\ B & C \end{bmatrix} = \begin{bmatrix} I &
+ \\ BF^{-1} & I \end{bmatrix} \begin{bmatrix} F & \\\ & -S
+ \end{bmatrix} \begin{bmatrix} I & F^{-1} B^T \\ & I \end{bmatrix}, $
+
+where $S$ is the Schur complement $S = B F^{-1} B^T - C$.
+
+\subsection{Pressure Convection-Diffusion (PCD)}
+\begin{itemize}
+\item Mathematical overview
+\item PCDPreconditionerFactory and PCDOperatorSource
+\end{itemize}
+
+
+In this section we describe the factory for building a pressure
+convection-diffusion style block preconditioner. This class of
+preconditioners were originally proposed by Kay, Loghin, and
+Wathen~\cite{KayLoghinWathen} and Silvester, Elman, Kay, and
+Wathen~\cite{SilvesterElmanKayWathen}.
+
+Meros currently implements the PCD preconditioner, a.k.a. Fp
+preconditioner. 
+
+The LDU factors of a saddle point system are given as follows:
+
+\begin{equation}
+  \left[ \begin{array}{cc} A & B^T \\ B & C \end{array} \right]
+     = \left[ \begin{array}{cc} I & \\ BF^{-1} & I \end{array} \right]
+       \left[ \begin{array}{cc} F & \\  & -S \end{array} \right]
+       \left[ \begin{array}{cc} I & F^{-1} B^T  \\  & I \end{array} \right],
+\end{equation}
+
+where $S$ is the Schur complement $S = B F^{-1} B^T - C$.  A
+pressure convection-diffusion style preconditioner is then given by
+
+\begin{equation}
+  P^{-1} =
+       \left[ \begin{array}{cc} F & B^T \\ & -\tilde S \end{array} \right]^{-1}
+       = 
+       \left[ \begin{array}{cc} F^{-1} &  \\  & I \end{array} \right]
+       \left[ \begin{array}{cc} I & -B^T \\  & I \end{array} \right]
+       \left[ \begin{array}{cc} I &  \\  & -\tilde S^{-1} \end{array} \right]
+\end{equation}
+where for $\tilde S$ is an approximation to the Schur complement S.
+
+To apply the above preconditioner, we need a linear solver on the
+(0,0) block and an approximation to the inverse of the Schur
+complement.
+
+To build a concrete preconditioner object, we will also need a 2x2
+block Thyra matrix or the 4 separate blocks as either Thyra or Epetra
+matrices.  If Thyra, assumes each block is a Thyra EpetraMatrix.
+
+\subsection{Least Squares Commutator (LSC)}
+\begin{itemize}
+\item Mathematical overview
+\item LSCPreconditionerFactory and LSCOperatorSource
+\end{itemize}
+
+
+Factory for building least squares commutator style block
+preconditioner.  
+
+Note that the LSC preconditioner assumes that we are using
+a stable discretization an a uniform mesh.
+
+The LDU factors of a saddle point system are given as follows:
+
+\begin{equation}
+  \left[ \begin{array}{cc} A & B^T \\ B & C \end{array} \right]
+     = \left[ \begin{array}{cc} I & \\ BF^{-1} & I \end{array} \right]
+       \left[ \begin{array}{cc} F & \\  & -S \end{array} \right]
+       \left[ \begin{array}{cc} I & F^{-1} B^T  \\  & I \end{array} \right],
+\end{equation}
+where $S$ is the Schur complement $S = B F^{-1} B^T - C$.
+A pressure convection-diffusion style preconditioner is then given by
+     
+\begin{equation}
+     P^{-1} =
+       \left[ \begin{array}{cc} F & B^T \\ & -\tilde S \end{array} \right]^{-1}
+       = 
+       \left[ \begin{array}{cc} F^{-1} &  \\  & I \end{array} \right]
+       \left[ \begin{array}{cc} I & -B^T \\  & I \end{array} \right]
+       \left[ \begin{array}{cc} I &  \\  & -\tilde S^{-1} \end{array} \right]
+\end{equation}
+where for $\tilde S$ is an approximation to the Schur complement S.
+
+To apply the above preconditioner, we need a linear solver on the
+(0,0) block and an approximation to the inverse of the Schur
+complement.
+
+To build a concrete preconditioner object, we will also need a 2x2
+block Thyra matrix or the 4 separate blocks as either Thyra or Epetra
+matrices.  If Thyra, assumes each block is a Thyra EpetraMatrix.
+
+
+\subsection{SIMPLE}
+\begin{itemize}
+\item Mathematical overview
+\item SIMPLEPreconditionerFactory and SIMPLEOperatorSource
+\end{itemize}

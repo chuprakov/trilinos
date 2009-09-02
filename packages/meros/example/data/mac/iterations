@@ -1,0 +1,72 @@
+Vicki,
+  Here is a new set of data. The files F.serial, B.serial, A.serial,
+Fp.serial, rhs, and init_guess correspond to a 16x16 grid. A.serial 
+is the Laplacian. There are also the files K_reordered, rhs_reordered,
+guess_reordered. This is the same problem only the matrix is padded
+and reordered so that it looks like a vbr matrix. Thus, we should
+get the same iterates. I will start working on building a vbr reader. 
+The petra reader stuff is still in the original tar ball that I put on 
+iterative. Here is some residual histories.   I am having some trouble 
+getting my gmres iterations to match those in matlab. Quite frankly, the 
+matlab ones seem messed up. I have also included some bicgstab iterations 
+(where the code and matlab match) as well for comparisions.
+
+
+
+My gmres iterations are as follows:
+
+                iter:    0           residual = 2.923527e-03
+                iter:    1           residual = 2.920711e-03
+                iter:    2           residual = 2.920587e-03
+                iter:    3           residual = 2.917414e-03
+                iter:    4           residual = 2.916719e-03
+                iter:    5           residual = 2.911868e-03
+                iter:    6           residual = 2.911557e-03
+                iter:    7           residual = 2.905593e-03
+                iter:    8           residual = 2.886069e-03
+                iter:    9           residual = 2.857169e-03
+                iter:   10           residual = 2.737571e-03
+                iter:   11           residual = 2.493953e-03
+                iter:   12           residual = 2.207245e-03
+                iter:   13           residual = 2.144656e-03
+                iter:   14           residual = 1.712844e-03
+                iter:   15           residual = 1.473462e-03
+                iter:   16           residual = 1.182303e-03
+                iter:   17           residual = 1.117482e-03
+                iter:   18           residual = 1.028243e-03
+                iter:   19           residual = 9.359440e-04
+
+
+****************************************************************
+Here is how things look inside the preconditioner for the above
+gmres run.
+
+                        input                    output
+1st time in M^-1, norm(r) =  1.  norm(r) = 1.354634e+03
+2nd time in M^-1, norm(r) =  1.  norm(r) = 5.455730e+00
+3rd time in M^-1, norm(r) =  1.  norm(r) = 8.312166e+00
+4th time in M^-1, norm(r) =  1.  norm(r) = 4.445549e+00
+
+****************************************************************
+****************************************************************
+
+Using Bicgstab
+
+                iter:    0           residual = 2.923527e-03
+                iter:    1           residual = 6.421216e-02
+                iter:    2           residual = 1.060579e-01
+                iter:    3           residual = 8.626980e-02
+                iter:    4           residual = 4.208515e+00
+                iter:    5           residual = 6.256488e-01
+
+****************************************************************
+Here is how things look inside the preconditioner for the above
+bicgstab run.
+
+                        input                    output
+1st time in M^-1, norm(r) =  2.923527e-03  norm(r) = 3.960310e+00
+2nd time in M^-1, norm(r) =  6.656395e-02  norm(r) = 3.631549e-01
+3rd time in M^-1, norm(r) =  6.524237e-02  norm(r) = 3.935821e-01
+4th time in M^-1, norm(r) =  1.062710e-01  norm(r) = 6.233570e-01
+
+           

@@ -1,0 +1,25 @@
+/* src-utils/SundanceConfig.h.in.  CMake version */
+
+/* define if we want to use Exodus */
+#cmakedefine HAVE_SUNDANCE_EXODUS
+
+/* define if we have enabled broken code */
+#cmakedefine HAVE_SUNDANCE_BROKEN_CODE
+
+/* define if we want to use MPI */
+#cmakedefine HAVE_MPI
+
+/* define if we want to use SUNDIALS */
+#cmakedefine HAVE_SUNDIALS
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#cmakedefine HAVE_UNISTD_H
+
+/* Version number of package */
+#cmakedefine SUNDANCE_VERSION
+
+/* Path to trilinos data directory. If this is not set, certain
+ * tests will be disabled  */
+#cmakedefine Trilinos_DATA_DIR
+
+

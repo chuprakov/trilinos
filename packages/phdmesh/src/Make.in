@@ -1,0 +1,57 @@
+#-----------------------------------------------------------------------
+#       phdMesh : Parallel Heterogneous Dynamic unstructured Mesh
+#		 Copyright (2007) Sandia Corporation
+#
+#  Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+#  license for use of this work by or on behalf of the U.S. Government.
+#
+#  This library is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU Lesser General Public License as
+#  published by the Free Software Foundation; either version 2.1 of the
+#  License, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful, but
+#  WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#  Lesser General Public License for more details.
+#
+#  You should have received a copy of the GNU Lesser General Public
+#  License along with this library; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+#  USA
+#-----------------------------------------------------------------------
+
+PHDMESH_SRC_DIRS =	\
+		$(PHDMESH_PATH)/src/util	\
+		$(PHDMESH_PATH)/src/txblas	\
+		$(PHDMESH_PATH)/src/mesh	\
+		$(PHDMESH_PATH)/src/mesh_io	\
+		$(PHDMESH_PATH)/src/element
+
+
+include	\
+	$(PHDMESH_PATH)/src/util/Make.in	\
+	$(PHDMESH_PATH)/src/txblas/Make.in	\
+	$(PHDMESH_PATH)/src/mesh/Make.in	\
+	$(PHDMESH_PATH)/src/mesh_io/Make.in	\
+	$(PHDMESH_PATH)/src/element/Make.in
+
+
+
+vpath %.c   $(PHDMESH_SRC_DIRS)
+vpath %.cpp $(PHDMESH_SRC_DIRS)
+
+src_all     :	util_all     txblas_all	\
+		mesh_all     mesh_io_all     element_all ;
+
+src_clean   :	util_clean   txblas_clean	\
+		mesh_clean   mesh_io_clean   element_clean ;
+
+src_install :	util_install txblas_install	\
+		mesh_install mesh_io_install element_install ;
+
+src_uninstall : \
+	util_uninstall txblas_uninstall	\
+	mesh_uninstall mesh_io_uninstall	
+	element_uninstall ;
+

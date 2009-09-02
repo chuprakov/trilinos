@@ -1,0 +1,40 @@
+#!/bin/bash
+
+#----------------------------------------------------------------------
+# Paths
+
+export PHDMESH_PATH="${HOME}/Trilinos/packages/phdmesh"
+
+#----------------------------------------------------------------------
+# The configuration is dependent upon this file
+
+export PHDMESH_CONFIG_DEPS=$0
+
+#----------------------------------------------------------------------
+# Compiler and linker configuration, SNL tbird default modules:
+#
+# source ${PHDMESH_PATH}/config/intel opt mpi
+#
+#----------------------------------------------------------------------
+# Compiler and linker configuration, SNL LAN:
+
+source /usr/local/intel/cc/9.1.044/bin/iccvars.sh
+source /usr/local/intel/fc/9.1.039/bin/ifortvars.sh
+
+MPICH_HOME="/usr/local/mpi/sierra/32Bit/1.2.7/intel-9.0"
+
+export PATH="${MPICH_HOME}/bin:${PATH}"
+
+source ${PHDMESH_PATH}/config/intel opt mpich
+
+#----------------------------------------------------------------------
+# SNL ACCESS ExodusII and NemesisI library configuration:
+
+source ${PHDMESH_PATH}/config/exodusII /usr/local/eng_sci/struct/i686/current
+
+#----------------------------------------------------------------------
+
+make -f ${PHDMESH_PATH}/Make.in $*
+
+#----------------------------------------------------------------------
+

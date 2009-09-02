@@ -1,0 +1,76 @@
+\documentclass[letter]{report}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{listings}
+
+\input{config.tex}
+
+\pagestyle{empty}
+
+\title{ {\LARGE\bf 
+        MESQUITE \\ Mesh Quality Improvement Toolkit \\ \vspace{.5cm} User's Guide\\
+}}
+
+\author{Patrick Knupp \\
+The Sandia National Laboratories \\
+Albuquerque NM USA \\
+ \\
+Lori Freitag-Diachin \\
+Livermore National Laboratory \\
+Livermore CA USA \\
+%  \\
+%Thomas Leurent \\
+%Argonne National Laboratory \\
+%Argonne, IL 60490 USA \\
+  \\
+Jason Kraftcheck \\
+University of Wisconsin--Madison \\
+Madison, WI 53706 USA}
+
+\date{Last Updated: 27 October, 2008}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\listoffigures
+
+\listoftables
+
+\srcinclude{intro.tex}
+
+\srcinclude{install.tex}
+
+\srcinclude{examples.tex}
+
+\srcinclude{data.tex}
+
+\srcinclude{geom.tex}
+
+\srcinclude{wrappers.tex}
+
+%\srcinclude{api.tex}
+
+%\srcinclude{extend.tex}
+
+%\srcinclude{trouble.tex}
+
+\srcinclude{caveats.tex}
+
+\srcinclude{support.tex}
+
+\appendix
+
+\srcinclude{team.tex}
+
+\srcinclude{ack.tex}
+
+\bibliographystyle{plain}
+\srcbibliography{mesquite}
+
+
+\end{document}
+
