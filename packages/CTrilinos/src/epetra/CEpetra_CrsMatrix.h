@@ -8,7 +8,6 @@
 #define CEPETRA_CRSMATRIX_H
 
 
-#include "Epetra_DataAccess.h"
 #include "CEpetra_Map.h"
 #include "CEpetra_CrsGraph.h"
 #include "CEpetra_Vector.h"
@@ -46,21 +45,21 @@ CTrilinos_Object_ID_t Epetra_CrsMatrix_Abstract (
    Epetra_CrsMatrix(Epetra_DataAccess CV, const Epetra_Map& RowMap, const int* NumEntriesPerRow, bool StaticProfile = false);
 */
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow ( 
-  Epetra_DataAccess CV, CT_Epetra_Map_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   const int * NumEntriesPerRow, boolean StaticProfile );
 
 /* Original C++ prototype:
    Epetra_CrsMatrix(Epetra_DataAccess CV, const Epetra_Map& RowMap, int NumEntriesPerRow, bool StaticProfile = false);
 */
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create ( 
-  Epetra_DataAccess CV, CT_Epetra_Map_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   int NumEntriesPerRow, boolean StaticProfile );
 
 /* Original C++ prototype:
    Epetra_CrsMatrix(Epetra_DataAccess CV, const Epetra_Map& RowMap, const Epetra_Map& ColMap, const int* NumEntriesPerRow, bool StaticProfile = false);
 */
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow_WithColMap ( 
-  Epetra_DataAccess CV, CT_Epetra_Map_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   CT_Epetra_Map_ID_t ColMapID, const int * NumEntriesPerRow, 
   boolean StaticProfile );
 
@@ -68,7 +67,7 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow_WithColMap (
    Epetra_CrsMatrix(Epetra_DataAccess CV, const Epetra_Map& RowMap, const Epetra_Map& ColMap, int NumEntriesPerRow, bool StaticProfile = false);
 */
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_WithColMap ( 
-  Epetra_DataAccess CV, CT_Epetra_Map_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   CT_Epetra_Map_ID_t ColMapID, int NumEntriesPerRow, 
   boolean StaticProfile );
 
@@ -76,7 +75,7 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_WithColMap (
    Epetra_CrsMatrix(Epetra_DataAccess CV, const Epetra_CrsGraph& Graph);
 */
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_FromGraph ( 
-  Epetra_DataAccess CV, CT_Epetra_CrsGraph_ID_t GraphID );
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_CrsGraph_ID_t GraphID );
 
 /* Original C++ prototype:
    Epetra_CrsMatrix(const Epetra_CrsMatrix& Matrix);

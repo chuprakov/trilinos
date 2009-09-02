@@ -90,7 +90,8 @@ int Epetra_Directory_GetDirectoryEntries (
 boolean Epetra_Directory_GIDsAllUniquelyOwned ( 
   CT_Epetra_Directory_ID_t selfID )
 {
-    return CEpetra::getConstDirectory(selfID)->GIDsAllUniquelyOwned();
+    return CEpetra::getConstDirectory(
+        selfID)->GIDsAllUniquelyOwned();
 }
 
 
@@ -149,7 +150,7 @@ CT_Epetra_Directory_ID_t
 CEpetra::storeDirectory( Epetra_Directory *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Directory_ID_t>(
-            tableOfDirectorys().storeCopy(pobj));
+            tableOfDirectorys().storeShared(pobj));
 }
 
 /* store const Epetra_Directory in const table */
@@ -157,7 +158,7 @@ CT_Epetra_Directory_ID_t
 CEpetra::storeConstDirectory( const Epetra_Directory *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Directory_ID_t>(
-            tableOfConstDirectorys().storeCopy(pobj));
+            tableOfConstDirectorys().storeShared(pobj));
 }
 
 /* dump contents of Epetra_Directory and const Epetra_Directory tables */

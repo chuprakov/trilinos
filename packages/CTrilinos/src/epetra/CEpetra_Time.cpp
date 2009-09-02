@@ -56,26 +56,24 @@ CT_Epetra_Time_ID_t Epetra_Time_Cast ( CTrilinos_Object_ID_t id )
     return CTrilinos::concreteType<CT_Epetra_Time_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_Time_Abstract ( 
-  CT_Epetra_Time_ID_t id )
+CTrilinos_Object_ID_t Epetra_Time_Abstract ( CT_Epetra_Time_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_Time_ID_t>(id);
 }
 
-CT_Epetra_Time_ID_t Epetra_Time_Create ( 
-  CT_Epetra_Comm_ID_t CommID )
+CT_Epetra_Time_ID_t Epetra_Time_Create ( CT_Epetra_Comm_ID_t CommID )
 {
     return CTrilinos::concreteType<CT_Epetra_Time_ID_t>(
-        tableOfTimes().store(new Epetra_Time(
-        *CEpetra::getConstComm(CommID))));
+        tableOfTimes().store(new Epetra_Time(*CEpetra::getConstComm(
+        CommID))));
 }
 
 CT_Epetra_Time_ID_t Epetra_Time_Duplicate ( 
   CT_Epetra_Time_ID_t TimeID )
 {
     return CTrilinos::concreteType<CT_Epetra_Time_ID_t>(
-        tableOfTimes().store(new Epetra_Time(
-        *CEpetra::getConstTime(TimeID))));
+        tableOfTimes().store(new Epetra_Time(*CEpetra::getConstTime(
+        TimeID))));
 }
 
 double Epetra_Time_WallTime ( CT_Epetra_Time_ID_t selfID )
@@ -169,7 +167,7 @@ CT_Epetra_Time_ID_t
 CEpetra::storeTime( Epetra_Time *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Time_ID_t>(
-            tableOfTimes().storeCopy(pobj));
+            tableOfTimes().storeShared(pobj));
 }
 
 /* store const Epetra_Time in const table */
@@ -177,7 +175,7 @@ CT_Epetra_Time_ID_t
 CEpetra::storeConstTime( const Epetra_Time *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Time_ID_t>(
-            tableOfConstTimes().storeCopy(pobj));
+            tableOfConstTimes().storeShared(pobj));
 }
 
 /* dump contents of Epetra_Time and const Epetra_Time tables */

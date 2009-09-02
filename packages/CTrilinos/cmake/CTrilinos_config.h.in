@@ -26,3 +26,7 @@
 
 /* Define if debugging mode */
 #cmakedefine TEUCHOS_DEBUG
+
+/* If Amesos is built */
+#cmakedefine HAVE_CTRILINOS_AMESOS
+#cmakedefine CTRILINOS_ENABLE_AMESOS

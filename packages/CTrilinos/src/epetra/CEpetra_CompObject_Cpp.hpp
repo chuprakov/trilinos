@@ -4,13 +4,9 @@
 #define CEPETRA_COMPOBJECT_CPP_HPP
 
 
-#include "CEpetra_CompObject.h"
 #include "Epetra_CompObject.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_CompObject;
 
 
 namespace CEpetra {

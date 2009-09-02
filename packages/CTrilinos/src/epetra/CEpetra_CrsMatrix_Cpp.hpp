@@ -4,13 +4,9 @@
 #define CEPETRA_CRSMATRIX_CPP_HPP
 
 
-#include "CEpetra_CrsMatrix.h"
 #include "Epetra_CrsMatrix.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_CrsMatrix;
 
 
 namespace CEpetra {

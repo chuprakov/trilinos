@@ -28,6 +28,14 @@
 #include "CEpetra_Import_Cpp.hpp"
 #include "CEpetra_Time_Cpp.hpp"
 #include "CEpetra_JadMatrix_Cpp.hpp"
+#include "CEpetra_LinearProblem_Cpp.hpp"
+#include "CEpetra_LAPACK_Cpp.hpp"
+#include "CTeuchos_CommandLineProcessor_Cpp.hpp"
+#include "CTeuchos_ParameterList_Cpp.hpp"
+#include "CTeuchos_ParameterEntry_Cpp.hpp"
+#include "CTeuchos_any_Cpp.hpp"
+#include "CAmesos_BaseSolver_Cpp.hpp"
+#include "CAmesos_Cpp.hpp"
 
 #include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
@@ -123,6 +131,20 @@ cast( Table<const T> &destTable, CTrilinos_Object_ID_t id )
         case CT_Epetra_JadMatrix_ID:
             newid = destTable.cast(CEpetra::getConstJadMatrix(id));
             break;
+        case CT_Epetra_LinearProblem_ID:
+            newid = destTable.cast(CEpetra::getConstLinearProblem(id));
+            break;
+        case CT_Epetra_LAPACK_ID:
+            newid = destTable.cast(CEpetra::getConstLAPACK(id));
+            break;
+        case CT_Teuchos_ParameterList_ID:
+            newid = destTable.cast(CTeuchos::getConstParameterList(id));
+            break;
+#ifdef HAVE_CTRILINOS_AMESOS
+        case CT_Amesos_BaseSolver_ID:
+            newid = destTable.cast(CAmesos::getConstBaseSolver(id));
+            break;
+#endif /* HAVE_CTRILINOS_AMESOS */
         default:
             break;
         }
@@ -202,6 +224,20 @@ cast( Table<const T> &destTable, CTrilinos_Object_ID_t id )
         case CT_Epetra_JadMatrix_ID:
             newid = destTable.cast(CEpetra::getJadMatrix(id));
             break;
+        case CT_Epetra_LinearProblem_ID:
+            newid = destTable.cast(CEpetra::getLinearProblem(id));
+            break;
+        case CT_Epetra_LAPACK_ID:
+            newid = destTable.cast(CEpetra::getLAPACK(id));
+            break;
+        case CT_Teuchos_ParameterList_ID:
+            newid = destTable.cast(CTeuchos::getParameterList(id));
+            break;
+#ifdef HAVE_CTRILINOS_AMESOS
+        case CT_Amesos_BaseSolver_ID:
+            newid = destTable.cast(CAmesos::getBaseSolver(id));
+            break;
+#endif /* HAVE_CTRILINOS_AMESOS */
         default:
             break;
         }
@@ -297,6 +333,20 @@ cast( Table<T> &destTable, CTrilinos_Object_ID_t id )
         case CT_Epetra_JadMatrix_ID:
             newid = destTable.cast(CEpetra::getJadMatrix(id));
             break;
+        case CT_Epetra_LinearProblem_ID:
+            newid = destTable.cast(CEpetra::getLinearProblem(id));
+            break;
+        case CT_Epetra_LAPACK_ID:
+            newid = destTable.cast(CEpetra::getLAPACK(id));
+            break;
+        case CT_Teuchos_ParameterList_ID:
+            newid = destTable.cast(CTeuchos::getParameterList(id));
+            break;
+#ifdef HAVE_CTRILINOS_AMESOS
+        case CT_Amesos_BaseSolver_ID:
+            newid = destTable.cast(CAmesos::getBaseSolver(id));
+            break;
+#endif /* HAVE_CTRILINOS_AMESOS */
         default:
             break;
         }
@@ -426,6 +476,34 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
         case CT_Epetra_JadMatrix_ID:
             shares = rcp.shares_resource(CEpetra::getConstJadMatrix(id));
             break;
+        case CT_Epetra_LinearProblem_ID:
+            shares = rcp.shares_resource(CEpetra::getConstLinearProblem(id));
+            break;
+        case CT_Epetra_LAPACK_ID:
+            shares = rcp.shares_resource(CEpetra::getConstLAPACK(id));
+            break;
+        case CT_Teuchos_CommandLineProcessor_ID:
+            shares = rcp.shares_resource(CTeuchos::getConstCommandLineProcessor(id));
+            break;
+        case CT_Teuchos_ParameterList_ID:
+            shares = rcp.shares_resource(CTeuchos::getConstParameterList(id));
+            break;
+        case CT_Teuchos_ParameterEntry_ID:
+            shares = rcp.shares_resource(CTeuchos::getConstParameterEntry(id));
+            break;
+        case CT_Teuchos_any_ID:
+            shares = rcp.shares_resource(CTeuchos::getConstany(id));
+            break;
+#ifdef HAVE_CTRILINOS_AMESOS
+        case CT_Amesos_BaseSolver_ID:
+            shares = rcp.shares_resource(CAmesos::getConstBaseSolver(id));
+            break;
+#endif /* HAVE_CTRILINOS_AMESOS */
+#ifdef HAVE_CTRILINOS_AMESOS
+        case CT_Amesos_ID:
+            shares = rcp.shares_resource(CAmesos::getConstAmesos(id));
+            break;
+#endif /* HAVE_CTRILINOS_AMESOS */
         default:
             break;
         }
@@ -505,6 +583,34 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
         case CT_Epetra_JadMatrix_ID:
             shares = rcp.shares_resource(CEpetra::getJadMatrix(id));
             break;
+        case CT_Epetra_LinearProblem_ID:
+            shares = rcp.shares_resource(CEpetra::getLinearProblem(id));
+            break;
+        case CT_Epetra_LAPACK_ID:
+            shares = rcp.shares_resource(CEpetra::getLAPACK(id));
+            break;
+        case CT_Teuchos_CommandLineProcessor_ID:
+            shares = rcp.shares_resource(CTeuchos::getCommandLineProcessor(id));
+            break;
+        case CT_Teuchos_ParameterList_ID:
+            shares = rcp.shares_resource(CTeuchos::getParameterList(id));
+            break;
+        case CT_Teuchos_ParameterEntry_ID:
+            shares = rcp.shares_resource(CTeuchos::getParameterEntry(id));
+            break;
+        case CT_Teuchos_any_ID:
+            shares = rcp.shares_resource(CTeuchos::getany(id));
+            break;
+#ifdef HAVE_CTRILINOS_AMESOS
+        case CT_Amesos_BaseSolver_ID:
+            shares = rcp.shares_resource(CAmesos::getBaseSolver(id));
+            break;
+#endif /* HAVE_CTRILINOS_AMESOS */
+#ifdef HAVE_CTRILINOS_AMESOS
+        case CT_Amesos_ID:
+            shares = rcp.shares_resource(CAmesos::getAmesos(id));
+            break;
+#endif /* HAVE_CTRILINOS_AMESOS */
         default:
             break;
         }

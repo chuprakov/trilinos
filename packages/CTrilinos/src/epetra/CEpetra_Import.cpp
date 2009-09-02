@@ -46,8 +46,7 @@ Table<const Epetra_Import>& tableOfConstImports()
 extern "C" {
 
 
-CT_Epetra_Import_ID_t Epetra_Import_Cast ( 
-  CTrilinos_Object_ID_t id )
+CT_Epetra_Import_ID_t Epetra_Import_Cast ( CTrilinos_Object_ID_t id )
 {
     CTrilinos_Object_ID_t newid;
     if (id.is_const) {
@@ -152,22 +151,22 @@ int Epetra_Import_NumRecv ( CT_Epetra_Import_ID_t selfID )
 CT_Epetra_BlockMap_ID_t Epetra_Import_SourceMap ( 
   CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::storeConstBlockMap(
-        &( CEpetra::getConstImport(selfID)->SourceMap() ));
+    return CEpetra::storeConstBlockMap(&( CEpetra::getConstImport(
+        selfID)->SourceMap() ));
 }
 
 CT_Epetra_BlockMap_ID_t Epetra_Import_TargetMap ( 
   CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::storeConstBlockMap(
-        &( CEpetra::getConstImport(selfID)->TargetMap() ));
+    return CEpetra::storeConstBlockMap(&( CEpetra::getConstImport(
+        selfID)->TargetMap() ));
 }
 
 CT_Epetra_Distributor_ID_t Epetra_Import_Distributor ( 
   CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::storeDistributor(
-        &( CEpetra::getConstImport(selfID)->Distributor() ));
+    return CEpetra::storeDistributor(&( CEpetra::getConstImport(
+        selfID)->Distributor() ));
 }
 
 
@@ -226,7 +225,7 @@ CT_Epetra_Import_ID_t
 CEpetra::storeImport( Epetra_Import *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
-            tableOfImports().storeCopy(pobj));
+            tableOfImports().storeShared(pobj));
 }
 
 /* store const Epetra_Import in const table */
@@ -234,7 +233,7 @@ CT_Epetra_Import_ID_t
 CEpetra::storeConstImport( const Epetra_Import *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
-            tableOfConstImports().storeCopy(pobj));
+            tableOfConstImports().storeShared(pobj));
 }
 
 /* dump contents of Epetra_Import and const Epetra_Import tables */

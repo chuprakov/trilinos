@@ -1,7 +1,6 @@
 #include "CEpetra_Map.h"
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_Vector.h"
-#include "Epetra_DataAccess.h"
 #include "Epetra_MultiVector.h"
 #include "CEpetra_MultiVector.h"
 #include "CEpetra_MultiVector_Cpp.hpp"
@@ -99,25 +98,25 @@ TEUCHOS_UNIT_TEST( Epetra_MultiVector , Duplicate )
 
 /**********************************************************************
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_From2DA ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t MapID, double * A, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t MapID, double * A, 
   int MyLDA, int NumVectors );
  **********************************************************************/
 
 /**********************************************************************
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_FromAOP ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t MapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t MapID, 
   double ** ArrayOfPointers, int NumVectors );
  **********************************************************************/
 
 /**********************************************************************
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_FromList ( 
-  Epetra_DataAccess CV, CT_Epetra_MultiVector_ID_t SourceID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_MultiVector_ID_t SourceID, 
   int * Indices, int NumVectors );
  **********************************************************************/
 
 /**********************************************************************
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_FromRange ( 
-  Epetra_DataAccess CV, CT_Epetra_MultiVector_ID_t SourceID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_MultiVector_ID_t SourceID, 
   int StartIndex, int NumVectors );
  **********************************************************************/
 

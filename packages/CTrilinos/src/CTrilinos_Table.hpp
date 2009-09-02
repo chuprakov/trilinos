@@ -44,12 +44,12 @@ class Table
     template <class Told>
     CTrilinos_Object_ID_t store(Told* pobj);
 
-    /* store a copy of an object of type T */
-    CTrilinos_Object_ID_t storeCopy(T* pobj);
+    /* store a non-owned object of type T */
+    CTrilinos_Object_ID_t storeShared(T* pobj);
 
-    /* store a copy of an object whose base class is T */
+    /* store a non-owned object whose base class is T */
     template <class Told>
-    CTrilinos_Object_ID_t storeCopy(Told* pobj);
+    CTrilinos_Object_ID_t storeShared(Told* pobj);
 
     /* remove an object from the table and invalidate the id struct */
     int remove(CTrilinos_Object_ID_t * id);
@@ -162,9 +162,9 @@ CTrilinos_Object_ID_t Table<T>::store(Told* pobj)
     return id;
 }
 
-/* store a copy of an object of type T */
+/* store a non-owned object of type T */
 template <class T>
-CTrilinos_Object_ID_t Table<T>::storeCopy(T* pobj)
+CTrilinos_Object_ID_t Table<T>::storeShared(T* pobj)
 {
     if (pobj == NULL)
         throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
@@ -180,10 +180,10 @@ CTrilinos_Object_ID_t Table<T>::storeCopy(T* pobj)
     return id;
 }
 
-/* store a copy of an object whose base class is T */
+/* store a non-owned object whose base class is T */
 template <class T>
 template <class Told>
-CTrilinos_Object_ID_t Table<T>::storeCopy(Told* pobj)
+CTrilinos_Object_ID_t Table<T>::storeShared(Told* pobj)
 { /* prevent adding wrong types */
     if (pobj == NULL)
         throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
@@ -195,9 +195,9 @@ CTrilinos_Object_ID_t Table<T>::storeCopy(Told* pobj)
 
     T* pnew = dynamic_cast<T*>(pobj);
     if (pnew != NULL) {
-        id = storeCopy(pnew);
+        id = storeShared(pnew);
     } else {
-        throw CTrilinosTypeMismatchError(badCastMsg(typeid(*pobj).name(), std::string("storeCopy()")));
+        throw CTrilinosTypeMismatchError(badCastMsg(typeid(*pobj).name(), std::string("storeShared()")));
     }
 
     return id;

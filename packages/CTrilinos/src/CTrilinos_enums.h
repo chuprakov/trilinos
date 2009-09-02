@@ -20,12 +20,8 @@ extern "C" {
 
 #ifdef __cplusplus
 typedef bool boolean;
-#ifndef FALSE
 #define FALSE false
-#endif
-#ifndef TRUE
 #define TRUE true
-#endif
 #else
 typedef enum { FALSE=0, TRUE=1 } boolean;
 #endif
@@ -61,7 +57,15 @@ typedef enum {
     CT_Epetra_BlockMap_ID, 
     CT_Epetra_Import_ID, 
     CT_Epetra_Time_ID, 
-    CT_Epetra_JadMatrix_ID
+    CT_Epetra_JadMatrix_ID, 
+    CT_Epetra_LinearProblem_ID, 
+    CT_Epetra_LAPACK_ID, 
+    CT_Teuchos_CommandLineProcessor_ID, 
+    CT_Teuchos_ParameterList_ID, 
+    CT_Teuchos_ParameterEntry_ID, 
+    CT_Teuchos_any_ID, 
+    CT_Amesos_BaseSolver_ID, 
+    CT_Amesos_ID
 } CTrilinos_Type_ID_t;
 
 /* The type in the struct below is actually used to identify the table in
@@ -166,8 +170,8 @@ typedef struct {
     int index;			/* Array index of the object */
     boolean is_const;		/* Whether or not object was declared const */
 } CT_Epetra_MpiComm_ID_t;
-
 #endif /* HAVE_MPI */
+
 typedef struct {
     CTrilinos_Type_ID_t type;	/* Data type of the object */
     int index;			/* Array index of the object */
@@ -228,6 +232,106 @@ typedef struct {
     boolean is_const;		/* Whether or not object was declared const */
 } CT_Epetra_JadMatrix_ID_t;
 
+typedef struct {
+    CTrilinos_Type_ID_t type;	/* Data type of the object */
+    int index;			/* Array index of the object */
+    boolean is_const;		/* Whether or not object was declared const */
+} CT_Epetra_LinearProblem_ID_t;
+
+typedef struct {
+    CTrilinos_Type_ID_t type;	/* Data type of the object */
+    int index;			/* Array index of the object */
+    boolean is_const;		/* Whether or not object was declared const */
+} CT_Epetra_LAPACK_ID_t;
+
+typedef struct {
+    CTrilinos_Type_ID_t type;	/* Data type of the object */
+    int index;			/* Array index of the object */
+    boolean is_const;		/* Whether or not object was declared const */
+} CT_Teuchos_CommandLineProcessor_ID_t;
+
+typedef struct {
+    CTrilinos_Type_ID_t type;	/* Data type of the object */
+    int index;			/* Array index of the object */
+    boolean is_const;		/* Whether or not object was declared const */
+} CT_Teuchos_ParameterList_ID_t;
+
+typedef struct {
+    CTrilinos_Type_ID_t type;	/* Data type of the object */
+    int index;			/* Array index of the object */
+    boolean is_const;		/* Whether or not object was declared const */
+} CT_Teuchos_ParameterEntry_ID_t;
+
+typedef struct {
+    CTrilinos_Type_ID_t type;	/* Data type of the object */
+    int index;			/* Array index of the object */
+    boolean is_const;		/* Whether or not object was declared const */
+} CT_Teuchos_any_ID_t;
+
+#ifdef HAVE_CTRILINOS_AMESOS
+typedef struct {
+    CTrilinos_Type_ID_t type;	/* Data type of the object */
+    int index;			/* Array index of the object */
+    boolean is_const;		/* Whether or not object was declared const */
+} CT_Amesos_BaseSolver_ID_t;
+#endif /* HAVE_CTRILINOS_AMESOS */
+
+#ifdef HAVE_CTRILINOS_AMESOS
+typedef struct {
+    CTrilinos_Type_ID_t type;	/* Data type of the object */
+    int index;			/* Array index of the object */
+    boolean is_const;		/* Whether or not object was declared const */
+} CT_Amesos_ID_t;
+#endif /* HAVE_CTRILINOS_AMESOS */
+
+
+
+typedef enum {
+    CT_Epetra_DataAccess_E_Copy,
+    CT_Epetra_DataAccess_E_View
+} CT_Epetra_DataAccess_E_t;
+
+typedef enum {
+    CT_Epetra_CombineMode_E_Add,
+    CT_Epetra_CombineMode_E_Zero,
+    CT_Epetra_CombineMode_E_Insert,
+    CT_Epetra_CombineMode_E_InsertAdd,
+    CT_Epetra_CombineMode_E_Average,
+    CT_Epetra_CombineMode_E_AbsMax
+} CT_Epetra_CombineMode_E_t;
+
+typedef enum {
+    CT_ProblemDifficultyLevel_E_easy,
+    CT_ProblemDifficultyLevel_E_moderate,
+    CT_ProblemDifficultyLevel_E_hard,
+    CT_ProblemDifficultyLevel_E_unsure
+} CT_ProblemDifficultyLevel_E_t;
+
+typedef enum {
+    CT_EParseCommandLineReturn_E_PARSE_SUCCESSFUL = 0,
+    CT_EParseCommandLineReturn_E_PARSE_HELP_PRINTED = 1,
+    CT_EParseCommandLineReturn_E_PARSE_UNRECOGNIZED_OPTION = 2
+} CT_EParseCommandLineReturn_E_t;
+
+typedef enum {
+    CT_EOptType_E_OPT_NONE,
+    CT_EOptType_E_OPT_BOOL_TRUE,
+    CT_EOptType_E_OPT_BOOL_FALSE,
+    CT_EOptType_E_OPT_INT,
+    CT_EOptType_E_OPT_DOUBLE,
+    CT_EOptType_E_OPT_STRING,
+    CT_EOptType_E_OPT_ENUM_INT
+} CT_EOptType_E_t;
+
+typedef enum {
+    CT_EValidateUsed_E_VALIDATE_USED_ENABLED,
+    CT_EValidateUsed_E_VALIDATE_USED_DISABLED
+} CT_EValidateUsed_E_t;
+
+typedef enum {
+    CT_EValidateDefaults_E_VALIDATE_DEFAULTS_ENABLED,
+    CT_EValidateDefaults_E_VALIDATE_DEFAULTS_DISABLED
+} CT_EValidateDefaults_E_t;
 
 
 #ifdef __cplusplus

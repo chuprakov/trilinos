@@ -27,8 +27,7 @@ extern "C" {
    be casted).
 */
 
-CT_Epetra_Object_ID_t Epetra_Object_Cast ( 
-  CTrilinos_Object_ID_t id );
+CT_Epetra_Object_ID_t Epetra_Object_Cast ( CTrilinos_Object_ID_t id );
 
 CTrilinos_Object_ID_t Epetra_Object_Abstract ( 
   CT_Epetra_Object_ID_t id );
@@ -68,11 +67,20 @@ void Epetra_Object_SetLabel (
 const char * Epetra_Object_Label ( CT_Epetra_Object_ID_t selfID );
 
 /* Original C++ prototype:
+   static void SetTracebackMode(int TracebackModeValue);
+*/
+void Epetra_Object_SetTracebackMode ( int TracebackModeValue );
+
+/* Original C++ prototype:
+   static int GetTracebackMode();
+*/
+int Epetra_Object_GetTracebackMode (  );
+
+/* Original C++ prototype:
    virtual int ReportError(const string Message, int ErrorCode) const;
 */
 int Epetra_Object_ReportError ( 
-  CT_Epetra_Object_ID_t selfID, const char * const Message, 
-  int ErrorCode );
+  CT_Epetra_Object_ID_t selfID, const char Message[], int ErrorCode );
 
 
 #ifdef __cplusplus

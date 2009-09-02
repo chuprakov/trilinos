@@ -4,13 +4,9 @@
 #define CEPETRA_CRSGRAPH_CPP_HPP
 
 
-#include "CEpetra_CrsGraph.h"
 #include "Epetra_CrsGraph.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_CrsGraph;
 
 
 namespace CEpetra {

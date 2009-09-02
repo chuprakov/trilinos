@@ -4,13 +4,9 @@
 #define CEPETRA_IMPORT_CPP_HPP
 
 
-#include "CEpetra_Import.h"
 #include "Epetra_Import.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_Import;
 
 
 namespace CEpetra {

@@ -6,7 +6,6 @@
 #include "CEpetra_Map.h"
 #include "CEpetra_MultiVector.h"
 #include "CEpetra_Vector.h"
-#include "Epetra_DataAccess.h"
 #include "Epetra_CrsMatrix.h"
 #include "CEpetra_CrsMatrix.h"
 #include "CEpetra_CrsMatrix_Cpp.hpp"
@@ -30,7 +29,7 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Cast (
 
 /**********************************************************************
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow ( 
-  Epetra_DataAccess CV, CT_Epetra_Map_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   const int * NumEntriesPerRow, boolean StaticProfile );
  **********************************************************************/
 
@@ -45,7 +44,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Create_VarPerRow )
   ECHO(CT_Epetra_Map_ID_t MapID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
 
   int NumIndicesPerRow[NumGlobalElements] = {3, 2, 6, 4};
-  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t selfID = Epetra_CrsMatrix_Create_VarPerRow(
        CV, MapID, NumIndicesPerRow, false));
 
@@ -56,7 +55,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Create_VarPerRow )
 
 /**********************************************************************
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create ( 
-  Epetra_DataAccess CV, CT_Epetra_Map_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   int NumEntriesPerRow, boolean StaticProfile );
  **********************************************************************/
 
@@ -71,7 +70,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Create )
   ECHO(CT_Epetra_Map_ID_t MapID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
 
   ECHO(int NumIndicesPerRow = 7);
-  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t selfID = Epetra_CrsMatrix_Create(
        CV, MapID, NumIndicesPerRow, false));
 
@@ -82,21 +81,21 @@ TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Create )
 
 /**********************************************************************
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow_WithColMap ( 
-  Epetra_DataAccess CV, CT_Epetra_Map_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   CT_Epetra_Map_ID_t ColMapID, const int * NumEntriesPerRow, 
   boolean StaticProfile );
  **********************************************************************/
 
 /**********************************************************************
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_WithColMap ( 
-  Epetra_DataAccess CV, CT_Epetra_Map_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   CT_Epetra_Map_ID_t ColMapID, int NumEntriesPerRow, 
   boolean StaticProfile );
  **********************************************************************/
 
 /**********************************************************************
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_FromGraph ( 
-  Epetra_DataAccess CV, CT_Epetra_CrsGraph_ID_t GraphID );
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_CrsGraph_ID_t GraphID );
  **********************************************************************/
 
 /**********************************************************************
@@ -116,7 +115,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Duplicate )
 
   /* Create the source matrix */
   ECHO(int NumIndicesPerRow = 4);
-  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t selfID = Epetra_CrsMatrix_Create(
        CV, MapID, NumIndicesPerRow, false));
 
@@ -151,7 +150,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Destroy )
   ECHO(CT_Epetra_Map_ID_t MapID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
 
   ECHO(int NumIndicesPerRow = 3);
-  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t selfID = Epetra_CrsMatrix_Create(
        CV, MapID, NumIndicesPerRow, false));
 

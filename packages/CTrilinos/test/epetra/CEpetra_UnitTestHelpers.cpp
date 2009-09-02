@@ -22,6 +22,19 @@
 #include "CEpetra_CrsMatrix_Cpp.hpp"
 #include "CEpetra_Operator_Cpp.hpp"
 #include "CEpetra_RowMatrix_Cpp.hpp"
+#include "CEpetra_Time_Cpp.hpp"
+#include "CEpetra_JadMatrix_Cpp.hpp"
+#include "CEpetra_LinearProblem_Cpp.hpp"
+#include "CEpetra_LAPACK_Cpp.hpp"
+#include "CAmesos_Cpp.hpp"
+#include "CAmesos_BaseSolver_Cpp.hpp"
+#include "CTeuchos_any_Cpp.hpp"
+#include "CTeuchos_CommandLineProcessor_Cpp.hpp"
+#include "CTeuchos_ParameterEntry_Cpp.hpp"
+#include "CTeuchos_ParameterList_Cpp.hpp"
+
+#include "CEpetra_SerialComm.h"
+#include "CEpetra_Comm.h"
 
 #include "CEpetra_UnitTestHelpers.hpp"
 
@@ -51,6 +64,16 @@ void CEpetra_Test_CleanSlate()
   CEpetra::purgeCrsMatrixTables();
   CEpetra::purgeOperatorTables();
   CEpetra::purgeRowMatrixTables();
+  CEpetra::purgeTimeTables();
+  CEpetra::purgeJadMatrixTables();
+  CEpetra::purgeLinearProblemTables();
+  CEpetra::purgeLAPACKTables();
+  CAmesos::purgeAmesosTables();
+  CAmesos::purgeBaseSolverTables();
+  CTeuchos::purgeanyTables();
+  CTeuchos::purgeCommandLineProcessorTables();
+  CTeuchos::purgeParameterEntryTables();
+  CTeuchos::purgeParameterListTables();
 }
 
 CT_Epetra_Comm_ID_t

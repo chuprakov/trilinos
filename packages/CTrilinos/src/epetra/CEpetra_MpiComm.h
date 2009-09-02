@@ -126,8 +126,8 @@ int Epetra_MpiComm_SumAll_Double (
    int SumAll(int * PartialSums, int * GlobalSums, int Count) const;
 */
 int Epetra_MpiComm_SumAll_Int ( 
-  CT_Epetra_MpiComm_ID_t selfID, int * PartialSums, int * GlobalSums, 
-  int Count );
+  CT_Epetra_MpiComm_ID_t selfID, int * PartialSums, 
+  int * GlobalSums, int Count );
 
 /* Original C++ prototype:
    int SumAll(long * PartialSums, long * GlobalSums, int Count) const;
@@ -147,8 +147,8 @@ int Epetra_MpiComm_MaxAll_Double (
    int MaxAll(int * PartialMaxs, int * GlobalMaxs, int Count) const;
 */
 int Epetra_MpiComm_MaxAll_Int ( 
-  CT_Epetra_MpiComm_ID_t selfID, int * PartialMaxs, int * GlobalMaxs, 
-  int Count );
+  CT_Epetra_MpiComm_ID_t selfID, int * PartialMaxs, 
+  int * GlobalMaxs, int Count );
 
 /* Original C++ prototype:
    int MaxAll(long * PartialMaxs, long * GlobalMaxs, int Count) const;
@@ -168,8 +168,8 @@ int Epetra_MpiComm_MinAll_Double (
    int MinAll(int * PartialMins, int * GlobalMins, int Count) const;
 */
 int Epetra_MpiComm_MinAll_Int ( 
-  CT_Epetra_MpiComm_ID_t selfID, int * PartialMins, int * GlobalMins, 
-  int Count );
+  CT_Epetra_MpiComm_ID_t selfID, int * PartialMins, 
+  int * GlobalMins, int Count );
 
 /* Original C++ prototype:
    int MinAll(long * PartialMins, long * GlobalMins, int Count) const;

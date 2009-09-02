@@ -1,5 +1,7 @@
 #include "CEpetra_BlockMap.h"
+#include "CEpetra_Map.h"
 #include "CEpetra_Comm.h"
+#include "CEpetra_Vector.h"
 #include "CEpetra_Export.h"
 #include "CEpetra_Import.h"
 #include "CEpetra_OffsetIndex.h"

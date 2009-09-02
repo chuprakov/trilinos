@@ -1,6 +1,5 @@
 #include "CTrilinos_config.h"
 
-#include "Epetra_CombineMode.h"
 #include "CEpetra_SrcDistObject_Cpp.hpp"
 #include "CEpetra_Import_Cpp.hpp"
 #include "CEpetra_OffsetIndex_Cpp.hpp"
@@ -69,8 +68,7 @@ CTrilinos_Object_ID_t Epetra_DistObject_Abstract (
     return CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(id);
 }
 
-void Epetra_DistObject_Destroy ( 
-  CT_Epetra_DistObject_ID_t * selfID )
+void Epetra_DistObject_Destroy ( CT_Epetra_DistObject_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(*selfID);
@@ -83,61 +81,73 @@ void Epetra_DistObject_Destroy (
 }
 
 int Epetra_DistObject_Import ( 
-  CT_Epetra_DistObject_ID_t selfID, CT_Epetra_SrcDistObject_ID_t AID, 
-  CT_Epetra_Import_ID_t ImporterID, Epetra_CombineMode CombineMode, 
+  CT_Epetra_DistObject_ID_t selfID, 
+  CT_Epetra_SrcDistObject_ID_t AID, 
+  CT_Epetra_Import_ID_t ImporterID, 
+  CT_Epetra_CombineMode_E_t CombineMode, 
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     return CEpetra::getDistObject(selfID)->Import(
         *CEpetra::getConstSrcDistObject(AID), 
-        *CEpetra::getConstImport(ImporterID), CombineMode, 
+        *CEpetra::getConstImport(ImporterID), 
+        (Epetra_CombineMode) CombineMode, 
         CEpetra::getConstOffsetIndex(IndexorID).getRawPtr());
 }
 
 int Epetra_DistObject_Import_UsingExporter ( 
-  CT_Epetra_DistObject_ID_t selfID, CT_Epetra_SrcDistObject_ID_t AID, 
-  CT_Epetra_Export_ID_t ExporterID, Epetra_CombineMode CombineMode, 
+  CT_Epetra_DistObject_ID_t selfID, 
+  CT_Epetra_SrcDistObject_ID_t AID, 
+  CT_Epetra_Export_ID_t ExporterID, 
+  CT_Epetra_CombineMode_E_t CombineMode, 
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     return CEpetra::getDistObject(selfID)->Import(
         *CEpetra::getConstSrcDistObject(AID), 
-        *CEpetra::getConstExport(ExporterID), CombineMode, 
+        *CEpetra::getConstExport(ExporterID), 
+        (Epetra_CombineMode) CombineMode, 
         CEpetra::getConstOffsetIndex(IndexorID).getRawPtr());
 }
 
 int Epetra_DistObject_Export_UsingImporter ( 
-  CT_Epetra_DistObject_ID_t selfID, CT_Epetra_SrcDistObject_ID_t AID, 
-  CT_Epetra_Import_ID_t ImporterID, Epetra_CombineMode CombineMode, 
+  CT_Epetra_DistObject_ID_t selfID, 
+  CT_Epetra_SrcDistObject_ID_t AID, 
+  CT_Epetra_Import_ID_t ImporterID, 
+  CT_Epetra_CombineMode_E_t CombineMode, 
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     return CEpetra::getDistObject(selfID)->Export(
         *CEpetra::getConstSrcDistObject(AID), 
-        *CEpetra::getConstImport(ImporterID), CombineMode, 
+        *CEpetra::getConstImport(ImporterID), 
+        (Epetra_CombineMode) CombineMode, 
         CEpetra::getConstOffsetIndex(IndexorID).getRawPtr());
 }
 
 int Epetra_DistObject_Export ( 
-  CT_Epetra_DistObject_ID_t selfID, CT_Epetra_SrcDistObject_ID_t AID, 
-  CT_Epetra_Export_ID_t ExporterID, Epetra_CombineMode CombineMode, 
+  CT_Epetra_DistObject_ID_t selfID, 
+  CT_Epetra_SrcDistObject_ID_t AID, 
+  CT_Epetra_Export_ID_t ExporterID, 
+  CT_Epetra_CombineMode_E_t CombineMode, 
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     return CEpetra::getDistObject(selfID)->Export(
         *CEpetra::getConstSrcDistObject(AID), 
-        *CEpetra::getConstExport(ExporterID), CombineMode, 
+        *CEpetra::getConstExport(ExporterID), 
+        (Epetra_CombineMode) CombineMode, 
         CEpetra::getConstOffsetIndex(IndexorID).getRawPtr());
 }
 
 CT_Epetra_BlockMap_ID_t Epetra_DistObject_Map ( 
   CT_Epetra_DistObject_ID_t selfID )
 {
-    return CEpetra::storeConstBlockMap(
-        &( CEpetra::getConstDistObject(selfID)->Map() ));
+    return CEpetra::storeConstBlockMap(&( CEpetra::getConstDistObject(
+        selfID)->Map() ));
 }
 
 CT_Epetra_Comm_ID_t Epetra_DistObject_Comm ( 
   CT_Epetra_DistObject_ID_t selfID )
 {
-    return CEpetra::storeConstComm(
-        &( CEpetra::getConstDistObject(selfID)->Comm() ));
+    return CEpetra::storeConstComm(&( CEpetra::getConstDistObject(
+        selfID)->Comm() ));
 }
 
 boolean Epetra_DistObject_DistributedGlobal ( 
@@ -202,7 +212,7 @@ CT_Epetra_DistObject_ID_t
 CEpetra::storeDistObject( Epetra_DistObject *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_DistObject_ID_t>(
-            tableOfDistObjects().storeCopy(pobj));
+            tableOfDistObjects().storeShared(pobj));
 }
 
 /* store const Epetra_DistObject in const table */
@@ -210,7 +220,7 @@ CT_Epetra_DistObject_ID_t
 CEpetra::storeConstDistObject( const Epetra_DistObject *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_DistObject_ID_t>(
-            tableOfConstDistObjects().storeCopy(pobj));
+            tableOfConstDistObjects().storeShared(pobj));
 }
 
 /* dump contents of Epetra_DistObject and const Epetra_DistObject tables */

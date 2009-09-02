@@ -2,6 +2,9 @@
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
+#include "CEpetra_SerialComm.h"
+#include "CEpetra_Comm.h"
+
 #include "Teuchos_RCP.hpp"
 
 #include "Teuchos_UnitTestHarness.hpp"

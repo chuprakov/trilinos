@@ -4,13 +4,9 @@
 #define CEPETRA_JADMATRIX_CPP_HPP
 
 
-#include "CEpetra_JadMatrix.h"
 #include "Epetra_JadMatrix.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_JadMatrix;
 
 
 namespace CEpetra {

@@ -8,7 +8,6 @@
 #define CEPETRA_DISTOBJECT_H
 
 
-#include "Epetra_CombineMode.h"
 #include "CEpetra_SrcDistObject.h"
 #include "CEpetra_Import.h"
 #include "CEpetra_OffsetIndex.h"
@@ -43,39 +42,46 @@ CTrilinos_Object_ID_t Epetra_DistObject_Abstract (
 /* Original C++ prototype:
    virtual ~Epetra_DistObject();
 */
-void Epetra_DistObject_Destroy ( 
-  CT_Epetra_DistObject_ID_t * selfID );
+void Epetra_DistObject_Destroy ( CT_Epetra_DistObject_ID_t * selfID );
 
 /* Original C++ prototype:
    int Import(const Epetra_SrcDistObject& A, const Epetra_Import& Importer, Epetra_CombineMode CombineMode, const Epetra_OffsetIndex * Indexor = 0);
 */
 int Epetra_DistObject_Import ( 
-  CT_Epetra_DistObject_ID_t selfID, CT_Epetra_SrcDistObject_ID_t AID, 
-  CT_Epetra_Import_ID_t ImporterID, Epetra_CombineMode CombineMode, 
+  CT_Epetra_DistObject_ID_t selfID, 
+  CT_Epetra_SrcDistObject_ID_t AID, 
+  CT_Epetra_Import_ID_t ImporterID, 
+  CT_Epetra_CombineMode_E_t CombineMode, 
   CT_Epetra_OffsetIndex_ID_t IndexorID );
 
 /* Original C++ prototype:
    int Import(const Epetra_SrcDistObject& A, const Epetra_Export& Exporter, Epetra_CombineMode CombineMode, const Epetra_OffsetIndex * Indexor = 0);
 */
 int Epetra_DistObject_Import_UsingExporter ( 
-  CT_Epetra_DistObject_ID_t selfID, CT_Epetra_SrcDistObject_ID_t AID, 
-  CT_Epetra_Export_ID_t ExporterID, Epetra_CombineMode CombineMode, 
+  CT_Epetra_DistObject_ID_t selfID, 
+  CT_Epetra_SrcDistObject_ID_t AID, 
+  CT_Epetra_Export_ID_t ExporterID, 
+  CT_Epetra_CombineMode_E_t CombineMode, 
   CT_Epetra_OffsetIndex_ID_t IndexorID );
 
 /* Original C++ prototype:
    int Export(const Epetra_SrcDistObject& A, const Epetra_Import & Importer, Epetra_CombineMode CombineMode, const Epetra_OffsetIndex * Indexor = 0);
 */
 int Epetra_DistObject_Export_UsingImporter ( 
-  CT_Epetra_DistObject_ID_t selfID, CT_Epetra_SrcDistObject_ID_t AID, 
-  CT_Epetra_Import_ID_t ImporterID, Epetra_CombineMode CombineMode, 
+  CT_Epetra_DistObject_ID_t selfID, 
+  CT_Epetra_SrcDistObject_ID_t AID, 
+  CT_Epetra_Import_ID_t ImporterID, 
+  CT_Epetra_CombineMode_E_t CombineMode, 
   CT_Epetra_OffsetIndex_ID_t IndexorID );
 
 /* Original C++ prototype:
    int Export(const Epetra_SrcDistObject& A, const Epetra_Export& Exporter, Epetra_CombineMode CombineMode, const Epetra_OffsetIndex * Indexor = 0);
 */
 int Epetra_DistObject_Export ( 
-  CT_Epetra_DistObject_ID_t selfID, CT_Epetra_SrcDistObject_ID_t AID, 
-  CT_Epetra_Export_ID_t ExporterID, Epetra_CombineMode CombineMode, 
+  CT_Epetra_DistObject_ID_t selfID, 
+  CT_Epetra_SrcDistObject_ID_t AID, 
+  CT_Epetra_Export_ID_t ExporterID, 
+  CT_Epetra_CombineMode_E_t CombineMode, 
   CT_Epetra_OffsetIndex_ID_t IndexorID );
 
 /* Original C++ prototype:

@@ -4,13 +4,9 @@
 #define CEPETRA_SERIALCOMM_CPP_HPP
 
 
-#include "CEpetra_SerialComm.h"
 #include "Epetra_SerialComm.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_SerialComm;
 
 
 namespace CEpetra {

@@ -57,8 +57,7 @@ CT_Epetra_Comm_ID_t Epetra_SerialComm_Clone (
 /* Original C++ prototype:
    virtual ~Epetra_SerialComm();
 */
-void Epetra_SerialComm_Destroy ( 
-  CT_Epetra_SerialComm_ID_t * selfID );
+void Epetra_SerialComm_Destroy ( CT_Epetra_SerialComm_ID_t * selfID );
 
 /* Original C++ prototype:
    void Barrier() const;
@@ -97,8 +96,8 @@ int Epetra_SerialComm_Broadcast_Char (
    int GatherAll(double * MyVals, double * AllVals, int Count) const;
 */
 int Epetra_SerialComm_GatherAll_Double ( 
-  CT_Epetra_SerialComm_ID_t selfID, double * MyVals, double * AllVals, 
-  int Count );
+  CT_Epetra_SerialComm_ID_t selfID, double * MyVals, 
+  double * AllVals, int Count );
 
 /* Original C++ prototype:
    int GatherAll(int * MyVals, int * AllVals, int Count) const;
@@ -224,7 +223,8 @@ CT_Epetra_Directory_ID_t Epetra_SerialComm_CreateDirectory (
    Epetra_SerialComm & operator=(const Epetra_SerialComm & Comm);
 */
 void Epetra_SerialComm_Assign ( 
-  CT_Epetra_SerialComm_ID_t selfID, CT_Epetra_SerialComm_ID_t CommID );
+  CT_Epetra_SerialComm_ID_t selfID, 
+  CT_Epetra_SerialComm_ID_t CommID );
 
 
 #ifdef __cplusplus

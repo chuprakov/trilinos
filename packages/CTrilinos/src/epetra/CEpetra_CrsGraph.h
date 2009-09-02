@@ -8,7 +8,6 @@
 #define CEPETRA_CRSGRAPH_H
 
 
-#include "Epetra_DataAccess.h"
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_Import.h"
 #include "CEpetra_Export.h"
@@ -42,21 +41,21 @@ CTrilinos_Object_ID_t Epetra_CrsGraph_Abstract (
    Epetra_CrsGraph(Epetra_DataAccess CV, const Epetra_BlockMap& RowMap, const int* NumIndicesPerRow, bool StaticProfile = false);
 */
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   const int * NumIndicesPerRow, boolean StaticProfile );
 
 /* Original C++ prototype:
    Epetra_CrsGraph(Epetra_DataAccess CV, const Epetra_BlockMap& RowMap, int NumIndicesPerRow, bool StaticProfile = false);
 */
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   int NumIndicesPerRow, boolean StaticProfile );
 
 /* Original C++ prototype:
    Epetra_CrsGraph(Epetra_DataAccess CV, const Epetra_BlockMap& RowMap, const Epetra_BlockMap& ColMap, const int* NumIndicesPerRow, bool StaticProfile = false);
 */
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow_WithColMap ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   CT_Epetra_BlockMap_ID_t ColMapID, const int * NumIndicesPerRow, 
   boolean StaticProfile );
 
@@ -64,7 +63,7 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow_WithColMap (
    Epetra_CrsGraph(Epetra_DataAccess CV, const Epetra_BlockMap& RowMap, const Epetra_BlockMap& ColMap, int NumIndicesPerRow, bool StaticProfile = false);
 */
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_With_ColMap ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   CT_Epetra_BlockMap_ID_t ColMapID, int NumIndicesPerRow, 
   boolean StaticProfile );
 
@@ -128,7 +127,8 @@ int Epetra_CrsGraph_FillComplete ( CT_Epetra_CrsGraph_ID_t selfID );
    int FillComplete(const Epetra_BlockMap& DomainMap, const Epetra_BlockMap& RangeMap);
 */
 int Epetra_CrsGraph_FillComplete_UsingMaps ( 
-  CT_Epetra_CrsGraph_ID_t selfID, CT_Epetra_BlockMap_ID_t DomainMapID, 
+  CT_Epetra_CrsGraph_ID_t selfID, 
+  CT_Epetra_BlockMap_ID_t DomainMapID, 
   CT_Epetra_BlockMap_ID_t RangeMapID );
 
 /* Original C++ prototype:
@@ -203,8 +203,7 @@ boolean Epetra_CrsGraph_UpperTriangular (
 /* Original C++ prototype:
    bool NoDiagonal() const;
 */
-boolean Epetra_CrsGraph_NoDiagonal ( 
-  CT_Epetra_CrsGraph_ID_t selfID );
+boolean Epetra_CrsGraph_NoDiagonal ( CT_Epetra_CrsGraph_ID_t selfID );
 
 /* Original C++ prototype:
    bool MyGlobalRow(int GID) const;
@@ -215,8 +214,7 @@ boolean Epetra_CrsGraph_MyGlobalRow (
 /* Original C++ prototype:
    bool HaveColMap() const;
 */
-boolean Epetra_CrsGraph_HaveColMap ( 
-  CT_Epetra_CrsGraph_ID_t selfID );
+boolean Epetra_CrsGraph_HaveColMap ( CT_Epetra_CrsGraph_ID_t selfID );
 
 /* Original C++ prototype:
    int NumMyRows() const;
@@ -253,14 +251,12 @@ int Epetra_CrsGraph_NumGlobalDiagonals (
 /* Original C++ prototype:
    int NumMyDiagonals() const;
 */
-int Epetra_CrsGraph_NumMyDiagonals ( 
-  CT_Epetra_CrsGraph_ID_t selfID );
+int Epetra_CrsGraph_NumMyDiagonals ( CT_Epetra_CrsGraph_ID_t selfID );
 
 /* Original C++ prototype:
    int NumMyBlockRows() const;
 */
-int Epetra_CrsGraph_NumMyBlockRows ( 
-  CT_Epetra_CrsGraph_ID_t selfID );
+int Epetra_CrsGraph_NumMyBlockRows ( CT_Epetra_CrsGraph_ID_t selfID );
 
 /* Original C++ prototype:
    int NumGlobalBlockRows() const;
@@ -271,8 +267,7 @@ int Epetra_CrsGraph_NumGlobalBlockRows (
 /* Original C++ prototype:
    int NumMyBlockCols() const;
 */
-int Epetra_CrsGraph_NumMyBlockCols ( 
-  CT_Epetra_CrsGraph_ID_t selfID );
+int Epetra_CrsGraph_NumMyBlockCols ( CT_Epetra_CrsGraph_ID_t selfID );
 
 /* Original C++ prototype:
    int NumGlobalBlockCols() const;
@@ -356,8 +351,7 @@ int Epetra_CrsGraph_GlobalMaxNumIndices (
 /* Original C++ prototype:
    int MaxNumNonzeros() const;
 */
-int Epetra_CrsGraph_MaxNumNonzeros ( 
-  CT_Epetra_CrsGraph_ID_t selfID );
+int Epetra_CrsGraph_MaxNumNonzeros ( CT_Epetra_CrsGraph_ID_t selfID );
 
 /* Original C++ prototype:
    int GlobalMaxNumNonzeros() const;
@@ -512,7 +506,8 @@ int Epetra_CrsGraph_TransformToLocal (
    int TransformToLocal(const Epetra_BlockMap* DomainMap, const Epetra_BlockMap* RangeMap);
 */
 int Epetra_CrsGraph_TransformToLocal_UsingMaps ( 
-  CT_Epetra_CrsGraph_ID_t selfID, CT_Epetra_BlockMap_ID_t DomainMapID, 
+  CT_Epetra_CrsGraph_ID_t selfID, 
+  CT_Epetra_BlockMap_ID_t DomainMapID, 
   CT_Epetra_BlockMap_ID_t RangeMapID );
 
 

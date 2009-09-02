@@ -139,7 +139,7 @@ CT_Epetra_SrcDistObject_ID_t
 CEpetra::storeSrcDistObject( Epetra_SrcDistObject *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_SrcDistObject_ID_t>(
-            tableOfSrcDistObjects().storeCopy(pobj));
+            tableOfSrcDistObjects().storeShared(pobj));
 }
 
 /* store const Epetra_SrcDistObject in const table */
@@ -147,7 +147,7 @@ CT_Epetra_SrcDistObject_ID_t
 CEpetra::storeConstSrcDistObject( const Epetra_SrcDistObject *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_SrcDistObject_ID_t>(
-            tableOfConstSrcDistObjects().storeCopy(pobj));
+            tableOfConstSrcDistObjects().storeShared(pobj));
 }
 
 /* dump contents of Epetra_SrcDistObject and const Epetra_SrcDistObject tables */

@@ -4,13 +4,9 @@
 #define CEPETRA_SRCDISTOBJECT_CPP_HPP
 
 
-#include "CEpetra_SrcDistObject.h"
 #include "Epetra_SrcDistObject.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_SrcDistObject;
 
 
 namespace CEpetra {

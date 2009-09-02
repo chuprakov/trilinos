@@ -184,7 +184,7 @@ CT_Epetra_OffsetIndex_ID_t
 CEpetra::storeOffsetIndex( Epetra_OffsetIndex *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
-            tableOfOffsetIndexs().storeCopy(pobj));
+            tableOfOffsetIndexs().storeShared(pobj));
 }
 
 /* store const Epetra_OffsetIndex in const table */
@@ -192,7 +192,7 @@ CT_Epetra_OffsetIndex_ID_t
 CEpetra::storeConstOffsetIndex( const Epetra_OffsetIndex *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
-            tableOfConstOffsetIndexs().storeCopy(pobj));
+            tableOfConstOffsetIndexs().storeShared(pobj));
 }
 
 /* dump contents of Epetra_OffsetIndex and const Epetra_OffsetIndex tables */

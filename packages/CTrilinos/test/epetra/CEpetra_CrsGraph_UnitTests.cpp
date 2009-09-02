@@ -1,8 +1,8 @@
 #include "CEpetra_BlockMap.h"
+#include "CEpetra_Map.h"
 #include "CEpetra_Comm.h"
 #include "CEpetra_Export.h"
 #include "CEpetra_Import.h"
-#include "Epetra_DataAccess.h"
 #include "Epetra_CrsGraph.h"
 #include "CEpetra_CrsGraph.h"
 #include "CEpetra_CrsGraph_Cpp.hpp"
@@ -26,7 +26,7 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Cast (
 
 /**********************************************************************
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   const int * NumIndicesPerRow, boolean StaticProfile );
  **********************************************************************/
 
@@ -42,7 +42,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Create_VarPerRow )
        Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
 
   int NumIndicesPerRow[NumGlobalElements] = {3, 2, 6, 4};
-  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create_VarPerRow(
        CV, MapID, NumIndicesPerRow, false));
 
@@ -53,7 +53,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Create_VarPerRow )
 
 /**********************************************************************
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   int NumIndicesPerRow, boolean StaticProfile );
  **********************************************************************/
 
@@ -69,7 +69,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Create )
        Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
 
   ECHO(int NumIndicesPerRow = 7);
-  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
        CV, MapID, NumIndicesPerRow, false));
 
@@ -80,14 +80,14 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Create )
 
 /**********************************************************************
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow_WithColMap ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   CT_Epetra_BlockMap_ID_t ColMapID, const int * NumIndicesPerRow, 
   boolean StaticProfile );
  **********************************************************************/
 
 /**********************************************************************
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_With_ColMap ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t RowMapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   CT_Epetra_BlockMap_ID_t ColMapID, int NumIndicesPerRow, 
   boolean StaticProfile );
  **********************************************************************/
@@ -109,7 +109,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Duplicate )
        Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
 
   ECHO(int NumIndicesPerRow = 3);
-  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
        CV, MapID, NumIndicesPerRow, false));
 
@@ -137,7 +137,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Destroy )
        Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
 
   ECHO(int NumIndicesPerRow = 3);
-  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
        CV, MapID, NumIndicesPerRow, false));
 

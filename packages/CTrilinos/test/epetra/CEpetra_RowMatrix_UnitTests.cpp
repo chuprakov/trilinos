@@ -2,6 +2,7 @@
 #include "CEpetra_Map.h"
 #include "CEpetra_MultiVector.h"
 #include "CEpetra_Vector.h"
+#include "CEpetra_CrsMatrix.h"
 #include "Epetra_RowMatrix.h"
 #include "CEpetra_RowMatrix.h"
 #include "CEpetra_RowMatrix_Cpp.hpp"
@@ -35,7 +36,7 @@ TEUCHOS_UNIT_TEST( Epetra_RowMatrix , Cast )
 
   /* Create the source matrix */
   ECHO(int NumIndicesPerRow = 4);
-  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
        CV, MapID, NumIndicesPerRow, false));
 
@@ -70,7 +71,7 @@ TEUCHOS_UNIT_TEST( Epetra_RowMatrix , Destroy )
 
   /* Create the source matrix */
   ECHO(int NumIndicesPerRow = 4);
-  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
        CV, MapID, NumIndicesPerRow, false));
 

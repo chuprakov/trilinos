@@ -4,13 +4,9 @@
 #define CEPETRA_OFFSETINDEX_CPP_HPP
 
 
-#include "CEpetra_OffsetIndex.h"
 #include "Epetra_OffsetIndex.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_OffsetIndex;
 
 
 namespace CEpetra {

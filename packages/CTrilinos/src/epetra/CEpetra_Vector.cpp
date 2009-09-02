@@ -1,6 +1,5 @@
 #include "CTrilinos_config.h"
 
-#include "Epetra_DataAccess.h"
 #include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_MultiVector_Cpp.hpp"
 #include "CEpetra_Vector_Cpp.hpp"
@@ -47,8 +46,7 @@ Table<const Epetra_Vector>& tableOfConstVectors()
 extern "C" {
 
 
-CT_Epetra_Vector_ID_t Epetra_Vector_Cast ( 
-  CTrilinos_Object_ID_t id )
+CT_Epetra_Vector_ID_t Epetra_Vector_Cast ( CTrilinos_Object_ID_t id )
 {
     CTrilinos_Object_ID_t newid;
     if (id.is_const) {
@@ -82,20 +80,23 @@ CT_Epetra_Vector_ID_t Epetra_Vector_Duplicate (
 }
 
 CT_Epetra_Vector_ID_t Epetra_Vector_Create_FromArray ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t MapID, double * V )
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t MapID, 
+  double * V )
 {
     return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
         tableOfVectors().store(new Epetra_Vector(
-        CV, *CEpetra::getConstBlockMap(MapID), V)));
+        (Epetra_DataAccess) CV, *CEpetra::getConstBlockMap(MapID), 
+        V)));
 }
 
 CT_Epetra_Vector_ID_t Epetra_Vector_FromSource ( 
-  Epetra_DataAccess CV, CT_Epetra_MultiVector_ID_t SourceID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_MultiVector_ID_t SourceID, 
   int Index )
 {
     return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
         tableOfVectors().store(new Epetra_Vector(
-        CV, *CEpetra::getConstMultiVector(SourceID), Index)));
+        (Epetra_DataAccess) CV, *CEpetra::getConstMultiVector(
+        SourceID), Index)));
 }
 
 void Epetra_Vector_Destroy ( CT_Epetra_Vector_ID_t * selfID )
@@ -122,8 +123,8 @@ int Epetra_Vector_ReplaceMyValues (
   CT_Epetra_Vector_ID_t selfID, int NumEntries, double * Values, 
   int * Indices )
 {
-    return CEpetra::getVector(selfID)->ReplaceMyValues(
-        NumEntries, Values, Indices);
+    return CEpetra::getVector(selfID)->ReplaceMyValues(NumEntries, 
+        Values, Indices);
 }
 
 int Epetra_Vector_SumIntoGlobalValues ( 
@@ -138,8 +139,8 @@ int Epetra_Vector_SumIntoMyValues (
   CT_Epetra_Vector_ID_t selfID, int NumEntries, double * Values, 
   int * Indices )
 {
-    return CEpetra::getVector(selfID)->SumIntoMyValues(
-        NumEntries, Values, Indices);
+    return CEpetra::getVector(selfID)->SumIntoMyValues(NumEntries, 
+        Values, Indices);
 }
 
 int Epetra_Vector_ReplaceGlobalValues_BlockPos ( 
@@ -154,8 +155,8 @@ int Epetra_Vector_ReplaceMyValues_BlockPos (
   CT_Epetra_Vector_ID_t selfID, int NumEntries, int BlockOffset, 
   double * Values, int * Indices )
 {
-    return CEpetra::getVector(selfID)->ReplaceMyValues(
-        NumEntries, BlockOffset, Values, Indices);
+    return CEpetra::getVector(selfID)->ReplaceMyValues(NumEntries, 
+        BlockOffset, Values, Indices);
 }
 
 int Epetra_Vector_SumIntoGlobalValues_BlockPos ( 
@@ -170,8 +171,8 @@ int Epetra_Vector_SumIntoMyValues_BlockPos (
   CT_Epetra_Vector_ID_t selfID, int NumEntries, int BlockOffset, 
   double * Values, int * Indices )
 {
-    return CEpetra::getVector(selfID)->SumIntoMyValues(
-        NumEntries, BlockOffset, Values, Indices);
+    return CEpetra::getVector(selfID)->SumIntoMyValues(NumEntries, 
+        BlockOffset, Values, Indices);
 }
 
 int Epetra_Vector_ExtractCopy ( 
@@ -250,7 +251,7 @@ CT_Epetra_Vector_ID_t
 CEpetra::storeVector( Epetra_Vector *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
-            tableOfVectors().storeCopy(pobj));
+            tableOfVectors().storeShared(pobj));
 }
 
 /* store const Epetra_Vector in const table */
@@ -258,7 +259,7 @@ CT_Epetra_Vector_ID_t
 CEpetra::storeConstVector( const Epetra_Vector *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(
-            tableOfConstVectors().storeCopy(pobj));
+            tableOfConstVectors().storeShared(pobj));
 }
 
 /* dump contents of Epetra_Vector and const Epetra_Vector tables */

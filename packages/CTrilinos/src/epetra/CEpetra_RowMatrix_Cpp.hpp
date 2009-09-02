@@ -4,13 +4,9 @@
 #define CEPETRA_ROWMATRIX_CPP_HPP
 
 
-#include "CEpetra_RowMatrix.h"
 #include "Epetra_RowMatrix.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_RowMatrix;
 
 
 namespace CEpetra {

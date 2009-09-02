@@ -4,13 +4,9 @@
 #define CEPETRA_DISTRIBUTOR_CPP_HPP
 
 
-#include "CEpetra_Distributor.h"
 #include "Epetra_Distributor.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_Distributor;
 
 
 namespace CEpetra {

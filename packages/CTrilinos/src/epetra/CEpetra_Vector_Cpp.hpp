@@ -4,13 +4,9 @@
 #define CEPETRA_VECTOR_CPP_HPP
 
 
-#include "CEpetra_Vector.h"
 #include "Epetra_Vector.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_Vector;
 
 
 namespace CEpetra {

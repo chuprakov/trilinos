@@ -1,6 +1,7 @@
 #include "CEpetra_Comm.h"
 #include "CEpetra_Map.h"
 #include "CEpetra_MultiVector.h"
+#include "CEpetra_CrsMatrix.h"
 #include "Epetra_Operator.h"
 #include "CEpetra_Operator.h"
 #include "CEpetra_Operator_Cpp.hpp"
@@ -38,7 +39,7 @@ TEUCHOS_UNIT_TEST( Epetra_Operator , Destroy )
 
   /* Create the source matrix */
   ECHO(int NumIndicesPerRow = 4);
-  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
        CV, MapID, NumIndicesPerRow, FALSE));
 
@@ -76,7 +77,7 @@ TEUCHOS_UNIT_TEST( Epetra_Operator , SetUseTranspose )
 
   /* Create the source matrix */
   ECHO(int NumIndicesPerRow = 4);
-  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
        CV, MapID, NumIndicesPerRow, FALSE));
 
@@ -143,7 +144,7 @@ TEUCHOS_UNIT_TEST( Epetra_Operator , UseTranspose )
 
   /* Create the source matrix */
   ECHO(int NumIndicesPerRow = 4);
-  ECHO(Epetra_DataAccess CV = Copy);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
        CV, MapID, NumIndicesPerRow, FALSE));
 

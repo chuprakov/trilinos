@@ -161,7 +161,7 @@ CT_Epetra_Flops_ID_t
 CEpetra::storeFlops( Epetra_Flops *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(
-            tableOfFlopss().storeCopy(pobj));
+            tableOfFlopss().storeShared(pobj));
 }
 
 /* store const Epetra_Flops in const table */
@@ -169,7 +169,7 @@ CT_Epetra_Flops_ID_t
 CEpetra::storeConstFlops( const Epetra_Flops *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(
-            tableOfConstFlopss().storeCopy(pobj));
+            tableOfConstFlopss().storeShared(pobj));
 }
 
 /* dump contents of Epetra_Flops and const Epetra_Flops tables */

@@ -77,8 +77,7 @@ CT_Epetra_CompObject_ID_t Epetra_CompObject_Duplicate (
         *CEpetra::getConstCompObject(SourceID))));
 }
 
-void Epetra_CompObject_Destroy ( 
-  CT_Epetra_CompObject_ID_t * selfID )
+void Epetra_CompObject_Destroy ( CT_Epetra_CompObject_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_CompObject_ID_t>(*selfID);
@@ -115,8 +114,8 @@ void Epetra_CompObject_UnsetFlopCounter (
 CT_Epetra_Flops_ID_t Epetra_CompObject_GetFlopCounter ( 
   CT_Epetra_CompObject_ID_t selfID )
 {
-    return CEpetra::storeFlops(
-        CEpetra::getConstCompObject(selfID)->GetFlopCounter());
+    return CEpetra::storeFlops(CEpetra::getConstCompObject(
+        selfID)->GetFlopCounter());
 }
 
 void Epetra_CompObject_ResetFlops ( 
@@ -218,7 +217,7 @@ CT_Epetra_CompObject_ID_t
 CEpetra::storeCompObject( Epetra_CompObject *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_CompObject_ID_t>(
-            tableOfCompObjects().storeCopy(pobj));
+            tableOfCompObjects().storeShared(pobj));
 }
 
 /* store const Epetra_CompObject in const table */
@@ -226,7 +225,7 @@ CT_Epetra_CompObject_ID_t
 CEpetra::storeConstCompObject( const Epetra_CompObject *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_CompObject_ID_t>(
-            tableOfConstCompObjects().storeCopy(pobj));
+            tableOfConstCompObjects().storeShared(pobj));
 }
 
 /* dump contents of Epetra_CompObject and const Epetra_CompObject tables */

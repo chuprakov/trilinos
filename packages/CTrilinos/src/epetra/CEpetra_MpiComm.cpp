@@ -74,8 +74,7 @@ CTrilinos_Object_ID_t Epetra_MpiComm_Abstract (
 CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Create ( MPI_Comm comm )
 {
     return CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(
-        tableOfMpiComms().store(new Epetra_MpiComm(
-        comm)));
+        tableOfMpiComms().store(new Epetra_MpiComm(comm)));
 }
 
 CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Duplicate ( 
@@ -89,8 +88,8 @@ CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Duplicate (
 CT_Epetra_Comm_ID_t Epetra_MpiComm_Clone ( 
   CT_Epetra_MpiComm_ID_t selfID )
 {
-    return CEpetra::storeComm(
-        CEpetra::getConstMpiComm(selfID)->Clone());
+    return CEpetra::storeComm(CEpetra::getConstMpiComm(
+        selfID)->Clone());
 }
 
 void Epetra_MpiComm_Destroy ( CT_Epetra_MpiComm_ID_t * selfID )
@@ -114,149 +113,149 @@ int Epetra_MpiComm_Broadcast_Double (
   CT_Epetra_MpiComm_ID_t selfID, double * MyVals, int Count, 
   int Root )
 {
-    return CEpetra::getConstMpiComm(selfID)->Broadcast(
-        MyVals, Count, Root);
+    return CEpetra::getConstMpiComm(selfID)->Broadcast(MyVals, Count, 
+        Root);
 }
 
 int Epetra_MpiComm_Broadcast_Int ( 
   CT_Epetra_MpiComm_ID_t selfID, int * MyVals, int Count, int Root )
 {
-    return CEpetra::getConstMpiComm(selfID)->Broadcast(
-        MyVals, Count, Root);
+    return CEpetra::getConstMpiComm(selfID)->Broadcast(MyVals, Count, 
+        Root);
 }
 
 int Epetra_MpiComm_Broadcast_Long ( 
   CT_Epetra_MpiComm_ID_t selfID, long * MyVals, int Count, int Root )
 {
-    return CEpetra::getConstMpiComm(selfID)->Broadcast(
-        MyVals, Count, Root);
+    return CEpetra::getConstMpiComm(selfID)->Broadcast(MyVals, Count, 
+        Root);
 }
 
 int Epetra_MpiComm_Broadcast_Char ( 
   CT_Epetra_MpiComm_ID_t selfID, char * MyVals, int Count, int Root )
 {
-    return CEpetra::getConstMpiComm(selfID)->Broadcast(
-        MyVals, Count, Root);
+    return CEpetra::getConstMpiComm(selfID)->Broadcast(MyVals, Count, 
+        Root);
 }
 
 int Epetra_MpiComm_GatherAll_Double ( 
   CT_Epetra_MpiComm_ID_t selfID, double * MyVals, double * AllVals, 
   int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->GatherAll(
-        MyVals, AllVals, Count);
+    return CEpetra::getConstMpiComm(selfID)->GatherAll(MyVals, 
+        AllVals, Count);
 }
 
 int Epetra_MpiComm_GatherAll_Int ( 
   CT_Epetra_MpiComm_ID_t selfID, int * MyVals, int * AllVals, 
   int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->GatherAll(
-        MyVals, AllVals, Count);
+    return CEpetra::getConstMpiComm(selfID)->GatherAll(MyVals, 
+        AllVals, Count);
 }
 
 int Epetra_MpiComm_GatherAll_Long ( 
   CT_Epetra_MpiComm_ID_t selfID, long * MyVals, long * AllVals, 
   int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->GatherAll(
-        MyVals, AllVals, Count);
+    return CEpetra::getConstMpiComm(selfID)->GatherAll(MyVals, 
+        AllVals, Count);
 }
 
 int Epetra_MpiComm_SumAll_Double ( 
   CT_Epetra_MpiComm_ID_t selfID, double * PartialSums, 
   double * GlobalSums, int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->SumAll(
-        PartialSums, GlobalSums, Count);
+    return CEpetra::getConstMpiComm(selfID)->SumAll(PartialSums, 
+        GlobalSums, Count);
 }
 
 int Epetra_MpiComm_SumAll_Int ( 
-  CT_Epetra_MpiComm_ID_t selfID, int * PartialSums, int * GlobalSums, 
-  int Count )
+  CT_Epetra_MpiComm_ID_t selfID, int * PartialSums, 
+  int * GlobalSums, int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->SumAll(
-        PartialSums, GlobalSums, Count);
+    return CEpetra::getConstMpiComm(selfID)->SumAll(PartialSums, 
+        GlobalSums, Count);
 }
 
 int Epetra_MpiComm_SumAll_Long ( 
   CT_Epetra_MpiComm_ID_t selfID, long * PartialSums, 
   long * GlobalSums, int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->SumAll(
-        PartialSums, GlobalSums, Count);
+    return CEpetra::getConstMpiComm(selfID)->SumAll(PartialSums, 
+        GlobalSums, Count);
 }
 
 int Epetra_MpiComm_MaxAll_Double ( 
   CT_Epetra_MpiComm_ID_t selfID, double * PartialMaxs, 
   double * GlobalMaxs, int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->MaxAll(
-        PartialMaxs, GlobalMaxs, Count);
+    return CEpetra::getConstMpiComm(selfID)->MaxAll(PartialMaxs, 
+        GlobalMaxs, Count);
 }
 
 int Epetra_MpiComm_MaxAll_Int ( 
-  CT_Epetra_MpiComm_ID_t selfID, int * PartialMaxs, int * GlobalMaxs, 
-  int Count )
+  CT_Epetra_MpiComm_ID_t selfID, int * PartialMaxs, 
+  int * GlobalMaxs, int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->MaxAll(
-        PartialMaxs, GlobalMaxs, Count);
+    return CEpetra::getConstMpiComm(selfID)->MaxAll(PartialMaxs, 
+        GlobalMaxs, Count);
 }
 
 int Epetra_MpiComm_MaxAll_Long ( 
   CT_Epetra_MpiComm_ID_t selfID, long * PartialMaxs, 
   long * GlobalMaxs, int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->MaxAll(
-        PartialMaxs, GlobalMaxs, Count);
+    return CEpetra::getConstMpiComm(selfID)->MaxAll(PartialMaxs, 
+        GlobalMaxs, Count);
 }
 
 int Epetra_MpiComm_MinAll_Double ( 
   CT_Epetra_MpiComm_ID_t selfID, double * PartialMins, 
   double * GlobalMins, int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->MinAll(
-        PartialMins, GlobalMins, Count);
+    return CEpetra::getConstMpiComm(selfID)->MinAll(PartialMins, 
+        GlobalMins, Count);
 }
 
 int Epetra_MpiComm_MinAll_Int ( 
-  CT_Epetra_MpiComm_ID_t selfID, int * PartialMins, int * GlobalMins, 
-  int Count )
+  CT_Epetra_MpiComm_ID_t selfID, int * PartialMins, 
+  int * GlobalMins, int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->MinAll(
-        PartialMins, GlobalMins, Count);
+    return CEpetra::getConstMpiComm(selfID)->MinAll(PartialMins, 
+        GlobalMins, Count);
 }
 
 int Epetra_MpiComm_MinAll_Long ( 
   CT_Epetra_MpiComm_ID_t selfID, long * PartialMins, 
   long * GlobalMins, int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->MinAll(
-        PartialMins, GlobalMins, Count);
+    return CEpetra::getConstMpiComm(selfID)->MinAll(PartialMins, 
+        GlobalMins, Count);
 }
 
 int Epetra_MpiComm_ScanSum_Double ( 
   CT_Epetra_MpiComm_ID_t selfID, double * MyVals, double * ScanSums, 
   int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->ScanSum(
-        MyVals, ScanSums, Count);
+    return CEpetra::getConstMpiComm(selfID)->ScanSum(MyVals, 
+        ScanSums, Count);
 }
 
 int Epetra_MpiComm_ScanSum_Int ( 
   CT_Epetra_MpiComm_ID_t selfID, int * MyVals, int * ScanSums, 
   int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->ScanSum(
-        MyVals, ScanSums, Count);
+    return CEpetra::getConstMpiComm(selfID)->ScanSum(MyVals, 
+        ScanSums, Count);
 }
 
 int Epetra_MpiComm_ScanSum_Long ( 
   CT_Epetra_MpiComm_ID_t selfID, long * MyVals, long * ScanSums, 
   int Count )
 {
-    return CEpetra::getConstMpiComm(selfID)->ScanSum(
-        MyVals, ScanSums, Count);
+    return CEpetra::getConstMpiComm(selfID)->ScanSum(MyVals, 
+        ScanSums, Count);
 }
 
 MPI_Comm Epetra_MpiComm_Comm ( CT_Epetra_MpiComm_ID_t selfID )
@@ -277,16 +276,16 @@ int Epetra_MpiComm_NumProc ( CT_Epetra_MpiComm_ID_t selfID )
 CT_Epetra_Distributor_ID_t Epetra_MpiComm_CreateDistributor ( 
   CT_Epetra_MpiComm_ID_t selfID )
 {
-    return CEpetra::storeDistributor(
-        CEpetra::getConstMpiComm(selfID)->CreateDistributor());
+    return CEpetra::storeDistributor(CEpetra::getConstMpiComm(
+        selfID)->CreateDistributor());
 }
 
 CT_Epetra_Directory_ID_t Epetra_MpiComm_CreateDirectory ( 
   CT_Epetra_MpiComm_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID )
 {
-    return CEpetra::storeDirectory(
-        CEpetra::getConstMpiComm(selfID)->CreateDirectory(
-            *CEpetra::getConstBlockMap(MapID)));
+    return CEpetra::storeDirectory(CEpetra::getConstMpiComm(
+        selfID)->CreateDirectory(*CEpetra::getConstBlockMap(
+        MapID)));
 }
 
 int Epetra_MpiComm_GetMpiTag ( CT_Epetra_MpiComm_ID_t selfID )
@@ -363,7 +362,7 @@ CT_Epetra_MpiComm_ID_t
 CEpetra::storeMpiComm( Epetra_MpiComm *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(
-            tableOfMpiComms().storeCopy(pobj));
+            tableOfMpiComms().storeShared(pobj));
 }
 
 /* store const Epetra_MpiComm in const table */
@@ -371,7 +370,7 @@ CT_Epetra_MpiComm_ID_t
 CEpetra::storeConstMpiComm( const Epetra_MpiComm *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(
-            tableOfConstMpiComms().storeCopy(pobj));
+            tableOfConstMpiComms().storeShared(pobj));
 }
 
 /* dump contents of Epetra_MpiComm and const Epetra_MpiComm tables */

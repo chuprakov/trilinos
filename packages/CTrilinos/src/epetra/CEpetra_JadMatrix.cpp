@@ -85,8 +85,8 @@ void Epetra_JadMatrix_Destroy ( CT_Epetra_JadMatrix_ID_t * selfID )
 }
 
 int Epetra_JadMatrix_UpdateValues ( 
-  CT_Epetra_JadMatrix_ID_t selfID, CT_Epetra_RowMatrix_ID_t MatrixID, 
-  boolean CheckStructure )
+  CT_Epetra_JadMatrix_ID_t selfID, 
+  CT_Epetra_RowMatrix_ID_t MatrixID, boolean CheckStructure )
 {
     return CEpetra::getJadMatrix(selfID)->UpdateValues(
         *CEpetra::getConstRowMatrix(MatrixID), CheckStructure);
@@ -119,17 +119,17 @@ int Epetra_JadMatrix_ExtractMyEntryView_Const (
 int Epetra_JadMatrix_NumMyRowEntries ( 
   CT_Epetra_JadMatrix_ID_t selfID, int MyRow, int * NumEntries )
 {
-    return CEpetra::getConstJadMatrix(selfID)->NumMyRowEntries(
-        MyRow, *NumEntries);
+    return CEpetra::getConstJadMatrix(selfID)->NumMyRowEntries(MyRow, 
+        *NumEntries);
 }
 
 int Epetra_JadMatrix_Multiply ( 
   CT_Epetra_JadMatrix_ID_t selfID, boolean TransA, 
   CT_Epetra_MultiVector_ID_t XID, CT_Epetra_MultiVector_ID_t YID )
 {
-    return CEpetra::getConstJadMatrix(selfID)->Multiply(
-        TransA, *CEpetra::getConstMultiVector(XID), 
-        *CEpetra::getMultiVector(YID));
+    return CEpetra::getConstJadMatrix(selfID)->Multiply(TransA, 
+        *CEpetra::getConstMultiVector(XID), *CEpetra::getMultiVector(
+        YID));
 }
 
 int Epetra_JadMatrix_Solve ( 
@@ -137,9 +137,8 @@ int Epetra_JadMatrix_Solve (
   boolean UnitDiagonal, CT_Epetra_MultiVector_ID_t XID, 
   CT_Epetra_MultiVector_ID_t YID )
 {
-    return CEpetra::getConstJadMatrix(selfID)->Solve(
-        Upper, Trans, UnitDiagonal, 
-        *CEpetra::getConstMultiVector(XID), 
+    return CEpetra::getConstJadMatrix(selfID)->Solve(Upper, Trans, 
+        UnitDiagonal, *CEpetra::getConstMultiVector(XID), 
         *CEpetra::getMultiVector(YID));
 }
 
@@ -199,7 +198,7 @@ CT_Epetra_JadMatrix_ID_t
 CEpetra::storeJadMatrix( Epetra_JadMatrix *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_JadMatrix_ID_t>(
-            tableOfJadMatrixs().storeCopy(pobj));
+            tableOfJadMatrixs().storeShared(pobj));
 }
 
 /* store const Epetra_JadMatrix in const table */
@@ -207,7 +206,7 @@ CT_Epetra_JadMatrix_ID_t
 CEpetra::storeConstJadMatrix( const Epetra_JadMatrix *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_JadMatrix_ID_t>(
-            tableOfConstJadMatrixs().storeCopy(pobj));
+            tableOfConstJadMatrixs().storeShared(pobj));
 }
 
 /* dump contents of Epetra_JadMatrix and const Epetra_JadMatrix tables */

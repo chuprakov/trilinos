@@ -1,7 +1,6 @@
 #include "CEpetra_Map.h"
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_MultiVector.h"
-#include "Epetra_DataAccess.h"
 #include "Epetra_Vector.h"
 #include "CEpetra_Vector.h"
 #include "CEpetra_Vector_Cpp.hpp"
@@ -103,7 +102,7 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Duplicate )
 
 /**********************************************************************
 CT_Epetra_Vector_ID_t Epetra_Vector_Create_FromArray ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t MapID, double * V );
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t MapID, double * V );
  **********************************************************************/
 
 TEUCHOS_UNIT_TEST( Epetra_Vector , Create_FromArray )
@@ -117,7 +116,8 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Create_FromArray )
   ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
        Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
   double V[NumGlobalElements] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
-  ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_Create_FromArray(Copy, MapID, V));
+  ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_Create_FromArray(
+       CT_Epetra_DataAccess_E_Copy, MapID, V));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.type, CT_Epetra_Vector_ID);
@@ -126,7 +126,7 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Create_FromArray )
 
 /**********************************************************************
 CT_Epetra_Vector_ID_t Epetra_Vector_FromSource ( 
-  Epetra_DataAccess CV, CT_Epetra_MultiVector_ID_t SourceID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_MultiVector_ID_t SourceID, 
   int Index );
  **********************************************************************/
 
@@ -144,7 +144,7 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , FromSource )
   ECHO(boolean zeroOut = TRUE);
   ECHO(CT_Epetra_MultiVector_ID_t SourceID = Epetra_MultiVector_Create(MapID, NumVectors, zeroOut));
   ECHO(int Index = 1);
-  ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_FromSource(View, SourceID, Index));
+  ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_FromSource(CT_Epetra_DataAccess_E_View, SourceID, Index));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.type, CT_Epetra_Vector_ID);

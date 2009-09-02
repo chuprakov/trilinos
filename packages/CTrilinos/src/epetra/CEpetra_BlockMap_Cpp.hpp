@@ -4,13 +4,9 @@
 #define CEPETRA_BLOCKMAP_CPP_HPP
 
 
-#include "CEpetra_BlockMap.h"
 #include "Epetra_BlockMap.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_BlockMap;
 
 
 namespace CEpetra {

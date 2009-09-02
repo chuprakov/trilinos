@@ -153,7 +153,8 @@ int main(int argc, char *argv[])
 
   // Create a Epetra_Matrix
 
-  CT_Epetra_CrsMatrix_ID_t A = Epetra_CrsMatrix_Create_VarPerRow(Copy, Map, &NumNz[0], FALSE);
+  CT_Epetra_CrsMatrix_ID_t A = Epetra_CrsMatrix_Create_VarPerRow(
+      CT_Epetra_DataAccess_E_Copy, Map, &NumNz[0], FALSE);
   EPETRA_TEST_ERR(Epetra_CrsMatrix_IndicesAreGlobal(A),ierr);
   EPETRA_TEST_ERR(Epetra_CrsMatrix_IndicesAreLocal(A),ierr);
   

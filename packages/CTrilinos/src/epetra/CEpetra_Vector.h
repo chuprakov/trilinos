@@ -8,7 +8,6 @@
 #define CEPETRA_VECTOR_H
 
 
-#include "Epetra_DataAccess.h"
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_MultiVector.h"
 #include "CTrilinos_enums.h"
@@ -30,8 +29,7 @@ extern "C" {
    be casted).
 */
 
-CT_Epetra_Vector_ID_t Epetra_Vector_Cast ( 
-  CTrilinos_Object_ID_t id );
+CT_Epetra_Vector_ID_t Epetra_Vector_Cast ( CTrilinos_Object_ID_t id );
 
 CTrilinos_Object_ID_t Epetra_Vector_Abstract ( 
   CT_Epetra_Vector_ID_t id );
@@ -52,13 +50,14 @@ CT_Epetra_Vector_ID_t Epetra_Vector_Duplicate (
    Epetra_Vector(Epetra_DataAccess CV, const Epetra_BlockMap& Map, double *V);
 */
 CT_Epetra_Vector_ID_t Epetra_Vector_Create_FromArray ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t MapID, double * V );
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t MapID, 
+  double * V );
 
 /* Original C++ prototype:
    Epetra_Vector(Epetra_DataAccess CV, const Epetra_MultiVector& Source, int Index);
 */
 CT_Epetra_Vector_ID_t Epetra_Vector_FromSource ( 
-  Epetra_DataAccess CV, CT_Epetra_MultiVector_ID_t SourceID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_MultiVector_ID_t SourceID, 
   int Index );
 
 /* Original C++ prototype:

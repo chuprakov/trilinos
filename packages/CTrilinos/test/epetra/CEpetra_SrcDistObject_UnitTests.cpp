@@ -1,4 +1,6 @@
 #include "CEpetra_BlockMap.h"
+#include "CEpetra_Map.h"
+#include "CEpetra_Vector.h"
 #include "Epetra_SrcDistObject.h"
 #include "CEpetra_SrcDistObject.h"
 #include "CEpetra_SrcDistObject_Cpp.hpp"

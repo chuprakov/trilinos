@@ -214,20 +214,17 @@ int Epetra_BlockMap_MaxMyElementSize (
 /* Original C++ prototype:
    int MinElementSize() const;
 */
-int Epetra_BlockMap_MinElementSize ( 
-  CT_Epetra_BlockMap_ID_t selfID );
+int Epetra_BlockMap_MinElementSize ( CT_Epetra_BlockMap_ID_t selfID );
 
 /* Original C++ prototype:
    int MaxElementSize() const;
 */
-int Epetra_BlockMap_MaxElementSize ( 
-  CT_Epetra_BlockMap_ID_t selfID );
+int Epetra_BlockMap_MaxElementSize ( CT_Epetra_BlockMap_ID_t selfID );
 
 /* Original C++ prototype:
    bool UniqueGIDs() const;
 */
-boolean Epetra_BlockMap_UniqueGIDs ( 
-  CT_Epetra_BlockMap_ID_t selfID );
+boolean Epetra_BlockMap_UniqueGIDs ( CT_Epetra_BlockMap_ID_t selfID );
 
 /* Original C++ prototype:
    bool ConstantElementSize() const;
@@ -309,8 +306,7 @@ CT_Epetra_Comm_ID_t Epetra_BlockMap_Comm (
 /* Original C++ prototype:
    bool IsOneToOne() const;
 */
-boolean Epetra_BlockMap_IsOneToOne ( 
-  CT_Epetra_BlockMap_ID_t selfID );
+boolean Epetra_BlockMap_IsOneToOne ( CT_Epetra_BlockMap_ID_t selfID );
 
 /* Original C++ prototype:
    Epetra_BlockMap & operator=(const Epetra_BlockMap & map);

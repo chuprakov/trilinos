@@ -50,8 +50,8 @@ void Epetra_JadMatrix_Destroy ( CT_Epetra_JadMatrix_ID_t * selfID );
    int UpdateValues(const Epetra_RowMatrix & Matrix, bool CheckStructure = false);
 */
 int Epetra_JadMatrix_UpdateValues ( 
-  CT_Epetra_JadMatrix_ID_t selfID, CT_Epetra_RowMatrix_ID_t MatrixID, 
-  boolean CheckStructure );
+  CT_Epetra_JadMatrix_ID_t selfID, 
+  CT_Epetra_RowMatrix_ID_t MatrixID, boolean CheckStructure );
 
 /* Original C++ prototype:
    int ExtractMyRowCopy(int MyRow, int Length, int & NumEntries, double *Values, int * Indices) const;

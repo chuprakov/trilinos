@@ -4,13 +4,9 @@
 #define CEPETRA_OPERATOR_CPP_HPP
 
 
-#include "CEpetra_Operator.h"
 #include "Epetra_Operator.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_Operator;
 
 
 namespace CEpetra {

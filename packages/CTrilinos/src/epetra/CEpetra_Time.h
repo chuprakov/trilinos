@@ -30,14 +30,12 @@ extern "C" {
 
 CT_Epetra_Time_ID_t Epetra_Time_Cast ( CTrilinos_Object_ID_t id );
 
-CTrilinos_Object_ID_t Epetra_Time_Abstract ( 
-  CT_Epetra_Time_ID_t id );
+CTrilinos_Object_ID_t Epetra_Time_Abstract ( CT_Epetra_Time_ID_t id );
 
 /* Original C++ prototype:
    Epetra_Time(const Epetra_Comm & Comm);
 */
-CT_Epetra_Time_ID_t Epetra_Time_Create ( 
-  CT_Epetra_Comm_ID_t CommID );
+CT_Epetra_Time_ID_t Epetra_Time_Create ( CT_Epetra_Comm_ID_t CommID );
 
 /* Original C++ prototype:
    Epetra_Time(const Epetra_Time& Time);

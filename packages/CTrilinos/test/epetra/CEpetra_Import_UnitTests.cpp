@@ -1,6 +1,7 @@
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_Map.h"
 #include "CEpetra_Distributor.h"
+#include "CEpetra_Object.h"
 #include "Epetra_Import.h"
 #include "CEpetra_Import.h"
 #include "CEpetra_Import_Cpp.hpp"

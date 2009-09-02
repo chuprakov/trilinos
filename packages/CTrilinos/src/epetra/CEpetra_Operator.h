@@ -69,8 +69,7 @@ double Epetra_Operator_NormInf ( CT_Epetra_Operator_ID_t selfID );
 /* Original C++ prototype:
    virtual const char * Label() const = 0;
 */
-const char * Epetra_Operator_Label ( 
-  CT_Epetra_Operator_ID_t selfID );
+const char * Epetra_Operator_Label ( CT_Epetra_Operator_ID_t selfID );
 
 /* Original C++ prototype:
    virtual bool UseTranspose() const = 0;
@@ -81,8 +80,7 @@ boolean Epetra_Operator_UseTranspose (
 /* Original C++ prototype:
    virtual bool HasNormInf() const = 0;
 */
-boolean Epetra_Operator_HasNormInf ( 
-  CT_Epetra_Operator_ID_t selfID );
+boolean Epetra_Operator_HasNormInf ( CT_Epetra_Operator_ID_t selfID );
 
 /* Original C++ prototype:
    virtual const Epetra_Comm & Comm() const = 0;

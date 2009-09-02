@@ -48,8 +48,7 @@ CT_Epetra_CompObject_ID_t Epetra_CompObject_Duplicate (
 /* Original C++ prototype:
    virtual ~Epetra_CompObject();
 */
-void Epetra_CompObject_Destroy ( 
-  CT_Epetra_CompObject_ID_t * selfID );
+void Epetra_CompObject_Destroy ( CT_Epetra_CompObject_ID_t * selfID );
 
 /* Original C++ prototype:
    void SetFlopCounter(const Epetra_Flops & FlopCounter_in);

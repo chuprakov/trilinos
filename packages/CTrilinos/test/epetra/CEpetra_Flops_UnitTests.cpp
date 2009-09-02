@@ -1,3 +1,4 @@
+#include "CEpetra_CompObject.h"
 #include "Epetra_Flops.h"
 #include "CEpetra_Flops.h"
 #include "CEpetra_Flops_Cpp.hpp"

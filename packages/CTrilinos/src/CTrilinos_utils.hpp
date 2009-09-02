@@ -12,11 +12,9 @@
 namespace CTrilinos {
 
 
-/* convert string to const char * since C does not support former */
-const char *str2cptr( std::string s );
+void pass_string_out( const std::string * const s, char *c[] );
 
-/* convert const char * to string since C does not support latter */
-std::string cptr2str( const char *pc );
+void pass_string_in( const char * const c[], std::string *s );
 
 /* stringify the enum name */
 std::string enum2str( CTrilinos_Type_ID_t ty );

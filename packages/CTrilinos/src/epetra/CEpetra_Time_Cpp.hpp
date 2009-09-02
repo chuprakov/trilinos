@@ -4,13 +4,9 @@
 #define CEPETRA_TIME_CPP_HPP
 
 
-#include "CEpetra_Time.h"
 #include "Epetra_Time.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_Time;
 
 
 namespace CEpetra {

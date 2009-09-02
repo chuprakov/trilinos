@@ -4,13 +4,9 @@
 #define CEPETRA_DIRECTORY_CPP_HPP
 
 
-#include "CEpetra_Directory.h"
 #include "Epetra_Directory.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_Directory;
 
 
 namespace CEpetra {

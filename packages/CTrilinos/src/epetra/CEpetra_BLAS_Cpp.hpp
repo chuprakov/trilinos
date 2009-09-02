@@ -4,13 +4,9 @@
 #define CEPETRA_BLAS_CPP_HPP
 
 
-#include "CEpetra_BLAS.h"
 #include "Epetra_BLAS.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
-
-
-class Epetra_BLAS;
 
 
 namespace CEpetra {

@@ -1,6 +1,5 @@
 #include "CTrilinos_config.h"
 
-#include "Epetra_DataAccess.h"
 #include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_Vector_Cpp.hpp"
 #include "CEpetra_MultiVector_Cpp.hpp"
@@ -82,42 +81,43 @@ CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Duplicate (
 }
 
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_From2DA ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t MapID, double * A, 
-  int MyLDA, int NumVectors )
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t MapID, 
+  double * A, int MyLDA, int NumVectors )
 {
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
         tableOfMultiVectors().store(new Epetra_MultiVector(
-        CV, *CEpetra::getConstBlockMap(MapID), A, MyLDA, NumVectors)));
+        (Epetra_DataAccess) CV, *CEpetra::getConstBlockMap(MapID), 
+        A, MyLDA, NumVectors)));
 }
 
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_FromAOP ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t MapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t MapID, 
   double ** ArrayOfPointers, int NumVectors )
 {
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
         tableOfMultiVectors().store(new Epetra_MultiVector(
-        CV, *CEpetra::getConstBlockMap(MapID), ArrayOfPointers, 
-        NumVectors)));
+        (Epetra_DataAccess) CV, *CEpetra::getConstBlockMap(MapID), 
+        ArrayOfPointers, NumVectors)));
 }
 
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_FromList ( 
-  Epetra_DataAccess CV, CT_Epetra_MultiVector_ID_t SourceID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_MultiVector_ID_t SourceID, 
   int * Indices, int NumVectors )
 {
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
         tableOfMultiVectors().store(new Epetra_MultiVector(
-        CV, *CEpetra::getConstMultiVector(SourceID), Indices, 
-        NumVectors)));
+        (Epetra_DataAccess) CV, *CEpetra::getConstMultiVector(
+        SourceID), Indices, NumVectors)));
 }
 
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_FromRange ( 
-  Epetra_DataAccess CV, CT_Epetra_MultiVector_ID_t SourceID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_MultiVector_ID_t SourceID, 
   int StartIndex, int NumVectors )
 {
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
         tableOfMultiVectors().store(new Epetra_MultiVector(
-        CV, *CEpetra::getConstMultiVector(SourceID), StartIndex, 
-        NumVectors)));
+        (Epetra_DataAccess) CV, *CEpetra::getConstMultiVector(
+        SourceID), StartIndex, NumVectors)));
 }
 
 void Epetra_MultiVector_Destroy ( 
@@ -169,8 +169,8 @@ int Epetra_MultiVector_ReplaceMyValue (
   CT_Epetra_MultiVector_ID_t selfID, int MyRow, int VectorIndex, 
   double ScalarValue )
 {
-    return CEpetra::getMultiVector(selfID)->ReplaceMyValue(
-        MyRow, VectorIndex, ScalarValue);
+    return CEpetra::getMultiVector(selfID)->ReplaceMyValue(MyRow, 
+        VectorIndex, ScalarValue);
 }
 
 int Epetra_MultiVector_ReplaceMyValue_BlockPos ( 
@@ -185,8 +185,8 @@ int Epetra_MultiVector_SumIntoMyValue (
   CT_Epetra_MultiVector_ID_t selfID, int MyRow, int VectorIndex, 
   double ScalarValue )
 {
-    return CEpetra::getMultiVector(selfID)->SumIntoMyValue(
-        MyRow, VectorIndex, ScalarValue);
+    return CEpetra::getMultiVector(selfID)->SumIntoMyValue(MyRow, 
+        VectorIndex, ScalarValue);
 }
 
 int Epetra_MultiVector_SumIntoMyValue_BlockPos ( 
@@ -200,7 +200,8 @@ int Epetra_MultiVector_SumIntoMyValue_BlockPos (
 int Epetra_MultiVector_PutScalar ( 
   CT_Epetra_MultiVector_ID_t selfID, double ScalarConstant )
 {
-    return CEpetra::getMultiVector(selfID)->PutScalar(ScalarConstant);
+    return CEpetra::getMultiVector(selfID)->PutScalar(
+        ScalarConstant);
 }
 
 int Epetra_MultiVector_Random ( CT_Epetra_MultiVector_ID_t selfID )
@@ -211,7 +212,8 @@ int Epetra_MultiVector_Random ( CT_Epetra_MultiVector_ID_t selfID )
 int Epetra_MultiVector_ExtractCopy_Fill2DA ( 
   CT_Epetra_MultiVector_ID_t selfID, double * A, int MyLDA )
 {
-    return CEpetra::getConstMultiVector(selfID)->ExtractCopy(A, MyLDA);
+    return CEpetra::getConstMultiVector(selfID)->ExtractCopy(A, 
+        MyLDA);
 }
 
 int Epetra_MultiVector_ExtractCopy_FillAOP ( 
@@ -224,7 +226,8 @@ int Epetra_MultiVector_ExtractCopy_FillAOP (
 int Epetra_MultiVector_ExtractView_Set2DA ( 
   CT_Epetra_MultiVector_ID_t selfID, double ** A, int * MyLDA )
 {
-    return CEpetra::getConstMultiVector(selfID)->ExtractView(A, MyLDA);
+    return CEpetra::getConstMultiVector(selfID)->ExtractView(A, 
+        MyLDA);
 }
 
 int Epetra_MultiVector_ExtractView_SetAOP ( 
@@ -266,16 +269,16 @@ int Epetra_MultiVector_Scale (
   CT_Epetra_MultiVector_ID_t selfID, double ScalarA, 
   CT_Epetra_MultiVector_ID_t AID )
 {
-    return CEpetra::getMultiVector(selfID)->Scale(
-        ScalarA, *CEpetra::getConstMultiVector(AID));
+    return CEpetra::getMultiVector(selfID)->Scale(ScalarA, 
+        *CEpetra::getConstMultiVector(AID));
 }
 
 int Epetra_MultiVector_Update_WithA ( 
   CT_Epetra_MultiVector_ID_t selfID, double ScalarA, 
   CT_Epetra_MultiVector_ID_t AID, double ScalarThis )
 {
-    return CEpetra::getMultiVector(selfID)->Update(
-        ScalarA, *CEpetra::getConstMultiVector(AID), ScalarThis);
+    return CEpetra::getMultiVector(selfID)->Update(ScalarA, 
+        *CEpetra::getConstMultiVector(AID), ScalarThis);
 }
 
 int Epetra_MultiVector_Update_WithAB ( 
@@ -283,8 +286,8 @@ int Epetra_MultiVector_Update_WithAB (
   CT_Epetra_MultiVector_ID_t AID, double ScalarB, 
   CT_Epetra_MultiVector_ID_t BID, double ScalarThis )
 {
-    return CEpetra::getMultiVector(selfID)->Update(
-        ScalarA, *CEpetra::getConstMultiVector(AID), ScalarB, 
+    return CEpetra::getMultiVector(selfID)->Update(ScalarA, 
+        *CEpetra::getConstMultiVector(AID), ScalarB, 
         *CEpetra::getConstMultiVector(BID), ScalarThis);
 }
 
@@ -337,9 +340,8 @@ int Epetra_MultiVector_Multiply_Matrix (
   double ScalarAB, CT_Epetra_MultiVector_ID_t AID, 
   CT_Epetra_MultiVector_ID_t BID, double ScalarThis )
 {
-    return CEpetra::getMultiVector(selfID)->Multiply(
-        TransA, TransB, ScalarAB, 
-        *CEpetra::getConstMultiVector(AID), 
+    return CEpetra::getMultiVector(selfID)->Multiply(TransA, TransB, 
+        ScalarAB, *CEpetra::getConstMultiVector(AID), 
         *CEpetra::getConstMultiVector(BID), ScalarThis);
 }
 
@@ -348,8 +350,8 @@ int Epetra_MultiVector_Multiply_ByEl (
   CT_Epetra_MultiVector_ID_t AID, CT_Epetra_MultiVector_ID_t BID, 
   double ScalarThis )
 {
-    return CEpetra::getMultiVector(selfID)->Multiply(
-        ScalarAB, *CEpetra::getConstMultiVector(AID), 
+    return CEpetra::getMultiVector(selfID)->Multiply(ScalarAB, 
+        *CEpetra::getConstMultiVector(AID), 
         *CEpetra::getConstMultiVector(BID), ScalarThis);
 }
 
@@ -406,8 +408,7 @@ int Epetra_MultiVector_NumVectors (
     return CEpetra::getConstMultiVector(selfID)->NumVectors();
 }
 
-int Epetra_MultiVector_MyLength ( 
-  CT_Epetra_MultiVector_ID_t selfID )
+int Epetra_MultiVector_MyLength ( CT_Epetra_MultiVector_ID_t selfID )
 {
     return CEpetra::getConstMultiVector(selfID)->MyLength();
 }
@@ -492,7 +493,7 @@ CT_Epetra_MultiVector_ID_t
 CEpetra::storeMultiVector( Epetra_MultiVector *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
-            tableOfMultiVectors().storeCopy(pobj));
+            tableOfMultiVectors().storeShared(pobj));
 }
 
 /* store const Epetra_MultiVector in const table */
@@ -500,7 +501,7 @@ CT_Epetra_MultiVector_ID_t
 CEpetra::storeConstMultiVector( const Epetra_MultiVector *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
-            tableOfConstMultiVectors().storeCopy(pobj));
+            tableOfConstMultiVectors().storeShared(pobj));
 }
 
 /* dump contents of Epetra_MultiVector and const Epetra_MultiVector tables */

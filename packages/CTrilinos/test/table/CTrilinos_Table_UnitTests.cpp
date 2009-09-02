@@ -81,13 +81,13 @@ TEUCHOS_UNIT_TEST( Table, storeNull )
 }
 
 
-/* Table::storeCopy() */
+/* Table::storeShared() */
 
-TEUCHOS_UNIT_TEST( Table, storeCopy )
+TEUCHOS_UNIT_TEST( Table, storeShared )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
   ECHO(T *pobj = new T);
-  ECHO(CTrilinos_Object_ID_t id = table.storeCopy(pobj));
+  ECHO(CTrilinos_Object_ID_t id = table.storeShared(pobj));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T));
   TEST_EQUALITY(id.is_const, FALSE);
@@ -95,11 +95,11 @@ TEUCHOS_UNIT_TEST( Table, storeCopy )
   TEST_EQUALITY_CONST(is_null(table.get(id)), false);
 }
 
-TEUCHOS_UNIT_TEST( Table, storeConstCopy )
+TEUCHOS_UNIT_TEST( Table, storeConstShared )
 {
   ECHO(Table<const T> table(CONSTRUCTOR(CLASS_ENUM(T)), TRUE));
   ECHO(const T *pobj = new T);
-  ECHO(CTrilinos_Object_ID_t id = table.storeCopy(pobj));
+  ECHO(CTrilinos_Object_ID_t id = table.storeShared(pobj));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T));
   TEST_EQUALITY(id.is_const, TRUE);
@@ -107,11 +107,11 @@ TEUCHOS_UNIT_TEST( Table, storeConstCopy )
   TEST_EQUALITY_CONST(is_null(table.get(id)), false);
 }
 
-TEUCHOS_UNIT_TEST( Table, storeCopyBase )
+TEUCHOS_UNIT_TEST( Table, storeSharedBase )
 {
   ECHO(Table<T2> table(CONSTRUCTOR(CLASS_ENUM(T2))));
   ECHO(T1 *pobj = new T1);
-  ECHO(CTrilinos_Object_ID_t id = table.storeCopy(pobj));
+  ECHO(CTrilinos_Object_ID_t id = table.storeShared(pobj));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T2));
   TEST_EQUALITY(id.is_const, FALSE);
@@ -119,11 +119,11 @@ TEUCHOS_UNIT_TEST( Table, storeCopyBase )
   TEST_EQUALITY_CONST(is_null(table.get(id)), false);
 }
 
-TEUCHOS_UNIT_TEST( Table, storeConstCopyBase )
+TEUCHOS_UNIT_TEST( Table, storeConstSharedBase )
 {
   ECHO(Table<const T2> table(CONSTRUCTOR(CLASS_ENUM(T2)), TRUE));
   ECHO(const T1 *pobj = new T1);
-  ECHO(CTrilinos_Object_ID_t id = table.storeCopy(pobj));
+  ECHO(CTrilinos_Object_ID_t id = table.storeShared(pobj));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T2));
   TEST_EQUALITY(id.is_const, TRUE);
@@ -131,28 +131,28 @@ TEUCHOS_UNIT_TEST( Table, storeConstCopyBase )
   TEST_EQUALITY_CONST(is_null(table.get(id)), false);
 }
 
-TEUCHOS_UNIT_TEST( Table, storeCopyWrong )
+TEUCHOS_UNIT_TEST( Table, storeSharedWrong )
 {
   ECHO(Table<T4> table(CONSTRUCTOR(CLASS_ENUM(T4))));
   ECHO(T3 *pobj = new T3);
-  TEST_THROW(table.storeCopy(pobj), CTrilinosTypeMismatchError);
+  TEST_THROW(table.storeShared(pobj), CTrilinosTypeMismatchError);
 }
 
-/* storeCopyWrongConst below should NOT compile --> OK */
+/* storeSharedWrongConst below should NOT compile --> OK */
 /*
-TEUCHOS_UNIT_TEST( Table, storeCopyWrongConst )
+TEUCHOS_UNIT_TEST( Table, storeSharedWrongConst )
 {
   ECHO(Table<T2> table(CONSTRUCTOR(CLASS_ENUM(T2))));
   ECHO(const T1 *pobj = new T1);
-  TEST_THROW(table.storeCopy(pobj), CTrilinosTypeMismatchError);
+  TEST_THROW(table.storeShared(pobj), CTrilinosTypeMismatchError);
 }
 */
 
-TEUCHOS_UNIT_TEST( Table, storeCopyCastConst )
+TEUCHOS_UNIT_TEST( Table, storeSharedCastConst )
 {
   ECHO(Table<const T2> table(CONSTRUCTOR(CLASS_ENUM(T2)), TRUE));
   ECHO(T1 *pobj = new T1);
-  ECHO(CTrilinos_Object_ID_t id = table.storeCopy(pobj));
+  ECHO(CTrilinos_Object_ID_t id = table.storeShared(pobj));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T2));
   TEST_EQUALITY(id.is_const, TRUE);
@@ -160,18 +160,18 @@ TEUCHOS_UNIT_TEST( Table, storeCopyCastConst )
   TEST_EQUALITY_CONST(is_null(table.get(id)), false);
 }
 
-TEUCHOS_UNIT_TEST( Table, storeCopyNull )
+TEUCHOS_UNIT_TEST( Table, storeSharedNull )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
   ECHO(T* pobj = NULL);
-  TEST_THROW(table.storeCopy(pobj), NullReferenceError); 
+  TEST_THROW(table.storeShared(pobj), NullReferenceError); 
 }
 
-TEUCHOS_UNIT_TEST( Table, storeConstCopyNull )
+TEUCHOS_UNIT_TEST( Table, storeConstSharedNull )
 {
   ECHO(Table<const T> table(CONSTRUCTOR(CLASS_ENUM(T)), TRUE));
   ECHO(const T* pobj = NULL);
-  TEST_THROW(table.storeCopy(pobj), NullReferenceError); 
+  TEST_THROW(table.storeShared(pobj), NullReferenceError); 
 }
 
 

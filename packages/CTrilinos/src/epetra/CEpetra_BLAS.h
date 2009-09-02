@@ -29,8 +29,7 @@ extern "C" {
 
 CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Object_ID_t id );
 
-CTrilinos_Object_ID_t Epetra_BLAS_Abstract ( 
-  CT_Epetra_BLAS_ID_t id );
+CTrilinos_Object_ID_t Epetra_BLAS_Abstract ( CT_Epetra_BLAS_ID_t id );
 
 /* Original C++ prototype:
    Epetra_BLAS(void);
@@ -108,8 +107,8 @@ void Epetra_BLAS_SCAL_Double (
    void COPY( const int N, const float * X, float * Y, const int INCX = 1, const int INCY = 1) const;
 */
 void Epetra_BLAS_COPY_Float ( 
-  CT_Epetra_BLAS_ID_t selfID, const int N, const float * X, float * Y, 
-  const int INCX, const int INCY );
+  CT_Epetra_BLAS_ID_t selfID, const int N, const float * X, 
+  float * Y, const int INCX, const int INCY );
 
 /* Original C++ prototype:
    void COPY( const int N, const double * X, double * Y, const int INCX = 1, const int INCY = 1) const;
@@ -197,8 +196,8 @@ void Epetra_BLAS_SYMM_Float (
 void Epetra_BLAS_SYMM_Double ( 
   CT_Epetra_BLAS_ID_t selfID, const char SIDE, const char UPLO, 
   const int M, const int N, const double ALPHA, const double * A, 
-  const int LDA, const double * B, const int LDB, 
-  const double BETA, double * C, const int LDC );
+  const int LDA, const double * B, const int LDB, const double BETA, 
+  double * C, const int LDC );
 
 /* Original C++ prototype:
    void TRMM(const char SIDE, const char UPLO, const char TRANSA, const char DIAG, const int M, const int N, const float ALPHA, const float * A, const int LDA, float * B, const int LDB) const;

@@ -1,4 +1,6 @@
 #include "CEpetra_BlockMap.h"
+#include "CEpetra_Map.h"
+#include "CEpetra_Object.h"
 #include "CEpetra_Distributor.h"
 #include "Epetra_Export.h"
 #include "CEpetra_Export.h"

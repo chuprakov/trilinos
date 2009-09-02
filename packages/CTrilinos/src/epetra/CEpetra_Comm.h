@@ -32,8 +32,7 @@ extern "C" {
 
 CT_Epetra_Comm_ID_t Epetra_Comm_Cast ( CTrilinos_Object_ID_t id );
 
-CTrilinos_Object_ID_t Epetra_Comm_Abstract ( 
-  CT_Epetra_Comm_ID_t id );
+CTrilinos_Object_ID_t Epetra_Comm_Abstract ( CT_Epetra_Comm_ID_t id );
 
 /* Original C++ prototype:
    virtual Epetra_Comm * Clone() const = 0;
@@ -85,7 +84,8 @@ int Epetra_Comm_GatherAll_Double (
    virtual int GatherAll(int * MyVals, int * AllVals, int Count) const = 0;
 */
 int Epetra_Comm_GatherAll_Int ( 
-  CT_Epetra_Comm_ID_t selfID, int * MyVals, int * AllVals, int Count );
+  CT_Epetra_Comm_ID_t selfID, int * MyVals, int * AllVals, 
+  int Count );
 
 /* Original C++ prototype:
    virtual int GatherAll(long * MyVals, long * AllVals, int Count) const = 0;

@@ -44,8 +44,7 @@ Table<const Epetra_Object>& tableOfConstObjects()
 extern "C" {
 
 
-CT_Epetra_Object_ID_t Epetra_Object_Cast ( 
-  CTrilinos_Object_ID_t id )
+CT_Epetra_Object_ID_t Epetra_Object_Cast ( CTrilinos_Object_ID_t id )
 {
     CTrilinos_Object_ID_t newid;
     if (id.is_const) {
@@ -66,16 +65,16 @@ CT_Epetra_Object_ID_t Epetra_Object_Create (
   int TracebackModeIn, boolean set_label )
 {
     return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
-        tableOfObjects().store(new Epetra_Object(
-        TracebackModeIn, set_label)));
+        tableOfObjects().store(new Epetra_Object(TracebackModeIn, 
+        set_label)));
 }
 
 CT_Epetra_Object_ID_t Epetra_Object_Create_WithLabel ( 
   const char * const Label, int TracebackModeIn )
 {
     return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
-        tableOfObjects().store(new Epetra_Object(
-        Label, TracebackModeIn)));
+        tableOfObjects().store(new Epetra_Object(Label, 
+        TracebackModeIn)));
 }
 
 CT_Epetra_Object_ID_t Epetra_Object_Duplicate ( 
@@ -109,12 +108,21 @@ const char * Epetra_Object_Label ( CT_Epetra_Object_ID_t selfID )
     return CEpetra::getConstObject(selfID)->Label();
 }
 
-int Epetra_Object_ReportError ( 
-  CT_Epetra_Object_ID_t selfID, const char * const Message, 
-  int ErrorCode )
+void Epetra_Object_SetTracebackMode ( int TracebackModeValue )
 {
-    return CEpetra::getConstObject(selfID)->ReportError(
-        CTrilinos::cptr2str(Message), ErrorCode);
+    Epetra_Object::SetTracebackMode(TracebackModeValue);
+}
+
+int Epetra_Object_GetTracebackMode (  )
+{
+    return Epetra_Object::GetTracebackMode();
+}
+
+int Epetra_Object_ReportError ( 
+  CT_Epetra_Object_ID_t selfID, const char Message[], int ErrorCode )
+{
+    return CEpetra::getConstObject(selfID)->ReportError(std::string(
+        Message), ErrorCode);
 }
 
 
@@ -173,7 +181,7 @@ CT_Epetra_Object_ID_t
 CEpetra::storeObject( Epetra_Object *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
-            tableOfObjects().storeCopy(pobj));
+            tableOfObjects().storeShared(pobj));
 }
 
 /* store const Epetra_Object in const table */
@@ -181,7 +189,7 @@ CT_Epetra_Object_ID_t
 CEpetra::storeConstObject( const Epetra_Object *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
-            tableOfConstObjects().storeCopy(pobj));
+            tableOfConstObjects().storeShared(pobj));
 }
 
 /* dump contents of Epetra_Object and const Epetra_Object tables */

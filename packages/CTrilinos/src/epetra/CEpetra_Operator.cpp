@@ -80,7 +80,8 @@ void Epetra_Operator_Destroy ( CT_Epetra_Operator_ID_t * selfID )
 int Epetra_Operator_SetUseTranspose ( 
   CT_Epetra_Operator_ID_t selfID, boolean UseTranspose )
 {
-    return CEpetra::getOperator(selfID)->SetUseTranspose(UseTranspose);
+    return CEpetra::getOperator(selfID)->SetUseTranspose(
+        UseTranspose);
 }
 
 int Epetra_Operator_Apply ( 
@@ -88,8 +89,8 @@ int Epetra_Operator_Apply (
   CT_Epetra_MultiVector_ID_t YID )
 {
     return CEpetra::getConstOperator(selfID)->Apply(
-        *CEpetra::getConstMultiVector(XID), 
-        *CEpetra::getMultiVector(YID));
+        *CEpetra::getConstMultiVector(XID), *CEpetra::getMultiVector(
+        YID));
 }
 
 int Epetra_Operator_ApplyInverse ( 
@@ -97,8 +98,8 @@ int Epetra_Operator_ApplyInverse (
   CT_Epetra_MultiVector_ID_t YID )
 {
     return CEpetra::getConstOperator(selfID)->ApplyInverse(
-        *CEpetra::getConstMultiVector(XID), 
-        *CEpetra::getMultiVector(YID));
+        *CEpetra::getConstMultiVector(XID), *CEpetra::getMultiVector(
+        YID));
 }
 
 double Epetra_Operator_NormInf ( CT_Epetra_Operator_ID_t selfID )
@@ -106,8 +107,7 @@ double Epetra_Operator_NormInf ( CT_Epetra_Operator_ID_t selfID )
     return CEpetra::getConstOperator(selfID)->NormInf();
 }
 
-const char * Epetra_Operator_Label ( 
-  CT_Epetra_Operator_ID_t selfID )
+const char * Epetra_Operator_Label ( CT_Epetra_Operator_ID_t selfID )
 {
     return CEpetra::getConstOperator(selfID)->Label();
 }
@@ -118,8 +118,7 @@ boolean Epetra_Operator_UseTranspose (
     return CEpetra::getConstOperator(selfID)->UseTranspose();
 }
 
-boolean Epetra_Operator_HasNormInf ( 
-  CT_Epetra_Operator_ID_t selfID )
+boolean Epetra_Operator_HasNormInf ( CT_Epetra_Operator_ID_t selfID )
 {
     return CEpetra::getConstOperator(selfID)->HasNormInf();
 }
@@ -127,22 +126,22 @@ boolean Epetra_Operator_HasNormInf (
 CT_Epetra_Comm_ID_t Epetra_Operator_Comm ( 
   CT_Epetra_Operator_ID_t selfID )
 {
-    return CEpetra::storeConstComm(
-        &( CEpetra::getConstOperator(selfID)->Comm() ));
+    return CEpetra::storeConstComm(&( CEpetra::getConstOperator(
+        selfID)->Comm() ));
 }
 
 CT_Epetra_Map_ID_t Epetra_Operator_OperatorDomainMap ( 
   CT_Epetra_Operator_ID_t selfID )
 {
-    return CEpetra::storeConstMap(
-        &( CEpetra::getConstOperator(selfID)->OperatorDomainMap() ));
+    return CEpetra::storeConstMap(&( CEpetra::getConstOperator(
+        selfID)->OperatorDomainMap() ));
 }
 
 CT_Epetra_Map_ID_t Epetra_Operator_OperatorRangeMap ( 
   CT_Epetra_Operator_ID_t selfID )
 {
-    return CEpetra::storeConstMap(
-        &( CEpetra::getConstOperator(selfID)->OperatorRangeMap() ));
+    return CEpetra::storeConstMap(&( CEpetra::getConstOperator(
+        selfID)->OperatorRangeMap() ));
 }
 
 
@@ -201,7 +200,7 @@ CT_Epetra_Operator_ID_t
 CEpetra::storeOperator( Epetra_Operator *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Operator_ID_t>(
-            tableOfOperators().storeCopy(pobj));
+            tableOfOperators().storeShared(pobj));
 }
 
 /* store const Epetra_Operator in const table */
@@ -209,7 +208,7 @@ CT_Epetra_Operator_ID_t
 CEpetra::storeConstOperator( const Epetra_Operator *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Operator_ID_t>(
-            tableOfConstOperators().storeCopy(pobj));
+            tableOfConstOperators().storeShared(pobj));
 }
 
 /* dump contents of Epetra_Operator and const Epetra_Operator tables */

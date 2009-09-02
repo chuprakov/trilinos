@@ -26,28 +26,29 @@
 #include "CEpetra_Import_Cpp.hpp"
 #include "CEpetra_Time_Cpp.hpp"
 #include "CEpetra_JadMatrix_Cpp.hpp"
+#include "CEpetra_LinearProblem_Cpp.hpp"
+#include "CEpetra_LAPACK_Cpp.hpp"
+#include "CTeuchos_CommandLineProcessor_Cpp.hpp"
+#include "CTeuchos_ParameterList_Cpp.hpp"
+#include "CTeuchos_ParameterEntry_Cpp.hpp"
+#include "CTeuchos_any_Cpp.hpp"
+#include "CAmesos_BaseSolver_Cpp.hpp"
+#include "CAmesos_Cpp.hpp"
 
 
 namespace CTrilinos {
 
 
-/* convert struct from specific type to generic CTrilinos_Object_ID_t
- * but keep the content in tact */
-const char *str2cptr( std::string s )
+void pass_string_out( const std::string * const s, char *c[] )
 {
-    char *pc = NULL;
-    pc = new char [s.size()+1];
-    strcpy(pc, s.c_str());
-    return pc;
+    *c = new char[s->size()+1];
+    strcpy(*c, s->c_str());
 }
 
 
-/* convert struct from generic CTrilinos_Object_ID_t to specific type
- * but keep the content in tact */
-std::string cptr2str( const char *pc )
+void pass_string_in( const char * const c[], std::string *s )
 {
-    std::string s(pc);
-    return s;
+    s = new std::string(*c);
 }
 
 
@@ -128,6 +129,30 @@ enum2str( CTrilinos_Type_ID_t ty )
         break;
     case CT_Epetra_JadMatrix_ID:
         s.assign("CT_Epetra_JadMatrix_ID");
+        break;
+    case CT_Epetra_LinearProblem_ID:
+        s.assign("CT_Epetra_LinearProblem_ID");
+        break;
+    case CT_Epetra_LAPACK_ID:
+        s.assign("CT_Epetra_LAPACK_ID");
+        break;
+    case CT_Teuchos_CommandLineProcessor_ID:
+        s.assign("CT_Teuchos_CommandLineProcessor_ID");
+        break;
+    case CT_Teuchos_ParameterList_ID:
+        s.assign("CT_Teuchos_ParameterList_ID");
+        break;
+    case CT_Teuchos_ParameterEntry_ID:
+        s.assign("CT_Teuchos_ParameterEntry_ID");
+        break;
+    case CT_Teuchos_any_ID:
+        s.assign("CT_Teuchos_any_ID");
+        break;
+    case CT_Amesos_BaseSolver_ID:
+        s.assign("CT_Amesos_BaseSolver_ID");
+        break;
+    case CT_Amesos_ID:
+        s.assign("CT_Amesos_ID");
         break;
     default:
         s.assign("(unrecognized)");
@@ -220,6 +245,34 @@ isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
         case CT_Epetra_JadMatrix_ID:
             shares = isSameObject(CEpetra::getConstJadMatrix(id1), id2);
             break;
+        case CT_Epetra_LinearProblem_ID:
+            shares = isSameObject(CEpetra::getConstLinearProblem(id1), id2);
+            break;
+        case CT_Epetra_LAPACK_ID:
+            shares = isSameObject(CEpetra::getConstLAPACK(id1), id2);
+            break;
+        case CT_Teuchos_CommandLineProcessor_ID:
+            shares = isSameObject(CTeuchos::getConstCommandLineProcessor(id1), id2);
+            break;
+        case CT_Teuchos_ParameterList_ID:
+            shares = isSameObject(CTeuchos::getConstParameterList(id1), id2);
+            break;
+        case CT_Teuchos_ParameterEntry_ID:
+            shares = isSameObject(CTeuchos::getConstParameterEntry(id1), id2);
+            break;
+        case CT_Teuchos_any_ID:
+            shares = isSameObject(CTeuchos::getConstany(id1), id2);
+            break;
+#ifdef HAVE_CTRILINOS_AMESOS
+        case CT_Amesos_BaseSolver_ID:
+            shares = isSameObject(CAmesos::getConstBaseSolver(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AMESOS */
+#ifdef HAVE_CTRILINOS_AMESOS
+        case CT_Amesos_ID:
+            shares = isSameObject(CAmesos::getConstAmesos(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AMESOS */
         default:
             break;
         }
@@ -299,6 +352,34 @@ isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
         case CT_Epetra_JadMatrix_ID:
             shares = isSameObject(CEpetra::getJadMatrix(id1), id2);
             break;
+        case CT_Epetra_LinearProblem_ID:
+            shares = isSameObject(CEpetra::getLinearProblem(id1), id2);
+            break;
+        case CT_Epetra_LAPACK_ID:
+            shares = isSameObject(CEpetra::getLAPACK(id1), id2);
+            break;
+        case CT_Teuchos_CommandLineProcessor_ID:
+            shares = isSameObject(CTeuchos::getCommandLineProcessor(id1), id2);
+            break;
+        case CT_Teuchos_ParameterList_ID:
+            shares = isSameObject(CTeuchos::getParameterList(id1), id2);
+            break;
+        case CT_Teuchos_ParameterEntry_ID:
+            shares = isSameObject(CTeuchos::getParameterEntry(id1), id2);
+            break;
+        case CT_Teuchos_any_ID:
+            shares = isSameObject(CTeuchos::getany(id1), id2);
+            break;
+#ifdef HAVE_CTRILINOS_AMESOS
+        case CT_Amesos_BaseSolver_ID:
+            shares = isSameObject(CAmesos::getBaseSolver(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AMESOS */
+#ifdef HAVE_CTRILINOS_AMESOS
+        case CT_Amesos_ID:
+            shares = isSameObject(CAmesos::getAmesos(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AMESOS */
         default:
             break;
         }

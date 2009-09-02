@@ -2,7 +2,6 @@
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_Vector.h"
 #include "Epetra_Vector.h"
-#include "Epetra_DataAccess.h"
 #include "CEpetra_MultiVector.h"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"

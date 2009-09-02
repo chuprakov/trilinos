@@ -65,8 +65,8 @@ CT_Epetra_Map_ID_t Epetra_Map_Create (
   int NumGlobalElements, int IndexBase, CT_Epetra_Comm_ID_t CommID )
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-        tableOfMaps().store(new Epetra_Map(
-        NumGlobalElements, IndexBase, *CEpetra::getConstComm(CommID))));
+        tableOfMaps().store(new Epetra_Map(NumGlobalElements, 
+        IndexBase, *CEpetra::getConstComm(CommID))));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Create_Linear ( 
@@ -74,9 +74,8 @@ CT_Epetra_Map_ID_t Epetra_Map_Create_Linear (
   CT_Epetra_Comm_ID_t CommID )
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-        tableOfMaps().store(new Epetra_Map(
-        NumGlobalElements, NumMyElements, IndexBase, 
-        *CEpetra::getConstComm(CommID))));
+        tableOfMaps().store(new Epetra_Map(NumGlobalElements, 
+        NumMyElements, IndexBase, *CEpetra::getConstComm(CommID))));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Create_Arbitrary ( 
@@ -85,16 +84,16 @@ CT_Epetra_Map_ID_t Epetra_Map_Create_Arbitrary (
   CT_Epetra_Comm_ID_t CommID )
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-        tableOfMaps().store(new Epetra_Map(
-        NumGlobalElements, NumMyElements, MyGlobalElements, 
-        IndexBase, *CEpetra::getConstComm(CommID))));
+        tableOfMaps().store(new Epetra_Map(NumGlobalElements, 
+        NumMyElements, MyGlobalElements, IndexBase, 
+        *CEpetra::getConstComm(CommID))));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Duplicate ( CT_Epetra_Map_ID_t mapID )
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-        tableOfMaps().store(new Epetra_Map(
-        *CEpetra::getConstMap(mapID))));
+        tableOfMaps().store(new Epetra_Map(*CEpetra::getConstMap(
+        mapID))));
 }
 
 void Epetra_Map_Destroy ( CT_Epetra_Map_ID_t * selfID )
@@ -173,7 +172,7 @@ CT_Epetra_Map_ID_t
 CEpetra::storeMap( Epetra_Map *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-            tableOfMaps().storeCopy(pobj));
+            tableOfMaps().storeShared(pobj));
 }
 
 /* store const Epetra_Map in const table */
@@ -181,7 +180,7 @@ CT_Epetra_Map_ID_t
 CEpetra::storeConstMap( const Epetra_Map *pobj )
 {
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-            tableOfConstMaps().storeCopy(pobj));
+            tableOfConstMaps().storeShared(pobj));
 }
 
 /* dump contents of Epetra_Map and const Epetra_Map tables */

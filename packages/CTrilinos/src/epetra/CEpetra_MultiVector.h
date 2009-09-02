@@ -8,7 +8,6 @@
 #define CEPETRA_MULTIVECTOR_H
 
 
-#include "Epetra_DataAccess.h"
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_Vector.h"
 #include "CTrilinos_enums.h"
@@ -52,28 +51,28 @@ CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Duplicate (
    Epetra_MultiVector(Epetra_DataAccess CV, const Epetra_BlockMap& Map, double *A, int MyLDA, int NumVectors);
 */
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_From2DA ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t MapID, double * A, 
-  int MyLDA, int NumVectors );
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t MapID, 
+  double * A, int MyLDA, int NumVectors );
 
 /* Original C++ prototype:
    Epetra_MultiVector(Epetra_DataAccess CV, const Epetra_BlockMap& Map, double **ArrayOfPointers, int NumVectors);
 */
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_FromAOP ( 
-  Epetra_DataAccess CV, CT_Epetra_BlockMap_ID_t MapID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t MapID, 
   double ** ArrayOfPointers, int NumVectors );
 
 /* Original C++ prototype:
    Epetra_MultiVector(Epetra_DataAccess CV, const Epetra_MultiVector& Source, int *Indices, int NumVectors);
 */
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_FromList ( 
-  Epetra_DataAccess CV, CT_Epetra_MultiVector_ID_t SourceID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_MultiVector_ID_t SourceID, 
   int * Indices, int NumVectors );
 
 /* Original C++ prototype:
    Epetra_MultiVector(Epetra_DataAccess CV, const Epetra_MultiVector& Source, int StartIndex, int NumVectors);
 */
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_FromRange ( 
-  Epetra_DataAccess CV, CT_Epetra_MultiVector_ID_t SourceID, 
+  CT_Epetra_DataAccess_E_t CV, CT_Epetra_MultiVector_ID_t SourceID, 
   int StartIndex, int NumVectors );
 
 /* Original C++ prototype:
@@ -327,8 +326,7 @@ int Epetra_MultiVector_NumVectors (
 /* Original C++ prototype:
    int MyLength() const;
 */
-int Epetra_MultiVector_MyLength ( 
-  CT_Epetra_MultiVector_ID_t selfID );
+int Epetra_MultiVector_MyLength ( CT_Epetra_MultiVector_ID_t selfID );
 
 /* Original C++ prototype:
    int GlobalLength() const;

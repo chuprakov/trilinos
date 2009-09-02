@@ -1,3 +1,4 @@
+#include "CEpetra_Comm.h"
 #include "Epetra_Distributor.h"
 #include "CEpetra_Distributor.h"
 #include "CEpetra_Distributor_Cpp.hpp"
