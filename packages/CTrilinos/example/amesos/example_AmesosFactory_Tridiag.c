@@ -30,8 +30,6 @@
 
 #include "CTrilinos_ConfigDefs.h"
 
-#ifdef HAVE_CTRILINOS_AMESOS
-
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -79,6 +77,8 @@
 
 int main(int argc, char *argv[]) 
 {
+#ifdef HAVE_CTRILINOS_AMESOS
+
   int NumGlobalElements, NumMyElements, NumEntries, Indices[3], i, check;
   double Values[3], residual;
   double sfact_time, nfact_time, solve_time, mtx_conv_time, mtx_redist_time, vec_redist_time;
@@ -346,9 +346,10 @@ int main(int argc, char *argv[])
 #ifdef HAVE_MPI
   MPI_Finalize();
 #endif
+
+#endif /* HAVE_CTRILINOS_AMESOS */
+
   return(EXIT_SUCCESS);
 
 } /* end of main() */
-
-#endif /* HAVE_CTRILINOS_AMESOS */
 
