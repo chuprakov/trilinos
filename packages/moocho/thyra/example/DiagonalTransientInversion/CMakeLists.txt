@@ -32,7 +32,7 @@ PACKAGE_ADD_TEST( DiagonalTransientInversion
     --params-file=diagTransInvSmall_1.xml
     --num-observations=1
     --final-time=1e-4 --scale-params-by=1.5
-    --max-sens-error=1e-5
+    --max-sens-error=1e-4
     --no-do-inv-prob
     --no-print-valid-options --verb-level=VERB_EXTREME
 
