@@ -79,7 +79,7 @@ A parallel hypergraph partitioner is available in Zoltan~\cite{Zoltan-hypergraph
 An advantage of hypergraph partitioning is that it
 also applies to rectangular matrices, not just square matrices.
 
-\section{Methods}
+\section{Partitioning Methods}
 \label{sec:methods}
 Zoltan and Isorropia currently support two types of partitioning methods: geometric and graph/hypergraph. The geometric methods are convenient if you have a vector of points in space, for example particles, or mesh points. The partitioner will then partition these points such that points that are close in Euclidean space will be assigned to the same or a nearby process. 
 
@@ -91,9 +91,14 @@ Isorropia is the preferred partitioning package for most Trilinos users
 since it supports Epetra. The actual partitioning is done by calling Zoltan,
 so Zoltan is a required dependency.
 
-Isorropia provides a simple interface for new users: \texttt{createBalancedCopy}. The input is an Epetra distributed data object (matrix, vector), and the output is a copy of the object (matrix, vector) but with a different (better) map (distribution).
-
-The \texttt{createBalancedCopy} interface is rather limited and only intended for beginners. The full-fledged API contains the following three classes:
+Isorropia provides a simple interface for new users: \texttt{createBalancedCopy}. The input is an Epetra distributed data object (matrix, vector), and the output is a copy of the object (matrix, vector) but with a different (better) map (distribution):
+\begin{verbatim}
+  Epetra_CrsMatrix *A;    // Original matrix
+  Epetra_CrsMatrix *balA; // Balanced matrix
+  balA = Isorropia::createBalancedCopy(A);
+\end{verbatim}
+Note that the user is responsible for deallacating \texttt{balA} after use.
+The \texttt{createBalancedCopy} interface is rather limited and mainly intended for beginners. The full-fledged (primary) API contains the following three classes:
 \begin{enumerate}
 \item Partitioner
 \item Redistributor
@@ -101,13 +106,23 @@ The \texttt{createBalancedCopy} interface is rather limited and only intended fo
 \end{enumerate}
 The Partitioner performs the partitioning, but does not move any data. The Redistributor takes user data and a Partitioner as input, and redistributes the user data. The CostDescriber is optional and can be used to provide costs (weights) to the Partitioner for problem-specific partitioning. 
 
+Note that the primary API uses Teuchos::RCP reference-counted pointers for safer memory management.
+
+\begin{verbatim}
+  Epetra_CrsMatrix A;
+  Partitioner part(Teuchos::rcp(A));
+  Redistributor rd(Teuchos::rcp(part));
+  Teuchos::RCP<Epetra_CrsMatrix> bal_matrix = rd.redistribute(A);
+\end{verbatim}
+
 The default partitioning method in Isorropia is hypergraph partitioning for a sparse matrix, and RCB for a vector.
 
-TODO: Examples.
+Isorropia only supports a small number of parameters. The parameters are case insensitive.  Advanced users who wish to specify detailed options should use Zoltan parameters. Isorropia supports a parameter sublist \emph{Zoltan}, and these parameters are passed on to Zoltan.
 
 
 \section{Zoltan}
 \label{sec:zoltan}
 Zoltan is a general-purpose package for partitioning and load balancing, and does not depend on any other Trilinos packages. Thus, it can be built and used as a stand-alone library, if desired.
 
+Zoltan currently provides all the partitioning methods in Isorropia. Zoltan also supports several third-party libraries, including the popular graph partitioners ParMetis and Scotch. To build Zoltan with ParMetis, you need to turn on \texttt{TPL\_ENABLE\_parmetis} in Cmake. Zoltan TPLs can also be used via Isorropia.
 
