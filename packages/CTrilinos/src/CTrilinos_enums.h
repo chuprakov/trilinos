@@ -20,15 +20,22 @@ extern "C" {
 
 #ifdef __cplusplus
 typedef bool boolean;
+
 #ifndef FALSE
 #define FALSE false
 #endif
+
 #ifndef TRUE
 #define TRUE true
 #endif
-#else
+
+#else 
+#ifndef TRUE
 typedef enum { FALSE=0, TRUE=1 } boolean;
+#else
+typedef int boolean;
 #endif
+#endif /* __cplusplus */
 
 /* The enum below lists all the classes that CTrilinos supports.  Classes
  * that are derived from a base class listed below can also be used with some

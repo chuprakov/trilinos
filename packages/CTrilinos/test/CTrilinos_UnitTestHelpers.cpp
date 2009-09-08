@@ -1,9 +1,12 @@
 #include "CTrilinos_config.h"
 
 #include "CEpetra_Comm_Cpp.hpp"
+#include "CEpetra_Comm.h"
 #include "CEpetra_SerialComm_Cpp.hpp"
+#include "CEpetra_SerialComm.h"
 #ifdef HAVE_MPI
 #include "CEpetra_MpiComm_Cpp.hpp"
+#include "CEpetra_MpiComm.h"
 #endif /* HAVE_MPI */
 #include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_Map_Cpp.hpp"
@@ -34,9 +37,6 @@
 #include "CTeuchos_CommandLineProcessor_Cpp.hpp"
 #include "CTeuchos_ParameterEntry_Cpp.hpp"
 #include "CTeuchos_ParameterList_Cpp.hpp"
-
-#include "CEpetra_SerialComm.h"
-#include "CEpetra_Comm.h"
 
 #include "CTrilinos_UnitTestHelpers.hpp"
 

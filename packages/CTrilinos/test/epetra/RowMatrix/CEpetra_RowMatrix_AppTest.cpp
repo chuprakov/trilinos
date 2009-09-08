@@ -1,3 +1,5 @@
+#include "CTrilinos_config.h"
+
 #include "CEpetra_Map.h"
 #include "CEpetra_Time.h"
 #include "CEpetra_CrsMatrix.h"
@@ -11,7 +13,7 @@
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_RowMatrix.h"
 #include "CEpetra_CompObject.h"
-#ifdef EPETRA_MPI
+#ifdef HAVE_MPI
 #include "CEpetra_MpiComm.h"
 #include "mpi.h"
 #else
