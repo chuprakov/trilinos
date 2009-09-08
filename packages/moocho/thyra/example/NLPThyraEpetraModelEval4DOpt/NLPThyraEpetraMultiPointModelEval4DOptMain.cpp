@@ -127,7 +127,7 @@ int main( int argc, char* argv[] )
 
     // Create the EpetraExt::MultiPointModelEvaluator object
     Teuchos::RCP<EpetraExt::MultiPointModelEvaluator>
-       multiPointModel = rcp(new EpetraExt::MultiPointModelEvaluator(
+      multiPointModel = Teuchos::rcp(new EpetraExt::MultiPointModelEvaluator(
                              epetraModel, globalComm, multi_x_init, q_vec));
 
     // Create the Thyra::EpetraModelEvaluator object
