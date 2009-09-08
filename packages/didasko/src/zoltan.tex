@@ -44,12 +44,13 @@ Trilinos provides two packages for partitioning and load balancing: Zoltan and I
 
 \section{Background}
 In parallel linear algebra applications, a critical part is to 
-distribute the matrices. The vectors are often distributed to conform
+distribute the matrices among processes (processors). The vectors are 
+often distributed to conform
 with the appropriate matrices, though not always. Matrices can
 be partitioned either along rows, columns, or by a 2-dimensional
 block decomposition. We limit our discussion to 1-dimensional data
-distributions (which are best supported in Epetra). In this case, 
-partitioning dense matrices is easy.
+distributions, in particular, row distributions  (which are best supported 
+in Epetra). In this case, partitioning dense matrices is easy.
 For a matrix with $n$ rows and with $p$ processes, simply give
 each process $n/p$  rows. For sparse matrices, the situation
 is more complicated. To achieve load-balance, one may wish 
@@ -75,7 +76,7 @@ of Minnesota.
 
 Recently, it has been shown \cite{CatAyk99} that hypergraph partitioning 
 is a more accurate model for parallel matrix-vector communication cost.
-A parallel hypergraph partitioner is available in Zoltan~\cite{Zoltan-hypergraph} and also via Isorropia.
+A parallel hypergraph partitioner is available in Zoltan~\cite{ZoltanParHyp06ipdps,ZoltanIPDPS07}
 An advantage of hypergraph partitioning is that it
 also applies to rectangular matrices, not just square matrices.
 
@@ -94,8 +95,8 @@ so Zoltan is a required dependency.
 Isorropia provides a simple interface for new users: \texttt{createBalancedCopy}. The input is an Epetra distributed data object (matrix, vector), and the output is a copy of the object (matrix, vector) but with a different (better) map (distribution):
 \begin{verbatim}
   Epetra_CrsMatrix *A;    // Original matrix
-  Epetra_CrsMatrix *balA; // Balanced matrix
-  balA = Isorropia::createBalancedCopy(A);
+  Epetra_CrsMatrix *bal_A; // Balanced matrix
+  bal_A = Isorropia::createBalancedCopy(A);
 \end{verbatim}
 Note that the user is responsible for deallacating \texttt{balA} after use.
 The \texttt{createBalancedCopy} interface is rather limited and mainly intended for beginners. The full-fledged (primary) API contains the following three classes:
@@ -112,7 +113,7 @@ Note that the primary API uses Teuchos::RCP reference-counted pointers for safer
   Epetra_CrsMatrix A;
   Partitioner part(Teuchos::rcp(A));
   Redistributor rd(Teuchos::rcp(part));
-  Teuchos::RCP<Epetra_CrsMatrix> bal_matrix = rd.redistribute(A);
+  Teuchos::RCP<Epetra_CrsMatrix> bal_A = rd.redistribute(A);
 \end{verbatim}
 
 The default partitioning method in Isorropia is hypergraph partitioning for a sparse matrix, and RCB for a vector.
@@ -122,7 +123,7 @@ Isorropia only supports a small number of parameters. The parameters are case in
 
 \section{Zoltan}
 \label{sec:zoltan}
-Zoltan is a general-purpose package for partitioning and load balancing, and does not depend on any other Trilinos packages. Thus, it can be built and used as a stand-alone library, if desired.
+Zoltan is a general-purpose package for parallel data management, including partitioning and load balancing~\cite{zoltan2002}. Zoltan was developed independently of Trilinos, and does not depend on any other Trilinos packages. Thus, it can be built and used as a stand-alone library, if desired. Zoltan was written in C but also provides C++ and Fortran90 wrapper interfaces.
 
 Zoltan currently provides all the partitioning methods in Isorropia. Zoltan also supports several third-party libraries, including the popular graph partitioners ParMetis and Scotch. To build Zoltan with ParMetis, you need to turn on \texttt{TPL\_ENABLE\_parmetis} in Cmake. Zoltan TPLs can also be used via Isorropia.
 
