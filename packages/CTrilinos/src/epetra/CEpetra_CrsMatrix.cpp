@@ -1,3 +1,35 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
 #include "CEpetra_Map_Cpp.hpp"
@@ -141,14 +173,6 @@ void Epetra_CrsMatrix_Destroy ( CT_Epetra_CrsMatrix_ID_t * selfID )
         tableOfCrsMatrixs().remove(&aid);
     }
     *selfID = CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(aid);
-}
-
-void Epetra_CrsMatrix_Assign ( 
-  CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_CrsMatrix_ID_t srcID )
-{
-    Epetra_CrsMatrix& self = *( CEpetra::getCrsMatrix(selfID) );
-
-    self = *CEpetra::getConstCrsMatrix(srcID);
 }
 
 int Epetra_CrsMatrix_PutScalar ( 
@@ -787,14 +811,6 @@ CT_Epetra_Import_ID_t Epetra_CrsMatrix_RowMatrixImporter (
         selfID)->RowMatrixImporter());
 }
 
-double * Epetra_CrsMatrix_getRow ( 
-  CT_Epetra_CrsMatrix_ID_t selfID, int Loc )
-{
-    const Epetra_CrsMatrix& self = *( CEpetra::getConstCrsMatrix(selfID) );
-
-    return self[Loc];
-}
-
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_ImportMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
@@ -815,6 +831,22 @@ int Epetra_CrsMatrix_TransformToLocal_UsingMaps (
     return CEpetra::getCrsMatrix(selfID)->TransformToLocal(
         CEpetra::getConstMap(DomainMapID).getRawPtr(), 
         CEpetra::getConstMap(RangeMapID).getRawPtr());
+}
+
+void Epetra_CrsMatrix_Assign ( 
+  CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_CrsMatrix_ID_t srcID )
+{
+    Epetra_CrsMatrix& self = *( CEpetra::getCrsMatrix(selfID) );
+
+    self = *CEpetra::getConstCrsMatrix(srcID);
+}
+
+double * Epetra_CrsMatrix_getRow ( 
+  CT_Epetra_CrsMatrix_ID_t selfID, int Loc )
+{
+    const Epetra_CrsMatrix& self = *( CEpetra::getConstCrsMatrix(selfID) );
+
+    return self[Loc];
 }
 
 

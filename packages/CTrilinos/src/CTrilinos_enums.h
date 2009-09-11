@@ -1,4 +1,38 @@
 
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
+/*! @file CTrilinos_enums.h
+ * @brief Defines structs and enums needed for CTrilinos. */
+
 
 #ifndef CTRILINOS_ENUMS_H
 #define CTRILINOS_ENUMS_H
@@ -12,32 +46,22 @@ extern "C" {
 #endif
 
 
-/* C does not support the C++ bool type, so the enum below will act as a custom
- * boolean type for users using a C compiler.  NOTE, however, that CTrilinos
- * currently expects users to #include directly the Epetra_DataAccess.h and
- * Epetra_CombineMode.h when needed, which may not actually compile with C
- * compilers due to the Doxygen comments! */
+/*! C does not support the C++ bool type, so the enum below will act as a custom
+ * boolean type for users using a C compiler. */
 
 #ifdef __cplusplus
 typedef bool boolean;
-
 #ifndef FALSE
 #define FALSE false
 #endif
-
 #ifndef TRUE
 #define TRUE true
 #endif
-
-#else 
-#ifndef TRUE
-typedef enum { FALSE=0, TRUE=1 } boolean;
 #else
-typedef int boolean;
+typedef enum { FALSE=0, TRUE=1 } boolean;
 #endif
-#endif /* __cplusplus */
 
-/* The enum below lists all the classes that CTrilinos supports.  Classes
+/*! The enum below lists all the classes that CTrilinos supports.  Classes
  * that are derived from a base class listed below can also be used with some
  * restrictions: (1) the only methods that can be called on such classes are
  * the ones defined by the base class and (2) objects of the derived type can
@@ -79,7 +103,7 @@ typedef enum {
     CT_Amesos_ID
 } CTrilinos_Type_ID_t;
 
-/* The type in the struct below is actually used to identify the table in
+/*! The type in the struct below is actually used to identify the table in
  * which the object is stored and not the type of the underlying object.  The
  * end user should NEVER change the content of this struct as it will result
  * in segfaults and/or memory leaks.  When the user asks that the object
@@ -87,9 +111,9 @@ typedef enum {
  * destructor function. */
 
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CTrilinos_Object_ID_t;
 
 /* All structs for specific types are identical but are declared separately
@@ -97,211 +121,277 @@ typedef struct {
  * changeable.  This forces the compiler to perform type-checking on calls
  * to the wrapper functions and will make debugging easier for the user. */
 
+/*! Struct used for referring to objects in the Epetra_Distributor table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_Distributor.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_Distributor_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_SerialComm table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_SerialComm.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_SerialComm_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_BLAS table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_BLAS.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_BLAS_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_Comm table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_Comm.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_Comm_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_Operator table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_Operator.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_Operator_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_MultiVector table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_MultiVector.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_MultiVector_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_OffsetIndex table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_OffsetIndex.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_OffsetIndex_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_Object table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_Object.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_Object_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_RowMatrix table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_RowMatrix.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_RowMatrix_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_CompObject table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_CompObject.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_CompObject_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_Directory table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_Directory.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_Directory_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_Flops table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_Flops.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_Flops_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_SrcDistObject table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_SrcDistObject.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_SrcDistObject_ID_t;
 
 #ifdef HAVE_MPI
+/*! Struct used for referring to objects in the Epetra_MpiComm table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_MpiComm.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_MpiComm_ID_t;
 #endif /* HAVE_MPI */
 
+/*! Struct used for referring to objects in the Epetra_CrsMatrix table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_CrsMatrix.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_CrsMatrix_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_CrsGraph table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_CrsGraph.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_CrsGraph_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_DistObject table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_DistObject.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_DistObject_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_Vector table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_Vector.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_Vector_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_Export table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_Export.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_Export_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_Map table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_Map.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_Map_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_BlockMap table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_BlockMap.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_BlockMap_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_Import table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_Import.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_Import_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_Time table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_Time.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_Time_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_JadMatrix table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_JadMatrix.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_JadMatrix_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_LinearProblem table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_LinearProblem.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_LinearProblem_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_LAPACK table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_LAPACK.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_LAPACK_ID_t;
 
+/*! Struct used for referring to objects in the Teuchos::CommandLineProcessor table.  Methods
+ * that can be invoked on the underlying objects are listed in CTeuchos_CommandLineProcessor.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Teuchos_CommandLineProcessor_ID_t;
 
+/*! Struct used for referring to objects in the Teuchos::ParameterList table.  Methods
+ * that can be invoked on the underlying objects are listed in CTeuchos_ParameterList.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Teuchos_ParameterList_ID_t;
 
+/*! Struct used for referring to objects in the Teuchos::ParameterEntry table.  Methods
+ * that can be invoked on the underlying objects are listed in CTeuchos_ParameterEntry.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Teuchos_ParameterEntry_ID_t;
 
+/*! Struct used for referring to objects in the Teuchos::any table.  Methods
+ * that can be invoked on the underlying objects are listed in CTeuchos_any.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Teuchos_any_ID_t;
 
 #ifdef HAVE_CTRILINOS_AMESOS
+/*! Struct used for referring to objects in the Amesos_BaseSolver table.  Methods
+ * that can be invoked on the underlying objects are listed in CAmesos_BaseSolver.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Amesos_BaseSolver_ID_t;
 #endif /* HAVE_CTRILINOS_AMESOS */
 
 #ifdef HAVE_CTRILINOS_AMESOS
+/*! Struct used for referring to objects in the Amesos table.  Methods
+ * that can be invoked on the underlying objects are listed in CAmesos.h */
 typedef struct {
-    CTrilinos_Type_ID_t type;	/* Data type of the object */
-    int index;			/* Array index of the object */
-    boolean is_const;		/* Whether or not object was declared const */
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Amesos_ID_t;
 #endif /* HAVE_CTRILINOS_AMESOS */
 
 
 
+/*! Wrapper for Epetra_DataAccess */
 typedef enum {
     CT_Epetra_DataAccess_E_Copy,
     CT_Epetra_DataAccess_E_View
 } CT_Epetra_DataAccess_E_t;
 
+/*! Wrapper for Epetra_CombineMode */
 typedef enum {
     CT_Epetra_CombineMode_E_Add,
     CT_Epetra_CombineMode_E_Zero,
@@ -311,6 +401,7 @@ typedef enum {
     CT_Epetra_CombineMode_E_AbsMax
 } CT_Epetra_CombineMode_E_t;
 
+/*! Wrapper for ProblemDifficultyLevel */
 typedef enum {
     CT_ProblemDifficultyLevel_E_easy,
     CT_ProblemDifficultyLevel_E_moderate,
@@ -318,12 +409,14 @@ typedef enum {
     CT_ProblemDifficultyLevel_E_unsure
 } CT_ProblemDifficultyLevel_E_t;
 
+/*! Wrapper for EParseCommandLineReturn */
 typedef enum {
     CT_EParseCommandLineReturn_E_PARSE_SUCCESSFUL = 0,
     CT_EParseCommandLineReturn_E_PARSE_HELP_PRINTED = 1,
     CT_EParseCommandLineReturn_E_PARSE_UNRECOGNIZED_OPTION = 2
 } CT_EParseCommandLineReturn_E_t;
 
+/*! Wrapper for EOptType */
 typedef enum {
     CT_EOptType_E_OPT_NONE,
     CT_EOptType_E_OPT_BOOL_TRUE,
@@ -334,11 +427,13 @@ typedef enum {
     CT_EOptType_E_OPT_ENUM_INT
 } CT_EOptType_E_t;
 
+/*! Wrapper for EValidateUsed */
 typedef enum {
     CT_EValidateUsed_E_VALIDATE_USED_ENABLED,
     CT_EValidateUsed_E_VALIDATE_USED_DISABLED
 } CT_EValidateUsed_E_t;
 
+/*! Wrapper for EValidateDefaults */
 typedef enum {
     CT_EValidateDefaults_E_VALIDATE_DEFAULTS_ENABLED,
     CT_EValidateDefaults_E_VALIDATE_DEFAULTS_DISABLED

@@ -1,5 +1,40 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
+
+/*! @file CEpetra_LAPACK.h
+ * @brief Wrappers for Epetra_LAPACK */
 
 /* True C header file! */
 
@@ -16,7 +51,7 @@ extern "C" {
 #endif
 
 
-/* Functions Epetra_LAPACK_Cast() and Epetra_LAPACK_Abstract()
+/*! Functions Epetra_LAPACK_Cast() and Epetra_LAPACK_Abstract()
    are used for casting CTrilinos objects from one type to another.
    The former function performs a dynamic cast on the underlying object
    and stores an RCP to it in the Epetra_LAPACK table, while
@@ -27,121 +62,139 @@ extern "C" {
    be casted).
 */
 
+/*! @name Explicit casting methods */
+/*@{*/
+
 CT_Epetra_LAPACK_ID_t Epetra_LAPACK_Cast ( CTrilinos_Object_ID_t id );
 
 CTrilinos_Object_ID_t Epetra_LAPACK_Abstract ( 
   CT_Epetra_LAPACK_ID_t id );
 
-/* Original C++ prototype:
-   Epetra_LAPACK(void);
+/*@}*/
+
+/*! @name Epetra_LAPACK constructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   Epetra_LAPACK::Epetra_LAPACK(void)
 */
 CT_Epetra_LAPACK_ID_t Epetra_LAPACK_Create (  );
 
-/* Original C++ prototype:
-   Epetra_LAPACK(const Epetra_LAPACK& LAPACK);
+/*! @brief Wrapper for 
+   Epetra_LAPACK::Epetra_LAPACK(const Epetra_LAPACK& LAPACK)
 */
 CT_Epetra_LAPACK_ID_t Epetra_LAPACK_Duplicate ( 
   CT_Epetra_LAPACK_ID_t LAPACKID );
 
-/* Original C++ prototype:
-   virtual ~Epetra_LAPACK(void);
+/*@}*/
+
+/*! @name Epetra_LAPACK destructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   virtual Epetra_LAPACK::~Epetra_LAPACK(void)
 */
 void Epetra_LAPACK_Destroy ( CT_Epetra_LAPACK_ID_t * selfID );
 
-/* Original C++ prototype:
-   void POTRF( const char UPLO, const int N, float * A, const int LDA, int * INFO) const;
+/*@}*/
+
+/*! @name Epetra_LAPACK member wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POTRF( const char UPLO, const int N, float * A, const int LDA, int * INFO) const
 */
 void Epetra_LAPACK_POTRF_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   float * A, const int LDA, int * INFO );
 
-/* Original C++ prototype:
-   void POTRF( const char UPLO, const int N, double * A, const int LDA, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POTRF( const char UPLO, const int N, double * A, const int LDA, int * INFO) const
 */
 void Epetra_LAPACK_POTRF_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   double * A, const int LDA, int * INFO );
 
-/* Original C++ prototype:
-   void POTRS( const char UPLO, const int N, const int NRHS, const float * A, const int LDA, float * X, const int LDX, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POTRS( const char UPLO, const int N, const int NRHS, const float * A, const int LDA, float * X, const int LDX, int * INFO) const
 */
 void Epetra_LAPACK_POTRS_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   const int NRHS, const float * A, const int LDA, float * X, 
   const int LDX, int * INFO );
 
-/* Original C++ prototype:
-   void POTRS( const char UPLO, const int N, const int NRHS, const double * A, const int LDA, double * X, const int LDX, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POTRS( const char UPLO, const int N, const int NRHS, const double * A, const int LDA, double * X, const int LDX, int * INFO) const
 */
 void Epetra_LAPACK_POTRS_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   const int NRHS, const double * A, const int LDA, double * X, 
   const int LDX, int * INFO );
 
-/* Original C++ prototype:
-   void POTRI( const char UPLO, const int N, float * A, const int LDA, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POTRI( const char UPLO, const int N, float * A, const int LDA, int * INFO) const
 */
 void Epetra_LAPACK_POTRI_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   float * A, const int LDA, int * INFO );
 
-/* Original C++ prototype:
-   void POTRI( const char UPLO, const int N, double * A, const int LDA, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POTRI( const char UPLO, const int N, double * A, const int LDA, int * INFO) const
 */
 void Epetra_LAPACK_POTRI_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   double * A, const int LDA, int * INFO );
 
-/* Original C++ prototype:
-   void POCON( const char UPLO, const int N, const float * A, const int LDA, const float ANORM, float * RCOND, float * WORK, int * IWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POCON( const char UPLO, const int N, const float * A, const int LDA, const float ANORM, float * RCOND, float * WORK, int * IWORK, int * INFO) const
 */
 void Epetra_LAPACK_POCON_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   const float * A, const int LDA, const float ANORM, float * RCOND, 
   float * WORK, int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void POCON( const char UPLO, const int N, const double * A, const int LDA, const double ANORM, double * RCOND, double * WORK, int * IWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POCON( const char UPLO, const int N, const double * A, const int LDA, const double ANORM, double * RCOND, double * WORK, int * IWORK, int * INFO) const
 */
 void Epetra_LAPACK_POCON_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   const double * A, const int LDA, const double ANORM, 
   double * RCOND, double * WORK, int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void POSV( const char UPLO, const int N, const int NRHS, float * A, const int LDA, float * X, const int LDX, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POSV( const char UPLO, const int N, const int NRHS, float * A, const int LDA, float * X, const int LDX, int * INFO) const
 */
 void Epetra_LAPACK_POSV_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   const int NRHS, float * A, const int LDA, float * X, 
   const int LDX, int * INFO );
 
-/* Original C++ prototype:
-   void POSV( const char UPLO, const int N, const int NRHS, double * A, const int LDA, double * X, const int LDX, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POSV( const char UPLO, const int N, const int NRHS, double * A, const int LDA, double * X, const int LDX, int * INFO) const
 */
 void Epetra_LAPACK_POSV_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   const int NRHS, double * A, const int LDA, double * X, 
   const int LDX, int * INFO );
 
-/* Original C++ prototype:
-   void POEQU(const int N, const float * A, const int LDA, float * S, float * SCOND, float * AMAX, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POEQU(const int N, const float * A, const int LDA, float * S, float * SCOND, float * AMAX, int * INFO) const
 */
 void Epetra_LAPACK_POEQU_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int N, const float * A, 
   const int LDA, float * S, float * SCOND, float * AMAX, 
   int * INFO );
 
-/* Original C++ prototype:
-   void POEQU(const int N, const double * A, const int LDA, double * S, double * SCOND, double * AMAX, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POEQU(const int N, const double * A, const int LDA, double * S, double * SCOND, double * AMAX, int * INFO) const
 */
 void Epetra_LAPACK_POEQU_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int N, const double * A, 
   const int LDA, double * S, double * SCOND, double * AMAX, 
   int * INFO );
 
-/* Original C++ prototype:
-   void PORFS(const char UPLO, const int N, const int NRHS, const float * A, const int LDA, const float * AF, const int LDAF, const float * B, const int LDB, float * X, const int LDX, float * FERR, float * BERR, float * WORK, int * IWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::PORFS(const char UPLO, const int N, const int NRHS, const float * A, const int LDA, const float * AF, const int LDAF, const float * B, const int LDB, float * X, const int LDX, float * FERR, float * BERR, float * WORK, int * IWORK, int * INFO) const
 */
 void Epetra_LAPACK_PORFS_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
@@ -150,8 +203,8 @@ void Epetra_LAPACK_PORFS_float (
   const int LDX, float * FERR, float * BERR, float * WORK, 
   int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void PORFS(const char UPLO, const int N, const int NRHS, const double * A, const int LDA, const double * AF, const int LDAF, const double * B, const int LDB, double * X, const int LDX, double * FERR, double * BERR, double * WORK, int * IWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::PORFS(const char UPLO, const int N, const int NRHS, const double * A, const int LDA, const double * AF, const int LDAF, const double * B, const int LDB, double * X, const int LDX, double * FERR, double * BERR, double * WORK, int * IWORK, int * INFO) const
 */
 void Epetra_LAPACK_PORFS_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
@@ -160,8 +213,8 @@ void Epetra_LAPACK_PORFS_double (
   const int LDB, double * X, const int LDX, double * FERR, 
   double * BERR, double * WORK, int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void POSVX(const char FACT, const char UPLO, const int N, const int NRHS, float * A, const int LDA, float * AF, const int LDAF, const char EQUED, float * S, float * B, const int LDB, float * X, const int LDX, float * RCOND, float * FERR, float * BERR, float * WORK, int * IWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POSVX(const char FACT, const char UPLO, const int N, const int NRHS, float * A, const int LDA, float * AF, const int LDAF, const char EQUED, float * S, float * B, const int LDB, float * X, const int LDX, float * RCOND, float * FERR, float * BERR, float * WORK, int * IWORK, int * INFO) const
 */
 void Epetra_LAPACK_POSVX_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char FACT, const char UPLO, 
@@ -171,8 +224,8 @@ void Epetra_LAPACK_POSVX_float (
   float * FERR, float * BERR, float * WORK, int * IWORK, 
   int * INFO );
 
-/* Original C++ prototype:
-   void POSVX(const char FACT, const char UPLO, const int N, const int NRHS, double * A, const int LDA, double * AF, const int LDAF, const char EQUED, double * S, double * B, const int LDB, double * X, const int LDX, double * RCOND, double * FERR, double * BERR, double * WORK, int * IWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::POSVX(const char FACT, const char UPLO, const int N, const int NRHS, double * A, const int LDA, double * AF, const int LDAF, const char EQUED, double * S, double * B, const int LDB, double * X, const int LDX, double * RCOND, double * FERR, double * BERR, double * WORK, int * IWORK, int * INFO) const
 */
 void Epetra_LAPACK_POSVX_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char FACT, const char UPLO, 
@@ -182,8 +235,8 @@ void Epetra_LAPACK_POSVX_double (
   double * RCOND, double * FERR, double * BERR, double * WORK, 
   int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GELS( const char TRANS, const int M, const int N, const int NRHS, double* A, const int LDA, double* B, const int LDB, double* WORK, const int LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GELS( const char TRANS, const int M, const int N, const int NRHS, double* A, const int LDA, double* B, const int LDB, double* WORK, const int LWORK, int * INFO) const
 */
 void Epetra_LAPACK_GELS_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char TRANS, const int M, 
@@ -191,118 +244,118 @@ void Epetra_LAPACK_GELS_double (
   double * B, const int LDB, double * WORK, const int LWORK, 
   int * INFO );
 
-/* Original C++ prototype:
-   void GETRF( const int M, const int N, float * A, const int LDA, int * IPIV, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GETRF( const int M, const int N, float * A, const int LDA, int * IPIV, int * INFO) const
 */
 void Epetra_LAPACK_GETRF_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int M, const int N, float * A, 
   const int LDA, int * IPIV, int * INFO );
 
-/* Original C++ prototype:
-   void GETRF( const int M, const int N, double * A, const int LDA, int * IPIV, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GETRF( const int M, const int N, double * A, const int LDA, int * IPIV, int * INFO) const
 */
 void Epetra_LAPACK_GETRF_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int M, const int N, 
   double * A, const int LDA, int * IPIV, int * INFO );
 
-/* Original C++ prototype:
-   void GEQRF( const int M, const int N, float * A, const int LDA, float * TAU, float * WORK, const int lwork, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GEQRF( const int M, const int N, float * A, const int LDA, float * TAU, float * WORK, const int lwork, int * INFO) const
 */
 void Epetra_LAPACK_GEQRF_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int M, const int N, float * A, 
   const int LDA, float * TAU, float * WORK, const int lwork, 
   int * INFO );
 
-/* Original C++ prototype:
-   void GEQRF( const int M, const int N, double * A, const int LDA, double * TAU, double * WORK, const int lwork, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GEQRF( const int M, const int N, double * A, const int LDA, double * TAU, double * WORK, const int lwork, int * INFO) const
 */
 void Epetra_LAPACK_GEQRF_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int M, const int N, 
   double * A, const int LDA, double * TAU, double * WORK, 
   const int lwork, int * INFO );
 
-/* Original C++ prototype:
-   void GETRS( const char TRANS, const int N, const int NRHS, const float * A, const int LDA, const int * IPIV, float * X, const int LDX, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GETRS( const char TRANS, const int N, const int NRHS, const float * A, const int LDA, const int * IPIV, float * X, const int LDX, int * INFO) const
 */
 void Epetra_LAPACK_GETRS_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char TRANS, const int N, 
   const int NRHS, const float * A, const int LDA, const int * IPIV, 
   float * X, const int LDX, int * INFO );
 
-/* Original C++ prototype:
-   void GETRS( const char TRANS, const int N, const int NRHS, const double * A, const int LDA, const int * IPIV, double * X, const int LDX, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GETRS( const char TRANS, const int N, const int NRHS, const double * A, const int LDA, const int * IPIV, double * X, const int LDX, int * INFO) const
 */
 void Epetra_LAPACK_GETRS_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char TRANS, const int N, 
   const int NRHS, const double * A, const int LDA, const int * IPIV, 
   double * X, const int LDX, int * INFO );
 
-/* Original C++ prototype:
-   void GETRI( const int N, float * A, const int LDA, int * IPIV, float * WORK, const int * LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GETRI( const int N, float * A, const int LDA, int * IPIV, float * WORK, const int * LWORK, int * INFO) const
 */
 void Epetra_LAPACK_GETRI_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int N, float * A, 
   const int LDA, int * IPIV, float * WORK, const int * LWORK, 
   int * INFO );
 
-/* Original C++ prototype:
-   void GETRI( const int N, double * A, const int LDA, int * IPIV, double * WORK, const int * LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GETRI( const int N, double * A, const int LDA, int * IPIV, double * WORK, const int * LWORK, int * INFO) const
 */
 void Epetra_LAPACK_GETRI_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int N, double * A, 
   const int LDA, int * IPIV, double * WORK, const int * LWORK, 
   int * INFO );
 
-/* Original C++ prototype:
-   void GECON( const char NORM, const int N, const float * A, const int LDA, const float ANORM, float * RCOND, float * WORK, int * IWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GECON( const char NORM, const int N, const float * A, const int LDA, const float ANORM, float * RCOND, float * WORK, int * IWORK, int * INFO) const
 */
 void Epetra_LAPACK_GECON_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char NORM, const int N, 
   const float * A, const int LDA, const float ANORM, float * RCOND, 
   float * WORK, int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GECON( const char NORM, const int N, const double * A, const int LDA, const double ANORM, double * RCOND, double * WORK, int * IWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GECON( const char NORM, const int N, const double * A, const int LDA, const double ANORM, double * RCOND, double * WORK, int * IWORK, int * INFO) const
 */
 void Epetra_LAPACK_GECON_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char NORM, const int N, 
   const double * A, const int LDA, const double ANORM, 
   double * RCOND, double * WORK, int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GESV( const int N, const int NRHS, float * A, const int LDA, int * IPIV, float * X, const int LDX, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GESV( const int N, const int NRHS, float * A, const int LDA, int * IPIV, float * X, const int LDX, int * INFO) const
 */
 void Epetra_LAPACK_GESV_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int N, const int NRHS, 
   float * A, const int LDA, int * IPIV, float * X, const int LDX, 
   int * INFO );
 
-/* Original C++ prototype:
-   void GESV( const int N, const int NRHS, double * A, const int LDA, int * IPIV, double * X, const int LDX, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GESV( const int N, const int NRHS, double * A, const int LDA, int * IPIV, double * X, const int LDX, int * INFO) const
 */
 void Epetra_LAPACK_GESV_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int N, const int NRHS, 
   double * A, const int LDA, int * IPIV, double * X, const int LDX, 
   int * INFO );
 
-/* Original C++ prototype:
-   void GEEQU(const int M, const int N, const float * A, const int LDA, float * R, float * C, float * ROWCND, float * COLCND, float * AMAX, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GEEQU(const int M, const int N, const float * A, const int LDA, float * R, float * C, float * ROWCND, float * COLCND, float * AMAX, int * INFO) const
 */
 void Epetra_LAPACK_GEEQU_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int M, const int N, 
   const float * A, const int LDA, float * R, float * C, 
   float * ROWCND, float * COLCND, float * AMAX, int * INFO );
 
-/* Original C++ prototype:
-   void GEEQU(const int M, const int N, const double * A, const int LDA, double * R, double * C, double * ROWCND, double * COLCND, double * AMAX, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GEEQU(const int M, const int N, const double * A, const int LDA, double * R, double * C, double * ROWCND, double * COLCND, double * AMAX, int * INFO) const
 */
 void Epetra_LAPACK_GEEQU_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int M, const int N, 
   const double * A, const int LDA, double * R, double * C, 
   double * ROWCND, double * COLCND, double * AMAX, int * INFO );
 
-/* Original C++ prototype:
-   void GERFS(const char TRANS, const int N, const int NRHS, const float * A, const int LDA, const float * AF, const int LDAF, const int * IPIV, const float * B, const int LDB, float * X, const int LDX, float * FERR, float * BERR, float * WORK, int * IWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GERFS(const char TRANS, const int N, const int NRHS, const float * A, const int LDA, const float * AF, const int LDAF, const int * IPIV, const float * B, const int LDB, float * X, const int LDX, float * FERR, float * BERR, float * WORK, int * IWORK, int * INFO) const
 */
 void Epetra_LAPACK_GERFS_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char TRANS, const int N, 
@@ -311,8 +364,8 @@ void Epetra_LAPACK_GERFS_float (
   float * X, const int LDX, float * FERR, float * BERR, 
   float * WORK, int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GERFS(const char TRANS, const int N, const int NRHS, const double * A, const int LDA, const double * AF, const int LDAF, const int * IPIV, const double * B, const int LDB, double * X, const int LDX, double * FERR, double * BERR, double * WORK, int * IWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GERFS(const char TRANS, const int N, const int NRHS, const double * A, const int LDA, const double * AF, const int LDAF, const int * IPIV, const double * B, const int LDB, double * X, const int LDX, double * FERR, double * BERR, double * WORK, int * IWORK, int * INFO) const
 */
 void Epetra_LAPACK_GERFS_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char TRANS, const int N, 
@@ -322,8 +375,8 @@ void Epetra_LAPACK_GERFS_double (
   double * FERR, double * BERR, double * WORK, int * IWORK, 
   int * INFO );
 
-/* Original C++ prototype:
-   void GESVX(const char FACT, const char TRANS, const int N, const int NRHS, float * A, const int LDA, float * AF, const int LDAF, int * IPIV, const char EQUED, float * R, float * C, float * B, const int LDB, float * X, const int LDX, float * RCOND, float * FERR, float * BERR, float * WORK, int * IWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GESVX(const char FACT, const char TRANS, const int N, const int NRHS, float * A, const int LDA, float * AF, const int LDAF, int * IPIV, const char EQUED, float * R, float * C, float * B, const int LDB, float * X, const int LDX, float * RCOND, float * FERR, float * BERR, float * WORK, int * IWORK, int * INFO) const
 */
 void Epetra_LAPACK_GESVX_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char FACT, const char TRANS, 
@@ -333,8 +386,8 @@ void Epetra_LAPACK_GESVX_float (
   float * RCOND, float * FERR, float * BERR, float * WORK, 
   int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GESVX(const char FACT, const char TRANS, const int N, const int NRHS, double * A, const int LDA, double * AF, const int LDAF, int * IPIV, const char EQUED, double * R, double * C, double * B, const int LDB, double * X, const int LDX, double * RCOND, double * FERR, double * BERR, double * WORK, int * IWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GESVX(const char FACT, const char TRANS, const int N, const int NRHS, double * A, const int LDA, double * AF, const int LDAF, int * IPIV, const char EQUED, double * R, double * C, double * B, const int LDB, double * X, const int LDX, double * RCOND, double * FERR, double * BERR, double * WORK, int * IWORK, int * INFO) const
 */
 void Epetra_LAPACK_GESVX_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char FACT, const char TRANS, 
@@ -344,24 +397,24 @@ void Epetra_LAPACK_GESVX_double (
   const int LDX, double * RCOND, double * FERR, double * BERR, 
   double * WORK, int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GEHRD(const int N, const int ILO, const int IHI, float * A, const int LDA, float * TAU, float * WORK, const int LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GEHRD(const int N, const int ILO, const int IHI, float * A, const int LDA, float * TAU, float * WORK, const int LWORK, int * INFO) const
 */
 void Epetra_LAPACK_GEHRD_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int N, const int ILO, 
   const int IHI, float * A, const int LDA, float * TAU, 
   float * WORK, const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GEHRD(const int N, const int ILO, const int IHI, double * A, const int LDA, double * TAU, double * WORK, const int LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GEHRD(const int N, const int ILO, const int IHI, double * A, const int LDA, double * TAU, double * WORK, const int LWORK, int * INFO) const
 */
 void Epetra_LAPACK_GEHRD_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int N, const int ILO, 
   const int IHI, double * A, const int LDA, double * TAU, 
   double * WORK, const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void HSEQR( const char JOB, const char COMPZ, const int N, const int ILO, const int IHI, float * H, const int LDH, float * WR, float * WI, float * Z, const int LDZ, float * WORK, const int LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::HSEQR( const char JOB, const char COMPZ, const int N, const int ILO, const int IHI, float * H, const int LDH, float * WR, float * WI, float * Z, const int LDZ, float * WORK, const int LWORK, int * INFO) const
 */
 void Epetra_LAPACK_HSEQR_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOB, const char COMPZ, 
@@ -369,8 +422,8 @@ void Epetra_LAPACK_HSEQR_float (
   const int LDH, float * WR, float * WI, float * Z, const int LDZ, 
   float * WORK, const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void HSEQR( const char JOB, const char COMPZ, const int N, const int ILO, const int IHI, double * H, const int LDH, double * WR, double * WI, double * Z, const int LDZ, double * WORK, const int LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::HSEQR( const char JOB, const char COMPZ, const int N, const int ILO, const int IHI, double * H, const int LDH, double * WR, double * WI, double * Z, const int LDZ, double * WORK, const int LWORK, int * INFO) const
 */
 void Epetra_LAPACK_HSEQR_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOB, const char COMPZ, 
@@ -378,40 +431,40 @@ void Epetra_LAPACK_HSEQR_double (
   const int LDH, double * WR, double * WI, double * Z, 
   const int LDZ, double * WORK, const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void ORGQR( const int M, const int N, const int K, float * A, const int LDA, float * TAU, float * WORK, const int LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::ORGQR( const int M, const int N, const int K, float * A, const int LDA, float * TAU, float * WORK, const int LWORK, int * INFO) const
 */
 void Epetra_LAPACK_ORGQR_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int M, const int N, 
   const int K, float * A, const int LDA, float * TAU, float * WORK, 
   const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void ORGQR( const int M, const int N, const int K, double * A, const int LDA, double * TAU, double * WORK, const int LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::ORGQR( const int M, const int N, const int K, double * A, const int LDA, double * TAU, double * WORK, const int LWORK, int * INFO) const
 */
 void Epetra_LAPACK_ORGQR_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int M, const int N, 
   const int K, double * A, const int LDA, double * TAU, 
   double * WORK, const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void ORGHR( const int N, const int ILO, const int IHI, float * A, const int LDA, float * TAU, float * WORK, const int LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::ORGHR( const int N, const int ILO, const int IHI, float * A, const int LDA, float * TAU, float * WORK, const int LWORK, int * INFO) const
 */
 void Epetra_LAPACK_ORGHR_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int N, const int ILO, 
   const int IHI, float * A, const int LDA, float * TAU, 
   float * WORK, const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void ORGHR( const int N, const int ILO, const int IHI, double * A, const int LDA, double * TAU, double * WORK, const int LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::ORGHR( const int N, const int ILO, const int IHI, double * A, const int LDA, double * TAU, double * WORK, const int LWORK, int * INFO) const
 */
 void Epetra_LAPACK_ORGHR_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int N, const int ILO, 
   const int IHI, double * A, const int LDA, double * TAU, 
   double * WORK, const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void ORMHR( const char SIDE, const char TRANS, const int M, const int N, const int ILO, const int IHI, const float * A, const int LDA, const float * TAU, float * C, const int LDC, float * WORK, const int LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::ORMHR( const char SIDE, const char TRANS, const int M, const int N, const int ILO, const int IHI, const float * A, const int LDA, const float * TAU, float * C, const int LDC, float * WORK, const int LWORK, int * INFO) const
 */
 void Epetra_LAPACK_ORMHR_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char SIDE, const char TRANS, 
@@ -419,8 +472,8 @@ void Epetra_LAPACK_ORMHR_float (
   const float * A, const int LDA, const float * TAU, float * C, 
   const int LDC, float * WORK, const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void ORMHR( const char SIDE, const char TRANS, const int M, const int N, const int ILO, const int IHI, const double * A, const int LDA, const double * TAU, double * C, const int LDC, double * WORK, const int LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::ORMHR( const char SIDE, const char TRANS, const int M, const int N, const int ILO, const int IHI, const double * A, const int LDA, const double * TAU, double * C, const int LDC, double * WORK, const int LWORK, int * INFO) const
 */
 void Epetra_LAPACK_ORMHR_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char SIDE, const char TRANS, 
@@ -428,24 +481,24 @@ void Epetra_LAPACK_ORMHR_double (
   const double * A, const int LDA, const double * TAU, double * C, 
   const int LDC, double * WORK, const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void LARFT( const char DIRECT, const char STOREV, const int N, const int K, double * V, const int LDV, double * TAU, double * T, const int LDT) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::LARFT( const char DIRECT, const char STOREV, const int N, const int K, double * V, const int LDV, double * TAU, double * T, const int LDT) const
 */
 void Epetra_LAPACK_LARFT_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char DIRECT, 
   const char STOREV, const int N, const int K, double * V, 
   const int LDV, double * TAU, double * T, const int LDT );
 
-/* Original C++ prototype:
-   void LARFT( const char DIRECT, const char STOREV, const int N, const int K, float * V, const int LDV, float * TAU, float * T, const int LDT) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::LARFT( const char DIRECT, const char STOREV, const int N, const int K, float * V, const int LDV, float * TAU, float * T, const int LDT) const
 */
 void Epetra_LAPACK_LARFT_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char DIRECT, 
   const char STOREV, const int N, const int K, float * V, 
   const int LDV, float * TAU, float * T, const int LDT );
 
-/* Original C++ prototype:
-   void TREVC( const char SIDE, const char HOWMNY, int * SELECT, const int N, const float * T, const int LDT, float *VL, const int LDVL, float * VR, const int LDVR, const int MM, int * M, float * WORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::TREVC( const char SIDE, const char HOWMNY, int * SELECT, const int N, const float * T, const int LDT, float *VL, const int LDVL, float * VR, const int LDVR, const int MM, int * M, float * WORK, int * INFO) const
 */
 void Epetra_LAPACK_TREVC_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char SIDE, const char HOWMNY, 
@@ -453,8 +506,8 @@ void Epetra_LAPACK_TREVC_float (
   float * VL, const int LDVL, float * VR, const int LDVR, 
   const int MM, int * M, float * WORK, int * INFO );
 
-/* Original C++ prototype:
-   void TREVC( const char SIDE, const char HOWMNY, int * SELECT, const int N, const double * T, const int LDT, double *VL, const int LDVL, double * VR, const int LDVR, const int MM, int *M, double * WORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::TREVC( const char SIDE, const char HOWMNY, int * SELECT, const int N, const double * T, const int LDT, double *VL, const int LDVL, double * VR, const int LDVR, const int MM, int *M, double * WORK, int * INFO) const
 */
 void Epetra_LAPACK_TREVC_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char SIDE, const char HOWMNY, 
@@ -462,24 +515,24 @@ void Epetra_LAPACK_TREVC_double (
   double * VL, const int LDVL, double * VR, const int LDVR, 
   const int MM, int * M, double * WORK, int * INFO );
 
-/* Original C++ prototype:
-   void TREXC( const char COMPQ, const int N, float * T, const int LDT, float * Q, const int LDQ, int IFST, int ILST, float * WORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::TREXC( const char COMPQ, const int N, float * T, const int LDT, float * Q, const int LDQ, int IFST, int ILST, float * WORK, int * INFO) const
 */
 void Epetra_LAPACK_TREXC_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char COMPQ, const int N, 
   float * T, const int LDT, float * Q, const int LDQ, int IFST, 
   int ILST, float * WORK, int * INFO );
 
-/* Original C++ prototype:
-   void TREXC( const char COMPQ, const int N, double * T, const int LDT, double * Q, const int LDQ, int IFST, int ILST, double * WORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::TREXC( const char COMPQ, const int N, double * T, const int LDT, double * Q, const int LDQ, int IFST, int ILST, double * WORK, int * INFO) const
 */
 void Epetra_LAPACK_TREXC_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char COMPQ, const int N, 
   double * T, const int LDT, double * Q, const int LDQ, int IFST, 
   int ILST, double * WORK, int * INFO );
 
-/* Original C++ prototype:
-   void GESVD( const char JOBU, const char JOBVT, const int M, const int N, float * A, const int LDA, float * S, float * U, const int LDU, float * VT, const int LDVT, float * WORK, const int * LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GESVD( const char JOBU, const char JOBVT, const int M, const int N, float * A, const int LDA, float * S, float * U, const int LDU, float * VT, const int LDVT, float * WORK, const int * LWORK, int * INFO) const
 */
 void Epetra_LAPACK_GESVD_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBU, const char JOBVT, 
@@ -487,8 +540,8 @@ void Epetra_LAPACK_GESVD_float (
   float * U, const int LDU, float * VT, const int LDVT, 
   float * WORK, const int * LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GESVD( const char JOBU, const char JOBVT, const int M, const int N, double * A, const int LDA, double * S, double * U, const int LDU, double * VT, const int LDVT, double * WORK, const int * LWORK, int * INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GESVD( const char JOBU, const char JOBVT, const int M, const int N, double * A, const int LDA, double * S, double * U, const int LDU, double * VT, const int LDVT, double * WORK, const int * LWORK, int * INFO) const
 */
 void Epetra_LAPACK_GESVD_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBU, const char JOBVT, 
@@ -496,8 +549,8 @@ void Epetra_LAPACK_GESVD_double (
   double * U, const int LDU, double * VT, const int LDVT, 
   double * WORK, const int * LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GGSVD(const char JOBU, const char JOBV, const char JOBQ, const int M, const int N, const int P, int * K, int * L, double* A, const int LDA, double* B, const int LDB, double* ALPHA, double* BETA, double* U, const int LDU, double* V, const int LDV, double* Q, const int LDQ, double* WORK, int* IWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GGSVD(const char JOBU, const char JOBV, const char JOBQ, const int M, const int N, const int P, int * K, int * L, double* A, const int LDA, double* B, const int LDB, double* ALPHA, double* BETA, double* U, const int LDU, double* V, const int LDV, double* Q, const int LDQ, double* WORK, int* IWORK, int* INFO) const
 */
 void Epetra_LAPACK_GGSVD_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBU, const char JOBV, 
@@ -507,8 +560,8 @@ void Epetra_LAPACK_GGSVD_double (
   double * V, const int LDV, double * Q, const int LDQ, 
   double * WORK, int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GGSVD(const char JOBU, const char JOBV, const char JOBQ, const int M, const int N, const int P, int * K, int * L, float* A, const int LDA, float* B, const int LDB, float* ALPHA, float* BETA, float* U, const int LDU, float* V, const int LDV, float* Q, const int LDQ, float* WORK, int* IWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GGSVD(const char JOBU, const char JOBV, const char JOBQ, const int M, const int N, const int P, int * K, int * L, float* A, const int LDA, float* B, const int LDB, float* ALPHA, float* BETA, float* U, const int LDU, float* V, const int LDV, float* Q, const int LDQ, float* WORK, int* IWORK, int* INFO) const
 */
 void Epetra_LAPACK_GGSVD_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBU, const char JOBV, 
@@ -518,8 +571,8 @@ void Epetra_LAPACK_GGSVD_float (
   const int LDV, float * Q, const int LDQ, float * WORK, 
   int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GEEV(const char JOBVL, const char JOBVR, const int N, double* A, const int LDA, double* WR, double* WI, double* VL, const int LDVL, double* VR, const int LDVR, double* WORK, const int LWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GEEV(const char JOBVL, const char JOBVR, const int N, double* A, const int LDA, double* WR, double* WI, double* VL, const int LDVL, double* VR, const int LDVR, double* WORK, const int LWORK, int* INFO) const
 */
 void Epetra_LAPACK_GEEV_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBVL, const char JOBVR, 
@@ -527,8 +580,8 @@ void Epetra_LAPACK_GEEV_double (
   double * VL, const int LDVL, double * VR, const int LDVR, 
   double * WORK, const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GEEV(const char JOBVL, const char JOBVR, const int N, float* A, const int LDA, float* WR, float* WI, float* VL, const int LDVL, float* VR, const int LDVR, float* WORK, const int LWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GEEV(const char JOBVL, const char JOBVR, const int N, float* A, const int LDA, float* WR, float* WI, float* VL, const int LDVL, float* VR, const int LDVR, float* WORK, const int LWORK, int* INFO) const
 */
 void Epetra_LAPACK_GEEV_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBVL, const char JOBVR, 
@@ -536,72 +589,72 @@ void Epetra_LAPACK_GEEV_float (
   float * VL, const int LDVL, float * VR, const int LDVR, 
   float * WORK, const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void SPEV(const char JOBZ, const char UPLO, const int N, double* AP, double* W, double* Z, int LDZ, double* WORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SPEV(const char JOBZ, const char UPLO, const int N, double* AP, double* W, double* Z, int LDZ, double* WORK, int* INFO) const
 */
 void Epetra_LAPACK_SPEV_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBZ, const char UPLO, 
   const int N, double * AP, double * W, double * Z, int LDZ, 
   double * WORK, int * INFO );
 
-/* Original C++ prototype:
-   void SPEV(const char JOBZ, const char UPLO, const int N, float* AP, float* W, float* Z, int LDZ, float* WORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SPEV(const char JOBZ, const char UPLO, const int N, float* AP, float* W, float* Z, int LDZ, float* WORK, int* INFO) const
 */
 void Epetra_LAPACK_SPEV_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBZ, const char UPLO, 
   const int N, float * AP, float * W, float * Z, int LDZ, 
   float * WORK, int * INFO );
 
-/* Original C++ prototype:
-   void SPGV(const int ITYPE, const char JOBZ, const char UPLO, const int N, double* AP, double* BP, double* W, double* Z, const int LDZ, double* WORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SPGV(const int ITYPE, const char JOBZ, const char UPLO, const int N, double* AP, double* BP, double* W, double* Z, const int LDZ, double* WORK, int* INFO) const
 */
 void Epetra_LAPACK_SPGV_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int ITYPE, const char JOBZ, 
   const char UPLO, const int N, double * AP, double * BP, 
   double * W, double * Z, const int LDZ, double * WORK, int * INFO );
 
-/* Original C++ prototype:
-   void SPGV(const int ITYPE, const char JOBZ, const char UPLO, const int N, float* AP, float* BP, float* W, float* Z, const int LDZ, float* WORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SPGV(const int ITYPE, const char JOBZ, const char UPLO, const int N, float* AP, float* BP, float* W, float* Z, const int LDZ, float* WORK, int* INFO) const
 */
 void Epetra_LAPACK_SPGV_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int ITYPE, const char JOBZ, 
   const char UPLO, const int N, float * AP, float * BP, float * W, 
   float * Z, const int LDZ, float * WORK, int * INFO );
 
-/* Original C++ prototype:
-   void SYEV(const char JOBZ, const char UPLO, const int N, double* A, const int LDA, double* W, double* WORK, const int LWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SYEV(const char JOBZ, const char UPLO, const int N, double* A, const int LDA, double* W, double* WORK, const int LWORK, int* INFO) const
 */
 void Epetra_LAPACK_SYEV_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBZ, const char UPLO, 
   const int N, double * A, const int LDA, double * W, double * WORK, 
   const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void SYEV(const char JOBZ, const char UPLO, const int N, float* A, const int LDA, float* W, float* WORK, const int LWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SYEV(const char JOBZ, const char UPLO, const int N, float* A, const int LDA, float* W, float* WORK, const int LWORK, int* INFO) const
 */
 void Epetra_LAPACK_SYEV_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBZ, const char UPLO, 
   const int N, float * A, const int LDA, float * W, float * WORK, 
   const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void SYEVD(const char JOBZ, const char UPLO, const int N, double* A, const int LDA, double* W, double* WORK, const int LWORK, int* IWORK, const int LIWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SYEVD(const char JOBZ, const char UPLO, const int N, double* A, const int LDA, double* W, double* WORK, const int LWORK, int* IWORK, const int LIWORK, int* INFO) const
 */
 void Epetra_LAPACK_SYEVD_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBZ, const char UPLO, 
   const int N, double * A, const int LDA, double * W, double * WORK, 
   const int LWORK, int * IWORK, const int LIWORK, int * INFO );
 
-/* Original C++ prototype:
-   void SYEVD(const char JOBZ, const char UPLO, const int N, float* A, const int LDA, float* W, float* WORK, const int LWORK, int* IWORK, const int LIWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SYEVD(const char JOBZ, const char UPLO, const int N, float* A, const int LDA, float* W, float* WORK, const int LWORK, int* IWORK, const int LIWORK, int* INFO) const
 */
 void Epetra_LAPACK_SYEVD_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBZ, const char UPLO, 
   const int N, float * A, const int LDA, float * W, float * WORK, 
   const int LWORK, int * IWORK, const int LIWORK, int * INFO );
 
-/* Original C++ prototype:
-   void SYEVX(const char JOBZ, const char RANGE, const char UPLO, const int N, double* A, const int LDA, const double* VL, const double* VU, const int* IL, const int* IU, const double ABSTOL, int * M, double* W, double* Z, const int LDZ, double* WORK, const int LWORK, int* IWORK, int* IFAIL, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SYEVX(const char JOBZ, const char RANGE, const char UPLO, const int N, double* A, const int LDA, const double* VL, const double* VU, const int* IL, const int* IU, const double ABSTOL, int * M, double* W, double* Z, const int LDZ, double* WORK, const int LWORK, int* IWORK, int* IFAIL, int* INFO) const
 */
 void Epetra_LAPACK_SYEVX_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBZ, const char RANGE, 
@@ -611,8 +664,8 @@ void Epetra_LAPACK_SYEVX_double (
   double * Z, const int LDZ, double * WORK, const int LWORK, 
   int * IWORK, int * IFAIL, int * INFO );
 
-/* Original C++ prototype:
-   void SYEVX(const char JOBZ, const char RANGE, const char UPLO, const int N, float* A, const int LDA, const float* VL, const float* VU, const int* IL, const int* IU, const float ABSTOL, int * M, float* W, float* Z, const int LDZ, float* WORK, const int LWORK, int* IWORK, int* IFAIL, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SYEVX(const char JOBZ, const char RANGE, const char UPLO, const int N, float* A, const int LDA, const float* VL, const float* VU, const int* IL, const int* IU, const float ABSTOL, int * M, float* W, float* Z, const int LDZ, float* WORK, const int LWORK, int* IWORK, int* IFAIL, int* INFO) const
 */
 void Epetra_LAPACK_SYEVX_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBZ, const char RANGE, 
@@ -622,8 +675,8 @@ void Epetra_LAPACK_SYEVX_float (
   const int LDZ, float * WORK, const int LWORK, int * IWORK, 
   int * IFAIL, int * INFO );
 
-/* Original C++ prototype:
-   void SYGV(const int ITYPE, const char JOBZ, const char UPLO, const int N, double* A, const int LDA, double* B, const int LDB, double* W, double* WORK, const int LWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SYGV(const int ITYPE, const char JOBZ, const char UPLO, const int N, double* A, const int LDA, double* B, const int LDB, double* W, double* WORK, const int LWORK, int* INFO) const
 */
 void Epetra_LAPACK_SYGV_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int ITYPE, const char JOBZ, 
@@ -631,8 +684,8 @@ void Epetra_LAPACK_SYGV_double (
   double * B, const int LDB, double * W, double * WORK, 
   const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void SYGV(const int ITYPE, const char JOBZ, const char UPLO, const int N, float* A, const int LDA, float* B, const int LDB, float* W, float* WORK, const int LWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SYGV(const int ITYPE, const char JOBZ, const char UPLO, const int N, float* A, const int LDA, float* B, const int LDB, float* W, float* WORK, const int LWORK, int* INFO) const
 */
 void Epetra_LAPACK_SYGV_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int ITYPE, const char JOBZ, 
@@ -640,8 +693,8 @@ void Epetra_LAPACK_SYGV_float (
   const int LDB, float * W, float * WORK, const int LWORK, 
   int * INFO );
 
-/* Original C++ prototype:
-   void SYGVX(const int ITYPE, const char JOBZ, const char RANGE, const char UPLO, const int N, double* A, const int LDA, double* B, const int LDB, const double* VL, const double* VU, const int* IL, const int* IU, const double ABSTOL, int* M, double* W, double* Z, const int LDZ, double* WORK, const int LWORK, int* IWORK, int* IFAIL, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SYGVX(const int ITYPE, const char JOBZ, const char RANGE, const char UPLO, const int N, double* A, const int LDA, double* B, const int LDB, const double* VL, const double* VU, const int* IL, const int* IU, const double ABSTOL, int* M, double* W, double* Z, const int LDZ, double* WORK, const int LWORK, int* IWORK, int* IFAIL, int* INFO) const
 */
 void Epetra_LAPACK_SYGVX_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int ITYPE, const char JOBZ, 
@@ -652,8 +705,8 @@ void Epetra_LAPACK_SYGVX_double (
   const int LDZ, double * WORK, const int LWORK, int * IWORK, 
   int * IFAIL, int * INFO );
 
-/* Original C++ prototype:
-   void SYGVX(const int ITYPE, const char JOBZ, const char RANGE, const char UPLO, const int N, float* A, const int LDA, float* B, const int LDB, const float* VL, const float* VU, const int* IL, const int* IU, const float ABSTOL, int* M, float* W, float* Z, const int LDZ, float* WORK, const int LWORK, int* IWORK, int* IFAIL, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SYGVX(const int ITYPE, const char JOBZ, const char RANGE, const char UPLO, const int N, float* A, const int LDA, float* B, const int LDB, const float* VL, const float* VU, const int* IL, const int* IU, const float ABSTOL, int* M, float* W, float* Z, const int LDZ, float* WORK, const int LWORK, int* IWORK, int* IFAIL, int* INFO) const
 */
 void Epetra_LAPACK_SYGVX_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int ITYPE, const char JOBZ, 
@@ -664,8 +717,8 @@ void Epetra_LAPACK_SYGVX_float (
   float * WORK, const int LWORK, int * IWORK, int * IFAIL, 
   int * INFO );
 
-/* Original C++ prototype:
-   void SYEVR(const char JOBZ, const char RANGE, const char UPLO, const int N, double* A, const int LDA, const double* VL, const double* VU, const int *IL, const int *IU, const double ABSTOL, int* M, double* W, double* Z, const int LDZ, int* ISUPPZ, double* WORK, const int LWORK, int* IWORK, const int LIWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SYEVR(const char JOBZ, const char RANGE, const char UPLO, const int N, double* A, const int LDA, const double* VL, const double* VU, const int *IL, const int *IU, const double ABSTOL, int* M, double* W, double* Z, const int LDZ, int* ISUPPZ, double* WORK, const int LWORK, int* IWORK, const int LIWORK, int* INFO) const
 */
 void Epetra_LAPACK_SYEVR_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBZ, const char RANGE, 
@@ -675,8 +728,8 @@ void Epetra_LAPACK_SYEVR_double (
   double * Z, const int LDZ, int * ISUPPZ, double * WORK, 
   const int LWORK, int * IWORK, const int LIWORK, int * INFO );
 
-/* Original C++ prototype:
-   void SYEVR(const char JOBZ, const char RANGE, const char UPLO, const int N, float* A, const int LDA, const float* VL, const float* VU, const int *IL, const int *IU, const float ABSTOL, int* M, float* W, float* Z, const int LDZ, int* ISUPPZ, float* WORK, const int LWORK, int* IWORK, const int LIWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::SYEVR(const char JOBZ, const char RANGE, const char UPLO, const int N, float* A, const int LDA, const float* VL, const float* VU, const int *IL, const int *IU, const float ABSTOL, int* M, float* W, float* Z, const int LDZ, int* ISUPPZ, float* WORK, const int LWORK, int* IWORK, const int LIWORK, int* INFO) const
 */
 void Epetra_LAPACK_SYEVR_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBZ, const char RANGE, 
@@ -686,8 +739,8 @@ void Epetra_LAPACK_SYEVR_float (
   const int LDZ, int * ISUPPZ, float * WORK, const int LWORK, 
   int * IWORK, const int LIWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GEEVX(const char BALANC, const char JOBVL, const char JOBVR, const char SENSE, const int N, double* A, const int LDA, double* WR, double* WI, double* VL, const int LDVL, double* VR, const int LDVR, int* ILO, int* IHI, double* SCALE, double* ABNRM, double* RCONDE, double* RCONDV, double* WORK, const int LWORK, int* IWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GEEVX(const char BALANC, const char JOBVL, const char JOBVR, const char SENSE, const int N, double* A, const int LDA, double* WR, double* WI, double* VL, const int LDVL, double* VR, const int LDVR, int* ILO, int* IHI, double* SCALE, double* ABNRM, double* RCONDE, double* RCONDV, double* WORK, const int LWORK, int* IWORK, int* INFO) const
 */
 void Epetra_LAPACK_GEEVX_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char BALANC, const char JOBVL, 
@@ -697,8 +750,8 @@ void Epetra_LAPACK_GEEVX_double (
   double * SCALE, double * ABNRM, double * RCONDE, double * RCONDV, 
   double * WORK, const int LWORK, int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GEEVX(const char BALANC, const char JOBVL, const char JOBVR, const char SENSE, const int N, float* A, const int LDA, float* WR, float* WI, float* VL, const int LDVL, float* VR, const int LDVR, int* ILO, int* IHI, float* SCALE, float* ABNRM, float* RCONDE, float* RCONDV, float* WORK, const int LWORK, int* IWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GEEVX(const char BALANC, const char JOBVL, const char JOBVR, const char SENSE, const int N, float* A, const int LDA, float* WR, float* WI, float* VL, const int LDVL, float* VR, const int LDVR, int* ILO, int* IHI, float* SCALE, float* ABNRM, float* RCONDE, float* RCONDV, float* WORK, const int LWORK, int* IWORK, int* INFO) const
 */
 void Epetra_LAPACK_GEEVX_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char BALANC, const char JOBVL, 
@@ -708,8 +761,8 @@ void Epetra_LAPACK_GEEVX_float (
   float * ABNRM, float * RCONDE, float * RCONDV, float * WORK, 
   const int LWORK, int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GESDD(const char JOBZ, const int M, const int N, double* A, const int LDA, double* S, double* U, const int LDU, double* VT, const int LDVT, double* WORK, const int LWORK, int* IWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GESDD(const char JOBZ, const int M, const int N, double* A, const int LDA, double* S, double* U, const int LDU, double* VT, const int LDVT, double* WORK, const int LWORK, int* IWORK, int* INFO) const
 */
 void Epetra_LAPACK_GESDD_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBZ, const int M, 
@@ -717,8 +770,8 @@ void Epetra_LAPACK_GESDD_double (
   const int LDU, double * VT, const int LDVT, double * WORK, 
   const int LWORK, int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GESDD(const char JOBZ, const int M, const int N, float* A, const int LDA, float* S, float* U, const int LDU, float* VT, const int LDVT, float* WORK, const int LWORK, int* IWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GESDD(const char JOBZ, const int M, const int N, float* A, const int LDA, float* S, float* U, const int LDU, float* VT, const int LDVT, float* WORK, const int LWORK, int* IWORK, int* INFO) const
 */
 void Epetra_LAPACK_GESDD_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBZ, const int M, 
@@ -726,8 +779,8 @@ void Epetra_LAPACK_GESDD_float (
   const int LDU, float * VT, const int LDVT, float * WORK, 
   const int LWORK, int * IWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GGEV(const char JOBVL, const char JOBVR, const int N, double* A, const int LDA, double* B, const int LDB, double* ALPHAR, double* ALPHAI, double* BETA, double* VL, const int LDVL, double* VR, const int LDVR, double* WORK, const int LWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GGEV(const char JOBVL, const char JOBVR, const int N, double* A, const int LDA, double* B, const int LDB, double* ALPHAR, double* ALPHAI, double* BETA, double* VL, const int LDVL, double* VR, const int LDVR, double* WORK, const int LWORK, int* INFO) const
 */
 void Epetra_LAPACK_GGEV_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBVL, const char JOBVR, 
@@ -736,8 +789,8 @@ void Epetra_LAPACK_GGEV_double (
   const int LDVL, double * VR, const int LDVR, double * WORK, 
   const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GGEV(const char JOBVL, const char JOBVR, const int N, float* A, const int LDA, float* B, const int LDB, float* ALPHAR, float* ALPHAI, float* BETA, float* VL, const int LDVL, float* VR, const int LDVR, float* WORK, const int LWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GGEV(const char JOBVL, const char JOBVR, const int N, float* A, const int LDA, float* B, const int LDB, float* ALPHAR, float* ALPHAI, float* BETA, float* VL, const int LDVL, float* VR, const int LDVR, float* WORK, const int LWORK, int* INFO) const
 */
 void Epetra_LAPACK_GGEV_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char JOBVL, const char JOBVR, 
@@ -746,8 +799,8 @@ void Epetra_LAPACK_GGEV_float (
   const int LDVL, float * VR, const int LDVR, float * WORK, 
   const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GGLSE(const int M, const int N, const int P, double* A, const int LDA, double* B, const int LDB, double* C, double* D, double* X, double* WORK, const int LWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GGLSE(const int M, const int N, const int P, double* A, const int LDA, double* B, const int LDB, double* C, double* D, double* X, double* WORK, const int LWORK, int* INFO) const
 */
 void Epetra_LAPACK_GGLSE_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int M, const int N, 
@@ -755,8 +808,8 @@ void Epetra_LAPACK_GGLSE_double (
   double * C, double * D, double * X, double * WORK, 
   const int LWORK, int * INFO );
 
-/* Original C++ prototype:
-   void GGLSE(const int M, const int N, const int P, float* A, const int LDA, float* B, const int LDB, float* C, float* D, float* X, float* WORK, const int LWORK, int* INFO) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::GGLSE(const int M, const int N, const int P, float* A, const int LDA, float* B, const int LDB, float* C, float* D, float* X, float* WORK, const int LWORK, int* INFO) const
 */
 void Epetra_LAPACK_GGLSE_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int M, const int N, 
@@ -764,17 +817,19 @@ void Epetra_LAPACK_GGLSE_float (
   float * C, float * D, float * X, float * WORK, const int LWORK, 
   int * INFO );
 
-/* Original C++ prototype:
-   void LAMCH ( const char CMACH, float & T) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::LAMCH( const char CMACH, float & T) const
 */
 void Epetra_LAPACK_LAMCH_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char CMACH, float * T );
 
-/* Original C++ prototype:
-   void LAMCH ( const char CMACH, double & T) const;
+/*! @brief Wrapper for 
+   void Epetra_LAPACK::LAMCH( const char CMACH, double & T) const
 */
 void Epetra_LAPACK_LAMCH_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char CMACH, double * T );
+
+/*@}*/
 
 
 #ifdef __cplusplus

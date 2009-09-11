@@ -1,5 +1,40 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
+
+/*! @file CTeuchos_ParameterList.h
+ * @brief Wrappers for Teuchos::ParameterList */
 
 /* True C header file! */
 
@@ -17,7 +52,7 @@ extern "C" {
 #endif
 
 
-/* Functions Teuchos_ParameterList_Cast() and Teuchos_ParameterList_Abstract()
+/*! Functions Teuchos_ParameterList_Cast() and Teuchos_ParameterList_Abstract()
    are used for casting CTrilinos objects from one type to another.
    The former function performs a dynamic cast on the underlying object
    and stores an RCP to it in the Teuchos_ParameterList table, while
@@ -28,254 +63,265 @@ extern "C" {
    be casted).
 */
 
+/*! @name Explicit casting methods */
+/*@{*/
+
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Cast ( 
   CTrilinos_Object_ID_t id );
 
 CTrilinos_Object_ID_t Teuchos_ParameterList_Abstract ( 
   CT_Teuchos_ParameterList_ID_t id );
 
-/* Original C++ prototype:
-   ParameterList();
+/*@}*/
+
+/*! @name ParameterList constructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   Teuchos::ParameterList::ParameterList()
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Create (  );
 
-/* Original C++ prototype:
-   ParameterList(const std::string &name);
+/*! @brief Wrapper for 
+   Teuchos::ParameterList::ParameterList(const std::string &name)
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Create_WithName ( 
   const char name[] );
 
-/* Original C++ prototype:
-   ParameterList(const ParameterList& source);
+/*! @brief Wrapper for 
+   Teuchos::ParameterList::ParameterList(const ParameterList& source)
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Create_FromSource ( 
   CT_Teuchos_ParameterList_ID_t sourceID );
 
-/* Original C++ prototype:
-   virtual ~ParameterList();
+/*@}*/
+
+/*! @name ParameterList destructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   virtual Teuchos::ParameterList::~ParameterList()
 */
 void Teuchos_ParameterList_Destroy ( 
   CT_Teuchos_ParameterList_ID_t * selfID );
 
-/* Original C++ prototype:
-   ParameterList& setName( const std::string &name );
+/*@}*/
+
+/*! @name ParameterList member wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   ParameterList& Teuchos::ParameterList::setName( const std::string &name )
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setName ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   ParameterList& operator=(const ParameterList& source);
-*/
-void Teuchos_ParameterList_Assign ( 
-  CT_Teuchos_ParameterList_ID_t selfID, 
-  CT_Teuchos_ParameterList_ID_t sourceID );
-
-/* Original C++ prototype:
-   ParameterList& setParameters(const ParameterList& source);
+/*! @brief Wrapper for 
+   ParameterList& Teuchos::ParameterList::setParameters(const ParameterList& source)
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setParameters ( 
   CT_Teuchos_ParameterList_ID_t selfID, 
   CT_Teuchos_ParameterList_ID_t sourceID );
 
-/* Original C++ prototype:
-   ParameterList& setParametersNotAlreadySet(const ParameterList& source);
+/*! @brief Wrapper for 
+   ParameterList& Teuchos::ParameterList::setParametersNotAlreadySet(const ParameterList& source)
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setParametersNotAlreadySet ( 
   CT_Teuchos_ParameterList_ID_t selfID, 
   CT_Teuchos_ParameterList_ID_t sourceID );
 
-/* Original C++ prototype:
-   ParameterList& disableRecursiveValidation();
+/*! @brief Wrapper for 
+   ParameterList& Teuchos::ParameterList::disableRecursiveValidation()
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_disableRecursiveValidation ( 
   CT_Teuchos_ParameterList_ID_t selfID );
 
-/* Original C++ prototype:
-   ParameterList& set( std::string const& name, ParameterList const& value, std::string const& docString = "" );
+/*! @brief Wrapper for 
+   ParameterList& Teuchos::ParameterList::set( std::string const& name, ParameterList const& value, std::string const& docString = "" )
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set ( 
   CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
   CT_Teuchos_ParameterList_ID_t valueID, char const docString[] );
 
-/* Original C++ prototype:
-   ParameterList& setEntry(const std::string& name, const ParameterEntry& entry);
+/*! @brief Wrapper for 
+   ParameterList& Teuchos::ParameterList::setEntry(const std::string& name, const ParameterEntry& entry)
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setEntry ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   CT_Teuchos_ParameterEntry_ID_t entryID );
 
-/* Original C++ prototype:
-   template<typename T> T& get(const std::string& name, T def_value);
+/*! @brief Wrapper for 
+   template<typename T> T& Teuchos::ParameterList::get(const std::string& name, T def_value)
 */
 double Teuchos_ParameterList_get_double_def ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   double def_value );
 
-/* Original C++ prototype:
-   template<typename T> T& get(const std::string& name, T def_value);
+/*! @brief Wrapper for 
+   template<typename T> T& Teuchos::ParameterList::get(const std::string& name, T def_value)
 */
 int Teuchos_ParameterList_get_int_def ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   int def_value );
 
-/* Original C++ prototype:
-   std::string& get(const std::string& name, char def_value[]);
+/*! @brief Wrapper for 
+   std::string& Teuchos::ParameterList::get(const std::string& name, char def_value[])
 */
 const char * Teuchos_ParameterList_get_char_def ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   char def_value[] );
 
-/* Original C++ prototype:
-   std::string& get(const std::string& name, const char def_value[]);
+/*! @brief Wrapper for 
+   std::string& Teuchos::ParameterList::get(const std::string& name, const char def_value[])
 */
 const char * Teuchos_ParameterList_get_const_char_def ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   const char def_value[] );
 
-/* Original C++ prototype:
-   template<typename T> T& get(const std::string& name);
+/*! @brief Wrapper for 
+   template<typename T> T& Teuchos::ParameterList::get(const std::string& name)
 */
 double Teuchos_ParameterList_get_double ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   template<typename T> T& get(const std::string& name);
+/*! @brief Wrapper for 
+   template<typename T> T& Teuchos::ParameterList::get(const std::string& name)
 */
 int Teuchos_ParameterList_get_int ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   template<typename T> const T& get(const std::string& name) const;
+/*! @brief Wrapper for 
+   template<typename T> const T& Teuchos::ParameterList::get(const std::string& name) const
 */
 double Teuchos_ParameterList_get_double_const ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   template<typename T> const T& get(const std::string& name) const;
+/*! @brief Wrapper for 
+   template<typename T> const T& Teuchos::ParameterList::get(const std::string& name) const
 */
 int Teuchos_ParameterList_get_int_const ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   template<typename T> inline T* getPtr(const std::string& name);
+/*! @brief Wrapper for 
+   template<typename T> inline T* Teuchos::ParameterList::getPtr(const std::string& name)
 */
 double * Teuchos_ParameterList_getPtr_double ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   template<typename T> inline T* getPtr(const std::string& name);
+/*! @brief Wrapper for 
+   template<typename T> inline T* Teuchos::ParameterList::getPtr(const std::string& name)
 */
 int * Teuchos_ParameterList_getPtr_int ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   template<typename T> inline const T* getPtr(const std::string& name) const;
+/*! @brief Wrapper for 
+   template<typename T> inline const T* Teuchos::ParameterList::getPtr(const std::string& name) const
 */
 const double * Teuchos_ParameterList_getPtr_double_const ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   template<typename T> inline const T* getPtr(const std::string& name) const;
+/*! @brief Wrapper for 
+   template<typename T> inline const T* Teuchos::ParameterList::getPtr(const std::string& name) const
 */
 const int * Teuchos_ParameterList_getPtr_int_const ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   ParameterEntry& getEntry(const std::string& name);
+/*! @brief Wrapper for 
+   ParameterEntry& Teuchos::ParameterList::getEntry(const std::string& name)
 */
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntry ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   inline const ParameterEntry& getEntry(const std::string& name) const;
+/*! @brief Wrapper for 
+   inline const ParameterEntry& Teuchos::ParameterList::getEntry(const std::string& name) const
 */
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntry_const ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   inline ParameterEntry* getEntryPtr(const std::string& name);
+/*! @brief Wrapper for 
+   inline ParameterEntry* Teuchos::ParameterList::getEntryPtr(const std::string& name)
 */
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntryPtr ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   inline const ParameterEntry* getEntryPtr(const std::string& name) const;
+/*! @brief Wrapper for 
+   inline const ParameterEntry* Teuchos::ParameterList::getEntryPtr(const std::string& name) const
 */
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntryPtr_const ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   bool remove( std::string const& name, bool throwIfNotExists = true );
+/*! @brief Wrapper for 
+   bool Teuchos::ParameterList::remove( std::string const& name, bool throwIfNotExists = true )
 */
 boolean Teuchos_ParameterList_remove ( 
   CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
   boolean throwIfNotExists );
 
-/* Original C++ prototype:
-   ParameterList& sublist( const std::string& name, bool mustAlreadyExist = false ,const std::string& docString = "" );
+/*! @brief Wrapper for 
+   ParameterList& Teuchos::ParameterList::sublist( const std::string& name, bool mustAlreadyExist = false ,const std::string& docString = "" )
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   boolean mustAlreadyExist, const char docString[] );
 
-/* Original C++ prototype:
-   const ParameterList& sublist(const std::string& name) const;
+/*! @brief Wrapper for 
+   const ParameterList& Teuchos::ParameterList::sublist(const std::string& name) const
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist_existing ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   const std::string& name() const;
+/*! @brief Wrapper for 
+   const std::string& Teuchos::ParameterList::name() const
 */
 const char * Teuchos_ParameterList_name_it ( 
   CT_Teuchos_ParameterList_ID_t selfID );
 
-/* Original C++ prototype:
-   bool isParameter(const std::string& name) const;
+/*! @brief Wrapper for 
+   bool Teuchos::ParameterList::isParameter(const std::string& name) const
 */
 boolean Teuchos_ParameterList_isParameter ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   bool isSublist(const std::string& name) const;
+/*! @brief Wrapper for 
+   bool Teuchos::ParameterList::isSublist(const std::string& name) const
 */
 boolean Teuchos_ParameterList_isSublist ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   template<typename T> bool isType(const std::string& name) const;
+/*! @brief Wrapper for 
+   template<typename T> bool Teuchos::ParameterList::isType(const std::string& name) const
 */
 boolean Teuchos_ParameterList_isType_double ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   template<typename T> bool isType(const std::string& name) const;
+/*! @brief Wrapper for 
+   template<typename T> bool Teuchos::ParameterList::isType(const std::string& name) const
 */
 boolean Teuchos_ParameterList_isType_int ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
-/* Original C++ prototype:
-   template<typename T> bool isType(const std::string& name, T* ptr) const;
+/*! @brief Wrapper for 
+   template<typename T> bool Teuchos::ParameterList::isType(const std::string& name, T* ptr) const
 */
 boolean Teuchos_ParameterList_isType_double_type ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   double * ptr );
 
-/* Original C++ prototype:
-   template<typename T> bool isType(const std::string& name, T* ptr) const;
+/*! @brief Wrapper for 
+   template<typename T> bool Teuchos::ParameterList::isType(const std::string& name, T* ptr) const
 */
 boolean Teuchos_ParameterList_isType_int_type ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   int * ptr );
 
-/* Original C++ prototype:
-   std::string currentParametersString() const;
+/*! @brief Wrapper for 
+   std::string Teuchos::ParameterList::currentParametersString() const
 */
 const char * Teuchos_ParameterList_currentParametersString ( 
   CT_Teuchos_ParameterList_ID_t selfID );
 
-/* Original C++ prototype:
-   void validateParameters( ParameterList const& validParamList, int const depth = 1000, EValidateUsed const validateUsed = VALIDATE_USED_ENABLED, EValidateDefaults const validateDefaults = VALIDATE_DEFAULTS_ENABLED ) const;
+/*! @brief Wrapper for 
+   void Teuchos::ParameterList::validateParameters( ParameterList const& validParamList, int const depth = 1000, EValidateUsed const validateUsed = VALIDATE_USED_ENABLED, EValidateDefaults const validateDefaults = VALIDATE_DEFAULTS_ENABLED ) const
 */
 void Teuchos_ParameterList_validateParameters ( 
   CT_Teuchos_ParameterList_ID_t selfID, 
@@ -283,12 +329,26 @@ void Teuchos_ParameterList_validateParameters (
   const CT_EValidateUsed_E_t validateUsed, 
   const CT_EValidateDefaults_E_t validateDefaults );
 
-/* Original C++ prototype:
-   void validateParametersAndSetDefaults( ParameterList const& validParamList, int const depth = 1000 );
+/*! @brief Wrapper for 
+   void Teuchos::ParameterList::validateParametersAndSetDefaults( ParameterList const& validParamList, int const depth = 1000 )
 */
 void Teuchos_ParameterList_validateParametersAndSetDefaults ( 
   CT_Teuchos_ParameterList_ID_t selfID, 
   CT_Teuchos_ParameterList_ID_t validParamListID, int const depth );
+
+/*@}*/
+
+/*! @name ParameterList operator wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   ParameterList& Teuchos::ParameterList::operator=(const ParameterList& source)
+*/
+void Teuchos_ParameterList_Assign ( 
+  CT_Teuchos_ParameterList_ID_t selfID, 
+  CT_Teuchos_ParameterList_ID_t sourceID );
+
+/*@}*/
 
 
 #ifdef __cplusplus

@@ -46,10 +46,18 @@ EXAMPLE_PATH           = ../example
 FILE_PATTERNS          = CEpetra*.h CTeuchos*.h CAmesos*.h CTrilinos_enums.h
 IMAGE_PATH             = .
 
-TAGFILES               = ../../common/tag_files/epetraBrowser.tag=../../../epetra/browser/doc/html
+TAGFILES               = ../../common/tag_files/epetra.tag=../../../epetra/doc/html ../../common/tag_files/teuchos.tag=../../../teuchos/doc/html
 GENERATE_TAGFILE       = ../../common/tag_files/ctrilinos.tag
 
-EXTRACT_ALL            = YES
+EXTRACT_ALL            = NO
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = NO
+HIDE_UNDOC_MEMBERS     = YES
+HIDE_UNDOC_CLASSES     = NO
+ALWAYS_DETAILED_SEC    = NO
+REPEAT_BRIEF           = YES
+DETAILS_AT_TOP         = YES
+OPTIMIZE_OUTPUT_FOR_C  = YES
 
 #
 # Preprocessing
@@ -57,7 +65,7 @@ EXTRACT_ALL            = YES
 ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
-SEARCH_INCLUDES        = YES
+SEARCH_INCLUDES        = NO
 INCLUDE_FILE_PATTERNS  = 
 PREDEFINED             = DOXYGEN_COMPILE DOXYGEN_SHOULD_SKIP_THIS HAVE_MPI HAVE_CTRILINOS_AMESOS
 

@@ -1,5 +1,40 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
+
+/*! @file CEpetra_Import.h
+ * @brief Wrappers for Epetra_Import */
 
 /* True C header file! */
 
@@ -18,7 +53,7 @@ extern "C" {
 #endif
 
 
-/* Functions Epetra_Import_Cast() and Epetra_Import_Abstract()
+/*! Functions Epetra_Import_Cast() and Epetra_Import_Abstract()
    are used for casting CTrilinos objects from one type to another.
    The former function performs a dynamic cast on the underlying object
    and stores an RCP to it in the Epetra_Import table, while
@@ -29,101 +64,121 @@ extern "C" {
    be casted).
 */
 
+/*! @name Explicit casting methods */
+/*@{*/
+
 CT_Epetra_Import_ID_t Epetra_Import_Cast ( CTrilinos_Object_ID_t id );
 
 CTrilinos_Object_ID_t Epetra_Import_Abstract ( 
   CT_Epetra_Import_ID_t id );
 
-/* Original C++ prototype:
-   Epetra_Import( const Epetra_BlockMap & TargetMap, const Epetra_BlockMap & SourceMap );
+/*@}*/
+
+/*! @name Epetra_Import constructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   Epetra_Import::Epetra_Import( const Epetra_BlockMap & TargetMap, const Epetra_BlockMap & SourceMap )
 */
 CT_Epetra_Import_ID_t Epetra_Import_Create ( 
   CT_Epetra_BlockMap_ID_t TargetMapID, 
   CT_Epetra_BlockMap_ID_t SourceMapID );
 
-/* Original C++ prototype:
-   Epetra_Import(const Epetra_Import& Importer);
+/*! @brief Wrapper for 
+   Epetra_Import::Epetra_Import(const Epetra_Import& Importer)
 */
 CT_Epetra_Import_ID_t Epetra_Import_Duplicate ( 
   CT_Epetra_Import_ID_t ImporterID );
 
-/* Original C++ prototype:
-   virtual ~Epetra_Import(void);
+/*@}*/
+
+/*! @name Epetra_Import destructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   virtual Epetra_Import::~Epetra_Import(void)
 */
 void Epetra_Import_Destroy ( CT_Epetra_Import_ID_t * selfID );
 
-/* Original C++ prototype:
-   int NumSameIDs() const;
+/*@}*/
+
+/*! @name Epetra_Import member wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   int Epetra_Import::NumSameIDs() const
 */
 int Epetra_Import_NumSameIDs ( CT_Epetra_Import_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumPermuteIDs() const;
+/*! @brief Wrapper for 
+   int Epetra_Import::NumPermuteIDs() const
 */
 int Epetra_Import_NumPermuteIDs ( CT_Epetra_Import_ID_t selfID );
 
-/* Original C++ prototype:
-   int * PermuteFromLIDs () const;
+/*! @brief Wrapper for 
+   int * Epetra_Import::PermuteFromLIDs() const
 */
 int * Epetra_Import_PermuteFromLIDs ( CT_Epetra_Import_ID_t selfID );
 
-/* Original C++ prototype:
-   int * PermuteToLIDs () const;
+/*! @brief Wrapper for 
+   int * Epetra_Import::PermuteToLIDs() const
 */
 int * Epetra_Import_PermuteToLIDs ( CT_Epetra_Import_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumRemoteIDs() const;
+/*! @brief Wrapper for 
+   int Epetra_Import::NumRemoteIDs() const
 */
 int Epetra_Import_NumRemoteIDs ( CT_Epetra_Import_ID_t selfID );
 
-/* Original C++ prototype:
-   int * RemoteLIDs() const;
+/*! @brief Wrapper for 
+   int * Epetra_Import::RemoteLIDs() const
 */
 int * Epetra_Import_RemoteLIDs ( CT_Epetra_Import_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumExportIDs () const;
+/*! @brief Wrapper for 
+   int Epetra_Import::NumExportIDs() const
 */
 int Epetra_Import_NumExportIDs ( CT_Epetra_Import_ID_t selfID );
 
-/* Original C++ prototype:
-   int * ExportLIDs () const;
+/*! @brief Wrapper for 
+   int * Epetra_Import::ExportLIDs() const
 */
 int * Epetra_Import_ExportLIDs ( CT_Epetra_Import_ID_t selfID );
 
-/* Original C++ prototype:
-   int * ExportPIDs () const;
+/*! @brief Wrapper for 
+   int * Epetra_Import::ExportPIDs() const
 */
 int * Epetra_Import_ExportPIDs ( CT_Epetra_Import_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumSend() const;
+/*! @brief Wrapper for 
+   int Epetra_Import::NumSend() const
 */
 int Epetra_Import_NumSend ( CT_Epetra_Import_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumRecv() const;
+/*! @brief Wrapper for 
+   int Epetra_Import::NumRecv() const
 */
 int Epetra_Import_NumRecv ( CT_Epetra_Import_ID_t selfID );
 
-/* Original C++ prototype:
-   const Epetra_BlockMap & SourceMap() const;
+/*! @brief Wrapper for 
+   const Epetra_BlockMap & Epetra_Import::SourceMap() const
 */
 CT_Epetra_BlockMap_ID_t Epetra_Import_SourceMap ( 
   CT_Epetra_Import_ID_t selfID );
 
-/* Original C++ prototype:
-   const Epetra_BlockMap & TargetMap() const;
+/*! @brief Wrapper for 
+   const Epetra_BlockMap & Epetra_Import::TargetMap() const
 */
 CT_Epetra_BlockMap_ID_t Epetra_Import_TargetMap ( 
   CT_Epetra_Import_ID_t selfID );
 
-/* Original C++ prototype:
-   Epetra_Distributor & Distributor() const;
+/*! @brief Wrapper for 
+   Epetra_Distributor & Epetra_Import::Distributor() const
 */
 CT_Epetra_Distributor_ID_t Epetra_Import_Distributor ( 
   CT_Epetra_Import_ID_t selfID );
+
+/*@}*/
 
 
 #ifdef __cplusplus

@@ -1,9 +1,44 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
 
 #ifdef HAVE_CTRILINOS_AMESOS
 
 
+
+/*! @file CAmesos.h
+ * @brief Wrappers for Amesos */
 
 /* True C header file! */
 
@@ -14,7 +49,6 @@
 
 #include "CAmesos_BaseSolver.h"
 #include "CEpetra_LinearProblem.h"
-#include "CTeuchos_ParameterList.h"
 #include "CTrilinos_enums.h"
 
 
@@ -23,44 +57,44 @@ extern "C" {
 #endif
 
 
-/* Functions Amesos_Cast() and Amesos_Abstract()
-   are used for casting CTrilinos objects from one type to another.
-   The former function performs a dynamic cast on the underlying object
-   and stores an RCP to it in the Amesos table, while
-   the latter only converts the type of the struct that references the
-   object so that an object of any type can be passed to the former
-   function (use the _Abstract() function corresponding to the type
-   of the object that will be casted, not the type to which it will
-   be casted).
-*/
 
-/* Original C++ prototype:
-   Amesos();
+/*! @name Amesos constructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   Amesos::Amesos()
 */
 CT_Amesos_ID_t Amesos_Create (  );
 
-/* Original C++ prototype:
-   ~Amesos();
+/*@}*/
+
+/*! @name Amesos destructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   Amesos::~Amesos()
 */
 void Amesos_Destroy ( CT_Amesos_ID_t * selfID );
 
-/* Original C++ prototype:
-   Amesos_BaseSolver *Create(const char *ClassType, const Epetra_LinearProblem& LinearProblem );
+/*@}*/
+
+/*! @name Amesos member wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   Amesos_BaseSolver *Amesos::Create(const char *ClassType, const Epetra_LinearProblem& LinearProblem )
 */
 CT_Amesos_BaseSolver_ID_t Amesos_CreateSolver ( 
   CT_Amesos_ID_t selfID, const char * ClassType, 
   CT_Epetra_LinearProblem_ID_t LinearProblemID );
 
-/* Original C++ prototype:
-   bool Query(const char * ClassType);
+/*! @brief Wrapper for 
+   bool Amesos::Query(const char * ClassType)
 */
 boolean Amesos_Query ( 
   CT_Amesos_ID_t selfID, const char * ClassType );
 
-/* Original C++ prototype:
-   static Teuchos::ParameterList GetValidParameters();
-*/
-CT_Teuchos_ParameterList_ID_t Amesos_GetValidParameters (  );
+/*@}*/
 
 
 #ifdef __cplusplus
