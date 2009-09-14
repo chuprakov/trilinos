@@ -110,7 +110,7 @@ int power_method(bool TransA, CT_Epetra_RowMatrix_ID_t& A,
 int main(int argc, char *argv[])
 {
   int ierr = 0, i, forierr = 0;
-#ifdef EPETRA_MPI
+#ifdef HAVE_MPI
 
   // Initialize MPI
 
@@ -300,7 +300,7 @@ int main(int argc, char *argv[])
   Epetra_CompObject_ResetFlops(coJadA1);
   powerMethodTests(rJadA1, rJadA2, Map, q, z, resid, verbose);
 
-#ifdef EPETRA_MPI
+#ifdef HAVE_MPI
   MPI_Finalize() ;
 #endif
 
