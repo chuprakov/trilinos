@@ -49,12 +49,15 @@ APPEND_SET(HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_utils.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_utils_templ.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_Table.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/CNOX_Interface.hpp
   )
 
 # Set sources
 
 APPEND_SET(SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_utils.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/CNOX_Interface.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/CNOX_Driver.cpp
   )
 
 #
