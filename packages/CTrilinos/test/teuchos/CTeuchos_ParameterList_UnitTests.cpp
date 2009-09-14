@@ -61,6 +61,16 @@ CTrilinos_Object_ID_t Teuchos_ParameterList_Abstract (
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Create (  );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Teuchos_ParameterList , Create )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Teuchos_ParameterList_ID_t selfID = Teuchos_ParameterList_Create());
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Teuchos_ParameterList_ID);
+}
+
 /**********************************************************************
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Create_WithName ( 
   const char name[] );

@@ -52,6 +52,16 @@ namespace {
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterEntry_Create (  );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Teuchos_ParameterEntry , Create )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Teuchos_ParameterEntry_ID_t selfID = Teuchos_ParameterEntry_Create());
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Teuchos_ParameterEntry_ID);
+}
+
 /**********************************************************************
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterEntry_Duplicate ( 
   CT_Teuchos_ParameterEntry_ID_t sourceID );

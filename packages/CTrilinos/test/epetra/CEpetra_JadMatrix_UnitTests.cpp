@@ -30,8 +30,10 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 
 
 #include "CTrilinos_config.h"
+#include "CEpetra_Map.h"
 #include "CEpetra_MultiVector.h"
 #include "CEpetra_RowMatrix.h"
+#include "CEpetra_CrsMatrix.h"
 #include "Epetra_JadMatrix.h"
 #include "CEpetra_JadMatrix.h"
 #include "CEpetra_JadMatrix_Cpp.hpp"
@@ -58,6 +60,39 @@ CT_Epetra_JadMatrix_ID_t Epetra_JadMatrix_Cast (
 CT_Epetra_JadMatrix_ID_t Epetra_JadMatrix_Create ( 
   CT_Epetra_RowMatrix_ID_t MatrixID );
  **********************************************************************/
+
+TEUCHOS_UNIT_TEST( Epetra_JadMatrix , Create )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 4);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_Map_ID_t MapID = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
+
+  /* Create the source matrix */
+  ECHO(int NumIndicesPerRow = 4);
+  ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
+  ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
+       CV, MapID, NumIndicesPerRow, false));
+
+  /* Initialize the source matrix */
+  ECHO(double val = 1.0);
+  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID, val));
+  TEST_EQUALITY(ret, 0);
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, true));
+  TEST_EQUALITY(ret, 0);
+
+  /* Cast it to a row matrix */
+  ECHO(CT_Epetra_RowMatrix_ID_t rmID = Epetra_RowMatrix_Cast(Epetra_CrsMatrix_Abstract(crsID)));
+
+  /* Create a JadMatrix from the RowMatrix */
+  ECHO(CT_Epetra_JadMatrix_ID_t selfID = Epetra_JadMatrix_Create(rmID));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Epetra_JadMatrix_ID);
+}
 
 /**********************************************************************
 void Epetra_JadMatrix_Destroy ( CT_Epetra_JadMatrix_ID_t * selfID );

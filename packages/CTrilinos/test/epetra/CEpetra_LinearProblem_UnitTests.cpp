@@ -65,6 +65,16 @@ CTrilinos_Object_ID_t Epetra_LinearProblem_Abstract (
 CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Create (  );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_LinearProblem , Create )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_LinearProblem_ID_t selfID = Epetra_LinearProblem_Create());
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Epetra_LinearProblem_ID);
+}
+
 /**********************************************************************
 CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Create_FromMatrix ( 
   CT_Epetra_RowMatrix_ID_t AID, CT_Epetra_MultiVector_ID_t XID, 

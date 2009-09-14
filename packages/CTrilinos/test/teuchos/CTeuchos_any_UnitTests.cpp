@@ -50,6 +50,16 @@ namespace {
 CT_Teuchos_any_ID_t Teuchos_any_Create (  );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Teuchos_any , Create )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Teuchos_any_ID_t selfID = Teuchos_any_Create());
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Teuchos_any_ID);
+}
+
 /**********************************************************************
 CT_Teuchos_any_ID_t Teuchos_any_Duplicate ( 
   CT_Teuchos_any_ID_t otherID );

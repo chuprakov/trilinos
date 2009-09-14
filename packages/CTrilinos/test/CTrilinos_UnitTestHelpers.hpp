@@ -36,4 +36,6 @@ void CEpetra_Test_CleanSlate();
 
 CT_Epetra_Comm_ID_t UnitTest_Create_Comm();
 
+CT_Epetra_Import_ID_t initialize_doxygen_example(CT_Epetra_Comm_ID_t CommID);
+
 #endif /* CTRILINOS_UNITTESTHELPERS_HPP */

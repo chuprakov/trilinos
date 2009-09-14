@@ -60,6 +60,16 @@ CTrilinos_Object_ID_t Epetra_LAPACK_Abstract (
 CT_Epetra_LAPACK_ID_t Epetra_LAPACK_Create (  );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_LAPACK , Create )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Epetra_LAPACK_ID_t selfID = Epetra_LAPACK_Create());
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Epetra_LAPACK_ID);
+}
+
 /**********************************************************************
 CT_Epetra_LAPACK_ID_t Epetra_LAPACK_Duplicate ( 
   CT_Epetra_LAPACK_ID_t LAPACKID );

@@ -57,6 +57,21 @@ CT_Teuchos_CommandLineProcessor_ID_t Teuchos_CommandLineProcessor_Create (
   boolean addOutputSetupOptions );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Teuchos_CommandLineProcessor , Create )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(boolean throwExceptions = TRUE);
+  ECHO(boolean recogniseAllOptions = TRUE);
+  ECHO(boolean addOutputSetupOptions = FALSE);
+  ECHO(CT_Teuchos_CommandLineProcessor_ID_t selfID
+         = Teuchos_CommandLineProcessor_Create(throwExceptions,
+              recogniseAllOptions, addOutputSetupOptions));
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Teuchos_CommandLineProcessor_ID);
+}
+
 /**********************************************************************
 void Teuchos_CommandLineProcessor_throwExceptions_set ( 
   CT_Teuchos_CommandLineProcessor_ID_t selfID, 

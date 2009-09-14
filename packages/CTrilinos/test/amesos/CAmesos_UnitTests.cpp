@@ -57,6 +57,16 @@ namespace {
 CT_Amesos_ID_t Amesos_Create (  );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Amesos , Create )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  ECHO(CT_Amesos_ID_t selfID = Amesos_Create());
+
+  /* Now check the result of the call to the wrapper function */
+  TEST_EQUALITY(selfID.type, CT_Amesos_ID);
+}
+
 /**********************************************************************
 void Amesos_Destroy ( CT_Amesos_ID_t * selfID );
  **********************************************************************/
