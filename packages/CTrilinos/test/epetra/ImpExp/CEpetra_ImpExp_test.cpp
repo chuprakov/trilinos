@@ -187,9 +187,6 @@ int main(int argc, char *argv[])
     int success1 = checkresult(MyResult, Correct[MyPID], CommID, MyPID, "NumPermuteIDs");
     success += success1;
 
-    /* The Trilinos 9.0 Doxygen page example for Epetra_Import has the results of
-     * PermuteToLIDs and PermuteFromLIDs switched! */
-
     if (success1 == 0) {
       int *MyResult2 = Epetra_Import_PermuteToLIDs(selfID);
       const int MaxCount = 3;
@@ -238,9 +235,6 @@ int main(int argc, char *argv[])
     int success1 = checkresult(MyResult, Correct[MyPID], CommID, MyPID, "NumExportIDs");
     success += success1;
 
-    /* The Trilinos 9.0 Doxygen page example for Epetra_Import has the results of
-     * ExportLIDs in the wrong order for processors 0 and 2! */
-
     if (success1 == 0) {
       int *MyResult2 = Epetra_Import_ExportLIDs(selfID);
       const int MaxCount = 2;
@@ -265,8 +259,6 @@ int main(int argc, char *argv[])
   /****************************************************************/
 
   {
-    /* The source code for Epetra_Import never sets NumSend to non-zero! */
-
     int MyResult = Epetra_Import_NumSend(selfID);
     int Correct[ForceNumProc] = {2, 2, 2};
     success += checkresult(MyResult, Correct[MyPID], CommID, MyPID, "NumSend");
