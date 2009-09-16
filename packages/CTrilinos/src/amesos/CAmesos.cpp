@@ -43,6 +43,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Amesos.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -112,7 +113,8 @@ CT_Amesos_BaseSolver_ID_t Amesos_CreateSolver (
 boolean Amesos_Query ( 
   CT_Amesos_ID_t selfID, const char * ClassType )
 {
-    return CAmesos::getAmesos(selfID)->Query(ClassType);
+    return ((CAmesos::getAmesos(selfID)->Query(
+        ClassType)) ? TRUE : FALSE);
 }
 
 

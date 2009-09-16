@@ -40,6 +40,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Epetra_Operator.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -113,7 +114,7 @@ int Epetra_Operator_SetUseTranspose (
   CT_Epetra_Operator_ID_t selfID, boolean UseTranspose )
 {
     return CEpetra::getOperator(selfID)->SetUseTranspose(
-        UseTranspose);
+        ((UseTranspose) != FALSE ? true : false));
 }
 
 int Epetra_Operator_Apply ( 
@@ -147,12 +148,14 @@ const char * Epetra_Operator_Label ( CT_Epetra_Operator_ID_t selfID )
 boolean Epetra_Operator_UseTranspose ( 
   CT_Epetra_Operator_ID_t selfID )
 {
-    return CEpetra::getConstOperator(selfID)->UseTranspose();
+    return ((CEpetra::getConstOperator(
+        selfID)->UseTranspose()) ? TRUE : FALSE);
 }
 
 boolean Epetra_Operator_HasNormInf ( CT_Epetra_Operator_ID_t selfID )
 {
-    return CEpetra::getConstOperator(selfID)->HasNormInf();
+    return ((CEpetra::getConstOperator(
+        selfID)->HasNormInf()) ? TRUE : FALSE);
 }
 
 CT_Epetra_Comm_ID_t Epetra_Operator_Comm ( 

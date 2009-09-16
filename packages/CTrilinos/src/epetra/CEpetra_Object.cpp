@@ -37,6 +37,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Epetra_Object.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -97,8 +98,8 @@ CT_Epetra_Object_ID_t Epetra_Object_Create (
   int TracebackModeIn, boolean set_label )
 {
     return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
-        tableOfObjects().store(new Epetra_Object(TracebackModeIn, 
-        set_label)));
+        tableOfObjects().store(new Epetra_Object(TracebackModeIn, ((
+        set_label) != FALSE ? true : false))));
 }
 
 CT_Epetra_Object_ID_t Epetra_Object_Create_WithLabel ( 

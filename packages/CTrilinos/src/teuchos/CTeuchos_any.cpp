@@ -37,6 +37,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Teuchos_any.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -111,7 +112,7 @@ CT_Teuchos_any_ID_t Teuchos_any_swap (
 
 boolean Teuchos_any_empty ( CT_Teuchos_any_ID_t selfID )
 {
-    return CTeuchos::getConstany(selfID)->empty();
+    return ((CTeuchos::getConstany(selfID)->empty()) ? TRUE : FALSE);
 }
 
 const char * Teuchos_any_typeName ( CT_Teuchos_any_ID_t selfID )
@@ -122,8 +123,8 @@ const char * Teuchos_any_typeName ( CT_Teuchos_any_ID_t selfID )
 boolean Teuchos_any_same ( 
   CT_Teuchos_any_ID_t selfID, CT_Teuchos_any_ID_t otherID )
 {
-    return CTeuchos::getConstany(selfID)->same(*CTeuchos::getConstany(
-        otherID));
+    return ((CTeuchos::getConstany(selfID)->same(
+        *CTeuchos::getConstany(otherID))) ? TRUE : FALSE);
 }
 
 void Teuchos_any_Assign ( 

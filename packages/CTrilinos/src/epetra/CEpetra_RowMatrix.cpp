@@ -41,6 +41,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Epetra_RowMatrix.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -142,7 +143,8 @@ int Epetra_RowMatrix_Multiply (
   CT_Epetra_RowMatrix_ID_t selfID, boolean TransA, 
   CT_Epetra_MultiVector_ID_t XID, CT_Epetra_MultiVector_ID_t YID )
 {
-    return CEpetra::getConstRowMatrix(selfID)->Multiply(TransA, 
+    return CEpetra::getConstRowMatrix(selfID)->Multiply(
+        ((TransA) != FALSE ? true : false), 
         *CEpetra::getConstMultiVector(XID), *CEpetra::getMultiVector(
         YID));
 }
@@ -152,9 +154,12 @@ int Epetra_RowMatrix_Solve (
   boolean UnitDiagonal, CT_Epetra_MultiVector_ID_t XID, 
   CT_Epetra_MultiVector_ID_t YID )
 {
-    return CEpetra::getConstRowMatrix(selfID)->Solve(Upper, Trans, 
-        UnitDiagonal, *CEpetra::getConstMultiVector(XID), 
-        *CEpetra::getMultiVector(YID));
+    return CEpetra::getConstRowMatrix(selfID)->Solve(
+        ((Upper) != FALSE ? true : false), ((
+        Trans) != FALSE ? true : false), ((
+        UnitDiagonal) != FALSE ? true : false), 
+        *CEpetra::getConstMultiVector(XID), *CEpetra::getMultiVector(
+        YID));
 }
 
 int Epetra_RowMatrix_InvRowSums ( 
@@ -187,7 +192,8 @@ int Epetra_RowMatrix_RightScale (
 
 boolean Epetra_RowMatrix_Filled ( CT_Epetra_RowMatrix_ID_t selfID )
 {
-    return CEpetra::getConstRowMatrix(selfID)->Filled();
+    return ((CEpetra::getConstRowMatrix(
+        selfID)->Filled()) ? TRUE : FALSE);
 }
 
 double Epetra_RowMatrix_NormInf ( CT_Epetra_RowMatrix_ID_t selfID )
@@ -249,13 +255,15 @@ int Epetra_RowMatrix_NumMyDiagonals (
 boolean Epetra_RowMatrix_LowerTriangular ( 
   CT_Epetra_RowMatrix_ID_t selfID )
 {
-    return CEpetra::getConstRowMatrix(selfID)->LowerTriangular();
+    return ((CEpetra::getConstRowMatrix(
+        selfID)->LowerTriangular()) ? TRUE : FALSE);
 }
 
 boolean Epetra_RowMatrix_UpperTriangular ( 
   CT_Epetra_RowMatrix_ID_t selfID )
 {
-    return CEpetra::getConstRowMatrix(selfID)->UpperTriangular();
+    return ((CEpetra::getConstRowMatrix(
+        selfID)->UpperTriangular()) ? TRUE : FALSE);
 }
 
 CT_Epetra_Map_ID_t Epetra_RowMatrix_RowMatrixRowMap ( 

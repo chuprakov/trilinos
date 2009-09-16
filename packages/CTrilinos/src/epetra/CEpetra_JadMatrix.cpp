@@ -39,6 +39,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Epetra_JadMatrix.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -121,7 +122,8 @@ int Epetra_JadMatrix_UpdateValues (
   CT_Epetra_RowMatrix_ID_t MatrixID, boolean CheckStructure )
 {
     return CEpetra::getJadMatrix(selfID)->UpdateValues(
-        *CEpetra::getConstRowMatrix(MatrixID), CheckStructure);
+        *CEpetra::getConstRowMatrix(MatrixID), ((
+        CheckStructure) != FALSE ? true : false));
 }
 
 int Epetra_JadMatrix_ExtractMyRowCopy ( 
@@ -159,7 +161,8 @@ int Epetra_JadMatrix_Multiply (
   CT_Epetra_JadMatrix_ID_t selfID, boolean TransA, 
   CT_Epetra_MultiVector_ID_t XID, CT_Epetra_MultiVector_ID_t YID )
 {
-    return CEpetra::getConstJadMatrix(selfID)->Multiply(TransA, 
+    return CEpetra::getConstJadMatrix(selfID)->Multiply(
+        ((TransA) != FALSE ? true : false), 
         *CEpetra::getConstMultiVector(XID), *CEpetra::getMultiVector(
         YID));
 }
@@ -169,9 +172,12 @@ int Epetra_JadMatrix_Solve (
   boolean UnitDiagonal, CT_Epetra_MultiVector_ID_t XID, 
   CT_Epetra_MultiVector_ID_t YID )
 {
-    return CEpetra::getConstJadMatrix(selfID)->Solve(Upper, Trans, 
-        UnitDiagonal, *CEpetra::getConstMultiVector(XID), 
-        *CEpetra::getMultiVector(YID));
+    return CEpetra::getConstJadMatrix(selfID)->Solve(
+        ((Upper) != FALSE ? true : false), ((
+        Trans) != FALSE ? true : false), ((
+        UnitDiagonal) != FALSE ? true : false), 
+        *CEpetra::getConstMultiVector(XID), *CEpetra::getMultiVector(
+        YID));
 }
 
 

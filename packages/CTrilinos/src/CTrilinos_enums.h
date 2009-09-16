@@ -49,16 +49,12 @@ extern "C" {
 /*! C does not support the C++ bool type, so the enum below will act as a custom
  * boolean type for users using a C compiler. */
 
-#ifdef __cplusplus
-typedef bool boolean;
-#ifndef FALSE
-#define FALSE false
-#endif
+typedef int boolean;
 #ifndef TRUE
-#define TRUE true
+#  define TRUE 1
 #endif
-#else
-typedef enum { FALSE=0, TRUE=1 } boolean;
+#ifndef FALSE
+#  define FALSE 0
 #endif
 
 /*! The enum below lists all the classes that CTrilinos supports.  Classes

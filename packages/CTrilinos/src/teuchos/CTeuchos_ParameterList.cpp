@@ -38,6 +38,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Teuchos_ParameterList.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -305,8 +306,9 @@ boolean Teuchos_ParameterList_remove (
   CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
   boolean throwIfNotExists )
 {
-    return CTeuchos::getParameterList(selfID)->remove(std::string(
-        name), throwIfNotExists);
+    return ((CTeuchos::getParameterList(selfID)->remove(std::string(
+        name), ((
+        throwIfNotExists) != FALSE ? true : false))) ? TRUE : FALSE);
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist ( 
@@ -314,8 +316,9 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist (
   boolean mustAlreadyExist, const char docString[] )
 {
     return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
-        selfID)->sublist(std::string(name), mustAlreadyExist, 
-        std::string(docString)) ));
+        selfID)->sublist(std::string(name), ((
+        mustAlreadyExist) != FALSE ? true : false), std::string(
+        docString)) ));
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist_existing ( 
@@ -335,45 +338,45 @@ const char * Teuchos_ParameterList_name_it (
 boolean Teuchos_ParameterList_isParameter ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getConstParameterList(selfID)->isParameter(
-        std::string(name));
+    return ((CTeuchos::getConstParameterList(selfID)->isParameter(
+        std::string(name))) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isSublist ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getConstParameterList(selfID)->isSublist(
-        std::string(name));
+    return ((CTeuchos::getConstParameterList(selfID)->isSublist(
+        std::string(name))) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isType_double ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getConstParameterList(selfID)->isType<double>(
-        std::string(name));
+    return ((CTeuchos::getConstParameterList(selfID)->isType<double>(
+        std::string(name))) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isType_int ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getConstParameterList(selfID)->isType<int>(
-        std::string(name));
+    return ((CTeuchos::getConstParameterList(selfID)->isType<int>(
+        std::string(name))) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isType_double_type ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   double * ptr )
 {
-    return CTeuchos::getConstParameterList(selfID)->isType<double>(
-        std::string(name), ptr);
+    return ((CTeuchos::getConstParameterList(selfID)->isType<double>(
+        std::string(name), ptr)) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isType_int_type ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   int * ptr )
 {
-    return CTeuchos::getConstParameterList(selfID)->isType<int>(
-        std::string(name), ptr);
+    return ((CTeuchos::getConstParameterList(selfID)->isType<int>(
+        std::string(name), ptr)) ? TRUE : FALSE);
 }
 
 const char * Teuchos_ParameterList_currentParametersString ( 

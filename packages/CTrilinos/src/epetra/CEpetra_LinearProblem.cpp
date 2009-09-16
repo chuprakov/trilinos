@@ -41,6 +41,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Epetra_LinearProblem.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -249,8 +250,8 @@ CT_ProblemDifficultyLevel_E_t Epetra_LinearProblem_GetPDL (
 boolean Epetra_LinearProblem_IsOperatorSymmetric ( 
   CT_Epetra_LinearProblem_ID_t selfID )
 {
-    return CEpetra::getConstLinearProblem(
-        selfID)->IsOperatorSymmetric();
+    return ((CEpetra::getConstLinearProblem(
+        selfID)->IsOperatorSymmetric()) ? TRUE : FALSE);
 }
 
 

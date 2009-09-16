@@ -44,6 +44,10 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 namespace CTrilinos {
 
 
+void pass_bool_out( const bool * pval, boolean * pvalout );
+
+void pass_bool_in( const boolean * pval, bool * pvalout );
+
 void pass_string_out( const std::string * const s, char *c[] );
 
 void pass_string_in( const char * const c[], std::string *s );

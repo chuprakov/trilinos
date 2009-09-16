@@ -38,6 +38,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Epetra_BlockMap.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -195,13 +196,15 @@ int Epetra_BlockMap_FindLocalElementID (
 boolean Epetra_BlockMap_MyGID ( 
   CT_Epetra_BlockMap_ID_t selfID, int GID_in )
 {
-    return CEpetra::getConstBlockMap(selfID)->MyGID(GID_in);
+    return ((CEpetra::getConstBlockMap(selfID)->MyGID(
+        GID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_MyLID ( 
   CT_Epetra_BlockMap_ID_t selfID, int LID_in )
 {
-    return CEpetra::getConstBlockMap(selfID)->MyLID(LID_in);
+    return ((CEpetra::getConstBlockMap(selfID)->MyLID(
+        LID_in)) ? TRUE : FALSE);
 }
 
 int Epetra_BlockMap_MinAllGID ( CT_Epetra_BlockMap_ID_t selfID )
@@ -311,38 +314,42 @@ int Epetra_BlockMap_MaxElementSize ( CT_Epetra_BlockMap_ID_t selfID )
 
 boolean Epetra_BlockMap_UniqueGIDs ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CEpetra::getConstBlockMap(selfID)->UniqueGIDs();
+    return ((CEpetra::getConstBlockMap(
+        selfID)->UniqueGIDs()) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_ConstantElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CEpetra::getConstBlockMap(selfID)->ConstantElementSize();
+    return ((CEpetra::getConstBlockMap(
+        selfID)->ConstantElementSize()) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_SameAs ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID )
 {
-    return CEpetra::getConstBlockMap(selfID)->SameAs(
-        *CEpetra::getConstBlockMap(MapID));
+    return ((CEpetra::getConstBlockMap(selfID)->SameAs(
+        *CEpetra::getConstBlockMap(MapID))) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_PointSameAs ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID )
 {
-    return CEpetra::getConstBlockMap(selfID)->PointSameAs(
-        *CEpetra::getConstBlockMap(MapID));
+    return ((CEpetra::getConstBlockMap(selfID)->PointSameAs(
+        *CEpetra::getConstBlockMap(MapID))) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_LinearMap ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CEpetra::getConstBlockMap(selfID)->LinearMap();
+    return ((CEpetra::getConstBlockMap(
+        selfID)->LinearMap()) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_DistributedGlobal ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CEpetra::getConstBlockMap(selfID)->DistributedGlobal();
+    return ((CEpetra::getConstBlockMap(
+        selfID)->DistributedGlobal()) ? TRUE : FALSE);
 }
 
 int * Epetra_BlockMap_MyGlobalElements ( 
@@ -400,7 +407,8 @@ CT_Epetra_Comm_ID_t Epetra_BlockMap_Comm (
 
 boolean Epetra_BlockMap_IsOneToOne ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CEpetra::getConstBlockMap(selfID)->IsOneToOne();
+    return ((CEpetra::getConstBlockMap(
+        selfID)->IsOneToOne()) ? TRUE : FALSE);
 }
 
 void Epetra_BlockMap_Assign ( 

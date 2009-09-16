@@ -44,6 +44,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Amesos_BaseSolver.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -134,13 +135,14 @@ int Amesos_BaseSolver_SetUseTranspose (
   CT_Amesos_BaseSolver_ID_t selfID, boolean UseTranspose )
 {
     return CAmesos::getBaseSolver(selfID)->SetUseTranspose(
-        UseTranspose);
+        ((UseTranspose) != FALSE ? true : false));
 }
 
 boolean Amesos_BaseSolver_UseTranspose ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return CAmesos::getConstBaseSolver(selfID)->UseTranspose();
+    return ((CAmesos::getConstBaseSolver(
+        selfID)->UseTranspose()) ? TRUE : FALSE);
 }
 
 int Amesos_BaseSolver_SetParameters ( 
@@ -161,7 +163,8 @@ CT_Epetra_LinearProblem_ID_t Amesos_BaseSolver_GetProblem (
 boolean Amesos_BaseSolver_MatrixShapeOK ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return CAmesos::getConstBaseSolver(selfID)->MatrixShapeOK();
+    return ((CAmesos::getConstBaseSolver(
+        selfID)->MatrixShapeOK()) ? TRUE : FALSE);
 }
 
 CT_Epetra_Comm_ID_t Amesos_BaseSolver_Comm ( 

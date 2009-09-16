@@ -41,6 +41,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Epetra_CrsGraph.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -105,7 +106,8 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow (
     return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
         tableOfCrsGraphs().store(new Epetra_CrsGraph(
         (Epetra_DataAccess) CV, *CEpetra::getConstBlockMap(
-        RowMapID), NumIndicesPerRow, StaticProfile)));
+        RowMapID), NumIndicesPerRow, ((
+        StaticProfile) != FALSE ? true : false))));
 }
 
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create ( 
@@ -115,7 +117,8 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create (
     return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
         tableOfCrsGraphs().store(new Epetra_CrsGraph(
         (Epetra_DataAccess) CV, *CEpetra::getConstBlockMap(
-        RowMapID), NumIndicesPerRow, StaticProfile)));
+        RowMapID), NumIndicesPerRow, ((
+        StaticProfile) != FALSE ? true : false))));
 }
 
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow_WithColMap ( 
@@ -127,7 +130,8 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow_WithColMap (
         tableOfCrsGraphs().store(new Epetra_CrsGraph(
         (Epetra_DataAccess) CV, *CEpetra::getConstBlockMap(
         RowMapID), *CEpetra::getConstBlockMap(ColMapID), 
-        NumIndicesPerRow, StaticProfile)));
+        NumIndicesPerRow, ((
+        StaticProfile) != FALSE ? true : false))));
 }
 
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_With_ColMap ( 
@@ -139,7 +143,8 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_With_ColMap (
         tableOfCrsGraphs().store(new Epetra_CrsGraph(
         (Epetra_DataAccess) CV, *CEpetra::getConstBlockMap(
         RowMapID), *CEpetra::getConstBlockMap(ColMapID), 
-        NumIndicesPerRow, StaticProfile)));
+        NumIndicesPerRow, ((
+        StaticProfile) != FALSE ? true : false))));
 }
 
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Duplicate ( 
@@ -261,53 +266,62 @@ int Epetra_CrsGraph_ExtractMyRowView (
 
 boolean Epetra_CrsGraph_Filled ( CT_Epetra_CrsGraph_ID_t selfID )
 {
-    return CEpetra::getConstCrsGraph(selfID)->Filled();
+    return ((CEpetra::getConstCrsGraph(
+        selfID)->Filled()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsGraph_StorageOptimized ( 
   CT_Epetra_CrsGraph_ID_t selfID )
 {
-    return CEpetra::getConstCrsGraph(selfID)->StorageOptimized();
+    return ((CEpetra::getConstCrsGraph(
+        selfID)->StorageOptimized()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsGraph_IndicesAreGlobal ( 
   CT_Epetra_CrsGraph_ID_t selfID )
 {
-    return CEpetra::getConstCrsGraph(selfID)->IndicesAreGlobal();
+    return ((CEpetra::getConstCrsGraph(
+        selfID)->IndicesAreGlobal()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsGraph_IndicesAreLocal ( 
   CT_Epetra_CrsGraph_ID_t selfID )
 {
-    return CEpetra::getConstCrsGraph(selfID)->IndicesAreLocal();
+    return ((CEpetra::getConstCrsGraph(
+        selfID)->IndicesAreLocal()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsGraph_LowerTriangular ( 
   CT_Epetra_CrsGraph_ID_t selfID )
 {
-    return CEpetra::getConstCrsGraph(selfID)->LowerTriangular();
+    return ((CEpetra::getConstCrsGraph(
+        selfID)->LowerTriangular()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsGraph_UpperTriangular ( 
   CT_Epetra_CrsGraph_ID_t selfID )
 {
-    return CEpetra::getConstCrsGraph(selfID)->UpperTriangular();
+    return ((CEpetra::getConstCrsGraph(
+        selfID)->UpperTriangular()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsGraph_NoDiagonal ( CT_Epetra_CrsGraph_ID_t selfID )
 {
-    return CEpetra::getConstCrsGraph(selfID)->NoDiagonal();
+    return ((CEpetra::getConstCrsGraph(
+        selfID)->NoDiagonal()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsGraph_MyGlobalRow ( 
   CT_Epetra_CrsGraph_ID_t selfID, int GID )
 {
-    return CEpetra::getConstCrsGraph(selfID)->MyGlobalRow(GID);
+    return ((CEpetra::getConstCrsGraph(selfID)->MyGlobalRow(
+        GID)) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsGraph_HaveColMap ( CT_Epetra_CrsGraph_ID_t selfID )
 {
-    return CEpetra::getConstCrsGraph(selfID)->HaveColMap();
+    return ((CEpetra::getConstCrsGraph(
+        selfID)->HaveColMap()) ? TRUE : FALSE);
 }
 
 int Epetra_CrsGraph_NumMyRows ( CT_Epetra_CrsGraph_ID_t selfID )
@@ -563,25 +577,29 @@ int Epetra_CrsGraph_GCID (
 boolean Epetra_CrsGraph_MyGRID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int GRID_in )
 {
-    return CEpetra::getConstCrsGraph(selfID)->MyGRID(GRID_in);
+    return ((CEpetra::getConstCrsGraph(selfID)->MyGRID(
+        GRID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsGraph_MyLRID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int LRID_in )
 {
-    return CEpetra::getConstCrsGraph(selfID)->MyLRID(LRID_in);
+    return ((CEpetra::getConstCrsGraph(selfID)->MyLRID(
+        LRID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsGraph_MyGCID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int GCID_in )
 {
-    return CEpetra::getConstCrsGraph(selfID)->MyGCID(GCID_in);
+    return ((CEpetra::getConstCrsGraph(selfID)->MyGCID(
+        GCID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsGraph_MyLCID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int LCID_in )
 {
-    return CEpetra::getConstCrsGraph(selfID)->MyLCID(LCID_in);
+    return ((CEpetra::getConstCrsGraph(selfID)->MyLCID(
+        LCID_in)) ? TRUE : FALSE);
 }
 
 CT_Epetra_BlockMap_ID_t Epetra_CrsGraph_ImportMap ( 

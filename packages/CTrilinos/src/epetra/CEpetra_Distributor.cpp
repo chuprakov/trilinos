@@ -37,6 +37,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Epetra_Distributor.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -120,7 +121,8 @@ int Epetra_Distributor_CreateFromSends (
   int * NumRemoteIDs )
 {
     return CEpetra::getDistributor(selfID)->CreateFromSends(
-        NumExportIDs, ExportPIDs, Deterministic, *NumRemoteIDs);
+        NumExportIDs, ExportPIDs, ((
+        Deterministic) != FALSE ? true : false), *NumRemoteIDs);
 }
 
 int Epetra_Distributor_CreateFromRecvs ( 
@@ -130,8 +132,9 @@ int Epetra_Distributor_CreateFromRecvs (
   int ** ExportPIDs )
 {
     return CEpetra::getDistributor(selfID)->CreateFromRecvs(
-        NumRemoteIDs, RemoteGIDs, RemotePIDs, Deterministic, 
-        *NumExportIDs, *ExportGIDs, *ExportPIDs);
+        NumRemoteIDs, RemoteGIDs, RemotePIDs, ((
+        Deterministic) != FALSE ? true : false), *NumExportIDs, 
+        *ExportGIDs, *ExportPIDs);
 }
 
 int Epetra_Distributor_Do ( 
