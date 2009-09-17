@@ -143,7 +143,7 @@ SET(UTIL_SOURCES ${HEADERS}
   util/Setv.cpp
   util/TestDriver.cpp
   util/TPI_Concurrency.c
-  util/TPI_pthreads.c
+  util/TPI.c
   util/TPI_Walltime.c
   util/TypeName.cpp
   )

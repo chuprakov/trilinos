@@ -65,7 +65,7 @@ UTIL_OBJ_FILES =	\
 	Setv.o	\
 	TestDriver.o	\
 	TPI_Concurrency.o	\
-	TPI_pthreads.o	\
+	TPI.o	\
 	TPI_Walltime.o	\
 	TypeName.o
 
