@@ -64,40 +64,23 @@ The package requires:
 
 1) Create a directory in which the build will be performed, e.g. BUILD_DIR.
 
-2) Create a build script in the BUILD_DIR to invoke the primary makefile.
-   Samples of configuration scripts for GNU, Intel, and SUN
+2) Create a host-specific makefile BUILD_DIR to invoke the primary makefile.
+   Samples of host-specific makefiles for GNU, Intel, and SUN
    compilers are located in the 'build_examples' subdirectory.
 
-   The build script had three responsibilities:
+   The host-specific makefile had three responsibilities:
      a) Setting paths:
           ${PHDMESH_PATH}    - path to source installation.
-          ${PHDMESH_INSTALL} - installation path for libraries.
 
      b) Setting the ${PATH} or loading modules for the compilers,
         if necessary.
 
-     c) Choosing a compiler and options via one of the scripts:
-          ${PHDMESH_PATH}/config/{gnu,intel,sun}
-        Options include
-          with/without MPI,
-          with/without pthreads,
-          debug/optimized,
+     c) Choosing a compiler and configuration options
 
-     d) Choosing other configuration script options,
-        such as to use ExodusII
-          ${PHDMESH_PATH}/config/exodusII <path>
-
-     e) Invoking make on the primary makefile.
-          make -f ${PHDMESH_PATH}/Make.in $@
-        or
-          gmake -f ${PHDMESH_PATH}/Make.in $@
-
-3) Make targets are identified in ${PHDMESH_PATH}/Make.in
-   A typical build command is 'build_script all -j 4'
-   which builds all executables using four parallel processes.
+3) Make targets are identified in ${PHDMESH_PATH}/makefile_targets
 
 If a new compilers, or new compiler options, are introduced please
-introduce created or updated ${PHDMESH_PATH}/config scripts into the
+introduce created or updated ${PHDMESH_PATH}/makefile.* files into the
 repository, or send to the author.
 
 #-----------------------------------------------------------------------

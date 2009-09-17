@@ -40,6 +40,8 @@
 
 #include <util/TestDriver.hpp>
 
+
+
 namespace phdmesh {
 
 int test_driver(
@@ -117,6 +119,94 @@ int test_driver(
     std::cout << "Total time = " << ( time_fin - time_init ) << " seconds"
               << std::endl ;
   }
+
+  return result ;
+}
+
+//----------------------------------------------------------------------
+
+namespace {
+#if defined(HAVE_MPI)
+
+void broadcast( ParallelMachine comm , int size , void * buf )
+{ MPI_Bcast( buf , size , MPI_BYTE , 0 , comm ); }
+
+#else
+
+void broadcast( ParallelMachine , int , void * )
+{}
+
+#endif
+}
+
+int test_driver( ParallelMachine comm , const TestDriverMap & dmap ,
+                 int argc , const char * const * argv )
+{
+  const unsigned p_rank = parallel_machine_rank( comm );
+
+  char buffer[8192]; buffer[0] = 0 ;
+
+  if ( 0 == p_rank ) {
+    for ( int i = 1 ; i < argc ; ++i ) {
+      std::strcat( buffer , " " );
+      std::strcat( buffer , argv[i] );
+    }
+  }
+
+  int length = std::strlen( buffer );
+
+  broadcast( comm , sizeof(int) , & length );
+  broadcast( comm , length + 1 , buffer );
+
+  std::istringstream is( std::string( buffer , length ) );
+
+  int result = 0 ;
+
+  TPI_Init( 1 );
+
+  try {
+    while ( is.good() && ! is.eof() ) {
+      if ( isspace( is.peek() ) || ',' == is.peek() ) {
+        is.ignore();
+      }
+      else {
+
+        std::string is_key ; is >> is_key ;
+
+        if ( is_key == std::string("threadpool") ) {
+          unsigned ntasks = 1 ;
+          if ( is.good() ) { is >> ntasks ; }
+          TPI_Finalize();
+          TPI_Init( ntasks );
+        }
+        else {
+          TestDriverMap::const_iterator iter = dmap.find( is_key );
+
+          if ( iter != dmap.end() ) {
+            const TestSubprogram ts = (*iter).second ;
+            (*ts)( comm , is );
+          }
+          else {
+            if ( p_rank == 0 ) {
+              std::cout << "Unknown test '" << is_key
+                        << "', known tests = {" << std::endl ;
+              for ( iter = dmap.begin() ; iter != dmap.end() ; ++iter ) {
+                std::cout << "  " << (*iter).first << std::endl ;
+              }
+              std::cout << "}" << std::endl ;
+            }
+            throw std::runtime_error( std::string("Given unknown test") );
+          }
+        }
+      }
+    }
+  }
+  catch( const std::exception & x ) {
+    std::cout << 'P' << p_rank << ": " << x.what() << std::endl ;
+    result = -1 ;
+  }
+
+  TPI_Finalize();
 
   return result ;
 }

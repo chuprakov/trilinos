@@ -61,7 +61,7 @@ MESH_OBJ_FILES =	\
 	MeshSharing.o	\
 	MeshTypes.o
 
-MESH_INC_DEPS = $(MESH_INC_FILES) $(UTIL_INC_DEPS)
+MESH_INC_DEPS = $(MESH_INC_FILES) $(UTIL_INC_DEPS) $(CONFIG_FILE)
 
 MESH_LIB = libphdmesh_mesh.a
 

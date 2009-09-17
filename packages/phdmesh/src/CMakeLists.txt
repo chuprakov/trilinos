@@ -148,6 +148,20 @@ SET(UTIL_SOURCES ${HEADERS}
   util/TypeName.cpp
   )
 
+#
+# yaml files
+#
+
+SET(YAML_HEADERS ${HEADERS}
+  yaml/YAML_Doc.hpp
+  yaml/YAML_Element.hpp
+  )
+
+SET(YAML_SOURCES ${HEADERS}
+  yaml/YAML_Doc.cpp
+  yaml/YAML_Element.cpp
+  )
+
 #does this need to be enclosed by the exodus option?
 
 #
@@ -202,6 +216,12 @@ PACKAGE_ADD_LIBRARY(
   phdmesh_util
   HEADERS ${UTIL_HEADERS}
   SOURCES ${UTIL_SOURCES}
+  )
+
+PACKAGE_ADD_LIBRARY(
+  phdmesh_yaml
+  HEADERS ${YAML_HEADERS}
+  SOURCES ${YAML_SOURCES}
   )
 
 PACKAGE_ADD_LIBRARY(

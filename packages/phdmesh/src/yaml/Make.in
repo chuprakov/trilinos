@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------
-#       phdMesh : Parallel Heterogneous Dynamic unstructured Mesh
+#      phdMesh : Parallel Heterogneous Dynamic unstructured Mesh
 #		 Copyright (2007) Sandia Corporation
 #
 #  Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
@@ -21,37 +21,38 @@
 #  USA
 #-----------------------------------------------------------------------
 
-PHDMESH_SRC_DIRS =	\
-		$(PHDMESH_PATH)/src/util	\
-		$(PHDMESH_PATH)/src/txblas	\
-		$(PHDMESH_PATH)/src/mesh	\
-		$(PHDMESH_PATH)/src/mesh_io	\
-		$(PHDMESH_PATH)/src/element
+YAML_INC_DIR = $(PHDMESH_PATH)/src/yaml
 
+YAML_INC_FILES =	\
+	$(YAML_INC_DIR)/YAML_Doc.hpp	\
+	$(YAML_INC_DIR)/YAML_Element.hpp
 
-include	\
-	$(PHDMESH_PATH)/src/util/Make.in	\
-	$(PHDMESH_PATH)/src/txblas/Make.in	\
-	$(PHDMESH_PATH)/src/mesh/Make.in	\
-	$(PHDMESH_PATH)/src/mesh_io/Make.in	\
-	$(PHDMESH_PATH)/src/element/Make.in
+YAML_OBJ_FILES =	\
+	YAML_Doc.o	\
+	YAML_Element.o
 
+YAML_INC_DEPS = $(YAML_INC_FILES)
 
+YAML_LIB = libphdmesh_yaml.a
 
-vpath %.c   $(PHDMESH_SRC_DIRS)
-vpath %.cpp $(PHDMESH_SRC_DIRS)
+YAML_LIB_LINK = -lphdmesh_yaml
 
-src_all     :	util_all     txblas_all	\
-		mesh_all     mesh_io_all     element_all ;
+$(YAML_OBJ_FILES) : $(YAML_INC_DEPS)
 
-src_clean   :	util_clean   txblas_clean	\
-		mesh_clean   mesh_io_clean   element_clean ;
+$(YAML_LIB) : $(YAML_OBJ_FILES)
+	rm -f $@
+	$(AR) $(ARFLAGS) $@ $^
+	$(RANLIB) $@
 
-src_install :	util_install txblas_install	\
-		mesh_install mesh_io_install element_install ;
+yaml_all : $(YAML_LIB) ;
 
-src_uninstall : \
-	util_uninstall txblas_uninstall	\
-	mesh_uninstall mesh_io_uninstall	
-	element_uninstall ;
+yaml_clean : ; rm -f $(YAML_LIB) $(YAML_OBJ_FILES)
+
+yaml_install : $(YAML_LIB) config_install
+	@ cp $(YAML_LIB) $(PHDMESH_INSTALL)/$(YAML_LIB)
+
+yaml_uninstall :
+	@ rm -f $(PHDMESH_INSTALL)/$(YAML_LIB)
+
+#-----------------------------------------------------------------------
 

@@ -79,7 +79,7 @@ unsigned OctTreeKey::depth() const
   const unsigned val   = m_value[which] ;
 
   int d = IndexPerWord ;
-  while ( d-- && ( val & ( MaskIndex << ( BitsPerIndex * d ) ) ) );
+  while ( d-- && ( val & ( MaskIndex << ( BitsPerIndex * d ) ) ) ) {}
   return ( which + 1 ) * IndexPerWord - ( d + 1 );
 }
 

@@ -177,7 +177,7 @@ void remove_this( std::vector< NamedValueSet *> & v , NamedValueSet * const ps )
 {
   if ( ps ) {
     std::vector<NamedValueSet*>::iterator i ;
-    for ( i = v.begin() ; i != v.end() && ps != *i ; ++i );
+    for ( i = v.begin() ; i != v.end() && ps != *i ; ++i ) {}
     if ( i != v.end() ) { v.erase( i ); }
   }
 }

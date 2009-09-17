@@ -254,17 +254,14 @@ void proximity_search(
   float global_box[6] ;
 
   // Generate a global square box that will contain all of the
-  // local boxes.
+  // local boxes.  The box is padded outward by a proportionately
+  // small value.
   {
     box_global_bounds( M.parallel() ,
                        boxes.size() , & boxes[0] , 0 , NULL ,
                        global_box );
 
-    double global_center[3] , global_size[3] ;
-
-    global_center[0] = ( global_box[0] + global_box[3] ) * 0.5 ;
-    global_center[1] = ( global_box[1] + global_box[4] ) * 0.5 ;
-    global_center[2] = ( global_box[2] + global_box[5] ) * 0.5 ;
+    double global_size[3] ;
 
     global_size[0] = global_box[3] - global_box[0] ;
     global_size[1] = global_box[4] - global_box[1] ;
@@ -273,14 +270,10 @@ void proximity_search(
     double max_size = global_size[0] ;
     if ( max_size < global_size[1] ) { max_size = global_size[1] ; }
     if ( max_size < global_size[2] ) { max_size = global_size[2] ; }
-    max_size *= 0.5 ;
 
-    global_box[0] = (float) ( global_center[0] - max_size );
-    global_box[1] = (float) ( global_center[1] - max_size );
-    global_box[2] = (float) ( global_center[2] - max_size );
-    global_box[3] = (float) ( global_center[0] + max_size );
-    global_box[4] = (float) ( global_center[1] + max_size );
-    global_box[5] = (float) ( global_center[2] + max_size );
+    global_box[3] = (float) ( global_box[0] + max_size );
+    global_box[4] = (float) ( global_box[1] + max_size );
+    global_box[5] = (float) ( global_box[2] + max_size );
   }
 
   unsigned search_stats[6] ;

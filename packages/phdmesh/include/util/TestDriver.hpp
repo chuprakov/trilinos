@@ -41,6 +41,8 @@ void (*TestSubprogram)( ParallelMachine , std::istream & );
 typedef std::map< std::string , TestSubprogram > TestDriverMap ;
 
 int test_driver( ParallelMachine , std::istream & , const TestDriverMap & );
+int test_driver( ParallelMachine , const TestDriverMap & ,
+                 int argc , const char * const * argv );
 
 }
 

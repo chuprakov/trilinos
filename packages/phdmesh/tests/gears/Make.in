@@ -53,18 +53,23 @@ vpath %.cpp $(TEST_MESH_SRC_DIR)
 #-----------------------------------------------------------------------
 
 $(TEST_MESH_OBJ_FILES) :	\
-	$(MESH_INC_DEPS) $(ELEMENT_INC_DEPS) $(UTIL_INC_DEPS)
+		$(MESHIO_INC_DEPS)	\
+		$(MESH_INC_DEPS) $(ELEMENT_INC_DEPS)	\
+		$(YAML_INC_DEPS) $(UTIL_INC_DEPS)	\
+		$(CONFIG_FILE)
 
 $(TEST_MESH_EXE)	:	\
-			$(TEST_MESH_OBJ_FILES)	\
-			$(MESHIO_LIB) $(MESH_LIB) $(ELEMENT_LIB) $(UTIL_LIB)
+		$(TEST_MESH_OBJ_FILES)	\
+		$(MESHIO_LIB) $(MESH_LIB) $(ELEMENT_LIB)	\
+		$(YAML_LIB) $(UTIL_LIB)
 	$(LDCXX) $(CXXFLAGS) $(LDFLAGS) -L. -o $@	\
-			$(TEST_MESH_OBJ_FILES)	\
-			$(MESHIO_LIB_LINK)	\
-			$(MESH_LIB_LINK)	\
-			$(ELEMENT_LIB_LINK)	\
-			$(UTIL_LIB_LINK)	\
-			$(CXX_LIB_EXT)
+		$(TEST_MESH_OBJ_FILES)	\
+		$(MESHIO_LIB_LINK)	\
+		$(MESH_LIB_LINK)	\
+		$(ELEMENT_LIB_LINK)	\
+		$(YAML_LIB_LINK)	\
+		$(UTIL_LIB_LINK)	\
+		$(CXX_LIB_EXT)
 
 #-----------------------------------------------------------------------
 

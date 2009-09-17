@@ -32,7 +32,6 @@
 #include <iostream>
 #include <stdexcept>
 
-#include <util/TPI.h>
 #include <util/TestDriver.hpp>
 #include <util/Parallel.hpp>
 #include <util/ParallelComm.hpp>
@@ -65,15 +64,7 @@ int main( int argc , char ** argv )
   int result = -1 ;
 
   try {
-    /* Ignore the 'sierra' script forcing of '-runtest pid'.
-     * Assume the last command line argument is the input file name.
-     */
-    const char * const file_name = 1 < argc ? argv[argc-1] : NULL ;
-
-    phdmesh::ParallelInputStream
-      is( comm , ( 0 == p_rank ? file_name : NULL ) );
-
-    result = phdmesh::test_driver( comm , is , test_map );
+    result = phdmesh::test_driver( comm , test_map , argc , argv );
   }
   catch( const std::exception & x ) {
     std::cout << "P" << p_rank << ": " << x.what() << std::endl ;

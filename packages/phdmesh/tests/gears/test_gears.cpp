@@ -35,6 +35,8 @@
 #include <util/ParallelReduce.hpp>
 #include <util/OctTreeOps.hpp>
 
+#include <yaml/YAML_Doc.hpp>
+
 #include <mesh/MetaData.hpp>
 #include <mesh/BulkData.hpp>
 #include <mesh/FieldData.hpp>
@@ -63,6 +65,7 @@ void test_gears( ParallelMachine pm ,
                  const unsigned i_end ,
                  const unsigned j_end ,
                  const unsigned k_end ,
+                 const unsigned nsteps ,
                  const std::string & exo_file_name ,
                  const bool verify );
 
@@ -74,9 +77,15 @@ void test_gears( phdmesh::ParallelMachine comm , std::istream & is )
   unsigned i = 2 ;
   unsigned j = 3 ;
   unsigned k = 1 ;
+  unsigned nsteps = 121 ;
 
   if ( is.good() ) {
     is >> i ; is >> j ; is >> k ;
+    is >> sval ;
+  }
+
+  if ( is.good() && sval == std::string("steps") ) {
+    is >> nsteps ;
     is >> sval ;
   }
 
@@ -91,47 +100,10 @@ void test_gears( phdmesh::ParallelMachine comm , std::istream & is )
     exo_file_name << sval << "_np" << p_size << ".exo" ;
   }
 
-  test_gears( comm , i , j , k , exo_file_name.str() , verify );
+  test_gears( comm , i , j , k , nsteps , exo_file_name.str() , verify );
 }
 
 //----------------------------------------------------------------------
-//----------------------------------------------------------------------
-
-namespace {
-
-#if 0
-
-#if defined( HAVE_MPI )
-
-void parallel_gather( ParallelMachine comm ,
-                      unsigned        rank ,
-                      const unsigned * local ,
-                      unsigned * global ,
-                      unsigned count )
-{
-  unsigned * tmp = const_cast<unsigned*>( local );
-
-  MPI_Gather( tmp , count , MPI_UNSIGNED ,
-              global , count , MPI_UNSIGNED , rank , comm );
-}
-
-#else
-
-void parallel_gather( ParallelMachine ,
-                      unsigned ,
-                      const unsigned * local ,
-                      unsigned * global ,
-                      unsigned count )
-{
-  for ( unsigned i = 0 ; i < count ; ++i ) { global[i] = local[i] ; }
-}
-
-#endif
-
-#endif
-
-}
-
 //----------------------------------------------------------------------
 
 void test_gears_face_proximity(
@@ -152,11 +124,8 @@ void test_gears_face_proximity(
   double wt ;
 
   if ( verify && ! comm_mesh_verify_parallel_consistency( M ) ) {
-    if ( p_rank == 0 ) {
-      std::cout << "N_GEARS failed parallel consistency before proximity"
-                << std::endl ;
-    }
-    throw std::runtime_error(std::string("N_GEARS"));
+    std::string msg("N_GEARS failed parallel consistency before proximity");
+    throw std::runtime_error( msg );
   }
 
   domain.clear();
@@ -254,21 +223,15 @@ void test_gears_face_proximity(
   dt_ghosting += wall_dtime( wt );
 
   if ( verify && ! comm_mesh_verify_parallel_consistency( M ) ) {
-    if ( p_rank == 0 ) {
-      std::cout << "N_GEARS failed parallel consistency of add_sharing"
-                << std::endl ;
-    }
-    throw std::runtime_error(std::string("N_GEARS"));
+    std::string msg("N_GEARS failed parallel consistency of add_sharing");
+    throw std::runtime_error( msg );
   }
 
   comm_mesh_scrub_sharing( M );
 
   if ( verify && ! comm_mesh_verify_parallel_consistency( M ) ) {
-    if ( p_rank == 0 ) {
-      std::cout << "N_GEARS failed parallel consistency of scrub_sharing"
-                << std::endl ;
-    }
-    throw std::runtime_error(std::string("N_GEARS"));
+    std::string msg("N_GEARS failed parallel consistency of scrub_sharing");
+    throw std::runtime_error( msg );
   }
 
   unsigned flag = M.shared_entities() == sharing_A ;
@@ -276,11 +239,8 @@ void test_gears_face_proximity(
   all_reduce( M.parallel() , Min<1>( & flag ) );
 
   if ( ! flag ) {
-    if ( p_rank == 0 ) {
-      std::cout << "N_GEARS failed parallel sharing before == after"
-                << std::endl ;
-    }
-    throw std::runtime_error(std::string("N_GEARS"));
+    std::string msg("N_GEARS failed parallel sharing before == after");
+    throw std::runtime_error( msg );
   }
 }
 
@@ -290,6 +250,7 @@ void test_gears( ParallelMachine pm ,
                  const unsigned i_end ,
                  const unsigned j_end ,
                  const unsigned k_end ,
+                 const unsigned nsteps ,
                  const std::string & exo_file_name ,
                  const bool verify )
 {
@@ -300,9 +261,27 @@ void test_gears( ParallelMachine pm ,
 
   const unsigned kernel_capacity = 100 ; // 20 ;
 
-  MetaData S ;
+  //------------------------------
+  std::ostringstream filename ;
 
-  GearFields gear_fields( S );
+  int nthread = 0 ;
+  TPI_Size( & nthread );
+  filename << "phdMesh_np" << p_size << "_nt" << nthread << "_" ;
+
+  YAML_Doc yaml_doc( std::string("phdMesh"), std::string("1.0"),
+                     std::string("."), filename.str() );
+
+  YAML_Element * yaml_platform = NULL ;
+  YAML_Element * yaml_build = NULL ;
+  YAML_Element * yaml_date = NULL ;
+  YAML_Element * yaml_mesh = NULL ;
+  YAML_Element * yaml_mesh_io = NULL ;
+  YAML_Element * yaml_run = NULL ;
+
+  //------------------------------
+
+  double dt_max ;
+  double dt_min ;
 
   double dt_rebalance = 0 ;
   double dt_proximity = 0 ;
@@ -310,6 +289,7 @@ void test_gears( ParallelMachine pm ,
   double dt_diffuse  = 0 ;
   double dt_diffuse_split = 0 ;
   double dt_exo_write = 0 ;
+  double wt = wall_time();
 
   //------------------------------
 
@@ -330,18 +310,38 @@ void test_gears( ParallelMachine pm ,
   const unsigned num_gear  = k_end * j_end * i_end ;
   const unsigned num_elem  = elem_gear * num_gear ;
 
-  if ( p_rank == 0 ) {
-    std::cout << std::endl
-              << "GEARS meshing:" << std::endl
-              << "  #Processors = " << p_size    << std::endl
-              << "  #Elements   = " << num_elem  << std::endl
-              << "  #Gears      = " << num_gear  << std::endl
-              << "  #Elem/gear  = " << elem_gear << std::endl
-              << "  #Angles     = " << angle_num << std::endl
-              << "  #Radial     = " << rad_num   << std::endl
-              << "  #Thickness  = " << z_num     << std::endl ;
+  if ( 0 == p_rank ) {
+    std::cout << "NGears begin" << std::endl ;
+    std::cout.flush();
+
+    yaml_platform = yaml_doc.add( "Platform" , "" );
+    yaml_build    = yaml_doc.add( "Build" , "" );
+    yaml_date     = yaml_doc.add( "Date" , "" );
+
+    yaml_mesh     = yaml_doc.add( "Mesh" , "" );
+    YAML_Element * yaml_mesh_gears = yaml_mesh->add("gears grid","");
+    yaml_mesh_gears->add("x_dir",        (size_t) i_end);
+    yaml_mesh_gears->add("y_dir",        (size_t) j_end);
+    yaml_mesh_gears->add("z_dir",        (size_t) k_end);
+    yaml_mesh_gears->add("total",        (size_t) num_gear);
+    yaml_mesh->add("elements",           (size_t) num_elem);
+    yaml_mesh->add("elements per gear",  (size_t) elem_gear);
+    yaml_mesh->add("angles per gear",    (size_t) angle_num);
+    yaml_mesh->add("layers per gear",    (size_t) rad_num);
+    yaml_mesh->add("thickness per gear", (size_t) z_num);
+
+    yaml_run      = yaml_doc.add( "Run" , "" );
+    yaml_run->add("processes",                (size_t) p_size );
+    yaml_run->add("threads per process",      (size_t) nthread );
+    yaml_run->add("number of rotation steps", (size_t) nsteps );
   }
-  
+
+  //------------------------------
+
+  MetaData S ;
+
+  GearFields gear_fields( S );
+
   //------------------------------
   // Proximity search.
   // Tag the surface parts with the proximity search object.
@@ -405,25 +405,68 @@ void test_gears( ParallelMachine pm ,
 
   S.commit();
 
-  //------------------------------
-
   BulkData M( S , pm , kernel_capacity );
 
-  double wt = wall_time();
+  //------------------------------
+
+  dt_max = dt_min = wall_dtime( wt );
+  all_reduce( pm , Max<1>( & dt_max ) , Min<1>( & dt_min ) );
+
+  if ( p_rank == 0 ) {
+    std::cout << "  Problem setup completed, begin internal meshing"
+              << std::endl ;
+    std::cout.flush();
+
+    YAML_Element * yaml_dt = yaml_mesh->add("setup time", "");
+    yaml_dt->add("minimum", dt_min );
+    yaml_dt->add("maximum", dt_max );
+  }
+
+  //------------------------------
 
   for ( std::vector<Gear*>::iterator
         i = gears.begin() ; i != gears.end() ; ++i ) {
     (*i)->mesh( M );
   }
 
+  dt_max = dt_min = wall_dtime( wt );
+  all_reduce( pm , Max<1>( & dt_max ) , Min<1>( & dt_min ) );
+
+  if ( p_rank == 0 ) {
+    std::cout << "  Local meshing completed, begin parallel resolution"
+              << std::endl ;
+    std::cout.flush();
+
+    YAML_Element * yaml_dt = yaml_mesh->add("local meshing time", "");
+    yaml_dt->add("minimum", dt_min );
+    yaml_dt->add("maximum", dt_max );
+  }
+
+  //------------------------------
+
   comm_mesh_discover_sharing( M );
   comm_mesh_regenerate_aura( M );
 
-  double dt_mesh_gen = wall_dtime( wt );
+  dt_max = dt_min = wall_dtime( wt );
+  all_reduce( pm , Max<1>( & dt_max ) , Min<1>( & dt_min ) );
+
+  if ( p_rank == 0 ) {
+    std::cout
+      << "  Parallel meshing resolution completed, begin consistency check"
+      << std::endl ;
+    std::cout.flush();
+
+    YAML_Element * yaml_dt =
+      yaml_mesh->add("parallel mesh resolution time", "");
+    yaml_dt->add("minimum", dt_min );
+    yaml_dt->add("maximum", dt_max );
+  }
+
+  //------------------------------
 
   if ( verify && ! comm_mesh_verify_parallel_consistency( M ) ) {
-    std::cout << "N_GEARS Failed parallel consistency" << std::endl ;
-    return ;
+    std::string msg("N_GEARS Failed parallel consistency");
+    throw std::runtime_error( msg );
   }
 
   // Copy coordinates to the aura nodes
@@ -441,30 +484,21 @@ void test_gears( ParallelMachine pm ,
   }
 
   if ( verify && ! comm_verify_shared_entity_values( M , Node , gear_fields.gear_coord ) ) {
-    if ( p_rank == 0 ) {
-      std::cout << "N_GEARS FAILED for shared values of " ;
-      std::cout << gear_fields.gear_coord.name();
-      std::cout << std::endl ;
-    }
-    return ;
+    std::string msg( "N_GEARS FAILED for shared values of " );
+    msg.append( gear_fields.gear_coord.name() );
+    throw std::runtime_error( msg );
   }
 
   if ( verify && ! comm_verify_shared_entity_values( M , Node , gear_fields.model_coord ) ) {
-    if ( p_rank == 0 ) {
-      std::cout << "TWO_GEARS FAILED for shared values of " ;
-      std::cout << gear_fields.model_coord.name();
-      std::cout << std::endl ;
-    }
-    return ;
+    std::string msg( "N_GEARS FAILED for shared values of " );
+    msg.append( gear_fields.model_coord.name() );
+    throw std::runtime_error( msg );
   }
 
   if ( verify && ! comm_verify_shared_entity_values( M , Node , gear_fields.current_coord ) ) {
-    if ( p_rank == 0 ) {
-      std::cout << "N_GEARS FAILED for shared values of " ;
-      std::cout << gear_fields.current_coord.name();
-      std::cout << std::endl ;
-    }
-    return ;
+    std::string msg( "N_GEARS FAILED for shared values of " );
+    msg.append( gear_fields.current_coord.name() );
+    throw std::runtime_error( msg );
   }
 
   //------------------------------
@@ -474,26 +508,21 @@ void test_gears( ParallelMachine pm ,
 
     comm_mesh_stats( M , counts , max_id );
 
+    dt_max = dt_min = wall_dtime( wt );
+    all_reduce( pm , Max<1>( & dt_max ) , Min<1>( & dt_min ) );
+
     if ( p_rank == 0 ) {
-      std::cout << "N_GEARS Meshing completed and verified" << std::endl ;
-
-      std::cout << "N_GEARS Global Counts { " 
-                << "node = " << counts[0] << " , "
-                << "edge = " << counts[1] << " , "
-                << "face = " << counts[2] << " , "
-                << "elem = " << counts[3] << " , "
-                << "particle = " << counts[4] << " , "
-                << "constraint = " << counts[5] << " }" << std::endl ;
-
-      std::cout << "N_GEARS Global MaxId { " 
-                << "node = " << max_id[0] << " , "
-                << "edge = " << max_id[1] << " , "
-                << "face = " << max_id[2] << " , "
-                << "elem = " << max_id[3] << " , "
-                << "particle = " << max_id[4] << " , "
-                << "constraint = " << max_id[5] << " }" << std::endl ;
-
+      std::cout << "  Meshing completed and consistent" << std::endl ;
       std::cout.flush();
+
+      yaml_mesh->add("global node count",     (size_t) counts[0] );
+      yaml_mesh->add("global edge count",     (size_t) counts[1] );
+      yaml_mesh->add("global face count",     (size_t) counts[2] );
+      yaml_mesh->add("global element count",  (size_t) counts[3] );
+
+      YAML_Element * yaml_dt = yaml_mesh->add("verify time", "");
+      yaml_dt->add("minimum", dt_min );
+      yaml_dt->add("maximum", dt_max );
     }
   }
   //------------------------------
@@ -519,7 +548,20 @@ void test_gears( ParallelMachine pm ,
     exo = new exodus::FileOutput( file_schema, M,
                                   exo_file_name , title,
                                   false , out_fields, flags);
-    dt_exo_write += wall_dtime(wt);
+
+    dt_exo_write += dt_max = dt_min = wall_dtime( wt );
+    all_reduce( pm , Max<1>( & dt_max ) , Min<1>( & dt_min ) );
+
+    if ( p_rank == 0 ) {
+      std::cout << "  ExodusII output initialized" << std::endl ;
+      std::cout.flush();
+
+      yaml_mesh_io = yaml_doc.add("mesh output","");
+      yaml_mesh_io->add("file",exo_file_name);
+      YAML_Element * yaml_dt = yaml_mesh_io->add("initilization time","");
+      yaml_dt->add("mininum",dt_min);
+      yaml_dt->add("maximum",dt_max);
+    }
   }
 
   std::vector<EntityProc> prox_domain ;
@@ -533,18 +575,52 @@ void test_gears( ParallelMachine pm ,
                              verify ,
                              dt_proximity , dt_ghosting );
 
-  wt = wall_time();
+  dt_max = dt_min = wall_dtime( wt );
+  all_reduce( pm , Max<1>( & dt_max ) , Min<1>( & dt_min ) );
+
+  if ( p_rank == 0 ) {
+    std::cout << "  Initial proximity test completed" << std::endl ;
+    std::cout.flush();
+
+    YAML_Element * yaml_dt =
+      yaml_run->add("Initial proximity detection time","");
+    yaml_dt->add("mininum",dt_min);
+    yaml_dt->add("maximum",dt_max);
+  }
 
   std::vector<OctTreeKey> rebal_cut_keys ;
 
   comm_mesh_rebalance( M , gear_fields.current_coord , NULL , rebal_cut_keys );
 
-  dt_rebalance = wall_dtime( wt );
+  dt_rebalance = dt_max = dt_min = wall_dtime( wt );
+  all_reduce( pm , Max<1>( & dt_max ) , Min<1>( & dt_min ) );
+
+  if ( p_rank == 0 ) {
+    std::cout << "  Initial rebalance completed" << std::endl ;
+    std::cout.flush();
+
+    YAML_Element * yaml_dt = yaml_run->add("Initial rebalance time","");
+    yaml_dt->add("mininum",dt_min);
+    yaml_dt->add("maximum",dt_max);
+  }
 
   if ( verify && ! comm_mesh_verify_parallel_consistency( M ) ) {
-    std::cout << "N_GEARS Failed parallel rebalance consistency"
-              << std::endl ;
-    return ;
+    std::string msg( "N_GEARS Failed parallel rebalance consistency" );
+    throw std::runtime_error( msg );
+  }
+
+  dt_max = dt_min = wall_dtime( wt );
+  all_reduce( pm , Max<1>( & dt_max ) , Min<1>( & dt_min ) );
+
+  if ( p_rank == 0 ) {
+    std::cout << "  Rebalance verification completed" << std::endl
+              << "Begin main loop" << std::endl ;
+    std::cout.flush();
+
+    YAML_Element * yaml_dt =
+      yaml_run->add("Initial rebalance verification time","");
+    yaml_dt->add("mininum",dt_min);
+    yaml_dt->add("maximum",dt_max);
   }
 
   //------------------------------
@@ -553,9 +629,7 @@ void test_gears( ParallelMachine pm ,
   dt_proximity = 0 ;
   dt_ghosting = 0 ;
 
-  const unsigned nsteps = 121 ;
-
-  {
+  if ( 2 < nsteps ) {
     for ( unsigned i = 0 ; i < nsteps ; ++i ) {
 
       M.update_state();
@@ -583,24 +657,18 @@ void test_gears( ParallelMachine pm ,
       // Check parallel consistency of shared variable
 
       if ( verify && ! comm_verify_shared_entity_values(M,Node,gear_fields.current_coord) ) {
-        if ( p_rank == 0 ) {
-          std::cout << "N_GEARS FAILED for shared values of " ;
-          std::cout << gear_fields.current_coord.name();
-          std::cout << std::endl ;
-        }
-        return ;
+        std::string msg( "N_GEARS FAILED for shared values of " );
+        msg.append( gear_fields.current_coord.name() );
+        throw std::runtime_error( msg );
       }
 
       const CartesianField & node_current_coord_old =
         gear_fields.current_coord[ StateOld ];
 
       if ( verify && ! comm_verify_shared_entity_values(M , Node, node_current_coord_old) ) {
-        if ( p_rank == 0 ) {
-          std::cout << "N_GEARS FAILED for shared values of " ;
-          std::cout << node_current_coord_old.name();
-          std::cout << std::endl ;
-        }
-        return ;
+        std::string msg( "N_GEARS FAILED for shared values of " );
+        msg.append( node_current_coord_old.name() );
+        throw std::runtime_error( msg );
       }
 
       // Average node value to element and then average back to nodes;
@@ -632,9 +700,6 @@ void test_gears( ParallelMachine pm ,
 
       // Surface in proximity are added to the Aura
 
-
-
-
       if ( NULL != exo ) {
         wt = wall_time();
         exo->write( 0.0 );
@@ -662,15 +727,17 @@ void test_gears( ParallelMachine pm ,
   dt_exo_write /= nsteps ;
 
   if ( p_rank == 0 ) {
-    std::cout << "N_GEARS Performance results:" << std::endl
-              << "  #Steps        = " << nsteps << std::endl
-              << "  Meshing       = " << dt_mesh_gen  << " sec" << std::endl
-              << "  Rebalance     = " << dt_rebalance << " sec" << std::endl
-              << "  Diffuse/step  = " << dt_diffuse   << " sec" << std::endl
-              << "  DiffuseSplit/step = " << dt_diffuse_split   << " sec" << std::endl
-              << "  Search/step   = " << dt_proximity << " sec" << std::endl
-              << "  Ghosting/step = " << dt_ghosting  << " sec" << std::endl
-              << "  Writing/step  = " << dt_exo_write << " sec" << std::endl
+
+    yaml_run->add("Diffusion split time per step", dt_diffuse_split);
+    yaml_run->add("Diffusion time per step", dt_diffuse);
+    yaml_run->add("Proximity search time per step", dt_proximity);
+    yaml_run->add("Proximity ghosting time per step", dt_ghosting);
+    yaml_run->add("File ouput time per step", dt_exo_write );
+
+    yaml_doc.generateYAML();
+
+    std::cout << "NGEARS completed, data written to "
+              << filename.str() << "*.yaml"
               << std::endl ;
     std::cout.flush();
   }

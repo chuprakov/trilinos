@@ -88,26 +88,20 @@ void global_coordinate_bounds( BulkData & M ,
 
   // A bounding cube:
 
-  double center[3] , disp[3] ;
-  center[0] = ( max[0] + min[0] ) * 0.5 ;
-  center[1] = ( max[1] + min[1] ) * 0.5 ;
-  center[2] = ( max[2] + min[2] ) * 0.5 ;
-  disp[0]   = ( max[0] - min[0] ) * 0.5 ;
-  disp[1]   = ( max[1] - min[1] ) * 0.5 ;
-  disp[2]   = ( max[2] - min[2] ) * 0.5 ;
+  double disp[3] ;
+  disp[0] = ( max[0] - min[0] );
+  disp[1] = ( max[1] - min[1] );
+  disp[2] = ( max[2] - min[2] );
 
   double disp_max = disp[0] ;
   if ( disp_max < disp[1] ) { disp_max = disp[1] ; }
   if ( disp_max < disp[2] ) { disp_max = disp[2] ; }
-  {
-    const double f_eps = std::numeric_limits<float>::epsilon();
-    disp_max *= 1.0 + f_eps ;
-  }
+  double disp_eps = disp_max * std::numeric_limits<float>::epsilon();
 
-  bounds[0] = center[0] - disp_max ;
-  bounds[1] = center[1] - disp_max ;
-  bounds[2] = center[2] - disp_max ;
-  bounds[3] = disp_max * 2 ;
+  bounds[0] = min[0] - disp_eps ;
+  bounds[1] = min[1] - disp_eps ;
+  bounds[2] = min[2] - disp_eps ;
+  bounds[3] = disp_max + 2 * disp_eps ;
 }
 
 //----------------------------------------------------------------------

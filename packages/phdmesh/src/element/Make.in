@@ -41,7 +41,7 @@ ELEMENT_OBJ_FILES =	\
 	ElementDimensions.o	\
 	ElementTopologies.o
 
-ELEMENT_INC_DEPS = $(ELEMENT_INC_FILES) $(UTIL_INC_DEPS)
+ELEMENT_INC_DEPS = $(ELEMENT_INC_FILES) $(UTIL_INC_DEPS) $(CONFIG_FILE)
 
 ELEMENT_LIB = libphdelement_mesh.a
 

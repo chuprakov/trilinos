@@ -35,7 +35,7 @@ TXBLAS_OBJ_FILES =	\
 	txblas_CR4Matrix.o	\
 	txblas_cr4_mxv.o
 
-TXBLAS_INC_DEPS = $(TXBLAS_INC_FILES) $(UTIL_INC_DEPS)
+TXBLAS_INC_DEPS = $(TXBLAS_INC_FILES) $(UTIL_INC_DEPS) $(CONFIG_FILE)
 
 TXBLAS_LIB = libphdmesh_txblas.a
 
