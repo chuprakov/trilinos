@@ -30,3 +30,10 @@
 /* If Amesos is built */
 #cmakedefine HAVE_CTRILINOS_AMESOS
 #cmakedefine CTRILINOS_ENABLE_AMESOS
+
+/* Define to 1 if you have the <malloc.h> header file. */
+#cmakedefine HAVE_MALLOC_H
+
+/* Define to rpl_malloc if the replacement function should be used. */
+#cmakedefine malloc
+

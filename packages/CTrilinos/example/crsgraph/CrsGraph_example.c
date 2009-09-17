@@ -31,9 +31,17 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 
 #include "CTrilinos_config.h"
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+
+#ifdef HAVE_MALLOC_H
+#ifndef __APPLE__
 #include <malloc.h>
+#else
+#include <sys/malloc.h>
+#endif
+#endif
 
 #include "CEpetra_CrsGraph.h"
 #include "CEpetra_Map.h"
