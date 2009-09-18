@@ -1,0 +1,91 @@
+CTrilinos Tutorial Notes
+------------------------
+
+To avoid passing pointers back and forth between C and C++, we instead
+utilize a lightweight identifier struct that can be used to pull the
+underlying object out of a table so that its methods may be invoked.
+This struct has the form
+
+typedef struct {
+    CTrilinos_Type_ID_t type;
+    int index;
+    boolean is_const;
+} CTrilinos_Object_ID_t;
+
+Although "type" in this struct can be thought of as referring to the
+type of object to which it refers, this is not completely accurate.
+In reality, "type" identifies the type-specific table in which the
+object is stored, and the underlying object may be of any type that
+can be legally dynamic_cast<>'ed to the table type.  This is a
+critical detail that must be understood.  The "index" field specifies
+which element of the table corresponds to the object in question.
+
+For every class, C, that has been wrapped by CTrilinos (including
+virtual classes), two tables exist: one that stores RCP<const C>
+(for when the "is_const" field is true) and a separate one to store
+RCP<C> (for when the "is_const" field is false).  This ensures that
+the only methods that can be invoked on const objects are the ones
+declared const themselves.  It is critical to note here that the
+tables contain RCPs to the objects, not the objects themselves.  This
+allows an object to be referenced by more than one table, just as more
+than one pointer could exist to any given object.
+
+When a method expects an argument of class C, its wrapper expects a to
+be passed a struct referring to the type-specific table for class C.
+To allow the compiler to do compile-time type-checking of the
+arguments, each wrapped class has its own, type-specific struct, which
+is identical in form to the generic one described above.  For example,
+the struct for an Epetra_Comm, whose "type" field is CT_Epetra_Comm_ID,
+is named CT_Epetra_Comm_ID_t.  There is no circumstance under which
+the "type" field should not correspond the type name of the struct.
+
+If one wants to pass an object of a class derived from C to a method
+expecting class C, then an RCP to that object must first be stored in
+the C table.  This can be done using the CTrilinos casting methods.
+Although two function calls are necessary, as shown below, they should
+ALWAYS be used in pairs and the intermediate result should NEVER be
+stored,
+
+CT_Epetra_SerialComm_ID_t serialComm = whatever...;
+CT_Epetra_Comm_ID_t Comm = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(serialComm));
+
+The inner function simply changes the type of the struct from
+CT_Epetra_SerialComm_ID_t to CTrilinos_Object_ID_t, which is the only
+struct type that can be passed to the outer function.  The outer
+function pulls the underlying object from the Epetra_SerialComm table
+using its RCP, does a dynamic_cast<> on the object, and stores a new
+RCP in the Epetra_Comm table.  Because the two structs serialComm and
+Comm now refer to the same underlying object, any operation affecting
+one will affect the other as well.
+
+An object can be removed from the table using its Destroy function,
+
+Epetra_Comm_Destroy(&Comm);
+
+When removed from the table, the "type" field will be changed to
+CT_Invalid_ID and its "index" field set to -1.  The underlying object
+will only be destroyed when it is no longer referenced by any table,
+provided that the object was created using a CTrilinos constructor.
+If it was stored in a table after being returned by some method, then
+CTrilinos assumes no ownership of that object and will not destroy it
+even when it is removed from the final table.
+
+The name of all wrappers for methods of a class will begin with the
+name of the class.  Due to a lack of function overloading in C, many
+of the methods have been renamed, so check the Doxygen pages to find
+out the exact name of the wrapper for any given method.  The first
+argument of any method, with the exceptions being constructors,
+destructors, and static methods, will be the struct identifying the
+object on which the method is to be invoked.  For example,
+
+Epetra_Comm_Barrier(Comm);
+
+is the wrapper for
+
+Epetra_Comm::Barrier().
+
+A simple, yet illustrative, example of using the CTrilinos interface
+to Epetra can be found in
+
+Trilinos/packages/CTrilinos/examples/verySimple/verySimple.c
+
