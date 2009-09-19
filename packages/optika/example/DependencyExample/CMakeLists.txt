@@ -1,6 +1,6 @@
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(PackageAddExecutable)
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST(
+PACKAGE_ADD_EXECUTABLE(
   DependencyExample
   SOURCES main.cpp
 )
