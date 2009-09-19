@@ -35,7 +35,7 @@
     num_values,num_indexes,num_chars,reduct_obj_t,reduce_reduct_obj,targ_load_state,targ_extract_state                \
     ,external_reduct_op,get_reduct_op                                                                                 \
     )                                                                                                                 \
-static void CALL_API external_reduct_op( void* in_targ_array, void* inout_targ_array                                           \
+static void external_reduct_op( void* in_targ_array, void* inout_targ_array                                           \
   , int* len, RTOp_Datatype* datatype )                                                                             \
 {                                                                                                                     \
   struct reduct_obj_t                                                                                               \

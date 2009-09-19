@@ -410,7 +410,7 @@ static int reduce_reduct_objs(
   return 0;
 }
 
-static void CALL_API external_reduct_op( void* in_targ_array, void* inout_targ_array
+static void external_reduct_op( void* in_targ_array, void* inout_targ_array
   , int* len, RTOp_Datatype* datatype )
 {
   int num_values_off, num_indexes_off, num_chars_off

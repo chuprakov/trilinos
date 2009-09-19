@@ -44,7 +44,7 @@ int RTOp_reduct_min_value(
   return 0;
 }
 
-static void CALL_API external_reduct_op( void* in_targ_array, void* inout_targ_array
+static void external_reduct_op( void* in_targ_array, void* inout_targ_array
   , int* len, RTOp_Datatype* datatype )
 {
   /* inout_dot_prod += in_dot_prod */

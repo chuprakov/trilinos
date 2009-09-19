@@ -46,12 +46,6 @@
 extern "C" {
 #endif
 
-#ifdef MPIAPI
-#define CALL_API MPIAPI
-#else
-#define CALL_API 
-#endif
-
 typedef Teuchos_Index RTOp_index_type;
 typedef double        RTOp_value_type;
 typedef char          RTOp_char_type;
@@ -241,9 +235,7 @@ typedef void*   RTOp_ReductTarget;     /*< The type for reduction target objects
  * be consistent with the above memory layout of its members but this
  * is not guaranteed by the C standard.
  */
-
-typedef void (CALL_API *RTOp_reduct_op_func_ptr_t) ( void *, void *, int *, RTOp_Datatype * ); 
-
+typedef void (*RTOp_reduct_op_func_ptr_t) ( void *, void *, int *, RTOp_Datatype * ); 
 /** @name Error codes returned from various RTOp functions and interfaces.
  */
 /*@{ */
