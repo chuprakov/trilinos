@@ -54,7 +54,7 @@ using CTrilinos::Table;
 Table<Epetra_BlockMap>& tableOfBlockMaps()
 {
     static Table<Epetra_BlockMap>
-        loc_tableOfBlockMaps(CT_Epetra_BlockMap_ID, "CT_Epetra_BlockMap_ID", false);
+        loc_tableOfBlockMaps(CT_Epetra_BlockMap_ID, "CT_Epetra_BlockMap_ID", FALSE);
     return loc_tableOfBlockMaps;
 }
 
@@ -62,7 +62,7 @@ Table<Epetra_BlockMap>& tableOfBlockMaps()
 Table<const Epetra_BlockMap>& tableOfConstBlockMaps()
 {
     static Table<const Epetra_BlockMap>
-        loc_tableOfConstBlockMaps(CT_Epetra_BlockMap_ID, "CT_Epetra_BlockMap_ID", true);
+        loc_tableOfConstBlockMaps(CT_Epetra_BlockMap_ID, "CT_Epetra_BlockMap_ID", TRUE);
     return loc_tableOfConstBlockMaps;
 }
 

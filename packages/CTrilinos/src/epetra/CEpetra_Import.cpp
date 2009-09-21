@@ -55,7 +55,7 @@ using CTrilinos::Table;
 Table<Epetra_Import>& tableOfImports()
 {
     static Table<Epetra_Import>
-        loc_tableOfImports(CT_Epetra_Import_ID, "CT_Epetra_Import_ID", false);
+        loc_tableOfImports(CT_Epetra_Import_ID, "CT_Epetra_Import_ID", FALSE);
     return loc_tableOfImports;
 }
 
@@ -63,7 +63,7 @@ Table<Epetra_Import>& tableOfImports()
 Table<const Epetra_Import>& tableOfConstImports()
 {
     static Table<const Epetra_Import>
-        loc_tableOfConstImports(CT_Epetra_Import_ID, "CT_Epetra_Import_ID", true);
+        loc_tableOfConstImports(CT_Epetra_Import_ID, "CT_Epetra_Import_ID", TRUE);
     return loc_tableOfConstImports;
 }
 

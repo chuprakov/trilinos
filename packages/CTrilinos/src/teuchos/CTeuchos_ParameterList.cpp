@@ -54,7 +54,7 @@ using CTrilinos::Table;
 Table<Teuchos::ParameterList>& tableOfParameterLists()
 {
     static Table<Teuchos::ParameterList>
-        loc_tableOfParameterLists(CT_Teuchos_ParameterList_ID, "CT_Teuchos_ParameterList_ID", false);
+        loc_tableOfParameterLists(CT_Teuchos_ParameterList_ID, "CT_Teuchos_ParameterList_ID", FALSE);
     return loc_tableOfParameterLists;
 }
 
@@ -62,7 +62,7 @@ Table<Teuchos::ParameterList>& tableOfParameterLists()
 Table<const Teuchos::ParameterList>& tableOfConstParameterLists()
 {
     static Table<const Teuchos::ParameterList>
-        loc_tableOfConstParameterLists(CT_Teuchos_ParameterList_ID, "CT_Teuchos_ParameterList_ID", true);
+        loc_tableOfConstParameterLists(CT_Teuchos_ParameterList_ID, "CT_Teuchos_ParameterList_ID", TRUE);
     return loc_tableOfConstParameterLists;
 }
 

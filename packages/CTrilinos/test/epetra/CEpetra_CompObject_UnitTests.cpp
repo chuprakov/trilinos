@@ -325,7 +325,7 @@ TEUCHOS_UNIT_TEST( Epetra_CompObject , UpdateFlops_Float )
   ECHO(CT_Epetra_Flops_ID_t fID = Epetra_Flops_Create());
   ECHO(Epetra_CompObject_SetFlopCounter(selfID, fID));
 
-  ECHO(float f = 15.4);
+  ECHO(float f = 15.4F);
   ECHO(Epetra_CompObject_UpdateFlops_Float(selfID, f));
 
   /* Now check the result of the call to the wrapper function */

@@ -55,7 +55,7 @@ using CTrilinos::Table;
 Table<Epetra_JadMatrix>& tableOfJadMatrixs()
 {
     static Table<Epetra_JadMatrix>
-        loc_tableOfJadMatrixs(CT_Epetra_JadMatrix_ID, "CT_Epetra_JadMatrix_ID", false);
+        loc_tableOfJadMatrixs(CT_Epetra_JadMatrix_ID, "CT_Epetra_JadMatrix_ID", FALSE);
     return loc_tableOfJadMatrixs;
 }
 
@@ -63,7 +63,7 @@ Table<Epetra_JadMatrix>& tableOfJadMatrixs()
 Table<const Epetra_JadMatrix>& tableOfConstJadMatrixs()
 {
     static Table<const Epetra_JadMatrix>
-        loc_tableOfConstJadMatrixs(CT_Epetra_JadMatrix_ID, "CT_Epetra_JadMatrix_ID", true);
+        loc_tableOfConstJadMatrixs(CT_Epetra_JadMatrix_ID, "CT_Epetra_JadMatrix_ID", TRUE);
     return loc_tableOfConstJadMatrixs;
 }
 

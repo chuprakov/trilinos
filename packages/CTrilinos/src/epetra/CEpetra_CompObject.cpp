@@ -54,7 +54,7 @@ using CTrilinos::Table;
 Table<Epetra_CompObject>& tableOfCompObjects()
 {
     static Table<Epetra_CompObject>
-        loc_tableOfCompObjects(CT_Epetra_CompObject_ID, "CT_Epetra_CompObject_ID", false);
+        loc_tableOfCompObjects(CT_Epetra_CompObject_ID, "CT_Epetra_CompObject_ID", FALSE);
     return loc_tableOfCompObjects;
 }
 
@@ -62,7 +62,7 @@ Table<Epetra_CompObject>& tableOfCompObjects()
 Table<const Epetra_CompObject>& tableOfConstCompObjects()
 {
     static Table<const Epetra_CompObject>
-        loc_tableOfConstCompObjects(CT_Epetra_CompObject_ID, "CT_Epetra_CompObject_ID", true);
+        loc_tableOfConstCompObjects(CT_Epetra_CompObject_ID, "CT_Epetra_CompObject_ID", TRUE);
     return loc_tableOfConstCompObjects;
 }
 

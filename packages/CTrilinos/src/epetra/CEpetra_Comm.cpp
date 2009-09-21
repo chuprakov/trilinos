@@ -56,7 +56,7 @@ using CTrilinos::Table;
 Table<Epetra_Comm>& tableOfComms()
 {
     static Table<Epetra_Comm>
-        loc_tableOfComms(CT_Epetra_Comm_ID, "CT_Epetra_Comm_ID", false);
+        loc_tableOfComms(CT_Epetra_Comm_ID, "CT_Epetra_Comm_ID", FALSE);
     return loc_tableOfComms;
 }
 
@@ -64,7 +64,7 @@ Table<Epetra_Comm>& tableOfComms()
 Table<const Epetra_Comm>& tableOfConstComms()
 {
     static Table<const Epetra_Comm>
-        loc_tableOfConstComms(CT_Epetra_Comm_ID, "CT_Epetra_Comm_ID", true);
+        loc_tableOfConstComms(CT_Epetra_Comm_ID, "CT_Epetra_Comm_ID", TRUE);
     return loc_tableOfConstComms;
 }
 

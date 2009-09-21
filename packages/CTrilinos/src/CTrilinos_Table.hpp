@@ -29,7 +29,7 @@ class Table
 
     /* constructor -- use is_const = true if table will store
      * objects of type const T instead of T */
-    Table(CTrilinos_Type_ID_t type, std::string str, bool is_const = false);
+    Table(CTrilinos_Type_ID_t type, std::string str, boolean is_const = FALSE);
 
     /* destructor */
     ~Table();
@@ -76,14 +76,14 @@ class Table
     CTrilinos_Type_ID_t ttype;  /* enum value for stored objects */
     std::string tstr;           /* string for exception msgs */
     std::string tstr2;          /* string for exception msgs */
-    bool tconst;                /* if table holds const T */
+    boolean tconst;                /* if table holds const T */
 };
 
 
 /* constructor -- use is_const = true if table will store
  * objects of type const T instead of T */
 template <class T>
-Table<T>::Table(CTrilinos_Type_ID_t type, std::string str, bool is_const)
+Table<T>::Table(CTrilinos_Type_ID_t type, std::string str, boolean is_const)
   : ttype(type),
     tconst(is_const)
 {

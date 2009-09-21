@@ -54,7 +54,7 @@ using CTrilinos::Table;
 Table<Epetra_Directory>& tableOfDirectorys()
 {
     static Table<Epetra_Directory>
-        loc_tableOfDirectorys(CT_Epetra_Directory_ID, "CT_Epetra_Directory_ID", false);
+        loc_tableOfDirectorys(CT_Epetra_Directory_ID, "CT_Epetra_Directory_ID", FALSE);
     return loc_tableOfDirectorys;
 }
 
@@ -62,7 +62,7 @@ Table<Epetra_Directory>& tableOfDirectorys()
 Table<const Epetra_Directory>& tableOfConstDirectorys()
 {
     static Table<const Epetra_Directory>
-        loc_tableOfConstDirectorys(CT_Epetra_Directory_ID, "CT_Epetra_Directory_ID", true);
+        loc_tableOfConstDirectorys(CT_Epetra_Directory_ID, "CT_Epetra_Directory_ID", TRUE);
     return loc_tableOfConstDirectorys;
 }
 

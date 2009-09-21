@@ -59,7 +59,7 @@ using CTrilinos::Table;
 Table<Amesos>& tableOfAmesoss()
 {
     static Table<Amesos>
-        loc_tableOfAmesoss(CT_Amesos_ID, "CT_Amesos_ID", false);
+        loc_tableOfAmesoss(CT_Amesos_ID, "CT_Amesos_ID", FALSE);
     return loc_tableOfAmesoss;
 }
 
@@ -67,7 +67,7 @@ Table<Amesos>& tableOfAmesoss()
 Table<const Amesos>& tableOfConstAmesoss()
 {
     static Table<const Amesos>
-        loc_tableOfConstAmesoss(CT_Amesos_ID, "CT_Amesos_ID", true);
+        loc_tableOfConstAmesoss(CT_Amesos_ID, "CT_Amesos_ID", TRUE);
     return loc_tableOfConstAmesoss;
 }
 

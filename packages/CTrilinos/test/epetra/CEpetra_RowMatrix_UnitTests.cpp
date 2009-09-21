@@ -70,13 +70,13 @@ TEUCHOS_UNIT_TEST( Epetra_RowMatrix , Cast )
   ECHO(int NumIndicesPerRow = 4);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Initialize the source matrix */
   ECHO(double val = 1.0);
   ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID, val));
   TEST_EQUALITY(ret, 0);
-  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, true));
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, TRUE));
   TEST_EQUALITY(ret, 0);
 
   /* Cast it to a row matrix */
@@ -105,13 +105,13 @@ TEUCHOS_UNIT_TEST( Epetra_RowMatrix , Destroy )
   ECHO(int NumIndicesPerRow = 4);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Initialize the source matrix */
   ECHO(double val = 1.0);
   ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID, val));
   TEST_EQUALITY(ret, 0);
-  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, true));
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, TRUE));
   TEST_EQUALITY(ret, 0);
 
   /* Cast it to a row matrix */

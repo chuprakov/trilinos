@@ -56,7 +56,7 @@ using CTrilinos::Table;
 Table<Epetra_Operator>& tableOfOperators()
 {
     static Table<Epetra_Operator>
-        loc_tableOfOperators(CT_Epetra_Operator_ID, "CT_Epetra_Operator_ID", false);
+        loc_tableOfOperators(CT_Epetra_Operator_ID, "CT_Epetra_Operator_ID", FALSE);
     return loc_tableOfOperators;
 }
 
@@ -64,7 +64,7 @@ Table<Epetra_Operator>& tableOfOperators()
 Table<const Epetra_Operator>& tableOfConstOperators()
 {
     static Table<const Epetra_Operator>
-        loc_tableOfConstOperators(CT_Epetra_Operator_ID, "CT_Epetra_Operator_ID", true);
+        loc_tableOfConstOperators(CT_Epetra_Operator_ID, "CT_Epetra_Operator_ID", TRUE);
     return loc_tableOfConstOperators;
 }
 

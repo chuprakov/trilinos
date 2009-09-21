@@ -53,7 +53,7 @@ using CTrilinos::Table;
 Table<Teuchos::any>& tableOfanys()
 {
     static Table<Teuchos::any>
-        loc_tableOfanys(CT_Teuchos_any_ID, "CT_Teuchos_any_ID", false);
+        loc_tableOfanys(CT_Teuchos_any_ID, "CT_Teuchos_any_ID", FALSE);
     return loc_tableOfanys;
 }
 
@@ -61,7 +61,7 @@ Table<Teuchos::any>& tableOfanys()
 Table<const Teuchos::any>& tableOfConstanys()
 {
     static Table<const Teuchos::any>
-        loc_tableOfConstanys(CT_Teuchos_any_ID, "CT_Teuchos_any_ID", true);
+        loc_tableOfConstanys(CT_Teuchos_any_ID, "CT_Teuchos_any_ID", TRUE);
     return loc_tableOfConstanys;
 }
 

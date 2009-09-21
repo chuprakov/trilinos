@@ -57,7 +57,7 @@ using CTrilinos::Table;
 Table<Epetra_SerialComm>& tableOfSerialComms()
 {
     static Table<Epetra_SerialComm>
-        loc_tableOfSerialComms(CT_Epetra_SerialComm_ID, "CT_Epetra_SerialComm_ID", false);
+        loc_tableOfSerialComms(CT_Epetra_SerialComm_ID, "CT_Epetra_SerialComm_ID", FALSE);
     return loc_tableOfSerialComms;
 }
 
@@ -65,7 +65,7 @@ Table<Epetra_SerialComm>& tableOfSerialComms()
 Table<const Epetra_SerialComm>& tableOfConstSerialComms()
 {
     static Table<const Epetra_SerialComm>
-        loc_tableOfConstSerialComms(CT_Epetra_SerialComm_ID, "CT_Epetra_SerialComm_ID", true);
+        loc_tableOfConstSerialComms(CT_Epetra_SerialComm_ID, "CT_Epetra_SerialComm_ID", TRUE);
     return loc_tableOfConstSerialComms;
 }
 

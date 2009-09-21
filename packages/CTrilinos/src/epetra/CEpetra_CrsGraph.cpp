@@ -57,7 +57,7 @@ using CTrilinos::Table;
 Table<Epetra_CrsGraph>& tableOfCrsGraphs()
 {
     static Table<Epetra_CrsGraph>
-        loc_tableOfCrsGraphs(CT_Epetra_CrsGraph_ID, "CT_Epetra_CrsGraph_ID", false);
+        loc_tableOfCrsGraphs(CT_Epetra_CrsGraph_ID, "CT_Epetra_CrsGraph_ID", FALSE);
     return loc_tableOfCrsGraphs;
 }
 
@@ -65,7 +65,7 @@ Table<Epetra_CrsGraph>& tableOfCrsGraphs()
 Table<const Epetra_CrsGraph>& tableOfConstCrsGraphs()
 {
     static Table<const Epetra_CrsGraph>
-        loc_tableOfConstCrsGraphs(CT_Epetra_CrsGraph_ID, "CT_Epetra_CrsGraph_ID", true);
+        loc_tableOfConstCrsGraphs(CT_Epetra_CrsGraph_ID, "CT_Epetra_CrsGraph_ID", TRUE);
     return loc_tableOfConstCrsGraphs;
 }
 

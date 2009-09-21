@@ -74,14 +74,14 @@ namespace CTrilinos {
 void pass_bool_out( const bool * pval, boolean * pvalout )
 {
     pvalout = new boolean[1];
-    *pvalout = *pval;
+    *pvalout = (*pval ? TRUE : FALSE);
 }
 
 
 void pass_bool_in( const boolean * pval, bool * pvalout )
 {
     pvalout = new bool[1];
-    *pvalout = *pval;
+    *pvalout = (*pval != FALSE ? true : false);
 }
 
 

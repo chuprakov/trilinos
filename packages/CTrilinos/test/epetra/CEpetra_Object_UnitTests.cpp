@@ -59,7 +59,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Object , Cast )
   ECHO(CEpetra_Test_CleanSlate());
 
   ECHO(int TracebackModeIn = -1);
-  ECHO(bool set_label = true);
+  ECHO(boolean set_label = TRUE);
   ECHO(CT_Epetra_Object_ID_t selfID = Epetra_Object_Create(TracebackModeIn, set_label));
 
   /* This cast should be allowed */
@@ -77,7 +77,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Object , Create )
   ECHO(CEpetra_Test_CleanSlate());
 
   ECHO(int TracebackModeIn = -1);
-  ECHO(bool set_label = true);
+  ECHO(boolean set_label = TRUE);
   ECHO(CT_Epetra_Object_ID_t selfID = Epetra_Object_Create(TracebackModeIn, set_label));
 
   TEST_EQUALITY(selfID.type, CT_Epetra_Object_ID);
@@ -111,7 +111,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Object , Duplicate )
   ECHO(CEpetra_Test_CleanSlate());
 
   ECHO(int TracebackModeIn = -1);
-  ECHO(bool set_label = true);
+  ECHO(boolean set_label = TRUE);
   ECHO(CT_Epetra_Object_ID_t selfID = Epetra_Object_Create(TracebackModeIn, set_label));
 
   ECHO(CT_Epetra_Object_ID_t dupID = Epetra_Object_Duplicate(selfID));
@@ -130,7 +130,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Object , Destroy )
   ECHO(CEpetra_Test_CleanSlate());
 
   ECHO(int TracebackModeIn = -1);
-  ECHO(bool set_label = true);
+  ECHO(boolean set_label = TRUE);
   ECHO(CT_Epetra_Object_ID_t selfID = Epetra_Object_Create(TracebackModeIn, set_label));
 
   ECHO(Epetra_Object_Destroy(&selfID));
@@ -149,7 +149,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Object , SetLabel )
   ECHO(CEpetra_Test_CleanSlate());
 
   ECHO(int TracebackModeIn = -1);
-  ECHO(bool set_label = true);
+  ECHO(boolean set_label = TRUE);
   ECHO(CT_Epetra_Object_ID_t selfID = Epetra_Object_Create(TracebackModeIn, set_label));
 
   ECHO(const char * Label = "blah");

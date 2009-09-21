@@ -53,7 +53,7 @@ using CTrilinos::Table;
 Table<Epetra_BLAS>& tableOfBLASs()
 {
     static Table<Epetra_BLAS>
-        loc_tableOfBLASs(CT_Epetra_BLAS_ID, "CT_Epetra_BLAS_ID", false);
+        loc_tableOfBLASs(CT_Epetra_BLAS_ID, "CT_Epetra_BLAS_ID", FALSE);
     return loc_tableOfBLASs;
 }
 
@@ -61,7 +61,7 @@ Table<Epetra_BLAS>& tableOfBLASs()
 Table<const Epetra_BLAS>& tableOfConstBLASs()
 {
     static Table<const Epetra_BLAS>
-        loc_tableOfConstBLASs(CT_Epetra_BLAS_ID, "CT_Epetra_BLAS_ID", true);
+        loc_tableOfConstBLASs(CT_Epetra_BLAS_ID, "CT_Epetra_BLAS_ID", TRUE);
     return loc_tableOfConstBLASs;
 }
 

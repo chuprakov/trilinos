@@ -57,7 +57,7 @@ using CTrilinos::Table;
 Table<Epetra_LinearProblem>& tableOfLinearProblems()
 {
     static Table<Epetra_LinearProblem>
-        loc_tableOfLinearProblems(CT_Epetra_LinearProblem_ID, "CT_Epetra_LinearProblem_ID", false);
+        loc_tableOfLinearProblems(CT_Epetra_LinearProblem_ID, "CT_Epetra_LinearProblem_ID", FALSE);
     return loc_tableOfLinearProblems;
 }
 
@@ -65,7 +65,7 @@ Table<Epetra_LinearProblem>& tableOfLinearProblems()
 Table<const Epetra_LinearProblem>& tableOfConstLinearProblems()
 {
     static Table<const Epetra_LinearProblem>
-        loc_tableOfConstLinearProblems(CT_Epetra_LinearProblem_ID, "CT_Epetra_LinearProblem_ID", true);
+        loc_tableOfConstLinearProblems(CT_Epetra_LinearProblem_ID, "CT_Epetra_LinearProblem_ID", TRUE);
     return loc_tableOfConstLinearProblems;
 }
 

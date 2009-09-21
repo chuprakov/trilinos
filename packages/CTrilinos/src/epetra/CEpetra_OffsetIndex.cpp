@@ -56,7 +56,7 @@ using CTrilinos::Table;
 Table<Epetra_OffsetIndex>& tableOfOffsetIndexs()
 {
     static Table<Epetra_OffsetIndex>
-        loc_tableOfOffsetIndexs(CT_Epetra_OffsetIndex_ID, "CT_Epetra_OffsetIndex_ID", false);
+        loc_tableOfOffsetIndexs(CT_Epetra_OffsetIndex_ID, "CT_Epetra_OffsetIndex_ID", FALSE);
     return loc_tableOfOffsetIndexs;
 }
 
@@ -64,7 +64,7 @@ Table<Epetra_OffsetIndex>& tableOfOffsetIndexs()
 Table<const Epetra_OffsetIndex>& tableOfConstOffsetIndexs()
 {
     static Table<const Epetra_OffsetIndex>
-        loc_tableOfConstOffsetIndexs(CT_Epetra_OffsetIndex_ID, "CT_Epetra_OffsetIndex_ID", true);
+        loc_tableOfConstOffsetIndexs(CT_Epetra_OffsetIndex_ID, "CT_Epetra_OffsetIndex_ID", TRUE);
     return loc_tableOfConstOffsetIndexs;
 }
 

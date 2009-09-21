@@ -54,7 +54,7 @@ using CTrilinos::Table;
 Table<Epetra_SrcDistObject>& tableOfSrcDistObjects()
 {
     static Table<Epetra_SrcDistObject>
-        loc_tableOfSrcDistObjects(CT_Epetra_SrcDistObject_ID, "CT_Epetra_SrcDistObject_ID", false);
+        loc_tableOfSrcDistObjects(CT_Epetra_SrcDistObject_ID, "CT_Epetra_SrcDistObject_ID", FALSE);
     return loc_tableOfSrcDistObjects;
 }
 
@@ -62,7 +62,7 @@ Table<Epetra_SrcDistObject>& tableOfSrcDistObjects()
 Table<const Epetra_SrcDistObject>& tableOfConstSrcDistObjects()
 {
     static Table<const Epetra_SrcDistObject>
-        loc_tableOfConstSrcDistObjects(CT_Epetra_SrcDistObject_ID, "CT_Epetra_SrcDistObject_ID", true);
+        loc_tableOfConstSrcDistObjects(CT_Epetra_SrcDistObject_ID, "CT_Epetra_SrcDistObject_ID", TRUE);
     return loc_tableOfConstSrcDistObjects;
 }
 

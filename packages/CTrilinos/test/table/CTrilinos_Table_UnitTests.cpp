@@ -228,7 +228,7 @@ TEUCHOS_UNIT_TEST( Table, removeInvalid )
   ECHO(CTrilinos_Object_ID_t id);
   ECHO(id.index = -1);
   ECHO(id.type = CLASS_ENUM(T));
-  ECHO(id.is_const = false);
+  ECHO(id.is_const = FALSE);
   TEST_THROW(table.remove(&id), RangeError);
 }
 
@@ -241,7 +241,7 @@ TEUCHOS_UNIT_TEST( Table, removeWrong )
   ECHO(CTrilinos_Object_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = CLASS_ENUM(T4));
-  ECHO(id.is_const = false);
+  ECHO(id.is_const = FALSE);
   TEST_THROW(table.remove(&id), CTrilinosTypeMismatchError);
 }
 
@@ -252,7 +252,7 @@ TEUCHOS_UNIT_TEST( Table, removeWrongConst1 )
   ECHO(CTrilinos_Object_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = id1.type);
-  ECHO(id.is_const = true);
+  ECHO(id.is_const = TRUE);
   TEST_THROW(table.remove(&id), CTrilinosTypeMismatchError);
 }
 
@@ -263,7 +263,7 @@ TEUCHOS_UNIT_TEST( Table, removeWrongConst2 )
   ECHO(CTrilinos_Object_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = id1.type);
-  ECHO(id.is_const = false);
+  ECHO(id.is_const = FALSE);
   TEST_THROW(table.remove(&id), CTrilinosTypeMismatchError);
 }
 
@@ -287,7 +287,7 @@ TEUCHOS_UNIT_TEST( Table, getInvalid )
   ECHO(CTrilinos_Object_ID_t id);
   ECHO(id.index = 0);
   ECHO(id.type = CLASS_ENUM(T));
-  ECHO(id.is_const = false);
+  ECHO(id.is_const = FALSE);
   TEST_THROW(table.get(id), RangeError);
 }
 
@@ -300,7 +300,7 @@ TEUCHOS_UNIT_TEST( Table, getWrong )
   ECHO(CTrilinos_Object_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = CLASS_ENUM(T4));
-  ECHO(id.is_const = false);
+  ECHO(id.is_const = FALSE);
   TEST_THROW(table.get(id), CTrilinosTypeMismatchError);
 }
 
@@ -311,7 +311,7 @@ TEUCHOS_UNIT_TEST( Table, getWrongConst1 )
   ECHO(CTrilinos_Object_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = id1.type);
-  ECHO(id.is_const = true);
+  ECHO(id.is_const = TRUE);
   TEST_THROW(table.get(id), CTrilinosTypeMismatchError);
 }
 
@@ -322,7 +322,7 @@ TEUCHOS_UNIT_TEST( Table, getWrongConst2 )
   ECHO(CTrilinos_Object_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = id1.type);
-  ECHO(id.is_const = false);
+  ECHO(id.is_const = FALSE);
   TEST_THROW(table.get(id), CTrilinosTypeMismatchError);
 }
 

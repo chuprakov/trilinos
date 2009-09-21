@@ -62,7 +62,7 @@ using CTrilinos::Table;
 Table<Epetra_MpiComm>& tableOfMpiComms()
 {
     static Table<Epetra_MpiComm>
-        loc_tableOfMpiComms(CT_Epetra_MpiComm_ID, "CT_Epetra_MpiComm_ID", false);
+        loc_tableOfMpiComms(CT_Epetra_MpiComm_ID, "CT_Epetra_MpiComm_ID", FALSE);
     return loc_tableOfMpiComms;
 }
 
@@ -70,7 +70,7 @@ Table<Epetra_MpiComm>& tableOfMpiComms()
 Table<const Epetra_MpiComm>& tableOfConstMpiComms()
 {
     static Table<const Epetra_MpiComm>
-        loc_tableOfConstMpiComms(CT_Epetra_MpiComm_ID, "CT_Epetra_MpiComm_ID", true);
+        loc_tableOfConstMpiComms(CT_Epetra_MpiComm_ID, "CT_Epetra_MpiComm_ID", TRUE);
     return loc_tableOfConstMpiComms;
 }
 

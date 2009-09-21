@@ -53,7 +53,7 @@ using CTrilinos::Table;
 Table<Epetra_LAPACK>& tableOfLAPACKs()
 {
     static Table<Epetra_LAPACK>
-        loc_tableOfLAPACKs(CT_Epetra_LAPACK_ID, "CT_Epetra_LAPACK_ID", false);
+        loc_tableOfLAPACKs(CT_Epetra_LAPACK_ID, "CT_Epetra_LAPACK_ID", FALSE);
     return loc_tableOfLAPACKs;
 }
 
@@ -61,7 +61,7 @@ Table<Epetra_LAPACK>& tableOfLAPACKs()
 Table<const Epetra_LAPACK>& tableOfConstLAPACKs()
 {
     static Table<const Epetra_LAPACK>
-        loc_tableOfConstLAPACKs(CT_Epetra_LAPACK_ID, "CT_Epetra_LAPACK_ID", true);
+        loc_tableOfConstLAPACKs(CT_Epetra_LAPACK_ID, "CT_Epetra_LAPACK_ID", TRUE);
     return loc_tableOfConstLAPACKs;
 }
 

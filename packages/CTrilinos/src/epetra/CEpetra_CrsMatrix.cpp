@@ -61,7 +61,7 @@ using CTrilinos::Table;
 Table<Epetra_CrsMatrix>& tableOfCrsMatrixs()
 {
     static Table<Epetra_CrsMatrix>
-        loc_tableOfCrsMatrixs(CT_Epetra_CrsMatrix_ID, "CT_Epetra_CrsMatrix_ID", false);
+        loc_tableOfCrsMatrixs(CT_Epetra_CrsMatrix_ID, "CT_Epetra_CrsMatrix_ID", FALSE);
     return loc_tableOfCrsMatrixs;
 }
 
@@ -69,7 +69,7 @@ Table<Epetra_CrsMatrix>& tableOfCrsMatrixs()
 Table<const Epetra_CrsMatrix>& tableOfConstCrsMatrixs()
 {
     static Table<const Epetra_CrsMatrix>
-        loc_tableOfConstCrsMatrixs(CT_Epetra_CrsMatrix_ID, "CT_Epetra_CrsMatrix_ID", true);
+        loc_tableOfConstCrsMatrixs(CT_Epetra_CrsMatrix_ID, "CT_Epetra_CrsMatrix_ID", TRUE);
     return loc_tableOfConstCrsMatrixs;
 }
 

@@ -55,7 +55,7 @@ using CTrilinos::Table;
 Table<Teuchos::ParameterEntry>& tableOfParameterEntrys()
 {
     static Table<Teuchos::ParameterEntry>
-        loc_tableOfParameterEntrys(CT_Teuchos_ParameterEntry_ID, "CT_Teuchos_ParameterEntry_ID", false);
+        loc_tableOfParameterEntrys(CT_Teuchos_ParameterEntry_ID, "CT_Teuchos_ParameterEntry_ID", FALSE);
     return loc_tableOfParameterEntrys;
 }
 
@@ -63,7 +63,7 @@ Table<Teuchos::ParameterEntry>& tableOfParameterEntrys()
 Table<const Teuchos::ParameterEntry>& tableOfConstParameterEntrys()
 {
     static Table<const Teuchos::ParameterEntry>
-        loc_tableOfConstParameterEntrys(CT_Teuchos_ParameterEntry_ID, "CT_Teuchos_ParameterEntry_ID", true);
+        loc_tableOfConstParameterEntrys(CT_Teuchos_ParameterEntry_ID, "CT_Teuchos_ParameterEntry_ID", TRUE);
     return loc_tableOfConstParameterEntrys;
 }
 

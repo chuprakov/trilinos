@@ -53,7 +53,7 @@ using CTrilinos::Table;
 Table<Epetra_Flops>& tableOfFlopss()
 {
     static Table<Epetra_Flops>
-        loc_tableOfFlopss(CT_Epetra_Flops_ID, "CT_Epetra_Flops_ID", false);
+        loc_tableOfFlopss(CT_Epetra_Flops_ID, "CT_Epetra_Flops_ID", FALSE);
     return loc_tableOfFlopss;
 }
 
@@ -61,7 +61,7 @@ Table<Epetra_Flops>& tableOfFlopss()
 Table<const Epetra_Flops>& tableOfConstFlopss()
 {
     static Table<const Epetra_Flops>
-        loc_tableOfConstFlopss(CT_Epetra_Flops_ID, "CT_Epetra_Flops_ID", true);
+        loc_tableOfConstFlopss(CT_Epetra_Flops_ID, "CT_Epetra_Flops_ID", TRUE);
     return loc_tableOfConstFlopss;
 }
 

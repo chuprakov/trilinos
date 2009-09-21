@@ -57,7 +57,7 @@ using CTrilinos::Table;
 Table<Epetra_RowMatrix>& tableOfRowMatrixs()
 {
     static Table<Epetra_RowMatrix>
-        loc_tableOfRowMatrixs(CT_Epetra_RowMatrix_ID, "CT_Epetra_RowMatrix_ID", false);
+        loc_tableOfRowMatrixs(CT_Epetra_RowMatrix_ID, "CT_Epetra_RowMatrix_ID", FALSE);
     return loc_tableOfRowMatrixs;
 }
 
@@ -65,7 +65,7 @@ Table<Epetra_RowMatrix>& tableOfRowMatrixs()
 Table<const Epetra_RowMatrix>& tableOfConstRowMatrixs()
 {
     static Table<const Epetra_RowMatrix>
-        loc_tableOfConstRowMatrixs(CT_Epetra_RowMatrix_ID, "CT_Epetra_RowMatrix_ID", true);
+        loc_tableOfConstRowMatrixs(CT_Epetra_RowMatrix_ID, "CT_Epetra_RowMatrix_ID", TRUE);
     return loc_tableOfConstRowMatrixs;
 }
 

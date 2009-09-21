@@ -55,7 +55,7 @@ using CTrilinos::Table;
 Table<Epetra_MultiVector>& tableOfMultiVectors()
 {
     static Table<Epetra_MultiVector>
-        loc_tableOfMultiVectors(CT_Epetra_MultiVector_ID, "CT_Epetra_MultiVector_ID", false);
+        loc_tableOfMultiVectors(CT_Epetra_MultiVector_ID, "CT_Epetra_MultiVector_ID", FALSE);
     return loc_tableOfMultiVectors;
 }
 
@@ -63,7 +63,7 @@ Table<Epetra_MultiVector>& tableOfMultiVectors()
 Table<const Epetra_MultiVector>& tableOfConstMultiVectors()
 {
     static Table<const Epetra_MultiVector>
-        loc_tableOfConstMultiVectors(CT_Epetra_MultiVector_ID, "CT_Epetra_MultiVector_ID", true);
+        loc_tableOfConstMultiVectors(CT_Epetra_MultiVector_ID, "CT_Epetra_MultiVector_ID", TRUE);
     return loc_tableOfConstMultiVectors;
 }
 

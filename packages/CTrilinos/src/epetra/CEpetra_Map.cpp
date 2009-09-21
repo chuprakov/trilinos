@@ -54,7 +54,7 @@ using CTrilinos::Table;
 Table<Epetra_Map>& tableOfMaps()
 {
     static Table<Epetra_Map>
-        loc_tableOfMaps(CT_Epetra_Map_ID, "CT_Epetra_Map_ID", false);
+        loc_tableOfMaps(CT_Epetra_Map_ID, "CT_Epetra_Map_ID", FALSE);
     return loc_tableOfMaps;
 }
 
@@ -62,7 +62,7 @@ Table<Epetra_Map>& tableOfMaps()
 Table<const Epetra_Map>& tableOfConstMaps()
 {
     static Table<const Epetra_Map>
-        loc_tableOfConstMaps(CT_Epetra_Map_ID, "CT_Epetra_Map_ID", true);
+        loc_tableOfConstMaps(CT_Epetra_Map_ID, "CT_Epetra_Map_ID", TRUE);
     return loc_tableOfConstMaps;
 }
 

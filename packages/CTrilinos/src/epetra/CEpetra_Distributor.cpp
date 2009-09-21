@@ -53,7 +53,7 @@ using CTrilinos::Table;
 Table<Epetra_Distributor>& tableOfDistributors()
 {
     static Table<Epetra_Distributor>
-        loc_tableOfDistributors(CT_Epetra_Distributor_ID, "CT_Epetra_Distributor_ID", false);
+        loc_tableOfDistributors(CT_Epetra_Distributor_ID, "CT_Epetra_Distributor_ID", FALSE);
     return loc_tableOfDistributors;
 }
 
@@ -61,7 +61,7 @@ Table<Epetra_Distributor>& tableOfDistributors()
 Table<const Epetra_Distributor>& tableOfConstDistributors()
 {
     static Table<const Epetra_Distributor>
-        loc_tableOfConstDistributors(CT_Epetra_Distributor_ID, "CT_Epetra_Distributor_ID", true);
+        loc_tableOfConstDistributors(CT_Epetra_Distributor_ID, "CT_Epetra_Distributor_ID", TRUE);
     return loc_tableOfConstDistributors;
 }
 

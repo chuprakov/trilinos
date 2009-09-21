@@ -60,7 +60,7 @@ using CTrilinos::Table;
 Table<Amesos_BaseSolver>& tableOfBaseSolvers()
 {
     static Table<Amesos_BaseSolver>
-        loc_tableOfBaseSolvers(CT_Amesos_BaseSolver_ID, "CT_Amesos_BaseSolver_ID", false);
+        loc_tableOfBaseSolvers(CT_Amesos_BaseSolver_ID, "CT_Amesos_BaseSolver_ID", FALSE);
     return loc_tableOfBaseSolvers;
 }
 
@@ -68,7 +68,7 @@ Table<Amesos_BaseSolver>& tableOfBaseSolvers()
 Table<const Amesos_BaseSolver>& tableOfConstBaseSolvers()
 {
     static Table<const Amesos_BaseSolver>
-        loc_tableOfConstBaseSolvers(CT_Amesos_BaseSolver_ID, "CT_Amesos_BaseSolver_ID", true);
+        loc_tableOfConstBaseSolvers(CT_Amesos_BaseSolver_ID, "CT_Amesos_BaseSolver_ID", TRUE);
     return loc_tableOfConstBaseSolvers;
 }
 

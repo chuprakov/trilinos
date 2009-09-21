@@ -76,7 +76,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Create_VarPerRow )
   int NumIndicesPerRow[NumGlobalElements] = {3, 2, 6, 4};
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create_VarPerRow(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.type, CT_Epetra_CrsGraph_ID);
@@ -103,7 +103,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Create )
   ECHO(int NumIndicesPerRow = 7);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.type, CT_Epetra_CrsGraph_ID);
@@ -143,7 +143,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Duplicate )
   ECHO(int NumIndicesPerRow = 3);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   ECHO(CT_Epetra_CrsGraph_ID_t dupID = Epetra_CrsGraph_Duplicate(selfID));
 
@@ -171,7 +171,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Destroy )
   ECHO(int NumIndicesPerRow = 3);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   ECHO(Epetra_CrsGraph_Destroy(&selfID));
 

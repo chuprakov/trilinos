@@ -70,16 +70,26 @@ int check(CT_Epetra_CrsGraph_ID_t A, int NumMyRows1, int NumGlobalRows1, int Num
 
 int main(int argc, char *argv[])
 {
-  int ierr = 0, forierr = 0, tempierr = 0, One = 1, i;
-  int Indices[2], *MyGlobalElements, *NumNz, Indices1[2], *MyGlobalElements1, *NumNz1;
-  boolean debug = TRUE, verbose = FALSE, verbose1 = FALSE;
+  int ierr, forierr, tempierr, One, i;
   int MyPID, NumProc, NumMyEquations, NumGlobalEquations, NumEntries, NumMyNonzeros;
   int NumMyElements1, NumMyEquations1, NumGlobalEquations1, NumEntries1;
+  boolean debug, verbose, verbose1;
+  int Indices[2], Indices1[2];
+  int *MyGlobalElements, *NumNz, *MyGlobalElements1, *NumNz1;
 
   CT_Epetra_Comm_ID_t Comm;
   CT_Epetra_Map_ID_t Mapa, Map1a;
   CT_Epetra_BlockMap_ID_t Map, Map1;
   CT_Epetra_CrsGraph_ID_t A, AA, A1, B;
+
+  ierr = 0;
+  forierr = 0;
+  tempierr = 0;
+  One = 1;
+
+  debug = TRUE;
+  verbose = FALSE;
+  verbose1 = FALSE;
 
 #ifdef HAVE_MPI
 
@@ -370,12 +380,15 @@ int check(CT_Epetra_CrsGraph_ID_t A, int NumMyRows1, int NumGlobalRows1, int Num
 	  int NumGlobalNonzeros1, int* MyGlobalElements, boolean verbose)
 {  
   (void)MyGlobalElements;
-  int ierr = 0, forierr = 0, i, j, Row, maxmygid, minmygid;
+  int ierr, forierr, i, j, Row, maxmygid, minmygid;
   int NumGlobalIndices, NumMyIndices, MaxNumIndices;
   int NumMyRows, NumMyNonzeros, NumGlobalRows, NumGlobalNonzeros;
   int *MyViewIndices, *MyCopyIndices, *GlobalCopyIndices;
 
   CT_Epetra_BlockMap_ID_t rowMap;
+
+  ierr = 0;
+  forierr = 0;
 
   assert((MyCopyIndices = (int*)malloc(MaxNumIndices*sizeof(int))) != NULL);
   assert((GlobalCopyIndices = (int*)malloc(MaxNumIndices*sizeof(int))) != NULL);

@@ -54,7 +54,7 @@ using CTrilinos::Table;
 Table<Epetra_Time>& tableOfTimes()
 {
     static Table<Epetra_Time>
-        loc_tableOfTimes(CT_Epetra_Time_ID, "CT_Epetra_Time_ID", false);
+        loc_tableOfTimes(CT_Epetra_Time_ID, "CT_Epetra_Time_ID", FALSE);
     return loc_tableOfTimes;
 }
 
@@ -62,7 +62,7 @@ Table<Epetra_Time>& tableOfTimes()
 Table<const Epetra_Time>& tableOfConstTimes()
 {
     static Table<const Epetra_Time>
-        loc_tableOfConstTimes(CT_Epetra_Time_ID, "CT_Epetra_Time_ID", true);
+        loc_tableOfConstTimes(CT_Epetra_Time_ID, "CT_Epetra_Time_ID", TRUE);
     return loc_tableOfConstTimes;
 }
 

@@ -53,7 +53,7 @@ using CTrilinos::Table;
 Table<Teuchos::CommandLineProcessor>& tableOfCommandLineProcessors()
 {
     static Table<Teuchos::CommandLineProcessor>
-        loc_tableOfCommandLineProcessors(CT_Teuchos_CommandLineProcessor_ID, "CT_Teuchos_CommandLineProcessor_ID", false);
+        loc_tableOfCommandLineProcessors(CT_Teuchos_CommandLineProcessor_ID, "CT_Teuchos_CommandLineProcessor_ID", FALSE);
     return loc_tableOfCommandLineProcessors;
 }
 
@@ -61,7 +61,7 @@ Table<Teuchos::CommandLineProcessor>& tableOfCommandLineProcessors()
 Table<const Teuchos::CommandLineProcessor>& tableOfConstCommandLineProcessors()
 {
     static Table<const Teuchos::CommandLineProcessor>
-        loc_tableOfConstCommandLineProcessors(CT_Teuchos_CommandLineProcessor_ID, "CT_Teuchos_CommandLineProcessor_ID", true);
+        loc_tableOfConstCommandLineProcessors(CT_Teuchos_CommandLineProcessor_ID, "CT_Teuchos_CommandLineProcessor_ID", TRUE);
     return loc_tableOfConstCommandLineProcessors;
 }
 
