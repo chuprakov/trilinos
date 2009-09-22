@@ -384,7 +384,7 @@ void MetaWindow::loadFile(){
 bool MetaWindow::saveCurrentUnsavedFile(){
 		QMessageBox saveQuestion(QMessageBox::Question, 
 		tr("Save?"),
-		tr("The current solver you are working on has not be saved. Would you like to save it now?"), 
+		tr("These choices have not been saved since you last made changes. Would you like to save them now?"), 
 		QMessageBox::Yes,
 		this);
 		saveQuestion.addButton(QMessageBox::No);
