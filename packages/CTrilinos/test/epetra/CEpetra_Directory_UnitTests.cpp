@@ -137,8 +137,9 @@ TEUCHOS_UNIT_TEST( Epetra_Directory , GetDirectoryEntries )
   int Procs1[NumEntries];
   int LocalEntries1[NumEntries];
   int EntrySizes1[NumEntries];
+  ECHO(bool high_rank1 = false);
   ECHO(ret = self.GetDirectoryEntries(bmap, NumEntries, GlobalEntries,
-       Procs1, LocalEntries1, EntrySizes1, high_rank));
+       Procs1, LocalEntries1, EntrySizes1, high_rank1));
   TEST_EQUALITY_CONST(ret, 0);
 
   /* And compare the results */
@@ -172,12 +173,13 @@ TEUCHOS_UNIT_TEST( Epetra_Directory , GIDsAllUniquelyOwned )
 
   /* Now try out the wrapper function */
   ECHO(boolean ret = Epetra_Directory_GIDsAllUniquelyOwned(selfID));
+  ECHO(bool ret0 = (ret != FALSE ? true : false));
 
   /* Now try out the original function */
   ECHO(bool ret1 = self.GIDsAllUniquelyOwned());
 
   /* And compare the results */
-  TEST_EQUALITY(ret, ret1);
+  TEST_EQUALITY(ret0, ret1);
 }
 
 /**********************************************************************/

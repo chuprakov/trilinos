@@ -384,13 +384,14 @@ int main(int argc, char *argv[])
 int check(CT_Epetra_CrsGraph_ID_t A, int NumMyRows1, int NumGlobalRows1, int NumMyNonzeros1,
 	  int NumGlobalNonzeros1, int* MyGlobalElements, boolean verbose)
 {  
-  (void)MyGlobalElements;
   int ierr, forierr, i, j, Row, maxmygid, minmygid;
   int NumGlobalIndices, NumMyIndices, MaxNumIndices;
   int NumMyRows, NumMyNonzeros, NumGlobalRows, NumGlobalNonzeros;
   int *MyViewIndices, *MyCopyIndices, *GlobalCopyIndices;
 
   CT_Epetra_BlockMap_ID_t rowMap;
+
+  (void)MyGlobalElements;
 
   ierr = 0;
   forierr = 0;
