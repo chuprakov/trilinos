@@ -43,6 +43,12 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CEpetra_Vector.h"
 #include "CEpetra_MultiVector.h"
 
+/*! @file verySimple.c
+ * This is a very simple example of how to use the CTrilinos interface
+ * to Epetra.  This example follows from the Epetra example by the same
+ * name.
+ */
+
 int main( int argc, char* argv[] )
 {
   

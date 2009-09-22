@@ -41,15 +41,17 @@
 ############################################################################
 
 PROJECT_NAME           = CTrilinos
-INPUT                  = ../src
-EXAMPLE_PATH           = ../example
-FILE_PATTERNS          = CEpetra*.h CTeuchos*.h CAmesos*.h CTrilinos_enums.h
+INPUT                  = ./index.doc ../src ../src/epetra ../src/teuchos ../src/amesos
+FILE_PATTERNS          = CEpetra*.h CTeuchos*.h CAmesos*.h CTrilinos_enums.h index.doc *.c
+EXAMPLE_PATH           = ../example ../example/verySimple/verySimple.c ../example/amesos/example_AmesosFactory_Tridiag.c ../example/crsgraph/CrsGraph_example.c
+EXAMPLE_PATTERNS       = *.c
 IMAGE_PATH             = .
 
 TAGFILES               = ../../common/tag_files/epetra.tag=../../../epetra/doc/html ../../common/tag_files/teuchos.tag=../../../teuchos/doc/html
 GENERATE_TAGFILE       = ../../common/tag_files/ctrilinos.tag
 
-EXTRACT_ALL            = NO
+#EXTRACT_ALL            = NO
+EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = NO
 HIDE_UNDOC_MEMBERS     = YES
@@ -58,6 +60,9 @@ ALWAYS_DETAILED_SEC    = NO
 REPEAT_BRIEF           = YES
 DETAILS_AT_TOP         = YES
 OPTIMIZE_OUTPUT_FOR_C  = YES
+SOURCE_BROWSER         = YES
+SHOW_DIRECTORIES       = YES
+WARN_IF_UNDOCUMENTED   = YES
 
 #
 # Preprocessing

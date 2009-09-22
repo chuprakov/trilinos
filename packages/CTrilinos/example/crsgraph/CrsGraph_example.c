@@ -54,6 +54,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CEpetra_SerialComm.h"
 #endif
 
+/*! @file CrsGraph_example.c
+ * This is an example of how to use the CTrilinos interface to Epetra.
+ * This example follows from the Epetra example my_example.
+ */
+
 /* This function is to be used when first identifying an error. */
 #define CTRILINOS_TEST_ERR(a,b) { { \
   if ((int)(a) != 0) {\

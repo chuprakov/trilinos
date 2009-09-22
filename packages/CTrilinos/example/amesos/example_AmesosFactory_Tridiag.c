@@ -51,6 +51,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CEpetra_LinearProblem.h"
 #include "CTeuchos_ParameterList.h"
 
+/*! @file example_AmesosFactory_Tridiag,c
+ * This is an example of how to use the CTrilinos interface to Amesos.
+ * This example follows from the Amesos example by the same name.
+ */
+
 /*
  * ====================
  * M A I N  D R I V E R
