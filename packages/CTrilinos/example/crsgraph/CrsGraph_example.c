@@ -396,9 +396,9 @@ int check(CT_Epetra_CrsGraph_ID_t A, int NumMyRows1, int NumGlobalRows1, int Num
   ierr = 0;
   forierr = 0;
 
+  MaxNumIndices = Epetra_CrsGraph_MaxNumIndices(A);
   assert((MyCopyIndices = (int*)malloc(MaxNumIndices*sizeof(int))) != NULL);
   assert((GlobalCopyIndices = (int*)malloc(MaxNumIndices*sizeof(int))) != NULL);
-  MaxNumIndices = Epetra_CrsGraph_MaxNumIndices(A);
 
   /* Test query functions */
 
