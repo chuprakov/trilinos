@@ -40,7 +40,7 @@
 
 /* Selected functions that are used to implement exteral_reduct_op */
 
-static int targ_extract_state(
+static int CALL_API targ_extract_state(
   const struct RTOp_obj_type_vtbl_t* vtbl
   ,const void *       instance_data
   ,void *             obj
@@ -65,7 +65,7 @@ static int targ_extract_state(
   return 0;
 }
 
-static int targ_load_state(
+static int CALL_API targ_load_state(
   const struct RTOp_obj_type_vtbl_t* vtbl
   ,const void *            instance_data
   ,int                     num_values
