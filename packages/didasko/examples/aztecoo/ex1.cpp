@@ -87,7 +87,6 @@ int main(int argc, char *argv[])
 
   double Values[4];
   int Indices[4];
-  int NumEntries;
   int left, right, lower, upper;
   double diag = 4.0;
   
