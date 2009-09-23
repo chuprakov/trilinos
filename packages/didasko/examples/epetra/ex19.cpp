@@ -113,7 +113,6 @@ int main(int argc, char *argv[])
 
   double Values[4];
   int Indices[4];
-  int NumEntries;
 
   for( int i=0 ; i<NumMyElements; ++i ) {
     int NumEntries=0;
