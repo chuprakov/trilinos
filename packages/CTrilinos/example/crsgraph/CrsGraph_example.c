@@ -138,14 +138,30 @@ int main(int argc, char *argv[])
   Map = Epetra_BlockMap_Cast(Epetra_Map_Abstract(Mapa));
   
   /* Get update list and number of local equations from newly created Map */
-  assert((MyGlobalElements = (int*)malloc(NumMyEquations*sizeof(int))) != NULL);
+  MyGlobalElements = (int*)malloc(NumMyEquations*sizeof(int));
+  if (MyGlobalElements == NULL) {
+    fprintf(stderr,"Couldn't malloc for MyGlobalElements\n");
+    printf( "\nEnd Result: TEST FAILED\n" );
+#ifdef HAVE_MPI
+    MPI_Finalize();
+#endif /* HAVE_MPI */
+    return 1;
+  }
   Epetra_BlockMap_MyGlobalElements_Fill(Map, MyGlobalElements);
 
   /* Create an integer vector NumNz that is used to build the Petra Matrix.
    * NumNz[i] is the Number of OFF-DIAGONAL term for the ith global equation
    *on this processor */
 
-  assert((NumNz = (int*)malloc(NumMyEquations*sizeof(int))) != NULL);
+  NumNz = (int*)malloc(NumMyEquations*sizeof(int));
+  if (NumNz == NULL) {
+    fprintf(stderr,"Couldn't malloc for NumNz\n");
+    printf( "\nEnd Result: TEST FAILED\n" );
+#ifdef HAVE_MPI
+    MPI_Finalize();
+#endif /* HAVE_MPI */
+    return 1;
+  }
 
   /* We are building a tridiagonal matrix where each row has (-1 2 -1)
    * So we need 2 off-diagonal terms (except for the first and last equation) */
@@ -304,14 +320,30 @@ int main(int argc, char *argv[])
     Map1 = Epetra_BlockMap_Cast(Epetra_Map_Abstract(Map1a));
     
     /* Get update list and number of local equations from newly created Map */
-    assert((MyGlobalElements1 = (int*)malloc(NumMyEquations1*sizeof(int))) != NULL);
+    MyGlobalElements1 = (int*)malloc(NumMyEquations1*sizeof(int));
+    if (MyGlobalElements1 == NULL) {
+      fprintf(stderr,"Couldn't malloc for MyGlobalElements1\n");
+      printf( "\nEnd Result: TEST FAILED\n" );
+#ifdef HAVE_MPI
+      MPI_Finalize();
+#endif /* HAVE_MPI */
+      return 1;
+    }
     Epetra_BlockMap_MyGlobalElements_Fill(Map1, MyGlobalElements1);
     
     /* Create an integer vector NumNz that is used to build the Petra Matrix.
      * NumNz[i] is the Number of OFF-DIAGONAL term for the ith global equation
      * on this processor */
     
-    assert((NumNz1 = (int*)malloc(NumMyEquations1*sizeof(int))) != NULL);
+    NumNz1 = (int*)malloc(NumMyEquations1*sizeof(int));
+    if (NumNz1 == NULL) {
+      fprintf(stderr,"Couldn't malloc for NumNz1\n");
+      printf( "\nEnd Result: TEST FAILED\n" );
+#ifdef HAVE_MPI
+      MPI_Finalize();
+#endif /* HAVE_MPI */
+      return 1;
+    }
     
     /* We are building a tridiagonal matrix where each row has (-1 2 -1)
      * So we need 2 off-diagonal terms (except for the first and last equation) */
@@ -367,17 +399,21 @@ int main(int argc, char *argv[])
     Epetra_Map_Destroy(&Map1a);
   }
 
+  forierr = 0;
+  if (ierr < 0) ierr *= -1;
+  Epetra_Comm_MaxAll_Int(Comm, &ierr, &forierr, 1);
+
+  if (forierr == 0)
+    printf( "\nEnd Result: TEST PASSED\n" );
+  else
+    printf( "\nEnd Result: TEST FAILED\n" );
+  
 #ifdef HAVE_MPI
   MPI_Finalize() ;
 #endif
 /* end main */
 
-  if (ierr == 0)
-    printf( "\nEnd Result: TEST PASSED\n" );
-  else
-    printf( "\nEnd Result: TEST FAILED\n" );
-  
-  return((ierr == 0) ? 0 : 1);
+  return((forierr == 0) ? 0 : 1);
 }
 
 /* ============================================================================== */
@@ -397,8 +433,10 @@ int check(CT_Epetra_CrsGraph_ID_t A, int NumMyRows1, int NumGlobalRows1, int Num
   forierr = 0;
 
   MaxNumIndices = Epetra_CrsGraph_MaxNumIndices(A);
-  assert((MyCopyIndices = (int*)malloc(MaxNumIndices*sizeof(int))) != NULL);
-  assert((GlobalCopyIndices = (int*)malloc(MaxNumIndices*sizeof(int))) != NULL);
+  MyCopyIndices = (int*)malloc(MaxNumIndices*sizeof(int));
+  assert(MyCopyIndices != NULL);
+  GlobalCopyIndices = (int*)malloc(MaxNumIndices*sizeof(int));
+  assert(GlobalCopyIndices != NULL);
 
   /* Test query functions */
 
