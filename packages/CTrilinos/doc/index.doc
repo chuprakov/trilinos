@@ -29,10 +29,10 @@ element of the table corresponds to the object in question.
 For every class, C, that has been wrapped by CTrilinos (including
 virtual classes), two tables exist: one that stores Teuchos::RCP &lt;const C&gt;
 (for when \link CTrilinos_Object_ID_t::is_const is_const \endlink is
-\link boolean::TRUE TRUE\endlink) and a separate one to store Teuchos::RCP &lt;C&gt; (for when
-\link CTrilinos_Object_ID_t::is_const is_const \endlink is
-\link boolean::FALSE FALSE\endlink).  This ensures that the only methods that can be invoked
-on <tt>const</tt> objects are the ones declared <tt>const</tt> themselves.
+#TRUE) and a separate one to store Teuchos::RCP &lt;C&gt; (for when
+\link CTrilinos_Object_ID_t::is_const is_const \endlink is #FALSE).
+This ensures that the only methods that can be invoked on
+<tt>const</tt> objects are the ones declared <tt>const</tt> themselves.
 It is critical to note here that each table entry contains a Teuchos::RCP
 to the object, not the object itself.  This allows an object to be
 referenced by more than one table, just as more than one pointer could
@@ -55,7 +55,7 @@ expecting class C, then a Teuchos::RCP to that object must first be
 stored in the C table.  This can be done using the CTrilinos casting
 methods.  Although two function calls are necessary, as shown below,
 they should ALWAYS be used in pairs and the intermediate result should
-NEVER be stored,
+NEVER be stored:
 
 \code
 CT_Epetra_SerialComm_ID_t serialComm;
@@ -110,9 +110,21 @@ Epetra_Comm::Barrier().
 
 A simple, yet illustrative, example of using the CTrilinos interface
 to Epetra can be found in <tt>verySimple.c</tt>.
-
-\example verySimple.c
-\example CrsGraph_example.c
-\example example_AmesosFactory_Tridiag.c
-
 */
+
+/*! \example verySimple.c
+ * This is a very simple example of how to use the CTrilinos interface
+ * to Epetra.  This example follows from the Epetra example by the same
+ * name.
+*/
+
+/*! \example CrsGraph_example.c
+ * This is an example of how to use the CTrilinos interface to Epetra.
+ * This example follows from the Epetra example my_example.
+*/
+
+/*! \example example_AmesosFactory_Tridiag.c
+ * This is an example of how to use the CTrilinos interface to Amesos.
+ * This example follows from the Amesos example by the same name.
+*/
+

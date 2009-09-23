@@ -46,13 +46,18 @@ extern "C" {
 #endif
 
 
-/*! C does not support the C++ bool type, so the enum below will act as a custom
- * boolean type for users using a C compiler. */
+/*! C does not support the C++ bool type, so the enum below will
+ * act as a custom boolean type for users using a C compiler.  #TRUE is
+ * the equivalent of true and #FALSE is the equivalent of false. */
 
 typedef int boolean;
+
+/*! #boolean uses TRUE instead of true. */
 #ifndef TRUE
 #  define TRUE 1
 #endif
+
+/*! #boolean uses FALSE instead of false. */
 #ifndef FALSE
 #  define FALSE 0
 #endif
@@ -64,39 +69,39 @@ typedef int boolean;
  * only be passed to methods expecting an argument of the base-class type. */
 
 typedef enum {
-    CT_Invalid_ID, 
-    CT_Epetra_Distributor_ID, 
-    CT_Epetra_SerialComm_ID, 
-    CT_Epetra_BLAS_ID, 
-    CT_Epetra_Comm_ID, 
-    CT_Epetra_Operator_ID, 
-    CT_Epetra_MultiVector_ID, 
-    CT_Epetra_OffsetIndex_ID, 
-    CT_Epetra_Object_ID, 
-    CT_Epetra_RowMatrix_ID, 
-    CT_Epetra_CompObject_ID, 
-    CT_Epetra_Directory_ID, 
-    CT_Epetra_Flops_ID, 
-    CT_Epetra_SrcDistObject_ID, 
-    CT_Epetra_MpiComm_ID, 
-    CT_Epetra_CrsMatrix_ID, 
-    CT_Epetra_CrsGraph_ID, 
-    CT_Epetra_DistObject_ID, 
-    CT_Epetra_Vector_ID, 
-    CT_Epetra_Export_ID, 
-    CT_Epetra_Map_ID, 
-    CT_Epetra_BlockMap_ID, 
-    CT_Epetra_Import_ID, 
-    CT_Epetra_Time_ID, 
-    CT_Epetra_JadMatrix_ID, 
-    CT_Epetra_LinearProblem_ID, 
-    CT_Epetra_LAPACK_ID, 
-    CT_Teuchos_CommandLineProcessor_ID, 
-    CT_Teuchos_ParameterList_ID, 
-    CT_Teuchos_ParameterEntry_ID, 
-    CT_Teuchos_any_ID, 
-    CT_Amesos_BaseSolver_ID, 
-    CT_Amesos_ID
+    CT_Invalid_ID,                       /*!< does not refer to a valid table entry */
+    CT_Epetra_Distributor_ID,            /*!< refers to an Epetra_Distributor table entry */
+    CT_Epetra_SerialComm_ID,             /*!< refers to an Epetra_SerialComm table entry */
+    CT_Epetra_BLAS_ID,                   /*!< refers to an Epetra_BLAS table entry */
+    CT_Epetra_Comm_ID,                   /*!< refers to an Epetra_Comm table entry */
+    CT_Epetra_Operator_ID,               /*!< refers to an Epetra_Operator table entry */
+    CT_Epetra_MultiVector_ID,            /*!< refers to an Epetra_MultiVector table entry */
+    CT_Epetra_OffsetIndex_ID,            /*!< refers to an Epetra_OffsetIndex table entry */
+    CT_Epetra_Object_ID,                 /*!< refers to an Epetra_Object table entry */
+    CT_Epetra_RowMatrix_ID,              /*!< refers to an Epetra_RowMatrix table entry */
+    CT_Epetra_CompObject_ID,             /*!< refers to an Epetra_CompObject table entry */
+    CT_Epetra_Directory_ID,              /*!< refers to an Epetra_Directory table entry */
+    CT_Epetra_Flops_ID,                  /*!< refers to an Epetra_Flops table entry */
+    CT_Epetra_SrcDistObject_ID,          /*!< refers to an Epetra_SrcDistObject table entry */
+    CT_Epetra_MpiComm_ID,                /*!< refers to an Epetra_MpiComm table entry */
+    CT_Epetra_CrsMatrix_ID,              /*!< refers to an Epetra_CrsMatrix table entry */
+    CT_Epetra_CrsGraph_ID,               /*!< refers to an Epetra_CrsGraph table entry */
+    CT_Epetra_DistObject_ID,             /*!< refers to an Epetra_DistObject table entry */
+    CT_Epetra_Vector_ID,                 /*!< refers to an Epetra_Vector table entry */
+    CT_Epetra_Export_ID,                 /*!< refers to an Epetra_Export table entry */
+    CT_Epetra_Map_ID,                    /*!< refers to an Epetra_Map table entry */
+    CT_Epetra_BlockMap_ID,               /*!< refers to an Epetra_BlockMap table entry */
+    CT_Epetra_Import_ID,                 /*!< refers to an Epetra_Import table entry */
+    CT_Epetra_Time_ID,                   /*!< refers to an Epetra_Time table entry */
+    CT_Epetra_JadMatrix_ID,              /*!< refers to an Epetra_JadMatrix table entry */
+    CT_Epetra_LinearProblem_ID,          /*!< refers to an Epetra_LinearProblem table entry */
+    CT_Epetra_LAPACK_ID,                 /*!< refers to an Epetra_LAPACK table entry */
+    CT_Teuchos_CommandLineProcessor_ID,  /*!< refers to a Teuchos::CommandLineProcessor table entry */
+    CT_Teuchos_ParameterList_ID,         /*!< refers to a Teuchos::ParameterList table entry */
+    CT_Teuchos_ParameterEntry_ID,        /*!< refers to a Teuchos::ParameterEntry table entry */
+    CT_Teuchos_any_ID,                   /*!< refers to a Teuchos::any table entry */
+    CT_Amesos_BaseSolver_ID,             /*!< refers to an Amesos_BaseSolver table entry */
+    CT_Amesos_ID                         /*!< refers to an Amesos table entry */
 } CTrilinos_Type_ID_t;
 
 /*! The type in the struct below is actually used to identify the table in
