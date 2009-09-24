@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
   double sfact_time, nfact_time, solve_time, mtx_conv_time, mtx_redist_time, vec_redist_time;
   int *MyGlobalElements = NULL;
 
+  CT_Epetra_Comm_ID_t Comm;
   CT_Epetra_Map_ID_t Map;
   CT_Epetra_BlockMap_ID_t bMap;
   CT_Epetra_CrsMatrix_ID_t A;
@@ -103,9 +104,9 @@ int main(int argc, char *argv[])
   
 #ifdef HAVE_MPI
   MPI_Init(&argc, &argv);
-  CT_Epetra_Comm_ID_t Comm = Epetra_Comm_Cast(Epetra_MpiComm_Abstract(Epetra_MpiComm_Create(MPI_COMM_WORLD)));
+  Comm = Epetra_Comm_Cast(Epetra_MpiComm_Abstract(Epetra_MpiComm_Create(MPI_COMM_WORLD)));
 #else
-  CT_Epetra_Comm_ID_t Comm = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(Epetra_SerialComm_Create()));
+  Comm = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(Epetra_SerialComm_Create()));
 #endif
 
   NumGlobalElements = 100; /* global dimension of the problem. */

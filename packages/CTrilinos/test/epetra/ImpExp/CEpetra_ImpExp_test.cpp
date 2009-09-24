@@ -29,6 +29,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 /*! \@HEADER */
 
 
+#include <iostream>
+
 #include "CTrilinos_config.h"
 #include "CEpetra_Comm.h"
 #ifdef HAVE_MPI
@@ -45,18 +47,14 @@ int checkresult(int MyResult, int Correct, CT_Epetra_Comm_ID_t CommID, int MyPID
 {
   int Failed = (MyResult == Correct ? 0 : 1);
 
-  if (Failed != 0) {
-    printf("  %s FAILED on processor %d:  %d != %d\n", pc, MyPID, MyResult, Correct);
-    fflush(stdout);
-  }
+  if (Failed != 0)
+    std::cout << "  " << pc << " FAILED on processor " << MyPID << ":  " << MyResult << " != " << Correct << std::endl;
 
   int SomeFailed;
   Epetra_Comm_MaxAll_Int(CommID, &Failed, &SomeFailed, 1);
 
-  if ((SomeFailed == 0) && (MyPID == 0)) {
-    printf("  %s passed!\n", pc, MyPID);
-    fflush(stdout);
-  }
+  if ((SomeFailed == 0) && (MyPID == 0))
+    std::cout << "  " << pc << " passed!" << std::endl;
   Epetra_Comm_Barrier(CommID);
 
   return SomeFailed;
@@ -70,21 +68,18 @@ int checkresultarray(int MyResult[], int Correct[], int Count, CT_Epetra_Comm_ID
   }
 
   if (Failed != 0) {
-    printf("  %s FAILED on processor %d: {%d", pc, MyPID, MyResult[0]);
-    for (int i=1; i<Count; i++) printf(",%d", MyResult[i]);
-    printf("} != {%d", Correct[0]);
-    for (int i=1; i<Count; i++) printf(",%d", Correct[i]);
-    printf("}\n");
-    fflush(stdout);
+    std::cout << "  " << pc << " FAILED on processor " << MyPID << ": {" << MyResult[0];
+    for (int i=1; i<Count; i++) std::cout << "," << MyResult[i];
+    std::cout << "} != {" << Correct[0];
+    for (int i=1; i<Count; i++) std::cout << "," << Correct[i];
+    std::cout << "}" << std::endl;
   }
 
   int SomeFailed;
   Epetra_Comm_MaxAll_Int(CommID, &Failed, &SomeFailed, 1);
 
-  if ((SomeFailed == 0) && (MyPID == 0)) {
-    printf("  %s passed!\n", pc, MyPID);
-    fflush(stdout);
-  }
+  if ((SomeFailed == 0) && (MyPID == 0))
+    std::cout << "  " << pc << " passed!" << std::endl;
   Epetra_Comm_Barrier(CommID);
 
   return SomeFailed;
@@ -110,8 +105,8 @@ int main(int argc, char *argv[])
   int NumProc = Epetra_Comm_NumProc(CommID);
 
   if (NumProc != ForceNumProc) {
-    fprintf(stderr, "Run this with %d processors!\n", ForceNumProc);
-    printf("End Result: TEST FAILED\n");
+    std::cerr << "Run this with " << ForceNumProc << " processors!" << std::endl;
+    std::cout << "End Result: TEST FAILED" << std::endl;
     success = 1;
     return success;
   }
@@ -119,7 +114,7 @@ int main(int argc, char *argv[])
   Epetra_Comm_Barrier(CommID);
 
   /* Create the source map */
-  if (MyPID == 0) printf("Creating source map...\n");
+  if (MyPID == 0) std::cout << "Creating source map..." << std::endl;
   int IndexBase = 0;
   const int NumMyElements = 3;
   int NumGlobalElements = NumMyElements * NumProc;
@@ -132,7 +127,7 @@ int main(int argc, char *argv[])
   Epetra_Comm_Barrier(CommID);
 
   /* Create the target map */
-  if (MyPID == 0) printf("Creating target map...\n");
+  if (MyPID == 0) std::cout << "Creating target map..." << std::endl;
   const int NumMyElements2 = 5;
   int NumGlobalElements2 = NumMyElements2 * NumProc;
   int MyGlobalElements2a[NumMyElements2] = {0, 1, 2, 3, 8};
@@ -161,13 +156,13 @@ int main(int argc, char *argv[])
 { /* IMPORT BLOCK */
 
   /* Create an importer */
-  if (MyPID == 0) printf("Creating importer...\n");
+  if (MyPID == 0) std::cout << "Creating importer..." << std::endl;
   CT_Epetra_Import_ID_t selfID = Epetra_Import_Create(btarID, bsrcID);
 
   Epetra_Comm_Barrier(CommID);
 
   /* Try out the wrapper functions... */
-  if (MyPID == 0) printf("Testing importer...\n");
+  if (MyPID == 0) std::cout << "Testing importer..." << std::endl;
 
   Epetra_Comm_Barrier(CommID);
 
@@ -286,14 +281,14 @@ int main(int argc, char *argv[])
 { /* EXPORT BLOCK */
 
   /* Create an exporter */
-  if (MyPID == 0) printf("Creating exporter...\n");
+  if (MyPID == 0) std::cout << "Creating exporter..." << std::endl;
   /* Intentionally swapping source and target maps! */
   CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(btarID, bsrcID);
 
   Epetra_Comm_Barrier(CommID);
 
   /* Try out the wrapper functions... */
-  if (MyPID == 0) printf("Testing exporter...\n");
+  if (MyPID == 0) std::cout << "Testing exporter..." << std::endl;
 
   Epetra_Comm_Barrier(CommID);
 
@@ -410,15 +405,15 @@ int main(int argc, char *argv[])
 } /* EXPORT BLOCK */
 
   if (success == 0)
-    printf( "\nEnd Result: TEST PASSED\n" );
+    std::cout << std::endl << "End Result: TEST PASSED" << std::endl;
   else
-    printf( "\nEnd Result: TEST FAILED\n" );
+    std::cout << std::endl << "End Result: TEST FAILED" << std::endl;
   
   MPI_Finalize() ;
 
 #else /* HAVE_MPI */
 
-  printf("End Result: TEST FAILED\n");
+  std::cout << std::endl << "End Result: TEST FAILED" << std::endl;
   return 1;
 
 #endif /* HAVE_MPI */
