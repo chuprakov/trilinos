@@ -176,7 +176,7 @@ TEUCHOS_UNIT_TEST( Epetra_CompObject , UnsetFlopCounter )
   ECHO(Teuchos::RCP<Epetra_CompObject> rcp1 = CEpetra::getCompObject(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY_CONST(rcp1->GetFlopCounter(), NULL);
+  TEST_EQUALITY_CONST(rcp1->GetFlopCounter(), 0);
 }
 
 /**********************************************************************

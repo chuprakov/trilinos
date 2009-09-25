@@ -1461,7 +1461,7 @@ TEUCHOS_UNIT_TEST( Epetra_BlockMap , PointToElementList_Fill )
 
   ECHO(int pts = Epetra_BlockMap_NumMyPoints(selfID));
   int *list = (int *)malloc(pts*sizeof(int));
-  TEST_INEQUALITY_CONST(list, NULL);
+  TEST_INEQUALITY_CONST(list, 0);
 
   if (list != NULL) {
     ECHO(int ret = Epetra_BlockMap_PointToElementList_Fill(selfID, list));

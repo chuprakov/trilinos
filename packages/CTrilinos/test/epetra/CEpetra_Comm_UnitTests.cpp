@@ -180,7 +180,7 @@ TEUCHOS_UNIT_TEST( Epetra_Comm , GatherAll_Double )
 
   ECHO(int AllCount = NumProc * Count);
   double *AllVals = (double *)malloc(AllCount * sizeof(double));
-  TEST_INEQUALITY(AllVals, NULL);
+  TEST_INEQUALITY_CONST(AllVals, 0);
 
   if (AllVals != NULL) {
     ECHO(int ret = Epetra_Comm_GatherAll_Double(selfID, MyVals, AllVals, Count));
