@@ -1,4 +1,0 @@
-ADD_SUBDIRECTORY(BasicExample)
-ADD_SUBDIRECTORY(DependencyExample)
-ADD_SUBDIRECTORY(ValidatorExample)
-ADD_SUBDIRECTORY(CustomFunctionExample)
