@@ -1,3 +1,35 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
 #include "CEpetra_Map_Cpp.hpp"
@@ -13,6 +45,7 @@
 #include "Epetra_CrsMatrix.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -28,7 +61,7 @@ using CTrilinos::Table;
 Table<Epetra_CrsMatrix>& tableOfCrsMatrixs()
 {
     static Table<Epetra_CrsMatrix>
-        loc_tableOfCrsMatrixs(CT_Epetra_CrsMatrix_ID, "CT_Epetra_CrsMatrix_ID", false);
+        loc_tableOfCrsMatrixs(CT_Epetra_CrsMatrix_ID, "CT_Epetra_CrsMatrix_ID", FALSE);
     return loc_tableOfCrsMatrixs;
 }
 
@@ -36,7 +69,7 @@ Table<Epetra_CrsMatrix>& tableOfCrsMatrixs()
 Table<const Epetra_CrsMatrix>& tableOfConstCrsMatrixs()
 {
     static Table<const Epetra_CrsMatrix>
-        loc_tableOfConstCrsMatrixs(CT_Epetra_CrsMatrix_ID, "CT_Epetra_CrsMatrix_ID", true);
+        loc_tableOfConstCrsMatrixs(CT_Epetra_CrsMatrix_ID, "CT_Epetra_CrsMatrix_ID", TRUE);
     return loc_tableOfConstCrsMatrixs;
 }
 
@@ -77,7 +110,8 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow (
     return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
         tableOfCrsMatrixs().store(new Epetra_CrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
-        NumEntriesPerRow, StaticProfile)));
+        NumEntriesPerRow, ((
+        StaticProfile) != FALSE ? true : false))));
 }
 
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create ( 
@@ -87,7 +121,8 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create (
     return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
         tableOfCrsMatrixs().store(new Epetra_CrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
-        NumEntriesPerRow, StaticProfile)));
+        NumEntriesPerRow, ((
+        StaticProfile) != FALSE ? true : false))));
 }
 
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow_WithColMap ( 
@@ -98,8 +133,8 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow_WithColMap (
     return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
         tableOfCrsMatrixs().store(new Epetra_CrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
-        *CEpetra::getConstMap(ColMapID), NumEntriesPerRow, 
-        StaticProfile)));
+        *CEpetra::getConstMap(ColMapID), NumEntriesPerRow, ((
+        StaticProfile) != FALSE ? true : false))));
 }
 
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_WithColMap ( 
@@ -110,8 +145,8 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_WithColMap (
     return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
         tableOfCrsMatrixs().store(new Epetra_CrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
-        *CEpetra::getConstMap(ColMapID), NumEntriesPerRow, 
-        StaticProfile)));
+        *CEpetra::getConstMap(ColMapID), NumEntriesPerRow, ((
+        StaticProfile) != FALSE ? true : false))));
 }
 
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_FromGraph ( 
@@ -141,14 +176,6 @@ void Epetra_CrsMatrix_Destroy ( CT_Epetra_CrsMatrix_ID_t * selfID )
         tableOfCrsMatrixs().remove(&aid);
     }
     *selfID = CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(aid);
-}
-
-void Epetra_CrsMatrix_Assign ( 
-  CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_CrsMatrix_ID_t srcID )
-{
-    Epetra_CrsMatrix& self = *( CEpetra::getCrsMatrix(selfID) );
-
-    self = *CEpetra::getConstCrsMatrix(srcID);
 }
 
 int Epetra_CrsMatrix_PutScalar ( 
@@ -222,7 +249,7 @@ int Epetra_CrsMatrix_FillComplete (
   CT_Epetra_CrsMatrix_ID_t selfID, boolean OptimizeDataStorage )
 {
     return CEpetra::getCrsMatrix(selfID)->FillComplete(
-        OptimizeDataStorage);
+        ((OptimizeDataStorage) != FALSE ? true : false));
 }
 
 int Epetra_CrsMatrix_FillComplete_UsingMaps ( 
@@ -231,7 +258,8 @@ int Epetra_CrsMatrix_FillComplete_UsingMaps (
 {
     return CEpetra::getCrsMatrix(selfID)->FillComplete(
         *CEpetra::getConstMap(DomainMapID), *CEpetra::getConstMap(
-        RangeMapID), OptimizeDataStorage);
+        RangeMapID), ((
+        OptimizeDataStorage) != FALSE ? true : false));
 }
 
 int Epetra_CrsMatrix_OptimizeStorage ( 
@@ -321,23 +349,26 @@ int Epetra_CrsMatrix_Multiply_Vector (
   CT_Epetra_CrsMatrix_ID_t selfID, boolean TransA, 
   CT_Epetra_Vector_ID_t xID, CT_Epetra_Vector_ID_t yID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->Multiply(TransA, 
-        *CEpetra::getConstVector(xID), *CEpetra::getVector(yID));
+    return CEpetra::getConstCrsMatrix(selfID)->Multiply(
+        ((TransA) != FALSE ? true : false), *CEpetra::getConstVector(
+        xID), *CEpetra::getVector(yID));
 }
 
 int Epetra_CrsMatrix_Multiply1_Vector ( 
   CT_Epetra_CrsMatrix_ID_t selfID, boolean TransA, 
   CT_Epetra_Vector_ID_t xID, CT_Epetra_Vector_ID_t yID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->Multiply1(TransA, 
-        *CEpetra::getConstVector(xID), *CEpetra::getVector(yID));
+    return CEpetra::getConstCrsMatrix(selfID)->Multiply1(
+        ((TransA) != FALSE ? true : false), *CEpetra::getConstVector(
+        xID), *CEpetra::getVector(yID));
 }
 
 int Epetra_CrsMatrix_Multiply_MultiVector ( 
   CT_Epetra_CrsMatrix_ID_t selfID, boolean TransA, 
   CT_Epetra_MultiVector_ID_t XID, CT_Epetra_MultiVector_ID_t YID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->Multiply(TransA, 
+    return CEpetra::getConstCrsMatrix(selfID)->Multiply(
+        ((TransA) != FALSE ? true : false), 
         *CEpetra::getConstMultiVector(XID), *CEpetra::getMultiVector(
         YID));
 }
@@ -346,7 +377,8 @@ int Epetra_CrsMatrix_Multiply1_MultiVector (
   CT_Epetra_CrsMatrix_ID_t selfID, boolean TransA, 
   CT_Epetra_MultiVector_ID_t XID, CT_Epetra_MultiVector_ID_t YID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->Multiply1(TransA, 
+    return CEpetra::getConstCrsMatrix(selfID)->Multiply1(
+        ((TransA) != FALSE ? true : false), 
         *CEpetra::getConstMultiVector(XID), *CEpetra::getMultiVector(
         YID));
 }
@@ -356,9 +388,11 @@ int Epetra_CrsMatrix_Solve_Vector (
   boolean UnitDiagonal, CT_Epetra_Vector_ID_t xID, 
   CT_Epetra_Vector_ID_t yID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->Solve(Upper, Trans, 
-        UnitDiagonal, *CEpetra::getConstVector(xID), 
-        *CEpetra::getVector(yID));
+    return CEpetra::getConstCrsMatrix(selfID)->Solve(
+        ((Upper) != FALSE ? true : false), ((
+        Trans) != FALSE ? true : false), ((
+        UnitDiagonal) != FALSE ? true : false), 
+        *CEpetra::getConstVector(xID), *CEpetra::getVector(yID));
 }
 
 int Epetra_CrsMatrix_Solve_MultiVector ( 
@@ -366,9 +400,12 @@ int Epetra_CrsMatrix_Solve_MultiVector (
   boolean UnitDiagonal, CT_Epetra_MultiVector_ID_t XID, 
   CT_Epetra_MultiVector_ID_t YID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->Solve(Upper, Trans, 
-        UnitDiagonal, *CEpetra::getConstMultiVector(XID), 
-        *CEpetra::getMultiVector(YID));
+    return CEpetra::getConstCrsMatrix(selfID)->Solve(
+        ((Upper) != FALSE ? true : false), ((
+        Trans) != FALSE ? true : false), ((
+        UnitDiagonal) != FALSE ? true : false), 
+        *CEpetra::getConstMultiVector(XID), *CEpetra::getMultiVector(
+        YID));
 }
 
 int Epetra_CrsMatrix_InvRowSums ( 
@@ -415,50 +452,57 @@ int Epetra_CrsMatrix_RightScale (
 
 boolean Epetra_CrsMatrix_Filled ( CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->Filled();
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->Filled()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_StorageOptimized ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->StorageOptimized();
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->StorageOptimized()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_IndicesAreGlobal ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->IndicesAreGlobal();
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->IndicesAreGlobal()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_IndicesAreLocal ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->IndicesAreLocal();
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->IndicesAreLocal()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_IndicesAreContiguous ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CEpetra::getConstCrsMatrix(
-        selfID)->IndicesAreContiguous();
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->IndicesAreContiguous()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_LowerTriangular ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->LowerTriangular();
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->LowerTriangular()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_UpperTriangular ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->UpperTriangular();
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->UpperTriangular()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_NoDiagonal ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->NoDiagonal();
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->NoDiagonal()) ? TRUE : FALSE);
 }
 
 double Epetra_CrsMatrix_NormInf ( CT_Epetra_CrsMatrix_ID_t selfID )
@@ -569,7 +613,8 @@ int Epetra_CrsMatrix_IndexBase ( CT_Epetra_CrsMatrix_ID_t selfID )
 boolean Epetra_CrsMatrix_StaticGraph ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CEpetra::getCrsMatrix(selfID)->StaticGraph();
+    return ((CEpetra::getCrsMatrix(
+        selfID)->StaticGraph()) ? TRUE : FALSE);
 }
 
 CT_Epetra_CrsGraph_ID_t Epetra_CrsMatrix_Graph ( 
@@ -596,7 +641,8 @@ int Epetra_CrsMatrix_ReplaceRowMap (
 boolean Epetra_CrsMatrix_HaveColMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->HaveColMap();
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->HaveColMap()) ? TRUE : FALSE);
 }
 
 int Epetra_CrsMatrix_ReplaceColMap ( 
@@ -675,31 +721,36 @@ int Epetra_CrsMatrix_GCID (
 boolean Epetra_CrsMatrix_MyGRID ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int GRID_in )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->MyGRID(GRID_in);
+    return ((CEpetra::getConstCrsMatrix(selfID)->MyGRID(
+        GRID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_MyLRID ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int LRID_in )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->MyLRID(LRID_in);
+    return ((CEpetra::getConstCrsMatrix(selfID)->MyLRID(
+        LRID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_MyGCID ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int GCID_in )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->MyGCID(GCID_in);
+    return ((CEpetra::getConstCrsMatrix(selfID)->MyGCID(
+        GCID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_MyLCID ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int LCID_in )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->MyLCID(LCID_in);
+    return ((CEpetra::getConstCrsMatrix(selfID)->MyLCID(
+        LCID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_MyGlobalRow ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int GID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->MyGlobalRow(GID);
+    return ((CEpetra::getConstCrsMatrix(selfID)->MyGlobalRow(
+        GID)) ? TRUE : FALSE);
 }
 
 const char * Epetra_CrsMatrix_Label ( 
@@ -712,7 +763,7 @@ int Epetra_CrsMatrix_SetUseTranspose (
   CT_Epetra_CrsMatrix_ID_t selfID, boolean UseTranspose_in )
 {
     return CEpetra::getCrsMatrix(selfID)->SetUseTranspose(
-        UseTranspose_in);
+        ((UseTranspose_in) != FALSE ? true : false));
 }
 
 int Epetra_CrsMatrix_Apply ( 
@@ -736,13 +787,15 @@ int Epetra_CrsMatrix_ApplyInverse (
 boolean Epetra_CrsMatrix_HasNormInf ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->HasNormInf();
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->HasNormInf()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_UseTranspose ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CEpetra::getConstCrsMatrix(selfID)->UseTranspose();
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->UseTranspose()) ? TRUE : FALSE);
 }
 
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_OperatorDomainMap ( 
@@ -787,14 +840,6 @@ CT_Epetra_Import_ID_t Epetra_CrsMatrix_RowMatrixImporter (
         selfID)->RowMatrixImporter());
 }
 
-double * Epetra_CrsMatrix_getRow ( 
-  CT_Epetra_CrsMatrix_ID_t selfID, int Loc )
-{
-    const Epetra_CrsMatrix& self = *( CEpetra::getConstCrsMatrix(selfID) );
-
-    return self[Loc];
-}
-
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_ImportMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
@@ -815,6 +860,22 @@ int Epetra_CrsMatrix_TransformToLocal_UsingMaps (
     return CEpetra::getCrsMatrix(selfID)->TransformToLocal(
         CEpetra::getConstMap(DomainMapID).getRawPtr(), 
         CEpetra::getConstMap(RangeMapID).getRawPtr());
+}
+
+void Epetra_CrsMatrix_Assign ( 
+  CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_CrsMatrix_ID_t srcID )
+{
+    Epetra_CrsMatrix& self = *( CEpetra::getCrsMatrix(selfID) );
+
+    self = *CEpetra::getConstCrsMatrix(srcID);
+}
+
+double * Epetra_CrsMatrix_getRow ( 
+  CT_Epetra_CrsMatrix_ID_t selfID, int Loc )
+{
+    const Epetra_CrsMatrix& self = *( CEpetra::getConstCrsMatrix(selfID) );
+
+    return self[Loc];
 }
 
 

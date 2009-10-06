@@ -1,3 +1,35 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
 #include "CTeuchos_any_Cpp.hpp"
@@ -7,6 +39,7 @@
 #include "Teuchos_ParameterEntry.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -22,7 +55,7 @@ using CTrilinos::Table;
 Table<Teuchos::ParameterEntry>& tableOfParameterEntrys()
 {
     static Table<Teuchos::ParameterEntry>
-        loc_tableOfParameterEntrys(CT_Teuchos_ParameterEntry_ID, "CT_Teuchos_ParameterEntry_ID", false);
+        loc_tableOfParameterEntrys(CT_Teuchos_ParameterEntry_ID, "CT_Teuchos_ParameterEntry_ID", FALSE);
     return loc_tableOfParameterEntrys;
 }
 
@@ -30,7 +63,7 @@ Table<Teuchos::ParameterEntry>& tableOfParameterEntrys()
 Table<const Teuchos::ParameterEntry>& tableOfConstParameterEntrys()
 {
     static Table<const Teuchos::ParameterEntry>
-        loc_tableOfConstParameterEntrys(CT_Teuchos_ParameterEntry_ID, "CT_Teuchos_ParameterEntry_ID", true);
+        loc_tableOfConstParameterEntrys(CT_Teuchos_ParameterEntry_ID, "CT_Teuchos_ParameterEntry_ID", TRUE);
     return loc_tableOfConstParameterEntrys;
 }
 
@@ -74,21 +107,13 @@ void Teuchos_ParameterEntry_Destroy (
     *selfID = CTrilinos::concreteType<CT_Teuchos_ParameterEntry_ID_t>(aid);
 }
 
-void Teuchos_ParameterEntry_Assign ( 
-  CT_Teuchos_ParameterEntry_ID_t selfID, 
-  CT_Teuchos_ParameterEntry_ID_t sourceID )
-{
-    Teuchos::ParameterEntry& self = *( CTeuchos::getParameterEntry(selfID) );
-
-    self = *CTeuchos::getConstParameterEntry(sourceID);
-}
-
 void Teuchos_ParameterEntry_setAnyValue ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, 
   CT_Teuchos_any_ID_t valueID, boolean isDefault )
 {
     CTeuchos::getParameterEntry(selfID)->setAnyValue(
-        *CTeuchos::getConstany(valueID), isDefault);
+        *CTeuchos::getConstany(valueID), ((
+        isDefault) != FALSE ? true : false));
 }
 
 void Teuchos_ParameterEntry_setDocString ( 
@@ -103,8 +128,9 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterEntry_setList (
   const char docString[] )
 {
     return CTeuchos::storeParameterList(
-        &( CTeuchos::getParameterEntry(selfID)->setList(isDefault, 
-        std::string(docString)) ));
+        &( CTeuchos::getParameterEntry(selfID)->setList(
+        ((isDefault) != FALSE ? true : false), std::string(
+        docString)) ));
 }
 
 double Teuchos_ParameterEntry_getValue_double ( 
@@ -125,7 +151,7 @@ CT_Teuchos_any_ID_t Teuchos_ParameterEntry_getAny (
   CT_Teuchos_ParameterEntry_ID_t selfID, boolean activeQry )
 {
     return CTeuchos::storeany(&( CTeuchos::getParameterEntry(
-        selfID)->getAny(activeQry) ));
+        selfID)->getAny(((activeQry) != FALSE ? true : false)) ));
 }
 
 CT_Teuchos_any_ID_t Teuchos_ParameterEntry_getAny_const ( 
@@ -133,38 +159,42 @@ CT_Teuchos_any_ID_t Teuchos_ParameterEntry_getAny_const (
 {
     return CTeuchos::storeConstany(
         &( CTeuchos::getConstParameterEntry(selfID)->getAny(
-        activeQry) ));
+        ((activeQry) != FALSE ? true : false)) ));
 }
 
 boolean Teuchos_ParameterEntry_isUsed ( 
   CT_Teuchos_ParameterEntry_ID_t selfID )
 {
-    return CTeuchos::getConstParameterEntry(selfID)->isUsed();
+    return ((CTeuchos::getConstParameterEntry(
+        selfID)->isUsed()) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterEntry_isList ( 
   CT_Teuchos_ParameterEntry_ID_t selfID )
 {
-    return CTeuchos::getConstParameterEntry(selfID)->isList();
+    return ((CTeuchos::getConstParameterEntry(
+        selfID)->isList()) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterEntry_isType_double ( 
   CT_Teuchos_ParameterEntry_ID_t selfID )
 {
-    return CTeuchos::getConstParameterEntry(
-        selfID)->isType<double>();
+    return ((CTeuchos::getConstParameterEntry(
+        selfID)->isType<double>()) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterEntry_isType_int ( 
   CT_Teuchos_ParameterEntry_ID_t selfID )
 {
-    return CTeuchos::getConstParameterEntry(selfID)->isType<int>();
+    return ((CTeuchos::getConstParameterEntry(
+        selfID)->isType<int>()) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterEntry_isDefault ( 
   CT_Teuchos_ParameterEntry_ID_t selfID )
 {
-    return CTeuchos::getConstParameterEntry(selfID)->isDefault();
+    return ((CTeuchos::getConstParameterEntry(
+        selfID)->isDefault()) ? TRUE : FALSE);
 }
 
 const char * Teuchos_ParameterEntry_docString ( 
@@ -172,6 +202,15 @@ const char * Teuchos_ParameterEntry_docString (
 {
     return CTeuchos::getConstParameterEntry(
         selfID)->docString().c_str();
+}
+
+void Teuchos_ParameterEntry_Assign ( 
+  CT_Teuchos_ParameterEntry_ID_t selfID, 
+  CT_Teuchos_ParameterEntry_ID_t sourceID )
+{
+    Teuchos::ParameterEntry& self = *( CTeuchos::getParameterEntry(selfID) );
+
+    self = *CTeuchos::getConstParameterEntry(sourceID);
 }
 
 

@@ -5,4 +5,5 @@ INCLUDE(AddSubdirectories)
 ADD_SUBDIRECTORIES(
   verySimple
   amesos
+  crsgraph
   )

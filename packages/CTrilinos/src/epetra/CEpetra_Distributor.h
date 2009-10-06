@@ -1,5 +1,40 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
+
+/*! @file CEpetra_Distributor.h
+ * @brief Wrappers for Epetra_Distributor */
 
 /* True C header file! */
 
@@ -16,7 +51,7 @@ extern "C" {
 #endif
 
 
-/* Functions Epetra_Distributor_Cast() and Epetra_Distributor_Abstract()
+/*! Functions Epetra_Distributor_Cast() and Epetra_Distributor_Abstract()
    are used for casting CTrilinos objects from one type to another.
    The former function performs a dynamic cast on the underlying object
    and stores an RCP to it in the Epetra_Distributor table, while
@@ -27,34 +62,47 @@ extern "C" {
    be casted).
 */
 
+/*! @name Explicit casting methods */
+/*@{*/
+
 CT_Epetra_Distributor_ID_t Epetra_Distributor_Cast ( 
   CTrilinos_Object_ID_t id );
 
 CTrilinos_Object_ID_t Epetra_Distributor_Abstract ( 
   CT_Epetra_Distributor_ID_t id );
 
-/* Original C++ prototype:
-   virtual Epetra_Distributor * Clone() = 0;
-*/
-CT_Epetra_Distributor_ID_t Epetra_Distributor_Clone ( 
-  CT_Epetra_Distributor_ID_t selfID );
+/*@}*/
 
-/* Original C++ prototype:
-   virtual ~Epetra_Distributor();
+/*! @name Epetra_Distributor destructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   virtual Epetra_Distributor::~Epetra_Distributor()
 */
 void Epetra_Distributor_Destroy ( 
   CT_Epetra_Distributor_ID_t * selfID );
 
-/* Original C++ prototype:
-   virtual int CreateFromSends( const int & NumExportIDs, const int * ExportPIDs, bool Deterministic, int & NumRemoteIDs ) = 0;
+/*@}*/
+
+/*! @name Epetra_Distributor member wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   virtual Epetra_Distributor * Epetra_Distributor::Clone() = 0
+*/
+CT_Epetra_Distributor_ID_t Epetra_Distributor_Clone ( 
+  CT_Epetra_Distributor_ID_t selfID );
+
+/*! @brief Wrapper for 
+   virtual int Epetra_Distributor::CreateFromSends( const int & NumExportIDs, const int * ExportPIDs, bool Deterministic, int & NumRemoteIDs ) = 0
 */
 int Epetra_Distributor_CreateFromSends ( 
   CT_Epetra_Distributor_ID_t selfID, int NumExportIDs, 
   const int * ExportPIDs, boolean Deterministic, 
   int * NumRemoteIDs );
 
-/* Original C++ prototype:
-   virtual int CreateFromRecvs( const int & NumRemoteIDs, const int * RemoteGIDs, const int * RemotePIDs, bool Deterministic, int & NumExportIDs, int *& ExportGIDs, int *& ExportPIDs) = 0;
+/*! @brief Wrapper for 
+   virtual int Epetra_Distributor::CreateFromRecvs( const int & NumRemoteIDs, const int * RemoteGIDs, const int * RemotePIDs, bool Deterministic, int & NumExportIDs, int *& ExportGIDs, int *& ExportPIDs) = 0
 */
 int Epetra_Distributor_CreateFromRecvs ( 
   CT_Epetra_Distributor_ID_t selfID, int NumRemoteIDs, 
@@ -62,76 +110,78 @@ int Epetra_Distributor_CreateFromRecvs (
   boolean Deterministic, int * NumExportIDs, int ** ExportGIDs, 
   int ** ExportPIDs );
 
-/* Original C++ prototype:
-   virtual int Do( char * export_objs, int obj_size, int & len_import_objs, char *& import_objs) = 0;
+/*! @brief Wrapper for 
+   virtual int Epetra_Distributor::Do( char * export_objs, int obj_size, int & len_import_objs, char *& import_objs) = 0
 */
 int Epetra_Distributor_Do ( 
   CT_Epetra_Distributor_ID_t selfID, char * export_objs, 
   int obj_size, int * len_import_objs, char ** import_objs );
 
-/* Original C++ prototype:
-   virtual int DoReverse( char * export_objs, int obj_size, int & len_import_objs, char *& import_objs ) = 0;
+/*! @brief Wrapper for 
+   virtual int Epetra_Distributor::DoReverse( char * export_objs, int obj_size, int & len_import_objs, char *& import_objs ) = 0
 */
 int Epetra_Distributor_DoReverse ( 
   CT_Epetra_Distributor_ID_t selfID, char * export_objs, 
   int obj_size, int * len_import_objs, char ** import_objs );
 
-/* Original C++ prototype:
-   virtual int DoPosts( char * export_objs, int obj_size, int & len_import_objs, char *& import_objs ) = 0;
+/*! @brief Wrapper for 
+   virtual int Epetra_Distributor::DoPosts( char * export_objs, int obj_size, int & len_import_objs, char *& import_objs ) = 0
 */
 int Epetra_Distributor_DoPosts ( 
   CT_Epetra_Distributor_ID_t selfID, char * export_objs, 
   int obj_size, int * len_import_objs, char ** import_objs );
 
-/* Original C++ prototype:
-   virtual int DoWaits() = 0;
+/*! @brief Wrapper for 
+   virtual int Epetra_Distributor::DoWaits() = 0
 */
 int Epetra_Distributor_DoWaits ( CT_Epetra_Distributor_ID_t selfID );
 
-/* Original C++ prototype:
-   virtual int DoReversePosts( char * export_objs, int obj_size, int & len_import_objs, char *& import_objs) = 0;
+/*! @brief Wrapper for 
+   virtual int Epetra_Distributor::DoReversePosts( char * export_objs, int obj_size, int & len_import_objs, char *& import_objs) = 0
 */
 int Epetra_Distributor_DoReversePosts ( 
   CT_Epetra_Distributor_ID_t selfID, char * export_objs, 
   int obj_size, int * len_import_objs, char ** import_objs );
 
-/* Original C++ prototype:
-   virtual int DoReverseWaits() = 0;
+/*! @brief Wrapper for 
+   virtual int Epetra_Distributor::DoReverseWaits() = 0
 */
 int Epetra_Distributor_DoReverseWaits ( 
   CT_Epetra_Distributor_ID_t selfID );
 
-/* Original C++ prototype:
-   virtual int Do( char * export_objs, int obj_size, int *& sizes, int & len_import_objs, char *& import_objs) = 0;
+/*! @brief Wrapper for 
+   virtual int Epetra_Distributor::Do( char * export_objs, int obj_size, int *& sizes, int & len_import_objs, char *& import_objs) = 0
 */
 int Epetra_Distributor_Do_VarLen ( 
   CT_Epetra_Distributor_ID_t selfID, char * export_objs, 
   int obj_size, int ** sizes, int * len_import_objs, 
   char ** import_objs );
 
-/* Original C++ prototype:
-   virtual int DoReverse( char * export_objs, int obj_size, int *& sizes, int & len_import_objs, char *& import_objs) = 0;
+/*! @brief Wrapper for 
+   virtual int Epetra_Distributor::DoReverse( char * export_objs, int obj_size, int *& sizes, int & len_import_objs, char *& import_objs) = 0
 */
 int Epetra_Distributor_DoReverse_VarLen ( 
   CT_Epetra_Distributor_ID_t selfID, char * export_objs, 
   int obj_size, int ** sizes, int * len_import_objs, 
   char ** import_objs );
 
-/* Original C++ prototype:
-   virtual int DoPosts( char * export_objs, int obj_size, int *& sizes, int & len_import_objs, char *& import_objs) = 0;
+/*! @brief Wrapper for 
+   virtual int Epetra_Distributor::DoPosts( char * export_objs, int obj_size, int *& sizes, int & len_import_objs, char *& import_objs) = 0
 */
 int Epetra_Distributor_DoPosts_VarLen ( 
   CT_Epetra_Distributor_ID_t selfID, char * export_objs, 
   int obj_size, int ** sizes, int * len_import_objs, 
   char ** import_objs );
 
-/* Original C++ prototype:
-   virtual int DoReversePosts( char * export_objs, int obj_size, int *& sizes, int & len_import_objs, char *& import_objs) = 0;
+/*! @brief Wrapper for 
+   virtual int Epetra_Distributor::DoReversePosts( char * export_objs, int obj_size, int *& sizes, int & len_import_objs, char *& import_objs) = 0
 */
 int Epetra_Distributor_DoReversePosts_VarLen ( 
   CT_Epetra_Distributor_ID_t selfID, char * export_objs, 
   int obj_size, int ** sizes, int * len_import_objs, 
   char ** import_objs );
+
+/*@}*/
 
 
 #ifdef __cplusplus

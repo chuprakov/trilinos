@@ -1,5 +1,40 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
+
+/*! @file CEpetra_BlockMap.h
+ * @brief Wrappers for Epetra_BlockMap */
 
 /* True C header file! */
 
@@ -17,7 +52,7 @@ extern "C" {
 #endif
 
 
-/* Functions Epetra_BlockMap_Cast() and Epetra_BlockMap_Abstract()
+/*! Functions Epetra_BlockMap_Cast() and Epetra_BlockMap_Abstract()
    are used for casting CTrilinos objects from one type to another.
    The former function performs a dynamic cast on the underlying object
    and stores an RCP to it in the Epetra_BlockMap table, while
@@ -28,291 +63,316 @@ extern "C" {
    be casted).
 */
 
+/*! @name Explicit casting methods */
+/*@{*/
+
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Cast ( 
   CTrilinos_Object_ID_t id );
 
 CTrilinos_Object_ID_t Epetra_BlockMap_Abstract ( 
   CT_Epetra_BlockMap_ID_t id );
 
-/* Original C++ prototype:
-   Epetra_BlockMap(int NumGlobalElements, int ElementSize, int IndexBase, const Epetra_Comm& Comm);
+/*@}*/
+
+/*! @name Epetra_BlockMap constructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   Epetra_BlockMap::Epetra_BlockMap(int NumGlobalElements, int ElementSize, int IndexBase, const Epetra_Comm& Comm)
 */
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create ( 
   int NumGlobalElements, int ElementSize, int IndexBase, 
   CT_Epetra_Comm_ID_t CommID );
 
-/* Original C++ prototype:
-   Epetra_BlockMap(int NumGlobalElements, int NumMyElements, int ElementSize, int IndexBase, const Epetra_Comm& Comm);
+/*! @brief Wrapper for 
+   Epetra_BlockMap::Epetra_BlockMap(int NumGlobalElements, int NumMyElements, int ElementSize, int IndexBase, const Epetra_Comm& Comm)
 */
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create_Linear ( 
   int NumGlobalElements, int NumMyElements, int ElementSize, 
   int IndexBase, CT_Epetra_Comm_ID_t CommID );
 
-/* Original C++ prototype:
-   Epetra_BlockMap(int NumGlobalElements, int NumMyElements, const int *MyGlobalElements, int ElementSize, int IndexBase, const Epetra_Comm& Comm);
+/*! @brief Wrapper for 
+   Epetra_BlockMap::Epetra_BlockMap(int NumGlobalElements, int NumMyElements, const int *MyGlobalElements, int ElementSize, int IndexBase, const Epetra_Comm& Comm)
 */
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create_Arbitrary ( 
   int NumGlobalElements, int NumMyElements, 
   const int * MyGlobalElements, int ElementSize, int IndexBase, 
   CT_Epetra_Comm_ID_t CommID );
 
-/* Original C++ prototype:
-   Epetra_BlockMap(int NumGlobalElements, int NumMyElements, const int *MyGlobalElements, const int *ElementSizeList, int IndexBase, const Epetra_Comm& Comm);
+/*! @brief Wrapper for 
+   Epetra_BlockMap::Epetra_BlockMap(int NumGlobalElements, int NumMyElements, const int *MyGlobalElements, const int *ElementSizeList, int IndexBase, const Epetra_Comm& Comm)
 */
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create_Variable ( 
   int NumGlobalElements, int NumMyElements, 
   const int * MyGlobalElements, const int * ElementSizeList, 
   int IndexBase, CT_Epetra_Comm_ID_t CommID );
 
-/* Original C++ prototype:
-   Epetra_BlockMap(const Epetra_BlockMap& map);
+/*! @brief Wrapper for 
+   Epetra_BlockMap::Epetra_BlockMap(const Epetra_BlockMap& map)
 */
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Duplicate ( 
   CT_Epetra_BlockMap_ID_t mapID );
 
-/* Original C++ prototype:
-   virtual ~Epetra_BlockMap(void);
+/*@}*/
+
+/*! @name Epetra_BlockMap destructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   virtual Epetra_BlockMap::~Epetra_BlockMap(void)
 */
 void Epetra_BlockMap_Destroy ( CT_Epetra_BlockMap_ID_t * selfID );
 
-/* Original C++ prototype:
-   int RemoteIDList(int NumIDs, const int * GIDList, int * PIDList, int * LIDList) const;
+/*@}*/
+
+/*! @name Epetra_BlockMap member wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::RemoteIDList(int NumIDs, const int * GIDList, int * PIDList, int * LIDList) const
 */
 int Epetra_BlockMap_RemoteIDList ( 
   CT_Epetra_BlockMap_ID_t selfID, int NumIDs, const int * GIDList, 
   int * PIDList, int * LIDList );
 
-/* Original C++ prototype:
-   int RemoteIDList(int NumIDs, const int * GIDList, int * PIDList, int * LIDList, int * SizeList) const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::RemoteIDList(int NumIDs, const int * GIDList, int * PIDList, int * LIDList, int * SizeList) const
 */
 int Epetra_BlockMap_RemoteIDList_WithSize ( 
   CT_Epetra_BlockMap_ID_t selfID, int NumIDs, const int * GIDList, 
   int * PIDList, int * LIDList, int * SizeList );
 
-/* Original C++ prototype:
-   int LID(int GID) const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::LID(int GID) const
 */
 int Epetra_BlockMap_LID ( CT_Epetra_BlockMap_ID_t selfID, int GID );
 
-/* Original C++ prototype:
-   int GID(int LID) const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::GID(int LID) const
 */
 int Epetra_BlockMap_GID ( CT_Epetra_BlockMap_ID_t selfID, int LID );
 
-/* Original C++ prototype:
-   int FindLocalElementID(int PointID, int & ElementID, int & ElementOffset) const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::FindLocalElementID(int PointID, int & ElementID, int & ElementOffset) const
 */
 int Epetra_BlockMap_FindLocalElementID ( 
   CT_Epetra_BlockMap_ID_t selfID, int PointID, int * ElementID, 
   int * ElementOffset );
 
-/* Original C++ prototype:
-   bool MyGID(int GID_in) const;
+/*! @brief Wrapper for 
+   bool Epetra_BlockMap::MyGID(int GID_in) const
 */
 boolean Epetra_BlockMap_MyGID ( 
   CT_Epetra_BlockMap_ID_t selfID, int GID_in );
 
-/* Original C++ prototype:
-   bool MyLID(int LID_in) const;
+/*! @brief Wrapper for 
+   bool Epetra_BlockMap::MyLID(int LID_in) const
 */
 boolean Epetra_BlockMap_MyLID ( 
   CT_Epetra_BlockMap_ID_t selfID, int LID_in );
 
-/* Original C++ prototype:
-   int MinAllGID() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::MinAllGID() const
 */
 int Epetra_BlockMap_MinAllGID ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int MaxAllGID() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::MaxAllGID() const
 */
 int Epetra_BlockMap_MaxAllGID ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int MinMyGID() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::MinMyGID() const
 */
 int Epetra_BlockMap_MinMyGID ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int MaxMyGID() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::MaxMyGID() const
 */
 int Epetra_BlockMap_MaxMyGID ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int MinLID() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::MinLID() const
 */
 int Epetra_BlockMap_MinLID ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int MaxLID() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::MaxLID() const
 */
 int Epetra_BlockMap_MaxLID ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumGlobalElements() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::NumGlobalElements() const
 */
 int Epetra_BlockMap_NumGlobalElements ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumMyElements() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::NumMyElements() const
 */
 int Epetra_BlockMap_NumMyElements ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int MyGlobalElements(int * MyGlobalElementList) const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::MyGlobalElements(int * MyGlobalElementList) const
 */
 int Epetra_BlockMap_MyGlobalElements_Fill ( 
   CT_Epetra_BlockMap_ID_t selfID, int * MyGlobalElementList );
 
-/* Original C++ prototype:
-   int ElementSize() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::ElementSize() const
 */
 int Epetra_BlockMap_ElementSize_Const ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int ElementSize(int LID) const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::ElementSize(int LID) const
 */
 int Epetra_BlockMap_ElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID, int LID );
 
-/* Original C++ prototype:
-   int FirstPointInElement(int LID) const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::FirstPointInElement(int LID) const
 */
 int Epetra_BlockMap_FirstPointInElement ( 
   CT_Epetra_BlockMap_ID_t selfID, int LID );
 
-/* Original C++ prototype:
-   int IndexBase() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::IndexBase() const
 */
 int Epetra_BlockMap_IndexBase ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumGlobalPoints() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::NumGlobalPoints() const
 */
 int Epetra_BlockMap_NumGlobalPoints ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumMyPoints() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::NumMyPoints() const
 */
 int Epetra_BlockMap_NumMyPoints ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int MinMyElementSize() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::MinMyElementSize() const
 */
 int Epetra_BlockMap_MinMyElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int MaxMyElementSize() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::MaxMyElementSize() const
 */
 int Epetra_BlockMap_MaxMyElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int MinElementSize() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::MinElementSize() const
 */
 int Epetra_BlockMap_MinElementSize ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int MaxElementSize() const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::MaxElementSize() const
 */
 int Epetra_BlockMap_MaxElementSize ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   bool UniqueGIDs() const;
+/*! @brief Wrapper for 
+   bool Epetra_BlockMap::UniqueGIDs() const
 */
 boolean Epetra_BlockMap_UniqueGIDs ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   bool ConstantElementSize() const;
+/*! @brief Wrapper for 
+   bool Epetra_BlockMap::ConstantElementSize() const
 */
 boolean Epetra_BlockMap_ConstantElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   bool SameAs(const Epetra_BlockMap & Map) const;
+/*! @brief Wrapper for 
+   bool Epetra_BlockMap::SameAs(const Epetra_BlockMap & Map) const
 */
 boolean Epetra_BlockMap_SameAs ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID );
 
-/* Original C++ prototype:
-   bool PointSameAs(const Epetra_BlockMap & Map) const;
+/*! @brief Wrapper for 
+   bool Epetra_BlockMap::PointSameAs(const Epetra_BlockMap & Map) const
 */
 boolean Epetra_BlockMap_PointSameAs ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID );
 
-/* Original C++ prototype:
-   bool LinearMap() const;
+/*! @brief Wrapper for 
+   bool Epetra_BlockMap::LinearMap() const
 */
 boolean Epetra_BlockMap_LinearMap ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   bool DistributedGlobal() const;
+/*! @brief Wrapper for 
+   bool Epetra_BlockMap::DistributedGlobal() const
 */
 boolean Epetra_BlockMap_DistributedGlobal ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int * MyGlobalElements() const;
+/*! @brief Wrapper for 
+   int * Epetra_BlockMap::MyGlobalElements() const
 */
 int * Epetra_BlockMap_MyGlobalElements ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int * FirstPointInElementList() const;
+/*! @brief Wrapper for 
+   int * Epetra_BlockMap::FirstPointInElementList() const
 */
 int * Epetra_BlockMap_FirstPointInElementList ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int * ElementSizeList() const;
+/*! @brief Wrapper for 
+   int * Epetra_BlockMap::ElementSizeList() const
 */
 int * Epetra_BlockMap_ElementSizeList ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int * PointToElementList() const;
+/*! @brief Wrapper for 
+   int * Epetra_BlockMap::PointToElementList() const
 */
 int * Epetra_BlockMap_PointToElementList ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   int ElementSizeList(int * ElementSizeList)const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::ElementSizeList(int * ElementSizeList)const
 */
 int Epetra_BlockMap_ElementSizeList_Fill ( 
   CT_Epetra_BlockMap_ID_t selfID, int * ElementSizeList );
 
-/* Original C++ prototype:
-   int FirstPointInElementList(int * FirstPointInElementList)const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::FirstPointInElementList(int * FirstPointInElementList)const
 */
 int Epetra_BlockMap_FirstPointInElementList_Fill ( 
   CT_Epetra_BlockMap_ID_t selfID, int * FirstPointInElementList );
 
-/* Original C++ prototype:
-   int PointToElementList(int * PointToElementList) const;
+/*! @brief Wrapper for 
+   int Epetra_BlockMap::PointToElementList(int * PointToElementList) const
 */
 int Epetra_BlockMap_PointToElementList_Fill ( 
   CT_Epetra_BlockMap_ID_t selfID, int * PointToElementList );
 
-/* Original C++ prototype:
-   const Epetra_Comm & Comm() const;
+/*! @brief Wrapper for 
+   const Epetra_Comm & Epetra_BlockMap::Comm() const
 */
 CT_Epetra_Comm_ID_t Epetra_BlockMap_Comm ( 
   CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   bool IsOneToOne() const;
+/*! @brief Wrapper for 
+   bool Epetra_BlockMap::IsOneToOne() const
 */
 boolean Epetra_BlockMap_IsOneToOne ( CT_Epetra_BlockMap_ID_t selfID );
 
-/* Original C++ prototype:
-   Epetra_BlockMap & operator=(const Epetra_BlockMap & map);
+/*@}*/
+
+/*! @name Epetra_BlockMap operator wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   Epetra_BlockMap & Epetra_BlockMap::operator=(const Epetra_BlockMap & map)
 */
 void Epetra_BlockMap_Assign ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t mapID );
+
+/*@}*/
 
 
 #ifdef __cplusplus

@@ -1,3 +1,35 @@
+/*! \@HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
+
+************************************************************************
+*/
+/*! \@HEADER */
+
+
+#include "CTrilinos_config.h"
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_Map.h"
 #include "CEpetra_Comm.h"
@@ -44,7 +76,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Create_VarPerRow )
   int NumIndicesPerRow[NumGlobalElements] = {3, 2, 6, 4};
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create_VarPerRow(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.type, CT_Epetra_CrsGraph_ID);
@@ -71,7 +103,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Create )
   ECHO(int NumIndicesPerRow = 7);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.type, CT_Epetra_CrsGraph_ID);
@@ -111,7 +143,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Duplicate )
   ECHO(int NumIndicesPerRow = 3);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   ECHO(CT_Epetra_CrsGraph_ID_t dupID = Epetra_CrsGraph_Duplicate(selfID));
 
@@ -139,7 +171,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Destroy )
   ECHO(int NumIndicesPerRow = 3);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   ECHO(Epetra_CrsGraph_Destroy(&selfID));
 

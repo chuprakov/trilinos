@@ -1,3 +1,36 @@
+/*! \@HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
+
+************************************************************************
+*/
+/*! \@HEADER */
+
+
+#include "CTrilinos_config.h"
+
 #include "CEpetra_Map.h"
 #include "CEpetra_Time.h"
 #include "CEpetra_CrsMatrix.h"
@@ -11,7 +44,7 @@
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_RowMatrix.h"
 #include "CEpetra_CompObject.h"
-#ifdef EPETRA_MPI
+#ifdef HAVE_MPI
 #include "CEpetra_MpiComm.h"
 #include "mpi.h"
 #else
@@ -67,7 +100,7 @@ int check(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & B, bool verbo
 int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & JadA, CT_Epetra_Map_ID_t & Map, 
 		     CT_Epetra_Vector_ID_t & q, CT_Epetra_Vector_ID_t & z, CT_Epetra_Vector_ID_t & resid, bool verbose);
 
-int power_method(bool TransA, CT_Epetra_RowMatrix_ID_t& A, 
+int power_method(boolean TransA, CT_Epetra_RowMatrix_ID_t& A, 
 		 CT_Epetra_Vector_ID_t& q,
 		 CT_Epetra_Vector_ID_t& z0, 
 		 CT_Epetra_Vector_ID_t& resid, 
@@ -77,7 +110,7 @@ int power_method(bool TransA, CT_Epetra_RowMatrix_ID_t& A,
 int main(int argc, char *argv[])
 {
   int ierr = 0, i, forierr = 0;
-#ifdef EPETRA_MPI
+#ifdef HAVE_MPI
 
   // Initialize MPI
 
@@ -267,7 +300,7 @@ int main(int argc, char *argv[])
   Epetra_CompObject_ResetFlops(coJadA1);
   powerMethodTests(rJadA1, rJadA2, Map, q, z, resid, verbose);
 
-#ifdef EPETRA_MPI
+#ifdef HAVE_MPI
   MPI_Finalize() ;
 #endif
 
@@ -297,7 +330,7 @@ int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & Ja
   CT_Epetra_CompObject_ID_t coq = Epetra_CompObject_Cast(Epetra_Vector_Abstract(q));
 
   double startTime = Epetra_Time_ElapsedTime(timer);
-  EPETRA_TEST_ERR(power_method(false, A, q, z, resid, &lambda, niters, tolerance, verbose),ierr);
+  EPETRA_TEST_ERR(power_method(FALSE, A, q, z, resid, &lambda, niters, tolerance, verbose),ierr);
   double elapsed_time = Epetra_Time_ElapsedTime(timer) - startTime;
   double total_flops = Epetra_CompObject_Flops(coq);
   double MFLOPs = total_flops/elapsed_time/1000000.0;
@@ -310,7 +343,7 @@ int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & Ja
 
   lambda = 0.0;
   startTime = Epetra_Time_ElapsedTime(timer);
-  EPETRA_TEST_ERR(power_method(false, JadA, q, z, resid, &lambda, niters, tolerance, verbose),ierr);
+  EPETRA_TEST_ERR(power_method(FALSE, JadA, q, z, resid, &lambda, niters, tolerance, verbose),ierr);
   elapsed_time = Epetra_Time_ElapsedTime(timer) - startTime;
   total_flops = Epetra_CompObject_Flops(coq);
   MFLOPs = total_flops/elapsed_time/1000000.0;
@@ -331,7 +364,7 @@ int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & Ja
   // Iterate
   lambda = 0.0;
   startTime = Epetra_Time_ElapsedTime(timer);
-  EPETRA_TEST_ERR(power_method(true, A, q, z, resid, &lambda, niters, tolerance, verbose),ierr);
+  EPETRA_TEST_ERR(power_method(TRUE, A, q, z, resid, &lambda, niters, tolerance, verbose),ierr);
   elapsed_time = Epetra_Time_ElapsedTime(timer) - startTime;
   total_flops = Epetra_CompObject_Flops(coq);
   MFLOPs = total_flops/elapsed_time/1000000.0;
@@ -344,7 +377,7 @@ int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & Ja
 
   lambda = 0.0;
   startTime = Epetra_Time_ElapsedTime(timer);
-  EPETRA_TEST_ERR(power_method(true, JadA, q, z, resid, &lambda, niters, tolerance, verbose),ierr);
+  EPETRA_TEST_ERR(power_method(TRUE, JadA, q, z, resid, &lambda, niters, tolerance, verbose),ierr);
   elapsed_time = Epetra_Time_ElapsedTime(timer) - startTime;
   total_flops = Epetra_CompObject_Flops(coq);
   MFLOPs = total_flops/elapsed_time/1000000.0;
@@ -362,7 +395,7 @@ int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & Ja
 
   return(0);
 }
-int power_method(bool TransA, CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_Vector_ID_t& q, CT_Epetra_Vector_ID_t& z0, 
+int power_method(boolean TransA, CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_Vector_ID_t& q, CT_Epetra_Vector_ID_t& z0, 
 		 CT_Epetra_Vector_ID_t& resid, double* lambda, int niters, double tolerance, bool verbose) 
 {  
 	
@@ -492,7 +525,7 @@ int check(CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_RowMatrix_ID_t & B, bool verbos
     CT_Epetra_MultiVector_ID_t YB2 = Epetra_MultiVector_Duplicate(YA1);
     Epetra_MultiVector_Random(X);
     
-    bool transA = false;
+    boolean transA = FALSE;
     Epetra_Operator_SetUseTranspose(oA, transA);
     Epetra_Operator_SetUseTranspose(oB, transA);
     Epetra_Operator_Apply(oA,X,YA1);
@@ -518,7 +551,7 @@ int check(CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_RowMatrix_ID_t & B, bool verbos
     CT_Epetra_MultiVector_ID_t YB2 = Epetra_MultiVector_Duplicate(YA1);
     Epetra_MultiVector_Random(X);
     
-    bool transA = true;
+    boolean transA = TRUE;
     Epetra_Operator_SetUseTranspose(oA, transA);
     Epetra_Operator_SetUseTranspose(oB, transA);
     Epetra_Operator_Apply(oA,X,YA1);

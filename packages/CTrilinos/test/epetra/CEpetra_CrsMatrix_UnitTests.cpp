@@ -1,3 +1,35 @@
+/*! \@HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
+
+************************************************************************
+*/
+/*! \@HEADER */
+
+
+#include "CTrilinos_config.h"
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_Comm.h"
 #include "CEpetra_CrsGraph.h"
@@ -46,7 +78,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Create_VarPerRow )
   int NumIndicesPerRow[NumGlobalElements] = {3, 2, 6, 4};
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t selfID = Epetra_CrsMatrix_Create_VarPerRow(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.type, CT_Epetra_CrsMatrix_ID);
@@ -72,7 +104,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Create )
   ECHO(int NumIndicesPerRow = 7);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t selfID = Epetra_CrsMatrix_Create(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.type, CT_Epetra_CrsMatrix_ID);
@@ -117,13 +149,13 @@ TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Duplicate )
   ECHO(int NumIndicesPerRow = 4);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t selfID = Epetra_CrsMatrix_Create(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Initialize the source matrix */
   ECHO(double val = 1.0);
   ECHO(int ret = Epetra_CrsMatrix_PutScalar(selfID, val));
   TEST_EQUALITY(ret, 0);
-  ECHO(ret = Epetra_CrsMatrix_FillComplete(selfID, true));
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(selfID, TRUE));
   TEST_EQUALITY(ret, 0);
 
   /* Call wrapper to duplicate the matrix */
@@ -152,7 +184,7 @@ TEUCHOS_UNIT_TEST( Epetra_CrsMatrix , Destroy )
   ECHO(int NumIndicesPerRow = 3);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsMatrix_ID_t selfID = Epetra_CrsMatrix_Create(
-       CV, MapID, NumIndicesPerRow, false));
+       CV, MapID, NumIndicesPerRow, FALSE));
 
   ECHO(Epetra_CrsMatrix_Destroy(&selfID));
 

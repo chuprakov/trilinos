@@ -24,3 +24,13 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
   STANDARD_PASS_OUTPUT
   )
 
+#PACKAGE_ADD_EXECUTABLE_AND_TEST(
+#  CTrilinos_Table_memory
+#  SOURCES
+#    CTrilinos_Table_memory.c
+#  ARGS 12
+#  COMM serial
+#  NUM_MPI_PROCS 1
+#  STANDARD_PASS_OUTPUT
+#  )
+

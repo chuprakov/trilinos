@@ -1,3 +1,35 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
 
@@ -14,6 +46,7 @@
 #include "Epetra_MpiComm.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -29,7 +62,7 @@ using CTrilinos::Table;
 Table<Epetra_MpiComm>& tableOfMpiComms()
 {
     static Table<Epetra_MpiComm>
-        loc_tableOfMpiComms(CT_Epetra_MpiComm_ID, "CT_Epetra_MpiComm_ID", false);
+        loc_tableOfMpiComms(CT_Epetra_MpiComm_ID, "CT_Epetra_MpiComm_ID", FALSE);
     return loc_tableOfMpiComms;
 }
 
@@ -37,7 +70,7 @@ Table<Epetra_MpiComm>& tableOfMpiComms()
 Table<const Epetra_MpiComm>& tableOfConstMpiComms()
 {
     static Table<const Epetra_MpiComm>
-        loc_tableOfConstMpiComms(CT_Epetra_MpiComm_ID, "CT_Epetra_MpiComm_ID", true);
+        loc_tableOfConstMpiComms(CT_Epetra_MpiComm_ID, "CT_Epetra_MpiComm_ID", TRUE);
     return loc_tableOfConstMpiComms;
 }
 
@@ -85,13 +118,6 @@ CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Duplicate (
         *CEpetra::getConstMpiComm(CommID))));
 }
 
-CT_Epetra_Comm_ID_t Epetra_MpiComm_Clone ( 
-  CT_Epetra_MpiComm_ID_t selfID )
-{
-    return CEpetra::storeComm(CEpetra::getConstMpiComm(
-        selfID)->Clone());
-}
-
 void Epetra_MpiComm_Destroy ( CT_Epetra_MpiComm_ID_t * selfID )
 {
     CTrilinos_Object_ID_t aid
@@ -102,6 +128,13 @@ void Epetra_MpiComm_Destroy ( CT_Epetra_MpiComm_ID_t * selfID )
         tableOfMpiComms().remove(&aid);
     }
     *selfID = CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(aid);
+}
+
+CT_Epetra_Comm_ID_t Epetra_MpiComm_Clone ( 
+  CT_Epetra_MpiComm_ID_t selfID )
+{
+    return CEpetra::storeComm(CEpetra::getConstMpiComm(
+        selfID)->Clone());
 }
 
 void Epetra_MpiComm_Barrier ( CT_Epetra_MpiComm_ID_t selfID )

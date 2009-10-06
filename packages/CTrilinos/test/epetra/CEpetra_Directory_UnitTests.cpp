@@ -1,3 +1,35 @@
+/*! \@HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
+
+************************************************************************
+*/
+/*! \@HEADER */
+
+
+#include "CTrilinos_config.h"
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_Map.h"
@@ -105,8 +137,9 @@ TEUCHOS_UNIT_TEST( Epetra_Directory , GetDirectoryEntries )
   int Procs1[NumEntries];
   int LocalEntries1[NumEntries];
   int EntrySizes1[NumEntries];
+  ECHO(bool high_rank1 = false);
   ECHO(ret = self.GetDirectoryEntries(bmap, NumEntries, GlobalEntries,
-       Procs1, LocalEntries1, EntrySizes1, high_rank));
+       Procs1, LocalEntries1, EntrySizes1, high_rank1));
   TEST_EQUALITY_CONST(ret, 0);
 
   /* And compare the results */
@@ -140,12 +173,13 @@ TEUCHOS_UNIT_TEST( Epetra_Directory , GIDsAllUniquelyOwned )
 
   /* Now try out the wrapper function */
   ECHO(boolean ret = Epetra_Directory_GIDsAllUniquelyOwned(selfID));
+  ECHO(bool ret0 = (ret != FALSE ? true : false));
 
   /* Now try out the original function */
   ECHO(bool ret1 = self.GIDsAllUniquelyOwned());
 
   /* And compare the results */
-  TEST_EQUALITY(ret, ret1);
+  TEST_EQUALITY(ret0, ret1);
 }
 
 /**********************************************************************/

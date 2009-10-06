@@ -1,3 +1,35 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
 #include "CTeuchos_CommandLineProcessor_Cpp.hpp"
@@ -5,6 +37,7 @@
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -20,7 +53,7 @@ using CTrilinos::Table;
 Table<Teuchos::CommandLineProcessor>& tableOfCommandLineProcessors()
 {
     static Table<Teuchos::CommandLineProcessor>
-        loc_tableOfCommandLineProcessors(CT_Teuchos_CommandLineProcessor_ID, "CT_Teuchos_CommandLineProcessor_ID", false);
+        loc_tableOfCommandLineProcessors(CT_Teuchos_CommandLineProcessor_ID, "CT_Teuchos_CommandLineProcessor_ID", FALSE);
     return loc_tableOfCommandLineProcessors;
 }
 
@@ -28,7 +61,7 @@ Table<Teuchos::CommandLineProcessor>& tableOfCommandLineProcessors()
 Table<const Teuchos::CommandLineProcessor>& tableOfConstCommandLineProcessors()
 {
     static Table<const Teuchos::CommandLineProcessor>
-        loc_tableOfConstCommandLineProcessors(CT_Teuchos_CommandLineProcessor_ID, "CT_Teuchos_CommandLineProcessor_ID", true);
+        loc_tableOfConstCommandLineProcessors(CT_Teuchos_CommandLineProcessor_ID, "CT_Teuchos_CommandLineProcessor_ID", TRUE);
     return loc_tableOfConstCommandLineProcessors;
 }
 
@@ -44,6 +77,18 @@ Table<const Teuchos::CommandLineProcessor>& tableOfConstCommandLineProcessors()
 extern "C" {
 
 
+CT_Teuchos_CommandLineProcessor_ID_t Teuchos_CommandLineProcessor_Create ( 
+  boolean throwExceptions, boolean recogniseAllOptions, 
+  boolean addOutputSetupOptions )
+{
+    return CTrilinos::concreteType<CT_Teuchos_CommandLineProcessor_ID_t>(
+        tableOfCommandLineProcessors().store(
+        new Teuchos::CommandLineProcessor(
+        ((throwExceptions) != FALSE ? true : false), ((
+        recogniseAllOptions) != FALSE ? true : false), ((
+        addOutputSetupOptions) != FALSE ? true : false))));
+}
+
 void Teuchos_CommandLineProcessor_Destroy ( 
   CT_Teuchos_CommandLineProcessor_ID_t * selfID )
 {
@@ -57,29 +102,19 @@ void Teuchos_CommandLineProcessor_Destroy (
     *selfID = CTrilinos::concreteType<CT_Teuchos_CommandLineProcessor_ID_t>(aid);
 }
 
-CT_Teuchos_CommandLineProcessor_ID_t Teuchos_CommandLineProcessor_Create ( 
-  boolean throwExceptions, boolean recogniseAllOptions, 
-  boolean addOutputSetupOptions )
-{
-    return CTrilinos::concreteType<CT_Teuchos_CommandLineProcessor_ID_t>(
-        tableOfCommandLineProcessors().store(
-        new Teuchos::CommandLineProcessor(throwExceptions, 
-        recogniseAllOptions, addOutputSetupOptions)));
-}
-
 void Teuchos_CommandLineProcessor_throwExceptions_set ( 
   CT_Teuchos_CommandLineProcessor_ID_t selfID, 
   boolean throwExceptions )
 {
     CTeuchos::getCommandLineProcessor(selfID)->throwExceptions(
-        throwExceptions);
+        ((throwExceptions) != FALSE ? true : false));
 }
 
 boolean Teuchos_CommandLineProcessor_throwExceptions_get ( 
   CT_Teuchos_CommandLineProcessor_ID_t selfID )
 {
-    return CTeuchos::getConstCommandLineProcessor(
-        selfID)->throwExceptions();
+    return ((CTeuchos::getConstCommandLineProcessor(
+        selfID)->throwExceptions()) ? TRUE : FALSE);
 }
 
 void Teuchos_CommandLineProcessor_recogniseAllOptions_set ( 
@@ -87,14 +122,14 @@ void Teuchos_CommandLineProcessor_recogniseAllOptions_set (
   boolean recogniseAllOptions )
 {
     CTeuchos::getCommandLineProcessor(selfID)->recogniseAllOptions(
-        recogniseAllOptions);
+        ((recogniseAllOptions) != FALSE ? true : false));
 }
 
 boolean Teuchos_CommandLineProcessor_recogniseAllOptions_get ( 
   CT_Teuchos_CommandLineProcessor_ID_t selfID )
 {
-    return CTeuchos::getConstCommandLineProcessor(
-        selfID)->recogniseAllOptions();
+    return ((CTeuchos::getConstCommandLineProcessor(
+        selfID)->recogniseAllOptions()) ? TRUE : FALSE);
 }
 
 void Teuchos_CommandLineProcessor_addOutputSetupOptions_set ( 
@@ -102,14 +137,14 @@ void Teuchos_CommandLineProcessor_addOutputSetupOptions_set (
   boolean addOutputSetupOptions )
 {
     CTeuchos::getCommandLineProcessor(selfID)->addOutputSetupOptions(
-        addOutputSetupOptions);
+        ((addOutputSetupOptions) != FALSE ? true : false));
 }
 
 boolean Teuchos_CommandLineProcessor_addOutputSetupOptions_get ( 
   CT_Teuchos_CommandLineProcessor_ID_t selfID )
 {
-    return CTeuchos::getConstCommandLineProcessor(
-        selfID)->addOutputSetupOptions();
+    return ((CTeuchos::getConstCommandLineProcessor(
+        selfID)->addOutputSetupOptions()) ? TRUE : FALSE);
 }
 
 void Teuchos_CommandLineProcessor_setDocString ( 
@@ -125,8 +160,12 @@ void Teuchos_CommandLineProcessor_setOption_bool (
   const char option_true[], const char option_false[], 
   boolean * option_val, const char documentation[] )
 {
+    bool *tmp_option_val = NULL;
+    CTrilinos::pass_bool_in(option_val, tmp_option_val);
     CTeuchos::getCommandLineProcessor(selfID)->setOption(option_true, 
-        option_false, option_val, documentation);
+        option_false, tmp_option_val, documentation);
+    CTrilinos::pass_bool_out(tmp_option_val, option_val);
+    delete tmp_option_val;
 }
 
 void Teuchos_CommandLineProcessor_setOption_int ( 
@@ -135,7 +174,8 @@ void Teuchos_CommandLineProcessor_setOption_int (
   const char documentation[], const boolean required )
 {
     CTeuchos::getCommandLineProcessor(selfID)->setOption(option_name, 
-        option_val, documentation, required);
+        option_val, documentation, ((
+        required) != FALSE ? true : false));
 }
 
 void Teuchos_CommandLineProcessor_setOption_double ( 
@@ -144,7 +184,8 @@ void Teuchos_CommandLineProcessor_setOption_double (
   const char documentation[], const boolean required )
 {
     CTeuchos::getCommandLineProcessor(selfID)->setOption(option_name, 
-        option_val, documentation, required);
+        option_val, documentation, ((
+        required) != FALSE ? true : false));
 }
 
 void Teuchos_CommandLineProcessor_setOption_str ( 
@@ -155,7 +196,8 @@ void Teuchos_CommandLineProcessor_setOption_str (
     std::string *tmp_option_val = NULL;
     CTrilinos::pass_string_in(option_val, tmp_option_val);
     CTeuchos::getCommandLineProcessor(selfID)->setOption(option_name, 
-        tmp_option_val, documentation, required);
+        tmp_option_val, documentation, ((
+        required) != FALSE ? true : false));
     CTrilinos::pass_string_out(tmp_option_val, option_val);
     delete tmp_option_val;
 }

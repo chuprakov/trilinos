@@ -1,5 +1,40 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
+
+/*! @file CTeuchos_ParameterEntry.h
+ * @brief Wrappers for Teuchos::ParameterEntry */
 
 /* True C header file! */
 
@@ -18,120 +53,130 @@ extern "C" {
 #endif
 
 
-/* Functions Teuchos_ParameterEntry_Cast() and Teuchos_ParameterEntry_Abstract()
-   are used for casting CTrilinos objects from one type to another.
-   The former function performs a dynamic cast on the underlying object
-   and stores an RCP to it in the Teuchos_ParameterEntry table, while
-   the latter only converts the type of the struct that references the
-   object so that an object of any type can be passed to the former
-   function (use the _Abstract() function corresponding to the type
-   of the object that will be casted, not the type to which it will
-   be casted).
-*/
 
-/* Original C++ prototype:
-   ParameterEntry();
+/*! @name ParameterEntry constructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   Teuchos::ParameterEntry::ParameterEntry()
 */
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterEntry_Create (  );
 
-/* Original C++ prototype:
-   ParameterEntry(const ParameterEntry& source);
+/*! @brief Wrapper for 
+   Teuchos::ParameterEntry::ParameterEntry(const ParameterEntry& source)
 */
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterEntry_Duplicate ( 
   CT_Teuchos_ParameterEntry_ID_t sourceID );
 
-/* Original C++ prototype:
-   ~ParameterEntry();
+/*@}*/
+
+/*! @name ParameterEntry destructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   Teuchos::ParameterEntry::~ParameterEntry()
 */
 void Teuchos_ParameterEntry_Destroy ( 
   CT_Teuchos_ParameterEntry_ID_t * selfID );
 
-/* Original C++ prototype:
-   ParameterEntry& operator=(const ParameterEntry& source);
-*/
-void Teuchos_ParameterEntry_Assign ( 
-  CT_Teuchos_ParameterEntry_ID_t selfID, 
-  CT_Teuchos_ParameterEntry_ID_t sourceID );
+/*@}*/
 
-/* Original C++ prototype:
-   void setAnyValue( const any &value, bool isDefault = false );
+/*! @name ParameterEntry member wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   void Teuchos::ParameterEntry::setAnyValue( const any &value, bool isDefault = false )
 */
 void Teuchos_ParameterEntry_setAnyValue ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, 
   CT_Teuchos_any_ID_t valueID, boolean isDefault );
 
-/* Original C++ prototype:
-   void setDocString(const std::string &docString);
+/*! @brief Wrapper for 
+   void Teuchos::ParameterEntry::setDocString(const std::string &docString)
 */
 void Teuchos_ParameterEntry_setDocString ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, const char docString[] );
 
-/* Original C++ prototype:
-   ParameterList& setList( bool isDefault = false, const std::string &docString = "" );
+/*! @brief Wrapper for 
+   ParameterList& Teuchos::ParameterEntry::setList( bool isDefault = false, const std::string &docString = "" )
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterEntry_setList ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, boolean isDefault, 
   const char docString[] );
 
-/* Original C++ prototype:
-   template<typename T> inline T& getValue(T *ptr) const;
+/*! @brief Wrapper for 
+   template<typename T> inline T& Teuchos::ParameterEntry::getValue(T *ptr) const
 */
 double Teuchos_ParameterEntry_getValue_double ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, double * ptr );
 
-/* Original C++ prototype:
-   template<typename T> inline T& getValue(T *ptr) const;
+/*! @brief Wrapper for 
+   template<typename T> inline T& Teuchos::ParameterEntry::getValue(T *ptr) const
 */
 int Teuchos_ParameterEntry_getValue_int ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, int * ptr );
 
-/* Original C++ prototype:
-   inline any& getAny(bool activeQry = true);
+/*! @brief Wrapper for 
+   inline any& Teuchos::ParameterEntry::getAny(bool activeQry = true)
 */
 CT_Teuchos_any_ID_t Teuchos_ParameterEntry_getAny ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, boolean activeQry );
 
-/* Original C++ prototype:
-   inline const any& getAny(bool activeQry = true) const;
+/*! @brief Wrapper for 
+   inline const any& Teuchos::ParameterEntry::getAny(bool activeQry = true) const
 */
 CT_Teuchos_any_ID_t Teuchos_ParameterEntry_getAny_const ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, boolean activeQry );
 
-/* Original C++ prototype:
-   inline bool isUsed() const;
+/*! @brief Wrapper for 
+   inline bool Teuchos::ParameterEntry::isUsed() const
 */
 boolean Teuchos_ParameterEntry_isUsed ( 
   CT_Teuchos_ParameterEntry_ID_t selfID );
 
-/* Original C++ prototype:
-   bool isList() const;
+/*! @brief Wrapper for 
+   bool Teuchos::ParameterEntry::isList() const
 */
 boolean Teuchos_ParameterEntry_isList ( 
   CT_Teuchos_ParameterEntry_ID_t selfID );
 
-/* Original C++ prototype:
-   template <typename T> inline bool isType() const;
+/*! @brief Wrapper for 
+   template <typename T> inline bool Teuchos::ParameterEntry::isType() const
 */
 boolean Teuchos_ParameterEntry_isType_double ( 
   CT_Teuchos_ParameterEntry_ID_t selfID );
 
-/* Original C++ prototype:
-   template <typename T> inline bool isType() const;
+/*! @brief Wrapper for 
+   template <typename T> inline bool Teuchos::ParameterEntry::isType() const
 */
 boolean Teuchos_ParameterEntry_isType_int ( 
   CT_Teuchos_ParameterEntry_ID_t selfID );
 
-/* Original C++ prototype:
-   inline bool isDefault() const;
+/*! @brief Wrapper for 
+   inline bool Teuchos::ParameterEntry::isDefault() const
 */
 boolean Teuchos_ParameterEntry_isDefault ( 
   CT_Teuchos_ParameterEntry_ID_t selfID );
 
-/* Original C++ prototype:
-   inline std::string docString() const;
+/*! @brief Wrapper for 
+   inline std::string Teuchos::ParameterEntry::docString() const
 */
 const char * Teuchos_ParameterEntry_docString ( 
   CT_Teuchos_ParameterEntry_ID_t selfID );
+
+/*@}*/
+
+/*! @name ParameterEntry operator wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   ParameterEntry& Teuchos::ParameterEntry::operator=(const ParameterEntry& source)
+*/
+void Teuchos_ParameterEntry_Assign ( 
+  CT_Teuchos_ParameterEntry_ID_t selfID, 
+  CT_Teuchos_ParameterEntry_ID_t sourceID );
+
+/*@}*/
 
 
 #ifdef __cplusplus

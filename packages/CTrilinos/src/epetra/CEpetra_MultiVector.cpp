@@ -1,3 +1,35 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
 #include "CEpetra_BlockMap_Cpp.hpp"
@@ -7,6 +39,7 @@
 #include "Epetra_MultiVector.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -22,7 +55,7 @@ using CTrilinos::Table;
 Table<Epetra_MultiVector>& tableOfMultiVectors()
 {
     static Table<Epetra_MultiVector>
-        loc_tableOfMultiVectors(CT_Epetra_MultiVector_ID, "CT_Epetra_MultiVector_ID", false);
+        loc_tableOfMultiVectors(CT_Epetra_MultiVector_ID, "CT_Epetra_MultiVector_ID", FALSE);
     return loc_tableOfMultiVectors;
 }
 
@@ -30,7 +63,7 @@ Table<Epetra_MultiVector>& tableOfMultiVectors()
 Table<const Epetra_MultiVector>& tableOfConstMultiVectors()
 {
     static Table<const Epetra_MultiVector>
-        loc_tableOfConstMultiVectors(CT_Epetra_MultiVector_ID, "CT_Epetra_MultiVector_ID", true);
+        loc_tableOfConstMultiVectors(CT_Epetra_MultiVector_ID, "CT_Epetra_MultiVector_ID", TRUE);
     return loc_tableOfConstMultiVectors;
 }
 
@@ -69,7 +102,8 @@ CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create (
 {
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
         tableOfMultiVectors().store(new Epetra_MultiVector(
-        *CEpetra::getConstBlockMap(MapID), NumVectors, zeroOut)));
+        *CEpetra::getConstBlockMap(MapID), NumVectors, ((
+        zeroOut) != FALSE ? true : false))));
 }
 
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Duplicate ( 
@@ -377,31 +411,6 @@ unsigned int Epetra_MultiVector_Seed (
     return CEpetra::getMultiVector(selfID)->Seed();
 }
 
-void Epetra_MultiVector_Assign ( 
-  CT_Epetra_MultiVector_ID_t selfID, 
-  CT_Epetra_MultiVector_ID_t SourceID )
-{
-    Epetra_MultiVector& self = *( CEpetra::getMultiVector(selfID) );
-
-    self = *CEpetra::getConstMultiVector(SourceID);
-}
-
-double * Epetra_MultiVector_getArray ( 
-  CT_Epetra_MultiVector_ID_t selfID, int i )
-{
-    const Epetra_MultiVector& self = *( CEpetra::getConstMultiVector(selfID) );
-
-    return self[i];
-}
-
-CT_Epetra_Vector_ID_t Epetra_MultiVector_getVector ( 
-  CT_Epetra_MultiVector_ID_t selfID, int i )
-{
-    const Epetra_MultiVector& self = *( CEpetra::getConstMultiVector(selfID) );
-
-    return CEpetra::storeConstVector(self(i));
-}
-
 int Epetra_MultiVector_NumVectors ( 
   CT_Epetra_MultiVector_ID_t selfID )
 {
@@ -427,7 +436,8 @@ int Epetra_MultiVector_Stride ( CT_Epetra_MultiVector_ID_t selfID )
 boolean Epetra_MultiVector_ConstantStride ( 
   CT_Epetra_MultiVector_ID_t selfID )
 {
-    return CEpetra::getConstMultiVector(selfID)->ConstantStride();
+    return ((CEpetra::getConstMultiVector(
+        selfID)->ConstantStride()) ? TRUE : FALSE);
 }
 
 int Epetra_MultiVector_ReplaceMap ( 
@@ -435,6 +445,31 @@ int Epetra_MultiVector_ReplaceMap (
 {
     return CEpetra::getMultiVector(selfID)->ReplaceMap(
         *CEpetra::getConstBlockMap(mapID));
+}
+
+void Epetra_MultiVector_Assign ( 
+  CT_Epetra_MultiVector_ID_t selfID, 
+  CT_Epetra_MultiVector_ID_t SourceID )
+{
+    Epetra_MultiVector& self = *( CEpetra::getMultiVector(selfID) );
+
+    self = *CEpetra::getConstMultiVector(SourceID);
+}
+
+double * Epetra_MultiVector_getArray ( 
+  CT_Epetra_MultiVector_ID_t selfID, int i )
+{
+    const Epetra_MultiVector& self = *( CEpetra::getConstMultiVector(selfID) );
+
+    return self[i];
+}
+
+CT_Epetra_Vector_ID_t Epetra_MultiVector_getVector ( 
+  CT_Epetra_MultiVector_ID_t selfID, int i )
+{
+    const Epetra_MultiVector& self = *( CEpetra::getConstMultiVector(selfID) );
+
+    return CEpetra::storeConstVector(self(i));
 }
 
 

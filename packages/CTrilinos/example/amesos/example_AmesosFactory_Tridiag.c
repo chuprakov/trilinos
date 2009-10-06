@@ -1,34 +1,35 @@
+/*! \@HEADER */
 /*
-// @HEADER
-// ***********************************************************************
-// 
-//            Trilinos: An Object-Oriented Solver Framework
-//                 Copyright (2001) Sandia Corporation
-// 
-// Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
-// license for use of this work by or on behalf of the U.S. Government.
-// 
-// This library is free software; you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation; either version 2.1 of the
-// License, or (at your option) any later version.
-//  
-// This library is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//  
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-// Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
-// 
-// ***********************************************************************
-// @HEADER
-*/
+************************************************************************
 
-#include "CTrilinos_ConfigDefs.h"
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
+
+************************************************************************
+*/
+/*! \@HEADER */
+
+
+#include "CTrilinos_config.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -49,6 +50,11 @@
 #include "CEpetra_Object.h"
 #include "CEpetra_LinearProblem.h"
 #include "CTeuchos_ParameterList.h"
+
+/*! @file example_AmesosFactory_Tridiag,c
+ * This is an example of how to use the CTrilinos interface to Amesos.
+ * This example follows from the Amesos example by the same name.
+ */
 
 /*
  * ====================
@@ -84,6 +90,7 @@ int main(int argc, char *argv[])
   double sfact_time, nfact_time, solve_time, mtx_conv_time, mtx_redist_time, vec_redist_time;
   int *MyGlobalElements = NULL;
 
+  CT_Epetra_Comm_ID_t Comm;
   CT_Epetra_Map_ID_t Map;
   CT_Epetra_BlockMap_ID_t bMap;
   CT_Epetra_CrsMatrix_ID_t A;
@@ -97,9 +104,9 @@ int main(int argc, char *argv[])
   
 #ifdef HAVE_MPI
   MPI_Init(&argc, &argv);
-  CT_Epetra_Comm_ID_t Comm = Epetra_Comm_Cast(Epetra_MpiComm_Abstract(Epetra_MpiComm_Create(MPI_COMM_WORLD)));
+  Comm = Epetra_Comm_Cast(Epetra_MpiComm_Abstract(Epetra_MpiComm_Create(MPI_COMM_WORLD)));
 #else
-  CT_Epetra_Comm_ID_t Comm = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(Epetra_SerialComm_Create()));
+  Comm = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(Epetra_SerialComm_Create()));
 #endif
 
   NumGlobalElements = 100; /* global dimension of the problem. */

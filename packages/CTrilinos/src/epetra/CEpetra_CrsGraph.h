@@ -1,5 +1,40 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
+
+/*! @file CEpetra_CrsGraph.h
+ * @brief Wrappers for Epetra_CrsGraph */
 
 /* True C header file! */
 
@@ -20,7 +55,7 @@ extern "C" {
 #endif
 
 
-/* Functions Epetra_CrsGraph_Cast() and Epetra_CrsGraph_Abstract()
+/*! Functions Epetra_CrsGraph_Cast() and Epetra_CrsGraph_Abstract()
    are used for casting CTrilinos objects from one type to another.
    The former function performs a dynamic cast on the underlying object
    and stores an RCP to it in the Epetra_CrsGraph table, while
@@ -31,484 +66,509 @@ extern "C" {
    be casted).
 */
 
+/*! @name Explicit casting methods */
+/*@{*/
+
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Cast ( 
   CTrilinos_Object_ID_t id );
 
 CTrilinos_Object_ID_t Epetra_CrsGraph_Abstract ( 
   CT_Epetra_CrsGraph_ID_t id );
 
-/* Original C++ prototype:
-   Epetra_CrsGraph(Epetra_DataAccess CV, const Epetra_BlockMap& RowMap, const int* NumIndicesPerRow, bool StaticProfile = false);
+/*@}*/
+
+/*! @name Epetra_CrsGraph constructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   Epetra_CrsGraph::Epetra_CrsGraph(Epetra_DataAccess CV, const Epetra_BlockMap& RowMap, const int* NumIndicesPerRow, bool StaticProfile = false)
 */
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   const int * NumIndicesPerRow, boolean StaticProfile );
 
-/* Original C++ prototype:
-   Epetra_CrsGraph(Epetra_DataAccess CV, const Epetra_BlockMap& RowMap, int NumIndicesPerRow, bool StaticProfile = false);
+/*! @brief Wrapper for 
+   Epetra_CrsGraph::Epetra_CrsGraph(Epetra_DataAccess CV, const Epetra_BlockMap& RowMap, int NumIndicesPerRow, bool StaticProfile = false)
 */
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   int NumIndicesPerRow, boolean StaticProfile );
 
-/* Original C++ prototype:
-   Epetra_CrsGraph(Epetra_DataAccess CV, const Epetra_BlockMap& RowMap, const Epetra_BlockMap& ColMap, const int* NumIndicesPerRow, bool StaticProfile = false);
+/*! @brief Wrapper for 
+   Epetra_CrsGraph::Epetra_CrsGraph(Epetra_DataAccess CV, const Epetra_BlockMap& RowMap, const Epetra_BlockMap& ColMap, const int* NumIndicesPerRow, bool StaticProfile = false)
 */
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow_WithColMap ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   CT_Epetra_BlockMap_ID_t ColMapID, const int * NumIndicesPerRow, 
   boolean StaticProfile );
 
-/* Original C++ prototype:
-   Epetra_CrsGraph(Epetra_DataAccess CV, const Epetra_BlockMap& RowMap, const Epetra_BlockMap& ColMap, int NumIndicesPerRow, bool StaticProfile = false);
+/*! @brief Wrapper for 
+   Epetra_CrsGraph::Epetra_CrsGraph(Epetra_DataAccess CV, const Epetra_BlockMap& RowMap, const Epetra_BlockMap& ColMap, int NumIndicesPerRow, bool StaticProfile = false)
 */
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_With_ColMap ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   CT_Epetra_BlockMap_ID_t ColMapID, int NumIndicesPerRow, 
   boolean StaticProfile );
 
-/* Original C++ prototype:
-   Epetra_CrsGraph(const Epetra_CrsGraph& Graph);
+/*! @brief Wrapper for 
+   Epetra_CrsGraph::Epetra_CrsGraph(const Epetra_CrsGraph& Graph)
 */
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Duplicate ( 
   CT_Epetra_CrsGraph_ID_t GraphID );
 
-/* Original C++ prototype:
-   virtual ~Epetra_CrsGraph();
+/*@}*/
+
+/*! @name Epetra_CrsGraph destructor wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   virtual Epetra_CrsGraph::~Epetra_CrsGraph()
 */
 void Epetra_CrsGraph_Destroy ( CT_Epetra_CrsGraph_ID_t * selfID );
 
-/* Original C++ prototype:
-   int InsertGlobalIndices(int GlobalRow, int NumIndices, int* Indices);
+/*@}*/
+
+/*! @name Epetra_CrsGraph member wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::InsertGlobalIndices(int GlobalRow, int NumIndices, int* Indices)
 */
 int Epetra_CrsGraph_InsertGlobalIndices ( 
   CT_Epetra_CrsGraph_ID_t selfID, int GlobalRow, int NumIndices, 
   int * Indices );
 
-/* Original C++ prototype:
-   int RemoveGlobalIndices(int GlobalRow, int NumIndices, int* Indices);
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::RemoveGlobalIndices(int GlobalRow, int NumIndices, int* Indices)
 */
 int Epetra_CrsGraph_RemoveGlobalIndices ( 
   CT_Epetra_CrsGraph_ID_t selfID, int GlobalRow, int NumIndices, 
   int * Indices );
 
-/* Original C++ prototype:
-   int RemoveGlobalIndices(int Row);
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::RemoveGlobalIndices(int Row)
 */
 int Epetra_CrsGraph_RemoveGlobalIndices_LocalRow ( 
   CT_Epetra_CrsGraph_ID_t selfID, int Row );
 
-/* Original C++ prototype:
-   int InsertMyIndices(int LocalRow, int NumIndices, int* Indices);
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::InsertMyIndices(int LocalRow, int NumIndices, int* Indices)
 */
 int Epetra_CrsGraph_InsertMyIndices ( 
   CT_Epetra_CrsGraph_ID_t selfID, int LocalRow, int NumIndices, 
   int * Indices );
 
-/* Original C++ prototype:
-   int RemoveMyIndices(int LocalRow, int NumIndices, int* Indices);
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::RemoveMyIndices(int LocalRow, int NumIndices, int* Indices)
 */
 int Epetra_CrsGraph_RemoveMyIndices ( 
   CT_Epetra_CrsGraph_ID_t selfID, int LocalRow, int NumIndices, 
   int * Indices );
 
-/* Original C++ prototype:
-   int RemoveMyIndices(int Row);
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::RemoveMyIndices(int Row)
 */
 int Epetra_CrsGraph_RemoveMyIndices_LocalRow ( 
   CT_Epetra_CrsGraph_ID_t selfID, int Row );
 
-/* Original C++ prototype:
-   int FillComplete();
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::FillComplete()
 */
 int Epetra_CrsGraph_FillComplete ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int FillComplete(const Epetra_BlockMap& DomainMap, const Epetra_BlockMap& RangeMap);
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::FillComplete(const Epetra_BlockMap& DomainMap, const Epetra_BlockMap& RangeMap)
 */
 int Epetra_CrsGraph_FillComplete_UsingMaps ( 
   CT_Epetra_CrsGraph_ID_t selfID, 
   CT_Epetra_BlockMap_ID_t DomainMapID, 
   CT_Epetra_BlockMap_ID_t RangeMapID );
 
-/* Original C++ prototype:
-   int OptimizeStorage();
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::OptimizeStorage()
 */
 int Epetra_CrsGraph_OptimizeStorage ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int ExtractGlobalRowCopy(int GlobalRow, int LenOfIndices, int& NumIndices, int* Indices) const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::ExtractGlobalRowCopy(int GlobalRow, int LenOfIndices, int& NumIndices, int* Indices) const
 */
 int Epetra_CrsGraph_ExtractGlobalRowCopy ( 
   CT_Epetra_CrsGraph_ID_t selfID, int GlobalRow, int LenOfIndices, 
   int * NumIndices, int * Indices );
 
-/* Original C++ prototype:
-   int ExtractMyRowCopy(int LocalRow, int LenOfIndices, int& NumIndices, int* Indices) const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::ExtractMyRowCopy(int LocalRow, int LenOfIndices, int& NumIndices, int* Indices) const
 */
 int Epetra_CrsGraph_ExtractMyRowCopy ( 
   CT_Epetra_CrsGraph_ID_t selfID, int LocalRow, int LenOfIndices, 
   int * NumIndices, int * Indices );
 
-/* Original C++ prototype:
-   int ExtractGlobalRowView(int GlobalRow, int& NumIndices, int*& Indices) const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::ExtractGlobalRowView(int GlobalRow, int& NumIndices, int*& Indices) const
 */
 int Epetra_CrsGraph_ExtractGlobalRowView ( 
   CT_Epetra_CrsGraph_ID_t selfID, int GlobalRow, int * NumIndices, 
   int ** Indices );
 
-/* Original C++ prototype:
-   int ExtractMyRowView(int LocalRow, int& NumIndices, int*& Indices) const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::ExtractMyRowView(int LocalRow, int& NumIndices, int*& Indices) const
 */
 int Epetra_CrsGraph_ExtractMyRowView ( 
   CT_Epetra_CrsGraph_ID_t selfID, int LocalRow, int * NumIndices, 
   int ** Indices );
 
-/* Original C++ prototype:
-   bool Filled() const;
+/*! @brief Wrapper for 
+   bool Epetra_CrsGraph::Filled() const
 */
 boolean Epetra_CrsGraph_Filled ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   bool StorageOptimized() const;
+/*! @brief Wrapper for 
+   bool Epetra_CrsGraph::StorageOptimized() const
 */
 boolean Epetra_CrsGraph_StorageOptimized ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   bool IndicesAreGlobal() const;
+/*! @brief Wrapper for 
+   bool Epetra_CrsGraph::IndicesAreGlobal() const
 */
 boolean Epetra_CrsGraph_IndicesAreGlobal ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   bool IndicesAreLocal() const;
+/*! @brief Wrapper for 
+   bool Epetra_CrsGraph::IndicesAreLocal() const
 */
 boolean Epetra_CrsGraph_IndicesAreLocal ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   bool LowerTriangular() const;
+/*! @brief Wrapper for 
+   bool Epetra_CrsGraph::LowerTriangular() const
 */
 boolean Epetra_CrsGraph_LowerTriangular ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   bool UpperTriangular() const;
+/*! @brief Wrapper for 
+   bool Epetra_CrsGraph::UpperTriangular() const
 */
 boolean Epetra_CrsGraph_UpperTriangular ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   bool NoDiagonal() const;
+/*! @brief Wrapper for 
+   bool Epetra_CrsGraph::NoDiagonal() const
 */
 boolean Epetra_CrsGraph_NoDiagonal ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   bool MyGlobalRow(int GID) const;
+/*! @brief Wrapper for 
+   bool Epetra_CrsGraph::MyGlobalRow(int GID) const
 */
 boolean Epetra_CrsGraph_MyGlobalRow ( 
   CT_Epetra_CrsGraph_ID_t selfID, int GID );
 
-/* Original C++ prototype:
-   bool HaveColMap() const;
+/*! @brief Wrapper for 
+   bool Epetra_CrsGraph::HaveColMap() const
 */
 boolean Epetra_CrsGraph_HaveColMap ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumMyRows() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumMyRows() const
 */
 int Epetra_CrsGraph_NumMyRows ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumGlobalRows() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumGlobalRows() const
 */
 int Epetra_CrsGraph_NumGlobalRows ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumMyCols() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumMyCols() const
 */
 int Epetra_CrsGraph_NumMyCols ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumGlobalCols() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumGlobalCols() const
 */
 int Epetra_CrsGraph_NumGlobalCols ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumGlobalNonzeros() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumGlobalNonzeros() const
 */
 int Epetra_CrsGraph_NumGlobalNonzeros ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumGlobalDiagonals() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumGlobalDiagonals() const
 */
 int Epetra_CrsGraph_NumGlobalDiagonals ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumMyDiagonals() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumMyDiagonals() const
 */
 int Epetra_CrsGraph_NumMyDiagonals ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumMyBlockRows() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumMyBlockRows() const
 */
 int Epetra_CrsGraph_NumMyBlockRows ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumGlobalBlockRows() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumGlobalBlockRows() const
 */
 int Epetra_CrsGraph_NumGlobalBlockRows ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumMyBlockCols() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumMyBlockCols() const
 */
 int Epetra_CrsGraph_NumMyBlockCols ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumGlobalBlockCols() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumGlobalBlockCols() const
 */
 int Epetra_CrsGraph_NumGlobalBlockCols ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumMyBlockDiagonals() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumMyBlockDiagonals() const
 */
 int Epetra_CrsGraph_NumMyBlockDiagonals ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumGlobalBlockDiagonals() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumGlobalBlockDiagonals() const
 */
 int Epetra_CrsGraph_NumGlobalBlockDiagonals ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumGlobalEntries() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumGlobalEntries() const
 */
 int Epetra_CrsGraph_NumGlobalEntries ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumMyEntries() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumMyEntries() const
 */
 int Epetra_CrsGraph_NumMyEntries ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int MaxRowDim() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::MaxRowDim() const
 */
 int Epetra_CrsGraph_MaxRowDim ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int GlobalMaxRowDim() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::GlobalMaxRowDim() const
 */
 int Epetra_CrsGraph_GlobalMaxRowDim ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int MaxColDim() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::MaxColDim() const
 */
 int Epetra_CrsGraph_MaxColDim ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int GlobalMaxColDim() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::GlobalMaxColDim() const
 */
 int Epetra_CrsGraph_GlobalMaxColDim ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumMyNonzeros() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumMyNonzeros() const
 */
 int Epetra_CrsGraph_NumMyNonzeros ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumGlobalIndices(int Row) const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumGlobalIndices(int Row) const
 */
 int Epetra_CrsGraph_NumGlobalIndices ( 
   CT_Epetra_CrsGraph_ID_t selfID, int Row );
 
-/* Original C++ prototype:
-   int NumAllocatedGlobalIndices(int Row) const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumAllocatedGlobalIndices(int Row) const
 */
 int Epetra_CrsGraph_NumAllocatedGlobalIndices ( 
   CT_Epetra_CrsGraph_ID_t selfID, int Row );
 
-/* Original C++ prototype:
-   int MaxNumIndices() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::MaxNumIndices() const
 */
 int Epetra_CrsGraph_MaxNumIndices ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int GlobalMaxNumIndices() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::GlobalMaxNumIndices() const
 */
 int Epetra_CrsGraph_GlobalMaxNumIndices ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int MaxNumNonzeros() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::MaxNumNonzeros() const
 */
 int Epetra_CrsGraph_MaxNumNonzeros ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int GlobalMaxNumNonzeros() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::GlobalMaxNumNonzeros() const
 */
 int Epetra_CrsGraph_GlobalMaxNumNonzeros ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int NumMyIndices(int Row) const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumMyIndices(int Row) const
 */
 int Epetra_CrsGraph_NumMyIndices ( 
   CT_Epetra_CrsGraph_ID_t selfID, int Row );
 
-/* Original C++ prototype:
-   int NumAllocatedMyIndices(int Row) const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::NumAllocatedMyIndices(int Row) const
 */
 int Epetra_CrsGraph_NumAllocatedMyIndices ( 
   CT_Epetra_CrsGraph_ID_t selfID, int Row );
 
-/* Original C++ prototype:
-   int IndexBase() const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::IndexBase() const
 */
 int Epetra_CrsGraph_IndexBase ( CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   const Epetra_BlockMap& RowMap() const;
+/*! @brief Wrapper for 
+   const Epetra_BlockMap& Epetra_CrsGraph::RowMap() const
 */
 CT_Epetra_BlockMap_ID_t Epetra_CrsGraph_RowMap ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int ReplaceRowMap(const Epetra_BlockMap& newmap);
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::ReplaceRowMap(const Epetra_BlockMap& newmap)
 */
 int Epetra_CrsGraph_ReplaceRowMap ( 
   CT_Epetra_CrsGraph_ID_t selfID, CT_Epetra_BlockMap_ID_t newmapID );
 
-/* Original C++ prototype:
-   int ReplaceColMap(const Epetra_BlockMap& newmap);
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::ReplaceColMap(const Epetra_BlockMap& newmap)
 */
 int Epetra_CrsGraph_ReplaceColMap ( 
   CT_Epetra_CrsGraph_ID_t selfID, CT_Epetra_BlockMap_ID_t newmapID );
 
-/* Original C++ prototype:
-   const Epetra_BlockMap& ColMap() const;
+/*! @brief Wrapper for 
+   const Epetra_BlockMap& Epetra_CrsGraph::ColMap() const
 */
 CT_Epetra_BlockMap_ID_t Epetra_CrsGraph_ColMap ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   const Epetra_BlockMap& DomainMap() const;
+/*! @brief Wrapper for 
+   const Epetra_BlockMap& Epetra_CrsGraph::DomainMap() const
 */
 CT_Epetra_BlockMap_ID_t Epetra_CrsGraph_DomainMap ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   const Epetra_BlockMap& RangeMap() const;
+/*! @brief Wrapper for 
+   const Epetra_BlockMap& Epetra_CrsGraph::RangeMap() const
 */
 CT_Epetra_BlockMap_ID_t Epetra_CrsGraph_RangeMap ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   const Epetra_Import* Importer() const;
+/*! @brief Wrapper for 
+   const Epetra_Import* Epetra_CrsGraph::Importer() const
 */
 CT_Epetra_Import_ID_t Epetra_CrsGraph_Importer ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   const Epetra_Export* Exporter() const;
+/*! @brief Wrapper for 
+   const Epetra_Export* Epetra_CrsGraph::Exporter() const
 */
 CT_Epetra_Export_ID_t Epetra_CrsGraph_Exporter ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   const Epetra_Comm& Comm() const;
+/*! @brief Wrapper for 
+   const Epetra_Comm& Epetra_CrsGraph::Comm() const
 */
 CT_Epetra_Comm_ID_t Epetra_CrsGraph_Comm ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int LRID(int GRID_in) const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::LRID(int GRID_in) const
 */
 int Epetra_CrsGraph_LRID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int GRID_in );
 
-/* Original C++ prototype:
-   int GRID(int LRID_in) const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::GRID(int LRID_in) const
 */
 int Epetra_CrsGraph_GRID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int LRID_in );
 
-/* Original C++ prototype:
-   int LCID(int GCID_in) const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::LCID(int GCID_in) const
 */
 int Epetra_CrsGraph_LCID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int GCID_in );
 
-/* Original C++ prototype:
-   int GCID(int LCID_in) const;
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::GCID(int LCID_in) const
 */
 int Epetra_CrsGraph_GCID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int LCID_in );
 
-/* Original C++ prototype:
-   bool MyGRID(int GRID_in) const;
+/*! @brief Wrapper for 
+   bool Epetra_CrsGraph::MyGRID(int GRID_in) const
 */
 boolean Epetra_CrsGraph_MyGRID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int GRID_in );
 
-/* Original C++ prototype:
-   bool MyLRID(int LRID_in) const;
+/*! @brief Wrapper for 
+   bool Epetra_CrsGraph::MyLRID(int LRID_in) const
 */
 boolean Epetra_CrsGraph_MyLRID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int LRID_in );
 
-/* Original C++ prototype:
-   bool MyGCID(int GCID_in) const;
+/*! @brief Wrapper for 
+   bool Epetra_CrsGraph::MyGCID(int GCID_in) const
 */
 boolean Epetra_CrsGraph_MyGCID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int GCID_in );
 
-/* Original C++ prototype:
-   bool MyLCID(int LCID_in) const;
+/*! @brief Wrapper for 
+   bool Epetra_CrsGraph::MyLCID(int LCID_in) const
 */
 boolean Epetra_CrsGraph_MyLCID ( 
   CT_Epetra_CrsGraph_ID_t selfID, int LCID_in );
 
-/* Original C++ prototype:
-   inline int* operator[]( int Loc ) const;
-*/
-int * Epetra_CrsGraph_getRow ( 
-  CT_Epetra_CrsGraph_ID_t selfID, int Loc );
-
-/* Original C++ prototype:
-   Epetra_CrsGraph& operator = (const Epetra_CrsGraph& Source);
-*/
-void Epetra_CrsGraph_Assign ( 
-  CT_Epetra_CrsGraph_ID_t selfID, CT_Epetra_CrsGraph_ID_t SourceID );
-
-/* Original C++ prototype:
-   const Epetra_BlockMap& ImportMap() const;
+/*! @brief Wrapper for 
+   const Epetra_BlockMap& Epetra_CrsGraph::ImportMap() const
 */
 CT_Epetra_BlockMap_ID_t Epetra_CrsGraph_ImportMap ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int TransformToLocal();
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::TransformToLocal()
 */
 int Epetra_CrsGraph_TransformToLocal ( 
   CT_Epetra_CrsGraph_ID_t selfID );
 
-/* Original C++ prototype:
-   int TransformToLocal(const Epetra_BlockMap* DomainMap, const Epetra_BlockMap* RangeMap);
+/*! @brief Wrapper for 
+   int Epetra_CrsGraph::TransformToLocal(const Epetra_BlockMap* DomainMap, const Epetra_BlockMap* RangeMap)
 */
 int Epetra_CrsGraph_TransformToLocal_UsingMaps ( 
   CT_Epetra_CrsGraph_ID_t selfID, 
   CT_Epetra_BlockMap_ID_t DomainMapID, 
   CT_Epetra_BlockMap_ID_t RangeMapID );
+
+/*@}*/
+
+/*! @name Epetra_CrsGraph operator wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   inline int* Epetra_CrsGraph::operator[]( int Loc ) const
+*/
+int * Epetra_CrsGraph_getRow ( 
+  CT_Epetra_CrsGraph_ID_t selfID, int Loc );
+
+/*! @brief Wrapper for 
+   Epetra_CrsGraph& Epetra_CrsGraph::operator= (const Epetra_CrsGraph& Source)
+*/
+void Epetra_CrsGraph_Assign ( 
+  CT_Epetra_CrsGraph_ID_t selfID, CT_Epetra_CrsGraph_ID_t SourceID );
+
+/*@}*/
 
 
 #ifdef __cplusplus

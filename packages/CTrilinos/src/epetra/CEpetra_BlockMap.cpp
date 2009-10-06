@@ -1,3 +1,35 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
 #include "CEpetra_Comm_Cpp.hpp"
@@ -6,6 +38,7 @@
 #include "Epetra_BlockMap.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -21,7 +54,7 @@ using CTrilinos::Table;
 Table<Epetra_BlockMap>& tableOfBlockMaps()
 {
     static Table<Epetra_BlockMap>
-        loc_tableOfBlockMaps(CT_Epetra_BlockMap_ID, "CT_Epetra_BlockMap_ID", false);
+        loc_tableOfBlockMaps(CT_Epetra_BlockMap_ID, "CT_Epetra_BlockMap_ID", FALSE);
     return loc_tableOfBlockMaps;
 }
 
@@ -29,7 +62,7 @@ Table<Epetra_BlockMap>& tableOfBlockMaps()
 Table<const Epetra_BlockMap>& tableOfConstBlockMaps()
 {
     static Table<const Epetra_BlockMap>
-        loc_tableOfConstBlockMaps(CT_Epetra_BlockMap_ID, "CT_Epetra_BlockMap_ID", true);
+        loc_tableOfConstBlockMaps(CT_Epetra_BlockMap_ID, "CT_Epetra_BlockMap_ID", TRUE);
     return loc_tableOfConstBlockMaps;
 }
 
@@ -163,13 +196,15 @@ int Epetra_BlockMap_FindLocalElementID (
 boolean Epetra_BlockMap_MyGID ( 
   CT_Epetra_BlockMap_ID_t selfID, int GID_in )
 {
-    return CEpetra::getConstBlockMap(selfID)->MyGID(GID_in);
+    return ((CEpetra::getConstBlockMap(selfID)->MyGID(
+        GID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_MyLID ( 
   CT_Epetra_BlockMap_ID_t selfID, int LID_in )
 {
-    return CEpetra::getConstBlockMap(selfID)->MyLID(LID_in);
+    return ((CEpetra::getConstBlockMap(selfID)->MyLID(
+        LID_in)) ? TRUE : FALSE);
 }
 
 int Epetra_BlockMap_MinAllGID ( CT_Epetra_BlockMap_ID_t selfID )
@@ -279,38 +314,42 @@ int Epetra_BlockMap_MaxElementSize ( CT_Epetra_BlockMap_ID_t selfID )
 
 boolean Epetra_BlockMap_UniqueGIDs ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CEpetra::getConstBlockMap(selfID)->UniqueGIDs();
+    return ((CEpetra::getConstBlockMap(
+        selfID)->UniqueGIDs()) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_ConstantElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CEpetra::getConstBlockMap(selfID)->ConstantElementSize();
+    return ((CEpetra::getConstBlockMap(
+        selfID)->ConstantElementSize()) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_SameAs ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID )
 {
-    return CEpetra::getConstBlockMap(selfID)->SameAs(
-        *CEpetra::getConstBlockMap(MapID));
+    return ((CEpetra::getConstBlockMap(selfID)->SameAs(
+        *CEpetra::getConstBlockMap(MapID))) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_PointSameAs ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID )
 {
-    return CEpetra::getConstBlockMap(selfID)->PointSameAs(
-        *CEpetra::getConstBlockMap(MapID));
+    return ((CEpetra::getConstBlockMap(selfID)->PointSameAs(
+        *CEpetra::getConstBlockMap(MapID))) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_LinearMap ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CEpetra::getConstBlockMap(selfID)->LinearMap();
+    return ((CEpetra::getConstBlockMap(
+        selfID)->LinearMap()) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_DistributedGlobal ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CEpetra::getConstBlockMap(selfID)->DistributedGlobal();
+    return ((CEpetra::getConstBlockMap(
+        selfID)->DistributedGlobal()) ? TRUE : FALSE);
 }
 
 int * Epetra_BlockMap_MyGlobalElements ( 
@@ -368,7 +407,8 @@ CT_Epetra_Comm_ID_t Epetra_BlockMap_Comm (
 
 boolean Epetra_BlockMap_IsOneToOne ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CEpetra::getConstBlockMap(selfID)->IsOneToOne();
+    return ((CEpetra::getConstBlockMap(
+        selfID)->IsOneToOne()) ? TRUE : FALSE);
 }
 
 void Epetra_BlockMap_Assign ( 

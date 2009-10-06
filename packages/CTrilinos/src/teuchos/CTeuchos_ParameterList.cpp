@@ -1,3 +1,35 @@
+
+/*! @HEADER */
+/*
+************************************************************************
+
+                CTrilinos:  C interface to Trilinos
+                Copyright (2009) Sandia Corporation
+
+Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+license for use of this work by or on behalf of the U.S. Government.
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
+
+************************************************************************
+*/
+/*! @HEADER */
+
+
 #include "CTrilinos_config.h"
 
 #include "CTeuchos_ParameterEntry_Cpp.hpp"
@@ -6,6 +38,7 @@
 #include "Teuchos_ParameterList.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
 
@@ -21,7 +54,7 @@ using CTrilinos::Table;
 Table<Teuchos::ParameterList>& tableOfParameterLists()
 {
     static Table<Teuchos::ParameterList>
-        loc_tableOfParameterLists(CT_Teuchos_ParameterList_ID, "CT_Teuchos_ParameterList_ID", false);
+        loc_tableOfParameterLists(CT_Teuchos_ParameterList_ID, "CT_Teuchos_ParameterList_ID", FALSE);
     return loc_tableOfParameterLists;
 }
 
@@ -29,7 +62,7 @@ Table<Teuchos::ParameterList>& tableOfParameterLists()
 Table<const Teuchos::ParameterList>& tableOfConstParameterLists()
 {
     static Table<const Teuchos::ParameterList>
-        loc_tableOfConstParameterLists(CT_Teuchos_ParameterList_ID, "CT_Teuchos_ParameterList_ID", true);
+        loc_tableOfConstParameterLists(CT_Teuchos_ParameterList_ID, "CT_Teuchos_ParameterList_ID", TRUE);
     return loc_tableOfConstParameterLists;
 }
 
@@ -104,15 +137,6 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setName (
 {
     return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
         selfID)->setName(std::string(name)) ));
-}
-
-void Teuchos_ParameterList_Assign ( 
-  CT_Teuchos_ParameterList_ID_t selfID, 
-  CT_Teuchos_ParameterList_ID_t sourceID )
-{
-    Teuchos::ParameterList& self = *( CTeuchos::getParameterList(selfID) );
-
-    self = *CTeuchos::getConstParameterList(sourceID);
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setParameters ( 
@@ -282,8 +306,9 @@ boolean Teuchos_ParameterList_remove (
   CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
   boolean throwIfNotExists )
 {
-    return CTeuchos::getParameterList(selfID)->remove(std::string(
-        name), throwIfNotExists);
+    return ((CTeuchos::getParameterList(selfID)->remove(std::string(
+        name), ((
+        throwIfNotExists) != FALSE ? true : false))) ? TRUE : FALSE);
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist ( 
@@ -291,8 +316,9 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist (
   boolean mustAlreadyExist, const char docString[] )
 {
     return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
-        selfID)->sublist(std::string(name), mustAlreadyExist, 
-        std::string(docString)) ));
+        selfID)->sublist(std::string(name), ((
+        mustAlreadyExist) != FALSE ? true : false), std::string(
+        docString)) ));
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist_existing ( 
@@ -312,45 +338,45 @@ const char * Teuchos_ParameterList_name_it (
 boolean Teuchos_ParameterList_isParameter ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getConstParameterList(selfID)->isParameter(
-        std::string(name));
+    return ((CTeuchos::getConstParameterList(selfID)->isParameter(
+        std::string(name))) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isSublist ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getConstParameterList(selfID)->isSublist(
-        std::string(name));
+    return ((CTeuchos::getConstParameterList(selfID)->isSublist(
+        std::string(name))) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isType_double ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getConstParameterList(selfID)->isType<double>(
-        std::string(name));
+    return ((CTeuchos::getConstParameterList(selfID)->isType<double>(
+        std::string(name))) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isType_int ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getConstParameterList(selfID)->isType<int>(
-        std::string(name));
+    return ((CTeuchos::getConstParameterList(selfID)->isType<int>(
+        std::string(name))) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isType_double_type ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   double * ptr )
 {
-    return CTeuchos::getConstParameterList(selfID)->isType<double>(
-        std::string(name), ptr);
+    return ((CTeuchos::getConstParameterList(selfID)->isType<double>(
+        std::string(name), ptr)) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isType_int_type ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   int * ptr )
 {
-    return CTeuchos::getConstParameterList(selfID)->isType<int>(
-        std::string(name), ptr);
+    return ((CTeuchos::getConstParameterList(selfID)->isType<int>(
+        std::string(name), ptr)) ? TRUE : FALSE);
 }
 
 const char * Teuchos_ParameterList_currentParametersString ( 
@@ -379,6 +405,15 @@ void Teuchos_ParameterList_validateParametersAndSetDefaults (
     CTeuchos::getParameterList(
         selfID)->validateParametersAndSetDefaults(
         *CTeuchos::getConstParameterList(validParamListID), depth);
+}
+
+void Teuchos_ParameterList_Assign ( 
+  CT_Teuchos_ParameterList_ID_t selfID, 
+  CT_Teuchos_ParameterList_ID_t sourceID )
+{
+    Teuchos::ParameterList& self = *( CTeuchos::getParameterList(selfID) );
+
+    self = *CTeuchos::getConstParameterList(sourceID);
 }
 
 
