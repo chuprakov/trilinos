@@ -106,6 +106,8 @@ void cnoxinit(int* nelems, double* statevector, int* mpi_comm_ignored,
     // Create the Epetra_Vector for the  state vector
     Teuchos::RCP<Epetra_Vector> soln = interface->getVector();
 
+// The next 2 statements need to be changed if your interface can
+// supply a Jacobian matrix!!! See nox examples epetra .....
     Teuchos::RCP<NOX::Epetra::MatrixFree> FD =
       Teuchos::rcp(new NOX::Epetra::MatrixFree(nlPrintParams, interface, soln));
 
@@ -115,6 +117,16 @@ void cnoxinit(int* nelems, double* statevector, int* mpi_comm_ignored,
     Teuchos::RCP<NOX::Epetra::LinearSystemAztecOO> linsys =
     Teuchos::rcp(new NOX::Epetra::LinearSystemAztecOO(nlPrintParams, lsParams,
                                          iJac, FD, iPrec, precOperator, soln));
+
+/* With a Jacobian, and no user-define preconditioner the previous 3 calls should be:
+
+  Teuchos::RCP<Epetra_RowMatrix> Amat = Teuchos::rcp(interface->getJacobian(),false)
+  Teuchos::RCP<NOX::Epetra::Interface::Jacobian> iJac = interface;
+  // Create the linear systems
+  Teuchos::RCP<NOX::Epetra::LinearSystemAztecOO> linsys =
+    Teuchos::rcp(new NOX::Epetra::LinearSystemAztecOO(nlPrintParams, lsParams,
+                                                      iReq, iJac, Amat, soln))
+*/
 
     // Create the loca vector
     initialGuess = Teuchos::RCP<NOX::Epetra::Vector>(new NOX::Epetra::Vector(soln));
