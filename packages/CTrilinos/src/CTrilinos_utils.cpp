@@ -66,6 +66,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTeuchos_any_Cpp.hpp"
 #include "CAmesos_BaseSolver_Cpp.hpp"
 #include "CAmesos_Cpp.hpp"
+#include "CEpetra_FECrsMatrix_Cpp.hpp"
 
 
 namespace CTrilinos {
@@ -200,6 +201,9 @@ enum2str( CTrilinos_Type_ID_t ty )
     case CT_Amesos_ID:
         s.assign("CT_Amesos_ID");
         break;
+    case CT_Epetra_FECrsMatrix_ID:
+        s.assign("CT_Epetra_FECrsMatrix_ID");
+        break;
     default:
         s.assign("(unrecognized)");
         break;
@@ -319,6 +323,9 @@ isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
             shares = isSameObject(CAmesos::getConstAmesos(id1), id2);
             break;
 #endif /* HAVE_CTRILINOS_AMESOS */
+        case CT_Epetra_FECrsMatrix_ID:
+            shares = isSameObject(CEpetra::getConstFECrsMatrix(id1), id2);
+            break;
         default:
             break;
         }
@@ -426,6 +433,9 @@ isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
             shares = isSameObject(CAmesos::getAmesos(id1), id2);
             break;
 #endif /* HAVE_CTRILINOS_AMESOS */
+        case CT_Epetra_FECrsMatrix_ID:
+            shares = isSameObject(CEpetra::getFECrsMatrix(id1), id2);
+            break;
         default:
             break;
         }

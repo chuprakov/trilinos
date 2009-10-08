@@ -101,7 +101,8 @@ typedef enum {
     CT_Teuchos_ParameterEntry_ID,        /*!< refers to a Teuchos::ParameterEntry table entry */
     CT_Teuchos_any_ID,                   /*!< refers to a Teuchos::any table entry */
     CT_Amesos_BaseSolver_ID,             /*!< refers to an Amesos_BaseSolver table entry */
-    CT_Amesos_ID                         /*!< refers to an Amesos table entry */
+    CT_Amesos_ID,                        /*!< refers to an Amesos table entry */
+    CT_Epetra_FECrsMatrix_ID             /*!< refers to an Epetra_FECrsMatrix table entry */
 } CTrilinos_Type_ID_t;
 
 /*! The type in the struct below is actually used to identify the table in
@@ -383,6 +384,14 @@ typedef struct {
     boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Amesos_ID_t;
 #endif /* HAVE_CTRILINOS_AMESOS */
+
+/*! Struct used for referring to objects in the Epetra_FECrsMatrix table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_FECrsMatrix.h */
+typedef struct {
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
+} CT_Epetra_FECrsMatrix_ID_t;
 
 
 

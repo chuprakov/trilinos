@@ -68,6 +68,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTeuchos_any_Cpp.hpp"
 #include "CAmesos_BaseSolver_Cpp.hpp"
 #include "CAmesos_Cpp.hpp"
+#include "CEpetra_FECrsMatrix_Cpp.hpp"
 
 #include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
@@ -177,6 +178,9 @@ cast( Table<const T> &destTable, CTrilinos_Object_ID_t id )
             newid = destTable.cast(CAmesos::getConstBaseSolver(id));
             break;
 #endif /* HAVE_CTRILINOS_AMESOS */
+        case CT_Epetra_FECrsMatrix_ID:
+            newid = destTable.cast(CEpetra::getConstFECrsMatrix(id));
+            break;
         default:
             break;
         }
@@ -270,6 +274,9 @@ cast( Table<const T> &destTable, CTrilinos_Object_ID_t id )
             newid = destTable.cast(CAmesos::getBaseSolver(id));
             break;
 #endif /* HAVE_CTRILINOS_AMESOS */
+        case CT_Epetra_FECrsMatrix_ID:
+            newid = destTable.cast(CEpetra::getFECrsMatrix(id));
+            break;
         default:
             break;
         }
@@ -379,6 +386,9 @@ cast( Table<T> &destTable, CTrilinos_Object_ID_t id )
             newid = destTable.cast(CAmesos::getBaseSolver(id));
             break;
 #endif /* HAVE_CTRILINOS_AMESOS */
+        case CT_Epetra_FECrsMatrix_ID:
+            newid = destTable.cast(CEpetra::getFECrsMatrix(id));
+            break;
         default:
             break;
         }
@@ -536,6 +546,9 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
             shares = rcp.shares_resource(CAmesos::getConstAmesos(id));
             break;
 #endif /* HAVE_CTRILINOS_AMESOS */
+        case CT_Epetra_FECrsMatrix_ID:
+            shares = rcp.shares_resource(CEpetra::getConstFECrsMatrix(id));
+            break;
         default:
             break;
         }
@@ -643,6 +656,9 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
             shares = rcp.shares_resource(CAmesos::getAmesos(id));
             break;
 #endif /* HAVE_CTRILINOS_AMESOS */
+        case CT_Epetra_FECrsMatrix_ID:
+            shares = rcp.shares_resource(CEpetra::getFECrsMatrix(id));
+            break;
         default:
             break;
         }
