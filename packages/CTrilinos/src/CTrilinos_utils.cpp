@@ -204,6 +204,9 @@ enum2str( CTrilinos_Type_ID_t ty )
     case CT_Epetra_FECrsMatrix_ID:
         s.assign("CT_Epetra_FECrsMatrix_ID");
         break;
+    case CT_Invalid_ID:
+        s.assign("CT_Invalid_ID (uninitialized/freed)");
+        break;
     default:
         std::stringstream ss;
         ss << "(unrecognized/" << ty << ")";
