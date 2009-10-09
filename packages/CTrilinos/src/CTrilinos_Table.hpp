@@ -249,16 +249,17 @@ template <class T>
 std::string Table<T>::typeMismatchMsg(CTrilinos_Object_ID_t id, std::string act)
 {
     std::string s = enum2str(id.type);
+    std::stringstream ss;
 
     if (id.is_const) {
-      std::string tmp = " (const)";
-      s += tmp;
+      ss << " (const)";
     } else {
-      std::string tmp = " (non-const)";
-      s += tmp;
+      ss << " (non-const)";
     }
-    std::string tmp = " when attempting to " + act;
-    s += tmp;
+    ss << " when attempting to " << act;
+    ss << " at index " << id.index;
+
+    s += ss.str();
 
     return (tstr + s);
 }

@@ -205,7 +205,9 @@ enum2str( CTrilinos_Type_ID_t ty )
         s.assign("CT_Epetra_FECrsMatrix_ID");
         break;
     default:
-        s.assign("(unrecognized)");
+        std::stringstream ss;
+        ss << "(unrecognized/" << ty << ")";
+        s.assign(ss.str());
         break;
     }
 
