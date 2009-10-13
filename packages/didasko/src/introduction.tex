@@ -28,7 +28,7 @@
 
 \chapter{Introduction}
 
-\ChapterAuthors{Marzio Sala, Michael Heroux, David Day}
+\ChapterAuthors{Marzio Sala, Michael Heroux, David Day, James Willenbring}
 %%%
 %%%
 %%%
@@ -47,10 +47,11 @@ valuable when combined with other Trilinos packages.
 
 \smallskip
 
-Trilinos is a large software project, and currently about thirty
+Trilinos is a large software project, and currently about forty
 packages are included.  The entire set of packages covers a wide range
-of numerical methods for large scale computing, as well as a large set
-of utilities to improve the development of software for scientific
+of algorithms and enabling technologies for the solution of large-scale,
+complex multi-physics engineering and scientific problems, as well as a
+large set of utilities to improve the development of software for scientific
 computing.
 
 Clearly, a full understanding all the functionalities of the Trilinos
@@ -83,6 +84,8 @@ We will describe the following subset of the Trilinos packages.
   preconditioned Krylov methods. Aztec users will find that AztecOO
   supports all the Aztec interfaces and functionality, and also provides
   significant new functionality.
+\item {\bf Belos}. Provides next-generation iterative linear solvers and a
+powerful linear solver developer framework.
 \item {\bf IFPACK}. The package performs various incomplete
   factorizations, and is here used with AztecOO.
 \item {\bf Teuchos}. This is a collection of classes that can be
@@ -99,6 +102,12 @@ We will describe the following subset of the Trilinos packages.
 \item {\bf NOX}. This is a collection of nonlinear solvers, designed to
   be easily integrated into an application and used with many different
   linear solvers.
+\item {\bf Zoltan}. A toolkit of parallel services for dynamic, unstructured,
+and/or adaptive simulations. Zoltan provides parallel dynamic load balancing
+and related services for a wide variety of applications, including finite
+element methods, matrix operations, particle methods, and crash simulations. 
+\item {\bf Tpetra}. Next-generation, templated version of Petra, taking
+advantage of the newer advanced features of C++. 
 \item {\bf Didasko}. This package contains all the examples reported in this
 tutorial. The sources of the examples can be found in the subdirectory\\
 \verb!<your-trilinos-home>/packages/didasko/examples!.
@@ -119,14 +128,14 @@ accomplished using Trilinos.
     EpetraExt & --
     \\
     \hline
-    Templated distributed vectors and sparse matrices: & Tpetra$^\star$
-    & -- \\
+    Templated distributed vectors and sparse matrices: & Tpetra
+    & Chapter \ref{chap:tpetra} \\
     \hline
     Distributed sparse matrices:& Epetra & -- \\
     \hline
     Solve a linear system with preconditioned Krylov accelerators,
-    CG, GMRES, Bi-CGSTAB, TFQMR:& AztecOO, Belos$^\star$ &
-    Chapter \ref{chap:aztecoo} \\
+    CG, GMRES, Bi-CGSTAB, TFQMR:& AztecOO, Belos &
+    Chapters \ref{chap:aztecoo}, \ref{chap:belos} \\
     \hline
     Incomplete Factorizations:& AztecOO, \newline IFPACK &
     Chapter \ref{chap:ifpack} \\
@@ -166,13 +175,13 @@ accomplished using Trilinos.
     Section \ref{sec:teuchos:LAPACK} \\
     \hline
     Definition of abstract interfaces to vectors, linear operators, and
-    solvers:& TSF$^\star$, TSFCore$^\star$, TSFExtended$^\star$   & --
+    solvers:& Thyra$^\star$ & --
     \\
     \hline
     Generation of test matrices & Triutils & Section~\ref{sec:triutils:gallery} \\
     \hline
   \end{tabular}
-  \caption{Partial overview of intended uses of  Trilinos. $\star$:
+  \caption{Partial overview of intended uses of Trilinos. $\star$:
     not covered in this tutorial.}
   \label{tab:tripackages}
 \end{table}
@@ -209,15 +218,7 @@ Trilinos philosophy, and a description of the packages provided by
 Trilinos, the reader is referred to \cite{Trilinos-Overview}.
 Developers should also consider the Trilinos Developers' Guide, which
 addresses many topics, including the development tools used by Trilinos'
-developers, and a description of how to include a new package\footnote{
-  Trilinos provides a variety of services to a developer wanting to
-  integrate a package into Trilinos.  The services include
-  Autoconf~\cite{Autoconf}, Automake~\cite{Automake} and
-  Libtool~\cite{Libtool}. The tools provide a robust, full-featured set
-  of tools for building software across a broad set of platforms.  The
-  tools are not officially standards, but are widely used.  All existing
-  Trilinos packages use Autoconf and Automake.  Libtool support will be
-  added in future releases.}.
+developers, and a description of how to include a new package.
 
 %%%
 %%%
@@ -226,9 +227,10 @@ developers, and a description of how to include a new package\footnote{
 \section{Installation}
 \label{sec:installing}
 
-To obtain Trilinos, please follow the instructions at the web site
+To obtain Trilinos, please follow the instructions at the Trilinos download
+page:
 \begin{verbatim}
-http://trilinos.sandia.gov
+http://trilinos.sandia.gov/download
 \end{verbatim}
 
 Trilinos has been compiled on a variety of architectures, including
@@ -242,64 +244,12 @@ http://trilinos.sandia.gov/getting_started.html
 http://trilinos.sandia.gov/faq.html
 \end{verbatim}
 
-After obtaining Trilinos, the next step is its compilation. The
-description here is for LINUX platforms with MPI, the compilation on
-other platforms being pretty similar.
+After obtaining Trilinos, the next step is its compilation.  Instructions for
+building Trilinos are available online:
 
-Each Trilinos' package can be enabled or disabled at configuration time.
-A procedure one may follow in order to compile Trilinos with AztecOO,
-ML, IFPACK, Anasazi, NOX, Triutils, and Didasko (which contains the examples
-used in this tutorial) is reported below. \$ indicates the
-shell prompt. The \verb!tee! command is used to write the output to
-standard output and to the specified file, and may be omitted.  More
-details about the installation of Trilinos can be found in
-\cite{Trilinos-Users-Guide}.
 \begin{verbatim}
-$ cd <your-trilinos-directory>
-$ mkdir LINUX_MPI
-$ cd LINUX_MPI
-$ ../configure --prefix=<your-trilinos-directory>/LINUX_MPI \
-  --enable-mpi --with-mpi-compilers \
-  --disable-default-packages        \
-  --enable-teuchos    \
-  --enable-epetra     \
-  --enable-aztecoo    \
-  --enable-triutils   \
-  --enable-amesos     \
-  --enable-ifpack     \
-  --enable-ml         \
-  --enable-nox        \
-  --enable-nox-epetra \
-  --enable-didasko    | tee configure_LINUX_MPI.log
-$ make everything| tee make_LINUX_MPI.log
-$ make install | tee make_install_LINUX_MPI.log
+http://trilinos.sandia.gov/build_instructions.html
 \end{verbatim}
-For more details, simply type
-\begin{verbatim}
-$ <your-trilinos-directory>/configure --help
-\end{verbatim}
-For serial configuration, simply
-delete the \verb!--enable-mpi --with-mpi-compilers! options
-(and possibly change the name of the installation directory from
- {\tt LINUX\_MPI} to something like {\tt LINUX\_SERIAL}).
-
-\begin{remark}
-  All Trilinos packages can be build to run with or without MPI. If MPI
-  is enabled (using \verb!--enable-mpi!), the users must know the
-  procedure for beginning MPI jobs on their computer system(s). It may be
-  necessary to specify on the configure line the location of MPI include
-  files and libraries.
-\end{remark}
-
-\begin{remark}
-  Compiling Trilinos may require a little bit of time! For instance, on a Pentium 4, 1.7
-  GHz with Intel compilers, to configure Trilinos with LOCA, NOX,
-  AztecOO, Anasazi, IFPACK, Triutils, EpetraExt, Teuchos, ML and Epetra,
-  required 2 minutes and 11 seconds. The compilation (without the
-  examples) took 5 minutes and 41 seconds. The reader might find convenient to
-  start by enabling a limited number of packages, then re-configuring
-  Trilinos as required.
-\end{remark}
 
 %%%
 %%%
@@ -418,7 +368,8 @@ Each Trilinos package in contained in the subdirectory
 \begin{verbatim}
 <your-trilinos-directory>/packages
 \end{verbatim}
-Each package contains sources, examples, tests and documentation subdirectories:
+Each package generally contains sources, examples, tests and documentation
+subdirectories:
 \begin{verbatim}
 <your-trilinos-directory>/packages/<package-name>/src
 <your-trilinos-directory>/packages/<package-name>/examples
@@ -428,8 +379,20 @@ Each package contains sources, examples, tests and documentation subdirectories:
 Developers' documentation is written using Doxygen\footnote{Copyright
   \copyright 1997-2003 by Dimitri van Heesch. More information can by
   found at the web address {\tt
-    http://www.stack.nl/~dimitri/doxygen/}.}. For instance, to create
-the documentation for Epetra are
+    http://www.stack.nl/~dimitri/doxygen/}.}.  The Doxygen documentation, and
+other available documentation, for each package is available online via 
+
+\begin{verbatim}
+http://trilinos.sandia.gov/packages/<package-name>/documentation.html
+\end{verbatim}
+
+The Doxygen documentation can also be generated from the source code directly
+when accessing a version-controlled copy of the Trilinos source code.  For
+some packages, Doxygen documentation can also be generated from the 
+distribution tarball.
+
+ For example, to create
+the documentation for Epetra, use the following commands:
 \begin{verbatim}
 $ cd <your-trilinos-home>/packages/epetra/doc
 $ doxygen
@@ -449,45 +412,8 @@ $ make
 \section{List of Trilinos Developers}
 \label{sec:intro_incomplete}
 
-Below is a list of past and present Trilinos developers as of 
-July 2007 (alphabetical order):
-
-Christopher Baker,
-Roscoe A. Bartlett,
-Paul Boggs,
-Erik Boman,
-Todd Coffey,
-Jason A. Cross,
-David M. Day,
-Clark Dohrmann,
-David Gay,
-Michael Gee,
-Robert Heaphy,
-Ulrich Hetmaniuk,
-Michael A. Heroux (project leader),
-Robert J. Hoekstra,
-Russell Hooper,
-Vicki E. Howle,
-Jonathan J. Hu,
-Tamara G. Kolda,
-Kristopher Kampshoff,
-Sarah Knepper,
-Joe Kotulski,
-Richard B. Lehoucq,
-Paul Lin,
-Kevin R. Long,
-Joe Outzen,
-Roger P. Pawlowski,
-Michael N. Phenow,
-Eric T. Phipps,
-Andrew J. Rothfuss,
-Marzio Sala,
-Andrew G. Salinger,
-Paul M. Sexton,
-Chris Siefert,
-Kendall S. Stanley,
-Heidi K. Thornquist,
-Ray S. Tuminaro,
-James M. Willenbring, and
-Alan Williams.
+A list of past and present Trilinos developers is available online at:
+\begin{verbatim}
+http://trilinos.sandia.gov/team.html
+\end{verbatim}
 
