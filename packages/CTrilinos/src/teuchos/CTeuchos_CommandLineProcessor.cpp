@@ -104,7 +104,7 @@ void Teuchos_CommandLineProcessor_Destroy (
 
 void Teuchos_CommandLineProcessor_throwExceptions_set ( 
   CT_Teuchos_CommandLineProcessor_ID_t selfID, 
-  boolean throwExceptions )
+  const boolean throwExceptions )
 {
     CTeuchos::getCommandLineProcessor(selfID)->throwExceptions(
         ((throwExceptions) != FALSE ? true : false));
@@ -119,7 +119,7 @@ boolean Teuchos_CommandLineProcessor_throwExceptions_get (
 
 void Teuchos_CommandLineProcessor_recogniseAllOptions_set ( 
   CT_Teuchos_CommandLineProcessor_ID_t selfID, 
-  boolean recogniseAllOptions )
+  const boolean recogniseAllOptions )
 {
     CTeuchos::getCommandLineProcessor(selfID)->recogniseAllOptions(
         ((recogniseAllOptions) != FALSE ? true : false));
@@ -134,7 +134,7 @@ boolean Teuchos_CommandLineProcessor_recogniseAllOptions_get (
 
 void Teuchos_CommandLineProcessor_addOutputSetupOptions_set ( 
   CT_Teuchos_CommandLineProcessor_ID_t selfID, 
-  boolean addOutputSetupOptions )
+  const boolean addOutputSetupOptions )
 {
     CTeuchos::getCommandLineProcessor(selfID)->addOutputSetupOptions(
         ((addOutputSetupOptions) != FALSE ? true : false));

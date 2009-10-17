@@ -39,6 +39,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 
 #include "CTrilinos_config.h"
+#include "CTrilinos_enum_wrappers.h"
 
 
 #ifdef __cplusplus
@@ -102,7 +103,14 @@ typedef enum {
     CT_Teuchos_any_ID,                   /*!< refers to a Teuchos::any table entry */
     CT_Amesos_BaseSolver_ID,             /*!< refers to an Amesos_BaseSolver table entry */
     CT_Amesos_ID,                        /*!< refers to an Amesos table entry */
-    CT_Epetra_FECrsMatrix_ID             /*!< refers to an Epetra_FECrsMatrix table entry */
+    CT_Epetra_FECrsMatrix_ID,            /*!< refers to an Epetra_FECrsMatrix table entry */
+    CT_Epetra_IntSerialDenseVector_ID,   /*!< refers to an Epetra_IntSerialDenseVector table entry */
+    CT_Epetra_SerialDenseMatrix_ID,      /*!< refers to an Epetra_SerialDenseMatrix table entry */
+    CT_AztecOO_ID,                       /*!< refers to an AztecOO table entry */
+    CT_AztecOO_StatusTest_ID,            /*!< refers to an AztecOO_StatusTest table entry */
+    CT_AztecOO_StatusTestCombo_ID,       /*!< refers to an AztecOO_StatusTestCombo table entry */
+    CT_AztecOO_StatusTestMaxIters_ID,    /*!< refers to an AztecOO_StatusTestMaxIters table entry */
+    CT_AztecOO_StatusTestResNorm_ID      /*!< refers to an AztecOO_StatusTestResNorm table entry */
 } CTrilinos_Type_ID_t;
 
 /*! The type in the struct below is actually used to identify the table in
@@ -393,61 +401,71 @@ typedef struct {
     boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Epetra_FECrsMatrix_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_IntSerialDenseVector table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_IntSerialDenseVector.h */
+typedef struct {
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
+} CT_Epetra_IntSerialDenseVector_ID_t;
 
+/*! Struct used for referring to objects in the Epetra_SerialDenseMatrix table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_SerialDenseMatrix.h */
+typedef struct {
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
+} CT_Epetra_SerialDenseMatrix_ID_t;
 
-/*! Wrapper for Epetra_DataAccess */
-typedef enum {
-    CT_Epetra_DataAccess_E_Copy,
-    CT_Epetra_DataAccess_E_View
-} CT_Epetra_DataAccess_E_t;
+#ifdef HAVE_CTRILINOS_AZTECOO
+/*! Struct used for referring to objects in the AztecOO table.  Methods
+ * that can be invoked on the underlying objects are listed in CAztecOO.h */
+typedef struct {
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
+} CT_AztecOO_ID_t;
+#endif /* HAVE_CTRILINOS_AZTECOO */
 
-/*! Wrapper for Epetra_CombineMode */
-typedef enum {
-    CT_Epetra_CombineMode_E_Add,
-    CT_Epetra_CombineMode_E_Zero,
-    CT_Epetra_CombineMode_E_Insert,
-    CT_Epetra_CombineMode_E_InsertAdd,
-    CT_Epetra_CombineMode_E_Average,
-    CT_Epetra_CombineMode_E_AbsMax
-} CT_Epetra_CombineMode_E_t;
+#ifdef HAVE_CTRILINOS_AZTECOO
+/*! Struct used for referring to objects in the AztecOO_StatusTest table.  Methods
+ * that can be invoked on the underlying objects are listed in CAztecOO_StatusTest.h */
+typedef struct {
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
+} CT_AztecOO_StatusTest_ID_t;
+#endif /* HAVE_CTRILINOS_AZTECOO */
 
-/*! Wrapper for ProblemDifficultyLevel */
-typedef enum {
-    CT_ProblemDifficultyLevel_E_easy,
-    CT_ProblemDifficultyLevel_E_moderate,
-    CT_ProblemDifficultyLevel_E_hard,
-    CT_ProblemDifficultyLevel_E_unsure
-} CT_ProblemDifficultyLevel_E_t;
+#ifdef HAVE_CTRILINOS_AZTECOO
+/*! Struct used for referring to objects in the AztecOO_StatusTestCombo table.  Methods
+ * that can be invoked on the underlying objects are listed in CAztecOO_StatusTestCombo.h */
+typedef struct {
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
+} CT_AztecOO_StatusTestCombo_ID_t;
+#endif /* HAVE_CTRILINOS_AZTECOO */
 
-/*! Wrapper for EParseCommandLineReturn */
-typedef enum {
-    CT_EParseCommandLineReturn_E_PARSE_SUCCESSFUL = 0,
-    CT_EParseCommandLineReturn_E_PARSE_HELP_PRINTED = 1,
-    CT_EParseCommandLineReturn_E_PARSE_UNRECOGNIZED_OPTION = 2
-} CT_EParseCommandLineReturn_E_t;
+#ifdef HAVE_CTRILINOS_AZTECOO
+/*! Struct used for referring to objects in the AztecOO_StatusTestMaxIters table.  Methods
+ * that can be invoked on the underlying objects are listed in CAztecOO_StatusTestMaxIters.h */
+typedef struct {
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
+} CT_AztecOO_StatusTestMaxIters_ID_t;
+#endif /* HAVE_CTRILINOS_AZTECOO */
 
-/*! Wrapper for EOptType */
-typedef enum {
-    CT_EOptType_E_OPT_NONE,
-    CT_EOptType_E_OPT_BOOL_TRUE,
-    CT_EOptType_E_OPT_BOOL_FALSE,
-    CT_EOptType_E_OPT_INT,
-    CT_EOptType_E_OPT_DOUBLE,
-    CT_EOptType_E_OPT_STRING,
-    CT_EOptType_E_OPT_ENUM_INT
-} CT_EOptType_E_t;
-
-/*! Wrapper for EValidateUsed */
-typedef enum {
-    CT_EValidateUsed_E_VALIDATE_USED_ENABLED,
-    CT_EValidateUsed_E_VALIDATE_USED_DISABLED
-} CT_EValidateUsed_E_t;
-
-/*! Wrapper for EValidateDefaults */
-typedef enum {
-    CT_EValidateDefaults_E_VALIDATE_DEFAULTS_ENABLED,
-    CT_EValidateDefaults_E_VALIDATE_DEFAULTS_DISABLED
-} CT_EValidateDefaults_E_t;
+#ifdef HAVE_CTRILINOS_AZTECOO
+/*! Struct used for referring to objects in the AztecOO_StatusTestResNorm table.  Methods
+ * that can be invoked on the underlying objects are listed in CAztecOO_StatusTestResNorm.h */
+typedef struct {
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
+} CT_AztecOO_StatusTestResNorm_ID_t;
+#endif /* HAVE_CTRILINOS_AZTECOO */
 
 
 #ifdef __cplusplus

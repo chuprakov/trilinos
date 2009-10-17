@@ -61,6 +61,16 @@ extern "C" {
 CT_Teuchos_any_ID_t Teuchos_any_Create (  );
 
 /*! @brief Wrapper for 
+   template<typename ValueType> explicit Teuchos::any::any(const ValueType & value)
+*/
+CT_Teuchos_any_ID_t Teuchos_any_Create_double ( double value );
+
+/*! @brief Wrapper for 
+   template<typename ValueType> explicit Teuchos::any::any(const ValueType & value)
+*/
+CT_Teuchos_any_ID_t Teuchos_any_Create_int ( int value );
+
+/*! @brief Wrapper for 
    Teuchos::any::any(const any & other)
 */
 CT_Teuchos_any_ID_t Teuchos_any_Duplicate ( 

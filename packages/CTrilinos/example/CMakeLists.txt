@@ -6,4 +6,5 @@ ADD_SUBDIRECTORIES(
   verySimple
   amesos
   crsgraph
+  aztecoo
   )

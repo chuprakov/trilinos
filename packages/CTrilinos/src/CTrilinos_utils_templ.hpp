@@ -69,6 +69,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CAmesos_BaseSolver_Cpp.hpp"
 #include "CAmesos_Cpp.hpp"
 #include "CEpetra_FECrsMatrix_Cpp.hpp"
+#include "CEpetra_IntSerialDenseVector_Cpp.hpp"
+#include "CEpetra_SerialDenseMatrix_Cpp.hpp"
+#include "CAztecOO_Cpp.hpp"
+#include "CAztecOO_StatusTest_Cpp.hpp"
+#include "CAztecOO_StatusTestCombo_Cpp.hpp"
+#include "CAztecOO_StatusTestMaxIters_Cpp.hpp"
+#include "CAztecOO_StatusTestResNorm_Cpp.hpp"
 
 #include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
@@ -181,6 +188,32 @@ cast( Table<const T> &destTable, CTrilinos_Object_ID_t id )
         case CT_Epetra_FECrsMatrix_ID:
             newid = destTable.cast(CEpetra::getConstFECrsMatrix(id));
             break;
+        case CT_Epetra_IntSerialDenseVector_ID:
+            newid = destTable.cast(CEpetra::getConstIntSerialDenseVector(id));
+            break;
+        case CT_Epetra_SerialDenseMatrix_ID:
+            newid = destTable.cast(CEpetra::getConstSerialDenseMatrix(id));
+            break;
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTest_ID:
+            newid = destTable.cast(CAztecOO::getConstStatusTest(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestCombo_ID:
+            newid = destTable.cast(CAztecOO::getConstStatusTestCombo(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestMaxIters_ID:
+            newid = destTable.cast(CAztecOO::getConstStatusTestMaxIters(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestResNorm_ID:
+            newid = destTable.cast(CAztecOO::getConstStatusTestResNorm(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
         default:
             break;
         }
@@ -277,6 +310,32 @@ cast( Table<const T> &destTable, CTrilinos_Object_ID_t id )
         case CT_Epetra_FECrsMatrix_ID:
             newid = destTable.cast(CEpetra::getFECrsMatrix(id));
             break;
+        case CT_Epetra_IntSerialDenseVector_ID:
+            newid = destTable.cast(CEpetra::getIntSerialDenseVector(id));
+            break;
+        case CT_Epetra_SerialDenseMatrix_ID:
+            newid = destTable.cast(CEpetra::getSerialDenseMatrix(id));
+            break;
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTest_ID:
+            newid = destTable.cast(CAztecOO::getStatusTest(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestCombo_ID:
+            newid = destTable.cast(CAztecOO::getStatusTestCombo(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestMaxIters_ID:
+            newid = destTable.cast(CAztecOO::getStatusTestMaxIters(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestResNorm_ID:
+            newid = destTable.cast(CAztecOO::getStatusTestResNorm(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
         default:
             break;
         }
@@ -389,6 +448,32 @@ cast( Table<T> &destTable, CTrilinos_Object_ID_t id )
         case CT_Epetra_FECrsMatrix_ID:
             newid = destTable.cast(CEpetra::getFECrsMatrix(id));
             break;
+        case CT_Epetra_IntSerialDenseVector_ID:
+            newid = destTable.cast(CEpetra::getIntSerialDenseVector(id));
+            break;
+        case CT_Epetra_SerialDenseMatrix_ID:
+            newid = destTable.cast(CEpetra::getSerialDenseMatrix(id));
+            break;
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTest_ID:
+            newid = destTable.cast(CAztecOO::getStatusTest(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestCombo_ID:
+            newid = destTable.cast(CAztecOO::getStatusTestCombo(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestMaxIters_ID:
+            newid = destTable.cast(CAztecOO::getStatusTestMaxIters(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestResNorm_ID:
+            newid = destTable.cast(CAztecOO::getStatusTestResNorm(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
         default:
             break;
         }
@@ -549,6 +634,37 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
         case CT_Epetra_FECrsMatrix_ID:
             shares = rcp.shares_resource(CEpetra::getConstFECrsMatrix(id));
             break;
+        case CT_Epetra_IntSerialDenseVector_ID:
+            shares = rcp.shares_resource(CEpetra::getConstIntSerialDenseVector(id));
+            break;
+        case CT_Epetra_SerialDenseMatrix_ID:
+            shares = rcp.shares_resource(CEpetra::getConstSerialDenseMatrix(id));
+            break;
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_ID:
+            shares = rcp.shares_resource(CAztecOO::getConstAztecOO(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTest_ID:
+            shares = rcp.shares_resource(CAztecOO::getConstStatusTest(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestCombo_ID:
+            shares = rcp.shares_resource(CAztecOO::getConstStatusTestCombo(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestMaxIters_ID:
+            shares = rcp.shares_resource(CAztecOO::getConstStatusTestMaxIters(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestResNorm_ID:
+            shares = rcp.shares_resource(CAztecOO::getConstStatusTestResNorm(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
         default:
             break;
         }
@@ -659,6 +775,37 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
         case CT_Epetra_FECrsMatrix_ID:
             shares = rcp.shares_resource(CEpetra::getFECrsMatrix(id));
             break;
+        case CT_Epetra_IntSerialDenseVector_ID:
+            shares = rcp.shares_resource(CEpetra::getIntSerialDenseVector(id));
+            break;
+        case CT_Epetra_SerialDenseMatrix_ID:
+            shares = rcp.shares_resource(CEpetra::getSerialDenseMatrix(id));
+            break;
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_ID:
+            shares = rcp.shares_resource(CAztecOO::getAztecOO(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTest_ID:
+            shares = rcp.shares_resource(CAztecOO::getStatusTest(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestCombo_ID:
+            shares = rcp.shares_resource(CAztecOO::getStatusTestCombo(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestMaxIters_ID:
+            shares = rcp.shares_resource(CAztecOO::getStatusTestMaxIters(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestResNorm_ID:
+            shares = rcp.shares_resource(CAztecOO::getStatusTestResNorm(id));
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
         default:
             break;
         }

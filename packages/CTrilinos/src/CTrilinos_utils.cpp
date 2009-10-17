@@ -67,6 +67,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CAmesos_BaseSolver_Cpp.hpp"
 #include "CAmesos_Cpp.hpp"
 #include "CEpetra_FECrsMatrix_Cpp.hpp"
+#include "CEpetra_IntSerialDenseVector_Cpp.hpp"
+#include "CEpetra_SerialDenseMatrix_Cpp.hpp"
+#include "CAztecOO_Cpp.hpp"
+#include "CAztecOO_StatusTest_Cpp.hpp"
+#include "CAztecOO_StatusTestCombo_Cpp.hpp"
+#include "CAztecOO_StatusTestMaxIters_Cpp.hpp"
+#include "CAztecOO_StatusTestResNorm_Cpp.hpp"
 
 
 namespace CTrilinos {
@@ -204,13 +211,29 @@ enum2str( CTrilinos_Type_ID_t ty )
     case CT_Epetra_FECrsMatrix_ID:
         s.assign("CT_Epetra_FECrsMatrix_ID");
         break;
-    case CT_Invalid_ID:
-        s.assign("CT_Invalid_ID (uninitialized/freed)");
+    case CT_Epetra_IntSerialDenseVector_ID:
+        s.assign("CT_Epetra_IntSerialDenseVector_ID");
+        break;
+    case CT_Epetra_SerialDenseMatrix_ID:
+        s.assign("CT_Epetra_SerialDenseMatrix_ID");
+        break;
+    case CT_AztecOO_ID:
+        s.assign("CT_AztecOO_ID");
+        break;
+    case CT_AztecOO_StatusTest_ID:
+        s.assign("CT_AztecOO_StatusTest_ID");
+        break;
+    case CT_AztecOO_StatusTestCombo_ID:
+        s.assign("CT_AztecOO_StatusTestCombo_ID");
+        break;
+    case CT_AztecOO_StatusTestMaxIters_ID:
+        s.assign("CT_AztecOO_StatusTestMaxIters_ID");
+        break;
+    case CT_AztecOO_StatusTestResNorm_ID:
+        s.assign("CT_AztecOO_StatusTestResNorm_ID");
         break;
     default:
-        std::stringstream ss;
-        ss << "(unrecognized/" << ty << ")";
-        s.assign(ss.str());
+        s.assign("(unrecognized)");
         break;
     }
 
@@ -331,6 +354,37 @@ isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
         case CT_Epetra_FECrsMatrix_ID:
             shares = isSameObject(CEpetra::getConstFECrsMatrix(id1), id2);
             break;
+        case CT_Epetra_IntSerialDenseVector_ID:
+            shares = isSameObject(CEpetra::getConstIntSerialDenseVector(id1), id2);
+            break;
+        case CT_Epetra_SerialDenseMatrix_ID:
+            shares = isSameObject(CEpetra::getConstSerialDenseMatrix(id1), id2);
+            break;
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_ID:
+            shares = isSameObject(CAztecOO::getConstAztecOO(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTest_ID:
+            shares = isSameObject(CAztecOO::getConstStatusTest(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestCombo_ID:
+            shares = isSameObject(CAztecOO::getConstStatusTestCombo(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestMaxIters_ID:
+            shares = isSameObject(CAztecOO::getConstStatusTestMaxIters(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestResNorm_ID:
+            shares = isSameObject(CAztecOO::getConstStatusTestResNorm(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
         default:
             break;
         }
@@ -441,6 +495,37 @@ isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
         case CT_Epetra_FECrsMatrix_ID:
             shares = isSameObject(CEpetra::getFECrsMatrix(id1), id2);
             break;
+        case CT_Epetra_IntSerialDenseVector_ID:
+            shares = isSameObject(CEpetra::getIntSerialDenseVector(id1), id2);
+            break;
+        case CT_Epetra_SerialDenseMatrix_ID:
+            shares = isSameObject(CEpetra::getSerialDenseMatrix(id1), id2);
+            break;
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_ID:
+            shares = isSameObject(CAztecOO::getAztecOO(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTest_ID:
+            shares = isSameObject(CAztecOO::getStatusTest(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestCombo_ID:
+            shares = isSameObject(CAztecOO::getStatusTestCombo(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestMaxIters_ID:
+            shares = isSameObject(CAztecOO::getStatusTestMaxIters(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+        case CT_AztecOO_StatusTestResNorm_ID:
+            shares = isSameObject(CAztecOO::getStatusTestResNorm(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
         default:
             break;
         }

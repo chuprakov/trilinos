@@ -34,6 +34,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CEpetra_Map_Cpp.hpp"
 #include "CEpetra_CrsGraph_Cpp.hpp"
+#include "CEpetra_IntSerialDenseVector_Cpp.hpp"
+#include "CEpetra_SerialDenseMatrix_Cpp.hpp"
 #include "CEpetra_FECrsMatrix_Cpp.hpp"
 #include "CEpetra_FECrsMatrix.h"
 #include "Epetra_FECrsMatrix.h"
@@ -295,6 +297,72 @@ int Epetra_FECrsMatrix_ReplaceGlobalValues_Ctable (
 {
     return CEpetra::getFECrsMatrix(selfID)->ReplaceGlobalValues(
         numRows, rows, numCols, cols, values, format);
+}
+
+int Epetra_FECrsMatrix_SumIntoGlobalValues_SubMatrix_Square ( 
+  CT_Epetra_FECrsMatrix_ID_t selfID, 
+  CT_Epetra_IntSerialDenseVector_ID_t indicesID, 
+  CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format )
+{
+    return CEpetra::getFECrsMatrix(selfID)->SumIntoGlobalValues(
+        *CEpetra::getConstIntSerialDenseVector(indicesID), 
+        *CEpetra::getConstSerialDenseMatrix(valuesID), format);
+}
+
+int Epetra_FECrsMatrix_SumIntoGlobalValues_SubMatrix ( 
+  CT_Epetra_FECrsMatrix_ID_t selfID, 
+  CT_Epetra_IntSerialDenseVector_ID_t rowsID, 
+  CT_Epetra_IntSerialDenseVector_ID_t colsID, 
+  CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format )
+{
+    return CEpetra::getFECrsMatrix(selfID)->SumIntoGlobalValues(
+        *CEpetra::getConstIntSerialDenseVector(rowsID), 
+        *CEpetra::getConstIntSerialDenseVector(colsID), 
+        *CEpetra::getConstSerialDenseMatrix(valuesID), format);
+}
+
+int Epetra_FECrsMatrix_InsertGlobalValues_SubMatrix_Square ( 
+  CT_Epetra_FECrsMatrix_ID_t selfID, 
+  CT_Epetra_IntSerialDenseVector_ID_t indicesID, 
+  CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format )
+{
+    return CEpetra::getFECrsMatrix(selfID)->InsertGlobalValues(
+        *CEpetra::getConstIntSerialDenseVector(indicesID), 
+        *CEpetra::getConstSerialDenseMatrix(valuesID), format);
+}
+
+int Epetra_FECrsMatrix_InsertGlobalValues_SubMatrix ( 
+  CT_Epetra_FECrsMatrix_ID_t selfID, 
+  CT_Epetra_IntSerialDenseVector_ID_t rowsID, 
+  CT_Epetra_IntSerialDenseVector_ID_t colsID, 
+  CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format )
+{
+    return CEpetra::getFECrsMatrix(selfID)->InsertGlobalValues(
+        *CEpetra::getConstIntSerialDenseVector(rowsID), 
+        *CEpetra::getConstIntSerialDenseVector(colsID), 
+        *CEpetra::getConstSerialDenseMatrix(valuesID), format);
+}
+
+int Epetra_FECrsMatrix_ReplaceGlobalValues_SubMatrix_Square ( 
+  CT_Epetra_FECrsMatrix_ID_t selfID, 
+  CT_Epetra_IntSerialDenseVector_ID_t indicesID, 
+  CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format )
+{
+    return CEpetra::getFECrsMatrix(selfID)->ReplaceGlobalValues(
+        *CEpetra::getConstIntSerialDenseVector(indicesID), 
+        *CEpetra::getConstSerialDenseMatrix(valuesID), format);
+}
+
+int Epetra_FECrsMatrix_ReplaceGlobalValues_SubMatrix ( 
+  CT_Epetra_FECrsMatrix_ID_t selfID, 
+  CT_Epetra_IntSerialDenseVector_ID_t rowsID, 
+  CT_Epetra_IntSerialDenseVector_ID_t colsID, 
+  CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format )
+{
+    return CEpetra::getFECrsMatrix(selfID)->ReplaceGlobalValues(
+        *CEpetra::getConstIntSerialDenseVector(rowsID), 
+        *CEpetra::getConstIntSerialDenseVector(colsID), 
+        *CEpetra::getConstSerialDenseMatrix(valuesID), format);
 }
 
 int Epetra_FECrsMatrix_GlobalAssemble ( 

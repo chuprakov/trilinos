@@ -83,6 +83,18 @@ CT_Teuchos_any_ID_t Teuchos_any_Create (  )
         tableOfanys().store(new Teuchos::any()));
 }
 
+CT_Teuchos_any_ID_t Teuchos_any_Create_double ( double value )
+{
+    return CTrilinos::concreteType<CT_Teuchos_any_ID_t>(
+        tableOfanys().store(new Teuchos::any(value)));
+}
+
+CT_Teuchos_any_ID_t Teuchos_any_Create_int ( int value )
+{
+    return CTrilinos::concreteType<CT_Teuchos_any_ID_t>(
+        tableOfanys().store(new Teuchos::any(value)));
+}
+
 CT_Teuchos_any_ID_t Teuchos_any_Duplicate ( 
   CT_Teuchos_any_ID_t otherID )
 {

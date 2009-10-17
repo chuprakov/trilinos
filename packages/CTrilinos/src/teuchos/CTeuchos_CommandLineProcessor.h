@@ -83,7 +83,7 @@ void Teuchos_CommandLineProcessor_Destroy (
 */
 void Teuchos_CommandLineProcessor_throwExceptions_set ( 
   CT_Teuchos_CommandLineProcessor_ID_t selfID, 
-  boolean throwExceptions );
+  const boolean throwExceptions );
 
 /*! @brief Wrapper for 
    bool Teuchos::CommandLineProcessor::throwExceptions() const
@@ -96,7 +96,7 @@ boolean Teuchos_CommandLineProcessor_throwExceptions_get (
 */
 void Teuchos_CommandLineProcessor_recogniseAllOptions_set ( 
   CT_Teuchos_CommandLineProcessor_ID_t selfID, 
-  boolean recogniseAllOptions );
+  const boolean recogniseAllOptions );
 
 /*! @brief Wrapper for 
    bool Teuchos::CommandLineProcessor::recogniseAllOptions() const
@@ -109,7 +109,7 @@ boolean Teuchos_CommandLineProcessor_recogniseAllOptions_get (
 */
 void Teuchos_CommandLineProcessor_addOutputSetupOptions_set ( 
   CT_Teuchos_CommandLineProcessor_ID_t selfID, 
-  boolean addOutputSetupOptions );
+  const boolean addOutputSetupOptions );
 
 /*! @brief Wrapper for 
    bool Teuchos::CommandLineProcessor::addOutputSetupOptions() const

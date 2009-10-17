@@ -45,6 +45,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CEpetra_Map.h"
 #include "CEpetra_CrsGraph.h"
+#include "CEpetra_IntSerialDenseVector.h"
+#include "CEpetra_SerialDenseMatrix.h"
 #include "CTrilinos_enums.h"
 
 
@@ -244,6 +246,57 @@ int Epetra_FECrsMatrix_ReplaceGlobalValues_Ctable (
   CT_Epetra_FECrsMatrix_ID_t selfID, int numRows, const int * rows, 
   int numCols, const int * cols, const double* const * values, 
   int format );
+
+/*! @brief Wrapper for 
+   int Epetra_FECrsMatrix::SumIntoGlobalValues(const Epetra_IntSerialDenseVector& indices, const Epetra_SerialDenseMatrix& values, int format=Epetra_FECrsMatrix::COLUMN_MAJOR)
+*/
+int Epetra_FECrsMatrix_SumIntoGlobalValues_SubMatrix_Square ( 
+  CT_Epetra_FECrsMatrix_ID_t selfID, 
+  CT_Epetra_IntSerialDenseVector_ID_t indicesID, 
+  CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format );
+
+/*! @brief Wrapper for 
+   int Epetra_FECrsMatrix::SumIntoGlobalValues(const Epetra_IntSerialDenseVector& rows, const Epetra_IntSerialDenseVector& cols, const Epetra_SerialDenseMatrix& values, int format=Epetra_FECrsMatrix::COLUMN_MAJOR)
+*/
+int Epetra_FECrsMatrix_SumIntoGlobalValues_SubMatrix ( 
+  CT_Epetra_FECrsMatrix_ID_t selfID, 
+  CT_Epetra_IntSerialDenseVector_ID_t rowsID, 
+  CT_Epetra_IntSerialDenseVector_ID_t colsID, 
+  CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format );
+
+/*! @brief Wrapper for 
+   int Epetra_FECrsMatrix::InsertGlobalValues(const Epetra_IntSerialDenseVector& indices, const Epetra_SerialDenseMatrix& values, int format=Epetra_FECrsMatrix::COLUMN_MAJOR)
+*/
+int Epetra_FECrsMatrix_InsertGlobalValues_SubMatrix_Square ( 
+  CT_Epetra_FECrsMatrix_ID_t selfID, 
+  CT_Epetra_IntSerialDenseVector_ID_t indicesID, 
+  CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format );
+
+/*! @brief Wrapper for 
+   int Epetra_FECrsMatrix::InsertGlobalValues(const Epetra_IntSerialDenseVector& rows, const Epetra_IntSerialDenseVector& cols, const Epetra_SerialDenseMatrix& values, int format=Epetra_FECrsMatrix::COLUMN_MAJOR)
+*/
+int Epetra_FECrsMatrix_InsertGlobalValues_SubMatrix ( 
+  CT_Epetra_FECrsMatrix_ID_t selfID, 
+  CT_Epetra_IntSerialDenseVector_ID_t rowsID, 
+  CT_Epetra_IntSerialDenseVector_ID_t colsID, 
+  CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format );
+
+/*! @brief Wrapper for 
+   int Epetra_FECrsMatrix::ReplaceGlobalValues(const Epetra_IntSerialDenseVector& indices, const Epetra_SerialDenseMatrix& values, int format=Epetra_FECrsMatrix::COLUMN_MAJOR)
+*/
+int Epetra_FECrsMatrix_ReplaceGlobalValues_SubMatrix_Square ( 
+  CT_Epetra_FECrsMatrix_ID_t selfID, 
+  CT_Epetra_IntSerialDenseVector_ID_t indicesID, 
+  CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format );
+
+/*! @brief Wrapper for 
+   int Epetra_FECrsMatrix::ReplaceGlobalValues(const Epetra_IntSerialDenseVector& rows, const Epetra_IntSerialDenseVector& cols, const Epetra_SerialDenseMatrix& values, int format=Epetra_FECrsMatrix::COLUMN_MAJOR)
+*/
+int Epetra_FECrsMatrix_ReplaceGlobalValues_SubMatrix ( 
+  CT_Epetra_FECrsMatrix_ID_t selfID, 
+  CT_Epetra_IntSerialDenseVector_ID_t rowsID, 
+  CT_Epetra_IntSerialDenseVector_ID_t colsID, 
+  CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format );
 
 /*! @brief Wrapper for 
    int Epetra_FECrsMatrix::GlobalAssemble(bool callFillComplete=true)

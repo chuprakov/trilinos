@@ -17,8 +17,15 @@ SET(SOURCES "")
 SET_AND_INC_DIRS(DIREPETRA ${CMAKE_CURRENT_SOURCE_DIR}/epetra)
 SET_AND_INC_DIRS(DIRTEUCHOS ${CMAKE_CURRENT_SOURCE_DIR}/teuchos)
 SET_AND_INC_DIRS(DIRAMESOS ${CMAKE_CURRENT_SOURCE_DIR}/amesos)
-APPEND_GLOB(HEADERS ${DIREPETRA}/*.hpp ${DIREPETRA}/*.h ${DIRTEUCHOS}/*.hpp ${DIRTEUCHOS}/*.h ${DIRAMESOS}/*.hpp ${DIRAMESOS}/*.h)
-APPEND_GLOB(SOURCES ${DIREPETRA}/*.cpp ${DIRTEUCHOS}/*.cpp ${DIRAMESOS}/*.cpp)
+SET_AND_INC_DIRS(DIRAZTECOO ${CMAKE_CURRENT_SOURCE_DIR}/aztecoo)
+APPEND_GLOB(HEADERS ${DIREPETRA}/*.hpp ${DIREPETRA}/*.h
+                    ${DIRTEUCHOS}/*.hpp ${DIRTEUCHOS}/*.h
+                    ${DIRAMESOS}/*.hpp ${DIRAMESOS}/*.h
+                    ${DIRAZTECOO}/*.hpp ${DIRAZTECOO}/*.h)
+APPEND_GLOB(SOURCES ${DIREPETRA}/*.cpp
+                    ${DIRTEUCHOS}/*.cpp
+                    ${DIRAMESOS}/*.cpp
+                    ${DIRAZTECOO}/*.cpp)
 
 # Set the base Trilinos directory in order to find Trilinos_version.h
 
@@ -46,6 +53,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 APPEND_SET(HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_Version.h
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_enums.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_enum_wrappers.h
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_exceptions.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_utils.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_utils_templ.hpp
