@@ -34,6 +34,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CTRILINOS_EXCEPTIONS_HPP
 
 
+#include "CTrilinos_config.h"
+
+
 #include "Teuchos_Exceptions.hpp"
 
 

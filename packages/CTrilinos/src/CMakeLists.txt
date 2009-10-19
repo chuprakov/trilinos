@@ -18,14 +18,6 @@ SET_AND_INC_DIRS(DIREPETRA ${CMAKE_CURRENT_SOURCE_DIR}/epetra)
 SET_AND_INC_DIRS(DIRTEUCHOS ${CMAKE_CURRENT_SOURCE_DIR}/teuchos)
 SET_AND_INC_DIRS(DIRAMESOS ${CMAKE_CURRENT_SOURCE_DIR}/amesos)
 SET_AND_INC_DIRS(DIRAZTECOO ${CMAKE_CURRENT_SOURCE_DIR}/aztecoo)
-APPEND_GLOB(HEADERS ${DIREPETRA}/*.hpp ${DIREPETRA}/*.h
-                    ${DIRTEUCHOS}/*.hpp ${DIRTEUCHOS}/*.h
-                    ${DIRAMESOS}/*.hpp ${DIRAMESOS}/*.h
-                    ${DIRAZTECOO}/*.hpp ${DIRAZTECOO}/*.h)
-APPEND_GLOB(SOURCES ${DIREPETRA}/*.cpp
-                    ${DIRTEUCHOS}/*.cpp
-                    ${DIRAMESOS}/*.cpp
-                    ${DIRAZTECOO}/*.cpp)
 
 # Set the base Trilinos directory in order to find Trilinos_version.h
 
@@ -48,6 +40,8 @@ APPEND_SET(HEADERS
 # NOTE: Above, we add the XXX_config.h file so tht MS Visual Studio
 # will know to include this file in the dependency analysis
 
+# Set sources and headers
+
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 APPEND_SET(HEADERS
@@ -61,13 +55,29 @@ APPEND_SET(HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/CNOX_Interface.hpp
   )
 
-# Set sources
-
 APPEND_SET(SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_utils.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CNOX_Interface.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CNOX_Driver.cpp
   )
+
+APPEND_GLOB(HEADERS ${DIREPETRA}/*.hpp ${DIREPETRA}/*.h
+                    ${DIRTEUCHOS}/*.hpp ${DIRTEUCHOS}/*.h)
+APPEND_GLOB(SOURCES ${DIREPETRA}/*.cpp ${DIRTEUCHOS}/*.cpp)
+
+IF (${PACKAGE_NAME}_ENABLE_Amesos)
+
+  APPEND_GLOB(HEADERS ${DIRAMESOS}/*.hpp ${DIRAMESOS}/*.h)
+  APPEND_GLOB(SOURCES ${DIRAMESOS}/*.cpp)
+
+ENDIF()
+
+IF (${PACKAGE_NAME}_ENABLE_AztecOO)
+
+  APPEND_GLOB(HEADERS ${DIRAZTECOO}/*.hpp ${DIRAZTECOO}/*.h)
+  APPEND_GLOB(SOURCES ${DIRAZTECOO}/*.cpp)
+
+ENDIF()
 
 #
 # C) Define the targets for package's library(s)

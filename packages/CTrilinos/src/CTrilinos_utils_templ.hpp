@@ -34,6 +34,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CTRILINOS_UTILS_TEMPL_HPP
 
 
+#include "CTrilinos_config.h"
+
+
 #include <string>
 
 #include "CEpetra_Distributor_Cpp.hpp"
@@ -77,7 +80,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CAztecOO_StatusTestMaxIters_Cpp.hpp"
 #include "CAztecOO_StatusTestResNorm_Cpp.hpp"
 
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_Table.hpp"
 #include "CTrilinos_utils.hpp"

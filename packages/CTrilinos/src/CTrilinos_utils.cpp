@@ -30,6 +30,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
+
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 

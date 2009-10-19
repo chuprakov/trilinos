@@ -4,7 +4,21 @@ INCLUDE(AddSubdirectories)
 
 ADD_SUBDIRECTORIES(
   verySimple
-  amesos
   crsgraph
-  aztecoo
   )
+
+IF (${PACKAGE_NAME}_ENABLE_Amesos)
+
+  ADD_SUBDIRECTORIES(
+    amesos
+    )
+
+ENDIF()
+
+IF (${PACKAGE_NAME}_ENABLE_AztecOO)
+
+  ADD_SUBDIRECTORIES(
+    aztecoo
+    )
+
+ENDIF()

@@ -34,9 +34,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CTRILINOS_UTILS_HPP
 
 
+#include "CTrilinos_config.h"
+
+
 #include <string>
 
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_Table.hpp"
 
