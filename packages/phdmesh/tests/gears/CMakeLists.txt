@@ -31,12 +31,12 @@ PACKAGE_ADD_TEST(
   NUM_MPI_PROCS 1
   )
 
-PACKAGE_ADD_TEST(
-  test_mesh
-  NAME test_gears
-  COMM mpi
-#      "gears <#X> <#Y> <#Z> [verify] [output <base_filename>]"
-  ARGS "threadpool 1 , gears 2 3 1 steps 5 verify"
-  NUM_MPI_PROCS 2
-  )
+# PACKAGE_ADD_TEST(
+#   test_mesh
+#   NAME test_gears
+#   COMM mpi
+# #      "gears <#X> <#Y> <#Z> [verify] [output <base_filename>]"
+#   ARGS "threadpool 1 , gears 2 3 1 steps 5 verify"
+#   NUM_MPI_PROCS 2
+#   )
 
