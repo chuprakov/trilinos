@@ -164,6 +164,33 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_disableRecursiveValidation (
         selfID)->disableRecursiveValidation() ));
 }
 
+CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set_double ( 
+  CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
+  double value, char const docString[] )
+{
+    return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
+        selfID)->set<double>(std::string(name), value, std::string(
+        docString),  Teuchos::null ) ));
+}
+
+CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set_int ( 
+  CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
+  int value, char const docString[] )
+{
+    return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
+        selfID)->set<int>(std::string(name), value, std::string(
+        docString),  Teuchos::null ) ));
+}
+
+CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set_str ( 
+  CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
+  char value[], char const docString[] )
+{
+    return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
+        selfID)->set(std::string(name), value, std::string(
+        docString),  Teuchos::null ) ));
+}
+
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set ( 
   CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
   CT_Teuchos_ParameterList_ID_t valueID, char const docString[] )

@@ -33,22 +33,22 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_config.h"
 
 
-#ifdef HAVE_CTRILINOS_AMESOS
+#ifdef HAVE_CTRILINOS_GALERI
 
 
 
-/*! @file CAmesos.h
- * @brief Wrappers for Amesos */
+/*! @file CGaleri_Maps.h
+ * @brief Wrappers for Galeri_Maps */
 
 /* True C header file! */
 
 
-#ifndef CAMESOS_H
-#define CAMESOS_H
+#ifndef CGALERI_MAPS_H
+#define CGALERI_MAPS_H
 
 
-#include "CAmesos_BaseSolver.h"
-#include "CEpetra_LinearProblem.h"
+#include "CEpetra_Map.h"
+#include "CEpetra_Comm.h"
 #include "CTeuchos_ParameterList.h"
 #include "CTrilinos_enums.h"
 
@@ -59,51 +59,15 @@ extern "C" {
 
 
 
-/*! @name Amesos constructor wrappers */
+/*! @name Galeri_Maps static function wrappers */
 /*@{*/
 
 /*! @brief Wrapper for 
-   Amesos::Amesos()
+   Epetra_Map* Galeri::CreateMap(string MapType, Epetra_Comm& Comm, Teuchos::ParameterList& List)
 */
-CT_Amesos_ID_t Amesos_Create (  );
-
-/*@}*/
-
-/*! @name Amesos destructor wrappers */
-/*@{*/
-
-/*! @brief Wrapper for 
-   Amesos::~Amesos()
-*/
-void Amesos_Destroy ( CT_Amesos_ID_t * selfID );
-
-/*@}*/
-
-/*! @name Amesos member wrappers */
-/*@{*/
-
-/*! @brief Wrapper for 
-   Amesos_BaseSolver *Amesos::Create(const char *ClassType, const Epetra_LinearProblem& LinearProblem )
-*/
-CT_Amesos_BaseSolver_ID_t Amesos_CreateSolver ( 
-  CT_Amesos_ID_t selfID, const char * ClassType, 
-  CT_Epetra_LinearProblem_ID_t LinearProblemID );
-
-/*! @brief Wrapper for 
-   bool Amesos::Query(const char * ClassType)
-*/
-boolean Amesos_Query ( 
-  CT_Amesos_ID_t selfID, const char * ClassType );
-
-/*@}*/
-
-/*! @name Amesos static function wrappers */
-/*@{*/
-
-/*! @brief Wrapper for 
-   static Teuchos::ParameterList Amesos::GetValidParameters()
-*/
-CT_Teuchos_ParameterList_ID_t Amesos_GetValidParameters (  );
+CT_Epetra_Map_ID_t Galeri_Maps_CreateMap ( 
+  char MapType[], CT_Epetra_Comm_ID_t CommID, 
+  CT_Teuchos_ParameterList_ID_t ListID );
 
 /*@}*/
 
@@ -113,8 +77,8 @@ CT_Teuchos_ParameterList_ID_t Amesos_GetValidParameters (  );
 #endif
 
 
-#endif /* CAMESOS_H */
+#endif /* CGALERI_MAPS_H */
 
-#endif /* HAVE_CTRILINOS_AMESOS */
+#endif /* HAVE_CTRILINOS_GALERI */
 
 

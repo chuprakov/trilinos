@@ -127,6 +127,21 @@ int Epetra_Object_ReportError (
 
 /*@}*/
 
+/*! @name Epetra_Object static function wrappers */
+/*@{*/
+
+/*! @brief Wrapper for 
+   static void Epetra_Object::SetTracebackMode(int TracebackModeValue)
+*/
+void Epetra_Object_SetTracebackMode ( int TracebackModeValue );
+
+/*! @brief Wrapper for 
+   static int Epetra_Object::GetTracebackMode()
+*/
+int Epetra_Object_GetTracebackMode (  );
+
+/*@}*/
+
 
 #ifdef __cplusplus
 } /* extern "C" */

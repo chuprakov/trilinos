@@ -38,6 +38,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CAmesos_BaseSolver_Cpp.hpp"
 #include "CEpetra_LinearProblem_Cpp.hpp"
+#include "CTeuchos_ParameterList_Cpp.hpp"
 #include "CAmesos_Cpp.hpp"
 #include "CAmesos.h"
 #include "Amesos.h"
@@ -115,6 +116,12 @@ boolean Amesos_Query (
 {
     return ((CAmesos::getAmesos(selfID)->Query(
         ClassType)) ? TRUE : FALSE);
+}
+
+CT_Teuchos_ParameterList_ID_t Amesos_GetValidParameters (  )
+{
+    return CTeuchos::storeParameterList(new Teuchos::ParameterList(
+        Amesos::GetValidParameters()));
 }
 
 

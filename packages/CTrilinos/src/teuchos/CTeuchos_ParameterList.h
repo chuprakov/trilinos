@@ -137,6 +137,27 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_disableRecursiveValidation (
   CT_Teuchos_ParameterList_ID_t selfID );
 
 /*! @brief Wrapper for 
+   template<typename T> ParameterList& Teuchos::ParameterList::set( std::string const& name, T const& value, std::string const& docString = "" ,RCP<const ParameterEntryValidator> const& validator = null )
+*/
+CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set_double ( 
+  CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
+  double value, char const docString[] );
+
+/*! @brief Wrapper for 
+   template<typename T> ParameterList& Teuchos::ParameterList::set( std::string const& name, T const& value, std::string const& docString = "" ,RCP<const ParameterEntryValidator> const& validator = null )
+*/
+CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set_int ( 
+  CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
+  int value, char const docString[] );
+
+/*! @brief Wrapper for 
+   ParameterList& Teuchos::ParameterList::set( std::string const& name, char value[], std::string const& docString = "" ,RCP<const ParameterEntryValidator> const& validator = null )
+*/
+CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set_str ( 
+  CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
+  char value[], char const docString[] );
+
+/*! @brief Wrapper for 
    ParameterList& Teuchos::ParameterList::set( std::string const& name, ParameterList const& value, std::string const& docString = "" )
 */
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set ( 

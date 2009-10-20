@@ -22,3 +22,11 @@ IF (${PACKAGE_NAME}_ENABLE_AztecOO)
     )
 
 ENDIF()
+
+IF (${PACKAGE_NAME}_ENABLE_Galeri)
+
+  ADD_SUBDIRECTORIES(
+    galeri
+    )
+
+ENDIF()

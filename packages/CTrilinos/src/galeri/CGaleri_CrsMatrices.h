@@ -33,22 +33,22 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_config.h"
 
 
-#ifdef HAVE_CTRILINOS_AMESOS
+#ifdef HAVE_CTRILINOS_GALERI
 
 
 
-/*! @file CAmesos.h
- * @brief Wrappers for Amesos */
+/*! @file CGaleri_CrsMatrices.h
+ * @brief Wrappers for Galeri_CrsMatrices */
 
 /* True C header file! */
 
 
-#ifndef CAMESOS_H
-#define CAMESOS_H
+#ifndef CGALERI_CRSMATRICES_H
+#define CGALERI_CRSMATRICES_H
 
 
-#include "CAmesos_BaseSolver.h"
-#include "CEpetra_LinearProblem.h"
+#include "CEpetra_CrsMatrix.h"
+#include "CEpetra_Map.h"
 #include "CTeuchos_ParameterList.h"
 #include "CTrilinos_enums.h"
 
@@ -59,51 +59,15 @@ extern "C" {
 
 
 
-/*! @name Amesos constructor wrappers */
+/*! @name Galeri_CrsMatrices static function wrappers */
 /*@{*/
 
 /*! @brief Wrapper for 
-   Amesos::Amesos()
+   Epetra_CrsMatrix* Galeri::CreateCrsMatrix(string MatrixType, const Epetra_Map* Map, Teuchos::ParameterList& List)
 */
-CT_Amesos_ID_t Amesos_Create (  );
-
-/*@}*/
-
-/*! @name Amesos destructor wrappers */
-/*@{*/
-
-/*! @brief Wrapper for 
-   Amesos::~Amesos()
-*/
-void Amesos_Destroy ( CT_Amesos_ID_t * selfID );
-
-/*@}*/
-
-/*! @name Amesos member wrappers */
-/*@{*/
-
-/*! @brief Wrapper for 
-   Amesos_BaseSolver *Amesos::Create(const char *ClassType, const Epetra_LinearProblem& LinearProblem )
-*/
-CT_Amesos_BaseSolver_ID_t Amesos_CreateSolver ( 
-  CT_Amesos_ID_t selfID, const char * ClassType, 
-  CT_Epetra_LinearProblem_ID_t LinearProblemID );
-
-/*! @brief Wrapper for 
-   bool Amesos::Query(const char * ClassType)
-*/
-boolean Amesos_Query ( 
-  CT_Amesos_ID_t selfID, const char * ClassType );
-
-/*@}*/
-
-/*! @name Amesos static function wrappers */
-/*@{*/
-
-/*! @brief Wrapper for 
-   static Teuchos::ParameterList Amesos::GetValidParameters()
-*/
-CT_Teuchos_ParameterList_ID_t Amesos_GetValidParameters (  );
+CT_Epetra_CrsMatrix_ID_t Galeri_CrsMatrices_CreateCrsMatrix ( 
+  char MatrixType[], CT_Epetra_Map_ID_t MapID, 
+  CT_Teuchos_ParameterList_ID_t ListID );
 
 /*@}*/
 
@@ -113,8 +77,8 @@ CT_Teuchos_ParameterList_ID_t Amesos_GetValidParameters (  );
 #endif
 
 
-#endif /* CAMESOS_H */
+#endif /* CGALERI_CRSMATRICES_H */
 
-#endif /* HAVE_CTRILINOS_AMESOS */
+#endif /* HAVE_CTRILINOS_GALERI */
 
 

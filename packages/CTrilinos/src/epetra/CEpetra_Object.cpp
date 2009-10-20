@@ -148,6 +148,16 @@ int Epetra_Object_ReportError (
         Message), ErrorCode);
 }
 
+void Epetra_Object_SetTracebackMode ( int TracebackModeValue )
+{
+    Epetra_Object::SetTracebackMode(TracebackModeValue);
+}
+
+int Epetra_Object_GetTracebackMode (  )
+{
+    return Epetra_Object::GetTracebackMode();
+}
+
 
 } // extern "C"
 
