@@ -35,6 +35,10 @@
 #cmakedefine HAVE_CTRILINOS_AZTECOO
 #cmakedefine CTrilinos_ENABLE_AztecOO
 
+/* If Galeri is built */
+#cmakedefine HAVE_CTRILINOS_GALERI
+#cmakedefine CTrilinos_ENABLE_Galeri
+
 /* Define to 1 if you have the <malloc.h> header file. */
 #cmakedefine HAVE_MALLOC_H
 
