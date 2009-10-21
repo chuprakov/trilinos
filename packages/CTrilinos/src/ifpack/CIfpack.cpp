@@ -127,9 +127,10 @@ int Ifpack_SetParameters (
     return ret;
 }
 
-const char * Ifpack_toString ( const  CT_EPrecType_E_t precType )
+const char * Ifpack_toString ( const CT_EPrecType_E_t precType )
 {
-    return Ifpack::toString((Ifpack::EPrecType) precType);
+    return Ifpack::toString(CTrilinos::convert_to_difficult_enum(
+        precType));
 }
 
 CT_Ifpack_Preconditioner_ID_t Ifpack_CreatePreconditioner_UsingType ( 
@@ -137,8 +138,8 @@ CT_Ifpack_Preconditioner_ID_t Ifpack_CreatePreconditioner_UsingType (
   const int overlap )
 {
     return CIfpack::storePreconditioner(Ifpack::Create(
-        (Ifpack::EPrecType) PrecType, CEpetra::getRowMatrix(
-        MatrixID).getRawPtr(), overlap));
+        CTrilinos::convert_to_difficult_enum(PrecType), 
+        CEpetra::getRowMatrix(MatrixID).getRawPtr(), overlap));
 }
 
 

@@ -105,7 +105,7 @@ int Ifpack_SetParameters (
 /*! @brief Wrapper for 
    static const char* Ifpack::toString(const EPrecType precType)
 */
-const char * Ifpack_toString ( const  CT_EPrecType_E_t precType );
+const char * Ifpack_toString ( const CT_EPrecType_E_t precType );
 
 /*! @brief Wrapper for 
    static Ifpack_Preconditioner* Ifpack::Create( EPrecType PrecType, Epetra_RowMatrix* Matrix, const int overlap = 0 )

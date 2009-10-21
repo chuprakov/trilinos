@@ -49,6 +49,12 @@ class CTrilinosTypeMismatchError : public Teuchos::ExceptionBase
     CTrilinosTypeMismatchError(const std::string& what_arg) : Teuchos::ExceptionBase(what_arg) {}
 };
 
+class CTrilinosMiscException : public Teuchos::ExceptionBase
+{
+  public:
+    CTrilinosMiscException(const std::string& what_arg) : Teuchos::ExceptionBase(what_arg) {}
+};
+
 
 } // namespace CTrilinos
 
