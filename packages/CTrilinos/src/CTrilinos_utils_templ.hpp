@@ -79,6 +79,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CAztecOO_StatusTestCombo_Cpp.hpp"
 #include "CAztecOO_StatusTestMaxIters_Cpp.hpp"
 #include "CAztecOO_StatusTestResNorm_Cpp.hpp"
+#include "CIfpack_Cpp.hpp"
+#include "CIfpack_Preconditioner_Cpp.hpp"
 
 #include "CTrilinos_enums.h"
 #include "CTrilinos_Table.hpp"
@@ -216,6 +218,11 @@ cast( Table<const T> &destTable, CTrilinos_Object_ID_t id )
             newid = destTable.cast(CAztecOO::getConstStatusTestResNorm(id));
             break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_IFPACK
+        case CT_Ifpack_Preconditioner_ID:
+            newid = destTable.cast(CIfpack::getConstPreconditioner(id));
+            break;
+#endif /* HAVE_CTRILINOS_IFPACK */
         default:
             break;
         }
@@ -338,6 +345,11 @@ cast( Table<const T> &destTable, CTrilinos_Object_ID_t id )
             newid = destTable.cast(CAztecOO::getStatusTestResNorm(id));
             break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_IFPACK
+        case CT_Ifpack_Preconditioner_ID:
+            newid = destTable.cast(CIfpack::getPreconditioner(id));
+            break;
+#endif /* HAVE_CTRILINOS_IFPACK */
         default:
             break;
         }
@@ -476,6 +488,11 @@ cast( Table<T> &destTable, CTrilinos_Object_ID_t id )
             newid = destTable.cast(CAztecOO::getStatusTestResNorm(id));
             break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_IFPACK
+        case CT_Ifpack_Preconditioner_ID:
+            newid = destTable.cast(CIfpack::getPreconditioner(id));
+            break;
+#endif /* HAVE_CTRILINOS_IFPACK */
         default:
             break;
         }
@@ -667,6 +684,16 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
             shares = rcp.shares_resource(CAztecOO::getConstStatusTestResNorm(id));
             break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_IFPACK
+        case CT_Ifpack_ID:
+            shares = rcp.shares_resource(CIfpack::getConstIfpack(id));
+            break;
+#endif /* HAVE_CTRILINOS_IFPACK */
+#ifdef HAVE_CTRILINOS_IFPACK
+        case CT_Ifpack_Preconditioner_ID:
+            shares = rcp.shares_resource(CIfpack::getConstPreconditioner(id));
+            break;
+#endif /* HAVE_CTRILINOS_IFPACK */
         default:
             break;
         }
@@ -808,6 +835,16 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
             shares = rcp.shares_resource(CAztecOO::getStatusTestResNorm(id));
             break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_IFPACK
+        case CT_Ifpack_ID:
+            shares = rcp.shares_resource(CIfpack::getIfpack(id));
+            break;
+#endif /* HAVE_CTRILINOS_IFPACK */
+#ifdef HAVE_CTRILINOS_IFPACK
+        case CT_Ifpack_Preconditioner_ID:
+            shares = rcp.shares_resource(CIfpack::getPreconditioner(id));
+            break;
+#endif /* HAVE_CTRILINOS_IFPACK */
         default:
             break;
         }

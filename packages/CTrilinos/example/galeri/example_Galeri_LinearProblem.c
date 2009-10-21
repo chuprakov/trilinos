@@ -102,7 +102,7 @@ int main(int argv, char* argc[])
   Matrix = Galeri_CrsMatrices_CreateCrsMatrix("Laplace2D", Map, GaleriList);
   rMatrix = Epetra_RowMatrix_Cast(Epetra_CrsMatrix_Abstract(Matrix));
 
-  ExactSolution = Epetra_Vector_Create(bMap, FALSE);
+  ExactSolution = Epetra_Vector_Create(bMap, TRUE);
   mExactSolution = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(ExactSolution));
   Epetra_MultiVector_Random(mExactSolution);
 

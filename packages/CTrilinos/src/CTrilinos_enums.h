@@ -110,7 +110,9 @@ typedef enum {
     CT_AztecOO_StatusTest_ID,            /*!< refers to an AztecOO_StatusTest table entry */
     CT_AztecOO_StatusTestCombo_ID,       /*!< refers to an AztecOO_StatusTestCombo table entry */
     CT_AztecOO_StatusTestMaxIters_ID,    /*!< refers to an AztecOO_StatusTestMaxIters table entry */
-    CT_AztecOO_StatusTestResNorm_ID      /*!< refers to an AztecOO_StatusTestResNorm table entry */
+    CT_AztecOO_StatusTestResNorm_ID,     /*!< refers to an AztecOO_StatusTestResNorm table entry */
+    CT_Ifpack_ID,                        /*!< refers to an Ifpack table entry */
+    CT_Ifpack_Preconditioner_ID          /*!< refers to an Ifpack_Preconditioner table entry */
 } CTrilinos_Type_ID_t;
 
 /*! The type in the struct below is actually used to identify the table in
@@ -466,6 +468,26 @@ typedef struct {
     boolean is_const;		/*!< Whether or not object was declared const */
 } CT_AztecOO_StatusTestResNorm_ID_t;
 #endif /* HAVE_CTRILINOS_AZTECOO */
+
+#ifdef HAVE_CTRILINOS_IFPACK
+/*! Struct used for referring to objects in the Ifpack table.  Methods
+ * that can be invoked on the underlying objects are listed in CIfpack.h */
+typedef struct {
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
+} CT_Ifpack_ID_t;
+#endif /* HAVE_CTRILINOS_IFPACK */
+
+#ifdef HAVE_CTRILINOS_IFPACK
+/*! Struct used for referring to objects in the Ifpack_Preconditioner table.  Methods
+ * that can be invoked on the underlying objects are listed in CIfpack_Preconditioner.h */
+typedef struct {
+    CTrilinos_Type_ID_t type;	/*!< Data type of the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
+} CT_Ifpack_Preconditioner_ID_t;
+#endif /* HAVE_CTRILINOS_IFPACK */
 
 
 #ifdef __cplusplus

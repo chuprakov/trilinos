@@ -77,6 +77,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CAztecOO_StatusTestCombo_Cpp.hpp"
 #include "CAztecOO_StatusTestMaxIters_Cpp.hpp"
 #include "CAztecOO_StatusTestResNorm_Cpp.hpp"
+#include "CIfpack_Cpp.hpp"
+#include "CIfpack_Preconditioner_Cpp.hpp"
 
 
 namespace CTrilinos {
@@ -235,6 +237,12 @@ enum2str( CTrilinos_Type_ID_t ty )
     case CT_AztecOO_StatusTestResNorm_ID:
         s.assign("CT_AztecOO_StatusTestResNorm_ID");
         break;
+    case CT_Ifpack_ID:
+        s.assign("CT_Ifpack_ID");
+        break;
+    case CT_Ifpack_Preconditioner_ID:
+        s.assign("CT_Ifpack_Preconditioner_ID");
+        break;
     default:
         s.assign("(unrecognized)");
         break;
@@ -388,6 +396,16 @@ isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
             shares = isSameObject(CAztecOO::getConstStatusTestResNorm(id1), id2);
             break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_IFPACK
+        case CT_Ifpack_ID:
+            shares = isSameObject(CIfpack::getConstIfpack(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_IFPACK */
+#ifdef HAVE_CTRILINOS_IFPACK
+        case CT_Ifpack_Preconditioner_ID:
+            shares = isSameObject(CIfpack::getConstPreconditioner(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_IFPACK */
         default:
             break;
         }
@@ -529,6 +547,16 @@ isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 )
             shares = isSameObject(CAztecOO::getStatusTestResNorm(id1), id2);
             break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_IFPACK
+        case CT_Ifpack_ID:
+            shares = isSameObject(CIfpack::getIfpack(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_IFPACK */
+#ifdef HAVE_CTRILINOS_IFPACK
+        case CT_Ifpack_Preconditioner_ID:
+            shares = isSameObject(CIfpack::getPreconditioner(id1), id2);
+            break;
+#endif /* HAVE_CTRILINOS_IFPACK */
         default:
             break;
         }
