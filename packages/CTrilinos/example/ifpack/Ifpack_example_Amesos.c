@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 
   /* initialize MPI and Epetra communicator */
 #ifdef HAVE_MPI
-  MPI_Init(&argv, &argc);
+  MPI_Init(&argc, &argv);
   Comm = Epetra_Comm_Cast(Epetra_MpiComm_Abstract(Epetra_MpiComm_Create(MPI_COMM_WORLD)));
 #else
   Comm = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(Epetra_SerialComm_Create()));

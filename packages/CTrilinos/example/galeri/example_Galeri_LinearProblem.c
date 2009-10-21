@@ -57,7 +57,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
  * main driver
  * =========== */
 
-int main(int argv, char* argc[])
+int main(int argc, char* argv[])
 {
   int NumProc, MyPID;
   double ResidualNorm;
@@ -73,7 +73,7 @@ int main(int argv, char* argc[])
   CT_Epetra_LinearProblem_ID_t Problem;
 
 #ifdef HAVE_MPI
-  MPI_Init(&argv, &argc);
+  MPI_Init(&argc, &argv);
   Comm = Epetra_Comm_Cast(Epetra_MpiComm_Abstract(Epetra_MpiComm_Create(MPI_COMM_WORLD)));
 #else
   Comm = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(Epetra_SerialComm_Create()));

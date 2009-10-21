@@ -289,6 +289,8 @@ TEUCHOS_UNIT_TEST( Epetra_MpiComm , Comm )
 
   /* Now check the result of the call to the wrapper function */
   /* ??? */
+
+  (void) c;
 }
 
 /**********************************************************************
@@ -305,6 +307,8 @@ TEUCHOS_UNIT_TEST( Epetra_MpiComm , MyPID )
 
   /* Now check the result of the call to the wrapper function */
   /* ??? */
+
+  (void) ret;
 }
 
 /**********************************************************************
@@ -321,6 +325,8 @@ TEUCHOS_UNIT_TEST( Epetra_MpiComm , NumProc )
 
   /* Now check the result of the call to the wrapper function */
   /* ??? */
+
+  (void) ret;
 }
 
 /**********************************************************************
