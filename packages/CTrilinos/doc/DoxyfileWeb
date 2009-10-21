@@ -45,15 +45,22 @@ PROJECT_NUMBER         = 1.0
 IMAGE_PATH             = .
 
 INPUT                  = . ../src
-FILE_PATTERNS          = CEpetra*.h CTeuchos*.h CAmesos*.h CTrilinos_enums.h index.doc
+#FILE_PATTERNS          = CEpetra*.h CTeuchos*.h CAmesos*.h CTrilinos_enums.h index.doc
+FILE_PATTERNS          = *.h index.doc
 RECURSIVE              = YES
 EXCLUDE                = ./html
+EXCLUDE_PATTERNS       = */src/CTrilinos_Version.h */src/CTrilinos_ConfigDefs.h
 
 EXAMPLE_PATH           = ../example
 EXAMPLE_PATTERNS       = *.c
 EXAMPLE_RECURSIVE      = YES
 
-TAGFILES               = ../../common/tag_files/epetra.tag=../../../epetra/doc/html ../../common/tag_files/teuchos.tag=../../../teuchos/doc/html
+TAGFILES               = ../../common/tag_files/epetra.tag=../../../epetra/doc/html \
+			 ../../common/tag_files/teuchos.tag=../../../teuchos/doc/html \
+			 ../../common/tag_files/amesos.tag=../../../amesos/doc/html \
+			 ../../common/tag_files/aztecoo.tag=../../../aztecoo/doc/html \
+			 ../../common/tag_files/galeri.tag=../../../galeri/doc/html \
+			 ../../common/tag_files/ifpack.tag=../../../ifpack/doc/html
 GENERATE_TAGFILE       = ../../common/tag_files/ctrilinos.tag
 
 EXTRACT_ALL            = NO
@@ -93,6 +100,6 @@ MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
 SEARCH_INCLUDES        = NO
 INCLUDE_FILE_PATTERNS  = 
-PREDEFINED             = DOXYGEN_COMPILE DOXYGEN_SHOULD_SKIP_THIS HAVE_MPI HAVE_CTRILINOS_AMESOS
+PREDEFINED             = DOXYGEN_COMPILE DOXYGEN_SHOULD_SKIP_THIS HAVE_MPI HAVE_CTRILINOS_AMESOS HAVE_CTRILINOS_AZTECOO HAVE_CTRILINOS_GALERI HAVE_CTRILINOS_IFPACK
 
 

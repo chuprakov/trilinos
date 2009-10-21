@@ -128,3 +128,18 @@ to Epetra can be found in <tt>verySimple.c</tt>.
  * This example follows from the Amesos example by the same name.
 */
 
+/*! \example simple_epetra_aztecoo.c
+ * This is an example of how to use the CTrilinos interface to AztecOO.
+ * This example follows from the AztecOO example by the same name.
+*/
+
+/*! \example example_Galeri_LinearProblem.c
+ * This is an example of how to use the CTrilinos interface to Galeri.
+ * This example follows from the Galeri example LinearProblem.
+*/
+
+/*! \example Ifpack_example_Amesos.c
+ * This is an example of how to use the CTrilinos interface to Ifpack.
+ * This example follows from the Ifpack example Ifpack_ex_Amesos.
+*/
+
