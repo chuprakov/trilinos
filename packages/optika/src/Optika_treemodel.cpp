@@ -27,6 +27,8 @@
 // @HEADER
 #include <iostream>
 #include "Optika_treemodel.hpp"
+#include "Teuchos_XMLParameterListWriter.hpp"
+#include <QTextStream>
 
 namespace Optika{
 
@@ -169,15 +171,11 @@ bool TreeModel::writeOutput(QString fileName){
 	if(!file->open(QIODevice::WriteOnly)){
 		return false;
 	}
-	QXmlStreamWriter xmlWriter(file);
-	xmlWriter.setAutoFormatting(true);
-	xmlWriter.writeStartDocument();
-	xmlWriter.writeStartElement("ParameterList");
-	for(int i=0; i<rootItem->getChildItems().size(); i++){
-		rootItem->getChildItems().at(i)->writeOutput(xmlWriter);
-	}
-	xmlWriter.writeEndElement();
-	xmlWriter.writeEndDocument();
+	std::ofstream outputFile;
+	Teuchos::XMLParameterListWriter plWriter;
+	Teuchos::XMLObject xmlOutput = plWriter.toXML(*validParameters);
+	QTextStream outStream(file);
+	outStream << QString::fromStdString(xmlOutput.toString());
 	file->close();
 	delete file;
 	saved = true;

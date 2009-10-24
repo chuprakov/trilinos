@@ -148,13 +148,6 @@ public:
 	bool hasValidValue() const;
 
 	/**
-	 * Writes the current state of the TreeItem to an xml stream
-	 *
-	 * @param xmlWriter The xml stream to which the object should write.
-	 */
-	void writeOutput(QXmlStreamWriter &xmlWriter);
-
-	/**
 	 * Changes the value of the TreeItem. Should only be used with TreeItems that represent Parameters.
 	 *
 	 * @param value The new value to be assigned to the TreeItem.

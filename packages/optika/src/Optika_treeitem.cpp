@@ -163,22 +163,6 @@ bool TreeItem::hasValidValue() const{
 
 }
 	
-void TreeItem::writeOutput(QXmlStreamWriter &xmlWriter){
-	if(data(2).toString() == "list"){
-		xmlWriter.writeStartElement("ParameterList");
-		xmlWriter.writeAttribute("name", data(0).toString());
-		for(int i=0; i<childCount(); i++){
-			dynamic_cast<TreeItem*>(child(i))->writeOutput(xmlWriter);
-		}
-		xmlWriter.writeEndElement();
-	}
-	else{
-		xmlWriter.writeEmptyElement("Parameter");
-		xmlWriter.writeAttribute("name", data(0).toString());
-		xmlWriter.writeAttribute("value", data(1).toString());
-		xmlWriter.writeAttribute("type", data(2).toString());
-	}
-}
 
 bool TreeItem::changeValue(QVariant value){
 	if(itemData[1].toString() == value.toString()){
