@@ -466,7 +466,7 @@ void DecompositionSystemVarReductImp::update_decomp(
       ,C_ptr.get()                                             // C
       ,D_imp_used_ == MAT_IMP_EXPLICIT ? D_ptr.get() : NULL    // D?
       ,NULL                                                    // GcUP == Uz
-      ,(mat_rel == mat_rel == MATRICES_INDEP_IMPS
+      ,(mat_rel == MATRICES_INDEP_IMPS
         ? BasisSystem::MATRICES_INDEP_IMPS
         : BasisSystem::MATRICES_ALLOW_DEP_IMPS )
       ,out && olevel >= PRINT_BASIC_INFO ? out : NULL
