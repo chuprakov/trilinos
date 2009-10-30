@@ -1,11 +1,157 @@
 /*! \mainpage CTrilinos: C interface to Trilinos
 
-\section Overview
+\section purpose Purpose of CTrilinos
 
-To avoid passing pointers back and forth between C and C++, we instead
-utilize a lightweight identifier struct that can be used to pull the
-underlying object out of a table so that its methods may be invoked.
-This struct has the form
+Trilinos is implemented in C++ to allow it to take advantage of the
+many benefits of object-oriented programming.  There are a number of
+scientific communities that, due to the existence of legacy codes,
+are centered around the Fortran language.  Although the Fortran 2003
+standard has added object-oriented features that are finally making
+it into compiler implementations, the language interoperability
+features are limited to the (non-object-oriented) C language.  Our
+solution to the problem of interfacing object-oriented Fortran to
+the object-oriented features of Trilinos that are implemented in C++
+is as follows:
+
+\code
+Trilinos
+   ||
+   \/
+CTrilinos
+   ||
+   \/
+ForTrilinos
+procedural
+ bindings
+   ||
+   \/
+ForTrilinos
+  objects
+\endcode
+
+The CTrilinos layer is a set of C++ helper code whose function
+prototypes are declared <tt>extern C</tt> in order to be callable
+from C.  The ForTrilinos procedural bindings are simply a
+<tt>bindC</tt> interface to CTrilinos.  Finally, the ForTrilinos
+objects are lightweight objects that wrap the procedural bindings to
+give ForTrilinos an object-oriented interface.
+
+The C language lacks many features utilized by Trilinos, e.g. function
+overloading, inheritance, operator overloading, templated functions,
+and templated classes.  This leads to an awkward interface between the
+C and C++ code.  We let our goal of providing an object-oriented
+Fortran interface to Trilinos guides our design philosophy.  In
+particular, we plan so that some of the less-than-elegant features of
+the intermediate layers can be hidden by the object-oriented Fortran
+layer.
+
+Functionality from many classes in other Trilinos packages has been
+brought to the ForTrilinos procedural bindings through CTrilinos.
+Providing access to that functionality via the object-oriented
+portion of ForTrilinos, in a way that is intuitive to Fortran users,
+is something that we are still working out.  Unimplemented/buggy
+features from the Fortran 2003 standard have caused us to put off
+many design decisions relating to this aspect of the code.
+
+\section invoking Invoking Object Methods from C
+
+Say we have a pointer, <tt>mv</tt>, to an object of class
+Epetra_MultiVector.  In C++, we would invoke the method
+<tt>Random()</tt> directly on the object, i.e.:
+
+\code
+Epetra_MultiVector *mv = new Epetra_MultiVector(...);
+mv->Random();
+\endcode
+
+Although C can handle pointers to C++ classes, it cannot be used to
+directly invoke the class methods on the object.  Instead, a helper
+function with an interface that allows it to be called from C (using
+<tt>extern C</tt>) needs to be implemented in C++.  Such a helper
+function is named for the class and method it invokes for us, i.e.:
+
+\code
+Epetra_MultiVector_Random(mv);  /* Exposes raw pointers to C */
+\endcode
+
+This solution, however, would give the C code access to raw pointers,
+which is a segfault waiting to happen.  Instead, we can give the
+object a "name" and then deny the C code direct access to the
+object's pointer.  The C code would only be allowed to refer to the
+object by name (or some other identifying information), e.g.:
+
+\code
+Epetra_MultiVector_Random(mv_id);  /* Safer! */
+\endcode
+
+This is the approach we have taken with CTrilinos.
+
+\section implem The CTrilinos Implementation
+
+Trilinos denies the interfaced C or Fortran code direct access to
+the objects intantiated by Trilinos by storing them internally in
+type-specific tables and only allowing the objects to be referred to
+by "name".
+
+To refer to an object, one uses a struct containing identifying
+information.  As far as the user need be concerned, this identifying
+(ID) struct is a black box.  There is NEVER a valid reason for the
+user to directly modify the internal state of the ID struct.
+
+Each wrapped class has its own custom (but internally identical) ID
+struct type to allow for compile-time type checking.  Using the C
+language casting construct to switch the type of the struct may allow
+the code to compile, but it <b>will</b> result in an exception being
+thrown from deep within CTrilinos, which will gracelessly terminate
+execution.  To create an Epetra_MultiVector, one would follow the
+example below:
+
+\code
+CT_Epetra_MultiVector_ID_t mv_id;
+mv_id = Epetra_MultiVector_Create(...);
+\endcode
+
+If the ID struct for an object goes out of scope, the underlying
+object will not be destroyed and the user will lose the ability to
+destroy it.  The CTrilinos object-specific <tt>_Destroy()</tt>
+function should <b>always</b> be invoked before the ID struct goes
+out of scope.  If an entry in another table refers to the same
+underlying object, invoking this destructor will not have an adverse
+effect; the object will not be freed until there are no remaining
+entries for it in any table.
+
+The ID struct should never be duplicated; this will not prevent the
+underlying object from being freed and will instead lead to unexpected
+results if the table entry is later re-used for a new object.
+
+Because the internal state of the ID struct should remain constant
+over the life of an object, the only CTrilinos function that expects
+to be passed a pointer to the ID struct is the <tt>_Destroy()</tt>
+function.  Calling this function will, at a minimum, set the
+<tt>type</tt> member of the ID struct to the value
+<tt>CT_Invalid_ID</tt>.  To invoke this function on an
+Epetra_MultiVector:
+
+\code
+Epetra_MultiVector_Destroy(&mv_id);
+\endcode
+
+If one passes an ID struct by value to a user function that calls the
+<tt>_Destroy()</tt> function on an object, the change in internal
+state of the ID struct associated with the removal of the object from
+the table will not be propagated back to the calling function, and
+will result in the same undesirable effects as duplicating the ID
+struct.
+
+\section devdetails Developer-Level Details
+
+Each class wrapped by CTrilinos has associated with it a pair of
+tables of templated class <tt>CTrilinos_Table</tt>.
+<tt>CTrilinos_Table</tt> is derived from the templated
+<tt>Teuchos::SimpleObjectTable</tt>.
+
+The type-specific ID struct for each wrapped class has an identical
+form to the generic ID struct, <tt>CTrilinos_Object_ID_t</tt>:
 
 \code
 typedef struct {
@@ -15,101 +161,280 @@ typedef struct {
 } CTrilinos_Object_ID_t;
 \endcode
 
-Although \link CTrilinos_Object_ID_t::type type \endlink in this
-struct can be thought of as referring to the type of object to which
-it refers, this is not completely accurate.  In reality,
-\link CTrilinos_Object_ID_t::type type \endlink identifies the
-type-specific table in which the object is stored, and the underlying
-object may be of any type that can be legally
-<tt>dynamic_cast&lt;&gt;</tt>'ed to the table type.  This is a critical
-detail that must be understood.  The field
-\link CTrilinos_Object_ID_t::index index \endlink specifies which
-element of the table corresponds to the object in question.
+The ID structs presently contain three members:
 
-For every class, C, that has been wrapped by CTrilinos (including
-virtual classes), two tables exist: one that stores Teuchos::RCP &lt;const C&gt;
-(for when \link CTrilinos_Object_ID_t::is_const is_const \endlink is
-#TRUE) and a separate one to store Teuchos::RCP &lt;C&gt; (for when
-\link CTrilinos_Object_ID_t::is_const is_const \endlink is #FALSE).
-This ensures that the only methods that can be invoked on
-<tt>const</tt> objects are the ones declared <tt>const</tt> themselves.
-It is critical to note here that each table entry contains a Teuchos::RCP
-to the object, not the object itself.  This allows an object to be
-referenced by more than one table, just as more than one pointer could
-exist to any given object.
+<tt>type</tt>: an enumerated data type identifying which table holds
+a reference to the object.  The name is somewhat misleading as the
+value of this member does not necessarily correspond to the type of
+the underlying object.  The table stores a reference counter pointer
+(<tt>RCP</tt>) to each object, not a copy of the object itself.  The
+reference-counting feature of the <tt>RCP</tt> applies only within
+CTrilinos itself and will not affect the user code.
 
-When a method expects an argument of class C, its wrapper expects a to
-be passed a struct referring to the type-specific table for class C.
-To allow the compiler to do compile-time type-checking of the
-arguments, each wrapped class has its own, type-specific struct, which
-is identical in form to the generic one described above.  For example,
-the struct for an Epetra_Comm, whose
-\link CT_Epetra_Comm_ID_t::type type \endlink is
-\link CTrilinos_Type_ID_t::CT_Epetra_Comm_ID CT_Epetra_Comm_ID\endlink,
-is named CT_Epetra_Comm_ID_t.  There is no circumstance under which
-\link CTrilinos_Object_ID_t::type type \endlink should not correspond
-to the type name of the struct.
+<tt>is_const</tt>: a boolean indicating whether the object was
+declared <tt>const</tt> at the time the reference to it was stored in
+the table.  An <tt>RCP</tt> to a <tt>const</tt> object would be
+stored in a separate table from one whose internal state is allowed
+to be modified.
 
-If one wants to pass an object of a class derived from C to a method
-expecting class C, then a Teuchos::RCP to that object must first be
-stored in the C table.  This can be done using the CTrilinos casting
-methods.  Although two function calls are necessary, as shown below,
-they should ALWAYS be used in pairs and the intermediate result should
-NEVER be stored:
+<tt>index</tt>: which entry in the table corresponds to the object in
+question.  Table indices are recycled when objects are removed from
+the table and new ones are added.
 
-\code
-CT_Epetra_SerialComm_ID_t serialComm;
-CT_Epetra_Comm_ID_t Comm;
+If the user were to modify the internal state of any instance of the
+ID struct, the consequences would be disasterous.  In the future, it
+might be prudent to add a checksum to the struct so that corruption
+can be detected.  Although this would likely have negligible effect
+on the memory footprint of the code, verifying the checksum every time
+the user requests that a method be invoked might incur a substantial
+performance hit.
 
-serialComm = Epetra_SerialComm_Create();
-Comm = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(serialComm));
-\endcode
+The tables are designed to prevent segfaults by catching attempts to
+access invalid table entries.  Table indices are recycled, however,
+so a user who duplicated an ID struct somewhere along the line could
+potentially be accessing a completely different object than expected.
+Later, we will present a list of "rules" that users should follow in
+order to prevent such an occurrence.
 
-The inner function simply changes the type of the struct from
-CT_Epetra_SerialComm_ID_t to CTrilinos_Object_ID_t, which is the only
-struct type that can be passed to the outer function.  The outer
-function pulls the underlying object from the Epetra_SerialComm table
-using its Teuchos::RCP, does a <tt>dynamic_cast&lt;&gt;</tt> on the
-object, and stores a new Teuchos::RCP in the Epetra_Comm table.
-Because the two structs serialComm and Comm now refer to the same
-underlying object, any operation affecting one will affect the other
-as well.
+Although CTrilinos uses an <tt>RCP</tt> to decide when to free the
+underlying object, the user must explicitly remove objects from the
+tables when they are no longer needed.  If the underlying object was
+created using a CTrilinos wrapper for a constructor, then CTrilinos
+assumes ownership of that object and will free it when it is no
+longer referenced by any CTrilinos table.
 
-An object can be removed from the table using its Destroy function,
+However, when a pointer or reference to an object (call it <tt>B</tt>)
+is returned by a method of object <tt>A</tt>, CTrilinos operates under
+the assumption that <tt>B</tt> may be in use insternally by
+<tt>A</tt>, and will only store a non-owned <tt>RCP</tt> to the
+object.  As such, CTrilinos will never attempt to free <tt>B</tt>,
+even when no references to it remain in a CTrilinos table.  In this
+case, it is possible that <tt>B</tt> could be destroyed when
+<tt>A</tt> is destroyed, and that an entry for it will still exist in
+the table.
+
+\section externc The Pain of "extern C"
+
+The C language does not support function overloading, so all
+overloaded functions (like constructors) must be given unique names.
+For example, the overloaded constructors:
 
 \code
-Epetra_Comm_Destroy(&Comm);
+Epetra_MultiVector::Epetra_MultiVector(const Epetra_BlockMap& Map, int NumVectors, bool zeroOut = true);
+Epetra_MultiVector::Epetra_MultiVector(const Epetra_MultiVector& Source);
+Epetra_MultiVector::Epetra_MultiVector(Epetra_DataAccess CV, const Epetra_BlockMap& Map, double *A, int MyLDA, int NumVectors);
+Epetra_MultiVector::Epetra_MultiVector(Epetra_DataAccess CV, const Epetra_BlockMap& Map, double **ArrayOfPointers, int NumVectors);
+Epetra_MultiVector::Epetra_MultiVector(Epetra_DataAccess CV, const Epetra_MultiVector& Source, int *Indices, int NumVectors);
+Epetra_MultiVector::Epetra_MultiVector(Epetra_DataAccess CV, const Epetra_MultiVector& Source, int StartIndex, int NumVectors);
 \endcode
 
-When removed from the table, \link CT_Epetra_Comm_ID_t::type type \endlink
-will be changed to CT_Invalid_ID and \link CT_Epetra_Comm_ID_t::index index \endlink
-set to -1.  The underlying object will only be destroyed when it is no
-longer referenced by any table, provided that the object was created
-using a CTrilinos constructor.  If it was stored in a table after being
-returned by some method, then CTrilinos assumes no ownership of that
-object and will not destroy it even when it is removed from the final
-table.
+would each need to be given a unique name when wrapped.  Check the
+Doxygen pages to find out how your favorite overloaded functions have
+been renamed!
 
-The name of all wrappers for methods of a class will begin with the
-name of the class.  Due to a lack of function overloading in C, many
-of the methods have been renamed, so check the Doxygen pages to find
-out the exact name of the wrapper for any given method.  The first
-argument of any method, with the exceptions being constructors,
-destructors, and static methods, will be the struct identifying the
-object on which the method is to be invoked.  For example,
+The C language has no concept of inheritance, so a separate wrapper
+would have to be created for each class that inherits a given method
+from the parent class.  For example, the wrapper for the method
 
 \code
-Epetra_Comm_Barrier(Comm);
+int Epetra_MultiVector::Norm2(double * Result) const;
 \endcode
 
-is the wrapper for
+would only invoke the <tt>Norm2()</tt> method of an Epetra_MultiVector
+object, even though Epetra_Vector inherits this method.  A separate
+wrapper would need to be written for Epetra_Vector.
+
+Also because the C language has no concept of inheritance, a separate
+wrapper would have to be created for each class derived from each
+argument of a given method.  For example, for a hypothetical method
+of the Epetra_RowMatrix class that takes any other Epetra_RowMatrix
+as an argument: there are about six flavors of Epetra_RowMatrix, so
+that would be 36 wrappers to create, all with unique names?!
+
+\section casting Possible Casting Solutions
+
+Following from the example mentioned in the above paragraph, such a
+C++ class method might be invoked as follows:
 
 \code
-Epetra_Comm::Barrier().
+Epetra_CrsMatrix *A = new Epetra_CrsMatrix(...);
+Epetra_JadMatrix *B = new Epetra_JadMatrix(...);
+
+A->TwoRowMatrixOp(B);
 \endcode
 
-A simple, yet illustrative, example of using the CTrilinos interface
-to Epetra can be found in <tt>verySimple.c</tt>.
+The corresponding C code would be:
+
+\code
+CT_Epetra_CrsMatrix_ID_t A;
+CT_Epetra_JadMatrix_ID_t B;
+
+A = Epetra_CrsMatrix_Create(...);
+B = Epetra_JadMatrix_Create(...);
+
+Epetra_RowMatrix_TwoRowMatrixOp_Crs_Jad(A, B);
+\endcode
+
+This looks pretty simple until you remember that there are 35 other
+versions of <tt>Epetra_RowMatrix_TwoRowMatrixOp()</tt>!
+
+An alternative involving explicit casting would be:
+
+\code
+CT_Epetra_CrsMatrix_ID_t A;
+CT_Epetra_JadMatrix_ID_t B;
+CT_Epetra_RowMatrix_ID_t rA, rB;
+
+A = Epetra_CrsMatrix_Create(...);
+rA = Cast_To_Epetra_RowMatrix(A);
+
+B = Epetra_JadMatrix_Create(...);
+rB = Cast_To_Epetra_RowMatrix(B);
+
+Epetra_RowMatrix_TwoRowMatrixOp(rA, rB);
+\endcode
+
+Now we only have one version of the wrapper, but we still need casting
+functions.  You may have noticed that ID structs for Epetra_CrsMatrix
+and Epetra_JadMatrix have been passed to the same casting function
+above, which is not possible in C!
+
+If we create a separate casting function for every pair of classes
+(source type and resulting type), we will again have an O(N^2)
+explosion of code.  We could cut down on some of the code by
+carefully tracking inheritance and only creating functions for legal
+casts, but that would potentially require modifying the wrappers for
+<b>every</b> class each time a new class is wrapped.
+
+\section twostep The Two-Step Cast
+
+Our chosen solution to the casting issue is to create a two-step cast.
+Because C does strict type checking on structs passed to the casting
+function, creating only one casting function for any given class
+requires that all such functions take in a single, "generic" struct
+type.
+
+To use such a casting function, we need only to create a second
+function for each class that converts that class's ID struct into the
+generic type.  So instead of needing O(N^2) casting functions, we now
+only need O(N) functions.  This could (but should not) be used as
+follows:
+
+\code
+CT_Epetra_CrsMatrix_ID_t A;
+CTrilinos_Object_ID_t genericA;
+CT_Epetra_RowMatrix_ID_t rA;
+
+A = Epetra_CrsMatrix_Create(...);
+
+genericA = Epetra_CrsMatrix_Abstract(A);  /* Don't do this in real code! */
+rA = Epetra_RowMatrix_Cast(genericA);
+\endcode
+
+This will give the user the ability to attempt to cast any class to
+any other class; we let C++'s <tt>dynamic_cast<></tt> function determine the
+legality of any cast behind the scenes.
+
+But the above example has a major pitfall: storing the intermediate
+state of the two-step casting operation (i.e. <tt>genericA</tt> in the
+above example) violates the rule of not duplicating an ID struct.  In
+practice, the two-step cast should <b>always</b> be performed
+without storing the intermediate state:
+
+\code
+CT_Epetra_CrsMatrix_ID_t A;
+CT_Epetra_RowMatrix_ID_t rA;
+
+A = Epetra_CrsMatrix_Create(...);
+
+rA = Epetra_RowMatrix_Cast(Epetra_CrsMatrix_Abstract(A));
+\endcode
+
+Behind the scenes, performing a cast simply adds an <tt>RCP</tt> to
+the underlying object to the table of the new type.  Because no copy
+of the underlying object is involved, all methods invoked on the
+object associated with <tt>rA</tt> will impact <tt>A</tt> identically.
+Calling the CTrilinos destructor function on either <tt>rA</tt> or
+<tt>A</tt> will remove the <tt>RCP</tt> from either the
+Epetra_RowMatrix or Epetra_CrsMatrix table, respectively, but will
+not cause the underlying object to be freed until the destructor is
+called on both tables.
+
+When any method returns the (non-generic) ID struct associated with
+an object, that struct should always be stored so that the destructor
+function can be invoked.  Doing the following instead would result in
+a memory leak:
+
+\code
+int nels;
+CT_Epetra_CrsGraph_ID_t G;
+
+G = Epetra_CrsGraph_Create(...);
+
+nels = Epetra_BlockMap_NumMyElements(Epetra_CrsGraph_RowMap());  /* Leak! */
+\endcode
+
+\section rules Summary of the Rules
+
+To prevent data corruption, follow these rules:
+
+\ul
+
+\li NEVER modify ID struct members directly; treat it as a black box.
+
+\li NEVER make a copy of an ID struct.
+
+\li NEVER store an generic ID struct.
+
+\endul
+
+To prevent memory leaks, follow these rules:
+
+\ul
+
+\li ALWAYS explicitly call the CTrilinos destructor method for an object
+BEFORE its ID struct goes out of scope.
+
+\li ALWAYS store the final struct produced by a cast, so that you can
+call its destructor later.
+
+\li ALWAYS store a struct returned by a method so that you can call its
+destructor later.
+
+\endul
+
+\section examples Simple Example Code
+
+The following code comes from the CTrilinos example
+<tt>verySimple.c</tt>.  This example follows from the Epetra example
+of the same name.
+
+Note that the only CTrilinos header files that should be included in
+user code using pre-processor macros are ones ending in <tt>.h</tt>.
+All files ending in <tt>.hpp</tt> support the internal workings of
+CTrilinos and should never be needed outside CTrilinos itself.
+Moreover, they include C++ code and, as such, their inclusion in C
+code will make the compiler very unhappy.
+
+\include verySimple.c
+
+\section packages Packages
+
+Portions of the following packages have been wrapped thus far:
+
+\ul
+\li Epetra
+\li Amesos
+\li AztecOO
+\li Galeri
+\li Ifpack
+\li Teuchos
+\endul
+
+We choose what packages and classes to wrap based in part on demand,
+so please let us know which classes are of interest to you.  If there
+is a simple example code that makes use of the same classes you'd
+like wrapped, please point us to it.
 */
 
 /*! \example verySimple.c

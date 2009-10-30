@@ -36,6 +36,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "az_aztec_defs.h"
 #include "CAztecOO.h"
 
+#include "CTrilinos_enums.h"
 #ifdef HAVE_MPI
 #include "mpi.h"
 #include "CEpetra_MpiComm.h"

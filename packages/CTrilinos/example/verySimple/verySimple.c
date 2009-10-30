@@ -36,6 +36,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include <assert.h>
 #include <math.h>
 
+#include "CTrilinos_enums.h"
 #include "CEpetra_SerialComm.h"
 #include "CEpetra_Comm.h"
 #include "CEpetra_Map.h"

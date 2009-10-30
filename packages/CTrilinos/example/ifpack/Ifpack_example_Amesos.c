@@ -35,6 +35,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include <stdio.h>
 #include <string.h>
 
+#include "CTrilinos_enums.h"
 #ifdef HAVE_MPI
 #include "CEpetra_MpiComm.h"
 #else

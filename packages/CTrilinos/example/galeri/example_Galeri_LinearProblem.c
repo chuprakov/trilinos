@@ -34,6 +34,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "CTrilinos_enums.h"
 #include "CGaleri_Maps.h"
 #include "CGaleri_CrsMatrices.h"
 #include "CGaleri_Utils.h"

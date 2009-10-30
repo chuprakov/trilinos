@@ -43,6 +43,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #endif
 #endif
 
+#include "CTrilinos_enums.h"
 #include "CEpetra_CrsGraph.h"
 #include "CEpetra_Map.h"
 #include "CEpetra_BlockMap.h"

@@ -45,7 +45,6 @@ PROJECT_NUMBER         = 1.0
 IMAGE_PATH             = .
 
 INPUT                  = . ../src
-#FILE_PATTERNS          = CEpetra*.h CTeuchos*.h CAmesos*.h CTrilinos_enums.h index.doc
 FILE_PATTERNS          = *.h index.doc
 RECURSIVE              = YES
 EXCLUDE                = ./html
