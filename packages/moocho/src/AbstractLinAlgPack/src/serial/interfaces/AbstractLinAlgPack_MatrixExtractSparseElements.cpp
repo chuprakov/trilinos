@@ -58,8 +58,8 @@ void MatrixExtractSparseElements::coor_extract_nonzeros(
   ,const index_type             col_offset
    ) const
 {
-  int dl,du;
-  get_dl_du(extract_region,&dl,&du);
+  index_type dl,du;
+  get_dl_du(extract_region, &dl, &du);
   coor_extract_nonzeros(
     element_uniqueness
     ,NULL,NULL,Range1D(1,rows()),Range1D(1,cols()),dl,du

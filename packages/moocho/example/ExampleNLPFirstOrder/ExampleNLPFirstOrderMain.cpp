@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
     // Initialize stuff
     //
 
-    size_type n;
+    int n;
     value_type xo;
     bool has_bounds;
     bool dep_bounded;

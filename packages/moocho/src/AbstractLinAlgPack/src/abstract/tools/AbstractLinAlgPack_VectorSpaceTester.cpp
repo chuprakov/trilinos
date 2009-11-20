@@ -66,11 +66,12 @@ VectorSpaceTester::VectorSpaceTester(
 {}
 
 bool VectorSpaceTester::check_vector_space(
-  const VectorSpace &space
-  ,std::ostream     *out
+  const VectorSpace &space,
+  std::ostream *out
   ) const
 {
-  namespace rcp = MemMngPack;
+
+  using Teuchos::as;
 
   bool success = true, result = false;
 
@@ -109,7 +110,7 @@ bool VectorSpaceTester::check_vector_space(
        << "\n*** VectorSpaceTester::check_vector_space(...) ***"
        << "\n**************************************************\n";
 
-  RTOp_index_type
+  index_type
     n = space.dim();
   RTOp_value_type
     err     = 0.0,
@@ -188,10 +189,16 @@ bool VectorSpaceTester::check_vector_space(
     *z[k] = 0.0;
     if(out && print_vectors())
       *out << std::endl << z_name << " =\n" << *z[k];
-    {for(int r = 0; r < num_random_tests(); ++r) {
+    {for(index_type r = 0; r < num_random_tests(); ++r) {
       std::srand( n / (1+r) + r ); // This is very important in a parallel program!
-      const RTOp_index_type
-        i = my_min( n, my_max( (RTOp_index_type)(((double)std::rand() / RAND_MAX) * n + 1.0), 1 ) );
+      const index_type
+        i = my_min(
+          n,
+          my_max(
+            as<index_type>(((double)std::rand() / RAND_MAX) * n + 1.0),
+            as<index_type>(1)
+            )
+          );
       const RTOp_value_type
         val = 10.0;
       
@@ -265,11 +272,11 @@ bool VectorSpaceTester::check_vector_space(
     if(out && print_vectors())
       *out << std::endl << z_name << " =\n" << *z[k];
     {for(int r = 0; r < num_random_tests(); ++r) {
-      RTOp_index_type
-        i1 = my_min( n, (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1) ),
-        i2 = my_min( n, (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1) );
+      index_type
+        i1 = my_min( n, (index_type)(((double)rand() / RAND_MAX) * n + 1) ),
+        i2 = my_min( n, (index_type)(((double)rand() / RAND_MAX) * n + 1) );
       if( i1 > i2 ) std::swap( i1, i2 );
-      RTOp_index_type
+      index_type
         sub_vec_dim = i2-i1+1;
       const RTOp_value_type
         val = 10.0;
@@ -360,10 +367,10 @@ bool VectorSpaceTester::check_vector_space(
       *out << std::endl << z_name << " =\n" << *z[k];
 
     {for(int r = 0; r < num_random_tests(); ++r) {
-      const RTOp_index_type // Get random small sub-vectors so parallel efficiency will be good
-        i1 = my_min( n, (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1) ),
-        i2 = my_min( (RTOp_index_type)(i1 + ((double)rand() / RAND_MAX) * 9), n );
-      const RTOp_index_type
+      const index_type // Get random small sub-vectors so parallel efficiency will be good
+        i1 = my_min( n, (index_type)(((double)rand() / RAND_MAX) * n + 1) ),
+        i2 = my_min( (index_type)(i1 + ((double)rand() / RAND_MAX) * 9), n );
+      const index_type
         sub_vec_dim = i2-i1+1;
 
       if(out && print_all_tests())

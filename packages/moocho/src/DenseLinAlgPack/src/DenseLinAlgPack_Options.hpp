@@ -33,6 +33,7 @@
 #define LINALGPACK_OPTIONS_H
 
 #include "DenseLinAlgPack_extended_value_type.hpp"
+#include "Teuchos_ConfigDefs.hpp"
 #include "Teuchos_F77_wrappers.h"
 
 #if !defined(LINALGPACK_NO_CHECKS)
@@ -81,12 +82,13 @@
 #endif
 
 namespace DenseLinAlgPack{
+
 /// Typedef for the value type of elements that is used for the library.
 typedef FortranTypes::f_dbl_prec		value_type;
 /// Typedef for the index type of elements that are used by the library
-typedef FortranTypes::f_int				index_type;
+typedef Teuchos::Ordinal index_type;
 /// Typedef for the size type of elements that are used by the library
-typedef	FortranTypes::f_int				size_type;
+typedef	Teuchos::Ordinal size_type;
 
 }
 

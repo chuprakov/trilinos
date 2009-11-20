@@ -35,6 +35,7 @@
 #include "DenseLinAlgPack_DVectorClass.hpp"
 #include "DenseLinAlgPack_DMatrixClass.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
+#include "Teuchos_F77_wrappers.h"
 
 namespace ConstrainedOptPack {
 
@@ -107,13 +108,15 @@ private:
   // Private types
 
   /** \brief . */
-  typedef std::vector<index_type>  IBND_t;
+  typedef FortranTypes::f_int f_int;
   /** \brief . */
-  typedef std::vector<index_type>  IACTSTORE_t;
+  typedef std::vector<f_int>  IBND_t;
   /** \brief . */
-  typedef std::vector<index_type>  IACT_t;
+  typedef std::vector<f_int>  IACTSTORE_t;
   /** \brief . */
-  typedef std::vector<index_type>  ISTATE_t;
+  typedef std::vector<f_int>  IACT_t;
+  /** \brief . */
+  typedef std::vector<f_int>  ISTATE_t;
 
   // //////////////////////////////////////////////////////////////
   // Private Data Members.
@@ -126,19 +129,19 @@ private:
   // Parameters to QPKWIK
 
   /** \brief . */
-  index_type      N_;
+  f_int      N_;
   /** \brief . */
-  index_type      M1_;
+  f_int      M1_;
   /** \brief . */
-  index_type      M2_;
+  f_int      M2_;
   /** \brief . */
-  index_type      M3_;
+  f_int      M3_;
   /** \brief . */
   DVector          GRAD_;
   /** \brief . */
   DMatrix       UINV_AUG_;
   /** \brief . */
-  index_type      LDUINV_AUG_;
+  f_int      LDUINV_AUG_;
   /** \brief . */
   IBND_t          IBND_;
   /** \brief . */
@@ -148,33 +151,33 @@ private:
   /** \brief . */
   DMatrix       A_;
   /** \brief . */
-  index_type		LDA_;
+  f_int		LDA_;
   /** \brief . */
   DVector          YPY_;
   /** \brief . */
-  index_type      IYPY_;
+  f_int      IYPY_;
   /** \brief . */
-  index_type      WARM_;
+  f_int      WARM_;
   /** \brief . */
   value_type      NUMPARAM_[3];
   /** \brief . */
-  index_type      MAX_ITER_;
+  f_int      MAX_ITER_;
 
   // Input / Output
 
   /** \brief . */
   DVector          X_;
   /** \brief . */
-  index_type      NACTSTORE_;
+  f_int      NACTSTORE_;
   /** \brief . */
   IACTSTORE_t     IACTSTORE_;
   /** \brief . */
-  index_type      INF_;
+  f_int      INF_;
   
   // Output
 
   /** \brief . */
-  index_type      NACT_;
+  f_int      NACT_;
   /** \brief . */
   IACT_t          IACT_;
   /** \brief . */
@@ -182,11 +185,11 @@ private:
   /** \brief . */
   value_type      EXTRA_;
   /** \brief . */
-  index_type      ITER_;
+  f_int      ITER_;
   /** \brief . */
-  index_type      NUM_ADDS_;
+  f_int      NUM_ADDS_;
   /** \brief . */
-  index_type      NUM_DROPS_;
+  f_int      NUM_DROPS_;
   
   // Internal state
 
@@ -196,7 +199,7 @@ private:
   // Workspace
 
   /** \brief . */
-  index_type      LRW_;
+  f_int      LRW_;
   /** \brief . */
   DVector          RW_;
 

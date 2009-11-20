@@ -138,8 +138,7 @@ void ExampleNLPDirect::calc_point(
   assert_is_initialized();
 
   const size_type
-    n = this->n(),
-    m = n/2;
+    n = this->n();
 
   // Validate the input
 

@@ -278,10 +278,10 @@ void MatrixSymDiagSparse::coor_extract_nonzeros(
   if( len_Aij > 0 ) {
     SpVectorSlice::const_iterator
       itr;
-    FortranTypes::f_int
+    index_type
       *l_Arow, *l_Acol;
     for( itr = diag.begin(), l_Arow = Arow, l_Acol = Acol; itr != diag.end(); ++itr ) {
-      const FortranTypes::f_int
+      const index_type
         ij = itr->index() + diag.offset();
       *l_Arow++ = ij + row_offset;
       *l_Acol++ = ij + col_offset;

@@ -31,7 +31,7 @@
 int AbstractLinAlgPack::exampleNLPDiagSetup(
   int argc, char* argv[], MPI_Comm comm
   ,Teuchos::RCP<const VectorSpace>   *vec_space
-  ,size_type *n, value_type *xo, bool *has_bounds, bool *dep_bounded
+  ,int *n, value_type *xo, bool *has_bounds, bool *dep_bounded
   )
 {
 
