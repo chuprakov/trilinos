@@ -15,10 +15,9 @@
 #endif
 
 namespace {
-
 typedef AbstractLinAlgPack::value_type  Scalar;
-
 } // namespace
+
 
 int main( int argc, char* argv[] )
 {
@@ -211,7 +210,7 @@ int main( int argc, char* argv[] )
     return solution_status;
 
   }
-  TEUCHOS_STANDARD_CATCH_STATEMENTS(true,*out,dummySuccess)
+  TEUCHOS_STANDARD_CATCH_STATEMENTS(true, *out, dummySuccess)
 
   return MoochoSolver::SOLVE_RETURN_EXCEPTION;
 
