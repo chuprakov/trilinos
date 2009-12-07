@@ -29,9 +29,12 @@
 #ifndef EXAMPLE_NLP_BANDED_H
 #define EXAMPLE_NLP_BANDED_H
 
+
 #include "NLPInterfacePack_NLPSerialPreprocessExplJac.hpp"
 
+
 namespace NLPInterfacePack {
+
 
 /** \brief Simple scalable serial %NLP subclass.
  *
@@ -348,8 +351,11 @@ private:
   ExampleNLPBanded(const ExampleNLPBanded&);
   ExampleNLPBanded& operator=(const ExampleNLPBanded&);
 
+
 };	// end class ExampleNLPBanded
 
+
 }	// end namespace NLPInterfacePack
+
 
 #endif	// EXAMPLE_NLP_BANDED_H

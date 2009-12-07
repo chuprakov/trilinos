@@ -36,6 +36,7 @@
 #include "RTOpPack_OldTypes.hpp"
 #include "DenseLinAlgPack_Types.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "Teuchos_RCP.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -44,6 +45,7 @@ namespace AbstractLinAlgPack {
 typedef RTOp_index_type  size_type;
 typedef RTOp_value_type  value_type;
 typedef RTOp_index_type  index_type;
+using Teuchos::RCP;
 
 #ifdef DOXYGEN_COMPILE // Doxygen needs a little help finding these links
 /** \brief . */

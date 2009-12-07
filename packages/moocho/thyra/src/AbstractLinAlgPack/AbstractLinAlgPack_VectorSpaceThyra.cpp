@@ -52,8 +52,8 @@ VectorSpaceThyra::VectorSpaceThyra(
 }
 
 void VectorSpaceThyra::initialize(
-  const Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
-  ,const inner_prod_ptr_t                                                  &inner_prod
+  const Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> > &thyra_vec_spc,
+  const inner_prod_ptr_t &inner_prod
   )
 {
   namespace mmp = MemMngPack;
