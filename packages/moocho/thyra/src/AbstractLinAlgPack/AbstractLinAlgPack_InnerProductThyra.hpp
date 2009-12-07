@@ -109,19 +109,19 @@ private:
 }; // end class InnerProductThyra
 
 
-} // end namespace AbstractLinAlgPack
-
-
 // ///////////////////////////////
 // Inline functions
 
 
 inline
-const RCP::RCP<const Thyra::VectorSpaceBase<value_type> >&
-Thyra::InnerProductThyra::thyra_vec_spc() const
+const RCP<const Thyra::VectorSpaceBase<value_type> >&
+InnerProductThyra::thyra_vec_spc() const
 {
   return thyra_vec_spc_;
 }
+
+
+} // end namespace AbstractLinAlgPack
 
 
 #endif  // ALAP_INNER_PRODUCT_Thyra_H
