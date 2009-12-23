@@ -23,6 +23,8 @@ APPEND_SET(HEADERS
   FEApp_SourceFunctionFactoryImpl.hpp
   FEApp_AbstractFunction.hpp
   FEApp_ConstantFunction.hpp
+  FEApp_KLExponentialFunction.hpp
+  FEApp_KLExponentialFunctionImpl.hpp
   FEApp_FunctionFactory.hpp
   FEApp_FunctionFactoryImpl.hpp
   FEApp_AbstractPDE_NTBase.hpp

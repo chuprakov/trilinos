@@ -41,6 +41,7 @@ HeatNonlinearSourcePDE(
   phi(),
   dphi(),
   jac(),
+  x(),
   u(),
   du(),
   udot(),
@@ -74,6 +75,7 @@ init(unsigned int numQuadPoints, unsigned int numNodes)
   phi.resize(num_qp);
   dphi.resize(num_qp);
   jac.resize(num_qp);
+  x.resize(num_qp);
   u.resize(num_qp);
   du.resize(num_qp);
   udot.resize(num_qp);
@@ -110,8 +112,11 @@ evaluateElementResidual(const FEApp::AbstractQuadrature& quadRule,
   // Evaluate Jacobian of transformation to standard element
   element.evaluateJacobian(xi, jac);
 
+  // Evaluate quadrature points
+  element.evaluateQuadPoints(xi, x);
+
   // Evaluate material values
-  mat->evaluate(xi, a);
+  mat->evaluate(x, a);
 
   // Compute u
   for (unsigned int qp=0; qp<num_qp; qp++) {

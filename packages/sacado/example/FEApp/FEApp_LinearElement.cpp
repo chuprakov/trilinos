@@ -108,3 +108,12 @@ evaluateJacobian(const std::vector<double>& xi, std::vector<double>& jac) const
   for (unsigned int i=0; i<xi.size(); i++)
     jac[i] = j;
 }
+
+void
+FEApp::LinearElement::
+evaluateQuadPoints(const std::vector<double>& xi,
+		   std::vector<double>& x) const
+{
+  for (unsigned int i=0; i<xi.size(); i++)
+    x[i] = 0.5*(xr+xl + (xr-xl)*xi[i]);
+}
