@@ -30,6 +30,7 @@
 // @HEADER
 #include "Teuchos_TestForException.hpp"
 #include "FEApp_ConstantFunction.hpp"
+#include "FEApp_KLExponentialFunction.hpp"
 
 template <typename EvalT>
 FEApp::FunctionFactory<EvalT>::FunctionFactory(
@@ -51,6 +52,12 @@ FEApp::FunctionFactory<EvalT>::create()
     strategy = 
       Teuchos::rcp(new FEApp::ConstantFunction<EvalT>(value, paramLib));
   }
+#ifdef HAVE_SACADO_STOKHOS
+  else if (method == "KL Exponential Random Field")
+    strategy = 
+      Teuchos::rcp(new FEApp::KLExponentialFunction<EvalT>(*funcParams, 
+							   paramLib));
+#endif
   else {
     TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,
                        std::endl << 

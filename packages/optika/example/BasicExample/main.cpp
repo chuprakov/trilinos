@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
   My_List->set( "Solver", "GMRES", "The type of solver to use.", solverValidator);
 
   /* 
-   * The TivaBuean Package can also handle arrays.
+   * The Optika Package can also handle arrays.
    * Here we create a Teuchos::Array class of 10 doubles
    * representing an initial guess for a linear solver.
    */

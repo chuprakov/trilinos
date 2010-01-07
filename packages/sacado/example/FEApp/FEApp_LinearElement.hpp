@@ -76,6 +76,11 @@ namespace FEApp {
     evaluateJacobian(const std::vector<double>& xi,
                      std::vector<double>& jac) const;
 
+    //! Map quadrature points to physical space
+    virtual void
+    evaluateQuadPoints(const std::vector<double>& xi,
+		       std::vector<double>& x) const;
+
   private:
 
     //! Private to prohibit copying

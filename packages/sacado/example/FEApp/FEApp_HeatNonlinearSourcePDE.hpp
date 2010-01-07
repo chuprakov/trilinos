@@ -101,6 +101,9 @@ namespace FEApp {
     //! Element transformation Jacobian
     std::vector<double> jac;
 
+    //! Coordinates of quadrature points
+    std::vector<double> x;
+
     //! Discretized solution
     std::vector<ScalarT> u;
 
