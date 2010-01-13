@@ -52,6 +52,8 @@ int main( int argc, char* argv[] )
 
     bool supportDerivs = true;
 
+    std::string extraXmlFile = "";
+
     CommandLineProcessor  clp(false); // Don't throw exceptions
 
     lowsfCreator.setupCLP(&clp);
@@ -75,7 +77,20 @@ int main( int argc, char* argv[] )
     clp.setOption( "xU0", &xU0 );
     clp.setOption( "xU1", &xU1 );
     clp.setOption( "support-derivs", "no-support-derivs", &supportDerivs );
+    clp.setOption("extra-xml-file",&extraXmlFile,"File with extra XML text that will modify the initial XML read in");
  
+    std::string line("");
+    if(extraXmlFile.length()) {
+      std::ifstream myfile(extraXmlFile.c_str());
+      if (myfile.is_open())
+      {
+        getline (myfile,line);
+        solver.extraParamsXmlStringOption(line);
+        std::cout << line << "\n";
+        myfile.close();
+      }
+    }
+
     CommandLineProcessor::EParseCommandLineReturn
       parse_return = clp.parse(argc,argv,&std::cerr);
 

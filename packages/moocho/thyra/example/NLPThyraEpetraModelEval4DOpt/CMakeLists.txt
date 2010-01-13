@@ -24,11 +24,11 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
     ${EPETRAEXT_4DOPT_DIR}/EpetraModelEval4DOpt.cpp
   ARGS
     " "
-    "--extra-moocho-thyra-params=\"${XML_PARAMS_FWD_SOLVE}\""
+    "--extra-xml-file=ExtraXML.txt"
     "--x00=0.9"
-    "--x00=0.9 --extra-moocho-thyra-params=\"${XML_PARAMS_FWD_SOLVE}\""
+    "--x00=0.9 --extra-xml-file=ExtraXML.txt"
     "--xt0=0.9"
-    "--xt0=0.9 --extra-moocho-thyra-params=\"${XML_PARAMS_FWD_SOLVE}\""
+    "--xt0=0.9 --extra-xml-file=ExtraXML.txt"
     "--x00=0.5 --xU0=0.6"
     "--x01=0.5 --xU1=0.6"
     "--x00=2.0 --xL0=1.1"
@@ -42,7 +42,9 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
 
 
 PACKAGE_COPY_FILES_TO_BINARY_DIR(ThyraNLPThyraEpetraModelEval4DOptCopyFiles
-  DEST_FILES moochoThyraFdNand.xml
+  DEST_FILES 
+    moochoThyraFdNand.xml
+    ExtraXML.txt
   SOURCE_PREFIX "_"
   EXEDEPS NLPThyraEpetraModelEval4DOpt
   )
