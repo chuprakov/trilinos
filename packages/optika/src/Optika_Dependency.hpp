@@ -72,7 +72,7 @@ public:
 	 *
 	 * Simply declaring the descrutor as virtual.
 	 */
-	virtual ~Dependency();
+	virtual ~Dependency(){}
 
 	/**
 	 * Gets the dependee of the dependency.

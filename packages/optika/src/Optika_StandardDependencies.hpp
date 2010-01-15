@@ -57,7 +57,7 @@ public:
 	 *
 	 * Simply declaring the descrutor as virtual.
 	 */
-	virtual ~Dependency();
+	virtual ~VisualDependency(){}
 
 	virtual void evaluate() = 0;
 
@@ -99,7 +99,7 @@ public:
 	 *
 	 * Simply declaring the descrutor as virtual.
 	 */
-	virtual ~Dependency();
+	virtual ~ValidatorDependency(){}
 
 	virtual void evaluate() = 0;
 
