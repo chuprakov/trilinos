@@ -68,6 +68,13 @@ public:
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, Type type);
 
 	/**
+	 * Desctructor
+	 *
+	 * Simply declaring the descrutor as virtual.
+	 */
+	virtual ~Dependency();
+
+	/**
 	 * Gets the dependee of the dependency.
 	 *
 	 *  @return The dependee of the dependency.

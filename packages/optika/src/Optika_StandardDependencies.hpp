@@ -52,6 +52,13 @@ public:
 	VisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList);
 
+	/**
+	 * Desctructor
+	 *
+	 * Simply declaring the descrutor as virtual.
+	 */
+	virtual ~Dependency();
+
 	virtual void evaluate() = 0;
 
 	/**
@@ -86,6 +93,13 @@ public:
 	 */
 	ValidatorDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList);
+
+	/**
+	 * Desctructor
+	 *
+	 * Simply declaring the descrutor as virtual.
+	 */
+	virtual ~Dependency();
 
 	virtual void evaluate() = 0;
 
