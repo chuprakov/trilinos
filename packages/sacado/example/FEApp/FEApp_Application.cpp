@@ -117,7 +117,8 @@ FEApp::Application::Application(
   bool enable_sg = params->get("Enable Stochastic Galerkin",false);
   if (enable_sg) {
     sg_expansion = params->get< Teuchos::RCP<Stokhos::OrthogPolyExpansion<int,double> > >("Stochastic Galerkin expansion");
-    sg_quad = params->get< Teuchos::RCP<const Stokhos::Quadrature<int,double> > >("Stochastic Galerkin quadrature");
+    if (params->isParameter("Stochastic Galerkin quadrature"))
+      sg_quad = params->get< Teuchos::RCP<const Stokhos::Quadrature<int,double> > >("Stochastic Galerkin quadrature");
     sg_basis = sg_expansion->getBasis();
 
     // Create Epetra orthogonal polynomial objects
@@ -131,9 +132,7 @@ FEApp::Application::Application(
     sg_overlapped_f = 
       Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_Vector>(sg_basis,
 							  *overlapped_f));
-    sg_overlapped_jac = 
-      Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_CrsMatrix>(sg_basis,
-							     *overlapped_jac));
+    // Delay creation of sg_overlapped_jac until needed
   }
 #endif
 }
@@ -720,9 +719,19 @@ FEApp::Application::computeGlobalSGJacobian(
       (*sg_overlapped_f)[i].PutScalar(0.0);
       (*sg_f)[i].PutScalar(0.0);
     }
-    (*sg_overlapped_jac)[i].PutScalar(0.0);
 
   }
+
+  // Create, resize and initialize overlapped Jacobians
+  if (sg_overlapped_jac == Teuchos::null || 
+      sg_overlapped_jac->size() < sg_jac.size())
+    sg_overlapped_jac = 
+      Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_CrsMatrix>(
+		     sg_basis,  *overlapped_jac, sg_jac.size()));
+  else if (sg_overlapped_jac->size() > sg_jac.size())
+    sg_overlapped_jac->resize(sg_jac.size());
+  for (int i=0; i<sg_overlapped_jac->size(); i++)
+    (*sg_overlapped_jac)[i].PutScalar(0.0);
 
   // Set real parameters
   if (p != NULL) {

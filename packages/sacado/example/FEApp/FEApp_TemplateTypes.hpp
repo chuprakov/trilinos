@@ -57,10 +57,10 @@
 
 // Typedef AD types to standard names
 typedef double RealType;
-typedef Sacado::Fad::DFad<double> FadType;
+typedef Sacado::ELRFad::DFad<double> FadType;
 #if SG_ACTIVE
 typedef Sacado::PCE::OrthogPoly<double> SGType;
-typedef Sacado::Fad::DFad< Sacado::PCE::OrthogPoly<double> > SGFadType;
+typedef Sacado::ELRFad::DFad< Sacado::PCE::OrthogPoly<double> > SGFadType;
 #endif
 
 // Set up evaluation traits

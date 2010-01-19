@@ -15,6 +15,7 @@ APPEND_SET(HEADERS
   FEApp_GaussianQuadrature2.hpp
   FEApp_QuadratureFactory.hpp
   FEApp_AbstractSourceFunction.hpp
+  FEApp_ConstantSourceFunction.hpp
   FEApp_QuadraticSourceFunction.hpp
   FEApp_CubicSourceFunction.hpp
   FEApp_ExponentialSourceFunction.hpp

@@ -30,6 +30,7 @@
 // @HEADER
 #include <sstream>
 #include "Teuchos_TestForException.hpp"
+#include "FEApp_ConstantSourceFunction.hpp"
 #include "FEApp_QuadraticSourceFunction.hpp"
 #include "FEApp_CubicSourceFunction.hpp"
 #include "FEApp_ExponentialSourceFunction.hpp"
@@ -50,7 +51,13 @@ FEApp::SourceFunctionFactory<EvalT>::create()
   Teuchos::RCP< FEApp::AbstractSourceFunction<EvalT> > strategy;
 
   std::string& method = funcParams->get("Name", "Quadratic");
-  if (method == "Quadratic") {
+  if (method == "Constant") {
+    double value = funcParams->get("Constant Value", 1.0);
+    strategy = 
+      Teuchos::rcp(new FEApp::ConstantSourceFunction<EvalT>(value,
+							    paramLib));
+  }
+  else if (method == "Quadratic") {
     double factor = funcParams->get("Nonlinear Factor", 1.0);
     strategy = 
       Teuchos::rcp(new FEApp::QuadraticSourceFunction<EvalT>(factor,

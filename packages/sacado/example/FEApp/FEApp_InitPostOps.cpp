@@ -832,53 +832,52 @@ FEApp::SGJacobianOp::elementPost(const FEApp::AbstractElement& e,
   int row, col;
   unsigned int lrow, lcol;
   double c;
-
-  // Loop over SG blocks
-  for (int block=0; block<nblock; block++) {
+  int nblock_jac = jac->size();
   
-    // Loop over nodes in element
-    for (unsigned int node_row=0; node_row<nnode; node_row++) {
+  // Loop over nodes in element
+  for (unsigned int node_row=0; node_row<nnode; node_row++) {
 
-      // Loop over equations per node
-      for (unsigned int eq_row=0; eq_row<neqn; eq_row++) {
-	lrow = neqn*node_row+eq_row;
+    // Loop over equations per node
+    for (unsigned int eq_row=0; eq_row<neqn; eq_row++) {
+      lrow = neqn*node_row+eq_row;
 
-	// Global row
-	row = static_cast<int>(e.nodeGID(node_row)*neqn + eq_row);
+      // Global row
+      row = static_cast<int>(e.nodeGID(node_row)*neqn + eq_row);
 
-	// Sum residual
-	if (f != Teuchos::null)
+      // Sum residual
+      if (f != Teuchos::null)
+	for (int block=0; block<nblock; block++)
           (*f)[block].SumIntoGlobalValue(row, 0, 
 					 elem_f[lrow].val().coeff(block));
       
-	// Check derivative array is nonzero
-	if (elem_f[lrow].hasFastAccess()) {
+      // Check derivative array is nonzero
+      if (elem_f[lrow].hasFastAccess()) {
         
-	  // Loop over nodes in element
-	  for (unsigned int node_col=0; node_col<nnode; node_col++){
+	// Loop over nodes in element
+	for (unsigned int node_col=0; node_col<nnode; node_col++){
           
-	    // Loop over equations per node
-	    for (unsigned int eq_col=0; eq_col<neqn; eq_col++) {
-	      lcol = neqn*node_col+eq_col;
+	  // Loop over equations per node
+	  for (unsigned int eq_col=0; eq_col<neqn; eq_col++) {
+	    lcol = neqn*node_col+eq_col;
             
-	      // Global column
-	      col = static_cast<int>(e.nodeGID(node_col)*neqn + eq_col);
+	    // Global column
+	    col = static_cast<int>(e.nodeGID(node_col)*neqn + eq_col);
             
-	      // Sum Jacobian
-              c = elem_f[lrow].fastAccessDx(lcol).coeff(block);
+	    // Sum Jacobian
+	    for (int block=0; block<nblock_jac; block++) {
+	      c = elem_f[lrow].fastAccessDx(lcol).coeff(block);
 	      (*jac)[block].SumIntoGlobalValues(row, 1, &c, &col);
+	    }
             
-	    } // column equations
+	  } // column equations
           
-	  } // column nodes
+	} // column nodes
         
-	} // has fast access
+      } // has fast access
       
-      } // row equations
-      
-    } // row node
-
-  } // SG blocks
+    } // row equations
+    
+  } // row node
 
 }
 
@@ -932,54 +931,56 @@ FEApp::SGJacobianOp::nodePost(const FEApp::NodeBC& bc,
   double* row_view = 0;
   int row, col;
   double c;
+  int nblock_jac = jac->size();
 
-  // Loop over SG blocks
-  for (int block=0; block<nblock; block++) {
+  // Loop over equations per node
+  for (unsigned int eq_row=0; eq_row<offsets.size(); eq_row++) {
 
-    // Loop over equations per node
-    for (unsigned int eq_row=0; eq_row<offsets.size(); eq_row++) {
-
-      // Global row
-      row = static_cast<int>(firstDOF + offsets[eq_row]);
+    // Global row
+    row = static_cast<int>(firstDOF + offsets[eq_row]);
     
-      // Replace residual
-      if (f != Teuchos::null) {
-	if (bc.isOwned())
+    // Replace residual
+    if (f != Teuchos::null) {
+      if (bc.isOwned())
+	for (int block=0; block<nblock; block++)
           (*f)[block].ReplaceGlobalValue(row, 0, 
 					 node_f[offsets[eq_row]].val().coeff(block));
-	else if (bc.isShared())
+      else if (bc.isShared())
+	for (int block=0; block<nblock; block++)
           (*f)[block].ReplaceGlobalValue(row, 0, 0.0);
-      }
+    }
     
-      // Always zero out row (This takes care of the not-owned case)
-      if (bc.isOwned() || bc.isShared()) {
+    // Always zero out row (This takes care of the not-owned case)
+    if (bc.isOwned() || bc.isShared()) {
+      for (int block=0; block<nblock_jac; block++) {
 	(*jac)[block].ExtractGlobalRowView(row, num_entries, row_view);
 	for (int k=0; k<num_entries; k++)
 	  row_view[k] = 0.0;
       }
+    }
     
-      // Check derivative array is nonzero
-      if (node_f[offsets[eq_row]].hasFastAccess()) {
+    // Check derivative array is nonzero
+    if (node_f[offsets[eq_row]].hasFastAccess()) {
 	    
-	// Loop over equations per node
-	for (unsigned int eq_col=0; eq_col<neqn; eq_col++) {
+      // Loop over equations per node
+      for (unsigned int eq_col=0; eq_col<neqn; eq_col++) {
 	      
-	  // Global column
-	  col = static_cast<int>(firstDOF + eq_col);
+	// Global column
+	col = static_cast<int>(firstDOF + eq_col);
         
-	  // Replace Jacobian
-	  if (bc.isOwned()) {
+	// Replace Jacobian
+	if (bc.isOwned()) {
+	  for (int block=0; block<nblock_jac; block++) {
             c = node_f[eq_row].fastAccessDx(eq_col).coeff(block);
 	    (*jac)[block].ReplaceGlobalValues(row, 1, &c, &col);
 	  }
+	}
         
-	} // column equations
+      } // column equations
       
-      } // has fast access
+    } // has fast access
     
-    } // row equations
-
-  } // SG blocks
+  } // row equations
 
 }
 
