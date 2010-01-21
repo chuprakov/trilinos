@@ -307,7 +307,7 @@ Teuchos::ParameterList&
 
  void (*myFunc)(Teuchos::RCP<const Teuchos::ParameterList>);
   myFunc = print;
-  Optika::getInput(My_deplist, myFunc);
+  Optika::getInput(My_deplist, depSheet1, myFunc);
 
   std::cout << "Dep List: \n";
   Teuchos::writeParameterListToXmlOStream(*My_deplist, *out);
