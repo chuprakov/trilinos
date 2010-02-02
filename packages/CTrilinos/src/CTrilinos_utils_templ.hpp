@@ -95,12 +95,12 @@ CTrilinos_Universal_ID_t
 cast( Table<const T> &destTable, CTrilinos_Universal_ID_t id )
 {
     CTrilinos_Universal_ID_t newid;
-    newid.type = CT_Invalid_ID;
+    newid.table = CT_Invalid_ID;
     newid.index = -1;
     newid.is_const = id.is_const;
 
     if (id.is_const) {
-        switch (id.type) {
+        switch (id.table) {
         case CT_Epetra_Distributor_ID:
             newid = destTable.cast(CEpetra::getConstDistributor(id));
             break;
@@ -227,7 +227,7 @@ cast( Table<const T> &destTable, CTrilinos_Universal_ID_t id )
             break;
         }
     } else {
-        switch (id.type) {
+        switch (id.table) {
         case CT_Epetra_Distributor_ID:
             newid = destTable.cast(CEpetra::getDistributor(id));
             break;
@@ -363,14 +363,14 @@ CTrilinos_Universal_ID_t
 cast( Table<T> &destTable, CTrilinos_Universal_ID_t id )
 {
     CTrilinos_Universal_ID_t newid;
-    newid.type = CT_Invalid_ID;
+    newid.table = CT_Invalid_ID;
     newid.index = -1;
     newid.is_const = id.is_const;
 
     if (id.is_const) {
         throw CTrilinosTypeMismatchError("[CTrilinos::cast]: casting away constness");
     } else {
-        switch (id.type) {
+        switch (id.table) {
         case CT_Epetra_Distributor_ID:
             newid = destTable.cast(CEpetra::getDistributor(id));
             break;
@@ -509,7 +509,7 @@ abstractType( T id )
 {
     CTrilinos_Universal_ID_t newid;
 
-    newid.type = id.type;
+    newid.table = id.table;
     newid.index = id.index;
     newid.is_const = id.is_const;
 
@@ -524,7 +524,7 @@ concreteType( CTrilinos_Universal_ID_t id )
 {
     T newid;
 
-    newid.type = id.type;
+    newid.table = id.table;
     newid.index = id.index;
     newid.is_const = id.is_const;
 
@@ -547,7 +547,7 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Universal_ID_t id )
     bool shares = false;
 
     if (id.is_const) {
-        switch (id.type) {
+        switch (id.table) {
         case CT_Epetra_Distributor_ID:
             shares = rcp.shares_resource(CEpetra::getConstDistributor(id));
             break;
@@ -698,7 +698,7 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Universal_ID_t id )
             break;
         }
     } else {
-        switch (id.type) {
+        switch (id.table) {
         case CT_Epetra_Distributor_ID:
             shares = rcp.shares_resource(CEpetra::getDistributor(id));
             break;

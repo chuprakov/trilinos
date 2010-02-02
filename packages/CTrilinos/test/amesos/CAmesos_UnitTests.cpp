@@ -64,7 +64,7 @@ TEUCHOS_UNIT_TEST( Amesos , Create )
   ECHO(CT_Amesos_ID_t selfID = Amesos_Create());
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Amesos_ID);
+  TEST_EQUALITY(selfID.table, CT_Amesos_ID);
 }
 
 /**********************************************************************

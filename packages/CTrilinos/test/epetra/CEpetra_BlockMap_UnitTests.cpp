@@ -94,7 +94,7 @@ TEUCHOS_UNIT_TEST( Epetra_BlockMap , Create )
        NumGlobalElements, ElementSize, IndexBase, CommID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_BlockMap_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_BlockMap_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 
   TEST_EQUALITY(Epetra_BlockMap_NumGlobalElements(selfID), NumGlobalElements);
@@ -124,7 +124,7 @@ TEUCHOS_UNIT_TEST( Epetra_BlockMap , Create_Linear )
        NumGlobalElements, NumMyElements, ElementSize, IndexBase, CommID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_BlockMap_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_BlockMap_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -154,7 +154,7 @@ TEUCHOS_UNIT_TEST( Epetra_BlockMap , Create_Arbitrary )
        NumGlobalElements, NumMyElements, MyGlobalElements, ElementSize, IndexBase, CommID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_BlockMap_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_BlockMap_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -184,7 +184,7 @@ TEUCHOS_UNIT_TEST( Epetra_BlockMap , Create_Variable )
        NumGlobalElements, NumMyElements, MyGlobalElements, ElementSizeList, IndexBase, CommID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_BlockMap_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_BlockMap_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -209,7 +209,7 @@ TEUCHOS_UNIT_TEST( Epetra_BlockMap , Duplicate )
   ECHO(CT_Epetra_BlockMap_ID_t dupID = Epetra_BlockMap_Duplicate(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(dupID.type, CT_Epetra_BlockMap_ID);
+  TEST_EQUALITY(dupID.table, CT_Epetra_BlockMap_ID);
   TEST_EQUALITY_CONST(dupID.index, 1);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
 }
@@ -234,7 +234,7 @@ TEUCHOS_UNIT_TEST( Epetra_BlockMap , Destroy )
   ECHO(Epetra_BlockMap_Destroy(&selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
   TEST_EQUALITY_CONST(selfID.index, -1);
 }
 
@@ -1502,7 +1502,7 @@ TEUCHOS_UNIT_TEST( Epetra_BlockMap , Comm )
   ECHO(CT_Epetra_Comm_ID_t cID = Epetra_BlockMap_Comm(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(cID.type, CT_Epetra_Comm_ID);
+  TEST_EQUALITY(cID.table, CT_Epetra_Comm_ID);
 }
 
 /**********************************************************************

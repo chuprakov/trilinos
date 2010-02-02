@@ -77,7 +77,7 @@ TEUCHOS_UNIT_TEST( Epetra_CompObject , Create )
   ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_CompObject_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_CompObject_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -94,7 +94,7 @@ TEUCHOS_UNIT_TEST( Epetra_CompObject , Duplicate )
   ECHO(CT_Epetra_CompObject_ID_t dupID = Epetra_CompObject_Duplicate(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(dupID.type, CT_Epetra_CompObject_ID);
+  TEST_EQUALITY(dupID.table, CT_Epetra_CompObject_ID);
   TEST_EQUALITY_CONST(dupID.index, 1);
 }
 
@@ -111,7 +111,7 @@ TEUCHOS_UNIT_TEST( Epetra_CompObject , Destroy )
   ECHO(Epetra_CompObject_Destroy(&selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
   TEST_EQUALITY_CONST(selfID.index, -1);
 }
 

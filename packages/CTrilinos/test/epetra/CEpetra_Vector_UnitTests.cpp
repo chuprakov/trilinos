@@ -101,7 +101,7 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Create )
   ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_Create(MapID, zeroOut));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_Vector_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_Vector_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -127,7 +127,7 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Duplicate )
   ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_Duplicate(SourceID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_Vector_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_Vector_ID);
   TEST_EQUALITY_CONST(selfID.index, 1);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, SourceID), false);
 }
@@ -152,7 +152,7 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Create_FromArray )
        CT_Epetra_DataAccess_E_Copy, MapID, V));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_Vector_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_Vector_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -179,7 +179,7 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , FromSource )
   ECHO(CT_Epetra_Vector_ID_t selfID = Epetra_Vector_FromSource(CT_Epetra_DataAccess_E_View, SourceID, Index));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_Vector_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_Vector_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -204,7 +204,7 @@ TEUCHOS_UNIT_TEST( Epetra_Vector , Destroy )
   ECHO(Epetra_Vector_Destroy(&selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
   TEST_EQUALITY_CONST(selfID.index, -1);
 }
 

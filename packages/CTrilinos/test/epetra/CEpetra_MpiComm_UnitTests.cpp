@@ -90,7 +90,7 @@ TEUCHOS_UNIT_TEST( Epetra_MpiComm , Create )
   ECHO(CT_Epetra_MpiComm_ID_t selfID = Epetra_MpiComm_Create(MPI_COMM_WORLD));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_MpiComm_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_MpiComm_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -108,7 +108,7 @@ TEUCHOS_UNIT_TEST( Epetra_MpiComm , Duplicate )
   ECHO(CT_Epetra_MpiComm_ID_t dupID = Epetra_MpiComm_Duplicate(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(dupID.type, CT_Epetra_MpiComm_ID);
+  TEST_EQUALITY(dupID.table, CT_Epetra_MpiComm_ID);
   TEST_EQUALITY_CONST(dupID.index, 1);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
 }
@@ -127,7 +127,7 @@ TEUCHOS_UNIT_TEST( Epetra_MpiComm , Clone )
   ECHO(CT_Epetra_Comm_ID_t dupID = Epetra_MpiComm_Clone(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(dupID.type, CT_Epetra_Comm_ID);
+  TEST_EQUALITY(dupID.table, CT_Epetra_Comm_ID);
   TEST_EQUALITY_CONST(dupID.index, 0);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
 }
@@ -145,7 +145,7 @@ TEUCHOS_UNIT_TEST( Epetra_MpiComm , Destroy )
   ECHO(Epetra_MpiComm_Destroy(&selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
   TEST_EQUALITY_CONST(selfID.index, -1);
 }
 
@@ -343,7 +343,7 @@ TEUCHOS_UNIT_TEST( Epetra_MpiComm , CreateDistributor )
   ECHO(CT_Epetra_Distributor_ID_t disID = Epetra_MpiComm_CreateDistributor(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(disID.type, CT_Epetra_Distributor_ID);
+  TEST_EQUALITY(disID.table, CT_Epetra_Distributor_ID);
   TEST_EQUALITY_CONST(disID.index, 0);
 }
 
@@ -366,7 +366,7 @@ TEUCHOS_UNIT_TEST( Epetra_MpiComm , CreateDirectory )
   ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_MpiComm_CreateDirectory(selfID, MapID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(dirID.type, CT_Epetra_Directory_ID);
+  TEST_EQUALITY(dirID.table, CT_Epetra_Directory_ID);
   TEST_EQUALITY_CONST(dirID.index, 0);
 }
 

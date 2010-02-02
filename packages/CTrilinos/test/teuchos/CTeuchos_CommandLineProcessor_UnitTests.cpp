@@ -69,7 +69,7 @@ TEUCHOS_UNIT_TEST( Teuchos_CommandLineProcessor , Create )
               recogniseAllOptions, addOutputSetupOptions));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Teuchos_CommandLineProcessor_ID);
+  TEST_EQUALITY(selfID.table, CT_Teuchos_CommandLineProcessor_ID);
 }
 
 /**********************************************************************

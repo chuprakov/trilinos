@@ -383,7 +383,7 @@ isSameObject( CTrilinos_Universal_ID_t id1, CTrilinos_Universal_ID_t id2 )
     bool shares = false;
 
     if (id1.is_const) {
-        switch (id1.type) {
+        switch (id1.table) {
         case CT_Epetra_Distributor_ID:
             shares = isSameObject(CEpetra::getConstDistributor(id1), id2);
             break;
@@ -534,7 +534,7 @@ isSameObject( CTrilinos_Universal_ID_t id1, CTrilinos_Universal_ID_t id2 )
             break;
         }
     } else {
-        switch (id1.type) {
+        switch (id1.table) {
         case CT_Epetra_Distributor_ID:
             shares = isSameObject(CEpetra::getDistributor(id1), id2);
             break;

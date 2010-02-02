@@ -126,7 +126,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , Create )
   ECHO(CT_Epetra_Export_ID_t selfID = Epetra_Export_Create(bsrcID, btarID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_Export_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_Export_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -168,7 +168,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , Duplicate )
   ECHO(CT_Epetra_Export_ID_t dupID = Epetra_Export_Duplicate(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(dupID.type, CT_Epetra_Export_ID);
+  TEST_EQUALITY(dupID.table, CT_Epetra_Export_ID);
   TEST_EQUALITY_CONST(dupID.index, 1);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
 }
@@ -209,7 +209,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , Destroy )
   ECHO(Epetra_Export_Destroy(&selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
   TEST_EQUALITY_CONST(selfID.index, -1);
 }
 
@@ -330,7 +330,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Export , Distributor )
     ECHO(CT_Epetra_Distributor_ID_t dID = Epetra_Export_Distributor(selfID));
 
     /* Now check the result of the call to the wrapper function */
-    TEST_EQUALITY(dID.type, CT_Epetra_Distributor_ID);
+    TEST_EQUALITY(dID.table, CT_Epetra_Distributor_ID);
     TEST_EQUALITY_CONST(dID.index, 0);
     TEST_EQUALITY_CONST(CEpetra::getDistributor(dID).is_null(), false);
   }

@@ -67,7 +67,7 @@ TEUCHOS_UNIT_TEST( Epetra_Time , Create )
   ECHO(CT_Epetra_Time_ID_t selfID = Epetra_Time_Create(CommID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_Time_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_Time_ID);
 }
 
 /**********************************************************************

@@ -73,7 +73,7 @@ class Table
     Teuchos::SimpleObjectTable<T> sot;
 
     /* properties of the table */
-    CTrilinos_Table_ID_t ttype;  /* enum value for stored objects */
+    CTrilinos_Table_ID_t ttable;  /* enum value for stored objects */
     std::string tstr;           /* string for exception msgs */
     std::string tstr2;          /* string for exception msgs */
     boolean tconst;                /* if table holds const T */
@@ -84,7 +84,7 @@ class Table
  * objects of type const T instead of T */
 template <class T>
 Table<T>::Table(CTrilinos_Table_ID_t type, std::string str, boolean is_const)
-  : ttype(type),
+  : ttable(type),
     tconst(is_const)
 {
     /* assemble exception error message for future use */
@@ -113,7 +113,7 @@ Table<T>::~Table()
 template <class T>
 const RCP<T> Table<T>::get(CTrilinos_Universal_ID_t id)
 {
-    if ((id.type == ttype) && (id.is_const == tconst)) {
+    if ((id.table == ttable) && (id.is_const == tconst)) {
         return sot.getRCP(id.index);
     } else {
         throw CTrilinosTypeMismatchError(typeMismatchMsg(id, std::string("get()")));
@@ -129,12 +129,12 @@ CTrilinos_Universal_ID_t Table<T>::store(T* pobj)
         throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
 
     CTrilinos_Universal_ID_t id;
-    id.type = CT_Invalid_ID;
+    id.table = CT_Invalid_ID;
     id.index = -1;
     id.is_const = tconst;
 
     if ((id.index = sot.storeNew(pobj)) != -1)
-        id.type = ttype;
+        id.table = ttable;
 
     return id;
 }
@@ -148,7 +148,7 @@ CTrilinos_Universal_ID_t Table<T>::store(Told* pobj)
         throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
 
     CTrilinos_Universal_ID_t id;
-    id.type = CT_Invalid_ID;
+    id.table = CT_Invalid_ID;
     id.index = -1;
     id.is_const = tconst;
 
@@ -170,12 +170,12 @@ CTrilinos_Universal_ID_t Table<T>::storeShared(T* pobj)
         throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
 
     CTrilinos_Universal_ID_t id;
-    id.type = CT_Invalid_ID;
+    id.table = CT_Invalid_ID;
     id.index = -1;
     id.is_const = tconst;
 
     if ((id.index = sot.storeNew(pobj, false)) != -1)
-        id.type = ttype;
+        id.table = ttable;
 
     return id;
 }
@@ -189,7 +189,7 @@ CTrilinos_Universal_ID_t Table<T>::storeShared(Told* pobj)
         throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
 
     CTrilinos_Universal_ID_t id;
-    id.type = CT_Invalid_ID;
+    id.table = CT_Invalid_ID;
     id.index = -1;
     id.is_const = tconst;
 
@@ -209,9 +209,9 @@ int Table<T>::remove(CTrilinos_Universal_ID_t * id)
 {
     int ret = -1;
 
-    if ((id->type == ttype) && (id->is_const == tconst)) {
+    if ((id->table == ttable) && (id->is_const == tconst)) {
         ret = (sot.removeRCP(id->index) < 0 ? -1 : 0);
-        if (ret == 0) id->type = CT_Invalid_ID;
+        if (ret == 0) id->table = CT_Invalid_ID;
     } else {
         throw CTrilinosTypeMismatchError(typeMismatchMsg(*id, std::string("remove()")));
     }
@@ -232,14 +232,14 @@ template <class Told>
 CTrilinos_Universal_ID_t Table<T>::cast(const RCP<Told> & rold)
 {
     CTrilinos_Universal_ID_t newid;
-    newid.type = CT_Invalid_ID;
+    newid.table = CT_Invalid_ID;
     newid.index = -1;
     newid.is_const = tconst;
 
     newid.index = sot.storeCastedRCP(rold);
 
     if (newid.index != -1)
-        newid.type = ttype;
+        newid.table = ttable;
 
     return newid;
 }
@@ -248,7 +248,7 @@ CTrilinos_Universal_ID_t Table<T>::cast(const RCP<Told> & rold)
 template <class T>
 std::string Table<T>::typeMismatchMsg(CTrilinos_Universal_ID_t id, std::string act)
 {
-    std::string s = enum2str(id.type);
+    std::string s = enum2str(id.table);
     std::stringstream ss;
 
     if (id.is_const) {

@@ -76,7 +76,7 @@ TEUCHOS_UNIT_TEST( Epetra_BLAS , Create )
   ECHO(CT_Epetra_BLAS_ID_t selfID = Epetra_BLAS_Create());
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_BLAS_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_BLAS_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -93,7 +93,7 @@ TEUCHOS_UNIT_TEST( Epetra_BLAS , Duplicate )
   ECHO(CT_Epetra_BLAS_ID_t dupID = Epetra_BLAS_Duplicate(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(dupID.type, CT_Epetra_BLAS_ID);
+  TEST_EQUALITY(dupID.table, CT_Epetra_BLAS_ID);
   TEST_EQUALITY_CONST(dupID.index, 1);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
 }
@@ -110,7 +110,7 @@ TEUCHOS_UNIT_TEST( Epetra_BLAS , Destroy )
   ECHO(Epetra_BLAS_Destroy(&selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
   TEST_EQUALITY_CONST(selfID.index, -1);
 }
 

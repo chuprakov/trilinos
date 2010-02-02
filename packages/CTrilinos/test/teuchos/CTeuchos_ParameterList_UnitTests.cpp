@@ -68,7 +68,7 @@ TEUCHOS_UNIT_TEST( Teuchos_ParameterList , Create )
   ECHO(CT_Teuchos_ParameterList_ID_t selfID = Teuchos_ParameterList_Create());
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Teuchos_ParameterList_ID);
+  TEST_EQUALITY(selfID.table, CT_Teuchos_ParameterList_ID);
 }
 
 /**********************************************************************

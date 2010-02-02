@@ -88,7 +88,7 @@ TEUCHOS_UNIT_TEST( Epetra_Operator , Destroy )
   ECHO(Epetra_Operator_Destroy(&selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
   TEST_EQUALITY_CONST(selfID.index, -1);
 }
 

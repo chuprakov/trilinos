@@ -80,7 +80,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Object , Create )
   ECHO(boolean set_label = TRUE);
   ECHO(CT_Epetra_Object_ID_t selfID = Epetra_Object_Create(TracebackModeIn, set_label));
 
-  TEST_EQUALITY(selfID.type, CT_Epetra_Object_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_Object_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -97,7 +97,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Object , Create_WithLabel )
   ECHO(int TracebackModeIn = -1);
   ECHO(CT_Epetra_Object_ID_t selfID = Epetra_Object_Create_WithLabel(Label, TracebackModeIn));
 
-  TEST_EQUALITY(selfID.type, CT_Epetra_Object_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_Object_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -116,7 +116,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Object , Duplicate )
 
   ECHO(CT_Epetra_Object_ID_t dupID = Epetra_Object_Duplicate(selfID));
 
-  TEST_EQUALITY(dupID.type, CT_Epetra_Object_ID);
+  TEST_EQUALITY(dupID.table, CT_Epetra_Object_ID);
   TEST_EQUALITY_CONST(dupID.index, 1);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
 }
@@ -135,7 +135,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Object , Destroy )
 
   ECHO(Epetra_Object_Destroy(&selfID));
 
-  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
   TEST_EQUALITY_CONST(selfID.index, -1);
 }
 

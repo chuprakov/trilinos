@@ -72,7 +72,7 @@ TEUCHOS_UNIT_TEST( Epetra_LinearProblem , Create )
   ECHO(CT_Epetra_LinearProblem_ID_t selfID = Epetra_LinearProblem_Create());
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_LinearProblem_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_LinearProblem_ID);
 }
 
 /**********************************************************************

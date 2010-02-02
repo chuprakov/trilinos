@@ -67,7 +67,7 @@ TEUCHOS_UNIT_TEST( Epetra_LAPACK , Create )
   ECHO(CT_Epetra_LAPACK_ID_t selfID = Epetra_LAPACK_Create());
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_LAPACK_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_LAPACK_ID);
 }
 
 /**********************************************************************

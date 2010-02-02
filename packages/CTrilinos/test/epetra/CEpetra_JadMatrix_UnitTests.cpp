@@ -91,7 +91,7 @@ TEUCHOS_UNIT_TEST( Epetra_JadMatrix , Create )
   ECHO(CT_Epetra_JadMatrix_ID_t selfID = Epetra_JadMatrix_Create(rmID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_JadMatrix_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_JadMatrix_ID);
 }
 
 /**********************************************************************

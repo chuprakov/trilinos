@@ -85,7 +85,7 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , Create )
   ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_SerialComm_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_SerialComm_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -103,7 +103,7 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , Duplicate )
   ECHO(CT_Epetra_SerialComm_ID_t dupID = Epetra_SerialComm_Duplicate(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(dupID.type, CT_Epetra_SerialComm_ID);
+  TEST_EQUALITY(dupID.table, CT_Epetra_SerialComm_ID);
   TEST_EQUALITY_CONST(dupID.index, 1);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
 }
@@ -122,7 +122,7 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , Clone )
   ECHO(CT_Epetra_Comm_ID_t dupID = Epetra_SerialComm_Clone(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(dupID.type, CT_Epetra_Comm_ID);
+  TEST_EQUALITY(dupID.table, CT_Epetra_Comm_ID);
   TEST_EQUALITY_CONST(dupID.index, 0);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
 }
@@ -141,7 +141,7 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , Destroy )
   ECHO(Epetra_SerialComm_Destroy(&selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
   TEST_EQUALITY_CONST(selfID.index, -1);
 }
 
@@ -689,7 +689,7 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , CreateDistributor )
   ECHO(CT_Epetra_Distributor_ID_t disID = Epetra_SerialComm_CreateDistributor(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(disID.type, CT_Epetra_Distributor_ID);
+  TEST_EQUALITY(disID.table, CT_Epetra_Distributor_ID);
   TEST_EQUALITY_CONST(disID.index, 0);
 }
 
@@ -712,7 +712,7 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , CreateDirectory )
   ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_SerialComm_CreateDirectory(selfID, MapID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(dirID.type, CT_Epetra_Directory_ID);
+  TEST_EQUALITY(dirID.table, CT_Epetra_Directory_ID);
   TEST_EQUALITY_CONST(dirID.index, 0);
 }
 

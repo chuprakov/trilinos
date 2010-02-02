@@ -83,7 +83,7 @@ TEUCHOS_UNIT_TEST( Epetra_RowMatrix , Cast )
   ECHO(CT_Epetra_RowMatrix_ID_t selfID = Epetra_RowMatrix_Cast(Epetra_CrsMatrix_Abstract(crsID)));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_RowMatrix_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_RowMatrix_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 }
 
@@ -120,7 +120,7 @@ TEUCHOS_UNIT_TEST( Epetra_RowMatrix , Destroy )
   ECHO(Epetra_RowMatrix_Destroy(&selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
   TEST_EQUALITY_CONST(selfID.index, -1);
 }
 

@@ -127,7 +127,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Import , Create )
   ECHO(CT_Epetra_Import_ID_t selfID = Epetra_Import_Create(btarID, bsrcID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Epetra_Import_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_Import_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
   ECHO(Teuchos::RCP<Epetra_Import> rcp1 = CEpetra::getImport(selfID));
   TEST_EQUALITY_CONST(rcp1.is_null(), false);
@@ -171,7 +171,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Import , Duplicate )
   ECHO(CT_Epetra_Import_ID_t dupID = Epetra_Import_Duplicate(selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(dupID.type, CT_Epetra_Import_ID);
+  TEST_EQUALITY(dupID.table, CT_Epetra_Import_ID);
   TEST_EQUALITY_CONST(dupID.index, 1);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), false);
 }
@@ -212,7 +212,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Import , Destroy )
   ECHO(Epetra_Import_Destroy(&selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
   TEST_EQUALITY_CONST(selfID.index, -1);
 }
 
@@ -333,7 +333,7 @@ TEUCHOS_UNIT_TEST ( Epetra_Import , Distributor )
     ECHO(CT_Epetra_Distributor_ID_t dID = Epetra_Import_Distributor(selfID));
 
     /* Now check the result of the call to the wrapper function */
-    TEST_EQUALITY(dID.type, CT_Epetra_Distributor_ID);
+    TEST_EQUALITY(dID.table, CT_Epetra_Distributor_ID);
     TEST_EQUALITY_CONST(dID.index, 0);
     TEST_EQUALITY_CONST(CEpetra::getDistributor(dID).is_null(), false);
   }

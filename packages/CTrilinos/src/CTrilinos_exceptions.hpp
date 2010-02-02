@@ -30,6 +30,10 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+/*! @file CTrilinos_exceptions.hpp
+ * @brief Defines exceptions thrown by CTrilinos. */
+
+
 #ifndef CTRILINOS_EXCEPTIONS_HPP
 #define CTRILINOS_EXCEPTIONS_HPP
 
@@ -43,12 +47,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 namespace CTrilinos {
 
 
+/*! exception indicating wrong object type encountered or invalid cast attempted */
 class CTrilinosTypeMismatchError : public Teuchos::ExceptionBase
 {
   public:
     CTrilinosTypeMismatchError(const std::string& what_arg) : Teuchos::ExceptionBase(what_arg) {}
 };
 
+/*! exception indicating some other error */
 class CTrilinosMiscException : public Teuchos::ExceptionBase
 {
   public:

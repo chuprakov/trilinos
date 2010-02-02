@@ -69,7 +69,7 @@ TEUCHOS_UNIT_TEST( Epetra_SrcDistObject , Cast )
 
   ECHO(CT_Epetra_SrcDistObject_ID_t selfID = Epetra_SrcDistObject_Cast(Epetra_Vector_Abstract(vecID)));
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(vecID, selfID), true);
-  TEST_EQUALITY(selfID.type, CT_Epetra_SrcDistObject_ID);
+  TEST_EQUALITY(selfID.table, CT_Epetra_SrcDistObject_ID);
   TEST_EQUALITY_CONST(selfID.index, 0);
 
   /* These casts should be valid */
@@ -99,7 +99,7 @@ TEUCHOS_UNIT_TEST( Epetra_SrcDistObject , Destroy )
   ECHO(Epetra_SrcDistObject_Destroy(&selfID));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Invalid_ID);
+  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
   TEST_EQUALITY_CONST(selfID.index, -1);
 }
 

@@ -57,7 +57,7 @@ TEUCHOS_UNIT_TEST( Teuchos_any , Create )
   ECHO(CT_Teuchos_any_ID_t selfID = Teuchos_any_Create());
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.type, CT_Teuchos_any_ID);
+  TEST_EQUALITY(selfID.table, CT_Teuchos_any_ID);
 }
 
 /**********************************************************************
