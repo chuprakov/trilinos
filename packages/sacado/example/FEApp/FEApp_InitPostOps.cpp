@@ -862,6 +862,14 @@ FEApp::SGJacobianOp::elementPost(const FEApp::AbstractElement& e,
             
 	    // Global column
 	    col = static_cast<int>(e.nodeGID(node_col)*neqn + eq_col);
+
+	    TEST_FOR_EXCEPTION(elem_f[lrow].fastAccessDx(lcol).size() >
+			       jac->size(), 
+			       std::logic_error,
+			       "Jacobian entry polynomial has size " <<
+			       elem_f[lrow].fastAccessDx(lcol).size() <<
+			       ", but Jacobian polynomial only has size " <<
+			       jac->size() << "!")
             
 	    // Sum Jacobian
 	    for (int block=0; block<nblock_jac; block++) {

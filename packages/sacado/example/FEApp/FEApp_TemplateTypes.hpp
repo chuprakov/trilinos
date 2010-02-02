@@ -47,7 +47,7 @@
 // Include all of our AD types
 #include "Sacado_MathFunctions.hpp"
 #include "Sacado.hpp"
-//#include "Sacado_CacheFad_DFad.hpp"
+#include "Sacado_CacheFad_DFad.hpp"
 #if SG_ACTIVE
 #include "Sacado_PCE_OrthogPoly.hpp"
 #endif
@@ -60,7 +60,7 @@ typedef double RealType;
 typedef Sacado::ELRFad::DFad<double> FadType;
 #if SG_ACTIVE
 typedef Sacado::PCE::OrthogPoly<double> SGType;
-typedef Sacado::ELRFad::DFad< Sacado::PCE::OrthogPoly<double> > SGFadType;
+typedef Sacado::ELRCacheFad::DFad< Sacado::PCE::OrthogPoly<double> > SGFadType;
 #endif
 
 // Set up evaluation traits
