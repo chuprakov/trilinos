@@ -135,7 +135,7 @@ initialize_doxygen_example(CT_Epetra_Comm_ID_t CommID)
   assert(NumProc > 0);
 
   CT_Epetra_Import_ID_t selfID;
-  selfID.type = CT_Invalid_ID;
+  selfID.table = CT_Invalid_ID;
   selfID.index = -1;
   selfID.is_const = FALSE;
 
@@ -183,7 +183,7 @@ initialize_doxygen_example(CT_Epetra_Comm_ID_t CommID)
 
   /* Create an importer */
   selfID = Epetra_Import_Create(btarID, bsrcID);
-  assert(selfID.type == CT_Epetra_Import_ID);
+  assert(selfID.table == CT_Epetra_Import_ID);
   assert(selfID.index >= 0);
 
   return selfID;
