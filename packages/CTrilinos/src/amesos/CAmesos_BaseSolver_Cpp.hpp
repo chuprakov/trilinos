@@ -55,9 +55,9 @@ using Teuchos::RCP;
 const RCP<Amesos_BaseSolver>
 getBaseSolver( CT_Amesos_BaseSolver_ID_t id );
 
-/* get Amesos_BaseSolver from non-const table using CTrilinos_Object_ID_t */
+/* get Amesos_BaseSolver from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Amesos_BaseSolver>
-getBaseSolver( CTrilinos_Object_ID_t id );
+getBaseSolver( CTrilinos_Universal_ID_t id );
 
 /* get const Amesos_BaseSolver from either the const or non-const table
  * using CT_Amesos_BaseSolver_ID */
@@ -65,9 +65,9 @@ const RCP<const Amesos_BaseSolver>
 getConstBaseSolver( CT_Amesos_BaseSolver_ID_t id );
 
 /* get const Amesos_BaseSolver from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Amesos_BaseSolver>
-getConstBaseSolver( CTrilinos_Object_ID_t id );
+getConstBaseSolver( CTrilinos_Universal_ID_t id );
 
 /* store Amesos_BaseSolver in non-const table */
 CT_Amesos_BaseSolver_ID_t

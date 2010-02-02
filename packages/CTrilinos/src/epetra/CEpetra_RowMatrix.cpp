@@ -82,9 +82,9 @@ extern "C" {
 
 
 CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstRowMatrixs(), id);
     } else {
@@ -93,7 +93,7 @@ CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix_Cast (
     return CTrilinos::concreteType<CT_Epetra_RowMatrix_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_RowMatrix_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_RowMatrix_Abstract ( 
   CT_Epetra_RowMatrix_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_RowMatrix_ID_t>(id);
@@ -101,7 +101,7 @@ CTrilinos_Object_ID_t Epetra_RowMatrix_Abstract (
 
 void Epetra_RowMatrix_Destroy ( CT_Epetra_RowMatrix_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_RowMatrix_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstRowMatrixs().remove(&aid);
@@ -300,14 +300,14 @@ CT_Epetra_Import_ID_t Epetra_RowMatrix_RowMatrixImporter (
 const Teuchos::RCP<Epetra_RowMatrix>
 CEpetra::getRowMatrix( CT_Epetra_RowMatrix_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_RowMatrix_ID_t>(id);
     return tableOfRowMatrixs().get(aid);
 }
 
-/* get Epetra_RowMatrix from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_RowMatrix from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_RowMatrix>
-CEpetra::getRowMatrix( CTrilinos_Object_ID_t id )
+CEpetra::getRowMatrix( CTrilinos_Universal_ID_t id )
 {
     return tableOfRowMatrixs().get(id);
 }
@@ -317,7 +317,7 @@ CEpetra::getRowMatrix( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_RowMatrix>
 CEpetra::getConstRowMatrix( CT_Epetra_RowMatrix_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_RowMatrix_ID_t>(id);
     if (id.is_const) {
         return tableOfConstRowMatrixs().get(aid);
@@ -327,9 +327,9 @@ CEpetra::getConstRowMatrix( CT_Epetra_RowMatrix_ID_t id )
 }
 
 /* get const Epetra_RowMatrix from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_RowMatrix>
-CEpetra::getConstRowMatrix( CTrilinos_Object_ID_t id )
+CEpetra::getConstRowMatrix( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstRowMatrixs().get(id);

@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_SerialDenseMatrix>
 getSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id );
 
-/* get Epetra_SerialDenseMatrix from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_SerialDenseMatrix from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_SerialDenseMatrix>
-getSerialDenseMatrix( CTrilinos_Object_ID_t id );
+getSerialDenseMatrix( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_SerialDenseMatrix from either the const or non-const table
  * using CT_Epetra_SerialDenseMatrix_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_SerialDenseMatrix>
 getConstSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id );
 
 /* get const Epetra_SerialDenseMatrix from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_SerialDenseMatrix>
-getConstSerialDenseMatrix( CTrilinos_Object_ID_t id );
+getConstSerialDenseMatrix( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_SerialDenseMatrix in non-const table */
 CT_Epetra_SerialDenseMatrix_ID_t

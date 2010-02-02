@@ -80,9 +80,9 @@ Table<const Epetra_Comm>& tableOfConstComms()
 extern "C" {
 
 
-CT_Epetra_Comm_ID_t Epetra_Comm_Cast ( CTrilinos_Object_ID_t id )
+CT_Epetra_Comm_ID_t Epetra_Comm_Cast ( CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstComms(), id);
     } else {
@@ -91,14 +91,15 @@ CT_Epetra_Comm_ID_t Epetra_Comm_Cast ( CTrilinos_Object_ID_t id )
     return CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_Comm_Abstract ( CT_Epetra_Comm_ID_t id )
+CTrilinos_Universal_ID_t Epetra_Comm_Abstract ( 
+  CT_Epetra_Comm_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id);
 }
 
 void Epetra_Comm_Destroy ( CT_Epetra_Comm_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstComms().remove(&aid);
@@ -305,14 +306,14 @@ CT_Epetra_Directory_ID_t Epetra_Comm_CreateDirectory (
 const Teuchos::RCP<Epetra_Comm>
 CEpetra::getComm( CT_Epetra_Comm_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id);
     return tableOfComms().get(aid);
 }
 
-/* get Epetra_Comm from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Comm from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_Comm>
-CEpetra::getComm( CTrilinos_Object_ID_t id )
+CEpetra::getComm( CTrilinos_Universal_ID_t id )
 {
     return tableOfComms().get(id);
 }
@@ -322,7 +323,7 @@ CEpetra::getComm( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_Comm>
 CEpetra::getConstComm( CT_Epetra_Comm_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id);
     if (id.is_const) {
         return tableOfConstComms().get(aid);
@@ -332,9 +333,9 @@ CEpetra::getConstComm( CT_Epetra_Comm_ID_t id )
 }
 
 /* get const Epetra_Comm from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_Comm>
-CEpetra::getConstComm( CTrilinos_Object_ID_t id )
+CEpetra::getConstComm( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstComms().get(id);

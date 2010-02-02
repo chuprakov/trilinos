@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_Vector>
 getVector( CT_Epetra_Vector_ID_t id );
 
-/* get Epetra_Vector from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Vector from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_Vector>
-getVector( CTrilinos_Object_ID_t id );
+getVector( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_Vector from either the const or non-const table
  * using CT_Epetra_Vector_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_Vector>
 getConstVector( CT_Epetra_Vector_ID_t id );
 
 /* get const Epetra_Vector from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_Vector>
-getConstVector( CTrilinos_Object_ID_t id );
+getConstVector( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_Vector in non-const table */
 CT_Epetra_Vector_ID_t

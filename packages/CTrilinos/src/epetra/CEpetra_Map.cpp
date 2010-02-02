@@ -78,9 +78,9 @@ Table<const Epetra_Map>& tableOfConstMaps()
 extern "C" {
 
 
-CT_Epetra_Map_ID_t Epetra_Map_Cast ( CTrilinos_Object_ID_t id )
+CT_Epetra_Map_ID_t Epetra_Map_Cast ( CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstMaps(), id);
     } else {
@@ -89,7 +89,8 @@ CT_Epetra_Map_ID_t Epetra_Map_Cast ( CTrilinos_Object_ID_t id )
     return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_Map_Abstract ( CT_Epetra_Map_ID_t id )
+CTrilinos_Universal_ID_t Epetra_Map_Abstract ( 
+  CT_Epetra_Map_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id);
 }
@@ -131,7 +132,7 @@ CT_Epetra_Map_ID_t Epetra_Map_Duplicate ( CT_Epetra_Map_ID_t mapID )
 
 void Epetra_Map_Destroy ( CT_Epetra_Map_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_Map_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstMaps().remove(&aid);
@@ -162,14 +163,14 @@ void Epetra_Map_Assign (
 const Teuchos::RCP<Epetra_Map>
 CEpetra::getMap( CT_Epetra_Map_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id);
     return tableOfMaps().get(aid);
 }
 
-/* get Epetra_Map from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Map from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_Map>
-CEpetra::getMap( CTrilinos_Object_ID_t id )
+CEpetra::getMap( CTrilinos_Universal_ID_t id )
 {
     return tableOfMaps().get(id);
 }
@@ -179,7 +180,7 @@ CEpetra::getMap( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_Map>
 CEpetra::getConstMap( CT_Epetra_Map_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id);
     if (id.is_const) {
         return tableOfConstMaps().get(aid);
@@ -189,9 +190,9 @@ CEpetra::getConstMap( CT_Epetra_Map_ID_t id )
 }
 
 /* get const Epetra_Map from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_Map>
-CEpetra::getConstMap( CTrilinos_Object_ID_t id )
+CEpetra::getConstMap( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstMaps().get(id);

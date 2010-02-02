@@ -52,7 +52,7 @@ namespace {
 
 
 /**********************************************************************
-CT_Epetra_Comm_ID_t Epetra_Comm_Cast ( CTrilinos_Object_ID_t id );
+CT_Epetra_Comm_ID_t Epetra_Comm_Cast ( CTrilinos_Universal_ID_t id );
  **********************************************************************/
 
 TEUCHOS_UNIT_TEST( Epetra_Comm , Cast )

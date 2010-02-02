@@ -82,7 +82,7 @@ using CTrilinos::Table;
 TEUCHOS_UNIT_TEST( Table, store )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
-  ECHO(CTrilinos_Object_ID_t id = table.store(new T));
+  ECHO(CTrilinos_Universal_ID_t id = table.store(new T));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T));
   TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
@@ -92,7 +92,7 @@ TEUCHOS_UNIT_TEST( Table, store )
 TEUCHOS_UNIT_TEST( Table, storeBase )
 {
   ECHO(Table<T2> table(CONSTRUCTOR(CLASS_ENUM(T2))));
-  ECHO(CTrilinos_Object_ID_t id = table.store(new T1));
+  ECHO(CTrilinos_Universal_ID_t id = table.store(new T1));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T2));
   TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
@@ -119,7 +119,7 @@ TEUCHOS_UNIT_TEST( Table, storeShared )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
   ECHO(T *pobj = new T);
-  ECHO(CTrilinos_Object_ID_t id = table.storeShared(pobj));
+  ECHO(CTrilinos_Universal_ID_t id = table.storeShared(pobj));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T));
   TEST_EQUALITY(id.is_const, FALSE);
@@ -131,7 +131,7 @@ TEUCHOS_UNIT_TEST( Table, storeConstShared )
 {
   ECHO(Table<const T> table(CONSTRUCTOR(CLASS_ENUM(T)), TRUE));
   ECHO(const T *pobj = new T);
-  ECHO(CTrilinos_Object_ID_t id = table.storeShared(pobj));
+  ECHO(CTrilinos_Universal_ID_t id = table.storeShared(pobj));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T));
   TEST_EQUALITY(id.is_const, TRUE);
@@ -143,7 +143,7 @@ TEUCHOS_UNIT_TEST( Table, storeSharedBase )
 {
   ECHO(Table<T2> table(CONSTRUCTOR(CLASS_ENUM(T2))));
   ECHO(T1 *pobj = new T1);
-  ECHO(CTrilinos_Object_ID_t id = table.storeShared(pobj));
+  ECHO(CTrilinos_Universal_ID_t id = table.storeShared(pobj));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T2));
   TEST_EQUALITY(id.is_const, FALSE);
@@ -155,7 +155,7 @@ TEUCHOS_UNIT_TEST( Table, storeConstSharedBase )
 {
   ECHO(Table<const T2> table(CONSTRUCTOR(CLASS_ENUM(T2)), TRUE));
   ECHO(const T1 *pobj = new T1);
-  ECHO(CTrilinos_Object_ID_t id = table.storeShared(pobj));
+  ECHO(CTrilinos_Universal_ID_t id = table.storeShared(pobj));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T2));
   TEST_EQUALITY(id.is_const, TRUE);
@@ -184,7 +184,7 @@ TEUCHOS_UNIT_TEST( Table, storeSharedCastConst )
 {
   ECHO(Table<const T2> table(CONSTRUCTOR(CLASS_ENUM(T2)), TRUE));
   ECHO(T1 *pobj = new T1);
-  ECHO(CTrilinos_Object_ID_t id = table.storeShared(pobj));
+  ECHO(CTrilinos_Universal_ID_t id = table.storeShared(pobj));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T2));
   TEST_EQUALITY(id.is_const, TRUE);
@@ -212,7 +212,7 @@ TEUCHOS_UNIT_TEST( Table, storeConstSharedNull )
 TEUCHOS_UNIT_TEST( Table, remove )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
-  ECHO(CTrilinos_Object_ID_t id = table.store(new T));
+  ECHO(CTrilinos_Universal_ID_t id = table.store(new T));
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.type, CLASS_ENUM(T));
   ECHO(table.remove(&id));
@@ -225,7 +225,7 @@ TEUCHOS_UNIT_TEST( Table, remove )
 TEUCHOS_UNIT_TEST( Table, removeInvalid )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
-  ECHO(CTrilinos_Object_ID_t id);
+  ECHO(CTrilinos_Universal_ID_t id);
   ECHO(id.index = -1);
   ECHO(id.type = CLASS_ENUM(T));
   ECHO(id.is_const = FALSE);
@@ -237,8 +237,8 @@ TEUCHOS_UNIT_TEST( Table, removeInvalid )
 TEUCHOS_UNIT_TEST( Table, removeWrong )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
-  ECHO(CTrilinos_Object_ID_t id1 = table.store(new T));
-  ECHO(CTrilinos_Object_ID_t id);
+  ECHO(CTrilinos_Universal_ID_t id1 = table.store(new T));
+  ECHO(CTrilinos_Universal_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = CLASS_ENUM(T4));
   ECHO(id.is_const = FALSE);
@@ -248,8 +248,8 @@ TEUCHOS_UNIT_TEST( Table, removeWrong )
 TEUCHOS_UNIT_TEST( Table, removeWrongConst1 )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
-  ECHO(CTrilinos_Object_ID_t id1 = table.store(new T));
-  ECHO(CTrilinos_Object_ID_t id);
+  ECHO(CTrilinos_Universal_ID_t id1 = table.store(new T));
+  ECHO(CTrilinos_Universal_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = id1.type);
   ECHO(id.is_const = TRUE);
@@ -259,8 +259,8 @@ TEUCHOS_UNIT_TEST( Table, removeWrongConst1 )
 TEUCHOS_UNIT_TEST( Table, removeWrongConst2 )
 {
   ECHO(Table<const T> table(CONSTRUCTOR(CLASS_ENUM(T)), TRUE));
-  ECHO(CTrilinos_Object_ID_t id1 = table.store(new T));
-  ECHO(CTrilinos_Object_ID_t id);
+  ECHO(CTrilinos_Universal_ID_t id1 = table.store(new T));
+  ECHO(CTrilinos_Universal_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = id1.type);
   ECHO(id.is_const = FALSE);
@@ -273,7 +273,7 @@ TEUCHOS_UNIT_TEST( Table, removeWrongConst2 )
 TEUCHOS_UNIT_TEST( Table, get )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
-  ECHO(CTrilinos_Object_ID_t id = table.store(new T));
+  ECHO(CTrilinos_Universal_ID_t id = table.store(new T));
   ECHO(RCP<T> rcpT = table.get(id));
   TEST_EQUALITY_CONST(nonnull(rcpT), true);
   TEST_EQUALITY_CONST(is_null(rcpT), false);
@@ -284,7 +284,7 @@ TEUCHOS_UNIT_TEST( Table, get )
 TEUCHOS_UNIT_TEST( Table, getInvalid )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
-  ECHO(CTrilinos_Object_ID_t id);
+  ECHO(CTrilinos_Universal_ID_t id);
   ECHO(id.index = 0);
   ECHO(id.type = CLASS_ENUM(T));
   ECHO(id.is_const = FALSE);
@@ -296,8 +296,8 @@ TEUCHOS_UNIT_TEST( Table, getInvalid )
 TEUCHOS_UNIT_TEST( Table, getWrong )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
-  ECHO(CTrilinos_Object_ID_t id1 = table.store(new T));
-  ECHO(CTrilinos_Object_ID_t id);
+  ECHO(CTrilinos_Universal_ID_t id1 = table.store(new T));
+  ECHO(CTrilinos_Universal_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = CLASS_ENUM(T4));
   ECHO(id.is_const = FALSE);
@@ -307,8 +307,8 @@ TEUCHOS_UNIT_TEST( Table, getWrong )
 TEUCHOS_UNIT_TEST( Table, getWrongConst1 )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
-  ECHO(CTrilinos_Object_ID_t id1 = table.store(new T));
-  ECHO(CTrilinos_Object_ID_t id);
+  ECHO(CTrilinos_Universal_ID_t id1 = table.store(new T));
+  ECHO(CTrilinos_Universal_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = id1.type);
   ECHO(id.is_const = TRUE);
@@ -318,8 +318,8 @@ TEUCHOS_UNIT_TEST( Table, getWrongConst1 )
 TEUCHOS_UNIT_TEST( Table, getWrongConst2 )
 {
   ECHO(Table<const T> table(CONSTRUCTOR(CLASS_ENUM(T)), TRUE));
-  ECHO(CTrilinos_Object_ID_t id1 = table.store(new T));
-  ECHO(CTrilinos_Object_ID_t id);
+  ECHO(CTrilinos_Universal_ID_t id1 = table.store(new T));
+  ECHO(CTrilinos_Universal_ID_t id);
   ECHO(id.index = id1.index);
   ECHO(id.type = id1.type);
   ECHO(id.is_const = FALSE);
@@ -334,8 +334,8 @@ TEUCHOS_UNIT_TEST( Table, cast )
   ECHO(Table<T1> table1(CONSTRUCTOR(CLASS_ENUM(T1))));
   ECHO(Table<T2> table2(CONSTRUCTOR(CLASS_ENUM(T2))));
 
-  ECHO(CTrilinos_Object_ID_t id1 = table1.store(new T1));
-  ECHO(CTrilinos_Object_ID_t id2 = table2.cast(table1.get(id1)));
+  ECHO(CTrilinos_Universal_ID_t id1 = table1.store(new T1));
+  ECHO(CTrilinos_Universal_ID_t id2 = table2.cast(table1.get(id1)));
 
   TEST_EQUALITY(id2.type, CLASS_ENUM(T2));
   TEST_EQUALITY_CONST(id2.index, 0);
@@ -346,8 +346,8 @@ TEUCHOS_UNIT_TEST( Table, castConst )
   ECHO(Table<T1> table1(CONSTRUCTOR(CLASS_ENUM(T1))));
   ECHO(Table<const T2> table2(CONSTRUCTOR(CLASS_ENUM(T2)), TRUE));
 
-  ECHO(CTrilinos_Object_ID_t id1 = table1.store(new T1));
-  ECHO(CTrilinos_Object_ID_t id2 = table2.cast(table1.get(id1)));
+  ECHO(CTrilinos_Universal_ID_t id1 = table1.store(new T1));
+  ECHO(CTrilinos_Universal_ID_t id2 = table2.cast(table1.get(id1)));
 
   TEST_EQUALITY(id2.type, CLASS_ENUM(T2));
   TEST_EQUALITY_CONST(id2.index, 0);
@@ -360,7 +360,7 @@ TEUCHOS_UNIT_TEST( Table, castBadConst )
   ECHO(Table<const T1> table1(CONSTRUCTOR(CLASS_ENUM(T1)), TRUE));
   ECHO(Table<T2> table2(CONSTRUCTOR(CLASS_ENUM(T2))));
 
-  ECHO(CTrilinos_Object_ID_t id1 = table1.store(new T1));
+  ECHO(CTrilinos_Universal_ID_t id1 = table1.store(new T1));
   TEST_THROW(table2.cast(table1.get(id1)), CTrilinosTypeMismatchError);
 }
 */
@@ -370,7 +370,7 @@ TEUCHOS_UNIT_TEST( Table, castBad )
   ECHO(Table<T3> table3(CONSTRUCTOR(CLASS_ENUM(T3))));
   ECHO(Table<T4> table4(CONSTRUCTOR(CLASS_ENUM(T4))));
 
-  ECHO(CTrilinos_Object_ID_t id3 = table3.store(new T3));
+  ECHO(CTrilinos_Universal_ID_t id3 = table3.store(new T3));
   TEST_THROW(table4.cast(table3.get(id3)), m_bad_cast);
 }
 
@@ -382,7 +382,7 @@ TEUCHOS_UNIT_TEST( Table, castBad )
 TEUCHOS_UNIT_TEST( Table, purge )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
-  ECHO(CTrilinos_Object_ID_t id = table.store(new T));
+  ECHO(CTrilinos_Universal_ID_t id = table.store(new T));
   TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
   ECHO(table.purge());
   TEST_THROW(table.get(id), RangeError);

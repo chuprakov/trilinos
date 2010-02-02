@@ -73,9 +73,9 @@ extern "C" {
 /*@{*/
 
 CT_Ifpack_Preconditioner_ID_t Ifpack_Preconditioner_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
 
-CTrilinos_Object_ID_t Ifpack_Preconditioner_Abstract ( 
+CTrilinos_Universal_ID_t Ifpack_Preconditioner_Abstract ( 
   CT_Ifpack_Preconditioner_ID_t id );
 
 /*@}*/

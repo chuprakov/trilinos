@@ -78,9 +78,9 @@ extern "C" {
 
 
 CT_Epetra_SerialDenseMatrix_ID_t Epetra_SerialDenseMatrix_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstSerialDenseMatrixs(), id);
     } else {
@@ -89,7 +89,7 @@ CT_Epetra_SerialDenseMatrix_ID_t Epetra_SerialDenseMatrix_Cast (
     return CTrilinos::concreteType<CT_Epetra_SerialDenseMatrix_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_SerialDenseMatrix_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_SerialDenseMatrix_Abstract ( 
   CT_Epetra_SerialDenseMatrix_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_SerialDenseMatrix_ID_t>(id);
@@ -136,7 +136,7 @@ CT_Epetra_SerialDenseMatrix_ID_t Epetra_SerialDenseMatrix_Duplicate (
 void Epetra_SerialDenseMatrix_Destroy ( 
   CT_Epetra_SerialDenseMatrix_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_SerialDenseMatrix_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstSerialDenseMatrixs().remove(&aid);
@@ -390,14 +390,14 @@ const double * Epetra_SerialDenseMatrix_getColumn (
 const Teuchos::RCP<Epetra_SerialDenseMatrix>
 CEpetra::getSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_SerialDenseMatrix_ID_t>(id);
     return tableOfSerialDenseMatrixs().get(aid);
 }
 
-/* get Epetra_SerialDenseMatrix from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_SerialDenseMatrix from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_SerialDenseMatrix>
-CEpetra::getSerialDenseMatrix( CTrilinos_Object_ID_t id )
+CEpetra::getSerialDenseMatrix( CTrilinos_Universal_ID_t id )
 {
     return tableOfSerialDenseMatrixs().get(id);
 }
@@ -407,7 +407,7 @@ CEpetra::getSerialDenseMatrix( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_SerialDenseMatrix>
 CEpetra::getConstSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_SerialDenseMatrix_ID_t>(id);
     if (id.is_const) {
         return tableOfConstSerialDenseMatrixs().get(aid);
@@ -417,9 +417,9 @@ CEpetra::getConstSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id )
 }
 
 /* get const Epetra_SerialDenseMatrix from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_SerialDenseMatrix>
-CEpetra::getConstSerialDenseMatrix( CTrilinos_Object_ID_t id )
+CEpetra::getConstSerialDenseMatrix( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstSerialDenseMatrixs().get(id);

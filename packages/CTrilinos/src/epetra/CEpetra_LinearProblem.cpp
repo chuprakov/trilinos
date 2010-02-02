@@ -82,9 +82,9 @@ extern "C" {
 
 
 CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstLinearProblems(), id);
     } else {
@@ -93,7 +93,7 @@ CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Cast (
     return CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_LinearProblem_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_LinearProblem_Abstract ( 
   CT_Epetra_LinearProblem_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(id);
@@ -138,7 +138,7 @@ CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Duplicate (
 void Epetra_LinearProblem_Destroy ( 
   CT_Epetra_LinearProblem_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstLinearProblems().remove(&aid);
@@ -267,14 +267,14 @@ boolean Epetra_LinearProblem_IsOperatorSymmetric (
 const Teuchos::RCP<Epetra_LinearProblem>
 CEpetra::getLinearProblem( CT_Epetra_LinearProblem_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(id);
     return tableOfLinearProblems().get(aid);
 }
 
-/* get Epetra_LinearProblem from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_LinearProblem from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_LinearProblem>
-CEpetra::getLinearProblem( CTrilinos_Object_ID_t id )
+CEpetra::getLinearProblem( CTrilinos_Universal_ID_t id )
 {
     return tableOfLinearProblems().get(id);
 }
@@ -284,7 +284,7 @@ CEpetra::getLinearProblem( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_LinearProblem>
 CEpetra::getConstLinearProblem( CT_Epetra_LinearProblem_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(id);
     if (id.is_const) {
         return tableOfConstLinearProblems().get(aid);
@@ -294,9 +294,9 @@ CEpetra::getConstLinearProblem( CT_Epetra_LinearProblem_ID_t id )
 }
 
 /* get const Epetra_LinearProblem from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_LinearProblem>
-CEpetra::getConstLinearProblem( CTrilinos_Object_ID_t id )
+CEpetra::getConstLinearProblem( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstLinearProblems().get(id);

@@ -55,9 +55,9 @@ using Teuchos::RCP;
 const RCP<AztecOO_StatusTest>
 getStatusTest( CT_AztecOO_StatusTest_ID_t id );
 
-/* get AztecOO_StatusTest from non-const table using CTrilinos_Object_ID_t */
+/* get AztecOO_StatusTest from non-const table using CTrilinos_Universal_ID_t */
 const RCP<AztecOO_StatusTest>
-getStatusTest( CTrilinos_Object_ID_t id );
+getStatusTest( CTrilinos_Universal_ID_t id );
 
 /* get const AztecOO_StatusTest from either the const or non-const table
  * using CT_AztecOO_StatusTest_ID */
@@ -65,9 +65,9 @@ const RCP<const AztecOO_StatusTest>
 getConstStatusTest( CT_AztecOO_StatusTest_ID_t id );
 
 /* get const AztecOO_StatusTest from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const AztecOO_StatusTest>
-getConstStatusTest( CTrilinos_Object_ID_t id );
+getConstStatusTest( CTrilinos_Universal_ID_t id );
 
 /* store AztecOO_StatusTest in non-const table */
 CT_AztecOO_StatusTest_ID_t

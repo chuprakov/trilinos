@@ -55,9 +55,9 @@ using Teuchos::RCP;
 const RCP<AztecOO_StatusTestCombo>
 getStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t id );
 
-/* get AztecOO_StatusTestCombo from non-const table using CTrilinos_Object_ID_t */
+/* get AztecOO_StatusTestCombo from non-const table using CTrilinos_Universal_ID_t */
 const RCP<AztecOO_StatusTestCombo>
-getStatusTestCombo( CTrilinos_Object_ID_t id );
+getStatusTestCombo( CTrilinos_Universal_ID_t id );
 
 /* get const AztecOO_StatusTestCombo from either the const or non-const table
  * using CT_AztecOO_StatusTestCombo_ID */
@@ -65,9 +65,9 @@ const RCP<const AztecOO_StatusTestCombo>
 getConstStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t id );
 
 /* get const AztecOO_StatusTestCombo from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const AztecOO_StatusTestCombo>
-getConstStatusTestCombo( CTrilinos_Object_ID_t id );
+getConstStatusTestCombo( CTrilinos_Universal_ID_t id );
 
 /* store AztecOO_StatusTestCombo in non-const table */
 CT_AztecOO_StatusTestCombo_ID_t

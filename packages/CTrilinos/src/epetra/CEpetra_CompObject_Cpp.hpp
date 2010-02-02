@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_CompObject>
 getCompObject( CT_Epetra_CompObject_ID_t id );
 
-/* get Epetra_CompObject from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_CompObject from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_CompObject>
-getCompObject( CTrilinos_Object_ID_t id );
+getCompObject( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_CompObject from either the const or non-const table
  * using CT_Epetra_CompObject_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_CompObject>
 getConstCompObject( CT_Epetra_CompObject_ID_t id );
 
 /* get const Epetra_CompObject from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_CompObject>
-getConstCompObject( CTrilinos_Object_ID_t id );
+getConstCompObject( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_CompObject in non-const table */
 CT_Epetra_CompObject_ID_t

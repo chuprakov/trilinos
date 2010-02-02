@@ -78,9 +78,9 @@ extern "C" {
 
 
 CT_Epetra_IntSerialDenseVector_ID_t Epetra_IntSerialDenseVector_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstIntSerialDenseVectors(), id);
     } else {
@@ -89,7 +89,7 @@ CT_Epetra_IntSerialDenseVector_ID_t Epetra_IntSerialDenseVector_Cast (
     return CTrilinos::concreteType<CT_Epetra_IntSerialDenseVector_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_IntSerialDenseVector_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_IntSerialDenseVector_Abstract ( 
   CT_Epetra_IntSerialDenseVector_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_IntSerialDenseVector_ID_t>(id);
@@ -132,7 +132,7 @@ CT_Epetra_IntSerialDenseVector_ID_t Epetra_IntSerialDenseVector_Duplicate (
 void Epetra_IntSerialDenseVector_Destroy ( 
   CT_Epetra_IntSerialDenseVector_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_IntSerialDenseVector_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstIntSerialDenseVectors().remove(&aid);
@@ -250,14 +250,14 @@ void Epetra_IntSerialDenseVector_Assign (
 const Teuchos::RCP<Epetra_IntSerialDenseVector>
 CEpetra::getIntSerialDenseVector( CT_Epetra_IntSerialDenseVector_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_IntSerialDenseVector_ID_t>(id);
     return tableOfIntSerialDenseVectors().get(aid);
 }
 
-/* get Epetra_IntSerialDenseVector from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_IntSerialDenseVector from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_IntSerialDenseVector>
-CEpetra::getIntSerialDenseVector( CTrilinos_Object_ID_t id )
+CEpetra::getIntSerialDenseVector( CTrilinos_Universal_ID_t id )
 {
     return tableOfIntSerialDenseVectors().get(id);
 }
@@ -267,7 +267,7 @@ CEpetra::getIntSerialDenseVector( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_IntSerialDenseVector>
 CEpetra::getConstIntSerialDenseVector( CT_Epetra_IntSerialDenseVector_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_IntSerialDenseVector_ID_t>(id);
     if (id.is_const) {
         return tableOfConstIntSerialDenseVectors().get(aid);
@@ -277,9 +277,9 @@ CEpetra::getConstIntSerialDenseVector( CT_Epetra_IntSerialDenseVector_ID_t id )
 }
 
 /* get const Epetra_IntSerialDenseVector from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_IntSerialDenseVector>
-CEpetra::getConstIntSerialDenseVector( CTrilinos_Object_ID_t id )
+CEpetra::getConstIntSerialDenseVector( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstIntSerialDenseVectors().get(id);

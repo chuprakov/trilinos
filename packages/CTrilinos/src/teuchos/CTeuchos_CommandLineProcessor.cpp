@@ -92,7 +92,7 @@ CT_Teuchos_CommandLineProcessor_ID_t Teuchos_CommandLineProcessor_Create (
 void Teuchos_CommandLineProcessor_Destroy ( 
   CT_Teuchos_CommandLineProcessor_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Teuchos_CommandLineProcessor_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstCommandLineProcessors().remove(&aid);
@@ -215,14 +215,14 @@ void Teuchos_CommandLineProcessor_setOption_str (
 const Teuchos::RCP<Teuchos::CommandLineProcessor>
 CTeuchos::getCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Teuchos_CommandLineProcessor_ID_t>(id);
     return tableOfCommandLineProcessors().get(aid);
 }
 
-/* get Teuchos::CommandLineProcessor from non-const table using CTrilinos_Object_ID_t */
+/* get Teuchos::CommandLineProcessor from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Teuchos::CommandLineProcessor>
-CTeuchos::getCommandLineProcessor( CTrilinos_Object_ID_t id )
+CTeuchos::getCommandLineProcessor( CTrilinos_Universal_ID_t id )
 {
     return tableOfCommandLineProcessors().get(id);
 }
@@ -232,7 +232,7 @@ CTeuchos::getCommandLineProcessor( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Teuchos::CommandLineProcessor>
 CTeuchos::getConstCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Teuchos_CommandLineProcessor_ID_t>(id);
     if (id.is_const) {
         return tableOfConstCommandLineProcessors().get(aid);
@@ -242,9 +242,9 @@ CTeuchos::getConstCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id 
 }
 
 /* get const Teuchos::CommandLineProcessor from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Teuchos::CommandLineProcessor>
-CTeuchos::getConstCommandLineProcessor( CTrilinos_Object_ID_t id )
+CTeuchos::getConstCommandLineProcessor( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstCommandLineProcessors().get(id);

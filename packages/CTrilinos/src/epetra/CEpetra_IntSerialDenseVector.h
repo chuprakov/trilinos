@@ -66,9 +66,9 @@ extern "C" {
 /*@{*/
 
 CT_Epetra_IntSerialDenseVector_ID_t Epetra_IntSerialDenseVector_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
 
-CTrilinos_Object_ID_t Epetra_IntSerialDenseVector_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_IntSerialDenseVector_Abstract ( 
   CT_Epetra_IntSerialDenseVector_ID_t id );
 
 /*@}*/

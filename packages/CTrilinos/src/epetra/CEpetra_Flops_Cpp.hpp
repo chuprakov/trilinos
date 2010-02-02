@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_Flops>
 getFlops( CT_Epetra_Flops_ID_t id );
 
-/* get Epetra_Flops from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Flops from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_Flops>
-getFlops( CTrilinos_Object_ID_t id );
+getFlops( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_Flops from either the const or non-const table
  * using CT_Epetra_Flops_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_Flops>
 getConstFlops( CT_Epetra_Flops_ID_t id );
 
 /* get const Epetra_Flops from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_Flops>
-getConstFlops( CTrilinos_Object_ID_t id );
+getConstFlops( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_Flops in non-const table */
 CT_Epetra_Flops_ID_t

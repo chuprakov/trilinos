@@ -85,9 +85,9 @@ extern "C" {
 
 
 CT_Ifpack_Preconditioner_ID_t Ifpack_Preconditioner_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstPreconditioners(), id);
     } else {
@@ -96,7 +96,7 @@ CT_Ifpack_Preconditioner_ID_t Ifpack_Preconditioner_Cast (
     return CTrilinos::concreteType<CT_Ifpack_Preconditioner_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Ifpack_Preconditioner_Abstract ( 
+CTrilinos_Universal_ID_t Ifpack_Preconditioner_Abstract ( 
   CT_Ifpack_Preconditioner_ID_t id )
 {
     return CTrilinos::abstractType<CT_Ifpack_Preconditioner_ID_t>(id);
@@ -229,14 +229,14 @@ double Ifpack_Preconditioner_ApplyInverseFlops (
 const Teuchos::RCP<Ifpack_Preconditioner>
 CIfpack::getPreconditioner( CT_Ifpack_Preconditioner_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Ifpack_Preconditioner_ID_t>(id);
     return tableOfPreconditioners().get(aid);
 }
 
-/* get Ifpack_Preconditioner from non-const table using CTrilinos_Object_ID_t */
+/* get Ifpack_Preconditioner from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Ifpack_Preconditioner>
-CIfpack::getPreconditioner( CTrilinos_Object_ID_t id )
+CIfpack::getPreconditioner( CTrilinos_Universal_ID_t id )
 {
     return tableOfPreconditioners().get(id);
 }
@@ -246,7 +246,7 @@ CIfpack::getPreconditioner( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Ifpack_Preconditioner>
 CIfpack::getConstPreconditioner( CT_Ifpack_Preconditioner_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Ifpack_Preconditioner_ID_t>(id);
     if (id.is_const) {
         return tableOfConstPreconditioners().get(aid);
@@ -256,9 +256,9 @@ CIfpack::getConstPreconditioner( CT_Ifpack_Preconditioner_ID_t id )
 }
 
 /* get const Ifpack_Preconditioner from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Ifpack_Preconditioner>
-CIfpack::getConstPreconditioner( CTrilinos_Object_ID_t id )
+CIfpack::getConstPreconditioner( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstPreconditioners().get(id);

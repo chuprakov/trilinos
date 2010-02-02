@@ -151,14 +151,14 @@ tables of templated class <tt>CTrilinos_Table</tt>.
 <tt>Teuchos::SimpleObjectTable</tt>.
 
 The type-specific ID struct for each wrapped class has an identical
-form to the generic ID struct, <tt>CTrilinos_Object_ID_t</tt>:
+form to the generic ID struct, <tt>CTrilinos_Universal_ID_t</tt>:
 
 \code
 typedef struct {
-    CTrilinos_Type_ID_t type;
+    CTrilinos_Table_ID_t type;
     int index;
     boolean is_const;
-} CTrilinos_Object_ID_t;
+} CTrilinos_Universal_ID_t;
 \endcode
 
 The ID structs presently contain three members:
@@ -322,7 +322,7 @@ follows:
 
 \code
 CT_Epetra_CrsMatrix_ID_t A;
-CTrilinos_Object_ID_t genericA;
+CTrilinos_Universal_ID_t genericA;
 CT_Epetra_RowMatrix_ID_t rA;
 
 A = Epetra_CrsMatrix_Create(...);

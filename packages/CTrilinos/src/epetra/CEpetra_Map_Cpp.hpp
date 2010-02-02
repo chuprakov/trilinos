@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_Map>
 getMap( CT_Epetra_Map_ID_t id );
 
-/* get Epetra_Map from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Map from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_Map>
-getMap( CTrilinos_Object_ID_t id );
+getMap( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_Map from either the const or non-const table
  * using CT_Epetra_Map_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_Map>
 getConstMap( CT_Epetra_Map_ID_t id );
 
 /* get const Epetra_Map from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_Map>
-getConstMap( CTrilinos_Object_ID_t id );
+getConstMap( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_Map in non-const table */
 CT_Epetra_Map_ID_t

@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_Import>
 getImport( CT_Epetra_Import_ID_t id );
 
-/* get Epetra_Import from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Import from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_Import>
-getImport( CTrilinos_Object_ID_t id );
+getImport( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_Import from either the const or non-const table
  * using CT_Epetra_Import_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_Import>
 getConstImport( CT_Epetra_Import_ID_t id );
 
 /* get const Epetra_Import from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_Import>
-getConstImport( CTrilinos_Object_ID_t id );
+getConstImport( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_Import in non-const table */
 CT_Epetra_Import_ID_t

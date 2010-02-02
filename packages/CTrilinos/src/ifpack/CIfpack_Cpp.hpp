@@ -55,9 +55,9 @@ using Teuchos::RCP;
 const RCP<Ifpack>
 getIfpack( CT_Ifpack_ID_t id );
 
-/* get Ifpack from non-const table using CTrilinos_Object_ID_t */
+/* get Ifpack from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Ifpack>
-getIfpack( CTrilinos_Object_ID_t id );
+getIfpack( CTrilinos_Universal_ID_t id );
 
 /* get const Ifpack from either the const or non-const table
  * using CT_Ifpack_ID */
@@ -65,9 +65,9 @@ const RCP<const Ifpack>
 getConstIfpack( CT_Ifpack_ID_t id );
 
 /* get const Ifpack from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Ifpack>
-getConstIfpack( CTrilinos_Object_ID_t id );
+getConstIfpack( CTrilinos_Universal_ID_t id );
 
 /* store Ifpack in non-const table */
 CT_Ifpack_ID_t

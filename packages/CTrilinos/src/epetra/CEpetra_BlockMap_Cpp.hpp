@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_BlockMap>
 getBlockMap( CT_Epetra_BlockMap_ID_t id );
 
-/* get Epetra_BlockMap from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_BlockMap from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_BlockMap>
-getBlockMap( CTrilinos_Object_ID_t id );
+getBlockMap( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_BlockMap from either the const or non-const table
  * using CT_Epetra_BlockMap_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_BlockMap>
 getConstBlockMap( CT_Epetra_BlockMap_ID_t id );
 
 /* get const Epetra_BlockMap from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_BlockMap>
-getConstBlockMap( CTrilinos_Object_ID_t id );
+getConstBlockMap( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_BlockMap in non-const table */
 CT_Epetra_BlockMap_ID_t

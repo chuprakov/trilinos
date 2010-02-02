@@ -97,7 +97,7 @@ CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterEntry_Duplicate (
 void Teuchos_ParameterEntry_Destroy ( 
   CT_Teuchos_ParameterEntry_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Teuchos_ParameterEntry_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstParameterEntrys().remove(&aid);
@@ -226,14 +226,14 @@ void Teuchos_ParameterEntry_Assign (
 const Teuchos::RCP<Teuchos::ParameterEntry>
 CTeuchos::getParameterEntry( CT_Teuchos_ParameterEntry_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Teuchos_ParameterEntry_ID_t>(id);
     return tableOfParameterEntrys().get(aid);
 }
 
-/* get Teuchos::ParameterEntry from non-const table using CTrilinos_Object_ID_t */
+/* get Teuchos::ParameterEntry from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Teuchos::ParameterEntry>
-CTeuchos::getParameterEntry( CTrilinos_Object_ID_t id )
+CTeuchos::getParameterEntry( CTrilinos_Universal_ID_t id )
 {
     return tableOfParameterEntrys().get(id);
 }
@@ -243,7 +243,7 @@ CTeuchos::getParameterEntry( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Teuchos::ParameterEntry>
 CTeuchos::getConstParameterEntry( CT_Teuchos_ParameterEntry_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Teuchos_ParameterEntry_ID_t>(id);
     if (id.is_const) {
         return tableOfConstParameterEntrys().get(aid);
@@ -253,9 +253,9 @@ CTeuchos::getConstParameterEntry( CT_Teuchos_ParameterEntry_ID_t id )
 }
 
 /* get const Teuchos::ParameterEntry from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Teuchos::ParameterEntry>
-CTeuchos::getConstParameterEntry( CTrilinos_Object_ID_t id )
+CTeuchos::getConstParameterEntry( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstParameterEntrys().get(id);

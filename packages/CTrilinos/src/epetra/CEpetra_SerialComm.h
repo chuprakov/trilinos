@@ -70,9 +70,9 @@ extern "C" {
 /*@{*/
 
 CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
 
-CTrilinos_Object_ID_t Epetra_SerialComm_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_SerialComm_Abstract ( 
   CT_Epetra_SerialComm_ID_t id );
 
 /*@}*/

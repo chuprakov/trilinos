@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Teuchos::CommandLineProcessor>
 getCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id );
 
-/* get Teuchos::CommandLineProcessor from non-const table using CTrilinos_Object_ID_t */
+/* get Teuchos::CommandLineProcessor from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Teuchos::CommandLineProcessor>
-getCommandLineProcessor( CTrilinos_Object_ID_t id );
+getCommandLineProcessor( CTrilinos_Universal_ID_t id );
 
 /* get const Teuchos::CommandLineProcessor from either the const or non-const table
  * using CT_Teuchos_CommandLineProcessor_ID */
@@ -61,9 +61,9 @@ const RCP<const Teuchos::CommandLineProcessor>
 getConstCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id );
 
 /* get const Teuchos::CommandLineProcessor from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Teuchos::CommandLineProcessor>
-getConstCommandLineProcessor( CTrilinos_Object_ID_t id );
+getConstCommandLineProcessor( CTrilinos_Universal_ID_t id );
 
 /* store Teuchos::CommandLineProcessor in non-const table */
 CT_Teuchos_CommandLineProcessor_ID_t

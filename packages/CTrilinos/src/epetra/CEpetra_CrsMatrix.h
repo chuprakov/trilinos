@@ -74,9 +74,9 @@ extern "C" {
 /*@{*/
 
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
 
-CTrilinos_Object_ID_t Epetra_CrsMatrix_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_CrsMatrix_Abstract ( 
   CT_Epetra_CrsMatrix_ID_t id );
 
 /*@}*/

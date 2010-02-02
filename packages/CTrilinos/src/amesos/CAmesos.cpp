@@ -92,7 +92,7 @@ CT_Amesos_ID_t Amesos_Create (  )
 
 void Amesos_Destroy ( CT_Amesos_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Amesos_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstAmesoss().remove(&aid);
@@ -137,14 +137,14 @@ CT_Teuchos_ParameterList_ID_t Amesos_GetValidParameters (  )
 const Teuchos::RCP<Amesos>
 CAmesos::getAmesos( CT_Amesos_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Amesos_ID_t>(id);
     return tableOfAmesoss().get(aid);
 }
 
-/* get Amesos from non-const table using CTrilinos_Object_ID_t */
+/* get Amesos from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Amesos>
-CAmesos::getAmesos( CTrilinos_Object_ID_t id )
+CAmesos::getAmesos( CTrilinos_Universal_ID_t id )
 {
     return tableOfAmesoss().get(id);
 }
@@ -154,7 +154,7 @@ CAmesos::getAmesos( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Amesos>
 CAmesos::getConstAmesos( CT_Amesos_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Amesos_ID_t>(id);
     if (id.is_const) {
         return tableOfConstAmesoss().get(aid);
@@ -164,9 +164,9 @@ CAmesos::getConstAmesos( CT_Amesos_ID_t id )
 }
 
 /* get const Amesos from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Amesos>
-CAmesos::getConstAmesos( CTrilinos_Object_ID_t id )
+CAmesos::getConstAmesos( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstAmesoss().get(id);

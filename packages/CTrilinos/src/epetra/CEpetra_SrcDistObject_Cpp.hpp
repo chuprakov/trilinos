@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_SrcDistObject>
 getSrcDistObject( CT_Epetra_SrcDistObject_ID_t id );
 
-/* get Epetra_SrcDistObject from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_SrcDistObject from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_SrcDistObject>
-getSrcDistObject( CTrilinos_Object_ID_t id );
+getSrcDistObject( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_SrcDistObject from either the const or non-const table
  * using CT_Epetra_SrcDistObject_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_SrcDistObject>
 getConstSrcDistObject( CT_Epetra_SrcDistObject_ID_t id );
 
 /* get const Epetra_SrcDistObject from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_SrcDistObject>
-getConstSrcDistObject( CTrilinos_Object_ID_t id );
+getConstSrcDistObject( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_SrcDistObject in non-const table */
 CT_Epetra_SrcDistObject_ID_t

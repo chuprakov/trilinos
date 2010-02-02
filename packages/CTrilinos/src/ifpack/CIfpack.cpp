@@ -92,7 +92,7 @@ CT_Ifpack_ID_t Ifpack_Create (  )
 
 void Ifpack_Destroy ( CT_Ifpack_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Ifpack_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstIfpacks().remove(&aid);
@@ -155,14 +155,14 @@ CT_Ifpack_Preconditioner_ID_t Ifpack_CreatePreconditioner_UsingType (
 const Teuchos::RCP<Ifpack>
 CIfpack::getIfpack( CT_Ifpack_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Ifpack_ID_t>(id);
     return tableOfIfpacks().get(aid);
 }
 
-/* get Ifpack from non-const table using CTrilinos_Object_ID_t */
+/* get Ifpack from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Ifpack>
-CIfpack::getIfpack( CTrilinos_Object_ID_t id )
+CIfpack::getIfpack( CTrilinos_Universal_ID_t id )
 {
     return tableOfIfpacks().get(id);
 }
@@ -172,7 +172,7 @@ CIfpack::getIfpack( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Ifpack>
 CIfpack::getConstIfpack( CT_Ifpack_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Ifpack_ID_t>(id);
     if (id.is_const) {
         return tableOfConstIfpacks().get(aid);
@@ -182,9 +182,9 @@ CIfpack::getConstIfpack( CT_Ifpack_ID_t id )
 }
 
 /* get const Ifpack from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Ifpack>
-CIfpack::getConstIfpack( CTrilinos_Object_ID_t id )
+CIfpack::getConstIfpack( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstIfpacks().get(id);

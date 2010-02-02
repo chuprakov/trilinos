@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_FECrsMatrix>
 getFECrsMatrix( CT_Epetra_FECrsMatrix_ID_t id );
 
-/* get Epetra_FECrsMatrix from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_FECrsMatrix from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_FECrsMatrix>
-getFECrsMatrix( CTrilinos_Object_ID_t id );
+getFECrsMatrix( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_FECrsMatrix from either the const or non-const table
  * using CT_Epetra_FECrsMatrix_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_FECrsMatrix>
 getConstFECrsMatrix( CT_Epetra_FECrsMatrix_ID_t id );
 
 /* get const Epetra_FECrsMatrix from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_FECrsMatrix>
-getConstFECrsMatrix( CTrilinos_Object_ID_t id );
+getConstFECrsMatrix( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_FECrsMatrix in non-const table */
 CT_Epetra_FECrsMatrix_ID_t

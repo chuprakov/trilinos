@@ -71,8 +71,8 @@ TEUCHOS_UNIT_TEST( Utils, isSameObjectRRTrue )
   ECHO(Table<T1> table1(CONSTRUCTOR(CLASS_ENUM(T1))));
   ECHO(Table<T2> table2(CONSTRUCTOR(CLASS_ENUM(T2))));
 
-  ECHO(CTrilinos_Object_ID_t id1 = table1.store(new T1));
-  ECHO(CTrilinos_Object_ID_t id2 = table2.cast(table1.get(id1)));
+  ECHO(CTrilinos_Universal_ID_t id1 = table1.store(new T1));
+  ECHO(CTrilinos_Universal_ID_t id2 = table2.cast(table1.get(id1)));
 
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(table1.get(id1), table2.get(id2)), true);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(table2.get(id2), table1.get(id1)), true);
@@ -82,8 +82,8 @@ TEUCHOS_UNIT_TEST( Utils, isSameObjectRRFalse )
 {
   ECHO(Table<T1> table1(CONSTRUCTOR(CLASS_ENUM(T1))));
 
-  ECHO(CTrilinos_Object_ID_t id1 = table1.store(new T1));
-  ECHO(CTrilinos_Object_ID_t id2 = table1.store(new T1));
+  ECHO(CTrilinos_Universal_ID_t id1 = table1.store(new T1));
+  ECHO(CTrilinos_Universal_ID_t id2 = table1.store(new T1));
 
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(table1.get(id1), table1.get(id2)), false);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(table1.get(id2), table1.get(id1)), false);
@@ -94,14 +94,14 @@ TEUCHOS_UNIT_TEST( Utils, isSameObjectRATrue )
   ECHO(CT_Epetra_SerialComm_ID_t id1 = CEpetra::storeSerialComm(new Epetra_SerialComm));
   ECHO(Teuchos::RCP<Epetra_SerialComm> rcp1 = CEpetra::getSerialComm(id1));
 
-  ECHO(CTrilinos_Object_ID_t aid1 = CTrilinos::abstractType(id1));
+  ECHO(CTrilinos_Universal_ID_t aid1 = CTrilinos::abstractType(id1));
 
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(rcp1, aid1), true);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(aid1, rcp1), true);
 
   ECHO(CT_Epetra_Comm_ID_t id2 = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(id1)));
 
-  ECHO(CTrilinos_Object_ID_t aid2 = CTrilinos::abstractType(id2));
+  ECHO(CTrilinos_Universal_ID_t aid2 = CTrilinos::abstractType(id2));
 
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(rcp1, aid2), true);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(aid2, rcp1), true);
@@ -157,8 +157,8 @@ TEUCHOS_UNIT_TEST( Utils, isSameObjectAATrue )
   ECHO(CT_Epetra_SerialComm_ID_t id1 = CEpetra::storeSerialComm(new Epetra_SerialComm));
   ECHO(CT_Epetra_Comm_ID_t id2 = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(id1)));
 
-  ECHO(CTrilinos_Object_ID_t aid1 = CTrilinos::abstractType(id1));
-  ECHO(CTrilinos_Object_ID_t aid2 = CTrilinos::abstractType(id2));
+  ECHO(CTrilinos_Universal_ID_t aid1 = CTrilinos::abstractType(id1));
+  ECHO(CTrilinos_Universal_ID_t aid2 = CTrilinos::abstractType(id2));
 
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(aid1, aid2), true);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(aid2, aid1), true);
@@ -169,8 +169,8 @@ TEUCHOS_UNIT_TEST( Utils, isSameObjectAITrue )
   ECHO(CT_Epetra_SerialComm_ID_t id1 = CEpetra::storeSerialComm(new Epetra_SerialComm));
   ECHO(CT_Epetra_Comm_ID_t id2 = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(id1)));
 
-  ECHO(CTrilinos_Object_ID_t aid1 = CTrilinos::abstractType(id1));
-  ECHO(CTrilinos_Object_ID_t aid2 = CTrilinos::abstractType(id2));
+  ECHO(CTrilinos_Universal_ID_t aid1 = CTrilinos::abstractType(id1));
+  ECHO(CTrilinos_Universal_ID_t aid2 = CTrilinos::abstractType(id2));
 
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(aid1, id2), true);
   TEST_EQUALITY_CONST(CTrilinos::isSameObject(id1, aid2), true);

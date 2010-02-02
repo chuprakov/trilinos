@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_BLAS>
 getBLAS( CT_Epetra_BLAS_ID_t id );
 
-/* get Epetra_BLAS from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_BLAS from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_BLAS>
-getBLAS( CTrilinos_Object_ID_t id );
+getBLAS( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_BLAS from either the const or non-const table
  * using CT_Epetra_BLAS_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_BLAS>
 getConstBLAS( CT_Epetra_BLAS_ID_t id );
 
 /* get const Epetra_BLAS from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_BLAS>
-getConstBLAS( CTrilinos_Object_ID_t id );
+getConstBLAS( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_BLAS in non-const table */
 CT_Epetra_BLAS_ID_t

@@ -57,7 +57,7 @@ namespace {
 
 /**********************************************************************
 CT_Epetra_DistObject_ID_t Epetra_DistObject_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
  **********************************************************************/
 
 TEUCHOS_UNIT_TEST( Epetra_DistObject , Cast )

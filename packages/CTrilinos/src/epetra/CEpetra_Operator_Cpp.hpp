@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_Operator>
 getOperator( CT_Epetra_Operator_ID_t id );
 
-/* get Epetra_Operator from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Operator from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_Operator>
-getOperator( CTrilinos_Object_ID_t id );
+getOperator( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_Operator from either the const or non-const table
  * using CT_Epetra_Operator_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_Operator>
 getConstOperator( CT_Epetra_Operator_ID_t id );
 
 /* get const Epetra_Operator from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_Operator>
-getConstOperator( CTrilinos_Object_ID_t id );
+getConstOperator( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_Operator in non-const table */
 CT_Epetra_Operator_ID_t

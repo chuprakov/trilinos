@@ -85,9 +85,9 @@ extern "C" {
 
 
 CT_Amesos_BaseSolver_ID_t Amesos_BaseSolver_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstBaseSolvers(), id);
     } else {
@@ -96,7 +96,7 @@ CT_Amesos_BaseSolver_ID_t Amesos_BaseSolver_Cast (
     return CTrilinos::concreteType<CT_Amesos_BaseSolver_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Amesos_BaseSolver_Abstract ( 
+CTrilinos_Universal_ID_t Amesos_BaseSolver_Abstract ( 
   CT_Amesos_BaseSolver_ID_t id )
 {
     return CTrilinos::abstractType<CT_Amesos_BaseSolver_ID_t>(id);
@@ -104,7 +104,7 @@ CTrilinos_Object_ID_t Amesos_BaseSolver_Abstract (
 
 void Amesos_BaseSolver_Destroy ( CT_Amesos_BaseSolver_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Amesos_BaseSolver_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstBaseSolvers().remove(&aid);
@@ -246,14 +246,14 @@ void Amesos_BaseSolver_GetTiming (
 const Teuchos::RCP<Amesos_BaseSolver>
 CAmesos::getBaseSolver( CT_Amesos_BaseSolver_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Amesos_BaseSolver_ID_t>(id);
     return tableOfBaseSolvers().get(aid);
 }
 
-/* get Amesos_BaseSolver from non-const table using CTrilinos_Object_ID_t */
+/* get Amesos_BaseSolver from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Amesos_BaseSolver>
-CAmesos::getBaseSolver( CTrilinos_Object_ID_t id )
+CAmesos::getBaseSolver( CTrilinos_Universal_ID_t id )
 {
     return tableOfBaseSolvers().get(id);
 }
@@ -263,7 +263,7 @@ CAmesos::getBaseSolver( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Amesos_BaseSolver>
 CAmesos::getConstBaseSolver( CT_Amesos_BaseSolver_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Amesos_BaseSolver_ID_t>(id);
     if (id.is_const) {
         return tableOfConstBaseSolvers().get(aid);
@@ -273,9 +273,9 @@ CAmesos::getConstBaseSolver( CT_Amesos_BaseSolver_ID_t id )
 }
 
 /* get const Amesos_BaseSolver from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Amesos_BaseSolver>
-CAmesos::getConstBaseSolver( CTrilinos_Object_ID_t id )
+CAmesos::getConstBaseSolver( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstBaseSolvers().get(id);

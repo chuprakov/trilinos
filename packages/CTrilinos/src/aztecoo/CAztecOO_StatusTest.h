@@ -71,9 +71,9 @@ extern "C" {
 /*@{*/
 
 CT_AztecOO_StatusTest_ID_t AztecOO_StatusTest_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
 
-CTrilinos_Object_ID_t AztecOO_StatusTest_Abstract ( 
+CTrilinos_Universal_ID_t AztecOO_StatusTest_Abstract ( 
   CT_AztecOO_StatusTest_ID_t id );
 
 /*@}*/

@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_Time>
 getTime( CT_Epetra_Time_ID_t id );
 
-/* get Epetra_Time from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Time from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_Time>
-getTime( CTrilinos_Object_ID_t id );
+getTime( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_Time from either the const or non-const table
  * using CT_Epetra_Time_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_Time>
 getConstTime( CT_Epetra_Time_ID_t id );
 
 /* get const Epetra_Time from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_Time>
-getConstTime( CTrilinos_Object_ID_t id );
+getConstTime( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_Time in non-const table */
 CT_Epetra_Time_ID_t

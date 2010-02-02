@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_CrsMatrix>
 getCrsMatrix( CT_Epetra_CrsMatrix_ID_t id );
 
-/* get Epetra_CrsMatrix from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_CrsMatrix from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_CrsMatrix>
-getCrsMatrix( CTrilinos_Object_ID_t id );
+getCrsMatrix( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_CrsMatrix from either the const or non-const table
  * using CT_Epetra_CrsMatrix_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_CrsMatrix>
 getConstCrsMatrix( CT_Epetra_CrsMatrix_ID_t id );
 
 /* get const Epetra_CrsMatrix from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_CrsMatrix>
-getConstCrsMatrix( CTrilinos_Object_ID_t id );
+getConstCrsMatrix( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_CrsMatrix in non-const table */
 CT_Epetra_CrsMatrix_ID_t

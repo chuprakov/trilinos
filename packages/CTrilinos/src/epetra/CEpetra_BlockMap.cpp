@@ -79,9 +79,9 @@ extern "C" {
 
 
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstBlockMaps(), id);
     } else {
@@ -90,7 +90,7 @@ CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Cast (
     return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_BlockMap_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_BlockMap_Abstract ( 
   CT_Epetra_BlockMap_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(id);
@@ -149,7 +149,7 @@ CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Duplicate (
 
 void Epetra_BlockMap_Destroy ( CT_Epetra_BlockMap_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstBlockMaps().remove(&aid);
@@ -432,14 +432,14 @@ void Epetra_BlockMap_Assign (
 const Teuchos::RCP<Epetra_BlockMap>
 CEpetra::getBlockMap( CT_Epetra_BlockMap_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(id);
     return tableOfBlockMaps().get(aid);
 }
 
-/* get Epetra_BlockMap from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_BlockMap from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_BlockMap>
-CEpetra::getBlockMap( CTrilinos_Object_ID_t id )
+CEpetra::getBlockMap( CTrilinos_Universal_ID_t id )
 {
     return tableOfBlockMaps().get(id);
 }
@@ -449,7 +449,7 @@ CEpetra::getBlockMap( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_BlockMap>
 CEpetra::getConstBlockMap( CT_Epetra_BlockMap_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(id);
     if (id.is_const) {
         return tableOfConstBlockMaps().get(aid);
@@ -459,9 +459,9 @@ CEpetra::getConstBlockMap( CT_Epetra_BlockMap_ID_t id )
 }
 
 /* get const Epetra_BlockMap from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_BlockMap>
-CEpetra::getConstBlockMap( CTrilinos_Object_ID_t id )
+CEpetra::getConstBlockMap( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstBlockMaps().get(id);

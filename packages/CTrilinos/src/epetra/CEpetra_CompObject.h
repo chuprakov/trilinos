@@ -67,9 +67,9 @@ extern "C" {
 /*@{*/
 
 CT_Epetra_CompObject_ID_t Epetra_CompObject_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
 
-CTrilinos_Object_ID_t Epetra_CompObject_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_CompObject_Abstract ( 
   CT_Epetra_CompObject_ID_t id );
 
 /*@}*/

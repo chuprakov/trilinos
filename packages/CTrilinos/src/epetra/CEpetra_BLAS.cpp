@@ -77,9 +77,9 @@ Table<const Epetra_BLAS>& tableOfConstBLASs()
 extern "C" {
 
 
-CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Object_ID_t id )
+CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstBLASs(), id);
     } else {
@@ -88,7 +88,8 @@ CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Object_ID_t id )
     return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_BLAS_Abstract ( CT_Epetra_BLAS_ID_t id )
+CTrilinos_Universal_ID_t Epetra_BLAS_Abstract ( 
+  CT_Epetra_BLAS_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id);
 }
@@ -109,7 +110,7 @@ CT_Epetra_BLAS_ID_t Epetra_BLAS_Duplicate (
 
 void Epetra_BLAS_Destroy ( CT_Epetra_BLAS_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstBLASs().remove(&aid);
@@ -310,14 +311,14 @@ void Epetra_BLAS_TRMM_Double (
 const Teuchos::RCP<Epetra_BLAS>
 CEpetra::getBLAS( CT_Epetra_BLAS_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id);
     return tableOfBLASs().get(aid);
 }
 
-/* get Epetra_BLAS from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_BLAS from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_BLAS>
-CEpetra::getBLAS( CTrilinos_Object_ID_t id )
+CEpetra::getBLAS( CTrilinos_Universal_ID_t id )
 {
     return tableOfBLASs().get(id);
 }
@@ -327,7 +328,7 @@ CEpetra::getBLAS( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_BLAS>
 CEpetra::getConstBLAS( CT_Epetra_BLAS_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id);
     if (id.is_const) {
         return tableOfConstBLASs().get(aid);
@@ -337,9 +338,9 @@ CEpetra::getConstBLAS( CT_Epetra_BLAS_ID_t id )
 }
 
 /* get const Epetra_BLAS from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_BLAS>
-CEpetra::getConstBLAS( CTrilinos_Object_ID_t id )
+CEpetra::getConstBLAS( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstBLASs().get(id);

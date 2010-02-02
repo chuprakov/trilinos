@@ -49,7 +49,7 @@ namespace {
 
 /**********************************************************************
 CT_Epetra_Distributor_ID_t Epetra_Distributor_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
  **********************************************************************/
 
 TEUCHOS_UNIT_TEST( Epetra_Distributor , Cast )

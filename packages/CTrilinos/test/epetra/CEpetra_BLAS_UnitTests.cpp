@@ -48,7 +48,7 @@ namespace {
 
 
 /**********************************************************************
-CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Object_ID_t id );
+CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Universal_ID_t id );
  **********************************************************************/
 
 TEUCHOS_UNIT_TEST( Epetra_BLAS , Cast )

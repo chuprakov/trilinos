@@ -79,9 +79,9 @@ extern "C" {
 
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstParameterLists(), id);
     } else {
@@ -90,7 +90,7 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Cast (
     return CTrilinos::concreteType<CT_Teuchos_ParameterList_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Teuchos_ParameterList_Abstract ( 
+CTrilinos_Universal_ID_t Teuchos_ParameterList_Abstract ( 
   CT_Teuchos_ParameterList_ID_t id )
 {
     return CTrilinos::abstractType<CT_Teuchos_ParameterList_ID_t>(id);
@@ -122,7 +122,7 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Create_FromSource (
 void Teuchos_ParameterList_Destroy ( 
   CT_Teuchos_ParameterList_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Teuchos_ParameterList_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstParameterLists().remove(&aid);
@@ -456,14 +456,14 @@ void Teuchos_ParameterList_Assign (
 const Teuchos::RCP<Teuchos::ParameterList>
 CTeuchos::getParameterList( CT_Teuchos_ParameterList_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Teuchos_ParameterList_ID_t>(id);
     return tableOfParameterLists().get(aid);
 }
 
-/* get Teuchos::ParameterList from non-const table using CTrilinos_Object_ID_t */
+/* get Teuchos::ParameterList from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Teuchos::ParameterList>
-CTeuchos::getParameterList( CTrilinos_Object_ID_t id )
+CTeuchos::getParameterList( CTrilinos_Universal_ID_t id )
 {
     return tableOfParameterLists().get(id);
 }
@@ -473,7 +473,7 @@ CTeuchos::getParameterList( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Teuchos::ParameterList>
 CTeuchos::getConstParameterList( CT_Teuchos_ParameterList_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Teuchos_ParameterList_ID_t>(id);
     if (id.is_const) {
         return tableOfConstParameterLists().get(aid);
@@ -483,9 +483,9 @@ CTeuchos::getConstParameterList( CT_Teuchos_ParameterList_ID_t id )
 }
 
 /* get const Teuchos::ParameterList from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Teuchos::ParameterList>
-CTeuchos::getConstParameterList( CTrilinos_Object_ID_t id )
+CTeuchos::getConstParameterList( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstParameterLists().get(id);

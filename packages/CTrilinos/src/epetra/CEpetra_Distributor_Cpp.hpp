@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_Distributor>
 getDistributor( CT_Epetra_Distributor_ID_t id );
 
-/* get Epetra_Distributor from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Distributor from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_Distributor>
-getDistributor( CTrilinos_Object_ID_t id );
+getDistributor( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_Distributor from either the const or non-const table
  * using CT_Epetra_Distributor_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_Distributor>
 getConstDistributor( CT_Epetra_Distributor_ID_t id );
 
 /* get const Epetra_Distributor from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_Distributor>
-getConstDistributor( CTrilinos_Object_ID_t id );
+getConstDistributor( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_Distributor in non-const table */
 CT_Epetra_Distributor_ID_t

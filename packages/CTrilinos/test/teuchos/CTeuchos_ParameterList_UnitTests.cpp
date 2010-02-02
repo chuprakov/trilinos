@@ -49,11 +49,11 @@ namespace {
 
 /**********************************************************************
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
  **********************************************************************/
 
 /**********************************************************************
-CTrilinos_Object_ID_t Teuchos_ParameterList_Abstract ( 
+CTrilinos_Universal_ID_t Teuchos_ParameterList_Abstract ( 
   CT_Teuchos_ParameterList_ID_t id );
  **********************************************************************/
 

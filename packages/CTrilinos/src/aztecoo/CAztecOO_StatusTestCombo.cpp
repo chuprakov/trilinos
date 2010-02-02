@@ -84,9 +84,9 @@ extern "C" {
 
 
 CT_AztecOO_StatusTestCombo_ID_t AztecOO_StatusTestCombo_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstStatusTestCombos(), id);
     } else {
@@ -95,7 +95,7 @@ CT_AztecOO_StatusTestCombo_ID_t AztecOO_StatusTestCombo_Cast (
     return CTrilinos::concreteType<CT_AztecOO_StatusTestCombo_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t AztecOO_StatusTestCombo_Abstract ( 
+CTrilinos_Universal_ID_t AztecOO_StatusTestCombo_Abstract ( 
   CT_AztecOO_StatusTestCombo_ID_t id )
 {
     return CTrilinos::abstractType<CT_AztecOO_StatusTestCombo_ID_t>(id);
@@ -132,7 +132,7 @@ CT_AztecOO_StatusTestCombo_ID_t AztecOO_StatusTestCombo_Create_TwoTests (
 void AztecOO_StatusTestCombo_Destroy ( 
   CT_AztecOO_StatusTestCombo_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_AztecOO_StatusTestCombo_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstStatusTestCombos().remove(&aid);
@@ -196,14 +196,14 @@ CT_ComboType_E_t AztecOO_StatusTestCombo_GetComboType (
 const Teuchos::RCP<AztecOO_StatusTestCombo>
 CAztecOO::getStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_AztecOO_StatusTestCombo_ID_t>(id);
     return tableOfStatusTestCombos().get(aid);
 }
 
-/* get AztecOO_StatusTestCombo from non-const table using CTrilinos_Object_ID_t */
+/* get AztecOO_StatusTestCombo from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<AztecOO_StatusTestCombo>
-CAztecOO::getStatusTestCombo( CTrilinos_Object_ID_t id )
+CAztecOO::getStatusTestCombo( CTrilinos_Universal_ID_t id )
 {
     return tableOfStatusTestCombos().get(id);
 }
@@ -213,7 +213,7 @@ CAztecOO::getStatusTestCombo( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const AztecOO_StatusTestCombo>
 CAztecOO::getConstStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_AztecOO_StatusTestCombo_ID_t>(id);
     if (id.is_const) {
         return tableOfConstStatusTestCombos().get(aid);
@@ -223,9 +223,9 @@ CAztecOO::getConstStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t id )
 }
 
 /* get const AztecOO_StatusTestCombo from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const AztecOO_StatusTestCombo>
-CAztecOO::getConstStatusTestCombo( CTrilinos_Object_ID_t id )
+CAztecOO::getConstStatusTestCombo( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstStatusTestCombos().get(id);

@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_Export>
 getExport( CT_Epetra_Export_ID_t id );
 
-/* get Epetra_Export from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Export from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_Export>
-getExport( CTrilinos_Object_ID_t id );
+getExport( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_Export from either the const or non-const table
  * using CT_Epetra_Export_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_Export>
 getConstExport( CT_Epetra_Export_ID_t id );
 
 /* get const Epetra_Export from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_Export>
-getConstExport( CTrilinos_Object_ID_t id );
+getConstExport( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_Export in non-const table */
 CT_Epetra_Export_ID_t

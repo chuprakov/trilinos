@@ -129,7 +129,7 @@ CT_AztecOO_ID_t AztecOO_Duplicate ( CT_AztecOO_ID_t SolverID )
 
 void AztecOO_Destroy ( CT_AztecOO_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_AztecOO_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstAztecOOs().remove(&aid);
@@ -421,14 +421,14 @@ int AztecOO_GetAllAztecStatus (
 const Teuchos::RCP<AztecOO>
 CAztecOO::getAztecOO( CT_AztecOO_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_AztecOO_ID_t>(id);
     return tableOfAztecOOs().get(aid);
 }
 
-/* get AztecOO from non-const table using CTrilinos_Object_ID_t */
+/* get AztecOO from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<AztecOO>
-CAztecOO::getAztecOO( CTrilinos_Object_ID_t id )
+CAztecOO::getAztecOO( CTrilinos_Universal_ID_t id )
 {
     return tableOfAztecOOs().get(id);
 }
@@ -438,7 +438,7 @@ CAztecOO::getAztecOO( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const AztecOO>
 CAztecOO::getConstAztecOO( CT_AztecOO_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_AztecOO_ID_t>(id);
     if (id.is_const) {
         return tableOfConstAztecOOs().get(aid);
@@ -448,9 +448,9 @@ CAztecOO::getConstAztecOO( CT_AztecOO_ID_t id )
 }
 
 /* get const AztecOO from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const AztecOO>
-CAztecOO::getConstAztecOO( CTrilinos_Object_ID_t id )
+CAztecOO::getConstAztecOO( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstAztecOOs().get(id);

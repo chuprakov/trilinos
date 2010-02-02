@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_CrsGraph>
 getCrsGraph( CT_Epetra_CrsGraph_ID_t id );
 
-/* get Epetra_CrsGraph from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_CrsGraph from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_CrsGraph>
-getCrsGraph( CTrilinos_Object_ID_t id );
+getCrsGraph( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_CrsGraph from either the const or non-const table
  * using CT_Epetra_CrsGraph_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_CrsGraph>
 getConstCrsGraph( CT_Epetra_CrsGraph_ID_t id );
 
 /* get const Epetra_CrsGraph from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_CrsGraph>
-getConstCrsGraph( CTrilinos_Object_ID_t id );
+getConstCrsGraph( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_CrsGraph in non-const table */
 CT_Epetra_CrsGraph_ID_t

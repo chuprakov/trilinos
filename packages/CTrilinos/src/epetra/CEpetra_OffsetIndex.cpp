@@ -81,9 +81,9 @@ extern "C" {
 
 
 CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstOffsetIndexs(), id);
     } else {
@@ -92,7 +92,7 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Cast (
     return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_OffsetIndex_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_OffsetIndex_Abstract ( 
   CT_Epetra_OffsetIndex_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(id);
@@ -133,7 +133,7 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Duplicate (
 void Epetra_OffsetIndex_Destroy ( 
   CT_Epetra_OffsetIndex_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstOffsetIndexs().remove(&aid);
@@ -174,14 +174,14 @@ int ** Epetra_OffsetIndex_RemoteOffsets (
 const Teuchos::RCP<Epetra_OffsetIndex>
 CEpetra::getOffsetIndex( CT_Epetra_OffsetIndex_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(id);
     return tableOfOffsetIndexs().get(aid);
 }
 
-/* get Epetra_OffsetIndex from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_OffsetIndex from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_OffsetIndex>
-CEpetra::getOffsetIndex( CTrilinos_Object_ID_t id )
+CEpetra::getOffsetIndex( CTrilinos_Universal_ID_t id )
 {
     return tableOfOffsetIndexs().get(id);
 }
@@ -191,7 +191,7 @@ CEpetra::getOffsetIndex( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_OffsetIndex>
 CEpetra::getConstOffsetIndex( CT_Epetra_OffsetIndex_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(id);
     if (id.is_const) {
         return tableOfConstOffsetIndexs().get(aid);
@@ -201,9 +201,9 @@ CEpetra::getConstOffsetIndex( CT_Epetra_OffsetIndex_ID_t id )
 }
 
 /* get const Epetra_OffsetIndex from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_OffsetIndex>
-CEpetra::getConstOffsetIndex( CTrilinos_Object_ID_t id )
+CEpetra::getConstOffsetIndex( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstOffsetIndexs().get(id);

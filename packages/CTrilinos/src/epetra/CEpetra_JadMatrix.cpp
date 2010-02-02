@@ -80,9 +80,9 @@ extern "C" {
 
 
 CT_Epetra_JadMatrix_ID_t Epetra_JadMatrix_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstJadMatrixs(), id);
     } else {
@@ -91,7 +91,7 @@ CT_Epetra_JadMatrix_ID_t Epetra_JadMatrix_Cast (
     return CTrilinos::concreteType<CT_Epetra_JadMatrix_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_JadMatrix_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_JadMatrix_Abstract ( 
   CT_Epetra_JadMatrix_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_JadMatrix_ID_t>(id);
@@ -107,7 +107,7 @@ CT_Epetra_JadMatrix_ID_t Epetra_JadMatrix_Create (
 
 void Epetra_JadMatrix_Destroy ( CT_Epetra_JadMatrix_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_JadMatrix_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstJadMatrixs().remove(&aid);
@@ -193,14 +193,14 @@ int Epetra_JadMatrix_Solve (
 const Teuchos::RCP<Epetra_JadMatrix>
 CEpetra::getJadMatrix( CT_Epetra_JadMatrix_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_JadMatrix_ID_t>(id);
     return tableOfJadMatrixs().get(aid);
 }
 
-/* get Epetra_JadMatrix from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_JadMatrix from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_JadMatrix>
-CEpetra::getJadMatrix( CTrilinos_Object_ID_t id )
+CEpetra::getJadMatrix( CTrilinos_Universal_ID_t id )
 {
     return tableOfJadMatrixs().get(id);
 }
@@ -210,7 +210,7 @@ CEpetra::getJadMatrix( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_JadMatrix>
 CEpetra::getConstJadMatrix( CT_Epetra_JadMatrix_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_JadMatrix_ID_t>(id);
     if (id.is_const) {
         return tableOfConstJadMatrixs().get(aid);
@@ -220,9 +220,9 @@ CEpetra::getConstJadMatrix( CT_Epetra_JadMatrix_ID_t id )
 }
 
 /* get const Epetra_JadMatrix from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_JadMatrix>
-CEpetra::getConstJadMatrix( CTrilinos_Object_ID_t id )
+CEpetra::getConstJadMatrix( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstJadMatrixs().get(id);

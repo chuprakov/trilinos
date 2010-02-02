@@ -69,9 +69,9 @@ extern "C" {
 /*@{*/
 
 CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
 
-CTrilinos_Object_ID_t Epetra_OffsetIndex_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_OffsetIndex_Abstract ( 
   CT_Epetra_OffsetIndex_ID_t id );
 
 /*@}*/

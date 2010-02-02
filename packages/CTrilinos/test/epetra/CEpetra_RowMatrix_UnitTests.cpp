@@ -53,7 +53,7 @@ namespace {
 
 /**********************************************************************
 CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
  **********************************************************************/
 
 TEUCHOS_UNIT_TEST( Epetra_RowMatrix , Cast )

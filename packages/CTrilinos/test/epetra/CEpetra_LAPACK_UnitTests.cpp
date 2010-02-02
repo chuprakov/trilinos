@@ -48,11 +48,11 @@ namespace {
 
 
 /**********************************************************************
-CT_Epetra_LAPACK_ID_t Epetra_LAPACK_Cast ( CTrilinos_Object_ID_t id );
+CT_Epetra_LAPACK_ID_t Epetra_LAPACK_Cast ( CTrilinos_Universal_ID_t id );
  **********************************************************************/
 
 /**********************************************************************
-CTrilinos_Object_ID_t Epetra_LAPACK_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_LAPACK_Abstract ( 
   CT_Epetra_LAPACK_ID_t id );
  **********************************************************************/
 

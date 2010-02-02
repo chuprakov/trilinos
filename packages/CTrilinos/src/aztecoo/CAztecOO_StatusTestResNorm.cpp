@@ -85,9 +85,9 @@ extern "C" {
 
 
 CT_AztecOO_StatusTestResNorm_ID_t AztecOO_StatusTestResNorm_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstStatusTestResNorms(), id);
     } else {
@@ -96,7 +96,7 @@ CT_AztecOO_StatusTestResNorm_ID_t AztecOO_StatusTestResNorm_Cast (
     return CTrilinos::concreteType<CT_AztecOO_StatusTestResNorm_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t AztecOO_StatusTestResNorm_Abstract ( 
+CTrilinos_Universal_ID_t AztecOO_StatusTestResNorm_Abstract ( 
   CT_AztecOO_StatusTestResNorm_ID_t id )
 {
     return CTrilinos::abstractType<CT_AztecOO_StatusTestResNorm_ID_t>(id);
@@ -116,7 +116,7 @@ CT_AztecOO_StatusTestResNorm_ID_t AztecOO_StatusTestResNorm_Create (
 void AztecOO_StatusTestResNorm_Destroy ( 
   CT_AztecOO_StatusTestResNorm_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_AztecOO_StatusTestResNorm_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstStatusTestResNorms().remove(&aid);
@@ -243,14 +243,14 @@ double AztecOO_StatusTestResNorm_GetScaledNormValue (
 const Teuchos::RCP<AztecOO_StatusTestResNorm>
 CAztecOO::getStatusTestResNorm( CT_AztecOO_StatusTestResNorm_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_AztecOO_StatusTestResNorm_ID_t>(id);
     return tableOfStatusTestResNorms().get(aid);
 }
 
-/* get AztecOO_StatusTestResNorm from non-const table using CTrilinos_Object_ID_t */
+/* get AztecOO_StatusTestResNorm from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<AztecOO_StatusTestResNorm>
-CAztecOO::getStatusTestResNorm( CTrilinos_Object_ID_t id )
+CAztecOO::getStatusTestResNorm( CTrilinos_Universal_ID_t id )
 {
     return tableOfStatusTestResNorms().get(id);
 }
@@ -260,7 +260,7 @@ CAztecOO::getStatusTestResNorm( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const AztecOO_StatusTestResNorm>
 CAztecOO::getConstStatusTestResNorm( CT_AztecOO_StatusTestResNorm_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_AztecOO_StatusTestResNorm_ID_t>(id);
     if (id.is_const) {
         return tableOfConstStatusTestResNorms().get(aid);
@@ -270,9 +270,9 @@ CAztecOO::getConstStatusTestResNorm( CT_AztecOO_StatusTestResNorm_ID_t id )
 }
 
 /* get const AztecOO_StatusTestResNorm from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const AztecOO_StatusTestResNorm>
-CAztecOO::getConstStatusTestResNorm( CTrilinos_Object_ID_t id )
+CAztecOO::getConstStatusTestResNorm( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstStatusTestResNorms().get(id);

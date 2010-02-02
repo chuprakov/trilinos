@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_IntSerialDenseVector>
 getIntSerialDenseVector( CT_Epetra_IntSerialDenseVector_ID_t id );
 
-/* get Epetra_IntSerialDenseVector from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_IntSerialDenseVector from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_IntSerialDenseVector>
-getIntSerialDenseVector( CTrilinos_Object_ID_t id );
+getIntSerialDenseVector( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_IntSerialDenseVector from either the const or non-const table
  * using CT_Epetra_IntSerialDenseVector_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_IntSerialDenseVector>
 getConstIntSerialDenseVector( CT_Epetra_IntSerialDenseVector_ID_t id );
 
 /* get const Epetra_IntSerialDenseVector from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_IntSerialDenseVector>
-getConstIntSerialDenseVector( CTrilinos_Object_ID_t id );
+getConstIntSerialDenseVector( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_IntSerialDenseVector in non-const table */
 CT_Epetra_IntSerialDenseVector_ID_t

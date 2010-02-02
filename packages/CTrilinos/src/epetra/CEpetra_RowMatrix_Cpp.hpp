@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_RowMatrix>
 getRowMatrix( CT_Epetra_RowMatrix_ID_t id );
 
-/* get Epetra_RowMatrix from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_RowMatrix from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_RowMatrix>
-getRowMatrix( CTrilinos_Object_ID_t id );
+getRowMatrix( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_RowMatrix from either the const or non-const table
  * using CT_Epetra_RowMatrix_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_RowMatrix>
 getConstRowMatrix( CT_Epetra_RowMatrix_ID_t id );
 
 /* get const Epetra_RowMatrix from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_RowMatrix>
-getConstRowMatrix( CTrilinos_Object_ID_t id );
+getConstRowMatrix( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_RowMatrix in non-const table */
 CT_Epetra_RowMatrix_ID_t

@@ -105,7 +105,7 @@ CT_Teuchos_any_ID_t Teuchos_any_Duplicate (
 
 void Teuchos_any_Destroy ( CT_Teuchos_any_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Teuchos_any_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstanys().remove(&aid);
@@ -160,14 +160,14 @@ void Teuchos_any_Assign (
 const Teuchos::RCP<Teuchos::any>
 CTeuchos::getany( CT_Teuchos_any_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Teuchos_any_ID_t>(id);
     return tableOfanys().get(aid);
 }
 
-/* get Teuchos::any from non-const table using CTrilinos_Object_ID_t */
+/* get Teuchos::any from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Teuchos::any>
-CTeuchos::getany( CTrilinos_Object_ID_t id )
+CTeuchos::getany( CTrilinos_Universal_ID_t id )
 {
     return tableOfanys().get(id);
 }
@@ -177,7 +177,7 @@ CTeuchos::getany( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Teuchos::any>
 CTeuchos::getConstany( CT_Teuchos_any_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Teuchos_any_ID_t>(id);
     if (id.is_const) {
         return tableOfConstanys().get(aid);
@@ -187,9 +187,9 @@ CTeuchos::getConstany( CT_Teuchos_any_ID_t id )
 }
 
 /* get const Teuchos::any from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Teuchos::any>
-CTeuchos::getConstany( CTrilinos_Object_ID_t id )
+CTeuchos::getConstany( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstanys().get(id);

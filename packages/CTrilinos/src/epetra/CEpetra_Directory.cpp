@@ -79,9 +79,9 @@ extern "C" {
 
 
 CT_Epetra_Directory_ID_t Epetra_Directory_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstDirectorys(), id);
     } else {
@@ -90,7 +90,7 @@ CT_Epetra_Directory_ID_t Epetra_Directory_Cast (
     return CTrilinos::concreteType<CT_Epetra_Directory_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_Directory_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_Directory_Abstract ( 
   CT_Epetra_Directory_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_Directory_ID_t>(id);
@@ -98,7 +98,7 @@ CTrilinos_Object_ID_t Epetra_Directory_Abstract (
 
 void Epetra_Directory_Destroy ( CT_Epetra_Directory_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_Directory_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstDirectorys().remove(&aid);
@@ -140,14 +140,14 @@ boolean Epetra_Directory_GIDsAllUniquelyOwned (
 const Teuchos::RCP<Epetra_Directory>
 CEpetra::getDirectory( CT_Epetra_Directory_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Directory_ID_t>(id);
     return tableOfDirectorys().get(aid);
 }
 
-/* get Epetra_Directory from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Directory from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_Directory>
-CEpetra::getDirectory( CTrilinos_Object_ID_t id )
+CEpetra::getDirectory( CTrilinos_Universal_ID_t id )
 {
     return tableOfDirectorys().get(id);
 }
@@ -157,7 +157,7 @@ CEpetra::getDirectory( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_Directory>
 CEpetra::getConstDirectory( CT_Epetra_Directory_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Directory_ID_t>(id);
     if (id.is_const) {
         return tableOfConstDirectorys().get(aid);
@@ -167,9 +167,9 @@ CEpetra::getConstDirectory( CT_Epetra_Directory_ID_t id )
 }
 
 /* get const Epetra_Directory from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_Directory>
-CEpetra::getConstDirectory( CTrilinos_Object_ID_t id )
+CEpetra::getConstDirectory( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstDirectorys().get(id);

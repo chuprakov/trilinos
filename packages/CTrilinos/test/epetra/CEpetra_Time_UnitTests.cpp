@@ -49,7 +49,7 @@ namespace {
 
 
 /**********************************************************************
-CT_Epetra_Time_ID_t Epetra_Time_Cast ( CTrilinos_Object_ID_t id );
+CT_Epetra_Time_ID_t Epetra_Time_Cast ( CTrilinos_Universal_ID_t id );
  **********************************************************************/
 
 /**********************************************************************

@@ -81,9 +81,9 @@ extern "C" {
 
 
 CT_Epetra_Operator_ID_t Epetra_Operator_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstOperators(), id);
     } else {
@@ -92,7 +92,7 @@ CT_Epetra_Operator_ID_t Epetra_Operator_Cast (
     return CTrilinos::concreteType<CT_Epetra_Operator_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_Operator_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_Operator_Abstract ( 
   CT_Epetra_Operator_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_Operator_ID_t>(id);
@@ -100,7 +100,7 @@ CTrilinos_Object_ID_t Epetra_Operator_Abstract (
 
 void Epetra_Operator_Destroy ( CT_Epetra_Operator_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_Operator_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstOperators().remove(&aid);
@@ -192,14 +192,14 @@ CT_Epetra_Map_ID_t Epetra_Operator_OperatorRangeMap (
 const Teuchos::RCP<Epetra_Operator>
 CEpetra::getOperator( CT_Epetra_Operator_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Operator_ID_t>(id);
     return tableOfOperators().get(aid);
 }
 
-/* get Epetra_Operator from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Operator from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_Operator>
-CEpetra::getOperator( CTrilinos_Object_ID_t id )
+CEpetra::getOperator( CTrilinos_Universal_ID_t id )
 {
     return tableOfOperators().get(id);
 }
@@ -209,7 +209,7 @@ CEpetra::getOperator( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_Operator>
 CEpetra::getConstOperator( CT_Epetra_Operator_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Operator_ID_t>(id);
     if (id.is_const) {
         return tableOfConstOperators().get(aid);
@@ -219,9 +219,9 @@ CEpetra::getConstOperator( CT_Epetra_Operator_ID_t id )
 }
 
 /* get const Epetra_Operator from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_Operator>
-CEpetra::getConstOperator( CTrilinos_Object_ID_t id )
+CEpetra::getConstOperator( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstOperators().get(id);

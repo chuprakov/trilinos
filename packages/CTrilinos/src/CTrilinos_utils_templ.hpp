@@ -91,10 +91,10 @@ namespace CTrilinos {
 
 
 template <class T>
-CTrilinos_Object_ID_t
-cast( Table<const T> &destTable, CTrilinos_Object_ID_t id )
+CTrilinos_Universal_ID_t
+cast( Table<const T> &destTable, CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     newid.type = CT_Invalid_ID;
     newid.index = -1;
     newid.is_const = id.is_const;
@@ -359,10 +359,10 @@ cast( Table<const T> &destTable, CTrilinos_Object_ID_t id )
 }
 
 template <class T>
-CTrilinos_Object_ID_t
-cast( Table<T> &destTable, CTrilinos_Object_ID_t id )
+CTrilinos_Universal_ID_t
+cast( Table<T> &destTable, CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     newid.type = CT_Invalid_ID;
     newid.index = -1;
     newid.is_const = id.is_const;
@@ -501,13 +501,13 @@ cast( Table<T> &destTable, CTrilinos_Object_ID_t id )
     return newid;
 }
 
-/* convert struct from specific type to generic CTrilinos_Object_ID_t
+/* convert struct from specific type to generic CTrilinos_Universal_ID_t
  * but keep the content in tact */
 template <typename T>
-CTrilinos_Object_ID_t
+CTrilinos_Universal_ID_t
 abstractType( T id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
 
     newid.type = id.type;
     newid.index = id.index;
@@ -516,11 +516,11 @@ abstractType( T id )
     return newid;
 }
 
-/* convert struct from generic CTrilinos_Object_ID_t to specific type
+/* convert struct from generic CTrilinos_Universal_ID_t to specific type
  * but keep the content in tact */
 template <typename T>
 T
-concreteType( CTrilinos_Object_ID_t id )
+concreteType( CTrilinos_Universal_ID_t id )
 {
     T newid;
 
@@ -542,7 +542,7 @@ isSameObject( const Teuchos::RCP<T1> &rcp1, const Teuchos::RCP<T2> &rcp2 )
 /* isSameObject(RCP, generic_id) */
 template <class T>
 bool
-isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Object_ID_t id )
+isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Universal_ID_t id )
 {
     bool shares = false;
 
@@ -874,8 +874,8 @@ template <typename S1, typename S2>
 bool
 isSameObject( S1 id1, S2 id2 )
 {
-    CTrilinos_Object_ID_t id1a = abstractType<S1>(id1);
-    CTrilinos_Object_ID_t id2a = abstractType<S2>(id2);
+    CTrilinos_Universal_ID_t id1a = abstractType<S1>(id1);
+    CTrilinos_Universal_ID_t id2a = abstractType<S2>(id2);
 
     return isSameObject(id1a, id2a);
 }

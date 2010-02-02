@@ -77,9 +77,10 @@ Table<const Epetra_Flops>& tableOfConstFlopss()
 extern "C" {
 
 
-CT_Epetra_Flops_ID_t Epetra_Flops_Cast ( CTrilinos_Object_ID_t id )
+CT_Epetra_Flops_ID_t Epetra_Flops_Cast ( 
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstFlopss(), id);
     } else {
@@ -88,7 +89,7 @@ CT_Epetra_Flops_ID_t Epetra_Flops_Cast ( CTrilinos_Object_ID_t id )
     return CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_Flops_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_Flops_Abstract ( 
   CT_Epetra_Flops_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(id);
@@ -110,7 +111,7 @@ CT_Epetra_Flops_ID_t Epetra_Flops_Duplicate (
 
 void Epetra_Flops_Destroy ( CT_Epetra_Flops_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstFlopss().remove(&aid);
@@ -151,14 +152,14 @@ void Epetra_Flops_Assign (
 const Teuchos::RCP<Epetra_Flops>
 CEpetra::getFlops( CT_Epetra_Flops_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(id);
     return tableOfFlopss().get(aid);
 }
 
-/* get Epetra_Flops from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Flops from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_Flops>
-CEpetra::getFlops( CTrilinos_Object_ID_t id )
+CEpetra::getFlops( CTrilinos_Universal_ID_t id )
 {
     return tableOfFlopss().get(id);
 }
@@ -168,7 +169,7 @@ CEpetra::getFlops( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_Flops>
 CEpetra::getConstFlops( CT_Epetra_Flops_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(id);
     if (id.is_const) {
         return tableOfConstFlopss().get(aid);
@@ -178,9 +179,9 @@ CEpetra::getConstFlops( CT_Epetra_Flops_ID_t id )
 }
 
 /* get const Epetra_Flops from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_Flops>
-CEpetra::getConstFlops( CTrilinos_Object_ID_t id )
+CEpetra::getConstFlops( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstFlopss().get(id);

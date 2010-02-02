@@ -67,10 +67,10 @@ CT_EPrecType_E_t convert_from_difficult_enum( Ifpack::EPrecType en );
 #endif /* HAVE_CTRILINOS_IFPACK */
 
 /* stringify the enum name */
-std::string enum2str( CTrilinos_Type_ID_t ty );
+std::string enum2str( CTrilinos_Table_ID_t ty );
 
 /* isSameObject(generic_id, generic_id) */
-bool isSameObject( CTrilinos_Object_ID_t id1, CTrilinos_Object_ID_t id2 );
+bool isSameObject( CTrilinos_Universal_ID_t id1, CTrilinos_Universal_ID_t id2 );
 
 
 } // namespace CTrilinos

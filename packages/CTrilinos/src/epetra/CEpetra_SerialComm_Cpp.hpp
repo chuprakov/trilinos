@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_SerialComm>
 getSerialComm( CT_Epetra_SerialComm_ID_t id );
 
-/* get Epetra_SerialComm from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_SerialComm from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_SerialComm>
-getSerialComm( CTrilinos_Object_ID_t id );
+getSerialComm( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_SerialComm from either the const or non-const table
  * using CT_Epetra_SerialComm_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_SerialComm>
 getConstSerialComm( CT_Epetra_SerialComm_ID_t id );
 
 /* get const Epetra_SerialComm from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_SerialComm>
-getConstSerialComm( CTrilinos_Object_ID_t id );
+getConstSerialComm( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_SerialComm in non-const table */
 CT_Epetra_SerialComm_ID_t

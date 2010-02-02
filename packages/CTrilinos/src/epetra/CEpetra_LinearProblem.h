@@ -70,9 +70,9 @@ extern "C" {
 /*@{*/
 
 CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
 
-CTrilinos_Object_ID_t Epetra_LinearProblem_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_LinearProblem_Abstract ( 
   CT_Epetra_LinearProblem_ID_t id );
 
 /*@}*/

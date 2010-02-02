@@ -50,7 +50,7 @@ namespace {
 
 /**********************************************************************
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Univeral_ID_t id );
  **********************************************************************/
 
 TEUCHOS_UNIT_TEST( Epetra_BlockMap , Cast )

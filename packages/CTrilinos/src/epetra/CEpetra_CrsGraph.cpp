@@ -82,9 +82,9 @@ extern "C" {
 
 
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstCrsGraphs(), id);
     } else {
@@ -93,7 +93,7 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Cast (
     return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_CrsGraph_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_CrsGraph_Abstract ( 
   CT_Epetra_CrsGraph_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_CrsGraph_ID_t>(id);
@@ -157,7 +157,7 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Duplicate (
 
 void Epetra_CrsGraph_Destroy ( CT_Epetra_CrsGraph_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_CrsGraph_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstCrsGraphs().remove(&aid);
@@ -654,14 +654,14 @@ void Epetra_CrsGraph_Assign (
 const Teuchos::RCP<Epetra_CrsGraph>
 CEpetra::getCrsGraph( CT_Epetra_CrsGraph_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_CrsGraph_ID_t>(id);
     return tableOfCrsGraphs().get(aid);
 }
 
-/* get Epetra_CrsGraph from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_CrsGraph from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_CrsGraph>
-CEpetra::getCrsGraph( CTrilinos_Object_ID_t id )
+CEpetra::getCrsGraph( CTrilinos_Universal_ID_t id )
 {
     return tableOfCrsGraphs().get(id);
 }
@@ -671,7 +671,7 @@ CEpetra::getCrsGraph( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_CrsGraph>
 CEpetra::getConstCrsGraph( CT_Epetra_CrsGraph_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_CrsGraph_ID_t>(id);
     if (id.is_const) {
         return tableOfConstCrsGraphs().get(aid);
@@ -681,9 +681,9 @@ CEpetra::getConstCrsGraph( CT_Epetra_CrsGraph_ID_t id )
 }
 
 /* get const Epetra_CrsGraph from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_CrsGraph>
-CEpetra::getConstCrsGraph( CTrilinos_Object_ID_t id )
+CEpetra::getConstCrsGraph( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstCrsGraphs().get(id);

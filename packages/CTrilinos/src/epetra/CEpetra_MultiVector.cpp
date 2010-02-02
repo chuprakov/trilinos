@@ -80,9 +80,9 @@ extern "C" {
 
 
 CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstMultiVectors(), id);
     } else {
@@ -91,7 +91,7 @@ CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Cast (
     return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_MultiVector_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_MultiVector_Abstract ( 
   CT_Epetra_MultiVector_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_MultiVector_ID_t>(id);
@@ -157,7 +157,7 @@ CT_Epetra_MultiVector_ID_t Epetra_MultiVector_Create_FromRange (
 void Epetra_MultiVector_Destroy ( 
   CT_Epetra_MultiVector_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_MultiVector_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstMultiVectors().remove(&aid);
@@ -485,14 +485,14 @@ CT_Epetra_Vector_ID_t Epetra_MultiVector_getVector (
 const Teuchos::RCP<Epetra_MultiVector>
 CEpetra::getMultiVector( CT_Epetra_MultiVector_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_MultiVector_ID_t>(id);
     return tableOfMultiVectors().get(aid);
 }
 
-/* get Epetra_MultiVector from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_MultiVector from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_MultiVector>
-CEpetra::getMultiVector( CTrilinos_Object_ID_t id )
+CEpetra::getMultiVector( CTrilinos_Universal_ID_t id )
 {
     return tableOfMultiVectors().get(id);
 }
@@ -502,7 +502,7 @@ CEpetra::getMultiVector( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_MultiVector>
 CEpetra::getConstMultiVector( CT_Epetra_MultiVector_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_MultiVector_ID_t>(id);
     if (id.is_const) {
         return tableOfConstMultiVectors().get(aid);
@@ -512,9 +512,9 @@ CEpetra::getConstMultiVector( CT_Epetra_MultiVector_ID_t id )
 }
 
 /* get const Epetra_MultiVector from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_MultiVector>
-CEpetra::getConstMultiVector( CTrilinos_Object_ID_t id )
+CEpetra::getConstMultiVector( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstMultiVectors().get(id);

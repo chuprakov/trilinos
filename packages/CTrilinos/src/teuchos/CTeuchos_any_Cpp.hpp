@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Teuchos::any>
 getany( CT_Teuchos_any_ID_t id );
 
-/* get Teuchos::any from non-const table using CTrilinos_Object_ID_t */
+/* get Teuchos::any from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Teuchos::any>
-getany( CTrilinos_Object_ID_t id );
+getany( CTrilinos_Universal_ID_t id );
 
 /* get const Teuchos::any from either the const or non-const table
  * using CT_Teuchos_any_ID */
@@ -61,9 +61,9 @@ const RCP<const Teuchos::any>
 getConstany( CT_Teuchos_any_ID_t id );
 
 /* get const Teuchos::any from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Teuchos::any>
-getConstany( CTrilinos_Object_ID_t id );
+getConstany( CTrilinos_Universal_ID_t id );
 
 /* store Teuchos::any in non-const table */
 CT_Teuchos_any_ID_t

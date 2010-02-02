@@ -78,9 +78,9 @@ Table<const Epetra_Time>& tableOfConstTimes()
 extern "C" {
 
 
-CT_Epetra_Time_ID_t Epetra_Time_Cast ( CTrilinos_Object_ID_t id )
+CT_Epetra_Time_ID_t Epetra_Time_Cast ( CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstTimes(), id);
     } else {
@@ -89,7 +89,8 @@ CT_Epetra_Time_ID_t Epetra_Time_Cast ( CTrilinos_Object_ID_t id )
     return CTrilinos::concreteType<CT_Epetra_Time_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_Time_Abstract ( CT_Epetra_Time_ID_t id )
+CTrilinos_Universal_ID_t Epetra_Time_Abstract ( 
+  CT_Epetra_Time_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_Time_ID_t>(id);
 }
@@ -111,7 +112,7 @@ CT_Epetra_Time_ID_t Epetra_Time_Duplicate (
 
 void Epetra_Time_Destroy ( CT_Epetra_Time_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_Time_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstTimes().remove(&aid);
@@ -157,14 +158,14 @@ void Epetra_Time_Assign (
 const Teuchos::RCP<Epetra_Time>
 CEpetra::getTime( CT_Epetra_Time_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Time_ID_t>(id);
     return tableOfTimes().get(aid);
 }
 
-/* get Epetra_Time from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Time from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_Time>
-CEpetra::getTime( CTrilinos_Object_ID_t id )
+CEpetra::getTime( CTrilinos_Universal_ID_t id )
 {
     return tableOfTimes().get(id);
 }
@@ -174,7 +175,7 @@ CEpetra::getTime( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_Time>
 CEpetra::getConstTime( CT_Epetra_Time_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Time_ID_t>(id);
     if (id.is_const) {
         return tableOfConstTimes().get(aid);
@@ -184,9 +185,9 @@ CEpetra::getConstTime( CT_Epetra_Time_ID_t id )
 }
 
 /* get const Epetra_Time from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_Time>
-CEpetra::getConstTime( CTrilinos_Object_ID_t id )
+CEpetra::getConstTime( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstTimes().get(id);

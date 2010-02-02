@@ -79,9 +79,9 @@ extern "C" {
 
 
 CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstSrcDistObjects(), id);
     } else {
@@ -90,7 +90,7 @@ CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject_Cast (
     return CTrilinos::concreteType<CT_Epetra_SrcDistObject_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_SrcDistObject_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_SrcDistObject_Abstract ( 
   CT_Epetra_SrcDistObject_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_SrcDistObject_ID_t>(id);
@@ -99,7 +99,7 @@ CTrilinos_Object_ID_t Epetra_SrcDistObject_Abstract (
 void Epetra_SrcDistObject_Destroy ( 
   CT_Epetra_SrcDistObject_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_SrcDistObject_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstSrcDistObjects().remove(&aid);
@@ -129,14 +129,14 @@ CT_Epetra_BlockMap_ID_t Epetra_SrcDistObject_Map (
 const Teuchos::RCP<Epetra_SrcDistObject>
 CEpetra::getSrcDistObject( CT_Epetra_SrcDistObject_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_SrcDistObject_ID_t>(id);
     return tableOfSrcDistObjects().get(aid);
 }
 
-/* get Epetra_SrcDistObject from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_SrcDistObject from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_SrcDistObject>
-CEpetra::getSrcDistObject( CTrilinos_Object_ID_t id )
+CEpetra::getSrcDistObject( CTrilinos_Universal_ID_t id )
 {
     return tableOfSrcDistObjects().get(id);
 }
@@ -146,7 +146,7 @@ CEpetra::getSrcDistObject( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_SrcDistObject>
 CEpetra::getConstSrcDistObject( CT_Epetra_SrcDistObject_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_SrcDistObject_ID_t>(id);
     if (id.is_const) {
         return tableOfConstSrcDistObjects().get(aid);
@@ -156,9 +156,9 @@ CEpetra::getConstSrcDistObject( CT_Epetra_SrcDistObject_ID_t id )
 }
 
 /* get const Epetra_SrcDistObject from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_SrcDistObject>
-CEpetra::getConstSrcDistObject( CTrilinos_Object_ID_t id )
+CEpetra::getConstSrcDistObject( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstSrcDistObjects().get(id);

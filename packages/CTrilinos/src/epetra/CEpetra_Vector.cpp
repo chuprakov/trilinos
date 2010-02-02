@@ -79,9 +79,10 @@ Table<const Epetra_Vector>& tableOfConstVectors()
 extern "C" {
 
 
-CT_Epetra_Vector_ID_t Epetra_Vector_Cast ( CTrilinos_Object_ID_t id )
+CT_Epetra_Vector_ID_t Epetra_Vector_Cast ( 
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstVectors(), id);
     } else {
@@ -90,7 +91,7 @@ CT_Epetra_Vector_ID_t Epetra_Vector_Cast ( CTrilinos_Object_ID_t id )
     return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_Vector_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_Vector_Abstract ( 
   CT_Epetra_Vector_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_Vector_ID_t>(id);
@@ -135,7 +136,7 @@ CT_Epetra_Vector_ID_t Epetra_Vector_FromSource (
 
 void Epetra_Vector_Destroy ( CT_Epetra_Vector_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_Vector_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstVectors().remove(&aid);
@@ -242,14 +243,14 @@ double Epetra_Vector_getElement (
 const Teuchos::RCP<Epetra_Vector>
 CEpetra::getVector( CT_Epetra_Vector_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Vector_ID_t>(id);
     return tableOfVectors().get(aid);
 }
 
-/* get Epetra_Vector from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Vector from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_Vector>
-CEpetra::getVector( CTrilinos_Object_ID_t id )
+CEpetra::getVector( CTrilinos_Universal_ID_t id )
 {
     return tableOfVectors().get(id);
 }
@@ -259,7 +260,7 @@ CEpetra::getVector( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_Vector>
 CEpetra::getConstVector( CT_Epetra_Vector_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Vector_ID_t>(id);
     if (id.is_const) {
         return tableOfConstVectors().get(aid);
@@ -269,9 +270,9 @@ CEpetra::getConstVector( CT_Epetra_Vector_ID_t id )
 }
 
 /* get const Epetra_Vector from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_Vector>
-CEpetra::getConstVector( CTrilinos_Object_ID_t id )
+CEpetra::getConstVector( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstVectors().get(id);

@@ -55,9 +55,9 @@ using Teuchos::RCP;
 const RCP<AztecOO_StatusTestMaxIters>
 getStatusTestMaxIters( CT_AztecOO_StatusTestMaxIters_ID_t id );
 
-/* get AztecOO_StatusTestMaxIters from non-const table using CTrilinos_Object_ID_t */
+/* get AztecOO_StatusTestMaxIters from non-const table using CTrilinos_Universal_ID_t */
 const RCP<AztecOO_StatusTestMaxIters>
-getStatusTestMaxIters( CTrilinos_Object_ID_t id );
+getStatusTestMaxIters( CTrilinos_Universal_ID_t id );
 
 /* get const AztecOO_StatusTestMaxIters from either the const or non-const table
  * using CT_AztecOO_StatusTestMaxIters_ID */
@@ -65,9 +65,9 @@ const RCP<const AztecOO_StatusTestMaxIters>
 getConstStatusTestMaxIters( CT_AztecOO_StatusTestMaxIters_ID_t id );
 
 /* get const AztecOO_StatusTestMaxIters from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const AztecOO_StatusTestMaxIters>
-getConstStatusTestMaxIters( CTrilinos_Object_ID_t id );
+getConstStatusTestMaxIters( CTrilinos_Universal_ID_t id );
 
 /* store AztecOO_StatusTestMaxIters in non-const table */
 CT_AztecOO_StatusTestMaxIters_ID_t

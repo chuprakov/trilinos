@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Teuchos::ParameterEntry>
 getParameterEntry( CT_Teuchos_ParameterEntry_ID_t id );
 
-/* get Teuchos::ParameterEntry from non-const table using CTrilinos_Object_ID_t */
+/* get Teuchos::ParameterEntry from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Teuchos::ParameterEntry>
-getParameterEntry( CTrilinos_Object_ID_t id );
+getParameterEntry( CTrilinos_Universal_ID_t id );
 
 /* get const Teuchos::ParameterEntry from either the const or non-const table
  * using CT_Teuchos_ParameterEntry_ID */
@@ -61,9 +61,9 @@ const RCP<const Teuchos::ParameterEntry>
 getConstParameterEntry( CT_Teuchos_ParameterEntry_ID_t id );
 
 /* get const Teuchos::ParameterEntry from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Teuchos::ParameterEntry>
-getConstParameterEntry( CTrilinos_Object_ID_t id );
+getConstParameterEntry( CTrilinos_Universal_ID_t id );
 
 /* store Teuchos::ParameterEntry in non-const table */
 CT_Teuchos_ParameterEntry_ID_t

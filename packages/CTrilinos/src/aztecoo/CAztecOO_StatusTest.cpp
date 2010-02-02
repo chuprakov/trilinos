@@ -83,9 +83,9 @@ extern "C" {
 
 
 CT_AztecOO_StatusTest_ID_t AztecOO_StatusTest_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstStatusTests(), id);
     } else {
@@ -94,7 +94,7 @@ CT_AztecOO_StatusTest_ID_t AztecOO_StatusTest_Cast (
     return CTrilinos::concreteType<CT_AztecOO_StatusTest_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t AztecOO_StatusTest_Abstract ( 
+CTrilinos_Universal_ID_t AztecOO_StatusTest_Abstract ( 
   CT_AztecOO_StatusTest_ID_t id )
 {
     return CTrilinos::abstractType<CT_AztecOO_StatusTest_ID_t>(id);
@@ -103,7 +103,7 @@ CTrilinos_Object_ID_t AztecOO_StatusTest_Abstract (
 void AztecOO_StatusTest_Destroy ( 
   CT_AztecOO_StatusTest_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_AztecOO_StatusTest_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstStatusTests().remove(&aid);
@@ -151,14 +151,14 @@ CT_AztecOO_StatusType_E_t AztecOO_StatusTest_GetStatus (
 const Teuchos::RCP<AztecOO_StatusTest>
 CAztecOO::getStatusTest( CT_AztecOO_StatusTest_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_AztecOO_StatusTest_ID_t>(id);
     return tableOfStatusTests().get(aid);
 }
 
-/* get AztecOO_StatusTest from non-const table using CTrilinos_Object_ID_t */
+/* get AztecOO_StatusTest from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<AztecOO_StatusTest>
-CAztecOO::getStatusTest( CTrilinos_Object_ID_t id )
+CAztecOO::getStatusTest( CTrilinos_Universal_ID_t id )
 {
     return tableOfStatusTests().get(id);
 }
@@ -168,7 +168,7 @@ CAztecOO::getStatusTest( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const AztecOO_StatusTest>
 CAztecOO::getConstStatusTest( CT_AztecOO_StatusTest_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_AztecOO_StatusTest_ID_t>(id);
     if (id.is_const) {
         return tableOfConstStatusTests().get(aid);
@@ -178,9 +178,9 @@ CAztecOO::getConstStatusTest( CT_AztecOO_StatusTest_ID_t id )
 }
 
 /* get const AztecOO_StatusTest from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const AztecOO_StatusTest>
-CAztecOO::getConstStatusTest( CTrilinos_Object_ID_t id )
+CAztecOO::getConstStatusTest( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstStatusTests().get(id);

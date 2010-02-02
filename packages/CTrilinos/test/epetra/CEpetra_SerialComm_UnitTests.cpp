@@ -53,7 +53,7 @@ namespace {
 
 /**********************************************************************
 CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
  **********************************************************************/
 
 TEUCHOS_UNIT_TEST( Epetra_SerialComm , Cast )

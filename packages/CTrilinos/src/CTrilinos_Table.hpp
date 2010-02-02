@@ -20,7 +20,7 @@ using Teuchos::RCP;
 using Teuchos::rcp;
 
 /* stringify the enum name -- defined in CTrilinos_utils.cpp */
-std::string enum2str( CTrilinos_Type_ID_t ty );
+std::string enum2str( CTrilinos_Table_ID_t ty );
 
 template <class T>
 class Table
@@ -29,42 +29,42 @@ class Table
 
     /* constructor -- use is_const = true if table will store
      * objects of type const T instead of T */
-    Table(CTrilinos_Type_ID_t type, std::string str, boolean is_const = FALSE);
+    Table(CTrilinos_Table_ID_t type, std::string str, boolean is_const = FALSE);
 
     /* destructor */
     ~Table();
 
     /* retrieve the object */
-    const RCP<T> get(CTrilinos_Object_ID_t id);
+    const RCP<T> get(CTrilinos_Universal_ID_t id);
 
     /* store an object of type T */
-    CTrilinos_Object_ID_t store(T* pobj);
+    CTrilinos_Universal_ID_t store(T* pobj);
 
     /* store an object whose base class is T */
     template <class Told>
-    CTrilinos_Object_ID_t store(Told* pobj);
+    CTrilinos_Universal_ID_t store(Told* pobj);
 
     /* store a non-owned object of type T */
-    CTrilinos_Object_ID_t storeShared(T* pobj);
+    CTrilinos_Universal_ID_t storeShared(T* pobj);
 
     /* store a non-owned object whose base class is T */
     template <class Told>
-    CTrilinos_Object_ID_t storeShared(Told* pobj);
+    CTrilinos_Universal_ID_t storeShared(Told* pobj);
 
     /* remove an object from the table and invalidate the id struct */
-    int remove(CTrilinos_Object_ID_t * id);
+    int remove(CTrilinos_Universal_ID_t * id);
 
     /* dump the table's contents but keep it's properties */
     void purge();
 
     /* cast the object to type T and store a copy */
     template <class Told>
-    CTrilinos_Object_ID_t cast(const RCP<Told> & rold);
+    CTrilinos_Universal_ID_t cast(const RCP<Told> & rold);
 
   private:
 
     /* build full exception msg on the fly */
-    std::string typeMismatchMsg(CTrilinos_Object_ID_t id, std::string act);
+    std::string typeMismatchMsg(CTrilinos_Universal_ID_t id, std::string act);
 
     /* build full exception msg on the fly */
     std::string badCastMsg(std::string type, std::string act);
@@ -73,7 +73,7 @@ class Table
     Teuchos::SimpleObjectTable<T> sot;
 
     /* properties of the table */
-    CTrilinos_Type_ID_t ttype;  /* enum value for stored objects */
+    CTrilinos_Table_ID_t ttype;  /* enum value for stored objects */
     std::string tstr;           /* string for exception msgs */
     std::string tstr2;          /* string for exception msgs */
     boolean tconst;                /* if table holds const T */
@@ -83,7 +83,7 @@ class Table
 /* constructor -- use is_const = true if table will store
  * objects of type const T instead of T */
 template <class T>
-Table<T>::Table(CTrilinos_Type_ID_t type, std::string str, boolean is_const)
+Table<T>::Table(CTrilinos_Table_ID_t type, std::string str, boolean is_const)
   : ttype(type),
     tconst(is_const)
 {
@@ -111,7 +111,7 @@ Table<T>::~Table()
 
 /* retrieve the object */
 template <class T>
-const RCP<T> Table<T>::get(CTrilinos_Object_ID_t id)
+const RCP<T> Table<T>::get(CTrilinos_Universal_ID_t id)
 {
     if ((id.type == ttype) && (id.is_const == tconst)) {
         return sot.getRCP(id.index);
@@ -123,12 +123,12 @@ const RCP<T> Table<T>::get(CTrilinos_Object_ID_t id)
 
 /* store an object of type T */
 template <class T>
-CTrilinos_Object_ID_t Table<T>::store(T* pobj)
+CTrilinos_Universal_ID_t Table<T>::store(T* pobj)
 {
     if (pobj == NULL)
         throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
 
-    CTrilinos_Object_ID_t id;
+    CTrilinos_Universal_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
     id.is_const = tconst;
@@ -142,12 +142,12 @@ CTrilinos_Object_ID_t Table<T>::store(T* pobj)
 /* store an object whose base class is T */
 template <class T>
 template <class Told>
-CTrilinos_Object_ID_t Table<T>::store(Told* pobj)
+CTrilinos_Universal_ID_t Table<T>::store(Told* pobj)
 { /* prevent adding wrong types */
     if (pobj == NULL)
         throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
 
-    CTrilinos_Object_ID_t id;
+    CTrilinos_Universal_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
     id.is_const = tconst;
@@ -164,12 +164,12 @@ CTrilinos_Object_ID_t Table<T>::store(Told* pobj)
 
 /* store a non-owned object of type T */
 template <class T>
-CTrilinos_Object_ID_t Table<T>::storeShared(T* pobj)
+CTrilinos_Universal_ID_t Table<T>::storeShared(T* pobj)
 {
     if (pobj == NULL)
         throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
 
-    CTrilinos_Object_ID_t id;
+    CTrilinos_Universal_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
     id.is_const = tconst;
@@ -183,12 +183,12 @@ CTrilinos_Object_ID_t Table<T>::storeShared(T* pobj)
 /* store a non-owned object whose base class is T */
 template <class T>
 template <class Told>
-CTrilinos_Object_ID_t Table<T>::storeShared(Told* pobj)
+CTrilinos_Universal_ID_t Table<T>::storeShared(Told* pobj)
 { /* prevent adding wrong types */
     if (pobj == NULL)
         throw Teuchos::NullReferenceError("[CTrilinos::Table]: Cannot store NULL pointer");
 
-    CTrilinos_Object_ID_t id;
+    CTrilinos_Universal_ID_t id;
     id.type = CT_Invalid_ID;
     id.index = -1;
     id.is_const = tconst;
@@ -205,7 +205,7 @@ CTrilinos_Object_ID_t Table<T>::storeShared(Told* pobj)
 
 /* remove an object from the table and invalidate the id struct */
 template <class T>
-int Table<T>::remove(CTrilinos_Object_ID_t * id)
+int Table<T>::remove(CTrilinos_Universal_ID_t * id)
 {
     int ret = -1;
 
@@ -229,9 +229,9 @@ void Table<T>::purge()
 /* cast the object to type T and store a copy */
 template <class T>
 template <class Told>
-CTrilinos_Object_ID_t Table<T>::cast(const RCP<Told> & rold)
+CTrilinos_Universal_ID_t Table<T>::cast(const RCP<Told> & rold)
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     newid.type = CT_Invalid_ID;
     newid.index = -1;
     newid.is_const = tconst;
@@ -246,7 +246,7 @@ CTrilinos_Object_ID_t Table<T>::cast(const RCP<Told> & rold)
 
 /* build full exception msg on the fly */
 template <class T>
-std::string Table<T>::typeMismatchMsg(CTrilinos_Object_ID_t id, std::string act)
+std::string Table<T>::typeMismatchMsg(CTrilinos_Universal_ID_t id, std::string act)
 {
     std::string s = enum2str(id.type);
     std::stringstream ss;

@@ -51,9 +51,9 @@ using Teuchos::RCP;
 const RCP<Epetra_JadMatrix>
 getJadMatrix( CT_Epetra_JadMatrix_ID_t id );
 
-/* get Epetra_JadMatrix from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_JadMatrix from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_JadMatrix>
-getJadMatrix( CTrilinos_Object_ID_t id );
+getJadMatrix( CTrilinos_Universal_ID_t id );
 
 /* get const Epetra_JadMatrix from either the const or non-const table
  * using CT_Epetra_JadMatrix_ID */
@@ -61,9 +61,9 @@ const RCP<const Epetra_JadMatrix>
 getConstJadMatrix( CT_Epetra_JadMatrix_ID_t id );
 
 /* get const Epetra_JadMatrix from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_JadMatrix>
-getConstJadMatrix( CTrilinos_Object_ID_t id );
+getConstJadMatrix( CTrilinos_Universal_ID_t id );
 
 /* store Epetra_JadMatrix in non-const table */
 CT_Epetra_JadMatrix_ID_t

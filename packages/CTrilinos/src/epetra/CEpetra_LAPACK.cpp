@@ -77,9 +77,10 @@ Table<const Epetra_LAPACK>& tableOfConstLAPACKs()
 extern "C" {
 
 
-CT_Epetra_LAPACK_ID_t Epetra_LAPACK_Cast ( CTrilinos_Object_ID_t id )
+CT_Epetra_LAPACK_ID_t Epetra_LAPACK_Cast ( 
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstLAPACKs(), id);
     } else {
@@ -88,7 +89,7 @@ CT_Epetra_LAPACK_ID_t Epetra_LAPACK_Cast ( CTrilinos_Object_ID_t id )
     return CTrilinos::concreteType<CT_Epetra_LAPACK_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_LAPACK_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_LAPACK_Abstract ( 
   CT_Epetra_LAPACK_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_LAPACK_ID_t>(id);
@@ -110,7 +111,7 @@ CT_Epetra_LAPACK_ID_t Epetra_LAPACK_Duplicate (
 
 void Epetra_LAPACK_Destroy ( CT_Epetra_LAPACK_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_LAPACK_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstLAPACKs().remove(&aid);
@@ -954,14 +955,14 @@ void Epetra_LAPACK_LAMCH_double (
 const Teuchos::RCP<Epetra_LAPACK>
 CEpetra::getLAPACK( CT_Epetra_LAPACK_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_LAPACK_ID_t>(id);
     return tableOfLAPACKs().get(aid);
 }
 
-/* get Epetra_LAPACK from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_LAPACK from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_LAPACK>
-CEpetra::getLAPACK( CTrilinos_Object_ID_t id )
+CEpetra::getLAPACK( CTrilinos_Universal_ID_t id )
 {
     return tableOfLAPACKs().get(id);
 }
@@ -971,7 +972,7 @@ CEpetra::getLAPACK( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_LAPACK>
 CEpetra::getConstLAPACK( CT_Epetra_LAPACK_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_LAPACK_ID_t>(id);
     if (id.is_const) {
         return tableOfConstLAPACKs().get(aid);
@@ -981,9 +982,9 @@ CEpetra::getConstLAPACK( CT_Epetra_LAPACK_ID_t id )
 }
 
 /* get const Epetra_LAPACK from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_LAPACK>
-CEpetra::getConstLAPACK( CTrilinos_Object_ID_t id )
+CEpetra::getConstLAPACK( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstLAPACKs().get(id);

@@ -79,9 +79,10 @@ Table<const Epetra_Export>& tableOfConstExports()
 extern "C" {
 
 
-CT_Epetra_Export_ID_t Epetra_Export_Cast ( CTrilinos_Object_ID_t id )
+CT_Epetra_Export_ID_t Epetra_Export_Cast ( 
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstExports(), id);
     } else {
@@ -90,7 +91,7 @@ CT_Epetra_Export_ID_t Epetra_Export_Cast ( CTrilinos_Object_ID_t id )
     return CTrilinos::concreteType<CT_Epetra_Export_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_Export_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_Export_Abstract ( 
   CT_Epetra_Export_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_Export_ID_t>(id);
@@ -116,7 +117,7 @@ CT_Epetra_Export_ID_t Epetra_Export_Duplicate (
 
 void Epetra_Export_Destroy ( CT_Epetra_Export_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_Export_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstExports().remove(&aid);
@@ -215,14 +216,14 @@ CT_Epetra_Distributor_ID_t Epetra_Export_Distributor (
 const Teuchos::RCP<Epetra_Export>
 CEpetra::getExport( CT_Epetra_Export_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Export_ID_t>(id);
     return tableOfExports().get(aid);
 }
 
-/* get Epetra_Export from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Export from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_Export>
-CEpetra::getExport( CTrilinos_Object_ID_t id )
+CEpetra::getExport( CTrilinos_Universal_ID_t id )
 {
     return tableOfExports().get(id);
 }
@@ -232,7 +233,7 @@ CEpetra::getExport( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_Export>
 CEpetra::getConstExport( CT_Epetra_Export_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Export_ID_t>(id);
     if (id.is_const) {
         return tableOfConstExports().get(aid);
@@ -242,9 +243,9 @@ CEpetra::getConstExport( CT_Epetra_Export_ID_t id )
 }
 
 /* get const Epetra_Export from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_Export>
-CEpetra::getConstExport( CTrilinos_Object_ID_t id )
+CEpetra::getConstExport( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstExports().get(id);

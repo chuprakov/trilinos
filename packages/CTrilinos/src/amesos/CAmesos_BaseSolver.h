@@ -73,9 +73,9 @@ extern "C" {
 /*@{*/
 
 CT_Amesos_BaseSolver_ID_t Amesos_BaseSolver_Cast ( 
-  CTrilinos_Object_ID_t id );
+  CTrilinos_Universal_ID_t id );
 
-CTrilinos_Object_ID_t Amesos_BaseSolver_Abstract ( 
+CTrilinos_Universal_ID_t Amesos_BaseSolver_Abstract ( 
   CT_Amesos_BaseSolver_ID_t id );
 
 /*@}*/

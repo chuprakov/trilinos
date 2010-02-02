@@ -78,9 +78,9 @@ extern "C" {
 
 
 CT_Epetra_Distributor_ID_t Epetra_Distributor_Cast ( 
-  CTrilinos_Object_ID_t id )
+  CTrilinos_Universal_ID_t id )
 {
-    CTrilinos_Object_ID_t newid;
+    CTrilinos_Universal_ID_t newid;
     if (id.is_const) {
         newid = CTrilinos::cast(tableOfConstDistributors(), id);
     } else {
@@ -89,7 +89,7 @@ CT_Epetra_Distributor_ID_t Epetra_Distributor_Cast (
     return CTrilinos::concreteType<CT_Epetra_Distributor_ID_t>(newid);
 }
 
-CTrilinos_Object_ID_t Epetra_Distributor_Abstract ( 
+CTrilinos_Universal_ID_t Epetra_Distributor_Abstract ( 
   CT_Epetra_Distributor_ID_t id )
 {
     return CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(id);
@@ -98,7 +98,7 @@ CTrilinos_Object_ID_t Epetra_Distributor_Abstract (
 void Epetra_Distributor_Destroy ( 
   CT_Epetra_Distributor_ID_t * selfID )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
         = CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(*selfID);
     if (selfID->is_const) {
         tableOfConstDistributors().remove(&aid);
@@ -230,14 +230,14 @@ int Epetra_Distributor_DoReversePosts_VarLen (
 const Teuchos::RCP<Epetra_Distributor>
 CEpetra::getDistributor( CT_Epetra_Distributor_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(id);
     return tableOfDistributors().get(aid);
 }
 
-/* get Epetra_Distributor from non-const table using CTrilinos_Object_ID_t */
+/* get Epetra_Distributor from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_Distributor>
-CEpetra::getDistributor( CTrilinos_Object_ID_t id )
+CEpetra::getDistributor( CTrilinos_Universal_ID_t id )
 {
     return tableOfDistributors().get(id);
 }
@@ -247,7 +247,7 @@ CEpetra::getDistributor( CTrilinos_Object_ID_t id )
 const Teuchos::RCP<const Epetra_Distributor>
 CEpetra::getConstDistributor( CT_Epetra_Distributor_ID_t id )
 {
-    CTrilinos_Object_ID_t aid
+    CTrilinos_Universal_ID_t aid
             = CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(id);
     if (id.is_const) {
         return tableOfConstDistributors().get(aid);
@@ -257,9 +257,9 @@ CEpetra::getConstDistributor( CT_Epetra_Distributor_ID_t id )
 }
 
 /* get const Epetra_Distributor from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<const Epetra_Distributor>
-CEpetra::getConstDistributor( CTrilinos_Object_ID_t id )
+CEpetra::getConstDistributor( CTrilinos_Universal_ID_t id )
 {
     if (id.is_const) {
         return tableOfConstDistributors().get(id);

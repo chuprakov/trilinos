@@ -55,9 +55,9 @@ using Teuchos::RCP;
 const RCP<Ifpack_Preconditioner>
 getPreconditioner( CT_Ifpack_Preconditioner_ID_t id );
 
-/* get Ifpack_Preconditioner from non-const table using CTrilinos_Object_ID_t */
+/* get Ifpack_Preconditioner from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Ifpack_Preconditioner>
-getPreconditioner( CTrilinos_Object_ID_t id );
+getPreconditioner( CTrilinos_Universal_ID_t id );
 
 /* get const Ifpack_Preconditioner from either the const or non-const table
  * using CT_Ifpack_Preconditioner_ID */
@@ -65,9 +65,9 @@ const RCP<const Ifpack_Preconditioner>
 getConstPreconditioner( CT_Ifpack_Preconditioner_ID_t id );
 
 /* get const Ifpack_Preconditioner from either the const or non-const table
- * using CTrilinos_Object_ID_t */
+ * using CTrilinos_Universal_ID_t */
 const RCP<const Ifpack_Preconditioner>
-getConstPreconditioner( CTrilinos_Object_ID_t id );
+getConstPreconditioner( CTrilinos_Universal_ID_t id );
 
 /* store Ifpack_Preconditioner in non-const table */
 CT_Ifpack_Preconditioner_ID_t

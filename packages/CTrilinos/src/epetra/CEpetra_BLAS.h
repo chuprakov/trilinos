@@ -65,9 +65,10 @@ extern "C" {
 /*! @name Explicit casting methods */
 /*@{*/
 
-CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Object_ID_t id );
+CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Universal_ID_t id );
 
-CTrilinos_Object_ID_t Epetra_BLAS_Abstract ( CT_Epetra_BLAS_ID_t id );
+CTrilinos_Universal_ID_t Epetra_BLAS_Abstract ( 
+  CT_Epetra_BLAS_ID_t id );
 
 /*@}*/
 
