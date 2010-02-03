@@ -46,36 +46,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Amesos */
-Table<Amesos>& tableOfAmesoss()
-{
-    static Table<Amesos>
-        loc_tableOfAmesoss(CT_Amesos_ID, "CT_Amesos_ID", FALSE);
-    return loc_tableOfAmesoss;
-}
-
-/* table to hold objects of type const Amesos */
-Table<const Amesos>& tableOfConstAmesoss()
-{
-    static Table<const Amesos>
-        loc_tableOfConstAmesoss(CT_Amesos_ID, "CT_Amesos_ID", TRUE);
-    return loc_tableOfConstAmesoss;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CAmesos.h
 //
@@ -86,20 +57,13 @@ extern "C" {
 
 CT_Amesos_ID_t Amesos_Create (  )
 {
-    return CTrilinos::concreteType<CT_Amesos_ID_t>(
-        tableOfAmesoss().store(new Amesos()));
+    return CTrilinos::tableRepos().store<Amesos, CT_Amesos_ID_t>(
+        new Amesos());
 }
 
 void Amesos_Destroy ( CT_Amesos_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Amesos_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstAmesoss().remove(&aid);
-    } else {
-        tableOfAmesoss().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Amesos_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 CT_Amesos_BaseSolver_ID_t Amesos_CreateSolver ( 
@@ -137,16 +101,7 @@ CT_Teuchos_ParameterList_ID_t Amesos_GetValidParameters (  )
 const Teuchos::RCP<Amesos>
 CAmesos::getAmesos( CT_Amesos_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Amesos_ID_t>(id);
-    return tableOfAmesoss().get(aid);
-}
-
-/* get Amesos from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Amesos>
-CAmesos::getAmesos( CTrilinos_Universal_ID_t id )
-{
-    return tableOfAmesoss().get(id);
+    return CTrilinos::tableRepos().get<Amesos, CT_Amesos_ID_t>(id);
 }
 
 /* get const Amesos from either the const or non-const table
@@ -154,49 +109,21 @@ CAmesos::getAmesos( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Amesos>
 CAmesos::getConstAmesos( CT_Amesos_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Amesos_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstAmesoss().get(aid);
-    } else {
-        return tableOfAmesoss().get(aid);
-    }
-}
-
-/* get const Amesos from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Amesos>
-CAmesos::getConstAmesos( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstAmesoss().get(id);
-    } else {
-        return tableOfAmesoss().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Amesos, CT_Amesos_ID_t>(id);
 }
 
 /* store Amesos in non-const table */
 CT_Amesos_ID_t
 CAmesos::storeAmesos( Amesos *pobj )
 {
-    return CTrilinos::concreteType<CT_Amesos_ID_t>(
-            tableOfAmesoss().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Amesos, CT_Amesos_ID_t>(pobj, false);
 }
 
 /* store const Amesos in const table */
 CT_Amesos_ID_t
 CAmesos::storeConstAmesos( const Amesos *pobj )
 {
-    return CTrilinos::concreteType<CT_Amesos_ID_t>(
-            tableOfConstAmesoss().storeShared(pobj));
-}
-
-/* dump contents of Amesos and const Amesos tables */
-void
-CAmesos::purgeAmesosTables(  )
-{
-    tableOfAmesoss().purge();
-    tableOfConstAmesoss().purge();
+    return CTrilinos::tableRepos().store<Amesos, CT_Amesos_ID_t>(pobj, false);
 }
 
 

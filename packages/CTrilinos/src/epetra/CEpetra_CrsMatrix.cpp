@@ -47,36 +47,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Epetra_CrsMatrix */
-Table<Epetra_CrsMatrix>& tableOfCrsMatrixs()
-{
-    static Table<Epetra_CrsMatrix>
-        loc_tableOfCrsMatrixs(CT_Epetra_CrsMatrix_ID, "CT_Epetra_CrsMatrix_ID", FALSE);
-    return loc_tableOfCrsMatrixs;
-}
-
-/* table to hold objects of type const Epetra_CrsMatrix */
-Table<const Epetra_CrsMatrix>& tableOfConstCrsMatrixs()
-{
-    static Table<const Epetra_CrsMatrix>
-        loc_tableOfConstCrsMatrixs(CT_Epetra_CrsMatrix_ID, "CT_Epetra_CrsMatrix_ID", TRUE);
-    return loc_tableOfConstCrsMatrixs;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CEpetra_CrsMatrix.h
 //
@@ -85,44 +56,26 @@ Table<const Epetra_CrsMatrix>& tableOfConstCrsMatrixs()
 extern "C" {
 
 
-CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Cast ( 
-  CTrilinos_Universal_ID_t id )
-{
-    CTrilinos_Universal_ID_t newid;
-    if (id.is_const) {
-        newid = CTrilinos::cast(tableOfConstCrsMatrixs(), id);
-    } else {
-        newid = CTrilinos::cast(tableOfCrsMatrixs(), id);
-    }
-    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(newid);
-}
-
-CTrilinos_Universal_ID_t Epetra_CrsMatrix_Abstract ( 
-  CT_Epetra_CrsMatrix_ID_t id )
-{
-    return CTrilinos::abstractType<CT_Epetra_CrsMatrix_ID_t>(id);
-}
-
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   const int * NumEntriesPerRow, boolean StaticProfile )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
-        tableOfCrsMatrixs().store(new Epetra_CrsMatrix(
+    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, 
+        CT_Epetra_CrsMatrix_ID_t>(new Epetra_CrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
         NumEntriesPerRow, ((
-        StaticProfile) != FALSE ? true : false))));
+        StaticProfile) != FALSE ? true : false)));
 }
 
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   int NumEntriesPerRow, boolean StaticProfile )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
-        tableOfCrsMatrixs().store(new Epetra_CrsMatrix(
+    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, 
+        CT_Epetra_CrsMatrix_ID_t>(new Epetra_CrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
         NumEntriesPerRow, ((
-        StaticProfile) != FALSE ? true : false))));
+        StaticProfile) != FALSE ? true : false)));
 }
 
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow_WithColMap ( 
@@ -130,11 +83,11 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow_WithColMap (
   CT_Epetra_Map_ID_t ColMapID, const int * NumEntriesPerRow, 
   boolean StaticProfile )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
-        tableOfCrsMatrixs().store(new Epetra_CrsMatrix(
+    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, 
+        CT_Epetra_CrsMatrix_ID_t>(new Epetra_CrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
         *CEpetra::getConstMap(ColMapID), NumEntriesPerRow, ((
-        StaticProfile) != FALSE ? true : false))));
+        StaticProfile) != FALSE ? true : false)));
 }
 
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_WithColMap ( 
@@ -142,40 +95,33 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_WithColMap (
   CT_Epetra_Map_ID_t ColMapID, int NumEntriesPerRow, 
   boolean StaticProfile )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
-        tableOfCrsMatrixs().store(new Epetra_CrsMatrix(
+    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, 
+        CT_Epetra_CrsMatrix_ID_t>(new Epetra_CrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
         *CEpetra::getConstMap(ColMapID), NumEntriesPerRow, ((
-        StaticProfile) != FALSE ? true : false))));
+        StaticProfile) != FALSE ? true : false)));
 }
 
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_FromGraph ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_CrsGraph_ID_t GraphID )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
-        tableOfCrsMatrixs().store(new Epetra_CrsMatrix(
+    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, 
+        CT_Epetra_CrsMatrix_ID_t>(new Epetra_CrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstCrsGraph(
-        GraphID))));
+        GraphID)));
 }
 
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Duplicate ( 
   CT_Epetra_CrsMatrix_ID_t MatrixID )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
-        tableOfCrsMatrixs().store(new Epetra_CrsMatrix(
-        *CEpetra::getConstCrsMatrix(MatrixID))));
+    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, 
+        CT_Epetra_CrsMatrix_ID_t>(new Epetra_CrsMatrix(
+        *CEpetra::getConstCrsMatrix(MatrixID)));
 }
 
 void Epetra_CrsMatrix_Destroy ( CT_Epetra_CrsMatrix_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Epetra_CrsMatrix_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstCrsMatrixs().remove(&aid);
-    } else {
-        tableOfCrsMatrixs().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 int Epetra_CrsMatrix_PutScalar ( 
@@ -891,16 +837,7 @@ double * Epetra_CrsMatrix_getRow (
 const Teuchos::RCP<Epetra_CrsMatrix>
 CEpetra::getCrsMatrix( CT_Epetra_CrsMatrix_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_CrsMatrix_ID_t>(id);
-    return tableOfCrsMatrixs().get(aid);
-}
-
-/* get Epetra_CrsMatrix from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_CrsMatrix>
-CEpetra::getCrsMatrix( CTrilinos_Universal_ID_t id )
-{
-    return tableOfCrsMatrixs().get(id);
+    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, CT_Epetra_CrsMatrix_ID_t>(id);
 }
 
 /* get const Epetra_CrsMatrix from either the const or non-const table
@@ -908,49 +845,21 @@ CEpetra::getCrsMatrix( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_CrsMatrix>
 CEpetra::getConstCrsMatrix( CT_Epetra_CrsMatrix_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_CrsMatrix_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstCrsMatrixs().get(aid);
-    } else {
-        return tableOfCrsMatrixs().get(aid);
-    }
-}
-
-/* get const Epetra_CrsMatrix from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_CrsMatrix>
-CEpetra::getConstCrsMatrix( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstCrsMatrixs().get(id);
-    } else {
-        return tableOfCrsMatrixs().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, CT_Epetra_CrsMatrix_ID_t>(id);
 }
 
 /* store Epetra_CrsMatrix in non-const table */
 CT_Epetra_CrsMatrix_ID_t
 CEpetra::storeCrsMatrix( Epetra_CrsMatrix *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
-            tableOfCrsMatrixs().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, CT_Epetra_CrsMatrix_ID_t>(pobj, false);
 }
 
 /* store const Epetra_CrsMatrix in const table */
 CT_Epetra_CrsMatrix_ID_t
 CEpetra::storeConstCrsMatrix( const Epetra_CrsMatrix *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
-            tableOfConstCrsMatrixs().storeShared(pobj));
-}
-
-/* dump contents of Epetra_CrsMatrix and const Epetra_CrsMatrix tables */
-void
-CEpetra::purgeCrsMatrixTables(  )
-{
-    tableOfCrsMatrixs().purge();
-    tableOfConstCrsMatrixs().purge();
+    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, CT_Epetra_CrsMatrix_ID_t>(pobj, false);
 }
 
 

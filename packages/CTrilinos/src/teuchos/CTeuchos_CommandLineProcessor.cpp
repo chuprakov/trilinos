@@ -39,36 +39,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Teuchos::CommandLineProcessor */
-Table<Teuchos::CommandLineProcessor>& tableOfCommandLineProcessors()
-{
-    static Table<Teuchos::CommandLineProcessor>
-        loc_tableOfCommandLineProcessors(CT_Teuchos_CommandLineProcessor_ID, "CT_Teuchos_CommandLineProcessor_ID", FALSE);
-    return loc_tableOfCommandLineProcessors;
-}
-
-/* table to hold objects of type const Teuchos::CommandLineProcessor */
-Table<const Teuchos::CommandLineProcessor>& tableOfConstCommandLineProcessors()
-{
-    static Table<const Teuchos::CommandLineProcessor>
-        loc_tableOfConstCommandLineProcessors(CT_Teuchos_CommandLineProcessor_ID, "CT_Teuchos_CommandLineProcessor_ID", TRUE);
-    return loc_tableOfConstCommandLineProcessors;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CTeuchos_CommandLineProcessor.h
 //
@@ -81,25 +52,18 @@ CT_Teuchos_CommandLineProcessor_ID_t Teuchos_CommandLineProcessor_Create (
   boolean throwExceptions, boolean recogniseAllOptions, 
   boolean addOutputSetupOptions )
 {
-    return CTrilinos::concreteType<CT_Teuchos_CommandLineProcessor_ID_t>(
-        tableOfCommandLineProcessors().store(
+    return CTrilinos::tableRepos().store<Teuchos::CommandLineProcessor, 
+        CT_Teuchos_CommandLineProcessor_ID_t>(
         new Teuchos::CommandLineProcessor(
         ((throwExceptions) != FALSE ? true : false), ((
         recogniseAllOptions) != FALSE ? true : false), ((
-        addOutputSetupOptions) != FALSE ? true : false))));
+        addOutputSetupOptions) != FALSE ? true : false)));
 }
 
 void Teuchos_CommandLineProcessor_Destroy ( 
   CT_Teuchos_CommandLineProcessor_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Teuchos_CommandLineProcessor_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstCommandLineProcessors().remove(&aid);
-    } else {
-        tableOfCommandLineProcessors().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Teuchos_CommandLineProcessor_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 void Teuchos_CommandLineProcessor_throwExceptions_set ( 
@@ -215,16 +179,7 @@ void Teuchos_CommandLineProcessor_setOption_str (
 const Teuchos::RCP<Teuchos::CommandLineProcessor>
 CTeuchos::getCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Teuchos_CommandLineProcessor_ID_t>(id);
-    return tableOfCommandLineProcessors().get(aid);
-}
-
-/* get Teuchos::CommandLineProcessor from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Teuchos::CommandLineProcessor>
-CTeuchos::getCommandLineProcessor( CTrilinos_Universal_ID_t id )
-{
-    return tableOfCommandLineProcessors().get(id);
+    return CTrilinos::tableRepos().get<Teuchos::CommandLineProcessor, CT_Teuchos_CommandLineProcessor_ID_t>(id);
 }
 
 /* get const Teuchos::CommandLineProcessor from either the const or non-const table
@@ -232,49 +187,21 @@ CTeuchos::getCommandLineProcessor( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Teuchos::CommandLineProcessor>
 CTeuchos::getConstCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Teuchos_CommandLineProcessor_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstCommandLineProcessors().get(aid);
-    } else {
-        return tableOfCommandLineProcessors().get(aid);
-    }
-}
-
-/* get const Teuchos::CommandLineProcessor from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Teuchos::CommandLineProcessor>
-CTeuchos::getConstCommandLineProcessor( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstCommandLineProcessors().get(id);
-    } else {
-        return tableOfCommandLineProcessors().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Teuchos::CommandLineProcessor, CT_Teuchos_CommandLineProcessor_ID_t>(id);
 }
 
 /* store Teuchos::CommandLineProcessor in non-const table */
 CT_Teuchos_CommandLineProcessor_ID_t
 CTeuchos::storeCommandLineProcessor( Teuchos::CommandLineProcessor *pobj )
 {
-    return CTrilinos::concreteType<CT_Teuchos_CommandLineProcessor_ID_t>(
-            tableOfCommandLineProcessors().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Teuchos::CommandLineProcessor, CT_Teuchos_CommandLineProcessor_ID_t>(pobj, false);
 }
 
 /* store const Teuchos::CommandLineProcessor in const table */
 CT_Teuchos_CommandLineProcessor_ID_t
 CTeuchos::storeConstCommandLineProcessor( const Teuchos::CommandLineProcessor *pobj )
 {
-    return CTrilinos::concreteType<CT_Teuchos_CommandLineProcessor_ID_t>(
-            tableOfConstCommandLineProcessors().storeShared(pobj));
-}
-
-/* dump contents of Teuchos::CommandLineProcessor and const Teuchos::CommandLineProcessor tables */
-void
-CTeuchos::purgeCommandLineProcessorTables(  )
-{
-    tableOfCommandLineProcessors().purge();
-    tableOfConstCommandLineProcessors().purge();
+    return CTrilinos::tableRepos().store<Teuchos::CommandLineProcessor, CT_Teuchos_CommandLineProcessor_ID_t>(pobj, false);
 }
 
 

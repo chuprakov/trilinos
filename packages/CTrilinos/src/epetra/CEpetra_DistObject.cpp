@@ -45,36 +45,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Epetra_DistObject */
-Table<Epetra_DistObject>& tableOfDistObjects()
-{
-    static Table<Epetra_DistObject>
-        loc_tableOfDistObjects(CT_Epetra_DistObject_ID, "CT_Epetra_DistObject_ID", FALSE);
-    return loc_tableOfDistObjects;
-}
-
-/* table to hold objects of type const Epetra_DistObject */
-Table<const Epetra_DistObject>& tableOfConstDistObjects()
-{
-    static Table<const Epetra_DistObject>
-        loc_tableOfConstDistObjects(CT_Epetra_DistObject_ID, "CT_Epetra_DistObject_ID", TRUE);
-    return loc_tableOfConstDistObjects;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CEpetra_DistObject.h
 //
@@ -83,34 +54,9 @@ Table<const Epetra_DistObject>& tableOfConstDistObjects()
 extern "C" {
 
 
-CT_Epetra_DistObject_ID_t Epetra_DistObject_Cast ( 
-  CTrilinos_Universal_ID_t id )
-{
-    CTrilinos_Universal_ID_t newid;
-    if (id.is_const) {
-        newid = CTrilinos::cast(tableOfConstDistObjects(), id);
-    } else {
-        newid = CTrilinos::cast(tableOfDistObjects(), id);
-    }
-    return CTrilinos::concreteType<CT_Epetra_DistObject_ID_t>(newid);
-}
-
-CTrilinos_Universal_ID_t Epetra_DistObject_Abstract ( 
-  CT_Epetra_DistObject_ID_t id )
-{
-    return CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(id);
-}
-
 void Epetra_DistObject_Destroy ( CT_Epetra_DistObject_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstDistObjects().remove(&aid);
-    } else {
-        tableOfDistObjects().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Epetra_DistObject_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 int Epetra_DistObject_Import ( 
@@ -203,16 +149,7 @@ boolean Epetra_DistObject_DistributedGlobal (
 const Teuchos::RCP<Epetra_DistObject>
 CEpetra::getDistObject( CT_Epetra_DistObject_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(id);
-    return tableOfDistObjects().get(aid);
-}
-
-/* get Epetra_DistObject from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_DistObject>
-CEpetra::getDistObject( CTrilinos_Universal_ID_t id )
-{
-    return tableOfDistObjects().get(id);
+    return CTrilinos::tableRepos().get<Epetra_DistObject, CT_Epetra_DistObject_ID_t>(id);
 }
 
 /* get const Epetra_DistObject from either the const or non-const table
@@ -220,49 +157,21 @@ CEpetra::getDistObject( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_DistObject>
 CEpetra::getConstDistObject( CT_Epetra_DistObject_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstDistObjects().get(aid);
-    } else {
-        return tableOfDistObjects().get(aid);
-    }
-}
-
-/* get const Epetra_DistObject from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_DistObject>
-CEpetra::getConstDistObject( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstDistObjects().get(id);
-    } else {
-        return tableOfDistObjects().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Epetra_DistObject, CT_Epetra_DistObject_ID_t>(id);
 }
 
 /* store Epetra_DistObject in non-const table */
 CT_Epetra_DistObject_ID_t
 CEpetra::storeDistObject( Epetra_DistObject *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_DistObject_ID_t>(
-            tableOfDistObjects().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Epetra_DistObject, CT_Epetra_DistObject_ID_t>(pobj, false);
 }
 
 /* store const Epetra_DistObject in const table */
 CT_Epetra_DistObject_ID_t
 CEpetra::storeConstDistObject( const Epetra_DistObject *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_DistObject_ID_t>(
-            tableOfConstDistObjects().storeShared(pobj));
-}
-
-/* dump contents of Epetra_DistObject and const Epetra_DistObject tables */
-void
-CEpetra::purgeDistObjectTables(  )
-{
-    tableOfDistObjects().purge();
-    tableOfConstDistObjects().purge();
+    return CTrilinos::tableRepos().store<Epetra_DistObject, CT_Epetra_DistObject_ID_t>(pobj, false);
 }
 
 

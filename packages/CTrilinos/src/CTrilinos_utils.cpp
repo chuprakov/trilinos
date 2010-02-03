@@ -84,6 +84,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 namespace CTrilinos {
 
 
+TableRepos & tableRepos(  )
+{
+    static TableRepos tr;
+    return tr;
+}
+
+
 void pass_bool_out( const bool * pval, boolean * pvalout )
 {
     pvalout = new boolean[1];

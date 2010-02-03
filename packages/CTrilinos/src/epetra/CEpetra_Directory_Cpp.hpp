@@ -47,36 +47,31 @@ namespace CEpetra {
 using Teuchos::RCP;
 
 
-/* get Epetra_Directory from non-const table using CT_Epetra_Directory_ID */
+/*! get Epetra_Directory from non-const table using CT_Epetra_Directory_ID */
 const RCP<Epetra_Directory>
 getDirectory( CT_Epetra_Directory_ID_t id );
 
-/* get Epetra_Directory from non-const table using CTrilinos_Universal_ID_t */
+/*! get Epetra_Directory from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_Directory>
 getDirectory( CTrilinos_Universal_ID_t id );
 
-/* get const Epetra_Directory from either the const or non-const table
+/*! get const Epetra_Directory from either the const or non-const table
  * using CT_Epetra_Directory_ID */
 const RCP<const Epetra_Directory>
 getConstDirectory( CT_Epetra_Directory_ID_t id );
 
-/* get const Epetra_Directory from either the const or non-const table
+/*! get const Epetra_Directory from either the const or non-const table
  * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_Directory>
 getConstDirectory( CTrilinos_Universal_ID_t id );
 
-/* store Epetra_Directory in non-const table */
+/*! store Epetra_Directory in non-const table */
 CT_Epetra_Directory_ID_t
 storeDirectory( Epetra_Directory *pobj );
 
-/* store const Epetra_Directory in const table */
+/*! store const Epetra_Directory in const table */
 CT_Epetra_Directory_ID_t
 storeConstDirectory( const Epetra_Directory *pobj );
-
-/* dump contents of Epetra_Directory and const Epetra_Directory tables */
-void
-purgeDirectoryTables(  );
-
 
 } // namespace CEpetra
 

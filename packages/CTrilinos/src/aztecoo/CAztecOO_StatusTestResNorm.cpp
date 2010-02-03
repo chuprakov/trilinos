@@ -46,36 +46,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type AztecOO_StatusTestResNorm */
-Table<AztecOO_StatusTestResNorm>& tableOfStatusTestResNorms()
-{
-    static Table<AztecOO_StatusTestResNorm>
-        loc_tableOfStatusTestResNorms(CT_AztecOO_StatusTestResNorm_ID, "CT_AztecOO_StatusTestResNorm_ID", FALSE);
-    return loc_tableOfStatusTestResNorms;
-}
-
-/* table to hold objects of type const AztecOO_StatusTestResNorm */
-Table<const AztecOO_StatusTestResNorm>& tableOfConstStatusTestResNorms()
-{
-    static Table<const AztecOO_StatusTestResNorm>
-        loc_tableOfConstStatusTestResNorms(CT_AztecOO_StatusTestResNorm_ID, "CT_AztecOO_StatusTestResNorm_ID", TRUE);
-    return loc_tableOfConstStatusTestResNorms;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CAztecOO_StatusTestResNorm.h
 //
@@ -84,46 +55,21 @@ Table<const AztecOO_StatusTestResNorm>& tableOfConstStatusTestResNorms()
 extern "C" {
 
 
-CT_AztecOO_StatusTestResNorm_ID_t AztecOO_StatusTestResNorm_Cast ( 
-  CTrilinos_Universal_ID_t id )
-{
-    CTrilinos_Universal_ID_t newid;
-    if (id.is_const) {
-        newid = CTrilinos::cast(tableOfConstStatusTestResNorms(), id);
-    } else {
-        newid = CTrilinos::cast(tableOfStatusTestResNorms(), id);
-    }
-    return CTrilinos::concreteType<CT_AztecOO_StatusTestResNorm_ID_t>(newid);
-}
-
-CTrilinos_Universal_ID_t AztecOO_StatusTestResNorm_Abstract ( 
-  CT_AztecOO_StatusTestResNorm_ID_t id )
-{
-    return CTrilinos::abstractType<CT_AztecOO_StatusTestResNorm_ID_t>(id);
-}
-
 CT_AztecOO_StatusTestResNorm_ID_t AztecOO_StatusTestResNorm_Create ( 
   CT_Epetra_Operator_ID_t OperatorID, CT_Epetra_Vector_ID_t LHSID, 
   CT_Epetra_Vector_ID_t RHSID, double Tolerance )
 {
-    return CTrilinos::concreteType<CT_AztecOO_StatusTestResNorm_ID_t>(
-        tableOfStatusTestResNorms().store(
+    return CTrilinos::tableRepos().store<AztecOO_StatusTestResNorm, 
+        CT_AztecOO_StatusTestResNorm_ID_t>(
         new AztecOO_StatusTestResNorm(*CEpetra::getConstOperator(
         OperatorID), *CEpetra::getConstVector(LHSID), 
-        *CEpetra::getConstVector(RHSID), Tolerance)));
+        *CEpetra::getConstVector(RHSID), Tolerance));
 }
 
 void AztecOO_StatusTestResNorm_Destroy ( 
   CT_AztecOO_StatusTestResNorm_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_AztecOO_StatusTestResNorm_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstStatusTestResNorms().remove(&aid);
-    } else {
-        tableOfStatusTestResNorms().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_AztecOO_StatusTestResNorm_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 int AztecOO_StatusTestResNorm_DefineResForm ( 
@@ -243,16 +189,7 @@ double AztecOO_StatusTestResNorm_GetScaledNormValue (
 const Teuchos::RCP<AztecOO_StatusTestResNorm>
 CAztecOO::getStatusTestResNorm( CT_AztecOO_StatusTestResNorm_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_AztecOO_StatusTestResNorm_ID_t>(id);
-    return tableOfStatusTestResNorms().get(aid);
-}
-
-/* get AztecOO_StatusTestResNorm from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<AztecOO_StatusTestResNorm>
-CAztecOO::getStatusTestResNorm( CTrilinos_Universal_ID_t id )
-{
-    return tableOfStatusTestResNorms().get(id);
+    return CTrilinos::tableRepos().get<AztecOO_StatusTestResNorm, CT_AztecOO_StatusTestResNorm_ID_t>(id);
 }
 
 /* get const AztecOO_StatusTestResNorm from either the const or non-const table
@@ -260,49 +197,21 @@ CAztecOO::getStatusTestResNorm( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const AztecOO_StatusTestResNorm>
 CAztecOO::getConstStatusTestResNorm( CT_AztecOO_StatusTestResNorm_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_AztecOO_StatusTestResNorm_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstStatusTestResNorms().get(aid);
-    } else {
-        return tableOfStatusTestResNorms().get(aid);
-    }
-}
-
-/* get const AztecOO_StatusTestResNorm from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const AztecOO_StatusTestResNorm>
-CAztecOO::getConstStatusTestResNorm( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstStatusTestResNorms().get(id);
-    } else {
-        return tableOfStatusTestResNorms().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestResNorm, CT_AztecOO_StatusTestResNorm_ID_t>(id);
 }
 
 /* store AztecOO_StatusTestResNorm in non-const table */
 CT_AztecOO_StatusTestResNorm_ID_t
 CAztecOO::storeStatusTestResNorm( AztecOO_StatusTestResNorm *pobj )
 {
-    return CTrilinos::concreteType<CT_AztecOO_StatusTestResNorm_ID_t>(
-            tableOfStatusTestResNorms().storeShared(pobj));
+    return CTrilinos::tableRepos().store<AztecOO_StatusTestResNorm, CT_AztecOO_StatusTestResNorm_ID_t>(pobj, false);
 }
 
 /* store const AztecOO_StatusTestResNorm in const table */
 CT_AztecOO_StatusTestResNorm_ID_t
 CAztecOO::storeConstStatusTestResNorm( const AztecOO_StatusTestResNorm *pobj )
 {
-    return CTrilinos::concreteType<CT_AztecOO_StatusTestResNorm_ID_t>(
-            tableOfConstStatusTestResNorms().storeShared(pobj));
-}
-
-/* dump contents of AztecOO_StatusTestResNorm and const AztecOO_StatusTestResNorm tables */
-void
-CAztecOO::purgeStatusTestResNormTables(  )
-{
-    tableOfStatusTestResNorms().purge();
-    tableOfConstStatusTestResNorms().purge();
+    return CTrilinos::tableRepos().store<AztecOO_StatusTestResNorm, CT_AztecOO_StatusTestResNorm_ID_t>(pobj, false);
 }
 
 

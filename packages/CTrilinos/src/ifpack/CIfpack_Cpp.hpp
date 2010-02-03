@@ -51,36 +51,31 @@ namespace CIfpack {
 using Teuchos::RCP;
 
 
-/* get Ifpack from non-const table using CT_Ifpack_ID */
+/*! get Ifpack from non-const table using CT_Ifpack_ID */
 const RCP<Ifpack>
 getIfpack( CT_Ifpack_ID_t id );
 
-/* get Ifpack from non-const table using CTrilinos_Universal_ID_t */
+/*! get Ifpack from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Ifpack>
 getIfpack( CTrilinos_Universal_ID_t id );
 
-/* get const Ifpack from either the const or non-const table
+/*! get const Ifpack from either the const or non-const table
  * using CT_Ifpack_ID */
 const RCP<const Ifpack>
 getConstIfpack( CT_Ifpack_ID_t id );
 
-/* get const Ifpack from either the const or non-const table
+/*! get const Ifpack from either the const or non-const table
  * using CTrilinos_Universal_ID_t */
 const RCP<const Ifpack>
 getConstIfpack( CTrilinos_Universal_ID_t id );
 
-/* store Ifpack in non-const table */
+/*! store Ifpack in non-const table */
 CT_Ifpack_ID_t
 storeIfpack( Ifpack *pobj );
 
-/* store const Ifpack in const table */
+/*! store const Ifpack in const table */
 CT_Ifpack_ID_t
 storeConstIfpack( const Ifpack *pobj );
-
-/* dump contents of Ifpack and const Ifpack tables */
-void
-purgeIfpackTables(  );
-
 
 } // namespace CIfpack
 

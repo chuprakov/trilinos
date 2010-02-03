@@ -39,36 +39,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Epetra_BLAS */
-Table<Epetra_BLAS>& tableOfBLASs()
-{
-    static Table<Epetra_BLAS>
-        loc_tableOfBLASs(CT_Epetra_BLAS_ID, "CT_Epetra_BLAS_ID", FALSE);
-    return loc_tableOfBLASs;
-}
-
-/* table to hold objects of type const Epetra_BLAS */
-Table<const Epetra_BLAS>& tableOfConstBLASs()
-{
-    static Table<const Epetra_BLAS>
-        loc_tableOfConstBLASs(CT_Epetra_BLAS_ID, "CT_Epetra_BLAS_ID", TRUE);
-    return loc_tableOfConstBLASs;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CEpetra_BLAS.h
 //
@@ -77,47 +48,23 @@ Table<const Epetra_BLAS>& tableOfConstBLASs()
 extern "C" {
 
 
-CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Universal_ID_t id )
-{
-    CTrilinos_Universal_ID_t newid;
-    if (id.is_const) {
-        newid = CTrilinos::cast(tableOfConstBLASs(), id);
-    } else {
-        newid = CTrilinos::cast(tableOfBLASs(), id);
-    }
-    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(newid);
-}
-
-CTrilinos_Universal_ID_t Epetra_BLAS_Abstract ( 
-  CT_Epetra_BLAS_ID_t id )
-{
-    return CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id);
-}
-
 CT_Epetra_BLAS_ID_t Epetra_BLAS_Create (  )
 {
-    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
-        tableOfBLASs().store(new Epetra_BLAS()));
+    return CTrilinos::tableRepos().store<Epetra_BLAS, 
+        CT_Epetra_BLAS_ID_t>(new Epetra_BLAS());
 }
 
 CT_Epetra_BLAS_ID_t Epetra_BLAS_Duplicate ( 
   CT_Epetra_BLAS_ID_t BLASID )
 {
-    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
-        tableOfBLASs().store(new Epetra_BLAS(*CEpetra::getConstBLAS(
-        BLASID))));
+    return CTrilinos::tableRepos().store<Epetra_BLAS, 
+        CT_Epetra_BLAS_ID_t>(new Epetra_BLAS(*CEpetra::getConstBLAS(
+        BLASID)));
 }
 
 void Epetra_BLAS_Destroy ( CT_Epetra_BLAS_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstBLASs().remove(&aid);
-    } else {
-        tableOfBLASs().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 float Epetra_BLAS_ASUM_Float ( 
@@ -311,16 +258,7 @@ void Epetra_BLAS_TRMM_Double (
 const Teuchos::RCP<Epetra_BLAS>
 CEpetra::getBLAS( CT_Epetra_BLAS_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id);
-    return tableOfBLASs().get(aid);
-}
-
-/* get Epetra_BLAS from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_BLAS>
-CEpetra::getBLAS( CTrilinos_Universal_ID_t id )
-{
-    return tableOfBLASs().get(id);
+    return CTrilinos::tableRepos().get<Epetra_BLAS, CT_Epetra_BLAS_ID_t>(id);
 }
 
 /* get const Epetra_BLAS from either the const or non-const table
@@ -328,49 +266,21 @@ CEpetra::getBLAS( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_BLAS>
 CEpetra::getConstBLAS( CT_Epetra_BLAS_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstBLASs().get(aid);
-    } else {
-        return tableOfBLASs().get(aid);
-    }
-}
-
-/* get const Epetra_BLAS from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_BLAS>
-CEpetra::getConstBLAS( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstBLASs().get(id);
-    } else {
-        return tableOfBLASs().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Epetra_BLAS, CT_Epetra_BLAS_ID_t>(id);
 }
 
 /* store Epetra_BLAS in non-const table */
 CT_Epetra_BLAS_ID_t
 CEpetra::storeBLAS( Epetra_BLAS *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
-            tableOfBLASs().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Epetra_BLAS, CT_Epetra_BLAS_ID_t>(pobj, false);
 }
 
 /* store const Epetra_BLAS in const table */
 CT_Epetra_BLAS_ID_t
 CEpetra::storeConstBLAS( const Epetra_BLAS *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
-            tableOfConstBLASs().storeShared(pobj));
-}
-
-/* dump contents of Epetra_BLAS and const Epetra_BLAS tables */
-void
-CEpetra::purgeBLASTables(  )
-{
-    tableOfBLASs().purge();
-    tableOfConstBLASs().purge();
+    return CTrilinos::tableRepos().store<Epetra_BLAS, CT_Epetra_BLAS_ID_t>(pobj, false);
 }
 
 

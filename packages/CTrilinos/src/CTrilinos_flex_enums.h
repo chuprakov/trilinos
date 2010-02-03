@@ -30,52 +30,45 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+/*! @file CTrilinos_flex_enums.h
+ * @brief Defines structs and enums needed for CTrilinos. */
+
+
+#ifndef CTRILINOS_FLEX_ENUMS_H
+#define CTRILINOS_FLEX_ENUMS_H
+
+
 #include "CTrilinos_config.h"
-
-#ifndef CTEUCHOS_ANY_CPP_HPP
-#define CTEUCHOS_ANY_CPP_HPP
-
-
-#include "Teuchos_any.hpp"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
 
 
-namespace CTeuchos {
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
-using Teuchos::RCP;
+typedef union {
+  CTrilinos_Object_ID_t universal;
+  CT_Epetra_SerialComm_ID_t Epetra_SerialComm;
+  CT_Epetra_Comm_ID_t Epetra_Comm;
+} CT_Epetra_SerialComm_ID_Flex_t;
+
+typedef union {
+  CTrilinos_Object_ID_t universal;
+  CT_Epetra_Map_ID_t Epetra_Map;
+  CT_Epetra_BlockMap_ID_t Epetra_BlockMap;
+} CT_Epetra_Map_ID_Flex_t;
+
+typedef union {
+  CTrilinos_Object_ID_t universal;
+  CT_Epetra_Vector_ID_t Epetra_Vector;
+  CT_Epetra_MultiVector_ID_t Epetra_MultiVector;
+} CT_Epetra_Vector_ID_Flex_t;
 
 
-/*! get Teuchos::any from non-const table using CT_Teuchos_any_ID */
-const RCP<Teuchos::any>
-getany( CT_Teuchos_any_ID_t id );
-
-/*! get Teuchos::any from non-const table using CTrilinos_Universal_ID_t */
-const RCP<Teuchos::any>
-getany( CTrilinos_Universal_ID_t id );
-
-/*! get const Teuchos::any from either the const or non-const table
- * using CT_Teuchos_any_ID */
-const RCP<const Teuchos::any>
-getConstany( CT_Teuchos_any_ID_t id );
-
-/*! get const Teuchos::any from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const RCP<const Teuchos::any>
-getConstany( CTrilinos_Universal_ID_t id );
-
-/*! store Teuchos::any in non-const table */
-CT_Teuchos_any_ID_t
-storeany( Teuchos::any *pobj );
-
-/*! store const Teuchos::any in const table */
-CT_Teuchos_any_ID_t
-storeConstany( const Teuchos::any *pobj );
-
-} // namespace CTeuchos
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 
-#endif // CTEUCHOS_ANY_CPP_HPP
-
-
+#endif

@@ -43,36 +43,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Epetra_FECrsMatrix */
-Table<Epetra_FECrsMatrix>& tableOfFECrsMatrixs()
-{
-    static Table<Epetra_FECrsMatrix>
-        loc_tableOfFECrsMatrixs(CT_Epetra_FECrsMatrix_ID, "CT_Epetra_FECrsMatrix_ID", FALSE);
-    return loc_tableOfFECrsMatrixs;
-}
-
-/* table to hold objects of type const Epetra_FECrsMatrix */
-Table<const Epetra_FECrsMatrix>& tableOfConstFECrsMatrixs()
-{
-    static Table<const Epetra_FECrsMatrix>
-        loc_tableOfConstFECrsMatrixs(CT_Epetra_FECrsMatrix_ID, "CT_Epetra_FECrsMatrix_ID", TRUE);
-    return loc_tableOfConstFECrsMatrixs;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CEpetra_FECrsMatrix.h
 //
@@ -81,44 +52,26 @@ Table<const Epetra_FECrsMatrix>& tableOfConstFECrsMatrixs()
 extern "C" {
 
 
-CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Cast ( 
-  CTrilinos_Universal_ID_t id )
-{
-    CTrilinos_Universal_ID_t newid;
-    if (id.is_const) {
-        newid = CTrilinos::cast(tableOfConstFECrsMatrixs(), id);
-    } else {
-        newid = CTrilinos::cast(tableOfFECrsMatrixs(), id);
-    }
-    return CTrilinos::concreteType<CT_Epetra_FECrsMatrix_ID_t>(newid);
-}
-
-CTrilinos_Universal_ID_t Epetra_FECrsMatrix_Abstract ( 
-  CT_Epetra_FECrsMatrix_ID_t id )
-{
-    return CTrilinos::abstractType<CT_Epetra_FECrsMatrix_ID_t>(id);
-}
-
 CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Create_Var ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   int * NumEntriesPerRow, boolean ignoreNonLocalEntries )
 {
-    return CTrilinos::concreteType<CT_Epetra_FECrsMatrix_ID_t>(
-        tableOfFECrsMatrixs().store(new Epetra_FECrsMatrix(
+    return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(new Epetra_FECrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
         NumEntriesPerRow, ((
-        ignoreNonLocalEntries) != FALSE ? true : false))));
+        ignoreNonLocalEntries) != FALSE ? true : false)));
 }
 
 CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Create ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   int NumEntriesPerRow, boolean ignoreNonLocalEntries )
 {
-    return CTrilinos::concreteType<CT_Epetra_FECrsMatrix_ID_t>(
-        tableOfFECrsMatrixs().store(new Epetra_FECrsMatrix(
+    return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(new Epetra_FECrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
         NumEntriesPerRow, ((
-        ignoreNonLocalEntries) != FALSE ? true : false))));
+        ignoreNonLocalEntries) != FALSE ? true : false)));
 }
 
 CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Create_WithColMap_Var ( 
@@ -126,11 +79,11 @@ CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Create_WithColMap_Var (
   CT_Epetra_Map_ID_t ColMapID, int * NumEntriesPerRow, 
   boolean ignoreNonLocalEntries )
 {
-    return CTrilinos::concreteType<CT_Epetra_FECrsMatrix_ID_t>(
-        tableOfFECrsMatrixs().store(new Epetra_FECrsMatrix(
+    return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(new Epetra_FECrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
         *CEpetra::getConstMap(ColMapID), NumEntriesPerRow, ((
-        ignoreNonLocalEntries) != FALSE ? true : false))));
+        ignoreNonLocalEntries) != FALSE ? true : false)));
 }
 
 CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Create_WithColMap ( 
@@ -138,42 +91,35 @@ CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Create_WithColMap (
   CT_Epetra_Map_ID_t ColMapID, int NumEntriesPerRow, 
   boolean ignoreNonLocalEntries )
 {
-    return CTrilinos::concreteType<CT_Epetra_FECrsMatrix_ID_t>(
-        tableOfFECrsMatrixs().store(new Epetra_FECrsMatrix(
+    return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(new Epetra_FECrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
         *CEpetra::getConstMap(ColMapID), NumEntriesPerRow, ((
-        ignoreNonLocalEntries) != FALSE ? true : false))));
+        ignoreNonLocalEntries) != FALSE ? true : false)));
 }
 
 CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Create_FromGraph ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_CrsGraph_ID_t GraphID, 
   boolean ignoreNonLocalEntries )
 {
-    return CTrilinos::concreteType<CT_Epetra_FECrsMatrix_ID_t>(
-        tableOfFECrsMatrixs().store(new Epetra_FECrsMatrix(
+    return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(new Epetra_FECrsMatrix(
         (Epetra_DataAccess) CV, *CEpetra::getConstCrsGraph(GraphID), 
-        ((ignoreNonLocalEntries) != FALSE ? true : false))));
+        ((ignoreNonLocalEntries) != FALSE ? true : false)));
 }
 
 CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Duplicate ( 
   CT_Epetra_FECrsMatrix_ID_t srcID )
 {
-    return CTrilinos::concreteType<CT_Epetra_FECrsMatrix_ID_t>(
-        tableOfFECrsMatrixs().store(new Epetra_FECrsMatrix(
-        *CEpetra::getConstFECrsMatrix(srcID))));
+    return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(new Epetra_FECrsMatrix(
+        *CEpetra::getConstFECrsMatrix(srcID)));
 }
 
 void Epetra_FECrsMatrix_Destroy ( 
   CT_Epetra_FECrsMatrix_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Epetra_FECrsMatrix_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstFECrsMatrixs().remove(&aid);
-    } else {
-        tableOfFECrsMatrixs().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Epetra_FECrsMatrix_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 int Epetra_FECrsMatrix_SumIntoGlobalValues ( 
@@ -411,16 +357,7 @@ void Epetra_FECrsMatrix_Assign (
 const Teuchos::RCP<Epetra_FECrsMatrix>
 CEpetra::getFECrsMatrix( CT_Epetra_FECrsMatrix_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_FECrsMatrix_ID_t>(id);
-    return tableOfFECrsMatrixs().get(aid);
-}
-
-/* get Epetra_FECrsMatrix from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_FECrsMatrix>
-CEpetra::getFECrsMatrix( CTrilinos_Universal_ID_t id )
-{
-    return tableOfFECrsMatrixs().get(id);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, CT_Epetra_FECrsMatrix_ID_t>(id);
 }
 
 /* get const Epetra_FECrsMatrix from either the const or non-const table
@@ -428,49 +365,21 @@ CEpetra::getFECrsMatrix( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_FECrsMatrix>
 CEpetra::getConstFECrsMatrix( CT_Epetra_FECrsMatrix_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_FECrsMatrix_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstFECrsMatrixs().get(aid);
-    } else {
-        return tableOfFECrsMatrixs().get(aid);
-    }
-}
-
-/* get const Epetra_FECrsMatrix from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_FECrsMatrix>
-CEpetra::getConstFECrsMatrix( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstFECrsMatrixs().get(id);
-    } else {
-        return tableOfFECrsMatrixs().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Epetra_FECrsMatrix, CT_Epetra_FECrsMatrix_ID_t>(id);
 }
 
 /* store Epetra_FECrsMatrix in non-const table */
 CT_Epetra_FECrsMatrix_ID_t
 CEpetra::storeFECrsMatrix( Epetra_FECrsMatrix *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_FECrsMatrix_ID_t>(
-            tableOfFECrsMatrixs().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, CT_Epetra_FECrsMatrix_ID_t>(pobj, false);
 }
 
 /* store const Epetra_FECrsMatrix in const table */
 CT_Epetra_FECrsMatrix_ID_t
 CEpetra::storeConstFECrsMatrix( const Epetra_FECrsMatrix *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_FECrsMatrix_ID_t>(
-            tableOfConstFECrsMatrixs().storeShared(pobj));
-}
-
-/* dump contents of Epetra_FECrsMatrix and const Epetra_FECrsMatrix tables */
-void
-CEpetra::purgeFECrsMatrixTables(  )
-{
-    tableOfFECrsMatrixs().purge();
-    tableOfConstFECrsMatrixs().purge();
+    return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, CT_Epetra_FECrsMatrix_ID_t>(pobj, false);
 }
 
 

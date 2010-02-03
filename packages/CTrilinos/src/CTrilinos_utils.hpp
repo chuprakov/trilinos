@@ -30,6 +30,10 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+/*! @file CTrilinos_utils.hpp
+ * @brief Utility functions for CTrilinos. */
+
+
 #ifndef CTRILINOS_UTILS_HPP
 #define CTRILINOS_UTILS_HPP
 
@@ -40,7 +44,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include <string>
 
 #include "CTrilinos_enums.h"
-#include "CTrilinos_Table.hpp"
+#include "CTrilinos_TableRepos.hpp"
 
 #ifdef HAVE_CTRILINOS_IFPACK
 #include "Ifpack.h"
@@ -49,6 +53,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 namespace CTrilinos {
 
+
+TableRepos & tableRepos(  );
 
 void pass_bool_out( const bool * pval, boolean * pvalout );
 

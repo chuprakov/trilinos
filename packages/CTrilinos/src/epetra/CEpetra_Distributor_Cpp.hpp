@@ -47,36 +47,31 @@ namespace CEpetra {
 using Teuchos::RCP;
 
 
-/* get Epetra_Distributor from non-const table using CT_Epetra_Distributor_ID */
+/*! get Epetra_Distributor from non-const table using CT_Epetra_Distributor_ID */
 const RCP<Epetra_Distributor>
 getDistributor( CT_Epetra_Distributor_ID_t id );
 
-/* get Epetra_Distributor from non-const table using CTrilinos_Universal_ID_t */
+/*! get Epetra_Distributor from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_Distributor>
 getDistributor( CTrilinos_Universal_ID_t id );
 
-/* get const Epetra_Distributor from either the const or non-const table
+/*! get const Epetra_Distributor from either the const or non-const table
  * using CT_Epetra_Distributor_ID */
 const RCP<const Epetra_Distributor>
 getConstDistributor( CT_Epetra_Distributor_ID_t id );
 
-/* get const Epetra_Distributor from either the const or non-const table
+/*! get const Epetra_Distributor from either the const or non-const table
  * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_Distributor>
 getConstDistributor( CTrilinos_Universal_ID_t id );
 
-/* store Epetra_Distributor in non-const table */
+/*! store Epetra_Distributor in non-const table */
 CT_Epetra_Distributor_ID_t
 storeDistributor( Epetra_Distributor *pobj );
 
-/* store const Epetra_Distributor in const table */
+/*! store const Epetra_Distributor in const table */
 CT_Epetra_Distributor_ID_t
 storeConstDistributor( const Epetra_Distributor *pobj );
-
-/* dump contents of Epetra_Distributor and const Epetra_Distributor tables */
-void
-purgeDistributorTables(  );
-
 
 } // namespace CEpetra
 

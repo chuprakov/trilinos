@@ -48,36 +48,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type AztecOO */
-Table<AztecOO>& tableOfAztecOOs()
-{
-    static Table<AztecOO>
-        loc_tableOfAztecOOs(CT_AztecOO_ID, "CT_AztecOO_ID", FALSE);
-    return loc_tableOfAztecOOs;
-}
-
-/* table to hold objects of type const AztecOO */
-Table<const AztecOO>& tableOfConstAztecOOs()
-{
-    static Table<const AztecOO>
-        loc_tableOfConstAztecOOs(CT_AztecOO_ID, "CT_AztecOO_ID", TRUE);
-    return loc_tableOfConstAztecOOs;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CAztecOO.h
 //
@@ -90,53 +61,45 @@ CT_AztecOO_ID_t AztecOO_Create_FromOperator (
   CT_Epetra_Operator_ID_t AID, CT_Epetra_MultiVector_ID_t XID, 
   CT_Epetra_MultiVector_ID_t BID )
 {
-    return CTrilinos::concreteType<CT_AztecOO_ID_t>(
-        tableOfAztecOOs().store(new AztecOO(CEpetra::getOperator(
-        AID).getRawPtr(), CEpetra::getMultiVector(XID).getRawPtr(), 
-        CEpetra::getMultiVector(BID).getRawPtr())));
+    return CTrilinos::tableRepos().store<AztecOO, CT_AztecOO_ID_t>(
+        new AztecOO(CEpetra::getOperator(AID).getRawPtr(), 
+        CEpetra::getMultiVector(XID).getRawPtr(), 
+        CEpetra::getMultiVector(BID).getRawPtr()));
 }
 
 CT_AztecOO_ID_t AztecOO_Create_FromRowMatrix ( 
   CT_Epetra_RowMatrix_ID_t AID, CT_Epetra_MultiVector_ID_t XID, 
   CT_Epetra_MultiVector_ID_t BID )
 {
-    return CTrilinos::concreteType<CT_AztecOO_ID_t>(
-        tableOfAztecOOs().store(new AztecOO(CEpetra::getRowMatrix(
-        AID).getRawPtr(), CEpetra::getMultiVector(XID).getRawPtr(), 
-        CEpetra::getMultiVector(BID).getRawPtr())));
+    return CTrilinos::tableRepos().store<AztecOO, CT_AztecOO_ID_t>(
+        new AztecOO(CEpetra::getRowMatrix(AID).getRawPtr(), 
+        CEpetra::getMultiVector(XID).getRawPtr(), 
+        CEpetra::getMultiVector(BID).getRawPtr()));
 }
 
 CT_AztecOO_ID_t AztecOO_Create_FromLinearProblem ( 
   CT_Epetra_LinearProblem_ID_t LinearProblemID )
 {
-    return CTrilinos::concreteType<CT_AztecOO_ID_t>(
-        tableOfAztecOOs().store(new AztecOO(
-        *CEpetra::getConstLinearProblem(LinearProblemID))));
+    return CTrilinos::tableRepos().store<AztecOO, CT_AztecOO_ID_t>(
+        new AztecOO(*CEpetra::getConstLinearProblem(
+        LinearProblemID)));
 }
 
 CT_AztecOO_ID_t AztecOO_Create (  )
 {
-    return CTrilinos::concreteType<CT_AztecOO_ID_t>(
-        tableOfAztecOOs().store(new AztecOO()));
+    return CTrilinos::tableRepos().store<AztecOO, CT_AztecOO_ID_t>(
+        new AztecOO());
 }
 
 CT_AztecOO_ID_t AztecOO_Duplicate ( CT_AztecOO_ID_t SolverID )
 {
-    return CTrilinos::concreteType<CT_AztecOO_ID_t>(
-        tableOfAztecOOs().store(new AztecOO(
-        *CAztecOO::getConstAztecOO(SolverID))));
+    return CTrilinos::tableRepos().store<AztecOO, CT_AztecOO_ID_t>(
+        new AztecOO(*CAztecOO::getConstAztecOO(SolverID)));
 }
 
 void AztecOO_Destroy ( CT_AztecOO_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_AztecOO_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstAztecOOs().remove(&aid);
-    } else {
-        tableOfAztecOOs().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_AztecOO_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 int AztecOO_SetProblem ( 
@@ -421,16 +384,7 @@ int AztecOO_GetAllAztecStatus (
 const Teuchos::RCP<AztecOO>
 CAztecOO::getAztecOO( CT_AztecOO_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_AztecOO_ID_t>(id);
-    return tableOfAztecOOs().get(aid);
-}
-
-/* get AztecOO from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<AztecOO>
-CAztecOO::getAztecOO( CTrilinos_Universal_ID_t id )
-{
-    return tableOfAztecOOs().get(id);
+    return CTrilinos::tableRepos().get<AztecOO, CT_AztecOO_ID_t>(id);
 }
 
 /* get const AztecOO from either the const or non-const table
@@ -438,49 +392,21 @@ CAztecOO::getAztecOO( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const AztecOO>
 CAztecOO::getConstAztecOO( CT_AztecOO_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_AztecOO_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstAztecOOs().get(aid);
-    } else {
-        return tableOfAztecOOs().get(aid);
-    }
-}
-
-/* get const AztecOO from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const AztecOO>
-CAztecOO::getConstAztecOO( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstAztecOOs().get(id);
-    } else {
-        return tableOfAztecOOs().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<AztecOO, CT_AztecOO_ID_t>(id);
 }
 
 /* store AztecOO in non-const table */
 CT_AztecOO_ID_t
 CAztecOO::storeAztecOO( AztecOO *pobj )
 {
-    return CTrilinos::concreteType<CT_AztecOO_ID_t>(
-            tableOfAztecOOs().storeShared(pobj));
+    return CTrilinos::tableRepos().store<AztecOO, CT_AztecOO_ID_t>(pobj, false);
 }
 
 /* store const AztecOO in const table */
 CT_AztecOO_ID_t
 CAztecOO::storeConstAztecOO( const AztecOO *pobj )
 {
-    return CTrilinos::concreteType<CT_AztecOO_ID_t>(
-            tableOfConstAztecOOs().storeShared(pobj));
-}
-
-/* dump contents of AztecOO and const AztecOO tables */
-void
-CAztecOO::purgeAztecOOTables(  )
-{
-    tableOfAztecOOs().purge();
-    tableOfConstAztecOOs().purge();
+    return CTrilinos::tableRepos().store<AztecOO, CT_AztecOO_ID_t>(pobj, false);
 }
 
 

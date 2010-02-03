@@ -51,36 +51,31 @@ namespace CAmesos {
 using Teuchos::RCP;
 
 
-/* get Amesos_BaseSolver from non-const table using CT_Amesos_BaseSolver_ID */
+/*! get Amesos_BaseSolver from non-const table using CT_Amesos_BaseSolver_ID */
 const RCP<Amesos_BaseSolver>
 getBaseSolver( CT_Amesos_BaseSolver_ID_t id );
 
-/* get Amesos_BaseSolver from non-const table using CTrilinos_Universal_ID_t */
+/*! get Amesos_BaseSolver from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Amesos_BaseSolver>
 getBaseSolver( CTrilinos_Universal_ID_t id );
 
-/* get const Amesos_BaseSolver from either the const or non-const table
+/*! get const Amesos_BaseSolver from either the const or non-const table
  * using CT_Amesos_BaseSolver_ID */
 const RCP<const Amesos_BaseSolver>
 getConstBaseSolver( CT_Amesos_BaseSolver_ID_t id );
 
-/* get const Amesos_BaseSolver from either the const or non-const table
+/*! get const Amesos_BaseSolver from either the const or non-const table
  * using CTrilinos_Universal_ID_t */
 const RCP<const Amesos_BaseSolver>
 getConstBaseSolver( CTrilinos_Universal_ID_t id );
 
-/* store Amesos_BaseSolver in non-const table */
+/*! store Amesos_BaseSolver in non-const table */
 CT_Amesos_BaseSolver_ID_t
 storeBaseSolver( Amesos_BaseSolver *pobj );
 
-/* store const Amesos_BaseSolver in const table */
+/*! store const Amesos_BaseSolver in const table */
 CT_Amesos_BaseSolver_ID_t
 storeConstBaseSolver( const Amesos_BaseSolver *pobj );
-
-/* dump contents of Amesos_BaseSolver and const Amesos_BaseSolver tables */
-void
-purgeBaseSolverTables(  );
-
 
 } // namespace CAmesos
 

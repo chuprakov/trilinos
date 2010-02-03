@@ -41,36 +41,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Teuchos::ParameterEntry */
-Table<Teuchos::ParameterEntry>& tableOfParameterEntrys()
-{
-    static Table<Teuchos::ParameterEntry>
-        loc_tableOfParameterEntrys(CT_Teuchos_ParameterEntry_ID, "CT_Teuchos_ParameterEntry_ID", FALSE);
-    return loc_tableOfParameterEntrys;
-}
-
-/* table to hold objects of type const Teuchos::ParameterEntry */
-Table<const Teuchos::ParameterEntry>& tableOfConstParameterEntrys()
-{
-    static Table<const Teuchos::ParameterEntry>
-        loc_tableOfConstParameterEntrys(CT_Teuchos_ParameterEntry_ID, "CT_Teuchos_ParameterEntry_ID", TRUE);
-    return loc_tableOfConstParameterEntrys;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CTeuchos_ParameterEntry.h
 //
@@ -81,30 +52,23 @@ extern "C" {
 
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterEntry_Create (  )
 {
-    return CTrilinos::concreteType<CT_Teuchos_ParameterEntry_ID_t>(
-        tableOfParameterEntrys().store(
-        new Teuchos::ParameterEntry()));
+    return CTrilinos::tableRepos().store<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(
+        new Teuchos::ParameterEntry());
 }
 
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterEntry_Duplicate ( 
   CT_Teuchos_ParameterEntry_ID_t sourceID )
 {
-    return CTrilinos::concreteType<CT_Teuchos_ParameterEntry_ID_t>(
-        tableOfParameterEntrys().store(new Teuchos::ParameterEntry(
-        *CTeuchos::getConstParameterEntry(sourceID))));
+    return CTrilinos::tableRepos().store<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(new Teuchos::ParameterEntry(
+        *CTeuchos::getConstParameterEntry(sourceID)));
 }
 
 void Teuchos_ParameterEntry_Destroy ( 
   CT_Teuchos_ParameterEntry_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Teuchos_ParameterEntry_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstParameterEntrys().remove(&aid);
-    } else {
-        tableOfParameterEntrys().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Teuchos_ParameterEntry_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 void Teuchos_ParameterEntry_setAnyValue ( 
@@ -226,16 +190,7 @@ void Teuchos_ParameterEntry_Assign (
 const Teuchos::RCP<Teuchos::ParameterEntry>
 CTeuchos::getParameterEntry( CT_Teuchos_ParameterEntry_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Teuchos_ParameterEntry_ID_t>(id);
-    return tableOfParameterEntrys().get(aid);
-}
-
-/* get Teuchos::ParameterEntry from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Teuchos::ParameterEntry>
-CTeuchos::getParameterEntry( CTrilinos_Universal_ID_t id )
-{
-    return tableOfParameterEntrys().get(id);
+    return CTrilinos::tableRepos().get<Teuchos::ParameterEntry, CT_Teuchos_ParameterEntry_ID_t>(id);
 }
 
 /* get const Teuchos::ParameterEntry from either the const or non-const table
@@ -243,49 +198,21 @@ CTeuchos::getParameterEntry( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Teuchos::ParameterEntry>
 CTeuchos::getConstParameterEntry( CT_Teuchos_ParameterEntry_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Teuchos_ParameterEntry_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstParameterEntrys().get(aid);
-    } else {
-        return tableOfParameterEntrys().get(aid);
-    }
-}
-
-/* get const Teuchos::ParameterEntry from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Teuchos::ParameterEntry>
-CTeuchos::getConstParameterEntry( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstParameterEntrys().get(id);
-    } else {
-        return tableOfParameterEntrys().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, CT_Teuchos_ParameterEntry_ID_t>(id);
 }
 
 /* store Teuchos::ParameterEntry in non-const table */
 CT_Teuchos_ParameterEntry_ID_t
 CTeuchos::storeParameterEntry( Teuchos::ParameterEntry *pobj )
 {
-    return CTrilinos::concreteType<CT_Teuchos_ParameterEntry_ID_t>(
-            tableOfParameterEntrys().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Teuchos::ParameterEntry, CT_Teuchos_ParameterEntry_ID_t>(pobj, false);
 }
 
 /* store const Teuchos::ParameterEntry in const table */
 CT_Teuchos_ParameterEntry_ID_t
 CTeuchos::storeConstParameterEntry( const Teuchos::ParameterEntry *pobj )
 {
-    return CTrilinos::concreteType<CT_Teuchos_ParameterEntry_ID_t>(
-            tableOfConstParameterEntrys().storeShared(pobj));
-}
-
-/* dump contents of Teuchos::ParameterEntry and const Teuchos::ParameterEntry tables */
-void
-CTeuchos::purgeParameterEntryTables(  )
-{
-    tableOfParameterEntrys().purge();
-    tableOfConstParameterEntrys().purge();
+    return CTrilinos::tableRepos().store<Teuchos::ParameterEntry, CT_Teuchos_ParameterEntry_ID_t>(pobj, false);
 }
 
 

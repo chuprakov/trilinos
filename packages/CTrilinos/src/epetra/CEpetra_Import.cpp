@@ -41,36 +41,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Epetra_Import */
-Table<Epetra_Import>& tableOfImports()
-{
-    static Table<Epetra_Import>
-        loc_tableOfImports(CT_Epetra_Import_ID, "CT_Epetra_Import_ID", FALSE);
-    return loc_tableOfImports;
-}
-
-/* table to hold objects of type const Epetra_Import */
-Table<const Epetra_Import>& tableOfConstImports()
-{
-    static Table<const Epetra_Import>
-        loc_tableOfConstImports(CT_Epetra_Import_ID, "CT_Epetra_Import_ID", TRUE);
-    return loc_tableOfConstImports;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CEpetra_Import.h
 //
@@ -79,52 +50,27 @@ Table<const Epetra_Import>& tableOfConstImports()
 extern "C" {
 
 
-CT_Epetra_Import_ID_t Epetra_Import_Cast ( 
-  CTrilinos_Universal_ID_t id )
-{
-    CTrilinos_Universal_ID_t newid;
-    if (id.is_const) {
-        newid = CTrilinos::cast(tableOfConstImports(), id);
-    } else {
-        newid = CTrilinos::cast(tableOfImports(), id);
-    }
-    return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(newid);
-}
-
-CTrilinos_Universal_ID_t Epetra_Import_Abstract ( 
-  CT_Epetra_Import_ID_t id )
-{
-    return CTrilinos::abstractType<CT_Epetra_Import_ID_t>(id);
-}
-
 CT_Epetra_Import_ID_t Epetra_Import_Create ( 
   CT_Epetra_BlockMap_ID_t TargetMapID, 
   CT_Epetra_BlockMap_ID_t SourceMapID )
 {
-    return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
-        tableOfImports().store(new Epetra_Import(
+    return CTrilinos::tableRepos().store<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(new Epetra_Import(
         *CEpetra::getConstBlockMap(TargetMapID), 
-        *CEpetra::getConstBlockMap(SourceMapID))));
+        *CEpetra::getConstBlockMap(SourceMapID)));
 }
 
 CT_Epetra_Import_ID_t Epetra_Import_Duplicate ( 
   CT_Epetra_Import_ID_t ImporterID )
 {
-    return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
-        tableOfImports().store(new Epetra_Import(
-        *CEpetra::getConstImport(ImporterID))));
+    return CTrilinos::tableRepos().store<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(new Epetra_Import(
+        *CEpetra::getConstImport(ImporterID)));
 }
 
 void Epetra_Import_Destroy ( CT_Epetra_Import_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Epetra_Import_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstImports().remove(&aid);
-    } else {
-        tableOfImports().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Epetra_Import_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 int Epetra_Import_NumSameIDs ( CT_Epetra_Import_ID_t selfID )
@@ -216,16 +162,7 @@ CT_Epetra_Distributor_ID_t Epetra_Import_Distributor (
 const Teuchos::RCP<Epetra_Import>
 CEpetra::getImport( CT_Epetra_Import_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_Import_ID_t>(id);
-    return tableOfImports().get(aid);
-}
-
-/* get Epetra_Import from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_Import>
-CEpetra::getImport( CTrilinos_Universal_ID_t id )
-{
-    return tableOfImports().get(id);
+    return CTrilinos::tableRepos().get<Epetra_Import, CT_Epetra_Import_ID_t>(id);
 }
 
 /* get const Epetra_Import from either the const or non-const table
@@ -233,49 +170,21 @@ CEpetra::getImport( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_Import>
 CEpetra::getConstImport( CT_Epetra_Import_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_Import_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstImports().get(aid);
-    } else {
-        return tableOfImports().get(aid);
-    }
-}
-
-/* get const Epetra_Import from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_Import>
-CEpetra::getConstImport( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstImports().get(id);
-    } else {
-        return tableOfImports().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Epetra_Import, CT_Epetra_Import_ID_t>(id);
 }
 
 /* store Epetra_Import in non-const table */
 CT_Epetra_Import_ID_t
 CEpetra::storeImport( Epetra_Import *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
-            tableOfImports().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Epetra_Import, CT_Epetra_Import_ID_t>(pobj, false);
 }
 
 /* store const Epetra_Import in const table */
 CT_Epetra_Import_ID_t
 CEpetra::storeConstImport( const Epetra_Import *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(
-            tableOfConstImports().storeShared(pobj));
-}
-
-/* dump contents of Epetra_Import and const Epetra_Import tables */
-void
-CEpetra::purgeImportTables(  )
-{
-    tableOfImports().purge();
-    tableOfConstImports().purge();
+    return CTrilinos::tableRepos().store<Epetra_Import, CT_Epetra_Import_ID_t>(pobj, false);
 }
 
 

@@ -49,11 +49,13 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 APPEND_SET(HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_Version.h
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_enums.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_flex_enums.h
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_enum_wrappers.h
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_exceptions.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_utils.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_utils_templ.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_Table.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_TableRepos.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CNOX_Interface.hpp
   )
 

@@ -46,36 +46,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Ifpack */
-Table<Ifpack>& tableOfIfpacks()
-{
-    static Table<Ifpack>
-        loc_tableOfIfpacks(CT_Ifpack_ID, "CT_Ifpack_ID", FALSE);
-    return loc_tableOfIfpacks;
-}
-
-/* table to hold objects of type const Ifpack */
-Table<const Ifpack>& tableOfConstIfpacks()
-{
-    static Table<const Ifpack>
-        loc_tableOfConstIfpacks(CT_Ifpack_ID, "CT_Ifpack_ID", TRUE);
-    return loc_tableOfConstIfpacks;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CIfpack.h
 //
@@ -86,20 +57,13 @@ extern "C" {
 
 CT_Ifpack_ID_t Ifpack_Create (  )
 {
-    return CTrilinos::concreteType<CT_Ifpack_ID_t>(
-        tableOfIfpacks().store(new Ifpack()));
+    return CTrilinos::tableRepos().store<Ifpack, CT_Ifpack_ID_t>(
+        new Ifpack());
 }
 
 void Ifpack_Destroy ( CT_Ifpack_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Ifpack_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstIfpacks().remove(&aid);
-    } else {
-        tableOfIfpacks().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Ifpack_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 CT_Ifpack_Preconditioner_ID_t Ifpack_CreatePreconditioner_UsingName ( 
@@ -155,16 +119,7 @@ CT_Ifpack_Preconditioner_ID_t Ifpack_CreatePreconditioner_UsingType (
 const Teuchos::RCP<Ifpack>
 CIfpack::getIfpack( CT_Ifpack_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Ifpack_ID_t>(id);
-    return tableOfIfpacks().get(aid);
-}
-
-/* get Ifpack from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Ifpack>
-CIfpack::getIfpack( CTrilinos_Universal_ID_t id )
-{
-    return tableOfIfpacks().get(id);
+    return CTrilinos::tableRepos().get<Ifpack, CT_Ifpack_ID_t>(id);
 }
 
 /* get const Ifpack from either the const or non-const table
@@ -172,49 +127,21 @@ CIfpack::getIfpack( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Ifpack>
 CIfpack::getConstIfpack( CT_Ifpack_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Ifpack_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstIfpacks().get(aid);
-    } else {
-        return tableOfIfpacks().get(aid);
-    }
-}
-
-/* get const Ifpack from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Ifpack>
-CIfpack::getConstIfpack( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstIfpacks().get(id);
-    } else {
-        return tableOfIfpacks().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Ifpack, CT_Ifpack_ID_t>(id);
 }
 
 /* store Ifpack in non-const table */
 CT_Ifpack_ID_t
 CIfpack::storeIfpack( Ifpack *pobj )
 {
-    return CTrilinos::concreteType<CT_Ifpack_ID_t>(
-            tableOfIfpacks().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Ifpack, CT_Ifpack_ID_t>(pobj, false);
 }
 
 /* store const Ifpack in const table */
 CT_Ifpack_ID_t
 CIfpack::storeConstIfpack( const Ifpack *pobj )
 {
-    return CTrilinos::concreteType<CT_Ifpack_ID_t>(
-            tableOfConstIfpacks().storeShared(pobj));
-}
-
-/* dump contents of Ifpack and const Ifpack tables */
-void
-CIfpack::purgeIfpackTables(  )
-{
-    tableOfIfpacks().purge();
-    tableOfConstIfpacks().purge();
+    return CTrilinos::tableRepos().store<Ifpack, CT_Ifpack_ID_t>(pobj, false);
 }
 
 

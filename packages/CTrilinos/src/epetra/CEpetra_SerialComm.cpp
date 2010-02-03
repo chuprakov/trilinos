@@ -43,36 +43,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Epetra_SerialComm */
-Table<Epetra_SerialComm>& tableOfSerialComms()
-{
-    static Table<Epetra_SerialComm>
-        loc_tableOfSerialComms(CT_Epetra_SerialComm_ID, "CT_Epetra_SerialComm_ID", FALSE);
-    return loc_tableOfSerialComms;
-}
-
-/* table to hold objects of type const Epetra_SerialComm */
-Table<const Epetra_SerialComm>& tableOfConstSerialComms()
-{
-    static Table<const Epetra_SerialComm>
-        loc_tableOfConstSerialComms(CT_Epetra_SerialComm_ID, "CT_Epetra_SerialComm_ID", TRUE);
-    return loc_tableOfConstSerialComms;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CEpetra_SerialComm.h
 //
@@ -81,48 +52,23 @@ Table<const Epetra_SerialComm>& tableOfConstSerialComms()
 extern "C" {
 
 
-CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Cast ( 
-  CTrilinos_Universal_ID_t id )
-{
-    CTrilinos_Universal_ID_t newid;
-    if (id.is_const) {
-        newid = CTrilinos::cast(tableOfConstSerialComms(), id);
-    } else {
-        newid = CTrilinos::cast(tableOfSerialComms(), id);
-    }
-    return CTrilinos::concreteType<CT_Epetra_SerialComm_ID_t>(newid);
-}
-
-CTrilinos_Universal_ID_t Epetra_SerialComm_Abstract ( 
-  CT_Epetra_SerialComm_ID_t id )
-{
-    return CTrilinos::abstractType<CT_Epetra_SerialComm_ID_t>(id);
-}
-
 CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Create (  )
 {
-    return CTrilinos::concreteType<CT_Epetra_SerialComm_ID_t>(
-        tableOfSerialComms().store(new Epetra_SerialComm()));
+    return CTrilinos::tableRepos().store<Epetra_SerialComm, 
+        CT_Epetra_SerialComm_ID_t>(new Epetra_SerialComm());
 }
 
 CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Duplicate ( 
   CT_Epetra_SerialComm_ID_t CommID )
 {
-    return CTrilinos::concreteType<CT_Epetra_SerialComm_ID_t>(
-        tableOfSerialComms().store(new Epetra_SerialComm(
-        *CEpetra::getConstSerialComm(CommID))));
+    return CTrilinos::tableRepos().store<Epetra_SerialComm, 
+        CT_Epetra_SerialComm_ID_t>(new Epetra_SerialComm(
+        *CEpetra::getConstSerialComm(CommID)));
 }
 
 void Epetra_SerialComm_Destroy ( CT_Epetra_SerialComm_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Epetra_SerialComm_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstSerialComms().remove(&aid);
-    } else {
-        tableOfSerialComms().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Epetra_SerialComm_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 CT_Epetra_Comm_ID_t Epetra_SerialComm_Clone ( 
@@ -336,16 +282,7 @@ void Epetra_SerialComm_Assign (
 const Teuchos::RCP<Epetra_SerialComm>
 CEpetra::getSerialComm( CT_Epetra_SerialComm_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_SerialComm_ID_t>(id);
-    return tableOfSerialComms().get(aid);
-}
-
-/* get Epetra_SerialComm from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_SerialComm>
-CEpetra::getSerialComm( CTrilinos_Universal_ID_t id )
-{
-    return tableOfSerialComms().get(id);
+    return CTrilinos::tableRepos().get<Epetra_SerialComm, CT_Epetra_SerialComm_ID_t>(id);
 }
 
 /* get const Epetra_SerialComm from either the const or non-const table
@@ -353,49 +290,21 @@ CEpetra::getSerialComm( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_SerialComm>
 CEpetra::getConstSerialComm( CT_Epetra_SerialComm_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_SerialComm_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstSerialComms().get(aid);
-    } else {
-        return tableOfSerialComms().get(aid);
-    }
-}
-
-/* get const Epetra_SerialComm from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_SerialComm>
-CEpetra::getConstSerialComm( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstSerialComms().get(id);
-    } else {
-        return tableOfSerialComms().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Epetra_SerialComm, CT_Epetra_SerialComm_ID_t>(id);
 }
 
 /* store Epetra_SerialComm in non-const table */
 CT_Epetra_SerialComm_ID_t
 CEpetra::storeSerialComm( Epetra_SerialComm *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_SerialComm_ID_t>(
-            tableOfSerialComms().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Epetra_SerialComm, CT_Epetra_SerialComm_ID_t>(pobj, false);
 }
 
 /* store const Epetra_SerialComm in const table */
 CT_Epetra_SerialComm_ID_t
 CEpetra::storeConstSerialComm( const Epetra_SerialComm *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_SerialComm_ID_t>(
-            tableOfConstSerialComms().storeShared(pobj));
-}
-
-/* dump contents of Epetra_SerialComm and const Epetra_SerialComm tables */
-void
-CEpetra::purgeSerialCommTables(  )
-{
-    tableOfSerialComms().purge();
-    tableOfConstSerialComms().purge();
+    return CTrilinos::tableRepos().store<Epetra_SerialComm, CT_Epetra_SerialComm_ID_t>(pobj, false);
 }
 
 

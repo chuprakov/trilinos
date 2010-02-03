@@ -51,36 +51,31 @@ namespace CAztecOO {
 using Teuchos::RCP;
 
 
-/* get AztecOO_StatusTestCombo from non-const table using CT_AztecOO_StatusTestCombo_ID */
+/*! get AztecOO_StatusTestCombo from non-const table using CT_AztecOO_StatusTestCombo_ID */
 const RCP<AztecOO_StatusTestCombo>
 getStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t id );
 
-/* get AztecOO_StatusTestCombo from non-const table using CTrilinos_Universal_ID_t */
+/*! get AztecOO_StatusTestCombo from non-const table using CTrilinos_Universal_ID_t */
 const RCP<AztecOO_StatusTestCombo>
 getStatusTestCombo( CTrilinos_Universal_ID_t id );
 
-/* get const AztecOO_StatusTestCombo from either the const or non-const table
+/*! get const AztecOO_StatusTestCombo from either the const or non-const table
  * using CT_AztecOO_StatusTestCombo_ID */
 const RCP<const AztecOO_StatusTestCombo>
 getConstStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t id );
 
-/* get const AztecOO_StatusTestCombo from either the const or non-const table
+/*! get const AztecOO_StatusTestCombo from either the const or non-const table
  * using CTrilinos_Universal_ID_t */
 const RCP<const AztecOO_StatusTestCombo>
 getConstStatusTestCombo( CTrilinos_Universal_ID_t id );
 
-/* store AztecOO_StatusTestCombo in non-const table */
+/*! store AztecOO_StatusTestCombo in non-const table */
 CT_AztecOO_StatusTestCombo_ID_t
 storeStatusTestCombo( AztecOO_StatusTestCombo *pobj );
 
-/* store const AztecOO_StatusTestCombo in const table */
+/*! store const AztecOO_StatusTestCombo in const table */
 CT_AztecOO_StatusTestCombo_ID_t
 storeConstStatusTestCombo( const AztecOO_StatusTestCombo *pobj );
-
-/* dump contents of AztecOO_StatusTestCombo and const AztecOO_StatusTestCombo tables */
-void
-purgeStatusTestComboTables(  );
-
 
 } // namespace CAztecOO
 

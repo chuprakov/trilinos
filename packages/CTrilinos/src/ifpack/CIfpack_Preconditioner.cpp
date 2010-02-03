@@ -46,36 +46,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Ifpack_Preconditioner */
-Table<Ifpack_Preconditioner>& tableOfPreconditioners()
-{
-    static Table<Ifpack_Preconditioner>
-        loc_tableOfPreconditioners(CT_Ifpack_Preconditioner_ID, "CT_Ifpack_Preconditioner_ID", FALSE);
-    return loc_tableOfPreconditioners;
-}
-
-/* table to hold objects of type const Ifpack_Preconditioner */
-Table<const Ifpack_Preconditioner>& tableOfConstPreconditioners()
-{
-    static Table<const Ifpack_Preconditioner>
-        loc_tableOfConstPreconditioners(CT_Ifpack_Preconditioner_ID, "CT_Ifpack_Preconditioner_ID", TRUE);
-    return loc_tableOfConstPreconditioners;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CIfpack_Preconditioner.h
 //
@@ -83,24 +54,6 @@ Table<const Ifpack_Preconditioner>& tableOfConstPreconditioners()
 
 extern "C" {
 
-
-CT_Ifpack_Preconditioner_ID_t Ifpack_Preconditioner_Cast ( 
-  CTrilinos_Universal_ID_t id )
-{
-    CTrilinos_Universal_ID_t newid;
-    if (id.is_const) {
-        newid = CTrilinos::cast(tableOfConstPreconditioners(), id);
-    } else {
-        newid = CTrilinos::cast(tableOfPreconditioners(), id);
-    }
-    return CTrilinos::concreteType<CT_Ifpack_Preconditioner_ID_t>(newid);
-}
-
-CTrilinos_Universal_ID_t Ifpack_Preconditioner_Abstract ( 
-  CT_Ifpack_Preconditioner_ID_t id )
-{
-    return CTrilinos::abstractType<CT_Ifpack_Preconditioner_ID_t>(id);
-}
 
 int Ifpack_Preconditioner_SetParameters ( 
   CT_Ifpack_Preconditioner_ID_t selfID, 
@@ -229,16 +182,7 @@ double Ifpack_Preconditioner_ApplyInverseFlops (
 const Teuchos::RCP<Ifpack_Preconditioner>
 CIfpack::getPreconditioner( CT_Ifpack_Preconditioner_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Ifpack_Preconditioner_ID_t>(id);
-    return tableOfPreconditioners().get(aid);
-}
-
-/* get Ifpack_Preconditioner from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Ifpack_Preconditioner>
-CIfpack::getPreconditioner( CTrilinos_Universal_ID_t id )
-{
-    return tableOfPreconditioners().get(id);
+    return CTrilinos::tableRepos().get<Ifpack_Preconditioner, CT_Ifpack_Preconditioner_ID_t>(id);
 }
 
 /* get const Ifpack_Preconditioner from either the const or non-const table
@@ -246,49 +190,21 @@ CIfpack::getPreconditioner( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Ifpack_Preconditioner>
 CIfpack::getConstPreconditioner( CT_Ifpack_Preconditioner_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Ifpack_Preconditioner_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstPreconditioners().get(aid);
-    } else {
-        return tableOfPreconditioners().get(aid);
-    }
-}
-
-/* get const Ifpack_Preconditioner from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Ifpack_Preconditioner>
-CIfpack::getConstPreconditioner( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstPreconditioners().get(id);
-    } else {
-        return tableOfPreconditioners().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, CT_Ifpack_Preconditioner_ID_t>(id);
 }
 
 /* store Ifpack_Preconditioner in non-const table */
 CT_Ifpack_Preconditioner_ID_t
 CIfpack::storePreconditioner( Ifpack_Preconditioner *pobj )
 {
-    return CTrilinos::concreteType<CT_Ifpack_Preconditioner_ID_t>(
-            tableOfPreconditioners().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Ifpack_Preconditioner, CT_Ifpack_Preconditioner_ID_t>(pobj, false);
 }
 
 /* store const Ifpack_Preconditioner in const table */
 CT_Ifpack_Preconditioner_ID_t
 CIfpack::storeConstPreconditioner( const Ifpack_Preconditioner *pobj )
 {
-    return CTrilinos::concreteType<CT_Ifpack_Preconditioner_ID_t>(
-            tableOfConstPreconditioners().storeShared(pobj));
-}
-
-/* dump contents of Ifpack_Preconditioner and const Ifpack_Preconditioner tables */
-void
-CIfpack::purgePreconditionerTables(  )
-{
-    tableOfPreconditioners().purge();
-    tableOfConstPreconditioners().purge();
+    return CTrilinos::tableRepos().store<Ifpack_Preconditioner, CT_Ifpack_Preconditioner_ID_t>(pobj, false);
 }
 
 

@@ -43,36 +43,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Epetra_LinearProblem */
-Table<Epetra_LinearProblem>& tableOfLinearProblems()
-{
-    static Table<Epetra_LinearProblem>
-        loc_tableOfLinearProblems(CT_Epetra_LinearProblem_ID, "CT_Epetra_LinearProblem_ID", FALSE);
-    return loc_tableOfLinearProblems;
-}
-
-/* table to hold objects of type const Epetra_LinearProblem */
-Table<const Epetra_LinearProblem>& tableOfConstLinearProblems()
-{
-    static Table<const Epetra_LinearProblem>
-        loc_tableOfConstLinearProblems(CT_Epetra_LinearProblem_ID, "CT_Epetra_LinearProblem_ID", TRUE);
-    return loc_tableOfConstLinearProblems;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CEpetra_LinearProblem.h
 //
@@ -81,71 +52,46 @@ Table<const Epetra_LinearProblem>& tableOfConstLinearProblems()
 extern "C" {
 
 
-CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Cast ( 
-  CTrilinos_Universal_ID_t id )
-{
-    CTrilinos_Universal_ID_t newid;
-    if (id.is_const) {
-        newid = CTrilinos::cast(tableOfConstLinearProblems(), id);
-    } else {
-        newid = CTrilinos::cast(tableOfLinearProblems(), id);
-    }
-    return CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(newid);
-}
-
-CTrilinos_Universal_ID_t Epetra_LinearProblem_Abstract ( 
-  CT_Epetra_LinearProblem_ID_t id )
-{
-    return CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(id);
-}
-
 CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Create (  )
 {
-    return CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(
-        tableOfLinearProblems().store(new Epetra_LinearProblem()));
+    return CTrilinos::tableRepos().store<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(new Epetra_LinearProblem());
 }
 
 CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Create_FromMatrix ( 
   CT_Epetra_RowMatrix_ID_t AID, CT_Epetra_MultiVector_ID_t XID, 
   CT_Epetra_MultiVector_ID_t BID )
 {
-    return CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(
-        tableOfLinearProblems().store(new Epetra_LinearProblem(
+    return CTrilinos::tableRepos().store<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(new Epetra_LinearProblem(
         CEpetra::getRowMatrix(AID).getRawPtr(), 
         CEpetra::getMultiVector(XID).getRawPtr(), 
-        CEpetra::getMultiVector(BID).getRawPtr())));
+        CEpetra::getMultiVector(BID).getRawPtr()));
 }
 
 CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Create_FromOperator ( 
   CT_Epetra_Operator_ID_t AID, CT_Epetra_MultiVector_ID_t XID, 
   CT_Epetra_MultiVector_ID_t BID )
 {
-    return CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(
-        tableOfLinearProblems().store(new Epetra_LinearProblem(
+    return CTrilinos::tableRepos().store<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(new Epetra_LinearProblem(
         CEpetra::getOperator(AID).getRawPtr(), 
         CEpetra::getMultiVector(XID).getRawPtr(), 
-        CEpetra::getMultiVector(BID).getRawPtr())));
+        CEpetra::getMultiVector(BID).getRawPtr()));
 }
 
 CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Duplicate ( 
   CT_Epetra_LinearProblem_ID_t ProblemID )
 {
-    return CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(
-        tableOfLinearProblems().store(new Epetra_LinearProblem(
-        *CEpetra::getConstLinearProblem(ProblemID))));
+    return CTrilinos::tableRepos().store<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(new Epetra_LinearProblem(
+        *CEpetra::getConstLinearProblem(ProblemID)));
 }
 
 void Epetra_LinearProblem_Destroy ( 
   CT_Epetra_LinearProblem_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstLinearProblems().remove(&aid);
-    } else {
-        tableOfLinearProblems().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 int Epetra_LinearProblem_CheckInput ( 
@@ -267,16 +213,7 @@ boolean Epetra_LinearProblem_IsOperatorSymmetric (
 const Teuchos::RCP<Epetra_LinearProblem>
 CEpetra::getLinearProblem( CT_Epetra_LinearProblem_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(id);
-    return tableOfLinearProblems().get(aid);
-}
-
-/* get Epetra_LinearProblem from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_LinearProblem>
-CEpetra::getLinearProblem( CTrilinos_Universal_ID_t id )
-{
-    return tableOfLinearProblems().get(id);
+    return CTrilinos::tableRepos().get<Epetra_LinearProblem, CT_Epetra_LinearProblem_ID_t>(id);
 }
 
 /* get const Epetra_LinearProblem from either the const or non-const table
@@ -284,49 +221,21 @@ CEpetra::getLinearProblem( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_LinearProblem>
 CEpetra::getConstLinearProblem( CT_Epetra_LinearProblem_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstLinearProblems().get(aid);
-    } else {
-        return tableOfLinearProblems().get(aid);
-    }
-}
-
-/* get const Epetra_LinearProblem from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_LinearProblem>
-CEpetra::getConstLinearProblem( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstLinearProblems().get(id);
-    } else {
-        return tableOfLinearProblems().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Epetra_LinearProblem, CT_Epetra_LinearProblem_ID_t>(id);
 }
 
 /* store Epetra_LinearProblem in non-const table */
 CT_Epetra_LinearProblem_ID_t
 CEpetra::storeLinearProblem( Epetra_LinearProblem *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(
-            tableOfLinearProblems().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Epetra_LinearProblem, CT_Epetra_LinearProblem_ID_t>(pobj, false);
 }
 
 /* store const Epetra_LinearProblem in const table */
 CT_Epetra_LinearProblem_ID_t
 CEpetra::storeConstLinearProblem( const Epetra_LinearProblem *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(
-            tableOfConstLinearProblems().storeShared(pobj));
-}
-
-/* dump contents of Epetra_LinearProblem and const Epetra_LinearProblem tables */
-void
-CEpetra::purgeLinearProblemTables(  )
-{
-    tableOfLinearProblems().purge();
-    tableOfConstLinearProblems().purge();
+    return CTrilinos::tableRepos().store<Epetra_LinearProblem, CT_Epetra_LinearProblem_ID_t>(pobj, false);
 }
 
 

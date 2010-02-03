@@ -43,36 +43,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Epetra_CrsGraph */
-Table<Epetra_CrsGraph>& tableOfCrsGraphs()
-{
-    static Table<Epetra_CrsGraph>
-        loc_tableOfCrsGraphs(CT_Epetra_CrsGraph_ID, "CT_Epetra_CrsGraph_ID", FALSE);
-    return loc_tableOfCrsGraphs;
-}
-
-/* table to hold objects of type const Epetra_CrsGraph */
-Table<const Epetra_CrsGraph>& tableOfConstCrsGraphs()
-{
-    static Table<const Epetra_CrsGraph>
-        loc_tableOfConstCrsGraphs(CT_Epetra_CrsGraph_ID, "CT_Epetra_CrsGraph_ID", TRUE);
-    return loc_tableOfConstCrsGraphs;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CEpetra_CrsGraph.h
 //
@@ -81,44 +52,26 @@ Table<const Epetra_CrsGraph>& tableOfConstCrsGraphs()
 extern "C" {
 
 
-CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Cast ( 
-  CTrilinos_Universal_ID_t id )
-{
-    CTrilinos_Universal_ID_t newid;
-    if (id.is_const) {
-        newid = CTrilinos::cast(tableOfConstCrsGraphs(), id);
-    } else {
-        newid = CTrilinos::cast(tableOfCrsGraphs(), id);
-    }
-    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(newid);
-}
-
-CTrilinos_Universal_ID_t Epetra_CrsGraph_Abstract ( 
-  CT_Epetra_CrsGraph_ID_t id )
-{
-    return CTrilinos::abstractType<CT_Epetra_CrsGraph_ID_t>(id);
-}
-
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   const int * NumIndicesPerRow, boolean StaticProfile )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
-        tableOfCrsGraphs().store(new Epetra_CrsGraph(
+    return CTrilinos::tableRepos().store<Epetra_CrsGraph, 
+        CT_Epetra_CrsGraph_ID_t>(new Epetra_CrsGraph(
         (Epetra_DataAccess) CV, *CEpetra::getConstBlockMap(
         RowMapID), NumIndicesPerRow, ((
-        StaticProfile) != FALSE ? true : false))));
+        StaticProfile) != FALSE ? true : false)));
 }
 
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t RowMapID, 
   int NumIndicesPerRow, boolean StaticProfile )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
-        tableOfCrsGraphs().store(new Epetra_CrsGraph(
+    return CTrilinos::tableRepos().store<Epetra_CrsGraph, 
+        CT_Epetra_CrsGraph_ID_t>(new Epetra_CrsGraph(
         (Epetra_DataAccess) CV, *CEpetra::getConstBlockMap(
         RowMapID), NumIndicesPerRow, ((
-        StaticProfile) != FALSE ? true : false))));
+        StaticProfile) != FALSE ? true : false)));
 }
 
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow_WithColMap ( 
@@ -126,12 +79,12 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow_WithColMap (
   CT_Epetra_BlockMap_ID_t ColMapID, const int * NumIndicesPerRow, 
   boolean StaticProfile )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
-        tableOfCrsGraphs().store(new Epetra_CrsGraph(
+    return CTrilinos::tableRepos().store<Epetra_CrsGraph, 
+        CT_Epetra_CrsGraph_ID_t>(new Epetra_CrsGraph(
         (Epetra_DataAccess) CV, *CEpetra::getConstBlockMap(
         RowMapID), *CEpetra::getConstBlockMap(ColMapID), 
         NumIndicesPerRow, ((
-        StaticProfile) != FALSE ? true : false))));
+        StaticProfile) != FALSE ? true : false)));
 }
 
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_With_ColMap ( 
@@ -139,32 +92,25 @@ CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_With_ColMap (
   CT_Epetra_BlockMap_ID_t ColMapID, int NumIndicesPerRow, 
   boolean StaticProfile )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
-        tableOfCrsGraphs().store(new Epetra_CrsGraph(
+    return CTrilinos::tableRepos().store<Epetra_CrsGraph, 
+        CT_Epetra_CrsGraph_ID_t>(new Epetra_CrsGraph(
         (Epetra_DataAccess) CV, *CEpetra::getConstBlockMap(
         RowMapID), *CEpetra::getConstBlockMap(ColMapID), 
         NumIndicesPerRow, ((
-        StaticProfile) != FALSE ? true : false))));
+        StaticProfile) != FALSE ? true : false)));
 }
 
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Duplicate ( 
   CT_Epetra_CrsGraph_ID_t GraphID )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
-        tableOfCrsGraphs().store(new Epetra_CrsGraph(
-        *CEpetra::getConstCrsGraph(GraphID))));
+    return CTrilinos::tableRepos().store<Epetra_CrsGraph, 
+        CT_Epetra_CrsGraph_ID_t>(new Epetra_CrsGraph(
+        *CEpetra::getConstCrsGraph(GraphID)));
 }
 
 void Epetra_CrsGraph_Destroy ( CT_Epetra_CrsGraph_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Epetra_CrsGraph_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstCrsGraphs().remove(&aid);
-    } else {
-        tableOfCrsGraphs().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 int Epetra_CrsGraph_InsertGlobalIndices ( 
@@ -654,16 +600,7 @@ void Epetra_CrsGraph_Assign (
 const Teuchos::RCP<Epetra_CrsGraph>
 CEpetra::getCrsGraph( CT_Epetra_CrsGraph_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_CrsGraph_ID_t>(id);
-    return tableOfCrsGraphs().get(aid);
-}
-
-/* get Epetra_CrsGraph from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_CrsGraph>
-CEpetra::getCrsGraph( CTrilinos_Universal_ID_t id )
-{
-    return tableOfCrsGraphs().get(id);
+    return CTrilinos::tableRepos().get<Epetra_CrsGraph, CT_Epetra_CrsGraph_ID_t>(id);
 }
 
 /* get const Epetra_CrsGraph from either the const or non-const table
@@ -671,49 +608,21 @@ CEpetra::getCrsGraph( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_CrsGraph>
 CEpetra::getConstCrsGraph( CT_Epetra_CrsGraph_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_CrsGraph_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstCrsGraphs().get(aid);
-    } else {
-        return tableOfCrsGraphs().get(aid);
-    }
-}
-
-/* get const Epetra_CrsGraph from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_CrsGraph>
-CEpetra::getConstCrsGraph( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstCrsGraphs().get(id);
-    } else {
-        return tableOfCrsGraphs().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Epetra_CrsGraph, CT_Epetra_CrsGraph_ID_t>(id);
 }
 
 /* store Epetra_CrsGraph in non-const table */
 CT_Epetra_CrsGraph_ID_t
 CEpetra::storeCrsGraph( Epetra_CrsGraph *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
-            tableOfCrsGraphs().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Epetra_CrsGraph, CT_Epetra_CrsGraph_ID_t>(pobj, false);
 }
 
 /* store const Epetra_CrsGraph in const table */
 CT_Epetra_CrsGraph_ID_t
 CEpetra::storeConstCrsGraph( const Epetra_CrsGraph *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_CrsGraph_ID_t>(
-            tableOfConstCrsGraphs().storeShared(pobj));
-}
-
-/* dump contents of Epetra_CrsGraph and const Epetra_CrsGraph tables */
-void
-CEpetra::purgeCrsGraphTables(  )
-{
-    tableOfCrsGraphs().purge();
-    tableOfConstCrsGraphs().purge();
+    return CTrilinos::tableRepos().store<Epetra_CrsGraph, CT_Epetra_CrsGraph_ID_t>(pobj, false);
 }
 
 

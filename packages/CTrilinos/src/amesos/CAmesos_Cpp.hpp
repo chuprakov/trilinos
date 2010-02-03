@@ -51,36 +51,31 @@ namespace CAmesos {
 using Teuchos::RCP;
 
 
-/* get Amesos from non-const table using CT_Amesos_ID */
+/*! get Amesos from non-const table using CT_Amesos_ID */
 const RCP<Amesos>
 getAmesos( CT_Amesos_ID_t id );
 
-/* get Amesos from non-const table using CTrilinos_Universal_ID_t */
+/*! get Amesos from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Amesos>
 getAmesos( CTrilinos_Universal_ID_t id );
 
-/* get const Amesos from either the const or non-const table
+/*! get const Amesos from either the const or non-const table
  * using CT_Amesos_ID */
 const RCP<const Amesos>
 getConstAmesos( CT_Amesos_ID_t id );
 
-/* get const Amesos from either the const or non-const table
+/*! get const Amesos from either the const or non-const table
  * using CTrilinos_Universal_ID_t */
 const RCP<const Amesos>
 getConstAmesos( CTrilinos_Universal_ID_t id );
 
-/* store Amesos in non-const table */
+/*! store Amesos in non-const table */
 CT_Amesos_ID_t
 storeAmesos( Amesos *pobj );
 
-/* store const Amesos in const table */
+/*! store const Amesos in const table */
 CT_Amesos_ID_t
 storeConstAmesos( const Amesos *pobj );
-
-/* dump contents of Amesos and const Amesos tables */
-void
-purgeAmesosTables(  );
-
 
 } // namespace CAmesos
 

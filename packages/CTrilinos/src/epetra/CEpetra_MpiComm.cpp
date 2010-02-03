@@ -48,36 +48,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Epetra_MpiComm */
-Table<Epetra_MpiComm>& tableOfMpiComms()
-{
-    static Table<Epetra_MpiComm>
-        loc_tableOfMpiComms(CT_Epetra_MpiComm_ID, "CT_Epetra_MpiComm_ID", FALSE);
-    return loc_tableOfMpiComms;
-}
-
-/* table to hold objects of type const Epetra_MpiComm */
-Table<const Epetra_MpiComm>& tableOfConstMpiComms()
-{
-    static Table<const Epetra_MpiComm>
-        loc_tableOfConstMpiComms(CT_Epetra_MpiComm_ID, "CT_Epetra_MpiComm_ID", TRUE);
-    return loc_tableOfConstMpiComms;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CEpetra_MpiComm.h
 //
@@ -86,48 +57,23 @@ Table<const Epetra_MpiComm>& tableOfConstMpiComms()
 extern "C" {
 
 
-CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Cast ( 
-  CTrilinos_Universal_ID_t id )
-{
-    CTrilinos_Universal_ID_t newid;
-    if (id.is_const) {
-        newid = CTrilinos::cast(tableOfConstMpiComms(), id);
-    } else {
-        newid = CTrilinos::cast(tableOfMpiComms(), id);
-    }
-    return CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(newid);
-}
-
-CTrilinos_Universal_ID_t Epetra_MpiComm_Abstract ( 
-  CT_Epetra_MpiComm_ID_t id )
-{
-    return CTrilinos::abstractType<CT_Epetra_MpiComm_ID_t>(id);
-}
-
 CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Create ( MPI_Comm comm )
 {
-    return CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(
-        tableOfMpiComms().store(new Epetra_MpiComm(comm)));
+    return CTrilinos::tableRepos().store<Epetra_MpiComm, 
+        CT_Epetra_MpiComm_ID_t>(new Epetra_MpiComm(comm));
 }
 
 CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Duplicate ( 
   CT_Epetra_MpiComm_ID_t CommID )
 {
-    return CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(
-        tableOfMpiComms().store(new Epetra_MpiComm(
-        *CEpetra::getConstMpiComm(CommID))));
+    return CTrilinos::tableRepos().store<Epetra_MpiComm, 
+        CT_Epetra_MpiComm_ID_t>(new Epetra_MpiComm(
+        *CEpetra::getConstMpiComm(CommID)));
 }
 
 void Epetra_MpiComm_Destroy ( CT_Epetra_MpiComm_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Epetra_MpiComm_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstMpiComms().remove(&aid);
-    } else {
-        tableOfMpiComms().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 CT_Epetra_Comm_ID_t Epetra_MpiComm_Clone ( 
@@ -352,16 +298,7 @@ void Epetra_MpiComm_Assign (
 const Teuchos::RCP<Epetra_MpiComm>
 CEpetra::getMpiComm( CT_Epetra_MpiComm_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_MpiComm_ID_t>(id);
-    return tableOfMpiComms().get(aid);
-}
-
-/* get Epetra_MpiComm from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_MpiComm>
-CEpetra::getMpiComm( CTrilinos_Universal_ID_t id )
-{
-    return tableOfMpiComms().get(id);
+    return CTrilinos::tableRepos().get<Epetra_MpiComm, CT_Epetra_MpiComm_ID_t>(id);
 }
 
 /* get const Epetra_MpiComm from either the const or non-const table
@@ -369,49 +306,21 @@ CEpetra::getMpiComm( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_MpiComm>
 CEpetra::getConstMpiComm( CT_Epetra_MpiComm_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Epetra_MpiComm_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstMpiComms().get(aid);
-    } else {
-        return tableOfMpiComms().get(aid);
-    }
-}
-
-/* get const Epetra_MpiComm from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_MpiComm>
-CEpetra::getConstMpiComm( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstMpiComms().get(id);
-    } else {
-        return tableOfMpiComms().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Epetra_MpiComm, CT_Epetra_MpiComm_ID_t>(id);
 }
 
 /* store Epetra_MpiComm in non-const table */
 CT_Epetra_MpiComm_ID_t
 CEpetra::storeMpiComm( Epetra_MpiComm *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(
-            tableOfMpiComms().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Epetra_MpiComm, CT_Epetra_MpiComm_ID_t>(pobj, false);
 }
 
 /* store const Epetra_MpiComm in const table */
 CT_Epetra_MpiComm_ID_t
 CEpetra::storeConstMpiComm( const Epetra_MpiComm *pobj )
 {
-    return CTrilinos::concreteType<CT_Epetra_MpiComm_ID_t>(
-            tableOfConstMpiComms().storeShared(pobj));
-}
-
-/* dump contents of Epetra_MpiComm and const Epetra_MpiComm tables */
-void
-CEpetra::purgeMpiCommTables(  )
-{
-    tableOfMpiComms().purge();
-    tableOfConstMpiComms().purge();
+    return CTrilinos::tableRepos().store<Epetra_MpiComm, CT_Epetra_MpiComm_ID_t>(pobj, false);
 }
 
 

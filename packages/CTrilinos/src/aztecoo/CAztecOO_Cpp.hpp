@@ -51,36 +51,31 @@ namespace CAztecOO {
 using Teuchos::RCP;
 
 
-/* get AztecOO from non-const table using CT_AztecOO_ID */
+/*! get AztecOO from non-const table using CT_AztecOO_ID */
 const RCP<AztecOO>
 getAztecOO( CT_AztecOO_ID_t id );
 
-/* get AztecOO from non-const table using CTrilinos_Universal_ID_t */
+/*! get AztecOO from non-const table using CTrilinos_Universal_ID_t */
 const RCP<AztecOO>
 getAztecOO( CTrilinos_Universal_ID_t id );
 
-/* get const AztecOO from either the const or non-const table
+/*! get const AztecOO from either the const or non-const table
  * using CT_AztecOO_ID */
 const RCP<const AztecOO>
 getConstAztecOO( CT_AztecOO_ID_t id );
 
-/* get const AztecOO from either the const or non-const table
+/*! get const AztecOO from either the const or non-const table
  * using CTrilinos_Universal_ID_t */
 const RCP<const AztecOO>
 getConstAztecOO( CTrilinos_Universal_ID_t id );
 
-/* store AztecOO in non-const table */
+/*! store AztecOO in non-const table */
 CT_AztecOO_ID_t
 storeAztecOO( AztecOO *pobj );
 
-/* store const AztecOO in const table */
+/*! store const AztecOO in const table */
 CT_AztecOO_ID_t
 storeConstAztecOO( const AztecOO *pobj );
-
-/* dump contents of AztecOO and const AztecOO tables */
-void
-purgeAztecOOTables(  );
-
 
 } // namespace CAztecOO
 

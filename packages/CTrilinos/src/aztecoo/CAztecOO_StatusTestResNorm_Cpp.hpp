@@ -51,36 +51,31 @@ namespace CAztecOO {
 using Teuchos::RCP;
 
 
-/* get AztecOO_StatusTestResNorm from non-const table using CT_AztecOO_StatusTestResNorm_ID */
+/*! get AztecOO_StatusTestResNorm from non-const table using CT_AztecOO_StatusTestResNorm_ID */
 const RCP<AztecOO_StatusTestResNorm>
 getStatusTestResNorm( CT_AztecOO_StatusTestResNorm_ID_t id );
 
-/* get AztecOO_StatusTestResNorm from non-const table using CTrilinos_Universal_ID_t */
+/*! get AztecOO_StatusTestResNorm from non-const table using CTrilinos_Universal_ID_t */
 const RCP<AztecOO_StatusTestResNorm>
 getStatusTestResNorm( CTrilinos_Universal_ID_t id );
 
-/* get const AztecOO_StatusTestResNorm from either the const or non-const table
+/*! get const AztecOO_StatusTestResNorm from either the const or non-const table
  * using CT_AztecOO_StatusTestResNorm_ID */
 const RCP<const AztecOO_StatusTestResNorm>
 getConstStatusTestResNorm( CT_AztecOO_StatusTestResNorm_ID_t id );
 
-/* get const AztecOO_StatusTestResNorm from either the const or non-const table
+/*! get const AztecOO_StatusTestResNorm from either the const or non-const table
  * using CTrilinos_Universal_ID_t */
 const RCP<const AztecOO_StatusTestResNorm>
 getConstStatusTestResNorm( CTrilinos_Universal_ID_t id );
 
-/* store AztecOO_StatusTestResNorm in non-const table */
+/*! store AztecOO_StatusTestResNorm in non-const table */
 CT_AztecOO_StatusTestResNorm_ID_t
 storeStatusTestResNorm( AztecOO_StatusTestResNorm *pobj );
 
-/* store const AztecOO_StatusTestResNorm in const table */
+/*! store const AztecOO_StatusTestResNorm in const table */
 CT_AztecOO_StatusTestResNorm_ID_t
 storeConstStatusTestResNorm( const AztecOO_StatusTestResNorm *pobj );
-
-/* dump contents of AztecOO_StatusTestResNorm and const AztecOO_StatusTestResNorm tables */
-void
-purgeStatusTestResNormTables(  );
-
 
 } // namespace CAztecOO
 

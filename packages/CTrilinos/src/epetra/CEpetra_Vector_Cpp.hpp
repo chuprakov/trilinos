@@ -47,36 +47,31 @@ namespace CEpetra {
 using Teuchos::RCP;
 
 
-/* get Epetra_Vector from non-const table using CT_Epetra_Vector_ID */
+/*! get Epetra_Vector from non-const table using CT_Epetra_Vector_ID */
 const RCP<Epetra_Vector>
 getVector( CT_Epetra_Vector_ID_t id );
 
-/* get Epetra_Vector from non-const table using CTrilinos_Universal_ID_t */
+/*! get Epetra_Vector from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_Vector>
 getVector( CTrilinos_Universal_ID_t id );
 
-/* get const Epetra_Vector from either the const or non-const table
+/*! get const Epetra_Vector from either the const or non-const table
  * using CT_Epetra_Vector_ID */
 const RCP<const Epetra_Vector>
 getConstVector( CT_Epetra_Vector_ID_t id );
 
-/* get const Epetra_Vector from either the const or non-const table
+/*! get const Epetra_Vector from either the const or non-const table
  * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_Vector>
 getConstVector( CTrilinos_Universal_ID_t id );
 
-/* store Epetra_Vector in non-const table */
+/*! store Epetra_Vector in non-const table */
 CT_Epetra_Vector_ID_t
 storeVector( Epetra_Vector *pobj );
 
-/* store const Epetra_Vector in const table */
+/*! store const Epetra_Vector in const table */
 CT_Epetra_Vector_ID_t
 storeConstVector( const Epetra_Vector *pobj );
-
-/* dump contents of Epetra_Vector and const Epetra_Vector tables */
-void
-purgeVectorTables(  );
-
 
 } // namespace CEpetra
 

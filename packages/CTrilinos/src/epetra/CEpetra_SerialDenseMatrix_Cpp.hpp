@@ -47,36 +47,31 @@ namespace CEpetra {
 using Teuchos::RCP;
 
 
-/* get Epetra_SerialDenseMatrix from non-const table using CT_Epetra_SerialDenseMatrix_ID */
+/*! get Epetra_SerialDenseMatrix from non-const table using CT_Epetra_SerialDenseMatrix_ID */
 const RCP<Epetra_SerialDenseMatrix>
 getSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id );
 
-/* get Epetra_SerialDenseMatrix from non-const table using CTrilinos_Universal_ID_t */
+/*! get Epetra_SerialDenseMatrix from non-const table using CTrilinos_Universal_ID_t */
 const RCP<Epetra_SerialDenseMatrix>
 getSerialDenseMatrix( CTrilinos_Universal_ID_t id );
 
-/* get const Epetra_SerialDenseMatrix from either the const or non-const table
+/*! get const Epetra_SerialDenseMatrix from either the const or non-const table
  * using CT_Epetra_SerialDenseMatrix_ID */
 const RCP<const Epetra_SerialDenseMatrix>
 getConstSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id );
 
-/* get const Epetra_SerialDenseMatrix from either the const or non-const table
+/*! get const Epetra_SerialDenseMatrix from either the const or non-const table
  * using CTrilinos_Universal_ID_t */
 const RCP<const Epetra_SerialDenseMatrix>
 getConstSerialDenseMatrix( CTrilinos_Universal_ID_t id );
 
-/* store Epetra_SerialDenseMatrix in non-const table */
+/*! store Epetra_SerialDenseMatrix in non-const table */
 CT_Epetra_SerialDenseMatrix_ID_t
 storeSerialDenseMatrix( Epetra_SerialDenseMatrix *pobj );
 
-/* store const Epetra_SerialDenseMatrix in const table */
+/*! store const Epetra_SerialDenseMatrix in const table */
 CT_Epetra_SerialDenseMatrix_ID_t
 storeConstSerialDenseMatrix( const Epetra_SerialDenseMatrix *pobj );
-
-/* dump contents of Epetra_SerialDenseMatrix and const Epetra_SerialDenseMatrix tables */
-void
-purgeSerialDenseMatrixTables(  );
-
 
 } // namespace CEpetra
 

@@ -39,36 +39,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
-
-
-namespace {
-
-
-using Teuchos::RCP;
-using CTrilinos::Table;
-
-
-/* table to hold objects of type Teuchos::any */
-Table<Teuchos::any>& tableOfanys()
-{
-    static Table<Teuchos::any>
-        loc_tableOfanys(CT_Teuchos_any_ID, "CT_Teuchos_any_ID", FALSE);
-    return loc_tableOfanys;
-}
-
-/* table to hold objects of type const Teuchos::any */
-Table<const Teuchos::any>& tableOfConstanys()
-{
-    static Table<const Teuchos::any>
-        loc_tableOfConstanys(CT_Teuchos_any_ID, "CT_Teuchos_any_ID", TRUE);
-    return loc_tableOfConstanys;
-}
-
-
-} // namespace
-
-
+#include "CTrilinos_TableRepos.hpp"
 //
 // Definitions from CTeuchos_any.h
 //
@@ -79,40 +50,33 @@ extern "C" {
 
 CT_Teuchos_any_ID_t Teuchos_any_Create (  )
 {
-    return CTrilinos::concreteType<CT_Teuchos_any_ID_t>(
-        tableOfanys().store(new Teuchos::any()));
+    return CTrilinos::tableRepos().store<Teuchos::any, 
+        CT_Teuchos_any_ID_t>(new Teuchos::any());
 }
 
 CT_Teuchos_any_ID_t Teuchos_any_Create_double ( double value )
 {
-    return CTrilinos::concreteType<CT_Teuchos_any_ID_t>(
-        tableOfanys().store(new Teuchos::any(value)));
+    return CTrilinos::tableRepos().store<Teuchos::any, 
+        CT_Teuchos_any_ID_t>(new Teuchos::any(value));
 }
 
 CT_Teuchos_any_ID_t Teuchos_any_Create_int ( int value )
 {
-    return CTrilinos::concreteType<CT_Teuchos_any_ID_t>(
-        tableOfanys().store(new Teuchos::any(value)));
+    return CTrilinos::tableRepos().store<Teuchos::any, 
+        CT_Teuchos_any_ID_t>(new Teuchos::any(value));
 }
 
 CT_Teuchos_any_ID_t Teuchos_any_Duplicate ( 
   CT_Teuchos_any_ID_t otherID )
 {
-    return CTrilinos::concreteType<CT_Teuchos_any_ID_t>(
-        tableOfanys().store(new Teuchos::any(*CTeuchos::getConstany(
-        otherID))));
+    return CTrilinos::tableRepos().store<Teuchos::any, 
+        CT_Teuchos_any_ID_t>(new Teuchos::any(*CTeuchos::getConstany(
+        otherID)));
 }
 
 void Teuchos_any_Destroy ( CT_Teuchos_any_ID_t * selfID )
 {
-    CTrilinos_Universal_ID_t aid
-        = CTrilinos::abstractType<CT_Teuchos_any_ID_t>(*selfID);
-    if (selfID->is_const) {
-        tableOfConstanys().remove(&aid);
-    } else {
-        tableOfanys().remove(&aid);
-    }
-    *selfID = CTrilinos::concreteType<CT_Teuchos_any_ID_t>(aid);
+    CTrilinos::tableRepos().remove(selfID);
 }
 
 CT_Teuchos_any_ID_t Teuchos_any_swap ( 
@@ -160,16 +124,7 @@ void Teuchos_any_Assign (
 const Teuchos::RCP<Teuchos::any>
 CTeuchos::getany( CT_Teuchos_any_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Teuchos_any_ID_t>(id);
-    return tableOfanys().get(aid);
-}
-
-/* get Teuchos::any from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Teuchos::any>
-CTeuchos::getany( CTrilinos_Universal_ID_t id )
-{
-    return tableOfanys().get(id);
+    return CTrilinos::tableRepos().get<Teuchos::any, CT_Teuchos_any_ID_t>(id);
 }
 
 /* get const Teuchos::any from either the const or non-const table
@@ -177,49 +132,21 @@ CTeuchos::getany( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Teuchos::any>
 CTeuchos::getConstany( CT_Teuchos_any_ID_t id )
 {
-    CTrilinos_Universal_ID_t aid
-            = CTrilinos::abstractType<CT_Teuchos_any_ID_t>(id);
-    if (id.is_const) {
-        return tableOfConstanys().get(aid);
-    } else {
-        return tableOfanys().get(aid);
-    }
-}
-
-/* get const Teuchos::any from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Teuchos::any>
-CTeuchos::getConstany( CTrilinos_Universal_ID_t id )
-{
-    if (id.is_const) {
-        return tableOfConstanys().get(id);
-    } else {
-        return tableOfanys().get(id);
-    }
+    return CTrilinos::tableRepos().getConst<Teuchos::any, CT_Teuchos_any_ID_t>(id);
 }
 
 /* store Teuchos::any in non-const table */
 CT_Teuchos_any_ID_t
 CTeuchos::storeany( Teuchos::any *pobj )
 {
-    return CTrilinos::concreteType<CT_Teuchos_any_ID_t>(
-            tableOfanys().storeShared(pobj));
+    return CTrilinos::tableRepos().store<Teuchos::any, CT_Teuchos_any_ID_t>(pobj, false);
 }
 
 /* store const Teuchos::any in const table */
 CT_Teuchos_any_ID_t
 CTeuchos::storeConstany( const Teuchos::any *pobj )
 {
-    return CTrilinos::concreteType<CT_Teuchos_any_ID_t>(
-            tableOfConstanys().storeShared(pobj));
-}
-
-/* dump contents of Teuchos::any and const Teuchos::any tables */
-void
-CTeuchos::purgeanyTables(  )
-{
-    tableOfanys().purge();
-    tableOfConstanys().purge();
+    return CTrilinos::tableRepos().store<Teuchos::any, CT_Teuchos_any_ID_t>(pobj, false);
 }
 
 
