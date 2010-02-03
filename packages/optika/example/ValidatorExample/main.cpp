@@ -25,16 +25,16 @@ int main(){
   * The validator for number types has been templated. The validator has two constuctors.
   * The first takes three arguments:
   * 1. Minimum allowed value (inclusive).
-  * 2. Maximum allowed value (exclusive).
+  * 2. Maximum allowed value (inclusive).
   * 3. The step. This is the how much the value of the parameter should be changed
-  * when it is told to increase or decreas in the GUI. Play around with this value a bit
+  * when it is told to increase or decrease in the GUI. Play around with this value a bit
   * to get a good idea of what it does. It really only has meaning when used with the GUI.
   *
-  * The second constructor only takes no arguments. It mearly enforces that a particular
+  * The second constructor takes no arguments. It mearly enforces that a particular
   * parameter is of a certain number type. If you use this second constructor, no
   * minimum or maximum will be set. If you would like your validator to have a minimum 
-  * and no maximum you may call the setMin function. The same can be done with the setMax 
-  * if you wish to have a maximum and no minimum.
+  * and no maximum you may call the setMin function after using this constructor.
+  * The same can be done with the setMax if you wish to have a maximum and no minimum.
   */
 
  /*
@@ -96,10 +96,10 @@ int main(){
   My_List->set("Double", (double)4.5, "double tester", doubleVali);
 
   /*
-   * This validator is simple called a StringValidator. It takes a Teuchos tuple containg strings
-   * and then makes sure what ever parameter it applied to is only ever set to one of those values.
+   * This validator is called a StringValidator. It takes a Teuchos tuple containg strings
+   * and then makes sure what every parameter it is applied to is only ever set to one of those values.
    * Note: A Teuchos StringToIntegralParameterEntryValidator would also do the trick here, but they're
-   * a little more complicated to use.
+   * a little more complicated to use and kind of overkill for what we're doing here.
    */
   Teuchos::RCP<Optika::StringValidator> solverValidator = Teuchos::RCP<Optika::StringValidator>(
   	new Optika::StringValidator(Teuchos::tuple<std::string>( "GMRES", "CG", "TFQMR" )));
@@ -171,7 +171,7 @@ int main(){
    * function.
    *
    * Remember: You default value for a parameter should be within the valid range
-   * for the validator you are using on it. I this is not the case, an error will
+   * for the validator you are using on it. If this is not the case, an error will
    * be thrown before the GUI can even start up.
    *
    * Remember: Make sure you're using the right type of validator with the right

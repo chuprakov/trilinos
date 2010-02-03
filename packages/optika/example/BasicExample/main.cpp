@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 
   /* 
    * Creating parameters in this list can be easily done using the set function.
-   * The first argument is the name of the Parameter. The second is the default
+   * The first argument is the name of the parameter. The second is the default
    * value for the parameter. The third is a short description of what the parameter 
    * is for.
    */
@@ -44,8 +44,8 @@ int main(int argc, char* argv[])
   My_List->set("Tolerance", 1e-10, "The tolerance used for the convergence check");
   
   /* 
-   * Validators are useful for making sure that an input has only a particular set of values.
-   * For the "Solver" option, we will create a validator. Here we use a 
+   * Validators are useful for restricting the set of values that may be used for a
+   * given parameter. For the "Solver" option, we will create a validator. Here we use a 
    * StringValidator and a tuple to specify which string values
    * are valid for the "Solver" option.
    */
@@ -54,30 +54,29 @@ int main(int argc, char* argv[])
   My_List->set( "Solver", "GMRES", "The type of solver to use.", solverValidator);
 
   /* 
-   * The Optika Package can also handle arrays.
-   * Here we create a Teuchos::Array class of 10 doubles
+   * The Optika Package can also handle Teuchos Arrays.
+   * Here we create a Teuchos::Array object of 10 doubles
    * representing an initial guess for a linear solver.
    */
   Teuchos::Array<double> doubleArray( 10, 0.0 );
   My_List->set("Initial Guess", doubleArray, "The initial guess as a RCP to an array object.");
 
   /* 
-   * A hierarchy of parameter lists can be constructed using {\tt Teuchos::ParameterList}.  This 
-   * means another parameter list is a valid {\it value} in any parameter list.  To create a sublist
-   * in a parameter list and obtain a reference to it:
+   * We can also create a hieiarchy of parameters by using sublists. Here we create a sublist
+   * called Prec_List. Prec_List will be contained within My_List.
    */
   Teuchos::ParameterList&
     Prec_List = My_List->sublist("Preconditioner",false,"Sublist that defines the preconditioner.");
 
   /*
-   * Now this parameter list can be filled with values:
+   * Now this Prec_List can be filled with other parameters:
    */
   Prec_List.set("Type", "ILU", "The tpye of preconditioner to use");
   Prec_List.set("Drop Tolerance", 1e-3
                 ,"The tolerance below which entries from the\n""factorization are left out of the factors.");
 
   /*
-   * The getInput function starts up a Optika GUI and lets the user start to input parameter values. When the user
+   * The getInput function starts up an Optika GUI and lets the user start to input parameter values. When the user
    * has completed their data entry, the function will finish right after all of the input values are stored in My_List.
    */
   Optika::getInput(My_List);
@@ -92,8 +91,8 @@ int main(int argc, char* argv[])
   /*
    * A Few Final Notes
    *
-   * -After calling the getInput function, any parameter in My_List has to potential to have been modified.
-   *  That said, no new parameters or parameterlist will have been added and none will have been removed.
+   * -After calling the getInput function, any parameter in My_List has the potential to have been modified.
+   *  That said, no new parameters or ParameterLists will have been added and none will have been removed.
    *
    * -The GUI can only handle certain types of parameters. They are:
    *	int
@@ -110,7 +109,7 @@ int main(int argc, char* argv[])
    * If you give it a ParameterList containing a parameter that is not of one of the types specified above,
    * the parameter will still be displayed in the GUI. However, the user will not be able to modify it's value.
    *
-   * That's it for now. Be sure Check out the other examples to see some of the more advanced 
+   * That's it for now. Be sure check out the other examples to see some of the more advanced 
    * features of the Optika package. If you have any suggestions or feature requests, please send them to
    * klnusbaum@gmail.com.
    */

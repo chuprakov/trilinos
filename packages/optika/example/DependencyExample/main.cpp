@@ -21,8 +21,8 @@ int main(){
 
   /*
    * One of the most powerful features of the Optika package is it's ability to understand Dependencies
-   * between various parameters. In order to take advantage of this capability need to use the new class
-   * "DependencySheet". For the most part, everything is still the same as before, and we do initial setup 
+   * between various parameters. In order to take advantage of this capability you need to use the new 
+   * "DependencySheet" class. For the most part, everything is still the same as before, and we do initial setup 
    * just like we did in the basic example. But now, we will also create our own DependencySheet.
    *
    */
@@ -30,8 +30,8 @@ int main(){
   /**
    * Notice how we specify My_deplist as the "Root List". When a dependency sheet is constructed it assumes
    * all dependencies that will be added to it will be located in the Root List or one of the sublists in
-   * the Root List. Make sure when you're adding a dependency to the Dependency sheet that your dependent
-   * and dependee (more on those later) are located somewhere in the "Root List".
+   * the Root List. Make sure when you're adding a dependency to the dependency sheet that your dependent
+   * and dependee (more on those later) are located somewhere in the "Root List" or one of it's sublists.
    */
   Teuchos::RCP<Optika::DependencySheet> depSheet1 =
   	Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(My_deplist, "My dep sheet"));
@@ -56,11 +56,11 @@ int main(){
    * Here we create a Dependency. There are several different types of dependencies but they all follow the 
    * same general outline: A dependent (which can be a parameter or parameter list) is dependent upon a 
    * dependee (which is always a non-array parameter). Different dependencies usually have different 
-   * requirements of their dependees and dependent. So be sure to check a dependecies documentation if you're 
+   * requirements of their dependee and dependent. So be sure to check a dependecies documentation if you're 
    * at all unsure whether or not you're using one correctly. Also, if you use a dependency incorrectly, 
-   * you'll be notified by an error and the GUI will never execute. It's alwasy important to make sure the 
-   * GUI can at leaste run. Most errors that result from improperly formed dependencies will be caught before 
-   * the user even sees the GUI.
+   * you'll be notified by an error and the GUI will never execute. It's always important to make sure the 
+   * GUI can at least run. Most errors that result from improperly formed dependencies will be caught before 
+   * the user ever sees the GUI.
    *
    * Below is a bool visual dependency. What this means is the dependent's visibility to the user
    * is determined by the dependee's boolean value. Here the dependent is the ParameterList "Preconditioner".
@@ -84,7 +84,7 @@ int main(){
 	true));
 
   /*
-   * Once we have created the depenency we add it to our dependent sheet using the addDependency function.
+   * Once we have created the depenency we add it to our dependency sheet using the addDependency function.
    * Dependencies can also be removed using the removeDependency function.
    */
   depSheet1->addDependency(precDep1);
@@ -103,7 +103,7 @@ int main(){
    * Here we are creating a StringVisualDependency. The dependent this time is a parameter called Swiss rating. We only want
    * the swiss rating parameter to show if the Favorite Cheese parameter has the value Swiss. So we make Favorite Cheese the
    * dependee, set the desired value to Swiss, and the showIf argument to true. If we were to state this dependency as a
-   * sentence it would look something like this:
+   * sentence it would read something like this:
    * Show the "Swiss rating" parameter when the "Favorite Cheese" parameter has the value "Swiss".
    */
    Teuchos::RCP<Optika::StringVisualDependency> swissDep1 = 
@@ -143,12 +143,12 @@ int main(){
       false));
 
   /*
-   * Lets make a sublist to put in to our "Root List".
+   * Lets make a sublist to put into our "Root List".
    */
   Teuchos::ParameterList& waterList = My_deplist->sublist("Water", false, "A sublist about a lovely liquid.");
 
   /*
-   * And let's put a few parameters in the sublist.
+   * And let's put a couple parameters in the sublist.
    */
   waterList.set("Number Of Buckets", 3, "How many buckets we have");
   waterList.set("Amount in Buckets", Teuchos::Array<double>(3, 2.5), "How much water is in each bucket");
@@ -156,10 +156,10 @@ int main(){
   /*
    * Obviously the number of buckets we have is going to affect the length of our array. If the number of
    * buckets gets changed to 5, we'll need an array length of 5. To solve this problem we'll use a
-   * NumberArrayLengthDependency. If written in a sentence, the dependency says this:
+   * NumberArrayLengthDependency. If written in a sentence, the dependency reads like this:
    * The number of entry's in the "Amount in Buckets" array is dependent upon the "Number Of Buckets" parameter.
    *
-   * Note how this time the parent list of the dependent and dependee are not My_deplist. They are the actuall list
+   * Note how this time the parent list of the dependent and dependee are not My_deplist. They are the actual list
    * that the parameters a located in.
    */
   Teuchos::RCP<Optika::NumberArrayLengthDependency> arrayLengthDep = Teuchos::RCP<Optika::NumberArrayLengthDependency>(
@@ -180,14 +180,11 @@ int main(){
    */
   Optika::getInput(My_deplist, depSheet1);
 
-  /*
-   * Create the output stream.
-   */
-  Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
   /*
    * Printing out the Dep List that was used to construct the GUI.
    */
+  Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::VerboseObjectBase::getDefaultOStream();
   std::cout << "Dep List: \n";
   Teuchos::writeParameterListToXmlOStream(*My_deplist, *out);
 
@@ -196,20 +193,21 @@ int main(){
    * Final notes:
    *
    * Remember: It's always a good idea to make sure you're GUI works. Basic issues will not allow the GUI
-   * to be even displayed to the user. So if your GUI can simply launch, that means you can trust everything
-   * to workout pretty well.
+   * to be even displayed to the user. So if your GUI can simply launch, that means you can feel pretty good
+   * about the dependencies working the way they should. Still, you should make sure they do what you think
+   * their doing.
    *
    * Remember: Dependents and Dependees don't have to have the same parent list. They just have to be located
-   * some where in the "Root List" of the dependency sheet.
+   * some where in the "Root List" (or one of its sublists) of the dependency sheet.
    *
-   * Remember: When making dependencies you must use the exact names of the the parameter and parameter lists
-   * when specifying the dependent and the dependee. If you mispell the names, and there is no parameter or
-   * parameter list by the name in the Root List, the GUI won't even start up. It'll just throw and error.
-   * Worse, if you mispelled a name and there is a parameter or parameter list by that name in the root list,
-   * then your GUI will probably behave erratically.
+   * Remember: When making dependencies you must use the exact names of the the parameter and/or parameter lists
+   * when specifying the dependent and the dependee. If you mispell the names, and there is no parameter and/or
+   * parameter list by the name in the Root List (or one of it's sublists), the GUI won't even start up. 
+   * It'll just throw and error. Worse, if you mispelled a name and there is a parameter or parameter list by 
+   * that name in the root list, then your GUI will probably behave erratically.
    *
    * Remmeber: Different depenencies have different requirements. Be sure to check the documentation of the
-   * dependency your using to make sure you're getting it right. Otherwise your (or worse, your users) might
+   * dependency you're using to make sure you're getting it right. Otherwise you (or worse, your users) might
    * have some nasty problems down the road. Most of the time, if you try to preform a dependency incorrectly
    * your program will compile but the GUI will throw an error before it ever opens.
    *
@@ -218,7 +216,7 @@ int main(){
    *
    * Remember: Arrays can't be dependees. If you would like this functionality please contact the author
    * of this package (Kurtis Nusbaum: klnusbaum@gmail.com), because he's thinking about including it in 
-   * a future release of this package.
+   * a future release.
    */
   return 0;
 }

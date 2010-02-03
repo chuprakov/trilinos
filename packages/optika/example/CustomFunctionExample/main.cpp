@@ -18,7 +18,7 @@
 
 /*
  * Don't worry about this little guy right now. We'll come back to it later.
- * I just needed to prototype it.
+ * We just needed to prototype it.
  */
 void customFunction(Teuchos::RCP<const Teuchos::ParameterList> currentParams);
 
@@ -26,12 +26,12 @@ int main(int argc, char* argv[])
 {
   /*
    * Sometimes, you would rather have a slightly different workflow than the one Optika offers by default.
-   * This is why Optika also offers a second, tighter workflow that works like this:
+   * This is why Optika also offers a second, tighter workflow that goes like this:
    * 	1. Construct a Parameter List of inputs.
    * 	2. Create a function which will run given the inputs.
    * 	3. Call getInput() like normal, except also pass the memory address of the function.
    * 	4. Everytime the user clicks the submit button on the GUI, your custom function will run.
-   * 	5. The user may click quit when they are finished and controll will be returned to you.
+   * 	5. The user may click quit when they are finished and control will be returned to you.
    * This alternative workflow allows the user to quickly tweak and re-try different parameter
    * configurations.
    */
@@ -82,3 +82,4 @@ void customFunction(Teuchos::RCP<const Teuchos::ParameterList> currentParams){
   std::cout << "The Tolerence choosen was: " << currentParams->get<double>("Tolerance") << "\n"; 
   std::cout << "The Preconditioner type was set to: " << currentParams->sublist("Preconditioner").get<std::string>("Type") << "\n";
 }
+
