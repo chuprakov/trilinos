@@ -56,6 +56,7 @@ APPEND_SET(HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_utils_templ.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_Table.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_TableRepos.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_TableRepos_Utils.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CNOX_Interface.hpp
   )
 

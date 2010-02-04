@@ -127,12 +127,27 @@ CTeuchos::getany( CT_Teuchos_any_ID_t id )
     return CTrilinos::tableRepos().get<Teuchos::any, CT_Teuchos_any_ID_t>(id);
 }
 
+/* get Teuchos::any from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Teuchos::any>
+CTeuchos::getany( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Teuchos::any, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Teuchos::any from either the const or non-const table
  * using CT_Teuchos_any_ID */
 const Teuchos::RCP<const Teuchos::any>
 CTeuchos::getConstany( CT_Teuchos_any_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Teuchos::any, CT_Teuchos_any_ID_t>(id);
+}
+
+/* get const Teuchos::any from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Teuchos::any>
+CTeuchos::getConstany( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Teuchos::any, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Teuchos::any in non-const table */

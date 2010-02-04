@@ -192,12 +192,27 @@ CEpetra::getVector( CT_Epetra_Vector_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(id);
 }
 
+/* get Epetra_Vector from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Vector>
+CEpetra::getVector( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_Vector, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_Vector from either the const or non-const table
  * using CT_Epetra_Vector_ID */
 const Teuchos::RCP<const Epetra_Vector>
 CEpetra::getConstVector( CT_Epetra_Vector_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_Vector, CT_Epetra_Vector_ID_t>(id);
+}
+
+/* get const Epetra_Vector from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Vector>
+CEpetra::getConstVector( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_Vector, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_Vector in non-const table */

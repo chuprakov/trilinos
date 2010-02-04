@@ -387,12 +387,27 @@ CAztecOO::getAztecOO( CT_AztecOO_ID_t id )
     return CTrilinos::tableRepos().get<AztecOO, CT_AztecOO_ID_t>(id);
 }
 
+/* get AztecOO from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<AztecOO>
+CAztecOO::getAztecOO( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<AztecOO, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const AztecOO from either the const or non-const table
  * using CT_AztecOO_ID */
 const Teuchos::RCP<const AztecOO>
 CAztecOO::getConstAztecOO( CT_AztecOO_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<AztecOO, CT_AztecOO_ID_t>(id);
+}
+
+/* get const AztecOO from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const AztecOO>
+CAztecOO::getConstAztecOO( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<AztecOO, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store AztecOO in non-const table */

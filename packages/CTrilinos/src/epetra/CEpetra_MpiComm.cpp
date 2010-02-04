@@ -301,12 +301,27 @@ CEpetra::getMpiComm( CT_Epetra_MpiComm_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_MpiComm, CT_Epetra_MpiComm_ID_t>(id);
 }
 
+/* get Epetra_MpiComm from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_MpiComm>
+CEpetra::getMpiComm( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_MpiComm, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_MpiComm from either the const or non-const table
  * using CT_Epetra_MpiComm_ID */
 const Teuchos::RCP<const Epetra_MpiComm>
 CEpetra::getConstMpiComm( CT_Epetra_MpiComm_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_MpiComm, CT_Epetra_MpiComm_ID_t>(id);
+}
+
+/* get const Epetra_MpiComm from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_MpiComm>
+CEpetra::getConstMpiComm( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_MpiComm, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_MpiComm in non-const table */

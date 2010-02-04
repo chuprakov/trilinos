@@ -434,12 +434,27 @@ CEpetra::getMultiVector( CT_Epetra_MultiVector_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_MultiVector, CT_Epetra_MultiVector_ID_t>(id);
 }
 
+/* get Epetra_MultiVector from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_MultiVector>
+CEpetra::getMultiVector( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_MultiVector, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_MultiVector from either the const or non-const table
  * using CT_Epetra_MultiVector_ID */
 const Teuchos::RCP<const Epetra_MultiVector>
 CEpetra::getConstMultiVector( CT_Epetra_MultiVector_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_MultiVector, CT_Epetra_MultiVector_ID_t>(id);
+}
+
+/* get const Epetra_MultiVector from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_MultiVector>
+CEpetra::getConstMultiVector( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_MultiVector, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_MultiVector in non-const table */

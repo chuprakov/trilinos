@@ -904,12 +904,27 @@ CEpetra::getLAPACK( CT_Epetra_LAPACK_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(id);
 }
 
+/* get Epetra_LAPACK from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_LAPACK>
+CEpetra::getLAPACK( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_LAPACK, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_LAPACK from either the const or non-const table
  * using CT_Epetra_LAPACK_ID */
 const Teuchos::RCP<const Epetra_LAPACK>
 CEpetra::getConstLAPACK( CT_Epetra_LAPACK_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(id);
+}
+
+/* get const Epetra_LAPACK from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_LAPACK>
+CEpetra::getConstLAPACK( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_LAPACK, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_LAPACK in non-const table */

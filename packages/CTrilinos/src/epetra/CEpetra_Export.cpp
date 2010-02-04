@@ -165,12 +165,27 @@ CEpetra::getExport( CT_Epetra_Export_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_Export, CT_Epetra_Export_ID_t>(id);
 }
 
+/* get Epetra_Export from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Export>
+CEpetra::getExport( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_Export, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_Export from either the const or non-const table
  * using CT_Epetra_Export_ID */
 const Teuchos::RCP<const Epetra_Export>
 CEpetra::getConstExport( CT_Epetra_Export_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_Export, CT_Epetra_Export_ID_t>(id);
+}
+
+/* get const Epetra_Export from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Export>
+CEpetra::getConstExport( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_Export, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_Export in non-const table */

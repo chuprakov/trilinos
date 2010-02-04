@@ -89,12 +89,27 @@ CEpetra::getDirectory( CT_Epetra_Directory_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_Directory, CT_Epetra_Directory_ID_t>(id);
 }
 
+/* get Epetra_Directory from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Directory>
+CEpetra::getDirectory( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_Directory, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_Directory from either the const or non-const table
  * using CT_Epetra_Directory_ID */
 const Teuchos::RCP<const Epetra_Directory>
 CEpetra::getConstDirectory( CT_Epetra_Directory_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_Directory, CT_Epetra_Directory_ID_t>(id);
+}
+
+/* get const Epetra_Directory from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Directory>
+CEpetra::getConstDirectory( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_Directory, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_Directory in non-const table */

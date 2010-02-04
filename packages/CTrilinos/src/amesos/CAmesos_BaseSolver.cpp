@@ -195,12 +195,27 @@ CAmesos::getBaseSolver( CT_Amesos_BaseSolver_ID_t id )
     return CTrilinos::tableRepos().get<Amesos_BaseSolver, CT_Amesos_BaseSolver_ID_t>(id);
 }
 
+/* get Amesos_BaseSolver from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Amesos_BaseSolver>
+CAmesos::getBaseSolver( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Amesos_BaseSolver, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Amesos_BaseSolver from either the const or non-const table
  * using CT_Amesos_BaseSolver_ID */
 const Teuchos::RCP<const Amesos_BaseSolver>
 CAmesos::getConstBaseSolver( CT_Amesos_BaseSolver_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Amesos_BaseSolver, CT_Amesos_BaseSolver_ID_t>(id);
+}
+
+/* get const Amesos_BaseSolver from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Amesos_BaseSolver>
+CAmesos::getConstBaseSolver( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Amesos_BaseSolver, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Amesos_BaseSolver in non-const table */

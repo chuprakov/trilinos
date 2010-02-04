@@ -216,12 +216,27 @@ CEpetra::getLinearProblem( CT_Epetra_LinearProblem_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_LinearProblem, CT_Epetra_LinearProblem_ID_t>(id);
 }
 
+/* get Epetra_LinearProblem from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_LinearProblem>
+CEpetra::getLinearProblem( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_LinearProblem, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_LinearProblem from either the const or non-const table
  * using CT_Epetra_LinearProblem_ID */
 const Teuchos::RCP<const Epetra_LinearProblem>
 CEpetra::getConstLinearProblem( CT_Epetra_LinearProblem_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_LinearProblem, CT_Epetra_LinearProblem_ID_t>(id);
+}
+
+/* get const Epetra_LinearProblem from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_LinearProblem>
+CEpetra::getConstLinearProblem( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_LinearProblem, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_LinearProblem in non-const table */

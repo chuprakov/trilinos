@@ -261,12 +261,27 @@ CEpetra::getBLAS( CT_Epetra_BLAS_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_BLAS, CT_Epetra_BLAS_ID_t>(id);
 }
 
+/* get Epetra_BLAS from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_BLAS>
+CEpetra::getBLAS( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_BLAS, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_BLAS from either the const or non-const table
  * using CT_Epetra_BLAS_ID */
 const Teuchos::RCP<const Epetra_BLAS>
 CEpetra::getConstBLAS( CT_Epetra_BLAS_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_BLAS, CT_Epetra_BLAS_ID_t>(id);
+}
+
+/* get const Epetra_BLAS from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_BLAS>
+CEpetra::getConstBLAS( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_BLAS, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_BLAS in non-const table */

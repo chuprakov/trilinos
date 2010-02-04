@@ -840,12 +840,27 @@ CEpetra::getCrsMatrix( CT_Epetra_CrsMatrix_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_CrsMatrix, CT_Epetra_CrsMatrix_ID_t>(id);
 }
 
+/* get Epetra_CrsMatrix from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_CrsMatrix>
+CEpetra::getCrsMatrix( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_CrsMatrix from either the const or non-const table
  * using CT_Epetra_CrsMatrix_ID */
 const Teuchos::RCP<const Epetra_CrsMatrix>
 CEpetra::getConstCrsMatrix( CT_Epetra_CrsMatrix_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, CT_Epetra_CrsMatrix_ID_t>(id);
+}
+
+/* get const Epetra_CrsMatrix from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_CrsMatrix>
+CEpetra::getConstCrsMatrix( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_CrsMatrix in non-const table */

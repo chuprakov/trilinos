@@ -142,12 +142,27 @@ CEpetra::getJadMatrix( CT_Epetra_JadMatrix_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_JadMatrix, CT_Epetra_JadMatrix_ID_t>(id);
 }
 
+/* get Epetra_JadMatrix from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_JadMatrix>
+CEpetra::getJadMatrix( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_JadMatrix, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_JadMatrix from either the const or non-const table
  * using CT_Epetra_JadMatrix_ID */
 const Teuchos::RCP<const Epetra_JadMatrix>
 CEpetra::getConstJadMatrix( CT_Epetra_JadMatrix_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_JadMatrix, CT_Epetra_JadMatrix_ID_t>(id);
+}
+
+/* get const Epetra_JadMatrix from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_JadMatrix>
+CEpetra::getConstJadMatrix( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_JadMatrix, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_JadMatrix in non-const table */

@@ -339,12 +339,27 @@ CEpetra::getSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, CT_Epetra_SerialDenseMatrix_ID_t>(id);
 }
 
+/* get Epetra_SerialDenseMatrix from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_SerialDenseMatrix>
+CEpetra::getSerialDenseMatrix( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_SerialDenseMatrix from either the const or non-const table
  * using CT_Epetra_SerialDenseMatrix_ID */
 const Teuchos::RCP<const Epetra_SerialDenseMatrix>
 CEpetra::getConstSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, CT_Epetra_SerialDenseMatrix_ID_t>(id);
+}
+
+/* get const Epetra_SerialDenseMatrix from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_SerialDenseMatrix>
+CEpetra::getConstSerialDenseMatrix( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_SerialDenseMatrix in non-const table */

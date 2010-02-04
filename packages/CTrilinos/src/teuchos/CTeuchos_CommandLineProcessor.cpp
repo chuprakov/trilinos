@@ -182,12 +182,27 @@ CTeuchos::getCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id )
     return CTrilinos::tableRepos().get<Teuchos::CommandLineProcessor, CT_Teuchos_CommandLineProcessor_ID_t>(id);
 }
 
+/* get Teuchos::CommandLineProcessor from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Teuchos::CommandLineProcessor>
+CTeuchos::getCommandLineProcessor( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Teuchos::CommandLineProcessor, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Teuchos::CommandLineProcessor from either the const or non-const table
  * using CT_Teuchos_CommandLineProcessor_ID */
 const Teuchos::RCP<const Teuchos::CommandLineProcessor>
 CTeuchos::getConstCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Teuchos::CommandLineProcessor, CT_Teuchos_CommandLineProcessor_ID_t>(id);
+}
+
+/* get const Teuchos::CommandLineProcessor from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Teuchos::CommandLineProcessor>
+CTeuchos::getConstCommandLineProcessor( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Teuchos::CommandLineProcessor, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Teuchos::CommandLineProcessor in non-const table */

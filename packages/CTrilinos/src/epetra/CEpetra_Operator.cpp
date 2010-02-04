@@ -141,12 +141,27 @@ CEpetra::getOperator( CT_Epetra_Operator_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_Operator, CT_Epetra_Operator_ID_t>(id);
 }
 
+/* get Epetra_Operator from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Operator>
+CEpetra::getOperator( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_Operator, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_Operator from either the const or non-const table
  * using CT_Epetra_Operator_ID */
 const Teuchos::RCP<const Epetra_Operator>
 CEpetra::getConstOperator( CT_Epetra_Operator_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_Operator, CT_Epetra_Operator_ID_t>(id);
+}
+
+/* get const Epetra_Operator from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Operator>
+CEpetra::getConstOperator( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_Operator, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_Operator in non-const table */

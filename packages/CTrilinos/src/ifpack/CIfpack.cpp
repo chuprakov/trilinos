@@ -122,12 +122,27 @@ CIfpack::getIfpack( CT_Ifpack_ID_t id )
     return CTrilinos::tableRepos().get<Ifpack, CT_Ifpack_ID_t>(id);
 }
 
+/* get Ifpack from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Ifpack>
+CIfpack::getIfpack( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Ifpack, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Ifpack from either the const or non-const table
  * using CT_Ifpack_ID */
 const Teuchos::RCP<const Ifpack>
 CIfpack::getConstIfpack( CT_Ifpack_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Ifpack, CT_Ifpack_ID_t>(id);
+}
+
+/* get const Ifpack from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Ifpack>
+CIfpack::getConstIfpack( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Ifpack, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Ifpack in non-const table */

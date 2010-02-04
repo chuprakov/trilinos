@@ -123,12 +123,27 @@ CEpetra::getOffsetIndex( CT_Epetra_OffsetIndex_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_OffsetIndex, CT_Epetra_OffsetIndex_ID_t>(id);
 }
 
+/* get Epetra_OffsetIndex from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_OffsetIndex>
+CEpetra::getOffsetIndex( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_OffsetIndex, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_OffsetIndex from either the const or non-const table
  * using CT_Epetra_OffsetIndex_ID */
 const Teuchos::RCP<const Epetra_OffsetIndex>
 CEpetra::getConstOffsetIndex( CT_Epetra_OffsetIndex_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, CT_Epetra_OffsetIndex_ID_t>(id);
+}
+
+/* get const Epetra_OffsetIndex from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_OffsetIndex>
+CEpetra::getConstOffsetIndex( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_OffsetIndex in non-const table */

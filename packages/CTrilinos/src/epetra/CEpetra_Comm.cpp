@@ -256,12 +256,27 @@ CEpetra::getComm( CT_Epetra_Comm_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_Comm, CT_Epetra_Comm_ID_t>(id);
 }
 
+/* get Epetra_Comm from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Comm>
+CEpetra::getComm( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_Comm, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_Comm from either the const or non-const table
  * using CT_Epetra_Comm_ID */
 const Teuchos::RCP<const Epetra_Comm>
 CEpetra::getConstComm( CT_Epetra_Comm_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(id);
+}
+
+/* get const Epetra_Comm from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Comm>
+CEpetra::getConstComm( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_Comm, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_Comm in non-const table */

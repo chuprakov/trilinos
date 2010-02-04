@@ -179,12 +179,27 @@ CEpetra::getDistributor( CT_Epetra_Distributor_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_Distributor, CT_Epetra_Distributor_ID_t>(id);
 }
 
+/* get Epetra_Distributor from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Distributor>
+CEpetra::getDistributor( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_Distributor, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_Distributor from either the const or non-const table
  * using CT_Epetra_Distributor_ID */
 const Teuchos::RCP<const Epetra_Distributor>
 CEpetra::getConstDistributor( CT_Epetra_Distributor_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_Distributor, CT_Epetra_Distributor_ID_t>(id);
+}
+
+/* get const Epetra_Distributor from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Distributor>
+CEpetra::getConstDistributor( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_Distributor, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_Distributor in non-const table */

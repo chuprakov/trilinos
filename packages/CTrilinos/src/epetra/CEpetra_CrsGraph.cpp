@@ -603,12 +603,27 @@ CEpetra::getCrsGraph( CT_Epetra_CrsGraph_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_CrsGraph, CT_Epetra_CrsGraph_ID_t>(id);
 }
 
+/* get Epetra_CrsGraph from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_CrsGraph>
+CEpetra::getCrsGraph( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_CrsGraph, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_CrsGraph from either the const or non-const table
  * using CT_Epetra_CrsGraph_ID */
 const Teuchos::RCP<const Epetra_CrsGraph>
 CEpetra::getConstCrsGraph( CT_Epetra_CrsGraph_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_CrsGraph, CT_Epetra_CrsGraph_ID_t>(id);
+}
+
+/* get const Epetra_CrsGraph from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_CrsGraph>
+CEpetra::getConstCrsGraph( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_CrsGraph, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_CrsGraph in non-const table */

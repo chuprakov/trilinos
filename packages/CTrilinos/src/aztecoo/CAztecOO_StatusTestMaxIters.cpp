@@ -124,12 +124,27 @@ CAztecOO::getStatusTestMaxIters( CT_AztecOO_StatusTestMaxIters_ID_t id )
     return CTrilinos::tableRepos().get<AztecOO_StatusTestMaxIters, CT_AztecOO_StatusTestMaxIters_ID_t>(id);
 }
 
+/* get AztecOO_StatusTestMaxIters from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<AztecOO_StatusTestMaxIters>
+CAztecOO::getStatusTestMaxIters( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<AztecOO_StatusTestMaxIters, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const AztecOO_StatusTestMaxIters from either the const or non-const table
  * using CT_AztecOO_StatusTestMaxIters_ID */
 const Teuchos::RCP<const AztecOO_StatusTestMaxIters>
 CAztecOO::getConstStatusTestMaxIters( CT_AztecOO_StatusTestMaxIters_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<AztecOO_StatusTestMaxIters, CT_AztecOO_StatusTestMaxIters_ID_t>(id);
+}
+
+/* get const AztecOO_StatusTestMaxIters from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const AztecOO_StatusTestMaxIters>
+CAztecOO::getConstStatusTestMaxIters( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestMaxIters, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store AztecOO_StatusTestMaxIters in non-const table */

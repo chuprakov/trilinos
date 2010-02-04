@@ -113,12 +113,27 @@ CEpetra::getMap( CT_Epetra_Map_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_Map, CT_Epetra_Map_ID_t>(id);
 }
 
+/* get Epetra_Map from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Map>
+CEpetra::getMap( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_Map, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_Map from either the const or non-const table
  * using CT_Epetra_Map_ID */
 const Teuchos::RCP<const Epetra_Map>
 CEpetra::getConstMap( CT_Epetra_Map_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(id);
+}
+
+/* get const Epetra_Map from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Map>
+CEpetra::getConstMap( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_Map, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_Map in non-const table */

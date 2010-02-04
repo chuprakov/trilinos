@@ -185,12 +185,27 @@ CIfpack::getPreconditioner( CT_Ifpack_Preconditioner_ID_t id )
     return CTrilinos::tableRepos().get<Ifpack_Preconditioner, CT_Ifpack_Preconditioner_ID_t>(id);
 }
 
+/* get Ifpack_Preconditioner from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Ifpack_Preconditioner>
+CIfpack::getPreconditioner( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Ifpack_Preconditioner, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Ifpack_Preconditioner from either the const or non-const table
  * using CT_Ifpack_Preconditioner_ID */
 const Teuchos::RCP<const Ifpack_Preconditioner>
 CIfpack::getConstPreconditioner( CT_Ifpack_Preconditioner_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, CT_Ifpack_Preconditioner_ID_t>(id);
+}
+
+/* get const Ifpack_Preconditioner from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Ifpack_Preconditioner>
+CIfpack::getConstPreconditioner( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Ifpack_Preconditioner in non-const table */

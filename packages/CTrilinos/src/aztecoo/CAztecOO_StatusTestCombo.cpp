@@ -145,12 +145,27 @@ CAztecOO::getStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t id )
     return CTrilinos::tableRepos().get<AztecOO_StatusTestCombo, CT_AztecOO_StatusTestCombo_ID_t>(id);
 }
 
+/* get AztecOO_StatusTestCombo from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<AztecOO_StatusTestCombo>
+CAztecOO::getStatusTestCombo( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<AztecOO_StatusTestCombo, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const AztecOO_StatusTestCombo from either the const or non-const table
  * using CT_AztecOO_StatusTestCombo_ID */
 const Teuchos::RCP<const AztecOO_StatusTestCombo>
 CAztecOO::getConstStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<AztecOO_StatusTestCombo, CT_AztecOO_StatusTestCombo_ID_t>(id);
+}
+
+/* get const AztecOO_StatusTestCombo from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const AztecOO_StatusTestCombo>
+CAztecOO::getConstStatusTestCombo( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestCombo, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store AztecOO_StatusTestCombo in non-const table */

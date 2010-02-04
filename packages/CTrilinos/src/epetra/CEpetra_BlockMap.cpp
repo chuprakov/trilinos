@@ -381,12 +381,27 @@ CEpetra::getBlockMap( CT_Epetra_BlockMap_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_BlockMap, CT_Epetra_BlockMap_ID_t>(id);
 }
 
+/* get Epetra_BlockMap from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_BlockMap>
+CEpetra::getBlockMap( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_BlockMap, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_BlockMap from either the const or non-const table
  * using CT_Epetra_BlockMap_ID */
 const Teuchos::RCP<const Epetra_BlockMap>
 CEpetra::getConstBlockMap( CT_Epetra_BlockMap_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_BlockMap, CT_Epetra_BlockMap_ID_t>(id);
+}
+
+/* get const Epetra_BlockMap from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_BlockMap>
+CEpetra::getConstBlockMap( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_BlockMap in non-const table */

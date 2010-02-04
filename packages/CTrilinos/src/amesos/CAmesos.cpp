@@ -104,12 +104,27 @@ CAmesos::getAmesos( CT_Amesos_ID_t id )
     return CTrilinos::tableRepos().get<Amesos, CT_Amesos_ID_t>(id);
 }
 
+/* get Amesos from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Amesos>
+CAmesos::getAmesos( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Amesos, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Amesos from either the const or non-const table
  * using CT_Amesos_ID */
 const Teuchos::RCP<const Amesos>
 CAmesos::getConstAmesos( CT_Amesos_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Amesos, CT_Amesos_ID_t>(id);
+}
+
+/* get const Amesos from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Amesos>
+CAmesos::getConstAmesos( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Amesos, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Amesos in non-const table */

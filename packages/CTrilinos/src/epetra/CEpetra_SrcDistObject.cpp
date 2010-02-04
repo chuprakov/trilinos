@@ -78,12 +78,27 @@ CEpetra::getSrcDistObject( CT_Epetra_SrcDistObject_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_SrcDistObject, CT_Epetra_SrcDistObject_ID_t>(id);
 }
 
+/* get Epetra_SrcDistObject from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_SrcDistObject>
+CEpetra::getSrcDistObject( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_SrcDistObject, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_SrcDistObject from either the const or non-const table
  * using CT_Epetra_SrcDistObject_ID */
 const Teuchos::RCP<const Epetra_SrcDistObject>
 CEpetra::getConstSrcDistObject( CT_Epetra_SrcDistObject_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_SrcDistObject, CT_Epetra_SrcDistObject_ID_t>(id);
+}
+
+/* get const Epetra_SrcDistObject from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_SrcDistObject>
+CEpetra::getConstSrcDistObject( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_SrcDistObject, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_SrcDistObject in non-const table */

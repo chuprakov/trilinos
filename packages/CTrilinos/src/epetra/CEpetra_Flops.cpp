@@ -101,12 +101,27 @@ CEpetra::getFlops( CT_Epetra_Flops_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_Flops, CT_Epetra_Flops_ID_t>(id);
 }
 
+/* get Epetra_Flops from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Flops>
+CEpetra::getFlops( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_Flops, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_Flops from either the const or non-const table
  * using CT_Epetra_Flops_ID */
 const Teuchos::RCP<const Epetra_Flops>
 CEpetra::getConstFlops( CT_Epetra_Flops_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_Flops, CT_Epetra_Flops_ID_t>(id);
+}
+
+/* get const Epetra_Flops from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Flops>
+CEpetra::getConstFlops( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_Flops, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_Flops in non-const table */

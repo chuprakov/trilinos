@@ -360,12 +360,27 @@ CEpetra::getFECrsMatrix( CT_Epetra_FECrsMatrix_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, CT_Epetra_FECrsMatrix_ID_t>(id);
 }
 
+/* get Epetra_FECrsMatrix from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_FECrsMatrix>
+CEpetra::getFECrsMatrix( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_FECrsMatrix from either the const or non-const table
  * using CT_Epetra_FECrsMatrix_ID */
 const Teuchos::RCP<const Epetra_FECrsMatrix>
 CEpetra::getConstFECrsMatrix( CT_Epetra_FECrsMatrix_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_FECrsMatrix, CT_Epetra_FECrsMatrix_ID_t>(id);
+}
+
+/* get const Epetra_FECrsMatrix from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_FECrsMatrix>
+CEpetra::getConstFECrsMatrix( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_FECrsMatrix, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_FECrsMatrix in non-const table */

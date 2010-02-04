@@ -108,12 +108,27 @@ CEpetra::getTime( CT_Epetra_Time_ID_t id )
     return CTrilinos::tableRepos().get<Epetra_Time, CT_Epetra_Time_ID_t>(id);
 }
 
+/* get Epetra_Time from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Time>
+CEpetra::getTime( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Epetra_Time, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Epetra_Time from either the const or non-const table
  * using CT_Epetra_Time_ID */
 const Teuchos::RCP<const Epetra_Time>
 CEpetra::getConstTime( CT_Epetra_Time_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Epetra_Time, CT_Epetra_Time_ID_t>(id);
+}
+
+/* get const Epetra_Time from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Time>
+CEpetra::getConstTime( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Epetra_Time, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Epetra_Time in non-const table */

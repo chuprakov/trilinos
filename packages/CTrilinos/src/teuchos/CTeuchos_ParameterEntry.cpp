@@ -193,12 +193,27 @@ CTeuchos::getParameterEntry( CT_Teuchos_ParameterEntry_ID_t id )
     return CTrilinos::tableRepos().get<Teuchos::ParameterEntry, CT_Teuchos_ParameterEntry_ID_t>(id);
 }
 
+/* get Teuchos::ParameterEntry from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Teuchos::ParameterEntry>
+CTeuchos::getParameterEntry( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().get<Teuchos::ParameterEntry, CTrilinos_Universal_ID_t>(id);
+}
+
 /* get const Teuchos::ParameterEntry from either the const or non-const table
  * using CT_Teuchos_ParameterEntry_ID */
 const Teuchos::RCP<const Teuchos::ParameterEntry>
 CTeuchos::getConstParameterEntry( CT_Teuchos_ParameterEntry_ID_t id )
 {
     return CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, CT_Teuchos_ParameterEntry_ID_t>(id);
+}
+
+/* get const Teuchos::ParameterEntry from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Teuchos::ParameterEntry>
+CTeuchos::getConstParameterEntry( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, CTrilinos_Universal_ID_t>(id);
 }
 
 /* store Teuchos::ParameterEntry in non-const table */
