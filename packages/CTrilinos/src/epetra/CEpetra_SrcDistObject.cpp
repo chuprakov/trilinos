@@ -49,6 +49,18 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_Epetra_SrcDistObject_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t Epetra_SrcDistObject_Generalize ( 
+  CT_Epetra_SrcDistObject_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_SrcDistObject_ID_t>(id);
+}
+
 void Epetra_SrcDistObject_Destroy ( 
   CT_Epetra_SrcDistObject_ID_t * selfID )
 {
@@ -58,8 +70,10 @@ void Epetra_SrcDistObject_Destroy (
 CT_Epetra_BlockMap_ID_t Epetra_SrcDistObject_Map ( 
   CT_Epetra_SrcDistObject_ID_t selfID )
 {
-    return CEpetra::storeConstBlockMap(
-        &( CEpetra::getConstSrcDistObject(selfID)->Map() ));
+    return CTrilinos::tableRepos().store<Epetra_BlockMap, 
+        CT_Epetra_BlockMap_ID_t>(
+        &( CTrilinos::tableRepos().getConst<Epetra_SrcDistObject, 
+        CT_Epetra_SrcDistObject_ID_t>(selfID)->Map() ));
 }
 
 

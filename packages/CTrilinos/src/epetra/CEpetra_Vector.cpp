@@ -50,41 +50,58 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_Epetra_Vector_ID_t Epetra_Vector_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_Epetra_Vector_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t Epetra_Vector_Generalize ( 
+  CT_Epetra_Vector_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Vector_ID_t>(id);
+}
+
 CT_Epetra_Vector_ID_t Epetra_Vector_Create ( 
   CT_Epetra_BlockMap_ID_t MapID, boolean zeroOut )
 {
-    return CTrilinos::tableRepos().store<Epetra_Vector, 
-        CT_Epetra_Vector_ID_t>(new Epetra_Vector(
-        *CEpetra::getConstBlockMap(MapID), ((
-        zeroOut) != FALSE ? true : false)));
+    const Teuchos::RCP<const Epetra_BlockMap> Map = 
+        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
+        CT_Epetra_BlockMap_ID_t>(MapID);
+    return CTrilinos::tableRepos().store<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        new Epetra_Vector(*Map, ((zeroOut) != FALSE ? true : false)));
 }
 
 CT_Epetra_Vector_ID_t Epetra_Vector_Duplicate ( 
   CT_Epetra_Vector_ID_t SourceID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Vector, 
-        CT_Epetra_Vector_ID_t>(new Epetra_Vector(
-        *CEpetra::getConstVector(SourceID)));
+    const Teuchos::RCP<const Epetra_Vector> Source = 
+        CTrilinos::tableRepos().getConst<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        SourceID);
+    return CTrilinos::tableRepos().store<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        new Epetra_Vector(*Source));
 }
 
 CT_Epetra_Vector_ID_t Epetra_Vector_Create_FromArray ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_BlockMap_ID_t MapID, 
   double * V )
 {
-    return CTrilinos::tableRepos().store<Epetra_Vector, 
-        CT_Epetra_Vector_ID_t>(new Epetra_Vector(
-        (Epetra_DataAccess) CV, *CEpetra::getConstBlockMap(MapID), 
-        V));
+    const Teuchos::RCP<const Epetra_BlockMap> Map = 
+        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
+        CT_Epetra_BlockMap_ID_t>(MapID);
+    return CTrilinos::tableRepos().store<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        new Epetra_Vector((Epetra_DataAccess) CV, *Map, V));
 }
 
 CT_Epetra_Vector_ID_t Epetra_Vector_FromSource ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_MultiVector_ID_t SourceID, 
   int Index )
 {
-    return CTrilinos::tableRepos().store<Epetra_Vector, 
-        CT_Epetra_Vector_ID_t>(new Epetra_Vector(
-        (Epetra_DataAccess) CV, *CEpetra::getConstMultiVector(
-        SourceID), Index));
+    const Teuchos::RCP<const Epetra_MultiVector> Source = 
+        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(SourceID);
+    return CTrilinos::tableRepos().store<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        new Epetra_Vector((Epetra_DataAccess) CV, *Source, Index));
 }
 
 void Epetra_Vector_Destroy ( CT_Epetra_Vector_ID_t * selfID )
@@ -96,82 +113,88 @@ int Epetra_Vector_ReplaceGlobalValues (
   CT_Epetra_Vector_ID_t selfID, int NumEntries, double * Values, 
   int * Indices )
 {
-    return CEpetra::getVector(selfID)->ReplaceGlobalValues(
-        NumEntries, Values, Indices);
+    return CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        selfID)->ReplaceGlobalValues(NumEntries, Values, Indices);
 }
 
 int Epetra_Vector_ReplaceMyValues ( 
   CT_Epetra_Vector_ID_t selfID, int NumEntries, double * Values, 
   int * Indices )
 {
-    return CEpetra::getVector(selfID)->ReplaceMyValues(NumEntries, 
-        Values, Indices);
+    return CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        selfID)->ReplaceMyValues(NumEntries, Values, Indices);
 }
 
 int Epetra_Vector_SumIntoGlobalValues ( 
   CT_Epetra_Vector_ID_t selfID, int NumEntries, double * Values, 
   int * Indices )
 {
-    return CEpetra::getVector(selfID)->SumIntoGlobalValues(
-        NumEntries, Values, Indices);
+    return CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        selfID)->SumIntoGlobalValues(NumEntries, Values, Indices);
 }
 
 int Epetra_Vector_SumIntoMyValues ( 
   CT_Epetra_Vector_ID_t selfID, int NumEntries, double * Values, 
   int * Indices )
 {
-    return CEpetra::getVector(selfID)->SumIntoMyValues(NumEntries, 
-        Values, Indices);
+    return CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        selfID)->SumIntoMyValues(NumEntries, Values, Indices);
 }
 
 int Epetra_Vector_ReplaceGlobalValues_BlockPos ( 
   CT_Epetra_Vector_ID_t selfID, int NumEntries, int BlockOffset, 
   double * Values, int * Indices )
 {
-    return CEpetra::getVector(selfID)->ReplaceGlobalValues(
-        NumEntries, BlockOffset, Values, Indices);
+    return CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        selfID)->ReplaceGlobalValues(NumEntries, BlockOffset, Values, 
+        Indices);
 }
 
 int Epetra_Vector_ReplaceMyValues_BlockPos ( 
   CT_Epetra_Vector_ID_t selfID, int NumEntries, int BlockOffset, 
   double * Values, int * Indices )
 {
-    return CEpetra::getVector(selfID)->ReplaceMyValues(NumEntries, 
-        BlockOffset, Values, Indices);
+    return CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        selfID)->ReplaceMyValues(NumEntries, BlockOffset, Values, Indices);
 }
 
 int Epetra_Vector_SumIntoGlobalValues_BlockPos ( 
   CT_Epetra_Vector_ID_t selfID, int NumEntries, int BlockOffset, 
   double * Values, int * Indices )
 {
-    return CEpetra::getVector(selfID)->SumIntoGlobalValues(
-        NumEntries, BlockOffset, Values, Indices);
+    return CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        selfID)->SumIntoGlobalValues(NumEntries, BlockOffset, Values, 
+        Indices);
 }
 
 int Epetra_Vector_SumIntoMyValues_BlockPos ( 
   CT_Epetra_Vector_ID_t selfID, int NumEntries, int BlockOffset, 
   double * Values, int * Indices )
 {
-    return CEpetra::getVector(selfID)->SumIntoMyValues(NumEntries, 
-        BlockOffset, Values, Indices);
+    return CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        selfID)->SumIntoMyValues(NumEntries, BlockOffset, Values, Indices);
 }
 
 int Epetra_Vector_ExtractCopy ( 
   CT_Epetra_Vector_ID_t selfID, double * V )
 {
-    return CEpetra::getConstVector(selfID)->ExtractCopy(V);
+    return CTrilinos::tableRepos().getConst<Epetra_Vector, 
+        CT_Epetra_Vector_ID_t>(selfID)->ExtractCopy(V);
 }
 
 int Epetra_Vector_ExtractView ( 
   CT_Epetra_Vector_ID_t selfID, double ** V )
 {
-    return CEpetra::getConstVector(selfID)->ExtractView(V);
+    return CTrilinos::tableRepos().getConst<Epetra_Vector, 
+        CT_Epetra_Vector_ID_t>(selfID)->ExtractView(V);
 }
 
 double Epetra_Vector_getElement ( 
   CT_Epetra_Vector_ID_t selfID, int index )
 {
-    const Epetra_Vector& self = *( CEpetra::getConstVector(selfID) );
+    const Epetra_Vector& self = *( 
+        CTrilinos::tableRepos().getConst<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        selfID) );
 
     return self[index];
 }

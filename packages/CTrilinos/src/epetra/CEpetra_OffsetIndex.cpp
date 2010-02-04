@@ -51,16 +51,35 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t Epetra_OffsetIndex_Generalize ( 
+  CT_Epetra_OffsetIndex_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(id);
+}
+
 CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromImporter ( 
   CT_Epetra_CrsGraph_ID_t SourceGraphID, 
   CT_Epetra_CrsGraph_ID_t TargetGraphID, 
   CT_Epetra_Import_ID_t ImporterID )
 {
+    const Teuchos::RCP<const Epetra_CrsGraph> SourceGraph = 
+        CTrilinos::tableRepos().getConst<Epetra_CrsGraph, 
+        CT_Epetra_CrsGraph_ID_t>(SourceGraphID);
+    const Teuchos::RCP<const Epetra_CrsGraph> TargetGraph = 
+        CTrilinos::tableRepos().getConst<Epetra_CrsGraph, 
+        CT_Epetra_CrsGraph_ID_t>(TargetGraphID);
+    const Teuchos::RCP<Epetra_Import> Importer = 
+        CTrilinos::tableRepos().get<Epetra_Import, CT_Epetra_Import_ID_t>(
+        ImporterID);
     return CTrilinos::tableRepos().store<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(new Epetra_OffsetIndex(
-        *CEpetra::getConstCrsGraph(SourceGraphID), 
-        *CEpetra::getConstCrsGraph(TargetGraphID), 
-        *CEpetra::getImport(ImporterID)));
+        CT_Epetra_OffsetIndex_ID_t>(new Epetra_OffsetIndex(*SourceGraph, 
+        *TargetGraph, *Importer));
 }
 
 CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromExporter ( 
@@ -68,19 +87,28 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromExporter (
   CT_Epetra_CrsGraph_ID_t TargetGraphID, 
   CT_Epetra_Export_ID_t ExporterID )
 {
+    const Teuchos::RCP<const Epetra_CrsGraph> SourceGraph = 
+        CTrilinos::tableRepos().getConst<Epetra_CrsGraph, 
+        CT_Epetra_CrsGraph_ID_t>(SourceGraphID);
+    const Teuchos::RCP<const Epetra_CrsGraph> TargetGraph = 
+        CTrilinos::tableRepos().getConst<Epetra_CrsGraph, 
+        CT_Epetra_CrsGraph_ID_t>(TargetGraphID);
+    const Teuchos::RCP<Epetra_Export> Exporter = 
+        CTrilinos::tableRepos().get<Epetra_Export, CT_Epetra_Export_ID_t>(
+        ExporterID);
     return CTrilinos::tableRepos().store<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(new Epetra_OffsetIndex(
-        *CEpetra::getConstCrsGraph(SourceGraphID), 
-        *CEpetra::getConstCrsGraph(TargetGraphID), 
-        *CEpetra::getExport(ExporterID)));
+        CT_Epetra_OffsetIndex_ID_t>(new Epetra_OffsetIndex(*SourceGraph, 
+        *TargetGraph, *Exporter));
 }
 
 CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Duplicate ( 
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
+    const Teuchos::RCP<const Epetra_OffsetIndex> Indexor = 
+        CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, 
+        CT_Epetra_OffsetIndex_ID_t>(IndexorID);
     return CTrilinos::tableRepos().store<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(new Epetra_OffsetIndex(
-        *CEpetra::getConstOffsetIndex(IndexorID)));
+        CT_Epetra_OffsetIndex_ID_t>(new Epetra_OffsetIndex(*Indexor));
 }
 
 void Epetra_OffsetIndex_Destroy ( 
@@ -92,19 +120,22 @@ void Epetra_OffsetIndex_Destroy (
 int ** Epetra_OffsetIndex_SameOffsets ( 
   CT_Epetra_OffsetIndex_ID_t selfID )
 {
-    return CEpetra::getConstOffsetIndex(selfID)->SameOffsets();
+    return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, 
+        CT_Epetra_OffsetIndex_ID_t>(selfID)->SameOffsets();
 }
 
 int ** Epetra_OffsetIndex_PermuteOffsets ( 
   CT_Epetra_OffsetIndex_ID_t selfID )
 {
-    return CEpetra::getConstOffsetIndex(selfID)->PermuteOffsets();
+    return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, 
+        CT_Epetra_OffsetIndex_ID_t>(selfID)->PermuteOffsets();
 }
 
 int ** Epetra_OffsetIndex_RemoteOffsets ( 
   CT_Epetra_OffsetIndex_ID_t selfID )
 {
-    return CEpetra::getConstOffsetIndex(selfID)->RemoteOffsets();
+    return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, 
+        CT_Epetra_OffsetIndex_ID_t>(selfID)->RemoteOffsets();
 }
 
 

@@ -53,12 +53,24 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_AztecOO_StatusTestMaxIters_ID_t AztecOO_StatusTestMaxIters_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_AztecOO_StatusTestMaxIters_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t AztecOO_StatusTestMaxIters_Generalize ( 
+  CT_AztecOO_StatusTestMaxIters_ID_t id )
+{
+    return CTrilinos::abstractType<CT_AztecOO_StatusTestMaxIters_ID_t>(id);
+}
+
 CT_AztecOO_StatusTestMaxIters_ID_t AztecOO_StatusTestMaxIters_Create ( 
   int MaxIters )
 {
     return CTrilinos::tableRepos().store<AztecOO_StatusTestMaxIters, 
-        CT_AztecOO_StatusTestMaxIters_ID_t>(
-        new AztecOO_StatusTestMaxIters(MaxIters));
+        CT_AztecOO_StatusTestMaxIters_ID_t>(new AztecOO_StatusTestMaxIters(
+        MaxIters));
 }
 
 void AztecOO_StatusTestMaxIters_Destroy ( 
@@ -70,7 +82,8 @@ void AztecOO_StatusTestMaxIters_Destroy (
 boolean AztecOO_StatusTestMaxIters_ResidualVectorRequired ( 
   CT_AztecOO_StatusTestMaxIters_ID_t selfID )
 {
-    return ((CAztecOO::getConstStatusTestMaxIters(
+    return ((CTrilinos::tableRepos().getConst<AztecOO_StatusTestMaxIters, 
+        CT_AztecOO_StatusTestMaxIters_ID_t>(
         selfID)->ResidualVectorRequired()) ? TRUE : FALSE);
 }
 
@@ -79,33 +92,36 @@ CT_AztecOO_StatusType_E_t AztecOO_StatusTestMaxIters_CheckStatus (
   CT_Epetra_MultiVector_ID_t CurrentResVectorID, 
   double CurrentResNormEst, boolean SolutionUpdated )
 {
-    return (CT_AztecOO_StatusType_E_t)(
-         CAztecOO::getStatusTestMaxIters(selfID)->CheckStatus(
-        CurrentIter, CEpetra::getMultiVector(
-        CurrentResVectorID).getRawPtr(), CurrentResNormEst, ((
-        SolutionUpdated) != FALSE ? true : false)) );
+    const Teuchos::RCP<Epetra_MultiVector> CurrentResVector = 
+        CTrilinos::tableRepos().get<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(CurrentResVectorID);
+    return (CT_AztecOO_StatusType_E_t)( 
+        CTrilinos::tableRepos().get<AztecOO_StatusTestMaxIters, 
+        CT_AztecOO_StatusTestMaxIters_ID_t>(selfID)->CheckStatus(CurrentIter, 
+        CurrentResVector.getRawPtr(), CurrentResNormEst, ((SolutionUpdated) != 
+        FALSE ? true : false)) );
 }
 
 CT_AztecOO_StatusType_E_t AztecOO_StatusTestMaxIters_GetStatus ( 
   CT_AztecOO_StatusTestMaxIters_ID_t selfID )
 {
-    return (CT_AztecOO_StatusType_E_t)(
-         CAztecOO::getConstStatusTestMaxIters(
-        selfID)->GetStatus() );
+    return (CT_AztecOO_StatusType_E_t)( 
+        CTrilinos::tableRepos().getConst<AztecOO_StatusTestMaxIters, 
+        CT_AztecOO_StatusTestMaxIters_ID_t>(selfID)->GetStatus() );
 }
 
 int AztecOO_StatusTestMaxIters_GetMaxIters ( 
   CT_AztecOO_StatusTestMaxIters_ID_t selfID )
 {
-    return CAztecOO::getConstStatusTestMaxIters(
-        selfID)->GetMaxIters();
+    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestMaxIters, 
+        CT_AztecOO_StatusTestMaxIters_ID_t>(selfID)->GetMaxIters();
 }
 
 int AztecOO_StatusTestMaxIters_GetNumIters ( 
   CT_AztecOO_StatusTestMaxIters_ID_t selfID )
 {
-    return CAztecOO::getConstStatusTestMaxIters(
-        selfID)->GetNumIters();
+    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestMaxIters, 
+        CT_AztecOO_StatusTestMaxIters_ID_t>(selfID)->GetNumIters();
 }
 
 

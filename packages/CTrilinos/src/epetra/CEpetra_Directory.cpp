@@ -49,6 +49,18 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_Epetra_Directory_ID_t Epetra_Directory_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_Epetra_Directory_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t Epetra_Directory_Generalize ( 
+  CT_Epetra_Directory_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Directory_ID_t>(id);
+}
+
 void Epetra_Directory_Destroy ( CT_Epetra_Directory_ID_t * selfID )
 {
     CTrilinos::tableRepos().remove(selfID);
@@ -60,16 +72,20 @@ int Epetra_Directory_GetDirectoryEntries (
   int * LocalEntries, int * EntrySizes, 
   boolean high_rank_sharing_procs )
 {
-    return CEpetra::getConstDirectory(selfID)->GetDirectoryEntries(
-        *CEpetra::getConstBlockMap(MapID), NumEntries, 
-        GlobalEntries, Procs, LocalEntries, EntrySizes, ((
+    const Teuchos::RCP<const Epetra_BlockMap> Map = 
+        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
+        CT_Epetra_BlockMap_ID_t>(MapID);
+    return CTrilinos::tableRepos().getConst<Epetra_Directory, 
+        CT_Epetra_Directory_ID_t>(selfID)->GetDirectoryEntries(*Map, 
+        NumEntries, GlobalEntries, Procs, LocalEntries, EntrySizes, ((
         high_rank_sharing_procs) != FALSE ? true : false));
 }
 
 boolean Epetra_Directory_GIDsAllUniquelyOwned ( 
   CT_Epetra_Directory_ID_t selfID )
 {
-    return ((CEpetra::getConstDirectory(
+    return ((CTrilinos::tableRepos().getConst<Epetra_Directory, 
+        CT_Epetra_Directory_ID_t>(
         selfID)->GIDsAllUniquelyOwned()) ? TRUE : FALSE);
 }
 

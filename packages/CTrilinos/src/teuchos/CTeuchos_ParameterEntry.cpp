@@ -53,16 +53,17 @@ extern "C" {
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterEntry_Create (  )
 {
     return CTrilinos::tableRepos().store<Teuchos::ParameterEntry, 
-        CT_Teuchos_ParameterEntry_ID_t>(
-        new Teuchos::ParameterEntry());
+        CT_Teuchos_ParameterEntry_ID_t>(new Teuchos::ParameterEntry());
 }
 
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterEntry_Duplicate ( 
   CT_Teuchos_ParameterEntry_ID_t sourceID )
 {
+    const Teuchos::RCP<const Teuchos::ParameterEntry> source = 
+        CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(sourceID);
     return CTrilinos::tableRepos().store<Teuchos::ParameterEntry, 
-        CT_Teuchos_ParameterEntry_ID_t>(new Teuchos::ParameterEntry(
-        *CTeuchos::getConstParameterEntry(sourceID)));
+        CT_Teuchos_ParameterEntry_ID_t>(new Teuchos::ParameterEntry(*source));
 }
 
 void Teuchos_ParameterEntry_Destroy ( 
@@ -75,15 +76,19 @@ void Teuchos_ParameterEntry_setAnyValue (
   CT_Teuchos_ParameterEntry_ID_t selfID, 
   CT_Teuchos_any_ID_t valueID, boolean isDefault )
 {
-    CTeuchos::getParameterEntry(selfID)->setAnyValue(
-        *CTeuchos::getConstany(valueID), ((
+    const Teuchos::RCP<const Teuchos::any> value = 
+        CTrilinos::tableRepos().getConst<Teuchos::any, CT_Teuchos_any_ID_t>(
+        valueID);
+    CTrilinos::tableRepos().get<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(selfID)->setAnyValue(*value, ((
         isDefault) != FALSE ? true : false));
 }
 
 void Teuchos_ParameterEntry_setDocString ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, const char docString[] )
 {
-    CTeuchos::getParameterEntry(selfID)->setDocString(std::string(
+    CTrilinos::tableRepos().get<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(selfID)->setDocString(std::string(
         docString));
 }
 
@@ -91,90 +96,101 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterEntry_setList (
   CT_Teuchos_ParameterEntry_ID_t selfID, boolean isDefault, 
   const char docString[] )
 {
-    return CTeuchos::storeParameterList(
-        &( CTeuchos::getParameterEntry(selfID)->setList(
-        ((isDefault) != FALSE ? true : false), std::string(
-        docString)) ));
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(selfID)->setList(((isDefault) != 
+        FALSE ? true : false), std::string(docString)) ));
 }
 
 double Teuchos_ParameterEntry_getValue_double ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, double * ptr )
 {
-    return CTeuchos::getConstParameterEntry(selfID)->getValue<double>(
-        ptr);
+    return CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(selfID)->getValue<double>(ptr);
 }
 
 int Teuchos_ParameterEntry_getValue_int ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, int * ptr )
 {
-    return CTeuchos::getConstParameterEntry(selfID)->getValue<int>(
-        ptr);
+    return CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(selfID)->getValue<int>(ptr);
 }
 
 CT_Teuchos_any_ID_t Teuchos_ParameterEntry_getAny ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, boolean activeQry )
 {
-    return CTeuchos::storeany(&( CTeuchos::getParameterEntry(
-        selfID)->getAny(((activeQry) != FALSE ? true : false)) ));
+    return CTrilinos::tableRepos().store<Teuchos::any, CT_Teuchos_any_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(selfID)->getAny(((activeQry) != 
+        FALSE ? true : false)) ));
 }
 
 CT_Teuchos_any_ID_t Teuchos_ParameterEntry_getAny_const ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, boolean activeQry )
 {
-    return CTeuchos::storeConstany(
-        &( CTeuchos::getConstParameterEntry(selfID)->getAny(
-        ((activeQry) != FALSE ? true : false)) ));
+    return CTrilinos::tableRepos().store<Teuchos::any, CT_Teuchos_any_ID_t>(
+        &( CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(selfID)->getAny(((activeQry) != 
+        FALSE ? true : false)) ));
 }
 
 boolean Teuchos_ParameterEntry_isUsed ( 
   CT_Teuchos_ParameterEntry_ID_t selfID )
 {
-    return ((CTeuchos::getConstParameterEntry(
-        selfID)->isUsed()) ? TRUE : FALSE);
+    return ((CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(selfID)->isUsed()) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterEntry_isList ( 
   CT_Teuchos_ParameterEntry_ID_t selfID )
 {
-    return ((CTeuchos::getConstParameterEntry(
-        selfID)->isList()) ? TRUE : FALSE);
+    return ((CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(selfID)->isList()) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterEntry_isType_double ( 
   CT_Teuchos_ParameterEntry_ID_t selfID )
 {
-    return ((CTeuchos::getConstParameterEntry(
+    return ((CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(
         selfID)->isType<double>()) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterEntry_isType_int ( 
   CT_Teuchos_ParameterEntry_ID_t selfID )
 {
-    return ((CTeuchos::getConstParameterEntry(
+    return ((CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(
         selfID)->isType<int>()) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterEntry_isDefault ( 
   CT_Teuchos_ParameterEntry_ID_t selfID )
 {
-    return ((CTeuchos::getConstParameterEntry(
-        selfID)->isDefault()) ? TRUE : FALSE);
+    return ((CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(selfID)->isDefault()) ? TRUE : FALSE);
 }
 
 const char * Teuchos_ParameterEntry_docString ( 
   CT_Teuchos_ParameterEntry_ID_t selfID )
 {
-    return CTeuchos::getConstParameterEntry(
-        selfID)->docString().c_str();
+    return CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(selfID)->docString().c_str();
 }
 
 void Teuchos_ParameterEntry_Assign ( 
   CT_Teuchos_ParameterEntry_ID_t selfID, 
   CT_Teuchos_ParameterEntry_ID_t sourceID )
 {
-    Teuchos::ParameterEntry& self = *( CTeuchos::getParameterEntry(selfID) );
+    Teuchos::ParameterEntry& self = *( 
+        CTrilinos::tableRepos().get<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(selfID) );
 
-    self = *CTeuchos::getConstParameterEntry(sourceID);
+    const Teuchos::RCP<const Teuchos::ParameterEntry> source = 
+        CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(sourceID);
+    self = *source;
 }
 
 

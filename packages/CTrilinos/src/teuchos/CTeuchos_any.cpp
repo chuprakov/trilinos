@@ -50,28 +50,30 @@ extern "C" {
 
 CT_Teuchos_any_ID_t Teuchos_any_Create (  )
 {
-    return CTrilinos::tableRepos().store<Teuchos::any, 
-        CT_Teuchos_any_ID_t>(new Teuchos::any());
+    return CTrilinos::tableRepos().store<Teuchos::any, CT_Teuchos_any_ID_t>(
+        new Teuchos::any());
 }
 
 CT_Teuchos_any_ID_t Teuchos_any_Create_double ( double value )
 {
-    return CTrilinos::tableRepos().store<Teuchos::any, 
-        CT_Teuchos_any_ID_t>(new Teuchos::any(value));
+    return CTrilinos::tableRepos().store<Teuchos::any, CT_Teuchos_any_ID_t>(
+        new Teuchos::any(value));
 }
 
 CT_Teuchos_any_ID_t Teuchos_any_Create_int ( int value )
 {
-    return CTrilinos::tableRepos().store<Teuchos::any, 
-        CT_Teuchos_any_ID_t>(new Teuchos::any(value));
+    return CTrilinos::tableRepos().store<Teuchos::any, CT_Teuchos_any_ID_t>(
+        new Teuchos::any(value));
 }
 
 CT_Teuchos_any_ID_t Teuchos_any_Duplicate ( 
   CT_Teuchos_any_ID_t otherID )
 {
-    return CTrilinos::tableRepos().store<Teuchos::any, 
-        CT_Teuchos_any_ID_t>(new Teuchos::any(*CTeuchos::getConstany(
-        otherID)));
+    const Teuchos::RCP<const Teuchos::any> other = 
+        CTrilinos::tableRepos().getConst<Teuchos::any, CT_Teuchos_any_ID_t>(
+        otherID);
+    return CTrilinos::tableRepos().store<Teuchos::any, CT_Teuchos_any_ID_t>(
+        new Teuchos::any(*other));
 }
 
 void Teuchos_any_Destroy ( CT_Teuchos_any_ID_t * selfID )
@@ -82,33 +84,45 @@ void Teuchos_any_Destroy ( CT_Teuchos_any_ID_t * selfID )
 CT_Teuchos_any_ID_t Teuchos_any_swap ( 
   CT_Teuchos_any_ID_t selfID, CT_Teuchos_any_ID_t rhsID )
 {
-    return CTeuchos::storeany(&( CTeuchos::getany(selfID)->swap(
-        *CTeuchos::getany(rhsID)) ));
+    const Teuchos::RCP<Teuchos::any> rhs = 
+        CTrilinos::tableRepos().get<Teuchos::any, CT_Teuchos_any_ID_t>(rhsID);
+    return CTrilinos::tableRepos().store<Teuchos::any, CT_Teuchos_any_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::any, CT_Teuchos_any_ID_t>(
+        selfID)->swap(*rhs) ));
 }
 
 boolean Teuchos_any_empty ( CT_Teuchos_any_ID_t selfID )
 {
-    return ((CTeuchos::getConstany(selfID)->empty()) ? TRUE : FALSE);
+    return ((CTrilinos::tableRepos().getConst<Teuchos::any, 
+        CT_Teuchos_any_ID_t>(selfID)->empty()) ? TRUE : FALSE);
 }
 
 const char * Teuchos_any_typeName ( CT_Teuchos_any_ID_t selfID )
 {
-    return CTeuchos::getConstany(selfID)->typeName().c_str();
+    return CTrilinos::tableRepos().getConst<Teuchos::any, CT_Teuchos_any_ID_t>(
+        selfID)->typeName().c_str();
 }
 
 boolean Teuchos_any_same ( 
   CT_Teuchos_any_ID_t selfID, CT_Teuchos_any_ID_t otherID )
 {
-    return ((CTeuchos::getConstany(selfID)->same(
-        *CTeuchos::getConstany(otherID))) ? TRUE : FALSE);
+    const Teuchos::RCP<const Teuchos::any> other = 
+        CTrilinos::tableRepos().getConst<Teuchos::any, CT_Teuchos_any_ID_t>(
+        otherID);
+    return ((CTrilinos::tableRepos().getConst<Teuchos::any, 
+        CT_Teuchos_any_ID_t>(selfID)->same(*other)) ? TRUE : FALSE);
 }
 
 void Teuchos_any_Assign ( 
   CT_Teuchos_any_ID_t selfID, CT_Teuchos_any_ID_t rhsID )
 {
-    Teuchos::any& self = *( CTeuchos::getany(selfID) );
+    Teuchos::any& self = *( CTrilinos::tableRepos().get<Teuchos::any, 
+        CT_Teuchos_any_ID_t>(selfID) );
 
-    self = *CTeuchos::getConstany(rhsID);
+    const Teuchos::RCP<const Teuchos::any> rhs = 
+        CTrilinos::tableRepos().getConst<Teuchos::any, CT_Teuchos_any_ID_t>(
+        rhsID);
+    self = *rhs;
 }
 
 

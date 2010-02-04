@@ -50,22 +50,40 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_Epetra_Import_ID_t Epetra_Import_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_Epetra_Import_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t Epetra_Import_Generalize ( 
+  CT_Epetra_Import_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Import_ID_t>(id);
+}
+
 CT_Epetra_Import_ID_t Epetra_Import_Create ( 
   CT_Epetra_BlockMap_ID_t TargetMapID, 
   CT_Epetra_BlockMap_ID_t SourceMapID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Import, 
-        CT_Epetra_Import_ID_t>(new Epetra_Import(
-        *CEpetra::getConstBlockMap(TargetMapID), 
-        *CEpetra::getConstBlockMap(SourceMapID)));
+    const Teuchos::RCP<const Epetra_BlockMap> TargetMap = 
+        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
+        CT_Epetra_BlockMap_ID_t>(TargetMapID);
+    const Teuchos::RCP<const Epetra_BlockMap> SourceMap = 
+        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
+        CT_Epetra_BlockMap_ID_t>(SourceMapID);
+    return CTrilinos::tableRepos().store<Epetra_Import, CT_Epetra_Import_ID_t>(
+        new Epetra_Import(*TargetMap, *SourceMap));
 }
 
 CT_Epetra_Import_ID_t Epetra_Import_Duplicate ( 
   CT_Epetra_Import_ID_t ImporterID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Import, 
-        CT_Epetra_Import_ID_t>(new Epetra_Import(
-        *CEpetra::getConstImport(ImporterID)));
+    const Teuchos::RCP<const Epetra_Import> Importer = 
+        CTrilinos::tableRepos().getConst<Epetra_Import, CT_Epetra_Import_ID_t>(
+        ImporterID);
+    return CTrilinos::tableRepos().store<Epetra_Import, CT_Epetra_Import_ID_t>(
+        new Epetra_Import(*Importer));
 }
 
 void Epetra_Import_Destroy ( CT_Epetra_Import_ID_t * selfID )
@@ -75,78 +93,95 @@ void Epetra_Import_Destroy ( CT_Epetra_Import_ID_t * selfID )
 
 int Epetra_Import_NumSameIDs ( CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::getConstImport(selfID)->NumSameIDs();
+    return CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->NumSameIDs();
 }
 
 int Epetra_Import_NumPermuteIDs ( CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::getConstImport(selfID)->NumPermuteIDs();
+    return CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->NumPermuteIDs();
 }
 
 int * Epetra_Import_PermuteFromLIDs ( CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::getConstImport(selfID)->PermuteFromLIDs();
+    return CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->PermuteFromLIDs();
 }
 
 int * Epetra_Import_PermuteToLIDs ( CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::getConstImport(selfID)->PermuteToLIDs();
+    return CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->PermuteToLIDs();
 }
 
 int Epetra_Import_NumRemoteIDs ( CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::getConstImport(selfID)->NumRemoteIDs();
+    return CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->NumRemoteIDs();
 }
 
 int * Epetra_Import_RemoteLIDs ( CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::getConstImport(selfID)->RemoteLIDs();
+    return CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->RemoteLIDs();
 }
 
 int Epetra_Import_NumExportIDs ( CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::getConstImport(selfID)->NumExportIDs();
+    return CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->NumExportIDs();
 }
 
 int * Epetra_Import_ExportLIDs ( CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::getConstImport(selfID)->ExportLIDs();
+    return CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->ExportLIDs();
 }
 
 int * Epetra_Import_ExportPIDs ( CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::getConstImport(selfID)->ExportPIDs();
+    return CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->ExportPIDs();
 }
 
 int Epetra_Import_NumSend ( CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::getConstImport(selfID)->NumSend();
+    return CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->NumSend();
 }
 
 int Epetra_Import_NumRecv ( CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::getConstImport(selfID)->NumRecv();
+    return CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->NumRecv();
 }
 
 CT_Epetra_BlockMap_ID_t Epetra_Import_SourceMap ( 
   CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::storeConstBlockMap(&( CEpetra::getConstImport(
-        selfID)->SourceMap() ));
+    return CTrilinos::tableRepos().store<Epetra_BlockMap, 
+        CT_Epetra_BlockMap_ID_t>(
+        &( CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->SourceMap() ));
 }
 
 CT_Epetra_BlockMap_ID_t Epetra_Import_TargetMap ( 
   CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::storeConstBlockMap(&( CEpetra::getConstImport(
-        selfID)->TargetMap() ));
+    return CTrilinos::tableRepos().store<Epetra_BlockMap, 
+        CT_Epetra_BlockMap_ID_t>(
+        &( CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->TargetMap() ));
 }
 
 CT_Epetra_Distributor_ID_t Epetra_Import_Distributor ( 
   CT_Epetra_Import_ID_t selfID )
 {
-    return CEpetra::storeDistributor(&( CEpetra::getConstImport(
-        selfID)->Distributor() ));
+    return CTrilinos::tableRepos().store<Epetra_Distributor, 
+        CT_Epetra_Distributor_ID_t>(
+        &( CTrilinos::tableRepos().getConst<Epetra_Import, 
+        CT_Epetra_Import_ID_t>(selfID)->Distributor() ));
 }
 
 

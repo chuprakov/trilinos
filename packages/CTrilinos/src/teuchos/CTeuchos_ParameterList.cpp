@@ -49,27 +49,40 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_Teuchos_ParameterList_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t Teuchos_ParameterList_Generalize ( 
+  CT_Teuchos_ParameterList_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Teuchos_ParameterList_ID_t>(id);
+}
+
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Create (  )
 {
     return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
-        CT_Teuchos_ParameterList_ID_t>(
-        new Teuchos::ParameterList());
+        CT_Teuchos_ParameterList_ID_t>(new Teuchos::ParameterList());
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Create_WithName ( 
   const char name[] )
 {
     return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
-        CT_Teuchos_ParameterList_ID_t>(new Teuchos::ParameterList(
-        std::string(name)));
+        CT_Teuchos_ParameterList_ID_t>(new Teuchos::ParameterList(std::string(
+        name)));
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Create_FromSource ( 
   CT_Teuchos_ParameterList_ID_t sourceID )
 {
+    const Teuchos::RCP<const Teuchos::ParameterList> source = 
+        CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(sourceID);
     return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
-        CT_Teuchos_ParameterList_ID_t>(new Teuchos::ParameterList(
-        *CTeuchos::getConstParameterList(sourceID)));
+        CT_Teuchos_ParameterList_ID_t>(new Teuchos::ParameterList(*source));
 }
 
 void Teuchos_ParameterList_Destroy ( 
@@ -81,32 +94,46 @@ void Teuchos_ParameterList_Destroy (
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setName ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
-        selfID)->setName(std::string(name)) ));
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->setName(std::string(name)) ));
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setParameters ( 
   CT_Teuchos_ParameterList_ID_t selfID, 
   CT_Teuchos_ParameterList_ID_t sourceID )
 {
-    return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
-        selfID)->setParameters(*CTeuchos::getConstParameterList(
-        sourceID)) ));
+    const Teuchos::RCP<const Teuchos::ParameterList> source = 
+        CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(sourceID);
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->setParameters(*source) ));
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setParametersNotAlreadySet ( 
   CT_Teuchos_ParameterList_ID_t selfID, 
   CT_Teuchos_ParameterList_ID_t sourceID )
 {
-    return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
-        selfID)->setParametersNotAlreadySet(
-        *CTeuchos::getConstParameterList(sourceID)) ));
+    const Teuchos::RCP<const Teuchos::ParameterList> source = 
+        CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(sourceID);
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->setParametersNotAlreadySet(
+        *source) ));
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_disableRecursiveValidation ( 
   CT_Teuchos_ParameterList_ID_t selfID )
 {
-    return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
         selfID)->disableRecursiveValidation() ));
 }
 
@@ -114,69 +141,87 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set_double (
   CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
   double value, char const docString[] )
 {
-    return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
-        selfID)->set<double>(std::string(name), value, std::string(
-        docString),  Teuchos::null ) ));
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->set<double>(std::string(name), 
+        value, std::string(docString),  Teuchos::null ) ));
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set_int ( 
   CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
   int value, char const docString[] )
 {
-    return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
-        selfID)->set<int>(std::string(name), value, std::string(
-        docString),  Teuchos::null ) ));
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->set<int>(std::string(name), 
+        value, std::string(docString),  Teuchos::null ) ));
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set_str ( 
   CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
   char value[], char const docString[] )
 {
-    return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
-        selfID)->set(std::string(name), value, std::string(
-        docString),  Teuchos::null ) ));
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->set(std::string(name), value, 
+        std::string(docString),  Teuchos::null ) ));
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_set ( 
   CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
   CT_Teuchos_ParameterList_ID_t valueID, char const docString[] )
 {
-    return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
-        selfID)->set(std::string(name), 
-        *CTeuchos::getConstParameterList(valueID), std::string(
-        docString)) ));
+    const Teuchos::RCP<const Teuchos::ParameterList> value = 
+        CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(valueID);
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->set(std::string(name), *value, 
+        std::string(docString)) ));
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setEntry ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   CT_Teuchos_ParameterEntry_ID_t entryID )
 {
-    return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
-        selfID)->setEntry(std::string(name), 
-        *CTeuchos::getConstParameterEntry(entryID)) ));
+    const Teuchos::RCP<const Teuchos::ParameterEntry> entry = 
+        CTrilinos::tableRepos().getConst<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(entryID);
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->setEntry(std::string(name), 
+        *entry) ));
 }
 
 double Teuchos_ParameterList_get_double_def ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   double def_value )
 {
-    return CTeuchos::getParameterList(selfID)->get<double>(
-        std::string(name), def_value);
+    return CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->get<double>(std::string(name), 
+        def_value);
 }
 
 int Teuchos_ParameterList_get_int_def ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   int def_value )
 {
-    return CTeuchos::getParameterList(selfID)->get<int>(std::string(
-        name), def_value);
+    return CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->get<int>(std::string(name), 
+        def_value);
 }
 
 const char * Teuchos_ParameterList_get_char_def ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   char def_value[] )
 {
-    return CTeuchos::getParameterList(selfID)->get(std::string(name), 
+    return CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->get(std::string(name), 
         def_value).c_str();
 }
 
@@ -184,103 +229,119 @@ const char * Teuchos_ParameterList_get_const_char_def (
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   const char def_value[] )
 {
-    return CTeuchos::getParameterList(selfID)->get(std::string(name), 
+    return CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->get(std::string(name), 
         def_value).c_str();
 }
 
 double Teuchos_ParameterList_get_double ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getParameterList(selfID)->get<double>(
-        std::string(name));
+    return CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->get<double>(std::string(
+        name));
 }
 
 int Teuchos_ParameterList_get_int ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getParameterList(selfID)->get<int>(std::string(
-        name));
+    return CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->get<int>(std::string(name));
 }
 
 double Teuchos_ParameterList_get_double_const ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getConstParameterList(selfID)->get<double>(
-        std::string(name));
+    return CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->get<double>(std::string(
+        name));
 }
 
 int Teuchos_ParameterList_get_int_const ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getConstParameterList(selfID)->get<int>(
-        std::string(name));
+    return CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->get<int>(std::string(name));
 }
 
 double * Teuchos_ParameterList_getPtr_double ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getParameterList(selfID)->getPtr<double>(
-        std::string(name));
+    return CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->getPtr<double>(std::string(
+        name));
 }
 
 int * Teuchos_ParameterList_getPtr_int ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getParameterList(selfID)->getPtr<int>(
-        std::string(name));
+    return CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->getPtr<int>(std::string(
+        name));
 }
 
 const double * Teuchos_ParameterList_getPtr_double_const ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getConstParameterList(selfID)->getPtr<double>(
-        std::string(name));
+    return CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->getPtr<double>(std::string(
+        name));
 }
 
 const int * Teuchos_ParameterList_getPtr_int_const ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::getConstParameterList(selfID)->getPtr<int>(
-        std::string(name));
+    return CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->getPtr<int>(std::string(
+        name));
 }
 
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntry ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::storeParameterEntry(
-        &( CTeuchos::getParameterList(selfID)->getEntry(std::string(
+    return CTrilinos::tableRepos().store<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->getEntry(std::string(
         name)) ));
 }
 
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntry_const ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::storeConstParameterEntry(
-        &( CTeuchos::getConstParameterList(selfID)->getEntry(
-        std::string(name)) ));
+    return CTrilinos::tableRepos().store<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(
+        &( CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->getEntry(std::string(
+        name)) ));
 }
 
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntryPtr ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::storeParameterEntry(CTeuchos::getParameterList(
-        selfID)->getEntryPtr(std::string(name)));
+    return CTrilinos::tableRepos().store<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(
+        CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->getEntryPtr(std::string(
+        name)));
 }
 
 CT_Teuchos_ParameterEntry_ID_t Teuchos_ParameterList_getEntryPtr_const ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::storeConstParameterEntry(
-        CTeuchos::getConstParameterList(selfID)->getEntryPtr(
-        std::string(name)));
+    return CTrilinos::tableRepos().store<Teuchos::ParameterEntry, 
+        CT_Teuchos_ParameterEntry_ID_t>(
+        CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->getEntryPtr(std::string(
+        name)));
 }
 
 boolean Teuchos_ParameterList_remove ( 
   CT_Teuchos_ParameterList_ID_t selfID, char const name[], 
   boolean throwIfNotExists )
 {
-    return ((CTeuchos::getParameterList(selfID)->remove(std::string(
-        name), ((
+    return ((CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->remove(std::string(name), ((
         throwIfNotExists) != FALSE ? true : false))) ? TRUE : FALSE);
 }
 
@@ -288,8 +349,10 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist (
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   boolean mustAlreadyExist, const char docString[] )
 {
-    return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
-        selfID)->sublist(std::string(name), ((
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        &( CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->sublist(std::string(name), ((
         mustAlreadyExist) != FALSE ? true : false), std::string(
         docString)) ));
 }
@@ -297,65 +360,74 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist (
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist_existing ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return CTeuchos::storeConstParameterList(
-        &( CTeuchos::getConstParameterList(selfID)->sublist(
-        std::string(name)) ));
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        &( CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->sublist(std::string(name)) ));
 }
 
 const char * Teuchos_ParameterList_name_it ( 
   CT_Teuchos_ParameterList_ID_t selfID )
 {
-    return CTeuchos::getConstParameterList(selfID)->name().c_str();
+    return CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->name().c_str();
 }
 
 boolean Teuchos_ParameterList_isParameter ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return ((CTeuchos::getConstParameterList(selfID)->isParameter(
-        std::string(name))) ? TRUE : FALSE);
+    return ((CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->isParameter(std::string(
+        name))) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isSublist ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return ((CTeuchos::getConstParameterList(selfID)->isSublist(
-        std::string(name))) ? TRUE : FALSE);
+    return ((CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->isSublist(std::string(
+        name))) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isType_double ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return ((CTeuchos::getConstParameterList(selfID)->isType<double>(
-        std::string(name))) ? TRUE : FALSE);
+    return ((CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->isType<double>(std::string(
+        name))) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isType_int ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] )
 {
-    return ((CTeuchos::getConstParameterList(selfID)->isType<int>(
-        std::string(name))) ? TRUE : FALSE);
+    return ((CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->isType<int>(std::string(
+        name))) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isType_double_type ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   double * ptr )
 {
-    return ((CTeuchos::getConstParameterList(selfID)->isType<double>(
-        std::string(name), ptr)) ? TRUE : FALSE);
+    return ((CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->isType<double>(std::string(
+        name), ptr)) ? TRUE : FALSE);
 }
 
 boolean Teuchos_ParameterList_isType_int_type ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   int * ptr )
 {
-    return ((CTeuchos::getConstParameterList(selfID)->isType<int>(
-        std::string(name), ptr)) ? TRUE : FALSE);
+    return ((CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->isType<int>(std::string(name), 
+        ptr)) ? TRUE : FALSE);
 }
 
 const char * Teuchos_ParameterList_currentParametersString ( 
   CT_Teuchos_ParameterList_ID_t selfID )
 {
-    return CTeuchos::getConstParameterList(
+    return CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
         selfID)->currentParametersString().c_str();
 }
 
@@ -365,9 +437,12 @@ void Teuchos_ParameterList_validateParameters (
   const CT_EValidateUsed_E_t validateUsed, 
   const CT_EValidateDefaults_E_t validateDefaults )
 {
-    CTeuchos::getConstParameterList(selfID)->validateParameters(
-        *CTeuchos::getConstParameterList(validParamListID), depth, 
-        (Teuchos::EValidateUsed) validateUsed, 
+    const Teuchos::RCP<const Teuchos::ParameterList> validParamList = 
+        CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(validParamListID);
+    CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID)->validateParameters(
+        *validParamList, depth, (Teuchos::EValidateUsed) validateUsed, 
         (Teuchos::EValidateDefaults) validateDefaults);
 }
 
@@ -375,18 +450,26 @@ void Teuchos_ParameterList_validateParametersAndSetDefaults (
   CT_Teuchos_ParameterList_ID_t selfID, 
   CT_Teuchos_ParameterList_ID_t validParamListID, int const depth )
 {
-    CTeuchos::getParameterList(
-        selfID)->validateParametersAndSetDefaults(
-        *CTeuchos::getConstParameterList(validParamListID), depth);
+    const Teuchos::RCP<const Teuchos::ParameterList> validParamList = 
+        CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(validParamListID);
+    CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        selfID)->validateParametersAndSetDefaults(*validParamList, depth);
 }
 
 void Teuchos_ParameterList_Assign ( 
   CT_Teuchos_ParameterList_ID_t selfID, 
   CT_Teuchos_ParameterList_ID_t sourceID )
 {
-    Teuchos::ParameterList& self = *( CTeuchos::getParameterList(selfID) );
+    Teuchos::ParameterList& self = *( 
+        CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(selfID) );
 
-    self = *CTeuchos::getConstParameterList(sourceID);
+    const Teuchos::RCP<const Teuchos::ParameterList> source = 
+        CTrilinos::tableRepos().getConst<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(sourceID);
+    self = *source;
 }
 
 

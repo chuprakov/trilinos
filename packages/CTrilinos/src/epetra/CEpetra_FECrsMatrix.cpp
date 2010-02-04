@@ -52,14 +52,28 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_Epetra_FECrsMatrix_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t Epetra_FECrsMatrix_Generalize ( 
+  CT_Epetra_FECrsMatrix_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_FECrsMatrix_ID_t>(id);
+}
+
 CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Create_Var ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   int * NumEntriesPerRow, boolean ignoreNonLocalEntries )
 {
+    const Teuchos::RCP<const Epetra_Map> RowMap = 
+        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+        RowMapID);
     return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, 
         CT_Epetra_FECrsMatrix_ID_t>(new Epetra_FECrsMatrix(
-        (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
-        NumEntriesPerRow, ((
+        (Epetra_DataAccess) CV, *RowMap, NumEntriesPerRow, ((
         ignoreNonLocalEntries) != FALSE ? true : false)));
 }
 
@@ -67,10 +81,12 @@ CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Create (
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   int NumEntriesPerRow, boolean ignoreNonLocalEntries )
 {
+    const Teuchos::RCP<const Epetra_Map> RowMap = 
+        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+        RowMapID);
     return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, 
         CT_Epetra_FECrsMatrix_ID_t>(new Epetra_FECrsMatrix(
-        (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
-        NumEntriesPerRow, ((
+        (Epetra_DataAccess) CV, *RowMap, NumEntriesPerRow, ((
         ignoreNonLocalEntries) != FALSE ? true : false)));
 }
 
@@ -79,10 +95,15 @@ CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Create_WithColMap_Var (
   CT_Epetra_Map_ID_t ColMapID, int * NumEntriesPerRow, 
   boolean ignoreNonLocalEntries )
 {
+    const Teuchos::RCP<const Epetra_Map> RowMap = 
+        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+        RowMapID);
+    const Teuchos::RCP<const Epetra_Map> ColMap = 
+        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+        ColMapID);
     return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, 
         CT_Epetra_FECrsMatrix_ID_t>(new Epetra_FECrsMatrix(
-        (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
-        *CEpetra::getConstMap(ColMapID), NumEntriesPerRow, ((
+        (Epetra_DataAccess) CV, *RowMap, *ColMap, NumEntriesPerRow, ((
         ignoreNonLocalEntries) != FALSE ? true : false)));
 }
 
@@ -91,10 +112,15 @@ CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Create_WithColMap (
   CT_Epetra_Map_ID_t ColMapID, int NumEntriesPerRow, 
   boolean ignoreNonLocalEntries )
 {
+    const Teuchos::RCP<const Epetra_Map> RowMap = 
+        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+        RowMapID);
+    const Teuchos::RCP<const Epetra_Map> ColMap = 
+        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+        ColMapID);
     return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, 
         CT_Epetra_FECrsMatrix_ID_t>(new Epetra_FECrsMatrix(
-        (Epetra_DataAccess) CV, *CEpetra::getConstMap(RowMapID), 
-        *CEpetra::getConstMap(ColMapID), NumEntriesPerRow, ((
+        (Epetra_DataAccess) CV, *RowMap, *ColMap, NumEntriesPerRow, ((
         ignoreNonLocalEntries) != FALSE ? true : false)));
 }
 
@@ -102,18 +128,23 @@ CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Create_FromGraph (
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_CrsGraph_ID_t GraphID, 
   boolean ignoreNonLocalEntries )
 {
+    const Teuchos::RCP<const Epetra_CrsGraph> Graph = 
+        CTrilinos::tableRepos().getConst<Epetra_CrsGraph, 
+        CT_Epetra_CrsGraph_ID_t>(GraphID);
     return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, 
         CT_Epetra_FECrsMatrix_ID_t>(new Epetra_FECrsMatrix(
-        (Epetra_DataAccess) CV, *CEpetra::getConstCrsGraph(GraphID), 
-        ((ignoreNonLocalEntries) != FALSE ? true : false)));
+        (Epetra_DataAccess) CV, *Graph, ((ignoreNonLocalEntries) != 
+        FALSE ? true : false)));
 }
 
 CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix_Duplicate ( 
   CT_Epetra_FECrsMatrix_ID_t srcID )
 {
+    const Teuchos::RCP<const Epetra_FECrsMatrix> src = 
+        CTrilinos::tableRepos().getConst<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(srcID);
     return CTrilinos::tableRepos().store<Epetra_FECrsMatrix, 
-        CT_Epetra_FECrsMatrix_ID_t>(new Epetra_FECrsMatrix(
-        *CEpetra::getConstFECrsMatrix(srcID)));
+        CT_Epetra_FECrsMatrix_ID_t>(new Epetra_FECrsMatrix(*src));
 }
 
 void Epetra_FECrsMatrix_Destroy ( 
@@ -126,48 +157,54 @@ int Epetra_FECrsMatrix_SumIntoGlobalValues (
   CT_Epetra_FECrsMatrix_ID_t selfID, int GlobalRow, int NumEntries, 
   double * Values, int * Indices )
 {
-    return CEpetra::getFECrsMatrix(selfID)->SumIntoGlobalValues(
-        GlobalRow, NumEntries, Values, Indices);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->SumIntoGlobalValues(GlobalRow, 
+        NumEntries, Values, Indices);
 }
 
 int Epetra_FECrsMatrix_InsertGlobalValues ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, int GlobalRow, int NumEntries, 
   double * Values, int * Indices )
 {
-    return CEpetra::getFECrsMatrix(selfID)->InsertGlobalValues(
-        GlobalRow, NumEntries, Values, Indices);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->InsertGlobalValues(GlobalRow, 
+        NumEntries, Values, Indices);
 }
 
 int Epetra_FECrsMatrix_ReplaceGlobalValues ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, int GlobalRow, int NumEntries, 
   double * Values, int * Indices )
 {
-    return CEpetra::getFECrsMatrix(selfID)->ReplaceGlobalValues(
-        GlobalRow, NumEntries, Values, Indices);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->ReplaceGlobalValues(GlobalRow, 
+        NumEntries, Values, Indices);
 }
 
 int Epetra_FECrsMatrix_SumIntoGlobalValues_Ftable_Square ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, int numIndices, 
   const int * indices, const double * values, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->SumIntoGlobalValues(
-        numIndices, indices, values, format);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->SumIntoGlobalValues(numIndices, 
+        indices, values, format);
 }
 
 int Epetra_FECrsMatrix_SumIntoGlobalValues_Ftable ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, int numRows, const int * rows, 
   int numCols, const int * cols, const double * values, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->SumIntoGlobalValues(
-        numRows, rows, numCols, cols, values, format);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->SumIntoGlobalValues(numRows, 
+        rows, numCols, cols, values, format);
 }
 
 int Epetra_FECrsMatrix_SumIntoGlobalValues_Ctable_Square ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, int numIndices, 
   const int * indices, const double* const * values, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->SumIntoGlobalValues(
-        numIndices, indices, values, format);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->SumIntoGlobalValues(numIndices, 
+        indices, values, format);
 }
 
 int Epetra_FECrsMatrix_SumIntoGlobalValues_Ctable ( 
@@ -175,32 +212,36 @@ int Epetra_FECrsMatrix_SumIntoGlobalValues_Ctable (
   int numCols, const int * cols, const double* const * values, 
   int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->SumIntoGlobalValues(
-        numRows, rows, numCols, cols, values, format);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->SumIntoGlobalValues(numRows, 
+        rows, numCols, cols, values, format);
 }
 
 int Epetra_FECrsMatrix_InsertGlobalValues_Ftable_Square ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, int numIndices, 
   const int * indices, const double * values, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->InsertGlobalValues(
-        numIndices, indices, values, format);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->InsertGlobalValues(numIndices, 
+        indices, values, format);
 }
 
 int Epetra_FECrsMatrix_InsertGlobalValues_Ftable ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, int numRows, const int * rows, 
   int numCols, const int * cols, const double * values, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->InsertGlobalValues(
-        numRows, rows, numCols, cols, values, format);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->InsertGlobalValues(numRows, rows, 
+        numCols, cols, values, format);
 }
 
 int Epetra_FECrsMatrix_InsertGlobalValues_Ctable_Square ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, int numIndices, 
   const int * indices, const double* const * values, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->InsertGlobalValues(
-        numIndices, indices, values, format);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->InsertGlobalValues(numIndices, 
+        indices, values, format);
 }
 
 int Epetra_FECrsMatrix_InsertGlobalValues_Ctable ( 
@@ -208,32 +249,36 @@ int Epetra_FECrsMatrix_InsertGlobalValues_Ctable (
   int numCols, const int * cols, const double* const * values, 
   int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->InsertGlobalValues(
-        numRows, rows, numCols, cols, values, format);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->InsertGlobalValues(numRows, rows, 
+        numCols, cols, values, format);
 }
 
 int Epetra_FECrsMatrix_ReplaceGlobalValues_Ftable_Square ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, int numIndices, 
   const int * indices, const double * values, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->ReplaceGlobalValues(
-        numIndices, indices, values, format);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->ReplaceGlobalValues(numIndices, 
+        indices, values, format);
 }
 
 int Epetra_FECrsMatrix_ReplaceGlobalValues_Ftable ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, int numRows, const int * rows, 
   int numCols, const int * cols, const double * values, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->ReplaceGlobalValues(
-        numRows, rows, numCols, cols, values, format);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->ReplaceGlobalValues(numRows, 
+        rows, numCols, cols, values, format);
 }
 
 int Epetra_FECrsMatrix_ReplaceGlobalValues_Ctable_Square ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, int numIndices, 
   const int * indices, const double* const * values, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->ReplaceGlobalValues(
-        numIndices, indices, values, format);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->ReplaceGlobalValues(numIndices, 
+        indices, values, format);
 }
 
 int Epetra_FECrsMatrix_ReplaceGlobalValues_Ctable ( 
@@ -241,8 +286,9 @@ int Epetra_FECrsMatrix_ReplaceGlobalValues_Ctable (
   int numCols, const int * cols, const double* const * values, 
   int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->ReplaceGlobalValues(
-        numRows, rows, numCols, cols, values, format);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->ReplaceGlobalValues(numRows, 
+        rows, numCols, cols, values, format);
 }
 
 int Epetra_FECrsMatrix_SumIntoGlobalValues_SubMatrix_Square ( 
@@ -250,9 +296,15 @@ int Epetra_FECrsMatrix_SumIntoGlobalValues_SubMatrix_Square (
   CT_Epetra_IntSerialDenseVector_ID_t indicesID, 
   CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->SumIntoGlobalValues(
-        *CEpetra::getConstIntSerialDenseVector(indicesID), 
-        *CEpetra::getConstSerialDenseMatrix(valuesID), format);
+    const Teuchos::RCP<const Epetra_IntSerialDenseVector> indices = 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(indicesID);
+    const Teuchos::RCP<const Epetra_SerialDenseMatrix> values = 
+        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
+        CT_Epetra_SerialDenseMatrix_ID_t>(valuesID);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->SumIntoGlobalValues(*indices, 
+        *values, format);
 }
 
 int Epetra_FECrsMatrix_SumIntoGlobalValues_SubMatrix ( 
@@ -261,10 +313,18 @@ int Epetra_FECrsMatrix_SumIntoGlobalValues_SubMatrix (
   CT_Epetra_IntSerialDenseVector_ID_t colsID, 
   CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->SumIntoGlobalValues(
-        *CEpetra::getConstIntSerialDenseVector(rowsID), 
-        *CEpetra::getConstIntSerialDenseVector(colsID), 
-        *CEpetra::getConstSerialDenseMatrix(valuesID), format);
+    const Teuchos::RCP<const Epetra_IntSerialDenseVector> rows = 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(rowsID);
+    const Teuchos::RCP<const Epetra_IntSerialDenseVector> cols = 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(colsID);
+    const Teuchos::RCP<const Epetra_SerialDenseMatrix> values = 
+        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
+        CT_Epetra_SerialDenseMatrix_ID_t>(valuesID);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->SumIntoGlobalValues(*rows, *cols, 
+        *values, format);
 }
 
 int Epetra_FECrsMatrix_InsertGlobalValues_SubMatrix_Square ( 
@@ -272,9 +332,15 @@ int Epetra_FECrsMatrix_InsertGlobalValues_SubMatrix_Square (
   CT_Epetra_IntSerialDenseVector_ID_t indicesID, 
   CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->InsertGlobalValues(
-        *CEpetra::getConstIntSerialDenseVector(indicesID), 
-        *CEpetra::getConstSerialDenseMatrix(valuesID), format);
+    const Teuchos::RCP<const Epetra_IntSerialDenseVector> indices = 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(indicesID);
+    const Teuchos::RCP<const Epetra_SerialDenseMatrix> values = 
+        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
+        CT_Epetra_SerialDenseMatrix_ID_t>(valuesID);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->InsertGlobalValues(*indices, 
+        *values, format);
 }
 
 int Epetra_FECrsMatrix_InsertGlobalValues_SubMatrix ( 
@@ -283,10 +349,18 @@ int Epetra_FECrsMatrix_InsertGlobalValues_SubMatrix (
   CT_Epetra_IntSerialDenseVector_ID_t colsID, 
   CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->InsertGlobalValues(
-        *CEpetra::getConstIntSerialDenseVector(rowsID), 
-        *CEpetra::getConstIntSerialDenseVector(colsID), 
-        *CEpetra::getConstSerialDenseMatrix(valuesID), format);
+    const Teuchos::RCP<const Epetra_IntSerialDenseVector> rows = 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(rowsID);
+    const Teuchos::RCP<const Epetra_IntSerialDenseVector> cols = 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(colsID);
+    const Teuchos::RCP<const Epetra_SerialDenseMatrix> values = 
+        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
+        CT_Epetra_SerialDenseMatrix_ID_t>(valuesID);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->InsertGlobalValues(*rows, *cols, 
+        *values, format);
 }
 
 int Epetra_FECrsMatrix_ReplaceGlobalValues_SubMatrix_Square ( 
@@ -294,9 +368,15 @@ int Epetra_FECrsMatrix_ReplaceGlobalValues_SubMatrix_Square (
   CT_Epetra_IntSerialDenseVector_ID_t indicesID, 
   CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->ReplaceGlobalValues(
-        *CEpetra::getConstIntSerialDenseVector(indicesID), 
-        *CEpetra::getConstSerialDenseMatrix(valuesID), format);
+    const Teuchos::RCP<const Epetra_IntSerialDenseVector> indices = 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(indicesID);
+    const Teuchos::RCP<const Epetra_SerialDenseMatrix> values = 
+        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
+        CT_Epetra_SerialDenseMatrix_ID_t>(valuesID);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->ReplaceGlobalValues(*indices, 
+        *values, format);
 }
 
 int Epetra_FECrsMatrix_ReplaceGlobalValues_SubMatrix ( 
@@ -305,16 +385,25 @@ int Epetra_FECrsMatrix_ReplaceGlobalValues_SubMatrix (
   CT_Epetra_IntSerialDenseVector_ID_t colsID, 
   CT_Epetra_SerialDenseMatrix_ID_t valuesID, int format )
 {
-    return CEpetra::getFECrsMatrix(selfID)->ReplaceGlobalValues(
-        *CEpetra::getConstIntSerialDenseVector(rowsID), 
-        *CEpetra::getConstIntSerialDenseVector(colsID), 
-        *CEpetra::getConstSerialDenseMatrix(valuesID), format);
+    const Teuchos::RCP<const Epetra_IntSerialDenseVector> rows = 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(rowsID);
+    const Teuchos::RCP<const Epetra_IntSerialDenseVector> cols = 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(colsID);
+    const Teuchos::RCP<const Epetra_SerialDenseMatrix> values = 
+        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
+        CT_Epetra_SerialDenseMatrix_ID_t>(valuesID);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->ReplaceGlobalValues(*rows, *cols, 
+        *values, format);
 }
 
 int Epetra_FECrsMatrix_GlobalAssemble ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, boolean callFillComplete )
 {
-    return CEpetra::getFECrsMatrix(selfID)->GlobalAssemble(
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->GlobalAssemble(
         ((callFillComplete) != FALSE ? true : false));
 }
 
@@ -323,25 +412,36 @@ int Epetra_FECrsMatrix_GlobalAssemble_WithMaps (
   CT_Epetra_Map_ID_t domain_mapID, CT_Epetra_Map_ID_t range_mapID, 
   boolean callFillComplete )
 {
-    return CEpetra::getFECrsMatrix(selfID)->GlobalAssemble(
-        *CEpetra::getConstMap(domain_mapID), *CEpetra::getConstMap(
-        range_mapID), ((callFillComplete) != FALSE ? true : false));
+    const Teuchos::RCP<const Epetra_Map> domain_map = 
+        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+        domain_mapID);
+    const Teuchos::RCP<const Epetra_Map> range_map = 
+        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+        range_mapID);
+    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID)->GlobalAssemble(*domain_map, 
+        *range_map, ((callFillComplete) != FALSE ? true : false));
 }
 
 void Epetra_FECrsMatrix_setIgnoreNonLocalEntries ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, boolean flag )
 {
-    CEpetra::getFECrsMatrix(selfID)->setIgnoreNonLocalEntries(
-        ((flag) != FALSE ? true : false));
+    CTrilinos::tableRepos().get<Epetra_FECrsMatrix, CT_Epetra_FECrsMatrix_ID_t>(
+        selfID)->setIgnoreNonLocalEntries(((flag) != FALSE ? true : false));
 }
 
 void Epetra_FECrsMatrix_Assign ( 
   CT_Epetra_FECrsMatrix_ID_t selfID, 
   CT_Epetra_FECrsMatrix_ID_t srcID )
 {
-    Epetra_FECrsMatrix& self = *( CEpetra::getFECrsMatrix(selfID) );
+    Epetra_FECrsMatrix& self = *( 
+        CTrilinos::tableRepos().get<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(selfID) );
 
-    self = *CEpetra::getConstFECrsMatrix(srcID);
+    const Teuchos::RCP<const Epetra_FECrsMatrix> src = 
+        CTrilinos::tableRepos().getConst<Epetra_FECrsMatrix, 
+        CT_Epetra_FECrsMatrix_ID_t>(srcID);
+    self = *src;
 }
 
 

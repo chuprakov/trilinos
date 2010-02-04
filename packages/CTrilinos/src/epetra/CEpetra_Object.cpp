@@ -48,28 +48,41 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_Epetra_Object_ID_t Epetra_Object_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t Epetra_Object_Generalize ( 
+  CT_Epetra_Object_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Object_ID_t>(id);
+}
+
 CT_Epetra_Object_ID_t Epetra_Object_Create ( 
   int TracebackModeIn, boolean set_label )
 {
-    return CTrilinos::tableRepos().store<Epetra_Object, 
-        CT_Epetra_Object_ID_t>(new Epetra_Object(TracebackModeIn, ((
-        set_label) != FALSE ? true : false)));
+    return CTrilinos::tableRepos().store<Epetra_Object, CT_Epetra_Object_ID_t>(
+        new Epetra_Object(TracebackModeIn, ((set_label) != 
+        FALSE ? true : false)));
 }
 
 CT_Epetra_Object_ID_t Epetra_Object_Create_WithLabel ( 
   const char * const Label, int TracebackModeIn )
 {
-    return CTrilinos::tableRepos().store<Epetra_Object, 
-        CT_Epetra_Object_ID_t>(new Epetra_Object(Label, 
-        TracebackModeIn));
+    return CTrilinos::tableRepos().store<Epetra_Object, CT_Epetra_Object_ID_t>(
+        new Epetra_Object(Label, TracebackModeIn));
 }
 
 CT_Epetra_Object_ID_t Epetra_Object_Duplicate ( 
   CT_Epetra_Object_ID_t ObjectID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Object, 
-        CT_Epetra_Object_ID_t>(new Epetra_Object(
-        *CEpetra::getConstObject(ObjectID)));
+    const Teuchos::RCP<const Epetra_Object> Object = 
+        CTrilinos::tableRepos().getConst<Epetra_Object, CT_Epetra_Object_ID_t>(
+        ObjectID);
+    return CTrilinos::tableRepos().store<Epetra_Object, CT_Epetra_Object_ID_t>(
+        new Epetra_Object(*Object));
 }
 
 void Epetra_Object_Destroy ( CT_Epetra_Object_ID_t * selfID )
@@ -80,19 +93,22 @@ void Epetra_Object_Destroy ( CT_Epetra_Object_ID_t * selfID )
 void Epetra_Object_SetLabel ( 
   CT_Epetra_Object_ID_t selfID, const char * const Label )
 {
-    CEpetra::getObject(selfID)->SetLabel(Label);
+    CTrilinos::tableRepos().get<Epetra_Object, CT_Epetra_Object_ID_t>(
+        selfID)->SetLabel(Label);
 }
 
 const char * Epetra_Object_Label ( CT_Epetra_Object_ID_t selfID )
 {
-    return CEpetra::getConstObject(selfID)->Label();
+    return CTrilinos::tableRepos().getConst<Epetra_Object, 
+        CT_Epetra_Object_ID_t>(selfID)->Label();
 }
 
 int Epetra_Object_ReportError ( 
   CT_Epetra_Object_ID_t selfID, const char Message[], int ErrorCode )
 {
-    return CEpetra::getConstObject(selfID)->ReportError(std::string(
-        Message), ErrorCode);
+    return CTrilinos::tableRepos().getConst<Epetra_Object, 
+        CT_Epetra_Object_ID_t>(selfID)->ReportError(std::string(Message), 
+        ErrorCode);
 }
 
 void Epetra_Object_SetTracebackMode ( int TracebackModeValue )

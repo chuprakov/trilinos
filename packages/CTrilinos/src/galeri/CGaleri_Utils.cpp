@@ -62,16 +62,24 @@ CT_Epetra_MultiVector_ID_t Galeri_Utils_CreateCartesianCoordinates (
   const char CoordType[], CT_Epetra_BlockMap_ID_t BlockMapID, 
   CT_Teuchos_ParameterList_ID_t ListID )
 {
-    return CEpetra::storeMultiVector(
-        Galeri::CreateCartesianCoordinates(std::string(CoordType), 
-        CEpetra::getConstBlockMap(BlockMapID).getRawPtr(), 
-        *CTeuchos::getParameterList(ListID)));
+    const Teuchos::RCP<const Epetra_BlockMap> BlockMap = 
+        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
+        CT_Epetra_BlockMap_ID_t>(BlockMapID);
+    const Teuchos::RCP<Teuchos::ParameterList> List = 
+        CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(ListID);
+    return CTrilinos::tableRepos().store<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(Galeri::CreateCartesianCoordinates(
+        std::string(CoordType), BlockMap.getRawPtr(), *List));
 }
 
 void Galeri_Utils_Solve_LinearProblem ( 
   CT_Epetra_LinearProblem_ID_t ProblemID )
 {
-    Galeri::Solve(*CEpetra::getConstLinearProblem(ProblemID));
+    const Teuchos::RCP<const Epetra_LinearProblem> Problem = 
+        CTrilinos::tableRepos().getConst<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(ProblemID);
+    Galeri::Solve(*Problem);
 }
 
 void Galeri_Utils_Solve_Matrix ( 
@@ -79,28 +87,46 @@ void Galeri_Utils_Solve_Matrix (
   CT_Epetra_MultiVector_ID_t LHSID, 
   CT_Epetra_MultiVector_ID_t RHSID )
 {
-    Galeri::Solve(CEpetra::getConstRowMatrix(MatrixID).getRawPtr(), 
-        CEpetra::getConstMultiVector(LHSID).getRawPtr(), 
-        CEpetra::getConstMultiVector(RHSID).getRawPtr());
+    const Teuchos::RCP<const Epetra_RowMatrix> Matrix = 
+        CTrilinos::tableRepos().getConst<Epetra_RowMatrix, 
+        CT_Epetra_RowMatrix_ID_t>(MatrixID);
+    const Teuchos::RCP<const Epetra_MultiVector> LHS = 
+        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(LHSID);
+    const Teuchos::RCP<const Epetra_MultiVector> RHS = 
+        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(RHSID);
+    Galeri::Solve(Matrix.getRawPtr(), LHS.getRawPtr(), RHS.getRawPtr());
 }
 
 double Galeri_Utils_ComputeNorm ( 
   CT_Epetra_MultiVector_ID_t LHSID, 
   CT_Epetra_MultiVector_ID_t RHSID )
 {
-    return Galeri::ComputeNorm(CEpetra::getConstMultiVector(
-        LHSID).getRawPtr(), CEpetra::getConstMultiVector(
-        RHSID).getRawPtr());
+    const Teuchos::RCP<const Epetra_MultiVector> LHS = 
+        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(LHSID);
+    const Teuchos::RCP<const Epetra_MultiVector> RHS = 
+        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(RHSID);
+    return Galeri::ComputeNorm(LHS.getRawPtr(), RHS.getRawPtr());
 }
 
 double Galeri_Utils_ComputeNorm_Matrix ( 
   CT_Epetra_RowMatrix_ID_t AID, CT_Epetra_MultiVector_ID_t LHSID, 
   CT_Epetra_MultiVector_ID_t RHSID )
 {
-    return Galeri::ComputeNorm(CEpetra::getConstRowMatrix(
-        AID).getRawPtr(), CEpetra::getConstMultiVector(
-        LHSID).getRawPtr(), CEpetra::getConstMultiVector(
-        RHSID).getRawPtr());
+    const Teuchos::RCP<const Epetra_RowMatrix> A = 
+        CTrilinos::tableRepos().getConst<Epetra_RowMatrix, 
+        CT_Epetra_RowMatrix_ID_t>(AID);
+    const Teuchos::RCP<const Epetra_MultiVector> LHS = 
+        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(LHSID);
+    const Teuchos::RCP<const Epetra_MultiVector> RHS = 
+        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(RHSID);
+    return Galeri::ComputeNorm(A.getRawPtr(), LHS.getRawPtr(), 
+        RHS.getRawPtr());
 }
 
 const char * Galeri_Utils_toString_Int ( int x )
@@ -122,8 +148,7 @@ void Galeri_Utils_GetNeighboursCartesian2d (
   const int i, const int nx, const int ny, int * left, int * right, 
   int * lower, int * upper )
 {
-    Galeri::GetNeighboursCartesian2d(i, nx, ny, *left, *right, 
-        *lower, *upper);
+    Galeri::GetNeighboursCartesian2d(i, nx, ny, *left, *right, *lower, *upper);
 }
 
 void Galeri_Utils_GetNeighboursCartesian2d_Both ( 
@@ -131,24 +156,26 @@ void Galeri_Utils_GetNeighboursCartesian2d_Both (
   int * lower, int * upper, int * left2, int * right2, int * lower2, 
   int * upper2 )
 {
-    Galeri::GetNeighboursCartesian2d(i, nx, ny, *left, *right, 
-        *lower, *upper, *left2, *right2, *lower2, *upper2);
+    Galeri::GetNeighboursCartesian2d(i, nx, ny, *left, *right, *lower, *upper, 
+        *left2, *right2, *lower2, *upper2);
 }
 
 void Galeri_Utils_GetNeighboursCartesian3d ( 
   const int i, const int nx, const int ny, const int nz, int * left, 
   int * right, int * lower, int * upper, int * below, int * above )
 {
-    Galeri::GetNeighboursCartesian3d(i, nx, ny, nz, *left, *right, 
-        *lower, *upper, *below, *above);
+    Galeri::GetNeighboursCartesian3d(i, nx, ny, nz, *left, *right, *lower, 
+        *upper, *below, *above);
 }
 
 void Galeri_Utils_PrintStencil2D ( 
   CT_Epetra_CrsMatrix_ID_t MatrixID, const int nx, const int ny, 
   int GID )
 {
-    Galeri::PrintStencil2D(CEpetra::getConstCrsMatrix(
-        MatrixID).getRawPtr(), nx, ny, GID);
+    const Teuchos::RCP<const Epetra_CrsMatrix> Matrix = 
+        CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
+        CT_Epetra_CrsMatrix_ID_t>(MatrixID);
+    Galeri::PrintStencil2D(Matrix.getRawPtr(), nx, ny, GID);
 }
 
 

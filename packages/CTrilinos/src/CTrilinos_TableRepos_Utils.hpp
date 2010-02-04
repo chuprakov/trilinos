@@ -43,48 +43,68 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include <string>
 
-#include "CEpetra_Distributor_Cpp.hpp"
-#include "CEpetra_SerialComm_Cpp.hpp"
-#include "CEpetra_BLAS_Cpp.hpp"
-#include "CEpetra_Comm_Cpp.hpp"
-#include "CEpetra_Operator_Cpp.hpp"
-#include "CEpetra_MultiVector_Cpp.hpp"
-#include "CEpetra_OffsetIndex_Cpp.hpp"
-#include "CEpetra_Object_Cpp.hpp"
-#include "CEpetra_RowMatrix_Cpp.hpp"
-#include "CEpetra_CompObject_Cpp.hpp"
-#include "CEpetra_Directory_Cpp.hpp"
-#include "CEpetra_Flops_Cpp.hpp"
-#include "CEpetra_SrcDistObject_Cpp.hpp"
-#include "CEpetra_MpiComm_Cpp.hpp"
-#include "CEpetra_CrsMatrix_Cpp.hpp"
-#include "CEpetra_CrsGraph_Cpp.hpp"
-#include "CEpetra_DistObject_Cpp.hpp"
-#include "CEpetra_Vector_Cpp.hpp"
-#include "CEpetra_Export_Cpp.hpp"
-#include "CEpetra_Map_Cpp.hpp"
-#include "CEpetra_BlockMap_Cpp.hpp"
-#include "CEpetra_Import_Cpp.hpp"
-#include "CEpetra_Time_Cpp.hpp"
-#include "CEpetra_JadMatrix_Cpp.hpp"
-#include "CEpetra_LinearProblem_Cpp.hpp"
-#include "CEpetra_LAPACK_Cpp.hpp"
-#include "CTeuchos_CommandLineProcessor_Cpp.hpp"
-#include "CTeuchos_ParameterList_Cpp.hpp"
-#include "CTeuchos_ParameterEntry_Cpp.hpp"
-#include "CTeuchos_any_Cpp.hpp"
-#include "CAmesos_BaseSolver_Cpp.hpp"
-#include "CAmesos_Cpp.hpp"
-#include "CEpetra_FECrsMatrix_Cpp.hpp"
-#include "CEpetra_IntSerialDenseVector_Cpp.hpp"
-#include "CEpetra_SerialDenseMatrix_Cpp.hpp"
-#include "CAztecOO_Cpp.hpp"
-#include "CAztecOO_StatusTest_Cpp.hpp"
-#include "CAztecOO_StatusTestCombo_Cpp.hpp"
-#include "CAztecOO_StatusTestMaxIters_Cpp.hpp"
-#include "CAztecOO_StatusTestResNorm_Cpp.hpp"
-#include "CIfpack_Cpp.hpp"
-#include "CIfpack_Preconditioner_Cpp.hpp"
+#include "Epetra_Distributor.h"
+#include "Epetra_SerialComm.h"
+#include "Epetra_BLAS.h"
+#include "Epetra_Comm.h"
+#include "Epetra_Operator.h"
+#include "Epetra_MultiVector.h"
+#include "Epetra_OffsetIndex.h"
+#include "Epetra_Object.h"
+#include "Epetra_RowMatrix.h"
+#include "Epetra_CompObject.h"
+#include "Epetra_Directory.h"
+#include "Epetra_Flops.h"
+#include "Epetra_SrcDistObject.h"
+#ifdef HAVE_MPI
+#include "Epetra_MpiComm.h"
+#endif /* HAVE_MPI */
+#include "Epetra_CrsMatrix.h"
+#include "Epetra_CrsGraph.h"
+#include "Epetra_DistObject.h"
+#include "Epetra_Vector.h"
+#include "Epetra_Export.h"
+#include "Epetra_Map.h"
+#include "Epetra_BlockMap.h"
+#include "Epetra_Import.h"
+#include "Epetra_Time.h"
+#include "Epetra_JadMatrix.h"
+#include "Epetra_LinearProblem.h"
+#include "Epetra_LAPACK.h"
+#include "Teuchos_CommandLineProcessor.hpp"
+#include "Teuchos_ParameterList.hpp"
+#include "Teuchos_ParameterEntry.hpp"
+#include "Teuchos_any.hpp"
+#ifdef HAVE_CTRILINOS_AMESOS
+#include "Amesos_BaseSolver.h"
+#endif /* HAVE_CTRILINOS_AMESOS */
+#ifdef HAVE_CTRILINOS_AMESOS
+#include "Amesos.h"
+#endif /* HAVE_CTRILINOS_AMESOS */
+#include "Epetra_FECrsMatrix.h"
+#include "Epetra_IntSerialDenseVector.h"
+#include "Epetra_SerialDenseMatrix.h"
+#ifdef HAVE_CTRILINOS_AZTECOO
+#include "AztecOO.h"
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+#include "AztecOO_StatusTest.h"
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+#include "AztecOO_StatusTestCombo.h"
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+#include "AztecOO_StatusTestMaxIters.h"
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+#include "AztecOO_StatusTestResNorm.h"
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_IFPACK
+#include "Ifpack.h"
+#endif /* HAVE_CTRILINOS_IFPACK */
+#ifdef HAVE_CTRILINOS_IFPACK
+#include "Ifpack_Preconditioner.h"
+#endif /* HAVE_CTRILINOS_IFPACK */
 
 #include "CTrilinos_enums.h"
 #include "CTrilinos_Table.hpp"

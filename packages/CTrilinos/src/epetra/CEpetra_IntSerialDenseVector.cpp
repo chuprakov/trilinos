@@ -48,6 +48,18 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_Epetra_IntSerialDenseVector_ID_t Epetra_IntSerialDenseVector_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_Epetra_IntSerialDenseVector_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t Epetra_IntSerialDenseVector_Generalize ( 
+  CT_Epetra_IntSerialDenseVector_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_IntSerialDenseVector_ID_t>(id);
+}
+
 CT_Epetra_IntSerialDenseVector_ID_t Epetra_IntSerialDenseVector_Create_Empty ( 
    )
 {
@@ -60,26 +72,27 @@ CT_Epetra_IntSerialDenseVector_ID_t Epetra_IntSerialDenseVector_Create (
   int Length_in )
 {
     return CTrilinos::tableRepos().store<Epetra_IntSerialDenseVector, 
-        CT_Epetra_IntSerialDenseVector_ID_t>(
-        new Epetra_IntSerialDenseVector(Length_in));
+        CT_Epetra_IntSerialDenseVector_ID_t>(new Epetra_IntSerialDenseVector(
+        Length_in));
 }
 
 CT_Epetra_IntSerialDenseVector_ID_t Epetra_IntSerialDenseVector_Create_FromArray ( 
   CT_Epetra_DataAccess_E_t CV_in, int * Values_in, int Length_in )
 {
     return CTrilinos::tableRepos().store<Epetra_IntSerialDenseVector, 
-        CT_Epetra_IntSerialDenseVector_ID_t>(
-        new Epetra_IntSerialDenseVector((Epetra_DataAccess) CV_in, 
-        Values_in, Length_in));
+        CT_Epetra_IntSerialDenseVector_ID_t>(new Epetra_IntSerialDenseVector(
+        (Epetra_DataAccess) CV_in, Values_in, Length_in));
 }
 
 CT_Epetra_IntSerialDenseVector_ID_t Epetra_IntSerialDenseVector_Duplicate ( 
   CT_Epetra_IntSerialDenseVector_ID_t SourceID )
 {
+    const Teuchos::RCP<const Epetra_IntSerialDenseVector> Source = 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(SourceID);
     return CTrilinos::tableRepos().store<Epetra_IntSerialDenseVector, 
-        CT_Epetra_IntSerialDenseVector_ID_t>(
-        new Epetra_IntSerialDenseVector(
-        *CEpetra::getConstIntSerialDenseVector(SourceID)));
+        CT_Epetra_IntSerialDenseVector_ID_t>(new Epetra_IntSerialDenseVector(
+        *Source));
 }
 
 void Epetra_IntSerialDenseVector_Destroy ( 
@@ -91,60 +104,71 @@ void Epetra_IntSerialDenseVector_Destroy (
 int Epetra_IntSerialDenseVector_Size ( 
   CT_Epetra_IntSerialDenseVector_ID_t selfID, int Length_in )
 {
-    return CEpetra::getIntSerialDenseVector(selfID)->Size(Length_in);
+    return CTrilinos::tableRepos().get<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(selfID)->Size(Length_in);
 }
 
 int Epetra_IntSerialDenseVector_Resize ( 
   CT_Epetra_IntSerialDenseVector_ID_t selfID, int Length_in )
 {
-    return CEpetra::getIntSerialDenseVector(selfID)->Resize(
-        Length_in);
+    return CTrilinos::tableRepos().get<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(selfID)->Resize(Length_in);
 }
 
 int Epetra_IntSerialDenseVector_Random ( 
   CT_Epetra_IntSerialDenseVector_ID_t selfID )
 {
-    return CEpetra::getIntSerialDenseVector(selfID)->Random();
+    return CTrilinos::tableRepos().get<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(selfID)->Random();
 }
 
 int Epetra_IntSerialDenseVector_Length ( 
   CT_Epetra_IntSerialDenseVector_ID_t selfID )
 {
-    return CEpetra::getConstIntSerialDenseVector(selfID)->Length();
+    return CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(selfID)->Length();
 }
 
 int * Epetra_IntSerialDenseVector_Values ( 
   CT_Epetra_IntSerialDenseVector_ID_t selfID )
 {
-    return CEpetra::getIntSerialDenseVector(selfID)->Values();
+    return CTrilinos::tableRepos().get<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(selfID)->Values();
 }
 
 const int * Epetra_IntSerialDenseVector_Values_Const ( 
   CT_Epetra_IntSerialDenseVector_ID_t selfID )
 {
-    return CEpetra::getConstIntSerialDenseVector(selfID)->Values();
+    return CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(selfID)->Values();
 }
 
 CT_Epetra_DataAccess_E_t Epetra_IntSerialDenseVector_CV ( 
   CT_Epetra_IntSerialDenseVector_ID_t selfID )
 {
-    return (CT_Epetra_DataAccess_E_t)(
-         CEpetra::getConstIntSerialDenseVector(selfID)->CV() );
+    return (CT_Epetra_DataAccess_E_t)( 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(selfID)->CV() );
 }
 
 int Epetra_IntSerialDenseVector_MakeViewOf ( 
   CT_Epetra_IntSerialDenseVector_ID_t selfID, 
   CT_Epetra_IntSerialDenseVector_ID_t SourceID )
 {
-    return CEpetra::getIntSerialDenseVector(selfID)->MakeViewOf(
-        *CEpetra::getConstIntSerialDenseVector(SourceID));
+    const Teuchos::RCP<const Epetra_IntSerialDenseVector> Source = 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(SourceID);
+    return CTrilinos::tableRepos().get<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(selfID)->MakeViewOf(*Source);
 }
 
 void Epetra_IntSerialDenseVector_setElement ( 
   CT_Epetra_IntSerialDenseVector_ID_t selfID, int Index, 
   int * value )
 {
-    Epetra_IntSerialDenseVector& self = *( CEpetra::getIntSerialDenseVector(selfID) );
+    Epetra_IntSerialDenseVector& self = *( 
+        CTrilinos::tableRepos().get<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(selfID) );
 
     self(Index) = *value;
 }
@@ -152,7 +176,9 @@ void Epetra_IntSerialDenseVector_setElement (
 int Epetra_IntSerialDenseVector_getElement ( 
   CT_Epetra_IntSerialDenseVector_ID_t selfID, int Index )
 {
-    const Epetra_IntSerialDenseVector& self = *( CEpetra::getConstIntSerialDenseVector(selfID) );
+    const Epetra_IntSerialDenseVector& self = *( 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(selfID) );
 
     return self(Index);
 }
@@ -161,7 +187,9 @@ void Epetra_IntSerialDenseVector_setElement_Bracket (
   CT_Epetra_IntSerialDenseVector_ID_t selfID, int Index, 
   int * value )
 {
-    Epetra_IntSerialDenseVector& self = *( CEpetra::getIntSerialDenseVector(selfID) );
+    Epetra_IntSerialDenseVector& self = *( 
+        CTrilinos::tableRepos().get<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(selfID) );
 
     self[Index] = *value;
 }
@@ -169,7 +197,9 @@ void Epetra_IntSerialDenseVector_setElement_Bracket (
 int Epetra_IntSerialDenseVector_getElement_Bracket ( 
   CT_Epetra_IntSerialDenseVector_ID_t selfID, int Index )
 {
-    const Epetra_IntSerialDenseVector& self = *( CEpetra::getConstIntSerialDenseVector(selfID) );
+    const Epetra_IntSerialDenseVector& self = *( 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(selfID) );
 
     return self[Index];
 }
@@ -178,9 +208,14 @@ void Epetra_IntSerialDenseVector_Assign (
   CT_Epetra_IntSerialDenseVector_ID_t selfID, 
   CT_Epetra_IntSerialDenseVector_ID_t SourceID )
 {
-    Epetra_IntSerialDenseVector& self = *( CEpetra::getIntSerialDenseVector(selfID) );
+    Epetra_IntSerialDenseVector& self = *( 
+        CTrilinos::tableRepos().get<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(selfID) );
 
-    self = *CEpetra::getConstIntSerialDenseVector(SourceID);
+    const Teuchos::RCP<const Epetra_IntSerialDenseVector> Source = 
+        CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector, 
+        CT_Epetra_IntSerialDenseVector_ID_t>(SourceID);
+    self = *Source;
 }
 
 

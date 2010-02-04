@@ -53,6 +53,23 @@ extern "C" {
 
 
 
+/*! @name ID struct conversion functions */
+/*@{*/
+
+/*! @brief Changes the ID struct from the universal
+   (generalized) struct type to the class-specific one.
+*/
+CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_Degeneralize ( 
+  CTrilinos_Universal_ID_t id );
+
+/*! @brief Changes the ID struct from the class-specific
+   struct type to the universal (generalized) one.
+*/
+CTrilinos_Universal_ID_t Teuchos_ParameterList_Generalize ( 
+  CT_Teuchos_ParameterList_ID_t id );
+
+/*@}*/
+
 /*! @name ParameterList constructor wrappers */
 /*@{*/
 

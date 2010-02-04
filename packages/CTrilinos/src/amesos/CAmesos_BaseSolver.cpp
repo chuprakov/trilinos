@@ -55,6 +55,18 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_Amesos_BaseSolver_ID_t Amesos_BaseSolver_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_Amesos_BaseSolver_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t Amesos_BaseSolver_Generalize ( 
+  CT_Amesos_BaseSolver_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Amesos_BaseSolver_ID_t>(id);
+}
+
 void Amesos_BaseSolver_Destroy ( CT_Amesos_BaseSolver_ID_t * selfID )
 {
     CTrilinos::tableRepos().remove(selfID);
@@ -63,120 +75,146 @@ void Amesos_BaseSolver_Destroy ( CT_Amesos_BaseSolver_ID_t * selfID )
 int Amesos_BaseSolver_SymbolicFactorization ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return CAmesos::getBaseSolver(selfID)->SymbolicFactorization();
+    return CTrilinos::tableRepos().get<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->SymbolicFactorization();
 }
 
 int Amesos_BaseSolver_NumericFactorization ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return CAmesos::getBaseSolver(selfID)->NumericFactorization();
+    return CTrilinos::tableRepos().get<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->NumericFactorization();
 }
 
 int Amesos_BaseSolver_Solve ( CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return CAmesos::getBaseSolver(selfID)->Solve();
+    return CTrilinos::tableRepos().get<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->Solve();
 }
 
 int Amesos_BaseSolver_SetUseTranspose ( 
   CT_Amesos_BaseSolver_ID_t selfID, boolean UseTranspose )
 {
-    return CAmesos::getBaseSolver(selfID)->SetUseTranspose(
-        ((UseTranspose) != FALSE ? true : false));
+    return CTrilinos::tableRepos().get<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->SetUseTranspose(((UseTranspose) != 
+        FALSE ? true : false));
 }
 
 boolean Amesos_BaseSolver_UseTranspose ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return ((CAmesos::getConstBaseSolver(
-        selfID)->UseTranspose()) ? TRUE : FALSE);
+    return ((CTrilinos::tableRepos().getConst<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->UseTranspose()) ? TRUE : FALSE);
 }
 
 int Amesos_BaseSolver_SetParameters ( 
   CT_Amesos_BaseSolver_ID_t selfID, 
   CT_Teuchos_ParameterList_ID_t ParameterListID )
 {
-    return CAmesos::getBaseSolver(selfID)->SetParameters(
-        *CTeuchos::getParameterList(ParameterListID));
+    const Teuchos::RCP<Teuchos::ParameterList> ParameterList = 
+        CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(ParameterListID);
+    return CTrilinos::tableRepos().get<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->SetParameters(*ParameterList);
 }
 
 CT_Epetra_LinearProblem_ID_t Amesos_BaseSolver_GetProblem ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return CEpetra::storeConstLinearProblem(
-        CAmesos::getConstBaseSolver(selfID)->GetProblem());
+    return CTrilinos::tableRepos().store<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(
+        CTrilinos::tableRepos().getConst<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->GetProblem());
 }
 
 boolean Amesos_BaseSolver_MatrixShapeOK ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return ((CAmesos::getConstBaseSolver(
-        selfID)->MatrixShapeOK()) ? TRUE : FALSE);
+    return ((CTrilinos::tableRepos().getConst<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->MatrixShapeOK()) ? TRUE : FALSE);
 }
 
 CT_Epetra_Comm_ID_t Amesos_BaseSolver_Comm ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return CEpetra::storeConstComm(&( CAmesos::getConstBaseSolver(
-        selfID)->Comm() ));
+    return CTrilinos::tableRepos().store<Epetra_Comm, CT_Epetra_Comm_ID_t>(
+        &( CTrilinos::tableRepos().getConst<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->Comm() ));
 }
 
 int Amesos_BaseSolver_NumSymbolicFact ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return CAmesos::getConstBaseSolver(selfID)->NumSymbolicFact();
+    return CTrilinos::tableRepos().getConst<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->NumSymbolicFact();
 }
 
 int Amesos_BaseSolver_NumNumericFact ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return CAmesos::getConstBaseSolver(selfID)->NumNumericFact();
+    return CTrilinos::tableRepos().getConst<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->NumNumericFact();
 }
 
 int Amesos_BaseSolver_NumSolve ( CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return CAmesos::getConstBaseSolver(selfID)->NumSolve();
+    return CTrilinos::tableRepos().getConst<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->NumSolve();
 }
 
 void Amesos_BaseSolver_PrintStatus ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    CAmesos::getConstBaseSolver(selfID)->PrintStatus();
+    CTrilinos::tableRepos().getConst<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->PrintStatus();
 }
 
 void Amesos_BaseSolver_PrintTiming ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    CAmesos::getConstBaseSolver(selfID)->PrintTiming();
+    CTrilinos::tableRepos().getConst<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->PrintTiming();
 }
 
 void Amesos_BaseSolver_setParameterList ( 
   CT_Amesos_BaseSolver_ID_t selfID, 
   CT_Teuchos_ParameterList_ID_t paramListID )
 {
-    CAmesos::getBaseSolver(selfID)->setParameterList(
-        CTeuchos::getParameterList(paramListID));
+    const Teuchos::RCP<Teuchos::ParameterList> paramList = 
+        CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(paramListID);
+    CTrilinos::tableRepos().get<Amesos_BaseSolver, CT_Amesos_BaseSolver_ID_t>(
+        selfID)->setParameterList(paramList);
 }
 
 CT_Teuchos_ParameterList_ID_t Amesos_BaseSolver_getNonconstParameterList ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return CTeuchos::storeParameterList(CAmesos::getBaseSolver(
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        CTrilinos::tableRepos().get<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(
         selfID)->getNonconstParameterList().getRawPtr());
 }
 
 CT_Teuchos_ParameterList_ID_t Amesos_BaseSolver_unsetParameterList ( 
   CT_Amesos_BaseSolver_ID_t selfID )
 {
-    return CTeuchos::storeParameterList(CAmesos::getBaseSolver(
-        selfID)->unsetParameterList().getRawPtr());
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(
+        CTrilinos::tableRepos().get<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->unsetParameterList().getRawPtr());
 }
 
 void Amesos_BaseSolver_GetTiming ( 
   CT_Amesos_BaseSolver_ID_t selfID, 
   CT_Teuchos_ParameterList_ID_t TimingParameterListID )
 {
-    CAmesos::getConstBaseSolver(selfID)->GetTiming(
-        *CTeuchos::getParameterList(TimingParameterListID));
+    const Teuchos::RCP<Teuchos::ParameterList> TimingParameterList = 
+        CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(TimingParameterListID);
+    CTrilinos::tableRepos().getConst<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(selfID)->GetTiming(*TimingParameterList);
 }
 
 

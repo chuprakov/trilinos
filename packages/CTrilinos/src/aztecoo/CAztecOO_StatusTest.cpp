@@ -53,6 +53,18 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_AztecOO_StatusTest_ID_t AztecOO_StatusTest_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_AztecOO_StatusTest_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t AztecOO_StatusTest_Generalize ( 
+  CT_AztecOO_StatusTest_ID_t id )
+{
+    return CTrilinos::abstractType<CT_AztecOO_StatusTest_ID_t>(id);
+}
+
 void AztecOO_StatusTest_Destroy ( 
   CT_AztecOO_StatusTest_ID_t * selfID )
 {
@@ -62,7 +74,8 @@ void AztecOO_StatusTest_Destroy (
 boolean AztecOO_StatusTest_ResidualVectorRequired ( 
   CT_AztecOO_StatusTest_ID_t selfID )
 {
-    return ((CAztecOO::getConstStatusTest(
+    return ((CTrilinos::tableRepos().getConst<AztecOO_StatusTest, 
+        CT_AztecOO_StatusTest_ID_t>(
         selfID)->ResidualVectorRequired()) ? TRUE : FALSE);
 }
 
@@ -71,17 +84,22 @@ CT_AztecOO_StatusType_E_t AztecOO_StatusTest_CheckStatus (
   CT_Epetra_MultiVector_ID_t CurrentResVectorID, 
   double CurrentResNormEst, boolean SolutionUpdated )
 {
-    return (CT_AztecOO_StatusType_E_t)( CAztecOO::getStatusTest(
-        selfID)->CheckStatus(CurrentIter, CEpetra::getMultiVector(
-        CurrentResVectorID).getRawPtr(), CurrentResNormEst, ((
-        SolutionUpdated) != FALSE ? true : false)) );
+    const Teuchos::RCP<Epetra_MultiVector> CurrentResVector = 
+        CTrilinos::tableRepos().get<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(CurrentResVectorID);
+    return (CT_AztecOO_StatusType_E_t)( 
+        CTrilinos::tableRepos().get<AztecOO_StatusTest, 
+        CT_AztecOO_StatusTest_ID_t>(selfID)->CheckStatus(CurrentIter, 
+        CurrentResVector.getRawPtr(), CurrentResNormEst, ((SolutionUpdated) != 
+        FALSE ? true : false)) );
 }
 
 CT_AztecOO_StatusType_E_t AztecOO_StatusTest_GetStatus ( 
   CT_AztecOO_StatusTest_ID_t selfID )
 {
-    return (CT_AztecOO_StatusType_E_t)( CAztecOO::getConstStatusTest(
-        selfID)->GetStatus() );
+    return (CT_AztecOO_StatusType_E_t)( 
+        CTrilinos::tableRepos().getConst<AztecOO_StatusTest, 
+        CT_AztecOO_StatusTest_ID_t>(selfID)->GetStatus() );
 }
 
 

@@ -57,8 +57,7 @@ extern "C" {
 
 CT_Ifpack_ID_t Ifpack_Create (  )
 {
-    return CTrilinos::tableRepos().store<Ifpack, CT_Ifpack_ID_t>(
-        new Ifpack());
+    return CTrilinos::tableRepos().store<Ifpack, CT_Ifpack_ID_t>(new Ifpack());
 }
 
 void Ifpack_Destroy ( CT_Ifpack_ID_t * selfID )
@@ -70,9 +69,13 @@ CT_Ifpack_Preconditioner_ID_t Ifpack_CreatePreconditioner_UsingName (
   CT_Ifpack_ID_t selfID, const char PrecType[], 
   CT_Epetra_RowMatrix_ID_t MatrixID, const int overlap )
 {
-    return CIfpack::storePreconditioner(CIfpack::getIfpack(
-        selfID)->Create(std::string(PrecType), CEpetra::getRowMatrix(
-        MatrixID).getRawPtr(), overlap));
+    const Teuchos::RCP<Epetra_RowMatrix> Matrix = 
+        CTrilinos::tableRepos().get<Epetra_RowMatrix, 
+        CT_Epetra_RowMatrix_ID_t>(MatrixID);
+    return CTrilinos::tableRepos().store<Ifpack_Preconditioner, 
+        CT_Ifpack_Preconditioner_ID_t>(CTrilinos::tableRepos().get<Ifpack, 
+        CT_Ifpack_ID_t>(selfID)->Create(std::string(PrecType), 
+        Matrix.getRawPtr(), overlap));
 }
 
 int Ifpack_SetParameters ( 
@@ -80,11 +83,13 @@ int Ifpack_SetParameters (
   CT_Teuchos_ParameterList_ID_t ListID, char * PrecType[], 
   int * Overlap )
 {
+    const Teuchos::RCP<Teuchos::ParameterList> List = 
+        CTrilinos::tableRepos().get<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(ListID);
     std::string *tmp_PrecType = NULL;
     CTrilinos::pass_string_in(PrecType, tmp_PrecType);
-    int ret = CIfpack::getIfpack(selfID)->SetParameters(argc, argv, 
-        *CTeuchos::getParameterList(ListID), *tmp_PrecType, 
-        *Overlap);
+    int ret = CTrilinos::tableRepos().get<Ifpack, CT_Ifpack_ID_t>(
+        selfID)->SetParameters(argc, argv, *List, *tmp_PrecType, *Overlap);
     CTrilinos::pass_string_out(tmp_PrecType, PrecType);
     delete tmp_PrecType;
 
@@ -93,17 +98,20 @@ int Ifpack_SetParameters (
 
 const char * Ifpack_toString ( const CT_EPrecType_E_t precType )
 {
-    return Ifpack::toString(CTrilinos::convert_to_difficult_enum(
-        precType));
+    return Ifpack::toString(CTrilinos::convert_to_difficult_enum(precType));
 }
 
 CT_Ifpack_Preconditioner_ID_t Ifpack_CreatePreconditioner_UsingType ( 
   CT_EPrecType_E_t PrecType, CT_Epetra_RowMatrix_ID_t MatrixID, 
   const int overlap )
 {
-    return CIfpack::storePreconditioner(Ifpack::Create(
-        CTrilinos::convert_to_difficult_enum(PrecType), 
-        CEpetra::getRowMatrix(MatrixID).getRawPtr(), overlap));
+    const Teuchos::RCP<Epetra_RowMatrix> Matrix = 
+        CTrilinos::tableRepos().get<Epetra_RowMatrix, 
+        CT_Epetra_RowMatrix_ID_t>(MatrixID);
+    return CTrilinos::tableRepos().store<Ifpack_Preconditioner, 
+        CT_Ifpack_Preconditioner_ID_t>(Ifpack::Create(
+        CTrilinos::convert_to_difficult_enum(PrecType), Matrix.getRawPtr(), 
+        overlap));
 }
 
 

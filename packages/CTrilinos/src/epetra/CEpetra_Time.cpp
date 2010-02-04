@@ -49,19 +49,35 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_Epetra_Time_ID_t Epetra_Time_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_Epetra_Time_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t Epetra_Time_Generalize ( 
+  CT_Epetra_Time_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Time_ID_t>(id);
+}
+
 CT_Epetra_Time_ID_t Epetra_Time_Create ( CT_Epetra_Comm_ID_t CommID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Time, 
-        CT_Epetra_Time_ID_t>(new Epetra_Time(*CEpetra::getConstComm(
-        CommID)));
+    const Teuchos::RCP<const Epetra_Comm> Comm = 
+        CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
+        CommID);
+    return CTrilinos::tableRepos().store<Epetra_Time, CT_Epetra_Time_ID_t>(
+        new Epetra_Time(*Comm));
 }
 
 CT_Epetra_Time_ID_t Epetra_Time_Duplicate ( 
   CT_Epetra_Time_ID_t TimeID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Time, 
-        CT_Epetra_Time_ID_t>(new Epetra_Time(*CEpetra::getConstTime(
-        TimeID)));
+    const Teuchos::RCP<const Epetra_Time> Time = 
+        CTrilinos::tableRepos().getConst<Epetra_Time, CT_Epetra_Time_ID_t>(
+        TimeID);
+    return CTrilinos::tableRepos().store<Epetra_Time, CT_Epetra_Time_ID_t>(
+        new Epetra_Time(*Time));
 }
 
 void Epetra_Time_Destroy ( CT_Epetra_Time_ID_t * selfID )
@@ -71,25 +87,32 @@ void Epetra_Time_Destroy ( CT_Epetra_Time_ID_t * selfID )
 
 double Epetra_Time_WallTime ( CT_Epetra_Time_ID_t selfID )
 {
-    return CEpetra::getConstTime(selfID)->WallTime();
+    return CTrilinos::tableRepos().getConst<Epetra_Time, CT_Epetra_Time_ID_t>(
+        selfID)->WallTime();
 }
 
 void Epetra_Time_ResetStartTime ( CT_Epetra_Time_ID_t selfID )
 {
-    CEpetra::getTime(selfID)->ResetStartTime();
+    CTrilinos::tableRepos().get<Epetra_Time, CT_Epetra_Time_ID_t>(
+        selfID)->ResetStartTime();
 }
 
 double Epetra_Time_ElapsedTime ( CT_Epetra_Time_ID_t selfID )
 {
-    return CEpetra::getConstTime(selfID)->ElapsedTime();
+    return CTrilinos::tableRepos().getConst<Epetra_Time, CT_Epetra_Time_ID_t>(
+        selfID)->ElapsedTime();
 }
 
 void Epetra_Time_Assign ( 
   CT_Epetra_Time_ID_t selfID, CT_Epetra_Time_ID_t srcID )
 {
-    Epetra_Time& self = *( CEpetra::getTime(selfID) );
+    Epetra_Time& self = *( CTrilinos::tableRepos().get<Epetra_Time, 
+        CT_Epetra_Time_ID_t>(selfID) );
 
-    self = *CEpetra::getConstTime(srcID);
+    const Teuchos::RCP<const Epetra_Time> src = 
+        CTrilinos::tableRepos().getConst<Epetra_Time, CT_Epetra_Time_ID_t>(
+        srcID);
+    self = *src;
 }
 
 

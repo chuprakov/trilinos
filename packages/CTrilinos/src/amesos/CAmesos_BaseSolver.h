@@ -59,6 +59,23 @@ extern "C" {
 
 
 
+/*! @name ID struct conversion functions */
+/*@{*/
+
+/*! @brief Changes the ID struct from the universal
+   (generalized) struct type to the class-specific one.
+*/
+CT_Amesos_BaseSolver_ID_t Amesos_BaseSolver_Degeneralize ( 
+  CTrilinos_Universal_ID_t id );
+
+/*! @brief Changes the ID struct from the class-specific
+   struct type to the universal (generalized) one.
+*/
+CTrilinos_Universal_ID_t Amesos_BaseSolver_Generalize ( 
+  CT_Amesos_BaseSolver_ID_t id );
+
+/*@}*/
+
 /*! @name Amesos_BaseSolver destructor wrappers */
 /*@{*/
 

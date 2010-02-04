@@ -49,21 +49,37 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_Epetra_Map_ID_t Epetra_Map_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t Epetra_Map_Generalize ( 
+  CT_Epetra_Map_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id);
+}
+
 CT_Epetra_Map_ID_t Epetra_Map_Create ( 
   int NumGlobalElements, int IndexBase, CT_Epetra_Comm_ID_t CommID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Map, 
-        CT_Epetra_Map_ID_t>(new Epetra_Map(NumGlobalElements, 
-        IndexBase, *CEpetra::getConstComm(CommID)));
+    const Teuchos::RCP<const Epetra_Comm> Comm = 
+        CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
+        CommID);
+    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
+        new Epetra_Map(NumGlobalElements, IndexBase, *Comm));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Create_Linear ( 
   int NumGlobalElements, int NumMyElements, int IndexBase, 
   CT_Epetra_Comm_ID_t CommID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Map, 
-        CT_Epetra_Map_ID_t>(new Epetra_Map(NumGlobalElements, 
-        NumMyElements, IndexBase, *CEpetra::getConstComm(CommID)));
+    const Teuchos::RCP<const Epetra_Comm> Comm = 
+        CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
+        CommID);
+    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
+        new Epetra_Map(NumGlobalElements, NumMyElements, IndexBase, *Comm));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Create_Arbitrary ( 
@@ -71,17 +87,21 @@ CT_Epetra_Map_ID_t Epetra_Map_Create_Arbitrary (
   const int * MyGlobalElements, int IndexBase, 
   CT_Epetra_Comm_ID_t CommID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Map, 
-        CT_Epetra_Map_ID_t>(new Epetra_Map(NumGlobalElements, 
-        NumMyElements, MyGlobalElements, IndexBase, 
-        *CEpetra::getConstComm(CommID)));
+    const Teuchos::RCP<const Epetra_Comm> Comm = 
+        CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
+        CommID);
+    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
+        new Epetra_Map(NumGlobalElements, NumMyElements, MyGlobalElements, 
+        IndexBase, *Comm));
 }
 
 CT_Epetra_Map_ID_t Epetra_Map_Duplicate ( CT_Epetra_Map_ID_t mapID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Map, 
-        CT_Epetra_Map_ID_t>(new Epetra_Map(*CEpetra::getConstMap(
-        mapID)));
+    const Teuchos::RCP<const Epetra_Map> map = 
+        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+        mapID);
+    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
+        new Epetra_Map(*map));
 }
 
 void Epetra_Map_Destroy ( CT_Epetra_Map_ID_t * selfID )
@@ -92,9 +112,13 @@ void Epetra_Map_Destroy ( CT_Epetra_Map_ID_t * selfID )
 void Epetra_Map_Assign ( 
   CT_Epetra_Map_ID_t selfID, CT_Epetra_Map_ID_t mapID )
 {
-    Epetra_Map& self = *( CEpetra::getMap(selfID) );
+    Epetra_Map& self = *( CTrilinos::tableRepos().get<Epetra_Map, 
+        CT_Epetra_Map_ID_t>(selfID) );
 
-    self = *CEpetra::getConstMap(mapID);
+    const Teuchos::RCP<const Epetra_Map> map = 
+        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+        mapID);
+    self = *map;
 }
 
 

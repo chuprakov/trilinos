@@ -48,19 +48,19 @@ extern "C" {
 
 
 typedef union {
-  CTrilinos_Object_ID_t universal;
+  CTrilinos_Universal_ID_t universal;
   CT_Epetra_SerialComm_ID_t Epetra_SerialComm;
   CT_Epetra_Comm_ID_t Epetra_Comm;
 } CT_Epetra_SerialComm_ID_Flex_t;
 
 typedef union {
-  CTrilinos_Object_ID_t universal;
+  CTrilinos_Universal_ID_t universal;
   CT_Epetra_Map_ID_t Epetra_Map;
   CT_Epetra_BlockMap_ID_t Epetra_BlockMap;
 } CT_Epetra_Map_ID_Flex_t;
 
 typedef union {
-  CTrilinos_Object_ID_t universal;
+  CTrilinos_Universal_ID_t universal;
   CT_Epetra_Vector_ID_t Epetra_Vector;
   CT_Epetra_MultiVector_ID_t Epetra_MultiVector;
 } CT_Epetra_Vector_ID_Flex_t;

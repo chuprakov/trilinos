@@ -57,6 +57,23 @@ extern "C" {
 
 
 
+/*! @name ID struct conversion functions */
+/*@{*/
+
+/*! @brief Changes the ID struct from the universal
+   (generalized) struct type to the class-specific one.
+*/
+CT_AztecOO_StatusTestMaxIters_ID_t AztecOO_StatusTestMaxIters_Degeneralize ( 
+  CTrilinos_Universal_ID_t id );
+
+/*! @brief Changes the ID struct from the class-specific
+   struct type to the universal (generalized) one.
+*/
+CTrilinos_Universal_ID_t AztecOO_StatusTestMaxIters_Generalize ( 
+  CT_AztecOO_StatusTestMaxIters_ID_t id );
+
+/*@}*/
+
 /*! @name AztecOO_StatusTestMaxIters constructor wrappers */
 /*@{*/
 

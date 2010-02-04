@@ -52,6 +52,18 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 extern "C" {
 
 
+CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Degeneralize ( 
+  CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(id);
+}
+
+CTrilinos_Universal_ID_t Epetra_LinearProblem_Generalize ( 
+  CT_Epetra_LinearProblem_ID_t id )
+{
+    return CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(id);
+}
+
 CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Create (  )
 {
     return CTrilinos::tableRepos().store<Epetra_LinearProblem, 
@@ -62,30 +74,46 @@ CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Create_FromMatrix (
   CT_Epetra_RowMatrix_ID_t AID, CT_Epetra_MultiVector_ID_t XID, 
   CT_Epetra_MultiVector_ID_t BID )
 {
+    const Teuchos::RCP<Epetra_RowMatrix> A = 
+        CTrilinos::tableRepos().get<Epetra_RowMatrix, 
+        CT_Epetra_RowMatrix_ID_t>(AID);
+    const Teuchos::RCP<Epetra_MultiVector> X = 
+        CTrilinos::tableRepos().get<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(XID);
+    const Teuchos::RCP<Epetra_MultiVector> B = 
+        CTrilinos::tableRepos().get<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(BID);
     return CTrilinos::tableRepos().store<Epetra_LinearProblem, 
-        CT_Epetra_LinearProblem_ID_t>(new Epetra_LinearProblem(
-        CEpetra::getRowMatrix(AID).getRawPtr(), 
-        CEpetra::getMultiVector(XID).getRawPtr(), 
-        CEpetra::getMultiVector(BID).getRawPtr()));
+        CT_Epetra_LinearProblem_ID_t>(new Epetra_LinearProblem(A.getRawPtr(), 
+        X.getRawPtr(), B.getRawPtr()));
 }
 
 CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Create_FromOperator ( 
   CT_Epetra_Operator_ID_t AID, CT_Epetra_MultiVector_ID_t XID, 
   CT_Epetra_MultiVector_ID_t BID )
 {
+    const Teuchos::RCP<Epetra_Operator> A = 
+        CTrilinos::tableRepos().get<Epetra_Operator, CT_Epetra_Operator_ID_t>(
+        AID);
+    const Teuchos::RCP<Epetra_MultiVector> X = 
+        CTrilinos::tableRepos().get<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(XID);
+    const Teuchos::RCP<Epetra_MultiVector> B = 
+        CTrilinos::tableRepos().get<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(BID);
     return CTrilinos::tableRepos().store<Epetra_LinearProblem, 
-        CT_Epetra_LinearProblem_ID_t>(new Epetra_LinearProblem(
-        CEpetra::getOperator(AID).getRawPtr(), 
-        CEpetra::getMultiVector(XID).getRawPtr(), 
-        CEpetra::getMultiVector(BID).getRawPtr()));
+        CT_Epetra_LinearProblem_ID_t>(new Epetra_LinearProblem(A.getRawPtr(), 
+        X.getRawPtr(), B.getRawPtr()));
 }
 
 CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Duplicate ( 
   CT_Epetra_LinearProblem_ID_t ProblemID )
 {
+    const Teuchos::RCP<const Epetra_LinearProblem> Problem = 
+        CTrilinos::tableRepos().getConst<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(ProblemID);
     return CTrilinos::tableRepos().store<Epetra_LinearProblem, 
-        CT_Epetra_LinearProblem_ID_t>(new Epetra_LinearProblem(
-        *CEpetra::getConstLinearProblem(ProblemID)));
+        CT_Epetra_LinearProblem_ID_t>(new Epetra_LinearProblem(*Problem));
 }
 
 void Epetra_LinearProblem_Destroy ( 
@@ -97,106 +125,137 @@ void Epetra_LinearProblem_Destroy (
 int Epetra_LinearProblem_CheckInput ( 
   CT_Epetra_LinearProblem_ID_t selfID )
 {
-    return CEpetra::getConstLinearProblem(selfID)->CheckInput();
+    return CTrilinos::tableRepos().getConst<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->CheckInput();
 }
 
 void Epetra_LinearProblem_AssertSymmetric ( 
   CT_Epetra_LinearProblem_ID_t selfID )
 {
-    CEpetra::getLinearProblem(selfID)->AssertSymmetric();
+    CTrilinos::tableRepos().get<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->AssertSymmetric();
 }
 
 void Epetra_LinearProblem_SetPDL ( 
   CT_Epetra_LinearProblem_ID_t selfID, 
   CT_ProblemDifficultyLevel_E_t PDL )
 {
-    CEpetra::getLinearProblem(selfID)->SetPDL(
+    CTrilinos::tableRepos().get<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->SetPDL(
         (ProblemDifficultyLevel) PDL);
 }
 
 void Epetra_LinearProblem_SetOperator_Matrix ( 
   CT_Epetra_LinearProblem_ID_t selfID, CT_Epetra_RowMatrix_ID_t AID )
 {
-    CEpetra::getLinearProblem(selfID)->SetOperator(
-        CEpetra::getRowMatrix(AID).getRawPtr());
+    const Teuchos::RCP<Epetra_RowMatrix> A = 
+        CTrilinos::tableRepos().get<Epetra_RowMatrix, 
+        CT_Epetra_RowMatrix_ID_t>(AID);
+    CTrilinos::tableRepos().get<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->SetOperator(A.getRawPtr());
 }
 
 void Epetra_LinearProblem_SetOperator ( 
   CT_Epetra_LinearProblem_ID_t selfID, CT_Epetra_Operator_ID_t AID )
 {
-    CEpetra::getLinearProblem(selfID)->SetOperator(
-        CEpetra::getOperator(AID).getRawPtr());
+    const Teuchos::RCP<Epetra_Operator> A = 
+        CTrilinos::tableRepos().get<Epetra_Operator, CT_Epetra_Operator_ID_t>(
+        AID);
+    CTrilinos::tableRepos().get<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->SetOperator(A.getRawPtr());
 }
 
 void Epetra_LinearProblem_SetLHS ( 
   CT_Epetra_LinearProblem_ID_t selfID, 
   CT_Epetra_MultiVector_ID_t XID )
 {
-    CEpetra::getLinearProblem(selfID)->SetLHS(CEpetra::getMultiVector(
-        XID).getRawPtr());
+    const Teuchos::RCP<Epetra_MultiVector> X = 
+        CTrilinos::tableRepos().get<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(XID);
+    CTrilinos::tableRepos().get<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->SetLHS(X.getRawPtr());
 }
 
 void Epetra_LinearProblem_SetRHS ( 
   CT_Epetra_LinearProblem_ID_t selfID, 
   CT_Epetra_MultiVector_ID_t BID )
 {
-    CEpetra::getLinearProblem(selfID)->SetRHS(CEpetra::getMultiVector(
-        BID).getRawPtr());
+    const Teuchos::RCP<Epetra_MultiVector> B = 
+        CTrilinos::tableRepos().get<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(BID);
+    CTrilinos::tableRepos().get<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->SetRHS(B.getRawPtr());
 }
 
 int Epetra_LinearProblem_LeftScale ( 
   CT_Epetra_LinearProblem_ID_t selfID, CT_Epetra_Vector_ID_t DID )
 {
-    return CEpetra::getLinearProblem(selfID)->LeftScale(
-        *CEpetra::getConstVector(DID));
+    const Teuchos::RCP<const Epetra_Vector> D = 
+        CTrilinos::tableRepos().getConst<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        DID);
+    return CTrilinos::tableRepos().get<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->LeftScale(*D);
 }
 
 int Epetra_LinearProblem_RightScale ( 
   CT_Epetra_LinearProblem_ID_t selfID, CT_Epetra_Vector_ID_t DID )
 {
-    return CEpetra::getLinearProblem(selfID)->RightScale(
-        *CEpetra::getConstVector(DID));
+    const Teuchos::RCP<const Epetra_Vector> D = 
+        CTrilinos::tableRepos().getConst<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        DID);
+    return CTrilinos::tableRepos().get<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->RightScale(*D);
 }
 
 CT_Epetra_Operator_ID_t Epetra_LinearProblem_GetOperator ( 
   CT_Epetra_LinearProblem_ID_t selfID )
 {
-    return CEpetra::storeOperator(CEpetra::getConstLinearProblem(
-        selfID)->GetOperator());
+    return CTrilinos::tableRepos().store<Epetra_Operator, 
+        CT_Epetra_Operator_ID_t>(
+        CTrilinos::tableRepos().getConst<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->GetOperator());
 }
 
 CT_Epetra_RowMatrix_ID_t Epetra_LinearProblem_GetMatrix ( 
   CT_Epetra_LinearProblem_ID_t selfID )
 {
-    return CEpetra::storeRowMatrix(CEpetra::getConstLinearProblem(
-        selfID)->GetMatrix());
+    return CTrilinos::tableRepos().store<Epetra_RowMatrix, 
+        CT_Epetra_RowMatrix_ID_t>(
+        CTrilinos::tableRepos().getConst<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->GetMatrix());
 }
 
 CT_Epetra_MultiVector_ID_t Epetra_LinearProblem_GetLHS ( 
   CT_Epetra_LinearProblem_ID_t selfID )
 {
-    return CEpetra::storeMultiVector(CEpetra::getConstLinearProblem(
-        selfID)->GetLHS());
+    return CTrilinos::tableRepos().store<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(
+        CTrilinos::tableRepos().getConst<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->GetLHS());
 }
 
 CT_Epetra_MultiVector_ID_t Epetra_LinearProblem_GetRHS ( 
   CT_Epetra_LinearProblem_ID_t selfID )
 {
-    return CEpetra::storeMultiVector(CEpetra::getConstLinearProblem(
-        selfID)->GetRHS());
+    return CTrilinos::tableRepos().store<Epetra_MultiVector, 
+        CT_Epetra_MultiVector_ID_t>(
+        CTrilinos::tableRepos().getConst<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->GetRHS());
 }
 
 CT_ProblemDifficultyLevel_E_t Epetra_LinearProblem_GetPDL ( 
   CT_Epetra_LinearProblem_ID_t selfID )
 {
-    return (CT_ProblemDifficultyLevel_E_t)(
-         CEpetra::getConstLinearProblem(selfID)->GetPDL() );
+    return (CT_ProblemDifficultyLevel_E_t)( 
+        CTrilinos::tableRepos().getConst<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(selfID)->GetPDL() );
 }
 
 boolean Epetra_LinearProblem_IsOperatorSymmetric ( 
   CT_Epetra_LinearProblem_ID_t selfID )
 {
-    return ((CEpetra::getConstLinearProblem(
+    return ((CTrilinos::tableRepos().getConst<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(
         selfID)->IsOperatorSymmetric()) ? TRUE : FALSE);
 }
 

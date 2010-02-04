@@ -57,8 +57,7 @@ extern "C" {
 
 CT_Amesos_ID_t Amesos_Create (  )
 {
-    return CTrilinos::tableRepos().store<Amesos, CT_Amesos_ID_t>(
-        new Amesos());
+    return CTrilinos::tableRepos().store<Amesos, CT_Amesos_ID_t>(new Amesos());
 }
 
 void Amesos_Destroy ( CT_Amesos_ID_t * selfID )
@@ -70,21 +69,25 @@ CT_Amesos_BaseSolver_ID_t Amesos_CreateSolver (
   CT_Amesos_ID_t selfID, const char * ClassType, 
   CT_Epetra_LinearProblem_ID_t LinearProblemID )
 {
-    return CAmesos::storeBaseSolver(CAmesos::getAmesos(
-        selfID)->Create(ClassType, *CEpetra::getConstLinearProblem(
-        LinearProblemID)));
+    const Teuchos::RCP<const Epetra_LinearProblem> LinearProblem = 
+        CTrilinos::tableRepos().getConst<Epetra_LinearProblem, 
+        CT_Epetra_LinearProblem_ID_t>(LinearProblemID);
+    return CTrilinos::tableRepos().store<Amesos_BaseSolver, 
+        CT_Amesos_BaseSolver_ID_t>(CTrilinos::tableRepos().get<Amesos, 
+        CT_Amesos_ID_t>(selfID)->Create(ClassType, *LinearProblem));
 }
 
 boolean Amesos_Query ( 
   CT_Amesos_ID_t selfID, const char * ClassType )
 {
-    return ((CAmesos::getAmesos(selfID)->Query(
+    return ((CTrilinos::tableRepos().get<Amesos, CT_Amesos_ID_t>(selfID)->Query(
         ClassType)) ? TRUE : FALSE);
 }
 
 CT_Teuchos_ParameterList_ID_t Amesos_GetValidParameters (  )
 {
-    return CTeuchos::storeParameterList(new Teuchos::ParameterList(
+    return CTrilinos::tableRepos().store<Teuchos::ParameterList, 
+        CT_Teuchos_ParameterList_ID_t>(new Teuchos::ParameterList(
         Amesos::GetValidParameters()));
 }
 
