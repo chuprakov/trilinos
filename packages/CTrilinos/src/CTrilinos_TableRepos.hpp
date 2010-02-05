@@ -58,10 +58,14 @@ class TableRepos
   public:
 
     /*! constructor */
-    TableRepos();
+    TableRepos()
+      : tabPoly(),
+        tabNonPoly()
+    { }
 
     /*! destructor */
-    ~TableRepos();
+    ~TableRepos()
+    { }
 
     /*! retrieve the object */
     template <class T, typename S>
@@ -84,15 +88,22 @@ class TableRepos
     void remove(S * id);
 
     /*! dump the table's contents but keep it's properties */
-    void purge();
-
-    /*! migrate RCP from one table to another table */
-    template <typename S>
-    void migrate(S *id, CTrilinos_Table_ID_t tab);
+    void purge()
+    {
+      tabPoly.purge();
+      tabNonPoly.purge();
+    }
 
     /*! create an alias for the object in another table */
-    template <typename S1, typename S2>
-    S1 alias(S2 id, CTrilinos_Table_ID_t tab, bool keepold = true);
+    CTrilinos_Universal_ID_t alias(CTrilinos_Universal_ID_t aid,
+        CTrilinos_Table_ID_t tab, bool keepold = true)
+    {
+	if (poly_checker_runtime(aid)) {
+	    return tabPoly.alias(aid, tab, keepold);
+	} else {
+	    throw std::string("cannot alias a non-polymorphic type");
+	}
+    }
 
   private:
 
@@ -107,16 +118,6 @@ class TableRepos
     { return getPolyTable<poly_checker<T>::is_poly>(); }
 
 };
-
-TableRepos::TableRepos() :
-    tabPoly(),
-    tabNonPoly()
-{
-}
-
-TableRepos::~TableRepos()
-{
-}
 
 template <bool POLY>
 TableReposPoly<POLY> & TableRepos::getPolyTable()
@@ -160,26 +161,6 @@ const Teuchos::RCP<const T> TableRepos::getConst(S id)
     return getTable<T>().getConst<T>(aid);
 }
 
-template <typename S1, typename S2>
-S1 TableRepos::alias(S2 id, CTrilinos_Table_ID_t tab, bool keepold)
-{
-    CTrilinos_Universal_ID_t aid = abstractType<S2>(id);
-    CTrilinos_Universal_ID_t newid;
-    if (poly_checker_runtime(aid)) {
-        newid = tabPoly.alias(aid, tab, keepold);
-    } else {
-        throw std::string("cannot alias a non-polymorphic type");
-    }
-    return concreteType<S1>(newid);
-}
-
-template <typename S>
-void TableRepos::migrate(S *id, CTrilinos_Table_ID_t tab)
-{
-    S newid = alias<S,S>(*id, tab, false);
-    *id = newid;
-}
-
 template <typename S>
 void TableRepos::remove(S * id)
 {
@@ -191,12 +172,6 @@ void TableRepos::remove(S * id)
         tabNonPoly.remove(&aid);
     }
     *id = concreteType<S>(aid);
-}
-
-void TableRepos::purge()
-{
-    tabPoly.purge();
-    tabNonPoly.purge();
 }
 
 
