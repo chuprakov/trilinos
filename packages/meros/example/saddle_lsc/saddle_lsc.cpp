@@ -53,7 +53,6 @@
 #include "Thyra_DefaultInverseLinearOp.hpp"
 #include "Thyra_PreconditionerFactoryBase.hpp"
 #include "Thyra_DefaultPreconditioner.hpp"
-#include "Thyra_SingleRhsLinearOpWithSolveBase.hpp"
 #include "Thyra_AztecOOLinearOpWithSolveFactory.hpp"
 
 #ifdef HAVE_MPI
