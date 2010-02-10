@@ -8,6 +8,7 @@ SET(DisabledTests
   transientOneZoneEddy2D
   PoissonBoltzmannDemo3D
   NoxAlgebraic 
+  NonlinAlgebraic 
   PartitionedPoisson1D 
 )
 
