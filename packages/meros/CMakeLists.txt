@@ -18,6 +18,8 @@ PACKAGE(Meros)
 # C) Add the libraries, tests, and examples
 #
 
+ADD_SUBDIRECTORY(thyra)
+
 ADD_SUBDIRECTORY(src)
 
 PACKAGE_ADD_TEST_DIRECTORIES(test)
