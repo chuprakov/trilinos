@@ -41,6 +41,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CEpetra_BlockMap.h
 //
@@ -65,11 +67,8 @@ CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create (
   int NumGlobalElements, int ElementSize, int IndexBase, 
   CT_Epetra_Comm_ID_t CommID )
 {
-    const Teuchos::RCP<const Epetra_Comm> Comm = 
-        CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        CommID);
-    return CTrilinos::tableRepos().store<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(new Epetra_BlockMap(NumGlobalElements, 
+    const Teuchos::RCP<const Epetra_Comm> Comm = CEpetra::getConstComm(CommID);
+    return CEpetra::storeNewBlockMap(new Epetra_BlockMap(NumGlobalElements, 
         ElementSize, IndexBase, *Comm));
 }
 
@@ -77,11 +76,8 @@ CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create_Linear (
   int NumGlobalElements, int NumMyElements, int ElementSize, 
   int IndexBase, CT_Epetra_Comm_ID_t CommID )
 {
-    const Teuchos::RCP<const Epetra_Comm> Comm = 
-        CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        CommID);
-    return CTrilinos::tableRepos().store<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(new Epetra_BlockMap(NumGlobalElements, 
+    const Teuchos::RCP<const Epetra_Comm> Comm = CEpetra::getConstComm(CommID);
+    return CEpetra::storeNewBlockMap(new Epetra_BlockMap(NumGlobalElements, 
         NumMyElements, ElementSize, IndexBase, *Comm));
 }
 
@@ -90,11 +86,8 @@ CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create_Arbitrary (
   const int * MyGlobalElements, int ElementSize, int IndexBase, 
   CT_Epetra_Comm_ID_t CommID )
 {
-    const Teuchos::RCP<const Epetra_Comm> Comm = 
-        CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        CommID);
-    return CTrilinos::tableRepos().store<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(new Epetra_BlockMap(NumGlobalElements, 
+    const Teuchos::RCP<const Epetra_Comm> Comm = CEpetra::getConstComm(CommID);
+    return CEpetra::storeNewBlockMap(new Epetra_BlockMap(NumGlobalElements, 
         NumMyElements, MyGlobalElements, ElementSize, IndexBase, *Comm));
 }
 
@@ -103,35 +96,29 @@ CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create_Variable (
   const int * MyGlobalElements, const int * ElementSizeList, 
   int IndexBase, CT_Epetra_Comm_ID_t CommID )
 {
-    const Teuchos::RCP<const Epetra_Comm> Comm = 
-        CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        CommID);
-    return CTrilinos::tableRepos().store<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(new Epetra_BlockMap(NumGlobalElements, 
+    const Teuchos::RCP<const Epetra_Comm> Comm = CEpetra::getConstComm(CommID);
+    return CEpetra::storeNewBlockMap(new Epetra_BlockMap(NumGlobalElements, 
         NumMyElements, MyGlobalElements, ElementSizeList, IndexBase, *Comm));
 }
 
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Duplicate ( 
   CT_Epetra_BlockMap_ID_t mapID )
 {
-    const Teuchos::RCP<const Epetra_BlockMap> map = 
-        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(mapID);
-    return CTrilinos::tableRepos().store<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(new Epetra_BlockMap(*map));
+    const Teuchos::RCP<const Epetra_BlockMap> map = CEpetra::getConstBlockMap(
+        mapID);
+    return CEpetra::storeNewBlockMap(new Epetra_BlockMap(*map));
 }
 
 void Epetra_BlockMap_Destroy ( CT_Epetra_BlockMap_ID_t * selfID )
 {
-    CTrilinos::tableRepos().remove(selfID);
+    CEpetra::removeBlockMap(selfID);
 }
 
 int Epetra_BlockMap_RemoteIDList ( 
   CT_Epetra_BlockMap_ID_t selfID, int NumIDs, const int * GIDList, 
   int * PIDList, int * LIDList )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->RemoteIDList(NumIDs, GIDList, 
+    return CEpetra::getConstBlockMap(selfID)->RemoteIDList(NumIDs, GIDList, 
         PIDList, LIDList);
 }
 
@@ -139,291 +126,248 @@ int Epetra_BlockMap_RemoteIDList_WithSize (
   CT_Epetra_BlockMap_ID_t selfID, int NumIDs, const int * GIDList, 
   int * PIDList, int * LIDList, int * SizeList )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->RemoteIDList(NumIDs, GIDList, 
+    return CEpetra::getConstBlockMap(selfID)->RemoteIDList(NumIDs, GIDList, 
         PIDList, LIDList, SizeList);
 }
 
 int Epetra_BlockMap_LID ( CT_Epetra_BlockMap_ID_t selfID, int GID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->LID(GID);
+    return CEpetra::getConstBlockMap(selfID)->LID(GID);
 }
 
 int Epetra_BlockMap_GID ( CT_Epetra_BlockMap_ID_t selfID, int LID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->GID(LID);
+    return CEpetra::getConstBlockMap(selfID)->GID(LID);
 }
 
 int Epetra_BlockMap_FindLocalElementID ( 
   CT_Epetra_BlockMap_ID_t selfID, int PointID, int * ElementID, 
   int * ElementOffset )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->FindLocalElementID(PointID, 
+    return CEpetra::getConstBlockMap(selfID)->FindLocalElementID(PointID, 
         *ElementID, *ElementOffset);
 }
 
 boolean Epetra_BlockMap_MyGID ( 
   CT_Epetra_BlockMap_ID_t selfID, int GID_in )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MyGID(GID_in)) ? TRUE : FALSE);
+    return ((CEpetra::getConstBlockMap(selfID)->MyGID(GID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_MyLID ( 
   CT_Epetra_BlockMap_ID_t selfID, int LID_in )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MyLID(LID_in)) ? TRUE : FALSE);
+    return ((CEpetra::getConstBlockMap(selfID)->MyLID(LID_in)) ? TRUE : FALSE);
 }
 
 int Epetra_BlockMap_MinAllGID ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MinAllGID();
+    return CEpetra::getConstBlockMap(selfID)->MinAllGID();
 }
 
 int Epetra_BlockMap_MaxAllGID ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MaxAllGID();
+    return CEpetra::getConstBlockMap(selfID)->MaxAllGID();
 }
 
 int Epetra_BlockMap_MinMyGID ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MinMyGID();
+    return CEpetra::getConstBlockMap(selfID)->MinMyGID();
 }
 
 int Epetra_BlockMap_MaxMyGID ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MaxMyGID();
+    return CEpetra::getConstBlockMap(selfID)->MaxMyGID();
 }
 
 int Epetra_BlockMap_MinLID ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MinLID();
+    return CEpetra::getConstBlockMap(selfID)->MinLID();
 }
 
 int Epetra_BlockMap_MaxLID ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MaxLID();
+    return CEpetra::getConstBlockMap(selfID)->MaxLID();
 }
 
 int Epetra_BlockMap_NumGlobalElements ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->NumGlobalElements();
+    return CEpetra::getConstBlockMap(selfID)->NumGlobalElements();
 }
 
 int Epetra_BlockMap_NumMyElements ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->NumMyElements();
+    return CEpetra::getConstBlockMap(selfID)->NumMyElements();
 }
 
 int Epetra_BlockMap_MyGlobalElements_Fill ( 
   CT_Epetra_BlockMap_ID_t selfID, int * MyGlobalElementList )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MyGlobalElements(
+    return CEpetra::getConstBlockMap(selfID)->MyGlobalElements(
         MyGlobalElementList);
 }
 
 int Epetra_BlockMap_ElementSize_Const ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->ElementSize();
+    return CEpetra::getConstBlockMap(selfID)->ElementSize();
 }
 
 int Epetra_BlockMap_ElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID, int LID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->ElementSize(LID);
+    return CEpetra::getConstBlockMap(selfID)->ElementSize(LID);
 }
 
 int Epetra_BlockMap_FirstPointInElement ( 
   CT_Epetra_BlockMap_ID_t selfID, int LID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->FirstPointInElement(LID);
+    return CEpetra::getConstBlockMap(selfID)->FirstPointInElement(LID);
 }
 
 int Epetra_BlockMap_IndexBase ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->IndexBase();
+    return CEpetra::getConstBlockMap(selfID)->IndexBase();
 }
 
 int Epetra_BlockMap_NumGlobalPoints ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->NumGlobalPoints();
+    return CEpetra::getConstBlockMap(selfID)->NumGlobalPoints();
 }
 
 int Epetra_BlockMap_NumMyPoints ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->NumMyPoints();
+    return CEpetra::getConstBlockMap(selfID)->NumMyPoints();
 }
 
 int Epetra_BlockMap_MinMyElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MinMyElementSize();
+    return CEpetra::getConstBlockMap(selfID)->MinMyElementSize();
 }
 
 int Epetra_BlockMap_MaxMyElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MaxMyElementSize();
+    return CEpetra::getConstBlockMap(selfID)->MaxMyElementSize();
 }
 
 int Epetra_BlockMap_MinElementSize ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MinElementSize();
+    return CEpetra::getConstBlockMap(selfID)->MinElementSize();
 }
 
 int Epetra_BlockMap_MaxElementSize ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MaxElementSize();
+    return CEpetra::getConstBlockMap(selfID)->MaxElementSize();
 }
 
 boolean Epetra_BlockMap_UniqueGIDs ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->UniqueGIDs()) ? TRUE : FALSE);
+    return ((CEpetra::getConstBlockMap(selfID)->UniqueGIDs()) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_ConstantElementSize ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(
+    return ((CEpetra::getConstBlockMap(
         selfID)->ConstantElementSize()) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_SameAs ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID )
 {
-    const Teuchos::RCP<const Epetra_BlockMap> Map = 
-        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(MapID);
-    return ((CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->SameAs(*Map)) ? TRUE : FALSE);
+    const Teuchos::RCP<const Epetra_BlockMap> Map = CEpetra::getConstBlockMap(
+        MapID);
+    return ((CEpetra::getConstBlockMap(selfID)->SameAs(*Map)) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_PointSameAs ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID )
 {
-    const Teuchos::RCP<const Epetra_BlockMap> Map = 
-        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(MapID);
-    return ((CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->PointSameAs(*Map)) ? TRUE : FALSE);
+    const Teuchos::RCP<const Epetra_BlockMap> Map = CEpetra::getConstBlockMap(
+        MapID);
+    return ((CEpetra::getConstBlockMap(selfID)->PointSameAs(
+        *Map)) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_LinearMap ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->LinearMap()) ? TRUE : FALSE);
+    return ((CEpetra::getConstBlockMap(selfID)->LinearMap()) ? TRUE : FALSE);
 }
 
 boolean Epetra_BlockMap_DistributedGlobal ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(
+    return ((CEpetra::getConstBlockMap(
         selfID)->DistributedGlobal()) ? TRUE : FALSE);
 }
 
 int * Epetra_BlockMap_MyGlobalElements ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->MyGlobalElements();
+    return CEpetra::getConstBlockMap(selfID)->MyGlobalElements();
 }
 
 int * Epetra_BlockMap_FirstPointInElementList ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->FirstPointInElementList();
+    return CEpetra::getConstBlockMap(selfID)->FirstPointInElementList();
 }
 
 int * Epetra_BlockMap_ElementSizeList ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->ElementSizeList();
+    return CEpetra::getConstBlockMap(selfID)->ElementSizeList();
 }
 
 int * Epetra_BlockMap_PointToElementList ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->PointToElementList();
+    return CEpetra::getConstBlockMap(selfID)->PointToElementList();
 }
 
 int Epetra_BlockMap_ElementSizeList_Fill ( 
   CT_Epetra_BlockMap_ID_t selfID, int * ElementSizeList )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->ElementSizeList(ElementSizeList);
+    return CEpetra::getConstBlockMap(selfID)->ElementSizeList(ElementSizeList);
 }
 
 int Epetra_BlockMap_FirstPointInElementList_Fill ( 
   CT_Epetra_BlockMap_ID_t selfID, int * FirstPointInElementList )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->FirstPointInElementList(
+    return CEpetra::getConstBlockMap(selfID)->FirstPointInElementList(
         FirstPointInElementList);
 }
 
 int Epetra_BlockMap_PointToElementList_Fill ( 
   CT_Epetra_BlockMap_ID_t selfID, int * PointToElementList )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->PointToElementList(
+    return CEpetra::getConstBlockMap(selfID)->PointToElementList(
         PointToElementList);
 }
 
 CT_Epetra_Comm_ID_t Epetra_BlockMap_Comm ( 
   CT_Epetra_BlockMap_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->Comm() ));
+    return CEpetra::storeConstComm(&( CEpetra::getConstBlockMap(
+        selfID)->Comm() ));
 }
 
 boolean Epetra_BlockMap_IsOneToOne ( CT_Epetra_BlockMap_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID)->IsOneToOne()) ? TRUE : FALSE);
+    return ((CEpetra::getConstBlockMap(selfID)->IsOneToOne()) ? TRUE : FALSE);
 }
 
 void Epetra_BlockMap_Assign ( 
   CT_Epetra_BlockMap_ID_t selfID, CT_Epetra_BlockMap_ID_t mapID )
 {
-    Epetra_BlockMap& self = *( CTrilinos::tableRepos().get<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(selfID) );
+    Epetra_BlockMap& self = *( CEpetra::getBlockMap(selfID) );
 
-    const Teuchos::RCP<const Epetra_BlockMap> map = 
-        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(mapID);
+    const Teuchos::RCP<const Epetra_BlockMap> map = CEpetra::getConstBlockMap(
+        mapID);
     self = *map;
 }
 
@@ -440,14 +384,15 @@ void Epetra_BlockMap_Assign (
 const Teuchos::RCP<Epetra_BlockMap>
 CEpetra::getBlockMap( CT_Epetra_BlockMap_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_BlockMap, CT_Epetra_BlockMap_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_BlockMap>(
+        CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(id));
 }
 
 /* get Epetra_BlockMap from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_BlockMap>
 CEpetra::getBlockMap( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_BlockMap, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_BlockMap>(id);
 }
 
 /* get const Epetra_BlockMap from either the const or non-const table
@@ -455,7 +400,8 @@ CEpetra::getBlockMap( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_BlockMap>
 CEpetra::getConstBlockMap( CT_Epetra_BlockMap_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, CT_Epetra_BlockMap_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_BlockMap>(
+        CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(id));
 }
 
 /* get const Epetra_BlockMap from either the const or non-const table
@@ -463,21 +409,48 @@ CEpetra::getConstBlockMap( CT_Epetra_BlockMap_ID_t id )
 const Teuchos::RCP<const Epetra_BlockMap>
 CEpetra::getConstBlockMap( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_BlockMap, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().getConst<Epetra_BlockMap>(id);
+}
+
+/* store Epetra_BlockMap (owned) in non-const table */
+CT_Epetra_BlockMap_ID_t
+CEpetra::storeNewBlockMap( Epetra_BlockMap *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_BlockMap>(pobj, true));
 }
 
 /* store Epetra_BlockMap in non-const table */
 CT_Epetra_BlockMap_ID_t
 CEpetra::storeBlockMap( Epetra_BlockMap *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_BlockMap, CT_Epetra_BlockMap_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_BlockMap>(pobj, false));
 }
 
 /* store const Epetra_BlockMap in const table */
 CT_Epetra_BlockMap_ID_t
 CEpetra::storeConstBlockMap( const Epetra_BlockMap *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_BlockMap, CT_Epetra_BlockMap_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_BlockMap>(pobj, false));
+}
+
+/* remove Epetra_BlockMap from table using CT_Epetra_BlockMap_ID */
+void
+CEpetra::removeBlockMap( CT_Epetra_BlockMap_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(*id);
+    CTrilinos::tableRepos().remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(aid);
+}
+
+/* purge Epetra_BlockMap table */
+void
+CEpetra::purgeBlockMap(  )
+{
+    CTrilinos::tableRepos().purge<Epetra_BlockMap>();
 }
 
 

@@ -69,6 +69,10 @@ getConstIfpack( CT_Ifpack_ID_t id );
 const RCP<const Ifpack>
 getConstIfpack( CTrilinos_Universal_ID_t id );
 
+/*! store Ifpack (owned) in non-const table */
+CT_Ifpack_ID_t
+storeNewIfpack( Ifpack *pobj );
+
 /*! store Ifpack in non-const table */
 CT_Ifpack_ID_t
 storeIfpack( Ifpack *pobj );
@@ -76,6 +80,14 @@ storeIfpack( Ifpack *pobj );
 /*! store const Ifpack in const table */
 CT_Ifpack_ID_t
 storeConstIfpack( const Ifpack *pobj );
+
+/* remove Ifpack from table using CT_Ifpack_ID */
+void
+removeIfpack( CT_Ifpack_ID_t *id );
+
+/* purge Ifpack table */
+void
+purgeIfpack(  );
 
 } // namespace CIfpack
 

@@ -65,6 +65,10 @@ getConstExport( CT_Epetra_Export_ID_t id );
 const RCP<const Epetra_Export>
 getConstExport( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_Export (owned) in non-const table */
+CT_Epetra_Export_ID_t
+storeNewExport( Epetra_Export *pobj );
+
 /*! store Epetra_Export in non-const table */
 CT_Epetra_Export_ID_t
 storeExport( Epetra_Export *pobj );
@@ -72,6 +76,14 @@ storeExport( Epetra_Export *pobj );
 /*! store const Epetra_Export in const table */
 CT_Epetra_Export_ID_t
 storeConstExport( const Epetra_Export *pobj );
+
+/* remove Epetra_Export from table using CT_Epetra_Export_ID */
+void
+removeExport( CT_Epetra_Export_ID_t *id );
+
+/* purge Epetra_Export table */
+void
+purgeExport(  );
 
 } // namespace CEpetra
 

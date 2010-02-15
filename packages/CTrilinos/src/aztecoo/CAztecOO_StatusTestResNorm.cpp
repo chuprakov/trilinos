@@ -47,6 +47,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CAztecOO_StatusTestResNorm.h
 //
@@ -72,23 +74,19 @@ CT_AztecOO_StatusTestResNorm_ID_t AztecOO_StatusTestResNorm_Create (
   CT_Epetra_Vector_ID_t RHSID, double Tolerance )
 {
     const Teuchos::RCP<const Epetra_Operator> Operator = 
-        CTrilinos::tableRepos().getConst<Epetra_Operator, 
-        CT_Epetra_Operator_ID_t>(OperatorID);
-    const Teuchos::RCP<const Epetra_Vector> LHS = 
-        CTrilinos::tableRepos().getConst<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+        CEpetra::getConstOperator(OperatorID);
+    const Teuchos::RCP<const Epetra_Vector> LHS = CEpetra::getConstVector(
         LHSID);
-    const Teuchos::RCP<const Epetra_Vector> RHS = 
-        CTrilinos::tableRepos().getConst<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+    const Teuchos::RCP<const Epetra_Vector> RHS = CEpetra::getConstVector(
         RHSID);
-    return CTrilinos::tableRepos().store<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(new AztecOO_StatusTestResNorm(
+    return CAztecOO::storeNewStatusTestResNorm(new AztecOO_StatusTestResNorm(
         *Operator, *LHS, *RHS, Tolerance));
 }
 
 void AztecOO_StatusTestResNorm_Destroy ( 
   CT_AztecOO_StatusTestResNorm_ID_t * selfID )
 {
-    CTrilinos::tableRepos().remove(selfID);
+    CAztecOO::removeStatusTestResNorm(selfID);
 }
 
 int AztecOO_StatusTestResNorm_DefineResForm ( 
@@ -96,11 +94,8 @@ int AztecOO_StatusTestResNorm_DefineResForm (
   CT_ResType_E_t TypeOfResidual, CT_NormType_E_t TypeOfNorm, 
   CT_Epetra_Vector_ID_t WeightsID )
 {
-    const Teuchos::RCP<Epetra_Vector> Weights = 
-        CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        WeightsID);
-    return CTrilinos::tableRepos().get<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(selfID)->DefineResForm(
+    const Teuchos::RCP<Epetra_Vector> Weights = CEpetra::getVector(WeightsID);
+    return CAztecOO::getStatusTestResNorm(selfID)->DefineResForm(
         (AztecOO_StatusTestResNorm::ResType) TypeOfResidual, 
         (AztecOO_StatusTestResNorm::NormType) TypeOfNorm, 
         Weights.getRawPtr());
@@ -111,11 +106,8 @@ int AztecOO_StatusTestResNorm_DefineScaleForm (
   CT_ScaleType_E_t TypeOfScaling, CT_NormType_E_t TypeOfNorm, 
   CT_Epetra_Vector_ID_t WeightsID, double ScaleValue )
 {
-    const Teuchos::RCP<Epetra_Vector> Weights = 
-        CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        WeightsID);
-    return CTrilinos::tableRepos().get<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(selfID)->DefineScaleForm(
+    const Teuchos::RCP<Epetra_Vector> Weights = CEpetra::getVector(WeightsID);
+    return CAztecOO::getStatusTestResNorm(selfID)->DefineScaleForm(
         (AztecOO_StatusTestResNorm::ScaleType) TypeOfScaling, 
         (AztecOO_StatusTestResNorm::NormType) TypeOfNorm, Weights.getRawPtr(), 
         ScaleValue);
@@ -124,32 +116,27 @@ int AztecOO_StatusTestResNorm_DefineScaleForm (
 int AztecOO_StatusTestResNorm_ResetTolerance ( 
   CT_AztecOO_StatusTestResNorm_ID_t selfID, double Tolerance )
 {
-    return CTrilinos::tableRepos().get<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(selfID)->ResetTolerance(Tolerance);
+    return CAztecOO::getStatusTestResNorm(selfID)->ResetTolerance(Tolerance);
 }
 
 int AztecOO_StatusTestResNorm_SetMaxNumExtraIterations ( 
   CT_AztecOO_StatusTestResNorm_ID_t selfID, 
   int maxNumExtraIterations )
 {
-    return CTrilinos::tableRepos().get<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(selfID)->SetMaxNumExtraIterations(
+    return CAztecOO::getStatusTestResNorm(selfID)->SetMaxNumExtraIterations(
         maxNumExtraIterations);
 }
 
 int AztecOO_StatusTestResNorm_GetMaxNumExtraIterations ( 
   CT_AztecOO_StatusTestResNorm_ID_t selfID )
 {
-    return CTrilinos::tableRepos().get<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(
-        selfID)->GetMaxNumExtraIterations();
+    return CAztecOO::getStatusTestResNorm(selfID)->GetMaxNumExtraIterations();
 }
 
 boolean AztecOO_StatusTestResNorm_ResidualVectorRequired ( 
   CT_AztecOO_StatusTestResNorm_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(
+    return ((CAztecOO::getConstStatusTestResNorm(
         selfID)->ResidualVectorRequired()) ? TRUE : FALSE);
 }
 
@@ -159,56 +146,47 @@ CT_AztecOO_StatusType_E_t AztecOO_StatusTestResNorm_CheckStatus (
   double CurrentResNormEst, boolean SolutionUpdated )
 {
     const Teuchos::RCP<Epetra_MultiVector> CurrentResVector = 
-        CTrilinos::tableRepos().get<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(CurrentResVectorID);
-    return (CT_AztecOO_StatusType_E_t)( 
-        CTrilinos::tableRepos().get<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(selfID)->CheckStatus(CurrentIter, 
-        CurrentResVector.getRawPtr(), CurrentResNormEst, ((SolutionUpdated) != 
-        FALSE ? true : false)) );
+        CEpetra::getMultiVector(CurrentResVectorID);
+    return (CT_AztecOO_StatusType_E_t)( CAztecOO::getStatusTestResNorm(
+        selfID)->CheckStatus(CurrentIter, CurrentResVector.getRawPtr(), 
+        CurrentResNormEst, ((SolutionUpdated) != FALSE ? true : false)) );
 }
 
 CT_AztecOO_StatusType_E_t AztecOO_StatusTestResNorm_GetStatus ( 
   CT_AztecOO_StatusTestResNorm_ID_t selfID )
 {
-    return (CT_AztecOO_StatusType_E_t)( 
-        CTrilinos::tableRepos().getConst<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(selfID)->GetStatus() );
+    return (CT_AztecOO_StatusType_E_t)( CAztecOO::getConstStatusTestResNorm(
+        selfID)->GetStatus() );
 }
 
 void AztecOO_StatusTestResNorm_ResetStatus ( 
   CT_AztecOO_StatusTestResNorm_ID_t selfID )
 {
-    CTrilinos::tableRepos().get<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(selfID)->ResetStatus();
+    CAztecOO::getStatusTestResNorm(selfID)->ResetStatus();
 }
 
 double AztecOO_StatusTestResNorm_GetTolerance ( 
   CT_AztecOO_StatusTestResNorm_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(selfID)->GetTolerance();
+    return CAztecOO::getConstStatusTestResNorm(selfID)->GetTolerance();
 }
 
 double AztecOO_StatusTestResNorm_GetTestValue ( 
   CT_AztecOO_StatusTestResNorm_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(selfID)->GetTestValue();
+    return CAztecOO::getConstStatusTestResNorm(selfID)->GetTestValue();
 }
 
 double AztecOO_StatusTestResNorm_GetResNormValue ( 
   CT_AztecOO_StatusTestResNorm_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(selfID)->GetResNormValue();
+    return CAztecOO::getConstStatusTestResNorm(selfID)->GetResNormValue();
 }
 
 double AztecOO_StatusTestResNorm_GetScaledNormValue ( 
   CT_AztecOO_StatusTestResNorm_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestResNorm, 
-        CT_AztecOO_StatusTestResNorm_ID_t>(selfID)->GetScaledNormValue();
+    return CAztecOO::getConstStatusTestResNorm(selfID)->GetScaledNormValue();
 }
 
 
@@ -224,14 +202,15 @@ double AztecOO_StatusTestResNorm_GetScaledNormValue (
 const Teuchos::RCP<AztecOO_StatusTestResNorm>
 CAztecOO::getStatusTestResNorm( CT_AztecOO_StatusTestResNorm_ID_t id )
 {
-    return CTrilinos::tableRepos().get<AztecOO_StatusTestResNorm, CT_AztecOO_StatusTestResNorm_ID_t>(id);
+    return CTrilinos::tableRepos().get<AztecOO_StatusTestResNorm>(
+        CTrilinos::abstractType<CT_AztecOO_StatusTestResNorm_ID_t>(id));
 }
 
 /* get AztecOO_StatusTestResNorm from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<AztecOO_StatusTestResNorm>
 CAztecOO::getStatusTestResNorm( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<AztecOO_StatusTestResNorm, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().get<AztecOO_StatusTestResNorm>(id);
 }
 
 /* get const AztecOO_StatusTestResNorm from either the const or non-const table
@@ -239,7 +218,8 @@ CAztecOO::getStatusTestResNorm( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const AztecOO_StatusTestResNorm>
 CAztecOO::getConstStatusTestResNorm( CT_AztecOO_StatusTestResNorm_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestResNorm, CT_AztecOO_StatusTestResNorm_ID_t>(id);
+    return CTrilinos::tableRepos().get<AztecOO_StatusTestResNorm>(
+        CTrilinos::abstractType<CT_AztecOO_StatusTestResNorm_ID_t>(id));
 }
 
 /* get const AztecOO_StatusTestResNorm from either the const or non-const table
@@ -247,21 +227,48 @@ CAztecOO::getConstStatusTestResNorm( CT_AztecOO_StatusTestResNorm_ID_t id )
 const Teuchos::RCP<const AztecOO_StatusTestResNorm>
 CAztecOO::getConstStatusTestResNorm( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestResNorm, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestResNorm>(id);
+}
+
+/* store AztecOO_StatusTestResNorm (owned) in non-const table */
+CT_AztecOO_StatusTestResNorm_ID_t
+CAztecOO::storeNewStatusTestResNorm( AztecOO_StatusTestResNorm *pobj )
+{
+    return CTrilinos::concreteType<CT_AztecOO_StatusTestResNorm_ID_t>(
+        CTrilinos::tableRepos().store<AztecOO_StatusTestResNorm>(pobj, true));
 }
 
 /* store AztecOO_StatusTestResNorm in non-const table */
 CT_AztecOO_StatusTestResNorm_ID_t
 CAztecOO::storeStatusTestResNorm( AztecOO_StatusTestResNorm *pobj )
 {
-    return CTrilinos::tableRepos().store<AztecOO_StatusTestResNorm, CT_AztecOO_StatusTestResNorm_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_AztecOO_StatusTestResNorm_ID_t>(
+        CTrilinos::tableRepos().store<AztecOO_StatusTestResNorm>(pobj, false));
 }
 
 /* store const AztecOO_StatusTestResNorm in const table */
 CT_AztecOO_StatusTestResNorm_ID_t
 CAztecOO::storeConstStatusTestResNorm( const AztecOO_StatusTestResNorm *pobj )
 {
-    return CTrilinos::tableRepos().store<AztecOO_StatusTestResNorm, CT_AztecOO_StatusTestResNorm_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_AztecOO_StatusTestResNorm_ID_t>(
+        CTrilinos::tableRepos().store<AztecOO_StatusTestResNorm>(pobj, false));
+}
+
+/* remove AztecOO_StatusTestResNorm from table using CT_AztecOO_StatusTestResNorm_ID */
+void
+CAztecOO::removeStatusTestResNorm( CT_AztecOO_StatusTestResNorm_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_AztecOO_StatusTestResNorm_ID_t>(*id);
+    CTrilinos::tableRepos().remove(&aid);
+    *id = CTrilinos::concreteType<CT_AztecOO_StatusTestResNorm_ID_t>(aid);
+}
+
+/* purge AztecOO_StatusTestResNorm table */
+void
+CAztecOO::purgeStatusTestResNorm(  )
+{
+    CTrilinos::tableRepos().purge<AztecOO_StatusTestResNorm>();
 }
 
 

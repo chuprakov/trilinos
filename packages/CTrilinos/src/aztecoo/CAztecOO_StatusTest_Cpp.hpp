@@ -69,6 +69,10 @@ getConstStatusTest( CT_AztecOO_StatusTest_ID_t id );
 const RCP<const AztecOO_StatusTest>
 getConstStatusTest( CTrilinos_Universal_ID_t id );
 
+/*! store AztecOO_StatusTest (owned) in non-const table */
+CT_AztecOO_StatusTest_ID_t
+storeNewStatusTest( AztecOO_StatusTest *pobj );
+
 /*! store AztecOO_StatusTest in non-const table */
 CT_AztecOO_StatusTest_ID_t
 storeStatusTest( AztecOO_StatusTest *pobj );
@@ -76,6 +80,14 @@ storeStatusTest( AztecOO_StatusTest *pobj );
 /*! store const AztecOO_StatusTest in const table */
 CT_AztecOO_StatusTest_ID_t
 storeConstStatusTest( const AztecOO_StatusTest *pobj );
+
+/* remove AztecOO_StatusTest from table using CT_AztecOO_StatusTest_ID */
+void
+removeStatusTest( CT_AztecOO_StatusTest_ID_t *id );
+
+/* purge AztecOO_StatusTest table */
+void
+purgeStatusTest(  );
 
 } // namespace CAztecOO
 

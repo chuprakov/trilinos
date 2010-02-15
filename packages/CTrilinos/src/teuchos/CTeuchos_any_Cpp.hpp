@@ -65,6 +65,10 @@ getConstany( CT_Teuchos_any_ID_t id );
 const RCP<const Teuchos::any>
 getConstany( CTrilinos_Universal_ID_t id );
 
+/*! store Teuchos::any (owned) in non-const table */
+CT_Teuchos_any_ID_t
+storeNewany( Teuchos::any *pobj );
+
 /*! store Teuchos::any in non-const table */
 CT_Teuchos_any_ID_t
 storeany( Teuchos::any *pobj );
@@ -72,6 +76,14 @@ storeany( Teuchos::any *pobj );
 /*! store const Teuchos::any in const table */
 CT_Teuchos_any_ID_t
 storeConstany( const Teuchos::any *pobj );
+
+/* remove Teuchos::any from table using CT_Teuchos_any_ID */
+void
+removeany( CT_Teuchos_any_ID_t *id );
+
+/* purge Teuchos::any table */
+void
+purgeany(  );
 
 } // namespace CTeuchos
 

@@ -43,6 +43,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CEpetra_OffsetIndex.h
 //
@@ -69,16 +71,12 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromImporter (
   CT_Epetra_Import_ID_t ImporterID )
 {
     const Teuchos::RCP<const Epetra_CrsGraph> SourceGraph = 
-        CTrilinos::tableRepos().getConst<Epetra_CrsGraph, 
-        CT_Epetra_CrsGraph_ID_t>(SourceGraphID);
+        CEpetra::getConstCrsGraph(SourceGraphID);
     const Teuchos::RCP<const Epetra_CrsGraph> TargetGraph = 
-        CTrilinos::tableRepos().getConst<Epetra_CrsGraph, 
-        CT_Epetra_CrsGraph_ID_t>(TargetGraphID);
-    const Teuchos::RCP<Epetra_Import> Importer = 
-        CTrilinos::tableRepos().get<Epetra_Import, CT_Epetra_Import_ID_t>(
+        CEpetra::getConstCrsGraph(TargetGraphID);
+    const Teuchos::RCP<Epetra_Import> Importer = CEpetra::getImport(
         ImporterID);
-    return CTrilinos::tableRepos().store<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(new Epetra_OffsetIndex(*SourceGraph, 
+    return CEpetra::storeNewOffsetIndex(new Epetra_OffsetIndex(*SourceGraph, 
         *TargetGraph, *Importer));
 }
 
@@ -88,16 +86,12 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromExporter (
   CT_Epetra_Export_ID_t ExporterID )
 {
     const Teuchos::RCP<const Epetra_CrsGraph> SourceGraph = 
-        CTrilinos::tableRepos().getConst<Epetra_CrsGraph, 
-        CT_Epetra_CrsGraph_ID_t>(SourceGraphID);
+        CEpetra::getConstCrsGraph(SourceGraphID);
     const Teuchos::RCP<const Epetra_CrsGraph> TargetGraph = 
-        CTrilinos::tableRepos().getConst<Epetra_CrsGraph, 
-        CT_Epetra_CrsGraph_ID_t>(TargetGraphID);
-    const Teuchos::RCP<Epetra_Export> Exporter = 
-        CTrilinos::tableRepos().get<Epetra_Export, CT_Epetra_Export_ID_t>(
+        CEpetra::getConstCrsGraph(TargetGraphID);
+    const Teuchos::RCP<Epetra_Export> Exporter = CEpetra::getExport(
         ExporterID);
-    return CTrilinos::tableRepos().store<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(new Epetra_OffsetIndex(*SourceGraph, 
+    return CEpetra::storeNewOffsetIndex(new Epetra_OffsetIndex(*SourceGraph, 
         *TargetGraph, *Exporter));
 }
 
@@ -105,37 +99,32 @@ CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Duplicate (
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     const Teuchos::RCP<const Epetra_OffsetIndex> Indexor = 
-        CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(IndexorID);
-    return CTrilinos::tableRepos().store<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(new Epetra_OffsetIndex(*Indexor));
+        CEpetra::getConstOffsetIndex(IndexorID);
+    return CEpetra::storeNewOffsetIndex(new Epetra_OffsetIndex(*Indexor));
 }
 
 void Epetra_OffsetIndex_Destroy ( 
   CT_Epetra_OffsetIndex_ID_t * selfID )
 {
-    CTrilinos::tableRepos().remove(selfID);
+    CEpetra::removeOffsetIndex(selfID);
 }
 
 int ** Epetra_OffsetIndex_SameOffsets ( 
   CT_Epetra_OffsetIndex_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(selfID)->SameOffsets();
+    return CEpetra::getConstOffsetIndex(selfID)->SameOffsets();
 }
 
 int ** Epetra_OffsetIndex_PermuteOffsets ( 
   CT_Epetra_OffsetIndex_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(selfID)->PermuteOffsets();
+    return CEpetra::getConstOffsetIndex(selfID)->PermuteOffsets();
 }
 
 int ** Epetra_OffsetIndex_RemoteOffsets ( 
   CT_Epetra_OffsetIndex_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(selfID)->RemoteOffsets();
+    return CEpetra::getConstOffsetIndex(selfID)->RemoteOffsets();
 }
 
 
@@ -151,14 +140,15 @@ int ** Epetra_OffsetIndex_RemoteOffsets (
 const Teuchos::RCP<Epetra_OffsetIndex>
 CEpetra::getOffsetIndex( CT_Epetra_OffsetIndex_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_OffsetIndex, CT_Epetra_OffsetIndex_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_OffsetIndex>(
+        CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(id));
 }
 
 /* get Epetra_OffsetIndex from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_OffsetIndex>
 CEpetra::getOffsetIndex( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_OffsetIndex, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_OffsetIndex>(id);
 }
 
 /* get const Epetra_OffsetIndex from either the const or non-const table
@@ -166,7 +156,8 @@ CEpetra::getOffsetIndex( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_OffsetIndex>
 CEpetra::getConstOffsetIndex( CT_Epetra_OffsetIndex_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, CT_Epetra_OffsetIndex_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_OffsetIndex>(
+        CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(id));
 }
 
 /* get const Epetra_OffsetIndex from either the const or non-const table
@@ -174,21 +165,48 @@ CEpetra::getConstOffsetIndex( CT_Epetra_OffsetIndex_ID_t id )
 const Teuchos::RCP<const Epetra_OffsetIndex>
 CEpetra::getConstOffsetIndex( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex>(id);
+}
+
+/* store Epetra_OffsetIndex (owned) in non-const table */
+CT_Epetra_OffsetIndex_ID_t
+CEpetra::storeNewOffsetIndex( Epetra_OffsetIndex *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_OffsetIndex>(pobj, true));
 }
 
 /* store Epetra_OffsetIndex in non-const table */
 CT_Epetra_OffsetIndex_ID_t
 CEpetra::storeOffsetIndex( Epetra_OffsetIndex *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_OffsetIndex, CT_Epetra_OffsetIndex_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_OffsetIndex>(pobj, false));
 }
 
 /* store const Epetra_OffsetIndex in const table */
 CT_Epetra_OffsetIndex_ID_t
 CEpetra::storeConstOffsetIndex( const Epetra_OffsetIndex *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_OffsetIndex, CT_Epetra_OffsetIndex_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_OffsetIndex>(pobj, false));
+}
+
+/* remove Epetra_OffsetIndex from table using CT_Epetra_OffsetIndex_ID */
+void
+CEpetra::removeOffsetIndex( CT_Epetra_OffsetIndex_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(*id);
+    CTrilinos::tableRepos().remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(aid);
+}
+
+/* purge Epetra_OffsetIndex table */
+void
+CEpetra::purgeOffsetIndex(  )
+{
+    CTrilinos::tableRepos().purge<Epetra_OffsetIndex>();
 }
 
 

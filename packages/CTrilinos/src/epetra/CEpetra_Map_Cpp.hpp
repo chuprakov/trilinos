@@ -65,6 +65,10 @@ getConstMap( CT_Epetra_Map_ID_t id );
 const RCP<const Epetra_Map>
 getConstMap( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_Map (owned) in non-const table */
+CT_Epetra_Map_ID_t
+storeNewMap( Epetra_Map *pobj );
+
 /*! store Epetra_Map in non-const table */
 CT_Epetra_Map_ID_t
 storeMap( Epetra_Map *pobj );
@@ -72,6 +76,14 @@ storeMap( Epetra_Map *pobj );
 /*! store const Epetra_Map in const table */
 CT_Epetra_Map_ID_t
 storeConstMap( const Epetra_Map *pobj );
+
+/* remove Epetra_Map from table using CT_Epetra_Map_ID */
+void
+removeMap( CT_Epetra_Map_ID_t *id );
+
+/* purge Epetra_Map table */
+void
+purgeMap(  );
 
 } // namespace CEpetra
 

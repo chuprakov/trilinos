@@ -69,6 +69,10 @@ getConstAmesos( CT_Amesos_ID_t id );
 const RCP<const Amesos>
 getConstAmesos( CTrilinos_Universal_ID_t id );
 
+/*! store Amesos (owned) in non-const table */
+CT_Amesos_ID_t
+storeNewAmesos( Amesos *pobj );
+
 /*! store Amesos in non-const table */
 CT_Amesos_ID_t
 storeAmesos( Amesos *pobj );
@@ -76,6 +80,14 @@ storeAmesos( Amesos *pobj );
 /*! store const Amesos in const table */
 CT_Amesos_ID_t
 storeConstAmesos( const Amesos *pobj );
+
+/* remove Amesos from table using CT_Amesos_ID */
+void
+removeAmesos( CT_Amesos_ID_t *id );
+
+/* purge Amesos table */
+void
+purgeAmesos(  );
 
 } // namespace CAmesos
 

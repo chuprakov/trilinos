@@ -48,6 +48,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CEpetra_CrsMatrix.h
 //
@@ -72,12 +74,10 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow (
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   const int * NumEntriesPerRow, boolean StaticProfile )
 {
-    const Teuchos::RCP<const Epetra_Map> RowMap = 
-        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+    const Teuchos::RCP<const Epetra_Map> RowMap = CEpetra::getConstMap(
         RowMapID);
-    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(new Epetra_CrsMatrix((Epetra_DataAccess) CV, 
-        *RowMap, NumEntriesPerRow, ((StaticProfile) != 
+    return CEpetra::storeNewCrsMatrix(new Epetra_CrsMatrix(
+        (Epetra_DataAccess) CV, *RowMap, NumEntriesPerRow, ((StaticProfile) != 
         FALSE ? true : false)));
 }
 
@@ -85,12 +85,10 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create (
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   int NumEntriesPerRow, boolean StaticProfile )
 {
-    const Teuchos::RCP<const Epetra_Map> RowMap = 
-        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+    const Teuchos::RCP<const Epetra_Map> RowMap = CEpetra::getConstMap(
         RowMapID);
-    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(new Epetra_CrsMatrix((Epetra_DataAccess) CV, 
-        *RowMap, NumEntriesPerRow, ((StaticProfile) != 
+    return CEpetra::storeNewCrsMatrix(new Epetra_CrsMatrix(
+        (Epetra_DataAccess) CV, *RowMap, NumEntriesPerRow, ((StaticProfile) != 
         FALSE ? true : false)));
 }
 
@@ -99,16 +97,13 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow_WithColMap (
   CT_Epetra_Map_ID_t ColMapID, const int * NumEntriesPerRow, 
   boolean StaticProfile )
 {
-    const Teuchos::RCP<const Epetra_Map> RowMap = 
-        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+    const Teuchos::RCP<const Epetra_Map> RowMap = CEpetra::getConstMap(
         RowMapID);
-    const Teuchos::RCP<const Epetra_Map> ColMap = 
-        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+    const Teuchos::RCP<const Epetra_Map> ColMap = CEpetra::getConstMap(
         ColMapID);
-    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(new Epetra_CrsMatrix((Epetra_DataAccess) CV, 
-        *RowMap, *ColMap, NumEntriesPerRow, ((StaticProfile) != 
-        FALSE ? true : false)));
+    return CEpetra::storeNewCrsMatrix(new Epetra_CrsMatrix(
+        (Epetra_DataAccess) CV, *RowMap, *ColMap, NumEntriesPerRow, ((
+        StaticProfile) != FALSE ? true : false)));
 }
 
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_WithColMap ( 
@@ -116,64 +111,54 @@ CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_WithColMap (
   CT_Epetra_Map_ID_t ColMapID, int NumEntriesPerRow, 
   boolean StaticProfile )
 {
-    const Teuchos::RCP<const Epetra_Map> RowMap = 
-        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+    const Teuchos::RCP<const Epetra_Map> RowMap = CEpetra::getConstMap(
         RowMapID);
-    const Teuchos::RCP<const Epetra_Map> ColMap = 
-        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+    const Teuchos::RCP<const Epetra_Map> ColMap = CEpetra::getConstMap(
         ColMapID);
-    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(new Epetra_CrsMatrix((Epetra_DataAccess) CV, 
-        *RowMap, *ColMap, NumEntriesPerRow, ((StaticProfile) != 
-        FALSE ? true : false)));
+    return CEpetra::storeNewCrsMatrix(new Epetra_CrsMatrix(
+        (Epetra_DataAccess) CV, *RowMap, *ColMap, NumEntriesPerRow, ((
+        StaticProfile) != FALSE ? true : false)));
 }
 
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_FromGraph ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_CrsGraph_ID_t GraphID )
 {
-    const Teuchos::RCP<const Epetra_CrsGraph> Graph = 
-        CTrilinos::tableRepos().getConst<Epetra_CrsGraph, 
-        CT_Epetra_CrsGraph_ID_t>(GraphID);
-    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(new Epetra_CrsMatrix((Epetra_DataAccess) CV, 
-        *Graph));
+    const Teuchos::RCP<const Epetra_CrsGraph> Graph = CEpetra::getConstCrsGraph(
+        GraphID);
+    return CEpetra::storeNewCrsMatrix(new Epetra_CrsMatrix(
+        (Epetra_DataAccess) CV, *Graph));
 }
 
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Duplicate ( 
   CT_Epetra_CrsMatrix_ID_t MatrixID )
 {
     const Teuchos::RCP<const Epetra_CrsMatrix> Matrix = 
-        CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(MatrixID);
-    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(new Epetra_CrsMatrix(*Matrix));
+        CEpetra::getConstCrsMatrix(MatrixID);
+    return CEpetra::storeNewCrsMatrix(new Epetra_CrsMatrix(*Matrix));
 }
 
 void Epetra_CrsMatrix_Destroy ( CT_Epetra_CrsMatrix_ID_t * selfID )
 {
-    CTrilinos::tableRepos().remove(selfID);
+    CEpetra::removeCrsMatrix(selfID);
 }
 
 int Epetra_CrsMatrix_PutScalar ( 
   CT_Epetra_CrsMatrix_ID_t selfID, double ScalarConstant )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->PutScalar(ScalarConstant);
+    return CEpetra::getCrsMatrix(selfID)->PutScalar(ScalarConstant);
 }
 
 int Epetra_CrsMatrix_Scale ( 
   CT_Epetra_CrsMatrix_ID_t selfID, double ScalarConstant )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Scale(ScalarConstant);
+    return CEpetra::getCrsMatrix(selfID)->Scale(ScalarConstant);
 }
 
 int Epetra_CrsMatrix_InsertGlobalValues ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int GlobalRow, int NumEntries, 
   double * Values, int * Indices )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->InsertGlobalValues(GlobalRow, 
+    return CEpetra::getCrsMatrix(selfID)->InsertGlobalValues(GlobalRow, 
         NumEntries, Values, Indices);
 }
 
@@ -181,8 +166,7 @@ int Epetra_CrsMatrix_ReplaceGlobalValues (
   CT_Epetra_CrsMatrix_ID_t selfID, int GlobalRow, int NumEntries, 
   double * Values, int * Indices )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ReplaceGlobalValues(GlobalRow, 
+    return CEpetra::getCrsMatrix(selfID)->ReplaceGlobalValues(GlobalRow, 
         NumEntries, Values, Indices);
 }
 
@@ -190,8 +174,7 @@ int Epetra_CrsMatrix_SumIntoGlobalValues (
   CT_Epetra_CrsMatrix_ID_t selfID, int GlobalRow, int NumEntries, 
   double * Values, int * Indices )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->SumIntoGlobalValues(GlobalRow, 
+    return CEpetra::getCrsMatrix(selfID)->SumIntoGlobalValues(GlobalRow, 
         NumEntries, Values, Indices);
 }
 
@@ -199,8 +182,7 @@ int Epetra_CrsMatrix_InsertMyValues (
   CT_Epetra_CrsMatrix_ID_t selfID, int MyRow, int NumEntries, 
   double * Values, int * Indices )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->InsertMyValues(MyRow, NumEntries, 
+    return CEpetra::getCrsMatrix(selfID)->InsertMyValues(MyRow, NumEntries, 
         Values, Indices);
 }
 
@@ -208,8 +190,7 @@ int Epetra_CrsMatrix_ReplaceMyValues (
   CT_Epetra_CrsMatrix_ID_t selfID, int MyRow, int NumEntries, 
   double * Values, int * Indices )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ReplaceMyValues(MyRow, NumEntries, 
+    return CEpetra::getCrsMatrix(selfID)->ReplaceMyValues(MyRow, NumEntries, 
         Values, Indices);
 }
 
@@ -217,26 +198,22 @@ int Epetra_CrsMatrix_SumIntoMyValues (
   CT_Epetra_CrsMatrix_ID_t selfID, int MyRow, int NumEntries, 
   double * Values, int * Indices )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->SumIntoMyValues(MyRow, NumEntries, 
+    return CEpetra::getCrsMatrix(selfID)->SumIntoMyValues(MyRow, NumEntries, 
         Values, Indices);
 }
 
 int Epetra_CrsMatrix_ReplaceDiagonalValues ( 
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_Vector_ID_t DiagonalID )
 {
-    const Teuchos::RCP<const Epetra_Vector> Diagonal = 
-        CTrilinos::tableRepos().getConst<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+    const Teuchos::RCP<const Epetra_Vector> Diagonal = CEpetra::getConstVector(
         DiagonalID);
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ReplaceDiagonalValues(*Diagonal);
+    return CEpetra::getCrsMatrix(selfID)->ReplaceDiagonalValues(*Diagonal);
 }
 
 int Epetra_CrsMatrix_FillComplete ( 
   CT_Epetra_CrsMatrix_ID_t selfID, boolean OptimizeDataStorage )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->FillComplete(
+    return CEpetra::getCrsMatrix(selfID)->FillComplete(
         ((OptimizeDataStorage) != FALSE ? true : false));
 }
 
@@ -244,37 +221,31 @@ int Epetra_CrsMatrix_FillComplete_UsingMaps (
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_Map_ID_t DomainMapID, 
   CT_Epetra_Map_ID_t RangeMapID, boolean OptimizeDataStorage )
 {
-    const Teuchos::RCP<const Epetra_Map> DomainMap = 
-        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+    const Teuchos::RCP<const Epetra_Map> DomainMap = CEpetra::getConstMap(
         DomainMapID);
-    const Teuchos::RCP<const Epetra_Map> RangeMap = 
-        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+    const Teuchos::RCP<const Epetra_Map> RangeMap = CEpetra::getConstMap(
         RangeMapID);
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->FillComplete(*DomainMap, *RangeMap, 
-        ((OptimizeDataStorage) != FALSE ? true : false));
+    return CEpetra::getCrsMatrix(selfID)->FillComplete(*DomainMap, *RangeMap, ((
+        OptimizeDataStorage) != FALSE ? true : false));
 }
 
 int Epetra_CrsMatrix_OptimizeStorage ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->OptimizeStorage();
+    return CEpetra::getCrsMatrix(selfID)->OptimizeStorage();
 }
 
 int Epetra_CrsMatrix_MakeDataContiguous ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->MakeDataContiguous();
+    return CEpetra::getCrsMatrix(selfID)->MakeDataContiguous();
 }
 
 int Epetra_CrsMatrix_ExtractGlobalRowCopy_WithIndices ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int GlobalRow, int Length, 
   int * NumEntries, double * Values, int * Indices )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ExtractGlobalRowCopy(GlobalRow, 
+    return CEpetra::getConstCrsMatrix(selfID)->ExtractGlobalRowCopy(GlobalRow, 
         Length, *NumEntries, Values, Indices);
 }
 
@@ -282,8 +253,7 @@ int Epetra_CrsMatrix_ExtractMyRowCopy_WithIndices (
   CT_Epetra_CrsMatrix_ID_t selfID, int MyRow, int Length, 
   int * NumEntries, double * Values, int * Indices )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ExtractMyRowCopy(MyRow, Length, 
+    return CEpetra::getConstCrsMatrix(selfID)->ExtractMyRowCopy(MyRow, Length, 
         *NumEntries, Values, Indices);
 }
 
@@ -291,8 +261,7 @@ int Epetra_CrsMatrix_ExtractGlobalRowCopy (
   CT_Epetra_CrsMatrix_ID_t selfID, int GlobalRow, int Length, 
   int * NumEntries, double * Values )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ExtractGlobalRowCopy(GlobalRow, 
+    return CEpetra::getConstCrsMatrix(selfID)->ExtractGlobalRowCopy(GlobalRow, 
         Length, *NumEntries, Values);
 }
 
@@ -300,27 +269,23 @@ int Epetra_CrsMatrix_ExtractMyRowCopy (
   CT_Epetra_CrsMatrix_ID_t selfID, int MyRow, int Length, 
   int * NumEntries, double * Values )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ExtractMyRowCopy(MyRow, Length, 
+    return CEpetra::getConstCrsMatrix(selfID)->ExtractMyRowCopy(MyRow, Length, 
         *NumEntries, Values);
 }
 
 int Epetra_CrsMatrix_ExtractDiagonalCopy ( 
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_Vector_ID_t DiagonalID )
 {
-    const Teuchos::RCP<Epetra_Vector> Diagonal = 
-        CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
+    const Teuchos::RCP<Epetra_Vector> Diagonal = CEpetra::getVector(
         DiagonalID);
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ExtractDiagonalCopy(*Diagonal);
+    return CEpetra::getConstCrsMatrix(selfID)->ExtractDiagonalCopy(*Diagonal);
 }
 
 int Epetra_CrsMatrix_ExtractGlobalRowView_WithIndices ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int GlobalRow, int * NumEntries, 
   double ** Values, int ** Indices )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ExtractGlobalRowView(GlobalRow, 
+    return CEpetra::getConstCrsMatrix(selfID)->ExtractGlobalRowView(GlobalRow, 
         *NumEntries, *Values, *Indices);
 }
 
@@ -328,8 +293,7 @@ int Epetra_CrsMatrix_ExtractMyRowView_WithIndices (
   CT_Epetra_CrsMatrix_ID_t selfID, int MyRow, int * NumEntries, 
   double ** Values, int ** Indices )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ExtractMyRowView(MyRow, 
+    return CEpetra::getConstCrsMatrix(selfID)->ExtractMyRowView(MyRow, 
         *NumEntries, *Values, *Indices);
 }
 
@@ -337,8 +301,7 @@ int Epetra_CrsMatrix_ExtractGlobalRowView (
   CT_Epetra_CrsMatrix_ID_t selfID, int GlobalRow, int * NumEntries, 
   double ** Values )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ExtractGlobalRowView(GlobalRow, 
+    return CEpetra::getConstCrsMatrix(selfID)->ExtractGlobalRowView(GlobalRow, 
         *NumEntries, *Values);
 }
 
@@ -346,8 +309,7 @@ int Epetra_CrsMatrix_ExtractMyRowView (
   CT_Epetra_CrsMatrix_ID_t selfID, int MyRow, int * NumEntries, 
   double ** Values )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ExtractMyRowView(MyRow, 
+    return CEpetra::getConstCrsMatrix(selfID)->ExtractMyRowView(MyRow, 
         *NumEntries, *Values);
 }
 
@@ -355,14 +317,9 @@ int Epetra_CrsMatrix_Multiply_Vector (
   CT_Epetra_CrsMatrix_ID_t selfID, boolean TransA, 
   CT_Epetra_Vector_ID_t xID, CT_Epetra_Vector_ID_t yID )
 {
-    const Teuchos::RCP<const Epetra_Vector> x = 
-        CTrilinos::tableRepos().getConst<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        xID);
-    const Teuchos::RCP<Epetra_Vector> y = 
-        CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        yID);
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Multiply(((TransA) != 
+    const Teuchos::RCP<const Epetra_Vector> x = CEpetra::getConstVector(xID);
+    const Teuchos::RCP<Epetra_Vector> y = CEpetra::getVector(yID);
+    return CEpetra::getConstCrsMatrix(selfID)->Multiply(((TransA) != 
         FALSE ? true : false), *x, *y);
 }
 
@@ -370,14 +327,9 @@ int Epetra_CrsMatrix_Multiply1_Vector (
   CT_Epetra_CrsMatrix_ID_t selfID, boolean TransA, 
   CT_Epetra_Vector_ID_t xID, CT_Epetra_Vector_ID_t yID )
 {
-    const Teuchos::RCP<const Epetra_Vector> x = 
-        CTrilinos::tableRepos().getConst<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        xID);
-    const Teuchos::RCP<Epetra_Vector> y = 
-        CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        yID);
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Multiply1(((TransA) != 
+    const Teuchos::RCP<const Epetra_Vector> x = CEpetra::getConstVector(xID);
+    const Teuchos::RCP<Epetra_Vector> y = CEpetra::getVector(yID);
+    return CEpetra::getConstCrsMatrix(selfID)->Multiply1(((TransA) != 
         FALSE ? true : false), *x, *y);
 }
 
@@ -386,13 +338,9 @@ int Epetra_CrsMatrix_Multiply_MultiVector (
   CT_Epetra_MultiVector_ID_t XID, CT_Epetra_MultiVector_ID_t YID )
 {
     const Teuchos::RCP<const Epetra_MultiVector> X = 
-        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(XID);
-    const Teuchos::RCP<Epetra_MultiVector> Y = 
-        CTrilinos::tableRepos().get<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(YID);
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Multiply(((TransA) != 
+        CEpetra::getConstMultiVector(XID);
+    const Teuchos::RCP<Epetra_MultiVector> Y = CEpetra::getMultiVector(YID);
+    return CEpetra::getConstCrsMatrix(selfID)->Multiply(((TransA) != 
         FALSE ? true : false), *X, *Y);
 }
 
@@ -401,13 +349,9 @@ int Epetra_CrsMatrix_Multiply1_MultiVector (
   CT_Epetra_MultiVector_ID_t XID, CT_Epetra_MultiVector_ID_t YID )
 {
     const Teuchos::RCP<const Epetra_MultiVector> X = 
-        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(XID);
-    const Teuchos::RCP<Epetra_MultiVector> Y = 
-        CTrilinos::tableRepos().get<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(YID);
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Multiply1(((TransA) != 
+        CEpetra::getConstMultiVector(XID);
+    const Teuchos::RCP<Epetra_MultiVector> Y = CEpetra::getMultiVector(YID);
+    return CEpetra::getConstCrsMatrix(selfID)->Multiply1(((TransA) != 
         FALSE ? true : false), *X, *Y);
 }
 
@@ -416,14 +360,9 @@ int Epetra_CrsMatrix_Solve_Vector (
   boolean UnitDiagonal, CT_Epetra_Vector_ID_t xID, 
   CT_Epetra_Vector_ID_t yID )
 {
-    const Teuchos::RCP<const Epetra_Vector> x = 
-        CTrilinos::tableRepos().getConst<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        xID);
-    const Teuchos::RCP<Epetra_Vector> y = 
-        CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        yID);
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Solve(((Upper) != 
+    const Teuchos::RCP<const Epetra_Vector> x = CEpetra::getConstVector(xID);
+    const Teuchos::RCP<Epetra_Vector> y = CEpetra::getVector(yID);
+    return CEpetra::getConstCrsMatrix(selfID)->Solve(((Upper) != 
         FALSE ? true : false), ((Trans) != FALSE ? true : false), ((
         UnitDiagonal) != FALSE ? true : false), *x, *y);
 }
@@ -434,13 +373,9 @@ int Epetra_CrsMatrix_Solve_MultiVector (
   CT_Epetra_MultiVector_ID_t YID )
 {
     const Teuchos::RCP<const Epetra_MultiVector> X = 
-        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(XID);
-    const Teuchos::RCP<Epetra_MultiVector> Y = 
-        CTrilinos::tableRepos().get<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(YID);
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Solve(((Upper) != 
+        CEpetra::getConstMultiVector(XID);
+    const Teuchos::RCP<Epetra_MultiVector> Y = CEpetra::getMultiVector(YID);
+    return CEpetra::getConstCrsMatrix(selfID)->Solve(((Upper) != 
         FALSE ? true : false), ((Trans) != FALSE ? true : false), ((
         UnitDiagonal) != FALSE ? true : false), *X, *Y);
 }
@@ -448,417 +383,355 @@ int Epetra_CrsMatrix_Solve_MultiVector (
 int Epetra_CrsMatrix_InvRowSums ( 
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_Vector_ID_t xID )
 {
-    const Teuchos::RCP<Epetra_Vector> x = 
-        CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        xID);
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->InvRowSums(*x);
+    const Teuchos::RCP<Epetra_Vector> x = CEpetra::getVector(xID);
+    return CEpetra::getConstCrsMatrix(selfID)->InvRowSums(*x);
 }
 
 int Epetra_CrsMatrix_InvRowMaxs ( 
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_Vector_ID_t xID )
 {
-    const Teuchos::RCP<Epetra_Vector> x = 
-        CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        xID);
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->InvRowMaxs(*x);
+    const Teuchos::RCP<Epetra_Vector> x = CEpetra::getVector(xID);
+    return CEpetra::getConstCrsMatrix(selfID)->InvRowMaxs(*x);
 }
 
 int Epetra_CrsMatrix_LeftScale ( 
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_Vector_ID_t xID )
 {
-    const Teuchos::RCP<const Epetra_Vector> x = 
-        CTrilinos::tableRepos().getConst<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        xID);
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->LeftScale(*x);
+    const Teuchos::RCP<const Epetra_Vector> x = CEpetra::getConstVector(xID);
+    return CEpetra::getCrsMatrix(selfID)->LeftScale(*x);
 }
 
 int Epetra_CrsMatrix_InvColSums ( 
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_Vector_ID_t xID )
 {
-    const Teuchos::RCP<Epetra_Vector> x = 
-        CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        xID);
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->InvColSums(*x);
+    const Teuchos::RCP<Epetra_Vector> x = CEpetra::getVector(xID);
+    return CEpetra::getConstCrsMatrix(selfID)->InvColSums(*x);
 }
 
 int Epetra_CrsMatrix_InvColMaxs ( 
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_Vector_ID_t xID )
 {
-    const Teuchos::RCP<Epetra_Vector> x = 
-        CTrilinos::tableRepos().get<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        xID);
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->InvColMaxs(*x);
+    const Teuchos::RCP<Epetra_Vector> x = CEpetra::getVector(xID);
+    return CEpetra::getConstCrsMatrix(selfID)->InvColMaxs(*x);
 }
 
 int Epetra_CrsMatrix_RightScale ( 
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_Vector_ID_t xID )
 {
-    const Teuchos::RCP<const Epetra_Vector> x = 
-        CTrilinos::tableRepos().getConst<Epetra_Vector, CT_Epetra_Vector_ID_t>(
-        xID);
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->RightScale(*x);
+    const Teuchos::RCP<const Epetra_Vector> x = CEpetra::getConstVector(xID);
+    return CEpetra::getCrsMatrix(selfID)->RightScale(*x);
 }
 
 boolean Epetra_CrsMatrix_Filled ( CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Filled()) ? TRUE : FALSE);
+    return ((CEpetra::getConstCrsMatrix(selfID)->Filled()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_StorageOptimized ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(
+    return ((CEpetra::getConstCrsMatrix(
         selfID)->StorageOptimized()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_IndicesAreGlobal ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(
+    return ((CEpetra::getConstCrsMatrix(
         selfID)->IndicesAreGlobal()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_IndicesAreLocal ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->IndicesAreLocal()) ? TRUE : FALSE);
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->IndicesAreLocal()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_IndicesAreContiguous ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(
+    return ((CEpetra::getConstCrsMatrix(
         selfID)->IndicesAreContiguous()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_LowerTriangular ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->LowerTriangular()) ? TRUE : FALSE);
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->LowerTriangular()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_UpperTriangular ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->UpperTriangular()) ? TRUE : FALSE);
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->UpperTriangular()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_NoDiagonal ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NoDiagonal()) ? TRUE : FALSE);
+    return ((CEpetra::getConstCrsMatrix(selfID)->NoDiagonal()) ? TRUE : FALSE);
 }
 
 double Epetra_CrsMatrix_NormInf ( CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NormInf();
+    return CEpetra::getConstCrsMatrix(selfID)->NormInf();
 }
 
 double Epetra_CrsMatrix_NormOne ( CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NormOne();
+    return CEpetra::getConstCrsMatrix(selfID)->NormOne();
 }
 
 double Epetra_CrsMatrix_NormFrobenius ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NormFrobenius();
+    return CEpetra::getConstCrsMatrix(selfID)->NormFrobenius();
 }
 
 int Epetra_CrsMatrix_NumGlobalNonzeros ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NumGlobalNonzeros();
+    return CEpetra::getConstCrsMatrix(selfID)->NumGlobalNonzeros();
 }
 
 int Epetra_CrsMatrix_NumGlobalRows ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NumGlobalRows();
+    return CEpetra::getConstCrsMatrix(selfID)->NumGlobalRows();
 }
 
 int Epetra_CrsMatrix_NumGlobalCols ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NumGlobalCols();
+    return CEpetra::getConstCrsMatrix(selfID)->NumGlobalCols();
 }
 
 int Epetra_CrsMatrix_NumGlobalDiagonals ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NumGlobalDiagonals();
+    return CEpetra::getConstCrsMatrix(selfID)->NumGlobalDiagonals();
 }
 
 int Epetra_CrsMatrix_NumMyNonzeros ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NumMyNonzeros();
+    return CEpetra::getConstCrsMatrix(selfID)->NumMyNonzeros();
 }
 
 int Epetra_CrsMatrix_NumMyRows ( CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NumMyRows();
+    return CEpetra::getConstCrsMatrix(selfID)->NumMyRows();
 }
 
 int Epetra_CrsMatrix_NumMyCols ( CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NumMyCols();
+    return CEpetra::getConstCrsMatrix(selfID)->NumMyCols();
 }
 
 int Epetra_CrsMatrix_NumMyDiagonals ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NumMyDiagonals();
+    return CEpetra::getConstCrsMatrix(selfID)->NumMyDiagonals();
 }
 
 int Epetra_CrsMatrix_NumGlobalEntries ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int Row )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NumGlobalEntries(Row);
+    return CEpetra::getConstCrsMatrix(selfID)->NumGlobalEntries(Row);
 }
 
 int Epetra_CrsMatrix_NumAllocatedGlobalEntries ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int Row )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NumAllocatedGlobalEntries(Row);
+    return CEpetra::getConstCrsMatrix(selfID)->NumAllocatedGlobalEntries(Row);
 }
 
 int Epetra_CrsMatrix_MaxNumEntries ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->MaxNumEntries();
+    return CEpetra::getConstCrsMatrix(selfID)->MaxNumEntries();
 }
 
 int Epetra_CrsMatrix_GlobalMaxNumEntries ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->GlobalMaxNumEntries();
+    return CEpetra::getConstCrsMatrix(selfID)->GlobalMaxNumEntries();
 }
 
 int Epetra_CrsMatrix_NumMyEntries ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int Row )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NumMyEntries(Row);
+    return CEpetra::getConstCrsMatrix(selfID)->NumMyEntries(Row);
 }
 
 int Epetra_CrsMatrix_NumAllocatedMyEntries ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int Row )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NumAllocatedMyEntries(Row);
+    return CEpetra::getConstCrsMatrix(selfID)->NumAllocatedMyEntries(Row);
 }
 
 int Epetra_CrsMatrix_IndexBase ( CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->IndexBase();
+    return CEpetra::getConstCrsMatrix(selfID)->IndexBase();
 }
 
 boolean Epetra_CrsMatrix_StaticGraph ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->StaticGraph()) ? TRUE : FALSE);
+    return ((CEpetra::getCrsMatrix(selfID)->StaticGraph()) ? TRUE : FALSE);
 }
 
 CT_Epetra_CrsGraph_ID_t Epetra_CrsMatrix_Graph ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_CrsGraph, 
-        CT_Epetra_CrsGraph_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Graph() ));
+    return CEpetra::storeConstCrsGraph(&( CEpetra::getConstCrsMatrix(
+        selfID)->Graph() ));
 }
 
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_RowMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->RowMap() ));
+    return CEpetra::storeConstMap(&( CEpetra::getConstCrsMatrix(
+        selfID)->RowMap() ));
 }
 
 int Epetra_CrsMatrix_ReplaceRowMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_BlockMap_ID_t newmapID )
 {
     const Teuchos::RCP<const Epetra_BlockMap> newmap = 
-        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(newmapID);
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ReplaceRowMap(*newmap);
+        CEpetra::getConstBlockMap(newmapID);
+    return CEpetra::getCrsMatrix(selfID)->ReplaceRowMap(*newmap);
 }
 
 boolean Epetra_CrsMatrix_HaveColMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->HaveColMap()) ? TRUE : FALSE);
+    return ((CEpetra::getConstCrsMatrix(selfID)->HaveColMap()) ? TRUE : FALSE);
 }
 
 int Epetra_CrsMatrix_ReplaceColMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_BlockMap_ID_t newmapID )
 {
     const Teuchos::RCP<const Epetra_BlockMap> newmap = 
-        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(newmapID);
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ReplaceColMap(*newmap);
+        CEpetra::getConstBlockMap(newmapID);
+    return CEpetra::getCrsMatrix(selfID)->ReplaceColMap(*newmap);
 }
 
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_ColMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ColMap() ));
+    return CEpetra::storeConstMap(&( CEpetra::getConstCrsMatrix(
+        selfID)->ColMap() ));
 }
 
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_DomainMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->DomainMap() ));
+    return CEpetra::storeConstMap(&( CEpetra::getConstCrsMatrix(
+        selfID)->DomainMap() ));
 }
 
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_RangeMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->RangeMap() ));
+    return CEpetra::storeConstMap(&( CEpetra::getConstCrsMatrix(
+        selfID)->RangeMap() ));
 }
 
 CT_Epetra_Import_ID_t Epetra_CrsMatrix_Importer ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Import, CT_Epetra_Import_ID_t>(
-        CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Importer());
+    return CEpetra::storeConstImport(CEpetra::getConstCrsMatrix(
+        selfID)->Importer());
 }
 
 CT_Epetra_Export_ID_t Epetra_CrsMatrix_Exporter ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Export, CT_Epetra_Export_ID_t>(
-        CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Exporter());
+    return CEpetra::storeConstExport(CEpetra::getConstCrsMatrix(
+        selfID)->Exporter());
 }
 
 CT_Epetra_Comm_ID_t Epetra_CrsMatrix_Comm ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Comm() ));
+    return CEpetra::storeConstComm(&( CEpetra::getConstCrsMatrix(
+        selfID)->Comm() ));
 }
 
 int Epetra_CrsMatrix_LRID ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int GRID_in )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->LRID(GRID_in);
+    return CEpetra::getConstCrsMatrix(selfID)->LRID(GRID_in);
 }
 
 int Epetra_CrsMatrix_GRID ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int LRID_in )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->GRID(LRID_in);
+    return CEpetra::getConstCrsMatrix(selfID)->GRID(LRID_in);
 }
 
 int Epetra_CrsMatrix_LCID ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int GCID_in )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->LCID(GCID_in);
+    return CEpetra::getConstCrsMatrix(selfID)->LCID(GCID_in);
 }
 
 int Epetra_CrsMatrix_GCID ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int LCID_in )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->GCID(LCID_in);
+    return CEpetra::getConstCrsMatrix(selfID)->GCID(LCID_in);
 }
 
 boolean Epetra_CrsMatrix_MyGRID ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int GRID_in )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->MyGRID(GRID_in)) ? TRUE : FALSE);
+    return ((CEpetra::getConstCrsMatrix(selfID)->MyGRID(
+        GRID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_MyLRID ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int LRID_in )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->MyLRID(LRID_in)) ? TRUE : FALSE);
+    return ((CEpetra::getConstCrsMatrix(selfID)->MyLRID(
+        LRID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_MyGCID ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int GCID_in )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->MyGCID(GCID_in)) ? TRUE : FALSE);
+    return ((CEpetra::getConstCrsMatrix(selfID)->MyGCID(
+        GCID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_MyLCID ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int LCID_in )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->MyLCID(LCID_in)) ? TRUE : FALSE);
+    return ((CEpetra::getConstCrsMatrix(selfID)->MyLCID(
+        LCID_in)) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_MyGlobalRow ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int GID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->MyGlobalRow(GID)) ? TRUE : FALSE);
+    return ((CEpetra::getConstCrsMatrix(selfID)->MyGlobalRow(
+        GID)) ? TRUE : FALSE);
 }
 
 const char * Epetra_CrsMatrix_Label ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Label();
+    return CEpetra::getConstCrsMatrix(selfID)->Label();
 }
 
 int Epetra_CrsMatrix_SetUseTranspose ( 
   CT_Epetra_CrsMatrix_ID_t selfID, boolean UseTranspose_in )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->SetUseTranspose(
-        ((UseTranspose_in) != FALSE ? true : false));
+    return CEpetra::getCrsMatrix(selfID)->SetUseTranspose(((UseTranspose_in) != 
+        FALSE ? true : false));
 }
 
 int Epetra_CrsMatrix_Apply ( 
@@ -866,13 +739,9 @@ int Epetra_CrsMatrix_Apply (
   CT_Epetra_MultiVector_ID_t YID )
 {
     const Teuchos::RCP<const Epetra_MultiVector> X = 
-        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(XID);
-    const Teuchos::RCP<Epetra_MultiVector> Y = 
-        CTrilinos::tableRepos().get<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(YID);
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->Apply(*X, *Y);
+        CEpetra::getConstMultiVector(XID);
+    const Teuchos::RCP<Epetra_MultiVector> Y = CEpetra::getMultiVector(YID);
+    return CEpetra::getConstCrsMatrix(selfID)->Apply(*X, *Y);
 }
 
 int Epetra_CrsMatrix_ApplyInverse ( 
@@ -880,125 +749,105 @@ int Epetra_CrsMatrix_ApplyInverse (
   CT_Epetra_MultiVector_ID_t YID )
 {
     const Teuchos::RCP<const Epetra_MultiVector> X = 
-        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(XID);
-    const Teuchos::RCP<Epetra_MultiVector> Y = 
-        CTrilinos::tableRepos().get<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(YID);
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ApplyInverse(*X, *Y);
+        CEpetra::getConstMultiVector(XID);
+    const Teuchos::RCP<Epetra_MultiVector> Y = CEpetra::getMultiVector(YID);
+    return CEpetra::getConstCrsMatrix(selfID)->ApplyInverse(*X, *Y);
 }
 
 boolean Epetra_CrsMatrix_HasNormInf ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->HasNormInf()) ? TRUE : FALSE);
+    return ((CEpetra::getConstCrsMatrix(selfID)->HasNormInf()) ? TRUE : FALSE);
 }
 
 boolean Epetra_CrsMatrix_UseTranspose ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->UseTranspose()) ? TRUE : FALSE);
+    return ((CEpetra::getConstCrsMatrix(
+        selfID)->UseTranspose()) ? TRUE : FALSE);
 }
 
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_OperatorDomainMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->OperatorDomainMap() ));
+    return CEpetra::storeConstMap(&( CEpetra::getConstCrsMatrix(
+        selfID)->OperatorDomainMap() ));
 }
 
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_OperatorRangeMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->OperatorRangeMap() ));
+    return CEpetra::storeConstMap(&( CEpetra::getConstCrsMatrix(
+        selfID)->OperatorRangeMap() ));
 }
 
 int Epetra_CrsMatrix_NumMyRowEntries ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int MyRow, int * NumEntries )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->NumMyRowEntries(MyRow, 
+    return CEpetra::getConstCrsMatrix(selfID)->NumMyRowEntries(MyRow, 
         *NumEntries);
 }
 
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_RowMatrixRowMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->RowMatrixRowMap() ));
+    return CEpetra::storeConstMap(&( CEpetra::getConstCrsMatrix(
+        selfID)->RowMatrixRowMap() ));
 }
 
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_RowMatrixColMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->RowMatrixColMap() ));
+    return CEpetra::storeConstMap(&( CEpetra::getConstCrsMatrix(
+        selfID)->RowMatrixColMap() ));
 }
 
 CT_Epetra_Import_ID_t Epetra_CrsMatrix_RowMatrixImporter ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Import, CT_Epetra_Import_ID_t>(
-        CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->RowMatrixImporter());
+    return CEpetra::storeConstImport(CEpetra::getConstCrsMatrix(
+        selfID)->RowMatrixImporter());
 }
 
 CT_Epetra_Map_ID_t Epetra_CrsMatrix_ImportMap ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->ImportMap() ));
+    return CEpetra::storeConstMap(&( CEpetra::getConstCrsMatrix(
+        selfID)->ImportMap() ));
 }
 
 int Epetra_CrsMatrix_TransformToLocal ( 
   CT_Epetra_CrsMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->TransformToLocal();
+    return CEpetra::getCrsMatrix(selfID)->TransformToLocal();
 }
 
 int Epetra_CrsMatrix_TransformToLocal_UsingMaps ( 
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_Map_ID_t DomainMapID, 
   CT_Epetra_Map_ID_t RangeMapID )
 {
-    const Teuchos::RCP<const Epetra_Map> DomainMap = 
-        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+    const Teuchos::RCP<const Epetra_Map> DomainMap = CEpetra::getConstMap(
         DomainMapID);
-    const Teuchos::RCP<const Epetra_Map> RangeMap = 
-        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
+    const Teuchos::RCP<const Epetra_Map> RangeMap = CEpetra::getConstMap(
         RangeMapID);
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID)->TransformToLocal(
+    return CEpetra::getCrsMatrix(selfID)->TransformToLocal(
         DomainMap.getRawPtr(), RangeMap.getRawPtr());
 }
 
 void Epetra_CrsMatrix_Assign ( 
   CT_Epetra_CrsMatrix_ID_t selfID, CT_Epetra_CrsMatrix_ID_t srcID )
 {
-    Epetra_CrsMatrix& self = *( CTrilinos::tableRepos().get<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID) );
+    Epetra_CrsMatrix& self = *( CEpetra::getCrsMatrix(selfID) );
 
-    const Teuchos::RCP<const Epetra_CrsMatrix> src = 
-        CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(srcID);
+    const Teuchos::RCP<const Epetra_CrsMatrix> src = CEpetra::getConstCrsMatrix(
+        srcID);
     self = *src;
 }
 
 double * Epetra_CrsMatrix_getRow ( 
   CT_Epetra_CrsMatrix_ID_t selfID, int Loc )
 {
-    const Epetra_CrsMatrix& self = *( 
-        CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(selfID) );
+    const Epetra_CrsMatrix& self = *( CEpetra::getConstCrsMatrix(selfID) );
 
     return self[Loc];
 }
@@ -1016,14 +865,15 @@ double * Epetra_CrsMatrix_getRow (
 const Teuchos::RCP<Epetra_CrsMatrix>
 CEpetra::getCrsMatrix( CT_Epetra_CrsMatrix_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, CT_Epetra_CrsMatrix_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_CrsMatrix>(
+        CTrilinos::abstractType<CT_Epetra_CrsMatrix_ID_t>(id));
 }
 
 /* get Epetra_CrsMatrix from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_CrsMatrix>
 CEpetra::getCrsMatrix( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_CrsMatrix>(id);
 }
 
 /* get const Epetra_CrsMatrix from either the const or non-const table
@@ -1031,7 +881,8 @@ CEpetra::getCrsMatrix( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_CrsMatrix>
 CEpetra::getConstCrsMatrix( CT_Epetra_CrsMatrix_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, CT_Epetra_CrsMatrix_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_CrsMatrix>(
+        CTrilinos::abstractType<CT_Epetra_CrsMatrix_ID_t>(id));
 }
 
 /* get const Epetra_CrsMatrix from either the const or non-const table
@@ -1039,21 +890,48 @@ CEpetra::getConstCrsMatrix( CT_Epetra_CrsMatrix_ID_t id )
 const Teuchos::RCP<const Epetra_CrsMatrix>
 CEpetra::getConstCrsMatrix( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix>(id);
+}
+
+/* store Epetra_CrsMatrix (owned) in non-const table */
+CT_Epetra_CrsMatrix_ID_t
+CEpetra::storeNewCrsMatrix( Epetra_CrsMatrix *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_CrsMatrix>(pobj, true));
 }
 
 /* store Epetra_CrsMatrix in non-const table */
 CT_Epetra_CrsMatrix_ID_t
 CEpetra::storeCrsMatrix( Epetra_CrsMatrix *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, CT_Epetra_CrsMatrix_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_CrsMatrix>(pobj, false));
 }
 
 /* store const Epetra_CrsMatrix in const table */
 CT_Epetra_CrsMatrix_ID_t
 CEpetra::storeConstCrsMatrix( const Epetra_CrsMatrix *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, CT_Epetra_CrsMatrix_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_CrsMatrix>(pobj, false));
+}
+
+/* remove Epetra_CrsMatrix from table using CT_Epetra_CrsMatrix_ID */
+void
+CEpetra::removeCrsMatrix( CT_Epetra_CrsMatrix_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_CrsMatrix_ID_t>(*id);
+    CTrilinos::tableRepos().remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(aid);
+}
+
+/* purge Epetra_CrsMatrix table */
+void
+CEpetra::purgeCrsMatrix(  )
+{
+    CTrilinos::tableRepos().purge<Epetra_CrsMatrix>();
 }
 
 

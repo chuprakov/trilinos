@@ -65,6 +65,10 @@ getConstLAPACK( CT_Epetra_LAPACK_ID_t id );
 const RCP<const Epetra_LAPACK>
 getConstLAPACK( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_LAPACK (owned) in non-const table */
+CT_Epetra_LAPACK_ID_t
+storeNewLAPACK( Epetra_LAPACK *pobj );
+
 /*! store Epetra_LAPACK in non-const table */
 CT_Epetra_LAPACK_ID_t
 storeLAPACK( Epetra_LAPACK *pobj );
@@ -72,6 +76,14 @@ storeLAPACK( Epetra_LAPACK *pobj );
 /*! store const Epetra_LAPACK in const table */
 CT_Epetra_LAPACK_ID_t
 storeConstLAPACK( const Epetra_LAPACK *pobj );
+
+/* remove Epetra_LAPACK from table using CT_Epetra_LAPACK_ID */
+void
+removeLAPACK( CT_Epetra_LAPACK_ID_t *id );
+
+/* purge Epetra_LAPACK table */
+void
+purgeLAPACK(  );
 
 } // namespace CEpetra
 

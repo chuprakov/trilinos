@@ -65,6 +65,10 @@ getConstFlops( CT_Epetra_Flops_ID_t id );
 const RCP<const Epetra_Flops>
 getConstFlops( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_Flops (owned) in non-const table */
+CT_Epetra_Flops_ID_t
+storeNewFlops( Epetra_Flops *pobj );
+
 /*! store Epetra_Flops in non-const table */
 CT_Epetra_Flops_ID_t
 storeFlops( Epetra_Flops *pobj );
@@ -72,6 +76,14 @@ storeFlops( Epetra_Flops *pobj );
 /*! store const Epetra_Flops in const table */
 CT_Epetra_Flops_ID_t
 storeConstFlops( const Epetra_Flops *pobj );
+
+/* remove Epetra_Flops from table using CT_Epetra_Flops_ID */
+void
+removeFlops( CT_Epetra_Flops_ID_t *id );
+
+/* purge Epetra_Flops table */
+void
+purgeFlops(  );
 
 } // namespace CEpetra
 

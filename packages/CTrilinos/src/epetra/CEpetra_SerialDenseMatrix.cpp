@@ -40,6 +40,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CEpetra_SerialDenseMatrix.h
 //
@@ -63,16 +65,14 @@ CTrilinos_Universal_ID_t Epetra_SerialDenseMatrix_Generalize (
 CT_Epetra_SerialDenseMatrix_ID_t Epetra_SerialDenseMatrix_Create_Empty ( 
   boolean set_object_label )
 {
-    return CTrilinos::tableRepos().store<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(new Epetra_SerialDenseMatrix(
+    return CEpetra::storeNewSerialDenseMatrix(new Epetra_SerialDenseMatrix(
         ((set_object_label) != FALSE ? true : false)));
 }
 
 CT_Epetra_SerialDenseMatrix_ID_t Epetra_SerialDenseMatrix_Create ( 
   int NumRows, int NumCols, boolean set_object_label )
 {
-    return CTrilinos::tableRepos().store<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(new Epetra_SerialDenseMatrix(
+    return CEpetra::storeNewSerialDenseMatrix(new Epetra_SerialDenseMatrix(
         NumRows, NumCols, ((set_object_label) != FALSE ? true : false)));
 }
 
@@ -80,8 +80,7 @@ CT_Epetra_SerialDenseMatrix_ID_t Epetra_SerialDenseMatrix_Create_FromArray (
   CT_Epetra_DataAccess_E_t CV, double * A_in, int LDA_in, 
   int NumRows, int NumCols, boolean set_object_label )
 {
-    return CTrilinos::tableRepos().store<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(new Epetra_SerialDenseMatrix(
+    return CEpetra::storeNewSerialDenseMatrix(new Epetra_SerialDenseMatrix(
         (Epetra_DataAccess) CV, A_in, LDA_in, NumRows, NumCols, ((
         set_object_label) != FALSE ? true : false)));
 }
@@ -90,31 +89,27 @@ CT_Epetra_SerialDenseMatrix_ID_t Epetra_SerialDenseMatrix_Duplicate (
   CT_Epetra_SerialDenseMatrix_ID_t SourceID )
 {
     const Teuchos::RCP<const Epetra_SerialDenseMatrix> Source = 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(SourceID);
-    return CTrilinos::tableRepos().store<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(new Epetra_SerialDenseMatrix(
+        CEpetra::getConstSerialDenseMatrix(SourceID);
+    return CEpetra::storeNewSerialDenseMatrix(new Epetra_SerialDenseMatrix(
         *Source));
 }
 
 void Epetra_SerialDenseMatrix_Destroy ( 
   CT_Epetra_SerialDenseMatrix_ID_t * selfID )
 {
-    CTrilinos::tableRepos().remove(selfID);
+    CEpetra::removeSerialDenseMatrix(selfID);
 }
 
 int Epetra_SerialDenseMatrix_Shape ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID, int NumRows, int NumCols )
 {
-    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->Shape(NumRows, NumCols);
+    return CEpetra::getSerialDenseMatrix(selfID)->Shape(NumRows, NumCols);
 }
 
 int Epetra_SerialDenseMatrix_Reshape ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID, int NumRows, int NumCols )
 {
-    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->Reshape(NumRows, NumCols);
+    return CEpetra::getSerialDenseMatrix(selfID)->Reshape(NumRows, NumCols);
 }
 
 int Epetra_SerialDenseMatrix_Multiply_Matrix ( 
@@ -123,13 +118,10 @@ int Epetra_SerialDenseMatrix_Multiply_Matrix (
   CT_Epetra_SerialDenseMatrix_ID_t BID, double ScalarThis )
 {
     const Teuchos::RCP<const Epetra_SerialDenseMatrix> A = 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(AID);
+        CEpetra::getConstSerialDenseMatrix(AID);
     const Teuchos::RCP<const Epetra_SerialDenseMatrix> B = 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(BID);
-    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->Multiply(TransA, TransB, 
+        CEpetra::getConstSerialDenseMatrix(BID);
+    return CEpetra::getSerialDenseMatrix(selfID)->Multiply(TransA, TransB, 
         ScalarAB, *A, *B, ScalarThis);
 }
 
@@ -139,106 +131,90 @@ int Epetra_SerialDenseMatrix_Multiply_Vector (
   CT_Epetra_SerialDenseMatrix_ID_t yID )
 {
     const Teuchos::RCP<const Epetra_SerialDenseMatrix> x = 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(xID);
+        CEpetra::getConstSerialDenseMatrix(xID);
     const Teuchos::RCP<Epetra_SerialDenseMatrix> y = 
-        CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(yID);
-    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->Multiply(((transA) != 
+        CEpetra::getSerialDenseMatrix(yID);
+    return CEpetra::getSerialDenseMatrix(selfID)->Multiply(((transA) != 
         FALSE ? true : false), *x, *y);
 }
 
 int Epetra_SerialDenseMatrix_Scale ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID, double ScalarA )
 {
-    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->Scale(ScalarA);
+    return CEpetra::getSerialDenseMatrix(selfID)->Scale(ScalarA);
 }
 
 double Epetra_SerialDenseMatrix_NormOne ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->NormOne();
+    return CEpetra::getConstSerialDenseMatrix(selfID)->NormOne();
 }
 
 double Epetra_SerialDenseMatrix_NormInf ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->NormInf();
+    return CEpetra::getConstSerialDenseMatrix(selfID)->NormInf();
 }
 
 int Epetra_SerialDenseMatrix_Random ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->Random();
+    return CEpetra::getSerialDenseMatrix(selfID)->Random();
 }
 
 int Epetra_SerialDenseMatrix_M ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->M();
+    return CEpetra::getConstSerialDenseMatrix(selfID)->M();
 }
 
 int Epetra_SerialDenseMatrix_N ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->N();
+    return CEpetra::getConstSerialDenseMatrix(selfID)->N();
 }
 
 double * Epetra_SerialDenseMatrix_A_Const ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->A();
+    return CEpetra::getConstSerialDenseMatrix(selfID)->A();
 }
 
 double * Epetra_SerialDenseMatrix_A ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->A();
+    return CEpetra::getSerialDenseMatrix(selfID)->A();
 }
 
 int Epetra_SerialDenseMatrix_LDA ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->LDA();
+    return CEpetra::getConstSerialDenseMatrix(selfID)->LDA();
 }
 
 CT_Epetra_DataAccess_E_t Epetra_SerialDenseMatrix_CV ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return (CT_Epetra_DataAccess_E_t)( 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->CV() );
+    return (CT_Epetra_DataAccess_E_t)( CEpetra::getConstSerialDenseMatrix(
+        selfID)->CV() );
 }
 
 double Epetra_SerialDenseMatrix_OneNorm ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->OneNorm();
+    return CEpetra::getConstSerialDenseMatrix(selfID)->OneNorm();
 }
 
 double Epetra_SerialDenseMatrix_InfNorm ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->InfNorm();
+    return CEpetra::getConstSerialDenseMatrix(selfID)->InfNorm();
 }
 
 int Epetra_SerialDenseMatrix_SetUseTranspose ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID, boolean UseTranspose_in )
 {
-    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->SetUseTranspose(
+    return CEpetra::getSerialDenseMatrix(selfID)->SetUseTranspose(
         ((UseTranspose_in) != FALSE ? true : false));
 }
 
@@ -248,13 +224,10 @@ int Epetra_SerialDenseMatrix_Apply (
   CT_Epetra_SerialDenseMatrix_ID_t YID )
 {
     const Teuchos::RCP<const Epetra_SerialDenseMatrix> X = 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(XID);
+        CEpetra::getConstSerialDenseMatrix(XID);
     const Teuchos::RCP<Epetra_SerialDenseMatrix> Y = 
-        CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(YID);
-    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->Apply(*X, *Y);
+        CEpetra::getSerialDenseMatrix(YID);
+    return CEpetra::getSerialDenseMatrix(selfID)->Apply(*X, *Y);
 }
 
 int Epetra_SerialDenseMatrix_ApplyInverse ( 
@@ -263,63 +236,53 @@ int Epetra_SerialDenseMatrix_ApplyInverse (
   CT_Epetra_SerialDenseMatrix_ID_t YID )
 {
     const Teuchos::RCP<const Epetra_SerialDenseMatrix> X = 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(XID);
+        CEpetra::getConstSerialDenseMatrix(XID);
     const Teuchos::RCP<Epetra_SerialDenseMatrix> Y = 
-        CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(YID);
-    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->ApplyInverse(*X, *Y);
+        CEpetra::getSerialDenseMatrix(YID);
+    return CEpetra::getSerialDenseMatrix(selfID)->ApplyInverse(*X, *Y);
 }
 
 const char * Epetra_SerialDenseMatrix_Label ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->Label();
+    return CEpetra::getConstSerialDenseMatrix(selfID)->Label();
 }
 
 boolean Epetra_SerialDenseMatrix_UseTranspose ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(
+    return ((CEpetra::getConstSerialDenseMatrix(
         selfID)->UseTranspose()) ? TRUE : FALSE);
 }
 
 boolean Epetra_SerialDenseMatrix_HasNormInf ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(
+    return ((CEpetra::getConstSerialDenseMatrix(
         selfID)->HasNormInf()) ? TRUE : FALSE);
 }
 
 int Epetra_SerialDenseMatrix_RowDim ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->RowDim();
+    return CEpetra::getConstSerialDenseMatrix(selfID)->RowDim();
 }
 
 int Epetra_SerialDenseMatrix_ColDim ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID)->ColDim();
+    return CEpetra::getConstSerialDenseMatrix(selfID)->ColDim();
 }
 
 void Epetra_SerialDenseMatrix_Assign ( 
   CT_Epetra_SerialDenseMatrix_ID_t selfID, 
   CT_Epetra_SerialDenseMatrix_ID_t SourceID )
 {
-    Epetra_SerialDenseMatrix& self = *( 
-        CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID) );
+    Epetra_SerialDenseMatrix& self = *( CEpetra::getSerialDenseMatrix(
+        selfID) );
 
     const Teuchos::RCP<const Epetra_SerialDenseMatrix> Source = 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(SourceID);
+        CEpetra::getConstSerialDenseMatrix(SourceID);
     self = *Source;
 }
 
@@ -328,12 +291,10 @@ boolean Epetra_SerialDenseMatrix_IsEqual (
   CT_Epetra_SerialDenseMatrix_ID_t rhsID )
 {
     const Epetra_SerialDenseMatrix& self = *( 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID) );
+        CEpetra::getConstSerialDenseMatrix(selfID) );
 
     const Teuchos::RCP<const Epetra_SerialDenseMatrix> rhs = 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(rhsID);
+        CEpetra::getConstSerialDenseMatrix(rhsID);
     return ((self == *rhs) ? TRUE : FALSE);
 }
 
@@ -342,12 +303,10 @@ boolean Epetra_SerialDenseMatrix_NotEqual (
   CT_Epetra_SerialDenseMatrix_ID_t rhsID )
 {
     const Epetra_SerialDenseMatrix& self = *( 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID) );
+        CEpetra::getConstSerialDenseMatrix(selfID) );
 
     const Teuchos::RCP<const Epetra_SerialDenseMatrix> rhs = 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(rhsID);
+        CEpetra::getConstSerialDenseMatrix(rhsID);
     return ((self != *rhs) ? TRUE : FALSE);
 }
 
@@ -355,13 +314,11 @@ void Epetra_SerialDenseMatrix_AddTo (
   CT_Epetra_SerialDenseMatrix_ID_t selfID, 
   CT_Epetra_SerialDenseMatrix_ID_t SourceID )
 {
-    Epetra_SerialDenseMatrix& self = *( 
-        CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID) );
+    Epetra_SerialDenseMatrix& self = *( CEpetra::getSerialDenseMatrix(
+        selfID) );
 
     const Teuchos::RCP<const Epetra_SerialDenseMatrix> Source = 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(SourceID);
+        CEpetra::getConstSerialDenseMatrix(SourceID);
     self += *Source;
 }
 
@@ -369,9 +326,8 @@ void Epetra_SerialDenseMatrix_setElement (
   CT_Epetra_SerialDenseMatrix_ID_t selfID, int RowIndex, 
   int ColIndex, double * value )
 {
-    Epetra_SerialDenseMatrix& self = *( 
-        CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID) );
+    Epetra_SerialDenseMatrix& self = *( CEpetra::getSerialDenseMatrix(
+        selfID) );
 
     self(RowIndex, ColIndex) = *value;
 }
@@ -381,8 +337,7 @@ double Epetra_SerialDenseMatrix_getElement (
   int ColIndex )
 {
     const Epetra_SerialDenseMatrix& self = *( 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID) );
+        CEpetra::getConstSerialDenseMatrix(selfID) );
 
     return self(RowIndex, ColIndex);
 }
@@ -391,8 +346,7 @@ const double * Epetra_SerialDenseMatrix_getColumn (
   CT_Epetra_SerialDenseMatrix_ID_t selfID, int ColIndex )
 {
     const Epetra_SerialDenseMatrix& self = *( 
-        CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, 
-        CT_Epetra_SerialDenseMatrix_ID_t>(selfID) );
+        CEpetra::getConstSerialDenseMatrix(selfID) );
 
     return self[ColIndex];
 }
@@ -410,14 +364,15 @@ const double * Epetra_SerialDenseMatrix_getColumn (
 const Teuchos::RCP<Epetra_SerialDenseMatrix>
 CEpetra::getSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, CT_Epetra_SerialDenseMatrix_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix>(
+        CTrilinos::abstractType<CT_Epetra_SerialDenseMatrix_ID_t>(id));
 }
 
 /* get Epetra_SerialDenseMatrix from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_SerialDenseMatrix>
 CEpetra::getSerialDenseMatrix( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix>(id);
 }
 
 /* get const Epetra_SerialDenseMatrix from either the const or non-const table
@@ -425,7 +380,8 @@ CEpetra::getSerialDenseMatrix( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_SerialDenseMatrix>
 CEpetra::getConstSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, CT_Epetra_SerialDenseMatrix_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix>(
+        CTrilinos::abstractType<CT_Epetra_SerialDenseMatrix_ID_t>(id));
 }
 
 /* get const Epetra_SerialDenseMatrix from either the const or non-const table
@@ -433,21 +389,48 @@ CEpetra::getConstSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id )
 const Teuchos::RCP<const Epetra_SerialDenseMatrix>
 CEpetra::getConstSerialDenseMatrix( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix>(id);
+}
+
+/* store Epetra_SerialDenseMatrix (owned) in non-const table */
+CT_Epetra_SerialDenseMatrix_ID_t
+CEpetra::storeNewSerialDenseMatrix( Epetra_SerialDenseMatrix *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_SerialDenseMatrix_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_SerialDenseMatrix>(pobj, true));
 }
 
 /* store Epetra_SerialDenseMatrix in non-const table */
 CT_Epetra_SerialDenseMatrix_ID_t
 CEpetra::storeSerialDenseMatrix( Epetra_SerialDenseMatrix *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_SerialDenseMatrix, CT_Epetra_SerialDenseMatrix_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_SerialDenseMatrix_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_SerialDenseMatrix>(pobj, false));
 }
 
 /* store const Epetra_SerialDenseMatrix in const table */
 CT_Epetra_SerialDenseMatrix_ID_t
 CEpetra::storeConstSerialDenseMatrix( const Epetra_SerialDenseMatrix *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_SerialDenseMatrix, CT_Epetra_SerialDenseMatrix_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_SerialDenseMatrix_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_SerialDenseMatrix>(pobj, false));
+}
+
+/* remove Epetra_SerialDenseMatrix from table using CT_Epetra_SerialDenseMatrix_ID */
+void
+CEpetra::removeSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_SerialDenseMatrix_ID_t>(*id);
+    CTrilinos::tableRepos().remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_SerialDenseMatrix_ID_t>(aid);
+}
+
+/* purge Epetra_SerialDenseMatrix table */
+void
+CEpetra::purgeSerialDenseMatrix(  )
+{
+    CTrilinos::tableRepos().purge<Epetra_SerialDenseMatrix>();
 }
 
 

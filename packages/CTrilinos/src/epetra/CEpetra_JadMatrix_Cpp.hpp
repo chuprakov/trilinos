@@ -65,6 +65,10 @@ getConstJadMatrix( CT_Epetra_JadMatrix_ID_t id );
 const RCP<const Epetra_JadMatrix>
 getConstJadMatrix( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_JadMatrix (owned) in non-const table */
+CT_Epetra_JadMatrix_ID_t
+storeNewJadMatrix( Epetra_JadMatrix *pobj );
+
 /*! store Epetra_JadMatrix in non-const table */
 CT_Epetra_JadMatrix_ID_t
 storeJadMatrix( Epetra_JadMatrix *pobj );
@@ -72,6 +76,14 @@ storeJadMatrix( Epetra_JadMatrix *pobj );
 /*! store const Epetra_JadMatrix in const table */
 CT_Epetra_JadMatrix_ID_t
 storeConstJadMatrix( const Epetra_JadMatrix *pobj );
+
+/* remove Epetra_JadMatrix from table using CT_Epetra_JadMatrix_ID */
+void
+removeJadMatrix( CT_Epetra_JadMatrix_ID_t *id );
+
+/* purge Epetra_JadMatrix table */
+void
+purgeJadMatrix(  );
 
 } // namespace CEpetra
 

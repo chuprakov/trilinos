@@ -42,6 +42,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CEpetra_JadMatrix.h
 //
@@ -66,15 +68,13 @@ CT_Epetra_JadMatrix_ID_t Epetra_JadMatrix_Create (
   CT_Epetra_RowMatrix_ID_t MatrixID )
 {
     const Teuchos::RCP<const Epetra_RowMatrix> Matrix = 
-        CTrilinos::tableRepos().getConst<Epetra_RowMatrix, 
-        CT_Epetra_RowMatrix_ID_t>(MatrixID);
-    return CTrilinos::tableRepos().store<Epetra_JadMatrix, 
-        CT_Epetra_JadMatrix_ID_t>(new Epetra_JadMatrix(*Matrix));
+        CEpetra::getConstRowMatrix(MatrixID);
+    return CEpetra::storeNewJadMatrix(new Epetra_JadMatrix(*Matrix));
 }
 
 void Epetra_JadMatrix_Destroy ( CT_Epetra_JadMatrix_ID_t * selfID )
 {
-    CTrilinos::tableRepos().remove(selfID);
+    CEpetra::removeJadMatrix(selfID);
 }
 
 int Epetra_JadMatrix_UpdateValues ( 
@@ -82,10 +82,8 @@ int Epetra_JadMatrix_UpdateValues (
   CT_Epetra_RowMatrix_ID_t MatrixID, boolean CheckStructure )
 {
     const Teuchos::RCP<const Epetra_RowMatrix> Matrix = 
-        CTrilinos::tableRepos().getConst<Epetra_RowMatrix, 
-        CT_Epetra_RowMatrix_ID_t>(MatrixID);
-    return CTrilinos::tableRepos().get<Epetra_JadMatrix, 
-        CT_Epetra_JadMatrix_ID_t>(selfID)->UpdateValues(*Matrix, ((
+        CEpetra::getConstRowMatrix(MatrixID);
+    return CEpetra::getJadMatrix(selfID)->UpdateValues(*Matrix, ((
         CheckStructure) != FALSE ? true : false));
 }
 
@@ -93,8 +91,7 @@ int Epetra_JadMatrix_ExtractMyRowCopy (
   CT_Epetra_JadMatrix_ID_t selfID, int MyRow, int Length, 
   int * NumEntries, double * Values, int * Indices )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_JadMatrix, 
-        CT_Epetra_JadMatrix_ID_t>(selfID)->ExtractMyRowCopy(MyRow, Length, 
+    return CEpetra::getConstJadMatrix(selfID)->ExtractMyRowCopy(MyRow, Length, 
         *NumEntries, Values, Indices);
 }
 
@@ -102,25 +99,22 @@ int Epetra_JadMatrix_ExtractMyEntryView (
   CT_Epetra_JadMatrix_ID_t selfID, int CurEntry, double * * Value, 
   int * RowIndex, int * ColIndex )
 {
-    return CTrilinos::tableRepos().get<Epetra_JadMatrix, 
-        CT_Epetra_JadMatrix_ID_t>(selfID)->ExtractMyEntryView(CurEntry, 
-        *Value, *RowIndex, *ColIndex);
+    return CEpetra::getJadMatrix(selfID)->ExtractMyEntryView(CurEntry, *Value, 
+        *RowIndex, *ColIndex);
 }
 
 int Epetra_JadMatrix_ExtractMyEntryView_Const ( 
   CT_Epetra_JadMatrix_ID_t selfID, int CurEntry, 
   double const ** Value, int * RowIndex, int * ColIndex )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_JadMatrix, 
-        CT_Epetra_JadMatrix_ID_t>(selfID)->ExtractMyEntryView(CurEntry, 
+    return CEpetra::getConstJadMatrix(selfID)->ExtractMyEntryView(CurEntry, 
         *Value, *RowIndex, *ColIndex);
 }
 
 int Epetra_JadMatrix_NumMyRowEntries ( 
   CT_Epetra_JadMatrix_ID_t selfID, int MyRow, int * NumEntries )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_JadMatrix, 
-        CT_Epetra_JadMatrix_ID_t>(selfID)->NumMyRowEntries(MyRow, 
+    return CEpetra::getConstJadMatrix(selfID)->NumMyRowEntries(MyRow, 
         *NumEntries);
 }
 
@@ -129,13 +123,9 @@ int Epetra_JadMatrix_Multiply (
   CT_Epetra_MultiVector_ID_t XID, CT_Epetra_MultiVector_ID_t YID )
 {
     const Teuchos::RCP<const Epetra_MultiVector> X = 
-        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(XID);
-    const Teuchos::RCP<Epetra_MultiVector> Y = 
-        CTrilinos::tableRepos().get<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(YID);
-    return CTrilinos::tableRepos().getConst<Epetra_JadMatrix, 
-        CT_Epetra_JadMatrix_ID_t>(selfID)->Multiply(((TransA) != 
+        CEpetra::getConstMultiVector(XID);
+    const Teuchos::RCP<Epetra_MultiVector> Y = CEpetra::getMultiVector(YID);
+    return CEpetra::getConstJadMatrix(selfID)->Multiply(((TransA) != 
         FALSE ? true : false), *X, *Y);
 }
 
@@ -145,13 +135,9 @@ int Epetra_JadMatrix_Solve (
   CT_Epetra_MultiVector_ID_t YID )
 {
     const Teuchos::RCP<const Epetra_MultiVector> X = 
-        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(XID);
-    const Teuchos::RCP<Epetra_MultiVector> Y = 
-        CTrilinos::tableRepos().get<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(YID);
-    return CTrilinos::tableRepos().getConst<Epetra_JadMatrix, 
-        CT_Epetra_JadMatrix_ID_t>(selfID)->Solve(((Upper) != 
+        CEpetra::getConstMultiVector(XID);
+    const Teuchos::RCP<Epetra_MultiVector> Y = CEpetra::getMultiVector(YID);
+    return CEpetra::getConstJadMatrix(selfID)->Solve(((Upper) != 
         FALSE ? true : false), ((Trans) != FALSE ? true : false), ((
         UnitDiagonal) != FALSE ? true : false), *X, *Y);
 }
@@ -169,14 +155,15 @@ int Epetra_JadMatrix_Solve (
 const Teuchos::RCP<Epetra_JadMatrix>
 CEpetra::getJadMatrix( CT_Epetra_JadMatrix_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_JadMatrix, CT_Epetra_JadMatrix_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_JadMatrix>(
+        CTrilinos::abstractType<CT_Epetra_JadMatrix_ID_t>(id));
 }
 
 /* get Epetra_JadMatrix from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_JadMatrix>
 CEpetra::getJadMatrix( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_JadMatrix, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_JadMatrix>(id);
 }
 
 /* get const Epetra_JadMatrix from either the const or non-const table
@@ -184,7 +171,8 @@ CEpetra::getJadMatrix( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_JadMatrix>
 CEpetra::getConstJadMatrix( CT_Epetra_JadMatrix_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_JadMatrix, CT_Epetra_JadMatrix_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_JadMatrix>(
+        CTrilinos::abstractType<CT_Epetra_JadMatrix_ID_t>(id));
 }
 
 /* get const Epetra_JadMatrix from either the const or non-const table
@@ -192,21 +180,48 @@ CEpetra::getConstJadMatrix( CT_Epetra_JadMatrix_ID_t id )
 const Teuchos::RCP<const Epetra_JadMatrix>
 CEpetra::getConstJadMatrix( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_JadMatrix, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().getConst<Epetra_JadMatrix>(id);
+}
+
+/* store Epetra_JadMatrix (owned) in non-const table */
+CT_Epetra_JadMatrix_ID_t
+CEpetra::storeNewJadMatrix( Epetra_JadMatrix *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_JadMatrix_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_JadMatrix>(pobj, true));
 }
 
 /* store Epetra_JadMatrix in non-const table */
 CT_Epetra_JadMatrix_ID_t
 CEpetra::storeJadMatrix( Epetra_JadMatrix *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_JadMatrix, CT_Epetra_JadMatrix_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_JadMatrix_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_JadMatrix>(pobj, false));
 }
 
 /* store const Epetra_JadMatrix in const table */
 CT_Epetra_JadMatrix_ID_t
 CEpetra::storeConstJadMatrix( const Epetra_JadMatrix *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_JadMatrix, CT_Epetra_JadMatrix_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_JadMatrix_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_JadMatrix>(pobj, false));
+}
+
+/* remove Epetra_JadMatrix from table using CT_Epetra_JadMatrix_ID */
+void
+CEpetra::removeJadMatrix( CT_Epetra_JadMatrix_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_JadMatrix_ID_t>(*id);
+    CTrilinos::tableRepos().remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_JadMatrix_ID_t>(aid);
+}
+
+/* purge Epetra_JadMatrix table */
+void
+CEpetra::purgeJadMatrix(  )
+{
+    CTrilinos::tableRepos().purge<Epetra_JadMatrix>();
 }
 
 

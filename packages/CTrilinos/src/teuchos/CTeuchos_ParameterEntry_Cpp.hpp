@@ -65,6 +65,10 @@ getConstParameterEntry( CT_Teuchos_ParameterEntry_ID_t id );
 const RCP<const Teuchos::ParameterEntry>
 getConstParameterEntry( CTrilinos_Universal_ID_t id );
 
+/*! store Teuchos::ParameterEntry (owned) in non-const table */
+CT_Teuchos_ParameterEntry_ID_t
+storeNewParameterEntry( Teuchos::ParameterEntry *pobj );
+
 /*! store Teuchos::ParameterEntry in non-const table */
 CT_Teuchos_ParameterEntry_ID_t
 storeParameterEntry( Teuchos::ParameterEntry *pobj );
@@ -72,6 +76,14 @@ storeParameterEntry( Teuchos::ParameterEntry *pobj );
 /*! store const Teuchos::ParameterEntry in const table */
 CT_Teuchos_ParameterEntry_ID_t
 storeConstParameterEntry( const Teuchos::ParameterEntry *pobj );
+
+/* remove Teuchos::ParameterEntry from table using CT_Teuchos_ParameterEntry_ID */
+void
+removeParameterEntry( CT_Teuchos_ParameterEntry_ID_t *id );
+
+/* purge Teuchos::ParameterEntry table */
+void
+purgeParameterEntry(  );
 
 } // namespace CTeuchos
 

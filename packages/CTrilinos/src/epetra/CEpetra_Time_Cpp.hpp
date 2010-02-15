@@ -65,6 +65,10 @@ getConstTime( CT_Epetra_Time_ID_t id );
 const RCP<const Epetra_Time>
 getConstTime( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_Time (owned) in non-const table */
+CT_Epetra_Time_ID_t
+storeNewTime( Epetra_Time *pobj );
+
 /*! store Epetra_Time in non-const table */
 CT_Epetra_Time_ID_t
 storeTime( Epetra_Time *pobj );
@@ -72,6 +76,14 @@ storeTime( Epetra_Time *pobj );
 /*! store const Epetra_Time in const table */
 CT_Epetra_Time_ID_t
 storeConstTime( const Epetra_Time *pobj );
+
+/* remove Epetra_Time from table using CT_Epetra_Time_ID */
+void
+removeTime( CT_Epetra_Time_ID_t *id );
+
+/* purge Epetra_Time table */
+void
+purgeTime(  );
 
 } // namespace CEpetra
 

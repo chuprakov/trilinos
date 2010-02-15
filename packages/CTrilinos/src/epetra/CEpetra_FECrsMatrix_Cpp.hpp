@@ -65,6 +65,10 @@ getConstFECrsMatrix( CT_Epetra_FECrsMatrix_ID_t id );
 const RCP<const Epetra_FECrsMatrix>
 getConstFECrsMatrix( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_FECrsMatrix (owned) in non-const table */
+CT_Epetra_FECrsMatrix_ID_t
+storeNewFECrsMatrix( Epetra_FECrsMatrix *pobj );
+
 /*! store Epetra_FECrsMatrix in non-const table */
 CT_Epetra_FECrsMatrix_ID_t
 storeFECrsMatrix( Epetra_FECrsMatrix *pobj );
@@ -72,6 +76,14 @@ storeFECrsMatrix( Epetra_FECrsMatrix *pobj );
 /*! store const Epetra_FECrsMatrix in const table */
 CT_Epetra_FECrsMatrix_ID_t
 storeConstFECrsMatrix( const Epetra_FECrsMatrix *pobj );
+
+/* remove Epetra_FECrsMatrix from table using CT_Epetra_FECrsMatrix_ID */
+void
+removeFECrsMatrix( CT_Epetra_FECrsMatrix_ID_t *id );
+
+/* purge Epetra_FECrsMatrix table */
+void
+purgeFECrsMatrix(  );
 
 } // namespace CEpetra
 

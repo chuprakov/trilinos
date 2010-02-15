@@ -88,11 +88,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_enums.h"
 #include "CTrilinos_Table.hpp"
-#include "CTrilinos_utils.hpp"
-
-
 namespace CTrilinos {
 
+
+/* defined in CTrilinos_utils.cpp but used here */
+bool isSameObject( CTrilinos_Universal_ID_t id1, CTrilinos_Universal_ID_t id2 );
 
 /* convert struct from specific type to generic CTrilinos_Universal_ID_t
  * but keep the content in tact */

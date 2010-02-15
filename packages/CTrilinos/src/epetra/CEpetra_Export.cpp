@@ -42,6 +42,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CEpetra_Export.h
 //
@@ -67,121 +69,99 @@ CT_Epetra_Export_ID_t Epetra_Export_Create (
   CT_Epetra_BlockMap_ID_t TargetMapID )
 {
     const Teuchos::RCP<const Epetra_BlockMap> SourceMap = 
-        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(SourceMapID);
+        CEpetra::getConstBlockMap(SourceMapID);
     const Teuchos::RCP<const Epetra_BlockMap> TargetMap = 
-        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(TargetMapID);
-    return CTrilinos::tableRepos().store<Epetra_Export, CT_Epetra_Export_ID_t>(
-        new Epetra_Export(*SourceMap, *TargetMap));
+        CEpetra::getConstBlockMap(TargetMapID);
+    return CEpetra::storeNewExport(new Epetra_Export(*SourceMap, *TargetMap));
 }
 
 CT_Epetra_Export_ID_t Epetra_Export_Duplicate ( 
   CT_Epetra_Export_ID_t ExporterID )
 {
-    const Teuchos::RCP<const Epetra_Export> Exporter = 
-        CTrilinos::tableRepos().getConst<Epetra_Export, CT_Epetra_Export_ID_t>(
+    const Teuchos::RCP<const Epetra_Export> Exporter = CEpetra::getConstExport(
         ExporterID);
-    return CTrilinos::tableRepos().store<Epetra_Export, CT_Epetra_Export_ID_t>(
-        new Epetra_Export(*Exporter));
+    return CEpetra::storeNewExport(new Epetra_Export(*Exporter));
 }
 
 void Epetra_Export_Destroy ( CT_Epetra_Export_ID_t * selfID )
 {
-    CTrilinos::tableRepos().remove(selfID);
+    CEpetra::removeExport(selfID);
 }
 
 int Epetra_Export_NumSameIDs ( CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->NumSameIDs();
+    return CEpetra::getConstExport(selfID)->NumSameIDs();
 }
 
 int Epetra_Export_NumPermuteIDs ( CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->NumPermuteIDs();
+    return CEpetra::getConstExport(selfID)->NumPermuteIDs();
 }
 
 int * Epetra_Export_PermuteFromLIDs ( CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->PermuteFromLIDs();
+    return CEpetra::getConstExport(selfID)->PermuteFromLIDs();
 }
 
 int * Epetra_Export_PermuteToLIDs ( CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->PermuteToLIDs();
+    return CEpetra::getConstExport(selfID)->PermuteToLIDs();
 }
 
 int Epetra_Export_NumRemoteIDs ( CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->NumRemoteIDs();
+    return CEpetra::getConstExport(selfID)->NumRemoteIDs();
 }
 
 int * Epetra_Export_RemoteLIDs ( CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->RemoteLIDs();
+    return CEpetra::getConstExport(selfID)->RemoteLIDs();
 }
 
 int Epetra_Export_NumExportIDs ( CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->NumExportIDs();
+    return CEpetra::getConstExport(selfID)->NumExportIDs();
 }
 
 int * Epetra_Export_ExportLIDs ( CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->ExportLIDs();
+    return CEpetra::getConstExport(selfID)->ExportLIDs();
 }
 
 int * Epetra_Export_ExportPIDs ( CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->ExportPIDs();
+    return CEpetra::getConstExport(selfID)->ExportPIDs();
 }
 
 int Epetra_Export_NumSend ( CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->NumSend();
+    return CEpetra::getConstExport(selfID)->NumSend();
 }
 
 int Epetra_Export_NumRecv ( CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->NumRecv();
+    return CEpetra::getConstExport(selfID)->NumRecv();
 }
 
 CT_Epetra_BlockMap_ID_t Epetra_Export_SourceMap ( 
   CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->SourceMap() ));
+    return CEpetra::storeConstBlockMap(&( CEpetra::getConstExport(
+        selfID)->SourceMap() ));
 }
 
 CT_Epetra_BlockMap_ID_t Epetra_Export_TargetMap ( 
   CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->TargetMap() ));
+    return CEpetra::storeConstBlockMap(&( CEpetra::getConstExport(
+        selfID)->TargetMap() ));
 }
 
 CT_Epetra_Distributor_ID_t Epetra_Export_Distributor ( 
   CT_Epetra_Export_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Distributor, 
-        CT_Epetra_Distributor_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_Export, 
-        CT_Epetra_Export_ID_t>(selfID)->Distributor() ));
+    return CEpetra::storeDistributor(&( CEpetra::getConstExport(
+        selfID)->Distributor() ));
 }
 
 
@@ -197,14 +177,15 @@ CT_Epetra_Distributor_ID_t Epetra_Export_Distributor (
 const Teuchos::RCP<Epetra_Export>
 CEpetra::getExport( CT_Epetra_Export_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_Export, CT_Epetra_Export_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_Export>(
+        CTrilinos::abstractType<CT_Epetra_Export_ID_t>(id));
 }
 
 /* get Epetra_Export from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_Export>
 CEpetra::getExport( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_Export, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_Export>(id);
 }
 
 /* get const Epetra_Export from either the const or non-const table
@@ -212,7 +193,8 @@ CEpetra::getExport( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_Export>
 CEpetra::getConstExport( CT_Epetra_Export_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Export, CT_Epetra_Export_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_Export>(
+        CTrilinos::abstractType<CT_Epetra_Export_ID_t>(id));
 }
 
 /* get const Epetra_Export from either the const or non-const table
@@ -220,21 +202,48 @@ CEpetra::getConstExport( CT_Epetra_Export_ID_t id )
 const Teuchos::RCP<const Epetra_Export>
 CEpetra::getConstExport( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Export, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().getConst<Epetra_Export>(id);
+}
+
+/* store Epetra_Export (owned) in non-const table */
+CT_Epetra_Export_ID_t
+CEpetra::storeNewExport( Epetra_Export *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Export_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_Export>(pobj, true));
 }
 
 /* store Epetra_Export in non-const table */
 CT_Epetra_Export_ID_t
 CEpetra::storeExport( Epetra_Export *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_Export, CT_Epetra_Export_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_Export_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_Export>(pobj, false));
 }
 
 /* store const Epetra_Export in const table */
 CT_Epetra_Export_ID_t
 CEpetra::storeConstExport( const Epetra_Export *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_Export, CT_Epetra_Export_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_Export_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_Export>(pobj, false));
+}
+
+/* remove Epetra_Export from table using CT_Epetra_Export_ID */
+void
+CEpetra::removeExport( CT_Epetra_Export_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_Export_ID_t>(*id);
+    CTrilinos::tableRepos().remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_Export_ID_t>(aid);
+}
+
+/* purge Epetra_Export table */
+void
+CEpetra::purgeExport(  )
+{
+    CTrilinos::tableRepos().purge<Epetra_Export>();
 }
 
 

@@ -65,6 +65,10 @@ getConstDistributor( CT_Epetra_Distributor_ID_t id );
 const RCP<const Epetra_Distributor>
 getConstDistributor( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_Distributor (owned) in non-const table */
+CT_Epetra_Distributor_ID_t
+storeNewDistributor( Epetra_Distributor *pobj );
+
 /*! store Epetra_Distributor in non-const table */
 CT_Epetra_Distributor_ID_t
 storeDistributor( Epetra_Distributor *pobj );
@@ -72,6 +76,14 @@ storeDistributor( Epetra_Distributor *pobj );
 /*! store const Epetra_Distributor in const table */
 CT_Epetra_Distributor_ID_t
 storeConstDistributor( const Epetra_Distributor *pobj );
+
+/* remove Epetra_Distributor from table using CT_Epetra_Distributor_ID */
+void
+removeDistributor( CT_Epetra_Distributor_ID_t *id );
+
+/* purge Epetra_Distributor table */
+void
+purgeDistributor(  );
 
 } // namespace CEpetra
 

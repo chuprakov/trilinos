@@ -46,7 +46,27 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_TableRepos.hpp"
+#include "CTrilinos_Table.hpp"
+
+
+namespace {
+
+
+using Teuchos::RCP;
+using CTrilinos::Table;
+
+
+/* table to hold objects of type Ifpack */
+Table<Ifpack>& tableOfIfpacks()
+{
+    static Table<Ifpack> loc_tableOfIfpacks(CT_Ifpack_ID);
+    return loc_tableOfIfpacks;
+}
+
+
+} // namespace
+
+
 //
 // Definitions from CIfpack.h
 //
@@ -57,25 +77,22 @@ extern "C" {
 
 CT_Ifpack_ID_t Ifpack_Create (  )
 {
-    return CTrilinos::tableRepos().store<Ifpack, CT_Ifpack_ID_t>(new Ifpack());
+    return CIfpack::storeNewIfpack(new Ifpack());
 }
 
 void Ifpack_Destroy ( CT_Ifpack_ID_t * selfID )
 {
-    CTrilinos::tableRepos().remove(selfID);
+    CIfpack::removeIfpack(selfID);
 }
 
 CT_Ifpack_Preconditioner_ID_t Ifpack_CreatePreconditioner_UsingName ( 
   CT_Ifpack_ID_t selfID, const char PrecType[], 
   CT_Epetra_RowMatrix_ID_t MatrixID, const int overlap )
 {
-    const Teuchos::RCP<Epetra_RowMatrix> Matrix = 
-        CTrilinos::tableRepos().get<Epetra_RowMatrix, 
-        CT_Epetra_RowMatrix_ID_t>(MatrixID);
-    return CTrilinos::tableRepos().store<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(CTrilinos::tableRepos().get<Ifpack, 
-        CT_Ifpack_ID_t>(selfID)->Create(std::string(PrecType), 
-        Matrix.getRawPtr(), overlap));
+    const Teuchos::RCP<Epetra_RowMatrix> Matrix = CEpetra::getRowMatrix(
+        MatrixID);
+    return CIfpack::storePreconditioner(CIfpack::getIfpack(selfID)->Create(
+        std::string(PrecType), Matrix.getRawPtr(), overlap));
 }
 
 int Ifpack_SetParameters ( 
@@ -84,12 +101,11 @@ int Ifpack_SetParameters (
   int * Overlap )
 {
     const Teuchos::RCP<Teuchos::ParameterList> List = 
-        CTrilinos::tableRepos().get<Teuchos::ParameterList, 
-        CT_Teuchos_ParameterList_ID_t>(ListID);
+        CTeuchos::getParameterList(ListID);
     std::string *tmp_PrecType = NULL;
     CTrilinos::pass_string_in(PrecType, tmp_PrecType);
-    int ret = CTrilinos::tableRepos().get<Ifpack, CT_Ifpack_ID_t>(
-        selfID)->SetParameters(argc, argv, *List, *tmp_PrecType, *Overlap);
+    int ret = CIfpack::getIfpack(selfID)->SetParameters(argc, argv, *List, 
+        *tmp_PrecType, *Overlap);
     CTrilinos::pass_string_out(tmp_PrecType, PrecType);
     delete tmp_PrecType;
 
@@ -105,11 +121,9 @@ CT_Ifpack_Preconditioner_ID_t Ifpack_CreatePreconditioner_UsingType (
   CT_EPrecType_E_t PrecType, CT_Epetra_RowMatrix_ID_t MatrixID, 
   const int overlap )
 {
-    const Teuchos::RCP<Epetra_RowMatrix> Matrix = 
-        CTrilinos::tableRepos().get<Epetra_RowMatrix, 
-        CT_Epetra_RowMatrix_ID_t>(MatrixID);
-    return CTrilinos::tableRepos().store<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(Ifpack::Create(
+    const Teuchos::RCP<Epetra_RowMatrix> Matrix = CEpetra::getRowMatrix(
+        MatrixID);
+    return CIfpack::storePreconditioner(Ifpack::Create(
         CTrilinos::convert_to_difficult_enum(PrecType), Matrix.getRawPtr(), 
         overlap));
 }
@@ -127,14 +141,15 @@ CT_Ifpack_Preconditioner_ID_t Ifpack_CreatePreconditioner_UsingType (
 const Teuchos::RCP<Ifpack>
 CIfpack::getIfpack( CT_Ifpack_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Ifpack, CT_Ifpack_ID_t>(id);
+    return tableOfIfpacks().get(
+        CTrilinos::abstractType<CT_Ifpack_ID_t>(id));
 }
 
 /* get Ifpack from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Ifpack>
 CIfpack::getIfpack( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Ifpack, CTrilinos_Universal_ID_t>(id);
+    return tableOfIfpacks().get(id);
 }
 
 /* get const Ifpack from either the const or non-const table
@@ -142,7 +157,8 @@ CIfpack::getIfpack( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Ifpack>
 CIfpack::getConstIfpack( CT_Ifpack_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack, CT_Ifpack_ID_t>(id);
+    return tableOfIfpacks().get(
+        CTrilinos::abstractType<CT_Ifpack_ID_t>(id));
 }
 
 /* get const Ifpack from either the const or non-const table
@@ -150,21 +166,48 @@ CIfpack::getConstIfpack( CT_Ifpack_ID_t id )
 const Teuchos::RCP<const Ifpack>
 CIfpack::getConstIfpack( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack, CTrilinos_Universal_ID_t>(id);
+    return tableOfIfpacks().getConst(id);
+}
+
+/* store Ifpack (owned) in non-const table */
+CT_Ifpack_ID_t
+CIfpack::storeNewIfpack( Ifpack *pobj )
+{
+    return CTrilinos::concreteType<CT_Ifpack_ID_t>(
+        tableOfIfpacks().store(pobj, true));
 }
 
 /* store Ifpack in non-const table */
 CT_Ifpack_ID_t
 CIfpack::storeIfpack( Ifpack *pobj )
 {
-    return CTrilinos::tableRepos().store<Ifpack, CT_Ifpack_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Ifpack_ID_t>(
+        tableOfIfpacks().store(pobj, false));
 }
 
 /* store const Ifpack in const table */
 CT_Ifpack_ID_t
 CIfpack::storeConstIfpack( const Ifpack *pobj )
 {
-    return CTrilinos::tableRepos().store<Ifpack, CT_Ifpack_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Ifpack_ID_t>(
+        tableOfIfpacks().store(pobj, false));
+}
+
+/* remove Ifpack from table using CT_Ifpack_ID */
+void
+CIfpack::removeIfpack( CT_Ifpack_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Ifpack_ID_t>(*id);
+    tableOfIfpacks().remove(&aid);
+    *id = CTrilinos::concreteType<CT_Ifpack_ID_t>(aid);
+}
+
+/* purge Ifpack table */
+void
+CIfpack::purgeIfpack(  )
+{
+    tableOfIfpacks().purge();
 }
 
 

@@ -43,6 +43,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CEpetra_Comm.h
 //
@@ -65,200 +67,180 @@ CTrilinos_Universal_ID_t Epetra_Comm_Generalize (
 
 void Epetra_Comm_Destroy ( CT_Epetra_Comm_ID_t * selfID )
 {
-    CTrilinos::tableRepos().remove(selfID);
+    CEpetra::removeComm(selfID);
 }
 
 CT_Epetra_Comm_ID_t Epetra_Comm_Clone ( CT_Epetra_Comm_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->Clone());
+    return CEpetra::storeComm(CEpetra::getConstComm(selfID)->Clone());
 }
 
 void Epetra_Comm_Barrier ( CT_Epetra_Comm_ID_t selfID )
 {
-    CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->Barrier();
+    CEpetra::getConstComm(selfID)->Barrier();
 }
 
 int Epetra_Comm_Broadcast_Double ( 
   CT_Epetra_Comm_ID_t selfID, double * MyVals, int Count, int Root )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->Broadcast(MyVals, Count, Root);
+    return CEpetra::getConstComm(selfID)->Broadcast(MyVals, Count, Root);
 }
 
 int Epetra_Comm_Broadcast_Int ( 
   CT_Epetra_Comm_ID_t selfID, int * MyVals, int Count, int Root )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->Broadcast(MyVals, Count, Root);
+    return CEpetra::getConstComm(selfID)->Broadcast(MyVals, Count, Root);
 }
 
 int Epetra_Comm_Broadcast_Long ( 
   CT_Epetra_Comm_ID_t selfID, long * MyVals, int Count, int Root )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->Broadcast(MyVals, Count, Root);
+    return CEpetra::getConstComm(selfID)->Broadcast(MyVals, Count, Root);
 }
 
 int Epetra_Comm_Broadcast_Char ( 
   CT_Epetra_Comm_ID_t selfID, char * MyVals, int Count, int Root )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->Broadcast(MyVals, Count, Root);
+    return CEpetra::getConstComm(selfID)->Broadcast(MyVals, Count, Root);
 }
 
 int Epetra_Comm_GatherAll_Double ( 
   CT_Epetra_Comm_ID_t selfID, double * MyVals, double * AllVals, 
   int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->GatherAll(MyVals, AllVals, Count);
+    return CEpetra::getConstComm(selfID)->GatherAll(MyVals, AllVals, Count);
 }
 
 int Epetra_Comm_GatherAll_Int ( 
   CT_Epetra_Comm_ID_t selfID, int * MyVals, int * AllVals, 
   int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->GatherAll(MyVals, AllVals, Count);
+    return CEpetra::getConstComm(selfID)->GatherAll(MyVals, AllVals, Count);
 }
 
 int Epetra_Comm_GatherAll_Long ( 
   CT_Epetra_Comm_ID_t selfID, long * MyVals, long * AllVals, 
   int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->GatherAll(MyVals, AllVals, Count);
+    return CEpetra::getConstComm(selfID)->GatherAll(MyVals, AllVals, Count);
 }
 
 int Epetra_Comm_SumAll_Double ( 
   CT_Epetra_Comm_ID_t selfID, double * PartialSums, 
   double * GlobalSums, int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->SumAll(PartialSums, GlobalSums, Count);
+    return CEpetra::getConstComm(selfID)->SumAll(PartialSums, GlobalSums, 
+        Count);
 }
 
 int Epetra_Comm_SumAll_Int ( 
   CT_Epetra_Comm_ID_t selfID, int * PartialSums, int * GlobalSums, 
   int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->SumAll(PartialSums, GlobalSums, Count);
+    return CEpetra::getConstComm(selfID)->SumAll(PartialSums, GlobalSums, 
+        Count);
 }
 
 int Epetra_Comm_SumAll_Long ( 
   CT_Epetra_Comm_ID_t selfID, long * PartialSums, long * GlobalSums, 
   int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->SumAll(PartialSums, GlobalSums, Count);
+    return CEpetra::getConstComm(selfID)->SumAll(PartialSums, GlobalSums, 
+        Count);
 }
 
 int Epetra_Comm_MaxAll_Double ( 
   CT_Epetra_Comm_ID_t selfID, double * PartialMaxs, 
   double * GlobalMaxs, int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->MaxAll(PartialMaxs, GlobalMaxs, Count);
+    return CEpetra::getConstComm(selfID)->MaxAll(PartialMaxs, GlobalMaxs, 
+        Count);
 }
 
 int Epetra_Comm_MaxAll_Int ( 
   CT_Epetra_Comm_ID_t selfID, int * PartialMaxs, int * GlobalMaxs, 
   int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->MaxAll(PartialMaxs, GlobalMaxs, Count);
+    return CEpetra::getConstComm(selfID)->MaxAll(PartialMaxs, GlobalMaxs, 
+        Count);
 }
 
 int Epetra_Comm_MaxAll_Long ( 
   CT_Epetra_Comm_ID_t selfID, long * PartialMaxs, long * GlobalMaxs, 
   int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->MaxAll(PartialMaxs, GlobalMaxs, Count);
+    return CEpetra::getConstComm(selfID)->MaxAll(PartialMaxs, GlobalMaxs, 
+        Count);
 }
 
 int Epetra_Comm_MinAll_Double ( 
   CT_Epetra_Comm_ID_t selfID, double * PartialMins, 
   double * GlobalMins, int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->MinAll(PartialMins, GlobalMins, Count);
+    return CEpetra::getConstComm(selfID)->MinAll(PartialMins, GlobalMins, 
+        Count);
 }
 
 int Epetra_Comm_MinAll_Int ( 
   CT_Epetra_Comm_ID_t selfID, int * PartialMins, int * GlobalMins, 
   int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->MinAll(PartialMins, GlobalMins, Count);
+    return CEpetra::getConstComm(selfID)->MinAll(PartialMins, GlobalMins, 
+        Count);
 }
 
 int Epetra_Comm_MinAll_Long ( 
   CT_Epetra_Comm_ID_t selfID, long * PartialMins, long * GlobalMins, 
   int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->MinAll(PartialMins, GlobalMins, Count);
+    return CEpetra::getConstComm(selfID)->MinAll(PartialMins, GlobalMins, 
+        Count);
 }
 
 int Epetra_Comm_ScanSum_Double ( 
   CT_Epetra_Comm_ID_t selfID, double * MyVals, double * ScanSums, 
   int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->ScanSum(MyVals, ScanSums, Count);
+    return CEpetra::getConstComm(selfID)->ScanSum(MyVals, ScanSums, Count);
 }
 
 int Epetra_Comm_ScanSum_Int ( 
   CT_Epetra_Comm_ID_t selfID, int * MyVals, int * ScanSums, 
   int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->ScanSum(MyVals, ScanSums, Count);
+    return CEpetra::getConstComm(selfID)->ScanSum(MyVals, ScanSums, Count);
 }
 
 int Epetra_Comm_ScanSum_Long ( 
   CT_Epetra_Comm_ID_t selfID, long * MyVals, long * ScanSums, 
   int Count )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->ScanSum(MyVals, ScanSums, Count);
+    return CEpetra::getConstComm(selfID)->ScanSum(MyVals, ScanSums, Count);
 }
 
 int Epetra_Comm_MyPID ( CT_Epetra_Comm_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->MyPID();
+    return CEpetra::getConstComm(selfID)->MyPID();
 }
 
 int Epetra_Comm_NumProc ( CT_Epetra_Comm_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        selfID)->NumProc();
+    return CEpetra::getConstComm(selfID)->NumProc();
 }
 
 CT_Epetra_Distributor_ID_t Epetra_Comm_CreateDistributor ( 
   CT_Epetra_Comm_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Distributor, 
-        CT_Epetra_Distributor_ID_t>(
-        CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
+    return CEpetra::storeDistributor(CEpetra::getConstComm(
         selfID)->CreateDistributor());
 }
 
 CT_Epetra_Directory_ID_t Epetra_Comm_CreateDirectory ( 
   CT_Epetra_Comm_ID_t selfID, CT_Epetra_BlockMap_ID_t MapID )
 {
-    const Teuchos::RCP<const Epetra_BlockMap> Map = 
-        CTrilinos::tableRepos().getConst<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(MapID);
-    return CTrilinos::tableRepos().store<Epetra_Directory, 
-        CT_Epetra_Directory_ID_t>(
-        CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(
+    const Teuchos::RCP<const Epetra_BlockMap> Map = CEpetra::getConstBlockMap(
+        MapID);
+    return CEpetra::storeDirectory(CEpetra::getConstComm(
         selfID)->CreateDirectory(*Map));
 }
 
@@ -275,14 +257,15 @@ CT_Epetra_Directory_ID_t Epetra_Comm_CreateDirectory (
 const Teuchos::RCP<Epetra_Comm>
 CEpetra::getComm( CT_Epetra_Comm_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_Comm, CT_Epetra_Comm_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_Comm>(
+        CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id));
 }
 
 /* get Epetra_Comm from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_Comm>
 CEpetra::getComm( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_Comm, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_Comm>(id);
 }
 
 /* get const Epetra_Comm from either the const or non-const table
@@ -290,7 +273,8 @@ CEpetra::getComm( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_Comm>
 CEpetra::getConstComm( CT_Epetra_Comm_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CT_Epetra_Comm_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_Comm>(
+        CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id));
 }
 
 /* get const Epetra_Comm from either the const or non-const table
@@ -298,21 +282,48 @@ CEpetra::getConstComm( CT_Epetra_Comm_ID_t id )
 const Teuchos::RCP<const Epetra_Comm>
 CEpetra::getConstComm( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Comm, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().getConst<Epetra_Comm>(id);
+}
+
+/* store Epetra_Comm (owned) in non-const table */
+CT_Epetra_Comm_ID_t
+CEpetra::storeNewComm( Epetra_Comm *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_Comm>(pobj, true));
 }
 
 /* store Epetra_Comm in non-const table */
 CT_Epetra_Comm_ID_t
 CEpetra::storeComm( Epetra_Comm *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_Comm, CT_Epetra_Comm_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_Comm>(pobj, false));
 }
 
 /* store const Epetra_Comm in const table */
 CT_Epetra_Comm_ID_t
 CEpetra::storeConstComm( const Epetra_Comm *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_Comm, CT_Epetra_Comm_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_Comm>(pobj, false));
+}
+
+/* remove Epetra_Comm from table using CT_Epetra_Comm_ID */
+void
+CEpetra::removeComm( CT_Epetra_Comm_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(*id);
+    CTrilinos::tableRepos().remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(aid);
+}
+
+/* purge Epetra_Comm table */
+void
+CEpetra::purgeComm(  )
+{
+    CTrilinos::tableRepos().purge<Epetra_Comm>();
 }
 
 

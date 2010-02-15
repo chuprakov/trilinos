@@ -47,6 +47,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CIfpack_Preconditioner.h
 //
@@ -72,46 +74,40 @@ int Ifpack_Preconditioner_SetParameters (
   CT_Teuchos_ParameterList_ID_t ListID )
 {
     const Teuchos::RCP<Teuchos::ParameterList> List = 
-        CTrilinos::tableRepos().get<Teuchos::ParameterList, 
-        CT_Teuchos_ParameterList_ID_t>(ListID);
-    return CTrilinos::tableRepos().get<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->SetParameters(*List);
+        CTeuchos::getParameterList(ListID);
+    return CIfpack::getPreconditioner(selfID)->SetParameters(*List);
 }
 
 int Ifpack_Preconditioner_Initialize ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return CTrilinos::tableRepos().get<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->Initialize();
+    return CIfpack::getPreconditioner(selfID)->Initialize();
 }
 
 boolean Ifpack_Preconditioner_IsInitialized ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(
+    return ((CIfpack::getConstPreconditioner(
         selfID)->IsInitialized()) ? TRUE : FALSE);
 }
 
 int Ifpack_Preconditioner_Compute ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return CTrilinos::tableRepos().get<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->Compute();
+    return CIfpack::getPreconditioner(selfID)->Compute();
 }
 
 boolean Ifpack_Preconditioner_IsComputed ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->IsComputed()) ? TRUE : FALSE);
+    return ((CIfpack::getConstPreconditioner(
+        selfID)->IsComputed()) ? TRUE : FALSE);
 }
 
 double Ifpack_Preconditioner_Condest ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->Condest();
+    return CIfpack::getConstPreconditioner(selfID)->Condest();
 }
 
 int Ifpack_Preconditioner_ApplyInverse ( 
@@ -119,85 +115,70 @@ int Ifpack_Preconditioner_ApplyInverse (
   CT_Epetra_MultiVector_ID_t XID, CT_Epetra_MultiVector_ID_t YID )
 {
     const Teuchos::RCP<const Epetra_MultiVector> X = 
-        CTrilinos::tableRepos().getConst<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(XID);
-    const Teuchos::RCP<Epetra_MultiVector> Y = 
-        CTrilinos::tableRepos().get<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(YID);
-    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->ApplyInverse(*X, *Y);
+        CEpetra::getConstMultiVector(XID);
+    const Teuchos::RCP<Epetra_MultiVector> Y = CEpetra::getMultiVector(YID);
+    return CIfpack::getConstPreconditioner(selfID)->ApplyInverse(*X, *Y);
 }
 
 CT_Epetra_RowMatrix_ID_t Ifpack_Preconditioner_Matrix ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_RowMatrix, 
-        CT_Epetra_RowMatrix_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->Matrix() ));
+    return CEpetra::storeConstRowMatrix(&( CIfpack::getConstPreconditioner(
+        selfID)->Matrix() ));
 }
 
 int Ifpack_Preconditioner_NumInitialize ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->NumInitialize();
+    return CIfpack::getConstPreconditioner(selfID)->NumInitialize();
 }
 
 int Ifpack_Preconditioner_NumCompute ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->NumCompute();
+    return CIfpack::getConstPreconditioner(selfID)->NumCompute();
 }
 
 int Ifpack_Preconditioner_NumApplyInverse ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->NumApplyInverse();
+    return CIfpack::getConstPreconditioner(selfID)->NumApplyInverse();
 }
 
 double Ifpack_Preconditioner_InitializeTime ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->InitializeTime();
+    return CIfpack::getConstPreconditioner(selfID)->InitializeTime();
 }
 
 double Ifpack_Preconditioner_ComputeTime ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->ComputeTime();
+    return CIfpack::getConstPreconditioner(selfID)->ComputeTime();
 }
 
 double Ifpack_Preconditioner_ApplyInverseTime ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->ApplyInverseTime();
+    return CIfpack::getConstPreconditioner(selfID)->ApplyInverseTime();
 }
 
 double Ifpack_Preconditioner_InitializeFlops ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->InitializeFlops();
+    return CIfpack::getConstPreconditioner(selfID)->InitializeFlops();
 }
 
 double Ifpack_Preconditioner_ComputeFlops ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->ComputeFlops();
+    return CIfpack::getConstPreconditioner(selfID)->ComputeFlops();
 }
 
 double Ifpack_Preconditioner_ApplyInverseFlops ( 
   CT_Ifpack_Preconditioner_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, 
-        CT_Ifpack_Preconditioner_ID_t>(selfID)->ApplyInverseFlops();
+    return CIfpack::getConstPreconditioner(selfID)->ApplyInverseFlops();
 }
 
 
@@ -213,14 +194,15 @@ double Ifpack_Preconditioner_ApplyInverseFlops (
 const Teuchos::RCP<Ifpack_Preconditioner>
 CIfpack::getPreconditioner( CT_Ifpack_Preconditioner_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Ifpack_Preconditioner, CT_Ifpack_Preconditioner_ID_t>(id);
+    return CTrilinos::tableRepos().get<Ifpack_Preconditioner>(
+        CTrilinos::abstractType<CT_Ifpack_Preconditioner_ID_t>(id));
 }
 
 /* get Ifpack_Preconditioner from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Ifpack_Preconditioner>
 CIfpack::getPreconditioner( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Ifpack_Preconditioner, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().get<Ifpack_Preconditioner>(id);
 }
 
 /* get const Ifpack_Preconditioner from either the const or non-const table
@@ -228,7 +210,8 @@ CIfpack::getPreconditioner( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Ifpack_Preconditioner>
 CIfpack::getConstPreconditioner( CT_Ifpack_Preconditioner_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, CT_Ifpack_Preconditioner_ID_t>(id);
+    return CTrilinos::tableRepos().get<Ifpack_Preconditioner>(
+        CTrilinos::abstractType<CT_Ifpack_Preconditioner_ID_t>(id));
 }
 
 /* get const Ifpack_Preconditioner from either the const or non-const table
@@ -236,21 +219,48 @@ CIfpack::getConstPreconditioner( CT_Ifpack_Preconditioner_ID_t id )
 const Teuchos::RCP<const Ifpack_Preconditioner>
 CIfpack::getConstPreconditioner( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner>(id);
+}
+
+/* store Ifpack_Preconditioner (owned) in non-const table */
+CT_Ifpack_Preconditioner_ID_t
+CIfpack::storeNewPreconditioner( Ifpack_Preconditioner *pobj )
+{
+    return CTrilinos::concreteType<CT_Ifpack_Preconditioner_ID_t>(
+        CTrilinos::tableRepos().store<Ifpack_Preconditioner>(pobj, true));
 }
 
 /* store Ifpack_Preconditioner in non-const table */
 CT_Ifpack_Preconditioner_ID_t
 CIfpack::storePreconditioner( Ifpack_Preconditioner *pobj )
 {
-    return CTrilinos::tableRepos().store<Ifpack_Preconditioner, CT_Ifpack_Preconditioner_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Ifpack_Preconditioner_ID_t>(
+        CTrilinos::tableRepos().store<Ifpack_Preconditioner>(pobj, false));
 }
 
 /* store const Ifpack_Preconditioner in const table */
 CT_Ifpack_Preconditioner_ID_t
 CIfpack::storeConstPreconditioner( const Ifpack_Preconditioner *pobj )
 {
-    return CTrilinos::tableRepos().store<Ifpack_Preconditioner, CT_Ifpack_Preconditioner_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Ifpack_Preconditioner_ID_t>(
+        CTrilinos::tableRepos().store<Ifpack_Preconditioner>(pobj, false));
+}
+
+/* remove Ifpack_Preconditioner from table using CT_Ifpack_Preconditioner_ID */
+void
+CIfpack::removePreconditioner( CT_Ifpack_Preconditioner_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Ifpack_Preconditioner_ID_t>(*id);
+    CTrilinos::tableRepos().remove(&aid);
+    *id = CTrilinos::concreteType<CT_Ifpack_Preconditioner_ID_t>(aid);
+}
+
+/* purge Ifpack_Preconditioner table */
+void
+CIfpack::purgePreconditioner(  )
+{
+    CTrilinos::tableRepos().purge<Ifpack_Preconditioner>();
 }
 
 

@@ -65,6 +65,10 @@ getConstOffsetIndex( CT_Epetra_OffsetIndex_ID_t id );
 const RCP<const Epetra_OffsetIndex>
 getConstOffsetIndex( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_OffsetIndex (owned) in non-const table */
+CT_Epetra_OffsetIndex_ID_t
+storeNewOffsetIndex( Epetra_OffsetIndex *pobj );
+
 /*! store Epetra_OffsetIndex in non-const table */
 CT_Epetra_OffsetIndex_ID_t
 storeOffsetIndex( Epetra_OffsetIndex *pobj );
@@ -72,6 +76,14 @@ storeOffsetIndex( Epetra_OffsetIndex *pobj );
 /*! store const Epetra_OffsetIndex in const table */
 CT_Epetra_OffsetIndex_ID_t
 storeConstOffsetIndex( const Epetra_OffsetIndex *pobj );
+
+/* remove Epetra_OffsetIndex from table using CT_Epetra_OffsetIndex_ID */
+void
+removeOffsetIndex( CT_Epetra_OffsetIndex_ID_t *id );
+
+/* purge Epetra_OffsetIndex table */
+void
+purgeOffsetIndex(  );
 
 } // namespace CEpetra
 

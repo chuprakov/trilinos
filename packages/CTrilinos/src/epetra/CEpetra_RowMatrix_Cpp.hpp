@@ -65,6 +65,10 @@ getConstRowMatrix( CT_Epetra_RowMatrix_ID_t id );
 const RCP<const Epetra_RowMatrix>
 getConstRowMatrix( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_RowMatrix (owned) in non-const table */
+CT_Epetra_RowMatrix_ID_t
+storeNewRowMatrix( Epetra_RowMatrix *pobj );
+
 /*! store Epetra_RowMatrix in non-const table */
 CT_Epetra_RowMatrix_ID_t
 storeRowMatrix( Epetra_RowMatrix *pobj );
@@ -72,6 +76,14 @@ storeRowMatrix( Epetra_RowMatrix *pobj );
 /*! store const Epetra_RowMatrix in const table */
 CT_Epetra_RowMatrix_ID_t
 storeConstRowMatrix( const Epetra_RowMatrix *pobj );
+
+/* remove Epetra_RowMatrix from table using CT_Epetra_RowMatrix_ID */
+void
+removeRowMatrix( CT_Epetra_RowMatrix_ID_t *id );
+
+/* purge Epetra_RowMatrix table */
+void
+purgeRowMatrix(  );
 
 } // namespace CEpetra
 

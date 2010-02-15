@@ -65,6 +65,10 @@ getConstSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id );
 const RCP<const Epetra_SerialDenseMatrix>
 getConstSerialDenseMatrix( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_SerialDenseMatrix (owned) in non-const table */
+CT_Epetra_SerialDenseMatrix_ID_t
+storeNewSerialDenseMatrix( Epetra_SerialDenseMatrix *pobj );
+
 /*! store Epetra_SerialDenseMatrix in non-const table */
 CT_Epetra_SerialDenseMatrix_ID_t
 storeSerialDenseMatrix( Epetra_SerialDenseMatrix *pobj );
@@ -72,6 +76,14 @@ storeSerialDenseMatrix( Epetra_SerialDenseMatrix *pobj );
 /*! store const Epetra_SerialDenseMatrix in const table */
 CT_Epetra_SerialDenseMatrix_ID_t
 storeConstSerialDenseMatrix( const Epetra_SerialDenseMatrix *pobj );
+
+/* remove Epetra_SerialDenseMatrix from table using CT_Epetra_SerialDenseMatrix_ID */
+void
+removeSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t *id );
+
+/* purge Epetra_SerialDenseMatrix table */
+void
+purgeSerialDenseMatrix(  );
 
 } // namespace CEpetra
 

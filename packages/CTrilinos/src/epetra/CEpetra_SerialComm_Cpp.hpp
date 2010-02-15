@@ -65,6 +65,10 @@ getConstSerialComm( CT_Epetra_SerialComm_ID_t id );
 const RCP<const Epetra_SerialComm>
 getConstSerialComm( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_SerialComm (owned) in non-const table */
+CT_Epetra_SerialComm_ID_t
+storeNewSerialComm( Epetra_SerialComm *pobj );
+
 /*! store Epetra_SerialComm in non-const table */
 CT_Epetra_SerialComm_ID_t
 storeSerialComm( Epetra_SerialComm *pobj );
@@ -72,6 +76,14 @@ storeSerialComm( Epetra_SerialComm *pobj );
 /*! store const Epetra_SerialComm in const table */
 CT_Epetra_SerialComm_ID_t
 storeConstSerialComm( const Epetra_SerialComm *pobj );
+
+/* remove Epetra_SerialComm from table using CT_Epetra_SerialComm_ID */
+void
+removeSerialComm( CT_Epetra_SerialComm_ID_t *id );
+
+/* purge Epetra_SerialComm table */
+void
+purgeSerialComm(  );
 
 } // namespace CEpetra
 

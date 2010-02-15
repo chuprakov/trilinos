@@ -69,6 +69,10 @@ getConstStatusTestMaxIters( CT_AztecOO_StatusTestMaxIters_ID_t id );
 const RCP<const AztecOO_StatusTestMaxIters>
 getConstStatusTestMaxIters( CTrilinos_Universal_ID_t id );
 
+/*! store AztecOO_StatusTestMaxIters (owned) in non-const table */
+CT_AztecOO_StatusTestMaxIters_ID_t
+storeNewStatusTestMaxIters( AztecOO_StatusTestMaxIters *pobj );
+
 /*! store AztecOO_StatusTestMaxIters in non-const table */
 CT_AztecOO_StatusTestMaxIters_ID_t
 storeStatusTestMaxIters( AztecOO_StatusTestMaxIters *pobj );
@@ -76,6 +80,14 @@ storeStatusTestMaxIters( AztecOO_StatusTestMaxIters *pobj );
 /*! store const AztecOO_StatusTestMaxIters in const table */
 CT_AztecOO_StatusTestMaxIters_ID_t
 storeConstStatusTestMaxIters( const AztecOO_StatusTestMaxIters *pobj );
+
+/* remove AztecOO_StatusTestMaxIters from table using CT_AztecOO_StatusTestMaxIters_ID */
+void
+removeStatusTestMaxIters( CT_AztecOO_StatusTestMaxIters_ID_t *id );
+
+/* purge AztecOO_StatusTestMaxIters table */
+void
+purgeStatusTestMaxIters(  );
 
 } // namespace CAztecOO
 

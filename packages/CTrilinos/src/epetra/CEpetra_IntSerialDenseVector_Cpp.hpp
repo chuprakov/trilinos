@@ -65,6 +65,10 @@ getConstIntSerialDenseVector( CT_Epetra_IntSerialDenseVector_ID_t id );
 const RCP<const Epetra_IntSerialDenseVector>
 getConstIntSerialDenseVector( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_IntSerialDenseVector (owned) in non-const table */
+CT_Epetra_IntSerialDenseVector_ID_t
+storeNewIntSerialDenseVector( Epetra_IntSerialDenseVector *pobj );
+
 /*! store Epetra_IntSerialDenseVector in non-const table */
 CT_Epetra_IntSerialDenseVector_ID_t
 storeIntSerialDenseVector( Epetra_IntSerialDenseVector *pobj );
@@ -72,6 +76,14 @@ storeIntSerialDenseVector( Epetra_IntSerialDenseVector *pobj );
 /*! store const Epetra_IntSerialDenseVector in const table */
 CT_Epetra_IntSerialDenseVector_ID_t
 storeConstIntSerialDenseVector( const Epetra_IntSerialDenseVector *pobj );
+
+/* remove Epetra_IntSerialDenseVector from table using CT_Epetra_IntSerialDenseVector_ID */
+void
+removeIntSerialDenseVector( CT_Epetra_IntSerialDenseVector_ID_t *id );
+
+/* purge Epetra_IntSerialDenseVector table */
+void
+purgeIntSerialDenseVector(  );
 
 } // namespace CEpetra
 

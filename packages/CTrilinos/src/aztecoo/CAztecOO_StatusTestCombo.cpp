@@ -46,6 +46,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CAztecOO_StatusTestCombo.h
 //
@@ -69,19 +71,15 @@ CTrilinos_Universal_ID_t AztecOO_StatusTestCombo_Generalize (
 CT_AztecOO_StatusTestCombo_ID_t AztecOO_StatusTestCombo_Create ( 
   CT_ComboType_E_t t )
 {
-    return CTrilinos::tableRepos().store<AztecOO_StatusTestCombo, 
-        CT_AztecOO_StatusTestCombo_ID_t>(new AztecOO_StatusTestCombo(
+    return CAztecOO::storeNewStatusTestCombo(new AztecOO_StatusTestCombo(
         (AztecOO_StatusTestCombo::ComboType) t));
 }
 
 CT_AztecOO_StatusTestCombo_ID_t AztecOO_StatusTestCombo_Create_OneTest ( 
   CT_ComboType_E_t t, CT_AztecOO_StatusTest_ID_t aID )
 {
-    const Teuchos::RCP<AztecOO_StatusTest> a = 
-        CTrilinos::tableRepos().get<AztecOO_StatusTest, 
-        CT_AztecOO_StatusTest_ID_t>(aID);
-    return CTrilinos::tableRepos().store<AztecOO_StatusTestCombo, 
-        CT_AztecOO_StatusTestCombo_ID_t>(new AztecOO_StatusTestCombo(
+    const Teuchos::RCP<AztecOO_StatusTest> a = CAztecOO::getStatusTest(aID);
+    return CAztecOO::storeNewStatusTestCombo(new AztecOO_StatusTestCombo(
         (AztecOO_StatusTestCombo::ComboType) t, *a));
 }
 
@@ -89,41 +87,31 @@ CT_AztecOO_StatusTestCombo_ID_t AztecOO_StatusTestCombo_Create_TwoTests (
   CT_ComboType_E_t t, CT_AztecOO_StatusTest_ID_t aID, 
   CT_AztecOO_StatusTest_ID_t bID )
 {
-    const Teuchos::RCP<AztecOO_StatusTest> a = 
-        CTrilinos::tableRepos().get<AztecOO_StatusTest, 
-        CT_AztecOO_StatusTest_ID_t>(aID);
-    const Teuchos::RCP<AztecOO_StatusTest> b = 
-        CTrilinos::tableRepos().get<AztecOO_StatusTest, 
-        CT_AztecOO_StatusTest_ID_t>(bID);
-    return CTrilinos::tableRepos().store<AztecOO_StatusTestCombo, 
-        CT_AztecOO_StatusTestCombo_ID_t>(new AztecOO_StatusTestCombo(
+    const Teuchos::RCP<AztecOO_StatusTest> a = CAztecOO::getStatusTest(aID);
+    const Teuchos::RCP<AztecOO_StatusTest> b = CAztecOO::getStatusTest(bID);
+    return CAztecOO::storeNewStatusTestCombo(new AztecOO_StatusTestCombo(
         (AztecOO_StatusTestCombo::ComboType) t, *a, *b));
 }
 
 void AztecOO_StatusTestCombo_Destroy ( 
   CT_AztecOO_StatusTestCombo_ID_t * selfID )
 {
-    CTrilinos::tableRepos().remove(selfID);
+    CAztecOO::removeStatusTestCombo(selfID);
 }
 
 CT_AztecOO_StatusTestCombo_ID_t AztecOO_StatusTestCombo_AddStatusTest ( 
   CT_AztecOO_StatusTestCombo_ID_t selfID, 
   CT_AztecOO_StatusTest_ID_t aID )
 {
-    const Teuchos::RCP<AztecOO_StatusTest> a = 
-        CTrilinos::tableRepos().get<AztecOO_StatusTest, 
-        CT_AztecOO_StatusTest_ID_t>(aID);
-    return CTrilinos::tableRepos().store<AztecOO_StatusTestCombo, 
-        CT_AztecOO_StatusTestCombo_ID_t>(
-        &( CTrilinos::tableRepos().get<AztecOO_StatusTestCombo, 
-        CT_AztecOO_StatusTestCombo_ID_t>(selfID)->AddStatusTest(*a) ));
+    const Teuchos::RCP<AztecOO_StatusTest> a = CAztecOO::getStatusTest(aID);
+    return CAztecOO::storeStatusTestCombo(&( CAztecOO::getStatusTestCombo(
+        selfID)->AddStatusTest(*a) ));
 }
 
 boolean AztecOO_StatusTestCombo_ResidualVectorRequired ( 
   CT_AztecOO_StatusTestCombo_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<AztecOO_StatusTestCombo, 
-        CT_AztecOO_StatusTestCombo_ID_t>(
+    return ((CAztecOO::getConstStatusTestCombo(
         selfID)->ResidualVectorRequired()) ? TRUE : FALSE);
 }
 
@@ -133,29 +121,24 @@ CT_AztecOO_StatusType_E_t AztecOO_StatusTestCombo_CheckStatus (
   double CurrentResNormEst, boolean SolutionUpdated )
 {
     const Teuchos::RCP<Epetra_MultiVector> CurrentResVector = 
-        CTrilinos::tableRepos().get<Epetra_MultiVector, 
-        CT_Epetra_MultiVector_ID_t>(CurrentResVectorID);
-    return (CT_AztecOO_StatusType_E_t)( 
-        CTrilinos::tableRepos().get<AztecOO_StatusTestCombo, 
-        CT_AztecOO_StatusTestCombo_ID_t>(selfID)->CheckStatus(CurrentIter, 
-        CurrentResVector.getRawPtr(), CurrentResNormEst, ((SolutionUpdated) != 
-        FALSE ? true : false)) );
+        CEpetra::getMultiVector(CurrentResVectorID);
+    return (CT_AztecOO_StatusType_E_t)( CAztecOO::getStatusTestCombo(
+        selfID)->CheckStatus(CurrentIter, CurrentResVector.getRawPtr(), 
+        CurrentResNormEst, ((SolutionUpdated) != FALSE ? true : false)) );
 }
 
 CT_AztecOO_StatusType_E_t AztecOO_StatusTestCombo_GetStatus ( 
   CT_AztecOO_StatusTestCombo_ID_t selfID )
 {
-    return (CT_AztecOO_StatusType_E_t)( 
-        CTrilinos::tableRepos().getConst<AztecOO_StatusTestCombo, 
-        CT_AztecOO_StatusTestCombo_ID_t>(selfID)->GetStatus() );
+    return (CT_AztecOO_StatusType_E_t)( CAztecOO::getConstStatusTestCombo(
+        selfID)->GetStatus() );
 }
 
 CT_ComboType_E_t AztecOO_StatusTestCombo_GetComboType ( 
   CT_AztecOO_StatusTestCombo_ID_t selfID )
 {
-    return (CT_ComboType_E_t)( 
-        CTrilinos::tableRepos().getConst<AztecOO_StatusTestCombo, 
-        CT_AztecOO_StatusTestCombo_ID_t>(selfID)->GetComboType() );
+    return (CT_ComboType_E_t)( CAztecOO::getConstStatusTestCombo(
+        selfID)->GetComboType() );
 }
 
 
@@ -171,14 +154,15 @@ CT_ComboType_E_t AztecOO_StatusTestCombo_GetComboType (
 const Teuchos::RCP<AztecOO_StatusTestCombo>
 CAztecOO::getStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t id )
 {
-    return CTrilinos::tableRepos().get<AztecOO_StatusTestCombo, CT_AztecOO_StatusTestCombo_ID_t>(id);
+    return CTrilinos::tableRepos().get<AztecOO_StatusTestCombo>(
+        CTrilinos::abstractType<CT_AztecOO_StatusTestCombo_ID_t>(id));
 }
 
 /* get AztecOO_StatusTestCombo from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<AztecOO_StatusTestCombo>
 CAztecOO::getStatusTestCombo( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<AztecOO_StatusTestCombo, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().get<AztecOO_StatusTestCombo>(id);
 }
 
 /* get const AztecOO_StatusTestCombo from either the const or non-const table
@@ -186,7 +170,8 @@ CAztecOO::getStatusTestCombo( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const AztecOO_StatusTestCombo>
 CAztecOO::getConstStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestCombo, CT_AztecOO_StatusTestCombo_ID_t>(id);
+    return CTrilinos::tableRepos().get<AztecOO_StatusTestCombo>(
+        CTrilinos::abstractType<CT_AztecOO_StatusTestCombo_ID_t>(id));
 }
 
 /* get const AztecOO_StatusTestCombo from either the const or non-const table
@@ -194,21 +179,48 @@ CAztecOO::getConstStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t id )
 const Teuchos::RCP<const AztecOO_StatusTestCombo>
 CAztecOO::getConstStatusTestCombo( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestCombo, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestCombo>(id);
+}
+
+/* store AztecOO_StatusTestCombo (owned) in non-const table */
+CT_AztecOO_StatusTestCombo_ID_t
+CAztecOO::storeNewStatusTestCombo( AztecOO_StatusTestCombo *pobj )
+{
+    return CTrilinos::concreteType<CT_AztecOO_StatusTestCombo_ID_t>(
+        CTrilinos::tableRepos().store<AztecOO_StatusTestCombo>(pobj, true));
 }
 
 /* store AztecOO_StatusTestCombo in non-const table */
 CT_AztecOO_StatusTestCombo_ID_t
 CAztecOO::storeStatusTestCombo( AztecOO_StatusTestCombo *pobj )
 {
-    return CTrilinos::tableRepos().store<AztecOO_StatusTestCombo, CT_AztecOO_StatusTestCombo_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_AztecOO_StatusTestCombo_ID_t>(
+        CTrilinos::tableRepos().store<AztecOO_StatusTestCombo>(pobj, false));
 }
 
 /* store const AztecOO_StatusTestCombo in const table */
 CT_AztecOO_StatusTestCombo_ID_t
 CAztecOO::storeConstStatusTestCombo( const AztecOO_StatusTestCombo *pobj )
 {
-    return CTrilinos::tableRepos().store<AztecOO_StatusTestCombo, CT_AztecOO_StatusTestCombo_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_AztecOO_StatusTestCombo_ID_t>(
+        CTrilinos::tableRepos().store<AztecOO_StatusTestCombo>(pobj, false));
+}
+
+/* remove AztecOO_StatusTestCombo from table using CT_AztecOO_StatusTestCombo_ID */
+void
+CAztecOO::removeStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_AztecOO_StatusTestCombo_ID_t>(*id);
+    CTrilinos::tableRepos().remove(&aid);
+    *id = CTrilinos::concreteType<CT_AztecOO_StatusTestCombo_ID_t>(aid);
+}
+
+/* purge AztecOO_StatusTestCombo table */
+void
+CAztecOO::purgeStatusTestCombo(  )
+{
+    CTrilinos::tableRepos().purge<AztecOO_StatusTestCombo>();
 }
 
 

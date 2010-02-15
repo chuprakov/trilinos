@@ -65,6 +65,10 @@ getConstBlockMap( CT_Epetra_BlockMap_ID_t id );
 const RCP<const Epetra_BlockMap>
 getConstBlockMap( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_BlockMap (owned) in non-const table */
+CT_Epetra_BlockMap_ID_t
+storeNewBlockMap( Epetra_BlockMap *pobj );
+
 /*! store Epetra_BlockMap in non-const table */
 CT_Epetra_BlockMap_ID_t
 storeBlockMap( Epetra_BlockMap *pobj );
@@ -72,6 +76,14 @@ storeBlockMap( Epetra_BlockMap *pobj );
 /*! store const Epetra_BlockMap in const table */
 CT_Epetra_BlockMap_ID_t
 storeConstBlockMap( const Epetra_BlockMap *pobj );
+
+/* remove Epetra_BlockMap from table using CT_Epetra_BlockMap_ID */
+void
+removeBlockMap( CT_Epetra_BlockMap_ID_t *id );
+
+/* purge Epetra_BlockMap table */
+void
+purgeBlockMap(  );
 
 } // namespace CEpetra
 

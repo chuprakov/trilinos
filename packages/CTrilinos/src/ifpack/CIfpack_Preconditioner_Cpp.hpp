@@ -69,6 +69,10 @@ getConstPreconditioner( CT_Ifpack_Preconditioner_ID_t id );
 const RCP<const Ifpack_Preconditioner>
 getConstPreconditioner( CTrilinos_Universal_ID_t id );
 
+/*! store Ifpack_Preconditioner (owned) in non-const table */
+CT_Ifpack_Preconditioner_ID_t
+storeNewPreconditioner( Ifpack_Preconditioner *pobj );
+
 /*! store Ifpack_Preconditioner in non-const table */
 CT_Ifpack_Preconditioner_ID_t
 storePreconditioner( Ifpack_Preconditioner *pobj );
@@ -76,6 +80,14 @@ storePreconditioner( Ifpack_Preconditioner *pobj );
 /*! store const Ifpack_Preconditioner in const table */
 CT_Ifpack_Preconditioner_ID_t
 storeConstPreconditioner( const Ifpack_Preconditioner *pobj );
+
+/* remove Ifpack_Preconditioner from table using CT_Ifpack_Preconditioner_ID */
+void
+removePreconditioner( CT_Ifpack_Preconditioner_ID_t *id );
+
+/* purge Ifpack_Preconditioner table */
+void
+purgePreconditioner(  );
 
 } // namespace CIfpack
 

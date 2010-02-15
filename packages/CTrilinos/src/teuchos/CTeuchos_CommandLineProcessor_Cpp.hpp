@@ -65,6 +65,10 @@ getConstCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id );
 const RCP<const Teuchos::CommandLineProcessor>
 getConstCommandLineProcessor( CTrilinos_Universal_ID_t id );
 
+/*! store Teuchos::CommandLineProcessor (owned) in non-const table */
+CT_Teuchos_CommandLineProcessor_ID_t
+storeNewCommandLineProcessor( Teuchos::CommandLineProcessor *pobj );
+
 /*! store Teuchos::CommandLineProcessor in non-const table */
 CT_Teuchos_CommandLineProcessor_ID_t
 storeCommandLineProcessor( Teuchos::CommandLineProcessor *pobj );
@@ -72,6 +76,14 @@ storeCommandLineProcessor( Teuchos::CommandLineProcessor *pobj );
 /*! store const Teuchos::CommandLineProcessor in const table */
 CT_Teuchos_CommandLineProcessor_ID_t
 storeConstCommandLineProcessor( const Teuchos::CommandLineProcessor *pobj );
+
+/* remove Teuchos::CommandLineProcessor from table using CT_Teuchos_CommandLineProcessor_ID */
+void
+removeCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t *id );
+
+/* purge Teuchos::CommandLineProcessor table */
+void
+purgeCommandLineProcessor(  );
 
 } // namespace CTeuchos
 

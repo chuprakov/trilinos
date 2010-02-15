@@ -46,6 +46,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CEpetra_DistObject.h
 //
@@ -68,7 +70,7 @@ CTrilinos_Universal_ID_t Epetra_DistObject_Generalize (
 
 void Epetra_DistObject_Destroy ( CT_Epetra_DistObject_ID_t * selfID )
 {
-    CTrilinos::tableRepos().remove(selfID);
+    CEpetra::removeDistObject(selfID);
 }
 
 int Epetra_DistObject_Import ( 
@@ -79,16 +81,12 @@ int Epetra_DistObject_Import (
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     const Teuchos::RCP<const Epetra_SrcDistObject> A = 
-        CTrilinos::tableRepos().getConst<Epetra_SrcDistObject, 
-        CT_Epetra_SrcDistObject_ID_t>(AID);
-    const Teuchos::RCP<const Epetra_Import> Importer = 
-        CTrilinos::tableRepos().getConst<Epetra_Import, CT_Epetra_Import_ID_t>(
+        CEpetra::getConstSrcDistObject(AID);
+    const Teuchos::RCP<const Epetra_Import> Importer = CEpetra::getConstImport(
         ImporterID);
     const Teuchos::RCP<const Epetra_OffsetIndex> Indexor = 
-        CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(IndexorID);
-    return CTrilinos::tableRepos().get<Epetra_DistObject, 
-        CT_Epetra_DistObject_ID_t>(selfID)->Import(*A, *Importer, 
+        CEpetra::getConstOffsetIndex(IndexorID);
+    return CEpetra::getDistObject(selfID)->Import(*A, *Importer, 
         (Epetra_CombineMode) CombineMode, Indexor.getRawPtr());
 }
 
@@ -100,16 +98,12 @@ int Epetra_DistObject_Import_UsingExporter (
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     const Teuchos::RCP<const Epetra_SrcDistObject> A = 
-        CTrilinos::tableRepos().getConst<Epetra_SrcDistObject, 
-        CT_Epetra_SrcDistObject_ID_t>(AID);
-    const Teuchos::RCP<const Epetra_Export> Exporter = 
-        CTrilinos::tableRepos().getConst<Epetra_Export, CT_Epetra_Export_ID_t>(
+        CEpetra::getConstSrcDistObject(AID);
+    const Teuchos::RCP<const Epetra_Export> Exporter = CEpetra::getConstExport(
         ExporterID);
     const Teuchos::RCP<const Epetra_OffsetIndex> Indexor = 
-        CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(IndexorID);
-    return CTrilinos::tableRepos().get<Epetra_DistObject, 
-        CT_Epetra_DistObject_ID_t>(selfID)->Import(*A, *Exporter, 
+        CEpetra::getConstOffsetIndex(IndexorID);
+    return CEpetra::getDistObject(selfID)->Import(*A, *Exporter, 
         (Epetra_CombineMode) CombineMode, Indexor.getRawPtr());
 }
 
@@ -121,16 +115,12 @@ int Epetra_DistObject_Export_UsingImporter (
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     const Teuchos::RCP<const Epetra_SrcDistObject> A = 
-        CTrilinos::tableRepos().getConst<Epetra_SrcDistObject, 
-        CT_Epetra_SrcDistObject_ID_t>(AID);
-    const Teuchos::RCP<const Epetra_Import> Importer = 
-        CTrilinos::tableRepos().getConst<Epetra_Import, CT_Epetra_Import_ID_t>(
+        CEpetra::getConstSrcDistObject(AID);
+    const Teuchos::RCP<const Epetra_Import> Importer = CEpetra::getConstImport(
         ImporterID);
     const Teuchos::RCP<const Epetra_OffsetIndex> Indexor = 
-        CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(IndexorID);
-    return CTrilinos::tableRepos().get<Epetra_DistObject, 
-        CT_Epetra_DistObject_ID_t>(selfID)->Export(*A, *Importer, 
+        CEpetra::getConstOffsetIndex(IndexorID);
+    return CEpetra::getDistObject(selfID)->Export(*A, *Importer, 
         (Epetra_CombineMode) CombineMode, Indexor.getRawPtr());
 }
 
@@ -142,41 +132,33 @@ int Epetra_DistObject_Export (
   CT_Epetra_OffsetIndex_ID_t IndexorID )
 {
     const Teuchos::RCP<const Epetra_SrcDistObject> A = 
-        CTrilinos::tableRepos().getConst<Epetra_SrcDistObject, 
-        CT_Epetra_SrcDistObject_ID_t>(AID);
-    const Teuchos::RCP<const Epetra_Export> Exporter = 
-        CTrilinos::tableRepos().getConst<Epetra_Export, CT_Epetra_Export_ID_t>(
+        CEpetra::getConstSrcDistObject(AID);
+    const Teuchos::RCP<const Epetra_Export> Exporter = CEpetra::getConstExport(
         ExporterID);
     const Teuchos::RCP<const Epetra_OffsetIndex> Indexor = 
-        CTrilinos::tableRepos().getConst<Epetra_OffsetIndex, 
-        CT_Epetra_OffsetIndex_ID_t>(IndexorID);
-    return CTrilinos::tableRepos().get<Epetra_DistObject, 
-        CT_Epetra_DistObject_ID_t>(selfID)->Export(*A, *Exporter, 
+        CEpetra::getConstOffsetIndex(IndexorID);
+    return CEpetra::getDistObject(selfID)->Export(*A, *Exporter, 
         (Epetra_CombineMode) CombineMode, Indexor.getRawPtr());
 }
 
 CT_Epetra_BlockMap_ID_t Epetra_DistObject_Map ( 
   CT_Epetra_DistObject_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_BlockMap, 
-        CT_Epetra_BlockMap_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_DistObject, 
-        CT_Epetra_DistObject_ID_t>(selfID)->Map() ));
+    return CEpetra::storeConstBlockMap(&( CEpetra::getConstDistObject(
+        selfID)->Map() ));
 }
 
 CT_Epetra_Comm_ID_t Epetra_DistObject_Comm ( 
   CT_Epetra_DistObject_ID_t selfID )
 {
-    return CTrilinos::tableRepos().store<Epetra_Comm, CT_Epetra_Comm_ID_t>(
-        &( CTrilinos::tableRepos().getConst<Epetra_DistObject, 
-        CT_Epetra_DistObject_ID_t>(selfID)->Comm() ));
+    return CEpetra::storeConstComm(&( CEpetra::getConstDistObject(
+        selfID)->Comm() ));
 }
 
 boolean Epetra_DistObject_DistributedGlobal ( 
   CT_Epetra_DistObject_ID_t selfID )
 {
-    return ((CTrilinos::tableRepos().getConst<Epetra_DistObject, 
-        CT_Epetra_DistObject_ID_t>(
+    return ((CEpetra::getConstDistObject(
         selfID)->DistributedGlobal()) ? TRUE : FALSE);
 }
 
@@ -193,14 +175,15 @@ boolean Epetra_DistObject_DistributedGlobal (
 const Teuchos::RCP<Epetra_DistObject>
 CEpetra::getDistObject( CT_Epetra_DistObject_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_DistObject, CT_Epetra_DistObject_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_DistObject>(
+        CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(id));
 }
 
 /* get Epetra_DistObject from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_DistObject>
 CEpetra::getDistObject( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_DistObject, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_DistObject>(id);
 }
 
 /* get const Epetra_DistObject from either the const or non-const table
@@ -208,7 +191,8 @@ CEpetra::getDistObject( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_DistObject>
 CEpetra::getConstDistObject( CT_Epetra_DistObject_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_DistObject, CT_Epetra_DistObject_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_DistObject>(
+        CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(id));
 }
 
 /* get const Epetra_DistObject from either the const or non-const table
@@ -216,21 +200,48 @@ CEpetra::getConstDistObject( CT_Epetra_DistObject_ID_t id )
 const Teuchos::RCP<const Epetra_DistObject>
 CEpetra::getConstDistObject( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_DistObject, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().getConst<Epetra_DistObject>(id);
+}
+
+/* store Epetra_DistObject (owned) in non-const table */
+CT_Epetra_DistObject_ID_t
+CEpetra::storeNewDistObject( Epetra_DistObject *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_DistObject_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_DistObject>(pobj, true));
 }
 
 /* store Epetra_DistObject in non-const table */
 CT_Epetra_DistObject_ID_t
 CEpetra::storeDistObject( Epetra_DistObject *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_DistObject, CT_Epetra_DistObject_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_DistObject_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_DistObject>(pobj, false));
 }
 
 /* store const Epetra_DistObject in const table */
 CT_Epetra_DistObject_ID_t
 CEpetra::storeConstDistObject( const Epetra_DistObject *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_DistObject, CT_Epetra_DistObject_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_DistObject_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_DistObject>(pobj, false));
+}
+
+/* remove Epetra_DistObject from table using CT_Epetra_DistObject_ID */
+void
+CEpetra::removeDistObject( CT_Epetra_DistObject_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_DistObject_ID_t>(*id);
+    CTrilinos::tableRepos().remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_DistObject_ID_t>(aid);
+}
+
+/* purge Epetra_DistObject table */
+void
+CEpetra::purgeDistObject(  )
+{
+    CTrilinos::tableRepos().purge<Epetra_DistObject>();
 }
 
 

@@ -65,6 +65,10 @@ getConstComm( CT_Epetra_Comm_ID_t id );
 const RCP<const Epetra_Comm>
 getConstComm( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_Comm (owned) in non-const table */
+CT_Epetra_Comm_ID_t
+storeNewComm( Epetra_Comm *pobj );
+
 /*! store Epetra_Comm in non-const table */
 CT_Epetra_Comm_ID_t
 storeComm( Epetra_Comm *pobj );
@@ -72,6 +76,14 @@ storeComm( Epetra_Comm *pobj );
 /*! store const Epetra_Comm in const table */
 CT_Epetra_Comm_ID_t
 storeConstComm( const Epetra_Comm *pobj );
+
+/* remove Epetra_Comm from table using CT_Epetra_Comm_ID */
+void
+removeComm( CT_Epetra_Comm_ID_t *id );
+
+/* purge Epetra_Comm table */
+void
+purgeComm(  );
 
 } // namespace CEpetra
 

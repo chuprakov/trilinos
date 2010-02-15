@@ -65,6 +65,10 @@ getConstOperator( CT_Epetra_Operator_ID_t id );
 const RCP<const Epetra_Operator>
 getConstOperator( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_Operator (owned) in non-const table */
+CT_Epetra_Operator_ID_t
+storeNewOperator( Epetra_Operator *pobj );
+
 /*! store Epetra_Operator in non-const table */
 CT_Epetra_Operator_ID_t
 storeOperator( Epetra_Operator *pobj );
@@ -72,6 +76,14 @@ storeOperator( Epetra_Operator *pobj );
 /*! store const Epetra_Operator in const table */
 CT_Epetra_Operator_ID_t
 storeConstOperator( const Epetra_Operator *pobj );
+
+/* remove Epetra_Operator from table using CT_Epetra_Operator_ID */
+void
+removeOperator( CT_Epetra_Operator_ID_t *id );
+
+/* purge Epetra_Operator table */
+void
+purgeOperator(  );
 
 } // namespace CEpetra
 

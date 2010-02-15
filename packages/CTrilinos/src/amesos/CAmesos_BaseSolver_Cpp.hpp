@@ -69,6 +69,10 @@ getConstBaseSolver( CT_Amesos_BaseSolver_ID_t id );
 const RCP<const Amesos_BaseSolver>
 getConstBaseSolver( CTrilinos_Universal_ID_t id );
 
+/*! store Amesos_BaseSolver (owned) in non-const table */
+CT_Amesos_BaseSolver_ID_t
+storeNewBaseSolver( Amesos_BaseSolver *pobj );
+
 /*! store Amesos_BaseSolver in non-const table */
 CT_Amesos_BaseSolver_ID_t
 storeBaseSolver( Amesos_BaseSolver *pobj );
@@ -76,6 +80,14 @@ storeBaseSolver( Amesos_BaseSolver *pobj );
 /*! store const Amesos_BaseSolver in const table */
 CT_Amesos_BaseSolver_ID_t
 storeConstBaseSolver( const Amesos_BaseSolver *pobj );
+
+/* remove Amesos_BaseSolver from table using CT_Amesos_BaseSolver_ID */
+void
+removeBaseSolver( CT_Amesos_BaseSolver_ID_t *id );
+
+/* purge Amesos_BaseSolver table */
+void
+purgeBaseSolver(  );
 
 } // namespace CAmesos
 

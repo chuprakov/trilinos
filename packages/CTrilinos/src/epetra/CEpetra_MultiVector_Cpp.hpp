@@ -65,6 +65,10 @@ getConstMultiVector( CT_Epetra_MultiVector_ID_t id );
 const RCP<const Epetra_MultiVector>
 getConstMultiVector( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_MultiVector (owned) in non-const table */
+CT_Epetra_MultiVector_ID_t
+storeNewMultiVector( Epetra_MultiVector *pobj );
+
 /*! store Epetra_MultiVector in non-const table */
 CT_Epetra_MultiVector_ID_t
 storeMultiVector( Epetra_MultiVector *pobj );
@@ -72,6 +76,14 @@ storeMultiVector( Epetra_MultiVector *pobj );
 /*! store const Epetra_MultiVector in const table */
 CT_Epetra_MultiVector_ID_t
 storeConstMultiVector( const Epetra_MultiVector *pobj );
+
+/* remove Epetra_MultiVector from table using CT_Epetra_MultiVector_ID */
+void
+removeMultiVector( CT_Epetra_MultiVector_ID_t *id );
+
+/* purge Epetra_MultiVector table */
+void
+purgeMultiVector(  );
 
 } // namespace CEpetra
 

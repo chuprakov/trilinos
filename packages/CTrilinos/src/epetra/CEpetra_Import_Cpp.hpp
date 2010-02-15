@@ -65,6 +65,10 @@ getConstImport( CT_Epetra_Import_ID_t id );
 const RCP<const Epetra_Import>
 getConstImport( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_Import (owned) in non-const table */
+CT_Epetra_Import_ID_t
+storeNewImport( Epetra_Import *pobj );
+
 /*! store Epetra_Import in non-const table */
 CT_Epetra_Import_ID_t
 storeImport( Epetra_Import *pobj );
@@ -72,6 +76,14 @@ storeImport( Epetra_Import *pobj );
 /*! store const Epetra_Import in const table */
 CT_Epetra_Import_ID_t
 storeConstImport( const Epetra_Import *pobj );
+
+/* remove Epetra_Import from table using CT_Epetra_Import_ID */
+void
+removeImport( CT_Epetra_Import_ID_t *id );
+
+/* purge Epetra_Import table */
+void
+purgeImport(  );
 
 } // namespace CEpetra
 

@@ -69,6 +69,10 @@ getConstAztecOO( CT_AztecOO_ID_t id );
 const RCP<const AztecOO>
 getConstAztecOO( CTrilinos_Universal_ID_t id );
 
+/*! store AztecOO (owned) in non-const table */
+CT_AztecOO_ID_t
+storeNewAztecOO( AztecOO *pobj );
+
 /*! store AztecOO in non-const table */
 CT_AztecOO_ID_t
 storeAztecOO( AztecOO *pobj );
@@ -76,6 +80,14 @@ storeAztecOO( AztecOO *pobj );
 /*! store const AztecOO in const table */
 CT_AztecOO_ID_t
 storeConstAztecOO( const AztecOO *pobj );
+
+/* remove AztecOO from table using CT_AztecOO_ID */
+void
+removeAztecOO( CT_AztecOO_ID_t *id );
+
+/* purge AztecOO table */
+void
+purgeAztecOO(  );
 
 } // namespace CAztecOO
 

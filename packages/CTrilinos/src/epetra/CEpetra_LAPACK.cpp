@@ -40,6 +40,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CEpetra_LAPACK.h
 //
@@ -62,39 +64,34 @@ CTrilinos_Universal_ID_t Epetra_LAPACK_Generalize (
 
 CT_Epetra_LAPACK_ID_t Epetra_LAPACK_Create (  )
 {
-    return CTrilinos::tableRepos().store<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        new Epetra_LAPACK());
+    return CEpetra::storeNewLAPACK(new Epetra_LAPACK());
 }
 
 CT_Epetra_LAPACK_ID_t Epetra_LAPACK_Duplicate ( 
   CT_Epetra_LAPACK_ID_t LAPACKID )
 {
-    const Teuchos::RCP<const Epetra_LAPACK> LAPACK = 
-        CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
+    const Teuchos::RCP<const Epetra_LAPACK> LAPACK = CEpetra::getConstLAPACK(
         LAPACKID);
-    return CTrilinos::tableRepos().store<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        new Epetra_LAPACK(*LAPACK));
+    return CEpetra::storeNewLAPACK(new Epetra_LAPACK(*LAPACK));
 }
 
 void Epetra_LAPACK_Destroy ( CT_Epetra_LAPACK_ID_t * selfID )
 {
-    CTrilinos::tableRepos().remove(selfID);
+    CEpetra::removeLAPACK(selfID);
 }
 
 void Epetra_LAPACK_POTRF_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   float * A, const int LDA, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POTRF(UPLO, N, A, LDA, INFO);
+    CEpetra::getConstLAPACK(selfID)->POTRF(UPLO, N, A, LDA, INFO);
 }
 
 void Epetra_LAPACK_POTRF_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   double * A, const int LDA, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POTRF(UPLO, N, A, LDA, INFO);
+    CEpetra::getConstLAPACK(selfID)->POTRF(UPLO, N, A, LDA, INFO);
 }
 
 void Epetra_LAPACK_POTRS_float ( 
@@ -102,8 +99,8 @@ void Epetra_LAPACK_POTRS_float (
   const int NRHS, const float * A, const int LDA, float * X, 
   const int LDX, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POTRS(UPLO, N, NRHS, A, LDA, X, LDX, INFO);
+    CEpetra::getConstLAPACK(selfID)->POTRS(UPLO, N, NRHS, A, LDA, X, LDX, 
+        INFO);
 }
 
 void Epetra_LAPACK_POTRS_double ( 
@@ -111,24 +108,22 @@ void Epetra_LAPACK_POTRS_double (
   const int NRHS, const double * A, const int LDA, double * X, 
   const int LDX, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POTRS(UPLO, N, NRHS, A, LDA, X, LDX, INFO);
+    CEpetra::getConstLAPACK(selfID)->POTRS(UPLO, N, NRHS, A, LDA, X, LDX, 
+        INFO);
 }
 
 void Epetra_LAPACK_POTRI_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   float * A, const int LDA, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POTRI(UPLO, N, A, LDA, INFO);
+    CEpetra::getConstLAPACK(selfID)->POTRI(UPLO, N, A, LDA, INFO);
 }
 
 void Epetra_LAPACK_POTRI_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char UPLO, const int N, 
   double * A, const int LDA, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POTRI(UPLO, N, A, LDA, INFO);
+    CEpetra::getConstLAPACK(selfID)->POTRI(UPLO, N, A, LDA, INFO);
 }
 
 void Epetra_LAPACK_POCON_float ( 
@@ -136,8 +131,8 @@ void Epetra_LAPACK_POCON_float (
   const float * A, const int LDA, const float ANORM, float * RCOND, 
   float * WORK, int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POCON(UPLO, N, A, LDA, ANORM, RCOND, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->POCON(UPLO, N, A, LDA, ANORM, RCOND, WORK, 
+        IWORK, INFO);
 }
 
 void Epetra_LAPACK_POCON_double ( 
@@ -145,8 +140,8 @@ void Epetra_LAPACK_POCON_double (
   const double * A, const int LDA, const double ANORM, 
   double * RCOND, double * WORK, int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POCON(UPLO, N, A, LDA, ANORM, RCOND, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->POCON(UPLO, N, A, LDA, ANORM, RCOND, WORK, 
+        IWORK, INFO);
 }
 
 void Epetra_LAPACK_POSV_float ( 
@@ -154,8 +149,7 @@ void Epetra_LAPACK_POSV_float (
   const int NRHS, float * A, const int LDA, float * X, 
   const int LDX, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POSV(UPLO, N, NRHS, A, LDA, X, LDX, INFO);
+    CEpetra::getConstLAPACK(selfID)->POSV(UPLO, N, NRHS, A, LDA, X, LDX, INFO);
 }
 
 void Epetra_LAPACK_POSV_double ( 
@@ -163,8 +157,7 @@ void Epetra_LAPACK_POSV_double (
   const int NRHS, double * A, const int LDA, double * X, 
   const int LDX, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POSV(UPLO, N, NRHS, A, LDA, X, LDX, INFO);
+    CEpetra::getConstLAPACK(selfID)->POSV(UPLO, N, NRHS, A, LDA, X, LDX, INFO);
 }
 
 void Epetra_LAPACK_POEQU_float ( 
@@ -172,8 +165,7 @@ void Epetra_LAPACK_POEQU_float (
   const int LDA, float * S, float * SCOND, float * AMAX, 
   int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POEQU(N, A, LDA, S, SCOND, AMAX, INFO);
+    CEpetra::getConstLAPACK(selfID)->POEQU(N, A, LDA, S, SCOND, AMAX, INFO);
 }
 
 void Epetra_LAPACK_POEQU_double ( 
@@ -181,8 +173,7 @@ void Epetra_LAPACK_POEQU_double (
   const int LDA, double * S, double * SCOND, double * AMAX, 
   int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POEQU(N, A, LDA, S, SCOND, AMAX, INFO);
+    CEpetra::getConstLAPACK(selfID)->POEQU(N, A, LDA, S, SCOND, AMAX, INFO);
 }
 
 void Epetra_LAPACK_PORFS_float ( 
@@ -192,9 +183,8 @@ void Epetra_LAPACK_PORFS_float (
   const int LDX, float * FERR, float * BERR, float * WORK, 
   int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->PORFS(UPLO, N, NRHS, A, LDA, AF, LDAF, B, LDB, X, LDX, FERR, 
-        BERR, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->PORFS(UPLO, N, NRHS, A, LDA, AF, LDAF, B, 
+        LDB, X, LDX, FERR, BERR, WORK, IWORK, INFO);
 }
 
 void Epetra_LAPACK_PORFS_double ( 
@@ -204,9 +194,8 @@ void Epetra_LAPACK_PORFS_double (
   const int LDB, double * X, const int LDX, double * FERR, 
   double * BERR, double * WORK, int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->PORFS(UPLO, N, NRHS, A, LDA, AF, LDAF, B, LDB, X, LDX, FERR, 
-        BERR, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->PORFS(UPLO, N, NRHS, A, LDA, AF, LDAF, B, 
+        LDB, X, LDX, FERR, BERR, WORK, IWORK, INFO);
 }
 
 void Epetra_LAPACK_POSVX_float ( 
@@ -217,9 +206,8 @@ void Epetra_LAPACK_POSVX_float (
   float * FERR, float * BERR, float * WORK, int * IWORK, 
   int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POSVX(FACT, UPLO, N, NRHS, A, LDA, AF, LDAF, EQUED, S, B, 
-        LDB, X, LDX, RCOND, FERR, BERR, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->POSVX(FACT, UPLO, N, NRHS, A, LDA, AF, 
+        LDAF, EQUED, S, B, LDB, X, LDX, RCOND, FERR, BERR, WORK, IWORK, INFO);
 }
 
 void Epetra_LAPACK_POSVX_double ( 
@@ -230,9 +218,8 @@ void Epetra_LAPACK_POSVX_double (
   double * RCOND, double * FERR, double * BERR, double * WORK, 
   int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->POSVX(FACT, UPLO, N, NRHS, A, LDA, AF, LDAF, EQUED, S, B, 
-        LDB, X, LDX, RCOND, FERR, BERR, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->POSVX(FACT, UPLO, N, NRHS, A, LDA, AF, 
+        LDAF, EQUED, S, B, LDB, X, LDX, RCOND, FERR, BERR, WORK, IWORK, INFO);
 }
 
 void Epetra_LAPACK_GELS_double ( 
@@ -241,24 +228,22 @@ void Epetra_LAPACK_GELS_double (
   double * B, const int LDB, double * WORK, const int LWORK, 
   int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GELS(TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GELS(TRANS, M, N, NRHS, A, LDA, B, LDB, 
+        WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_GETRF_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const int M, const int N, float * A, 
   const int LDA, int * IPIV, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GETRF(M, N, A, LDA, IPIV, INFO);
+    CEpetra::getConstLAPACK(selfID)->GETRF(M, N, A, LDA, IPIV, INFO);
 }
 
 void Epetra_LAPACK_GETRF_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const int M, const int N, 
   double * A, const int LDA, int * IPIV, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GETRF(M, N, A, LDA, IPIV, INFO);
+    CEpetra::getConstLAPACK(selfID)->GETRF(M, N, A, LDA, IPIV, INFO);
 }
 
 void Epetra_LAPACK_GEQRF_float ( 
@@ -266,8 +251,8 @@ void Epetra_LAPACK_GEQRF_float (
   const int LDA, float * TAU, float * WORK, const int lwork, 
   int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GEQRF(M, N, A, LDA, TAU, WORK, lwork, INFO);
+    CEpetra::getConstLAPACK(selfID)->GEQRF(M, N, A, LDA, TAU, WORK, lwork, 
+        INFO);
 }
 
 void Epetra_LAPACK_GEQRF_double ( 
@@ -275,8 +260,8 @@ void Epetra_LAPACK_GEQRF_double (
   double * A, const int LDA, double * TAU, double * WORK, 
   const int lwork, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GEQRF(M, N, A, LDA, TAU, WORK, lwork, INFO);
+    CEpetra::getConstLAPACK(selfID)->GEQRF(M, N, A, LDA, TAU, WORK, lwork, 
+        INFO);
 }
 
 void Epetra_LAPACK_GETRS_float ( 
@@ -284,8 +269,8 @@ void Epetra_LAPACK_GETRS_float (
   const int NRHS, const float * A, const int LDA, const int * IPIV, 
   float * X, const int LDX, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GETRS(TRANS, N, NRHS, A, LDA, IPIV, X, LDX, INFO);
+    CEpetra::getConstLAPACK(selfID)->GETRS(TRANS, N, NRHS, A, LDA, IPIV, X, 
+        LDX, INFO);
 }
 
 void Epetra_LAPACK_GETRS_double ( 
@@ -293,8 +278,8 @@ void Epetra_LAPACK_GETRS_double (
   const int NRHS, const double * A, const int LDA, const int * IPIV, 
   double * X, const int LDX, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GETRS(TRANS, N, NRHS, A, LDA, IPIV, X, LDX, INFO);
+    CEpetra::getConstLAPACK(selfID)->GETRS(TRANS, N, NRHS, A, LDA, IPIV, X, 
+        LDX, INFO);
 }
 
 void Epetra_LAPACK_GETRI_float ( 
@@ -302,8 +287,7 @@ void Epetra_LAPACK_GETRI_float (
   const int LDA, int * IPIV, float * WORK, const int * LWORK, 
   int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GETRI(N, A, LDA, IPIV, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GETRI(N, A, LDA, IPIV, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_GETRI_double ( 
@@ -311,8 +295,7 @@ void Epetra_LAPACK_GETRI_double (
   const int LDA, int * IPIV, double * WORK, const int * LWORK, 
   int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GETRI(N, A, LDA, IPIV, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GETRI(N, A, LDA, IPIV, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_GECON_float ( 
@@ -320,8 +303,8 @@ void Epetra_LAPACK_GECON_float (
   const float * A, const int LDA, const float ANORM, float * RCOND, 
   float * WORK, int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GECON(NORM, N, A, LDA, ANORM, RCOND, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GECON(NORM, N, A, LDA, ANORM, RCOND, WORK, 
+        IWORK, INFO);
 }
 
 void Epetra_LAPACK_GECON_double ( 
@@ -329,8 +312,8 @@ void Epetra_LAPACK_GECON_double (
   const double * A, const int LDA, const double ANORM, 
   double * RCOND, double * WORK, int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GECON(NORM, N, A, LDA, ANORM, RCOND, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GECON(NORM, N, A, LDA, ANORM, RCOND, WORK, 
+        IWORK, INFO);
 }
 
 void Epetra_LAPACK_GESV_float ( 
@@ -338,8 +321,7 @@ void Epetra_LAPACK_GESV_float (
   float * A, const int LDA, int * IPIV, float * X, const int LDX, 
   int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GESV(N, NRHS, A, LDA, IPIV, X, LDX, INFO);
+    CEpetra::getConstLAPACK(selfID)->GESV(N, NRHS, A, LDA, IPIV, X, LDX, INFO);
 }
 
 void Epetra_LAPACK_GESV_double ( 
@@ -347,8 +329,7 @@ void Epetra_LAPACK_GESV_double (
   double * A, const int LDA, int * IPIV, double * X, const int LDX, 
   int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GESV(N, NRHS, A, LDA, IPIV, X, LDX, INFO);
+    CEpetra::getConstLAPACK(selfID)->GESV(N, NRHS, A, LDA, IPIV, X, LDX, INFO);
 }
 
 void Epetra_LAPACK_GEEQU_float ( 
@@ -356,8 +337,8 @@ void Epetra_LAPACK_GEEQU_float (
   const float * A, const int LDA, float * R, float * C, 
   float * ROWCND, float * COLCND, float * AMAX, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GEEQU(M, N, A, LDA, R, C, ROWCND, COLCND, AMAX, INFO);
+    CEpetra::getConstLAPACK(selfID)->GEEQU(M, N, A, LDA, R, C, ROWCND, COLCND, 
+        AMAX, INFO);
 }
 
 void Epetra_LAPACK_GEEQU_double ( 
@@ -365,8 +346,8 @@ void Epetra_LAPACK_GEEQU_double (
   const double * A, const int LDA, double * R, double * C, 
   double * ROWCND, double * COLCND, double * AMAX, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GEEQU(M, N, A, LDA, R, C, ROWCND, COLCND, AMAX, INFO);
+    CEpetra::getConstLAPACK(selfID)->GEEQU(M, N, A, LDA, R, C, ROWCND, COLCND, 
+        AMAX, INFO);
 }
 
 void Epetra_LAPACK_GERFS_float ( 
@@ -376,9 +357,8 @@ void Epetra_LAPACK_GERFS_float (
   float * X, const int LDX, float * FERR, float * BERR, 
   float * WORK, int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GERFS(TRANS, N, NRHS, A, LDA, AF, LDAF, IPIV, B, LDB, X, LDX, 
-        FERR, BERR, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GERFS(TRANS, N, NRHS, A, LDA, AF, LDAF, 
+        IPIV, B, LDB, X, LDX, FERR, BERR, WORK, IWORK, INFO);
 }
 
 void Epetra_LAPACK_GERFS_double ( 
@@ -389,9 +369,8 @@ void Epetra_LAPACK_GERFS_double (
   double * FERR, double * BERR, double * WORK, int * IWORK, 
   int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GERFS(TRANS, N, NRHS, A, LDA, AF, LDAF, IPIV, B, LDB, X, LDX, 
-        FERR, BERR, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GERFS(TRANS, N, NRHS, A, LDA, AF, LDAF, 
+        IPIV, B, LDB, X, LDX, FERR, BERR, WORK, IWORK, INFO);
 }
 
 void Epetra_LAPACK_GESVX_float ( 
@@ -402,9 +381,9 @@ void Epetra_LAPACK_GESVX_float (
   float * RCOND, float * FERR, float * BERR, float * WORK, 
   int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GESVX(FACT, TRANS, N, NRHS, A, LDA, AF, LDAF, IPIV, EQUED, R, 
-        C, B, LDB, X, LDX, RCOND, FERR, BERR, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GESVX(FACT, TRANS, N, NRHS, A, LDA, AF, 
+        LDAF, IPIV, EQUED, R, C, B, LDB, X, LDX, RCOND, FERR, BERR, WORK, 
+        IWORK, INFO);
 }
 
 void Epetra_LAPACK_GESVX_double ( 
@@ -415,9 +394,9 @@ void Epetra_LAPACK_GESVX_double (
   const int LDX, double * RCOND, double * FERR, double * BERR, 
   double * WORK, int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GESVX(FACT, TRANS, N, NRHS, A, LDA, AF, LDAF, IPIV, EQUED, R, 
-        C, B, LDB, X, LDX, RCOND, FERR, BERR, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GESVX(FACT, TRANS, N, NRHS, A, LDA, AF, 
+        LDAF, IPIV, EQUED, R, C, B, LDB, X, LDX, RCOND, FERR, BERR, WORK, 
+        IWORK, INFO);
 }
 
 void Epetra_LAPACK_GEHRD_float ( 
@@ -425,8 +404,8 @@ void Epetra_LAPACK_GEHRD_float (
   const int IHI, float * A, const int LDA, float * TAU, 
   float * WORK, const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GEHRD(N, ILO, IHI, A, LDA, TAU, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GEHRD(N, ILO, IHI, A, LDA, TAU, WORK, 
+        LWORK, INFO);
 }
 
 void Epetra_LAPACK_GEHRD_double ( 
@@ -434,8 +413,8 @@ void Epetra_LAPACK_GEHRD_double (
   const int IHI, double * A, const int LDA, double * TAU, 
   double * WORK, const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GEHRD(N, ILO, IHI, A, LDA, TAU, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GEHRD(N, ILO, IHI, A, LDA, TAU, WORK, 
+        LWORK, INFO);
 }
 
 void Epetra_LAPACK_HSEQR_float ( 
@@ -444,9 +423,8 @@ void Epetra_LAPACK_HSEQR_float (
   const int LDH, float * WR, float * WI, float * Z, const int LDZ, 
   float * WORK, const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->HSEQR(JOB, COMPZ, N, ILO, IHI, H, LDH, WR, WI, Z, LDZ, WORK, 
-        LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->HSEQR(JOB, COMPZ, N, ILO, IHI, H, LDH, WR, 
+        WI, Z, LDZ, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_HSEQR_double ( 
@@ -455,9 +433,8 @@ void Epetra_LAPACK_HSEQR_double (
   const int LDH, double * WR, double * WI, double * Z, 
   const int LDZ, double * WORK, const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->HSEQR(JOB, COMPZ, N, ILO, IHI, H, LDH, WR, WI, Z, LDZ, WORK, 
-        LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->HSEQR(JOB, COMPZ, N, ILO, IHI, H, LDH, WR, 
+        WI, Z, LDZ, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_ORGQR_float ( 
@@ -465,8 +442,8 @@ void Epetra_LAPACK_ORGQR_float (
   const int K, float * A, const int LDA, float * TAU, float * WORK, 
   const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->ORGQR(M, N, K, A, LDA, TAU, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->ORGQR(M, N, K, A, LDA, TAU, WORK, LWORK, 
+        INFO);
 }
 
 void Epetra_LAPACK_ORGQR_double ( 
@@ -474,8 +451,8 @@ void Epetra_LAPACK_ORGQR_double (
   const int K, double * A, const int LDA, double * TAU, 
   double * WORK, const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->ORGQR(M, N, K, A, LDA, TAU, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->ORGQR(M, N, K, A, LDA, TAU, WORK, LWORK, 
+        INFO);
 }
 
 void Epetra_LAPACK_ORGHR_float ( 
@@ -483,8 +460,8 @@ void Epetra_LAPACK_ORGHR_float (
   const int IHI, float * A, const int LDA, float * TAU, 
   float * WORK, const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->ORGHR(N, ILO, IHI, A, LDA, TAU, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->ORGHR(N, ILO, IHI, A, LDA, TAU, WORK, 
+        LWORK, INFO);
 }
 
 void Epetra_LAPACK_ORGHR_double ( 
@@ -492,8 +469,8 @@ void Epetra_LAPACK_ORGHR_double (
   const int IHI, double * A, const int LDA, double * TAU, 
   double * WORK, const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->ORGHR(N, ILO, IHI, A, LDA, TAU, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->ORGHR(N, ILO, IHI, A, LDA, TAU, WORK, 
+        LWORK, INFO);
 }
 
 void Epetra_LAPACK_ORMHR_float ( 
@@ -502,9 +479,8 @@ void Epetra_LAPACK_ORMHR_float (
   const float * A, const int LDA, const float * TAU, float * C, 
   const int LDC, float * WORK, const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->ORMHR(SIDE, TRANS, M, N, ILO, IHI, A, LDA, TAU, C, LDC, WORK, 
-        LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->ORMHR(SIDE, TRANS, M, N, ILO, IHI, A, LDA, 
+        TAU, C, LDC, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_ORMHR_double ( 
@@ -513,9 +489,8 @@ void Epetra_LAPACK_ORMHR_double (
   const double * A, const int LDA, const double * TAU, double * C, 
   const int LDC, double * WORK, const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->ORMHR(SIDE, TRANS, M, N, ILO, IHI, A, LDA, TAU, C, LDC, WORK, 
-        LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->ORMHR(SIDE, TRANS, M, N, ILO, IHI, A, LDA, 
+        TAU, C, LDC, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_LARFT_float ( 
@@ -523,8 +498,8 @@ void Epetra_LAPACK_LARFT_float (
   const char STOREV, const int N, const int K, double * V, 
   const int LDV, double * TAU, double * T, const int LDT )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->LARFT(DIRECT, STOREV, N, K, V, LDV, TAU, T, LDT);
+    CEpetra::getConstLAPACK(selfID)->LARFT(DIRECT, STOREV, N, K, V, LDV, TAU, 
+        T, LDT);
 }
 
 void Epetra_LAPACK_LARFT_double ( 
@@ -532,8 +507,8 @@ void Epetra_LAPACK_LARFT_double (
   const char STOREV, const int N, const int K, float * V, 
   const int LDV, float * TAU, float * T, const int LDT )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->LARFT(DIRECT, STOREV, N, K, V, LDV, TAU, T, LDT);
+    CEpetra::getConstLAPACK(selfID)->LARFT(DIRECT, STOREV, N, K, V, LDV, TAU, 
+        T, LDT);
 }
 
 void Epetra_LAPACK_TREVC_float ( 
@@ -542,9 +517,8 @@ void Epetra_LAPACK_TREVC_float (
   float * VL, const int LDVL, float * VR, const int LDVR, 
   const int MM, int * M, float * WORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->TREVC(SIDE, HOWMNY, SELECT, N, T, LDT, VL, LDVL, VR, LDVR, 
-        MM, M, WORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->TREVC(SIDE, HOWMNY, SELECT, N, T, LDT, VL, 
+        LDVL, VR, LDVR, MM, M, WORK, INFO);
 }
 
 void Epetra_LAPACK_TREVC_double ( 
@@ -553,9 +527,8 @@ void Epetra_LAPACK_TREVC_double (
   double * VL, const int LDVL, double * VR, const int LDVR, 
   const int MM, int * M, double * WORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->TREVC(SIDE, HOWMNY, SELECT, N, T, LDT, VL, LDVL, VR, LDVR, 
-        MM, M, WORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->TREVC(SIDE, HOWMNY, SELECT, N, T, LDT, VL, 
+        LDVL, VR, LDVR, MM, M, WORK, INFO);
 }
 
 void Epetra_LAPACK_TREXC_float ( 
@@ -563,8 +536,8 @@ void Epetra_LAPACK_TREXC_float (
   float * T, const int LDT, float * Q, const int LDQ, int IFST, 
   int ILST, float * WORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->TREXC(COMPQ, N, T, LDT, Q, LDQ, IFST, ILST, WORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->TREXC(COMPQ, N, T, LDT, Q, LDQ, IFST, 
+        ILST, WORK, INFO);
 }
 
 void Epetra_LAPACK_TREXC_double ( 
@@ -572,8 +545,8 @@ void Epetra_LAPACK_TREXC_double (
   double * T, const int LDT, double * Q, const int LDQ, int IFST, 
   int ILST, double * WORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->TREXC(COMPQ, N, T, LDT, Q, LDQ, IFST, ILST, WORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->TREXC(COMPQ, N, T, LDT, Q, LDQ, IFST, 
+        ILST, WORK, INFO);
 }
 
 void Epetra_LAPACK_GESVD_float ( 
@@ -582,9 +555,8 @@ void Epetra_LAPACK_GESVD_float (
   float * U, const int LDU, float * VT, const int LDVT, 
   float * WORK, const int * LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GESVD(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, 
-        LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GESVD(JOBU, JOBVT, M, N, A, LDA, S, U, 
+        LDU, VT, LDVT, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_GESVD_double ( 
@@ -593,9 +565,8 @@ void Epetra_LAPACK_GESVD_double (
   double * U, const int LDU, double * VT, const int LDVT, 
   double * WORK, const int * LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GESVD(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, 
-        LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GESVD(JOBU, JOBVT, M, N, A, LDA, S, U, 
+        LDU, VT, LDVT, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_GGSVD_double ( 
@@ -606,9 +577,8 @@ void Epetra_LAPACK_GGSVD_double (
   double * V, const int LDV, double * Q, const int LDQ, 
   double * WORK, int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GGSVD(JOBU, JOBV, JOBQ, M, N, P, K, L, A, LDA, B, LDB, ALPHA, 
-        BETA, U, LDU, V, LDV, Q, LDQ, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GGSVD(JOBU, JOBV, JOBQ, M, N, P, K, L, A, 
+        LDA, B, LDB, ALPHA, BETA, U, LDU, V, LDV, Q, LDQ, WORK, IWORK, INFO);
 }
 
 void Epetra_LAPACK_GGSVD_float ( 
@@ -619,9 +589,8 @@ void Epetra_LAPACK_GGSVD_float (
   const int LDV, float * Q, const int LDQ, float * WORK, 
   int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GGSVD(JOBU, JOBV, JOBQ, M, N, P, K, L, A, LDA, B, LDB, ALPHA, 
-        BETA, U, LDU, V, LDV, Q, LDQ, WORK, IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GGSVD(JOBU, JOBV, JOBQ, M, N, P, K, L, A, 
+        LDA, B, LDB, ALPHA, BETA, U, LDU, V, LDV, Q, LDQ, WORK, IWORK, INFO);
 }
 
 void Epetra_LAPACK_GEEV_double ( 
@@ -630,9 +599,8 @@ void Epetra_LAPACK_GEEV_double (
   double * VL, const int LDVL, double * VR, const int LDVR, 
   double * WORK, const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GEEV(JOBVL, JOBVR, N, A, LDA, WR, WI, VL, LDVL, VR, LDVR, 
-        WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GEEV(JOBVL, JOBVR, N, A, LDA, WR, WI, VL, 
+        LDVL, VR, LDVR, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_GEEV_float ( 
@@ -641,9 +609,8 @@ void Epetra_LAPACK_GEEV_float (
   float * VL, const int LDVL, float * VR, const int LDVR, 
   float * WORK, const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GEEV(JOBVL, JOBVR, N, A, LDA, WR, WI, VL, LDVL, VR, LDVR, 
-        WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GEEV(JOBVL, JOBVR, N, A, LDA, WR, WI, VL, 
+        LDVL, VR, LDVR, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_SPEV_double ( 
@@ -651,8 +618,8 @@ void Epetra_LAPACK_SPEV_double (
   const int N, double * AP, double * W, double * Z, int LDZ, 
   double * WORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SPEV(JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->SPEV(JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, 
+        INFO);
 }
 
 void Epetra_LAPACK_SPEV_float ( 
@@ -660,8 +627,8 @@ void Epetra_LAPACK_SPEV_float (
   const int N, float * AP, float * W, float * Z, int LDZ, 
   float * WORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SPEV(JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->SPEV(JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, 
+        INFO);
 }
 
 void Epetra_LAPACK_SPGV_double ( 
@@ -669,8 +636,8 @@ void Epetra_LAPACK_SPGV_double (
   const char UPLO, const int N, double * AP, double * BP, 
   double * W, double * Z, const int LDZ, double * WORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SPGV(ITYPE, JOBZ, UPLO, N, AP, BP, W, Z, LDZ, WORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->SPGV(ITYPE, JOBZ, UPLO, N, AP, BP, W, Z, 
+        LDZ, WORK, INFO);
 }
 
 void Epetra_LAPACK_SPGV_float ( 
@@ -678,8 +645,8 @@ void Epetra_LAPACK_SPGV_float (
   const char UPLO, const int N, float * AP, float * BP, float * W, 
   float * Z, const int LDZ, float * WORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SPGV(ITYPE, JOBZ, UPLO, N, AP, BP, W, Z, LDZ, WORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->SPGV(ITYPE, JOBZ, UPLO, N, AP, BP, W, Z, 
+        LDZ, WORK, INFO);
 }
 
 void Epetra_LAPACK_SYEV_double ( 
@@ -687,8 +654,8 @@ void Epetra_LAPACK_SYEV_double (
   const int N, double * A, const int LDA, double * W, double * WORK, 
   const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SYEV(JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->SYEV(JOBZ, UPLO, N, A, LDA, W, WORK, 
+        LWORK, INFO);
 }
 
 void Epetra_LAPACK_SYEV_float ( 
@@ -696,8 +663,8 @@ void Epetra_LAPACK_SYEV_float (
   const int N, float * A, const int LDA, float * W, float * WORK, 
   const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SYEV(JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->SYEV(JOBZ, UPLO, N, A, LDA, W, WORK, 
+        LWORK, INFO);
 }
 
 void Epetra_LAPACK_SYEVD_double ( 
@@ -705,9 +672,8 @@ void Epetra_LAPACK_SYEVD_double (
   const int N, double * A, const int LDA, double * W, double * WORK, 
   const int LWORK, int * IWORK, const int LIWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SYEVD(JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, IWORK, LIWORK, 
-        INFO);
+    CEpetra::getConstLAPACK(selfID)->SYEVD(JOBZ, UPLO, N, A, LDA, W, WORK, 
+        LWORK, IWORK, LIWORK, INFO);
 }
 
 void Epetra_LAPACK_SYEVD_float ( 
@@ -715,9 +681,8 @@ void Epetra_LAPACK_SYEVD_float (
   const int N, float * A, const int LDA, float * W, float * WORK, 
   const int LWORK, int * IWORK, const int LIWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SYEVD(JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, IWORK, LIWORK, 
-        INFO);
+    CEpetra::getConstLAPACK(selfID)->SYEVD(JOBZ, UPLO, N, A, LDA, W, WORK, 
+        LWORK, IWORK, LIWORK, INFO);
 }
 
 void Epetra_LAPACK_SYEVX_double ( 
@@ -728,9 +693,8 @@ void Epetra_LAPACK_SYEVX_double (
   double * Z, const int LDZ, double * WORK, const int LWORK, 
   int * IWORK, int * IFAIL, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SYEVX(JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU, ABSTOL, 
-        M, W, Z, LDZ, WORK, LWORK, IWORK, IFAIL, INFO);
+    CEpetra::getConstLAPACK(selfID)->SYEVX(JOBZ, RANGE, UPLO, N, A, LDA, VL, 
+        VU, IL, IU, ABSTOL, M, W, Z, LDZ, WORK, LWORK, IWORK, IFAIL, INFO);
 }
 
 void Epetra_LAPACK_SYEVX_float ( 
@@ -741,9 +705,8 @@ void Epetra_LAPACK_SYEVX_float (
   const int LDZ, float * WORK, const int LWORK, int * IWORK, 
   int * IFAIL, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SYEVX(JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU, ABSTOL, 
-        M, W, Z, LDZ, WORK, LWORK, IWORK, IFAIL, INFO);
+    CEpetra::getConstLAPACK(selfID)->SYEVX(JOBZ, RANGE, UPLO, N, A, LDA, VL, 
+        VU, IL, IU, ABSTOL, M, W, Z, LDZ, WORK, LWORK, IWORK, IFAIL, INFO);
 }
 
 void Epetra_LAPACK_SYGV_double ( 
@@ -752,9 +715,8 @@ void Epetra_LAPACK_SYGV_double (
   double * B, const int LDB, double * W, double * WORK, 
   const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SYGV(ITYPE, JOBZ, UPLO, N, A, LDA, B, LDB, W, WORK, LWORK, 
-        INFO);
+    CEpetra::getConstLAPACK(selfID)->SYGV(ITYPE, JOBZ, UPLO, N, A, LDA, B, LDB, 
+        W, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_SYGV_float ( 
@@ -763,9 +725,8 @@ void Epetra_LAPACK_SYGV_float (
   const int LDB, float * W, float * WORK, const int LWORK, 
   int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SYGV(ITYPE, JOBZ, UPLO, N, A, LDA, B, LDB, W, WORK, LWORK, 
-        INFO);
+    CEpetra::getConstLAPACK(selfID)->SYGV(ITYPE, JOBZ, UPLO, N, A, LDA, B, LDB, 
+        W, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_SYGVX_double ( 
@@ -777,9 +738,9 @@ void Epetra_LAPACK_SYGVX_double (
   const int LDZ, double * WORK, const int LWORK, int * IWORK, 
   int * IFAIL, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SYGVX(ITYPE, JOBZ, RANGE, UPLO, N, A, LDA, B, LDB, VL, VU, 
-        IL, IU, ABSTOL, M, W, Z, LDZ, WORK, LWORK, IWORK, IFAIL, INFO);
+    CEpetra::getConstLAPACK(selfID)->SYGVX(ITYPE, JOBZ, RANGE, UPLO, N, A, LDA, 
+        B, LDB, VL, VU, IL, IU, ABSTOL, M, W, Z, LDZ, WORK, LWORK, IWORK, 
+        IFAIL, INFO);
 }
 
 void Epetra_LAPACK_SYGVX_float ( 
@@ -791,9 +752,9 @@ void Epetra_LAPACK_SYGVX_float (
   float * WORK, const int LWORK, int * IWORK, int * IFAIL, 
   int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SYGVX(ITYPE, JOBZ, RANGE, UPLO, N, A, LDA, B, LDB, VL, VU, 
-        IL, IU, ABSTOL, M, W, Z, LDZ, WORK, LWORK, IWORK, IFAIL, INFO);
+    CEpetra::getConstLAPACK(selfID)->SYGVX(ITYPE, JOBZ, RANGE, UPLO, N, A, LDA, 
+        B, LDB, VL, VU, IL, IU, ABSTOL, M, W, Z, LDZ, WORK, LWORK, IWORK, 
+        IFAIL, INFO);
 }
 
 void Epetra_LAPACK_SYEVR_double ( 
@@ -804,9 +765,9 @@ void Epetra_LAPACK_SYEVR_double (
   double * Z, const int LDZ, int * ISUPPZ, double * WORK, 
   const int LWORK, int * IWORK, const int LIWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SYEVR(JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU, ABSTOL, 
-        M, W, Z, LDZ, ISUPPZ, WORK, LWORK, IWORK, LIWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->SYEVR(JOBZ, RANGE, UPLO, N, A, LDA, VL, 
+        VU, IL, IU, ABSTOL, M, W, Z, LDZ, ISUPPZ, WORK, LWORK, IWORK, LIWORK, 
+        INFO);
 }
 
 void Epetra_LAPACK_SYEVR_float ( 
@@ -817,9 +778,9 @@ void Epetra_LAPACK_SYEVR_float (
   const int LDZ, int * ISUPPZ, float * WORK, const int LWORK, 
   int * IWORK, const int LIWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->SYEVR(JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU, ABSTOL, 
-        M, W, Z, LDZ, ISUPPZ, WORK, LWORK, IWORK, LIWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->SYEVR(JOBZ, RANGE, UPLO, N, A, LDA, VL, 
+        VU, IL, IU, ABSTOL, M, W, Z, LDZ, ISUPPZ, WORK, LWORK, IWORK, LIWORK, 
+        INFO);
 }
 
 void Epetra_LAPACK_GEEVX_double ( 
@@ -830,10 +791,9 @@ void Epetra_LAPACK_GEEVX_double (
   double * SCALE, double * ABNRM, double * RCONDE, double * RCONDV, 
   double * WORK, const int LWORK, int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GEEVX(BALANC, JOBVL, JOBVR, SENSE, N, A, LDA, WR, WI, VL, 
-        LDVL, VR, LDVR, ILO, IHI, SCALE, ABNRM, RCONDE, RCONDV, WORK, LWORK, 
-        IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GEEVX(BALANC, JOBVL, JOBVR, SENSE, N, A, 
+        LDA, WR, WI, VL, LDVL, VR, LDVR, ILO, IHI, SCALE, ABNRM, RCONDE, 
+        RCONDV, WORK, LWORK, IWORK, INFO);
 }
 
 void Epetra_LAPACK_GEEVX_float ( 
@@ -844,10 +804,9 @@ void Epetra_LAPACK_GEEVX_float (
   float * ABNRM, float * RCONDE, float * RCONDV, float * WORK, 
   const int LWORK, int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GEEVX(BALANC, JOBVL, JOBVR, SENSE, N, A, LDA, WR, WI, VL, 
-        LDVL, VR, LDVR, ILO, IHI, SCALE, ABNRM, RCONDE, RCONDV, WORK, LWORK, 
-        IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GEEVX(BALANC, JOBVL, JOBVR, SENSE, N, A, 
+        LDA, WR, WI, VL, LDVL, VR, LDVR, ILO, IHI, SCALE, ABNRM, RCONDE, 
+        RCONDV, WORK, LWORK, IWORK, INFO);
 }
 
 void Epetra_LAPACK_GESDD_double ( 
@@ -856,9 +815,8 @@ void Epetra_LAPACK_GESDD_double (
   const int LDU, double * VT, const int LDVT, double * WORK, 
   const int LWORK, int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GESDD(JOBZ, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, LWORK, 
-        IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GESDD(JOBZ, M, N, A, LDA, S, U, LDU, VT, 
+        LDVT, WORK, LWORK, IWORK, INFO);
 }
 
 void Epetra_LAPACK_GESDD_float ( 
@@ -867,9 +825,8 @@ void Epetra_LAPACK_GESDD_float (
   const int LDU, float * VT, const int LDVT, float * WORK, 
   const int LWORK, int * IWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GESDD(JOBZ, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, LWORK, 
-        IWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GESDD(JOBZ, M, N, A, LDA, S, U, LDU, VT, 
+        LDVT, WORK, LWORK, IWORK, INFO);
 }
 
 void Epetra_LAPACK_GGEV_double ( 
@@ -879,9 +836,8 @@ void Epetra_LAPACK_GGEV_double (
   const int LDVL, double * VR, const int LDVR, double * WORK, 
   const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GGEV(JOBVL, JOBVR, N, A, LDA, B, LDB, ALPHAR, ALPHAI, BETA, 
-        VL, LDVL, VR, LDVR, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GGEV(JOBVL, JOBVR, N, A, LDA, B, LDB, 
+        ALPHAR, ALPHAI, BETA, VL, LDVL, VR, LDVR, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_GGEV_float ( 
@@ -891,9 +847,8 @@ void Epetra_LAPACK_GGEV_float (
   const int LDVL, float * VR, const int LDVR, float * WORK, 
   const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GGEV(JOBVL, JOBVR, N, A, LDA, B, LDB, ALPHAR, ALPHAI, BETA, 
-        VL, LDVL, VR, LDVR, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GGEV(JOBVL, JOBVR, N, A, LDA, B, LDB, 
+        ALPHAR, ALPHAI, BETA, VL, LDVL, VR, LDVR, WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_GGLSE_double ( 
@@ -902,8 +857,8 @@ void Epetra_LAPACK_GGLSE_double (
   double * C, double * D, double * X, double * WORK, 
   const int LWORK, int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GGLSE(M, N, P, A, LDA, B, LDB, C, D, X, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GGLSE(M, N, P, A, LDA, B, LDB, C, D, X, 
+        WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_GGLSE_float ( 
@@ -912,22 +867,20 @@ void Epetra_LAPACK_GGLSE_float (
   float * C, float * D, float * X, float * WORK, const int LWORK, 
   int * INFO )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->GGLSE(M, N, P, A, LDA, B, LDB, C, D, X, WORK, LWORK, INFO);
+    CEpetra::getConstLAPACK(selfID)->GGLSE(M, N, P, A, LDA, B, LDB, C, D, X, 
+        WORK, LWORK, INFO);
 }
 
 void Epetra_LAPACK_LAMCH_float ( 
   CT_Epetra_LAPACK_ID_t selfID, const char CMACH, float * T )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->LAMCH(CMACH, *T);
+    CEpetra::getConstLAPACK(selfID)->LAMCH(CMACH, *T);
 }
 
 void Epetra_LAPACK_LAMCH_double ( 
   CT_Epetra_LAPACK_ID_t selfID, const char CMACH, double * T )
 {
-    CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(
-        selfID)->LAMCH(CMACH, *T);
+    CEpetra::getConstLAPACK(selfID)->LAMCH(CMACH, *T);
 }
 
 
@@ -943,14 +896,15 @@ void Epetra_LAPACK_LAMCH_double (
 const Teuchos::RCP<Epetra_LAPACK>
 CEpetra::getLAPACK( CT_Epetra_LAPACK_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_LAPACK>(
+        CTrilinos::abstractType<CT_Epetra_LAPACK_ID_t>(id));
 }
 
 /* get Epetra_LAPACK from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_LAPACK>
 CEpetra::getLAPACK( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_LAPACK, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_LAPACK>(id);
 }
 
 /* get const Epetra_LAPACK from either the const or non-const table
@@ -958,7 +912,8 @@ CEpetra::getLAPACK( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_LAPACK>
 CEpetra::getConstLAPACK( CT_Epetra_LAPACK_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_LAPACK>(
+        CTrilinos::abstractType<CT_Epetra_LAPACK_ID_t>(id));
 }
 
 /* get const Epetra_LAPACK from either the const or non-const table
@@ -966,21 +921,48 @@ CEpetra::getConstLAPACK( CT_Epetra_LAPACK_ID_t id )
 const Teuchos::RCP<const Epetra_LAPACK>
 CEpetra::getConstLAPACK( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_LAPACK, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().getConst<Epetra_LAPACK>(id);
+}
+
+/* store Epetra_LAPACK (owned) in non-const table */
+CT_Epetra_LAPACK_ID_t
+CEpetra::storeNewLAPACK( Epetra_LAPACK *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_LAPACK_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_LAPACK>(pobj, true));
 }
 
 /* store Epetra_LAPACK in non-const table */
 CT_Epetra_LAPACK_ID_t
 CEpetra::storeLAPACK( Epetra_LAPACK *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_LAPACK_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_LAPACK>(pobj, false));
 }
 
 /* store const Epetra_LAPACK in const table */
 CT_Epetra_LAPACK_ID_t
 CEpetra::storeConstLAPACK( const Epetra_LAPACK *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_LAPACK, CT_Epetra_LAPACK_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_LAPACK_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_LAPACK>(pobj, false));
+}
+
+/* remove Epetra_LAPACK from table using CT_Epetra_LAPACK_ID */
+void
+CEpetra::removeLAPACK( CT_Epetra_LAPACK_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_LAPACK_ID_t>(*id);
+    CTrilinos::tableRepos().remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_LAPACK_ID_t>(aid);
+}
+
+/* purge Epetra_LAPACK table */
+void
+CEpetra::purgeLAPACK(  )
+{
+    CTrilinos::tableRepos().purge<Epetra_LAPACK>();
 }
 
 

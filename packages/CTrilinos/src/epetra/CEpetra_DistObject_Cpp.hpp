@@ -65,6 +65,10 @@ getConstDistObject( CT_Epetra_DistObject_ID_t id );
 const RCP<const Epetra_DistObject>
 getConstDistObject( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_DistObject (owned) in non-const table */
+CT_Epetra_DistObject_ID_t
+storeNewDistObject( Epetra_DistObject *pobj );
+
 /*! store Epetra_DistObject in non-const table */
 CT_Epetra_DistObject_ID_t
 storeDistObject( Epetra_DistObject *pobj );
@@ -72,6 +76,14 @@ storeDistObject( Epetra_DistObject *pobj );
 /*! store const Epetra_DistObject in const table */
 CT_Epetra_DistObject_ID_t
 storeConstDistObject( const Epetra_DistObject *pobj );
+
+/* remove Epetra_DistObject from table using CT_Epetra_DistObject_ID */
+void
+removeDistObject( CT_Epetra_DistObject_ID_t *id );
+
+/* purge Epetra_DistObject table */
+void
+purgeDistObject(  );
 
 } // namespace CEpetra
 

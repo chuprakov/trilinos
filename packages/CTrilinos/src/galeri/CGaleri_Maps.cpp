@@ -46,7 +46,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CGaleri_Maps.h
 //
@@ -59,13 +60,11 @@ CT_Epetra_Map_ID_t Galeri_Maps_CreateMap (
   char MapType[], CT_Epetra_Comm_ID_t CommID, 
   CT_Teuchos_ParameterList_ID_t ListID )
 {
-    const Teuchos::RCP<Epetra_Comm> Comm = 
-        CTrilinos::tableRepos().get<Epetra_Comm, CT_Epetra_Comm_ID_t>(CommID);
+    const Teuchos::RCP<Epetra_Comm> Comm = CEpetra::getComm(CommID);
     const Teuchos::RCP<Teuchos::ParameterList> List = 
-        CTrilinos::tableRepos().get<Teuchos::ParameterList, 
-        CT_Teuchos_ParameterList_ID_t>(ListID);
-    return CTrilinos::tableRepos().store<Epetra_Map, CT_Epetra_Map_ID_t>(
-        Galeri::CreateMap(std::string(MapType), *Comm, *List));
+        CTeuchos::getParameterList(ListID);
+    return CEpetra::storeMap(Galeri::CreateMap(std::string(MapType), *Comm, 
+        *List));
 }
 
 

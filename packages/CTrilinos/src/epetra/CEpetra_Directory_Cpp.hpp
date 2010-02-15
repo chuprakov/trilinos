@@ -65,6 +65,10 @@ getConstDirectory( CT_Epetra_Directory_ID_t id );
 const RCP<const Epetra_Directory>
 getConstDirectory( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_Directory (owned) in non-const table */
+CT_Epetra_Directory_ID_t
+storeNewDirectory( Epetra_Directory *pobj );
+
 /*! store Epetra_Directory in non-const table */
 CT_Epetra_Directory_ID_t
 storeDirectory( Epetra_Directory *pobj );
@@ -72,6 +76,14 @@ storeDirectory( Epetra_Directory *pobj );
 /*! store const Epetra_Directory in const table */
 CT_Epetra_Directory_ID_t
 storeConstDirectory( const Epetra_Directory *pobj );
+
+/* remove Epetra_Directory from table using CT_Epetra_Directory_ID */
+void
+removeDirectory( CT_Epetra_Directory_ID_t *id );
+
+/* purge Epetra_Directory table */
+void
+purgeDirectory(  );
 
 } // namespace CEpetra
 

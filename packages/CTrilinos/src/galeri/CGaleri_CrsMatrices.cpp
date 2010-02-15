@@ -46,7 +46,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CGaleri_CrsMatrices.h
 //
@@ -59,14 +60,10 @@ CT_Epetra_CrsMatrix_ID_t Galeri_CrsMatrices_CreateCrsMatrix (
   char MatrixType[], CT_Epetra_Map_ID_t MapID, 
   CT_Teuchos_ParameterList_ID_t ListID )
 {
-    const Teuchos::RCP<const Epetra_Map> Map = 
-        CTrilinos::tableRepos().getConst<Epetra_Map, CT_Epetra_Map_ID_t>(
-        MapID);
+    const Teuchos::RCP<const Epetra_Map> Map = CEpetra::getConstMap(MapID);
     const Teuchos::RCP<Teuchos::ParameterList> List = 
-        CTrilinos::tableRepos().get<Teuchos::ParameterList, 
-        CT_Teuchos_ParameterList_ID_t>(ListID);
-    return CTrilinos::tableRepos().store<Epetra_CrsMatrix, 
-        CT_Epetra_CrsMatrix_ID_t>(Galeri::CreateCrsMatrix(std::string(
+        CTeuchos::getParameterList(ListID);
+    return CEpetra::storeCrsMatrix(Galeri::CreateCrsMatrix(std::string(
         MatrixType), Map.getRawPtr(), *List));
 }
 

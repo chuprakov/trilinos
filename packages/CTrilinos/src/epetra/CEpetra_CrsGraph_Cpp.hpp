@@ -65,6 +65,10 @@ getConstCrsGraph( CT_Epetra_CrsGraph_ID_t id );
 const RCP<const Epetra_CrsGraph>
 getConstCrsGraph( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_CrsGraph (owned) in non-const table */
+CT_Epetra_CrsGraph_ID_t
+storeNewCrsGraph( Epetra_CrsGraph *pobj );
+
 /*! store Epetra_CrsGraph in non-const table */
 CT_Epetra_CrsGraph_ID_t
 storeCrsGraph( Epetra_CrsGraph *pobj );
@@ -72,6 +76,14 @@ storeCrsGraph( Epetra_CrsGraph *pobj );
 /*! store const Epetra_CrsGraph in const table */
 CT_Epetra_CrsGraph_ID_t
 storeConstCrsGraph( const Epetra_CrsGraph *pobj );
+
+/* remove Epetra_CrsGraph from table using CT_Epetra_CrsGraph_ID */
+void
+removeCrsGraph( CT_Epetra_CrsGraph_ID_t *id );
+
+/* purge Epetra_CrsGraph table */
+void
+purgeCrsGraph(  );
 
 } // namespace CEpetra
 

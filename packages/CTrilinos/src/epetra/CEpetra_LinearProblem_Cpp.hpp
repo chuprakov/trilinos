@@ -65,6 +65,10 @@ getConstLinearProblem( CT_Epetra_LinearProblem_ID_t id );
 const RCP<const Epetra_LinearProblem>
 getConstLinearProblem( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_LinearProblem (owned) in non-const table */
+CT_Epetra_LinearProblem_ID_t
+storeNewLinearProblem( Epetra_LinearProblem *pobj );
+
 /*! store Epetra_LinearProblem in non-const table */
 CT_Epetra_LinearProblem_ID_t
 storeLinearProblem( Epetra_LinearProblem *pobj );
@@ -72,6 +76,14 @@ storeLinearProblem( Epetra_LinearProblem *pobj );
 /*! store const Epetra_LinearProblem in const table */
 CT_Epetra_LinearProblem_ID_t
 storeConstLinearProblem( const Epetra_LinearProblem *pobj );
+
+/* remove Epetra_LinearProblem from table using CT_Epetra_LinearProblem_ID */
+void
+removeLinearProblem( CT_Epetra_LinearProblem_ID_t *id );
+
+/* purge Epetra_LinearProblem table */
+void
+purgeLinearProblem(  );
 
 } // namespace CEpetra
 

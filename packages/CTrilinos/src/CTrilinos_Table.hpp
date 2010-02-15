@@ -45,7 +45,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Teuchos_Exceptions.hpp"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
-#include "CTrilinos_utils.hpp"
 
 
 namespace CTrilinos

@@ -65,6 +65,10 @@ getConstBLAS( CT_Epetra_BLAS_ID_t id );
 const RCP<const Epetra_BLAS>
 getConstBLAS( CTrilinos_Universal_ID_t id );
 
+/*! store Epetra_BLAS (owned) in non-const table */
+CT_Epetra_BLAS_ID_t
+storeNewBLAS( Epetra_BLAS *pobj );
+
 /*! store Epetra_BLAS in non-const table */
 CT_Epetra_BLAS_ID_t
 storeBLAS( Epetra_BLAS *pobj );
@@ -72,6 +76,14 @@ storeBLAS( Epetra_BLAS *pobj );
 /*! store const Epetra_BLAS in const table */
 CT_Epetra_BLAS_ID_t
 storeConstBLAS( const Epetra_BLAS *pobj );
+
+/* remove Epetra_BLAS from table using CT_Epetra_BLAS_ID */
+void
+removeBLAS( CT_Epetra_BLAS_ID_t *id );
+
+/* purge Epetra_BLAS table */
+void
+purgeBLAS(  );
 
 } // namespace CEpetra
 

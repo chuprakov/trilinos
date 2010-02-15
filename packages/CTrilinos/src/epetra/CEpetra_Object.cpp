@@ -40,6 +40,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+
+
 //
 // Definitions from CEpetra_Object.h
 //
@@ -63,51 +65,44 @@ CTrilinos_Universal_ID_t Epetra_Object_Generalize (
 CT_Epetra_Object_ID_t Epetra_Object_Create ( 
   int TracebackModeIn, boolean set_label )
 {
-    return CTrilinos::tableRepos().store<Epetra_Object, CT_Epetra_Object_ID_t>(
-        new Epetra_Object(TracebackModeIn, ((set_label) != 
-        FALSE ? true : false)));
+    return CEpetra::storeNewObject(new Epetra_Object(TracebackModeIn, ((
+        set_label) != FALSE ? true : false)));
 }
 
 CT_Epetra_Object_ID_t Epetra_Object_Create_WithLabel ( 
   const char * const Label, int TracebackModeIn )
 {
-    return CTrilinos::tableRepos().store<Epetra_Object, CT_Epetra_Object_ID_t>(
-        new Epetra_Object(Label, TracebackModeIn));
+    return CEpetra::storeNewObject(new Epetra_Object(Label, TracebackModeIn));
 }
 
 CT_Epetra_Object_ID_t Epetra_Object_Duplicate ( 
   CT_Epetra_Object_ID_t ObjectID )
 {
-    const Teuchos::RCP<const Epetra_Object> Object = 
-        CTrilinos::tableRepos().getConst<Epetra_Object, CT_Epetra_Object_ID_t>(
+    const Teuchos::RCP<const Epetra_Object> Object = CEpetra::getConstObject(
         ObjectID);
-    return CTrilinos::tableRepos().store<Epetra_Object, CT_Epetra_Object_ID_t>(
-        new Epetra_Object(*Object));
+    return CEpetra::storeNewObject(new Epetra_Object(*Object));
 }
 
 void Epetra_Object_Destroy ( CT_Epetra_Object_ID_t * selfID )
 {
-    CTrilinos::tableRepos().remove(selfID);
+    CEpetra::removeObject(selfID);
 }
 
 void Epetra_Object_SetLabel ( 
   CT_Epetra_Object_ID_t selfID, const char * const Label )
 {
-    CTrilinos::tableRepos().get<Epetra_Object, CT_Epetra_Object_ID_t>(
-        selfID)->SetLabel(Label);
+    CEpetra::getObject(selfID)->SetLabel(Label);
 }
 
 const char * Epetra_Object_Label ( CT_Epetra_Object_ID_t selfID )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Object, 
-        CT_Epetra_Object_ID_t>(selfID)->Label();
+    return CEpetra::getConstObject(selfID)->Label();
 }
 
 int Epetra_Object_ReportError ( 
   CT_Epetra_Object_ID_t selfID, const char Message[], int ErrorCode )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Object, 
-        CT_Epetra_Object_ID_t>(selfID)->ReportError(std::string(Message), 
+    return CEpetra::getConstObject(selfID)->ReportError(std::string(Message), 
         ErrorCode);
 }
 
@@ -134,14 +129,15 @@ int Epetra_Object_GetTracebackMode (  )
 const Teuchos::RCP<Epetra_Object>
 CEpetra::getObject( CT_Epetra_Object_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_Object, CT_Epetra_Object_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_Object>(
+        CTrilinos::abstractType<CT_Epetra_Object_ID_t>(id));
 }
 
 /* get Epetra_Object from non-const table using CTrilinos_Universal_ID_t */
 const Teuchos::RCP<Epetra_Object>
 CEpetra::getObject( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_Object, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_Object>(id);
 }
 
 /* get const Epetra_Object from either the const or non-const table
@@ -149,7 +145,8 @@ CEpetra::getObject( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_Object>
 CEpetra::getConstObject( CT_Epetra_Object_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Object, CT_Epetra_Object_ID_t>(id);
+    return CTrilinos::tableRepos().get<Epetra_Object>(
+        CTrilinos::abstractType<CT_Epetra_Object_ID_t>(id));
 }
 
 /* get const Epetra_Object from either the const or non-const table
@@ -157,21 +154,48 @@ CEpetra::getConstObject( CT_Epetra_Object_ID_t id )
 const Teuchos::RCP<const Epetra_Object>
 CEpetra::getConstObject( CTrilinos_Universal_ID_t id )
 {
-    return CTrilinos::tableRepos().getConst<Epetra_Object, CTrilinos_Universal_ID_t>(id);
+    return CTrilinos::tableRepos().getConst<Epetra_Object>(id);
+}
+
+/* store Epetra_Object (owned) in non-const table */
+CT_Epetra_Object_ID_t
+CEpetra::storeNewObject( Epetra_Object *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_Object>(pobj, true));
 }
 
 /* store Epetra_Object in non-const table */
 CT_Epetra_Object_ID_t
 CEpetra::storeObject( Epetra_Object *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_Object, CT_Epetra_Object_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_Object>(pobj, false));
 }
 
 /* store const Epetra_Object in const table */
 CT_Epetra_Object_ID_t
 CEpetra::storeConstObject( const Epetra_Object *pobj )
 {
-    return CTrilinos::tableRepos().store<Epetra_Object, CT_Epetra_Object_ID_t>(pobj, false);
+    return CTrilinos::concreteType<CT_Epetra_Object_ID_t>(
+        CTrilinos::tableRepos().store<Epetra_Object>(pobj, false));
+}
+
+/* remove Epetra_Object from table using CT_Epetra_Object_ID */
+void
+CEpetra::removeObject( CT_Epetra_Object_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_Object_ID_t>(*id);
+    CTrilinos::tableRepos().remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_Object_ID_t>(aid);
+}
+
+/* purge Epetra_Object table */
+void
+CEpetra::purgeObject(  )
+{
+    CTrilinos::tableRepos().purge<Epetra_Object>();
 }
 
 
