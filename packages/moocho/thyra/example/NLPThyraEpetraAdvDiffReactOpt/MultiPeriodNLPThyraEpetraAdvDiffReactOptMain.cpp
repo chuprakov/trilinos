@@ -141,6 +141,7 @@ int main( int argc, char* argv[] )
 
     int clusterRank = -1;
     int numClusters = -1;
+
 #ifdef HAVE_MPI
 
     RCP<OpaqueWrapper<MPI_Comm> >
