@@ -158,7 +158,7 @@ bool RTOpC::coord_invariant_impl() const
 }
 
 
-const std::string RTOpC::op_name_impl() const
+std::string RTOpC::op_name_impl() const
 {
   const char* op_name = NULL;
   TEST_FOR_EXCEPTION(

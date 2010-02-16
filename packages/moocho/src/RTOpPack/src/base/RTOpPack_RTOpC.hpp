@@ -98,7 +98,7 @@ public:
   /** \brief . */
   bool coord_invariant_impl() const;
   /** \brief . */
-  const std::string op_name_impl() const;
+  std::string op_name_impl() const;
   /** \brief . */
   void apply_op_impl(
     const Teuchos::ArrayView<const ConstSubVectorView<Scalar> > &sub_vecs,
