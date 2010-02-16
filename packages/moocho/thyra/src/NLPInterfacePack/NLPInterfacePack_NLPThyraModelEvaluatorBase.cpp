@@ -43,6 +43,7 @@
 #include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack_MatrixSymPosDefCholFactor.hpp"
 #include "Thyra_DetachedVectorView.hpp"
+#include "Thyra_VectorStdOps.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"

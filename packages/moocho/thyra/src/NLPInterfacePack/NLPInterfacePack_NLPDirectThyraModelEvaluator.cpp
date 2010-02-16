@@ -41,6 +41,8 @@
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Thyra_ModelEvaluatorHelpers.hpp"
 #include "Thyra_DetachedVectorView.hpp"
+#include "Thyra_VectorStdOps.hpp"
+#include "Thyra_MultiVectorStdOps.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
