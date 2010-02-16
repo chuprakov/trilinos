@@ -43,12 +43,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_DISTOBJECT_H
 
 
-#include "CEpetra_SrcDistObject.h"
-#include "CEpetra_Import.h"
-#include "CEpetra_OffsetIndex.h"
-#include "CEpetra_Export.h"
-#include "CEpetra_BlockMap.h"
-#include "CEpetra_Comm.h"
 #include "CTrilinos_enums.h"
 
 

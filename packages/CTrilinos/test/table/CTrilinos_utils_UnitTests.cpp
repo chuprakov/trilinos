@@ -33,10 +33,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_test_utils.hpp"
 #include "CTrilinos_Table.hpp"
 #include "CTrilinos_table_man.h"
 #include "CEpetra_SerialComm.h"
+#include "Epetra_SerialComm.h"
 #include "CEpetra_Comm.h"
+#include "Epetra_Comm.h"
 
 #include "Teuchos_RCP.hpp"
 
@@ -72,22 +75,22 @@ TEUCHOS_UNIT_TEST( Utils, isSameObjectRRTrue )
   ECHO(Table<T1> table1(CONSTRUCTOR(CLASS_ENUM(T1))));
   ECHO(Table<T2> table2(CONSTRUCTOR(CLASS_ENUM(T2))));
 
-  ECHO(CTrilinos_Universal_ID_t id1 = table1.store(new T1, true));
-  ECHO(CTrilinos_Universal_ID_t id2 = table2.alias(table1.get(id1)));
+  ECHO(CTrilinos_Universal_ID_t id1 = table1.store<T1>(new T1, true));
+  ECHO(CTrilinos_Universal_ID_t id2 = table2.alias(table1.get<T1>(id1)));
 
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(table1.get(id1), table2.get(id2)), true);
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(table2.get(id2), table1.get(id1)), true);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(table1.get<T1>(id1), table2.get<T1>(id2)), true);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(table2.get<T1>(id2), table1.get<T1>(id1)), true);
 }
 
 TEUCHOS_UNIT_TEST( Utils, isSameObjectRRFalse )
 {
   ECHO(Table<T1> table1(CONSTRUCTOR(CLASS_ENUM(T1))));
 
-  ECHO(CTrilinos_Universal_ID_t id1 = table1.store(new T1, true));
-  ECHO(CTrilinos_Universal_ID_t id2 = table1.store(new T1, true));
+  ECHO(CTrilinos_Universal_ID_t id1 = table1.store<T1>(new T1, true));
+  ECHO(CTrilinos_Universal_ID_t id2 = table1.store<T1>(new T1, true));
 
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(table1.get(id1), table1.get(id2)), false);
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(table1.get(id2), table1.get(id1)), false);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(table1.get<T1>(id1), table1.get<T1>(id2)), false);
+  TEST_EQUALITY_CONST(CTrilinos::isSameObject(table1.get<T1>(id2), table1.get<T1>(id1)), false);
 }
 
 TEUCHOS_UNIT_TEST( Utils, isSameObjectRATrue )

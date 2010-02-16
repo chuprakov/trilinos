@@ -36,15 +36,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifdef HAVE_CTRILINOS_AZTECOO
 
 
-#include "CEpetra_MultiVector_Cpp.hpp"
-#include "CAztecOO_StatusTest_Cpp.hpp"
-#include "CAztecOO_StatusTest.h"
-#include "AztecOO_StatusTest.h"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CAztecOO_StatusTest.h"
+#include "CAztecOO_StatusTest_Cpp.hpp"
+#include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+#include "CEpetra_MultiVector_Cpp.hpp"
 
 
 //

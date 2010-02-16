@@ -47,9 +47,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CGALERI_CRSMATRICES_H
 
 
-#include "CEpetra_CrsMatrix.h"
-#include "CEpetra_Map.h"
-#include "CTeuchos_ParameterList.h"
 #include "CTrilinos_enums.h"
 
 

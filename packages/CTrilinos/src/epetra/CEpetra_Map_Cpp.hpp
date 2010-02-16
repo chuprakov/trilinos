@@ -36,9 +36,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_MAP_CPP_HPP
 
 
-#include "Epetra_Map.h"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "Teuchos_RCP.hpp"
+#include "Epetra_Map.h"
 
 
 namespace CEpetra {

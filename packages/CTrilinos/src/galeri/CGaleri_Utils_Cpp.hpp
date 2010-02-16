@@ -40,9 +40,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CGALERI_UTILS_CPP_HPP
 
 
-#include "Galeri_Utils.h"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "Teuchos_RCP.hpp"
+#include "Galeri_Utils.h"
 
 
 namespace CGaleri {

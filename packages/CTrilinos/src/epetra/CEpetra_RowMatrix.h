@@ -43,10 +43,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_ROWMATRIX_H
 
 
-#include "CEpetra_Vector.h"
-#include "CEpetra_MultiVector.h"
-#include "CEpetra_Map.h"
-#include "CEpetra_Import.h"
 #include "CTrilinos_enums.h"
 
 

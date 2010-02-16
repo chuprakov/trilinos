@@ -32,16 +32,15 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
-#include "CTeuchos_any_Cpp.hpp"
-#include "CTeuchos_ParameterList_Cpp.hpp"
-#include "CTeuchos_ParameterEntry_Cpp.hpp"
-#include "CTeuchos_ParameterEntry.h"
-#include "Teuchos_ParameterEntry.hpp"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTeuchos_ParameterEntry.h"
+#include "CTeuchos_ParameterEntry_Cpp.hpp"
+#include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
+#include "CTeuchos_any_Cpp.hpp"
+#include "CTeuchos_ParameterList_Cpp.hpp"
 
 
 namespace {

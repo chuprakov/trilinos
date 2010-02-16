@@ -36,16 +36,15 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifdef HAVE_CTRILINOS_GALERI
 
 
+#include "CTrilinos_enums.h"
+#include "CGaleri_Maps.h"
+#include "CGaleri_Maps_Cpp.hpp"
+#include "Teuchos_RCP.hpp"
+#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CEpetra_Map_Cpp.hpp"
 #include "CEpetra_Comm_Cpp.hpp"
 #include "CTeuchos_ParameterList_Cpp.hpp"
-#include "CGaleri_Maps_Cpp.hpp"
-#include "CGaleri_Maps.h"
-#include "Galeri_Maps.h"
-#include "Teuchos_RCP.hpp"
-#include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
-#include "CTrilinos_utils_templ.hpp"
 
 
 //

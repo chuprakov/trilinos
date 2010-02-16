@@ -32,11 +32,10 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
-#include "CTeuchos_CommandLineProcessor_Cpp.hpp"
-#include "CTeuchos_CommandLineProcessor.h"
-#include "Teuchos_CommandLineProcessor.hpp"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTeuchos_CommandLineProcessor.h"
+#include "CTeuchos_CommandLineProcessor_Cpp.hpp"
+#include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"

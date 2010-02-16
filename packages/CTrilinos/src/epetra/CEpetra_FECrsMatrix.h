@@ -43,10 +43,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_FECRSMATRIX_H
 
 
-#include "CEpetra_Map.h"
-#include "CEpetra_CrsGraph.h"
-#include "CEpetra_IntSerialDenseVector.h"
-#include "CEpetra_SerialDenseMatrix.h"
 #include "CTrilinos_enums.h"
 
 

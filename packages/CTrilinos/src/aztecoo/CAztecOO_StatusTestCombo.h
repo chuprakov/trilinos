@@ -47,8 +47,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CAZTECOO_STATUSTESTCOMBO_H
 
 
-#include "CAztecOO_StatusTest.h"
-#include "CEpetra_MultiVector.h"
 #include "CTrilinos_enums.h"
 
 

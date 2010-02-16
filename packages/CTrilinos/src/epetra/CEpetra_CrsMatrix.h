@@ -43,14 +43,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_CRSMATRIX_H
 
 
-#include "CEpetra_Map.h"
-#include "CEpetra_CrsGraph.h"
-#include "CEpetra_Vector.h"
-#include "CEpetra_MultiVector.h"
-#include "CEpetra_BlockMap.h"
-#include "CEpetra_Import.h"
-#include "CEpetra_Export.h"
-#include "CEpetra_Comm.h"
 #include "CTrilinos_enums.h"
 
 

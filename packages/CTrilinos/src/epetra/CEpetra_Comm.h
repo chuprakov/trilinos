@@ -43,9 +43,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_COMM_H
 
 
-#include "CEpetra_Distributor.h"
-#include "CEpetra_Directory.h"
-#include "CEpetra_BlockMap.h"
 #include "CTrilinos_enums.h"
 
 

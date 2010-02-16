@@ -71,22 +71,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Epetra_JadMatrix.h"
 #include "Epetra_LinearProblem.h"
 #include "Epetra_LAPACK.h"
-#include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_ParameterList.hpp"
-#include "Teuchos_ParameterEntry.hpp"
-#include "Teuchos_any.hpp"
 #ifdef HAVE_CTRILINOS_AMESOS
 #include "Amesos_BaseSolver.h"
-#endif /* HAVE_CTRILINOS_AMESOS */
-#ifdef HAVE_CTRILINOS_AMESOS
-#include "Amesos.h"
 #endif /* HAVE_CTRILINOS_AMESOS */
 #include "Epetra_FECrsMatrix.h"
 #include "Epetra_IntSerialDenseVector.h"
 #include "Epetra_SerialDenseMatrix.h"
-#ifdef HAVE_CTRILINOS_AZTECOO
-#include "AztecOO.h"
-#endif /* HAVE_CTRILINOS_AZTECOO */
 #ifdef HAVE_CTRILINOS_AZTECOO
 #include "AztecOO_StatusTest.h"
 #endif /* HAVE_CTRILINOS_AZTECOO */
@@ -100,20 +91,20 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "AztecOO_StatusTestResNorm.h"
 #endif /* HAVE_CTRILINOS_AZTECOO */
 #ifdef HAVE_CTRILINOS_IFPACK
-#include "Ifpack.h"
-#endif /* HAVE_CTRILINOS_IFPACK */
-#ifdef HAVE_CTRILINOS_IFPACK
 #include "Ifpack_Preconditioner.h"
 #endif /* HAVE_CTRILINOS_IFPACK */
 
 #include "CTrilinos_enums.h"
 #include "CTrilinos_Table.hpp"
-#include "CTrilinos_utils_templ.hpp"
 #include "Teuchos_RCP.hpp"
 
 
 namespace CTrilinos {
 
+
+class TableRepos;
+
+TableRepos & tableRepos(  );
 
 class TableRepos
 {
@@ -151,10 +142,6 @@ class TableRepos
     /*! dump the tables' content but keep their properties */
     void purgeAll();
 
-    /*! create an alias for the object in another table */
-    CTrilinos_Universal_ID_t alias(CTrilinos_Universal_ID_t id, CTrilinos_Table_ID_t tab, bool keepold = true);
-
-  private:
     /*! get the Ctrilinos::Table for the given type */
     void getTable(Table<Epetra_Distributor> *& tab);
     void getTable(Table<Epetra_SerialComm> *& tab);
@@ -206,6 +193,9 @@ class TableRepos
 #ifdef HAVE_CTRILINOS_IFPACK
     void getTable(Table<Ifpack_Preconditioner> *& tab);
 #endif /* HAVE_CTRILINOS_IFPACK */
+
+    /*! create an alias for the object in another table */
+    CTrilinos_Universal_ID_t alias(CTrilinos_Universal_ID_t id, CTrilinos_Table_ID_t tab, bool keepold = true);
 
     /*! create an alias for the object in another table */
     template <class T>
@@ -276,65 +266,6 @@ class TableRepos
 
     bool call_me_lazy;  /* I was too lazy to deal with the commas in the init list, so... */
 };
-
-TableRepos::TableRepos() :
-    tab_Epetra_Distributor(CT_Epetra_Distributor_ID),
-    tab_Epetra_SerialComm(CT_Epetra_SerialComm_ID),
-    tab_Epetra_BLAS(CT_Epetra_BLAS_ID),
-    tab_Epetra_Comm(CT_Epetra_Comm_ID),
-    tab_Epetra_Operator(CT_Epetra_Operator_ID),
-    tab_Epetra_MultiVector(CT_Epetra_MultiVector_ID),
-    tab_Epetra_OffsetIndex(CT_Epetra_OffsetIndex_ID),
-    tab_Epetra_Object(CT_Epetra_Object_ID),
-    tab_Epetra_RowMatrix(CT_Epetra_RowMatrix_ID),
-    tab_Epetra_CompObject(CT_Epetra_CompObject_ID),
-    tab_Epetra_Directory(CT_Epetra_Directory_ID),
-    tab_Epetra_Flops(CT_Epetra_Flops_ID),
-    tab_Epetra_SrcDistObject(CT_Epetra_SrcDistObject_ID),
-#ifdef HAVE_MPI
-    tab_Epetra_MpiComm(CT_Epetra_MpiComm_ID),
-#endif /* HAVE_MPI */
-    tab_Epetra_CrsMatrix(CT_Epetra_CrsMatrix_ID),
-    tab_Epetra_CrsGraph(CT_Epetra_CrsGraph_ID),
-    tab_Epetra_DistObject(CT_Epetra_DistObject_ID),
-    tab_Epetra_Vector(CT_Epetra_Vector_ID),
-    tab_Epetra_Export(CT_Epetra_Export_ID),
-    tab_Epetra_Map(CT_Epetra_Map_ID),
-    tab_Epetra_BlockMap(CT_Epetra_BlockMap_ID),
-    tab_Epetra_Import(CT_Epetra_Import_ID),
-    tab_Epetra_Time(CT_Epetra_Time_ID),
-    tab_Epetra_JadMatrix(CT_Epetra_JadMatrix_ID),
-    tab_Epetra_LinearProblem(CT_Epetra_LinearProblem_ID),
-    tab_Epetra_LAPACK(CT_Epetra_LAPACK_ID),
-    tab_Teuchos_ParameterList(CT_Teuchos_ParameterList_ID),
-#ifdef HAVE_CTRILINOS_AMESOS
-    tab_Amesos_BaseSolver(CT_Amesos_BaseSolver_ID),
-#endif /* HAVE_CTRILINOS_AMESOS */
-    tab_Epetra_FECrsMatrix(CT_Epetra_FECrsMatrix_ID),
-    tab_Epetra_IntSerialDenseVector(CT_Epetra_IntSerialDenseVector_ID),
-    tab_Epetra_SerialDenseMatrix(CT_Epetra_SerialDenseMatrix_ID),
-#ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTest(CT_AztecOO_StatusTest_ID),
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTestCombo(CT_AztecOO_StatusTestCombo_ID),
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTestMaxIters(CT_AztecOO_StatusTestMaxIters_ID),
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTestResNorm(CT_AztecOO_StatusTestResNorm_ID),
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_IFPACK
-    tab_Ifpack_Preconditioner(CT_Ifpack_Preconditioner_ID),
-#endif /* HAVE_CTRILINOS_IFPACK */
-    call_me_lazy(true)
-{
-}
-
-TableRepos::~TableRepos()
-{
-}
 
 
 template <class T>
@@ -971,179 +902,8 @@ CTrilinos_Universal_ID_t TableRepos::do_alias_const(
     return newid;
 }
 
-CTrilinos_Universal_ID_t TableRepos::alias(
-    CTrilinos_Universal_ID_t aid, CTrilinos_Table_ID_t tab, bool keepold)
-{
-    CTrilinos_Universal_ID_t newid;
-
-    switch (tab) {
-    case CT_Epetra_Distributor_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Distributor, aid, keepold)
-                              : do_alias(tab_Epetra_Distributor, aid, keepold));
-        break;
-    case CT_Epetra_SerialComm_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_SerialComm, aid, keepold)
-                              : do_alias(tab_Epetra_SerialComm, aid, keepold));
-        break;
-    case CT_Epetra_BLAS_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_BLAS, aid, keepold)
-                              : do_alias(tab_Epetra_BLAS, aid, keepold));
-        break;
-    case CT_Epetra_Comm_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Comm, aid, keepold)
-                              : do_alias(tab_Epetra_Comm, aid, keepold));
-        break;
-    case CT_Epetra_Operator_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Operator, aid, keepold)
-                              : do_alias(tab_Epetra_Operator, aid, keepold));
-        break;
-    case CT_Epetra_MultiVector_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_MultiVector, aid, keepold)
-                              : do_alias(tab_Epetra_MultiVector, aid, keepold));
-        break;
-    case CT_Epetra_OffsetIndex_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_OffsetIndex, aid, keepold)
-                              : do_alias(tab_Epetra_OffsetIndex, aid, keepold));
-        break;
-    case CT_Epetra_Object_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Object, aid, keepold)
-                              : do_alias(tab_Epetra_Object, aid, keepold));
-        break;
-    case CT_Epetra_RowMatrix_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_RowMatrix, aid, keepold)
-                              : do_alias(tab_Epetra_RowMatrix, aid, keepold));
-        break;
-    case CT_Epetra_CompObject_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_CompObject, aid, keepold)
-                              : do_alias(tab_Epetra_CompObject, aid, keepold));
-        break;
-    case CT_Epetra_Directory_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Directory, aid, keepold)
-                              : do_alias(tab_Epetra_Directory, aid, keepold));
-        break;
-    case CT_Epetra_Flops_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Flops, aid, keepold)
-                              : do_alias(tab_Epetra_Flops, aid, keepold));
-        break;
-    case CT_Epetra_SrcDistObject_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_SrcDistObject, aid, keepold)
-                              : do_alias(tab_Epetra_SrcDistObject, aid, keepold));
-        break;
-#ifdef HAVE_MPI
-    case CT_Epetra_MpiComm_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_MpiComm, aid, keepold)
-                              : do_alias(tab_Epetra_MpiComm, aid, keepold));
-        break;
-#endif /* HAVE_MPI */
-    case CT_Epetra_CrsMatrix_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_CrsMatrix, aid, keepold)
-                              : do_alias(tab_Epetra_CrsMatrix, aid, keepold));
-        break;
-    case CT_Epetra_CrsGraph_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_CrsGraph, aid, keepold)
-                              : do_alias(tab_Epetra_CrsGraph, aid, keepold));
-        break;
-    case CT_Epetra_DistObject_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_DistObject, aid, keepold)
-                              : do_alias(tab_Epetra_DistObject, aid, keepold));
-        break;
-    case CT_Epetra_Vector_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Vector, aid, keepold)
-                              : do_alias(tab_Epetra_Vector, aid, keepold));
-        break;
-    case CT_Epetra_Export_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Export, aid, keepold)
-                              : do_alias(tab_Epetra_Export, aid, keepold));
-        break;
-    case CT_Epetra_Map_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Map, aid, keepold)
-                              : do_alias(tab_Epetra_Map, aid, keepold));
-        break;
-    case CT_Epetra_BlockMap_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_BlockMap, aid, keepold)
-                              : do_alias(tab_Epetra_BlockMap, aid, keepold));
-        break;
-    case CT_Epetra_Import_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Import, aid, keepold)
-                              : do_alias(tab_Epetra_Import, aid, keepold));
-        break;
-    case CT_Epetra_Time_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Time, aid, keepold)
-                              : do_alias(tab_Epetra_Time, aid, keepold));
-        break;
-    case CT_Epetra_JadMatrix_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_JadMatrix, aid, keepold)
-                              : do_alias(tab_Epetra_JadMatrix, aid, keepold));
-        break;
-    case CT_Epetra_LinearProblem_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_LinearProblem, aid, keepold)
-                              : do_alias(tab_Epetra_LinearProblem, aid, keepold));
-        break;
-    case CT_Epetra_LAPACK_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_LAPACK, aid, keepold)
-                              : do_alias(tab_Epetra_LAPACK, aid, keepold));
-        break;
-    case CT_Teuchos_ParameterList_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Teuchos_ParameterList, aid, keepold)
-                              : do_alias(tab_Teuchos_ParameterList, aid, keepold));
-        break;
-#ifdef HAVE_CTRILINOS_AMESOS
-    case CT_Amesos_BaseSolver_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Amesos_BaseSolver, aid, keepold)
-                              : do_alias(tab_Amesos_BaseSolver, aid, keepold));
-        break;
-#endif /* HAVE_CTRILINOS_AMESOS */
-    case CT_Epetra_FECrsMatrix_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_FECrsMatrix, aid, keepold)
-                              : do_alias(tab_Epetra_FECrsMatrix, aid, keepold));
-        break;
-    case CT_Epetra_IntSerialDenseVector_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_IntSerialDenseVector, aid, keepold)
-                              : do_alias(tab_Epetra_IntSerialDenseVector, aid, keepold));
-        break;
-    case CT_Epetra_SerialDenseMatrix_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_SerialDenseMatrix, aid, keepold)
-                              : do_alias(tab_Epetra_SerialDenseMatrix, aid, keepold));
-        break;
-#ifdef HAVE_CTRILINOS_AZTECOO
-    case CT_AztecOO_StatusTest_ID:
-        newid = (aid.is_const ? do_alias_const(tab_AztecOO_StatusTest, aid, keepold)
-                              : do_alias(tab_AztecOO_StatusTest, aid, keepold));
-        break;
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    case CT_AztecOO_StatusTestCombo_ID:
-        newid = (aid.is_const ? do_alias_const(tab_AztecOO_StatusTestCombo, aid, keepold)
-                              : do_alias(tab_AztecOO_StatusTestCombo, aid, keepold));
-        break;
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    case CT_AztecOO_StatusTestMaxIters_ID:
-        newid = (aid.is_const ? do_alias_const(tab_AztecOO_StatusTestMaxIters, aid, keepold)
-                              : do_alias(tab_AztecOO_StatusTestMaxIters, aid, keepold));
-        break;
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    case CT_AztecOO_StatusTestResNorm_ID:
-        newid = (aid.is_const ? do_alias_const(tab_AztecOO_StatusTestResNorm, aid, keepold)
-                              : do_alias(tab_AztecOO_StatusTestResNorm, aid, keepold));
-        break;
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_IFPACK
-    case CT_Ifpack_Preconditioner_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Ifpack_Preconditioner, aid, keepold)
-                              : do_alias(tab_Ifpack_Preconditioner, aid, keepold));
-        break;
-#endif /* HAVE_CTRILINOS_IFPACK */
-    default:
-        throw std::string("invalid table id or non-polymorphic class");
-    }
-
-    return newid;
-}
-
 template <class T>
-CTrilinos_Universal_ID_t store(T* pobj, bool owned = true)
+CTrilinos_Universal_ID_t store(T* pobj, bool owned)
 {
     Table<T> *tab = 0;
     getTable(tab);
@@ -1151,141 +911,11 @@ CTrilinos_Universal_ID_t store(T* pobj, bool owned = true)
 }
 
 template <class T>
-CTrilinos_Universal_ID_t store(const T* pobj, bool owned = false)
+CTrilinos_Universal_ID_t store(const T* pobj, bool owned)
 {
     Table<T> *tab = 0;
     getTable(tab);
     return tab->store(pobj, owned);
-}
-
-void TableRepos::remove(CTrilinos_Universal_ID_t * aid)
-{
-    switch (aid->table) {
-    case CT_Epetra_Distributor_ID:
-        tab_Epetra_Distributor.remove(aid);
-        break;
-    case CT_Epetra_SerialComm_ID:
-        tab_Epetra_SerialComm.remove(aid);
-        break;
-    case CT_Epetra_BLAS_ID:
-        tab_Epetra_BLAS.remove(aid);
-        break;
-    case CT_Epetra_Comm_ID:
-        tab_Epetra_Comm.remove(aid);
-        break;
-    case CT_Epetra_Operator_ID:
-        tab_Epetra_Operator.remove(aid);
-        break;
-    case CT_Epetra_MultiVector_ID:
-        tab_Epetra_MultiVector.remove(aid);
-        break;
-    case CT_Epetra_OffsetIndex_ID:
-        tab_Epetra_OffsetIndex.remove(aid);
-        break;
-    case CT_Epetra_Object_ID:
-        tab_Epetra_Object.remove(aid);
-        break;
-    case CT_Epetra_RowMatrix_ID:
-        tab_Epetra_RowMatrix.remove(aid);
-        break;
-    case CT_Epetra_CompObject_ID:
-        tab_Epetra_CompObject.remove(aid);
-        break;
-    case CT_Epetra_Directory_ID:
-        tab_Epetra_Directory.remove(aid);
-        break;
-    case CT_Epetra_Flops_ID:
-        tab_Epetra_Flops.remove(aid);
-        break;
-    case CT_Epetra_SrcDistObject_ID:
-        tab_Epetra_SrcDistObject.remove(aid);
-        break;
-#ifdef HAVE_MPI
-    case CT_Epetra_MpiComm_ID:
-        tab_Epetra_MpiComm.remove(aid);
-        break;
-#endif /* HAVE_MPI */
-    case CT_Epetra_CrsMatrix_ID:
-        tab_Epetra_CrsMatrix.remove(aid);
-        break;
-    case CT_Epetra_CrsGraph_ID:
-        tab_Epetra_CrsGraph.remove(aid);
-        break;
-    case CT_Epetra_DistObject_ID:
-        tab_Epetra_DistObject.remove(aid);
-        break;
-    case CT_Epetra_Vector_ID:
-        tab_Epetra_Vector.remove(aid);
-        break;
-    case CT_Epetra_Export_ID:
-        tab_Epetra_Export.remove(aid);
-        break;
-    case CT_Epetra_Map_ID:
-        tab_Epetra_Map.remove(aid);
-        break;
-    case CT_Epetra_BlockMap_ID:
-        tab_Epetra_BlockMap.remove(aid);
-        break;
-    case CT_Epetra_Import_ID:
-        tab_Epetra_Import.remove(aid);
-        break;
-    case CT_Epetra_Time_ID:
-        tab_Epetra_Time.remove(aid);
-        break;
-    case CT_Epetra_JadMatrix_ID:
-        tab_Epetra_JadMatrix.remove(aid);
-        break;
-    case CT_Epetra_LinearProblem_ID:
-        tab_Epetra_LinearProblem.remove(aid);
-        break;
-    case CT_Epetra_LAPACK_ID:
-        tab_Epetra_LAPACK.remove(aid);
-        break;
-    case CT_Teuchos_ParameterList_ID:
-        tab_Teuchos_ParameterList.remove(aid);
-        break;
-#ifdef HAVE_CTRILINOS_AMESOS
-    case CT_Amesos_BaseSolver_ID:
-        tab_Amesos_BaseSolver.remove(aid);
-        break;
-#endif /* HAVE_CTRILINOS_AMESOS */
-    case CT_Epetra_FECrsMatrix_ID:
-        tab_Epetra_FECrsMatrix.remove(aid);
-        break;
-    case CT_Epetra_IntSerialDenseVector_ID:
-        tab_Epetra_IntSerialDenseVector.remove(aid);
-        break;
-    case CT_Epetra_SerialDenseMatrix_ID:
-        tab_Epetra_SerialDenseMatrix.remove(aid);
-        break;
-#ifdef HAVE_CTRILINOS_AZTECOO
-    case CT_AztecOO_StatusTest_ID:
-        tab_AztecOO_StatusTest.remove(aid);
-        break;
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    case CT_AztecOO_StatusTestCombo_ID:
-        tab_AztecOO_StatusTestCombo.remove(aid);
-        break;
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    case CT_AztecOO_StatusTestMaxIters_ID:
-        tab_AztecOO_StatusTestMaxIters.remove(aid);
-        break;
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    case CT_AztecOO_StatusTestResNorm_ID:
-        tab_AztecOO_StatusTestResNorm.remove(aid);
-        break;
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_IFPACK
-    case CT_Ifpack_Preconditioner_ID:
-        tab_Ifpack_Preconditioner.remove(aid);
-        break;
-#endif /* HAVE_CTRILINOS_IFPACK */
-    default:
-        throw std::string("invalid table id");
-    }
 }
 
 template <class T>
@@ -1294,60 +924,6 @@ void purge()
     Table<T> *tab = 0;
     getTable(tab);
     tab->purge();
-}
-
-void TableRepos::purgeAll()
-{
-    tab_Epetra_Distributor.purge();
-    tab_Epetra_SerialComm.purge();
-    tab_Epetra_BLAS.purge();
-    tab_Epetra_Comm.purge();
-    tab_Epetra_Operator.purge();
-    tab_Epetra_MultiVector.purge();
-    tab_Epetra_OffsetIndex.purge();
-    tab_Epetra_Object.purge();
-    tab_Epetra_RowMatrix.purge();
-    tab_Epetra_CompObject.purge();
-    tab_Epetra_Directory.purge();
-    tab_Epetra_Flops.purge();
-    tab_Epetra_SrcDistObject.purge();
-#ifdef HAVE_MPI
-    tab_Epetra_MpiComm.purge();
-#endif /* HAVE_MPI */
-    tab_Epetra_CrsMatrix.purge();
-    tab_Epetra_CrsGraph.purge();
-    tab_Epetra_DistObject.purge();
-    tab_Epetra_Vector.purge();
-    tab_Epetra_Export.purge();
-    tab_Epetra_Map.purge();
-    tab_Epetra_BlockMap.purge();
-    tab_Epetra_Import.purge();
-    tab_Epetra_Time.purge();
-    tab_Epetra_JadMatrix.purge();
-    tab_Epetra_LinearProblem.purge();
-    tab_Epetra_LAPACK.purge();
-    tab_Teuchos_ParameterList.purge();
-#ifdef HAVE_CTRILINOS_AMESOS
-    tab_Amesos_BaseSolver.purge();
-#endif /* HAVE_CTRILINOS_AMESOS */
-    tab_Epetra_FECrsMatrix.purge();
-    tab_Epetra_IntSerialDenseVector.purge();
-    tab_Epetra_SerialDenseMatrix.purge();
-#ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTest.purge();
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTestCombo.purge();
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTestMaxIters.purge();
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTestResNorm.purge();
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_IFPACK
-    tab_Ifpack_Preconditioner.purge();
-#endif /* HAVE_CTRILINOS_IFPACK */
 }
 
 

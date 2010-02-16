@@ -43,7 +43,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_COMPOBJECT_H
 
 
-#include "CEpetra_Flops.h"
 #include "CTrilinos_enums.h"
 
 

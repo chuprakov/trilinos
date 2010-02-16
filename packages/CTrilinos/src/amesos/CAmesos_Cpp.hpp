@@ -40,9 +40,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CAMESOS_CPP_HPP
 
 
-#include "Amesos.h"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "Teuchos_RCP.hpp"
+#include "Amesos.h"
 
 
 namespace CAmesos {

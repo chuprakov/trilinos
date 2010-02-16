@@ -32,16 +32,15 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
-#include "CEpetra_BlockMap_Cpp.hpp"
-#include "CEpetra_Distributor_Cpp.hpp"
-#include "CEpetra_Import_Cpp.hpp"
-#include "CEpetra_Import.h"
-#include "Epetra_Import.h"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CEpetra_Import.h"
+#include "CEpetra_Import_Cpp.hpp"
+#include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+#include "CEpetra_BlockMap_Cpp.hpp"
+#include "CEpetra_Distributor_Cpp.hpp"
 
 
 //

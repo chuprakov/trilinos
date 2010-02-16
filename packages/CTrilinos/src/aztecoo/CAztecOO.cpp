@@ -36,19 +36,18 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifdef HAVE_CTRILINOS_AZTECOO
 
 
+#include "CTrilinos_enums.h"
+#include "CAztecOO.h"
+#include "CAztecOO_Cpp.hpp"
+#include "Teuchos_RCP.hpp"
+#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_Table.hpp"
 #include "CEpetra_Operator_Cpp.hpp"
 #include "CEpetra_MultiVector_Cpp.hpp"
 #include "CEpetra_RowMatrix_Cpp.hpp"
 #include "CEpetra_LinearProblem_Cpp.hpp"
 #include "CTeuchos_ParameterList_Cpp.hpp"
-#include "CAztecOO_Cpp.hpp"
-#include "CAztecOO.h"
-#include "AztecOO.h"
-#include "Teuchos_RCP.hpp"
-#include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
-#include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_Table.hpp"
 
 
 namespace {

@@ -36,9 +36,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_SERIALDENSEMATRIX_CPP_HPP
 
 
-#include "Epetra_SerialDenseMatrix.h"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "Teuchos_RCP.hpp"
+#include "Epetra_SerialDenseMatrix.h"
 
 
 namespace CEpetra {

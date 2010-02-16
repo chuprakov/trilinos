@@ -36,9 +36,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CTEUCHOS_PARAMETERENTRY_CPP_HPP
 
 
-#include "Teuchos_ParameterEntry.hpp"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "Teuchos_RCP.hpp"
+#include "Teuchos_ParameterEntry.hpp"
 
 
 namespace CTeuchos {

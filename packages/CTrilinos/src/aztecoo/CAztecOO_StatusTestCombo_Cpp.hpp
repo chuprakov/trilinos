@@ -40,9 +40,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CAZTECOO_STATUSTESTCOMBO_CPP_HPP
 
 
-#include "AztecOO_StatusTestCombo.h"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "Teuchos_RCP.hpp"
+#include "AztecOO_StatusTestCombo.h"
 
 
 namespace CAztecOO {

@@ -32,17 +32,16 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
-#include "CEpetra_CrsGraph_Cpp.hpp"
-#include "CEpetra_Import_Cpp.hpp"
-#include "CEpetra_Export_Cpp.hpp"
-#include "CEpetra_OffsetIndex_Cpp.hpp"
-#include "CEpetra_OffsetIndex.h"
-#include "Epetra_OffsetIndex.h"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CEpetra_OffsetIndex.h"
+#include "CEpetra_OffsetIndex_Cpp.hpp"
+#include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+#include "CEpetra_CrsGraph_Cpp.hpp"
+#include "CEpetra_Import_Cpp.hpp"
+#include "CEpetra_Export_Cpp.hpp"
 
 
 //

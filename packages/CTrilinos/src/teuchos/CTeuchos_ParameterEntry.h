@@ -43,8 +43,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CTEUCHOS_PARAMETERENTRY_H
 
 
-#include "CTeuchos_any.h"
-#include "CTeuchos_ParameterList.h"
 #include "CTrilinos_enums.h"
 
 

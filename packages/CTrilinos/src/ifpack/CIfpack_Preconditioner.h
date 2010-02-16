@@ -47,9 +47,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CIFPACK_PRECONDITIONER_H
 
 
-#include "CTeuchos_ParameterList.h"
-#include "CEpetra_MultiVector.h"
-#include "CEpetra_RowMatrix.h"
 #include "CTrilinos_enums.h"
 
 

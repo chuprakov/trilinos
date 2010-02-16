@@ -32,18 +32,17 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
+#include "CTrilinos_enums.h"
+#include "CEpetra_RowMatrix.h"
+#include "CEpetra_RowMatrix_Cpp.hpp"
+#include "Teuchos_RCP.hpp"
+#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_Vector_Cpp.hpp"
 #include "CEpetra_MultiVector_Cpp.hpp"
 #include "CEpetra_Map_Cpp.hpp"
 #include "CEpetra_Import_Cpp.hpp"
-#include "CEpetra_RowMatrix_Cpp.hpp"
-#include "CEpetra_RowMatrix.h"
-#include "Epetra_RowMatrix.h"
-#include "Teuchos_RCP.hpp"
-#include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
-#include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_TableRepos.hpp"
 
 
 //

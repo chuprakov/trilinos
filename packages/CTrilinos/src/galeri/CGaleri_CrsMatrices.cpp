@@ -36,16 +36,15 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifdef HAVE_CTRILINOS_GALERI
 
 
+#include "CTrilinos_enums.h"
+#include "CGaleri_CrsMatrices.h"
+#include "CGaleri_CrsMatrices_Cpp.hpp"
+#include "Teuchos_RCP.hpp"
+#include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CEpetra_CrsMatrix_Cpp.hpp"
 #include "CEpetra_Map_Cpp.hpp"
 #include "CTeuchos_ParameterList_Cpp.hpp"
-#include "CGaleri_CrsMatrices_Cpp.hpp"
-#include "CGaleri_CrsMatrices.h"
-#include "Galeri_CrsMatrices.h"
-#include "Teuchos_RCP.hpp"
-#include "CTrilinos_enums.h"
-#include "CTrilinos_utils.hpp"
-#include "CTrilinos_utils_templ.hpp"
 
 
 //

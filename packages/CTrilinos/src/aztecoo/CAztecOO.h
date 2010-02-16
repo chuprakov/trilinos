@@ -47,11 +47,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CAZTECOO_H
 
 
-#include "CEpetra_Operator.h"
-#include "CEpetra_MultiVector.h"
-#include "CEpetra_RowMatrix.h"
-#include "CEpetra_LinearProblem.h"
-#include "CTeuchos_ParameterList.h"
 #include "CTrilinos_enums.h"
 
 

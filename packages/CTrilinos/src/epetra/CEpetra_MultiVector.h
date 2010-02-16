@@ -43,8 +43,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_MULTIVECTOR_H
 
 
-#include "CEpetra_BlockMap.h"
-#include "CEpetra_Vector.h"
 #include "CTrilinos_enums.h"
 
 

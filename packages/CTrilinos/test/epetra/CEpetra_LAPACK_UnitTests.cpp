@@ -1,4 +1,5 @@
 /*! \@HEADER */
+#include "CTrilinos_test_utils.hpp"
 /*
 ************************************************************************
 
@@ -38,6 +39,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_test_utils.hpp"
 
 #include "CTrilinos_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"

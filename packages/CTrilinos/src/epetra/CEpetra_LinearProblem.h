@@ -43,10 +43,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_LINEARPROBLEM_H
 
 
-#include "CEpetra_RowMatrix.h"
-#include "CEpetra_MultiVector.h"
-#include "CEpetra_Operator.h"
-#include "CEpetra_Vector.h"
 #include "CTrilinos_enums.h"
 
 

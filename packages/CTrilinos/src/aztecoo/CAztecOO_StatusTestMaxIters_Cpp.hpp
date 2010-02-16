@@ -40,9 +40,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CAZTECOO_STATUSTESTMAXITERS_CPP_HPP
 
 
-#include "AztecOO_StatusTestMaxIters.h"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "Teuchos_RCP.hpp"
+#include "AztecOO_StatusTestMaxIters.h"
 
 
 namespace CAztecOO {

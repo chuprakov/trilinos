@@ -47,9 +47,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CAZTECOO_STATUSTESTRESNORM_H
 
 
-#include "CEpetra_Operator.h"
-#include "CEpetra_Vector.h"
-#include "CEpetra_MultiVector.h"
 #include "CTrilinos_enums.h"
 
 

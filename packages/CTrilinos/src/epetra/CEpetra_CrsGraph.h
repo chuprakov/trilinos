@@ -43,10 +43,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_CRSGRAPH_H
 
 
-#include "CEpetra_BlockMap.h"
-#include "CEpetra_Import.h"
-#include "CEpetra_Export.h"
-#include "CEpetra_Comm.h"
 #include "CTrilinos_enums.h"
 
 

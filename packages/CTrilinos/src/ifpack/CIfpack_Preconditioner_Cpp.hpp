@@ -40,9 +40,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CIFPACK_PRECONDITIONER_CPP_HPP
 
 
-#include "Ifpack_Preconditioner.h"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "Teuchos_RCP.hpp"
+#include "Ifpack_Preconditioner.h"
 
 
 namespace CIfpack {

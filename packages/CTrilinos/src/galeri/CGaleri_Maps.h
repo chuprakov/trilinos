@@ -47,9 +47,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CGALERI_MAPS_H
 
 
-#include "CEpetra_Map.h"
-#include "CEpetra_Comm.h"
-#include "CTeuchos_ParameterList.h"
 #include "CTrilinos_enums.h"
 
 

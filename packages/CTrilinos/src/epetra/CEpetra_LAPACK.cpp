@@ -32,11 +32,10 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
-#include "CEpetra_LAPACK_Cpp.hpp"
-#include "CEpetra_LAPACK.h"
-#include "Epetra_LAPACK.h"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CEpetra_LAPACK.h"
+#include "CEpetra_LAPACK_Cpp.hpp"
+#include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"

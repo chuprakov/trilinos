@@ -47,12 +47,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CGALERI_UTILS_H
 
 
-#include "CEpetra_MultiVector.h"
-#include "CEpetra_BlockMap.h"
-#include "CTeuchos_ParameterList.h"
-#include "CEpetra_LinearProblem.h"
-#include "CEpetra_RowMatrix.h"
-#include "CEpetra_CrsMatrix.h"
 #include "CTrilinos_enums.h"
 
 

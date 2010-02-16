@@ -47,9 +47,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CAMESOS_H
 
 
-#include "CAmesos_BaseSolver.h"
-#include "CEpetra_LinearProblem.h"
-#include "CTeuchos_ParameterList.h"
 #include "CTrilinos_enums.h"
 
 

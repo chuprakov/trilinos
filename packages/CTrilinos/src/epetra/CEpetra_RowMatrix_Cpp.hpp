@@ -36,9 +36,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_ROWMATRIX_CPP_HPP
 
 
-#include "Epetra_RowMatrix.h"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "Teuchos_RCP.hpp"
+#include "Epetra_RowMatrix.h"
 
 
 namespace CEpetra {

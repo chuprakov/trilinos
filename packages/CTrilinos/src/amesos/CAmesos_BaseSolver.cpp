@@ -36,17 +36,16 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifdef HAVE_CTRILINOS_AMESOS
 
 
-#include "CTeuchos_ParameterList_Cpp.hpp"
-#include "CEpetra_LinearProblem_Cpp.hpp"
-#include "CEpetra_Comm_Cpp.hpp"
-#include "CAmesos_BaseSolver_Cpp.hpp"
-#include "CAmesos_BaseSolver.h"
-#include "Amesos_BaseSolver.h"
-#include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CAmesos_BaseSolver.h"
+#include "CAmesos_BaseSolver_Cpp.hpp"
+#include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
+#include "CTeuchos_ParameterList_Cpp.hpp"
+#include "CEpetra_LinearProblem_Cpp.hpp"
+#include "CEpetra_Comm_Cpp.hpp"
 
 
 //

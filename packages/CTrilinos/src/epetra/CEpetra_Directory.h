@@ -43,7 +43,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_DIRECTORY_H
 
 
-#include "CEpetra_BlockMap.h"
 #include "CTrilinos_enums.h"
 
 

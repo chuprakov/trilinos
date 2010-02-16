@@ -43,7 +43,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_TIME_H
 
 
-#include "CEpetra_Comm.h"
 #include "CTrilinos_enums.h"
 
 
