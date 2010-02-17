@@ -40,6 +40,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CEpetra_CrsGraph_Cpp.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_flex_enums.h"
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
@@ -51,11 +52,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 
 namespace {
 
-
-/**********************************************************************
-CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Cast ( 
-  CTrilinos_Universal_ID_t id );
- **********************************************************************/
 
 /**********************************************************************
 CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph_Create_VarPerRow ( 
@@ -71,13 +67,13 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Create_VarPerRow )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(const int NumGlobalElements = 4);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
+  ECHO(CT_Epetra_Map_ID_Flex_t MapID);
+  ECHO(MapID.Epetra_Map = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
 
   int NumIndicesPerRow[NumGlobalElements] = {3, 2, 6, 4};
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create_VarPerRow(
-       CV, MapID, NumIndicesPerRow, FALSE));
+       CV, MapID.Epetra_BlockMap, NumIndicesPerRow, FALSE));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.table, CT_Epetra_CrsGraph_ID);
@@ -98,13 +94,13 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Create )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 5);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
+  ECHO(CT_Epetra_Map_ID_Flex_t MapID);
+  ECHO(MapID.Epetra_Map = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
 
   ECHO(int NumIndicesPerRow = 7);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
-       CV, MapID, NumIndicesPerRow, FALSE));
+       CV, MapID.Epetra_BlockMap, NumIndicesPerRow, FALSE));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.table, CT_Epetra_CrsGraph_ID);
@@ -138,13 +134,13 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Duplicate )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 6);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
+  ECHO(CT_Epetra_Map_ID_Flex_t MapID);
+  ECHO(MapID.Epetra_Map = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
 
   ECHO(int NumIndicesPerRow = 3);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
-       CV, MapID, NumIndicesPerRow, FALSE));
+       CV, MapID.Epetra_BlockMap, NumIndicesPerRow, FALSE));
 
   ECHO(CT_Epetra_CrsGraph_ID_t dupID = Epetra_CrsGraph_Duplicate(selfID));
 
@@ -166,13 +162,13 @@ TEUCHOS_UNIT_TEST( Epetra_CrsGraph , Destroy )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 6);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
+  ECHO(CT_Epetra_Map_ID_Flex_t MapID);
+  ECHO(MapID.Epetra_Map = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
 
   ECHO(int NumIndicesPerRow = 3);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
   ECHO(CT_Epetra_CrsGraph_ID_t selfID = Epetra_CrsGraph_Create(
-       CV, MapID, NumIndicesPerRow, FALSE));
+       CV, MapID.Epetra_BlockMap, NumIndicesPerRow, FALSE));
 
   ECHO(Epetra_CrsGraph_Destroy(&selfID));
 

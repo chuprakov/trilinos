@@ -49,24 +49,6 @@ namespace {
 
 
 /**********************************************************************
-CT_Epetra_Flops_ID_t Epetra_Flops_Cast ( CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
-TEUCHOS_UNIT_TEST( Epetra_Flops , Cast )
-{
-  ECHO(CEpetra_Test_CleanSlate());
-
-  ECHO(CT_Epetra_Flops_ID_t selfID = Epetra_Flops_Create());
-
-  /* This cast should be allowed */
-  ECHO(CT_Epetra_Flops_ID_t dupID = Epetra_Flops_Cast(Epetra_Flops_Abstract(selfID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
-
-  /* This cast should not be allowed */
-  TEST_THROW(Epetra_CompObject_Cast(Epetra_Flops_Abstract(selfID)), Teuchos::m_bad_cast);
-}
-
-/**********************************************************************
 CT_Epetra_Flops_ID_t Epetra_Flops_Create (  );
  **********************************************************************/
 

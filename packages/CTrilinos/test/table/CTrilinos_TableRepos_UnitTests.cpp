@@ -74,6 +74,7 @@ using Teuchos::RangeError;
 using Teuchos::NullReferenceError;
 using Teuchos::m_bad_cast;
 using CTrilinos::CTrilinosTypeMismatchError;
+using CTrilinos::CTrilinosConstCastError;
 using CTrilinos::TableRepos;
 
 
@@ -108,15 +109,6 @@ TEUCHOS_UNIT_TEST( Table, storeBase )
   TEST_EQUALITY_CONST(nonnull(repos.getConst<T1>(id)), true);
   TEST_EQUALITY_CONST(is_null(repos.getConst<T1>(id)), false);
 }
-
-/* this should not compile -- ok */
-/*
-TEUCHOS_UNIT_TEST( Table, storeWrong )
-{
-  ECHO(TableRepos repos);
-  TEST_THROW(repos.store<T3>(new T3, true), CTrilinosTypeMismatchError);
-}
-*/
 
 TEUCHOS_UNIT_TEST( Table, storeNull )
 {
@@ -154,8 +146,8 @@ TEUCHOS_UNIT_TEST( Table, storeConstShared )
   TEST_EQUALITY(id.is_const, TRUE);
   TEST_EQUALITY_CONST(nonnull(repos.getConst<T>(id)), true);
   TEST_EQUALITY_CONST(is_null(repos.getConst<T>(id)), false);
-  TEST_THROW(nonnull(repos.get<T>(id)), CTrilinosTypeMismatchError);
-  TEST_THROW(is_null(repos.get<T>(id)), CTrilinosTypeMismatchError);
+  TEST_THROW(nonnull(repos.get<T>(id)), CTrilinosConstCastError);
+  TEST_THROW(is_null(repos.get<T>(id)), CTrilinosConstCastError);
   ECHO(repos.remove(&id));
   ECHO(delete pobj);
 }
@@ -190,43 +182,12 @@ TEUCHOS_UNIT_TEST( Table, storeConstSharedBase )
   TEST_EQUALITY(id.is_const, TRUE);
   TEST_EQUALITY_CONST(nonnull(repos.getConst<T2>(id)), true);
   TEST_EQUALITY_CONST(is_null(repos.getConst<T2>(id)), false);
-  TEST_THROW(nonnull(repos.get<T2>(id)), CTrilinosTypeMismatchError);
-  TEST_THROW(is_null(repos.get<T2>(id)), CTrilinosTypeMismatchError);
+  TEST_THROW(nonnull(repos.get<T2>(id)), CTrilinosConstCastError);
+  TEST_THROW(is_null(repos.get<T2>(id)), CTrilinosConstCastError);
   TEST_EQUALITY_CONST(nonnull(repos.getConst<T1>(id)), true);
   TEST_EQUALITY_CONST(is_null(repos.getConst<T1>(id)), false);
-  TEST_THROW(nonnull(repos.get<T1>(id)), CTrilinosTypeMismatchError);
-  TEST_THROW(is_null(repos.get<T1>(id)), CTrilinosTypeMismatchError);
-  ECHO(repos.remove(&id));
-  ECHO(delete pobj);
-}
-
-/* this should not compile -- ok */
-/*
-TEUCHOS_UNIT_TEST( Table, storeSharedWrong )
-{
-  ECHO(TableRepos repos);
-  ECHO(T3 *pobj = new T3);
-  TEST_THROW(repos.store<T3>(pobj, false), CTrilinosTypeMismatchError);
-  ECHO(delete pobj);
-}
-*/
-
-TEUCHOS_UNIT_TEST( Table, storeSharedCastConst )
-{
-  ECHO(TableRepos repos);
-  ECHO(T1 *pobj = new T1);
-  ECHO(CTrilinos_Universal_ID_t id = repos.store<T2>(pobj, false));
-  TEST_EQUALITY_CONST(id.index, 0);
-  TEST_EQUALITY(id.table, CLASS_ENUM(T2));
-  TEST_EQUALITY(id.is_const, TRUE);
-  TEST_EQUALITY_CONST(nonnull(repos.getConst<T1>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.getConst<T1>(id)), false);
-  TEST_THROW(nonnull(repos.get<T1>(id)), CTrilinosTypeMismatchError);
-  TEST_THROW(is_null(repos.get<T1>(id)), CTrilinosTypeMismatchError);
-  TEST_EQUALITY_CONST(nonnull(repos.getConst<T2>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.getConst<T2>(id)), false);
-  TEST_THROW(nonnull(repos.get<T2>(id)), CTrilinosTypeMismatchError);
-  TEST_THROW(is_null(repos.get<T2>(id)), CTrilinosTypeMismatchError);
+  TEST_THROW(nonnull(repos.get<T1>(id)), CTrilinosConstCastError);
+  TEST_THROW(is_null(repos.get<T1>(id)), CTrilinosConstCastError);
   ECHO(repos.remove(&id));
   ECHO(delete pobj);
 }
@@ -288,17 +249,6 @@ TEUCHOS_UNIT_TEST( Table, removeInvalid )
 
 #endif /* TEUCHOS_DEBUG */
 
-TEUCHOS_UNIT_TEST( Table, removeWrong )
-{
-  ECHO(TableRepos repos);
-  ECHO(CTrilinos_Universal_ID_t id1 = repos.store<T>(new T, true));
-  ECHO(CTrilinos_Universal_ID_t id);
-  ECHO(id.index = id1.index);
-  ECHO(id.table = CLASS_ENUM(T4));
-  ECHO(id.is_const = FALSE);
-  TEST_THROW(repos.remove(&id), CTrilinosTypeMismatchError);
-}
-
 
 /* Table::get() */
 
@@ -327,17 +277,6 @@ TEUCHOS_UNIT_TEST( Table, getInvalid )
 }
 
 #endif /* TEUCHOS_DEBUG */
-
-TEUCHOS_UNIT_TEST( Table, getWrong )
-{
-  ECHO(TableRepos repos);
-  ECHO(CTrilinos_Universal_ID_t id1 = repos.store<T>(new T, true));
-  ECHO(CTrilinos_Universal_ID_t id);
-  ECHO(id.index = id1.index);
-  ECHO(id.table = CLASS_ENUM(T4));
-  ECHO(id.is_const = FALSE);
-  TEST_THROW(repos.get<T>(id), CTrilinosTypeMismatchError);
-}
 
 
 /* Table::alias() */

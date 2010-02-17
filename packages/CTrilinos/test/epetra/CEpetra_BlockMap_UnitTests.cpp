@@ -50,32 +50,6 @@ namespace {
 
 
 /**********************************************************************
-CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Cast ( 
-  CTrilinos_Univeral_ID_t id );
- **********************************************************************/
-
-TEUCHOS_UNIT_TEST( Epetra_BlockMap , Cast )
-{
-  ECHO(CEpetra_Test_CleanSlate());
-
-  /* Create everything we need to pass to the constructor */
-  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
-
-  ECHO(int NumGlobalElements = 8);
-  ECHO(int ElementSize = 2);
-  ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t selfID = Epetra_BlockMap_Create(
-       NumGlobalElements, ElementSize, IndexBase, CommID));
-
-  /* This cast should be allowed */
-  ECHO(CT_Epetra_BlockMap_ID_t bmapID = Epetra_BlockMap_Cast(Epetra_BlockMap_Abstract(selfID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, bmapID), true);
-
-  /* This cast should not be allowed */
-  TEST_THROW(Epetra_Map_Cast(Epetra_BlockMap_Abstract(selfID)), Teuchos::m_bad_cast);
-}
-
-/**********************************************************************
 CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create ( 
   int NumGlobalElements, int ElementSize, int IndexBase, 
   CT_Epetra_Comm_ID_t CommID );

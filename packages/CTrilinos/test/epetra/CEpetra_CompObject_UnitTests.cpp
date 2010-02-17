@@ -50,24 +50,6 @@ namespace {
 
 
 /**********************************************************************
-CT_Epetra_CompObject_ID_t Epetra_CompObject_Cast ( 
-  CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
-TEUCHOS_UNIT_TEST( Epetra_CompObject , Cast )
-{
-  ECHO(CEpetra_Test_CleanSlate());
-
-  ECHO(CT_Epetra_CompObject_ID_t selfID = Epetra_CompObject_Create());
-
-  /* This cast should be allowed */
-  ECHO(CT_Epetra_CompObject_ID_t coID = Epetra_CompObject_Cast(Epetra_CompObject_Abstract(selfID)));
-
-  /* This cast should not be allowed */
-  TEST_THROW(Epetra_Comm_Cast(Epetra_CompObject_Abstract(selfID)), Teuchos::m_bad_cast);
-}
-
-/**********************************************************************
 CT_Epetra_CompObject_ID_t Epetra_CompObject_Create (  );
  **********************************************************************/
 

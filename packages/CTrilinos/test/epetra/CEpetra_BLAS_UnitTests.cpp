@@ -49,24 +49,6 @@ namespace {
 
 
 /**********************************************************************
-CT_Epetra_BLAS_ID_t Epetra_BLAS_Cast ( CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
-TEUCHOS_UNIT_TEST( Epetra_BLAS , Cast )
-{
-  ECHO(CEpetra_Test_CleanSlate());
-
-  ECHO(CT_Epetra_BLAS_ID_t selfID = Epetra_BLAS_Create());
-
-  /* This cast should be allowed */
-  ECHO(CT_Epetra_BLAS_ID_t blasID = Epetra_BLAS_Cast(Epetra_BLAS_Abstract(selfID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, blasID), true);
-
-  /* This cast should not be allowed */
-  TEST_THROW(Epetra_Comm_Cast(Epetra_BLAS_Abstract(selfID)), Teuchos::m_bad_cast);
-}
-
-/**********************************************************************
 CT_Epetra_BLAS_ID_t Epetra_BLAS_Create (  );
  **********************************************************************/
 

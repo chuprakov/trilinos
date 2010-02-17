@@ -52,17 +52,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 namespace {
 
 
-
-/**********************************************************************
-CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Cast ( 
-  CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
-/**********************************************************************
-CTrilinos_Universal_ID_t Epetra_LinearProblem_Abstract ( 
-  CT_Epetra_LinearProblem_ID_t id );
- **********************************************************************/
-
 /**********************************************************************
 CT_Epetra_LinearProblem_ID_t Epetra_LinearProblem_Create (  );
  **********************************************************************/

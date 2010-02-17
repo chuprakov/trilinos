@@ -38,6 +38,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CEpetra_SrcDistObject_Cpp.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_flex_enums.h"
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
@@ -49,34 +50,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 
 namespace {
 
-
-/**********************************************************************
-CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject_Cast ( 
-  CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
-TEUCHOS_UNIT_TEST( Epetra_SrcDistObject , Cast )
-{
-  ECHO(CEpetra_Test_CleanSlate());
-
-  /* Create everything we need to pass to the constructor */
-  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
-  ECHO(int NumGlobalElements = 6);
-  ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
-  ECHO(boolean zeroOut = FALSE);
-  ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Create(MapID, zeroOut));
-
-  ECHO(CT_Epetra_SrcDistObject_ID_t selfID = Epetra_SrcDistObject_Cast(Epetra_Vector_Abstract(vecID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(vecID, selfID), true);
-  TEST_EQUALITY(selfID.table, CT_Epetra_SrcDistObject_ID);
-  TEST_EQUALITY_CONST(selfID.index, 0);
-
-  /* These casts should be valid */
-  ECHO(CT_Epetra_SrcDistObject_ID_t dupID = Epetra_SrcDistObject_Cast(Epetra_SrcDistObject_Abstract(selfID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
-}
 
 /**********************************************************************
 void Epetra_SrcDistObject_Destroy ( 
@@ -91,17 +64,17 @@ TEUCHOS_UNIT_TEST( Epetra_SrcDistObject , Destroy )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 6);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
+  ECHO(CT_Epetra_Map_ID_Flex_t MapID);
+  ECHO(MapID.Epetra_Map = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
   ECHO(boolean zeroOut = FALSE);
-  ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Create(MapID, zeroOut));
-  ECHO(CT_Epetra_SrcDistObject_ID_t selfID = Epetra_SrcDistObject_Cast(Epetra_Vector_Abstract(vecID)));
+  ECHO(CT_Epetra_Vector_ID_Flex_t vecID);
+  ECHO(vecID.Epetra_Vector = Epetra_Vector_Create(MapID.Epetra_BlockMap, zeroOut));
 
-  ECHO(Epetra_SrcDistObject_Destroy(&selfID));
+  ECHO(Epetra_SrcDistObject_Destroy(&vecID.Epetra_SrcDistObject));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
-  TEST_EQUALITY_CONST(selfID.index, -1);
+  TEST_EQUALITY(vecID.Epetra_SrcDistObject.table, CT_Invalid_ID);
+  TEST_EQUALITY_CONST(vecID.Epetra_SrcDistObject.index, -1);
 }
 
 /**********************************************************************
@@ -117,13 +90,13 @@ TEUCHOS_UNIT_TEST( Epetra_SrcDistObject , Map )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 6);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
+  ECHO(CT_Epetra_Map_ID_Flex_t MapID);
+  ECHO(MapID.Epetra_Map = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
   ECHO(boolean zeroOut = FALSE);
-  ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Create(MapID, zeroOut));
-  ECHO(CT_Epetra_SrcDistObject_ID_t selfID = Epetra_SrcDistObject_Cast(Epetra_Vector_Abstract(vecID)));
+  ECHO(CT_Epetra_Vector_ID_Flex_t vecID);
+  ECHO(vecID.Epetra_Vector = Epetra_Vector_Create(MapID.Epetra_BlockMap, zeroOut));
 
-  ECHO(CT_Epetra_BlockMap_ID_t mapID = Epetra_SrcDistObject_Map(selfID));
+  ECHO(CT_Epetra_BlockMap_ID_t mapID = Epetra_SrcDistObject_Map(vecID.Epetra_SrcDistObject));
 
   /* Now check the result of the call to the wrapper function */
   ECHO(int els = Epetra_BlockMap_NumGlobalElements(mapID));

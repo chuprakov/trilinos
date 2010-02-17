@@ -33,6 +33,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 
 #include <assert.h>
 
+#include "CTrilinos_enums.h"
+#include "CTrilinos_table_man.h"
+
 #include "CEpetra_Comm_Cpp.hpp"
 #include "CEpetra_Comm.h"
 #include "CEpetra_SerialComm_Cpp.hpp"
@@ -78,52 +81,56 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 
 void CEpetra_Test_CleanSlate()
 {
-  CEpetra::purgeCommTables();
-  CEpetra::purgeSerialCommTables();
+  CEpetra::purgeComm();
+  CEpetra::purgeSerialComm();
 #ifdef HAVE_MPI
-  CEpetra::purgeMpiCommTables();
+  CEpetra::purgeMpiComm();
 #endif /* HAVE_MPI */
-  CEpetra::purgeBlockMapTables();
-  CEpetra::purgeMapTables();
-  CEpetra::purgeObjectTables();
-  CEpetra::purgeDistributorTables();
-  CEpetra::purgeDirectoryTables();
-  CEpetra::purgeImportTables();
-  CEpetra::purgeExportTables();
-  CEpetra::purgeOffsetIndexTables();
-  CEpetra::purgeDistObjectTables();
-  CEpetra::purgeSrcDistObjectTables();
-  CEpetra::purgeBLASTables();
-  CEpetra::purgeFlopsTables();
-  CEpetra::purgeCompObjectTables();
-  CEpetra::purgeMultiVectorTables();
-  CEpetra::purgeVectorTables();
-  CEpetra::purgeCrsGraphTables();
-  CEpetra::purgeCrsMatrixTables();
-  CEpetra::purgeOperatorTables();
-  CEpetra::purgeRowMatrixTables();
-  CEpetra::purgeTimeTables();
-  CEpetra::purgeJadMatrixTables();
-  CEpetra::purgeLinearProblemTables();
-  CEpetra::purgeLAPACKTables();
+  CEpetra::purgeBlockMap();
+  CEpetra::purgeMap();
+  CEpetra::purgeObject();
+  CEpetra::purgeDistributor();
+  CEpetra::purgeDirectory();
+  CEpetra::purgeImport();
+  CEpetra::purgeExport();
+  CEpetra::purgeOffsetIndex();
+  CEpetra::purgeDistObject();
+  CEpetra::purgeSrcDistObject();
+  CEpetra::purgeBLAS();
+  CEpetra::purgeFlops();
+  CEpetra::purgeCompObject();
+  CEpetra::purgeMultiVector();
+  CEpetra::purgeVector();
+  CEpetra::purgeCrsGraph();
+  CEpetra::purgeCrsMatrix();
+  CEpetra::purgeOperator();
+  CEpetra::purgeRowMatrix();
+  CEpetra::purgeTime();
+  CEpetra::purgeJadMatrix();
+  CEpetra::purgeLinearProblem();
+  CEpetra::purgeLAPACK();
 #ifdef HAVE_CTRILINOS_AMESOS
-  CAmesos::purgeAmesosTables();
-  CAmesos::purgeBaseSolverTables();
+  CAmesos::purgeAmesos();
+  CAmesos::purgeBaseSolver();
 #endif
-  CTeuchos::purgeanyTables();
-  CTeuchos::purgeCommandLineProcessorTables();
-  CTeuchos::purgeParameterEntryTables();
-  CTeuchos::purgeParameterListTables();
+  CTeuchos::purgeany();
+  CTeuchos::purgeCommandLineProcessor();
+  CTeuchos::purgeParameterEntry();
+  CTeuchos::purgeParameterList();
 }
 
 CT_Epetra_Comm_ID_t
 UnitTest_Create_Comm()
 {
 #ifdef EPETRA_MPI
-  return Epetra_Comm_Cast(Epetra_MpiComm_Abstract(Epetra_MpiComm_Create(MPI_COMM_WORLD)));
+  CT_Epetra_MpiComm_ID_t comm = Epetra_MpiComm_Create(MPI_COMM_WORLD);
+  CTrilinos_Universal_ID_t ucomm = Epetra_MpiComm_Generalize(comm);
 #else /* EPETRA_MPI */
-  return Epetra_Comm_Cast(Epetra_SerialComm_Abstract(Epetra_SerialComm_Create()));
+  CT_Epetra_SerialComm_ID_t comm = Epetra_SerialComm_Create();
+  CTrilinos_Universal_ID_t ucomm = Epetra_SerialComm_Generalize(comm);
 #endif /* EPETRA_MPI */
+  CT_Migrate(&ucomm, CT_Epetra_Comm_ID);
+  return Epetra_Comm_Degeneralize(ucomm);
 }
 
 CT_Epetra_Import_ID_t
@@ -148,8 +155,10 @@ initialize_doxygen_example(CT_Epetra_Comm_ID_t CommID)
   CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID);
 
-  /* Cast it */
-  CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID));
+  /* Migrate it */
+  CTrilinos_Universal_ID_t tmpID = Epetra_Map_Generalize(srcID);
+  CT_Migrate(&tmpID, CT_Epetra_BlockMap_ID);
+  CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Degeneralize(tmpID);
   int els = Epetra_BlockMap_NumMyElements(bsrcID);
   assert(els == NumMyElements);
 
@@ -176,8 +185,10 @@ initialize_doxygen_example(CT_Epetra_Comm_ID_t CommID)
   CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
        NumGlobalElements2, NumMyElements2, MyGlobalElements2, IndexBase, CommID);
 
-  /* Cast it */
-  CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID));
+  /* Migrate it */
+  tmpID = Epetra_Map_Generalize(tarID);
+  CT_Migrate(&tmpID, CT_Epetra_BlockMap_ID);
+  CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Degeneralize(tmpID);
   int els2 = Epetra_BlockMap_NumMyElements(btarID);
   assert(els2 == NumMyElements2);
 

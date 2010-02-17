@@ -54,17 +54,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 namespace {
 
 
-
-/**********************************************************************
-CT_Amesos_BaseSolver_ID_t Amesos_BaseSolver_Cast ( 
-  CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
-/**********************************************************************
-CTrilinos_Universal_ID_t Amesos_BaseSolver_Abstract ( 
-  CT_Amesos_BaseSolver_ID_t id );
- **********************************************************************/
-
 /**********************************************************************
 void Amesos_BaseSolver_Destroy ( CT_Amesos_BaseSolver_ID_t * selfID );
  **********************************************************************/

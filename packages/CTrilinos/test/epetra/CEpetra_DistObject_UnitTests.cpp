@@ -44,6 +44,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CEpetra_DistObject_Cpp.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_flex_enums.h"
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
@@ -55,38 +56,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 
 namespace {
 
-
-/**********************************************************************
-CT_Epetra_DistObject_ID_t Epetra_DistObject_Cast ( 
-  CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
-TEUCHOS_UNIT_TEST( Epetra_DistObject , Cast )
-{
-  ECHO(CEpetra_Test_CleanSlate());
-
-  /* Create everything we need to pass to the constructor */
-  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
-  ECHO(int NumGlobalElements = 6);
-  ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
-  ECHO(boolean zeroOut = FALSE);
-  ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Create(MapID, zeroOut));
-
-  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(Epetra_Vector_Abstract(vecID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(vecID, selfID), true);
-  TEST_EQUALITY(selfID.table, CT_Epetra_DistObject_ID);
-  TEST_EQUALITY_CONST(selfID.index, 0);
-
-  /* These casts should be valid */
-  ECHO(CT_Epetra_DistObject_ID_t dupID = Epetra_DistObject_Cast(Epetra_DistObject_Abstract(selfID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
-  ECHO(CT_Epetra_SrcDistObject_ID_t sdoID = Epetra_SrcDistObject_Cast(Epetra_DistObject_Abstract(selfID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, sdoID), true);
-  ECHO(CT_Epetra_DistObject_ID_t dupID2 = Epetra_DistObject_Cast(Epetra_SrcDistObject_Abstract(sdoID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(dupID2, sdoID), true);
-}
 
 /**********************************************************************
 void Epetra_DistObject_Destroy ( 
@@ -101,17 +70,17 @@ TEUCHOS_UNIT_TEST( Epetra_DistObject , Destroy )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 6);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
+  ECHO(CT_Epetra_Map_ID_Flex_t MapID);
+  ECHO(MapID.Epetra_Map = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
   ECHO(boolean zeroOut = FALSE);
-  ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Create(MapID, zeroOut));
-  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(Epetra_Vector_Abstract(vecID)))
+  ECHO(CT_Epetra_Vector_ID_Flex_t vecID);
+  ECHO(vecID.Epetra_Vector = Epetra_Vector_Create(MapID.Epetra_BlockMap, zeroOut));
 
-  ECHO(Epetra_DistObject_Destroy(&selfID));
+  ECHO(Epetra_DistObject_Destroy(&vecID.Epetra_DistObject));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
-  TEST_EQUALITY_CONST(selfID.index, -1);
+  TEST_EQUALITY(vecID.Epetra_DistObject.table, CT_Invalid_ID);
+  TEST_EQUALITY_CONST(vecID.Epetra_DistObject.index, -1);
 }
 
 /**********************************************************************
@@ -155,13 +124,13 @@ TEUCHOS_UNIT_TEST( Epetra_DistObject , Map )
   ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
   ECHO(int NumGlobalElements = 9);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
+  ECHO(CT_Epetra_Map_ID_Flex_t MapID);
+  ECHO(MapID.Epetra_Map = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
   ECHO(boolean zeroOut = FALSE);
-  ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Create(MapID, zeroOut));
-  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(Epetra_Vector_Abstract(vecID)));
+  ECHO(CT_Epetra_Vector_ID_Flex_t vecID);
+  ECHO(vecID.Epetra_Vector = Epetra_Vector_Create(MapID.Epetra_BlockMap, zeroOut));
 
-  ECHO(CT_Epetra_BlockMap_ID_t mapID = Epetra_DistObject_Map(selfID));
+  ECHO(CT_Epetra_BlockMap_ID_t mapID = Epetra_DistObject_Map(vecID.Epetra_DistObject));
 
   /* Now check the result of the call to the wrapper function */
   ECHO(int els = Epetra_BlockMap_NumGlobalElements(mapID));
@@ -182,13 +151,13 @@ TEUCHOS_UNIT_TEST( Epetra_DistObject , Comm )
   ECHO(int NumProc = Epetra_Comm_NumProc(CommID));
   ECHO(int NumGlobalElements = 7);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
+  ECHO(CT_Epetra_Map_ID_Flex_t MapID);
+  ECHO(MapID.Epetra_Map = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
   ECHO(boolean zeroOut = FALSE);
-  ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Create(MapID, zeroOut));
-  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(Epetra_Vector_Abstract(vecID)));
+  ECHO(CT_Epetra_Vector_ID_Flex_t vecID);
+  ECHO(vecID.Epetra_Vector = Epetra_Vector_Create(MapID.Epetra_BlockMap, zeroOut));
 
-  ECHO(CT_Epetra_Comm_ID_t cID = Epetra_DistObject_Comm(selfID));
+  ECHO(CT_Epetra_Comm_ID_t cID = Epetra_DistObject_Comm(vecID.Epetra_DistObject));
 
   /* Now check the result of the call to the wrapper function */
   ECHO(int np = Epetra_Comm_NumProc(cID));
@@ -209,13 +178,13 @@ TEUCHOS_UNIT_TEST( Epetra_DistObject , DistributedGlobal )
   ECHO(int NumProc = Epetra_Comm_NumProc(CommID));
   ECHO(int NumGlobalElements = 7);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
+  ECHO(CT_Epetra_Map_ID_Flex_t MapID);
+  ECHO(MapID.Epetra_Map = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
   ECHO(boolean zeroOut = FALSE);
-  ECHO(CT_Epetra_Vector_ID_t vecID = Epetra_Vector_Create(MapID, zeroOut));
-  ECHO(CT_Epetra_DistObject_ID_t selfID = Epetra_DistObject_Cast(Epetra_Vector_Abstract(vecID)));
+  ECHO(CT_Epetra_Vector_ID_Flex_t vecID);
+  ECHO(vecID.Epetra_Vector = Epetra_Vector_Create(MapID.Epetra_BlockMap, zeroOut));
 
-  ECHO(boolean dg = Epetra_DistObject_DistributedGlobal(selfID));
+  ECHO(boolean dg = Epetra_DistObject_DistributedGlobal(vecID.Epetra_DistObject));
 
   /* Now check the result of the call to the wrapper function */
   boolean isdg = (NumProc > 1 ? TRUE : FALSE);

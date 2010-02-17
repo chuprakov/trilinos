@@ -56,11 +56,6 @@ namespace {
 
 
 /**********************************************************************
-CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Cast ( 
-  CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
-/**********************************************************************
 CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow ( 
   CT_Epetra_DataAccess_E_t CV, CT_Epetra_Map_ID_t RowMapID, 
   const int * NumEntriesPerRow, boolean StaticProfile );

@@ -162,12 +162,12 @@ template <class T>
 const Teuchos::RCP<T> Table<T>::get(CTrilinos_Universal_ID_t id)
 {
     if (id.is_const)
-        throw CTrilinosTypeMismatchError(typeMismatchMsg(id, std::string("get()")));
+        throw CTrilinosConstCastError(typeMismatchMsg(id, std::string("get()")));
 
     if (id.table == ttab)
         return sot.getRCP(id.index);
 
-    throw CTrilinosTypeMismatchError(typeMismatchMsg(id, std::string("get()")));
+    throw CTrilinosWrongTableError(typeMismatchMsg(id, std::string("get()")));
     return Teuchos::null;
 }
 
@@ -177,12 +177,12 @@ template <class TT>
 const Teuchos::RCP<TT> Table<T>::get(CTrilinos_Universal_ID_t id)
 {
     if (id.is_const)
-        throw CTrilinosTypeMismatchError(typeMismatchMsg(id, std::string("get()")));
+        throw CTrilinosConstCastError(typeMismatchMsg(id, std::string("get()")));
 
     if (id.table == ttab)
         return Teuchos::rcp_dynamic_cast<TT,T>(sot.getRCP(id.index), true);
 
-    throw CTrilinosTypeMismatchError(typeMismatchMsg(id, std::string("get()")));
+    throw CTrilinosWrongTableError(typeMismatchMsg(id, std::string("get()")));
     return Teuchos::null;
 }
 
@@ -197,7 +197,7 @@ const Teuchos::RCP<const T> Table<T>::getConst(CTrilinos_Universal_ID_t id)
             return sot.getRCP(id.index);
     }
 
-    throw CTrilinosTypeMismatchError(typeMismatchMsg(id, std::string("getConst()")));
+    throw CTrilinosWrongTableError(typeMismatchMsg(id, std::string("getConst()")));
     return Teuchos::null;
 }
 
@@ -213,7 +213,7 @@ const Teuchos::RCP<const TT> Table<T>::getConst(CTrilinos_Universal_ID_t id)
             return Teuchos::rcp_dynamic_cast<TT,T>(sot.getRCP(id.index), true);
     }
 
-    throw CTrilinosTypeMismatchError(typeMismatchMsg(id, std::string("getConst()")));
+    throw CTrilinosWrongTableError(typeMismatchMsg(id, std::string("getConst()")));
     return Teuchos::null;
 }
 
@@ -350,7 +350,7 @@ int Table<T>::remove(CTrilinos_Universal_ID_t * id)
             ret = (sot.removeRCP(id->index) < 0 ? -1 : 0);
         if (ret == 0) id->table = CT_Invalid_ID;
     } else {
-        throw CTrilinosTypeMismatchError(typeMismatchMsg(*id, std::string("remove()")));
+        throw CTrilinosWrongTableError(typeMismatchMsg(*id, std::string("remove()")));
     }
 
     return ret;

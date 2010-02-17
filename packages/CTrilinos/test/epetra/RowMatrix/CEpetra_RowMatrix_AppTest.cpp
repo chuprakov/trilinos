@@ -97,15 +97,13 @@ int checkMultiVectors( CT_Epetra_MultiVector_ID_t & X, CT_Epetra_MultiVector_ID_
 
 int check(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & B, bool verbose);
 
-int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & JadA, CT_Epetra_Map_ID_t & Map, 
-		     CT_Epetra_Vector_ID_t & q, CT_Epetra_Vector_ID_t & z, CT_Epetra_Vector_ID_t & resid, bool verbose);
+int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & JadA,
+                     CT_Epetra_Map_ID_Flex_t & Map, CT_Epetra_Vector_ID_Flex_t & q,
+                     CT_Epetra_Vector_ID_Flex_t & z, CT_Epetra_Vector_ID_Flex_t & resid, bool verbose);
 
-int power_method(boolean TransA, CT_Epetra_RowMatrix_ID_t& A, 
-		 CT_Epetra_Vector_ID_t& q,
-		 CT_Epetra_Vector_ID_t& z0, 
-		 CT_Epetra_Vector_ID_t& resid, 
-		 double * lambda, int niters, double tolerance,
-		 bool verbose);
+int power_method(boolean TransA, CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_Vector_ID_Flex_t& q,
+                 CT_Epetra_Vector_ID_Flex_t& z0, CT_Epetra_Vector_ID_Flex_t& resid, double* lambda,
+                 int niters, double tolerance, bool verbose);
 
 int main(int argc, char *argv[])
 {
@@ -118,12 +116,14 @@ int main(int argc, char *argv[])
   int rank; // My process ID
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  CT_Epetra_Comm_ID_t Comm = Epetra_Comm_Cast(Epetra_MpiComm_Abstract(Epetra_MpiComm_Create( MPI_COMM_WORLD )));
+  CT_Epetra_MpiComm_ID_Flex_t Comm;
+  Comm.Epetra_MpiComm = Epetra_MpiComm_Create( MPI_COMM_WORLD );
 
 #else
 
   int rank = 0;
-  CT_Epetra_Comm_ID_t Comm = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(Epetra_SerialComm_Create()));
+  CT_Epetra_SerialComm_ID_Flex_t Comm;
+  Comm.Epetra_SerialComm = Epetra_SerialComm_Create();
 
 #endif
 
@@ -163,12 +163,12 @@ int main(int argc, char *argv[])
 
   // Construct a Map that puts approximately the same Number of equations on each processor
 
-  CT_Epetra_Map_ID_t Map = Epetra_Map_Create_Linear(NumGlobalEquations, NumMyEquations, 0, Comm);
-  CT_Epetra_BlockMap_ID_t bMap = Epetra_BlockMap_Cast(Epetra_Map_Abstract(Map));
+  CT_Epetra_Map_ID_Flex_t Map;
+  Map.Epetra_Map = Epetra_Map_Create_Linear(NumGlobalEquations, NumMyEquations, 0, Comm);
   
   // Get update list and number of local equations from newly created Map
-  vector<int> MyGlobalElements(Epetra_BlockMap_NumMyElements(bMap));
-  Epetra_BlockMap_MyGlobalElements_Fill(bMap, &MyGlobalElements[0]);
+  vector<int> MyGlobalElements(Epetra_BlockMap_NumMyElements(Map.Epetra_BlockMap));
+  Epetra_BlockMap_MyGlobalElements_Fill(Map.Epetra_BlockMap, &MyGlobalElements[0]);
 
   // Create an integer vector NumNz that is used to build the Petra Matrix.
   // NumNz[i] is the Number of OFF-DIAGONAL term for the ith global equation on this processor
@@ -186,10 +186,11 @@ int main(int argc, char *argv[])
 
   // Create a Epetra_Matrix
 
-  CT_Epetra_CrsMatrix_ID_t A = Epetra_CrsMatrix_Create_VarPerRow(
+  CT_Epetra_CrsMatrix_ID_Flex_t A;
+  A.Epetra_CrsMatrix = Epetra_CrsMatrix_Create_VarPerRow(
       CT_Epetra_DataAccess_E_Copy, Map, &NumNz[0], FALSE);
-  EPETRA_TEST_ERR(Epetra_CrsMatrix_IndicesAreGlobal(A),ierr);
-  EPETRA_TEST_ERR(Epetra_CrsMatrix_IndicesAreLocal(A),ierr);
+  EPETRA_TEST_ERR(Epetra_CrsMatrix_IndicesAreGlobal(A.Epetra_CrsMatrix),ierr);
+  EPETRA_TEST_ERR(Epetra_CrsMatrix_IndicesAreLocal(A.Epetra_CrsMatrix),ierr);
   
   // Add  rows one-at-a-time
   // Need some vectors to help
@@ -218,61 +219,48 @@ int main(int argc, char *argv[])
 			Indices[1] = MyGlobalElements[i]+1;
 			NumEntries = 2;
 		}
-		forierr += !(Epetra_CrsMatrix_InsertGlobalValues(A, MyGlobalElements[i], NumEntries, &Values[0], &Indices[0])==0);
-		forierr += !(Epetra_CrsMatrix_InsertGlobalValues(A, MyGlobalElements[i], 1, &two, &MyGlobalElements[i])>0); // Put in the diagonal entry
+		forierr += !(Epetra_CrsMatrix_InsertGlobalValues(A.Epetra_CrsMatrix,
+                             MyGlobalElements[i], NumEntries, &Values[0], &Indices[0])==0);
+		forierr += !(Epetra_CrsMatrix_InsertGlobalValues(A.Epetra_CrsMatrix,
+                             MyGlobalElements[i], 1, &two, &MyGlobalElements[i])>0); // Put in the diagonal entry
   }
   EPETRA_TEST_ERR(forierr,ierr);
 
   // Finish up
-  Epetra_CrsMatrix_FillComplete(A, TRUE);
-  Epetra_CrsMatrix_OptimizeStorage(A);
+  Epetra_CrsMatrix_FillComplete(A.Epetra_CrsMatrix, TRUE);
+  Epetra_CrsMatrix_OptimizeStorage(A.Epetra_CrsMatrix);
 
-  CT_Epetra_RowMatrix_ID_t rA = Epetra_RowMatrix_Cast(Epetra_CrsMatrix_Abstract(A));
-  CT_Epetra_JadMatrix_ID_t JadA = Epetra_JadMatrix_Create(rA);
-  CT_Epetra_RowMatrix_ID_t rJadA = Epetra_RowMatrix_Cast(Epetra_JadMatrix_Abstract(JadA));
-  CT_Epetra_JadMatrix_ID_t JadA1 = Epetra_JadMatrix_Create(rA);
-  CT_Epetra_RowMatrix_ID_t rJadA1 = Epetra_RowMatrix_Cast(Epetra_JadMatrix_Abstract(JadA1));
-  CT_Epetra_JadMatrix_ID_t JadA2 = Epetra_JadMatrix_Create(rA);
-  CT_Epetra_RowMatrix_ID_t rJadA2 = Epetra_RowMatrix_Cast(Epetra_JadMatrix_Abstract(JadA2));
+  CT_Epetra_JadMatrix_ID_Flex_t JadA, JadA1, JadA2;
+  JadA.Epetra_JadMatrix = Epetra_JadMatrix_Create(A.Epetra_RowMatrix);
+  JadA1.Epetra_JadMatrix = Epetra_JadMatrix_Create(A.Epetra_RowMatrix);
+  JadA2.Epetra_JadMatrix = Epetra_JadMatrix_Create(A.Epetra_RowMatrix);
 
   // Create vectors for Power method
 
-  CT_Epetra_Vector_ID_t q = Epetra_Vector_Create(bMap, TRUE);
-  CT_Epetra_Vector_ID_t z = Epetra_Vector_Create(bMap, TRUE);
-  CT_Epetra_MultiVector_ID_t mz = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(z));
-  Epetra_MultiVector_Random(mz);
-  CT_Epetra_Vector_ID_t resid = Epetra_Vector_Create(bMap, TRUE);
+  CT_Epetra_Vector_ID_Flex_t q, z, resid;
+  q.Epetra_Vector = Epetra_Vector_Create(Map.Epetra_BlockMap, TRUE);
+  z.Epetra_Vector = Epetra_Vector_Create(Map.Epetra_BlockMap, TRUE);
+  Epetra_MultiVector_Random(z.Epetra_MultiVector);
+  resid.Epetra_Vector = Epetra_Vector_Create(Map.Epetra_BlockMap, TRUE);
 
   CT_Epetra_Flops_ID_t flopcounter = Epetra_Flops_Create();
+  Epetra_CompObject_SetFlopCounter(A.Epetra_CompObject, flopcounter);
 
-  CT_Epetra_CompObject_ID_t coA = Epetra_CompObject_Cast(Epetra_CrsMatrix_Abstract(A));
-  Epetra_CompObject_SetFlopCounter(coA, flopcounter);
+  Epetra_CompObject_SetFlopCounter_Matching(q.Epetra_CompObject, A.Epetra_CompObject);
+  Epetra_CompObject_SetFlopCounter_Matching(z.Epetra_CompObject, A.Epetra_CompObject);
+  Epetra_CompObject_SetFlopCounter_Matching(resid.Epetra_CompObject, A.Epetra_CompObject);
 
-  CT_Epetra_CompObject_ID_t coq = Epetra_CompObject_Cast(Epetra_Vector_Abstract(q));
-  Epetra_CompObject_SetFlopCounter_Matching(coq, coA);
-
-  CT_Epetra_CompObject_ID_t coz = Epetra_CompObject_Cast(Epetra_Vector_Abstract(z));
-  Epetra_CompObject_SetFlopCounter_Matching(coz, coA);
-
-  CT_Epetra_CompObject_ID_t coresid = Epetra_CompObject_Cast(Epetra_Vector_Abstract(resid));
-  Epetra_CompObject_SetFlopCounter_Matching(coresid, coA);
-
-  CT_Epetra_CompObject_ID_t coJadA = Epetra_CompObject_Cast(Epetra_JadMatrix_Abstract(JadA));
-  Epetra_CompObject_SetFlopCounter_Matching(coJadA, coA);
-
-  CT_Epetra_CompObject_ID_t coJadA1 = Epetra_CompObject_Cast(Epetra_JadMatrix_Abstract(JadA1));
-  Epetra_CompObject_SetFlopCounter_Matching(coJadA1, coA);
-
-  CT_Epetra_CompObject_ID_t coJadA2 = Epetra_CompObject_Cast(Epetra_JadMatrix_Abstract(JadA2));
-  Epetra_CompObject_SetFlopCounter_Matching(coJadA2, coA);
+  Epetra_CompObject_SetFlopCounter_Matching(JadA.Epetra_CompObject, A.Epetra_CompObject);
+  Epetra_CompObject_SetFlopCounter_Matching(JadA1.Epetra_CompObject, A.Epetra_CompObject);
+  Epetra_CompObject_SetFlopCounter_Matching(JadA2.Epetra_CompObject, A.Epetra_CompObject);
   
 
   if (verbose) cout << "=======================================" << endl
 		    << "Testing Jad using CrsMatrix as input..." << endl
 		    << "=======================================" << endl;
 
-  Epetra_CompObject_ResetFlops(coA);
-  powerMethodTests(rA, rJadA, Map, q, z, resid, verbose);
+  Epetra_CompObject_ResetFlops(A.Epetra_CompObject);
+  powerMethodTests(A.Epetra_RowMatrix, JadA.Epetra_RowMatrix, Map, q, z, resid, verbose);
 
   // Increase diagonal dominance
 
@@ -280,25 +268,26 @@ int main(int argc, char *argv[])
 		    << endl;
 
   
-  if (Epetra_CrsMatrix_MyGlobalRow(A, 0)) {
-    int numvals = Epetra_CrsMatrix_NumGlobalEntries(A, 0);
+  if (Epetra_CrsMatrix_MyGlobalRow(A.Epetra_CrsMatrix, 0)) {
+    int numvals = Epetra_CrsMatrix_NumGlobalEntries(A.Epetra_CrsMatrix, 0);
     vector<double> Rowvals(numvals);
     vector<int> Rowinds(numvals);
-    Epetra_CrsMatrix_ExtractGlobalRowCopy_WithIndices(A, 0, numvals, &numvals, &Rowvals[0], &Rowinds[0]); // Get A[0,0]
+    Epetra_CrsMatrix_ExtractGlobalRowCopy_WithIndices(A.Epetra_CrsMatrix, 0,
+        numvals, &numvals, &Rowvals[0], &Rowinds[0]); // Get A[0,0]
 
     for (i=0; i<numvals; i++) if (Rowinds[i] == 0) Rowvals[i] *= 10.0;
     
-    Epetra_CrsMatrix_ReplaceGlobalValues(A, 0, numvals, &Rowvals[0], &Rowinds[0]);
+    Epetra_CrsMatrix_ReplaceGlobalValues(A.Epetra_CrsMatrix, 0, numvals, &Rowvals[0], &Rowinds[0]);
   }
-  Epetra_JadMatrix_UpdateValues(JadA, rA, FALSE);
-  Epetra_CompObject_ResetFlops(coA);
-  powerMethodTests(rA, rJadA, Map, q, z, resid, verbose);
+  Epetra_JadMatrix_UpdateValues(JadA.Epetra_JadMatrix, A.Epetra_RowMatrix, FALSE);
+  Epetra_CompObject_ResetFlops(A.Epetra_CompObject);
+  powerMethodTests(A.Epetra_RowMatrix, JadA.Epetra_RowMatrix, Map, q, z, resid, verbose);
 
   if (verbose) cout << "================================================================" << endl
 		          << "Testing Jad using Jad matrix as input matrix for construction..." << endl
 		          << "================================================================" << endl;
-  Epetra_CompObject_ResetFlops(coJadA1);
-  powerMethodTests(rJadA1, rJadA2, Map, q, z, resid, verbose);
+  Epetra_CompObject_ResetFlops(JadA1.Epetra_JadMatrix);
+  powerMethodTests(JadA1.Epetra_RowMatrix, JadA2.Epetra_RowMatrix, Map, q, z, resid, verbose);
 
 #ifdef HAVE_MPI
   MPI_Finalize() ;
@@ -307,8 +296,9 @@ int main(int argc, char *argv[])
 return ierr ;
 }
 
-int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & JadA, CT_Epetra_Map_ID_t & Map, 
-		     CT_Epetra_Vector_ID_t & q, CT_Epetra_Vector_ID_t & z, CT_Epetra_Vector_ID_t & resid, bool verbose) {
+int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & JadA,
+                     CT_Epetra_Map_ID_Flex_t & Map, CT_Epetra_Vector_ID_Flex_t & q,
+                     CT_Epetra_Vector_ID_Flex_t & z, CT_Epetra_Vector_ID_Flex_t & resid, bool verbose) {
 
   // variable needed for iteration
   double lambda = 0.0;
@@ -321,18 +311,14 @@ int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & Ja
 	
   // Iterate
 
-  CT_Epetra_BlockMap_ID_t bMap = Epetra_BlockMap_Cast(Epetra_Map_Abstract(Map));
-  CT_Epetra_Comm_ID_t Comm = Epetra_BlockMap_Comm(bMap);
-  Epetra_BlockMap_Destroy(&bMap);
+  CT_Epetra_Comm_ID_t Comm = Epetra_BlockMap_Comm(Map.Epetra_BlockMap);
   CT_Epetra_Time_ID_t timer = Epetra_Time_Create(Comm);
   Epetra_Comm_Destroy(&Comm);
 	
-  CT_Epetra_CompObject_ID_t coq = Epetra_CompObject_Cast(Epetra_Vector_Abstract(q));
-
   double startTime = Epetra_Time_ElapsedTime(timer);
   EPETRA_TEST_ERR(power_method(FALSE, A, q, z, resid, &lambda, niters, tolerance, verbose),ierr);
   double elapsed_time = Epetra_Time_ElapsedTime(timer) - startTime;
-  double total_flops = Epetra_CompObject_Flops(coq);
+  double total_flops = Epetra_CompObject_Flops(q.Epetra_CompObject);
   double MFLOPs = total_flops/elapsed_time/1000000.0;
   double lambdaref = lambda;
   double flopsref = total_flops;
@@ -345,7 +331,7 @@ int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & Ja
   startTime = Epetra_Time_ElapsedTime(timer);
   EPETRA_TEST_ERR(power_method(FALSE, JadA, q, z, resid, &lambda, niters, tolerance, verbose),ierr);
   elapsed_time = Epetra_Time_ElapsedTime(timer) - startTime;
-  total_flops = Epetra_CompObject_Flops(coq);
+  total_flops = Epetra_CompObject_Flops(q.Epetra_CompObject);
   MFLOPs = total_flops/elapsed_time/1000000.0;
 
   if (verbose) 
@@ -366,7 +352,7 @@ int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & Ja
   startTime = Epetra_Time_ElapsedTime(timer);
   EPETRA_TEST_ERR(power_method(TRUE, A, q, z, resid, &lambda, niters, tolerance, verbose),ierr);
   elapsed_time = Epetra_Time_ElapsedTime(timer) - startTime;
-  total_flops = Epetra_CompObject_Flops(coq);
+  total_flops = Epetra_CompObject_Flops(q.Epetra_CompObject);
   MFLOPs = total_flops/elapsed_time/1000000.0;
   lambdaref = lambda;
   flopsref = total_flops;
@@ -379,7 +365,7 @@ int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & Ja
   startTime = Epetra_Time_ElapsedTime(timer);
   EPETRA_TEST_ERR(power_method(TRUE, JadA, q, z, resid, &lambda, niters, tolerance, verbose),ierr);
   elapsed_time = Epetra_Time_ElapsedTime(timer) - startTime;
-  total_flops = Epetra_CompObject_Flops(coq);
+  total_flops = Epetra_CompObject_Flops(q.Epetra_CompObject);
   MFLOPs = total_flops/elapsed_time/1000000.0;
 
   if (verbose) 
@@ -391,34 +377,29 @@ int powerMethodTests(CT_Epetra_RowMatrix_ID_t & A, CT_Epetra_RowMatrix_ID_t & Ja
 
   EPETRA_TEST_ERR(check(A, JadA, verbose),ierr);
 
-  Epetra_CompObject_Destroy(&coq);
-
   return(0);
 }
-int power_method(boolean TransA, CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_Vector_ID_t& q, CT_Epetra_Vector_ID_t& z0, 
-		 CT_Epetra_Vector_ID_t& resid, double* lambda, int niters, double tolerance, bool verbose) 
+int power_method(boolean TransA, CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_Vector_ID_Flex_t& q,
+                 CT_Epetra_Vector_ID_Flex_t& z0, CT_Epetra_Vector_ID_Flex_t& resid, double* lambda,
+                 int niters, double tolerance, bool verbose) 
 {  
 	
   // Fill z with random Numbers
-  CT_Epetra_Vector_ID_t z = Epetra_Vector_Duplicate(z0);
+  CT_Epetra_Vector_ID_Flex_t z = Epetra_Vector_Duplicate(z0.Epetra_Vector);
 	
-  CT_Epetra_MultiVector_ID_t mz = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(z));
-  CT_Epetra_MultiVector_ID_t mq = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(q));
-  CT_Epetra_MultiVector_ID_t mresid = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(resid));
-
   // variable needed for iteration
   double normz, residual;
 
   int ierr = 1;
 	
   for(int iter = 0; iter < niters; iter++) {
-		Epetra_MultiVector_Norm2(mz, &normz); // Compute 2-norm of z
-		Epetra_MultiVector_Scale(mq, 1.0/normz, mz);
-		Epetra_RowMatrix_Multiply(A, TransA, mq, mz); // Compute z = A*q // SEGFAULT HAPPENS HERE
-		Epetra_MultiVector_Dot(mq, mz, lambda); // Approximate maximum eigenvaluE
+		Epetra_MultiVector_Norm2(z.Epetra_MultiVector, &normz); // Compute 2-norm of z
+		Epetra_MultiVector_Scale(q.Epetra_MultiVector, 1.0/normz, z.Epetra_MultiVector);
+		Epetra_RowMatrix_Multiply(A, TransA, q.Epetra_MultiVector, z.Epetra_MultiVector); // Compute z = A*q // SEGFAULT HAPPENS HERE
+		Epetra_MultiVector_Dot(q.Epetra_MultiVector, z.Epetra_MultiVector, lambda); // Approximate maximum eigenvaluE
 		if(iter%100==0 || iter+1==niters) {
-			Epetra_MultiVector_Update_WithAB(mresid, 1.0, mz, -(*lambda), mq, 0.0); // Compute A*q - lambda*q
-			Epetra_MultiVector_Norm2(mresid, &residual);
+			Epetra_MultiVector_Update_WithAB(resid.Epetra_MultiVector, 1.0, z.Epetra_MultiVector, -(*lambda), q.Epetra_MultiVector, 0.0); // Compute A*q - lambda*q
+			Epetra_MultiVector_Norm2(resid.Epetra_MultiVector, &residual);
 			if(verbose) cout << "Iter = " << iter << "  Lambda = " << *lambda 
 											 << "  Residual of A*q - lambda*q = " << residual << endl;
 		}
@@ -428,11 +409,7 @@ int power_method(boolean TransA, CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_Vector_I
 		}
 	}
 
-  Epetra_MultiVector_Destroy(&mresid);
-  Epetra_MultiVector_Destroy(&mq);
-  Epetra_MultiVector_Destroy(&mz);
-
-  Epetra_Vector_Destroy(&z);
+  Epetra_Vector_Destroy(&z.Epetra_Vector);
 
   return(ierr);
 }

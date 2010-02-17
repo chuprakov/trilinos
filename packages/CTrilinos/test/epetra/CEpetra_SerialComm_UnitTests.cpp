@@ -40,6 +40,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CEpetra_SerialComm_Cpp.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_flex_enums.h"
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
@@ -51,29 +52,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 
 namespace {
 
-
-/**********************************************************************
-CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Cast ( 
-  CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
-TEUCHOS_UNIT_TEST( Epetra_SerialComm , Cast )
-{
-  ECHO(CEpetra_Test_CleanSlate());
-
-  /* This cast should be allowed */
-  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
-  ECHO(CT_Epetra_SerialComm_ID_t dupID = Epetra_SerialComm_Cast(Epetra_SerialComm_Abstract(selfID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
-
-  /* These casts should be allowed */
-  ECHO(CT_Epetra_Comm_ID_t commID = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(selfID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, commID), true);
-  ECHO(CT_Epetra_SerialComm_ID_t serialcommID = Epetra_SerialComm_Cast(Epetra_Comm_Abstract(commID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(commID, serialcommID), true);
-
-  /* If no exceptions thrown, then test was successful */
-}
 
 /**********************************************************************
 CT_Epetra_SerialComm_ID_t Epetra_SerialComm_Create (  );
@@ -703,14 +681,15 @@ TEUCHOS_UNIT_TEST( Epetra_SerialComm , CreateDirectory )
 {
   ECHO(CEpetra_Test_CleanSlate());
 
-  ECHO(CT_Epetra_SerialComm_ID_t selfID = Epetra_SerialComm_Create());
-  ECHO(CT_Epetra_Comm_ID_t CommID = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(selfID)));
+  ECHO(CT_Epetra_SerialComm_ID_Flex_t CommID);
+  ECHO(CommID.Epetra_SerialComm = Epetra_SerialComm_Create());
 
   ECHO(int NumGlobalElements = 9);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
-       Epetra_Map_Create(NumGlobalElements, IndexBase, CommID))));
-  ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_SerialComm_CreateDirectory(selfID, MapID));
+  ECHO(CT_Epetra_Map_ID_Flex_t MapID);
+  ECHO(MapID.Epetra_Map = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID.Epetra_Comm));
+  ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_SerialComm_CreateDirectory(
+      CommID.Epetra_SerialComm, MapID.Epetra_BlockMap));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(dirID.table, CT_Epetra_Directory_ID);

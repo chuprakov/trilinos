@@ -51,24 +51,6 @@ namespace {
 
 
 /**********************************************************************
-CT_Epetra_Object_ID_t Epetra_Object_Cast ( 
-  CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
-TEUCHOS_UNIT_TEST ( Epetra_Object , Cast )
-{
-  ECHO(CEpetra_Test_CleanSlate());
-
-  ECHO(int TracebackModeIn = -1);
-  ECHO(boolean set_label = TRUE);
-  ECHO(CT_Epetra_Object_ID_t selfID = Epetra_Object_Create(TracebackModeIn, set_label));
-
-  /* This cast should be allowed */
-  ECHO(CT_Epetra_Object_ID_t dupID = Epetra_Object_Cast(Epetra_Object_Abstract(selfID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
-}
-
-/**********************************************************************
 CT_Epetra_Object_ID_t Epetra_Object_Create ( 
   int TracebackModeIn, boolean set_label );
  **********************************************************************/

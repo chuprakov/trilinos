@@ -39,6 +39,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CEpetra_JadMatrix_Cpp.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_flex_enums.h"
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
@@ -50,12 +51,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 
 namespace {
 
-
-
-/**********************************************************************
-CT_Epetra_JadMatrix_ID_t Epetra_JadMatrix_Cast ( 
-  CTrilinos_Universal_ID_t id );
- **********************************************************************/
 
 /**********************************************************************
 CT_Epetra_JadMatrix_ID_t Epetra_JadMatrix_Create ( 
@@ -75,21 +70,19 @@ TEUCHOS_UNIT_TEST( Epetra_JadMatrix , Create )
   /* Create the source matrix */
   ECHO(int NumIndicesPerRow = 4);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
-  ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
+  ECHO(CT_Epetra_CrsMatrix_ID_Flex_t crsID);
+  ECHO(crsID.Epetra_CrsMatrix = Epetra_CrsMatrix_Create(
        CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Initialize the source matrix */
   ECHO(double val = 1.0);
-  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID, val));
+  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID.Epetra_CrsMatrix, val));
   TEST_EQUALITY(ret, 0);
-  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, TRUE));
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID.Epetra_CrsMatrix, TRUE));
   TEST_EQUALITY(ret, 0);
-
-  /* Cast it to a row matrix */
-  ECHO(CT_Epetra_RowMatrix_ID_t rmID = Epetra_RowMatrix_Cast(Epetra_CrsMatrix_Abstract(crsID)));
 
   /* Create a JadMatrix from the RowMatrix */
-  ECHO(CT_Epetra_JadMatrix_ID_t selfID = Epetra_JadMatrix_Create(rmID));
+  ECHO(CT_Epetra_JadMatrix_ID_t selfID = Epetra_JadMatrix_Create(crsID.Epetra_RowMatrix));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(selfID.table, CT_Epetra_JadMatrix_ID);

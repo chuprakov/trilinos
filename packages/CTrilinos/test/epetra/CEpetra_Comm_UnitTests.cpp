@@ -53,19 +53,6 @@ namespace {
 
 
 /**********************************************************************
-CT_Epetra_Comm_ID_t Epetra_Comm_Cast ( CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
-TEUCHOS_UNIT_TEST( Epetra_Comm , Cast )
-{
-  ECHO(CEpetra_Test_CleanSlate());
-
-  ECHO(CT_Epetra_Comm_ID_t selfID = UnitTest_Create_Comm());
-
-  /* If no exception thrown, then test was successful */
-}
-
-/**********************************************************************
 CT_Epetra_Comm_ID_t Epetra_Comm_Clone ( CT_Epetra_Comm_ID_t selfID );
  **********************************************************************/
 
@@ -341,7 +328,7 @@ TEUCHOS_UNIT_TEST( Epetra_Comm , CreateDirectory )
 
   ECHO(int NumGlobalElements = 9);
   ECHO(int IndexBase = 0);
-  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(
+  ECHO(CT_Epetra_BlockMap_ID_t MapID = Epetra_BlockMap_Degeneralize(Epetra_Map_Generalize(
        Epetra_Map_Create(NumGlobalElements, IndexBase, selfID))));
   ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_Comm_CreateDirectory(selfID, MapID));
 

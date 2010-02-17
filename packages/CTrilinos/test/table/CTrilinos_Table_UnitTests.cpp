@@ -74,6 +74,8 @@ using Teuchos::RangeError;
 using Teuchos::NullReferenceError;
 using Teuchos::m_bad_cast;
 using CTrilinos::CTrilinosTypeMismatchError;
+using CTrilinos::CTrilinosConstCastError;
+using CTrilinos::CTrilinosWrongTableError;
 using CTrilinos::Table;
 
 
@@ -150,8 +152,8 @@ TEUCHOS_UNIT_TEST( Table, storeConstShared )
   TEST_EQUALITY(id.is_const, TRUE);
   TEST_EQUALITY_CONST(nonnull(table.getConst(id)), true);
   TEST_EQUALITY_CONST(is_null(table.getConst(id)), false);
-  TEST_THROW(nonnull(table.get(id)), CTrilinosTypeMismatchError);
-  TEST_THROW(is_null(table.get(id)), CTrilinosTypeMismatchError);
+  TEST_THROW(nonnull(table.get(id)), CTrilinosConstCastError);
+  TEST_THROW(is_null(table.get(id)), CTrilinosConstCastError);
   ECHO(table.remove(&id));
   ECHO(delete pobj);
 }
@@ -182,8 +184,8 @@ TEUCHOS_UNIT_TEST( Table, storeConstSharedBase )
   TEST_EQUALITY(id.is_const, TRUE);
   TEST_EQUALITY_CONST(nonnull(table.getConst(id)), true);
   TEST_EQUALITY_CONST(is_null(table.getConst(id)), false);
-  TEST_THROW(nonnull(table.get(id)), CTrilinosTypeMismatchError);
-  TEST_THROW(is_null(table.get(id)), CTrilinosTypeMismatchError);
+  TEST_THROW(nonnull(table.get(id)), CTrilinosConstCastError);
+  TEST_THROW(is_null(table.get(id)), CTrilinosConstCastError);
   ECHO(table.remove(&id));
   ECHO(delete pobj);
 }
@@ -198,22 +200,6 @@ TEUCHOS_UNIT_TEST( Table, storeSharedWrong )
   ECHO(delete pobj);
 }
 */
-
-TEUCHOS_UNIT_TEST( Table, storeSharedCastConst )
-{
-  ECHO(Table<T2> table(CONSTRUCTOR(CLASS_ENUM(T2))));
-  ECHO(T1 *pobj = new T1);
-  ECHO(CTrilinos_Universal_ID_t id = table.store(pobj, false));
-  TEST_EQUALITY_CONST(id.index, 0);
-  TEST_EQUALITY(id.table, CLASS_ENUM(T2));
-  TEST_EQUALITY(id.is_const, TRUE);
-  TEST_EQUALITY_CONST(nonnull(table.getConst(id)), true);
-  TEST_EQUALITY_CONST(is_null(table.getConst(id)), false);
-  TEST_THROW(nonnull(table.get(id)), CTrilinosTypeMismatchError);
-  TEST_THROW(is_null(table.get(id)), CTrilinosTypeMismatchError);
-  ECHO(table.remove(&id));
-  ECHO(delete pobj);
-}
 
 TEUCHOS_UNIT_TEST( Table, storeSharedNull )
 {
@@ -280,7 +266,7 @@ TEUCHOS_UNIT_TEST( Table, removeWrong )
   ECHO(id.index = id1.index);
   ECHO(id.table = CLASS_ENUM(T4));
   ECHO(id.is_const = FALSE);
-  TEST_THROW(table.remove(&id), CTrilinosTypeMismatchError);
+  TEST_THROW(table.remove(&id), CTrilinosWrongTableError);
 }
 
 
@@ -320,7 +306,7 @@ TEUCHOS_UNIT_TEST( Table, getWrong )
   ECHO(id.index = id1.index);
   ECHO(id.table = CLASS_ENUM(T4));
   ECHO(id.is_const = FALSE);
-  TEST_THROW(table.get(id), CTrilinosTypeMismatchError);
+  TEST_THROW(table.get(id), CTrilinosWrongTableError);
 }
 
 
@@ -344,10 +330,11 @@ TEUCHOS_UNIT_TEST( Table, aliasConst )
   ECHO(Table<T2> table2(CONSTRUCTOR(CLASS_ENUM(T2))));
 
   ECHO(CTrilinos_Universal_ID_t id1 = table1.store(new const T1, true));
-  ECHO(CTrilinos_Universal_ID_t id2 = table2.alias(table1.get(id1)));
+  ECHO(CTrilinos_Universal_ID_t id2 = table2.alias(table1.getConst(id1)));
 
   TEST_EQUALITY(id2.table, CLASS_ENUM(T2));
   TEST_EQUALITY_CONST(id2.index, 0);
+  TEST_EQUALITY_CONST(id2.is_const, TRUE);
 }
 
 TEUCHOS_UNIT_TEST( Table, aliasBad )

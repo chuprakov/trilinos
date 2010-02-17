@@ -39,6 +39,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CEpetra_Operator_Cpp.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_enums.h"
+#include "CTrilinos_flex_enums.h"
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
@@ -50,11 +51,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 
 namespace {
 
-
-/**********************************************************************
-CT_Epetra_Operator_ID_t Epetra_Operator_Cast ( 
-  CTrilinos_Universal_ID_t id );
- **********************************************************************/
 
 /**********************************************************************
 void Epetra_Operator_Destroy ( CT_Epetra_Operator_ID_t * selfID );
@@ -73,24 +69,22 @@ TEUCHOS_UNIT_TEST( Epetra_Operator , Destroy )
   /* Create the source matrix */
   ECHO(int NumIndicesPerRow = 4);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
-  ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
+  ECHO(CT_Epetra_CrsMatrix_ID_Flex_t crsID);
+  ECHO(crsID.Epetra_CrsMatrix = Epetra_CrsMatrix_Create(
        CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Initialize the source matrix */
   ECHO(double val = 1.0);
-  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID, val));
+  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID.Epetra_CrsMatrix, val));
   TEST_EQUALITY(ret, 0);
-  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, TRUE));
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID.Epetra_CrsMatrix, TRUE));
   TEST_EQUALITY(ret, 0);
 
-  /* Cast it to an operator */
-  ECHO(CT_Epetra_Operator_ID_t selfID = Epetra_Operator_Cast(Epetra_CrsMatrix_Abstract(crsID)));
-
-  ECHO(Epetra_Operator_Destroy(&selfID));
+  ECHO(Epetra_Operator_Destroy(&crsID.Epetra_Operator));
 
   /* Now check the result of the call to the wrapper function */
-  TEST_EQUALITY(selfID.table, CT_Invalid_ID);
-  TEST_EQUALITY_CONST(selfID.index, -1);
+  TEST_EQUALITY(crsID.Epetra_Operator.table, CT_Invalid_ID);
+  TEST_EQUALITY_CONST(crsID.Epetra_Operator.index, -1);
 }
 
 /**********************************************************************
@@ -111,31 +105,29 @@ TEUCHOS_UNIT_TEST( Epetra_Operator , SetUseTranspose )
   /* Create the source matrix */
   ECHO(int NumIndicesPerRow = 4);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
-  ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
+  ECHO(CT_Epetra_CrsMatrix_ID_Flex_t crsID);
+  ECHO(crsID.Epetra_CrsMatrix = Epetra_CrsMatrix_Create(
        CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Initialize the source matrix */
   ECHO(double val = 1.0);
-  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID, val));
+  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID.Epetra_CrsMatrix, val));
   TEST_EQUALITY(ret, 0);
-  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, TRUE));
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID.Epetra_CrsMatrix, TRUE));
   TEST_EQUALITY(ret, 0);
-
-  /* Cast it to an operator */
-  ECHO(CT_Epetra_Operator_ID_t selfID = Epetra_Operator_Cast(Epetra_CrsMatrix_Abstract(crsID)));
 
   /* Test true */
   ECHO(boolean tr = TRUE);
-  ECHO(ret = Epetra_Operator_SetUseTranspose(selfID, tr));
+  ECHO(ret = Epetra_Operator_SetUseTranspose(crsID.Epetra_Operator, tr));
   TEST_EQUALITY_CONST(ret, 0);
-  ECHO(boolean tr2 = Epetra_Operator_UseTranspose(selfID));
+  ECHO(boolean tr2 = Epetra_Operator_UseTranspose(crsID.Epetra_Operator));
   TEST_EQUALITY(tr, tr2);
 
   /* Test false */
   ECHO(tr = FALSE);
-  ECHO(ret = Epetra_Operator_SetUseTranspose(selfID, tr));
+  ECHO(ret = Epetra_Operator_SetUseTranspose(crsID.Epetra_Operator, tr));
   TEST_EQUALITY_CONST(ret, 0);
-  ECHO(tr2 = Epetra_Operator_UseTranspose(selfID));
+  ECHO(tr2 = Epetra_Operator_UseTranspose(crsID.Epetra_Operator));
   TEST_EQUALITY(tr, tr2);
 }
 
@@ -178,31 +170,29 @@ TEUCHOS_UNIT_TEST( Epetra_Operator , UseTranspose )
   /* Create the source matrix */
   ECHO(int NumIndicesPerRow = 4);
   ECHO(CT_Epetra_DataAccess_E_t CV = CT_Epetra_DataAccess_E_Copy);
-  ECHO(CT_Epetra_CrsMatrix_ID_t crsID = Epetra_CrsMatrix_Create(
+  ECHO(CT_Epetra_CrsMatrix_ID_Flex_t crsID);
+  ECHO(crsID.Epetra_CrsMatrix = Epetra_CrsMatrix_Create(
        CV, MapID, NumIndicesPerRow, FALSE));
 
   /* Initialize the source matrix */
   ECHO(double val = 1.0);
-  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID, val));
+  ECHO(int ret = Epetra_CrsMatrix_PutScalar(crsID.Epetra_CrsMatrix, val));
   TEST_EQUALITY(ret, 0);
-  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID, TRUE));
+  ECHO(ret = Epetra_CrsMatrix_FillComplete(crsID.Epetra_CrsMatrix, TRUE));
   TEST_EQUALITY(ret, 0);
-
-  /* Cast it to an operator */
-  ECHO(CT_Epetra_Operator_ID_t selfID = Epetra_Operator_Cast(Epetra_CrsMatrix_Abstract(crsID)));
 
   /* Test true */
   ECHO(boolean tr = TRUE);
-  ECHO(ret = Epetra_Operator_SetUseTranspose(selfID, tr));
+  ECHO(ret = Epetra_Operator_SetUseTranspose(crsID.Epetra_Operator, tr));
   TEST_EQUALITY_CONST(ret, 0);
-  ECHO(boolean tr2 = Epetra_Operator_UseTranspose(selfID));
+  ECHO(boolean tr2 = Epetra_Operator_UseTranspose(crsID.Epetra_Operator));
   TEST_EQUALITY(tr, tr2);
 
   /* Test false */
   ECHO(tr = FALSE);
-  ECHO(ret = Epetra_Operator_SetUseTranspose(selfID, tr));
+  ECHO(ret = Epetra_Operator_SetUseTranspose(crsID.Epetra_Operator, tr));
   TEST_EQUALITY_CONST(ret, 0);
-  ECHO(tr2 = Epetra_Operator_UseTranspose(selfID));
+  ECHO(tr2 = Epetra_Operator_UseTranspose(crsID.Epetra_Operator));
   TEST_EQUALITY(tr, tr2);
 }
 

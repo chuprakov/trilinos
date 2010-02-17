@@ -47,11 +47,32 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 namespace CTrilinos {
 
 
-/*! exception indicating wrong object type encountered or invalid cast attempted */
+/*! exception indicating wrong object type encountered */
 class CTrilinosTypeMismatchError : public Teuchos::ExceptionBase
 {
   public:
     CTrilinosTypeMismatchError(const std::string& what_arg) : Teuchos::ExceptionBase(what_arg) {}
+};
+
+/*! exception indicating wrong object type encountered */
+class CTrilinosInvalidTypeError : public Teuchos::ExceptionBase
+{
+  public:
+    CTrilinosInvalidTypeError(const std::string& what_arg) : Teuchos::ExceptionBase(what_arg) {}
+};
+
+/*! exception indicating invalid cast attempted */
+class CTrilinosConstCastError : public Teuchos::ExceptionBase
+{
+  public:
+    CTrilinosConstCastError(const std::string& what_arg) : Teuchos::ExceptionBase(what_arg) {}
+};
+
+/*! exception indicating wrong object table accessed */
+class CTrilinosWrongTableError : public Teuchos::ExceptionBase
+{
+  public:
+    CTrilinosWrongTableError(const std::string& what_arg) : Teuchos::ExceptionBase(what_arg) {}
 };
 
 /*! exception indicating some other error */

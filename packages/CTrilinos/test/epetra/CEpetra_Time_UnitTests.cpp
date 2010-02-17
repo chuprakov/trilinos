@@ -48,11 +48,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 namespace {
 
 
-
-/**********************************************************************
-CT_Epetra_Time_ID_t Epetra_Time_Cast ( CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
 /**********************************************************************
 CT_Epetra_Time_ID_t Epetra_Time_Create ( 
   CT_Epetra_Comm_ID_t CommID );

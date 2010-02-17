@@ -430,7 +430,7 @@ CTrilinos_Universal_ID_t TableRepos::alias(
         break;
 #endif /* HAVE_CTRILINOS_IFPACK */
     default:
-        throw std::string("invalid table id or non-polymorphic class");
+        throw CTrilinosInvalidTypeError("invalid table id or non-polymorphic class");
     }
 
     return newid;
@@ -562,7 +562,7 @@ void TableRepos::remove(CTrilinos_Universal_ID_t * aid)
         break;
 #endif /* HAVE_CTRILINOS_IFPACK */
     default:
-        throw std::string("invalid table id");
+        throw CTrilinosInvalidTypeError("invalid table id");
     }
 }
 

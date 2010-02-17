@@ -95,16 +95,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #endif /* HAVE_CTRILINOS_IFPACK */
 
 #include "CTrilinos_enums.h"
+#include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_Table.hpp"
 #include "Teuchos_RCP.hpp"
 
 
 namespace CTrilinos {
 
-
-class TableRepos;
-
-TableRepos & tableRepos(  );
 
 class TableRepos
 {
@@ -126,11 +123,11 @@ class TableRepos
 
     /*! store a non-const RCP to object of type T */
     template <class T>
-    CTrilinos_Universal_ID_t store(T* pobj, bool owned = true);
+    CTrilinos_Universal_ID_t store(T* pobj, bool owned);
 
     /*! store a const RCP to object of type T */
     template <class T>
-    CTrilinos_Universal_ID_t store(const T* pobj, bool owned = false);
+    CTrilinos_Universal_ID_t store(const T* pobj, bool owned);
 
     /*! remove an object from the table and invalidate the id struct */
     void remove(CTrilinos_Universal_ID_t * id);
@@ -142,7 +139,7 @@ class TableRepos
     /*! dump the tables' content but keep their properties */
     void purgeAll();
 
-    /*! get the Ctrilinos::Table for the given type */
+    /*! get the CTrilinos::Table for the given type */
     void getTable(Table<Epetra_Distributor> *& tab);
     void getTable(Table<Epetra_SerialComm> *& tab);
     void getTable(Table<Epetra_BLAS> *& tab);
@@ -266,6 +263,8 @@ class TableRepos
 
     bool call_me_lazy;  /* I was too lazy to deal with the commas in the init list, so... */
 };
+
+TableRepos & tableRepos(  );
 
 
 template <class T>
@@ -407,7 +406,7 @@ const Teuchos::RCP<T> TableRepos::getPoly(CTrilinos_Universal_ID_t aid)
         break;
 #endif /* HAVE_CTRILINOS_IFPACK */
     default:
-        throw std::string("invalid table id");
+        throw CTrilinosInvalidTypeError("invalid table id");
     }
 
     return Teuchos::null;
@@ -552,7 +551,7 @@ const Teuchos::RCP<const T> TableRepos::getConstPoly(CTrilinos_Universal_ID_t ai
         break;
 #endif /* HAVE_CTRILINOS_IFPACK */
     default:
-        throw std::string("invalid table id");
+        throw CTrilinosInvalidTypeError("invalid table id");
     }
 
     return Teuchos::null;
@@ -724,7 +723,7 @@ CTrilinos_Universal_ID_t TableRepos::do_alias(
         break;
 #endif /* HAVE_CTRILINOS_IFPACK */
     default:
-        throw std::string("invalid table id or non-polymorphic class");
+        throw CTrilinosInvalidTypeError("invalid table id or non-polymorphic class");
     }
 
     return newid;
@@ -896,14 +895,14 @@ CTrilinos_Universal_ID_t TableRepos::do_alias_const(
         break;
 #endif /* HAVE_CTRILINOS_IFPACK */
     default:
-        throw std::string("invalid table id or non-polymorphic class");
+        throw CTrilinosInvalidTypeError("invalid table id or non-polymorphic class");
     }
 
     return newid;
 }
 
 template <class T>
-CTrilinos_Universal_ID_t store(T* pobj, bool owned)
+CTrilinos_Universal_ID_t TableRepos::store(T* pobj, bool owned)
 {
     Table<T> *tab = 0;
     getTable(tab);
@@ -911,7 +910,7 @@ CTrilinos_Universal_ID_t store(T* pobj, bool owned)
 }
 
 template <class T>
-CTrilinos_Universal_ID_t store(const T* pobj, bool owned)
+CTrilinos_Universal_ID_t TableRepos::store(const T* pobj, bool owned)
 {
     Table<T> *tab = 0;
     getTable(tab);
@@ -919,7 +918,7 @@ CTrilinos_Universal_ID_t store(const T* pobj, bool owned)
 }
 
 template <class T>
-void purge()
+void TableRepos::purge()
 {
     Table<T> *tab = 0;
     getTable(tab);

@@ -55,6 +55,8 @@ typedef union {
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_SerialComm_ID_t Epetra_SerialComm;
+    CT_Epetra_Comm_ID_t Epetra_Comm;
+    CT_Epetra_Object_ID_t Epetra_Object;
 } CT_Epetra_SerialComm_ID_Flex_t;
 
 typedef union {
@@ -75,11 +77,17 @@ typedef union {
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_MultiVector_ID_t Epetra_MultiVector;
+    CT_Epetra_BLAS_ID_t Epetra_BLAS;
+    CT_Epetra_CompObject_ID_t Epetra_CompObject;
+    CT_Epetra_DistObject_ID_t Epetra_DistObject;
+    CT_Epetra_Object_ID_t Epetra_Object;
+    CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject;
 } CT_Epetra_MultiVector_ID_Flex_t;
 
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex;
+    CT_Epetra_Object_ID_t Epetra_Object;
 } CT_Epetra_OffsetIndex_ID_Flex_t;
 
 typedef union {
@@ -90,6 +98,8 @@ typedef union {
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix;
+    CT_Epetra_Operator_ID_t Epetra_Operator;
+    CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject;
 } CT_Epetra_RowMatrix_ID_Flex_t;
 
 typedef union {
@@ -116,52 +126,82 @@ typedef union {
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_MpiComm_ID_t Epetra_MpiComm;
+#ifdef HAVE_MPI
+    CT_Epetra_Comm_ID_t Epetra_Comm;
+#endif /* HAVE_MPI */
+#ifdef HAVE_MPI
+    CT_Epetra_Object_ID_t Epetra_Object;
+#endif /* HAVE_MPI */
 } CT_Epetra_MpiComm_ID_Flex_t;
 #endif /* HAVE_MPI */
 
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix;
+    CT_Epetra_BLAS_ID_t Epetra_BLAS;
+    CT_Epetra_CompObject_ID_t Epetra_CompObject;
+    CT_Epetra_DistObject_ID_t Epetra_DistObject;
+    CT_Epetra_Object_ID_t Epetra_Object;
+    CT_Epetra_Operator_ID_t Epetra_Operator;
+    CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix;
+    CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject;
 } CT_Epetra_CrsMatrix_ID_Flex_t;
 
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_CrsGraph_ID_t Epetra_CrsGraph;
+    CT_Epetra_DistObject_ID_t Epetra_DistObject;
+    CT_Epetra_Object_ID_t Epetra_Object;
+    CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject;
 } CT_Epetra_CrsGraph_ID_Flex_t;
 
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_DistObject_ID_t Epetra_DistObject;
+    CT_Epetra_Object_ID_t Epetra_Object;
+    CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject;
 } CT_Epetra_DistObject_ID_Flex_t;
 
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_Vector_ID_t Epetra_Vector;
+    CT_Epetra_BLAS_ID_t Epetra_BLAS;
+    CT_Epetra_CompObject_ID_t Epetra_CompObject;
+    CT_Epetra_DistObject_ID_t Epetra_DistObject;
+    CT_Epetra_MultiVector_ID_t Epetra_MultiVector;
+    CT_Epetra_Object_ID_t Epetra_Object;
+    CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject;
 } CT_Epetra_Vector_ID_Flex_t;
 
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_Export_ID_t Epetra_Export;
+    CT_Epetra_Object_ID_t Epetra_Object;
 } CT_Epetra_Export_ID_Flex_t;
 
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_Map_ID_t Epetra_Map;
+    CT_Epetra_BlockMap_ID_t Epetra_BlockMap;
+    CT_Epetra_Object_ID_t Epetra_Object;
 } CT_Epetra_Map_ID_Flex_t;
 
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_BlockMap_ID_t Epetra_BlockMap;
+    CT_Epetra_Object_ID_t Epetra_Object;
 } CT_Epetra_BlockMap_ID_Flex_t;
 
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_Import_ID_t Epetra_Import;
+    CT_Epetra_Object_ID_t Epetra_Object;
 } CT_Epetra_Import_ID_Flex_t;
 
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_Time_ID_t Epetra_Time;
+    CT_Epetra_Object_ID_t Epetra_Object;
 } CT_Epetra_Time_ID_Flex_t;
 
 typedef union {
@@ -216,6 +256,14 @@ typedef union {
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_FECrsMatrix_ID_t Epetra_FECrsMatrix;
+    CT_Epetra_BLAS_ID_t Epetra_BLAS;
+    CT_Epetra_CompObject_ID_t Epetra_CompObject;
+    CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix;
+    CT_Epetra_DistObject_ID_t Epetra_DistObject;
+    CT_Epetra_Object_ID_t Epetra_Object;
+    CT_Epetra_Operator_ID_t Epetra_Operator;
+    CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix;
+    CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject;
 } CT_Epetra_FECrsMatrix_ID_Flex_t;
 
 typedef union {
@@ -226,6 +274,9 @@ typedef union {
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_SerialDenseMatrix_ID_t Epetra_SerialDenseMatrix;
+    CT_Epetra_BLAS_ID_t Epetra_BLAS;
+    CT_Epetra_CompObject_ID_t Epetra_CompObject;
+    CT_Epetra_Object_ID_t Epetra_Object;
 } CT_Epetra_SerialDenseMatrix_ID_Flex_t;
 
 #ifdef HAVE_CTRILINOS_AZTECOO
@@ -246,6 +297,9 @@ typedef union {
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_AztecOO_StatusTestCombo_ID_t AztecOO_StatusTestCombo;
+#ifdef HAVE_CTRILINOS_AZTECOO
+    CT_AztecOO_StatusTest_ID_t AztecOO_StatusTest;
+#endif /* HAVE_CTRILINOS_AZTECOO */
 } CT_AztecOO_StatusTestCombo_ID_Flex_t;
 #endif /* HAVE_CTRILINOS_AZTECOO */
 
@@ -253,6 +307,9 @@ typedef union {
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_AztecOO_StatusTestMaxIters_ID_t AztecOO_StatusTestMaxIters;
+#ifdef HAVE_CTRILINOS_AZTECOO
+    CT_AztecOO_StatusTest_ID_t AztecOO_StatusTest;
+#endif /* HAVE_CTRILINOS_AZTECOO */
 } CT_AztecOO_StatusTestMaxIters_ID_Flex_t;
 #endif /* HAVE_CTRILINOS_AZTECOO */
 
@@ -260,6 +317,9 @@ typedef union {
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_AztecOO_StatusTestResNorm_ID_t AztecOO_StatusTestResNorm;
+#ifdef HAVE_CTRILINOS_AZTECOO
+    CT_AztecOO_StatusTest_ID_t AztecOO_StatusTest;
+#endif /* HAVE_CTRILINOS_AZTECOO */
 } CT_AztecOO_StatusTestResNorm_ID_Flex_t;
 #endif /* HAVE_CTRILINOS_AZTECOO */
 
@@ -274,6 +334,9 @@ typedef union {
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Ifpack_Preconditioner_ID_t Ifpack_Preconditioner;
+#ifdef HAVE_CTRILINOS_IFPACK
+    CT_Epetra_Operator_ID_t Epetra_Operator;
+#endif /* HAVE_CTRILINOS_IFPACK */
 } CT_Ifpack_Preconditioner_ID_Flex_t;
 #endif /* HAVE_CTRILINOS_IFPACK */
 

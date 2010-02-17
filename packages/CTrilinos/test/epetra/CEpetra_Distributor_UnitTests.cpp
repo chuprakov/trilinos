@@ -49,26 +49,6 @@ namespace {
 
 
 /**********************************************************************
-CT_Epetra_Distributor_ID_t Epetra_Distributor_Cast ( 
-  CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
-TEUCHOS_UNIT_TEST( Epetra_Distributor , Cast )
-{
-  ECHO(CEpetra_Test_CleanSlate());
-
-  /* Create everything we need to pass to the constructor */
-  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
-  ECHO(CT_Epetra_Distributor_ID_t selfID = Epetra_Comm_CreateDistributor(CommID));
-  TEST_EQUALITY(selfID.table, CT_Epetra_Distributor_ID);
-  TEST_EQUALITY_CONST(selfID.index, 0);
-
-  /* This cast should be allowed */
-  ECHO(CT_Epetra_Distributor_ID_t dupID = Epetra_Distributor_Cast(Epetra_Distributor_Abstract(selfID)));
-  TEST_EQUALITY_CONST(CTrilinos::isSameObject(selfID, dupID), true);
-}
-
-/**********************************************************************
 CT_Epetra_Distributor_ID_t Epetra_Distributor_Clone ( 
   CT_Epetra_Distributor_ID_t selfID );
  **********************************************************************/

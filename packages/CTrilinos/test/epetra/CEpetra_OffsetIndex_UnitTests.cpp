@@ -51,11 +51,6 @@ namespace {
 
 
 /**********************************************************************
-CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Cast ( 
-  CTrilinos_Universal_ID_t id );
- **********************************************************************/
-
-/**********************************************************************
 CT_Epetra_OffsetIndex_ID_t Epetra_OffsetIndex_Create_FromImporter ( 
   CT_Epetra_CrsGraph_ID_t SourceGraphID, 
   CT_Epetra_CrsGraph_ID_t TargetGraphID, 
