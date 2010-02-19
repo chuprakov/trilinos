@@ -44,9 +44,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #endif
 
 #include "CTrilinos_enums.h"
-#include "CEpetra_CrsGraph.h"
-#include "CEpetra_Map.h"
-#include "CEpetra_BlockMap.h"
+#include "CTrilinos_flex_enums.h"
 #include "CEpetra_Comm.h"
 #ifdef HAVE_MPI
 #include "CEpetra_MpiComm.h"
@@ -54,6 +52,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #else
 #include "CEpetra_SerialComm.h"
 #endif
+#include "CEpetra_Map.h"
+#include "CEpetra_BlockMap.h"
+#include "CEpetra_CrsGraph.h"
 
 /*! @file CrsGraph_example.c
  * This is an example of how to use the CTrilinos interface to Epetra.
@@ -83,10 +84,22 @@ int main(int argc, char *argv[])
   int Indices[2], Indices1[2];
   int *MyGlobalElements, *NumNz, *MyGlobalElements1, *NumNz1;
 
-  CT_Epetra_Comm_ID_t Comm;
-  CT_Epetra_Map_ID_t Mapa, Map1a;
-  CT_Epetra_BlockMap_ID_t Map, Map1;
+  CT_Epetra_Map_ID_Flex_t Map, Map1;
   CT_Epetra_CrsGraph_ID_t A, AA, A1, B;
+
+#ifdef HAVE_MPI
+
+  /* Initialize MPI */
+  CT_Epetra_MpiComm_ID_Flex_t Comm;
+  MPI_Init(&argc,&argv);
+  Comm.Epetra_MpiComm = Epetra_MpiComm_Create( MPI_COMM_WORLD );
+
+#else
+
+  CT_Epetra_SerialComm_ID_Flex_t Comm;
+  Comm.Epetra_SerialComm = Epetra_SerialComm_Create();
+
+#endif
 
   ierr = 0;
   forierr = 0;
@@ -97,20 +110,6 @@ int main(int argc, char *argv[])
   verbose = FALSE;
   verbose1 = FALSE;
 
-#ifdef HAVE_MPI
-
-  /* Initialize MPI */
-  MPI_Init(&argc,&argv);
-  Comm = Epetra_Comm_Cast(Epetra_MpiComm_Abstract(
-      Epetra_MpiComm_Create( MPI_COMM_WORLD )));
-
-#else
-
-  Comm = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(
-      Epetra_SerialComm_Create()));
-
-#endif
-
   /* Check if we should print results to standard out */
   if(argc > 1) {
     if(argv[1][0]=='-' && argv[1][1]=='v') {
@@ -118,8 +117,8 @@ int main(int argc, char *argv[])
     }
   }
 
-  MyPID = Epetra_Comm_MyPID(Comm);
-  NumProc = Epetra_Comm_NumProc(Comm);
+  MyPID = Epetra_Comm_MyPID(Comm.Epetra_Comm);
+  NumProc = Epetra_Comm_NumProc(Comm.Epetra_Comm);
   if(verbose) printf("Processor %d of %d is alive.\n", MyPID, NumProc);
 
   verbose1 = verbose;
@@ -135,8 +134,7 @@ int main(int argc, char *argv[])
   /* Construct a Map that puts approximately the same Number of equations
    * on each processor */
 
-  Mapa = Epetra_Map_Create_Linear(NumGlobalEquations, NumMyEquations, 0, Comm);
-  Map = Epetra_BlockMap_Cast(Epetra_Map_Abstract(Mapa));
+  Map.Epetra_Map = Epetra_Map_Create_Linear(NumGlobalEquations, NumMyEquations, 0, Comm.Epetra_Comm);
   
   /* Get update list and number of local equations from newly created Map */
   MyGlobalElements = (int*)malloc(NumMyEquations*sizeof(int));
@@ -148,7 +146,7 @@ int main(int argc, char *argv[])
 #endif /* HAVE_MPI */
     return 1;
   }
-  Epetra_BlockMap_MyGlobalElements_Fill(Map, MyGlobalElements);
+  Epetra_BlockMap_MyGlobalElements_Fill(Map.Epetra_BlockMap, MyGlobalElements);
 
   /* Create an integer vector NumNz that is used to build the Petra Matrix.
    * NumNz[i] is the Number of OFF-DIAGONAL term for the ith global equation
@@ -176,7 +174,7 @@ int main(int argc, char *argv[])
   /* Create a Epetra_CrsGraph */
 
   A = Epetra_CrsGraph_Create_VarPerRow(CT_Epetra_DataAccess_E_Copy,
-         Map, NumNz, FALSE);
+         Map.Epetra_BlockMap, NumNz, FALSE);
   CTRILINOS_TEST_ERR(Epetra_CrsGraph_IndicesAreGlobal(A),ierr);
   CTRILINOS_TEST_ERR(Epetra_CrsGraph_IndicesAreLocal(A),ierr);
   
@@ -238,13 +236,13 @@ int main(int argc, char *argv[])
 
   Epetra_CrsGraph_Destroy(&A);
 
-  if(debug) Epetra_Comm_Barrier(Comm);
+  if(debug) Epetra_Comm_Barrier(Comm.Epetra_Comm);
 
   if(verbose) printf("\n*****Testing constant entry constructor\n\n");
 
-  AA = Epetra_CrsGraph_Create(CT_Epetra_DataAccess_E_Copy, Map, 5, FALSE);
+  AA = Epetra_CrsGraph_Create(CT_Epetra_DataAccess_E_Copy, Map.Epetra_BlockMap, 5, FALSE);
   
-  if(debug) Epetra_Comm_Barrier(Comm);
+  if(debug) Epetra_Comm_Barrier(Comm.Epetra_Comm);
 
   for(i = 0; i < NumMyEquations; i++) 
     Epetra_CrsGraph_InsertGlobalIndices(AA, MyGlobalElements[i], 1,
@@ -263,11 +261,11 @@ int main(int argc, char *argv[])
   CTRILINOS_TEST_ERR(!(Epetra_CrsGraph_UpperTriangular(AA)),ierr);
   CTRILINOS_TEST_ERR(!(Epetra_CrsGraph_LowerTriangular(AA)),ierr);
 
-  if(debug) Epetra_Comm_Barrier(Comm);
+  if(debug) Epetra_Comm_Barrier(Comm.Epetra_Comm);
   CTRILINOS_TEST_ERR(check(AA, NumMyEquations, NumGlobalEquations,
       NumMyEquations, NumGlobalEquations, MyGlobalElements, verbose),ierr);
 
-  if(debug) Epetra_Comm_Barrier(Comm);
+  if(debug) Epetra_Comm_Barrier(Comm.Epetra_Comm);
 
   forierr = 0;
   for(i = 0; i < NumMyEquations; i++) 
@@ -276,7 +274,7 @@ int main(int argc, char *argv[])
 
   if(verbose) printf("NumIndices function check OK\n");
 
-  if(debug) Epetra_Comm_Barrier(Comm);
+  if(debug) Epetra_Comm_Barrier(Comm.Epetra_Comm);
 
   if(verbose) printf("\n*****Testing copy constructor\n\n");
 
@@ -294,7 +292,7 @@ int main(int argc, char *argv[])
 
   if(verbose) printf("NumIndices function check OK\n");
 
-  if(debug) Epetra_Comm_Barrier(Comm);
+  if(debug) Epetra_Comm_Barrier(Comm.Epetra_Comm);
 
   if(verbose) printf("\n*****Testing post construction modifications\n\n");
 
@@ -304,8 +302,7 @@ int main(int argc, char *argv[])
   free(MyGlobalElements);
   free(NumNz);
 
-  Epetra_BlockMap_Destroy(&Map);
-  Epetra_Map_Destroy(&Mapa);
+  Epetra_BlockMap_Destroy(&Map.Epetra_BlockMap);
   Epetra_CrsGraph_Destroy(&B);
 
 
@@ -317,8 +314,7 @@ int main(int argc, char *argv[])
     NumMyEquations1 = NumMyElements1;
     NumGlobalEquations1 = NumMyEquations1*NumProc;
 
-    Map1a = Epetra_Map_Create_Linear(NumGlobalEquations1, NumMyEquations1, 1, Comm);
-    Map1 = Epetra_BlockMap_Cast(Epetra_Map_Abstract(Map1a));
+    Map1.Epetra_Map = Epetra_Map_Create_Linear(NumGlobalEquations1, NumMyEquations1, 1, Comm.Epetra_Comm);
     
     /* Get update list and number of local equations from newly created Map */
     MyGlobalElements1 = (int*)malloc(NumMyEquations1*sizeof(int));
@@ -330,7 +326,7 @@ int main(int argc, char *argv[])
 #endif /* HAVE_MPI */
       return 1;
     }
-    Epetra_BlockMap_MyGlobalElements_Fill(Map1, MyGlobalElements1);
+    Epetra_BlockMap_MyGlobalElements_Fill(Map1.Epetra_BlockMap, MyGlobalElements1);
     
     /* Create an integer vector NumNz that is used to build the Petra Matrix.
      * NumNz[i] is the Number of OFF-DIAGONAL term for the ith global equation
@@ -357,7 +353,7 @@ int main(int argc, char *argv[])
     
     /* Create a Epetra_Graph using 1-based arithmetic */
     
-    A1 = Epetra_CrsGraph_Create_VarPerRow(CT_Epetra_DataAccess_E_Copy, Map1,
+    A1 = Epetra_CrsGraph_Create_VarPerRow(CT_Epetra_DataAccess_E_Copy, Map1.Epetra_BlockMap,
               NumNz1, FALSE);
     
     /* Add  rows one-at-a-time
@@ -396,13 +392,12 @@ int main(int argc, char *argv[])
     free(NumNz1);
 
     Epetra_CrsGraph_Destroy(&A1);
-    Epetra_BlockMap_Destroy(&Map1);
-    Epetra_Map_Destroy(&Map1a);
+    Epetra_BlockMap_Destroy(&Map1.Epetra_BlockMap);
   }
 
   forierr = 0;
   if (ierr < 0) ierr *= -1;
-  Epetra_Comm_MaxAll_Int(Comm, &ierr, &forierr, 1);
+  Epetra_Comm_MaxAll_Int(Comm.Epetra_Comm, &ierr, &forierr, 1);
 
   if (forierr == 0)
     printf( "\nEnd Result: TEST PASSED\n" );

@@ -35,9 +35,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include <stdio.h>
 
 #include "CTrilinos_enums.h"
-#include "CGaleri_Maps.h"
-#include "CGaleri_CrsMatrices.h"
-#include "CGaleri_Utils.h"
+#include "CTrilinos_flex_enums.h"
 #ifdef HAVE_MPI
 #include "CEpetra_MpiComm.h"
 #include "mpi.h"
@@ -53,6 +51,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CEpetra_RowMatrix.h"
 #include "CEpetra_LinearProblem.h"
 #include "CTeuchos_ParameterList.h"
+#include "CGaleri_Maps.h"
+#include "CGaleri_CrsMatrices.h"
+#include "CGaleri_Utils.h"
 
 /* ===========
  * main driver
@@ -63,24 +64,22 @@ int main(int argc, char* argv[])
   int NumProc, MyPID;
   double ResidualNorm;
 
-  CT_Epetra_Comm_ID_t Comm;
-  CT_Epetra_Map_ID_t Map;
-  CT_Epetra_BlockMap_ID_t bMap;
-  CT_Epetra_CrsMatrix_ID_t Matrix;
-  CT_Epetra_RowMatrix_ID_t rMatrix;
+  CT_Epetra_Map_ID_Flex_t Map;
+  CT_Epetra_CrsMatrix_ID_Flex_t Matrix;
   CT_Teuchos_ParameterList_ID_t GaleriList;
-  CT_Epetra_Vector_ID_t ExactSolution, LHS, RHS;
-  CT_Epetra_MultiVector_ID_t mExactSolution, mLHS, mRHS;
+  CT_Epetra_Vector_ID_Flex_t ExactSolution, LHS, RHS;
   CT_Epetra_LinearProblem_ID_t Problem;
 
 #ifdef HAVE_MPI
+  CT_Epetra_MpiComm_ID_Flex_t Comm;
   MPI_Init(&argc, &argv);
-  Comm = Epetra_Comm_Cast(Epetra_MpiComm_Abstract(Epetra_MpiComm_Create(MPI_COMM_WORLD)));
+  Comm.Epetra_MpiComm = Epetra_MpiComm_Create(MPI_COMM_WORLD);
 #else
-  Comm = Epetra_Comm_Cast(Epetra_SerialComm_Abstract(Epetra_SerialComm_Create()));
+  CT_Epetra_SerialComm_ID_Flex_t Comm;
+  Comm.Epetra_SerialComm = Epetra_SerialComm_Create();
 #endif
-  NumProc = Epetra_Comm_NumProc(Comm);
-  MyPID = Epetra_Comm_MyPID(Comm);
+  NumProc = Epetra_Comm_NumProc(Comm.Epetra_Comm);
+  MyPID = Epetra_Comm_MyPID(Comm.Epetra_Comm);
 
   /* Here we create the linear problem
    *
@@ -97,24 +96,22 @@ int main(int argc, char* argv[])
   Teuchos_ParameterList_set_int(GaleriList, "mx", NumProc, "");
   Teuchos_ParameterList_set_int(GaleriList, "my", 1, "");
 
-  Map = Galeri_Maps_CreateMap("Cartesian2D", Comm, GaleriList);
-  bMap = Epetra_BlockMap_Cast(Epetra_Map_Abstract(Map));
+  Map.Epetra_Map = Galeri_Maps_CreateMap("Cartesian2D", Comm.Epetra_Comm, GaleriList);
 
-  Matrix = Galeri_CrsMatrices_CreateCrsMatrix("Laplace2D", Map, GaleriList);
-  rMatrix = Epetra_RowMatrix_Cast(Epetra_CrsMatrix_Abstract(Matrix));
+  Matrix.Epetra_CrsMatrix = Galeri_CrsMatrices_CreateCrsMatrix("Laplace2D",
+      Map.Epetra_Map, GaleriList);
 
-  ExactSolution = Epetra_Vector_Create(bMap, TRUE);
-  mExactSolution = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(ExactSolution));
-  Epetra_MultiVector_Random(mExactSolution);
+  ExactSolution.Epetra_Vector = Epetra_Vector_Create(Map.Epetra_BlockMap, TRUE);
+  Epetra_MultiVector_Random(ExactSolution.Epetra_MultiVector);
 
-  LHS = Epetra_Vector_Create(bMap, TRUE);
-  mLHS = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(LHS));
-  RHS = Epetra_Vector_Create(bMap, TRUE);
-  mRHS = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(RHS));
+  LHS.Epetra_Vector = Epetra_Vector_Create(Map.Epetra_BlockMap, TRUE);
+  RHS.Epetra_Vector = Epetra_Vector_Create(Map.Epetra_BlockMap, TRUE);
 
-  Epetra_CrsMatrix_Multiply_Vector(Matrix, FALSE, ExactSolution, RHS);
+  Epetra_CrsMatrix_Multiply_Vector(Matrix.Epetra_CrsMatrix, FALSE,
+      ExactSolution.Epetra_Vector, RHS.Epetra_Vector);
 
-  Problem = Epetra_LinearProblem_Create_FromMatrix(rMatrix, mLHS, mRHS);
+  Problem = Epetra_LinearProblem_Create_FromMatrix(Matrix.Epetra_RowMatrix,
+      LHS.Epetra_MultiVector, RHS.Epetra_MultiVector);
 
   /* at this point any object that understand Epetra_LinearProblem can be
    * used, for example AztecOO, Amesos. IFPACK and ML can be used to define a
@@ -124,15 +121,17 @@ int main(int argc, char* argv[])
   Galeri_Utils_Solve_LinearProblem(Problem);
 
   /* and we compute the norm of the true residual. */
-  ResidualNorm = Galeri_Utils_ComputeNorm_Matrix(rMatrix, mLHS, mRHS);
+  ResidualNorm = Galeri_Utils_ComputeNorm_Matrix(Matrix.Epetra_RowMatrix,
+      LHS.Epetra_MultiVector, RHS.Epetra_MultiVector);
 
   if (MyPID == 0)
     printf("%g\n", ResidualNorm);
 
-  Epetra_BlockMap_Destroy(&bMap);
-  Epetra_Map_Destroy(&Map);
-  Epetra_RowMatrix_Destroy(&rMatrix);
-  Epetra_CrsMatrix_Destroy(&Matrix);
+  Epetra_BlockMap_Destroy(&Map.Epetra_BlockMap);
+  Epetra_CrsMatrix_Destroy(&Matrix.Epetra_CrsMatrix);
+  Epetra_Vector_Destroy(&LHS.Epetra_Vector);
+  Epetra_Vector_Destroy(&RHS.Epetra_Vector);
+  Epetra_Vector_Destroy(&ExactSolution.Epetra_Vector);
 
 #ifdef HAVE_MPI
   MPI_Finalize();
