@@ -207,6 +207,11 @@ typedef union {
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_JadMatrix_ID_t Epetra_JadMatrix;
+    CT_Epetra_CompObject_ID_t Epetra_CompObject;
+    CT_Epetra_Object_ID_t Epetra_Object;
+    CT_Epetra_Operator_ID_t Epetra_Operator;
+    CT_Epetra_RowMatrix_ID_t Epetra_RowMatrix;
+    CT_Epetra_SrcDistObject_ID_t Epetra_SrcDistObject;
 } CT_Epetra_JadMatrix_ID_Flex_t;
 
 typedef union {
@@ -269,6 +274,7 @@ typedef union {
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Epetra_IntSerialDenseVector_ID_t Epetra_IntSerialDenseVector;
+    CT_Epetra_Object_ID_t Epetra_Object;
 } CT_Epetra_IntSerialDenseVector_ID_Flex_t;
 
 typedef union {

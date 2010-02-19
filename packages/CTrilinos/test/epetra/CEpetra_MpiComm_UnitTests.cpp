@@ -342,7 +342,7 @@ TEUCHOS_UNIT_TEST( Epetra_MpiComm , CreateDirectory )
   ECHO(int IndexBase = 0);
   ECHO(CT_Epetra_Map_ID_Flex_t MapID);
   ECHO(MapID.Epetra_Map = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID.Epetra_Comm));
-  ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_MpiComm_CreateDirectory(selfID, MapID.Epetra_BlockMap));
+  ECHO(CT_Epetra_Directory_ID_t dirID = Epetra_MpiComm_CreateDirectory(CommID.Epetra_MpiComm, MapID.Epetra_BlockMap));
 
   /* Now check the result of the call to the wrapper function */
   TEST_EQUALITY(dirID.table, CT_Epetra_Directory_ID);

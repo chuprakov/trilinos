@@ -2,7 +2,7 @@ INCLUDE(PackageAddExecutableAndTest)
 INCLUDE(AddSubdirectories)
 
 ADD_SUBDIRECTORIES(
-#  RowMatrix
+  RowMatrix
   ImpExp
   )
 

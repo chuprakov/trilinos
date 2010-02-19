@@ -32,15 +32,15 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include <iostream>
 
 #include "CTrilinos_config.h"
+#include "CTrilinos_enums.h"
 #include "CEpetra_Comm.h"
 #ifdef HAVE_MPI
 #include "CEpetra_MpiComm.h"
 #endif
-#include "CEpetra_BlockMap.h"
 #include "CEpetra_Map.h"
+#include "CEpetra_BlockMap.h"
 #include "CEpetra_Import.h"
 #include "CEpetra_Export.h"
-#include "CTrilinos_enums.h"
 
 
 int checkresult(int MyResult, int Correct, CT_Epetra_Comm_ID_t CommID, int MyPID, const char *pc)
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
   const int ForceNumProc = 3;
 
   /* Set up communication */
-  CT_Epetra_Comm_ID_t CommID = Epetra_Comm_Cast(Epetra_MpiComm_Abstract(
+  CT_Epetra_Comm_ID_t CommID = Epetra_Comm_Degeneralize(Epetra_MpiComm_Generalize(
       Epetra_MpiComm_Create( MPI_COMM_WORLD )));
 
   int MyPID = Epetra_Comm_MyPID(CommID);
@@ -120,9 +120,9 @@ int main(int argc, char *argv[])
   int NumGlobalElements = NumMyElements * NumProc;
   int off = NumMyElements*MyPID;
   int MyGlobalElements[NumMyElements] = {0+off, 1+off, 2+off};
-  CT_Epetra_Map_ID_t srcID = Epetra_Map_Create_Arbitrary(
-       NumGlobalElements, NumMyElements, MyGlobalElements, IndexBase, CommID);
-  CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(srcID));
+  CT_Epetra_BlockMap_ID_t bsrcID = Epetra_BlockMap_Degeneralize(Epetra_Map_Generalize(
+      Epetra_Map_Create_Arbitrary(NumGlobalElements, NumMyElements,
+          MyGlobalElements, IndexBase, CommID)));
 
   Epetra_Comm_Barrier(CommID);
 
@@ -147,9 +147,9 @@ int main(int argc, char *argv[])
       break;
     }
   }
-  CT_Epetra_Map_ID_t tarID = Epetra_Map_Create_Arbitrary(
-       NumGlobalElements2, NumMyElements2, MyGlobalElements2, IndexBase, CommID);
-  CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Cast(Epetra_Map_Abstract(tarID));
+  CT_Epetra_BlockMap_ID_t btarID = Epetra_BlockMap_Degeneralize(Epetra_Map_Generalize(
+       Epetra_Map_Create_Arbitrary(NumGlobalElements2, NumMyElements2,
+           MyGlobalElements2, IndexBase, CommID)));
 
   Epetra_Comm_Barrier(CommID);
 

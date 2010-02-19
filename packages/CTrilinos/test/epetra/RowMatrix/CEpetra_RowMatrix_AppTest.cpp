@@ -30,6 +30,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 
 
 #include "CTrilinos_config.h"
+#include "CTrilinos_enums.h"
+#include "CTrilinos_flex_enums.h"
 
 #include "CEpetra_Map.h"
 #include "CEpetra_Time.h"
@@ -44,6 +46,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_RowMatrix.h"
 #include "CEpetra_CompObject.h"
+#include "CEpetra_SrcDistObject.h"
 #ifdef HAVE_MPI
 #include "CEpetra_MpiComm.h"
 #include "mpi.h"
@@ -82,11 +85,10 @@ int checkMultiVectors( CT_Epetra_MultiVector_ID_t & X, CT_Epetra_MultiVector_ID_
     Epetra_Vector_Destroy(&vecy);
     Epetra_Vector_Destroy(&vecx);
   }
-  CT_Epetra_DistObject_ID_t doX = Epetra_DistObject_Cast(Epetra_MultiVector_Abstract(X));
-  CT_Epetra_Comm_ID_t Comm = Epetra_DistObject_Comm(doX);
+  CT_Epetra_Comm_ID_t Comm = Epetra_DistObject_Comm(Epetra_DistObject_Degeneralize(
+      Epetra_MultiVector_Generalize(X)));
   Epetra_Comm_MaxAll_Int(Comm, &badvalue, &globalbadvalue, 1);
   Epetra_Comm_Destroy(&Comm);
-  Epetra_DistObject_Destroy(&doX);
 
   if (verbose) {
     if (globalbadvalue==0) cout << message << " check OK." << endl;
@@ -110,13 +112,14 @@ int main(int argc, char *argv[])
   int ierr = 0, i, forierr = 0;
 #ifdef HAVE_MPI
 
+  CT_Epetra_MpiComm_ID_Flex_t Comm;
+
   // Initialize MPI
 
   MPI_Init(&argc,&argv);
   int rank; // My process ID
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  CT_Epetra_MpiComm_ID_Flex_t Comm;
   Comm.Epetra_MpiComm = Epetra_MpiComm_Create( MPI_COMM_WORLD );
 
 #else
@@ -133,18 +136,18 @@ int main(int argc, char *argv[])
   if (argc>1) if (argv[1][0]=='-' && argv[1][1]=='v') verbose = true;
 
   int verbose_int = verbose ? 1 : 0;
-  Epetra_Comm_Broadcast_Int(Comm, &verbose_int, 1, 0);
+  Epetra_Comm_Broadcast_Int(Comm.Epetra_Comm, &verbose_int, 1, 0);
   verbose = verbose_int==1 ? true : false;
 
 
   //  char tmp;
   //  if (rank==0) cout << "Press any key to continue..."<< endl;
   //  if (rank==0) cin >> tmp;
-  //  Epetra_Comm_Barrier(Comm);
+  //  Epetra_Comm_Barrier(Comm.Epetra_Comm);
 
-//  Epetra_Comm_SetTracebackMode(Comm, 0); // This should shut down any error traceback reporting
-  int MyPID = Epetra_Comm_MyPID(Comm);
-  int NumProc = Epetra_Comm_NumProc(Comm);
+//  Epetra_Comm_SetTracebackMode(Comm.Epetra_Comm, 0); // This should shut down any error traceback reporting
+  int MyPID = Epetra_Comm_MyPID(Comm.Epetra_Comm);
+  int NumProc = Epetra_Comm_NumProc(Comm.Epetra_Comm);
 
   if(verbose && MyPID==0)
     cout << Epetra_Version() << endl << endl;
@@ -164,7 +167,7 @@ int main(int argc, char *argv[])
   // Construct a Map that puts approximately the same Number of equations on each processor
 
   CT_Epetra_Map_ID_Flex_t Map;
-  Map.Epetra_Map = Epetra_Map_Create_Linear(NumGlobalEquations, NumMyEquations, 0, Comm);
+  Map.Epetra_Map = Epetra_Map_Create_Linear(NumGlobalEquations, NumMyEquations, 0, Comm.Epetra_Comm);
   
   // Get update list and number of local equations from newly created Map
   vector<int> MyGlobalElements(Epetra_BlockMap_NumMyElements(Map.Epetra_BlockMap));
@@ -188,7 +191,7 @@ int main(int argc, char *argv[])
 
   CT_Epetra_CrsMatrix_ID_Flex_t A;
   A.Epetra_CrsMatrix = Epetra_CrsMatrix_Create_VarPerRow(
-      CT_Epetra_DataAccess_E_Copy, Map, &NumNz[0], FALSE);
+      CT_Epetra_DataAccess_E_Copy, Map.Epetra_Map, &NumNz[0], FALSE);
   EPETRA_TEST_ERR(Epetra_CrsMatrix_IndicesAreGlobal(A.Epetra_CrsMatrix),ierr);
   EPETRA_TEST_ERR(Epetra_CrsMatrix_IndicesAreLocal(A.Epetra_CrsMatrix),ierr);
   
@@ -286,7 +289,7 @@ int main(int argc, char *argv[])
   if (verbose) cout << "================================================================" << endl
 		          << "Testing Jad using Jad matrix as input matrix for construction..." << endl
 		          << "================================================================" << endl;
-  Epetra_CompObject_ResetFlops(JadA1.Epetra_JadMatrix);
+  Epetra_CompObject_ResetFlops(JadA1.Epetra_CompObject);
   powerMethodTests(JadA1.Epetra_RowMatrix, JadA2.Epetra_RowMatrix, Map, q, z, resid, verbose);
 
 #ifdef HAVE_MPI
@@ -385,7 +388,8 @@ int power_method(boolean TransA, CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_Vector_I
 {  
 	
   // Fill z with random Numbers
-  CT_Epetra_Vector_ID_Flex_t z = Epetra_Vector_Duplicate(z0.Epetra_Vector);
+  CT_Epetra_Vector_ID_Flex_t z;
+  z.Epetra_Vector = Epetra_Vector_Duplicate(z0.Epetra_Vector);
 	
   // variable needed for iteration
   double normz, residual;
@@ -418,29 +422,27 @@ int check(CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_RowMatrix_ID_t & B, bool verbos
 
   int ierr = 0;
 
-  CT_Epetra_Operator_ID_t oA = Epetra_Operator_Cast(Epetra_RowMatrix_Abstract(A));
-  CT_Epetra_Operator_ID_t oB = Epetra_Operator_Cast(Epetra_RowMatrix_Abstract(B));
+  CT_Epetra_Operator_ID_t tmp_oA = Epetra_Operator_Degeneralize(Epetra_RowMatrix_Generalize(A));
+  CT_Epetra_Operator_ID_t tmp_oB = Epetra_Operator_Degeneralize(Epetra_RowMatrix_Generalize(B));
 
-  CT_Epetra_Comm_ID_t CommA = Epetra_Operator_Comm(oA);
-  CT_Epetra_Comm_ID_t CommB = Epetra_Operator_Comm(oB);
+  CT_Epetra_Comm_ID_t CommA = Epetra_Operator_Comm(tmp_oA);
+  CT_Epetra_Comm_ID_t CommB = Epetra_Operator_Comm(tmp_oB);
   EPETRA_TEST_ERR(!Epetra_Comm_NumProc(CommA)==Epetra_Comm_NumProc(CommB),ierr);
   EPETRA_TEST_ERR(!Epetra_Comm_MyPID(CommA)==Epetra_Comm_MyPID(CommB),ierr);
   Epetra_Comm_Destroy(&CommB);
   Epetra_Comm_Destroy(&CommA);
 
   EPETRA_TEST_ERR(!Epetra_RowMatrix_Filled(A)==Epetra_RowMatrix_Filled(B),ierr);
-  EPETRA_TEST_ERR(!Epetra_Operator_HasNormInf(oA)==Epetra_Operator_HasNormInf(oB),ierr);
+  EPETRA_TEST_ERR(!Epetra_Operator_HasNormInf(tmp_oA)==Epetra_Operator_HasNormInf(tmp_oB),ierr);
   EPETRA_TEST_ERR(!Epetra_RowMatrix_LowerTriangular(A)==Epetra_RowMatrix_LowerTriangular(B),ierr);
 
-  CT_Epetra_SrcDistObject_ID_t sdoA = Epetra_SrcDistObject_Cast(Epetra_RowMatrix_Abstract(A));
-  CT_Epetra_SrcDistObject_ID_t sdoB = Epetra_SrcDistObject_Cast(Epetra_RowMatrix_Abstract(B));
-  CT_Epetra_BlockMap_ID_t mapA = Epetra_SrcDistObject_Map(sdoA);
-  CT_Epetra_BlockMap_ID_t mapB = Epetra_SrcDistObject_Map(sdoB);
+  CT_Epetra_BlockMap_ID_t mapA = Epetra_SrcDistObject_Map(Epetra_SrcDistObject_Degeneralize(
+      Epetra_RowMatrix_Generalize(A)));
+  CT_Epetra_BlockMap_ID_t mapB = Epetra_SrcDistObject_Map(Epetra_SrcDistObject_Degeneralize(
+      Epetra_RowMatrix_Generalize(B)));
   EPETRA_TEST_ERR(!Epetra_BlockMap_SameAs(mapA, mapB),ierr);
   Epetra_BlockMap_Destroy(&mapB);
   Epetra_BlockMap_Destroy(&mapA);
-  Epetra_SrcDistObject_Destroy(&sdoB);
-  Epetra_SrcDistObject_Destroy(&sdoA);
 
   EPETRA_TEST_ERR(!Epetra_RowMatrix_MaxNumEntries(A)==Epetra_RowMatrix_MaxNumEntries(B),ierr);
   EPETRA_TEST_ERR(!Epetra_RowMatrix_NumGlobalCols(A)==Epetra_RowMatrix_NumGlobalCols(B),ierr);
@@ -458,40 +460,32 @@ int check(CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_RowMatrix_ID_t & B, bool verbos
   }
   EPETRA_TEST_ERR(!Epetra_RowMatrix_NumMyRows(A)==Epetra_RowMatrix_NumMyRows(B),ierr);
 
-  CT_Epetra_Map_ID_t odmA = Epetra_Operator_OperatorDomainMap(oA);
-  CT_Epetra_BlockMap_ID_t bodmA = Epetra_BlockMap_Cast(Epetra_Map_Abstract(odmA));
-  Epetra_Map_Destroy(&odmA);
-  CT_Epetra_Map_ID_t odmB = Epetra_Operator_OperatorDomainMap(oB);
-  CT_Epetra_BlockMap_ID_t bodmB = Epetra_BlockMap_Cast(Epetra_Map_Abstract(odmB));
-  Epetra_Map_Destroy(&odmB);
+  CT_Epetra_BlockMap_ID_t bodmA = Epetra_BlockMap_Degeneralize(Epetra_Map_Generalize(
+      Epetra_Operator_OperatorDomainMap(tmp_oA)));
+  CT_Epetra_BlockMap_ID_t bodmB = Epetra_BlockMap_Degeneralize(Epetra_Map_Generalize(
+      Epetra_Operator_OperatorDomainMap(tmp_oB)));
   EPETRA_TEST_ERR(!Epetra_BlockMap_SameAs(bodmA, bodmB),ierr);
 
-  CT_Epetra_Map_ID_t ormA = Epetra_Operator_OperatorRangeMap(oA);
-  CT_Epetra_BlockMap_ID_t bormA = Epetra_BlockMap_Cast(Epetra_Map_Abstract(ormA));
-  Epetra_Map_Destroy(&ormA);
-  CT_Epetra_Map_ID_t ormB = Epetra_Operator_OperatorRangeMap(oB);
-  CT_Epetra_BlockMap_ID_t bormB = Epetra_BlockMap_Cast(Epetra_Map_Abstract(ormB));
-  Epetra_Map_Destroy(&ormB);
+  CT_Epetra_BlockMap_ID_t bormA = Epetra_BlockMap_Degeneralize(Epetra_Map_Generalize(
+      Epetra_Operator_OperatorRangeMap(tmp_oA)));
+  CT_Epetra_BlockMap_ID_t bormB = Epetra_BlockMap_Degeneralize(Epetra_Map_Generalize(
+      Epetra_Operator_OperatorRangeMap(tmp_oB)));
   EPETRA_TEST_ERR(!Epetra_BlockMap_SameAs(bormA, bormB),ierr);
 
-  CT_Epetra_Map_ID_t rcmA = Epetra_RowMatrix_RowMatrixColMap(A);
-  CT_Epetra_BlockMap_ID_t brcmA = Epetra_BlockMap_Cast(Epetra_Map_Abstract(rcmA));
-  Epetra_Map_Destroy(&rcmA);
-  CT_Epetra_Map_ID_t rcmB = Epetra_RowMatrix_RowMatrixColMap(B);
-  CT_Epetra_BlockMap_ID_t brcmB = Epetra_BlockMap_Cast(Epetra_Map_Abstract(rcmB));
-  Epetra_Map_Destroy(&rcmB);
+  CT_Epetra_BlockMap_ID_t brcmA = Epetra_BlockMap_Degeneralize(Epetra_Map_Generalize(
+      Epetra_RowMatrix_RowMatrixColMap(A)));
+  CT_Epetra_BlockMap_ID_t brcmB = Epetra_BlockMap_Degeneralize(Epetra_Map_Generalize(
+      Epetra_RowMatrix_RowMatrixColMap(B)));
   EPETRA_TEST_ERR(!Epetra_BlockMap_SameAs(brcmA, brcmB),ierr);
 
-  CT_Epetra_Map_ID_t rrmA = Epetra_RowMatrix_RowMatrixRowMap(A);
-  CT_Epetra_BlockMap_ID_t brrmA = Epetra_BlockMap_Cast(Epetra_Map_Abstract(rrmA));
-  Epetra_Map_Destroy(&rrmA);
-  CT_Epetra_Map_ID_t rrmB = Epetra_RowMatrix_RowMatrixRowMap(B);
-  CT_Epetra_BlockMap_ID_t brrmB = Epetra_BlockMap_Cast(Epetra_Map_Abstract(rrmB));
-  Epetra_Map_Destroy(&rrmB);
+  CT_Epetra_BlockMap_ID_t brrmA = Epetra_BlockMap_Degeneralize(Epetra_Map_Generalize(
+      Epetra_RowMatrix_RowMatrixRowMap(A)));
+  CT_Epetra_BlockMap_ID_t brrmB = Epetra_BlockMap_Degeneralize(Epetra_Map_Generalize(
+      Epetra_RowMatrix_RowMatrixRowMap(B)));
   EPETRA_TEST_ERR(!Epetra_BlockMap_SameAs(brrmA, brrmB),ierr);
 
   EPETRA_TEST_ERR(!Epetra_RowMatrix_UpperTriangular(A)==Epetra_RowMatrix_UpperTriangular(B),ierr);
-  EPETRA_TEST_ERR(!Epetra_Operator_UseTranspose(oA)==Epetra_Operator_UseTranspose(oB),ierr);
+  EPETRA_TEST_ERR(!Epetra_Operator_UseTranspose(tmp_oA)==Epetra_Operator_UseTranspose(tmp_oB),ierr);
 
   int NumVectors = 5;
   { // No transpose case
@@ -503,12 +497,12 @@ int check(CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_RowMatrix_ID_t & B, bool verbos
     Epetra_MultiVector_Random(X);
     
     boolean transA = FALSE;
-    Epetra_Operator_SetUseTranspose(oA, transA);
-    Epetra_Operator_SetUseTranspose(oB, transA);
-    Epetra_Operator_Apply(oA,X,YA1);
+    Epetra_Operator_SetUseTranspose(tmp_oA, transA);
+    Epetra_Operator_SetUseTranspose(tmp_oB, transA);
+    Epetra_Operator_Apply(tmp_oA,X,YA1);
     Epetra_RowMatrix_Multiply(A, transA, X, YA2);
     EPETRA_TEST_ERR(checkMultiVectors(YA1,YA2,"A Multiply and A Apply", verbose),ierr);
-    Epetra_Operator_Apply(oB,X,YB1);
+    Epetra_Operator_Apply(tmp_oB,X,YB1);
     EPETRA_TEST_ERR(checkMultiVectors(YA1,YB1,"A Multiply and B Multiply", verbose),ierr);
     Epetra_RowMatrix_Multiply(B, transA, X, YB2);
     EPETRA_TEST_ERR(checkMultiVectors(YA1,YB2,"A Multiply and B Apply", verbose), ierr);
@@ -529,12 +523,12 @@ int check(CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_RowMatrix_ID_t & B, bool verbos
     Epetra_MultiVector_Random(X);
     
     boolean transA = TRUE;
-    Epetra_Operator_SetUseTranspose(oA, transA);
-    Epetra_Operator_SetUseTranspose(oB, transA);
-    Epetra_Operator_Apply(oA,X,YA1);
+    Epetra_Operator_SetUseTranspose(tmp_oA, transA);
+    Epetra_Operator_SetUseTranspose(tmp_oB, transA);
+    Epetra_Operator_Apply(tmp_oA,X,YA1);
     Epetra_RowMatrix_Multiply(A, transA, X, YA2);
     EPETRA_TEST_ERR(checkMultiVectors(YA1,YA2, "A Multiply and A Apply (transpose)", verbose),ierr);
-    Epetra_Operator_Apply(oB,X,YB1);
+    Epetra_Operator_Apply(tmp_oB,X,YB1);
     EPETRA_TEST_ERR(checkMultiVectors(YA1,YB1, "A Multiply and B Multiply (transpose)", verbose),ierr);
     Epetra_RowMatrix_Multiply(B, transA, X, YB2);
     EPETRA_TEST_ERR(checkMultiVectors(YA1,YB2, "A Multiply and B Apply (transpose)", verbose),ierr);
@@ -547,56 +541,49 @@ int check(CT_Epetra_RowMatrix_ID_t& A, CT_Epetra_RowMatrix_ID_t & B, bool verbos
     
   }
 
-  Epetra_Operator_Destroy(&oB);
-  Epetra_Operator_Destroy(&oA);
+  CT_Epetra_Vector_ID_Flex_t diagA;
+  diagA.Epetra_Vector = Epetra_Vector_Create(brrmA, TRUE);
+  EPETRA_TEST_ERR(Epetra_RowMatrix_ExtractDiagonalCopy(A, diagA.Epetra_Vector),ierr);
+  CT_Epetra_Vector_ID_Flex_t diagB;
+  diagB.Epetra_Vector = Epetra_Vector_Create(brrmB, TRUE);
+  EPETRA_TEST_ERR(Epetra_RowMatrix_ExtractDiagonalCopy(B, diagB.Epetra_Vector),ierr);
+  EPETRA_TEST_ERR(checkMultiVectors(diagA.Epetra_MultiVector,diagB.Epetra_MultiVector,
+      "ExtractDiagonalCopy", verbose),ierr);
 
-  CT_Epetra_Vector_ID_t diagA = Epetra_Vector_Create(brrmA, TRUE);
-  CT_Epetra_MultiVector_ID_t mdiagA = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(diagA));
-  EPETRA_TEST_ERR(Epetra_RowMatrix_ExtractDiagonalCopy(A, diagA),ierr);
-  CT_Epetra_Vector_ID_t diagB = Epetra_Vector_Create(brrmB, TRUE);
-  CT_Epetra_MultiVector_ID_t mdiagB = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(diagB));
-  EPETRA_TEST_ERR(Epetra_RowMatrix_ExtractDiagonalCopy(B, diagB),ierr);
-  EPETRA_TEST_ERR(checkMultiVectors(mdiagA,mdiagB, "ExtractDiagonalCopy", verbose),ierr);
+  CT_Epetra_Vector_ID_Flex_t rowA;
+  rowA.Epetra_Vector = Epetra_Vector_Create(brrmA, TRUE);
+  EPETRA_TEST_ERR(Epetra_RowMatrix_InvRowSums(A, rowA.Epetra_Vector),ierr);
+  CT_Epetra_Vector_ID_Flex_t rowB;
+  rowB.Epetra_Vector = Epetra_Vector_Create(brrmB, TRUE);
+  EPETRA_TEST_ERR(Epetra_RowMatrix_InvRowSums(B, rowB.Epetra_Vector),ierr)
+  EPETRA_TEST_ERR(checkMultiVectors(rowA.Epetra_MultiVector,rowB.Epetra_MultiVector,
+      "InvRowSums", verbose),ierr);
 
-  CT_Epetra_Vector_ID_t rowA = Epetra_Vector_Create(brrmA, TRUE);
-  CT_Epetra_MultiVector_ID_t mrowA = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(rowA));
-  EPETRA_TEST_ERR(Epetra_RowMatrix_InvRowSums(A, rowA),ierr);
-  CT_Epetra_Vector_ID_t rowB = Epetra_Vector_Create(brrmB, TRUE);
-  CT_Epetra_MultiVector_ID_t mrowB = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(rowB));
-  EPETRA_TEST_ERR(Epetra_RowMatrix_InvRowSums(B, rowB),ierr)
-  EPETRA_TEST_ERR(checkMultiVectors(mrowA,mrowB, "InvRowSums", verbose),ierr);
-
-  CT_Epetra_Vector_ID_t colA = Epetra_Vector_Create(brcmA, TRUE);
-  CT_Epetra_MultiVector_ID_t mcolA = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(colA));
-  EPETRA_TEST_ERR(Epetra_RowMatrix_InvColSums(A, colA),ierr);
-  CT_Epetra_Vector_ID_t colB = Epetra_Vector_Create(brcmB, TRUE);
-  CT_Epetra_MultiVector_ID_t mcolB = Epetra_MultiVector_Cast(Epetra_Vector_Abstract(colB));
-  EPETRA_TEST_ERR(Epetra_RowMatrix_InvColSums(B, colB),ierr);
-  EPETRA_TEST_ERR(checkMultiVectors(mcolA,mcolB, "InvColSums", verbose),ierr);
+  CT_Epetra_Vector_ID_Flex_t colA;
+  colA.Epetra_Vector = Epetra_Vector_Create(brcmA, TRUE);
+  EPETRA_TEST_ERR(Epetra_RowMatrix_InvColSums(A, colA.Epetra_Vector),ierr);
+  CT_Epetra_Vector_ID_Flex_t colB;
+  colB.Epetra_Vector = Epetra_Vector_Create(brcmB, TRUE);
+  EPETRA_TEST_ERR(Epetra_RowMatrix_InvColSums(B, colB.Epetra_Vector),ierr);
+  EPETRA_TEST_ERR(checkMultiVectors(colA.Epetra_MultiVector,colB.Epetra_MultiVector,
+      "InvColSums", verbose),ierr);
 
   EPETRA_TEST_ERR(checkValues(Epetra_RowMatrix_NormInf(A), Epetra_RowMatrix_NormInf(B), "NormInf before scaling", verbose), ierr);
   EPETRA_TEST_ERR(checkValues(Epetra_RowMatrix_NormOne(A), Epetra_RowMatrix_NormOne(B), "NormOne before scaling", verbose),ierr);
 
-  EPETRA_TEST_ERR(Epetra_RowMatrix_RightScale(A, colA),ierr);  
-  EPETRA_TEST_ERR(Epetra_RowMatrix_RightScale(B, colB),ierr);
+  EPETRA_TEST_ERR(Epetra_RowMatrix_RightScale(A, colA.Epetra_Vector),ierr);  
+  EPETRA_TEST_ERR(Epetra_RowMatrix_RightScale(B, colB.Epetra_Vector),ierr);
 
 
-  EPETRA_TEST_ERR(Epetra_RowMatrix_LeftScale(A, rowA),ierr);
-  EPETRA_TEST_ERR(Epetra_RowMatrix_LeftScale(B, rowB),ierr);
+  EPETRA_TEST_ERR(Epetra_RowMatrix_LeftScale(A, rowA.Epetra_Vector),ierr);
+  EPETRA_TEST_ERR(Epetra_RowMatrix_LeftScale(B, rowB.Epetra_Vector),ierr);
 
-  Epetra_MultiVector_Destroy(&mcolB);
-  Epetra_MultiVector_Destroy(&mcolA);
-  Epetra_MultiVector_Destroy(&mrowB);
-  Epetra_MultiVector_Destroy(&mrowA);
-  Epetra_MultiVector_Destroy(&mdiagB);
-  Epetra_MultiVector_Destroy(&mdiagA);
-
-  Epetra_Vector_Destroy(&colB);
-  Epetra_Vector_Destroy(&colA);
-  Epetra_Vector_Destroy(&rowB);
-  Epetra_Vector_Destroy(&rowA);
-  Epetra_Vector_Destroy(&diagB);
-  Epetra_Vector_Destroy(&diagA);
+  Epetra_Vector_Destroy(&colB.Epetra_Vector);
+  Epetra_Vector_Destroy(&colA.Epetra_Vector);
+  Epetra_Vector_Destroy(&rowB.Epetra_Vector);
+  Epetra_Vector_Destroy(&rowA.Epetra_Vector);
+  Epetra_Vector_Destroy(&diagB.Epetra_Vector);
+  Epetra_Vector_Destroy(&diagA.Epetra_Vector);
 
   Epetra_BlockMap_Destroy(&brrmA);
   Epetra_BlockMap_Destroy(&brrmB);
