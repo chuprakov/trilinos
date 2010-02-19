@@ -47,6 +47,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_MPICOMM_H
 
 
+#include "mpi.h"
 #include "CTrilinos_enums.h"
 
 
