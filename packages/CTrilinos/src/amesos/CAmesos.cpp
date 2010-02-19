@@ -135,7 +135,7 @@ CAmesos::getAmesos( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Amesos>
 CAmesos::getConstAmesos( CT_Amesos_ID_t id )
 {
-    return tableOfAmesoss().get(
+    return tableOfAmesoss().getConst(
         CTrilinos::abstractType<CT_Amesos_ID_t>(id));
 }
 

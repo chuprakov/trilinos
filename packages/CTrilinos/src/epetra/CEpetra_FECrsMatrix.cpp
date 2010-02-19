@@ -417,7 +417,7 @@ CEpetra::getFECrsMatrix( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_FECrsMatrix>
 CEpetra::getConstFECrsMatrix( CT_Epetra_FECrsMatrix_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_FECrsMatrix>(
+    return CTrilinos::tableRepos().getConst<Epetra_FECrsMatrix>(
         CTrilinos::abstractType<CT_Epetra_FECrsMatrix_ID_t>(id));
 }
 

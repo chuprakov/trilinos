@@ -218,7 +218,7 @@ CEpetra::getVector( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_Vector>
 CEpetra::getConstVector( CT_Epetra_Vector_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_Vector>(
+    return CTrilinos::tableRepos().getConst<Epetra_Vector>(
         CTrilinos::abstractType<CT_Epetra_Vector_ID_t>(id));
 }
 

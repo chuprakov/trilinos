@@ -224,7 +224,7 @@ CAmesos::getBaseSolver( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Amesos_BaseSolver>
 CAmesos::getConstBaseSolver( CT_Amesos_BaseSolver_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Amesos_BaseSolver>(
+    return CTrilinos::tableRepos().getConst<Amesos_BaseSolver>(
         CTrilinos::abstractType<CT_Amesos_BaseSolver_ID_t>(id));
 }
 

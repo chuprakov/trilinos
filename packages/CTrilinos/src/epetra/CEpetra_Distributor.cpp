@@ -201,7 +201,7 @@ CEpetra::getDistributor( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_Distributor>
 CEpetra::getConstDistributor( CT_Epetra_Distributor_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_Distributor>(
+    return CTrilinos::tableRepos().getConst<Epetra_Distributor>(
         CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(id));
 }
 

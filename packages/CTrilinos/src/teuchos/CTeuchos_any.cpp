@@ -158,7 +158,7 @@ CTeuchos::getany( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Teuchos::any>
 CTeuchos::getConstany( CT_Teuchos_any_ID_t id )
 {
-    return tableOfanys().get(
+    return tableOfanys().getConst(
         CTrilinos::abstractType<CT_Teuchos_any_ID_t>(id));
 }
 

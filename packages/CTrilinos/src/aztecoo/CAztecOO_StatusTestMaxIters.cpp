@@ -146,7 +146,7 @@ CAztecOO::getStatusTestMaxIters( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const AztecOO_StatusTestMaxIters>
 CAztecOO::getConstStatusTestMaxIters( CT_AztecOO_StatusTestMaxIters_ID_t id )
 {
-    return CTrilinos::tableRepos().get<AztecOO_StatusTestMaxIters>(
+    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestMaxIters>(
         CTrilinos::abstractType<CT_AztecOO_StatusTestMaxIters_ID_t>(id));
 }
 

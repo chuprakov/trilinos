@@ -116,7 +116,7 @@ CEpetra::getDirectory( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_Directory>
 CEpetra::getConstDirectory( CT_Epetra_Directory_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_Directory>(
+    return CTrilinos::tableRepos().getConst<Epetra_Directory>(
         CTrilinos::abstractType<CT_Epetra_Directory_ID_t>(id));
 }
 

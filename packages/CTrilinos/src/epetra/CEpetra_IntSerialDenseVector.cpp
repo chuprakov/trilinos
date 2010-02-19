@@ -229,7 +229,7 @@ CEpetra::getIntSerialDenseVector( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_IntSerialDenseVector>
 CEpetra::getConstIntSerialDenseVector( CT_Epetra_IntSerialDenseVector_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_IntSerialDenseVector>(
+    return CTrilinos::tableRepos().getConst<Epetra_IntSerialDenseVector>(
         CTrilinos::abstractType<CT_Epetra_IntSerialDenseVector_ID_t>(id));
 }
 

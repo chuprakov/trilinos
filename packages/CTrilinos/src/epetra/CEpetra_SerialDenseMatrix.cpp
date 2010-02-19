@@ -379,7 +379,7 @@ CEpetra::getSerialDenseMatrix( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_SerialDenseMatrix>
 CEpetra::getConstSerialDenseMatrix( CT_Epetra_SerialDenseMatrix_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_SerialDenseMatrix>(
+    return CTrilinos::tableRepos().getConst<Epetra_SerialDenseMatrix>(
         CTrilinos::abstractType<CT_Epetra_SerialDenseMatrix_ID_t>(id));
 }
 

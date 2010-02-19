@@ -155,7 +155,7 @@ CEpetra::getOffsetIndex( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_OffsetIndex>
 CEpetra::getConstOffsetIndex( CT_Epetra_OffsetIndex_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_OffsetIndex>(
+    return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex>(
         CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(id));
 }
 

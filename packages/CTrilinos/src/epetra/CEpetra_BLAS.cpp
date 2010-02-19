@@ -285,7 +285,7 @@ CEpetra::getBLAS( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_BLAS>
 CEpetra::getConstBLAS( CT_Epetra_BLAS_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_BLAS>(
+    return CTrilinos::tableRepos().getConst<Epetra_BLAS>(
         CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id));
 }
 

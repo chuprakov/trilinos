@@ -399,7 +399,7 @@ CEpetra::getBlockMap( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_BlockMap>
 CEpetra::getConstBlockMap( CT_Epetra_BlockMap_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_BlockMap>(
+    return CTrilinos::tableRepos().getConst<Epetra_BlockMap>(
         CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(id));
 }
 

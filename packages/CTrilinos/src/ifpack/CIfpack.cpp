@@ -156,7 +156,7 @@ CIfpack::getIfpack( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Ifpack>
 CIfpack::getConstIfpack( CT_Ifpack_ID_t id )
 {
-    return tableOfIfpacks().get(
+    return tableOfIfpacks().getConst(
         CTrilinos::abstractType<CT_Ifpack_ID_t>(id));
 }
 

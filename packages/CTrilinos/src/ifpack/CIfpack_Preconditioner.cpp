@@ -209,7 +209,7 @@ CIfpack::getPreconditioner( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Ifpack_Preconditioner>
 CIfpack::getConstPreconditioner( CT_Ifpack_Preconditioner_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Ifpack_Preconditioner>(
+    return CTrilinos::tableRepos().getConst<Ifpack_Preconditioner>(
         CTrilinos::abstractType<CT_Ifpack_Preconditioner_ID_t>(id));
 }
 

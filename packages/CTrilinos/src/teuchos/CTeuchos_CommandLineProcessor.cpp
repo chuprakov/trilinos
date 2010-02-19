@@ -209,7 +209,7 @@ CTeuchos::getCommandLineProcessor( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Teuchos::CommandLineProcessor>
 CTeuchos::getConstCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id )
 {
-    return tableOfCommandLineProcessors().get(
+    return tableOfCommandLineProcessors().getConst(
         CTrilinos::abstractType<CT_Teuchos_CommandLineProcessor_ID_t>(id));
 }
 

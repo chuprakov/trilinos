@@ -479,7 +479,7 @@ CEpetra::getMultiVector( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_MultiVector>
 CEpetra::getConstMultiVector( CT_Epetra_MultiVector_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_MultiVector>(
+    return CTrilinos::tableRepos().getConst<Epetra_MultiVector>(
         CTrilinos::abstractType<CT_Epetra_MultiVector_ID_t>(id));
 }
 

@@ -192,7 +192,7 @@ CEpetra::getExport( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_Export>
 CEpetra::getConstExport( CT_Epetra_Export_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_Export>(
+    return CTrilinos::tableRepos().getConst<Epetra_Export>(
         CTrilinos::abstractType<CT_Epetra_Export_ID_t>(id));
 }
 

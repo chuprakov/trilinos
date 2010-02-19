@@ -170,7 +170,7 @@ CEpetra::getJadMatrix( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_JadMatrix>
 CEpetra::getConstJadMatrix( CT_Epetra_JadMatrix_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_JadMatrix>(
+    return CTrilinos::tableRepos().getConst<Epetra_JadMatrix>(
         CTrilinos::abstractType<CT_Epetra_JadMatrix_ID_t>(id));
 }
 

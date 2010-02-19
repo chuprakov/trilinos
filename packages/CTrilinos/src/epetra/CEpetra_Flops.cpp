@@ -127,7 +127,7 @@ CEpetra::getFlops( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_Flops>
 CEpetra::getConstFlops( CT_Epetra_Flops_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_Flops>(
+    return CTrilinos::tableRepos().getConst<Epetra_Flops>(
         CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(id));
 }
 

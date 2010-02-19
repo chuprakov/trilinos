@@ -104,7 +104,7 @@ CEpetra::getSrcDistObject( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_SrcDistObject>
 CEpetra::getConstSrcDistObject( CT_Epetra_SrcDistObject_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_SrcDistObject>(
+    return CTrilinos::tableRepos().getConst<Epetra_SrcDistObject>(
         CTrilinos::abstractType<CT_Epetra_SrcDistObject_ID_t>(id));
 }
 

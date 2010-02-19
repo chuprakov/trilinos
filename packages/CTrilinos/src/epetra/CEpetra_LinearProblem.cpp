@@ -240,7 +240,7 @@ CEpetra::getLinearProblem( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_LinearProblem>
 CEpetra::getConstLinearProblem( CT_Epetra_LinearProblem_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_LinearProblem>(
+    return CTrilinos::tableRepos().getConst<Epetra_LinearProblem>(
         CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(id));
 }
 

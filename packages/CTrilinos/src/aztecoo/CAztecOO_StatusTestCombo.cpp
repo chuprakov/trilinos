@@ -169,7 +169,7 @@ CAztecOO::getStatusTestCombo( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const AztecOO_StatusTestCombo>
 CAztecOO::getConstStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t id )
 {
-    return CTrilinos::tableRepos().get<AztecOO_StatusTestCombo>(
+    return CTrilinos::tableRepos().getConst<AztecOO_StatusTestCombo>(
         CTrilinos::abstractType<CT_AztecOO_StatusTestCombo_ID_t>(id));
 }
 

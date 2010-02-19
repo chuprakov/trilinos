@@ -221,7 +221,7 @@ CTeuchos::getParameterEntry( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Teuchos::ParameterEntry>
 CTeuchos::getConstParameterEntry( CT_Teuchos_ParameterEntry_ID_t id )
 {
-    return tableOfParameterEntrys().get(
+    return tableOfParameterEntrys().getConst(
         CTrilinos::abstractType<CT_Teuchos_ParameterEntry_ID_t>(id));
 }
 

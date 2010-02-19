@@ -423,7 +423,7 @@ CAztecOO::getAztecOO( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const AztecOO>
 CAztecOO::getConstAztecOO( CT_AztecOO_ID_t id )
 {
-    return tableOfAztecOOs().get(
+    return tableOfAztecOOs().getConst(
         CTrilinos::abstractType<CT_AztecOO_ID_t>(id));
 }
 

@@ -127,7 +127,7 @@ CAztecOO::getStatusTest( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const AztecOO_StatusTest>
 CAztecOO::getConstStatusTest( CT_AztecOO_StatusTest_ID_t id )
 {
-    return CTrilinos::tableRepos().get<AztecOO_StatusTest>(
+    return CTrilinos::tableRepos().getConst<AztecOO_StatusTest>(
         CTrilinos::abstractType<CT_AztecOO_StatusTest_ID_t>(id));
 }
 

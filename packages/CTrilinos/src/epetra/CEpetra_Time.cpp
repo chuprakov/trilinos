@@ -133,7 +133,7 @@ CEpetra::getTime( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_Time>
 CEpetra::getConstTime( CT_Epetra_Time_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_Time>(
+    return CTrilinos::tableRepos().getConst<Epetra_Time>(
         CTrilinos::abstractType<CT_Epetra_Time_ID_t>(id));
 }
 

@@ -428,7 +428,7 @@ CTeuchos::getParameterList( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Teuchos::ParameterList>
 CTeuchos::getConstParameterList( CT_Teuchos_ParameterList_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Teuchos::ParameterList>(
+    return CTrilinos::tableRepos().getConst<Teuchos::ParameterList>(
         CTrilinos::abstractType<CT_Teuchos_ParameterList_ID_t>(id));
 }
 

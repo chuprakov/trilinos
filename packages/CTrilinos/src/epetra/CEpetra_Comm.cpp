@@ -272,7 +272,7 @@ CEpetra::getComm( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_Comm>
 CEpetra::getConstComm( CT_Epetra_Comm_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_Comm>(
+    return CTrilinos::tableRepos().getConst<Epetra_Comm>(
         CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id));
 }
 

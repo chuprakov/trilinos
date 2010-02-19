@@ -880,7 +880,7 @@ CEpetra::getCrsMatrix( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Epetra_CrsMatrix>
 CEpetra::getConstCrsMatrix( CT_Epetra_CrsMatrix_ID_t id )
 {
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix>(
+    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix>(
         CTrilinos::abstractType<CT_Epetra_CrsMatrix_ID_t>(id));
 }
 
