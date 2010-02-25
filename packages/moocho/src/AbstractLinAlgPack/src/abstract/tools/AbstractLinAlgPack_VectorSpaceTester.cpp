@@ -38,6 +38,14 @@
 #include "TestingHelperPack_update_success.hpp"
 #include "Teuchos_TestForException.hpp"
 
+
+//#define ALAP_VECTOR_SPACE_TESTER_DUMP
+
+#ifdef ALAP_VECTOR_SPACE_TESTER_DUMP
+#  include "RTOpPack_SPMD_apply_op.hpp"
+#endif // ALAP_VECTOR_SPACE_TESTER_DUMP
+
+
 namespace {
 template< class T >
 inline
@@ -47,7 +55,9 @@ inline
 T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
 } // end namespace
 
+
 namespace AbstractLinAlgPack {
+
 
 VectorSpaceTester::VectorSpaceTester(
   bool         print_all_tests
@@ -204,11 +214,23 @@ bool VectorSpaceTester::check_vector_space(
       
       if(out && print_all_tests())
         *out << std::endl << z_name << ".set_ele("<<i<<","<<val<<")\n";
+#ifdef ALAP_VECTOR_SPACE_TESTER_DUMP
+      RTOpPack::show_spmd_apply_op_dump = true;
+#endif
       z[k]->set_ele(i,val);
+#ifdef ALAP_VECTOR_SPACE_TESTER_DUMP
+      RTOpPack::show_spmd_apply_op_dump = false;
+#endif
       if(out && print_vectors())
         *out << std::endl << z_name << " =\n" << *z[k];
+#ifdef ALAP_VECTOR_SPACE_TESTER_DUMP
+      RTOpPack::show_spmd_apply_op_dump = true;
+#endif
       RTOp_value_type
         val_get = z[k]->get_ele(i);
+#ifdef ALAP_VECTOR_SPACE_TESTER_DUMP
+      RTOpPack::show_spmd_apply_op_dump = false;
+#endif
       err = val - val_get;
       if(out && (print_all_tests() || ::fabs(err) >= warning_tol()) )
         *out << "check: " << val << " - " << z_name << ".get_ele(" << i << ") = "
@@ -242,7 +264,6 @@ bool VectorSpaceTester::check_vector_space(
   {
     {for( int k = 0; k < 3; ++k ) {
       sprintf( z_name, "z[%d]", k );
-      const AbstractLinAlgPack::Vector *vec = NULL;
       sprintf( v_name, "v[%d]", k );
       if(out && print_all_tests())
         *out << "\n" << v_name << " -> " << z_name << "\n";
