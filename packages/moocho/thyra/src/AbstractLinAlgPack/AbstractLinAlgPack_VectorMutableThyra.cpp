@@ -133,13 +133,8 @@ void VectorMutableThyra::apply_op(
   // Call the Thyra::apply_op(...)
   RTOpPack::RTOpSubRangeDecorator<value_type>
     subRangeOp(rcpFromRef(op), first_ele-1, sub_dim==0 ? -1 : sub_dim);
-  Thyra::applyOp<value_type>(
-    subRangeOp,
-    thyra_vecs(),
-    targ_thyra_vecs(),
-    Teuchos::ptr(reduct_obj),
-    0, -1, global_offset
-    );
+  Thyra::applyOp<value_type>(subRangeOp, thyra_vecs(), targ_thyra_vecs(),
+    Teuchos::ptr(reduct_obj), global_offset);
 
   // Free/commit the Thyra vector views
   for(int k = 0; k < as<int>(num_vecs); ++k ) {
