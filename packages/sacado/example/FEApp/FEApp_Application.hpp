@@ -223,6 +223,22 @@ namespace FEApp {
 			Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_f,
 			Stokhos::VectorOrthogPoly<Epetra_Operator>& sg_jac);
 
+    //! Compute global Tangent for stochastic Galerkin problem
+    /*!
+     * Set xdot to NULL for steady-state problems
+     */
+    void computeGlobalSGTangent(
+      double alpha, double beta, bool sum_derivs,
+      const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
+      const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+      const ParamVec* p, ParamVec* deriv_p, const ParamVec* sg_p, 
+      const Teuchos::Array<SGType>* sg_p_vals,   
+      const Epetra_MultiVector* Vx,
+      const Teuchos::SerialDenseMatrix<int,double>* Vp,
+      Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_f,
+      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_JVx,
+      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_fVp);
+
     //! Evaluate stochastic Galerkin response functions
     /*!
      * Set xdot to NULL for steady-state problems
@@ -230,10 +246,41 @@ namespace FEApp {
     void 
     evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
 			const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
-			const ParamVec* p,
-			const ParamVec* sg_p,
+			const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
 			const Teuchos::Array<SGType>* sg_p_vals,
 			Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_g);
+
+    //! Evaluate tangent = dg/dx*dx/dp + dg/dxdot*dxdot/dp + dg/dp
+    /*!
+     * Set xdot, dxdot_dp to NULL for steady-state problems
+     */
+    void 
+    evaluateSGResponseTangents(
+      const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
+      const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+      const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+      const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
+      const Teuchos::Array<SGType>* sg_p_vals,
+      const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dxdot_dp,
+      const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dx_dp,
+      Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
+      const Teuchos::Array< Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_gt);
+
+    //! Evaluate gradient = dg/dx, dg/dxdot, dg/dp
+    /*!
+     * Set xdot, dg_dxdot to NULL for steady-state problems
+     */
+    void 
+    evaluateSGResponseGradients(
+      const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
+      const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+      const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+      const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
+      const Teuchos::Array<SGType>* sg_p_vals,
+      Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
+      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dx,
+      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dxdot,
+      const Teuchos::Array< Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_dg_dp);
 
 #endif
 

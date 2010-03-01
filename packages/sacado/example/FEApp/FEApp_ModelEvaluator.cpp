@@ -234,9 +234,9 @@ FEApp::ModelEvaluator::createOutArgs() const
 
   if (supports_p && supports_g) {
     outArgs.set_Np_Ng(param_names.size(), 1);
-    for (unsigned int i=0; i<param_names.size(); i++)
+    for (int i=0; i<param_names.size(); i++)
       outArgs.setSupports(OUT_ARG_DgDp, 0, i, 
-			  DerivativeSupport(DERIV_MV_BY_COL));
+			  DerivativeSupport(DERIV_TRANS_MV_BY_ROW));
   }
   else if (supports_p)
     outArgs.set_Np_Ng(1, 0);
@@ -246,14 +246,16 @@ FEApp::ModelEvaluator::createOutArgs() const
     outArgs.set_Np_Ng(0, 0);
 
   if (supports_g) {
-    outArgs.setSupports(OUT_ARG_DgDx, 0, DerivativeSupport(DERIV_MV_BY_COL));
+    outArgs.setSupports(OUT_ARG_DgDx, 0, 
+			DerivativeSupport(DERIV_TRANS_MV_BY_ROW));
     if (app->isTransient())
       outArgs.setSupports(OUT_ARG_DgDx_dot, 0, 
-                          DerivativeSupport(DERIV_MV_BY_COL));
+                          DerivativeSupport(DERIV_TRANS_MV_BY_ROW));
   }
   if (supports_p)
-    for (unsigned int i=0; i<param_names.size(); i++)
-      outArgs.setSupports(OUT_ARG_DfDp, i, DerivativeSupport(DERIV_MV_BY_COL));
+    for (int i=0; i<param_names.size(); i++)
+      outArgs.setSupports(OUT_ARG_DfDp, i, 
+			  DerivativeSupport(DERIV_TRANS_MV_BY_ROW));
 
   outArgs.setSupports(OUT_ARG_f,true);
   outArgs.setSupports(OUT_ARG_W,true);
@@ -261,11 +263,35 @@ FEApp::ModelEvaluator::createOutArgs() const
     DerivativeProperties(
       DERIV_LINEARITY_UNKNOWN ,DERIV_RANK_FULL ,true)
     );
+
   if (supports_sg) {
     outArgs.setSupports(OUT_ARG_f_sg,true);
     outArgs.setSupports(OUT_ARG_W_sg,true);
-    if (supports_g)
+
+    if (supports_p && supports_g) {
+      outArgs.set_Np_Ng_sg(param_names.size(), 1);
+      for (int i=0; i<param_names.size(); i++)
+	outArgs.setSupports(OUT_ARG_DgDp_sg, 0, i, 
+			    DerivativeSupport(DERIV_TRANS_MV_BY_ROW));
+    }
+    else if (supports_p)
+      outArgs.set_Np_Ng_sg(1, 0);
+    else if (supports_g)
       outArgs.set_Np_Ng_sg(0, 1);
+    else
+      outArgs.set_Np_Ng_sg(0, 0);
+
+    if (supports_g) {
+      outArgs.setSupports(OUT_ARG_DgDx_sg, 0, 
+			  DerivativeSupport(DERIV_TRANS_MV_BY_ROW));
+      if (app->isTransient())
+	outArgs.setSupports(OUT_ARG_DgDx_dot_sg, 0, 
+			    DerivativeSupport(DERIV_TRANS_MV_BY_ROW));
+    }
+    if (supports_p)
+      for (int i=0; i<param_names.size(); i++)
+	outArgs.setSupports(OUT_ARG_DfDp_sg, i, 
+			    DerivativeSupport(DERIV_TRANS_MV_BY_ROW));
   }
 
   return outArgs;
@@ -418,7 +444,7 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
 	inArgs.get_p_sg(0);
       Teuchos::Array<SGType> *p_sg_ptr = NULL;
       if (epetra_p_sg != Teuchos::null) {
-	for (unsigned int i=0; i<p_sg_vals.size(); i++) {
+	for (int i=0; i<p_sg_vals.size(); i++) {
 	  int num_sg_blocks = epetra_p_sg->size();
 	  p_sg_vals[i].reset(app->getStochasticExpansion(), num_sg_blocks);
 	  p_sg_vals[i].copyForWrite();
@@ -428,27 +454,104 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
 	}
 	p_sg_ptr = &p_sg_vals;
       }
+
       OutArgs::sg_vector_t f_sg = outArgs.get_f_sg();
       OutArgs::sg_operator_t W_sg = outArgs.get_W_sg();
-      if (W_sg != Teuchos::null)
+      bool f_sg_computed = false;
+      
+      // W_sg
+      if (W_sg != Teuchos::null) {
 	app->computeGlobalSGJacobian(alpha, beta, x_dot_sg.get(), *x_sg, 
 				     sacado_param_vec[0].get(), 
 				     sacado_param_vec[1].get(), p_sg_ptr,
 				     f_sg.get(), *W_sg);
-      else if (f_sg != Teuchos::null)
+	f_sg_computed = true;
+      }
+
+      // df/dp_sg
+      if (supports_p) {
+	for (int i=0; i<outArgs.Np_sg(); i++) {
+	  Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > dfdp_sg 
+	    = outArgs.get_DfDp_sg(i).getMultiVector();
+	  if (dfdp_sg != Teuchos::null) {
+	    Teuchos::Array<int> p_indexes = 
+	      outArgs.get_DfDp_sg(i).getDerivativeMultiVector().getParamIndexes();
+	    unsigned int n_params = p_indexes.size();
+	    Teuchos::RCP<ParamVec> p_vec;
+	    if (n_params > 0) {
+	      Teuchos::Array<std::string> p_names(n_params);
+	      for (unsigned int j=0; j<n_params; j++)
+		p_names[j] = (*(param_names[i]))[p_indexes[j]];
+	      p_vec = Teuchos::rcp(new ParamVec);
+	      app->getParamLib()->fillVector<FEApp::ResidualType>(p_names, *p_vec);
+	      for (unsigned int j=0; j<p_vec->size(); j++)
+		(*p_vec)[j].baseValue = 
+		  (*(sacado_param_vec[i]))[p_indexes[j]].baseValue;
+	    }
+	    else
+	      p_vec = Teuchos::rcp(sacado_param_vec[0].get(), false);
+	    
+	    app->computeGlobalSGTangent(0.0, 0.0, false, x_dot_sg.get(), *x_sg, 
+					sacado_param_vec[0].get(), p_vec.get(), 
+					sacado_param_vec[1].get(), p_sg_ptr,
+					NULL, NULL, f_sg.get(), NULL, 
+					dfdp_sg.get());
+
+	    f_sg_computed = true;
+	  }
+	}
+      }
+
+      if (f_sg != Teuchos::null && !f_sg_computed)
 	app->computeGlobalSGResidual(x_dot_sg.get(), *x_sg, 
 				     sacado_param_vec[0].get(), 
 				     sacado_param_vec[1].get(), p_sg_ptr,
 				     *f_sg);
 
       // Response functions
-      if (outArgs.Ng() > 0 && supports_g) {
-	OutArgs::sg_vector_t g_sg = outArgs.get_g_sg(0);
-	if (g_sg != Teuchos::null)
+      if (outArgs.Ng_sg() > 0 && supports_g) {
+	Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> > g_sg 
+	  = outArgs.get_g_sg(0);
+	Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > dgdx_sg 
+	  = outArgs.get_DgDx_sg(0).getMultiVector();
+	Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > dgdxdot_sg;
+	if (app->isTransient())
+	  dgdxdot_sg = outArgs.get_DgDx_dot_sg(0).getMultiVector();
+    
+	Teuchos::Array< Teuchos::RCP<ParamVec> > p_vec(outArgs.Np());
+	Teuchos::Array< Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > > dgdp_sg(outArgs.Np());
+	bool have_dgdp = false;
+	for (int i=0; i<outArgs.Np(); i++) {
+	  dgdp_sg[i] = outArgs.get_DgDp_sg(0,i).getMultiVector();
+	  if (dgdp_sg[i] != Teuchos::null)
+	    have_dgdp = true;
+	  Teuchos::Array<int> p_indexes = 
+	    outArgs.get_DgDp_sg(0,i).getDerivativeMultiVector().getParamIndexes();
+	  unsigned int n_params = p_indexes.size();
+	  if (n_params > 0) {
+	    Teuchos::Array<std::string> p_names(n_params);
+	    for (unsigned int j=0; j<n_params; j++)
+	      p_names[i] = (*(param_names[i]))[p_indexes[j]];
+	    p_vec[i] = Teuchos::rcp(new ParamVec);
+	    app->getParamLib()->fillVector<FEApp::ResidualType>(p_names, 
+								*(p_vec[i]));
+	    for (unsigned int j=0; j<p_vec[i]->size(); j++)
+	      (*(p_vec[i]))[j].baseValue = (*(sacado_param_vec[i]))[p_indexes[j]].baseValue;
+	  }
+	  else
+	    p_vec[i] = sacado_param_vec[i];
+	}
+
+	if (have_dgdp ||dgdx_sg != Teuchos::null || 
+	    dgdxdot_sg != Teuchos::null) {
+	  app->evaluateSGResponseGradients(x_dot_sg.get(), *x_sg, 
+					   sacado_param_vec, p_vec, p_sg_ptr,
+					   g_sg.get(), dgdx_sg.get(), 
+					   dgdxdot_sg.get(), dgdp_sg);
+	}
+	else if (g_sg != Teuchos::null)
 	  app->evaluateSGResponses(x_dot_sg.get(), *x_sg, 
-				   sacado_param_vec[0].get(), 
-				   sacado_param_vec[1].get(), p_sg_ptr, 
-				   *g_sg);
+				   sacado_param_vec, p_sg_ptr, *g_sg);
       }
     }
   }

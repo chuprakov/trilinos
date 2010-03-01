@@ -75,7 +75,7 @@ evaluateTangents(
     x.MeanValue(&(*g)[0]);
 
   // Evaluate tangent of g = dg/dx*dx/dp + dg/dxdot*dxdot/dp + dg/dp
-  for (unsigned int j=0; j<gt.size(); j++)
+  for (int j=0; j<gt.size(); j++)
     if (gt[j] != Teuchos::null)
       for (int i=0; i<dx_dp[i]->NumVectors(); i++)
 	(*dx_dp[j])(i)->MeanValue(&(*gt[j])[i][0]);
@@ -107,7 +107,7 @@ evaluateGradients(
     dg_dxdot->PutScalar(0.0);
 
   // Evaluate dg/dp
-  for (unsigned int j=0; j<dg_dp.size(); j++)
+  for (int j=0; j<dg_dp.size(); j++)
     if (dg_dp[j] != Teuchos::null)
       dg_dp[j]->PutScalar(0.0);
 }
@@ -117,13 +117,78 @@ void
 FEApp::SolutionAverageResponseFunction::
 evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
 		    const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
-		    const ParamVec* p,
-		    const ParamVec* sg_p,
+		    const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
 		    const Teuchos::Array<SGType>* sg_p_vals,
 		    Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_g)
 {
-  unsigned int sz = sg_x.size();
-  for (unsigned int i=0; i<sz; i++)
+  int sz = sg_x.size();
+  for (int i=0; i<sz; i++)
     sg_x[i].MeanValue(&sg_g[i][0]);
+}
+
+void
+FEApp::SolutionAverageResponseFunction::
+evaluateSGTangents(
+  const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
+  const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+  const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+  const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
+  const Teuchos::Array<SGType>* sg_p_vals,
+  const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dxdot_dp,
+  const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dx_dp,
+  Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
+  const Teuchos::Array< Teuchos::RCP<Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_gt)
+{
+  int sz = sg_x.size();
+    
+  // Evaluate response g
+  if (sg_g != NULL)
+    for (int i=0; i<sz; i++)
+      sg_x[i].MeanValue(&((*sg_g)[i][0]));
+
+  // Evaluate tangent of g = dg/dx*dx/dp + dg/dxdot*dxdot/dp + dg/dp
+  for (int j=0; j<sg_gt.size(); j++) {
+    if (sg_gt[j] != Teuchos::null)
+      sg_gt[j]->init(0.0);
+      for (int i=0; i<dx_dp[i]->NumVectors(); i++)
+	(*dx_dp[j])(i)->MeanValue(&(*sg_gt[j])[0][i][0]);
+  }
+}
+
+void
+FEApp::SolutionAverageResponseFunction::
+evaluateSGGradients(
+  const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
+  const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+  const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+  const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
+  const Teuchos::Array<SGType>* sg_p_vals,
+  Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
+  Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dx,
+  Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dxdot,
+  const Teuchos::Array< Teuchos::RCP<Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_dg_dp)
+{
+  int sz = sg_x.size();
+    
+  // Evaluate response g
+  if (sg_g != NULL) {
+    for (int i=0; i<sz; i++)
+      sg_x[i].MeanValue(&((*sg_g)[i][0]));
+  }
+
+  // Evaluate dg/dx
+  if (sg_dg_dx != NULL) {
+    sg_dg_dx->init(0.0);
+    (*sg_dg_dx)[0].PutScalar(1.0 / sg_x[0].GlobalLength());
+  }
+
+  // Evaluate dg/dxdot
+  if (sg_dg_dxdot != NULL)
+    sg_dg_dxdot->init(0.0);
+
+  // Evaluate dg/dp
+  for (int j=0; j<sg_dg_dp.size(); j++)
+    if (sg_dg_dp[j] != Teuchos::null)
+      sg_dg_dp[j]->init(0.0);
 }
 #endif

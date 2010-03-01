@@ -195,16 +195,16 @@ namespace FEApp {
      * Set xdot to Teuchos::null for steady-state problems
      */
     TangentOp(
-	       double alpha, double beta, bool sum_derivs,
-         const Teuchos::RCP<const Epetra_Vector>& overlapped_xdot,
-         const Teuchos::RCP<const Epetra_Vector>& overlapped_x,
-         const Teuchos::RCP<ParamVec>& p,
-         const Teuchos::RCP<const Epetra_MultiVector>& overlapped_Vx,
-         const Teuchos::RCP<const Epetra_MultiVector>& overlapped_Vxdot,
-	       const Teuchos::RCP<const Teuchos::SerialDenseMatrix<int,double> >& Vp,
-         const Teuchos::RCP<Epetra_Vector>& overlapped_f,
-         const Teuchos::RCP<Epetra_MultiVector>& overlapped_JV,
-         const Teuchos::RCP<Epetra_MultiVector>& overlapped_fp);
+      double alpha, double beta, bool sum_derivs,
+      const Teuchos::RCP<const Epetra_Vector>& overlapped_xdot,
+      const Teuchos::RCP<const Epetra_Vector>& overlapped_x,
+      const Teuchos::RCP<ParamVec>& p,
+      const Teuchos::RCP<const Epetra_MultiVector>& overlapped_Vx,
+      const Teuchos::RCP<const Epetra_MultiVector>& overlapped_Vxdot,
+      const Teuchos::RCP<const Teuchos::SerialDenseMatrix<int,double> >& Vp,
+      const Teuchos::RCP<Epetra_Vector>& overlapped_f,
+      const Teuchos::RCP<Epetra_MultiVector>& overlapped_JV,
+      const Teuchos::RCP<Epetra_MultiVector>& overlapped_fp);
 
     //! Destructor
     virtual ~TangentOp();
@@ -444,6 +444,125 @@ namespace FEApp {
 
     //! Jacobian matrices
     Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_CrsMatrix> > jac;
+
+  };
+
+  /*!! 
+   * Fill operator for stochastic galerkin "tangent":  
+   * alpha*df/dxdot*Vxdot + beta*df/dx*Vx + df/dp*V_p
+   */
+  class SGTangentOp : 
+    public FEApp::AbstractInitPostOp<FEApp::SGTangentType> {
+  public:
+
+    //! Constructor
+    /*!
+     * Set xdot to Teuchos::null for steady-state problems
+     */
+    SGTangentOp(
+      const Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> >& expansion,
+      double alpha, double beta, bool sum_derivs,
+      const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& xdot,
+      const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& x,
+      const Teuchos::RCP<ParamVec>& p,
+      const Teuchos::RCP<const Epetra_MultiVector>& Vx,
+      const Teuchos::RCP<const Epetra_MultiVector>& Vxdot,
+      const Teuchos::RCP<const Teuchos::SerialDenseMatrix<int,double> >& Vp,
+      const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >& f,
+      const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> >& JV,
+      const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> >& fp);
+
+    //! Destructor
+    virtual ~SGTangentOp();
+
+    //! Evaulate element init operator
+    virtual void elementInit(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector< SGFadType >* elem_xdot,
+                             std::vector< SGFadType >& elem_x);
+
+    //! Evaluate element post operator
+    virtual void elementPost(const FEApp::AbstractElement& e,
+                             unsigned int neqn,
+                             std::vector< SGFadType >& elem_f);
+
+    //! Evaulate node init operator
+    virtual void nodeInit(const FEApp::NodeBC& bc,
+                          unsigned int neqn,
+                          std::vector< SGFadType >* node_xdot,
+                          std::vector< SGFadType >& node_x);
+
+    //! Evaluate node post operator
+    virtual void nodePost(const FEApp::NodeBC& bc,
+                          unsigned int neqn,
+                          std::vector< SGFadType >& node_f);
+
+    //! Finalize fill
+    virtual void finalizeFill() {}
+
+  private:
+    
+    //! Private to prohibit copying
+    SGTangentOp(const SGTangentOp&);
+    
+    //! Private to prohibit copying
+    SGTangentOp& operator=(const SGTangentOp&);
+
+  protected:
+
+    //! Expansion
+    Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> > expansion;
+
+    //! Number of blocks
+    int nblock;
+
+    //! Coefficient of mass matrix
+    double m_coeff;
+
+    //! Coefficient of Jacobian matrix
+    double j_coeff;
+
+    //! Whether to sum derivative terms
+    bool sum_derivs;
+
+    //! Time derivative vectors (may be null)
+    Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> > xdot;
+
+    //! Solution vectors
+    Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> > x;
+
+    //! Parameter vector for parameter derivatives
+    Teuchos::RCP<ParamVec> params;
+
+    //! Seed matrix for state variables
+    Teuchos::RCP<const Epetra_MultiVector> Vx;
+
+    //! Seed matrix for transient variables
+    Teuchos::RCP<const Epetra_MultiVector> Vxdot;
+
+    //! Seed matrix for parameters
+    Teuchos::RCP<const Teuchos::SerialDenseMatrix<int,double> > Vp;
+
+    //! Residual vectors
+    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> > f;
+
+    //! Tangent matrix (alpha*df/dxdot + beta*df/dx)*V
+    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > JV;
+    
+    //! Tangent matrix df/dp*V_p
+    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > fp;
+
+    //! Stores number of columns in seed matrix V
+    int num_cols_x;
+
+    //! Stores number of columns in seend matrix Vp
+    int num_cols_p;
+
+    //! Stores the total number of columns
+    int num_cols_tot;
+
+    //! Stores the parameter offset
+    int param_offset;
 
   };
 

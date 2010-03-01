@@ -997,4 +997,300 @@ FEApp::SGJacobianOp::finalizeFill()
 {
 }
 
+FEApp::SGTangentOp::SGTangentOp(
+  const Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> >& expansion_,
+  double alpha, double beta, bool sum_derivs_,
+  const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& xdot_,
+  const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& x_,
+  const Teuchos::RCP<ParamVec>& p,
+  const Teuchos::RCP<const Epetra_MultiVector>& Vx_,
+  const Teuchos::RCP<const Epetra_MultiVector>& Vxdot_,
+  const Teuchos::RCP<const Teuchos::SerialDenseMatrix<int,double> >& Vp_,
+  const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >& f_,
+  const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> >& JV_,
+  const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> >& fp_) :
+  expansion(expansion_),
+  nblock(x_->size()),
+  m_coeff(alpha),
+  j_coeff(beta),
+  sum_derivs(sum_derivs_),
+  xdot(xdot_),
+  x(x_),
+  params(p),
+  Vx(Vx_),
+  Vxdot(Vxdot_),
+  Vp(Vp_),
+  f(f_),
+  JV(JV_),
+  fp(fp_),
+  num_cols_x(0),
+  num_cols_p(0),
+  num_cols_tot(0),
+  param_offset(0)
+{
+  if (Vx != Teuchos::null)
+    num_cols_x = Vx->NumVectors();
+  else if (Vxdot != Teuchos::null)
+    num_cols_x = Vxdot->NumVectors();
+  if (params != Teuchos::null) {
+    if (Vp != Teuchos::null)
+      num_cols_p = Vp->numCols();
+    else
+      num_cols_p = params->size();
+  }
+  if (sum_derivs) {
+    num_cols_tot = num_cols_x;
+    param_offset = 0;
+  }
+  else {
+    num_cols_tot = num_cols_x + num_cols_p;
+    param_offset = num_cols_x;
+  }
+
+  TEST_FOR_EXCEPTION(sum_derivs && (num_cols_x != 0) && (num_cols_p != 0) && 
+                     (num_cols_x != num_cols_p),
+                     std::logic_error,
+                     "Seed matrices Vx and Vp must have the same number " << 
+                     " of columns when sum_derivs is true and both are "
+                     << "non-null!" << std::endl);
+}
+
+FEApp::SGTangentOp::~SGTangentOp()
+{
+}
+
+void
+FEApp::SGTangentOp::elementInit(
+			 const FEApp::AbstractElement& e,
+			 unsigned int neqn,
+			 std::vector< SGFadType >* elem_xdot,
+			 std::vector< SGFadType >& elem_x)
+{
+  // Global node ID
+  unsigned int node_GID;
+
+  // Local ID of first DOF
+  unsigned int firstDOF;
+
+  // Number of nodes
+  unsigned int nnode = e.numNodes();
+
+  // Copy element solution
+  for (unsigned int i=0; i<nnode; i++) {
+    node_GID = e.nodeGID(i);
+    firstDOF = (*x)[0].Map().LID(node_GID*neqn);
+
+    for (unsigned int j=0; j<neqn; j++) {
+      if (Vx != Teuchos::null && j_coeff != 0.0) {
+        elem_x[neqn*i+j] = SGFadType(num_cols_tot, 0.0);
+        for (int k=0; k<num_cols_x; k++)
+          elem_x[neqn*i+j].fastAccessDx(k) = j_coeff*(*Vx)[k][firstDOF+j];
+      }
+      else
+        elem_x[neqn*i+j] = SGFadType(0.0);
+      elem_x[neqn*i+j].val().reset(expansion);
+      elem_x[neqn*i+j].val().copyForWrite();
+      for (int block=0; block<nblock; block++)
+	elem_x[neqn*i+j].val().fastAccessCoeff(block) = 
+	  (*x)[block][firstDOF+j];
+      
+      if (elem_xdot != NULL) {
+        if (Vxdot != Teuchos::null && m_coeff != 0.0) {
+          (*elem_xdot)[neqn*i+j] = SGFadType(num_cols_tot, 0.0);
+          for (int k=0; k<num_cols_x; k++)
+            (*elem_xdot)[neqn*i+j].fastAccessDx(k) = 
+              m_coeff*(*Vxdot)[k][firstDOF+j];
+        }
+        else
+          (*elem_xdot)[neqn*i+j] = SGFadType(0.0);
+	(*elem_xdot)[neqn*i+j].val().reset(expansion);
+	(*elem_xdot)[neqn*i+j].val().copyForWrite();
+	for (int block=0; block<nblock; block++)
+	  (*elem_xdot)[neqn*i+j].val().fastAccessCoeff(block) = 
+	    (*xdot)[block][firstDOF+j];
+      }   
+    }
+  }
+
+  if (params != Teuchos::null) {
+    SGFadType p;
+    SGType pval;
+    for (unsigned int i=0; i<params->size(); i++) {
+      pval = (*params)[i].family->getValue<FEApp::SGTangentType>().val();
+      p = SGFadType(num_cols_tot, pval);
+      if (Vp != Teuchos::null) 
+        for (int k=0; k<num_cols_p; k++)
+          p.fastAccessDx(param_offset+k) = (*Vp)(i,k);
+      else
+        p.fastAccessDx(param_offset+i) = 1.0;
+      (*params)[i].family->setValue<FEApp::SGTangentType>(p);
+    }
+  }
+}
+
+void
+FEApp::SGTangentOp::elementPost(const FEApp::AbstractElement& e,
+                              unsigned int neqn,
+                              std::vector< SGFadType >& elem_f)
+{
+  // Number of nodes
+  unsigned int nnode = e.numNodes();
+
+  int row;
+  unsigned int lrow;
+  for (unsigned int node_row=0; node_row<nnode; node_row++) {
+
+    // Loop over equations per node
+    for (unsigned int eq_row=0; eq_row<neqn; eq_row++) {
+      lrow = neqn*node_row+eq_row;
+
+      // Global row
+      row = static_cast<int>(e.nodeGID(node_row)*neqn + eq_row);
+
+      // Sum residual
+      if (f != Teuchos::null)
+	for (int block=0; block<nblock; block++)
+	  (*f)[block].SumIntoGlobalValue(row, 0, 
+					 elem_f[lrow].val().coeff(block));
+	
+      // Extract derivative components for each column
+      if (JV != Teuchos::null)
+	for (int col=0; col<num_cols_x; col++)
+	  for (int block=0; block<nblock; block++)
+	    (*JV)[block].SumIntoGlobalValue(row, col, 
+					    elem_f[lrow].dx(col).coeff(block));
+      if (fp != Teuchos::null)
+        for (int col=0; col<num_cols_p; col++)
+	  for (int block=0; block<nblock; block++)
+	    (*fp)[block].SumIntoGlobalValue(row, col, 
+					    elem_f[lrow].dx(col+param_offset).coeff(block));
+      
+    } // row equations
+    
+  } // row node
+
+}
+
+void
+FEApp::SGTangentOp::nodeInit(const FEApp::NodeBC& bc,
+                           unsigned int neqn,
+                           std::vector< SGFadType >* node_xdot,
+                           std::vector< SGFadType >& node_x)
+{
+  // Global node ID
+  unsigned int node_GID = bc.getNodeGID();
+
+  // Local ID of first DOF
+  unsigned int firstDOF = (*x)[0].Map().LID(node_GID*neqn);
+
+  // Copy element solution
+  for (unsigned int j=0; j<neqn; j++) {
+    if (Vx != Teuchos::null && j_coeff != 0.0) {
+      node_x[j] = SGFadType(num_cols_tot, 0.0);
+      for (int k=0; k < num_cols_x; k++)
+        node_x[j].fastAccessDx(k) = j_coeff*(*Vx)[k][firstDOF+j];
+    }
+    else
+      node_x[j] = SGFadType(0.0);
+    node_x[j].val().reset(expansion);
+    node_x[j].val().copyForWrite();
+    for (int block=0; block<nblock; block++)
+      node_x[j].val().fastAccessCoeff(block) = (*x)[block][firstDOF+j];
+
+    if (node_xdot != NULL) {
+      if (Vxdot != Teuchos::null && m_coeff != 0.0) {
+        (*node_xdot)[j] = SGFadType(num_cols_tot, 0.0);
+        for (int k=0; k < num_cols_x; k++)
+          (*node_xdot)[j].fastAccessDx(k) = m_coeff*(*Vxdot)[k][firstDOF+j];
+      }
+      else
+        (*node_xdot)[j] = SGFadType(0.0);
+      (*node_xdot)[j].val().reset(expansion);
+      (*node_xdot)[j].val().copyForWrite();
+      for (int block=0; block<nblock; block++)
+        (*node_xdot)[j].val().fastAccessCoeff(block) = 
+          (*xdot)[block][firstDOF+j];
+    }
+  }
+  
+  if (params != Teuchos::null) {
+    SGFadType p;
+    SGType pval;
+    for (unsigned int i=0; i<params->size(); i++) {
+      pval = (*params)[i].family->getValue<FEApp::SGTangentType>().val();
+      p = SGFadType(num_cols_tot, pval);
+      if (Vp != Teuchos::null) 
+        for (int k=0; k<num_cols_p; k++)
+          p.fastAccessDx(param_offset+k) = (*Vp)(i,k);
+      else
+        p.fastAccessDx(param_offset+i) = 1.0;
+      (*params)[i].family->setValue<FEApp::SGTangentType>(p);
+    }
+  }
+}
+
+void
+FEApp::SGTangentOp::nodePost(const FEApp::NodeBC& bc,
+			    unsigned int neqn,
+			    std::vector< SGFadType >& node_f)
+{
+  // Global node ID
+  unsigned int node_GID = bc.getNodeGID();
+
+  // Global ID of first DOF
+  unsigned int firstDOF = node_GID*neqn;
+
+  // Residual offsets
+  const std::vector<unsigned int>& offsets = bc.getOffsets();
+
+  int row;
+
+  // Loop over equations per node
+  for (unsigned int eq_row=0; eq_row<offsets.size(); eq_row++) {
+
+    // Global row
+    row = static_cast<int>(firstDOF + offsets[eq_row]);
+    
+    // Replace residual
+    if (f != Teuchos::null) {
+      if (bc.isOwned())
+	for (int block=0; block<nblock; block++)
+	  (*f)[block].ReplaceGlobalValue(row, 0, 
+					 node_f[offsets[eq_row]].val().coeff(block));
+      else if (bc.isShared())
+	for (int block=0; block<nblock; block++)
+	  (*f)[block].ReplaceGlobalValue(row, 0, 0.0);
+    }
+    
+    if (bc.isOwned()) {
+      
+      // Extract derivative components for each column
+      if (JV != Teuchos::null && Vx != Teuchos::null)
+        for (int col=0; col<num_cols_x; col++)
+	  for (int block=0; block<nblock; block++)
+	    (*JV)[block].ReplaceGlobalValue(row, col, 
+					    node_f[offsets[eq_row]].dx(col).coeff(block));
+      
+      if (fp != Teuchos::null)
+        for (int col=0; col<num_cols_p; col++)
+	  for (int block=0; block<nblock; block++)
+	    (*fp)[block].ReplaceGlobalValue(row, col, 
+					    node_f[offsets[eq_row]].dx(col+param_offset).coeff(block));
+    }
+    else if (bc.isShared()) {
+      if (JV != Teuchos::null && Vx != Teuchos::null)
+        for (int col=0; col<num_cols_x; col++)
+	  for (int block=0; block<nblock; block++)
+	    (*JV)[block].ReplaceGlobalValue(row, col, 0.0);
+      
+      if (fp != Teuchos::null)
+        for (int col=0; col<num_cols_p; col++)
+	  for (int block=0; block<nblock; block++)
+	    (*fp)[block].ReplaceGlobalValue(row, col, 0.0);
+    }
+    
+  } // row equations
+
+}
+
 #endif // SG_ACTIVE

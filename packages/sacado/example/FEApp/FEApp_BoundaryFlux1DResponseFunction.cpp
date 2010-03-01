@@ -107,7 +107,7 @@ evaluateTangents(
   }
 
   // Evaluate tangent of g = dg/dx*dx/dp + dg/dxdot*dxdot/dp + dg/dp
-  for (unsigned int j=0; j<gt.size(); j++)
+  for (int j=0; j<gt.size(); j++)
     if (gt[j] != Teuchos::null) {
       Epetra_MultiVector bvt(*boundaryMap, dx_dp[j]->NumVectors());
       bvt.Import(*dx_dp[j], *importer, Insert);
@@ -155,7 +155,7 @@ evaluateGradients(
     dg_dxdot->PutScalar(0.0);
 
   // Evaluate dg/dp
-  for (unsigned int j=0; j<dg_dp.size(); j++)
+  for (int j=0; j<dg_dp.size(); j++)
     if (dg_dp[j] != Teuchos::null)
       dg_dp[j]->PutScalar(0.0);
 }
@@ -165,13 +165,12 @@ void
 FEApp::BoundaryFlux1DResponseFunction::
 evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
 		    const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
-		    const ParamVec* p,
-		    const ParamVec* sg_p,
+		    const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
 		    const Teuchos::Array<SGType>* sg_p_vals,
 		    Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_g)
 {
-  unsigned int sz = sg_x.size();
-  for (unsigned int i=0; i<sz; i++) {
+  int sz = sg_x.size();
+  for (int i=0; i<sz; i++) {
 
     // Import boundary values
     bv->Import(sg_x[i], *importer, Insert);
@@ -181,5 +180,77 @@ evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
     sg_g[i][1] = ((*bv)[3] - (*bv)[2]) / grid_spacing;
 
   }
+}
+
+void
+FEApp::BoundaryFlux1DResponseFunction::
+evaluateSGTangents(
+  const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
+  const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+  const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+  const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
+  const Teuchos::Array<SGType>* sg_p_vals,
+  const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dxdot_dp,
+  const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dx_dp,
+  Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
+  const Teuchos::Array< Teuchos::RCP<Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_gt)
+{
+  if (sg_g != NULL)
+    evaluateSGResponses(sg_xdot, sg_x, p, sg_p_vals, *sg_g);
+
+  // For tangent, only mean is non-zero, which is the tangent of the mean
+  const Epetra_Vector *xdot_mean = NULL;
+  if (sg_xdot != NULL)
+    xdot_mean = sg_xdot->getCoeffPtr(0).get();
+  const Epetra_Vector& x_mean = sg_x[0];
+  Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> > gt_mean(sg_gt.size());
+  for (int i=0; i<sg_gt.size(); i++)
+    if (sg_gt[i] != Teuchos::null) {
+      sg_gt[i]->init(0.0);
+      gt_mean[i] = sg_gt[i]->getCoeffPtr(0);
+    }
+  evaluateTangents(xdot_mean, x_mean, p, deriv_p, dxdot_dp, dx_dp, NULL, 
+		   gt_mean);
+}
+
+void
+FEApp::BoundaryFlux1DResponseFunction::
+evaluateSGGradients(
+  const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
+  const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+  const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+  const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
+  const Teuchos::Array<SGType>* sg_p_vals,
+  Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
+  Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dx,
+  Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dxdot,
+  const Teuchos::Array< Teuchos::RCP<Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_dg_dp)
+{
+  if (sg_g != NULL)
+    evaluateSGResponses(sg_xdot, sg_x, p, sg_p_vals, *sg_g);
+
+  // For gradients, only mean is non-zero, which is the gradient of the mean
+  const Epetra_Vector *xdot_mean = NULL;
+  if (sg_xdot != NULL)
+    xdot_mean = sg_xdot->getCoeffPtr(0).get();
+  const Epetra_Vector& x_mean = sg_x[0];
+  Epetra_MultiVector* dg_dx_mean = NULL;
+  if (sg_dg_dx != NULL) {
+    sg_dg_dx->init(0.0);
+    dg_dx_mean = sg_dg_dx->getCoeffPtr(0).get();
+  }
+  Epetra_MultiVector* dg_dxdot_mean = NULL;
+  if (sg_dg_dxdot != NULL) {
+    sg_dg_dxdot->init(0.0);
+    dg_dxdot_mean = sg_dg_dxdot->getCoeffPtr(0).get();
+  }
+  Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> > dg_dp_mean(sg_dg_dp.size());
+  for (int i=0; i<sg_dg_dp.size(); i++)
+    if (sg_dg_dp[i] != Teuchos::null) {
+      sg_dg_dp[i]->init(0.0);
+      dg_dp_mean[i] = sg_dg_dp[i]->getCoeffPtr(0);
+    }
+  evaluateGradients(xdot_mean, x_mean, p, deriv_p, NULL, 
+		    dg_dx_mean, dg_dxdot_mean, dg_dp_mean);
 }
 #endif

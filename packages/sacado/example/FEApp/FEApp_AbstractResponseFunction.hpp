@@ -94,10 +94,35 @@ namespace FEApp {
     virtual void 
     evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
 			const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
-			const ParamVec* p,
-			const ParamVec* sg_p,
+			const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
 			const Teuchos::Array<SGType>* sg_p_vals,
 			Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_g) = 0;
+
+    //! Evaluate SG tangent = dg/dx*dx/dp + dg/dxdot*dxdot/dp + dg/dp
+    virtual void 
+    evaluateSGTangents(
+      const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
+      const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+      const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+      const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
+      const Teuchos::Array<SGType>* sg_p_vals,
+      const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dxdot_dp,
+      const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dx_dp,
+      Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
+      const Teuchos::Array< Teuchos::RCP<Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_gt) = 0;
+
+    //! Evaluate SG gradient = dg/dx, dg/dxdot, dg/dp
+    virtual void 
+    evaluateSGGradients(
+      const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
+      const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+      const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
+      const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
+      const Teuchos::Array<SGType>* sg_p_vals,
+      Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
+      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dx,
+      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dxdot,
+      const Teuchos::Array< Teuchos::RCP<Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_dg_dp) = 0;
 #endif
 
   private:

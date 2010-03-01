@@ -73,6 +73,7 @@ namespace FEApp {
 #if SG_ACTIVE
   struct SGResidualType {};
   struct SGJacobianType {};
+  struct SGTangentType {};
 #endif
 
   // Evaluation traits
@@ -91,6 +92,8 @@ namespace FEApp {
     typedef SGType type; };
   template <> struct EvaluationTraits::apply<SGJacobianType> { 
     typedef SGFadType  type; };
+  template <> struct EvaluationTraits::apply<SGTangentType> { 
+    typedef SGFadType type; };
 #endif
 }
 
@@ -106,10 +109,11 @@ typedef Sacado::mpl::push_back<EvalTypes2, FEApp::TangentType>::type EvalTypes3;
 #if SG_ACTIVE
 typedef Sacado::mpl::push_back<EvalTypes3, FEApp::SGResidualType>::type EvalTypes4;
 typedef Sacado::mpl::push_back<EvalTypes4, FEApp::SGJacobianType>::type EvalTypes5;
+typedef Sacado::mpl::push_back<EvalTypes5, FEApp::SGTangentType>::type EvalTypes6;
 #else
-typedef EvalTypes3 EvalTypes5;
+typedef EvalTypes3 EvalTypes6;
 #endif
-typedef EvalTypes5 EvalTypes;
+typedef EvalTypes6 EvalTypes;
 
 // Turn on/off explicit template instantiation
 #define SACADO_ETI
@@ -121,9 +125,11 @@ typedef EvalTypes5 EvalTypes;
 #if SG_ACTIVE
 #define INSTANTIATE_TEMPLATE_CLASS_SGRESIDUAL(name) template class name<FEApp::SGResidualType>;
 #define INSTANTIATE_TEMPLATE_CLASS_SGJACOBIAN(name) template class name<FEApp::SGJacobianType>;
+#define INSTANTIATE_TEMPLATE_CLASS_SGTANGENT(name) template class name<FEApp::SGTangentType>;
 #else
 #define INSTANTIATE_TEMPLATE_CLASS_SGRESIDUAL(name)
 #define INSTANTIATE_TEMPLATE_CLASS_SGJACOBIAN(name)
+#define INSTANTIATE_TEMPLATE_CLASS_SGTANGENT(name)
 #endif
 
 #define INSTANTIATE_TEMPLATE_CLASS(name)      \
@@ -131,6 +137,7 @@ typedef EvalTypes5 EvalTypes;
   INSTANTIATE_TEMPLATE_CLASS_JACOBIAN(name)   \
   INSTANTIATE_TEMPLATE_CLASS_TANGENT(name)    \
   INSTANTIATE_TEMPLATE_CLASS_SGRESIDUAL(name) \
-  INSTANTIATE_TEMPLATE_CLASS_SGJACOBIAN(name)
+  INSTANTIATE_TEMPLATE_CLASS_SGJACOBIAN(name) \
+  INSTANTIATE_TEMPLATE_CLASS_SGTANGENT(name)
 
 #endif // FEAPP_TEMPLATETYPES_HPP
