@@ -115,11 +115,11 @@ evaluateGradients(
 #if SG_ACTIVE
 void
 FEApp::SolutionAverageResponseFunction::
-evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-		    const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+evaluateSGResponses(const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+		    const Stokhos::EpetraVectorOrthogPoly& sg_x,
 		    const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
 		    const Teuchos::Array<SGType>* sg_p_vals,
-		    Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_g)
+		    Stokhos::EpetraVectorOrthogPoly& sg_g)
 {
   int sz = sg_x.size();
   for (int i=0; i<sz; i++)
@@ -129,15 +129,15 @@ evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
 void
 FEApp::SolutionAverageResponseFunction::
 evaluateSGTangents(
-  const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-  const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+  const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+  const Stokhos::EpetraVectorOrthogPoly& sg_x,
   const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
   const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
   const Teuchos::Array<SGType>* sg_p_vals,
   const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dxdot_dp,
   const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dx_dp,
-  Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
-  const Teuchos::Array< Teuchos::RCP<Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_gt)
+  Stokhos::EpetraVectorOrthogPoly* sg_g,
+  const Teuchos::Array< Teuchos::RCP<Stokhos::EpetraMultiVectorOrthogPoly > >& sg_gt)
 {
   int sz = sg_x.size();
     
@@ -158,15 +158,15 @@ evaluateSGTangents(
 void
 FEApp::SolutionAverageResponseFunction::
 evaluateSGGradients(
-  const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-  const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+  const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+  const Stokhos::EpetraVectorOrthogPoly& sg_x,
   const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
   const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
   const Teuchos::Array<SGType>* sg_p_vals,
-  Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
-  Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dx,
-  Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dxdot,
-  const Teuchos::Array< Teuchos::RCP<Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_dg_dp)
+  Stokhos::EpetraVectorOrthogPoly* sg_g,
+  Stokhos::EpetraMultiVectorOrthogPoly* sg_dg_dx,
+  Stokhos::EpetraMultiVectorOrthogPoly* sg_dg_dxdot,
+  const Teuchos::Array< Teuchos::RCP<Stokhos::EpetraMultiVectorOrthogPoly > >& sg_dg_dp)
 {
   int sz = sg_x.size();
     

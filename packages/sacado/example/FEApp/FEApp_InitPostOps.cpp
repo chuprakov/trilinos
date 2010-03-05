@@ -34,6 +34,8 @@
 //#include "Teuchos_Exceptions.hpp"
 #include "Epetra_Map.h"
 #include "EpetraExt_MatrixMatrix.h"
+#include "Stokhos_EpetraVectorOrthogPoly.hpp"
+#include "Stokhos_EpetraMultiVectorOrthogPoly.hpp"
 
 FEApp::ResidualOp::ResidualOp(
         const Teuchos::RCP<const Epetra_Vector>& overlapped_xdot,
@@ -601,9 +603,9 @@ FEApp::TangentOp::nodePost(const FEApp::NodeBC& bc,
 
 FEApp::SGResidualOp::SGResidualOp(
    const Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> >& expansion_,
-   const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& xdot_,
-   const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& x_,
-   const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >& f_) :
+   const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly >& xdot_,
+   const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly >& x_,
+   const Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly >& f_) :
   expansion(expansion_),
   nblock(x_->size()),
   xdot(xdot_),
@@ -756,9 +758,9 @@ FEApp::SGResidualOp::finalizeFill()
 FEApp::SGJacobianOp::SGJacobianOp(
    const Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> >& expansion_,
    double alpha, double beta,
-   const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& xdot_,
-   const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& x_,
-   const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >& f_,
+   const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly >& xdot_,
+   const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly >& x_,
+   const Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly >& f_,
    const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_CrsMatrix> >& jac_) :
   expansion(expansion_),
   nblock(x_->size()),
@@ -1000,15 +1002,15 @@ FEApp::SGJacobianOp::finalizeFill()
 FEApp::SGTangentOp::SGTangentOp(
   const Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> >& expansion_,
   double alpha, double beta, bool sum_derivs_,
-  const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& xdot_,
-  const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& x_,
+  const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly >& xdot_,
+  const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly >& x_,
   const Teuchos::RCP<ParamVec>& p,
   const Teuchos::RCP<const Epetra_MultiVector>& Vx_,
   const Teuchos::RCP<const Epetra_MultiVector>& Vxdot_,
   const Teuchos::RCP<const Teuchos::SerialDenseMatrix<int,double> >& Vp_,
-  const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >& f_,
-  const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> >& JV_,
-  const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> >& fp_) :
+  const Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly >& f_,
+  const Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly >& JV_,
+  const Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly >& fp_) :
   expansion(expansion_),
   nblock(x_->size()),
   m_coeff(alpha),

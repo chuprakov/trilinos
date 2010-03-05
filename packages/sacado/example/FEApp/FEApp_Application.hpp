@@ -61,6 +61,8 @@
 #include "Stokhos_Quadrature.hpp"
 #include "Stokhos_VectorOrthogPoly.hpp"
 #include "Stokhos_VectorOrthogPolyTraitsEpetra.hpp"
+#include "Stokhos_EpetraVectorOrthogPoly.hpp"
+#include "Stokhos_EpetraMultiVectorOrthogPoly.hpp"
 #endif
 
 namespace FEApp {
@@ -95,6 +97,14 @@ namespace FEApp {
 
     //! Return whether problem is transient
     bool isTransient() const;
+
+#if SG_ACTIVE
+    //! Initialize SG expansion data
+    void init_sg(
+      const Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> >& sg_basis,
+      const Teuchos::RCP<const Stokhos::Quadrature<int,double> >& sg_quad,
+      const Teuchos::RCP<Stokhos::OrthogPolyExpansion<int,double> >& sg_exp);
+#endif
 
     //! Create new W operator
     Teuchos::RCP<Epetra_Operator> createW() const;
@@ -202,12 +212,12 @@ namespace FEApp {
      * Set xdot to NULL for steady-state problems
      */
     void computeGlobalSGResidual(
-		        const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-			const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+		        const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+			const Stokhos::EpetraVectorOrthogPoly& sg_x,
 			const ParamVec* p,
 			const ParamVec* sg_p,
 			const Teuchos::Array<SGType>* sg_p_vals,
-			Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_f);
+			Stokhos::EpetraVectorOrthogPoly& sg_f);
 
     //! Compute global Jacobian for stochastic Galerkin problem
     /*!
@@ -215,12 +225,12 @@ namespace FEApp {
      */
     void computeGlobalSGJacobian(
 			double alpha, double beta,
-			const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-			const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+			const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+			const Stokhos::EpetraVectorOrthogPoly& sg_x,
 			const ParamVec* p,
 			const ParamVec* sg_p,
 			const Teuchos::Array<SGType>* sg_p_vals,
-			Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_f,
+			Stokhos::EpetraVectorOrthogPoly* sg_f,
 			Stokhos::VectorOrthogPoly<Epetra_Operator>& sg_jac);
 
     //! Compute global Tangent for stochastic Galerkin problem
@@ -229,26 +239,26 @@ namespace FEApp {
      */
     void computeGlobalSGTangent(
       double alpha, double beta, bool sum_derivs,
-      const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-      const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+      const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+      const Stokhos::EpetraVectorOrthogPoly& sg_x,
       const ParamVec* p, ParamVec* deriv_p, const ParamVec* sg_p, 
       const Teuchos::Array<SGType>* sg_p_vals,   
       const Epetra_MultiVector* Vx,
       const Teuchos::SerialDenseMatrix<int,double>* Vp,
-      Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_f,
-      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_JVx,
-      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_fVp);
+      Stokhos::EpetraVectorOrthogPoly* sg_f,
+      Stokhos::EpetraMultiVectorOrthogPoly* sg_JVx,
+      Stokhos::EpetraMultiVectorOrthogPoly* sg_fVp);
 
     //! Evaluate stochastic Galerkin response functions
     /*!
      * Set xdot to NULL for steady-state problems
      */
     void 
-    evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-			const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+    evaluateSGResponses(const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+			const Stokhos::EpetraVectorOrthogPoly& sg_x,
 			const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
 			const Teuchos::Array<SGType>* sg_p_vals,
-			Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_g);
+			Stokhos::EpetraVectorOrthogPoly& sg_g);
 
     //! Evaluate tangent = dg/dx*dx/dp + dg/dxdot*dxdot/dp + dg/dp
     /*!
@@ -256,15 +266,15 @@ namespace FEApp {
      */
     void 
     evaluateSGResponseTangents(
-      const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-      const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+      const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+      const Stokhos::EpetraVectorOrthogPoly& sg_x,
       const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
       const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
       const Teuchos::Array<SGType>* sg_p_vals,
       const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dxdot_dp,
       const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dx_dp,
-      Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
-      const Teuchos::Array< Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_gt);
+      Stokhos::EpetraVectorOrthogPoly* sg_g,
+      const Teuchos::Array< Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > >& sg_gt);
 
     //! Evaluate gradient = dg/dx, dg/dxdot, dg/dp
     /*!
@@ -272,15 +282,15 @@ namespace FEApp {
      */
     void 
     evaluateSGResponseGradients(
-      const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-      const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+      const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+      const Stokhos::EpetraVectorOrthogPoly& sg_x,
       const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
       const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
       const Teuchos::Array<SGType>* sg_p_vals,
-      Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
-      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dx,
-      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dxdot,
-      const Teuchos::Array< Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_dg_dp);
+      Stokhos::EpetraVectorOrthogPoly* sg_g,
+      Stokhos::EpetraMultiVectorOrthogPoly* sg_dg_dx,
+      Stokhos::EpetraMultiVectorOrthogPoly* sg_dg_dxdot,
+      const Teuchos::Array< Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > >& sg_dg_dp);
 
 #endif
 
@@ -354,13 +364,13 @@ namespace FEApp {
     Teuchos::RCP<Stokhos::OrthogPolyExpansion<int,double> > sg_expansion;
 
     //! SG overlapped solution vector
-    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >  sg_overlapped_x;
+    Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly >  sg_overlapped_x;
 
     //! SG overlapped time derivative vector
-    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> > sg_overlapped_xdot;
+    Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly > sg_overlapped_xdot;
 
     //! SG overlapped residual vector
-    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> > sg_overlapped_f;
+    Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly > sg_overlapped_f;
 
     //! Overlapped Jacobian matrix
     Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_CrsMatrix> > sg_overlapped_jac;

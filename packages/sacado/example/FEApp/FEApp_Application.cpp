@@ -41,6 +41,7 @@
 #include "Stokhos_MeanEpetraOp.hpp"
 #endif
 #include "Teuchos_TimeMonitor.hpp"
+#include "Teuchos_TestForException.hpp"
 
 FEApp::Application::Application(
 		   const std::vector<double>& coords,
@@ -112,29 +113,6 @@ FEApp::Application::Application(
   if (total_num_responses > 0)
     response_map = Teuchos::rcp(new Epetra_LocalMap(total_num_responses, 0,
                                                     *comm));
-
-#if SG_ACTIVE
-  bool enable_sg = params->get("Enable Stochastic Galerkin",false);
-  if (enable_sg) {
-    sg_expansion = params->get< Teuchos::RCP<Stokhos::OrthogPolyExpansion<int,double> > >("Stochastic Galerkin expansion");
-    if (params->isParameter("Stochastic Galerkin quadrature"))
-      sg_quad = params->get< Teuchos::RCP<const Stokhos::Quadrature<int,double> > >("Stochastic Galerkin quadrature");
-    sg_basis = sg_expansion->getBasis();
-
-    // Create Epetra orthogonal polynomial objects
-    sg_overlapped_x = 
-      Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_Vector>(sg_basis,
-							  *overlapped_x));
-    if (transient)
-      sg_overlapped_xdot = 
-	Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_Vector>(sg_basis,
-							    *overlapped_xdot));
-    sg_overlapped_f = 
-      Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_Vector>(sg_basis,
-							  *overlapped_f));
-    // Delay creation of sg_overlapped_jac until needed
-  }
-#endif
 }
 
 FEApp::Application::~Application()
@@ -176,6 +154,43 @@ FEApp::Application::isTransient() const
 {
   return transient;
 }
+
+#if SG_ACTIVE
+void
+FEApp::Application::init_sg(
+      const Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> >& basis,
+      const Teuchos::RCP<const Stokhos::Quadrature<int,double> >& quad,
+      const Teuchos::RCP<Stokhos::OrthogPolyExpansion<int,double> >& exp)
+{
+  TEST_FOR_EXCEPTION(basis == Teuchos::null, std::logic_error,
+		     "Error!  FEApp::Application::init_sg():  " <<
+		     "SG basis cannot be null!");
+  TEST_FOR_EXCEPTION(exp == Teuchos::null, std::logic_error,
+		     "Error!  FEApp::Application::init_sg():  " <<
+		     "SG expansion cannot be null!");
+  sg_basis = basis;
+  sg_quad = quad;
+  sg_expansion = exp;
+
+  // Create Epetra orthogonal polynomial objects
+  if (sg_overlapped_x == Teuchos::null) {
+    sg_overlapped_x = 
+      Teuchos::rcp(new Stokhos::EpetraVectorOrthogPoly(sg_basis,
+						       overlapped_x->Map()));
+    if (transient)
+      sg_overlapped_xdot = 
+	Teuchos::rcp(new Stokhos::EpetraVectorOrthogPoly(sg_basis,
+							 overlapped_xdot->Map()));
+    sg_overlapped_f = 
+      Teuchos::rcp(new Stokhos::EpetraVectorOrthogPoly(sg_basis,
+						       overlapped_f->Map()));
+    // Delay creation of sg_overlapped_jac until needed
+  }
+
+  for (unsigned int i=0; i<responses.size(); i++)
+    responses[i]->init_sg(basis, quad, exp);
+}
+#endif
 
 Teuchos::RCP<Epetra_Operator>
 FEApp::Application::createW() const
@@ -613,12 +628,12 @@ evaluateResponseGradients(
 #if SG_ACTIVE
 void
 FEApp::Application::computeGlobalSGResidual(
-			const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-			const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+			const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+			const Stokhos::EpetraVectorOrthogPoly& sg_x,
 			const ParamVec* p,
 			const ParamVec* sg_p,
 			const Teuchos::Array<SGType>* sg_p_vals,
-			Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_f)
+			Stokhos::EpetraVectorOrthogPoly& sg_f)
 {
   TEUCHOS_FUNC_TIME_MONITOR("FEApp::Application::computeGlobalSGResidual");
 
@@ -695,12 +710,12 @@ FEApp::Application::computeGlobalSGResidual(
 void
 FEApp::Application::computeGlobalSGJacobian(
 			double alpha, double beta,
-			const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-			const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+			const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+			const Stokhos::EpetraVectorOrthogPoly& sg_x,
 			const ParamVec* p,
 			const ParamVec* sg_p,
 			const Teuchos::Array<SGType>* sg_p_vals,
-			Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_f,
+			Stokhos::EpetraVectorOrthogPoly* sg_f,
 			Stokhos::VectorOrthogPoly<Epetra_Operator>& sg_jac)
 {
   TEUCHOS_FUNC_TIME_MONITOR("FEApp::Application::computeGlobalSGJacobian");
@@ -748,7 +763,7 @@ FEApp::Application::computeGlobalSGJacobian(
   }
 
   // Create Jacobian init/post op
-  Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> > sg_overlapped_ff;
+  Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly > sg_overlapped_ff;
   if (sg_f != NULL)
     sg_overlapped_ff = sg_overlapped_f;
   Teuchos::RCP<FEApp::SGJacobianOp> sg_jac_fill_op = 
@@ -808,15 +823,15 @@ FEApp::Application::computeGlobalSGJacobian(
 void
 FEApp::Application::computeGlobalSGTangent(
       double alpha, double beta, bool sum_derivs,
-      const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-      const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+      const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+      const Stokhos::EpetraVectorOrthogPoly& sg_x,
       const ParamVec* p, ParamVec* deriv_p, const ParamVec* sg_p, 
       const Teuchos::Array<SGType>* sg_p_vals,   
       const Epetra_MultiVector* Vx,
       const Teuchos::SerialDenseMatrix<int,double>* Vp,
-      Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_f,
-      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_JVx,
-      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_fVp)
+      Stokhos::EpetraVectorOrthogPoly* sg_f,
+      Stokhos::EpetraMultiVectorOrthogPoly* sg_JVx,
+      Stokhos::EpetraMultiVectorOrthogPoly* sg_fVp)
 {
   TEUCHOS_FUNC_TIME_MONITOR("FEApp::Application::computeGlobalSGTangent");
 
@@ -851,23 +866,21 @@ FEApp::Application::computeGlobalSGTangent(
     }
   }
 
-  Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > sg_overlapped_JVx;
+  Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > sg_overlapped_JVx;
   if (sg_JVx != NULL) {
     sg_overlapped_JVx = 
-      Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_MultiVector>(
-		     sg_basis,  
-		     Stokhos::EpetraMultiVectorCloner(*(disc->getOverlapMap()), 
-						      (*sg_JVx)[0].NumVectors())));
+      Teuchos::rcp(new Stokhos::EpetraMultiVectorOrthogPoly(
+		     sg_basis, *(disc->getOverlapMap()), 
+		     (*sg_JVx)[0].NumVectors()));
     sg_JVx->init(0.0);
   }
   
-  Teuchos::RCP<Stokhos::VectorOrthogPoly<Epetra_MultiVector> > sg_overlapped_fVp;
+  Teuchos::RCP<Stokhos::EpetraMultiVectorOrthogPoly > sg_overlapped_fVp;
   if (sg_fVp != NULL) {
     sg_overlapped_fVp = 
-      Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_MultiVector>(
-		     sg_basis,
-		     Stokhos::EpetraMultiVectorCloner(*(disc->getOverlapMap()), 
-						      (*sg_fVp)[0].NumVectors())));
+      Teuchos::rcp(new Stokhos::EpetraMultiVectorOrthogPoly(
+		     sg_basis, *(disc->getOverlapMap()), 
+		     (*sg_fVp)[0].NumVectors()));
     sg_fVp->init(0.0);
   }
 
@@ -884,7 +897,7 @@ FEApp::Application::computeGlobalSGTangent(
     Teuchos::rcp(deriv_p, false);
 
   // Create Jacobian init/post op
-   Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> > sg_overlapped_ff;
+   Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly > sg_overlapped_ff;
   if (sg_f != NULL)
     sg_overlapped_ff = sg_overlapped_f;
   Teuchos::RCP<FEApp::SGTangentOp> op = 
@@ -926,11 +939,11 @@ FEApp::Application::computeGlobalSGTangent(
 
 void
 FEApp::Application::
-evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-		    const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+evaluateSGResponses(const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+		    const Stokhos::EpetraVectorOrthogPoly& sg_x,
 		    const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
 		    const Teuchos::Array<SGType>* sg_p_vals,
-		    Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_g)
+		    Stokhos::EpetraVectorOrthogPoly& sg_g)
 {
   TEUCHOS_FUNC_TIME_MONITOR("FEApp::Application::evaluateSGResponses");
 
@@ -945,7 +958,7 @@ evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
     Epetra_LocalMap local_response_map(num_responses, 0, comm);
 
     // Create Epetra_Vector for response function
-    Stokhos::VectorOrthogPoly<Epetra_Vector> local_sg_g(basis,
+    Stokhos::EpetraVectorOrthogPoly local_sg_g(basis,
 							local_response_map);
 
     // Evaluate response function
@@ -964,15 +977,15 @@ evaluateSGResponses(const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
 void
 FEApp::Application::
 evaluateSGResponseTangents(
-      const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-      const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+      const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+      const Stokhos::EpetraVectorOrthogPoly& sg_x,
       const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
       const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
       const Teuchos::Array<SGType>* sg_p_vals,
       const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dxdot_dp,
       const Teuchos::Array< Teuchos::RCP<Epetra_MultiVector> >& dx_dp,
-      Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
-      const Teuchos::Array< Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_gt)
+      Stokhos::EpetraVectorOrthogPoly* sg_g,
+      const Teuchos::Array< Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > >& sg_gt)
 {
   TEUCHOS_FUNC_TIME_MONITOR("FEApp::Application::evaluateSGResponseTangents");
 
@@ -980,7 +993,7 @@ evaluateSGResponseTangents(
   unsigned int offset = 0;
   Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > basis = 
     sg_x.basis();
-  Teuchos::Array< Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > > local_sg_gt(sg_gt.size());
+  Teuchos::Array< Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > > local_sg_gt(sg_gt.size());
   for (unsigned int i=0; i<responses.size(); i++) {
 
     // Create Epetra_Map for response function
@@ -988,18 +1001,17 @@ evaluateSGResponseTangents(
     Epetra_LocalMap local_response_map(num_responses, 0, comm);
 
     // Create Epetra_Vectors for response function
-    Teuchos::RCP<Stokhos::VectorOrthogPoly<Epetra_Vector> > local_sg_g;
+    Teuchos::RCP<Stokhos::EpetraVectorOrthogPoly > local_sg_g;
     if (sg_g != NULL)
       local_sg_g = 
-	Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_Vector>(
+	Teuchos::rcp(new Stokhos::EpetraVectorOrthogPoly(
 		       basis, local_response_map));
     for (int j=0; j<sg_gt.size(); j++)
       if (sg_gt[j] != Teuchos::null)
 	local_sg_gt[j] = 
-	  Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_MultiVector>(
-			 basis,
-			 Stokhos::EpetraMultiVectorCloner(local_response_map, 
-							  (*sg_gt[j])[0].NumVectors())));
+	  Teuchos::rcp(new Stokhos::EpetraMultiVectorOrthogPoly(
+			 basis, local_response_map, 
+			 (*sg_gt[j])[0].NumVectors()));
 
     // Evaluate response function
     responses[i]->evaluateSGTangents(sg_xdot, sg_x, p, deriv_p, sg_p_vals,
@@ -1026,15 +1038,15 @@ evaluateSGResponseTangents(
 void
 FEApp::Application::
 evaluateSGResponseGradients(
-      const Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_xdot,
-      const Stokhos::VectorOrthogPoly<Epetra_Vector>& sg_x,
+      const Stokhos::EpetraVectorOrthogPoly* sg_xdot,
+      const Stokhos::EpetraVectorOrthogPoly& sg_x,
       const Teuchos::Array< Teuchos::RCP<ParamVec> >& p,
       const Teuchos::Array< Teuchos::RCP<ParamVec> >& deriv_p,
       const Teuchos::Array<SGType>* sg_p_vals,
-      Stokhos::VectorOrthogPoly<Epetra_Vector>* sg_g,
-      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dx,
-      Stokhos::VectorOrthogPoly<Epetra_MultiVector>* sg_dg_dxdot,
-      const Teuchos::Array< Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > >& sg_dg_dp)
+      Stokhos::EpetraVectorOrthogPoly* sg_g,
+      Stokhos::EpetraMultiVectorOrthogPoly* sg_dg_dx,
+      Stokhos::EpetraMultiVectorOrthogPoly* sg_dg_dxdot,
+      const Teuchos::Array< Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > >& sg_dg_dp)
 {
   TEUCHOS_FUNC_TIME_MONITOR("FEApp::Application::evaluateSGResponseGradients");
 
@@ -1042,7 +1054,7 @@ evaluateSGResponseGradients(
   unsigned int offset = 0;
   Teuchos::RCP<const Stokhos::OrthogPolyBasis<int,double> > basis = 
     sg_x.basis();
-  Teuchos::Array< Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > > local_sg_dgdp(sg_dg_dp.size());
+  Teuchos::Array< Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > > local_sg_dgdp(sg_dg_dp.size());
   for (unsigned int i=0; i<responses.size(); i++) {
 
     // Create Epetra_Map for response function
@@ -1050,33 +1062,28 @@ evaluateSGResponseGradients(
     Epetra_LocalMap local_response_map(num_responses, 0, comm);
 
     // Create Epetra_Vectors for response function
-    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> > local_sg_g;
+    Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly > local_sg_g;
     if (sg_g != NULL)
       local_sg_g = 
-	Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_Vector>(
+	Teuchos::rcp(new Stokhos::EpetraVectorOrthogPoly(
 		       basis, local_response_map));
-    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > local_sg_dgdx;
+    Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > local_sg_dgdx;
     if (sg_dg_dx != NULL)
       local_sg_dgdx = 
-	Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_MultiVector>(
-		       basis, 
-		       Stokhos::EpetraMultiVectorCloner((*sg_dg_dx)[0].Map(), 
-							num_responses)));
-    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > local_sg_dgdxdot;
+	Teuchos::rcp(new Stokhos::EpetraMultiVectorOrthogPoly(
+		       basis, (*sg_dg_dx)[0].Map(), num_responses));
+    Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > local_sg_dgdxdot;
     if (sg_dg_dxdot != NULL)
       local_sg_dgdxdot = 
-	Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_MultiVector>(
-		       basis, 
-		       Stokhos::EpetraMultiVectorCloner((*sg_dg_dxdot)[0].Map(),
-							num_responses)));
+	Teuchos::rcp(new Stokhos::EpetraMultiVectorOrthogPoly(
+		       basis, (*sg_dg_dxdot)[0].Map(), num_responses));
 
     for (int j=0; j<sg_dg_dp.size(); j++)
       if (sg_dg_dp[j] != Teuchos::null)
 	local_sg_dgdp[j] = 
-	  Teuchos::rcp(new Stokhos::VectorOrthogPoly<Epetra_MultiVector>(
-			 basis, 
-			 Stokhos::EpetraMultiVectorCloner(local_response_map, 
-							  (*sg_dg_dp[j])[0].NumVectors())));
+	  Teuchos::rcp(new Stokhos::EpetraMultiVectorOrthogPoly(
+			 basis, local_response_map,
+			 (*sg_dg_dp[j])[0].NumVectors()));
 
     // Evaluate response function
     responses[i]->evaluateSGGradients(sg_xdot, sg_x, p, deriv_p, sg_p_vals, 

@@ -307,9 +307,9 @@ namespace FEApp {
      */
     SGResidualOp(
     const Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> >& expansion,
-    const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& xdot,
-    const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& x,
-    const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >& f);
+    const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly >& xdot,
+    const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly >& x,
+    const Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly >& f);
 
     //! Destructor
     virtual ~SGResidualOp();
@@ -356,13 +356,13 @@ namespace FEApp {
     int nblock;
 
     //! Time derivative vectors (may be null)
-    Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> > xdot;
+    Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly > xdot;
 
     //! Solution vectors
-    Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> > x;
+    Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly > x;
 
     //! Residual vectors
-    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> > f;
+    Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly > f;
 
   };
 
@@ -378,9 +378,9 @@ namespace FEApp {
     SGJacobianOp(
     const Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> >& expansion,
     double alpha, double beta,
-    const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& xdot,
-    const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& x,
-    const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >& f,
+    const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly >& xdot,
+    const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly >& x,
+    const Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly >& f,
     const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_CrsMatrix> >& jac);
 
     //! Destructor
@@ -434,13 +434,13 @@ namespace FEApp {
     double j_coeff;
 
     //! Time derivative vectors (may be null)
-    Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> > xdot;
+    Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly > xdot;
 
     //! Solution vectors
-    Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> > x;
+    Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly > x;
 
     //! Residual vectors
-    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> > f;
+    Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly > f;
 
     //! Jacobian matrices
     Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_CrsMatrix> > jac;
@@ -462,15 +462,15 @@ namespace FEApp {
     SGTangentOp(
       const Teuchos::RCP< Stokhos::OrthogPolyExpansion<int,double> >& expansion,
       double alpha, double beta, bool sum_derivs,
-      const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& xdot,
-      const Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> >& x,
+      const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly >& xdot,
+      const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly >& x,
       const Teuchos::RCP<ParamVec>& p,
       const Teuchos::RCP<const Epetra_MultiVector>& Vx,
       const Teuchos::RCP<const Epetra_MultiVector>& Vxdot,
       const Teuchos::RCP<const Teuchos::SerialDenseMatrix<int,double> >& Vp,
-      const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> >& f,
-      const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> >& JV,
-      const Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> >& fp);
+      const Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly >& f,
+      const Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly >& JV,
+      const Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly >& fp);
 
     //! Destructor
     virtual ~SGTangentOp();
@@ -526,10 +526,10 @@ namespace FEApp {
     bool sum_derivs;
 
     //! Time derivative vectors (may be null)
-    Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> > xdot;
+    Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly > xdot;
 
     //! Solution vectors
-    Teuchos::RCP<const Stokhos::VectorOrthogPoly<Epetra_Vector> > x;
+    Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly > x;
 
     //! Parameter vector for parameter derivatives
     Teuchos::RCP<ParamVec> params;
@@ -544,13 +544,13 @@ namespace FEApp {
     Teuchos::RCP<const Teuchos::SerialDenseMatrix<int,double> > Vp;
 
     //! Residual vectors
-    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> > f;
+    Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly > f;
 
     //! Tangent matrix (alpha*df/dxdot + beta*df/dx)*V
-    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > JV;
+    Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > JV;
     
     //! Tangent matrix df/dp*V_p
-    Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > fp;
+    Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > fp;
 
     //! Stores number of columns in seed matrix V
     int num_cols_x;

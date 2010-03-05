@@ -211,6 +211,9 @@ FEApp::ModelEvaluator::createInArgs() const
   if (supports_sg) {
     inArgs.setSupports(IN_ARG_x_sg,true);
     inArgs.set_Np_sg(1); // 1 SG parameter vector
+    inArgs.setSupports(IN_ARG_sg_basis,true);
+    inArgs.setSupports(IN_ARG_sg_quadrature,true);
+    inArgs.setSupports(IN_ARG_sg_expansion,true);
   }
   else
     inArgs.set_Np_sg(0);
@@ -437,6 +440,8 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
     InArgs::sg_const_vector_t x_sg = 
       inArgs.get_x_sg();
     if (x_sg != Teuchos::null) {
+      app->init_sg(inArgs.get_sg_basis(), inArgs.get_sg_quadrature(), 
+		   inArgs.get_sg_expansion());
       InArgs::sg_const_vector_t x_dot_sg;
       if (app->isTransient())
 	x_dot_sg = inArgs.get_x_dot_sg();
@@ -471,7 +476,7 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
       // df/dp_sg
       if (supports_p) {
 	for (int i=0; i<outArgs.Np_sg(); i++) {
-	  Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > dfdp_sg 
+	  Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > dfdp_sg 
 	    = outArgs.get_DfDp_sg(i).getMultiVector();
 	  if (dfdp_sg != Teuchos::null) {
 	    Teuchos::Array<int> p_indexes = 
@@ -510,16 +515,16 @@ FEApp::ModelEvaluator::evalModel(const InArgs& inArgs,
 
       // Response functions
       if (outArgs.Ng_sg() > 0 && supports_g) {
-	Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_Vector> > g_sg 
+	Teuchos::RCP< Stokhos::EpetraVectorOrthogPoly > g_sg 
 	  = outArgs.get_g_sg(0);
-	Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > dgdx_sg 
+	Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > dgdx_sg 
 	  = outArgs.get_DgDx_sg(0).getMultiVector();
-	Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > dgdxdot_sg;
+	Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > dgdxdot_sg;
 	if (app->isTransient())
 	  dgdxdot_sg = outArgs.get_DgDx_dot_sg(0).getMultiVector();
     
 	Teuchos::Array< Teuchos::RCP<ParamVec> > p_vec(outArgs.Np());
-	Teuchos::Array< Teuchos::RCP< Stokhos::VectorOrthogPoly<Epetra_MultiVector> > > dgdp_sg(outArgs.Np());
+	Teuchos::Array< Teuchos::RCP< Stokhos::EpetraMultiVectorOrthogPoly > > dgdp_sg(outArgs.Np());
 	bool have_dgdp = false;
 	for (int i=0; i<outArgs.Np(); i++) {
 	  dgdp_sg[i] = outArgs.get_DgDp_sg(0,i).getMultiVector();
