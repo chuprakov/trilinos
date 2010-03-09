@@ -36,11 +36,20 @@
 FEApp::ModelEvaluator::ModelEvaluator(
   const Teuchos::RCP<FEApp::Application>& app_,
   const Teuchos::RCP< Teuchos::Array<std::string> >& free_param_names,
-  const Teuchos::RCP< Teuchos::Array<std::string> >& sg_param_names) 
+  const Teuchos::RCP< Teuchos::Array<std::string> >& sg_param_names
+#if SG_ACTIVE
+  ,const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly>& initial_x_sg_,
+  const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly>& initial_p_sg_
+#endif
+) 
   : app(app_),
     supports_p(false),
     supports_g(false),
     supports_sg(false),
+#if SG_ACTIVE
+    initial_x_sg(initial_x_sg_),
+    initial_p_sg(initial_p_sg_),
+#endif
     eval_W_with_f(false)
 {
   // Compute number of parameter vectors
@@ -135,6 +144,23 @@ FEApp::ModelEvaluator::get_p_map(int l) const
 }
 
 Teuchos::RCP<const Epetra_Map>
+FEApp::ModelEvaluator::get_p_sg_map(int l) const
+{
+  TEST_FOR_EXCEPTION(supports_sg == false, 
+                     Teuchos::Exceptions::InvalidParameter,
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_p_sg_map():  " <<
+                     "SG is not enabled.");
+  TEST_FOR_EXCEPTION(l != 0, 
+		     Teuchos::Exceptions::InvalidParameter,
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_p_sg_map():  " <<
+                     "Invalid parameter index l = " << l << std::endl);
+
+  return epetra_param_map[1];
+}
+
+Teuchos::RCP<const Epetra_Map>
 FEApp::ModelEvaluator::get_g_map(int l) const
 {
   TEST_FOR_EXCEPTION(supports_g == false, 
@@ -146,6 +172,23 @@ FEApp::ModelEvaluator::get_g_map(int l) const
   TEST_FOR_EXCEPTION(l != 0, Teuchos::Exceptions::InvalidParameter,
                      std::endl << 
                      "Error!  FEApp::ModelEvaluator::get_g_map() only " <<
+                     " supports 1 response vector.  Supplied index l = " << 
+                     l << std::endl);
+
+  return app->getResponseMap();
+}
+
+Teuchos::RCP<const Epetra_Map>
+FEApp::ModelEvaluator::get_g_sg_map(int l) const
+{
+  TEST_FOR_EXCEPTION(supports_sg == false, 
+                     Teuchos::Exceptions::InvalidParameter,
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_g_sg_map():  " <<
+                     "SG is not enabled.");
+  TEST_FOR_EXCEPTION(l != 0, Teuchos::Exceptions::InvalidParameter,
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_g_sg_map() only " <<
                      " supports 1 response vector.  Supplied index l = " << 
                      l << std::endl);
 
@@ -170,10 +213,43 @@ FEApp::ModelEvaluator::get_p_names(int l) const
   return param_names[l];
 }
 
+Teuchos::RCP<const Teuchos::Array<std::string> >
+FEApp::ModelEvaluator::get_p_sg_names(int l) const
+{
+  TEST_FOR_EXCEPTION(supports_sg == false, 
+                     Teuchos::Exceptions::InvalidParameter,
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_p_names():  " <<
+                     "SG is not enabled.");
+  TEST_FOR_EXCEPTION(l != 0, 
+		     Teuchos::Exceptions::InvalidParameter,
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_p_sg_names():  " <<
+                     "Invalid parameter index l = " << l << std::endl);
+
+  return param_names[1];
+}
+
 Teuchos::RCP<const Epetra_Vector>
 FEApp::ModelEvaluator::get_x_init() const
 {
   return app->getInitialSolution();
+}
+
+Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly>
+FEApp::ModelEvaluator::get_x_sg_init() const
+{
+  TEST_FOR_EXCEPTION(supports_sg == false, 
+                     Teuchos::Exceptions::InvalidParameter,
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_x_sg_init():  " <<
+                     "SG is not enabled.");
+  TEST_FOR_EXCEPTION(initial_x_sg == Teuchos::null, 
+                     Teuchos::Exceptions::InvalidParameter,
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_x_sg_init():  " <<
+                     "initial_x_sg is NULL!");
+  return initial_x_sg;
 }
 
 Teuchos::RCP<const Epetra_Vector>
@@ -192,6 +268,27 @@ FEApp::ModelEvaluator::get_p_init(int l) const
                      "Invalid parameter index l = " << l << std::endl);
   
   return epetra_param_vec[l];
+}
+
+Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly>
+FEApp::ModelEvaluator::get_p_sg_init(int l) const
+{
+  TEST_FOR_EXCEPTION(supports_sg == false, 
+                     Teuchos::Exceptions::InvalidParameter,
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_p_sg_init():  " <<
+                     "SG is not enabled.");
+  TEST_FOR_EXCEPTION(l != 0, 
+		     Teuchos::Exceptions::InvalidParameter,
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_p_sg_init():  " <<
+                     "Invalid parameter index l = " << l << std::endl);
+  TEST_FOR_EXCEPTION(initial_p_sg == Teuchos::null, 
+                     Teuchos::Exceptions::InvalidParameter,
+                     std::endl << 
+                     "Error!  FEApp::ModelEvaluator::get_p_sg_init():  " <<
+                     "initial_x_sg is NULL!");
+  return initial_p_sg;
 }
 
 Teuchos::RCP<Epetra_Operator>

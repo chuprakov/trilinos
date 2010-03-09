@@ -53,7 +53,12 @@ namespace FEApp {
        const Teuchos::RCP< Teuchos::Array<std::string> >& free_param_names = 
        Teuchos::null,
        const Teuchos::RCP< Teuchos::Array<std::string> >& sg_param_names = 
-       Teuchos::null);
+       Teuchos::null
+#if SG_ACTIVE
+       ,const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly>& initial_x_sg = Teuchos::null,
+       const Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly>& initial_p_sg = Teuchos::null
+#endif
+      );
 
     /** \name Overridden from EpetraExt::ModelEvaluator . */
     //@{
@@ -67,18 +72,38 @@ namespace FEApp {
     //! Return parameter vector map
     Teuchos::RCP<const Epetra_Map> get_p_map(int l) const;
 
+    //! Return parameter vector map
+    Teuchos::RCP<const Epetra_Map> get_p_sg_map(int l) const;
+
     //! Return response function map
     Teuchos::RCP<const Epetra_Map> get_g_map(int j) const;
+
+    //! Return response function map
+    Teuchos::RCP<const Epetra_Map> get_g_sg_map(int j) const;
 
     //! Return array of parameter names
     Teuchos::RCP<const Teuchos::Array<std::string> > 
     get_p_names(int l) const;
 
+    //! Return array of parameter names
+    Teuchos::RCP<const Teuchos::Array<std::string> > 
+    get_p_sg_names(int l) const;
+
     //! Return initial solution
     Teuchos::RCP<const Epetra_Vector> get_x_init() const;
 
+#if SG_ACTIVE
+    //! Return initial solution
+    Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly> get_x_sg_init() const;
+#endif
+
     //! Return initial parameters
     Teuchos::RCP<const Epetra_Vector> get_p_init(int l) const;
+
+#if SG_ACTIVE
+    //! Return initial parameters
+    Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly> get_p_sg_init(int l) const;
+#endif
 
     //! Create W = alpha*M + beta*J matrix
     Teuchos::RCP<Epetra_Operator> create_W() const;
@@ -121,6 +146,12 @@ namespace FEApp {
     bool supports_sg;
 
 #if SG_ACTIVE
+    //! SG initial guess
+    Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly> initial_x_sg;
+
+    //! SG initial parameters
+    Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly> initial_p_sg;
+
     //! Stochastic Galerkin parameters
     mutable Teuchos::Array<SGType> p_sg_vals;
 #endif
