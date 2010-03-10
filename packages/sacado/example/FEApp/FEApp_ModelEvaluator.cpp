@@ -236,6 +236,7 @@ FEApp::ModelEvaluator::get_x_init() const
   return app->getInitialSolution();
 }
 
+#if SG_ACTIVE
 Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly>
 FEApp::ModelEvaluator::get_x_sg_init() const
 {
@@ -251,6 +252,7 @@ FEApp::ModelEvaluator::get_x_sg_init() const
                      "initial_x_sg is NULL!");
   return initial_x_sg;
 }
+#endif
 
 Teuchos::RCP<const Epetra_Vector>
 FEApp::ModelEvaluator::get_p_init(int l) const
@@ -270,6 +272,7 @@ FEApp::ModelEvaluator::get_p_init(int l) const
   return epetra_param_vec[l];
 }
 
+#if SG_ACTIVE
 Teuchos::RCP<const Stokhos::EpetraVectorOrthogPoly>
 FEApp::ModelEvaluator::get_p_sg_init(int l) const
 {
@@ -290,6 +293,7 @@ FEApp::ModelEvaluator::get_p_sg_init(int l) const
                      "initial_x_sg is NULL!");
   return initial_p_sg;
 }
+#endif
 
 Teuchos::RCP<Epetra_Operator>
 FEApp::ModelEvaluator::create_W() const
