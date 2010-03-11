@@ -66,6 +66,8 @@ Teuchos::RCP<Teuchos::ParameterEntryValidator> ValidatorFactory::createValidator
 			return toReturn;
 			break;
 	}
+	Teuchos::RCP<Teuchos::ParameterEntryValidator> toReturn;
+	return toReturn;
 }
 
 Teuchos::RCP<EnhancedNumberValidator<int> > ValidatorFactory::getIntValidator(){
