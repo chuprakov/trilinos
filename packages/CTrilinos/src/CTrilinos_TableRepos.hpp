@@ -210,6 +210,9 @@ class TableRepos
     template <class T>
     const Teuchos::RCP<const T> getConstPoly(CTrilinos_Universal_ID_t aid);
 
+    /*! see if the object is dynamic_cast'able */
+    bool typeCheck(CTrilinos_Universal_ID_t aid, CTrilinos_Table_ID_t type);
+
     Table<Epetra_Distributor> tab_Epetra_Distributor;
     Table<Epetra_SerialComm> tab_Epetra_SerialComm;
     Table<Epetra_BLAS> tab_Epetra_BLAS;

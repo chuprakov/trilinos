@@ -334,6 +334,17 @@ TEUCHOS_UNIT_TEST( Table, purgeAll )
 #endif /* TEUCHOS_DEBUG */
 
 
+/* Table::typeCheck() */
+
+TEUCHOS_UNIT_TEST( Table, typeCheck )
+{
+  ECHO(TableRepos repos);
+  ECHO(CTrilinos_Universal_ID_t id = repos.store<T1>(new T1, true));
+  TEST_EQUALITY_CONST(repos.typeCheck(id, CLASS_ENUM(T1)), true);
+  TEST_EQUALITY_CONST(repos.typeCheck(id, CLASS_ENUM(T2)), true);
+  TEST_EQUALITY_CONST(repos.typeCheck(id, CLASS_ENUM(T4)), false);
+}
+
 //
 // Template Instantiations
 //
