@@ -80,7 +80,7 @@ using CTrilinos::TableRepos;
 
 /* Table::store() owned */
 
-TEUCHOS_UNIT_TEST( Table, store )
+TEUCHOS_UNIT_TEST( TableRepos, store )
 {
   ECHO(TableRepos repos);
   ECHO(CTrilinos_Universal_ID_t id = repos.store<T>(new T, true));
@@ -93,7 +93,7 @@ TEUCHOS_UNIT_TEST( Table, store )
   TEST_EQUALITY_CONST(is_null(repos.getConst<T>(id)), false);
 }
 
-TEUCHOS_UNIT_TEST( Table, storeBase )
+TEUCHOS_UNIT_TEST( TableRepos, storeBase )
 {
   ECHO(TableRepos repos);
   ECHO(CTrilinos_Universal_ID_t id = repos.store<T2>(new T1, true));
@@ -110,7 +110,7 @@ TEUCHOS_UNIT_TEST( Table, storeBase )
   TEST_EQUALITY_CONST(is_null(repos.getConst<T1>(id)), false);
 }
 
-TEUCHOS_UNIT_TEST( Table, storeNull )
+TEUCHOS_UNIT_TEST( TableRepos, storeNull )
 {
   ECHO(TableRepos repos);
   ECHO(T* pobj = NULL);
@@ -120,7 +120,7 @@ TEUCHOS_UNIT_TEST( Table, storeNull )
 
 /* Table::store() non-owned */
 
-TEUCHOS_UNIT_TEST( Table, storeShared )
+TEUCHOS_UNIT_TEST( TableRepos, storeShared )
 {
   ECHO(TableRepos repos);
   ECHO(T *pobj = new T);
@@ -136,7 +136,7 @@ TEUCHOS_UNIT_TEST( Table, storeShared )
   ECHO(delete pobj);
 }
 
-TEUCHOS_UNIT_TEST( Table, storeConstShared )
+TEUCHOS_UNIT_TEST( TableRepos, storeConstShared )
 {
   ECHO(TableRepos repos);
   ECHO(const T *pobj = new T);
@@ -152,7 +152,7 @@ TEUCHOS_UNIT_TEST( Table, storeConstShared )
   ECHO(delete pobj);
 }
 
-TEUCHOS_UNIT_TEST( Table, storeSharedBase )
+TEUCHOS_UNIT_TEST( TableRepos, storeSharedBase )
 {
   ECHO(TableRepos repos);
   ECHO(T1 *pobj = new T1);
@@ -172,7 +172,7 @@ TEUCHOS_UNIT_TEST( Table, storeSharedBase )
   ECHO(delete pobj);
 }
 
-TEUCHOS_UNIT_TEST( Table, storeConstSharedBase )
+TEUCHOS_UNIT_TEST( TableRepos, storeConstSharedBase )
 {
   ECHO(TableRepos repos);
   ECHO(const T1 *pobj = new T1);
@@ -192,14 +192,14 @@ TEUCHOS_UNIT_TEST( Table, storeConstSharedBase )
   ECHO(delete pobj);
 }
 
-TEUCHOS_UNIT_TEST( Table, storeSharedNull )
+TEUCHOS_UNIT_TEST( TableRepos, storeSharedNull )
 {
   ECHO(TableRepos repos);
   ECHO(T* pobj = NULL);
   TEST_THROW(repos.store<T>(pobj, false), NullReferenceError); 
 }
 
-TEUCHOS_UNIT_TEST( Table, storeConstSharedNull )
+TEUCHOS_UNIT_TEST( TableRepos, storeConstSharedNull )
 {
   ECHO(TableRepos repos);
   ECHO(const T* pobj = NULL);
@@ -209,7 +209,7 @@ TEUCHOS_UNIT_TEST( Table, storeConstSharedNull )
 
 /* Table::remove() */
 
-TEUCHOS_UNIT_TEST( Table, remove )
+TEUCHOS_UNIT_TEST( TableRepos, remove )
 {
   ECHO(TableRepos repos);
   ECHO(CTrilinos_Universal_ID_t id = repos.store<T>(new T, true));
@@ -221,7 +221,7 @@ TEUCHOS_UNIT_TEST( Table, remove )
   TEST_EQUALITY(id.table, CLASS_ENUM(Invalid));
 }
 
-TEUCHOS_UNIT_TEST( Table, removeConst )
+TEUCHOS_UNIT_TEST( TableRepos, removeConst )
 {
   ECHO(TableRepos repos);
   ECHO(const T* pobj = new T);
@@ -237,7 +237,7 @@ TEUCHOS_UNIT_TEST( Table, removeConst )
 
 #ifdef TEUCHOS_DEBUG
 
-TEUCHOS_UNIT_TEST( Table, removeInvalid )
+TEUCHOS_UNIT_TEST( TableRepos, removeInvalid )
 {
   ECHO(TableRepos repos);
   ECHO(CTrilinos_Universal_ID_t id);
@@ -252,7 +252,7 @@ TEUCHOS_UNIT_TEST( Table, removeInvalid )
 
 /* Table::get() */
 
-TEUCHOS_UNIT_TEST( Table, get )
+TEUCHOS_UNIT_TEST( TableRepos, get )
 {
   ECHO(TableRepos repos);
   ECHO(CTrilinos_Universal_ID_t id = repos.store<T>(new T, true));
@@ -266,7 +266,7 @@ TEUCHOS_UNIT_TEST( Table, get )
 
 #ifdef TEUCHOS_DEBUG
 
-TEUCHOS_UNIT_TEST( Table, getInvalid )
+TEUCHOS_UNIT_TEST( TableRepos, getInvalid )
 {
   ECHO(TableRepos repos);
   ECHO(CTrilinos_Universal_ID_t id);
@@ -281,7 +281,7 @@ TEUCHOS_UNIT_TEST( Table, getInvalid )
 
 /* Table::alias() */
 
-TEUCHOS_UNIT_TEST( Table, alias )
+TEUCHOS_UNIT_TEST( TableRepos, alias )
 {
   ECHO(TableRepos repos);
   ECHO(CTrilinos_Universal_ID_t id1 = repos.store<T1>(new T1, true));
@@ -291,7 +291,7 @@ TEUCHOS_UNIT_TEST( Table, alias )
   TEST_EQUALITY_CONST(id2.is_const, FALSE);
 }
 
-TEUCHOS_UNIT_TEST( Table, aliasConst )
+TEUCHOS_UNIT_TEST( TableRepos, aliasConst )
 {
   ECHO(TableRepos repos);
   ECHO(CTrilinos_Universal_ID_t id1 = repos.store<T1>(new const T1, true));
@@ -301,7 +301,7 @@ TEUCHOS_UNIT_TEST( Table, aliasConst )
   TEST_EQUALITY_CONST(id2.is_const, TRUE);
 }
 
-TEUCHOS_UNIT_TEST( Table, aliasBad )
+TEUCHOS_UNIT_TEST( TableRepos, aliasBad )
 {
   ECHO(TableRepos repos);
   ECHO(CTrilinos_Universal_ID_t id3 = repos.store<T3>(new T3, true));
@@ -313,7 +313,7 @@ TEUCHOS_UNIT_TEST( Table, aliasBad )
 
 #ifdef TEUCHOS_DEBUG
 
-TEUCHOS_UNIT_TEST( Table, purge )
+TEUCHOS_UNIT_TEST( TableRepos, purge )
 {
   ECHO(TableRepos repos);
   ECHO(CTrilinos_Universal_ID_t id = repos.store<T>(new T, true));
@@ -322,7 +322,7 @@ TEUCHOS_UNIT_TEST( Table, purge )
   TEST_THROW(repos.get<T>(id), RangeError);
 }
 
-TEUCHOS_UNIT_TEST( Table, purgeAll )
+TEUCHOS_UNIT_TEST( TableRepos, purgeAll )
 {
   ECHO(TableRepos repos);
   ECHO(CTrilinos_Universal_ID_t id = repos.store<T>(new T, true));
@@ -336,7 +336,7 @@ TEUCHOS_UNIT_TEST( Table, purgeAll )
 
 /* Table::typeCheck() */
 
-TEUCHOS_UNIT_TEST( Table, typeCheck )
+TEUCHOS_UNIT_TEST( TableRepos, typeCheck )
 {
   ECHO(TableRepos repos);
   ECHO(CTrilinos_Universal_ID_t id = repos.store<T1>(new T1, true));
