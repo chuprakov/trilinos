@@ -340,7 +340,7 @@ FEApp::ModelEvaluator::createOutArgs() const
     outArgs.set_Np_Ng(param_names.size(), 1);
     for (int i=0; i<param_names.size(); i++)
       outArgs.setSupports(OUT_ARG_DgDp, 0, i, 
-			  DerivativeSupport(DERIV_TRANS_MV_BY_ROW));
+			  DerivativeSupport(DERIV_MV_BY_COL));
   }
   else if (supports_p)
     outArgs.set_Np_Ng(1, 0);
@@ -359,7 +359,7 @@ FEApp::ModelEvaluator::createOutArgs() const
   if (supports_p)
     for (int i=0; i<param_names.size(); i++)
       outArgs.setSupports(OUT_ARG_DfDp, i, 
-			  DerivativeSupport(DERIV_TRANS_MV_BY_ROW));
+			  DerivativeSupport(DERIV_MV_BY_COL));
 
   outArgs.setSupports(OUT_ARG_f,true);
   outArgs.setSupports(OUT_ARG_W,true);
@@ -376,7 +376,7 @@ FEApp::ModelEvaluator::createOutArgs() const
       outArgs.set_Np_Ng_sg(param_names.size(), 1);
       for (int i=0; i<param_names.size(); i++)
 	outArgs.setSupports(OUT_ARG_DgDp_sg, 0, i, 
-			    DerivativeSupport(DERIV_TRANS_MV_BY_ROW));
+			    DerivativeSupport(DERIV_MV_BY_COL));
     }
     else if (supports_p)
       outArgs.set_Np_Ng_sg(1, 0);
@@ -395,7 +395,7 @@ FEApp::ModelEvaluator::createOutArgs() const
     if (supports_p)
       for (int i=0; i<param_names.size(); i++)
 	outArgs.setSupports(OUT_ARG_DfDp_sg, i, 
-			    DerivativeSupport(DERIV_TRANS_MV_BY_ROW));
+			    DerivativeSupport(DERIV_MV_BY_COL));
   }
 
   return outArgs;
