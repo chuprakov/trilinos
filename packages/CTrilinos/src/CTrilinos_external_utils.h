@@ -50,7 +50,7 @@ extern "C" {
 #ifdef HAVE_MPI
 
 /*! Create an Epetra_MpiComm from Fortran */
-CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Fortran_Create ( MPI_Fint fcomm );
+CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Fortran_Create ( int fcomm );
 
 #endif /* HAVE_MPI */
 
