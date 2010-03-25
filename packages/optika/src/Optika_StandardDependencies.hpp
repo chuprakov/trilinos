@@ -258,7 +258,7 @@ public:
 	}
 
 	void evaluate(){
-		int functionVal = runFunction(dependeeParentList->get<S>(dependeeName));
+		S functionVal = runFunction(dependeeParentList->get<S>(dependeeName));
 		functionVal > 0 ? dependentVisible = true : dependentVisible = false;
 	}
 

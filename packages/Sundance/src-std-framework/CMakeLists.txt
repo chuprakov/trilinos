@@ -42,6 +42,7 @@ APPEND_SET(HEADERS
   Elements/SundanceBubble.hpp
   Elements/SundanceClosedNewtonCotes.hpp
   Elements/SundanceClosedNewtonCotesType.hpp
+  Elements/SundanceCubicHermite.hpp
   Elements/SundanceDiscreteFunction.hpp
   Elements/SundanceDiscreteFunctionData.hpp
   Elements/SundanceDiscreteSpace.hpp
@@ -81,6 +82,7 @@ APPEND_SET(SOURCES
   Elements/SundanceBubble.cpp
   Elements/SundanceClosedNewtonCotes.cpp
   Elements/SundanceClosedNewtonCotesType.cpp
+  Elements/SundanceCubicHermite.cpp
   Elements/SundanceDiscreteFunction.cpp
   Elements/SundanceDiscreteFunctionData.cpp
   Elements/SundanceDiscreteSpace.cpp
@@ -126,8 +128,11 @@ APPEND_SET(HEADERS
   DOFMapping/SundanceMapStructure.hpp
   DOFMapping/SundanceMixedDOFMap.hpp
   DOFMapping/SundanceNodalDOFMap.hpp
+  DOFMapping/SundanceNodalDOFMapHN.hpp
   DOFMapping/SundancePartialElementDOFMap.hpp
   DOFMapping/SundanceSpatiallyHomogeneousDOFMapBase.hpp
+  DOFMapping/SundanceHNDoFMapBase.hpp
+  DOFMapping/SundanceNodalDOFMapHN.hpp
   )
 
 APPEND_SET(SOURCES
@@ -137,6 +142,7 @@ APPEND_SET(SOURCES
   DOFMapping/SundanceMapStructure.cpp
   DOFMapping/SundanceMixedDOFMap.cpp
   DOFMapping/SundanceNodalDOFMap.cpp
+  DOFMapping/SundanceNodalDOFMapHN.cpp
   DOFMapping/SundancePartialElementDOFMap.cpp
   DOFMapping/SundanceSpatiallyHomogeneousDOFMapBase.cpp
   )
@@ -163,6 +169,7 @@ APPEND_SET(HEADERS
   Assembly/SundanceLocalMatrixContainer.hpp
   Assembly/SundanceMapBundle.hpp
   Assembly/SundanceMatrixVectorAssemblyKernel.hpp
+  Assembly/SundanceMaximalQuadratureIntegral.hpp
   Assembly/SundanceQuadratureEvalMediator.hpp
   Assembly/SundanceQuadratureIntegral.hpp
   Assembly/SundanceQuadratureIntegralBase.hpp
@@ -207,6 +214,7 @@ APPEND_SET(SOURCES
   Assembly/SundanceLocalMatrixContainer.cpp
   Assembly/SundanceMapBundle.cpp
   Assembly/SundanceMatrixVectorAssemblyKernel.cpp
+  Assembly/SundanceMaximalQuadratureIntegral.cpp
   Assembly/SundanceQuadratureEvalMediator.cpp
   Assembly/SundanceQuadratureIntegral.cpp
   Assembly/SundanceQuadratureIntegralBase.cpp
@@ -277,6 +285,31 @@ APPEND_SET(SOURCES
   Problem/SundanceStochBlockJacobiSolver.cpp
   Problem/SundanceNonlinearProblem.cpp
   )
+
+
+#
+# Element Matrix & Vector Transformation files
+#
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/ElementTransformation)
+
+APPEND_SET(HEADERS
+  ElementTransformation/SundanceTransformationBase.hpp
+  ElementTransformation/SundanceAssemblyTransformationBuilder.hpp
+  ElementTransformation/SundanceDiscreteSpaceTransfBuilder.hpp
+  ElementTransformation/SundanceTransformationHermite.hpp
+  ElementTransformation/SundanceTransformationHN.hpp
+)
+
+APPEND_SET(SOURCES
+  ElementTransformation/SundanceTransformationBase.cpp
+  ElementTransformation/SundanceAssemblyTransformationBuilder.cpp
+  ElementTransformation/SundanceDiscreteSpaceTransfBuilder.cpp
+  ElementTransformation/SundanceTransformationHermite.cpp
+  ElementTransformation/SundanceTransformationHN.cpp
+  )
+
 
 IF (TPL_ENABLE_MPI)
 ENDIF()

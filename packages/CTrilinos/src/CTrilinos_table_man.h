@@ -58,6 +58,11 @@ CTrilinos_Universal_ID_t CT_Alias(CTrilinos_Universal_ID_t aid, CTrilinos_Table_
  *  to be removed in order to destroy the object. */
 void CT_Migrate(CTrilinos_Universal_ID_t *aid, CTrilinos_Table_ID_t new_table);
 
+/*! Checks to see if the underlying object referenced by a table
+ *  entry is dynamic_cast'able to a given type (can be used to
+ *  distinguish, e.g., an Epetra_SerialComm from an Epetra_MpiComm). */
+boolean CT_TypeCheck(CTrilinos_Universal_ID_t aid, CTrilinos_Table_ID_t type);
+
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -24,5 +24,14 @@ void CT_Migrate(CTrilinos_Universal_ID_t *aid, CTrilinos_Table_ID_t new_table)
     *aid = newid;
 }
 
+/*! Checks to see if the underlying object referenced by a table
+ *  entry is dynamic_cast'able to a given type (can be used to
+ *  distinguish, e.g., an Epetra_SerialComm from an Epetra_MpiComm). */
+boolean CT_TypeCheck(CTrilinos_Universal_ID_t aid, CTrilinos_Table_ID_t type)
+{
+    bool ret = CTrilinos::tableRepos().typeCheck(aid, type);
+    return (ret ? TRUE : FALSE);
+}
+
 
 } // extern "C"

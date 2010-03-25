@@ -41,6 +41,7 @@ APPEND_SET(HEADERS
   CellFilter/SundanceDimensionalCellFilter.hpp
   CellFilter/SundanceExplicitCellIterator.hpp
   CellFilter/SundanceExplicitCellSet.hpp
+  CellFilter/SundanceGIDCellPredicate.hpp
   CellFilter/SundanceImplicitCellSet.hpp
   CellFilter/SundanceLabelCellPredicate.hpp
   CellFilter/SundanceMaximalCellFilter.hpp
@@ -64,6 +65,7 @@ APPEND_SET(SOURCES
   CellFilter/SundanceCFMeshPair.cpp
   CellFilter/SundanceDimensionalCellFilter.cpp
   CellFilter/SundanceExplicitCellSet.cpp
+  CellFilter/SundanceGIDCellPredicate.cpp
   CellFilter/SundanceImplicitCellSet.cpp
   CellFilter/SundanceLabelCellPredicate.cpp
   CellFilter/SundanceMaximalCellFilter.cpp
@@ -121,11 +123,14 @@ APPEND_SET(HEADERS
   Concrete/SundanceBasicSimplicialMesh.hpp
   Concrete/SundanceBasicSimplicialMeshType.hpp
   Concrete/SundanceBasicVertexView.hpp
+  Concrete/SundanceHNodeMesh2D.hpp
+  Concrete/SundanceHNodeMeshType2D.hpp
   )
 
 APPEND_SET(SOURCES
   Concrete/SundanceBasicSimplicialMesh.cpp
   Concrete/SundanceBasicVertexView.cpp
+  Concrete/SundanceHNodeMesh2D.cpp
   )
 
 
@@ -172,6 +177,7 @@ APPEND_SET(HEADERS
   Sources/SundancePartitionedRectangleMesher.hpp
   Sources/SundanceTriangleMeshReader.hpp
   Sources/SundanceBamgMeshReader.hpp 
+  Sources/SundanceHNodeMesher2D.hpp
   )
 
 APPEND_SET(SOURCES
@@ -185,6 +191,7 @@ APPEND_SET(SOURCES
   Sources/SundancePartitionedRectangleMesher.cpp
   Sources/SundanceTriangleMeshReader.cpp
   Sources/SundanceBamgMeshReader.cpp
+  Sources/SundanceHNodeMesher2D.cpp
   )
   
 IF(HAVE_SUNDANCE_PEANO) 

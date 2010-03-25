@@ -46,7 +46,8 @@ class QuadratureIntegralBase
   : public ElementIntegral
 {
 public:
-  /** Construct a zero-form to be computed by quadrature */
+
+  /** Construct a zero form to be computed by quadrature */
   QuadratureIntegralBase(int spatialDim,
     const CellType& maxCellType,
     int dim, 
@@ -91,7 +92,7 @@ public:
   /** virtual dtor */
   virtual ~QuadratureIntegralBase(){;}
       
-  /** */
+     /** */
   virtual void transform(const CellJacobianBatch& JTrans,
     const CellJacobianBatch& JVol,
     const Array<int>& isLocalFlag,
@@ -139,8 +140,14 @@ public:
 protected:
   static void addFlops(const double& flops) {totalFlops() += flops;}
       
+  const QuadratureFamily& quad() const {return quad_;}
+  /** */
+  int nQuad_ ;
+
+private:
+
   /* */
-  int nQuad_;
+  QuadratureFamily quad_;
       
 };
 

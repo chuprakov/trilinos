@@ -6,6 +6,7 @@ SET(DisabledTests
   RefinementTest3D
   FunctionalTest3D 
   transientOneZoneEddy2D
+  FOSLSMagnetostatics2D
   PoissonBoltzmannDemo3D
   NoxAlgebraic 
   NonlinAlgebraic 
@@ -24,12 +25,13 @@ SET(SerialTests
   LinearPartialDomain 
   NonlinearPartialDomain 
   AToCDensitySample
-  FOSLSMagnetostatics2D
   NonlinearPDECOTest1D
   NonlinearPDECOTest2D
   FunctionalTest 
   TwoZoneDiscFunc
   PerforatedPlate
+  PerforatedPlate_QuadInt
+  Poisson2D_HN
   PoissonPeano2D
   PoissonPeano3D
   StokesPeano2D 
@@ -47,6 +49,7 @@ SET(MPITests
              FieldIOTest
              BlockStochPoissonTest1D
              HighOrderPoisson1D
+             HighOrderPoisson1DCubicHermite
              HighOrderPoissonBernstein1D
              HighOrderPoisson2D
              HighOrderPoissonBernstein2D

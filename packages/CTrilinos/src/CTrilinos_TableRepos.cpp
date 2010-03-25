@@ -620,6 +620,274 @@ void TableRepos::purgeAll()
 #endif /* HAVE_CTRILINOS_IFPACK */
 }
 
+bool TableRepos::typeCheck(CTrilinos_Universal_ID_t aid, CTrilinos_Table_ID_t type)
+{
+    if (aid.table == type)
+        return true;
+
+    try {
+        if (aid.is_const) {
+            switch (type) {
+            case CT_Epetra_Distributor_ID:
+                getConst<Epetra_Distributor>(aid);
+                break;
+            case CT_Epetra_SerialComm_ID:
+                getConst<Epetra_SerialComm>(aid);
+                break;
+            case CT_Epetra_BLAS_ID:
+                getConst<Epetra_BLAS>(aid);
+                break;
+            case CT_Epetra_Comm_ID:
+                getConst<Epetra_Comm>(aid);
+                break;
+            case CT_Epetra_Operator_ID:
+                getConst<Epetra_Operator>(aid);
+                break;
+            case CT_Epetra_MultiVector_ID:
+                getConst<Epetra_MultiVector>(aid);
+                break;
+            case CT_Epetra_OffsetIndex_ID:
+                getConst<Epetra_OffsetIndex>(aid);
+                break;
+            case CT_Epetra_Object_ID:
+                getConst<Epetra_Object>(aid);
+                break;
+            case CT_Epetra_RowMatrix_ID:
+                getConst<Epetra_RowMatrix>(aid);
+                break;
+            case CT_Epetra_CompObject_ID:
+                getConst<Epetra_CompObject>(aid);
+                break;
+            case CT_Epetra_Directory_ID:
+                getConst<Epetra_Directory>(aid);
+                break;
+            case CT_Epetra_Flops_ID:
+                getConst<Epetra_Flops>(aid);
+                break;
+            case CT_Epetra_SrcDistObject_ID:
+                getConst<Epetra_SrcDistObject>(aid);
+                break;
+#ifdef HAVE_MPI
+            case CT_Epetra_MpiComm_ID:
+                getConst<Epetra_MpiComm>(aid);
+                break;
+#endif /* HAVE_MPI */
+            case CT_Epetra_CrsMatrix_ID:
+                getConst<Epetra_CrsMatrix>(aid);
+                break;
+            case CT_Epetra_CrsGraph_ID:
+                getConst<Epetra_CrsGraph>(aid);
+                break;
+            case CT_Epetra_DistObject_ID:
+                getConst<Epetra_DistObject>(aid);
+                break;
+            case CT_Epetra_Vector_ID:
+                getConst<Epetra_Vector>(aid);
+                break;
+            case CT_Epetra_Export_ID:
+                getConst<Epetra_Export>(aid);
+                break;
+            case CT_Epetra_Map_ID:
+                getConst<Epetra_Map>(aid);
+                break;
+            case CT_Epetra_BlockMap_ID:
+                getConst<Epetra_BlockMap>(aid);
+                break;
+            case CT_Epetra_Import_ID:
+                getConst<Epetra_Import>(aid);
+                break;
+            case CT_Epetra_Time_ID:
+                getConst<Epetra_Time>(aid);
+                break;
+            case CT_Epetra_JadMatrix_ID:
+                getConst<Epetra_JadMatrix>(aid);
+                break;
+            case CT_Epetra_LinearProblem_ID:
+                getConst<Epetra_LinearProblem>(aid);
+                break;
+            case CT_Epetra_LAPACK_ID:
+                getConst<Epetra_LAPACK>(aid);
+                break;
+            case CT_Teuchos_ParameterList_ID:
+                getConst<Teuchos::ParameterList>(aid);
+                break;
+#ifdef HAVE_CTRILINOS_AMESOS
+            case CT_Amesos_BaseSolver_ID:
+                getConst<Amesos_BaseSolver>(aid);
+                break;
+#endif /* HAVE_CTRILINOS_AMESOS */
+            case CT_Epetra_FECrsMatrix_ID:
+                getConst<Epetra_FECrsMatrix>(aid);
+                break;
+            case CT_Epetra_IntSerialDenseVector_ID:
+                getConst<Epetra_IntSerialDenseVector>(aid);
+                break;
+            case CT_Epetra_SerialDenseMatrix_ID:
+                getConst<Epetra_SerialDenseMatrix>(aid);
+                break;
+#ifdef HAVE_CTRILINOS_AZTECOO
+            case CT_AztecOO_StatusTest_ID:
+                getConst<AztecOO_StatusTest>(aid);
+                break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+            case CT_AztecOO_StatusTestCombo_ID:
+                getConst<AztecOO_StatusTestCombo>(aid);
+                break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+            case CT_AztecOO_StatusTestMaxIters_ID:
+                getConst<AztecOO_StatusTestMaxIters>(aid);
+                break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+            case CT_AztecOO_StatusTestResNorm_ID:
+                getConst<AztecOO_StatusTestResNorm>(aid);
+                break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_IFPACK
+            case CT_Ifpack_Preconditioner_ID:
+                getConst<Ifpack_Preconditioner>(aid);
+                break;
+#endif /* HAVE_CTRILINOS_IFPACK */
+            default:
+                return false;
+            }
+        } else {
+            switch (type) {
+            case CT_Epetra_Distributor_ID:
+                get<Epetra_Distributor>(aid);
+                break;
+            case CT_Epetra_SerialComm_ID:
+                get<Epetra_SerialComm>(aid);
+                break;
+            case CT_Epetra_BLAS_ID:
+                get<Epetra_BLAS>(aid);
+                break;
+            case CT_Epetra_Comm_ID:
+                get<Epetra_Comm>(aid);
+                break;
+            case CT_Epetra_Operator_ID:
+                get<Epetra_Operator>(aid);
+                break;
+            case CT_Epetra_MultiVector_ID:
+                get<Epetra_MultiVector>(aid);
+                break;
+            case CT_Epetra_OffsetIndex_ID:
+                get<Epetra_OffsetIndex>(aid);
+                break;
+            case CT_Epetra_Object_ID:
+                get<Epetra_Object>(aid);
+                break;
+            case CT_Epetra_RowMatrix_ID:
+                get<Epetra_RowMatrix>(aid);
+                break;
+            case CT_Epetra_CompObject_ID:
+                get<Epetra_CompObject>(aid);
+                break;
+            case CT_Epetra_Directory_ID:
+                get<Epetra_Directory>(aid);
+                break;
+            case CT_Epetra_Flops_ID:
+                get<Epetra_Flops>(aid);
+                break;
+            case CT_Epetra_SrcDistObject_ID:
+                get<Epetra_SrcDistObject>(aid);
+                break;
+#ifdef HAVE_MPI
+            case CT_Epetra_MpiComm_ID:
+                get<Epetra_MpiComm>(aid);
+                break;
+#endif /* HAVE_MPI */
+            case CT_Epetra_CrsMatrix_ID:
+                get<Epetra_CrsMatrix>(aid);
+                break;
+            case CT_Epetra_CrsGraph_ID:
+                get<Epetra_CrsGraph>(aid);
+                break;
+            case CT_Epetra_DistObject_ID:
+                get<Epetra_DistObject>(aid);
+                break;
+            case CT_Epetra_Vector_ID:
+                get<Epetra_Vector>(aid);
+                break;
+            case CT_Epetra_Export_ID:
+                get<Epetra_Export>(aid);
+                break;
+            case CT_Epetra_Map_ID:
+                get<Epetra_Map>(aid);
+                break;
+            case CT_Epetra_BlockMap_ID:
+                get<Epetra_BlockMap>(aid);
+                break;
+            case CT_Epetra_Import_ID:
+                get<Epetra_Import>(aid);
+                break;
+            case CT_Epetra_Time_ID:
+                get<Epetra_Time>(aid);
+                break;
+            case CT_Epetra_JadMatrix_ID:
+                get<Epetra_JadMatrix>(aid);
+                break;
+            case CT_Epetra_LinearProblem_ID:
+                get<Epetra_LinearProblem>(aid);
+                break;
+            case CT_Epetra_LAPACK_ID:
+                get<Epetra_LAPACK>(aid);
+                break;
+            case CT_Teuchos_ParameterList_ID:
+                get<Teuchos::ParameterList>(aid);
+                break;
+#ifdef HAVE_CTRILINOS_AMESOS
+            case CT_Amesos_BaseSolver_ID:
+                get<Amesos_BaseSolver>(aid);
+                break;
+#endif /* HAVE_CTRILINOS_AMESOS */
+            case CT_Epetra_FECrsMatrix_ID:
+                get<Epetra_FECrsMatrix>(aid);
+                break;
+            case CT_Epetra_IntSerialDenseVector_ID:
+                get<Epetra_IntSerialDenseVector>(aid);
+                break;
+            case CT_Epetra_SerialDenseMatrix_ID:
+                get<Epetra_SerialDenseMatrix>(aid);
+                break;
+#ifdef HAVE_CTRILINOS_AZTECOO
+            case CT_AztecOO_StatusTest_ID:
+                get<AztecOO_StatusTest>(aid);
+                break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+            case CT_AztecOO_StatusTestCombo_ID:
+                get<AztecOO_StatusTestCombo>(aid);
+                break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+            case CT_AztecOO_StatusTestMaxIters_ID:
+                get<AztecOO_StatusTestMaxIters>(aid);
+                break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+            case CT_AztecOO_StatusTestResNorm_ID:
+                get<AztecOO_StatusTestResNorm>(aid);
+                break;
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_IFPACK
+            case CT_Ifpack_Preconditioner_ID:
+                get<Ifpack_Preconditioner>(aid);
+                break;
+#endif /* HAVE_CTRILINOS_IFPACK */
+            default:
+                return false;
+            }
+        }
+    } catch (...) {
+        return false;
+    }
+
+    return true;
+}
+
 
 } // namespace CTrilinos
 

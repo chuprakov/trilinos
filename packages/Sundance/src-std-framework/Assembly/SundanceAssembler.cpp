@@ -62,6 +62,7 @@
 #include "SundanceMatrixVectorAssemblyKernel.hpp"
 #include "SundanceFunctionalAssemblyKernel.hpp"
 #include "SundanceFunctionalGradientAssemblyKernel.hpp"
+#include "SundanceAssemblyTransformationBuilder.hpp"
 #ifndef HAVE_TEUCHOS_EXPLICIT_INSTANTIATION
 #include "TSFLinearOperatorImpl.hpp"
 #include "TSFSimpleBlockOpImpl.hpp"
@@ -1045,6 +1046,27 @@ void Assembler::assemblyLoop(const ComputationType& compType,
    * (CellFilters) and quadrature rules.   */
   SUNDANCE_MSG1(verb, 
     tab << "---------- outer assembly loop over subregions");
+  //SUNDANCE_MSG3(verb, tab << "Row DoF:" << rowMap_.size());
+  //SUNDANCE_MSG3(verb, tab << "Column DoF:" << colMap_.size());
+  //SUNDANCE_MSG3(verb, tab << "Region Quadratic Comb:" << rqc_.size());
+
+  /* The double array which contains the transformations*/
+  Array< Array<RCP<AssemblyTransformationBuilder> > > transformations;
+
+  /** ----- Create Transformation objects for each integral group ------- */
+  transformations.resize(rqc_.size());
+  for (int r=0; r<rqc_.size(); r++)
+  {
+	  transformations[r].resize(groups[r].size());
+	  for (int g=0; g<groups[r].size(); g++)
+	  {
+		  const RCP<IntegralGroup>& group = groups[r][g];
+		  /* Here we create the transformation object, if they are not needed
+		   * there would be no operation done to the array of local stiffnes matrix */
+		  transformations[r][g] = rcp(new AssemblyTransformationBuilder( group , rowMap_ , colMap_ , mesh_));
+	  }
+  }
+
 
   /* Record the default kernel verbosity so that it if changes we can
    * reset it at the end of a loop iteration */
@@ -1311,6 +1333,16 @@ void Assembler::assemblyLoop(const ComputationType& compType,
         const RCP<IntegralGroup>& group = groups[r][g];
         if (!group->evaluate(JTrans, JVol, *isLocalFlag, facetIndices, workSet,
             vectorCoeffs, constantCoeffs, localValues)) continue;
+
+        /* Here we call the transformation object, if they are not needed
+         * (the function migh be one return) there would be no operation
+         * done to the array of local stiffnes matrix
+         * Do the actual transformation (transformations for Matrix)*/
+        transformations[r][g]->applyTransformsToAssembly(
+        		g , (localValues->size() / workSet->size()),
+                cellType, maxCellType,
+        		JTrans, JVol, facetIndices, workSet, localValues);
+
         /* add the integration results into the output objects by a call
          * to the kernel's fill() function. We need to pass isBCRqc to the kernel
          * because it might handle BC rows differently. The integral group

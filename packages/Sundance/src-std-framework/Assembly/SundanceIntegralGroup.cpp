@@ -31,6 +31,7 @@
 #include "SundanceIntegralGroup.hpp"
 #include "SundanceRefIntegral.hpp"
 #include "SundanceQuadratureIntegral.hpp"
+#include "SundanceMaximalQuadratureIntegral.hpp"
 #include "SundanceOut.hpp"
 #include "SundanceTabs.hpp"
 #include "Teuchos_TimeMonitor.hpp"
@@ -279,6 +280,10 @@ bool IntegralGroup
   SUNDANCE_MSG1(integrationVerb(), tab0 << "evaluating integral group with "
     << integrals_.size() << " integrals");
 
+  SUNDANCE_MSG3(integrationVerb(), 
+    tab0 << "num integration cells = " << JVol.numCells());
+  SUNDANCE_MSG3(integrationVerb(), 
+    tab0 << "num nodes in output = " << integrals_[0]->nNodes());
 
   /* initialize the return vector */
   if (integrals_[0]->nNodes() == -1) A->resize(1);
@@ -302,6 +307,8 @@ bool IntegralGroup
       = dynamic_cast<const RefIntegral*>(integrals_[i].get());
     const QuadratureIntegral* quad 
       = dynamic_cast<const QuadratureIntegral*>(integrals_[i].get());
+    const MaximalQuadratureIntegral* maxQuad 
+      = dynamic_cast<const MaximalQuadratureIntegral*>(integrals_[i].get());
 
     if (ref!=0)
     {
@@ -313,7 +320,7 @@ bool IntegralGroup
         tab2 << "Coefficient is " << f);
       ref->transform(JTrans, JVol, isLocalFlag, facetIndex, cellLIDs , f, A);
     }
-    else 
+    else if (quad != 0)
     {
       SUNDANCE_MSG2(integrationVerb(),
         tab2 << "Integrating term group " << i 
@@ -334,6 +341,32 @@ bool IntegralGroup
       const double* const f = vectorCoeffs[resultIndices_[i]]->start();
       quad->transform(JTrans, JVol, isLocalFlag, facetIndex, cellLIDs , f, A);
     }
+    else if (maxQuad != 0)
+    {
+      SUNDANCE_MSG2(integrationVerb(),
+        tab2 << "Integrating term group " << i 
+        << " by quadrature");
+          
+      TEST_FOR_EXCEPTION(vectorCoeffs[resultIndices_[i]]->length()==0,
+        InternalError,
+        "zero-length coeff vector detected in "
+        "quadrature integration branch of "
+        "IntegralGroup::evaluate(). String value is ["
+        << vectorCoeffs[resultIndices_[i]]->str()
+        << "]");
+
+      Tabs tab3;
+      SUNDANCE_MSG3(integrationVerb(),
+        tab3 << "coefficients are " <<  vectorCoeffs[resultIndices_[i]]->str());
+
+      const double* const f = vectorCoeffs[resultIndices_[i]]->start();
+      maxQuad->transform(JTrans, JVol, isLocalFlag, facetIndex, cellLIDs , f, A);
+    }
+    else
+    {
+      TEST_FOR_EXCEPT(1);
+    }
+
     SUNDANCE_MSG4(integrationVerb(),
       tab1 << "i=" << i << " integral values=");
     if (integrationVerb() >=4) writeTable(Out::os(), tab1, *A, 6);

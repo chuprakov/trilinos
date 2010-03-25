@@ -44,7 +44,7 @@ class EdgeLocalizedBasis : public ScalarBasis
 {
 public:
   /** */
-  EdgeLocalizedBasis(int order);
+  EdgeLocalizedBasis();
 
   /**   
    * \brief Inform caller as to whether a given cell type is supported 
@@ -58,7 +58,7 @@ public:
   void print(std::ostream& os) const ;
 
   /** */
-  int order() const {return order_;}
+  int order() const {return 0;}
 
   /** return the number of nodes for this basis on the given cell type */
   int nReferenceDOFs(
@@ -86,14 +86,20 @@ public:
 
 private:
 
-  static Array<int> makeRange(int low, int high);
-
   /** evaluate on a line cell  */
   void evalOnLine(const Point& pt,
     const MultiIndex& deriv,
     Array<double>& result) const ;
     
-  int order_;
+  /** evaluate on a triangle cell  */
+  void evalOnTriangle(const Point& pt,
+    const MultiIndex& deriv,
+    Array<double>& result) const ;
+  /** evaluate on a tet cell  */
+  void evalOnTet(const Point& pt,
+    const MultiIndex& deriv,
+    Array<double>& result) const ;
+    
 };
 }
 
