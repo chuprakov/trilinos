@@ -33,5 +33,5 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_config.h"
 
 std::string CTrilinos_Version() { 
-  return("CTrilinos Version 1.0 - 09/24/2009"); 
+  return("CTrilinos Version 2.0 - 03/25/2010"); 
 }

@@ -63,7 +63,7 @@ namespace RangePack {
 class Range1D {
 public:
   /** \brief . */
-  typedef RTOpPack::Index  Index;
+  typedef RTOpPack::Ordinal  Index;
   /** \brief . */
   enum EInvalidRange { INVALID };
   /// Range1D(INVALID)

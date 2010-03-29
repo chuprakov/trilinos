@@ -117,89 +117,52 @@ void Lagrange::print(std::ostream& os) const
   os << "Lagrange(" << order_ << ")";
 }
 
-int Lagrange::nReferenceDOFs(
+int Lagrange::nReferenceDOFsWithoutFacets(
   const CellType& maximalCellType,
   const CellType& cellType
   ) const
 {
+  if (order_==0)
+  {
+    if (maximalCellType != cellType) return 0;
+    return 1;
+  }
+
   switch(cellType)
-    {
+  {
     case PointCell:
       return 1;
     case LineCell:
-      return 1 + order_;
+      return order_-1;
     case TriangleCell:
-      {
-        switch(order_)
-          {
-          case 0:
-            return 1;
-          case 1:
-            return 3;
-          case 2:
-            return 6;
-          case 3:
-            return 10;
-          default:
-            TEST_FOR_EXCEPTION(true, RuntimeError, "order=" << order_ 
-                               << " not implemented in Lagrange basis");
-            return -1; // -Wall
-          }
-      }
-    case QuadCell:{
-        switch(order_) {
-          case 0:
-            return 1;
-          case 1:
-            return 4;
-          case 2:
-        	return 9;
-            //return 8; // was 9 before
-                      // !!! ---- change here also if one changes the number of unknowns ----
-          default:
-            TEST_FOR_EXCEPTION(true, RuntimeError, "order=" << order_
-                               << " not implemented in Lagrange basis");
-            return -1; // -Wall
-          }
-      }
+      if (order_ < 3) return 0;
+      if (order_ == 3) return 1;
+      TEST_FOR_EXCEPTION(order_>3, RuntimeError, 
+        "Lagrange order > 3 not implemented "
+        "for triangle cells");
+      return 0;
+    case QuadCell:
+      if (order_==1) return 0;
+      if (order_==2) return 1;
+      TEST_FOR_EXCEPTION(order_>2, RuntimeError, 
+        "Lagrange order > 2 not implemented "
+        "for quad cells");
     case TetCell:
-      {switch(order_)
-          {
-          case 0:
-            return 1;
-          case 1:
-            return 4;
-          case 2:
-            return 10;
-          default:
-            TEST_FOR_EXCEPTION(true, RuntimeError, "order=" << order_ 
-                               << " not implemented in Lagrange basis");
-            return -1; // -Wall
-          }
-
-      }
+      if (order_<=2) return 0;
+      TEST_FOR_EXCEPTION(order_>2, RuntimeError, 
+        "Lagrange order > 2 not implemented "
+        "for tet cells");
     case BrickCell:
-      {switch(order_)
-          {
-          case 0:
-            return 1;
-          case 1:
-            return 8;
-          case 2:
-        	return 27;
-            //return 20;
-          default:
-            TEST_FOR_EXCEPTION(true, RuntimeError, "order=" << order_
-                               << " not implemented in Lagrange basis");
-            return -1; // -Wall
-          }
-
-      }
+      if (order_<=1) return 0;
+      if (order_==2) return 1;
+      TEST_FOR_EXCEPTION(order_>2, RuntimeError, 
+        "Lagrange order > 2 not implemented "
+        "for brick cells");
     default:
       TEST_FOR_EXCEPTION(true, RuntimeError, "Cell type "
-                         << cellType << " not implemented in Lagrange basis");
+        << cellType << " not implemented in Lagrange basis");
       return -1; // -Wall
-    }
+  }
 }
 
 void Lagrange::getReferenceDOFs(
@@ -208,6 +171,22 @@ void Lagrange::getReferenceDOFs(
   Array<Array<Array<int> > >& dofs) const 
 {
   typedef Array<int> Aint;
+
+  if (order_==0)
+  {
+    int dim = dimension(cellType);
+    dofs.resize(dim+1);
+    for (int d=0; d<dim; d++)
+    {
+      Array<Array<int> > dd;
+      for (int f=0; f<numFacets(cellType, d); f++) dd.append(Array<int>());
+      dofs[d] = dd;
+    }
+    if (cellType!=PointCell) dofs[dim] = tuple<Aint>(tuple(0));
+    else dofs[dim] = tuple<Aint>(Array<int>());
+    return;
+  }
+
   switch(cellType)
     {
     case PointCell:

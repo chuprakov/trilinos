@@ -61,7 +61,7 @@ public:
   int order() const {return order_;}
 
   /** return the number of nodes for this basis on the given cell type */
-  int nReferenceDOFs(
+  int nReferenceDOFsWithoutFacets(
     const CellType& maximalCellType,
     const CellType& cellType
     ) const ;
@@ -84,6 +84,10 @@ public:
 
   /* Handleable boilerplate */
   GET_RCP(BasisFamilyBase);
+
+  /** */
+  std::string description() const 
+    {return "Lagrange(" + Teuchos::toString(order()) + ")";}
 
 private:
   int order_;
