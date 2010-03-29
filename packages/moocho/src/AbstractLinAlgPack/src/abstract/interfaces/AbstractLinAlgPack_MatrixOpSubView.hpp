@@ -49,6 +49,9 @@ namespace AbstractLinAlgPack {
  */
 class MatrixOpSubView : public virtual MatrixOp {
 public:
+
+  /** \brief . */
+  using MatrixOp::syrk;
   
   /** \brief . */
   typedef Teuchos::RCP<MatrixOp>   mat_ptr_t;

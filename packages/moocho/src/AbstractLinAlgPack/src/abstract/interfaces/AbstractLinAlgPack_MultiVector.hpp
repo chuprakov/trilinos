@@ -158,6 +158,11 @@ class MultiVector : virtual public MatrixOp {
 public:
 
   /** \brief . */
+  using MatrixOp::clone;
+  /** \brief . */
+  using MatrixOp::Mp_StMtM;
+
+  /** \brief . */
   typedef int  access_by_t;
   /** \brief . */
   enum {
@@ -174,8 +179,7 @@ public:
   //@{
 
   /** \brief . */
-  friend
-  void AbstractLinAlgPack::apply_op(
+  friend void apply_op(
     EApplyBy                        apply_by
     ,const RTOpPack::RTOp           &primary_op
     ,const size_t                   num_multi_vecs
@@ -190,8 +194,7 @@ public:
     ,const index_type               secondary_sub_dim
     );
   /** \brief . */
-  friend
-  void AbstractLinAlgPack::apply_op(
+  friend void apply_op(
     EApplyBy                        apply_by
     ,const RTOpPack::RTOp           &primary_op
     ,const RTOpPack::RTOp           &secondary_op

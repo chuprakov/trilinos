@@ -28,6 +28,8 @@
 // @HEADER
 */
 
+#include <math.h>
+
 /* ///////////////////////////////////////////// */
 /* RTOp_TOp_max_abs_vec_scalar.c */
 

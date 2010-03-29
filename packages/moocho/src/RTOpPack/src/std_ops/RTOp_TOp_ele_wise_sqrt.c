@@ -28,6 +28,8 @@
 // @HEADER
 */
 
+#include <math.h>
+
 /* ///////////////////////////////////////////// */
 /* RTOp_TOp_ele_wise_sqrt.c */
 

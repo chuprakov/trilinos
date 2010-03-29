@@ -28,6 +28,8 @@
 // @HEADER
 */
 
+#include <math.h>
+
 #include "RTOp_ROp_norms.h"
 #include "RTOp_obj_null_vtbl.h"
 #include "RTOp_obj_value_vtbl.h"

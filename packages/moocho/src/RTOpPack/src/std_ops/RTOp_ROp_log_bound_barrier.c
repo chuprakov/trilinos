@@ -28,6 +28,8 @@
 // @HEADER
 */
 
+#include <math.h>
+
 /* */
 /* Note: This file was created automatically by 'new_rtop.pl' */
 /*       on 6/26/2002 at 21:9 */

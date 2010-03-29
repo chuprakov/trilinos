@@ -28,6 +28,8 @@
 // @HEADER
 */
 
+#include <math.h>
+
 /* ///////////////////////////////////////////// */
 /* RTOp_ROp_comp_err_with_mu.c */
 
