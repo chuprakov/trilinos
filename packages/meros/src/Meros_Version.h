@@ -31,13 +31,14 @@
 
 #include "Meros_ConfigDefs.h"
 #include "Meros_Config.h"
+#include "Trilinos_version.h"
 
 namespace Meros {
   
   // using std::string;
   
   std::string Meros_Version() { 
-    return("Meros Version 1.2 Development - 11/13/2009"); 
+    return("Meros in Trilinos " TRILINOS_VERSION_STRING); 
     
   }
   
