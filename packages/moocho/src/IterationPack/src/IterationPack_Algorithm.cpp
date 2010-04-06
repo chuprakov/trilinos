@@ -1055,7 +1055,7 @@ void Algorithm::look_for_interrupt()
         << "  (s) Gracefully terminate the algorithm at the end of this step?\n"
         << "  (i) Gracefully terminate the algorithm at the end of this iteration?\n"
         << "Answer a, c, s or i ? ";
-      char abort_mode;
+      char abort_mode = 'a';
       std::cin >> abort_mode;
       if( abort_mode == 'a' ) {
         response = R_ABORT_NOW;
