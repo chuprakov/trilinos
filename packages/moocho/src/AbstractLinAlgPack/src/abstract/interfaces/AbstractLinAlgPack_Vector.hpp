@@ -181,7 +181,7 @@ public:
 
   /** \brief . */
   friend
-  void AbstractLinAlgPack::apply_op(
+  void apply_op(
     const RTOpPack::RTOp       &op
     ,const size_t              num_vecs
     ,const Vector*             vecs[]
