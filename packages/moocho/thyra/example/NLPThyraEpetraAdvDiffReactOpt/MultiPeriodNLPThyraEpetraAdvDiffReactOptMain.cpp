@@ -15,7 +15,7 @@
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_StandardCatchMacros.hpp"
 #include "Teuchos_VerboseObject.hpp"
-#include "Teuchos_arrayArg.hpp"
+#include "Teuchos_Tuple.hpp"
 #include "Teuchos_Utils.hpp"
 #include "Teuchos_DefaultComm.hpp"
 #ifdef HAVE_MPI
@@ -282,9 +282,9 @@ int main( int argc, char* argv[] )
           ,0 // clusterRootRank
           ,interClusterComm
           ,1 // numBlocks
-          ,Teuchos::arrayArg<RCP<const Thyra::VectorSpaceBase<Scalar> > >(
+          ,tuple<RCP<const Thyra::VectorSpaceBase<Scalar> > >(
             epetraThyraModel->get_x_space()
-            )()
+            ).getRawPtr()
           )
         );
       f_bar_space = Teuchos::rcp(
@@ -293,9 +293,9 @@ int main( int argc, char* argv[] )
           ,0 // clusterRootRank
           ,interClusterComm
           ,1 // numBlocks
-          ,Teuchos::arrayArg<RCP<const Thyra::VectorSpaceBase<Scalar> > >(
+          ,tuple<RCP<const Thyra::VectorSpaceBase<Scalar> > >(
             epetraThyraModel->get_f_space()
-            )()
+            ).getRawPtr()
           )
         );
       
