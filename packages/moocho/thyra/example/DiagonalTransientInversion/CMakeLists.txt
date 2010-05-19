@@ -36,7 +36,16 @@ PACKAGE_ADD_TEST( DiagonalTransientInversion
     --no-do-inv-prob
     --no-print-valid-options --verb-level=VERB_EXTREME
 
-  POSTFIX_AND_ARGS_2  inv_no7
+  NUM_MPI_PROCS 1
+
+  )
+
+
+PACKAGE_ADD_TEST( DiagonalTransientInversion
+
+  CATEGORIES NIGHTLY
+
+  POSTFIX_AND_ARGS_0  inv_no7
     --moocho-options-file=MoochoDiagTransInvMedium.opt
     --params-file=diagTransInvMedium.xml
     --num-observations=7
@@ -45,7 +54,7 @@ PACKAGE_ADD_TEST( DiagonalTransientInversion
     --do-inv-prob --max-p-inv-error=1e-10
     --no-print-valid-options --verb-level=VERB_EXTREME
 
-  POSTFIX_AND_ARGS_3  inv_no7_BDF
+  POSTFIX_AND_ARGS_1  inv_no7_BDF
     --moocho-options-file=MoochoDiagTransInvBdfVariable.opt
     --params-file=diagTransInvBdfVariable.xml
     --use-BDF

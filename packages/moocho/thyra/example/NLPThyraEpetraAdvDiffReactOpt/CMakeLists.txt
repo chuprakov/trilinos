@@ -354,6 +354,8 @@ PACKAGE_ADD_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
 
   NAME_POSTFIX np4
 
+  CATEGORIES NIGHTLY
+
   POSTFIX_AND_ARGS_0  nppc8
     --np=4 --num-periods-per-cluster=8 --p-perturb-scaling=2.0
     --period-param-scale=1.5 --beta=0.0
