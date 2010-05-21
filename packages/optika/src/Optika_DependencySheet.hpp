@@ -103,7 +103,6 @@ public:
 	 * */
 	const DepSet& getDependenciesForParameter(const Teuchos::ParameterEntry *dependee) const;
 
-
 	/**
 	 * Returns an iterator to the beginning of all the dependees in the sheet.
 	 *

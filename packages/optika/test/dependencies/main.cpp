@@ -25,16 +25,11 @@
 // 
 // ***********************************************************************
 // @HEADER
-#include "Teuchos_TestingHelpers.hpp"
+#include "Teuchos_LocalTestingHelpers.hpp"
+#include "Teuchos_VerboseObject.hpp"
 #include "Teuchos_ParameterList.hpp"
 #include "Optika_StandardDependencies.hpp"
 #include "Optika_DependencySheet.hpp"
-
-
-/*void print(Teuchos::RCP<const Teuchos::ParameterList> theList){
-  Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::VerboseObjectBase::getDefaultOStream();
-  Teuchos::writeParameterListToXmlOStream(*theList, *out);
-}*/
 
 int intFuncTester(int argument){
 	return argument+10;
@@ -53,161 +48,240 @@ double fondueTempTester(double argument){
 	return argument-100;
 }
 
-int main(){
-// Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::VerboseObjectBase::getDefaultOStream();
- Teuchos::RCP<Teuchos::ParameterList> My_deplist = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
- Teuchos::RCP<Optika::DependencySheet> depSheet1 = Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(My_deplist));
 
-  Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
-    stringFoodTypeValidator = Teuchos::rcp(
-      new Teuchos::StringToIntegralParameterEntryValidator<int>(
-        Teuchos::tuple<std::string>( "Cheese", "Soda", "Chips" )
-        ,"Food Type"
-        )
-      );
+int testValiDeps(Teuchos::FancyOStream &out){
+	bool success = true;
+	Teuchos::RCP<Teuchos::ParameterList> My_deplist = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
+	Teuchos::RCP<Optika::DependencySheet> depSheet1 = Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(My_deplist));
 
-  Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+ 	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+   	stringFoodTypeValidator = Teuchos::rcp(
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+		Teuchos::tuple<std::string>( "Cheese", "Soda", "Chips" )
+		,"Food Type"
+		)
+	);
+
+	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
     cheeseValidator = Teuchos::rcp(
-      new Teuchos::StringToIntegralParameterEntryValidator<int>(
-        Teuchos::tuple<std::string>( "Swiss", "American", "Super Awesome Cheese" )
-        ,"Food Selector"
-        )
-      );
-  Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
-    sodaValidator = Teuchos::rcp(
-      new Teuchos::StringToIntegralParameterEntryValidator<int>(
-        Teuchos::tuple<std::string>( "Pepsi", "Coke", "Kurtis Cola", "Bad Cola" )
-        ,"Food Selector"
-        )
-      );
-  Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
-    chipsValidator = Teuchos::rcp(
-      new Teuchos::StringToIntegralParameterEntryValidator<int>(
-        Teuchos::tuple<std::string>( "Lays", "Doritos", "Kurtis Super Awesome Brand" )
-        ,"Food Selector"
-        )
-      );
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+   			Teuchos::tuple<std::string>( "Swiss", "American", "Super Awesome Cheese" )
+			,"Food Selector"
+			)
+	);
 
-  Optika::StringValidatorDependency::ValueToValidatorMap testValidatorMap1;
-  testValidatorMap1["Cheese"] = cheeseValidator;
-  testValidatorMap1["Soda"] = sodaValidator;
-  testValidatorMap1["Chips"] = chipsValidator;
+	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+	sodaValidator = Teuchos::rcp(
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+			Teuchos::tuple<std::string>( "Pepsi", "Coke", "Kurtis Cola", "Bad Cola" )
+			,"Food Selector"
+			)
+		);
 
+	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+	chipsValidator = Teuchos::rcp(
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+			Teuchos::tuple<std::string>( "Lays", "Doritos", "Kurtis Super Awesome Brand" )
+			,"Food Selector"
+		)
+	);
 
-  Teuchos::ParameterList&
-    stringValiDepList = My_deplist->sublist("String Validator Dependency", false, "String Validator Dependency testing list.\nWorking June 27th 2009");
-  stringValiDepList.set("Food Selector", "Swiss", "select the food you want", cheeseValidator);
-  stringValiDepList.set("Food Type", "Cheese", "String Validator Dependency Tester", stringFoodTypeValidator);
-  depSheet1->addDependency(Teuchos::RCP<Optika::StringValidatorDependency>(
-  	new Optika::StringValidatorDependency("Food Type", 
-	Teuchos::sublist(My_deplist,"String Validator Dependency"),
-	"Food Selector", 
-	Teuchos::sublist(My_deplist,"String Validator Dependency"),
-	testValidatorMap1, 
-	cheeseValidator)));
-	
-	assert(depSheet1->hasDependents(stringValiDepList.getEntryPtr("Food Type")));
-	Optika::DependencySheet::DepSet stringValiDepSet = depSheet1->getDependenciesForParameter(My_deplist->sublist("String Validator Dependency").getEntryPtr("Food Type"));
-	assert(stringValiDepSet.size() == 1);
-	stringValiDepList.getEntry("Food Type").setValue("Soda");
-	//for(Optika::DependencySheet::DepSet::iterator it = deps.begin(); it != deps.end(); it++
-	
-	
-	
+	Optika::StringValidatorDependency::ValueToValidatorMap testValidatorMap1;
+	testValidatorMap1["Cheese"] = cheeseValidator;
+	testValidatorMap1["Soda"] = sodaValidator;
+	testValidatorMap1["Chips"] = chipsValidator;
 
+	Teuchos::ParameterList& stringValiDepList = My_deplist->sublist("String Validator Dependency", false, "String Validator Dependency testing list.\nWorking June 27th 2009");
+	stringValiDepList.set("Food Selector", "Swiss", "select the food you want", cheeseValidator);
+	stringValiDepList.set("Food Type", "Cheese", "String Validator Dependency Tester", stringFoodTypeValidator);
+
+	Teuchos::RCP<Optika::StringValidatorDependency> 
+	stringValiDep = Teuchos::RCP<Optika::StringValidatorDependency>(
+		new Optika::StringValidatorDependency("Food Type", 
+			Teuchos::sublist(My_deplist,"String Validator Dependency"),
+			"Food Selector", 
+			Teuchos::sublist(My_deplist,"String Validator Dependency"),
+			testValidatorMap1, 
+			cheeseValidator
+		)
+	);
+
+	depSheet1->addDependency(stringValiDep);
+	
+	TEST_NOTHROW(stringValiDepList.validateParameters(stringValiDepList));
+	TEST_ASSERT(depSheet1->hasDependents(stringValiDepList.getEntryPtr("Food Type")));
+	Optika::DependencySheet::DepSet stringValiDepSet = depSheet1->getDependenciesForParameter(stringValiDepList.getEntryPtr("Food Type"));
+	TEST_ASSERT(stringValiDepSet.size() == 1);
+	stringValiDepList.set("Food Type","Soda");
+	stringValiDep->evaluate();
+	TEST_ASSERT(stringValiDepList.getEntry("Food Selector").validator().shares_resource(sodaValidator));
+	TEST_THROW(stringValiDepList.validateParameters(stringValiDepList), Teuchos::Exceptions::InvalidParameterValue);
+	stringValiDepList.set("Food Selector", "Pepsi");
+	TEST_NOTHROW(stringValiDepList.validateParameters(stringValiDepList));
  
 
-  Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
-    stringRangeValidator = Teuchos::rcp(
-      new Teuchos::StringToIntegralParameterEntryValidator<int>(
-        Teuchos::tuple<std::string>( "1-10", "10-33", "50-60" )
-        ,"Range selector"
-        )
-      );
-  Teuchos::ParameterList&
-    stringValiDepList2 = My_deplist->sublist("String Validator Dependency (other validators)", false, "String Validator Dependency testing list for EnhancedNumber Validators.\nWorking June 27th 2009");
-  stringValiDepList2.set("Range selector", "1-10", "selects the range to validate", stringRangeValidator);
-  Teuchos::RCP<Optika::EnhancedNumberValidator<int> > range110Vali = 
-  	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(1,10));
-  Teuchos::RCP<Optika::EnhancedNumberValidator<int> > range1033Vali = 
-  	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(10,33));
-  Teuchos::RCP<Optika::EnhancedNumberValidator<int> > range5060Vali = 
-  	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(50,60));
-  Optika::StringValidatorDependency::ValueToValidatorMap rangeValidatorMap1;
-  rangeValidatorMap1["1-10"] = range110Vali;
-  rangeValidatorMap1["10-33"] = range1033Vali;
-  rangeValidatorMap1["50-60"] = range5060Vali;
-  stringValiDepList2.set("RangeValue", 3, "the value of the range", range110Vali);
-  depSheet1->addDependency(Teuchos::RCP<Optika::StringValidatorDependency>(
-  	new Optika::StringValidatorDependency(
-	"Range selector", 
-	Teuchos::sublist(My_deplist,"String Validator Dependency (other validators)"),
-	"RangeValue", 
-	Teuchos::sublist(My_deplist,"String Validator Dependency (other validators)"),
-	rangeValidatorMap1, 
-	range110Vali)));
+	Teuchos::ParameterList& 
+	stringValiDepList2 = My_deplist->sublist(
+		"String Validator Dependency (other validators)",
+		false,
+		"String Validator Dependency testing list for EnhancedNumber Validators.\nWorking June 27th 2009"
+	);
+
+	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+	stringRangeValidator = Teuchos::rcp(
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+		Teuchos::tuple<std::string>( "1-10", "10-33", "50-60" ),
+		"Range selector"
+		)
+	);
+
+	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > range110Vali = 
+	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(1,10));
+	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > range1033Vali = 
+	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(10,33));
+	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > range5060Vali = 
+	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(50,60));
+
+	stringValiDepList2.set("Range selector", "1-10", "selects the range to validate", stringRangeValidator);
+
+	Optika::StringValidatorDependency::ValueToValidatorMap rangeValidatorMap1;
+	rangeValidatorMap1["1-10"] = range110Vali;
+	rangeValidatorMap1["10-33"] = range1033Vali;
+	rangeValidatorMap1["50-60"] = range5060Vali;
+	stringValiDepList2.set("RangeValue", 3, "the value of the range", range110Vali);
+
+	Teuchos::RCP<Optika::StringValidatorDependency> 
+	stringValiDep2 = Teuchos::RCP<Optika::StringValidatorDependency>(
+		new Optika::StringValidatorDependency(
+			"Range selector", 
+			Teuchos::sublist(My_deplist,"String Validator Dependency (other validators)"),
+			"RangeValue", 
+			Teuchos::sublist(My_deplist,"String Validator Dependency (other validators)"),
+			rangeValidatorMap1, 
+			range110Vali
+		)
+	);
+
+	depSheet1->addDependency(stringValiDep2);
+
+	TEST_NOTHROW(stringValiDepList2.validateParameters(stringValiDepList2));
+	TEST_ASSERT(depSheet1->hasDependents(stringValiDepList2.getEntryPtr("Range selector")));
+	Optika::DependencySheet::DepSet stringValiDepSet2 = depSheet1->getDependenciesForParameter(stringValiDepList2.getEntryPtr("Range selector"));
+	TEST_ASSERT(stringValiDepSet2.size() == 1);
+	stringValiDepList2.set("Range selector","50-60");
+	stringValiDep2->evaluate();
+	TEST_ASSERT(stringValiDepList2.getEntry("RangeValue").validator().shares_resource(range5060Vali));
+	TEST_THROW(stringValiDepList2.validateParameters(stringValiDepList2), Teuchos::Exceptions::InvalidParameterValue);
+	stringValiDepList2.set("RangeValue", 55);
+	TEST_NOTHROW(stringValiDepList2.validateParameters(stringValiDepList2));
 
 
+	Teuchos::ParameterList&
+	boolValidatorDepList = My_deplist->sublist(
+		"Bool Validator Dependency List", 
+		false,
+		"Bool Validator Dependency testing list.\nWorking June 27th 2009"
+	);
 
-  Teuchos::ParameterList&
-    boolValidatorDepList = My_deplist->sublist("Bool Validator Dependency List", false, "Bool Validator Dependency testing list.\nWorking June 27th 2009");
-  boolValidatorDepList.set("Use Validator?", true, "truns the validator on and off");
-  Teuchos::RCP<Optika::EnhancedNumberValidator<int> > basicVali = 
-  	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(1,10));
-  boolValidatorDepList.set("do I have a validator?", 4, "does it have a validator?", basicVali);
-  depSheet1->addDependency(Teuchos::RCP<Optika::BoolValidatorDependency>(
-  	new Optika::BoolValidatorDependency(
-	"Use Validator?", 
-	Teuchos::sublist(My_deplist,"Bool Validator Dependency List"),
-	"do I have a validator?", 
-	Teuchos::sublist(My_deplist,"Bool Validator Dependency List"),
-	basicVali, 
-	Teuchos::RCP<Teuchos::ParameterEntryValidator>())));
+	boolValidatorDepList.set("Use Validator?", true, "truns the validator on and off");
+	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > basicVali = Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(1,10));
+	boolValidatorDepList.set("do I have a validator?", 4, "does it have a validator?", basicVali);
+
+	Teuchos::RCP<Optika::BoolValidatorDependency> 
+	boolValiDep = Teuchos::RCP<Optika::BoolValidatorDependency>(
+		new Optika::BoolValidatorDependency(
+			"Use Validator?", 
+			Teuchos::sublist(My_deplist,"Bool Validator Dependency List"),
+			"do I have a validator?", 
+			Teuchos::sublist(My_deplist,"Bool Validator Dependency List"),
+			basicVali, 
+			Teuchos::RCP<Teuchos::ParameterEntryValidator>()
+		)
+	);
+
+	depSheet1->addDependency(boolValiDep);
+
+	TEST_ASSERT(depSheet1->hasDependents(boolValidatorDepList.getEntryPtr("Use Validator?")));
+	TEST_ASSERT(boolValidatorDepList.getEntry("do I have a validator?").validator().shares_resource(basicVali));
+	TEST_NOTHROW(boolValidatorDepList.validateParameters(boolValidatorDepList));
+	Optika::DependencySheet::DepSet boolValiDepSet = depSheet1->getDependenciesForParameter(boolValidatorDepList.getEntryPtr("Use Validator?"));
+	TEST_ASSERT(boolValiDepSet.size() == 1);
+	boolValidatorDepList.set("Use Validator?",false);
+	boolValiDep->evaluate();
+	TEST_ASSERT(boolValidatorDepList.getEntry("do I have a validator?").validator().is_null());
 
 
-  Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
-    lowTempCheeseValidator = Teuchos::rcp(
-      new Teuchos::StringToIntegralParameterEntryValidator<int>(
-        Teuchos::tuple<std::string>( "PepperJack", "Swiss", "American" )
-        ,"Cheese to Fondue"
-        )
-      );
+	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+	lowTempCheeseValidator = Teuchos::rcp(
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+			Teuchos::tuple<std::string>( "PepperJack", "Swiss", "American" ),
+			"Cheese to Fondue"
+		)
+	);
 
-  Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
-    highTempCheeseValidator = Teuchos::rcp(
-      new Teuchos::StringToIntegralParameterEntryValidator<int>(
-        Teuchos::tuple<std::string>( "Munster", "Provalone", "Kurtis Super Awesome Cheese")
-        ,"Cheese to Fondue"
-        )
-      );
-  Teuchos::ParameterList&
-    rangeValidatorDepList = My_deplist->sublist("Range Validator and NumberVisual Dependency List", false, "Range Validator and Number Visual Dependency testing list.\nWorking June 27th 2009");
-  rangeValidatorDepList.set("Temperature",101.0, "The temperature of the fondue");
-  rangeValidatorDepList.set("Cheese to Fondue", "Swiss", "The cheese we'll be using in our fondue pot.", lowTempCheeseValidator);
-  Optika::RangeValidatorDependency<double>::RangeToValidatorMap tempranges;
-  tempranges[std::pair<double,double>(100,200)] = lowTempCheeseValidator;
-  tempranges[std::pair<double,double>(200,300)] = highTempCheeseValidator;
-  Teuchos::RCP<Optika::RangeValidatorDependency<double> > cheeseTempDep = Teuchos::RCP<Optika::RangeValidatorDependency<double> >(
-  	new Optika::RangeValidatorDependency<double>(
-	"Temperature", 
-	Teuchos::sublist(My_deplist,"Range Validator and NumberVisual Dependency List"),
-	"Cheese to Fondue", 
-	Teuchos::sublist(My_deplist,"Range Validator and NumberVisual Dependency List"),
-	tempranges, 
-	lowTempCheeseValidator) );
-  depSheet1->addDependency(cheeseTempDep);
+	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+	highTempCheeseValidator = Teuchos::rcp(
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+			Teuchos::tuple<std::string>( "Munster", "Provalone", "Kurtis Super Awesome Cheese"),
+			"Cheese to Fondue"
+		)
+	);
+
+	Teuchos::ParameterList& 
+	rangeValidatorDepList = My_deplist->sublist(
+		"Range Validator and NumberVisual Dependency List",
+		false,
+		"Range Validator and Number Visual Dependency testing list.\nWorking June 27th 2009"
+	);
+	rangeValidatorDepList.set("Temperature",101.0, "The temperature of the fondue");
+	rangeValidatorDepList.set("Cheese to Fondue", "Swiss", "The cheese we'll be using in our fondue pot.", lowTempCheeseValidator);
+	Optika::RangeValidatorDependency<double>::RangeToValidatorMap tempranges;
+	tempranges[std::pair<double,double>(100,200)] = lowTempCheeseValidator;
+	tempranges[std::pair<double,double>(200,300)] = highTempCheeseValidator;
+	Teuchos::RCP<Optika::RangeValidatorDependency<double> > 
+	cheeseTempDep = Teuchos::RCP<Optika::RangeValidatorDependency<double> >(
+		new Optika::RangeValidatorDependency<double>(
+			"Temperature", 
+			Teuchos::sublist(My_deplist,"Range Validator and NumberVisual Dependency List"),
+			"Cheese to Fondue", 
+			Teuchos::sublist(My_deplist,"Range Validator and NumberVisual Dependency List"),
+			tempranges, 
+			lowTempCheeseValidator
+		)
+	);
+	depSheet1->addDependency(cheeseTempDep);
+
+	TEST_ASSERT(depSheet1->hasDependents(rangeValidatorDepList.getEntryPtr("Temperature")));
+	Optika::DependencySheet::DepSet rangeValiDepSet = depSheet1->getDependenciesForParameter(rangeValidatorDepList.getEntryPtr("Temperature"));
+	TEST_ASSERT(rangeValiDepSet.size() == 1);
+	rangeValidatorDepList.set("Temperature",250.0);
+	cheeseTempDep->evaluate();
+	TEST_ASSERT(rangeValidatorDepList.getEntry("Cheese to Fondue").validator().shares_resource(highTempCheeseValidator));
+	TEST_THROW(rangeValidatorDepList.validateParameters(rangeValidatorDepList), Teuchos::Exceptions::InvalidParameterValue);
+	rangeValidatorDepList.set("Cheese to Fondue", "Provalone");
+	TEST_NOTHROW(rangeValidatorDepList.validateParameters(rangeValidatorDepList));
+
+	return (success ? 0:1);
+}
   
-  double (*fondueFunc)(double);
-  fondueFunc = fondueTempTester;
+int testVisualDeps(Teuchos::FancyOStream &out){
+	bool success = false;
+	Teuchos::RCP<Teuchos::ParameterList> My_deplist = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
+	Teuchos::RCP<Optika::DependencySheet> depSheet1 = Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(My_deplist));
+	double (*fondueFunc)(double);
+	fondueFunc = fondueTempTester;
 
-  Teuchos::RCP<Optika::NumberVisualDependency<double> > fondueDep = 
-      Teuchos::RCP<Optika::NumberVisualDependency<double> >(new Optika::NumberVisualDependency<double>(
-      "Temperature", 
-      Teuchos::sublist(My_deplist,"Range Validator and NumberVisual Dependency List"),
-      "Cheese to Fondue", 
-      Teuchos::sublist(My_deplist,"Range Validator and NumberVisual Dependency List"),
-      fondueFunc));
-  depSheet1->addDependency(fondueDep);
+	Teuchos::RCP<Optika::NumberVisualDependency<double> > fondueDep = 
+	Teuchos::RCP<Optika::NumberVisualDependency<double> >(
+		new Optika::NumberVisualDependency<double>(
+			"Temperature", 
+			Teuchos::sublist(My_deplist,"Range Validator and NumberVisual Dependency List"),
+			"Cheese to Fondue", 
+			Teuchos::sublist(My_deplist,"Range Validator and NumberVisual Dependency List"),
+			fondueFunc
+		)
+	);
+	depSheet1->addDependency(fondueDep);
 
 
 
@@ -338,20 +412,20 @@ Teuchos::ParameterList&
 
 
 
-/*
- void (*myFunc)(Teuchos::RCP<const Teuchos::ParameterList>);
-  myFunc = print;
-  Optika::getInput(My_deplist, depSheet1, myFunc);
-
-  std::cout << "Dep List: \n";
-  Teuchos::writeParameterListToXmlOStream(*My_deplist, *out);
-
-  std::cout << "Deps: \n";
-  depSheet1->printDeps();
-*/
 
 
-  return 0;
+  return (success ? 0:1);
 }
 
+int main(int argc, char* argv[]){
+	bool success = true;
+	Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::VerboseObjectBase::getDefaultOStream();
+	if(testValiDeps(*out) == 1){
+		success = false;
+	}
+/*	if(testVisualDeps(*out) ==1){
+		success = false;
+	}*/
+	return (success ? 0:1);
+}
 
