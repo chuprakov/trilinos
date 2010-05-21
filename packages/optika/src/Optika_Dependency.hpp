@@ -170,8 +170,8 @@ private:
 	Type type;
 
 	/**
-	 * Validates the dependency to make sure it's valid. If subclassing, this fucntion should
-	 * be called in the constructor constructor.
+	 * Validates the dependency to make sure it's valid/has been setupd properly. If subclassing, this fucntion should
+	 * be called in the new subclasses constructor.
 	 */
 	virtual void validateDep() = 0;
 
