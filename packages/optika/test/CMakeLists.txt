@@ -1,3 +1,3 @@
-ADD_SUBDIRECTORY(basic)
-ADD_SUBDIRECTORY(datatypes)
-ADD_SUBDIRECTORY(dependencyandexec)
+ADD_SUBDIRECTORY(dependencies)
+#ADD_SUBDIRECTORY(validators)
+ADD_SUBDIRECTORY(gui)
