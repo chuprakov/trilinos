@@ -45,7 +45,7 @@ int intVisualTester(int argument){
 }
 
 double fondueTempTester(double argument){
-	return argument-100;
+	return argument-100.0;
 }
 
 
@@ -229,9 +229,9 @@ int testValiDeps(Teuchos::FancyOStream &out){
 
 	Teuchos::ParameterList& 
 	rangeValidatorDepList = My_deplist->sublist(
-		"Range Validator and NumberVisual Dependency List",
+		"Range Validator Dependency List",
 		false,
-		"Range Validator and Number Visual Dependency testing list.\nWorking June 27th 2009"
+		"Range Validator Dependency testing list.\nWorking June 27th 2009"
 	);
 	rangeValidatorDepList.set("Temperature",101.0, "The temperature of the fondue");
 	rangeValidatorDepList.set("Cheese to Fondue", "Swiss", "The cheese we'll be using in our fondue pot.", lowTempCheeseValidator);
@@ -242,9 +242,9 @@ int testValiDeps(Teuchos::FancyOStream &out){
 	cheeseTempDep = Teuchos::RCP<Optika::RangeValidatorDependency<double> >(
 		new Optika::RangeValidatorDependency<double>(
 			"Temperature", 
-			Teuchos::sublist(My_deplist,"Range Validator and NumberVisual Dependency List"),
+			Teuchos::sublist(My_deplist,"Range Validator Dependency List"),
 			"Cheese to Fondue", 
-			Teuchos::sublist(My_deplist,"Range Validator and NumberVisual Dependency List"),
+			Teuchos::sublist(My_deplist,"Range Validator Dependency List"),
 			tempranges, 
 			lowTempCheeseValidator
 		)
@@ -265,9 +265,18 @@ int testValiDeps(Teuchos::FancyOStream &out){
 }
   
 int testVisualDeps(Teuchos::FancyOStream &out){
-	bool success = false;
+	bool success = true;
 	Teuchos::RCP<Teuchos::ParameterList> My_deplist = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
 	Teuchos::RCP<Optika::DependencySheet> depSheet1 = Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(My_deplist));
+	Teuchos::ParameterList&
+	doubleVisualDepList = My_deplist->sublist(
+		"NumberVisual Dependency List (double)", 
+		false, 
+		"Number visual Dependency testing list.\nWorking June 27th 2009"
+	);
+		
+	doubleVisualDepList.set("Temperature",101.0, "The temperature of the fondue");
+	doubleVisualDepList.set("Cheese to Fondue", "Swiss", "The cheese to fondue");
 	double (*fondueFunc)(double);
 	fondueFunc = fondueTempTester;
 
@@ -275,146 +284,206 @@ int testVisualDeps(Teuchos::FancyOStream &out){
 	Teuchos::RCP<Optika::NumberVisualDependency<double> >(
 		new Optika::NumberVisualDependency<double>(
 			"Temperature", 
-			Teuchos::sublist(My_deplist,"Range Validator and NumberVisual Dependency List"),
+			Teuchos::sublist(My_deplist,"NumberVisual Dependency List (double)"),
 			"Cheese to Fondue", 
-			Teuchos::sublist(My_deplist,"Range Validator and NumberVisual Dependency List"),
+			Teuchos::sublist(My_deplist,"NumberVisual Dependency List (double)"),
 			fondueFunc
 		)
 	);
 	depSheet1->addDependency(fondueDep);
+	TEST_ASSERT(fondueDep->isDependentVisible());
+	doubleVisualDepList.set("Temperature",99.0);
+	fondueDep->evaluate();
+	TEST_ASSERT(!fondueDep->isDependentVisible());
+
+	Teuchos::ParameterList&
+	boolVisDepList = My_deplist->sublist(
+		"Bool Visual Dependency List", 
+		false,
+		"Bool Visual Dependency testing list.\nWorking June 29 2009"
+	);
+	boolVisDepList.set("ShowPrecs", true, "Whether or not to should the Preciondtioner list");
+	Teuchos::ParameterList&
+	Prec_List0 = boolVisDepList.sublist("Preconditioner",false,"Sublist that defines the preconditioner.");
+	Prec_List0.set("Type", "ILU", "The tpye of preconditioner to use");
+	Teuchos::RCP<Optika::EnhancedNumberValidator<double> > droptolValidator = Teuchos::rcp(new Optika::EnhancedNumberValidator<double>(0,10,1e-3));
+	Prec_List0.set("Drop Tolerance", 1e-3,"The tolerance below which entries from the\n""factorization are left out of the factors.", droptolValidator);
+	Teuchos::RCP<Optika::BoolVisualDependency> 
+	precDep1 = Teuchos::RCP<Optika::BoolVisualDependency>(
+		new Optika::BoolVisualDependency(
+			"ShowPrecs", 
+			Teuchos::sublist(My_deplist,"Bool Visual Dependency List"),
+			"Preconditioner", 
+			Teuchos::sublist(My_deplist,"Bool Visual Dependency List"),
+			true
+		)
+	);
+	depSheet1->addDependency(precDep1);
+	TEST_ASSERT(precDep1->isDependentVisible());
+	boolVisDepList.set("ShowPrecs", false);
+	precDep1->evaluate();
+	TEST_ASSERT(!precDep1->isDependentVisible());
 
 
 
-
-  Teuchos::ParameterList&
-    numberArrayLengthDepList = My_deplist->sublist("Number Array Length Dependency List", false, "Number Array Length ependecy testing list.\nWorking June 27th 2009");
-  numberArrayLengthDepList.set("Array Length", 8, "array length setter");
-  Teuchos::Array<double> variableLengthArray(10,23.0);
-  Teuchos::RCP<Optika::EnhancedNumberValidator<double> > varLengthArrayVali = Teuchos::RCP<Optika::EnhancedNumberValidator<double> >(
-  	new Optika::EnhancedNumberValidator<double>(10,50,4) );
-  numberArrayLengthDepList.set("Variable Length Array", variableLengthArray, "variable length array",
-  Teuchos::RCP<Optika::ArrayNumberValidator<double> >(new Optika::ArrayNumberValidator<double>(varLengthArrayVali)));
-
-  Teuchos::RCP<Optika::NumberArrayLengthDependency> arrayLengthDep = Teuchos::RCP<Optika::NumberArrayLengthDependency>(
-  	new Optika::NumberArrayLengthDependency(
-	"Array Length", 
-	Teuchos::sublist(My_deplist,"Number Array Length Dependency List"),
-	"Variable Length Array", 
-	Teuchos::sublist(My_deplist,"Number Array Length Dependency List")));
-  depSheet1->addDependency(arrayLengthDep);
-
-
-
-  Teuchos::ParameterList&
-    numberValiAspDepList = My_deplist->sublist("Number Validator Aspect Dependency List", false, "Number Validator Aspect Dependency testing list.\nWorking June 27th 2009");
-  Teuchos::RCP<Optika::EnhancedNumberValidator<int> > intVali2 = 
-  	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(0,20));
-  numberValiAspDepList.set("Int", 8, "Int tester", intVali2);
-  numberValiAspDepList.set("Int2", 8, "int2 tester", intVali2);
-  numberValiAspDepList.set("Int dependee", 1, "Int dependee");
-
-  int (*func)(int);
-  func = intFuncTester;
-
-  Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> > intDep1 =
-     Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> >(
-       new Optika::NumberValidatorAspectDependency<int>(
-	 "Int dependee",
-	Teuchos::sublist(My_deplist,"Number Validator Aspect Dependency List"),
-         "Int",
-	Teuchos::sublist(My_deplist,"Number Validator Aspect Dependency List"),
-	 intVali2,
-	 Optika::NumberValidatorAspectDependency<int>::Max,
-	 func
-	 ));
-  Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> > intDep2 =
-     Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> >(
-       new Optika::NumberValidatorAspectDependency<int>(
-	 "Int dependee",
-	Teuchos::sublist(My_deplist,"Number Validator Aspect Dependency List"),
-         "Int2",
-	Teuchos::sublist(My_deplist,"Number Validator Aspect Dependency List"),
-	 intVali2,
-	 Optika::NumberValidatorAspectDependency<int>::Max,
-	 func
-	 ));
-
-  depSheet1->addDependency(intDep1);
-  depSheet1->addDependency(intDep2);
-
-  
-
-
-
-  Teuchos::ParameterList&
-    boolVisDepList = My_deplist->sublist("Bool Visual Dependency List", false, "Bool Visual Dependency testing list.\nWorking June 29 2009");
-  boolVisDepList.set("ShowPrecs", true, "Whether or not to should the Preciondtioner list");
-  Teuchos::ParameterList&
-    Prec_List0 = boolVisDepList.sublist("Preconditioner",false,"Sublist that defines the preconditioner.");
-  Prec_List0.set("Type", "ILU", "The tpye of preconditioner to use");
-  Teuchos::RCP<Optika::EnhancedNumberValidator<double> > droptolValidator = Teuchos::rcp(new Optika::EnhancedNumberValidator<double>(0,10,1e-3));
-  Prec_List0.set("Drop Tolerance", 1e-3
-                ,"The tolerance below which entries from the\n""factorization are left out of the factors.", droptolValidator);
-  Teuchos::RCP<Optika::BoolVisualDependency> precDep1 = Teuchos::RCP<Optika::BoolVisualDependency>(new Optika::BoolVisualDependency(
-  "ShowPrecs", 
-	Teuchos::sublist(My_deplist,"Bool Visual Dependency List"),
-  "Preconditioner", 
-	Teuchos::sublist(My_deplist,"Bool Visual Dependency List"),
-  true));
-  depSheet1->addDependency(precDep1);
-
-
-
-
-Teuchos::ParameterList&
-    stringVisDepList = My_deplist->sublist("String Visual Dependency List", false, "String Visual Dependency testing list.\nWorking June 29 2009");
-  Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
-    favCheeseValidator = Teuchos::rcp(
-      new Teuchos::StringToIntegralParameterEntryValidator<int>(
-        Teuchos::tuple<std::string>( "Swiss", "American", "Cheder" )
-        ,"Favorite Cheese"
-        )
-      );
+	Teuchos::ParameterList&
+    stringVisDepList = My_deplist->sublist(
+		"String Visual Dependency List",
+		false,
+		"String Visual Dependency testing list.\nWorking June 29 2009"
+	);
+	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+	favCheeseValidator = Teuchos::rcp(
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+			Teuchos::tuple<std::string>( "Swiss", "American", "Cheder" ),
+			"Favorite Cheese"
+		)
+	);
    
-   stringVisDepList.set(
-   	"Favorite Cheese", "American", "Your favorite type of cheese", favCheeseValidator);
-   Teuchos::RCP<Optika::EnhancedNumberValidator<int> > swissValidator = Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(0,10));
-   stringVisDepList.set("Swiss rating", 0, "How you rate swiss on a scale of 1 to 10", swissValidator);
-   Teuchos::RCP<Optika::StringVisualDependency> swissDep1 = 
-      Teuchos::RCP<Optika::StringVisualDependency>(new Optika::StringVisualDependency(
-      "Favorite Cheese", 
-	Teuchos::sublist(My_deplist,"String Visual Dependency List"),
-      "Swiss rating", 
-	Teuchos::sublist(My_deplist,"String Visual Dependency List"),
-      "Swiss", 
-      true));
-   depSheet1->addDependency(swissDep1);
+	stringVisDepList.set("Favorite Cheese", "American", "Your favorite type of cheese", favCheeseValidator);
+	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > 
+	swissValidator = Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(0,10));
+	stringVisDepList.set("Swiss rating", 0, "How you rate swiss on a scale of 1 to 10", swissValidator);
+	Teuchos::RCP<Optika::StringVisualDependency> 
+	swissDep1 = Teuchos::RCP<Optika::StringVisualDependency>(
+		new Optika::StringVisualDependency(
+			"Favorite Cheese", 
+			Teuchos::sublist(My_deplist,"String Visual Dependency List"),
+			"Swiss rating", 
+			Teuchos::sublist(My_deplist,"String Visual Dependency List"),
+			"Swiss", 
+			true
+		)
+	);
+	depSheet1->addDependency(swissDep1);
+	swissDep1->evaluate();
+	TEST_ASSERT(!swissDep1->isDependentVisible());
+	stringVisDepList.set("Favorite Cheese", "Swiss");
+	swissDep1->evaluate();
+	TEST_ASSERT(swissDep1->isDependentVisible());
+
+	int (*visfunc)(int);
+	visfunc = intVisualTester;
+	Teuchos::ParameterList&
+    numberVisDepList = My_deplist->sublist(
+		"Number Visual Dependency List", 
+		false, 
+		"Number Visual Dependency testing list.\nWorking June 27th 2009"
+	);
+	numberVisDepList.set("Ice", 50, "Ice stuff");
+	numberVisDepList.set("Room Temp", 10, "Room temperature");
+	Teuchos::RCP<Optika::NumberVisualDependency<int> > 
+	iceDep = Teuchos::RCP<Optika::NumberVisualDependency<int> >(
+		new Optika::NumberVisualDependency<int>(
+			"Room Temp", 
+			Teuchos::sublist(My_deplist,"Number Visual Dependency List"),
+			"Ice", 
+			Teuchos::sublist(My_deplist,"Number Visual Dependency List"),
+			visfunc
+		)
+	);
+	depSheet1->addDependency(iceDep);
+	TEST_ASSERT(iceDep->isDependentVisible());
+	numberVisDepList.set("Room Temp", 33);
+	iceDep->evaluate();
+	TEST_ASSERT(!iceDep->isDependentVisible());
+
+	return (success ? 0:1);
+}
 
 
+int testArrayLengthDep(Teuchos::FancyOStream &out){
+	bool success = true;
+	Teuchos::RCP<Teuchos::ParameterList> My_deplist = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
+	Teuchos::RCP<Optika::DependencySheet> depSheet1 = Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(My_deplist));
+
+	Teuchos::ParameterList&
+	numberArrayLengthDepList = My_deplist->sublist("Number Array Length Dependency List", false, "Number Array Length ependecy testing list.\nWorking June 27th 2009");
+	numberArrayLengthDepList.set("Array Length", 10, "array length setter");
+	Teuchos::Array<double> variableLengthArray(10,23.0);
+	Teuchos::RCP<Optika::EnhancedNumberValidator<double> > 
+	varLengthArrayVali = Teuchos::RCP<Optika::EnhancedNumberValidator<double> >(
+  		new Optika::EnhancedNumberValidator<double>(10,50,4) 
+	);
+	numberArrayLengthDepList.set("Variable Length Array", variableLengthArray, "variable length array",
+	Teuchos::RCP<Optika::ArrayNumberValidator<double> >(new Optika::ArrayNumberValidator<double>(varLengthArrayVali)));
+
+	Teuchos::RCP<Optika::NumberArrayLengthDependency> 
+	arrayLengthDep = Teuchos::RCP<Optika::NumberArrayLengthDependency>(
+  		new Optika::NumberArrayLengthDependency(
+			"Array Length", 
+			Teuchos::sublist(My_deplist,"Number Array Length Dependency List"),
+			"Variable Length Array", 
+			Teuchos::sublist(My_deplist,"Number Array Length Dependency List")
+		)
+	);
+	depSheet1->addDependency(arrayLengthDep);
+	Teuchos::Array<double> dummyType;
+	TEST_ASSERT(numberArrayLengthDepList.get("Variable Length Array", dummyType).length() ==10);
+	numberArrayLengthDepList.set("Array Length", 12);
+	arrayLengthDep()->evaluate();
+	TEST_ASSERT(numberArrayLengthDepList.get("Variable Length Array", dummyType).length() ==12);
+
+	return (success ? 0:1);
+}
+
+int testNumberValiAspDep(Teuchos::FancyOStream &out){
+	bool success = true;
+	Teuchos::RCP<Teuchos::ParameterList> My_deplist = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
+	Teuchos::RCP<Optika::DependencySheet> depSheet1 = Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(My_deplist));
+
+	Teuchos::ParameterList&
+	numberValiAspDepList = My_deplist->sublist(
+		"Number Validator Aspect Dependency List",
+		false,
+		"Number Validator Aspect Dependency testing list.\nWorking June 27th 2009"
+	);
+	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > intVali2 = 
+	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(0,20));
+	numberValiAspDepList.set("Int", 8, "Int tester", intVali2);
+	numberValiAspDepList.set("Int2", 8, "int2 tester", intVali2);
+	numberValiAspDepList.set("Int dependee", 1, "Int dependee");
+
+	int (*func)(int);
+	func = intFuncTester;
+
+	Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> > 
+	intDep1 = Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> >(
+		new Optika::NumberValidatorAspectDependency<int>(
+			"Int dependee",
+			Teuchos::sublist(My_deplist,"Number Validator Aspect Dependency List"),
+			"Int",
+			Teuchos::sublist(My_deplist,"Number Validator Aspect Dependency List"),
+			intVali2,
+			Optika::NumberValidatorAspectDependency<int>::Max,
+			func
+		)
+	);
+	
+	Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> > 
+	intDep2 = Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> >(
+		new Optika::NumberValidatorAspectDependency<int>(
+			"Int dependee",
+			Teuchos::sublist(My_deplist,"Number Validator Aspect Dependency List"),
+			"Int2",
+			Teuchos::sublist(My_deplist,"Number Validator Aspect Dependency List"),
+			intVali2,
+			Optika::NumberValidatorAspectDependency<int>::Max,
+			func
+		)
+	);
+
+	depSheet1->addDependency(intDep1);
+	depSheet1->addDependency(intDep2);
+
+	TEST_ASSERT(Teuchos::rcp_static_cast<const Optika::EnhancedNumberValidator<int> >(numberValiAspDepList.getEntry("Int").validator())->max() == 20);
+	TEST_ASSERT(Teuchos::rcp_static_cast<const Optika::EnhancedNumberValidator<int> >(numberValiAspDepList.getEntry("Int2").validator())->max() == 20);
+	intDep1->evaluate();
+	TEST_ASSERT(Teuchos::rcp_static_cast<const Optika::EnhancedNumberValidator<int> >(numberValiAspDepList.getEntry("Int").validator())->max() == 11);
+	TEST_ASSERT(Teuchos::rcp_static_cast<const Optika::EnhancedNumberValidator<int> >(numberValiAspDepList.getEntry("Int2").validator())->max() == 11);
 
 
-
-  int (*visfunc)(int);
-  visfunc = intVisualTester;
-Teuchos::ParameterList&
-    numberVisDepList = My_deplist->sublist("Number Visual Dependency List", false, "Number Visual Dependency testing list.\nWorking June 27th 2009");
-  numberVisDepList.set("Ice", 50, "Ice stuff");
-  numberVisDepList.set("Room Temp", 10, "Room temperature");
-  Teuchos::RCP<Optika::NumberVisualDependency<int> > iceDep = 
-      Teuchos::RCP<Optika::NumberVisualDependency<int> >(new Optika::NumberVisualDependency<int>(
-      "Room Temp", 
-	Teuchos::sublist(My_deplist,"Number Visual Dependency List"),
-      "Ice", 
-	Teuchos::sublist(My_deplist,"Number Visual Dependency List"),
-      visfunc));
-  depSheet1->addDependency(iceDep);
-
-
-
-
-
-
-  return (success ? 0:1);
+	return (success ? 0:1);
 }
 
 int main(int argc, char* argv[]){
@@ -423,9 +492,15 @@ int main(int argc, char* argv[]){
 	if(testValiDeps(*out) == 1){
 		success = false;
 	}
-/*	if(testVisualDeps(*out) ==1){
+	if(testVisualDeps(*out) == 1){
 		success = false;
-	}*/
+	}
+	if(testArrayLengthDep(*out) == 1){
+		success = false;
+	}
+	if(testNumberValiAspDep(*out) == 1){
+		success = false;
+	}
 	return (success ? 0:1);
 }
 

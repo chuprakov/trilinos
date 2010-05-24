@@ -285,10 +285,10 @@ private:
 	}	
 
 	void validateDep(){
-		if(dependee->isType<int>()
-		&& dependee->isType<short>()
-		&& dependee->isType<double>()
-		&& dependee->isType<float>())
+		if(!dependee->isType<int>()
+		&& !dependee->isType<short>()
+		&& !dependee->isType<double>()
+		&& !dependee->isType<float>())
 			throw InvalidDependencyException("The dependee of a"
 			"Number Visual Dependency must be of a supported number type!\n"
 			"Problem dependee: " + dependeeName + "\n"
@@ -468,10 +468,10 @@ private:
 	}	
 
 	void validateDep(){
-		if(dependee->isType<int>()
-		&& dependee->isType<short>()
-		&& dependee->isType<double>()
-		&& dependee->isType<float>())
+		if(!dependee->isType<int>()
+		&& !dependee->isType<short>()
+		&& !dependee->isType<double>()
+		&& !dependee->isType<float>())
 			throw InvalidDependencyException("The dependee of a"
 			"Number Validator Aspect Dependency must be of a supported number type!\n"
 			"Problem dependee: " + dependeeName + "\n"
