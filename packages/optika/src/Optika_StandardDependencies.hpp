@@ -472,20 +472,20 @@ private:
 		&& !dependee->isType<short>()
 		&& !dependee->isType<double>()
 		&& !dependee->isType<float>())
-			throw InvalidDependencyException("The dependee of a"
+			throw InvalidDependencyException("The dependee of a "
 			"Number Validator Aspect Dependency must be of a supported number type!\n"
 			"Problem dependee: " + dependeeName + "\n"
 			"Actual type: " + dependee->getAny().typeName() + "\n"
 			"Dependent: " + dependentName);
 		if(dependent->validator() == Teuchos::null)
-			throw InvalidDependencyException("The dependent of an"
+			throw InvalidDependencyException("The dependent of an "
 			"Number Validator Aspect Dependency must have an EnhancedNumberValidator "
 			"or an ArrayNumberValidator\n"
 			"Problem dependent: " + dependentName + "\n" 
 			"Dependee: " + dependeeName);
 		if(validator != dependent->validator())
 			throw InvalidDependencyException("The dependent's validator and the validator specified "
-			"in the constructor must be the same for a Number Validator Aspect Dependency!"
+			"in the constructor must be the same for a Number Validator Aspect Dependency!\n"
 			"Problem dependent: " + dependentName + "\n" 
 			"Dependee: " + dependeeName);
 		if(typeid(S) != dependee->getAny().type() || typeid(S) != dependent->getAny().type())
@@ -786,27 +786,26 @@ private:
 	RangeToValidatorMap rangesAndValidators;
 	
 	void validateDep(){
-		if(dependee->isType<int>()
-		&& dependee->isType<short>()
-		&& dependee->isType<double>()
-		&& dependee->isType<float>())
-			throw InvalidDependencyException("The dependee of a"
+		if(!dependee->isType<int>()
+		&& !dependee->isType<short>()
+		&& !dependee->isType<double>()
+		&& !dependee->isType<float>())
+			throw InvalidDependencyException("The dependee of a "
 			"Range Validator Dependency must be of a supported number type!\n"
 			"Problem dependee: " + dependeeName + "\n"
 			"Actual type: " + dependee->getAny().typeName() + "\n"
 			"Dependent: " + dependentName);
 		typename RangeToValidatorMap::const_iterator it;
 		for(it = rangesAndValidators.begin(); it != rangesAndValidators.end(); it++){
-			if(typeid(dependent->validator()) != typeid(it->second))
-			throw InvalidDependencyException("The validator of a dependent of a"
-			"Range Validator Dependency must be the same type as all of the validators\n"
+			if(typeid(*(dependent->validator().get())) != typeid(*(it->second.get())))
+			throw InvalidDependencyException("The validator of a dependent of a "
+			"Range Validator Dependency must be the same type as all of the validators "
 			"in the rangesAndValidators map.\n"
-			"Note this means that the dependent must have an initial validator\n"
+			"Note this means that the dependent must have an initial validator.\n"
 			"Problem dependent: " + dependentName + "\n"
-			"Validator Type: " + typeid(dependent->validator()).name() + "\n"
-			"One of the validators in the rangesAndValidators map is of type: " + typeid(it->second).name());
+			"Validator Type: " + typeid(*(dependent->validator())).name() + "\n"
+			"One of the validators in the rangesAndValidators map is of type: " + typeid(*(it->second)).name());
 		}
-				
 	}
 };
 

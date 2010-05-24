@@ -180,11 +180,11 @@ private:
 	 * ParameterList.
 	 *
 	 * @param parentList The ParameterList to search.
-	 * @param listname The name of the ParameterList for which is being searched.
+	 * @param listToFind The ParameterList to for which we are searching.
 	 * @return True if the parentList or and of it's children ParameterLists contains the list
 	 * specified by the listname parameter.
 	 */
-	bool doesListContainList(Teuchos::RCP<Teuchos::ParameterList> parentList, std::string listname);
+	bool doesListContainList(Teuchos::RCP<Teuchos::ParameterList> parentList, Teuchos::RCP<Teuchos::ParameterList> listToFind);
 };
 
 

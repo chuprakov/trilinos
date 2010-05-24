@@ -72,11 +72,11 @@ const Teuchos::ParameterEntry* Dependency::getDependent() const{
 }
 
 bool Dependency::isDependeeParentInList(Teuchos::RCP<Teuchos::ParameterList> potentialParentList){
-	return doesListContainList(potentialParentList, dependeeParentList->name());
+	return doesListContainList(potentialParentList, dependeeParentList);
 }
 
 bool Dependency::isDependentParentInList(Teuchos::RCP<Teuchos::ParameterList> potentialParentList){
-	return doesListContainList(potentialParentList, dependentParentList->name());
+	return doesListContainList(potentialParentList, dependentParentList);
 }
 
 const std::string& Dependency::getDependeeName() const{
@@ -91,17 +91,15 @@ Dependency::Type Dependency::getType() const{
 	return type;
 }
 
-bool Dependency::doesListContainList(Teuchos::RCP<Teuchos::ParameterList> parentList, std::string listName){
-	if(parentList->name() == listName){
-		return true;
-	}
-	else if(parentList->isSublist(listName)){
+bool Dependency::doesListContainList(Teuchos::RCP<Teuchos::ParameterList> parentList, Teuchos::RCP<Teuchos::ParameterList> listToFind){
+	if(parentList.get() == listToFind.get()){
 		return true;
 	}
 	else{
 		for(Teuchos::ParameterList::ConstIterator it = parentList->begin(); it!=parentList->end(); it++){
 			if(it->second.isList()){
-				if(doesListContainList(sublist(parentList, it->first, true), listName)){
+				std::cout << "\nchecking sublist " << it->first << "\n";
+				if(doesListContainList(sublist(parentList, it->first,true), listToFind)){
 					return true;
 				}
 			}
@@ -109,7 +107,6 @@ bool Dependency::doesListContainList(Teuchos::RCP<Teuchos::ParameterList> parent
 	}
 	return false;
 }
-
 
 
 }

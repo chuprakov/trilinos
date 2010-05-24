@@ -1,5 +1,4 @@
-// @HEADER
-// ***********************************************************************
+// @HEADER // ***********************************************************************
 // 
 //         Optika: A Tool For Developing Parameter Obtaining GUIs
 //                Copyright (2009) Sandia Corporation
@@ -97,7 +96,8 @@ int testValiDeps(Teuchos::FancyOStream &out){
 
 	Teuchos::RCP<Optika::StringValidatorDependency> 
 	stringValiDep = Teuchos::RCP<Optika::StringValidatorDependency>(
-		new Optika::StringValidatorDependency("Food Type", 
+		new Optika::StringValidatorDependency(
+			"Food Type", 
 			Teuchos::sublist(My_deplist,"String Validator Dependency"),
 			"Food Selector", 
 			Teuchos::sublist(My_deplist,"String Validator Dependency"),
@@ -175,7 +175,6 @@ int testValiDeps(Teuchos::FancyOStream &out){
 	stringValiDepList2.set("RangeValue", 55);
 	TEST_NOTHROW(stringValiDepList2.validateParameters(stringValiDepList2));
 
-
 	Teuchos::ParameterList&
 	boolValidatorDepList = My_deplist->sublist(
 		"Bool Validator Dependency List", 
@@ -185,6 +184,7 @@ int testValiDeps(Teuchos::FancyOStream &out){
 
 	boolValidatorDepList.set("Use Validator?", true, "truns the validator on and off");
 	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > basicVali = Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(1,10));
+	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > basicVali2 = Teuchos::rcp(new Optika::EnhancedNumberValidator<int>());
 	boolValidatorDepList.set("do I have a validator?", 4, "does it have a validator?", basicVali);
 
 	Teuchos::RCP<Optika::BoolValidatorDependency> 
@@ -195,7 +195,7 @@ int testValiDeps(Teuchos::FancyOStream &out){
 			"do I have a validator?", 
 			Teuchos::sublist(My_deplist,"Bool Validator Dependency List"),
 			basicVali, 
-			Teuchos::RCP<Teuchos::ParameterEntryValidator>()
+			basicVali2
 		)
 	);
 
@@ -208,7 +208,7 @@ int testValiDeps(Teuchos::FancyOStream &out){
 	TEST_ASSERT(boolValiDepSet.size() == 1);
 	boolValidatorDepList.set("Use Validator?",false);
 	boolValiDep->evaluate();
-	TEST_ASSERT(boolValidatorDepList.getEntry("do I have a validator?").validator().is_null());
+	TEST_ASSERT(boolValidatorDepList.getEntry("do I have a validator?").validator().shares_resource(basicVali2));
 
 
 	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
@@ -486,6 +486,215 @@ int testNumberValiAspDep(Teuchos::FancyOStream &out){
 	return (success ? 0:1);
 }
 
+int testDepExceptions(Teuchos::FancyOStream &out){
+	bool success = true;
+	Teuchos::RCP<Teuchos::ParameterList> list1 = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList());
+	Teuchos::RCP<Teuchos::ParameterList> list2 = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList());
+
+	list1->set("int parameter", 4, "int parameter");
+	list1->set("double parameter", 6.0, "double parameter");
+	list1->set("string parameter", "hahahaha", "string parameter");
+	Teuchos::Array<double> doubleArray(10,23.0);
+	list1->set("array parameter", doubleArray, "array parameter");
+	list1->set("bool parameter", true, "bool parameter");
+
+	Teuchos::RCP<Optika::StringVisualDependency> stringVisDep;
+	TEST_THROW(stringVisDep = Teuchos::RCP<Optika::StringVisualDependency>(new Optika::StringVisualDependency("not in list", list1, "int parameter", list1, "cheese", true)), Optika::InvalidDependencyException);
+	TEST_THROW(stringVisDep = Teuchos::RCP<Optika::StringVisualDependency>(new Optika::StringVisualDependency("string parameter", list1, "not in list", list1, "cheese", true)), Optika::InvalidDependencyException);
+	TEST_THROW(stringVisDep = Teuchos::RCP<Optika::StringVisualDependency>(new Optika::StringVisualDependency("double parameter", list1, "int parameter", list1, "cheese", true)), Optika::InvalidDependencyException);
+
+	TEST_THROW(Teuchos::RCP<Optika::BoolVisualDependency> boolVisDep = Teuchos::RCP<Optika::BoolVisualDependency>(new Optika::BoolVisualDependency("int parameter", list1, "double parameter", list1, false)), Optika::InvalidDependencyException);
+
+	TEST_THROW(Teuchos::RCP<Optika::NumberArrayLengthDependency> numArrayLengthDep = Teuchos::RCP<Optika::NumberArrayLengthDependency>(new Optika::NumberArrayLengthDependency("double parameter", list1, "array parameter", list1)), Optika::InvalidDependencyException);
+	TEST_THROW(Teuchos::RCP<Optika::NumberArrayLengthDependency> numArrayLengthDep = Teuchos::RCP<Optika::NumberArrayLengthDependency>(new Optika::NumberArrayLengthDependency("int parameter", list1, "double parameter", list1)), Optika::InvalidDependencyException);
+
+	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+    cheeseValidator = Teuchos::rcp(
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+   			Teuchos::tuple<std::string>( "Swiss", "American", "Super Awesome Cheese" )
+			,"Food Selector"
+			)
+	);
+
+	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+	sodaValidator = Teuchos::rcp(
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+			Teuchos::tuple<std::string>( "Pepsi", "Coke", "Kurtis Cola", "Bad Cola" )
+			,"Food Selector"
+			)
+		);
+
+	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+	chipsValidator = Teuchos::rcp(
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+			Teuchos::tuple<std::string>( "Lays", "Doritos", "Kurtis Super Awesome Brand" )
+			,"Food Selector"
+		)
+	);
+
+
+	list1->set("string 2 parameter", "Swiss", "second string parameter", cheeseValidator);
+	Optika::StringValidatorDependency::ValueToValidatorMap testValidatorMap1;
+	testValidatorMap1["Cheese"] = cheeseValidator;
+	testValidatorMap1["Soda"] = sodaValidator;
+	testValidatorMap1["Chips"] = chipsValidator;
+	TEST_THROW(Teuchos::RCP<Optika::StringValidatorDependency> stringValiDep = Teuchos::RCP<Optika::StringValidatorDependency>(new Optika::StringValidatorDependency("int parameter", list1, "string 2 parameter", list1, testValidatorMap1, cheeseValidator)), Optika::InvalidDependencyException);
+	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > intVali = Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(0,20));
+	testValidatorMap1["Candy"] = intVali;
+	TEST_THROW(Teuchos::RCP<Optika::StringValidatorDependency> stringValiDep = Teuchos::RCP<Optika::StringValidatorDependency>(new Optika::StringValidatorDependency("string parameter", list1, "string 2 parameter", list1, testValidatorMap1, cheeseValidator)), Optika::InvalidDependencyException);
+	
+	Teuchos::RCP<Optika::EnhancedNumberValidator<double> > doubleVali1 = Teuchos::rcp(new Optika::EnhancedNumberValidator<double>(0.0,20.0));
+	Teuchos::RCP<Optika::EnhancedNumberValidator<double> > doubleVali2 = Teuchos::rcp(new Optika::EnhancedNumberValidator<double>(5.0,20.0));
+	list1->set("double parameter", 6.0, "double parameter", doubleVali1);
+	TEST_THROW(Teuchos::RCP<Optika::BoolValidatorDependency> boolValiDep = Teuchos::RCP<Optika::BoolValidatorDependency>(new Optika::BoolValidatorDependency("int parameter", list1, "double parameter", list1, doubleVali1, doubleVali2)), Optika::InvalidDependencyException);
+	TEST_THROW(Teuchos::RCP<Optika::BoolValidatorDependency> boolValiDep = Teuchos::RCP<Optika::BoolValidatorDependency>(new Optika::BoolValidatorDependency("bool parameter", list1, "double parameter", list1, intVali, doubleVali2)), Optika::InvalidDependencyException);
+	TEST_THROW(Teuchos::RCP<Optika::BoolValidatorDependency> boolValiDep = Teuchos::RCP<Optika::BoolValidatorDependency>(new Optika::BoolValidatorDependency("bool parameter", list1, "double parameter", list1, doubleVali1, intVali)), Optika::InvalidDependencyException);
+
+	TEST_THROW(Teuchos::RCP<Optika::NumberVisualDependency<int> > boolValiDep = Teuchos::RCP<Optika::NumberVisualDependency<int> >(new Optika::NumberVisualDependency<int>("bool parameter", list1, "double parameter", list1, intFuncTester)), Optika::InvalidDependencyException);
+
+
+	list1->set("int 2 parameter", 6, "int 2 parameter");
+	TEST_THROW(Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> > 
+		intDep1 = Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> >(
+			new Optika::NumberValidatorAspectDependency<int>(
+				"int parameter",
+				list1,
+				"int 2 parameter",
+				list1,
+				intVali,
+				Optika::NumberValidatorAspectDependency<int>::Max,
+				intFuncTester
+			)
+		),
+		Optika::InvalidDependencyException
+	);
+
+	list1->set("int 2 parameter", 6, "int 2 parameter", intVali);
+	TEST_THROW(Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> > 
+		intDep1 = Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> >(
+			new Optika::NumberValidatorAspectDependency<int>(
+				"string parameter",
+				list1,
+				"int 2 parameter",
+				list1,
+				intVali,
+				Optika::NumberValidatorAspectDependency<int>::Max,
+				intFuncTester
+			)
+		),
+		Optika::InvalidDependencyException
+	);
+	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > intVali2 = Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(5,20));
+	TEST_THROW(Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> > 
+		intDep1 = Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> >(
+			new Optika::NumberValidatorAspectDependency<int>(
+				"int parameter",
+				list1,
+				"int 2 parameter",
+				list1,
+				intVali2,
+				Optika::NumberValidatorAspectDependency<int>::Max,
+				intFuncTester
+			)
+		),
+		Optika::InvalidDependencyException
+	);
+
+	TEST_THROW(Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> > 
+		intDep1 = Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> >(
+			new Optika::NumberValidatorAspectDependency<int>(
+				"int parameter",
+				list1,
+				"double parameter",
+				list1,
+				intVali,
+				Optika::NumberValidatorAspectDependency<int>::Max,
+				intFuncTester
+			)
+		),
+		Optika::InvalidDependencyException
+	);
+
+	TEST_THROW(Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> > 
+		intDep1 = Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> >(
+			new Optika::NumberValidatorAspectDependency<int>(
+				"double parameter",
+				list1,
+				"int parameter",
+				list1,
+				intVali,
+				Optika::NumberValidatorAspectDependency<int>::Max,
+				intFuncTester
+			)
+		),
+		Optika::InvalidDependencyException
+	);
+
+	list1->set("Cheese to Fondue", "Swiss", "the cheese to fondue");
+	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+	lowTempCheeseValidator = Teuchos::rcp(
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+			Teuchos::tuple<std::string>( "PepperJack", "Swiss", "American" ),
+			"Cheese to Fondue"
+		)
+	);
+	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+	highTempCheeseValidator = Teuchos::rcp(
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+			Teuchos::tuple<std::string>( "Munster", "Provalone", "Kurtis Super Awesome Cheese"),
+			"Cheese to Fondue"
+		)
+	);
+	list1->set("Cheese to Fondue", "Swiss", "the cheese to fondue", lowTempCheeseValidator);
+	Optika::RangeValidatorDependency<double>::RangeToValidatorMap tempranges;
+	tempranges[std::pair<double,double>(100,200)] = lowTempCheeseValidator;
+	tempranges[std::pair<double,double>(200,300)] = highTempCheeseValidator;
+	TEST_THROW(
+		Teuchos::RCP<Optika::RangeValidatorDependency<double> > 
+		cheeseTempDep = Teuchos::RCP<Optika::RangeValidatorDependency<double> >(
+			new Optika::RangeValidatorDependency<double>(
+				"string parameter", 
+				list1,	
+				"Cheese to Fondue", 
+				list1,	
+				tempranges, 
+				lowTempCheeseValidator
+			)
+		),
+		Optika::InvalidDependencyException
+	);
+	tempranges[std::pair<double,double>(400,800)] = intVali;
+	TEST_THROW(
+		Teuchos::RCP<Optika::RangeValidatorDependency<double> > 
+		cheeseTempDep = Teuchos::RCP<Optika::RangeValidatorDependency<double> >(
+			new Optika::RangeValidatorDependency<double>(
+				"int parameter", 
+				list1,	
+				"Cheese to Fondue", 
+				list1,
+				tempranges, 
+				lowTempCheeseValidator
+			)
+		),
+		Optika::InvalidDependencyException
+	);
+
+
+	Teuchos::RCP<Optika::DependencySheet> depSheet1 = Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(list1));
+	Teuchos::RCP<Optika::DependencySheet> depSheet2 = Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(list2));
+
+	list2->set("list2 double", 4.0, "a double parameter in list 2");
+	list2->set("list2 bool", true, "a bool parameter in list2");
+
+	Teuchos::RCP<Optika::BoolVisualDependency> boolVisDep = Teuchos::RCP<Optika::BoolVisualDependency>(new Optika::BoolVisualDependency("bool parameter", list1, "list2 double", list2, false));
+	TEST_THROW(depSheet2->addDependency(boolVisDep), Optika::InvalidDependencyException);
+	boolVisDep = Teuchos::RCP<Optika::BoolVisualDependency>(new Optika::BoolVisualDependency("list2 bool", list2, "double parameter", list1, false));
+	TEST_THROW(depSheet2->addDependency(boolVisDep), Optika::InvalidDependencyException);
+
+
+	return (success ? 0:1);
+}
+
 int main(int argc, char* argv[]){
 	bool success = true;
 	Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::VerboseObjectBase::getDefaultOStream();
@@ -499,6 +708,10 @@ int main(int argc, char* argv[]){
 		success = false;
 	}
 	if(testNumberValiAspDep(*out) == 1){
+		success = false;
+	}
+
+	if(testDepExceptions(*out) ==1){
 		success = false;
 	}
 	return (success ? 0:1);

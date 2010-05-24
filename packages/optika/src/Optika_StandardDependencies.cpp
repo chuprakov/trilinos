@@ -249,22 +249,22 @@ void StringValidatorDependency::evaluate(){
 
 void StringValidatorDependency::validateDep(){
 	if(!dependee->isType<std::string>()){
-		throw InvalidDependencyException("Ay no!The dependee of a "
+		throw InvalidDependencyException("Ay no! The dependee of a "
 		"String Validator Dependency must be of type string.\n"
 		"Problem dependee: " + dependeeName + "\n"
 		"Actual type: " + dependee->getAny().typeName() + "\n"
 		"Dependent: " + dependentName);
 	}
 	for(ValueToValidatorMap::const_iterator it = valuesAndValidators.begin(); it != valuesAndValidators.end(); it++){
-		if(typeid(dependent->validator()) != typeid(it->second)){
+		if(typeid(*(dependent->validator().get())) != typeid(*(it->second.get()))){
 			throw InvalidDependencyException("Ay no! The validator of a dependent of a "
-			"String Validator Dependency must be the same type as all of the validators"
-			"in the valuesAndValidators map."
+			"String Validator Dependency must be the same type as all of the validators "
+			"in the valuesAndValidators map. "
 			"Note this means that the dependent must have an initial validator.\n"
 			"Problem dependent: " + dependentName + "\n"
-			"Validator Type: " + typeid(dependent->validator()).name() + "\n"
+			"Validator Type: " + typeid(*(dependent->validator())).name() + "\n"
 			"Problem Map Value: " + it->first + "\n"
-			"The Validator type associated with the Map Value: " + typeid(it->second).name());
+			"The Validator type associated with the Map Value: " + typeid(*(it->second)).name());
 		}
 	}
 }
@@ -295,26 +295,26 @@ void BoolValidatorDependency::evaluate(){
 void BoolValidatorDependency::validateDep(){
 	if(!dependee->isType<bool>()){
 		throw InvalidDependencyException("Ay no! The dependee of a "
-		"Bool Validator Dependency must be of type string.\n"
+		"Bool Validator Dependency must be of type boolean.\n"
 		"Problem dependee: " + dependeeName + "\n"
 		"Actual type: " + dependee->getAny().typeName() + "\n"
 		"Dependent: " + dependentName);
 	}
-	if(typeid(dependent->validator()) != typeid(trueValidator)){
-		throw InvalidDependencyException("Ay no! The validator of a dependent of a"
-		"Bool Validator Dependency must be the same type as the \"true\" validator."
+	if(typeid(*(dependent->validator().get())) != typeid(*(trueValidator.get()))){
+		throw InvalidDependencyException("Ay no! The validator of a dependent of a "
+		"Bool Validator Dependency must be the same type as the \"true\" validator. "
 		"Note this means that the dependent must have an initial validator.\n"
 		"Problem dependent: " + dependentName + "\n"
-		"Validator Type: " + typeid(dependent->validator()).name() + "\n"
-		"Type of the \"true\" validator: " + typeid(trueValidator).name());
+		"Validator Type: " + typeid(*(dependent->validator().get())).name() + "\n"
+		"Type of the \"true\" validator: " + typeid(*(trueValidator.get())).name());
 	}
-	if(typeid(dependent->validator()) != typeid(falseValidator)){
-		throw InvalidDependencyException("Ay no! The validator of a dependent of a"
-		"Bool Validator Dependency must be the same type as the \"false\" validator."
-		"Note this means that the dependent must have an initial validator\n"
+	if(typeid(*(dependent->validator().get())) != typeid(*(falseValidator.get()))){
+		throw InvalidDependencyException("Ay no! The validator of a dependent of a "
+		"Bool Validator Dependency must be the same type as the \"false\" validator. "
+		"Note this means that the dependent must have an initial validator.\n"
 		"Problem dependent: " + dependentName + "\n"
-		"Validator Type: " + typeid(dependent->validator()).name() + "\n"
-		"Type of the \"false\" validator: " + typeid(falseValidator).name());
+		"Validator Type: " + typeid(*(dependent->validator().get())).name() + "\n"
+		"Type of the \"false\" validator: " + typeid(*(falseValidator.get())).name());
 	}
 }
 
