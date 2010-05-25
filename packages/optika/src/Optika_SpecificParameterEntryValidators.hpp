@@ -35,6 +35,7 @@
 #include <QComboBox>
 #include <float.h>
 #include <limits>
+#include <sys/stat.h>
 #include "Teuchos_StandardParameterEntryValidators.hpp"
 #include "Optika_ArrayHelperFunctions.hpp"
 
@@ -190,7 +191,7 @@ public:
 				"No need to fret though. I'm sure it's just a small mistake. Maybe the information below "<<
 				"can help you figure out what went wrong.\n\n"
 				"Error: The value that was entered doesn't fall with in " <<
-				"the range set by the validator." <<
+				"the range set by the validator.\n" <<
 				"Parameter: " << paramName << "\n" <<
 				"Min: " << minVal << "\n" <<
 				"Max: " << maxVal << "\n" <<
@@ -207,7 +208,7 @@ public:
 			" parameter in the \"" << sublistName << "\" sublist didn't quite work out.\n" <<
 			"No need to fret though. I'm sure it's just a small mistake. Maybe the information below "<<
 			"can help you figure out what went wrong.\n\n"
-			"Error: The value that you entered was the wrong type." <<
+			"Error: The value that you entered was the wrong type.\n" <<
 			"Parameter: " << paramName << "\n" <<
 			"Type specified: " << entryName << "\n" <<
 			"Type accepted: " << typeid(S).name() << "\n";
@@ -419,7 +420,7 @@ public:
 	 * Construcsts an EnhancedNumberValidator of type double with no
 	 * minimum or maximum.
 	 */
-	EnhancedNumberValidator():GenericNumberValidator<double>(doubleId, doubleDefaultStep), precision(precision){}
+	EnhancedNumberValidator():GenericNumberValidator<double>(doubleId, doubleDefaultStep), precision(doubleDefaultPrecision){}
 
 	/**
 	 * Constructs an EnhancedNumberValidator of type double.
@@ -498,7 +499,7 @@ public:
 	 * Construcsts an EnhancedNumberValidator of type float with no
 	 * minimum or maximum.
 	 */
-	EnhancedNumberValidator():GenericNumberValidator<float>(floatId, floatDefaultStep), precision(precision){}
+	EnhancedNumberValidator():GenericNumberValidator<float>(floatId, floatDefaultStep), precision(floatDefaultPrecision){}
 
 	/**
 	 * Constructs an EnhancedNumberValidator of type float.
@@ -573,11 +574,25 @@ class FileNameValidator : public Teuchos::ParameterEntryValidator{
 public:
 	/**
 	 * Constructs a FileNameValidator.
+	 *
+	 * @param mustAlreadyExist True if the file the user specifies should already exists, false otherwise.
 	 */
 	FileNameValidator(bool mustAlreadyExist=false);
 
+	/**
+	 * Gets the variable describing whether or not this validator wants the file that is specified to
+	 * already exist.
+	 *
+	 * @return Whether or not the validator requires the file to already exist
+	 */
 	bool fileMustExist() const;
 
+	/**
+	 * Sets whether or not the validator requires the file to already exist.
+	 *
+	 * @param shouldFileExist True if the file should already exist, false otherwise.
+	 * @return The new value of the shouldFileExist variable.
+	 */
 	bool setFileMustExist(bool shouldFileExist);
 
 	Teuchos::RCP<const Teuchos::Array<std::string> > validStringValues() const;
@@ -586,6 +601,9 @@ public:
 
 	void printDoc(std::string const &docString, std::ostream &out) const;
 private:
+	/**
+	 * Whether or not the file specified in the parameter should already exist.
+	 */
 	bool mustAlreadyExist;
 };
 
@@ -614,6 +632,9 @@ public:
 
 	void printDoc(std::string const &docString, std::ostream &out) const;
 private:
+	/**
+	 * An array containing a list of all the valid string values.
+	 */
 	Teuchos::Array<std::string> validStrings;
 };
 
@@ -651,7 +672,7 @@ public:
 	/**
 	 * Constructs an ArrayStringValidator
 	 *
-	 * @param prototypeValidator The StringToIntegralParameterEntryValidator that should be used
+	 * @param prototypeValidator The ParameterEntry validator containing a list of valid string values to be used 
 	 * on each entry in the Array.
 	 */
 	ArrayStringValidator(Teuchos::RCP<Teuchos::ParameterEntryValidator> prototypeValidator)
@@ -684,7 +705,7 @@ public:
 					"No need to fret though. I'm sure it's just a small mistake. Maybe the information below "<<
 					"can help you figure out what went wrong.\n\n"
 					"Error: The value that was entered at " << i << " in the array does't fall within " <<
-					"the rang set by the validtor.\\n" <<
+					"the rang set by the validtor.\n" <<
 					"Parameter: " << paramName << "\n" << 
 					"Value entered at " << i << ": "<<
 					extracted[i] << "\n" <<
@@ -705,7 +726,7 @@ public:
 			" parameter in the \"" << sublistName << "\" sublist didn't quite work out.\n" <<
 			"No need to fret though. I'm sure it's just a small mistake. Maybe the information below "<<
 			"can help you figure out what went wrong.\n\n"
-			"Error: The value you entered was the wrong type" <<
+			"Error: The value you entered was the wrong type.\n" <<
 			"Parameter: " << paramName << "\n" <<
 			"Type specified: " << entryName << "\n" <<
 			"Type accepted: " << typeid(Teuchos::Array<std::string>).name() << "\n";
@@ -761,7 +782,7 @@ public:
 					"No need to fret though. I'm sure it's just a small mistake. Maybe the information below "<<
 					"can help you figure out what went wrong.\n\n"
 					"Error: The value that was entered at \"" << i << "\" in the array does't fall within " <<
-					"the rang set by the validtor." <<
+					"the rang set by the validtor.\n" <<
 					"Parameter: " << paramName << "\n" <<
 					"Min: " << getPrototype()->min() << "\n" <<
 					"Max: " << getPrototype()->max() << "\n" <<
@@ -780,7 +801,7 @@ public:
 			" parameter in the \"" << sublistName << "\" sublist didn't quite work out.\n" <<
 			"No need to fret though. I'm sure it's just a small mistake. Maybe the information below "<<
 			"can help you figure out what went wrong.\n\n"
-			"Error: The value you entered was the wrong type\n" <<
+			"Error: The value you entered was the wrong type.\n" <<
 			"Parameter: " << paramName << "\n" <<
 			"Type specified: " << entryName << "\n" <<
 			"Type accepted: " << typeid(Teuchos::Array<S>).name() << "\n";
@@ -831,13 +852,36 @@ public:
 			" parameter in the \"" << sublistName << "\" sublist didn't quite work out.\n" <<
 			"No need to fret though. I'm sure it's just a small mistake. Maybe the information below "<<
 			"can help you figure out what went wrong.\n\n"
-			"Error: The value you entered was the wrong type" <<
+			"Error: The value you entered was the wrong type.\n" <<
 			"Parameter: " << paramName << "\n" <<
 			"Type specified: " << entryName << "\n" <<
 			"Type accepted: " << anyValue.typeName() << "\n";
 			msg = oss.str();
 			throw Teuchos::Exceptions::InvalidParameterType(msg);
 		}
+		else if(getPrototype()->fileMustExist()){
+			Teuchos::Array<std::string> extracted = Teuchos::any_cast<Teuchos::Array<std::string> >(anyValue);
+			for(unsigned int i = 0; i<extracted.size(); i++){
+				std::string fileName = extracted[i];
+				struct stat fileInfo;
+				int intStat= stat(fileName.c_str(),&fileInfo);
+				if(intStat !=0){
+					const std::string &entryName = entry.getAny(false).typeName();
+					std::stringstream oss;
+					std::string msg;
+					oss << "Aww shoot! Sorry bud, but it looks like the \"" << paramName << "\"" <<
+					" parameter in the \"" << sublistName << "\" sublist didn't quite work out.\n" <<
+					"No need to fret though. I'm sure it's just a small mistake. Maybe the information below "<<
+					"can help you figure out what went wrong.\n\n"
+					"Error: The file must already exists. The value you entered does not corresspond to an existing file name.\n" <<
+					"Parameter: " << paramName << "\n" << 
+					"File name specified index " << i <<": " << fileName << "\n";
+					msg = oss.str();
+					throw Teuchos::Exceptions::InvalidParameterValue(msg);
+				}
+			}
+		}
+
 	}
 
 	void printDoc(std::string const &docString, std::ostream &out) const{

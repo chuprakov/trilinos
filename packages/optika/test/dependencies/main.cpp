@@ -114,7 +114,7 @@ int testValiDeps(Teuchos::FancyOStream &out){
 	TEST_ASSERT(stringValiDepSet.size() == 1);
 	stringValiDepList.set("Food Type","Soda");
 	stringValiDep->evaluate();
-	TEST_ASSERT(stringValiDepList.getEntry("Food Selector").validator().shares_resource(sodaValidator));
+	TEST_ASSERT(stringValiDepList.getEntry("Food Selector").validator().get()==sodaValidator.get());
 	TEST_THROW(stringValiDepList.validateParameters(stringValiDepList), Teuchos::Exceptions::InvalidParameterValue);
 	stringValiDepList.set("Food Selector", "Pepsi");
 	TEST_NOTHROW(stringValiDepList.validateParameters(stringValiDepList));
@@ -170,7 +170,7 @@ int testValiDeps(Teuchos::FancyOStream &out){
 	TEST_ASSERT(stringValiDepSet2.size() == 1);
 	stringValiDepList2.set("Range selector","50-60");
 	stringValiDep2->evaluate();
-	TEST_ASSERT(stringValiDepList2.getEntry("RangeValue").validator().shares_resource(range5060Vali));
+	TEST_ASSERT(stringValiDepList2.getEntry("RangeValue").validator().get() == range5060Vali.get());
 	TEST_THROW(stringValiDepList2.validateParameters(stringValiDepList2), Teuchos::Exceptions::InvalidParameterValue);
 	stringValiDepList2.set("RangeValue", 55);
 	TEST_NOTHROW(stringValiDepList2.validateParameters(stringValiDepList2));
@@ -202,13 +202,13 @@ int testValiDeps(Teuchos::FancyOStream &out){
 	depSheet1->addDependency(boolValiDep);
 
 	TEST_ASSERT(depSheet1->hasDependents(boolValidatorDepList.getEntryPtr("Use Validator?")));
-	TEST_ASSERT(boolValidatorDepList.getEntry("do I have a validator?").validator().shares_resource(basicVali));
+	TEST_ASSERT(boolValidatorDepList.getEntry("do I have a validator?").validator().get() == basicVali.get());
 	TEST_NOTHROW(boolValidatorDepList.validateParameters(boolValidatorDepList));
 	Optika::DependencySheet::DepSet boolValiDepSet = depSheet1->getDependenciesForParameter(boolValidatorDepList.getEntryPtr("Use Validator?"));
 	TEST_ASSERT(boolValiDepSet.size() == 1);
 	boolValidatorDepList.set("Use Validator?",false);
 	boolValiDep->evaluate();
-	TEST_ASSERT(boolValidatorDepList.getEntry("do I have a validator?").validator().shares_resource(basicVali2));
+	TEST_ASSERT(boolValidatorDepList.getEntry("do I have a validator?").validator().get() == basicVali2.get());
 
 
 	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
@@ -256,7 +256,7 @@ int testValiDeps(Teuchos::FancyOStream &out){
 	TEST_ASSERT(rangeValiDepSet.size() == 1);
 	rangeValidatorDepList.set("Temperature",250.0);
 	cheeseTempDep->evaluate();
-	TEST_ASSERT(rangeValidatorDepList.getEntry("Cheese to Fondue").validator().shares_resource(highTempCheeseValidator));
+	TEST_ASSERT(rangeValidatorDepList.getEntry("Cheese to Fondue").validator().get() == highTempCheeseValidator.get());
 	TEST_THROW(rangeValidatorDepList.validateParameters(rangeValidatorDepList), Teuchos::Exceptions::InvalidParameterValue);
 	rangeValidatorDepList.set("Cheese to Fondue", "Provalone");
 	TEST_NOTHROW(rangeValidatorDepList.validateParameters(rangeValidatorDepList));

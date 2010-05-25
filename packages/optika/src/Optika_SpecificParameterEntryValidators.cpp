@@ -54,12 +54,31 @@ void FileNameValidator::validate(Teuchos::ParameterEntry const &entry, std::stri
 		" parameter in the \"" << sublistName << "\" sublist didn't quite work out.\n" <<
 		"No need to fret though. I'm sure it's just a small mistake. Maybe the information below "<<
 		"can help you figure out what went wrong.\n\n"
-		"Error: The value that you entered was the wrong type." <<
+		"Error: The value that you entered was the wrong type.\n" <<
 		"Parameter: " << paramName << "\n" << 
 		"Type specified: " << entryName << "\n" <<
 		"Type accepted: " << typeid(std::string).name() << "\n";
 		msg = oss.str();
 		throw Teuchos::Exceptions::InvalidParameterType(msg);
+	}
+	if(mustAlreadyExist){
+		std::string fileName = entry.getValue((std::string*)NULL);
+		struct stat fileInfo;
+		int intStat= stat(fileName.c_str(),&fileInfo);
+		if(intStat !=0){
+			const std::string &entryName = entry.getAny(false).typeName();
+			std::stringstream oss;
+			std::string msg;
+			oss << "Aww shoot! Sorry bud, but it looks like the \"" << paramName << "\"" <<
+			" parameter in the \"" << sublistName << "\" sublist didn't quite work out.\n" <<
+			"No need to fret though. I'm sure it's just a small mistake. Maybe the information below "<<
+			"can help you figure out what went wrong.\n\n"
+			"Error: The file must already exists. The value you entered does not corresspond to an existing file name.\n" <<
+			"Parameter: " << paramName << "\n" << 
+			"File name specified: " << fileName << "\n";
+			msg = oss.str();
+			throw Teuchos::Exceptions::InvalidParameterValue(msg);
+		}
 	}
 }
 
