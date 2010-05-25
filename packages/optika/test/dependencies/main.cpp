@@ -313,6 +313,7 @@ int testVisualDeps(Teuchos::FancyOStream &out){
 		)
 	);
 	depSheet1->addDependency(fondueDep);
+	fondueDep->evaluate();
 	TEST_ASSERT(fondueDep->isDependentVisible());
 	doubleVisualDepList.set("Temperature",99.0);
 	fondueDep->evaluate();
@@ -415,6 +416,7 @@ int testVisualDeps(Teuchos::FancyOStream &out){
 		)
 	);
 	depSheet1->addDependency(iceDep);
+	iceDep->evaluate();
 	TEST_ASSERT(iceDep->isDependentVisible());
 	numberVisDepList.set("Room Temp", 33);
 	iceDep->evaluate();

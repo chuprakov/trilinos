@@ -98,7 +98,6 @@ bool Dependency::doesListContainList(Teuchos::RCP<Teuchos::ParameterList> parent
 	else{
 		for(Teuchos::ParameterList::ConstIterator it = parentList->begin(); it!=parentList->end(); it++){
 			if(it->second.isList()){
-				std::cout << "\nchecking sublist " << it->first << "\n";
 				if(doesListContainList(sublist(parentList, it->first,true), listToFind)){
 					return true;
 				}
