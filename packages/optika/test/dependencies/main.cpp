@@ -319,6 +319,7 @@ int testVisualDeps(Teuchos::FancyOStream &out){
 		)
 	);
 	depSheet1->addDependency(precDep1);
+	precDep1->evaluate();
 	TEST_ASSERT(precDep1->isDependentVisible());
 	boolVisDepList.set("ShowPrecs", false);
 	precDep1->evaluate();
