@@ -32,8 +32,14 @@
 using namespace Teuchos;
 using namespace Optika;
 
+/**
+ * Tests Number Validators.
+ */
 int testNumberValis(Teuchos::FancyOStream &out){
 	bool success = true;
+	/*
+	 * Testing Int Validator.
+	 */
 	RCP<ParameterList> intList = RCP<ParameterList>(new ParameterList("Int List"));
 	RCP<EnhancedNumberValidator<int> > intVali = RCP<EnhancedNumberValidator<int> >(new EnhancedNumberValidator<int>(0,10,4));
 	TEST_ASSERT(intVali->min() == 0);
@@ -53,6 +59,9 @@ int testNumberValis(Teuchos::FancyOStream &out){
 	TEST_THROW(intList->set("Int Parameter", 11), Exceptions::InvalidParameterValue);
 	TEST_THROW(intList->set("Double Parameter", 5.0, "double parameter", intVali), Exceptions::InvalidParameterType);
 
+	/*
+	 * Testing Short Validator.
+	 */
 	RCP<ParameterList> shortList = RCP<ParameterList>(new ParameterList("Short List"));
 	RCP<EnhancedNumberValidator<short> > shortVali = RCP<EnhancedNumberValidator<short> >(new EnhancedNumberValidator<short>(0,10,4));
 	TEST_ASSERT(shortVali->min() == 0);
@@ -72,6 +81,9 @@ int testNumberValis(Teuchos::FancyOStream &out){
 	TEST_THROW(shortList->set("Short Parameter", (short)11), Exceptions::InvalidParameterValue);
 	TEST_THROW(shortList->set("Double Parameter", 5.0, "double parameter", shortVali), Exceptions::InvalidParameterType);
 
+	/*
+	 * Testing Float Validator.
+	 */
 	RCP<ParameterList> floatList = RCP<ParameterList>(new ParameterList("Float List"));
 	RCP<EnhancedNumberValidator<float> > floatVali = RCP<EnhancedNumberValidator<float> >(new EnhancedNumberValidator<float>(0,10.0,4.0,6));
 	TEST_ASSERT(floatVali->min() == 0.0);
@@ -93,6 +105,9 @@ int testNumberValis(Teuchos::FancyOStream &out){
 	TEST_THROW(floatList->set("Float Parameter", (float)11.0), Exceptions::InvalidParameterValue);
 	TEST_THROW(floatList->set("Int Parameter", 5, "int parameter", floatVali), Exceptions::InvalidParameterType);
 
+	/*
+	 * Testing Double Validator.
+	 */
 	RCP<ParameterList> doubleList = RCP<ParameterList>(new ParameterList("Double List"));
 	RCP<EnhancedNumberValidator<double> > doubleVali = RCP<EnhancedNumberValidator<double> >(new EnhancedNumberValidator<double>(0,10.0,4.0,6));
 	TEST_ASSERT(doubleVali->min() == 0.0);
@@ -116,6 +131,9 @@ int testNumberValis(Teuchos::FancyOStream &out){
 	return (success ? 0:1);
 }
 
+/*
+ * Testing StringValidator.
+ */
 int testStringVali(Teuchos::FancyOStream &out){
 	bool success = true;
 	RCP<ParameterList> stringList = RCP<ParameterList>(new ParameterList("String List"));
@@ -136,6 +154,9 @@ int testStringVali(Teuchos::FancyOStream &out){
 	return (success ? 0:1);
 }
 
+/*
+ * Testing FileNameValidator.
+ */
 int testFileNameVali(Teuchos::FancyOStream &out){
 	bool success = true;
 	RCP<ParameterList> fileNameList = RCP<ParameterList>(new ParameterList("Filename List"));
@@ -152,8 +173,14 @@ int testFileNameVali(Teuchos::FancyOStream &out){
 	return (success ? 0:1);
 }
 
+/*
+ * Testing Array Validators.
+ */
 int testArrayValis(Teuchos::FancyOStream &out){
 	bool success = true;
+	/*
+	 * Testing StringArrayValidator.
+	 */
 	RCP<ParameterList> stringList = RCP<ParameterList>(new ParameterList("String List"));
 	Array<std::string> stringVals = tuple<std::string>("str1", "str2", "str3");
 	RCP<StringValidator> stringVali = RCP<StringValidator>(new StringValidator(stringVals));
@@ -168,6 +195,9 @@ int testArrayValis(Teuchos::FancyOStream &out){
 	TEST_THROW(stringList->set("Long array param", longArray, "long array parameter", stringArrayVali), Exceptions::InvalidParameterType);
 
 	
+	/*
+	 * Testing Int ArrayValidator.
+	 */
 	RCP<ParameterList> intList = RCP<ParameterList>(new ParameterList("Int List"));
 	RCP<EnhancedNumberValidator<int> > intVali = RCP<EnhancedNumberValidator<int> >(new EnhancedNumberValidator<int>(0, 10));
 	RCP<ArrayNumberValidator<int> > intArrayVali = RCP<ArrayNumberValidator<int> >(new ArrayNumberValidator<int>(intVali));
@@ -178,6 +208,9 @@ int testArrayValis(Teuchos::FancyOStream &out){
 	TEST_THROW(intList->set("int bad array param", intBadArray, "int bad array parameter", intArrayVali), Exceptions::InvalidParameterValue);
 	TEST_THROW(stringList->set("Long array param", longArray, "long array parameter", intArrayVali), Exceptions::InvalidParameterType);
 
+	/*
+	 * Testing Short ArrayValidator.
+	 */
 	RCP<ParameterList> shortList = RCP<ParameterList>(new ParameterList("Short List"));
 	RCP<EnhancedNumberValidator<short> > shortVali = RCP<EnhancedNumberValidator<short> >(new EnhancedNumberValidator<short>(0, 10));
 	RCP<ArrayNumberValidator<short> > shortArrayVali = RCP<ArrayNumberValidator<short> >(new ArrayNumberValidator<short>(shortVali));
@@ -188,6 +221,9 @@ int testArrayValis(Teuchos::FancyOStream &out){
 	TEST_THROW(shortList->set("short bad array param", shortBadArray, "short bad array parameter", shortArrayVali), Exceptions::InvalidParameterValue);
 	TEST_THROW(stringList->set("Long array param", longArray, "long array parameter", shortArrayVali), Exceptions::InvalidParameterType);
 
+	/*
+	 * Testing Float ArrayValidator.
+	 */
 	RCP<ParameterList> floatList = RCP<ParameterList>(new ParameterList("Float List"));
 	RCP<EnhancedNumberValidator<float> > floatVali = RCP<EnhancedNumberValidator<float> >(new EnhancedNumberValidator<float>(0.0, 10.0));
 	RCP<ArrayNumberValidator<float> > floatArrayVali = RCP<ArrayNumberValidator<float> >(new ArrayNumberValidator<float>(floatVali));
@@ -198,6 +234,9 @@ int testArrayValis(Teuchos::FancyOStream &out){
 	TEST_THROW(floatList->set("float bad array param", floatBadArray, "float bad array parameter", floatArrayVali), Exceptions::InvalidParameterValue);
 	TEST_THROW(stringList->set("Long array param", longArray, "long array parameter", floatArrayVali), Exceptions::InvalidParameterType);
 
+	/*
+	 * Testing Double ArrayValidator.
+	 */
 	RCP<ParameterList> doubleList = RCP<ParameterList>(new ParameterList("Double List"));
 	RCP<EnhancedNumberValidator<double> > doubleVali = RCP<EnhancedNumberValidator<double> >(new EnhancedNumberValidator<double>(0.0, 10.0));
 	RCP<ArrayNumberValidator<double> > doubleArrayVali = RCP<ArrayNumberValidator<double> >(new ArrayNumberValidator<double>(doubleVali));
@@ -208,6 +247,9 @@ int testArrayValis(Teuchos::FancyOStream &out){
 	TEST_THROW(doubleList->set("double bad array param", doubleBadArray, "double bad array parameter", doubleArrayVali), Exceptions::InvalidParameterValue);
 	TEST_THROW(stringList->set("Long array param", longArray, "long array parameter", doubleArrayVali), Exceptions::InvalidParameterType);
 
+	/*
+	 * Testing FileName ArrayValidator.
+	 */
 	RCP<ParameterList> fileNameList = RCP<ParameterList>(new ParameterList("Filename List"));
 	RCP<FileNameValidator> fileNameVali = RCP<FileNameValidator>(new FileNameValidator(true));
 	RCP<ArrayFileNameValidator> arrayFileNameVali = RCP<ArrayFileNameValidator>(new ArrayFileNameValidator(fileNameVali));

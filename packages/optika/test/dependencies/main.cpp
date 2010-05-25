@@ -48,11 +48,17 @@ double fondueTempTester(double argument){
 }
 
 
+/**
+ * Test all the validator dependencies.
+ */
 int testValiDeps(Teuchos::FancyOStream &out){
 	bool success = true;
 	Teuchos::RCP<Teuchos::ParameterList> My_deplist = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
 	Teuchos::RCP<Optika::DependencySheet> depSheet1 = Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(My_deplist));
 
+	/*
+	 * Testing StringValidatorDependency
+	 */
  	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
    	stringFoodTypeValidator = Teuchos::rcp(
 		new Teuchos::StringToIntegralParameterEntryValidator<int>(
@@ -120,6 +126,9 @@ int testValiDeps(Teuchos::FancyOStream &out){
 	TEST_NOTHROW(stringValiDepList.validateParameters(stringValiDepList));
  
 
+	/*
+	 * Tesing some different aspects of the StringValidatorDependency
+	 */
 	Teuchos::ParameterList& 
 	stringValiDepList2 = My_deplist->sublist(
 		"String Validator Dependency (other validators)",
@@ -175,6 +184,9 @@ int testValiDeps(Teuchos::FancyOStream &out){
 	stringValiDepList2.set("RangeValue", 55);
 	TEST_NOTHROW(stringValiDepList2.validateParameters(stringValiDepList2));
 
+	/*
+	 * Testing the BoolValidatorDependency.
+	 */
 	Teuchos::ParameterList&
 	boolValidatorDepList = My_deplist->sublist(
 		"Bool Validator Dependency List", 
@@ -211,6 +223,9 @@ int testValiDeps(Teuchos::FancyOStream &out){
 	TEST_ASSERT(boolValidatorDepList.getEntry("do I have a validator?").validator().get() == basicVali2.get());
 
 
+	/*
+	 * Testing the RangeValidatorDependency
+	 */
 	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
 	lowTempCheeseValidator = Teuchos::rcp(
 		new Teuchos::StringToIntegralParameterEntryValidator<int>(
@@ -264,10 +279,17 @@ int testValiDeps(Teuchos::FancyOStream &out){
 	return (success ? 0:1);
 }
   
+/**
+ * Testing all the visual dependencies
+ */
 int testVisualDeps(Teuchos::FancyOStream &out){
 	bool success = true;
 	Teuchos::RCP<Teuchos::ParameterList> My_deplist = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
 	Teuchos::RCP<Optika::DependencySheet> depSheet1 = Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(My_deplist));
+
+	/*
+	 * Testing the NumberVisualDependency
+	 */
 	Teuchos::ParameterList&
 	doubleVisualDepList = My_deplist->sublist(
 		"NumberVisual Dependency List (double)", 
@@ -296,6 +318,9 @@ int testVisualDeps(Teuchos::FancyOStream &out){
 	fondueDep->evaluate();
 	TEST_ASSERT(!fondueDep->isDependentVisible());
 
+	/*
+	 * Testing the BoolVisualDependency
+	 */
 	Teuchos::ParameterList&
 	boolVisDepList = My_deplist->sublist(
 		"Bool Visual Dependency List", 
@@ -327,6 +352,9 @@ int testVisualDeps(Teuchos::FancyOStream &out){
 
 
 
+	/*
+	 * Testing the StringVisualDepenency
+	 */
 	Teuchos::ParameterList&
     stringVisDepList = My_deplist->sublist(
 		"String Visual Dependency List",
@@ -363,6 +391,9 @@ int testVisualDeps(Teuchos::FancyOStream &out){
 	swissDep1->evaluate();
 	TEST_ASSERT(swissDep1->isDependentVisible());
 
+	/*
+	 * Another test of the NumberVisualDependency.
+	 */
 	int (*visfunc)(int);
 	visfunc = intVisualTester;
 	Teuchos::ParameterList&
@@ -393,6 +424,9 @@ int testVisualDeps(Teuchos::FancyOStream &out){
 }
 
 
+/**
+ * Test the ArrayLengthDependency.
+ */
 int testArrayLengthDep(Teuchos::FancyOStream &out){
 	bool success = true;
 	Teuchos::RCP<Teuchos::ParameterList> My_deplist = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
@@ -428,6 +462,9 @@ int testArrayLengthDep(Teuchos::FancyOStream &out){
 	return (success ? 0:1);
 }
 
+/**
+ * Test the NumberValidatorAspectDependency.
+ */
 int testNumberValiAspDep(Teuchos::FancyOStream &out){
 	bool success = true;
 	Teuchos::RCP<Teuchos::ParameterList> My_deplist = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
@@ -487,6 +524,9 @@ int testNumberValiAspDep(Teuchos::FancyOStream &out){
 	return (success ? 0:1);
 }
 
+/**
+ * Tests the excpetions associated with Dependencies
+ */
 int testDepExceptions(Teuchos::FancyOStream &out){
 	bool success = true;
 	Teuchos::RCP<Teuchos::ParameterList> list1 = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList());
@@ -499,6 +539,9 @@ int testDepExceptions(Teuchos::FancyOStream &out){
 	list1->set("array parameter", doubleArray, "array parameter");
 	list1->set("bool parameter", true, "bool parameter");
 
+	/*
+	 * Testing StringVisualDepenendcy exceptions.
+	 */
 	Teuchos::RCP<Optika::StringVisualDependency> stringVisDep;
 	TEST_THROW(stringVisDep = Teuchos::RCP<Optika::StringVisualDependency>(new Optika::StringVisualDependency("not in list", list1, "int parameter", list1, "cheese", true)), Optika::InvalidDependencyException);
 	TEST_THROW(stringVisDep = Teuchos::RCP<Optika::StringVisualDependency>(new Optika::StringVisualDependency("string parameter", list1, "not in list", list1, "cheese", true)), Optika::InvalidDependencyException);
@@ -509,6 +552,9 @@ int testDepExceptions(Teuchos::FancyOStream &out){
 	TEST_THROW(Teuchos::RCP<Optika::NumberArrayLengthDependency> numArrayLengthDep = Teuchos::RCP<Optika::NumberArrayLengthDependency>(new Optika::NumberArrayLengthDependency("double parameter", list1, "array parameter", list1)), Optika::InvalidDependencyException);
 	TEST_THROW(Teuchos::RCP<Optika::NumberArrayLengthDependency> numArrayLengthDep = Teuchos::RCP<Optika::NumberArrayLengthDependency>(new Optika::NumberArrayLengthDependency("int parameter", list1, "double parameter", list1)), Optika::InvalidDependencyException);
 
+	/*
+	 * Testing StringValidatorDependency exceptions.
+	 */
 	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
     cheeseValidator = Teuchos::rcp(
 		new Teuchos::StringToIntegralParameterEntryValidator<int>(
@@ -544,6 +590,9 @@ int testDepExceptions(Teuchos::FancyOStream &out){
 	testValidatorMap1["Candy"] = intVali;
 	TEST_THROW(Teuchos::RCP<Optika::StringValidatorDependency> stringValiDep = Teuchos::RCP<Optika::StringValidatorDependency>(new Optika::StringValidatorDependency("string parameter", list1, "string 2 parameter", list1, testValidatorMap1, cheeseValidator)), Optika::InvalidDependencyException);
 	
+	/*
+	 * Testing BoolValidatorDependency exceptions.
+	 */
 	Teuchos::RCP<Optika::EnhancedNumberValidator<double> > doubleVali1 = Teuchos::rcp(new Optika::EnhancedNumberValidator<double>(0.0,20.0));
 	Teuchos::RCP<Optika::EnhancedNumberValidator<double> > doubleVali2 = Teuchos::rcp(new Optika::EnhancedNumberValidator<double>(5.0,20.0));
 	list1->set("double parameter", 6.0, "double parameter", doubleVali1);
@@ -554,6 +603,9 @@ int testDepExceptions(Teuchos::FancyOStream &out){
 	TEST_THROW(Teuchos::RCP<Optika::NumberVisualDependency<int> > boolValiDep = Teuchos::RCP<Optika::NumberVisualDependency<int> >(new Optika::NumberVisualDependency<int>("bool parameter", list1, "double parameter", list1, intFuncTester)), Optika::InvalidDependencyException);
 
 
+	/*
+	 * Testing NumberValidatorAspectDependency exceptions.
+	 */
 	list1->set("int 2 parameter", 6, "int 2 parameter");
 	TEST_THROW(Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> > 
 		intDep1 = Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> >(
@@ -631,6 +683,9 @@ int testDepExceptions(Teuchos::FancyOStream &out){
 		Optika::InvalidDependencyException
 	);
 
+	/*
+	 * Testing RangeValidatorDependency exceptions.
+	 */
 	list1->set("Cheese to Fondue", "Swiss", "the cheese to fondue");
 	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
 	lowTempCheeseValidator = Teuchos::rcp(
@@ -681,6 +736,9 @@ int testDepExceptions(Teuchos::FancyOStream &out){
 	);
 
 
+	/*
+	 * Testing DependencySheet exceptions.
+	 */
 	Teuchos::RCP<Optika::DependencySheet> depSheet1 = Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(list1));
 	Teuchos::RCP<Optika::DependencySheet> depSheet2 = Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(list2));
 
