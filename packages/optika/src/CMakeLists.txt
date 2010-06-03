@@ -15,6 +15,9 @@ ENDIF(QT_VERSION_MINOR LESS 5)
 
 INCLUDE( ${QT_USE_FILE} )
 
+SET(${TPL_Qt_LIBRARIES} ${QT_LIBRARIES})
+
+
 SET(HDRS Optika_Dependency.hpp 
 Optika_DependencySheet.hpp Optika_ArrayHelperFunctions.hpp 
 Optika_GUI.hpp Optika_InvalidDependencyException.hpp
@@ -40,6 +43,6 @@ PACKAGE_ADD_LIBRARY(
 	HEADERS ${MOC_HDRS} ${HDRS} 
 	SOURCES ${SRCS} ${MOC_SRCS} 
 	DEPLIBS
-	teuchos ${QT_LIBRARIES}
+	teuchos ${TPL_Qt_LIBRARIES}
 	)
 
