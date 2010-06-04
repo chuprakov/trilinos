@@ -522,7 +522,7 @@ public:
 	 * should be calculated from the dependees value.
 	 */
 	NumberArrayLengthDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, unsigned int (*func)(int) = 0);
+	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, int (*func)(int) = 0);
 
 	/**
 	 * Constructs an ArrayLengthDependency.
@@ -534,7 +534,7 @@ public:
 	 * should be calculated from the dependees value.
 	 */
 	NumberArrayLengthDependency(std::string dependeeName, std::string dependentName, 
-	Teuchos::RCP<Teuchos::ParameterList> parentList, unsigned int (*func)(int) = 0);
+	Teuchos::RCP<Teuchos::ParameterList> parentList, int (*func)(int) = 0);
 	
 	void evaluate();
 
@@ -543,7 +543,7 @@ private:
 	 * The function used to calculate the new value of the
 	 * arrays length.
 	 */
-	unsigned int (*func)(int);
+	int (*func)(int);
 	
 	/**
 	 * Runs the dependencies function on the given argument and returns
@@ -552,7 +552,7 @@ private:
 	 * @param The value to run the function on.
 	 * @return The value the function returned.
 	 */
-	unsigned int runFunction(int argument) const;
+	int runFunction(int argument) const;
 
 	/**
 	 * Modifies the length of an array.
@@ -561,7 +561,7 @@ private:
 	 * @param dependentValue The index of the dependent array that is going to be changed.
 	 */
 	template <class S>
-	void modifyArrayLength(unsigned int newLength);
+	void modifyArrayLength(int newLength);
 
 	void validateDep();
 };

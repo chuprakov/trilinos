@@ -26,6 +26,7 @@
 // ***********************************************************************
 // @HEADER
 #include "Optika_StandardDependencies.hpp"
+#include "Teuchos_StandardParameterEntryValidators.hpp"
 #include <QDir>
 
 namespace Optika{
@@ -113,21 +114,21 @@ void BoolVisualDependency::validateDep(){
 }
 
 NumberArrayLengthDependency::NumberArrayLengthDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, unsigned int (*func)(int))
+std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, int (*func)(int))
 :Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList, Dependency::NumberArrayLengthDep){
 	this->func = func;
 	validateDep();
 }
 
 NumberArrayLengthDependency::NumberArrayLengthDependency(std::string dependeeName, std::string dependentName, 
-Teuchos::RCP<Teuchos::ParameterList> parentList, unsigned int (*func)(int))
+Teuchos::RCP<Teuchos::ParameterList> parentList, int (*func)(int))
 :Dependency(dependeeName, parentList, dependentName, parentList, Dependency::NumberArrayLengthDep){ 
 	this->func = func;
 	validateDep();
 }
 
 
-unsigned int NumberArrayLengthDependency::runFunction(int argument) const{
+int NumberArrayLengthDependency::runFunction(int argument) const{
 	if(func !=0){
 		return (*func)(argument);
 	}
@@ -137,14 +138,29 @@ unsigned int NumberArrayLengthDependency::runFunction(int argument) const{
 }
 
 template <class S>
-void NumberArrayLengthDependency::modifyArrayLength(unsigned int newLength){
+void NumberArrayLengthDependency::modifyArrayLength(int newLength){
+	if(newLength <0){
+		std::stringstream oss;
+		std::string msg;
+		oss << "Ruh Roh Shaggy! Looks like a dependency tried to set the length of the Array in the " <<
+		getDependentName() << " parameter to a negative number. Silly. You can't have an Array " <<
+		"with a negative length! You should probably contact the maintainer of this program and " <<
+		"give him or her the following information: \n\n" <<
+		"Error:\n" <<
+		"An attempt was made to set the length of an Array to a negative number by a NumberArrayLengthDependency\n" <<
+		"Dependency Type: " << QString::number(getType()).toStdString() + "\n" <<
+		"Problem Dependee: " << getDependeeName() <<
+		"Problem Dependent: " << getDependeeName();
+		msg = oss.str();
+		throw Teuchos::Exceptions::InvalidParameterValue(msg);
+	}
 	const Teuchos::Array<S> originalArray = Teuchos::any_cast<Teuchos::Array<S> >(dependent->getAny()); 
 	Teuchos::RCP<const EnhancedNumberValidator<S> > potentialValidator = Teuchos::null;
 	if(!Teuchos::is_null(dependent->validator())){
 		potentialValidator = Teuchos::rcp_dynamic_cast<const ArrayNumberValidator<S> >(dependent->validator(),true)->getPrototype();
 	}
 	Teuchos::Array<S> newArray;
-	unsigned int i;
+	int i;
 	for(i=0; i<originalArray.size() && i<newLength; i++){
 		newArray.append(originalArray[i]);
 	}
@@ -160,11 +176,26 @@ void NumberArrayLengthDependency::modifyArrayLength(unsigned int newLength){
 }
 
 template<>
-void NumberArrayLengthDependency::modifyArrayLength<std::string>(unsigned int newLength){
+void NumberArrayLengthDependency::modifyArrayLength<std::string>(int newLength){
+	if(newLength <0){
+		std::stringstream oss;
+		std::string msg;
+		oss << "Ruh Roh Shaggy! Looks like a dependency tried to set the length of the Array in the " <<
+		getDependentName() << " parameter to a negative number. Silly. You can't have an Array " <<
+		"with a negative length! You should probably contact the maintainer of this program and " <<
+		"give him or her the following information: \n\n" <<
+		"Error:\n" <<
+		"An attempt was made to set the length of an Array to a negative number by a NumberArrayLengthDependency\n" <<
+		"Dependency Type: " << QString::number(getType()).toStdString() + "\n" <<
+		"Problem Dependee: " << getDependeeName() <<
+		"Problem Dependent: " << getDependeeName();
+		msg = oss.str();
+		throw Teuchos::Exceptions::InvalidParameterValue(msg);
+	}
 	const Teuchos::Array<std::string> originalArray = Teuchos::any_cast<Teuchos::Array<std::string> >(dependent->getAny()); 
 	Teuchos::Array<std::string> newArray;
 	Teuchos::RCP<const Teuchos::ParameterEntryValidator> validator = dependent->validator();
-	unsigned int i;
+	int i;
 	for(i=0; i<originalArray.size() && i<newLength; i++){
 		newArray.append(originalArray[i]);
 	}
