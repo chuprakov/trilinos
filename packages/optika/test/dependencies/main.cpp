@@ -435,7 +435,7 @@ int testArrayLengthDep(Teuchos::FancyOStream &out){
 	Teuchos::RCP<Optika::DependencySheet> depSheet1 = Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(My_deplist));
 
 	Teuchos::ParameterList&
-	numberArrayLengthDepList = My_deplist->sublist("Number Array Length Dependency List", false, "Number Array Length ependecy testing list.\nWorking June 27th 2009");
+	numberArrayLengthDepList = My_deplist->sublist("Number Array Length Dependency List", false, "Number Array Length Dependecy testing list.\nWorking June 27th 2009");
 	numberArrayLengthDepList.set("Array Length", 10, "array length setter");
 	Teuchos::Array<double> variableLengthArray(10,23.0);
 	Teuchos::RCP<Optika::EnhancedNumberValidator<double> > 
@@ -460,6 +460,8 @@ int testArrayLengthDep(Teuchos::FancyOStream &out){
 	numberArrayLengthDepList.set("Array Length", 12);
 	arrayLengthDep()->evaluate();
 	TEST_ASSERT(numberArrayLengthDepList.get("Variable Length Array", dummyType).length() ==12);
+	numberArrayLengthDepList.set("Array Length", -1);
+	TEST_THROW(arrayLengthDep()->evaluate(), Teuchos::Exceptions::InvalidParameterValue);
 
 	return (success ? 0:1);
 }

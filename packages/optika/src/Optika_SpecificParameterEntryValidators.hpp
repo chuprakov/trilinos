@@ -694,7 +694,7 @@ public:
 			
 			std::string currentString;
 			Teuchos::RCP< const Teuchos::Array<std::string> > validStrings = validStringValues();
-			for(unsigned int i = 0; i<extracted.size(); i++){
+			for(int i = 0; i<extracted.size(); i++){
 				currentString = extracted[i];
 				Teuchos::Array<std::string>::const_iterator it = std::find(validStrings->begin(), validStrings->end(), currentString);
 				if(it == validStrings->end()){
@@ -710,7 +710,7 @@ public:
 					"Value entered at " << i << ": "<<
 					extracted[i] << "\n" <<
 					"Exceptable Values:\n";
-					for(unsigned int j=0; j<validStrings->size(); j++){
+					for(int j=0; j<validStrings->size(); j++){
 						oss << "	" << (*validStrings)[j] << "\n";
 					}
 					msg = oss.str();
@@ -773,7 +773,7 @@ public:
 		Teuchos::any anyValue = entry.getAny(true);
 		if(anyValue.type() == typeid(Teuchos::Array<S>)){
 			Teuchos::Array<S> extracted = Teuchos::any_cast<Teuchos::Array<S> >(anyValue);
-			for(unsigned int i = 0; i<extracted.size(); i++){
+			for(int i = 0; i<extracted.size(); i++){
 				if(!( extracted[i] >= getPrototype()->min() &&  extracted[i] <= getPrototype()->max())){
 					std::stringstream oss;
 					std::string msg;
@@ -861,12 +861,11 @@ public:
 		}
 		else if(getPrototype()->fileMustExist()){
 			Teuchos::Array<std::string> extracted = Teuchos::any_cast<Teuchos::Array<std::string> >(anyValue);
-			for(unsigned int i = 0; i<extracted.size(); i++){
+			for(int i = 0; i<extracted.size(); i++){
 				std::string fileName = extracted[i];
 				struct stat fileInfo;
 				int intStat= stat(fileName.c_str(),&fileInfo);
 				if(intStat !=0){
-					const std::string &entryName = entry.getAny(false).typeName();
 					std::stringstream oss;
 					std::string msg;
 					oss << "Aww shoot! Sorry bud, but it looks like the \"" << paramName << "\"" <<

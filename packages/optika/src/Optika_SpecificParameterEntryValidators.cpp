@@ -66,7 +66,6 @@ void FileNameValidator::validate(Teuchos::ParameterEntry const &entry, std::stri
 		struct stat fileInfo;
 		int intStat= stat(fileName.c_str(),&fileInfo);
 		if(intStat !=0){
-			const std::string &entryName = entry.getAny(false).typeName();
 			std::stringstream oss;
 			std::string msg;
 			oss << "Aww shoot! Sorry bud, but it looks like the \"" << paramName << "\"" <<
