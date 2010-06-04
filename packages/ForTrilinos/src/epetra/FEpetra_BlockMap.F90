@@ -1,7 +1,46 @@
+!*********************************************************************
+! ForTrilinos: Object-Oriented Fortran 2003 interface to Trilinos
+!                Copyright 2010 Sandia Corporation
+!
+! Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
+! the U.S. Government retains certain rights in this software.
+!
+! Redistribution and use in source and binary forms, with or without
+! modification, are permitted provided that the following conditions are met:
+!
+! 1. Redistributions of source code must retain the above copyright
+!    notice, this list of conditions and the following disclaimer.
+!
+! 2. Redistributions in binary form must reproduce the above copyright
+!    notice, this list of conditions and the following disclaimer in the
+!    documentation and/or other materials provided with the distribution.
+!
+! 3. Neither the name of the Corporation nor the names of the
+!    contributors may be used to endorse or promote products derived from
+!    this software without specific prior written permission.
+!
+! THIS SOFTWARE IS PROVIDED BY SANDIA CORPORATION "AS IS" AND ANY
+! EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+! IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+! PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SANDIA CORPORATION OR THE
+! CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+! EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+! PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+! PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+! LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+! NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+! SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+!
+! Questions? Contact Karla Morris  (knmorri@sandia.gov) or
+!                    Damian Rouson (rouson@sandia.gov)
+!*********************************************************************
+
+
 module FEpetra_BlockMap
   use ForTrilinos_enums ,only: FT_Epetra_Comm_ID_t,FT_Epetra_BlockMap_ID_t,FT_Epetra_Map_ID_t,ForTrilinos_Universal_ID_t
   use ForTrilinos_table_man
-  use ForTrilinos_universal
+  use ForTrilinos_hermetic,only:hermetic
+  use ForTrilinos_universal,only:universal
   use FEpetra_Comm  ,only: Epetra_Comm
   use iso_c_binding ,only: c_int
   use forepetra
@@ -9,16 +48,16 @@ module FEpetra_BlockMap
   private                   ! Hide everything by default
   public :: Epetra_BlockMap ! Expose type/constructors/methods
 
-  type ,extends(universal)                 :: Epetra_BlockMap !"shell"
+  type ,extends(universal)      :: Epetra_BlockMap !"shell"
     private
-    type(FT_Epetra_BlockMap_ID_t) ,pointer :: BlockMap_id => null()
+    type(FT_Epetra_BlockMap_ID_t) :: BlockMap_id 
   contains
      !Developers only
+     procedure         :: remote_dealloc
+     procedure         :: remote_dealloc_EpetraBlockMap
      procedure         :: get_EpetraBlockMap_ID 
      procedure ,nopass :: alias_EpetraBlockMap_ID
      procedure         :: generalize 
-     procedure         :: assign_to_Epetra_BlockMap
-     generic :: assignment(=) => assign_to_Epetra_BlockMap
      !Local/Global ID accessor methods
      !Size and dimension acccessor functions
      procedure         :: NumGlobalElements
@@ -32,9 +71,6 @@ module FEpetra_BlockMap
      procedure         :: DistributedGlobal
      !Array accessor functions
      !Miscellaneous
-     !Memory Management
-     procedure         :: force_finalization 
-     final :: finalize
   end type
 
    interface Epetra_BlockMap ! constructors
@@ -42,9 +78,10 @@ module FEpetra_BlockMap
    end interface
  
 contains
-  type(FT_Epetra_BlockMap_ID_t) function from_struct(id)
+  type(Epetra_BlockMap) function from_struct(id)
      type(FT_Epetra_BlockMap_ID_t) ,intent(in) :: id
-     from_struct = id
+     from_struct%BlockMap_id = id
+     call from_struct%register_self()
   end function
  
   ! Original C++ prototype:
@@ -52,13 +89,15 @@ contains
   ! CTrilinos prototype:
   ! CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create ( int NumGlobalElements, int ElementSize, int IndexBase, CT_Epetra_Comm_ID_t CommID );
 
-  type(FT_Epetra_BlockMap_ID_t) function from_scratch(Num_GlobalElements,ElementSize,IndexBase,comm)
+  type(Epetra_BlockMap) function from_scratch(Num_GlobalElements,ElementSize,IndexBase,comm)
    !use ForTrilinos_enums ,only : FT_Epetra_Comm_ID_t,FT_Epetra_Map_ID_t
     integer(c_int) ,intent(in) :: Num_GlobalElements
     integer(c_int) ,intent(in) :: ElementSize
     integer(c_int) ,intent(in) :: IndexBase
     class(Epetra_Comm)         :: comm
-    from_scratch = Epetra_BlockMap_Create(Num_GlobalElements,ElementSize,IndexBase,comm%get_EpetraComm_ID())
+    type(FT_Epetra_BlockMap_ID_t) :: from_scratch_id
+    from_scratch_id = Epetra_BlockMap_Create(Num_GlobalElements,ElementSize,IndexBase,comm%get_EpetraComm_ID())
+    from_scratch = from_struct(from_scratch_id)
   end function
 
 ! Original C++ prototype:
@@ -67,14 +106,16 @@ contains
   ! CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create_Linear ( int NumGlobalElements, int NumMyElements, int
   ! ElementSize, int IndexBase, CT_Epetra_Comm_ID_t CommID );
 
-  type(FT_Epetra_BlockMap_ID_t) function from_scratch_linear(Num_GlobalElements,Num_MyElements,Element_Size,IndexBase,comm)
+  type(Epetra_BlockMap) function from_scratch_linear(Num_GlobalElements,Num_MyElements,Element_Size,IndexBase,comm)
    !use ForTrilinos_enums ,only : FT_Epetra_Comm_ID_t,FT_Epetra_Map_ID_t
     integer(c_int) ,intent(in) :: Num_GlobalElements
     integer(c_int) ,intent(in) :: Num_MyElements
     integer(c_int) ,intent(in) :: Element_Size
     integer(c_int) ,intent(in) :: IndexBase
     class(Epetra_Comm)         :: comm
-    from_scratch_linear = Epetra_BlockMap_Create_Linear(Num_GlobalElements,Num_MyElements,Element_Size,IndexBase,comm%get_EpetraComm_ID())
+    type(FT_Epetra_BlockMap_ID_t) :: from_scratch_linear_id
+    from_scratch_linear_id = Epetra_BlockMap_Create_Linear(Num_GlobalElements,Num_MyElements,Element_Size,IndexBase,comm%get_EpetraComm_ID())
+    from_scratch_linear = from_struct(from_scratch_linear_id)
   end function
 
 !Original C++ prototype:
@@ -83,7 +124,7 @@ contains
   ! CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create_Arbitrary ( int NumGlobalElements, int NumMyElements,
   !const int * MyGlobalElements, int ElementSize, int IndexBase, CT_Epetra_Comm_ID_t CommID );
 
-  type(FT_Epetra_BlockMap_ID_t) function from_scratch_arbitrary(Num_GlobalElements,Num_MyElements,My_GlobalElements,Element_Size,IndexBase,comm)
+  type(Epetra_BlockMap) function from_scratch_arbitrary(Num_GlobalElements,Num_MyElements,My_GlobalElements,Element_Size,IndexBase,comm)
    !use ForTrilinos_enums ,only : FT_Epetra_Comm_ID_t,FT_Epetra_Map_ID_t
     integer(c_int) ,intent(in) :: Num_GlobalElements
     integer(c_int) ,intent(in) :: Num_MyElements
@@ -91,7 +132,9 @@ contains
     integer(c_int) ,intent(in) :: Element_Size
     integer(c_int) ,intent(in) :: IndexBase
     class(Epetra_Comm)         :: comm
-    from_scratch_arbitrary = Epetra_BlockMap_Create_Arbitrary(Num_GlobalElements,Num_MyElements,My_GlobalElements,Element_Size,IndexBase,comm%get_EpetraComm_ID())
+    type(FT_Epetra_BlockMap_ID_t) :: from_scratch_arbitrary_id
+    from_scratch_arbitrary_id = Epetra_BlockMap_Create_Arbitrary(Num_GlobalElements,Num_MyElements,My_GlobalElements,Element_Size,IndexBase,comm%get_EpetraComm_ID())
+    from_scratch_arbitrary = from_struct(from_scratch_arbitrary_id)
   end function
 
 ! Original C++ prototype:
@@ -101,7 +144,7 @@ contains
   ! CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create_Variable ( int NumGlobalElements, int NumMyElements,
   !const int * MyGlobalElements, const int * ElementSizeList, int IndexBase, CT_Epetra_Comm_ID_t CommID );
 
-  type(FT_Epetra_BlockMap_ID_t) function from_scratch_variable(Num_GlobalElements,Num_MyElements,My_GlobalElements,Element_SizeList,IndexBase,comm)
+  type(Epetra_BlockMap) function from_scratch_variable(Num_GlobalElements,Num_MyElements,My_GlobalElements,Element_SizeList,IndexBase,comm)
    !use ForTrilinos_enums ,only : FT_Epetra_Comm_ID_t,FT_Epetra_Map_ID_t
     integer(c_int) ,intent(in) :: Num_GlobalElements
     integer(c_int) ,intent(in) :: Num_MyElements
@@ -109,7 +152,9 @@ contains
     integer(c_int) ,intent(in) ,dimension(:) :: Element_SizeList    
     integer(c_int) ,intent(in) :: IndexBase
     class(Epetra_Comm)         :: comm
-    from_scratch_variable = Epetra_BlockMap_Create_Variable(Num_GlobalElements,Num_MyElements,My_GlobalElements,Element_SizeList,IndexBase,comm%get_EpetraComm_ID())
+    type(FT_Epetra_BlockMap_ID_t) :: from_scratch_variable_id
+    from_scratch_variable_id = Epetra_BlockMap_Create_Variable(Num_GlobalElements,Num_MyElements,My_GlobalElements,Element_SizeList,IndexBase,comm%get_EpetraComm_ID())
+    from_scratch_variable = from_struct(from_scratch_variable_id)
   end function
 
   ! Original C++ prototype:
@@ -117,18 +162,16 @@ contains
   ! CTrilinos prototype:
   ! CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Duplicate ( CT_Epetra_BlockMap_ID_t mapID );
 
-  type(FT_Epetra_BlockMap_ID_t) function duplicate(original)
-    type(Epetra_BlockMap) ,intent(in) :: original
-    duplicate = Epetra_BlockMap_Duplicate(original%BlockMap_id)
+  type(Epetra_BlockMap) function duplicate(this)
+    type(Epetra_BlockMap) ,intent(in) :: this 
+    type(FT_Epetra_BlockMap_ID_t) :: duplicate_id
+    duplicate_id = Epetra_BlockMap_Duplicate(this%BlockMap_id)
+    duplicate = from_struct(duplicate_id)
   end function
 
   type(FT_Epetra_BlockMap_ID_t) function get_EpetraBlockMap_ID(this)
     class(Epetra_BlockMap) ,intent(in) :: this 
-    if (associated(this%BlockMap_id)) then
-     get_EpetraBlockMap_ID=this%BlockMap_id
-    else
-     stop 'get_EpetraBlockMap_ID: BlockMap_id is unassociated'
-    end if
+    get_EpetraBlockMap_ID=this%BlockMap_id
   end function
   
   type(FT_Epetra_BlockMap_ID_t) function alias_EpetraBlockMap_ID(generic_id)
@@ -172,12 +215,6 @@ contains
    ! ____ Use for CTrilinos function implementation ______
   end function
  
-  subroutine assign_to_Epetra_BlockMap(lhs,rhs)
-    class(Epetra_BlockMap)        ,intent(inout) :: lhs
-    type(FT_Epetra_BlockMap_ID_t) ,intent(in)    :: rhs
-    allocate(lhs%BlockMap_id,source=rhs)
-  end subroutine
-
   integer(c_int) function NumGlobalElements(this)
     class(Epetra_BlockMap) ,intent(in) :: this
     NumGlobalElements=Epetra_BlockMap_NumGlobalElements(this%BlockMap_id)
@@ -225,19 +262,14 @@ contains
     if (DistributedGlobal_out==FT_TRUE) DistributedGlobal=.true.
   end function
 
-  subroutine finalize(this)
-    type(Epetra_BlockMap) :: this
+  subroutine remote_dealloc(this)
+    class(Epetra_BlockMap),intent(inout) :: this
     call Epetra_BlockMap_Destroy( this%BlockMap_id ) 
-    deallocate (this%BlockMap_id)
   end subroutine
 
-  subroutine force_finalization(this)
-    class(Epetra_BlockMap) ,intent(inout) :: this
-    if (associated(this%BlockMap_id)) then
-      call finalize(this) 
-    else
-      print *,' finalization for Epetra_BlockMap received  with unassociated object'
-    end if
+  subroutine remote_dealloc_EpetraBlockMap(this)
+    class(Epetra_BlockMap),intent(inout) :: this
+    call Epetra_BlockMap_Destroy( this%BlockMap_id ) 
   end subroutine
 
 end module 

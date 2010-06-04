@@ -1,3 +1,40 @@
+!*********************************************************************
+! ForTrilinos: Object-Oriented Fortran 2003 interface to Trilinos
+!                Copyright 2010 Sandia Corporation
+!
+! Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
+! the U.S. Government retains certain rights in this software.
+!
+! Redistribution and use in source and binary forms, with or without
+! modification, are permitted provided that the following conditions are met:
+!
+! 1. Redistributions of source code must retain the above copyright
+!    notice, this list of conditions and the following disclaimer.
+!
+! 2. Redistributions in binary form must reproduce the above copyright
+!    notice, this list of conditions and the following disclaimer in the
+!    documentation and/or other materials provided with the distribution.
+!
+! 3. Neither the name of the Corporation nor the names of the
+!    contributors may be used to endorse or promote products derived from
+!    this software without specific prior written permission.
+!
+! THIS SOFTWARE IS PROVIDED BY SANDIA CORPORATION "AS IS" AND ANY
+! EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+! IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+! PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SANDIA CORPORATION OR THE
+! CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+! EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+! PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+! PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+! LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+! NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+! SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+!
+! Questions? Contact Karla Morris  (knmorri@sandia.gov) or
+!                    Damian Rouson (rouson@sandia.gov)
+!*********************************************************************
+
 module FEpetra_Vector
   use ForTrilinos_enums   ,only: FT_Epetra_MultiVector_ID_t,FT_Epetra_Vector_ID_t,FT_Epetra_BlockMap_ID_t,ForTrilinos_Universal_ID_t,FT_boolean_t 
   use ForTrilinos_table_man
@@ -12,20 +49,17 @@ module FEpetra_Vector
 
   type ,extends(Epetra_MultiVector)      :: Epetra_Vector !"shell"
     private
-    type(FT_Epetra_Vector_ID_t) ,pointer :: vector_id => null()
+    type(FT_Epetra_Vector_ID_t)  :: vector_id 
   contains
+     procedure         :: remote_dealloc
      procedure         :: get_EpetraVector_ID 
      procedure ,nopass :: alias_EpetraVector_ID
      procedure         :: generalize 
-     procedure         :: assign_to_Epetra_Vector
-     generic :: assignment(=) => assign_to_Epetra_Vector
      !Post-construction modfication routines
      procedure         :: ReplaceGlobalValues
      ! Extraction methods
      procedure         :: ExtractCopy_EpetraVector
      generic :: ExtractCopy => ExtractCopy_EpetraVector
-     procedure         :: force_finalization 
-     final :: finalize
   end type
 
    interface Epetra_Vector ! constructors
@@ -34,9 +68,10 @@ module FEpetra_Vector
  
 contains
 
-  type(FT_Epetra_Vector_ID_t) function from_struct(id)
-     type(FT_Epetra_Vector_ID_t) ,intent(in) :: id
-     from_struct = id
+  type(Epetra_Vector) function from_struct(id)
+    type(FT_Epetra_Vector_ID_t) ,intent(in) :: id
+    from_struct%vector_id = id
+    from_struct%Epetra_MultiVector=Epetra_MultiVector(from_struct%alias_EpetraMultiVector_ID(from_struct%generalize()))
   end function
 
   ! Original C++ prototype:
@@ -44,27 +79,31 @@ contains
   ! CTrilinos prototype:
   ! CT_Epetra_Vector_ID_t Epetra_Vector_Create ( CT_Epetra_BlockMap_ID_t MapID, boolean zeroOut );
 
-  type(FT_Epetra_Vector_ID_t) function constructor1(BlockMap,zero_initial)
+  type(Epetra_Vector) function constructor1(BlockMap,zero_initial)
     use ForTrilinos_enums ,only: FT_boolean_t,FT_FALSE,FT_TRUE,FT_Epetra_BlockMap_ID_t
     use FEpetra_BlockMap  ,only: Epetra_BlockMap
     class(Epetra_BlockMap) ,intent(in) :: BlockMap
     logical ,optional      ,intent(in) :: zero_initial
     integer(FT_boolean_t)              :: zero_out
+    type(FT_Epetra_Vector_ID_t) :: constructor1_id
     if (present(zero_initial).and.zero_initial) then
      zero_out=FT_TRUE
     else
      zero_out=FT_FALSE
     endif
-    constructor1 = Epetra_Vector_Create(BlockMap%get_EpetraBlockMap_ID(),zero_out)
+    constructor1_id = Epetra_Vector_Create(BlockMap%get_EpetraBlockMap_ID(),zero_out)
+    constructor1 = from_struct(constructor1_id)
   end function
   
-  type(FT_Epetra_Vector_ID_t) function constructor2(CV,BlockMap,V)
+  type(Epetra_Vector) function constructor2(CV,BlockMap,V)
     use ForTrilinos_enum_wrappers
     use FEpetra_BlockMap  ,only: Epetra_BlockMap
     class(Epetra_BlockMap) ,intent(in) :: BlockMap
     integer(FT_Epetra_DataAccess_E_t), intent(in) :: CV
     real(c_double),dimension(:) :: V
-    constructor2 = Epetra_Vector_Create_FromArray(CV,BlockMap%get_EpetraBlockMap_ID(),V)
+    type(FT_Epetra_Vector_ID_t) :: constructor2_id
+    constructor2_id = Epetra_Vector_Create_FromArray(CV,BlockMap%get_EpetraBlockMap_ID(),V)
+    constructor2 = from_struct(constructor2_id) 
   end function
 
   ! Original C++ prototype:
@@ -72,18 +111,16 @@ contains
   ! CTrilinos prototype:
   ! CT_Epetra_Vector_ID_t Epetra_Vector_Duplicate ( CT_Epetra_Vector_ID_t SourceID );
 
-  type(FT_Epetra_Vector_ID_t) function duplicate(original)
-    type(Epetra_Vector) ,intent(in) :: original
-    duplicate = Epetra_Vector_Duplicate(original%vector_id)
+  type(Epetra_Vector) function duplicate(this)
+    type(Epetra_Vector) ,intent(in) :: this 
+    type(FT_Epetra_Vector_ID_t) :: duplicate_id
+    duplicate_id = Epetra_Vector_Duplicate(this%vector_id)
+    duplicate = from_struct(duplicate_id)
   end function
 
   type(FT_Epetra_Vector_ID_t) function get_EpetraVector_ID(this)
     class(Epetra_Vector) ,intent(in) :: this 
-    if (associated(this%vector_id)) then
-     get_EpetraVector_ID=this%vector_id
-    else
-     stop 'get_EpetraVector_ID: vector_id is unassociated'
-    end if
+    get_EpetraVector_ID=this%vector_id
   end function
  
   type(FT_Epetra_Vector_ID_t) function alias_EpetraVector_ID(generic_id)
@@ -127,13 +164,6 @@ contains
    ! ____ Use for CTrilinos function implementation ______
   end function
 
-  subroutine assign_to_Epetra_Vector(lhs,rhs)
-    class(Epetra_Vector)        ,intent(inout) :: lhs
-    type(FT_Epetra_Vector_ID_t) ,intent(in)    :: rhs
-    allocate(lhs%vector_id,source=rhs)
-    lhs%Epetra_MultiVector=Epetra_MultiVector(lhs%alias_EpetraMultiVector_ID(lhs%generalize()))
-  end subroutine
-
   subroutine ReplaceGlobalValues(this,NumEntries,values,indices,err)
     class(Epetra_Vector), intent(in) :: this
     integer(c_int),       intent(in) :: NumEntries
@@ -155,20 +185,10 @@ contains
    if (present(err)) err=error(error_out)
   end function 
   
-  subroutine finalize(this)
-    type(Epetra_Vector) :: this
-    call Epetra_Vector_Destroy( this%vector_id ) 
-    deallocate(this%vector_id)
-  end subroutine
-
-  subroutine force_finalization(this)
+  subroutine remote_dealloc(this)
     class(Epetra_Vector) ,intent(inout) :: this
-    call this%Epetra_MultiVector%force_finalization()
-    if (associated(this%vector_id)) then
-      call finalize(this) 
-    else
-      print *,' finalization for Epetra_Vector received object with unassociated vector_id'
-    end if
+    call this%remote_dealloc_EpetraMultiVector()
+    call Epetra_Vector_Destroy(this%vector_id) 
   end subroutine
 
 end module 

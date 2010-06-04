@@ -1,5 +1,43 @@
+!*********************************************************************
+! ForTrilinos: Object-Oriented Fortran 2003 interface to Trilinos
+!                Copyright 2010 Sandia Corporation
+!
+! Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
+! the U.S. Government retains certain rights in this software.
+!
+! Redistribution and use in source and binary forms, with or without
+! modification, are permitted provided that the following conditions are met:
+!
+! 1. Redistributions of source code must retain the above copyright
+!    notice, this list of conditions and the following disclaimer.
+!
+! 2. Redistributions in binary form must reproduce the above copyright
+!    notice, this list of conditions and the following disclaimer in the
+!    documentation and/or other materials provided with the distribution.
+!
+! 3. Neither the name of the Corporation nor the names of the
+!    contributors may be used to endorse or promote products derived from
+!    this software without specific prior written permission.
+!
+! THIS SOFTWARE IS PROVIDED BY SANDIA CORPORATION "AS IS" AND ANY
+! EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+! IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+! PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SANDIA CORPORATION OR THE
+! CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+! EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+! PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+! PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+! LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+! NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+! SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+!
+! Questions? Contact Karla Morris  (knmorri@sandia.gov) or
+!                    Damian Rouson (rouson@sandia.gov)
+!*********************************************************************
+
+
 module FEpetra_RowMatrix
-  use ForTrilinos_universal ,only : universal
+  use ForTrilinos_universal,only : universal
   use ForTrilinos_enums !,only: FT_Epetra_RowMatrix_ID_t,ForTrilinos_Universal_ID_t
   use ForTrilinos_table_man
   use ForTrilinos_error, only: error
@@ -16,14 +54,11 @@ module FEpetra_RowMatrix
    type(FT_Epetra_RowMatrix_ID_t)         :: RowMatrix_id 
   contains
     ! Developers only
+    procedure                          :: remote_dealloc_EpetraRowMatrix
     procedure                                     :: get_EpetraRowMatrix_ID
     procedure                                     :: set_EpetraRowMatrix_ID
     procedure                 ,nopass             :: alias_EpetraRowMatrix_ID
     procedure ,non_overridable                    :: generalize_EpetraRowMatrix
-    procedure(EpetraCrsMatrix_assign)   ,deferred :: CrsMatrix_assign 
-    procedure(EpetraRowMatrix_assign)   ,deferred :: RowMatrix_assign 
-    procedure                                     :: RowMatrix_assign_ID
-    generic :: assignment(=)=>RowMatrix_assign,CrsMatrix_assign,RowMatrix_assign_ID
     !Matrix data extraction routines
     procedure(NumMyRowEntries_interface),deferred :: NumMyRowEntries
     procedure(MaxNumEntries_interface)  ,deferred :: MaxNumEntries
@@ -37,22 +72,9 @@ module FEpetra_RowMatrix
     !Atribute access functions
     procedure(RowMatrixRowMap_interface),deferred :: RowMatrixRowMap
     !I/O methods
-    !Memory Management
-    procedure,non_overridable :: force_finalization_EpetraRowMatrix
   end type
   
   abstract interface
-    subroutine EpetraRowMatrix_assign(lhs,rhs)
-      import:: Epetra_RowMatrix
-      class(Epetra_RowMatrix) ,intent(in)    :: rhs
-      class(Epetra_RowMatrix) ,intent(inout) :: lhs
-    end subroutine
-    subroutine EpetraCrsMatrix_assign(lhs,rhs)
-      use ForTrilinos_enums, only: FT_Epetra_CrsMatrix_ID_t
-      import:: Epetra_RowMatrix
-      type(FT_Epetra_CrsMatrix_ID_t) ,intent(in)    :: rhs
-      class(Epetra_RowMatrix) ,intent(inout) :: lhs
-    end subroutine
     integer(c_int) function NumMyRowEntries_interface(this,MyRow)
       use iso_c_binding, only : c_int
       import:: Epetra_RowMatrix
@@ -164,7 +186,7 @@ module FEpetra_RowMatrix
     lhs%RowMatrix_id=rhs
   end subroutine
  
-  subroutine force_finalization_EpetraRowMatrix(this)
+  subroutine remote_dealloc_EpetraRowMatrix(this)
     class(Epetra_RowMatrix) ,intent(inout) :: this
     call Epetra_RowMatrix_Destroy( this%RowMatrix_id )
   end subroutine
