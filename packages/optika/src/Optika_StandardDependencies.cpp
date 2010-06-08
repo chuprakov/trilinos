@@ -77,14 +77,6 @@ void StringVisualDependency::evaluate(){
 	else{
 		dependentVisible = false;
 	}
-
-		
-	/*if((dependeeValue == value && showIf) || (dependeeValue != value && !showIf)){
-		dependentVisible = true;
-	}
-	else{
-		dependentVisible = false;
-	}*/
 }
 
 void StringVisualDependency::validateDep(){
