@@ -118,6 +118,11 @@ private:
 class StringVisualDependency : public VisualDependency{
 public:
 	/**
+	 * Convience typedef
+	 */
+	typedef Teuchos::Array<std::string> ValueList; 
+
+	/**
 	 * Constructs a StringVisualDependency.
 	 *
 	 * @param dependeeName The name of the dependee parameter.
@@ -126,7 +131,7 @@ public:
 	 * @param dependentParentList The ParameterList containing the dependent.
 	 * @param value The value of the depndee that affects the visiblity of the dependent.
 	 * @param showIf When true, the depndent will be be shown if the dependee is set to the same value as specified by the value parameter.
-	 * If false, the dependent will be shown only when the depndee is set to a value other than the one specified by the value parameter.
+	 * If false, the dependent will be shown only when the dependee is set to a value other than the one specified by the value parameter.
 	 */
 	StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, std::string value, bool showIf);
@@ -139,10 +144,37 @@ public:
 	 * @param parentList The ParameterList containing the dependent and the dependee.
 	 * @param value The value of the depndee that affects the visiblity of the dependent.
 	 * @param showIf When true, the depndent will be be shown if the dependee is set to the same value as specified by the value parameter.
-	 * If false, the dependent will be shown only when the depndee is set to a value other than the one specified by the value parameter.
+	 * If false, the dependent will be shown only when the dependee is set to a value other than the one specified by the value parameter.
 	 */
 	StringVisualDependency(std::string dependeeName, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> parentList, 
 	std::string value, bool showIf);
+
+	/**
+	 * Constructs a StringVisualDependency.
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependentName The name of the dependent parameter.
+	 * @param dependentParentList The ParameterList containing the dependent.
+	 * @param values The values of the depndee that affect the visiblity of the dependent.
+	 * @param showIf When true, the depndent will be be shown if the dependee is set to one of the values specified by the values parameter.
+	 * If false, the dependent will be shown only when the dependee is set to a value other than the ones specified by the values parameter.
+	 */
+	StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, const ValueList& values, bool showIf);
+
+	/**
+	 * Constructs a StringVisualDependency.
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependentName The name of the dependent parameter.
+	 * @param parentList The ParameterList containing the dependent and the dependee.
+	 * @param values The values of the depndee that affect the visiblity of the dependent.
+	 * @param showIf When true, the depndent will be be shown if the dependee is set to the one of the values as specified by the values parameter.
+	 * If false, the dependent will be shown only when the dependee is set to a value other than the ones specified by the values parameter.
+	 */
+	StringVisualDependency(std::string dependeeName, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> parentList, 
+	const ValueList& values, bool showIf);
 
 	void evaluate();
 
@@ -150,7 +182,7 @@ private:
 	/**
 	 * The value used to deteremine the visiblity of the dependent.
 	 */
-	std::string value;
+	const ValueList values;
 
 	/**
 	 * Whether or not to show the dependent if the dependee is set to the value.

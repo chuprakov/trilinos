@@ -393,6 +393,42 @@ int testVisualDeps(Teuchos::FancyOStream &out){
 	TEST_ASSERT(swissDep1->isDependentVisible());
 
 	/*
+	 * String Visual Tester with multiple values
+	 */
+	Teuchos::ParameterList&
+    multiStringVisDepList = My_deplist->sublist(
+		"Multi String Visual Dependency List",
+		false
+	);
+	Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
+	favCheeseValidator2 = Teuchos::rcp(
+		new Teuchos::StringToIntegralParameterEntryValidator<int>(
+			Teuchos::tuple<std::string>( "Provalone", "Swiss", "American", "Cheder" ),
+			"Favorite Cheese"
+		)
+	);
+   
+	multiStringVisDepList.set("Favorite Cheese", "American", "Your favorite type of cheese", favCheeseValidator2);
+	multiStringVisDepList.set("Swiss rating", 0, "How you rate swiss on a scale of 1 to 10", swissValidator);
+	Teuchos::RCP<Optika::StringVisualDependency> 
+	swissDep2 = Teuchos::RCP<Optika::StringVisualDependency>(
+		new Optika::StringVisualDependency(
+			"Favorite Cheese", 
+			Teuchos::sublist(My_deplist,"Multi String Visual Dependency List"),
+			"Swiss rating", 
+			Teuchos::sublist(My_deplist,"Multi String Visual Dependency List"),
+			Teuchos::tuple<std::string>("Swiss", "Cheder"), 
+			true
+		)
+	);
+	depSheet1->addDependency(swissDep2);
+	swissDep2->evaluate();
+	TEST_ASSERT(!swissDep2->isDependentVisible());
+	multiStringVisDepList.set("Favorite Cheese", "Cheder");
+	swissDep2->evaluate();
+	TEST_ASSERT(swissDep2->isDependentVisible());
+
+	/*
 	 * Another test of the NumberVisualDependency.
 	 */
 	int (*visfunc)(int);

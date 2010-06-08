@@ -45,29 +45,50 @@ std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentL
 
 StringVisualDependency::StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, std::string value, bool showIf)
-:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList){
-	this->showIf = showIf;
-	this->value = value;
+:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList), values(ValueList(1,value)), showIf(showIf){
 	validateDep();
 }
 
 StringVisualDependency::StringVisualDependency(std::string dependeeName, std::string dependentName, 
 Teuchos::RCP<Teuchos::ParameterList> parentList, std::string value, bool showIf)
-:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList){
+:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList), showIf(showIf){
 	StringVisualDependency(dependeeName, parentList, dependentName, parentList, value, showIf);
+}
+
+StringVisualDependency::StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, const ValueList& values, bool showIf)
+:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList), values(values), showIf(showIf){
+	validateDep();
+}
+
+StringVisualDependency::StringVisualDependency(std::string dependeeName, std::string dependentName, 
+Teuchos::RCP<Teuchos::ParameterList> parentList, const ValueList& values, bool showIf)
+:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList), values(values), showIf(showIf){
+	StringVisualDependency(dependeeName, parentList, dependentName, parentList, values, showIf);
 }
 
 void StringVisualDependency::evaluate(){
 	std::string dependeeValue = dependeeParentList->get<std::string>(dependeeName);
-	if((dependeeValue == value && showIf) || (dependeeValue != value && !showIf)){
+	ValueList::const_iterator result;
+	result = find(values.begin(), values.end(), dependeeValue);
+	if((result != values.end() && showIf) || (result==values.end() && !showIf)){
 		dependentVisible = true;
 	}
 	else{
 		dependentVisible = false;
 	}
+
+		
+	/*if((dependeeValue == value && showIf) || (dependeeValue != value && !showIf)){
+		dependentVisible = true;
+	}
+	else{
+		dependentVisible = false;
+	}*/
 }
 
 void StringVisualDependency::validateDep(){
+	std::cout << "inv valid dep " << values << "\n";
 	if(!dependee->isType<std::string>()){
 		throw InvalidDependencyException("Ay no! The dependee of a "
 		"String Visual Dependency must be of type string.\n"
