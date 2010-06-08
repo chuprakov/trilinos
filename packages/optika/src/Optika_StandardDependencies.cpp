@@ -53,10 +53,8 @@ std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentL
 
 StringVisualDependency::StringVisualDependency(std::string dependeeName, std::string dependentName, 
 Teuchos::RCP<Teuchos::ParameterList> parentList, std::string value, bool showIf)
-:VisualDependency(dependeeName, parentList, dependentName, parentList){
-	this->showIf = showIf;
-	this->value = value;
-	validateDep();
+:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList){
+	StringVisualDependency(dependeeName, parentList, dependentName, parentList, value, showIf);
 }
 
 void StringVisualDependency::evaluate(){
@@ -88,9 +86,8 @@ std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentL
 
 BoolVisualDependency::BoolVisualDependency(std::string dependeeName, std::string dependentName, 
 Teuchos::RCP<Teuchos::ParameterList> parentList, bool showIf)
-:VisualDependency(dependeeName, parentList, dependentName, parentList){
-	this->showIf = showIf;
-	validateDep();
+:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList){
+	BoolVisualDependency(dependeeName, parentList, dependentName, parentList, showIf);
 }
 
 void BoolVisualDependency::evaluate(){
@@ -122,9 +119,8 @@ std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentL
 
 NumberArrayLengthDependency::NumberArrayLengthDependency(std::string dependeeName, std::string dependentName, 
 Teuchos::RCP<Teuchos::ParameterList> parentList, int (*func)(int))
-:Dependency(dependeeName, parentList, dependentName, parentList, Dependency::NumberArrayLengthDep){ 
-	this->func = func;
-	validateDep();
+:Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList, Dependency::NumberArrayLengthDep){
+	NumberArrayLengthDependency(dependeeName, parentList, dependentName, parentList, func);
 }
 
 
@@ -262,10 +258,8 @@ ValueToValidatorMap valuesAndValidators, Teuchos::RCP<Teuchos::ParameterEntryVal
 StringValidatorDependency::StringValidatorDependency(std::string dependeeName, std::string dependentName, 
 Teuchos::RCP<Teuchos::ParameterList> parentList, ValueToValidatorMap valuesAndValidators, 
 Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator)
-:ValidatorDependency(dependeeName, parentList, dependentName, parentList){
-	this->valuesAndValidators = valuesAndValidators;
-	this->defaultValidator = defaultValidator;
-	validateDep();
+:ValidatorDependency(dependeeName, dependeeParentList, dependentName, dependentParentList){
+	StringValidatorDependency(dependeeName, parentList, dependentName, parentList, valuesAndValidators, defaultValidator);
 }
 
 void StringValidatorDependency::evaluate(){
@@ -312,10 +306,8 @@ Teuchos::RCP<const Teuchos::ParameterEntryValidator> trueValidator, Teuchos::RCP
 BoolValidatorDependency::BoolValidatorDependency(std::string dependeeName, std::string dependentName, 
 Teuchos::RCP<Teuchos::ParameterList> parentList, Teuchos::RCP<const Teuchos::ParameterEntryValidator> trueValidator,
 Teuchos::RCP<const Teuchos::ParameterEntryValidator> falseValidator)
-:ValidatorDependency(dependeeName, parentList, dependentName, parentList){
-	this->trueValidator = trueValidator;
-	this->falseValidator = falseValidator;
-	validateDep();
+:ValidatorDependency(dependeeName, dependeeParentList, dependentName, dependentParentList){
+	BoolValidatorDependency(dependeeName, parentList, dependentName, parentList, trueValidator, falseValidator);
 }
 
 void BoolValidatorDependency::evaluate(){
