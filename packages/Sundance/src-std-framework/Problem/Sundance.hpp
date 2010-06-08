@@ -137,6 +137,9 @@
 /* Solvers & stuff */
 #include "TSFVectorType.hpp"
 #include "TSFEpetraVectorType.hpp"
+#include "TSFEpetraMatrixMatrixProduct.hpp"
+#include "TSFEpetraMatrixMatrixSum.hpp"
+#include "TSFEpetraMatrixOps.hpp"
 #include "TSFBICGSTABSolverDecl.hpp"
 #include "TSFAztecSolver.hpp"
 #include "TSFLinearSolverImpl.hpp"
