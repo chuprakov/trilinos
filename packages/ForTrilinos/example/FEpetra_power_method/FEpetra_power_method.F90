@@ -153,9 +153,9 @@ program main
  
   ! Clean up memory (in reverse order).  This step is not required
   ! with compilers that support Fortran 2003 type finalization:
-  call A%force_finalization()
-  call map%force_finalization()
-  call communicator%force_finalization()
+  call A%force_finalize()
+  call map%force_finalize()
+  call communicator%force_finalize()
  
 #ifdef HAVE_MPI
   call MPI_FINALIZE(rc)
@@ -165,6 +165,7 @@ contains
 
 subroutine power_method(A,lambda,niters,tolerance,verbose,ierr_pm)
  use iso_c_binding        ,only : c_int,c_double
+ use FEpetra_Map, only : Epetra_Map
  use FEpetra_Vector, only : Epetra_Vector
  use FEpetra_CrsMatrix, only : Epetra_CrsMatrix
  implicit none
@@ -179,20 +180,20 @@ subroutine power_method(A,lambda,niters,tolerance,verbose,ierr_pm)
  integer(c_int) :: iter
  print *,'Inside power method'
  ierr_pm=1
- q = Epetra_Vector(A%RowMap()) 
- z = Epetra_Vector(A%RowMap()) 
- resid = Epetra_Vector(A%RowMap()) 
+ !q = Epetra_Vector(A%RowMap()) 
+ !z = Epetra_Vector(A%RowMap()) 
+ !resid = Epetra_Vector(A%RowMap()) 
 
  !Fill z with random numbers
  call z%Random()
 
  do iter=1,niters
-  normz=z%Norm2()              !Compute 2-norm of z
-  call q%Scale(1.0/normz(1),z)  
-  call A%Multiply(.false.,q,z) ! Compute z=A*q
-  call q%Dot(z,[lambda])       ! Approximate maximum eignvalue
+ ! normz=z%Norm2()              !Compute 2-norm of z
+ ! call q%Scale(1.0/normz(1),z)  
+ ! call A%Multiply(.false.,q,z) ! Compute z=A*q
+ ! call q%Dot(z,[lambda])       ! Approximate maximum eignvalue
   if (mod(iter,100)==0.or.iter==niters) then
-   call resid%Update(1.0_c_double,z,-lambda,q,0.0_c_double) ! Compute A*q-lambda*q
+ !  call resid%Update(1.0_c_double,z,-lambda,q,0.0_c_double) ! Compute A*q-lambda*q
    residual=resid%Norm2()
    if (verbose) then
     print *,'Iter=',iter,'lambda=',lambda,'Resisual of A*q-lambda*q=',residual(1)

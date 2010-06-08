@@ -1,5 +1,43 @@
+!*********************************************************************
+! ForTrilinos: Object-Oriented Fortran 2003 interface to Trilinos
+!                Copyright 2010 Sandia Corporation
+!
+! Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
+! the U.S. Government retains certain rights in this software.
+!
+! Redistribution and use in source and binary forms, with or without
+! modification, are permitted provided that the following conditions are met:
+!
+! 1. Redistributions of source code must retain the above copyright
+!    notice, this list of conditions and the following disclaimer.
+!
+! 2. Redistributions in binary form must reproduce the above copyright
+!    notice, this list of conditions and the following disclaimer in the
+!    documentation and/or other materials provided with the distribution.
+!
+! 3. Neither the name of the Corporation nor the names of the
+!    contributors may be used to endorse or promote products derived from
+!    this software without specific prior written permission.
+!
+! THIS SOFTWARE IS PROVIDED BY SANDIA CORPORATION "AS IS" AND ANY
+! EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+! IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+! PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SANDIA CORPORATION OR THE
+! CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+! EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+! PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+! PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+! LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+! NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+! SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+!
+! Questions? Contact Karla Morris  (knmorri@sandia.gov) or 
+!                    Damian Rouson (rouson@sandia.gov)
+!*********************************************************************
+
 module FEpetra_CrsMatrix
   use ForTrilinos_enums !,only : FT_Epetra_RowMatrix_ID,FT_Epetra_CrsMatrix_ID_t,ForTrilinos_Universal_ID_t,FT_boolean_t,FT_FALSE,FT_TRUE
+  use ForTrilinos_hermetic,only:hermetic
   use ForTrilinos_enum_wrappers
   use ForTrilinos_table_man
   use ForTrilinos_error
@@ -13,15 +51,14 @@ module FEpetra_CrsMatrix
 
   type ,extends(Epetra_RowMatrix)  :: Epetra_CrsMatrix !"shell"
     private
-    type(FT_Epetra_CrsMatrix_ID_t) ,pointer :: CrsMatrix_id => null()
+    type(FT_Epetra_CrsMatrix_ID_t) :: CrsMatrix_id 
   contains
      !Constructor
      !Developers only
+     procedure         :: remote_dealloc
      procedure         :: get_EpetraCrsMatrix_ID 
      procedure ,nopass :: alias_EpetraCrsMatrix_ID
      procedure         :: generalize 
-     procedure         :: CrsMatrix_assign => assign_to_Epetra_CrsMatrix
-     procedure         :: RowMatrix_assign => assign_to_Epetra_RowMatrix
     !Insertion/Replace/SumInto methods
      procedure         :: InsertGlobalValues
      procedure         :: ReplaceGlobalValues
@@ -43,9 +80,6 @@ module FEpetra_CrsMatrix
      !procedure         :: Comm
      !Local/Global ID method
      procedure         :: MyGlobalRow
-     !Memory Management
-     procedure         :: force_finalization 
-     final :: finalize
   end type
 
    interface Epetra_CrsMatrix ! constructors
@@ -54,9 +88,10 @@ module FEpetra_CrsMatrix
 
 contains
 
-  type(FT_Epetra_CrsMatrix_ID_t) function from_struct(id)
-     type(FT_Epetra_CrsMatrix_ID_t) ,intent(in) :: id
-     from_struct = id
+  type(Epetra_CrsMatrix) function from_struct(id)
+    type(FT_Epetra_CrsMatrix_ID_t) ,intent(in) :: id
+    from_struct%CrsMatrix_id = id
+    call from_struct%set_EpetraRowMatrix_ID(from_struct%alias_EpetraRowMatrix_ID(from_struct%generalize()))
   end function
  
   ! Original C++ prototype:
@@ -66,17 +101,19 @@ contains
   ! CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Create_VarPerRow ( CT_Epetra_DataAccess_E_t CV,
   !CT_Epetra_Map_ID_t RowMapID, const int * NumEntriesPerRow, boolean StaticProfile);
 
-  type(FT_Epetra_CrsMatrix_ID_t) function from_scratch(CV,Row_Map,NumEntriesPerRow,StaticProfile)
+  type(Epetra_CrsMatrix) function from_scratch(CV,Row_Map,NumEntriesPerRow,StaticProfile)
     use ForTrilinos_enums,         only: FT_boolean_t,FT_FALSE,FT_TRUE
     integer(FT_Epetra_DataAccess_E_t), intent(in) :: CV
     class(Epetra_Map),              intent(in) :: Row_Map
     integer(c_int), dimension(:),   intent(in) :: NumEntriesPerRow                   
     integer(FT_boolean_t), optional            :: StaticProfile
+    type(FT_Epetra_CrsMatrix_ID_t) :: from_scratch_id
     if (present(StaticProfile)) then
-      from_scratch = Epetra_CrsMatrix_Create_VarPerRow(CV,Row_Map%get_EpetraMap_ID(),NumEntriesPerRow,StaticProfile) 
+      from_scratch_id = Epetra_CrsMatrix_Create_VarPerRow(CV,Row_Map%get_EpetraMap_ID(),NumEntriesPerRow,StaticProfile) 
     else
-      from_scratch = Epetra_CrsMatrix_Create_VarPerRow(CV,Row_Map%get_EpetraMap_ID(),NumEntriesPerRow,FT_FALSE)
+      from_scratch_id = Epetra_CrsMatrix_Create_VarPerRow(CV,Row_Map%get_EpetraMap_ID(),NumEntriesPerRow,FT_FALSE)
     endif
+      from_scratch = from_struct(from_scratch_id)
   end function
   
   ! Original C++ prototype:
@@ -84,18 +121,16 @@ contains
   ! CTrilinos prototype:
   ! CT_Epetra_CrsMatrix_ID_t Epetra_CrsMatrix_Duplicate ( CT_Epetra_BasicRowMatrix_ID_t RowMatrixID );
 
-  type(FT_Epetra_CrsMatrix_ID_t) function duplicate(this)
+  type(Epetra_CrsMatrix) function duplicate(this)
     type(Epetra_CrsMatrix) ,intent(in) :: this 
-    duplicate = Epetra_CrsMatrix_Duplicate(this%CrsMatrix_id)
+    type(FT_Epetra_CrsMatrix_ID_t) :: duplicate_id
+    duplicate_id = Epetra_CrsMatrix_Duplicate(this%CrsMatrix_id)
+    duplicate = from_struct(duplicate_id)
   end function
 
   type(FT_Epetra_CrsMatrix_ID_t) function get_EpetraCrsMatrix_ID(this)
    class(Epetra_CrsMatrix) ,intent(in) :: this 
-   if (associated(this%CrsMatrix_id)) then
-    get_EpetraCrsMatrix_ID=this%CrsMatrix_id
-   else
-    stop 'get_EpetraCrsMatrix_ID: CrsMatrix_id is unassociated'
-   end if
+   get_EpetraCrsMatrix_ID=this%CrsMatrix_id
   end function
   
   type(FT_Epetra_CrsMatrix_ID_t) function alias_EpetraCrsMatrix_ID(generic_id)
@@ -139,25 +174,6 @@ contains
    ! degeneralize_EpetraCrsMatrix = Epetra_CrsMatrix_Degeneralize( generic_id )
    ! ____ Use for CTrilinos function implementation ______
   end function
- 
-  subroutine assign_to_Epetra_CrsMatrix(lhs,rhs)
-    class(Epetra_CrsMatrix)        ,intent(inout) :: lhs
-    type(FT_Epetra_CrsMatrix_ID_t) ,intent(in)    :: rhs
-    allocate( lhs%CrsMatrix_id, source=rhs)
-    call lhs%set_EpetraRowMatrix_ID(lhs%alias_EpetraRowMatrix_ID(lhs%generalize()))
-  end subroutine
-
-  subroutine assign_to_Epetra_RowMatrix(lhs,rhs)
-    class(Epetra_CrsMatrix) ,intent(inout) :: lhs
-    class(Epetra_RowMatrix) ,intent(in)    :: rhs
-    select type(rhs)
-      class is (Epetra_CrsMatrix)
-        allocate(lhs%CrsMatrix_id,source=alias_EpetraCrsMatrix_ID(rhs%generalize()))
-        call lhs%set_EpetraRowMatrix_ID(lhs%alias_EpetraRowMatrix_ID(lhs%generalize()))
-     class default
-        stop 'assign_to_Epetra_RowMatrix: unsupported class'
-     end select
-  end subroutine
  
   subroutine InsertGlobalValues(this,GlobalRow,NumEntries,values,indices,err)
    class(Epetra_CrsMatrix), intent(in) :: this
@@ -311,20 +327,10 @@ contains
  !  allocate(Comm,source=comm_out)
  !end function
 
-  subroutine finalize(this)
-    type(Epetra_CrsMatrix)     :: this
-    call this%force_finalization_EpetraRowMatrix()
-    call Epetra_CrsMatrix_Destroy( this%CrsMatrix_id ) 
-    deallocate(this%CrsMatrix_id)
-  end subroutine
-
-  subroutine force_finalization(this)
+  subroutine remote_dealloc(this)
     class(Epetra_CrsMatrix) ,intent(inout) :: this
-    if (associated(this%CrsMatrix_id)) then
-      call finalize(this) 
-    else
-      print *,' finalization for Epetra_CrsMatrix received object with unassociated CrsMatrix_id'
-    end if
+    call this%remote_dealloc_EpetraRowMatrix()
+    call Epetra_CrsMatrix_Destroy( this%CrsMatrix_id ) 
   end subroutine
 end module 
 

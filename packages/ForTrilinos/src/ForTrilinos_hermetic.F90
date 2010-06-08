@@ -1,70 +1,54 @@
+!*********************************************************************
+! ForTrilinos: Object-Oriented Fortran 2003 interface to Trilinos
+!                Copyright 2010 Sandia Corporation
+!
+! Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
+! the U.S. Government retains certain rights in this software.
+!
+! Redistribution and use in source and binary forms, with or without
+! modification, are permitted provided that the following conditions are met:
+!
+! 1. Redistributions of source code must retain the above copyright
+!    notice, this list of conditions and the following disclaimer.
+!
+! 2. Redistributions in binary form must reproduce the above copyright
+!    notice, this list of conditions and the following disclaimer in the
+!    documentation and/or other materials provided with the distribution.
+!
+! 3. Neither the name of the Corporation nor the names of the
+!    contributors may be used to endorse or promote products derived from
+!    this software without specific prior written permission.
+!
+! THIS SOFTWARE IS PROVIDED BY SANDIA CORPORATION "AS IS" AND ANY
+! EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+! IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+! PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SANDIA CORPORATION OR THE
+! CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+! EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+! PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+! PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+! LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+! NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+! SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+!
+! Questions? Contact Karla Morris  (knmorri@sandia.gov) 
+!                    Damian Rouson (rouson@sandia.gov)
+!*********************************************************************
+
+
 module ForTrilinos_hermetic
-! Can't use Fortran-style include due to C pre-processor directives in ForTrilinos_config.h
-#include "ForTrilinos_config.h"
-  implicit none
   private
-  public :: hermetic ! Expose type and type-bound procedures
-
-  ! This module provides a base type that all ForTrilinos types should extend in order to
-  ! inherit its memory management utilities.  These utilities are useful to work around 
-  ! compilers that do not yet support Fortran 2003 final subroutines.  The type-bound
-  ! procedures are modeled after those published by G. W. Stewart (2003) "Memory leaks in
-  ! derived types revisited," ACM Fortran Forum 22:3, 25-27.
-
-  type ,abstract :: hermetic
-    private
-    integer, pointer :: temporary => null() ! Null symbolizes non-temporary data
+  public :: hermetic
+  type, abstract :: hermetic
   contains
-    procedure :: SetTemp      ! Mark object as temporary
-    procedure :: GuardTemp    ! Increment the reference count
-    procedure :: CleanTemp    ! Decrement ref count & destroy when zero
-    procedure :: is_temporary ! Check for temporary mark
-    procedure(final_interface) ,deferred :: force_finalization
+      procedure(free_memory), deferred :: remote_dealloc
   end type
 
   abstract interface
-    subroutine final_interface(this)
-      import :: hermetic
-      class(hermetic) ,intent(inout) :: this
-    end subroutine
-  end interface 
-
-contains
-  subroutine SetTemp(this) ! Mark object as temporary
-    class(hermetic) ,intent(inout) :: this 
-    if (.not. this%is_temporary()) allocate(this%temporary) 
-    this%temporary = 1 
-  end subroutine 
-
-  subroutine GuardTemp (this) 
-    class (hermetic) :: this 
-    integer, pointer :: t 
-    if (this%is_temporary()) then ! If temporary,
-      t => this%temporary 
-      t = t + 1                   ! then increment count.
-    end if 
-  end subroutine
-
-  subroutine CleanTemp(this) 
-    class(hermetic) :: this 
-    integer, pointer :: t 
-    if (this%is_temporary()) then      ! If temporary, 
-      t=>this%temporary 
-      if (t > 1) then
-        t = t - 1                      ! then decrement reference count
-      else if (t == 1) then            ! else if no references left,
-        call this%force_finalization() ! then call destructor.
-        deallocate(t) 
-      end if 
-    end if 
-  end subroutine 
-
-  logical function is_temporary(this)
-    class(hermetic) ,intent(in):: this
-    if (associated(this%temporary)) then  
-      is_temporary = .true.
-    else
-      is_temporary = .false.
-    end if
-  end function
+     subroutine free_memory (this)
+        import :: hermetic
+        class(hermetic), intent(inout) :: this
+     end subroutine
+  end interface
 end module
+

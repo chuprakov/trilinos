@@ -152,7 +152,7 @@ protected:
 	 */
 	void setupArrayLayout(){
 		QGridLayout *widgetLayout = new QGridLayout(arrayContainer);
-		for(unsigned int i=0; i<baseArray.size(); i++){
+		for(int i=0; i<baseArray.size(); i++){
 			widgetLayout->addWidget(new QLabel("Item: " +QString::number(i)),0,i,Qt::AlignLeft);
 			QWidget* editorWidget = getEditorWidget();
 			widgetLayout->addWidget(editorWidget,1,i,Qt::AlignLeft);

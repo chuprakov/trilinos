@@ -1,3 +1,40 @@
+!*********************************************************************
+! ForTrilinos: Object-Oriented Fortran 2003 interface to Trilinos
+!                Copyright 2010 Sandia Corporation
+!
+! Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
+! the U.S. Government retains certain rights in this software.
+!
+! Redistribution and use in source and binary forms, with or without
+! modification, are permitted provided that the following conditions are met:
+!
+! 1. Redistributions of source code must retain the above copyright
+!    notice, this list of conditions and the following disclaimer.
+!
+! 2. Redistributions in binary form must reproduce the above copyright
+!    notice, this list of conditions and the following disclaimer in the
+!    documentation and/or other materials provided with the distribution.
+!
+! 3. Neither the name of the Corporation nor the names of the
+!    contributors may be used to endorse or promote products derived from
+!    this software without specific prior written permission.
+!
+! THIS SOFTWARE IS PROVIDED BY SANDIA CORPORATION "AS IS" AND ANY
+! EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+! IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+! PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SANDIA CORPORATION OR THE
+! CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+! EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+! PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+! PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+! LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+! NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+! SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+!
+! Questions? Contact Karla Morris  (knmorri@sandia.gov) or
+!                    Damian Rouson (rouson@sandia.gov)
+!*********************************************************************
+
 module FEpetra_MpiComm
 #include "ForTrilinos_config.h"
 #ifdef HAVE_MPI
@@ -5,6 +42,7 @@ module FEpetra_MpiComm
   use ForTrilinos_enums ,only: FT_Epetra_MpiComm_ID_t,ForTrilinos_Universal_ID_t
   use ForTrilinos_table_man
   use ForTrilinos_external_utils
+  use ForTrilinos_hermetic, only : hermetic
   use FEpetra_Comm      ,only: Epetra_Comm
   use iso_c_binding     ,only: c_int,c_double,c_long,c_char
   use forepetra
@@ -14,17 +52,15 @@ module FEpetra_MpiComm
 
   type ,extends(Epetra_Comm) :: Epetra_MpiComm
     private
-    type(FT_Epetra_MpiComm_ID_t), pointer :: MpiComm_id  
+    type(FT_Epetra_MpiComm_ID_t) :: MpiComm_id  
   contains
     !Constructor
-    procedure         :: clone
+    !procedure         :: clone
     !Developers only
+    procedure         ::remote_dealloc
     procedure         :: get_EpetraMpiComm_ID
     procedure ,nopass :: alias_EpetraMpiComm_ID
     procedure         :: generalize
-    procedure         :: MpiComm_assign => assign_to_Epetra_MpiComm 
-    procedure         :: Comm_assign => assign_to_Epetra_Comm
-    procedure         :: SerialComm_assign
     !Barrier Method
     procedure         :: barrier
     !Broadcast Method
@@ -46,8 +82,6 @@ module FEpetra_MpiComm
     !Gather/catter and Directory Constructors
     !I/O methods
     !Memory Management 
-    procedure :: force_finalization 
-    final :: finalize
   end type
   
  interface Epetra_MpiComm ! constructors
@@ -56,9 +90,11 @@ module FEpetra_MpiComm
   
 contains
 
- type(FT_Epetra_MpiComm_ID_t) function from_struct(id)
-     type(FT_Epetra_MpiComm_ID_t) ,intent(in) :: id
-     from_struct = id
+ type(Epetra_MpiComm) function from_struct(id)
+   type(FT_Epetra_MpiComm_ID_t) ,intent(in) :: id
+   from_struct%MpiComm_id = id
+   call from_struct%set_EpetraComm_ID(from_struct%alias_EpetraComm_ID(from_struct%generalize()))
+   call from_struct%register_self
   end function
  
   ! Original C++ prototype:
@@ -66,9 +102,11 @@ contains
   ! CTrilinos prototype:
   ! CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Create ( MPI_Comm comm );
 
-  type(FT_Epetra_MpiComm_ID_t) function from_scratch(comm)
-    integer(c_int) ,intent(in) :: comm
-    from_scratch = Epetra_MpiComm_Fortran_Create(comm)
+  type(Epetra_MpiComm) function from_scratch(comm)
+   integer(c_int) ,intent(in) :: comm
+   type(FT_Epetra_MpiComm_ID_t) :: from_scratch_id
+   from_scratch_id = Epetra_MpiComm_Fortran_Create(comm)
+   from_scratch=from_struct(from_scratch_id)
   end function
 
   ! Original C++ prototype:
@@ -76,48 +114,29 @@ contains
   ! CTrilinos prototype:
   ! CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Duplicate ( CT_Epetra_MpiComm_ID_t CommID );
 
-  type(FT_Epetra_MpiComm_ID_t) function duplicate(original)
-    type(Epetra_MpiComm) ,intent(in) :: original
-    duplicate = Epetra_MpiComm_Duplicate(original%MpiComm_id)
+  type(Epetra_MpiComm) function duplicate(this)
+   type(Epetra_MpiComm) ,intent(in) :: this
+    type(FT_Epetra_MpiComm_ID_t) :: duplicate_id
+    duplicate_id = Epetra_MpiComm_Duplicate(this%MpiComm_id)
+    duplicate = from_struct(duplicate_id)
   end function
 
   !function clone(this)
   !  class(Epetra_MpiComm)    ,intent(in)  :: this
   !  class(Epetra_Comm)       ,allocatable :: clone
+  !  type(Epetra_MpiComm)      :: clone_local
+  !  type(FT_Epetra_MpiComm_ID_t) :: clone_mpi_id
+  !  type(FT_Epetra_Comm_ID_t) :: clone_comm_id
+  !  clone_comm_id=Epetra_MpiComm_Clone(this%MpiComm_id)
+  !  call clone_local%set_EpetraComm_ID(clone_comm_id)
   !  allocate(Epetra_MpiComm :: clone)
-  !  clone = Epetra_MpiComm_Clone(this%MpiComm_id)
+  !  clone=Epetra_MpiComm(alias_EpetraMpiComm_ID(clone_local%generalize_EpetraComm()))
+  !  call clone_local%force_finalize()
   !end function
-
-  function clone(this)
-    class(Epetra_MpiComm) ,intent(in)  :: this
-    class(Epetra_Comm)       ,allocatable :: clone
-    class(Epetra_Comm)       ,allocatable :: clone_temp
-    type(FT_Epetra_MpiComm_ID_t) :: test
-    type(FT_Epetra_Comm_ID_t) :: test1
-    allocate(Epetra_MpiComm :: clone)
-    allocate(Epetra_MpiComm :: clone_temp)
-    clone_temp = Epetra_MpiComm_Clone(this%MpiComm_id)
-   ! test = clone_temp%MpiComm_id
-   ! print *,'clone_temp%mpicom',test%table,test%index
-    test1 = clone_temp%get_EpetraComm_ID()
-    print *,'clone_temp%comm',test1%table,test1%index
-    clone=Epetra_MpiComm(alias_EpetraMpiComm_ID(clone_temp%generalize_EpetraComm()))
-    !test = clone%MpiComm_id
-   ! test = clone%get_EpetraMpiComm_ID()
-   ! print *,'clone%mpicomm',test%table,test%index
-    test1 = clone%get_EpetraComm_ID()
-    print *,'clone%comm',test1%table,test1%index
-    call clone_temp%force_finalization_EpetraComm()
-  end function
-
 
  type(FT_Epetra_MpiComm_ID_t) function get_EpetraMpiComm_ID(this)
    class(Epetra_MpiComm) ,intent(in) :: this
-   if (associated(this%MpiComm_id)) then
-    get_EpetraMpiComm_ID=this%MpiComm_id
-   else
-    stop 'get_EpetraMpiComm_ID: MpiComm_id is unassociated'
-   end if
+   get_EpetraMpiComm_ID=this%MpiComm_id
   end function
  
   type(FT_Epetra_MpiComm_ID_t) function alias_EpetraMpiComm_ID(generic_id)
@@ -160,33 +179,6 @@ contains
    ! degeneralize_EpetraMpiComm = Epetra_MpiComm_Degeneralize( generic_id )
    ! ____ Use for CTrilinos function implementation ______
   end function
-
-  subroutine assign_to_Epetra_MpiComm(lhs,rhs)
-    class(Epetra_MpiComm)     ,intent(inout) :: lhs
-    type(FT_Epetra_MpiComm_ID_t) ,intent(in)    :: rhs
-    allocate( lhs%MpiComm_id, source=rhs)
-    call lhs%set_EpetraComm_ID(lhs%alias_EpetraComm_ID(lhs%generalize()))
-  end subroutine
-
-  subroutine SerialComm_assign(lhs,rhs)
-    use ForTrilinos_enums, only : FT_Epetra_SerialComm_ID_t
-    class(Epetra_MpiComm),      intent(inout) :: lhs
-    type(FT_Epetra_SerialComm_ID_t), intent(in) :: rhs 
-    print *, 'SerialComm_assign in FEpetra_MpiComm no-op'
-  end subroutine
-
-
-  subroutine assign_to_Epetra_Comm(lhs,rhs)
-    class(Epetra_MpiComm) ,intent(inout) :: lhs
-    class(Epetra_Comm)       ,intent(in)    :: rhs
-    select type(rhs)
-      class is (Epetra_MpiComm)
-        allocate(lhs%MpiComm_id,source=alias_EpetraMpiComm_ID(rhs%generalize()))
-        call lhs%set_EpetraComm_ID(lhs%alias_EpetraComm_ID(lhs%generalize()))
-     class default
-        stop 'assign_to_Epetra_Comm: unsupported class'
-     end select
-  end subroutine
 
   subroutine barrier(this)
    class(Epetra_MpiComm) ,intent(in) :: this
@@ -246,20 +238,10 @@ contains
    NumProc=Epetra_MpiComm_NumProc(this%MpiComm_id)
   end function
 
-  subroutine finalize(this)
-    type(Epetra_MpiComm) :: this
-    call this%force_finalization_EpetraComm()
-    call Epetra_MpiComm_Destroy ( this%MpiComm_id ) 
-    deallocate(this%MpiComm_id)
-  end subroutine
-
-  subroutine force_finalization(this)
+  subroutine remote_dealloc(this)
     class(Epetra_MpiComm) ,intent(inout) :: this
-    if (associated(this%MpiComm_id)) then
-      call finalize(this) 
-    else
-      print *,'finalization for Epetra_MpiComm received object with unassociated MpiComm_id'
-    end if
+    call this%remote_dealloc_EpetraComm()
+    call Epetra_MpiComm_Destroy(this%MpiComm_id)
   end subroutine
 #endif
 end module 
