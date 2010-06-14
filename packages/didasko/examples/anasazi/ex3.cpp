@@ -226,7 +226,7 @@ int main(int argc, char *argv[]) {
     if (index[i]==0) {
       // Get a view of the current eigenvector (evecr)
       curind[0] = i;
-      evecr = MVT::CloneView( *evecs, curind );
+      evecr = MVT::CloneViewNonConst( *evecs, curind );
       
       // Get a copy of A*evecr
       tempAevec = MVT::CloneCopy( Aevec, curind );
@@ -242,14 +242,14 @@ int main(int argc, char *argv[]) {
     } else {
       // Get a view of the real part of the eigenvector (evecr)
       curind[0] = i;
-      evecr = MVT::CloneView( *evecs, curind );
+      evecr = MVT::CloneViewNonConst( *evecs, curind );
       
       // Get a copy of A*evecr
       tempAevec = MVT::CloneCopy( Aevec, curind );
       
       // Get a view of the imaginary part of the eigenvector (eveci)
       curind[0] = i+1;
-      eveci = MVT::CloneView( *evecs, curind );
+      eveci = MVT::CloneViewNonConst( *evecs, curind );
       
       // Set the eigenvalue into Breal and Bimag
       Breal(0,0) = evals[i].realpart;

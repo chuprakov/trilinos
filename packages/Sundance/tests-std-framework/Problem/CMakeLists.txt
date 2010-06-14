@@ -41,20 +41,14 @@ SET(SerialTests
 
 
 SET(MPITests 
-             Poisson1D
+             LPTests1D
              Poisson2D
              RadDiff1D
-             Helmholtz1D
-             Coupled1D
              CrankNicolsonHeat1D
              FieldIOTest
              BlockStochPoissonTest1D
-             HighOrderPoisson1D
-             HighOrderPoisson1DCubicHermite
-             HighOrderPoissonBernstein1D
              HighOrderPoisson2D
              HighOrderPoissonBernstein2D
-             HighOrderProjection1D 
              HighOrderProjection2D 
              NoxPoisson1D 
              PoissonBoltzmann2D
@@ -95,11 +89,14 @@ PACKAGE_COPY_FILES_TO_BINARY_DIR(TestCopyFiles
                    aztec-ml.xml 
                    aztec-native.xml
                    aztec.xml
+                   belos-ifpack.xml 
+                   belos-ml.xml 
                    bicgstab.xml
                    gmres.xml
                    nox.xml            
                    nox-amesos.xml            
-                   nox-aztec.xml            
+                   nox-aztec.xml      
+                   nox-newton.xml                  
                    poissonParams.xml
                    userPrecParams.xml
   SOURCE_DIR ${SolverParamPath}

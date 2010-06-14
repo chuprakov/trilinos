@@ -1,14 +1,17 @@
 #include "MeshDomain1D.hpp"
 #include "PlanarDomain.hpp"
 #include "CylinderDomain.hpp"
+#include "ConicDomain.hpp"
 #include "SphericalDomain.hpp"
 #include "DomainClassifier.hpp"
 #include "MeshImpl.hpp"
 #include "CLArgs.hpp"
 #include "MsqError.hpp"
+#include "TopologyInfo.hpp"
 
 #include "domain.hpp"
 #include <iostream>
+#include <algorithm>
 #include <stdlib.h>
 
 using namespace Mesquite;
@@ -33,6 +36,39 @@ bool SphereDomainArg::value( const std::vector<double>& list )
   if (list.size() == 4)
     center.set( list[1], list[2], list[3] );
   domList.push_back( new SphericalDomain( center, rad ) );
+  dimList.push_back( 2 );
+  return true;
+}
+
+class ConicDomainArg : public CLArgs::DoubleListArgI
+{
+  private:
+  std::vector<MeshDomain*>& domList;
+  std::vector<int>& dimList;
+  public:
+  ConicDomainArg( std::vector<MeshDomain*>& domlist,
+                     std::vector<int>& dims ) 
+    : domList(domlist), dimList( dims ) {}
+  virtual bool value( const std::vector<double>& list );
+};
+bool ConicDomainArg::value( const std::vector<double>& vals )
+{
+  double base_rad = vals[0];
+  double height = vals[1];
+  Vector3D axis( 0, 0, 1 );
+  if (vals.size() >= 5) {
+    axis[0] = vals[2];
+    axis[1] = vals[3];
+    axis[2] = vals[4];
+  }
+  Vector3D point( 0, 0, 0 );
+  if (vals.size() == 8) {
+    axis[0] = vals[5];
+    axis[1] = vals[6];
+    axis[2] = vals[7];
+  }
+    
+  domList.push_back( new ConicDomain( base_rad, height, axis, point ) );
   dimList.push_back( 2 );
   return true;
 }
@@ -152,6 +188,7 @@ bool PointDomainArg::value( const std::vector<double>& vals )
 std::vector<MeshDomain*> domains;
 std::vector<int> domain_dims;
 SphereDomainArg     sphere_arg( domains, domain_dims );
+ConicDomainArg       conic_arg( domains, domain_dims );
 CylinderDomainArg cylinder_arg( domains, domain_dims );
 PlanarDomainArg      plane_arg( domains, domain_dims );
 CircleDomainArg     circle_arg( domains, domain_dims );
@@ -161,6 +198,7 @@ CLArgs::ToggleArg skin_mesh( false );
 
 const char* SPHERE_VALUES[] = { "rad", "x", "y", "z" };
 const char* CYLINDER_VALUES[] = { "rad", "i", "j", "k", "x", "y", "z" };
+const char* CONE_VALUES[] = { "rad", "h", "i", "j", "k", "x", "y", "z" };
 
 void add_domain_args( CLArgs& args )
 {
@@ -171,9 +209,13 @@ void add_domain_args( CLArgs& args )
   args.double_list_flag( PLANE_FLAG, "Planar domain as normal and point", &plane_arg );
   args.limit_list_flag( PLANE_FLAG, 3, CYLINDER_VALUES+1 );
   args.limit_list_flag( PLANE_FLAG, 6, CYLINDER_VALUES+1 );
-  args.double_list_flag( CYLINDER_FLAG, "Cylindrical domain as point, axis, and radius", &cylinder_arg );
+  args.double_list_flag( CYLINDER_FLAG, "Cylindrical radius, axis, and point", &cylinder_arg );
   args.limit_list_flag( CYLINDER_FLAG, 4, CYLINDER_VALUES );
   args.limit_list_flag( CYLINDER_FLAG, 7, CYLINDER_VALUES );
+  args.double_list_flag( CONE_FLAG, "Conic domain as base radius, height, axis, and base center", &conic_arg );
+  args.limit_list_flag( CONE_FLAG, 2, CONE_VALUES );
+  args.limit_list_flag( CONE_FLAG, 5, CONE_VALUES );
+  args.limit_list_flag( CONE_FLAG, 8, CONE_VALUES );
   args.double_list_flag( LINE_FLAG, "Linear domain as direction and point", &line_arg );
   args.limit_list_flag( LINE_FLAG, 3, CYLINDER_VALUES+1 );
   args.limit_list_flag( LINE_FLAG, 6, CYLINDER_VALUES+1 );
@@ -186,21 +228,45 @@ void add_domain_args( CLArgs& args )
 
 MeshDomain* process_domain_args( MeshImpl* mesh )
 {
-  MsqError err;
+  MsqPrintError err(std::cerr);
   MeshDomain* rval = 0;
   
   if (!domains.empty()) {
-    DomainClassifier* result = new DomainClassifier();
-    DomainClassifier::classify_geometrically( *result,
-                                              mesh,
-                                              1e-4,
-                                              &domains[0],
-                                              &domain_dims[0],
-                                              domains.size(),
-                                              err );
-    rval = result;
+    int max_domain_dim = *std::max_element( domain_dims.begin(), domain_dims.end() );
+    std::vector<Mesh::ElementHandle> elems;
+    mesh->get_all_elements( elems, err );
+    std::vector<EntityTopology> types( elems.size() );
+    mesh->elements_get_topologies( &elems[0], &types[0], elems.size(), err );
+    EntityTopology max_type = *std::max_element( types.begin(), types.end() );
+    int max_elem_dim = TopologyInfo::dimension( max_type );
+  
+    if (max_domain_dim == max_elem_dim && domains.size() == 1) {
+      rval = domains.front();
+    }
+    else {
+      DomainClassifier* result = new DomainClassifier();
+      if (max_domain_dim < max_elem_dim) {
+        DomainClassifier::classify_skin_geometrically( *result,
+                                                mesh,
+                                                1e-4,
+                                                &domains[0],
+                                                &domain_dims[0],
+                                                domains.size(),
+                                                err );
+      }
+      else {
+        DomainClassifier::classify_geometrically( *result,
+                                                mesh,
+                                                1e-4,
+                                                &domains[0],
+                                                &domain_dims[0],
+                                                domains.size(),
+                                                err );
+      }
+      rval = result;
+    }
   }
-  else if (skin_mesh.value()) {
+  if (skin_mesh.value()) {
     mesh->mark_skin_fixed( err, false );
   }
   if (err) {

@@ -61,8 +61,8 @@ void FileNameValidator::validate(Teuchos::ParameterEntry const &entry, std::stri
 		msg = oss.str();
 		throw Teuchos::Exceptions::InvalidParameterType(msg);
 	}
-	if(mustAlreadyExist){
-		std::string fileName = entry.getValue((std::string*)NULL);
+	if(mustAlreadyExist && Teuchos::getValue<std::string>(entry) != ""){
+		std::string fileName = Teuchos::getValue<std::string>(entry);
 		struct stat fileInfo;
 		int intStat= stat(fileName.c_str(),&fileInfo);
 		if(intStat !=0){
