@@ -170,6 +170,12 @@ int main(){
       false));
 
   /*
+   * Then add the dependency to the dependency sheet.
+   */
+  depSheet1->addDependency(awesomeDep1);
+
+
+  /*
    * Lets make a sublist to put into our "Root List".
    */
   Teuchos::ParameterList& waterList = My_deplist->sublist("Water", false, "A sublist about a lovely liquid.");

@@ -77,11 +77,16 @@ DependencySheet::DepMap::const_iterator DependencySheet::depEnd() const{
 
 void DependencySheet::printDeps(){
 	std::cout << "Dependency Sheet: " << name << "\n\n";
-	for(DepMap::iterator it = depBegin(); it != depEnd(); it++){
+	for(DepMap::iterator it = depBegin(); it != depEnd(); ++it){
 		const Teuchos::ParameterEntry* dependee = it->first;
-		for(DepSet::iterator it2 = dependencies.find(dependee)->second.begin(); it2 != dependencies.find(dependee)->second.end(); it2++){
+		for(DepSet::iterator it2 = dependencies.find(dependee)->second.begin(); it2 != dependencies.find(dependee)->second.end(); ++it2){
+			std::set<std::string> dependentNames = (*it2)->getDependentNames();
 			std::cout << "Dependee: " << (*it2)->getDependeeName() << "\n";
-			std::cout << "Dependent: " << (*it2)->getDependentName() << "\n";
+			std::cout << "Dependents: ";
+			for(std::set<std::string>::iterator it3 = dependentNames.begin(); it3 != dependentNames.end(); ++it3){
+				std::cout << *it3 << " ";
+			}
+			std::cout << "\n";
 			std::cout << "Type: " << (*it2)->getType() << "\n\n";
 		}
 	}
@@ -104,21 +109,27 @@ void DependencySheet::validateExistanceInRoot(Teuchos::RCP<Optika::Dependency> d
 		"Dependency Type: " + QString::number(dependency->getType()).toStdString() + "\n"
 		"Bad Parameter Name: " + dependency->getDependeeName());
 	}
-	if(!dependency->isDependentParentInList(rootList)){
-		throw InvalidDependencyException(
-		"FAILED TO ADD DEPENDENCY!\n\n"
-		"Sorry for the yelling there, but this is kind of a big deal. Dependencies are hard and complex so don't beat "
-		"yourself up too much. Mistakes are easy to make when dealing with dependencies. "
-		"And besides, I'm gonna do my best to help you out! I'm sure with the informationg below you'll be able to figure out what "
-		"exactly went wrong. I've got confidence in you! :)\n\n"
-		"Error:\n"
-		"An attempt was made to add a dependency containing a the dependent parameter \"" + dependency->getDependentName() + "\""
-		" to the Dependency Sheet \"" + name + "\"."
-		" The Dependency Sheet's list does not contain nor does it have"
-		" child ParameterLists that contain the parameter.\n"
-		"Dependency Sheet: " + name + "\n"
-		"Dependency Type: " + QString::number(dependency->getType()).toStdString() + "\n"
-		"Bad Parameter Name: " + dependency->getDependeeName());
+	Dependency::ParameterParentMap::const_iterator it;
+	Teuchos::ParameterEntry *currentDependent;
+	Dependency::ParameterParentMap dependents = dependency->getDependents();
+	for(it = dependents.begin(); it != dependents.end(); ++it){ 
+		currentDependent = it->second->getEntryPtr(it->first);
+		if(!Dependency::doesListContainList(rootList, it->second)){
+			throw InvalidDependencyException(
+			"FAILED TO ADD DEPENDENCY!\n\n"
+			"Sorry for the yelling there, but this is kind of a big deal. Dependencies are hard and complex so don't beat "
+			"yourself up too much. Mistakes are easy to make when dealing with dependencies. "
+			"And besides, I'm gonna do my best to help you out! I'm sure with the informationg below you'll be able to figure out what "
+			"exactly went wrong. I've got confidence in you! :)\n\n"
+			"Error:\n"
+			"An attempt was made to add a dependency containing a the dependent parameter \"" + it->first + "\""
+			" to the Dependency Sheet \"" + name + "\"."
+			" The Dependency Sheet's list does not contain nor does it have"
+			" child ParameterLists that contain the parameter.\n"
+			"Dependency Sheet: " + name + "\n"
+			"Dependency Type: " + QString::number(dependency->getType()).toStdString() + "\n"
+			"Bad Parameter Name: " + dependency->getDependeeName());
+		}
 	}
 }
 

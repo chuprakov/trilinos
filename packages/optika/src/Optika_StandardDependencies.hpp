@@ -262,9 +262,8 @@ public:
 	 */
 	NumberVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, S (*func)(S) =0)
-		:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList)
+		:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList), func(func)
 	{
-		this->func = func;
 		validateDep();
 	}
 
@@ -283,9 +282,8 @@ public:
 	 */
 	NumberVisualDependency(std::string dependeeName, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> parentList, S 
 	(*func)(S) =0)
-		:VisualDependency(dependeeName, parentList, dependentName, parentList)
+		:VisualDependency(dependeeName, parentList, dependentName, parentList), func(func)
 	{
-		this->func = func;
 		validateDep();
 	}
 
@@ -325,7 +323,7 @@ private:
 			"Number Visual Dependency must be of a supported number type!\n"
 			"Problem dependee: " + dependeeName + "\n"
 			"Actual type: " + dependee->getAny().typeName() + "\n"
-			"Dependent: " + dependentName);
+			"Dependents: " + getDependentNamesString());
 	}
 };
 
@@ -375,11 +373,12 @@ public:
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, 
 	Teuchos::RCP<Optika::EnhancedNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
-		:Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList, Dependency::NumberValidatorAspectDep)
+		:Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList, Dependency::NumberValidatorAspectDep),
+		aspect(aspect),
+		validator(validator),
+		func(func)
+
 	{
-		this->validator = validator;
-		this->aspect = aspect;
-		this->func = func;
 		validateDep();
 	}
 
@@ -398,13 +397,7 @@ public:
 	Teuchos::RCP<Teuchos::ParameterList> parentList, 
 	Teuchos::RCP<Optika::EnhancedNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
-		:Dependency(dependeeName, parentList, dependentName, parentList, Dependency::NumberValidatorAspectDep)
-	{
-		this->validator = validator;
-		this->aspect = aspect;
-		this->func = func;
-		validateDep();
-	}
+		:NumberValidatorAspectDependency(dependeeName, parentList, dependentName, parentList, validator, aspect, func) {}
 
 	/**
 	 * Constructs a NumberValidatorDependency. Conveniece Constructor for ArrayNumberValidators
@@ -422,11 +415,11 @@ public:
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, 
 	Teuchos::RCP<Optika::ArrayNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
-		:Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList, Dependency::NumberValidatorAspectDep)
+		:Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList, Dependency::NumberValidatorAspectDep),
+		aspect(aspect),
+		validator(validator->getPrototype()),
+		func(func)
 	{
-		this->validator = validator->getPrototype();
-		this->aspect = aspect;
-		this->func = func;
 		validateDep();
 	}
 
@@ -445,11 +438,12 @@ public:
 	Teuchos::RCP<Teuchos::ParameterList> parentList,
 	Teuchos::RCP<Optika::ArrayNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
-		:Dependency(dependeeName, parentList, dependentName, parentList, Dependency::NumberValidatorAspectDep)
+		:Dependency(dependeeName, parentList, dependentName, parentList, Dependency::NumberValidatorAspectDep),
+		aspect(aspect),
+		validator(validator),
+		func(func)
+
 	{
-		this->validator = validator->getPrototype();
-		this->aspect = aspect;
-		this->func = func;
 		validateDep();
 	}
 
@@ -503,32 +497,47 @@ private:
 		if(!dependee->isType<int>()
 		&& !dependee->isType<short>()
 		&& !dependee->isType<double>()
-		&& !dependee->isType<float>())
+		&& !dependee->isType<float>()){
 			throw InvalidDependencyException("The dependee of a "
 			"Number Validator Aspect Dependency must be of a supported number type!\n"
 			"Problem dependee: " + dependeeName + "\n"
 			"Actual type: " + dependee->getAny().typeName() + "\n"
-			"Dependent: " + dependentName);
-		if(dependent->validator() == Teuchos::null)
-			throw InvalidDependencyException("The dependent of an "
-			"Number Validator Aspect Dependency must have an EnhancedNumberValidator "
-			"or an ArrayNumberValidator\n"
-			"Problem dependent: " + dependentName + "\n" 
-			"Dependee: " + dependeeName);
-		if(validator != dependent->validator())
-			throw InvalidDependencyException("The dependent's validator and the validator specified "
-			"in the constructor must be the same for a Number Validator Aspect Dependency!\n"
-			"Problem dependent: " + dependentName + "\n" 
-			"Dependee: " + dependeeName);
-		if(typeid(S) != dependee->getAny().type() || typeid(S) != dependent->getAny().type())
-			throw InvalidDependencyException("The dependent type, dependee type, and EnhancedNumberValidator "
+			"Dependents: " + getDependentNamesString());
+		}
+		typename ParameterParentMap::const_iterator it;
+		Teuchos::ParameterEntry *currentDependent;
+		for(it = dependents.begin(); it != dependents.end(); ++it){ 
+			currentDependent = it->second->getEntryPtr(it->first);
+			if(currentDependent->validator() == Teuchos::null){
+				throw InvalidDependencyException("The dependent of an "
+				"Number Validator Aspect Dependency must have an EnhancedNumberValidator "
+				"or an ArrayNumberValidator\n"
+				"Problem dependent: " + it->first + "\n" 
+				"Dependee: " + dependeeName);
+			}
+			if(validator != currentDependent->validator()){
+				throw InvalidDependencyException("The dependent's validator and the validator specified "
+				"in the constructor must be the same for a Number Validator Aspect Dependency!\n"
+				"Problem dependent: " + it->first + "\n" 
+				"Dependee: " + dependeeName);
+			}
+			if(typeid(S) != currentDependent->getAny().type()){
+				throw InvalidDependencyException("The dependent type and EnhancedNumberValidator "
+				"template type must all be the same for a Number Validator Aspect Dependency.\n"
+				"Dependent: " + it->first + "\n" 
+				"Dependent Type: " + currentDependent->getAny().typeName() + "\n"
+				"Validator Template Type: " + typeid(S).name());
+			}
+		}
+		
+		if(typeid(S) != dependee->getAny().type()){
+			throw InvalidDependencyException("The dependent type and EnhancedNumberValidator "
 			"template type must all be the same for a Number Validator Aspect Dependency.\n"
 			"Dependee: " + dependeeName + "\n"
 			"Dependee Type: " + dependee->getAny().typeName() + "\n"
-			"Dependent: " + dependentName + "\n" 
-			"Dependent Type: " + dependent->getAny().typeName() + "\n"
 			"Validator Template Type: " + typeid(S).name());
-	}	
+		}
+	}
 };
 
 /**
@@ -593,7 +602,7 @@ private:
 	 * @param dependentValue The index of the dependent array that is going to be changed.
 	 */
 	template <class S>
-	void modifyArrayLength(int newLength);
+	void modifyArrayLength(int newLength, Teuchos::ParameterEntry* dependentToModify);
 
 	void validateDep();
 };
@@ -765,10 +774,10 @@ public:
 	RangeValidatorDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, RangeToValidatorMap rangesAndValidators,
 	Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator)
-		:ValidatorDependency(dependeeName, dependeeParentList, dependentName, dependentParentList)
+		:ValidatorDependency(dependeeName, dependeeParentList, dependentName, dependentParentList),
+		defaultValidator(defaultValidator),
+		rangesAndValidators(rangesAndValidators)
 	{
-		this->defaultValidator = defaultValidator;
-		this->rangesAndValidators = rangesAndValidators;
 		validateDep();
 	}
 
@@ -786,10 +795,10 @@ public:
 	RangeValidatorDependency(std::string dependeeName, std::string dependentName, 
 	Teuchos::RCP<Teuchos::ParameterList> parentList, RangeToValidatorMap rangesAndValidators,
 	Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator)
-		:ValidatorDependency(dependeeName, parentList, dependentName, parentList)
+		:ValidatorDependency(dependeeName, parentList, dependentName, parentList),
+		defaultValidator(defaultValidator),
+		rangesAndValidators(rangesAndValidators)
 	{
-		this->defaultValidator = defaultValidator;
-		this->rangesAndValidators = rangesAndValidators;
 		validateDep();
 	}
 
@@ -800,7 +809,12 @@ public:
 			S min = it->first.first;
 			S max = it->first.second;
 			if(dependeeValue >= min && dependeeValue <=max){
-				dependent->setValidator(it->second);
+				typename ParameterParentMap::iterator it2;
+				Teuchos::ParameterEntry *currentDependent;
+				for(it2 = dependents.begin(); it2 != dependents.end(); ++it2){ 
+					currentDependent = it2->second->getEntryPtr(it2->first);
+					currentDependent->setValidator(it->second);
+				}
 				return;
 			}
 		}
@@ -821,22 +835,29 @@ private:
 		if(!dependee->isType<int>()
 		&& !dependee->isType<short>()
 		&& !dependee->isType<double>()
-		&& !dependee->isType<float>())
+		&& !dependee->isType<float>()){
 			throw InvalidDependencyException("The dependee of a "
 			"Range Validator Dependency must be of a supported number type!\n"
 			"Problem dependee: " + dependeeName + "\n"
 			"Actual type: " + dependee->getAny().typeName() + "\n"
-			"Dependent: " + dependentName);
+			"Dependents: " + getDependentNamesString());
+		}
 		typename RangeToValidatorMap::const_iterator it;
 		for(it = rangesAndValidators.begin(); it != rangesAndValidators.end(); it++){
-			if(typeid(*(dependent->validator().get())) != typeid(*(it->second.get())))
-			throw InvalidDependencyException("The validator of a dependent of a "
-			"Range Validator Dependency must be the same type as all of the validators "
-			"in the rangesAndValidators map.\n"
-			"Note this means that the dependent must have an initial validator.\n"
-			"Problem dependent: " + dependentName + "\n"
-			"Validator Type: " + typeid(*(dependent->validator())).name() + "\n"
-			"One of the validators in the rangesAndValidators map is of type: " + typeid(*(it->second)).name());
+			typename ParameterParentMap::const_iterator it2;
+			Teuchos::ParameterEntry *currentDependent;
+			for(it2 = dependents.begin(); it2 != dependents.end(); ++it2){ 
+				currentDependent = it2->second->getEntryPtr(it2->first);
+				if(typeid(*(currentDependent->validator().get())) != typeid(*(it->second.get()))){
+					throw InvalidDependencyException("The validator of a dependent of a "
+					"Range Validator Dependency must be the same type as all of the validators "
+					"in the rangesAndValidators map.\n"
+					"Note this means that the dependent must have an initial validator.\n"
+					"Problem dependent: " + it2->first + "\n"
+					"Validator Type: " + typeid(*(currentDependent->validator())).name() + "\n"
+					"One of the validators in the rangesAndValidators map is of type: " + typeid(*(it->second)).name());
+				}
+			}
 		}
 	}
 };

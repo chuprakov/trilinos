@@ -375,22 +375,27 @@ void TreeModel::basicSetup(QString saveFileName){
 
 void TreeModel::checkDependentState(const QModelIndex dependee, Teuchos::RCP<Dependency> dependency){
 	Dependency::Type type = dependency->getType();
-
-	QModelIndex dependent = findParameterEntryIndex(dependency->getDependent(), dependency->getDependentName());
-	if(type == Dependency::NumberArrayLengthDep){
-		redrawArray(dependent.sibling(dependent.row(),1));
-	}
-	else if(type == Dependency::VisualDep){
-		Teuchos::RCP<VisualDependency> visDep = Teuchos::rcp_static_cast<VisualDependency>(dependency);
-		visDep->isDependentVisible() ? emit showData(dependent.row(), dependent.parent()) :
+	QModelIndex dependent;
+	Teuchos::ParameterEntry *currentDependent;
+	Dependency::ParameterParentMap dependents= dependency->getDependents();
+	for(Dependency::ParameterParentMap::iterator it = dependents.begin(); it != dependents.end(); ++it ){ 
+		currentDependent = it->second->getEntryPtr(it->first);
+		dependent = findParameterEntryIndex(currentDependent, it->first);
+		if(type == Dependency::NumberArrayLengthDep){
+			redrawArray(dependent.sibling(dependent.row(),1));
+		}
+		else if(type == Dependency::VisualDep){
+			Teuchos::RCP<VisualDependency> visDep = Teuchos::rcp_static_cast<VisualDependency>(dependency);
+			visDep->isDependentVisible() ? emit showData(dependent.row(), dependent.parent()) :
 					       emit hideData(dependent.row(), dependent.parent());
-	}
+		}
 
-	if(!hasValidValue(dependent)){
-		QString message = "Because you recently modified the " + data(dependee, Qt::DisplayRole).toString() +
-		" parameter, the valid values for the " + data(dependent, Qt::DisplayRole).toString() +
-		" parameter have changed.\n\nPlease modify the " +  data(dependent,Qt::DisplayRole).toString() + " value.\n";
-		emit badValue(dependent.sibling(dependent.row(), 1), message);
+		if(!hasValidValue(dependent)){
+			QString message = "Because you recently modified the " + data(dependee, Qt::DisplayRole).toString() +
+			" parameter, the valid values for the " + data(dependent, Qt::DisplayRole).toString() +
+			" parameter have changed.\n\nPlease modify the " +  data(dependent,Qt::DisplayRole).toString() + " value.\n";
+			emit badValue(dependent.sibling(dependent.row(), 1), message);
+		}
 	}
 }
 
