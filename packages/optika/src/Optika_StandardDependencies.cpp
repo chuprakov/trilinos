@@ -428,7 +428,6 @@ void StringValidatorDependency::validateDep(){
 		}
 	}
 }
-
 BoolValidatorDependency::BoolValidatorDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList,
 Teuchos::RCP<const Teuchos::ParameterEntryValidator> trueValidator, Teuchos::RCP<const Teuchos::ParameterEntryValidator> falseValidator)
