@@ -40,6 +40,11 @@ namespace Optika{
 class Condition{
 public:
 	/**
+	 * Conviencne typedef for defining a list of conditions.
+	 */
+	typedef Teuchos::Array<Teuchos::RCP<Condition> > ConditionList;
+
+	/**
 	 * Enum to determine the conditoin type.
 	 */
 	enum Type{BinLogicCon, NotCon, ParamCon};
@@ -66,7 +71,7 @@ public:
 	 * @return wether or not the evaluation of a parameter
 	 * occurs somewhere in this condition.
 	 */
-	virtual bool containsAtLeasetOneParameter()=0;
+	virtual bool containsAtLeasteOneParameter()=0;
 
 	/**
 	 * Gets all of the parameters that are evaluated in this

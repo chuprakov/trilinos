@@ -29,25 +29,11 @@
 #include "Teuchos_ParameterList.hpp"
 #include "Optika_StandardConditions.hpp"
 #include "Optika_SpecificParameterEntryValidators.hpp"
+#include "Optika_StandardConditions.hpp"
 
-/*
-int intFuncTester(int argument){
-	return argument+10;
-}
-
-int intVisualTester(int argument){
-	if(argument <= 32){
-		return 1;
-	}
-	else{
-		return 0;
-	}
-}
-*/
 double doubleTesterFunc(double argument){
 	return argument-100.0;
 }
-
 
 /**
  * Test all the conditions
@@ -117,13 +103,13 @@ int testConditions(Teuchos::FancyOStream &out){
 	/*
 	 * Test And condition
 	 */
-	Optika::BinaryLogicalCondition::ConditionList conList1(Teuchos::tuple<Teuchos::RCP<Optika::Condition> >(stringCon1, boolCon1));
+	Optika::Condition::ConditionList conList1(Teuchos::tuple<Teuchos::RCP<Optika::Condition> >(stringCon1, boolCon1));
 	Teuchos::RCP<Optika::AndCondition> andCon1 = Teuchos::rcp(new Optika::AndCondition(conList1));
 	TEST_ASSERT(andCon1->isConditionTrue());
-	Optika::BinaryLogicalCondition::ConditionList conList2(Teuchos::tuple<Teuchos::RCP<Optika::Condition> >(stringCon1, boolCon2));
+	Optika::Condition::ConditionList conList2(Teuchos::tuple<Teuchos::RCP<Optika::Condition> >(stringCon1, boolCon2));
 	Teuchos::RCP<Optika::AndCondition> andCon2 = Teuchos::rcp(new Optika::AndCondition(conList2));
 	TEST_ASSERT(!andCon2->isConditionTrue());
-	Optika::BinaryLogicalCondition::ConditionList conList3(Teuchos::tuple<Teuchos::RCP<Optika::Condition> >(stringCon2, boolCon2));
+	Optika::Condition::ConditionList conList3(Teuchos::tuple<Teuchos::RCP<Optika::Condition> >(stringCon2, boolCon2));
 	Teuchos::RCP<Optika::AndCondition> andCon3 = Teuchos::rcp(new Optika::AndCondition(conList3));
 	TEST_ASSERT(!andCon3->isConditionTrue());
 
@@ -202,7 +188,7 @@ int testConditionGetterAndSetters(Teuchos::FancyOStream &out){
 	/*
 	 * Test And condition
 	 */
-	Optika::BinaryLogicalCondition::ConditionList conList1(Teuchos::tuple<Teuchos::RCP<Optika::Condition> >(stringCon1, boolCon1));
+	Optika::Condition::ConditionList conList1(Teuchos::tuple<Teuchos::RCP<Optika::Condition> >(stringCon1, boolCon1));
 	Teuchos::RCP<Optika::AndCondition> andCon1 = Teuchos::rcp(new Optika::AndCondition(conList1));
 	TEST_ASSERT(andCon1->getType() == Optika::Condition::BinLogicCon);
 	Optika::Dependency::ParameterParentMap andParameters = andCon1->getAllParameters();
@@ -223,7 +209,7 @@ int testConditionGetterAndSetters(Teuchos::FancyOStream &out){
 	/*
 	 * Testing Equsl condition
 	 */
-	Optika::BinaryLogicalCondition::ConditionList conList2(Teuchos::tuple<Teuchos::RCP<Optika::Condition> >(numberCon1, boolCon1));
+	Optika::Condition::ConditionList conList2(Teuchos::tuple<Teuchos::RCP<Optika::Condition> >(numberCon1, boolCon1));
 	Teuchos::RCP<Optika::EqualsCondition> equalsCon1 = Teuchos::rcp(new Optika::EqualsCondition(conList2));
 	TEST_ASSERT(equalsCon1->getType() == Optika::Condition::BinLogicCon);
 	Optika::Dependency::ParameterParentMap equalsParameters = equalsCon1->getAllParameters();
@@ -260,6 +246,10 @@ int testConditionException(Teuchos::FancyOStream &out){
 	TEST_THROW(Optika::StringCondition stringCon1("double param", testingList, "coke"), Optika::InvalidConditionException);
 	TEST_THROW(Optika::NumberCondition<double> doubleCon1("string param", testingList, true), Optika::InvalidConditionException);
 	TEST_THROW(Optika::BoolCondition boolCon1("double param", testingList), Optika::InvalidConditionException);
+	Optika::Condition::ConditionList conList1;
+	TEST_THROW(Optika::AndCondition andCon1(conList1), Optika::InvalidConditionException);
+	Teuchos::RCP<Optika::Condition> con1;
+	TEST_THROW(Optika::NotCondition notCon1(con1), Optika::InvalidConditionException);
 
 	return (success ? 0:1);
 }

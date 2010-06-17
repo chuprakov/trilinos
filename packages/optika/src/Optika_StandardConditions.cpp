@@ -46,7 +46,7 @@ ParameterCondition::ParameterCondition(std::string parameterName, Teuchos::RCP<T
 	}
 }
 
-bool ParameterCondition::containsAtLeasetOneParameter(){
+bool ParameterCondition::containsAtLeasteOneParameter(){
 	return true;
 }
 
@@ -58,15 +58,25 @@ Dependency::ParameterParentMap ParameterCondition::getAllParameters(){
 
 BinaryLogicalCondition::BinaryLogicalCondition(ConditionList& conditions):
 	Condition(Condition::BinLogicCon),
-	conditions(conditions){}
+	conditions(conditions)
+{
+	if(conditions.size() ==0){
+		throw InvalidConditionException("Sorry bud, but you gotta at least give me one condition "
+		"when you're constructing a BinaryLogicalCondition. Looks like you didn't. I'm just gonna "
+		"chalk it up a silly little mistake though. Take a look over your conditions again and make sure "
+		"you don't ever give any of your BinaryLogicConditions and empty condition list.\n\n"
+		"Error: Empty condition list given to a BinaryLogicalCondition constructor.");
+	}
+}
+
 
 void BinaryLogicalCondition::addCondition(Teuchos::RCP<Condition> toAdd){
 	conditions.append(toAdd);
 }
 
-bool BinaryLogicalCondition::containsAtLeasetOneParameter(){
+bool BinaryLogicalCondition::containsAtLeasteOneParameter(){
 	for(ConditionList::iterator it=conditions.begin(); it!=conditions.end(); ++it){
-		if((*it)->containsAtLeasetOneParameter()){
+		if((*it)->containsAtLeasteOneParameter()){
 			return true;
 		}
 	}
@@ -124,13 +134,22 @@ bool EqualsCondition::isConditionTrue(){
 
 NotCondition::NotCondition(Teuchos::RCP<Condition> condition):
 	Condition(Condition::NotCon),
-	condition(condition){}
+	condition(condition)
+{
+	if(condition.is_null()){
+		throw InvalidConditionException("OOOOOOOOPppppps! Looks like you tried to give me "
+		"a null pointer when you were making a not conditon. That's a no no. Go back and "
+		"checkout your not conditions and make sure you didn't give any of them a null pointer "
+		"as an argument to the constructor.\n\n"
+		"Error: Null pointer given to NotCondition constructor.");
+	}
+}
 
 bool NotCondition::isConditionTrue(){
 	return (!condition->isConditionTrue());
 }
 
-bool NotCondition::containsAtLeasetOneParameter(){
+bool NotCondition::containsAtLeasteOneParameter(){
 	return condition->getType() == Condition::ParamCon;
 }
 

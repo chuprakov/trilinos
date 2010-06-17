@@ -39,6 +39,12 @@ VisualDependency::VisualDependency(std::string dependeeName, Teuchos::RCP<Teucho
 ParameterParentMap dependents)
 :Dependency(dependeeName, dependeeParentList, dependents,  Dependency::VisualDep){}
 
+VisualDependency::VisualDependency(ParameterParentMap dependees, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList)
+:Dependency(dependees, dependentName, dependentParentList, Dependency::VisualDep){}
+
+VisualDependency::VisualDependency(ParameterParentMap dependees, ParameterParentMap dependents) 
+:Dependency(dependees, dependents, Dependency::VisualDep){}
+
 bool VisualDependency::isDependentVisible(){
 	return dependentVisible;
 }
@@ -87,6 +93,7 @@ ParameterParentMap dependents, const ValueList& values, bool showIf)
 :VisualDependency(dependeeName, dependeeParentList, dependents), values(values), showIf(showIf){
 	validateDep();
 }
+
 void StringVisualDependency::evaluate(){
 	std::string dependeeValue = getFirstDependeeValue<std::string>();
 	ValueList::const_iterator result;
@@ -107,7 +114,8 @@ void StringVisualDependency::validateDep(){
 	if(dependees.size() != 1){
 		throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
 		"String Visual Dependency doesn't have exactly one dependee. This is kind of a problem. " 
-		"You should probably take a look into it. \n\n" 
+		"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
+		"be doing some subclassing you sly-dog ;)\n\n" 
 		"Error: A String Visual Dependency must have exactly 1 dependee. " 
 		"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n" 
 		"Dependees: " + getDependeeNamesString() + "\n" 
@@ -158,7 +166,8 @@ void BoolVisualDependency::validateDep(){
 	if(dependees.size() != 1){
 		throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
 		"Bool Visual Dependency doesn't have exactly one dependee. This is kind of a problem. " 
-		"You should probably take a look into it. \n\n" 
+		"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
+		"be doing some subclassing you sly-dog ;)\n\n" 
 		"Error: A Bool Visual Dependency must have exactly 1 dependee. " 
 		"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n" 
 		"Dependees: " + getDependeeNamesString() + "\n" 
@@ -173,6 +182,35 @@ void BoolVisualDependency::validateDep(){
 		"Dependents: " + getDependentNamesString());
 	}
 }
+
+ConditionVisualDependency::ConditionVisualDependency(Teuchos::RCP<Condition> condition,
+std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf)
+:VisualDependency(condition->getAllParameters(), dependentName, dependentParentList), showIf(showIf), condition(condition){
+	validateDep();
+}
+
+ConditionVisualDependency::ConditionVisualDependency(Teuchos::RCP<Condition> condition, ParameterParentMap dependents, bool showIf)
+:VisualDependency(condition->getAllParameters(), dependents), showIf(showIf), condition(condition){
+	validateDep();
+}
+
+void ConditionVisualDependency::evaluate(){
+	bool conditionState = condition->isConditionTrue();
+	if(conditionState){
+		std::cout << "condition is true \n";
+	}
+	if(showIf){
+		std::cout << "showIf is true \n";
+	}
+	if((conditionState && showIf) || (!conditionState && !showIf)){
+		dependentVisible = true;
+	}
+	else{
+		dependentVisible = false;
+	}
+}
+
+void ConditionVisualDependency::validateDep(){} 
 
 NumberArrayLengthDependency::NumberArrayLengthDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, int (*func)(int))
@@ -294,7 +332,8 @@ void NumberArrayLengthDependency::validateDep(){
 	if(dependees.size() != 1){
 		throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
 		"Number Array Length Dependency doesn't have exactly one currentDependee. This is kind of a problem. " 
-		"You should probably take a look into it. \n\n" 
+		"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
+		"be doing some subclassing you sly-dog ;)\n\n" 
 		"Error: A Number Array Length Dependency must have exactly 1 currentDependee. " 
 		"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n" 
 		"Dependees: " + getDependeeNamesString() + "\n" 
@@ -363,7 +402,8 @@ void StringValidatorDependency::validateDep(){
 	if(dependees.size() != 1){
 		throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
 		"String Validator Dependency doesn't have exactly one dependee. This is kind of a problem. " 
-		"You should probably take a look into it. \n\n"
+		"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
+		"be doing some subclassing you sly-dog ;)\n\n" 
 		"Error: A String Validator Dependency must have exactly 1 dependee. "
 		"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n"
 		"Dependees: " + getDependeeNamesString() + "\n"
@@ -433,7 +473,8 @@ void BoolValidatorDependency::validateDep(){
 	if(dependees.size() != 1){
 		throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
 		"Bool Validator Dependency doesn't have exactly one dependee. This is kind of a problem. " 
-		"You should probably take a look into it. \n\n"
+		"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
+		"be doing some subclassing you sly-dog ;)\n\n" 
 		"Error: A Bool Validator Dependency must have exactly 1 dependee. "
 		"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n"
 		"Dependees: " + getDependeeNamesString() + "\n" 

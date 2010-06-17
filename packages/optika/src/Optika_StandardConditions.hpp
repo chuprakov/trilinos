@@ -43,11 +43,6 @@ namespace Optika{
 class BinaryLogicalCondition : public Condition{
 public:
 	/**
-	 * Conviencne typedef for defining a list of conditions.
-	 */
-	typedef Teuchos::Array<Teuchos::RCP<Condition> > ConditionList;
-
-	/**
 	 * Constructs a BinaryLogicCondition
 	 *
 	 * @param conditions The conditions to be evaluated.
@@ -70,7 +65,7 @@ public:
 
 	virtual bool isConditionTrue()=0;
 
-	bool containsAtLeasetOneParameter();
+	bool containsAtLeasteOneParameter();
 
 	Dependency::ParameterParentMap getAllParameters();
 
@@ -165,7 +160,7 @@ public:
 
 	bool isConditionTrue();
 
-	bool containsAtLeasetOneParameter();
+	bool containsAtLeasteOneParameter();
 
 	Dependency::ParameterParentMap getAllParameters();
 
@@ -201,7 +196,7 @@ public:
 
 	virtual bool isConditionTrue()=0;
 
-	bool containsAtLeasetOneParameter();
+	bool containsAtLeasteOneParameter();
 
 	Dependency::ParameterParentMap getAllParameters();
 

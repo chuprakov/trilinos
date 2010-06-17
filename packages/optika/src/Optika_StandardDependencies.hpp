@@ -29,6 +29,8 @@
 #define OPTIKA_STANDARDDEPENDCIES_HPP_
 #include "Optika_Dependency.hpp"
 #include "Optika_SpecificParameterEntryValidators.hpp"
+#include "Optika_Condition.hpp"
+
 namespace Optika{
 
 /**
@@ -61,6 +63,23 @@ public:
 	 */
 	VisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	ParameterParentMap dependents);
+
+	/**
+	 * Constructs a VisualDependency.
+	 *
+	 * @param dependees A map containing all the dependee Parameters associated with their parent ParameterLists.
+	 * @param dependentName The name of the dependent parameter.
+	 * @param dependentParentList The ParameterList containing the dependent.
+	 */
+	VisualDependency(ParameterParentMap dependees, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList);
+
+	/**
+	 * Constructs a VisualDependency.
+	 *
+	 * @param dependees A map containing all the dependee Parameters associated with their parent ParameterLists.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 */
+	VisualDependency(ParameterParentMap dependees, ParameterParentMap dependents);
 
 	/**
 	 * Desctructor
@@ -129,7 +148,7 @@ private:
 };
 
 /**
- * A string visual depdencies says the following about the relationship between two elements in a Dependent Parameter List:
+ * A string visual depdencies says the following about the relationship between two elements in a Parameter List:
  * Depending on wether or not the dependee has a particular value, the dependent may or may not be displayed to the user in a GUI.
  * 
  * The dependee of a StringVisualDependency must be of type string and can't be an array. The dependent may be any type of
@@ -239,7 +258,7 @@ private:
 };
 
 /**
- * A bool visual depdencies says the following about the relationship between to elements in a Dependent Parameter List:
+ * A bool visual dependency says the following about the relationship between two elements in a Parameter List:
  * Depending on wether or not the dependee is true or false, the dependent may or may not be displayed to the user in a GUI.
  *
  * The dependee of a BoolVisualDependency must be of type bool and can't be an array. The dependent may be any type of parameter
@@ -295,7 +314,58 @@ public:
 };
 
 /**
- * A number visual depdencies says the following about the relationship between to elements in a Dependent Parameter List:
+ * A condition visual dependency says the following about the relationship between elements in a Parameter List:
+ * Depending on wether or not the dependee(s) statisfy a particual condition, the dependent may or may not be displayed to the user in a GUI.
+ *
+ * Conditoin Visual Dependencies are unique in that via the Condition class, they allow for multiple dependees.
+ * The dependee(s) of a ConditionVisualDependency must be expressed as a Condition and are subject to the consquential constraints. The dependent may be any type of parameter
+ * or parameter list.
+ */
+class ConditionVisualDependency : public VisualDependency{
+public:
+	/**
+	 * Constructs a ConditionVisualDependency.
+	 *
+	 *
+	 * @param condition The condition that must be satisfied in order to display the dependent
+	 * parameter.
+	 * @param dependentName The name of the dependent parameter.
+	 * @param dependentParentList The ParameterList containing the dependent.
+	 * @param showIf When true, the depndent will be be shown if the condition is true.
+	 * If false, the dependent will be shown only when the dependee is false.
+	 */
+	ConditionVisualDependency(Teuchos::RCP<Condition> condition,
+	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf);
+
+	/**
+	 * Constructs a BoolVisualDependency.
+	 *
+	 * @param condition The condition that must be satisfied in order to display the dependent
+	 * parameter.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param showIf When true, the depndent will be be shown if the condition is true.
+	 * If false, the dependent will be shown only when the dependee is false.
+	 */
+	ConditionVisualDependency(Teuchos::RCP<Condition> condition, ParameterParentMap dependents, bool showIf);
+
+	void evaluate();
+
+	/**
+	 * Whether or not to show the dependent if the dependee is set to the value.
+	 */
+	bool showIf;
+
+	void validateDep();
+
+private:
+	/**
+	 * The Condition to determine wether or not the dependent is displayed.
+	 */
+	Teuchos::RCP<Condition> condition;
+};
+
+/**
+ * A number visual dependency says the following about the relationship between two elements in a Parameter List:
  * Depending on wether or not the dependee has a certain value, the dependent may or may not be displayed to the user in a GUI.
  *
  * The dependee of a NumberVisualDependency must be a number type and can't be an array. The dependent may be any type of parameter
@@ -401,7 +471,8 @@ private:
 		if(dependees.size() != 1){
 			throw InvalidDependencyException("Uh oh. Looks like you tried to make a " 
 			"Number Visual Dependency doesn't have exactly one dependee. This is kind of a problem. " 
-			"You should probably take a look into it. \n\n" 
+			"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
+			"be doing some subclassing you sly-dog ;)\n\n" 
 			"Error: A Number Visual Dependency must have exactly 1 dependee. " 
 			"You have tried to assign it " + QString::number(dependees.size()).toStdString() + " dependees.\n" 
 			"Dependees: " + getDependeeNamesString() + "\n" 
@@ -622,7 +693,7 @@ private:
 	S (*func)(S);
 	
 	/**
-	 * Runs the dependencies function on the given argument and returns
+	 * Runs the dependency's function on the given argument and returns
 	 * the value that function returns.
 	 *
 	 * @param The value to run the function on.
@@ -643,7 +714,8 @@ private:
 		if(dependees.size() != 1){
 			throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
 			"Number Visual Dependency doesn't have exactly one dependee. This is kind of a problem. " 
-			"You should probably take a look into it. \n\n" 
+			"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
+			"be doing some subclassing you sly-dog ;)\n\n" 
 			"Error: A Number Visual Dependency must have exactly 1 dependee. " 
 			"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n" 
 			"Dependees: " + getDependeeNamesString() + "\n" 
@@ -760,7 +832,7 @@ private:
 	int (*func)(int);
 	
 	/**
-	 * Runs the dependencies function on the given argument and returns
+	 * Runs the dependency's function on the given argument and returns
 	 * the value that function returns.
 	 *
 	 * @param The value to run the function on.
@@ -1063,7 +1135,8 @@ private:
 		if(dependees.size() != 1){
 			throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
 			"Number Visual Dependency doesn't have exactly one dependee. This is kind of a problem. "
-			"You should probably take a look into it. \n\n"
+			"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
+			"be doing some subclassing you sly-dog ;)\n\n" 
 			"Error: A Number Visual Dependency must have exactly 1 dependee. "
 			"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n"
 			"Dependees: " + getDependeeNamesString() + "\n" 
