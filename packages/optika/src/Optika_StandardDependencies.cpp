@@ -396,10 +396,10 @@ ValueToValidatorMap valuesAndValidators, Teuchos::RCP<Teuchos::ParameterEntryVal
 	validateDep();
 }
 
-StringValidatorDependency::StringValidatorDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+StringValidatorDependency::StringValidatorDependency(std::string currentDependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 ParameterParentMap dependents,
 ValueToValidatorMap valuesAndValidators, Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator)
-:ValidatorDependency(dependeeName, dependeeParentList, dependents), defaultValidator(defaultValidator), valuesAndValidators(valuesAndValidators){
+:ValidatorDependency(currentDependeeName, dependeeParentList, dependents), defaultValidator(defaultValidator), valuesAndValidators(valuesAndValidators){
 	validateDep();
 }
 
