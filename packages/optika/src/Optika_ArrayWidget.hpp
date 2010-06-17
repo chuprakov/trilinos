@@ -152,7 +152,7 @@ protected:
 	 */
 	void setupArrayLayout(){
 		QGridLayout *widgetLayout = new QGridLayout(arrayContainer);
-		for(int i=0; i<baseArray.size(); i++){
+		for(int i=0; i<baseArray.size(); ++i){
 			widgetLayout->addWidget(new QLabel("Item: " +QString::number(i)),0,i,Qt::AlignLeft);
 			QWidget* editorWidget = getEditorWidget();
 			widgetLayout->addWidget(editorWidget,1,i,Qt::AlignLeft);
@@ -211,7 +211,7 @@ public slots:
 
 	std::string saveData(){
 		Teuchos::Array<int> toReturn;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); it++){
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
 			toReturn.push_back(((QSpinBox*)(*it))->value());
 		}
 		return toReturn.toString();
@@ -220,7 +220,7 @@ public slots:
 	void initializeValues(QString values){
 		QStringList valueList = getValues(values); 
 		int i =0;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); it++, i++){
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it, ++i){
 			static_cast<QSpinBox*>(*it)->setValue(valueList.at(i).toInt());
 		}
 
@@ -266,7 +266,7 @@ public slots:
 
 	std::string saveData(){
 		Teuchos::Array<short> toReturn;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); it++){
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
 			toReturn.push_back(((QSpinBox*)(*it))->value());
 		}
 		return toReturn.toString();
@@ -275,7 +275,7 @@ public slots:
 	void initializeValues(QString values){
 		QStringList valueList = getValues(values); 
 		int i =0;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); it++, i++){
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it, ++i){
 			static_cast<QSpinBox*>(*it)->setValue((short)valueList.at(i).toInt());
 		}
 
@@ -319,7 +319,7 @@ public slots:
 
 	std::string saveData(){
 		Teuchos::Array<long long int> toReturn;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); it++){
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
 			toReturn.push_back(((QwwLongSpinBox*)(*it))->value());
 		}
 		return toReturn.toString();
@@ -328,7 +328,7 @@ public slots:
 	void initializeValues(QString values){
 		QStringList valueList = getValues(values); 
 		int i =0;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); it++, i++){
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it, ++i){
 			static_cast<QwwLongSpinBox*>(*it)->setValue(valueList.at(i).toLongLong());
 		}
 
@@ -372,7 +372,7 @@ public slots:
 
 	std::string saveData(){
 		Teuchos::Array<double> toReturn;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); it++){
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
 			toReturn.push_back(((QDoubleSpinBox*)(*it))->value());
 		}
 		return toReturn.toString();
@@ -381,7 +381,7 @@ public slots:
 	void initializeValues(QString values){
 		QStringList valueList = getValues(values); 
 		int i =0;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); it++, i++){
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it, ++i){
 			static_cast<QDoubleSpinBox*>(*it)->setValue(valueList.at(i).toDouble());
 		}
 	}
@@ -426,7 +426,7 @@ public slots:
 
 	std::string saveData(){
 		Teuchos::Array<float> toReturn;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); it++){
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
 			toReturn.push_back(((QDoubleSpinBox*)(*it))->value());
 		}
 		return toReturn.toString();
@@ -435,7 +435,7 @@ public slots:
 	void initializeValues(QString values){
 		QStringList valueList = getValues(values); 
 		int i =0;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); it++, i++){
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it, ++i){
 			static_cast<QDoubleSpinBox*>(*it)->setValue(valueList.at(i).toDouble());
 		}
 
@@ -477,7 +477,7 @@ public:
 
 	std::string saveData(){
 		Teuchos::Array<std::string> toReturn;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); it++){
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
 			if(Teuchos::is_null(entryValidator)){
 				toReturn.push_back(((QLineEdit*)(*it))->text().toStdString());
 			}
@@ -497,7 +497,7 @@ public:
 	void initializeValues(QString values){
 		QStringList valueList = getValues(values); 
 		int i =0;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); it++, i++){
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it, ++i){
 			if(Teuchos::is_null(entryValidator)){
 				static_cast<QLineEdit*>(*it)->setText(valueList.at(i));
 			}

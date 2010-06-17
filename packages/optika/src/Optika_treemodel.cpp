@@ -156,7 +156,7 @@ int TreeModel::columnCount(const QModelIndex &parent) const {
 }
 
 void TreeModel::issueInitilizationSignals(){
-	for(DependencySheet::DepMap::const_iterator it = dependencySheet->depBegin(); it != dependencySheet->depEnd(); it++){
+	for(DependencySheet::DepMap::const_iterator it = dependencySheet->depBegin(); it != dependencySheet->depEnd(); ++it){
 		QModelIndex dependeeIndex = findParameterEntryIndex(it->first, (*(it->second.begin()))->getDependeeName(it->first));
 		dataChangedListener(dependeeIndex, dependeeIndex);
 	}
@@ -260,7 +260,7 @@ QModelIndex TreeModel::findParameterEntryIndex(const Teuchos::ParameterEntry *pa
 	QString targetName = QString::fromStdString(parameterName);
 	QList<QModelIndex> potentialMatches = match(index(0,0), Qt::DisplayRole, QString::fromStdString(parameterName),
 				        	    -1, Qt::MatchExactly | Qt::MatchRecursive );
-	for(QList<QModelIndex>::const_iterator it = potentialMatches.begin(); it != potentialMatches.end(); it++){
+	for(QList<QModelIndex>::const_iterator it = potentialMatches.begin(); it != potentialMatches.end(); ++it){
 		if(parameterEntry == itemEntry(*it)){
 			return *it;
 		}
@@ -418,7 +418,7 @@ void TreeModel::dataChangedListener(const QModelIndex& index1, const QModelIndex
 	QModelIndex dependee = index1.sibling(index1.row(), 0);
 	if(dependencySheet->hasDependents(changedIndexEntry)){
 		DependencySheet::DepSet deps =  dependencySheet->getDependenciesForParameter(changedIndexEntry);
-		for(DependencySheet::DepSet::iterator it = deps.begin(); it != deps.end(); it++){
+		for(DependencySheet::DepSet::iterator it = deps.begin(); it != deps.end(); ++it){
 			(*it)->evaluate();
 			checkDependentState(dependee,*it);
 		}

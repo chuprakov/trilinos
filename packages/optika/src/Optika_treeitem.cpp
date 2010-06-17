@@ -58,11 +58,11 @@ TreeItem::~TreeItem(){
 
 void TreeItem::printOut() const{
 	std::cout << itemData.at(0).toString().toStdString() <<  ":     ";
-	for(int i=0; i < itemData.size(); i++){
+	for(int i=0; i < itemData.size(); ++i){
 		std::cout << itemData.at(i).toString().toStdString() << " ";
 	}
 	std::cout << "\n";
-	for(int i=0; i<childItems.size(); i++){
+	for(int i=0; i<childItems.size(); ++i){
 		childItems.at(i)->printOut();
 	}
 }

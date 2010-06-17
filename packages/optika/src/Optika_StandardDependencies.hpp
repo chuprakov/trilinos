@@ -1029,7 +1029,7 @@ public:
 	void evaluate(){
 		typename RangeToValidatorMap::const_iterator it;
 		S dependeeValue = getFirstDependeeValue<S>();
-		for(it = rangesAndValidators.begin(); it != rangesAndValidators.end(); it++){
+		for(it = rangesAndValidators.begin(); it != rangesAndValidators.end(); ++it){
 			S min = it->first.first;
 			S max = it->first.second;
 			if(dependeeValue >= min && dependeeValue <=max){
@@ -1084,7 +1084,7 @@ private:
 		}
 
 		typename RangeToValidatorMap::const_iterator it;
-		for(it = rangesAndValidators.begin(); it != rangesAndValidators.end(); it++){
+		for(it = rangesAndValidators.begin(); it != rangesAndValidators.end(); ++it){
 			typename ParameterParentMap::const_iterator it2;
 			Teuchos::ParameterEntry *currentDependent;
 			for(it2 = dependents.begin(); it2 != dependents.end(); ++it2){ 

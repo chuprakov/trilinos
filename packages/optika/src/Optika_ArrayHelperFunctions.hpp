@@ -70,11 +70,11 @@ Teuchos::Array<S> fromStringToArray(QString arrayString){
 	arrayString = arrayString.remove(" ");
 	QStringList tempValues = arrayString.split(",");
 	QList<QVariant> values;
-	for(int i = 0; i<tempValues.size(); i++){
+	for(int i = 0; i<tempValues.size(); ++i){
 		values.append(tempValues[i]);
 	}
 	Teuchos::Array<S> toReturn;
-	for(int i = 0; i<values.size(); i++){
+	for(int i = 0; i<values.size(); ++i){
 		toReturn.append(values[i].value<S>());	
 	}
 	return toReturn;

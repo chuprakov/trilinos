@@ -309,7 +309,7 @@ void MetaWindow::saveSettings(){
 		xmlWriter.writeStartElement("ypos");
 		xmlWriter.writeCharacters(QString::number(y()));
 		xmlWriter.writeEndElement();
-		for(int i =0; i<recentDocsList.size(); i++){
+		for(int i =0; i<recentDocsList.size(); ++i){
 			xmlWriter.writeStartElement("recentdoc");
 				xmlWriter.writeCharacters(recentDocsList.at(i));
 			xmlWriter.writeEndElement();
@@ -332,7 +332,7 @@ void MetaWindow::addRecentDocument(QString recentDocument){
 
 void MetaWindow::updateRecentDocsMenu(){
 	recentMenu->clear();
-	for(int i=0; i<recentDocsList.size(); i++){
+	for(int i=0; i<recentDocsList.size(); ++i){
 		QAction *recentDocAct = new QAction(recentDocsList.at(i).section("/",-1,-1),this);
 		connect(recentDocAct, SIGNAL(triggered()), this, SLOT(loadRecentDoc()));
 		recentMenu->addAction(recentDocAct);
@@ -398,7 +398,7 @@ bool MetaWindow::saveCurrentUnsavedFile(){
 void MetaWindow::loadRecentDoc(){
 	QString docName = dynamic_cast<QAction*>(sender())->text();
 	int i =0;
-	for(; i<recentDocsList.size();i++){
+	for(; i<recentDocsList.size();++i){
 		if(recentDocsList.at(i).contains(docName)){
 			break;
 		}

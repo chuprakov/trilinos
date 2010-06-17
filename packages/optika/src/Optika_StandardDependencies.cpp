@@ -210,10 +210,10 @@ void NumberArrayLengthDependency::modifyArrayLength(int newLength, Teuchos::Para
 	}
 	Teuchos::Array<S> newArray;
 	int i;
-	for(i=0; i<originalArray.size() && i<newLength; i++){
+	for(i=0; i<originalArray.size() && i<newLength; ++i){
 		newArray.append(originalArray[i]);
 	}
-	for(;i<newLength;i++){
+	for(;i<newLength;++i){
 		if(Teuchos::is_null(potentialValidator)){
 			newArray.append(0);
 		}
@@ -230,10 +230,10 @@ void NumberArrayLengthDependency::modifyArrayLength<std::string>(int newLength, 
 	Teuchos::Array<std::string> newArray;
 	Teuchos::RCP<const Teuchos::ParameterEntryValidator> validator = dependentToModify->validator();
 	int i;
-	for(i=0; i<originalArray.size() && i<newLength; i++){
+	for(i=0; i<originalArray.size() && i<newLength; ++i){
 		newArray.append(originalArray[i]);
 	}
-	for(;i<newLength;i++){
+	for(;i<newLength;++i){
 		if(Teuchos::is_null(validator)){
 			newArray.append(" ");
 		}
@@ -377,7 +377,7 @@ void StringValidatorDependency::validateDep(){
 		"Actual type: " + getFirstDependee()->getAny().typeName() + "\n"
 		"Dependent: " + getDependentNamesString());
 	}
-	for(ValueToValidatorMap::const_iterator it = valuesAndValidators.begin(); it != valuesAndValidators.end(); it++){
+	for(ValueToValidatorMap::const_iterator it = valuesAndValidators.begin(); it != valuesAndValidators.end(); ++it){
 		Teuchos::ParameterEntry *currentDependent;
 		for(ParameterParentMap::const_iterator it2 = dependents.begin(); it2 != dependents.end(); ++it2){ 
 			currentDependent = it2->second->getEntryPtr(it2->first);
