@@ -28,13 +28,71 @@
 #ifndef OPTIKA_CONDITION_HPP_
 #define OPTIKA_CONDITION_HPP_
 
+#include "Optika_Dependency.hpp"
+
 namespace Optika{
 
+/**
+ * A condition determins whether or not 
+ * a particular set of conditions are currently
+ * occuring.
+ */
 class Condition{
 public:
-	virtual bool isConditionTrue()=0;
-	
+	/**
+	 * Enum to determine the conditoin type.
+	 */
+	enum Type{BinLogicCon, NotCon, ParamCon};
+
+	/**
+	 * Construcst a Condition
+	 */
+	Condition(Type type):type(type){}
+
+	/**
+	 * Deconstructs a condition.
+	 */
 	virtual ~Condition(){}
+
+	/**
+	 * Determins wether or not a condition is true.
+	 */
+	virtual bool isConditionTrue()=0;
+
+	/**
+	 * Determines wether or not the evaluation of a parameter
+	 * occurs somewhere in this condition.
+	 *
+	 * @return wether or not the evaluation of a parameter
+	 * occurs somewhere in this condition.
+	 */
+	virtual bool containsAtLeasetOneParameter()=0;
+
+	/**
+	 * Gets all of the parameters that are evaluated in this
+	 * condition.
+	 *
+	 * @return A map of all of the parameters that are evaluated in this
+	 * condition.
+	 */
+
+	virtual Dependency::ParameterParentMap getAllParameters()=0;
+
+	/**
+	 * Gets the type of the condition.
+	 *
+	 * @return The type of the condition.
+	 */
+	Type getType(){
+		return type;
+	}
+
+private:
+	/**
+	 * The Conditions's type.
+	 */
+	Type type;
+
 };
 
 }

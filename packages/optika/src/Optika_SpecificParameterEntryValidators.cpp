@@ -87,11 +87,11 @@ void FileNameValidator::printDoc(std::string const &docString, std::ostream &out
 	out << "#	FileName Validator\n";
 }
 
-StringValidator::StringValidator(Teuchos::Array<std::string> validStrings):ParameterEntryValidator(){
+StringValidator::StringValidator(ValueList validStrings):ParameterEntryValidator(){
 	this->validStrings = validStrings;	
 }
 
-const Teuchos::Array<std::string> StringValidator::setValidStrings(Teuchos::Array<std::string> validStrings){
+const Teuchos::Array<std::string> StringValidator::setValidStrings(ValueList validStrings){
 	this->validStrings = validStrings;
 	return this->validStrings;
 }

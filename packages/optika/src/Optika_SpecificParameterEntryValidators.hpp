@@ -612,10 +612,11 @@ private:
  */
 class StringValidator : public Teuchos::ParameterEntryValidator{
 public:
+	typedef Teuchos::Array<std::string> ValueList;
 	/**
 	 * Constructs a StringValidator.
 	 */
-	StringValidator(Teuchos::Array<std::string> validStrings);
+	StringValidator(ValueList validStrings);
 
 	/**
 	 * Sets the Array of valid strings and returns what the current array of valid
@@ -624,7 +625,7 @@ public:
 	 * @param validStrings What the array for the valid strings should contain.
 	 * @return What the arry for the valid strings now conatians.
 	 */
-	const Teuchos::Array<std::string> setValidStrings(Teuchos::Array<std::string> validStrings);
+	const ValueList setValidStrings(ValueList validStrings);
 
 	Teuchos::RCP<const Teuchos::Array<std::string> > validStringValues() const;
 
@@ -635,7 +636,7 @@ private:
 	/**
 	 * An array containing a list of all the valid string values.
 	 */
-	Teuchos::Array<std::string> validStrings;
+	ValueList validStrings;
 };
 
 /**
