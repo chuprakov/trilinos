@@ -367,7 +367,7 @@ public:
 	}
 
 	void evaluate(){
-		S functionVal = runFunction(dependeeParentList->get<S>(dependeeName));
+		S functionVal = runFunction(getFirstDependeeValue<S>());
 		functionVal > 0 ? dependentVisible = true : dependentVisible = false;
 	}
 
@@ -394,15 +394,31 @@ private:
 	}	
 
 	void validateDep(){
+		/*
+		 * This error should never get thrown, unless someone
+		 * is doing something wonky in a sublcass.
+		 */
+		if(dependees.size() != 1){
+			throw InvalidDependencyException("Uh oh. Looks like you tried to make a " 
+			"Number Visual Dependency doesn't have exactly one dependee. This is kind of a problem. " 
+			"You should probably take a look into it. \n\n" 
+			"Error: A Number Visual Dependency must have exactly 1 dependee. " 
+			"You have tried to assign it " + QString::number(dependees.size()).toStdString() + " dependees.\n" 
+			"Dependees: " + getDependeeNamesString() + "\n" 
+			"Dependents: " + getDependentNamesString());
+		}
+		const Teuchos::ParameterEntry* dependee = getFirstDependee();
 		if(!dependee->isType<int>()
 		&& !dependee->isType<short>()
 		&& !dependee->isType<double>()
-		&& !dependee->isType<float>())
-			throw InvalidDependencyException("The dependee of a"
+		&& !dependee->isType<float>()){
+			throw InvalidDependencyException("The dependee of a "
 			"Number Visual Dependency must be of a supported number type!\n"
-			"Problem dependee: " + dependeeName + "\n"
+			"Problem dependee: " + getFirstDependeeName() + "\n"
 			"Actual type: " + dependee->getAny().typeName() + "\n"
+			"Dependees: " + getDependeeNamesString() + "\n"
 			"Dependents: " + getDependentNamesString());
+		}
 	}
 };
 
@@ -574,7 +590,7 @@ public:
 	}
 
 	void evaluate(){
-		S newAspectValue = runFunction(dependeeParentList->get<S>(dependeeName));
+		S newAspectValue = runFunction(getFirstDependeeValue<S>());
 		switch(aspect){
 			case NumberValidatorAspectDependency<S>::Min:
 				validator->setMin(newAspectValue);
@@ -620,6 +636,22 @@ private:
 	}	
 
 	void validateDep(){
+		/*
+		 * This error should never get thrown, unless someone
+		 * is doing something wonky in a sublcass.
+		 */
+		if(dependees.size() != 1){
+			throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
+			"Number Visual Dependency doesn't have exactly one dependee. This is kind of a problem. " 
+			"You should probably take a look into it. \n\n" 
+			"Error: A Number Visual Dependency must have exactly 1 dependee. " 
+			"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n" 
+			"Dependees: " + getDependeeNamesString() + "\n" 
+			"Dependents: " + getDependentNamesString());
+		}
+
+		const Teuchos::ParameterEntry* dependee = getFirstDependee();
+		std::string dependeeName = getFirstDependeeName();
 		if(!dependee->isType<int>()
 		&& !dependee->isType<short>()
 		&& !dependee->isType<double>()
@@ -630,6 +662,15 @@ private:
 			"Actual type: " + dependee->getAny().typeName() + "\n"
 			"Dependents: " + getDependentNamesString());
 		}
+
+		if(typeid(S) != dependee->getAny().type()){
+			throw InvalidDependencyException("The dependee type and EnhancedNumberValidator "
+			"template type must all be the same for a Number Validator Aspect Dependency.\n"
+			"Problem Dependee: " + dependeeName + "\n"
+			"Dependee Type: " + dependee->getAny().typeName() + "\n"
+			"Validator Template Type: " + typeid(S).name());
+		}
+
 		typename ParameterParentMap::const_iterator it;
 		Teuchos::ParameterEntry *currentDependent;
 		for(it = dependents.begin(); it != dependents.end(); ++it){ 
@@ -639,13 +680,15 @@ private:
 				"Number Validator Aspect Dependency must have an EnhancedNumberValidator "
 				"or an ArrayNumberValidator\n"
 				"Problem dependent: " + it->first + "\n" 
-				"Dependee: " + dependeeName);
+				"Dependees: " + getDependeeNamesString() + "\n"
+				"Dependents: " + getDependentNamesString());
 			}
 			if(validator != currentDependent->validator()){
 				throw InvalidDependencyException("The dependent's validator and the validator specified "
 				"in the constructor must be the same for a Number Validator Aspect Dependency!\n"
 				"Problem dependent: " + it->first + "\n" 
-				"Dependee: " + dependeeName);
+				"Dependees: " + getDependeeNamesString() + "\n"
+				"Dependents: " + getDependentNamesString());
 			}
 			if(typeid(S) != currentDependent->getAny().type()){
 				throw InvalidDependencyException("The dependent type and EnhancedNumberValidator "
@@ -654,14 +697,6 @@ private:
 				"Dependent Type: " + currentDependent->getAny().typeName() + "\n"
 				"Validator Template Type: " + typeid(S).name());
 			}
-		}
-		
-		if(typeid(S) != dependee->getAny().type()){
-			throw InvalidDependencyException("The dependent type and EnhancedNumberValidator "
-			"template type must all be the same for a Number Validator Aspect Dependency.\n"
-			"Dependee: " + dependeeName + "\n"
-			"Dependee Type: " + dependee->getAny().typeName() + "\n"
-			"Validator Template Type: " + typeid(S).name());
 		}
 	}
 };
@@ -993,7 +1028,7 @@ public:
 
 	void evaluate(){
 		typename RangeToValidatorMap::const_iterator it;
-		S dependeeValue = dependeeParentList->get<S>(dependeeName);
+		S dependeeValue = getFirstDependeeValue<S>();
 		for(it = rangesAndValidators.begin(); it != rangesAndValidators.end(); it++){
 			S min = it->first.first;
 			S max = it->first.second;
@@ -1021,6 +1056,22 @@ private:
 	RangeToValidatorMap rangesAndValidators;
 	
 	void validateDep(){
+		/*
+		 * This error should never get thrown, unless someone
+		 * is doing something wonky in a sublcass.
+		 */
+		if(dependees.size() != 1){
+			throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
+			"Number Visual Dependency doesn't have exactly one dependee. This is kind of a problem. "
+			"You should probably take a look into it. \n\n"
+			"Error: A Number Visual Dependency must have exactly 1 dependee. "
+			"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n"
+			"Dependees: " + getDependeeNamesString() + "\n" 
+			"Dependents: " + getDependentNamesString());
+		}
+
+		const Teuchos::ParameterEntry* dependee = getFirstDependee();
+		std::string dependeeName = getFirstDependeeName();
 		if(!dependee->isType<int>()
 		&& !dependee->isType<short>()
 		&& !dependee->isType<double>()
@@ -1031,6 +1082,7 @@ private:
 			"Actual type: " + dependee->getAny().typeName() + "\n"
 			"Dependents: " + getDependentNamesString());
 		}
+
 		typename RangeToValidatorMap::const_iterator it;
 		for(it = rangesAndValidators.begin(); it != rangesAndValidators.end(); it++){
 			typename ParameterParentMap::const_iterator it2;

@@ -157,7 +157,7 @@ int TreeModel::columnCount(const QModelIndex &parent) const {
 
 void TreeModel::issueInitilizationSignals(){
 	for(DependencySheet::DepMap::const_iterator it = dependencySheet->depBegin(); it != dependencySheet->depEnd(); it++){
-		QModelIndex dependeeIndex = findParameterEntryIndex(it->first, (*(it->second.begin()))->getDependeeName());
+		QModelIndex dependeeIndex = findParameterEntryIndex(it->first, (*(it->second.begin()))->getDependeeName(it->first));
 		dataChangedListener(dependeeIndex, dependeeIndex);
 	}
 }

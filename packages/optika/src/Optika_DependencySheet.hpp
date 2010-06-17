@@ -138,7 +138,8 @@ public:
 
 private:
 	/**
-	 * A map containing all the depenecies for a list.
+	 * A map containing all the depenecies for a list. Dependencies with multiple dependees will be found in multiple
+	 * places  within the map. Essentially, for each dependee, there will be a pointer to the dependency.
 	 */
 	DepMap dependencies;
 

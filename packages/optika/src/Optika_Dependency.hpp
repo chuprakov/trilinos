@@ -68,6 +68,27 @@ public:
 	 * @param dependents A map of all the dependents and their associated parent lists.
 	 * @param type The type of dependency.
 	 */
+	Dependency(ParameterParentMap& dependees, ParameterParentMap& dependents, Type type);
+
+	/**
+	 * Constructs a Dependency
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependentName The name of the dependent parameter.
+	 * @param dependentParentList The ParameterList containing the dependent.
+	 * @param type The type of dependency.
+	 */
+	Dependency(ParameterParentMap& dependees, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, Type type);
+
+	/**
+	 * Constructs a Dependency
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map of all the dependents and their associated parent lists.
+	 * @param type The type of dependency.
+	 */
 	Dependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	ParameterParentMap& dependents, Type type);
 
@@ -102,11 +123,11 @@ public:
 	static bool doesListContainList(Teuchos::RCP<Teuchos::ParameterList> parentList, Teuchos::RCP<Teuchos::ParameterList> listToFind);
 
 	/**
-	 * Gets the dependee of the dependency.
+	 * Gets the dependees of the dependency.
 	 *
-	 *  @return The dependee of the dependency.
+	 *  @return The dependees of the dependency.
 	 */
-	const Teuchos::ParameterEntry* getDependee() const;
+	ParameterParentMap getDependees() const;
 
 	/**
 	 * Gets the dependent of the dependency.
@@ -124,7 +145,7 @@ public:
 	 * @return True of the potentialParentList contians the dependee's parent
 	 * ParameterList, false otherwise.
 	 */
-	bool isDependeeParentInList(Teuchos::RCP<Teuchos::ParameterList> potentialParentList);
+	//bool isDependeeParentInList(Teuchos::RCP<Teuchos::ParameterList> potentialParentList);
 
 	/**
 	 * Determines whether or not the potentialParentList constains the dependent's parent
@@ -138,11 +159,11 @@ public:
 	//bool areDependentsParentsInList(Teuchos::RCP<Teuchos::ParameterList> potentialParentList);
 
 	/**
-	 * Gets the name of the dependee parameter.
+	 * Gets the names of the dependee parameters.
 	 *
-	 * @return The name of the dependee parameter.
+	 * @return The names of the dependee parameters.
 	 */
-	const std::string& getDependeeName() const;
+	std::set<std::string> getDependeeNames() const;
 
 	/**
 	 * Gets a set containing the names of the dependent parameters.
@@ -150,6 +171,21 @@ public:
 	 * @return A set containing the names of the dependent parameters.
 	 */
 	std::set<std::string> getDependentNames() const;
+
+	/**
+	 * Gets a string containing all the names of the dependee parameters.
+	 *
+	 * @return A string containing all the names of the dependee parameters.
+	 */
+	std::string getDependeeNamesString() const;
+
+	/**
+	 * Gets the name of a dpendee given a pointer to the dependee parameter.
+	 *
+	 * @parama Pointer to the dependee parameter whose name is desired.
+	 * @return The name of the dependee parameter associated with the pointer specified in the arguments.
+	 */
+	std::string getDependeeName(const Teuchos::ParameterEntry* dependee) const;
 
 	/**
 	 * Gets a string containing all the names of the dependent parameters.
@@ -174,8 +210,9 @@ public:
 protected:
 	/**
 	 * The dependee is the parameter being depended upon.
+	 * This is a map of all the dependees and their associated parent ParameterLists.
 	 */
-	Teuchos::ParameterEntry* dependee;
+	ParameterParentMap dependees;
 
 	/**
 	 * The dependent is the parameter that dependes on another parameter.
@@ -184,19 +221,42 @@ protected:
 	ParameterParentMap dependents;
 
 	/**
-	 * The ParameterList containing the dependee parameter.
+	 * The names of all the dependees
 	 */
-	Teuchos::RCP<Teuchos::ParameterList> dependeeParentList;
-
-	/**
-	 * The name of the dependent and dependee parameters.
-	 */
-	std::string dependeeName;
+	std::set<std::string> dependeeNames;
 
 	/**
 	 * The names of all the dependents
 	 */
 	std::set<std::string> dependentNames;
+
+	/**
+	 * Convienence function. Returns the first dependee in the list of dependees.
+	 *
+	 * @return The first dependee in the list of dependees.
+	 */
+	inline const Teuchos::ParameterEntry* getFirstDependee() const{
+		return dependees.begin()->second->getEntryPtr(dependees.begin()->first);
+	}
+
+	/**
+	 * Convienence function. Returns the first dependee in the list of dependees.
+	 *
+	 * @return The first dependee in the list of dependees.
+	 */
+	template<class S>
+	inline const S getFirstDependeeValue() const{
+		return dependees.begin()->second->get<S>(dependees.begin()->first);
+	}
+
+	/**
+	 * Gets the name of the first dependee in the dependees map.
+	 *
+	 * @return the name of the first dependee in the dependees map.
+	 */
+	inline std::string getFirstDependeeName() const{
+		return dependees.begin()->first;
+	}
 
 private:
 	/**
@@ -211,7 +271,13 @@ private:
 	virtual void validateDep() = 0;
 
 
-	void intitializeDependeesAndDependents(ParameterParentMap& dependents);
+	/**
+	 * Initializes all the dependnees and dependents along with checking to make sure
+	 * that their parents lists are actually valid.
+	 *
+	 * @param dependees The dependees to be initialized.
+	 */
+	void intitializeDependeesAndDependents(ParameterParentMap& dependees, ParameterParentMap& dependents);
 };
 
 

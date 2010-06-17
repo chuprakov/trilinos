@@ -88,7 +88,7 @@ ParameterParentMap dependents, const ValueList& values, bool showIf)
 	validateDep();
 }
 void StringVisualDependency::evaluate(){
-	std::string dependeeValue = dependeeParentList->get<std::string>(dependeeName);
+	std::string dependeeValue = getFirstDependeeValue<std::string>();
 	ValueList::const_iterator result;
 	result = find(values.begin(), values.end(), dependeeValue);
 	if((result != values.end() && showIf) || (result==values.end() && !showIf)){
@@ -100,11 +100,24 @@ void StringVisualDependency::evaluate(){
 }
 
 void StringVisualDependency::validateDep(){
-	if(!dependee->isType<std::string>()){
+	/*
+	 * This error should never get thrown, unless someone
+	 * is doing something wonky in a sublcass.
+	 */
+	if(dependees.size() != 1){
+		throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
+		"String Visual Dependency doesn't have exactly one dependee. This is kind of a problem. " 
+		"You should probably take a look into it. \n\n" 
+		"Error: A String Visual Dependency must have exactly 1 dependee. " 
+		"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n" 
+		"Dependees: " + getDependeeNamesString() + "\n" 
+		"Dependents: " + getDependentNamesString());
+	}
+	if(!getFirstDependee()->isType<std::string>()){
 		throw InvalidDependencyException("Ay no! The dependee of a "
 		"String Visual Dependency must be of type string.\n"
-		"Problem dependee: " + dependeeName + "\n"
-		"Actual type: " + dependee->getAny().typeName() + "\n"
+		"Problem dependee: " + getFirstDependeeName() + "\n"
+		"Actual type: " + getFirstDependee()->getAny().typeName() + "\n"
 		"Dependent: " + getDependentNamesString());
 	}
 }
@@ -128,7 +141,7 @@ ParameterParentMap dependents, bool showIf)
 }
 
 void BoolVisualDependency::evaluate(){
-	bool dependeeValue = dependeeParentList->get<bool>(dependeeName);
+	bool dependeeValue = getFirstDependeeValue<bool>();
 	if((dependeeValue && showIf) || (!dependeeValue && !showIf)){
 		dependentVisible = true;
 	}
@@ -138,11 +151,25 @@ void BoolVisualDependency::evaluate(){
 }
 
 void BoolVisualDependency::validateDep(){
-	if(!dependee->isType<bool>()){
+	/*
+	 * This error should never get thrown, unless someone
+	 * is doing something wonky in a sublcass.
+	 */
+	if(dependees.size() != 1){
+		throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
+		"Bool Visual Dependency doesn't have exactly one dependee. This is kind of a problem. " 
+		"You should probably take a look into it. \n\n" 
+		"Error: A Bool Visual Dependency must have exactly 1 dependee. " 
+		"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n" 
+		"Dependees: " + getDependeeNamesString() + "\n" 
+		"Dependents: " + getDependentNamesString());
+	}
+
+	if(!getFirstDependee()->isType<bool>()){
 		throw InvalidDependencyException("Ay no! The dependee of a "
 		"Bool Visual Dependency must be of type bool.\n"
-		"Problem dependee: " + dependeeName + "\n"
-		"Actual type: " + dependee->getAny().typeName() + "\n"
+		"Problem dependee: " + getFirstDependeeName() + "\n"
+		"Actual type: " + getFirstDependee()->getAny().typeName() + "\n"
 		"Dependents: " + getDependentNamesString());
 	}
 }
@@ -221,7 +248,7 @@ void NumberArrayLengthDependency::modifyArrayLength<std::string>(int newLength, 
 }
 
 void NumberArrayLengthDependency::evaluate(){
-	int newLength = runFunction(Teuchos::getValue<int>(*dependee));
+	int newLength = runFunction(getFirstDependeeValue<int>());
 	if(newLength <0){
 		std::stringstream oss;
 		std::string msg;
@@ -232,7 +259,7 @@ void NumberArrayLengthDependency::evaluate(){
 		"Error:\n" <<
 		"An attempt was made to set the length of an Array to a negative number by a NumberArrayLengthDependency\n" <<
 		"Dependency Type: " << QString::number(getType()).toStdString() + "\n" <<
-		"Problem Dependee: " << getDependeeName() <<
+		"Problem Dependee: " << getFirstDependeeName() <<
 		"Problem Dependents: " << getDependentNamesString();
 		msg = oss.str();
 		throw Teuchos::Exceptions::InvalidParameterValue(msg);
@@ -260,11 +287,25 @@ void NumberArrayLengthDependency::evaluate(){
 }
 
 void NumberArrayLengthDependency::validateDep(){
-	if(!dependee->isType<int>() && !dependee->isType<short>()){
-		throw InvalidDependencyException("Ay no! The dependee for an "
+	/*
+	 * This error should never get thrown, unless someone
+	 * is doing something wonky in a sublcass.
+	 */
+	if(dependees.size() != 1){
+		throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
+		"Number Array Length Dependency doesn't have exactly one currentDependee. This is kind of a problem. " 
+		"You should probably take a look into it. \n\n" 
+		"Error: A Number Array Length Dependency must have exactly 1 currentDependee. " 
+		"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n" 
+		"Dependees: " + getDependeeNamesString() + "\n" 
+		"Dependents: " + getDependentNamesString());
+	}
+
+	if(!getFirstDependee()->isType<int>() && !getFirstDependee()->isType<short>()){
+		throw InvalidDependencyException("Ay no! The currentDependee for an "
 		"Array Length Dependency must be either of type short or of type int.\n" 
-		"Problem dependee: " + dependeeName + "\n" 
-		"Actual type: " + dependee->getAny().typeName() + "\n"
+		"Problem currentDependee: " + getFirstDependeeName() + "\n" 
+		"Actual type: " + getFirstDependee()->getAny().typeName() + "\n"
 		"Dependent: " + getDependentNamesString());
 	}
 	Teuchos::ParameterEntry *currentDependent;
@@ -275,51 +316,65 @@ void NumberArrayLengthDependency::validateDep(){
 			"Array Length Dependency must be an array.\n"
 			"Problem dependent: " + it->first + "\n" 
 			"Actual type: " + currentDependent->getAny().typeName() + "\n"
-			"Dependee: " + dependeeName);
+			"Dependees: " + getDependeeNamesString());
 		}
 	}
 }
 
-StringValidatorDependency::StringValidatorDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+StringValidatorDependency::StringValidatorDependency(std::string currentDependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList,
 ValueToValidatorMap valuesAndValidators, Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator)
-:ValidatorDependency(dependeeName, dependeeParentList, dependentName, dependentParentList), defaultValidator(defaultValidator), valuesAndValidators(valuesAndValidators){
+:ValidatorDependency(currentDependeeName, dependeeParentList, dependentName, dependentParentList), defaultValidator(defaultValidator), valuesAndValidators(valuesAndValidators){
 	validateDep();
 }
 
-StringValidatorDependency::StringValidatorDependency(std::string dependeeName, std::string dependentName, 
+StringValidatorDependency::StringValidatorDependency(std::string currentDependeeName, std::string dependentName, 
 Teuchos::RCP<Teuchos::ParameterList> parentList, ValueToValidatorMap valuesAndValidators, 
 Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator)
-:ValidatorDependency(dependeeName, parentList, dependentName, parentList), defaultValidator(defaultValidator), valuesAndValidators(valuesAndValidators){
+:ValidatorDependency(currentDependeeName, parentList, dependentName, parentList), defaultValidator(defaultValidator), valuesAndValidators(valuesAndValidators){
 	validateDep();
 }
 
-StringValidatorDependency::StringValidatorDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+StringValidatorDependency::StringValidatorDependency(std::string currentDependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 ParameterParentMap dependents,
 ValueToValidatorMap valuesAndValidators, Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator)
-:ValidatorDependency(dependeeName, dependeeParentList, dependents), defaultValidator(defaultValidator), valuesAndValidators(valuesAndValidators){
+:ValidatorDependency(currentDependeeName, dependeeParentList, dependents), defaultValidator(defaultValidator), valuesAndValidators(valuesAndValidators){
 	validateDep();
 }
 
 void StringValidatorDependency::evaluate(){
-	std::string dependeeValue = dependeeParentList->get<std::string>(dependeeName);
+	std::string currentDependeeValue = getFirstDependeeValue<std::string>();
 	Teuchos::ParameterEntry *currentDependent;
 	for(ParameterParentMap::const_iterator it = dependents.begin(); it != dependents.end(); ++it){ 
 		currentDependent = it->second->getEntryPtr(it->first);
-		if(valuesAndValidators.find(dependeeValue) == valuesAndValidators.end()){
+		if(valuesAndValidators.find(currentDependeeValue) == valuesAndValidators.end()){
 			currentDependent->setValidator(defaultValidator);
 		}
 		else{
-			currentDependent->setValidator(valuesAndValidators[dependeeValue]);
+			currentDependent->setValidator(valuesAndValidators[currentDependeeValue]);
 		}
 	}
 }
 void StringValidatorDependency::validateDep(){
-	if(!dependee->isType<std::string>()){
+	/*
+	 * This error should never get thrown, unless someone
+	 * is doing something wonky in a sublcass.
+	 */
+	if(dependees.size() != 1){
+		throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
+		"String Validator Dependency doesn't have exactly one dependee. This is kind of a problem. " 
+		"You should probably take a look into it. \n\n"
+		"Error: A String Validator Dependency must have exactly 1 dependee. "
+		"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n"
+		"Dependees: " + getDependeeNamesString() + "\n"
+		"Dependents: " + getDependentNamesString());
+	}
+
+	if(!getFirstDependee()->isType<std::string>()){
 		throw InvalidDependencyException("Ay no! The dependee of a "
 		"String Validator Dependency must be of type string.\n"
-		"Problem dependee: " + dependeeName + "\n"
-		"Actual type: " + dependee->getAny().typeName() + "\n"
+		"Problem dependee: " + getFirstDependeeName() + "\n"
+		"Actual type: " + getFirstDependee()->getAny().typeName() + "\n"
 		"Dependent: " + getDependentNamesString());
 	}
 	for(ValueToValidatorMap::const_iterator it = valuesAndValidators.begin(); it != valuesAndValidators.end(); it++){
@@ -362,7 +417,7 @@ Teuchos::RCP<const Teuchos::ParameterEntryValidator> trueValidator, Teuchos::RCP
 }
 
 void BoolValidatorDependency::evaluate(){
-	bool dependeeValue = dependeeParentList->get<bool>(dependeeName);
+	bool dependeeValue = getFirstDependeeValue<bool>();
 	Teuchos::ParameterEntry *currentDependent;
 	for(ParameterParentMap::const_iterator it = dependents.begin(); it != dependents.end(); ++it){ 
 		currentDependent = it->second->getEntryPtr(it->first);
@@ -371,11 +426,25 @@ void BoolValidatorDependency::evaluate(){
 }
 
 void BoolValidatorDependency::validateDep(){
-	if(!dependee->isType<bool>()){
+	/*
+	 * This error should never get thrown, unless someone
+	 * is doing something wonky in a sublcass.
+	 */
+	if(dependees.size() != 1){
+		throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
+		"Bool Validator Dependency doesn't have exactly one dependee. This is kind of a problem. " 
+		"You should probably take a look into it. \n\n"
+		"Error: A Bool Validator Dependency must have exactly 1 dependee. "
+		"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n"
+		"Dependees: " + getDependeeNamesString() + "\n" 
+		"Dependents: " + getDependentNamesString());
+	}
+
+	if(!getFirstDependee()->isType<bool>()){
 		throw InvalidDependencyException("Ay no! The dependee of a "
 		"Bool Validator Dependency must be of type boolean.\n"
-		"Problem dependee: " + dependeeName + "\n"
-		"Actual type: " + dependee->getAny().typeName() + "\n"
+		"Problem dependee: " + getFirstDependeeName() + "\n"
+		"Actual type: " + getFirstDependee()->getAny().typeName() + "\n"
 		"Dependent: " + getDependentNamesString());
 	}
 	Teuchos::ParameterEntry *currentDependent;
