@@ -96,6 +96,23 @@ public:
 	ParameterParentMap dependents);
 
 	/**
+	 * Constructs a VisualDependency.
+	 *
+	 * @param dependees A map containing all the dependee Parameters associated with their parent ParameterLists.
+	 * @param dependentName The name of the dependent parameter.
+	 * @param dependentParentList The ParameterList containing the dependent.
+	 */
+	VisualDependency(ParameterParentMap dependees, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList);
+
+	/**
+	 * Constructs a VisualDependency.
+	 *
+	 * @param dependees A map containing all the dependee Parameters associated with their parent ParameterLists.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 */
+	VisualDependency(ParameterParentMap dependees, ParameterParentMap dependents);
+
+	/**
 	 * Desctructor
 	 *
 	 * Simply declaring the descrutor as virtual.

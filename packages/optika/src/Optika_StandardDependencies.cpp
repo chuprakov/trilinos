@@ -49,6 +49,12 @@ VisualDependency::VisualDependency(std::string dependeeName, Teuchos::RCP<Teucho
 ParameterParentMap dependents)
 :Dependency(dependeeName, dependeeParentList, dependents,  Dependency::VisualDep){}
 
+VisualDependency::VisualDependency(ParameterParentMap dependees, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList)
+:Dependency(dependees, dependentName, dependentParentList, Dependency::VisualDep){}
+
+VisualDependency::VisualDependency(ParameterParentMap dependees, ParameterParentMap dependents) 
+:Dependency(dependees, dependents, Dependency::VisualDep){}
+
 bool VisualDependency::isDependentVisible(){
 	return dependentVisible;
 }
@@ -109,6 +115,7 @@ ParameterParentMap dependents, const ValueList& values, bool showIf)
 :VisualDependency(dependeeName, dependeeParentList, dependents), values(values), showIf(showIf){
 	validateDep();
 }
+
 void StringVisualDependency::evaluate(){
 	std::string dependeeValue = getFirstDependeeValue<std::string>();
 	ValueList::const_iterator result;
