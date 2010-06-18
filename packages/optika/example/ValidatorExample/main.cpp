@@ -197,6 +197,10 @@ int main(){
    * make sure to check that your data is valid after running the getInput
    * function.
    *
+   * Note: There's a validator factory class so that you can make validators
+   * all quick and fast like. You should check it out if you use a lot of validators.
+   * Chances are it could make your life rediculously easier.
+   *
    * Remember: You default value for a parameter should be within the valid range
    * for the validator you are using on it. If this is not the case, an error will
    * be thrown before the GUI can even start up.
