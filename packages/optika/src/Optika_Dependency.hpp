@@ -137,28 +137,6 @@ public:
 	ParameterParentMap getDependents() const;
 
 	/**
-	 * Determines whether or not the potentialParentList contains the dependee's parent
-	 * ParameterList.
-	 *
-	 * @param potentialParentList The ParameterList that potentially could be the parent of the
-	 * dependee's parent ParameterList.
-	 * @return True of the potentialParentList contians the dependee's parent
-	 * ParameterList, false otherwise.
-	 */
-	//bool isDependeeParentInList(Teuchos::RCP<Teuchos::ParameterList> potentialParentList);
-
-	/**
-	 * Determines whether or not the potentialParentList constains the dependent's parent
-	 * ParameterList.
-	 *
-	 * @param potentialParentList The ParameterList that potentially could be the parent of the
-	 * dependent's parent ParameterList.
-	 * @return True of the potentialParentList contians the dependent's parent
-	 * ParameterList, false otherwise.
-	 */
-	//bool areDependentsParentsInList(Teuchos::RCP<Teuchos::ParameterList> potentialParentList);
-
-	/**
 	 * Gets the names of the dependee parameters.
 	 *
 	 * @return The names of the dependee parameters.

@@ -196,12 +196,6 @@ ConditionVisualDependency::ConditionVisualDependency(Teuchos::RCP<Condition> con
 
 void ConditionVisualDependency::evaluate(){
 	bool conditionState = condition->isConditionTrue();
-	if(conditionState){
-		std::cout << "condition is true \n";
-	}
-	if(showIf){
-		std::cout << "showIf is true \n";
-	}
 	if((conditionState && showIf) || (!conditionState && !showIf)){
 		dependentVisible = true;
 	}

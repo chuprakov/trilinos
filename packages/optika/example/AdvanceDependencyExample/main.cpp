@@ -150,13 +150,13 @@ int main(int argc, char* argv[])
 		)
 	);
 
-	//add dependencies
-	depSheet1->addDependency(surfTypeLengthDep);
-	depSheet1->addDependency(surfTypeValiDep);
+  //add dependencies
+  depSheet1->addDependency(surfTypeLengthDep);
+  depSheet1->addDependency(surfTypeValiDep);
 
-	//BOOM, you're good to go. What all this will do is:
-	//	-Use different validators on the array based on how many dimensions the user has selected
-	//	-Adjust the length of the array based on how many surface types the user has specified.
+  //BOOM, you're good to go. What all this will do is:
+  //	-Use different validators on the array based on how many dimensions the user has selected
+  //	-Adjust the length of the array based on how many surface types the user has specified.
 	
 
   /*
@@ -225,7 +225,7 @@ int main(int argc, char* argv[])
   RCP<AndCondition> andCon1 = rcp(new AndCondition(conList1));
   
   //Now we're ready.
-  RCP<ConditionVisualDependency> conVis1 = rcp(new ConditionVisualDependency(andCon1, "Special parameter", crazyDepList, false));
+  RCP<ConditionVisualDependency> conVis1 = rcp(new ConditionVisualDependency(andCon1, "Special parameter", crazyDepList, true));
 
   //There you have it. Now the Special parameter will only be shwon if the Are you cool
   //at all parameter is true and both the Sweetness and Aweseomness parameters are set
@@ -243,6 +243,9 @@ int main(int argc, char* argv[])
    *  -In addition to the Bool and Number Parameter, there's also a String Parameter.
    *  -The other BinaryLogicConditions are Or and Equals.
    *  -There's also a NotCondition that negates the condition given to it.
+   *  -You can chain together an arbitrary amount of Conditions. You could give an And condition
+   *   a list of conditions that contained some Or coniditoins, which contained some Not conditions
+   *   which contained some...we'll you get the idea.
    * That's it! You're now an Optika expert!
    */
 }
