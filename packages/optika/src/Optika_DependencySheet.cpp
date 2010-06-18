@@ -159,7 +159,5 @@ void DependencySheet::validateExistanceInRoot(Teuchos::RCP<Optika::Dependency> d
 	}
 }
 
-
-
 }
 

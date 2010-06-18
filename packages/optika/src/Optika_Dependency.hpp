@@ -34,7 +34,7 @@ namespace Optika{
 
 
 /**
- * This class represents a depndency between to elements in a Parameter List.
+ * This class represents a depndency between elements in a Parameter List.
  * 
  * @see DependencyList 
  */
@@ -56,15 +56,14 @@ public:
 	enum Type{VisualDep, ValidatorDep, NumberValidatorAspectDep, NumberArrayLengthDep};
 
 	/**
-	 * Maps parameters to there associate parent ParametersList
+	 * Maps parameters to their associated parent ParametersList.
 	 */
 	typedef std::map<const std::string, const Teuchos::RCP<Teuchos::ParameterList> > ParameterParentMap;
 
 	/**
 	 * Constructs a Dependency
 	 *
-	 * @param dependeeName The name of the dependee parameter.
-	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependees A map of all the dependees and their associated parent lists.
 	 * @param dependents A map of all the dependents and their associated parent lists.
 	 * @param type The type of dependency.
 	 */
@@ -73,8 +72,7 @@ public:
 	/**
 	 * Constructs a Dependency
 	 *
-	 * @param dependeeName The name of the dependee parameter.
-	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependees A map of all the dependees and their associated parent lists.
 	 * @param dependentName The name of the dependent parameter.
 	 * @param dependentParentList The ParameterList containing the dependent.
 	 * @param type The type of dependency.
@@ -117,8 +115,8 @@ public:
 	 *
 	 * @param parentList The ParameterList to search.
 	 * @param listToFind The ParameterList to for which we are searching.
-	 * @return True if the parentList or and of it's children ParameterLists contains the list
-	 * specified by the listname parameter.
+	 * @return True if the parentList or and or any of it's children ParameterLists contains the list
+	 * specified by the listToFind parameter.
 	 */
 	static bool doesListContainList(Teuchos::RCP<Teuchos::ParameterList> parentList, Teuchos::RCP<Teuchos::ParameterList> listToFind);
 
@@ -130,9 +128,9 @@ public:
 	ParameterParentMap getDependees() const;
 
 	/**
-	 * Gets the dependent of the dependency.
+	 * Gets the dependents of the dependency.
 	 *
-	 * @return The dependent of the dependency.
+	 * @return The dependents of the dependency.
 	 */
 	ParameterParentMap getDependents() const;
 
@@ -158,19 +156,19 @@ public:
 	std::string getDependeeNamesString() const;
 
 	/**
-	 * Gets the name of a dpendee given a pointer to the dependee parameter.
-	 *
-	 * @parama Pointer to the dependee parameter whose name is desired.
-	 * @return The name of the dependee parameter associated with the pointer specified in the arguments.
-	 */
-	std::string getDependeeName(const Teuchos::ParameterEntry* dependee) const;
-
-	/**
 	 * Gets a string containing all the names of the dependent parameters.
 	 *
 	 * @return A string containing all the names of the dependent parameters.
 	 */
 	std::string getDependentNamesString() const;
+
+	/**
+	 * Gets the name of a dependee given a pointer to the dependee parameter.
+	 *
+	 * @param Pointer to the dependee parameter whose name is desired.
+	 * @return The name of the dependee parameter associated with the pointer specified in the arguments.
+	 */
+	std::string getDependeeName(const Teuchos::ParameterEntry* dependee) const;
 
 	/**
 	 * Gets the type of the dependency.
@@ -243,7 +241,7 @@ private:
 	Type type;
 
 	/**
-	 * Validates the dependency to make sure it's valid/has been setupd properly. If subclassing, this fucntion should
+	 * Validates the dependency to make sure it's valid/has been setup properly. If subclassing, this fucntion should
 	 * be called in the new subclasses constructor.
 	 */
 	virtual void validateDep() = 0;
@@ -254,6 +252,7 @@ private:
 	 * that their parents lists are actually valid.
 	 *
 	 * @param dependees The dependees to be initialized.
+	 * @param dependents The dependents to be initialized.
 	 */
 	void intitializeDependeesAndDependents(ParameterParentMap& dependees, ParameterParentMap& dependents);
 };

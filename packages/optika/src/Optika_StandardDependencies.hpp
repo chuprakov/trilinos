@@ -38,7 +38,7 @@ namespace Optika{
  *
  * IMPORTANT NOTE:
  * If a parameter becomes hidden, it's validity will not be checked by the GUI. This means that it
- * is indeed possible for the GUI to return a non-valid GUI. Make sure that you program code takes
+ * is indeed possible for the GUI to return a non-valid ParameterList. Make sure that you program code takes
  * this into account.
  */
 class VisualDependency : public Dependency{
@@ -50,9 +50,10 @@ public:
 	 * @param dependeeParentList The ParameterList containing the dependee.
 	 * @param dependentName The name of the dependent parameter.
 	 * @param dependentParentList The ParameterList containing the dependent.
+	 * @param showIf When true, the depndent will be be shown if the dependee is true.
 	 */
 	VisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList);
+	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf=true);
 
 	/**
 	 * Constructs a VisualDependency.
@@ -60,9 +61,10 @@ public:
 	 * @param dependeeName The name of the dependee parameter.
 	 * @param dependeeParentList The ParameterList containing the dependee.
 	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param showIf When true, the depndent will be be shown if the dependee is true.
 	 */
 	VisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	ParameterParentMap dependents);
+	ParameterParentMap dependents, bool showIf=true);
 
 	/**
 	 * Constructs a VisualDependency.
@@ -70,16 +72,18 @@ public:
 	 * @param dependees A map containing all the dependee Parameters associated with their parent ParameterLists.
 	 * @param dependentName The name of the dependent parameter.
 	 * @param dependentParentList The ParameterList containing the dependent.
+	 * @param showIf When true, the depndent will be be shown if the dependee is true.
 	 */
-	VisualDependency(ParameterParentMap dependees, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList);
+	VisualDependency(ParameterParentMap dependees, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf=true);
 
 	/**
 	 * Constructs a VisualDependency.
 	 *
 	 * @param dependees A map containing all the dependee Parameters associated with their parent ParameterLists.
 	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param showIf When true, the depndent will be be shown if the dependee is true.
 	 */
-	VisualDependency(ParameterParentMap dependees, ParameterParentMap dependents);
+	VisualDependency(ParameterParentMap dependees, ParameterParentMap dependents, bool showIf=true);
 
 	/**
 	 * Desctructor
@@ -101,8 +105,13 @@ protected:
 	 * Whether or not the dependent is currently visible.
 	 */
 	bool dependentVisible;
-private:
 
+	/**
+	 * Whether or not to show the dependent if the dependee is set to the value.
+	 */
+	bool showIf;
+
+private:
 	virtual void validateDep() = 0;
 };
 
@@ -149,7 +158,7 @@ private:
 
 /**
  * A string visual depdencies says the following about the relationship between two elements in a Parameter List:
- * Depending on wether or not the dependee has a particular value, the dependent may or may not be displayed to the user in a GUI.
+ * Depending on whether or not the dependee has a particular value, the dependent may or may not be displayed to the user in a GUI.
  * 
  * The dependee of a StringVisualDependency must be of type string and can't be an array. The dependent may be any type of
  * parameter or parameter list.
@@ -157,7 +166,7 @@ private:
 class StringVisualDependency : public VisualDependency{
 public:
 	/**
-	 * Convience typedef
+	 * Convience typedef representing an array of strings.
 	 */
 	typedef Teuchos::Array<std::string> ValueList; 
 
@@ -173,7 +182,7 @@ public:
 	 * If false, the dependent will be shown only when the dependee is set to a value other than the one specified by the value parameter.
 	 */
 	StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, std::string value, bool showIf);
+	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, std::string value, bool showIf=true);
 
 	/**
 	 * Constructs a StringVisualDependency.
@@ -186,7 +195,7 @@ public:
 	 * If false, the dependent will be shown only when the dependee is set to a value other than the one specified by the value parameter.
 	 */
 	StringVisualDependency(std::string dependeeName, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> parentList, 
-	std::string value, bool showIf);
+	std::string value, bool showIf=true);
 
 	/**
 	 * Constructs a StringVisualDependency.
@@ -200,7 +209,7 @@ public:
 	 * If false, the dependent will be shown only when the dependee is set to a value other than the ones specified by the values parameter.
 	 */
 	StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, const ValueList& values, bool showIf);
+	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, const ValueList& values, bool showIf=true);
 
 	/**
 	 * Constructs a StringVisualDependency.
@@ -213,7 +222,7 @@ public:
 	 * If false, the dependent will be shown only when the dependee is set to a value other than the ones specified by the values parameter.
 	 */
 	StringVisualDependency(std::string dependeeName, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> parentList, 
-	const ValueList& values, bool showIf);
+	const ValueList& values, bool showIf=true);
 
 	/**
 	 * Constructs a StringVisualDependency.
@@ -226,7 +235,7 @@ public:
 	 * If false, the dependent will be shown only when the dependee is set to a value other than the one specified by the value parameter.
 	 */
 	StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	ParameterParentMap dependents, std::string value, bool showIf);
+	ParameterParentMap dependents, std::string value, bool showIf=true);
 
 	/**
 	 * Constructs a StringVisualDependency.
@@ -239,7 +248,7 @@ public:
 	 * If false, the dependent will be shown only when the dependee is set to a value other than the ones specified by the values parameter.
 	 */
 	StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	ParameterParentMap dependents, const ValueList& values, bool showIf);
+	ParameterParentMap dependents, const ValueList& values, bool showIf=true);
 
 	void evaluate();
 
@@ -249,17 +258,12 @@ private:
 	 */
 	const ValueList values;
 
-	/**
-	 * Whether or not to show the dependent if the dependee is set to the value.
-	 */
-	bool showIf;
-
 	void validateDep();
 };
 
 /**
  * A bool visual dependency says the following about the relationship between two elements in a Parameter List:
- * Depending on wether or not the dependee is true or false, the dependent may or may not be displayed to the user in a GUI.
+ * Depending on whether or not the dependee is true or false, the dependent may or may not be displayed to the user in a GUI.
  *
  * The dependee of a BoolVisualDependency must be of type bool and can't be an array. The dependent may be any type of parameter
  * or parameter list.
@@ -277,7 +281,7 @@ public:
 	 * If false, the dependent will be shown only when the dependee is false.
 	 */
 	BoolVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf);
+	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf=true);
 
 	/**
 	 * Constructs a BoolVisualDependency.
@@ -289,7 +293,7 @@ public:
 	 * If false, the dependent will be shown only when the dependee is false.
 	 */
 	BoolVisualDependency(std::string dependeeName, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> parentList, 
-	bool showIf);
+	bool showIf=true);
 
 	/**
 	 * Constructs a BoolVisualDependency.
@@ -301,21 +305,16 @@ public:
 	 * If false, the dependent will be shown only when the dependee is false.
 	 */
 	BoolVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	ParameterParentMap dependents, bool showIf);
+	ParameterParentMap dependents, bool showIf=true);
 
 	void evaluate();
-
-	/**
-	 * Whether or not to show the dependent if the dependee is set to the value.
-	 */
-	bool showIf;
 
 	void validateDep();
 };
 
 /**
  * A condition visual dependency says the following about the relationship between elements in a Parameter List:
- * Depending on wether or not the dependee(s) statisfy a particual condition, the dependent may or may not be displayed to the user in a GUI.
+ * Depending on whether or not the dependee(s) statisfy a particual condition, the dependent may or may not be displayed to the user in a GUI.
  *
  * Conditoin Visual Dependencies are unique in that via the Condition class, they allow for multiple dependees.
  * The dependee(s) of a ConditionVisualDependency must be expressed as a Condition and are subject to the consquential constraints. The dependent may be any type of parameter
@@ -335,7 +334,7 @@ public:
 	 * If false, the dependent will be shown only when the dependee is false.
 	 */
 	ConditionVisualDependency(Teuchos::RCP<Condition> condition,
-	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf);
+	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf=true);
 
 	/**
 	 * Constructs a BoolVisualDependency.
@@ -346,27 +345,22 @@ public:
 	 * @param showIf When true, the depndent will be be shown if the condition is true.
 	 * If false, the dependent will be shown only when the dependee is false.
 	 */
-	ConditionVisualDependency(Teuchos::RCP<Condition> condition, ParameterParentMap dependents, bool showIf);
+	ConditionVisualDependency(Teuchos::RCP<Condition> condition, ParameterParentMap dependents, bool showIf=true);
 
 	void evaluate();
-
-	/**
-	 * Whether or not to show the dependent if the dependee is set to the value.
-	 */
-	bool showIf;
 
 	void validateDep();
 
 private:
 	/**
-	 * The Condition to determine wether or not the dependent is displayed.
+	 * The Condition to determine whether or not the dependent is displayed.
 	 */
 	Teuchos::RCP<Condition> condition;
 };
 
 /**
  * A number visual dependency says the following about the relationship between two elements in a Parameter List:
- * Depending on wether or not the dependee has a certain value, the dependent may or may not be displayed to the user in a GUI.
+ * Depending on whether or not the dependee has a certain value, the dependent may or may not be displayed to the user in a GUI.
  *
  * The dependee of a NumberVisualDependency must be a number type and can't be an array. The dependent may be any type of parameter
  * or parameter list.
@@ -420,8 +414,7 @@ public:
 	 *
 	 * @param dependeeName The name of the dependee parameter.
 	 * @param dependeeParentList The ParameterList containing the dependee.
-	 * @param dependentName The name of the dependent parameter.
-	 * @param dependentParentList The ParameterList containing the dependent.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
 	 * @param func A function that takes the dependees value, does some calculations on it, and then
 	 * returns a value. If this value is greater than 0, the dependent is show. If the value returned is
 	 * less than or equal to zero, the dependent is not shown. If no fuction is specified, the direct
@@ -449,11 +442,11 @@ private:
 	S (*func)(S);
 
 	/**
-	 * run the function on the argument and returns the value of the fucntion. if no function is specified,
+	 * Run the function on the argument and returns the value of the fucntion. If no function is specified,
 	 * the argument is simple returned.
 	 *
 	 * @param argument the value to use as an argument for the function.
-	 * @return the result of running the function with the value. if no function is specified,
+	 * @return the result of running the function with the value. If no function is specified,
 	 * the argument is simple returned.
 	 */
 	S runFunction(S argument) const{

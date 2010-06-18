@@ -52,16 +52,10 @@ QStringList getValues(QString& values);
 /**
  * Determines the type of array stored in a parameter.
  *
- * @param parameter The parameters whose array type is in question.
+ * @param parameter The parameter whose array type is in question.
  * @return A QString containing the type of array in the parameter.
  */
 QString determineArrayType(Teuchos::ParameterEntry *parameter);
-
-/*template <class S>
-Teuchos::Array<S> fromStringToArray(QString arrayString);
-
-template <>
-Teuchos::Array<std::string> fromStringToArray(QString arrayString);*/
 
 template <class S>
 Teuchos::Array<S> fromStringToArray(QString arrayString){

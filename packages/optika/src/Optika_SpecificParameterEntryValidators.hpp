@@ -53,8 +53,8 @@ static int floatDefaultPrecision = 3;
 /**
  * A Template base class for NumberValidators.
  * Note that while this is not an abstract base class,
- * it is highly recommended that the EnhancedNumberValidator
- * class be used instead of this class.
+ * you really shouldn't use it.
+ * Just use the EnhancedNumberValidator class.
  */
 template <class S>
 class GenericNumberValidator : public Teuchos::ParameterEntryValidator{
@@ -305,7 +305,6 @@ public:
 	 * the QSpinBox that is used in the Optika GUI. If you're not using the GUI, you may ignore this parameter.
 	 */
 	EnhancedNumberValidator(int min, int max, int step=intDefaultStep):GenericNumberValidator<int>(intId, min, max, step){}
-
 
 	/**
 	 * Applies an EnhancedNumberValidator of type int to a QSpinBox

@@ -32,18 +32,18 @@
 namespace Optika{
 
 VisualDependency::VisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList)
-:Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList,  Dependency::VisualDep){}
+std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf)
+:Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList, Dependency::VisualDep), showIf(showIf){}
 
 VisualDependency::VisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-ParameterParentMap dependents)
-:Dependency(dependeeName, dependeeParentList, dependents,  Dependency::VisualDep){}
+ParameterParentMap dependents, bool showIf)
+:Dependency(dependeeName, dependeeParentList, dependents,  Dependency::VisualDep), showIf(showIf){}
 
-VisualDependency::VisualDependency(ParameterParentMap dependees, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList)
-:Dependency(dependees, dependentName, dependentParentList, Dependency::VisualDep){}
+VisualDependency::VisualDependency(ParameterParentMap dependees, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf)
+:Dependency(dependees, dependentName, dependentParentList, Dependency::VisualDep), showIf(showIf){}
 
-VisualDependency::VisualDependency(ParameterParentMap dependees, ParameterParentMap dependents) 
-:Dependency(dependees, dependents, Dependency::VisualDep){}
+VisualDependency::VisualDependency(ParameterParentMap dependees, ParameterParentMap dependents, bool showIf) 
+:Dependency(dependees, dependents, Dependency::VisualDep), showIf(showIf){}
 
 bool VisualDependency::isDependentVisible(){
 	return dependentVisible;
@@ -60,37 +60,37 @@ ParameterParentMap dependents)
 
 StringVisualDependency::StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, std::string value, bool showIf)
-:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList), values(ValueList(1,value)), showIf(showIf){
+:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList, showIf), values(ValueList(1,value)){
 	validateDep();
 }
 
 StringVisualDependency::StringVisualDependency(std::string dependeeName, std::string dependentName, 
 Teuchos::RCP<Teuchos::ParameterList> parentList, std::string value, bool showIf)
-:VisualDependency(dependeeName, parentList, dependentName, parentList), values(ValueList(1,value)), showIf(showIf){
+:VisualDependency(dependeeName, parentList, dependentName, parentList, showIf), values(ValueList(1,value)){
 	validateDep();
 }
 
 StringVisualDependency::StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, const ValueList& values, bool showIf)
-:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList), values(values), showIf(showIf){
+:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList, showIf), values(values){
 	validateDep();
 }
 
 StringVisualDependency::StringVisualDependency(std::string dependeeName, std::string dependentName, 
 Teuchos::RCP<Teuchos::ParameterList> parentList, const ValueList& values, bool showIf)
-:VisualDependency(dependeeName, parentList, dependentName, parentList), values(values), showIf(showIf){
+:VisualDependency(dependeeName, parentList, dependentName, parentList, showIf), values(values){
 	validateDep();
 }
 
 StringVisualDependency::StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList, 
 ParameterParentMap dependents, std::string value, bool showIf)
-:VisualDependency(dependeeName, dependeeParentList, dependents), values(ValueList(1,value)), showIf(showIf){
+:VisualDependency(dependeeName, dependeeParentList, dependents, showIf), values(ValueList(1,value)){
 	validateDep();
 }
 
 StringVisualDependency::StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 ParameterParentMap dependents, const ValueList& values, bool showIf)
-:VisualDependency(dependeeName, dependeeParentList, dependents), values(values), showIf(showIf){
+:VisualDependency(dependeeName, dependeeParentList, dependents, showIf), values(values){
 	validateDep();
 }
 
@@ -132,19 +132,19 @@ void StringVisualDependency::validateDep(){
 
 BoolVisualDependency::BoolVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf)
-:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList), showIf(showIf){
+:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList, showIf){
 	validateDep();
 }
 
 BoolVisualDependency::BoolVisualDependency(std::string dependeeName, std::string dependentName, 
 Teuchos::RCP<Teuchos::ParameterList> parentList, bool showIf)
-:VisualDependency(dependeeName, parentList, dependentName, parentList), showIf(showIf){
+:VisualDependency(dependeeName, parentList, dependentName, parentList, showIf){
 	validateDep();
 }
 
 BoolVisualDependency::BoolVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 ParameterParentMap dependents, bool showIf)
-:VisualDependency(dependeeName, dependeeParentList, dependents), showIf(showIf){
+:VisualDependency(dependeeName, dependeeParentList, dependents, showIf){
 	validateDep();
 }
 
@@ -185,12 +185,12 @@ void BoolVisualDependency::validateDep(){
 
 ConditionVisualDependency::ConditionVisualDependency(Teuchos::RCP<Condition> condition,
 std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf)
-:VisualDependency(condition->getAllParameters(), dependentName, dependentParentList), showIf(showIf), condition(condition){
+:VisualDependency(condition->getAllParameters(), dependentName, dependentParentList, showIf), condition(condition){
 	validateDep();
 }
 
 ConditionVisualDependency::ConditionVisualDependency(Teuchos::RCP<Condition> condition, ParameterParentMap dependents, bool showIf)
-:VisualDependency(condition->getAllParameters(), dependents), showIf(showIf), condition(condition){
+:VisualDependency(condition->getAllParameters(), dependents, showIf), condition(condition){
 	validateDep();
 }
 

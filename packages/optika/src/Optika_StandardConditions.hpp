@@ -37,8 +37,8 @@ namespace Optika{
  * An abstract parent class for all Binary Logic Conditions.
  * Binary Logic Conditions return the result of performing some
  * Logical operation on a set of conditions. Note that although the
- * name implies a comparison of two conditions, Binary Logic Conditions
- * can actually compare and arbiturary number of conditions.
+ * name implies the evaluation of two conditions, Binary Logic Conditions
+ * can actually evaluate and arbiturary number of conditions.
  */
 class BinaryLogicalCondition : public Condition{
 public:
@@ -147,14 +147,14 @@ public:
 class NotCondition : public Condition{
 public:
 	/**
-	 * Constructs an Or Condition
+	 * Constructs a Not Condition
 	 *
 	 * @param condition The condition to be evaluated.
 	 */
 	NotCondition(Teuchos::RCP<Condition> condition);
 
 	/**
-	 * Deconstructs an Or Condition.
+	 * Deconstructs a Not Condition.
 	 */
 	virtual ~NotCondition(){}
 
@@ -180,14 +180,14 @@ private:
 class ParameterCondition : public Condition{
 public:
 
-	/**
+   /**
  	* Constructs a Parameter Condition.
 	*
 	* @param parameterName The name of the parameter to be evaluated.
 	* @param parentList The parent Parameter List of the parameter to be evaluated.
-	* @param whenParamEqualsValue Indicates wether the condition should be true when the evaluation
+	* @param whenParamEqualsValue Indicates whether the condition should be true when the evaluation
 	* results in a true or when the evaluation results in a false. When set to true, if the parameter
-	* evaluates to true then the condition will evaluate to true. If seet to false if the parameter
+	* evaluates to true then the condition will evaluate to true. If set to false if the parameter
 	* evaluates to false, then the condition will evaluatae to true.
  	*/
 	ParameterCondition(std::string parameterName, Teuchos::RCP<Teuchos::ParameterList> parentList, bool whenParamEqualsValue);
@@ -224,36 +224,36 @@ protected:
 
 /**
  * A String Condition is a Parameter Condition that evaluates
- * wether or not a string parameter has taken on a particular
+ * whether or not a string parameter has taken on a particular
  * value or set of values.
  */
 class StringCondition : public ParameterCondition{
 public:
 	/**
-	 * Convience typedef
+	 * Convience typedef representing an array of strings.
 	 */
 	typedef Teuchos::Array<std::string> ValueList; 
 
-	/**
+   /**
  	* Constructs a String Condition.
 	*
 	* @param parameterName The name of the parameter to be evaluated.
 	* @param parentList The parent Parameter List of the parameter to be evaluated.
 	* #param value The value to compare the parameter's value against.
-	* @param whenParamEqualsValue Indicates wether the condition should be true when the evaluation
+	* @param whenParamEqualsValue Indicates whether the condition should be true when the evaluation
 	* results in a true or when the evaluation results in a false. When set to true, if the parameter
-	* evaluates to true then the condition will evaluate to true. If seet to false if the parameter
+	* evaluates to true then the condition will evaluate to true. If set to false if the parameter
 	* evaluates to false, then the condition will evaluatae to true.
  	*/
 	StringCondition(std::string parameterName, Teuchos::RCP<Teuchos::ParameterList> parentList, std::string value, bool whenParamEqualsValue=true);
 
-	/**
+   /**
  	* Constructs a String Condition.
 	*
 	* @param parameterName The name of the parameter to be evaluated.
 	* @param parentList The parent Parameter List of the parameter to be evaluated.
 	* #param values The values to compare the parameter's value against.
-	* @param whenParamEqualsValue Indicates wether the condition should be true when the evaluation
+	* @param whenParamEqualsValue Indicates whether the condition should be true when the evaluation
 	* results in a true or when the evaluation results in a false. When set to true, if the parameter
 	* evaluates to true then the condition will evaluate to true. If seet to false if the parameter
 	* evaluates to false, then the condition will evaluatae to true.
@@ -266,14 +266,14 @@ public:
 
 private:
 	/**
-	 * A list of values against which to compare the parameter's value.
+	 * A list of values against which to evaluate the parameter's value.
 	 */
 	ValueList values;
 };
 
 /**
  * A Number Condition is a Parameter Condition that evaluates
- * wether or not a number parameter is greater 0. If the parameter is
+ * whether or not a number parameter is greater 0. If the parameter is
  * greater than 0 this is interperted as the condition being "true".
  * Otherwise the oncidiont is interperted as false.
  */
@@ -288,7 +288,7 @@ public:
 	* @param func A function to run the value of the parameter through. If the function returns a value
 	* greater than 0, this will be interperted as the condition being "true". If the 
 	* function returns a value of 0 or less, this will be interperted as the condition being false.
-	* @param whenParamEqualsValue Indicates wether the condition should be true when the evaluation
+	* @param whenParamEqualsValue Indicates whether the condition should be true when the evaluation
 	* results in a true or when the evaluation results in a false. When set to true, if the parameter
 	* evaluates to true then the condition will evaluate to true. If seet to false if the parameter
 	* evaluates to false, then the condition will evaluatae to true.
@@ -317,7 +317,7 @@ public:
 	* greater than 0, this will be interperted as the parameter's current state being "true". If the 
 	* function returns a value of 0 or less, this will be interperted as the parameter's current state
 	* being "false".
-	* @param whenParamEqualsValue Indicates wether the condition should be true when the evaluation
+	* @param whenParamEqualsValue Indicates whether the condition should be true when the evaluation
 	* results in a true or when the evaluation results in a fals. When set to true, if the parameter
 	* evaluates to true then the condition will evaluate to true. If seet to false if the parameter
 	* evaluates to false, then the condition will evaluatae to true.
@@ -351,18 +351,18 @@ private:
 
 /**
  * A Bool Condition is a Parameter Condition that evaluates
- * wether or not a Boolean parameter is ture.
+ * whether or not a Boolean parameter is ture.
  * */
 class BoolCondition : public ParameterCondition{
 public:
-	/**
+   /**
  	* Constructs a Bool Condition.
 	*
 	* @param parameterName The name of the parameter to be evaluated.
 	* @param parentList The parent Parameter List of the parameter to be evaluated.
-	* @param whenParamEqualsValue Indicates wether the condition should be true when the evaluation
+	* @param whenParamEqualsValue Indicates whether the condition should be true when the evaluation
 	* results in a true or when the evaluation results in a false. When set to true, if the parameter
-	* evaluates to true then the condition will evaluate to true. If seet to false if the parameter
+	* evaluates to true then the condition will evaluate to true. If set to false if the parameter
 	* evaluates to false, then the condition will evaluatae to true.
  	*/
 	BoolCondition(std::string parameterName, Teuchos::RCP<Teuchos::ParameterList> parentList, bool whenParamEqualsValue=true);

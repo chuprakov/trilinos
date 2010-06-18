@@ -31,7 +31,6 @@
 
 namespace Optika {
 
-
 /**
  * Thrown when some aspect of a Condition has been determined to be invalid.
  */
@@ -44,8 +43,6 @@ public:
 	 */
 	InvalidConditionException(const std::string& what_arg):std::logic_error(what_arg){}
 };
-
-
 
 }
 #endif //OPTIKA_INVALIDCONDITIONEXCEPTION_HPP_

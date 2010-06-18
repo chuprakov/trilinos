@@ -139,7 +139,7 @@ public:
 private:
 	/**
 	 * A map containing all the depenecies for a list. Dependencies with multiple dependees will be found in multiple
-	 * places  within the map. Essentially, for each dependee, there will be a pointer to the dependency.
+	 * places within the map. Essentially, for each dependee, there will be a pointer to for dependency of which it is a part.
 	 */
 	DepMap dependencies;
 
@@ -154,7 +154,7 @@ private:
 	Teuchos::RCP<Teuchos::ParameterList> rootList;
 
 	/**
-	 * Validates whether or not the dependee and dependet of a dependency exist
+	 * Validates whether or not the dependees and dependents of a dependency exist
 	 * within the root ParameterList.
 	 */
 	void validateExistanceInRoot(Teuchos::RCP<Optika::Dependency> dependency);

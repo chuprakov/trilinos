@@ -121,7 +121,7 @@ public:
 
 protected:
 	/**
-	 * Convienece typedef
+	 * Convienece typedef. Represents an array of QWidgets.
 	 */
 	typedef std::vector<QWidget*> WVector;
 
@@ -280,6 +280,7 @@ public slots:
 		}
 
 	}
+
 private:
 	QWidget* getEditorWidget(){
 		QSpinBox *newSpin = new QSpinBox(this);
@@ -333,6 +334,7 @@ public slots:
 		}
 
 	}
+
 private:
 	QWidget* getEditorWidget(){
 		QSpinBox *newSpin = new QwwLongSpinBox(this);
@@ -385,6 +387,7 @@ public slots:
 			static_cast<QDoubleSpinBox*>(*it)->setValue(valueList.at(i).toDouble());
 		}
 	}
+
 private:
 	QWidget* getEditorWidget(){
 		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
@@ -396,8 +399,6 @@ private:
 		return newSpin;
 	}
 };
-
-
 
 /**
  * A widget for editing Arrays of type short.
@@ -440,6 +441,7 @@ public slots:
 		}
 
 	}
+
 private:
 	QWidget* getEditorWidget(){
 		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);

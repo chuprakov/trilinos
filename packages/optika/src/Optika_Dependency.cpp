@@ -133,7 +133,7 @@ std::set<std::string> Dependency::getDependentNames() const{
 std::string Dependency::getDependeeNamesString() const{
 	std::string names = "";
 	for(std::set<std::string>::const_iterator it=dependeeNames.begin(); it != dependeeNames.end(); ++it){
-		names += *it + "" ;
+		names += *it + " ";
 	}
 	return names;
 }
@@ -141,7 +141,7 @@ std::string Dependency::getDependeeNamesString() const{
 std::string Dependency::getDependentNamesString() const{
 	std::string names = "";
 	for(std::set<std::string>::const_iterator it=dependentNames.begin(); it != dependentNames.end(); ++it){
-		names += *it + "" ;
+		names += *it + " ";
 	}
 	return names;
 }

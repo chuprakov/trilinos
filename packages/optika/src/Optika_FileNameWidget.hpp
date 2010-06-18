@@ -74,14 +74,13 @@ private:
 	 * The current file name stored in the list.
 	 */
 	QString currentFileName;
+
 	/**
 	 * The label describing the file path.
 	 */
 	QLabel *pathLabel;
 	bool mustAlreadyExist;
-
 };
-
 
 }
 

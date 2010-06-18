@@ -33,7 +33,7 @@
 namespace Optika{
 
 /**
- * A condition determins whether or not 
+ * A Condition determines whether or not 
  * a particular set of conditions are currently
  * occuring.
  */
@@ -60,15 +60,15 @@ public:
 	virtual ~Condition(){}
 
 	/**
-	 * Determins wether or not a condition is true.
+	 * Determins whether or not a condition is true.
 	 */
 	virtual bool isConditionTrue()=0;
 
 	/**
-	 * Determines wether or not the evaluation of a parameter
+	 * Determines whether or not the evaluation of a parameter
 	 * occurs somewhere in this condition.
 	 *
-	 * @return wether or not the evaluation of a parameter
+	 * @return Whether or not the evaluation of a parameter
 	 * occurs somewhere in this condition.
 	 */
 	virtual bool containsAtLeasteOneParameter()=0;

@@ -137,8 +137,6 @@ void StringValidator::validate(Teuchos::ParameterEntry const &entry, std::string
 		}
 
 	}
-		
-
 }
 
 void StringValidator::printDoc(std::string const &docString, std::ostream &out) const{
@@ -146,8 +144,6 @@ void StringValidator::printDoc(std::string const &docString, std::ostream &out) 
 	out << "#  Validator Used: \n";
 	out << "#	FileName Validator\n";
 }
-
-
 
 }
 
