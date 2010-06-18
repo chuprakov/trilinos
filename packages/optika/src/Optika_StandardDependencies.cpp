@@ -104,18 +104,6 @@ ParameterParentMap dependents, const ValueList& values, bool showIf)
 	validateDep();
 }
 
-StringVisualDependency::StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList, 
-ParameterParentMap dependents, std::string value, bool showIf)
-:VisualDependency(dependeeName, dependeeParentList, dependents), values(ValueList(1,value)), showIf(showIf){
-	validateDep();
-}
-
-StringVisualDependency::StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-ParameterParentMap dependents, const ValueList& values, bool showIf)
-:VisualDependency(dependeeName, dependeeParentList, dependents), values(values), showIf(showIf){
-	validateDep();
-}
-
 void StringVisualDependency::evaluate(){
 	std::string dependeeValue = getFirstDependeeValue<std::string>();
 	ValueList::const_iterator result;
@@ -167,12 +155,6 @@ Teuchos::RCP<Teuchos::ParameterList> parentList, bool showIf)
 BoolVisualDependency::BoolVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 ParameterParentMap dependents, bool showIf)
 :VisualDependency(dependeeName, dependeeParentList, dependents, showIf){
-	validateDep();
-}
-
-BoolVisualDependency::BoolVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-ParameterParentMap dependents, bool showIf)
-:VisualDependency(dependeeName, dependeeParentList, dependents), showIf(showIf){
 	validateDep();
 }
 
@@ -393,13 +375,6 @@ StringValidatorDependency::StringValidatorDependency(std::string currentDependee
 Teuchos::RCP<Teuchos::ParameterList> parentList, ValueToValidatorMap valuesAndValidators, 
 Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator)
 :ValidatorDependency(currentDependeeName, parentList, dependentName, parentList), defaultValidator(defaultValidator), valuesAndValidators(valuesAndValidators){
-	validateDep();
-}
-
-StringValidatorDependency::StringValidatorDependency(std::string currentDependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-ParameterParentMap dependents,
-ValueToValidatorMap valuesAndValidators, Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator)
-:ValidatorDependency(currentDependeeName, dependeeParentList, dependents), defaultValidator(defaultValidator), valuesAndValidators(valuesAndValidators){
 	validateDep();
 }
 

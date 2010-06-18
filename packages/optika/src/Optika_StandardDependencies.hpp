@@ -277,32 +277,6 @@ public:
 	StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	ParameterParentMap dependents, const ValueList& values, bool showIf=true);
 
-	/**
-	 * Constructs a StringVisualDependency.
-	 *
-	 * @param dependeeName The name of the dependee parameter.
-	 * @param dependeeParentList The ParameterList containing the dependee.
-	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
-	 * @param value The value of the depndee that affects the visiblity of the dependent.
-	 * @param showIf When true, the depndent will be be shown if the dependee is set to the same value as specified by the value parameter.
-	 * If false, the dependent will be shown only when the dependee is set to a value other than the one specified by the value parameter.
-	 */
-	StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	ParameterParentMap dependents, std::string value, bool showIf);
-
-	/**
-	 * Constructs a StringVisualDependency.
-	 *
-	 * @param dependeeName The name of the dependee parameter.
-	 * @param dependeeParentList The ParameterList containing the dependee.
-	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
-	 * @param values The values of the depndee that affect the visiblity of the dependent.
-	 * @param showIf When true, the depndent will be be shown if the dependee is set to one of the values specified by the values parameter.
-	 * If false, the dependent will be shown only when the dependee is set to a value other than the ones specified by the values parameter.
-	 */
-	StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	ParameterParentMap dependents, const ValueList& values, bool showIf);
-
 	void evaluate();
 
 private:
@@ -359,18 +333,6 @@ public:
 	 */
 	BoolVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	ParameterParentMap dependents, bool showIf=true);
-
-	/**
-	 * Constructs a BoolVisualDependency.
-	 *
-	 * @param dependeeName The name of the dependee parameter.
-	 * @param dependeeParentList The ParameterList containing the dependee.
-	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
-	 * @param showIf When true, the depndent will be be shown if the dependee is true.
-	 * If false, the dependent will be shown only when the dependee is false.
-	 */
-	BoolVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	ParameterParentMap dependents, bool showIf);
 
 	void evaluate();
 

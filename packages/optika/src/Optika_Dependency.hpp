@@ -87,27 +87,6 @@ public:
 	 * @param dependents A map of all the dependents and their associated parent lists.
 	 * @param type The type of dependency.
 	 */
-	Dependency(ParameterParentMap& dependees, ParameterParentMap& dependents, Type type);
-
-	/**
-	 * Constructs a Dependency
-	 *
-	 * @param dependeeName The name of the dependee parameter.
-	 * @param dependeeParentList The ParameterList containing the dependee.
-	 * @param dependentName The name of the dependent parameter.
-	 * @param dependentParentList The ParameterList containing the dependent.
-	 * @param type The type of dependency.
-	 */
-	Dependency(ParameterParentMap& dependees, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, Type type);
-
-	/**
-	 * Constructs a Dependency
-	 *
-	 * @param dependeeName The name of the dependee parameter.
-	 * @param dependeeParentList The ParameterList containing the dependee.
-	 * @param dependents A map of all the dependents and their associated parent lists.
-	 * @param type The type of dependency.
-	 */
 	Dependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	ParameterParentMap& dependents, Type type);
 
