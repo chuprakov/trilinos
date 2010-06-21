@@ -94,6 +94,13 @@ public:
 	void exec();
 
 	/**
+	 * Adds the information specified to the about dialog of the GUI.
+	 *
+	 * @param aboutInfo Information to be added to the about dialog of the GUI.
+	 */
+	 void setAboutInfo(std::string aboutInfo);
+
+	/**
 	 * Sets the title of the GUI window that is displayed to the user.
 	 *
 	 * @param title A string containing what the title of the GUI window should be.
@@ -149,6 +156,13 @@ public:
 	 */
 	std::string getStyleSheet();
 
+	/**
+	 * Gets the information to be added to the about dialog of the GUI.
+	 *
+	 * @return the information to be added to the about dialog of the GUI.
+	 */
+	 std::string getAboutInfo();
+
 private:
 
 	/**
@@ -175,6 +189,11 @@ private:
 	 * File path to the QT style sheet to be used for the GUI.
 	 */
 	std::string styleSheetFilePath;
+
+	/**
+	 * Information to be added to the about dialog of the GUI.
+	 */
+	 std::string aboutInfo;
 
 	/**
 	 * The custom function to be run whenever the user hits submit.

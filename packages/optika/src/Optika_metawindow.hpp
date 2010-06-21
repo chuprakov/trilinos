@@ -170,6 +170,21 @@ public:
 	 */
 	~MetaWindow();
 
+	/**
+	 * Adds the information specified to the about dialog of the GUI.
+	 *
+	 * @param aboutInfo Information to be added to the about dialog of the GUI.
+	 */
+	 void setAboutInfo(QString aboutInfo);
+
+	/**
+	 * Gets the information to be added to the about dialog of the GUI.
+	 *
+	 * @return the information to be added to the about dialog of the GUI.
+	 */
+	 QString getAboutInfo();
+
+
 protected:
 	/**
 	 * Handles any QCloseEvents for the metawindow.
@@ -186,6 +201,11 @@ private:
 	SearchWidget *searchWidget;
 	QAction *resetAct, *loadAct, *saveAct, *saveAsAct, *quitAct, *aboutAct, *searchAct;
 	QMenu *fileMenu, *recentMenu, *helpMenu;
+
+	/**
+	 * Any additional about information that should be displayed in the about dialog.
+	 */
+	QString aboutInfo;
 
 	/*
 	 * The custom function to run when the user hits the submit button.

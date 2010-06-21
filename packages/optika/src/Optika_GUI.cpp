@@ -128,6 +128,9 @@ void OptikaGUI::exec(){
 				a.setStyleSheet(str);
 			}
 		}
+		if(aboutInfo != ""){
+			theWindow->setAboutInfo(QString::fromStdString(aboutInfo));
+		}
 		theWindow->show();
 		a.exec();
 	}
@@ -145,8 +148,13 @@ void OptikaGUI::setWindowIcon(std::string filePath){
 void OptikaGUI::setStyleSheet(std::string filePath){
 	this->styleSheetFilePath = filePath;
 } 
+
 void OptikaGUI::setCustomFunction(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)){
 	this->customFunc = customFunc;
+}
+
+void OptikaGUI::setAboutInfo(std::string aboutInfo){
+	this->aboutInfo = aboutInfo;
 }
 
 std::string OptikaGUI::getWindowTitle(){
@@ -159,6 +167,10 @@ std::string OptikaGUI::getWindowIcon(){
 
 std::string OptikaGUI::getStyleSheet(){
 	return styleSheetFilePath;
+}
+
+std::string  OptikaGUI::getAboutInfo(){
+	return aboutInfo;
 }
 
 }
