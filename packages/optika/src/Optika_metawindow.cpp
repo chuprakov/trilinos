@@ -37,13 +37,17 @@
 #include <QtGui>
 #include <QIcon>
 #include <iostream>
+#include <algorithm>
 namespace Optika{
 
 
 const int numRecentDocuments = 7; 
-SearchWidget::SearchWidget(TreeModel *treeModel, TreeView *treeView, QWidget *parent):QDialog(parent){
-	this->treeView = treeView;
-	this->treeModel = treeModel;
+
+SearchWidget::SearchWidget(TreeModel *treeModel, TreeView *treeView, QWidget *parent):
+	QDialog(parent),
+	treeModel(treeModel),
+	treeView(treeView)
+{
 	matchesLabel = new QLabel(tr("Matches"));
 	searchButton = new QPushButton(tr("Search"));
 	connect(searchButton, SIGNAL(clicked(bool)), this, SLOT(search()));
@@ -71,12 +75,18 @@ SearchWidget::SearchWidget(TreeModel *treeModel, TreeView *treeView, QWidget *pa
 void SearchWidget::search(){
 	currentSearchResults = treeModel->match(treeModel->index(0,0,QModelIndex()), Qt::DisplayRole, searchTermsEdit->text(), 
 	-1, Qt::MatchWrap | Qt::MatchContains | Qt::MatchRecursive);
+	currentSearchResults = removeHiddenItems(currentSearchResults);
 	currentSearchIterator = currentSearchResults.begin();	
 	int searchSize = currentSearchResults.size();
 	matchesLabel->setText("Matches ("+ QString::number(searchSize) + ")");
-	if(searchSize <= 1){
+	if(searchSize <= 0){
 		nextButton->setDisabled(true);
 		previousButton->setDisabled(true);
+	}
+	else if(searchSize == 1){
+		nextButton->setDisabled(true);
+		previousButton->setDisabled(true);
+		treeView->setCurrentIndex(*currentSearchIterator);
 	}
 	else{
 		nextButton->setDisabled(false);
@@ -100,7 +110,17 @@ void SearchWidget::previous(){
 	}
 	treeView->setCurrentIndex(*currentSearchIterator);
 }
-	
+
+QModelIndexList SearchWidget::removeHiddenItems(QModelIndexList& items){
+	QModelIndexList toReturn;
+	for(QModelIndexList::iterator it = items.begin(); it != items.end(); ++it){
+		if(!treeView->isRowHidden(it->row(), it->parent())){
+			toReturn.append(*it);
+		}
+	}
+	return toReturn;
+}
+
 MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, QString fileName){
 	model = new TreeModel(validParameters, fileName);
 	initilization();
@@ -128,18 +148,17 @@ MetaWindow::~MetaWindow(){
 void MetaWindow::closeEvent(QCloseEvent *event){
 	if(!model->isSaved()){
 		if(saveCurrentUnsavedFile()){
-			event->accept();
 			saveSettings();
+			event->accept();
 		}
 		else{
 			event->ignore();
 		}
 	}
 	else{
-		event->accept();
 		saveSettings();
+		event->accept();
 	}
-	qApp->quit();
 }
 
 void MetaWindow::initilization(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)){
@@ -214,7 +233,7 @@ void MetaWindow::createActions(){
 	connect(quitAct, SIGNAL(triggered()), this, SLOT(close()));
 
 	aboutAct = new QAction(tr("About"),this);
-	searchAct = new QAction(tr("Search"), this);
+	searchAct = new QAction(tr("Search For Parameter/Parameter List"), this);
 	searchAct->setToolTip("Search for a particular Parameter or ParameterList");
 	connect(aboutAct, SIGNAL(triggered()), this, SLOT(showAbout()));
 	connect(searchAct, SIGNAL(triggered()), this, SLOT(initiateSearch()));
@@ -339,8 +358,6 @@ void MetaWindow::updateRecentDocsMenu(){
 	}
 }
 
-
-
 void MetaWindow::resetModel(){
 	if(!model->isSaved()){
 		saveCurrentUnsavedFile();
@@ -350,7 +367,7 @@ void MetaWindow::resetModel(){
 
 bool MetaWindow::saveFileAs(){
 	QString fileName = QFileDialog::getSaveFileName(this, tr("Save To..."), currentSaveDir, tr("XML (*.xml)"));
-	if(fileName != ""){
+	if(fileName.toStdString() != ""){
 		if(!fileName.endsWith(".xml")){
 			fileName = fileName.append(".xml");
 		}

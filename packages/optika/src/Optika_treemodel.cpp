@@ -33,18 +33,21 @@
 namespace Optika{
 
 
-TreeModel::TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, QString saveFileName, QObject *parent):QAbstractItemModel(parent){
-	this->validParameters = validParameters;
+TreeModel::TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, QString saveFileName, QObject *parent):
+	QAbstractItemModel(parent),
+	dependencies(false),
+	validParameters(validParameters)
+{
 	basicSetup(saveFileName);
-	dependencies = false;
 }
 
 TreeModel::TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Optika::DependencySheet> dependencySheet,
-		     QString saveFileName, QObject *parent):QAbstractItemModel(parent)
+     QString saveFileName, QObject *parent):
+	 QAbstractItemModel(parent),
+	 dependencies(true),
+	 validParameters(validParameters),
+	 dependencySheet(dependencySheet)
 {
-	this->validParameters = validParameters;
-	this->dependencySheet = dependencySheet;
-	dependencies = true;
 	basicSetup(saveFileName);
 	connect(this, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), 
 		this, SLOT(dataChangedListener(const QModelIndex&, const QModelIndex&)));

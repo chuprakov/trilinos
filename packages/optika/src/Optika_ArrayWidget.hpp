@@ -60,12 +60,14 @@ public:
 	 * @param type The type of the array.
 	 * @param parent The parent widget.
 	 */
-	GenericArrayWidget(const QModelIndex index, QString type, QWidget *parent=0):QDialog(parent){
-		this->index = index;
-		this->model = (TreeModel*)index.model();
-		this->baseArray = model->getArray<S>(index);
-		this->entryValidator = model->getValidator(index);
-		this->type = type;
+	GenericArrayWidget(const QModelIndex index, QString type, QWidget *parent=0):
+		QDialog(parent),
+		model((TreeModel*)index.model()),
+		index(index), 
+		entryValidator(model->getValidator(index)),
+		baseArray(model->getArray<S>(index)),
+		type(type)
+	{
 		setModal(true);
 		setSizeGripEnabled(true);
 		arrayContainer = new QWidget(this);

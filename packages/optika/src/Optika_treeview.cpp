@@ -72,9 +72,5 @@ void TreeView::checkForOtherBadValues(){
 	}
 }
 
-
-
-
-
 }
 

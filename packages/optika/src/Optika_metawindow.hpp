@@ -76,6 +76,18 @@ private slots:
 
 private:
 	/**
+	 * Removes any indicies in a QModelIndexList that correspond to a
+	 * hidden item.
+	 *
+	 * @param items A list of indicies from which all hidden items
+	 * will be removed
+	 * @return A QModelIndexList identical to the one specified in the
+	 * items parameter except that all indicies corresponding to hidden
+	 * items have been removed.
+	 */
+	QModelIndexList removeHiddenItems(QModelIndexList& items);
+
+	/**
 	 * Widgets comprising a search widget
 	 */
 	QPushButton *searchButton, *closeButton, *nextButton, *previousButton;
@@ -93,6 +105,7 @@ private:
 	 * An iterator over the results of the last search performed.
 	 */
 	QList<QModelIndex>::const_iterator currentSearchIterator;
+
 };
 
 /**

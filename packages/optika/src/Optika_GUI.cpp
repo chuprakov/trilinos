@@ -87,15 +87,13 @@ void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP
 	}
 }
 
-OptikaGUI::OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters){
-	this->validParameters = validParameters;
-}
+OptikaGUI::OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters):
+	validParameters(validParameters){}
 
 
-OptikaGUI::OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet){
-	this->validParameters = validParameters;
-	this->dependencySheet = dependencySheet;
-}
+OptikaGUI::OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet):
+	validParameters(validParameters),
+	dependencySheet(dependencySheet){}
 
 void OptikaGUI::exec(){
 	{

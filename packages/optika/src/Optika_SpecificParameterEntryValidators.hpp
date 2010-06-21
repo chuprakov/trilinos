@@ -78,8 +78,13 @@ public:
 	 * @param step The increments at which the value should be changed. This is mostly used for 
 	 * the QSpinBox that is used in the Optika GUI. If you're not using the GUI, you may ignore this parameter.
 	 */
-	GenericNumberValidator(QString type, S step):Teuchos::ParameterEntryValidator(){
-		this->type = type;
+	GenericNumberValidator(QString type, S step):
+		Teuchos::ParameterEntryValidator(),
+		type(type),
+		step(step),
+		containsMin(false),
+		containsMax(false)
+	{
 		if(std::numeric_limits<S>::is_integer){
 			this->minVal = std::numeric_limits<S>::min();
 			this->maxVal = std::numeric_limits<S>::max();
@@ -88,9 +93,6 @@ public:
 			this->minVal = -std::numeric_limits<S>::max();
 			this->maxVal = std::numeric_limits<S>::max();
 		}
-		this->step = step;
-		containsMin = false;
-		containsMax = false;
 	}
 		
 	/**
