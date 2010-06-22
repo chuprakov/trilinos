@@ -29,6 +29,8 @@
 #define OPTIKA_STANDARDDEPENDCIES_HPP_
 #include "Optika_Dependency.hpp"
 #include "Optika_SpecificParameterEntryValidators.hpp"
+#include "Optika_Condition.hpp"
+
 namespace Optika{
 
 /**
@@ -36,7 +38,7 @@ namespace Optika{
  *
  * IMPORTANT NOTE:
  * If a parameter becomes hidden, it's validity will not be checked by the GUI. This means that it
- * is indeed possible for the GUI to return a non-valid GUI. Make sure that you program code takes
+ * is indeed possible for the GUI to return a non-valid ParameterList. Make sure that you program code takes
  * this into account.
  */
 class VisualDependency : public Dependency{
@@ -48,9 +50,67 @@ public:
 	 * @param dependeeParentList The ParameterList containing the dependee.
 	 * @param dependentName The name of the dependent parameter.
 	 * @param dependentParentList The ParameterList containing the dependent.
+	 * @param showIf When true, the depndent will be be shown if the dependee is true.
 	 */
 	VisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList);
+	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf=true);
+
+	/**
+	 * Constructs a VisualDependency.
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param showIf When true, the depndent will be be shown if the dependee is true.
+	 */
+	VisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap dependents, bool showIf=true);
+
+	/**
+	 * Constructs a VisualDependency.
+	 *
+	 * @param dependees A map containing all the dependee Parameters associated with their parent ParameterLists.
+	 * @param dependentName The name of the dependent parameter.
+	 * @param dependentParentList The ParameterList containing the dependent.
+	 * @param showIf When true, the depndent will be be shown if the dependee is true.
+	 */
+	VisualDependency(ParameterParentMap dependees, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf=true);
+
+	/**
+	 * Constructs a VisualDependency.
+	 *
+	 * @param dependees A map containing all the dependee Parameters associated with their parent ParameterLists.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param showIf When true, the depndent will be be shown if the dependee is true.
+	 */
+	VisualDependency(ParameterParentMap dependees, ParameterParentMap dependents, bool showIf=true);
+
+	/**
+	 * Constructs a VisualDependency.
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 */
+	VisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap dependents);
+
+	/**
+	 * Constructs a VisualDependency.
+	 *
+	 * @param dependees A map containing all the dependee Parameters associated with their parent ParameterLists.
+	 * @param dependentName The name of the dependent parameter.
+	 * @param dependentParentList The ParameterList containing the dependent.
+	 */
+	VisualDependency(ParameterParentMap dependees, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList);
+
+	/**
+	 * Constructs a VisualDependency.
+	 *
+	 * @param dependees A map containing all the dependee Parameters associated with their parent ParameterLists.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 */
+	VisualDependency(ParameterParentMap dependees, ParameterParentMap dependents);
 
 	/**
 	 * Desctructor
@@ -72,8 +132,13 @@ protected:
 	 * Whether or not the dependent is currently visible.
 	 */
 	bool dependentVisible;
-private:
 
+	/**
+	 * Whether or not to show the dependent if the dependee is set to the value.
+	 */
+	bool showIf;
+
+private:
 	virtual void validateDep() = 0;
 };
 
@@ -95,6 +160,16 @@ public:
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList);
 
 	/**
+	 * Constructs a ValidatorDependency.
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 */
+	ValidatorDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap dependents);
+
+	/**
 	 * Desctructor
 	 *
 	 * Simply declaring the descrutor as virtual.
@@ -109,8 +184,8 @@ private:
 };
 
 /**
- * A string visual depdencies says the following about the relationship between two elements in a Dependent Parameter List:
- * Depending on wether or not the dependee has a particular value, the dependent may or may not be displayed to the user in a GUI.
+ * A string visual depdencies says the following about the relationship between two elements in a Parameter List:
+ * Depending on whether or not the dependee has a particular value, the dependent may or may not be displayed to the user in a GUI.
  * 
  * The dependee of a StringVisualDependency must be of type string and can't be an array. The dependent may be any type of
  * parameter or parameter list.
@@ -118,7 +193,7 @@ private:
 class StringVisualDependency : public VisualDependency{
 public:
 	/**
-	 * Convience typedef
+	 * Convience typedef representing an array of strings.
 	 */
 	typedef Teuchos::Array<std::string> ValueList; 
 
@@ -134,7 +209,7 @@ public:
 	 * If false, the dependent will be shown only when the dependee is set to a value other than the one specified by the value parameter.
 	 */
 	StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, std::string value, bool showIf);
+	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, std::string value, bool showIf=true);
 
 	/**
 	 * Constructs a StringVisualDependency.
@@ -147,7 +222,7 @@ public:
 	 * If false, the dependent will be shown only when the dependee is set to a value other than the one specified by the value parameter.
 	 */
 	StringVisualDependency(std::string dependeeName, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> parentList, 
-	std::string value, bool showIf);
+	std::string value, bool showIf=true);
 
 	/**
 	 * Constructs a StringVisualDependency.
@@ -161,7 +236,7 @@ public:
 	 * If false, the dependent will be shown only when the dependee is set to a value other than the ones specified by the values parameter.
 	 */
 	StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, const ValueList& values, bool showIf);
+	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, const ValueList& values, bool showIf=true);
 
 	/**
 	 * Constructs a StringVisualDependency.
@@ -174,7 +249,33 @@ public:
 	 * If false, the dependent will be shown only when the dependee is set to a value other than the ones specified by the values parameter.
 	 */
 	StringVisualDependency(std::string dependeeName, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> parentList, 
-	const ValueList& values, bool showIf);
+	const ValueList& values, bool showIf=true);
+
+	/**
+	 * Constructs a StringVisualDependency.
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param value The value of the depndee that affects the visiblity of the dependent.
+	 * @param showIf When true, the depndent will be be shown if the dependee is set to the same value as specified by the value parameter.
+	 * If false, the dependent will be shown only when the dependee is set to a value other than the one specified by the value parameter.
+	 */
+	StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap dependents, std::string value, bool showIf=true);
+
+	/**
+	 * Constructs a StringVisualDependency.
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param values The values of the depndee that affect the visiblity of the dependent.
+	 * @param showIf When true, the depndent will be be shown if the dependee is set to one of the values specified by the values parameter.
+	 * If false, the dependent will be shown only when the dependee is set to a value other than the ones specified by the values parameter.
+	 */
+	StringVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap dependents, const ValueList& values, bool showIf=true);
 
 	void evaluate();
 
@@ -184,17 +285,12 @@ private:
 	 */
 	const ValueList values;
 
-	/**
-	 * Whether or not to show the dependent if the dependee is set to the value.
-	 */
-	bool showIf;
-
 	void validateDep();
 };
 
 /**
- * A bool visual depdencies says the following about the relationship between to elements in a Dependent Parameter List:
- * Depending on wether or not the dependee is true or false, the dependent may or may not be displayed to the user in a GUI.
+ * A bool visual dependency says the following about the relationship between two elements in a Parameter List:
+ * Depending on whether or not the dependee is true or false, the dependent may or may not be displayed to the user in a GUI.
  *
  * The dependee of a BoolVisualDependency must be of type bool and can't be an array. The dependent may be any type of parameter
  * or parameter list.
@@ -212,7 +308,7 @@ public:
 	 * If false, the dependent will be shown only when the dependee is false.
 	 */
 	BoolVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf);
+	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf=true);
 
 	/**
 	 * Constructs a BoolVisualDependency.
@@ -224,21 +320,74 @@ public:
 	 * If false, the dependent will be shown only when the dependee is false.
 	 */
 	BoolVisualDependency(std::string dependeeName, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> parentList, 
-	bool showIf);
-
-	void evaluate();
+	bool showIf=true);
 
 	/**
-	 * Whether or not to show the dependent if the dependee is set to the value.
+	 * Constructs a BoolVisualDependency.
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param showIf When true, the depndent will be be shown if the dependee is true.
+	 * If false, the dependent will be shown only when the dependee is false.
 	 */
-	bool showIf;
+	BoolVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap dependents, bool showIf=true);
+
+	void evaluate();
 
 	void validateDep();
 };
 
 /**
- * A number visual depdencies says the following about the relationship between to elements in a Dependent Parameter List:
- * Depending on wether or not the dependee has a certain value, the dependent may or may not be displayed to the user in a GUI.
+ * A condition visual dependency says the following about the relationship between elements in a Parameter List:
+ * Depending on whether or not the dependee(s) statisfy a particual condition, the dependent may or may not be displayed to the user in a GUI.
+ *
+ * Conditoin Visual Dependencies are unique in that via the Condition class, they allow for multiple dependees.
+ * The dependee(s) of a ConditionVisualDependency must be expressed as a Condition and are subject to the consquential constraints. The dependent may be any type of parameter
+ * or parameter list.
+ */
+class ConditionVisualDependency : public VisualDependency{
+public:
+	/**
+	 * Constructs a ConditionVisualDependency.
+	 *
+	 *
+	 * @param condition The condition that must be satisfied in order to display the dependent
+	 * parameter.
+	 * @param dependentName The name of the dependent parameter.
+	 * @param dependentParentList The ParameterList containing the dependent.
+	 * @param showIf When true, the depndent will be be shown if the condition is true.
+	 * If false, the dependent will be shown only when the dependee is false.
+	 */
+	ConditionVisualDependency(Teuchos::RCP<Condition> condition,
+	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, bool showIf=true);
+
+	/**
+	 * Constructs a BoolVisualDependency.
+	 *
+	 * @param condition The condition that must be satisfied in order to display the dependent
+	 * parameter.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param showIf When true, the depndent will be be shown if the condition is true.
+	 * If false, the dependent will be shown only when the dependee is false.
+	 */
+	ConditionVisualDependency(Teuchos::RCP<Condition> condition, ParameterParentMap dependents, bool showIf=true);
+
+	void evaluate();
+
+	void validateDep();
+
+private:
+	/**
+	 * The Condition to determine whether or not the dependent is displayed.
+	 */
+	Teuchos::RCP<Condition> condition;
+};
+
+/**
+ * A number visual dependency says the following about the relationship between two elements in a Parameter List:
+ * Depending on whether or not the dependee has a certain value, the dependent may or may not be displayed to the user in a GUI.
  *
  * The dependee of a NumberVisualDependency must be a number type and can't be an array. The dependent may be any type of parameter
  * or parameter list.
@@ -262,9 +411,8 @@ public:
 	 */
 	NumberVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, S (*func)(S) =0)
-		:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList)
+		:VisualDependency(dependeeName, dependeeParentList, dependentName, dependentParentList), func(func)
 	{
-		this->func = func;
 		validateDep();
 	}
 
@@ -283,14 +431,33 @@ public:
 	 */
 	NumberVisualDependency(std::string dependeeName, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> parentList, S 
 	(*func)(S) =0)
-		:VisualDependency(dependeeName, parentList, dependentName, parentList)
+		:VisualDependency(dependeeName, parentList, dependentName, parentList), func(func)
 	{
-		this->func = func;
+		validateDep();
+	}
+
+	/**
+	 * Constructs a NumberVisualDependency.
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param func A function that takes the dependees value, does some calculations on it, and then
+	 * returns a value. If this value is greater than 0, the dependent is show. If the value returned is
+	 * less than or equal to zero, the dependent is not shown. If no fuction is specified, the direct
+	 * value of the dependee will be used to determine the dependents visibility in a similar fashion (postive
+	 * numbers causing the dependent to be displayed and 0 or negative numbers cuasing the dependent to be
+	 * hidden).
+	 */
+	NumberVisualDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap dependents, S (*func)(S) =0)
+		:VisualDependency(dependeeName, dependeeParentList, dependents), func(func)
+	{
 		validateDep();
 	}
 
 	void evaluate(){
-		S functionVal = runFunction(dependeeParentList->get<S>(dependeeName));
+		S functionVal = runFunction(getFirstDependeeValue<S>());
 		functionVal > 0 ? dependentVisible = true : dependentVisible = false;
 	}
 
@@ -302,11 +469,11 @@ private:
 	S (*func)(S);
 
 	/**
-	 * run the function on the argument and returns the value of the fucntion. if no function is specified,
+	 * Run the function on the argument and returns the value of the fucntion. If no function is specified,
 	 * the argument is simple returned.
 	 *
 	 * @param argument the value to use as an argument for the function.
-	 * @return the result of running the function with the value. if no function is specified,
+	 * @return the result of running the function with the value. If no function is specified,
 	 * the argument is simple returned.
 	 */
 	S runFunction(S argument) const{
@@ -317,15 +484,32 @@ private:
 	}	
 
 	void validateDep(){
+		/*
+		 * This error should never get thrown, unless someone
+		 * is doing something wonky in a sublcass.
+		 */
+		if(dependees.size() != 1){
+			throw InvalidDependencyException("Uh oh. Looks like you tried to make a " 
+			"Number Visual Dependency doesn't have exactly one dependee. This is kind of a problem. " 
+			"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
+			"be doing some subclassing you sly-dog ;)\n\n" 
+			"Error: A Number Visual Dependency must have exactly 1 dependee. " 
+			"You have tried to assign it " + QString::number(dependees.size()).toStdString() + " dependees.\n" 
+			"Dependees: " + getDependeeNamesString() + "\n" 
+			"Dependents: " + getDependentNamesString());
+		}
+		const Teuchos::ParameterEntry* dependee = getFirstDependee();
 		if(!dependee->isType<int>()
 		&& !dependee->isType<short>()
 		&& !dependee->isType<double>()
-		&& !dependee->isType<float>())
-			throw InvalidDependencyException("The dependee of a"
+		&& !dependee->isType<float>()){
+			throw InvalidDependencyException("The dependee of a "
 			"Number Visual Dependency must be of a supported number type!\n"
-			"Problem dependee: " + dependeeName + "\n"
+			"Problem dependee: " + getFirstDependeeName() + "\n"
 			"Actual type: " + dependee->getAny().typeName() + "\n"
-			"Dependent: " + dependentName);
+			"Dependees: " + getDependeeNamesString() + "\n"
+			"Dependents: " + getDependentNamesString());
+		}
 	}
 };
 
@@ -375,11 +559,12 @@ public:
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, 
 	Teuchos::RCP<Optika::EnhancedNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
-		:Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList, Dependency::NumberValidatorAspectDep)
+		:Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList, Dependency::NumberValidatorAspectDep),
+		aspect(aspect),
+		validator(validator),
+		func(func)
+
 	{
-		this->validator = validator;
-		this->aspect = aspect;
-		this->func = func;
 		validateDep();
 	}
 
@@ -398,13 +583,7 @@ public:
 	Teuchos::RCP<Teuchos::ParameterList> parentList, 
 	Teuchos::RCP<Optika::EnhancedNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
-		:Dependency(dependeeName, parentList, dependentName, parentList, Dependency::NumberValidatorAspectDep)
-	{
-		this->validator = validator;
-		this->aspect = aspect;
-		this->func = func;
-		validateDep();
-	}
+		:NumberValidatorAspectDependency(dependeeName, parentList, dependentName, parentList, validator, aspect, func) {}
 
 	/**
 	 * Constructs a NumberValidatorDependency. Conveniece Constructor for ArrayNumberValidators
@@ -422,11 +601,11 @@ public:
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, 
 	Teuchos::RCP<Optika::ArrayNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
-		:Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList, Dependency::NumberValidatorAspectDep)
+		:Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList, Dependency::NumberValidatorAspectDep),
+		aspect(aspect),
+		validator(validator->getPrototype()),
+		func(func)
 	{
-		this->validator = validator->getPrototype();
-		this->aspect = aspect;
-		this->func = func;
 		validateDep();
 	}
 
@@ -445,16 +624,64 @@ public:
 	Teuchos::RCP<Teuchos::ParameterList> parentList,
 	Teuchos::RCP<Optika::ArrayNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
-		:Dependency(dependeeName, parentList, dependentName, parentList, Dependency::NumberValidatorAspectDep)
+		:Dependency(dependeeName, parentList, dependentName, parentList, Dependency::NumberValidatorAspectDep),
+		aspect(aspect),
+		validator(validator),
+		func(func)
+
 	{
-		this->validator = validator->getPrototype();
-		this->aspect = aspect;
-		this->func = func;
+		validateDep();
+	}
+
+	/**
+	 * Constructs a NumberValidatorDependency
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param validator The validator whose aspect will change. 
+	 * @param aspect The aspect of the validator that should change.
+	 * @param func A function specifying how the value of the validators
+	 * aspect should be calculated from the dependees value.
+	 */
+	NumberValidatorAspectDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap dependents, 
+	Teuchos::RCP<Optika::EnhancedNumberValidator<S> > validator,
+	ValidatorAspect aspect, S (*func)(S) =0)
+		:Dependency(dependeeName, dependeeParentList, dependents, Dependency::NumberValidatorAspectDep),
+		aspect(aspect),
+		validator(validator),
+		func(func)
+
+	{
+		validateDep();
+	}
+
+	/**
+	 * Constructs a NumberValidatorDependency. Conveniece Constructor for ArrayNumberValidators
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param validator The validator whose aspect will change. 
+	 * @param aspect The aspect of the validator that should change.
+	 * @param func A function specifying how the value of the validators
+	 * aspect should be calculated from the dependees value.
+	 */
+	NumberValidatorAspectDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap dependents,
+	Teuchos::RCP<Optika::ArrayNumberValidator<S> > validator,
+	ValidatorAspect aspect, S (*func)(S) =0)
+		:Dependency(dependeeName, dependeeParentList, dependents, Dependency::NumberValidatorAspectDep),
+		aspect(aspect),
+		validator(validator->getPrototype()),
+		func(func)
+	{
 		validateDep();
 	}
 
 	void evaluate(){
-		S newAspectValue = runFunction(dependeeParentList->get<S>(dependeeName));
+		S newAspectValue = runFunction(getFirstDependeeValue<S>());
 		switch(aspect){
 			case NumberValidatorAspectDependency<S>::Min:
 				validator->setMin(newAspectValue);
@@ -486,7 +713,7 @@ private:
 	S (*func)(S);
 	
 	/**
-	 * Runs the dependencies function on the given argument and returns
+	 * Runs the dependency's function on the given argument and returns
 	 * the value that function returns.
 	 *
 	 * @param The value to run the function on.
@@ -500,35 +727,70 @@ private:
 	}	
 
 	void validateDep(){
+		/*
+		 * This error should never get thrown, unless someone
+		 * is doing something wonky in a sublcass.
+		 */
+		if(dependees.size() != 1){
+			throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
+			"Number Visual Dependency doesn't have exactly one dependee. This is kind of a problem. " 
+			"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
+			"be doing some subclassing you sly-dog ;)\n\n" 
+			"Error: A Number Visual Dependency must have exactly 1 dependee. " 
+			"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n" 
+			"Dependees: " + getDependeeNamesString() + "\n" 
+			"Dependents: " + getDependentNamesString());
+		}
+
+		const Teuchos::ParameterEntry* dependee = getFirstDependee();
+		std::string dependeeName = getFirstDependeeName();
 		if(!dependee->isType<int>()
 		&& !dependee->isType<short>()
 		&& !dependee->isType<double>()
-		&& !dependee->isType<float>())
+		&& !dependee->isType<float>()){
 			throw InvalidDependencyException("The dependee of a "
 			"Number Validator Aspect Dependency must be of a supported number type!\n"
 			"Problem dependee: " + dependeeName + "\n"
 			"Actual type: " + dependee->getAny().typeName() + "\n"
-			"Dependent: " + dependentName);
-		if(dependent->validator() == Teuchos::null)
-			throw InvalidDependencyException("The dependent of an "
-			"Number Validator Aspect Dependency must have an EnhancedNumberValidator "
-			"or an ArrayNumberValidator\n"
-			"Problem dependent: " + dependentName + "\n" 
-			"Dependee: " + dependeeName);
-		if(validator != dependent->validator())
-			throw InvalidDependencyException("The dependent's validator and the validator specified "
-			"in the constructor must be the same for a Number Validator Aspect Dependency!\n"
-			"Problem dependent: " + dependentName + "\n" 
-			"Dependee: " + dependeeName);
-		if(typeid(S) != dependee->getAny().type() || typeid(S) != dependent->getAny().type())
-			throw InvalidDependencyException("The dependent type, dependee type, and EnhancedNumberValidator "
+			"Dependents: " + getDependentNamesString());
+		}
+
+		if(typeid(S) != dependee->getAny().type()){
+			throw InvalidDependencyException("The dependee type and EnhancedNumberValidator "
 			"template type must all be the same for a Number Validator Aspect Dependency.\n"
-			"Dependee: " + dependeeName + "\n"
+			"Problem Dependee: " + dependeeName + "\n"
 			"Dependee Type: " + dependee->getAny().typeName() + "\n"
-			"Dependent: " + dependentName + "\n" 
-			"Dependent Type: " + dependent->getAny().typeName() + "\n"
 			"Validator Template Type: " + typeid(S).name());
-	}	
+		}
+
+		typename ParameterParentMap::const_iterator it;
+		Teuchos::ParameterEntry *currentDependent;
+		for(it = dependents.begin(); it != dependents.end(); ++it){ 
+			currentDependent = it->second->getEntryPtr(it->first);
+			if(currentDependent->validator() == Teuchos::null){
+				throw InvalidDependencyException("The dependent of an "
+				"Number Validator Aspect Dependency must have an EnhancedNumberValidator "
+				"or an ArrayNumberValidator\n"
+				"Problem dependent: " + it->first + "\n" 
+				"Dependees: " + getDependeeNamesString() + "\n"
+				"Dependents: " + getDependentNamesString());
+			}
+			if(validator != currentDependent->validator()){
+				throw InvalidDependencyException("The dependent's validator and the validator specified "
+				"in the constructor must be the same for a Number Validator Aspect Dependency!\n"
+				"Problem dependent: " + it->first + "\n" 
+				"Dependees: " + getDependeeNamesString() + "\n"
+				"Dependents: " + getDependentNamesString());
+			}
+			if(typeid(S) != currentDependent->getAny().type()){
+				throw InvalidDependencyException("The dependent type and EnhancedNumberValidator "
+				"template type must all be the same for a Number Validator Aspect Dependency.\n"
+				"Dependent: " + it->first + "\n" 
+				"Dependent Type: " + currentDependent->getAny().typeName() + "\n"
+				"Validator Template Type: " + typeid(S).name());
+			}
+		}
+	}
 };
 
 /**
@@ -567,6 +829,18 @@ public:
 	 */
 	NumberArrayLengthDependency(std::string dependeeName, std::string dependentName, 
 	Teuchos::RCP<Teuchos::ParameterList> parentList, int (*func)(int) = 0);
+
+	/**
+	 * Constructs an ArrayLengthDependency.
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param func A function specifying how the arrays length 
+	 * should be calculated from the dependees value.
+	 */
+	NumberArrayLengthDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap dependents, int (*func)(int) = 0);
 	
 	void evaluate();
 
@@ -578,7 +852,7 @@ private:
 	int (*func)(int);
 	
 	/**
-	 * Runs the dependencies function on the given argument and returns
+	 * Runs the dependency's function on the given argument and returns
 	 * the value that function returns.
 	 *
 	 * @param The value to run the function on.
@@ -593,7 +867,7 @@ private:
 	 * @param dependentValue The index of the dependent array that is going to be changed.
 	 */
 	template <class S>
-	void modifyArrayLength(int newLength);
+	void modifyArrayLength(int newLength, Teuchos::ParameterEntry* dependentToModify);
 
 	void validateDep();
 };
@@ -648,6 +922,22 @@ public:
 	StringValidatorDependency(std::string dependeeName, std::string dependentName, 
 	Teuchos::RCP<Teuchos::ParameterList> parentList,  ValueToValidatorMap valuesAndValidators, 
 	Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator);
+
+	/**
+	 * Constructs a StringValidatorDependency.
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param valuesAndValidators A map associating string values with ParameterEntryValidators. This will be used
+	 * to deteremine what type of validator should be applied to the dependent based on the dependees value.
+	 * @param defaultValidator If a value is entered in the dependee that is not in the valuesAndValidators map,
+	 * this is the validator that will be assigned to the dependent.
+	 */
+	StringValidatorDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap dependents,  ValueToValidatorMap valuesAndValidators, 
+	Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator);
+
 
 	void evaluate();
 
@@ -711,6 +1001,20 @@ public:
 	Teuchos::RCP<const Teuchos::ParameterEntryValidator> trueValidator,
 	Teuchos::RCP<const Teuchos::ParameterEntryValidator> falseValidator);
 
+	/**
+	 * Constructs a BoolValidatorDependency.
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param trueValidator The validator to be used on the dependent if the dependee is set to true.
+	 * @param falseValidator The validator to be used on the dependent if the dependee is set to false.
+	 */
+	BoolValidatorDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap dependents,
+	Teuchos::RCP<const Teuchos::ParameterEntryValidator> trueValidator,
+	Teuchos::RCP<const Teuchos::ParameterEntryValidator> falseValidator);
+
 	void evaluate();
 
 private:
@@ -765,10 +1069,10 @@ public:
 	RangeValidatorDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, RangeToValidatorMap rangesAndValidators,
 	Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator)
-		:ValidatorDependency(dependeeName, dependeeParentList, dependentName, dependentParentList)
+		:ValidatorDependency(dependeeName, dependeeParentList, dependentName, dependentParentList),
+		defaultValidator(defaultValidator),
+		rangesAndValidators(rangesAndValidators)
 	{
-		this->defaultValidator = defaultValidator;
-		this->rangesAndValidators = rangesAndValidators;
 		validateDep();
 	}
 
@@ -786,21 +1090,47 @@ public:
 	RangeValidatorDependency(std::string dependeeName, std::string dependentName, 
 	Teuchos::RCP<Teuchos::ParameterList> parentList, RangeToValidatorMap rangesAndValidators,
 	Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator)
-		:ValidatorDependency(dependeeName, parentList, dependentName, parentList)
+		:ValidatorDependency(dependeeName, parentList, dependentName, parentList),
+		defaultValidator(defaultValidator),
+		rangesAndValidators(rangesAndValidators)
 	{
-		this->defaultValidator = defaultValidator;
-		this->rangesAndValidators = rangesAndValidators;
+		validateDep();
+	}
+
+	/**
+	 * Constructs a RangeValidatorDependency.
+	 *
+	 * @param dependeeName The name of the dependee parameter.
+	 * @param dependeeParentList The ParameterList containing the dependee.
+	 * @param dependents A map containing dependent Parameters associated with their paraent ParameterLists.
+	 * @param rangesAndValidators A map associating ranges of values with ParameterEntryValidators. This will be used
+	 * to deteremine what type of validator should be applied to the dependent based on the dependees value.
+	 * @param defaultValidator If a value is entered in the dependee that does not fall within any of the ranges in
+	 * the rangesAndValidators map, this is the validator that will be assigned to the dependent.
+	 */
+	RangeValidatorDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap dependents, RangeToValidatorMap rangesAndValidators,
+	Teuchos::RCP<Teuchos::ParameterEntryValidator> defaultValidator)
+		:ValidatorDependency(dependeeName, dependeeParentList, dependents),
+		defaultValidator(defaultValidator),
+		rangesAndValidators(rangesAndValidators)
+	{
 		validateDep();
 	}
 
 	void evaluate(){
 		typename RangeToValidatorMap::const_iterator it;
-		S dependeeValue = dependeeParentList->get<S>(dependeeName);
-		for(it = rangesAndValidators.begin(); it != rangesAndValidators.end(); it++){
+		S dependeeValue = getFirstDependeeValue<S>();
+		for(it = rangesAndValidators.begin(); it != rangesAndValidators.end(); ++it){
 			S min = it->first.first;
 			S max = it->first.second;
 			if(dependeeValue >= min && dependeeValue <=max){
-				dependent->setValidator(it->second);
+				typename ParameterParentMap::iterator it2;
+				Teuchos::ParameterEntry *currentDependent;
+				for(it2 = dependents.begin(); it2 != dependents.end(); ++it2){ 
+					currentDependent = it2->second->getEntryPtr(it2->first);
+					currentDependent->setValidator(it->second);
+				}
 				return;
 			}
 		}
@@ -818,25 +1148,50 @@ private:
 	RangeToValidatorMap rangesAndValidators;
 	
 	void validateDep(){
+		/*
+		 * This error should never get thrown, unless someone
+		 * is doing something wonky in a sublcass.
+		 */
+		if(dependees.size() != 1){
+			throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
+			"Number Visual Dependency doesn't have exactly one dependee. This is kind of a problem. "
+			"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
+			"be doing some subclassing you sly-dog ;)\n\n" 
+			"Error: A Number Visual Dependency must have exactly 1 dependee. "
+			"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n"
+			"Dependees: " + getDependeeNamesString() + "\n" 
+			"Dependents: " + getDependentNamesString());
+		}
+
+		const Teuchos::ParameterEntry* dependee = getFirstDependee();
+		std::string dependeeName = getFirstDependeeName();
 		if(!dependee->isType<int>()
 		&& !dependee->isType<short>()
 		&& !dependee->isType<double>()
-		&& !dependee->isType<float>())
+		&& !dependee->isType<float>()){
 			throw InvalidDependencyException("The dependee of a "
 			"Range Validator Dependency must be of a supported number type!\n"
 			"Problem dependee: " + dependeeName + "\n"
 			"Actual type: " + dependee->getAny().typeName() + "\n"
-			"Dependent: " + dependentName);
+			"Dependents: " + getDependentNamesString());
+		}
+
 		typename RangeToValidatorMap::const_iterator it;
-		for(it = rangesAndValidators.begin(); it != rangesAndValidators.end(); it++){
-			if(typeid(*(dependent->validator().get())) != typeid(*(it->second.get())))
-			throw InvalidDependencyException("The validator of a dependent of a "
-			"Range Validator Dependency must be the same type as all of the validators "
-			"in the rangesAndValidators map.\n"
-			"Note this means that the dependent must have an initial validator.\n"
-			"Problem dependent: " + dependentName + "\n"
-			"Validator Type: " + typeid(*(dependent->validator())).name() + "\n"
-			"One of the validators in the rangesAndValidators map is of type: " + typeid(*(it->second)).name());
+		for(it = rangesAndValidators.begin(); it != rangesAndValidators.end(); ++it){
+			typename ParameterParentMap::const_iterator it2;
+			Teuchos::ParameterEntry *currentDependent;
+			for(it2 = dependents.begin(); it2 != dependents.end(); ++it2){ 
+				currentDependent = it2->second->getEntryPtr(it2->first);
+				if(typeid(*(currentDependent->validator().get())) != typeid(*(it->second.get()))){
+					throw InvalidDependencyException("The validator of a dependent of a "
+					"Range Validator Dependency must be the same type as all of the validators "
+					"in the rangesAndValidators map.\n"
+					"Note this means that the dependent must have an initial validator.\n"
+					"Problem dependent: " + it2->first + "\n"
+					"Validator Type: " + typeid(*(currentDependent->validator())).name() + "\n"
+					"One of the validators in the rangesAndValidators map is of type: " + typeid(*(it->second)).name());
+				}
+			}
 		}
 	}
 };

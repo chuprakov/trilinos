@@ -53,8 +53,8 @@ static int floatDefaultPrecision = 3;
 /**
  * A Template base class for NumberValidators.
  * Note that while this is not an abstract base class,
- * it is highly recommended that the EnhancedNumberValidator
- * class be used instead of this class.
+ * you really shouldn't use it.
+ * Just use the EnhancedNumberValidator class.
  */
 template <class S>
 class GenericNumberValidator : public Teuchos::ParameterEntryValidator{
@@ -78,8 +78,13 @@ public:
 	 * @param step The increments at which the value should be changed. This is mostly used for 
 	 * the QSpinBox that is used in the Optika GUI. If you're not using the GUI, you may ignore this parameter.
 	 */
-	GenericNumberValidator(QString type, S step):Teuchos::ParameterEntryValidator(){
-		this->type = type;
+	GenericNumberValidator(QString type, S step):
+		Teuchos::ParameterEntryValidator(),
+		type(type),
+		step(step),
+		containsMin(false),
+		containsMax(false)
+	{
 		if(std::numeric_limits<S>::is_integer){
 			this->minVal = std::numeric_limits<S>::min();
 			this->maxVal = std::numeric_limits<S>::max();
@@ -88,9 +93,6 @@ public:
 			this->minVal = -std::numeric_limits<S>::max();
 			this->maxVal = std::numeric_limits<S>::max();
 		}
-		this->step = step;
-		containsMin = false;
-		containsMax = false;
 	}
 		
 	/**
@@ -305,7 +307,6 @@ public:
 	 * the QSpinBox that is used in the Optika GUI. If you're not using the GUI, you may ignore this parameter.
 	 */
 	EnhancedNumberValidator(int min, int max, int step=intDefaultStep):GenericNumberValidator<int>(intId, min, max, step){}
-
 
 	/**
 	 * Applies an EnhancedNumberValidator of type int to a QSpinBox
@@ -612,10 +613,11 @@ private:
  */
 class StringValidator : public Teuchos::ParameterEntryValidator{
 public:
+	typedef Teuchos::Array<std::string> ValueList;
 	/**
 	 * Constructs a StringValidator.
 	 */
-	StringValidator(Teuchos::Array<std::string> validStrings);
+	StringValidator(ValueList validStrings);
 
 	/**
 	 * Sets the Array of valid strings and returns what the current array of valid
@@ -624,7 +626,7 @@ public:
 	 * @param validStrings What the array for the valid strings should contain.
 	 * @return What the arry for the valid strings now conatians.
 	 */
-	const Teuchos::Array<std::string> setValidStrings(Teuchos::Array<std::string> validStrings);
+	const ValueList setValidStrings(ValueList validStrings);
 
 	Teuchos::RCP<const Teuchos::Array<std::string> > validStringValues() const;
 
@@ -635,7 +637,7 @@ private:
 	/**
 	 * An array containing a list of all the valid string values.
 	 */
-	Teuchos::Array<std::string> validStrings;
+	ValueList validStrings;
 };
 
 /**
@@ -694,7 +696,7 @@ public:
 			
 			std::string currentString;
 			Teuchos::RCP< const Teuchos::Array<std::string> > validStrings = validStringValues();
-			for(int i = 0; i<extracted.size(); i++){
+			for(int i = 0; i<extracted.size(); ++i){
 				currentString = extracted[i];
 				Teuchos::Array<std::string>::const_iterator it = std::find(validStrings->begin(), validStrings->end(), currentString);
 				if(it == validStrings->end()){
@@ -710,7 +712,7 @@ public:
 					"Value entered at " << i << ": "<<
 					extracted[i] << "\n" <<
 					"Exceptable Values:\n";
-					for(int j=0; j<validStrings->size(); j++){
+					for(int j=0; j<validStrings->size(); ++j){
 						oss << "	" << (*validStrings)[j] << "\n";
 					}
 					msg = oss.str();
@@ -773,7 +775,7 @@ public:
 		Teuchos::any anyValue = entry.getAny(true);
 		if(anyValue.type() == typeid(Teuchos::Array<S>)){
 			Teuchos::Array<S> extracted = Teuchos::any_cast<Teuchos::Array<S> >(anyValue);
-			for(int i = 0; i<extracted.size(); i++){
+			for(int i = 0; i<extracted.size(); ++i){
 				if(!( extracted[i] >= getPrototype()->min() &&  extracted[i] <= getPrototype()->max())){
 					std::stringstream oss;
 					std::string msg;
@@ -861,7 +863,7 @@ public:
 		}
 		else if(getPrototype()->fileMustExist()){
 			Teuchos::Array<std::string> extracted = Teuchos::any_cast<Teuchos::Array<std::string> >(anyValue);
-			for(int i = 0; i<extracted.size(); i++){
+			for(int i = 0; i<extracted.size(); ++i){
 				std::string fileName = extracted[i];
 				struct stat fileInfo;
 				int intStat= stat(fileName.c_str(),&fileInfo);

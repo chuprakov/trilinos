@@ -37,7 +37,7 @@ QStringList getValues(QString& values){
 	values = values.remove("{");
 	values = values.remove("}");
 	QStringList toReturn = values.split(",");
-	for(int i = 0; i < toReturn.size(); i++){
+	for(int i = 0; i < toReturn.size(); ++i){
 		if(toReturn[i].at(0) == QChar(' ')){
 			toReturn[i] = toReturn[i].remove(0,1);
 		}
@@ -72,17 +72,17 @@ Teuchos::Array<std::string> fromStringToArray<std::string>(QString arrayString){
 	arrayString = arrayString.remove("{");
 	arrayString = arrayString.remove("}");
 	QStringList tempValues = arrayString.split(",");
-	for(int i = 0; i < tempValues.size(); i++){
+	for(int i = 0; i < tempValues.size(); ++i){
 		if(tempValues[i].at(0) == QChar(' ')){
 			tempValues[i] = tempValues[i].remove(0,1);
 		}
 	}
 	QList<QVariant> values;
-	for(int i = 0; i<tempValues.size(); i++){
+	for(int i = 0; i<tempValues.size(); ++i){
 		values.append(tempValues[i]);
 	}
 	Teuchos::Array<std::string> toReturn;
-	for(int i = 0; i<values.size(); i++){
+	for(int i = 0; i<values.size(); ++i){
 		toReturn.append(values[i].value<QString>().toStdString());	
 	}
 	return toReturn;

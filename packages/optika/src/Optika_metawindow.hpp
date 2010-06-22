@@ -76,6 +76,18 @@ private slots:
 
 private:
 	/**
+	 * Removes any indicies in a QModelIndexList that correspond to a
+	 * hidden item.
+	 *
+	 * @param items A list of indicies from which all hidden items
+	 * will be removed
+	 * @return A QModelIndexList identical to the one specified in the
+	 * items parameter except that all indicies corresponding to hidden
+	 * items have been removed.
+	 */
+	QModelIndexList removeHiddenItems(QModelIndexList& items);
+
+	/**
 	 * Widgets comprising a search widget
 	 */
 	QPushButton *searchButton, *closeButton, *nextButton, *previousButton;
@@ -93,6 +105,7 @@ private:
 	 * An iterator over the results of the last search performed.
 	 */
 	QList<QModelIndex>::const_iterator currentSearchIterator;
+
 };
 
 /**
@@ -157,6 +170,21 @@ public:
 	 */
 	~MetaWindow();
 
+	/**
+	 * Adds the information specified to the about dialog of the GUI.
+	 *
+	 * @param aboutInfo Information to be added to the about dialog of the GUI.
+	 */
+	 void setAboutInfo(QString aboutInfo);
+
+	/**
+	 * Gets the information to be added to the about dialog of the GUI.
+	 *
+	 * @return the information to be added to the about dialog of the GUI.
+	 */
+	 QString getAboutInfo();
+
+
 protected:
 	/**
 	 * Handles any QCloseEvents for the metawindow.
@@ -173,6 +201,11 @@ private:
 	SearchWidget *searchWidget;
 	QAction *resetAct, *loadAct, *saveAct, *saveAsAct, *quitAct, *aboutAct, *searchAct;
 	QMenu *fileMenu, *recentMenu, *helpMenu;
+
+	/**
+	 * Any additional about information that should be displayed in the about dialog.
+	 */
+	QString aboutInfo;
 
 	/*
 	 * The custom function to run when the user hits the submit button.

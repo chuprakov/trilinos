@@ -29,62 +29,121 @@
 
 namespace Optika{
 
-Dependency::Dependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
-		       std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, Type type)
+Dependency::Dependency(ParameterParentMap& dependees, ParameterParentMap& dependents, Type type):
+	type(type)
 {
-	this->dependentParentList = dependentParentList;
-	this->dependeeParentList = dependeeParentList;
-	this->dependeeName = dependeeName;
-	this->dependentName = dependentName;
-	if(dependeeParentList->getEntryPtr(dependeeName) == NULL){
-		throw InvalidDependencyException("The Dependee Parameter \"" + dependeeName + "\" does "
-		"not exist in the given Dependee Parent List \"" + dependeeParentList->name() + "\"."
-		"\n\nBummer! Maybe you just mispelled something? Why not go back and check to make sure "
-		"you've got the names of the dependee and the depedent right? "
-		"It might also be that you didn't specify the correct parent lists for the dependent and "
-		"dependee. Either way, I'm sure it's just a simple mistake. "
-		"You're a great programmer, I'm sure you'll figure it out! :)");
+	intitializeDependeesAndDependents(dependees,dependents);
+}
+
+Dependency::Dependency(ParameterParentMap& dependees, std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, Type type):
+	type(type)
+{
+	ParameterParentMap dependents;
+	dependents.insert(std::pair<std::string, Teuchos::RCP<Teuchos::ParameterList> >(dependentName, dependentParentList));
+	intitializeDependeesAndDependents(dependees,dependents);
+}
+
+Dependency::Dependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+	ParameterParentMap& dependents, Type type):
+	type(type)
+{
+	ParameterParentMap dependees;
+	dependees.insert(std::pair<std::string, Teuchos::RCP<Teuchos::ParameterList> >(dependeeName, dependeeParentList));
+	intitializeDependeesAndDependents(dependees,dependents);
+}
+	
+Dependency::Dependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
+ 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, Type type):
+	type(type)
+{
+	ParameterParentMap dependees;
+	dependees.insert(std::pair<std::string, Teuchos::RCP<Teuchos::ParameterList> >(dependeeName, dependeeParentList));
+	ParameterParentMap dependents;
+	dependents.insert(std::pair<std::string, Teuchos::RCP<Teuchos::ParameterList> >(dependentName, dependentParentList));
+	intitializeDependeesAndDependents(dependees, dependents);
+}
+
+void Dependency::intitializeDependeesAndDependents(ParameterParentMap& dependees, ParameterParentMap& dependents){
+	ParameterParentMap::iterator it;
+	for(it = dependees.begin(); it != dependees.end(); ++it){
+		if(it->second->getEntryPtr(it->first) == NULL){
+			throw InvalidDependencyException("The Dependee Parameter \"" + it->first + "\" does "
+			"not exist in the given Dependent Parent List \"" + it->second->name() + "\"."
+			"\n\nBummer! Maybe you just mispelled something? Why not go back and check to make sure "
+			"you've got the names of the dependee and the depedent right? "
+			"It might also be that you just didn't specify the correct parent lists for the dependent and "
+			"dependee. Either way, I'm sure it's just a simple mistake. "
+			"You're a great programmer, I'm sure you'll figure it out! :)");
+		}
+		else{
+			this->dependees.insert(std::pair<std::string, Teuchos::RCP<Teuchos::ParameterList> >(it->first, it->second));
+			dependeeNames.insert(it->first);
+		}
 	}
-	else{
-		this->dependee = dependeeParentList->getEntryPtr(dependeeName);
+	for(it = dependents.begin(); it != dependents.end(); ++it){
+		if(it->second->getEntryPtr(it->first) == NULL){
+			throw InvalidDependencyException("The Dependent Parameter \"" + it->first + "\" does "
+			"not exist in the given Dependent Parent List \"" + it->second->name() + "\"."
+			"\n\nBummer! Maybe you just mispelled something? Why not go back and check to make sure "
+			"you've got the names of the dependee and the depedent right? "
+			"It might also be that you just didn't specify the correct parent lists for the dependent and "
+			"dependee. Either way, I'm sure it's just a simple mistake. "
+			"You're a great programmer, I'm sure you'll figure it out! :)");
+		}
+		else{
+			this->dependents.insert(std::pair<std::string, Teuchos::RCP<Teuchos::ParameterList> >(it->first, it->second));
+			dependentNames.insert(it->first);
+		}
 	}
-	if(dependentParentList->getEntryPtr(dependentName) == NULL){
-		throw InvalidDependencyException("The Dependent Parameter \"" + dependentName + "\" does "
-		"not exist in the given Dependent Parent List \"" + dependentParentList->name() + "\"."
-		"\n\nBummer! Maybe you just mispelled something? Why not go back and check to make sure "
-		"you've got the names of the dependee and the depedent right? "
-		"It might also be that you just didn't specify the correct parent lists for the dependent and "
-		"dependee. Either way, I'm sure it's just a simple mistake. "
-		"You're a great programmer, I'm sure you'll figure it out! :)");
+}
+
+
+Dependency::ParameterParentMap Dependency::getDependees() const{
+	return dependees;
+}
+
+Dependency::ParameterParentMap Dependency::getDependents() const{
+	return dependents;
+}
+
+std::set<std::string> Dependency::getDependeeNames() const{
+	return dependeeNames;
+}
+
+std::string Dependency::getDependeeName(const Teuchos::ParameterEntry* dependee) const{
+	for(ParameterParentMap::const_iterator it = dependees.begin(); it != dependees.end(); ++it){
+		if(dependee == it->second->getEntryPtr(it->first)){
+			return it->first;
+		}
 	}
-	else{
-		this->dependent = dependentParentList->getEntryPtr(dependentName);
+	throw InvalidDependencyException("Fooey! Looks like you tried to get the name of a dependee parameter "
+	"that isn't actually a dependee parameter for this dependency. Make sure you're giving this funciton "
+	"the right pointer. Maybe the information below can help you out.\n\n"
+	"Error: Dependency does not contain specified dependee parameter.\n"
+	"Dependee(s): " + getDependeeNamesString() + "\n"
+	"Dependent(s): " + getDependentNamesString() + "\n");
+	return "";
+}
+
+
+std::set<std::string> Dependency::getDependentNames() const{
+	return dependentNames;
+}
+
+std::string Dependency::getDependeeNamesString() const{
+	std::string names = "";
+	for(std::set<std::string>::const_iterator it=dependeeNames.begin(); it != dependeeNames.end(); ++it){
+		names += *it + " ";
 	}
-	this->type = type;
+	return names;
 }
 
-const Teuchos::ParameterEntry* Dependency::getDependee() const{
-	return dependee;
-}
-
-const Teuchos::ParameterEntry* Dependency::getDependent() const{
-	return dependent;
-}
-
-bool Dependency::isDependeeParentInList(Teuchos::RCP<Teuchos::ParameterList> potentialParentList){
-	return doesListContainList(potentialParentList, dependeeParentList);
-}
-
-bool Dependency::isDependentParentInList(Teuchos::RCP<Teuchos::ParameterList> potentialParentList){
-	return doesListContainList(potentialParentList, dependentParentList);
-}
-
-const std::string& Dependency::getDependeeName() const{
-	return dependeeName;
-}
-
-const std::string& Dependency::getDependentName() const{
-	return dependentName;
+std::string Dependency::getDependentNamesString() const{
+	std::string names = "";
+	for(std::set<std::string>::const_iterator it=dependentNames.begin(); it != dependentNames.end(); ++it){
+		names += *it + " ";
+	}
+	return names;
 }
 
 Dependency::Type Dependency::getType() const{
@@ -96,7 +155,7 @@ bool Dependency::doesListContainList(Teuchos::RCP<Teuchos::ParameterList> parent
 		return true;
 	}
 	else{
-		for(Teuchos::ParameterList::ConstIterator it = parentList->begin(); it!=parentList->end(); it++){
+		for(Teuchos::ParameterList::ConstIterator it = parentList->begin(); it!=parentList->end(); ++it){
 			if(it->second.isList()){
 				if(doesListContainList(sublist(parentList, it->first,true), listToFind)){
 					return true;
@@ -106,7 +165,6 @@ bool Dependency::doesListContainList(Teuchos::RCP<Teuchos::ParameterList> parent
 	}
 	return false;
 }
-
 
 }
 

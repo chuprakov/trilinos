@@ -29,6 +29,7 @@
 #include "Teuchos_ParameterList.hpp"
 #include "Optika_StandardDependencies.hpp"
 #include "Optika_DependencySheet.hpp"
+#include "Optika_StandardConditions.hpp"
 
 int intFuncTester(int argument){
 	return argument+10;
@@ -457,6 +458,27 @@ int testVisualDeps(Teuchos::FancyOStream &out){
 	numberVisDepList.set("Room Temp", 33);
 	iceDep->evaluate();
 	TEST_ASSERT(!iceDep->isDependentVisible());
+
+	/*
+	 * Test condition visual dependency
+	 */
+	Teuchos::RCP<Teuchos::ParameterList> conVisDepList = Teuchos::sublist(My_deplist,"Condition Visual Dependency List", false);
+	conVisDepList->set("double param", 4.0, "double parameter");
+	conVisDepList->set("bool param", true, "bool parameter");
+	conVisDepList->set("string param", "blah", "a string parameter");
+	Teuchos::RCP<Optika::NumberCondition<double> > numberCon = Teuchos::rcp( new Optika::NumberCondition<double>("double param", conVisDepList, true));
+	Teuchos::RCP<Optika::BoolCondition> boolCon = Teuchos::rcp(new Optika::BoolCondition("bool param", conVisDepList));
+	Optika::Condition::ConditionList conList = Teuchos::tuple<Teuchos::RCP<Optika::Condition> >(numberCon, boolCon);
+	Teuchos::RCP<Optika::AndCondition> andCon = Teuchos::rcp(new Optika::AndCondition(conList));
+	Teuchos::RCP<Optika::ConditionVisualDependency> conVisDep = Teuchos::rcp(new Optika::ConditionVisualDependency(andCon, "string param", conVisDepList, true));
+	depSheet1->addDependency(conVisDep);
+	conVisDep->evaluate();
+	TEST_ASSERT(conVisDep->isDependentVisible());
+	conVisDepList->set("bool param", false);
+	conVisDep->evaluate();
+	TEST_ASSERT(!conVisDep->isDependentVisible());
+
+
 
 	return (success ? 0:1);
 }

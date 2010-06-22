@@ -33,18 +33,21 @@
 namespace Optika{
 
 
-TreeModel::TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, QString saveFileName, QObject *parent):QAbstractItemModel(parent){
-	this->validParameters = validParameters;
+TreeModel::TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, QString saveFileName, QObject *parent):
+	QAbstractItemModel(parent),
+	dependencies(false),
+	validParameters(validParameters)
+{
 	basicSetup(saveFileName);
-	dependencies = false;
 }
 
 TreeModel::TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Optika::DependencySheet> dependencySheet,
-		     QString saveFileName, QObject *parent):QAbstractItemModel(parent)
+     QString saveFileName, QObject *parent):
+	 QAbstractItemModel(parent),
+	 dependencies(true),
+	 validParameters(validParameters),
+	 dependencySheet(dependencySheet)
 {
-	this->validParameters = validParameters;
-	this->dependencySheet = dependencySheet;
-	dependencies = true;
 	basicSetup(saveFileName);
 	connect(this, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), 
 		this, SLOT(dataChangedListener(const QModelIndex&, const QModelIndex&)));
@@ -156,8 +159,8 @@ int TreeModel::columnCount(const QModelIndex &parent) const {
 }
 
 void TreeModel::issueInitilizationSignals(){
-	for(DependencySheet::DepMap::const_iterator it = dependencySheet->depBegin(); it != dependencySheet->depEnd(); it++){
-		QModelIndex dependeeIndex = findParameterEntryIndex(it->first, (*(it->second.begin()))->getDependeeName());
+	for(DependencySheet::DepMap::const_iterator it = dependencySheet->depBegin(); it != dependencySheet->depEnd(); ++it){
+		QModelIndex dependeeIndex = findParameterEntryIndex(it->first, (*(it->second.begin()))->getDependeeName(it->first));
 		dataChangedListener(dependeeIndex, dependeeIndex);
 	}
 }
@@ -260,7 +263,7 @@ QModelIndex TreeModel::findParameterEntryIndex(const Teuchos::ParameterEntry *pa
 	QString targetName = QString::fromStdString(parameterName);
 	QList<QModelIndex> potentialMatches = match(index(0,0), Qt::DisplayRole, QString::fromStdString(parameterName),
 				        	    -1, Qt::MatchExactly | Qt::MatchRecursive );
-	for(QList<QModelIndex>::const_iterator it = potentialMatches.begin(); it != potentialMatches.end(); it++){
+	for(QList<QModelIndex>::const_iterator it = potentialMatches.begin(); it != potentialMatches.end(); ++it){
 		if(parameterEntry == itemEntry(*it)){
 			return *it;
 		}
@@ -375,22 +378,27 @@ void TreeModel::basicSetup(QString saveFileName){
 
 void TreeModel::checkDependentState(const QModelIndex dependee, Teuchos::RCP<Dependency> dependency){
 	Dependency::Type type = dependency->getType();
-
-	QModelIndex dependent = findParameterEntryIndex(dependency->getDependent(), dependency->getDependentName());
-	if(type == Dependency::NumberArrayLengthDep){
-		redrawArray(dependent.sibling(dependent.row(),1));
-	}
-	else if(type == Dependency::VisualDep){
-		Teuchos::RCP<VisualDependency> visDep = Teuchos::rcp_static_cast<VisualDependency>(dependency);
-		visDep->isDependentVisible() ? emit showData(dependent.row(), dependent.parent()) :
+	QModelIndex dependent;
+	Teuchos::ParameterEntry *currentDependent;
+	Dependency::ParameterParentMap dependents= dependency->getDependents();
+	for(Dependency::ParameterParentMap::iterator it = dependents.begin(); it != dependents.end(); ++it ){ 
+		currentDependent = it->second->getEntryPtr(it->first);
+		dependent = findParameterEntryIndex(currentDependent, it->first);
+		if(type == Dependency::NumberArrayLengthDep){
+			redrawArray(dependent.sibling(dependent.row(),1));
+		}
+		else if(type == Dependency::VisualDep){
+			Teuchos::RCP<VisualDependency> visDep = Teuchos::rcp_static_cast<VisualDependency>(dependency);
+			visDep->isDependentVisible() ? emit showData(dependent.row(), dependent.parent()) :
 					       emit hideData(dependent.row(), dependent.parent());
-	}
+		}
 
-	if(!hasValidValue(dependent)){
-		QString message = "Because you recently modified the " + data(dependee, Qt::DisplayRole).toString() +
-		" parameter, the valid values for the " + data(dependent, Qt::DisplayRole).toString() +
-		" parameter have changed.\n\nPlease modify the " +  data(dependent,Qt::DisplayRole).toString() + " value.\n";
-		emit badValue(dependent.sibling(dependent.row(), 1), message);
+		if(!hasValidValue(dependent)){
+			QString message = "Because you recently modified the " + data(dependee, Qt::DisplayRole).toString() +
+			" parameter, the valid values for the " + data(dependent, Qt::DisplayRole).toString() +
+			" parameter have changed.\n\nPlease modify the " +  data(dependent,Qt::DisplayRole).toString() + " value.\n";
+			emit badValue(dependent.sibling(dependent.row(), 1), message);
+		}
 	}
 }
 
@@ -413,7 +421,7 @@ void TreeModel::dataChangedListener(const QModelIndex& index1, const QModelIndex
 	QModelIndex dependee = index1.sibling(index1.row(), 0);
 	if(dependencySheet->hasDependents(changedIndexEntry)){
 		DependencySheet::DepSet deps =  dependencySheet->getDependenciesForParameter(changedIndexEntry);
-		for(DependencySheet::DepSet::iterator it = deps.begin(); it != deps.end(); it++){
+		for(DependencySheet::DepSet::iterator it = deps.begin(); it != deps.end(); ++it){
 			(*it)->evaluate();
 			checkDependentState(dependee,*it);
 		}

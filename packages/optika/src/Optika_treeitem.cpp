@@ -33,11 +33,12 @@
 
 namespace Optika{
 
-TreeItem::TreeItem(const QList<QVariant> &data, Teuchos::ParameterEntry *parameter, TreeItem *parent, bool unrecognized){
-	parameterEntry = parameter;
-	parentItem = parent;
-	itemData = data;
-	this->unrecognized = unrecognized;
+TreeItem::TreeItem(const QList<QVariant> &data, Teuchos::ParameterEntry *parameter, TreeItem *parent, bool unrecognized):
+	unrecognized(unrecognized),
+	itemData(data),
+	parentItem(parent),
+	parameterEntry(parameter)
+{
 	if(unrecognized && parameter != 0){
 		this->docString = "Sorry, but we don't recognize the type of the " + data.at(0).toString() + " parameter.\n"
 		 + "No worries though. Everything should be fine.\n"
@@ -58,11 +59,11 @@ TreeItem::~TreeItem(){
 
 void TreeItem::printOut() const{
 	std::cout << itemData.at(0).toString().toStdString() <<  ":     ";
-	for(int i=0; i < itemData.size(); i++){
+	for(int i=0; i < itemData.size(); ++i){
 		std::cout << itemData.at(i).toString().toStdString() << " ";
 	}
 	std::cout << "\n";
-	for(int i=0; i<childItems.size(); i++){
+	for(int i=0; i<childItems.size(); ++i){
 		childItems.at(i)->printOut();
 	}
 }

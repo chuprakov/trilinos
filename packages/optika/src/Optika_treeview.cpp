@@ -40,6 +40,8 @@ TreeView::TreeView(TreeModel *treeModel, Delegate *delegate):QTreeView(){
 		connect(delegate, SIGNAL(closeEditor(QWidget*, QAbstractItemDelegate::EndEditHint)), this, SLOT(checkForOtherBadValues()));
 		treeModel->issueInitilizationSignals();
 	}
+	setAnimated(true);
+	setAlternatingRowColors(true);
 }
 
 void TreeView::showRow(int row, const QModelIndex& parent){
@@ -71,10 +73,6 @@ void TreeView::checkForOtherBadValues(){
 		handleBadValue(needsToBeEdited.first, needsToBeEdited.second);
 	}
 }
-
-
-
-
 
 }
 

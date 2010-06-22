@@ -61,7 +61,7 @@ void FileNameValidator::validate(Teuchos::ParameterEntry const &entry, std::stri
 		msg = oss.str();
 		throw Teuchos::Exceptions::InvalidParameterType(msg);
 	}
-	if(mustAlreadyExist && Teuchos::getValue<std::string>(entry) != ""){
+	if(mustAlreadyExist){
 		std::string fileName = Teuchos::getValue<std::string>(entry);
 		struct stat fileInfo;
 		int intStat= stat(fileName.c_str(),&fileInfo);
@@ -87,11 +87,11 @@ void FileNameValidator::printDoc(std::string const &docString, std::ostream &out
 	out << "#	FileName Validator\n";
 }
 
-StringValidator::StringValidator(Teuchos::Array<std::string> validStrings):ParameterEntryValidator(){
-	this->validStrings = validStrings;	
-}
+StringValidator::StringValidator(ValueList validStrings):
+	ParameterEntryValidator(),
+	validStrings(validStrings){}
 
-const Teuchos::Array<std::string> StringValidator::setValidStrings(Teuchos::Array<std::string> validStrings){
+const Teuchos::Array<std::string> StringValidator::setValidStrings(ValueList validStrings){
 	this->validStrings = validStrings;
 	return this->validStrings;
 }
@@ -137,8 +137,6 @@ void StringValidator::validate(Teuchos::ParameterEntry const &entry, std::string
 		}
 
 	}
-		
-
 }
 
 void StringValidator::printDoc(std::string const &docString, std::ostream &out) const{
@@ -146,8 +144,6 @@ void StringValidator::printDoc(std::string const &docString, std::ostream &out) 
 	out << "#  Validator Used: \n";
 	out << "#	FileName Validator\n";
 }
-
-
 
 }
 
