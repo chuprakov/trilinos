@@ -70,6 +70,9 @@ namespace Optika{
 	 */
 	void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
 
+/**
+ * A class that allows the user to create and customize their Optika GUI.
+ */
 class OptikaGUI{
 public:
 	/**
