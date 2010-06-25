@@ -228,6 +228,27 @@ public:
 		out << "#  	Max (inclusive): " << maxVal << "\n";
 	}
 
+	virtual void writeAspectsToXML(Teuchos::RCP<Teuchos::XMLObject> parentNode) const{
+		Teuchos::XMLObject typeTag("type");
+		typeTag.addAttribute("value", type.toStdString());
+		std::stringstream out;
+		out << minVal;
+		Teuchos::XMLObject minTag("min");
+		minTag.addAttribute("value", out.str());
+		out.flush();
+		out << maxVal;
+		Teuchos::XMLObject maxTag("max");
+		maxTag.addAttribute("value", out.str());
+		out.flush();
+		out << step;
+		Teuchos::XMLObject stepTag("step");
+		stepTag.addAttribute("value", out.str());
+		parentNode->addChild(typeTag);
+		parentNode->addChild(minTag);
+		parentNode->addChild(maxTag);
+		parentNode->addChild(stepTag);
+	}
+
 private:
 	/**
 	 * The type of the array.
@@ -326,6 +347,8 @@ public:
 			spinBox->setSingleStep(intDefaultStep);
 		}
 	}
+
+
 };
 
 /**
@@ -480,6 +503,32 @@ public:
 		}
 	}
 
+	virtual void writeAspectsToXML(Teuchos::RCP<Teuchos::XMLObject> parentNode) const{
+		Teuchos::XMLObject typeTag("type");
+		typeTag.addAttribute("value", getType().toStdString());
+		std::stringstream out;
+		out << min();
+		Teuchos::XMLObject minTag("min");
+		minTag.addAttribute("value", out.str());
+		out.flush();
+		out << max();
+		Teuchos::XMLObject maxTag("max");
+		maxTag.addAttribute("value", out.str());
+		out.flush();
+		out << getStep();
+		Teuchos::XMLObject stepTag("step");
+		stepTag.addAttribute("value", out.str());
+		out.flush();
+		out << precision;
+		Teuchos::XMLObject precisionTag("precision");
+		precisionTag.addAttribute("value", out.str());
+		parentNode->addChild(typeTag);
+		parentNode->addChild(minTag);
+		parentNode->addChild(maxTag);
+		parentNode->addChild(stepTag);
+		parentNode->addChild(precisionTag);
+	}
+
 private:
 	/**
 	 * The precision with which the variable should be displayed in a GUI.
@@ -558,6 +607,32 @@ public:
 		}
 	}
 
+	virtual void writeAspectsToXML(Teuchos::RCP<Teuchos::XMLObject> parentNode) const{
+		Teuchos::XMLObject typeTag("type");
+		typeTag.addAttribute("value", getType().toStdString());
+		std::stringstream out;
+		out << min();
+		Teuchos::XMLObject minTag("min");
+		minTag.addAttribute("value", out.str());
+		out.flush();
+		out << max();
+		Teuchos::XMLObject maxTag("max");
+		maxTag.addAttribute("value", out.str());
+		out.flush();
+		out << getStep();
+		Teuchos::XMLObject stepTag("step");
+		stepTag.addAttribute("value", out.str());
+		out.flush();
+		out << precision;
+		Teuchos::XMLObject precisionTag("precision");
+		precisionTag.addAttribute("value", out.str());
+		parentNode->addChild(typeTag);
+		parentNode->addChild(minTag);
+		parentNode->addChild(maxTag);
+		parentNode->addChild(stepTag);
+		parentNode->addChild(precisionTag);
+	}
+
 private:
 	/**
 	 * The precision with which the variable should be displayed in a GUI.
@@ -601,6 +676,8 @@ public:
 	void validate(Teuchos::ParameterEntry const &entry, std::string const &paramName, std::string const &sublistName) const;
 
 	void printDoc(std::string const &docString, std::ostream &out) const;
+
+	void writeAspectsToXML(Teuchos::RCP<Teuchos::XMLObject> parentNode) const;
 private:
 	/**
 	 * Whether or not the file specified in the parameter should already exist.
@@ -633,6 +710,8 @@ public:
 	void validate(Teuchos::ParameterEntry const &entry, std::string const &paramName, std::string const &sublistName) const;
 
 	void printDoc(std::string const &docString, std::ostream &out) const;
+
+	void writeAspectsToXML(Teuchos::RCP<Teuchos::XMLObject> parentNode) const;
 private:
 	/**
 	 * An array containing a list of all the valid string values.
@@ -657,8 +736,17 @@ public:
 	virtual Teuchos::RCP<const Teuchos::Array<std::string> > validStringValues() const{
 		return prototypeValidator->validStringValues();
 	}
+
 	virtual void validate(Teuchos::ParameterEntry const &entry, std::string const &paramName, std::string const &sublistName) const =0;
+
 	virtual void printDoc(std::string const &docString, std::ostream &out) const =0;
+
+	void writeAspectsToXML(Teuchos::RCP<Teuchos::XMLObject> parentNode) const{
+		Teuchos::RCP<Teuchos::XMLObject> prototypeValidatorTag = Teuchos::rcp(new Teuchos::XMLObject("prototypevalidator"));
+		prototypeValidator->writeAspectsToXML(prototypeValidatorTag);
+		parentNode->addChild(*prototypeValidatorTag);
+	}
+
 protected:
 	/**
 	 * The prototype validator to be applied to each entry in the Array.

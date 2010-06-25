@@ -81,6 +81,12 @@ void FileNameValidator::validate(Teuchos::ParameterEntry const &entry, std::stri
 	}
 }
 
+void FileNameValidator::writeAspectsToXML(Teuchos::RCP<Teuchos::XMLObject> parentNode) const{
+	Teuchos::XMLObject mustAlreadyExistTag("mustalreadyexist");
+	mustAlreadyExistTag.addBool("value", mustAlreadyExist);
+	parentNode->addChild(mustAlreadyExistTag);
+}
+
 void FileNameValidator::printDoc(std::string const &docString, std::ostream &out) const{
 	Teuchos::StrUtils::printLines(out,"# ",docString);
 	out << "#  Validator Used: \n";
@@ -135,14 +141,24 @@ void StringValidator::validate(Teuchos::ParameterEntry const &entry, std::string
 			msg = oss.str();
 			throw Teuchos::Exceptions::InvalidParameterValue(msg);
 		}
-
 	}
 }
+
+void StringValidator::writeAspectsToXML(Teuchos::RCP<Teuchos::XMLObject> parentNode) const{
+	Teuchos::XMLObject valuesTag("values");
+	for(ValueList::const_iterator it = validStrings.begin(); it != validStrings.end(); ++it){
+		Teuchos::XMLObject valueTag("value");
+		valueTag.addAttribute("value", *it);
+		valuesTag.addChild(valueTag);
+	}
+	parentNode->addChild(valuesTag);
+}
+
 
 void StringValidator::printDoc(std::string const &docString, std::ostream &out) const{
 	Teuchos::StrUtils::printLines(out,"# ",docString);
 	out << "#  Validator Used: \n";
-	out << "#	FileName Validator\n";
+	out << "#	String Validator\n";
 }
 
 }
