@@ -54,8 +54,8 @@ int main(){
     ,solverValidator
     );
 
-   Teuchos::RCP<Optika::EnhancedNumberValidator<int> > awesomenessValidator = 
-   Teuchos::RCP<Optika::EnhancedNumberValidator<int> >(new Optika::EnhancedNumberValidator<int>(0,10));
+   Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > awesomenessValidator = 
+   Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> >(new Teuchos::EnhancedNumberValidator<int>(0,10));
     My_List->set("Awesomeness", 5, "Rate the awesomeness!!!", awesomenessValidator);
 
   Teuchos::Array<double> testArray( 10, 0.0 );

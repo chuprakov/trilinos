@@ -26,7 +26,6 @@
 // ***********************************************************************
 // @HEADER
 #include "Optika_GUI.hpp"
-#include "Optika_SpecificParameterEntryValidators.hpp"
 #include "Teuchos_StandardParameterEntryValidators.hpp"
 #include "Optika_StandardDependencies.hpp"
 #include "Optika_DependencySheet.hpp"

@@ -28,7 +28,7 @@
 #include "Teuchos_VerboseObject.hpp"
 #include "Teuchos_ParameterList.hpp"
 #include "Optika_StandardConditions.hpp"
-#include "Optika_SpecificParameterEntryValidators.hpp"
+#include "Teuchos_StandardParameterEntryValidators.hpp"
 #include "Optika_StandardConditions.hpp"
 
 double doubleTesterFunc(double argument){
@@ -46,8 +46,8 @@ int testConditions(Teuchos::FancyOStream &out){
 	/*
 	 * Testing for string condition
 	 */
-	Optika::StringValidator::ValueList validValues(Teuchos::tuple<std::string>("mountain dew", "pepsi", "coke", "fanta"));
-	Teuchos::RCP<Optika::StringValidator> stringVali1 = Teuchos::rcp(new Optika::StringValidator(validValues));
+	Teuchos::StringValidator::ValueList validValues(Teuchos::tuple<std::string>("mountain dew", "pepsi", "coke", "fanta"));
+	Teuchos::RCP<Teuchos::StringValidator> stringVali1 = Teuchos::rcp(new Teuchos::StringValidator(validValues));
 
 	testingList->set("string param", "fanta", "parameter for testing string conditions", stringVali1);
 
@@ -142,8 +142,8 @@ int testConditionGetterAndSetters(Teuchos::FancyOStream &out){
 	//Settin up initial list
 	Teuchos::RCP<Teuchos::ParameterList> testingList = Teuchos::rcp(new Teuchos::ParameterList("Condition Testing List"));
 
-	Optika::StringValidator::ValueList validValues(Teuchos::tuple<std::string>("mountain dew", "pepsi", "coke", "fanta"));
-	Teuchos::RCP<Optika::StringValidator> stringVali1 = Teuchos::rcp(new Optika::StringValidator(validValues));
+	Teuchos::StringValidator::ValueList validValues(Teuchos::tuple<std::string>("mountain dew", "pepsi", "coke", "fanta"));
+	Teuchos::RCP<Teuchos::StringValidator> stringVali1 = Teuchos::rcp(new Teuchos::StringValidator(validValues));
 
 	testingList->set("string param", "fanta", "parameter for testing string conditions", stringVali1);
 

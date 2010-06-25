@@ -29,8 +29,8 @@
 
 namespace Optika{
 bool doesParameterContainArray(const Teuchos::ParameterEntry *parameter){
-	QString typeName = QString::fromStdString(parameter->getAny(false).typeName());
-	return typeName.contains("Teuchos") && typeName.contains("Array");	
+	std::string typeName = parameter->getAny(false).typeName();
+	return typeName.find("Teuchos")!=std::string::npos && typeName.find("Array")!=std::string::npos;	
 }
 
 QStringList getValues(QString& values){

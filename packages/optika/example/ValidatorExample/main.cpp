@@ -28,7 +28,6 @@
 #include "Teuchos_XMLParameterListHelpers.hpp"
 #include "Teuchos_VerboseObject.hpp"
 #include "Optika_GUI.hpp"
-#include "Optika_SpecificParameterEntryValidators.hpp"
 #include "Teuchos_StandardParameterEntryValidators.hpp"
 #include "Optika_StandardDependencies.hpp"
 int main(){
@@ -75,8 +74,8 @@ int main(){
   * Here we create a validator for an int parameter. It's minimum value is 0, and it's maximum value is 10.
   * The step is 1 (the default value for the argument).
   */
-  Teuchos::RCP<Optika::EnhancedNumberValidator<int> > intVali = 
-  	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(0,10));
+  Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > intVali = 
+  	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<int>(0,10));
 
   /*
    * We then create an int parameter and use intVali as the
@@ -90,16 +89,16 @@ int main(){
    * and down buttons that appear in the edit box of this parameter. That's
    * the best way to explain what the step parameter specifies.
    */
-  Teuchos::RCP<Optika::EnhancedNumberValidator<int> > intStepVali =
-     Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(0,100,10));
+  Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > intStepVali =
+     Teuchos::rcp(new Teuchos::EnhancedNumberValidator<int>(0,100,10));
   My_List->set("Step int", 10, "Step int tester", intStepVali);
 
   /*
    * Now suppose we wanted to make a validator for a short parameter that only
    * had a minimum, and no maximum. First we creat it.
    */
-  Teuchos::RCP<Optika::EnhancedNumberValidator<short> > shortVali = 
-  	Teuchos::rcp(new Optika::EnhancedNumberValidator<short>());
+  Teuchos::RCP<Teuchos::EnhancedNumberValidator<short> > shortVali = 
+  	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<short>());
 
   /*
    * We then call the setMin function with a value of 0.
@@ -118,8 +117,8 @@ int main(){
    * double validator to 1e-6 and the precision to 6 decimal places. Try running the program
    * to see it in action.
    */
-  Teuchos::RCP<Optika::EnhancedNumberValidator<double> > doubleVali = 
-  	Teuchos::rcp(new Optika::EnhancedNumberValidator<double>(0,20,1e-6, 6));
+  Teuchos::RCP<Teuchos::EnhancedNumberValidator<double> > doubleVali = 
+  	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<double>(0,20,1e-6, 6));
   My_List->set("Double", (double)4.5, "double tester", doubleVali);
 
   /*
@@ -128,16 +127,16 @@ int main(){
    * Note: A Teuchos StringToIntegralParameterEntryValidator would also do the trick here, but they're
    * a little more complicated to use and kind of overkill for what we're doing here.
    */
-  Teuchos::RCP<Optika::StringValidator> solverValidator = Teuchos::RCP<Optika::StringValidator>(
-  	new Optika::StringValidator(Teuchos::tuple<std::string>( "GMRES", "CG", "TFQMR" )));
+  Teuchos::RCP<Teuchos::StringValidator> solverValidator = Teuchos::RCP<Teuchos::StringValidator>(
+  	new Teuchos::StringValidator(Teuchos::tuple<std::string>( "GMRES", "CG", "TFQMR" )));
   My_List->set("Solver", "GMRES", "The type of solver to use.", solverValidator);
   
   /*
    * The other validator that you may use is the FileNameValidator. This makes sure that the user supplies
    * a valid filename for this parameter.
    */
-  Teuchos::RCP<Optika::FileNameValidator> filnameVali = 
-  	Teuchos::rcp(new Optika::FileNameValidator);
+  Teuchos::RCP<Teuchos::FileNameValidator> filnameVali = 
+  	Teuchos::rcp(new Teuchos::FileNameValidator);
   My_List->set("filename", "", "filename tester", filnameVali);
 
   /*
@@ -158,22 +157,22 @@ int main(){
   Teuchos::Array<std::string> filenameArray(3,"~/");
 
   My_List->set("IntArray", intArray, "intarray tester", 
-	Teuchos::RCP<Optika::ArrayNumberValidator<int> >(new Optika::ArrayNumberValidator<int>(
-	  Teuchos::RCP<Optika::EnhancedNumberValidator<int> >(
-	  	new Optika::EnhancedNumberValidator<int>(0,20,5)	
+	Teuchos::RCP<Teuchos::ArrayNumberValidator<int> >(new Teuchos::ArrayNumberValidator<int>(
+	  Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> >(
+	  	new Teuchos::EnhancedNumberValidator<int>(0,20,5)	
 	))));
 
 
-  Teuchos::RCP<Optika::StringValidator> optionsValidator = Teuchos::RCP<Optika::StringValidator>(
-  	new Optika::StringValidator(Teuchos::tuple<std::string>("Option1", "Option2", "Option3", "Option4" )));
+  Teuchos::RCP<Teuchos::StringValidator> optionsValidator = Teuchos::RCP<Teuchos::StringValidator>(
+  	new Teuchos::StringValidator(Teuchos::tuple<std::string>("Option1", "Option2", "Option3", "Option4" )));
 
   My_List->set("StringArray", stringArray, "string tester", 
-  	Teuchos::RCP<Optika::ArrayStringValidator>(new Optika::ArrayStringValidator(optionsValidator))); 
+  	Teuchos::RCP<Teuchos::ArrayStringValidator>(new Teuchos::ArrayStringValidator(optionsValidator))); 
 
-  Teuchos::RCP<Optika::FileNameValidator> arrayFilnameVali = Teuchos::rcp(new Optika::FileNameValidator);
+  Teuchos::RCP<Teuchos::FileNameValidator> arrayFilnameVali = Teuchos::rcp(new Teuchos::FileNameValidator);
   
   My_List->set("Filename Array", filenameArray, "filename array tester",
-  	Teuchos::RCP<Optika::ArrayFileNameValidator>(new Optika::ArrayFileNameValidator(arrayFilnameVali)));
+  	Teuchos::RCP<Teuchos::ArrayFileNameValidator>(new Teuchos::ArrayFileNameValidator(arrayFilnameVali)));
 
   /*
    * Here we print ouf the user entered values in XML format.

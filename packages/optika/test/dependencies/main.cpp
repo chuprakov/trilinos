@@ -145,12 +145,12 @@ int testValiDeps(Teuchos::FancyOStream &out){
 		)
 	);
 
-	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > range110Vali = 
-	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(1,10));
-	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > range1033Vali = 
-	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(10,33));
-	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > range5060Vali = 
-	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(50,60));
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > range110Vali = 
+	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<int>(1,10));
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > range1033Vali = 
+	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<int>(10,33));
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > range5060Vali = 
+	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<int>(50,60));
 
 	stringValiDepList2.set("Range selector", "1-10", "selects the range to validate", stringRangeValidator);
 
@@ -196,8 +196,8 @@ int testValiDeps(Teuchos::FancyOStream &out){
 	);
 
 	boolValidatorDepList.set("Use Validator?", true, "truns the validator on and off");
-	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > basicVali = Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(1,10));
-	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > basicVali2 = Teuchos::rcp(new Optika::EnhancedNumberValidator<int>());
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > basicVali = Teuchos::rcp(new Teuchos::EnhancedNumberValidator<int>(1,10));
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > basicVali2 = Teuchos::rcp(new Teuchos::EnhancedNumberValidator<int>());
 	boolValidatorDepList.set("do I have a validator?", 4, "does it have a validator?", basicVali);
 
 	Teuchos::RCP<Optika::BoolValidatorDependency> 
@@ -333,7 +333,7 @@ int testVisualDeps(Teuchos::FancyOStream &out){
 	Teuchos::ParameterList&
 	Prec_List0 = boolVisDepList.sublist("Preconditioner",false,"Sublist that defines the preconditioner.");
 	Prec_List0.set("Type", "ILU", "The tpye of preconditioner to use");
-	Teuchos::RCP<Optika::EnhancedNumberValidator<double> > droptolValidator = Teuchos::rcp(new Optika::EnhancedNumberValidator<double>(0,10,1e-3));
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<double> > droptolValidator = Teuchos::rcp(new Teuchos::EnhancedNumberValidator<double>(0,10,1e-3));
 	Prec_List0.set("Drop Tolerance", 1e-3,"The tolerance below which entries from the\n""factorization are left out of the factors.", droptolValidator);
 	Teuchos::RCP<Optika::BoolVisualDependency> 
 	precDep1 = Teuchos::RCP<Optika::BoolVisualDependency>(
@@ -372,8 +372,8 @@ int testVisualDeps(Teuchos::FancyOStream &out){
 	);
    
 	stringVisDepList.set("Favorite Cheese", "American", "Your favorite type of cheese", favCheeseValidator);
-	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > 
-	swissValidator = Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(0,10));
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > 
+	swissValidator = Teuchos::rcp(new Teuchos::EnhancedNumberValidator<int>(0,10));
 	stringVisDepList.set("Swiss rating", 0, "How you rate swiss on a scale of 1 to 10", swissValidator);
 	Teuchos::RCP<Optika::StringVisualDependency> 
 	swissDep1 = Teuchos::RCP<Optika::StringVisualDependency>(
@@ -496,12 +496,12 @@ int testArrayLengthDep(Teuchos::FancyOStream &out){
 	numberArrayLengthDepList = My_deplist->sublist("Number Array Length Dependency List", false, "Number Array Length Dependecy testing list.\nWorking June 27th 2009");
 	numberArrayLengthDepList.set("Array Length", 10, "array length setter");
 	Teuchos::Array<double> variableLengthArray(10,23.0);
-	Teuchos::RCP<Optika::EnhancedNumberValidator<double> > 
-	varLengthArrayVali = Teuchos::RCP<Optika::EnhancedNumberValidator<double> >(
-  		new Optika::EnhancedNumberValidator<double>(10,50,4) 
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<double> > 
+	varLengthArrayVali = Teuchos::RCP<Teuchos::EnhancedNumberValidator<double> >(
+  		new Teuchos::EnhancedNumberValidator<double>(10,50,4) 
 	);
 	numberArrayLengthDepList.set("Variable Length Array", variableLengthArray, "variable length array",
-	Teuchos::RCP<Optika::ArrayNumberValidator<double> >(new Optika::ArrayNumberValidator<double>(varLengthArrayVali)));
+	Teuchos::RCP<Teuchos::ArrayNumberValidator<double> >(new Teuchos::ArrayNumberValidator<double>(varLengthArrayVali)));
 
 	Teuchos::RCP<Optika::NumberArrayLengthDependency> 
 	arrayLengthDep = Teuchos::RCP<Optika::NumberArrayLengthDependency>(
@@ -538,8 +538,8 @@ int testNumberValiAspDep(Teuchos::FancyOStream &out){
 		false,
 		"Number Validator Aspect Dependency testing list.\nWorking June 27th 2009"
 	);
-	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > intVali2 = 
-	Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(0,20));
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > intVali2 = 
+	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<int>(0,20));
 	numberValiAspDepList.set("Int", 8, "Int tester", intVali2);
 	numberValiAspDepList.set("Int2", 8, "int2 tester", intVali2);
 	numberValiAspDepList.set("Int dependee", 1, "Int dependee");
@@ -576,11 +576,11 @@ int testNumberValiAspDep(Teuchos::FancyOStream &out){
 	depSheet1->addDependency(intDep1);
 	depSheet1->addDependency(intDep2);
 
-	TEST_ASSERT(Teuchos::rcp_static_cast<const Optika::EnhancedNumberValidator<int> >(numberValiAspDepList.getEntry("Int").validator())->max() == 20);
-	TEST_ASSERT(Teuchos::rcp_static_cast<const Optika::EnhancedNumberValidator<int> >(numberValiAspDepList.getEntry("Int2").validator())->max() == 20);
+	TEST_ASSERT(Teuchos::rcp_static_cast<const Teuchos::EnhancedNumberValidator<int> >(numberValiAspDepList.getEntry("Int").validator())->getMax() == 20);
+	TEST_ASSERT(Teuchos::rcp_static_cast<const Teuchos::EnhancedNumberValidator<int> >(numberValiAspDepList.getEntry("Int2").validator())->getMax() == 20);
 	intDep1->evaluate();
-	TEST_ASSERT(Teuchos::rcp_static_cast<const Optika::EnhancedNumberValidator<int> >(numberValiAspDepList.getEntry("Int").validator())->max() == 11);
-	TEST_ASSERT(Teuchos::rcp_static_cast<const Optika::EnhancedNumberValidator<int> >(numberValiAspDepList.getEntry("Int2").validator())->max() == 11);
+	TEST_ASSERT(Teuchos::rcp_static_cast<const Teuchos::EnhancedNumberValidator<int> >(numberValiAspDepList.getEntry("Int").validator())->getMax() == 11);
+	TEST_ASSERT(Teuchos::rcp_static_cast<const Teuchos::EnhancedNumberValidator<int> >(numberValiAspDepList.getEntry("Int2").validator())->getMax() == 11);
 
 
 	return (success ? 0:1);
@@ -648,15 +648,15 @@ int testDepExceptions(Teuchos::FancyOStream &out){
 	testValidatorMap1["Soda"] = sodaValidator;
 	testValidatorMap1["Chips"] = chipsValidator;
 	TEST_THROW(Teuchos::RCP<Optika::StringValidatorDependency> stringValiDep = Teuchos::RCP<Optika::StringValidatorDependency>(new Optika::StringValidatorDependency("int parameter", list1, "string 2 parameter", list1, testValidatorMap1, cheeseValidator)), Optika::InvalidDependencyException);
-	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > intVali = Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(0,20));
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > intVali = Teuchos::rcp(new Teuchos::EnhancedNumberValidator<int>(0,20));
 	testValidatorMap1["Candy"] = intVali;
 	TEST_THROW(Teuchos::RCP<Optika::StringValidatorDependency> stringValiDep = Teuchos::RCP<Optika::StringValidatorDependency>(new Optika::StringValidatorDependency("string parameter", list1, "string 2 parameter", list1, testValidatorMap1, cheeseValidator)), Optika::InvalidDependencyException);
 	
 	/*
 	 * Testing BoolValidatorDependency exceptions.
 	 */
-	Teuchos::RCP<Optika::EnhancedNumberValidator<double> > doubleVali1 = Teuchos::rcp(new Optika::EnhancedNumberValidator<double>(0.0,20.0));
-	Teuchos::RCP<Optika::EnhancedNumberValidator<double> > doubleVali2 = Teuchos::rcp(new Optika::EnhancedNumberValidator<double>(5.0,20.0));
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<double> > doubleVali1 = Teuchos::rcp(new Teuchos::EnhancedNumberValidator<double>(0.0,20.0));
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<double> > doubleVali2 = Teuchos::rcp(new Teuchos::EnhancedNumberValidator<double>(5.0,20.0));
 	list1->set("double parameter", 6.0, "double parameter", doubleVali1);
 	TEST_THROW(Teuchos::RCP<Optika::BoolValidatorDependency> boolValiDep = Teuchos::RCP<Optika::BoolValidatorDependency>(new Optika::BoolValidatorDependency("int parameter", list1, "double parameter", list1, doubleVali1, doubleVali2)), Optika::InvalidDependencyException);
 	TEST_THROW(Teuchos::RCP<Optika::BoolValidatorDependency> boolValiDep = Teuchos::RCP<Optika::BoolValidatorDependency>(new Optika::BoolValidatorDependency("bool parameter", list1, "double parameter", list1, intVali, doubleVali2)), Optika::InvalidDependencyException);
@@ -699,7 +699,7 @@ int testDepExceptions(Teuchos::FancyOStream &out){
 		),
 		Optika::InvalidDependencyException
 	);
-	Teuchos::RCP<Optika::EnhancedNumberValidator<int> > intVali2 = Teuchos::rcp(new Optika::EnhancedNumberValidator<int>(5,20));
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > intVali2 = Teuchos::rcp(new Teuchos::EnhancedNumberValidator<int>(5,20));
 	TEST_THROW(Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> > 
 		intDep1 = Teuchos::RCP<Optika::NumberValidatorAspectDependency<int> >(
 			new Optika::NumberValidatorAspectDependency<int>(
