@@ -35,6 +35,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 
 #include "CTrilinos_test_utils.hpp"
+#include "CTrilinos_TableRepos.hpp"
 
 
 namespace CTrilinos {
@@ -351,6 +352,27 @@ isSameObject( CTrilinos_Universal_ID_t id1, CTrilinos_Universal_ID_t id2 )
     }
 
     return shares;
+}
+
+
+void
+purgeAllTables(  )
+{
+    // polymorphic tables
+    CTrilinos::tableRepos().purgeAll();
+    // non-polymorphic tables
+    CTeuchos::purgeCommandLineProcessor();
+    CTeuchos::purgeParameterEntry();
+    CTeuchos::purgeany();
+#ifdef HAVE_CTRILINOS_AMESOS
+    CAmesos::purgeAmesos();
+#endif /* HAVE_CTRILINOS_AMESOS */
+#ifdef HAVE_CTRILINOS_AZTECOO
+    CAztecOO::purgeAztecOO();
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_IFPACK
+    CIfpack::purgeIfpack();
+#endif /* HAVE_CTRILINOS_IFPACK */
 }
 
 
