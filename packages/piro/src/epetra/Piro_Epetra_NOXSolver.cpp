@@ -28,41 +28,38 @@
 // ************************************************************************
 // @HEADER
 
-#include "Piro_Epetra_LOCASolver.hpp"
-#include "Piro_Epetra_MatrixFreeDecorator.hpp"
+#include "Piro_Epetra_NOXSolver.hpp"
 #include "Piro_ValidPiroParameters.hpp"
+#include "Piro_Epetra_MatrixFreeDecorator.hpp"
 #include "NOX_Epetra_LinearSystem_Stratimikos.H"
 
-
-Piro::Epetra::LOCASolver::LOCASolver(Teuchos::RCP<Teuchos::ParameterList> piroParams_,
-                          Teuchos::RCP<EpetraExt::ModelEvaluator> model_,
-                          Teuchos::RCP<NOX::Epetra::Observer> observer_,
-                          Teuchos::RCP<LOCA::SaveEigenData::AbstractStrategy> saveEigData_,
-                          Teuchos::RCP<LOCA::StatusTest::Abstract> locaStatusTest_
+Piro::Epetra::NOXSolver::NOXSolver(Teuchos::RCP<Teuchos::ParameterList> piroParams_,
+			   Teuchos::RCP<EpetraExt::ModelEvaluator> model_,
+			   Teuchos::RCP<NOX::Epetra::Observer> observer_
 ) :
   piroParams(piroParams_),
   model(model_),
   observer(observer_),
-  saveEigData(saveEigData_),
-  locaStatusTest(locaStatusTest_),
   utils(piroParams->sublist("NOX").sublist("Printing"))
 {
   //piroParams->validateParameters(*Piro::getValidPiroParameters(),0);
 
-  Teuchos::ParameterList& noxParams = piroParams->sublist("NOX");
-  Teuchos::ParameterList& printParams = noxParams.sublist("Printing");
+  Teuchos::RCP<Teuchos::ParameterList> noxParams =
+	Teuchos::rcp(&(piroParams->sublist("NOX")),false);
+  Teuchos::ParameterList& printParams = noxParams->sublist("Printing");
 
   string jacobianSource = piroParams->get("Jacobian Operator", "Have Jacobian");
 
-  Teuchos::ParameterList& noxstratlsParams = noxParams.
+  Teuchos::ParameterList& noxstratlsParams = noxParams->
         sublist("Direction").sublist("Newton").sublist("Stratimikos Linear Solver");
 
   // Inexact Newton must be set in a second sublist when using 
   // Stratimikos: This code snippet sets it automatically
-  bool inexact = (noxParams.sublist("Direction").sublist("Newton").
+  bool inexact = (noxParams->sublist("Direction").sublist("Newton").
                   get("Forcing Term Method", "Constant") != "Constant");
   noxstratlsParams.sublist("NOX Stratimikos Options").
                    set("Use Linear Solve Tolerance From NOX", inexact);
+
 
   if (jacobianSource == "Matrix-Free") {
     if (piroParams->isParameter("Matrix-Free Perturbation")) {
@@ -82,28 +79,13 @@ Piro::Epetra::LOCASolver::LOCASolver(Teuchos::RCP<Teuchos::ParameterList> piroPa
   Teuchos::RCP<const Epetra_Vector> u = model->get_x_init();
   currentSolution = Teuchos::rcp(new NOX::Epetra::Vector(*u));
 
-  // Create Epetra factory
-  Teuchos::RCP<LOCA::Abstract::Factory> epetraFactory =
-	Teuchos::rcp(new LOCA::Epetra::Factory);
-
-  // Create global data object
-  globalData = LOCA::createGlobalData(piroParams, epetraFactory);
-
-  // Create LOCA interface
+  // Create NOX interface from model evaluator
   interface = Teuchos::rcp(
-	       new LOCA::Epetra::ModelEvaluatorInterface(globalData, model));
+	       new NOX::Epetra::ModelEvaluatorInterface(model));
+  Teuchos::RCP<NOX::Epetra::Interface::Required> iReq = interface;
 
-  // explicitly set the observer for LOCA
-  interface->setObserver( observer );
-
-  // Get LOCA parameter vector
-  //pVector = interface->getLOCAParameterVector();
-  pVector = Teuchos::rcp(new LOCA::ParameterVector(interface->getLOCAParameterVector()));
-
-  // Create the Jacobian matrix
+  // Create the Jacobian matrix (unless flag is set to do it numerically)
   Teuchos::RCP<Epetra_Operator> A;
-  Teuchos::RCP<NOX::Epetra::ModelEvaluatorInterface> itmp = interface;
-  Teuchos::RCP<NOX::Epetra::Interface::Required> iReq = itmp;
   Teuchos::RCP<NOX::Epetra::Interface::Jacobian> iJac;
 
   if (jacobianSource == "Have Jacobian" || jacobianSource == "Matrix-Free") {
@@ -119,7 +101,7 @@ Piro::Epetra::LOCASolver::LOCASolver(Teuchos::RCP<Teuchos::ParameterList> piroPa
     TEST_FOR_EXCEPTION(true, Teuchos::Exceptions::InvalidParameter,
                  "Error in Piro::Epetra::NOXSolver " <<
                  "Invalid value for parameter \" Jacobian Operator\"= " <<
-                  jacobianSource << std::endl);
+                 jacobianSource << std::endl);
 
   // Create separate preconditioner if the model supports it
   /* NOTE: How do we want to decide between using an
@@ -127,105 +109,68 @@ Piro::Epetra::LOCASolver::LOCASolver(Teuchos::RCP<Teuchos::ParameterList> piroPa
    * it, then we use it, or (2) if a parameter list says
    * User_Defined ?  [Below, logic is ooption (1).]
    */
-
   Teuchos::RCP<EpetraExt::ModelEvaluator::Preconditioner> WPrec;
   if (outargs.supports(EpetraExt::ModelEvaluator::OUT_ARG_WPrec))
-    WPrec = model->create_WPrec();
+    WPrec = model->create_WPrec(); 
 
   // Create the linear system
-  // also Build shifted linear system for eigensolver
   Teuchos::RCP<NOX::Epetra::LinearSystemStratimikos> linsys;
-  Teuchos::RCP<NOX::Epetra::LinearSystemStratimikos> shiftedLinSys;
   if (WPrec != Teuchos::null) {
     Teuchos::RCP<NOX::Epetra::Interface::Preconditioner> iPrec = interface;
-
-    linsys =
-      Teuchos::rcp(new NOX::Epetra::LinearSystemStratimikos(printParams,
-                  noxstratlsParams, iJac, A, iPrec, WPrec->PrecOp,
-                  *currentSolution, WPrec->isAlreadyInverted));
-    shiftedLinSys =
-      Teuchos::rcp(new NOX::Epetra::LinearSystemStratimikos(printParams,
-  		  noxstratlsParams, iJac, A, iPrec, WPrec->PrecOp,
-                  *currentSolution, WPrec->isAlreadyInverted));
+    linsys = Teuchos::rcp(new NOX::Epetra::LinearSystemStratimikos(printParams,
+                      noxstratlsParams, iJac, A, iPrec, WPrec->PrecOp,
+                      *currentSolution, WPrec->isAlreadyInverted));
   }
   else {
-     linsys =
-        Teuchos::rcp(new NOX::Epetra::LinearSystemStratimikos(printParams,
-                          noxstratlsParams, iJac, A, *currentSolution));
-     shiftedLinSys =
-        Teuchos::rcp(new NOX::Epetra::LinearSystemStratimikos(printParams,
+    linsys = Teuchos::rcp(new NOX::Epetra::LinearSystemStratimikos(printParams,
                           noxstratlsParams, iJac, A, *currentSolution));
   }
 
-  Teuchos::RCP<LOCA::Epetra::Interface::TimeDependent> iTime = interface;
+  // Build NOX group
+  grp = Teuchos::rcp(new NOX::Epetra::Group(printParams, iReq,
+                                           *currentSolution, linsys));
 
-  // Create the LOCA Group
-  grp = Teuchos::rcp(new LOCA::Epetra::Group(globalData, printParams, iTime,
-                                       *currentSolution, linsys,
-                                        shiftedLinSys, *pVector));
-  grp->setDerivUtils(interface);
-  
   // Create the Solver convergence test
-  Teuchos::ParameterList& statusParams = noxParams.sublist("Status Tests");
-  Teuchos::RCP<NOX::StatusTest::Generic> noxStatusTests =
-    NOX::StatusTest::buildStatusTests(statusParams,
-                                      *(globalData->locaUtils));
+  Teuchos::ParameterList& statusParams = noxParams->sublist("Status Tests");
+  Teuchos::RCP<NOX::StatusTest::Generic> statusTests =
+    NOX::StatusTest::buildStatusTests(statusParams, utils);
 
-  // Register SaveEigenData strategy if given
-
-  if (saveEigData != Teuchos::null) {
-    Teuchos::ParameterList& eigParams =
-      piroParams->sublist("LOCA").sublist("Stepper").sublist("Eigensolver");
-    eigParams.set("Save Eigen Data Method", "User-Defined");
-    eigParams.set("User-Defined Save Eigen Data Name", "Piro Strategy");
-    eigParams.set( eigParams.get
-      ("User-Defined Save Eigen Data Name", "Piro Strategy"), saveEigData);
-  }
-   
   // Create the solver
-  stepper = Teuchos::rcp(new LOCA::Stepper(globalData, grp, locaStatusTest, noxStatusTests, piroParams));
+  solver = NOX::Solver::buildSolver(grp, statusTests, noxParams);
 }
 
-Piro::Epetra::LOCASolver::~LOCASolver()
+Piro::Epetra::NOXSolver::~NOXSolver()
 {
-  LOCA::destroyGlobalData(globalData);
-
-  // Release saveEigenData RCP
-  Teuchos::ParameterList& eigParams =
-      piroParams->sublist("LOCA").sublist("Stepper").sublist("Eigensolver");
-  eigParams.set( eigParams.get
-      ("User-Defined Save Eigen Data Name", "Piro Strategy"), Teuchos::null);
 }
 
-Teuchos::RCP<const Epetra_Map> Piro::Epetra::LOCASolver::get_x_map() const
+Teuchos::RCP<const Epetra_Map> Piro::Epetra::NOXSolver::get_x_map() const
 {
   Teuchos::RCP<const Epetra_Map> neverused;
   return neverused;
 }
 
-Teuchos::RCP<const Epetra_Map> Piro::Epetra::LOCASolver::get_f_map() const
+Teuchos::RCP<const Epetra_Map> Piro::Epetra::NOXSolver::get_f_map() const
 {
   Teuchos::RCP<const Epetra_Map> neverused;
   return neverused;
 }
 
-Teuchos::RCP<const Epetra_Map> Piro::Epetra::LOCASolver::get_p_map(int l) const
+Teuchos::RCP<const Epetra_Map> Piro::Epetra::NOXSolver::get_p_map(int l) const
 {
-  TEST_FOR_EXCEPTION(l != 0, Teuchos::Exceptions::InvalidParameter,
+  TEST_FOR_EXCEPTION(l >= num_p || l < 0, Teuchos::Exceptions::InvalidParameter,
                      std::endl <<
-                     "Error!  App::ModelEval::get_p_map() only " <<
-                     " supports 1 parameter vector.  Supplied index l = " <<
+                     "Error in Piro::Epetra::NOXSolver::get_p_map():  " <<
+                     "Invalid parameter index l = " <<
                      l << std::endl);
-
   return model->get_p_map(l);
 }
 
-Teuchos::RCP<const Epetra_Map> Piro::Epetra::LOCASolver::get_g_map(int j) const
+Teuchos::RCP<const Epetra_Map> Piro::Epetra::NOXSolver::get_g_map(int j) const
 {
-  TEST_FOR_EXCEPTION( (j>1 || j<0), Teuchos::Exceptions::InvalidParameter,
+  TEST_FOR_EXCEPTION(j > num_g || j < 0, Teuchos::Exceptions::InvalidParameter,
                      std::endl <<
-                     "Error!  Piro::Epetra::NOXSolver::get_g_map() only " <<
-                     " supports 2 response vectors.  Supplied index l = " <<
+                     "Error in Piro::Epetra::NOXSolver::get_g_map():  " <<
+                     "Invalid response index j = " <<
                      j << std::endl);
 
   if      (j < num_g) return model->get_g_map(j);
@@ -233,68 +178,68 @@ Teuchos::RCP<const Epetra_Map> Piro::Epetra::LOCASolver::get_g_map(int j) const
   return Teuchos::null;
 }
 
-Teuchos::RCP<const Epetra_Vector> Piro::Epetra::LOCASolver::get_x_init() const
+Teuchos::RCP<const Epetra_Vector> Piro::Epetra::NOXSolver::get_x_init() const
 {
   Teuchos::RCP<const Epetra_Vector> neverused;
   return neverused;
 }
 
-Teuchos::RCP<const Epetra_Vector> Piro::Epetra::LOCASolver::get_p_init(int l) const
+Teuchos::RCP<const Epetra_Vector> Piro::Epetra::NOXSolver::get_p_init(int l) const
 {
-  TEST_FOR_EXCEPTION(l != 0, Teuchos::Exceptions::InvalidParameter,
+  TEST_FOR_EXCEPTION(l >= num_p || l < 0, Teuchos::Exceptions::InvalidParameter,
                      std::endl <<
-                     "Error!  App::ModelEval::get_p_map() only " <<
-                     " supports 1 parameter vector.  Supplied index l = " <<
+                     "Error in Piro::Epetra::NOXSolver::get_p_init():  " <<
+                     "Invalid parameter index l = " <<
                      l << std::endl);
-
   return model->get_p_init(l);
 }
 
-EpetraExt::ModelEvaluator::InArgs Piro::Epetra::LOCASolver::createInArgs() const
+EpetraExt::ModelEvaluator::InArgs Piro::Epetra::NOXSolver::createInArgs() const
 {
-  //return underlyingME->createInArgs();
   EpetraExt::ModelEvaluator::InArgsSetup inArgs;
   inArgs.setModelEvalDescription(this->description());
   inArgs.set_Np(num_p);
   return inArgs;
 }
 
-EpetraExt::ModelEvaluator::OutArgs Piro::Epetra::LOCASolver::createOutArgs() const
+EpetraExt::ModelEvaluator::OutArgs Piro::Epetra::NOXSolver::createOutArgs() const
 {
   EpetraExt::ModelEvaluator::OutArgsSetup outArgs;
   outArgs.setModelEvalDescription(this->description());
+  // Ng is 1 bigger then model-Ng so that the solution vector can be an outarg
   outArgs.set_Np_Ng(num_p, num_g+1);
 
   EpetraExt::ModelEvaluator::OutArgs model_outargs = model->createOutArgs();
   for (int i=0; i<num_g; i++)
     for (int j=0; j<num_p; j++)
       if (!model_outargs.supports(OUT_ARG_DgDp, i, j).none())
-        outArgs.setSupports(OUT_ARG_DgDp, i, j,
-                            DerivativeSupport(DERIV_MV_BY_COL));
+	outArgs.setSupports(OUT_ARG_DgDp, i, j, 
+			    DerivativeSupport(DERIV_MV_BY_COL));
 
   return outArgs;
 }
 
-void Piro::Epetra::LOCASolver::evalModel( const InArgs& inArgs,
-                              const OutArgs& outArgs ) const
+void Piro::Epetra::NOXSolver::evalModel(const InArgs& inArgs,
+				const OutArgs& outArgs ) const
 {
-  // Parse InArgs
-  Teuchos::RCP<const Epetra_Vector> p_in = inArgs.get_p(0);
-  if (!p_in.get()) cout << "ERROR: Piro::Epetra::LOCASolver requires p as inargs" << endl;
-  int numParameters = p_in->GlobalLength();
+  // Parse input parameters
+  for (int i=0; i<num_p; i++) {
+    Teuchos::RCP<const Epetra_Vector> p_in = inArgs.get_p(i);
+    if (p_in != Teuchos::null)
+      interface->inargs_set_p(p_in, i); // Pass "p_in" through to inargs 
+  }
 
-  for (int i=0; i< numParameters; i++) pVector->setValue(i, (*p_in)[i]);
-  utils.out() << "eval pVector   " << setprecision(10) << *pVector << endl;
-  interface->setParameters(*pVector);
+  // Reset initial guess, if the user requests
+  if(piroParams->sublist("NOX").get("Reset Initial Guess",false)==true)
+    *currentSolution=*model->get_x_init();
 
   // Solve
-  // AGS:: Need to reset solution?? solver->reset(*currentSolution);
-  LOCA::Abstract::Iterator::IteratorStatus status = stepper->run();
+  solver->reset(*currentSolution);
+  NOX::StatusTest::StatusType status = solver->solve();
 
-  if (status ==  LOCA::Abstract::Iterator::Finished) 
-    utils.out() << "Continuation Stepper Finished" << endl;
-  else if (status ==  LOCA::Abstract::Iterator::NotFinished) 
-    utils.out() << "Continuation Stepper did not reach final value." << endl;
+  // Print status
+  if (status == NOX::StatusTest::Converged) 
+    utils.out() << "Step Converged" << endl;
   else {
     utils.out() << "Nonlinear solver failed to converge!" << endl;
     outArgs.setFailed();
@@ -320,9 +265,8 @@ void Piro::Epetra::LOCASolver::evalModel( const InArgs& inArgs,
     utils.out() << endl;
   }
 
-  // Don't explicitly observe finalSolution:
-  // This is already taken care of by the stepper which observes the solution after each
-  // continuation step by default.
+  if (observer != Teuchos::null)
+    observer->observeSolution(*finalSolution);
 
   // Print stats
   {
@@ -342,7 +286,7 @@ void Piro::Epetra::LOCASolver::evalModel( const InArgs& inArgs,
 	 << NewtonIters << "  " << KrylovIters << "  " 
 	 << (double) KrylovIters / (double) NewtonIters << endl;
     if (stepNum > 1)
-      utils.out() << "Convergence Stats: running total: Newton, Krylov, Kr/Ne, Kr/Step: " 
+     utils.out() << "Convergence Stats: running total: Newton, Krylov, Kr/Ne, Kr/Step: " 
            << totalNewtonIters << "  " << totalKrylovIters << "  " 
            << (double) totalKrylovIters / (double) totalNewtonIters 
            << "  " << (double) totalKrylovIters / (double) stepNum << endl;
@@ -373,7 +317,7 @@ void Piro::Epetra::LOCASolver::evalModel( const InArgs& inArgs,
 	TEST_FOR_EXCEPTION(p_indexes.size() > 0, 
 			   Teuchos::Exceptions::InvalidParameter,
 			   std::endl <<
-			   "Piro::Epetra::LOCASolver::evalModel():  " <<
+			   "Piro::Epetra::NOXSolver::evalModel():  " <<
 			   "Non-empty paramIndexes for dg/dp(" << i << "," <<
 			   j << ") is not currently supported." << std::endl);
       }
@@ -497,32 +441,9 @@ void Piro::Epetra::LOCASolver::evalModel( const InArgs& inArgs,
   // return the final solution as an additional g-vector, if requested
   Teuchos::RCP<Epetra_Vector> gx_out = outArgs.get_g(num_g); 
   if (gx_out != Teuchos::null)  *gx_out = *finalSolution; 
-}
 
-Teuchos::RCP<const LOCA::Stepper>
-Piro::Epetra::LOCASolver::
-getLOCAStepper() const
-{
-  return stepper;
-}
+  // Clear RCPs to parameter vectors
+  for (int i=0; i<num_p; i++)
+    interface->inargs_set_p(Teuchos::null, i); 
  
-Teuchos::RCP<LOCA::Stepper>
-Piro::Epetra::LOCASolver::
-getLOCAStepperNonConst()
-{
-  return stepper;
-}
-
-Teuchos::RCP<const LOCA::GlobalData>
-Piro::Epetra::LOCASolver::
-getGlobalData() const
-{
-  return globalData; 
-}
-
-Teuchos::RCP<LOCA::GlobalData>
-Piro::Epetra::LOCASolver::
-getGlobalDataNonConst()
-{
-  return globalData; 
 }
