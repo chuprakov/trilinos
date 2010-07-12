@@ -51,13 +51,8 @@ int main(){
   Teuchos::RCP<Teuchos::EnhancedNumberValidator<double> > doubleVali = 
   	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<double>(0,20,1e-2, 6));
   validatorList.set("Double", (double)4.5, "double tester", doubleVali);
-  Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
-    solverValidator2 = Teuchos::rcp(
-      new Teuchos::StringToIntegralParameterEntryValidator<int>(
-        Teuchos::tuple<std::string>( "GMRES", "CG", "TFQMR" )
-        ,"Solver"
-        )
-      );
+  Teuchos::RCP<Teuchos::StringValidator> solverValidator2 = Teuchos::rcp(
+      new Teuchos::StringValidator( Teuchos::tuple<std::string>( "GMRES", "CG", "TFQMR" )));
   validatorList.set(
     "Solver"
     ,"GMRES" // This will be validated by solverValidator right here!

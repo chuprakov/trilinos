@@ -46,7 +46,7 @@ int testConditions(Teuchos::FancyOStream &out){
 	/*
 	 * Testing for string condition
 	 */
-	Teuchos::StringValidator::ValueList validValues(Teuchos::tuple<std::string>("mountain dew", "pepsi", "coke", "fanta"));
+	Teuchos::Array<std::string> validValues(Teuchos::tuple<std::string>("mountain dew", "pepsi", "coke", "fanta"));
 	Teuchos::RCP<Teuchos::StringValidator> stringVali1 = Teuchos::rcp(new Teuchos::StringValidator(validValues));
 
 	testingList->set("string param", "fanta", "parameter for testing string conditions", stringVali1);
@@ -142,7 +142,7 @@ int testConditionGetterAndSetters(Teuchos::FancyOStream &out){
 	//Settin up initial list
 	Teuchos::RCP<Teuchos::ParameterList> testingList = Teuchos::rcp(new Teuchos::ParameterList("Condition Testing List"));
 
-	Teuchos::StringValidator::ValueList validValues(Teuchos::tuple<std::string>("mountain dew", "pepsi", "coke", "fanta"));
+	Teuchos::Array<std::string> validValues(Teuchos::tuple<std::string>("mountain dew", "pepsi", "coke", "fanta"));
 	Teuchos::RCP<Teuchos::StringValidator> stringVali1 = Teuchos::rcp(new Teuchos::StringValidator(validValues));
 
 	testingList->set("string param", "fanta", "parameter for testing string conditions", stringVali1);

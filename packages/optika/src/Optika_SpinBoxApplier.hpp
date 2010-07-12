@@ -45,6 +45,11 @@ public:
 			spinBox->setMaximum(validator->getMax());
 			spinBox->setSingleStep(validator->getStep());
 		}
+		else{
+			spinBox->setMinimum(Teuchos::EnhancedNumberTraits<S>::min());
+			spinBox->setMaximum(Teuchos::EnhancedNumberTraits<S>::max());
+			spinBox->setSingleStep(Teuchos::EnhancedNumberTraits<S>::defaultStep());
+		}
 	}
 };
 
@@ -65,9 +70,9 @@ public:
 			spinBox->setSingleStep(validator->getStep());
 		}
 		else{
-			spinBox->setMinimum(INT_MIN);
-			spinBox->setMaximum(INT_MAX);
-			spinBox->setSingleStep(Teuchos::EnhancedNumberValidator<int>::intDefaultStep);
+			spinBox->setMinimum(Teuchos::EnhancedNumberTraits<int>::min());
+			spinBox->setMaximum(Teuchos::EnhancedNumberTraits<int>::max());
+			spinBox->setSingleStep(Teuchos::EnhancedNumberTraits<int>::defaultStep());
 		}
 	}
 };
@@ -92,9 +97,9 @@ public:
 			spinBox->setSingleStep(validator->getStep());
 		}
 		else{
-			spinBox->setMinimum(SHRT_MIN);
-			spinBox->setMaximum(SHRT_MAX);
-			spinBox->setSingleStep(Teuchos::EnhancedNumberValidator<short>::shortDefaultStep);
+			spinBox->setMinimum(Teuchos::EnhancedNumberTraits<short>::min());
+			spinBox->setMaximum(Teuchos::EnhancedNumberTraits<short>::max());
+			spinBox->setSingleStep(Teuchos::EnhancedNumberTraits<short>::defaultStep());
 		}
 	}
 };
@@ -159,9 +164,10 @@ public:
 			spinBox->setDecimals(validator->getPrecision());
 		}
 		else{
-			spinBox->setMinimum(-DBL_MAX);
-			spinBox->setMaximum(DBL_MAX);
-			spinBox->setSingleStep(Teuchos::EnhancedNumberValidator<double>::doubleDefaultStep);
+			spinBox->setMinimum(Teuchos::EnhancedNumberTraits<double>::min());
+			spinBox->setMaximum(Teuchos::EnhancedNumberTraits<double>::max());
+			spinBox->setSingleStep(Teuchos::EnhancedNumberTraits<double>::defaultStep());
+			spinBox->setDecimals(Teuchos::EnhancedNumberTraits<float>::defaultPrecision());
 		}
 	}
 };
@@ -184,9 +190,10 @@ public:
 			spinBox->setDecimals(validator->getPrecision());
 		}
 		else{
-			spinBox->setMinimum(-FLT_MAX);
-			spinBox->setMaximum(FLT_MAX);
-			spinBox->setSingleStep(Teuchos::EnhancedNumberValidator<float>::floatDefaultStep);
+			spinBox->setMinimum(Teuchos::EnhancedNumberTraits<float>::min());
+			spinBox->setMaximum(Teuchos::EnhancedNumberTraits<float>::max());
+			spinBox->setSingleStep(Teuchos::EnhancedNumberTraits<float>::defaultStep());
+			spinBox->setDecimals(Teuchos::EnhancedNumberTraits<float>::defaultPrecision());
 		}
 	}
 }; 
