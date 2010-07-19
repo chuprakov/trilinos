@@ -34,6 +34,7 @@
 #include "Optika_delegate.hpp"
 #include "float.h"
 #include <iostream>
+#include "Teuchos_StandardParameterEntryValidators.hpp"
 
 namespace Optika{
 
@@ -49,43 +50,43 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 
 	if(itemType == intId){
 		editor = new QSpinBox(parent);
-		Teuchos::RCP<const EnhancedNumberValidator <int> > intValidator;
+		Teuchos::RCP<const Teuchos::EnhancedNumberValidator <int> > intValidator;
 		if(!Teuchos::is_null(paramValidator)){
-			intValidator = Teuchos::rcp_dynamic_cast<const EnhancedNumberValidator<int> >(paramValidator);
+			intValidator = Teuchos::rcp_dynamic_cast<const Teuchos::EnhancedNumberValidator<int> >(paramValidator);
 		}
-		EnhancedNumberValidator<int>::applyToSpinBox(intValidator, (QSpinBox*)editor);
+		SpinBoxApplier<int>::applyToSpinBox(intValidator, (QSpinBox*)editor);
 	}
 	else if(itemType == shortId){
 		editor = new QSpinBox(parent);
-		Teuchos::RCP<const EnhancedNumberValidator<short> > shortValidator;
+		Teuchos::RCP<const Teuchos::EnhancedNumberValidator<short> > shortValidator;
 		if(!Teuchos::is_null(paramValidator)){
-			shortValidator = Teuchos::rcp_dynamic_cast<const EnhancedNumberValidator<short> >(paramValidator);
+			shortValidator = Teuchos::rcp_dynamic_cast<const Teuchos::EnhancedNumberValidator<short> >(paramValidator);
 		}
-		EnhancedNumberValidator<short>::applyToSpinBox(shortValidator, (QSpinBox*)editor);
+		SpinBoxApplier<short>::applyToSpinBox(shortValidator, (QSpinBox*)editor);
 	}
 /*	else if(itemType == longlongId){
 		editor = new QwwLongSpinBox(parent);
-		Teuchos::RCP<const EnhancedNumberValidator<long long> > longlongValidator;
+		Teuchos::RCP<const Teuchos::EnhancedNumberValidator<long long> > longlongValidator;
 		if(!Teuchos::is_null(paramValidator)){
-			longlongValidator = Teuchos::rcp_dynamic_cast<const EnhancedNumberValidator<long long> >(paramValidator);
+			longlongValidator = Teuchos::rcp_dynamic_cast<const Teuchos::EnhancedNumberValidator<long long> >(paramValidator);
 		}
-		EnhancedNumberValidator<long long>::applyToSpinBox(longlongValidator, (QDoubleSpinBox*)editor);
+		Teuchos::EnhancedNumberValidator<long long>::applyToSpinBox(longlongValidator, (QDoubleSpinBox*)editor);
 	}*/
 	else if(itemType == doubleId){
 		editor = new QDoubleSpinBox(parent);
-		Teuchos::RCP<const EnhancedNumberValidator<double> > doubleValidator;
+		Teuchos::RCP<const Teuchos::EnhancedNumberValidator<double> > doubleValidator;
 		if(!Teuchos::is_null(paramValidator)){
-			doubleValidator = Teuchos::rcp_dynamic_cast<const EnhancedNumberValidator<double> >(paramValidator);
+			doubleValidator = Teuchos::rcp_dynamic_cast<const Teuchos::EnhancedNumberValidator<double> >(paramValidator);
 		}
-		EnhancedNumberValidator<double>::applyToSpinBox(doubleValidator, (QDoubleSpinBox*)editor);
+		SpinBoxApplier<double>::applyToSpinBox(doubleValidator, (QDoubleSpinBox*)editor);
 	}
 	else if(itemType == floatId){
 		editor = new QDoubleSpinBox(parent);
-		Teuchos::RCP<const EnhancedNumberValidator<float> > floatValidator; 
+		Teuchos::RCP<const Teuchos::EnhancedNumberValidator<float> > floatValidator; 
 		if(!Teuchos::is_null(paramValidator)){
-			floatValidator = Teuchos::rcp_dynamic_cast<const EnhancedNumberValidator<float> >(paramValidator);
+			floatValidator = Teuchos::rcp_dynamic_cast<const Teuchos::EnhancedNumberValidator<float> >(paramValidator);
 		}
-		EnhancedNumberValidator<float>::applyToSpinBox(floatValidator, (QDoubleSpinBox*)editor);
+		SpinBoxApplier<float>::applyToSpinBox(floatValidator, (QDoubleSpinBox*)editor);
 	}
 	else if(itemType == boolId){
 		editor = new QComboBox(parent);
@@ -96,7 +97,7 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 		if(Teuchos::is_null(paramValidator)){
 			editor = new QLineEdit(parent);
 		}
-		else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const FileNameValidator>(paramValidator))){
+		else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const Teuchos::FileNameValidator>(paramValidator))){
 			QString paramName = 
 				((TreeModel*)(index.model()))->data(index.sibling(index.row(), 0),Qt::DisplayRole).toString();
 			QString currentPath = ((TreeModel*)(index.model()))->data(index,Qt::DisplayRole).toString();
@@ -104,7 +105,7 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 				currentPath = QDir::homePath();
 			}
 			QString filename;
-			if(Teuchos::rcp_dynamic_cast<const FileNameValidator>(paramValidator)->fileMustExist()){
+			if(Teuchos::rcp_dynamic_cast<const Teuchos::FileNameValidator>(paramValidator)->fileMustExist()){
 				filename = QFileDialog::getOpenFileName(parent, paramName, currentPath);
 			}
 			else{

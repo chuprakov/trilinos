@@ -76,8 +76,8 @@ int main(int argc, char* argv[])
    * StringValidator and a tuple to specify which string values
    * are valid for the "Solver" option.
    */
-  Teuchos::RCP<Optika::StringValidator> solverValidator = 
-     Teuchos::RCP<Optika::StringValidator>(new Optika::StringValidator(Teuchos::tuple<std::string>("GMRES", "CG", "TFQMR")));
+  Teuchos::RCP<Teuchos::StringValidator> solverValidator = 
+     Teuchos::RCP<Teuchos::StringValidator>(new Teuchos::StringValidator(Teuchos::tuple<std::string>("GMRES", "CG", "TFQMR")));
   My_List->set( "Solver", "GMRES", "The type of solver to use.", solverValidator);
 
   /* 

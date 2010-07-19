@@ -28,7 +28,7 @@
 #ifndef OPTIKA_STANDARDDEPENDCIES_HPP_
 #define OPTIKA_STANDARDDEPENDCIES_HPP_
 #include "Optika_Dependency.hpp"
-#include "Optika_SpecificParameterEntryValidators.hpp"
+#include "Teuchos_StandardParameterEntryValidators.hpp"
 #include "Optika_Condition.hpp"
 
 namespace Optika{
@@ -489,12 +489,14 @@ private:
 		 * is doing something wonky in a sublcass.
 		 */
 		if(dependees.size() != 1){
+			std::stringstream out;
+			out << dependees.size();
 			throw InvalidDependencyException("Uh oh. Looks like you tried to make a " 
 			"Number Visual Dependency doesn't have exactly one dependee. This is kind of a problem. " 
 			"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
 			"be doing some subclassing you sly-dog ;)\n\n" 
 			"Error: A Number Visual Dependency must have exactly 1 dependee. " 
-			"You have tried to assign it " + QString::number(dependees.size()).toStdString() + " dependees.\n" 
+			"You have tried to assign it " + out.str()+ " dependees.\n" 
 			"Dependees: " + getDependeeNamesString() + "\n" 
 			"Dependents: " + getDependentNamesString());
 		}
@@ -557,7 +559,7 @@ public:
 	 */
 	NumberValidatorAspectDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, 
-	Teuchos::RCP<Optika::EnhancedNumberValidator<S> > validator,
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
 		:Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList, Dependency::NumberValidatorAspectDep),
 		aspect(aspect),
@@ -581,7 +583,7 @@ public:
 	 */
 	NumberValidatorAspectDependency(std::string dependeeName, std::string dependentName, 
 	Teuchos::RCP<Teuchos::ParameterList> parentList, 
-	Teuchos::RCP<Optika::EnhancedNumberValidator<S> > validator,
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
 		:NumberValidatorAspectDependency(dependeeName, parentList, dependentName, parentList, validator, aspect, func) {}
 
@@ -599,7 +601,7 @@ public:
 	 */
 	NumberValidatorAspectDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	std::string dependentName, Teuchos::RCP<Teuchos::ParameterList> dependentParentList, 
-	Teuchos::RCP<Optika::ArrayNumberValidator<S> > validator,
+	Teuchos::RCP<Teuchos::ArrayNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
 		:Dependency(dependeeName, dependeeParentList, dependentName, dependentParentList, Dependency::NumberValidatorAspectDep),
 		aspect(aspect),
@@ -622,7 +624,7 @@ public:
 	 */
 	NumberValidatorAspectDependency(std::string dependeeName, std::string dependentName, 
 	Teuchos::RCP<Teuchos::ParameterList> parentList,
-	Teuchos::RCP<Optika::ArrayNumberValidator<S> > validator,
+	Teuchos::RCP<Teuchos::ArrayNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
 		:Dependency(dependeeName, parentList, dependentName, parentList, Dependency::NumberValidatorAspectDep),
 		aspect(aspect),
@@ -646,7 +648,7 @@ public:
 	 */
 	NumberValidatorAspectDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	ParameterParentMap dependents, 
-	Teuchos::RCP<Optika::EnhancedNumberValidator<S> > validator,
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
 		:Dependency(dependeeName, dependeeParentList, dependents, Dependency::NumberValidatorAspectDep),
 		aspect(aspect),
@@ -670,7 +672,7 @@ public:
 	 */
 	NumberValidatorAspectDependency(std::string dependeeName, Teuchos::RCP<Teuchos::ParameterList> dependeeParentList,
 	ParameterParentMap dependents,
-	Teuchos::RCP<Optika::ArrayNumberValidator<S> > validator,
+	Teuchos::RCP<Teuchos::ArrayNumberValidator<S> > validator,
 	ValidatorAspect aspect, S (*func)(S) =0)
 		:Dependency(dependeeName, dependeeParentList, dependents, Dependency::NumberValidatorAspectDep),
 		aspect(aspect),
@@ -704,7 +706,7 @@ private:
 	/**
 	 * The validator to be modified.
 	 */
-	Teuchos::RCP<Optika::EnhancedNumberValidator<S> > validator;
+	Teuchos::RCP<Teuchos::EnhancedNumberValidator<S> > validator;
 
 	/**
 	 * The function used to calculate the new value of the
@@ -732,12 +734,14 @@ private:
 		 * is doing something wonky in a sublcass.
 		 */
 		if(dependees.size() != 1){
+			std::stringstream out;
+			out << dependees.size();
 			throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
 			"Number Visual Dependency doesn't have exactly one dependee. This is kind of a problem. " 
 			"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
 			"be doing some subclassing you sly-dog ;)\n\n" 
 			"Error: A Number Visual Dependency must have exactly 1 dependee. " 
-			"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n" 
+			"You have tried to assign it "+ out.str() + " dependees.\n" 
 			"Dependees: " + getDependeeNamesString() + "\n" 
 			"Dependents: " + getDependentNamesString());
 		}
@@ -1153,12 +1157,14 @@ private:
 		 * is doing something wonky in a sublcass.
 		 */
 		if(dependees.size() != 1){
+			std::stringstream out;
+			out << dependees.size();
 			throw InvalidDependencyException("Uh oh. Looks like you tried to make a "
 			"Number Visual Dependency doesn't have exactly one dependee. This is kind of a problem. "
 			"You should probably take a look into it. I'm actually amazed you even threw this error. You must "
 			"be doing some subclassing you sly-dog ;)\n\n" 
 			"Error: A Number Visual Dependency must have exactly 1 dependee. "
-			"You have tried to assign it "+ QString::number(dependees.size()).toStdString() + " dependees.\n"
+			"You have tried to assign it "+ out.str() + " dependees.\n"
 			"Dependees: " + getDependeeNamesString() + "\n" 
 			"Dependents: " + getDependentNamesString());
 		}

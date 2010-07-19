@@ -27,6 +27,7 @@
 // @HEADER
 #include "Optika_StandardDependencies.hpp"
 #include "Teuchos_StandardParameterEntryValidators.hpp"
+#include "Optika_ArrayHelperFunctions.hpp"
 #include <QDir>
 
 namespace Optika{
@@ -246,9 +247,9 @@ int NumberArrayLengthDependency::runFunction(int argument) const{
 template <class S>
 void NumberArrayLengthDependency::modifyArrayLength(int newLength, Teuchos::ParameterEntry* dependentToModify){
 	const Teuchos::Array<S> originalArray = Teuchos::any_cast<Teuchos::Array<S> >(dependentToModify->getAny()); 
-	Teuchos::RCP<const EnhancedNumberValidator<S> > potentialValidator = Teuchos::null;
+	Teuchos::RCP<const Teuchos::EnhancedNumberValidator<S> > potentialValidator = Teuchos::null;
 	if(!Teuchos::is_null(dependentToModify->validator())){
-			potentialValidator = Teuchos::rcp_dynamic_cast<const ArrayNumberValidator<S> >(dependentToModify->validator(),true)->getPrototype();
+			potentialValidator = Teuchos::rcp_dynamic_cast<const Teuchos::ArrayNumberValidator<S> >(dependentToModify->validator(),true)->getPrototype();
 	}
 	Teuchos::Array<S> newArray;
 	int i;
@@ -260,7 +261,7 @@ void NumberArrayLengthDependency::modifyArrayLength(int newLength, Teuchos::Para
 			newArray.append(0);
 		}
 		else{
-			newArray.append(potentialValidator->min());
+			newArray.append(potentialValidator->getMin());
 		}
 	}
 	dependentToModify->setValue(newArray, false, dependentToModify->docString(), dependentToModify->validator());
@@ -279,7 +280,7 @@ void NumberArrayLengthDependency::modifyArrayLength<std::string>(int newLength, 
 		if(Teuchos::is_null(validator)){
 			newArray.append(" ");
 		}
-		else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const ArrayFileNameValidator>(validator))){
+		else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const Teuchos::ArrayFileNameValidator>(validator))){
 			newArray.append(QDir::homePath().toStdString());
 		}
 		else{
@@ -309,20 +310,20 @@ void NumberArrayLengthDependency::evaluate(){
 	Teuchos::ParameterEntry *currentDependent;
 	for(ParameterParentMap::const_iterator it = dependents.begin(); it != dependents.end(); ++it){ 
 		currentDependent = it->second->getEntryPtr(it->first);
-		QString dependentType = determineArrayType(currentDependent);
-		if(dependentType.contains(intId)){
+		//QString dependentType = determineArrayType(currentDependent);
+		if(currentDependent->getAny().type() == typeid(Teuchos::Array<int>)){
 			modifyArrayLength<int>(newLength, currentDependent);
 		}
-		else if(dependentType.contains(shortId)){
+		else if(currentDependent->getAny().type() == typeid(Teuchos::Array<short>)){
 			modifyArrayLength<short>(newLength, currentDependent);
 		}
-		else if(dependentType.contains(doubleId)){
+		else if(currentDependent->getAny().type() == typeid(Teuchos::Array<double>)){
 			modifyArrayLength<double>(newLength, currentDependent);
 		}
-		else if(dependentType.contains(floatId)){
+		else if(currentDependent->getAny().type() == typeid(Teuchos::Array<float>)){
 			modifyArrayLength<float>(newLength, currentDependent);
 		}
-		else if(dependentType.contains(stringId)){
+		else if(currentDependent->getAny().type() == typeid(Teuchos::Array<std::string>)){
 			modifyArrayLength<std::string>(newLength, currentDependent);
 		}
 	}

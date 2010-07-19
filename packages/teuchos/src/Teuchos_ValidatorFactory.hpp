@@ -1,11 +1,11 @@
 // @HEADER
 // ***********************************************************************
 // 
-//         Optika: A Tool For Developing Parameter Obtaining GUIs
-//                Copyright (2009) Sandia Corporation
+//                    Teuchos: Common Tools Package
+//                 Copyright (2004) Sandia Corporation
 // 
-// Under terms of Contract DE-AC04-94AL85000, with Sandia Corporation, the 
-// U.S. Government retains certain rights in this software.
+// Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+// license for use of this work by or on behalf of the U.S. Government.
 // 
 // This library is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as
@@ -21,16 +21,17 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
-// Questions? Contact Kurtis Nusbaum (klnusbaum@gmail.com) 
+// Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // ***********************************************************************
 // @HEADER
-#ifndef OPTIKA_VALIDATORFACTORY_HPP_
-#define OPTIKA_VALIDATORFACTORY_HPP_
-#include "Optika_SpecificParameterEntryValidators.hpp"
+
+#ifndef TEUCHOS_VALIDATORFACTORY_HPP_
+#define TEUCHOS_VALIDATORFACTORY_HPP_
+#include "Teuchos_StandardParameterEntryValidators.hpp"
 
 
-namespace Optika{
+namespace Teuchos{
 
 class ValidatorFactory{
 public:
@@ -43,79 +44,79 @@ public:
 	 * @param valiType The type of validator to be created.
 	 * @return A validator of the specified type.
 	 */
-	static Teuchos::RCP<Teuchos::ParameterEntryValidator> createValidator(ValidatorType valiType);
+	static RCP<ParameterEntryValidator> createValidator(ValidatorType valiType);
 
 	/**
 	 * Creates and returns a Enhanced Number Validator of type int.
 	 *
 	 * @return An Enhanced Number Validator of type int.
 	 */
-	static Teuchos::RCP<EnhancedNumberValidator<int> > getIntValidator();
+	static RCP<EnhancedNumberValidator<int> > getIntValidator();
 
 	/**
 	 * Creates and returns a Enhanced Number Validator of type short.
 	 *
 	 * @return An Enhanced Number Validator of type short.
 	 */
-	static Teuchos::RCP<EnhancedNumberValidator<short> > getShortValidator();
+	static RCP<EnhancedNumberValidator<short> > getShortValidator();
 
 	/**
 	 * Creates and returns a Enhanced Number Validator of type double.
 	 *
 	 * @return An Enhanced Number Validator of type double.
 	 */
-	static Teuchos::RCP<EnhancedNumberValidator<double> > getDoubleValidator();
+	static RCP<EnhancedNumberValidator<double> > getDoubleValidator();
 
 	/**
 	 * Creates and returns a Enhanced Number Validator of type float.
 	 *
 	 * @return An Enhanced Number Validator of type float.
 	 */
-	static Teuchos::RCP<EnhancedNumberValidator<float> > getFloatValidator();
+	static RCP<EnhancedNumberValidator<float> > getFloatValidator();
 
 	/**
 	 * Creates and returns FileNameValidator.
 	 *
 	 * @return A FileNameValidator.
 	 */
-	static Teuchos::RCP<FileNameValidator> getFileNameValidator();
+	static RCP<FileNameValidator> getFileNameValidator();
 
 	/**
 	 * Creates and returns an Array Number Validator of type int.
 	 *
 	 * @return An Enhanced Number Validator of type int.
 	 */
-	static Teuchos::RCP<ArrayNumberValidator<int> > getArrayIntValidator();
+	static RCP<ArrayNumberValidator<int> > getArrayIntValidator();
 
 	/**
 	 * Creates and returns an Array Number Validator of type short.
 	 *
 	 * @return An Enhanced Number Validator of type short.
 	 */
-	static Teuchos::RCP<ArrayNumberValidator<short> > getArrayShortValidator();
+	static RCP<ArrayNumberValidator<short> > getArrayShortValidator();
 
 	/**
 	 * Creates and returns an Array Number Validator of type double.
 	 *
 	 * @return An Enhanced Number Validator of type double.
 	 */
-	static Teuchos::RCP<ArrayNumberValidator<double> > getArrayDoubleValidator();
+	static RCP<ArrayNumberValidator<double> > getArrayDoubleValidator();
 
 	/**
 	 * Creates and returns an Array Number Validator of type float.
 	 *
 	 * @return An Enhanced Number Validator of type float.
 	 */
-	static Teuchos::RCP<ArrayNumberValidator<float> > getArrayFloatValidator();
+	static RCP<ArrayNumberValidator<float> > getArrayFloatValidator();
 
 	/**
 	 * Creates and returns an Array File Name Validator.
 	 *
 	 * @return An Array File Name Validator.
 	 */
-	static Teuchos::RCP<ArrayFileNameValidator> getArrayFileNameValidator();
+	static RCP<ArrayFileNameValidator> getArrayFileNameValidator();
 };
 
 }
 
-#endif /* OPTIKA_VALIDATORFACTORY_HPP_ */
+#endif /* TEUCHOS_VALIDATORFACTORY_HPP_ */
