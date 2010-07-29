@@ -40,6 +40,7 @@ module FEpetra_Import
   use ForTrilinos_enums ,only: FT_Epetra_Comm_ID_t,FT_Epetra_Import_ID_t,FT_Epetra_BlockMap_ID_t,ForTrilinos_Universal_ID_t
   use ForTrilinos_table_man
   use ForTrilinos_universal,only:universal
+  use ForTrilinos_error
   use FEpetra_Comm  ,only: Epetra_Comm
   use FEpetra_BlockMap ,only: Epetra_BlockMap
   use iso_c_binding ,only: c_int
@@ -62,12 +63,8 @@ module FEpetra_Import
      procedure        :: NumSameIDs
      procedure        :: NumPermuteIDs
      procedure        :: PermuteFromLIDs
-     !procedure        :: PermuteToLIDs
      procedure        :: NumRemoteIDs
-     !procedure       :: RemoteLIDs
      procedure        :: NumExportIDs
-     !procedure       :: ExportLIDs
-     !procedure       :: Export PIDs
      procedure        :: NumSend
      procedure        :: NumRecv
      procedure        :: SourceMap
@@ -121,12 +118,18 @@ contains
   type(FT_Epetra_Import_ID_t) function alias_EpetraImport_ID(generic_id)
     use ForTrilinos_table_man
     use ForTrilinos_enums ,only: ForTrilinos_Universal_ID_t,FT_Epetra_Import_ID
-    use iso_c_binding     ,only: c_loc
+    use iso_c_binding     ,only: c_loc,c_int
     type(ForTrilinos_Universal_ID_t) ,intent(in) :: generic_id
     type(ForTrilinos_Universal_ID_t) ,pointer    :: alias_id
-    allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_Import_ID))
+    integer(c_int) :: status
+    type(error) :: ierr
+    if (.not.associated(alias_id)) then
+     allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_Import_ID),stat=status)
+     ierr=error(status,'FEpetra_Import:alias_EpetraImport_ID')
+     call ierr%check_success()
+    endif
     alias_EpetraImport_ID=degeneralize_EpetraImport(c_loc(alias_id))
-    deallocate(alias_id)
+    call deallocate_and_check_error(alias_id,'FEpetra_Import:alias_EpetraImport_ID')
   end function
 
   type(ForTrilinos_Universal_ID_t) function generalize(this)
@@ -175,7 +178,13 @@ contains
     integer(c_int),dimension(:),allocatable :: PermuteFromLIDs
     type(c_ptr)   :: PermuteFromLIDs_external_ptr 
     integer(c_int),pointer :: PermuteFromLIDs_local_ptr
-    allocate(PermuteFromLIDs(this%NumPermuteIDs()))
+    integer(c_int) :: status
+    type(error) :: ierr
+    if (.not.allocated(PermuteFromLIDs)) then
+     allocate(PermuteFromLIDs(this%NumPermuteIDs()),stat=status)
+     ierr=error(status,'FEpetra_Import:alias_EpetraImport_ID')
+     call ierr%check_success()
+    endif
     PermuteFromLIDs_external_ptr=Epetra_Import_PermuteFromLIDs(this%Import_id)
     call c_f_pointer (PermuteFromLIDs_external_ptr, PermuteFromLIDs_local_ptr)
     PermuteFromLIDs=PermuteFromLIDs_local_ptr

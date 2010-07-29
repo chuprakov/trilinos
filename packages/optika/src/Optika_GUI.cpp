@@ -115,7 +115,7 @@ void OptikaGUI::exec(){
 		}
 		if(iconFilePath != ""){
 			QIcon windowIcon(QString::fromStdString(iconFilePath));
-			theWindow->setWindowIcon(windowIcon);
+			QApplication::setWindowIcon(windowIcon);
 		}
 		if(styleSheetFilePath != ""){
 			QString str;
@@ -132,6 +132,7 @@ void OptikaGUI::exec(){
 			theWindow->setAboutInfo(QString::fromStdString(aboutInfo));
 		}
 		theWindow->show();
+		theWindow->activateWindow();
 		a.exec();
 	}
 	

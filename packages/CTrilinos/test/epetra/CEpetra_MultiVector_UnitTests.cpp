@@ -172,6 +172,40 @@ int Epetra_MultiVector_SumIntoGlobalValue (
   double ScalarValue );
  **********************************************************************/
 
+TEUCHOS_UNIT_TEST( Epetra_MultiVector , SumIntoGlobalValue )
+{
+  ECHO(CEpetra_Test_CleanSlate());
+
+  /* Create everything we need to pass to the constructor */
+  ECHO(CT_Epetra_Comm_ID_t CommID = UnitTest_Create_Comm());
+  ECHO(int NumGlobalElements = 7);
+  ECHO(int IndexBase = 0);
+  ECHO(CT_Epetra_Map_ID_Flex_t MapID);
+  ECHO(MapID.Epetra_Map = Epetra_Map_Create(NumGlobalElements, IndexBase, CommID));
+  ECHO(int NumVectors = 4);
+  ECHO(boolean zeroOut = TRUE);
+  ECHO(CT_Epetra_MultiVector_ID_t selfID = Epetra_MultiVector_Create(MapID.Epetra_BlockMap, NumVectors, zeroOut));
+
+  /* Initialize the multivector state and duplicate it */
+  ECHO(Epetra_MultiVector_Random(selfID));
+  ECHO(CT_Epetra_MultiVector_ID_t dupID = Epetra_MultiVector_Duplicate(selfID));
+
+  /* Test the wrapper */
+  ECHO(int GlobalRow = 2);
+  ECHO(int VectorIndex = 1);
+  ECHO(double ScalarValue = 3.8);
+  ECHO(int ret = Epetra_MultiVector_SumIntoGlobalValue(selfID, GlobalRow, VectorIndex, ScalarValue));
+  TEST_EQUALITY(ret, 0);
+  for (int c=0; c<NumVectors; c++) {
+    double *a1 = Epetra_MultiVector_getArray(selfID, c);
+    double *a2 = Epetra_MultiVector_getArray(dupID, c);
+    for (int r=0; r<NumGlobalElements; r++) {
+      double corr = a2[r]+(r == GlobalRow ? (c == VectorIndex ? ScalarValue : 0.0) : 0.0);
+      TEST_EQUALITY(corr, a1[r]);
+    }
+  }
+}
+
 /**********************************************************************
 int Epetra_MultiVector_SumIntoGlobalValue_BlockPos ( 
   CT_Epetra_MultiVector_ID_t selfID, int GlobalBlockRow, 

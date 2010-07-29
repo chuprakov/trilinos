@@ -25,7 +25,7 @@ are described in section \ref{sec:tutDetailedAPI}.
 To create and link a driver code, the Mesquite library must be
 installed per the instructions of section \ref{sec:compiling}. 
 This commands and file names specified in this section are relative 
-to the installed \texttt{share/doc/mesquite/examples} directory.  It 
+to the installed \texttt{testsuite/tutorial} directory.  It 
 is assumed that that is the working diretory.
 This tutorial begins with the file \texttt{tutorial.cpp}, 
 which contains the following template:
@@ -38,7 +38,8 @@ which contains the following template:
 3.    MsqError err;
 
       if (argc != 2) {
-        std::cerr << "Expected mesh file names as single argument." << std::endl;
+        std::cerr << "Expected mesh file names as single argument."
+                  << std::endl;
         exit (EXIT_FAILURE);
       }
 
@@ -51,7 +52,9 @@ which contains the following template:
 The lines labeled 1-3 highlight three basic aspects of using Mesquite;
 \begin{enumerate}
 \item For convenience, Mesquite provides the header file
-\texttt{include/Mesquite\_all\_headers.hpp} which includes all Mesquite
+\begin{center}
+\texttt{include/Mesquite\_all\_headers.hpp}
+\end{center} which includes all Mesquite
 headers. Although this is the easiest way to handle the include directives,
 it may slow down compilation of the application.  
 \item All Mesquite classes are part of the \texttt{Mesquite} namespace. 
@@ -71,9 +74,11 @@ in which they are discussed.
 The code above takes a mesh file name as a command line argument and
 performs no action. We can compile it in the 
 (\texttt{examples/}) directory with the command:
+
 \begin{verbatim}
-make -f tutorial.make
+                        make -f tutorial.make
 \end{verbatim}
+
 
 \subsection{Loading a Test Mesh}
 \label{sec:tutMesh}
@@ -138,17 +143,18 @@ allow users to set the most important parameters of the underlying
 algorithms and metrics (see Chapter 
 \ref{sec:wrappers} for details).
 \begin{verbatim}
-  Mesquite::ShapeImprovementWrapper mesh_quality_algorithm(err);
-  mesh_quality_algorithm.run_instructions( &my_mesh, &my_mesh_plane, err);
-    //Should check the error object after the instruction is ran
-    // to see whether the instructions were all successful.
-  if (err) 
-  {
+Mesquite::ShapeImprovementWrapper mesh_quality_algorithm(err);
+mesh_quality_algorithm.run_instructions(&my_mesh,
+                                        &my_mesh_plane,  err);
+//Should check the error object after the instruction is ran
+// to see whether the instructions were all successful.
+if (err) 
+{
     std::cout << err << std::endl;
     return 1;
-  }
-
+}
 \end{verbatim}
+
 Once the algorithm has been executed using the {\tt run\_instructions} member
 function of the wrapper class, the improved mesh can be written to a new
 file:
@@ -178,28 +184,28 @@ of square quadrilaterals which have an inverse mean ratio value of 1.0.
   There were no inverted elements detected. 
   No entities had undefined values for any computed metric.
 
-             metric     minimum     average         rms     maximum
- Inverse Mean Ratio     1.01013     1.16655      1.1738     1.79134
+             metric    minimum    average        rms    maximum
+ Inverse Mean Ratio    1.01013    1.16655     1.1738    1.79134
 
 ************** QualityAssessor Summary **************
 
   There were no inverted elements detected. 
   No entities had undefined values for any computed metric.
 
-             metric     minimum     average         rms     maximum
- Inverse Mean Ratio     1.01013     1.16655      1.1738     1.79134
+             metric    minimum    average        rms    maximum
+ Inverse Mean Ratio    1.01013    1.16655     1.1738    1.79134
 
 ************** QualityAssessor Summary **************
 
   There were no inverted elements detected. 
   No entities had undefined values for any computed metric.
 
-             metric     minimum     average         rms     maximum
- Inverse Mean Ratio           1           1           1           1
+             metric    minimum    average        rms    maximum
+ Inverse Mean Ratio          1          1          1          1
 \end{verbatim}
 \begin{figure*}[htbp]
 \begin{center}
-    \includegraphics{square_rand.eps}
+    \includegraphics[height=50mm]{square_rand.eps}
     \caption{square\_quad\_10\_rand.vtk mesh. The original mesh is on the left, the mesh smoothed with the \texttt{ShapeImprovementWrapper} is shown on the right.}
     \label{fig:square_rand}
 \end{center}

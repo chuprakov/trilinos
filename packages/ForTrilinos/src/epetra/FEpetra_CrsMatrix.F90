@@ -53,7 +53,6 @@ module FEpetra_CrsMatrix
     private
     type(FT_Epetra_CrsMatrix_ID_t) :: CrsMatrix_id 
   contains
-     !Constructor
      !Developers only
      procedure         :: invalidate_id => invalidate_EpetraCrsMatrix_ID
      procedure         :: ctrilinos_delete => ctrilinos_delete_EpetraCrsMatrix
@@ -65,13 +64,13 @@ module FEpetra_CrsMatrix
      procedure         :: InsertGlobalValues
      procedure         :: ReplaceGlobalValues
     !Transformation methods
-     procedure         :: FillComplete
+     procedure,private :: FillComplete_Op
+     procedure,private :: FillComplete_Map
+     generic           :: FillComplete=>FillComplete_Op, FillComplete_Map 
      !Matrix data extraction routines
      procedure         :: ExtractGlobalRowCopy
      procedure         :: NumMyRowEntries
      procedure         :: MaxNumEntries
-    !procedure         :: ExtractMyRowCopy
-    !procedure         :: ExtractDiagonalCopy
     !Computational Methods
      procedure         :: Multiply_Vector
      procedure         :: Multiply => Multiply_MultiVector
@@ -79,7 +78,6 @@ module FEpetra_CrsMatrix
      procedure         :: RowMatrixRowMap 
      procedure         :: RowMap
      procedure         :: NumGlobalEntries
-     !procedure         :: Comm
      !Local/Global ID method
      procedure         :: MyGlobalRow
   end type
@@ -112,7 +110,9 @@ contains
     logical,        optional                   :: StaticProfile                  
     integer(FT_boolean_t)                      :: StaticProfile_in
     type(FT_Epetra_CrsMatrix_ID_t)             :: Create_VarPerRow_id
-    if (present(StaticProfile).and.StaticProfile) then
+    if (.not.present(StaticProfile)) then
+      StaticProfile_in=FT_FALSE
+    elseif (StaticProfile) then
       StaticProfile_in=FT_TRUE
     else
       StaticProfile_in=FT_FALSE
@@ -135,7 +135,9 @@ contains
     logical,        optional                   :: StaticProfile
     integer(FT_boolean_t)                      :: StaticProfile_in
     type(FT_Epetra_CrsMatrix_ID_t) :: Create_id
-    if (present(StaticProfile).and.StaticProfile) then
+    if (.not.present(StaticProfile)) then
+      StaticProfile_in=FT_FALSE
+    elseif (StaticProfile) then
       StaticProfile_in=FT_TRUE
     else
       StaticProfile_in=FT_FALSE
@@ -160,7 +162,9 @@ contains
     logical,        optional                   :: StaticProfile
     integer(FT_boolean_t)                      :: StaticProfile_in   
     type(FT_Epetra_CrsMatrix_ID_t):: Create_id
-    if (present(StaticProfile).and.StaticProfile) then
+    if (.not.present(StaticProfile)) then
+      StaticProfile_in=FT_FALSE
+    elseif (StaticProfile) then
       StaticProfile_in=FT_TRUE
     else
       StaticProfile_in=FT_FALSE
@@ -184,7 +188,9 @@ contains
     logical,        optional                   :: StaticProfile
     integer(FT_boolean_t)                      :: StaticProfile_in
     type(FT_Epetra_CrsMatrix_ID_t):: Create_id
-    if (present(StaticProfile).and.StaticProfile) then
+    if (.not.present(StaticProfile)) then
+      StaticProfile_in=FT_FALSE
+    elseif (StaticProfile) then
       StaticProfile_in=FT_TRUE
     else
       StaticProfile_in=FT_FALSE
@@ -212,14 +218,20 @@ contains
   end function
   
   type(FT_Epetra_CrsMatrix_ID_t) function alias_EpetraCrsMatrix_ID(generic_id)
-    use iso_c_binding        ,only: c_loc
+    use iso_c_binding        ,only: c_loc,c_int
     use ForTrilinos_enums    ,only: FT_Epetra_CrsMatrix_ID,ForTrilinos_Universal_ID_t
     use ForTrilinos_table_man,only: CT_Alias
     type(Fortrilinos_Universal_ID_t) ,intent(in) :: generic_id
     type(Fortrilinos_Universal_ID_t) ,pointer    :: alias_id
-    allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_CrsMatrix_ID))
+    integer(c_int) :: status
+    type(error) :: ierr
+    if (.not.associated(alias_id)) then
+      allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_CrsMatrix_ID),stat=status)
+      ierr=error(status,'FEpetra_CrsMatrix:alias_EpetraCrsMatrix_ID')
+      call ierr%check_success()
+    endif
     alias_EpetraCrsMatrix_ID=degeneralize_EpetraCrsMatrix(c_loc(alias_id))
-    deallocate(alias_id)
+    call deallocate_and_check_error(alias_id,'FEpetra_CrsMatrix:alias_EpetraCrsMatrix_ID')
   end function
 
 
@@ -285,20 +297,43 @@ contains
    error_out=Epetra_CrsMatrix_ReplaceGlobalValues(this%CrsMatrix_id,GlobalRow,NumEntries,values,indices)
    if (present(err)) err=error(error_out)
   end subroutine
-
-  subroutine FillComplete(this,OptimizeDataStorage,err)
+  
+  subroutine FillComplete_Op(this,OptimizeDataStorage,err)
    use ForTrilinos_enums, only: FT_boolean_t,FT_FALSE,FT_TRUE
    class(Epetra_CrsMatrix), intent(in) :: this
    logical,optional,        intent(in) :: OptimizeDataStorage
    type(error),optional,intent(out)    :: err
-   integer(c_int)                      :: error_out 
+   integer(c_int)                      :: error_out
    integer(FT_boolean_t)               :: OptimizeDataStorage_in
-   if (present(OptimizeDataStorage).and.OptimizeDataStorage) then
+   if (.not.present(OptimizeDataStorage)) then
+     OptimizeDataStorage_in=FT_TRUE
+   elseif (OptimizeDataStorage) then
      OptimizeDataStorage_in=FT_TRUE
    else
-     OptimizeDataStorage_in=FT_TRUE
+     OptimizeDataStorage_in=FT_FALSE
    endif
    error_out=Epetra_CrsMatrix_FillComplete(this%CrsMatrix_id,OptimizeDataStorage_in)
+   if (present(err)) err=error(error_out)
+  end subroutine
+
+  subroutine FillComplete_Map(this,DomainMap,RangeMap,OptimizeDataStorage,err)
+   use ForTrilinos_enums, only: FT_boolean_t,FT_FALSE,FT_TRUE
+   class(Epetra_CrsMatrix), intent(in) :: this
+   class(Epetra_Map) , intent(in) :: DomainMap
+   class(Epetra_Map) , intent(in) :: RangeMap
+   logical,optional,        intent(in) :: OptimizeDataStorage
+   type(error),optional,intent(out)    :: err
+   integer(c_int)                      :: error_out 
+   integer(FT_boolean_t)               :: OptimizeDataStorage_in
+   if (.not.present(OptimizeDataStorage)) then
+     OptimizeDataStorage_in=FT_TRUE
+   elseif (OptimizeDataStorage) then
+     OptimizeDataStorage_in=FT_TRUE
+   else
+     OptimizeDataStorage_in=FT_FALSE
+   endif
+   error_out=Epetra_CrsMatrix_FillComplete_UsingMaps(this%CrsMatrix_id,DomainMap%get_EpetraMap_ID(),&
+        RangeMap%get_EpetraMap_ID(),OptimizeDataStorage_in)
    if (present(err)) err=error(error_out)
   end subroutine
 
@@ -319,7 +354,9 @@ contains
    use iso_c_binding, only : c_int
    class(Epetra_CrsMatrix), intent(in) :: this
    integer(c_int),          intent(in) :: MyRow
-   NumMyRowEntries=Epetra_CrsMatrix_NumMyEntries(this%CrsMatrix_id,MyRow)
+   integer(c_int)                      :: MyRow_c
+   MyRow_c=MyRow-FT_Index_OffSet ! To account for Fortran index base 1
+   NumMyRowEntries=Epetra_CrsMatrix_NumMyEntries(this%CrsMatrix_id,MyRow_c)
  end function
 
  integer(c_int) function MaxNumEntries(this)
@@ -335,7 +372,7 @@ contains
   logical, intent(in) :: TransA
   integer(FT_boolean_t)  :: TransA_in
   class(Epetra_Vector), intent(in) :: x
-  class(Epetra_Vector), intent(in) :: y 
+  class(Epetra_Vector), intent(inout) :: y 
   type(error), optional, intent(inout) :: err
   integer(c_int)                       :: error_out
   if (TransA) then
@@ -354,7 +391,7 @@ contains
   logical, intent(in) :: TransA
   integer(FT_boolean_t)  :: TransA_in
   class(Epetra_MultiVector), intent(in) :: x
-  class(Epetra_MultiVector), intent(in) :: y 
+  class(Epetra_MultiVector), intent(inout) :: y 
   type(error), optional, intent(inout) :: err
   integer(c_int)                       :: error_out
   if (TransA) then
@@ -400,20 +437,6 @@ contains
    integer(c_int), intent(in) :: row
    NumGlobalEntries=Epetra_CrsMatrix_NumGlobalEntries(this%CrsMatrix_id,row)
  end function
-
- !type(FT_Epetra_Comm_ID_t) function Comm(this)
- !function Comm(this)
- !  use FEpetra_Comm, only:Epetra_Comm
- !  use FEpetra_MpiComm, only:Epetra_MpiComm
- !  class(Epetra_CrsMatrix), intent(in) :: this
- !  class(Epetra_MpiComm),allocatable:: Comm  
- !  class(Epetra_MpiComm):: comm_out  
- !  class(Epetra_Comm),allocatable :: comm_temp
- !  allocate(Epetra_MpiComm:: comm_temp)  
- !  comm_temp=Epetra_CrsMatrix_Comm(this%CrsMatrix_id)
- !  comm_out=comm_temp
- !  allocate(Comm,source=comm_out)
- !end function
 
   subroutine invalidate_EpetraCrsMatrix_ID(this)
     class(Epetra_CrsMatrix) ,intent(inout) :: this

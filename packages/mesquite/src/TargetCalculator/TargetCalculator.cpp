@@ -465,6 +465,7 @@ static NodeSet get_nodeset( EntityTopology type, int num_nodes, MsqError& err )
   if (MSQ_CHKERR(err)) return NodeSet();
   
   NodeSet bits;
+  bits.set_all_corner_nodes(type);
   if (midedge) 
     bits.set_all_mid_edge_nodes(type);
   if (midface)
@@ -605,5 +606,15 @@ void TargetCalculator::get_refmesh_Jacobian_2D(
   jacobian_2D( pd, type, n, sample, vert_coords, W_out, err );
   MSQ_ERRRTN(err);
 }
+
+TargetCalculator::~TargetCalculator()
+{}
+
+void TargetCalculator::initialize_queue( Mesh* ,
+                                         MeshDomain* ,
+                                         const Settings* ,
+                                         MsqError&  )
+{}
+
 
 } // namespace MESQUITE_NS

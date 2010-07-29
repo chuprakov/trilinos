@@ -135,10 +135,12 @@ APPEND_SET(HEADERS
   DOFMapping/SundanceSpatiallyHomogeneousDOFMapBase.hpp
   DOFMapping/SundanceHNDoFMapBase.hpp
   DOFMapping/SundanceNodalDOFMapHN.hpp
+  DOFMapping/SundanceUnfoldPeriodicDF.hpp
   )
 
 APPEND_SET(SOURCES
   DOFMapping/SundanceDOFMapBase.cpp
+  DOFMapping/SundanceHNDoFMapBase.cpp
   DOFMapping/SundanceDOFMapBuilder.cpp
   DOFMapping/SundanceInhomogeneousNodalDOFMap.cpp
   DOFMapping/SundanceMapStructure.cpp
@@ -148,6 +150,7 @@ APPEND_SET(SOURCES
   DOFMapping/SundanceNodalDOFMapHN.cpp
   DOFMapping/SundancePartialElementDOFMap.cpp
   DOFMapping/SundanceSpatiallyHomogeneousDOFMapBase.cpp
+  DOFMapping/SundanceUnfoldPeriodicDF.cpp
   )
 
 #
@@ -309,6 +312,7 @@ APPEND_SET(HEADERS
   ElementTransformation/SundanceDiscreteSpaceTransfBuilder.hpp
   ElementTransformation/SundanceTransformationHN.hpp
   ElementTransformation/SundanceInequivalentElementTransformation.hpp
+  ElementTransformation/SundanceMatrixStore.hpp
 )
 
 APPEND_SET(SOURCES
@@ -317,6 +321,7 @@ APPEND_SET(SOURCES
   ElementTransformation/SundanceDiscreteSpaceTransfBuilder.cpp
   ElementTransformation/SundanceTransformationHN.cpp
   ElementTransformation/SundanceInequivalentElementTransformation.cpp
+  ElementTransformation/SundanceMatrixStore.cpp  
   )
 
 
@@ -331,4 +336,5 @@ PACKAGE_ADD_LIBRARY(
   sundanceStdFwk
   HEADERS ${HEADERS}
   SOURCES ${SOURCES}
+  DEPLIBS sundanceCore sundanceStdMesh TSFExtended sundanceInterop sundanceUtils
   )

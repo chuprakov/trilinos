@@ -15,6 +15,8 @@ SET(DisabledTests
 SET(SerialTests
   DiscFunc3D
   PoissonOnDisk 
+  LinearPeriodic1D
+  NonlinearPeriodic1D
   Poisson3D
   PoissonBoltzmannDemo1D
   BesselTest2D 
@@ -35,8 +37,8 @@ SET(SerialTests
   PoissonPeano2D
   PoissonPeano3D
   StokesPeano2D 
+  SecondOrderFloquet 
   MixedTest
-  MixedTest_HN
 )
 
 
@@ -66,6 +68,10 @@ SET(MPITests
              SteadyBurgers1D
              NitschePoisson2D 
              HelmholtzEigen2D
+             MixedTest_HN
+             NavStok_Chanel_stat_HN
+             Poisson3DTest_HN_Q1Q1
+             Poisson3DTest_HN_Q2Q1
    )
 
 

@@ -5,7 +5,7 @@
 
 namespace {
 
-static bool ignore_now = false;
+static bool ignore_now = true;
 
 void proc_module_def(const std::string &line, const std::string &term,
   const std::vector<std::string> &args, std::vector<std::string> &result)
@@ -64,7 +64,6 @@ void proc_unittest_begin(const std::string &line, const std::string &term,
 //FORTRILINOS_UNITTEST_BEGIN
   if (args.size() != 0)
     throw ParserException("Incorrect number of arguments");
-  ignore_now = true;
 }
 
 void proc_unittest_end(const std::string &line, const std::string &term,
@@ -73,7 +72,6 @@ void proc_unittest_end(const std::string &line, const std::string &term,
 //FORTRILINOS_UNITTEST_END
   if (args.size() != 0)
     throw ParserException("Incorrect number of arguments");
-  ignore_now = false;
 }
 
 }
@@ -95,12 +93,8 @@ void ListParser::init()
 void ListParser::proc_plain(const std::string &line, std::vector<std::string> &result)
 {
   if (!ignore_now) {
-    std::string mline = strip_space(line);
-    if (mline.size() > 0) {
-      if (mline[0] != '#') {
-        result.push_back(line);
-      }
-    }
+    if ((!is_blank(line)) && (!is_preproc(line)))
+      result.push_back(line);
   }
 }
 

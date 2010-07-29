@@ -1,4 +1,5 @@
 INCLUDE(PackageAddExecutable)
+INCLUDE(PackageCopyFilesToBinaryDir)
 
 PACKAGE_ADD_EXECUTABLE(
   CustomGUIExample

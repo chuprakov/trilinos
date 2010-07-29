@@ -397,6 +397,16 @@ TagHandle QualityAssessor::get_tag( Mesh* mesh,
   return tag;
 }
 
+void QualityAssessor::initialize_queue( Mesh* mesh,
+                                        MeshDomain* domain,
+                                        const Settings* settings,
+                                        MsqError& err )
+{
+  for (list_type::iterator i = assessList.begin(); i != assessList.end(); ++i) {
+    (*i)->get_metric()->initialize_queue( mesh, domain, settings, err );
+    MSQ_ERRRTN(err);
+  }
+}
 
 /*! 
   Computes the quality data for a given
@@ -861,7 +871,12 @@ void QualityAssessor::Assessor::add_hist_value( double metric_value )
       // Calculate which interval the value is in.  Add one
       // because first entry is for values below user-specifed
       // minimum value for histogram.
-    double fract = (metric_value - histMin) / (histMax - histMin);
+    double range = histMax - histMin;
+    double fract;
+    if (range > DBL_EPSILON)
+      fract = (metric_value - histMin) / range;
+    else
+      fract = 0.0;
     unsigned cell;
     if (fabs(fract - 1.0) < histMax*DBL_EPSILON)
       cell = histogram.size() - 1;

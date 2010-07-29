@@ -42,6 +42,16 @@ CELL_PREDICATE(TopPointTest, {return fabs(x[1]-1.0) < 1.0e-10;})
 //CELL_PREDICATE(PeggedPointTest, {return fabs(x[1]+1.0) < 1.0e-10 
 //                  && fabs(x[0]+1.0) < 1.0e-10 ;})
 
+REFINE_MESH_ESTIMATE(MeshRefEst , { return 0; } , {return 1;} )
+MESH_DOMAIN( MeshDomain , {return true;})
+
+REFINE_MESH_ESTIMATE(MeshRefEst1 , { \
+
+	if ( (cellPos[0] > -0.5) && (cellPos[0] < 0.5) && (cellPos[1] > -0.5)
+		&& (cellPos[1] < 0.5) && (cellLevel < 1)) \
+                  return 1;\
+                  else return 0; } , {return 1;} )
+
 int main(int argc, char** argv)
 {
   
@@ -52,18 +62,14 @@ int main(int argc, char** argv)
       /* We will do our linear algebra using Epetra */
       VectorType<double> vecType = new EpetraVectorType();
 
-      /* Create a mesh. It will be of type BasisSimplicialMesh, and will
-       * be built using a PartitionedRectangleMesher. */
-      //int np = MPIComm::world().getNProc();
-      //int nx = 3;
-      //int ny = 3;
+      /* refinement criterion object */
+      RefinementClass refCl1 = new MeshRefEst1();
 
-      //MeshType meshType = new PeanoMeshType2D();
-      //MeshSource mesher = new PeanoMesher2D(-1.0, -1.0,  2.0 , 2.0 , 0.8 , meshType);
-      MeshType meshType = new HNodeMeshType2D();
-      MeshSource mesher = new HNodeMesher2D(-1.0, -1.0, 2.0 , 2.0 , 0.1 , 0.1, meshType);
-      //MeshType meshType = new BasicSimplicialMeshType();
-      //MeshSource mesher = new PartitionedRectangleMesher(0.0, 1.0, nx, np, 0.0, 1.0, ny, 1,  meshType);
+      /* mesh domain, dummy class */
+      MeshDomainDef meshDom = new MeshDomain();
+
+      MeshType meshType = new HNMeshType2D();
+      MeshSource mesher = new HNMesher2D(-1.0, -1.0 , 2.0 , 2.0  , 3 , 3 , meshType , refCl1 , meshDom );
 
 
       Mesh mesh = mesher.getMesh();
@@ -139,24 +145,24 @@ int main(int argc, char** argv)
       verbosity<Assembler>() = VerbExtreme;
 #endif
 
-      cerr << "Expr with children verbosity = " << verbosity<ExprWithChildren>() << endl;
+      std::cerr << "Expr with children verbosity = " << verbosity<ExprWithChildren>() << std::endl;
       /* We can now set up the linear problem! */
       
       LinearProblem prob(mesh, eqn, bc, List(vx, vy , q), 
                          List(ux ,uy ,p), vecType);
 	 
-      cerr << "Expr with children verbosity = " << verbosity<ExprWithChildren>() << endl;
+      std::cerr << "Expr with children verbosity = " << verbosity<ExprWithChildren>() << std::endl;
 
 
 #ifdef BLAHBLAH     
-      cout << "row map = " << endl;
+      cout << "row map = " << std::endl;
       prob.rowMap(0)->print(cout);
 #endif
      
 
       ParameterXMLFileReader reader("bicgstab.xml");
       ParameterList solverParams = reader.getParameters();
-      cerr << "params = " << solverParams << endl;
+      std::cerr << "params = " << solverParams << std::endl;
 
 
       LinearSolver<double> solver 
@@ -194,16 +200,16 @@ int main(int argc, char** argv)
 
       double errorXSq = errXInt.evaluate();
       double errorYSq = errYInt.evaluate();
-      cerr << "error norm |u_x - u_x(0)| = " << sqrt(errorXSq) << endl << endl;
-      cerr << "error norm |u_y - u_y(0)| = " << sqrt(errorYSq) << endl << endl;
+      std::cerr << "error norm |u_x - u_x(0)| = " << sqrt(errorXSq) << std::endl << std::endl;
+      std::cerr << "error norm |u_y - u_y(0)| = " << sqrt(errorYSq) << std::endl << std::endl;
       
       double tol = 1.0e-1;
       Sundance::passFailTest(sqrt(errorXSq+errorYSq), tol); 
 //*/
     }
-	catch(exception& e)
+	catch(std::exception& e)
 		{
-      cerr << e.what() << endl;
+      std::cerr << e.what() << std::endl;
 		}
   Sundance::finalize(); 
   return Sundance::testStatus(); 

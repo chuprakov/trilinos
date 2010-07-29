@@ -6,7 +6,7 @@
 The Optika package is intended to give Trilinos Developers an 
 easy way to construct a GUI for their program. Through the use of Teuchos ParameterLists,
 the Optika package will allow the developer to achieve the following
-workflow within their program:
+work flow within their program:
 	\begin{enumerate}
 	\item Specify a list of inputs needed from the user
 	\item Define valid values for inputs as well as defaults
@@ -16,18 +16,34 @@ workflow within their program:
 	\end{enumerate}
 
 \section Compile Notes
-In order to compile Optika you must have Qt installed. You can either download Qt directly from the website (http://www.qtsoftware.com)
-or if you are on Linux, you can use your package manager.  If you use your package manager, may sure you download the Qt developement package 
-(usually something like qt4-devel) and that it is Qt version 4.5 or higher. If you download Qt directly and put it some where other than the default
-installation directory, the simpilest way to ensure that optika finds it is by putting the path to the qmake executable in your $PATH variable.
-For example, lets assume that I installed qt to a directory in my home directory called qt4.5, then I would issue the following command:
+In order to compile Optika you must have Qt installed. You can either download Qt directly from the website (http://qt.nokia.com)
+or if you are on Linux, you can use your package manager (this is highly recommended). If you use your package manager, make sure you 
+download the Qt development package (usually something like qt4-devel) and that it is Qt version 4.5 or higher. If you download Qt 
+directly and put it some where other than the default installation directory, the simplest way to ensure that optika finds it 
+is by setting the configure option TPL_QT_QMAKE_EXECUTABLE to the location of your qmake executable. For example, if I had installed 
+qt to my home directory in the directory qt4.6 then I would use the following in my configuration of Trilinos:
+
 <code>
-For BASH:
-$  export $PATH=/home/kurtis/qt4.5/bin:$PATH
-For TSCH:
-$  set path=( /home/kurtis/qt4.5/bin $path)
+-DTPL_QT_QMAKE_EXECUTABLE:FILEPATH="/home/kurtis/qt4.6/bin/qmake"
 </code>
 
+You can also put the path to the qmake executable in your $PATH variable.
+For example, lets assume that I installed qt to a directory in my home directory called qt4.6, then I would issue the following command:
+
+For BASH:
+
+<code>
+$  export $PATH=/home/kurtis/qt4.6/bin:$PATH
+</code>
+
+For TSCH:
+
+<code>
+$  set path=( /home/kurtis/qt4.6/bin $path)
+</code>
+
+To permanently set the $PATH variable so it always includes the path to the qmake executable, I could put the previous commands into the
+.bash_profile or .cshrc files respectively.
 
 You can browse all of Optika as a <A HREF="../../browser/doc/html/index.html">single
 doxygen collection</A>. Warning, this is not the recommended way to learn

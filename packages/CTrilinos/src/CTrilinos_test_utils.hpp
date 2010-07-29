@@ -116,6 +116,9 @@ namespace CTrilinos {
 bool
 isSameObject( CTrilinos_Universal_ID_t id1, CTrilinos_Universal_ID_t id2 );
 
+void
+purgeAllTables(  );
+
 /* isSameObject(RCP, RCP) */
 template <class T1, class T2>
 bool

@@ -38,7 +38,7 @@
 module FEpetra_Comm
   use ForTrilinos_universal ,only : universal
   use ForTrilinos_enums !,only: FT_Epetra_Comm_ID_t,ForTrilinos_Universal_ID_t
-  use ForTrilinos_error, only: error
+  use ForTrilinos_error
   use ForTrilinos_table_man
   use forepetra
 #include "ForTrilinos_config.h"
@@ -142,32 +142,32 @@ module FEpetra_Comm
       character(kind=c_char),dimension(:),intent(inout) :: MyVals
       integer(c_int)                     ,intent(in)    :: count
       integer(c_int)                     ,intent(in)    :: root
-      type(error)   ,optional      ,intent(inout) :: err
+      type(error)   ,optional            ,intent(inout) :: err
     end subroutine
     subroutine gather_double_interface(this,MyVals,AllVals,count,err) 
       use iso_c_binding ,only: c_int,c_double
       import:: Epetra_Comm, error
-      class(Epetra_Comm)       ,intent(in)    :: this
-      real(c_double), dimension(:)            :: MyVals
-      real(c_double), dimension(:)            :: AllVals
-      integer(c_int)           ,intent(in)    :: count
-      type(error)   ,optional  ,intent(inout) :: err
+      class(Epetra_Comm)         ,intent(in)    :: this
+      real(c_double),dimension(:),intent(in)    :: MyVals
+      real(c_double),dimension(:),intent(inout) :: AllVals
+      integer(c_int)             ,intent(in)    :: count
+      type(error)   ,optional    ,intent(inout) :: err
     end subroutine
     subroutine gather_int_interface(this,MyVals,AllVals,count,err) 
       use iso_c_binding ,only: c_int
       import:: Epetra_Comm, error
       class(Epetra_Comm)         ,intent(in)   :: this
-      integer(c_int), dimension(:)             :: MyVals
-      integer(c_int), dimension(:)             :: AllVals
-      integer(c_int)            ,intent(in)    :: count
-      type(error)   ,optional   ,intent(inout) :: err
+      integer(c_int),dimension(:),intent(in)   :: MyVals
+      integer(c_int),dimension(:),intent(inout):: AllVals
+      integer(c_int)             ,intent(in)    :: count
+      type(error)   ,optional    ,intent(inout) :: err
     end subroutine
     subroutine gather_long_interface(this,MyVals,AllVals,count,err) 
       use iso_c_binding ,only: c_int,c_long
       import:: Epetra_Comm, error
       class(Epetra_Comm)           ,intent(in)    :: this
-      integer(c_long), dimension(:)               :: MyVals
-      integer(c_long), dimension(:)               :: AllVals
+      integer(c_long),dimension(:) ,intent(in)    :: MyVals
+      integer(c_long),dimension(:) ,intent(inout):: AllVals
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
@@ -175,8 +175,8 @@ module FEpetra_Comm
       use iso_c_binding ,only: c_int,c_double
       import:: Epetra_Comm, error
       class(Epetra_Comm)           ,intent(in)    :: this
-      real(c_double), dimension(:)                :: PartialSums
-      real(c_double), dimension(:)                :: GlobalSums
+      real(c_double),dimension(:)  ,intent(in)    :: PartialSums
+      real(c_double),dimension(:)  ,intent(inout) :: GlobalSums
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
@@ -184,8 +184,8 @@ module FEpetra_Comm
       use iso_c_binding ,only: c_int
       import:: Epetra_Comm, error
       class(Epetra_Comm)           ,intent(in)    :: this
-      integer(c_int), dimension(:)               :: PartialSums
-      integer(c_int), dimension(:)               :: GlobalSums
+      integer(c_int), dimension(:) ,intent(in)    :: PartialSums
+      integer(c_int), dimension(:) ,intent(inout) :: GlobalSums
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
@@ -193,8 +193,8 @@ module FEpetra_Comm
       use iso_c_binding ,only: c_int,c_long
       import:: Epetra_Comm, error
       class(Epetra_Comm)           ,intent(in)    :: this
-      integer(c_long), dimension(:)               :: PartialSums
-      integer(c_long), dimension(:)               :: GlobalSums
+      integer(c_long), dimension(:),intent(in)    :: PartialSums
+      integer(c_long), dimension(:),intent(inout) :: GlobalSums
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
@@ -202,8 +202,8 @@ module FEpetra_Comm
       use iso_c_binding ,only: c_int,c_double
       import:: Epetra_Comm, error
       class(Epetra_Comm)           ,intent(in)    :: this
-      real(c_double), dimension(:)               :: PartialMaxs
-      real(c_double), dimension(:)               :: GlobalMaxs
+      real(c_double), dimension(:) ,intent(in)    :: PartialMaxs
+      real(c_double), dimension(:) ,intent(inout) :: GlobalMaxs
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
@@ -211,8 +211,8 @@ module FEpetra_Comm
       use iso_c_binding ,only: c_int,c_int
       import:: Epetra_Comm, error
       class(Epetra_Comm)           ,intent(in)    :: this
-      integer(c_int), dimension(:)               :: PartialMaxs
-      integer(c_int), dimension(:)               :: GlobalMaxs
+      integer(c_int), dimension(:) ,intent(in)    :: PartialMaxs
+      integer(c_int), dimension(:) ,intent(inout) :: GlobalMaxs
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
@@ -220,8 +220,8 @@ module FEpetra_Comm
       use iso_c_binding ,only: c_int,c_long
       import:: Epetra_Comm, error
       class(Epetra_Comm)           ,intent(in)    :: this
-      integer(c_long), dimension(:)               :: PartialMaxs
-      integer(c_long), dimension(:)               :: GlobalMaxs
+      integer(c_long), dimension(:),intent(in)    :: PartialMaxs
+      integer(c_long), dimension(:),intent(inout) :: GlobalMaxs
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
@@ -229,8 +229,8 @@ module FEpetra_Comm
       use iso_c_binding ,only: c_int,c_double
       import:: Epetra_Comm, error
       class(Epetra_Comm)           ,intent(in)    :: this
-      real(c_double), dimension(:)               :: PartialMins
-      real(c_double), dimension(:)               :: GlobalMins
+      real(c_double), dimension(:) ,intent(in)    :: PartialMins
+      real(c_double), dimension(:) ,intent(inout) :: GlobalMins
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
@@ -238,8 +238,8 @@ module FEpetra_Comm
       use iso_c_binding ,only: c_int,c_int
       import:: Epetra_Comm, error
       class(Epetra_Comm)           ,intent(in)    :: this
-      integer(c_int), dimension(:)               :: PartialMins
-      integer(c_int), dimension(:)               :: GlobalMins
+      integer(c_int), dimension(:) ,intent(in)    :: PartialMins
+      integer(c_int), dimension(:) ,intent(inout) :: GlobalMins
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
@@ -247,8 +247,8 @@ module FEpetra_Comm
       use iso_c_binding ,only: c_int,c_long
       import:: Epetra_Comm, error
       class(Epetra_Comm)           ,intent(in)    :: this
-      integer(c_long), dimension(:)               :: PartialMins
-      integer(c_long), dimension(:)               :: GlobalMins
+      integer(c_long), dimension(:),intent(in)    :: PartialMins
+      integer(c_long), dimension(:),intent(inout) :: GlobalMins
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
@@ -256,8 +256,8 @@ module FEpetra_Comm
       use iso_c_binding ,only: c_int,c_double
       import:: Epetra_Comm, error
       class(Epetra_Comm)           ,intent(in)    :: this
-      real(c_double), dimension(:)               :: MyVals
-      real(c_double), dimension(:)               :: scan_sums 
+      real(c_double), dimension(:) ,intent(in)    :: MyVals
+      real(c_double), dimension(:) ,intent(inout) :: scan_sums 
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
@@ -265,8 +265,8 @@ module FEpetra_Comm
       use iso_c_binding ,only: c_int
       import:: Epetra_Comm, error
       class(Epetra_Comm)           ,intent(in)    :: this
-      integer(c_int), dimension(:)               :: MyVals
-      integer(c_int), dimension(:)               :: scan_sums 
+      integer(c_int), dimension(:) ,intent(in)    :: MyVals
+      integer(c_int), dimension(:) ,intent(inout) :: scan_sums 
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
@@ -274,8 +274,8 @@ module FEpetra_Comm
       use iso_c_binding ,only: c_int,c_long
       import:: Epetra_Comm, error
       class(Epetra_Comm)           ,intent(in)    :: this
-      integer(c_long), dimension(:)               :: MyVals
-      integer(c_long), dimension(:)               :: scan_sums 
+      integer(c_long), dimension(:),intent(in)    :: MyVals
+      integer(c_long), dimension(:),intent(inout) :: scan_sums 
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
@@ -305,20 +305,20 @@ module FEpetra_Comm
   end subroutine 
   
   type(FT_Epetra_Comm_ID_t) function alias_EpetraComm_ID(generic_id)
-    use iso_c_binding, only : c_loc
+    use iso_c_binding, only : c_loc,c_int
     use ForTrilinos_table_man
     use ForTrilinos_enums
     type(ForTrilinos_Universal_ID_t) ,intent(in) :: generic_id
     type(ForTrilinos_Universal_ID_t) ,pointer    :: alias_id
     integer(c_int) :: status 
     type(error) :: ierr
-    allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_Comm_ID),stat=status)
-    ierr=error(status,'FEpetra_Comm:alias_EpetraComm_ID')
-    call ierr%check_allocation()
+    if (.not.associated(alias_id)) then
+      allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_Comm_ID),stat=status)
+      ierr=error(status,'FEpetra_Comm:alias_EpetraComm_ID')
+      call ierr%check_success()
+    endif
     alias_EpetraComm_ID=degeneralize_EpetraComm(c_loc(alias_id))
-    deallocate(alias_id,stat=status)
-    ierr=error(status,'FEpetra_Comm:alias_EpetraComm_ID')
-    call ierr%check_deallocation()
+    call deallocate_and_check_error(alias_id,'FEpetra_Comm:alias_EpetraComm_ID')
   end function
 
   type(ForTrilinos_Universal_ID_t) function generalize_EpetraComm(this)

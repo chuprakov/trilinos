@@ -41,6 +41,7 @@ module FEpetra_BlockMap
   use ForTrilinos_table_man
   use ForTrilinos_hermetic,only:hermetic
   use ForTrilinos_universal,only:universal
+  use ForTrilinos_error
   use FEpetra_Comm  ,only: Epetra_Comm
   use iso_c_binding ,only: c_int
   use forepetra
@@ -62,6 +63,9 @@ module FEpetra_BlockMap
      !Size and dimension acccessor functions
      procedure         :: NumGlobalElements
      procedure         :: NumMyElements
+     procedure         :: IndexBase
+     procedure         :: SameAs
+     procedure         :: PointSameAs
      procedure         :: MyGlobalElements
      procedure         :: ElementSize_Const
      procedure         :: ElementSize_LID
@@ -89,14 +93,14 @@ contains
   ! CTrilinos prototype:
   ! CT_Epetra_BlockMap_ID_t Epetra_BlockMap_Create ( int NumGlobalElements, int ElementSize, int IndexBase, CT_Epetra_Comm_ID_t CommID );
 
-  type(Epetra_BlockMap) function from_scratch(Num_GlobalElements,ElementSize,IndexBase,comm)
+  type(Epetra_BlockMap) function from_scratch(Num_GlobalElements,Element_Size,IndexBase,comm)
    !use ForTrilinos_enums ,only : FT_Epetra_Comm_ID_t,FT_Epetra_Map_ID_t
     integer(c_int) ,intent(in) :: Num_GlobalElements
-    integer(c_int) ,intent(in) :: ElementSize
+    integer(c_int) ,intent(in) :: Element_Size
     integer(c_int) ,intent(in) :: IndexBase
     class(Epetra_Comm)         :: comm
     type(FT_Epetra_BlockMap_ID_t) :: from_scratch_id
-    from_scratch_id = Epetra_BlockMap_Create(Num_GlobalElements,ElementSize,IndexBase,comm%get_EpetraComm_ID())
+    from_scratch_id = Epetra_BlockMap_Create(Num_GlobalElements,Element_Size,IndexBase,comm%get_EpetraComm_ID())
     from_scratch = from_struct(from_scratch_id)
   end function
 
@@ -177,12 +181,18 @@ contains
   type(FT_Epetra_BlockMap_ID_t) function alias_EpetraBlockMap_ID(generic_id)
     use ForTrilinos_table_man
     use ForTrilinos_enums ,only: ForTrilinos_Universal_ID_t,FT_Epetra_BlockMap_ID
-    use iso_c_binding     ,only: c_loc
+    use iso_c_binding     ,only: c_loc,c_int
     type(ForTrilinos_Universal_ID_t) ,intent(in) :: generic_id
     type(ForTrilinos_Universal_ID_t) ,pointer    :: alias_id
-    allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_BlockMap_ID))
+    integer(c_int) :: status
+    type(error) :: ierr
+    if(.not.associated(alias_id)) then
+      allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_BlockMap_ID),stat=status)
+      ierr=error(status,'FEpetra_BlockMap:alias_EpetraBlockMap_ID')
+      call ierr%check_success()
+    endif
     alias_EpetraBlockMap_ID=degeneralize_EpetraBlockMap(c_loc(alias_id))
-    deallocate(alias_id)
+    call deallocate_and_check_error(alias_id,'FEpetra_BlockMap:alias_EpetraBlockMap_ID')
   end function
 
   type(ForTrilinos_Universal_ID_t) function generalize(this)
@@ -224,12 +234,44 @@ contains
     class(Epetra_BlockMap) ,intent(in) :: this
     NumMyElements=Epetra_BlockMap_NumMyElements(this%BlockMap_id)
   end function 
+
+  integer(c_int) function IndexBase(this)
+    class(Epetra_BlockMap) ,intent(in) :: this
+    IndexBase=Epetra_BlockMap_IndexBase(this%BlockMap_id)
+  end function 
+
+  logical function  SameAs(lhs,rhs)
+    use ForTrilinos_enums, only:FT_boolean_t,FT_FALSE,FT_TRUE
+    class(Epetra_BlockMap)        ,intent(in) :: lhs
+    class(Epetra_BlockMap)        ,intent(in) :: rhs
+    integer(FT_boolean_t) :: SameAs_out
+    SameAs_out=Epetra_BlockMap_SameAs(lhs%BlockMap_id,rhs%BlockMap_id)
+    if (SameAs_out==FT_FALSE) SameAs=.false.
+    if (SameAs_out==FT_TRUE)  SameAs=.true.
+  end function SameAs
+
+  logical function  PointSameAs(lhs,rhs)
+    use ForTrilinos_enums, only:FT_boolean_t,FT_FALSE,FT_TRUE
+    class(Epetra_BlockMap)        ,intent(in) :: lhs
+    class(Epetra_BlockMap)        ,intent(in) :: rhs
+    integer(FT_boolean_t) :: PointSameAs_out
+    PointSameAs_out=Epetra_BlockMap_PointSameAs(lhs%BlockMap_id,rhs%BlockMap_id)
+    if (PointSameAs_out==FT_FALSE) PointSameAs=.false.
+    if (PointSameAs_out==FT_TRUE)  PointSameAs=.true.
+  end function PointSameAs
+
  
   function MyGlobalElements(this) result(MyGlobalElementsList)
     class(Epetra_BlockMap)     ,intent(in)    :: this
     integer(c_int),dimension(:),allocatable   :: MyGlobalElementsList
     integer(c_int)                            :: junk
-    allocate(MyGlobalElementsList(this%NumMyElements()))
+    integer(c_int) :: status
+    type(error) :: ierr
+    if (.not.allocated(MyGlobalElementsList)) then
+     allocate(MyGlobalElementsList(this%NumMyElements()),stat=status)
+     ierr=error(status,'FEpetra_BlockMap:MyGlobalElements')
+     call ierr%check_success()
+    endif
     junk=Epetra_BlockMap_MyGlobalElements_Fill(this%BlockMap_id,MyGlobalElementsList)
   end function 
 
@@ -241,7 +283,9 @@ contains
   integer(c_int) function ElementSize_LID(this,L_ID)
     class(Epetra_BlockMap) ,intent(in) :: this
     integer(c_int)         ,intent(in) :: L_ID
-    ElementSize_LID=Epetra_BlockMap_ElementSize(this%BlockMap_id,L_ID)
+    integer(c_int)          :: L_ID_c
+    L_ID_c=L_ID-FT_Index_OffSet ! To account for Fortran index base 1
+    ElementSize_LID=Epetra_BlockMap_ElementSize(this%BlockMap_id,L_ID_c)
   end function 
 
   logical function LinearMap(this)

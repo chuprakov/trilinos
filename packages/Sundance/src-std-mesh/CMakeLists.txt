@@ -49,8 +49,9 @@ APPEND_SET(HEADERS
   CellFilter/SundancePositionalCellPredicate.hpp
   CellFilter/SundanceSideCellFilter.hpp
   CellFilter/SundanceSubsetCellFilter.hpp
-  CellFilter/SundanceSubsetManager.hpp
   CellFilter/SundanceCellCurvePredicate.hpp
+  CellFilter/SundanceSubsetManager.hpp
+  CellFilter/SundanceDomainDefinition.hpp
   )
 
 APPEND_SET(SOURCES
@@ -124,14 +125,20 @@ APPEND_SET(HEADERS
   Concrete/SundanceBasicSimplicialMesh.hpp
   Concrete/SundanceBasicSimplicialMeshType.hpp
   Concrete/SundanceBasicVertexView.hpp
-  Concrete/SundanceHNodeMesh2D.hpp
-  Concrete/SundanceHNodeMeshType2D.hpp
+  Concrete/SundanceHNMesh2D.hpp
+  Concrete/SundanceHNMeshType2D.hpp
+  Concrete/SundanceHNMesh3D.hpp
+  Concrete/SundanceHNMeshType3D.hpp
+  Concrete/SundancePeriodicMesh1D.hpp
+  Concrete/SundancePeriodicMeshType1D.hpp
   )
 
 APPEND_SET(SOURCES
   Concrete/SundanceBasicSimplicialMesh.cpp
   Concrete/SundanceBasicVertexView.cpp
-  Concrete/SundanceHNodeMesh2D.cpp
+  Concrete/SundanceHNMesh2D.cpp
+  Concrete/SundanceHNMesh3D.cpp
+  Concrete/SundancePeriodicMesh1D.cpp
   )
 
 
@@ -178,8 +185,10 @@ APPEND_SET(HEADERS
   Sources/SundancePartitionedRectangleMesher.hpp
   Sources/SundanceTriangleMeshReader.hpp
   Sources/SundanceBamgMeshReader.hpp 
-  Sources/SundanceHNodeMesher2D.hpp
+  Sources/SundanceHNMesher2D.hpp
+  Sources/SundanceHNMesher3D.hpp
   Sources/SundanceOneCellTestMesher.hpp
+  Sources/SundancePeriodicLineMesher.hpp
   )
 
 APPEND_SET(SOURCES
@@ -193,7 +202,8 @@ APPEND_SET(SOURCES
   Sources/SundancePartitionedRectangleMesher.cpp
   Sources/SundanceTriangleMeshReader.cpp
   Sources/SundanceBamgMeshReader.cpp
-  Sources/SundanceHNodeMesher2D.cpp
+  Sources/SundanceHNMesher2D.cpp
+  Sources/SundanceHNMesher3D.cpp
   Sources/SundanceOneCellTestMesher.cpp
   )
   
@@ -285,6 +295,23 @@ APPEND_SET(SOURCES
   Writers/SundanceVTKWriter.cpp
   )
 
+#
+# Mesh Refinement (error estimate) files
+#
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/Refinement)
+
+APPEND_SET(HEADERS
+  Refinement/SundanceRefinementBase.hpp
+  Refinement/SundanceRefinementClass.hpp
+  )
+
+APPEND_SET(SOURCES
+  Refinement/SundanceRefinementBase.cpp
+  Refinement/SundanceRefinementClass.cpp
+  )
+
 
 IF (TPL_ENABLE_MPI)
 ENDIF()
@@ -297,4 +324,5 @@ PACKAGE_ADD_LIBRARY(
   sundanceStdMesh
   HEADERS ${HEADERS}
   SOURCES ${SOURCES}
+  DEPLIBS sundanceCore sundanceInterop sundanceUtils
   )

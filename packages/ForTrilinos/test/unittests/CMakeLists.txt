@@ -35,6 +35,9 @@ ADD_SUBDIRECTORIES(
   Epetra_CrsMatrix
   Epetra_BlockMap
   Epetra_SerialComm
+  Epetra_Map
+  Epetra_MultiVector
+  Epetra_Vector
   )
 
 IF(HAVE_MPI)

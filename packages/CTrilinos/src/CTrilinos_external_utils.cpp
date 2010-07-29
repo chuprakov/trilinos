@@ -1,4 +1,5 @@
 #include "CTrilinos_external_utils.h"
+#include "CTrilinos_test_utils.hpp"
 #include "CTrilinos_exceptions.hpp"
 #include "CEpetra_MpiComm.h"
 
@@ -31,5 +32,10 @@ CT_Epetra_MpiComm_ID_t Epetra_MpiComm_Fortran_Create ( int fcomm )
 
 #endif /* HAVE_MPI */
 
+/* Clear the tables between tests */
+void CTrilinos_CleanSlate (  )
+{
+  CTrilinos::purgeAllTables();
+}
 
 } // extern "C"

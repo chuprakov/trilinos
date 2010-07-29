@@ -26,7 +26,10 @@ ENDIF()
 #proper defines are given to compile the test. The auto tools version
 #of this test is not giving the proper defines and as such the code
 #has been short circuited to not actually do anything.
-IF(HAVE_DIDASKO_EPETRAEXT)
+#
+#Newer comment:  the EpetraExt code does not work in serial, so we will
+#build this test only if MPI is enabled.
+IF(HAVE_DIDASKO_EPETRAEXT AND ${PACKAGE_NAME}_ENABLE_Zoltan AND TPL_ENABLE_MPI)
   ADD_SUBDIRECTORY(epetraext)
 ENDIF()
 

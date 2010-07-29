@@ -23,6 +23,7 @@ void proc_module_def(const std::string &line, const std::string &term,
     ss << "use " << args[0] << "_test_impls";
     result.push_back(ss.str());
   }
+  ignore_now = true;
 }
 
 void proc_module_begin(const std::string &line, const std::string &term,
@@ -97,7 +98,6 @@ void proc_unittest_begin(const std::string &line, const std::string &term,
 //FORTRILINOS_UNITTEST_BEGIN
   if (args.size() != 0)
     throw ParserException("Incorrect number of arguments");
-  ignore_now = true;
 }
 
 void proc_unittest_end(const std::string &line, const std::string &term,
@@ -106,7 +106,6 @@ void proc_unittest_end(const std::string &line, const std::string &term,
 //FORTRILINOS_UNITTEST_END
   if (args.size() != 0)
     throw ParserException("Incorrect number of arguments");
-  ignore_now = false;
 }
 
 }
@@ -128,10 +127,8 @@ void CallsParser::init()
 void CallsParser::proc_plain(const std::string &line, std::vector<std::string> &result)
 {
   if (!ignore_now) {
-    std::string mline = strip_space(line);
-    if (mline.size() > 0) {
+    if (!is_blank(line))
       result.push_back(line);
-    }
   }
 }
 

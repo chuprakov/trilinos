@@ -306,12 +306,14 @@ APPEND_SET(HEADERS
   Spectral/SundanceSpectralBasisBase.hpp
   Spectral/SundanceSpectralExpr.hpp 
   Spectral/SundanceSpectralPreprocessor.hpp 
+  Spectral/SundanceStokhosBasisWrapper.hpp 
   )
 
 APPEND_SET(SOURCES
   Spectral/SundanceHermiteSpectralBasis.cpp
   Spectral/SundanceSpectralExpr.cpp
   Spectral/SundanceSpectralPreprocessor.cpp 
+  Spectral/SundanceStokhosBasisWrapper.cpp 
   )
 
 #
@@ -354,12 +356,14 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/ParametrizedCurves)
 APPEND_SET(HEADERS
   ParametrizedCurves/SundanceCurveBase.hpp
   ParametrizedCurves/SundanceCircle.hpp
+  ParametrizedCurves/SundanceBox2D.hpp
   ParametrizedCurves/SundanceParametrizedCurve.hpp
   ParametrizedCurves/SundanceDummyParametrizedCurve.hpp
   )
 
 APPEND_SET(SOURCES
   ParametrizedCurves/SundanceCircle.cpp
+  ParametrizedCurves/SundanceBox2D.cpp
   ParametrizedCurves/SundanceParametrizedCurve.cpp
   )
 
@@ -374,4 +378,5 @@ PACKAGE_ADD_LIBRARY(
   sundanceCore
   HEADERS ${HEADERS}
   SOURCES ${SOURCES}
+  DEPLIBS sundanceUtils sundanceInterop
   )
