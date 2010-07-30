@@ -1,11 +1,11 @@
 // @HEADER
 // ***********************************************************************
 // 
-//         Optika: A Tool For Developing Parameter Obtaining GUIs
-//                Copyright (2009) Sandia Corporation
+//                    Teuchos: Common Tools Package
+//                 Copyright (2004) Sandia Corporation
 // 
-// Under terms of Contract DE-AC04-94AL85000, with Sandia Corporation, the 
-// U.S. Government retains certain rights in this software.
+// Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+// license for use of this work by or on behalf of the U.S. Government.
 // 
 // This library is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as
@@ -21,15 +21,18 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
-// Questions? Contact Kurtis Nusbaum (klnusbaum@gmail.com) 
+// Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // ***********************************************************************
 // @HEADER
-#ifndef OPTIKA_DEPENDENCYSHEET_HPP_
-#define OPTIKA_DEPENDENCYSHEET_HPP_
-#include "Optika_Dependency.hpp"
 
-namespace Optika{
+
+
+#ifndef TEUCHOS_DEPENDENCYSHEET_HPP_
+#define TEUCHOS_DEPENDENCYSHEET_HPP_
+#include "Teuchos_Dependency.hpp"
+
+namespace Teuchos{
 
 /**
  * A Dependency sheet keeps track of dependencies between various elements located
@@ -45,7 +48,7 @@ public:
 	/**
 	 * Convience typedef representing a set of dependencies.
 	 */
-	typedef std::set<Teuchos::RCP<Optika::Dependency>, Optika::Dependency::DepComp > DepSet;
+	typedef std::set<Teuchos::RCP<Teuchos::Dependency>, Teuchos::Dependency::DepComp > DepSet;
 
 	/**
 	 * Convience typedef. Maps dependee parameter entries to a set of their corresponding
@@ -76,7 +79,7 @@ public:
 	 * @param dependency The dependency to be added.
 	 * @return True if the addition was sucessful, false otherwise.
 	 */
-	bool addDependency(const Teuchos::RCP<Optika::Dependency> dependency);
+	bool addDependency(const Teuchos::RCP<Teuchos::Dependency> dependency);
 
 	/**
 	 * Removes a particular dependency between two parameters.
@@ -84,7 +87,7 @@ public:
 	 * @param dependency The dependency to be removed.
 	 * @return True if the removal was sucessfull, false otherwise.
 	 */
-	bool removeDependency(Teuchos::RCP<Optika::Dependency> dependency);
+	bool removeDependency(Teuchos::RCP<Teuchos::Dependency> dependency);
 
 	/**
 	 * Determines whether or not a parameter is depended upon by any another
@@ -157,9 +160,9 @@ private:
 	 * Validates whether or not the dependees and dependents of a dependency exist
 	 * within the root ParameterList.
 	 */
-	void validateExistanceInRoot(Teuchos::RCP<Optika::Dependency> dependency);
+	void validateExistanceInRoot(Teuchos::RCP<Teuchos::Dependency> dependency);
 };
 
 
 }
-#endif //OPTIKA_DEPENDENCYSHEET_HPP_
+#endif //TEUCHOS_DEPENDENCYSHEET_HPP_

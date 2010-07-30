@@ -1,11 +1,11 @@
 // @HEADER
 // ***********************************************************************
 // 
-//         Optika: A Tool For Developing Parameter Obtaining GUIs
-//                Copyright (2009) Sandia Corporation
+//                    Teuchos: Common Tools Package
+//                 Copyright (2004) Sandia Corporation
 // 
-// Under terms of Contract DE-AC04-94AL85000, with Sandia Corporation, the 
-// U.S. Government retains certain rights in this software.
+// Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+// license for use of this work by or on behalf of the U.S. Government.
 // 
 // This library is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as
@@ -21,21 +21,23 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
-// Questions? Contact Kurtis Nusbaum (klnusbaum@gmail.com) 
+// Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // ***********************************************************************
 // @HEADER
-#include "Optika_DependencySheet.hpp"
-#include <QString>
 
-namespace Optika{
+
+
+#include "Teuchos_DependencySheet.hpp"
+
+namespace Teuchos{
 
 
 DependencySheet::DependencySheet(Teuchos::RCP<Teuchos::ParameterList> rootList):name("DEP_ANONYMOUS"), rootList(rootList){}
 
 DependencySheet::DependencySheet(Teuchos::RCP<Teuchos::ParameterList> rootList, const std::string &name):name(name), rootList(rootList){}
 
-bool DependencySheet::addDependency(Teuchos::RCP<Optika::Dependency> dependency){
+bool DependencySheet::addDependency(Teuchos::RCP<Teuchos::Dependency> dependency){
 	validateExistanceInRoot(dependency);
 	bool successfulAdd = true;
 	Dependency::ParameterParentMap dependees = dependency->getDependees();
@@ -47,7 +49,7 @@ bool DependencySheet::addDependency(Teuchos::RCP<Optika::Dependency> dependency)
 	return successfulAdd;
 }
 
-bool DependencySheet::removeDependency(Teuchos::RCP<Optika::Dependency> dependency){
+bool DependencySheet::removeDependency(Teuchos::RCP<Teuchos::Dependency> dependency){
 	bool succesfulRemove = true;	
 	Dependency::ParameterParentMap dependees = dependency->getDependees();
 	for(Dependency::ParameterParentMap::iterator it  = dependees.begin(); it != dependees.end(); ++it){
@@ -112,27 +114,27 @@ void DependencySheet::printDeps(){
 	}
 }
 
-void DependencySheet::validateExistanceInRoot(Teuchos::RCP<Optika::Dependency> dependency){
+void DependencySheet::validateExistanceInRoot(Teuchos::RCP<Teuchos::Dependency> dependency){
 	Dependency::ParameterParentMap::const_iterator it;
 	Teuchos::ParameterEntry *currentDependee;
 	Dependency::ParameterParentMap dependees = dependency->getDependees();
 	for(it = dependees.begin(); it != dependees.end(); ++it){ 
 		currentDependee = it->second->getEntryPtr(it->first);
-		if(!Dependency::doesListContainList(rootList, it->second)){
-			throw InvalidDependencyException(
+		TEST_FOR_EXCEPTION(!Dependency::doesListContainList(rootList, it->second),
+			InvalidDependencyException,
 			"FAILED TO ADD DEPENDENCY!\n\n"
 			"Sorry for the yelling there, but this is kind of a big deal. Dependencies are hard and complex so don't beat "
 			"yourself up too much. Mistakes are easy to make when dealing with dependencies. "
 			"And besides, I'm gonna do my best to help you out! I'm sure with the informationg below you'll be able to figure out what "
 			"exactly went wrong. I've got confidence in you! :)\n\n"
 			"Error:\n"
-			"An attempt was made to add a dependency containing a the dependee parameter \"" + it->first + "\""
-			" to the Dependency Sheet \"" + name + "\"."
+			"An attempt was made to add a dependency containing a the dependee parameter \"" << it->first << "\""
+			" to the Dependency Sheet \"" << name << "\"."
 			" The Dependency Sheet's root list does not contain nor does it have"
 			" child ParameterLists that contain the parameter.\n"
-			"Dependency Sheet: " + name + "\n"
-			"Dependency Type: " + QString::number(dependency->getType()).toStdString() + "\n"
-			"Bad Dependee Name: " + it->first);
+			"Dependency Sheet: " << name << "\n"
+			"Dependency Type: " <<dependency->getType() << "\n"
+			"Bad Dependee Name: " << it->first);
 		}
 	}
 
@@ -140,21 +142,21 @@ void DependencySheet::validateExistanceInRoot(Teuchos::RCP<Optika::Dependency> d
 	Dependency::ParameterParentMap dependents = dependency->getDependents();
 	for(it = dependents.begin(); it != dependents.end(); ++it){ 
 		currentDependent = it->second->getEntryPtr(it->first);
-		if(!Dependency::doesListContainList(rootList, it->second)){
-			throw InvalidDependencyException(
+		TEST_FOR_EXCEPTION(!Dependency::doesListContainList(rootList, it->second),
+			InvalidDependencyException,
 			"FAILED TO ADD DEPENDENCY!\n\n"
 			"Sorry for the yelling there, but this is kind of a big deal. Dependencies are hard and complex so don't beat "
 			"yourself up too much. Mistakes are easy to make when dealing with dependencies. "
 			"And besides, I'm gonna do my best to help you out! I'm sure with the informationg below you'll be able to figure out what "
 			"exactly went wrong. I've got confidence in you! :)\n\n"
 			"Error:\n"
-			"An attempt was made to add a dependency containing a the dependent parameter \"" + it->first + "\""
-			" to the Dependency Sheet \"" + name + "\"."
+			"An attempt was made to add a dependency containing a the dependent parameter \"" << it->first << "\""
+			" to the Dependency Sheet \"" << name << "\"."
 			" The Dependency Sheet's root list does not contain nor does it have"
 			" child ParameterLists that contain the parameter.\n"
-			"Dependency Sheet: " + name + "\n"
-			"Dependency Type: " + QString::number(dependency->getType()).toStdString() + "\n"
-			"Bad Dependent Name: " + it->first);
+			"Dependency Sheet: " << name << "\n"
+			"Dependency Type: " << dependency->getType() << "\n"
+			"Bad Dependent Name: " << it->first);
 		}
 	}
 }

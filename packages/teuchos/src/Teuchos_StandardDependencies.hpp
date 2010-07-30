@@ -1,11 +1,11 @@
 // @HEADER
 // ***********************************************************************
 // 
-//         Optika: A Tool For Developing Parameter Obtaining GUIs
-//                Copyright (2009) Sandia Corporation
+//                    Teuchos: Common Tools Package
+//                 Copyright (2004) Sandia Corporation
 // 
-// Under terms of Contract DE-AC04-94AL85000, with Sandia Corporation, the 
-// U.S. Government retains certain rights in this software.
+// Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+// license for use of this work by or on behalf of the U.S. Government.
 // 
 // This library is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as
@@ -21,17 +21,20 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
-// Questions? Contact Kurtis Nusbaum (klnusbaum@gmail.com) 
+// Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // ***********************************************************************
 // @HEADER
-#ifndef OPTIKA_STANDARDDEPENDCIES_HPP_
-#define OPTIKA_STANDARDDEPENDCIES_HPP_
-#include "Optika_Dependency.hpp"
-#include "Teuchos_StandardParameterEntryValidators.hpp"
-#include "Optika_Condition.hpp"
 
-namespace Optika{
+
+
+#ifndef TEUCHOS_STANDARDDEPENDCIES_HPP_
+#define TEUCHOS_STANDARDDEPENDCIES_HPP_
+#include "Teuchos_Dependency.hpp"
+#include "Teuchos_StandardParameterEntryValidators.hpp"
+#include "Teuchos_Condition.hpp"
+
+namespace Teuchos{
 
 /**
  * An abstract parent class for all visual dependencies.
@@ -1204,4 +1207,4 @@ private:
 
 
 }
-#endif //OPTIKA_STANDARDDEPENDCIES_HPP_
+#endif //TEUCHOS_STANDARDDEPENDCIES_HPP_
