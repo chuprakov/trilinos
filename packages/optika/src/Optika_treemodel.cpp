@@ -338,7 +338,7 @@ void TreeModel::insertParameter(Teuchos::ParameterEntry *parameter, std::string 
 		values.append(QString::fromStdString(Teuchos::getValue<std::string>(*parameter)));
 		values.append(stringId);
 	}
-	else if(doesParameterContainArray(parameter)){
+	else if(parameter->isArray()){
 		QString determinedId = determineArrayType(parameter);
 		if( determinedId != unrecognizedId){
 			values.append(QString::fromStdString(Teuchos::toString(parameter->getAny())));

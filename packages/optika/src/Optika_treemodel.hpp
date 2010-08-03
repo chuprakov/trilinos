@@ -38,8 +38,8 @@
 #include <QVariant>
 #include <QDir>
 #include "Optika_treeitem.hpp"
-#include "Optika_DependencySheet.hpp"
-#include "Optika_StandardDependencies.hpp"
+#include "Teuchos_DependencySheet.hpp"
+#include "Teuchos_StandardDependencies.hpp"
 
 
 namespace Optika{
@@ -74,7 +74,7 @@ public:
 	 * @param saveFileName Name of a save file used in a previous attempt to get values for the validParameters ParameterList.
 	 * @param parent The parent object.
 	 */
-	TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Optika::DependencySheet> dependencySheet,
+	TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet,
 		  QString saveFileName=QString(), QObject *parent=0);
 
 	/**
@@ -252,7 +252,7 @@ private:
 	 * The dependency sheet being used to determine any
 	 * depdendencies between parameters.
 	 */
-	Teuchos::RCP<Optika::DependencySheet> dependencySheet;
+	Teuchos::RCP<Teuchos::DependencySheet> dependencySheet;
 
 	/**
 	 * Finds the index of a particular parameter entry.

@@ -5,7 +5,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 include(${QT_USE_FILE})
 
-SET(HDRS Optika_Dependency.hpp 
+SET(HDRS 
 Optika_ArrayHelperFunctions.hpp 
 Optika_GUI.hpp 
 Optika_SpinBoxApplier.hpp
@@ -31,6 +31,6 @@ PACKAGE_ADD_LIBRARY(
 	HEADERS ${MOC_HDRS} ${HDRS} 
 	SOURCES ${SRCS} ${MOC_SRCS} 
 	DEPLIBS
-	teuchos ${TPL_Qt_LIBRARIES}
+	teuchos ${TPL_QT_LIBRARIES}
 	)
 
