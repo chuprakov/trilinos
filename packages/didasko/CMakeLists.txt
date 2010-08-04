@@ -26,6 +26,30 @@ ADD_SUBDIRECTORY(src)
 PACKAGE_ADD_EXAMPLE_DIRECTORIES(examples)
 
 #
+# Exclude files for source package.
+#
+
+PACKAGE_ARCH_EXCLUDE_AUTOTOOLS_FILES()
+
+PACKAGE_ARCH_EXCLUDE_FILES(
+  examples/teuchos/xml-data
+  src/.*.eps
+  src/.*.tex
+  src/.*.ps
+  src/DOEbwlogo.pdf
+  src/Makefile
+  src/SANDreport.cls
+  src/Trilinos60Tutorial.pdf
+  src/Trilinos70Tutorial.pdf
+  src/Trilinos80Tutorial.pdf
+  src/TrilinosTutorial_ReviewAndApproval.doc
+  src/chapterbox.pdf
+  src/colabarticle.cls
+  src/snllineblk.pdf
+  src/tutorial_biblio.bib
+  )
+
+#
 # D) Do standard postprocessing
 #
 
