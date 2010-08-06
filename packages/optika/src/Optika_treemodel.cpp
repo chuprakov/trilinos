@@ -377,17 +377,16 @@ void TreeModel::basicSetup(QString saveFileName){
 }
 
 void TreeModel::checkDependentState(const QModelIndex dependee, Teuchos::RCP<Dependency> dependency){
-	Dependency::Type type = dependency->getType();
 	QModelIndex dependent;
 	Teuchos::ParameterEntry *currentDependent;
 	Dependency::ParameterParentMap dependents= dependency->getDependents();
 	for(Dependency::ParameterParentMap::iterator it = dependents.begin(); it != dependents.end(); ++it ){ 
 		currentDependent = it->second->getEntryPtr(it->first);
 		dependent = findParameterEntryIndex(currentDependent, it->first);
-		if(type == Dependency::NumberArrayLengthDep){
+		if(Teuchos::nonnull(rcp_dynamic_cast<NumberArrayLengthDep>(dependency))){
 			redrawArray(dependent.sibling(dependent.row(),1));
 		}
-		else if(type == Dependency::VisualDep){
+		else if(Teuchos::nonnull(rcp_dynamic_cast<VisualDependency>(dependency))){
 			Teuchos::RCP<VisualDependency> visDep = Teuchos::rcp_static_cast<VisualDependency>(dependency);
 			visDep->isDependentVisible() ? emit showData(dependent.row(), dependent.parent()) :
 					       emit hideData(dependent.row(), dependent.parent());
