@@ -38,7 +38,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_TableRepos.hpp"
 
 
 //
@@ -885,84 +884,6 @@ void Epetra_LAPACK_LAMCH_double (
 
 } // extern "C"
 
-
-//
-// Definitions from CEpetra_LAPACK_Cpp.hpp
-//
-
-
-/* get Epetra_LAPACK from non-const table using CT_Epetra_LAPACK_ID */
-const Teuchos::RCP<Epetra_LAPACK>
-CEpetra::getLAPACK( CT_Epetra_LAPACK_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_LAPACK>(
-        CTrilinos::abstractType<CT_Epetra_LAPACK_ID_t>(id));
-}
-
-/* get Epetra_LAPACK from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_LAPACK>
-CEpetra::getLAPACK( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_LAPACK>(id);
-}
-
-/* get const Epetra_LAPACK from either the const or non-const table
- * using CT_Epetra_LAPACK_ID */
-const Teuchos::RCP<const Epetra_LAPACK>
-CEpetra::getConstLAPACK( CT_Epetra_LAPACK_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_LAPACK>(
-        CTrilinos::abstractType<CT_Epetra_LAPACK_ID_t>(id));
-}
-
-/* get const Epetra_LAPACK from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_LAPACK>
-CEpetra::getConstLAPACK( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_LAPACK>(id);
-}
-
-/* store Epetra_LAPACK (owned) in non-const table */
-CT_Epetra_LAPACK_ID_t
-CEpetra::storeNewLAPACK( Epetra_LAPACK *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_LAPACK_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_LAPACK>(pobj, true));
-}
-
-/* store Epetra_LAPACK in non-const table */
-CT_Epetra_LAPACK_ID_t
-CEpetra::storeLAPACK( Epetra_LAPACK *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_LAPACK_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_LAPACK>(pobj, false));
-}
-
-/* store const Epetra_LAPACK in const table */
-CT_Epetra_LAPACK_ID_t
-CEpetra::storeConstLAPACK( const Epetra_LAPACK *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_LAPACK_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_LAPACK>(pobj, false));
-}
-
-/* remove Epetra_LAPACK from table using CT_Epetra_LAPACK_ID */
-void
-CEpetra::removeLAPACK( CT_Epetra_LAPACK_ID_t *id )
-{
-    CTrilinos_Universal_ID_t aid = 
-        CTrilinos::abstractType<CT_Epetra_LAPACK_ID_t>(*id);
-    CTrilinos::tableRepos().remove(&aid);
-    *id = CTrilinos::concreteType<CT_Epetra_LAPACK_ID_t>(aid);
-}
-
-/* purge Epetra_LAPACK table */
-void
-CEpetra::purgeLAPACK(  )
-{
-    CTrilinos::tableRepos().purge<Epetra_LAPACK>();
-}
 
 
 

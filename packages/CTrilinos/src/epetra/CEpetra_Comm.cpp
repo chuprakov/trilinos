@@ -38,7 +38,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_Distributor_Cpp.hpp"
 #include "CEpetra_Directory_Cpp.hpp"
 #include "CEpetra_BlockMap_Cpp.hpp"
@@ -246,84 +245,6 @@ CT_Epetra_Directory_ID_t Epetra_Comm_CreateDirectory (
 
 } // extern "C"
 
-
-//
-// Definitions from CEpetra_Comm_Cpp.hpp
-//
-
-
-/* get Epetra_Comm from non-const table using CT_Epetra_Comm_ID */
-const Teuchos::RCP<Epetra_Comm>
-CEpetra::getComm( CT_Epetra_Comm_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_Comm>(
-        CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id));
-}
-
-/* get Epetra_Comm from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_Comm>
-CEpetra::getComm( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_Comm>(id);
-}
-
-/* get const Epetra_Comm from either the const or non-const table
- * using CT_Epetra_Comm_ID */
-const Teuchos::RCP<const Epetra_Comm>
-CEpetra::getConstComm( CT_Epetra_Comm_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_Comm>(
-        CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id));
-}
-
-/* get const Epetra_Comm from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_Comm>
-CEpetra::getConstComm( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_Comm>(id);
-}
-
-/* store Epetra_Comm (owned) in non-const table */
-CT_Epetra_Comm_ID_t
-CEpetra::storeNewComm( Epetra_Comm *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_Comm>(pobj, true));
-}
-
-/* store Epetra_Comm in non-const table */
-CT_Epetra_Comm_ID_t
-CEpetra::storeComm( Epetra_Comm *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_Comm>(pobj, false));
-}
-
-/* store const Epetra_Comm in const table */
-CT_Epetra_Comm_ID_t
-CEpetra::storeConstComm( const Epetra_Comm *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_Comm>(pobj, false));
-}
-
-/* remove Epetra_Comm from table using CT_Epetra_Comm_ID */
-void
-CEpetra::removeComm( CT_Epetra_Comm_ID_t *id )
-{
-    CTrilinos_Universal_ID_t aid = 
-        CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(*id);
-    CTrilinos::tableRepos().remove(&aid);
-    *id = CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(aid);
-}
-
-/* purge Epetra_Comm table */
-void
-CEpetra::purgeComm(  )
-{
-    CTrilinos::tableRepos().purge<Epetra_Comm>();
-}
 
 
 

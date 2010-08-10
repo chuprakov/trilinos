@@ -38,7 +38,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_MultiVector_Cpp.hpp"
 #include "CEpetra_Comm_Cpp.hpp"
 #include "CEpetra_Map_Cpp.hpp"
@@ -142,84 +141,6 @@ CT_Epetra_Map_ID_t Epetra_Operator_OperatorRangeMap (
 
 } // extern "C"
 
-
-//
-// Definitions from CEpetra_Operator_Cpp.hpp
-//
-
-
-/* get Epetra_Operator from non-const table using CT_Epetra_Operator_ID */
-const Teuchos::RCP<Epetra_Operator>
-CEpetra::getOperator( CT_Epetra_Operator_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_Operator>(
-        CTrilinos::abstractType<CT_Epetra_Operator_ID_t>(id));
-}
-
-/* get Epetra_Operator from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_Operator>
-CEpetra::getOperator( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_Operator>(id);
-}
-
-/* get const Epetra_Operator from either the const or non-const table
- * using CT_Epetra_Operator_ID */
-const Teuchos::RCP<const Epetra_Operator>
-CEpetra::getConstOperator( CT_Epetra_Operator_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_Operator>(
-        CTrilinos::abstractType<CT_Epetra_Operator_ID_t>(id));
-}
-
-/* get const Epetra_Operator from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_Operator>
-CEpetra::getConstOperator( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_Operator>(id);
-}
-
-/* store Epetra_Operator (owned) in non-const table */
-CT_Epetra_Operator_ID_t
-CEpetra::storeNewOperator( Epetra_Operator *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_Operator_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_Operator>(pobj, true));
-}
-
-/* store Epetra_Operator in non-const table */
-CT_Epetra_Operator_ID_t
-CEpetra::storeOperator( Epetra_Operator *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_Operator_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_Operator>(pobj, false));
-}
-
-/* store const Epetra_Operator in const table */
-CT_Epetra_Operator_ID_t
-CEpetra::storeConstOperator( const Epetra_Operator *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_Operator_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_Operator>(pobj, false));
-}
-
-/* remove Epetra_Operator from table using CT_Epetra_Operator_ID */
-void
-CEpetra::removeOperator( CT_Epetra_Operator_ID_t *id )
-{
-    CTrilinos_Universal_ID_t aid = 
-        CTrilinos::abstractType<CT_Epetra_Operator_ID_t>(*id);
-    CTrilinos::tableRepos().remove(&aid);
-    *id = CTrilinos::concreteType<CT_Epetra_Operator_ID_t>(aid);
-}
-
-/* purge Epetra_Operator table */
-void
-CEpetra::purgeOperator(  )
-{
-    CTrilinos::tableRepos().purge<Epetra_Operator>();
-}
 
 
 

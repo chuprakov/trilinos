@@ -38,7 +38,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_TableRepos.hpp"
 
 
 //
@@ -259,84 +258,6 @@ void Epetra_BLAS_TRMM_Double (
 
 } // extern "C"
 
-
-//
-// Definitions from CEpetra_BLAS_Cpp.hpp
-//
-
-
-/* get Epetra_BLAS from non-const table using CT_Epetra_BLAS_ID */
-const Teuchos::RCP<Epetra_BLAS>
-CEpetra::getBLAS( CT_Epetra_BLAS_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_BLAS>(
-        CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id));
-}
-
-/* get Epetra_BLAS from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_BLAS>
-CEpetra::getBLAS( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_BLAS>(id);
-}
-
-/* get const Epetra_BLAS from either the const or non-const table
- * using CT_Epetra_BLAS_ID */
-const Teuchos::RCP<const Epetra_BLAS>
-CEpetra::getConstBLAS( CT_Epetra_BLAS_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_BLAS>(
-        CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id));
-}
-
-/* get const Epetra_BLAS from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_BLAS>
-CEpetra::getConstBLAS( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_BLAS>(id);
-}
-
-/* store Epetra_BLAS (owned) in non-const table */
-CT_Epetra_BLAS_ID_t
-CEpetra::storeNewBLAS( Epetra_BLAS *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_BLAS>(pobj, true));
-}
-
-/* store Epetra_BLAS in non-const table */
-CT_Epetra_BLAS_ID_t
-CEpetra::storeBLAS( Epetra_BLAS *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_BLAS>(pobj, false));
-}
-
-/* store const Epetra_BLAS in const table */
-CT_Epetra_BLAS_ID_t
-CEpetra::storeConstBLAS( const Epetra_BLAS *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_BLAS>(pobj, false));
-}
-
-/* remove Epetra_BLAS from table using CT_Epetra_BLAS_ID */
-void
-CEpetra::removeBLAS( CT_Epetra_BLAS_ID_t *id )
-{
-    CTrilinos_Universal_ID_t aid = 
-        CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(*id);
-    CTrilinos::tableRepos().remove(&aid);
-    *id = CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(aid);
-}
-
-/* purge Epetra_BLAS table */
-void
-CEpetra::purgeBLAS(  )
-{
-    CTrilinos::tableRepos().purge<Epetra_BLAS>();
-}
 
 
 
