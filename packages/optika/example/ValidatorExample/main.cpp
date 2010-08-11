@@ -29,7 +29,6 @@
 #include "Teuchos_VerboseObject.hpp"
 #include "Optika_GUI.hpp"
 #include "Teuchos_StandardParameterEntryValidators.hpp"
-#include "Optika_StandardDependencies.hpp"
 int main(){
  /*
   * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 

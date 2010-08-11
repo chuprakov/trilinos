@@ -38,7 +38,7 @@ namespace Optika{
  *
  * @return True if the ParameterEntry contains an array, false otherwise.
  */
-bool doesParameterContainArray(const Teuchos::ParameterEntry *parameter);
+bool doesParameterContainArray(Teuchos::RCP<const Teuchos::ParameterEntry> parameter);
 
 /**
  * Takes a string representing an array, formats it, and returns
@@ -55,7 +55,7 @@ QStringList getValues(QString& values);
  * @param parameter The parameter whose array type is in question.
  * @return A QString containing the type of array in the parameter.
  */
-QString determineArrayType(Teuchos::ParameterEntry *parameter);
+QString determineArrayType(Teuchos::RCP<const Teuchos::ParameterEntry> parameter);
 
 template <class S>
 Teuchos::Array<S> fromStringToArray(QString arrayString){
