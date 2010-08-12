@@ -95,7 +95,8 @@ include 'config.php';
   <li>
   We now try to execute a simple c++ program. The program is:
 <pre>
-#include <iostream>
+#include &#060iostream>
+#include &#060cstdlib>
 
 int main(int argc, char* argv[])
 {
@@ -111,6 +112,7 @@ int main(int argc, char* argv[])
 <?
 $program = "";
 $program .= "#include <iostream>\n";
+$program .= "#include <cstdlib>\n";
 $program .= "int main(int argc, char* argv[]) {\n";
 $program .= '  std::cout << "Hello, WebTrilinos World!" << std::endl;';
 $program .= " return(EXIT_SUCCESS); } \n";
@@ -144,7 +146,7 @@ echo "</font>";
   <li>
   We now try to execute a simple c++ program that uses Epetra. The program is:
 <pre>
-#include <iostream>
+#include &#060iostream>
 #include "Epetra_ConfigDefs.h"
 #include "Epetra_SerialComm.h"
 
@@ -204,7 +206,7 @@ echo "</font>";
   <li>
   We now try to execute a simple c++ program that uses Epetra. The program is:
 <pre>
-#include <iostream>
+#include &#060iostream>
 #include "Epetra_ConfigDefs.h"
 #include "Epetra_SerialComm.h"
 
