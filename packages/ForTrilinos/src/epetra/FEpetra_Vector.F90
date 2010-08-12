@@ -63,6 +63,9 @@ module FEpetra_Vector
      ! Extraction methods
      procedure         :: ExtractCopy_EpetraVector
      generic :: ExtractCopy => ExtractCopy_EpetraVector
+     !overloaded operators
+     procedure         :: get_element_EpetraVector
+     generic :: get_Element => get_element_EpetraVector 
   end type
 
    interface Epetra_Vector ! constructors
@@ -90,7 +93,9 @@ contains
     logical ,optional      ,intent(in) :: zero_initial
     integer(FT_boolean_t)              :: zero_out
     type(FT_Epetra_Vector_ID_t) :: constructor1_id
-    if (present(zero_initial).and.zero_initial) then
+    if (.not.present(zero_initial)) then
+     zero_out=FT_FALSE
+    elseif (zero_initial) then
      zero_out=FT_TRUE
     else
      zero_out=FT_FALSE
@@ -135,13 +140,13 @@ contains
     type(ForTrilinos_Universal_ID_t) ,pointer    :: alias_id
     integer(c_int) :: status
     type(error) :: ierr
-    allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_Vector_ID),stat=status)
-    ierr=error(status,'FEpetra_Vector:alias_Epetra_Vector_ID')
-    call ierr%check_allocation()
+    if (.not.associated(alias_id)) then
+      allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_Vector_ID),stat=status)
+      ierr=error(status,'FEpetra_Vector:alias_Epetra_Vector_ID')
+      call ierr%check_success()
+    endif
     alias_EpetraVector_ID=degeneralize_EpetraVector(c_loc(alias_id))
-    deallocate(alias_id,stat=status)
-    ierr=error(status,'FEpetra_Vector:alias_Epetra_Vector_ID')
-    call ierr%check_deallocation()
+    call deallocate_and_check_error(alias_id,'FEpetra_Vector:alias_Epetra_Vector_ID')
   end function
 
   type(ForTrilinos_Universal_ID_t) function generalize(this)
@@ -192,13 +197,23 @@ contains
    integer(c_int)                      :: error_out
    integer(c_int) :: status
    type(error) :: ierr
-   allocate(ExtractCopy_out(this%MyLength()),stat=status)
-   ierr=error(status,'FEpetra_Vector:ExtractCopy_EpetraVector')
-   call ierr%check_allocation()
+   if (.not.allocated(ExtractCopy_out)) then
+     allocate(ExtractCopy_out(this%MyLength()),stat=status)
+     ierr=error(status,'FEpetra_Vector:ExtractCopy_EpetraVector')
+     call ierr%check_success()
+   endif
    error_out = Epetra_Vector_ExtractCopy(this%vector_id,ExtractCopy_out)
    if (present(err)) err=error(error_out)
   end function 
-  
+ 
+  real(c_double) function get_element_EpetraVector(this,index)
+    class(Epetra_Vector), intent(in) :: this
+    integer(c_int), intent(in) :: index
+    integer(c_int)             :: index_c
+    index_c=index-FT_Index_OffSet ! To account for Fortran index base 1 
+    get_element_EpetraVector=Epetra_Vector_getElement(this%vector_id,index_c)
+  end function
+   
   subroutine invalidate_EpetraVector_ID(this)
     class(Epetra_Vector) ,intent(inout) :: this
     call this%Epetra_MultiVector%invalidate_id

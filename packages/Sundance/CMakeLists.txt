@@ -19,6 +19,17 @@ ADD_OPTION_AND_DEFINE(${PACKAGE_NAME}_ENABLE_Python
   "Enable python functionality."
   OFF )
 
+ADD_OPTION_AND_DEFINE(${PACKAGE_NAME}_ENABLE_MOOCHO
+  HAVE_SUNDANCE_MOOCHO
+  "Enable Sundance/Moocho."
+  ON )
+
+
+ADD_OPTION_AND_DEFINE(${PACKAGE_NAME}_ENABLE_Stokhos
+  HAVE_SUNDANCE_STOKHOS
+  "Enable Sundance/Stokhos."
+  ON )
+
 
 ADD_OPTION_AND_DEFINE(${PACKAGE_NAME}_ENABLE_BROKEN_CODE
   HAVE_SUNDANCE_BROKEN_CODE
@@ -100,6 +111,12 @@ ENDIF()
 
 PACKAGE_ADD_TEST_DIRECTORIES(examples-tutorial)
 
+
+#
+# Exclude files for source package.
+#
+
+PACKAGE_ARCH_EXCLUDE_AUTOTOOLS_FILES()
 
 #
 # D) Do standard postprocessing

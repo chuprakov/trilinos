@@ -36,11 +36,13 @@
 #include "TSFNOXSolver.H"
 #include "SundanceNLPModelEvaluator.hpp"
 
+
 #ifndef HAVE_TEUCHOS_EXPLICIT_INSTANTIATION
 #include "TSFVectorImpl.hpp"
 #endif
 
-#ifdef HAVE_ENABLED_MOOCHO
+#ifdef HAVE_SUNDANCE_MOOCHO 
+#ifdef BROKEN
 
 SundanceNLPModelEvaluator::SundanceNLPModelEvaluator(const VectorType<double>& vecType)
   : SundanceModelEvaluator(vecType),
@@ -221,9 +223,9 @@ Array<double> SundanceNLPModelEvaluator::parameters() const
 
 Array<double> SundanceNLPModelEvaluator
 ::paramArray(const ParameterList& params,
-             const string& paramName) const
+             const std::string& paramName) const
 {
-  string str = getParameter<string>(params, paramName);
+  std::string str = getParameter<string>(params, paramName);
   Array<string> toks = StrUtils::stringTokenizer(str);
   Array<double> rtn(toks.size());
   for (int i=0; i<toks.size(); i++)
@@ -296,6 +298,6 @@ Expr SundanceNLPModelEvaluator
   
 }
 
-
+#endif
 #endif
 

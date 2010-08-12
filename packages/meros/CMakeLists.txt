@@ -27,6 +27,22 @@ PACKAGE_ADD_TEST_DIRECTORIES(test)
 PACKAGE_ADD_EXAMPLE_DIRECTORIES(example)
 
 #
+# Exclude files for source package.
+#
+
+PACKAGE_ARCH_EXCLUDE_AUTOTOOLS_FILES()
+
+PACKAGE_ARCH_EXCLUDE_FILES(
+  README-MEROS
+  doc/UsersGuide
+  example/data/mac
+  example/data/mac-vbr
+  example/data/q1p0
+  example/data/salsa
+  example/data/tmac-vbr
+ )
+
+#
 # D) Do standard postprocessing
 #
 

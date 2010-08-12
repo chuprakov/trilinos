@@ -38,7 +38,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_CrsGraph_Cpp.hpp"
 #include "CEpetra_Import_Cpp.hpp"
 #include "CEpetra_Export_Cpp.hpp"
@@ -129,84 +128,6 @@ int ** Epetra_OffsetIndex_RemoteOffsets (
 
 } // extern "C"
 
-
-//
-// Definitions from CEpetra_OffsetIndex_Cpp.hpp
-//
-
-
-/* get Epetra_OffsetIndex from non-const table using CT_Epetra_OffsetIndex_ID */
-const Teuchos::RCP<Epetra_OffsetIndex>
-CEpetra::getOffsetIndex( CT_Epetra_OffsetIndex_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_OffsetIndex>(
-        CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(id));
-}
-
-/* get Epetra_OffsetIndex from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_OffsetIndex>
-CEpetra::getOffsetIndex( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_OffsetIndex>(id);
-}
-
-/* get const Epetra_OffsetIndex from either the const or non-const table
- * using CT_Epetra_OffsetIndex_ID */
-const Teuchos::RCP<const Epetra_OffsetIndex>
-CEpetra::getConstOffsetIndex( CT_Epetra_OffsetIndex_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex>(
-        CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(id));
-}
-
-/* get const Epetra_OffsetIndex from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_OffsetIndex>
-CEpetra::getConstOffsetIndex( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_OffsetIndex>(id);
-}
-
-/* store Epetra_OffsetIndex (owned) in non-const table */
-CT_Epetra_OffsetIndex_ID_t
-CEpetra::storeNewOffsetIndex( Epetra_OffsetIndex *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_OffsetIndex>(pobj, true));
-}
-
-/* store Epetra_OffsetIndex in non-const table */
-CT_Epetra_OffsetIndex_ID_t
-CEpetra::storeOffsetIndex( Epetra_OffsetIndex *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_OffsetIndex>(pobj, false));
-}
-
-/* store const Epetra_OffsetIndex in const table */
-CT_Epetra_OffsetIndex_ID_t
-CEpetra::storeConstOffsetIndex( const Epetra_OffsetIndex *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_OffsetIndex>(pobj, false));
-}
-
-/* remove Epetra_OffsetIndex from table using CT_Epetra_OffsetIndex_ID */
-void
-CEpetra::removeOffsetIndex( CT_Epetra_OffsetIndex_ID_t *id )
-{
-    CTrilinos_Universal_ID_t aid = 
-        CTrilinos::abstractType<CT_Epetra_OffsetIndex_ID_t>(*id);
-    CTrilinos::tableRepos().remove(&aid);
-    *id = CTrilinos::concreteType<CT_Epetra_OffsetIndex_ID_t>(aid);
-}
-
-/* purge Epetra_OffsetIndex table */
-void
-CEpetra::purgeOffsetIndex(  )
-{
-    CTrilinos::tableRepos().purge<Epetra_OffsetIndex>();
-}
 
 
 

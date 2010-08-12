@@ -33,7 +33,7 @@
 #include "SundanceDefs.hpp"
 #include "SundanceDefs.hpp"
 
-#ifdef HAVE_ENABLED_MOOCHO
+#ifdef HAVE_SUNDANCE_MOOCHO
 
 #include "SundanceNonlinearProblem.hpp"
 #include "SundanceLinearProblem.hpp"
@@ -127,7 +127,7 @@ namespace Thyra
 
     /** */
     Array<double> paramArray(const ParameterList& params,
-                             const string& paramName) const ;
+                             const std::string& paramName) const ;
 
     /** */
     void setContinuationParameters(const Expr& contParams) {contParams_ = contParams;}

@@ -15,6 +15,8 @@ SET(DisabledTests
 SET(SerialTests
   DiscFunc3D
   PoissonOnDisk 
+  LinearPeriodic1D
+  NonlinearPeriodic1D
   Poisson3D
   PoissonBoltzmannDemo1D
   BesselTest2D 
@@ -35,6 +37,7 @@ SET(SerialTests
   PoissonPeano2D
   PoissonPeano3D
   StokesPeano2D 
+  SecondOrderFloquet 
   MixedTest
 )
 
