@@ -38,7 +38,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_Comm_Cpp.hpp"
 
 
@@ -112,84 +111,6 @@ void Epetra_Map_Assign (
 
 } // extern "C"
 
-
-//
-// Definitions from CEpetra_Map_Cpp.hpp
-//
-
-
-/* get Epetra_Map from non-const table using CT_Epetra_Map_ID */
-const Teuchos::RCP<Epetra_Map>
-CEpetra::getMap( CT_Epetra_Map_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_Map>(
-        CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id));
-}
-
-/* get Epetra_Map from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_Map>
-CEpetra::getMap( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_Map>(id);
-}
-
-/* get const Epetra_Map from either the const or non-const table
- * using CT_Epetra_Map_ID */
-const Teuchos::RCP<const Epetra_Map>
-CEpetra::getConstMap( CT_Epetra_Map_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_Map>(
-        CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id));
-}
-
-/* get const Epetra_Map from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_Map>
-CEpetra::getConstMap( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_Map>(id);
-}
-
-/* store Epetra_Map (owned) in non-const table */
-CT_Epetra_Map_ID_t
-CEpetra::storeNewMap( Epetra_Map *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_Map>(pobj, true));
-}
-
-/* store Epetra_Map in non-const table */
-CT_Epetra_Map_ID_t
-CEpetra::storeMap( Epetra_Map *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_Map>(pobj, false));
-}
-
-/* store const Epetra_Map in const table */
-CT_Epetra_Map_ID_t
-CEpetra::storeConstMap( const Epetra_Map *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_Map>(pobj, false));
-}
-
-/* remove Epetra_Map from table using CT_Epetra_Map_ID */
-void
-CEpetra::removeMap( CT_Epetra_Map_ID_t *id )
-{
-    CTrilinos_Universal_ID_t aid = 
-        CTrilinos::abstractType<CT_Epetra_Map_ID_t>(*id);
-    CTrilinos::tableRepos().remove(&aid);
-    *id = CTrilinos::concreteType<CT_Epetra_Map_ID_t>(aid);
-}
-
-/* purge Epetra_Map table */
-void
-CEpetra::purgeMap(  )
-{
-    CTrilinos::tableRepos().purge<Epetra_Map>();
-}
 
 
 

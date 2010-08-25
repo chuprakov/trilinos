@@ -131,19 +131,6 @@ contains
     duplicate = from_struct(duplicate_id)
   end function
 
-  !function clone(this)
-  !  class(Epetra_MpiComm)    ,intent(in)  :: this
-  !  class(Epetra_Comm)       ,allocatable :: clone
-  !  type(Epetra_MpiComm)      :: clone_local
-  !  type(FT_Epetra_MpiComm_ID_t) :: clone_mpi_id
-  !  type(FT_Epetra_Comm_ID_t) :: clone_comm_id
-  !  clone_comm_id=Epetra_MpiComm_Clone(this%MpiComm_id)
-  !  call clone_local%set_EpetraComm_ID(clone_comm_id)
-  !  allocate(Epetra_MpiComm :: clone)
-  !  clone=Epetra_MpiComm(alias_EpetraMpiComm_ID(clone_local%generalize_EpetraComm()))
-  !  call clone_local%force_finalize()
-  !end function
-
  type(FT_Epetra_MpiComm_ID_t) function get_EpetraMpiComm_ID(this)
    class(Epetra_MpiComm) ,intent(in) :: this
    get_EpetraMpiComm_ID=this%MpiComm_id
@@ -157,13 +144,13 @@ contains
     type(Fortrilinos_Universal_ID_t) ,pointer    :: alias_id
     integer(c_int) :: status
     type(error) :: ierr
-    allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_MpiComm_ID),stat=status)
-    ierr=error(status,'FEpetra_MpiComm:alias_EpetraMpiComm_ID')
-    call ierr%check_allocation()
+    if (.not.associated(alias_id)) then
+      allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_MpiComm_ID),stat=status)
+      ierr=error(status,'FEpetra_MpiComm:alias_EpetraMpiComm_ID')
+      call ierr%check_success()
+    endif
     alias_EpetraMpiComm_ID=degeneralize_EpetraMpiComm(c_loc(alias_id))
-    deallocate(alias_id,stat=status)
-    ierr=error(status,'FEpetra_MpiComm:alias_EpetraMpiComm_ID')
-    call ierr%check_deallocation()
+    call deallocate_and_check_error(alias_id,'FEpetra_MpiComm:alias_EpetraMpiComm_ID')
   end function
 
   type(ForTrilinos_Universal_ID_t) function generalize(this)

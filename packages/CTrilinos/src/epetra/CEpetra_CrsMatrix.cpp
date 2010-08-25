@@ -38,7 +38,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_Map_Cpp.hpp"
 #include "CEpetra_CrsGraph_Cpp.hpp"
 #include "CEpetra_Vector_Cpp.hpp"
@@ -854,84 +853,6 @@ double * Epetra_CrsMatrix_getRow (
 
 } // extern "C"
 
-
-//
-// Definitions from CEpetra_CrsMatrix_Cpp.hpp
-//
-
-
-/* get Epetra_CrsMatrix from non-const table using CT_Epetra_CrsMatrix_ID */
-const Teuchos::RCP<Epetra_CrsMatrix>
-CEpetra::getCrsMatrix( CT_Epetra_CrsMatrix_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix>(
-        CTrilinos::abstractType<CT_Epetra_CrsMatrix_ID_t>(id));
-}
-
-/* get Epetra_CrsMatrix from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_CrsMatrix>
-CEpetra::getCrsMatrix( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_CrsMatrix>(id);
-}
-
-/* get const Epetra_CrsMatrix from either the const or non-const table
- * using CT_Epetra_CrsMatrix_ID */
-const Teuchos::RCP<const Epetra_CrsMatrix>
-CEpetra::getConstCrsMatrix( CT_Epetra_CrsMatrix_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix>(
-        CTrilinos::abstractType<CT_Epetra_CrsMatrix_ID_t>(id));
-}
-
-/* get const Epetra_CrsMatrix from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_CrsMatrix>
-CEpetra::getConstCrsMatrix( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_CrsMatrix>(id);
-}
-
-/* store Epetra_CrsMatrix (owned) in non-const table */
-CT_Epetra_CrsMatrix_ID_t
-CEpetra::storeNewCrsMatrix( Epetra_CrsMatrix *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_CrsMatrix>(pobj, true));
-}
-
-/* store Epetra_CrsMatrix in non-const table */
-CT_Epetra_CrsMatrix_ID_t
-CEpetra::storeCrsMatrix( Epetra_CrsMatrix *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_CrsMatrix>(pobj, false));
-}
-
-/* store const Epetra_CrsMatrix in const table */
-CT_Epetra_CrsMatrix_ID_t
-CEpetra::storeConstCrsMatrix( const Epetra_CrsMatrix *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_CrsMatrix>(pobj, false));
-}
-
-/* remove Epetra_CrsMatrix from table using CT_Epetra_CrsMatrix_ID */
-void
-CEpetra::removeCrsMatrix( CT_Epetra_CrsMatrix_ID_t *id )
-{
-    CTrilinos_Universal_ID_t aid = 
-        CTrilinos::abstractType<CT_Epetra_CrsMatrix_ID_t>(*id);
-    CTrilinos::tableRepos().remove(&aid);
-    *id = CTrilinos::concreteType<CT_Epetra_CrsMatrix_ID_t>(aid);
-}
-
-/* purge Epetra_CrsMatrix table */
-void
-CEpetra::purgeCrsMatrix(  )
-{
-    CTrilinos::tableRepos().purge<Epetra_CrsMatrix>();
-}
 
 
 

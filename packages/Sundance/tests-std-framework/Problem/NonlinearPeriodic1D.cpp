@@ -109,13 +109,13 @@ int main(int argc, char** argv)
       FunctionalEvaluator uErrInt(mesh, uErrExpr);
 
       double uErrorSq = uErrInt.evaluate();
-      cerr << "u error norm = " << sqrt(uErrorSq) << endl << endl;
+      std::cerr << "u error norm = " << sqrt(uErrorSq) << std::endl << std::endl;
 
       double tol = 1.0e-3;
       Sundance::passFailTest(sqrt(uErrorSq), tol);
 
     }
-	catch(exception& e)
+	catch(std::exception& e)
 		{
       Sundance::handleException(e);
 		}
