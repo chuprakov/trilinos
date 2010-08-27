@@ -173,8 +173,8 @@ int main(){
    * NumberArrayLengthDependency. If written in a sentence, the dependency reads like this:
    * The number of entry's in the "Amount in Buckets" array is dependent upon the "Number Of Buckets" parameter.
    */
-  Teuchos::RCP<Teuchos::NumberArrayLengthDependency> arrayLengthDep = Teuchos::RCP<Teuchos::NumberArrayLengthDependency>(
-  	new Teuchos::NumberArrayLengthDependency(
+  Teuchos::RCP<Teuchos::NumberArrayLengthDependency<int, double> > arrayLengthDep = Teuchos::RCP<Teuchos::NumberArrayLengthDependency<int, double> >(
+  	new Teuchos::NumberArrayLengthDependency<int, double>(
 	waterList.getEntryRCP("Number Of Buckets"),
 	waterList.getEntryRCP("Amount in Buckets")));
 

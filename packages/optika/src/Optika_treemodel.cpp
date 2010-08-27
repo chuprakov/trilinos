@@ -397,10 +397,11 @@ void TreeModel::checkDependentState(const QModelIndex dependee, Teuchos::RCP<Teu
 	Teuchos::Dependency::ParameterEntryList dependents= dependency->getDependents();
 	for(Teuchos::Dependency::ParameterEntryList::iterator it = dependents.begin(); it != dependents.end(); ++it ){ 
 		dependent = findParameterEntryIndex(*it);
-		if(Teuchos::nonnull(Teuchos::rcp_dynamic_cast<Teuchos::NumberArrayLengthDependency>(dependency))){
+		//if(!is_null(Teuchos::rcp_dynamic_cast<Teuchos::NumberArrayLengthDependency>(dependency))){
+    if((*it)->isArray()){
 			redrawArray(dependent.sibling(dependent.row(),1));
 		}
-		else if(Teuchos::nonnull(Teuchos::rcp_dynamic_cast<Teuchos::VisualDependency>(dependency))){
+		else if(!is_null(Teuchos::rcp_dynamic_cast<Teuchos::VisualDependency>(dependency))){
 			Teuchos::RCP<Teuchos::VisualDependency> visDep = Teuchos::rcp_static_cast<Teuchos::VisualDependency>(dependency);
 			visDep->isDependentVisible() ? emit showData(dependent.row(), dependent.parent()) :
 					       emit hideData(dependent.row(), dependent.parent());

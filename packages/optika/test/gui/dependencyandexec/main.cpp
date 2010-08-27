@@ -36,12 +36,14 @@ void print(Teuchos::RCP<const Teuchos::ParameterList> theList){
   Teuchos::writeParameterListToXmlOStream(*theList, *out);
 }
 
-int intFuncTester(int argument){
-	return argument+10;
-}
+class IntVisualTester : public Teuchos::SingleArguementFunctionObject<int, int>{
 
-int intVisualTester(int argument){
-	if(argument <= 32){
+public:
+  int runFunction() const;
+};
+
+int IntVisualTester::runFunction() const{
+	if(getParameterValue() <= 32){
 		return 1;
 	}
 	else{
@@ -49,8 +51,24 @@ int intVisualTester(int argument){
 	}
 }
 
-double fondueTempTester(double argument){
-	return argument-100;
+class IntFuncTester : public Teuchos::SingleArguementFunctionObject<int, int>{
+
+public:
+  int runFunction() const;
+};
+
+int IntFuncTester::runFunction() const{
+  return getParameterValue() + 10;
+}
+
+class FondueTempTester : public Teuchos::SingleArguementFunctionObject<double, double>{
+
+public:
+  double runFunction() const;
+};
+
+double FondueTempTester::runFunction() const{
+	return getParameterValue()-100;
 }
 
 int main(){
@@ -177,9 +195,7 @@ int main(){
  
   depSheet1->addDependency(cheeseTempDep);
   
-  double (*fondueFunc)(double);
-  fondueFunc = fondueTempTester;
-
+  Teuchos::RCP<FondueTempTester> fondueFunc = Teuchos::rcp(new FondueTempTester());
   Teuchos::RCP<Teuchos::NumberVisualDependency<double> > fondueDep = 
       Teuchos::RCP<Teuchos::NumberVisualDependency<double> >(new Teuchos::NumberVisualDependency<double>(
       My_deplist->getEntryRCP("Temperature"),
@@ -196,10 +212,9 @@ int main(){
   numberArrayLengthDepList.set("Variable Length Array", variableLengthArray, "variable length array",
   Teuchos::RCP<Teuchos::ArrayNumberValidator<double> >(new Teuchos::ArrayNumberValidator<double>(varLengthArrayVali)));
 
-  Teuchos::RCP<Teuchos::NumberArrayLengthDependency> arrayLengthDep = Teuchos::rcp(
-  	new Teuchos::NumberArrayLengthDependency(
-	My_deplist->getEntryRCP("Array Length"),
-	My_deplist->getEntryRCP("Variable Length Array")));
+  Teuchos::RCP<Teuchos::NumberArrayLengthDependency<int, double> > arrayLengthDep(
+    new Teuchos::NumberArrayLengthDependency<int, double>(My_deplist->getEntryRCP("Array Length"), 
+    My_deplist->getEntryRCP("Variable Length Array")));
   depSheet1->addDependency(arrayLengthDep);
 
 
@@ -211,30 +226,6 @@ int main(){
   numberValiAspDepList.set("Int", 8, "Int tester", intVali2);
   numberValiAspDepList.set("Int2", 8, "int2 tester", intVali2);
   numberValiAspDepList.set("Int dependee", 1, "Int dependee");
-
-  int (*func)(int);
-  func = intFuncTester;
-
-  Teuchos::RCP<Teuchos::NumberValidatorAspectDependency<int> > intDep1 =
-     Teuchos::RCP<Teuchos::NumberValidatorAspectDependency<int> >(
-       new Teuchos::NumberValidatorAspectDependency<int>(
-	        My_deplist->getEntryRCP("Int dependee"),
-          My_deplist->getEntryRCP("Int"),
-	        Teuchos::NumberValidatorAspectDependency<int>::Max,
-	        intVali2,
-	        func));
-
-  Teuchos::RCP<Teuchos::NumberValidatorAspectDependency<int> > intDep2 =
-     Teuchos::RCP<Teuchos::NumberValidatorAspectDependency<int> >(
-       new Teuchos::NumberValidatorAspectDependency<int>(
-         My_deplist->getEntryRCP("Int dependee"),
-         My_deplist->getEntryRCP("Int2"),
-	      Teuchos::NumberValidatorAspectDependency<int>::Max,
-	       intVali2,
-	      func));
-
-  depSheet1->addDependency(intDep1);
-  depSheet1->addDependency(intDep2);
 
   Teuchos::ParameterList&
     boolVisDepList = My_deplist->sublist("Bool Visual Dependency List", false, "Bool Visual Dependency testing list.");
@@ -280,8 +271,8 @@ Teuchos::ParameterList&
 
 
 
-  int (*visfunc)(int);
-  visfunc = intVisualTester;
+  Teuchos::RCP<IntVisualTester> intVisTester = 
+    Teuchos::rcp(new IntVisualTester());
 Teuchos::ParameterList&
     numberVisDepList = My_deplist->sublist("Number Visual Dependency List", false, "Number Visual Dependency testing list.");
   numberVisDepList.set("Ice", 50, "Ice stuff");
@@ -290,7 +281,7 @@ Teuchos::ParameterList&
       Teuchos::RCP<Teuchos::NumberVisualDependency<int> >(new Teuchos::NumberVisualDependency<int>(
       My_deplist->getEntryRCP("Room Temp"),
       My_deplist->getEntryRCP("Ice"),
-      visfunc));
+      intVisTester));
   depSheet1->addDependency(iceDep);
 
 

@@ -139,8 +139,8 @@ int main(int argc, char* argv[])
 	}
 
 	//Ok, so now for the really really fun part. setting up the dependencies. Let's do the ArrayLengthDependency first.
-	RCP<NumberArrayLengthDependency> surfTypeLengthDep = rcp(
-		new NumberArrayLengthDependency(
+	RCP<NumberArrayLengthDependency<int, std::string> > surfTypeLengthDep = rcp(
+		new NumberArrayLengthDependency<int, std::string>(
 			surfDefParams->getEntryRCP("Nsurf_types"),
 			surfDefParams->getEntryRCP("Surf_Type")
 		)
