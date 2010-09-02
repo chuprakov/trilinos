@@ -52,10 +52,14 @@
 using namespace Teuchos;
 using namespace Optika;
 
-//ignore this for now. we'll use it later.
-int intFunc(int argument){
-	return argument-9;
-}
+class IntFunc : public Teuchos::SingleArguementFunctionObject<int, int>{
+public:
+  int runFunction() const{
+	  return getParameterValue()-9;
+  }
+};
+    
+
 
 int main(int argc, char* argv[])
 {
@@ -225,8 +229,12 @@ int main(int argc, char* argv[])
   //Here's a NumberCondition, which is a type of ParameterCondition. It simply checks to
   // see if the value of some number parameter is greater than 0. If greater than 0, 
   //the condition evaluates to true. Otherwise, it evaluates false.
-  RCP<NumberCondition<int> > intCon1 = rcp(new NumberCondition<int>(crazyDepList->getEntryRCP("Sweetness"), intFunc));
-  RCP<NumberCondition<int> > intCon2 = rcp(new NumberCondition<int>(crazyDepList->getEntryRCP("Awesomeness"), intFunc));
+  RCP<NumberCondition<int> > intCon1 = rcp(
+    new NumberCondition<int>(
+      crazyDepList->getEntryRCP("Sweetness"), rcp(new IntFunc)));
+  RCP<NumberCondition<int> > intCon2 = rcp(
+    new NumberCondition<int>(crazyDepList->getEntryRCP("Awesomeness"), 
+      rcp(new IntFunc)));
 
   //And here's a Bool Condition.
   RCP<BoolCondition> boolCon1 = rcp(new BoolCondition(crazyDepList->getEntryRCP("Are you at all cool?")));

@@ -34,6 +34,11 @@
 #include <QXmlStreamReader>
 #include "Teuchos_ParameterList.hpp"
 #include "Optika_ArrayHelperFunctions.hpp"
+
+//MUST BE DONE OUTSIDE NAMEPSACE!
+Q_DECLARE_METATYPE(Teuchos::RCP<const Teuchos::ParameterEntry>)
+Q_DECLARE_METATYPE(Teuchos::RCP<Teuchos::ParameterEntry>)
+
 namespace Optika{
 /**
  * The TreeItem class is the item class used by the TreeModel class.
@@ -197,4 +202,5 @@ private:
 
 
 }
+
 #endif /* OPTIKA_TREEITEM_HPP_ */

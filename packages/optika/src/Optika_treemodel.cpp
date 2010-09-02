@@ -277,7 +277,7 @@ QModelIndex TreeModel::findParameterEntryIndex(
 	QList<QModelIndex> potentialMatches = match(
     index(0,0),
     Qt::UserRole, 
-    QVariant::fromValue(Teuchos::ParameterEntry::getParameterEntryID(parameterEntry)),
+    QVariant::fromValue(parameterEntry),
 	  1, 
     Qt::MatchExactly | Qt::MatchRecursive );
   if(potentialMatches.size() == 1){
@@ -289,8 +289,7 @@ QModelIndex TreeModel::findParameterEntryIndex(
 
 Teuchos::RCP<const Teuchos::ParameterEntry> 
 TreeModel::itemEntry(const QModelIndex &index) const{
-	return 
-    Teuchos::ParameterEntry::getParameterEntry(index.data(Qt::UserRole).value<Teuchos::ParameterEntry::ParameterEntryID>());
+	return index.data(Qt::UserRole).value<Teuchos::RCP<const Teuchos::ParameterEntry> >();
 }
 
 void TreeModel::readInParameterList(Teuchos::RCP<Teuchos::ParameterList> parameterList, TreeItem *parentItem){
