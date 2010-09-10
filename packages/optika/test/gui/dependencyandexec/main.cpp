@@ -273,12 +273,15 @@ Teuchos::ParameterList&
 
   Teuchos::RCP<IntVisualTester> intVisTester = 
     Teuchos::rcp(new IntVisualTester());
-Teuchos::ParameterList&
-    numberVisDepList = My_deplist->sublist("Number Visual Dependency List", false, "Number Visual Dependency testing list.");
+  Teuchos::ParameterList&
+    numberVisDepList = My_deplist->sublist(
+      "Number Visual Dependency List", false, 
+      "Number Visual Dependency testing list.");
   numberVisDepList.set("Ice", 50, "Ice stuff");
   numberVisDepList.set("Room Temp", 10, "Room temperature");
   Teuchos::RCP<Teuchos::NumberVisualDependency<int> > iceDep = 
-      Teuchos::RCP<Teuchos::NumberVisualDependency<int> >(new Teuchos::NumberVisualDependency<int>(
+      Teuchos::RCP<Teuchos::NumberVisualDependency<int> >(
+        new Teuchos::NumberVisualDependency<int>(
       My_deplist->getEntryRCP("Room Temp"),
       My_deplist->getEntryRCP("Ice"),
       intVisTester));
@@ -295,7 +298,7 @@ Teuchos::ParameterList&
   Teuchos::writeParameterListToXmlOStream(*My_deplist, *out);
 
   std::cout << "Deps: \n";
-  depSheet1->printDeps();
+  depSheet1->printDeps(std::cout);
 
 
   return 0;
