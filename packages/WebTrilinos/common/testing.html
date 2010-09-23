@@ -294,8 +294,7 @@ global $PYTHONPATH;
 $command = "";
 if ($PYTHONPATH != "")
   $command .= "PYTHONPATH=$PYTHONPATH ";
-$command .= 'python -c "from PyTrilinos import Epetra, EpetraExt, Amesos,
-IFPACK, AztecOO, ML" 2 > &1';
+$command .= 'python -c "from PyTrilinos import Epetra, EpetraExt, Amesos, IFPACK, AztecOO, ML" 2 > &1';
 echo "<font color=blue>";
 passthru($command);
 echo "</font>";
