@@ -38,7 +38,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_BlockMap_Cpp.hpp"
 #include "CEpetra_Vector_Cpp.hpp"
 
@@ -453,84 +452,6 @@ CT_Epetra_Vector_ID_t Epetra_MultiVector_getVector (
 
 } // extern "C"
 
-
-//
-// Definitions from CEpetra_MultiVector_Cpp.hpp
-//
-
-
-/* get Epetra_MultiVector from non-const table using CT_Epetra_MultiVector_ID */
-const Teuchos::RCP<Epetra_MultiVector>
-CEpetra::getMultiVector( CT_Epetra_MultiVector_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_MultiVector>(
-        CTrilinos::abstractType<CT_Epetra_MultiVector_ID_t>(id));
-}
-
-/* get Epetra_MultiVector from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Epetra_MultiVector>
-CEpetra::getMultiVector( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Epetra_MultiVector>(id);
-}
-
-/* get const Epetra_MultiVector from either the const or non-const table
- * using CT_Epetra_MultiVector_ID */
-const Teuchos::RCP<const Epetra_MultiVector>
-CEpetra::getConstMultiVector( CT_Epetra_MultiVector_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_MultiVector>(
-        CTrilinos::abstractType<CT_Epetra_MultiVector_ID_t>(id));
-}
-
-/* get const Epetra_MultiVector from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Epetra_MultiVector>
-CEpetra::getConstMultiVector( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Epetra_MultiVector>(id);
-}
-
-/* store Epetra_MultiVector (owned) in non-const table */
-CT_Epetra_MultiVector_ID_t
-CEpetra::storeNewMultiVector( Epetra_MultiVector *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_MultiVector>(pobj, true));
-}
-
-/* store Epetra_MultiVector in non-const table */
-CT_Epetra_MultiVector_ID_t
-CEpetra::storeMultiVector( Epetra_MultiVector *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_MultiVector>(pobj, false));
-}
-
-/* store const Epetra_MultiVector in const table */
-CT_Epetra_MultiVector_ID_t
-CEpetra::storeConstMultiVector( const Epetra_MultiVector *pobj )
-{
-    return CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(
-        CTrilinos::tableRepos().store<Epetra_MultiVector>(pobj, false));
-}
-
-/* remove Epetra_MultiVector from table using CT_Epetra_MultiVector_ID */
-void
-CEpetra::removeMultiVector( CT_Epetra_MultiVector_ID_t *id )
-{
-    CTrilinos_Universal_ID_t aid = 
-        CTrilinos::abstractType<CT_Epetra_MultiVector_ID_t>(*id);
-    CTrilinos::tableRepos().remove(&aid);
-    *id = CTrilinos::concreteType<CT_Epetra_MultiVector_ID_t>(aid);
-}
-
-/* purge Epetra_MultiVector table */
-void
-CEpetra::purgeMultiVector(  )
-{
-    CTrilinos::tableRepos().purge<Epetra_MultiVector>();
-}
 
 
 

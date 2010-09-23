@@ -38,9 +38,12 @@
 
 namespace Sundance
 {
+
 using namespace Sundance;
+
 class CoordExpr;
 class CellDiameterExpr;
+class CurveNormExpr;
 class CellVectorExpr;
 class MultiIndex; 
 class DiscreteFuncElement;
@@ -86,6 +89,16 @@ public:
    * its numerical values in the given EvalVector. */
   virtual void evalCellDiameterExpr(const CellDiameterExpr* expr,
     RCP<EvalVector>& vec) const = 0 ;
+
+  /** Evaluates one component of the normal vector to a given parameterized curve
+   * i.e. x,y or z component of that vector in 3D <br>
+   * , this method is only in the CurveEvalMediator class implemented */
+  virtual void evalCurveNormExpr(const CurveNormExpr* expr,
+    RCP<EvalVector>& vec) const
+    {
+	  TEST_FOR_EXCEPTION( true , RuntimeError,
+		" EvalMediator::evalCurveNormExpr , not possible with the current EvalMediator (only with CurveEvalMediator)");
+    }
 
   /** Evaluate the given cell vector expression, putting
    * its numerical values in the given EvalVector. */

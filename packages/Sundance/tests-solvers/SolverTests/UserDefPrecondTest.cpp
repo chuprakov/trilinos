@@ -85,9 +85,7 @@ int main(int argc, char *argv[])
     /* create the range space  */
     int nLocalRows = solverParams.get<int>("nLocal");
 
-    bool symBC = solverParams.get<bool>("Symmetrize BCs");
-
-    MatrixLaplacian1D builder(nLocalRows, type, symBC);
+    MatrixLaplacian1D builder(nLocalRows, type);
 
     LinearOperator<double> A = builder.getOp();
 
@@ -142,7 +140,7 @@ int main(int argc, char *argv[])
     double err = (x-ans).norm2();
     cout << "error norm = " << err << std::endl;
 
-    double tol = 1.0e-10;
+    double tol = 1.0e-8;
     if (err > tol)
     {
       cout << "User-defined preconditioner test FAILED" << std::endl;

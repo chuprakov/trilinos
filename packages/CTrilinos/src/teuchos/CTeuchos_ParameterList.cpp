@@ -38,7 +38,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
-#include "CTrilinos_TableRepos.hpp"
 #include "CTeuchos_ParameterEntry_Cpp.hpp"
 
 
@@ -402,84 +401,6 @@ void Teuchos_ParameterList_Assign (
 
 } // extern "C"
 
-
-//
-// Definitions from CTeuchos_ParameterList_Cpp.hpp
-//
-
-
-/* get Teuchos::ParameterList from non-const table using CT_Teuchos_ParameterList_ID */
-const Teuchos::RCP<Teuchos::ParameterList>
-CTeuchos::getParameterList( CT_Teuchos_ParameterList_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Teuchos::ParameterList>(
-        CTrilinos::abstractType<CT_Teuchos_ParameterList_ID_t>(id));
-}
-
-/* get Teuchos::ParameterList from non-const table using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<Teuchos::ParameterList>
-CTeuchos::getParameterList( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().get<Teuchos::ParameterList>(id);
-}
-
-/* get const Teuchos::ParameterList from either the const or non-const table
- * using CT_Teuchos_ParameterList_ID */
-const Teuchos::RCP<const Teuchos::ParameterList>
-CTeuchos::getConstParameterList( CT_Teuchos_ParameterList_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Teuchos::ParameterList>(
-        CTrilinos::abstractType<CT_Teuchos_ParameterList_ID_t>(id));
-}
-
-/* get const Teuchos::ParameterList from either the const or non-const table
- * using CTrilinos_Universal_ID_t */
-const Teuchos::RCP<const Teuchos::ParameterList>
-CTeuchos::getConstParameterList( CTrilinos_Universal_ID_t id )
-{
-    return CTrilinos::tableRepos().getConst<Teuchos::ParameterList>(id);
-}
-
-/* store Teuchos::ParameterList (owned) in non-const table */
-CT_Teuchos_ParameterList_ID_t
-CTeuchos::storeNewParameterList( Teuchos::ParameterList *pobj )
-{
-    return CTrilinos::concreteType<CT_Teuchos_ParameterList_ID_t>(
-        CTrilinos::tableRepos().store<Teuchos::ParameterList>(pobj, true));
-}
-
-/* store Teuchos::ParameterList in non-const table */
-CT_Teuchos_ParameterList_ID_t
-CTeuchos::storeParameterList( Teuchos::ParameterList *pobj )
-{
-    return CTrilinos::concreteType<CT_Teuchos_ParameterList_ID_t>(
-        CTrilinos::tableRepos().store<Teuchos::ParameterList>(pobj, false));
-}
-
-/* store const Teuchos::ParameterList in const table */
-CT_Teuchos_ParameterList_ID_t
-CTeuchos::storeConstParameterList( const Teuchos::ParameterList *pobj )
-{
-    return CTrilinos::concreteType<CT_Teuchos_ParameterList_ID_t>(
-        CTrilinos::tableRepos().store<Teuchos::ParameterList>(pobj, false));
-}
-
-/* remove Teuchos::ParameterList from table using CT_Teuchos_ParameterList_ID */
-void
-CTeuchos::removeParameterList( CT_Teuchos_ParameterList_ID_t *id )
-{
-    CTrilinos_Universal_ID_t aid = 
-        CTrilinos::abstractType<CT_Teuchos_ParameterList_ID_t>(*id);
-    CTrilinos::tableRepos().remove(&aid);
-    *id = CTrilinos::concreteType<CT_Teuchos_ParameterList_ID_t>(aid);
-}
-
-/* purge Teuchos::ParameterList table */
-void
-CTeuchos::purgeParameterList(  )
-{
-    CTrilinos::tableRepos().purge<Teuchos::ParameterList>();
-}
 
 
 

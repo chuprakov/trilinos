@@ -54,6 +54,17 @@ ADD_SUBDIRECTORY(src)
 
 PACKAGE_ADD_TEST_DIRECTORIES(tests)
 
+#
+# Exclude files for source package.
+#
+
+PACKAGE_ARCH_EXCLUDE_AUTOTOOLS_FILES()
+
+PACKAGE_ARCH_EXCLUDE_FILES(
+  Make.in
+  \(.*/\)*Make.in
+  build_examples
+  )
 
 #
 # D) Do standard postprocessing
