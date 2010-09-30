@@ -124,13 +124,13 @@ int MPI_Send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI
   assert(0); /* Should never be called in serial mode */
   return 0;
 }
-int MPI_Recv(void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status* status)
+int MPI_Recv(void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, RTOP_MPI_Status* status)
 {
   assert(0); /* Should never be called in serial mode */
   return 0;
 }
 
-int MPI_Sendrecv_replace(void* buff, int count, MPI_Datatype datatype, int dest, int sendtag, int source, int recvtag, MPI_Comm comm, MPI_Status* status)
+int MPI_Sendrecv_replace(void* buff, int count, MPI_Datatype datatype, int dest, int sendtag, int source, int recvtag, MPI_Comm comm, RTOP_MPI_Status* status)
 {
   assert(0); /* Should never be called in serial mode */
   return 0;

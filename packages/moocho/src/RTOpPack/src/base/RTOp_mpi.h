@@ -61,7 +61,7 @@ typedef int MPI_Op;
 #define MPI_MIN            (MPI_Op)(101)
 #define MPI_SUM            (MPI_Op)(102)
 #define MPI_DATATYPE_NULL  ((MPI_Datatype)0)
-typedef struct { int MPI_SOURCE; int MPI_TAG; int MPI_ERROR; } MPI_Status;
+typedef struct { int MPI_SOURCE; int MPI_TAG; int MPI_ERROR; } RTOP_MPI_Status;
 typedef void (MPI_User_function) ( void *, void *, int *, MPI_Datatype * ); 
 
 /* ////////////////////////// */
@@ -78,8 +78,8 @@ EXPORT_MPI_API int MPI_Type_free(MPI_Datatype *);
 EXPORT_MPI_API int MPI_Op_create(MPI_User_function *, int, MPI_Op *);
 EXPORT_MPI_API int MPI_Op_free( MPI_Op *);
 EXPORT_MPI_API int MPI_Send(void*, int, MPI_Datatype, int, int, MPI_Comm);
-EXPORT_MPI_API int MPI_Recv(void*, int, MPI_Datatype, int, int, MPI_Comm, MPI_Status*);
-EXPORT_MPI_API int MPI_Sendrecv_replace(void*, int, MPI_Datatype, int, int, int, int, MPI_Comm, MPI_Status*);
+EXPORT_MPI_API int MPI_Recv(void*, int, MPI_Datatype, int, int, MPI_Comm, RTOP_MPI_Status*);
+EXPORT_MPI_API int MPI_Sendrecv_replace(void*, int, MPI_Datatype, int, int, int, int, MPI_Comm, RTOP_MPI_Status*);
 EXPORT_MPI_API int MPI_Reduce(void* , void*, int, MPI_Datatype, MPI_Op, int, MPI_Comm);
 EXPORT_MPI_API int MPI_Allreduce(void* , void*, int, MPI_Datatype, MPI_Op, MPI_Comm);
 EXPORT_MPI_API int MPI_Barrier(MPI_Comm);
