@@ -1,4 +1,5 @@
 #include "SundanceExodusMeshReader.hpp"
+#include "SundanceVertexSort.hpp"
 #include "SundanceOut.hpp"
 #include "SundanceExceptions.hpp"
 #include "SundancePathUtils.hpp"
@@ -6,9 +7,6 @@
 #ifdef HAVE_SUNDANCE_EXODUS
 #include "exodusII.h"
 #endif 
-
-using namespace Sundance;
-using namespace Sundance;
 
 using namespace Teuchos;
 using namespace Sundance;
@@ -191,6 +189,12 @@ Mesh ExodusMeshReader::fillMesh() const
   }
   TEST_FOR_EXCEPT(ierr < 0);
   int count = 0;
+  Array<int> permKey;
+  permKey.resize(numElems);
+//  Sundance::Map<int,Array<int> > elemVerts;
+  Array<int> blockIsSimplicial(numElemBlocks);
+  bool allBlocksAreSimplicial = true;
+
   for (int b=0; b<numElemBlocks; b++)
   {
     char elemType[MAX_LINE_LENGTH+1];
@@ -198,35 +202,53 @@ Mesh ExodusMeshReader::fillMesh() const
     int nodesPerEl;
     int numAttrs;
     int bid = blockIDs[b];
-
+    
     ierr = ex_get_elem_block(exoID, bid, elemType, &elsInBlock,
       &nodesPerEl, &numAttrs);
     TEST_FOR_EXCEPT(ierr < 0);
+
+    bool blockIsSimplicial = true;
+    if (nodesPerEl != dim+1) 
+    {
+      blockIsSimplicial=false;
+      allBlocksAreSimplicial=false;
+    }
 
     Array<int> connect(elsInBlock * nodesPerEl);
 
     ierr = ex_get_elem_conn(exoID, bid, &(connect[0]));
     TEST_FOR_EXCEPT(ierr < 0);
     int n=0;
+    Array<int> orderedVerts(nodesPerEl);
+    Array<int> exVerts(nodesPerEl);
 
     for (int e=0; e<elsInBlock; e++, n+=nodesPerEl, count++)
     {
-      if (dim==2)
+
+      for (int v=0; v<nodesPerEl; v++)
       {
-        mesh.addElement(elemGID[count], tuple(ptGID[connect[n]-1], ptGID[connect[n+1]-1], ptGID[connect[n+2]-1]), elemOwner[count], bid);
-        SUNDANCE_VERB_HIGH("adding element=("
-          << connect[n]-1 << ", " << connect[n+1]-1
-          << ", " << connect[n+2]-1 << ")");
+        orderedVerts[v] = ptGID[connect[n+v]-1];
       }
-      else
+      exVerts = orderedVerts;
+      int key = -1;
+      if (blockIsSimplicial) 
       {
-        mesh.addElement(elemGID[count], 
-          tuple(ptGID[connect[n]-1], ptGID[connect[n+1]-1], ptGID[connect[n+2]-1], ptGID[connect[n+3]-1]),
+        vertexSort(orderedVerts, &key);
+//        elemVerts.put(elemGID[count], orderedVerts); 
+      }
+
+      int elemLID 
+        = mesh.addElement(elemGID[count], orderedVerts, 
           elemOwner[count], bid);
+      if (blockIsSimplicial) 
+      {
+//        elemVerts.put(elemLID, orderedVerts); 
+        permKey[elemLID]=key;
       }
     }
   }
 
+ 
 
   /* Read the node sets */
   Array<int> nsIDs(numNodeSets);
@@ -272,10 +294,16 @@ Mesh ExodusMeshReader::fillMesh() const
     TEST_FOR_EXCEPT(ierr < 0);
     for (int n=0; n<nSides; n++)
     {
-      int elemID = elems[n];
-      int facetNum = sides[n];
+      int elemID = elems[n]-1;
+      int facetNum = sides[n]-1;
       int fsign;
-      int sideLID = mesh.facetLID(dim, elemID-1, dim-1, facetNum-1,fsign);
+      if (allBlocksAreSimplicial)
+      {
+        int key = permKey[elemID];
+        facetNum = exFacetIndexToUFCFacetIndex(dim, key, facetNum);
+      }
+      int sideLID = mesh.facetLID(dim, elemID, dim-1, 
+        facetNum, fsign);
       mesh.setLabel(dim-1, sideLID, ssID);
     }
   }

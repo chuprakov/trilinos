@@ -25,51 +25,51 @@
   ***************************************************************** */
 
 
-/** \file Target3DUntangle.cpp
+/** \file Target3DUntangleBeta.cpp
  *  \brief 
  *  \author Jason Kraftcheck 
  */
 
 #include "Mesquite.hpp"
-#include "Target3DUntangle.hpp"
+#include "Target3DUntangleBeta.hpp"
 #include "TMPDerivs.hpp"
 
 namespace MESQUITE_NS {
 
 
-Target3DUntangle::~Target3DUntangle()
+Target3DUntangleBeta::~Target3DUntangleBeta()
 {}
 
-std::string Target3DUntangle::get_name() const
-  { return "untangle"; }
+std::string Target3DUntangleBeta::get_name() const
+  { return "untangle beta"; }
 
-bool Target3DUntangle::evaluate( const MsqMatrix<3,3>& A, 
-                                 const MsqMatrix<3,3>& W, 
-                                 double& result, 
-                                 MsqError& err )
+bool Target3DUntangleBeta::evaluate( const MsqMatrix<3,3>& A, 
+                                     const MsqMatrix<3,3>& W, 
+                                     double& result, 
+                                     MsqError& err )
 {
   const MsqMatrix<3,3> Winv = inverse(W);
   const MsqMatrix<3,3> T = A * Winv;
   double tau = det(T);
   double d = tau - mGamma;
   double f = fabs(d) - d;
-  result = f*f*f*f;
+  result = 0.125*f*f*f;
   return true;
 }
 
-bool Target3DUntangle::evaluate_with_grad( const MsqMatrix<3,3>& A,
-                                           const MsqMatrix<3,3>& W,
-                                           double& result,
-                                           MsqMatrix<3,3>& deriv_wrt_A,
-                                           MsqError& err )
+bool Target3DUntangleBeta::evaluate_with_grad( const MsqMatrix<3,3>& A,
+                                               const MsqMatrix<3,3>& W,
+                                               double& result,
+                                               MsqMatrix<3,3>& deriv_wrt_A,
+                                               MsqError& err )
 {
   const MsqMatrix<3,3> Winv = inverse(W);
   const MsqMatrix<3,3> T = A * Winv;
   double tau = det(T);
   if (tau < mGamma) {
-    double d = tau - mGamma;
-    result = 16 * d*d*d*d;
-    deriv_wrt_A = 64 * d*d*d * transpose_adj(T);
+    double d = mGamma - tau;
+    result = d*d*d;
+    deriv_wrt_A = -3*d*d*transpose_adj(T);
     deriv_wrt_A = deriv_wrt_A * transpose(Winv);
   }
   else {
@@ -79,24 +79,24 @@ bool Target3DUntangle::evaluate_with_grad( const MsqMatrix<3,3>& A,
   return true;
 }
 
-bool Target3DUntangle::evaluate_with_hess( const MsqMatrix<3,3>& A,
-                                           const MsqMatrix<3,3>& W,
-                                           double& result,
-                                           MsqMatrix<3,3>& deriv_wrt_A,
-                                           MsqMatrix<3,3> second_wrt_A[6],
-                                           MsqError& err )
+bool Target3DUntangleBeta::evaluate_with_hess( const MsqMatrix<3,3>& A,
+                                               const MsqMatrix<3,3>& W,
+                                               double& result,
+                                               MsqMatrix<3,3>& deriv_wrt_A,
+                                               MsqMatrix<3,3> second_wrt_A[6],
+                                               MsqError& err )
 {
   const MsqMatrix<3,3> Winv = inverse(W);
   const MsqMatrix<3,3> T = A * Winv;
   double tau = det(T);
   if (tau < mGamma) {
-    double d = tau - mGamma;
-    result = 16 * d*d*d*d;
     const MsqMatrix<3,3> adjt = transpose_adj(T);
-    deriv_wrt_A = 64 * d*d*d * adjt;
+    double d = mGamma - tau;
+    result = d*d*d;
+    deriv_wrt_A = -3*d*d*adjt;
     deriv_wrt_A = deriv_wrt_A * transpose(Winv);
-    set_scaled_outer_product( second_wrt_A, 192*d*d, adjt );
-    pluseq_scaled_2nd_deriv_of_det( second_wrt_A, 64*d*d*d, T );
+    set_scaled_outer_product( second_wrt_A, 6*d, adjt );
+    pluseq_scaled_2nd_deriv_of_det( second_wrt_A, -3*d*d, T );
     second_deriv_wrt_product_factor( second_wrt_A, Winv );
   }
   else {

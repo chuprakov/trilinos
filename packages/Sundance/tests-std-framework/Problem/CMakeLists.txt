@@ -14,10 +14,12 @@ SET(DisabledTests
 
 SET(SerialTests
   DiscFunc3D
+  TetQuadTransformationTest
   PoissonOnDisk 
   LinearPeriodic1D
   NonlinearPeriodic1D
   Poisson3D
+  Projection3D
   PoissonBoltzmannDemo1D
   BesselTest2D 
   Coupled2D

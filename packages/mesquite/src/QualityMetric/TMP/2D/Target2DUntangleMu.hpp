@@ -20,70 +20,81 @@
     (lgpl.txt) along with this library; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-    (2009) kraftche@cae.wisc.edu    
-    (2010) jwfrank@sandia.gov   
+    (2010) kraftche@cae.wisc.edu    
 
   ***************************************************************** */
 
 
-/** \file Target3DShapeSizeUntangle.hpp
+/** \file Target2DUntangleMu.hpp
  *  \brief 
- *  \author Jason Franks
+ *  \author Jason Kraftcheck 
  */
 
-#ifndef MSQ_TARGET_3D_SHAPE_SIZE_UNTANGLE_HPP
-#define MSQ_TARGET_3D_SHAPE_SIZE_UNTANGLE_HPP
+#ifndef MSQ_TARGET_2D_UNTANGLE_MU_HPP
+#define MSQ_TARGET_2D_UNTANGLE_MU_HPP
 
 #include "Mesquite.hpp"
-#include "TargetMetric3D.hpp"
+#include "TargetMetric2D.hpp"
 
 namespace MESQUITE_NS {
 
-/**\brief Untangle metric
+/**\brief Composite untangle metric
  *
- * \f$ \mu(T) = |T|^3 - 3 \sqrt{3} \tau + \gamma (\tau - 1)^2 \f$
+ * This metric should be combined with Target2DSize or Target2DShapeSize
+ * to produce a concrete untangle metric.
  *
- * \f$ \f(mu(T)) = \{|[1 - \epsilon] - \mu(T)| - ([1 - \epsilon] - \mu(T))\}^2
+ * \f$ \mu^\prime(T) = \frac{1}{8}(|d| - d)^3 \f$
+ * \f$ d(T) = \sigma - \epsilon - \mu(T()) \f$
  *
  */
-class Target3DShapeSizeUntangle : public TargetMetric3D
+class Target2DUntangleMu : public TargetMetric2D
 {
 private:
-  double mEps;
-  double mGamma;
+  TargetMetric2D* mBaseMetric;
+  double mConstant;
 
 public:
 
-  Target3DShapeSizeUntangle( double eps = 0.01, double gamma = 2.0 ) : mEps(eps), mGamma(gamma) {}
+  Target2DUntangleMu( TargetMetric2D* base, 
+                      double sigma = 1.0 ) 
+    : mBaseMetric(base),
+      mConstant(0.99*sigma) /* default epsilon is 0.01*sigma */
+    {}
+
+  Target2DUntangleMu( TargetMetric2D* base, 
+                      double sigma,
+                      double epsilon ) 
+    : mBaseMetric(base),
+      mConstant(sigma-epsilon) 
+    {}
 
   MESQUITE_EXPORT virtual
-  ~Target3DShapeSizeUntangle();
+  ~Target2DUntangleMu();
 
   MESQUITE_EXPORT virtual
   std::string get_name() const;
 
   MESQUITE_EXPORT virtual
-  bool evaluate( const MsqMatrix<3,3>& A, 
-                 const MsqMatrix<3,3>& W, 
+  bool evaluate( const MsqMatrix<2,2>& A, 
+                 const MsqMatrix<2,2>& W, 
                  double& result, 
                  MsqError& err );
    
-  MESQUITE_EXPORT virtual
-  bool evaluate_with_grad( const MsqMatrix<3,3>& A, 
-                           const MsqMatrix<3,3>& W, 
-                           double& result, 
-                           MsqMatrix<3,3>& wrt_A, 
+ MESQUITE_EXPORT virtual
+  bool evaluate_with_grad( const MsqMatrix<2,2>& A,
+                           const MsqMatrix<2,2>& W,
+                           double& result,
+                           MsqMatrix<2,2>& deriv_wrt_A,
                            MsqError& err );
 
-  /* MESQUITE_EXPORT virtual
-  bool evaluate_with_hess( const MsqMatrix<3,3>& A,
-                           const MsqMatrix<3,3>& W,
+  MESQUITE_EXPORT virtual
+  bool evaluate_with_hess( const MsqMatrix<2,2>& A,
+                           const MsqMatrix<2,2>& W,
                            double& result,
-                           MsqMatrix<3,3>& deriv_wrt_A,
-                           MsqMatrix<3,3> second_wrt_A[3],
-                           MsqError& err );*/
+                           MsqMatrix<2,2>& deriv_wrt_A,
+                           MsqMatrix<2,2> second_wrt_A[3],
+                           MsqError& err );
 };
-
 
 
 } // namespace MESQUITE_NS

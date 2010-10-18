@@ -633,16 +633,15 @@ APPEND_SET(HEADERS
   QualityMetric/TMP/2D/Target2DShapeSizeOrientAlt1.hpp
   QualityMetric/TMP/2D/Target2DShapeSizeOrientBarrier.hpp
   QualityMetric/TMP/2D/Target2DShapeSizeOrientBarrierAlt1.hpp
-  QualityMetric/TMP/2D/Target2DShapeSizeUntangle.hpp
   QualityMetric/TMP/2D/Target2DSize.hpp
   QualityMetric/TMP/2D/Target2DSizeBarrier.hpp
-  QualityMetric/TMP/2D/Target2DSizeUntangle.hpp
   QualityMetric/TMP/2D/Target2DSquared.hpp
   QualityMetric/TMP/2D/Target2DSum.hpp
   QualityMetric/TMP/2D/Target2DOffset.hpp
   QualityMetric/TMP/2D/Target2DTau.hpp
-  QualityMetric/TMP/2D/Target2DUntangle.hpp
   QualityMetric/TMP/2D/Target2DUntangleAlt1.hpp
+  QualityMetric/TMP/2D/Target2DUntangleBeta.hpp
+  QualityMetric/TMP/2D/Target2DUntangleMu.hpp
   QualityMetric/TMP/2D/InverseMeanRatio2D.hpp 
   )
 
@@ -668,16 +667,15 @@ APPEND_SET(SOURCES
   QualityMetric/TMP/2D/Target2DShapeSizeOrientAlt1.cpp
   QualityMetric/TMP/2D/Target2DShapeSizeOrientBarrier.cpp
   QualityMetric/TMP/2D/Target2DShapeSizeOrientBarrierAlt1.cpp
-  QualityMetric/TMP/2D/Target2DShapeSizeUntangle.cpp
   QualityMetric/TMP/2D/Target2DSize.cpp
   QualityMetric/TMP/2D/Target2DSizeBarrier.cpp
-  QualityMetric/TMP/2D/Target2DSizeUntangle.cpp
   QualityMetric/TMP/2D/Target2DSquared.cpp
   QualityMetric/TMP/2D/Target2DSum.cpp
   QualityMetric/TMP/2D/Target2DOffset.cpp
   QualityMetric/TMP/2D/Target2DTau.cpp
-  QualityMetric/TMP/2D/Target2DUntangle.cpp
   QualityMetric/TMP/2D/Target2DUntangleAlt1.cpp
+  QualityMetric/TMP/2D/Target2DUntangleBeta.cpp
+  QualityMetric/TMP/2D/Target2DUntangleMu.cpp
   QualityMetric/TMP/2D/InverseMeanRatio2D.cpp 
   )
 
@@ -709,16 +707,15 @@ APPEND_SET(HEADERS
   QualityMetric/TMP/3D/Target3DShapeSizeOrientAlt1.hpp
   QualityMetric/TMP/3D/Target3DShapeSizeOrientBarrier.hpp
   QualityMetric/TMP/3D/Target3DShapeSizeOrientBarrierAlt1.hpp
-  QualityMetric/TMP/3D/Target3DShapeSizeUntangle.hpp
   QualityMetric/TMP/3D/Target3DSize.hpp
   QualityMetric/TMP/3D/Target3DSizeBarrier.hpp
-  QualityMetric/TMP/3D/Target3DSizeUntangle.hpp
   QualityMetric/TMP/3D/Target3DSquared.hpp
   QualityMetric/TMP/3D/Target3DSum.hpp
   QualityMetric/TMP/3D/Target3DOffset.hpp
   QualityMetric/TMP/3D/Target3DTau.hpp
-  QualityMetric/TMP/3D/Target3DUntangle.hpp 
   QualityMetric/TMP/3D/Target3DUntangleAlt1.hpp 
+  QualityMetric/TMP/3D/Target3DUntangleBeta.hpp 
+  QualityMetric/TMP/3D/Target3DUntangleMu.hpp 
   )
 
 APPEND_SET(SOURCES
@@ -742,16 +739,15 @@ APPEND_SET(SOURCES
   QualityMetric/TMP/3D/Target3DShapeSizeOrientAlt1.cpp
   QualityMetric/TMP/3D/Target3DShapeSizeOrientBarrier.cpp
   QualityMetric/TMP/3D/Target3DShapeSizeOrientBarrierAlt1.cpp
-  QualityMetric/TMP/3D/Target3DShapeSizeUntangle.cpp
   QualityMetric/TMP/3D/Target3DSize.cpp
   QualityMetric/TMP/3D/Target3DSizeBarrier.cpp
-  QualityMetric/TMP/3D/Target3DSizeUntangle.cpp
   QualityMetric/TMP/3D/Target3DSquared.cpp
   QualityMetric/TMP/3D/Target3DSum.cpp
   QualityMetric/TMP/3D/Target3DOffset.cpp
   QualityMetric/TMP/3D/Target3DTau.cpp
-  QualityMetric/TMP/3D/Target3DUntangle.cpp 
   QualityMetric/TMP/3D/Target3DUntangleAlt1.cpp 
+  QualityMetric/TMP/3D/Target3DUntangleBeta.cpp 
+  QualityMetric/TMP/3D/Target3DUntangleMu.cpp 
   )
 
 #
