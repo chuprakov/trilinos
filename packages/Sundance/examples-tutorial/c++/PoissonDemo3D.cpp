@@ -32,7 +32,7 @@
 using Sundance::List;
 
 // This test depends on Exodus, so skip it if Expdus hasn't been enabled. 
-#if defined(HAVE_SUNDANCE_EXODUS)
+#if defined(HAVE_SUNDANCE_EXODUS) && defined(HAVE_TRILINOS_DATA)
 
 /* 
  * </Ignore> 
@@ -389,7 +389,7 @@ int main(int argc, char** argv)
      * is just a sanity check to ensure the code doesn't get completely 
      * broken after a change to the library. 
      */
-    Sundance::passFailTest(fabs(flux), 1.0e-3);
+    Sundance::passFailTest(fabs(flux), 5.0e-3);
 
     /*
      * <Header level="subsubsection" name="finalize">

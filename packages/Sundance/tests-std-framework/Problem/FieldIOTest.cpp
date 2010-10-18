@@ -43,6 +43,7 @@ int main(int argc, char** argv)
 #endif
 
     std::string infile = "cyl-coarse";
+//    std::string infile = "./prism";
     int numProc = world.getNProc();
     
 
@@ -60,7 +61,7 @@ int main(int argc, char** argv)
 
         RCP<SerialPartitionerBase> part 
           = rcp(new FileIOChacoPartitioner("part"));
-
+        
         serialPartition(part, numProc, mesher, infile);
       }
       /* everyone else waits for the root processor to finish partitioning */
@@ -68,8 +69,12 @@ int main(int argc, char** argv)
     }
 
     /* Now do a readback test on the mesh */
+    MPIComm::world().synchronize();
+    Out::root() << "starting readback" << endl;
+    MPIComm::world().synchronize();
     double err = readbackTester(infile, world);
 #else
+    Out::root() << "starting readback" << endl;
     double err = 0.0;
     if (world.getRank()==0)
     {

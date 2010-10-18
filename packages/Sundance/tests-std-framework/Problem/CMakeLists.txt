@@ -14,10 +14,12 @@ SET(DisabledTests
 
 SET(SerialTests
   DiscFunc3D
+  TetQuadTransformationTest
   PoissonOnDisk 
   LinearPeriodic1D
   NonlinearPeriodic1D
   Poisson3D
+  Projection3D
   PoissonBoltzmannDemo1D
   BesselTest2D 
   Coupled2D
@@ -69,7 +71,7 @@ SET(MPITests
              SpectralSqrt 
              SteadyBurgers1D
              NitschePoisson2D 
-             HelmholtzEigen2D
+             #HelmholtzEigen2D
              MixedTest_HN
              NavStok_Chanel_stat_HN
              Poisson3DTest_HN_Q1Q1

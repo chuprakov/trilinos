@@ -28,6 +28,7 @@
 // ************************************************************************
 /* @HEADER@ */
 
+
 #include "SundanceQuadratureFamily.hpp"
 #include "SundanceTabs.hpp"
 
@@ -169,19 +170,19 @@ void QuadratureFamily::getTriangleFacetQuad(int facetDim,
       quadWeights.resize(facetWts.size());
       for (int i=0; i<facetPts.size(); i++)
         {
-          if (facetIndex==0)
+          if (facetIndex==2)
             {
               quadPoints[i] = Point(facetPts[i][0], 0.0);
               quadWeights[i] = facetWts[i];
             }
-          else if (facetIndex==1)
+          else if (facetIndex==0)
             {
               quadPoints[i] = Point(1.0-facetPts[i][0], facetPts[i][0]);
               quadWeights[i] = facetWts[i];
             }
           else
             {
-              quadPoints[i] = Point(0.0, 1.0-facetPts[i][0]);
+              quadPoints[i] = Point(0.0, facetPts[i][0]);
               quadWeights[i] = facetWts[i];
             }
         }
@@ -275,32 +276,35 @@ void QuadratureFamily::getTetFacetQuad(int facetDim,
           double s = facetPts[i][0];
           double t = facetPts[i][1];
           double x,y,z;
-          if (facetIndex==0)
+          if (facetIndex==2) 
             {
-              x = 1.0-s;
-              y = 1.0-s-t;
-              z = t;
-            }
-          else if (facetIndex==1)
-            {
-              x = 1.0-s;
+              x = s;
               y = 0.0;
               z = t;
             }
-          else if (facetIndex==2) 
+          else if (facetIndex==0) 
+            {
+              x = 1.0-s-t;
+              y = s;
+              z = t;
+            }
+          else if (facetIndex==1) 
             {
               x = 0.0;
-              y = 1.0-s;
-              z = t;
+              y = t;
+              z = s;
             }
           else
             {
               x = s;
-              y = t;
+              y = 1.0-s-t;
               z = 0.0;
             }
           quadPoints[i] = Point(x, y, z);
-          quadWeights[i] = facetWts[i];
+	  if (facetIndex != 1)
+	    quadWeights[i] = facetWts[i];
+	  else 
+	    quadWeights[i] = facetWts[i] * sqrt(3.0);
 
         }
     }
@@ -309,11 +313,12 @@ void QuadratureFamily::getTetFacetQuad(int facetDim,
       quadPoints.resize(1);
       quadWeights.resize(1);
       quadWeights[0] = 1.0;  
-      if (facetIndex==0) quadPoints[0] = Point(0.0, 0.0);
-      else if (facetIndex==1) quadPoints[0] = Point(1.0, 0.0);
-      else if (facetIndex==2) quadPoints[0] = Point(1.0, 0.0);
-      else quadPoints[0] = Point(0.0, 1.0);
+      if (facetIndex==0) quadPoints[0] = Point(0.0, 0.0, 0.0);
+      else if (facetIndex==1) quadPoints[0] = Point(1.0, 0.0, 0.0);
+      else if (facetIndex==2) quadPoints[0] = Point(0.0, 1.0, 0.0);
+      else quadPoints[0] = Point(0.0, 0.0, 1.0);
     }
+  TEST_FOR_EXCEPT(facetDim==1);
 }
 
 

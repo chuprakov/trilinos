@@ -79,7 +79,7 @@ int main(int argc, char** argv)
       
       /* Create unknown and test functions, discretized using first-order
        * Lagrange interpolants */
-      int order = 3;
+      int order = 2;
       double p = (double) order;
       Expr u = new UnknownFunction(new Lagrange(order), "u");
       Expr v = new TestFunction(new Lagrange(order), "v");

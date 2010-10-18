@@ -102,6 +102,9 @@ private:
   CPPUNIT_TEST( test_diagonal_gradient );
   CPPUNIT_TEST( test_diagonal_gradient_sqr );
   
+  CPPUNIT_TEST( test_hessian_diag );
+  CPPUNIT_TEST( test_hessian_diag_sqr );
+ 
   CPPUNIT_TEST( test_clone );
   CPPUNIT_TEST( test_clone_sqr );
   
@@ -195,6 +198,11 @@ public:
   void test_diagonal_gradient_sqr( )  
     { VarianceTemplate of(NULL); compare_diagonal_gradient(&of); }
 
+  void test_hessian_diag()
+    { StdDevTemplate of(NULL); compare_numerical_hessian_diagonal(&of); }
+  void test_hessian_diag_sqr()
+    { VarianceTemplate of(NULL); compare_numerical_hessian_diagonal(&of); }
+
   void test_hessian_fails();
   void test_hessian_fails_sqr();
   
@@ -247,7 +255,7 @@ static double std_dev_sqr( const double* array, unsigned len )
     sqr_sum += array[i]*array[i];
   }
   
-  return (len*sqr_sum - sum*sum)/(len * (len-1));
+  return sqr_sum/len - (sum/len)*(sum/len);
 }
 
 
