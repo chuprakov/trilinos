@@ -145,6 +145,7 @@ APPEND_SET(HEADERS
   Control/Wrappers/ShapeImprover.hpp
   Control/Wrappers/SizeAdaptShapeWrapper.hpp
   Control/Wrappers/PaverMinEdgeLengthWrapper.hpp 
+  Control/Wrappers/UntangleWrapper.hpp 
   Control/Wrappers/ViscousCFDTetShapeWrapper.hpp 
   Control/Wrappers/Wrapper.hpp 
   )
@@ -155,6 +156,7 @@ APPEND_SET(SOURCES
   Control/Wrappers/ShapeImprover.cpp
   Control/Wrappers/SizeAdaptShapeWrapper.cpp
   Control/Wrappers/PaverMinEdgeLengthWrapper.cpp
+  Control/Wrappers/UntangleWrapper.cpp 
   Control/Wrappers/ViscousCFDTetShapeWrapper.cpp
   Control/Wrappers/Wrapper.cpp 
   )
@@ -233,6 +235,7 @@ APPEND_SET(HEADERS
   Misc/ConicDomain.hpp
   Misc/CylinderDomain.hpp
   Misc/DomainClassifier.hpp
+  Misc/EdgeIterator.hpp
   Misc/Exponent.hpp
   Misc/FileTokenizer.hpp
   Misc/Matrix3D.hpp
@@ -247,6 +250,7 @@ APPEND_SET(HEADERS
   Misc/MsqMatrix.hpp
   Misc/MsqTimer.hpp
   Misc/PlanarDomain.hpp
+  Misc/SimpleStats.hpp
   Misc/SphericalDomain.hpp
   Misc/SymMatrix3D.hpp
   Misc/Vector3D.hpp
@@ -261,6 +265,7 @@ APPEND_SET(SOURCES
   Misc/DomainClassifier.cpp
   Misc/DomainUtil.cpp
   Misc/DomainUtil.hpp
+  Misc/EdgeIterator.cpp
   Misc/Exponent.cpp
   Misc/FileTokenizer.cpp
   Misc/MeshDomain1D.cpp
@@ -274,6 +279,7 @@ APPEND_SET(SOURCES
   Misc/MsqInterrupt.cpp
   Misc/MsqTimer.cpp
   Misc/PlanarDomain.cpp
+  Misc/SimpleStats.cpp
   Misc/SphericalDomain.cpp
   Misc/Vector3D.cpp
   Misc/VtkTypeInfo.cpp
