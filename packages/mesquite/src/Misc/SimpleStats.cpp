@@ -25,53 +25,30 @@
   ***************************************************************** */
 
 
-/** \file MeshUtil.hpp
+/** \file SimpleStats.cpp
+ *  \brief 
  *  \author Jason Kraftcheck 
  */
 
-#ifndef MSQ_MESH_UTIL_HPP
-#define MSQ_MESH_UTIL_HPP
-
-#include "Mesquite.hpp"
+#include "SimpleStats.hpp"
+#include <limits>
 
 namespace MESQUITE_NS {
 
-class Mesh;
-class MsqError;
-class SimpleStats;
-class Settings;
-class PatchData;
+SimpleStats::SimpleStats() 
+  : valueSum(0),
+    valueSqrSum(0),
+    valueMin(std::numeric_limits<double>::infinity()),
+    valueMax(-std::numeric_limits<double>::infinity()),
+    valueCount(0) 
+  {}
 
-/**\brief Miscelanions operations performed on an entire \c Mesh
- *        without the conveinience of a \c PatchData.
- */
-class MeshUtil 
+void SimpleStats::clear()
 {
-  private:
-    Mesh* myMesh;
-    Settings* mySettings;
-    PatchData* globalPatch;
-    
-  protected:
-    PatchData* get_global_patch( MsqError& err );
-    
-  public:
-    MeshUtil( Mesh* mesh, Settings* settings = 0 ) 
-      : myMesh( mesh ), 
-        mySettings( settings ),
-        globalPatch(0) 
-        {}
-        
-    ~MeshUtil();
-    
-    /**\brief Calcluate statistics for mesh edge lengths
-     */
-    void edge_length_distribution( SimpleStats& result, MsqError& err );
-
-    void lambda_distribution( SimpleStats& result, MsqError& err );
-};
-
+  valueSum = valueSqrSum = 0;
+  valueMin = std::numeric_limits<double>::infinity();
+  valueMax = -valueMin;
+  valueCount = 0;
+}
 
 } // namespace MESQUITE_NS
-
-#endif
