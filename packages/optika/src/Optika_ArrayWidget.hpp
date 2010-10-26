@@ -41,6 +41,7 @@
 #include <vector>
 #include "Optika_treemodel.hpp"
 #include "Optika_FileNameWidget.hpp"
+#include "Optika_SpinBoxApplier.hpp"
 
 namespace Optika {
 
@@ -231,11 +232,11 @@ public slots:
 private:
 	QWidget* getEditorWidget(){
 		QSpinBox *newSpin = new QSpinBox(this);
-		Teuchos::RCP<const EnhancedNumberValidator<int> > validator = Teuchos::null;
+		Teuchos::RCP<const Teuchos::EnhancedNumberValidator<int> > validator = Teuchos::null;
 		if(!Teuchos::is_null(entryValidator)){
-			validator = Teuchos::rcp_dynamic_cast<const ArrayNumberValidator<int> >(entryValidator,true)->getPrototype();
+			validator = Teuchos::rcp_dynamic_cast<const Teuchos::ArrayNumberValidator<int> >(entryValidator,true)->getPrototype();
 		}
-		EnhancedNumberValidator<int>::applyToSpinBox(validator, newSpin);
+		SpinBoxApplier<int>::applyToSpinBox(validator, newSpin);
 		return newSpin;
 	}
 };
@@ -286,11 +287,11 @@ public slots:
 private:
 	QWidget* getEditorWidget(){
 		QSpinBox *newSpin = new QSpinBox(this);
-		Teuchos::RCP<const EnhancedNumberValidator<short> > validator = Teuchos::null;
+		Teuchos::RCP<const Teuchos::EnhancedNumberValidator<short> > validator = Teuchos::null;
 		if(!Teuchos::is_null(entryValidator)){
-			validator = Teuchos::rcp_dynamic_cast<const ArrayNumberValidator<short> >(entryValidator,true)->getPrototype();
+			validator = Teuchos::rcp_dynamic_cast<const Teuchos::ArrayNumberValidator<short> >(entryValidator,true)->getPrototype();
 		}
-		EnhancedNumberValidator<short>::applyToSpinBox(validator, newSpin);
+		SpinBoxApplier<short>::applyToSpinBox(validator, newSpin);
 		return newSpin;
 	}
 };
@@ -393,11 +394,11 @@ public slots:
 private:
 	QWidget* getEditorWidget(){
 		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
-		Teuchos::RCP<const EnhancedNumberValidator<double> > validator = Teuchos::null;
+		Teuchos::RCP<const Teuchos::EnhancedNumberValidator<double> > validator = Teuchos::null;
 		if(!Teuchos::is_null(entryValidator)){
-			validator = Teuchos::rcp_dynamic_cast<const ArrayNumberValidator<double> >(entryValidator,true)->getPrototype();
+			validator = Teuchos::rcp_dynamic_cast<const Teuchos::ArrayNumberValidator<double> >(entryValidator,true)->getPrototype();
 		}
-		EnhancedNumberValidator<double>::applyToSpinBox(validator, newSpin);
+		SpinBoxApplier<double>::applyToSpinBox(validator, newSpin);
 		return newSpin;
 	}
 };
@@ -447,11 +448,11 @@ public slots:
 private:
 	QWidget* getEditorWidget(){
 		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
-		Teuchos::RCP<const EnhancedNumberValidator<float> > validator = Teuchos::null;
+		Teuchos::RCP<const Teuchos::EnhancedNumberValidator<float> > validator = Teuchos::null;
 		if(!Teuchos::is_null(entryValidator)){
-			validator = Teuchos::rcp_dynamic_cast<const ArrayNumberValidator<float> >(entryValidator,true)->getPrototype();
+			validator = Teuchos::rcp_dynamic_cast<const Teuchos::ArrayNumberValidator<float> >(entryValidator,true)->getPrototype();
 		}
-		EnhancedNumberValidator<float>::applyToSpinBox(validator, newSpin);
+		SpinBoxApplier<float>::applyToSpinBox(validator, newSpin);
 		return newSpin;
 	}
 };
@@ -485,7 +486,7 @@ public:
 			if(Teuchos::is_null(entryValidator)){
 				toReturn.push_back(((QLineEdit*)(*it))->text().toStdString());
 			}
-			else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator))){
+			else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const Teuchos::ArrayFileNameValidator>(entryValidator))){
 				toReturn.push_back(((FileNameWidget*)(*it))->getCurrentFileName().toStdString());
 			}
 			else if(entryValidator->validStringValues()->size() !=0){
@@ -505,7 +506,7 @@ public:
 			if(Teuchos::is_null(entryValidator)){
 				static_cast<QLineEdit*>(*it)->setText(valueList.at(i));
 			}
-			else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator))){
+			else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const Teuchos::ArrayFileNameValidator>(entryValidator))){
 				static_cast<FileNameWidget*>(*it)->setCurrentFileName(valueList.at(i));
 			}
 			else if(entryValidator->validStringValues()->size() !=0){
@@ -526,8 +527,8 @@ private:
 		if(Teuchos::is_null(entryValidator)){
 			return new QLineEdit(this);
 		}
-		else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator))){
-			return new FileNameWidget("", Teuchos::rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator)->getPrototype()->fileMustExist(), this);
+		else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const Teuchos::ArrayFileNameValidator>(entryValidator))){
+			return new FileNameWidget("", Teuchos::rcp_dynamic_cast<const Teuchos::ArrayFileNameValidator>(entryValidator)->getPrototype()->fileMustExist(), this);
 		}
 		else if(entryValidator->validStringValues()->size() != 0){
 			Teuchos::RCP<const Teuchos::Array<std::string> > options = entryValidator->validStringValues();

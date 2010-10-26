@@ -1,4 +1,1 @@
-#ADD_SUBDIRECTORY(dependencies)
-ADD_SUBDIRECTORY(validators)
 ADD_SUBDIRECTORY(gui)
-ADD_SUBDIRECTORY(conditions)

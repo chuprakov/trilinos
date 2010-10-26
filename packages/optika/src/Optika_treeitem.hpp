@@ -34,6 +34,11 @@
 #include <QXmlStreamReader>
 #include "Teuchos_ParameterList.hpp"
 #include "Optika_ArrayHelperFunctions.hpp"
+
+//MUST BE DONE OUTSIDE NAMEPSACE!
+Q_DECLARE_METATYPE(Teuchos::RCP<const Teuchos::ParameterEntry>)
+Q_DECLARE_METATYPE(Teuchos::RCP<Teuchos::ParameterEntry>)
+
 namespace Optika{
 /**
  * The TreeItem class is the item class used by the TreeModel class.
@@ -61,7 +66,7 @@ public:
 	 * @param parent The parent TreeItem.
 	 * @param unrecognized If true, this item will be unrecognized and not displayed, if false the item will be displayed.
 	 */
-	TreeItem(const QList<QVariant> &data, Teuchos::ParameterEntry *parameterEntry, TreeItem *parent = 0, bool unrecognized=false);
+	TreeItem(const QList<QVariant> &data, Teuchos::RCP<Teuchos::ParameterEntry> parameterEntry, TreeItem *parent = 0, bool unrecognized=false);
 
 	/**
 	 * Deconstrcutor for the TreeItem.
@@ -133,13 +138,6 @@ public:
 	int row() const;
 
 	/**
-	 * Gets the ParameterEntry associated with this TreeItem if it has one.
-	 *
-	 * @return The ParameterEntry associated with this TreeItem if it has one.
-	 */
-	const Teuchos::ParameterEntry *entry();
-
-	/**
 	 * Determines whether or not the current value associated with the
 	 * TreeItem is valid.
 	 *
@@ -193,7 +191,7 @@ private:
 	/**
 	 * The ParameterEntry being represented by the TreeItem.
 	 */
-	Teuchos::ParameterEntry *parameterEntry;
+	Teuchos::RCP<Teuchos::ParameterEntry> parameterEntry;
 
 	/**
 	 * The docString for the TreeItem.
@@ -204,4 +202,5 @@ private:
 
 
 }
+
 #endif /* OPTIKA_TREEITEM_HPP_ */

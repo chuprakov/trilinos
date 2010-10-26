@@ -26,10 +26,9 @@
 // ***********************************************************************
 // @HEADER
 #include "Optika_GUI.hpp"
-#include "Optika_SpecificParameterEntryValidators.hpp"
 #include "Teuchos_StandardParameterEntryValidators.hpp"
-#include "Optika_StandardDependencies.hpp"
-#include "Optika_DependencySheet.hpp"
+#include "Teuchos_StandardDependencies.hpp"
+#include "Teuchos_DependencySheet.hpp"
 #include "Teuchos_FancyOStream.hpp"
 #include "Teuchos_VerboseObject.hpp"
 #include "Teuchos_XMLParameterListHelpers.hpp"
@@ -54,14 +53,9 @@ int main(){
    *
    */
   Teuchos::RCP<Teuchos::ParameterList> My_deplist = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
-  /**
-   * Notice how we specify My_deplist as the "Root List". When a dependency sheet is constructed it assumes
-   * all dependencies that will be added to it will be located in the Root List or one of the sublists in
-   * the Root List. Make sure when you're adding a dependency to the dependency sheet that your dependent
-   * and dependee (more on those later) are located somewhere in the "Root List" or one of it's sublists.
-   */
-  Teuchos::RCP<Optika::DependencySheet> depSheet1 =
-  	Teuchos::RCP<Optika::DependencySheet>(new Optika::DependencySheet(My_deplist, "My dep sheet"));
+
+  Teuchos::RCP<Teuchos::DependencySheet> depSheet1 =
+  	Teuchos::RCP<Teuchos::DependencySheet>(new Teuchos::DependencySheet("My dep sheet"));
 
 
   /*
@@ -93,22 +87,16 @@ int main(){
    * is determined by the dependee's boolean value. Here the dependent is the ParameterList "Preconditioner".
    * The dependee is a boolean parameter called ShowPrec. We only want the Preconditioner ParameterList to show 
    * if the ShowPrecs parameter is set to true, so we give the boolean value of "true" as the showIf argument.
-   * We also specify the parent parameter lists of both the dependent and the dependee.
-   *
-   * Note how both the Preconditioner sublist and ShowPrecs parameter are located in our "Root List" (which also
-   * happens to be their parent ParameterList).
    *
    * If we were to write out this dependency as a sentance, it would read like this:
    * Only show the Preconditioner list if the ShowPrecs parameter is set to true.
    */
-  Teuchos::RCP<Optika::BoolVisualDependency> precDep1 =
-    Teuchos::RCP<Optika::BoolVisualDependency>(
-      new Optika::BoolVisualDependency(
-	"ShowPrecs",
-	My_deplist,
-        "Preconditioner",
-	My_deplist,
-	true));
+  Teuchos::RCP<Teuchos::BoolVisualDependency> precDep1 =
+    Teuchos::RCP<Teuchos::BoolVisualDependency>(
+      new Teuchos::BoolVisualDependency(
+	      My_deplist->getEntryRCP("ShowPrecs"),
+        My_deplist->getEntryRCP("Preconditioner"),
+	      true));
 
   /*
    * Once we have created the depenency we add it to our dependency sheet using the addDependency function.
@@ -120,10 +108,7 @@ int main(){
   /*
    * Next we'll add two more parameters
    */
-  My_deplist->set(
-   	"Favorite Cheese",
-	"American",
-	"Your favorite type of cheese");
+  My_deplist->set("Favorite Cheese", "American", "Your favorite type of cheese");
   My_deplist->set("Swiss rating", 0, "How you rate swiss on a scail of 1 to 10");
 
   /*
@@ -133,13 +118,11 @@ int main(){
    * sentence it would read something like this:
    * Show the "Swiss rating" parameter when the "Favorite Cheese" parameter has the value "Swiss".
    */
-   Teuchos::RCP<Optika::StringVisualDependency> swissDep1 = 
-      Teuchos::RCP<Optika::StringVisualDependency>(
-        new Optika::StringVisualDependency(
-	  "Favorite Cheese",
-	  My_deplist,
-	  "Swiss rating",
-	  My_deplist,
+   Teuchos::RCP<Teuchos::StringVisualDependency> swissDep1 = 
+      Teuchos::RCP<Teuchos::StringVisualDependency>(
+        new Teuchos::StringVisualDependency(
+	  My_deplist->getEntryRCP("Favorite Cheese"),
+	  My_deplist->getEntryRCP("Swiss rating"),
 	  "Swiss",
 	  true));
 
@@ -161,12 +144,10 @@ int main(){
    * like this:
    * Only show the "Awesomeness" parameter when the "No awesome param" is false.
    */
-  Teuchos::RCP<Optika::BoolVisualDependency> awesomeDep1 =
-    Teuchos::RCP<Optika::BoolVisualDependency>( new Optika::BoolVisualDependency(
-      "No awesome param",
-      My_deplist,
-      "Awesomeness",
-      My_deplist,
+  Teuchos::RCP<Teuchos::BoolVisualDependency> awesomeDep1 =
+    Teuchos::RCP<Teuchos::BoolVisualDependency>( new Teuchos::BoolVisualDependency(
+      My_deplist->getEntryRCP("No awesome param"),
+      My_deplist->getEntryRCP("Awesomeness"),
       false));
 
   /*
@@ -176,7 +157,7 @@ int main(){
 
 
   /*
-   * Lets make a sublist to put into our "Root List".
+   * Lets make a sublist to put into our main parameter list.
    */
   Teuchos::ParameterList& waterList = My_deplist->sublist("Water", false, "A sublist about a lovely liquid.");
 
@@ -191,16 +172,11 @@ int main(){
    * buckets gets changed to 5, we'll need an array length of 5. To solve this problem we'll use a
    * NumberArrayLengthDependency. If written in a sentence, the dependency reads like this:
    * The number of entry's in the "Amount in Buckets" array is dependent upon the "Number Of Buckets" parameter.
-   *
-   * Note how this time the parent list of the dependent and dependee are not My_deplist. They are the actual list
-   * that the parameters a located in.
    */
-  Teuchos::RCP<Optika::NumberArrayLengthDependency> arrayLengthDep = Teuchos::RCP<Optika::NumberArrayLengthDependency>(
-  	new Optika::NumberArrayLengthDependency(
-	"Number Of Buckets", 
-	Teuchos::sublist(My_deplist,"Water"),
-	"Amount in Buckets", 
-	Teuchos::sublist(My_deplist,"Water")));
+  Teuchos::RCP<Teuchos::NumberArrayLengthDependency<int, double> > arrayLengthDep = Teuchos::RCP<Teuchos::NumberArrayLengthDependency<int, double> >(
+  	new Teuchos::NumberArrayLengthDependency<int, double>(
+	waterList.getEntryRCP("Number Of Buckets"),
+	waterList.getEntryRCP("Amount in Buckets")));
 
   /*
    * Then add the dependency to the dependency sheet.
@@ -231,13 +207,13 @@ int main(){
    * their doing.
    *
    * Remember: Dependents and Dependees don't have to have the same parent list. They just have to be located
-   * some where in the "Root List" (or one of its sublists) of the dependency sheet.
+   * anywhere!
    *
    * Remember: When making dependencies you must use the exact names of the the parameter and/or parameter lists
    * when specifying the dependent and the dependee. If you mispell the names, and there is no parameter and/or
-   * parameter list by the name in the Root List (or one of it's sublists), the GUI won't even start up. 
+   * parameter list by the name, the GUI won't even start up. 
    * It'll just throw and error. Worse, if you mispelled a name and there is a parameter or parameter list by 
-   * that name in the root list, then your GUI will probably behave erratically.
+   * that name, then your GUI will probably behave erratically.
    *
    * Remmeber: Different depenencies have different requirements. Be sure to check the documentation of the
    * dependency you're using to make sure you're getting it right. Otherwise you (or worse, your users) might
