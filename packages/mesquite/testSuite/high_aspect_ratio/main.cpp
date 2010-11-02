@@ -37,8 +37,8 @@
 
 #include "ReferenceMesh.hpp"
 #include "RefMeshTargetCalculator.hpp"
-#include "Target2DShapeBarrier.hpp"
-#include "TMPQualityMetric.hpp"
+#include "TRel2DShapeBarrier.hpp"
+#include "TRelQualityMetric.hpp"
 
 #include "TerminationCriterion.hpp"
 #include "QualityAssessor.hpp"
@@ -176,8 +176,8 @@ int main( int argc, char* argv[] )
 
   ReferenceMesh rmesh( &refmesh );
   RefMeshTargetCalculator tc( &rmesh );
-  Target2DShapeBarrier tm;
-  TMPQualityMetric qm( &tc, &tm, 0 );
+  TRel2DShapeBarrier tm;
+  TRelQualityMetric qm( &tc, &tm, 0 );
   
   PMeanPTemplate of( 1.0, &qm );
   ConjugateGradient cg( &of );
@@ -223,8 +223,8 @@ int main( int argc, char* argv[] )
     std::cerr << "Mesh contains no vertices" << std::endl;
     return USAGE_ERROR;
   }
-  std::vector<unsigned short> dof( vertices.size(), -1 );
-  domain.domain_DoF( &vertices[0], &dof[0], vertices.size(), err ); CHECKERR
+  std::vector<unsigned short> dof( vertices.size(), 0 );
+  domain.domain_DoF( arrptr(vertices), arrptr(dof), vertices.size(), err ); CHECKERR
   int idx = std::find(dof.begin(), dof.end(), 2) - dof.begin();
   const Mesh::VertexHandle free_vertex = vertices[idx];
   MsqVertex coords;

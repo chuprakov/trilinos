@@ -176,7 +176,7 @@ int main( int argc, char* argv[] )
   result += uwt( skip_beta||skip_shest, UntangleWrapper::BETA, "shest_grid32.vtk",           0 );
 
   result += uwt( skip_size||skip_horse, UntangleWrapper::SIZE, "tangled_horse1.vtk",         0 );
-  result += uwt( skip_size||skip_hole , UntangleWrapper::SIZE, "hole_in_square_tanglap.vtk", 4, true );
+  result += uwt( skip_size||skip_hole , UntangleWrapper::SIZE, "hole_in_square_tanglap.vtk", 6, true );
   result += uwt( skip_size||skip_invrt, UntangleWrapper::SIZE, "inverted-hole-2.vtk",        0  );
   result += uwt( skip_size||skip_shest, UntangleWrapper::SIZE, "shest_grid32.vtk",           0 );
 
@@ -320,7 +320,7 @@ int uwt( bool skip,
   mesh.get_all_vertices( verts, err );
   if (err || verts.empty()) abort();
   MsqVertex coords;
-  mesh.vertices_get_coordinates( &verts[0], &coords, 1, err );
+  mesh.vertices_get_coordinates( arrptr(verts), &coords, 1, err );
   if (err) abort();
   Vector3D norm(0,0,flip_domain ? -1 : 1);
   PlanarDomain domain( norm, coords );
