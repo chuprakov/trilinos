@@ -35,9 +35,9 @@
 #include "AspectRatioGammaQualityMetric.hpp"
 #include "LocalSizeQualityMetric.hpp"
 #include "ConditionNumberQualityMetric.hpp"
-#include "Target2DShape.hpp"
+#include "TRel2DShape.hpp"
 #include "IdealShapeTarget.hpp"
-#include "TMPQualityMetric.hpp"
+#include "TRelQualityMetric.hpp"
 #include "PlanarDomain.hpp"
 #include "Settings.hpp"
 #include "MeshImpl.hpp"
@@ -363,9 +363,9 @@ void QualityAssessorTest::test_basic_stats_vertex()
 
 void QualityAssessorTest::test_basic_stats_sample()
 {
-  Target2DShape tm;
+  TRel2DShape tm;
   IdealShapeTarget tc;
-  TMPQualityMetric metric( &tc, &tm, 0 );
+  TRelQualityMetric metric( &tc, &tm, 0 );
   MetricLogger logger(&metric);
   QualityAssessor qa(&logger);
   qa.disable_printing_results();
@@ -772,7 +772,7 @@ void QualityAssessorTest::test_tag_element()
   CPPUNIT_ASSERT(!logger.mValues.empty());
   vector<double> tag_values( logger.mValues.size() );
   myMesh.tag_get_element_data( tag, logger.mHandles.size(),
-                      &logger.mHandles[0], &tag_values[0], err );
+                      &logger.mHandles[0], arrptr(tag_values), err );
   ASSERT_NO_ERROR( err );
   
   for (unsigned i = 0; i < logger.mValues.size(); ++i)
@@ -807,7 +807,7 @@ void QualityAssessorTest::test_tag_vertex()
   CPPUNIT_ASSERT_EQUAL( logger.mValues.size(), logger.mHandles.size() );
   vector<double> tag_values( logger.mValues.size() );
   myMesh.tag_get_vertex_data( tag, logger.mHandles.size(),
-                      &logger.mHandles[0], &tag_values[0], err );
+                      &logger.mHandles[0], arrptr(tag_values), err );
   ASSERT_NO_ERROR( err );
   
   for (unsigned i = 0; i < logger.mValues.size(); ++i)
@@ -844,7 +844,7 @@ void QualityAssessorTest::test_tag_inverted()
   // expect two elements, one inverted
   CPPUNIT_ASSERT_EQUAL( (size_t)2, elements.size() );
   int data[2];
-  invertedMesh.tag_get_element_data( tag, 2, &elements[0], data, err );
+  invertedMesh.tag_get_element_data( tag, 2, arrptr(elements), data, err );
   ASSERT_NO_ERROR( err );
   
   if (data[0]) {

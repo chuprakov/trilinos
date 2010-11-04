@@ -55,8 +55,6 @@ SET( unit_tests
      StdDevTemplateTest
      SymMatrix3DTest
      TagVertexMeshTest
-     Target2DTest
-     Target3DTest
      TargetCalculatorTest
      TargetReadWriteTest
      TerminationCriterionTest
@@ -64,7 +62,16 @@ SET( unit_tests
      TriLagrangeShapeTest
      TopologyInfoTest
      TMPDerivsTest
-     TMPQualityMetricTest
+     TAbs2DMetricTest
+     TAbs3DMetricTest
+     TRel2DMetricTest
+     TRel3DMetricTest
+     TAbsQualityMetricTest
+     TRelQualityMetricTest
+     TestTAbs2DMetrics
+     TestTAbs3DMetrics
+     TestTRel2DMetrics
+     TestTRel3DMetrics
      UntangleBetaTest
      Vector3DTest
      VertexConditionNumberTest
@@ -92,7 +99,9 @@ SET( unit_srcs
      ObjectiveFunctionTests.cpp 
      PatchDataInstances.hpp 
      QualityMetricTester.hpp 
-     UnitUtil.hpp )
+     UnitUtil.hpp 
+     TMetricTest.hpp
+     TMPQualityMetricTest.hpp )
 
 FOREACH( test ${unit_tests} )
   SET( unit_srcs ${unit_srcs} ${test}.cpp )
@@ -102,12 +111,7 @@ IF (NOT ${PROJECT_NAME} STREQUAL "Mesquite")
   PACKAGE_ADD_EXECUTABLE( msq_test SOURCES ${unit_srcs} DEPLIBS ${CPPUNIT_LIBRARY} )
 #  TARGET_LINK_LIBRARIES( msq_test mesquite ${CPPUNIT_LIBRARY} )
   FOREACH( test ${unit_tests} )
-    # See PR#4953
-    IF (${test} STREQUAL "TMPQualityMetricTest")
-      PACKAGE_ADD_TEST( msq_test NAME ${test} ARGS ${test} NUM_MPI_PROCS 1 XHOST s903186.sandia.gov )
-    ELSE()
-      PACKAGE_ADD_TEST( msq_test NAME ${test} ARGS ${test} NUM_MPI_PROCS 1 )
-    ENDIF()
+    PACKAGE_ADD_TEST( msq_test NAME ${test} ARGS ${test} NUM_MPI_PROCS 1 )
   ENDFOREACH()
 ELSE()
   IF (${PACKAGE_NAME}_ENABLE_TESTS)

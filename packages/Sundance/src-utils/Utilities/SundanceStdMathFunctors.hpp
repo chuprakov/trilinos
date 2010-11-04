@@ -38,7 +38,6 @@
 # include "winmath.h"
 #endif
 
-#ifndef DOXYGEN_DEVELOPER_ONLY
 
 namespace Sundance
 {
@@ -74,8 +73,25 @@ namespace Sundance
                       double* d2f_dxx,
                       double* d3f_dxxx) const ;
 
+    static RCP<FunctorDomain> powerDomain(const double& p);
+
+  protected:
+    bool acceptX(int diffOrder, const double& x) const
+    {
+      if (powerIsInteger_)
+	{
+	  return p_>=0.0 || x!=0.0;
+	}
+      else
+	{
+	  if (x<0.0) return false; 
+	  if (x==0.0) return (p_ > diffOrder);
+	}
+      return true;      
+    }
   private:
     double p_;
+    bool powerIsInteger_;
   };
 
 
@@ -150,6 +166,5 @@ namespace Sundance
 }
 
                   
-#endif  /* DOXYGEN_DEVELOPER_ONLY */  
 
 #endif

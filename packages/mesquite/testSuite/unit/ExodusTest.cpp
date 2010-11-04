@@ -42,6 +42,8 @@ static bool create_exodus_file( const char* filename );
 #include "MsqVertex.hpp"
 #include "MsqError.hpp"
 
+using Mesquite::arrptr;
+
 #include "cppunit/extensions/HelperMacros.h"
 
 #include <iostream>
@@ -139,7 +141,7 @@ public:
     CPPUNIT_ASSERT( elem_handle_vect.size() == NUM_QUADS + NUM_HEXES );
     std::vector<Mesquite::Mesh::VertexHandle> vert_handle_vect;
     std::vector<size_t> offset_vect;
-    mMesh->elements_get_attached_vertices( &elem_handle_vect[0],
+    mMesh->elements_get_attached_vertices( arrptr(elem_handle_vect),
                                            elem_handle_vect.size(),
                                            vert_handle_vect,
                                            offset_vect, err );

@@ -32,12 +32,12 @@
 #define SUNDANCE_FUNCTORDOMAIN_H
 
 #include "SundanceDefs.hpp"
-
-#ifndef DOXYGEN_DEVELOPER_ONLY
+#include "Teuchos_StrUtils.hpp"
 
 namespace Sundance
 {
   using namespace Teuchos;
+  using std::string;
 
   class FunctorDomain
   {
@@ -58,12 +58,15 @@ namespace Sundance
 
     virtual double excludedPoint() const ;
 
+    virtual string description() const = 0 ;
   };
 
   class UnboundedDomain : public FunctorDomain
   {
   public:
     UnboundedDomain();
+
+    string description() const {return "UnboundedDomain()";}
   };
 
 
@@ -72,9 +75,28 @@ namespace Sundance
   public:
     PositiveDomain();
 
-     bool hasLowerBound() const {return true;}
+    bool hasLowerBound() const {return true;}
+    
+    double lowerBound() const {return 0.0;}
+    
+    string description() const {return "PositiveDomain()";}
+  };
 
-     double lowerBound() const {return 0.0;}
+  class StrictlyPositiveDomain : public FunctorDomain
+  {
+  public:
+    StrictlyPositiveDomain();
+
+    bool hasLowerBound() const {return true;}
+    
+    double lowerBound() const {return 0.0;}
+    
+    bool hasExcludedPoint() const {return true;}
+    
+    double excludedPoint() const {return 0.0;}
+
+    string description() const {return "StrictlyPositiveDomain()";}
+
   };
 
 
@@ -83,13 +105,17 @@ namespace Sundance
   public:
     BoundedDomain(const double& lower, const double& upper);
 
-     bool hasLowerBound() const {return true;}
+    bool hasLowerBound() const {return true;}
+    
+    double lowerBound() const {return lower_;}
+    
+    bool hasUpperBound() const {return true;}
+    
+    double upperBound() const {return upper_;}
 
-     double lowerBound() const {return lower_;}
-
-     bool hasUpperBound() const {return true;}
-
-     double upperBound() const {return upper_;}
+    string description() const {return "BoundedDomain("
+	+ Teuchos::toString(lowerBound()) + ", "
+	+ Teuchos::toString(upperBound()) + ")";}
 
   private:
     double lower_;
@@ -107,6 +133,11 @@ namespace Sundance
 
      double lowerBound() const {return lower_;}
 
+    string description() const {return "LowerBoundedDomain("
+	+ Teuchos::toString(lowerBound()) + ")";}
+
+
+
   private:
     double lower_;
   };
@@ -116,13 +147,22 @@ class NonzeroDomain : public FunctorDomain
   public:
     NonzeroDomain();
 
-     bool hasExcludedPoint() const {return true;}
+    bool hasExcludedPoint() const {return true;}
+    
+    double excludedPoint() const {return 0.0;}
 
-     double excludedPoint() const {return 0.0;}
+    string description() const {return "NonzeroDomain()";}
+
+
   };
 
+  inline std::ostream& operator<<(std::ostream& os, const FunctorDomain& f)
+  {
+    os << f.description();
+    return os;
+  }
 }
 
 
-#endif /* DOXYGEN_DEVELOPER_ONLY */
+
 #endif
