@@ -103,11 +103,11 @@ void MatrixOpNonsingThyra::V_InvMtV(
   *v_lhs = 0.0; // Must initialize before sending to solve(...)!
   VectorMutableThyra &v_thyra_lhs = dyn_cast<VectorMutableThyra>(*v_lhs);
   Teuchos::RCP<Thyra::VectorBase<value_type> > thyra_vec_lhs = v_thyra_lhs.set_uninitialized();
-  Thyra::solve(
+  Thyra::solve<value_type>(
     *thyra_linear_op_ns()
     ,trans_trans(trans_rhs1,thyra_linear_op_trans())==BLAS_Cpp::no_trans ? Thyra::NOTRANS : Thyra::TRANS  // M_trans
     ,*dyn_cast<const VectorMutableThyra>(v_rhs2).thyra_vec()                                              // y
-    ,thyra_vec_lhs.get()                                                                                  // x
+    ,thyra_vec_lhs.ptr()                                                                                  // x
     );
   v_thyra_lhs.initialize(thyra_vec_lhs);
 }
