@@ -527,7 +527,7 @@ void MoochoThyraSolver::setModel(
   p_idx_ = p_idx;
   g_idx_ = g_idx;
 
-  const int procRank = Teuchos::GlobalMPISession::getRank();
+  //const int procRank = Teuchos::GlobalMPISession::getRank();
   //const int numProcs = Teuchos::GlobalMPISession::getNProc();
 
   //

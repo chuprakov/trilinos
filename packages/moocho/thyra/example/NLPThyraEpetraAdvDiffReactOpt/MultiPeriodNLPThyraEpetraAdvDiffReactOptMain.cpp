@@ -51,7 +51,7 @@ int main( int argc, char* argv[] )
   using Thyra::VectorBase;
   using Thyra::ProductVectorBase;
   typedef Thyra::ModelEvaluatorBase MEB;
-  typedef Thyra::Index Index;
+  typedef Thyra::Ordinal Ordinal;
   using Thyra::ModelEvaluator;
   using MoochoPack::MoochoSolver;
   using MoochoPack::MoochoThyraSolver;
@@ -273,9 +273,9 @@ int main( int argc, char* argv[] )
     if (skipSolve) {
       
       *out << "\nCreate block parallel vector spaces for multi-period model.x and model.f ...\n";
-      RCP<const Teuchos::Comm<Index> >
-        intraClusterComm = rcp(new Teuchos::MpiComm<Index>(intraClusterMpiComm)),
-        interClusterComm = Teuchos::createMpiComm<Index>(interClusterMpiComm);
+      RCP<const Teuchos::Comm<Ordinal> >
+        intraClusterComm = rcp(new Teuchos::MpiComm<Ordinal>(intraClusterMpiComm)),
+        interClusterComm = Teuchos::createMpiComm<Ordinal>(interClusterMpiComm);
       x_bar_space = Teuchos::rcp(
         new Thyra::DefaultClusteredSpmdProductVectorSpace<Scalar>(
           intraClusterComm
@@ -320,9 +320,10 @@ int main( int argc, char* argv[] )
       
       RCP<const VectorBase<Scalar> >
         x0 = epetraThyraModel->getNominalValues().get_x();
-      double nrm_x0;
       
 /* 2008/02/21: rabartl: I have commented this out since it is causing an MPI error?
+
+      double nrm_x0;
 
       *out << "\nTiming a global reduction across just this cluster: ||x0||_1 = ";
       timer.start(true);
@@ -335,8 +336,8 @@ int main( int argc, char* argv[] )
       timer.start(true);
       RTOpPack::ROpNorm1<Scalar> norm_1_op;
       RCP<RTOpPack::ReductTarget> norm_1_targ = norm_1_op.reduct_obj_create();
-      const Teuchos::RCP<const Teuchos::Comm<Teuchos_Index> > comm
-        = Teuchos::DefaultComm<Index>::getComm();
+      const Teuchos::RCP<const Teuchos::Comm<Teuchos_Ordinal> > comm
+        = Teuchos::DefaultComm<Ordinal>::getComm();
       const Teuchos::ArrayView<const Teuchos::Ptr<const VectorBase<Scalar> > >
         vecs = Teuchos::tuple(Teuchos::ptrInArg(*x0));
       Teuchos::dyn_cast<const Thyra::SpmdVectorBase<Scalar> >(*x0).applyOpImplWithComm(
@@ -429,8 +430,8 @@ int main( int argc, char* argv[] )
 
     const int p_index = 0;
     const int z_index = 1;
-    const int z_p_index = 1; // Index of the reaction rate parameter parameter subvector
-    const int z_x_index = 2; // Index of the state matching subvector parameter
+    const int z_p_index = 1; // Ordinal of the reaction rate parameter parameter subvector
+    const int z_x_index = 2; // Ordinal of the state matching subvector parameter
     Array<int> z_indexes;
     if (useStatelessPeriodModel)
       z_indexes = tuple<int>(z_p_index, z_x_index);
@@ -445,8 +446,8 @@ int main( int argc, char* argv[] )
     Scalar scale_z_i = 1.0;
     for ( int i = 0; i < N; ++i ) {
       weights.push_back(1.0);
-      RCP<VectorBase<Scalar> > z_i = z_base->clone_v();
-      Vt_S( &*z_i, scale_z_i );
+      const RCP<VectorBase<Scalar> > z_i = z_base->clone_v();
+      Vt_S( z_i.ptr(), scale_z_i );
       *out << "\nz["<<i<<"] =\n" << Teuchos::describe(*z_i,Teuchos::VERB_EXTREME);
       if ( useStatelessPeriodModel ) {
         z.push_back(
@@ -534,7 +535,7 @@ int main( int argc, char* argv[] )
 
         // Save the final solution for the next period!
         period_x = solver.getFinalPoint().get_x()->clone_v();
-        assign( &*x_opt_prod->getNonconstVectorBlock(i), *period_x );
+        assign( x_opt_prod->getNonconstVectorBlock(i).ptr(), *period_x );
         if ( useStatelessPeriodModel )
           z[i][1] = period_x->clone_v(); // This is our matching vector!
         
@@ -593,7 +594,7 @@ int main( int argc, char* argv[] )
       MEB::InArgs<Scalar> initialGuess = thyraModel->createInArgs();
       initialGuess.setArgs(thyraModel->getNominalValues());
       initialGuess.set_x(x_init);
-      Thyra::Vt_S(&*p_init,perturbedParamScaling);
+      Thyra::Vt_S(p_init.ptr(), perturbedParamScaling);
       initialGuess.set_p(0,p_init);
       //*out << "\nInitial Guess:\n" << Teuchos::describe(initialGuess,Teuchos::VERB_EXTREME);
       solver.setInitialGuess(initialGuess);

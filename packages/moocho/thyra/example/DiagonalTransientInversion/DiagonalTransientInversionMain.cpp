@@ -303,10 +303,10 @@ int main( int argc, char* argv[] )
 
     RCP<Thyra::VectorBase<Scalar> > s_bar_init
       = createMember(stateAndSensStepper->getFwdSensModel()->get_x_space());
-    assign( &*s_bar_init, 0.0 );
+    assign( s_bar_init.ptr(), 0.0 );
     RCP<Thyra::VectorBase<Scalar> > s_bar_dot_init
       = createMember(stateAndSensStepper->getFwdSensModel()->get_x_space());
-    assign( &*s_bar_dot_init, 0.0 );
+    assign( s_bar_dot_init.ptr(), 0.0 );
     // Above, I believe that these are the correct initial conditions for
     // s_bar and s_bar_dot given how the EpetraExt::DiagonalTransientModel
     // is currently implemented!
@@ -438,7 +438,7 @@ int main( int argc, char* argv[] )
       RCP<Thyra::VectorBase<Scalar> >
         p_perturb = createMember(p->space());
 
-      V_StV( &*p_perturb, scaleParamsBy, *p );
+      V_StV( p_perturb.ptr(), scaleParamsBy, *p );
 
       *out << "\nPerturbed parameters p_perturb = " << *p_perturb;
 
