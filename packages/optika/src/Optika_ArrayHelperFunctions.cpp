@@ -28,9 +28,11 @@
 #include "Optika_ArrayHelperFunctions.hpp"
 
 namespace Optika{
-bool doesParameterContainArray(const Teuchos::ParameterEntry *parameter){
-	QString typeName = QString::fromStdString(parameter->getAny(false).typeName());
-	return typeName.contains("Teuchos") && typeName.contains("Array");	
+
+
+bool doesParameterContainArray(Teuchos::RCP<const Teuchos::ParameterEntry> parameter){
+	std::string typeName = parameter->getAny(false).typeName();
+	return typeName.find("Teuchos")!=std::string::npos && typeName.find("Array")!=std::string::npos;	
 }
 
 QStringList getValues(QString& values){
@@ -45,7 +47,7 @@ QStringList getValues(QString& values){
 	return toReturn;
 }
 
-QString determineArrayType(Teuchos::ParameterEntry *parameter){
+QString determineArrayType(Teuchos::RCP<const Teuchos::ParameterEntry> parameter){
 	Teuchos::any anyArray = parameter->getAny();
 	if(anyArray.type() == typeid(Teuchos::Array<int>)){
 		return intId;

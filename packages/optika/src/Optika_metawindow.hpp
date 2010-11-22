@@ -147,7 +147,7 @@ public:
 	 * Parameter List specified by validParameters.
 	 */
 	MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, 
-	Teuchos::RCP<DependencySheet> dependencySheet,
+	Teuchos::RCP<Teuchos::DependencySheet> dependencySheet,
 	QString fileName=QString());
 
 	/**
@@ -161,7 +161,7 @@ public:
 	 * Parameter List specified by validParameters.
 	 */
 	MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, 
-	Teuchos::RCP<DependencySheet> dependencySheet,
+	Teuchos::RCP<Teuchos::DependencySheet> dependencySheet,
 	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>),
 	QString fileName=QString());
 

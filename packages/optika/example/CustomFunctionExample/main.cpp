@@ -71,8 +71,8 @@ int main(int argc, char* argv[])
   My_List->set("Max Iters", 1550, "Determines the maximum number of iterations in the solver");
   My_List->set("Tolerance", 1e-10, "The tolerance used for the convergence check");
   
-  Teuchos::RCP<Optika::StringValidator> solverValidator = 
-     Teuchos::RCP<Optika::StringValidator>(new Optika::StringValidator(Teuchos::tuple<std::string>("GMRES", "CG", "TFQMR")));
+  Teuchos::RCP<Teuchos::StringValidator> solverValidator = 
+     Teuchos::RCP<Teuchos::StringValidator>(new Teuchos::StringValidator(Teuchos::tuple<std::string>("GMRES", "CG", "TFQMR")));
   My_List->set( "Solver", "GMRES", "The type of solver to use.", solverValidator);
 
   Teuchos::Array<double> doubleArray( 10, 0.0 );
