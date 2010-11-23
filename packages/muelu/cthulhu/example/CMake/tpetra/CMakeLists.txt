@@ -3,13 +3,16 @@ INCLUDE(PackageAddExecutableAndTest)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../../../gallery)
   
-SET(MatrixDriver_SOURCES
-  MueLu_MatrixDriver.cpp
-  )
-
 PACKAGE_ADD_EXECUTABLE_AND_TEST(
   MatrixDriver_Tpetra
   DIRECTORY ../../
-  SOURCES ${MatrixDriver_SOURCES}
+  SOURCES MueLu_MatrixDriver.cpp
   DEFINES -DCTHULHU_USE_TPETRA #or USE_CTHULHU_TPETRA ?
+  )
+
+PACKAGE_ADD_EXECUTABLE_AND_TEST(
+  MatrixDriverTests_Tpetra
+  DIRECTORY ../../
+  SOURCES MueLu_MatrixDriverTests.cpp
+  DEFINES -DCTHULHU_USE_TPETRA
   )
