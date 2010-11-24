@@ -35,9 +35,29 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CEpetra_Flops.h"
 #include "CEpetra_Flops_Cpp.hpp"
+#include "Epetra_Flops.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_TableRepos.hpp"
+
+
+namespace {
+
+
+using Teuchos::RCP;
+using CTrilinos::Table;
+
+
+/* table to hold objects of type Epetra_Flops */
+Table<Epetra_Flops>& tableOfFlopss()
+{
+    static Table<Epetra_Flops> loc_tableOfFlopss(CT_Epetra_Flops_ID);
+    return loc_tableOfFlopss;
+}
+
+
+} // namespace
 
 
 //
@@ -100,6 +120,125 @@ void Epetra_Flops_Assign (
 
 } // extern "C"
 
+
+//
+// Definitions from CEpetra_Flops_Cpp.hpp
+//
+
+
+/* get Epetra_Flops from non-const table using CT_Epetra_Flops_ID */
+const Teuchos::RCP<Epetra_Flops>
+CEpetra::getFlops( CT_Epetra_Flops_ID_t id )
+{
+    if (tableOfFlopss().isType(id.table))
+        return tableOfFlopss().get<Epetra_Flops>(
+        CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::get<Epetra_Flops>(
+        CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(id));
+}
+
+/* get Epetra_Flops from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Flops>
+CEpetra::getFlops( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfFlopss().isType(id.table))
+        return tableOfFlopss().get<Epetra_Flops>(id);
+    else
+        return CTrilinos::TableRepos::get<Epetra_Flops>(id);
+}
+
+/* get const Epetra_Flops from either the const or non-const table
+ * using CT_Epetra_Flops_ID */
+const Teuchos::RCP<const Epetra_Flops>
+CEpetra::getConstFlops( CT_Epetra_Flops_ID_t id )
+{
+    if (tableOfFlopss().isType(id.table))
+        return tableOfFlopss().getConst<Epetra_Flops>(
+        CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_Flops>(
+        CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(id));
+}
+
+/* get const Epetra_Flops from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Flops>
+CEpetra::getConstFlops( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfFlopss().isType(id.table))
+        return tableOfFlopss().getConst<Epetra_Flops>(id);
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_Flops>(id);
+}
+
+/* store Epetra_Flops (owned) in non-const table */
+CT_Epetra_Flops_ID_t
+CEpetra::storeNewFlops( Epetra_Flops *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(
+        tableOfFlopss().store<Epetra_Flops>(pobj, true));
+}
+
+/* store Epetra_Flops in non-const table */
+CT_Epetra_Flops_ID_t
+CEpetra::storeFlops( Epetra_Flops *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(
+        tableOfFlopss().store<Epetra_Flops>(pobj, false));
+}
+
+/* store const Epetra_Flops in const table */
+CT_Epetra_Flops_ID_t
+CEpetra::storeConstFlops( const Epetra_Flops *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(
+        tableOfFlopss().store<Epetra_Flops>(pobj, false));
+}
+
+/* remove Epetra_Flops from table using CT_Epetra_Flops_ID */
+void
+CEpetra::removeFlops( CT_Epetra_Flops_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_Flops_ID_t>(*id);
+    if (tableOfFlopss().isType(aid.table))
+        tableOfFlopss().remove(&aid);
+    else
+        CTrilinos::TableRepos::remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_Flops_ID_t>(aid);
+}
+
+/* remove Epetra_Flops from table using CTrilinos_Universal_ID_t */
+void
+CEpetra::removeFlops( CTrilinos_Universal_ID_t *aid )
+{
+    if (tableOfFlopss().isType(aid->table))
+        tableOfFlopss().remove(aid);
+    else
+        CTrilinos::TableRepos::remove(aid);
+}
+
+/* purge Epetra_Flops table */
+void
+CEpetra::purgeFlops(  )
+{
+    tableOfFlopss().purge();
+}
+
+/* store Epetra_Flops in non-const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasFlops( const Teuchos::RCP< Epetra_Flops > & robj )
+{
+    return tableOfFlopss().alias(robj);
+}
+
+/* store const Epetra_Flops in const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasConstFlops( const Teuchos::RCP< const Epetra_Flops > & robj )
+{
+    return tableOfFlopss().alias(robj);
+}
 
 
 

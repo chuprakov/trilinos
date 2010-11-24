@@ -30,12 +30,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_MPI
-
-
 
 /*! @file CEpetra_MpiComm.h
  * @brief Wrappers for Epetra_MpiComm */
@@ -46,7 +40,10 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifndef CEPETRA_MPICOMM_H
 #define CEPETRA_MPICOMM_H
 
+#ifdef HAVE_MPI
 
+
+#include "CTrilinos_config.h"
 #include "mpi.h"
 #include "CTrilinos_enums.h"
 
@@ -300,8 +297,7 @@ void Epetra_MpiComm_Assign (
 #endif
 
 
-#endif /* CEPETRA_MPICOMM_H */
-
 #endif /* HAVE_MPI */
 
+#endif /* CEPETRA_MPICOMM_H */
 

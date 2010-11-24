@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CEPETRA_ROWMATRIX_CPP_HPP
 #define CEPETRA_ROWMATRIX_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -81,9 +82,21 @@ storeConstRowMatrix( const Epetra_RowMatrix *pobj );
 void
 removeRowMatrix( CT_Epetra_RowMatrix_ID_t *id );
 
+/* remove Epetra_RowMatrix from table using CTrilinos_Universal_ID_t */
+void
+removeRowMatrix( CTrilinos_Universal_ID_t *aid );
+
 /* purge Epetra_RowMatrix table */
 void
 purgeRowMatrix(  );
+
+/* store Epetra_RowMatrix in non-const table */
+CTrilinos_Universal_ID_t
+aliasRowMatrix( const Teuchos::RCP< Epetra_RowMatrix > & robj );
+
+/* store const Epetra_RowMatrix in const table */
+CTrilinos_Universal_ID_t
+aliasConstRowMatrix( const Teuchos::RCP< const Epetra_RowMatrix > & robj );
 
 } // namespace CEpetra
 

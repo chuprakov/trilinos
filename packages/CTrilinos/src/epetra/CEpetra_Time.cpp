@@ -35,10 +35,30 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CEpetra_Time.h"
 #include "CEpetra_Time_Cpp.hpp"
+#include "Epetra_Time.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_Comm_Cpp.hpp"
+
+
+namespace {
+
+
+using Teuchos::RCP;
+using CTrilinos::Table;
+
+
+/* table to hold objects of type Epetra_Time */
+Table<Epetra_Time>& tableOfTimes()
+{
+    static Table<Epetra_Time> loc_tableOfTimes(CT_Epetra_Time_ID);
+    return loc_tableOfTimes;
+}
+
+
+} // namespace
 
 
 //
@@ -106,6 +126,125 @@ void Epetra_Time_Assign (
 
 } // extern "C"
 
+
+//
+// Definitions from CEpetra_Time_Cpp.hpp
+//
+
+
+/* get Epetra_Time from non-const table using CT_Epetra_Time_ID */
+const Teuchos::RCP<Epetra_Time>
+CEpetra::getTime( CT_Epetra_Time_ID_t id )
+{
+    if (tableOfTimes().isType(id.table))
+        return tableOfTimes().get<Epetra_Time>(
+        CTrilinos::abstractType<CT_Epetra_Time_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::get<Epetra_Time>(
+        CTrilinos::abstractType<CT_Epetra_Time_ID_t>(id));
+}
+
+/* get Epetra_Time from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Time>
+CEpetra::getTime( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfTimes().isType(id.table))
+        return tableOfTimes().get<Epetra_Time>(id);
+    else
+        return CTrilinos::TableRepos::get<Epetra_Time>(id);
+}
+
+/* get const Epetra_Time from either the const or non-const table
+ * using CT_Epetra_Time_ID */
+const Teuchos::RCP<const Epetra_Time>
+CEpetra::getConstTime( CT_Epetra_Time_ID_t id )
+{
+    if (tableOfTimes().isType(id.table))
+        return tableOfTimes().getConst<Epetra_Time>(
+        CTrilinos::abstractType<CT_Epetra_Time_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_Time>(
+        CTrilinos::abstractType<CT_Epetra_Time_ID_t>(id));
+}
+
+/* get const Epetra_Time from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Time>
+CEpetra::getConstTime( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfTimes().isType(id.table))
+        return tableOfTimes().getConst<Epetra_Time>(id);
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_Time>(id);
+}
+
+/* store Epetra_Time (owned) in non-const table */
+CT_Epetra_Time_ID_t
+CEpetra::storeNewTime( Epetra_Time *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Time_ID_t>(
+        tableOfTimes().store<Epetra_Time>(pobj, true));
+}
+
+/* store Epetra_Time in non-const table */
+CT_Epetra_Time_ID_t
+CEpetra::storeTime( Epetra_Time *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Time_ID_t>(
+        tableOfTimes().store<Epetra_Time>(pobj, false));
+}
+
+/* store const Epetra_Time in const table */
+CT_Epetra_Time_ID_t
+CEpetra::storeConstTime( const Epetra_Time *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Time_ID_t>(
+        tableOfTimes().store<Epetra_Time>(pobj, false));
+}
+
+/* remove Epetra_Time from table using CT_Epetra_Time_ID */
+void
+CEpetra::removeTime( CT_Epetra_Time_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_Time_ID_t>(*id);
+    if (tableOfTimes().isType(aid.table))
+        tableOfTimes().remove(&aid);
+    else
+        CTrilinos::TableRepos::remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_Time_ID_t>(aid);
+}
+
+/* remove Epetra_Time from table using CTrilinos_Universal_ID_t */
+void
+CEpetra::removeTime( CTrilinos_Universal_ID_t *aid )
+{
+    if (tableOfTimes().isType(aid->table))
+        tableOfTimes().remove(aid);
+    else
+        CTrilinos::TableRepos::remove(aid);
+}
+
+/* purge Epetra_Time table */
+void
+CEpetra::purgeTime(  )
+{
+    tableOfTimes().purge();
+}
+
+/* store Epetra_Time in non-const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasTime( const Teuchos::RCP< Epetra_Time > & robj )
+{
+    return tableOfTimes().alias(robj);
+}
+
+/* store const Epetra_Time in const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasConstTime( const Teuchos::RCP< const Epetra_Time > & robj )
+{
+    return tableOfTimes().alias(robj);
+}
 
 
 

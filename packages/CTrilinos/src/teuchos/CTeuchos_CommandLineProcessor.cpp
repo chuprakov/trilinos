@@ -35,6 +35,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTeuchos_CommandLineProcessor.h"
 #include "CTeuchos_CommandLineProcessor_Cpp.hpp"
+#include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
@@ -193,7 +194,7 @@ void Teuchos_CommandLineProcessor_setOption_str (
 const Teuchos::RCP<Teuchos::CommandLineProcessor>
 CTeuchos::getCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id )
 {
-    return tableOfCommandLineProcessors().get(
+        return tableOfCommandLineProcessors().get<Teuchos::CommandLineProcessor>(
         CTrilinos::abstractType<CT_Teuchos_CommandLineProcessor_ID_t>(id));
 }
 
@@ -201,7 +202,7 @@ CTeuchos::getCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id )
 const Teuchos::RCP<Teuchos::CommandLineProcessor>
 CTeuchos::getCommandLineProcessor( CTrilinos_Universal_ID_t id )
 {
-    return tableOfCommandLineProcessors().get(id);
+        return tableOfCommandLineProcessors().get<Teuchos::CommandLineProcessor>(id);
 }
 
 /* get const Teuchos::CommandLineProcessor from either the const or non-const table
@@ -209,7 +210,7 @@ CTeuchos::getCommandLineProcessor( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Teuchos::CommandLineProcessor>
 CTeuchos::getConstCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id )
 {
-    return tableOfCommandLineProcessors().getConst(
+        return tableOfCommandLineProcessors().getConst<Teuchos::CommandLineProcessor>(
         CTrilinos::abstractType<CT_Teuchos_CommandLineProcessor_ID_t>(id));
 }
 
@@ -218,7 +219,7 @@ CTeuchos::getConstCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id 
 const Teuchos::RCP<const Teuchos::CommandLineProcessor>
 CTeuchos::getConstCommandLineProcessor( CTrilinos_Universal_ID_t id )
 {
-    return tableOfCommandLineProcessors().getConst(id);
+        return tableOfCommandLineProcessors().getConst<Teuchos::CommandLineProcessor>(id);
 }
 
 /* store Teuchos::CommandLineProcessor (owned) in non-const table */
@@ -226,7 +227,7 @@ CT_Teuchos_CommandLineProcessor_ID_t
 CTeuchos::storeNewCommandLineProcessor( Teuchos::CommandLineProcessor *pobj )
 {
     return CTrilinos::concreteType<CT_Teuchos_CommandLineProcessor_ID_t>(
-        tableOfCommandLineProcessors().store(pobj, true));
+        tableOfCommandLineProcessors().store<Teuchos::CommandLineProcessor>(pobj, true));
 }
 
 /* store Teuchos::CommandLineProcessor in non-const table */
@@ -234,7 +235,7 @@ CT_Teuchos_CommandLineProcessor_ID_t
 CTeuchos::storeCommandLineProcessor( Teuchos::CommandLineProcessor *pobj )
 {
     return CTrilinos::concreteType<CT_Teuchos_CommandLineProcessor_ID_t>(
-        tableOfCommandLineProcessors().store(pobj, false));
+        tableOfCommandLineProcessors().store<Teuchos::CommandLineProcessor>(pobj, false));
 }
 
 /* store const Teuchos::CommandLineProcessor in const table */
@@ -242,7 +243,7 @@ CT_Teuchos_CommandLineProcessor_ID_t
 CTeuchos::storeConstCommandLineProcessor( const Teuchos::CommandLineProcessor *pobj )
 {
     return CTrilinos::concreteType<CT_Teuchos_CommandLineProcessor_ID_t>(
-        tableOfCommandLineProcessors().store(pobj, false));
+        tableOfCommandLineProcessors().store<Teuchos::CommandLineProcessor>(pobj, false));
 }
 
 /* remove Teuchos::CommandLineProcessor from table using CT_Teuchos_CommandLineProcessor_ID */
@@ -251,8 +252,15 @@ CTeuchos::removeCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t *id )
 {
     CTrilinos_Universal_ID_t aid = 
         CTrilinos::abstractType<CT_Teuchos_CommandLineProcessor_ID_t>(*id);
-    tableOfCommandLineProcessors().remove(&aid);
+        tableOfCommandLineProcessors().remove(&aid);
     *id = CTrilinos::concreteType<CT_Teuchos_CommandLineProcessor_ID_t>(aid);
+}
+
+/* remove Teuchos::CommandLineProcessor from table using CTrilinos_Universal_ID_t */
+void
+CTeuchos::removeCommandLineProcessor( CTrilinos_Universal_ID_t *aid )
+{
+        tableOfCommandLineProcessors().remove(aid);
 }
 
 /* purge Teuchos::CommandLineProcessor table */

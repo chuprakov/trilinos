@@ -30,14 +30,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_GALERI
-
-
 #ifndef CGALERI_MAPS_CPP_HPP
 #define CGALERI_MAPS_CPP_HPP
+
+
+#include "CTrilinos_config.h"
+
+#ifdef HAVE_CTRILINOS_GALERI
 
 
 #include "CTrilinos_enums.h"
@@ -54,9 +53,8 @@ using Teuchos::RCP;
 } // namespace CGaleri
 
 
-#endif // CGALERI_MAPS_CPP_HPP
-
-
 #endif /* HAVE_CTRILINOS_GALERI */
+
+#endif // CGALERI_MAPS_CPP_HPP
 
 

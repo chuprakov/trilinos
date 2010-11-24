@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CTEUCHOS_PARAMETERENTRY_CPP_HPP
 #define CTEUCHOS_PARAMETERENTRY_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -80,6 +81,10 @@ storeConstParameterEntry( const Teuchos::ParameterEntry *pobj );
 /* remove Teuchos::ParameterEntry from table using CT_Teuchos_ParameterEntry_ID */
 void
 removeParameterEntry( CT_Teuchos_ParameterEntry_ID_t *id );
+
+/* remove Teuchos::ParameterEntry from table using CTrilinos_Universal_ID_t */
+void
+removeParameterEntry( CTrilinos_Universal_ID_t *aid );
 
 /* purge Teuchos::ParameterEntry table */
 void

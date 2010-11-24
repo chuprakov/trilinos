@@ -35,12 +35,32 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CEpetra_Comm.h"
 #include "CEpetra_Comm_Cpp.hpp"
+#include "Epetra_Comm.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_Distributor_Cpp.hpp"
 #include "CEpetra_Directory_Cpp.hpp"
 #include "CEpetra_BlockMap_Cpp.hpp"
+
+
+namespace {
+
+
+using Teuchos::RCP;
+using CTrilinos::Table;
+
+
+/* table to hold objects of type Epetra_Comm */
+Table<Epetra_Comm>& tableOfComms()
+{
+    static Table<Epetra_Comm> loc_tableOfComms(CT_Epetra_Comm_ID);
+    return loc_tableOfComms;
+}
+
+
+} // namespace
 
 
 //
@@ -245,6 +265,125 @@ CT_Epetra_Directory_ID_t Epetra_Comm_CreateDirectory (
 
 } // extern "C"
 
+
+//
+// Definitions from CEpetra_Comm_Cpp.hpp
+//
+
+
+/* get Epetra_Comm from non-const table using CT_Epetra_Comm_ID */
+const Teuchos::RCP<Epetra_Comm>
+CEpetra::getComm( CT_Epetra_Comm_ID_t id )
+{
+    if (tableOfComms().isType(id.table))
+        return tableOfComms().get<Epetra_Comm>(
+        CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::get<Epetra_Comm>(
+        CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id));
+}
+
+/* get Epetra_Comm from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Comm>
+CEpetra::getComm( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfComms().isType(id.table))
+        return tableOfComms().get<Epetra_Comm>(id);
+    else
+        return CTrilinos::TableRepos::get<Epetra_Comm>(id);
+}
+
+/* get const Epetra_Comm from either the const or non-const table
+ * using CT_Epetra_Comm_ID */
+const Teuchos::RCP<const Epetra_Comm>
+CEpetra::getConstComm( CT_Epetra_Comm_ID_t id )
+{
+    if (tableOfComms().isType(id.table))
+        return tableOfComms().getConst<Epetra_Comm>(
+        CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_Comm>(
+        CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(id));
+}
+
+/* get const Epetra_Comm from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Comm>
+CEpetra::getConstComm( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfComms().isType(id.table))
+        return tableOfComms().getConst<Epetra_Comm>(id);
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_Comm>(id);
+}
+
+/* store Epetra_Comm (owned) in non-const table */
+CT_Epetra_Comm_ID_t
+CEpetra::storeNewComm( Epetra_Comm *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(
+        tableOfComms().store<Epetra_Comm>(pobj, true));
+}
+
+/* store Epetra_Comm in non-const table */
+CT_Epetra_Comm_ID_t
+CEpetra::storeComm( Epetra_Comm *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(
+        tableOfComms().store<Epetra_Comm>(pobj, false));
+}
+
+/* store const Epetra_Comm in const table */
+CT_Epetra_Comm_ID_t
+CEpetra::storeConstComm( const Epetra_Comm *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(
+        tableOfComms().store<Epetra_Comm>(pobj, false));
+}
+
+/* remove Epetra_Comm from table using CT_Epetra_Comm_ID */
+void
+CEpetra::removeComm( CT_Epetra_Comm_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_Comm_ID_t>(*id);
+    if (tableOfComms().isType(aid.table))
+        tableOfComms().remove(&aid);
+    else
+        CTrilinos::TableRepos::remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_Comm_ID_t>(aid);
+}
+
+/* remove Epetra_Comm from table using CTrilinos_Universal_ID_t */
+void
+CEpetra::removeComm( CTrilinos_Universal_ID_t *aid )
+{
+    if (tableOfComms().isType(aid->table))
+        tableOfComms().remove(aid);
+    else
+        CTrilinos::TableRepos::remove(aid);
+}
+
+/* purge Epetra_Comm table */
+void
+CEpetra::purgeComm(  )
+{
+    tableOfComms().purge();
+}
+
+/* store Epetra_Comm in non-const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasComm( const Teuchos::RCP< Epetra_Comm > & robj )
+{
+    return tableOfComms().alias(robj);
+}
+
+/* store const Epetra_Comm in const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasConstComm( const Teuchos::RCP< const Epetra_Comm > & robj )
+{
+    return tableOfComms().alias(robj);
+}
 
 
 

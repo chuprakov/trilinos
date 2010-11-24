@@ -67,17 +67,11 @@ class Table
     /*! destructor */
     ~Table();
 
-    /*! retrieve the object */
-    const Teuchos::RCP<T> get(CTrilinos_Universal_ID_t id);
-
-    /*! cast the object to type T and store a copy */
+    /*! retrieve the object (possibly of a different type RCP) */
     template <class TT>
     const Teuchos::RCP<TT> get(CTrilinos_Universal_ID_t id);
 
-    /*! retrieve the object */
-    const Teuchos::RCP<const T> getConst(CTrilinos_Universal_ID_t id);
-
-    /*! cast the object to type T and store a copy */
+    /*! retrieve the object (possibly of a different type RCP) */
     template <class TT>
     const Teuchos::RCP<const TT> getConst(CTrilinos_Universal_ID_t id);
 
@@ -157,21 +151,7 @@ Table<T>::~Table()
   purge();
 }
 
-/* retrieve the object */
-template <class T>
-const Teuchos::RCP<T> Table<T>::get(CTrilinos_Universal_ID_t id)
-{
-    if (id.is_const)
-        throw CTrilinosConstCastError(typeMismatchMsg(id, std::string("get()")));
-
-    if (id.table == ttab)
-        return sot.getRCP(id.index);
-
-    throw CTrilinosWrongTableError(typeMismatchMsg(id, std::string("get()")));
-    return Teuchos::null;
-}
-
-/* return a different type RCP */
+/* retrieve the object (possibly of a different type RCP) */
 template <class T>
 template <class TT>
 const Teuchos::RCP<TT> Table<T>::get(CTrilinos_Universal_ID_t id)
@@ -186,22 +166,7 @@ const Teuchos::RCP<TT> Table<T>::get(CTrilinos_Universal_ID_t id)
     return Teuchos::null;
 }
 
-/* retrieve the object */
-template <class T>
-const Teuchos::RCP<const T> Table<T>::getConst(CTrilinos_Universal_ID_t id)
-{
-    if (id.table == ttab) {
-        if (id.is_const)
-            return csot.getRCP(id.index);
-        else
-            return sot.getRCP(id.index);
-    }
-
-    throw CTrilinosWrongTableError(typeMismatchMsg(id, std::string("getConst()")));
-    return Teuchos::null;
-}
-
-/* retrieve the object */
+/* retrieve the object (possibly of a different type RCP) */
 template <class T>
 template <class TT>
 const Teuchos::RCP<const TT> Table<T>::getConst(CTrilinos_Universal_ID_t id)

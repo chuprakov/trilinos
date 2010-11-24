@@ -35,9 +35,29 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CEpetra_BLAS.h"
 #include "CEpetra_BLAS_Cpp.hpp"
+#include "Epetra_BLAS.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_TableRepos.hpp"
+
+
+namespace {
+
+
+using Teuchos::RCP;
+using CTrilinos::Table;
+
+
+/* table to hold objects of type Epetra_BLAS */
+Table<Epetra_BLAS>& tableOfBLASs()
+{
+    static Table<Epetra_BLAS> loc_tableOfBLASs(CT_Epetra_BLAS_ID);
+    return loc_tableOfBLASs;
+}
+
+
+} // namespace
 
 
 //
@@ -258,6 +278,125 @@ void Epetra_BLAS_TRMM_Double (
 
 } // extern "C"
 
+
+//
+// Definitions from CEpetra_BLAS_Cpp.hpp
+//
+
+
+/* get Epetra_BLAS from non-const table using CT_Epetra_BLAS_ID */
+const Teuchos::RCP<Epetra_BLAS>
+CEpetra::getBLAS( CT_Epetra_BLAS_ID_t id )
+{
+    if (tableOfBLASs().isType(id.table))
+        return tableOfBLASs().get<Epetra_BLAS>(
+        CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::get<Epetra_BLAS>(
+        CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id));
+}
+
+/* get Epetra_BLAS from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_BLAS>
+CEpetra::getBLAS( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfBLASs().isType(id.table))
+        return tableOfBLASs().get<Epetra_BLAS>(id);
+    else
+        return CTrilinos::TableRepos::get<Epetra_BLAS>(id);
+}
+
+/* get const Epetra_BLAS from either the const or non-const table
+ * using CT_Epetra_BLAS_ID */
+const Teuchos::RCP<const Epetra_BLAS>
+CEpetra::getConstBLAS( CT_Epetra_BLAS_ID_t id )
+{
+    if (tableOfBLASs().isType(id.table))
+        return tableOfBLASs().getConst<Epetra_BLAS>(
+        CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_BLAS>(
+        CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(id));
+}
+
+/* get const Epetra_BLAS from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_BLAS>
+CEpetra::getConstBLAS( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfBLASs().isType(id.table))
+        return tableOfBLASs().getConst<Epetra_BLAS>(id);
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_BLAS>(id);
+}
+
+/* store Epetra_BLAS (owned) in non-const table */
+CT_Epetra_BLAS_ID_t
+CEpetra::storeNewBLAS( Epetra_BLAS *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
+        tableOfBLASs().store<Epetra_BLAS>(pobj, true));
+}
+
+/* store Epetra_BLAS in non-const table */
+CT_Epetra_BLAS_ID_t
+CEpetra::storeBLAS( Epetra_BLAS *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
+        tableOfBLASs().store<Epetra_BLAS>(pobj, false));
+}
+
+/* store const Epetra_BLAS in const table */
+CT_Epetra_BLAS_ID_t
+CEpetra::storeConstBLAS( const Epetra_BLAS *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(
+        tableOfBLASs().store<Epetra_BLAS>(pobj, false));
+}
+
+/* remove Epetra_BLAS from table using CT_Epetra_BLAS_ID */
+void
+CEpetra::removeBLAS( CT_Epetra_BLAS_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_BLAS_ID_t>(*id);
+    if (tableOfBLASs().isType(aid.table))
+        tableOfBLASs().remove(&aid);
+    else
+        CTrilinos::TableRepos::remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_BLAS_ID_t>(aid);
+}
+
+/* remove Epetra_BLAS from table using CTrilinos_Universal_ID_t */
+void
+CEpetra::removeBLAS( CTrilinos_Universal_ID_t *aid )
+{
+    if (tableOfBLASs().isType(aid->table))
+        tableOfBLASs().remove(aid);
+    else
+        CTrilinos::TableRepos::remove(aid);
+}
+
+/* purge Epetra_BLAS table */
+void
+CEpetra::purgeBLAS(  )
+{
+    tableOfBLASs().purge();
+}
+
+/* store Epetra_BLAS in non-const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasBLAS( const Teuchos::RCP< Epetra_BLAS > & robj )
+{
+    return tableOfBLASs().alias(robj);
+}
+
+/* store const Epetra_BLAS in const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasConstBLAS( const Teuchos::RCP< const Epetra_BLAS > & robj )
+{
+    return tableOfBLASs().alias(robj);
+}
 
 
 

@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CEPETRA_LAPACK_CPP_HPP
 #define CEPETRA_LAPACK_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -81,9 +82,21 @@ storeConstLAPACK( const Epetra_LAPACK *pobj );
 void
 removeLAPACK( CT_Epetra_LAPACK_ID_t *id );
 
+/* remove Epetra_LAPACK from table using CTrilinos_Universal_ID_t */
+void
+removeLAPACK( CTrilinos_Universal_ID_t *aid );
+
 /* purge Epetra_LAPACK table */
 void
 purgeLAPACK(  );
+
+/* store Epetra_LAPACK in non-const table */
+CTrilinos_Universal_ID_t
+aliasLAPACK( const Teuchos::RCP< Epetra_LAPACK > & robj );
+
+/* store const Epetra_LAPACK in const table */
+CTrilinos_Universal_ID_t
+aliasConstLAPACK( const Teuchos::RCP< const Epetra_LAPACK > & robj );
 
 } // namespace CEpetra
 

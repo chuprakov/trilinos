@@ -68,6 +68,8 @@ namespace {
 
 
 using Teuchos::null;
+using Teuchos::nonnull;
+using Teuchos::is_null;
 using Teuchos::RCP;
 using Teuchos::rcp;
 using Teuchos::RangeError;
@@ -88,10 +90,10 @@ TEUCHOS_UNIT_TEST( Table, store )
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY_CONST(id.is_const, FALSE);
   TEST_EQUALITY(id.table, CLASS_ENUM(T));
-  TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
-  TEST_EQUALITY_CONST(is_null(table.get(id)), false);
-  TEST_EQUALITY_CONST(nonnull(table.getConst(id)), true);
-  TEST_EQUALITY_CONST(is_null(table.getConst(id)), false);
+  TEST_EQUALITY_CONST(nonnull(table.get<T>(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.get<T>(id)), false);
+  TEST_EQUALITY_CONST(nonnull(table.getConst<T>(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.getConst<T>(id)), false);
 }
 
 TEUCHOS_UNIT_TEST( Table, storeBase )
@@ -101,10 +103,10 @@ TEUCHOS_UNIT_TEST( Table, storeBase )
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY_CONST(id.is_const, FALSE);
   TEST_EQUALITY(id.table, CLASS_ENUM(T2));
-  TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
-  TEST_EQUALITY_CONST(is_null(table.get(id)), false);
-  TEST_EQUALITY_CONST(nonnull(table.getConst(id)), true);
-  TEST_EQUALITY_CONST(is_null(table.getConst(id)), false);
+  TEST_EQUALITY_CONST(nonnull(table.get<T2>(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.get<T2>(id)), false);
+  TEST_EQUALITY_CONST(nonnull(table.getConst<T2>(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.getConst<T2>(id)), false);
 }
 
 /* this should not compile -- ok */
@@ -134,10 +136,10 @@ TEUCHOS_UNIT_TEST( Table, storeShared )
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.table, CLASS_ENUM(T));
   TEST_EQUALITY(id.is_const, FALSE);
-  TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
-  TEST_EQUALITY_CONST(is_null(table.get(id)), false);
-  TEST_EQUALITY_CONST(nonnull(table.getConst(id)), true);
-  TEST_EQUALITY_CONST(is_null(table.getConst(id)), false);
+  TEST_EQUALITY_CONST(nonnull(table.get<T>(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.get<T>(id)), false);
+  TEST_EQUALITY_CONST(nonnull(table.getConst<T>(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.getConst<T>(id)), false);
   ECHO(table.remove(&id));
   ECHO(delete pobj);
 }
@@ -150,10 +152,10 @@ TEUCHOS_UNIT_TEST( Table, storeConstShared )
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.table, CLASS_ENUM(T));
   TEST_EQUALITY(id.is_const, TRUE);
-  TEST_EQUALITY_CONST(nonnull(table.getConst(id)), true);
-  TEST_EQUALITY_CONST(is_null(table.getConst(id)), false);
-  TEST_THROW(nonnull(table.get(id)), CTrilinosConstCastError);
-  TEST_THROW(is_null(table.get(id)), CTrilinosConstCastError);
+  TEST_EQUALITY_CONST(nonnull(table.getConst<T>(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.getConst<T>(id)), false);
+  TEST_THROW(nonnull(table.get<T>(id)), CTrilinosConstCastError);
+  TEST_THROW(is_null(table.get<T>(id)), CTrilinosConstCastError);
   ECHO(table.remove(&id));
   ECHO(delete pobj);
 }
@@ -166,10 +168,10 @@ TEUCHOS_UNIT_TEST( Table, storeSharedBase )
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.table, CLASS_ENUM(T2));
   TEST_EQUALITY(id.is_const, FALSE);
-  TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
-  TEST_EQUALITY_CONST(is_null(table.get(id)), false);
-  TEST_EQUALITY_CONST(nonnull(table.getConst(id)), true);
-  TEST_EQUALITY_CONST(is_null(table.getConst(id)), false);
+  TEST_EQUALITY_CONST(nonnull(table.get<T2>(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.get<T2>(id)), false);
+  TEST_EQUALITY_CONST(nonnull(table.getConst<T2>(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.getConst<T2>(id)), false);
   ECHO(table.remove(&id));
   ECHO(delete pobj);
 }
@@ -182,10 +184,10 @@ TEUCHOS_UNIT_TEST( Table, storeConstSharedBase )
   TEST_EQUALITY_CONST(id.index, 0);
   TEST_EQUALITY(id.table, CLASS_ENUM(T2));
   TEST_EQUALITY(id.is_const, TRUE);
-  TEST_EQUALITY_CONST(nonnull(table.getConst(id)), true);
-  TEST_EQUALITY_CONST(is_null(table.getConst(id)), false);
-  TEST_THROW(nonnull(table.get(id)), CTrilinosConstCastError);
-  TEST_THROW(is_null(table.get(id)), CTrilinosConstCastError);
+  TEST_EQUALITY_CONST(nonnull(table.getConst<T2>(id)), true);
+  TEST_EQUALITY_CONST(is_null(table.getConst<T2>(id)), false);
+  TEST_THROW(nonnull(table.get<T2>(id)), CTrilinosConstCastError);
+  TEST_THROW(is_null(table.get<T2>(id)), CTrilinosConstCastError);
   ECHO(table.remove(&id));
   ECHO(delete pobj);
 }
@@ -276,10 +278,10 @@ TEUCHOS_UNIT_TEST( Table, get )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
   ECHO(CTrilinos_Universal_ID_t id = table.store(new T, true));
-  ECHO(RCP<T> rcpT = table.get(id));
+  ECHO(RCP<T> rcpT = table.get<T>(id));
   TEST_EQUALITY_CONST(nonnull(rcpT), true);
   TEST_EQUALITY_CONST(is_null(rcpT), false);
-  ECHO(RCP<const T> rcpCT = table.getConst(id));
+  ECHO(RCP<const T> rcpCT = table.getConst<T>(id));
   TEST_EQUALITY_CONST(nonnull(rcpCT), true);
   TEST_EQUALITY_CONST(is_null(rcpCT), false);
 }
@@ -293,7 +295,7 @@ TEUCHOS_UNIT_TEST( Table, getInvalid )
   ECHO(id.index = 0);
   ECHO(id.table = CLASS_ENUM(T));
   ECHO(id.is_const = FALSE);
-  TEST_THROW(table.get(id), RangeError);
+  TEST_THROW(table.get<T>(id), RangeError);
 }
 
 #endif /* TEUCHOS_DEBUG */
@@ -306,7 +308,7 @@ TEUCHOS_UNIT_TEST( Table, getWrong )
   ECHO(id.index = id1.index);
   ECHO(id.table = CLASS_ENUM(T4));
   ECHO(id.is_const = FALSE);
-  TEST_THROW(table.get(id), CTrilinosWrongTableError);
+  TEST_THROW(table.get<T>(id), CTrilinosWrongTableError);
 }
 
 
@@ -318,7 +320,7 @@ TEUCHOS_UNIT_TEST( Table, alias )
   ECHO(Table<T2> table2(CONSTRUCTOR(CLASS_ENUM(T2))));
 
   ECHO(CTrilinos_Universal_ID_t id1 = table1.store(new T1, true));
-  ECHO(CTrilinos_Universal_ID_t id2 = table2.alias(table1.get(id1)));
+  ECHO(CTrilinos_Universal_ID_t id2 = table2.alias(table1.get<T2>(id1)));
 
   TEST_EQUALITY(id2.table, CLASS_ENUM(T2));
   TEST_EQUALITY_CONST(id2.index, 0);
@@ -330,7 +332,7 @@ TEUCHOS_UNIT_TEST( Table, aliasConst )
   ECHO(Table<T2> table2(CONSTRUCTOR(CLASS_ENUM(T2))));
 
   ECHO(CTrilinos_Universal_ID_t id1 = table1.store(new const T1, true));
-  ECHO(CTrilinos_Universal_ID_t id2 = table2.alias(table1.getConst(id1)));
+  ECHO(CTrilinos_Universal_ID_t id2 = table2.alias(table1.getConst<T2>(id1)));
 
   TEST_EQUALITY(id2.table, CLASS_ENUM(T2));
   TEST_EQUALITY_CONST(id2.index, 0);
@@ -343,7 +345,7 @@ TEUCHOS_UNIT_TEST( Table, aliasBad )
   ECHO(Table<T4> table4(CONSTRUCTOR(CLASS_ENUM(T4))));
 
   ECHO(CTrilinos_Universal_ID_t id3 = table3.store(new T3, true));
-  TEST_THROW(table4.alias(table3.get(id3)), m_bad_cast);
+  TEST_THROW(table4.alias(table3.get<T4>(id3)), m_bad_cast);
 }
 
 
@@ -355,9 +357,9 @@ TEUCHOS_UNIT_TEST( Table, purge )
 {
   ECHO(Table<T> table(CONSTRUCTOR(CLASS_ENUM(T))));
   ECHO(CTrilinos_Universal_ID_t id = table.store(new T, true));
-  TEST_EQUALITY_CONST(nonnull(table.get(id)), true);
+  TEST_EQUALITY_CONST(nonnull(table.get<T>(id)), true);
   ECHO(table.purge());
-  TEST_THROW(table.get(id), RangeError);
+  TEST_THROW(table.get<T>(id), RangeError);
 }
 
 #endif /* TEUCHOS_DEBUG */

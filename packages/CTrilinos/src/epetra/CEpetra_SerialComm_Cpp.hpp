@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CEPETRA_SERIALCOMM_CPP_HPP
 #define CEPETRA_SERIALCOMM_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -81,9 +82,21 @@ storeConstSerialComm( const Epetra_SerialComm *pobj );
 void
 removeSerialComm( CT_Epetra_SerialComm_ID_t *id );
 
+/* remove Epetra_SerialComm from table using CTrilinos_Universal_ID_t */
+void
+removeSerialComm( CTrilinos_Universal_ID_t *aid );
+
 /* purge Epetra_SerialComm table */
 void
 purgeSerialComm(  );
+
+/* store Epetra_SerialComm in non-const table */
+CTrilinos_Universal_ID_t
+aliasSerialComm( const Teuchos::RCP< Epetra_SerialComm > & robj );
+
+/* store const Epetra_SerialComm in const table */
+CTrilinos_Universal_ID_t
+aliasConstSerialComm( const Teuchos::RCP< const Epetra_SerialComm > & robj );
 
 } // namespace CEpetra
 

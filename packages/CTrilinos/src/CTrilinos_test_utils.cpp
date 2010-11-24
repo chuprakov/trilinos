@@ -34,6 +34,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
  * @brief Utility functions for CTrilinos testing. */
 
 
+#include "CTrilinos_config.h"
 #include "CTrilinos_test_utils.hpp"
 #include "CTrilinos_TableRepos.hpp"
 
@@ -358,20 +359,67 @@ isSameObject( CTrilinos_Universal_ID_t id1, CTrilinos_Universal_ID_t id2 )
 void
 purgeAllTables(  )
 {
-    // polymorphic tables
-    CTrilinos::tableRepos().purgeAll();
-    // non-polymorphic tables
+    CEpetra::purgeDistributor();
+    CEpetra::purgeSerialComm();
+    CEpetra::purgeBLAS();
+    CEpetra::purgeComm();
+    CEpetra::purgeOperator();
+    CEpetra::purgeMultiVector();
+    CEpetra::purgeOffsetIndex();
+    CEpetra::purgeObject();
+    CEpetra::purgeRowMatrix();
+    CEpetra::purgeCompObject();
+    CEpetra::purgeDirectory();
+    CEpetra::purgeFlops();
+    CEpetra::purgeSrcDistObject();
+#ifdef HAVE_MPI
+    CEpetra::purgeMpiComm();
+#endif /* HAVE_MPI */
+    CEpetra::purgeCrsMatrix();
+    CEpetra::purgeCrsGraph();
+    CEpetra::purgeDistObject();
+    CEpetra::purgeVector();
+    CEpetra::purgeExport();
+    CEpetra::purgeMap();
+    CEpetra::purgeBlockMap();
+    CEpetra::purgeImport();
+    CEpetra::purgeTime();
+    CEpetra::purgeJadMatrix();
+    CEpetra::purgeLinearProblem();
+    CEpetra::purgeLAPACK();
     CTeuchos::purgeCommandLineProcessor();
+    CTeuchos::purgeParameterList();
     CTeuchos::purgeParameterEntry();
     CTeuchos::purgeany();
 #ifdef HAVE_CTRILINOS_AMESOS
+    CAmesos::purgeBaseSolver();
+#endif /* HAVE_CTRILINOS_AMESOS */
+#ifdef HAVE_CTRILINOS_AMESOS
     CAmesos::purgeAmesos();
 #endif /* HAVE_CTRILINOS_AMESOS */
+    CEpetra::purgeFECrsMatrix();
+    CEpetra::purgeIntSerialDenseVector();
+    CEpetra::purgeSerialDenseMatrix();
 #ifdef HAVE_CTRILINOS_AZTECOO
     CAztecOO::purgeAztecOO();
 #endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+    CAztecOO::purgeStatusTest();
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+    CAztecOO::purgeStatusTestCombo();
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+    CAztecOO::purgeStatusTestMaxIters();
+#endif /* HAVE_CTRILINOS_AZTECOO */
+#ifdef HAVE_CTRILINOS_AZTECOO
+    CAztecOO::purgeStatusTestResNorm();
+#endif /* HAVE_CTRILINOS_AZTECOO */
 #ifdef HAVE_CTRILINOS_IFPACK
     CIfpack::purgeIfpack();
+#endif /* HAVE_CTRILINOS_IFPACK */
+#ifdef HAVE_CTRILINOS_IFPACK
+    CIfpack::purgePreconditioner();
 #endif /* HAVE_CTRILINOS_IFPACK */
 }
 

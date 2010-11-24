@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CEPETRA_CRSGRAPH_CPP_HPP
 #define CEPETRA_CRSGRAPH_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -81,9 +82,21 @@ storeConstCrsGraph( const Epetra_CrsGraph *pobj );
 void
 removeCrsGraph( CT_Epetra_CrsGraph_ID_t *id );
 
+/* remove Epetra_CrsGraph from table using CTrilinos_Universal_ID_t */
+void
+removeCrsGraph( CTrilinos_Universal_ID_t *aid );
+
 /* purge Epetra_CrsGraph table */
 void
 purgeCrsGraph(  );
+
+/* store Epetra_CrsGraph in non-const table */
+CTrilinos_Universal_ID_t
+aliasCrsGraph( const Teuchos::RCP< Epetra_CrsGraph > & robj );
+
+/* store const Epetra_CrsGraph in const table */
+CTrilinos_Universal_ID_t
+aliasConstCrsGraph( const Teuchos::RCP< const Epetra_CrsGraph > & robj );
 
 } // namespace CEpetra
 

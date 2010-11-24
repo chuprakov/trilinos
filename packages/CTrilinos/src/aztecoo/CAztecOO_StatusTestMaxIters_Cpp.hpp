@@ -30,14 +30,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_AZTECOO
-
-
 #ifndef CAZTECOO_STATUSTESTMAXITERS_CPP_HPP
 #define CAZTECOO_STATUSTESTMAXITERS_CPP_HPP
+
+
+#include "CTrilinos_config.h"
+
+#ifdef HAVE_CTRILINOS_AZTECOO
 
 
 #include "CTrilinos_enums.h"
@@ -85,16 +84,27 @@ storeConstStatusTestMaxIters( const AztecOO_StatusTestMaxIters *pobj );
 void
 removeStatusTestMaxIters( CT_AztecOO_StatusTestMaxIters_ID_t *id );
 
+/* remove AztecOO_StatusTestMaxIters from table using CTrilinos_Universal_ID_t */
+void
+removeStatusTestMaxIters( CTrilinos_Universal_ID_t *aid );
+
 /* purge AztecOO_StatusTestMaxIters table */
 void
 purgeStatusTestMaxIters(  );
 
+/* store AztecOO_StatusTestMaxIters in non-const table */
+CTrilinos_Universal_ID_t
+aliasStatusTestMaxIters( const Teuchos::RCP< AztecOO_StatusTestMaxIters > & robj );
+
+/* store const AztecOO_StatusTestMaxIters in const table */
+CTrilinos_Universal_ID_t
+aliasConstStatusTestMaxIters( const Teuchos::RCP< const AztecOO_StatusTestMaxIters > & robj );
+
 } // namespace CAztecOO
 
 
-#endif // CAZTECOO_STATUSTESTMAXITERS_CPP_HPP
-
-
 #endif /* HAVE_CTRILINOS_AZTECOO */
+
+#endif // CAZTECOO_STATUSTESTMAXITERS_CPP_HPP
 
 

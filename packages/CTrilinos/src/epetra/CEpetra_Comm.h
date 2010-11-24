@@ -30,8 +30,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 
 /*! @file CEpetra_Comm.h
  * @brief Wrappers for Epetra_Comm */
@@ -43,6 +41,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CEPETRA_COMM_H
 
 
+#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 

@@ -30,14 +30,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_MPI
-
-
 #ifndef CEPETRA_MPICOMM_CPP_HPP
 #define CEPETRA_MPICOMM_CPP_HPP
+
+
+#include "CTrilinos_config.h"
+
+#ifdef HAVE_MPI
 
 
 #include "CTrilinos_enums.h"
@@ -85,16 +84,27 @@ storeConstMpiComm( const Epetra_MpiComm *pobj );
 void
 removeMpiComm( CT_Epetra_MpiComm_ID_t *id );
 
+/* remove Epetra_MpiComm from table using CTrilinos_Universal_ID_t */
+void
+removeMpiComm( CTrilinos_Universal_ID_t *aid );
+
 /* purge Epetra_MpiComm table */
 void
 purgeMpiComm(  );
 
+/* store Epetra_MpiComm in non-const table */
+CTrilinos_Universal_ID_t
+aliasMpiComm( const Teuchos::RCP< Epetra_MpiComm > & robj );
+
+/* store const Epetra_MpiComm in const table */
+CTrilinos_Universal_ID_t
+aliasConstMpiComm( const Teuchos::RCP< const Epetra_MpiComm > & robj );
+
 } // namespace CEpetra
 
 
-#endif // CEPETRA_MPICOMM_CPP_HPP
-
-
 #endif /* HAVE_MPI */
+
+#endif // CEPETRA_MPICOMM_CPP_HPP
 
 

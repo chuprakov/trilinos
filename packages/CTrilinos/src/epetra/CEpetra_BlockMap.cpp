@@ -35,10 +35,30 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CEpetra_BlockMap.h"
 #include "CEpetra_BlockMap_Cpp.hpp"
+#include "Epetra_BlockMap.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_Comm_Cpp.hpp"
+
+
+namespace {
+
+
+using Teuchos::RCP;
+using CTrilinos::Table;
+
+
+/* table to hold objects of type Epetra_BlockMap */
+Table<Epetra_BlockMap>& tableOfBlockMaps()
+{
+    static Table<Epetra_BlockMap> loc_tableOfBlockMaps(CT_Epetra_BlockMap_ID);
+    return loc_tableOfBlockMaps;
+}
+
+
+} // namespace
 
 
 //
@@ -372,6 +392,125 @@ void Epetra_BlockMap_Assign (
 
 } // extern "C"
 
+
+//
+// Definitions from CEpetra_BlockMap_Cpp.hpp
+//
+
+
+/* get Epetra_BlockMap from non-const table using CT_Epetra_BlockMap_ID */
+const Teuchos::RCP<Epetra_BlockMap>
+CEpetra::getBlockMap( CT_Epetra_BlockMap_ID_t id )
+{
+    if (tableOfBlockMaps().isType(id.table))
+        return tableOfBlockMaps().get<Epetra_BlockMap>(
+        CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::get<Epetra_BlockMap>(
+        CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(id));
+}
+
+/* get Epetra_BlockMap from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_BlockMap>
+CEpetra::getBlockMap( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfBlockMaps().isType(id.table))
+        return tableOfBlockMaps().get<Epetra_BlockMap>(id);
+    else
+        return CTrilinos::TableRepos::get<Epetra_BlockMap>(id);
+}
+
+/* get const Epetra_BlockMap from either the const or non-const table
+ * using CT_Epetra_BlockMap_ID */
+const Teuchos::RCP<const Epetra_BlockMap>
+CEpetra::getConstBlockMap( CT_Epetra_BlockMap_ID_t id )
+{
+    if (tableOfBlockMaps().isType(id.table))
+        return tableOfBlockMaps().getConst<Epetra_BlockMap>(
+        CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_BlockMap>(
+        CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(id));
+}
+
+/* get const Epetra_BlockMap from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_BlockMap>
+CEpetra::getConstBlockMap( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfBlockMaps().isType(id.table))
+        return tableOfBlockMaps().getConst<Epetra_BlockMap>(id);
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_BlockMap>(id);
+}
+
+/* store Epetra_BlockMap (owned) in non-const table */
+CT_Epetra_BlockMap_ID_t
+CEpetra::storeNewBlockMap( Epetra_BlockMap *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(
+        tableOfBlockMaps().store<Epetra_BlockMap>(pobj, true));
+}
+
+/* store Epetra_BlockMap in non-const table */
+CT_Epetra_BlockMap_ID_t
+CEpetra::storeBlockMap( Epetra_BlockMap *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(
+        tableOfBlockMaps().store<Epetra_BlockMap>(pobj, false));
+}
+
+/* store const Epetra_BlockMap in const table */
+CT_Epetra_BlockMap_ID_t
+CEpetra::storeConstBlockMap( const Epetra_BlockMap *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(
+        tableOfBlockMaps().store<Epetra_BlockMap>(pobj, false));
+}
+
+/* remove Epetra_BlockMap from table using CT_Epetra_BlockMap_ID */
+void
+CEpetra::removeBlockMap( CT_Epetra_BlockMap_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_BlockMap_ID_t>(*id);
+    if (tableOfBlockMaps().isType(aid.table))
+        tableOfBlockMaps().remove(&aid);
+    else
+        CTrilinos::TableRepos::remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_BlockMap_ID_t>(aid);
+}
+
+/* remove Epetra_BlockMap from table using CTrilinos_Universal_ID_t */
+void
+CEpetra::removeBlockMap( CTrilinos_Universal_ID_t *aid )
+{
+    if (tableOfBlockMaps().isType(aid->table))
+        tableOfBlockMaps().remove(aid);
+    else
+        CTrilinos::TableRepos::remove(aid);
+}
+
+/* purge Epetra_BlockMap table */
+void
+CEpetra::purgeBlockMap(  )
+{
+    tableOfBlockMaps().purge();
+}
+
+/* store Epetra_BlockMap in non-const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasBlockMap( const Teuchos::RCP< Epetra_BlockMap > & robj )
+{
+    return tableOfBlockMaps().alias(robj);
+}
+
+/* store const Epetra_BlockMap in const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasConstBlockMap( const Teuchos::RCP< const Epetra_BlockMap > & robj )
+{
+    return tableOfBlockMaps().alias(robj);
+}
 
 
 

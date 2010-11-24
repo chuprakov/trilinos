@@ -30,12 +30,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_IFPACK
-
-
 
 /*! @file CIfpack.h
  * @brief Wrappers for Ifpack */
@@ -46,7 +40,10 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifndef CIFPACK_H
 #define CIFPACK_H
 
+#ifdef HAVE_CTRILINOS_IFPACK
 
+
+#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 
@@ -119,8 +116,7 @@ CT_Ifpack_Preconditioner_ID_t Ifpack_CreatePreconditioner_UsingType (
 #endif
 
 
-#endif /* CIFPACK_H */
-
 #endif /* HAVE_CTRILINOS_IFPACK */
 
+#endif /* CIFPACK_H */
 

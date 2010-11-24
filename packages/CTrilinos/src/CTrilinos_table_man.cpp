@@ -12,7 +12,7 @@ extern "C" {
  *  the object. */
 CTrilinos_Universal_ID_t CT_Alias(CTrilinos_Universal_ID_t aid, CTrilinos_Table_ID_t new_table)
 {
-    return CTrilinos::tableRepos().alias(aid, new_table, true);
+    return CTrilinos::TableRepos::alias(aid, new_table, true);
 }
 
 /*! Removes the RCP from one table and puts it in another. *aid will
@@ -20,7 +20,7 @@ CTrilinos_Universal_ID_t CT_Alias(CTrilinos_Universal_ID_t aid, CTrilinos_Table_
  *  to be removed in order to destroy the object. */
 void CT_Migrate(CTrilinos_Universal_ID_t *aid, CTrilinos_Table_ID_t new_table)
 {
-    CTrilinos_Universal_ID_t newid = CTrilinos::tableRepos().alias(*aid, new_table, false);
+    CTrilinos_Universal_ID_t newid = CTrilinos::TableRepos::alias(*aid, new_table, false);
     *aid = newid;
 }
 
@@ -29,7 +29,7 @@ void CT_Migrate(CTrilinos_Universal_ID_t *aid, CTrilinos_Table_ID_t new_table)
  *  distinguish, e.g., an Epetra_SerialComm from an Epetra_MpiComm). */
 boolean CT_TypeCheck(CTrilinos_Universal_ID_t aid, CTrilinos_Table_ID_t type)
 {
-    bool ret = CTrilinos::tableRepos().typeCheck(aid, type);
+    bool ret = CTrilinos::TableRepos::typeCheck(aid, type);
     return (ret ? TRUE : FALSE);
 }
 

@@ -35,6 +35,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CTeuchos_any.h"
 #include "CTeuchos_any_Cpp.hpp"
+#include "Teuchos_any.hpp"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
@@ -142,7 +143,7 @@ void Teuchos_any_Assign (
 const Teuchos::RCP<Teuchos::any>
 CTeuchos::getany( CT_Teuchos_any_ID_t id )
 {
-    return tableOfanys().get(
+        return tableOfanys().get<Teuchos::any>(
         CTrilinos::abstractType<CT_Teuchos_any_ID_t>(id));
 }
 
@@ -150,7 +151,7 @@ CTeuchos::getany( CT_Teuchos_any_ID_t id )
 const Teuchos::RCP<Teuchos::any>
 CTeuchos::getany( CTrilinos_Universal_ID_t id )
 {
-    return tableOfanys().get(id);
+        return tableOfanys().get<Teuchos::any>(id);
 }
 
 /* get const Teuchos::any from either the const or non-const table
@@ -158,7 +159,7 @@ CTeuchos::getany( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Teuchos::any>
 CTeuchos::getConstany( CT_Teuchos_any_ID_t id )
 {
-    return tableOfanys().getConst(
+        return tableOfanys().getConst<Teuchos::any>(
         CTrilinos::abstractType<CT_Teuchos_any_ID_t>(id));
 }
 
@@ -167,7 +168,7 @@ CTeuchos::getConstany( CT_Teuchos_any_ID_t id )
 const Teuchos::RCP<const Teuchos::any>
 CTeuchos::getConstany( CTrilinos_Universal_ID_t id )
 {
-    return tableOfanys().getConst(id);
+        return tableOfanys().getConst<Teuchos::any>(id);
 }
 
 /* store Teuchos::any (owned) in non-const table */
@@ -175,7 +176,7 @@ CT_Teuchos_any_ID_t
 CTeuchos::storeNewany( Teuchos::any *pobj )
 {
     return CTrilinos::concreteType<CT_Teuchos_any_ID_t>(
-        tableOfanys().store(pobj, true));
+        tableOfanys().store<Teuchos::any>(pobj, true));
 }
 
 /* store Teuchos::any in non-const table */
@@ -183,7 +184,7 @@ CT_Teuchos_any_ID_t
 CTeuchos::storeany( Teuchos::any *pobj )
 {
     return CTrilinos::concreteType<CT_Teuchos_any_ID_t>(
-        tableOfanys().store(pobj, false));
+        tableOfanys().store<Teuchos::any>(pobj, false));
 }
 
 /* store const Teuchos::any in const table */
@@ -191,7 +192,7 @@ CT_Teuchos_any_ID_t
 CTeuchos::storeConstany( const Teuchos::any *pobj )
 {
     return CTrilinos::concreteType<CT_Teuchos_any_ID_t>(
-        tableOfanys().store(pobj, false));
+        tableOfanys().store<Teuchos::any>(pobj, false));
 }
 
 /* remove Teuchos::any from table using CT_Teuchos_any_ID */
@@ -200,8 +201,15 @@ CTeuchos::removeany( CT_Teuchos_any_ID_t *id )
 {
     CTrilinos_Universal_ID_t aid = 
         CTrilinos::abstractType<CT_Teuchos_any_ID_t>(*id);
-    tableOfanys().remove(&aid);
+        tableOfanys().remove(&aid);
     *id = CTrilinos::concreteType<CT_Teuchos_any_ID_t>(aid);
+}
+
+/* remove Teuchos::any from table using CTrilinos_Universal_ID_t */
+void
+CTeuchos::removeany( CTrilinos_Universal_ID_t *aid )
+{
+        tableOfanys().remove(aid);
 }
 
 /* purge Teuchos::any table */

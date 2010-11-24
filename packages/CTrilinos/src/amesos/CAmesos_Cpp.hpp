@@ -30,14 +30,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_AMESOS
-
-
 #ifndef CAMESOS_CPP_HPP
 #define CAMESOS_CPP_HPP
+
+
+#include "CTrilinos_config.h"
+
+#ifdef HAVE_CTRILINOS_AMESOS
 
 
 #include "CTrilinos_enums.h"
@@ -85,6 +84,10 @@ storeConstAmesos( const Amesos *pobj );
 void
 removeAmesos( CT_Amesos_ID_t *id );
 
+/* remove Amesos from table using CTrilinos_Universal_ID_t */
+void
+removeAmesos( CTrilinos_Universal_ID_t *aid );
+
 /* purge Amesos table */
 void
 purgeAmesos(  );
@@ -92,9 +95,8 @@ purgeAmesos(  );
 } // namespace CAmesos
 
 
-#endif // CAMESOS_CPP_HPP
-
-
 #endif /* HAVE_CTRILINOS_AMESOS */
+
+#endif // CAMESOS_CPP_HPP
 
 

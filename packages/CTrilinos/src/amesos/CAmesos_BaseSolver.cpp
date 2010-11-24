@@ -32,19 +32,37 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
-
 #ifdef HAVE_CTRILINOS_AMESOS
-
 
 #include "CTrilinos_enums.h"
 #include "CAmesos_BaseSolver.h"
 #include "CAmesos_BaseSolver_Cpp.hpp"
+#include "Amesos_BaseSolver.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_TableRepos.hpp"
 #include "CTeuchos_ParameterList_Cpp.hpp"
 #include "CEpetra_LinearProblem_Cpp.hpp"
 #include "CEpetra_Comm_Cpp.hpp"
+
+
+namespace {
+
+
+using Teuchos::RCP;
+using CTrilinos::Table;
+
+
+/* table to hold objects of type Amesos_BaseSolver */
+Table<Amesos_BaseSolver>& tableOfBaseSolvers()
+{
+    static Table<Amesos_BaseSolver> loc_tableOfBaseSolvers(CT_Amesos_BaseSolver_ID);
+    return loc_tableOfBaseSolvers;
+}
+
+
+} // namespace
 
 
 //
@@ -198,6 +216,124 @@ void Amesos_BaseSolver_GetTiming (
 } // extern "C"
 
 
+//
+// Definitions from CAmesos_BaseSolver_Cpp.hpp
+//
+
+
+/* get Amesos_BaseSolver from non-const table using CT_Amesos_BaseSolver_ID */
+const Teuchos::RCP<Amesos_BaseSolver>
+CAmesos::getBaseSolver( CT_Amesos_BaseSolver_ID_t id )
+{
+    if (tableOfBaseSolvers().isType(id.table))
+        return tableOfBaseSolvers().get<Amesos_BaseSolver>(
+        CTrilinos::abstractType<CT_Amesos_BaseSolver_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::get<Amesos_BaseSolver>(
+        CTrilinos::abstractType<CT_Amesos_BaseSolver_ID_t>(id));
+}
+
+/* get Amesos_BaseSolver from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Amesos_BaseSolver>
+CAmesos::getBaseSolver( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfBaseSolvers().isType(id.table))
+        return tableOfBaseSolvers().get<Amesos_BaseSolver>(id);
+    else
+        return CTrilinos::TableRepos::get<Amesos_BaseSolver>(id);
+}
+
+/* get const Amesos_BaseSolver from either the const or non-const table
+ * using CT_Amesos_BaseSolver_ID */
+const Teuchos::RCP<const Amesos_BaseSolver>
+CAmesos::getConstBaseSolver( CT_Amesos_BaseSolver_ID_t id )
+{
+    if (tableOfBaseSolvers().isType(id.table))
+        return tableOfBaseSolvers().getConst<Amesos_BaseSolver>(
+        CTrilinos::abstractType<CT_Amesos_BaseSolver_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::getConst<Amesos_BaseSolver>(
+        CTrilinos::abstractType<CT_Amesos_BaseSolver_ID_t>(id));
+}
+
+/* get const Amesos_BaseSolver from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Amesos_BaseSolver>
+CAmesos::getConstBaseSolver( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfBaseSolvers().isType(id.table))
+        return tableOfBaseSolvers().getConst<Amesos_BaseSolver>(id);
+    else
+        return CTrilinos::TableRepos::getConst<Amesos_BaseSolver>(id);
+}
+
+/* store Amesos_BaseSolver (owned) in non-const table */
+CT_Amesos_BaseSolver_ID_t
+CAmesos::storeNewBaseSolver( Amesos_BaseSolver *pobj )
+{
+    return CTrilinos::concreteType<CT_Amesos_BaseSolver_ID_t>(
+        tableOfBaseSolvers().store<Amesos_BaseSolver>(pobj, true));
+}
+
+/* store Amesos_BaseSolver in non-const table */
+CT_Amesos_BaseSolver_ID_t
+CAmesos::storeBaseSolver( Amesos_BaseSolver *pobj )
+{
+    return CTrilinos::concreteType<CT_Amesos_BaseSolver_ID_t>(
+        tableOfBaseSolvers().store<Amesos_BaseSolver>(pobj, false));
+}
+
+/* store const Amesos_BaseSolver in const table */
+CT_Amesos_BaseSolver_ID_t
+CAmesos::storeConstBaseSolver( const Amesos_BaseSolver *pobj )
+{
+    return CTrilinos::concreteType<CT_Amesos_BaseSolver_ID_t>(
+        tableOfBaseSolvers().store<Amesos_BaseSolver>(pobj, false));
+}
+
+/* remove Amesos_BaseSolver from table using CT_Amesos_BaseSolver_ID */
+void
+CAmesos::removeBaseSolver( CT_Amesos_BaseSolver_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Amesos_BaseSolver_ID_t>(*id);
+    if (tableOfBaseSolvers().isType(aid.table))
+        tableOfBaseSolvers().remove(&aid);
+    else
+        CTrilinos::TableRepos::remove(&aid);
+    *id = CTrilinos::concreteType<CT_Amesos_BaseSolver_ID_t>(aid);
+}
+
+/* remove Amesos_BaseSolver from table using CTrilinos_Universal_ID_t */
+void
+CAmesos::removeBaseSolver( CTrilinos_Universal_ID_t *aid )
+{
+    if (tableOfBaseSolvers().isType(aid->table))
+        tableOfBaseSolvers().remove(aid);
+    else
+        CTrilinos::TableRepos::remove(aid);
+}
+
+/* purge Amesos_BaseSolver table */
+void
+CAmesos::purgeBaseSolver(  )
+{
+    tableOfBaseSolvers().purge();
+}
+
+/* store Amesos_BaseSolver in non-const table */
+CTrilinos_Universal_ID_t
+CAmesos::aliasBaseSolver( const Teuchos::RCP< Amesos_BaseSolver > & robj )
+{
+    return tableOfBaseSolvers().alias(robj);
+}
+
+/* store const Amesos_BaseSolver in const table */
+CTrilinos_Universal_ID_t
+CAmesos::aliasConstBaseSolver( const Teuchos::RCP< const Amesos_BaseSolver > & robj )
+{
+    return tableOfBaseSolvers().alias(robj);
+}
 
 
 #endif /* HAVE_CTRILINOS_AMESOS */

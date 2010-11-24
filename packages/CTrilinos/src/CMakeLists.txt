@@ -64,7 +64,6 @@ APPEND_SET(HEADERS
 
 APPEND_SET(SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_TableRepos.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_table_calls.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_utils.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_test_utils.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CTrilinos_table_man.cpp

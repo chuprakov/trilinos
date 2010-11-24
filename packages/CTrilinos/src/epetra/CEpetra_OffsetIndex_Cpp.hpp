@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CEPETRA_OFFSETINDEX_CPP_HPP
 #define CEPETRA_OFFSETINDEX_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -81,9 +82,21 @@ storeConstOffsetIndex( const Epetra_OffsetIndex *pobj );
 void
 removeOffsetIndex( CT_Epetra_OffsetIndex_ID_t *id );
 
+/* remove Epetra_OffsetIndex from table using CTrilinos_Universal_ID_t */
+void
+removeOffsetIndex( CTrilinos_Universal_ID_t *aid );
+
 /* purge Epetra_OffsetIndex table */
 void
 purgeOffsetIndex(  );
+
+/* store Epetra_OffsetIndex in non-const table */
+CTrilinos_Universal_ID_t
+aliasOffsetIndex( const Teuchos::RCP< Epetra_OffsetIndex > & robj );
+
+/* store const Epetra_OffsetIndex in const table */
+CTrilinos_Universal_ID_t
+aliasConstOffsetIndex( const Teuchos::RCP< const Epetra_OffsetIndex > & robj );
 
 } // namespace CEpetra
 

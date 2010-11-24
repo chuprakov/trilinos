@@ -32,17 +32,35 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
-
 #ifdef HAVE_CTRILINOS_AZTECOO
-
 
 #include "CTrilinos_enums.h"
 #include "CAztecOO_StatusTestMaxIters.h"
 #include "CAztecOO_StatusTestMaxIters_Cpp.hpp"
+#include "AztecOO_StatusTestMaxIters.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_MultiVector_Cpp.hpp"
+
+
+namespace {
+
+
+using Teuchos::RCP;
+using CTrilinos::Table;
+
+
+/* table to hold objects of type AztecOO_StatusTestMaxIters */
+Table<AztecOO_StatusTestMaxIters>& tableOfStatusTestMaxIterss()
+{
+    static Table<AztecOO_StatusTestMaxIters> loc_tableOfStatusTestMaxIterss(CT_AztecOO_StatusTestMaxIters_ID);
+    return loc_tableOfStatusTestMaxIterss;
+}
+
+
+} // namespace
 
 
 //
@@ -120,6 +138,124 @@ int AztecOO_StatusTestMaxIters_GetNumIters (
 } // extern "C"
 
 
+//
+// Definitions from CAztecOO_StatusTestMaxIters_Cpp.hpp
+//
+
+
+/* get AztecOO_StatusTestMaxIters from non-const table using CT_AztecOO_StatusTestMaxIters_ID */
+const Teuchos::RCP<AztecOO_StatusTestMaxIters>
+CAztecOO::getStatusTestMaxIters( CT_AztecOO_StatusTestMaxIters_ID_t id )
+{
+    if (tableOfStatusTestMaxIterss().isType(id.table))
+        return tableOfStatusTestMaxIterss().get<AztecOO_StatusTestMaxIters>(
+        CTrilinos::abstractType<CT_AztecOO_StatusTestMaxIters_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::get<AztecOO_StatusTestMaxIters>(
+        CTrilinos::abstractType<CT_AztecOO_StatusTestMaxIters_ID_t>(id));
+}
+
+/* get AztecOO_StatusTestMaxIters from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<AztecOO_StatusTestMaxIters>
+CAztecOO::getStatusTestMaxIters( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfStatusTestMaxIterss().isType(id.table))
+        return tableOfStatusTestMaxIterss().get<AztecOO_StatusTestMaxIters>(id);
+    else
+        return CTrilinos::TableRepos::get<AztecOO_StatusTestMaxIters>(id);
+}
+
+/* get const AztecOO_StatusTestMaxIters from either the const or non-const table
+ * using CT_AztecOO_StatusTestMaxIters_ID */
+const Teuchos::RCP<const AztecOO_StatusTestMaxIters>
+CAztecOO::getConstStatusTestMaxIters( CT_AztecOO_StatusTestMaxIters_ID_t id )
+{
+    if (tableOfStatusTestMaxIterss().isType(id.table))
+        return tableOfStatusTestMaxIterss().getConst<AztecOO_StatusTestMaxIters>(
+        CTrilinos::abstractType<CT_AztecOO_StatusTestMaxIters_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::getConst<AztecOO_StatusTestMaxIters>(
+        CTrilinos::abstractType<CT_AztecOO_StatusTestMaxIters_ID_t>(id));
+}
+
+/* get const AztecOO_StatusTestMaxIters from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const AztecOO_StatusTestMaxIters>
+CAztecOO::getConstStatusTestMaxIters( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfStatusTestMaxIterss().isType(id.table))
+        return tableOfStatusTestMaxIterss().getConst<AztecOO_StatusTestMaxIters>(id);
+    else
+        return CTrilinos::TableRepos::getConst<AztecOO_StatusTestMaxIters>(id);
+}
+
+/* store AztecOO_StatusTestMaxIters (owned) in non-const table */
+CT_AztecOO_StatusTestMaxIters_ID_t
+CAztecOO::storeNewStatusTestMaxIters( AztecOO_StatusTestMaxIters *pobj )
+{
+    return CTrilinos::concreteType<CT_AztecOO_StatusTestMaxIters_ID_t>(
+        tableOfStatusTestMaxIterss().store<AztecOO_StatusTestMaxIters>(pobj, true));
+}
+
+/* store AztecOO_StatusTestMaxIters in non-const table */
+CT_AztecOO_StatusTestMaxIters_ID_t
+CAztecOO::storeStatusTestMaxIters( AztecOO_StatusTestMaxIters *pobj )
+{
+    return CTrilinos::concreteType<CT_AztecOO_StatusTestMaxIters_ID_t>(
+        tableOfStatusTestMaxIterss().store<AztecOO_StatusTestMaxIters>(pobj, false));
+}
+
+/* store const AztecOO_StatusTestMaxIters in const table */
+CT_AztecOO_StatusTestMaxIters_ID_t
+CAztecOO::storeConstStatusTestMaxIters( const AztecOO_StatusTestMaxIters *pobj )
+{
+    return CTrilinos::concreteType<CT_AztecOO_StatusTestMaxIters_ID_t>(
+        tableOfStatusTestMaxIterss().store<AztecOO_StatusTestMaxIters>(pobj, false));
+}
+
+/* remove AztecOO_StatusTestMaxIters from table using CT_AztecOO_StatusTestMaxIters_ID */
+void
+CAztecOO::removeStatusTestMaxIters( CT_AztecOO_StatusTestMaxIters_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_AztecOO_StatusTestMaxIters_ID_t>(*id);
+    if (tableOfStatusTestMaxIterss().isType(aid.table))
+        tableOfStatusTestMaxIterss().remove(&aid);
+    else
+        CTrilinos::TableRepos::remove(&aid);
+    *id = CTrilinos::concreteType<CT_AztecOO_StatusTestMaxIters_ID_t>(aid);
+}
+
+/* remove AztecOO_StatusTestMaxIters from table using CTrilinos_Universal_ID_t */
+void
+CAztecOO::removeStatusTestMaxIters( CTrilinos_Universal_ID_t *aid )
+{
+    if (tableOfStatusTestMaxIterss().isType(aid->table))
+        tableOfStatusTestMaxIterss().remove(aid);
+    else
+        CTrilinos::TableRepos::remove(aid);
+}
+
+/* purge AztecOO_StatusTestMaxIters table */
+void
+CAztecOO::purgeStatusTestMaxIters(  )
+{
+    tableOfStatusTestMaxIterss().purge();
+}
+
+/* store AztecOO_StatusTestMaxIters in non-const table */
+CTrilinos_Universal_ID_t
+CAztecOO::aliasStatusTestMaxIters( const Teuchos::RCP< AztecOO_StatusTestMaxIters > & robj )
+{
+    return tableOfStatusTestMaxIterss().alias(robj);
+}
+
+/* store const AztecOO_StatusTestMaxIters in const table */
+CTrilinos_Universal_ID_t
+CAztecOO::aliasConstStatusTestMaxIters( const Teuchos::RCP< const AztecOO_StatusTestMaxIters > & robj )
+{
+    return tableOfStatusTestMaxIterss().alias(robj);
+}
 
 
 #endif /* HAVE_CTRILINOS_AZTECOO */
