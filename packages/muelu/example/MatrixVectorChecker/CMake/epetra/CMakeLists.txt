@@ -9,4 +9,5 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
   SOURCES MatrixVectorCheckerExample.cpp
   DEFINES -DCTHULHU_USE_EPETRA #or USE_CTHULHU_EPETRA ?
   COMM serial mpi
+  DEPLIBS muelu muelu-cthulhu
   )
