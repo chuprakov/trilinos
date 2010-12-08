@@ -312,9 +312,7 @@ int shape_improve_volume( iMesh_Instance mesh_instance,
   if (iBase_SUCCESS != ierr) return ierr;
 
     // Finally, smooth the mesh
-  ShapeImprover smoother(err);
-  if (err) return err.error_code();
-
+  ShapeImprover smoother;
   \<smoother.run_instructions( &mesh_adapter, err );\>
   if (err) return err.error_code();
 
@@ -324,7 +322,7 @@ int shape_improve_volume( iMesh_Instance mesh_instance,
 
 \subsection{Two-dimensional Example}
 
-This section presents an example of how to use Mesquite to optimize a 2D mesh.  It is a modification of the example from the previous section with changes shown in a bold type face.  As Mesquite operates only on 3D meshes (either volume or surface), a 2D mesh is optimized by treating it as a surface mesh constrained to the XY plane.
+This section presents an example of how to use Mesquite to optimize a 2D mesh.  It is a modification of the example from the previous section with changes shown in blue.  As Mesquite operates only on 3D meshes (either volume or surface), a 2D mesh is optimized by treating it as a surface mesh constrained to the XY plane.
 
 
 \begin{lstlisting}
@@ -424,9 +422,7 @@ int shape_improve_2D( iMesh_Instance mesh_instance,
   if (iBase_SUCCESS != ierr) return ierr;
 
     // Finally, smooth the mesh
-  ShapeImprover smoother(err);
-  if (err) return err.error_code();
-
+  ShapeImprover smoother;
   \<PlanarDomain xyplane(PlanarDomain::XY);\>
   \<smoother.run_instructions( &mesh_adapter, &xyplane, err );\>
   if (err) return err.error_code();
