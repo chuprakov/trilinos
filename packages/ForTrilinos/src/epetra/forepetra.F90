@@ -34,9 +34,7 @@
 ! Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov) 
 !*********************************************************************
 
-
 #include "ForTrilinos_config.h"
-
 module forepetra
   use iso_c_binding ,only : c_int,c_double,c_char,c_bool,c_ptr,c_long,c_float
   use ForTrilinos_enums

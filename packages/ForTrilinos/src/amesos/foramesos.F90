@@ -36,7 +36,6 @@
 
 
 #include "ForTrilinos_config.h"
-
 #ifdef HAVE_FORTRILINOS_AMESOS
 
 module foramesos

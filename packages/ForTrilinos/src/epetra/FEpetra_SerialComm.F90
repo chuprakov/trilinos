@@ -35,7 +35,7 @@
 !                    Damian Rouson (rouson@sandia.gov)
 !*********************************************************************
 
-
+#include "ForTrilinos_config.h"
 module FEpetra_SerialComm
   use ForTrilinos_enums ,only : FT_Epetra_Comm_ID,FT_Epetra_SerialComm_ID_t,ForTrilinos_Universal_ID_t
   use ForTrilinos_table_man
@@ -44,7 +44,6 @@ module FEpetra_SerialComm
   use FEpetra_Comm      ,only : Epetra_Comm
   use iso_c_binding     ,only : c_int,c_long,c_double,c_char
   use forepetra
-#include "ForTrilinos_config.h"
   implicit none
   private                     ! Hide everything by default
   public :: Epetra_SerialComm ! Expose type/constructors/methods
@@ -62,29 +61,35 @@ module FEpetra_SerialComm
      !Barrier Methods
      procedure         :: barrier
      !Broadcast Methods
-     procedure         :: broadcast_double
-     procedure         :: broadcast_int
-     procedure         :: broadcast_long
-     procedure         :: broadcast_char
+     procedure,private         :: broadcast_double
+     procedure,private         :: broadcast_int
+     procedure                 :: broadcast_long
+     procedure,private         :: broadcast_char
+     generic::broadcast=>broadcast_double,broadcast_int,broadcast_char
      !Gather Methods
-     procedure         :: gather_double
-     procedure         :: gather_int
-     procedure         :: gather_long
+     procedure,private         :: gather_double
+     procedure,private         :: gather_int
+     procedure                 :: gather_long
+     generic ::GatherAll=>gather_double,gather_int
      !Sum Methods
-     procedure         :: sum_double
-     procedure         :: sum_int
-     procedure         :: sum_long
+     procedure,private         :: sum_double
+     procedure,private         :: sum_int
+     procedure                 :: sum_long
+     generic::SumAll=>sum_double,sum_int
      !Max/Min Methods
-     procedure         :: max_double
-     procedure         :: max_int
-     procedure         :: max_long
-     procedure         :: min_double
-     procedure         :: min_int
-     procedure         :: min_long
+     procedure,private         :: max_double
+     procedure,private         :: max_int
+     procedure                 :: max_long
+     generic::MaxAll=>max_double,max_int
+     procedure,private         :: min_double
+     procedure,private         :: min_int
+     procedure                 :: min_long
+     generic::MinAll=>min_double,min_int
      !Parallel Prefix Methods
-     procedure         :: ScanSum_double
-     procedure         :: ScanSum_int
-     procedure         :: ScanSum_long
+     procedure,private         :: ScanSum_double
+     procedure,private         :: ScanSum_int
+     procedure                 :: ScanSum_long
+     generic::ScanSum=>ScanSum_double,ScanSum_int
      !Attribute Accessor Methods
      procedure         :: MyPID
      procedure         :: NumProc
