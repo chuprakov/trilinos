@@ -31,7 +31,8 @@
 #include <iostream>
 #include <string>
 
-#include "MockModelEval_B.hpp"
+#include "MockModelEval_A.hpp"
+#include "SaveEigenData_Epetra.hpp"
 
 #include "Teuchos_XMLParameterListHelpers.hpp"
 #include "Teuchos_TestForException.hpp"
@@ -40,8 +41,13 @@
 
 #include "Piro_ConfigDefs.hpp"
 
-#include "Piro_Epetra_VelocityVerletSolver.hpp"
+#ifdef Piro_ENABLE_NOX
 #include "Piro_Epetra_NOXSolver.hpp"
+#include "Piro_Epetra_LOCASolver.hpp"
+#endif
+#ifdef Piro_ENABLE_Rythmos
+#include "Piro_Epetra_RythmosSolver.hpp"
+#endif
 
 
 int main(int argc, char *argv[]) {
@@ -61,18 +67,36 @@ int main(int argc, char *argv[]) {
 
   using Teuchos::RCP;
   using Teuchos::rcp;
-  std::string inputFile="input_Solve_VV.xml"; 
+  std::string inputFile;
+
+  bool doAll = (argc==1);
+  if (argc>1) doAll = !strcmp(argv[1],"-v");
+ 
+  for (int iTest=0; iTest<3; iTest++) {
+
+    if (doAll) {
+      switch (iTest) {
+       case 0: inputFile="input_Solve_NOX_1.xml"; break;
+       case 1: inputFile="input_Solve_LOCA_1.xml"; break;
+       case 2: inputFile="input_Solve_Rythmos_1.xml"; break;
+       default : cout << "iTest logic error " << endl; exit(-1);
+      }
+    }
+     else {
+      inputFile=argv[1];
+      iTest = 999;
+    }
 
     if (Proc==0)
      cout << "===================================================\n"
-          << "======  Running input file: "<< inputFile <<"\n"
+          << "======  Running input file "<< iTest <<": "<< inputFile <<"\n"
           << "===================================================\n"
           << endl;
     
     try {
 
       // Create (1) a Model Evaluator and (2) a ParameterList
-      RCP<EpetraExt::ModelEvaluator> Model = rcp(new MockModelEval_B(appComm));
+      RCP<EpetraExt::ModelEvaluator> Model = rcp(new MockModelEval_A(appComm));
 
       RCP<Teuchos::ParameterList> piroParams =
          rcp(new Teuchos::ParameterList("Piro Parameters"));
@@ -84,17 +108,25 @@ int main(int argc, char *argv[]) {
 
       std::string& solver = piroParams->get("Piro Solver","NOX");
 #ifdef Piro_ENABLE_NOX
-      if (solver=="NOX") {
+      if (solver=="NOX")
         piro = rcp(new Piro::Epetra::NOXSolver(piroParams, Model));
-      }
-      else if (solver=="Velocity Verlet") {
-        piro = rcp(new Piro::Epetra::VelocityVerletSolver(
-                       piroParams, Model, Teuchos::null));
+      else if (solver=="LOCA") {
+        RCP<LOCA::SaveEigenData::AbstractStrategy> saveEigs/* =
+            rcp(new SaveEigenData_Epetra(piroParams->sublist("LOCA"))) */;
+        piro = rcp(new Piro::Epetra::LOCASolver(
+                       piroParams, Model, Teuchos::null, saveEigs));
       }
       else
 #endif
+#ifdef Piro_ENABLE_Rythmos
+      if (solver=="Rythmos")
+        piro = rcp(new Piro::Epetra::RythmosSolver(piroParams, Model));
+      else 
+#endif
         TEST_FOR_EXCEPTION(true, std::logic_error,
           "Error: Unknown Piro Solver : " << solver);
+
+      bool computeSens = piroParams->get("Compute Sensitivities", false);
 
       // Now the (somewhat cumbersome) setting of inputs and outputs
       EpetraExt::ModelEvaluator::InArgs inArgs = piro->createInArgs();
@@ -112,6 +144,9 @@ int main(int argc, char *argv[]) {
       RCP<Epetra_Vector> gx = rcp(new Epetra_Vector(*(piro->get_g_map(1))));
       outArgs.set_g(1,gx);
 
+      RCP<Epetra_MultiVector> dgdp = rcp(new Epetra_MultiVector(g1->Map(), numParams));
+      if (computeSens) outArgs.set_DgDp(0, 0, dgdp);
+
       // Now, solve the problem and return the responses
       piro->evalModel(inArgs, outArgs);
 
@@ -121,23 +156,27 @@ int main(int argc, char *argv[]) {
              << "\n-----------------------------------------------------------------"
              << std::setprecision(9) << endl;
 
-      p1->Print(cout << "\nParameters! {1}\n");
-      g1->Print(cout << "\nResponses! {0.0}\n");
-      gx->Print(cout << "\nSolution! {0.0}\n");
+      p1->Print(cout << "\nParameters! {1,1}\n");
+      g1->Print(cout << "\nResponses! {8.0}\n");
+      gx->Print(cout << "\nSolution! {1,2,3,4}\n");
+      if (computeSens)
+        dgdp->Print(cout <<"\nSensitivities {2.0, -8.0}\n");
 
       if (Proc == 0)
         cout <<
           "\n-----------------------------------------------------------------\n";
     }
     TEUCHOS_STANDARD_CATCH_STATEMENTS(true, std::cerr, success);
-    if (!success) status=10; else status=0;
+    if (!success) status+=1000;
 
     overall_status += status;
-
+  }
 
   if (Proc==0) {
-    if (overall_status==0) cout << "\nTEST PASSED\n" << endl;
-    else cout << "\nTEST Failed:  " << overall_status << endl;
+    if (overall_status==0) 
+      cout << "\nTEST PASSED\n" << endl;
+    else 
+      cout << "\nTEST Failed:  " << overall_status << endl;
   }
 
   return status;
