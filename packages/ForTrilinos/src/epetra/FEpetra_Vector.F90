@@ -36,7 +36,8 @@
 !*********************************************************************
 
 module FEpetra_Vector
-  use ForTrilinos_enums   ,only: FT_Epetra_MultiVector_ID_t,FT_Epetra_Vector_ID_t,FT_Epetra_BlockMap_ID_t,ForTrilinos_Universal_ID_t,FT_boolean_t 
+  use ForTrilinos_enums   ,only: FT_Epetra_MultiVector_ID_t,FT_Epetra_Vector_ID_t,&
+                                 FT_Epetra_BlockMap_ID_t,ForTrilinos_Universal_ID_t,FT_boolean_t 
   use ForTrilinos_table_man
   use ForTrilinos_error
   use ForTrilinos_universal
@@ -44,9 +45,9 @@ module FEpetra_Vector
   use FEpetra_BlockMap    !,only: Epetra_BlockMap !use to circumvent reported compiler bug
   use iso_c_binding       ,only: c_int
   use forepetra
+  implicit none
   private                                    ! Hide everything by default
   public :: Epetra_Vector !,Epetra_MultiVector ! Expose type/constructors/methods
-  implicit none
 
   type ,extends(Epetra_MultiVector)      :: Epetra_Vector !"shell"
     private
@@ -60,6 +61,7 @@ module FEpetra_Vector
      procedure         :: generalize 
      !Post-construction modfication routines
      procedure         :: ReplaceGlobalValues
+     procedure         :: SumIntoGlobalValues
      ! Extraction methods
      procedure         :: ExtractCopy_EpetraVector
      generic :: ExtractCopy => ExtractCopy_EpetraVector
@@ -187,6 +189,17 @@ contains
     type(error),optional,intent(out) :: err
     integer(c_int)                      :: error_out
     error_out=Epetra_Vector_ReplaceGlobalValues(this%vector_id,NumEntries,values,indices)
+    if (present(err)) err=error(error_out)
+  end subroutine
+
+  subroutine SumIntoGlobalValues(this,NumEntries,values,indices,err)
+    class(Epetra_Vector), intent(in) :: this
+    integer(c_int),       intent(in) :: NumEntries
+    real(c_double),dimension(:),intent(in) :: values
+    integer(c_int),dimension(:),intent(in) :: indices 
+    type(error),optional,intent(out) :: err
+    integer(c_int)                      :: error_out
+    error_out=Epetra_Vector_SumIntoGlobalValues(this%vector_id,NumEntries,values,indices)
     if (present(err)) err=error(error_out)
   end subroutine
 

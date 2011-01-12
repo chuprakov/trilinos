@@ -35,13 +35,13 @@
 !                    Damian Rouson (rouson@sandia.gov)
 !*********************************************************************
 
+#include "ForTrilinos_config.h"
 module FEpetra_Comm
   use ForTrilinos_universal ,only : universal
   use ForTrilinos_enums !,only: FT_Epetra_Comm_ID_t,ForTrilinos_Universal_ID_t
   use ForTrilinos_error
   use ForTrilinos_table_man
   use forepetra
-#include "ForTrilinos_config.h"
   implicit none
   private               ! Hide everything by default
   public :: Epetra_Comm ! Expose type/methods
@@ -66,34 +66,34 @@ module FEpetra_Comm
     !Barrier Methods
     procedure(barrier_interface)          ,deferred          ::barrier
     !Broadcast Methods
-    procedure(broadcast_double_interface) ,deferred  ::broadcast_double
-    procedure(broadcast_int_interface)    ,deferred  ::broadcast_int
-    procedure(broadcast_long_interface)   ,deferred  ::broadcast_long
-    procedure(broadcast_char_interface)   ,deferred  ::broadcast_char
+    procedure(broadcast_double_interface) ,private,deferred  ::broadcast_double
+    procedure(broadcast_int_interface)    ,private,deferred  ::broadcast_int
+    procedure(broadcast_long_interface)           ,deferred  ::broadcast_long
+    procedure(broadcast_char_interface)   ,private,deferred  ::broadcast_char
     generic :: broadcast=>broadcast_double,broadcast_int,broadcast_char
     !Gather Methods
-    procedure(gather_double_interface)   ,deferred  ::gather_double
-    procedure(gather_int_interface)      ,deferred  ::gather_int
-    procedure(gather_long_interface)     ,deferred  ::gather_long
+    procedure(gather_double_interface),private   ,deferred  ::gather_double
+    procedure(gather_int_interface)   ,private   ,deferred  ::gather_int
+    procedure(gather_long_interface)             ,deferred  ::gather_long
     generic :: GatherAll=>gather_double,gather_int
     !Sum Methods
-    procedure(sum_double_interface)     ,deferred   ::sum_double
-    procedure(sum_int_interface)        ,deferred   ::sum_int
-    procedure(sum_long_interface)       ,deferred   ::sum_long
+    procedure(sum_double_interface),private     ,deferred   ::sum_double
+    procedure(sum_int_interface)   ,private     ,deferred   ::sum_int
+    procedure(sum_long_interface)               ,deferred   ::sum_long
     generic :: SumAll=>sum_double,sum_int
     !Max/Min Methods
-    procedure(max_double_interface)     ,deferred   ::max_double
-    procedure(max_int_interface)        ,deferred   ::max_int
-    procedure(max_long_interface)       ,deferred   ::max_long
+    procedure(max_double_interface) ,private    ,deferred   ::max_double
+    procedure(max_int_interface)    ,private    ,deferred   ::max_int
+    procedure(max_long_interface)               ,deferred   ::max_long
     generic :: MaxAll=>max_double,max_int
-    procedure(min_double_interface)     ,deferred   ::min_double
-    procedure(min_int_interface)        ,deferred   ::min_int
-    procedure(min_long_interface)       ,deferred   ::min_long
+    procedure(min_double_interface) ,private    ,deferred   ::min_double
+    procedure(min_int_interface)    ,private    ,deferred   ::min_int
+    procedure(min_long_interface)               ,deferred   ::min_long
     generic :: MinAll=>min_double,min_int
     !Parallel Prefix Methods
-    procedure(ScanSum_double_interface)     ,deferred   ::ScanSum_double
-    procedure(ScanSum_int_interface)        ,deferred   ::ScanSum_int
-    procedure(ScanSum_long_interface)       ,deferred   ::ScanSum_long
+    procedure(ScanSum_double_interface) ,private    ,deferred   ::ScanSum_double
+    procedure(ScanSum_int_interface)    ,private    ,deferred   ::ScanSum_int
+    procedure(ScanSum_long_interface)               ,deferred   ::ScanSum_long
     generic :: ScanSum=>ScanSum_double,ScanSum_int
     !Attribute Accessor Methods
     procedure(MyPID_interface)           ,deferred::MyPID
@@ -279,22 +279,25 @@ module FEpetra_Comm
       integer(c_int)               ,intent(in)    :: count
       type(error)   ,optional      ,intent(inout) :: err
     end subroutine
-    integer(c_int) function MyPID_interface(this)
+    function MyPID_interface(this)
       use iso_c_binding ,only: c_int
       import:: Epetra_Comm
       class(Epetra_Comm), intent(in) :: this
+      integer(c_int) :: MyPID_interface
     end function
-    integer(c_int) function NumProc_interface(this)
+    function NumProc_interface(this)
       use iso_c_binding ,only: c_int
       import:: Epetra_Comm
       class(Epetra_Comm), intent(in) :: this
+      integer(c_int) :: NumProc_interface
     end function
   end interface
 
   contains
   
-  type(FT_Epetra_Comm_ID_t) function get_EpetraComm_ID(this)
+  function get_EpetraComm_ID(this)
     class(Epetra_Comm) ,intent(in) :: this
+    type(FT_Epetra_Comm_ID_t) :: get_EpetraComm_ID
     get_EpetraComm_ID = this%comm_id
   end function
   
@@ -304,7 +307,7 @@ module FEpetra_Comm
     this%comm_id=id
   end subroutine 
   
-  type(FT_Epetra_Comm_ID_t) function alias_EpetraComm_ID(generic_id)
+  function alias_EpetraComm_ID(generic_id)
     use iso_c_binding, only : c_loc,c_int
     use ForTrilinos_table_man
     use ForTrilinos_enums
@@ -312,6 +315,7 @@ module FEpetra_Comm
     type(ForTrilinos_Universal_ID_t) ,pointer    :: alias_id
     integer(c_int) :: status 
     type(error) :: ierr
+    type(FT_Epetra_Comm_ID_t) :: alias_EpetraComm_ID
     if (.not.associated(alias_id)) then
       allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_Comm_ID),stat=status)
       ierr=error(status,'FEpetra_Comm:alias_EpetraComm_ID')
@@ -321,25 +325,28 @@ module FEpetra_Comm
     call deallocate_and_check_error(alias_id,'FEpetra_Comm:alias_EpetraComm_ID')
   end function
 
-  type(ForTrilinos_Universal_ID_t) function generalize_EpetraComm(this)
+  function generalize_EpetraComm(this)
    ! ____ Use for ForTrilinos function implementation ______
    use ForTrilinos_utils ,only: generalize_all
    use iso_c_binding ,only : c_loc
    class(Epetra_Comm) ,intent(in) ,target :: this
+   type(ForTrilinos_Universal_ID_t) :: generalize_EpetraComm
    generalize_EpetraComm = generalize_all( c_loc(this%comm_id) )
    ! ____ Use for ForTrilinos function implementation ______
 
    ! ____ Use for CTrilinos function implementation ______
    ! class(Epetra_Comm) ,intent(in) ,target :: this
+   ! type(ForTrilinos_Universal_ID_t) :: generalize_EpetraComm
    ! generalize_EpetraComm = Epetra_Comm_Generalize ( this%comm_id )
    ! ____ Use for CTrilinos function implementation ______
   end function
   
-  type(FT_Epetra_Comm_ID_t) function degeneralize_EpetraComm(generic_id) bind(C)
+  function degeneralize_EpetraComm(generic_id) 
     !use ForTrilinos_enums ,only : ForTrilinos_Universal_ID_t,FT_Epetra_Comm_ID_t
     use ,intrinsic :: iso_c_binding ,only: c_ptr,c_f_pointer
     type(c_ptr)              ,value  :: generic_id
     type(FT_Epetra_Comm_ID_t),pointer:: local_ptr
+    type(FT_Epetra_Comm_ID_t) :: degeneralize_EpetraComm
     call c_f_pointer (generic_id, local_ptr)
     degeneralize_EpetraComm = local_ptr
   end function

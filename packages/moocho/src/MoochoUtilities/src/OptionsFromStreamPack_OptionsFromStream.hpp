@@ -286,7 +286,9 @@ private:
 public:
   // Is given zero by OptionsFromStream to signify the option group does't exist.
   // It is put here to keep it away from the eyes of the general user.
-  OptionsGroup( option_to_value_map_t* option_to_value_map );
+  OptionsGroup( option_to_value_map_t* option_to_value_map )
+    : option_to_value_map_(option_to_value_map)
+  {}
 
 };	// end class OptionsGroup
 
@@ -617,11 +619,6 @@ inline
 OptionsGroup::const_iterator	OptionsGroup::end() const {
   return option_to_value_map_->end();
 }
-
-inline
-OptionsGroup::OptionsGroup( option_to_value_map_t* option_to_value_map )
-  : option_to_value_map_(option_to_value_map)
-{}
 
 }	// end namespace OptionsFromStreamPack
 

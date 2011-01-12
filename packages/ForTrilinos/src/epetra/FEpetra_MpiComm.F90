@@ -35,8 +35,8 @@
 !                    Damian Rouson (rouson@sandia.gov)
 !*********************************************************************
 
-module FEpetra_MpiComm
 #include "ForTrilinos_config.h"
+module FEpetra_MpiComm
 #ifdef HAVE_MPI
   use ForTrilinos_enums ,only: FT_Epetra_MpiComm_ID_t,ForTrilinos_Universal_ID_t
   use ForTrilinos_table_man
@@ -63,29 +63,35 @@ module FEpetra_MpiComm
     !Barrier Method
     procedure         :: barrier
     !Broadcast Method
-    procedure         :: broadcast_double
-    procedure         :: broadcast_int
-    procedure         :: broadcast_long
-    procedure         :: broadcast_char
+    procedure,private         :: broadcast_double
+    procedure,private         :: broadcast_int
+    procedure                 :: broadcast_long
+    procedure,private         :: broadcast_char
+    generic :: broadcast=>broadcast_double,broadcast_int,broadcast_char
     !Gather Methods
-    procedure         :: gather_double
-    procedure         :: gather_int
-    procedure         :: gather_long
+    procedure,private         :: gather_double
+    procedure,private         :: gather_int
+    procedure                 :: gather_long
+    generic::GatherAll=>gather_double,gather_int
     !Sum Methods
-    procedure         :: sum_double
-    procedure         :: sum_int
-    procedure         :: sum_long
+    procedure,private         :: sum_double
+    procedure,private         :: sum_int
+    procedure                 :: sum_long
+    generic::SumAll=>sum_double,sum_int
     !Max/Min Methods
-    procedure         :: max_double
-    procedure         :: max_int
-    procedure         :: max_long
-    procedure         :: min_double
-    procedure         :: min_int
-    procedure         :: min_long
+    procedure,private         :: max_double
+    procedure,private         :: max_int
+    procedure                 :: max_long
+    generic::MaxAll=>max_double,max_int
+    procedure,private         :: min_double
+    procedure,private         :: min_int
+    procedure                 :: min_long
+    generic::MinAll=>min_double,min_int
     !Parallel Prefix Methods
-    procedure         :: ScanSum_double
-    procedure         :: ScanSum_int
-    procedure         :: ScanSum_long
+    procedure,private         :: ScanSum_double
+    procedure,private         :: ScanSum_int
+    procedure                 :: ScanSum_long
+    generic::ScanSum=>ScanSum_double,ScanSum_int
     !Attribute Accessor Methods
     procedure         :: MyPID
     procedure         :: NumProc
@@ -95,7 +101,7 @@ module FEpetra_MpiComm
   end type
   
  interface Epetra_MpiComm ! constructors
-   procedure from_scratch,duplicate,from_struct
+   procedure from_scratch,duplicate,from_struct,from_comm
  end interface
   
 contains
@@ -107,6 +113,13 @@ contains
    call from_struct%register_self
   end function
  
+ type(Epetra_MpiComm) function from_comm(id)
+   type(FT_Epetra_Comm_ID_t) ,intent(in) :: id
+   call from_comm%set_EpetraComm_ID(id)
+   from_comm%MpiComm_id = from_comm%alias_EpetraMpiComm_ID(from_comm%generalize_EpetraComm())
+   call from_comm%register_self
+  end function
+
   ! Original C++ prototype:
   ! Epetra_MpiComm(MPI_Comm comm);
   ! CTrilinos prototype:

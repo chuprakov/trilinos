@@ -41,6 +41,7 @@ module FEpetra_MultiVector
   use ForTrilinos_table_man
   use ForTrilinos_universal,only:universal
   use ForTrilinos_error
+  use FEpetra_DistObject, only: Epetra_DistObject
   use FEpetra_BlockMap  ,only: Epetra_BlockMap
   use iso_c_binding     ,only: c_int,c_double,c_char
   use forepetra
@@ -51,6 +52,7 @@ module FEpetra_MultiVector
   type ,extends(universal)                    :: Epetra_MultiVector !"shell"
     private
     type(FT_Epetra_MultiVector_ID_t) :: MultiVector_id 
+    !type(Epetra_DistObject) :: DistObject
   contains
      procedure         :: invalidate_id => invalidate_EpetraMultiVector_ID
      procedure         :: ctrilinos_delete => ctrilinos_delete_EpetraMultiVector
@@ -94,6 +96,7 @@ module FEpetra_MultiVector
      procedure         :: GlobalLength
      procedure         :: Stride
      procedure         :: ConstantStride
+     !procedure         :: export ! Emulating multiple inheritance
   end type
 
    interface Epetra_MultiVector ! constructors
@@ -103,9 +106,26 @@ module FEpetra_MultiVector
 contains
   type(Epetra_MultiVector) function from_struct(id)
      type(FT_Epetra_MultiVector_ID_t) ,intent(in) :: id
-     from_struct%MultiVector_id = id
+     from_struct%MultiVector_id = id  
+     !from_struct%DistObject = Epetra_DistObject(from_struct%DistObject%alias_EpetraDistObject_ID(from_struct%generalize()))
      call from_struct%register_self
   end function
+
+  !subroutine export(this,A,exporter,CombineMode,indexor,err)
+  ! use FEpetra_SrcDistObject, only: Epetra_SrcDistObject
+  ! use FEpetra_OffsetIndex, only: Epetra_OffsetIndex
+  ! use FEpetra_Export, only: Epetra_Export
+  ! use ForTrilinos_enum_wrappers, only: FT_Epetra_CombineMode_E_t
+  ! class(Epetra_MultiVector), intent(in) :: this,A 
+  ! !class(Epetra_SrcDistObject), intent(in) :: A
+  ! type(Epetra_Export),intent(in) :: exporter
+  ! integer(FT_Epetra_CombineMode_E_t), intent(in) :: CombineMode
+  ! type(Epetra_OffsetIndex), intent(in) :: indexor
+  ! type(error),optional,intent(out) :: err
+  ! integer(c_int)     :: error_out
+  ! call this%DistObject%export(A%DistObject,exporter,CombineMode,indexor,err)
+  ! if (present(err)) err=error(error_out)
+  !end subroutine
 
   ! Original C++ prototype:
   ! Epetra_MultiVector(const Epetra_BlockMap& Map, int NumVectors, bool zeroOut = true);
@@ -165,7 +185,7 @@ contains
    use ForTrilinos_utils ,only: generalize_all
    use iso_c_binding     ,only : c_loc
    class(Epetra_MultiVector) ,intent(in) ,target :: this
-   generalize = generalize_all(c_loc(this%MultiVector_ID))
+   generalize = generalize_all(c_loc(this%MultiVector_id))
    ! ____ Use for ForTrilinos function implementation ______
 
    ! ____ Use for CTrilinos function implementation ______
@@ -505,6 +525,7 @@ contains
 
   subroutine invalidate_EpetraMultiVector_ID(this)
     class(Epetra_MultiVector),intent(inout) :: this
+    !call this%DistObject%invalidate_id
     this%MultiVector_id%table = FT_Invalid_ID
     this%MultiVector_id%index = FT_Invalid_Index 
     this%MultiVector_id%is_const = FT_FALSE
