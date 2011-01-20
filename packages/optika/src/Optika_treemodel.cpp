@@ -437,7 +437,7 @@ void TreeModel::dataChangedListener(const QModelIndex& index1, const QModelIndex
 		Teuchos::RCP<const Teuchos::DependencySheet::DepSet> deps =  
       dependencySheet->getDependenciesForParameter(changedIndexEntry);
 		for(
-      Teuchos::DependencySheet::DepSet::iterator it = deps->begin();
+      Teuchos::DependencySheet::DepSet::const_iterator it = deps->begin();
       it != deps->end(); 
       ++it)
     {
