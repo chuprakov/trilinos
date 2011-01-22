@@ -189,6 +189,14 @@ public:
 	 * @return A ParameterList containing all of the parameters at their current settings.
 	 */
 	Teuchos::RCP<const Teuchos::ParameterList> getCurrentParameters();
+
+	/**
+	 * Finds the index of a particular parameter entry.
+	 *
+	 * @param parameterEntry The ParameterEntry whose index is being sought.
+	 * @param parameterName The name of the parameter whose index is being sought.
+	 */
+	QModelIndex findParameterEntryIndex(const Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry);
 signals:
 	/**
 	 * Emitted when a row should be hidden.
@@ -253,13 +261,6 @@ private:
 	 */
 	Teuchos::RCP<Teuchos::DependencySheet> dependencySheet;
 
-	/**
-	 * Finds the index of a particular parameter entry.
-	 *
-	 * @param parameterEntry The ParameterEntry whose index is being sought.
-	 * @param parameterName The name of the parameter whose index is being sought.
-	 */
-	QModelIndex findParameterEntryIndex(const Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry);
 
 	/**
 	 * Gets the ParameterEntry object given a QModelIndex.
