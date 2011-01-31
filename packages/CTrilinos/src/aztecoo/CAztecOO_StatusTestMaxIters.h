@@ -30,12 +30,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_AZTECOO
-
-
 
 /*! @file CAztecOO_StatusTestMaxIters.h
  * @brief Wrappers for AztecOO_StatusTestMaxIters */
@@ -46,7 +40,10 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifndef CAZTECOO_STATUSTESTMAXITERS_H
 #define CAZTECOO_STATUSTESTMAXITERS_H
 
+#ifdef HAVE_CTRILINOS_AZTECOO
 
+
+#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 
@@ -138,8 +135,7 @@ int AztecOO_StatusTestMaxIters_GetNumIters (
 #endif
 
 
-#endif /* CAZTECOO_STATUSTESTMAXITERS_H */
-
 #endif /* HAVE_CTRILINOS_AZTECOO */
 
+#endif /* CAZTECOO_STATUSTESTMAXITERS_H */
 

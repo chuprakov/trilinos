@@ -30,14 +30,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_AMESOS
-
-
 #ifndef CAMESOS_BASESOLVER_CPP_HPP
 #define CAMESOS_BASESOLVER_CPP_HPP
+
+
+#include "CTrilinos_config.h"
+
+#ifdef HAVE_CTRILINOS_AMESOS
 
 
 #include "CTrilinos_enums.h"
@@ -85,16 +84,27 @@ storeConstBaseSolver( const Amesos_BaseSolver *pobj );
 void
 removeBaseSolver( CT_Amesos_BaseSolver_ID_t *id );
 
+/* remove Amesos_BaseSolver from table using CTrilinos_Universal_ID_t */
+void
+removeBaseSolver( CTrilinos_Universal_ID_t *aid );
+
 /* purge Amesos_BaseSolver table */
 void
 purgeBaseSolver(  );
 
+/* store Amesos_BaseSolver in non-const table */
+CTrilinos_Universal_ID_t
+aliasBaseSolver( const Teuchos::RCP< Amesos_BaseSolver > & robj );
+
+/* store const Amesos_BaseSolver in const table */
+CTrilinos_Universal_ID_t
+aliasConstBaseSolver( const Teuchos::RCP< const Amesos_BaseSolver > & robj );
+
 } // namespace CAmesos
 
 
-#endif // CAMESOS_BASESOLVER_CPP_HPP
-
-
 #endif /* HAVE_CTRILINOS_AMESOS */
+
+#endif // CAMESOS_BASESOLVER_CPP_HPP
 
 

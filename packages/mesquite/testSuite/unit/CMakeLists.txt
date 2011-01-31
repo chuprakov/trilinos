@@ -4,6 +4,8 @@ SET( unit_tests
      ArrayMeshTest 
      AspectRatioGammaTest 
      AveragingQMTest
+     AWMetricTest
+     AWQualityMetricTest
      BCDTest
      BoundedCylinderDomainTest
      CachingTargetTest
@@ -32,6 +34,7 @@ SET( unit_tests
      Matrix3DTest
      MeshInterfaceTest
      MeshImplTest
+     MiscTargetMetricTests
      MsqFreeVertexIndexIteratorTest
      MsqHessianTest
      MsqMatrixTest
@@ -49,6 +52,11 @@ SET( unit_tests
      QuadLagrangeShapeTest
      QualityAssessorTest
      QualityMetricTest
+     ShapeOrientTargetMetricTests
+     ShapeSizeOrientTargetMetricTests
+     ShapeSizeTargetMetricTests
+     ShapeTargetMetricTests
+     SizeTargetMetricTests
      SlaveBoundaryVerticesTest
      SphericalDomainTest
      SphericalGeometryTest
@@ -62,17 +70,10 @@ SET( unit_tests
      TriLagrangeShapeTest
      TopologyInfoTest
      TMPDerivsTest
-     TAbs2DMetricTest
-     TAbs3DMetricTest
-     TRel2DMetricTest
-     TRel3DMetricTest
-     TAbsQualityMetricTest
-     TRelQualityMetricTest
-     TestTAbs2DMetrics
-     TestTAbs3DMetrics
-     TestTRel2DMetrics
-     TestTRel3DMetrics
+     TMetricTest
+     TQualityMetricTest
      UntangleBetaTest
+     UntangleTargetMetricTests
      Vector3DTest
      VertexConditionNumberTest
      VertexCullingRegressionTest
@@ -100,7 +101,7 @@ SET( unit_srcs
      PatchDataInstances.hpp 
      QualityMetricTester.hpp 
      UnitUtil.hpp 
-     TMetricTest.hpp
+     TargetMetricTest.hpp
      TMPQualityMetricTest.hpp )
 
 FOREACH( test ${unit_tests} )
@@ -111,12 +112,7 @@ IF (NOT ${PROJECT_NAME} STREQUAL "Mesquite")
   PACKAGE_ADD_EXECUTABLE( msq_test SOURCES ${unit_srcs} DEPLIBS ${CPPUNIT_LIBRARY} )
 #  TARGET_LINK_LIBRARIES( msq_test mesquite ${CPPUNIT_LIBRARY} )
   FOREACH( test ${unit_tests} )
-    # See PR#4953
-    IF (${test} STREQUAL "TMPQualityMetricTest")
-      PACKAGE_ADD_TEST( msq_test NAME ${test} ARGS ${test} NUM_MPI_PROCS 1 XHOST s903186.sandia.gov )
-    ELSE()
-      PACKAGE_ADD_TEST( msq_test NAME ${test} ARGS ${test} NUM_MPI_PROCS 1 )
-    ENDIF()
+    PACKAGE_ADD_TEST( msq_test NAME ${test} ARGS ${test} NUM_MPI_PROCS 1 )
   ENDFOREACH()
 ELSE()
   IF (${PACKAGE_NAME}_ENABLE_TESTS)

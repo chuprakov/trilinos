@@ -31,13 +31,13 @@
 ! NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ! SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 !
-! Questions? Contact Karla Morris  (knmorri@sandia.gov) 
+! Questions? Contact Karla Morris  (knmorri@sandia.gov) or
 !                    Damian Rouson (rouson@sandia.gov)
 !*********************************************************************
 
+#include "ForTrilinos_config.h"
 module ForTrilinos_enums
 ! Can't use Fortran-style include due to C pre-processor directives in ForTrilinos_config.h
-#include "ForTrilinos_config.h"
   use iso_c_binding ,only : c_int        ! Kind parameter (precision specifier)
   implicit none                          ! Prevent implicit typing
 
@@ -107,10 +107,10 @@ module ForTrilinos_enums
 
   integer(FT_boolean_t) ,parameter :: FT_FALSE = 0
   integer(FT_boolean_t) ,parameter :: FT_TRUE  = 1
- 
+
   ! Define invalid index in object table
   integer(c_int), parameter :: FT_Invalid_Index = -1
-  
+
   ! Define index base for local arrays in Fortran
   integer(c_int), parameter :: FT_Index_OffSet = 1
 

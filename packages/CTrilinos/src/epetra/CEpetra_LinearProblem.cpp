@@ -35,13 +35,33 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CEpetra_LinearProblem.h"
 #include "CEpetra_LinearProblem_Cpp.hpp"
+#include "Epetra_LinearProblem.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_RowMatrix_Cpp.hpp"
 #include "CEpetra_MultiVector_Cpp.hpp"
 #include "CEpetra_Operator_Cpp.hpp"
 #include "CEpetra_Vector_Cpp.hpp"
+
+
+namespace {
+
+
+using Teuchos::RCP;
+using CTrilinos::Table;
+
+
+/* table to hold objects of type Epetra_LinearProblem */
+Table<Epetra_LinearProblem>& tableOfLinearProblems()
+{
+    static Table<Epetra_LinearProblem> loc_tableOfLinearProblems(CT_Epetra_LinearProblem_ID);
+    return loc_tableOfLinearProblems;
+}
+
+
+} // namespace
 
 
 //
@@ -213,6 +233,125 @@ boolean Epetra_LinearProblem_IsOperatorSymmetric (
 
 } // extern "C"
 
+
+//
+// Definitions from CEpetra_LinearProblem_Cpp.hpp
+//
+
+
+/* get Epetra_LinearProblem from non-const table using CT_Epetra_LinearProblem_ID */
+const Teuchos::RCP<Epetra_LinearProblem>
+CEpetra::getLinearProblem( CT_Epetra_LinearProblem_ID_t id )
+{
+    if (tableOfLinearProblems().isType(id.table))
+        return tableOfLinearProblems().get<Epetra_LinearProblem>(
+        CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::get<Epetra_LinearProblem>(
+        CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(id));
+}
+
+/* get Epetra_LinearProblem from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_LinearProblem>
+CEpetra::getLinearProblem( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfLinearProblems().isType(id.table))
+        return tableOfLinearProblems().get<Epetra_LinearProblem>(id);
+    else
+        return CTrilinos::TableRepos::get<Epetra_LinearProblem>(id);
+}
+
+/* get const Epetra_LinearProblem from either the const or non-const table
+ * using CT_Epetra_LinearProblem_ID */
+const Teuchos::RCP<const Epetra_LinearProblem>
+CEpetra::getConstLinearProblem( CT_Epetra_LinearProblem_ID_t id )
+{
+    if (tableOfLinearProblems().isType(id.table))
+        return tableOfLinearProblems().getConst<Epetra_LinearProblem>(
+        CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_LinearProblem>(
+        CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(id));
+}
+
+/* get const Epetra_LinearProblem from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_LinearProblem>
+CEpetra::getConstLinearProblem( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfLinearProblems().isType(id.table))
+        return tableOfLinearProblems().getConst<Epetra_LinearProblem>(id);
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_LinearProblem>(id);
+}
+
+/* store Epetra_LinearProblem (owned) in non-const table */
+CT_Epetra_LinearProblem_ID_t
+CEpetra::storeNewLinearProblem( Epetra_LinearProblem *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(
+        tableOfLinearProblems().store<Epetra_LinearProblem>(pobj, true));
+}
+
+/* store Epetra_LinearProblem in non-const table */
+CT_Epetra_LinearProblem_ID_t
+CEpetra::storeLinearProblem( Epetra_LinearProblem *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(
+        tableOfLinearProblems().store<Epetra_LinearProblem>(pobj, false));
+}
+
+/* store const Epetra_LinearProblem in const table */
+CT_Epetra_LinearProblem_ID_t
+CEpetra::storeConstLinearProblem( const Epetra_LinearProblem *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(
+        tableOfLinearProblems().store<Epetra_LinearProblem>(pobj, false));
+}
+
+/* remove Epetra_LinearProblem from table using CT_Epetra_LinearProblem_ID */
+void
+CEpetra::removeLinearProblem( CT_Epetra_LinearProblem_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_LinearProblem_ID_t>(*id);
+    if (tableOfLinearProblems().isType(aid.table))
+        tableOfLinearProblems().remove(&aid);
+    else
+        CTrilinos::TableRepos::remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_LinearProblem_ID_t>(aid);
+}
+
+/* remove Epetra_LinearProblem from table using CTrilinos_Universal_ID_t */
+void
+CEpetra::removeLinearProblem( CTrilinos_Universal_ID_t *aid )
+{
+    if (tableOfLinearProblems().isType(aid->table))
+        tableOfLinearProblems().remove(aid);
+    else
+        CTrilinos::TableRepos::remove(aid);
+}
+
+/* purge Epetra_LinearProblem table */
+void
+CEpetra::purgeLinearProblem(  )
+{
+    tableOfLinearProblems().purge();
+}
+
+/* store Epetra_LinearProblem in non-const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasLinearProblem( const Teuchos::RCP< Epetra_LinearProblem > & robj )
+{
+    return tableOfLinearProblems().alias(robj);
+}
+
+/* store const Epetra_LinearProblem in const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasConstLinearProblem( const Teuchos::RCP< const Epetra_LinearProblem > & robj )
+{
+    return tableOfLinearProblems().alias(robj);
+}
 
 
 

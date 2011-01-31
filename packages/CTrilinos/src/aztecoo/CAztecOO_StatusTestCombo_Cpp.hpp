@@ -30,14 +30,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_AZTECOO
-
-
 #ifndef CAZTECOO_STATUSTESTCOMBO_CPP_HPP
 #define CAZTECOO_STATUSTESTCOMBO_CPP_HPP
+
+
+#include "CTrilinos_config.h"
+
+#ifdef HAVE_CTRILINOS_AZTECOO
 
 
 #include "CTrilinos_enums.h"
@@ -85,16 +84,27 @@ storeConstStatusTestCombo( const AztecOO_StatusTestCombo *pobj );
 void
 removeStatusTestCombo( CT_AztecOO_StatusTestCombo_ID_t *id );
 
+/* remove AztecOO_StatusTestCombo from table using CTrilinos_Universal_ID_t */
+void
+removeStatusTestCombo( CTrilinos_Universal_ID_t *aid );
+
 /* purge AztecOO_StatusTestCombo table */
 void
 purgeStatusTestCombo(  );
 
+/* store AztecOO_StatusTestCombo in non-const table */
+CTrilinos_Universal_ID_t
+aliasStatusTestCombo( const Teuchos::RCP< AztecOO_StatusTestCombo > & robj );
+
+/* store const AztecOO_StatusTestCombo in const table */
+CTrilinos_Universal_ID_t
+aliasConstStatusTestCombo( const Teuchos::RCP< const AztecOO_StatusTestCombo > & robj );
+
 } // namespace CAztecOO
 
 
-#endif // CAZTECOO_STATUSTESTCOMBO_CPP_HPP
-
-
 #endif /* HAVE_CTRILINOS_AZTECOO */
+
+#endif // CAZTECOO_STATUSTESTCOMBO_CPP_HPP
 
 

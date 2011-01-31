@@ -30,12 +30,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_AZTECOO
-
-
 
 /*! @file CAztecOO.h
  * @brief Wrappers for AztecOO */
@@ -46,7 +40,10 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifndef CAZTECOO_H
 #define CAZTECOO_H
 
+#ifdef HAVE_CTRILINOS_AZTECOO
 
+
+#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 
@@ -351,8 +348,7 @@ int AztecOO_GetAllAztecStatus (
 #endif
 
 
-#endif /* CAZTECOO_H */
-
 #endif /* HAVE_CTRILINOS_AZTECOO */
 
+#endif /* CAZTECOO_H */
 

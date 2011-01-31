@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CTEUCHOS_COMMANDLINEPROCESSOR_CPP_HPP
 #define CTEUCHOS_COMMANDLINEPROCESSOR_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -80,6 +81,10 @@ storeConstCommandLineProcessor( const Teuchos::CommandLineProcessor *pobj );
 /* remove Teuchos::CommandLineProcessor from table using CT_Teuchos_CommandLineProcessor_ID */
 void
 removeCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t *id );
+
+/* remove Teuchos::CommandLineProcessor from table using CTrilinos_Universal_ID_t */
+void
+removeCommandLineProcessor( CTrilinos_Universal_ID_t *aid );
 
 /* purge Teuchos::CommandLineProcessor table */
 void

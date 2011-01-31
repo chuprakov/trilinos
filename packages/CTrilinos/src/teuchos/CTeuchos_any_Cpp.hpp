@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CTEUCHOS_ANY_CPP_HPP
 #define CTEUCHOS_ANY_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -80,6 +81,10 @@ storeConstany( const Teuchos::any *pobj );
 /* remove Teuchos::any from table using CT_Teuchos_any_ID */
 void
 removeany( CT_Teuchos_any_ID_t *id );
+
+/* remove Teuchos::any from table using CTrilinos_Universal_ID_t */
+void
+removeany( CTrilinos_Universal_ID_t *aid );
 
 /* purge Teuchos::any table */
 void

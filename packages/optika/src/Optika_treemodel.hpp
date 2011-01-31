@@ -38,13 +38,12 @@
 #include <QVariant>
 #include <QDir>
 #include "Optika_treeitem.hpp"
-#include "Optika_DependencySheet.hpp"
-#include "Optika_StandardDependencies.hpp"
+#include "Teuchos_DependencySheet.hpp"
+#include "Teuchos_StandardDependencies.hpp"
 
 
 namespace Optika{
 
-class DependencySheet;
 class TreeItem;
 
 /**
@@ -74,7 +73,7 @@ public:
 	 * @param saveFileName Name of a save file used in a previous attempt to get values for the validParameters ParameterList.
 	 * @param parent The parent object.
 	 */
-	TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Optika::DependencySheet> dependencySheet,
+	TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet,
 		  QString saveFileName=QString(), QObject *parent=0);
 
 	/**
@@ -190,6 +189,14 @@ public:
 	 * @return A ParameterList containing all of the parameters at their current settings.
 	 */
 	Teuchos::RCP<const Teuchos::ParameterList> getCurrentParameters();
+
+	/**
+	 * Finds the index of a particular parameter entry.
+	 *
+	 * @param parameterEntry The ParameterEntry whose index is being sought.
+	 * @param parameterName The name of the parameter whose index is being sought.
+	 */
+	QModelIndex findParameterEntryIndex(const Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry);
 signals:
 	/**
 	 * Emitted when a row should be hidden.
@@ -252,15 +259,8 @@ private:
 	 * The dependency sheet being used to determine any
 	 * depdendencies between parameters.
 	 */
-	Teuchos::RCP<Optika::DependencySheet> dependencySheet;
+	Teuchos::RCP<Teuchos::DependencySheet> dependencySheet;
 
-	/**
-	 * Finds the index of a particular parameter entry.
-	 *
-	 * @param parameterEntry The ParameterEntry whose index is being sought.
-	 * @param parameterName The name of the parameter whose index is being sought.
-	 */
-	QModelIndex findParameterEntryIndex(const Teuchos::ParameterEntry *parameterEntry, std::string parameterName);
 
 	/**
 	 * Gets the ParameterEntry object given a QModelIndex.
@@ -268,7 +268,8 @@ private:
 	 * @param index Index of the TreeItem for which the ParameterEntry is desired.
 	 * @return The ParameterEntry associated with the QModelIndex.
 	 */
-	const Teuchos::ParameterEntry* itemEntry(const QModelIndex &index) const;
+	Teuchos::RCP<const Teuchos::ParameterEntry> 
+    itemEntry(const QModelIndex &index) const;
 
 	/**
 	 * Reads in the parameter list to be represented by the model.
@@ -286,7 +287,7 @@ private:
 	 * @param name The name of the ParameterList.
 	 * @param The parent TreeItem.
 	 */
-	void insertParameterList(Teuchos::RCP<Teuchos::ParameterList> parameterList, Teuchos::ParameterEntry *listEntry, std::string name, TreeItem *parent);
+	void insertParameterList(Teuchos::RCP<Teuchos::ParameterList> parameterList, Teuchos::RCP<Teuchos::ParameterEntry> listEntry, std::string name, TreeItem *parent);
 
 	/**
 	 * Inserts a new parameter into the model.
@@ -295,7 +296,7 @@ private:
 	 * @param name The name of the Parameter.
 	 * @param The parent TreeItem.
 	 */
-	void insertParameter(Teuchos::ParameterEntry *parameter, std::string name, TreeItem *parent);
+	void insertParameter(Teuchos::RCP<Teuchos::ParameterEntry> parameter, std::string name, TreeItem *parent);
 
 	/**
 	 * Basic setup shared by each of the constructors
@@ -309,7 +310,7 @@ private:
 	 * appropriate action if any more modifications to the model need to be made or if
 	 * the view needs to know anything as a result of the change.
 	 */
-	void checkDependentState(const QModelIndex dependee, Teuchos::RCP<Dependency> dependency);
+	void checkDependentState(const QModelIndex dependee, Teuchos::RCP<Teuchos::Dependency> dependency);
 
 	/**
 	 * Redraws the array at arrayIndex if it's length has changed. 

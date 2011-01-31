@@ -33,19 +33,19 @@
 
 namespace Optika{
 
-TreeItem::TreeItem(const QList<QVariant> &data, Teuchos::ParameterEntry *parameter, TreeItem *parent, bool unrecognized):
+TreeItem::TreeItem(const QList<QVariant> &data, Teuchos::RCP<Teuchos::ParameterEntry> parameter, TreeItem *parent, bool unrecognized):
 	unrecognized(unrecognized),
 	itemData(data),
 	parentItem(parent),
 	parameterEntry(parameter)
 {
-	if(unrecognized && parameter != 0){
+	if(unrecognized && Teuchos::nonnull(parameterEntry)){
 		this->docString = "Sorry, but we don't recognize the type of the " + data.at(0).toString() + " parameter.\n"
 		 + "No worries though. Everything should be fine.\n"
 		 "We'll just go ahead and set this parameter to its default value for you."
 		 "\n\nActual Documentation:\n" + QString::fromStdString(parameter->docString());
 	}
-	else if(parameter != 0){
+	else if(Teuchos::nonnull(parameter)){
 		this->docString = QString::fromStdString(parameter->docString());
 	}
 	else{
@@ -113,7 +113,7 @@ QVariant TreeItem::data(int column, int role) const{
 		}
 		return docString;
 	}
-	if(role == Qt::DisplayRole && unrecognized){
+	else if(role == Qt::DisplayRole && unrecognized){
 		if(column == 0){
 			return itemData.at(0);
 		}
@@ -124,11 +124,13 @@ QVariant TreeItem::data(int column, int role) const{
 			return QVariant("Unrecognized type");
 		}
 	}
-	if(role == Qt::DisplayRole){
+	else if(role == Qt::DisplayRole){
 		return itemData.value(column);
 	}
+  else if(role == Qt::UserRole){
+    return QVariant::fromValue(parameterEntry);
+  }
 	return QVariant();
-
 }
 
 TreeItem* TreeItem::parent(){
@@ -140,10 +142,6 @@ int TreeItem::row() const{
 		return parentItem->childItems.indexOf(const_cast<TreeItem*>(this));
 	}
 	return 0;
-}
-
-const Teuchos::ParameterEntry* TreeItem::entry(){
-	return parameterEntry;
 }
 
 bool TreeItem::hasValidValue() const{

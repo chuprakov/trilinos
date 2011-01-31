@@ -32,13 +32,12 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
-
 #ifdef HAVE_CTRILINOS_GALERI
-
 
 #include "CTrilinos_enums.h"
 #include "CGaleri_Utils.h"
 #include "CGaleri_Utils_Cpp.hpp"
+#include "Galeri_Utils.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
@@ -172,7 +171,6 @@ void Galeri_Utils_PrintStencil2D (
 //
 // Definitions from CGaleri_Utils_Cpp.hpp
 //
-
 
 
 

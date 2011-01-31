@@ -30,14 +30,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_IFPACK
-
-
 #ifndef CIFPACK_PRECONDITIONER_CPP_HPP
 #define CIFPACK_PRECONDITIONER_CPP_HPP
+
+
+#include "CTrilinos_config.h"
+
+#ifdef HAVE_CTRILINOS_IFPACK
 
 
 #include "CTrilinos_enums.h"
@@ -85,16 +84,27 @@ storeConstPreconditioner( const Ifpack_Preconditioner *pobj );
 void
 removePreconditioner( CT_Ifpack_Preconditioner_ID_t *id );
 
+/* remove Ifpack_Preconditioner from table using CTrilinos_Universal_ID_t */
+void
+removePreconditioner( CTrilinos_Universal_ID_t *aid );
+
 /* purge Ifpack_Preconditioner table */
 void
 purgePreconditioner(  );
 
+/* store Ifpack_Preconditioner in non-const table */
+CTrilinos_Universal_ID_t
+aliasPreconditioner( const Teuchos::RCP< Ifpack_Preconditioner > & robj );
+
+/* store const Ifpack_Preconditioner in const table */
+CTrilinos_Universal_ID_t
+aliasConstPreconditioner( const Teuchos::RCP< const Ifpack_Preconditioner > & robj );
+
 } // namespace CIfpack
 
 
-#endif // CIFPACK_PRECONDITIONER_CPP_HPP
-
-
 #endif /* HAVE_CTRILINOS_IFPACK */
+
+#endif // CIFPACK_PRECONDITIONER_CPP_HPP
 
 

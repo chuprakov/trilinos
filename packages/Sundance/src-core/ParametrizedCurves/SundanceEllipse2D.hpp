@@ -49,7 +49,7 @@ public:
 	 * @param c
 	 * @param a1 alpha1 coefficient for FCM
 	 * @param a2 alpha2 coefficient for FCM */
-	Ellipse2D(double px, double py, double a, double b, double a1, double a2);
+	Ellipse2D(double px, double py, double a, double b, double a1, double a2, bool flipD = false);
 
 	virtual ~Ellipse2D();
 
@@ -92,6 +92,12 @@ public:
 	{
 		return true;
 	}
+
+	/** In the case of simple geometries the geometry it can be transformed to a polygon, which
+	 * reflects the original geometry
+	 * @param mesh
+	 * @param resolution , the global resolution */
+	virtual const RCP<CurveBase> getPolygon(const Mesh& mesh ,double resolution) const ;
 
 private:
 

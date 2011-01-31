@@ -59,7 +59,7 @@ void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, void (*custo
 	}
 }
 
-void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet){	
+void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet){	
 	{
 		using namespace Qt;
 		int argNum=1;
@@ -73,7 +73,7 @@ void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP
 	}
 }
 
-void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)){	
+void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)){	
 	{
 		using namespace Qt;
 		int argNum=1;
@@ -91,7 +91,7 @@ OptikaGUI::OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters):
 	validParameters(validParameters){}
 
 
-OptikaGUI::OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet):
+OptikaGUI::OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet):
 	validParameters(validParameters),
 	dependencySheet(dependencySheet){}
 

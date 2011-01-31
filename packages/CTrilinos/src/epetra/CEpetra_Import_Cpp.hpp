@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CEPETRA_IMPORT_CPP_HPP
 #define CEPETRA_IMPORT_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -81,9 +82,21 @@ storeConstImport( const Epetra_Import *pobj );
 void
 removeImport( CT_Epetra_Import_ID_t *id );
 
+/* remove Epetra_Import from table using CTrilinos_Universal_ID_t */
+void
+removeImport( CTrilinos_Universal_ID_t *aid );
+
 /* purge Epetra_Import table */
 void
 purgeImport(  );
+
+/* store Epetra_Import in non-const table */
+CTrilinos_Universal_ID_t
+aliasImport( const Teuchos::RCP< Epetra_Import > & robj );
+
+/* store const Epetra_Import in const table */
+CTrilinos_Universal_ID_t
+aliasConstImport( const Teuchos::RCP< const Epetra_Import > & robj );
 
 } // namespace CEpetra
 

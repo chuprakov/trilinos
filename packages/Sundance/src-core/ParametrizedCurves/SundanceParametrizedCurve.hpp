@@ -99,6 +99,11 @@ public:
 		return ptr()->curveEquation(evaluationPoint);
 	}
 
+	/** flip the domains from the ficticious to the real */
+	void flipDomains() const {
+		ptr()->flipDomains();
+	}
+
 	/** Returns the points of intersection of the curve with the line defined by the points <br>
 	 *  Only intersection between start and end point will be stated */
 	void returnIntersectPoints(const Point& startEdgePoint, const Point& endEdgePoint,
@@ -115,6 +120,20 @@ public:
 		                      int& nrPoints ,Array<double>& result) const {
 			ptr()->returnIntersect( startEdgePoint , endEdgePoint , nrPoints , result);
 		}
+
+	/** In the case of simple geometries the geometry it can be transformed to a polygon, which
+	 * reflects the original geometry
+	 * @param mesh
+	 * @param resolution , the global resolution */
+	const RCP<CurveBase> getPolygon(const Mesh& mesh , double resolution) const {
+		return ptr()->getPolygon( mesh , resolution);
+	}
+
+	/** Writes the geometry into a VTK file for visualization purposes
+	 * @param filename */
+	void writeToVTK(const std::string& filename) const {
+		ptr()->writeToVTK(filename);
+	}
 
 	/** Shows if the curve is a valid curve*/
 	inline bool isCurveValid() const { return ptr()->isCurveValid(); }

@@ -52,10 +52,11 @@ contains
   ! terminating null character. The "count" procedure calculates C string length by 
   ! searching for the null terminator.
 
-  integer(c_int) function count(ptr) bind(C,name="forLinkingOnly") 
+  function count(ptr) bind(C,name="forLinkingOnly") 
     use ,intrinsic :: iso_c_binding ,only: c_char ,c_int  ,c_null_char
     implicit none 
     character(kind=c_char) :: ptr(*) 
+    integer(c_int) :: count 
     count = 0 
     do 
        if(ptr(count+1) == c_null_char) return 

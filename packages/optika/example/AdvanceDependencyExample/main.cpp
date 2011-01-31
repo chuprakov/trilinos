@@ -26,14 +26,13 @@
 // ***********************************************************************
 // @HEADER
 #include "Optika_GUI.hpp"
-#include "Optika_SpecificParameterEntryValidators.hpp"
 #include "Teuchos_StandardParameterEntryValidators.hpp"
-#include "Optika_StandardDependencies.hpp"
-#include "Optika_DependencySheet.hpp"
+#include "Teuchos_StandardDependencies.hpp"
+#include "Teuchos_DependencySheet.hpp"
 #include "Teuchos_FancyOStream.hpp"
 #include "Teuchos_VerboseObject.hpp"
 #include "Teuchos_XMLParameterListHelpers.hpp"
-#include "Optika_StandardConditions.hpp"
+#include "Teuchos_StandardConditions.hpp"
 
   /*
    * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
@@ -53,10 +52,14 @@
 using namespace Teuchos;
 using namespace Optika;
 
-//ignore this for now. we'll use it later.
-int intFunc(int argument){
-	return argument-9;
-}
+class IntFunc : public Teuchos::SingleArguementFunctionObject<int, int>{
+public:
+  int runFunction() const{
+	  return getParameterValue()-9;
+  }
+};
+    
+
 
 int main(int argc, char* argv[])
 {
@@ -69,7 +72,7 @@ int main(int argc, char* argv[])
   RCP<ParameterList> surfDefParams = sublist(Tramonto_List, "Surface Definition Parameters");
 
   //create our dependency sheet. This should look a little different to you. We're using rcp instead of RCP. I'll explain that in a bit.
-  RCP<DependencySheet> depSheet1 = rcp(new DependencySheet(Tramonto_List));
+  RCP<DependencySheet> depSheet1 = rcp(new DependencySheet);
 
 
   /*
@@ -91,7 +94,7 @@ int main(int argc, char* argv[])
 
 
   //Here we'll make the validator for the Nsurf_types parameter.
-  //Teuchos::rcp is a short cut. We bascially don't have to template the rcp function now. It just knows what to template based on the argument it's given.
+  //Teuchos::rcp is a short cut. We bascially don't have to template the RCP constructor now. It just knows what to template based on the argument it's given.
   //Normally the this line would read:
   //Teuchos::RCP<Optika::EnhancedNumberValidator<int> > nSurfTypesValidator  = Teuchos::RCP<Optika::EnhancedNumberValidator<int> >(new Optika::EnhancedNumberValidator<int>());
   //but by using the namespace stuff I should you above, and the rcp function, we can write it concisely like this:
@@ -140,18 +143,15 @@ int main(int argc, char* argv[])
 	}
 
 	//Ok, so now for the really really fun part. setting up the dependencies. Let's do the ArrayLengthDependency first.
-	//Since Nsurf_types and Ndim have the same parent list, we can use a short-cut for the constructor where we only have to
-	//specify the parent list once.
-	RCP<NumberArrayLengthDependency> surfTypeLengthDep = rcp(
-		new NumberArrayLengthDependency(
-			"Nsurf_types",
-			"Surf_Type",
-			surfDefParams
+	RCP<NumberArrayLengthDependency<int, std::string> > surfTypeLengthDep = rcp(
+		new NumberArrayLengthDependency<int, std::string>(
+			surfDefParams->getEntryRCP("Nsurf_types"),
+			surfDefParams->getEntryRCP("Surf_Type")
 		)
 	);
   
   //Now for one of the trickier dependencies, RangeValidatorDependency. First we make a map of ranges to validators. 
-  //It's kind of overkill for our situation here because our ranges are small. But you get the idea, these ranges could be arbitrary in size.
+  //It's kind of overkill for our situation here because our ranges are small (size 1). But you get the idea, these ranges could be arbitrary in size.
   RangeValidatorDependency<int>::RangeToValidatorMap dimranges;
   dimranges[std::pair<int,int>(1,1)] = arraySurfTypeVali1;
   dimranges[std::pair<int,int>(2,2)] = arraySurfTypeVali2;
@@ -161,11 +161,9 @@ int main(int argc, char* argv[])
   RCP<RangeValidatorDependency<int> > 
 	surfTypeValiDep = rcp(
 		new RangeValidatorDependency<int>(
-			"Ndim", 
-			"Surf_Type", 
-			surfDefParams,
-			dimranges, 
-			arraySurfTypeVali1
+			surfDefParams->getEntryRCP("Ndim"),
+			surfDefParams->getEntryRCP("Surf_Type"),
+			dimranges
 		)
 	);
 
@@ -207,13 +205,13 @@ int main(int argc, char* argv[])
 
 
   //So first we'll tackle multiple dependents. Let's set up a BoolVisualDependency...WITH MULTIPLE DEPENDENTS!
-  //First we make a map that maps the dependents to their parents.
-  Dependency::ParameterParentMap dependents;
-  dependents.insert(std::pair<std::string, Teuchos::RCP<Teuchos::ParameterList> >("Sweetness", crazyDepList));
-  dependents.insert(std::pair<std::string, Teuchos::RCP<Teuchos::ParameterList> >("Awesomeness", crazyDepList));
+  //First we make a list of all the dependents.
+  Dependency::ParameterEntryList dependents;
+  dependents.insert(crazyDepList->getEntryRCP("Sweetness"));
+  dependents.insert(crazyDepList->getEntryRCP("Awesomeness"));
 
   //Now we only wanna show these parameters if the user is at least some what cool. So well make the actuall dependency now.
-  RCP<BoolVisualDependency> boolDep = rcp(new BoolVisualDependency("Are you at all cool?", crazyDepList, dependents, true));
+  RCP<BoolVisualDependency> boolDep = rcp(new BoolVisualDependency(crazyDepList->getEntryRCP("Are you at all cool?"), dependents, true));
   depSheet1->addDependency(boolDep);
 
   //There, now those two parameters will only show if the users is at least some what cool.
@@ -231,24 +229,28 @@ int main(int argc, char* argv[])
   //Here's a NumberCondition, which is a type of ParameterCondition. It simply checks to
   // see if the value of some number parameter is greater than 0. If greater than 0, 
   //the condition evaluates to true. Otherwise, it evaluates false.
-  RCP<NumberCondition<int> > intCon1 = rcp(new NumberCondition<int>("Sweetness", crazyDepList, intFunc));
-  RCP<NumberCondition<int> > intCon2 = rcp(new NumberCondition<int>("Awesomeness", crazyDepList, intFunc));
+  RCP<NumberCondition<int> > intCon1 = rcp(
+    new NumberCondition<int>(
+      crazyDepList->getEntryRCP("Sweetness"), rcp(new IntFunc)));
+  RCP<NumberCondition<int> > intCon2 = rcp(
+    new NumberCondition<int>(crazyDepList->getEntryRCP("Awesomeness"), 
+      rcp(new IntFunc)));
 
   //And here's a Bool Condition.
-  RCP<BoolCondition> boolCon1 = rcp(new BoolCondition("Are you at all cool?", crazyDepList));
+  RCP<BoolCondition> boolCon1 = rcp(new BoolCondition(crazyDepList->getEntryRCP("Are you at all cool?")));
 
   //You can then combine conditions using a BinaryLogicalCondition. A BinaryLogicCondition
   //takes multiple conditions and evaluates them together in some fashion.
   
   //This is an And condition (an and? that sounds weird). If all the conditions it's assigned are true, it evaluates
-  //to true. Just like a logical AND would. First we have to put all our conditions in a list.
-  Condition::ConditionList conList1 = tuple<RCP<Condition> >(intCon1, intCon2, boolCon1);
+  //to true. Just like a logical AND would. First we have to put all our conditions in a list (note the const).
+  Condition::ConstConditionList conList1 = tuple<RCP<const Condition> >(intCon1, intCon2, boolCon1);
 
   //And now we make the And Condition
   RCP<AndCondition> andCon1 = rcp(new AndCondition(conList1));
   
   //Now we're ready to make our ConditionVisualDependency.
-  RCP<ConditionVisualDependency> conVis1 = rcp(new ConditionVisualDependency(andCon1, "Special parameter", crazyDepList, true));
+  RCP<ConditionVisualDependency> conVis1 = rcp(new ConditionVisualDependency(andCon1, crazyDepList->getEntryRCP("Special parameter"), true));
 
   //There you have it. Now the Special parameter will only be shown if the Are you cool
   //at all parameter is true and both the Sweetness and Aweseomness parameters are set

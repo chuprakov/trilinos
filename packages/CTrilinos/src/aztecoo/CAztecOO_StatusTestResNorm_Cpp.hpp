@@ -30,14 +30,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_AZTECOO
-
-
 #ifndef CAZTECOO_STATUSTESTRESNORM_CPP_HPP
 #define CAZTECOO_STATUSTESTRESNORM_CPP_HPP
+
+
+#include "CTrilinos_config.h"
+
+#ifdef HAVE_CTRILINOS_AZTECOO
 
 
 #include "CTrilinos_enums.h"
@@ -85,16 +84,27 @@ storeConstStatusTestResNorm( const AztecOO_StatusTestResNorm *pobj );
 void
 removeStatusTestResNorm( CT_AztecOO_StatusTestResNorm_ID_t *id );
 
+/* remove AztecOO_StatusTestResNorm from table using CTrilinos_Universal_ID_t */
+void
+removeStatusTestResNorm( CTrilinos_Universal_ID_t *aid );
+
 /* purge AztecOO_StatusTestResNorm table */
 void
 purgeStatusTestResNorm(  );
 
+/* store AztecOO_StatusTestResNorm in non-const table */
+CTrilinos_Universal_ID_t
+aliasStatusTestResNorm( const Teuchos::RCP< AztecOO_StatusTestResNorm > & robj );
+
+/* store const AztecOO_StatusTestResNorm in const table */
+CTrilinos_Universal_ID_t
+aliasConstStatusTestResNorm( const Teuchos::RCP< const AztecOO_StatusTestResNorm > & robj );
+
 } // namespace CAztecOO
 
 
-#endif // CAZTECOO_STATUSTESTRESNORM_CPP_HPP
-
-
 #endif /* HAVE_CTRILINOS_AZTECOO */
+
+#endif // CAZTECOO_STATUSTESTRESNORM_CPP_HPP
 
 

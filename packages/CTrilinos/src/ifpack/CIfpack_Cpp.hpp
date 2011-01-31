@@ -30,14 +30,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_IFPACK
-
-
 #ifndef CIFPACK_CPP_HPP
 #define CIFPACK_CPP_HPP
+
+
+#include "CTrilinos_config.h"
+
+#ifdef HAVE_CTRILINOS_IFPACK
 
 
 #include "CTrilinos_enums.h"
@@ -85,6 +84,10 @@ storeConstIfpack( const Ifpack *pobj );
 void
 removeIfpack( CT_Ifpack_ID_t *id );
 
+/* remove Ifpack from table using CTrilinos_Universal_ID_t */
+void
+removeIfpack( CTrilinos_Universal_ID_t *aid );
+
 /* purge Ifpack table */
 void
 purgeIfpack(  );
@@ -92,9 +95,8 @@ purgeIfpack(  );
 } // namespace CIfpack
 
 
-#endif // CIFPACK_CPP_HPP
-
-
 #endif /* HAVE_CTRILINOS_IFPACK */
+
+#endif // CIFPACK_CPP_HPP
 
 

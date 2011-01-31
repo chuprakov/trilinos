@@ -32,17 +32,35 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
-
 #ifdef HAVE_CTRILINOS_AZTECOO
-
 
 #include "CTrilinos_enums.h"
 #include "CAztecOO_StatusTest.h"
 #include "CAztecOO_StatusTest_Cpp.hpp"
+#include "AztecOO_StatusTest.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_MultiVector_Cpp.hpp"
+
+
+namespace {
+
+
+using Teuchos::RCP;
+using CTrilinos::Table;
+
+
+/* table to hold objects of type AztecOO_StatusTest */
+Table<AztecOO_StatusTest>& tableOfStatusTests()
+{
+    static Table<AztecOO_StatusTest> loc_tableOfStatusTests(CT_AztecOO_StatusTest_ID);
+    return loc_tableOfStatusTests;
+}
+
+
+} // namespace
 
 
 //
@@ -101,6 +119,124 @@ CT_AztecOO_StatusType_E_t AztecOO_StatusTest_GetStatus (
 } // extern "C"
 
 
+//
+// Definitions from CAztecOO_StatusTest_Cpp.hpp
+//
+
+
+/* get AztecOO_StatusTest from non-const table using CT_AztecOO_StatusTest_ID */
+const Teuchos::RCP<AztecOO_StatusTest>
+CAztecOO::getStatusTest( CT_AztecOO_StatusTest_ID_t id )
+{
+    if (tableOfStatusTests().isType(id.table))
+        return tableOfStatusTests().get<AztecOO_StatusTest>(
+        CTrilinos::abstractType<CT_AztecOO_StatusTest_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::get<AztecOO_StatusTest>(
+        CTrilinos::abstractType<CT_AztecOO_StatusTest_ID_t>(id));
+}
+
+/* get AztecOO_StatusTest from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<AztecOO_StatusTest>
+CAztecOO::getStatusTest( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfStatusTests().isType(id.table))
+        return tableOfStatusTests().get<AztecOO_StatusTest>(id);
+    else
+        return CTrilinos::TableRepos::get<AztecOO_StatusTest>(id);
+}
+
+/* get const AztecOO_StatusTest from either the const or non-const table
+ * using CT_AztecOO_StatusTest_ID */
+const Teuchos::RCP<const AztecOO_StatusTest>
+CAztecOO::getConstStatusTest( CT_AztecOO_StatusTest_ID_t id )
+{
+    if (tableOfStatusTests().isType(id.table))
+        return tableOfStatusTests().getConst<AztecOO_StatusTest>(
+        CTrilinos::abstractType<CT_AztecOO_StatusTest_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::getConst<AztecOO_StatusTest>(
+        CTrilinos::abstractType<CT_AztecOO_StatusTest_ID_t>(id));
+}
+
+/* get const AztecOO_StatusTest from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const AztecOO_StatusTest>
+CAztecOO::getConstStatusTest( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfStatusTests().isType(id.table))
+        return tableOfStatusTests().getConst<AztecOO_StatusTest>(id);
+    else
+        return CTrilinos::TableRepos::getConst<AztecOO_StatusTest>(id);
+}
+
+/* store AztecOO_StatusTest (owned) in non-const table */
+CT_AztecOO_StatusTest_ID_t
+CAztecOO::storeNewStatusTest( AztecOO_StatusTest *pobj )
+{
+    return CTrilinos::concreteType<CT_AztecOO_StatusTest_ID_t>(
+        tableOfStatusTests().store<AztecOO_StatusTest>(pobj, true));
+}
+
+/* store AztecOO_StatusTest in non-const table */
+CT_AztecOO_StatusTest_ID_t
+CAztecOO::storeStatusTest( AztecOO_StatusTest *pobj )
+{
+    return CTrilinos::concreteType<CT_AztecOO_StatusTest_ID_t>(
+        tableOfStatusTests().store<AztecOO_StatusTest>(pobj, false));
+}
+
+/* store const AztecOO_StatusTest in const table */
+CT_AztecOO_StatusTest_ID_t
+CAztecOO::storeConstStatusTest( const AztecOO_StatusTest *pobj )
+{
+    return CTrilinos::concreteType<CT_AztecOO_StatusTest_ID_t>(
+        tableOfStatusTests().store<AztecOO_StatusTest>(pobj, false));
+}
+
+/* remove AztecOO_StatusTest from table using CT_AztecOO_StatusTest_ID */
+void
+CAztecOO::removeStatusTest( CT_AztecOO_StatusTest_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_AztecOO_StatusTest_ID_t>(*id);
+    if (tableOfStatusTests().isType(aid.table))
+        tableOfStatusTests().remove(&aid);
+    else
+        CTrilinos::TableRepos::remove(&aid);
+    *id = CTrilinos::concreteType<CT_AztecOO_StatusTest_ID_t>(aid);
+}
+
+/* remove AztecOO_StatusTest from table using CTrilinos_Universal_ID_t */
+void
+CAztecOO::removeStatusTest( CTrilinos_Universal_ID_t *aid )
+{
+    if (tableOfStatusTests().isType(aid->table))
+        tableOfStatusTests().remove(aid);
+    else
+        CTrilinos::TableRepos::remove(aid);
+}
+
+/* purge AztecOO_StatusTest table */
+void
+CAztecOO::purgeStatusTest(  )
+{
+    tableOfStatusTests().purge();
+}
+
+/* store AztecOO_StatusTest in non-const table */
+CTrilinos_Universal_ID_t
+CAztecOO::aliasStatusTest( const Teuchos::RCP< AztecOO_StatusTest > & robj )
+{
+    return tableOfStatusTests().alias(robj);
+}
+
+/* store const AztecOO_StatusTest in const table */
+CTrilinos_Universal_ID_t
+CAztecOO::aliasConstStatusTest( const Teuchos::RCP< const AztecOO_StatusTest > & robj )
+{
+    return tableOfStatusTests().alias(robj);
+}
 
 
 #endif /* HAVE_CTRILINOS_AZTECOO */

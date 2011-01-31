@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CEPETRA_INTSERIALDENSEVECTOR_CPP_HPP
 #define CEPETRA_INTSERIALDENSEVECTOR_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -81,9 +82,21 @@ storeConstIntSerialDenseVector( const Epetra_IntSerialDenseVector *pobj );
 void
 removeIntSerialDenseVector( CT_Epetra_IntSerialDenseVector_ID_t *id );
 
+/* remove Epetra_IntSerialDenseVector from table using CTrilinos_Universal_ID_t */
+void
+removeIntSerialDenseVector( CTrilinos_Universal_ID_t *aid );
+
 /* purge Epetra_IntSerialDenseVector table */
 void
 purgeIntSerialDenseVector(  );
+
+/* store Epetra_IntSerialDenseVector in non-const table */
+CTrilinos_Universal_ID_t
+aliasIntSerialDenseVector( const Teuchos::RCP< Epetra_IntSerialDenseVector > & robj );
+
+/* store const Epetra_IntSerialDenseVector in const table */
+CTrilinos_Universal_ID_t
+aliasConstIntSerialDenseVector( const Teuchos::RCP< const Epetra_IntSerialDenseVector > & robj );
 
 } // namespace CEpetra
 

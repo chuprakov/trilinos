@@ -131,7 +131,7 @@ void MatrixOpThyra::Vp_StMtV(
     *thyra_linear_op_
     ,trans_trans(trans_rhs1,thyra_linear_op_trans())==BLAS_Cpp::no_trans ? Thyra::NOTRANS : Thyra::TRANS  // M_trans
     ,*thyra_vec_rhs2                                                                                      // x
-    ,&*thyra_vec_lhs                                                                                      // y
+    ,thyra_vec_lhs.ptr()                                                                                  // y
     ,alpha                                                                                                // alpha
     ,beta                                                                                                // beta
     );

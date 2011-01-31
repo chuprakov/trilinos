@@ -35,10 +35,30 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CEpetra_Map.h"
 #include "CEpetra_Map_Cpp.hpp"
+#include "Epetra_Map.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_TableRepos.hpp"
 #include "CEpetra_Comm_Cpp.hpp"
+
+
+namespace {
+
+
+using Teuchos::RCP;
+using CTrilinos::Table;
+
+
+/* table to hold objects of type Epetra_Map */
+Table<Epetra_Map>& tableOfMaps()
+{
+    static Table<Epetra_Map> loc_tableOfMaps(CT_Epetra_Map_ID);
+    return loc_tableOfMaps;
+}
+
+
+} // namespace
 
 
 //
@@ -111,6 +131,125 @@ void Epetra_Map_Assign (
 
 } // extern "C"
 
+
+//
+// Definitions from CEpetra_Map_Cpp.hpp
+//
+
+
+/* get Epetra_Map from non-const table using CT_Epetra_Map_ID */
+const Teuchos::RCP<Epetra_Map>
+CEpetra::getMap( CT_Epetra_Map_ID_t id )
+{
+    if (tableOfMaps().isType(id.table))
+        return tableOfMaps().get<Epetra_Map>(
+        CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::get<Epetra_Map>(
+        CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id));
+}
+
+/* get Epetra_Map from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Map>
+CEpetra::getMap( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfMaps().isType(id.table))
+        return tableOfMaps().get<Epetra_Map>(id);
+    else
+        return CTrilinos::TableRepos::get<Epetra_Map>(id);
+}
+
+/* get const Epetra_Map from either the const or non-const table
+ * using CT_Epetra_Map_ID */
+const Teuchos::RCP<const Epetra_Map>
+CEpetra::getConstMap( CT_Epetra_Map_ID_t id )
+{
+    if (tableOfMaps().isType(id.table))
+        return tableOfMaps().getConst<Epetra_Map>(
+        CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_Map>(
+        CTrilinos::abstractType<CT_Epetra_Map_ID_t>(id));
+}
+
+/* get const Epetra_Map from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Map>
+CEpetra::getConstMap( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfMaps().isType(id.table))
+        return tableOfMaps().getConst<Epetra_Map>(id);
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_Map>(id);
+}
+
+/* store Epetra_Map (owned) in non-const table */
+CT_Epetra_Map_ID_t
+CEpetra::storeNewMap( Epetra_Map *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
+        tableOfMaps().store<Epetra_Map>(pobj, true));
+}
+
+/* store Epetra_Map in non-const table */
+CT_Epetra_Map_ID_t
+CEpetra::storeMap( Epetra_Map *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
+        tableOfMaps().store<Epetra_Map>(pobj, false));
+}
+
+/* store const Epetra_Map in const table */
+CT_Epetra_Map_ID_t
+CEpetra::storeConstMap( const Epetra_Map *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Map_ID_t>(
+        tableOfMaps().store<Epetra_Map>(pobj, false));
+}
+
+/* remove Epetra_Map from table using CT_Epetra_Map_ID */
+void
+CEpetra::removeMap( CT_Epetra_Map_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_Map_ID_t>(*id);
+    if (tableOfMaps().isType(aid.table))
+        tableOfMaps().remove(&aid);
+    else
+        CTrilinos::TableRepos::remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_Map_ID_t>(aid);
+}
+
+/* remove Epetra_Map from table using CTrilinos_Universal_ID_t */
+void
+CEpetra::removeMap( CTrilinos_Universal_ID_t *aid )
+{
+    if (tableOfMaps().isType(aid->table))
+        tableOfMaps().remove(aid);
+    else
+        CTrilinos::TableRepos::remove(aid);
+}
+
+/* purge Epetra_Map table */
+void
+CEpetra::purgeMap(  )
+{
+    tableOfMaps().purge();
+}
+
+/* store Epetra_Map in non-const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasMap( const Teuchos::RCP< Epetra_Map > & robj )
+{
+    return tableOfMaps().alias(robj);
+}
+
+/* store const Epetra_Map in const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasConstMap( const Teuchos::RCP< const Epetra_Map > & robj )
+{
+    return tableOfMaps().alias(robj);
+}
 
 
 

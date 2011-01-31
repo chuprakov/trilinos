@@ -99,6 +99,7 @@ void PatchData::get_minmax_element_unsigned_area(double& min, double& max, MsqEr
     size_t count = num_elements();
     for (size_t i=0; i<count; ++i) {
       double vol;
+      assert( i<elementArray.size() );
       vol = elementArray[i].compute_unsigned_area(*this, err); MSQ_ERRRTN(err);
       if (vol > max)
         max = vol;
@@ -231,6 +232,7 @@ void PatchData::reorder()
         for (i = vtx_adj_offset; i < vtx_adj_end; ++i)
         {
           size_t elem = vertAdjacencyArray[i];
+          assert( elem < elementArray.size() );
           size_t num_elem_verts = elementArray[elem].node_count();
           size_t* elem_verts = elementArray[elem].get_vertex_index_array();
           for (j = 0; j < num_elem_verts; ++j)
@@ -307,6 +309,7 @@ void PatchData::reorder()
   std::vector<MsqMeshEntity> new_elem_array(num_elem);
   std::vector<Mesh::ElementHandle> new_elem_handle_array(num_elem);
   for (i = 0; i < num_elem; ++i) {
+    assert( i < elementArray.size() );
     size_t  vert_count = elementArray[i].node_count();
     size_t* conn_array = elementArray[i].get_vertex_index_array();
     for (j = 0; j < vert_count; ++j) {
@@ -314,6 +317,7 @@ void PatchData::reorder()
     }
 
     size_t new_idx = element_map[i];
+    assert(new_idx < num_elem);
     new_elem_array[new_idx] = elementArray[i];
     new_elem_handle_array[new_idx] = elementHandlesArray[i];
   }
@@ -540,6 +544,7 @@ void PatchData::get_element_vertex_coordinates(
     return;
   
     // Ask the element for its vertex indices
+  assert( elem_index < elementArray.size() );
   const size_t *vertex_indices = elementArray[elem_index].get_vertex_index_array();
   
     // Get the coords for each indicated vertex
@@ -560,6 +565,7 @@ void PatchData::get_element_vertex_indices(
   MsqError& /*err*/)
 {
     // Ask the element for its vertex indices
+  assert( elem_index < elementArray.size() );
   elementArray[elem_index].get_vertex_indices(vertex_indices);
 }
 
@@ -586,6 +592,7 @@ void PatchData::get_vertex_element_indices(size_t vertex_index,
   ptr = get_vertex_element_adjacencies( vertex_index, count, err );
   for (const size_t* const end = ptr + count; ptr != end; ++ptr)
   {
+    assert(*ptr < elementArray.size());
     const EntityTopology type = elementArray[*ptr].get_element_type();
     const unsigned dim = TopologyInfo::dimension( type );
     if (dim == element_dimension) 
@@ -620,7 +627,7 @@ const size_t* PatchData::get_vertex_element_adjacencies( size_t vertex_index,
 */
 void PatchData::get_adjacent_vertex_indices(size_t vertex_index,
                                             std::vector<size_t> &vert_indices,
-                                            MsqError &err)
+                                            MsqError &err) const
 {
   bitMap.clear();
   bitMap.resize( num_nodes(), false );
@@ -629,14 +636,25 @@ void PatchData::get_adjacent_vertex_indices(size_t vertex_index,
   size_t conn_idx, curr_vtx_idx;
   const unsigned* adj;
   unsigned num_adj, i;
-  std::vector<MsqMeshEntity>::iterator e;
+  std::vector<MsqMeshEntity>::const_iterator e;
   for (e = elementArray.begin(); e != elementArray.end(); ++e) {
     conn = e->get_vertex_index_array();
     conn_idx = std::find( conn, conn + e->node_count(), vertex_index ) - conn;
     if (conn_idx == e->node_count())
       continue;
     
-    adj = TopologyInfo::adjacent_vertices( e->get_element_type(), conn_idx, num_adj );
+      // If a higher-order node, return corners of side/face
+      // that node is in the center of.
+    EntityTopology type = e->get_element_type();
+    if (conn_idx >= TopologyInfo::corners(type)) {
+      unsigned dim, id;
+      TopologyInfo::side_from_higher_order( type, e->node_count(), conn_idx,
+                                            dim, id, err ); MSQ_ERRRTN(err);
+      adj = TopologyInfo::side_vertices( type, dim, id, num_adj );
+    }
+    else {
+      adj = TopologyInfo::adjacent_vertices( e->get_element_type(), conn_idx, num_adj );
+    }
     for (i = 0; i < num_adj; ++i) {
       curr_vtx_idx = conn[ adj[i] ]; // get index into patch vertex list
       if (!bitMap[curr_vtx_idx]) {
@@ -1059,6 +1077,7 @@ void PatchData::get_subpatch(size_t center_vertex_index,
   for (i = 0; i < elements.size(); ++i)
   {
     MsqMeshEntity& elem = element_by_index( elements[i] );
+    assert( i < elementArray.size() );
     subpatch.elementArray[i].set_element_type( elem.get_element_type() );
     subpatch.elementHandlesArray[i] = elementHandlesArray[elements[i]];
     const size_t* verts = elem.get_vertex_index_array();
@@ -1227,6 +1246,7 @@ void PatchData::get_domain_normal_at_element(size_t elem_index,
   }
     // otherwise query domain for normal at element centroid
   else if(domain_set()) {    
+    assert(elem_index < elementArray.size());
     elementArray[elem_index].get_centroid(surf_norm, *this, err); MSQ_ERRRTN(err);
     get_domain()->element_normal_at( elementHandlesArray[elem_index], surf_norm );
   }
@@ -1279,6 +1299,7 @@ void PatchData::get_domain_normals_at_corners( size_t elem_index,
     return;
   }
   
+  assert(elem_index < elementArray.size());
   if (2 != TopologyInfo::dimension( elementArray[elem_index].get_element_type() ))
   {
     MSQ_SETERR(err)( "Attempt to get corners of non-surface element", MsqError::INVALID_ARG );
@@ -1349,6 +1370,7 @@ void PatchData::get_domain_normal_at_corner( size_t elem_index,
                                              Vector3D& normal,
                                              MsqError& err ) 
 {
+  assert(elem_index < elementArray.size());
   if (2 != TopologyInfo::dimension( elementArray[elem_index].get_element_type() ))
   {
     MSQ_SETERR(err)( "Attempt to get corners of non-surface element", MsqError::INVALID_ARG );

@@ -32,13 +32,12 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
-
 #ifdef HAVE_CTRILINOS_AZTECOO
-
 
 #include "CTrilinos_enums.h"
 #include "CAztecOO.h"
 #include "CAztecOO_Cpp.hpp"
+#include "AztecOO.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
@@ -407,7 +406,7 @@ int AztecOO_GetAllAztecStatus (
 const Teuchos::RCP<AztecOO>
 CAztecOO::getAztecOO( CT_AztecOO_ID_t id )
 {
-    return tableOfAztecOOs().get(
+        return tableOfAztecOOs().get<AztecOO>(
         CTrilinos::abstractType<CT_AztecOO_ID_t>(id));
 }
 
@@ -415,7 +414,7 @@ CAztecOO::getAztecOO( CT_AztecOO_ID_t id )
 const Teuchos::RCP<AztecOO>
 CAztecOO::getAztecOO( CTrilinos_Universal_ID_t id )
 {
-    return tableOfAztecOOs().get(id);
+        return tableOfAztecOOs().get<AztecOO>(id);
 }
 
 /* get const AztecOO from either the const or non-const table
@@ -423,7 +422,7 @@ CAztecOO::getAztecOO( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const AztecOO>
 CAztecOO::getConstAztecOO( CT_AztecOO_ID_t id )
 {
-    return tableOfAztecOOs().getConst(
+        return tableOfAztecOOs().getConst<AztecOO>(
         CTrilinos::abstractType<CT_AztecOO_ID_t>(id));
 }
 
@@ -432,7 +431,7 @@ CAztecOO::getConstAztecOO( CT_AztecOO_ID_t id )
 const Teuchos::RCP<const AztecOO>
 CAztecOO::getConstAztecOO( CTrilinos_Universal_ID_t id )
 {
-    return tableOfAztecOOs().getConst(id);
+        return tableOfAztecOOs().getConst<AztecOO>(id);
 }
 
 /* store AztecOO (owned) in non-const table */
@@ -440,7 +439,7 @@ CT_AztecOO_ID_t
 CAztecOO::storeNewAztecOO( AztecOO *pobj )
 {
     return CTrilinos::concreteType<CT_AztecOO_ID_t>(
-        tableOfAztecOOs().store(pobj, true));
+        tableOfAztecOOs().store<AztecOO>(pobj, true));
 }
 
 /* store AztecOO in non-const table */
@@ -448,7 +447,7 @@ CT_AztecOO_ID_t
 CAztecOO::storeAztecOO( AztecOO *pobj )
 {
     return CTrilinos::concreteType<CT_AztecOO_ID_t>(
-        tableOfAztecOOs().store(pobj, false));
+        tableOfAztecOOs().store<AztecOO>(pobj, false));
 }
 
 /* store const AztecOO in const table */
@@ -456,7 +455,7 @@ CT_AztecOO_ID_t
 CAztecOO::storeConstAztecOO( const AztecOO *pobj )
 {
     return CTrilinos::concreteType<CT_AztecOO_ID_t>(
-        tableOfAztecOOs().store(pobj, false));
+        tableOfAztecOOs().store<AztecOO>(pobj, false));
 }
 
 /* remove AztecOO from table using CT_AztecOO_ID */
@@ -465,8 +464,15 @@ CAztecOO::removeAztecOO( CT_AztecOO_ID_t *id )
 {
     CTrilinos_Universal_ID_t aid = 
         CTrilinos::abstractType<CT_AztecOO_ID_t>(*id);
-    tableOfAztecOOs().remove(&aid);
+        tableOfAztecOOs().remove(&aid);
     *id = CTrilinos::concreteType<CT_AztecOO_ID_t>(aid);
+}
+
+/* remove AztecOO from table using CTrilinos_Universal_ID_t */
+void
+CAztecOO::removeAztecOO( CTrilinos_Universal_ID_t *aid )
+{
+        tableOfAztecOOs().remove(aid);
 }
 
 /* purge AztecOO table */
@@ -475,7 +481,6 @@ CAztecOO::purgeAztecOO(  )
 {
     tableOfAztecOOs().purge();
 }
-
 
 
 #endif /* HAVE_CTRILINOS_AZTECOO */

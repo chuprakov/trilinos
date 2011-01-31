@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CEPETRA_DISTOBJECT_CPP_HPP
 #define CEPETRA_DISTOBJECT_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -81,9 +82,21 @@ storeConstDistObject( const Epetra_DistObject *pobj );
 void
 removeDistObject( CT_Epetra_DistObject_ID_t *id );
 
+/* remove Epetra_DistObject from table using CTrilinos_Universal_ID_t */
+void
+removeDistObject( CTrilinos_Universal_ID_t *aid );
+
 /* purge Epetra_DistObject table */
 void
 purgeDistObject(  );
+
+/* store Epetra_DistObject in non-const table */
+CTrilinos_Universal_ID_t
+aliasDistObject( const Teuchos::RCP< Epetra_DistObject > & robj );
+
+/* store const Epetra_DistObject in const table */
+CTrilinos_Universal_ID_t
+aliasConstDistObject( const Teuchos::RCP< const Epetra_DistObject > & robj );
 
 } // namespace CEpetra
 

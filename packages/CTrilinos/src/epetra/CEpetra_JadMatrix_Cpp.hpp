@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CEPETRA_JADMATRIX_CPP_HPP
 #define CEPETRA_JADMATRIX_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -81,9 +82,21 @@ storeConstJadMatrix( const Epetra_JadMatrix *pobj );
 void
 removeJadMatrix( CT_Epetra_JadMatrix_ID_t *id );
 
+/* remove Epetra_JadMatrix from table using CTrilinos_Universal_ID_t */
+void
+removeJadMatrix( CTrilinos_Universal_ID_t *aid );
+
 /* purge Epetra_JadMatrix table */
 void
 purgeJadMatrix(  );
+
+/* store Epetra_JadMatrix in non-const table */
+CTrilinos_Universal_ID_t
+aliasJadMatrix( const Teuchos::RCP< Epetra_JadMatrix > & robj );
+
+/* store const Epetra_JadMatrix in const table */
+CTrilinos_Universal_ID_t
+aliasConstJadMatrix( const Teuchos::RCP< const Epetra_JadMatrix > & robj );
 
 } // namespace CEpetra
 

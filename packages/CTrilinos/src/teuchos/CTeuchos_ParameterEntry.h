@@ -30,8 +30,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 
 /*! @file CTeuchos_ParameterEntry.h
  * @brief Wrappers for Teuchos::ParameterEntry */
@@ -43,6 +41,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #define CTEUCHOS_PARAMETERENTRY_H
 
 
+#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 

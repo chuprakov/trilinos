@@ -30,14 +30,13 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_AZTECOO
-
-
 #ifndef CAZTECOO_CPP_HPP
 #define CAZTECOO_CPP_HPP
+
+
+#include "CTrilinos_config.h"
+
+#ifdef HAVE_CTRILINOS_AZTECOO
 
 
 #include "CTrilinos_enums.h"
@@ -85,6 +84,10 @@ storeConstAztecOO( const AztecOO *pobj );
 void
 removeAztecOO( CT_AztecOO_ID_t *id );
 
+/* remove AztecOO from table using CTrilinos_Universal_ID_t */
+void
+removeAztecOO( CTrilinos_Universal_ID_t *aid );
+
 /* purge AztecOO table */
 void
 purgeAztecOO(  );
@@ -92,9 +95,8 @@ purgeAztecOO(  );
 } // namespace CAztecOO
 
 
-#endif // CAZTECOO_CPP_HPP
-
-
 #endif /* HAVE_CTRILINOS_AZTECOO */
+
+#endif // CAZTECOO_CPP_HPP
 
 

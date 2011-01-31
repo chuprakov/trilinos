@@ -30,13 +30,14 @@
 
 #include "SundanceCircle.hpp"
 #include "SundancePoint.hpp"
+#include "SundancePolygon2D.hpp"
 #include "SundanceDefs.hpp"
 
 using namespace Sundance;
 
 Circle::Circle(double centerx, double centery, double radius, double a1,
-		double a2) :
-	CurveBase(1, a1, a2), _centerx(centerx), _centery(centery), _radius(radius)
+		double a2, bool flipD ) :
+	CurveBase(1, a1, a2, flipD), _centerx(centerx), _centery(centery), _radius(radius)
 {
 }
 
@@ -58,7 +59,7 @@ double Circle::curveEquation(const Point& evalPoint) const
 	Point center(_centerx, _centery);
 
 	// the circle equation is (x-cx)^2 + (y-cy)^2 - r^2 = 0
-	return ((evalPoint - center) * (evalPoint - center)) - _radius * _radius;
+	return flipDomains_*(((evalPoint - center) * (evalPoint - center)) - _radius * _radius);
 }
 
 void Circle::returnIntersectPoints(const Point& start, const Point& end, int& nrPoints,
@@ -130,3 +131,23 @@ void Circle::returnIntersect(const Point& start, const Point& end, int& nrPoints
 	}
 }
 
+const RCP<CurveBase> Circle::getPolygon(const Mesh& mesh , double resolution) const {
+
+	int verb = 0;
+	// 2*pi*r/h will give the angle
+	double average_angle = resolution/(2.0*3.14*_radius);
+
+	int nrPoints = ::ceil (2.0*3.14/average_angle);
+	double stepAngle = (2.0*3.14/(double)nrPoints);
+
+	SUNDANCE_MSG3( verb , " Circle::getPolygon average_angle=" << average_angle << " nrPoints = " << nrPoints << " stepAngle=" << stepAngle);
+	Array<Point> points(nrPoints);
+	for (int pI = 0 ; pI < nrPoints ; pI++){
+		Point p(_centerx + _radius*::cos(stepAngle*(double)pI), _centery + _radius*::sin(stepAngle*(double)pI));
+		SUNDANCE_MSG3( verb , " Circle::getPolygon add pint " << pI << " p=" << p );
+		points[pI] = p;
+	}
+
+	// return the polygon
+	return rcp(new Polygon2D( mesh , points , _alpha1 , _alpha2 , (flipDomains_ < 0) ));
+}

@@ -6,8 +6,9 @@ AC_CONFIG_AUX_DIR(./config_aux)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR(include/Mesquite.hpp)
 AC_CANONICAL_SYSTEM
-dnl AM_INIT_AUTOMAKE([subdir-objects])
-AM_INIT_AUTOMAKE
+m4_ifdef([AM_SILENT_RULES],
+[AM_INIT_AUTOMAKE([color-tests])],
+[AM_INIT_AUTOMAKE])
 
 if test "x$CXXFLAGS" = "x"; then
   have_user_CXXFLAGS=no
@@ -51,12 +52,24 @@ AC_ARG_ENABLE( [debug],
                                  --enable-debug-symbols
                                  --enable-debug-output=1,2
                                  --enable-trap-fpe
-                                 --enable-quite-make])], 
+                                 --enable-silent-rules])], 
   [MSQ_DO_DEBUG="$enableval"], [MSQ_DO_DEBUG=""] )
+
+m4_ifdef([AM_SILENT_RULES],[
+  if test "xyes" = "x$MSQ_DO_DEBUG"; then
+    AM_SILENT_RULES(yes)
+  else
+    AM_SILENT_RULES(no)
+  fi
+])
 
 AC_ARG_ENABLE( [compile-optimized],
   [AC_HELP_STRING([--enable-compile-optimized],[Compile optimized (-O2)])],
   [MSQ_DO_OPTIMIZE="$enableval"], [MSQ_DO_OPTIMIZE=""] )
+
+AC_ARG_ENABLE( [fast-native],
+  [AC_HELP_STRING([--enable-fast-native],[Compile with fast math options, target build CPU, etc.])],
+  [MSQ_DO_FAST="$enableval"], [MSQ_DO_FAST=""] )
 
 AC_ARG_ENABLE( [debug-symbols], 
   [AC_HELP_STRING([--enable-debug-symbols],[Compile with debug symbols (-g)])],
@@ -170,7 +183,9 @@ if test "x$have_user_CXXFLAGS" = "xno"; then
 fi
 SNL_DETECT_CXX
 SNL_REQUIRED_CXX_FLAGS
-if test "$MSQ_DO_OPTIMIZE" = "yes"; then
+if test "$MSQ_DO_FAST" = "yes"; then
+  SNL_CXX_COMPILE_FAST
+elif test "$MSQ_DO_OPTIMIZE" = "yes"; then
   SNL_CXX_COMPILE_OPTIMIZED
 fi
 if test "$MSQ_DEBUG_SYMBOLS" = "yes"; then

@@ -32,9 +32,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
+#include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_TableRepos.hpp"
 #include "Teuchos_RCP.hpp"
 
+#include "CTrilinos_UnitTestHelpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
 
 #include "CEpetra_SerialComm.h"
@@ -56,7 +58,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #define XSTRFY(A)        STRFY(A)
 #define CONSTRUCTOR(A)   A
 
-
 #define T Epetra_SerialComm
 #define T1 Epetra_SerialComm
 #define T2 Epetra_Comm
@@ -75,176 +76,46 @@ using Teuchos::NullReferenceError;
 using Teuchos::m_bad_cast;
 using CTrilinos::CTrilinosTypeMismatchError;
 using CTrilinos::CTrilinosConstCastError;
-using CTrilinos::TableRepos;
-
-
-/* Table::store() owned */
-
-TEUCHOS_UNIT_TEST( TableRepos, store )
-{
-  ECHO(TableRepos repos);
-  ECHO(CTrilinos_Universal_ID_t id = repos.store<T>(new T, true));
-  TEST_EQUALITY_CONST(id.index, 0);
-  TEST_EQUALITY_CONST(id.is_const, FALSE);
-  TEST_EQUALITY(id.table, CLASS_ENUM(T));
-  TEST_EQUALITY_CONST(nonnull(repos.get<T>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.get<T>(id)), false);
-  TEST_EQUALITY_CONST(nonnull(repos.getConst<T>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.getConst<T>(id)), false);
-}
-
-TEUCHOS_UNIT_TEST( TableRepos, storeBase )
-{
-  ECHO(TableRepos repos);
-  ECHO(CTrilinos_Universal_ID_t id = repos.store<T2>(new T1, true));
-  TEST_EQUALITY_CONST(id.index, 0);
-  TEST_EQUALITY_CONST(id.is_const, FALSE);
-  TEST_EQUALITY(id.table, CLASS_ENUM(T2));
-  TEST_EQUALITY_CONST(nonnull(repos.get<T2>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.get<T2>(id)), false);
-  TEST_EQUALITY_CONST(nonnull(repos.getConst<T2>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.getConst<T2>(id)), false);
-  TEST_EQUALITY_CONST(nonnull(repos.get<T1>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.get<T1>(id)), false);
-  TEST_EQUALITY_CONST(nonnull(repos.getConst<T1>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.getConst<T1>(id)), false);
-}
-
-TEUCHOS_UNIT_TEST( TableRepos, storeNull )
-{
-  ECHO(TableRepos repos);
-  ECHO(T* pobj = NULL);
-  TEST_THROW(repos.store<T>(pobj, false), NullReferenceError); 
-}
-
-
-/* Table::store() non-owned */
-
-TEUCHOS_UNIT_TEST( TableRepos, storeShared )
-{
-  ECHO(TableRepos repos);
-  ECHO(T *pobj = new T);
-  ECHO(CTrilinos_Universal_ID_t id = repos.store<T>(pobj, false));
-  TEST_EQUALITY_CONST(id.index, 0);
-  TEST_EQUALITY(id.table, CLASS_ENUM(T));
-  TEST_EQUALITY(id.is_const, FALSE);
-  TEST_EQUALITY_CONST(nonnull(repos.get<T>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.get<T>(id)), false);
-  TEST_EQUALITY_CONST(nonnull(repos.getConst<T>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.getConst<T>(id)), false);
-  ECHO(repos.remove(&id));
-  ECHO(delete pobj);
-}
-
-TEUCHOS_UNIT_TEST( TableRepos, storeConstShared )
-{
-  ECHO(TableRepos repos);
-  ECHO(const T *pobj = new T);
-  ECHO(CTrilinos_Universal_ID_t id = repos.store<T>(pobj, false));
-  TEST_EQUALITY_CONST(id.index, 0);
-  TEST_EQUALITY(id.table, CLASS_ENUM(T));
-  TEST_EQUALITY(id.is_const, TRUE);
-  TEST_EQUALITY_CONST(nonnull(repos.getConst<T>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.getConst<T>(id)), false);
-  TEST_THROW(nonnull(repos.get<T>(id)), CTrilinosConstCastError);
-  TEST_THROW(is_null(repos.get<T>(id)), CTrilinosConstCastError);
-  ECHO(repos.remove(&id));
-  ECHO(delete pobj);
-}
-
-TEUCHOS_UNIT_TEST( TableRepos, storeSharedBase )
-{
-  ECHO(TableRepos repos);
-  ECHO(T1 *pobj = new T1);
-  ECHO(CTrilinos_Universal_ID_t id = repos.store<T2>(pobj, false));
-  TEST_EQUALITY_CONST(id.index, 0);
-  TEST_EQUALITY(id.table, CLASS_ENUM(T2));
-  TEST_EQUALITY(id.is_const, FALSE);
-  TEST_EQUALITY_CONST(nonnull(repos.get<T2>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.get<T2>(id)), false);
-  TEST_EQUALITY_CONST(nonnull(repos.getConst<T2>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.getConst<T2>(id)), false);
-  TEST_EQUALITY_CONST(nonnull(repos.get<T1>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.get<T1>(id)), false);
-  TEST_EQUALITY_CONST(nonnull(repos.getConst<T1>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.getConst<T1>(id)), false);
-  ECHO(repos.remove(&id));
-  ECHO(delete pobj);
-}
-
-TEUCHOS_UNIT_TEST( TableRepos, storeConstSharedBase )
-{
-  ECHO(TableRepos repos);
-  ECHO(const T1 *pobj = new T1);
-  ECHO(CTrilinos_Universal_ID_t id = repos.store<T2>(pobj, false));
-  TEST_EQUALITY_CONST(id.index, 0);
-  TEST_EQUALITY(id.table, CLASS_ENUM(T2));
-  TEST_EQUALITY(id.is_const, TRUE);
-  TEST_EQUALITY_CONST(nonnull(repos.getConst<T2>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.getConst<T2>(id)), false);
-  TEST_THROW(nonnull(repos.get<T2>(id)), CTrilinosConstCastError);
-  TEST_THROW(is_null(repos.get<T2>(id)), CTrilinosConstCastError);
-  TEST_EQUALITY_CONST(nonnull(repos.getConst<T1>(id)), true);
-  TEST_EQUALITY_CONST(is_null(repos.getConst<T1>(id)), false);
-  TEST_THROW(nonnull(repos.get<T1>(id)), CTrilinosConstCastError);
-  TEST_THROW(is_null(repos.get<T1>(id)), CTrilinosConstCastError);
-  ECHO(repos.remove(&id));
-  ECHO(delete pobj);
-}
-
-TEUCHOS_UNIT_TEST( TableRepos, storeSharedNull )
-{
-  ECHO(TableRepos repos);
-  ECHO(T* pobj = NULL);
-  TEST_THROW(repos.store<T>(pobj, false), NullReferenceError); 
-}
-
-TEUCHOS_UNIT_TEST( TableRepos, storeConstSharedNull )
-{
-  ECHO(TableRepos repos);
-  ECHO(const T* pobj = NULL);
-  TEST_THROW(repos.store<T>(pobj, false), NullReferenceError); 
-}
 
 
 /* Table::remove() */
 
 TEUCHOS_UNIT_TEST( TableRepos, remove )
 {
-  ECHO(TableRepos repos);
-  ECHO(CTrilinos_Universal_ID_t id = repos.store<T>(new T, true));
-  TEST_EQUALITY_CONST(id.index, 0);
-  TEST_EQUALITY(id.table, CLASS_ENUM(T));
-  TEST_EQUALITY_CONST(id.is_const, FALSE);
-  ECHO(repos.remove(&id));
-  TEST_EQUALITY_CONST(id.index, -1);
-  TEST_EQUALITY(id.table, CLASS_ENUM(Invalid));
+  ECHO(CEpetra_Test_CleanSlate());
+  ECHO(CLASS_TYPE(T) id = CEpetra::storeSerialComm(new T));
+  ECHO(CTrilinos_Universal_ID_t aid = CTrilinos::abstractType(id));
+  TEST_EQUALITY_CONST(aid.index, 0);
+  TEST_EQUALITY(aid.table, CLASS_ENUM(T));
+  TEST_EQUALITY_CONST(aid.is_const, FALSE);
+  ECHO(CTrilinos::TableRepos::remove(&aid));
+  TEST_EQUALITY_CONST(aid.index, -1);
+  TEST_EQUALITY(aid.table, CLASS_ENUM(Invalid));
 }
 
 TEUCHOS_UNIT_TEST( TableRepos, removeConst )
 {
-  ECHO(TableRepos repos);
-  ECHO(const T* pobj = new T);
-  ECHO(CTrilinos_Universal_ID_t id = repos.store<T>(pobj, false));
-  TEST_EQUALITY_CONST(id.index, 0);
-  TEST_EQUALITY(id.table, CLASS_ENUM(T));
-  TEST_EQUALITY_CONST(id.is_const, TRUE);
-  ECHO(repos.remove(&id));
-  TEST_EQUALITY_CONST(id.index, -1);
-  TEST_EQUALITY(id.table, CLASS_ENUM(Invalid));
-  ECHO(delete pobj);
+  ECHO(CEpetra_Test_CleanSlate());
+  ECHO(CLASS_TYPE(T) id = CEpetra::storeConstSerialComm(new T));
+  ECHO(CTrilinos_Universal_ID_t aid = CTrilinos::abstractType(id));
+  TEST_EQUALITY_CONST(aid.index, 0);
+  TEST_EQUALITY(aid.table, CLASS_ENUM(T));
+  TEST_EQUALITY_CONST(aid.is_const, TRUE);
+  ECHO(CTrilinos::TableRepos::remove(&aid));
+  TEST_EQUALITY_CONST(aid.index, -1);
+  TEST_EQUALITY(aid.table, CLASS_ENUM(Invalid));
 }
 
 #ifdef TEUCHOS_DEBUG
 
 TEUCHOS_UNIT_TEST( TableRepos, removeInvalid )
 {
-  ECHO(TableRepos repos);
+  ECHO(CEpetra_Test_CleanSlate());
   ECHO(CTrilinos_Universal_ID_t id);
   ECHO(id.index = -1);
   ECHO(id.table = CLASS_ENUM(T));
   ECHO(id.is_const = FALSE);
-  TEST_THROW(repos.remove(&id), RangeError);
+  TEST_THROW(CTrilinos::TableRepos::remove(&id), RangeError);
 }
 
 #endif /* TEUCHOS_DEBUG */
@@ -254,12 +125,13 @@ TEUCHOS_UNIT_TEST( TableRepos, removeInvalid )
 
 TEUCHOS_UNIT_TEST( TableRepos, get )
 {
-  ECHO(TableRepos repos);
-  ECHO(CTrilinos_Universal_ID_t id = repos.store<T>(new T, true));
-  ECHO(RCP<T> rcpT = repos.get<T>(id));
+  ECHO(CEpetra_Test_CleanSlate());
+  ECHO(CLASS_TYPE(T1) id = CEpetra::storeSerialComm(new T1));
+  ECHO(CTrilinos_Universal_ID_t aid = CTrilinos::abstractType(id));
+  ECHO(RCP<T2> rcpT = CTrilinos::TableRepos::get<T2>(aid));
   TEST_EQUALITY_CONST(nonnull(rcpT), true);
   TEST_EQUALITY_CONST(is_null(rcpT), false);
-  ECHO(RCP<const T> rcpCT = repos.getConst<T>(id));
+  ECHO(RCP<const T2> rcpCT = CTrilinos::TableRepos::getConst<T2>(aid));
   TEST_EQUALITY_CONST(nonnull(rcpCT), true);
   TEST_EQUALITY_CONST(is_null(rcpCT), false);
 }
@@ -268,12 +140,12 @@ TEUCHOS_UNIT_TEST( TableRepos, get )
 
 TEUCHOS_UNIT_TEST( TableRepos, getInvalid )
 {
-  ECHO(TableRepos repos);
+  ECHO(CEpetra_Test_CleanSlate());
   ECHO(CTrilinos_Universal_ID_t id);
   ECHO(id.index = 0);
   ECHO(id.table = CLASS_ENUM(T));
   ECHO(id.is_const = FALSE);
-  TEST_THROW(repos.get<T>(id), RangeError);
+  TEST_THROW(CTrilinos::TableRepos::get<T>(id), RangeError);
 }
 
 #endif /* TEUCHOS_DEBUG */
@@ -283,66 +155,45 @@ TEUCHOS_UNIT_TEST( TableRepos, getInvalid )
 
 TEUCHOS_UNIT_TEST( TableRepos, alias )
 {
-  ECHO(TableRepos repos);
-  ECHO(CTrilinos_Universal_ID_t id1 = repos.store<T1>(new T1, true));
-  ECHO(CTrilinos_Universal_ID_t id2 = repos.alias(id1, CLASS_ENUM(T2), true));
-  TEST_EQUALITY(id2.table, CLASS_ENUM(T2));
-  TEST_EQUALITY_CONST(id2.index, 0);
-  TEST_EQUALITY_CONST(id2.is_const, FALSE);
+  ECHO(CEpetra_Test_CleanSlate());
+  ECHO(CLASS_TYPE(T1) id1 = CEpetra::storeSerialComm(new T1));
+  ECHO(CTrilinos_Universal_ID_t aid1 = CTrilinos::abstractType(id1));
+  ECHO(CTrilinos_Universal_ID_t aid2 = CTrilinos::TableRepos::alias(aid1, CLASS_ENUM(T2), true));
+  TEST_EQUALITY(aid2.table, CLASS_ENUM(T2));
+  TEST_EQUALITY_CONST(aid2.index, 0);
+  TEST_EQUALITY_CONST(aid2.is_const, FALSE);
 }
 
 TEUCHOS_UNIT_TEST( TableRepos, aliasConst )
 {
-  ECHO(TableRepos repos);
-  ECHO(CTrilinos_Universal_ID_t id1 = repos.store<T1>(new const T1, true));
-  ECHO(CTrilinos_Universal_ID_t id2 = repos.alias(id1, CLASS_ENUM(T2), true));
-  TEST_EQUALITY(id2.table, CLASS_ENUM(T2));
-  TEST_EQUALITY_CONST(id2.index, 0);
-  TEST_EQUALITY_CONST(id2.is_const, TRUE);
+  ECHO(CEpetra_Test_CleanSlate());
+  ECHO(CLASS_TYPE(T1) id1 = CEpetra::storeConstSerialComm(new const T1));
+  ECHO(CTrilinos_Universal_ID_t aid1 = CTrilinos::abstractType(id1));
+  ECHO(CTrilinos_Universal_ID_t aid2 = CTrilinos::TableRepos::alias(aid1, CLASS_ENUM(T2), true));
+  TEST_EQUALITY(aid2.table, CLASS_ENUM(T2));
+  TEST_EQUALITY_CONST(aid2.index, 0);
+  TEST_EQUALITY_CONST(aid2.is_const, TRUE);
 }
 
 TEUCHOS_UNIT_TEST( TableRepos, aliasBad )
 {
-  ECHO(TableRepos repos);
-  ECHO(CTrilinos_Universal_ID_t id3 = repos.store<T3>(new T3, true));
-  TEST_THROW(repos.alias(id3, CLASS_ENUM(T4), true), m_bad_cast);
+  ECHO(CEpetra_Test_CleanSlate());
+  ECHO(CLASS_TYPE(T3) id = CEpetra::storeSerialComm(new T3));
+  ECHO(CTrilinos_Universal_ID_t aid = CTrilinos::abstractType(id));
+  TEST_THROW(CTrilinos::TableRepos::alias(aid, CLASS_ENUM(T4), true), m_bad_cast);
 }
-
-
-/* Table::purge() */
-
-#ifdef TEUCHOS_DEBUG
-
-TEUCHOS_UNIT_TEST( TableRepos, purge )
-{
-  ECHO(TableRepos repos);
-  ECHO(CTrilinos_Universal_ID_t id = repos.store<T>(new T, true));
-  TEST_EQUALITY_CONST(nonnull(repos.get<T>(id)), true);
-  ECHO(repos.purge<T>());
-  TEST_THROW(repos.get<T>(id), RangeError);
-}
-
-TEUCHOS_UNIT_TEST( TableRepos, purgeAll )
-{
-  ECHO(TableRepos repos);
-  ECHO(CTrilinos_Universal_ID_t id = repos.store<T>(new T, true));
-  TEST_EQUALITY_CONST(nonnull(repos.get<T>(id)), true);
-  ECHO(repos.purgeAll());
-  TEST_THROW(repos.get<T>(id), RangeError);
-}
-
-#endif /* TEUCHOS_DEBUG */
 
 
 /* Table::typeCheck() */
 
 TEUCHOS_UNIT_TEST( TableRepos, typeCheck )
 {
-  ECHO(TableRepos repos);
-  ECHO(CTrilinos_Universal_ID_t id = repos.store<T1>(new T1, true));
-  TEST_EQUALITY_CONST(repos.typeCheck(id, CLASS_ENUM(T1)), true);
-  TEST_EQUALITY_CONST(repos.typeCheck(id, CLASS_ENUM(T2)), true);
-  TEST_EQUALITY_CONST(repos.typeCheck(id, CLASS_ENUM(T4)), false);
+  ECHO(CEpetra_Test_CleanSlate());
+  ECHO(CLASS_TYPE(T1) id = CEpetra::storeSerialComm(new T1));
+  ECHO(CTrilinos_Universal_ID_t aid = CTrilinos::abstractType(id));
+  TEST_EQUALITY_CONST(CTrilinos::TableRepos::typeCheck(aid, CLASS_ENUM(T1)), true);
+  TEST_EQUALITY_CONST(CTrilinos::TableRepos::typeCheck(aid, CLASS_ENUM(T2)), true);
+  TEST_EQUALITY_CONST(CTrilinos::TableRepos::typeCheck(aid, CLASS_ENUM(T4)), false);
 }
 
 //

@@ -30,12 +30,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_GALERI
-
-
 
 /*! @file CGaleri_Maps.h
  * @brief Wrappers for Galeri_Maps */
@@ -46,7 +40,10 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifndef CGALERI_MAPS_H
 #define CGALERI_MAPS_H
 
+#ifdef HAVE_CTRILINOS_GALERI
 
+
+#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 
@@ -74,8 +71,7 @@ CT_Epetra_Map_ID_t Galeri_Maps_CreateMap (
 #endif
 
 
-#endif /* CGALERI_MAPS_H */
-
 #endif /* HAVE_CTRILINOS_GALERI */
 
+#endif /* CGALERI_MAPS_H */
 

@@ -47,7 +47,7 @@ public:
 	 * @param b
 	 * @param a1 alpha1 coefficient for FCM
 	 * @param a2 alpha2 coefficient for FCM */
-	Line2D(double slope, double b, double a1, double a2);
+	Line2D(double slope, double b, double a1, double a2,bool flipD = false);
 
 	virtual ~Line2D();
 
@@ -90,6 +90,12 @@ public:
 	{
 		return true;
 	}
+
+	/** In the case of simple geometries the geometry it can be transformed to a polygon, which
+	 * reflects the original geometry
+	 * @param mesh
+	 * @param resolution , the global resolution */
+	virtual const RCP<CurveBase> getPolygon(const Mesh& mesh ,double resolution) const ;
 
 private:
 

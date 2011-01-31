@@ -32,13 +32,12 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
-
 #ifdef HAVE_CTRILINOS_AMESOS
-
 
 #include "CTrilinos_enums.h"
 #include "CAmesos.h"
 #include "CAmesos_Cpp.hpp"
+#include "Amesos.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
@@ -119,7 +118,7 @@ CT_Teuchos_ParameterList_ID_t Amesos_GetValidParameters (  )
 const Teuchos::RCP<Amesos>
 CAmesos::getAmesos( CT_Amesos_ID_t id )
 {
-    return tableOfAmesoss().get(
+        return tableOfAmesoss().get<Amesos>(
         CTrilinos::abstractType<CT_Amesos_ID_t>(id));
 }
 
@@ -127,7 +126,7 @@ CAmesos::getAmesos( CT_Amesos_ID_t id )
 const Teuchos::RCP<Amesos>
 CAmesos::getAmesos( CTrilinos_Universal_ID_t id )
 {
-    return tableOfAmesoss().get(id);
+        return tableOfAmesoss().get<Amesos>(id);
 }
 
 /* get const Amesos from either the const or non-const table
@@ -135,7 +134,7 @@ CAmesos::getAmesos( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Amesos>
 CAmesos::getConstAmesos( CT_Amesos_ID_t id )
 {
-    return tableOfAmesoss().getConst(
+        return tableOfAmesoss().getConst<Amesos>(
         CTrilinos::abstractType<CT_Amesos_ID_t>(id));
 }
 
@@ -144,7 +143,7 @@ CAmesos::getConstAmesos( CT_Amesos_ID_t id )
 const Teuchos::RCP<const Amesos>
 CAmesos::getConstAmesos( CTrilinos_Universal_ID_t id )
 {
-    return tableOfAmesoss().getConst(id);
+        return tableOfAmesoss().getConst<Amesos>(id);
 }
 
 /* store Amesos (owned) in non-const table */
@@ -152,7 +151,7 @@ CT_Amesos_ID_t
 CAmesos::storeNewAmesos( Amesos *pobj )
 {
     return CTrilinos::concreteType<CT_Amesos_ID_t>(
-        tableOfAmesoss().store(pobj, true));
+        tableOfAmesoss().store<Amesos>(pobj, true));
 }
 
 /* store Amesos in non-const table */
@@ -160,7 +159,7 @@ CT_Amesos_ID_t
 CAmesos::storeAmesos( Amesos *pobj )
 {
     return CTrilinos::concreteType<CT_Amesos_ID_t>(
-        tableOfAmesoss().store(pobj, false));
+        tableOfAmesoss().store<Amesos>(pobj, false));
 }
 
 /* store const Amesos in const table */
@@ -168,7 +167,7 @@ CT_Amesos_ID_t
 CAmesos::storeConstAmesos( const Amesos *pobj )
 {
     return CTrilinos::concreteType<CT_Amesos_ID_t>(
-        tableOfAmesoss().store(pobj, false));
+        tableOfAmesoss().store<Amesos>(pobj, false));
 }
 
 /* remove Amesos from table using CT_Amesos_ID */
@@ -177,8 +176,15 @@ CAmesos::removeAmesos( CT_Amesos_ID_t *id )
 {
     CTrilinos_Universal_ID_t aid = 
         CTrilinos::abstractType<CT_Amesos_ID_t>(*id);
-    tableOfAmesoss().remove(&aid);
+        tableOfAmesoss().remove(&aid);
     *id = CTrilinos::concreteType<CT_Amesos_ID_t>(aid);
+}
+
+/* remove Amesos from table using CTrilinos_Universal_ID_t */
+void
+CAmesos::removeAmesos( CTrilinos_Universal_ID_t *aid )
+{
+        tableOfAmesoss().remove(aid);
 }
 
 /* purge Amesos table */
@@ -187,7 +193,6 @@ CAmesos::purgeAmesos(  )
 {
     tableOfAmesoss().purge();
 }
-
 
 
 #endif /* HAVE_CTRILINOS_AMESOS */

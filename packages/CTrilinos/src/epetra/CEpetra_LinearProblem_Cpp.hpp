@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CEPETRA_LINEARPROBLEM_CPP_HPP
 #define CEPETRA_LINEARPROBLEM_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -81,9 +82,21 @@ storeConstLinearProblem( const Epetra_LinearProblem *pobj );
 void
 removeLinearProblem( CT_Epetra_LinearProblem_ID_t *id );
 
+/* remove Epetra_LinearProblem from table using CTrilinos_Universal_ID_t */
+void
+removeLinearProblem( CTrilinos_Universal_ID_t *aid );
+
 /* purge Epetra_LinearProblem table */
 void
 purgeLinearProblem(  );
+
+/* store Epetra_LinearProblem in non-const table */
+CTrilinos_Universal_ID_t
+aliasLinearProblem( const Teuchos::RCP< Epetra_LinearProblem > & robj );
+
+/* store const Epetra_LinearProblem in const table */
+CTrilinos_Universal_ID_t
+aliasConstLinearProblem( const Teuchos::RCP< const Epetra_LinearProblem > & robj );
 
 } // namespace CEpetra
 

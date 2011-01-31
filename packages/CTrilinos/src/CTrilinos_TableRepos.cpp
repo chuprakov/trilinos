@@ -34,236 +34,144 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
  * @brief Central table repository for CTrilinos. */
 
 
+#include "CTrilinos_config.h"
 #include "CTrilinos_TableRepos.hpp"
+
 
 
 namespace CTrilinos {
 
 
-TableRepos & tableRepos(  )
+void TableRepos::remove(
+    CTrilinos_Universal_ID_t * aid)
 {
-    static TableRepos tr;
-    return tr;
-}
-
-
-TableRepos::TableRepos() :
-    tab_Epetra_Distributor(CT_Epetra_Distributor_ID),
-    tab_Epetra_SerialComm(CT_Epetra_SerialComm_ID),
-    tab_Epetra_BLAS(CT_Epetra_BLAS_ID),
-    tab_Epetra_Comm(CT_Epetra_Comm_ID),
-    tab_Epetra_Operator(CT_Epetra_Operator_ID),
-    tab_Epetra_MultiVector(CT_Epetra_MultiVector_ID),
-    tab_Epetra_OffsetIndex(CT_Epetra_OffsetIndex_ID),
-    tab_Epetra_Object(CT_Epetra_Object_ID),
-    tab_Epetra_RowMatrix(CT_Epetra_RowMatrix_ID),
-    tab_Epetra_CompObject(CT_Epetra_CompObject_ID),
-    tab_Epetra_Directory(CT_Epetra_Directory_ID),
-    tab_Epetra_Flops(CT_Epetra_Flops_ID),
-    tab_Epetra_SrcDistObject(CT_Epetra_SrcDistObject_ID),
+    switch (aid->table) {
+    case CT_Epetra_Distributor_ID:
+        CEpetra::removeDistributor(aid);
+        break;
+    case CT_Epetra_SerialComm_ID:
+        CEpetra::removeSerialComm(aid);
+        break;
+    case CT_Epetra_BLAS_ID:
+        CEpetra::removeBLAS(aid);
+        break;
+    case CT_Epetra_Comm_ID:
+        CEpetra::removeComm(aid);
+        break;
+    case CT_Epetra_Operator_ID:
+        CEpetra::removeOperator(aid);
+        break;
+    case CT_Epetra_MultiVector_ID:
+        CEpetra::removeMultiVector(aid);
+        break;
+    case CT_Epetra_OffsetIndex_ID:
+        CEpetra::removeOffsetIndex(aid);
+        break;
+    case CT_Epetra_Object_ID:
+        CEpetra::removeObject(aid);
+        break;
+    case CT_Epetra_RowMatrix_ID:
+        CEpetra::removeRowMatrix(aid);
+        break;
+    case CT_Epetra_CompObject_ID:
+        CEpetra::removeCompObject(aid);
+        break;
+    case CT_Epetra_Directory_ID:
+        CEpetra::removeDirectory(aid);
+        break;
+    case CT_Epetra_Flops_ID:
+        CEpetra::removeFlops(aid);
+        break;
+    case CT_Epetra_SrcDistObject_ID:
+        CEpetra::removeSrcDistObject(aid);
+        break;
 #ifdef HAVE_MPI
-    tab_Epetra_MpiComm(CT_Epetra_MpiComm_ID),
+    case CT_Epetra_MpiComm_ID:
+        CEpetra::removeMpiComm(aid);
+        break;
 #endif /* HAVE_MPI */
-    tab_Epetra_CrsMatrix(CT_Epetra_CrsMatrix_ID),
-    tab_Epetra_CrsGraph(CT_Epetra_CrsGraph_ID),
-    tab_Epetra_DistObject(CT_Epetra_DistObject_ID),
-    tab_Epetra_Vector(CT_Epetra_Vector_ID),
-    tab_Epetra_Export(CT_Epetra_Export_ID),
-    tab_Epetra_Map(CT_Epetra_Map_ID),
-    tab_Epetra_BlockMap(CT_Epetra_BlockMap_ID),
-    tab_Epetra_Import(CT_Epetra_Import_ID),
-    tab_Epetra_Time(CT_Epetra_Time_ID),
-    tab_Epetra_JadMatrix(CT_Epetra_JadMatrix_ID),
-    tab_Epetra_LinearProblem(CT_Epetra_LinearProblem_ID),
-    tab_Epetra_LAPACK(CT_Epetra_LAPACK_ID),
-    tab_Teuchos_ParameterList(CT_Teuchos_ParameterList_ID),
+    case CT_Epetra_CrsMatrix_ID:
+        CEpetra::removeCrsMatrix(aid);
+        break;
+    case CT_Epetra_CrsGraph_ID:
+        CEpetra::removeCrsGraph(aid);
+        break;
+    case CT_Epetra_DistObject_ID:
+        CEpetra::removeDistObject(aid);
+        break;
+    case CT_Epetra_Vector_ID:
+        CEpetra::removeVector(aid);
+        break;
+    case CT_Epetra_Export_ID:
+        CEpetra::removeExport(aid);
+        break;
+    case CT_Epetra_Map_ID:
+        CEpetra::removeMap(aid);
+        break;
+    case CT_Epetra_BlockMap_ID:
+        CEpetra::removeBlockMap(aid);
+        break;
+    case CT_Epetra_Import_ID:
+        CEpetra::removeImport(aid);
+        break;
+    case CT_Epetra_Time_ID:
+        CEpetra::removeTime(aid);
+        break;
+    case CT_Epetra_JadMatrix_ID:
+        CEpetra::removeJadMatrix(aid);
+        break;
+    case CT_Epetra_LinearProblem_ID:
+        CEpetra::removeLinearProblem(aid);
+        break;
+    case CT_Epetra_LAPACK_ID:
+        CEpetra::removeLAPACK(aid);
+        break;
+    case CT_Teuchos_ParameterList_ID:
+        CTeuchos::removeParameterList(aid);
+        break;
 #ifdef HAVE_CTRILINOS_AMESOS
-    tab_Amesos_BaseSolver(CT_Amesos_BaseSolver_ID),
+    case CT_Amesos_BaseSolver_ID:
+        CAmesos::removeBaseSolver(aid);
+        break;
 #endif /* HAVE_CTRILINOS_AMESOS */
-    tab_Epetra_FECrsMatrix(CT_Epetra_FECrsMatrix_ID),
-    tab_Epetra_IntSerialDenseVector(CT_Epetra_IntSerialDenseVector_ID),
-    tab_Epetra_SerialDenseMatrix(CT_Epetra_SerialDenseMatrix_ID),
+    case CT_Epetra_FECrsMatrix_ID:
+        CEpetra::removeFECrsMatrix(aid);
+        break;
+    case CT_Epetra_IntSerialDenseVector_ID:
+        CEpetra::removeIntSerialDenseVector(aid);
+        break;
+    case CT_Epetra_SerialDenseMatrix_ID:
+        CEpetra::removeSerialDenseMatrix(aid);
+        break;
 #ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTest(CT_AztecOO_StatusTest_ID),
+    case CT_AztecOO_StatusTest_ID:
+        CAztecOO::removeStatusTest(aid);
+        break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
 #ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTestCombo(CT_AztecOO_StatusTestCombo_ID),
+    case CT_AztecOO_StatusTestCombo_ID:
+        CAztecOO::removeStatusTestCombo(aid);
+        break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
 #ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTestMaxIters(CT_AztecOO_StatusTestMaxIters_ID),
+    case CT_AztecOO_StatusTestMaxIters_ID:
+        CAztecOO::removeStatusTestMaxIters(aid);
+        break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
 #ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTestResNorm(CT_AztecOO_StatusTestResNorm_ID),
+    case CT_AztecOO_StatusTestResNorm_ID:
+        CAztecOO::removeStatusTestResNorm(aid);
+        break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
 #ifdef HAVE_CTRILINOS_IFPACK
-    tab_Ifpack_Preconditioner(CT_Ifpack_Preconditioner_ID),
+    case CT_Ifpack_Preconditioner_ID:
+        CIfpack::removePreconditioner(aid);
+        break;
 #endif /* HAVE_CTRILINOS_IFPACK */
-    call_me_lazy(true)
-{
+    default:
+        throw CTrilinosInvalidTypeError("invalid table id or non-polymorphic class");
+    }
 }
-
-TableRepos::~TableRepos()
-{
-}
-
-void TableRepos::getTable(Table<Epetra_Distributor> *& tab)
-{
-    tab = &tab_Epetra_Distributor;
-}
-void TableRepos::getTable(Table<Epetra_SerialComm> *& tab)
-{
-    tab = &tab_Epetra_SerialComm;
-}
-void TableRepos::getTable(Table<Epetra_BLAS> *& tab)
-{
-    tab = &tab_Epetra_BLAS;
-}
-void TableRepos::getTable(Table<Epetra_Comm> *& tab)
-{
-    tab = &tab_Epetra_Comm;
-}
-void TableRepos::getTable(Table<Epetra_Operator> *& tab)
-{
-    tab = &tab_Epetra_Operator;
-}
-void TableRepos::getTable(Table<Epetra_MultiVector> *& tab)
-{
-    tab = &tab_Epetra_MultiVector;
-}
-void TableRepos::getTable(Table<Epetra_OffsetIndex> *& tab)
-{
-    tab = &tab_Epetra_OffsetIndex;
-}
-void TableRepos::getTable(Table<Epetra_Object> *& tab)
-{
-    tab = &tab_Epetra_Object;
-}
-void TableRepos::getTable(Table<Epetra_RowMatrix> *& tab)
-{
-    tab = &tab_Epetra_RowMatrix;
-}
-void TableRepos::getTable(Table<Epetra_CompObject> *& tab)
-{
-    tab = &tab_Epetra_CompObject;
-}
-void TableRepos::getTable(Table<Epetra_Directory> *& tab)
-{
-    tab = &tab_Epetra_Directory;
-}
-void TableRepos::getTable(Table<Epetra_Flops> *& tab)
-{
-    tab = &tab_Epetra_Flops;
-}
-void TableRepos::getTable(Table<Epetra_SrcDistObject> *& tab)
-{
-    tab = &tab_Epetra_SrcDistObject;
-}
-#ifdef HAVE_MPI
-void TableRepos::getTable(Table<Epetra_MpiComm> *& tab)
-{
-    tab = &tab_Epetra_MpiComm;
-}
-#endif /* HAVE_MPI */
-void TableRepos::getTable(Table<Epetra_CrsMatrix> *& tab)
-{
-    tab = &tab_Epetra_CrsMatrix;
-}
-void TableRepos::getTable(Table<Epetra_CrsGraph> *& tab)
-{
-    tab = &tab_Epetra_CrsGraph;
-}
-void TableRepos::getTable(Table<Epetra_DistObject> *& tab)
-{
-    tab = &tab_Epetra_DistObject;
-}
-void TableRepos::getTable(Table<Epetra_Vector> *& tab)
-{
-    tab = &tab_Epetra_Vector;
-}
-void TableRepos::getTable(Table<Epetra_Export> *& tab)
-{
-    tab = &tab_Epetra_Export;
-}
-void TableRepos::getTable(Table<Epetra_Map> *& tab)
-{
-    tab = &tab_Epetra_Map;
-}
-void TableRepos::getTable(Table<Epetra_BlockMap> *& tab)
-{
-    tab = &tab_Epetra_BlockMap;
-}
-void TableRepos::getTable(Table<Epetra_Import> *& tab)
-{
-    tab = &tab_Epetra_Import;
-}
-void TableRepos::getTable(Table<Epetra_Time> *& tab)
-{
-    tab = &tab_Epetra_Time;
-}
-void TableRepos::getTable(Table<Epetra_JadMatrix> *& tab)
-{
-    tab = &tab_Epetra_JadMatrix;
-}
-void TableRepos::getTable(Table<Epetra_LinearProblem> *& tab)
-{
-    tab = &tab_Epetra_LinearProblem;
-}
-void TableRepos::getTable(Table<Epetra_LAPACK> *& tab)
-{
-    tab = &tab_Epetra_LAPACK;
-}
-void TableRepos::getTable(Table<Teuchos::ParameterList> *& tab)
-{
-    tab = &tab_Teuchos_ParameterList;
-}
-#ifdef HAVE_CTRILINOS_AMESOS
-void TableRepos::getTable(Table<Amesos_BaseSolver> *& tab)
-{
-    tab = &tab_Amesos_BaseSolver;
-}
-#endif /* HAVE_CTRILINOS_AMESOS */
-void TableRepos::getTable(Table<Epetra_FECrsMatrix> *& tab)
-{
-    tab = &tab_Epetra_FECrsMatrix;
-}
-void TableRepos::getTable(Table<Epetra_IntSerialDenseVector> *& tab)
-{
-    tab = &tab_Epetra_IntSerialDenseVector;
-}
-void TableRepos::getTable(Table<Epetra_SerialDenseMatrix> *& tab)
-{
-    tab = &tab_Epetra_SerialDenseMatrix;
-}
-#ifdef HAVE_CTRILINOS_AZTECOO
-void TableRepos::getTable(Table<AztecOO_StatusTest> *& tab)
-{
-    tab = &tab_AztecOO_StatusTest;
-}
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-void TableRepos::getTable(Table<AztecOO_StatusTestCombo> *& tab)
-{
-    tab = &tab_AztecOO_StatusTestCombo;
-}
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-void TableRepos::getTable(Table<AztecOO_StatusTestMaxIters> *& tab)
-{
-    tab = &tab_AztecOO_StatusTestMaxIters;
-}
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-void TableRepos::getTable(Table<AztecOO_StatusTestResNorm> *& tab)
-{
-    tab = &tab_AztecOO_StatusTestResNorm;
-}
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_IFPACK
-void TableRepos::getTable(Table<Ifpack_Preconditioner> *& tab)
-{
-    tab = &tab_Ifpack_Preconditioner;
-}
-#endif /* HAVE_CTRILINOS_IFPACK */
 
 CTrilinos_Universal_ID_t TableRepos::alias(
     CTrilinos_Universal_ID_t aid, CTrilinos_Table_ID_t tab, bool keepold)
@@ -272,161 +180,377 @@ CTrilinos_Universal_ID_t TableRepos::alias(
 
     switch (tab) {
     case CT_Epetra_Distributor_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Distributor, aid, keepold)
-                              : do_alias(tab_Epetra_Distributor, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_Distributor> robj = getConst<Epetra_Distributor>(aid);
+            newid = CEpetra::aliasConstDistributor(robj);
+        } else {
+            Teuchos::RCP<Epetra_Distributor> robj = get<Epetra_Distributor>(aid);
+            newid = CEpetra::aliasDistributor(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_SerialComm_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_SerialComm, aid, keepold)
-                              : do_alias(tab_Epetra_SerialComm, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_SerialComm> robj = getConst<Epetra_SerialComm>(aid);
+            newid = CEpetra::aliasConstSerialComm(robj);
+        } else {
+            Teuchos::RCP<Epetra_SerialComm> robj = get<Epetra_SerialComm>(aid);
+            newid = CEpetra::aliasSerialComm(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_BLAS_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_BLAS, aid, keepold)
-                              : do_alias(tab_Epetra_BLAS, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_BLAS> robj = getConst<Epetra_BLAS>(aid);
+            newid = CEpetra::aliasConstBLAS(robj);
+        } else {
+            Teuchos::RCP<Epetra_BLAS> robj = get<Epetra_BLAS>(aid);
+            newid = CEpetra::aliasBLAS(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_Comm_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Comm, aid, keepold)
-                              : do_alias(tab_Epetra_Comm, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_Comm> robj = getConst<Epetra_Comm>(aid);
+            newid = CEpetra::aliasConstComm(robj);
+        } else {
+            Teuchos::RCP<Epetra_Comm> robj = get<Epetra_Comm>(aid);
+            newid = CEpetra::aliasComm(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_Operator_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Operator, aid, keepold)
-                              : do_alias(tab_Epetra_Operator, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_Operator> robj = getConst<Epetra_Operator>(aid);
+            newid = CEpetra::aliasConstOperator(robj);
+        } else {
+            Teuchos::RCP<Epetra_Operator> robj = get<Epetra_Operator>(aid);
+            newid = CEpetra::aliasOperator(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_MultiVector_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_MultiVector, aid, keepold)
-                              : do_alias(tab_Epetra_MultiVector, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_MultiVector> robj = getConst<Epetra_MultiVector>(aid);
+            newid = CEpetra::aliasConstMultiVector(robj);
+        } else {
+            Teuchos::RCP<Epetra_MultiVector> robj = get<Epetra_MultiVector>(aid);
+            newid = CEpetra::aliasMultiVector(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_OffsetIndex_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_OffsetIndex, aid, keepold)
-                              : do_alias(tab_Epetra_OffsetIndex, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_OffsetIndex> robj = getConst<Epetra_OffsetIndex>(aid);
+            newid = CEpetra::aliasConstOffsetIndex(robj);
+        } else {
+            Teuchos::RCP<Epetra_OffsetIndex> robj = get<Epetra_OffsetIndex>(aid);
+            newid = CEpetra::aliasOffsetIndex(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_Object_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Object, aid, keepold)
-                              : do_alias(tab_Epetra_Object, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_Object> robj = getConst<Epetra_Object>(aid);
+            newid = CEpetra::aliasConstObject(robj);
+        } else {
+            Teuchos::RCP<Epetra_Object> robj = get<Epetra_Object>(aid);
+            newid = CEpetra::aliasObject(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_RowMatrix_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_RowMatrix, aid, keepold)
-                              : do_alias(tab_Epetra_RowMatrix, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_RowMatrix> robj = getConst<Epetra_RowMatrix>(aid);
+            newid = CEpetra::aliasConstRowMatrix(robj);
+        } else {
+            Teuchos::RCP<Epetra_RowMatrix> robj = get<Epetra_RowMatrix>(aid);
+            newid = CEpetra::aliasRowMatrix(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_CompObject_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_CompObject, aid, keepold)
-                              : do_alias(tab_Epetra_CompObject, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_CompObject> robj = getConst<Epetra_CompObject>(aid);
+            newid = CEpetra::aliasConstCompObject(robj);
+        } else {
+            Teuchos::RCP<Epetra_CompObject> robj = get<Epetra_CompObject>(aid);
+            newid = CEpetra::aliasCompObject(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_Directory_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Directory, aid, keepold)
-                              : do_alias(tab_Epetra_Directory, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_Directory> robj = getConst<Epetra_Directory>(aid);
+            newid = CEpetra::aliasConstDirectory(robj);
+        } else {
+            Teuchos::RCP<Epetra_Directory> robj = get<Epetra_Directory>(aid);
+            newid = CEpetra::aliasDirectory(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_Flops_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Flops, aid, keepold)
-                              : do_alias(tab_Epetra_Flops, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_Flops> robj = getConst<Epetra_Flops>(aid);
+            newid = CEpetra::aliasConstFlops(robj);
+        } else {
+            Teuchos::RCP<Epetra_Flops> robj = get<Epetra_Flops>(aid);
+            newid = CEpetra::aliasFlops(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_SrcDistObject_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_SrcDistObject, aid, keepold)
-                              : do_alias(tab_Epetra_SrcDistObject, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_SrcDistObject> robj = getConst<Epetra_SrcDistObject>(aid);
+            newid = CEpetra::aliasConstSrcDistObject(robj);
+        } else {
+            Teuchos::RCP<Epetra_SrcDistObject> robj = get<Epetra_SrcDistObject>(aid);
+            newid = CEpetra::aliasSrcDistObject(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
 #ifdef HAVE_MPI
     case CT_Epetra_MpiComm_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_MpiComm, aid, keepold)
-                              : do_alias(tab_Epetra_MpiComm, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_MpiComm> robj = getConst<Epetra_MpiComm>(aid);
+            newid = CEpetra::aliasConstMpiComm(robj);
+        } else {
+            Teuchos::RCP<Epetra_MpiComm> robj = get<Epetra_MpiComm>(aid);
+            newid = CEpetra::aliasMpiComm(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
 #endif /* HAVE_MPI */
     case CT_Epetra_CrsMatrix_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_CrsMatrix, aid, keepold)
-                              : do_alias(tab_Epetra_CrsMatrix, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_CrsMatrix> robj = getConst<Epetra_CrsMatrix>(aid);
+            newid = CEpetra::aliasConstCrsMatrix(robj);
+        } else {
+            Teuchos::RCP<Epetra_CrsMatrix> robj = get<Epetra_CrsMatrix>(aid);
+            newid = CEpetra::aliasCrsMatrix(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_CrsGraph_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_CrsGraph, aid, keepold)
-                              : do_alias(tab_Epetra_CrsGraph, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_CrsGraph> robj = getConst<Epetra_CrsGraph>(aid);
+            newid = CEpetra::aliasConstCrsGraph(robj);
+        } else {
+            Teuchos::RCP<Epetra_CrsGraph> robj = get<Epetra_CrsGraph>(aid);
+            newid = CEpetra::aliasCrsGraph(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_DistObject_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_DistObject, aid, keepold)
-                              : do_alias(tab_Epetra_DistObject, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_DistObject> robj = getConst<Epetra_DistObject>(aid);
+            newid = CEpetra::aliasConstDistObject(robj);
+        } else {
+            Teuchos::RCP<Epetra_DistObject> robj = get<Epetra_DistObject>(aid);
+            newid = CEpetra::aliasDistObject(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_Vector_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Vector, aid, keepold)
-                              : do_alias(tab_Epetra_Vector, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_Vector> robj = getConst<Epetra_Vector>(aid);
+            newid = CEpetra::aliasConstVector(robj);
+        } else {
+            Teuchos::RCP<Epetra_Vector> robj = get<Epetra_Vector>(aid);
+            newid = CEpetra::aliasVector(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_Export_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Export, aid, keepold)
-                              : do_alias(tab_Epetra_Export, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_Export> robj = getConst<Epetra_Export>(aid);
+            newid = CEpetra::aliasConstExport(robj);
+        } else {
+            Teuchos::RCP<Epetra_Export> robj = get<Epetra_Export>(aid);
+            newid = CEpetra::aliasExport(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_Map_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Map, aid, keepold)
-                              : do_alias(tab_Epetra_Map, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_Map> robj = getConst<Epetra_Map>(aid);
+            newid = CEpetra::aliasConstMap(robj);
+        } else {
+            Teuchos::RCP<Epetra_Map> robj = get<Epetra_Map>(aid);
+            newid = CEpetra::aliasMap(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_BlockMap_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_BlockMap, aid, keepold)
-                              : do_alias(tab_Epetra_BlockMap, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_BlockMap> robj = getConst<Epetra_BlockMap>(aid);
+            newid = CEpetra::aliasConstBlockMap(robj);
+        } else {
+            Teuchos::RCP<Epetra_BlockMap> robj = get<Epetra_BlockMap>(aid);
+            newid = CEpetra::aliasBlockMap(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_Import_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Import, aid, keepold)
-                              : do_alias(tab_Epetra_Import, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_Import> robj = getConst<Epetra_Import>(aid);
+            newid = CEpetra::aliasConstImport(robj);
+        } else {
+            Teuchos::RCP<Epetra_Import> robj = get<Epetra_Import>(aid);
+            newid = CEpetra::aliasImport(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_Time_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_Time, aid, keepold)
-                              : do_alias(tab_Epetra_Time, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_Time> robj = getConst<Epetra_Time>(aid);
+            newid = CEpetra::aliasConstTime(robj);
+        } else {
+            Teuchos::RCP<Epetra_Time> robj = get<Epetra_Time>(aid);
+            newid = CEpetra::aliasTime(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_JadMatrix_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_JadMatrix, aid, keepold)
-                              : do_alias(tab_Epetra_JadMatrix, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_JadMatrix> robj = getConst<Epetra_JadMatrix>(aid);
+            newid = CEpetra::aliasConstJadMatrix(robj);
+        } else {
+            Teuchos::RCP<Epetra_JadMatrix> robj = get<Epetra_JadMatrix>(aid);
+            newid = CEpetra::aliasJadMatrix(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_LinearProblem_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_LinearProblem, aid, keepold)
-                              : do_alias(tab_Epetra_LinearProblem, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_LinearProblem> robj = getConst<Epetra_LinearProblem>(aid);
+            newid = CEpetra::aliasConstLinearProblem(robj);
+        } else {
+            Teuchos::RCP<Epetra_LinearProblem> robj = get<Epetra_LinearProblem>(aid);
+            newid = CEpetra::aliasLinearProblem(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_LAPACK_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_LAPACK, aid, keepold)
-                              : do_alias(tab_Epetra_LAPACK, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_LAPACK> robj = getConst<Epetra_LAPACK>(aid);
+            newid = CEpetra::aliasConstLAPACK(robj);
+        } else {
+            Teuchos::RCP<Epetra_LAPACK> robj = get<Epetra_LAPACK>(aid);
+            newid = CEpetra::aliasLAPACK(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Teuchos_ParameterList_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Teuchos_ParameterList, aid, keepold)
-                              : do_alias(tab_Teuchos_ParameterList, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Teuchos::ParameterList> robj = getConst<Teuchos::ParameterList>(aid);
+            newid = CTeuchos::aliasConstParameterList(robj);
+        } else {
+            Teuchos::RCP<Teuchos::ParameterList> robj = get<Teuchos::ParameterList>(aid);
+            newid = CTeuchos::aliasParameterList(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
 #ifdef HAVE_CTRILINOS_AMESOS
     case CT_Amesos_BaseSolver_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Amesos_BaseSolver, aid, keepold)
-                              : do_alias(tab_Amesos_BaseSolver, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Amesos_BaseSolver> robj = getConst<Amesos_BaseSolver>(aid);
+            newid = CAmesos::aliasConstBaseSolver(robj);
+        } else {
+            Teuchos::RCP<Amesos_BaseSolver> robj = get<Amesos_BaseSolver>(aid);
+            newid = CAmesos::aliasBaseSolver(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
 #endif /* HAVE_CTRILINOS_AMESOS */
     case CT_Epetra_FECrsMatrix_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_FECrsMatrix, aid, keepold)
-                              : do_alias(tab_Epetra_FECrsMatrix, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_FECrsMatrix> robj = getConst<Epetra_FECrsMatrix>(aid);
+            newid = CEpetra::aliasConstFECrsMatrix(robj);
+        } else {
+            Teuchos::RCP<Epetra_FECrsMatrix> robj = get<Epetra_FECrsMatrix>(aid);
+            newid = CEpetra::aliasFECrsMatrix(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_IntSerialDenseVector_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_IntSerialDenseVector, aid, keepold)
-                              : do_alias(tab_Epetra_IntSerialDenseVector, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_IntSerialDenseVector> robj = getConst<Epetra_IntSerialDenseVector>(aid);
+            newid = CEpetra::aliasConstIntSerialDenseVector(robj);
+        } else {
+            Teuchos::RCP<Epetra_IntSerialDenseVector> robj = get<Epetra_IntSerialDenseVector>(aid);
+            newid = CEpetra::aliasIntSerialDenseVector(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
     case CT_Epetra_SerialDenseMatrix_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Epetra_SerialDenseMatrix, aid, keepold)
-                              : do_alias(tab_Epetra_SerialDenseMatrix, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_SerialDenseMatrix> robj = getConst<Epetra_SerialDenseMatrix>(aid);
+            newid = CEpetra::aliasConstSerialDenseMatrix(robj);
+        } else {
+            Teuchos::RCP<Epetra_SerialDenseMatrix> robj = get<Epetra_SerialDenseMatrix>(aid);
+            newid = CEpetra::aliasSerialDenseMatrix(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
 #ifdef HAVE_CTRILINOS_AZTECOO
     case CT_AztecOO_StatusTest_ID:
-        newid = (aid.is_const ? do_alias_const(tab_AztecOO_StatusTest, aid, keepold)
-                              : do_alias(tab_AztecOO_StatusTest, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const AztecOO_StatusTest> robj = getConst<AztecOO_StatusTest>(aid);
+            newid = CAztecOO::aliasConstStatusTest(robj);
+        } else {
+            Teuchos::RCP<AztecOO_StatusTest> robj = get<AztecOO_StatusTest>(aid);
+            newid = CAztecOO::aliasStatusTest(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
 #ifdef HAVE_CTRILINOS_AZTECOO
     case CT_AztecOO_StatusTestCombo_ID:
-        newid = (aid.is_const ? do_alias_const(tab_AztecOO_StatusTestCombo, aid, keepold)
-                              : do_alias(tab_AztecOO_StatusTestCombo, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const AztecOO_StatusTestCombo> robj = getConst<AztecOO_StatusTestCombo>(aid);
+            newid = CAztecOO::aliasConstStatusTestCombo(robj);
+        } else {
+            Teuchos::RCP<AztecOO_StatusTestCombo> robj = get<AztecOO_StatusTestCombo>(aid);
+            newid = CAztecOO::aliasStatusTestCombo(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
 #ifdef HAVE_CTRILINOS_AZTECOO
     case CT_AztecOO_StatusTestMaxIters_ID:
-        newid = (aid.is_const ? do_alias_const(tab_AztecOO_StatusTestMaxIters, aid, keepold)
-                              : do_alias(tab_AztecOO_StatusTestMaxIters, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const AztecOO_StatusTestMaxIters> robj = getConst<AztecOO_StatusTestMaxIters>(aid);
+            newid = CAztecOO::aliasConstStatusTestMaxIters(robj);
+        } else {
+            Teuchos::RCP<AztecOO_StatusTestMaxIters> robj = get<AztecOO_StatusTestMaxIters>(aid);
+            newid = CAztecOO::aliasStatusTestMaxIters(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
 #ifdef HAVE_CTRILINOS_AZTECOO
     case CT_AztecOO_StatusTestResNorm_ID:
-        newid = (aid.is_const ? do_alias_const(tab_AztecOO_StatusTestResNorm, aid, keepold)
-                              : do_alias(tab_AztecOO_StatusTestResNorm, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const AztecOO_StatusTestResNorm> robj = getConst<AztecOO_StatusTestResNorm>(aid);
+            newid = CAztecOO::aliasConstStatusTestResNorm(robj);
+        } else {
+            Teuchos::RCP<AztecOO_StatusTestResNorm> robj = get<AztecOO_StatusTestResNorm>(aid);
+            newid = CAztecOO::aliasStatusTestResNorm(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
 #endif /* HAVE_CTRILINOS_AZTECOO */
 #ifdef HAVE_CTRILINOS_IFPACK
     case CT_Ifpack_Preconditioner_ID:
-        newid = (aid.is_const ? do_alias_const(tab_Ifpack_Preconditioner, aid, keepold)
-                              : do_alias(tab_Ifpack_Preconditioner, aid, keepold));
+        if (aid.is_const) {
+            Teuchos::RCP<const Ifpack_Preconditioner> robj = getConst<Ifpack_Preconditioner>(aid);
+            newid = CIfpack::aliasConstPreconditioner(robj);
+        } else {
+            Teuchos::RCP<Ifpack_Preconditioner> robj = get<Ifpack_Preconditioner>(aid);
+            newid = CIfpack::aliasPreconditioner(robj);
+        }
+        if (!keepold) remove(&aid);
         break;
 #endif /* HAVE_CTRILINOS_IFPACK */
     default:
@@ -434,190 +558,6 @@ CTrilinos_Universal_ID_t TableRepos::alias(
     }
 
     return newid;
-}
-
-void TableRepos::remove(CTrilinos_Universal_ID_t * aid)
-{
-    switch (aid->table) {
-    case CT_Epetra_Distributor_ID:
-        tab_Epetra_Distributor.remove(aid);
-        break;
-    case CT_Epetra_SerialComm_ID:
-        tab_Epetra_SerialComm.remove(aid);
-        break;
-    case CT_Epetra_BLAS_ID:
-        tab_Epetra_BLAS.remove(aid);
-        break;
-    case CT_Epetra_Comm_ID:
-        tab_Epetra_Comm.remove(aid);
-        break;
-    case CT_Epetra_Operator_ID:
-        tab_Epetra_Operator.remove(aid);
-        break;
-    case CT_Epetra_MultiVector_ID:
-        tab_Epetra_MultiVector.remove(aid);
-        break;
-    case CT_Epetra_OffsetIndex_ID:
-        tab_Epetra_OffsetIndex.remove(aid);
-        break;
-    case CT_Epetra_Object_ID:
-        tab_Epetra_Object.remove(aid);
-        break;
-    case CT_Epetra_RowMatrix_ID:
-        tab_Epetra_RowMatrix.remove(aid);
-        break;
-    case CT_Epetra_CompObject_ID:
-        tab_Epetra_CompObject.remove(aid);
-        break;
-    case CT_Epetra_Directory_ID:
-        tab_Epetra_Directory.remove(aid);
-        break;
-    case CT_Epetra_Flops_ID:
-        tab_Epetra_Flops.remove(aid);
-        break;
-    case CT_Epetra_SrcDistObject_ID:
-        tab_Epetra_SrcDistObject.remove(aid);
-        break;
-#ifdef HAVE_MPI
-    case CT_Epetra_MpiComm_ID:
-        tab_Epetra_MpiComm.remove(aid);
-        break;
-#endif /* HAVE_MPI */
-    case CT_Epetra_CrsMatrix_ID:
-        tab_Epetra_CrsMatrix.remove(aid);
-        break;
-    case CT_Epetra_CrsGraph_ID:
-        tab_Epetra_CrsGraph.remove(aid);
-        break;
-    case CT_Epetra_DistObject_ID:
-        tab_Epetra_DistObject.remove(aid);
-        break;
-    case CT_Epetra_Vector_ID:
-        tab_Epetra_Vector.remove(aid);
-        break;
-    case CT_Epetra_Export_ID:
-        tab_Epetra_Export.remove(aid);
-        break;
-    case CT_Epetra_Map_ID:
-        tab_Epetra_Map.remove(aid);
-        break;
-    case CT_Epetra_BlockMap_ID:
-        tab_Epetra_BlockMap.remove(aid);
-        break;
-    case CT_Epetra_Import_ID:
-        tab_Epetra_Import.remove(aid);
-        break;
-    case CT_Epetra_Time_ID:
-        tab_Epetra_Time.remove(aid);
-        break;
-    case CT_Epetra_JadMatrix_ID:
-        tab_Epetra_JadMatrix.remove(aid);
-        break;
-    case CT_Epetra_LinearProblem_ID:
-        tab_Epetra_LinearProblem.remove(aid);
-        break;
-    case CT_Epetra_LAPACK_ID:
-        tab_Epetra_LAPACK.remove(aid);
-        break;
-    case CT_Teuchos_ParameterList_ID:
-        tab_Teuchos_ParameterList.remove(aid);
-        break;
-#ifdef HAVE_CTRILINOS_AMESOS
-    case CT_Amesos_BaseSolver_ID:
-        tab_Amesos_BaseSolver.remove(aid);
-        break;
-#endif /* HAVE_CTRILINOS_AMESOS */
-    case CT_Epetra_FECrsMatrix_ID:
-        tab_Epetra_FECrsMatrix.remove(aid);
-        break;
-    case CT_Epetra_IntSerialDenseVector_ID:
-        tab_Epetra_IntSerialDenseVector.remove(aid);
-        break;
-    case CT_Epetra_SerialDenseMatrix_ID:
-        tab_Epetra_SerialDenseMatrix.remove(aid);
-        break;
-#ifdef HAVE_CTRILINOS_AZTECOO
-    case CT_AztecOO_StatusTest_ID:
-        tab_AztecOO_StatusTest.remove(aid);
-        break;
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    case CT_AztecOO_StatusTestCombo_ID:
-        tab_AztecOO_StatusTestCombo.remove(aid);
-        break;
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    case CT_AztecOO_StatusTestMaxIters_ID:
-        tab_AztecOO_StatusTestMaxIters.remove(aid);
-        break;
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    case CT_AztecOO_StatusTestResNorm_ID:
-        tab_AztecOO_StatusTestResNorm.remove(aid);
-        break;
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_IFPACK
-    case CT_Ifpack_Preconditioner_ID:
-        tab_Ifpack_Preconditioner.remove(aid);
-        break;
-#endif /* HAVE_CTRILINOS_IFPACK */
-    default:
-        throw CTrilinosInvalidTypeError("invalid table id");
-    }
-}
-
-void TableRepos::purgeAll()
-{
-    tab_Epetra_Distributor.purge();
-    tab_Epetra_SerialComm.purge();
-    tab_Epetra_BLAS.purge();
-    tab_Epetra_Comm.purge();
-    tab_Epetra_Operator.purge();
-    tab_Epetra_MultiVector.purge();
-    tab_Epetra_OffsetIndex.purge();
-    tab_Epetra_Object.purge();
-    tab_Epetra_RowMatrix.purge();
-    tab_Epetra_CompObject.purge();
-    tab_Epetra_Directory.purge();
-    tab_Epetra_Flops.purge();
-    tab_Epetra_SrcDistObject.purge();
-#ifdef HAVE_MPI
-    tab_Epetra_MpiComm.purge();
-#endif /* HAVE_MPI */
-    tab_Epetra_CrsMatrix.purge();
-    tab_Epetra_CrsGraph.purge();
-    tab_Epetra_DistObject.purge();
-    tab_Epetra_Vector.purge();
-    tab_Epetra_Export.purge();
-    tab_Epetra_Map.purge();
-    tab_Epetra_BlockMap.purge();
-    tab_Epetra_Import.purge();
-    tab_Epetra_Time.purge();
-    tab_Epetra_JadMatrix.purge();
-    tab_Epetra_LinearProblem.purge();
-    tab_Epetra_LAPACK.purge();
-    tab_Teuchos_ParameterList.purge();
-#ifdef HAVE_CTRILINOS_AMESOS
-    tab_Amesos_BaseSolver.purge();
-#endif /* HAVE_CTRILINOS_AMESOS */
-    tab_Epetra_FECrsMatrix.purge();
-    tab_Epetra_IntSerialDenseVector.purge();
-    tab_Epetra_SerialDenseMatrix.purge();
-#ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTest.purge();
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTestCombo.purge();
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTestMaxIters.purge();
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_AZTECOO
-    tab_AztecOO_StatusTestResNorm.purge();
-#endif /* HAVE_CTRILINOS_AZTECOO */
-#ifdef HAVE_CTRILINOS_IFPACK
-    tab_Ifpack_Preconditioner.purge();
-#endif /* HAVE_CTRILINOS_IFPACK */
 }
 
 bool TableRepos::typeCheck(CTrilinos_Universal_ID_t aid, CTrilinos_Table_ID_t type)

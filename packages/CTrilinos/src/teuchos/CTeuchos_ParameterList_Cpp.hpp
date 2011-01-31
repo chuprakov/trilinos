@@ -30,10 +30,11 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
 #ifndef CTEUCHOS_PARAMETERLIST_CPP_HPP
 #define CTEUCHOS_PARAMETERLIST_CPP_HPP
+
+
+#include "CTrilinos_config.h"
 
 
 #include "CTrilinos_enums.h"
@@ -81,9 +82,21 @@ storeConstParameterList( const Teuchos::ParameterList *pobj );
 void
 removeParameterList( CT_Teuchos_ParameterList_ID_t *id );
 
+/* remove Teuchos::ParameterList from table using CTrilinos_Universal_ID_t */
+void
+removeParameterList( CTrilinos_Universal_ID_t *aid );
+
 /* purge Teuchos::ParameterList table */
 void
 purgeParameterList(  );
+
+/* store Teuchos::ParameterList in non-const table */
+CTrilinos_Universal_ID_t
+aliasParameterList( const Teuchos::RCP< Teuchos::ParameterList > & robj );
+
+/* store const Teuchos::ParameterList in const table */
+CTrilinos_Universal_ID_t
+aliasConstParameterList( const Teuchos::RCP< const Teuchos::ParameterList > & robj );
 
 } // namespace CTeuchos
 

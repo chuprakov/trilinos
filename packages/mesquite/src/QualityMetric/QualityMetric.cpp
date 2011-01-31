@@ -57,6 +57,48 @@ void QualityMetric::get_single_pass( PatchData& pd,
 }
 
 
+static inline 
+double get_delta_C( const PatchData& pd,
+                    const std::vector<size_t>& indices,
+                    MsqError& err )
+{
+  if (indices.empty()) {
+    MSQ_SETERR(err)(MsqError::INVALID_ARG);
+    return 0.0;
+  }
+
+  std::vector<size_t>::const_iterator beg, iter, iter2, end;
+  
+  std::vector<size_t> tmp_vect;
+  if (indices.size() == 1u) {
+    pd.get_adjacent_vertex_indices( indices.front(), tmp_vect, err );
+    MSQ_ERRZERO(err);
+    assert(!tmp_vect.empty());
+    tmp_vect.push_back( indices.front() );
+    beg = tmp_vect.begin();
+    end = tmp_vect.end();
+  }
+  else {
+    beg = indices.begin();
+    end = indices.end();
+  }
+  
+  double min_dist_sqr = HUGE_VAL, sum_dist_sqr = 0.0;
+  for (iter = beg; iter != end; ++iter) {
+    for (iter2 = iter+1; iter2 != end; ++iter2) {
+      Vector3D diff = pd.vertex_by_index(*iter);
+      diff -= pd.vertex_by_index(*iter2);
+      double dist_sqr = diff % diff;
+      if (dist_sqr < min_dist_sqr)
+        min_dist_sqr = dist_sqr;
+      sum_dist_sqr += dist_sqr;
+    }
+  }
+  
+  return 3e-6*sqrt(min_dist_sqr) + 5e-7*sqrt(sum_dist_sqr/(end-beg));
+}
+    
+
 bool QualityMetric::evaluate_with_gradient( PatchData& pd,
                               size_t handle,
                               double& value,
@@ -68,9 +110,19 @@ bool QualityMetric::evaluate_with_gradient( PatchData& pd,
   bool valid = evaluate_with_indices( pd, handle, value, indices, err);
   if (MSQ_CHKERR(err) || !valid)
     return false;
+  if (indices.empty())
+    return true;
 
-  const double delta_C = 10e-6;
-  const double delta_inv_C = 1. / delta_C; // avoids division in the loop. 
+    // get initial pertubation amount
+  double delta_C = finiteDiffEps;
+  if (!haveFiniteDiffEps) {
+    delta_C = get_delta_C( pd, indices, err ); MSQ_ERRZERO(err);
+    if (keepFiniteDiffEps) {
+      finiteDiffEps = delta_C;
+      haveFiniteDiffEps = true;
+    }
+  }
+  const double delta_inv_C = 1.0/delta_C;
   const int reduction_limit = 15;
 
   gradient.resize( indices.size() );
@@ -128,14 +180,31 @@ bool QualityMetric::evaluate_with_Hessian( PatchData& pd,
                               std::vector<Matrix3D>& Hessian,
                               MsqError& err )
 {
-  const double delta_C =  10e-6;
-  const double delta_inv_C = 1./delta_C;
-  const int reduction_limit = 15;
-  
   indices.clear();
+  gradient.clear();
+  keepFiniteDiffEps = true;
   bool valid = evaluate_with_gradient( pd, handle, value, indices, gradient, err );
-  if (MSQ_CHKERR(err) || !valid)
+  keepFiniteDiffEps = false;
+  if (MSQ_CHKERR(err) || !valid) {
+    haveFiniteDiffEps = false;
     return false;
+  }
+  if (indices.empty()){
+    haveFiniteDiffEps = false;
+    return true;
+  }
+
+    // get initial pertubation amount
+  double delta_C;
+  if (haveFiniteDiffEps) {
+    delta_C = finiteDiffEps;
+  }
+  else {
+    delta_C = get_delta_C( pd, indices, err ); MSQ_ERRZERO(err);
+  }
+  assert(delta_C < 1e30);
+  const double delta_inv_C = 1.0/delta_C;
+  const int reduction_limit = 15;
 
   std::vector<Vector3D> temp_gradient( indices.size() );
   const int num_hess = indices.size() * (indices.size() + 1) / 2;
@@ -161,6 +230,7 @@ bool QualityMetric::evaluate_with_Hessian( PatchData& pd,
         if (++counter >= reduction_limit) {
           MSQ_SETERR(err)("Algorithm did not successfully compute element's "
                            "Hessian.\n",MsqError::INTERNAL_ERROR);
+          haveFiniteDiffEps = false;
           return false;
         }
         
@@ -185,6 +255,7 @@ bool QualityMetric::evaluate_with_Hessian( PatchData& pd,
       }
     }  // for(j)
   } // for(indices)
+  haveFiniteDiffEps = false;
   return true;
 }
 

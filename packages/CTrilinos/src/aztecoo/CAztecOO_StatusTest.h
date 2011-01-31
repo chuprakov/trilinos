@@ -30,12 +30,6 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#include "CTrilinos_config.h"
-
-
-#ifdef HAVE_CTRILINOS_AZTECOO
-
-
 
 /*! @file CAztecOO_StatusTest.h
  * @brief Wrappers for AztecOO_StatusTest */
@@ -46,7 +40,10 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifndef CAZTECOO_STATUSTEST_H
 #define CAZTECOO_STATUSTEST_H
 
+#ifdef HAVE_CTRILINOS_AZTECOO
 
+
+#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 
@@ -115,8 +112,7 @@ CT_AztecOO_StatusType_E_t AztecOO_StatusTest_GetStatus (
 #endif
 
 
-#endif /* CAZTECOO_STATUSTEST_H */
-
 #endif /* HAVE_CTRILINOS_AZTECOO */
 
+#endif /* CAZTECOO_STATUSTEST_H */
 

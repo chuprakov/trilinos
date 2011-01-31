@@ -27,8 +27,11 @@
 // @HEADER
 #ifndef OPTIKA_GUI_HPP_
 #define OPTIKA_GUI_HPP_
-#include "Optika_DependencySheet.hpp"
+
+#include "Teuchos_DependencySheet.hpp"
 #include "Optika_metawindow.hpp"
+
+
 namespace Optika{
 	/**
 	 * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
@@ -56,7 +59,7 @@ namespace Optika{
 	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
 	 * ParameterList.
 	 */
-	void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet);
+	void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet);
 
 	/**
 	 * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
@@ -68,7 +71,7 @@ namespace Optika{
 	 * ParameterList.
 	 * @param customFunc Custom function to run whenever the user clicks the submit button.
 	 */
-	void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
+	void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
 
 /**
  * A class that allows the user to create and customize their Optika GUI.
@@ -89,7 +92,7 @@ public:
 	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
 	 * ParameterList.
 	 */
-	OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet);
+	OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet);
 
 	/**
 	 * Runs the GUI and gets the user input.
@@ -176,7 +179,7 @@ private:
 	/**
 	 * A sheet listing any dependencies between parameters in the validParameters
 	 */
-	Teuchos::RCP<DependencySheet> dependencySheet;
+	Teuchos::RCP<Teuchos::DependencySheet> dependencySheet;
 
 	/**
 	 * A string containing the window title.

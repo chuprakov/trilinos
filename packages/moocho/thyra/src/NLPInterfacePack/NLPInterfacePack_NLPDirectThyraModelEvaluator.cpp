@@ -337,49 +337,48 @@ void NLPDirectThyraModelEvaluator::calc_point(
     const int nind = thyra_N_->domain()->dim();
     RCP<Thyra::MultiVectorBase<value_type> > 
       thyra_cN = Thyra::createMembers(thyra_N_->range(),nind+1);
-    Thyra::assign(&*thyra_cN->col(0),*thyra_c);
-    Thyra::assign(&*thyra_cN->subView(Teuchos::Range1D(1,nind)),*thyra_N_);
+    Thyra::assign(thyra_cN->col(0).ptr(), *thyra_c);
+    Thyra::assign(thyra_cN->subView(Teuchos::Range1D(1,nind)).ptr(), *thyra_N_);
     RCP<Thyra::MultiVectorBase<value_type> > 
       thyra_pyD = Thyra::createMembers(thyra_D->range(),nind+1);
-    Thyra::assign(&*thyra_pyD,0.0);
+    Thyra::assign(thyra_pyD.ptr(), 0.0);
     Thyra::SolveStatus<value_type>
-      solveStatus = Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_cN,&*thyra_pyD);
+      solveStatus = Thyra::solve(*thyra_C_, Thyra::NOTRANS, *thyra_cN, thyra_pyD.ptr());
     if(out.get() && trace) {
       *out
         << "\nsolve status:\n";
       OSTab(out).o() << solveStatus;
     }
-    Thyra::scale(-1.0,&*thyra_pyD);
-    Thyra::assign(&*thyra_py,*thyra_pyD->col(0));
-    Thyra::assign(&*thyra_D,*thyra_pyD->subView(Teuchos::Range1D(1,nind)));
+    Thyra::scale(-1.0, thyra_pyD.ptr());
+    Thyra::assign(thyra_py.ptr(), *thyra_pyD->col(0));
+    Thyra::assign(thyra_D.ptr(), *thyra_pyD->subView(Teuchos::Range1D(1,nind)));
   }
   else {
     // Solve for py or D
     if( py ) {
       if(out.get() && trace)
         *out << "\nSolving C*py = -c ...\n";
-      Thyra::assign(&*thyra_py,0.0);
-      Thyra::SolveStatus<value_type>
-        solveStatus = Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_c,&*thyra_py);
-      if(out.get() && trace) {
-        *out
-          << "\nsolve status:\n";
+      Thyra::assign(thyra_py.ptr(), 0.0);
+      Thyra::SolveStatus<value_type> solveStatus =
+        Thyra::solve<value_type>(*thyra_C_, Thyra::NOTRANS, *thyra_c, thyra_py.ptr());
+      if (nonnull(out) && trace) {
+        *out << "\nsolve status:\n";
         OSTab(out).o() << solveStatus;
       }
-      Thyra::Vt_S(&*thyra_py,-1.0);
+      Thyra::Vt_S(thyra_py.ptr(), -1.0);
     }
     if( D || rGf ) {
       if(out.get() && trace)
         *out << "\nSolving C*D = -N ...\n";
-      Thyra::assign(&*thyra_D,0.0);
+      Thyra::assign(thyra_D.ptr(), 0.0);
       Thyra::SolveStatus<value_type>
-        solveStatus = Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_N_,&*thyra_D);
+        solveStatus = Thyra::solve(*thyra_C_, Thyra::NOTRANS, *thyra_N_, thyra_D.ptr());
       if(out.get() && trace) {
         *out
           << "\nsolve status:\n";
         OSTab(out).o() << solveStatus;
       }
-      Thyra::scale(-1.0,&*thyra_D);
+      Thyra::scale(-1.0, thyra_D.ptr());
     }
   }
   if(thyra_py.get()) {
@@ -402,25 +401,25 @@ void NLPDirectThyraModelEvaluator::calc_point(
       //
       AbstractLinAlgPack::VectorDenseMutableEncap d_rGf(*rGf);
       TVecPtr e_i = createMember(model_->get_p_space(p_idx_));
-      Thyra::assign(&*e_i,0.0);
+      Thyra::assign(e_i.ptr(), 0.0);
       MEB::InArgs<value_type> dir = model_->createInArgs();
       dir.set_p(p_idx_,e_i);
       MEB::OutArgs<value_type> bfunc = model_->createOutArgs();
       if(f) {
         bfunc.set_g(g_idx_,createMember(model_->get_g_space(g_idx_)));
-        Thyra::set_ele(0,*f,&*bfunc.get_g(g_idx_));
+        Thyra::set_ele(0, *f, bfunc.get_g(g_idx_).ptr());
       }
       MEB::OutArgs<value_type> var = model_->createOutArgs();
       var.set_g(g_idx_,createMember(model_->get_g_space(g_idx_)));
       const int np = var_indep.size();
       for( int i = 0; i < np; ++i ) {
-        set_ele(i,1.0,&*e_i);
+        set_ele(i, 1.0, e_i.ptr());
         dir.set_x(thyra_D->col(i));
         objDirecFiniteDiffCalculator_->calcVariations(
           *model_,model_inArgs,dir,bfunc,var
           );
         dir.set_x(Teuchos::null);
-        Thyra::set_ele(i,0.0,&*e_i);
+        Thyra::set_ele(i, 0.0, e_i.ptr());
         d_rGf()[i] = Thyra::get_ele(*var.get_g(g_idx_),0);
       }
     }

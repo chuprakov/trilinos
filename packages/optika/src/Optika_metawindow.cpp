@@ -132,12 +132,12 @@ MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, voi
 	initilization(customFunc);
 }
 
-MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet, QString fileName){
+MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, QString fileName){
 	model = new TreeModel(validParameters, dependencySheet, fileName);
 	initilization();
 } 
 
-MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>), QString fileName){
+MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>), QString fileName){
 	model = new TreeModel(validParameters, dependencySheet, fileName);
 	initilization(customFunc);
 } 

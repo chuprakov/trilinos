@@ -35,9 +35,29 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_enums.h"
 #include "CEpetra_Distributor.h"
 #include "CEpetra_Distributor_Cpp.hpp"
+#include "Epetra_Distributor.h"
 #include "Teuchos_RCP.hpp"
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
+#include "CTrilinos_TableRepos.hpp"
+
+
+namespace {
+
+
+using Teuchos::RCP;
+using CTrilinos::Table;
+
+
+/* table to hold objects of type Epetra_Distributor */
+Table<Epetra_Distributor>& tableOfDistributors()
+{
+    static Table<Epetra_Distributor> loc_tableOfDistributors(CT_Epetra_Distributor_ID);
+    return loc_tableOfDistributors;
+}
+
+
+} // namespace
 
 
 //
@@ -174,6 +194,125 @@ int Epetra_Distributor_DoReversePosts_VarLen (
 
 } // extern "C"
 
+
+//
+// Definitions from CEpetra_Distributor_Cpp.hpp
+//
+
+
+/* get Epetra_Distributor from non-const table using CT_Epetra_Distributor_ID */
+const Teuchos::RCP<Epetra_Distributor>
+CEpetra::getDistributor( CT_Epetra_Distributor_ID_t id )
+{
+    if (tableOfDistributors().isType(id.table))
+        return tableOfDistributors().get<Epetra_Distributor>(
+        CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::get<Epetra_Distributor>(
+        CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(id));
+}
+
+/* get Epetra_Distributor from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_Distributor>
+CEpetra::getDistributor( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfDistributors().isType(id.table))
+        return tableOfDistributors().get<Epetra_Distributor>(id);
+    else
+        return CTrilinos::TableRepos::get<Epetra_Distributor>(id);
+}
+
+/* get const Epetra_Distributor from either the const or non-const table
+ * using CT_Epetra_Distributor_ID */
+const Teuchos::RCP<const Epetra_Distributor>
+CEpetra::getConstDistributor( CT_Epetra_Distributor_ID_t id )
+{
+    if (tableOfDistributors().isType(id.table))
+        return tableOfDistributors().getConst<Epetra_Distributor>(
+        CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(id));
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_Distributor>(
+        CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(id));
+}
+
+/* get const Epetra_Distributor from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_Distributor>
+CEpetra::getConstDistributor( CTrilinos_Universal_ID_t id )
+{
+    if (tableOfDistributors().isType(id.table))
+        return tableOfDistributors().getConst<Epetra_Distributor>(id);
+    else
+        return CTrilinos::TableRepos::getConst<Epetra_Distributor>(id);
+}
+
+/* store Epetra_Distributor (owned) in non-const table */
+CT_Epetra_Distributor_ID_t
+CEpetra::storeNewDistributor( Epetra_Distributor *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Distributor_ID_t>(
+        tableOfDistributors().store<Epetra_Distributor>(pobj, true));
+}
+
+/* store Epetra_Distributor in non-const table */
+CT_Epetra_Distributor_ID_t
+CEpetra::storeDistributor( Epetra_Distributor *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Distributor_ID_t>(
+        tableOfDistributors().store<Epetra_Distributor>(pobj, false));
+}
+
+/* store const Epetra_Distributor in const table */
+CT_Epetra_Distributor_ID_t
+CEpetra::storeConstDistributor( const Epetra_Distributor *pobj )
+{
+    return CTrilinos::concreteType<CT_Epetra_Distributor_ID_t>(
+        tableOfDistributors().store<Epetra_Distributor>(pobj, false));
+}
+
+/* remove Epetra_Distributor from table using CT_Epetra_Distributor_ID */
+void
+CEpetra::removeDistributor( CT_Epetra_Distributor_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_Distributor_ID_t>(*id);
+    if (tableOfDistributors().isType(aid.table))
+        tableOfDistributors().remove(&aid);
+    else
+        CTrilinos::TableRepos::remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_Distributor_ID_t>(aid);
+}
+
+/* remove Epetra_Distributor from table using CTrilinos_Universal_ID_t */
+void
+CEpetra::removeDistributor( CTrilinos_Universal_ID_t *aid )
+{
+    if (tableOfDistributors().isType(aid->table))
+        tableOfDistributors().remove(aid);
+    else
+        CTrilinos::TableRepos::remove(aid);
+}
+
+/* purge Epetra_Distributor table */
+void
+CEpetra::purgeDistributor(  )
+{
+    tableOfDistributors().purge();
+}
+
+/* store Epetra_Distributor in non-const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasDistributor( const Teuchos::RCP< Epetra_Distributor > & robj )
+{
+    return tableOfDistributors().alias(robj);
+}
+
+/* store const Epetra_Distributor in const table */
+CTrilinos_Universal_ID_t
+CEpetra::aliasConstDistributor( const Teuchos::RCP< const Epetra_Distributor > & robj )
+{
+    return tableOfDistributors().alias(robj);
+}
 
 
 
