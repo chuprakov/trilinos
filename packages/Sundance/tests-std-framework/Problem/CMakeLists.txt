@@ -43,6 +43,7 @@ SET(SerialTests
   SecondOrderFloquet 
   MixedTest
   Poisson2D_HN_Nitsch
+  Stokes_Chanel_Nitsche_line_obstic
 )
 
 
@@ -64,7 +65,6 @@ SET(MPITests
              AdvectionDiffusion2D 
              LinearVariationalTest 
              OptPoisson1D
-             SimpleModelEvalTest 
              VorticityStokes2D 
              VorticityNavierStokes2D
              SpectralPoisson1D 

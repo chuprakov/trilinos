@@ -42,17 +42,8 @@
 #include "SundanceConfig.h"
 
 
-namespace Teuchos {}
 
-namespace Sundance 
-{
-  typedef Teuchos::Ordinal OrdType; 
-}
 
-namespace TSFExtended 
-{
-  typedef Sundance::OrdType OrdType; 
-}
 
 
 

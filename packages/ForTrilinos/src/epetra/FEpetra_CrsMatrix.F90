@@ -37,7 +37,7 @@
 
 module FEpetra_CrsMatrix
   use ForTrilinos_enums !,only : FT_Epetra_RowMatrix_ID,FT_Epetra_CrsMatrix_ID_t,ForTrilinos_Universal_ID_t,
-                        !        FT_boolean_t,FT_FALSE,FT_TRUE
+                        !        FT_Epetra_Map_ID_t,FT_boolean_t,FT_FALSE,FT_TRUE
   use ForTrilinos_hermetic,only:hermetic
   use ForTrilinos_enum_wrappers
   use ForTrilinos_table_man
@@ -226,7 +226,7 @@ contains
     use ForTrilinos_enums    ,only: FT_Epetra_CrsMatrix_ID,ForTrilinos_Universal_ID_t
     use ForTrilinos_table_man,only: CT_Alias
     type(Fortrilinos_Universal_ID_t) ,intent(in) :: generic_id
-    type(Fortrilinos_Universal_ID_t) ,pointer    :: alias_id
+    type(Fortrilinos_Universal_ID_t) ,pointer    :: alias_id=>null()
     integer(c_int) :: status
     type(error) :: ierr
     if (.not.associated(alias_id)) then
@@ -258,7 +258,7 @@ contains
     use ForTrilinos_enums ,only : ForTrilinos_Universal_ID_t,FT_Epetra_CrsMatrix_ID_t
     use ,intrinsic :: iso_c_binding ,only: c_ptr,c_f_pointer
     type(c_ptr)                     ,value   :: generic_id
-    type(FT_Epetra_CrsMatrix_ID_t) ,pointer :: local_ptr
+    type(FT_Epetra_CrsMatrix_ID_t) ,pointer :: local_ptr=>null()
     call c_f_pointer (generic_id, local_ptr)
     degeneralize_EpetraCrsMatrix = local_ptr
    ! ____ Use for ForTrilinos function implementation ______
