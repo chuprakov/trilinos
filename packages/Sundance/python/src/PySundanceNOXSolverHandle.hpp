@@ -1,10 +1,10 @@
 #ifndef PYSUNDANCENOXSOLVERHANDLE_H
 #define PYSUNDANCENOXSOLVERHANDLE_H
 
-#include "TSFNOXSolver.H"
+#include "PlayaNOXSolver.hpp"
 
 
-namespace TSFExtended
+namespace Playa
 {
   class NOXSolverHandle
 
