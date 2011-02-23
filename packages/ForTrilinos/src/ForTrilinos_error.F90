@@ -78,8 +78,8 @@ contains
   end function
 
   subroutine check_success(this)
-   class(error), intent(in) :: this
-   call assert( [this%code==0], [this%error_message] )
+    class(error), intent(in) :: this
+    call assert( [this%code==0], [this%error_message] )
   end subroutine
 
   subroutine deallocate_integer_rank1(garbage,message)

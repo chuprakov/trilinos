@@ -71,7 +71,6 @@ contains
     type(FT_Epetra_Map_ID_t),intent(in) :: id
     from_struct%map_id = id
     from_struct%Epetra_BlockMap=Epetra_BlockMap(from_struct%alias_EpetraBlockMap_ID(from_struct%generalize()))
-    call from_struct%register_self
   end function
 
   ! Original C++ prototype:
@@ -85,10 +84,8 @@ contains
     integer(c_int) ,intent(in) :: IndexBase
     class(Epetra_Comm)         :: comm
     type(FT_Epetra_Map_ID_t) :: from_scratch_id
-    print *,'Epetra_Map%from_scratch: start'
     from_scratch_id = Epetra_Map_Create(Num_GlobalElements,IndexBase,comm%get_EpetraComm_ID())
     from_scratch = from_struct(from_scratch_id)
-    print *,'Epetra_Map%from_scratch: end'
   end function
 
 ! Original C++ prototype:
@@ -149,16 +146,13 @@ contains
     use ForTrilinos_enums    ,only: ForTrilinos_Universal_ID_t, FT_Epetra_Map_ID
     use ForTrilinos_table_man,only: CT_Alias
     type(ForTrilinos_Universal_ID_t) ,intent(in) :: generic_id
-    type(ForTrilinos_Universal_ID_t) ,pointer    :: alias_id=>null()
+    type(ForTrilinos_Universal_ID_t) ,allocatable ,target :: alias_id
     integer(c_int) :: status
     type(error) :: ierr
-    if (.not.associated(alias_id)) then
-      allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_Map_ID),stat=status)
-      ierr=error(status,'FEpetra_Map:alias_EpetraMap_ID')
-      call ierr%check_success()
-    endif
+    allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_Map_ID),stat=status)
+    ierr=error(status,'FEpetra_Map:alias_EpetraMap_ID')
+    call ierr%check_success()
     alias_EpetraMap_ID=degeneralize_EpetraMap(c_loc(alias_id))
-    call deallocate_and_check_error(alias_id,'FEpetra_Map:alias_EpetraMap_ID')
   end function
 
   type(ForTrilinos_Universal_ID_t) function generalize(this)
@@ -184,6 +178,7 @@ contains
     type(FT_Epetra_Map_ID_t) ,pointer :: local_ptr=>null()
     call c_f_pointer (generic_id, local_ptr)
     degeneralize_EpetraMap = local_ptr
+    local_ptr => null()
    ! ____ Use for ForTrilinos function implementation ______
    
    ! ____ Use for CTrilinos function implementation ______
@@ -202,9 +197,7 @@ contains
 
   subroutine ctrilinos_delete_EpetraMap(this)
     class(Epetra_Map),intent(inout) :: this
-    print *,'Epetra_Map%ctrilinos_delete_EpetraMap: start'
     call Epetra_Map_Destroy( this%map_id ) 
-    print *,'Epetra_Map%ctrilinos_delete_EpetraMap: end'
   end subroutine
 
 end module 

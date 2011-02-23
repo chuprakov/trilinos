@@ -43,8 +43,7 @@ module ForTrilinos_universal
   type ,abstract ,extends(hermetic) :: universal
     private
     type(ref_counter) :: counter
-
-    contains
+  contains
     procedure(invalidate_id_interface) , deferred :: invalidate_id 
     procedure, non_overridable :: force_finalize
     procedure, non_overridable :: register_self
