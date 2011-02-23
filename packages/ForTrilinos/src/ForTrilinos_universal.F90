@@ -57,18 +57,16 @@ module ForTrilinos_universal
      end subroutine
   end interface
 
-  contains
+contains
 
   subroutine force_finalize (this)
     class(universal), intent(inout) :: this
-
     call this%counter%release
     call this%invalidate_id
   end subroutine
 
   subroutine register_self (this)
     class(universal), intent(inout) :: this
-
     this%counter = ref_counter(this)
   end subroutine
 end module

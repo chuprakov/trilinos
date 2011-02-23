@@ -131,7 +131,7 @@ contains
   end subroutine
 
   subroutine deallocate_ForTrilinos_Universal_ID_t(garbage,message)
-    type(ForTrilinos_Universal_ID_t) ,pointer,intent(out) :: garbage
+    type(ForTrilinos_Universal_ID_t) ,pointer,intent(inout) :: garbage
     character(len=*) ,intent(in) :: message
     integer(c_int) :: status
     type(error) :: ierr
