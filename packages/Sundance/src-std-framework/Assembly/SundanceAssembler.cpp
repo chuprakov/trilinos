@@ -65,6 +65,7 @@
 #ifndef HAVE_TEUCHOS_EXPLICIT_INSTANTIATION
 #include "PlayaLinearOperatorImpl.hpp"
 #include "PlayaSimpleBlockOpImpl.hpp"
+#include "PlayaDefaultBlockVectorImpl.hpp"
 #endif
 
 
@@ -816,11 +817,15 @@ void Assembler::configureMatrix(LinearOperator<double>& A,
 {
   TimeMonitor timer(configTimer());
   int verb = eqn_->maxWatchFlagSetting("matrix config");
+  Tabs tab;
+  SUNDANCE_MSG1(verb, tab << "in Assembler::configureMatrix()");
   
+
+  SUNDANCE_MSG1(verb,  tab << "before config: A=" << A.description());
   if (matNeedsConfiguration_)
   {
     Tabs tab0;
-    SUNDANCE_MSG1(verb, tab0 << "in Assembler::configureMatrix()");
+
     int nRowBlocks = rowMap_.size();
     int nColBlocks = colMap_.size();
     Array<Array<int> > isNonzero = findNonzeroBlocks();
@@ -854,6 +859,7 @@ void Assembler::configureMatrix(LinearOperator<double>& A,
     SUNDANCE_MSG1(verb,
       tab0 << "Assembler::configureMatrix() not needed, proceeding to configure vector");
   }
+  SUNDANCE_MSG1(verb,  tab << "after config: A=" << A.description());
   configureVector(b);
 }
 
