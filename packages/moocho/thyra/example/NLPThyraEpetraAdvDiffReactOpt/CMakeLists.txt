@@ -6,6 +6,7 @@ SET(EPETRAEXT_GLPAPP_DIR ${PACKAGE_SOURCE_DIR}/../epetraext/example/model_evalua
 
 
 INCLUDE_DIRECTORIES(
+  REQUIRED_DURING_INSTALLATION_TESTING 
   ${PACKAGE_SOURCE_DIR}/../thyra/example/operator_vector
   ${EPETRAEXT_GLPAPP_DIR}
   )
