@@ -7,6 +7,9 @@ namespace Sundance
 {
 using namespace Teuchos;
 
+
+UniformRefinementPair::UniformRefinementPair() {}
+
 UniformRefinementPair::UniformRefinementPair(const MeshType& meshType,
   const Mesh& coarse)
   : meshType_(meshType),
@@ -53,6 +56,8 @@ void UniformRefinementPair::refineTriMesh()
   newEdgeParents_ = Array<int>(numNewEdges, -1);
   newEdgeParallels_ = Array<int>(numNewEdges, -1);
   
+  interiorEdges_ = ArrayOfTuples<int>(numElems, 3);
+
   int newVertLID = 0;
 
   for (int c=0; c<numElems; c++)
@@ -130,6 +135,8 @@ void UniformRefinementPair::refineTriMesh()
       edgeLIDs[s] = coarse_.facetLID(2, c, 1, s, ori);
     }
 
+    int interiorEdgeCount = 0; // initialize to zero
+
     /* make the new elements */
     int elemOwner = coarse_.ownerProcID(2, c);
     int elemLabel = coarse_.label(2, c);
@@ -154,6 +161,12 @@ void UniformRefinementPair::refineTriMesh()
         
         if (newVertIsOnEdge_[v1] && newVertIsOnEdge_[v2]) // edge is interior
         {
+          /* Add to the list of interior edges for this element. This
+           * will only happen once per edge thanks to the newEdgeDone check
+           * above. */
+          TEST_FOR_EXCEPT(interiorEdgeCount >= 3);
+          interiorEdges_.value(c, interiorEdgeCount++) = newEdge;
+          
           /* find the coarse edge parallel to the new interior edge */
           int parEdge = -1;
           for (int i=0; i<3; i++)
@@ -325,6 +338,39 @@ int UniformRefinementPair::check() const
          << setw(12) << parents 
          << setw(12) << parallels
          << setw(12) << coarsePar 
+         << setw(6) << state << endl;
+  }
+
+  cout << endl << endl;
+  cout << "interior edges" << endl;
+  cout << "----------------------------------------" << endl;
+  for (int c=0; c<coarse_.numCells(2); c++)
+  {
+    string state = "GOOD";
+    Array<int> edges(3);
+    for (int i=0; i<3; i++) 
+    {
+      edges[i] = interiorEdges_.value(c,i);
+      int ori;
+      int v1 = fine_.facetLID(1, edges[i], 0, 0, ori);
+      if (!newVertIsOnEdge_[v1]) 
+      {bad++; state="BAD";}
+      int v2 = fine_.facetLID(1, edges[i], 0, 1, ori);
+      if (!newVertIsOnEdge_[v2]) 
+      {bad++; state="BAD";}
+      /* check that the cofacets of this edge are both refinements of
+       * the current coarse cell */
+      Array<int> cofs;
+      fine_.getCofacets(1, edges[i], 2, cofs);
+      if (cofs.size() != 2) {bad++; state="BAD";}
+      for (int cf=0; cf<cofs.size(); cf++)
+      {
+        if (newToOldElemMap_[cofs[cf]] != c)
+        {bad++; state="BAD";}
+      }
+    }
+      
+    cout << setw(4) << c << setw(20) << edges
          << setw(6) << state << endl;
   }
 

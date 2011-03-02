@@ -45,6 +45,8 @@ class UniformRefinementPair
 {
 public:
   /** */
+  UniformRefinementPair();
+  /** */
   UniformRefinementPair(const MeshType& meshType,
     const Mesh& coarse);
 
@@ -90,6 +92,11 @@ public:
     {return newEdgeParallels_;}
 
 
+  /** */
+  const ArrayOfTuples<int>& interiorEdgesOfCoarseElems() const 
+    {return interiorEdges_;}
+
+
   /** Run a consistency check on the pair of meshes. Returns the number
    * of errors detected. */
   int check() const ;
@@ -117,6 +124,7 @@ private:
   Array<int> newEdgeParents_;
   Array<int> newEdgeParallels_;
 
+  ArrayOfTuples<int> interiorEdges_;
 };
 
 }
