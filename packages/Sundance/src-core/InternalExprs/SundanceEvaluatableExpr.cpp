@@ -35,14 +35,13 @@
 #include "SundanceEvalManager.hpp"
 #include "SundanceSymbolicFuncElement.hpp"
 #include "SundanceExpr.hpp"
-#include "SundanceTabs.hpp"
+#include "PlayaTabs.hpp"
 #include "SundanceOut.hpp"
 #include "Teuchos_Utils.hpp"
 
 using namespace Sundance;
-using namespace Sundance;
 using namespace Teuchos;
-
+using std::endl;
 
 TEUCHOS_TIMER(evalTimer, "Symbolic Evaluation")
 
@@ -97,7 +96,7 @@ const Set<MultiIndex>& EvaluatableExpr
 ::activeSpatialDerivs(const EvalContext& context) const
 {
   TEST_FOR_EXCEPTION(!activeSpatialDerivMap_.containsKey(context),
-    InternalError,
+    std::logic_error,
     "Unknown context " << context);
   return activeSpatialDerivMap_[context];
 }
@@ -127,6 +126,12 @@ EvaluatableExpr::sparsitySuperset(const EvalContext& context) const
     const Set<MultipleDeriv>& R = findR(context);
     const Set<MultipleDeriv>& C = findC(context);
     const Set<MultipleDeriv>& V = findV(context);
+    if (context.setupVerbosity() > 4)
+    {
+      Out::os() << tab1 << "R=" << R << endl;
+      Out::os() << tab1 << "C=" << C << endl;
+      Out::os() << tab1 << "V=" << V << endl;
+    }
     rtn = rcp(new SparsitySuperset(C.intersection(R), V.intersection(R)));
     sparsity_.put(context, rtn);
   }
@@ -138,7 +143,7 @@ EvaluatableExpr::sparsitySuperset(const EvalContext& context) const
 const RCP<Evaluator>&
 EvaluatableExpr::evaluator(const EvalContext& context) const 
 {
-  TEST_FOR_EXCEPTION(!evaluators_.containsKey(context), RuntimeError, 
+  TEST_FOR_EXCEPTION(!evaluators_.containsKey(context), std::runtime_error, 
     "Evaluator not found for context " << context);
   return evaluators_.get(context);
 }
@@ -153,14 +158,14 @@ void EvaluatableExpr::evaluate(const EvalManager& mgr,
 
 void EvaluatableExpr::setupEval(const EvalContext& context) const
 {
-  Tabs tabs0;
-  int verb = context.setupVerbosity();
+  Tabs tabs0(0);
+  int verb = context.evalSetupVerbosity();
   SUNDANCE_MSG1(verb, tabs0 << "setupEval() for " << this->toString());
   if (!evaluators_.containsKey(context))
   {
     Tabs tabs;
     SUNDANCE_MSG2(verb, tabs << "creating new evaluator...");
-    SUNDANCE_MSG2(verb, tabs << "my sparsity superset = " 
+    SUNDANCE_MSG2(verb, tabs << "my sparsity superset = " << std::endl
       << *sparsitySuperset(context));
     RCP<Evaluator> eval;
     if (sparsitySuperset(context)->numDerivs()>0)
@@ -207,10 +212,10 @@ const EvaluatableExpr* EvaluatableExpr::getEvalExpr(const Expr& expr)
 {
   const EvaluatableExpr* rtn 
     = dynamic_cast<const EvaluatableExpr*>(expr[0].ptr().get());
-  TEST_FOR_EXCEPTION(rtn==0, InternalError,
+  TEST_FOR_EXCEPTION(rtn==0, std::logic_error,
     "cast of " << expr 
     << " failed in EvaluatableExpr::getEvalExpr()");
-  TEST_FOR_EXCEPTION(expr.size() != 1, InternalError,
+  TEST_FOR_EXCEPTION(expr.size() != 1, std::logic_error,
     "non-scalar expression " << expr
     << " in EvaluatableExpr::getEvalExpr()");
 
@@ -257,7 +262,7 @@ const Set<MultipleDeriv>&
 EvaluatableExpr::findR(int order,
   const EvalContext& context) const
 {
-  TEST_FOR_EXCEPTION(!rIsReady_, InternalError,
+  TEST_FOR_EXCEPTION(!rIsReady_, std::logic_error,
     "findR() cannot be used for initial computation of the "
     "R subset. Calling object is " << toString());
   return findDerivSubset(order, RequiredNonzeros, context);
@@ -271,7 +276,7 @@ EvaluatableExpr::findDerivSubset(int order,
 {
   Tabs tabs;
   int verb = context.setupVerbosity();
-  SUNDANCE_MSG3(verb, tabs << "finding " << derivType(dss) 
+  SUNDANCE_MSG2(verb, tabs << "finding " << derivType(dss) 
     << "[" << order << "] for " << toString());
   if (contextToDSSMap_[dss][order].containsKey(context))
   {
@@ -296,7 +301,7 @@ EvaluatableExpr::findDerivSubset(int order,
         contextToDSSMap_[dss][order].put(context, internalFindC(order, context));
         break;
       default:
-        TEST_FOR_EXCEPTION(true, InternalError, "this should never happen");
+        TEST_FOR_EXCEPTION(true, std::logic_error, "this should never happen");
     }
   }
 
@@ -306,7 +311,7 @@ EvaluatableExpr::findDerivSubset(int order,
     contextToDSSMap_[dss][order].put(context, Set<MultipleDeriv>());
   }
   const Set<MultipleDeriv>& rtn = contextToDSSMap_[dss][order].get(context);
-  SUNDANCE_MSG3(verb, tabs << "found " << rtn);
+  SUNDANCE_MSG2(verb, tabs << "found " << rtn);
   return rtn;
 }
 
@@ -388,24 +393,24 @@ RCP<Array<Set<MultipleDeriv> > > EvaluatableExpr
 ::internalDetermineR(const EvalContext& context,
   const Array<Set<MultipleDeriv> >& RInput) const
 {
-  Tabs tab0;
+  Tabs tab0(0);
+  int verb = context.setupVerbosity();
   RCP<Array<Set<MultipleDeriv> > > rtn 
     = rcp(new Array<Set<MultipleDeriv> >(RInput.size()));
 
-  SUNDANCE_VERB_HIGH( tab0 << "EE::internalDetermineR() for " << toString() );
-  SUNDANCE_VERB_HIGH( tab0 << "RInput = " << RInput );
+  SUNDANCE_MSG2(verb, tab0 << "EE::internalDetermineR() for " << toString() );
+  SUNDANCE_MSG2(verb, tab0 << "RInput = " << RInput );
 
   for (int i=0; i<RInput.size(); i++)
   {
     Tabs tab1;
     if (RInput[i].size()==0) continue;
     const Set<MultipleDeriv>& Wi = findW(i, context);
-    SUNDANCE_VERB_EXTREME( tab1 << "W[" << i << "] = " << Wi );
+    SUNDANCE_MSG3(verb, tab1 << "W[" << i << "] = " << Wi );
     (*rtn)[i] = RInput[i].intersection(Wi);
   }
 
-  SUNDANCE_VERB_HIGH( tab0 << "R = " << (*rtn) );
-
+  printR(verb, rtn);
   return rtn;
 }
 
@@ -416,17 +421,17 @@ Array<Set<MultipleDeriv> > EvaluatableExpr
   const Array<Set<MultiIndex> >& spatialDerivs) const 
 {
   int verb = context.setupVerbosity();
-  Tabs tabs;
-  SUNDANCE_MSG4(verb, tabs << "in EE::computeInputR()");
+  Tabs tabs(0);
+  SUNDANCE_MSG2(verb, tabs << "in EE::computeInputR()");
   Array<Set<MultipleDeriv> > rtn(funcIDCombinations.size());
   for (int order=0; order<funcIDCombinations.size(); order++)
   {
     Tabs tabs1;
-    SUNDANCE_MSG4(verb, tabs << "order=" << order);
-    SUNDANCE_MSG4(verb, tabs1 << "funcID combs=" 
+    SUNDANCE_MSG2(verb, tabs << "order=" << order);
+    SUNDANCE_MSG2(verb, tabs1 << "funcID combs=" 
       << funcIDCombinations[order]);
     const Set<MultipleDeriv>& W = findW(order, context);
-    SUNDANCE_MSG4(verb, tabs1 << "W[order=" << order << "]=" << W);
+    SUNDANCE_MSG2(verb, tabs1 << "W[order=" << order << "]=" << W);
 
     for (Set<MultipleDeriv>::const_iterator i=W.begin(); i!=W.end(); i++)
     {
@@ -435,16 +440,17 @@ Array<Set<MultipleDeriv> > EvaluatableExpr
       if (nonzeroDeriv.isInRequiredSet(funcIDCombinations[order],
           spatialDerivs[order]))
       {
-        SUNDANCE_MSG4(verb, tab2 << "md=" << nonzeroDeriv 
+        SUNDANCE_MSG2(verb, tab2 << "md=" << nonzeroDeriv 
           << " added to inputR");
         rtn[order].put(nonzeroDeriv);
       }
       else
       {
-        SUNDANCE_MSG4(verb, tab2 << "md=" << nonzeroDeriv << " not needed");
+        SUNDANCE_MSG2(verb, tab2 << "md=" << nonzeroDeriv << " not needed");
       }
     }
   }
+  SUNDANCE_MSG2(verb, tabs << "inputR=" << rtn);
   return rtn;
 }
 
@@ -508,3 +514,16 @@ void EvaluatableExpr::displayNonzeros(std::ostream& os, const EvalContext& conte
   }
 }
 
+
+void EvaluatableExpr::printR(int verb,
+  const RCP<Array<Set<MultipleDeriv> > >& R) const
+{
+  Tabs tab(0);
+  const Array<Set<MultipleDeriv> >& r = *R;
+  for (int order=0; order<r.size(); order++)
+  {
+    Tabs tab1;
+    SUNDANCE_MSG2(verb, tab << "order=" << order);
+    SUNDANCE_MSG2(verb, tab1 << "R[" << order << "]=" << r[order]);
+  }
+}

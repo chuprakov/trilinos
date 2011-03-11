@@ -60,6 +60,7 @@ module FAztecOO
      procedure ,nopass :: alias_AztecOO_ID
      procedure         :: generalize 
      ! Standard AztecOO solve methods
+     procedure         :: SetAztecOption
      procedure         :: iterate_current
      procedure         :: iterate_RowMatrix
      generic :: iterate => iterate_current, iterate_RowMatrix
@@ -109,16 +110,13 @@ contains
     use iso_c_binding        ,only: c_loc,c_int
     use ForTrilinos_enums    ,only: ForTrilinos_Universal_ID_t,FT_AztecOO_ID
     type(ForTrilinos_Universal_ID_t) ,intent(in) :: generic_id
-    type(ForTrilinos_Universal_ID_t) ,pointer    :: alias_id
+    type(ForTrilinos_Universal_ID_t) ,allocatable ,target :: alias_id
     integer(c_int) :: status
     type(error) :: ierr
-    if (.not.associated(alias_id)) then
-      allocate(alias_id,source=CT_Alias(generic_id,FT_AztecOO_ID),stat=status)
-      ierr=error(status,'FAztecOO:alias_AztecOO_ID')
-      call ierr%check_success()
-    endif
+    allocate(alias_id,source=CT_Alias(generic_id,FT_AztecOO_ID),stat=status)
+    ierr=error(status,'FAztecOO:alias_AztecOO_ID')
+    call ierr%check_success()
     alias_AztecOO_ID=degeneralize_AztecOO(c_loc(alias_id))
-    call deallocate_and_check_error(alias_id,'FAztecOO:alias_AztecOO_ID')
   end function
 
   type(ForTrilinos_Universal_ID_t) function generalize(this)
@@ -185,6 +183,14 @@ contains
     integer(c_int)               :: error_out
     error_out = AztecOO_Iterate(this%AztecOO_id,A%get_EpetraRowMatrix_ID(),x%get_EpetraMultiVector_ID(),b%get_EpetraMultiVector_ID(),MaxIters,tolerance)
     if (present(err)) err=error(error_out)
+  end subroutine
+
+  subroutine SetAztecOption(this,option,value)
+   class(AztecOO), intent(in) :: this
+   integer(c_int),intent(in) :: option
+   integer(c_int),intent(in) :: value
+   integer(c_int) ::er
+   er=AztecOO_SetAztecOption(this%AztecOO_id,option,value) 
   end subroutine
 
   subroutine invalidate_AztecOO_ID(this)

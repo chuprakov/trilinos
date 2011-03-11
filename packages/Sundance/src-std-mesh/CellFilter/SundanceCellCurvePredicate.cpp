@@ -47,7 +47,7 @@ bool CellCurvePredicate::lessThan(const CellPredicateBase* other) const
   const CellCurvePredicate* S = dynamic_cast<const CellCurvePredicate*>(other);
 
   TEST_FOR_EXCEPTION( S== 0,
-                     InternalError,
+                     std::logic_error,
                      "argument " << other->toXML()
                      << " to CellCurvePredicate::lessThan() should be "
                      "a CellCurvePredicate pointer.");
@@ -80,7 +80,7 @@ void CellCurvePredicate::testBatch(const Array<int>& cellLID,
 		  break;
 	  case On_Curve:
 	      for (int i=0; i<cellLID.size(); i++)
-	    	  if ( fabs(curve_.curveEquation( mesh().nodePosition(cellLID[i]))) < 1e-8 )
+	    	  if ( fabs(curve_.curveEquation( mesh().nodePosition(cellLID[i]))) < 1e-16 )
 	              results[i] = true;
 	    	  else
 	    		  results[i] = false;

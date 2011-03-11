@@ -35,14 +35,14 @@
 #include "SundanceSpectralExpr.hpp"
 #include "SundanceUnknownParameterElement.hpp"
 #include "SundanceTestFuncElement.hpp"
-#include "SundanceExceptions.hpp"
+#include "PlayaExceptions.hpp"
 #include "SundanceIntegral.hpp"
 #include "SundanceListExpr.hpp"
 #include "SundanceEssentialBC.hpp"
 #include "SundanceSumOfIntegrals.hpp"
 #include "SundanceSumOfBCs.hpp"
 #include "SundanceOut.hpp"
-#include "SundanceTabs.hpp"
+#include "PlayaTabs.hpp"
 
  
 
@@ -380,10 +380,12 @@ void EquationSet::init(
     RegionQuadCombo rqc = r->first;
     int rqcVerb = verb;
     int symbVerb = 0;
+    int evalSetupVerb = 0;
     if (rqc.watch().isActive()) 
     {
       symbVerb = rqc.watch().param("symbolic preprocessing");
       rqcVerb=rqc.watch().param("equation set setup");
+      evalSetupVerb=rqc.watch().param("evaluator setup");
     }
     SUNDANCE_MSG1(std::max(verb,rqcVerb), tab15 << "processing RQC = " << rqc);
 
@@ -402,6 +404,7 @@ void EquationSet::init(
       Tabs tab3; 
       EvalContext context(rqc, makeSet(1,2), contextID[0]);
       context.setSetupVerbosity(symbVerb);
+      context.setEvalSetupVerbosity(evalSetupVerb);
       DerivSet nonzeros;
       
       if (isVariationalProblem_)
@@ -460,6 +463,7 @@ void EquationSet::init(
       Tabs tab3; 
       EvalContext context(rqc, makeSet(1), contextID[1]);
       context.setSetupVerbosity(symbVerb);
+      context.setEvalSetupVerbosity(evalSetupVerb);
       DerivSet nonzeros;
       if (isVariationalProblem_)
       {
@@ -512,6 +516,7 @@ void EquationSet::init(
       Tabs tab3;
       EvalContext context(rqc, makeSet(2), contextID[4]);
       context.setSetupVerbosity(symbVerb);
+      context.setEvalSetupVerbosity(evalSetupVerb);
       DerivSet nonzeros;
       nonzeros = SymbPreprocessor
         ::setupSensitivities(term, toList(vars), 
@@ -547,6 +552,7 @@ void EquationSet::init(
 
       EvalContext context(rqc, makeSet(0), contextID[2]);
       context.setSetupVerbosity(symbVerb);
+      context.setEvalSetupVerbosity(evalSetupVerb);
       DerivSet nonzeros;
       Expr fields;
       Expr fieldValues;
@@ -617,6 +623,7 @@ void EquationSet::init(
       Tabs tab3;
       EvalContext context(rqc, makeSet(0,1), contextID[3]);
       context.setSetupVerbosity(symbVerb);
+      context.setEvalSetupVerbosity(evalSetupVerb);
       DerivSet nonzeros;
       nonzeros = SymbPreprocessor
         ::setupGradient(term, 
@@ -655,10 +662,12 @@ void EquationSet::init(
       RegionQuadCombo rqc = r->first;
       int rqcVerb = verb;
       int symbVerb = 0;
+      int evalSetupVerb = 0;
       if (rqc.watch().isActive()) 
       {
         symbVerb = rqc.watch().param("symbolic preprocessing");
         rqcVerb=rqc.watch().param("equation set setup");
+        evalSetupVerb=rqc.watch().param("evaluator setup");
       }
       SUNDANCE_MSG1(verb, tab15 << "processing BC RQC = " << rqc);
 
@@ -678,6 +687,7 @@ void EquationSet::init(
         SUNDANCE_MSG2(rqcVerb, tab3 << "preparing matrix/vector calculation");
         EvalContext context(rqc, makeSet(1,2), contextID[0]);
         context.setSetupVerbosity(symbVerb);
+        context.setEvalSetupVerbosity(evalSetupVerb);
         DerivSet nonzeros;
               
         if (isVariationalProblem_)
@@ -737,6 +747,7 @@ void EquationSet::init(
         SUNDANCE_MSG2(rqcVerb, tab3 << "preparing vector-only calculation");
         EvalContext context(rqc, makeSet(1), contextID[1]);
         context.setSetupVerbosity(symbVerb);
+        context.setEvalSetupVerbosity(evalSetupVerb);
         DerivSet nonzeros;
         if (isVariationalProblem_)
         {
@@ -794,6 +805,7 @@ void EquationSet::init(
         SUNDANCE_MSG2(rqcVerb, tab3 << "preparing sensitivity calculation");
         EvalContext context(rqc, makeSet(2), contextID[4]);
         context.setSetupVerbosity(symbVerb);
+        context.setEvalSetupVerbosity(evalSetupVerb);
         DerivSet nonzeros;
         nonzeros = SymbPreprocessor
           ::setupSensitivities(term, toList(vars), toList(unks), 
@@ -832,6 +844,7 @@ void EquationSet::init(
         SUNDANCE_MSG2(rqcVerb, tab3 << "preparing functional-only calculation");
         EvalContext context(rqc, makeSet(0), contextID[2]);
         context.setSetupVerbosity(symbVerb);
+        context.setEvalSetupVerbosity(evalSetupVerb);
         DerivSet nonzeros;
         Expr fields;
         Expr fieldValues;
@@ -904,6 +917,7 @@ void EquationSet::init(
         SUNDANCE_MSG2(rqcVerb, tab3 << "preparing functional and gradient calculation");
         EvalContext context(rqc, makeSet(0,1), contextID[3]);
         context.setSetupVerbosity(symbVerb);
+        context.setEvalSetupVerbosity(evalSetupVerb);
         DerivSet nonzeros;
         nonzeros = SymbPreprocessor
           ::setupGradient(term, 
@@ -989,7 +1003,7 @@ void EquationSet
     {
       const Deriv& d = *j;
       TEST_FOR_EXCEPTION(!d.isFunctionalDeriv(), 
-        InternalError, "non-functional deriv "
+        std::logic_error, "non-functional deriv "
         << d << " detected in EquationSet::"
         "addToVarUnkPairs()");
       f.append(d);
@@ -1016,7 +1030,7 @@ void EquationSet
       funcPairs->put(OrderedPair<int, int>(varID, unkID));
       gotIt=true;
     }
-    TEST_FOR_EXCEPTION(!gotIt, InternalError,
+    TEST_FOR_EXCEPTION(!gotIt, std::logic_error,
       "no valid (var,unk) pair could be extracted from "
       "derivative " << md);
   }
@@ -1105,13 +1119,13 @@ const RCP<Set<OrderedPair<int, int> > >& EquationSet::
 bcVarUnkPairs(const OrderedHandle<CellFilterStub>& domain) const 
 {
   TEST_FOR_EXCEPTION(!bcVarUnkPairsOnRegions_.containsKey(domain),
-    InternalError,
+    std::logic_error,
     "equation set does not have a var-unk pair list for "
     "bc region " << domain);
   const RCP<Set<OrderedPair<int, int> > >& rtn 
     = bcVarUnkPairsOnRegions_.get(domain);
 
-  TEST_FOR_EXCEPTION(rtn.get()==0, InternalError, 
+  TEST_FOR_EXCEPTION(rtn.get()==0, std::logic_error, 
     "null var-unk pair list for BC region " << domain);
   return rtn;
 }
@@ -1126,11 +1140,11 @@ EvalContext EquationSet::rqcToContext(ComputationType compType,
   const RegionQuadCombo& r) const 
 {
   TEST_FOR_EXCEPTION(!rqcToContext_.containsKey(compType),
-    InternalError,
+    std::logic_error,
     "EquationSet::rqcToContext() did not find key " 
     << compType);
   TEST_FOR_EXCEPTION(!rqcToContext_.get(compType).containsKey(r),
-    InternalError, 
+    std::logic_error, 
     "EquationSet::rqcToContext(" << compType 
     << ") did not find expected key " 
     << r);
@@ -1142,11 +1156,11 @@ EvalContext EquationSet::bcRqcToContext(ComputationType compType,
   const RegionQuadCombo& r) const 
 {
   TEST_FOR_EXCEPTION(!bcRqcToContext_.containsKey(compType),
-    InternalError,
+    std::logic_error,
     "EquationSet::bcRqcToContext() did not find key " 
     << compType);
   TEST_FOR_EXCEPTION(!bcRqcToContext_.get(compType).containsKey(r),
-    InternalError, 
+    std::logic_error, 
     "EquationSet::bcRqcToContext(" << compType 
     << ") did not find expected key " 
     << r);
@@ -1158,7 +1172,7 @@ bool EquationSet::skipRqc(ComputationType compType,
   const RegionQuadCombo& r) const 
 {
   TEST_FOR_EXCEPTION(!rqcToSkip_.containsKey(compType),
-    InternalError,
+    std::logic_error,
     "EquationSet::skipRqc() did not find expected key " 
     << compType);
     
@@ -1169,7 +1183,7 @@ bool EquationSet::skipBCRqc(ComputationType compType,
   const RegionQuadCombo& r) const 
 {
   TEST_FOR_EXCEPTION(!bcRqcToSkip_.containsKey(compType),
-    InternalError,
+    std::logic_error,
     "EquationSet::skipBCRqc() did not find expected key " 
     << compType);
     
@@ -1180,7 +1194,7 @@ const DerivSet& EquationSet::nonzeroFunctionalDerivs(ComputationType compType,
   const RegionQuadCombo& r) const
 {
   TEST_FOR_EXCEPTION(!regionQuadComboNonzeroDerivs_.containsKey(compType),
-    InternalError,
+    std::logic_error,
     "EquationSet:nonzeroFunctionalDerivs() did not find key " 
     << compType);
   return regionQuadComboNonzeroDerivs_.get(compType).get(r);
@@ -1190,7 +1204,7 @@ const DerivSet& EquationSet::nonzeroBCFunctionalDerivs(ComputationType compType,
   const RegionQuadCombo& r) const
 {
   TEST_FOR_EXCEPTION(!bcRegionQuadComboNonzeroDerivs_.containsKey(compType),
-    InternalError,
+    std::logic_error,
     "EquationSet:nonzeroBCFunctionalDerivs() did not find key " 
     << compType);
   return bcRegionQuadComboNonzeroDerivs_.get(compType).get(r);

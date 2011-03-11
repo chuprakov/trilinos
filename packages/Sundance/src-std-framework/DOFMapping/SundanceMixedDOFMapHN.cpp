@@ -34,7 +34,7 @@
 #include "SundanceMaximalCellFilter.hpp"
 #include "Teuchos_MPIContainerComm.hpp"
 #include "SundanceOut.hpp"
-#include "SundanceTabs.hpp"
+#include "PlayaTabs.hpp"
 #include "Teuchos_Time.hpp"
 #include "Teuchos_TimeMonitor.hpp"
 
@@ -1187,7 +1187,8 @@ void MixedDOFMapHN::getTrafoMatrixForCell(
 		matrixStore_.getMatrix( chunkForFuncID(funcID) , matrixIndexes[chunkForFuncID(funcID)] , transfMatrix );
 		//transfMatrix = (maxCellLIDwithHN_to_TrafoMatrix_.get( cellLID ))[chunkForFuncID(funcID)]; // this should return a valid array
 
-		trafoMatrixSize = sqrt(transfMatrix.size());
+    // KL added cast to double to avoid compilation problems on windows
+		trafoMatrixSize = sqrt((double) transfMatrix.size());
 		SUNDANCE_MSG1(setupVerb(), "getTrafoMatrixForCell() cellLID:" << cellLID << ",funcID:" <<
 				funcID << ",chunkForFuncID(funcID):" << chunkForFuncID(funcID) << ", trafoMatrixSize:" << trafoMatrixSize);
 		//SUNDANCE_MSG1(setupVerb(), "getTrafoMatrixForCell() Matrix:" << std::endl << transfMatrix );
@@ -1353,5 +1354,5 @@ void MixedDOFMapHN::checkTable() const
   int anyBad = bad;
   comm().allReduce((void*) &bad, (void*) &anyBad, 1, 
     MPIComm::INT, MPIComm::SUM);
-  TEST_FOR_EXCEPTION(anyBad > 0, RuntimeError, "invalid DOF map");
+  TEST_FOR_EXCEPTION(anyBad > 0, std::runtime_error, "invalid DOF map");
 }

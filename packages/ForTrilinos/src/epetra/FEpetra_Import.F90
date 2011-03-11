@@ -120,16 +120,13 @@ contains
     use ForTrilinos_enums ,only: ForTrilinos_Universal_ID_t,FT_Epetra_Import_ID
     use iso_c_binding     ,only: c_loc,c_int
     type(ForTrilinos_Universal_ID_t) ,intent(in) :: generic_id
-    type(ForTrilinos_Universal_ID_t) ,pointer    :: alias_id
+    type(ForTrilinos_Universal_ID_t) ,allocatable ,target :: alias_id
     integer(c_int) :: status
     type(error) :: ierr
-    if (.not.associated(alias_id)) then
-     allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_Import_ID),stat=status)
-     ierr=error(status,'FEpetra_Import:alias_EpetraImport_ID')
-     call ierr%check_success()
-    endif
+    allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_Import_ID),stat=status)
+    ierr=error(status,'FEpetra_Import:alias_EpetraImport_ID')
+    call ierr%check_success()
     alias_EpetraImport_ID=degeneralize_EpetraImport(c_loc(alias_id))
-    call deallocate_and_check_error(alias_id,'FEpetra_Import:alias_EpetraImport_ID')
   end function
 
   type(ForTrilinos_Universal_ID_t) function generalize(this)
@@ -151,7 +148,7 @@ contains
     use ForTrilinos_enums ,only : ForTrilinos_Universal_ID_t,FT_Epetra_Import_ID_t
     use ,intrinsic :: iso_c_binding ,only: c_ptr,c_f_pointer
     type(c_ptr)                   ,value   :: generic_id
-    type(FT_Epetra_Import_ID_t) ,pointer :: local_ptr
+    type(FT_Epetra_Import_ID_t) ,pointer :: local_ptr=>null()
     call c_f_pointer (generic_id, local_ptr)
     degeneralize_EpetraImport = local_ptr
    ! ____ Use for ForTrilinos function implementation ______
@@ -177,14 +174,12 @@ contains
     class(Epetra_Import), intent(in) :: this
     integer(c_int),dimension(:),allocatable :: PermuteFromLIDs
     type(c_ptr)   :: PermuteFromLIDs_external_ptr 
-    integer(c_int),pointer :: PermuteFromLIDs_local_ptr
+    integer(c_int),pointer :: PermuteFromLIDs_local_ptr=>null()
     integer(c_int) :: status
     type(error) :: ierr
-    if (.not.allocated(PermuteFromLIDs)) then
-     allocate(PermuteFromLIDs(this%NumPermuteIDs()),stat=status)
-     ierr=error(status,'FEpetra_Import:alias_EpetraImport_ID')
-     call ierr%check_success()
-    endif
+    allocate(PermuteFromLIDs(this%NumPermuteIDs()),stat=status)
+    ierr=error(status,'FEpetra_Import:alias_EpetraImport_ID')
+    call ierr%check_success()
     PermuteFromLIDs_external_ptr=Epetra_Import_PermuteFromLIDs(this%Import_id)
     call c_f_pointer (PermuteFromLIDs_external_ptr, PermuteFromLIDs_local_ptr)
     PermuteFromLIDs=PermuteFromLIDs_local_ptr
@@ -236,4 +231,3 @@ contains
     call Epetra_Import_Destroy( this%Import_id ) 
   end subroutine
 end module 
-

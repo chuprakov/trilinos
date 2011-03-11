@@ -5,7 +5,7 @@ INCLUDE(PackageLibraryMacros)
 # A) Package-specific configuration options
 #
 
-PACKAGE_CONFIGURE_FILE(TSF_config.h)
+
 
 #
 # B) Define the header and source files (and directories)
@@ -26,8 +26,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 #
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../src-solvers/Vectors)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../src-solvers/Operators)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../Playa/src)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../src-core/UserExprs)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../src-core/InternalExprs)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../src-core/FrameworkInterface)
@@ -52,6 +51,8 @@ APPEND_SET(HEADERS
   Elements/SundanceFeketeQuadQuadrature.hpp
   Elements/SundanceFeketeQuadratureType.hpp
   Elements/SundanceFeketeTriangleQuadrature.hpp
+  Elements/SundanceTrapesoidQuadrature.hpp
+  Elements/SundanceGaussLobattoQuadrature.hpp
   Elements/SundanceFuncWithBasis.hpp
   Elements/SundanceGauss1D.hpp
   Elements/SundanceGaussLobatto1D.hpp
@@ -94,6 +95,8 @@ APPEND_SET(SOURCES
   Elements/SundanceFeketeQuadrature.cpp
   Elements/SundanceFeketeQuadratureType.cpp
   Elements/SundanceFeketeTriangleQuadrature.cpp
+  Elements/SundanceTrapesoidQuadrature.cpp
+  Elements/SundanceGaussLobattoQuadrature.cpp
   Elements/SundanceFuncWithBasis.cpp
   Elements/SundanceGauss1D.cpp
   Elements/SundanceGaussLobatto1D.cpp
@@ -273,15 +276,14 @@ APPEND_SET(HEADERS
   Problem/SundanceLinearProblem.hpp
   Problem/SundanceLinearSolveDriver.hpp
   Problem/SundanceMeshIOUtils.hpp
-  Problem/SundanceModelEvaluatorBase.hpp
   Problem/SundanceNitscheBC.hpp
-  Problem/SundanceNLPModelEvaluator.hpp
   Problem/SundanceNLOp.hpp
   Problem/SundancePCDPreconditioner.hpp
   Problem/SundanceProblemTesting.hpp
   Problem/SundanceRivaraDriver.hpp
   Problem/SundanceStochBlockJacobiSolver.hpp
   Problem/SundanceNonlinearProblem.hpp 
+  Problem/SundanceUniformRefinementPair.hpp 
   )
 
 APPEND_SET(SOURCES
@@ -297,15 +299,14 @@ APPEND_SET(SOURCES
   Problem/SundanceLinearProblem.cpp
   Problem/SundanceLinearSolveDriver.cpp
   Problem/SundanceMeshIOUtils.cpp
-  Problem/SundanceModelEvaluatorBase.cpp
   Problem/SundanceNitscheBC.cpp
-  Problem/SundanceNLPModelEvaluator.cpp
   Problem/SundanceNLOp.cpp
   Problem/SundancePCDPreconditioner.cpp
   Problem/SundanceProblemTesting.cpp
   Problem/SundanceRivaraDriver.cpp
   Problem/SundanceStochBlockJacobiSolver.cpp
-  Problem/SundanceNonlinearProblem.cpp
+  Problem/SundanceNonlinearProblem.cpp  
+  Problem/SundanceUniformRefinementPair.cpp 
   )
 
 
@@ -346,5 +347,5 @@ PACKAGE_ADD_LIBRARY(
   sundanceStdFwk
   HEADERS ${HEADERS}
   SOURCES ${SOURCES}
-  DEPLIBS sundanceCore sundanceStdMesh TSFExtended sundanceInterop sundanceUtils
+  DEPLIBS sundanceCore sundanceStdMesh sundanceInterop sundanceUtils playa
   )

@@ -2,14 +2,14 @@
 #define PYSUNDANCELINEARSOLVER_H
 
 #include "PySundanceCallback.hpp"
-#include "TSFLinearSolverBaseDecl.hpp"
-#include "SundanceHandleable.hpp"
+#include "PlayaLinearSolverBaseDecl.hpp"
+#include "PlayaHandleable.hpp"
 
 
-namespace TSFExtended
+namespace Playa
 {
   class PySundanceLinearSolver : public LinearSolverBase<double>,
-                                 public Sundance::Handleable<LinearSolverBase<double> >
+                                 public Playa::Handleable<LinearSolverBase<double> >
   {
   public:
     /** */
