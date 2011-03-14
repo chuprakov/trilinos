@@ -34,7 +34,7 @@
 #include "SundanceExpr.hpp"
 #include "SundancePoint.hpp"
 #include "SundanceDefs.hpp"
-#include "SundanceHandleable.hpp"
+#include "PlayaHandleable.hpp"
 
 namespace Sundance
 {
@@ -51,7 +51,7 @@ namespace Sundance
  * Adaptive Cell Integration.
  */
 
-class CurveBase : public Sundance::Handleable<CurveBase>
+class CurveBase : public Playa::Handleable<CurveBase>
 {
 public:
 
@@ -60,9 +60,11 @@ public:
 	/** Base constructor
 	 * @param dim , the dimension of the curve, where it is defined
 	 * @param alpha1 , the integration coefficient for inside the domain
-	 * @param alpha2 , the integration coefficient for outside the domain*/
-	CurveBase(int dim , double alpha1 , double alpha2):_dimension(dim),
-	_alpha1(alpha1),_alpha2(alpha2) {
+	 * @param alpha2 , the integration coefficient for outside the domain
+	 * @param flipD, to flip the domains for this curve*/
+	CurveBase(int dim , double alpha1 , double alpha2 , bool flipD = false):_dimension(dim),
+	_alpha1(alpha1),_alpha2(alpha2) , flipDomains_(1.0){
+		if (flipD) flipDomains_ = -1.0;
 	}
 
 	virtual ~CurveBase(){;}
@@ -71,6 +73,11 @@ public:
 	 * TODO: This interface should be extended later
 	 * @return Expr The parameters of the curve which uniquely defines the curve*/
 	virtual Expr getParams() const = 0 ;
+
+	/** function to return the control points of a given curve */
+	virtual Array<Point>& getControlPoints() {
+		TEST_FOR_EXCEPTION( true , std::runtime_error, " getControlPoints() method is not overwritten ");
+	}
 
 	/**
 	 * Return the integration parameters
@@ -103,11 +110,32 @@ public:
 			return _alpha2;
 	}
 
+	/** If we want to flip the fictitious with the real computational domain then call this method */
+	void flipDomains() const {
+      if ( flipDomains_ > 0){
+    	  flipDomains_ = -1.0;
+      } else {
+    	  flipDomains_ = 1.0;
+      }
+	}
+
+	/**
+	 * Returns the value of the parameterized curve at one given location
+	 * @param evaluationPoint the point where we want the alpha integration parameter <br>
+	 * @return double the value of the curve equation at the evaluation point  */
+	double curveEquation(const Point& evaluationPoint) const {
+		return flipDomains_ * curveEquation_intern(evaluationPoint);
+	}
+
+protected:
+
 	/**
 	 * This function should be implemented
 	 * @param evaluationPoint the point where we want the alpha integration parameter <br>
 	 * @return double the value of the curve equation at the evaluation point  */
-	virtual double curveEquation(const Point& evaluationPoint) const = 0 ;
+	virtual double curveEquation_intern(const Point& evaluationPoint) const = 0 ;
+
+public:
 
 	/**
 	 * This function is important for nonstructural mesh integration.<br>
@@ -140,14 +168,23 @@ public:
 	 * @param mesh
 	 * @param resolution , the global resolution */
 	virtual const RCP<CurveBase> getPolygon(const Mesh& mesh , double resolution) const {
-		TEST_FOR_EXCEPTION( true , RuntimeError, " getPolygon() method is not overwritten ");
+		TEST_FOR_EXCEPTION( true , std::runtime_error, " getPolygon() method is not overwritten ");
 		return rcp((CurveBase*)0);
 	}
+
+	/** e.g. the polygon needs the mesh for additional informations
+	 * empty implementation in the base class
+	 * @param mesh */
+	virtual void setMesh(const Mesh& mesh) {;}
+
+	/** is case of wrapper objects this should return the real object behind the wrapper
+	 * e.g. such wrapper is the ParametrizedCurveIntegral class */
+	virtual const CurveBase* getUnderlyingCurveObj() const { return this; }
 
 	/** Writes the geometry into a VTK file for visualization purposes
 	 * @param filename */
 	virtual void writeToVTK(const std::string& filename) const {
-		TEST_FOR_EXCEPTION( true , RuntimeError, " writeToVTK() method is not overwritten ");
+		TEST_FOR_EXCEPTION( true , std::runtime_error, " writeToVTK() method is not overwritten ");
 	}
 
 protected:
@@ -160,6 +197,9 @@ protected:
 
 	/** The integration parameter when the curve equation is negative*/
 	double _alpha2;
+
+	/** by default this value is 1.0 , if we want to flip the domains then -1.0*/
+	mutable double flipDomains_;
 };
 
 } // end from namespace

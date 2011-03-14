@@ -36,8 +36,8 @@
 #include "SundanceCellFilter.hpp"
 #include "SundanceCellSet.hpp"
 #include "SundanceMap.hpp"
-#include "SundanceHandleable.hpp"
-#include "SundancePrintable.hpp"
+#include "PlayaHandleable.hpp"
+#include "PlayaPrintable.hpp"
 #include "Teuchos_Describable.hpp"
 
 namespace Sundance
@@ -102,6 +102,9 @@ public:
 
   /** */
   void setName(const std::string& name) {name_ = name;}
+
+  /** empties the cache of the filter */
+  void flushCache() const;
 
 protected:
 

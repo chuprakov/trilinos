@@ -47,18 +47,20 @@ public:
 	 * @param b
 	 * @param a1 alpha1 coefficient for FCM
 	 * @param a2 alpha2 coefficient for FCM */
-	Line2D(double slope, double b, double a1, double a2);
+	Line2D(double slope, double b, double a1, double a2,bool flipD = false);
 
 	virtual ~Line2D();
 
 	/** @return Expr The parameters of the curve which uniquely defines the curve*/
 	virtual Expr getParams() const;
 
+protected:
 	/**
 	 * This function should be implemented
 	 * @param evalPoint point where the line equation is evaluated <br>
 	 * @return double the value of the curve equation at the evaluation point  */
-	virtual double curveEquation(const Point& evalPoint) const;
+	virtual double curveEquation_intern(const Point& evalPoint) const;
+public:
 
 	/**
 	 * This function is important for nonstructural mesh integration.<br>

@@ -59,19 +59,20 @@ public:
       try
       {
         Tabs tab;
+        int verb = context.evalSetupVerbosity();
 
-        SUNDANCE_MSG3(this->verb(), tab << "UnaryEvaluator ctor: expr = " << expr->toString());
+        SUNDANCE_MSG2(verb, tab << "UnaryEvaluator ctor: expr = " << expr->toString());
 
-        SUNDANCE_MSG3(this->verb(), tab << "arg sparsity superset maxOrder: " 
+        SUNDANCE_MSG2(verb, tab << "arg sparsity superset maxOrder: " 
           << argSparsitySuperset_->maxOrder());
             
         argEval_->addClient();
             
-        SUNDANCE_MSG3(this->verb(), tab << "done unary evalulator ctor");
+        SUNDANCE_MSG2(verb, tab << "done unary evalulator ctor");
       }
       catch(std::exception& e)
       {
-        TEST_FOR_EXCEPTION(true, RuntimeError, 
+        TEST_FOR_EXCEPTION(true, std::runtime_error, 
           "exception detected in UnaryEvaluator: expr="
           << expr->toString() << std::endl
           << "arg=" << expr->evaluatableArg()->toString() << std::endl

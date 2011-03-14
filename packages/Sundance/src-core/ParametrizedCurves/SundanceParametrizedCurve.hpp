@@ -31,7 +31,7 @@
 #ifndef SUNDANCEPARAMETRIZEDCURVE_H_
 #define SUNDANCEPARAMETRIZEDCURVE_H_
 
-#include "SundanceHandle.hpp"
+#include "PlayaHandle.hpp"
 #include "SundanceDummyParametrizedCurve.hpp"
 #include "SundanceCurveBase.hpp"
 
@@ -53,7 +53,7 @@ namespace Sundance
  * But this might be used for other purposes as well.
  *
  */
-class ParametrizedCurve : public Sundance::Handle<CurveBase> {
+class ParametrizedCurve : public Playa::Handle<CurveBase> {
 public:
 
 	/* */
@@ -63,7 +63,7 @@ public:
 	ParametrizedCurve();
 
     /** Construct from a raw pointer to a ParametrizedCurve type subtype */
-	ParametrizedCurve(Sundance::Handleable<CurveBase>* rawPtr);
+	ParametrizedCurve(Playa::Handleable<CurveBase>* rawPtr);
 
     /** Construct from a smart pointer to a ParametrizedCurve type subtype */
 	ParametrizedCurve(const RCP<CurveBase>& smartPtr);
@@ -73,6 +73,11 @@ public:
 	/** Returns the parameters of the curve*/
 	Expr getParams() const {
 		return ptr()->getParams();
+	}
+
+	/** return the control points of the parameterized curve */
+	Array<Point>& getControlPoints() {
+		return ptr()->getControlPoints();
 	}
 
 	/** List integration parameters for the FCM method*/
@@ -99,6 +104,11 @@ public:
 		return ptr()->curveEquation(evaluationPoint);
 	}
 
+	/** flip the domains from the ficticious to the real */
+	void flipDomains() const {
+		ptr()->flipDomains();
+	}
+
 	/** Returns the points of intersection of the curve with the line defined by the points <br>
 	 *  Only intersection between start and end point will be stated */
 	void returnIntersectPoints(const Point& startEdgePoint, const Point& endEdgePoint,
@@ -122,6 +132,12 @@ public:
 	 * @param resolution , the global resolution */
 	const RCP<CurveBase> getPolygon(const Mesh& mesh , double resolution) const {
 		return ptr()->getPolygon( mesh , resolution);
+	}
+
+	/** Some parameterized curve types need also the mesh
+	 * @param mesh */
+	void setMesh(const Mesh& mesh) {
+		ptr()->setMesh( mesh );
 	}
 
 	/** Writes the geometry into a VTK file for visualization purposes

@@ -49,18 +49,20 @@ public:
 	 * @param oy offset of the box in Y direction
 	 * @param a1 alpha1 coefficient for FCM
 	 * @param a2 alpha2 coefficient for FCM */
-	Box2D(double px, double py, double ox, double oy, double a1, double a2);
+	Box2D(double px, double py, double ox, double oy, double a1, double a2, bool flipD = false);
 
 	virtual ~Box2D();
 
 	/** @return Expr The parameters of the curve which uniquely defines the curve*/
 	virtual Expr getParams() const;
 
+protected:
 	/**
 	 * This function should be implemented
 	 * @param evalPoint point where the box equation is evaluated <br>
 	 * @return double the value of the curve equation at the evaluation point  */
-	virtual double curveEquation(const Point& evalPoint) const;
+	virtual double curveEquation_intern(const Point& evalPoint) const;
+public:
 
 	/**
 	 * This function is important for nonstructural mesh integration.<br>

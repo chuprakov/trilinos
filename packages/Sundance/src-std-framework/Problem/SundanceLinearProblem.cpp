@@ -30,22 +30,22 @@
 
 #include "SundanceLinearProblem.hpp"
 #include "SundanceOut.hpp"
-#include "SundanceTabs.hpp"
+#include "PlayaTabs.hpp"
 #include "SundanceAssembler.hpp"
 #include "SundanceDiscreteFunction.hpp"
 #include "SundanceEquationSet.hpp"
 #include "SundanceZeroExpr.hpp"
 #include "SundanceExpr.hpp"
 #include "SundanceListExpr.hpp"
-#include "TSFSolverState.hpp"
+#include "PlayaSolverState.hpp"
 #ifndef HAVE_TEUCHOS_EXPLICIT_INSTANTIATION
-#include "TSFLinearOperatorImpl.hpp"
+#include "PlayaLinearOperatorImpl.hpp"
 #endif
 
 
 using namespace Sundance;
 using namespace Teuchos;
-using namespace TSFExtended;
+using namespace Playa;
 using namespace std;
 
 
@@ -322,7 +322,7 @@ Array<Vector<double> > LinearProblem::getRHS() const
 }
 
 
-TSFExtended::LinearOperator<double> LinearProblem::getOperator() const 
+Playa::LinearOperator<double> LinearProblem::getOperator() const 
 {
   Tabs tab;
   SUNDANCE_MSG1(assembler_->maxWatchFlagSetting("solve control"),
@@ -386,12 +386,6 @@ SolverState<double> LinearProblem
 
 
 
-Vector<double> 
-LinearProblem::convertToMonolithicVector(const Array<Vector<double> >& internalBlock,
-  const Array<Vector<double> >& bcBlock) const 
-{return assembler_->convertToMonolithicVector(internalBlock, bcBlock);}
-
-
 Expr LinearProblem::formSolutionExpr(const Array<Vector<double> >& vec) const
 {
   int verb = assembler_->maxWatchFlagSetting("solve control");
@@ -399,4 +393,7 @@ Expr LinearProblem::formSolutionExpr(const Array<Vector<double> >& vec) const
 }
 
 
+void LinearProblem::reAssembleProblem() const {
+	assembler_->flushConfiguration();
+}
 

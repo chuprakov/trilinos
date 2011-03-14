@@ -7,8 +7,16 @@ ADD_SUBDIRECTORIES(
   )
 
 IF(${PACKAGE_NAME}_ENABLE_EXTENDED)
+
+  IF (${PACKAGE_NAME}_ENABLE_AztecOO)
+    ADD_SUBDIRECTORIES(
+      aztecoo
+       )
+  ENDIF()
+
   ADD_SUBDIRECTORIES(
-  verySimpleObjectOriented
-  FEpetra_power_method
+   Burgers_Solver_Central_Difference
+   verySimpleObjectOriented
+   FEpetra_power_method
     )
 ENDIF()

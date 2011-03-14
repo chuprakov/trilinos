@@ -34,7 +34,7 @@
 #include "SundanceMaximalCellFilter.hpp"
 #include "Teuchos_MPIContainerComm.hpp"
 #include "SundanceOut.hpp"
-#include "SundanceTabs.hpp"
+#include "PlayaTabs.hpp"
 #include "Teuchos_Time.hpp"
 #include "Teuchos_TimeMonitor.hpp"
 
@@ -175,7 +175,7 @@ InhomogeneousDOFMapHN::InhomogeneousDOFMapHN(const Mesh& mesh,
 
   nPoints_ = mesh.numCells(0);
   // this must be satisfied
-  //TEST_FOR_EXCEPTION( nrAllFuncs_ != nBasis , RuntimeError,
+  //TEST_FOR_EXCEPTION( nrAllFuncs_ != nBasis , std::runtime_error,
   //   " nrAllFuncs_ != nBasis , nrAllFuncs_=" <<  nrAllFuncs_ << " , nBasis = " << nBasis );
   if ( nrAllFuncs_ < nBasis) nrAllFuncs_ = nBasis;
 
@@ -1407,8 +1407,8 @@ void InhomogeneousDOFMapHN::getTrafoMatrixForCell(
 		const Array<int> &matrixIndexes = maxCellLIDwithHN_to_TrafoMatrix_.get( cellLID );
 		matrixStore_.getMatrix( chunkForFuncID(funcID) , matrixIndexes[chunkForFuncID(funcID)] , transfMatrix );
 		//transfMatrix = (maxCellLIDwithHN_to_TrafoMatrix_.get( cellLID ))[chunkForFuncID(funcID)]; // this should return a valid array
-
-		trafoMatrixSize = sqrt(transfMatrix.size());
+    // KL added cast to double to avoid compilation problems on windows
+		trafoMatrixSize = sqrt((double) transfMatrix.size());
 		SUNDANCE_MSG1(setupVerb(), "getTrafoMatrixForCell() cellLID:" << cellLID << ",funcID:" <<
 				funcID << ",chunkForFuncID(funcID):" << chunkForFuncID(funcID) <<
 				" , indexForFuncID(funcID)" << indexForFuncID(funcID) << ", trafoMatrixSize:" << trafoMatrixSize);

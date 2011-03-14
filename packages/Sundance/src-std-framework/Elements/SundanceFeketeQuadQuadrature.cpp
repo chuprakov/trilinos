@@ -2,7 +2,7 @@
 #include "SundanceOut.hpp"
 #include "SundancePoint.hpp"
 #include "SundanceGaussLobatto1D.hpp"
-#include "SundanceTabs.hpp"
+#include "PlayaTabs.hpp"
 
 using namespace Sundance;
 using namespace Teuchos;
@@ -91,7 +91,7 @@ void FeketeQuadQuadrature::computeBasisCoeffs(const int order, Array<double>& ba
 
 	TEST_FOR_EXCEPTION(
 			lapack_err != 0,
-			RuntimeError,
+			std::runtime_error,
 			"FeketeQuadQuadrature::computeBasisCoeffs(): factorization of generalized Vandermonde matrix failed");
 
 	// Determine work array size and invert factorized matrix
@@ -104,7 +104,7 @@ void FeketeQuadQuadrature::computeBasisCoeffs(const int order, Array<double>& ba
 
 	TEST_FOR_EXCEPTION(
 			lapack_err != 0,
-			RuntimeError,
+			std::runtime_error,
 			"FeketeQuadQuadrature::computeBasisCoeffs(): inversion of generalized Vandermonde matrix failed");
 }
 
@@ -113,7 +113,7 @@ void FeketeQuadQuadrature::evalPolynomials(int nPts, double x,
 {
 	// Calculate all (normalized and shifted) Legendre polynomials < order
 	int i = 0;
-	int order = (int) sqrt(nPts);
+	int order = (int) sqrt((double) nPts);
 
 	double xLegendre  = 1.;
 	double xLegendre1 = 0.;

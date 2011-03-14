@@ -63,35 +63,29 @@ module FEpetra_MpiComm
     !Barrier Method
     procedure         :: barrier
     !Broadcast Method
-    procedure,private         :: broadcast_double
-    procedure,private         :: broadcast_int
-    procedure                 :: broadcast_long
-    procedure,private         :: broadcast_char
-    generic :: broadcast=>broadcast_double,broadcast_int,broadcast_char
+    procedure         :: broadcast_double
+    procedure         :: broadcast_int
+    procedure         :: broadcast_long
+    procedure         :: broadcast_char
     !Gather Methods
-    procedure,private         :: gather_double
-    procedure,private         :: gather_int
-    procedure                 :: gather_long
-    generic::GatherAll=>gather_double,gather_int
+    procedure         :: gather_double
+    procedure         :: gather_int
+    procedure         :: gather_long
     !Sum Methods
-    procedure,private         :: sum_double
-    procedure,private         :: sum_int
-    procedure                 :: sum_long
-    generic::SumAll=>sum_double,sum_int
+    procedure         :: sum_double
+    procedure         :: sum_int
+    procedure         :: sum_long
     !Max/Min Methods
-    procedure,private         :: max_double
-    procedure,private         :: max_int
-    procedure                 :: max_long
-    generic::MaxAll=>max_double,max_int
-    procedure,private         :: min_double
-    procedure,private         :: min_int
-    procedure                 :: min_long
-    generic::MinAll=>min_double,min_int
+    procedure         :: max_double
+    procedure         :: max_int
+    procedure         :: max_long
+    procedure         :: min_double
+    procedure         :: min_int
+    procedure         :: min_long
     !Parallel Prefix Methods
-    procedure,private         :: ScanSum_double
-    procedure,private         :: ScanSum_int
-    procedure                 :: ScanSum_long
-    generic::ScanSum=>ScanSum_double,ScanSum_int
+    procedure         :: ScanSum_double
+    procedure         :: ScanSum_int
+    procedure         :: ScanSum_long
     !Attribute Accessor Methods
     procedure         :: MyPID
     procedure         :: NumProc
@@ -154,16 +148,13 @@ contains
     use ForTrilinos_enums    ,only: FT_Epetra_MpiComm_ID,ForTrilinos_Universal_ID_t
     use ForTrilinos_table_man,only: CT_Alias
     type(Fortrilinos_Universal_ID_t) ,intent(in) :: generic_id
-    type(Fortrilinos_Universal_ID_t) ,pointer    :: alias_id
+    type(Fortrilinos_Universal_ID_t) ,allocatable ,target :: alias_id
     integer(c_int) :: status
     type(error) :: ierr
-    if (.not.associated(alias_id)) then
-      allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_MpiComm_ID),stat=status)
-      ierr=error(status,'FEpetra_MpiComm:alias_EpetraMpiComm_ID')
-      call ierr%check_success()
-    endif
+    allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_MpiComm_ID),stat=status)
+    ierr=error(status,'FEpetra_MpiComm:alias_EpetraMpiComm_ID')
+    call ierr%check_success()
     alias_EpetraMpiComm_ID=degeneralize_EpetraMpiComm(c_loc(alias_id))
-    call deallocate_and_check_error(alias_id,'FEpetra_MpiComm:alias_EpetraMpiComm_ID')
   end function
 
   type(ForTrilinos_Universal_ID_t) function generalize(this)
@@ -185,7 +176,7 @@ contains
     use ForTrilinos_enums ,only : ForTrilinos_Universal_ID_t,FT_Epetra_MpiComm_ID_t
     use ,intrinsic :: iso_c_binding ,only: c_ptr,c_f_pointer
     type(c_ptr)                     ,value   :: generic_id
-    type(FT_Epetra_MpiComm_ID_t) ,pointer :: local_ptr
+    type(FT_Epetra_MpiComm_ID_t) ,pointer :: local_ptr=>null()
     call c_f_pointer (generic_id, local_ptr)
     degeneralize_EpetraMpiComm = local_ptr
    ! ____ Use for ForTrilinos function implementation ______

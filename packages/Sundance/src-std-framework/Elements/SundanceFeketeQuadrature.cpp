@@ -34,7 +34,7 @@
 #include "SundanceFeketeTriangleQuadrature.hpp"
 #include "SundanceGaussLobatto1D.hpp"
 #include "SundanceOut.hpp"
-#include "SundanceTabs.hpp"
+#include "PlayaTabs.hpp"
 #include <stack>
 
 using namespace Sundance;
@@ -792,8 +792,10 @@ void FeketeQuadrature::evaluateAllBasisFunctions(const CellType cellType,
 			_hasBasisCoeffs = true;
 		}
 
+    // KL added explicit cast of sqrt argument to double to allow
+    // compilation on windows.
 		// One has nFeketePts basis functions
-		int nFeketePts = sqrt(_basisCoeffs.size());
+		int nFeketePts = sqrt((double) _basisCoeffs.size());
 		result.resize(nFeketePts);
 
 		// Determine values of all PKD polynomials at evaluation point q
@@ -820,8 +822,10 @@ void FeketeQuadrature::evaluateAllBasisFunctions(const CellType cellType,
 			_hasBasisCoeffs = true;
 		}
 
+    // KL added explicit cast of sqrt argument to double to allow
+    // compilation on windows.
 		// One has nFeketePts basis functions
-		int nFeketePts = sqrt(_basisCoeffs.size());
+		int nFeketePts = sqrt((double) _basisCoeffs.size());
 		result.resize(nFeketePts);
 
 		// Determine values of all polynomials at evaluation point q

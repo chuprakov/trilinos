@@ -58,4 +58,8 @@ CellSet CellFilterBase::getCells(const Mesh& mesh) const
   return cellSetCache_.get(id);
 }
 
+void CellFilterBase::flushCache() const {
+	// reset the cache object
+	cellSetCache_ = Sundance::Map<int, CellSet>();
+}
 

@@ -48,18 +48,20 @@ public:
 	 * @param c ,
 	 * @param a1 alpha1 coefficient for FCM
 	 * @param a2 alpha2 coefficient for FCM */
-	Plane3D(double a, double b, double c, double a1, double a2);
+	Plane3D(double a, double b, double c, double a1, double a2, bool flipD = false);
 
 	virtual ~Plane3D();
 
 	/** @return Expr The parameters of the curve which uniquely defines the curve*/
 	virtual Expr getParams() const;
 
+protected:
 	/**
 	 * This function should be implemented
 	 * @param evalPoint point where the plane equation is evaluated <br>
 	 * @return double the value of the curve equation at the evaluation point  */
-	virtual double curveEquation(const Point& evalPoint) const;
+	virtual double curveEquation_intern(const Point& evalPoint) const;
+public:
 
 	/**
 	 * This function is important for nonstructural mesh integration.<br>

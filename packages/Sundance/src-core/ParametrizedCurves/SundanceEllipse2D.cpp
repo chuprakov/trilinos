@@ -35,8 +35,9 @@
 
 using namespace Sundance;
 
-Ellipse2D::Ellipse2D(double px, double py, double a, double b, double a1, double a2) :
-	CurveBase(1, a1, a2), px_(px), py_(px), a_(a), b_(b)
+Ellipse2D::Ellipse2D(double px, double py, double a, double b, double a1, double a2,
+		bool flipD ) :
+	CurveBase(1, a1, a2, flipD), px_(px), py_(px), a_(a), b_(b)
 {
 }
 
@@ -51,10 +52,10 @@ Expr Ellipse2D::getParams() const
 	return Expr(List(px_, py_, a_ , b_ ));
 }
 
-double Ellipse2D::curveEquation(const Point& evalPoint) const
+double Ellipse2D::curveEquation_intern(const Point& evalPoint) const
 {
 	int verb = 0;
-	TEST_FOR_EXCEPTION(evalPoint.dim() != 2, RuntimeError,
+	TEST_FOR_EXCEPTION(evalPoint.dim() != 2, std::runtime_error,
 			"Ellipse2D::curveEquation() evaluation point dimension must be 2");
 
 	// calculate the distance compared to the middle point
@@ -214,5 +215,5 @@ const RCP<CurveBase> Ellipse2D::getPolygon(const Mesh& mesh ,double resolution) 
 	}
 
 	// return the polygon
-	return rcp(new Polygon2D( mesh , points , _alpha1 , _alpha2 ));
+	return rcp(new Polygon2D( mesh , points , _alpha1 , _alpha2 , true , (flipDomains_ < 0)));
 }

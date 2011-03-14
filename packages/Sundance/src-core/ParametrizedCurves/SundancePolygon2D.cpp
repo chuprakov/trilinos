@@ -40,8 +40,8 @@ using namespace Sundance;
 
 int Polygon2D::intersectionEdge_ = -1;
 
-Polygon2D::Polygon2D(const Mesh& mesh , const Array<Point>& points , double a1, double a2) :
-	CurveBase(1, a1, a2), mesh_(mesh)
+Polygon2D::Polygon2D(const Mesh& mesh , const Array<Point>& points , double a1, double a2, bool closedPolygon ,bool flipD ) :
+	CurveBase(1, a2, a1, flipD), hasMesh_(true), closedPolygon_(closedPolygon) , mesh_(&(mesh)) // here we twist the alpha parameters for the polygon convention
 {
 	int verb = 0;
 	// just store the input points
@@ -55,13 +55,28 @@ Polygon2D::Polygon2D(const Mesh& mesh , const Array<Point>& points , double a1, 
 	computeMaxCellLIDs();
 }
 
-Polygon2D::Polygon2D(const Mesh& mesh , const std::string& filename , double a1, double a2) :
-CurveBase(1, a1, a2) , mesh_(mesh)
+Polygon2D::Polygon2D(const Array<Point>& points , double a1, double a2, bool closedPolygon , bool flipD ) :
+	CurveBase(1, a2, a1, flipD), hasMesh_(false), closedPolygon_(closedPolygon), mesh_(0)// here we twist the alpha parameters for the polygon convention
+{
+	int verb = 0;
+	// just store the input points
+	polyPoints_.resize(points.size());
+	SUNDANCE_MSG3( verb , "Polygon2D() Ctor nrPoints=" << points.size() );
+	for (int j = 0 ; j < points.size() ; j++ ){
+		polyPoints_[j] = points[j];
+		SUNDANCE_MSG3( verb , " point[" << j << "] = " << polyPoints_[j]);
+	}
+    // get the maxCellsLID for each point
+	computeMaxCellLIDs();
+}
+
+Polygon2D::Polygon2D(const Mesh& mesh , const std::string& filename , double a1, double a2, bool closedPolygon ,bool flipD ) :
+CurveBase(1, a2, a1, flipD), hasMesh_(true), closedPolygon_(closedPolygon) , mesh_(&(mesh))// here we twist the alpha parameters for the polygon convention
 {
 	std::string str_tmp;
 	std::ifstream myfile;
 	std::vector<std::string> elems;
-	int verb = 0;
+	int verb = 6;
 
 	char *pEnd;
 	double d1 , d2;
@@ -72,30 +87,91 @@ CurveBase(1, a1, a2) , mesh_(mesh)
 	myfile.open( filename.c_str() , std::ios::in );
 	polyPoints_.resize(index_tmp);
 
+	getline( myfile , str_tmp );
+	d1 = strtod (str_tmp.c_str() , &pEnd);
+	d2 = strtod (pEnd , NULL);
 	// each line of the file should contain a point
 	while (!myfile.eof())
 	{
-		getline( myfile , str_tmp );
-		d1 = strtod (str_tmp.c_str() , &pEnd);
-		d2 = strtod (pEnd , NULL);
 		// we add the point to the polygon
 		index_tmp = polyPoints_.size();
 		polyPoints_.resize(index_tmp+1);
 		Point tmpP(d1,d2);
 		polyPoints_[index_tmp] = tmpP;
 		SUNDANCE_MSG3( verb , " point[" << index_tmp << "] = " << polyPoints_[index_tmp]);
+		getline( myfile , str_tmp );
+		//SUNDANCE_MSG3( verb , " next line = " << str_tmp << " line size = " << str_tmp.size());
+		// if the line is less then 2 then break
+		if (str_tmp.size() < 2 ) break;
+		d1 = strtod (str_tmp.c_str() , &pEnd);
+		d2 = strtod (pEnd , NULL);
     }
+
 	// close the file
 	myfile.close();
 	// compute the maxCells in which are the points
 	computeMaxCellLIDs();
 }
 
+Polygon2D::Polygon2D( const std::string& filename , double a1, double a2, bool closedPolygon ,bool flipD ) :
+CurveBase(1, a2, a1, flipD), hasMesh_(false), closedPolygon_(closedPolygon), mesh_(0)// here we twist the alpha parameters for the polygon convention
+{
+	std::string str_tmp;
+	std::ifstream myfile;
+	std::vector<std::string> elems;
+	int verb = 6;
+
+	char *pEnd;
+	double d1 , d2;
+	int index_tmp = 0;
+
+	SUNDANCE_MSG3( verb , "Polygon2D() read from file ");
+
+	myfile.open( filename.c_str() , std::ios::in );
+	polyPoints_.resize(index_tmp);
+
+	getline( myfile , str_tmp );
+	d1 = strtod (str_tmp.c_str() , &pEnd);
+	d2 = strtod (pEnd , NULL);
+	// each line of the file should contain a point
+	while (!myfile.eof())
+	{
+		// we add the point to the polygon
+		index_tmp = polyPoints_.size();
+		polyPoints_.resize(index_tmp+1);
+		Point tmpP(d1,d2);
+		polyPoints_[index_tmp] = tmpP;
+		SUNDANCE_MSG3( verb , " point[" << index_tmp << "] = " << polyPoints_[index_tmp]);
+		getline( myfile , str_tmp );
+		//SUNDANCE_MSG3( verb , " next line = " << str_tmp << " line size = " << str_tmp.size());
+		// if the line is less then 2 then break
+		if (str_tmp.size() < 2 ) break;
+		d1 = strtod (str_tmp.c_str() , &pEnd);
+		d2 = strtod (pEnd , NULL);
+    }
+
+	// close the file
+	myfile.close();
+	// compute the maxCells in which are the points
+	computeMaxCellLIDs();
+}
+
+void Polygon2D::setMesh(const Mesh& mesh){
+
+	mesh_ = &(mesh);
+	hasMesh_ = true;
+	// set the maxLID for each point of the polygon
+	computeMaxCellLIDs();
+}
+
 void Polygon2D::computeMaxCellLIDs(){
 
-	int meshDim = mesh_.spatialDim();
-	int nrLID = mesh_.numCells(meshDim);
-	int verb = 0;
+	// test if we have a mesh, otherwise
+	if (hasMesh_ == false) return;
+
+	int meshDim = mesh_->spatialDim();
+	int nrLID = mesh_->numCells(meshDim);
+	//int verb = 6;
 
 	//SUNDANCE_MSG3( verb , " Polygon2D::computeMaxCellLIDs " << polyPoints_.size() );
 
@@ -107,15 +183,15 @@ void Polygon2D::computeMaxCellLIDs(){
 		// set the LID first for all points to -1
 		// run through each cell, and in each cell look for each point which is contained in that cell
 		//
-		switch (mesh_.cellType(meshDim)){
+		switch (mesh_->cellType(meshDim)){
 			case QuadCell:{
 				// in the case of Quadcells we always have structured cells (Quadcells)
 				int tmp;
-				Point p0 = mesh_.nodePosition( mesh_.facetLID(meshDim,cellLID,0,0,tmp) );
+				Point p0 = mesh_->nodePosition( mesh_->facetLID(meshDim,cellLID,0,0,tmp) );
 				//Point p1 = mesh_.nodePosition( mesh_.facetLID(meshDim,cellLID,0,1,tmp) );
 				//Point p2 = mesh_.nodePosition( mesh_.facetLID(meshDim,cellLID,0,2,tmp) );
-				Point p3 = mesh_.nodePosition( mesh_.facetLID(meshDim,cellLID,0,3,tmp) );
-				SUNDANCE_MSG3( verb , " Polygon2D::computeMaxCellLIDs cellLID =" << cellLID << " ,p0:" << p0 << " ,p3:" << p3 );
+				Point p3 = mesh_->nodePosition( mesh_->facetLID(meshDim,cellLID,0,3,tmp) );
+				//SUNDANCE_MSG3( verb , " Polygon2D::computeMaxCellLIDs cellLID =" << cellLID << " ,p0:" << p0 << " ,p3:" << p3 );
 				for (int j = 0 ; j < polyPoints_.size() ; j++)
 				{
 	               //SUNDANCE_MSG3( verb , " test j = " << j );
@@ -146,14 +222,14 @@ Expr Polygon2D::getParams() const
 	return Expr(List(0.0));
 }
 
-double Polygon2D::curveEquation(const Point& evalPoint) const
+double Polygon2D::curveEquation_intern(const Point& evalPoint) const
 {
 	//int verb = 0;
-	double dist = 1e+20;
+	double dist = 1e+100;
 	double dist_tmp = 0.0;
 	double sign_tmp = 0.0;
 	Point p0 , p1;
-	double eps = 1e-12;
+	double eps = 1e-14;
 
     for (int ii = 0 ; ii < polyPoints_.size() ; ii++)
     {
@@ -164,6 +240,7 @@ double Polygon2D::curveEquation(const Point& evalPoint) const
     	}
     	else
     	{   // the last line from size-1 to 0
+    		if (!closedPolygon_) continue; // only if the polygon is closed
         	p0 = polyPoints_[ii];
         	p1 = polyPoints_[0];
     	}
@@ -208,8 +285,9 @@ double Polygon2D::curveEquation(const Point& evalPoint) const
        	dist_tmp = ::sqrt(dist_tmp*dist_tmp + (intP-evalPoint)*(intP-evalPoint) );
        	Point v1 = p1 - p0;
        	Point v2 = evalPoint - p0;
+       	// v1 X v2
        	sign_tmp = v1[0]*v2[1] - v1[1]*v2[0];
-       	// if the vector product is negative then the point is inside
+       	// if the vector product is positive then the point is inside
        	if ( sign_tmp > 0.0){
       		dist_tmp = -dist_tmp;
        	}
@@ -233,7 +311,7 @@ void Polygon2D::returnIntersectPoints(const Point& start, const Point& end, int&
 	nrPoints = 0;
 	result.resize(nrPoints);
 	Point p0 , p1;
-	double eps = 1e-12;
+	double eps = 1e-14;
 
 	// the edge index which will be intersecting as last
 	intersectionEdge_ = -1;
@@ -248,6 +326,7 @@ void Polygon2D::returnIntersectPoints(const Point& start, const Point& end, int&
     	}
     	else
     	{   // the last line from size-1 to 0
+    		if (!closedPolygon_) continue; // only if the polygon is closed
         	p0 = polyPoints_[ii];
         	p1 = polyPoints_[0];
     	}
@@ -257,7 +336,7 @@ void Polygon2D::returnIntersectPoints(const Point& start, const Point& end, int&
     			        start[1]-end[1] , end[0]-start[0]};
     	double b[2] = { p0[1]*(p1[0]-p0[0]) - p0[0]*(p1[1]-p0[1]),
     			        start[1]*(end[0] - start[0]) - start[0]*(end[1] - start[1]) };
-    	if ( ::fabs( a[0]*a[3]-a[1]*a[2]) < 1e-10){
+    	if ( ::fabs( a[0]*a[3]-a[1]*a[2]) < 1e-12){
     		// matrix is singular det|A|~0, no solution
     		continue;
     	}
@@ -298,8 +377,9 @@ void Polygon2D::returnIntersectPoints(const Point& start, const Point& end, int&
     }// from the for loop
 }
 
-void Polygon2D::returnIntersect(const Point& start, const Point& end, int& nrPoints, Array<
-		double>& result) const
+
+void Polygon2D::returnIntersect(const Point& start, const Point& end,
+		int& nrPoints, Array<double>& result) const
 {
 	Array<Point> t;
 	returnIntersectPoints(start, end, nrPoints, t);
@@ -311,6 +391,22 @@ void Polygon2D::returnIntersect(const Point& start, const Point& end, int& nrPoi
 	{
 		Point tmp( end[0]-t[i][0]/(end[0]-start[0]) , end[1]-t[i][1]/(end[1]-start[1]) );
 		result[i] =  sqrt( tmp*tmp );
+	}
+}
+
+
+void Polygon2D::getCellsPolygonesPoint( int maxCellLID , Array<Point>& points) const {
+	int siz = 0;
+	points.resize(siz);
+
+	for(int j = 0 ; j < pointsMaxCellLID_.size() ; j++ ){
+		// test if this point is in the maxCell
+		if ( maxCellLID == pointsMaxCellLID_[j] ){
+			points.resize(siz+1);
+			// add the point to the returned array
+			points[siz] = polyPoints_[j];
+			siz = siz + 1;
+		}
 	}
 }
 
@@ -358,7 +454,7 @@ RCP<CurveBase> Polygon2D::unite(ParametrizedCurve& c1 , ParametrizedCurve& c2)
    const Polygon2D* pol2 = dynamic_cast<const Polygon2D*>(pb2);
 
    if ( (pol1 == 0) || (pol2 == 0)){
-	   TEST_FOR_EXCEPTION( true , RuntimeError, "Polygon2D::unite one of the inputs is not a polygon 2D ");
+	   TEST_FOR_EXCEPTION( true , std::runtime_error, "Polygon2D::unite one of the inputs is not a polygon 2D ");
    }
 
    // the array where the resulting points will be stored
@@ -378,10 +474,12 @@ RCP<CurveBase> Polygon2D::unite(ParametrizedCurve& c1 , ParametrizedCurve& c2)
    while (doLoop)
    {
 	   SUNDANCE_MSG3( verb , "unite() testing p1Index=" << p1Index );
-	  if ((pol2->curveEquation(pol1->polyPoints_[p1Index+1]) > 0) || (p1Index >= nrP1 - 1)){
+	  if ((pol2->curveEquation(pol1->polyPoints_[p1Index+1]) > 0) || (p1Index >= nrP1 - 1))
+	  {
 		  doLoop = false;
 		  // when already the first point is inside then add to the new polygon the first point
-		  if (pol2->curveEquation(pol1->polyPoints_[p1Index]) > 0){
+		  if (pol2->curveEquation(pol1->polyPoints_[p1Index]) > 0)
+		  {
 			   allPoints.resize(pNewIndex+1);
 			   allPoints[ pNewIndex ] = pol1->polyPoints_[p1Index];
 			   pNewIndex = pNewIndex + 1;
@@ -397,7 +495,8 @@ RCP<CurveBase> Polygon2D::unite(ParametrizedCurve& c1 , ParametrizedCurve& c2)
    // 2) iterate as long it is outside the other, with the current polygon
    // 3) if we have switch , then determine intersection point, and continue with the other polygon
    // 4) stop if we run out of points in the case of one polygon
-   while ( (p1Index < nrP1) && (p2Index < nrP2)){
+   while ( (p1Index < nrP1) && (p2Index < nrP2))
+   {
 	   SUNDANCE_MSG3( verb , "unite() next point polyIndex = " << polyIndex);
 	   if (polyIndex == 0)
 	   { // first polygon
@@ -444,7 +543,7 @@ RCP<CurveBase> Polygon2D::unite(ParametrizedCurve& c1 , ParametrizedCurve& c2)
 			   }
 			   else
 			   {   // error
-				   TEST_FOR_EXCEPTION( true , RuntimeError, "Polygon2D::unite nrIntersectPoints == 0");
+				   TEST_FOR_EXCEPTION( true , std::runtime_error , "Polygon2D::unite nrIntersectPoints == 0");
 			   }
 		   }
 	   }
@@ -488,12 +587,15 @@ RCP<CurveBase> Polygon2D::unite(ParametrizedCurve& c1 , ParametrizedCurve& c2)
 			   }
 			   else
 			   {   // error
-				   TEST_FOR_EXCEPTION( true , RuntimeError, "Polygon2D::unite nrINtersectPoints == 0");
+				   TEST_FOR_EXCEPTION( true , std::runtime_error , "Polygon2D::unite nrINtersectPoints == 0");
 			   }
 		   }
 	   }
    }
 
    // now create one polygon
-   return rcp( new Polygon2D(pol1->mesh_ , allPoints , pol1->_alpha1 , pol2->_alpha2) );
+   if (pol1->hasMesh_)
+	   return rcp( new Polygon2D(*(pol1->mesh_) , allPoints , pol1->_alpha1 , pol2->_alpha2 ) );
+   else
+	   return rcp( new Polygon2D( allPoints , pol1->_alpha1 , pol2->_alpha2 ) );
 }

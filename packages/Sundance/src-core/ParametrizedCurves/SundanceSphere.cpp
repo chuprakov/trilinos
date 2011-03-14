@@ -35,8 +35,8 @@
 using namespace Sundance;
 
 Sphere::Sphere(double centerx, double centery, double centerz, double radius, double a1,
-		double a2) :
-	CurveBase(2, a1, a2), _centerx(centerx), _centery(centery), _centerz(centerz), _radius(radius)
+		double a2 , bool flipD ) :
+	CurveBase(2, a1, a2, flipD), _centerx(centerx), _centery(centery), _centerz(centerz), _radius(radius)
 {
 }
 
@@ -50,9 +50,9 @@ Expr Sphere::getParams() const
 	return Expr(List(_centerx, _centery, _centerz, _radius));
 }
 
-double Sphere::curveEquation(const Point& evalPoint) const
+double Sphere::curveEquation_intern(const Point& evalPoint) const
 {
-	TEST_FOR_EXCEPTION(evalPoint.dim() != 3, RuntimeError,
+	TEST_FOR_EXCEPTION(evalPoint.dim() != 3, std::runtime_error,
 			"Sphere::curveEquation() evaluation point dimension must be 3");
 
 	Point center( _centerx , _centery , _centerz );

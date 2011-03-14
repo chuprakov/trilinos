@@ -187,20 +187,17 @@ contains
   end function
   
   type(FT_Epetra_BlockMap_ID_t) function alias_EpetraBlockMap_ID(generic_id)
-    use ForTrilinos_table_man
+    use ForTrilinos_table_man, only : CT_Alias
     use ForTrilinos_enums ,only: ForTrilinos_Universal_ID_t,FT_Epetra_BlockMap_ID
     use iso_c_binding     ,only: c_loc,c_int
     type(ForTrilinos_Universal_ID_t) ,intent(in) :: generic_id
-    type(ForTrilinos_Universal_ID_t) ,pointer    :: alias_id
+    type(ForTrilinos_Universal_ID_t) ,allocatable ,target :: alias_id
     integer(c_int) :: status
     type(error) :: ierr
-    if(.not.associated(alias_id)) then
-      allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_BlockMap_ID),stat=status)
-      ierr=error(status,'FEpetra_BlockMap:alias_EpetraBlockMap_ID')
-      call ierr%check_success()
-    endif
+    allocate(alias_id,source=CT_Alias(generic_id,FT_Epetra_BlockMap_ID),stat=status)
+    ierr=error(status,'FEpetra_BlockMap:alias_EpetraBlockMap_ID')
+    call ierr%check_success()
     alias_EpetraBlockMap_ID=degeneralize_EpetraBlockMap(c_loc(alias_id))
-    call deallocate_and_check_error(alias_id,'FEpetra_BlockMap:alias_EpetraBlockMap_ID')
   end function
 
   type(ForTrilinos_Universal_ID_t) function generalize(this)
@@ -222,7 +219,7 @@ contains
     use ForTrilinos_enums ,only : ForTrilinos_Universal_ID_t,FT_Epetra_BlockMap_ID_t
     use ,intrinsic :: iso_c_binding ,only: c_ptr,c_f_pointer
     type(c_ptr)                   ,value   :: generic_id
-    type(FT_Epetra_BlockMap_ID_t) ,pointer :: local_ptr
+    type(FT_Epetra_BlockMap_ID_t) ,pointer :: local_ptr=>null()
     call c_f_pointer (generic_id, local_ptr)
     degeneralize_EpetraBlockMap = local_ptr
    ! ____ Use for ForTrilinos function implementation ______

@@ -23,6 +23,7 @@ SET(SerialTests
   PoissonBoltzmannDemo1D
   BesselTest2D 
   Coupled2D
+  CNBugTest
   EdgeDFTest
   Kepler 
   Stokes2D 
@@ -42,7 +43,10 @@ SET(SerialTests
   StokesPeano2D 
   SecondOrderFloquet 
   MixedTest
+  RefinementTest2D
   Poisson2D_HN_Nitsch
+  Stokes_Chanel_Nitsche_line_obstic
+  NavStok_Chanel_stat_HN_Nitsch
 )
 
 
@@ -64,7 +68,6 @@ SET(MPITests
              AdvectionDiffusion2D 
              LinearVariationalTest 
              OptPoisson1D
-             SimpleModelEvalTest 
              VorticityStokes2D 
              VorticityNavierStokes2D
              SpectralPoisson1D 
@@ -78,7 +81,6 @@ SET(MPITests
              Poisson3DTest_HN_Q2Q1
              LinearPartialDomain_mixed
              NonlinearPartialDomain_mixed
-             NavStok_Chanel_stat_HN_Nitsch
    )
 
 
