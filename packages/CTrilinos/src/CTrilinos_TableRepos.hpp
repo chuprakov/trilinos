@@ -92,6 +92,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifdef HAVE_CTRILINOS_IFPACK
 #include "CIfpack_Preconditioner_Cpp.hpp"
 #endif /* HAVE_CTRILINOS_IFPACK */
+#include "CEpetra_SerialDenseVector_Cpp.hpp"
 #include "CTrilinos_enums.h"
 #include "CTrilinos_exceptions.hpp"
 #include "CTrilinos_Table.hpp"
@@ -212,6 +213,8 @@ const Teuchos::RCP<T> TableRepos::get(CTrilinos_Universal_ID_t aid)
     case CT_Ifpack_Preconditioner_ID:
         return Teuchos::rcp_dynamic_cast<T,Ifpack_Preconditioner>(CIfpack::getPreconditioner(aid), true);
 #endif /* HAVE_CTRILINOS_IFPACK */
+    case CT_Epetra_SerialDenseVector_ID:
+        return Teuchos::rcp_dynamic_cast<T,Epetra_SerialDenseVector>(CEpetra::getSerialDenseVector(aid), true);
     default:
         throw CTrilinosInvalidTypeError("invalid table id");
     }
@@ -309,6 +312,8 @@ const Teuchos::RCP<const T> TableRepos::getConst(CTrilinos_Universal_ID_t aid)
     case CT_Ifpack_Preconditioner_ID:
         return Teuchos::rcp_dynamic_cast<const T, const Ifpack_Preconditioner>(CIfpack::getConstPreconditioner(aid), true);
 #endif /* HAVE_CTRILINOS_IFPACK */
+    case CT_Epetra_SerialDenseVector_ID:
+        return Teuchos::rcp_dynamic_cast<const T, const Epetra_SerialDenseVector>(CEpetra::getConstSerialDenseVector(aid), true);
     default:
         throw CTrilinosInvalidTypeError("invalid table id");
     }

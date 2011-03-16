@@ -89,6 +89,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifdef HAVE_CTRILINOS_IFPACK
 //#include "CIfpack_Preconditioner_Cpp.hpp"
 #endif /* HAVE_CTRILINOS_IFPACK */
+//#include "CEpetra_SerialDenseVector_Cpp.hpp"
 
 
 //
@@ -3285,5 +3286,93 @@ purgePreconditioner(  )
 }
 
 #endif /* HAVE_CTRILINOS_IFPACK */
+
+
+//
+// Definitions for Epetra_SerialDenseVector
+//
+
+namespace CEpetra {
+
+/* get Epetra_SerialDenseVector from non-const table using CT_Epetra_SerialDenseVector_ID */
+const Teuchos::RCP<Epetra_SerialDenseVector>
+getSerialDenseVector( CT_Epetra_SerialDenseVector_ID_t id )
+{
+    return CTrilinos::TableRepos::get<Epetra_SerialDenseVector>(
+        CTrilinos::abstractType<CT_Epetra_SerialDenseVector_ID_t>(id));
+}
+
+/* get Epetra_SerialDenseVector from non-const table using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<Epetra_SerialDenseVector>
+getSerialDenseVector( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::TableRepos::get<Epetra_SerialDenseVector>(id);
+}
+
+/* get const Epetra_SerialDenseVector from either the const or non-const table
+ * using CT_Epetra_SerialDenseVector_ID */
+const Teuchos::RCP<const Epetra_SerialDenseVector>
+getConstSerialDenseVector( CT_Epetra_SerialDenseVector_ID_t id )
+{
+    return CTrilinos::TableRepos::getConst<Epetra_SerialDenseVector>(
+        CTrilinos::abstractType<CT_Epetra_SerialDenseVector_ID_t>(id));
+}
+
+/* get const Epetra_SerialDenseVector from either the const or non-const table
+ * using CTrilinos_Universal_ID_t */
+const Teuchos::RCP<const Epetra_SerialDenseVector>
+getConstSerialDenseVector( CTrilinos_Universal_ID_t id )
+{
+    return CTrilinos::TableRepos::getConst<Epetra_SerialDenseVector>(id);
+}
+
+/* store Epetra_SerialDenseVector (owned) in non-const table */
+CT_Epetra_SerialDenseVector_ID_t
+storeNewSerialDenseVector( Epetra_SerialDenseVector *pobj )
+{
+    CTrilinos::Table<Epetra_SerialDenseVector> *tab = 0;
+    CTrilinos::TableRepos::getTable(tab);
+    return CTrilinos::concreteType<CT_Epetra_SerialDenseVector_ID_t>(
+        tab->store(pobj, true));
+}
+
+/* store Epetra_SerialDenseVector in non-const table */
+CT_Epetra_SerialDenseVector_ID_t
+storeSerialDenseVector( Epetra_SerialDenseVector *pobj )
+{
+    CTrilinos::Table<Epetra_SerialDenseVector> *tab = 0;
+    CTrilinos::TableRepos::getTable(tab);
+    return CTrilinos::concreteType<CT_Epetra_SerialDenseVector_ID_t>(
+        tab->store(pobj, false));
+}
+
+/* store const Epetra_SerialDenseVector in const table */
+CT_Epetra_SerialDenseVector_ID_t
+storeConstSerialDenseVector( const Epetra_SerialDenseVector *pobj )
+{
+    CTrilinos::Table<Epetra_SerialDenseVector> *tab = 0;
+    CTrilinos::TableRepos::getTable(tab);
+    return CTrilinos::concreteType<CT_Epetra_SerialDenseVector_ID_t>(
+        tab->store(pobj, false));
+}
+
+/* remove Epetra_SerialDenseVector from table using CT_Epetra_SerialDenseVector_ID */
+void
+removeSerialDenseVector( CT_Epetra_SerialDenseVector_ID_t *id )
+{
+    CTrilinos_Universal_ID_t aid = 
+        CTrilinos::abstractType<CT_Epetra_SerialDenseVector_ID_t>(*id);
+    CTrilinos::TableRepos::remove(&aid);
+    *id = CTrilinos::concreteType<CT_Epetra_SerialDenseVector_ID_t>(aid);
+}
+
+/* purge Epetra_SerialDenseVector table */
+void
+purgeSerialDenseVector(  )
+{
+    CTrilinos::TableRepos::purge<Epetra_SerialDenseVector>();
+}
+
+}
 
 
