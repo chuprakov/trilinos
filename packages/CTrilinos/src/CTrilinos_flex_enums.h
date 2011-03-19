@@ -346,6 +346,22 @@ typedef union {
 } CT_Ifpack_Preconditioner_ID_Flex_t;
 #endif /* HAVE_CTRILINOS_IFPACK */
 
+typedef union {
+    CTrilinos_Universal_ID_t universal;
+    CT_Epetra_SerialDenseVector_ID_t Epetra_SerialDenseVector;
+    CT_Epetra_BLAS_ID_t Epetra_BLAS;
+    CT_Epetra_CompObject_ID_t Epetra_CompObject;
+    CT_Epetra_Object_ID_t Epetra_Object;
+    CT_Epetra_SerialDenseMatrix_ID_t Epetra_SerialDenseMatrix;
+} CT_Epetra_SerialDenseVector_ID_Flex_t;
+
+#ifdef HAVE_CTRILINOS_PLIRIS
+typedef union {
+    CTrilinos_Universal_ID_t universal;
+    CT_Pliris_ID_t Pliris;
+} CT_Pliris_ID_Flex_t;
+#endif /* HAVE_CTRILINOS_PLIRIS */
+
 
 #ifdef __cplusplus
 } /* extern "C" */

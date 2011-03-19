@@ -168,6 +168,9 @@ void TableRepos::remove(
         CIfpack::removePreconditioner(aid);
         break;
 #endif /* HAVE_CTRILINOS_IFPACK */
+    case CT_Epetra_SerialDenseVector_ID:
+        CEpetra::removeSerialDenseVector(aid);
+        break;
     default:
         throw CTrilinosInvalidTypeError("invalid table id or non-polymorphic class");
     }
@@ -553,6 +556,16 @@ CTrilinos_Universal_ID_t TableRepos::alias(
         if (!keepold) remove(&aid);
         break;
 #endif /* HAVE_CTRILINOS_IFPACK */
+    case CT_Epetra_SerialDenseVector_ID:
+        if (aid.is_const) {
+            Teuchos::RCP<const Epetra_SerialDenseVector> robj = getConst<Epetra_SerialDenseVector>(aid);
+            newid = CEpetra::aliasConstSerialDenseVector(robj);
+        } else {
+            Teuchos::RCP<Epetra_SerialDenseVector> robj = get<Epetra_SerialDenseVector>(aid);
+            newid = CEpetra::aliasSerialDenseVector(robj);
+        }
+        if (!keepold) remove(&aid);
+        break;
     default:
         throw CTrilinosInvalidTypeError("invalid table id or non-polymorphic class");
     }
@@ -690,6 +703,9 @@ bool TableRepos::typeCheck(CTrilinos_Universal_ID_t aid, CTrilinos_Table_ID_t ty
                 getConst<Ifpack_Preconditioner>(aid);
                 break;
 #endif /* HAVE_CTRILINOS_IFPACK */
+            case CT_Epetra_SerialDenseVector_ID:
+                getConst<Epetra_SerialDenseVector>(aid);
+                break;
             default:
                 return false;
             }
@@ -817,6 +833,9 @@ bool TableRepos::typeCheck(CTrilinos_Universal_ID_t aid, CTrilinos_Table_ID_t ty
                 get<Ifpack_Preconditioner>(aid);
                 break;
 #endif /* HAVE_CTRILINOS_IFPACK */
+            case CT_Epetra_SerialDenseVector_ID:
+                get<Epetra_SerialDenseVector>(aid);
+                break;
             default:
                 return false;
             }

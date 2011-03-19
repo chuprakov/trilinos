@@ -44,7 +44,7 @@ module forgaleri
   use ForTrilinos_enum_wrappers
   implicit none   ! Prevent implicit typing
 #ifdef HAVE_MPI
-#include "mpif.h"
+#include <mpif.h>
 #endif
 
   ! This file provides Fortran interface blocks that bind the argument types,
@@ -193,8 +193,8 @@ module forgaleri
   !! void GetNeighboursCartesian2d(const int i, const int nx, const int ny, int & left, int & right, 
   !!     int & lower, int & upper);
   !> <BR> <BR> CTrilinos prototype:
-  !! void Galeri_Utils_GetNeighboursCartesian2d ( const int i, const int nx, const int ny, int * left, 
-  !!     int * right, int * lower, int * upper );
+  !! void Galeri_Utils_GetNeighboursCartesian2d ( const int i, const int nx, const int ny, 
+  !!     int * left, int * right, int * lower, int * upper );
 
   subroutine Galeri_Utils_GetNeighboursCartesian2d ( i, nx, ny, left, right, lower, upper ) &
         bind(C,name='Galeri_Utils_GetNeighboursCartesian2d')
@@ -215,7 +215,8 @@ module forgaleri
   !!     int& lower, int& upper, int& left2, int& right2, int& lower2, int& upper2);
   !> <BR> <BR> CTrilinos prototype:
   !! void Galeri_Utils_GetNeighboursCartesian2d_Both ( const int i, const int nx, const int ny, 
-  !!     int * left, int * right, int * lower, int * upper, int * left2, int * right2, int * lower2, int * upper2 );
+  !!     int * left, int * right, int * lower, int * upper, int * left2, int * right2, int * lower2, 
+  !!     int * upper2 );
 
   subroutine Galeri_Utils_GetNeighboursCartesian2d_Both ( i, nx, ny, left, right, lower, &
         upper, left2, right2, lower2, upper2 ) &
@@ -263,8 +264,8 @@ module forgaleri
   !> <BR> Original C++ prototype:
   !! void PrintStencil2D(const Epetra_CrsMatrix* Matrix, const int nx, const int ny, int GID = -1);
   !> <BR> <BR> CTrilinos prototype:
-  !! void Galeri_Utils_PrintStencil2D ( CT_Epetra_CrsMatrix_ID_t MatrixID, const int nx, const int ny, 
-  !!     int GID );
+  !! void Galeri_Utils_PrintStencil2D ( CT_Epetra_CrsMatrix_ID_t MatrixID, const int nx, 
+  !!     const int ny, int GID );
 
   subroutine Galeri_Utils_PrintStencil2D ( MatrixID, nx, ny, GID ) &
         bind(C,name='Galeri_Utils_PrintStencil2D')
@@ -338,4 +339,4 @@ module forgaleri
   end interface
 end module forgaleri
 
-#endif /* HAVE_FORTRILINOS_GALERI */
+#endif
