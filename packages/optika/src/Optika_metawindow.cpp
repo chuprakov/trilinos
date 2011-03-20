@@ -132,15 +132,32 @@ MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, voi
 	initilization(customFunc);
 }
 
-MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, QString fileName){
+MetaWindow::MetaWindow(
+  Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, QString fileName){
 	model = new TreeModel(validParameters, dependencySheet, fileName);
 	initilization();
 } 
 
-MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>), QString fileName){
+MetaWindow::MetaWindow(
+  Teuchos::RCP<Teuchos::ParameterList> validParameters, 
+  Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, 
+  void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>), 
+  QString fileName)
+{
 	model = new TreeModel(validParameters, dependencySheet, fileName);
 	initilization(customFunc);
 } 
+
+MetaWindow::MetaWindow(
+  Teuchos::RCP<Teuchos::ParameterList> validParameters, 
+  Teuchos::RCP<Teuchos::DependencySheet> dependencySheet,
+  void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>),
+  bool showActionButton,
+  QString fileName)
+{
+	model = new TreeModel(validParameters, dependencySheet, fileName);
+	initilization(customFunc, showActionButton);
+}
 
 MetaWindow::~MetaWindow(){
 	saveSettings();
@@ -162,21 +179,27 @@ void MetaWindow::closeEvent(QCloseEvent *event){
 	}
 }
 
-void MetaWindow::initilization(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)){
+void MetaWindow::initilization(
+  void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>),
+  bool showActionButton)
+{
 	this->customFunc = customFunc;
 	delegate = new Delegate;
 	view = new TreeView(model, delegate);
 	view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
 	searchWidget = new SearchWidget(model, view, this);
 	searchWidget->hide();
-	QPushButton *submitButton = new QPushButton(tr("Submit"), this);
-	connect(submitButton, SIGNAL(clicked(bool)), this, SLOT(submit()));
 	QWidget *centerWidget = new QWidget(this);
 	QGridLayout *centerWidgetLayout = new QGridLayout(centerWidget);
 	centerWidgetLayout->addWidget(view,0,0);
-	centerWidgetLayout->addWidget(submitButton,1,0,Qt::AlignRight);
+  if(showActionButton){
+	  QPushButton *submitButton = new QPushButton(tr("Submit"), this);
+	  connect(submitButton, SIGNAL(clicked(bool)), this, SLOT(submit()));
+	  centerWidgetLayout->addWidget(submitButton,1,0,Qt::AlignRight);
+  }
 	centerWidget->setLayout(centerWidgetLayout);
 	setCentralWidget(centerWidget);
+
 	createActions();
 	createMenus();
 	resize(800,600);

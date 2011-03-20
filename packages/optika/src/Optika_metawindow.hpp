@@ -166,6 +166,23 @@ public:
 	QString fileName=QString());
 
 	/**
+	 * Constructs a MainWindow object.
+	 * 
+	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
+	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
+	 * ParameterList.
+	 * @param customFunc The function to run whenever the user clicks the submit button.
+   * @param showActionButton Whether or not to show the action button.
+	 * @param fileName The name of a save file that may store previous values used by a user for the 
+	 * Parameter List specified by validParameters.
+	 */
+	MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, 
+	Teuchos::RCP<Teuchos::DependencySheet> dependencySheet,
+	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>),
+  bool showActionButton,
+	QString fileName=QString());
+
+	/**
 	 * Deconstructer for the metawindow
 	 */
 	~MetaWindow();
@@ -242,7 +259,7 @@ private:
 	 *
 	 * @param customFunc The function to run whenever the user clicks the submit button.
 	 */
-	void initilization(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)=0);
+	void initilization(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)=0, bool showActionButton=true);
 
 	/**
 	 * Creates all the menus for the metawindow.
