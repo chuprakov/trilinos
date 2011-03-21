@@ -142,22 +142,13 @@ MetaWindow::MetaWindow(
   Teuchos::RCP<Teuchos::ParameterList> validParameters, 
   Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, 
   void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>), 
-  QString fileName)
+  QString fileName,
+  const std::string actionButtonText)
 {
 	model = new TreeModel(validParameters, dependencySheet, fileName);
-	initilization(customFunc);
+	initilization(customFunc, actionButtonText);
 } 
 
-MetaWindow::MetaWindow(
-  Teuchos::RCP<Teuchos::ParameterList> validParameters, 
-  Teuchos::RCP<Teuchos::DependencySheet> dependencySheet,
-  void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>),
-  bool showActionButton,
-  QString fileName)
-{
-	model = new TreeModel(validParameters, dependencySheet, fileName);
-	initilization(customFunc, showActionButton);
-}
 
 MetaWindow::~MetaWindow(){
 	saveSettings();
@@ -181,7 +172,7 @@ void MetaWindow::closeEvent(QCloseEvent *event){
 
 void MetaWindow::initilization(
   void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>),
-  bool showActionButton)
+  const std::string actionButtonText)
 {
 	this->customFunc = customFunc;
 	delegate = new Delegate;
@@ -189,14 +180,19 @@ void MetaWindow::initilization(
 	view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
 	searchWidget = new SearchWidget(model, view, this);
 	searchWidget->hide();
+  QPushButton *actionButton = NULL;
+  if(actionButtonText != ""){
+	  actionButton = new QPushButton(tr("Submit"), this);
+  }
+  else{
+    actionButton = 
+      new QPushButton(QString::fromStdString(actionButtonText), this); 
+  }
 	QWidget *centerWidget = new QWidget(this);
 	QGridLayout *centerWidgetLayout = new QGridLayout(centerWidget);
 	centerWidgetLayout->addWidget(view,0,0);
-  if(showActionButton){
-	  QPushButton *submitButton = new QPushButton(tr("Submit"), this);
-	  connect(submitButton, SIGNAL(clicked(bool)), this, SLOT(submit()));
-	  centerWidgetLayout->addWidget(submitButton,1,0,Qt::AlignRight);
-  }
+	connect(actionButton, SIGNAL(clicked(bool)), this, SLOT(doAction()));
+  centerWidgetLayout->addWidget(actionButton,1,0,Qt::AlignRight);
 	centerWidget->setLayout(centerWidgetLayout);
 	setCentralWidget(centerWidget);
 
@@ -462,7 +458,7 @@ void MetaWindow::initiateSearch(){
 	searchWidget->show();
 }
 
-void MetaWindow::submit(){
+void MetaWindow::doAction(){
 	if(customFunc == 0){
 		close();
 	}

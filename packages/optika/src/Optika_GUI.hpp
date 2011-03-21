@@ -43,11 +43,11 @@ namespace Optika{
 
   /**
    * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
-   * All user input will be stored in it. Also runs the function specified whenever the user hits the submit
+   * All user input will be stored in it. Also runs the function specified whenever the user clicks the action
    * button.
    *
    * @param validParameters A list of parameters from which the users may specify values.
-   * @param customFunc Custom function to run whenever the user clicks the submit button.
+   * @param customFunc Custom function to run whenever the user clicks the action button.
    */
   void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
 
@@ -63,13 +63,13 @@ namespace Optika{
 
   /**
    * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
-   * All user input will be stored in it. Also runs the function specified whenever the user hits the submit
+   * All user input will be stored in it. Also runs the function specified whenever the user clicks the action
    * button.
    *
    * @param validParameters A list of parameters from which the users may specify values.
    * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
    * ParameterList.
-   * @param customFunc Custom function to run whenever the user clicks the submit button.
+   * @param customFunc Custom function to run whenever the user clicks the action button.
    */
   void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
 
@@ -131,9 +131,9 @@ public:
 
   /**
    * Sets the custom function to be used in the GUI. When ever the
-   * user hits submit, this function will be run.
+   * user clicks the action button, this function will be run.
    *
-   * @param The custom function to be run whenever the user hits submit.
+   * @param The custom function to be run whenever the user clicks the action button.
    */
   void setCustomFunction(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
 
@@ -170,13 +170,11 @@ public:
   std::string getAboutInfo();
 
   /**
-   * Shows (or hides) the action button. For the most part, the action
-   * button should be left on. However, if you're using Optika to simply edit
-   * an ParameterList it may be appropriate to not show this button.
+   * Sets the text in the "action" button"
+   *
+   * @param text The text for the action button
    */
-  void showActionButton(bool show){
-    showActionButton_ = show;
-  }
+  void setActionButtonText(const std::string text);
 
 private:
 
@@ -211,12 +209,12 @@ private:
   std::string aboutInfo;
 
   /**
-   * Whether or not to dispaly the action button.
+   * Text to display in the action button.
    */
-  bool showActionButton_;
+  std::string actionButtonText;
 
   /**
-   * The custom function to be run whenever the user hits submit.
+   * The custom function to be run whenever the user clicks the action button.
    */
   void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>);
 };
