@@ -38,6 +38,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #ifdef HAVE_CTRILINOS_PLIRIS
 
+#ifdef HAVE_MPI
+
 
 #include "CTrilinos_enums.h"
 #include "Teuchos_RCP.hpp"
@@ -94,6 +96,8 @@ purgePliris(  );
 
 } // namespace CPliris
 
+
+#endif /* HAVE_MPI */
 
 #endif /* HAVE_CTRILINOS_PLIRIS */
 

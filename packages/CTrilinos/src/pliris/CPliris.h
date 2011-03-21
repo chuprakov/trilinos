@@ -42,6 +42,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #ifdef HAVE_CTRILINOS_PLIRIS
 
+#ifdef HAVE_MPI
+
 
 #include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
@@ -152,6 +154,8 @@ int Pliris_Solve (
 } /* extern "C" */
 #endif
 
+
+#endif /* HAVE_MPI */
 
 #endif /* HAVE_CTRILINOS_PLIRIS */
 

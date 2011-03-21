@@ -356,10 +356,12 @@ typedef union {
 } CT_Epetra_SerialDenseVector_ID_Flex_t;
 
 #ifdef HAVE_CTRILINOS_PLIRIS
+#ifdef HAVE_MPI
 typedef union {
     CTrilinos_Universal_ID_t universal;
     CT_Pliris_ID_t Pliris;
 } CT_Pliris_ID_Flex_t;
+#endif /* HAVE_MPI */
 #endif /* HAVE_CTRILINOS_PLIRIS */
 
 

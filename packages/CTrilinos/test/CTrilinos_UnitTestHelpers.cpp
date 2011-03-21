@@ -70,12 +70,27 @@ Questions? Contact M. Nicole Lemaster (mnlemas\@sandia.gov)
 #include "CEpetra_JadMatrix_Cpp.hpp"
 #include "CEpetra_LinearProblem_Cpp.hpp"
 #include "CEpetra_LAPACK_Cpp.hpp"
-#include "CAmesos_Cpp.hpp"
-#include "CAmesos_BaseSolver_Cpp.hpp"
 #include "CTeuchos_any_Cpp.hpp"
 #include "CTeuchos_CommandLineProcessor_Cpp.hpp"
 #include "CTeuchos_ParameterEntry_Cpp.hpp"
 #include "CTeuchos_ParameterList_Cpp.hpp"
+#include "CAmesos_Cpp.hpp"
+#include "CAmesos_BaseSolver_Cpp.hpp"
+#include "CEpetra_FECrsMatrix_Cpp.hpp"
+#include "CEpetra_IntSerialDenseVector_Cpp.hpp"
+#include "CEpetra_SerialDenseMatrix_Cpp.hpp"
+#include "CAztecOO_Cpp.hpp"
+#include "CAztecOO_StatusTest_Cpp.hpp"
+#include "CAztecOO_StatusTestCombo_Cpp.hpp"
+#include "CAztecOO_StatusTestMaxIters_Cpp.hpp"
+#include "CAztecOO_StatusTestResNorm_Cpp.hpp"
+#include "CGaleri_Utils_Cpp.hpp"
+#include "CGaleri_Maps_Cpp.hpp"
+#include "CGaleri_CrsMatrices_Cpp.hpp"
+#include "CIfpack_Cpp.hpp"
+#include "CIfpack_Preconditioner_Cpp.hpp"
+#include "CEpetra_SerialDenseVector_Cpp.hpp"
+#include "CPliris_Cpp.hpp"
 
 #include "CTrilinos_UnitTestHelpers.hpp"
 
@@ -109,14 +124,32 @@ void CEpetra_Test_CleanSlate()
   CEpetra::purgeJadMatrix();
   CEpetra::purgeLinearProblem();
   CEpetra::purgeLAPACK();
-#ifdef HAVE_CTRILINOS_AMESOS
-  CAmesos::purgeAmesos();
-  CAmesos::purgeBaseSolver();
-#endif
   CTeuchos::purgeany();
   CTeuchos::purgeCommandLineProcessor();
   CTeuchos::purgeParameterEntry();
   CTeuchos::purgeParameterList();
+#ifdef HAVE_CTRILINOS_AMESOS
+  CAmesos::purgeAmesos();
+  CAmesos::purgeBaseSolver();
+#endif
+  CEpetra::purgeFECrsMatrix();
+  CEpetra::purgeIntSerialDenseVector();
+  CEpetra::purgeSerialDenseMatrix();
+#ifdef HAVE_CTRILINOS_AZTECOO
+  CAztecOO::purgeAztecOO();
+  CAztecOO::purgeStatusTest();
+  CAztecOO::purgeStatusTestCombo();
+  CAztecOO::purgeStatusTestMaxIters();
+  CAztecOO::purgeStatusTestResNorm();
+#endif
+#ifdef HAVE_CTRILINOS_IFPACK
+  CIfpack::purgeIfpack();
+  CIfpack::purgePreconditioner();
+#endif
+  CEpetra::purgeSerialDenseVector();
+#ifdef HAVE_CTRILINOS_PLIRIS
+  CPliris::purgePliris();
+#endif
 }
 
 CT_Epetra_Comm_ID_t
