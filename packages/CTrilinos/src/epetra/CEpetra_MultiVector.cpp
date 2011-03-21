@@ -454,8 +454,7 @@ void Epetra_MultiVector_Assign (
 double * Epetra_MultiVector_getArray ( 
   CT_Epetra_MultiVector_ID_t selfID, int i )
 {
-    const Epetra_MultiVector& self = *( CEpetra::getConstMultiVector(
-        selfID) );
+    const Epetra_MultiVector& self = *( CEpetra::getConstMultiVector(selfID) );
 
     return self[i];
 }
@@ -463,8 +462,7 @@ double * Epetra_MultiVector_getArray (
 CT_Epetra_Vector_ID_t Epetra_MultiVector_getVector ( 
   CT_Epetra_MultiVector_ID_t selfID, int i )
 {
-    const Epetra_MultiVector& self = *( CEpetra::getConstMultiVector(
-        selfID) );
+    const Epetra_MultiVector& self = *( CEpetra::getConstMultiVector(selfID) );
 
     return CEpetra::storeConstVector(self(i));
 }

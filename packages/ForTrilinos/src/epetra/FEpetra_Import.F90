@@ -39,7 +39,7 @@
 module FEpetra_Import
   use ForTrilinos_enums ,only: FT_Epetra_Comm_ID_t,FT_Epetra_Import_ID_t,FT_Epetra_BlockMap_ID_t,ForTrilinos_Universal_ID_t
   use ForTrilinos_table_man
-  use ForTrilinos_universal,only:universal
+  use ForTrilinos_universal ,only:universal
   use ForTrilinos_error
   use FEpetra_Comm  ,only: Epetra_Comm
   use FEpetra_BlockMap ,only: Epetra_BlockMap
@@ -76,6 +76,7 @@ module FEpetra_Import
    end interface
  
 contains
+
   type(Epetra_Import) function from_struct(id)
     type(FT_Epetra_Import_ID_t) ,intent(in) :: id
     from_struct%Import_id = id
@@ -91,8 +92,8 @@ contains
 
   type(Epetra_Import) function create(TargetMap,SourceMap)
    !use ForTrilinos_enums ,only : FT_Epetra_Comm_ID_t,FT_Epetra_BlockMap_ID_t
-    type(Epetra_BlockMap), intent(in) :: TargetMap
-    type(Epetra_BlockMap), intent(in) :: SourceMap
+    class(Epetra_BlockMap), intent(in) :: TargetMap
+    class(Epetra_BlockMap), intent(in) :: SourceMap
     type(FT_Epetra_Import_ID_t) :: create_id
     create_id = Epetra_Import_Create(TargetMap%get_EpetraBlockMap_ID(),SourceMap%get_EpetraBlockMap_ID())
     create = from_struct(create_id)

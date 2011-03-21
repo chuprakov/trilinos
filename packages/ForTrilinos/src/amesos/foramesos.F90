@@ -44,7 +44,7 @@ module foramesos
   use ForTrilinos_enum_wrappers
   implicit none   ! Prevent implicit typing
 #ifdef HAVE_MPI
-#include "mpif.h"
+#include <mpif.h>
 #endif
 
   ! This file provides Fortran interface blocks that bind the argument types,
@@ -439,4 +439,4 @@ module foramesos
   end interface
 end module foramesos
 
-#endif /* HAVE_FORTRILINOS_AMESOS */
+#endif
