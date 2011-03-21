@@ -148,7 +148,9 @@ void CEpetra_Test_CleanSlate()
 #endif
   CEpetra::purgeSerialDenseVector();
 #ifdef HAVE_CTRILINOS_PLIRIS
+#ifdef HAVE_MPI
   CPliris::purgePliris();
+#endif
 #endif
 }
 
