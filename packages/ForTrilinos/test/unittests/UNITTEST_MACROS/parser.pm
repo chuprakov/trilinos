@@ -7,6 +7,11 @@ use Text::Balanced qw(extract_bracketed);
 
 use macroexp;
 
+######################################################################
+# distinct_parens: separate each outer paren pair, including the text
+#                  between pairs with the pair that follows it; for
+#                  text with no following pair, it stands alone
+######################################################################
 sub distinct_parens {
   my ($line) = @_;
 
@@ -22,11 +27,11 @@ sub distinct_parens {
   my $rank = 0;
   my $lp = index($line, '(', $search_pos);
   my $rp = index($line, ')', $search_pos);
-  while (($lp > 0) or ($rp > 0)) {
-    if (($lp > 0) and (($lp < $rp) or ($rp < 0))) {
+  while (($lp >= 0) or ($rp >= 0)) {
+    if (($lp >= 0) and (($lp < $rp) or ($rp < 0))) {
       $search_pos = $lp+1;
       $rank++;
-    } elsif (($rp > 0) and (($rp < $lp) or ($lp < 0))) {
+    } elsif (($rp >= 0) and (($rp < $lp) or ($lp < 0))) {
       $search_pos = $rp+1;
       $rank--;
       if ($rank == 0) {
@@ -35,7 +40,7 @@ sub distinct_parens {
         $begin_group = $rp+1;
       }
     } else {
-      die "unknown error when trying to isolate parentheses";
+      die "unknown error when trying to isolate parentheses ";
     }
     die "incorrect parenthesis order" if ($rank < 0);
     $lp = index($line, '(', $search_pos);
@@ -55,6 +60,11 @@ sub distinct_parens {
   return @groups;
 }
 
+######################################################################
+# parse_parens: for string containing at most one pair of parens,
+#               separate what comes before/within/after parens; if no
+#               parens, return everything as "before" variable
+######################################################################
 sub parse_parens {
   my ($line) = @_;
 
@@ -87,6 +97,10 @@ sub parse_parens {
   return ($before, $within, $after);
 }
 
+######################################################################
+# separate_key: when given all text before a pair of parens, separate
+#               the macro name from anything else that may be there
+######################################################################
 sub separate_key {
   my ($pre_paren) = @_;
 
@@ -103,6 +117,10 @@ sub separate_key {
   return ($pre, $key);
 }
 
+######################################################################
+# recursive_replace: recursively process nested and/or adjacent paren
+#                    pairs, expanding any macros found
+######################################################################
 sub recursive_replace {
   my ($line) = @_;
 
@@ -130,6 +148,10 @@ sub recursive_replace {
   return $output;
 }
 
+######################################################################
+# break_args: split up each term of an argument list, carefully
+#             watching for commas that are protected by parentheses
+######################################################################
 sub break_args {
   my ($argstr) = @_;
 
@@ -143,7 +165,7 @@ sub break_args {
       my $tmp = $string;
       my $lpar = ($tmp =~ tr/\(/X/);
       if ($lpar > 0) {
-        my ($ext, $new_string, $pre) = extract_bracketed($string,'()','[^()]+');
+        my ($ext, $new_string, $pre) = extract_bracketed($string,'()','[^()]*');
         $string = $new_string;
         push(@params, "$pre$ext");
         $string =~ s/^\s*,\s*//;
@@ -156,6 +178,9 @@ sub break_args {
   return @params;
 }
 
+######################################################################
+# expand_line: initiate the processing of non-blank lines
+######################################################################
 sub expand_line {
   my ($line) = @_;
   $line =~ s/^(\s+)//;
@@ -168,4 +193,5 @@ sub expand_line {
   }
 }
 
+# module load successful (required)
 1;
