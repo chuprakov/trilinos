@@ -500,6 +500,7 @@ typedef struct {
 } CT_Epetra_SerialDenseVector_ID_t;
 
 #ifdef HAVE_CTRILINOS_PLIRIS
+#ifdef HAVE_MPI
 /*! Struct used for referring to objects in the Pliris table.  Methods
  * that can be invoked on the underlying objects are listed in CPliris.h */
 typedef struct {
@@ -507,6 +508,7 @@ typedef struct {
     int index;			/*!< Array index of the object */
     boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Pliris_ID_t;
+#endif /* HAVE_MPI */
 #endif /* HAVE_CTRILINOS_PLIRIS */
 
 

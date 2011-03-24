@@ -47,6 +47,18 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 APPEND_SET(HEADERS
   )
 
+# Store Fortran modules in a dedicated directory.
+SET(CMAKE_Fortran_MODULE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/mod")
+INCLUDE_DIRECTORIES("${CMAKE_Fortran_MODULE_DIRECTORY}")
+
+# Install *.mod from the module directory to the include directory.
+INSTALL(
+  DIRECTORY "${CMAKE_Fortran_MODULE_DIRECTORY}/"
+  DESTINATION "${${PROJECT_NAME}_INSTALL_INCLUDE_DIR}"
+  COMPONENT ${PACKAGE_NAME}
+  FILES_MATCHING PATTERN "*.mod"
+  )
+
 # Set sources for link-layer build
 
 APPEND_SET(SOURCES
@@ -92,11 +104,13 @@ IF (${PACKAGE_NAME}_ENABLE_Ifpack)
 ENDIF()
 
 IF (${PACKAGE_NAME}_ENABLE_Pliris)
+  IF (TPL_ENABLE_MPI)
 
-  APPEND_SET(SOURCES
-    ${DIRPLIRIS}/forpliris.F90
-    )
+    APPEND_SET(SOURCES
+      ${DIRPLIRIS}/forpliris.F90
+      )
 
+  ENDIF()
 ENDIF()
 
 # Set additional sources for object-oriented build
@@ -128,14 +142,22 @@ IF(${PACKAGE_NAME}_ENABLE_EXTENDED)
 
   IF (${PACKAGE_NAME}_ENABLE_Galeri)
 
-    APPEND_GLOB(SOURCES ${DIRAZTECOO}/FGaleri*.F90)
+    APPEND_GLOB(SOURCES ${DIRGALERI}/FGaleri*.F90)
 
   ENDIF()
 
   IF (${PACKAGE_NAME}_ENABLE_Ifpack)
 
-    APPEND_GLOB(SOURCES ${DIRAZTECOO}/FIfpack*.F90)
+    APPEND_GLOB(SOURCES ${DIRIFPACK}/FIfpack*.F90)
 
+  ENDIF()
+
+  IF (${PACKAGE_NAME}_ENABLE_Pliris)
+    IF (TPL_ENABLE_MPI)
+
+      APPEND_GLOB(SOURCES ${DIRPLIRIS}/FPliris*.F90)
+
+    ENDIF()
   ENDIF()
 
 ENDIF()
