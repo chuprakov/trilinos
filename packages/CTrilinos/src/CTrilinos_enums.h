@@ -112,7 +112,9 @@ typedef enum {
     CT_AztecOO_StatusTestMaxIters_ID,    /*!< refers to an AztecOO_StatusTestMaxIters table entry */
     CT_AztecOO_StatusTestResNorm_ID,     /*!< refers to an AztecOO_StatusTestResNorm table entry */
     CT_Ifpack_ID,                        /*!< refers to an Ifpack table entry */
-    CT_Ifpack_Preconditioner_ID          /*!< refers to an Ifpack_Preconditioner table entry */
+    CT_Ifpack_Preconditioner_ID,         /*!< refers to an Ifpack_Preconditioner table entry */
+    CT_Epetra_SerialDenseVector_ID,      /*!< refers to an Epetra_SerialDenseVector table entry */
+    CT_Pliris_ID                         /*!< refers to a Pliris table entry */
 } CTrilinos_Table_ID_t;
 
 /*! The type in the struct below is actually used to identify the table in
@@ -488,6 +490,26 @@ typedef struct {
     boolean is_const;		/*!< Whether or not object was declared const */
 } CT_Ifpack_Preconditioner_ID_t;
 #endif /* HAVE_CTRILINOS_IFPACK */
+
+/*! Struct used for referring to objects in the Epetra_SerialDenseVector table.  Methods
+ * that can be invoked on the underlying objects are listed in CEpetra_SerialDenseVector.h */
+typedef struct {
+    CTrilinos_Table_ID_t table;	/*!< Table holding reference to the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
+} CT_Epetra_SerialDenseVector_ID_t;
+
+#ifdef HAVE_CTRILINOS_PLIRIS
+#ifdef HAVE_MPI
+/*! Struct used for referring to objects in the Pliris table.  Methods
+ * that can be invoked on the underlying objects are listed in CPliris.h */
+typedef struct {
+    CTrilinos_Table_ID_t table;	/*!< Table holding reference to the object */
+    int index;			/*!< Array index of the object */
+    boolean is_const;		/*!< Whether or not object was declared const */
+} CT_Pliris_ID_t;
+#endif /* HAVE_MPI */
+#endif /* HAVE_CTRILINOS_PLIRIS */
 
 
 #ifdef __cplusplus

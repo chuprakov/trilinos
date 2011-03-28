@@ -35,18 +35,17 @@
 #include "SundanceCellFilter.hpp"
 #include "SundanceCellSet.hpp"
 #include "SundanceSubtypeEvaluator.hpp"
+#include "PlayaDefaultBlockVectorDecl.hpp"
 
 #ifndef HAVE_TEUCHOS_EXPLICIT_INSTANTIATION
 #include "PlayaVectorImpl.hpp"
+#include "PlayaDefaultBlockVectorImpl.hpp"
 #endif
 
-using namespace Sundance;
-using namespace Sundance;
-using namespace Sundance;
-using namespace Sundance;
-using namespace Sundance;
+namespace Sundance
+{
 using namespace Teuchos;
-
+using std::runtime_error;
 
 static Time& getLocalValsTimer() 
 {
@@ -62,9 +61,9 @@ static Time& dfCtorTimer()
 }
 
 DiscreteFunction::DiscreteFunction(const DiscreteSpace& space, 
-                                   const std::string& name)
+  const std::string& name)
   : DiscreteFunctionStub(tuple(name), space.dimStructure(),
-                         getRCP(new DiscreteFunctionData(space))), 
+    getRCP(new DiscreteFunctionData(space))), 
     FuncWithBasis(space.basis()),
     data_()
 {
@@ -73,9 +72,9 @@ DiscreteFunction::DiscreteFunction(const DiscreteSpace& space,
 }
 
 DiscreteFunction::DiscreteFunction(const DiscreteSpace& space, 
-                                   const Array<string>& name)
+  const Array<string>& name)
   : DiscreteFunctionStub(name, space.dimStructure(),
-                         getRCP(new DiscreteFunctionData(space))), 
+    getRCP(new DiscreteFunctionData(space))), 
     FuncWithBasis(space.basis()),
     data_()
 {
@@ -84,10 +83,10 @@ DiscreteFunction::DiscreteFunction(const DiscreteSpace& space,
 }
 
 DiscreteFunction::DiscreteFunction(const DiscreteSpace& space, 
-                                   const double& constantValue,
-                                   const std::string& name)
+  const double& constantValue,
+  const std::string& name)
   : DiscreteFunctionStub(tuple(name), space.dimStructure(),
-                         getRCP(new DiscreteFunctionData(space, constantValue))), 
+    getRCP(new DiscreteFunctionData(space, constantValue))), 
     FuncWithBasis(space.basis()),
     data_()
 {
@@ -99,10 +98,10 @@ DiscreteFunction::DiscreteFunction(const DiscreteSpace& space,
 }
 
 DiscreteFunction::DiscreteFunction(const DiscreteSpace& space, 
-                                   const double& constantValue,
-                                   const Array<string>& name)
+  const double& constantValue,
+  const Array<string>& name)
   : DiscreteFunctionStub(name, space.dimStructure(),
-                         getRCP(new DiscreteFunctionData(space, constantValue))), 
+    getRCP(new DiscreteFunctionData(space, constantValue))), 
     FuncWithBasis(space.basis()),
     data_()
 {
@@ -114,10 +113,10 @@ DiscreteFunction::DiscreteFunction(const DiscreteSpace& space,
 }
 
 DiscreteFunction::DiscreteFunction(const DiscreteSpace& space, 
-                                   const Vector<double>& vec,
-                                   const std::string& name)
+  const Vector<double>& vec,
+  const std::string& name)
   : DiscreteFunctionStub(tuple(name), space.dimStructure(),
-                         getRCP(new DiscreteFunctionData(space, vec))), 
+    getRCP(new DiscreteFunctionData(space, vec))), 
     FuncWithBasis(space.basis()),
     data_()
 {
@@ -126,10 +125,10 @@ DiscreteFunction::DiscreteFunction(const DiscreteSpace& space,
 }
 
 DiscreteFunction::DiscreteFunction(const DiscreteSpace& space, 
-                                   const Vector<double>& vec,
-                                   const Array<string>& name)
+  const Vector<double>& vec,
+  const Array<string>& name)
   : DiscreteFunctionStub(name, space.dimStructure(),
-                         getRCP(new DiscreteFunctionData(space, vec))), 
+    getRCP(new DiscreteFunctionData(space, vec))), 
     FuncWithBasis(space.basis()),
     data_()
 {
@@ -149,8 +148,8 @@ void DiscreteFunction::updateGhosts() const
 
 
 RCP<const MapStructure> DiscreteFunction::getLocalValues(int cellDim, 
-                                                                 const Array<int>& cellLID,
-                                                                 Array<Array<double> >& localValues) const 
+  const Array<int>& cellLID,
+  Array<Array<double> >& localValues) const 
 {
   TimeMonitor timer(getLocalValsTimer());
   return data_->getLocalValues(cellDim, cellLID, localValues);
@@ -188,5 +187,87 @@ DiscreteFunction* DiscreteFunction::discFunc(Expr& expr)
 RCP<DiscreteFuncDataStub> DiscreteFunction::getRCP(DiscreteFunctionData* ptr)
 {
   return rcp_dynamic_cast<DiscreteFuncDataStub>(rcp(ptr));
+}
+
+
+
+void updateDiscreteFunction(const Expr& newVals, Expr old)
+{
+  const DiscreteFunction* in = DiscreteFunction::discFunc(newVals);
+  TEST_FOR_EXCEPTION(in==0, std::runtime_error,
+    "input argument " << newVals 
+    << " is not a discrete function in updateDiscreteFunction()");
+
+  DiscreteFunction* out = DiscreteFunction::discFunc(old);
+  TEST_FOR_EXCEPTION(out==0, std::runtime_error,
+    "output argument " << old 
+    << " is not a discrete function in updateDiscreteFunction()");
+
+  TEST_FOR_EXCEPTION(
+    in->getVector().space() != out->getVector().space(),
+    std::runtime_error,
+    "incompatible spaces " << in->getVector().space()
+    << " and " << out->getVector().space()
+    << " in updateDiscreteFunction()");
+
+  Vector<double> vec = in->getVector();
+  out->setVector(vec);
+}
+
+Expr copyDiscreteFunction(const Expr& u0, const string& name)
+{
+  const DiscreteFunction* in = DiscreteFunction::discFunc(u0);  
+
+  TEST_FOR_EXCEPTION(in==0, std::runtime_error,
+    "input argument " << u0 
+    << " is not a discrete function in copyDiscreteFunction()");
+
+  const DiscreteSpace& space = in->discreteSpace();
+  const Vector<double>& vec = in->getVector();
+  Vector<double> vecCopy = vec.copy();
+  return new DiscreteFunction(space, vec, name);
+}
+
+void addVecToDiscreteFunction(Expr u, const Vector<double>& v)
+{
+  DiscreteFunction* in = DiscreteFunction::discFunc(u);
+
+  TEST_FOR_EXCEPTION(in==0, std::runtime_error,
+    "input argument " << u
+    << " is not a discrete function in addVecToDiscreteFunction()");
+  
+  Vector<double> vec = in->getVector();
+
+  TEST_FOR_EXCEPTION(
+    in->getVector().space() != v.space(),
+    std::runtime_error,
+    "incompatible spaces " << in->getVector().space()
+    << " and " << v.space()
+    << " in addVecToDiscreteFunction()");
+  
+  vec.update(1.0, v);
+}
+
+Vector<double> getDiscreteFunctionVector(const Expr& u)
+{
+  const DiscreteFunction* df = DiscreteFunction::discFunc(u);  
+  if (df != 0)
+  {
+    return df->getVector();
+  }
+  else
+  {
+    TEST_FOR_EXCEPTION(df==0 && u.size()==1, runtime_error,
+      "non-block vector should be a discrete function in getDiscreteFunctionVector()");
+    Array<Vector<double> > vec(u.size());
+    for (int b=0; b<u.size(); b++)
+    {
+      vec[b] = getDiscreteFunctionVector(u[b]);
+    }
+    return blockVector(vec);
+  }
+}
+
+
 }
 

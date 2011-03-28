@@ -196,6 +196,16 @@ isSameObject( CTrilinos_Universal_ID_t id1, CTrilinos_Universal_ID_t id2 )
             shares = isSameObject(CIfpack::getConstPreconditioner(id1), id2);
             break;
 #endif /* HAVE_CTRILINOS_IFPACK */
+        case CT_Epetra_SerialDenseVector_ID:
+            shares = isSameObject(CEpetra::getConstSerialDenseVector(id1), id2);
+            break;
+#ifdef HAVE_CTRILINOS_PLIRIS
+#ifdef HAVE_MPI
+        case CT_Pliris_ID:
+            shares = isSameObject(CPliris::getConstPliris(id1), id2);
+            break;
+#endif /* HAVE_MPI */
+#endif /* HAVE_CTRILINOS_PLIRIS */
         default:
             break;
         }
@@ -347,6 +357,16 @@ isSameObject( CTrilinos_Universal_ID_t id1, CTrilinos_Universal_ID_t id2 )
             shares = isSameObject(CIfpack::getPreconditioner(id1), id2);
             break;
 #endif /* HAVE_CTRILINOS_IFPACK */
+        case CT_Epetra_SerialDenseVector_ID:
+            shares = isSameObject(CEpetra::getSerialDenseVector(id1), id2);
+            break;
+#ifdef HAVE_CTRILINOS_PLIRIS
+#ifdef HAVE_MPI
+        case CT_Pliris_ID:
+            shares = isSameObject(CPliris::getPliris(id1), id2);
+            break;
+#endif /* HAVE_MPI */
+#endif /* HAVE_CTRILINOS_PLIRIS */
         default:
             break;
         }
@@ -421,6 +441,12 @@ purgeAllTables(  )
 #ifdef HAVE_CTRILINOS_IFPACK
     CIfpack::purgePreconditioner();
 #endif /* HAVE_CTRILINOS_IFPACK */
+    CEpetra::purgeSerialDenseVector();
+#ifdef HAVE_CTRILINOS_PLIRIS
+#ifdef HAVE_MPI
+    CPliris::purgePliris();
+#endif /* HAVE_MPI */
+#endif /* HAVE_CTRILINOS_PLIRIS */
 }
 
 

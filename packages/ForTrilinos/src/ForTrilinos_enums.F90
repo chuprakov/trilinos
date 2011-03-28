@@ -35,9 +35,9 @@
 !                    Damian Rouson (rouson@sandia.gov)
 !*********************************************************************
 
+! Can't use Fortran-style include due to C pre-processor directives in ForTrilinos_config.h
 #include "ForTrilinos_config.h"
 module ForTrilinos_enums
-! Can't use Fortran-style include due to C pre-processor directives in ForTrilinos_config.h
   use iso_c_binding ,only : c_int        ! Kind parameter (precision specifier)
   implicit none                          ! Prevent implicit typing
 
@@ -90,7 +90,9 @@ module ForTrilinos_enums
       FT_AztecOO_StatusTestMaxIters_ID,       &
       FT_AztecOO_StatusTestResNorm_ID,        &
       FT_Ifpack_ID,                           &
-      FT_Ifpack_Preconditioner_ID
+      FT_Ifpack_Preconditioner_ID,            &
+      FT_Epetra_SerialDenseVector_ID,         &
+      FT_Pliris_ID
   end enum
 
   ! Since the Fortran 2003 standard guarantees that enum values correspond to C int values, we can create
@@ -271,5 +273,15 @@ module ForTrilinos_enums
     integer(ForTrilinos_Table_ID_t) :: table; integer(c_int) :: index; integer(FT_boolean_t) :: is_const
   end type
 #endif /* HAVE_FORTRILINOS_IFPACK */
+  type ,bind(C) :: FT_Epetra_SerialDenseVector_ID_t
+    integer(ForTrilinos_Table_ID_t) :: table; integer(c_int) :: index; integer(FT_boolean_t) :: is_const
+  end type
+#ifdef HAVE_FORTRILINOS_PLIRIS
+#ifdef HAVE_MPI
+  type ,bind(C) :: FT_Pliris_ID_t
+    integer(ForTrilinos_Table_ID_t) :: table; integer(c_int) :: index; integer(FT_boolean_t) :: is_const
+  end type
+#endif /* HAVE_MPI */
+#endif /* HAVE_FORTRILINOS_PLIRIS */
 
 end module ForTrilinos_enums

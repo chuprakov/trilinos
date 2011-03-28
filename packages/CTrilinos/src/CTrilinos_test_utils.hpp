@@ -103,6 +103,12 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #ifdef HAVE_CTRILINOS_IFPACK
 #include "CIfpack_Preconditioner_Cpp.hpp"
 #endif /* HAVE_CTRILINOS_IFPACK */
+#include "CEpetra_SerialDenseVector_Cpp.hpp"
+#ifdef HAVE_CTRILINOS_PLIRIS
+#ifdef HAVE_MPI
+#include "CPliris_Cpp.hpp"
+#endif /* HAVE_MPI */
+#endif /* HAVE_CTRILINOS_PLIRIS */
 
 #include "CTrilinos_enums.h"
 #include "CTrilinos_utils.hpp"
@@ -282,6 +288,16 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Universal_ID_t id )
             shares = rcp.shares_resource(CIfpack::getConstPreconditioner(id));
             break;
 #endif /* HAVE_CTRILINOS_IFPACK */
+        case CT_Epetra_SerialDenseVector_ID:
+            shares = rcp.shares_resource(CEpetra::getConstSerialDenseVector(id));
+            break;
+#ifdef HAVE_CTRILINOS_PLIRIS
+#ifdef HAVE_MPI
+        case CT_Pliris_ID:
+            shares = rcp.shares_resource(CPliris::getConstPliris(id));
+            break;
+#endif /* HAVE_MPI */
+#endif /* HAVE_CTRILINOS_PLIRIS */
         default:
             break;
         }
@@ -433,6 +449,16 @@ isSameObject( const Teuchos::RCP<T> &rcp, CTrilinos_Universal_ID_t id )
             shares = rcp.shares_resource(CIfpack::getPreconditioner(id));
             break;
 #endif /* HAVE_CTRILINOS_IFPACK */
+        case CT_Epetra_SerialDenseVector_ID:
+            shares = rcp.shares_resource(CEpetra::getSerialDenseVector(id));
+            break;
+#ifdef HAVE_CTRILINOS_PLIRIS
+#ifdef HAVE_MPI
+        case CT_Pliris_ID:
+            shares = rcp.shares_resource(CPliris::getPliris(id));
+            break;
+#endif /* HAVE_MPI */
+#endif /* HAVE_CTRILINOS_PLIRIS */
         default:
             break;
         }

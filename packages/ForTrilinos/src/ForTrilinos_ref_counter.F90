@@ -67,7 +67,7 @@ contains
 
   subroutine grab(this)
     class(ref_counter), intent(inout) :: this
-    if (assertions) call assert( [associated(this%count)], [error_message('Ref_counter%grab: count not associated.')] )
+    call assert( [associated(this%count)], [error_message('Ref_counter%grab: count not associated.')] )
     this%count = this%count + 1
   end subroutine
 
@@ -76,9 +76,11 @@ contains
     class (ref_counter), intent(inout) :: this
     integer :: status
     type(error) :: ierr
-    if (assertions) call assert( [associated(this%count)], [error_message('Ref_counter%release: count not associated.')] )
+    call assert( [associated(this%count)], [error_message('Ref_counter%release: count not associated.')] )
+    call assert( [this%count>=1], [error_message('Ref_counter%release: non-positive count.')] )
     this%count = this%count - 1
     if (this%count == 0) then
+      call this%obj%ctrilinos_delete
       deallocate (this%count,stat=status)
       ierr=error(status,'Ref_counter%release: this%count')
       call ierr%check_success()
@@ -91,7 +93,7 @@ contains
   subroutine assign (lhs, rhs)
     class (ref_counter), intent(inout) :: lhs
     class (ref_counter), intent(in) :: rhs
-    if (associated(lhs%count)) call lhs%release
+    call assert( [associated(rhs%count)], [error_message('Ref_counter%assign: rhs%count not associated.')] )
     lhs%count => rhs%count
     lhs%obj => rhs%obj
     call lhs%grab

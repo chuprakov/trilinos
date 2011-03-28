@@ -320,6 +320,12 @@ enum2str( CTrilinos_Table_ID_t ty )
     case CT_Ifpack_Preconditioner_ID:
         s.assign("CT_Ifpack_Preconditioner_ID");
         break;
+    case CT_Epetra_SerialDenseVector_ID:
+        s.assign("CT_Epetra_SerialDenseVector_ID");
+        break;
+    case CT_Pliris_ID:
+        s.assign("CT_Pliris_ID");
+        break;
     default:
         s.assign("(unrecognized)");
         break;
