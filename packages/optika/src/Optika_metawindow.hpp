@@ -129,7 +129,7 @@ public:
 	 * Constructs a MainWindow object.
 	 * 
 	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
-	 * @param customFunc The function to run whenever the user clicks the submit button.
+	 * @param customFunc The function to run whenever the user clicks the action button.
 	 * @param fileName The name of a save file that may store previous values used by a user for the 
 	 * Parameter List specified by validParameters.
 	 */
@@ -156,14 +156,15 @@ public:
 	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
 	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
 	 * ParameterList.
-	 * @param customFunc The function to run whenever the user clicks the submit button.
+	 * @param customFunc The function to run whenever the user clicks the action button.
 	 * @param fileName The name of a save file that may store previous values used by a user for the 
 	 * Parameter List specified by validParameters.
 	 */
 	MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, 
 	Teuchos::RCP<Teuchos::DependencySheet> dependencySheet,
 	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>),
-	QString fileName=QString());
+	QString fileName=QString(),
+  const std::string actionButtonText="");
 
 	/**
 	 * Deconstructer for the metawindow
@@ -208,7 +209,7 @@ private:
 	QString aboutInfo;
 
 	/*
-	 * The custom function to run when the user hits the submit button.
+	 * The custom function to run when the user clicks the action button.
 	 */
 	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>);
 
@@ -240,9 +241,13 @@ private:
 	/**
 	 * Common initialization shared by both constructors.
 	 *
-	 * @param customFunc The function to run whenever the user clicks the submit button.
+	 * @param customFunc The function to run whenever the user clicks the action 
+   * button.
+   * @param actionButtonText Text to be placed in the action button.
 	 */
-	void initilization(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)=0);
+	void initilization(
+    void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)=0, 
+    const std::string actionButtonText="");
 
 	/**
 	 * Creates all the menus for the metawindow.
@@ -322,9 +327,9 @@ private slots:
 	void initiateSearch();
 	
 	/**
-	 * What should happen when the user clicks the submit button.
+	 * What should happen when the user clicks the action button.
 	 */
-	void submit();
+	void doAction();
 };
 
 

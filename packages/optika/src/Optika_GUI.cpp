@@ -158,6 +158,10 @@ void OptikaGUI::setAboutInfo(std::string aboutInfo){
 	this->aboutInfo = aboutInfo;
 }
 
+void OptikaGUI::setActionButtonText(const std::string text){
+  actionButtonText = text;
+}
+
 std::string OptikaGUI::getWindowTitle(){
 	return title;
 }
