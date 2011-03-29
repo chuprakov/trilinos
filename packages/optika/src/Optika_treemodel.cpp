@@ -188,7 +188,8 @@ bool TreeModel::writeOutput(QString fileName){
 	}
 	std::ofstream outputFile;
 	Teuchos::XMLParameterListWriter plWriter;
-	Teuchos::XMLObject xmlOutput = plWriter.toXML(*validParameters);
+	Teuchos::XMLObject xmlOutput = 
+    plWriter.toXML(*validParameters, dependencySheet);
 	QTextStream outStream(file);
 	outStream << QString::fromStdString(xmlOutput.toString());
 	file->close();
