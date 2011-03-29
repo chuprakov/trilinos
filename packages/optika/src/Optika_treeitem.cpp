@@ -127,9 +127,9 @@ QVariant TreeItem::data(int column, int role) const{
 	else if(role == Qt::DisplayRole){
 		return itemData.value(column);
 	}
-  else if(role == Qt::UserRole){
-    return QVariant::fromValue(parameterEntry);
-  }
+  /*else if(role == Qt::UserRole){
+    return QVariant::fromValue(parameterEntry.getConst());
+  }*/
 	return QVariant();
 }
 

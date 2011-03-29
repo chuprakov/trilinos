@@ -194,9 +194,8 @@ public:
 	 * Finds the index of a particular parameter entry.
 	 *
 	 * @param parameterEntry The ParameterEntry whose index is being sought.
-	 * @param parameterName The name of the parameter whose index is being sought.
 	 */
-	QModelIndex findParameterEntryIndex(const Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry);
+	QModelIndex findParameterEntryIndex(Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry);
 signals:
 	/**
 	 * Emitted when a row should be hidden.
@@ -318,6 +317,8 @@ private:
 	 * @param arrayIndex The index of the array to be redrawn.
 	 */
 	void redrawArray(const QModelIndex arrayIndex);
+  
+  QModelIndex recursiveIndexSearch(QModelIndex currentIndex, Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry);
 
 private slots:
 	/**

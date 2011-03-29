@@ -272,25 +272,48 @@ Teuchos::RCP<const Teuchos::ParameterList> TreeModel::getCurrentParameters(){
 	return validParameters;
 }
 
+QModelIndex TreeModel::recursiveIndexSearch(QModelIndex currentIndex, Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry){
+  TreeItem* currentItem = (TreeItem*)currentIndex.internalPointer();
+  if(currentItem != NULL && currentItem->hasEntry() && itemEntry(currentIndex).get() == parameterEntry.get()){
+    return currentIndex;
+  }
+
+  if(hasChildren(currentIndex)){
+    int numChildren = rowCount(currentIndex);
+    for(int i =0; i< numChildren; ++i){
+      if(recursiveIndexSearch(currentIndex.child(i,0), parameterEntry).isValid()){
+        return currentIndex.child(i,0);
+      }
+    }
+  }
+  QModelIndex invalidIndex;
+  return invalidIndex;
+
+}
+
 QModelIndex TreeModel::findParameterEntryIndex(
-  const Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry)
+  Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry)
 {
-	QList<QModelIndex> potentialMatches = match(
+  return recursiveIndexSearch(index(1,0), parameterEntry);
+/*	QList<QModelIndex> potentialMatches = match(
     index(0,0),
     Qt::UserRole, 
     QVariant::fromValue(parameterEntry),
 	  1, 
     Qt::MatchExactly | Qt::MatchRecursive );
+  
   if(potentialMatches.size() == 1){
     return potentialMatches.first();
   }
-	return QModelIndex();
+	return QModelIndex();*/
+  
 }
 
 
 Teuchos::RCP<const Teuchos::ParameterEntry> 
 TreeModel::itemEntry(const QModelIndex &index) const{
-	return index.data(Qt::UserRole).value<Teuchos::RCP<const Teuchos::ParameterEntry> >();
+  TreeItem* item = (TreeItem*)index.internalPointer();
+  return item->getEntry();
 }
 
 void TreeModel::readInParameterList(Teuchos::RCP<Teuchos::ParameterList> parameterList, TreeItem *parentItem){

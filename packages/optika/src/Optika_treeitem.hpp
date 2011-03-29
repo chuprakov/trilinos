@@ -36,8 +36,8 @@
 #include "Optika_ArrayHelperFunctions.hpp"
 
 //MUST BE DONE OUTSIDE NAMEPSACE!
-Q_DECLARE_METATYPE(Teuchos::RCP<const Teuchos::ParameterEntry>)
-Q_DECLARE_METATYPE(Teuchos::RCP<Teuchos::ParameterEntry>)
+//Q_DECLARE_METATYPE(Teuchos::RCP<const Teuchos::ParameterEntry>)
+//Q_DECLARE_METATYPE(Teuchos::RCP<Teuchos::ParameterEntry>)
 
 namespace Optika{
 /**
@@ -92,6 +92,19 @@ public:
 	 * @return The child TreeItem located in the row.
 	 */
 	TreeItem *child(int row);
+
+  /**
+   * Gets the ParameterEntry associated with this TreeItem.
+   *
+   * @return The ParameterEntry associated with this TreeItem.
+   */
+  inline Teuchos::RCP<const Teuchos::ParameterEntry> getEntry() const{
+    return parameterEntry.getConst();
+  }
+
+  inline bool hasEntry() const{
+    return parameterEntry != Teuchos::null;
+  }
 
 	/**
 	 * Gets the number of child nodes this item has.
