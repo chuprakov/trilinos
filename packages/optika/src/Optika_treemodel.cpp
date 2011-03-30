@@ -275,81 +275,28 @@ Teuchos::RCP<const Teuchos::ParameterEntryValidator> TreeModel::getValidator(con
 Teuchos::RCP<const Teuchos::ParameterList> TreeModel::getCurrentParameters(){
 	return validParameters;
 }
-/*
-QModelIndex TreeModel::recursiveIndexSearch(QModelIndex currentIndex, Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry){
-  TreeItem* currentItem = (TreeItem*)currentIndex.internalPointer();
-  if(currentItem != NULL && currentItem->hasEntry() && itemEntry(currentIndex).get() == parameterEntry.get()){
-    return currentIndex;
-  }
 
-  if(hasChildren(currentIndex)){
-    int numChildren = rowCount(currentIndex);
-    for(int i =0; i< numChildren; ++i){
-      if(recursiveIndexSearch(currentIndex.child(i,0), parameterEntry).isValid()){
-        return currentIndex.child(i,0);
-      }
-    }
-  }
-  QModelIndex invalidIndex;
-  return invalidIndex;
-
-}*/
-QModelIndex TreeModel::recursiveIndexSearch(QModelIndex currentIndex, Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry){
-  QModelIndex p = parent(currentIndex);
-  int from = currentIndex.row();
-  int to = rowCount(p);
-  for(int i=from; i<to; ++i){
-    QModelIndex idx = index(i, currentIndex.column(), p);
-    Teuchos::RCP<const Teuchos::ParameterEntry> entry = 
-      itemEntry(idx);
-    if(entry != Teuchos::null && entry.get() == parameterEntry.get()){
-      return idx;
-    }  
-    QModelIndex recursiveResult =
-      recursiveIndexSearch(index(0,idx.column(), idx), parameterEntry);
-    if(recursiveResult.isValid()){
-      return recursiveResult;
-    }
-  }
-  return QModelIndex();
-}
-
-QModelIndexList TreeModel::myMatch(const QModelIndex &start, int role,
-  const Teuchos::RCP<const Teuchos::ParameterEntry> &parameterEntry, 
-  int hits, Qt::MatchFlags flags) const
+QModelIndexList TreeModel::parameterEntryMatch(const QModelIndex &start,
+  const Teuchos::RCP<const Teuchos::ParameterEntry> &parameterEntry) const
 {
   QModelIndexList result;
-  uint matchType = flags & 0x0F;
-  Qt::CaseSensitivity cs = flags & Qt::MatchCaseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive;
-  bool recurse = flags & Qt::MatchRecursive;
-  bool wrap = flags & Qt::MatchWrap;
-  bool allHits = (hits == -1);
-  QString text; // only convert to a string if it is needed
   QModelIndex p = parent(start);
   int from = start.row();
   int to = rowCount(p);
 
-  // iterates twice if wrapping
-  for (int i = 0; (wrap && i < 2) || (!wrap && i < 1); ++i) {
-    for (int r = from; (r < to) && (allHits || result.count() < hits); ++r) {
-      QModelIndex idx = index(r, start.column(), p);
-      if (!idx.isValid())
-        continue;
-            //QVariant v = data(idx, role);
-      Teuchos::RCP<const Teuchos::ParameterEntry> entry = itemEntry(idx);
-      if(entry != Teuchos::null && entry.get() == parameterEntry.get()){
-        result.append(idx);
-      }  
+  for (int r = from; r < to ; ++r) {
+    QModelIndex idx = index(r, start.column(), p);
+    if (!idx.isValid())
+      continue;
+    Teuchos::RCP<const Teuchos::ParameterEntry> entry = itemEntry(idx);
+    if(entry != Teuchos::null && entry.get() == parameterEntry.get()){
+      result.append(idx);
+    }  
             
-      if (recurse && hasChildren(idx)) { // search the hierarchy
-        result += myMatch(index(0, idx.column(), idx), role,
-                       parameterEntry,
-                       (allHits ? -1 : hits - result.count()), flags);
-      }
+    if (hasChildren(idx)) { // search the hierarchy
+      result += 
+        parameterEntryMatch(index(0, idx.column(), idx), parameterEntry);
     }
-    // prepare for the next iteration
-    from = 0;
-    to = start.row();
   }
   return result;
 }
@@ -358,13 +305,9 @@ QModelIndexList TreeModel::myMatch(const QModelIndex &start, int role,
 QModelIndex TreeModel::findParameterEntryIndex(
   Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry)
 {
-//  return recursiveIndexSearch(index(0,0), parameterEntry);
-	QList<QModelIndex> potentialMatches = myMatch(
+	QList<QModelIndex> potentialMatches = parameterEntryMatch(
     index(0,0),
-    Qt::UserRole, 
-    parameterEntry,
-	  1, 
-    Qt::MatchExactly | Qt::MatchRecursive );
+    parameterEntry);
   
   if(potentialMatches.size() == 1){
     return potentialMatches.first();

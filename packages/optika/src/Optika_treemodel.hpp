@@ -90,9 +90,8 @@ public:
 	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
-QModelIndexList myMatch(const QModelIndex &start, int role,
-  const Teuchos::RCP<const Teuchos::ParameterEntry> &parameterEntry, 
-  int hits, Qt::MatchFlags flags) const;
+QModelIndexList parameterEntryMatch(const QModelIndex &start,
+  const Teuchos::RCP<const Teuchos::ParameterEntry> &parameterEntry) const;
 
 
 	/**
