@@ -284,7 +284,7 @@ QModelIndexList TreeModel::parameterEntryMatch(const QModelIndex &start,
   int from = start.row();
   int to = rowCount(p);
 
-  for (int r = from; r < to ; ++r) {
+  for (int r = from; (r < to) && (result.size() < 1); ++r) {
     QModelIndex idx = index(r, start.column(), p);
     if (!idx.isValid())
       continue;

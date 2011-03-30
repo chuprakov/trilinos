@@ -90,8 +90,6 @@ public:
 	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
-QModelIndexList parameterEntryMatch(const QModelIndex &start,
-  const Teuchos::RCP<const Teuchos::ParameterEntry> &parameterEntry) const;
 
 
 	/**
@@ -322,7 +320,21 @@ private:
 	 */
 	void redrawArray(const QModelIndex arrayIndex);
   
-  QModelIndex recursiveIndexSearch(QModelIndex currentIndex, Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry);
+  /**
+   * Finds a list of QModelIndecies whose have associated ParameterEntrys
+   * that match the given parameterEntry. 
+   * 
+   * The fact this returns a list is a
+   * little missleading, as the list will always be length one. I really
+   * should just be returning a single QModelIndex. But my thesis is due on
+   * Friday so I'll have to come back and fix this later. 
+   * Kurtis Nusbaum 30/03/2011.
+   *
+   * @param start The index where we should start looking.
+   * @param parameterEntry The parameter entry we're looking for.
+   */
+  QModelIndexList parameterEntryMatch(const QModelIndex &start,
+    const Teuchos::RCP<const Teuchos::ParameterEntry> &parameterEntry) const;
 
 private slots:
 	/**
