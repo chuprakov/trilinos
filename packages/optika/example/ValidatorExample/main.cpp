@@ -93,21 +93,21 @@ int main(){
   My_List->set("Step int", 10, "Step int tester", intStepVali);
 
   /*
-   * Now suppose we wanted to make a validator for a short parameter that only
+   * Now suppose we wanted to make a validator for a int parameter that only
    * had a minimum, and no maximum. First we creat it.
    */
-  Teuchos::RCP<Teuchos::EnhancedNumberValidator<short> > shortVali = 
-  	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<short>());
+  Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > int2Vali = 
+  	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<int>());
 
   /*
    * We then call the setMin function with a value of 0.
    */
-  shortVali->setMin(0);
+  int2Vali->setMin(0);
 
   /*
-   * We then apply the validator to a short parameter.
+   * We then apply the validator to a int parameter.
    */
-  My_List->set("Short", (short)4, "short tester", shortVali);
+  My_List->set("Int2", 4, "int min tester", int2Vali);
 
   /*
    * Floats and Doubles have an extra argument that can be tacked on to their constructor,

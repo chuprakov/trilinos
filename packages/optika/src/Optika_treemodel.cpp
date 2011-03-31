@@ -172,7 +172,11 @@ void TreeModel::issueInitilizationSignals(){
       ++it2)
     {
 		  QModelIndex dependeeIndex = findParameterEntryIndex(*it2);
+      TEST_FOR_EXCEPTION(!dependeeIndex.isValid(), std::logic_error,
+        "Could not find the index of the dependee. This is an internal error. "
+        "Please contact the Optika team.");
 		  dataChangedListener(dependeeIndex, dependeeIndex);
+        
     }
 	}
 }
@@ -272,15 +276,39 @@ Teuchos::RCP<const Teuchos::ParameterList> TreeModel::getCurrentParameters(){
 	return validParameters;
 }
 
-QModelIndex TreeModel::findParameterEntryIndex(
-  const Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry)
+QModelIndexList TreeModel::parameterEntryMatch(const QModelIndex &start,
+  const Teuchos::RCP<const Teuchos::ParameterEntry> &parameterEntry) const
 {
-	QList<QModelIndex> potentialMatches = match(
+  QModelIndexList result;
+  QModelIndex p = parent(start);
+  int from = start.row();
+  int to = rowCount(p);
+
+  for (int r = from; (r < to) && (result.size() < 1); ++r) {
+    QModelIndex idx = index(r, start.column(), p);
+    if (!idx.isValid())
+      continue;
+    Teuchos::RCP<const Teuchos::ParameterEntry> entry = itemEntry(idx);
+    if(entry != Teuchos::null && entry.get() == parameterEntry.get()){
+      result.append(idx);
+    }  
+            
+    if (hasChildren(idx)) { // search the hierarchy
+      result += 
+        parameterEntryMatch(index(0, idx.column(), idx), parameterEntry);
+    }
+  }
+  return result;
+}
+
+
+QModelIndex TreeModel::findParameterEntryIndex(
+  Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry)
+{
+	QList<QModelIndex> potentialMatches = parameterEntryMatch(
     index(0,0),
-    Qt::UserRole, 
-    QVariant::fromValue(parameterEntry),
-	  1, 
-    Qt::MatchExactly | Qt::MatchRecursive );
+    parameterEntry);
+  
   if(potentialMatches.size() == 1){
     return potentialMatches.first();
   }
@@ -290,7 +318,16 @@ QModelIndex TreeModel::findParameterEntryIndex(
 
 Teuchos::RCP<const Teuchos::ParameterEntry> 
 TreeModel::itemEntry(const QModelIndex &index) const{
-	return index.data(Qt::UserRole).value<Teuchos::RCP<const Teuchos::ParameterEntry> >();
+  if(!index.isValid()){
+    return Teuchos::null;
+  }
+  TreeItem* item = (TreeItem*)index.internalPointer();
+  if(item->hasEntry()){
+    return item->getEntry();
+  }
+  else{
+    return Teuchos::null;
+  }
 }
 
 void TreeModel::readInParameterList(Teuchos::RCP<Teuchos::ParameterList> parameterList, TreeItem *parentItem){

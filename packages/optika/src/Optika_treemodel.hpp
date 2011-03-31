@@ -91,6 +91,7 @@ public:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
+
 	/**
 	 * If this TreeModel has a dependent Parameter List, then all the depndencies need to be evaluated before the Parameter List may be displayed.
 	 * Certain items might need to be hidden before the user even starts entering data. 
@@ -194,9 +195,8 @@ public:
 	 * Finds the index of a particular parameter entry.
 	 *
 	 * @param parameterEntry The ParameterEntry whose index is being sought.
-	 * @param parameterName The name of the parameter whose index is being sought.
 	 */
-	QModelIndex findParameterEntryIndex(const Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry);
+	QModelIndex findParameterEntryIndex(Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry);
 signals:
 	/**
 	 * Emitted when a row should be hidden.
@@ -222,6 +222,7 @@ signals:
 	 * item to obtain an invalid value.
 	 */
 	void badValue(QModelIndex badItem,  QString message);
+
 
 private:
 	/**
@@ -318,6 +319,22 @@ private:
 	 * @param arrayIndex The index of the array to be redrawn.
 	 */
 	void redrawArray(const QModelIndex arrayIndex);
+  
+  /**
+   * Finds a list of QModelIndecies whose have associated ParameterEntrys
+   * that match the given parameterEntry. 
+   * 
+   * The fact this returns a list is a
+   * little missleading, as the list will always be length one. I really
+   * should just be returning a single QModelIndex. But my thesis is due on
+   * Friday so I'll have to come back and fix this later. 
+   * Kurtis Nusbaum 30/03/2011.
+   *
+   * @param start The index where we should start looking.
+   * @param parameterEntry The parameter entry we're looking for.
+   */
+  QModelIndexList parameterEntryMatch(const QModelIndex &start,
+    const Teuchos::RCP<const Teuchos::ParameterEntry> &parameterEntry) const;
 
 private slots:
 	/**
