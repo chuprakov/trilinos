@@ -164,7 +164,7 @@ public:
 	Teuchos::RCP<Teuchos::DependencySheet> dependencySheet,
 	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>),
 	QString fileName=QString(),
-  const std::string actionButtonText="");
+  const std::string actionButtonText="submit");
 
 	/**
 	 * Deconstructer for the metawindow
@@ -247,7 +247,7 @@ private:
 	 */
 	void initilization(
     void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)=0, 
-    const std::string actionButtonText="");
+    const std::string actionButtonText="submit");
 
 	/**
 	 * Creates all the menus for the metawindow.
