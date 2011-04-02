@@ -43,7 +43,7 @@ public:
 };
 
 int IntVisualTester::runFunction() const{
-	if(getParameterValue() <= 32){
+	if(getArguementValue() <= 32){
 		return 1;
 	}
 	else{
@@ -58,7 +58,7 @@ public:
 };
 
 int IntFuncTester::runFunction() const{
-  return getParameterValue() + 10;
+  return getArguementValue() + 10;
 }
 
 class FondueTempTester : public Teuchos::SingleArguementFunctionObject<double, double>{
@@ -68,7 +68,7 @@ public:
 };
 
 double FondueTempTester::runFunction() const{
-	return getParameterValue()-100;
+	return getArguementValue()-100;
 }
 
 int main(){
