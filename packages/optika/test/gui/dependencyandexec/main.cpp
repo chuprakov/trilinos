@@ -36,41 +36,6 @@ void print(Teuchos::RCP<const Teuchos::ParameterList> theList){
   Teuchos::writeParameterListToXmlOStream(*theList, *out);
 }
 
-class IntVisualTester : public Teuchos::SingleArguementFunctionObject<int, int>{
-
-public:
-  int runFunction() const;
-};
-
-int IntVisualTester::runFunction() const{
-	if(getArguementValue() <= 32){
-		return 1;
-	}
-	else{
-		return 0;
-	}
-}
-
-class IntFuncTester : public Teuchos::SingleArguementFunctionObject<int, int>{
-
-public:
-  int runFunction() const;
-};
-
-int IntFuncTester::runFunction() const{
-  return getArguementValue() + 10;
-}
-
-class FondueTempTester : public Teuchos::SingleArguementFunctionObject<double, double>{
-
-public:
-  double runFunction() const;
-};
-
-double FondueTempTester::runFunction() const{
-	return getArguementValue()-100;
-}
-
 int main(){
  Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::VerboseObjectBase::getDefaultOStream();
  Teuchos::RCP<Teuchos::ParameterList> My_deplist = rcp(new Teuchos::ParameterList);
@@ -195,7 +160,8 @@ int main(){
  
   depSheet1->addDependency(cheeseTempDep);
   
-  Teuchos::RCP<FondueTempTester> fondueFunc = Teuchos::rcp(new FondueTempTester());
+  Teuchos::RCP<Teuchos::SubtractionFunction<double> > fondueFunc = Teuchos::rcp(
+    new Teuchos::SubtractionFunction<double>(100));
   Teuchos::RCP<Teuchos::NumberVisualDependency<double> > fondueDep = 
       Teuchos::RCP<Teuchos::NumberVisualDependency<double> >(new Teuchos::NumberVisualDependency<double>(
       My_deplist->getEntryRCP("Temperature"),
@@ -271,8 +237,8 @@ Teuchos::ParameterList&
 
 
 
-  Teuchos::RCP<IntVisualTester> intVisTester = 
-    Teuchos::rcp(new IntVisualTester());
+  Teuchos::RCP<Teuchos::SubtractionFunction<int> > intVisTester =
+    Teuchos::rcp(new Teuchos::SubtractionFunction<int>(32));
   Teuchos::ParameterList&
     numberVisDepList = My_deplist->sublist(
       "Number Visual Dependency List", false, 
