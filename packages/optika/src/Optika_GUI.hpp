@@ -28,7 +28,6 @@
 #ifndef OPTIKA_GUI_HPP_
 #define OPTIKA_GUI_HPP_
 
-#include "Teuchos_DependencySheet.hpp"
 #include "Optika_metawindow.hpp"
 
 
@@ -39,7 +38,7 @@ namespace Optika{
    *
    * @param validParameters A list of parameters from which the users may specify values.
    */
-  void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters);
+  void getInput(RCP<ParameterList> validParameters);
 
   /**
    * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
@@ -49,7 +48,7 @@ namespace Optika{
    * @param validParameters A list of parameters from which the users may specify values.
    * @param customFunc Custom function to run whenever the user clicks the action button.
    */
-  void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
+  void getInput(RCP<ParameterList> validParameters, void (*customFunc)(RCP<const ParameterList>));
 
   /**
    * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
@@ -59,7 +58,7 @@ namespace Optika{
    * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
    * ParameterList.
    */
-  void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet);
+  void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet);
 
   /**
    * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
@@ -71,7 +70,7 @@ namespace Optika{
    * ParameterList.
    * @param customFunc Custom function to run whenever the user clicks the action button.
    */
-  void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
+  void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet, void (*customFunc)(RCP<const ParameterList>));
 
 /**
  * A class that allows the user to create and customize their Optika GUI.
@@ -83,7 +82,7 @@ public:
    *
    * @param validParameters A list of parameters from which the users may specify values.
    */
-  OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters);
+  OptikaGUI(RCP<ParameterList> validParameters);
 
   /**
    * Constructs an OptikaGUI object.
@@ -92,7 +91,7 @@ public:
    * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
    * ParameterList.
    */
-  OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet);
+  OptikaGUI(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet);
 
   /**
    * Runs the GUI and gets the user input.
@@ -135,7 +134,7 @@ public:
    *
    * @param The custom function to be run whenever the user clicks the action button.
    */
-  void setCustomFunction(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
+  void setCustomFunction(void (*customFunc)(RCP<const ParameterList>));
 
   /**
    * Gets the window title.
@@ -181,12 +180,12 @@ private:
   /**
    * A list of parameters from which the users may specify values.
    */
-  Teuchos::RCP<Teuchos::ParameterList> validParameters;
+  RCP<ParameterList> validParameters;
 
   /**
    * A sheet listing any dependencies between parameters in the validParameters
    */
-  Teuchos::RCP<Teuchos::DependencySheet> dependencySheet;
+  RCP<DependencySheet> dependencySheet;
 
   /**
    * A string containing the window title.
@@ -216,7 +215,7 @@ private:
   /**
    * The custom function to be run whenever the user clicks the action button.
    */
-  void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>);
+  void (*customFunc)(RCP<const ParameterList>);
 };
 
 }

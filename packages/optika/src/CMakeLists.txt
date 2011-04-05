@@ -9,7 +9,8 @@ SET(HDRS
 Optika_ArrayHelperFunctions.hpp 
 Optika_GUI.hpp 
 Optika_SpinBoxApplier.hpp
-Optika_treeitem.hpp Optika_Types.hpp )
+Optika_treeitem.hpp Optika_Types.hpp 
+Optika_ConfigDefs.hpp)
 
 
 SET(MOC_HDRS Optika_metawindow.hpp Optika_treemodel.hpp

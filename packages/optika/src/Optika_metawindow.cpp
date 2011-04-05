@@ -122,26 +122,26 @@ QModelIndexList SearchWidget::removeHiddenItems(QModelIndexList& items){
 	return toReturn;
 }
 
-MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, QString fileName){
+MetaWindow::MetaWindow(RCP<ParameterList> validParameters, QString fileName){
 	model = new TreeModel(validParameters, fileName);
 	initilization();
 }
 
-MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>), QString fileName){
+MetaWindow::MetaWindow(RCP<ParameterList> validParameters, void (*customFunc)(RCP<const ParameterList>), QString fileName){
 	model = new TreeModel(validParameters, fileName);
 	initilization(customFunc);
 }
 
 MetaWindow::MetaWindow(
-  Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, QString fileName){
+  RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet, QString fileName){
 	model = new TreeModel(validParameters, dependencySheet, fileName);
 	initilization();
 } 
 
 MetaWindow::MetaWindow(
-  Teuchos::RCP<Teuchos::ParameterList> validParameters, 
-  Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, 
-  void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>), 
+  RCP<ParameterList> validParameters, 
+  RCP<DependencySheet> dependencySheet, 
+  void (*customFunc)(RCP<const ParameterList>), 
   QString fileName,
   const std::string actionButtonText)
 {
@@ -171,7 +171,7 @@ void MetaWindow::closeEvent(QCloseEvent *event){
 }
 
 void MetaWindow::initilization(
-  void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>),
+  void (*customFunc)(RCP<const ParameterList>),
   const std::string actionButtonText)
 {
 	this->customFunc = customFunc;

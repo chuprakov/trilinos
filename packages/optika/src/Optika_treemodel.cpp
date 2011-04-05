@@ -33,7 +33,7 @@
 namespace Optika{
 
 
-TreeModel::TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, QString saveFileName, QObject *parent):
+TreeModel::TreeModel(RCP<ParameterList> validParameters, QString saveFileName, QObject *parent):
 	QAbstractItemModel(parent),
 	dependencies(false),
 	validParameters(validParameters)
@@ -41,7 +41,7 @@ TreeModel::TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, QStri
 	basicSetup(saveFileName);
 }
 
-TreeModel::TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet,
+TreeModel::TreeModel(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet,
      QString saveFileName, QObject *parent):
 	 QAbstractItemModel(parent),
 	 dependencies(true),
@@ -160,13 +160,13 @@ int TreeModel::columnCount(const QModelIndex &parent) const {
 
 void TreeModel::issueInitilizationSignals(){
 	for(
-    Teuchos::DependencySheet::DepSet::const_iterator it = 
+    DependencySheet::DepSet::const_iterator it = 
       dependencySheet->depBegin(); 
     it != dependencySheet->depEnd(); 
     ++it)
   {
     for(
-      Teuchos::Dependency::ConstParameterEntryList::const_iterator it2=
+      Dependency::ConstParameterEntryList::const_iterator it2=
         (*it)->getDependees().begin();
       it2 != (*it)->getDependees().end();
       ++it2)
@@ -191,8 +191,8 @@ bool TreeModel::writeOutput(QString fileName){
 		return false;
 	}
 	std::ofstream outputFile;
-	Teuchos::XMLParameterListWriter plWriter;
-	Teuchos::XMLObject xmlOutput = 
+	XMLParameterListWriter plWriter;
+	XMLObject xmlOutput = 
     plWriter.toXML(*validParameters, dependencySheet);
 	QTextStream outStream(file);
 	outStream << QString::fromStdString(xmlOutput.toString());
@@ -236,7 +236,7 @@ void TreeModel::reset(){
 	delete rootItem;
 	QList<QVariant> headers;
 	headers  << "Parameter" << "Value" << "Type";
-	rootItem = new TreeItem(headers, Teuchos::null, 0, true);	
+	rootItem = new TreeItem(headers, null, 0, true);	
 	validParameters->setParameters(*canonicalList);
 	readInParameterList(validParameters, rootItem);
 	this->saveFileName = saveFileName;
@@ -268,16 +268,16 @@ bool TreeModel::hasValidValue(QModelIndex valueToCheck) const{
 	return item->hasValidValue();
 }
 
-Teuchos::RCP<const Teuchos::ParameterEntryValidator> TreeModel::getValidator(const QModelIndex &index) const{
+RCP<const ParameterEntryValidator> TreeModel::getValidator(const QModelIndex &index) const{
 	return itemEntry(index)->validator();
 }
 
-Teuchos::RCP<const Teuchos::ParameterList> TreeModel::getCurrentParameters(){
+RCP<const ParameterList> TreeModel::getCurrentParameters(){
 	return validParameters;
 }
 
 QModelIndexList TreeModel::parameterEntryMatch(const QModelIndex &start,
-  const Teuchos::RCP<const Teuchos::ParameterEntry> &parameterEntry) const
+  const RCP<const ParameterEntry> &parameterEntry) const
 {
   QModelIndexList result;
   QModelIndex p = parent(start);
@@ -288,8 +288,8 @@ QModelIndexList TreeModel::parameterEntryMatch(const QModelIndex &start,
     QModelIndex idx = index(r, start.column(), p);
     if (!idx.isValid())
       continue;
-    Teuchos::RCP<const Teuchos::ParameterEntry> entry = itemEntry(idx);
-    if(entry != Teuchos::null && entry.get() == parameterEntry.get()){
+    RCP<const ParameterEntry> entry = itemEntry(idx);
+    if(entry != null && entry.get() == parameterEntry.get()){
       result.append(idx);
     }  
             
@@ -303,7 +303,7 @@ QModelIndexList TreeModel::parameterEntryMatch(const QModelIndex &start,
 
 
 QModelIndex TreeModel::findParameterEntryIndex(
-  Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry)
+  RCP<const ParameterEntry> parameterEntry)
 {
 	QList<QModelIndex> potentialMatches = parameterEntryMatch(
     index(0,0),
@@ -316,22 +316,22 @@ QModelIndex TreeModel::findParameterEntryIndex(
 }
 
 
-Teuchos::RCP<const Teuchos::ParameterEntry> 
+RCP<const ParameterEntry> 
 TreeModel::itemEntry(const QModelIndex &index) const{
   if(!index.isValid()){
-    return Teuchos::null;
+    return null;
   }
   TreeItem* item = (TreeItem*)index.internalPointer();
   if(item->hasEntry()){
     return item->getEntry();
   }
   else{
-    return Teuchos::null;
+    return null;
   }
 }
 
-void TreeModel::readInParameterList(Teuchos::RCP<Teuchos::ParameterList> parameterList, TreeItem *parentItem){
-	for(Teuchos::ParameterList::ConstIterator itr = parameterList->begin(); itr != parameterList->end(); ++itr){
+void TreeModel::readInParameterList(RCP<ParameterList> parameterList, TreeItem *parentItem){
+	for(ParameterList::ConstIterator itr = parameterList->begin(); itr != parameterList->end(); ++itr){
 		std::string name = parameterList->name(itr);
 		if(parameterList->isSublist(name)){
 			insertParameterList(sublist(parameterList, name), parameterList->getEntryRCP(name), name, parentItem);
@@ -342,14 +342,14 @@ void TreeModel::readInParameterList(Teuchos::RCP<Teuchos::ParameterList> paramet
 	}
 }
 
-void TreeModel::insertParameterList(Teuchos::RCP<Teuchos::ParameterList> parameterList, Teuchos::RCP<Teuchos::ParameterEntry> listEntry, 
+void TreeModel::insertParameterList(RCP<ParameterList> parameterList, RCP<ParameterEntry> listEntry, 
 				    std::string name, TreeItem *parent)
 {
 	QList<QVariant> values = QList<QVariant>() << QString::fromStdString(name).section("->",-1) << QString("") << listId;
 
 	TreeItem *newList = new TreeItem(values, listEntry, parent);
 	parent->appendChild(newList);
-	for(Teuchos::ParameterList::ConstIterator itr = parameterList->begin(); itr != parameterList->end(); ++itr){
+	for(ParameterList::ConstIterator itr = parameterList->begin(); itr != parameterList->end(); ++itr){
 		std::string name = parameterList->name(itr);
 		if(parameterList->isSublist(name)){
 			insertParameterList(sublist(parameterList, name), parameterList->getEntryRCP(name), name,  newList);
@@ -360,41 +360,41 @@ void TreeModel::insertParameterList(Teuchos::RCP<Teuchos::ParameterList> paramet
 	}
 }
 
-void TreeModel::insertParameter(Teuchos::RCP<Teuchos::ParameterEntry> parameter, std::string name, TreeItem *parent){
+void TreeModel::insertParameter(RCP<ParameterEntry> parameter, std::string name, TreeItem *parent){
 	QList<QVariant> values;
 	values.append(QString::fromStdString(name));
 	if(parameter->isType<int>()){
-		values.append(Teuchos::getValue<int>(*parameter));
+		values.append(getValue<int>(*parameter));
 		values.append(intId);
 	}
 	else if(parameter->isType<short>()){
-		values.append(Teuchos::getValue<short>(*parameter));
+		values.append(getValue<short>(*parameter));
 		values.append(shortId);
 	}
 	/*else if(parameter->isType<long long>()){
-		values.append(Teuchos::getValue<long long>(*parameter));
+		values.append(getValue<long long>(*parameter));
 		value.append(longlongId);
 	}*/
 	else if(parameter->isType<double>()){
-		values.append(Teuchos::getValue<double>(*parameter));
+		values.append(getValue<double>(*parameter));
 		values.append(doubleId);
 	}
 	else if(parameter->isType<float>()){
-		values.append(Teuchos::getValue<float>(*parameter));
+		values.append(getValue<float>(*parameter));
 		values.append(floatId);
 	}
 	else if(parameter->isType<bool>()){
-		values.append(Teuchos::getValue<bool>(*parameter));
+		values.append(getValue<bool>(*parameter));
 		values.append(boolId);
 	}
 	else if(parameter->isType<std::string>()){
-		values.append(QString::fromStdString(Teuchos::getValue<std::string>(*parameter)));
+		values.append(QString::fromStdString(getValue<std::string>(*parameter)));
 		values.append(stringId);
 	}
 	else if(parameter->isArray()){
 		QString determinedId = determineArrayType(parameter);
 		if( determinedId != unrecognizedId){
-			values.append(QString::fromStdString(Teuchos::toString(parameter->getAny())));
+			values.append(QString::fromStdString(toString(parameter->getAny())));
 			values.append(QString(arrayId + " "+ determinedId));
 		}
 		else{
@@ -416,8 +416,8 @@ void TreeModel::insertParameter(Teuchos::RCP<Teuchos::ParameterEntry> parameter,
 void TreeModel::basicSetup(QString saveFileName){
 	QList<QVariant> headers;
 	headers  << "Parameter" << "Value" << "Type";
-	rootItem = new TreeItem(headers, Teuchos::null, 0);	
-	canonicalList = Teuchos::RCP<const Teuchos::ParameterList>(new Teuchos::ParameterList(*validParameters));
+	rootItem = new TreeItem(headers, null, 0);	
+	canonicalList = RCP<const ParameterList>(new ParameterList(*validParameters));
 	readInParameterList(validParameters, rootItem);
 	this->saveFileName = saveFileName;
 	if(saveFileName != ""){
@@ -429,17 +429,17 @@ void TreeModel::basicSetup(QString saveFileName){
 	}
 }
 
-void TreeModel::checkDependentState(const QModelIndex dependee, Teuchos::RCP<Teuchos::Dependency> dependency){
+void TreeModel::checkDependentState(const QModelIndex dependee, RCP<Dependency> dependency){
 	QModelIndex dependent;
-	Teuchos::Dependency::ParameterEntryList dependents= dependency->getDependents();
-	for(Teuchos::Dependency::ParameterEntryList::iterator it = dependents.begin(); it != dependents.end(); ++it ){ 
+	Dependency::ParameterEntryList dependents= dependency->getDependents();
+	for(Dependency::ParameterEntryList::iterator it = dependents.begin(); it != dependents.end(); ++it ){ 
 		dependent = findParameterEntryIndex(*it);
-		//if(!is_null(Teuchos::rcp_dynamic_cast<Teuchos::NumberArrayLengthDependency>(dependency))){
+		//if(!is_null(rcp_dynamic_cast<NumberArrayLengthDependency>(dependency))){
     if((*it)->isArray()){
 			redrawArray(dependent.sibling(dependent.row(),1));
 		}
-		else if(!is_null(Teuchos::rcp_dynamic_cast<Teuchos::VisualDependency>(dependency))){
-			Teuchos::RCP<Teuchos::VisualDependency> visDep = Teuchos::rcp_static_cast<Teuchos::VisualDependency>(dependency);
+		else if(!is_null(rcp_dynamic_cast<VisualDependency>(dependency))){
+			RCP<VisualDependency> visDep = rcp_static_cast<VisualDependency>(dependency);
 			visDep->isDependentVisible() ? emit showData(dependent.row(), dependent.parent()) :
 					       emit hideData(dependent.row(), dependent.parent());
 		}
@@ -454,11 +454,11 @@ void TreeModel::checkDependentState(const QModelIndex dependee, Teuchos::RCP<Teu
 }
 
 void TreeModel::redrawArray(const QModelIndex arrayIndex){
-	if(Teuchos::toString(itemEntry(arrayIndex)->getAny()).size() <= 2){
+	if(toString(itemEntry(arrayIndex)->getAny()).size() <= 2){
 		emit hideData(arrayIndex.row(), arrayIndex.parent());
 	}
 	else{
-		setData(arrayIndex, QString::fromStdString(Teuchos::toString(itemEntry(arrayIndex)->getAny())));
+		setData(arrayIndex, QString::fromStdString(toString(itemEntry(arrayIndex)->getAny())));
 		emit showData(arrayIndex.row(), arrayIndex.parent());
 	}
 }
@@ -468,14 +468,14 @@ void TreeModel::currentFileNowModified(){
 }
 
 void TreeModel::dataChangedListener(const QModelIndex& index1, const QModelIndex& /*index2*/){
-	Teuchos::RCP<const Teuchos::ParameterEntry> changedIndexEntry = 
+	RCP<const ParameterEntry> changedIndexEntry = 
     itemEntry(index1);	
 	QModelIndex dependee = index1.sibling(index1.row(), 0);
 	if(dependencySheet->hasDependents(changedIndexEntry)){
-		Teuchos::RCP<const Teuchos::DependencySheet::DepSet> deps =  
+		RCP<const DependencySheet::DepSet> deps =  
       dependencySheet->getDependenciesForParameter(changedIndexEntry);
 		for(
-      Teuchos::DependencySheet::DepSet::const_iterator it = deps->begin();
+      DependencySheet::DepSet::const_iterator it = deps->begin();
       it != deps->end(); 
       ++it)
     {

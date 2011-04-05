@@ -30,7 +30,7 @@
 #include <QStringList>
 #include <QVariant>
 #include "Optika_Types.hpp"
-#include "Teuchos_ParameterEntry.hpp"
+#include "Optika_ConfigDefs.hpp"
 namespace Optika{
 
 /**
@@ -38,7 +38,7 @@ namespace Optika{
  *
  * @return True if the ParameterEntry contains an array, false otherwise.
  */
-bool doesParameterContainArray(Teuchos::RCP<const Teuchos::ParameterEntry> parameter);
+bool doesParameterContainArray(RCP<const ParameterEntry> parameter);
 
 /**
  * Takes a string representing an array, formats it, and returns
@@ -55,10 +55,10 @@ QStringList getValues(QString& values);
  * @param parameter The parameter whose array type is in question.
  * @return A QString containing the type of array in the parameter.
  */
-QString determineArrayType(Teuchos::RCP<const Teuchos::ParameterEntry> parameter);
+QString determineArrayType(RCP<const ParameterEntry> parameter);
 
 template <class S>
-Teuchos::Array<S> fromStringToArray(QString arrayString){
+Array<S> fromStringToArray(QString arrayString){
 	arrayString = arrayString.remove("{");
 	arrayString = arrayString.remove("}");
 	arrayString = arrayString.remove(" ");
@@ -67,7 +67,7 @@ Teuchos::Array<S> fromStringToArray(QString arrayString){
 	for(int i = 0; i<tempValues.size(); ++i){
 		values.append(tempValues[i]);
 	}
-	Teuchos::Array<S> toReturn;
+	Array<S> toReturn;
 	for(int i = 0; i<values.size(); ++i){
 		toReturn.append(values[i].value<S>());	
 	}
@@ -76,7 +76,7 @@ Teuchos::Array<S> fromStringToArray(QString arrayString){
 }
 
 template <>
-Teuchos::Array<std::string> fromStringToArray<std::string>(QString arrayString);
+Array<std::string> fromStringToArray<std::string>(QString arrayString);
 
 }
 #endif /* OPTIKA_ARRAYHELPERFUNCTIONS_HPP_ */

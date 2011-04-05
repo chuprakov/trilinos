@@ -32,7 +32,6 @@
 #include <QVariant>
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
-#include "Teuchos_ParameterList.hpp"
 #include "Optika_ArrayHelperFunctions.hpp"
 
 
@@ -63,7 +62,7 @@ public:
 	 * @param parent The parent TreeItem.
 	 * @param unrecognized If true, this item will be unrecognized and not displayed, if false the item will be displayed.
 	 */
-	TreeItem(const QList<QVariant> &data, Teuchos::RCP<Teuchos::ParameterEntry> parameterEntry, TreeItem *parent = 0, bool unrecognized=false);
+	TreeItem(const QList<QVariant> &data, RCP<ParameterEntry> parameterEntry, TreeItem *parent = 0, bool unrecognized=false);
 
 	/**
 	 * \brief Deconstrcutor for the TreeItem.
@@ -96,7 +95,7 @@ public:
    * @return The ParameterEntry associated with this TreeItem. If this
    * tree item does not have a parameterEntry, null is returned.
    */
-  inline Teuchos::RCP<const Teuchos::ParameterEntry> getEntry() const{
+  inline RCP<const ParameterEntry> getEntry() const{
     return parameterEntry.getConst();
   }
 
@@ -105,7 +104,7 @@ public:
    * with it.
    */
   inline bool hasEntry() const{
-    return parameterEntry != Teuchos::null;
+    return parameterEntry != null;
   }
 
 	/**
@@ -172,7 +171,7 @@ public:
 	 *
 	 * @param validator The validator which the parameter should be given.
 	 */
-	void setValidator(Teuchos::RCP<const Teuchos::ParameterEntryValidator> validator);
+	void setValidator(RCP<const ParameterEntryValidator> validator);
 
 private:
 	/**
@@ -206,7 +205,7 @@ private:
 	/**
 	 * The ParameterEntry being represented by the TreeItem.
 	 */
-	Teuchos::RCP<Teuchos::ParameterEntry> parameterEntry;
+	RCP<ParameterEntry> parameterEntry;
 
 	/**
 	 * The docString for the TreeItem.

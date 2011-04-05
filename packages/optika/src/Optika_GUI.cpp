@@ -31,7 +31,7 @@
 #include <iostream>
 namespace Optika{
 
-void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters){
+void getInput(RCP<ParameterList> validParameters){
 	{
 		using namespace Qt;
 		int argNum=1;
@@ -45,7 +45,7 @@ void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters){
 	}
 }
 
-void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)){
+void getInput(RCP<ParameterList> validParameters, void (*customFunc)(RCP<const ParameterList>)){
 	{
 		using namespace Qt;
 		int argNum=1;
@@ -59,7 +59,7 @@ void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, void (*custo
 	}
 }
 
-void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet){	
+void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet){	
 	{
 		using namespace Qt;
 		int argNum=1;
@@ -73,7 +73,7 @@ void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP
 	}
 }
 
-void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)){	
+void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet, void (*customFunc)(RCP<const ParameterList>)){	
 	{
 		using namespace Qt;
 		int argNum=1;
@@ -87,11 +87,11 @@ void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP
 	}
 }
 
-OptikaGUI::OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters):
+OptikaGUI::OptikaGUI(RCP<ParameterList> validParameters):
 	validParameters(validParameters){}
 
 
-OptikaGUI::OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet):
+OptikaGUI::OptikaGUI(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet):
 	validParameters(validParameters),
 	dependencySheet(dependencySheet){}
 
@@ -104,7 +104,7 @@ void OptikaGUI::exec(){
 		args[0] = &appName[0];
 		QApplication a(argNum,args);
 		MetaWindow *theWindow;
-		if(Teuchos::is_null(dependencySheet)){
+		if(is_null(dependencySheet)){
 			theWindow = new MetaWindow(validParameters, customFunc);
 		}
 		else{
@@ -150,7 +150,7 @@ void OptikaGUI::setStyleSheet(std::string filePath){
 	this->styleSheetFilePath = filePath;
 } 
 
-void OptikaGUI::setCustomFunction(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)){
+void OptikaGUI::setCustomFunction(void (*customFunc)(RCP<const ParameterList>)){
 	this->customFunc = customFunc;
 }
 

@@ -122,7 +122,7 @@ public:
 	 * @param fileName The name of a save file that may store previous values used by a user for the 
 	 * Parameter List specified by validParameters.
 	 */
-	MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, 
+	MetaWindow(RCP<ParameterList> validParameters, 
 	QString fileName=QString());
 
 	/**
@@ -133,8 +133,8 @@ public:
 	 * @param fileName The name of a save file that may store previous values used by a user for the 
 	 * Parameter List specified by validParameters.
 	 */
-	MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, 
-	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>),
+	MetaWindow(RCP<ParameterList> validParameters, 
+	void (*customFunc)(RCP<const ParameterList>),
 	QString fileName=QString());
 
 	/**
@@ -146,8 +146,8 @@ public:
 	 * @param fileName The name of a save file that may store previous values used by a user for the 
 	 * Parameter List specified by validParameters.
 	 */
-	MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, 
-	Teuchos::RCP<Teuchos::DependencySheet> dependencySheet,
+	MetaWindow(RCP<ParameterList> validParameters, 
+	RCP<DependencySheet> dependencySheet,
 	QString fileName=QString());
 
 	/**
@@ -160,9 +160,9 @@ public:
 	 * @param fileName The name of a save file that may store previous values used by a user for the 
 	 * Parameter List specified by validParameters.
 	 */
-	MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, 
-	Teuchos::RCP<Teuchos::DependencySheet> dependencySheet,
-	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>),
+	MetaWindow(RCP<ParameterList> validParameters, 
+	RCP<DependencySheet> dependencySheet,
+	void (*customFunc)(RCP<const ParameterList>),
 	QString fileName=QString(),
   const std::string actionButtonText="submit");
 
@@ -211,7 +211,7 @@ private:
 	/*
 	 * The custom function to run when the user clicks the action button.
 	 */
-	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>);
+	void (*customFunc)(RCP<const ParameterList>);
 
 	/**
 	 * Load and save directory paths
@@ -246,7 +246,7 @@ private:
    * @param actionButtonText Text to be placed in the action button.
 	 */
 	void initilization(
-    void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)=0, 
+    void (*customFunc)(RCP<const ParameterList>)=0, 
     const std::string actionButtonText="submit");
 
 	/**
