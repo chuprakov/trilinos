@@ -33,44 +33,76 @@
 
 namespace Optika{
   /**
-   * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
-   * All user input will be stored in it.
+   * Retreives the input for a Teuchos Parameter List using a GUI. Note the 
+   * Parameter List will be edited. All user input will be stored in it.
    *
-   * @param validParameters A list of parameters from which the users may specify values.
+   * @param validParameters A list of parameters from which the users may 
+   * specify values.
    */
   void getInput(RCP<ParameterList> validParameters);
 
   /**
-   * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
-   * All user input will be stored in it. Also runs the function specified whenever the user clicks the action
-   * button.
+   * Retreives the input for a Teuchos Parameter List using a GUI. Note the 
+   * Parameter List will be edited. All user input will be stored in it. Also 
+   * runs the function specified whenever the user clicks the action button.
    *
-   * @param validParameters A list of parameters from which the users may specify values.
-   * @param customFunc Custom function to run whenever the user clicks the action button.
+   * @param validParameters A list of parameters from which the users may 
+   * specify values.
+   * @param customFunc Custom function to run whenever the user clicks the 
+   * action button.
    */
-  void getInput(RCP<ParameterList> validParameters, void (*customFunc)(RCP<const ParameterList>));
+  void getInput(
+    RCP<ParameterList> validParameters, 
+    void (*customFunc)(RCP<const ParameterList>));
 
   /**
-   * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
-   * All user input will be stored in it.
+   * Retreives the input for a Teuchos Parameter List using a GUI. Note the 
+   * Parameter List will be edited. All user input will be stored in it.
    *
-   * @param validParameters A list of parameters from which the users may specify values.
-   * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
-   * ParameterList.
+   * @param validParameters A list of parameters from which the users may 
+   * specify values.
+   * @param dependencySheet A sheet listing any dependencies between parameters
+   * in the validParameters ParameterList.
    */
-  void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet);
+  void getInput(
+    RCP<ParameterList> validParameters, 
+    RCP<DependencySheet> dependencySheet);
 
   /**
-   * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
-   * All user input will be stored in it. Also runs the function specified whenever the user clicks the action
-   * button.
+   * Retreives the input for a Teuchos Parameter List using a GUI. Note the 
+   * Parameter List will be edited. All user input will be stored in it. 
+   * Also runs the function specified whenever the user clicks the action
+   * button and uses the specified dependency list.
    *
-   * @param validParameters A list of parameters from which the users may specify values.
-   * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
-   * ParameterList.
-   * @param customFunc Custom function to run whenever the user clicks the action button.
+   * @param validParameters A list of parameters from which the users may 
+   * specify values.
+   * @param dependencySheet A sheet listing any dependencies between parameters
+   * in the validParameters ParameterList.
+   * @param customFunc Custom function to run whenever the user clicks the 
+   * action button.
    */
-  void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet, void (*customFunc)(RCP<const ParameterList>));
+  void getInput(
+    RCP<ParameterList> validParameters,
+    RCP<DependencySheet> dependencySheet,
+    void (*customFunc)(RCP<const ParameterList>));
+
+  /**
+   * Reads in a set of parameters and dependencies from the specified xmlfile,
+   * displays a GUI, and stores the users input in the sprecified
+   * ParameterList. If a custom function is provided, it is run upon the user
+   * clicking the action button.
+   *
+   * @param namOfXmlFile The name of the xml file from which parameters and
+   * dependencies will be read in.
+   * @param userInput A ParameterList into which all user input should be
+   * stored.
+   * @param customFunc A custom function for Optika to run upon the user 
+   * clicking the action button.
+   */
+  void getInput(
+    const std::string& nameOfXmlFile,
+    RCP<ParameterList> userInput,
+    void (*customFunc)(RCP<const ParameterList>)=NULL);
 
 /**
  * A class that allows the user to create and customize their Optika GUI.
@@ -80,18 +112,22 @@ public:
   /**
    * Constructs an OptikaGUI object.
    *
-   * @param validParameters A list of parameters from which the users may specify values.
+   * @param validParameters A list of parameters from which the users may 
+   * specify values.
    */
   OptikaGUI(RCP<ParameterList> validParameters);
 
   /**
    * Constructs an OptikaGUI object.
    *
-   * @param validParameters A list of parameters from which the users may specify values.
-   * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
-   * ParameterList.
+   * @param validParameters A list of parameters from which the users may 
+   * specify values.
+   * @param dependencySheet A sheet listing any dependencies between parameters
+   * in the validParameters ParameterList.
    */
-  OptikaGUI(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet);
+  OptikaGUI(
+    RCP<ParameterList> validParameters, 
+    RCP<DependencySheet> dependencySheet);
 
   /**
    * Runs the GUI and gets the user input.
@@ -108,7 +144,8 @@ public:
   /**
    * Sets the title of the GUI window that is displayed to the user.
    *
-   * @param title A string containing what the title of the GUI window should be.
+   * @param title A string containing what the title of the GUI window 
+   * should be.
    */
   void setWindowTitle(std::string title);
 
@@ -132,7 +169,8 @@ public:
    * Sets the custom function to be used in the GUI. When ever the
    * user clicks the action button, this function will be run.
    *
-   * @param The custom function to be run whenever the user clicks the action button.
+   * @param The custom function to be run whenever the user clicks the action 
+   * button.
    */
   void setCustomFunction(void (*customFunc)(RCP<const ParameterList>));
 

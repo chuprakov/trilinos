@@ -87,6 +87,27 @@ void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependenc
 	}
 }
 
+void getInput(
+  const std::string& nameOfXmlFile,
+  RCP<ParameterList> userInput,
+  void (*customFunc)(RCP<const ParameterList>))
+{
+  {
+		using namespace Qt;
+    RCP<DependencySheet> depSheet = rcp(new DependencySheet());
+    userInput = getParametersFromXmlFile(nameOfXmlFile, depSheet);
+		int argNum=1;
+		char* args[1];
+		std::string appName ="Optika";
+		args[0] = &appName[0];
+		QApplication a(argNum,args);
+		MetaWindow *theWindow = new MetaWindow(
+      userInput, depSheet, customFunc);
+		theWindow->show();
+		a.exec();
+	}
+}
+
 OptikaGUI::OptikaGUI(RCP<ParameterList> validParameters):
 	validParameters(validParameters){}
 
