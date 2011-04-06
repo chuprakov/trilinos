@@ -270,10 +270,7 @@
              evaluates to true, otherwise it evaluates to false. This let's
              us test the "Bossness" parameter.
         -->
-        <Condition 
-          parameterID="3"
-          type="NumberCondition(int)"
-        >
+        <Condition parameterID="3" type="NumberCondition(int)">
           <!--
                Remember when I said that number conditions compare the
                parameters value to 0? Well I kind of lied. The true is
