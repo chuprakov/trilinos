@@ -27,8 +27,8 @@
 // @HEADER
 #include <QApplication>
 #include <QtGui>
+#include <QString>
 #include "Optika_GUI.hpp"
-#include <iostream>
 namespace Optika{
 
 void getInput(RCP<ParameterList> validParameters){
@@ -156,6 +156,7 @@ void OptikaGUI::exec(){
 		if(aboutInfo != ""){
 			theWindow->setAboutInfo(QString::fromStdString(aboutInfo));
 		}
+    theWindow->setActionButtonText(QString::fromStdString(actionButtonText));
 		theWindow->show();
 		theWindow->activateWindow();
 		a.exec();
@@ -163,15 +164,15 @@ void OptikaGUI::exec(){
 	
 }
 
-void OptikaGUI::setWindowTitle(std::string title){
+void OptikaGUI::setWindowTitle(const std::string& title){
 	this->title = title;
 }
 
-void OptikaGUI::setWindowIcon(std::string filePath){
+void OptikaGUI::setWindowIcon(const std::string& filePath){
 	this->iconFilePath = filePath;
 }
 
-void OptikaGUI::setStyleSheet(std::string filePath){
+void OptikaGUI::setStyleSheet(const std::string& filePath){
 	this->styleSheetFilePath = filePath;
 } 
 
@@ -179,11 +180,11 @@ void OptikaGUI::setCustomFunction(void (*customFunc)(RCP<const ParameterList>)){
 	this->customFunc = customFunc;
 }
 
-void OptikaGUI::setAboutInfo(std::string aboutInfo){
+void OptikaGUI::setAboutInfo(const std::string& aboutInfo){
 	this->aboutInfo = aboutInfo;
 }
 
-void OptikaGUI::setActionButtonText(const std::string text){
+void OptikaGUI::setActionButtonText(const std::string& text){
   actionButtonText = text;
 }
 

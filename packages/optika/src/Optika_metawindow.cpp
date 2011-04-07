@@ -180,7 +180,7 @@ void MetaWindow::initilization(
 	view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
 	searchWidget = new SearchWidget(model, view, this);
 	searchWidget->hide();
-  QPushButton *actionButton = NULL;
+  actionButton = NULL;
   if(actionButtonText != ""){
 	  actionButton = new QPushButton(tr("Submit"), this);
   }
@@ -475,5 +475,14 @@ QString MetaWindow::getAboutInfo(){
 	return aboutInfo;
 }
 
+void MetaWindow::setActionButtonText(QString newText){
+  actionButton->setText(newText);
 }
+
+QString MetaWindow::getActionButtonText(){
+  return actionButton->text();
+}
+
+
+} //namespace Optika
 

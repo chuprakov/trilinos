@@ -139,7 +139,14 @@ public:
    *
    * @param aboutInfo Information to be added to the about dialog of the GUI.
    */
-  void setAboutInfo(std::string aboutInfo);
+  void setAboutInfo(const std::string& aboutInfo);
+
+  /**
+   * Sets the text in the "action" button"
+   *
+   * @param text The text for the action button
+   */
+  void setActionButtonText(const std::string& text);
 
   /**
    * Sets the title of the GUI window that is displayed to the user.
@@ -147,7 +154,7 @@ public:
    * @param title A string containing what the title of the GUI window 
    * should be.
    */
-  void setWindowTitle(std::string title);
+  void setWindowTitle(const std::string& title);
 
   /**
    * Sets the window icon to the image specified in the filePath.
@@ -155,7 +162,7 @@ public:
    * @param filePath File path to the image that should be used as
    *  the window icon.
    */
-  void setWindowIcon(std::string filePath);
+  void setWindowIcon(const std::string& filePath);
 
   /**
    * Sets the QT style sheet that should be used for the GUI.
@@ -163,7 +170,7 @@ public:
    * @param filePath File path to the QT style sheet to be used for
    * the GUI.
    */
-  void setStyleSheet(std::string filePath);
+  void setStyleSheet(const std::string& filePath);
 
   /**
    * Sets the custom function to be used in the GUI. When ever the
@@ -205,13 +212,6 @@ public:
    * @return the information to be added to the about dialog of the GUI.
    */
   std::string getAboutInfo();
-
-  /**
-   * Sets the text in the "action" button"
-   *
-   * @param text The text for the action button
-   */
-  void setActionButtonText(const std::string text);
 
 private:
 

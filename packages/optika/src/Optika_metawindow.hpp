@@ -185,6 +185,19 @@ public:
 	 */
 	 QString getAboutInfo();
 
+   /**
+    * Sets the action button text.
+    *
+    * @param text The text to put in the action button.
+    */
+   void setActionButtonText(QString newText);
+
+   /**
+    * Gets the text being displayed int he action button.
+    *
+    * @return The text being displayed in the action button.
+    */
+   QString getActionButtonText();
 
 protected:
 	/**
@@ -202,6 +215,8 @@ private:
 	SearchWidget *searchWidget;
 	QAction *resetAct, *loadAct, *saveAct, *saveAsAct, *quitAct, *aboutAct, *searchAct;
 	QMenu *fileMenu, *recentMenu, *helpMenu;
+
+  QPushButton *actionButton;
 
 	/**
 	 * Any additional about information that should be displayed in the about dialog.
