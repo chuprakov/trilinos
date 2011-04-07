@@ -109,12 +109,16 @@ void getInput(
 }
 
 OptikaGUI::OptikaGUI(RCP<ParameterList> validParameters):
-	validParameters(validParameters){}
+	validParameters(validParameters),
+  customFunc(0)
+  {}
 
 
 OptikaGUI::OptikaGUI(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet):
 	validParameters(validParameters),
-	dependencySheet(dependencySheet){}
+	dependencySheet(dependencySheet),
+  customFunc(0)
+  {}
 
 void OptikaGUI::exec(){
 	{
