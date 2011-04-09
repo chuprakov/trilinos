@@ -313,7 +313,7 @@ void MsqIMesh::get_flag_data( iBase_TagHandle tag,
                               bool have_tag,
                               iBase_TagValueType type,
                               const VertexHandle vert_array[],
-                              bool flag_array[],
+                              std::vector<bool>& flag_array,
                               size_t num_vtx, 
                               MsqError& err )
 {
@@ -321,9 +321,12 @@ void MsqIMesh::get_flag_data( iBase_TagHandle tag,
     return;
 
   if (!have_tag) {
-    memset( flag_array, 0, num_vtx * sizeof(bool) );
+    flag_array.clear();
+    flag_array.resize( num_vtx, false );
     return;
   }
+
+  flag_array.resize( num_vtx );
 
   assert( sizeof(VertexHandle) == sizeof(iBase_EntityHandle) );
   const iBase_EntityHandle* arr = reinterpret_cast<const iBase_EntityHandle*>(vert_array);
@@ -339,25 +342,11 @@ void MsqIMesh::get_flag_data( iBase_TagHandle tag,
       flag_array[i] = !!values[i];
   }
   else if (type == iBase_BYTES) {
-    if (sizeof(bool) == sizeof(char)) {  // always true?
-#if IMESH_VERSION_ATLEAST(1,1)
-      void* ptr = flag_array;
-#else
-      char* ptr = reinterpret_cast<char*>(flag_array);
-#endif
-      iMesh_getArrData( meshInstance, arr, num_vtx, tag, &ptr, &alloc, &size, &ierr );
-    }
-    else {
-      std::vector<char> values(num_vtx);
-#if IMESH_VERSION_ATLEAST(1,1)
-      void* ptr = arrptr(values);
-#else
-      char* ptr = arrptr(values);
-#endif
-      iMesh_getArrData( meshInstance, arr, num_vtx, tag, &ptr, &alloc, &size, &ierr );
-      for (int i = 0; i < size; ++i)
-        flag_array[i] = !!values[i];
-    }
+    std::vector<char> values(num_vtx);
+    void* ptr = arrptr(values);
+    iMesh_getArrData( meshInstance, arr, num_vtx, tag, &ptr, &alloc, &size, &ierr );
+    for (int i = 0; i < size; ++i)
+      flag_array[i] = !!values[i];
   }
   else {
     MSQ_SETERR(err)("Invalid tag type for vertex flag data", MsqError::INVALID_STATE);
@@ -381,7 +370,7 @@ void MsqIMesh::get_flag_data( iBase_TagHandle tag,
 // Mesquite::Mesh interface.
 void MsqIMesh::vertices_get_fixed_flag(
   const VertexHandle vert_array[], 
-  bool bool_array[],
+  std::vector<bool>& bool_array,
   size_t num_vtx, MsqError &err)
 {
   get_flag_data( fixedTag, haveFixedTag, fixedTagType, vert_array, bool_array, num_vtx, err );
@@ -390,7 +379,7 @@ void MsqIMesh::vertices_get_fixed_flag(
 
 void MsqIMesh::vertices_get_slaved_flag(
   const VertexHandle vert_array[], 
-  bool bool_array[],
+  std::vector<bool>& bool_array,
   size_t num_vtx, MsqError &err)
 {
   get_flag_data( slavedTag, haveSlavedTag, slavedTagType, vert_array, bool_array, num_vtx, err );

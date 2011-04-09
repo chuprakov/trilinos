@@ -38,8 +38,6 @@
 #include <QVariant>
 #include <QDir>
 #include "Optika_treeitem.hpp"
-#include "Teuchos_DependencySheet.hpp"
-#include "Teuchos_StandardDependencies.hpp"
 
 
 namespace Optika{
@@ -62,7 +60,7 @@ public:
 	 * @param saveFileName Name of a save file used in a previous attempt to get values for the validParameters ParameterList.
 	 * @param parent The parent object.
 	 */
-	TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, QString saveFileName=QString(), QObject *parent=0);
+	TreeModel(RCP<ParameterList> validParameters, QString saveFileName=QString(), QObject *parent=0);
 
 	/**
 	 * Constructs the TreeModel.
@@ -73,7 +71,7 @@ public:
 	 * @param saveFileName Name of a save file used in a previous attempt to get values for the validParameters ParameterList.
 	 * @param parent The parent object.
 	 */
-	TreeModel(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet,
+	TreeModel(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet,
 		  QString saveFileName=QString(), QObject *parent=0);
 
 	/**
@@ -90,6 +88,7 @@ public:
 	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
+
 
 	/**
 	 * If this TreeModel has a dependent Parameter List, then all the depndencies need to be evaluated before the Parameter List may be displayed.
@@ -170,7 +169,7 @@ public:
 	 * @param index The index of the TreeItem whose validators is sought.
 	 * @return The validator at the given index.
 	 */
-	Teuchos::RCP<const Teuchos::ParameterEntryValidator> getValidator(const QModelIndex &index) const;
+	RCP<const ParameterEntryValidator> getValidator(const QModelIndex &index) const;
 
 	/**
 	 * Gets the array for a particular TreeItem.
@@ -179,8 +178,8 @@ public:
 	 * @return The array at the given index.
 	 */
 	template <class S>
-	Teuchos::Array<S> getArray(const QModelIndex& index){
-		return Teuchos::any_cast<Teuchos::Array<S> >(itemEntry(index)->getAny()); 
+	Array<S> getArray(const QModelIndex& index){
+		return any_cast<Array<S> >(itemEntry(index)->getAny()); 
 	}
 
 	/**
@@ -188,15 +187,14 @@ public:
 	 *
 	 * @return A ParameterList containing all of the parameters at their current settings.
 	 */
-	Teuchos::RCP<const Teuchos::ParameterList> getCurrentParameters();
+	RCP<const ParameterList> getCurrentParameters();
 
 	/**
 	 * Finds the index of a particular parameter entry.
 	 *
 	 * @param parameterEntry The ParameterEntry whose index is being sought.
-	 * @param parameterName The name of the parameter whose index is being sought.
 	 */
-	QModelIndex findParameterEntryIndex(const Teuchos::RCP<const Teuchos::ParameterEntry> parameterEntry);
+	QModelIndex findParameterEntryIndex(RCP<const ParameterEntry> parameterEntry);
 signals:
 	/**
 	 * Emitted when a row should be hidden.
@@ -223,6 +221,7 @@ signals:
 	 */
 	void badValue(QModelIndex badItem,  QString message);
 
+
 private:
 	/**
 	 * Whether or not the model has been saved since it was last modified.
@@ -247,19 +246,19 @@ private:
 	/**
 	 * The list of valid parameters.
 	 */
-	Teuchos::RCP<Teuchos::ParameterList> validParameters;
+	RCP<ParameterList> validParameters;
 
 	/**
 	 * A canonical list of what the validParameters were when they were first
 	 * passed to the treemodel. Used by the reset function.
 	 */
-	Teuchos::RCP<const Teuchos::ParameterList> canonicalList;
+	RCP<const ParameterList> canonicalList;
 
 	/**
 	 * The dependency sheet being used to determine any
 	 * depdendencies between parameters.
 	 */
-	Teuchos::RCP<Teuchos::DependencySheet> dependencySheet;
+	RCP<DependencySheet> dependencySheet;
 
 
 	/**
@@ -268,7 +267,7 @@ private:
 	 * @param index Index of the TreeItem for which the ParameterEntry is desired.
 	 * @return The ParameterEntry associated with the QModelIndex.
 	 */
-	Teuchos::RCP<const Teuchos::ParameterEntry> 
+	RCP<const ParameterEntry> 
     itemEntry(const QModelIndex &index) const;
 
 	/**
@@ -277,7 +276,7 @@ private:
 	 * @param validParameters The list to be read.
 	 * @param parentItem The initial parent tree item to be used.
 	 */
-	void readInParameterList(Teuchos::RCP<Teuchos::ParameterList> validParameters, TreeItem *parentItem);
+	void readInParameterList(RCP<ParameterList> validParameters, TreeItem *parentItem);
 
 	/**
 	 * Inserts a new parameter list into the model.
@@ -287,7 +286,7 @@ private:
 	 * @param name The name of the ParameterList.
 	 * @param The parent TreeItem.
 	 */
-	void insertParameterList(Teuchos::RCP<Teuchos::ParameterList> parameterList, Teuchos::RCP<Teuchos::ParameterEntry> listEntry, std::string name, TreeItem *parent);
+	void insertParameterList(RCP<ParameterList> parameterList, RCP<ParameterEntry> listEntry, std::string name, TreeItem *parent);
 
 	/**
 	 * Inserts a new parameter into the model.
@@ -296,7 +295,7 @@ private:
 	 * @param name The name of the Parameter.
 	 * @param The parent TreeItem.
 	 */
-	void insertParameter(Teuchos::RCP<Teuchos::ParameterEntry> parameter, std::string name, TreeItem *parent);
+	void insertParameter(RCP<ParameterEntry> parameter, std::string name, TreeItem *parent);
 
 	/**
 	 * Basic setup shared by each of the constructors
@@ -310,7 +309,7 @@ private:
 	 * appropriate action if any more modifications to the model need to be made or if
 	 * the view needs to know anything as a result of the change.
 	 */
-	void checkDependentState(const QModelIndex dependee, Teuchos::RCP<Teuchos::Dependency> dependency);
+	void checkDependentState(const QModelIndex dependee, RCP<Dependency> dependency);
 
 	/**
 	 * Redraws the array at arrayIndex if it's length has changed. 
@@ -318,6 +317,22 @@ private:
 	 * @param arrayIndex The index of the array to be redrawn.
 	 */
 	void redrawArray(const QModelIndex arrayIndex);
+  
+  /**
+   * Finds a list of QModelIndecies whose have associated ParameterEntrys
+   * that match the given parameterEntry. 
+   * 
+   * The fact this returns a list is a
+   * little missleading, as the list will always be length one. I really
+   * should just be returning a single QModelIndex. But my thesis is due on
+   * Friday so I'll have to come back and fix this later. 
+   * Kurtis Nusbaum 30/03/2011.
+   *
+   * @param start The index where we should start looking.
+   * @param parameterEntry The parameter entry we're looking for.
+   */
+  QModelIndexList parameterEntryMatch(const QModelIndex &start,
+    const RCP<const ParameterEntry> &parameterEntry) const;
 
 private slots:
 	/**

@@ -462,8 +462,11 @@ namespace MESQUITE_NS
     
       //! Updates the underlying mesh (the Mesquite::Mesh implementation) with
       //! new node coordinates and flag values.
+      //!\param tag If non-null, store vertex coords in tag rather than
+      //!           updating the coords in the mesh database.  Used for
+      //!           Jacobi optimizations.
 	MESQUITE_EXPORT
-    void update_mesh(MsqError &err);
+    void update_mesh(MsqError &err, const TagHandle* tag = 0);
     
       //! Calculate new location for all slave higher-order nodes using
       //! mapping function.  Called by update_mesh().
@@ -736,13 +739,6 @@ namespace MESQUITE_NS
     std::vector<size_t> offsetArray;
     std::vector<unsigned char> byteArray;
     mutable std::vector<bool> bitMap;
-    bool* boolArray;
-    size_t boolArraySize;
-    bool* get_bool_array( size_t size ) {
-      if (boolArraySize < size)
-        boolArray = (bool*)realloc( boolArray, (boolArraySize = size) );
-      return boolArray;
-    }
     
       // Patch Computed Information (maxs, mins, etc ... )
     double computedInfos[MAX_COMPUTED_INFO_ENUM];

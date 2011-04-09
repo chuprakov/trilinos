@@ -27,11 +27,11 @@
 // @HEADER
 #include <QApplication>
 #include <QtGui>
+#include <QString>
 #include "Optika_GUI.hpp"
-#include <iostream>
 namespace Optika{
 
-void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters){
+void getInput(RCP<ParameterList> validParameters){
 	{
 		using namespace Qt;
 		int argNum=1;
@@ -45,7 +45,7 @@ void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters){
 	}
 }
 
-void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)){
+void getInput(RCP<ParameterList> validParameters, void (*customFunc)(RCP<const ParameterList>)){
 	{
 		using namespace Qt;
 		int argNum=1;
@@ -59,7 +59,7 @@ void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, void (*custo
 	}
 }
 
-void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet){	
+void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet){	
 	{
 		using namespace Qt;
 		int argNum=1;
@@ -73,7 +73,7 @@ void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP
 	}
 }
 
-void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)){	
+void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet, void (*customFunc)(RCP<const ParameterList>)){	
 	{
 		using namespace Qt;
 		int argNum=1;
@@ -87,13 +87,38 @@ void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP
 	}
 }
 
-OptikaGUI::OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters):
-	validParameters(validParameters){}
+void getInput(
+  const std::string& nameOfXmlFile,
+  RCP<ParameterList> userInput,
+  void (*customFunc)(RCP<const ParameterList>))
+{
+  {
+		using namespace Qt;
+    RCP<DependencySheet> depSheet = rcp(new DependencySheet());
+    userInput = getParametersFromXmlFile(nameOfXmlFile, depSheet);
+		int argNum=1;
+		char* args[1];
+		std::string appName ="Optika";
+		args[0] = &appName[0];
+		QApplication a(argNum,args);
+		MetaWindow *theWindow = new MetaWindow(
+      userInput, depSheet, customFunc);
+		theWindow->show();
+		a.exec();
+	}
+}
 
-
-OptikaGUI::OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet):
+OptikaGUI::OptikaGUI(RCP<ParameterList> validParameters):
 	validParameters(validParameters),
-	dependencySheet(dependencySheet){}
+  customFunc(0)
+  {}
+
+
+OptikaGUI::OptikaGUI(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet):
+	validParameters(validParameters),
+	dependencySheet(dependencySheet),
+  customFunc(0)
+  {}
 
 void OptikaGUI::exec(){
 	{
@@ -104,7 +129,7 @@ void OptikaGUI::exec(){
 		args[0] = &appName[0];
 		QApplication a(argNum,args);
 		MetaWindow *theWindow;
-		if(Teuchos::is_null(dependencySheet)){
+		if(is_null(dependencySheet)){
 			theWindow = new MetaWindow(validParameters, customFunc);
 		}
 		else{
@@ -131,6 +156,7 @@ void OptikaGUI::exec(){
 		if(aboutInfo != ""){
 			theWindow->setAboutInfo(QString::fromStdString(aboutInfo));
 		}
+    theWindow->setActionButtonText(QString::fromStdString(actionButtonText));
 		theWindow->show();
 		theWindow->activateWindow();
 		a.exec();
@@ -138,27 +164,27 @@ void OptikaGUI::exec(){
 	
 }
 
-void OptikaGUI::setWindowTitle(std::string title){
+void OptikaGUI::setWindowTitle(const std::string& title){
 	this->title = title;
 }
 
-void OptikaGUI::setWindowIcon(std::string filePath){
+void OptikaGUI::setWindowIcon(const std::string& filePath){
 	this->iconFilePath = filePath;
 }
 
-void OptikaGUI::setStyleSheet(std::string filePath){
+void OptikaGUI::setStyleSheet(const std::string& filePath){
 	this->styleSheetFilePath = filePath;
 } 
 
-void OptikaGUI::setCustomFunction(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)){
+void OptikaGUI::setCustomFunction(void (*customFunc)(RCP<const ParameterList>)){
 	this->customFunc = customFunc;
 }
 
-void OptikaGUI::setAboutInfo(std::string aboutInfo){
+void OptikaGUI::setAboutInfo(const std::string& aboutInfo){
 	this->aboutInfo = aboutInfo;
 }
 
-void OptikaGUI::setActionButtonText(const std::string text){
+void OptikaGUI::setActionButtonText(const std::string& text){
   actionButtonText = text;
 }
 
