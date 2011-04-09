@@ -294,7 +294,7 @@ void ParallelHelperImpl::smoothing_init(MsqError& err)
   mesh->vertices_get_processor_id(arrptr(vertices),arrptr(proc_owner),num_vertex,err); MSQ_ERRRTN(err);
   /* only interested in fixed flag from vertex byte? Clear others. */
   for (i = 0; i < num_vertex; ++i)
-    app_fixed |= MsqVertex::MSQ_HARD_FIXED;
+    app_fixed[i] |= MsqVertex::MSQ_HARD_FIXED;
   
   /* create temporary Tag for the local IDs */
   std::vector<int> lid(num_vertex);
@@ -1003,7 +1003,7 @@ void ParallelHelperImpl::smoothing_close(MsqError& err)
     mesh->vertices_get_processor_id(arrptr(vertices),arrptr(proc_owner),num_vertex,err); MSQ_ERRRTN(err);
     /* only interested in fixed flag from vertex byte? Clear others. */
     for (i = 0; i < num_vertex; ++i)
-      app_fixed |= MsqVertex::MSQ_HARD_FIXED;
+      app_fixed[i] |= MsqVertex::MSQ_HARD_FIXED;
 
     /* insert all our unfixed vertices into a map so we can find the requested vertices efficiently */
     VertexIdMap temp_vid_map;
@@ -1425,7 +1425,7 @@ int ParallelHelperImpl::comm_smoothed_vtx_tnb_no_all( MsqError& err )
 	packing_vertex->y = coordinates[1];
 	packing_vertex->z = coordinates[2];
 	packing_vertex->glob_id = exportVtxGIDs[i];
-	if (0) printf("[%d]i%d vertex %d packed %g %g %g\n", rank,iteration,exportVtxGIDs[i],packing_vertex->x, packing_vertex->y, packing_vertex->z);
+	if (0) printf("[%d]i%d vertex %lu packed %g %g %g\n", rank,iteration,(unsigned long)exportVtxGIDs[i],packing_vertex->x, packing_vertex->y, packing_vertex->z);
       }
     }
   }
@@ -2521,6 +2521,14 @@ void ParallelHelperImpl::communicate_histogram_to_zero(std::vector<int> &histogr
   if (rank == 0) {
     histogram.swap( histogram_recv );
   }
+}
+
+void ParallelHelperImpl::communicate_all_true( bool& value, MsqError& err ) const
+{
+  char byte_out = value, byte_in;
+  int rval = MPI_Allreduce( &byte_out, &byte_in, 1, MPI_CHAR, MPI_MAX, (MPI_Comm)communicator);
+  CHECK_MPI( rval, err );
+  value = (byte_in != 0);
 }
 
 } // namespace mesquite

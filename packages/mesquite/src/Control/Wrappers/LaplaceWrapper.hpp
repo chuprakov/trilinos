@@ -20,67 +20,68 @@
     (lgpl.txt) along with this library; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-    (2010) kraftche@cae.wisc.edu    
+    (2011) kraftche@cae.wisc.edu    
 
   ***************************************************************** */
 
 
-/** \file UntangleWrapper.hpp
- *  \brief 
+/** \file LaplaceWrapper.hpp
+ *  \brief Define LaplaceWrapper class
  *  \author Jason Kraftcheck 
  */
 
-#ifndef MSQ_UNTANGLE_WRAPPER_HPP
-#define MSQ_UNTANGLE_WRAPPER_HPP
+#ifndef MSQ_LAPLACE_WRAPPER_HPP
+#define MSQ_LAPLACE_WRAPPER_HPP
 
-#include "Mesquite.hpp"
 #include "Wrapper.hpp"
 
 namespace MESQUITE_NS {
 
-/**\brief Wrapper that implements several TMP-based untanglers */
-class UntangleWrapper : public Wrapper {
-  
+class LaplaceWrapper : public Wrapper
+{
 public:
-
-  /**\brief Which quality metric to use */
-  enum UntangleMetric { 
-    BETA, //!< Use TMP UntangleBeta metric
-    SIZE, //!< Use UntangleMu(TargetSize}
-    SHAPESIZE //!< Use UntangleMu(TargetShapeSize}
-  };
-
-  /**\brief Specify which untangle metric to use */
+  
   MESQUITE_EXPORT
-  void set_untangle_metric( UntangleMetric metric );
+  LaplaceWrapper();
 
-  /**\brief Specify constant value for untangle metric */
-  MESQUITE_EXPORT
-  void set_metric_constant( double value );
-
-  /**\brief Specify timeout after which untangler will exit */
-  MESQUITE_EXPORT
-  void set_cpu_time_limit( double seconds );
+  /**\brief Specify timeout after which untangler will exit 
+   *
+   *  Specify a value less than or equal to zero for no limit
+   */
+  void set_cpu_time_limit( double seconds )
+    { maxTime = seconds; }
+  double get_cpu_time_limit() const 
+    { return maxTime; }
 
   /**\brief Specify factor by which to minimum distance a vertex must 
-   *        move in an iteration to avoid termination of the untangler */
-  MESQUITE_EXPORT
-  void set_vertex_movement_limit_factor( double f );
+   *        move in an iteration to avoid termination of the untangler 
+   *
+   *  Specify a value less than or equal to zero for no limit.
+   *\NOTE Culling cannot be done w/out a limit on vertex movement
+   */
+  void set_vertex_movement_limit_factor( double f )
+    { movementFactor = f; }
+  double get_vertex_movement_limit_factor() const
+    { return movementFactor; }
 
-  MESQUITE_EXPORT
-  UntangleWrapper();
+  /**\brief Specify maximum number of iterations.  
+   * 
+   * Specify a value less than or equal to zero for no limit
+   */
+  void set_iteration_limit( int limit )
+    { iterationLimit = limit; }
+  int get_iteration_limit() const
+    { return iterationLimit; }
 
-  MESQUITE_EXPORT
-  UntangleWrapper(UntangleMetric m);
-
-  MESQUITE_EXPORT
-  ~UntangleWrapper();
-
+  /**\brief Cull vertices based on movement limit */
+  inline void enable_culling( bool yesno )
+    { doCulling = yesno; }
   inline bool is_culling_enabled() const
     { return doCulling; }
   
-  inline void enable_culling( bool yesno )
-    { doCulling = yesno; }
+
+  MESQUITE_EXPORT
+  ~LaplaceWrapper();
 
 protected:
 
@@ -91,11 +92,11 @@ protected:
                     Settings* settings,
                     QualityAssessor* qa,
                     MsqError& err );
-
+  
 private:
-
-  UntangleMetric qualityMetric;
-  double maxTime, movementFactor, metricConstant;
+  
+  double maxTime, movementFactor;
+  int iterationLimit;
   bool doCulling;
 };
 
