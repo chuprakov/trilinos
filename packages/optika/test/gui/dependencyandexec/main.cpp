@@ -53,6 +53,7 @@ void RUN_OPTIKA_DEPENDENCY_AND_EXEC_TEST(){
  using Teuchos::SubtractionFunction;
  using Teuchos::RangeValidatorDependency;
  using Teuchos::tuple;
+ using Teuchos::rcp;
 
 
  RCP<FancyOStream> out = VerboseObjectBase::getDefaultOStream();
