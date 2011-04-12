@@ -37,9 +37,8 @@
 
 
 module FEpetra_Map
-  use ForTrilinos_enums !,only: FT_Epetra_BlockMap_ID,FT_Epetra_Map_ID_t,ForTrilinos_Universal_ID_t
+  use ForTrilinos_enums ,only: FT_Epetra_BlockMap_ID,FT_Epetra_Map_ID_t,ForTrilinos_Universal_ID_t
   use ForTrilinos_table_man
-  use ForTrilinos_hermetic,only:hermetic
   use ForTrilinos_error
   use FEpetra_Comm       ,only: Epetra_Comm
   use FEpetra_BlockMap   ,only: Epetra_BlockMap
@@ -49,7 +48,7 @@ module FEpetra_Map
   private                     ! Hide everything by default
   public :: Epetra_Map!,Epetra_BlockMap ! Expose type/constructors/methods
 
-  type, extends(Epetra_BlockMap)      :: Epetra_Map !"shell"
+  type, extends(Epetra_BlockMap) :: Epetra_Map 
     private
     type(FT_Epetra_Map_ID_t) :: map_id
   contains

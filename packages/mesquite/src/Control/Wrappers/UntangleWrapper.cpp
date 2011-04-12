@@ -44,6 +44,7 @@
 #include "SteepestDescent.hpp"
 #include "QualityAssessor.hpp"
 #include "InstructionQueue.hpp"
+#include "ElementPMeanP.hpp"
 
 #include "TUntangleBeta.hpp"
 #include "TUntangleMu.hpp"
@@ -55,8 +56,9 @@
 #include <memory>
 
 const int NUM_INNER_ITERATIONS = 1;
-const int DEFUALT_PARALLEL_ITERATIONS = 10;
 const double DEFAULT_MOVEMENT_FACTOR = 0.001;
+const bool CULLING_DEFAULT = true;
+const bool JACOBI_DEFAULT = false;
 
 namespace MESQUITE_NS {
 
@@ -65,7 +67,8 @@ UntangleWrapper::UntangleWrapper()
     maxTime(-1),
     movementFactor( DEFAULT_MOVEMENT_FACTOR ),
     metricConstant( -1 ),
-    parallelIterations(DEFUALT_PARALLEL_ITERATIONS)
+    doCulling(CULLING_DEFAULT),
+    doJacobi(JACOBI_DEFAULT)
 {}
 
 UntangleWrapper::UntangleWrapper(UntangleMetric m) 
@@ -73,7 +76,8 @@ UntangleWrapper::UntangleWrapper(UntangleMetric m)
     maxTime(-1),
     movementFactor( DEFAULT_MOVEMENT_FACTOR ),
     metricConstant( -1 ),
-    parallelIterations(DEFUALT_PARALLEL_ITERATIONS)
+    doCulling(CULLING_DEFAULT),
+    doJacobi(JACOBI_DEFAULT)
 {}
 
 UntangleWrapper::~UntangleWrapper()
@@ -90,9 +94,6 @@ void UntangleWrapper::set_cpu_time_limit( double seconds )
 
 void UntangleWrapper::set_vertex_movement_limit_factor( double f )
   { movementFactor = f; }
-
-void UntangleWrapper::set_parallel_iterations( int count )
-  { parallelIterations = count; }
 
 
 void UntangleWrapper::run_wrapper( Mesh* mesh,
@@ -136,16 +137,20 @@ void UntangleWrapper::run_wrapper( Mesh* mesh,
     // define objective function
   IdealShapeTarget base_target;
   LambdaConstant target( lambda.average(), &base_target );
-  TQualityMetric metric(&target, mu.get());
+  TQualityMetric metric_0(&target, mu.get());
+  ElementPMeanP metric( 1.0, &metric_0 );
   PMeanPTemplate objfunc( 1.0, &metric );
   
     // define termination criterion
-  TerminationCriterion term;
+  double eps = movementFactor * (edge_len.average() - edge_len.standard_deviation());
+  TerminationCriterion term, inner;
   term.add_untangled_mesh();
-  term.add_absolute_vertex_movement( movementFactor * (edge_len.average() - edge_len.standard_deviation()) );
+  if (doCulling) 
+    inner.cull_on_absolute_vertex_movement( eps );
+  else
+    term.add_absolute_vertex_movement( eps );
   if (maxTime > 0.0) 
     term.add_cpu_time( maxTime );
-  TerminationCriterion inner;
   inner.add_iteration_limit( NUM_INNER_ITERATIONS );
   
     // construct solver
@@ -153,6 +158,10 @@ void UntangleWrapper::run_wrapper( Mesh* mesh,
   solver.use_element_on_vertex_patch();
   solver.set_inner_termination_criterion( &inner );
   solver.set_outer_termination_criterion( &term );
+  if (doJacobi)
+    solver.do_jacobi_optimization();
+  else
+    solver.do_gauss_optimization();
   
     // Run 
   qa->add_quality_assessment( &metric );

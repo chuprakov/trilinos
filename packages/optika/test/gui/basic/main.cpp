@@ -29,21 +29,32 @@
 #include "Teuchos_XMLParameterListHelpers.hpp"
 #include "Teuchos_VerboseObject.hpp"
 #include "Teuchos_FancyOStream.hpp"
-int main(){
-  Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::VerboseObjectBase::getDefaultOStream();
+
+namespace Optika{
+
+
+void RUN_BASIC_OPTIKA_TESTS(){
+
+  using Teuchos::FancyOStream;
+  using Teuchos::VerboseObjectBase;
+  using Teuchos::StringToIntegralParameterEntryValidator;
+  using Teuchos::tuple;
+  using Teuchos::rcp;
+
+  RCP<FancyOStream> out = VerboseObjectBase::getDefaultOStream();
 
   //Basic Test
-  Teuchos::RCP<Teuchos::ParameterList> My_List = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
+  RCP<ParameterList> My_List = RCP<ParameterList>(new ParameterList);
 
   double *pointer = 0;
   My_List->set("Double pointer", pointer);
   My_List->set("Max Iters", 1550, "Determines the maximum number of iterations in the solver");
   My_List->set("Tolerance", 1e-10, "The tolerance used for the convergence check");
   
-  Teuchos::RCP<Teuchos::StringToIntegralParameterEntryValidator<int> >
-    solverValidator = Teuchos::rcp(
-      new Teuchos::StringToIntegralParameterEntryValidator<int>(
-        Teuchos::tuple<std::string>( "GMRES", "CG", "TFQMR" )
+  RCP<StringToIntegralParameterEntryValidator<int> >
+    solverValidator = rcp(
+      new StringToIntegralParameterEntryValidator<int>(
+        tuple<std::string>( "GMRES", "CG", "TFQMR" )
         ,"Solver"
         )
       );
@@ -54,24 +65,33 @@ int main(){
     ,solverValidator
     );
 
-   Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > awesomenessValidator = 
-   Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> >(new Teuchos::EnhancedNumberValidator<int>(0,10));
+   RCP<EnhancedNumberValidator<int> > awesomenessValidator = 
+   RCP<EnhancedNumberValidator<int> >(new EnhancedNumberValidator<int>(0,10));
     My_List->set("Awesomeness", 5, "Rate the awesomeness!!!", awesomenessValidator);
 
-  Teuchos::Array<double> testArray( 10, 0.0 );
+  Array<double> testArray( 10, 0.0 );
   
   My_List->set("Initial Guess", testArray, "The initial guess as a RCP to an array object.");
 
-  Teuchos::ParameterList&
+  ParameterList&
     Prec_List = My_List->sublist("Preconditioner",false,"Sublist that defines the preconditioner.");
 
   Prec_List.set("Type", "ILU", "The tpye of preconditioner to use");
   Prec_List.set("Drop Tolerance", 1e-3
                 ,"The tolerance below which entries from the\n""factorization are left out of the factors.");
 
-  Optika::getInput(My_List);
+  getInput(My_List);
 
-  Teuchos::writeParameterListToXmlOStream(*My_List, *out);
+  writeParameterListToXmlOStream(*My_List, *out);
 
+
+}
+
+
+}
+
+int main(){
+  Optika::RUN_BASIC_OPTIKA_TESTS();
   return 0;
 }
+

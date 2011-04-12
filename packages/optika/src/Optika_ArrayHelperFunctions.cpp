@@ -30,7 +30,7 @@
 namespace Optika{
 
 
-bool doesParameterContainArray(Teuchos::RCP<const Teuchos::ParameterEntry> parameter){
+bool doesParameterContainArray(RCP<const ParameterEntry> parameter){
 	std::string typeName = parameter->getAny(false).typeName();
 	return typeName.find("Teuchos")!=std::string::npos && typeName.find("Array")!=std::string::npos;	
 }
@@ -47,21 +47,21 @@ QStringList getValues(QString& values){
 	return toReturn;
 }
 
-QString determineArrayType(Teuchos::RCP<const Teuchos::ParameterEntry> parameter){
-	Teuchos::any anyArray = parameter->getAny();
-	if(anyArray.type() == typeid(Teuchos::Array<int>)){
+QString determineArrayType(RCP<const ParameterEntry> parameter){
+	any anyArray = parameter->getAny();
+	if(anyArray.type() == typeid(Array<int>)){
 		return intId;
 	}
-	else if(anyArray.type() == typeid(Teuchos::Array<short>)){
+	else if(anyArray.type() == typeid(Array<short>)){
 		return shortId;
 	}
-	else if(anyArray.type() == typeid(Teuchos::Array<double>)){
+	else if(anyArray.type() == typeid(Array<double>)){
 		return doubleId;
 	}
-	else if(anyArray.type() == typeid(Teuchos::Array<float>)){
+	else if(anyArray.type() == typeid(Array<float>)){
 		return floatId;
 	}
-	else if(anyArray.type() == typeid(Teuchos::Array<std::string>)){
+	else if(anyArray.type() == typeid(Array<std::string>)){
 		return stringId;
 	}
 	else{
@@ -70,7 +70,7 @@ QString determineArrayType(Teuchos::RCP<const Teuchos::ParameterEntry> parameter
 }
 
 template <>
-Teuchos::Array<std::string> fromStringToArray<std::string>(QString arrayString){
+Array<std::string> fromStringToArray<std::string>(QString arrayString){
 	arrayString = arrayString.remove("{");
 	arrayString = arrayString.remove("}");
 	QStringList tempValues = arrayString.split(",");
@@ -83,7 +83,7 @@ Teuchos::Array<std::string> fromStringToArray<std::string>(QString arrayString){
 	for(int i = 0; i<tempValues.size(); ++i){
 		values.append(tempValues[i]);
 	}
-	Teuchos::Array<std::string> toReturn;
+	Array<std::string> toReturn;
 	for(int i = 0; i<values.size(); ++i){
 		toReturn.append(values[i].value<QString>().toStdString());	
 	}

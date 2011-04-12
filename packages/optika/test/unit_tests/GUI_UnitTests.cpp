@@ -55,8 +55,8 @@ Q_OBJECT
 };
 
 void BasicTests::testInt(){
-  Teuchos::RCP<Teuchos::ParameterList> My_List = 
-    Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
+  RCP<ParameterList> My_List = 
+    RCP<ParameterList>(new ParameterList);
 
   double *pointer = 0;
   My_List->set("Double pointer", pointer);

@@ -28,8 +28,9 @@
 #include "VertexPatches.hpp"
 #include "GlobalPatch.hpp"
 #include "MeshInterface.hpp"
+#include "Instruction.hpp"
 #include "MsqError.hpp"
-#include "cppunit/extensions/HelperMacros.h"
+#include "UnitUtil.hpp"
 
 #include <assert.h>
 #include <vector>
@@ -63,9 +64,9 @@ public:
   
   void get_all_vertices( vector<VertexHandle>& verts, MsqError& err );
   
-  void vertices_get_fixed_flag( const VertexHandle* verts, bool* fixed, size_t n, MsqError& err );
+  void vertices_get_fixed_flag( const VertexHandle* verts, std::vector<bool>& fixed, size_t n, MsqError& err );
   
-  void vertices_get_slaved_flag( const VertexHandle* verts, bool* fixed, size_t n, MsqError& err );
+  void vertices_get_slaved_flag( const VertexHandle* verts, std::vector<bool>& fixed, size_t n, MsqError& err );
   
   void vertices_get_attached_elements( const VertexHandle* array, size_t len,
                                        vector<ElementHandle>& elems,
@@ -77,9 +78,9 @@ public:
   ElementIterator* element_iterator(MsqError& err) { NI(err); return 0; }
   void vertices_get_coordinates( const VertexHandle*, MsqVertex*, size_t, MsqError& err ) { NI(err); }
   void vertex_set_coordinates( VertexHandle, const Vector3D&, MsqError& err ) { NI(err); }
-  void vertex_set_byte( VertexHandle, unsigned char, MsqError& err ) { NI(err); }
-  void vertices_set_byte( const VertexHandle*, const unsigned char*, size_t, MsqError& err ) { NI(err);  }
-  void vertex_get_byte( const VertexHandle, unsigned char*, MsqError& err) { NI(err);}
+  void vertex_set_byte( VertexHandle h, unsigned char b, MsqError& err ) { vertices_get_byte( &h, &b, 1, err ); }
+  void vertices_set_byte( const VertexHandle*, const unsigned char*, size_t, MsqError& err );
+  void vertex_get_byte( const VertexHandle h, unsigned char* b, MsqError& err) { vertices_get_byte( &h, b, 1, err );}
   void vertices_get_byte( const VertexHandle*, unsigned char*, size_t, MsqError& err );
   
   void elements_get_attached_vertices(const ElementHandle*, size_t,
@@ -102,6 +103,7 @@ private:
   std::vector<ElementHandle> elemHandles;
   std::vector<size_t> vertOffsets;
   std::vector<bool> fixedFlags;
+  std::vector<unsigned char> vertexBytes;
   bool doError;
 };
 
@@ -121,6 +123,7 @@ FakeMesh::FakeMesh( size_t num_vtx )
     fixedFlags[i] = !(i%2);
   }
   vertOffsets[vertOffsets.size()-1] = elemHandles.size();
+  vertexBytes.resize( num_vtx, 0 );
 }
 
 FakeMesh::~FakeMesh() {}
@@ -146,18 +149,19 @@ void FakeMesh::get_all_vertices( vector<Mesh::VertexHandle>& verts, MsqError& er
 }
   
 void FakeMesh::vertices_get_fixed_flag( const VertexHandle* verts, 
-                              bool* fixed, size_t n, MsqError& err )
+                              std::vector<bool>& fixed, size_t n, MsqError& err )
 {
   if (doError) {
     MSQ_SETERR(err)(MsqError::UNKNOWN_ERROR, "Expected error");
     return;
   }
   
-  if (!verts || !fixed) {
+  if (!verts) {
     MSQ_SETERR(err)(MsqError::INVALID_STATE, "NULL array pointer");
     return;
   }
   
+  fixed.resize(n);
   for (size_t i = 0; i < n; ++i)
   {
     size_t vert = (size_t)verts[i];
@@ -170,7 +174,7 @@ void FakeMesh::vertices_get_fixed_flag( const VertexHandle* verts,
 }
    
 void FakeMesh::vertices_get_slaved_flag( const VertexHandle* , 
-                              bool* , size_t , MsqError&  )
+                              std::vector<bool>& , size_t , MsqError&  )
 {
   CPPUNIT_ASSERT(false);
 }
@@ -220,7 +224,22 @@ void FakeMesh::vertices_get_byte( const VertexHandle* handles,
       MSQ_SETERR(err)(MsqError::INVALID_STATE, "Vertex handle out of range");
       return;
     }
-    bytes[i] = 0;
+    bytes[i] = vertexBytes[vert];
+  }
+}
+  
+void FakeMesh::vertices_set_byte( const VertexHandle* handles, 
+                                  const unsigned char* bytes, 
+                                  size_t count, 
+                                  MsqError& err )
+{
+  for (size_t i = 0; i < count; ++i) {
+    size_t vert = (size_t)handles[i];
+    if (vert >= vertHandles.size()) {
+      MSQ_SETERR(err)(MsqError::INVALID_STATE, "Vertex handle out of range");
+      return;
+    }
+    vertexBytes[vert] = bytes[i];
   }
 }
     
@@ -280,32 +299,32 @@ void PatchSetTest::test_vertex_patches()
   VertexPatches vp;
   MsqPrintError err(std::cout);
   vp.set_mesh( &myMesh );
+  Instruction::initialize_vertex_byte( &myMesh, 0, 0, err );
+  ASSERT_NO_ERROR(err);
   
     // Get data from myMesh to compare to
   
   vector<Mesh::VertexHandle> vertex_handles, patch_verts;
   vector<Mesh::ElementHandle> element_handles, patch_elems;
   myMesh.get_all_vertices( vertex_handles, err );
-  CPPUNIT_ASSERT(!err);
+  ASSERT_NO_ERROR(err);
   CPPUNIT_ASSERT(!vertex_handles.empty());
   
-  bool *fixed = new bool[vertex_handles.size()];
+  std::vector<bool> fixed;
   myMesh.vertices_get_fixed_flag(arrptr(vertex_handles), fixed, vertex_handles.size(), err );
-  if (err) { delete [] fixed; fixed = 0; }
-  CPPUNIT_ASSERT(!err);
+  ASSERT_NO_ERROR(err);
   
   set<Mesh::VertexHandle> free_verts;
   for (i = 0; i < vertex_handles.size(); ++i)
     if (!fixed[i])
       free_verts.insert( vertex_handles[i] );
-  delete [] fixed;
   
     // Get list of patch handles
   
   vector<PatchSet::PatchHandle> patch_handles;
   vp.get_patch_handles( patch_handles, err );
-  CPPUNIT_ASSERT(!err);
-  CPPUNIT_ASSERT(free_verts.size() == patch_handles.size());
+  ASSERT_NO_ERROR(err);
+  CPPUNIT_ASSERT_EQUAL(free_verts.size(), patch_handles.size());
   
   
     // Check each patch handle
@@ -313,8 +332,8 @@ void PatchSetTest::test_vertex_patches()
   for (i = 0; i < patch_handles.size(); ++i)
   {
     vp.get_patch(patch_handles[i], patch_elems, patch_verts, err );
-    CPPUNIT_ASSERT(!err);
-    
+    ASSERT_NO_ERROR(err);
+
       // Check that each patch contains exactly 1 free vertex
       // and that it is always a different free vertex.
     CPPUNIT_ASSERT(patch_verts.size() == 1);
@@ -326,7 +345,7 @@ void PatchSetTest::test_vertex_patches()
     element_handles.clear();
     myMesh.vertices_get_attached_elements( arrptr(patch_verts), 1, 
                                            element_handles, offsets, err );
-    CPPUNIT_ASSERT(!err);
+    ASSERT_NO_ERROR(err);
     
       // Compare element handle lists
     sort( element_handles.begin(), element_handles.end() );

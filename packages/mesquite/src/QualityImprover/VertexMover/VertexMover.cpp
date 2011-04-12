@@ -47,7 +47,8 @@ namespace MESQUITE_NS {
 
 VertexMover::VertexMover( ObjectiveFunction* OF, bool Nash ) 
   : QualityImprover(),
-    objFuncEval( OF, Nash ) 
+    objFuncEval( OF, Nash ) ,
+    jacobiOpt(false)
   {}
 
 
@@ -118,6 +119,12 @@ double VertexMover::loop_over_mesh( Mesh* mesh,
                                     const Settings* settings,
                                     MsqError& err )
 {
+  TagHandle coord_tag = 0; // store uncommitted coords for jacobi optimization 
+  TagHandle* coord_tag_ptr = 0;
+
+    // Clear culling flag, set hard fixed flag, etc on all vertices
+  initialize_vertex_byte( mesh, domain, settings, err ); MSQ_ERRZERO(err);
+
     // Get the patch data to use for the first iteration
   OFEvaluator& obj_func = get_objective_function_evaluator();
   
@@ -141,6 +148,7 @@ double VertexMover::loop_over_mesh( Mesh* mesh,
   std::vector<PatchSet::PatchHandle> patch_list;
   patch_set->get_patch_handles( patch_list, err ); MSQ_ERRZERO(err);
   
+  
     // Get termination criteria
   TerminationCriterion* outer_crit=this->get_outer_termination_criterion();
   TerminationCriterion* inner_crit=this->get_inner_termination_criterion();
@@ -158,6 +166,12 @@ double VertexMover::loop_over_mesh( Mesh* mesh,
     inner_crit->set_debug_output_level(3);
   else
     one_patch = true;
+  
+  if (jacobiOpt) {
+    coord_tag = get_jacobi_coord_tag(mesh, err);
+    MSQ_ERRZERO(err);
+    coord_tag_ptr = &coord_tag;
+  }
   
     // Initialize outer loop
     
@@ -258,10 +272,13 @@ double VertexMover::loop_over_mesh( Mesh* mesh,
         inner_crit->cull_vertices( patch, obj_func, err );
         if (MSQ_CHKERR(err)) goto ERROR;
         
-        patch.update_mesh( err );
+        patch.update_mesh( err, coord_tag_ptr );
         if (MSQ_CHKERR(err)) goto ERROR;
       }
     } 
+
+    if (jacobiOpt)
+      commit_jacobi_coords( coord_tag, mesh, err );
 
     this->terminate_mesh_iteration(patch, err); 
     if (MSQ_CHKERR(err)) goto ERROR;
@@ -275,6 +292,9 @@ double VertexMover::loop_over_mesh( Mesh* mesh,
 
 
 ERROR:  
+  if (jacobiOpt)
+    mesh->tag_delete( coord_tag, err );
+
     //call the criteria's cleanup funtions.
   outer_crit->cleanup(mesh,domain,err);
   inner_crit->cleanup(mesh,domain,err);
@@ -298,6 +318,11 @@ double VertexMover::loop_over_mesh( ParallelMesh* mesh,
 {
   std::vector<size_t> junk;
   Mesh::VertexHandle vertex_handle;
+  TagHandle coord_tag = 0; // store uncommitted coords for jacobi optimization 
+  TagHandle* coord_tag_ptr = 0;
+
+    // Clear culling flag, set hard fixed flag, etc on all vertices
+  initialize_vertex_byte( mesh, domain, settings, err ); MSQ_ERRZERO(err);
 
     // Get the patch data to use for the first iteration
   OFEvaluator& obj_func = get_objective_function_evaluator();
@@ -343,6 +368,12 @@ double VertexMover::loop_over_mesh( ParallelMesh* mesh,
   std::vector<PatchSet::PatchHandle> patch_list;
   patch_set->get_patch_handles( patch_list, err ); MSQ_ERRZERO(err);
   
+  if (jacobiOpt) {
+    coord_tag = get_jacobi_coord_tag(mesh, err);
+    MSQ_ERRZERO(err);
+    coord_tag_ptr = &coord_tag;
+  }
+  
     // Initialize outer loop
     
   this->initialize(patch, err);        
@@ -356,14 +387,23 @@ double VertexMover::loop_over_mesh( ParallelMesh* mesh,
    
    // Loop until outer termination criterion is met
   did_some = true;
-  while (!outer_crit->terminate())
+  all_culled = false;
+  for (;;)
   {
+    bool done = all_culled || outer_crit->terminate();
     if (!did_some) {
       MSQ_SETERR(err)("Inner termiation criterion satisfied for all patches "
                       "without meeting outer termination criterion.  This is "
                       "an infinite loop.  Aborting.", MsqError::INVALID_STATE);
-      break;
+      done = true;
     }
+    
+    helper->communicate_all_true( done, err ); 
+    if (MSQ_CHKERR(err)) goto ERROR;
+    if (done)
+      break;
+    
+    
     did_some = false;
     all_culled = true;
 
@@ -445,7 +485,7 @@ double VertexMover::loop_over_mesh( ParallelMesh* mesh,
         inner_crit->cull_vertices( patch, obj_func, err );
         if (MSQ_CHKERR(err)) goto ERROR;
         
-        patch.update_mesh( err );
+        patch.update_mesh( err, coord_tag_ptr );
         if (MSQ_CHKERR(err)) goto ERROR;
       }
     }
@@ -508,7 +548,7 @@ double VertexMover::loop_over_mesh( ParallelMesh* mesh,
 	  inner_crit->cull_vertices( patch, obj_func, err );
 	  if (MSQ_CHKERR(err)) goto ERROR;
         
-	  patch.update_mesh( err );
+          patch.update_mesh( err, coord_tag_ptr );
 	  if (MSQ_CHKERR(err)) goto ERROR;
 	}
       }
@@ -516,17 +556,20 @@ double VertexMover::loop_over_mesh( ParallelMesh* mesh,
       if (MSQ_CHKERR(err)) goto ERROR;
     }
 
+    if (jacobiOpt)
+      commit_jacobi_coords( coord_tag, mesh, err );
+
     this->terminate_mesh_iteration(patch, err); 
     if (MSQ_CHKERR(err)) goto ERROR;
     
     outer_crit->accumulate_outer( mesh, domain, obj_func, settings, err );
     if (MSQ_CHKERR(err)) goto ERROR;
-    
-    if (all_culled)
-      break;
   }
 
 ERROR: 
+  if (jacobiOpt)
+    mesh->tag_delete( coord_tag, err );
+
     //call the criteria's cleanup funtions.
   outer_crit->cleanup(mesh,domain,err); MSQ_CHKERR(err);
   inner_crit->cleanup(mesh,domain,err); MSQ_CHKERR(err);
@@ -546,6 +589,78 @@ void VertexMover::initialize_queue( Mesh* mesh,
 {
   QualityImprover::initialize_queue( mesh, domain, settings, err ); MSQ_ERRRTN(err);
   objFuncEval.initialize_queue( mesh, domain, settings, err ); MSQ_ERRRTN(err);
+}
+
+TagHandle VertexMover::get_jacobi_coord_tag( Mesh* mesh, MsqError& err )
+{
+    // Get tag handle
+  const char tagname[] = "msq_jacobi_temp_coords";
+  TagHandle tag = mesh->tag_create( tagname, Mesh::DOUBLE, 3, 0, err );  MSQ_ERRZERO(err);
+    /* VertexMover will always delete the tag when it is done, so it is probably
+       best not to accept an existing tag
+  if (err.error_code() == TAG_ALREADY_EXISTS) {
+    err.clear();
+    tag = tag_get( tagname, err ); MSQ_ERRZERO(err);
+    std::string name;
+    Mesh::TagType type;
+    unsigned length;
+    mesh->tag_properties( tag, name, type, length, err ); MSQ_ERRZERO(err);
+    if (type != Mesh::DOUBLE || length != 3) {
+      MSQ_SETERR(err)(TAG_ALREADY_EXISTS,
+                     "Tag \"%s\" already exists with invalid type", 
+                     tagname);
+      return 0;
+    }
+  }
+    */
+  
+    // Initialize tag value with initial vertex coordinates so that
+    // vertices that never get moved end up with the correct coords.
+  std::vector<Mesh::VertexHandle> vertices;
+  mesh->get_all_vertices( vertices, err ); MSQ_ERRZERO(err);
+    // remove fixed vertices
+    // to avoid really huge arrays (especially since we need to copy
+    // coords out of annoying MsqVertex class to double array), work
+    // in blocks
+  const size_t blocksize = 4096;
+  std::vector<bool> fixed(blocksize);
+  MsqVertex coords[blocksize];
+  double tag_data[3*blocksize];
+  for (size_t i = 0; i < vertices.size(); i += blocksize) {
+    size_t count = std::min( blocksize, vertices.size() - i );
+      // remove fixed vertices
+    mesh->vertices_get_fixed_flag( &vertices[i], fixed, count, err ); MSQ_ERRZERO(err);
+    size_t w = 0;
+    for (size_t j = 0; j < count; ++j)
+      if (!fixed[j])
+        vertices[i + w++] = vertices[i + j];
+    count = w;
+      // store tag data for free vertices
+    mesh->vertices_get_coordinates( &vertices[i], coords, count, err ); MSQ_ERRZERO(err);
+    for (size_t j = 0; j < count; ++j) {
+      tag_data[3*j  ] = coords[j][0];
+      tag_data[3*j+1] = coords[j][1];
+      tag_data[3*j+2] = coords[j][2];
+    }
+    mesh->tag_set_vertex_data( tag, count, &vertices[i], tag_data, err ); MSQ_ERRZERO(err);
+  }
+  
+  return tag;
+}
+
+void VertexMover::commit_jacobi_coords( TagHandle tag, Mesh* mesh, MsqError& err )
+{
+  Vector3D coords;
+  std::vector<Mesh::VertexHandle> vertices;
+  mesh->get_all_vertices( vertices, err ); MSQ_ERRRTN(err);
+  std::vector<bool> fixed( vertices.size() );
+  mesh->vertices_get_fixed_flag( &vertices[0], fixed, vertices.size(), err );
+  for (size_t i = 0; i < vertices.size(); ++i) {
+    if (!fixed[i]) {
+      mesh->tag_get_vertex_data( tag, 1, &vertices[i], coords.to_array(), err ); MSQ_ERRRTN(err);
+      mesh->vertex_set_coordinates( vertices[i], coords, err ); MSQ_ERRRTN(err);
+    }
+  }
 }
 
 } // namespace Mesquite
