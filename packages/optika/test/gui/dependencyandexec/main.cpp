@@ -45,6 +45,7 @@ void RUN_OPTIKA_DEPENDENCY_AND_EXEC_TEST(){
  using Teuchos::VerboseObjectBase;
  using Teuchos::StringToIntegralParameterEntryValidator;
  using Teuchos::StringValidatorDependency;
+ using Teuchos::ArrayNumberValidator;
  using Teuchos::StringVisualDependency;
  using Teuchos::NumberVisualDependency;
  using Teuchos::NumberArrayLengthDependency;
