@@ -1,12 +1,12 @@
 @TEST_MAKE_INCLUDE@
-LDADD = $(top_builddir)/libmesquite.la
+LDADD = $(top_builddir)/src/libmesquite.la
 AM_LDFLAGS = @AM_LDFLAGS@
 AM_CPPFLAGS = @AM_CPPFLAGS@
 
 
 if WITH_CPPUNIT
   check_PROGRAMS = msq_test
-  msq_test_DEPENDENCIES = $(top_builddir)/libmesquite.la
+  msq_test_DEPENDENCIES = $(top_builddir)/src/libmesquite.la
   TESTS = $(check_PROGRAMS)
   CPPUNIT_CPPFLAGS_SET = @CPPUNIT_CPPFLAGS@
   CPPUNIT_LDFLAGS_SET = @CPPUNIT_LDFLAGS@
@@ -63,6 +63,7 @@ msq_test_SOURCES = msq_test_main.cpp \
 	BCDTest.cpp \
 	BoundedCylinderDomainTest.cpp \
 	CachingTargetTest.cpp \
+	CircleDomainTest.cpp \
 	CompositeMetricTest.cpp \
 	CompositeOFTest.cpp \
 	ConditionNumberTest.cpp \
@@ -83,6 +84,7 @@ msq_test_SOURCES = msq_test_main.cpp \
 	IdealWeightInverseMeanRatioTest.cpp \
 	InstructionQueueTest.cpp \
 	LinearMappingFunctionTest.cpp \
+	LineDomainTest.cpp \
 	LVQDTargetTest.cpp \
 	MappingFunctionTest.cpp \
 	Matrix3DTest.cpp \

@@ -72,7 +72,7 @@ module FPliris
 
    interface Pliris ! Constructors
      !User interface -- constructors for use by end applications:
-     module procedure from_scratch,from_thin_air
+     module procedure Create_Default,Create
      !Developers only -- to be called by developers from other ForTrilinos modules, not by end applications:
      module procedure from_struct
    end interface
@@ -87,18 +87,16 @@ contains
      call from_struct%register_self
   end function
 
-  type(Pliris) function from_thin_air()
-    from_thin_air = from_struct(Pliris_Create_Default())
+  type(Pliris) function Create_Default()
+    Create_Default = from_struct(Pliris_Create_Default())
   end function
 
-  type(Pliris) function from_scratch(A,x,b)
+  type(Pliris) function Create(A,x,b)
     use FEpetra_Vector ,only : Epetra_Vector
     use FEpetra_MultiVector ,only : Epetra_MultiVector
     type(Epetra_Vector) ,intent(in) :: A
     type(Epetra_MultiVector) ,intent(in) :: x,b
-    type(FT_Pliris_ID_t) :: from_scratch_id
-    from_scratch_id = Pliris_Create(A%get_EpetraVector_ID(),x%get_EpetraMultiVector_ID(),b%get_EpetraMultiVector_ID())
-    from_scratch = from_struct(from_scratch_id)
+    Create = from_struct(Pliris_Create(A%get_EpetraVector_ID(),x%get_EpetraMultiVector_ID(),b%get_EpetraMultiVector_ID()))
   end function
 
   !----------------- Destructor ---------------------------------------
@@ -108,7 +106,6 @@ contains
     call Pliris_Destroy( this%FT_Pliris_id ) 
   end subroutine
 
-  
   !----------------- Data access ---------------------------------------------
 
   type(FT_Pliris_ID_t) function get_PlirisID(this)
@@ -133,34 +130,19 @@ contains
   end function
 
   type(ForTrilinos_Universal_ID_t) function generalize(this)
-   ! ____ Use for ForTrilinos function implementation ______
    use ForTrilinos_utils ,only: generalize_all
    use iso_c_binding     ,only: c_loc
    class(Pliris) ,intent(in) ,target :: this
    generalize = generalize_all(c_loc(this%FT_Pliris_id))
-   ! ____ Use for ForTrilinos function implementation ______
-
-   ! ____ Use for CTrilinos function implementation ______
-   !class(Pliris) ,intent(in) ,target :: this
-   !generalize = Pliris_Generalize ( this%FT_Pliris_id)
-   ! ____ Use for CTrilinos function implementation ______
   end function
 
  type(FT_Pliris_ID_t) function degeneralize_Pliris(generic_id) bind(C)
-   ! ____ Use for ForTrilinos function implementation ______
     use ForTrilinos_enums ,only : FT_Pliris_ID_t
     use ,intrinsic :: iso_c_binding ,only: c_ptr,c_f_pointer
     type(c_ptr)                   ,value   :: generic_id
     type(FT_Pliris_ID_t) ,pointer :: local_ptr=>null()
     call c_f_pointer (generic_id, local_ptr)
     degeneralize_Pliris = local_ptr
-   ! ____ Use for ForTrilinos function implementation ______
-
-   ! ____ Use for CTrilinos function implementation ______
-   !use ForTrilinos_enums ,only : ForTrilinos_Universal_ID_t,FT_Pliris_ID_t
-   !type(ForTrilinos_Universal_ID_t) ,intent(in) :: generic_id
-   !degeneralize_Pliris = Pliris_Degeneralize(generic_id)
-   ! ____ Use for CTrilinos function implementation ______
   end function
  
   subroutine invalidate_PlirisID(this)
@@ -215,7 +197,7 @@ contains
   subroutine FactorSolve ( this, A, my_rows, my_cols, matrix_size, num_procsr, num_rhs, secs )
     use FEpetra_Vector ,only : Epetra_Vector
     class(Pliris)       ,intent(in)  :: this
-    type(Epetra_Vector) ,intent(in)  ,value :: A
+    type(Epetra_Vector) ,intent(in)  :: A
     integer(c_int)      ,intent(in)  ,value :: my_rows,my_cols
     integer(c_int)      ,intent(in)  :: matrix_size,num_procsr,num_rhs
     real(c_double)      ,intent(out) :: secs
