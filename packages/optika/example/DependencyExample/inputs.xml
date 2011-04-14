@@ -171,10 +171,10 @@
     </Dependency>
   </Dependencies>
   <Validators>
-    <Validator type="stringValidator" validatorId="0">
-      <String stringValue="American"/>
-      <String stringValue="Swiss"/>
-      <String stringValue="Pepperjack"/>
+    <Validator type="StringValidator" validatorId="0">
+      <String value="American"/>
+      <String value="Swiss"/>
+      <String value="Pepperjack"/>
     </Validator>
   </Validators>
   <!-- 

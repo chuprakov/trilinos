@@ -23,8 +23,7 @@ namespace Optika{
   using Teuchos::EnhancedNumberValidator;
   using Teuchos::EnhancedNumberTraits;
   using Teuchos::FileNameValidator;
-  using Teuchos::ArrayNumberValidator;
-  using Teuchos::ArrayFileNameValidator;
+  using Teuchos::ArrayValidator;
   using Teuchos::DependencySheet;
   using Teuchos::Dependency;
   using Teuchos::VisualDependency;

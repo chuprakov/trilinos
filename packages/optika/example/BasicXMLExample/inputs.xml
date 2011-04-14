@@ -65,10 +65,10 @@
        words, the <Validators> tag must be a direct child of the root 
        <ParameterList> tag. -->
   <Validators>
-    <Validator type="stringValidator" validatorId="0">
-      <String stringValue="GMRES"/>
-      <String stringValue="CG"/>
-      <String stringValue="TFQMR"/>
+    <Validator type="StringValidator" validatorId="0">
+      <String value="GMRES"/>
+      <String value="CG"/>
+      <String value="TFQMR"/>
     </Validator>
   </Validators>
 </ParameterList>
