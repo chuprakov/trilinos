@@ -136,34 +136,34 @@
          just hold on to your pants. We'll explore that a little more below
          in the dependencies.
     -->
-    <Validator type="ArrayValidator(stringValidator, string)" validatorId="3">
-      <Validator type="stringValidator">
-        <String stringValue="Infinite Planar Wall"/>
-        <String stringValue="Finite Planar Wall"/>
+    <Validator type="ArrayValidator(StringValidator, string)" validatorId="3">
+      <Validator type="StringValidator">
+        <String value="Infinite Planar Wall"/>
+        <String value="Finite Planar Wall"/>
       </Validator>
     </Validator>
-    <Validator type="ArrayValidator(stringValidator, string)" validatorId="4">
-      <Validator type="stringValidator">
-        <String stringValue="Infinite Planar Wall"/>
-        <String stringValue="Finite Planar Wall"/>
-        <String stringValue="Colloids"/>
-        <String stringValue="Pore"/>
-        <String stringValue="Finite Pore"/>
-        <String stringValue="Tapered Pore"/>
+    <Validator type="ArrayValidator(StringValidator, string)" validatorId="4">
+      <Validator type="StringValidator">
+        <String value="Infinite Planar Wall"/>
+        <String value="Finite Planar Wall"/>
+        <String value="Colloids"/>
+        <String value="Pore"/>
+        <String value="Finite Pore"/>
+        <String value="Tapered Pore"/>
       </Validator>
     </Validator>
-    <Validator type="ArrayValidator(stringValidator, string)" validatorId="5">
-      <Validator type="stringValidator">
-        <String stringValue="Infinite Planar Wall"/>
-        <String stringValue="Finite Planar Wall"/>
-        <String stringValue="Colloids"/>
-        <String stringValue="Atoms"/>
-        <String stringValue="Point Atoms"/>
-        <String stringValue="Finite Length Cylinder"/>
-        <String stringValue="Cylinder with Periodic function for the radius"/>
-        <String stringValue="Pore"/>
-        <String stringValue="Finite Pore"/>
-        <String stringValue="Tapered Pore"/>
+    <Validator type="ArrayValidator(StringValidator, string)" validatorId="5">
+      <Validator type="StringValidator">
+        <String value="Infinite Planar Wall"/>
+        <String value="Finite Planar Wall"/>
+        <String value="Colloids"/>
+        <String value="Atoms"/>
+        <String value="Point Atoms"/>
+        <String value="Finite Length Cylinder"/>
+        <String value="Cylinder with Periodic function for the radius"/>
+        <String value="Pore"/>
+        <String value="Finite Pore"/>
+        <String value="Tapered Pore"/>
       </Validator>
     </Validator>
   </Validators>
@@ -263,7 +263,7 @@
            logically "and them together using an AndCondition.
       -->
 
-      <Condition type="andCondition">
+      <Condition type="AndCondition">
         <!--
              This is a number condition. It just tests to see if the value
              of a number parameter is greater than 0. If it is, the condition
@@ -295,7 +295,7 @@
              parameter. If the parameter is true, then this condition is true,
              and vice versa
         -->
-        <Condition parameterID="0" type="boolCondition"/>
+        <Condition parameterID="0" type="BoolCondition"/>
       </Condition>
     </Dependency>
   </Dependencies>

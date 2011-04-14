@@ -137,10 +137,10 @@
     <!-- So let's look at some other validators. This is a string validator.
          When using it you just specify all of the valid string values like 
          so. -->
-    <Validator type="stringValidator" validatorId="5">
-      <String stringValue="GMRES"/>
-      <String stringValue="CG"/>
-      <String stringValue="TFQMR"/>
+    <Validator type="StringValidator" validatorId="5">
+      <String value="GMRES"/>
+      <String value="CG"/>
+      <String value="TFQMR"/>
     </Validator>
 
     <!-- This is a file name validator. It is used on string parameters and
@@ -149,7 +149,7 @@
          fileMustExist attribute to true. Here we don't care whether or not
          the file already exists, so we'll set the attribute value to false.
     -->
-    <Validator fileMustExist="false" type="filenameValidator" validatorId="8"/>
+    <Validator fileMustExist="false" type="FilenameValidator" validatorId="8"/>
 
     <!-- ArrayValidators allow the validators specified above to be used
          as validators on arrays. You need to specify what type of 
@@ -170,18 +170,18 @@
     </Validator>
 
     <!-- Here's an example of using a string validator in an array context. -->
-    <Validator type="ArrayValidator(stringValidator, string)" validatorId="7">
-      <Validator type="stringValidator">
-        <String stringValue="Option1"/>
-        <String stringValue="Option2"/>
-        <String stringValue="Option3"/>
-        <String stringValue="Option4"/>
+    <Validator type="ArrayValidator(StringValidator, string)" validatorId="7">
+      <Validator type="StringValidator">
+        <String value="Option1"/>
+        <String value="Option2"/>
+        <String value="Option3"/>
+        <String value="Option4"/>
       </Validator>
     </Validator>
 
     <!-- You could even have an array of file names if you wanted. -->
-    <Validator type="ArrayValidator(filenameValidator, string)" validatorId="1">
-      <Validator fileMustExist="false" type="filenameValidator"/>
+    <Validator type="ArrayValidator(FilenameValidator, string)" validatorId="1">
+      <Validator fileMustExist="false" type="FilenameValidator"/>
     </Validator>
     
     <!-- That's pretty much all we've got for you. It's actually all pretty

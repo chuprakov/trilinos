@@ -130,6 +130,13 @@ public:
     RCP<DependencySheet> dependencySheet);
 
   /**
+   * Constructs an OptikaGUI object.
+   *
+   * @param xmlFileName Name of an XML file describing the GUI.
+   */
+  OptikaGUI(const std::string& xmlFileName);
+
+  /**
    * Runs the GUI and gets the user input.
    */
   void exec();
