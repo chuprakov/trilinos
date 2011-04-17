@@ -38,7 +38,7 @@
 
 module F$Package_$Class
   use ForTrilinos_enums ,only: FT_$Package_ID_t,FT_$Package_$Class_ID_t,ForTrilinos_Universal_ID_t
-  use ForTrilinos_table_man
+  use ForTrilinos_table_man ,only : CT_Alias
   use ForTrilinos_universal ,only : universal
   use ForTrilinos_error ,only : error
   use for$Package
@@ -50,7 +50,9 @@ module F$Package_$Class
     private
     type(FT_$Package_$Class_ID_t) :: $Class_id 
   contains
-     !Developers only
+     !User interface -- insert here type-bound procedures intended for use by end applications:
+
+     !Developers only -- to be called by developers from other ForTrilinos modules, not by end applications:
      procedure         :: invalidate_id => invalidate_$Package$Class_ID
      procedure         :: ctrilinos_delete => ctrilinos_delete_$Package$Class
      procedure         :: get_$Package$Class_ID 
@@ -58,19 +60,26 @@ module F$Package_$Class
      procedure         :: generalize 
   end type
 
-   interface $Package_$Class ! constructors
-     module procedure from_scratch,duplicate,from_struct
+   interface $Package_$Class 
+     !User interface -- constructors for use by end applications:
+     module procedure from_scratch,duplicate
+     !Developers only -- to be called by developers from other ForTrilinos modules, not by end applications:
+     module procedure from_struct
    end interface
  
 contains
 
   ! Common type-bound procedures begin here: all ForTrilinos classes at the base of the API have procedures analogous to these.
+  ! The function from_struct should be called by developers only from other ForTrilinos modules, never by end applications:
 
-  typ($Package_$Class) function from_struct(id)
+  type($Package_$Class) function from_struct(id)
      type(FT_$Package_$Class_ID_t) ,intent(in) :: id
      from_struct%$Class_id = id
      call from_struct%register_self()
   end function
+ 
+  ! All additional constructors should take two steps: (1) obtain a struct ID by invoking a procedural binding and then (2) pass
+  ! this ID to from_struct to initialize the constructed object's ID component and register the object for reference counting.
  
   type($Package_$Class) function from_scratch($args)
     ! Declare args
@@ -81,15 +90,17 @@ contains
 
   type($Package_$Class) function duplicate(this)
     type($Package_$Class) ,intent(in) :: this 
-    type(FT_$Package_$Class_ID_t) :: duplicate_id
-    duplicate_id = $Package_$Class_Duplicate(this%$Class_id)
-    duplicate = from_struct(duplicate_id)
+    duplicate = from_struct($Package_$Class_Duplicate(this%$Class_id))
   end function
+
+  !----------------- Data access ---------------------------------------------
 
   type(FT_$Package_$Class_ID_t) function get_$Package$Class_ID(this)
     class($Package_$Class) ,intent(in) :: this 
     get_$Package$Class_ID=this%$Class_id
   end function
+
+  !----------------- Type casting ---------------------------------------------
   
   type(FT_$Package_$Class_ID_t) function alias_$Package$Class_ID(generic_id)
     use ForTrilinos_table_man, only : CT_Alias
@@ -106,33 +117,19 @@ contains
   end function
 
   type(ForTrilinos_Universal_ID_t) function generalize(this)
-   ! ____ Use for ForTrilinos function implementation ______
    use ForTrilinos_utils ,only: generalize_all
    use iso_c_binding     ,only: c_loc
    class($Package_$Class) ,intent(in) ,target :: this
-   generalize = generalize_all(c_loc(this%$Class_ID))
-   ! ____ Use for ForTrilinos function implementation ______
-
-   ! ____ Use for CTrilinos function implementation ______
-   !class($Package_$Class) ,intent(in) ,target :: this
-   !generalize = $Package_$Class_Generalize ( this%$Class_id)
-   ! ____ Use for CTrilinos function implementation ______
+   generalize = generalize_all(c_loc(this%$Class_id))
   end function
 
  type(FT_$Package_$Class_ID_t) function degeneralize_$Package$Class(generic_id) bind(C)
-   ! ____ Use for ForTrilinos function implementation ______
     use ForTrilinos_enums ,only : ForTrilinos_Universal_ID_t,FT_$Package_$Class_ID_t
     use ,intrinsic :: iso_c_binding ,only: c_ptr,c_f_pointer
     type(c_ptr)                   ,value   :: generic_id
     type(FT_$Package_$Class_ID_t) ,pointer :: local_ptr=>null()
     call c_f_pointer (generic_id, local_ptr)
     degeneralize_$Package$Class = local_ptr
-   ! ____ Use for ForTrilinos function implementation ______
-
-   ! ____ Use for CTrilinos function implementation ______
-   !type(ForTrilinos_Universal_ID_t) ,intent(in) :: generic_id
-   !degeneralize_$Package$Class = $Package_$Class_Degeneralize(generic_id)
-   ! ____ Use for CTrilinos function implementation ______
   end function
  
   subroutine invalidate_$Package$Class_ID(this)

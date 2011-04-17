@@ -234,7 +234,7 @@ private:
 		QSpinBox *newSpin = new QSpinBox(this);
 		RCP<const EnhancedNumberValidator<int> > validator = null;
 		if(!is_null(entryValidator)){
-			validator = rcp_dynamic_cast<const ArrayNumberValidator<int> >(entryValidator,true)->getPrototype();
+			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<int>, int> >(entryValidator,true)->getPrototype();
 		}
 		SpinBoxApplier<int>::applyToSpinBox(validator, newSpin);
 		return newSpin;
@@ -289,7 +289,7 @@ private:
 		QSpinBox *newSpin = new QSpinBox(this);
 		RCP<const EnhancedNumberValidator<short> > validator = null;
 		if(!is_null(entryValidator)){
-			validator = rcp_dynamic_cast<const ArrayNumberValidator<short> >(entryValidator,true)->getPrototype();
+			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<short>, short> >(entryValidator,true)->getPrototype();
 		}
 		SpinBoxApplier<short>::applyToSpinBox(validator, newSpin);
 		return newSpin;
@@ -396,7 +396,7 @@ private:
 		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
 		RCP<const EnhancedNumberValidator<double> > validator = null;
 		if(!is_null(entryValidator)){
-			validator = rcp_dynamic_cast<const ArrayNumberValidator<double> >(entryValidator,true)->getPrototype();
+			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<double>, double> >(entryValidator,true)->getPrototype();
 		}
 		SpinBoxApplier<double>::applyToSpinBox(validator, newSpin);
 		return newSpin;
@@ -450,7 +450,7 @@ private:
 		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
 		RCP<const EnhancedNumberValidator<float> > validator = null;
 		if(!is_null(entryValidator)){
-			validator = rcp_dynamic_cast<const ArrayNumberValidator<float> >(entryValidator,true)->getPrototype();
+			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<float>, float> >(entryValidator,true)->getPrototype();
 		}
 		SpinBoxApplier<float>::applyToSpinBox(validator, newSpin);
 		return newSpin;
@@ -486,7 +486,7 @@ public:
 			if(is_null(entryValidator)){
 				toReturn.push_back(((QLineEdit*)(*it))->text().toStdString());
 			}
-			else if(!is_null(rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator))){
+			else if(!is_null(rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(entryValidator))){
 				toReturn.push_back(((FileNameWidget*)(*it))->getCurrentFileName().toStdString());
 			}
 			else if(entryValidator->validStringValues()->size() !=0){
@@ -506,7 +506,7 @@ public:
 			if(is_null(entryValidator)){
 				static_cast<QLineEdit*>(*it)->setText(valueList.at(i));
 			}
-			else if(!is_null(rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator))){
+			else if(!is_null(rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(entryValidator))){
 				static_cast<FileNameWidget*>(*it)->setCurrentFileName(valueList.at(i));
 			}
 			else if(entryValidator->validStringValues()->size() !=0){
@@ -527,8 +527,8 @@ private:
 		if(is_null(entryValidator)){
 			return new QLineEdit(this);
 		}
-		else if(!is_null(rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator))){
-			return new FileNameWidget("", rcp_dynamic_cast<const ArrayFileNameValidator>(entryValidator)->getPrototype()->fileMustExist(), this);
+		else if(!is_null(rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(entryValidator))){
+			return new FileNameWidget("", rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(entryValidator)->getPrototype()->fileMustExist(), this);
 		}
 		else if(entryValidator->validStringValues()->size() != 0){
 			RCP<const Array<std::string> > options = entryValidator->validStringValues();

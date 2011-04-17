@@ -39,6 +39,7 @@ void RUN_BASIC_OPTIKA_TESTS(){
   using Teuchos::VerboseObjectBase;
   using Teuchos::StringToIntegralParameterEntryValidator;
   using Teuchos::tuple;
+  using Teuchos::rcp;
 
   RCP<FancyOStream> out = VerboseObjectBase::getDefaultOStream();
 

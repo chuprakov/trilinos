@@ -21,6 +21,13 @@ ELSE()
   ENDFUNCTION()
 ENDIF()
 
+
+
+autoconf_header( ${CMAKE_CURRENT_SOURCE_DIR}/include/mesquite_version.h.in
+                 ${CMAKE_CURRENT_BINARY_DIR}/include/mesquite_version.h )
+autoconf_header( ${CMAKE_CURRENT_SOURCE_DIR}/include/mesquite_config.h.in
+                 ${CMAKE_CURRENT_BINARY_DIR}/include/mesquite_config.h )
+
 #
 # B) Define the header and source files (and directories)
 #
@@ -33,12 +40,13 @@ SET(HEADERS "")
 SET(SOURCES "")
 
 APPEND_SET(HEADERS
-  ${CMAKE_CURRENT_BINARY_DIR}/../include/mesquite_config.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../include/mesquite_version.h
-  ../include/Mesquite.hpp
-  ../include/MeshInterface.hpp
-  ../include/ParallelMeshInterface.hpp
-  ../include/ParallelHelperInterface.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/include/mesquite_config.h
+  ${CMAKE_CURRENT_BINARY_DIR}/include/mesquite_version.h
+  include/Mesquite.hpp
+  include/MeshInterface.hpp
+  include/ParallelMeshInterface.hpp
+  include/ParallelHelperInterface.hpp
+  include/CurveDomain.hpp
   )
 
 #
@@ -130,6 +138,7 @@ APPEND_SET(SOURCES
 #
 
 APPEND_SET(HEADERS
+  Control/Wrappers/DeformingDomainWrapper.hpp
   Control/Wrappers/LaplaceWrapper.hpp
   Control/Wrappers/ShapeImprovementWrapper.hpp
   Control/Wrappers/ShapeImprover.hpp
@@ -141,6 +150,7 @@ APPEND_SET(HEADERS
   )
 
 APPEND_SET(SOURCES
+  Control/Wrappers/DeformingDomainWrapper.cpp
   Control/Wrappers/LaplaceWrapper.cpp
   Control/Wrappers/ShapeImprovementWrapper.cpp
   Control/Wrappers/ShapeImprover.cpp
@@ -886,7 +896,7 @@ APPEND_SET(SOURCES
 # Create the Mesquite_all_headers.hpp file.
 #
 
-SET( all_file ${CMAKE_CURRENT_BINARY_DIR}/../include/Mesquite_all_headers.hpp )
+SET( all_file ${CMAKE_CURRENT_BINARY_DIR}/include/Mesquite_all_headers.hpp )
 # Cannot do this correctly because list if all headers is too long
 # of a command-line argument for some platforms (e.g. Windows.)
 # Instead, use less optimial solution (doesn't automatically update.)

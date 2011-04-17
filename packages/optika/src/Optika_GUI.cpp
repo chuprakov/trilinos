@@ -120,6 +120,12 @@ OptikaGUI::OptikaGUI(RCP<ParameterList> validParameters, RCP<DependencySheet> de
   customFunc(0)
   {}
 
+OptikaGUI::OptikaGUI(const std::string& xmlFileName){
+  dependencySheet = rcp(new DependencySheet);
+  validParameters = getParametersFromXmlFile(xmlFileName, dependencySheet);
+  customFunc =0;
+}
+
 void OptikaGUI::exec(){
 	{
 		using namespace Qt;

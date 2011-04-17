@@ -64,7 +64,8 @@ int main(int argc, char* argv[])
   using Teuchos::StringValidator;
   using Teuchos::tuple;
   using Teuchos::Array;
-  RCP<ParameterList> My_List = RCP<ParameterList>(new ParameterList);
+  using Teuchos::rcp;
+  RCP<ParameterList> My_List = rcp(new ParameterList);
 
   My_List->set(
     "Max Iters", 

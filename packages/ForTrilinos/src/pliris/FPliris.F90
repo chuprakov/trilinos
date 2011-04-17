@@ -41,6 +41,7 @@ module FPliris
   use ForTrilinos_table_man
   use ForTrilinos_universal ,only : universal
   use ForTrilinos_error ,only : error
+  use iso_c_binding ,only : c_int,c_double
   use forpliris
   implicit none
   private                   ! Hide everything by default
@@ -50,16 +51,18 @@ module FPliris
     private
     type(FT_Pliris_ID_t) :: FT_Pliris_id 
   contains
-     !User interface
+     !User interface -- type-bound procedures intended for use by end applications:
      procedure         :: SetLHS
      procedure         :: SetRHS
      procedure         :: SetMatrix
     !procedure         :: SetMatrix_Serial
-    !procedure         :: GetDistribution
+     procedure         :: GetDistribution
+     procedure         :: FactorSolve
     !procedure         :: FactorSolve_Serial
-    !procedure         :: Factor
-    !procedure         :: Solve
-     ! Developers only
+     procedure         :: Factor
+     procedure         :: Solve
+
+     !Developers only -- to be called by developers from other ForTrilinos modules, not by end applications:
      procedure         :: invalidate_id => invalidate_PlirisID
      procedure         :: ctrilinos_delete => ctrilinos_delete_Pliris
      procedure         :: get_PlirisID 
@@ -67,33 +70,33 @@ module FPliris
      procedure         :: generalize 
   end type
 
-   interface Pliris ! constructors
-     module procedure from_scratch,from_struct,from_thin_air
+   interface Pliris ! Constructors
+     !User interface -- constructors for use by end applications:
+     module procedure Create_Default,Create
+     !Developers only -- to be called by developers from other ForTrilinos modules, not by end applications:
+     module procedure from_struct
    end interface
  
 contains
 
   ! -------------------- User-defined constructors ------------------ 
-
-  function from_thin_air()
-    type(FT_Pliris_ID_t) :: from_thin_air
-    from_thin_air = Pliris_Create_Default ()
-  end function
-
+   
   type(Pliris) function from_struct(id)
      type(FT_Pliris_ID_t) ,intent(in) :: id
      from_struct%FT_Pliris_id = id
-     call from_struct%register_self()
+     call from_struct%register_self
   end function
 
-  type(Pliris) function from_scratch(A,x,b)
+  type(Pliris) function Create_Default()
+    Create_Default = from_struct(Pliris_Create_Default())
+  end function
+
+  type(Pliris) function Create(A,x,b)
     use FEpetra_Vector ,only : Epetra_Vector
     use FEpetra_MultiVector ,only : Epetra_MultiVector
     type(Epetra_Vector) ,intent(in) :: A
     type(Epetra_MultiVector) ,intent(in) :: x,b
-    type(FT_Pliris_ID_t) :: from_scratch_id
-    from_scratch_id = Pliris_Create(A%get_EpetraVector_ID(),x%get_EpetraMultiVector_ID(),b%get_EpetraMultiVector_ID())
-    from_scratch = from_struct(from_scratch_id)
+    Create = from_struct(Pliris_Create(A%get_EpetraVector_ID(),x%get_EpetraMultiVector_ID(),b%get_EpetraMultiVector_ID()))
   end function
 
   !----------------- Destructor ---------------------------------------
@@ -103,7 +106,6 @@ contains
     call Pliris_Destroy( this%FT_Pliris_id ) 
   end subroutine
 
-  
   !----------------- Data access ---------------------------------------------
 
   type(FT_Pliris_ID_t) function get_PlirisID(this)
@@ -128,34 +130,19 @@ contains
   end function
 
   type(ForTrilinos_Universal_ID_t) function generalize(this)
-   ! ____ Use for ForTrilinos function implementation ______
    use ForTrilinos_utils ,only: generalize_all
    use iso_c_binding     ,only: c_loc
    class(Pliris) ,intent(in) ,target :: this
    generalize = generalize_all(c_loc(this%FT_Pliris_id))
-   ! ____ Use for ForTrilinos function implementation ______
-
-   ! ____ Use for CTrilinos function implementation ______
-   !class(Pliris) ,intent(in) ,target :: this
-   !generalize = Pliris_Generalize ( this%FT_Pliris_id)
-   ! ____ Use for CTrilinos function implementation ______
   end function
 
  type(FT_Pliris_ID_t) function degeneralize_Pliris(generic_id) bind(C)
-   ! ____ Use for ForTrilinos function implementation ______
     use ForTrilinos_enums ,only : FT_Pliris_ID_t
     use ,intrinsic :: iso_c_binding ,only: c_ptr,c_f_pointer
     type(c_ptr)                   ,value   :: generic_id
     type(FT_Pliris_ID_t) ,pointer :: local_ptr=>null()
     call c_f_pointer (generic_id, local_ptr)
     degeneralize_Pliris = local_ptr
-   ! ____ Use for ForTrilinos function implementation ______
-
-   ! ____ Use for CTrilinos function implementation ______
-   !use ForTrilinos_enums ,only : ForTrilinos_Universal_ID_t,FT_Pliris_ID_t
-   !type(ForTrilinos_Universal_ID_t) ,intent(in) :: generic_id
-   !degeneralize_Pliris = Pliris_Degeneralize(generic_id)
-   ! ____ Use for CTrilinos function implementation ______
   end function
  
   subroutine invalidate_PlirisID(this)
@@ -197,76 +184,52 @@ contains
 !   success = Pliris_SetMatrix_Serial(this%FT_Pliris_ID,A%get_EpetraSerialDenseVector_ID()) 
 ! end subroutine 
 
-! function Pliris_GetDistribution ( selfID, nprocs_row, number_of_unknowns, nrhs, my_rows, &
-!       my_cols, my_first_row, my_first_col, my_rhs, my_row, my_col ) result(that) &
-!       bind(C,name='Pliris_GetDistribution')
-!   import :: c_int ,FT_Pliris_ID_t
+  subroutine GetDistribution ( this, nprocs_row, number_of_unknowns, nrhs, my_rows, &
+        my_cols, my_first_row, my_first_col, my_rhs, my_row, my_col ) 
+    class(Pliris)  ,intent(in)  :: this
+    integer(c_int) ,intent(in)  :: nprocs_row,number_of_unknowns,nrhs
+    integer(c_int) ,intent(out) :: my_rows,my_cols,my_first_row,my_first_col,my_rhs,my_row,my_col
+    integer(c_int)              :: success
+    success = Pliris_GetDistribution( this%FT_Pliris_id, nprocs_row, number_of_unknowns, nrhs, my_rows, &
+        my_cols, my_first_row, my_first_col, my_rhs, my_row, my_col )
+  end subroutine
 
-!   integer(c_int)                                                :: that
-!   type(FT_Pliris_ID_t)        ,intent(in)   ,value              :: selfID
-!   integer(c_int)                                  ,dimension(*) :: nprocs_row
-!   integer(c_int)                                  ,dimension(*) :: number_of_unknowns
-!   integer(c_int)                                  ,dimension(*) :: nrhs
-!   integer(c_int)                                  ,dimension(*) :: my_rows
-!   integer(c_int)                                  ,dimension(*) :: my_cols
-!   integer(c_int)                                  ,dimension(*) :: my_first_row
-!   integer(c_int)                                  ,dimension(*) :: my_first_col
-!   integer(c_int)                                  ,dimension(*) :: my_rhs
-!   integer(c_int)                                  ,dimension(*) :: my_row
-!   integer(c_int)                                  ,dimension(*) :: my_col
+  subroutine FactorSolve ( this, A, my_rows, my_cols, matrix_size, num_procsr, num_rhs, secs )
+    use FEpetra_Vector ,only : Epetra_Vector
+    class(Pliris)       ,intent(in)  :: this
+    type(Epetra_Vector) ,intent(in)  :: A
+    integer(c_int)      ,intent(in)  ,value :: my_rows,my_cols
+    integer(c_int)      ,intent(in)  :: matrix_size,num_procsr,num_rhs
+    real(c_double)      ,intent(out) :: secs
+    integer(c_int) :: success
+    success = Pliris_FactorSolve(this%FT_Pliris_id,A%get_EpetraVector_ID(),my_rows,my_cols,matrix_size,num_procsr,num_rhs,secs)
+  end subroutine
+
+! function Pliris_FactorSolve_Serial ( this, A, my_rows, my_cols, matrix_size, num_procsr, num_rhs, secs )
+!   class(Pliris)                  ,intent(in)  :: this
+!   type(Epetra_SerialDenseVector) ,intent(in)  :: A
+!   integer(c_int)                 ,intent(in)  :: my_rows,my_cols,matrix_size,num_procsr,num_rhs
+!   real(c_double)                 ,intent(out) :: secs
+!   success = Pliris_FactorSolve_Serial( &
+!     this%FT_Pliris_id,A%get_EpetraSerialDenseVector_ID(),my_rows,my_cols,matrix_size,num_procsr,num_rhs,secs)
 ! end function
 
-! function Pliris_FactorSolve ( selfID, AID, my_rows, my_cols, matrix_size, num_procsr, &
-!       num_rhs, secs ) result(that) bind(C,name='Pliris_FactorSolve')
-!   import :: c_int ,FT_Pliris_ID_t ,FT_Epetra_Vector_ID_t ,c_double
+  subroutine Factor ( this, A, matrix_size, num_procsr, permute, secs ) 
+    use FEpetra_Vector ,only : Epetra_Vector
+    class(Pliris)       ,intent(in)  :: this
+    type(Epetra_Vector) ,intent(in)  :: A
+    integer(c_int)      ,intent(in)  :: matrix_size,num_procsr
+    integer(c_int)      ,intent(out) ,dimension(*) :: permute
+    real(c_double)      ,intent(out)               :: secs
+    integer(c_int) :: success
+    success = Pliris_Factor ( this%FT_Pliris_id, A%get_EpetraVector_id(), matrix_size, num_procsr, permute, secs ) 
+  end subroutine
 
-!   integer(c_int)                                                :: that
-!   type(FT_Pliris_ID_t)        ,intent(in)   ,value              :: selfID
-!   type(FT_Epetra_Vector_ID_t) ,intent(in)   ,value              :: AID
-!   integer(c_int)              ,intent(in)   ,value              :: my_rows
-!   integer(c_int)              ,intent(in)   ,value              :: my_cols
-!   integer(c_int)                                  ,dimension(*) :: matrix_size
-!   integer(c_int)                                  ,dimension(*) :: num_procsr
-!   integer(c_int)                                  ,dimension(*) :: num_rhs
-!   real(c_double)                                  ,dimension(*) :: secs
-! end function
-
-! function Pliris_FactorSolve_Serial ( selfID, AAID, my_rows, my_cols, matrix_size, &
-!       num_procsr, num_rhs, secs ) result(that) bind(C,name='Pliris_FactorSolve_Serial')
-!   import :: c_int ,FT_Pliris_ID_t ,FT_Epetra_SerialDenseVector_ID_t ,c_double
-
-!   integer(c_int)                                                :: that
-!   type(FT_Pliris_ID_t)        ,intent(in)   ,value              :: selfID
-!   type(FT_Epetra_SerialDenseVector_ID_t),intent(in)   ,value              :: AAID
-!   integer(c_int)              ,intent(in)   ,value              :: my_rows
-!   integer(c_int)              ,intent(in)   ,value              :: my_cols
-!   integer(c_int)                                  ,dimension(*) :: matrix_size
-!   integer(c_int)                                  ,dimension(*) :: num_procsr
-!   integer(c_int)                                  ,dimension(*) :: num_rhs
-!   real(c_double)                                  ,dimension(*) :: secs
-! end function
-
-! function Pliris_Factor ( selfID, AID, matrix_size, num_procsr, permute, secs ) &
-!       result(that) bind(C,name='Pliris_Factor')
-!   import :: c_int ,FT_Pliris_ID_t ,FT_Epetra_Vector_ID_t ,c_double
-
-!   integer(c_int)                                                :: that
-!   type(FT_Pliris_ID_t)        ,intent(in)   ,value              :: selfID
-!   type(FT_Epetra_Vector_ID_t) ,intent(in)   ,value              :: AID
-!   integer(c_int)                                  ,dimension(*) :: matrix_size
-!   integer(c_int)                                  ,dimension(*) :: num_procsr
-!   integer(c_int)                                  ,dimension(*) :: permute
-!   real(c_double)                                  ,dimension(*) :: secs
-! end function
-
-! function Pliris_Solve ( selfID, permute, num_rhs ) result(that) &
-!       bind(C,name='Pliris_Solve')
-!   import :: c_int ,FT_Pliris_ID_t
-
-!   integer(c_int)                                                :: that
-!   type(FT_Pliris_ID_t)        ,intent(in)   ,value              :: selfID
-!   integer(c_int)                                  ,dimension(*) :: permute
-!   integer(c_int)                                  ,dimension(*) :: num_rhs
-! end function
-
+  subroutine Solve ( this, permute, num_rhs ) 
+    class(Pliris)  ,intent(in)   :: this
+    integer(c_int) ,intent(in)   ,dimension(*) :: permute
+    integer(c_int) ,intent(in)   :: num_rhs
+    integer(c_int) :: success
+    success = Pliris_Solve ( this%FT_Pliris_id, permute, num_rhs )
+  end subroutine
 end module 

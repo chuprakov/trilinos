@@ -43,6 +43,7 @@ void RUN_OPTIKA_DATA_TYPE_TESTS(){
   using Teuchos::ArrayStringValidator;
   using Teuchos::ArrayFileNameValidator;
   using Teuchos::tuple;
+  using Teuchos::rcp;
 
   RCP<FancyOStream> out = VerboseObjectBase::getDefaultOStream();
 
