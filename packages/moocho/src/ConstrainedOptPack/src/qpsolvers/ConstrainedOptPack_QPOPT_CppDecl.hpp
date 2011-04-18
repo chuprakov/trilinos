@@ -131,6 +131,7 @@ void set_real_option(EQPOPT_real_option option, const f_dbl_prec&);
 // ////////////////////////////////////////////////////
 // Declarations to link with Fortran QPSOL procedures
 
+namespace Fortran {
 extern "C" {
 
 FORTRAN_FUNC_DECL_UL(void,QPOPT,qpopt) ( const f_int& N, const f_int& NCLIN
@@ -154,6 +155,7 @@ FORTRAN_FUNC_DECL_UL_(void,QPOPT_LOG_OPT,qpopt_log_opt) (const f_int& option, co
 FORTRAN_FUNC_DECL_UL_(void,QPOPT_REAL_OPT,qpopt_real_opt) (const f_int& option, const f_dbl_prec& );
 
 } // end extern "C"
+} // end namespace Fortran
 
 // ///////////////////////////////////////////////////////////////////////////////
 // Inline definitions.
@@ -167,25 +169,25 @@ void qpopt( const f_int& N, const f_int& NCLIN
   , f_dbl_prec* CLAMDA, f_int* IW, const f_int& LENIW, f_dbl_prec* W
   , const f_int& LENW )
 {
-  FORTRAN_FUNC_CALL_UL(QPOPT,qpopt) ( N, NCLIN, LDA, LDH, A, BL, BU, CVEC, H, QPHESS
+  Fortran::FORTRAN_FUNC_CALL_UL(QPOPT,qpopt) ( N, NCLIN, LDA, LDH, A, BL, BU, CVEC, H, QPHESS
     , ISTATE, X, INFORM, ITER, OBJ, AX, CLAMDA, IW, LENIW, W, LENW );
 }
 
 inline
 void reset_defaults()
-{	FORTRAN_FUNC_CALL_UL_(QPOPT_SET_DEFAULTS,qpopt_set_defaults) (); }
+{	Fortran::FORTRAN_FUNC_CALL_UL_(QPOPT_SET_DEFAULTS,qpopt_set_defaults) (); }
 
 inline
 void set_int_option(EQPOPT_int_option option, const f_int& val)
-{	FORTRAN_FUNC_CALL_UL_(QPOPT_INT_OPT,qpopt_int_opt) ( option, val ); }
+{	Fortran::FORTRAN_FUNC_CALL_UL_(QPOPT_INT_OPT,qpopt_int_opt) ( option, val ); }
 
 inline
 void set_logical_option(EQPOPT_logical_option option, const f_logical& val)
-{	FORTRAN_FUNC_CALL_UL_(QPOPT_LOG_OPT,qpopt_log_opt) ( option, val ); }
+{	Fortran::FORTRAN_FUNC_CALL_UL_(QPOPT_LOG_OPT,qpopt_log_opt) ( option, val ); }
 
 inline
 void set_real_option(EQPOPT_real_option option, const f_dbl_prec& val)
-{	FORTRAN_FUNC_CALL_UL_(QPOPT_REAL_OPT,qpopt_real_opt) ( option, val ); }
+{	Fortran::FORTRAN_FUNC_CALL_UL_(QPOPT_REAL_OPT,qpopt_real_opt) ( option, val ); }
 
 //@}
 

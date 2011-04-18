@@ -66,6 +66,7 @@ using FortranTypes::f_logical;		// LOGICAL
 // ////////////////////////////////////////////////////
 // Declarations to link with Fortran QPKWIK procedures
 
+namespace Fortran {
 extern "C" {
 
 FORTRAN_FUNC_DECL_UL(void,QPKWIKNEW,qpkwiknew) (
@@ -87,6 +88,7 @@ FORTRAN_FUNC_DECL_UL_(f_int,QPKWIKNEW_LRW,qpkwiknew_lrw) (
   const f_int& n, const f_int& m1, const f_int& m2, const f_int& m3);
 
 } // end extern "C"
+} // end namespace Fortran
 
 // //////////////////////////////////
 // QPKWIK interface functions
@@ -107,7 +109,7 @@ void qpkwiknew (
   ,f_int istate[], const f_int& lrw, f_dbl_prec rw[]
   )
 {
-  FORTRAN_FUNC_CALL_UL(QPKWIKNEW,qpkwiknew) (
+  Fortran::FORTRAN_FUNC_CALL_UL(QPKWIKNEW,qpkwiknew) (
     n, m1, m2, m3, grad, uinv, lduinv
     , ibnd, bl, bu, a, lda, ypy, iypy, warm, numparam, max_iter, x, nactstore
     , iactstore, inf, nact, iact, ur, extra, iter, num_adds, num_drops, istate
@@ -120,7 +122,7 @@ inline
 f_int qpkwiknew_listate(const f_int& n, const f_int& m1, const f_int& m2
             , const f_int& m3)
 {
-  return FORTRAN_FUNC_CALL_UL_(QPKWIKNEW_LISTATE,qpkwiknew_listate) (n, m1, m2, m3);
+  return Fortran::FORTRAN_FUNC_CALL_UL_(QPKWIKNEW_LISTATE,qpkwiknew_listate) (n, m1, m2, m3);
 }
 
 // Get the length of the real (double precision) workspace
@@ -128,7 +130,7 @@ inline
 f_int qpkwiknew_lrw(const f_int& n, const f_int& m1, const f_int& m2
           , const f_int& m3)
 {
-  return FORTRAN_FUNC_CALL_UL_(QPKWIKNEW_LRW,qpkwiknew_lrw) (n, m1, m2, m3);
+  return Fortran::FORTRAN_FUNC_CALL_UL_(QPKWIKNEW_LRW,qpkwiknew_lrw) (n, m1, m2, m3);
 }
 
 } // end namespace QPKWIKNEW_CppDecl
