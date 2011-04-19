@@ -182,8 +182,8 @@
          Revel in the power...
     -->
     <Dependency type="NumberArrayLengthDependency(int, string)">
-      <Dependee parameterID="6"/>
-      <Dependent parameterID="7"/>
+      <Dependee parameterId="6"/>
+      <Dependent parameterId="7"/>
     </Dependency>
 
     <!-- Now we need to do something a little more tricky. Depending on the
@@ -195,8 +195,8 @@
          very big, but you get the idea...
     -->
     <Dependency type="RangeValidatorDependency(int)">
-      <Dependee parameterID="5"/>
-      <Dependent parameterID="7"/>
+      <Dependee parameterId="5"/>
+      <Dependent parameterId="7"/>
       <!-- Here is where we specify which ranges should be associated with
            which validator. If Ndim is between 1 and 1 (i.e. if it's 1), we 
            want to use validator 3. If Ndim is 2, we want to use validator 4.
@@ -229,9 +229,9 @@
          you want the dependencies to have.
     -->
     <Dependency showIf="true" type="BoolVisualDependency">
-      <Dependee parameterID="0"/>
-      <Dependent parameterID="3"/>
-      <Dependent parameterID="1"/>
+      <Dependee parameterId="0"/>
+      <Dependent parameterId="3"/>
+      <Dependent parameterId="1"/>
     </Dependency>
 
     <!-- Ok, time for the crem de la crem. The only Dependency that allows
@@ -241,10 +241,10 @@
          dependents that are going to be used in this dependency.
     -->
     <Dependency showIf="true" type="ConditionVisualDependency">
-      <Dependee parameterID="3"/>
-      <Dependee parameterID="0"/>
-      <Dependee parameterID="1"/>
-      <Dependent parameterID="2"/>
+      <Dependee parameterId="3"/>
+      <Dependee parameterId="0"/>
+      <Dependee parameterId="1"/>
+      <Dependent parameterId="2"/>
       <!--
            The way we use these dependee's together is something called a
            condition. A condition usually tests the value of a parameter and

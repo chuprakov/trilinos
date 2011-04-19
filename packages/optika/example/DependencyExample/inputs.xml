@@ -124,8 +124,8 @@
     to true.
    -->
     <Dependency showIf="true" type="BoolVisualDependency">
-      <Dependee parameterID="8"/>
-      <Dependent parameterID="7"/>
+      <Dependee parameterId="8"/>
+      <Dependent parameterId="7"/>
     </Dependency>
   <!-- 
     Here we are creating a StringVisualDependency. The dependent this time is 
@@ -137,8 +137,8 @@
     the "Favorite Cheese" parameter has the value "Swiss".
   --> 
     <Dependency showIf="true" type="StringVisualDependency">
-      <Dependee parameterID="2"/>
-      <Dependent parameterID="9"/>
+      <Dependee parameterId="2"/>
+      <Dependent parameterId="9"/>
       <StringValues>
         <string value="Swiss"/>
       </StringValues>
@@ -153,8 +153,8 @@
     when the "No awesome param" is false.
   --> 
     <Dependency showIf="false" type="BoolVisualDependency">
-      <Dependee parameterID="4"/>
-      <Dependent parameterID="0"/>
+      <Dependee parameterId="4"/>
+      <Dependent parameterId="0"/>
     </Dependency>
 
   <!-- 
@@ -166,8 +166,8 @@
     directly dependent upon the "Number Of Buckets" parameter.
   --> 
     <Dependency type="NumberArrayLengthDependency(int, double)">
-      <Dependee parameterID="12"/>
-      <Dependent parameterID="11"/>
+      <Dependee parameterId="12"/>
+      <Dependent parameterId="11"/>
     </Dependency>
   </Dependencies>
   <Validators>
