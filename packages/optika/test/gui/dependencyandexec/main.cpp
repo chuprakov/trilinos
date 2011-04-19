@@ -186,6 +186,7 @@ void RUN_OPTIKA_DEPENDENCY_AND_EXEC_TEST(){
       RCP<NumberVisualDependency<double> >(new NumberVisualDependency<double>(
       My_deplist->getEntryRCP("Temperature"),
       My_deplist->getEntryRCP("Cheese to Fondue"),
+      true,
       fondueFunc));
   depSheet1->addDependency(fondueDep);
 
@@ -270,6 +271,7 @@ ParameterList&
         new NumberVisualDependency<int>(
       My_deplist->getEntryRCP("Room Temp"),
       My_deplist->getEntryRCP("Ice"),
+      true,
       intVisTester));
   depSheet1->addDependency(iceDep);
 
