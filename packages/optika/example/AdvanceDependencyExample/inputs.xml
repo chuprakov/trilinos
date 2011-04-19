@@ -249,7 +249,7 @@
            The way we use these dependee's together is something called a
            condition. A condition usually tests the value of a parameter and
            returns true or false. Conditions can then be "added" together using
-           another type of condition, the BinaryLogicCondition. You can:
+           another type of condition, the BoolLogicCondition. You can:
            Logically "and" a group of conditions together; Logically "or" a
            group of conditions together; and test to see if a group of 
            conditions are all equal to one another. Let's see this in
