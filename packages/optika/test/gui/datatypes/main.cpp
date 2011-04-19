@@ -28,12 +28,14 @@
 #include "Teuchos_XMLParameterListHelpers.hpp"
 #include "Teuchos_VerboseObject.hpp"
 #include "Teuchos_FancyOStream.hpp"
+#include "Teuchos_ValidatorXMLConverterDB.hpp"
 #include "Optika_GUI.hpp"
 
 namespace Optika{
 
 
 void RUN_OPTIKA_DATA_TYPE_TESTS(){
+  TEUCHOS_ADD_NUMBERTYPECONVERTERS(short)
   using Teuchos::FancyOStream;
   using Teuchos::VerboseObjectBase;
   using Teuchos::FileNameValidator;
