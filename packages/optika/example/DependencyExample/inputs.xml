@@ -148,7 +148,7 @@
       <Dependee parameterId="2"/>
       <Dependent parameterId="9"/>
       <StringValues>
-        <string value="Swiss"/>
+        <String value="Swiss"/>
       </StringValues>
     </Dependency>
   
