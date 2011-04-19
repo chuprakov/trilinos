@@ -67,10 +67,16 @@ void FileNameWidget::getNewFileName(){
 		defaultPath = currentFileName;
 	}
 	if(mustAlreadyExist){
-		setCurrentFileName(QFileDialog::getOpenFileName(this, tr("File"), defaultPath));
+    QString newFileName = QFileDialog::getOpenFileName(this, tr("File"), defaultPath);
+    if(!newFileName.isNull()){
+		  setCurrentFileName(newFileName);
+    }
 	}
 	else{
-		setCurrentFileName(QFileDialog::getSaveFileName(this, tr("File"), defaultPath));
+		QString newFileName = QFileDialog::getSaveFileName(this, tr("File"), defaultPath);
+    if(!newFileName.isNull()){
+		  setCurrentFileName(newFileName);
+    }
 	}
 }
 
