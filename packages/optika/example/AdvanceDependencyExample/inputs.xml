@@ -270,7 +270,7 @@
              evaluates to true, otherwise it evaluates to false. This let's
              us test the "Bossness" parameter.
         -->
-        <Condition parameterID="3" type="NumberCondition(int)">
+        <Condition parameterId="3" type="NumberCondition(int)">
           <!--
                Remember when I said that number conditions compare the
                parameters value to 0? Well I kind of lied. The true is
@@ -288,14 +288,14 @@
         <!-- This is pretty much the same as the condition above. We're
              just applying it also to the "Awesomeness" parameter.
         -->
-        <Condition parameterID="1" type="NumberCondition(int)">
+        <Condition parameterId="1" type="NumberCondition(int)">
           <Function operand="9" type="SubtractionFunction(int)"/>
         </Condition>
         <!-- This is a bool Condition. It just tests the value of a boolean
              parameter. If the parameter is true, then this condition is true,
              and vice versa
         -->
-        <Condition parameterID="0" type="BoolCondition"/>
+        <Condition parameterId="0" type="BoolCondition"/>
       </Condition>
     </Dependency>
   </Dependencies>
