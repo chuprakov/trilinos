@@ -92,8 +92,16 @@
       docString="How many buckets we have"
     />
   </ParameterList>
+  <!-- A validator we're going to use -->
+  <Validators>
+    <Validator type="StringValidator" validatorId="0">
+      <String value="American"/>
+      <String value="Swiss"/>
+      <String value="Pepperjack"/>
+    </Validator>
+  </Validators>
   <!--
-    Here is where we we create Dependencys. There are several different types of 
+    Here is where we we create Dependencies. There are several different types of 
     dependencies but they all follow the same general outline: A dependent 
     (which can be a parameter or parameter list) is dependent upon a 
     dependee (which is always a non-array parameter). Different dependencies 
@@ -170,13 +178,6 @@
       <Dependent parameterId="11"/>
     </Dependency>
   </Dependencies>
-  <Validators>
-    <Validator type="StringValidator" validatorId="0">
-      <String value="American"/>
-      <String value="Swiss"/>
-      <String value="Pepperjack"/>
-    </Validator>
-  </Validators>
   <!-- 
     Some Final notes:
    
