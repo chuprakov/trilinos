@@ -28,183 +28,239 @@
 #ifndef OPTIKA_GUI_HPP_
 #define OPTIKA_GUI_HPP_
 
-#include "Teuchos_DependencySheet.hpp"
 #include "Optika_metawindow.hpp"
 
 
 namespace Optika{
-	/**
-	 * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
-	 * All user input will be stored in it.
-	 *
-	 * @param validParameters A list of parameters from which the users may specify values.
-	 */
-	void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters);
+  /**
+   * Retreives the input for a Teuchos Parameter List using a GUI. Note the 
+   * Parameter List will be edited. All user input will be stored in it.
+   *
+   * @param validParameters A list of parameters from which the users may 
+   * specify values.
+   */
+  void getInput(RCP<ParameterList> validParameters);
 
-	/**
-	 * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
-	 * All user input will be stored in it. Also runs the function specified whenever the user hits the submit
-	 * button.
-	 *
-	 * @param validParameters A list of parameters from which the users may specify values.
-	 * @param customFunc Custom function to run whenever the user clicks the submit button.
-	 */
-	void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
+  /**
+   * Retreives the input for a Teuchos Parameter List using a GUI. Note the 
+   * Parameter List will be edited. All user input will be stored in it. Also 
+   * runs the function specified whenever the user clicks the action button.
+   *
+   * @param validParameters A list of parameters from which the users may 
+   * specify values.
+   * @param customFunc Custom function to run whenever the user clicks the 
+   * action button.
+   */
+  void getInput(
+    RCP<ParameterList> validParameters, 
+    void (*customFunc)(RCP<const ParameterList>));
 
-	/**
-	 * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
-	 * All user input will be stored in it.
-	 *
-	 * @param validParameters A list of parameters from which the users may specify values.
-	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
-	 * ParameterList.
-	 */
-	void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet);
+  /**
+   * Retreives the input for a Teuchos Parameter List using a GUI. Note the 
+   * Parameter List will be edited. All user input will be stored in it.
+   *
+   * @param validParameters A list of parameters from which the users may 
+   * specify values.
+   * @param dependencySheet A sheet listing any dependencies between parameters
+   * in the validParameters ParameterList.
+   */
+  void getInput(
+    RCP<ParameterList> validParameters, 
+    RCP<DependencySheet> dependencySheet);
 
-	/**
-	 * Retreives the input for a Teuchos Parameter List using a GUI. Note the Parameter List will be edited.
-	 * All user input will be stored in it. Also runs the function specified whenever the user hits the submit
-	 * button.
-	 *
-	 * @param validParameters A list of parameters from which the users may specify values.
-	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
-	 * ParameterList.
-	 * @param customFunc Custom function to run whenever the user clicks the submit button.
-	 */
-	void getInput(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
+  /**
+   * Retreives the input for a Teuchos Parameter List using a GUI. Note the 
+   * Parameter List will be edited. All user input will be stored in it. 
+   * Also runs the function specified whenever the user clicks the action
+   * button and uses the specified dependency list.
+   *
+   * @param validParameters A list of parameters from which the users may 
+   * specify values.
+   * @param dependencySheet A sheet listing any dependencies between parameters
+   * in the validParameters ParameterList.
+   * @param customFunc Custom function to run whenever the user clicks the 
+   * action button.
+   */
+  void getInput(
+    RCP<ParameterList> validParameters,
+    RCP<DependencySheet> dependencySheet,
+    void (*customFunc)(RCP<const ParameterList>));
+
+  /**
+   * Reads in a set of parameters and dependencies from the specified xmlfile,
+   * displays a GUI, and stores the users input in the sprecified
+   * ParameterList. If a custom function is provided, it is run upon the user
+   * clicking the action button.
+   *
+   * @param namOfXmlFile The name of the xml file from which parameters and
+   * dependencies will be read in.
+   * @param userInput A ParameterList into which all user input should be
+   * stored.
+   * @param customFunc A custom function for Optika to run upon the user 
+   * clicking the action button.
+   */
+  void getInput(
+    const std::string& nameOfXmlFile,
+    RCP<ParameterList> userInput,
+    void (*customFunc)(RCP<const ParameterList>)=NULL);
 
 /**
  * A class that allows the user to create and customize their Optika GUI.
  */
 class OptikaGUI{
 public:
-	/**
-	 * Constructs an OptikaGUI object.
-	 *
-	 * @param validParameters A list of parameters from which the users may specify values.
-	 */
-	OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters);
+  /**
+   * Constructs an OptikaGUI object.
+   *
+   * @param validParameters A list of parameters from which the users may 
+   * specify values.
+   */
+  OptikaGUI(RCP<ParameterList> validParameters);
 
-	/**
-	 * Constructs an OptikaGUI object.
-	 *
-	 * @param validParameters A list of parameters from which the users may specify values.
-	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
-	 * ParameterList.
-	 */
-	OptikaGUI(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet);
+  /**
+   * Constructs an OptikaGUI object.
+   *
+   * @param validParameters A list of parameters from which the users may 
+   * specify values.
+   * @param dependencySheet A sheet listing any dependencies between parameters
+   * in the validParameters ParameterList.
+   */
+  OptikaGUI(
+    RCP<ParameterList> validParameters, 
+    RCP<DependencySheet> dependencySheet);
 
-	/**
-	 * Runs the GUI and gets the user input.
-	 */
-	void exec();
+  /**
+   * Constructs an OptikaGUI object.
+   *
+   * @param xmlFileName Name of an XML file describing the GUI.
+   */
+  OptikaGUI(const std::string& xmlFileName);
 
-	/**
-	 * Adds the information specified to the about dialog of the GUI.
-	 *
-	 * @param aboutInfo Information to be added to the about dialog of the GUI.
-	 */
-	 void setAboutInfo(std::string aboutInfo);
+  /**
+   * Runs the GUI and gets the user input.
+   */
+  void exec();
 
-	/**
-	 * Sets the title of the GUI window that is displayed to the user.
-	 *
-	 * @param title A string containing what the title of the GUI window should be.
-	 */
-	void setWindowTitle(std::string title);
+  /**
+   * Adds the information specified to the about dialog of the GUI.
+   *
+   * @param aboutInfo Information to be added to the about dialog of the GUI.
+   */
+  void setAboutInfo(const std::string& aboutInfo);
 
-	/**
-	 * Sets the window icon to the image specified in the filePath.
-	 *
-	 * @param filePath File path to the image that should be used as
-	 *  the window icon.
-	 */
-	void setWindowIcon(std::string filePath);
+  /**
+   * Sets the text in the "action" button"
+   *
+   * @param text The text for the action button
+   */
+  void setActionButtonText(const std::string& text);
 
-	/**
-	 * Sets the QT style sheet that should be used for the GUI.
-	 *
-	 * @param filePath File path to the QT style sheet to be used for
-	 * the GUI.
-	 */
-	void setStyleSheet(std::string filePath);
+  /**
+   * Sets the title of the GUI window that is displayed to the user.
+   *
+   * @param title A string containing what the title of the GUI window 
+   * should be.
+   */
+  void setWindowTitle(const std::string& title);
 
-	/**
-	 * Sets the custom function to be used in the GUI. When ever the
-	 * user hits submit, this function will be run.
-	 *
-	 * @param The custom function to be run whenever the user hits submit.
-	 */
-	void setCustomFunction(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>));
+  /**
+   * Sets the window icon to the image specified in the filePath.
+   *
+   * @param filePath File path to the image that should be used as
+   *  the window icon.
+   */
+  void setWindowIcon(const std::string& filePath);
 
-	/**
-	 * Gets the window title.
-	 * 
-	 * @return A string containing the window title.
-	 */
-	std::string getWindowTitle();
+  /**
+   * Sets the QT style sheet that should be used for the GUI.
+   *
+   * @param filePath File path to the QT style sheet to be used for
+   * the GUI.
+   */
+  void setStyleSheet(const std::string& filePath);
 
-	/**
-	 * Gets the file path describing the location of the file
-	 * being used for the window icon.
-	 *
-	 * @return The file path describing the location of the file
-	 * being used for the window icon.
-	 */
-	std::string getWindowIcon();
+  /**
+   * Sets the custom function to be used in the GUI. When ever the
+   * user clicks the action button, this function will be run.
+   *
+   * @param The custom function to be run whenever the user clicks the action 
+   * button.
+   */
+  void setCustomFunction(void (*customFunc)(RCP<const ParameterList>));
 
-	/**
-	 * Gets the file path describing the location of the file
-	 * being used as the QT Style Sheet.
-	 *
-	 * @return The file path describing the location of the file
-	 * being used as the QT Style Sheet.
-	 */
-	std::string getStyleSheet();
+  /**
+   * Gets the window title.
+   * 
+   * @return A string containing the window title.
+   */
+  std::string getWindowTitle();
 
-	/**
-	 * Gets the information to be added to the about dialog of the GUI.
-	 *
-	 * @return the information to be added to the about dialog of the GUI.
-	 */
-	 std::string getAboutInfo();
+  /**
+   * Gets the file path describing the location of the file
+   * being used for the window icon.
+   *
+   * @return The file path describing the location of the file
+   * being used for the window icon.
+   */
+  std::string getWindowIcon();
+
+  /**
+   * Gets the file path describing the location of the file
+   * being used as the QT Style Sheet.
+   *
+   * @return The file path describing the location of the file
+   * being used as the QT Style Sheet.
+   */
+  std::string getStyleSheet();
+
+  /**
+   * Gets the information to be added to the about dialog of the GUI.
+   *
+   * @return the information to be added to the about dialog of the GUI.
+   */
+  std::string getAboutInfo();
 
 private:
 
-	/**
-	 * A list of parameters from which the users may specify values.
-	 */
-	Teuchos::RCP<Teuchos::ParameterList> validParameters;
+  /**
+   * A list of parameters from which the users may specify values.
+   */
+  RCP<ParameterList> validParameters;
 
-	/**
-	 * A sheet listing any dependencies between parameters in the validParameters
-	 */
-	Teuchos::RCP<Teuchos::DependencySheet> dependencySheet;
+  /**
+   * A sheet listing any dependencies between parameters in the validParameters
+   */
+  RCP<DependencySheet> dependencySheet;
 
-	/**
-	 * A string containing the window title.
-	 */
-	std::string title;
+  /**
+   * A string containing the window title.
+   */
+  std::string title;
 
-	/**
-	 * File path to the image that should be used as the window icon.
-	 */
-	std::string iconFilePath;
+  /**
+   * File path to the image that should be used as the window icon.
+   */
+  std::string iconFilePath;
 
-	/**
-	 * File path to the QT style sheet to be used for the GUI.
-	 */
-	std::string styleSheetFilePath;
+  /**
+   * File path to the QT style sheet to be used for the GUI.
+   */
+  std::string styleSheetFilePath;
 
-	/**
-	 * Information to be added to the about dialog of the GUI.
-	 */
-	 std::string aboutInfo;
+  /**
+   * Information to be added to the about dialog of the GUI.
+   */
+  std::string aboutInfo;
 
-	/**
-	 * The custom function to be run whenever the user hits submit.
-	 */
-	void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>);
+  /**
+   * Text to display in the action button.
+   */
+  std::string actionButtonText;
+
+  /**
+   * The custom function to be run whenever the user clicks the action button.
+   */
+  void (*customFunc)(RCP<const ParameterList>);
 };
 
 }

@@ -63,6 +63,11 @@ public:
     const Expr& params, const Expr& paramVals,  
     const Playa::VectorType<double>& vecType);
 
+  /** Construct with a mesh, equation set, bcs, test and unknown funcs,
+   * and a vector type */
+  NonlinearProblem(const Mesh& mesh, const Expr& eqn, const Expr& bc,
+    const BlockArray& test, const BlockArray& unk, const Expr& u0);
+
 
   /** */
   NonlinearProblem(const RCP<Assembler>& assembler, 
@@ -80,6 +85,9 @@ public:
 
   /** Set an initial guess */
   void setInitialGuess(const Expr& u0New) {op_->setInitialGuess(u0New);}
+
+  /** Set the current evaluation point */
+  void setEvalPoint(const Expr& u0New) {op_->setInitialGuess(u0New);}
       
 
   /** Compute the residual and Jacobian at the current evaluation point */

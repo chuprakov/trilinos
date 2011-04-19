@@ -54,7 +54,7 @@ module ForTrilinos_ref_counter
   end type
 
   interface ref_counter
-      module procedure constructor
+      module procedure new_ref_counter
   end interface
 
 #ifdef ForTrilinos_ASSERTIONS
@@ -67,31 +67,36 @@ contains
 
   subroutine grab(this)
     class(ref_counter), intent(inout) :: this
-    if (assertions) call assert( [associated(this%count)], [error_message('Ref_counter%grab: count not associated.')] )
+    call assert( [associated(this%count)], [error_message('Ref_counter%grab: count not associated.')] )
     this%count = this%count + 1
   end subroutine
 
   subroutine release(this)
     use ForTrilinos_error ,only : error
     class (ref_counter), intent(inout) :: this
-    integer :: status
+    integer  :: status
     type(error) :: ierr
-    if (assertions) call assert( [associated(this%count)], [error_message('Ref_counter%release: count not associated.')] )
+    call assert( [associated(this%count)], [error_message('Ref_counter%release: count not associated.')] )
+    call assert( [this%count>=1], [error_message('Ref_counter%release: non-positive count.')] )
     this%count = this%count - 1
     if (this%count == 0) then
-      deallocate (this%count,stat=status)
-      ierr=error(status,'Ref_counter%release: this%count')
+      call this%obj%ctrilinos_delete
+      deallocate(this%count,stat=status)
+      ierr=error(status,'Ref_counter%release: this%count deallocation failed.')
       call ierr%check_success()
-      deallocate (this%obj,stat=status)
-      ierr=error(status,'Ref_counter%release: this%obj')
+      this%count=>null()
+
+      deallocate(this%obj,stat=status)
+      ierr=error(status,'Ref_counter%release: this%obj deallocation failed.')
       call ierr%check_success()
+      this%obj=>null()
     end if
   end subroutine
 
   subroutine assign (lhs, rhs)
     class (ref_counter), intent(inout) :: lhs
     class (ref_counter), intent(in) :: rhs
-    if (associated(lhs%count)) call lhs%release
+    call assert( [associated(rhs%count)], [error_message('Ref_counter%assign: rhs%count not associated.')] )
     lhs%count => rhs%count
     lhs%obj => rhs%obj
     call lhs%grab
@@ -102,12 +107,25 @@ contains
     if (associated(this%count)) call this%release
   end subroutine
 
-  function constructor (object)
+  function new_ref_counter(object)
+    use ForTrilinos_error ,only : error
     class(hermetic), intent(in) :: object
-    type(ref_counter), allocatable :: constructor
-    allocate (constructor)
-    allocate (constructor%count, source=0)
-    allocate (constructor%obj, source=object)
-    call constructor%grab
+    integer :: status
+    type(error) :: ierr
+    type(ref_counter), allocatable :: new_ref_counter
+
+    allocate(new_ref_counter,stat=status)
+    ierr=error(status,'new_ref_counter: new_ref_counter allocation failed.')
+    call ierr%check_success()
+
+    allocate(new_ref_counter%count, source=0,stat=status)
+    ierr=error(status,'new_ref_counter: count allocation failed.')
+    call ierr%check_success()
+
+    allocate(new_ref_counter%obj,source=object,stat=status)
+    ierr=error(status,'new_ref_counter: obj allocation failed.')
+    call ierr%check_success()
+
+    call new_ref_counter%grab
   end function
 end module

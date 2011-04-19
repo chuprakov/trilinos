@@ -40,7 +40,8 @@ module fortrilinos_utils
 #include "ForTrilinos_config.h"
   implicit none
   private
-  public :: count
+  public :: c_strlen
+  public :: fortran_string
   public :: generalize_all
   public :: valid_kind_parameters
 contains
@@ -49,20 +50,36 @@ contains
   ! an array of character values.  A C string is interoperable with the second type of 
   ! Fortran string with the primary distinction being that Fortran strings carry their
   ! own string-length information, whereas the length of C strings is indicated by a 
-  ! terminating null character. The "count" procedure calculates C string length by 
-  ! searching for the null terminator.
+  ! terminating null character. This function takes in a c_string and returns the 
+  ! equivalent Fortran string.
 
-  function count(ptr) bind(C,name="forLinkingOnly") 
+  function fortran_string(c_string)
+    use ,intrinsic :: iso_c_binding ,only: c_char,c_null_char
+    character(kind=c_char) ,intent(in) :: c_string(*)
+    character(:) ,allocatable :: fortran_string
+    integer :: i
+    i=1
+    fortran_string = c_string(i)
+    do while(c_string(i)/=c_null_char)
+      i=i+1
+      fortran_string = fortran_string // c_string(i)
+    end do
+  end function
+
+  ! This is a Fortran implementation of the C strlen function that returns
+  ! the C string length by searching for the null terminator.  The length
+  ! differs from the result of the Fortran len intrinsic by a unit decrement
+  ! corresponding to the position of the terminating null character.
+
+  function c_strlen(c_string)
     use ,intrinsic :: iso_c_binding ,only: c_char ,c_int  ,c_null_char
-    implicit none 
-    character(kind=c_char) :: ptr(*) 
-    integer(c_int) :: count 
-    count = 0 
-    do 
-       if(ptr(count+1) == c_null_char) return 
-       count = count+1 
-    end do 
-  end function 
+    character(kind=c_char) ,intent(in) :: c_string(*)
+    integer(c_int) :: c_strlen
+    c_strlen = len(fortran_string(c_string)) - len(c_null_char)
+  end function
+
+  ! This procedure converts a C string to a variable-length Fortran string.
+
 
   ! This is a Fortran implementation of the functionality in the Epetra_*_Abstract procedures
   ! in each CTrilinos/src/CEpetra* file.  It effectively casts any given Epetra derived type
@@ -73,7 +90,7 @@ contains
     use ForTrilinos_enums ,only : ForTrilinos_Universal_ID_t
     use ,intrinsic :: iso_c_binding ,only: c_ptr,c_f_pointer
     type(c_ptr) ,value :: object_id
-    type(ForTrilinos_Universal_ID_t), pointer :: local_ptr=>null()
+    type(ForTrilinos_Universal_ID_t), pointer :: local_ptr
     call c_f_pointer (object_id, local_ptr)
     generalize_all = local_ptr
   end function

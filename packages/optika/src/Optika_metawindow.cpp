@@ -122,25 +122,33 @@ QModelIndexList SearchWidget::removeHiddenItems(QModelIndexList& items){
 	return toReturn;
 }
 
-MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, QString fileName){
+MetaWindow::MetaWindow(RCP<ParameterList> validParameters, QString fileName){
 	model = new TreeModel(validParameters, fileName);
 	initilization();
 }
 
-MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>), QString fileName){
+MetaWindow::MetaWindow(RCP<ParameterList> validParameters, void (*customFunc)(RCP<const ParameterList>), QString fileName){
 	model = new TreeModel(validParameters, fileName);
 	initilization(customFunc);
 }
 
-MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, QString fileName){
+MetaWindow::MetaWindow(
+  RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet, QString fileName){
 	model = new TreeModel(validParameters, dependencySheet, fileName);
 	initilization();
 } 
 
-MetaWindow::MetaWindow(Teuchos::RCP<Teuchos::ParameterList> validParameters, Teuchos::RCP<Teuchos::DependencySheet> dependencySheet, void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>), QString fileName){
+MetaWindow::MetaWindow(
+  RCP<ParameterList> validParameters, 
+  RCP<DependencySheet> dependencySheet, 
+  void (*customFunc)(RCP<const ParameterList>), 
+  QString fileName,
+  const std::string actionButtonText)
+{
 	model = new TreeModel(validParameters, dependencySheet, fileName);
-	initilization(customFunc);
+	initilization(customFunc, actionButtonText);
 } 
+
 
 MetaWindow::~MetaWindow(){
 	saveSettings();
@@ -162,21 +170,32 @@ void MetaWindow::closeEvent(QCloseEvent *event){
 	}
 }
 
-void MetaWindow::initilization(void (*customFunc)(Teuchos::RCP<const Teuchos::ParameterList>)){
+void MetaWindow::initilization(
+  void (*customFunc)(RCP<const ParameterList>),
+  const std::string actionButtonText)
+{
 	this->customFunc = customFunc;
 	delegate = new Delegate;
 	view = new TreeView(model, delegate);
 	view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
 	searchWidget = new SearchWidget(model, view, this);
 	searchWidget->hide();
-	QPushButton *submitButton = new QPushButton(tr("Submit"), this);
-	connect(submitButton, SIGNAL(clicked(bool)), this, SLOT(submit()));
+  actionButton = NULL;
+  if(actionButtonText != ""){
+	  actionButton = new QPushButton(tr("Submit"), this);
+  }
+  else{
+    actionButton = 
+      new QPushButton(QString::fromStdString(actionButtonText), this); 
+  }
 	QWidget *centerWidget = new QWidget(this);
 	QGridLayout *centerWidgetLayout = new QGridLayout(centerWidget);
 	centerWidgetLayout->addWidget(view,0,0);
-	centerWidgetLayout->addWidget(submitButton,1,0,Qt::AlignRight);
+	connect(actionButton, SIGNAL(clicked(bool)), this, SLOT(doAction()));
+  centerWidgetLayout->addWidget(actionButton,1,0,Qt::AlignRight);
 	centerWidget->setLayout(centerWidgetLayout);
 	setCentralWidget(centerWidget);
+
 	createActions();
 	createMenus();
 	resize(800,600);
@@ -439,7 +458,7 @@ void MetaWindow::initiateSearch(){
 	searchWidget->show();
 }
 
-void MetaWindow::submit(){
+void MetaWindow::doAction(){
 	if(customFunc == 0){
 		close();
 	}
@@ -456,5 +475,14 @@ QString MetaWindow::getAboutInfo(){
 	return aboutInfo;
 }
 
+void MetaWindow::setActionButtonText(QString newText){
+  actionButton->setText(newText);
 }
+
+QString MetaWindow::getActionButtonText(){
+  return actionButton->text();
+}
+
+
+} //namespace Optika
 

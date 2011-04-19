@@ -13,9 +13,9 @@ This chapter provides a summary of the current Mesquite wrappers. \newline
 the optimization problem.  The user still has to set the fixed/free flags,
 and the values of the termination criteria.  \newline
 
-\section{Laplace-smoothing} \label{sec:LaplacianIQ}
+\section{Laplace-smoothing} \label{sec:LaplaceWrapper}
 
-\noindent {\it Name}: LaplacianIQ \newline
+\noindent {\it Name}: LaplaceWrapper \newline
 \noindent {\it Purpose}: Produce a {\it smooth} mesh. \newline
 \noindent {\it Notes}: This is a local patch relaxation-solver. A 'smart' 
 Laplacian solver is also available in Mesquite, but it is not used in this 
@@ -26,7 +26,7 @@ wrapper.  \newline
 \noindent Under the Cover: \newline
 \noindent {\it Hardwired Parameters}: None \newline
 \noindent {\it Mesh/Element Type}: Any supported type. \newline
-\noindent {\it Global/Local}: Local Patch \newline
+\noindent {\it Global/Local}: Local Patch with Culling \newline
 
 
 
@@ -35,10 +35,11 @@ wrapper.  \newline
 \noindent {\it Name}: ShapeImprover \newline
 \noindent {\it Purpose}: Make the shape of an element as close as possible to 
 that of the ideal/regular element shape. For example, make triangular and 
-tetrahedral elements equilateral. \newline
-\noindent {\it Notes}: If the initial mesh is inverted, then an attempt to 
-untangle the mesh is made. If the untangling effort fails, then the wrapper
-aborts.  \newline
+tetrahedral elements equilateral.  The wrapper will use a non-barrier metric
+until the mesh contains no inverted elements.  If the initial mesh was not tangled this phase will not modify the mesh.  If no limit is imposed on CPU
+time or time remains a second phase using a barrier metric will further 
+optimize the mesh with the guarantee that no elements will become inverted. \newline
+\noindent {\it Notes}: Will return failure if mesh contains inverted elements after first phase.\newline
 \noindent {\it Limitations/assumptions}:  \newline 
 \noindent {\it Input Termination Criterion}: CPU time limit (not used if input 
 value is non-positive) or fraction of mean edge length (default is 0.005). \newline \newline
@@ -49,6 +50,27 @@ value is non-positive) or fraction of mean edge length (default is 0.005). \newl
 \noindent {\it Mesh/Element Type}: Any supported type. \newline
 \noindent {\it Solver}: Conjugate Gradient \newline
 \noindent {\it Global/Local}: Global \newline
+
+
+\section{Untangler} \label{sec:Untangler}
+
+\noindent {\it Name}: UntangleWrapper \newline
+\noindent {\it Purpose}: Untangle elements.  Prioritizes untangling over
+element shape or other mesh quality measures.  \newline
+\noindent {\it Notes}: A second optimization to improve element quality
+after untangling is often necessary.  \newline
+\noindent {\it Limitations/assumptions}:  \newline 
+\noindent {\it Input Termination Criterion}: CPU time limit (not used if input 
+value is non-positive) or fraction of mean edge length (default is 0.005).  It
+also terminates if all elements are untangled, such that it should not modify
+an input mesh with no inverted elements. \newline \newline
+
+\noindent Under the Cover: \newline
+\noindent {\it Metric}: TUntangleBeta or TUntangleMu(TSizeNB1) or TUntangleMu(TShapeSizeNB1) \newline
+\noindent {\it Objective Function}: Algebraic mean of quality metric values \newline
+\noindent {\it Mesh/Element Type}: Any supported type. \newline
+\noindent {\it Solver}: Steepest Descent \newline
+\noindent {\it Global/Local}: Local with culling, optionally Jacobi \newline
 
 
 \section{Minimum Edge-Length Improvement} \label{sec:PaverMinEdgeLengthWrapper}
@@ -112,3 +134,20 @@ preserving an existing layer of sliver elements in the boundary layer. \newline
 \noindent {\it Global/Local}: Global \newline
 
 
+\section{Deforming Domain} \label{sec:DeformingDomain}
+
+\noindent {\it Name}: DeformingDomainWrapper \newline
+\noindent {\it Purpose}:  Use initial mesh on undeformed geometric domain
+to guide optimization of mesh moved to deformed geometric domain.  \newline
+\noindent {\it Notes}: Uses a non-barrier metric which means that the
+wrapper could potentially invert/tangle elements.  \newline
+\noindent {\it Limitations/assumptions}:  Application responsible for explicit handling of mesh on geometric curves and points.  Initial mesh before moving to deformed domain must be available.\newline 
+\noindent {\it Input Termination Criterion}: CPU time limit (not used if input 
+value is non-positive) or fraction of mean edge length (default is 0.005). \newline \newline
+
+\noindent Under the Cover: \newline
+\noindent {\it Metric}: TMPQualityMetric(TShapeNB1 or TShapeSizeNB1 or TShapeSizeOrientNB1) \newline
+\noindent {\it Objective Function}: Algebraic mean of quality metric values \newline
+\noindent {\it Mesh/Element Type}: Any supported type. \newline
+\noindent {\it Solver}: Steepest Descent \newline
+\noindent {\it Global/Local}: Local with culling \newline

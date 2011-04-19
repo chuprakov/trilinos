@@ -115,14 +115,12 @@ void MeshImplTest::dump_mesh( const char* filename, MeshImpl& mesh, MsqError& er
 void MeshImplTest::test_zero_length_data()
 {
   const size_t num_vtx = 2, zero = 0;
-  const double vtx_coords1[] = { 0, 0, 0 };
-  const double vtx_coords2[] = { 1, 1, 1 };
-  const double* coords[num_vtx] = { vtx_coords1, vtx_coords2 };
+  const double coords[3*num_vtx] = { 0, 0, 0, 1, 1, 1 };
   const bool fixed[num_vtx] = { false, false };
   std::vector<Mesh::ElementHandle> elems;
   std::vector<Mesh::VertexHandle> verts;
   MsqError err;
-  const int* conn[2];
+  const int conn[6] = { 0, 1, 0, 1, 0, 1 };
   EntityTopology type = TRIANGLE;
 
   MeshImpl no_elem1( 2, 0, TRIANGLE, fixed, coords, 0 );
@@ -229,6 +227,7 @@ void MeshImplTest::skin_mesh_2D()
   
   std::vector<Mesh::VertexHandle> elems;
   std::vector<size_t> offsets;
+  std::vector<bool> fixed;
   
   
   for (unsigned i = 0; i < verts.size(); ++i) {
@@ -237,14 +236,13 @@ void MeshImplTest::skin_mesh_2D()
     mesh.vertices_get_attached_elements( &verts[i], 1, elems, offsets, err );
     CPPUNIT_ASSERT(!err);
     
-    bool fixed;
-    mesh.vertices_get_fixed_flag( &verts[i], &fixed, 1, err );
+    mesh.vertices_get_fixed_flag( &verts[i], fixed, 1, err );
     CPPUNIT_ASSERT(!err);
     
     if (elems.size() == 4)
-      CPPUNIT_ASSERT(!fixed);
+      CPPUNIT_ASSERT(!fixed[0]);
     else 
-      CPPUNIT_ASSERT(fixed);
+      CPPUNIT_ASSERT(fixed[0]);
   }
 }
 
@@ -271,7 +269,7 @@ void MeshImplTest::skin_mesh_3D()
   
   std::vector<Mesh::VertexHandle> elems;
   std::vector<size_t> offsets;
-  
+  std::vector<bool> fixed;
   
   for (unsigned i = 0; i < verts.size(); ++i) {
     elems.clear();
@@ -279,14 +277,13 @@ void MeshImplTest::skin_mesh_3D()
     mesh.vertices_get_attached_elements( &verts[i], 1, elems, offsets, err );
     CPPUNIT_ASSERT(!err);
     
-    bool fixed;
-    mesh.vertices_get_fixed_flag( &verts[i], &fixed, 1, err );
+    mesh.vertices_get_fixed_flag( &verts[i], fixed, 1, err );
     CPPUNIT_ASSERT(!err);
     
     if (elems.size() == 8)
-      CPPUNIT_ASSERT(!fixed);
+      CPPUNIT_ASSERT(!fixed[0]);
     else 
-      CPPUNIT_ASSERT(fixed);
+      CPPUNIT_ASSERT(fixed[0]);
   }
 }
 
@@ -333,9 +330,10 @@ void MeshImplTest::skin_mesh_mixed()
   MsqVertex coords[5];
   mesh.vertices_get_coordinates( arrptr(verts), coords, 5, err );
   CPPUNIT_ASSERT(!err);
-  bool fixed[5];
+  std::vector<bool> fixed;
   mesh.vertices_get_fixed_flag( arrptr(verts), fixed, 5, err );
   CPPUNIT_ASSERT(!err);
+  CPPUNIT_ASSERT_EQUAL( (size_t)5, fixed.size() );
   
   int free_idx = -1;
   for (int i = 0; i < 5; ++i) {
@@ -406,9 +404,10 @@ void MeshImplTest::skin_mesh_higher_order()
   MsqVertex coords[13];
   mesh.vertices_get_coordinates( arrptr(verts), coords, 13, err );
   CPPUNIT_ASSERT(!err);
-  bool fixed[13];
+  std::vector<bool> fixed;
   mesh.vertices_get_fixed_flag( arrptr(verts), fixed, 13, err );
   CPPUNIT_ASSERT(!err);
+  CPPUNIT_ASSERT_EQUAL( (size_t)13, fixed.size() );
   
   int free_idx = -1;
   for (int i = 0; i < 13; ++i) {

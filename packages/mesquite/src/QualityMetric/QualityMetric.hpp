@@ -125,7 +125,7 @@ namespace MESQUITE_NS
        * such that each edge in the mesh is visited only once even though
        * it would normally be visited twice when iterating over patches
        * of the mesh.  This assumes that no vertex occurs in more than one
-       * patch with its MSQ_PATCH_VERTEX set.  This assumption is true for
+       * patch without its MSQ_PATCH_FIXED flag set.  This assumption is true for
        * both element-on-vertex and global patches.
        *\param pd       The patch
        *\param handles  Output list of handles
@@ -337,10 +337,11 @@ namespace MESQUITE_NS
       //!
       //! Do any preliminary global initialization, consistency checking,
       //! etc.  Default implementation does nothing.
-     virtual void initialize_queue( Mesh* mesh,
-                                    MeshDomain* domain,
-                                    const Settings* settings,
-                                    MsqError& err );
+     MESQUITE_EXPORT virtual 
+     void initialize_queue( Mesh* mesh,
+                            MeshDomain* domain,
+                            const Settings* settings,
+                            MsqError& err );
 
   private:
      int feasible;

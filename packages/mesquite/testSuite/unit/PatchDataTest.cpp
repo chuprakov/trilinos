@@ -49,6 +49,7 @@ Unit testing of various functions in the PatchData class.
 #include "PatchDataInstances.hpp"
 #include "UnitUtil.hpp"
 #include "Settings.hpp"
+#include "Instruction.hpp"
 
 #include "ArrayMesh.hpp"
 #include "DomainClassifier.hpp"
@@ -56,7 +57,7 @@ Unit testing of various functions in the PatchData class.
 #include "MeshDomain1D.hpp"
 #include "MeshDecorator.hpp"
 
-#include "TriLagrangeShape.hpp"
+//#include "TriLagrangeShape.hpp"
 
 #include "cppunit/extensions/HelperMacros.h"
 
@@ -647,8 +648,8 @@ void PatchDataTest::test_update_slave_node_coords()
   
     // update_slave_node_coords requires a mapping function
   Settings settings;
-  TriLagrangeShape tri_func;
-  settings.set_mapping_function( &tri_func );
+//  TriLagrangeShape tri_func;
+//  settings.set_mapping_function( &tri_func );
   pd.attach_settings( &settings );
   
     // call the function we're trying to test.
@@ -924,6 +925,8 @@ void PatchDataTest::test_fixed_by_geom_dim( unsigned dim )
   Mesh* mesh = 0;
   MeshDomain* domain = 0;
   get_quad8_mesh_and_domain( mesh, domain );
+  Instruction::initialize_vertex_byte( mesh, domain, &settings, err ); 
+  ASSERT_NO_ERROR(err);
   
   PatchData pd;
   pd.attach_settings( &settings );
@@ -993,7 +996,7 @@ void PatchDataTest::get_higher_order_vertices( Mesh* mesh,
     std::map<Mesh::VertexHandle,bool>::iterator p;
     std::sort( verts.begin(), verts.end() );
     verts.erase( std::unique( verts.begin(), verts.end() ), verts.end() );
-    bool* fixed = new bool[verts.size()];
+    std::vector<bool> fixed;
     mesh->vertices_get_fixed_flag( arrptr(verts), fixed, verts.size(), err );
     ASSERT_NO_ERROR(err);
     for (size_t i = 0; i < verts.size(); ++i) {
@@ -1003,7 +1006,6 @@ void PatchDataTest::get_higher_order_vertices( Mesh* mesh,
           ho_verts.erase(p);
       }
     }
-    delete [] fixed;
   }
 }
 
@@ -1016,6 +1018,8 @@ void PatchDataTest::check_higher_order_vertices_slaved(
   
   Settings settings;
   settings.set_slaved_ho_node_mode( mode );
+  Instruction::initialize_vertex_byte( mesh, 0, &settings, err ); 
+  ASSERT_NO_ERROR(err);
   
   PatchData pd;
   pd.attach_settings( &settings );
@@ -1044,7 +1048,7 @@ void PatchDataTest::test_patch_data_mesh_slaved_ho_nodes()
   get_quad8_mesh( mesh );
   
   std::map<Mesh::VertexHandle,bool> ho_verts;
-  get_higher_order_vertices( mesh, ho_verts, true );
+  get_higher_order_vertices( mesh, ho_verts, true, false );
   
   check_higher_order_vertices_slaved( mesh, Settings::SLAVE_ALL, ho_verts );
   delete mesh;
@@ -1105,17 +1109,18 @@ class HoSlavedMesh : public MeshDecorator
       {}
       
     virtual void vertices_get_slaved_flag( const VertexHandle vert_array[], 
-                                           bool slaved_flag_array[],
+                                           std::vector<bool>& slaved_flag_array,
                                            size_t num_vtx, 
                                            MsqError &err );
   private:
     SMap slavedVerts;
 };
 void HoSlavedMesh::vertices_get_slaved_flag( const VertexHandle vert_array[], 
-                                             bool slaved_flag_array[],
+                                             std::vector<bool>& slaved_flag_array,
                                              size_t num_vtx, 
                                              MsqError &err )
 {
+  slaved_flag_array.resize( num_vtx );
   for (size_t i = 0; i < num_vtx; ++i) {
     SMap::iterator j = slavedVerts.find( vert_array[i] );
     slaved_flag_array[i] = (j != slavedVerts.end()) && j->second;

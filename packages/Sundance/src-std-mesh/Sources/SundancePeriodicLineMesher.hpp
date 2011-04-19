@@ -34,6 +34,7 @@
 #include "SundanceDefs.hpp"
 #include "SundanceMeshReaderBase.hpp"
 #include "SundancePeriodicMesh1D.hpp"
+#include "SundancePeriodicSingleCellMesh1D.hpp"
 
 namespace Sundance
 {
@@ -64,7 +65,9 @@ public:
   /** Create a mesh */
   virtual Mesh fillMesh() const 
     {
-      RCP<MeshBase> rtn = rcp(new PeriodicMesh1D(a_, b_, nx_));
+      RCP<MeshBase> rtn;
+      if (nx_<=1) rtn = rcp(new PeriodicSingleCellMesh1D(a_, b_));
+      else rtn = rcp(new PeriodicMesh1D(a_, b_, nx_));
       return rtn;
     }
 

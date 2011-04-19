@@ -25,6 +25,8 @@ IF(NOT FORTRILINOS_SKIP_UNITTESTS)
 ADD_SUBDIRECTORIES(
   UNITTEST_PARSER
   UNITTEST_LAUNCHER
+  Utils
+  Error
   Epetra_Comm
   Epetra_CrsMatrix
   Epetra_BlockMap

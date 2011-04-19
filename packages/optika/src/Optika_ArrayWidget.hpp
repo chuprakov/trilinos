@@ -147,7 +147,7 @@ protected:
 	/**
 	 * The validator being used on the array.
 	 */
-	Teuchos::RCP<const Teuchos::ParameterEntryValidator> entryValidator;	
+	RCP<const ParameterEntryValidator> entryValidator;	
 
 	/**
 	 * Sets up the layout for the arrayContainer, including adding what ever editing
@@ -174,7 +174,7 @@ private:
 	/**
 	 * The array to be edited.
 	 */
-	Teuchos::Array<S> baseArray;
+	Array<S> baseArray;
 
 	/**
 	 * The type of array.
@@ -213,7 +213,7 @@ public slots:
 	}
 
 	std::string saveData(){
-		Teuchos::Array<int> toReturn;
+		Array<int> toReturn;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
 			toReturn.push_back(((QSpinBox*)(*it))->value());
 		}
@@ -232,9 +232,9 @@ public slots:
 private:
 	QWidget* getEditorWidget(){
 		QSpinBox *newSpin = new QSpinBox(this);
-		Teuchos::RCP<const Teuchos::EnhancedNumberValidator<int> > validator = Teuchos::null;
-		if(!Teuchos::is_null(entryValidator)){
-			validator = Teuchos::rcp_dynamic_cast<const Teuchos::ArrayNumberValidator<int> >(entryValidator,true)->getPrototype();
+		RCP<const EnhancedNumberValidator<int> > validator = null;
+		if(!is_null(entryValidator)){
+			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<int>, int> >(entryValidator,true)->getPrototype();
 		}
 		SpinBoxApplier<int>::applyToSpinBox(validator, newSpin);
 		return newSpin;
@@ -268,7 +268,7 @@ public slots:
 	}
 
 	std::string saveData(){
-		Teuchos::Array<short> toReturn;
+		Array<short> toReturn;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
 			toReturn.push_back(((QSpinBox*)(*it))->value());
 		}
@@ -287,9 +287,9 @@ public slots:
 private:
 	QWidget* getEditorWidget(){
 		QSpinBox *newSpin = new QSpinBox(this);
-		Teuchos::RCP<const Teuchos::EnhancedNumberValidator<short> > validator = Teuchos::null;
-		if(!Teuchos::is_null(entryValidator)){
-			validator = Teuchos::rcp_dynamic_cast<const Teuchos::ArrayNumberValidator<short> >(entryValidator,true)->getPrototype();
+		RCP<const EnhancedNumberValidator<short> > validator = null;
+		if(!is_null(entryValidator)){
+			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<short>, short> >(entryValidator,true)->getPrototype();
 		}
 		SpinBoxApplier<short>::applyToSpinBox(validator, newSpin);
 		return newSpin;
@@ -322,7 +322,7 @@ public slots:
 	}
 
 	std::string saveData(){
-		Teuchos::Array<long long int> toReturn;
+		Array<long long int> toReturn;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
 			toReturn.push_back(((QwwLongSpinBox*)(*it))->value());
 		}
@@ -341,9 +341,9 @@ public slots:
 private:
 	QWidget* getEditorWidget(){
 		QSpinBox *newSpin = new QwwLongSpinBox(this);
-		Teuchos::RCP<const EnhancedNumberValidator<long long int> > validator = null;
-		if(!Teuchos::is_null(entryValidator)){
-			validator = Teuchos::rcp_dynamic_cast<const EnhancedNumberValidator<long long int> >(entryValidator,true);
+		RCP<const EnhancedNumberValidator<long long int> > validator = null;
+		if(!is_null(entryValidator)){
+			validator = rcp_dynamic_cast<const EnhancedNumberValidator<long long int> >(entryValidator,true);
 		}
 		EnhancedNumberValidator<long long int>::applyToSpinBox(validator, newSpin);
 		return newSpin;
@@ -376,7 +376,7 @@ public slots:
 	}
 
 	std::string saveData(){
-		Teuchos::Array<double> toReturn;
+		Array<double> toReturn;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
 			toReturn.push_back(((QDoubleSpinBox*)(*it))->value());
 		}
@@ -394,9 +394,9 @@ public slots:
 private:
 	QWidget* getEditorWidget(){
 		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
-		Teuchos::RCP<const Teuchos::EnhancedNumberValidator<double> > validator = Teuchos::null;
-		if(!Teuchos::is_null(entryValidator)){
-			validator = Teuchos::rcp_dynamic_cast<const Teuchos::ArrayNumberValidator<double> >(entryValidator,true)->getPrototype();
+		RCP<const EnhancedNumberValidator<double> > validator = null;
+		if(!is_null(entryValidator)){
+			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<double>, double> >(entryValidator,true)->getPrototype();
 		}
 		SpinBoxApplier<double>::applyToSpinBox(validator, newSpin);
 		return newSpin;
@@ -429,7 +429,7 @@ public slots:
 	}
 
 	std::string saveData(){
-		Teuchos::Array<float> toReturn;
+		Array<float> toReturn;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
 			toReturn.push_back(((QDoubleSpinBox*)(*it))->value());
 		}
@@ -448,9 +448,9 @@ public slots:
 private:
 	QWidget* getEditorWidget(){
 		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
-		Teuchos::RCP<const Teuchos::EnhancedNumberValidator<float> > validator = Teuchos::null;
-		if(!Teuchos::is_null(entryValidator)){
-			validator = Teuchos::rcp_dynamic_cast<const Teuchos::ArrayNumberValidator<float> >(entryValidator,true)->getPrototype();
+		RCP<const EnhancedNumberValidator<float> > validator = null;
+		if(!is_null(entryValidator)){
+			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<float>, float> >(entryValidator,true)->getPrototype();
 		}
 		SpinBoxApplier<float>::applyToSpinBox(validator, newSpin);
 		return newSpin;
@@ -481,12 +481,12 @@ public:
 	}
 
 	std::string saveData(){
-		Teuchos::Array<std::string> toReturn;
+		Array<std::string> toReturn;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
-			if(Teuchos::is_null(entryValidator)){
+			if(is_null(entryValidator)){
 				toReturn.push_back(((QLineEdit*)(*it))->text().toStdString());
 			}
-			else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const Teuchos::ArrayFileNameValidator>(entryValidator))){
+			else if(!is_null(rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(entryValidator))){
 				toReturn.push_back(((FileNameWidget*)(*it))->getCurrentFileName().toStdString());
 			}
 			else if(entryValidator->validStringValues()->size() !=0){
@@ -503,10 +503,10 @@ public:
 		QStringList valueList = getValues(values); 
 		int i =0;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it, ++i){
-			if(Teuchos::is_null(entryValidator)){
+			if(is_null(entryValidator)){
 				static_cast<QLineEdit*>(*it)->setText(valueList.at(i));
 			}
-			else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const Teuchos::ArrayFileNameValidator>(entryValidator))){
+			else if(!is_null(rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(entryValidator))){
 				static_cast<FileNameWidget*>(*it)->setCurrentFileName(valueList.at(i));
 			}
 			else if(entryValidator->validStringValues()->size() !=0){
@@ -524,16 +524,16 @@ public:
 
 private:
 	QWidget* getEditorWidget(){
-		if(Teuchos::is_null(entryValidator)){
+		if(is_null(entryValidator)){
 			return new QLineEdit(this);
 		}
-		else if(!Teuchos::is_null(Teuchos::rcp_dynamic_cast<const Teuchos::ArrayFileNameValidator>(entryValidator))){
-			return new FileNameWidget("", Teuchos::rcp_dynamic_cast<const Teuchos::ArrayFileNameValidator>(entryValidator)->getPrototype()->fileMustExist(), this);
+		else if(!is_null(rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(entryValidator))){
+			return new FileNameWidget("", rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(entryValidator)->getPrototype()->fileMustExist(), this);
 		}
 		else if(entryValidator->validStringValues()->size() != 0){
-			Teuchos::RCP<const Teuchos::Array<std::string> > options = entryValidator->validStringValues();
+			RCP<const Array<std::string> > options = entryValidator->validStringValues();
 			QComboBox *newCombo = new QComboBox(this);
-			for(Teuchos::Array<std::string>::const_iterator itr = options->begin(); itr != options->end(); ++itr){
+			for(Array<std::string>::const_iterator itr = options->begin(); itr != options->end(); ++itr){
 				newCombo->addItem(QString::fromStdString(*itr));
 			}
 			return newCombo;

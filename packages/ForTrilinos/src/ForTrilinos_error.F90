@@ -43,8 +43,6 @@ module ForTrilinos_error
   implicit none
   private
   public :: error
- !public :: deallocate_and_check_error ! As of 3/3/2011, this is not used anywhere in ForTrilinos: we have no explicit deallocations
-                                       ! because we allocate memory via allocatable entities only (never via pointers).
   type ,extends(error_message) :: error
     private
     integer(c_int) :: code
@@ -57,18 +55,13 @@ module ForTrilinos_error
     module procedure new_error  
   end interface
 
-  interface deallocate_and_check_error
-    module procedure deallocate_real_rank1,deallocate_real_rank2
-    module procedure deallocate_integer_rank1,deallocate_integer_rank2
-  end interface
-  
 contains
   function new_error(new_code,new_message) 
     integer(c_int) ,intent(in) :: new_code
-    character(len=*) ,intent(in) ,optional :: new_message
+    character(len=*) ,intent(in) :: new_message
     type(error) :: new_error
     new_error%code = new_code 
-    if (present(new_message)) new_error%error_message = error_message(new_message)
+    new_error%error_message = error_message(new_message)
   end function
 
   integer(c_int) function error_code(this)
@@ -80,54 +73,4 @@ contains
     class(error), intent(in) :: this
     call assert( [this%code==0], [this%error_message] )
   end subroutine
-
-  subroutine deallocate_integer_rank1(garbage,message)
-    integer(c_int), dimension(:), allocatable ,intent(out) :: garbage
-    character(len=*) ,intent(in) :: message
-    integer(c_int) :: status
-    type(error)  :: ierr
-    if (allocated(garbage)) then
-      deallocate(garbage,stat=status)
-      ierr=error(status,message)
-      call ierr%check_success()
-    endif
-  end subroutine
-
-  subroutine deallocate_integer_rank2(garbage,message)
-    integer(c_int), dimension(:,:),allocatable ,intent(out) :: garbage
-    character(len=*) ,intent(in) :: message
-    integer(c_int) :: status
-    type(error)  :: ierr
-    if (allocated(garbage)) then
-      deallocate(garbage,stat=status)
-      ierr=error(status,message)
-      call ierr%check_success()
-    endif
-  end subroutine
-
-  subroutine deallocate_real_rank1(garbage,message)
-    real(c_double), dimension(:),allocatable ,intent(out) :: garbage
-    character(len=*) ,intent(in) :: message
-    integer(c_int) :: status
-    type(error) :: ierr
-    if (allocated(garbage)) then
-      deallocate(garbage,stat=status)
-      ierr=error(status,message)
-      call ierr%check_success()
-    endif
-  end subroutine
-
-  subroutine deallocate_real_rank2(garbage,message)
-    real(c_double), dimension(:,:) ,allocatable,intent(out) :: garbage
-    character(len=*) ,intent(in) :: message
-    integer(c_int) :: status
-    type(error) :: ierr
-    if (allocated(garbage)) then
-      deallocate(garbage,stat=status)
-      ierr=error(status,message)
-      call ierr%check_success()
-    endif
-  end subroutine
-
 end module ForTrilinos_error 
-

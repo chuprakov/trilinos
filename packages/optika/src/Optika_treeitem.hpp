@@ -32,12 +32,8 @@
 #include <QVariant>
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
-#include "Teuchos_ParameterList.hpp"
 #include "Optika_ArrayHelperFunctions.hpp"
 
-//MUST BE DONE OUTSIDE NAMEPSACE!
-Q_DECLARE_METATYPE(Teuchos::RCP<const Teuchos::ParameterEntry>)
-Q_DECLARE_METATYPE(Teuchos::RCP<Teuchos::ParameterEntry>)
 
 namespace Optika{
 /**
@@ -46,7 +42,7 @@ namespace Optika{
 class TreeItem{
 public:
 	/**
-	 * Constructs a TreeItem object.
+	 * \brief Constructs a TreeItem object.
 	 *
 	 * @param data A list of data that should be in the TreeItem. The list should be of length 3 and contain the following data in 
 	 * each respective location:
@@ -66,32 +62,50 @@ public:
 	 * @param parent The parent TreeItem.
 	 * @param unrecognized If true, this item will be unrecognized and not displayed, if false the item will be displayed.
 	 */
-	TreeItem(const QList<QVariant> &data, Teuchos::RCP<Teuchos::ParameterEntry> parameterEntry, TreeItem *parent = 0, bool unrecognized=false);
+	TreeItem(const QList<QVariant> &data, RCP<ParameterEntry> parameterEntry, TreeItem *parent = 0, bool unrecognized=false);
 
 	/**
-	 * Deconstrcutor for the TreeItem.
+	 * \brief Deconstrcutor for the TreeItem.
 	 */
 	~TreeItem();
 
 	/**
-	 * Prints out the values in the TreeItem.
+	 * \brief Prints out the values in the TreeItem.
 	 */
 	void printOut() const;
 
 	/**
-	 * Appends a child TreeItem to the TreeItem
+	 * \brief Appends a child TreeItem to the TreeItem
 	 * 
 	 * @param child The child item to be appended.
 	 */
 	void appendChild(TreeItem *child);
 
 	/**
-	 * Returns the child treeitem in the row specified by the row argument.
+	 * \brief Returns the child treeitem in the row specified by the row argument.
 	 *
 	 * @param row The row in which the child is in.
 	 * @return The child TreeItem located in the row.
 	 */
 	TreeItem *child(int row);
+
+  /**
+   * \brief Gets the ParameterEntry associated with this TreeItem.
+   *
+   * @return The ParameterEntry associated with this TreeItem. If this
+   * tree item does not have a parameterEntry, null is returned.
+   */
+  inline RCP<const ParameterEntry> getEntry() const{
+    return parameterEntry.getConst();
+  }
+
+  /**
+   * \brief Returns whether or not this TreeItem has a ParameterEntry associated
+   * with it.
+   */
+  inline bool hasEntry() const{
+    return parameterEntry != null;
+  }
 
 	/**
 	 * Gets the number of child nodes this item has.
@@ -157,7 +171,7 @@ public:
 	 *
 	 * @param validator The validator which the parameter should be given.
 	 */
-	void setValidator(Teuchos::RCP<const Teuchos::ParameterEntryValidator> validator);
+	void setValidator(RCP<const ParameterEntryValidator> validator);
 
 private:
 	/**
@@ -191,7 +205,7 @@ private:
 	/**
 	 * The ParameterEntry being represented by the TreeItem.
 	 */
-	Teuchos::RCP<Teuchos::ParameterEntry> parameterEntry;
+	RCP<ParameterEntry> parameterEntry;
 
 	/**
 	 * The docString for the TreeItem.

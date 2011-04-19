@@ -30,43 +30,57 @@
 #include "Teuchos_FancyOStream.hpp"
 #include "Optika_GUI.hpp"
 
-int main(){
-  Teuchos::RCP<Teuchos::FancyOStream> out = Teuchos::VerboseObjectBase::getDefaultOStream();
+namespace Optika{
 
-  Teuchos::RCP<Teuchos::ParameterList> My_List2 = Teuchos::RCP<Teuchos::ParameterList>(new Teuchos::ParameterList);
-  Teuchos::ParameterList&
+
+void RUN_OPTIKA_DATA_TYPE_TESTS(){
+  using Teuchos::FancyOStream;
+  using Teuchos::VerboseObjectBase;
+  using Teuchos::FileNameValidator;
+  using Teuchos::EnhancedNumberValidator;
+  using Teuchos::StringValidator;
+  using Teuchos::ArrayNumberValidator;
+  using Teuchos::ArrayStringValidator;
+  using Teuchos::ArrayFileNameValidator;
+  using Teuchos::tuple;
+  using Teuchos::rcp;
+
+  RCP<FancyOStream> out = VerboseObjectBase::getDefaultOStream();
+
+  RCP<ParameterList> My_List2 = RCP<ParameterList>(new ParameterList);
+  ParameterList&
     validatorList = My_List2->sublist("Validator List", false, "Validator testing\nWorking June 27th 2009");
-  Teuchos::RCP<Teuchos::FileNameValidator> filnameVali = 
-  	Teuchos::RCP<Teuchos::FileNameValidator>(new Teuchos::FileNameValidator);
+  RCP<FileNameValidator> filnameVali = 
+  	RCP<FileNameValidator>(new FileNameValidator);
   validatorList.set("filename", "", "filename tester", filnameVali);
-  Teuchos::RCP<Teuchos::EnhancedNumberValidator<int> > intVali = 
-  	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<int>(0,10,2));
+  RCP<EnhancedNumberValidator<int> > intVali = 
+  	rcp(new EnhancedNumberValidator<int>(0,10,2));
   validatorList.set("Int", 8, "Int tester", intVali);
-  Teuchos::RCP<Teuchos::EnhancedNumberValidator<short> > shortVali = 
-  	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<short>(0,10,4));
+  RCP<EnhancedNumberValidator<short> > shortVali = 
+  	rcp(new EnhancedNumberValidator<short>(0,10,4));
   validatorList.set("Short", (short)4, "short tester", shortVali);
-  Teuchos::RCP<Teuchos::EnhancedNumberValidator<float> > floatVali = 
-  	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<float>(0,20,1e-2, 6));
+  RCP<EnhancedNumberValidator<float> > floatVali = 
+  	rcp(new EnhancedNumberValidator<float>(0,20,1e-2, 6));
   validatorList.set("Float", (float)4.5, "float tester", floatVali);
-  Teuchos::RCP<Teuchos::EnhancedNumberValidator<double> > doubleVali = 
-  	Teuchos::rcp(new Teuchos::EnhancedNumberValidator<double>(0,20,1e-2, 6));
+  RCP<EnhancedNumberValidator<double> > doubleVali = 
+  	rcp(new EnhancedNumberValidator<double>(0,20,1e-2, 6));
   validatorList.set("Double", (double)4.5, "double tester", doubleVali);
-  Teuchos::RCP<Teuchos::StringValidator> solverValidator2 = Teuchos::rcp(
-      new Teuchos::StringValidator( Teuchos::tuple<std::string>( "GMRES", "CG", "TFQMR" )));
+  RCP<StringValidator> solverValidator2 = rcp(
+      new StringValidator( tuple<std::string>( "GMRES", "CG", "TFQMR" )));
   validatorList.set(
     "Solver"
     ,"GMRES" // This will be validated by solverValidator right here!
     ,"The type of solver to use."
     ,solverValidator2
     );
-  Teuchos::Array<std::string> validValues;
+  Array<std::string> validValues;
   validValues.append("value1");
   validValues.append("value2");
   validValues.append("value3");
-  Teuchos::RCP<Teuchos::StringValidator> stringVali2 = Teuchos::RCP<Teuchos::StringValidator>(new Teuchos::StringValidator(validValues));
+  RCP<StringValidator> stringVali2 = RCP<StringValidator>(new StringValidator(validValues));
   validatorList.set("Easy String", "value1", "easy string validator tester", stringVali2);
 
-  Teuchos::ParameterList&
+  ParameterList&
     NoValiList = My_List2->sublist("No validator list",false,"sublist containing data types without validators on them for checking default behavior.");
   NoValiList.set("Int1", 8, "Int tester");
   NoValiList.set("Short1", (short)4, "short tester");
@@ -77,31 +91,40 @@ int main(){
   NoValiList.set("Free String", "fee");
   
   //Arrays
-  Teuchos::RCP<Teuchos::StringValidator> easyStringValidator = Teuchos::RCP<Teuchos::StringValidator>(new Teuchos::StringValidator(Teuchos::tuple<std::string>("value1", "value2", "value3")));
-  Teuchos::Array<int> intArray(10,0);
-  Teuchos::Array<short> shortArray(10,3);
-  Teuchos::Array<float> floatArray(10,4.4);
-  Teuchos::Array<double> doubleArray(10, 5.5);
-  Teuchos::Array<std::string> stringArray(10,"CG");
-  Teuchos::Array<std::string> easyStringArray(10, "value1");
-  Teuchos::Array<std::string> freestringArray(10,"Blah");
-  Teuchos::Array<std::string> filenameArray(3,"/net/home/f07/klnusbau/blah.txt");
-  Teuchos::ParameterList&
+  RCP<StringValidator> easyStringValidator = RCP<StringValidator>(new StringValidator(tuple<std::string>("value1", "value2", "value3")));
+  Array<int> intArray(10,0);
+  Array<short> shortArray(10,3);
+  Array<float> floatArray(10,4.4);
+  Array<double> doubleArray(10, 5.5);
+  Array<std::string> stringArray(10,"CG");
+  Array<std::string> easyStringArray(10, "value1");
+  Array<std::string> freestringArray(10,"Blah");
+  Array<std::string> filenameArray(3,"/net/home/f07/klnusbau/blah.txt");
+  ParameterList&
   	ArrayList = My_List2->sublist("Arrays", false, "sublist containing arrays.");
-  ArrayList.set("IntArray", intArray, "intarray tester", Teuchos::RCP<Teuchos::ArrayNumberValidator<int> >(new Teuchos::ArrayNumberValidator<int>(intVali)));
-  ArrayList.set("ShortArray", shortArray, "shortarray tester", Teuchos::RCP<Teuchos::ArrayNumberValidator<short> >(new Teuchos::ArrayNumberValidator<short>(shortVali)));
-  ArrayList.set("DoubleArray", doubleArray, "doublearray tester", Teuchos::RCP<Teuchos::ArrayNumberValidator<double> >(new Teuchos::ArrayNumberValidator<double>(doubleVali)));
-  ArrayList.set("FloatArray", floatArray, "floatarray tester", Teuchos::RCP<Teuchos::ArrayNumberValidator<float> >(new Teuchos::ArrayNumberValidator<float>(floatVali)));
+  ArrayList.set("IntArray", intArray, "intarray tester", RCP<ArrayNumberValidator<int> >(new ArrayNumberValidator<int>(intVali)));
+  ArrayList.set("ShortArray", shortArray, "shortarray tester", RCP<ArrayNumberValidator<short> >(new ArrayNumberValidator<short>(shortVali)));
+  ArrayList.set("DoubleArray", doubleArray, "doublearray tester", RCP<ArrayNumberValidator<double> >(new ArrayNumberValidator<double>(doubleVali)));
+  ArrayList.set("FloatArray", floatArray, "floatarray tester", RCP<ArrayNumberValidator<float> >(new ArrayNumberValidator<float>(floatVali)));
   ArrayList.set("StringArray", stringArray, "string tester", 
-  Teuchos::RCP<Teuchos::ArrayStringValidator>(new Teuchos::ArrayStringValidator(solverValidator2))); 
-  ArrayList.set("EasyStringArray", easyStringArray, "testing the easy validator", Teuchos::RCP<Teuchos::ArrayStringValidator>(new Teuchos::ArrayStringValidator(easyStringValidator)));
+  RCP<ArrayStringValidator>(new ArrayStringValidator(solverValidator2))); 
+  ArrayList.set("EasyStringArray", easyStringArray, "testing the easy validator", RCP<ArrayStringValidator>(new ArrayStringValidator(easyStringValidator)));
   ArrayList.set("FreeStringArray", freestringArray, "free string array tester");
   ArrayList.set("Filename Array", filenameArray, "filename array tester",
-  	Teuchos::RCP<Teuchos::ArrayFileNameValidator>(new Teuchos::ArrayFileNameValidator(filnameVali)));
+  	RCP<ArrayFileNameValidator>(new ArrayFileNameValidator(filnameVali)));
 
-  Optika::getInput(My_List2);
-  Teuchos::writeParameterListToXmlOStream(*My_List2, *out);
-  My_List2->print(std::cout,Teuchos::ParameterList::PrintOptions().showDoc(true).indent(2).showTypes(true));
+  getInput(My_List2);
+  writeParameterListToXmlOStream(*My_List2, *out);
+  My_List2->print(
+    std::cout,ParameterList::PrintOptions().showDoc(true).indent(2).showTypes(true));
 
+
+
+}
+
+}
+
+int main(){
+  Optika::RUN_OPTIKA_DATA_TYPE_TESTS();
   return 0;
 }

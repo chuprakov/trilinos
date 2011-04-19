@@ -170,17 +170,17 @@ module forpliris
     import :: c_int ,FT_Pliris_ID_t
     
     integer(c_int)                                                :: that
-    type(FT_Pliris_ID_t)        ,intent(in)   ,value              :: selfID
-    integer(c_int)                                  ,dimension(*) :: nprocs_row
-    integer(c_int)                                  ,dimension(*) :: number_of_unknowns
-    integer(c_int)                                  ,dimension(*) :: nrhs
-    integer(c_int)                                  ,dimension(*) :: my_rows
-    integer(c_int)                                  ,dimension(*) :: my_cols
-    integer(c_int)                                  ,dimension(*) :: my_first_row
-    integer(c_int)                                  ,dimension(*) :: my_first_col
-    integer(c_int)                                  ,dimension(*) :: my_rhs
-    integer(c_int)                                  ,dimension(*) :: my_row
-    integer(c_int)                                  ,dimension(*) :: my_col
+    type(FT_Pliris_ID_t) ,intent(in)   ,value              :: selfID
+    integer(c_int)       ,intent(in)                       :: nprocs_row
+    integer(c_int)       ,intent(in)                       :: number_of_unknowns
+    integer(c_int)       ,intent(in)                       :: nrhs
+    integer(c_int)       ,intent(out)                      :: my_rows
+    integer(c_int)       ,intent(out)                      :: my_cols
+    integer(c_int)       ,intent(out)                      :: my_first_row
+    integer(c_int)       ,intent(out)                      :: my_first_col
+    integer(c_int)       ,intent(out)                      :: my_rhs
+    integer(c_int)       ,intent(out)                      :: my_row
+    integer(c_int)       ,intent(out)                      :: my_col
   end function
 
 
@@ -200,10 +200,10 @@ module forpliris
     type(FT_Epetra_Vector_ID_t) ,intent(in)   ,value              :: AID
     integer(c_int)              ,intent(in)   ,value              :: my_rows
     integer(c_int)              ,intent(in)   ,value              :: my_cols
-    integer(c_int)                                  ,dimension(*) :: matrix_size
-    integer(c_int)                                  ,dimension(*) :: num_procsr
-    integer(c_int)                                  ,dimension(*) :: num_rhs
-    real(c_double)                                  ,dimension(*) :: secs
+    integer(c_int)              ,intent(in)                       :: matrix_size
+    integer(c_int)              ,intent(in)                       :: num_procsr
+    integer(c_int)              ,intent(in)                       :: num_rhs
+    real(c_double)              ,intent(out)                      :: secs
   end function
 
 
@@ -215,20 +215,20 @@ module forpliris
   !!     int my_rows, int my_cols, int * matrix_size, int * num_procsr, int * num_rhs, 
   !!     double * secs );
 
-  function Pliris_FactorSolve_Serial ( selfID, AAID, my_rows, my_cols, matrix_size, &
-        num_procsr, num_rhs, secs ) result(that) bind(C,name='Pliris_FactorSolve_Serial')
-    import :: c_int ,FT_Pliris_ID_t ,FT_Epetra_SerialDenseVector_ID_t ,c_double
-    
-    integer(c_int)                                                :: that
-    type(FT_Pliris_ID_t)        ,intent(in)   ,value              :: selfID
-    type(FT_Epetra_SerialDenseVector_ID_t),intent(in)   ,value              :: AAID
-    integer(c_int)              ,intent(in)   ,value              :: my_rows
-    integer(c_int)              ,intent(in)   ,value              :: my_cols
-    integer(c_int)                                  ,dimension(*) :: matrix_size
-    integer(c_int)                                  ,dimension(*) :: num_procsr
-    integer(c_int)                                  ,dimension(*) :: num_rhs
-    real(c_double)                                  ,dimension(*) :: secs
-  end function
+! function Pliris_FactorSolve_Serial ( selfID, AAID, my_rows, my_cols, matrix_size, &
+!       num_procsr, num_rhs, secs ) result(that) bind(C,name='Pliris_FactorSolve_Serial')
+!   import :: c_int ,FT_Pliris_ID_t ,FT_Epetra_SerialDenseVector_ID_t ,c_double
+!   
+!   integer(c_int)                                                :: that
+!   type(FT_Pliris_ID_t)        ,intent(in)   ,value              :: selfID
+!   type(FT_Epetra_SerialDenseVector_ID_t),intent(in)   ,value              :: AAID
+!   integer(c_int)              ,intent(in)   ,value              :: my_rows
+!   integer(c_int)              ,intent(in)   ,value              :: my_cols
+!   integer(c_int)              ,intent(in)   ,value              :: matrix_size
+!   integer(c_int)              ,intent(in)   ,value              :: num_procsr
+!   integer(c_int)              ,intent(in)   ,value              :: num_rhs
+!   real(c_double)              ,intent(out)                      :: secs
+! end function
 
 
   !> <BR> Original C++ prototype:
@@ -244,10 +244,10 @@ module forpliris
     integer(c_int)                                                :: that
     type(FT_Pliris_ID_t)        ,intent(in)   ,value              :: selfID
     type(FT_Epetra_Vector_ID_t) ,intent(in)   ,value              :: AID
-    integer(c_int)                                  ,dimension(*) :: matrix_size
-    integer(c_int)                                  ,dimension(*) :: num_procsr
-    integer(c_int)                                  ,dimension(*) :: permute
-    real(c_double)                                  ,dimension(*) :: secs
+    integer(c_int)              ,intent(in)   ,value              :: matrix_size
+    integer(c_int)              ,intent(in)   ,value              :: num_procsr
+    integer(c_int)              ,intent(out)        ,dimension(*) :: permute
+    real(c_double)              ,intent(out)                      :: secs
   end function
 
 
@@ -262,8 +262,8 @@ module forpliris
     
     integer(c_int)                                                :: that
     type(FT_Pliris_ID_t)        ,intent(in)   ,value              :: selfID
-    integer(c_int)                                  ,dimension(*) :: permute
-    integer(c_int)                                  ,dimension(*) :: num_rhs
+    integer(c_int)              ,intent(in)         ,dimension(*) :: permute
+    integer(c_int)              ,intent(in)   ,value              :: num_rhs
   end function
 
 

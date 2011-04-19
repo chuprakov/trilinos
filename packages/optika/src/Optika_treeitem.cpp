@@ -33,19 +33,19 @@
 
 namespace Optika{
 
-TreeItem::TreeItem(const QList<QVariant> &data, Teuchos::RCP<Teuchos::ParameterEntry> parameter, TreeItem *parent, bool unrecognized):
+TreeItem::TreeItem(const QList<QVariant> &data, RCP<ParameterEntry> parameter, TreeItem *parent, bool unrecognized):
 	unrecognized(unrecognized),
 	itemData(data),
 	parentItem(parent),
 	parameterEntry(parameter)
 {
-	if(unrecognized && Teuchos::nonnull(parameterEntry)){
+	if(unrecognized && nonnull(parameterEntry)){
 		this->docString = "Sorry, but we don't recognize the type of the " + data.at(0).toString() + " parameter.\n"
 		 + "No worries though. Everything should be fine.\n"
 		 "We'll just go ahead and set this parameter to its default value for you."
 		 "\n\nActual Documentation:\n" + QString::fromStdString(parameter->docString());
 	}
-	else if(Teuchos::nonnull(parameter)){
+	else if(nonnull(parameter)){
 		this->docString = QString::fromStdString(parameter->docString());
 	}
 	else{
@@ -127,9 +127,9 @@ QVariant TreeItem::data(int column, int role) const{
 	else if(role == Qt::DisplayRole){
 		return itemData.value(column);
 	}
-  else if(role == Qt::UserRole){
-    return QVariant::fromValue(parameterEntry);
-  }
+  /*else if(role == Qt::UserRole){
+    return QVariant::fromValue(parameterEntry.getConst());
+  }*/
 	return QVariant();
 }
 
@@ -145,7 +145,7 @@ int TreeItem::row() const{
 }
 
 bool TreeItem::hasValidValue() const{
-	if(Teuchos::is_null(parameterEntry->validator()))
+	if(is_null(parameterEntry->validator()))
 		return true;
 	else{
 		try{
@@ -192,7 +192,7 @@ bool TreeItem::changeValue(QVariant value){
 	return true;
 }
 
-void TreeItem::setValidator(Teuchos::RCP<const Teuchos::ParameterEntryValidator> validator){
+void TreeItem::setValidator(RCP<const ParameterEntryValidator> validator){
 	parameterEntry->setValidator(validator);
 }
 

@@ -106,10 +106,14 @@ IF(NOT HAVE_TIMES AND NOT HAVE_CLOCK)
     )
 ENDIF()
 
-ADD_OPTION_AND_DEFINE(${PACKAGE_NAME}_ENABLE_SHARED
-  HAVE_Mesquite_SHARED
-  "Build as shared library (e.g. Linux *.so, or Windows *.dll)."
-  OFF )
+IF (${PROJECT_NAME} STREQUAL "Trilinos")
+  SET(Mesquite_ENABLE_SHARED ${TRILINOS_BUILD_SHARED_LIBS})
+ELSE()
+  ADD_OPTION_AND_DEFINE(Mesquite_ENABLE_SHARED
+    HAVE_Mesquite_SHARED
+    "Build as shared library (e.g. Linux *.so, or Windows *.dll)."
+    OFF )
+ENDIF()
 
 #this needs to be done more like the mesquite version where 
 #there is a loop to determine the value. Not sure how to do
@@ -167,11 +171,6 @@ IF (${PACKAGE_NAME}_ENABLE_ExodusII)
 ENDIF()
 
 
-autoconf_header( ${CMAKE_CURRENT_SOURCE_DIR}/include/mesquite_version.h.in
-                 ${CMAKE_CURRENT_BINARY_DIR}/include/mesquite_version.h )
-autoconf_header( ${CMAKE_CURRENT_SOURCE_DIR}/include/mesquite_config.h.in
-                 ${CMAKE_CURRENT_BINARY_DIR}/include/mesquite_config.h )
-
 
 #
 # C) Add the libraries, tests, and examples
@@ -182,18 +181,21 @@ autoconf_header( ${CMAKE_CURRENT_SOURCE_DIR}/include/mesquite_config.h.in
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/testSuite)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/include)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/itaps)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/itaps)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/Mesh)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/Misc)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/src/include)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/include)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/Control)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/Control/Wrappers)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/MappingFunction)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/MappingFunction/Linear)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/MappingFunction/Lagrange)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/Mesh)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/Misc)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/ObjectiveFunction)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityAssessor)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover/OptSolvers)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover/Relaxation)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityMetric)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityMetric/Debug)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityMetric/Shape)
@@ -210,18 +212,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/TargetMetric/ShapeSize)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/TargetMetric/ShapeSizeOrient)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/TargetMetric/Size)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/TargetMetric/Untangle)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/ObjectiveFunction)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover/VertexMover)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover/VertexMover/FeasibleNewton)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover/VertexMover/TrustRegion)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover/VertexMover/ConjugateGradient)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover/VertexMover/Randomize)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover/VertexMover/Relaxation)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover/VertexMover/SteepestDescent)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover/VertexMover/NonSmoothDescent)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover/VertexMover/QuasiNewton)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/QualityImprover/TopologyModifier)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/Wrappers)
 
 ADD_SUBDIRECTORY(itaps)
 ADD_SUBDIRECTORY(src)
@@ -234,15 +225,17 @@ IF (${PACKAGE_NAME}_ENABLE_TESTS)
 
     #PACKAGE_ADD_EXAMPLE_DIRECTORIES(example)
 
-    #
-    # D) Do standard postprocessing
-    #
-
-    PACKAGE_POSTPROCESS()
-
   ELSE()
 
     ADD_SUBDIRECTORY(testSuite)
 
   ENDIF()
+ENDIF()
+
+IF (NOT ${PROJECT_NAME} STREQUAL "Mesquite")
+  #
+  # D) Do standard postprocessing
+  #
+
+  PACKAGE_POSTPROCESS()
 ENDIF()
