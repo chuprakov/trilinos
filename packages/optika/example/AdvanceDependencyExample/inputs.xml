@@ -203,9 +203,9 @@
            You get the point.
        -->
       <RangesAndValidators>
-        <Pair max="1" min="1" validatorID="3"/>
-        <Pair max="2" min="2" validatorID="4"/>
-        <Pair max="3" min="3" validatorID="5"/>
+        <Pair max="1" min="1" validatorId="3"/>
+        <Pair max="2" min="2" validatorId="4"/>
+        <Pair max="3" min="3" validatorId="5"/>
       </RangesAndValidators>
       <!-- AND THAT'S IT! Simple, right? I mean we done some pretty
            sweet stuff here. But we're not quite finished yet
