@@ -46,6 +46,7 @@ using FortranTypes::f_real;			// REAL
 using FortranTypes::f_dbl_prec;		// DOUBLE PRECISION
 using FortranTypes::f_logical;		// LOGICAL
 
+namespace Fortran {
 extern "C" {
 
 // analyze and factorize a matrix
@@ -197,6 +198,7 @@ extern MC23BD_struct FORTRAN_NAME_UL(MC23BD,mc23bd); // link to fortan common bl
 
 
 } // end extern "C"
+} // end namespace Fortran
 
 
 /* * @name {\bf MA28 C++ Declarations}.
@@ -508,7 +510,7 @@ static MC23BD_struct &mc23bd_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MC23BD,mc23bd);
 inline void ma28ad(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
   , f_int irn[], const f_int& lirn, f_int icn[], const f_dbl_prec& u, f_int ikeep[], f_int iw[]
   , f_dbl_prec w[], f_int* iflag)
-{	FORTRAN_FUNC_CALL_UL(MA28AD,ma28ad) (n,nz,a,licn,irn,lirn,icn,u,ikeep,iw,w,iflag);	}
+{	Fortran::FORTRAN_FUNC_CALL_UL(MA28AD,ma28ad) (n,nz,a,licn,irn,lirn,icn,u,ikeep,iw,w,iflag);	}
 
 // /
 /* * Factor a sparse matrix using previous analyze pivots.
@@ -550,7 +552,7 @@ inline void ma28ad(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int&
 inline void ma28bd(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
   , const f_int ivect[], const f_int jvect[], const f_int icn[], const f_int ikeep[], f_int iw[]
   , f_dbl_prec w[], f_int* iflag)
-{	FORTRAN_FUNC_CALL_UL(MA28BD,ma28bd) (n,nz,a,licn,ivect,jvect,icn,ikeep,iw,w,iflag);	}
+{	Fortran::FORTRAN_FUNC_CALL_UL(MA28BD,ma28bd) (n,nz,a,licn,ivect,jvect,icn,ikeep,iw,w,iflag);	}
 
 // /
 /* * Solve for a rhs using a factorized matrix.
@@ -585,7 +587,7 @@ inline void ma28bd(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int&
   */
 inline void ma28cd(const f_int& n, const f_dbl_prec a[], const f_int& licn, const f_int icn[]
   , const f_int ikeep[], f_dbl_prec rhs[], f_dbl_prec w[], const f_int& mtype)
-{	FORTRAN_FUNC_CALL_UL(MA28CD,ma28cd) (n,a,licn,icn,ikeep,rhs,w,mtype);	}
+{	Fortran::FORTRAN_FUNC_CALL_UL(MA28CD,ma28cd) (n,a,licn,icn,ikeep,rhs,w,mtype);	}
 
 //		end MA28 C++ Declarations
 // @}

@@ -25,28 +25,26 @@
   ***************************************************************** */
 
 
-/** \file ViscousCFDTetShapeWrapper.hpp
+/** \file PaverMinEdgeLengthWrapper.hpp
  *  \brief 
  *  \author Jason Kraftcheck 
  */
 
-#ifndef MSQ_VISCOUS_CFD_TET_SHAPE_WRAPPER_HPP
-#define MSQ_VISCOUS_CFD_TET_SHAPE_WRAPPER_HPP
+#ifndef MSQ_PAVER_MIN_EDGE_LENGTH_WRAPPER_HPP
+#define MSQ_PAVER_MIN_EDGE_LENGTH_WRAPPER_HPP
 
 #include "Mesquite.hpp"
 #include "Wrapper.hpp"
 
 namespace MESQUITE_NS {
 
-class MESQUITE_EXPORT ViscousCFDTetShapeWrapper : public Wrapper
+class MESQUITE_EXPORT PaverMinEdgeLengthWrapper : public Wrapper
 {
   private:
-    double dCutoff, aVal;
     int iterationLimit;
     int parallelIterations;
     double maxVtxMovement;
 
-    MESQUITE_EXPORT
     void run_wrapper( Mesh* mesh,
                       ParallelMesh* pmesh,
                       MeshDomain* geom,
@@ -60,21 +58,15 @@ class MESQUITE_EXPORT ViscousCFDTetShapeWrapper : public Wrapper
      *\param max_vertex_movement  Termination optimization if no vertex is moved
      *                            by more than this distance in the previous solver
      *                            step.
-     *\param a                    Coefficient for target metric weight
-     *\param d_prime              Dihedral handle cut-off for target metric weight
      *\param max_iterations       Termination optimizaiton after this many solver 
      *                            steps.
      */
-    ViscousCFDTetShapeWrapper( double max_vertex_movement,
-                               double a = 0.4395, 
-                               double d_prime = 135,
+    PaverMinEdgeLengthWrapper( double max_vertex_movement,
                                int max_iterations = 50,
                                int parallel_iterations = 10 )
-      : dCutoff(d_prime), 
-        aVal(a), 
-        iterationLimit( max_iterations ),
-        parallelIterations( parallel_iterations ),
-        maxVtxMovement( max_vertex_movement )
+                        : iterationLimit( max_iterations ),
+                          parallelIterations( parallel_iterations ),
+                          maxVtxMovement( max_vertex_movement )
       {}
 
 };

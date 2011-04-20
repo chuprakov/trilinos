@@ -40,7 +40,7 @@ void LAPACK_C_Decl::dpotrf(  const f_char& UPLO
   , const f_int& N, f_dbl_prec* A, const f_int& LDA
   , f_int* INFO  )
 {
-  FORTRAN_FUNC_CALL_UL(DPOTRF,dpotrf) (FORTRAN_CHAR_1_ARG_CALL(UPLO),N,A,LDA,INFO);
+  ::FORTRAN_FUNC_CALL_UL(DPOTRF,dpotrf) (FORTRAN_CHAR_1_ARG_CALL(UPLO),N,A,LDA,INFO);
 }
 
 // DGEQRF
@@ -58,7 +58,7 @@ void LAPACK_C_Decl::dgeqrf( const f_int& M
   , f_dbl_prec* TAU, f_dbl_prec* WORK
   , const f_int& LWORK, f_int* INFO  )
 {
-  FORTRAN_FUNC_CALL_UL(DGEQRF,dgeqrf) (M,N,A,LDA,TAU,WORK,LWORK,INFO);
+  ::FORTRAN_FUNC_CALL_UL(DGEQRF,dgeqrf) (M,N,A,LDA,TAU,WORK,LWORK,INFO);
 }
 
 // DORMRQ
@@ -80,7 +80,7 @@ void LAPACK_C_Decl::dormqr( const f_char& SIDE
   , const f_dbl_prec* TAU, f_dbl_prec* C, const f_int& LDC
   , f_dbl_prec* WORK, const f_int& LWORK, f_int* INFO )
 {
-  FORTRAN_FUNC_CALL_UL(DORMQR,dormqr)(FORTRAN_CHAR_1_ARG_CALL(SIDE)
+  ::FORTRAN_FUNC_CALL_UL(DORMQR,dormqr)(FORTRAN_CHAR_1_ARG_CALL(SIDE)
     ,FORTRAN_CHAR_1_ARG_CALL(TRANS),M,N,K,A,LDA,TAU,C,LDC,WORK,LWORK,INFO);
 }
 
@@ -100,7 +100,7 @@ void LAPACK_C_Decl::dsytrf( const f_char& UPLO
   , f_int IPIV[], f_dbl_prec WORK[], const f_int& LWORK
   , f_int* INFO )
 {
-  FORTRAN_FUNC_CALL_UL(DSYTRF,dsytrf)(FORTRAN_CHAR_1_ARG_CALL(UPLO)
+  ::FORTRAN_FUNC_CALL_UL(DSYTRF,dsytrf)(FORTRAN_CHAR_1_ARG_CALL(UPLO)
     ,N,A,LDA,IPIV,WORK,LWORK,INFO);
 }
 
@@ -120,7 +120,7 @@ void LAPACK_C_Decl::dsytrs( const f_char& UPLO
   , const f_int& LDA, const f_int IPIV[], f_dbl_prec B[]
   , const f_int& LDB, f_int* INFO )
 {
-  FORTRAN_FUNC_CALL_UL(DSYTRS,dsytrs)(FORTRAN_CHAR_1_ARG_CALL(UPLO)
+  ::FORTRAN_FUNC_CALL_UL(DSYTRS,dsytrs)(FORTRAN_CHAR_1_ARG_CALL(UPLO)
     ,N,NRHS,A,LDA,IPIV,B,LDB,INFO);
 }
 
@@ -139,7 +139,7 @@ void LAPACK_C_Decl::dgetrf(
   ,f_int IPIV[], f_int* INFO
   )
 {
-  FORTRAN_FUNC_CALL_UL(DGETRF,dgetrf)(M,N,A,LDA,IPIV,INFO);
+  ::FORTRAN_FUNC_CALL_UL(DGETRF,dgetrf)(M,N,A,LDA,IPIV,INFO);
 }
 
 // DGETRS
@@ -162,7 +162,7 @@ void LAPACK_C_Decl::dgetrs(
   ,const f_int& LDB, f_int* INFO
   )
 {
-  FORTRAN_FUNC_CALL_UL(DGETRS,dgetrs)(
+  ::FORTRAN_FUNC_CALL_UL(DGETRS,dgetrs)(
     FORTRAN_CHAR_1_ARG_CALL(TRANS),N,NRHS,A,LDA,IPIV,B,LDB,INFO
     );
 }

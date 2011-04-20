@@ -28,7 +28,7 @@ libmesquite_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined
 
 include Mesh/Makefile.am
 include Control/Makefile.am
-include Control/Wrappers/Makefile.am
+include Wrappers/Makefile.am
 include MappingFunction/Makefile.am
 include MappingFunction/Lagrange/Makefile.am
 include MappingFunction/Linear/Makefile.am
@@ -36,16 +36,8 @@ include Misc/Makefile.am
 include ObjectiveFunction/Makefile.am
 include QualityAssessor/Makefile.am
 include QualityImprover/Makefile.am
-include QualityImprover/TopologyModifier/Makefile.am
-include QualityImprover/VertexMover/Makefile.am
-include QualityImprover/VertexMover/ConjugateGradient/Makefile.am
-include QualityImprover/VertexMover/Relaxation/Makefile.am
-include QualityImprover/VertexMover/SteepestDescent/Makefile.am
-include QualityImprover/VertexMover/NonSmoothDescent/Makefile.am
-include QualityImprover/VertexMover/FeasibleNewton/Makefile.am
-include QualityImprover/VertexMover/Randomize/Makefile.am
-include QualityImprover/VertexMover/TrustRegion/Makefile.am
-include QualityImprover/VertexMover/QuasiNewton/Makefile.am
+include QualityImprover/OptSolvers/Makefile.am
+include QualityImprover/Relaxation/Makefile.am
 include QualityMetric/Makefile.am
 include QualityMetric/Shape/Makefile.am
 include QualityMetric/Smoothness/Makefile.am
