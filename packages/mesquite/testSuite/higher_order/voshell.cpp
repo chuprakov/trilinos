@@ -20,7 +20,7 @@
     (lgpl.txt) along with this library; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-    (2010) kraftche@cae.wisc.edu    
+    (2011) kraftche@cae.wisc.edu    
 
   ***************************************************************** */
 
@@ -28,6 +28,7 @@
 /** \file voshell.cpp
  *  \brief Implement some of the examples from N. Voshell.
  *  \author Jason Kraftcheck 
+ *  \author Nick Voshell
  */
 
 #include "ShapeImprover.hpp"
@@ -76,9 +77,9 @@ int run_example( const Example& e, bool write_output_file );
 
 
 const Example examples[] = {
-  { 'h', &get_homogenious_example, "homogenous mesh (curvey surface) example" },
+  { 'H', &get_homogenious_example, "homogenous mesh (curvey surface) example" },
   { 't', &get_part_example_tri,    "part mesh with triangles" },
-  { 'h', &get_part_example_quad,   "part mesh with quads" },
+  { 'q', &get_part_example_quad,   "part mesh with quads" },
   { 'c', &get_sphere_cube_example, "cube with subtracted hemisphere" },
   { 'l', &get_cut_cube_example,    "cube with slot removed" },
   { 's', &get_sphere_cylinder_example, "cylinder with subtracted sphere" },
@@ -128,8 +129,12 @@ int main( int argc, char* argv[] )
           if (examples[idx].flag == argv[i][j])
             break;
         if (idx == num_examples) {
-          std::cerr << "Invalid flag: '" << argv[i][j] << "'" << std::endl;
-          usage(argv[0]);
+          if (argv[i][j] == 'h')
+            usage(argv[0],true);
+          else {
+            std::cerr << "Invalid flag: '" << argv[i][j] << "'" << std::endl;
+            usage(argv[0]);
+          }
         }
         list.push_back(examples[idx]);
       }
@@ -180,9 +185,10 @@ int run_example( const Example& e, bool write_output_file )
   untangler.run_instructions( &mesh, &domain, err ); 
   if (MSQ_CHKERR(err)) return 1;
   ShapeImprover smoother;
-  smoother.run_instructions( &mesh, &domain, err );
   smoother.set_slaved_ho_node_mode( Settings::SLAVE_NONE );
   smoother.set_mapping_function( &hex27 );
+  smoother.set_vertex_movement_limit_factor( 0.05 );
+  smoother.run_instructions( &mesh, &domain, err );
   if (MSQ_CHKERR(err)) return 1;
   
   if (write_output_file) {

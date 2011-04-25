@@ -7,7 +7,7 @@ UG_SRCS = users-guide.tex \
 	ack.tex \
 	api.tex \
 	caveats.tex \
-	custom_solver.tex \
+	custom.tex \
 	data.tex \
 	extend.tex \
 	examples.tex \
@@ -19,7 +19,7 @@ UG_SRCS = users-guide.tex \
 	opt_strategies.tex \
 	plan.tex \
         parallel.tex \
-	solver_post.tex \
+	debugging.tex \
 	support.tex \
 	team.tex \
 	tmp.tex \
@@ -30,6 +30,14 @@ UG_SRCS = users-guide.tex \
         msq-paradigm.eps \
         square_rand.eps \
         parallel_mesh.eps \
+	generalized_optimization.eps \
+	patches-horiz.eps \
+	iterplot.eps \
+	mesh_gpt.eps \
+	mesh_vtk.eps \
+	mesh.eps \
+	meshqual.eps \
+	meshqual3d.eps \
         mesquite.bib
 
 EXTRA_DIST = $(UG_SRCS)

@@ -36,6 +36,8 @@
 
 namespace MESQUITE_NS {
 
+SizeMetric::~SizeMetric() {}
+
 std::string SizeMetric::get_name() const { return "Size"; }
 
 int SizeMetric::get_negate_flag() const { return 1; }

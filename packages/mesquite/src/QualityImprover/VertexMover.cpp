@@ -45,12 +45,14 @@
 
 namespace MESQUITE_NS {
 
-VertexMover::VertexMover( ObjectiveFunction* OF, bool Nash ) 
+VertexMover::VertexMover( ObjectiveFunction* OF ) 
   : QualityImprover(),
-    objFuncEval( OF, Nash ) ,
+    objFuncEval( OF ) ,
     jacobiOpt(false)
   {}
 
+
+VertexMover::~VertexMover() {}
 
 /*
   

@@ -62,6 +62,7 @@ InstructionQueue::InstructionQueue() :
 {
 }
 
+InstructionQueue::~InstructionQueue() {}
 
 void InstructionQueue::add_target_calculator( TargetWriter* tc, MsqError& )
 {
@@ -329,7 +330,7 @@ void InstructionQueue::run_common( Mesh* mesh,
       return;
     }
     
-    (*instr)->initialize_queue( mesh, domain, this, err ); 
+    (*instr)->initialize_queue( mesh, domain, settings, err ); 
     MSQ_ERRRTN(err);
   }
   
@@ -344,10 +345,10 @@ void InstructionQueue::run_common( Mesh* mesh,
     
     if (pmesh) {
       assert(!mesh || pmesh == mesh);
-      (*instr)->loop_over_mesh( pmesh, domain, this, err ); 
+      (*instr)->loop_over_mesh( pmesh, domain, settings, err ); 
     }
     else {
-      (*instr)->loop_over_mesh( mesh, domain, this, err ); 
+      (*instr)->loop_over_mesh( mesh, domain, settings, err ); 
     }
     MSQ_ERRRTN(err);
   }
