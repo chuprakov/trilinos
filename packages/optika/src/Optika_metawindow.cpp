@@ -269,7 +269,7 @@ void MetaWindow::load(){
 }
 
 void MetaWindow::loadLastSettings(){
-	QFile *file = new QFile("settings.xml");
+	QFile *file = new QFile(getSettingsFileName());
 	if(file->open(QIODevice::ReadOnly)){
 		QXmlStreamReader xmlReader(file);
 		while(!xmlReader.isEndDocument()){
@@ -323,7 +323,7 @@ void MetaWindow::loadLastSettings(){
 
 
 void MetaWindow::saveSettings(){
-	QFile *file = new QFile("settings.xml");
+	QFile *file = new QFile(getSettingsFileName());
 	file->open(QIODevice::WriteOnly);
 	QXmlStreamWriter xmlWriter(file);
 
