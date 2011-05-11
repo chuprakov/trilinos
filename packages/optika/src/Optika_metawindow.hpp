@@ -216,6 +216,12 @@ private:
 	QAction *resetAct, *loadAct, *saveAct, *saveAsAct, *quitAct, *aboutAct, *searchAct;
 	QMenu *fileMenu, *recentMenu, *helpMenu;
 
+  static QString getSettingsFileName(){
+    static QString settingsFileName("OptikaSettings.xml");
+    return settingsFileName;
+  }
+      
+
   QPushButton *actionButton;
 
 	/**
