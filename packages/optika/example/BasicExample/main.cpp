@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
   My_List->set(
     "Initial Guess", 
     doubleArray, 
-    "The initial guess as a RCP to an array object.");
+    "The initial guess as an array object.");
 
   /* 
    * We can also create a hieiarchy of parameters by using sublists. Here we 

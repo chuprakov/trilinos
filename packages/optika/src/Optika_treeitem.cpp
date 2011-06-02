@@ -30,6 +30,7 @@
 #include <QTextStream>
 #include <QSize>
 #include "Optika_treeitem.hpp"
+#include "Optika_treemodel.hpp"
 
 namespace Optika{
 
@@ -121,12 +122,30 @@ QVariant TreeItem::data(int column, int role) const{
 			return QVariant("N/A");
 		}
 		else if(column == 2){
-			return QVariant("Unrecognized type");
+			return QVariant(unrecognizedId);
 		}
 	}
 	else if(role == Qt::DisplayRole){
-		return itemData.value(column);
+    if(column == 1 && nonnull(parameterEntry) && parameterEntry->isArray()){
+      return QString::fromStdString(toString(parameterEntry->getAny()));
+    }
+    else{
+		 return itemData.value(column);
+    }
 	}
+  else if(role == TreeModel::getRawDataRole()){
+    if(column == 1 && nonnull(parameterEntry) && parameterEntry->isArray()){
+      return arrayEntryToVariant(parameterEntry, 
+        getArrayType(itemData.value(2).toString()));
+    }
+    else if(column == 1 && nonnull(parameterEntry) && parameterEntry->isTwoDArray()){
+      return arrayEntryToVariant(parameterEntry,
+        getArrayType(itemData.value(2).toString()));
+    }
+    else{
+      return itemData.value(column);
+    }
+  }
   /*else if(role == Qt::UserRole){
     return QVariant::fromValue(parameterEntry.getConst());
   }*/
@@ -164,10 +183,11 @@ bool TreeItem::hasValidValue() const{
 	
 
 bool TreeItem::changeValue(QVariant value){
-	if(itemData[1].toString() == value.toString()){
+	if(itemData[1]== value){
 		return false;
 	}
-	itemData[1] = value;
+  itemData[1].clear();
+  itemData[1] = value;
 	if(data(2).toString() == intId){
 		parameterEntry->setValue(value.toInt(), false, parameterEntry->docString(), parameterEntry->validator());
 	}
@@ -187,8 +207,12 @@ bool TreeItem::changeValue(QVariant value){
 		parameterEntry->setValue(value.toString().toStdString(), false, parameterEntry->docString(), parameterEntry->validator());
 	}
 	else if(data(2).toString().contains(arrayId)){
-		changeValueForArray(value, data(2).toString().section(" ",-1));
+		changeValueForArray(value, getArrayType(data(2).toString()));
 	}
+	else if(data(2).toString().contains(twoDArrayId)){
+		changeValueForArray(value, getArrayType(data(2).toString()), true);
+	}
+
 	return true;
 }
 
@@ -196,25 +220,45 @@ void TreeItem::setValidator(RCP<const ParameterEntryValidator> validator){
 	parameterEntry->setValidator(validator);
 }
 
-void TreeItem::changeValueForArray(QVariant value, QString type){
+void TreeItem::changeValueForArray(QVariant value, QString type, bool twoD){
 	if(type == intId){
-		parameterEntry->setValue(Optika::fromStringToArray<int>(value.toString()), false,
+    twoD ? 
+		parameterEntry->setValue(value.value<TwoDArray<int> >(), false,
+					 parameterEntry->docString(), parameterEntry->validator())
+    :
+		parameterEntry->setValue(value.value<Array<int> >(), false,
 					 parameterEntry->docString(), parameterEntry->validator());
 	}
 	else if(type == shortId){
-		parameterEntry->setValue(Optika::fromStringToArray<short>(value.toString()), false,
+    twoD ? 
+		parameterEntry->setValue(value.value<TwoDArray<short> >(), false,
+					 parameterEntry->docString(), parameterEntry->validator())
+    :
+		parameterEntry->setValue(value.value<Array<short> >(), false,
 					 parameterEntry->docString(), parameterEntry->validator());
 	}
 	else if(type == doubleId){
-		parameterEntry->setValue(Optika::fromStringToArray<double>(value.toString()), false,
+    twoD ? 
+		parameterEntry->setValue(value.value<TwoDArray<double> >(), false,
+					 parameterEntry->docString(), parameterEntry->validator())
+    :
+		parameterEntry->setValue(value.value<Array<double> >(), false,
 					 parameterEntry->docString(), parameterEntry->validator());
 	}
 	else if(type == floatId){
-		parameterEntry->setValue(Optika::fromStringToArray<float>(value.toString()), false,
+    twoD ? 
+		parameterEntry->setValue(value.value<TwoDArray<float> >(), false,
+					 parameterEntry->docString(), parameterEntry->validator())
+    :
+		parameterEntry->setValue(value.value<Array<float> >(), false,
 					 parameterEntry->docString(), parameterEntry->validator());
 	}
 	else if(type == stringId){
-		parameterEntry->setValue(Optika::fromStringToArray<std::string>(value.toString()), false,
+    twoD ? 
+		parameterEntry->setValue(value.value<TwoDArray<std::string> >(), false,
+					 parameterEntry->docString(), parameterEntry->validator())
+    :
+		parameterEntry->setValue(value.value<Array<std::string> >(), false,
 					 parameterEntry->docString(), parameterEntry->validator());
 	}
 }

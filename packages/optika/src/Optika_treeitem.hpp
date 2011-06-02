@@ -30,17 +30,21 @@
 
 #include <QList>
 #include <QVariant>
-#include <QXmlStreamWriter>
-#include <QXmlStreamReader>
 #include "Optika_ArrayHelperFunctions.hpp"
 
+/*! \file Optika_treeitem.hpp
+    \brief A item in the treemodel.
+*/
 
 namespace Optika{
 /**
- * The TreeItem class is the item class used by the TreeModel class.
+ * \brief The TreeItem class is the item class used by the TreeModel class.
  */
 class TreeItem{
 public:
+  /** \name Constructors/Destructor */
+  //@{
+
 	/**
 	 * \brief Constructs a TreeItem object.
 	 *
@@ -69,18 +73,21 @@ public:
 	 */
 	~TreeItem();
 
+  //@}
+
+  //! @name Debugging fucntions
+  //@{
+
 	/**
 	 * \brief Prints out the values in the TreeItem.
 	 */
 	void printOut() const;
 
-	/**
-	 * \brief Appends a child TreeItem to the TreeItem
-	 * 
-	 * @param child The child item to be appended.
-	 */
-	void appendChild(TreeItem *child);
+  //@}
 
+  //! @name Getters and Setters
+  //@{
+  
 	/**
 	 * \brief Returns the child treeitem in the row specified by the row argument.
 	 *
@@ -108,28 +115,28 @@ public:
   }
 
 	/**
-	 * Gets the number of child nodes this item has.
+	 * \brief Gets the number of child nodes this item has.
 	 *
 	 * @return The number of child nodes this item has.
 	 */
 	int childCount() const;
 
 	/**
-	 * Gets a list of all the child items.
+	 * \brief Gets a list of all the child items.
 	 *
 	 * @return A list of all child items.
 	 */
 	const QList<TreeItem*> getChildItems();
 
 	/**
-	 * How man columns the TreeItem has. Should always be 3.
+	 * \brief How man columns the TreeItem has. Should always be 3.
 	 *
 	 * @return The number of columns the TreeItem has.
 	 */
 	int columnCount() const;
 
 	/**
-	 * Returns the data located in a particular column.
+	 * \brief Returns the data located in a particular column.
 	 *
 	 * @param column The column of the desired data.
 	 * @param role The role of the data.
@@ -138,21 +145,21 @@ public:
 	QVariant data(int column, int role = Qt::DisplayRole) const;
 
 	/**
-	 * Gets the parent TreeItem
+	 * \brief Gets the parent TreeItem
 	 *
 	 * @return The parent TreeItem.
 	 */
 	TreeItem *parent();
 
 	/**
-	 * Returns the row in which this TreeItem is located.
+	 * \brief Returns the row in which this TreeItem is located.
 	 * 
 	 * @return The row in which this TreeItem is located.
 	 */
 	int row() const;
 
 	/**
-	 * Determines whether or not the current value associated with the
+	 * \brief Determines whether or not the current value associated with the
 	 * TreeItem is valid.
 	 *
 	 * @return True if the value is valid, false otherwise.
@@ -160,57 +167,78 @@ public:
 	bool hasValidValue() const;
 
 	/**
-	 * Changes the value of the TreeItem. Should only be used with TreeItems that represent Parameters.
+	 * \brief Appends a child TreeItem to the TreeItem
+	 * 
+	 * @param child The child item to be appended.
+	 */
+	void appendChild(TreeItem *child);
+
+	/**
+	 * \brief Changes the value of the TreeItem. Should only be used with TreeItems that represent Parameters.
 	 *
 	 * @param value The new value to be assigned to the TreeItem.
 	 */
 	bool changeValue(QVariant value);
 
 	/**
-	 * Sets the validator for the parameter the TreeItem represents.
+	 * \brief Sets the validator for the parameter the TreeItem represents.
 	 *
 	 * @param validator The validator which the parameter should be given.
 	 */
 	void setValidator(RCP<const ParameterEntryValidator> validator);
 
-private:
-	/**
-	 * Changes the value of an array.
-	 *
-	 * @param value A string representing the value of the array.
-	 * @param type The type of array.
-	 */
-	void changeValueForArray(QVariant value, QString type);
+  //@}
 
+private:
+
+  /** \name Private Members */
+  //@{
+  
 	/**
-	 * Whether or not the parameter type is unrecognized.
+	 * \brief Whether or not the parameter type is unrecognized.
 	 */
 	bool unrecognized;
 
 	/**
-	 * The childitems of the TreeItem.
+	 * \brief The childitems of the TreeItem.
 	 */
 	QList<TreeItem*> childItems;
 
 	/**
-	 * The data in the item.
+	 * \brief The data in the item.
 	 */
 	QList<QVariant> itemData;
 
 	/**
-	 * The parent TreeItem.
+	 * \brief The parent TreeItem.
 	 */
 	TreeItem *parentItem;
 
 	/**
-	 * The ParameterEntry being represented by the TreeItem.
+	 * \brief The ParameterEntry being represented by the TreeItem.
 	 */
 	RCP<ParameterEntry> parameterEntry;
 
 	/**
-	 * The docString for the TreeItem.
+	 * \brief The docString for the TreeItem.
 	 */
 	QString docString;
+
+  //@}
+
+  /** \name Private Functions */
+  //@{
+  
+	/**
+	 * \brief Changes the value of an array.
+	 *
+	 * @param value A string representing the value of the array.
+	 * @param type The type of array.
+	 */
+	void changeValueForArray(QVariant value, QString type, bool twoD=false);
+
+  //@}
+
 };
 
 

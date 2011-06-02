@@ -198,16 +198,17 @@
       <Dependee parameterId="5"/>
       <Dependent parameterId="7"/>
       <!-- Here is where we specify which ranges should be associated with
-           which validator. If Ndim is between 1 and 1 (i.e. if it's 1), we 
+           which validator. If Ndim is between 1 and 1 (i.e. if it's 1 because
+           the max of a range is exclusive), we 
            want to use validator 3. If Ndim is 2, we want to use validator 4.
-           You get the point.
+           Etc. Etc...You get the point.
        -->
       <RangesAndValidators>
-        <Pair max="1" min="1" validatorId="3"/>
-        <Pair max="2" min="2" validatorId="4"/>
-        <Pair max="3" min="3" validatorId="5"/>
+        <Pair max="2" min="1" validatorId="3"/>
+        <Pair max="3" min="2" validatorId="4"/>
+        <Pair max="4" min="3" validatorId="5"/>
       </RangesAndValidators>
-      <!-- AND THAT'S IT! Simple, right? I mean we done some pretty
+      <!-- AND THAT'S IT! Simple, right? I mean we've done some pretty
            sweet stuff here. But we're not quite finished yet
       -->
     </Dependency>

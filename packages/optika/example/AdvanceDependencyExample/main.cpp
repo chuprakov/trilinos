@@ -48,6 +48,7 @@ int main(int argc, char* argv[])
    */
   Teuchos::RCP<Teuchos::ParameterList> userInput;
   Optika::getInput("inputs.xml", userInput);
+  userInput->print(std::cout);
 	
   return 0;
 }

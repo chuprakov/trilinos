@@ -28,19 +28,37 @@
 #ifndef OPTIKA_TYPES_HPP
 #define OPTIKA_TYPES_HPP
 #include <QString>
+
+/*! \file Optika_Types.hpp
+    \brief A collection of types
+    that Optika uses to to keep track
+    of ParameterEntry types.
+*/
 namespace Optika{
 /**
  * The id's for the supported Optika types.
  */
+
+/** * \brief .  */
 extern QString listId;
+/** * \brief .  */
 extern QString intId;
+/** * \brief .  */
 extern QString shortId;
 //extern QString longlongId = QString("longlong");
+/** * \brief .  */
 extern QString doubleId;
+/** * \brief .  */
 extern QString floatId;
+/** * \brief .  */
 extern QString boolId;
+/** * \brief .  */
 extern QString stringId;
+/** * \brief .  */
 extern QString arrayId;
+/** * \brief .  */
+extern QString twoDArrayId;
+/** * \brief .  */
 extern QString unrecognizedId;
 }
 #endif //OPTIKA_TYPES_HPP

@@ -90,8 +90,8 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 	}
 	else if(itemType == boolId){
 		editor = new QComboBox(parent);
-		static_cast<QComboBox*>(editor)->addItem("true");
-		static_cast<QComboBox*>(editor)->addItem("false");
+		static_cast<QComboBox*>(editor)->addItem(getBoolEditorTrue());
+		static_cast<QComboBox*>(editor)->addItem(getBoolEditorFalse());
 	}
 	else if(itemType == stringId){
 		if(is_null(paramValidator)){
@@ -127,7 +127,7 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 		}
 	}
 	else if(itemType.contains(arrayId)){
-		arrayHandler(index, itemType.section(" ", -1), parent);
+		editor = getArrayEditor(index, getArrayType(itemType), parent);
 	}
 
 	return editor;
@@ -163,6 +163,9 @@ void Delegate::setEditorData(QWidget *editor, const QModelIndex &index) const{
 	 	else
 			static_cast<QComboBox*>(editor)->setEditText(value);
 	}
+  else if(itemType.contains(arrayId)){
+    setArrayWidgetData(editor, itemType.section(" ", -1), index);
+  }
 }
 
 void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const{
@@ -188,7 +191,8 @@ void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QM
 		model->setData(index, (float)spinBox->value(), Qt::EditRole);
 	}
 	else if(itemType == boolId){
-		bool value = static_cast<QComboBox*>(editor)->currentText() == "true"; 
+		bool value = static_cast<QComboBox*>(editor)->currentText() 
+      == getBoolEditorTrue(); 
 		model->setData(index, value, Qt::EditRole);
 	}
 	else if(itemType == stringId){
@@ -203,38 +207,96 @@ void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QM
 		}
 		model->setData(index, value, Qt::EditRole);
 	}
+  else if(itemType.contains(arrayId)){
+    QVariant value = extractValueFromArray(editor, itemType.section(" ", -1));
+    model->setData(index, value, Qt::EditRole);
+  }
 }
+
+QVariant Delegate::extractValueFromArray(QWidget* editor, QString type) const
+{
+  if(type == intId){
+    IntArrayWidget* intEditor = (IntArrayWidget*)editor;
+    return QVariant::fromValue(intEditor->getData());
+  }
+  else if(type == shortId){
+    ShortArrayWidget* shortEditor = (ShortArrayWidget*)editor;
+    return QVariant::fromValue(shortEditor->getData());
+  }
+  else if(type == floatId){
+    FloatArrayWidget* floatEditor = (FloatArrayWidget*)editor;
+    return QVariant::fromValue(floatEditor->getData());
+  }
+  else if(type == doubleId){
+    DoubleArrayWidget* doubleEditor = (DoubleArrayWidget*)editor;
+    return QVariant::fromValue(doubleEditor->getData());
+  }
+  else if(type == stringId){
+    StringArrayWidget* stringEditor = (StringArrayWidget*)editor;
+    return QVariant::fromValue(stringEditor->getData());
+  }
+  else{
+    return QVariant();
+  }
+}
+ 
 
 void Delegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const{
 	editor->setGeometry(option.rect);
 }
 
-void Delegate::arrayHandler(const QModelIndex& index, QString type, QWidget *parent) const{
+QWidget* Delegate::getArrayEditor(const QModelIndex& index, QString type, QWidget *parent) const{
+  TreeModel* model = (TreeModel*)index.model();
+  QString name = model->data(
+    index.sibling(index.row(),0),Qt::DisplayRole).toString();
+  RCP<const ParameterEntryValidator> validator = 
+    model->getValidator(index);
+    
 	if(type == intId){
-		IntArrayWidget array(index, type, parent);
-		array.exec();
+		return new IntArrayWidget(name, type, validator, parent);
 	}
 	else if(type == shortId){
-		ShortArrayWidget array(index, type, parent);
-		array.exec();
+		return new ShortArrayWidget(name, type, validator, parent);
 	}
 	/*else if(type == longlongId){
-		LongLongArrayWidget array(index, type, parent);
-		array.exec();
+		return new IntArrayWidget(index, type, parent);
 	}*/
 	else if(type == doubleId){
-		DoubleArrayWidget array(index, type, parent);
-		array.exec();
-	}
+		return new DoubleArrayWidget(name, type, validator, parent);
+  }
 	else if(type == floatId){
-		FloatArrayWidget array(index, type, parent);
-		array.exec();
+		return new FloatArrayWidget(name, type, validator, parent);
 	}
 	else if(type == stringId){
-		StringArrayWidget array(index, type, parent);
-		array.exec();
+		return new StringArrayWidget(name, type, validator, parent);
+	}
+  else{
+    return 0;
+  }
+}
+
+void Delegate::setArrayWidgetData(QWidget* editor, QString type, const QModelIndex& index) const{
+  QVariant newData = index.model()->data(index, TreeModel::getRawDataRole());
+	if(type == intId){
+    ((IntArrayWidget*)editor)->initData(newData.value<Array<int> >());
+	}
+	else if(type == shortId){
+    ((ShortArrayWidget*)editor)->initData(newData.value<Array<short> >());
+	}
+	/*else if(type == longlongId){
+	}*/
+	else if(type == doubleId){
+    ((DoubleArrayWidget*)editor)->initData(newData.value<Array<double> >());
+  }
+	else if(type == floatId){
+    ((FloatArrayWidget*)editor)->initData(newData.value<Array<float> >());
+	}
+	else if(type == stringId){
+    ((StringArrayWidget*)editor)->initData(
+      newData.value<Array<std::string> >());
 	}
 }
 
-}
+
+} //End namespace
 

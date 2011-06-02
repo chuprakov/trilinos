@@ -1,3 +1,9 @@
+INCLUDE(PackageAddExecutableAndTest)
+
+include(${QT_USE_FILE})
+  
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 if(UNIX AND (NOT APPLE) )
   message(STATUS "Target system is a non-apple, unix system. Testing ability to connect to X server")
   execute_process(
@@ -20,12 +26,6 @@ endif(UNIX AND (NOT APPLE) )
 
 if(DO_GUI_UNIT_TESTS)
 
-  INCLUDE(PackageAddExecutableAndTest)
-
-  include(${QT_USE_FILE})
-  
-  INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-  INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
   QT4_GENERATE_MOC(GUI_UnitTests.cpp GUI_UnitTests.moc)
   
   PACKAGE_ADD_EXECUTABLE_AND_TEST(
@@ -35,4 +35,16 @@ if(DO_GUI_UNIT_TESTS)
     DEPLIBS teuchos ${TPL_QT_LIBRARIES}
     )
   
+  PACKAGE_COPY_FILES_TO_BINARY_DIR(GUI_dep_test_copies
+    DEST_FILES deptests.xml
+    EXEDEPS GUI_UnitTests
+  )
 endif(DO_GUI_UNIT_TESTS)
+
+PACKAGE_ADD_EXECUTABLE_AND_TEST(
+  Array_Functions_Tests
+  SOURCES Array_Functions_Tests.cpp
+  ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+  DEPLIBS teuchos ${TPL_QT_LIBRARIES}
+)
+

@@ -31,52 +31,47 @@
 #include <QVariant>
 #include "Optika_Types.hpp"
 #include "Optika_ConfigDefs.hpp"
+/*! \file Opitka_ArrayHelperFunctions.hpp
+    \brief Helper functions used for manipulating
+    and querying Arrays
+*/
 namespace Optika{
 
 /**
- * Determines whether or not a ParameterEntry contains an array.
- *
- * @return True if the ParameterEntry contains an array, false otherwise.
- */
-bool doesParameterContainArray(RCP<const ParameterEntry> parameter);
-
-/**
- * Takes a string representing an array, formats it, and returns
- * a QStringList containing each value in the array.
- *
- * @param values A QString containing the values in the array.
- * @return A QStringList containing the values in the array.
- */
-QStringList getValues(QString& values);
-
-/**
- * Determines the type of array stored in a parameter.
+ * \brief Determines the type of array stored in a parameter.
  *
  * @param parameter The parameter whose array type is in question.
  * @return A QString containing the type of array in the parameter.
  */
-QString determineArrayType(RCP<const ParameterEntry> parameter);
+QString determineArrayType(RCP<const ParameterEntry> parameter, bool twoD=false);
 
-template <class S>
-Array<S> fromStringToArray(QString arrayString){
-	arrayString = arrayString.remove("{");
-	arrayString = arrayString.remove("}");
-	arrayString = arrayString.remove(" ");
-	QStringList tempValues = arrayString.split(",");
-	QList<QVariant> values;
-	for(int i = 0; i<tempValues.size(); ++i){
-		values.append(tempValues[i]);
-	}
-	Array<S> toReturn;
-	for(int i = 0; i<values.size(); ++i){
-		toReturn.append(values[i].value<S>());	
-	}
-	return toReturn;
+/**
+ * \brief Creates a QVariant containing the array that is in
+ * arrayEntry.
+ *
+ * @param arrayEntry The parameter entry containing the array.
+ * @param type The array's template type.
+ * @return A QVariant containing an Array that is equal to the Array in array entry.
+ */
+QVariant arrayEntryToVariant(
+  RCP<const ParameterEntry> arrayEntry, QString type, bool twoD=false);
 
-}
+/**
+ * \brief Given a type string, determines the template type of the Array.
+ *
+ * @param itemType The type string describing the array.
+ * @return The template type of the Array.
+ */
+QString getArrayType(QString itemType);
 
-template <>
-Array<std::string> fromStringToArray<std::string>(QString arrayString);
+/**
+ * \brief Determines wether or no the array inside a ParameterEntry is empty.
+ *
+ * @param arrayEntry The parameter entry containging the array.
+ * @param type The template type of the array.
+ * @return True if the array is empty, false otherwise.
+ */
+bool isArrayEmpty(RCP<const ParameterEntry> arrayEntry, QString type);
 
 }
 #endif /* OPTIKA_ARRAYHELPERFUNCTIONS_HPP_ */

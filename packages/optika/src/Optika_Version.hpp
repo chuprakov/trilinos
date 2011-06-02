@@ -29,7 +29,16 @@
 #define OPTIKA_VERSION_HPP_
 #include "Trilinos_version.h"
 
+/*! \file Optika_Version.hpp
+    \brief Optika version information
+  */
+
 namespace Optika {
+  /**
+   * \brief Return a string describing the version of Optika.
+   *
+   * @return A string describing the version of Optika.
+   */
 	std::string Optika_Version(){
 		return ("Optika in Trilinos version " TRILINOS_VERSION_STRING);
 	}
