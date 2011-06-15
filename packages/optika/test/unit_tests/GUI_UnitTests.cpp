@@ -48,26 +48,83 @@
  */
 namespace Optika{
 
-class BasicTests: public QObject{
+class OptikaGUITests: public QObject{
 Q_OBJECT
-  private slots:
-  void testInt();
+private slots:
+  //void basicTests();
+  void dependencyTests();
+private:
+  /*static void verifyParameterAndType(
+    RCP<ParameterList> pl,
+    QString name, 
+    QString type, 
+    TreeModel* model);
+
+  static QModelIndex getEntryIndex(
+    RCP<ParameterList> pl, 
+    std::string name,
+    TreeModel* model);*/
 };
 
-void BasicTests::testInt(){
+//QModelIndex OptikaGUITests::getEntryIndex(
+
+#define GET_ENTRY_INDEX(\
+  PL, \
+  NAME, \
+  MODEL) \
+  RCP<ParameterEntry> NAME##Entry = PL->getEntryRCP( #NAME  ); \
+  QVERIFY(nonnull( NAME##Entry )); \
+  QModelIndex NAME##Index = MODEL->findParameterEntryIndex( NAME##Entry ); \
+  QVERIFY( NAME##Index.isValid());
+
+/*
+void OptikaGUITests::verifyParameterAndType(
+  RCP<ParameterList> pl,
+  QString name, 
+  QString type, 
+  TreeModel* model)
+{
+  QModelIndex itemIndex = getEntryIndex(pl, name.toStdString(), model);
+  QCOMPARE(model->data(itemIndex, Qt::DisplayRole).toString(),name);
+  QModelIndex typeIndex = itemIndex.sibling(itemIndex.row(),2);
+  QVERIFY(typeIndex.isValid());
+  QCOMPARE(model->data(typeIndex, Qt::DisplayRole).toString(),type);
+
+}
+
+void OptikaGUITests::basicTests(){
   RCP<ParameterList> My_List = 
     RCP<ParameterList>(new ParameterList);
 
   double *pointer = 0;
   My_List->set("Double pointer", pointer);
-  My_List->set("Max Iters", 1550, "Determines the maximum number of iterations in the solver");
-  My_List->set("Tolerance", 1e-10, "The tolerance used for the convergence check");
+  My_List->set(
+    "Max Iters", 
+    1550, 
+    "Determines the maximum number of iterations in the solver");
+  My_List->set(
+    "Tolerance", 1e-10, "The tolerance used for the convergence check");
   
-  TreeModel model(My_List);
-   
+  TreeModel* model = new TreeModel(My_List);
+
+  verifyParameterAndType(My_List, "Max Iters", intId, model);
+  verifyParameterAndType(My_List, "Double pointer", unrecognizedId, model);
+  verifyParameterAndType(My_List, "Tolerance", doubleId, model);
+}*/
+
+
+void OptikaGUITests::dependencyTests(){
+  RCP<DependencySheet> dependencySheet = rcp(new DependencySheet);
+  RCP<ParameterList> validParameters = 
+    getParametersFromXmlFile("deptests.xml", dependencySheet);
+  TreeModel* model = new TreeModel(validParameters, dependencySheet);
+  Delegate* delegate = new Delegate;
+  TreeView* treeView = new TreeView(model, delegate);
+  GET_ENTRY_INDEX(validParameters, Preconditioner, model)
+  QVERIFY(treeView->isRowHidden(
+    PreconditionerIndex.row(), PreconditionerIndex.parent()));
+
 }
-
-
   
 
 
@@ -87,6 +144,6 @@ void BasicTests::testInt(){
   TEUCHOS_ASSERT(QTest::qExec(&bt, argc, argv) == 0);
 }*/
 
-QTEST_MAIN(Optika::BasicTests)
+QTEST_MAIN(Optika::OptikaGUITests)
 #include "GUI_UnitTests.moc"
 

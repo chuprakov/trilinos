@@ -121,7 +121,7 @@ QVariant TreeItem::data(int column, int role) const{
 			return QVariant("N/A");
 		}
 		else if(column == 2){
-			return QVariant("Unrecognized type");
+			return QVariant(unrecognizedId);
 		}
 	}
 	else if(role == Qt::DisplayRole){

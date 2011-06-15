@@ -35,4 +35,8 @@ if(DO_GUI_UNIT_TESTS)
     DEPLIBS teuchos ${TPL_QT_LIBRARIES}
     )
   
+  PACKAGE_COPY_FILES_TO_BINARY_DIR(TpetraMatMatFileCopies
+    DEST_FILES deptests.xml
+    EXEDEPS GUI_UnitTests
+  )
 endif(DO_GUI_UNIT_TESTS)

@@ -1,0 +1,121 @@
+<ParameterList name="ANONYMOUS">
+  <Parameter 
+    id="0"
+    name="Awesomeness"
+    type="int"
+    value="10"
+    docString="How awesome you think dep lists are."
+  />
+  <Parameter 
+    id="1"
+    name="Cheese array stuff:"
+    value="{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}"
+    type="Array(int)"
+    docString="Array stuff"
+  />
+  <Parameter 
+    docString="Your favorite type of cheese"
+    id="2"
+    name="Favorite Cheese"
+    type="string"
+    value="American"
+    validatorId="0"
+  />
+  <Parameter 
+    id="3"
+    name="Max Iters"
+    type="int"
+    value="1550"
+    docString="Determines the maximum number of iterations in the solver"
+  />
+  <Parameter 
+    id="4"
+    name="No awesome param"
+    type="bool"
+    value="true"
+    docString="Whether or not the awesome parameter should be shown"
+  />
+  <ParameterList id="7" name="Preconditioner">
+    <Parameter 
+      id="5"
+      name="Drop Tolerance"
+      type="double"
+      value="0.001"
+      docString="The tolerance below which entries from the factorization are left out of the factors."
+    />
+    <Parameter 
+      id="6"
+      name="Type"
+      type="string"
+      value="ILU"
+      docString="The tpye of preconditioner to use"
+    />
+  </ParameterList>
+  <Parameter 
+    id="8"
+    name="ShowPrecs"
+    type="bool"
+    value="false"
+    docString="Whether or not to show the preconditioners"
+  />
+  <Parameter 
+    id="9"
+    name="Swiss rating"
+    type="int"
+    value="0"
+    docString="How you rate swiss on a scail of 1 to 10"
+  />
+  <Parameter 
+    id="10"
+    name="Tolerance"
+    type="double"
+    value="1e-10"
+    docString="The tolerance used for the convergence check"
+  />
+  <ParameterList id="13" name="Water">
+    <Parameter 
+      id="11"
+      name="Amount in Buckets"
+      type="Array(double)"
+      value="{2.5, 2.5, 2.5}"
+      docString="How much water is in each bucket"
+    />
+    <Parameter 
+      id="12"
+      name="Number Of Buckets"
+      type="int"
+      value="3"
+      docString="How many buckets we have"
+    />
+  </ParameterList>
+  <Validators>
+    <Validator type="StringValidator" validatorId="0">
+      <String value="American"/>
+      <String value="Swiss"/>
+      <String value="Pepperjack"/>
+    </Validator>
+  </Validators>
+  <Dependencies name="My dep sheet">
+    <Dependency showIf="true" type="BoolVisualDependency">
+      <Dependee parameterId="8"/>
+      <Dependent parameterId="7"/>
+    </Dependency>
+    <Dependency showIf="true" type="StringVisualDependency">
+      <Dependee parameterId="2"/>
+      <Dependent parameterId="9"/>
+      <StringValues>
+        <String value="Swiss"/>
+      </StringValues>
+    </Dependency>
+    <Dependency showIf="false" type="BoolVisualDependency">
+      <Dependee parameterId="4"/>
+      <Dependent parameterId="0"/>
+    </Dependency>
+    <Dependency type="NumberArrayLengthDependency(int, double)">
+      <Dependee parameterId="12"/>
+      <Dependent parameterId="11"/>
+    </Dependency>
+  </Dependencies>
+</ParameterList>
+
+
