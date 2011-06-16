@@ -90,8 +90,8 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 	}
 	else if(itemType == boolId){
 		editor = new QComboBox(parent);
-		static_cast<QComboBox*>(editor)->addItem("true");
-		static_cast<QComboBox*>(editor)->addItem("false");
+		static_cast<QComboBox*>(editor)->addItem(getBoolEditorTrue());
+		static_cast<QComboBox*>(editor)->addItem(getBoolEditorFalse());
 	}
 	else if(itemType == stringId){
 		if(is_null(paramValidator)){
@@ -188,7 +188,8 @@ void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QM
 		model->setData(index, (float)spinBox->value(), Qt::EditRole);
 	}
 	else if(itemType == boolId){
-		bool value = static_cast<QComboBox*>(editor)->currentText() == "true"; 
+		bool value = static_cast<QComboBox*>(editor)->currentText() 
+      == getBoolEditorTrue(); 
 		model->setData(index, value, Qt::EditRole);
 	}
 	else if(itemType == stringId){

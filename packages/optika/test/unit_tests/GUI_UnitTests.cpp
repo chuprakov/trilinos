@@ -128,14 +128,10 @@ void OptikaGUITests::dependencyTests(){
   QModelIndex precWidgetIndex = ShowPrecsIndex.sibling(ShowPrecsIndex.row(),1);
   QComboBox* precBox = (QComboBox*)delegate->createEditor(
     0, genericStyleItem, precWidgetIndex);
-  precBox->setCurrentIndex(precBox->findText("true"));
-  delegate->setModelData(precBox, model, ShowPrecsIndex);
+  precBox->setCurrentIndex(precBox->findText(Delegate::getBoolEditorTrue()));
+  delegate->setModelData(precBox, model, precWidgetIndex);
   QVERIFY(!treeView->isRowHidden(
     PreconditionerIndex.row(), PreconditionerIndex.parent()));
-
-  
-
-
 
 
 }

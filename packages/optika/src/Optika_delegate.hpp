@@ -53,6 +53,16 @@ public:
 	void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
 	virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
+  static const QString& getBoolEditorTrue(){
+    static const QString boolEditorTrue("true");
+    return boolEditorTrue;
+  }
+
+  static const QString& getBoolEditorFalse(){
+    static const QString boolEditorFalse("false");
+    return boolEditorFalse;
+  }
+
 private:
 	/**
 	 * Handles any array editing that needs to be done.
