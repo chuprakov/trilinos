@@ -45,6 +45,7 @@
 /* Symbolics */
 #include "SundanceTestFunction.hpp"
 #include "SundanceUnknownFunction.hpp"
+#include "SundanceUnknownParameter.hpp"
 #include "SundanceDiscreteSpace.hpp"
 #include "SundanceDiscreteFunction.hpp"
 #include "SundanceEssentialBC.hpp"
