@@ -51,19 +51,9 @@ namespace Optika{
 class OptikaGUITests: public QObject{
 Q_OBJECT
 private slots:
-  //void basicTests();
+  void typeTest();
   void dependencyTests();
 private:
-  /*static void verifyParameterAndType(
-    RCP<ParameterList> pl,
-    QString name, 
-    QString type, 
-    TreeModel* model);
-
-  static QModelIndex getEntryIndex(
-    RCP<ParameterList> pl, 
-    std::string name,
-    TreeModel* model);*/
 };
 
 //QModelIndex OptikaGUITests::getEntryIndex(
@@ -89,17 +79,25 @@ void OptikaGUITests::verifyParameterAndType(
   QModelIndex typeIndex = itemIndex.sibling(itemIndex.row(),2);
   QVERIFY(typeIndex.isValid());
   QCOMPARE(model->data(typeIndex, Qt::DisplayRole).toString(),type);
+}*/
 
-}
+#define VERIFY_PARAMETER_TYPE(PL, NAME, TYPE, MODEL) \
+  GET_ENTRY_INDEX( PL , NAME , MODEL ) \
+  QCOMPARE( MODEL->data( NAME##Index, Qt::DisplayRole).toString(), \
+    QString::fromStdString( #NAME) );  \
+  QModelIndex NAME##TypeIndex = NAME##Index.sibling(NAME##Index.row(),2); \
+  QVERIFY( NAME##TypeIndex.isValid()); \
+  QCOMPARE( MODEL->data( NAME##TypeIndex, Qt::DisplayRole).toString(), TYPE );
 
-void OptikaGUITests::basicTests(){
+
+void OptikaGUITests::typeTest(){
   RCP<ParameterList> My_List = 
     RCP<ParameterList>(new ParameterList);
 
   double *pointer = 0;
-  My_List->set("Double pointer", pointer);
+  My_List->set("Doublepointer", pointer);
   My_List->set(
-    "Max Iters", 
+    "MaxIters", 
     1550, 
     "Determines the maximum number of iterations in the solver");
   My_List->set(
@@ -107,10 +105,10 @@ void OptikaGUITests::basicTests(){
   
   TreeModel* model = new TreeModel(My_List);
 
-  verifyParameterAndType(My_List, "Max Iters", intId, model);
-  verifyParameterAndType(My_List, "Double pointer", unrecognizedId, model);
-  verifyParameterAndType(My_List, "Tolerance", doubleId, model);
-}*/
+  VERIFY_PARAMETER_TYPE(My_List, MaxIters, intId, model)
+  VERIFY_PARAMETER_TYPE(My_List, Doublepointer, unrecognizedId, model);
+  VERIFY_PARAMETER_TYPE(My_List, Tolerance, doubleId, model);
+}
 
 
 void OptikaGUITests::dependencyTests(){
@@ -120,9 +118,25 @@ void OptikaGUITests::dependencyTests(){
   TreeModel* model = new TreeModel(validParameters, dependencySheet);
   Delegate* delegate = new Delegate;
   TreeView* treeView = new TreeView(model, delegate);
+  QStyleOptionViewItem genericStyleItem;
+
   GET_ENTRY_INDEX(validParameters, Preconditioner, model)
+  GET_ENTRY_INDEX(validParameters, ShowPrecs, model);
+
   QVERIFY(treeView->isRowHidden(
     PreconditionerIndex.row(), PreconditionerIndex.parent()));
+  QModelIndex precWidgetIndex = ShowPrecsIndex.sibling(ShowPrecsIndex.row(),1);
+  QComboBox* precBox = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, precWidgetIndex);
+  precBox->setCurrentIndex(precBox->findText("true"));
+  delegate->setModelData(precBox, model, ShowPrecsIndex);
+  QVERIFY(!treeView->isRowHidden(
+    PreconditionerIndex.row(), PreconditionerIndex.parent()));
+
+  
+
+
+
 
 }
   

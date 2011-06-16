@@ -8,7 +8,7 @@
   />
   <Parameter 
     id="1"
-    name="Cheese array stuff:"
+    name="Cheese_array_stuff:"
     value="{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}"
     type="Array(int)"
     docString="Array stuff"
@@ -16,21 +16,21 @@
   <Parameter 
     docString="Your favorite type of cheese"
     id="2"
-    name="Favorite Cheese"
+    name="Favorite_Cheese"
     type="string"
     value="American"
     validatorId="0"
   />
   <Parameter 
     id="3"
-    name="Max Iters"
+    name="Max_Iters"
     type="int"
     value="1550"
     docString="Determines the maximum number of iterations in the solver"
   />
   <Parameter 
     id="4"
-    name="No awesome param"
+    name="No_awesome_param"
     type="bool"
     value="true"
     docString="Whether or not the awesome parameter should be shown"
@@ -38,7 +38,7 @@
   <ParameterList id="7" name="Preconditioner">
     <Parameter 
       id="5"
-      name="Drop Tolerance"
+      name="Drop_Tolerance"
       type="double"
       value="0.001"
       docString="The tolerance below which entries from the factorization are left out of the factors."
@@ -60,7 +60,7 @@
   />
   <Parameter 
     id="9"
-    name="Swiss rating"
+    name="Swiss_rating"
     type="int"
     value="0"
     docString="How you rate swiss on a scail of 1 to 10"
@@ -75,14 +75,14 @@
   <ParameterList id="13" name="Water">
     <Parameter 
       id="11"
-      name="Amount in Buckets"
+      name="Amount_in_Buckets"
       type="Array(double)"
       value="{2.5, 2.5, 2.5}"
       docString="How much water is in each bucket"
     />
     <Parameter 
       id="12"
-      name="Number Of Buckets"
+      name="Number_Of_Buckets"
       type="int"
       value="3"
       docString="How many buckets we have"
