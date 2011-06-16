@@ -115,6 +115,12 @@ inline QModelIndex OptikaGUITests::getWidgetIndex(const QModelIndex& index){
   return index.sibling(index.row(),1);
 }
   
+  
+#define VERIFY_HIDDEN_ROW(INDEX) \
+  QVERIFY(treeView->isRowHidden(  INDEX.row(), INDEX.parent()));
+
+#define VERIFY_SHOWN_ROW(INDEX) \
+  QVERIFY(!treeView->isRowHidden(  INDEX.row(), INDEX.parent()));
 
 void OptikaGUITests::dependencyTests(){
   RCP<DependencySheet> dependencySheet = rcp(new DependencySheet);
@@ -125,37 +131,30 @@ void OptikaGUITests::dependencyTests(){
   TreeView* treeView = new TreeView(model, delegate);
   QStyleOptionViewItem genericStyleItem;
   
-
-
-
 //Testing Bool visual dependency
   GET_ENTRY_INDEX(validParameters, Preconditioner, model)
   GET_ENTRY_INDEX(validParameters, ShowPrecs, model)
 
-  QVERIFY(treeView->isRowHidden(
-    PreconditionerIndex.row(), PreconditionerIndex.parent()));
+  VERIFY_HIDDEN_ROW(PreconditionerIndex)
   QModelIndex precWidgetIndex = getWidgetIndex(ShowPrecsIndex);
   QComboBox* precBox = (QComboBox*)delegate->createEditor(
     0, genericStyleItem, precWidgetIndex);
   precBox->setCurrentIndex(precBox->findText(Delegate::getBoolEditorTrue()));
   delegate->setModelData(precBox, model, precWidgetIndex);
-  QVERIFY(!treeView->isRowHidden(
-    PreconditionerIndex.row(), PreconditionerIndex.parent()));
+  VERIFY_SHOWN_ROW(PreconditionerIndex)
 
 
+//StringVisualDependency testing
   GET_ENTRY_INDEX(validParameters, Favorite_Cheese, model)
   GET_ENTRY_INDEX(validParameters, Swiss_rating, model)
 
-  QVERIFY(treeView->isRowHidden(
-    Swiss_ratingIndex.row(), Swiss_ratingIndex.parent()));
+  VERIFY_HIDDEN_ROW(Swiss_ratingIndex)
   QModelIndex cheeseWidgetIndex = getWidgetIndex(Favorite_CheeseIndex);
   QComboBox* cheeseBox = (QComboBox*)delegate->createEditor(
     0,genericStyleItem, cheeseWidgetIndex);
   cheeseBox->setCurrentIndex(cheeseBox->findText("Swiss"));
   delegate->setModelData(cheeseBox, model, cheeseWidgetIndex);
-  QVERIFY(!treeView->isRowHidden(
-    Swiss_ratingIndex.row(), Swiss_ratingIndex.parent()));
-
+  VERIFY_SHOWN_ROW(Swiss_ratingIndex)
 
 
 
