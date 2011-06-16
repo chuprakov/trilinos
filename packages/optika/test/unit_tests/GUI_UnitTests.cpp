@@ -54,6 +54,7 @@ private slots:
   void typeTest();
   void dependencyTests();
 private:
+  static inline QModelIndex getWidgetIndex(const QModelIndex& index);
 };
 
 //QModelIndex OptikaGUITests::getEntryIndex(
@@ -110,6 +111,10 @@ void OptikaGUITests::typeTest(){
   VERIFY_PARAMETER_TYPE(My_List, Tolerance, doubleId, model);
 }
 
+inline QModelIndex OptikaGUITests::getWidgetIndex(const QModelIndex& index){
+  return index.sibling(index.row(),1);
+}
+  
 
 void OptikaGUITests::dependencyTests(){
   RCP<DependencySheet> dependencySheet = rcp(new DependencySheet);
@@ -119,19 +124,39 @@ void OptikaGUITests::dependencyTests(){
   Delegate* delegate = new Delegate;
   TreeView* treeView = new TreeView(model, delegate);
   QStyleOptionViewItem genericStyleItem;
+  
 
+
+
+//Testing Bool visual dependency
   GET_ENTRY_INDEX(validParameters, Preconditioner, model)
-  GET_ENTRY_INDEX(validParameters, ShowPrecs, model);
+  GET_ENTRY_INDEX(validParameters, ShowPrecs, model)
 
   QVERIFY(treeView->isRowHidden(
     PreconditionerIndex.row(), PreconditionerIndex.parent()));
-  QModelIndex precWidgetIndex = ShowPrecsIndex.sibling(ShowPrecsIndex.row(),1);
+  QModelIndex precWidgetIndex = getWidgetIndex(ShowPrecsIndex);
   QComboBox* precBox = (QComboBox*)delegate->createEditor(
     0, genericStyleItem, precWidgetIndex);
   precBox->setCurrentIndex(precBox->findText(Delegate::getBoolEditorTrue()));
   delegate->setModelData(precBox, model, precWidgetIndex);
   QVERIFY(!treeView->isRowHidden(
     PreconditionerIndex.row(), PreconditionerIndex.parent()));
+
+
+  GET_ENTRY_INDEX(validParameters, Favorite_Cheese, model)
+  GET_ENTRY_INDEX(validParameters, Swiss_rating, model)
+
+  QVERIFY(treeView->isRowHidden(
+    Swiss_ratingIndex.row(), Swiss_ratingIndex.parent()));
+  QModelIndex cheeseWidgetIndex = getWidgetIndex(Favorite_CheeseIndex);
+  QComboBox* cheeseBox = (QComboBox*)delegate->createEditor(
+    0,genericStyleItem, cheeseWidgetIndex);
+  cheeseBox->setCurrentIndex(cheeseBox->findText("Swiss"));
+  delegate->setModelData(cheeseBox, model, cheeseWidgetIndex);
+  QVERIFY(!treeView->isRowHidden(
+    Swiss_ratingIndex.row(), Swiss_ratingIndex.parent()));
+
+
 
 
 }
