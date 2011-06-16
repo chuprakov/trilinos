@@ -155,7 +155,17 @@ void OptikaGUITests::dependencyTests(){
   cheeseBox->setCurrentIndex(cheeseBox->findText("Swiss"));
   delegate->setModelData(cheeseBox, model, cheeseWidgetIndex);
   VERIFY_SHOWN_ROW(Swiss_ratingIndex)
-
+ 
+//Testing Number Visual Dependencies
+  GET_ENTRY_INDEX(validParameters, Temp, model)
+  GET_ENTRY_INDEX(validParameters, Num_ice_cubes, model)
+  VERIFY_SHOWN_ROW(Num_ice_cubesIndex)
+  QModelIndex tempWidgetIndex = getWidgetIndex(Num_ice_cubesIndex);
+  QDoubleSpinBox* tempSpinner = (QDoubleSpinBox*)delegate->createEditor(
+    0,genericStyleItem, tempWidgetIndex);
+  tempSpinner->setValue(33);
+  delegate->setModelData(tempSpinner, model, tempWidgetIndex);
+  VERIFY_HIDDEN_ROW(Num_ice_cubesIndex)
 
 
 }

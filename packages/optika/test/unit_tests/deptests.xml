@@ -1,4 +1,5 @@
 <ParameterList name="ANONYMOUS">
+
   <Parameter 
     id="0"
     name="Awesomeness"
@@ -88,6 +89,10 @@
       docString="How many buckets we have"
     />
   </ParameterList>
+  <Parameter name="Temp" type="double" value="31" id="14" 
+    docString="The temperature in the room in degrees farenheit"/>
+  <Parameter name="Num_ice_cubes" type="int" value="1"
+    id="15" docString="The number of ice cubes in the room"/>
   <Validators>
     <Validator type="StringValidator" validatorId="0">
       <String value="American"/>
@@ -114,6 +119,14 @@
     <Dependency type="NumberArrayLengthDependency(int, double)">
       <Dependee parameterId="12"/>
       <Dependent parameterId="11"/>
+    </Dependency>
+    <Dependency 
+      showIf="false" 
+      type="NumberVisualDependency(double)"
+    >
+      <Dependee parameterId="14"/>
+      <Dependent parameterId="15"/>
+      <Function operand="32" type="SubtractionFunction(double)"/> 
     </Dependency>
   </Dependencies>
 </ParameterList>
