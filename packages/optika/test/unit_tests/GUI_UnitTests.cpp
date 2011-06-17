@@ -53,9 +53,17 @@ Q_OBJECT
 private slots:
   void typeTest();
   void dependencyTests();
+  void cleanupTestCase();
 private:
   static inline QModelIndex getWidgetIndex(const QModelIndex& index);
+  QObjectCleanupHandler cleaner;
 };
+
+void OptikaGUITests::cleanupTestCase(){
+  cleaner.clear();
+}
+  
+
 
 //QModelIndex OptikaGUITests::getEntryIndex(
 
@@ -105,10 +113,12 @@ void OptikaGUITests::typeTest(){
     "Tolerance", 1e-10, "The tolerance used for the convergence check");
   
   TreeModel* model = new TreeModel(My_List);
+  cleaner.add(model);
 
   VERIFY_PARAMETER_TYPE(My_List, MaxIters, intId, model)
   VERIFY_PARAMETER_TYPE(My_List, Doublepointer, unrecognizedId, model);
   VERIFY_PARAMETER_TYPE(My_List, Tolerance, doubleId, model);
+  cleaner.remove(model);
   delete model; 
 }
 
@@ -130,6 +140,9 @@ void OptikaGUITests::dependencyTests(){
   TreeModel* model = new TreeModel(validParameters, dependencySheet);
   Delegate* delegate = new Delegate;
   TreeView* treeView = new TreeView(model, delegate);
+  cleaner.add(model);
+  cleaner.add(delegate);
+  cleaner.add(treeView);
   QStyleOptionViewItem genericStyleItem;
   
 //Testing Bool visual dependency
@@ -168,6 +181,9 @@ void OptikaGUITests::dependencyTests(){
   delegate->setModelData(tempSpinner, model, tempWidgetIndex);
   VERIFY_HIDDEN_ROW(Num_ice_cubesIndex)
 
+  cleaner.remove(model);
+  cleaner.remove(treeView);
+  cleaner.remove(delegate);
   delete model;
   delete treeView;
   delete delegate;
