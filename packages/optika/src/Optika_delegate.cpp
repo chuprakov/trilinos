@@ -127,7 +127,7 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 		}
 	}
 	else if(itemType.contains(arrayId)){
-		editor = arrayHandler(index, itemType.section(" ", -1), parent);
+		editor = getArrayEditor(index, itemType.section(" ", -1), parent);
 	}
 
 	return editor;
@@ -163,6 +163,9 @@ void Delegate::setEditorData(QWidget *editor, const QModelIndex &index) const{
 	 	else
 			static_cast<QComboBox*>(editor)->setEditText(value);
 	}
+  else if(itemType.contains(arrayId)){
+    setArrayWidgetData(editor, itemType.section(" ", -1), index);
+  }
 }
 
 void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const{
@@ -205,17 +208,35 @@ void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QM
 		model->setData(index, value, Qt::EditRole);
 	}
   else if(itemType.contains(arrayId)){
-    QString value = extractValueFromArray(editor, itemType);
+    QString value = extractValueFromArray(editor, itemType.section(" ", -1));
     model->setData(index, value, Qt::EditRole);
   }
 }
 
 QString Delegate::extractValueFromArray(QWidget* editor, QString itemType){
-  if(itemType.contains(intId)){
+  if(itemType == intId){
     IntArrayWidget* intEditor = (IntArrayWidget*)editor;
     return QString::fromStdString(intEditor->getData().toString());
   }
-  return QString();
+  else if(itemType == shortId){
+    ShortArrayWidget* shortEditor = (ShortArrayWidget*)editor;
+    return QString::fromStdString(shortEditor->getData().toString());
+  }
+  else if(itemType == floatId){
+    FloatArrayWidget* floatEditor = (FloatArrayWidget*)editor;
+    return QString::fromStdString(floatEditor->getData().toString());
+  }
+  else if(itemType == doubleId){
+    DoubleArrayWidget* doubleEditor = (DoubleArrayWidget*)editor;
+    return QString::fromStdString(doubleEditor->getData().toString());
+  }
+  else if(itemType == stringId){
+    StringArrayWidget* stringEditor = (StringArrayWidget*)editor;
+    return QString::fromStdString(stringEditor->getData().toString());
+  }
+  else{
+    return QString();
+  }
 }
  
 
@@ -223,35 +244,62 @@ void Delegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem 
 	editor->setGeometry(option.rect);
 }
 
-
-
-
-QWidget* Delegate::arrayHandler(const QModelIndex& index, QString type, QWidget *parent) const{
+QWidget* Delegate::getArrayEditor(const QModelIndex& index, QString type, QWidget *parent) const{
+  TreeModel* model = (TreeModel*)index.model();
+  QString name = model->data(
+    index.sibling(index.row(),0),Qt::DisplayRole).toString();
+  RCP<const ParameterEntryValidator> validator = 
+    model->getValidator(index);
+    
 	if(type == intId){
-		return new IntArrayWidget(index, type, parent);
+		return new IntArrayWidget(name, type, validator, parent);
 	}
-	/*else if(type == shortId){
-		ShortArrayWidget array(index, type, parent);
-		array.exec();
-	}*/
+	else if(type == shortId){
+		return new ShortArrayWidget(name, type, validator, parent);
+	}
 	/*else if(type == longlongId){
-		LongLongArrayWidget array(index, type, parent);
-		array.exec();
+		return new IntArrayWidget(index, type, parent);
 	}*/
-	/*else if(type == doubleId){
-		DoubleArrayWidget array(index, type, parent);
-		array.exec();
-	}
+	else if(type == doubleId){
+		return new DoubleArrayWidget(name, type, validator, parent);
+  }
 	else if(type == floatId){
-		FloatArrayWidget array(index, type, parent);
-		array.exec();
+		return new FloatArrayWidget(name, type, validator, parent);
 	}
 	else if(type == stringId){
-		StringArrayWidget array(index, type, parent);
-		array.exec();
-	}*/
-  return 0;
+		return new StringArrayWidget(name, type, validator, parent);
+	}
+  else{
+    return 0;
+  }
 }
 
+void Delegate::setArrayWidgetData(QWidget* editor, QString type, const QModelIndex& index) const{
+  std::string value = index.model()->data(index).toString().toStdString();
+	if(type == intId){
+    ((IntArrayWidget*)editor)->initData(
+      Teuchos::fromStringToArray<int>(value));
+	}
+	else if(type == shortId){
+    ((ShortArrayWidget*)editor)->initData(
+      Teuchos::fromStringToArray<short>(value));
+	}
+	/*else if(type == longlongId){
+	}*/
+	else if(type == doubleId){
+    ((DoubleArrayWidget*)editor)->initData(
+      Teuchos::fromStringToArray<double>(value));
+  }
+	else if(type == floatId){
+    ((FloatArrayWidget*)editor)->initData(
+      Teuchos::fromStringToArray<float>(value));
+	}
+	else if(type == stringId){
+    ((StringArrayWidget*)editor)->initData(
+      Teuchos::fromStringToArray<std::string>(value));
+	}
 }
+
+
+} //End namespace
 

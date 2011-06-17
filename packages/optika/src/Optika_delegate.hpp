@@ -66,14 +66,8 @@ public:
   static QString extractValueFromArray(QWidget* editor, QString itemType);
 
 private:
-	/**
-	 * Handles any array editing that needs to be done.
-	 *
-	 * @param index The index of the item being edited.
-	 * @param type The type of array being edited.
-	 * @param parent The parent widget.
-	 */
-	QWidget* arrayHandler(const QModelIndex& index, QString type, QWidget *parent) const;
+	QWidget* getArrayEditor(const QModelIndex& index, QString type, QWidget *parent) const;
+  void setArrayWidgetData(QWidget* editor, QString type, const QModelIndex& index) const;
 };
 
 
