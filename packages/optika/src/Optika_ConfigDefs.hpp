@@ -27,6 +27,7 @@ namespace Optika{
   using Teuchos::DependencySheet;
   using Teuchos::Dependency;
   using Teuchos::VisualDependency;
+  using Teuchos::NumberArrayLengthDependency;
   using Teuchos::any;
   using Teuchos::any_cast;
   using Teuchos::XMLParameterListWriter;

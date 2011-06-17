@@ -73,22 +73,20 @@
     value="1e-10"
     docString="The tolerance used for the convergence check"
   />
-  <ParameterList id="13" name="Water">
-    <Parameter 
-      id="11"
-      name="Amount_in_Buckets"
-      type="Array(double)"
-      value="{2.5, 2.5, 2.5}"
-      docString="How much water is in each bucket"
-    />
-    <Parameter 
-      id="12"
-      name="Number_Of_Buckets"
-      type="int"
-      value="3"
-      docString="How many buckets we have"
-    />
-  </ParameterList>
+  <Parameter 
+    id="11"
+    name="AmtInBuckets"
+    type="Array(double)"
+    value="{2.5, 2.5, 2.5}"
+    docString="How much water is in each bucket"
+  />
+  <Parameter 
+    id="12"
+    name="NumBuckets"
+    type="int"
+    value="3"
+    docString="How many buckets we have"
+  />
   <Parameter name="Temp" type="double" value="31" id="14" 
     docString="The temperature in the room in degrees farenheit"/>
   <Parameter name="Num_ice_cubes" type="int" value="1"

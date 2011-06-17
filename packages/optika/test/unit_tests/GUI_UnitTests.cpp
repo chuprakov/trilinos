@@ -76,20 +76,6 @@ void OptikaGUITests::cleanupTestCase(){
   QModelIndex NAME##Index = MODEL->findParameterEntryIndex( NAME##Entry ); \
   QVERIFY( NAME##Index.isValid());
 
-/*
-void OptikaGUITests::verifyParameterAndType(
-  RCP<ParameterList> pl,
-  QString name, 
-  QString type, 
-  TreeModel* model)
-{
-  QModelIndex itemIndex = getEntryIndex(pl, name.toStdString(), model);
-  QCOMPARE(model->data(itemIndex, Qt::DisplayRole).toString(),name);
-  QModelIndex typeIndex = itemIndex.sibling(itemIndex.row(),2);
-  QVERIFY(typeIndex.isValid());
-  QCOMPARE(model->data(typeIndex, Qt::DisplayRole).toString(),type);
-}*/
-
 #define VERIFY_PARAMETER_TYPE(PL, NAME, TYPE, MODEL) \
   GET_ENTRY_INDEX( PL , NAME , MODEL ) \
   QCOMPARE( MODEL->data( NAME##Index, Qt::DisplayRole).toString(), \
@@ -104,6 +90,8 @@ void OptikaGUITests::typeTest(){
     RCP<ParameterList>(new ParameterList);
 
   double *pointer = 0;
+  Array<double*> doubleStarArray;
+  Array<int> intArray;
   My_List->set("Doublepointer", pointer);
   My_List->set(
     "MaxIters", 
@@ -111,6 +99,8 @@ void OptikaGUITests::typeTest(){
     "Determines the maximum number of iterations in the solver");
   My_List->set(
     "Tolerance", 1e-10, "The tolerance used for the convergence check");
+  My_List->set("DoublePointerArray", doubleStarArray);
+  My_List->set("IntArray", intArray);
   
   TreeModel* model = new TreeModel(My_List);
   cleaner.add(model);
@@ -118,6 +108,8 @@ void OptikaGUITests::typeTest(){
   VERIFY_PARAMETER_TYPE(My_List, MaxIters, intId, model)
   VERIFY_PARAMETER_TYPE(My_List, Doublepointer, unrecognizedId, model);
   VERIFY_PARAMETER_TYPE(My_List, Tolerance, doubleId, model);
+  VERIFY_PARAMETER_TYPE(My_List, DoublePointerArray, unrecognizedId, model);
+  VERIFY_PARAMETER_TYPE(My_List, IntArray, arrayId + " " + intId, model);
   cleaner.remove(model);
   delete model; 
 }
@@ -180,6 +172,24 @@ void OptikaGUITests::dependencyTests(){
   tempSpinner->setValue(33.0);
   delegate->setModelData(tempSpinner, model, tempWidgetIndex);
   VERIFY_HIDDEN_ROW(Num_ice_cubesIndex)
+
+  //Test Number Array Length Dependency
+  GET_ENTRY_INDEX(validParameters, NumBuckets, model)
+  GET_ENTRY_INDEX(validParameters, AmtInBuckets, model)
+  Array<double> bucketsArray = model->getArray<double>(AmtInBucketsIndex);
+  QCOMPARE(bucketsArray.size(),(Array<double>::size_type)3);
+  QModelIndex numBucketsWidgetIndex = getWidgetIndex(NumBucketsIndex);
+  QSpinBox* numBucketsSpinner = (QSpinBox*)delegate->createEditor(
+    0, genericStyleItem, numBucketsWidgetIndex);
+  numBucketsSpinner->setValue(5);
+  delegate->setModelData(numBucketsSpinner, model, numBucketsWidgetIndex);
+  bucketsArray = model->getArray<double>(AmtInBucketsIndex);
+  QCOMPARE(bucketsArray.size(),(Array<double>::size_type)5);
+
+
+
+
+
 
   cleaner.remove(model);
   cleaner.remove(treeView);
