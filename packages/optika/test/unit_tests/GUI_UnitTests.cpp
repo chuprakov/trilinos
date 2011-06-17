@@ -109,6 +109,7 @@ void OptikaGUITests::typeTest(){
   VERIFY_PARAMETER_TYPE(My_List, MaxIters, intId, model)
   VERIFY_PARAMETER_TYPE(My_List, Doublepointer, unrecognizedId, model);
   VERIFY_PARAMETER_TYPE(My_List, Tolerance, doubleId, model);
+  delete model; 
 }
 
 inline QModelIndex OptikaGUITests::getWidgetIndex(const QModelIndex& index){
@@ -167,7 +168,9 @@ void OptikaGUITests::dependencyTests(){
   delegate->setModelData(tempSpinner, model, tempWidgetIndex);
   VERIFY_HIDDEN_ROW(Num_ice_cubesIndex)
 
-
+  delete model;
+  delete treeView;
+  delete delegate;
 }
   
 
