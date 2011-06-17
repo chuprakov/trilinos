@@ -30,7 +30,7 @@
 namespace Optika{
 
 
-TreeView::TreeView(TreeModel *treeModel, Delegate *delegate):QTreeView(){
+TreeView::TreeView(TreeModel *treeModel, Delegate *delegate, QWidget* parent):QTreeView(parent){
 	setModel(treeModel);
 	setItemDelegateForColumn(1, delegate);
 	if(treeModel->hasDependencies()){

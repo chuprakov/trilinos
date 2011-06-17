@@ -52,7 +52,7 @@ public:
 	 * @param treeModel The Tree Model being used with the TreeView.
 	 * @param delegate The delegate to be used with the TreeView.
 	 */
-	TreeView(TreeModel *treeModel, Delegate *delegate);
+	TreeView(TreeModel *treeModel, Delegate *delegate, QWidget* parent=0);
 
 public slots:
 	/**
