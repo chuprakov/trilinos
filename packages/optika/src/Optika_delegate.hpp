@@ -63,6 +63,8 @@ public:
     return boolEditorFalse;
   }
 
+  static QString extractValueFromArray(QWidget* editor, QString itemType);
+
 private:
 	/**
 	 * Handles any array editing that needs to be done.
@@ -71,7 +73,7 @@ private:
 	 * @param type The type of array being edited.
 	 * @param parent The parent widget.
 	 */
-	void arrayHandler(const QModelIndex& index, QString type, QWidget *parent) const;
+	QWidget* arrayHandler(const QModelIndex& index, QString type, QWidget *parent) const;
 };
 
 

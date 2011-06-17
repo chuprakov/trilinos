@@ -127,7 +127,7 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 		}
 	}
 	else if(itemType.contains(arrayId)){
-		arrayHandler(index, itemType.section(" ", -1), parent);
+		editor = arrayHandler(index, itemType.section(" ", -1), parent);
 	}
 
 	return editor;
@@ -204,26 +204,41 @@ void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QM
 		}
 		model->setData(index, value, Qt::EditRole);
 	}
+  else if(itemType.contains(arrayId)){
+    QString value = extractValueFromArray(editor, itemType);
+    model->setData(index, value, Qt::EditRole);
+  }
 }
+
+QString Delegate::extractValueFromArray(QWidget* editor, QString itemType){
+  if(itemType.contains(intId)){
+    IntArrayWidget* intEditor = (IntArrayWidget*)editor;
+    return QString::fromStdString(intEditor->getData().toString());
+  }
+  return QString();
+}
+ 
 
 void Delegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const{
 	editor->setGeometry(option.rect);
 }
 
-void Delegate::arrayHandler(const QModelIndex& index, QString type, QWidget *parent) const{
+
+
+
+QWidget* Delegate::arrayHandler(const QModelIndex& index, QString type, QWidget *parent) const{
 	if(type == intId){
-		IntArrayWidget array(index, type, parent);
-		array.exec();
+		return new IntArrayWidget(index, type, parent);
 	}
-	else if(type == shortId){
+	/*else if(type == shortId){
 		ShortArrayWidget array(index, type, parent);
 		array.exec();
-	}
+	}*/
 	/*else if(type == longlongId){
 		LongLongArrayWidget array(index, type, parent);
 		array.exec();
 	}*/
-	else if(type == doubleId){
+	/*else if(type == doubleId){
 		DoubleArrayWidget array(index, type, parent);
 		array.exec();
 	}
@@ -234,7 +249,8 @@ void Delegate::arrayHandler(const QModelIndex& index, QString type, QWidget *par
 	else if(type == stringId){
 		StringArrayWidget array(index, type, parent);
 		array.exec();
-	}
+	}*/
+  return 0;
 }
 
 }

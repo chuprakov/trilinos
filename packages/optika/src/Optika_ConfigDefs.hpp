@@ -8,6 +8,7 @@
 #include "Teuchos_XMLParameterListHelpers.hpp"
 #include "Teuchos_XMLParameterListWriter.hpp"
 
+
 namespace Optika{
 
   //Common Teuchos classes that are used.
@@ -27,15 +28,13 @@ namespace Optika{
   using Teuchos::DependencySheet;
   using Teuchos::Dependency;
   using Teuchos::VisualDependency;
-  using Teuchos::NumberArrayLengthDependency;
   using Teuchos::any;
   using Teuchos::any_cast;
   using Teuchos::XMLParameterListWriter;
   using Teuchos::XMLObject;
   using Teuchos::getValue;
   using Teuchos::getParametersFromXmlFile;
-
-
 } //namespace Optika
+
 
 #endif //OPTIKA_CONFIG_DEFS_HPP

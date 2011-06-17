@@ -63,10 +63,8 @@ public:
 	 */
 	GenericArrayWidget(const QModelIndex index, QString type, QWidget *parent=0):
 		QDialog(parent),
-		model((TreeModel*)index.model()),
-		index(index), 
-		entryValidator(model->getValidator(index)),
-		baseArray(model->getArray<S>(index)),
+		entryValidator(((TreeModel*)index.model())->getValidator(index)),
+		baseArray(((TreeModel*)index.model())->getArray<S>(index)),
 		type(type)
 	{
 		setModal(true);
@@ -88,7 +86,7 @@ public:
 
 		this->setLayout(layout);
 
-		setWindowTitle(model->data(index.sibling(index.row(),0),Qt::DisplayRole).toString());
+		setWindowTitle(index.model()->data(index.sibling(index.row(),0),Qt::DisplayRole).toString());
 	}
 	
 	/**
@@ -101,26 +99,14 @@ public:
 	}
 
 	/**
-	 * Gets a string representing what should be saved back to the model.
-	 * When reimplemented in a subclass, it should be a slot.
-	 *
-	 * @return A string representing what should be saved back to the model.
-	 */
-	virtual std::string saveData() = 0;
-
-	/**
-	 * Sets all of the values in the array widget to what they initially should be.
-	 * When reimplemented in a subclass, it should be a slot.
-	 *
-	 * @param values The values to which the array should be set.
-	 */
-	virtual void initializeValues(QString values) = 0;
-
-	/**
 	 * Called when the user has entered in their desired values and is done editing
 	 * the array. When reimplemented in a subclass, it should be a slot.
 	 */
 	virtual void accept() =0;
+
+  const Array<S> getData() const{
+    return baseArray;
+  }
 
 protected:
 	/**
@@ -132,17 +118,6 @@ protected:
 	 * Conatins the editing widgets (e.g. QLineEdits and QSpinBoxes) comprising the array editor.
 	 */
 	WVector widgetVector;
-
-	/**
-	 * A pointer to the TreeModel the ArrayWidget is editing.
-	 */
-	TreeModel *model;
-
-	/**
-	 * The index in the TreeModel of the parameter the ArrayWidget is
-	 * editing.
-	 */
-	QModelIndex index;
 
 	/**
 	 * The validator being used on the array.
@@ -164,17 +139,17 @@ protected:
 		arrayContainer->setLayout(widgetLayout);
 	}
 
+	/**
+	 * The array to be edited.
+	 */
+	Array<S> baseArray;
+
 private:
 	/**
 	 * The widget containing all of the editing widgets (e.g.
 	 * QLineEdits, and QSpinBoxes) that comprise the array editor.
 	 */
 	QWidget *arrayContainer;
-	
-	/**
-	 * The array to be edited.
-	 */
-	Array<S> baseArray;
 
 	/**
 	 * The type of array.
@@ -203,28 +178,22 @@ public:
 	 */
 	IntArrayWidget(const QModelIndex index, QString type, QWidget *parent=0):GenericArrayWidget<int>(index, type, parent){
 		setupArrayLayout();
-		initializeValues(index.model()->data(index).toString()); 
+		initializeValues(); 
 	}
 
 public slots:
 	void accept(){
-		model->setData(index, QString::fromStdString(saveData()), Qt::EditRole);
+    baseArray.clear();
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
+			baseArray.push_back(((QSpinBox*)(*it))->value());
+		}
 		done(QDialog::Accepted);
 	}
 
-	std::string saveData(){
-		Array<int> toReturn;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
-			toReturn.push_back(((QSpinBox*)(*it))->value());
-		}
-		return toReturn.toString();
-	}
-
-	void initializeValues(QString values){
-		QStringList valueList = getValues(values); 
+	void initializeValues(){
 		int i =0;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it, ++i){
-			static_cast<QSpinBox*>(*it)->setValue(valueList.at(i).toInt());
+			static_cast<QSpinBox*>(*it)->setValue(baseArray[i]);
 		}
 
 	}
@@ -240,6 +209,10 @@ private:
 		return newSpin;
 	}
 };
+
+
+#ifdef OTHER_STUFF_NOT_YET
+
 
 /**
  * A widget for editing Arrays of type short.
@@ -544,7 +517,7 @@ private:
 	}
 };
 
-
+#endif
 }
 
 #endif //OPTIKA_ARRAYWIDGET_HPP_

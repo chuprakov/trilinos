@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
    * Here we create a Array object of 10 doubles
    * representing an initial guess for a linear solver.
    */
-  Array<double> doubleArray( 10, 0.0 );
+  Array<int> doubleArray( 10, 0 );
   My_List->set(
     "Initial Guess", 
     doubleArray, 
