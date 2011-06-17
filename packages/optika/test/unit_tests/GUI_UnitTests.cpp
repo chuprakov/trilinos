@@ -160,10 +160,10 @@ void OptikaGUITests::dependencyTests(){
   GET_ENTRY_INDEX(validParameters, Temp, model)
   GET_ENTRY_INDEX(validParameters, Num_ice_cubes, model)
   VERIFY_SHOWN_ROW(Num_ice_cubesIndex)
-  QModelIndex tempWidgetIndex = getWidgetIndex(Num_ice_cubesIndex);
+  QModelIndex tempWidgetIndex = getWidgetIndex(TempIndex);
   QDoubleSpinBox* tempSpinner = (QDoubleSpinBox*)delegate->createEditor(
     0,genericStyleItem, tempWidgetIndex);
-  tempSpinner->setValue(33);
+  tempSpinner->setValue(33.0);
   delegate->setModelData(tempSpinner, model, tempWidgetIndex);
   VERIFY_HIDDEN_ROW(Num_ice_cubesIndex)
 
@@ -173,20 +173,6 @@ void OptikaGUITests::dependencyTests(){
 
 
 } //namespace Optika
-
-/**
- *  Test the basics of Optika Functionality
- */
-/*TEUCHOS_UNIT_TEST(Optika_GUITests, testBasics){
-  int argc = 0;
-  char* argv[1];
-  char name [] = "optika_basic_test";
-  argv[0]=name;
-  QApplication app(argc, argv);
-  QTEST_DISABLE_KEYPAD_NAVIGATION
-  Optika::BasicTests bt;
-  TEUCHOS_ASSERT(QTest::qExec(&bt, argc, argv) == 0);
-}*/
 
 QTEST_MAIN(Optika::OptikaGUITests)
 #include "GUI_UnitTests.moc"
