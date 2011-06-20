@@ -59,33 +59,7 @@ public:
     QString name, 
     QString type, 
     const RCP<const ParameterEntryValidator> validator,
-    QWidget *parent=0):
-		QDialog(parent),
-		entryValidator(validator),
-    name(name),
-		type(type)
-	{
-		setModal(true);
-		setSizeGripEnabled(true);
-		arrayContainer = new QWidget(this);
-
-		QScrollArea *scrollArea = new QScrollArea(this);
-		scrollArea->setWidget(arrayContainer);
-		scrollArea->setWidgetResizable(true);
-
-		QPushButton *doneButton = new QPushButton(tr("Done"));
-		QPushButton *cancelButton = new QPushButton(tr("Cancel"));
-		connect(doneButton, SIGNAL(clicked(bool)), this, SLOT(accept()));
-		connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(reject()));
-		QGridLayout *layout = new QGridLayout(this);
-		layout->addWidget(scrollArea,0,0,1,3);
-		layout->addWidget(doneButton,1,2);
-		layout->addWidget(cancelButton,1,1);
-
-		this->setLayout(layout);
-
-		setWindowTitle(name);
-	}
+    QWidget *parent=0);
 	
 	/**
 	 * Gets the type of array being edited.
@@ -160,17 +134,56 @@ private:
 	 * Sets up the layout for the arrayContainer, including adding what ever editing
 	 * widget should be used for the particual type of array.
 	 */
-	void setupArrayLayout(){
-		QGridLayout *widgetLayout = new QGridLayout(arrayContainer);
-		for(int i=0; i<baseArray.size(); ++i){
-			widgetLayout->addWidget(new QLabel("Item: " +QString::number(i)),0,i,Qt::AlignLeft);
-			QWidget* editorWidget = getEditorWidget(i);
-			widgetLayout->addWidget(editorWidget,1,i,Qt::AlignLeft);
-			widgetVector.push_back(editorWidget);
-		}
-		arrayContainer->setLayout(widgetLayout);
-	}
+	void setupArrayLayout();
 };
+
+template<class S>
+GenericArrayWidget<S>::GenericArrayWidget(
+  QString name, 
+  QString type, 
+  const RCP<const ParameterEntryValidator> validator,
+  QWidget *parent):
+  QDialog(parent),
+  entryValidator(validator),
+  name(name),
+  type(type)
+{
+	setModal(true);
+	setSizeGripEnabled(true);
+	arrayContainer = new QWidget(this);
+
+	QScrollArea *scrollArea = new QScrollArea(this);
+	scrollArea->setWidget(arrayContainer);
+	scrollArea->setWidgetResizable(true);
+
+	QPushButton *doneButton = new QPushButton(tr("Done"));
+	QPushButton *cancelButton = new QPushButton(tr("Cancel"));
+	connect(doneButton, SIGNAL(clicked(bool)), this, SLOT(accept()));
+	connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(reject()));
+	QGridLayout *layout = new QGridLayout(this);
+	layout->addWidget(scrollArea,0,0,1,3);
+	layout->addWidget(doneButton,1,2);
+	layout->addWidget(cancelButton,1,1);
+
+	this->setLayout(layout);
+
+	setWindowTitle(name);
+}
+
+
+template<class S>
+void GenericArrayWidget<S>::setupArrayLayout(){
+  if(arrayContainer->layout() == NULL){
+	  QGridLayout *widgetLayout = new QGridLayout;
+	  for(int i=0; i<baseArray.size(); ++i){
+		  widgetLayout->addWidget(new QLabel("Item: " +QString::number(i)),0,i,Qt::AlignLeft);
+		  QWidget* editorWidget = getEditorWidget(i);
+		  widgetLayout->addWidget(editorWidget,1,i,Qt::AlignLeft);
+		  widgetVector.push_back(editorWidget);
+	  }
+	  arrayContainer->setLayout(widgetLayout);
+  }
+}
 
 /**
  * A widget for editing Arrays of type int.
