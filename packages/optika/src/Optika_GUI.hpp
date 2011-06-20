@@ -101,7 +101,7 @@ namespace Optika{
    */
   void getInput(
     const std::string& nameOfXmlFile,
-    RCP<ParameterList> userInput,
+    RCP<ParameterList>& userInput,
     void (*customFunc)(RCP<const ParameterList>)=NULL);
 
 /**

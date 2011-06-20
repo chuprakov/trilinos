@@ -34,7 +34,16 @@ namespace Optika{
   using Teuchos::XMLObject;
   using Teuchos::getValue;
   using Teuchos::getParametersFromXmlFile;
+
+
+  
 } //namespace Optika
+
+Q_DECLARE_METATYPE(Teuchos::Array<int>)
+Q_DECLARE_METATYPE(Teuchos::Array<short>)
+Q_DECLARE_METATYPE(Teuchos::Array<float>)
+Q_DECLARE_METATYPE(Teuchos::Array<double>)
+Q_DECLARE_METATYPE(Teuchos::Array<std::string>)
 
 
 #endif //OPTIKA_CONFIG_DEFS_HPP

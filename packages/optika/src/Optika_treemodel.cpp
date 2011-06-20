@@ -61,7 +61,9 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const {
 	if(!index.isValid()){
 		return QVariant();
 	}
-	if(role != Qt::DisplayRole && role != Qt::ToolTipRole){
+	if(role != Qt::DisplayRole && role != Qt::ToolTipRole
+    && role != getRawDataRole())
+  {
 		return QVariant();
 	}
 	TreeItem *item = (TreeItem*)(index.internalPointer());
@@ -394,10 +396,15 @@ void TreeModel::insertParameter(RCP<ParameterEntry> parameter, std::string name,
 	else if(parameter->isArray()){
 		QString determinedId = determineArrayType(parameter);
 		if( determinedId != unrecognizedId){
-			values.append(QString::fromStdString(toString(parameter->getAny())));
+			values.append(arrayEntryToVariant(parameter, determinedId));
 			values.append(QString(arrayId + " "+ determinedId));
 		}
-		else{
+  }
+  else{
+    values.append("");
+    values.append("");
+  }
+		/*else{
 			values.append("");
 			values.append("");
 			parent->appendChild(new TreeItem(values, parameter, parent, true));
@@ -409,7 +416,7 @@ void TreeModel::insertParameter(RCP<ParameterEntry> parameter, std::string name,
 		values.append("");
 		parent->appendChild(new TreeItem(values, parameter, parent, true));
 		return;
-	}
+	}*/
 	parent->appendChild(new TreeItem(values, parameter, parent));
 }
 
@@ -454,11 +461,11 @@ void TreeModel::checkDependentState(const QModelIndex dependee, RCP<Dependency> 
 }
 
 void TreeModel::redrawArray(const QModelIndex arrayIndex){
-	if(toString(itemEntry(arrayIndex)->getAny()).size() <= 2){
+  if(isArrayEmpty(itemEntry(arrayIndex), getArrayType(itemType(arrayIndex)))){
 		emit hideData(arrayIndex.row(), arrayIndex.parent());
 	}
 	else{
-		setData(arrayIndex, QString::fromStdString(toString(itemEntry(arrayIndex)->getAny())));
+		//setData(arrayIndex, QString::fromStdString(toString(itemEntry(arrayIndex)->getAny())));
 		emit showData(arrayIndex.row(), arrayIndex.parent());
 	}
 }

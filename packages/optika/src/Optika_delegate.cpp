@@ -208,34 +208,35 @@ void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QM
 		model->setData(index, value, Qt::EditRole);
 	}
   else if(itemType.contains(arrayId)){
-    QString value = extractValueFromArray(editor, itemType.section(" ", -1));
+    QVariant value = extractValueFromArray(editor, itemType.section(" ", -1));
     model->setData(index, value, Qt::EditRole);
   }
 }
 
-QString Delegate::extractValueFromArray(QWidget* editor, QString itemType){
+QVariant Delegate::extractValueFromArray(QWidget* editor, QString itemType) const
+{
   if(itemType == intId){
     IntArrayWidget* intEditor = (IntArrayWidget*)editor;
-    return QString::fromStdString(intEditor->getData().toString());
+    return QVariant::fromValue(intEditor->getData());
   }
   else if(itemType == shortId){
     ShortArrayWidget* shortEditor = (ShortArrayWidget*)editor;
-    return QString::fromStdString(shortEditor->getData().toString());
+    return QVariant::fromValue(shortEditor->getData());
   }
   else if(itemType == floatId){
     FloatArrayWidget* floatEditor = (FloatArrayWidget*)editor;
-    return QString::fromStdString(floatEditor->getData().toString());
+    return QVariant::fromValue(floatEditor->getData());
   }
   else if(itemType == doubleId){
     DoubleArrayWidget* doubleEditor = (DoubleArrayWidget*)editor;
-    return QString::fromStdString(doubleEditor->getData().toString());
+    return QVariant::fromValue(doubleEditor->getData());
   }
   else if(itemType == stringId){
     StringArrayWidget* stringEditor = (StringArrayWidget*)editor;
-    return QString::fromStdString(stringEditor->getData().toString());
+    return QVariant::fromValue(stringEditor->getData());
   }
   else{
-    return QString();
+    return QVariant();
   }
 }
  
@@ -275,28 +276,24 @@ QWidget* Delegate::getArrayEditor(const QModelIndex& index, QString type, QWidge
 }
 
 void Delegate::setArrayWidgetData(QWidget* editor, QString type, const QModelIndex& index) const{
-  std::string value = index.model()->data(index).toString().toStdString();
+  QVariant newData = index.model()->data(index, TreeModel::getRawDataRole());
 	if(type == intId){
-    ((IntArrayWidget*)editor)->initData(
-      Teuchos::fromStringToArray<int>(value));
+    ((IntArrayWidget*)editor)->initData(newData.value<Array<int> >());
 	}
 	else if(type == shortId){
-    ((ShortArrayWidget*)editor)->initData(
-      Teuchos::fromStringToArray<short>(value));
+    ((ShortArrayWidget*)editor)->initData(newData.value<Array<short> >());
 	}
 	/*else if(type == longlongId){
 	}*/
 	else if(type == doubleId){
-    ((DoubleArrayWidget*)editor)->initData(
-      Teuchos::fromStringToArray<double>(value));
+    ((DoubleArrayWidget*)editor)->initData(newData.value<Array<double> >());
   }
 	else if(type == floatId){
-    ((FloatArrayWidget*)editor)->initData(
-      Teuchos::fromStringToArray<float>(value));
+    ((FloatArrayWidget*)editor)->initData(newData.value<Array<float> >());
 	}
 	else if(type == stringId){
     ((StringArrayWidget*)editor)->initData(
-      Teuchos::fromStringToArray<std::string>(value));
+      newData.value<Array<std::string> >());
 	}
 }
 

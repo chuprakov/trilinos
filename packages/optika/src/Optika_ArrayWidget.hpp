@@ -398,6 +398,7 @@ public:
     GenericArrayWidget<std::string>(name, type, validator,parent){}
 
 	void accept(){
+    baseArray.clear();
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
 			if(is_null(entryValidator)){
 				baseArray.push_back(((QLineEdit*)(*it))->text().toStdString());

@@ -91,6 +91,53 @@ Array<std::string> fromStringToArray<std::string>(QString arrayString){
 
 }
 
-
+QVariant arrayEntryToVariant(
+  RCP<const ParameterEntry> arrayEntry, QString type){
+	if(type == intId){
+    return QVariant::fromValue<Array<int> >(
+      getValue<Array<int> >(*arrayEntry));
+	}
+	else if(type == shortId){
+    return QVariant::fromValue<Array<short> >(
+      getValue<Array<short> >(*arrayEntry));
+	}
+	else if(type == doubleId){
+    return QVariant::fromValue<Array<double> >(
+      getValue<Array<double> >(*arrayEntry));
+  }
+	else if(type == floatId){
+    return QVariant::fromValue<Array<float> >(
+      getValue<Array<float> >(*arrayEntry));
+  }
+	else if(type == stringId){
+    return QVariant::fromValue<Array<std::string> >(
+      getValue<Array<std::string> >(*arrayEntry));
+	}
+  return QVariant();
 }
 
+QString getArrayType(QString itemType){
+  return itemType.section(" ",-1);  
+}
+
+bool isArrayEmpty(RCP<const ParameterEntry> arrayEntry, QString type){
+	if(type == intId){
+    return getValue<Array<int> >(*arrayEntry).size() == 0;
+	}
+	else if(type == shortId){
+    return getValue<Array<short> >(*arrayEntry).size() == 0;
+	}
+	else if(type == doubleId){
+    return getValue<Array<double> >(*arrayEntry).size() == 0;
+  }
+	else if(type == floatId){
+    return getValue<Array<float> >(*arrayEntry).size() == 0;
+  }
+	else if(type == stringId){
+    return getValue<Array<std::string> >(*arrayEntry).size() == 0;
+	}
+  return true;
+}
+
+
+}

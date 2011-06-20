@@ -195,6 +195,13 @@ public:
 	 * @param parameterEntry The ParameterEntry whose index is being sought.
 	 */
 	QModelIndex findParameterEntryIndex(RCP<const ParameterEntry> parameterEntry);
+
+  static const int getRawDataRole(){
+    static const int RawDataRole = Qt::UserRole;
+    return RawDataRole;
+  }
+
+
 signals:
 	/**
 	 * Emitted when a row should be hidden.
@@ -220,7 +227,6 @@ signals:
 	 * item to obtain an invalid value.
 	 */
 	void badValue(QModelIndex badItem,  QString message);
-
 
 private:
 	/**

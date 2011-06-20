@@ -63,11 +63,11 @@ public:
     return boolEditorFalse;
   }
 
-  static QString extractValueFromArray(QWidget* editor, QString itemType);
 
 private:
 	QWidget* getArrayEditor(const QModelIndex& index, QString type, QWidget *parent) const;
   void setArrayWidgetData(QWidget* editor, QString type, const QModelIndex& index) const;
+  QVariant extractValueFromArray(QWidget* editor, QString itemType) const;
 };
 
 

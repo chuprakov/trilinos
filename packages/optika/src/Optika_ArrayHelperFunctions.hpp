@@ -78,5 +78,12 @@ Array<S> fromStringToArray(QString arrayString){
 template <>
 Array<std::string> fromStringToArray<std::string>(QString arrayString);
 
+QVariant arrayEntryToVariant(
+  RCP<const ParameterEntry> arrayEntry, QString type);
+
+QString getArrayType(QString itemType);
+
+bool isArrayEmpty(RCP<const ParameterEntry> arrayEntry, QString type);
+
 }
 #endif /* OPTIKA_ARRAYHELPERFUNCTIONS_HPP_ */

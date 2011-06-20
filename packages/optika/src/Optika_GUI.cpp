@@ -91,7 +91,7 @@ void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependenc
 
 void getInput(
   const std::string& nameOfXmlFile,
-  RCP<ParameterList> userInput,
+  RCP<ParameterList>& userInput,
   void (*customFunc)(RCP<const ParameterList>))
 {
   {

@@ -25,31 +25,22 @@
 // 
 // ***********************************************************************
 // @HEADER
-#include "Optika_GUI.hpp"
-#include "Teuchos_ParameterList.hpp"
 
-  /*
-   * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-   * !!!!!              ATTENTION              !!!!!!!!!!!!!!!!!!!!!!!
-   * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   * !!!!  PLEASE VIEW THE BASIC XML EXAMPLE AND DEPENDENCY  !!!!!!!!!
-   * !!!!  EXAMPLE FIRST BEFORE READING THIS EXAMPLE. THEY   !!!!!!!!!
-   * !!!!  PROVIDE FUNDAMENTAL KNOWLEDGE THAT WILL BE VERY   !!!!!!!!!
-   * !!!!  HELPFUL IN UNDERSTANDING THIS EXAMPLE.            !!!!!!!!!
-   * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   */ 
+#include <QVariant>
+#include "Teuchos_UnitTestHarness.hpp"
+#include "Optika_ArrayHelperFunctions.hpp"
 
-int main(int argc, char* argv[])
-{
-  /**
-   * We're doing this one all in XML. Head over to the "inputs.xml" file for
-   * the real action.
-   */
-  Teuchos::RCP<Teuchos::ParameterList> userInput;
-  Optika::getInput("inputs.xml", userInput);
-  userInput->print(std::cout);
-	
-  return 0;
+namespace Optika{
+
+TEUCHOS_UNIT_TEST(Array_Helper_Functions, ArrayToQVariant){
+  Array<std::string> testArray = Teuchos::tuple<std::string>("blah1", "blah2");
+  ParameterEntry entry(testArray);
+  QVariant testVariant = arrayEntryToVariant(rcpFromRef(entry), stringId);
+  Array<std::string> extractedArray = testVariant.value<Array<std::string> >();
+  TEST_EQUALITY(testArray,extractedArray);
+  out << "Test Array: " << testArray << std::endl;
+  out << "Extracted Array: " << extractedArray << std::endl;
 }
 
+
+} //end namespace
