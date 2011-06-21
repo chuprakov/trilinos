@@ -89,6 +89,7 @@ void OptikaGUITests::cleanupTestCase(){
 
 
 void OptikaGUITests::typeTest(){
+  cleaner.clear();
   RCP<ParameterList> My_List = 
     RCP<ParameterList>(new ParameterList);
 
@@ -129,6 +130,7 @@ inline QModelIndex OptikaGUITests::getWidgetIndex(const QModelIndex& index){
   QVERIFY(!treeView->isRowHidden(  INDEX.row(), INDEX.parent()));
 
 void OptikaGUITests::dependencyTests(){
+  cleaner.clear();
   RCP<DependencySheet> dependencySheet = rcp(new DependencySheet);
   RCP<ParameterList> validParameters = 
     getParametersFromXmlFile("deptests.xml", dependencySheet);
@@ -175,6 +177,32 @@ void OptikaGUITests::dependencyTests(){
   tempSpinner->setValue(33.0);
   delegate->setModelData(tempSpinner, model, tempWidgetIndex);
   VERIFY_HIDDEN_ROW(Num_ice_cubesIndex)
+
+  //Test condition visual dependency
+  GET_ENTRY_INDEX(validParameters, ParamA, model)
+  GET_ENTRY_INDEX(validParameters, ParamB, model)
+  GET_ENTRY_INDEX(validParameters, OptParam, model)
+  VERIFY_SHOWN_ROW(OptParamIndex)
+  QModelIndex paramAWidgetIndex = getWidgetIndex(ParamAIndex);
+  QModelIndex paramBWidgetIndex = getWidgetIndex(ParamBIndex);
+  QSpinBox* paramASpinner = (QSpinBox*)delegate->createEditor(
+    0, genericStyleItem, paramAWidgetIndex);
+  QSpinBox* paramBSpinner = (QSpinBox*)delegate->createEditor(
+    0, genericStyleItem, paramBWidgetIndex);
+  paramASpinner->setValue(0);
+  delegate->setModelData(paramASpinner, model, paramAWidgetIndex);
+  VERIFY_SHOWN_ROW(OptParamIndex)
+  paramBSpinner->setValue(0);
+  delegate->setModelData(paramBSpinner, model, paramBWidgetIndex);
+  VERIFY_HIDDEN_ROW(OptParamIndex)
+  paramBSpinner->setValue(1);
+  delegate->setModelData(paramBSpinner, model, paramBWidgetIndex);
+  VERIFY_SHOWN_ROW(OptParamIndex)
+
+  
+
+
+
 
   //Test Number Array Length Dependency
   GET_ENTRY_INDEX(validParameters, NumBuckets, model)

@@ -91,6 +91,20 @@
     docString="The temperature in the room in degrees farenheit"/>
   <Parameter name="Num_ice_cubes" type="int" value="1"
     id="15" docString="The number of ice cubes in the room"/>
+
+
+
+  <Parameter name="ParamA" type="int" value="3"
+    id="16"
+    docString="First parameter"/>
+  <Parameter name="ParamB" type="int" value="8"
+    id="17"
+    docString="First parameter"/>
+  <Parameter name="OptParam" type="string"
+    value="cheese"
+    id="18"
+    docString="optional parameter"/>
+
   <Validators>
     <Validator type="StringValidator" validatorId="0">
       <String value="American"/>
@@ -125,6 +139,17 @@
       <Dependee parameterId="14"/>
       <Dependent parameterId="15"/>
       <Function operand="32" type="SubtractionFunction(double)"/> 
+    </Dependency>
+    <Dependency type="ConditionVisualDependency">
+      <Dependee parameterId="16"/>
+      <Dependee parameterId="17"/>
+      <Dependent parameterId="18"/>
+      <Condition type="OrCondition">
+        <Condition type="NumberCondition(int)" 
+          parameterId="16"/>
+        <Condition type="NumberCondition(int)"
+          parameterId="17"/>
+      </Condition>
     </Dependency>
   </Dependencies>
 </ParameterList>
