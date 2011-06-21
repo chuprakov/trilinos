@@ -71,11 +71,9 @@ public:
 	}
 
 	/**
-	 * Called when the user has entered in their desired values and is done editing
-	 * the array. When reimplemented in a subclass, it should be a slot and 
-   * should clear out baseArray and fill it with the new values.
+   * Gathers all the user inputed data and closes the dialog.
 	 */
-	virtual void accept() =0;
+	void doAcceptWork();
 
   const Array<S> getData() const{
     return baseArray;
@@ -85,6 +83,11 @@ public:
     baseArray = array;
     setupArrayLayout();
   }
+
+  /**
+   * Must be implemented as a slot in base classes.
+   */
+  virtual void accept() =0;
 
 protected:
 	/**
@@ -135,6 +138,8 @@ private:
 	 * widget should be used for the particual type of array.
 	 */
 	void setupArrayLayout();
+
+  virtual Array<S> getArrayFromWidgets() = 0;
 };
 
 template<class S>
@@ -185,6 +190,13 @@ void GenericArrayWidget<S>::setupArrayLayout(){
   }
 }
 
+template<class S>
+void GenericArrayWidget<S>::doAcceptWork(){
+  baseArray.clear();
+  baseArray = getArrayFromWidgets();
+  done(QDialog::Accepted);
+}
+
 /**
  * A widget for editing Arrays of type int.
  */
@@ -200,13 +212,9 @@ public:
     GenericArrayWidget<int>(name, type, validator,parent){}
 
 public slots:
-	void accept(){
-    baseArray.clear();
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
-			baseArray.push_back(((QSpinBox*)(*it))->value());
-		}
-		done(QDialog::Accepted);
-	}
+  void accept(){
+    doAcceptWork();
+  }
 
 private:
 	QWidget* getEditorWidget(int index){
@@ -218,6 +226,14 @@ private:
 		SpinBoxApplier<int>::applyToSpinBox(validator, newSpin);
     newSpin->setValue(baseArray[index]);
 		return newSpin;
+	}
+
+	Array<int> getArrayFromWidgets(){
+    Array<int> toReturn;
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
+			baseArray.push_back(((QSpinBox*)(*it))->value());
+		}
+    return toReturn;
 	}
 };
 
@@ -238,11 +254,7 @@ public:
 
 public slots:
 	void accept(){
-    baseArray.clear();
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
-			baseArray.push_back(((QSpinBox*)(*it))->value());
-		}
-		done(QDialog::Accepted);
+    doAcceptWork();
 	}
 
 private:
@@ -256,62 +268,15 @@ private:
     newSpin->setValue(baseArray[index]);
 		return newSpin;
 	}
-};
 
-/**
- * A widget for editing Arrays of type long long int.
- */
-/*
-class LongLongArrayWidget: public GenericArrayWidget<long long int>{
-	Q_OBJECT
-public:
-	**
-	 * Constructs an LongLongArrayWidget.
-	 *
-	 * @param index The index of the array that is being edited.
-	 * @param type The type of the array.
-	 * @param parent The parent widget.
-	 *
-	LongLongArrayWidget(const QModelIndex index, QString type, QWidget *parent=0):GenericArrayWidget<long long int>(index, type, parent){
-		setupArrayLayout();
-		initializeValues(index.model()->data(index).toString()); 
-	}
-
-public slots:
-	void accept(){
-		model->setData(index, QString::fromStdString(saveData()), Qt::EditRole);
-		done(QDialog::Accepted);
-	}
-
-	std::string saveData(){
-		Array<long long int> toReturn;
+	Array<short> getArrayFromWidgets(){
+    Array<short> toReturn;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
-			toReturn.push_back(((QwwLongSpinBox*)(*it))->value());
+			toReturn.push_back(((QSpinBox*)(*it))->value());
 		}
-		return toReturn.toString();
-	}
-
-	void initializeValues(QString values){
-		QStringList valueList = getValues(values); 
-		int i =0;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it, ++i){
-			static_cast<QwwLongSpinBox*>(*it)->setValue(valueList.at(i).toLongLong());
-		}
-
-	}
-
-private:
-	QWidget* getEditorWidget(){
-		QSpinBox *newSpin = new QwwLongSpinBox(this);
-		RCP<const EnhancedNumberValidator<long long int> > validator = null;
-		if(!is_null(entryValidator)){
-			validator = rcp_dynamic_cast<const EnhancedNumberValidator<long long int> >(entryValidator,true);
-		}
-		EnhancedNumberValidator<long long int>::applyToSpinBox(validator, newSpin);
-		return newSpin;
-	}
-};*/
-
+    return toReturn;
+  }
+};
 /**
  * A widget for editing Arrays of type double.
  */
@@ -328,11 +293,7 @@ public:
     GenericArrayWidget<double>(name, type, validator,parent){}
 public slots:
 	void accept(){
-    baseArray.clear();
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
-			baseArray.push_back(((QDoubleSpinBox*)(*it))->value());
-		}
-		done(QDialog::Accepted);
+    doAcceptWork();
 	}
 
 private:
@@ -346,6 +307,13 @@ private:
     newSpin->setValue(baseArray[index]);
 		return newSpin;
 	}
+	Array<double> getArrayFromWidgets(){
+    Array<double> toReturn;
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
+			baseArray.push_back(((QDoubleSpinBox*)(*it))->value());
+		}
+    return toReturn;
+  }
 };
 
 /**
@@ -363,13 +331,8 @@ public:
     GenericArrayWidget<float>(name, type, validator,parent){}
 public slots:
 	void accept(){
-    baseArray.clear();
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
-			baseArray.push_back(((QDoubleSpinBox*)(*it))->value());
-		}
-		done(QDialog::Accepted);
+    doAcceptWork();
 	}
-
 
 private:
 	QWidget* getEditorWidget(int index){
@@ -382,6 +345,13 @@ private:
     newSpin->setValue(baseArray[index]);
 		return newSpin;
 	}
+	Array<float> getArrayFromWidgets(){
+    Array<float> toReturn;
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
+			toReturn.push_back(((QDoubleSpinBox*)(*it))->value());
+		}
+    return toReturn;
+  }
 };
 
 /**
@@ -398,22 +368,7 @@ public:
     GenericArrayWidget<std::string>(name, type, validator,parent){}
 
 	void accept(){
-    baseArray.clear();
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
-			if(is_null(entryValidator)){
-				baseArray.push_back(((QLineEdit*)(*it))->text().toStdString());
-			}
-			else if(!is_null(rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(entryValidator))){
-				baseArray.push_back(((FileNameWidget*)(*it))->getCurrentFileName().toStdString());
-			}
-			else if(entryValidator->validStringValues()->size() !=0){
-				baseArray.push_back(((QComboBox*)(*it))->currentText().toStdString());
-			}
-			else{
-				baseArray.push_back(((QLineEdit*)(*it))->text().toStdString());
-			}
-		}
-		done(QDialog::Accepted);
+    doAcceptWork();
 	}
 
 
@@ -442,8 +397,27 @@ private:
 			return new QLineEdit(currentData,this);
 		}
 	}
+
+	Array<std::string> getArrayFromWidgets(){
+    Array<std::string> toReturn;
+		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
+			if(is_null(entryValidator)){
+				toReturn.push_back(((QLineEdit*)(*it))->text().toStdString());
+			}
+			else if(!is_null(rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(entryValidator))){
+				toReturn.push_back(((FileNameWidget*)(*it))->getCurrentFileName().toStdString());
+			}
+			else if(entryValidator->validStringValues()->size() !=0){
+				toReturn.push_back(((QComboBox*)(*it))->currentText().toStdString());
+			}
+			else{
+				toReturn.push_back(((QLineEdit*)(*it))->text().toStdString());
+			}
+		}
+    return toReturn;
+  }
 };
 
-}
 
+} //end namespace
 #endif //OPTIKA_ARRAYWIDGET_HPP_
