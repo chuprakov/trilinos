@@ -105,12 +105,21 @@
     id="18"
     docString="optional parameter"/>
 
+ 
+  <Parameter name="TempConst" type="bool" 
+    value="true" id="19" 
+    docString="Whether or not to use temperature constraints."/>
+  <Parameter name="BoolTemp" type="double" value="0"
+    id="20" docString="The temperature"/>
+
   <Validators>
     <Validator type="StringValidator" validatorId="0">
       <String value="American"/>
       <String value="Swiss"/>
       <String value="Pepperjack"/>
     </Validator>
+    <Validator type="EnhancedNumberValidator(double)" validatorId="1"
+      min="0" max="50"/>
   </Validators>
   <Dependencies name="My dep sheet">
     <Dependency showIf="true" type="BoolVisualDependency">
@@ -150,6 +159,13 @@
         <Condition type="NumberCondition(int)"
           parameterId="17"/>
       </Condition>
+    </Dependency>
+    <Dependency 
+      type="BoolValidatorDependency" 
+      trueValidatorId="1"
+    >
+      <Dependee parameterId="19"/>
+      <Dependent parameterId="20"/>
     </Dependency>
   </Dependencies>
 </ParameterList>

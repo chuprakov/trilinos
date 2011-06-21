@@ -82,9 +82,6 @@ void OptikaGUITests::cleanupTestCase(){
     QString::fromStdString( #NAME) );  \
   QModelIndex NAME##TypeIndex = NAME##Index.sibling(NAME##Index.row(),2); \
   QVERIFY( NAME##TypeIndex.isValid()); \
-  std::cout <<  \
-    MODEL->data( NAME##TypeIndex, Qt::DisplayRole).toString().toStdString() \
-    <<std::endl; \
   QCOMPARE( MODEL->data( NAME##TypeIndex, Qt::DisplayRole).toString(), TYPE );
 
 
@@ -199,10 +196,6 @@ void OptikaGUITests::dependencyTests(){
   delegate->setModelData(paramBSpinner, model, paramBWidgetIndex);
   VERIFY_SHOWN_ROW(OptParamIndex)
 
-  
-
-
-
 
   //Test Number Array Length Dependency
   GET_ENTRY_INDEX(validParameters, NumBuckets, model)
@@ -228,6 +221,26 @@ void OptikaGUITests::dependencyTests(){
   QCOMPARE(bucketsArray.size(),(Array<double>::size_type)2);
 
 
+  //Testing for Bool ValidatorDependency
+  GET_ENTRY_INDEX(validParameters, TempConst, model)
+  GET_ENTRY_INDEX(validParameters, BoolTemp, model)
+  QVERIFY(nonnull(model->getValidator(BoolTempIndex)));
+  QModelIndex tempConstWidgetIndex = getWidgetIndex(TempConstIndex);
+  QModelIndex boolTempWidgetIndex = getWidgetIndex(BoolTempIndex);
+  QDoubleSpinBox* boolTempSpinner = (QDoubleSpinBox*)delegate->createEditor(
+    0, genericStyleItem, boolTempWidgetIndex);
+  QCOMPARE(boolTempSpinner->minimum(), 0.0);
+  QCOMPARE(boolTempSpinner->maximum(), 50.0);
+  QComboBox* tempConstCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, tempConstWidgetIndex);
+  tempConstCombo->setCurrentIndex(
+    tempConstCombo->findText(Delegate::getBoolEditorFalse()));
+  delegate->setModelData(tempConstCombo, model, tempConstWidgetIndex);
+  QVERIFY(model->getValidator(BoolTempIndex).is_null());
+  boolTempSpinner = (QDoubleSpinBox*)delegate->createEditor(
+    0, genericStyleItem, boolTempWidgetIndex);
+  QCOMPARE(boolTempSpinner->minimum(), EnhancedNumberTraits<double>::min());
+  QCOMPARE(boolTempSpinner->maximum(), EnhancedNumberTraits<double>::max());
 
 
 
