@@ -48,6 +48,20 @@
  */
 namespace Optika{
 
+class ModalClicker : public QThread{
+public:
+  void run();
+};
+
+void ModalClicker::run(){
+  QWidget* modalDialog = QApplication::activeModalWidget();
+  while(modalDialog == NULL){
+    modalDialog = QApplication::activeModalWidget();
+    msleep(100);
+  }
+  QTest::keyClick(QApplication::activeModalWidget(), Qt::Key_Return);
+}
+
 class OptikaGUITests: public QObject{
 Q_OBJECT
 private slots:
@@ -57,10 +71,16 @@ private slots:
 private:
   static inline QModelIndex getWidgetIndex(const QModelIndex& index);
   QObjectCleanupHandler cleaner;
+  ModalClicker clicker;
 };
 
 void OptikaGUITests::cleanupTestCase(){
   cleaner.clear();
+  if(clicker.isRunning()){
+    clicker.terminate();
+    clicker.wait();
+  }
+  QVERIFY(!clicker.isRunning());
 }
   
 
@@ -243,8 +263,52 @@ void OptikaGUITests::dependencyTests(){
   QCOMPARE(boolTempSpinner->maximum(), EnhancedNumberTraits<double>::max());
 
 
+  //StringValidatorDepenecy tests
+  GET_ENTRY_INDEX(validParameters, FavFoodType, model)
+  GET_ENTRY_INDEX(validParameters, FavFood, model)
+  QVERIFY(nonnull(model->getValidator(FavFoodIndex)));
+  QModelIndex favFoodWidgetIndex = getWidgetIndex(FavFoodIndex);
+  QComboBox* favFoodCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, favFoodWidgetIndex);
+  QCOMPARE(favFoodCombo->count(),3);
+  QVERIFY(favFoodCombo->findText("American") != -1);
+  QVERIFY(favFoodCombo->findText("Swiss") != -1);
+  QVERIFY(favFoodCombo->findText("Pepperjack") != -1);
+
+  //Change to chips and verify new valid values
+  QSignalSpy badValSpy(model, SIGNAL(badValue(QModelIndex, QString)));
+  QModelIndex favFoodTypeWidgetIndex = getWidgetIndex(FavFoodTypeIndex);
+  QLineEdit* favFoodTypeEdit = (QLineEdit*)delegate->createEditor(
+    0, genericStyleItem, favFoodTypeWidgetIndex);
+  favFoodTypeEdit->setText("Chips");
+  clicker.start(QThread::IdlePriority);
+  delegate->setModelData(favFoodTypeEdit, model, favFoodTypeWidgetIndex);
+  QCOMPARE(badValSpy.count(), 1);
+  favFoodCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, favFoodWidgetIndex);
+  QCOMPARE(favFoodCombo->count(),3);
+  QVERIFY(favFoodCombo->findText("Lays") != -1);
+  QVERIFY(favFoodCombo->findText("Ruffles") != -1);
+  QVERIFY(favFoodCombo->findText("Pringles") != -1);
+
+  //Change to blah and validate ther validator is now null
+  favFoodTypeEdit->setText("blah");
+  delegate->setModelData(favFoodTypeEdit, model, favFoodTypeWidgetIndex);
+  QVERIFY(model->getValidator(FavFoodIndex).is_null());
+
+  //Change Back to chips and verify that the valid vlues have returned.
+  favFoodTypeEdit->setText("Chips");
+  delegate->setModelData(favFoodTypeEdit, model, favFoodTypeWidgetIndex);
+  favFoodCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, favFoodWidgetIndex);
+  QCOMPARE(favFoodCombo->count(),3);
+  QVERIFY(favFoodCombo->findText("Lays") != -1);
+  QVERIFY(favFoodCombo->findText("Ruffles") != -1);
+  QVERIFY(favFoodCombo->findText("Pringles") != -1);
 
 
+
+  
 
   cleaner.remove(model);
   cleaner.remove(treeView);

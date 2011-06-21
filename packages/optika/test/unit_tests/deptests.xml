@@ -112,6 +112,12 @@
   <Parameter name="BoolTemp" type="double" value="0"
     id="20" docString="The temperature"/>
 
+
+  <Parameter name="FavFoodType" type="string" value="Cheese"
+    id="21" docString="The type of your favorite food"/>
+  <Parameter name="FavFood" type="string" value="American"
+    id="22" docString="Your favorite food"/>
+
   <Validators>
     <Validator type="StringValidator" validatorId="0">
       <String value="American"/>
@@ -120,6 +126,17 @@
     </Validator>
     <Validator type="EnhancedNumberValidator(double)" validatorId="1"
       min="0" max="50"/>
+
+    <Validator type="StringValidator" validatorId="2">
+      <String value="American"/>
+      <String value="Swiss"/>
+      <String value="Pepperjack"/>
+    </Validator>
+    <Validator type="StringValidator" validatorId="3">
+      <String value="Lays"/>
+      <String value="Ruffles"/>
+      <String value="Pringles"/>
+    </Validator>
   </Validators>
   <Dependencies name="My dep sheet">
     <Dependency showIf="true" type="BoolVisualDependency">
@@ -166,6 +183,14 @@
     >
       <Dependee parameterId="19"/>
       <Dependent parameterId="20"/>
+    </Dependency>
+    <Dependency type="StringValidatorDependency">
+      <Dependee parameterId="21"/>
+      <Dependent parameterId="22"/>
+      <ValuesAndValidators>
+        <Pair value="Cheese" validatorId="2"/>
+        <Pair value="Chips" validatorId="3"/>
+      </ValuesAndValidators>
     </Dependency>
   </Dependencies>
 </ParameterList>
