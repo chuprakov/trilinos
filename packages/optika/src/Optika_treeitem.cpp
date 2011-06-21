@@ -233,8 +233,6 @@ void TreeItem::changeValueForArray(QVariant value, QString type){
 	else if(type == stringId){
 		parameterEntry->setValue(value.value<Array<std::string> >(), false,
 					 parameterEntry->docString(), parameterEntry->validator());
-    Array<std::string> extracted = value.value<Array<std::string> >();
-    int k =0;
 	}
 }
 

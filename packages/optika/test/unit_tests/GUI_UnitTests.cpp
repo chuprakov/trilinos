@@ -82,6 +82,9 @@ void OptikaGUITests::cleanupTestCase(){
     QString::fromStdString( #NAME) );  \
   QModelIndex NAME##TypeIndex = NAME##Index.sibling(NAME##Index.row(),2); \
   QVERIFY( NAME##TypeIndex.isValid()); \
+  std::cout <<  \
+    MODEL->data( NAME##TypeIndex, Qt::DisplayRole).toString().toStdString() \
+    <<std::endl; \
   QCOMPARE( MODEL->data( NAME##TypeIndex, Qt::DisplayRole).toString(), TYPE );
 
 

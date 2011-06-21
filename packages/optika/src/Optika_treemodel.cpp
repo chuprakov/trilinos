@@ -399,12 +399,7 @@ void TreeModel::insertParameter(RCP<ParameterEntry> parameter, std::string name,
 			values.append(arrayEntryToVariant(parameter, determinedId));
 			values.append(QString(arrayId + " "+ determinedId));
 		}
-  }
-  else{
-    values.append("");
-    values.append("");
-  }
-		/*else{
+		else{
 			values.append("");
 			values.append("");
 			parent->appendChild(new TreeItem(values, parameter, parent, true));
@@ -416,7 +411,7 @@ void TreeModel::insertParameter(RCP<ParameterEntry> parameter, std::string name,
 		values.append("");
 		parent->appendChild(new TreeItem(values, parameter, parent, true));
 		return;
-	}*/
+	}
 	parent->appendChild(new TreeItem(values, parameter, parent));
 }
 
