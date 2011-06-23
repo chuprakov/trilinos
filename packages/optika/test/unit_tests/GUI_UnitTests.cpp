@@ -302,8 +302,38 @@ void OptikaGUITests::dependencyTests(){
   GET_ENTRY_INDEX(validParameters, FondFood, model)
   QVERIFY(nonnull(model->getValidator(FondFoodIndex)));
   QModelIndex fondFoodWidgetIndex = getWidgetIndex(FondFoodIndex);
+  QComboBox* fondFoodCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, fondFoodWidgetIndex);
+  QCOMPARE(fondFoodCombo->count(), 2);
+  QVERIFY(fondFoodCombo->findText("Cheese") != -1);
+  QVERIFY(fondFoodCombo->findText("Bread") != -1);
+
+  QModelIndex fondTempWidgetIndex = getWidgetIndex(FondTempIndex);
+  QDoubleSpinBox* fondTempSpinner = (QDoubleSpinBox*)delegate->createEditor(
+    0, genericStyleItem, fondTempWidgetIndex);
+  fondTempSpinner->setValue(120.1);
+  delegate->setModelData(fondTempSpinner, model, fondTempWidgetIndex);
+  fondFoodCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, fondFoodWidgetIndex);
+  QCOMPARE(fondFoodCombo->count(), 2);
+  QVERIFY(fondFoodCombo->findText("Chicken") != -1);
+  QVERIFY(fondFoodCombo->findText("Beef") != -1);
+
+  fondTempSpinner->setValue(180.1);
+  delegate->setModelData(fondTempSpinner, model, fondTempWidgetIndex);
+  QVERIFY(model->getValidator(FondFoodIndex).is_null());
+  QLineEdit* fondFoodLineEdit = (QLineEdit*)delegate->createEditor(
+    0, genericStyleItem, fondFoodWidgetIndex);
+  QVERIFY(fondFoodLineEdit != NULL);
   
 
+  fondTempSpinner->setValue(90);
+  delegate->setModelData(fondTempSpinner, model, fondTempWidgetIndex);
+  fondFoodCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, fondFoodWidgetIndex);
+  QCOMPARE(fondFoodCombo->count(), 2);
+  QVERIFY(fondFoodCombo->findText("Cheese") != -1);
+  QVERIFY(fondFoodCombo->findText("Bread") != -1);
 
   
 
