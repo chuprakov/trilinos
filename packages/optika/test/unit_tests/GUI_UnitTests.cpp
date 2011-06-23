@@ -117,9 +117,9 @@ void OptikaGUITests::typeTest(){
   cleaner.add(model);
 
   VERIFY_PARAMETER_TYPE(My_List, MaxIters, intId, model)
-  VERIFY_PARAMETER_TYPE(My_List, Doublepointer, unrecognizedId, model);
-  VERIFY_PARAMETER_TYPE(My_List, Tolerance, doubleId, model);
-  VERIFY_PARAMETER_TYPE(My_List, DoublePointerArray, unrecognizedId, model);
+  VERIFY_PARAMETER_TYPE(My_List, Doublepointer, unrecognizedId, model)
+  VERIFY_PARAMETER_TYPE(My_List, Tolerance, doubleId, model)
+  VERIFY_PARAMETER_TYPE(My_List, DoublePointerArray, unrecognizedId, model)
   VERIFY_PARAMETER_TYPE(My_List, IntArray, arrayId + " " + intId, model);
   cleaner.remove(model);
   delete model; 
