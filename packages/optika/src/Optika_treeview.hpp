@@ -51,6 +51,7 @@ public:
 	 * 
 	 * @param treeModel The Tree Model being used with the TreeView.
 	 * @param delegate The delegate to be used with the TreeView.
+   * @param parent The parent widget.
 	 */
 	TreeView(TreeModel *treeModel, Delegate *delegate, QWidget* parent=0);
 

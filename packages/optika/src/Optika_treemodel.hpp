@@ -196,6 +196,11 @@ public:
 	 */
 	QModelIndex findParameterEntryIndex(RCP<const ParameterEntry> parameterEntry);
 
+  /**
+   * Returns constant representing the RawDataRole
+   *
+   * @return The constant representing the RawDataRole.
+   */
   static const int getRawDataRole(){
     static const int RawDataRole = Qt::UserRole;
     return RawDataRole;
