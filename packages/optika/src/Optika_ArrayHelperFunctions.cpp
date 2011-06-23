@@ -29,24 +29,6 @@
 
 namespace Optika{
 
-
-bool doesParameterContainArray(RCP<const ParameterEntry> parameter){
-	std::string typeName = parameter->getAny(false).typeName();
-	return typeName.find("Teuchos")!=std::string::npos && typeName.find("Array")!=std::string::npos;	
-}
-
-QStringList getValues(QString& values){
-	values = values.remove("{");
-	values = values.remove("}");
-	QStringList toReturn = values.split(",");
-	for(int i = 0; i < toReturn.size(); ++i){
-		if(toReturn[i].at(0) == QChar(' ')){
-			toReturn[i] = toReturn[i].remove(0,1);
-		}
-	}
-	return toReturn;
-}
-
 QString determineArrayType(RCP<const ParameterEntry> parameter){
 	any anyArray = parameter->getAny();
 	if(anyArray.type() == typeid(Array<int>)){
@@ -67,28 +49,6 @@ QString determineArrayType(RCP<const ParameterEntry> parameter){
 	else{
 		return unrecognizedId;		
 	}
-}
-
-template <>
-Array<std::string> fromStringToArray<std::string>(QString arrayString){
-	arrayString = arrayString.remove("{");
-	arrayString = arrayString.remove("}");
-	QStringList tempValues = arrayString.split(",");
-	for(int i = 0; i < tempValues.size(); ++i){
-		if(tempValues[i].at(0) == QChar(' ')){
-			tempValues[i] = tempValues[i].remove(0,1);
-		}
-	}
-	QList<QVariant> values;
-	for(int i = 0; i<tempValues.size(); ++i){
-		values.append(tempValues[i]);
-	}
-	Array<std::string> toReturn;
-	for(int i = 0; i<values.size(); ++i){
-		toReturn.append(values[i].value<QString>().toStdString());	
-	}
-	return toReturn;
-
 }
 
 QVariant arrayEntryToVariant(
