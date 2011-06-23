@@ -213,25 +213,25 @@ void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QM
   }
 }
 
-QVariant Delegate::extractValueFromArray(QWidget* editor, QString itemType) const
+QVariant Delegate::extractValueFromArray(QWidget* editor, QString type) const
 {
-  if(itemType == intId){
+  if(type == intId){
     IntArrayWidget* intEditor = (IntArrayWidget*)editor;
     return QVariant::fromValue(intEditor->getData());
   }
-  else if(itemType == shortId){
+  else if(type == shortId){
     ShortArrayWidget* shortEditor = (ShortArrayWidget*)editor;
     return QVariant::fromValue(shortEditor->getData());
   }
-  else if(itemType == floatId){
+  else if(type == floatId){
     FloatArrayWidget* floatEditor = (FloatArrayWidget*)editor;
     return QVariant::fromValue(floatEditor->getData());
   }
-  else if(itemType == doubleId){
+  else if(type == doubleId){
     DoubleArrayWidget* doubleEditor = (DoubleArrayWidget*)editor;
     return QVariant::fromValue(doubleEditor->getData());
   }
-  else if(itemType == stringId){
+  else if(type == stringId){
     StringArrayWidget* stringEditor = (StringArrayWidget*)editor;
     return QVariant::fromValue(stringEditor->getData());
   }

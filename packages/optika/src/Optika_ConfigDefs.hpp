@@ -39,6 +39,9 @@ namespace Optika{
   
 } //namespace Optika
 
+//Declarations of the supported Array types
+//as QMEATTYPES so that we can encapsulate them
+//in QVariant objects.
 Q_DECLARE_METATYPE(Teuchos::Array<int>)
 Q_DECLARE_METATYPE(Teuchos::Array<short>)
 Q_DECLARE_METATYPE(Teuchos::Array<float>)
