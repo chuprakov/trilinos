@@ -118,6 +118,11 @@
   <Parameter name="FavFood" type="string" value="American"
     id="22" docString="Your favorite food"/>
 
+  <Parameter name="FondTemp" type="double" value="100"
+    id="23" docString="The number of dimensions being used"/>
+  <Parameter name="FondFood" type="string" value="Cheese"
+    id="24" docString="The food we're fonduing"/>
+
   <Validators>
     <Validator type="StringValidator" validatorId="0">
       <String value="American"/>
@@ -136,6 +141,15 @@
       <String value="Lays"/>
       <String value="Ruffles"/>
       <String value="Pringles"/>
+    </Validator>
+
+    <Validator type="StringValidator" validatorId="4">
+      <String value="Cheese"/>
+      <String value="Bread"/>
+    </Validator>
+    <Validator type="StringValidator" validatorId="5">
+      <String value="Chicken"/>
+      <String value="Beef"/>
     </Validator>
   </Validators>
   <Dependencies name="My dep sheet">
@@ -191,6 +205,15 @@
         <Pair value="Cheese" validatorId="2"/>
         <Pair value="Chips" validatorId="3"/>
       </ValuesAndValidators>
+    </Dependency>
+
+    <Dependency type="RangeValidatorDependency(double)">
+      <Dependee parameterId="23"/>
+      <Dependent parameterId="24"/>
+      <RangesAndValidators>
+        <Pair min="80" max="120" validatorId="4"/>
+        <Pair min="120" max="180" validatorId="5"/>
+      </RangesAndValidators>
     </Dependency>
   </Dependencies>
 </ParameterList>

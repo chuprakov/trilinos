@@ -26,7 +26,6 @@
 // ***********************************************************************
 // @HEADER
 
-#include <QVariant>
 #include "Teuchos_UnitTestHarness.hpp"
 #include "Optika_ArrayHelperFunctions.hpp"
 

@@ -36,16 +36,6 @@
 #include <QSpinBox>
 #include <iostream>
 
-/**
- *  THIS IS JUST A PROOF OF CONCEPT!
- *  I just wanted to see if I could get the QTest
- *  framework working with our CTest Framework.
- *  I don't have time right now to actually
- *  do extensive GUI unit testing. I will come
- *  back and actually write the tests a.s.a.p.
- *
- *  kln 21/01/2011
- */
 namespace Optika{
 
 class ModalClicker : public QThread{
@@ -306,6 +296,13 @@ void OptikaGUITests::dependencyTests(){
   QVERIFY(favFoodCombo->findText("Ruffles") != -1);
   QVERIFY(favFoodCombo->findText("Pringles") != -1);
 
+
+  //Test RangeValidatorDependency
+  GET_ENTRY_INDEX(validParameters, FondTemp, model)
+  GET_ENTRY_INDEX(validParameters, FondFood, model)
+  QVERIFY(nonnull(model->getValidator(FondFoodIndex)));
+  QModelIndex fondFoodWidgetIndex = getWidgetIndex(FondFoodIndex);
+  
 
 
   
