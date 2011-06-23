@@ -127,7 +127,7 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 		}
 	}
 	else if(itemType.contains(arrayId)){
-		editor = getArrayEditor(index, itemType.section(" ", -1), parent);
+		editor = getArrayEditor(index, getArrayType(itemType), parent);
 	}
 
 	return editor;

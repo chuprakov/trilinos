@@ -55,6 +55,14 @@ template <class S>
 class GenericArrayWidget : public QDialog{
 public:
 
+  /**
+   * Constructs a GenericArrayWidget.
+   *
+   * @param name The name of the parmaeter being edited.
+   * @param type The array's template type.
+   * @param validator  The validator on the array (null if there is none).
+   * @param parent The parent widget.
+   */
 	GenericArrayWidget(
     QString name, 
     QString type, 
@@ -75,10 +83,19 @@ public:
 	 */
 	void doAcceptWork();
 
+  /**
+   * Return the array backing this widget.
+   *
+   * @param The array backing this widget.
+   */
   const Array<S> getData() const{
     return baseArray;
   }
 
+  /**
+   * Initialize the data in the widget with the currecnt values of the baseArray as
+   * well as setting up the widgets layout.
+   */
   void initData(Array<S> array){
     baseArray = array;
     setupArrayLayout();
@@ -139,6 +156,11 @@ private:
 	 */
 	void setupArrayLayout();
 
+  /**
+   * Get a new array reflecting the current values entered in the widgets.
+   *
+   * @return A new array reflecting the currecnt values entered in the widgets.
+   */
   virtual Array<S> getArrayFromWidgets() = 0;
 };
 
@@ -204,6 +226,14 @@ class IntArrayWidget: public GenericArrayWidget<int>{
 	Q_OBJECT
 public:
 
+  /**
+   * Constructs a IntArrayWidget.
+   *
+   * @param name The name of the parmaeter being edited.
+   * @param type The array's template type.
+   * @param validator  The validator on the array (null if there is none).
+   * @param parent The parent widget.
+   */
 	IntArrayWidget(
     QString name, 
     QString type, 
@@ -245,6 +275,14 @@ class ShortArrayWidget: public GenericArrayWidget<short>
 	Q_OBJECT
 public:
 
+  /**
+   * Constructs a ShortArrayWidget.
+   *
+   * @param name The name of the parmaeter being edited.
+   * @param type The array's template type.
+   * @param validator  The validator on the array (null if there is none).
+   * @param parent The parent widget.
+   */
 	ShortArrayWidget(
     QString name, 
     QString type, 
@@ -285,6 +323,14 @@ class DoubleArrayWidget: public GenericArrayWidget<double>
 	Q_OBJECT
 public:
 
+  /**
+   * Constructs a DoubleArrayWidget.
+   *
+   * @param name The name of the parmaeter being edited.
+   * @param type The array's template type.
+   * @param validator  The validator on the array (null if there is none).
+   * @param parent The parent widget.
+   */
 	DoubleArrayWidget(
     QString name, 
     QString type, 
@@ -323,6 +369,14 @@ class FloatArrayWidget: public GenericArrayWidget<float>
 {
 	Q_OBJECT
 public:
+  /**
+   * Constructs a FloatArrayWidget.
+   *
+   * @param name The name of the parmaeter being edited.
+   * @param type The array's template type.
+   * @param validator  The validator on the array (null if there is none).
+   * @param parent The parent widget.
+   */
 	FloatArrayWidget(
     QString name, 
     QString type, 
@@ -360,6 +414,14 @@ private:
 class StringArrayWidget : public GenericArrayWidget<std::string>{
 	Q_OBJECT
 public:
+  /**
+   * Constructs a StringArrayWidget.
+   *
+   * @param name The name of the parmaeter being edited.
+   * @param type The array's template type.
+   * @param validator  The validator on the array (null if there is none).
+   * @param parent The parent widget.
+   */
 	StringArrayWidget(
     QString name, 
     QString type, 
