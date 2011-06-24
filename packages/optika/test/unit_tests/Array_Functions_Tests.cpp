@@ -41,5 +41,52 @@ TEUCHOS_UNIT_TEST(Array_Helper_Functions, ArrayToQVariant){
   out << "Extracted Array: " << extractedArray << std::endl;
 }
 
+TEUCHOS_UNIT_TEST(Array_Helper_Functions, DetermineArrayType){
+  Array<int> intArray  = Teuchos::tuple<int>(5,6,7,8);
+  ParameterEntry intParam(intArray);
+  TEST_EQUALITY(
+    determineArrayType(rcpFromRef(intParam)).toStdString(), 
+    intId.toStdString());
+
+  Array<double> doubleArray = 
+    Teuchos::tuple<double>(5.0,6.4,7.5,8.9);
+  ParameterEntry doubleParam(doubleArray);
+  TEST_EQUALITY(
+    determineArrayType(rcpFromRef(doubleParam)).toStdString(), 
+    doubleId.toStdString());
+
+  Array<std::string> stringArray = 
+    Teuchos::tuple<std::string>("hello", "one");
+  ParameterEntry stringParam(stringArray);
+  TEST_EQUALITY(
+    determineArrayType(rcpFromRef(stringParam)).toStdString(), 
+    stringId.toStdString());
+}
+
+TEUCHOS_UNIT_TEST(Array_Helper_Functions, GetArrayType){
+  TEST_EQUALITY(
+    intId.toStdString(), 
+    getArrayType(arrayId + " " + intId).toStdString());
+
+  TEST_EQUALITY(
+    doubleId.toStdString(), 
+    getArrayType(arrayId + " " + doubleId).toStdString());
+
+  TEST_EQUALITY(
+    stringId.toStdString(), 
+    getArrayType(arrayId + " " + stringId).toStdString());
+
+}
+
+TEUCHOS_UNIT_TEST(Array_Helper_Functions, IsArrayEmpty){
+  Array<int> intArray;
+  ParameterEntry intArrayParam(intArray);
+  TEST_ASSERT(isArrayEmpty(rcpFromRef(intArrayParam), intId));
+
+  Array<std::string> stringArray(4, "blah");
+  ParameterEntry stringArrayParam(stringArray);
+  TEST_ASSERT(!isArrayEmpty(rcpFromRef(stringArrayParam), stringId));
+
+}
 
 } //end namespace
