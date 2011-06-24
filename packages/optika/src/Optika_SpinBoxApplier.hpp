@@ -34,11 +34,32 @@
 #include <limits>
 #include "Optika_ConfigDefs.hpp"
 
+/*! \file Optika_SpinBoxApplier.hpp
+    \brief A collection of objects which
+    apply the restriction of a EnhancedNumberValidator
+    to a spinbox.
+*/
+
 namespace Optika{
 
+/**
+ * \brief A templated class that applies the minimum,
+ * maximum and step specified in an EnhancedNumberValidator
+ * onto a QSpingBox.
+ */
 template<class S> class SpinBoxApplier{
 public:
+  //! @name Applier Functions
+  //@{
 
+  /**
+   * \brief Applied attributes of the validator to the spin box.
+   *
+   * @param validator Validator whose attributes are to be applied to
+   * the spinbox
+   * @param spinBox A point to the spinbox upon which the validator's
+   * attributes should be applied.
+   */
 	static void applyToSpinBox(RCP<const EnhancedNumberValidator<S> > validator, QSpinBox *spinBox){
 		if(!is_null(validator)){
 			spinBox->setMinimum(validator->getMin());
@@ -51,14 +72,23 @@ public:
 			spinBox->setSingleStep(EnhancedNumberTraits<S>::defaultStep());
 		}
 	}
+
+  //@}
+
 };
 
+/**
+ * \brief Template specialzation on type in of the SpinBoxApplier
+ */
 template <>
 class SpinBoxApplier<int>{
 public:
+  
+  //! @name Applier Functions
+  //@{
 
 	/**
-	 * Applies an EnhancedNumberValidator of type int to a QSpinBox
+	 * \brief Applies an EnhancedNumberValidator of type int to a QSpinBox
 	 *
 	 * @param validator The validator to be useed.
 	 * @param spinBox The spinBox on which to apply the validator.
@@ -75,17 +105,22 @@ public:
 			spinBox->setSingleStep(EnhancedNumberTraits<int>::defaultStep());
 		}
 	}
+
+  //@}
 };
 
 /**
- * A specific validator used to validate values of type short.
+ * \brief A specific validator used to validate values of type short.
  */
 template<>
 class SpinBoxApplier<short>{
 public:
 
+  //! @name Applier Functions
+  //@{
+
 	/**
-	 * Applies an EnhancedNumberValidator of type short to a QSpinBox
+	 * \brief Applies an EnhancedNumberValidator of type short to a QSpinBox
 	 *
 	 * @param validator The validator to be useed.
 	 * @param spinBox The spinBox on which to apply the validator.
@@ -102,10 +137,12 @@ public:
 			spinBox->setSingleStep(EnhancedNumberTraits<short>::defaultStep());
 		}
 	}
+
+  //@}
 };
 
 /**
- * A specific validator used to validate entry's of type long long int.
+ * \brief A specific validator used to validate entry's of type long long int.
  */
 /*template<long long int>
 class EnhancedNumberValidator<long long int> : public EnhancedNumberValidator<long long int>{
@@ -146,12 +183,19 @@ public:
 	}
 };*/
 
+/**
+ * \brief A template spcialization of the SpinBoxApplier
+ * class on the type double.
+ */
 template<>
 class SpinBoxApplier<double>{
 public:
 
+  //! @name Applier Functions
+  //@{
+
 	/**
-	 * Applies an EnhancedNumberValidator of type double to a QDoubleSpinBox
+	 * \brief Applies an EnhancedNumberValidator of type double to a QDoubleSpinBox
 	 *
 	 * @param validator The validator to be useed.
 	 * @param spinBox The SpinBox on which to apply the validator.
@@ -170,14 +214,23 @@ public:
 			spinBox->setDecimals(EnhancedNumberTraits<float>::defaultPrecision());
 		}
 	}
+
+  //@}
 };
 
+/**
+ * \brief A template specialzation of the SpinBoxApplier
+ * class on the type float.
+ */
 template<>
 class SpinBoxApplier<float>{
 public:
 
+  //! @name Applier Functions
+  //@{
+
 	/**
-	 * Applies an EnhancedNumberValidator of type float to a QDoubleSpinBox.
+	 * \brief Applies an EnhancedNumberValidator of type float to a QDoubleSpinBox.
 	 *
 	 * @param validator The validator to be useed.
 	 * @param spinBox The SpinBox on which to apply the validator.
@@ -196,6 +249,8 @@ public:
 			spinBox->setDecimals(EnhancedNumberTraits<float>::defaultPrecision());
 		}
 	}
+
+  //@}
 }; 
 
 }
