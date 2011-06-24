@@ -30,24 +30,37 @@
 #include <QTreeView>
 #include <QQueue>
 #include "Optika_delegate.hpp"
+
+/*! \file Optika_treeview.hpp
+    \brief The view used in Optikas implementation
+    of the MVC framework.
+*/
 namespace Optika{
 
 class Delegate;
 class TreeModel;
 
 /**
- * Class used to view TreeModels
+ * \brief Class used to view TreeModels
  */
 class TreeView : public QTreeView{
 	Q_OBJECT
 public:
+  /** \name Public types */
+  //@{
+
 	/**
-	 * A pair representing an invalidIndex and why it's invalid
+	 * \brief A pair representing an invalidIndex and why it's invalid
 	 */
 	typedef std::pair<QModelIndex, QString> invalidIndex;
 
+  //@}
+
+  /** \name Constructors */
+  //@{
+
 	/**
-	 * Constructs a TreeView.
+	 * \brief Constructs a TreeView.
 	 * 
 	 * @param treeModel The Tree Model being used with the TreeView.
 	 * @param delegate The delegate to be used with the TreeView.
@@ -55,9 +68,15 @@ public:
 	 */
 	TreeView(TreeModel *treeModel, Delegate *delegate, QWidget* parent=0);
 
+  //@}
+
 public slots:
+
+  /** \name Public Slots */
+  //@{
+
 	/**
-	 * Used to change the visiblity of a row from hidden to shown.
+	 * \brief Used to change the visiblity of a row from hidden to shown.
 	 *
 	 * @param row The row to be shwon.
 	 * @param parent The parent of the item to be shown.
@@ -65,7 +84,7 @@ public slots:
 	void showRow(int row, const QModelIndex& parent);
 
 	/**
-	 * Used to change the visiblity of a row from shown to hidden.
+	 * \brief Used to change the visiblity of a row from shown to hidden.
 	 *
 	 * @param row The row to be shwon.
 	 * @param parent The parent of the item to be hidden.
@@ -73,7 +92,7 @@ public slots:
 	void hideRow(int row, const QModelIndex& parent);
 
 	/**
-	 * Handles any badValue signals that might be emitted by the
+	 * \brief Handles any badValue signals that might be emitted by the
 	 * TreeModel.
 	 *
 	 * @param badValueIndex The index of the item with the bad value.
@@ -83,19 +102,26 @@ public slots:
 	void handleBadValue(QModelIndex badValueIndex, QString message);
 
 	/**
-	 * Checks to see if there are any other invalid indicies.
+	 * \brief Checks to see if there are any other invalid indicies.
 	 * If there are, it dequeues the next invalidIndex from the 
 	 * invalidIndicies queue and calls the handleBadValue function
 	 * with it.
 	 */
 	void checkForOtherBadValues();
 
+  //@}
+
 private:
+  /** \name Private Members */
+  //@{
+  
 	/**
-	 * A Queue containing any invalid indicies that need to be
+	 * \brief A Queue containing any invalid indicies that need to be
 	 * delt with.
 	 */
 	QQueue<invalidIndex> invalidInicies; 
+
+  //@}
 };
 
 
