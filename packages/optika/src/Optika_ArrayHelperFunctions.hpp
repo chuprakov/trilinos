@@ -31,10 +31,14 @@
 #include <QVariant>
 #include "Optika_Types.hpp"
 #include "Optika_ConfigDefs.hpp"
+/*! \file Opitka_ArrayHelperFunctions.hpp
+    \brief Helper functions used for manipulating
+    and querying Arrays
+*/
 namespace Optika{
 
 /**
- * Determines the type of array stored in a parameter.
+ * \brief Determines the type of array stored in a parameter.
  *
  * @param parameter The parameter whose array type is in question.
  * @return A QString containing the type of array in the parameter.
@@ -42,7 +46,7 @@ namespace Optika{
 QString determineArrayType(RCP<const ParameterEntry> parameter);
 
 /**
- * Creates a QVariant containing the array that is in
+ * \brief Creates a QVariant containing the array that is in
  * arrayEntry.
  *
  * @param arrayEntry The parameter entry containing the array.
@@ -53,7 +57,7 @@ QVariant arrayEntryToVariant(
   RCP<const ParameterEntry> arrayEntry, QString type);
 
 /**
- * Given a type string, determines the template type of the Array.
+ * \brief Given a type string, determines the template type of the Array.
  *
  * @param itemType The type string describing the array.
  * @return The template type of the Array.
@@ -61,7 +65,7 @@ QVariant arrayEntryToVariant(
 QString getArrayType(QString itemType);
 
 /**
- * Determines wether or no the array inside a ParameterEntry is empty.
+ * \brief Determines wether or no the array inside a ParameterEntry is empty.
  *
  * @param arrayEntry The parameter entry containging the array.
  * @param type The template type of the array.

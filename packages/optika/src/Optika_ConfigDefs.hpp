@@ -1,5 +1,11 @@
 #ifndef OPTIKA_CONFIG_DEFS_HPP
 #define OPTIKA_CONFIG_DEFS_HPP
+
+/*! \file Optika_ConfigDefs.hpp
+ * \brief A Header file that includes some of the commonly used includes
+ * throughtout Optika as well as some overall information used throughout
+ * Optika.
+ */
 #include "Teuchos_StandardParameterEntryValidators.hpp"
 #include "Teuchos_StandardDependencies.hpp"
 #include "Teuchos_DependencySheet.hpp"
