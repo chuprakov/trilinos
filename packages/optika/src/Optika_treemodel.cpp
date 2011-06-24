@@ -25,7 +25,7 @@
 // 
 // ***********************************************************************
 // @HEADER
-#include <iostream>
+#include <QXmlStreamReader>
 #include "Optika_treemodel.hpp"
 #include "Teuchos_XMLParameterListWriter.hpp"
 #include <QTextStream>

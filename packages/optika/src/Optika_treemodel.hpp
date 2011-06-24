@@ -27,33 +27,36 @@
 // @HEADER
 #ifndef OPTIKA_MODEL_HPP_
 #define OPTIKA_MODEL_HPP_
-/*
- * Optika_model.hpp
- *
- *  Created on: Apr 21, 2009
- *      Author: Kurtis Nusbaum
- */
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
 #include <QDir>
 #include "Optika_treeitem.hpp"
 
+/*! \file Optika_TreeModel.hpp
+    \brief The model used by Optika
+    in its implementation of the MVC
+    framework.
+*/
 
 namespace Optika{
 
 class TreeItem;
 
 /**
- * TreeModel is a type of QAbstractItemModel that has a Tree like structure.
+ * \brief TreeModel is a type of QAbstractItemModel that has a Tree like structure.
  *
  * Note: For all undocumented functions, please refer to the Qt api. They will have a good desciption.
  */
 class TreeModel : public QAbstractItemModel{
 	Q_OBJECT
 public:
+
+  /** \name Constructors/Destructor */
+  //@{
+
 	/**
-	 * Constructs the TreeModel.
+	 * \brief Constructs the TreeModel.
 	 * 
 	 * @param validParameters A list of parameters for which the users must enter values. Note the Parameter List will be edited.
 	 * All user input will be stored in it.
@@ -63,7 +66,7 @@ public:
 	TreeModel(RCP<ParameterList> validParameters, QString saveFileName=QString(), QObject *parent=0);
 
 	/**
-	 * Constructs the TreeModel.
+	 * \brief Constructs the TreeModel.
 	 * 
 	 * @param validParameters A list of parameters for which the users must enter values.
 	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
@@ -76,21 +79,36 @@ public:
 
 	/**
 	 *
-	 * Deconstructor for the TreeModel.
+	 * \brief Deconstructor for the TreeModel.
 	 */
 	~TreeModel();
 
+  /** \name Overridden from QAbstractItemModel */
+  //@{
+
+  /** * \brief .  */
 	QVariant data(const QModelIndex &index, int role) const;
+  /** * \brief .  */
 	Qt::ItemFlags flags(const QModelIndex &index) const;
+  /** * \brief .  */
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+  /** * \brief .  */
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+  /** * \brief .  */
 	QModelIndex parent(const QModelIndex &index) const;
+  /** * \brief .  */
 	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+  /** * \brief .  */
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
+  /** * \brief .  */
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
+  //! @name Helper Functions
+  //@{
 
 	/**
+   * \brief Issues any signals that need to be emitted right away.
+   *
 	 * If this TreeModel has a dependent Parameter List, then all the depndencies need to be evaluated before the Parameter List may be displayed.
 	 * Certain items might need to be hidden before the user even starts entering data. 
 	 * This function goes through all of the depndees in the Dependent Parameter List and issues a signal saying they've changed.
@@ -99,27 +117,43 @@ public:
 	 */
 	void issueInitilizationSignals();
 
+  //@}
+
+  //! @name Debug Functions
+  //@{
+  
 	/**
-	 * Prints out the model.
+	 * \brief Prints out the model.
 	 */
 	void printOut() const;
 
+  //@}
+
+  //! @name Input/Output Functions
+  //@{
+
 	/**
-	 * Writes out the state of the current parameters in xml format.
+	 * \brief Writes out the state of the current parameters in xml format.
 	 *
 	 * @param fileName The name of the file to which the TreeModel should write the XML output.
 	 */
 	bool writeOutput(QString fileName);
 
 	/**
-	 * Reads an xml file that describes the state of current parameters in xml format.
+	 * \brief Reads an xml file that describes the state of current parameters in xml format.
 	 *
 	 * @param fileName The name of the file from which the TreeModel should read parameter values.
 	 */
 	void readInput(QString fileName);
 
+  //@}
+
+  //! @name Getters and Setters
+  //@{
+  
 	/**
-	 * Gets the name of the save file with which the TreeModel is associated.
+	 * \brief Gets the name of the save file with which the TreeModel is associated.
+   *
 	 * If the TreeModel has yet to be saved and thus has no save file associated with it, the funtion will return an empty string.
 	 *
 	 * @return The name of the save file with which the TreeModel is associated.
@@ -127,19 +161,19 @@ public:
 	QString getSaveFileName();
 
 	/**
-	 * Determines wether or not the current state of TreeModel has been saved.
+	 * \brief Determines wether or not the current state of TreeModel has been saved.
 	 *
 	 * @return True if the current state of the TreeModel has been saved. False otherwise.
 	 */
 	bool isSaved();
 
 	/**
-	 * Resets all the inputs to their default values.
+	 * \brief Resets all the inputs to their default values.
 	 */
 	void reset();
 
 	/**
-	 * Returns the type of item located at the specified QModelIndex.
+	 * \brief Returns the type of item located at the specified QModelIndex.
 	 *
 	 * @param index The index of the TreeItem.
 	 * @return The type of the item at the index.
@@ -147,14 +181,14 @@ public:
 	QString itemType(const QModelIndex &index) const;
 
 	/**
-	 * Determines whether or not a Dependent Parameter List is being used in the TreeModel.
+	 * \brief Determines whether or not a Dependent Parameter List is being used in the TreeModel.
 	 *
 	 * @return True if the TreeModel has dependencies, false otherwise.
 	 */
 	bool hasDependencies();
 
 	/**
-	 * Determines whether or not the value at the valueToCheck 
+	 * \brief Determines whether or not the value at the valueToCheck 
 	 * is valid.
 	 *
 	 * @param valueToCheck The index of the item whose valididty
@@ -164,7 +198,7 @@ public:
 	bool hasValidValue(QModelIndex valueToCheck) const;
 
 	/**
-	 * Gets the validator for a particular TreeItem.
+	 * \brief Gets the validator for a particular TreeItem.
 	 *
 	 * @param index The index of the TreeItem whose validators is sought.
 	 * @return The validator at the given index.
@@ -172,7 +206,7 @@ public:
 	RCP<const ParameterEntryValidator> getValidator(const QModelIndex &index) const;
 
 	/**
-	 * Gets the array for a particular TreeItem.
+	 * \brief Gets the array for a particular TreeItem.
 	 *
 	 * @param index The index of the TreeItem whose arrays is sought.
 	 * @return The array at the given index.
@@ -183,21 +217,26 @@ public:
 	}
 
 	/**
-	 * Get a ParameterList containing all of the parameters at their current settings.
+	 * \brief Get a ParameterList containing all of the parameters at their current settings.
 	 *
 	 * @return A ParameterList containing all of the parameters at their current settings.
 	 */
 	RCP<const ParameterList> getCurrentParameters();
 
 	/**
-	 * Finds the index of a particular parameter entry.
+	 * \brief Finds the index of a particular parameter entry.
 	 *
 	 * @param parameterEntry The ParameterEntry whose index is being sought.
 	 */
 	QModelIndex findParameterEntryIndex(RCP<const ParameterEntry> parameterEntry);
 
+  //@}
+
+  //! @name Constant Getting Functions.
+  //@{
+
   /**
-   * Returns constant representing the RawDataRole
+   * \brief Returns constant representing the RawDataRole
    *
    * @return The constant representing the RawDataRole.
    */
@@ -206,10 +245,15 @@ public:
     return RawDataRole;
   }
 
+  //@}
 
 signals:
+
+  //! @name Public Signals
+  //@{
+
 	/**
-	 * Emitted when a row should be hidden.
+	 * \brief Emitted when a row should be hidden.
 	 *
 	 * @param row The row of the item that should be hidden.
 	 * @param parent The parent of the item that should be hidden.
@@ -217,7 +261,7 @@ signals:
 	void hideData(int row, const QModelIndex& parent);
 
 	/**
-	 * Emitted when a row should be shown.
+	 * \brief Emitted when a row should be shown.
 	 *
 	 * @param row The row of the item that should be shown.
 	 * @param parent The parent of the item that should be shown.
@@ -225,7 +269,7 @@ signals:
 	void showData(int row, const QModelIndex& parent);
 
 	/**
-	 * Emitted when it has been determined that a TreeItem no longer has a valid value.
+	 * \brief Emitted when it has been determined that a TreeItem no longer has a valid value.
 	 *
 	 * @param badItem The index of the item that now has a bad value.
 	 * @param message A message describing what happened to cause the
@@ -233,47 +277,56 @@ signals:
 	 */
 	void badValue(QModelIndex badItem,  QString message);
 
+  //@}
+
 private:
+  /** \name Private Members */
+  //@{
+  
 	/**
-	 * Whether or not the model has been saved since it was last modified.
+	 * \brief Whether or not the model has been saved since it was last modified.
 	 */
 	bool saved;
 
 	/**
-	 * Whether or not the model has any dependencies.
+	 * \brief Whether or not the model has any dependencies.
 	 */
 	bool dependencies;
 
 	/**
-	 * The name of the savefile associated with the model.
+	 * \brief The name of the savefile associated with the model.
 	 */
 	QString saveFileName;
 
 	/**
-	 * The Root item of the model.
+	 * \brief The Root item of the model.
 	 */
 	TreeItem *rootItem;
 
 	/**
-	 * The list of valid parameters.
+	 * \brief The list of valid parameters.
 	 */
 	RCP<ParameterList> validParameters;
 
 	/**
-	 * A canonical list of what the validParameters were when they were first
+	 * \brief A canonical list of what the validParameters were when they were first
 	 * passed to the treemodel. Used by the reset function.
 	 */
 	RCP<const ParameterList> canonicalList;
 
 	/**
-	 * The dependency sheet being used to determine any
+	 * \brief The dependency sheet being used to determine any
 	 * depdendencies between parameters.
 	 */
 	RCP<DependencySheet> dependencySheet;
 
+  //@}
+
+  /** \name Private Functions */
+  //@{
 
 	/**
-	 * Gets the ParameterEntry object given a QModelIndex.
+	 * \brief Gets the ParameterEntry object given a QModelIndex.
 	 *
 	 * @param index Index of the TreeItem for which the ParameterEntry is desired.
 	 * @return The ParameterEntry associated with the QModelIndex.
@@ -282,7 +335,7 @@ private:
     itemEntry(const QModelIndex &index) const;
 
 	/**
-	 * Reads in the parameter list to be represented by the model.
+	 * \brief Reads in the parameter list to be represented by the model.
 	 * 
 	 * @param validParameters The list to be read.
 	 * @param parentItem The initial parent tree item to be used.
@@ -290,7 +343,7 @@ private:
 	void readInParameterList(RCP<ParameterList> validParameters, TreeItem *parentItem);
 
 	/**
-	 * Inserts a new parameter list into the model.
+	 * \brief Inserts a new parameter list into the model.
 	 *
 	 * @param parameterList The ParameterList to be inserted.
 	 * @param listEntry The ParameterEntry of the ParameterList to be inserted.
@@ -300,7 +353,7 @@ private:
 	void insertParameterList(RCP<ParameterList> parameterList, RCP<ParameterEntry> listEntry, std::string name, TreeItem *parent);
 
 	/**
-	 * Inserts a new parameter into the model.
+	 * \brief Inserts a new parameter into the model.
 	 *
 	 * @param listEntry The ParameterEntry of the Parameter to be inserted.
 	 * @param name The name of the Parameter.
@@ -309,28 +362,29 @@ private:
 	void insertParameter(RCP<ParameterEntry> parameter, std::string name, TreeItem *parent);
 
 	/**
-	 * Basic setup shared by each of the constructors
+	 * \brief Basic setup shared by each of the constructors
 	 *
 	 * @param saveFileName The saveFileName parameter passed to the constructors.
 	 */
 	void basicSetup(QString saveFileName);
 
 	/**
-	 * Checks the state of a dependent after it's dependency has been evaluated. Takes
-	 * appropriate action if any more modifications to the model need to be made or if
+	 * \brief Checks the state of a dependent after it's dependency has been evaluated. 
+   *
+   * Takes appropriate action if any more modifications to the model need to be made or if
 	 * the view needs to know anything as a result of the change.
 	 */
 	void checkDependentState(const QModelIndex dependee, RCP<Dependency> dependency);
 
 	/**
-	 * Redraws the array at arrayIndex if it's length has changed. 
+	 * \brief Redraws the array at arrayIndex if it's length has changed. 
 	 *
 	 * @param arrayIndex The index of the array to be redrawn.
 	 */
 	void redrawArray(const QModelIndex arrayIndex);
   
   /**
-   * Finds a list of QModelIndecies whose have associated ParameterEntrys
+   * \brief Finds a list of QModelIndecies whose have associated ParameterEntrys
    * that match the given parameterEntry. 
    * 
    * The fact this returns a list is a
@@ -345,23 +399,32 @@ private:
   QModelIndexList parameterEntryMatch(const QModelIndex &start,
     const RCP<const ParameterEntry> &parameterEntry) const;
 
+  //@}
+
 private slots:
+
+  //! @name Private Slots
+  //@{
+
 	/**
-	 * When the state of any of the MainTree's items is changed, this slot should be called
+	 * \brief When the state of any of the MainTree's items is changed, this slot should be called
 	 */
 	void currentFileNowModified();
 
 	/**
-	 * Listens to see if any data has changed. If so and the item has dependencies, this function will make sure all appropriate signals are emitted,
+	 * \brief Listens to see if any data has changed. 
+   *
+   * If so and the item has dependencies, this function will make sure all appropriate signals are emitted,
 	 * and any changes that need to be made to the model are made.
 	 * 
 	 * @param index1 The start index of the data that changed.
 	 * @param index2 The end index of the data that changed.
 	 */
 	void dataChangedListener(const QModelIndex& index1, const QModelIndex& index2);
+
+  //@}
 };
 
 
-}
-
+} //end namespace 
 #endif /* OPTIKA_MODEL_HPP_ */
