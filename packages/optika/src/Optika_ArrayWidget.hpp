@@ -43,20 +43,32 @@
 #include "Optika_FileNameWidget.hpp"
 #include "Optika_SpinBoxApplier.hpp"
 
+/*! \file Optika_ArrayWidget.hpp
+    \brief A collection of Widgets used to edit
+    Arrays in  Optika.
+*/
+
 namespace Optika {
 
 
 /**
- * A templated abstract base class for all other array editing widgets. Note the absence of the Q_OBJECT
+ * \brief A templated abstract base class for all other array editing widgets. 
+ *
+ * Note the absence of the Q_OBJECT
  * macro. This is becuase classes using the Q_OBJECT macro can't be templated (bummer). The macro is therfore
  * present in the subclasses.
+ *
+ * \reference Array
  */ 
 template <class S>
 class GenericArrayWidget : public QDialog{
 public:
 
+  /** \name Constructor */
+  //@{
+
   /**
-   * Constructs a GenericArrayWidget.
+   * \brief Constructs a GenericArrayWidget.
    *
    * @param name The name of the parmaeter being edited.
    * @param type The array's template type.
@@ -68,7 +80,12 @@ public:
     QString type, 
     const RCP<const ParameterEntryValidator> validator,
     QWidget *parent=0);
+
+  //@}
 	
+  //! @name Attribute/Query Methods 
+  //@{
+
 	/**
 	 * Gets the type of array being edited.
 	 *
@@ -77,11 +94,6 @@ public:
 	QString getType(){
 		return type;
 	}
-
-	/**
-   * Gathers all the user inputed data and closes the dialog.
-	 */
-	void doAcceptWork();
 
   /**
    * Return the array backing this widget.
@@ -92,8 +104,14 @@ public:
     return baseArray;
   }
 
+  //@}
+
+
+  /** @name Miscellaneous */
+  //@{
+
   /**
-   * Initialize the data in the widget with the currecnt values of the baseArray as
+   * \brief Initialize the data in the widget with the currecnt values of the baseArray as
    * well as setting up the widgets layout.
    */
   void initData(Array<S> array){
@@ -102,23 +120,36 @@ public:
   }
 
   /**
-   * Must be implemented as a slot in base classes.
+   * \brief called when the user is done entering data
+   * into the widget. MUST BE IMPLEMENTED AS A SLOT IN
+   * SUBCLASSES!
    */
   virtual void accept() =0;
 
+  //@}
+
 protected:
+
+  /** \name Protected types */
+  //@{
+
 	/**
-	 * Convienece typedef. Represents an array of QWidgets.
+	 * \brief Convienece typedef. Represents an array of QWidgets.
 	 */
 	typedef std::vector<QWidget*> WVector;
 
+  //@}
+
+  /** \name Protected members */
+  //@{
+
 	/**
-	 * Conatins the editing widgets (e.g. QLineEdits and QSpinBoxes) comprising the array editor.
+	 * \brief Conatins the editing widgets (e.g. QLineEdits and QSpinBoxes) comprising the array editor.
 	 */
 	WVector widgetVector;
 
 	/**
-	 * The validator being used on the array.
+	 * \brief The validator being used on the array.
 	 */
 	RCP<const ParameterEntryValidator> entryValidator;	
 
@@ -133,35 +164,58 @@ protected:
    */
   QString name;
 
-private:
+  //@}
+
+  /** @name Miscellaneous Protected Functions */
+  //@{
+
 	/**
-	 * The widget containing all of the editing widgets (e.g.
+   * \brief Gathers all the user inputed data and closes the dialog.
+	 */
+	void doAcceptWork();
+
+  //@}
+
+private:
+
+  /** @name Private Members */
+  //@{
+
+	/**
+	 * \brief The widget containing all of the editing widgets (e.g.
 	 * QLineEdits, and QSpinBoxes) that comprise the array editor.
 	 */
 	QWidget *arrayContainer;
 
 	/**
-	 * The type of array.
+	 * \brief The type of array.
 	 */
 	QString type;
+
+  //@}
 	
+  /** \name Private Functions */
+  //@{
+
 	/**
-	 * Gets the widget to be used as an editor for each entry in the array.
+	 * \brief Gets the widget to be used as an editor for each entry in the array.
 	 */
 	virtual QWidget* getEditorWidget(int index) = 0;
 
 	/**
-	 * Sets up the layout for the arrayContainer, including adding what ever editing
+	 * \brief Sets up the layout for the arrayContainer, including adding what ever editing
 	 * widget should be used for the particual type of array.
 	 */
 	void setupArrayLayout();
 
   /**
-   * Get a new array reflecting the current values entered in the widgets.
+   * \brief Get a new array reflecting the current values entered in the widgets.
    *
    * @return A new array reflecting the currecnt values entered in the widgets.
    */
   virtual Array<S> getArrayFromWidgets() = 0;
+
+  //@}
 };
 
 template<class S>
@@ -220,14 +274,17 @@ void GenericArrayWidget<S>::doAcceptWork(){
 }
 
 /**
- * A widget for editing Arrays of type int.
+ * \brief A widget for editing Arrays of type int.
  */
 class IntArrayWidget: public GenericArrayWidget<int>{
 	Q_OBJECT
 public:
 
+  /** \name Constructors */
+  //@{
+
   /**
-   * Constructs a IntArrayWidget.
+   * \brief Constructs a IntArrayWidget.
    *
    * @param name The name of the parmaeter being edited.
    * @param type The array's template type.
@@ -241,12 +298,24 @@ public:
     QWidget *parent=0):
     GenericArrayWidget<int>(name, type, validator,parent){}
 
+  //@}
+
 public slots:
+
+  /** \name Overridden from GenericArrayWidget */
+  //@{
+
+  /** * \brief .  */
   void accept(){
     doAcceptWork();
   }
 
+
 private:
+
+  /**
+   * \brief .
+   */
 	QWidget* getEditorWidget(int index){
 		QSpinBox *newSpin = new QSpinBox(this);
 		RCP<const EnhancedNumberValidator<int> > validator = null;
@@ -258,6 +327,9 @@ private:
 		return newSpin;
 	}
 
+  /**
+   * \brief .
+   */
 	Array<int> getArrayFromWidgets(){
     Array<int> toReturn;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
@@ -265,18 +337,23 @@ private:
 		}
     return toReturn;
 	}
+
+  //@}
 };
 
 /**
- * A widget for editing Arrays of type short.
+ * \brief A widget for editing Arrays of type short.
  */
 class ShortArrayWidget: public GenericArrayWidget<short>
 {
 	Q_OBJECT
 public:
 
+  /** \name Constructors */
+  //@{
+
   /**
-   * Constructs a ShortArrayWidget.
+   * \brief Constructs a ShortArrayWidget.
    *
    * @param name The name of the parmaeter being edited.
    * @param type The array's template type.
@@ -290,12 +367,21 @@ public:
     QWidget *parent=0):
     GenericArrayWidget<short>(name, type, validator,parent){}
 
+  //@}
+
 public slots:
+  /** \name Overridden from GenericArrayWidget */
+  //@{
+
+  /** * \brief .  */
 	void accept(){
     doAcceptWork();
 	}
 
+  //@}
+
 private:
+  /** * \brief .  */
 	QWidget* getEditorWidget(int index){
 		QSpinBox *newSpin = new QSpinBox(this);
 		RCP<const EnhancedNumberValidator<short> > validator = null;
@@ -307,6 +393,7 @@ private:
 		return newSpin;
 	}
 
+  /** * \brief .  */
 	Array<short> getArrayFromWidgets(){
     Array<short> toReturn;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
@@ -314,17 +401,23 @@ private:
 		}
     return toReturn;
   }
+
+  //@}
 };
+
 /**
- * A widget for editing Arrays of type double.
+ * \brief A widget for editing Arrays of type double.
  */
 class DoubleArrayWidget: public GenericArrayWidget<double>
 {
 	Q_OBJECT
 public:
 
+  /** \name Constructors */
+  //@{
+
   /**
-   * Constructs a DoubleArrayWidget.
+   * \brief Constructs a DoubleArrayWidget.
    *
    * @param name The name of the parmaeter being edited.
    * @param type The array's template type.
@@ -337,12 +430,21 @@ public:
     const RCP<const ParameterEntryValidator> validator,
     QWidget *parent=0):
     GenericArrayWidget<double>(name, type, validator,parent){}
+
+  //@}
+  
 public slots:
+  /** \name Overridden from GenericArrayWidget */
+  //@{
+
+  /** * \brief .  */
 	void accept(){
     doAcceptWork();
 	}
 
 private:
+
+  /** * \brief .  */
 	QWidget* getEditorWidget(int index){
 		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
 		RCP<const EnhancedNumberValidator<double> > validator = null;
@@ -353,6 +455,8 @@ private:
     newSpin->setValue(baseArray[index]);
 		return newSpin;
 	}
+
+  /** * \brief .  */
 	Array<double> getArrayFromWidgets(){
     Array<double> toReturn;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
@@ -360,17 +464,22 @@ private:
 		}
     return toReturn;
   }
+
+  //@}
 };
 
 /**
- * A widget for editing Arrays of type short.
+ * \brief A widget for editing Arrays of type short.
  */
 class FloatArrayWidget: public GenericArrayWidget<float>
 {
 	Q_OBJECT
 public:
+  /** \name Constructors */
+  //@{
+
   /**
-   * Constructs a FloatArrayWidget.
+   * \brief Constructs a FloatArrayWidget.
    *
    * @param name The name of the parmaeter being edited.
    * @param type The array's template type.
@@ -383,12 +492,22 @@ public:
     const RCP<const ParameterEntryValidator> validator,
     QWidget *parent=0):
     GenericArrayWidget<float>(name, type, validator,parent){}
+
+  //@}
+  
 public slots:
+
+  /** \name Overridden from GenericArrayWidget */
+  //@{
+
+  /** * \brief .  */
 	void accept(){
     doAcceptWork();
 	}
 
 private:
+
+  /** * \brief .  */
 	QWidget* getEditorWidget(int index){
 		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
 		RCP<const EnhancedNumberValidator<float> > validator = null;
@@ -399,6 +518,8 @@ private:
     newSpin->setValue(baseArray[index]);
 		return newSpin;
 	}
+
+  /** * \brief .  */
 	Array<float> getArrayFromWidgets(){
     Array<float> toReturn;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
@@ -406,16 +527,22 @@ private:
 		}
     return toReturn;
   }
+
+  //@}
 };
 
 /**
- * A widget for editing an array of strings
+ * \brief A widget for editing an array of strings
  */
 class StringArrayWidget : public GenericArrayWidget<std::string>{
 	Q_OBJECT
 public:
+
+  /** \name Constructors */
+  //@{
+
   /**
-   * Constructs a StringArrayWidget.
+   * \brief Constructs a StringArrayWidget.
    *
    * @param name The name of the parmaeter being edited.
    * @param type The array's template type.
@@ -429,12 +556,20 @@ public:
     QWidget *parent=0):
     GenericArrayWidget<std::string>(name, type, validator,parent){}
 
+  //@}
+
+  /** \name Overridden from GenericArrayWidget */
+  //@{
+
+  /** * \brief .  */
 	void accept(){
     doAcceptWork();
 	}
 
 
 private:
+
+  /** * \brief .  */
 	QWidget* getEditorWidget(int index){
     QString currentData = QString::fromStdString(baseArray[index]);
 		if(is_null(entryValidator)){
@@ -460,6 +595,7 @@ private:
 		}
 	}
 
+  /** * \brief .  */
 	Array<std::string> getArrayFromWidgets(){
     Array<std::string> toReturn;
 		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
@@ -478,6 +614,8 @@ private:
 		}
     return toReturn;
   }
+
+  //@}
 };
 
 
