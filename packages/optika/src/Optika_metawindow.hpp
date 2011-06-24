@@ -32,6 +32,12 @@
 #include <QModelIndex>
 #include "Optika_treeview.hpp"
 
+/*! \file Optika_metawindow.hpp
+    \brief The main window users interact
+    with along with a small search widget used
+    in the main window.
+*/
+
 class QAction;
 class QMenu;
 class QLabel;
@@ -40,14 +46,18 @@ class QLineEdit;
 namespace Optika{
 
 /**
- * A small widget that searchs through a parameter list for a particular name
+ * \brief A small widget that searchs through a parameter list for a particular name
  * of either a parameter or another parameter list.
  */
 class SearchWidget : public QDialog{
 	Q_OBJECT
 public:
+
+  /** \name Constructors */
+  //@{
+
 	/**
-	 * Constructs a SearchWidget.
+	 * \brief Constructs a SearchWidget.
 	 *
 	 * @param treeModel The TreeModel being searched.
 	 * @param treeView The TreeView being used to display the model.
@@ -55,28 +65,40 @@ public:
 	 */
 	SearchWidget(TreeModel *treeModel, TreeView *treeView, QWidget *parent=0);
 
+  //@}
+
 private slots:
+
+  /** \name Private Slots */
+  //@{
+  
 	/**
-	 * Searches the for a parameter or parameter list containing the string enterd
+	 * \brief Searches the for a parameter or parameter list containing the string enterd
 	 * in the search terms box.
 	 */
 	void search();
 
 	/**
-	 * Highlights the next result in the list of results that are set
+	 * \brief Highlights the next result in the list of results that are set
 	 * by the search function.
 	 */
 	void next();
 
 	/**
-	 * Highlights the previous result in the list of results that are set
+	 * \brief Highlights the previous result in the list of results that are set
 	 * by the search function.
 	 */
 	void previous();
 
+  //@}
+
 private:
+
+  /** \name Private Functions */
+  //@{
+  
 	/**
-	 * Removes any indicies in a QModelIndexList that correspond to a
+	 * \brief Removes any indicies in a QModelIndexList that correspond to a
 	 * hidden item.
 	 *
 	 * @param items A list of indicies from which all hidden items
@@ -87,8 +109,13 @@ private:
 	 */
 	QModelIndexList removeHiddenItems(QModelIndexList& items);
 
+  //@}
+
+  /** \name Private Members */
+  //@{
+  
 	/**
-	 * Widgets comprising a search widget
+	 * \brief Widgets comprising a search widget
 	 */
 	QPushButton *searchButton, *closeButton, *nextButton, *previousButton;
 	QLineEdit *searchTermsEdit;
@@ -97,26 +124,32 @@ private:
 	TreeView *treeView;
 
 	/**
-	 * The results of the search last performed.
+	 * \brief The results of the search last performed.
 	 */
 	QList<QModelIndex> currentSearchResults;
 
 	/**
-	 * An iterator over the results of the last search performed.
+	 * \brief An iterator over the results of the last search performed.
 	 */
 	QList<QModelIndex>::const_iterator currentSearchIterator;
+
+  //@}
 
 };
 
 /**
- * The Main Window that contains all other widgets in the Optika GUI.
+ * \brief The Main Window that contains all other widgets in the Optika GUI.
  * For all undocumented functions please refer to the Qt API.
  */
 class MetaWindow : public QMainWindow{
 	Q_OBJECT
 public:
+
+  /** \name Constructors/Destructor */
+  //@{
+
 	/**
-	 * Constructs a MainWindow object.
+	 * \brief Constructs a MainWindow object.
 	 * 
 	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
 	 * @param fileName The name of a save file that may store previous values used by a user for the 
@@ -126,7 +159,7 @@ public:
 	QString fileName=QString());
 
 	/**
-	 * Constructs a MainWindow object.
+	 * \brief Constructs a MainWindow object.
 	 * 
 	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
 	 * @param customFunc The function to run whenever the user clicks the action button.
@@ -138,7 +171,7 @@ public:
 	QString fileName=QString());
 
 	/**
-	 * Constructs a MainWindow object.
+	 * \brief Constructs a MainWindow object.
 	 * 
 	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
 	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
@@ -151,7 +184,7 @@ public:
 	QString fileName=QString());
 
 	/**
-	 * Constructs a MainWindow object.
+	 * \brief Constructs a MainWindow object.
 	 * 
 	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
 	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
@@ -167,100 +200,126 @@ public:
   const std::string actionButtonText="submit");
 
 	/**
-	 * Deconstructer for the metawindow
+	 * \brief Deconstructer for the metawindow
 	 */
 	~MetaWindow();
 
+  //@}
+
+  //! @name Getters and Setters
+  //@{
+  
 	/**
-	 * Adds the information specified to the about dialog of the GUI.
+	 * \brief Adds the information specified to the about dialog of the GUI.
 	 *
 	 * @param aboutInfo Information to be added to the about dialog of the GUI.
 	 */
 	 void setAboutInfo(QString aboutInfo);
 
 	/**
-	 * Gets the information to be added to the about dialog of the GUI.
+	 * \brief Gets the information to be added to the about dialog of the GUI.
 	 *
 	 * @return the information to be added to the about dialog of the GUI.
 	 */
 	 QString getAboutInfo();
 
    /**
-    * Sets the action button text.
+    * \brief Sets the action button text.
     *
     * @param text The text to put in the action button.
     */
    void setActionButtonText(QString newText);
 
    /**
-    * Gets the text being displayed int he action button.
+    * \brief Gets the text being displayed int he action button.
     *
     * @return The text being displayed in the action button.
     */
    QString getActionButtonText();
 
 protected:
+
+  /** \name Overridden from QWidget */
+  //@{
+
 	/**
-	 * Handles any QCloseEvents for the metawindow.
+	 * \brief Handles any QCloseEvents for the metawindow.
 	 *
 	 * @param event The QCloseEvent that was issued.
 	 */
 	void closeEvent(QCloseEvent *event);
 
+  //@}
 
 private:
+  /** \name Private Members */
+  //@{
+  
 	/**
-	 * Widgets comprising the MetaWindow
+	 * \brief Widgets comprising the MetaWindow
 	 */
 	SearchWidget *searchWidget;
+
+  /** \brief Various actions. */
 	QAction *resetAct, *loadAct, *saveAct, *saveAsAct, *quitAct, *aboutAct, *searchAct;
+  /** \brief Various menus. */
 	QMenu *fileMenu, *recentMenu, *helpMenu;
 
-  static QString getSettingsFileName(){
-    static QString settingsFileName("OptikaSettings.xml");
-    return settingsFileName;
-  }
-      
-
+  /** \brief The button the user pushes that either closes
+   * the MetaWindow or runs the custom function.
+   */
   QPushButton *actionButton;
 
 	/**
-	 * Any additional about information that should be displayed in the about dialog.
+	 * \brief Any additional about information that should be displayed in the about dialog.
 	 */
 	QString aboutInfo;
 
-	/*
-	 * The custom function to run when the user clicks the action button.
-	 */
-	void (*customFunc)(RCP<const ParameterList>);
-
 	/**
-	 * Load and save directory paths
+	 * \brief Load and save directory paths
 	 */
 	QString currentLoadDir, currentSaveDir;
 
 	/**
-	 * A list of recently used documents.
+	 * \brief A list of recently used documents.
 	 */
 	QStringList recentDocsList;
 
 	/**
-	 * The TreeView being used in the metawindow.
+	 * \brief The TreeView being used in the metawindow.
 	 */
 	TreeView *view;
 
 	/**
-	 * The TreeModel being used to display the inputs.
+	 * \brief The TreeModel being used to display the inputs.
 	 */
 	TreeModel *model;
 
 	/**
-	 * The deleages being used to modify any input values.
+	 * \brief The deleages being used to modify any input values.
 	 */
 	Delegate *delegate;
 
+  //@}
+
+  /** \name Private Functions */
+  //@{
+  
 	/**
-	 * Common initialization shared by both constructors.
+	 * \brief The custom function to run when the user clicks the action button.
+	 */
+	void (*customFunc)(RCP<const ParameterList>);
+
+  /**
+   * \brief Returns the name used to store refernce the settings file.
+   */
+  static QString getSettingsFileName(){
+    static QString settingsFileName("OptikaSettings.xml");
+    return settingsFileName;
+  }
+
+	/**
+	 * \brief Common initialization shared by all constructors.
 	 *
 	 * @param customFunc The function to run whenever the user clicks the action 
    * button.
@@ -271,86 +330,91 @@ private:
     const std::string actionButtonText="submit");
 
 	/**
-	 * Creates all the menus for the metawindow.
+	 * \brief Creates all the menus for the metawindow.
 	 */
 	void createMenus();
 
 	/**
-	 * Creates all necessary actions used in the menut items.
+	 * \brief Creates all necessary actions used in the menut items.
 	 */
 	void createActions();
 
 	/**
-	 * Loads previous parameter settings.
+	 * \brief Loads previous parameter settings.
 	 */
 	void load();
 
 	/**
-	 * Loads the last state of the MetaWindow (things like window size and screen position).
+	 * \brief Loads the last state of the MetaWindow (things like window size and screen position).
 	 */
 	void loadLastSettings();
 
 	/**
-	 * Saves the state of the MetaWindow (things like window size and screen position).
+	 * \brief Saves the state of the MetaWindow (things like window size and screen position).
 	 */
 	void saveSettings();
 
 	/**
-	 * Currently under developement
+	 * \brief Currently under developement
 	 */
 	void addRecentDocument(QString recentDocument);
 
 	/**
-	 * Currently under developement
+	 * \brief Currently under developement
 	 */
 	void updateRecentDocsMenu();
 
 private slots:
+  /** \name Private Slots */
+  //@{
+  
 	/**
-	 * Resets the treemodel to its default state.
+	 * \brief Resets the treemodel to its default state.
 	 */
 	void resetModel();
 
 	/**
-	 * Saves the parameter list settings to a user specified file.
+	 * \brief Saves the parameter list settings to a user specified file.
 	 */
 	bool saveFileAs();
 
 	/**
-	 * Saves the current solver to the file the user has already specified.
+	 * \brief Saves the current solver to the file the user has already specified.
 	 */
 	void saveFile();
 
 	/**
-	 * Loads a solver the user was previously working on and had saved.
+	 * \brief Loads a solver the user was previously working on and had saved.
 	 */
 	void loadFile();
 
 	/**
-	 * Asks the user whether or not they would like to currently save the file they are working on.
+	 * \brief Asks the user whether or not they would like to currently save the file they are working on.
 	 * Should be used when the user has modified the file and is about to perform an action that would cause those modifiation to be lost.
 	 */
 	bool saveCurrentUnsavedFile();
 
 	/**
-	 * Loads a document from the set of recent documents
+	 * \brief Loads a document from the set of recent documents
 	 */
 	void loadRecentDoc();
 
 	/**
-	 * Shows information about the program.
+	 * \brief Shows information about the program.
 	 */
 	void showAbout();
 
 	/**
-	 * Starts a search for a parituclar Parameter or ParameterList.
+	 * \brief Starts a search for a parituclar Parameter or ParameterList.
 	 */
 	void initiateSearch();
 	
 	/**
-	 * What should happen when the user clicks the action button.
+	 * \brief What should happen when the user clicks the action button.
 	 */
 	void doAction();
+
+  //@}
 };
 
 
