@@ -235,7 +235,7 @@ private:
 	 * @param value A string representing the value of the array.
 	 * @param type The type of array.
 	 */
-	void changeValueForArray(QVariant value, QString type);
+	void changeValueForArray(QVariant value, QString type, bool twoD=false);
 
   //@}
 

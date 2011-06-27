@@ -138,6 +138,10 @@ QVariant TreeItem::data(int column, int role) const{
       return arrayEntryToVariant(parameterEntry, 
         getArrayType(itemData.value(2).toString()));
     }
+    else if(column == 1 && nonnull(parameterEntry) && parameterEntry->isTwoDArray()){
+      return arrayEntryToVariant(parameterEntry,
+        getArrayType(itemData.value(2).toString()));
+    }
     else{
       return itemData.value(column);
     }
@@ -205,6 +209,9 @@ bool TreeItem::changeValue(QVariant value){
 	else if(data(2).toString().contains(arrayId)){
 		changeValueForArray(value, getArrayType(data(2).toString()));
 	}
+	else if(data(2).toString().contains(twoDArrayId)){
+		changeValueForArray(value, getArrayType(data(2).toString()), true);
+	}
 
 	return true;
 }
@@ -213,24 +220,44 @@ void TreeItem::setValidator(RCP<const ParameterEntryValidator> validator){
 	parameterEntry->setValidator(validator);
 }
 
-void TreeItem::changeValueForArray(QVariant value, QString type){
+void TreeItem::changeValueForArray(QVariant value, QString type, bool twoD){
 	if(type == intId){
+    twoD ? 
+		parameterEntry->setValue(value.value<TwoDArray<int> >(), false,
+					 parameterEntry->docString(), parameterEntry->validator())
+    :
 		parameterEntry->setValue(value.value<Array<int> >(), false,
 					 parameterEntry->docString(), parameterEntry->validator());
 	}
 	else if(type == shortId){
+    twoD ? 
+		parameterEntry->setValue(value.value<TwoDArray<short> >(), false,
+					 parameterEntry->docString(), parameterEntry->validator())
+    :
 		parameterEntry->setValue(value.value<Array<short> >(), false,
 					 parameterEntry->docString(), parameterEntry->validator());
 	}
 	else if(type == doubleId){
+    twoD ? 
+		parameterEntry->setValue(value.value<TwoDArray<double> >(), false,
+					 parameterEntry->docString(), parameterEntry->validator())
+    :
 		parameterEntry->setValue(value.value<Array<double> >(), false,
 					 parameterEntry->docString(), parameterEntry->validator());
 	}
 	else if(type == floatId){
+    twoD ? 
+		parameterEntry->setValue(value.value<TwoDArray<float> >(), false,
+					 parameterEntry->docString(), parameterEntry->validator())
+    :
 		parameterEntry->setValue(value.value<Array<float> >(), false,
 					 parameterEntry->docString(), parameterEntry->validator());
 	}
 	else if(type == stringId){
+    twoD ? 
+		parameterEntry->setValue(value.value<TwoDArray<std::string> >(), false,
+					 parameterEntry->docString(), parameterEntry->validator())
+    :
 		parameterEntry->setValue(value.value<Array<std::string> >(), false,
 					 parameterEntry->docString(), parameterEntry->validator());
 	}

@@ -110,6 +110,12 @@ protected:
 
   virtual QLayout* getArrayLayout() =0;  
 
+	/**
+   * \brief Gathers all the user inputed data and closes the dialog.
+	 */
+	virtual void doAcceptWork() =0;
+
+
   //@}
 	
 
@@ -181,14 +187,24 @@ class Generic2DArrayWidget : public GenericArrayWidget<S>{
     this->setupArrayLayout();
   }
 
+  void doAcceptWork(){
+    baseArray.clear();
+    baseArray = getArrayFromWidgets();
+    this->done(QDialog::Accepted);
+  }
+
+
 protected:
-  TwoDArray<S> baseArray;
 
-  TwoDArray<QWidget*> widgetArray;
-
-	QLayout* getArrayLayout();
   
   virtual QWidget* getEditorWidget(int row, int col) =0;
+
+  virtual TwoDArray<S> getArrayFromWidgets()=0;
+
+  TwoDArray<QWidget*> widgetArray;
+private:
+  TwoDArray<S> baseArray;
+	QLayout* getArrayLayout();
 
 };
 
@@ -315,19 +331,9 @@ protected:
 	 */
 	Array<S> baseArray;
 
+  void doAcceptWork();
   //@}
 
-  /** @name Miscellaneous Protected Functions */
-  //@{
-
-	/**
-   * \brief Gathers all the user inputed data and closes the dialog.
-	 */
-	void doAcceptWork();
-
-  QLayout* getArrayLayout();
-
-  //@}
 
 private:
 
@@ -340,6 +346,8 @@ private:
    * @return A new array reflecting the currecnt values entered in the widgets.
    */
   virtual Array<S> getArrayFromWidgets() = 0;
+
+  QLayout* getArrayLayout();
 
   //@}
 };
