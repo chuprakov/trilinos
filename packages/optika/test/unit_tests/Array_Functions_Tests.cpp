@@ -61,6 +61,12 @@ TEUCHOS_UNIT_TEST(Array_Helper_Functions, DetermineArrayType){
   TEST_EQUALITY(
     determineArrayType(rcpFromRef(stringParam)).toStdString(), 
     stringId.toStdString());
+  TwoDArray<float> floatArray = 
+    Teuchos::tuple<float>(5.0,6.4,7.5,8.9);
+  ParameterEntry floatParam(floatTwoDArray);
+  TEST_EQUALITY(
+    determineTwoDArrayType(rcpFromRef(floatParam)).toStdString(), 
+    floatId.toStdString());
 }
 
 TEUCHOS_UNIT_TEST(Array_Helper_Functions, GetArrayType){
