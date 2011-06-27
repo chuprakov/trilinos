@@ -54,7 +54,7 @@ QString determineArrayType(RCP<const ParameterEntry> parameter, bool twoD=false)
  * @return A QVariant containing an Array that is equal to the Array in array entry.
  */
 QVariant arrayEntryToVariant(
-  RCP<const ParameterEntry> arrayEntry, QString type);
+  RCP<const ParameterEntry> arrayEntry, QString type, bool twoD=false);
 
 /**
  * \brief Given a type string, determines the template type of the Array.

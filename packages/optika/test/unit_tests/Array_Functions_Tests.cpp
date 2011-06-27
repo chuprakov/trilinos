@@ -39,6 +39,15 @@ TEUCHOS_UNIT_TEST(Array_Helper_Functions, ArrayToQVariant){
   TEST_EQUALITY(testArray,extractedArray);
   out << "Test Array: " << testArray << std::endl;
   out << "Extracted Array: " << extractedArray << std::endl;
+
+  TwoDArray<float> twoDtestArray(3,4.0);
+  ParameterEntry twoDEntry(twoDtestArray);
+  QVariant twoDVariant = arrayEntryToVariant(rcpFromRef(twoDEntry), floatId, true);
+  TwoDArray<float> twoDExtracted = twoDVariant.value<TwoDArray<float> >();
+  TEST_EQUALITY(twoDExtracted, twoDtestArray)
+  out << "TwoD Test: " << twoDtestArray << std::endl;
+  out << "TwoD Extracted: " << twoDExtracted << std::endl;
+  
 }
 
 TEUCHOS_UNIT_TEST(Array_Helper_Functions, DetermineArrayType){

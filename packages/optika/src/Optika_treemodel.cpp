@@ -407,6 +407,17 @@ void TreeModel::insertParameter(RCP<ParameterEntry> parameter, std::string name,
 		}
 	}
   else if(parameter->isTwoDArray()){
+		QString determinedId = determineArrayType(parameter, true);
+		if( determinedId != unrecognizedId){
+			values.append(arrayEntryToVariant(parameter, determinedId, true));
+			values.append(QString(twoDArrayId + " "+ determinedId));
+		}
+		else{
+			values.append("");
+			values.append("");
+			parent->appendChild(new TreeItem(values, parameter, parent, true));
+			return;
+		}
 
   }
 	else{

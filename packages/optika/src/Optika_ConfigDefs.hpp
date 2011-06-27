@@ -54,6 +54,11 @@ Q_DECLARE_METATYPE(Teuchos::Array<short>)
 Q_DECLARE_METATYPE(Teuchos::Array<float>)
 Q_DECLARE_METATYPE(Teuchos::Array<double>)
 Q_DECLARE_METATYPE(Teuchos::Array<std::string>)
+Q_DECLARE_METATYPE(Teuchos::TwoDArray<int>)
+Q_DECLARE_METATYPE(Teuchos::TwoDArray<short>)
+Q_DECLARE_METATYPE(Teuchos::TwoDArray<float>)
+Q_DECLARE_METATYPE(Teuchos::TwoDArray<double>)
+Q_DECLARE_METATYPE(Teuchos::TwoDArray<std::string>)
 
 
 #endif //OPTIKA_CONFIG_DEFS_HPP

@@ -74,26 +74,46 @@ QString determineArrayType(RCP<const ParameterEntry> parameter){
 }
 
 QVariant arrayEntryToVariant(
-  RCP<const ParameterEntry> arrayEntry, QString type){
+  RCP<const ParameterEntry> arrayEntry, QString type, bool twoD){
 	if(type == intId){
-    return QVariant::fromValue<Array<int> >(
-      getValue<Array<int> >(*arrayEntry));
+    return (twoD ? 
+      QVariant::fromValue<TwoDArray<int> >(
+      getValue<TwoDArray<int> >(*arrayEntry))
+      :
+      QVariant::fromValue<Array<int> >(
+      getValue<Array<int> >(*arrayEntry)));
 	}
 	else if(type == shortId){
-    return QVariant::fromValue<Array<short> >(
-      getValue<Array<short> >(*arrayEntry));
+    return (twoD ? 
+      QVariant::fromValue<TwoDArray<short> >(
+      getValue<TwoDArray<short> >(*arrayEntry))
+      :
+      QVariant::fromValue<Array<short> >(
+      getValue<Array<short> >(*arrayEntry)));
 	}
 	else if(type == doubleId){
-    return QVariant::fromValue<Array<double> >(
-      getValue<Array<double> >(*arrayEntry));
+    return (twoD ? 
+      QVariant::fromValue<TwoDArray<double> >(
+      getValue<TwoDArray<double> >(*arrayEntry))
+      :
+      QVariant::fromValue<Array<double> >(
+      getValue<Array<double> >(*arrayEntry)));
   }
 	else if(type == floatId){
-    return QVariant::fromValue<Array<float> >(
-      getValue<Array<float> >(*arrayEntry));
+    return (twoD ? 
+      QVariant::fromValue<TwoDArray<float> >(
+      getValue<TwoDArray<float> >(*arrayEntry))
+      :
+      QVariant::fromValue<Array<float> >(
+      getValue<Array<float> >(*arrayEntry)));
   }
 	else if(type == stringId){
-    return QVariant::fromValue<Array<std::string> >(
-      getValue<Array<std::string> >(*arrayEntry));
+    return (twoD ? 
+      QVariant::fromValue<TwoDArray<std::string> >(
+      getValue<TwoDArray<std::string> >(*arrayEntry))
+      :
+      QVariant::fromValue<Array<std::string> >(
+      getValue<Array<std::string> >(*arrayEntry)));
 	}
   return QVariant();
 }
