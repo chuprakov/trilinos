@@ -37,5 +37,6 @@ QString boolId = QString("bool");
 QString stringId = QString("string");
 QString arrayId = QString("array");
 QString unrecognizedId = QString("unrecognized");
+QString twoDArrayId = QString("2DArray");
 }
 

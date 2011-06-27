@@ -29,6 +29,28 @@
 
 namespace Optika{
 
+QString determineArrayType(RCP<const ParameterEntry> parameter, bool twoD){
+	any anyArray = parameter->getAny();
+	if(anyArray.type() == (twoD ? typeid(TwoDArray<int>) : typeid(Array<int>))){
+		return intId;
+	}
+	if(anyArray.type() == (twoD ? typeid(TwoDArray<short>) : typeid(Array<short>))){
+		return shortId;
+	}
+	if(anyArray.type() == (twoD ? typeid(TwoDArray<double>) : typeid(Array<double>))){
+		return doubleId;
+	}
+	if(anyArray.type() == (twoD ? typeid(TwoDArray<float>) : typeid(Array<float>))){
+		return floatId;
+	}
+	if(anyArray.type() == (twoD ? typeid(TwoDArray<std::string>) : typeid(Array<std::string>))){
+		return stringId;
+	}
+	else{
+		return unrecognizedId;		
+	}
+}
+
 QString determineArrayType(RCP<const ParameterEntry> parameter){
 	any anyArray = parameter->getAny();
 	if(anyArray.type() == typeid(Array<int>)){

@@ -57,6 +57,8 @@ extern QString stringId;
 /** * \brief .  */
 extern QString arrayId;
 /** * \brief .  */
+extern QString twoDArrayId;
+/** * \brief .  */
 extern QString unrecognizedId;
 }
 #endif //OPTIKA_TYPES_HPP

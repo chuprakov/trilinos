@@ -9,7 +9,7 @@
 #include "Teuchos_StandardParameterEntryValidators.hpp"
 #include "Teuchos_StandardDependencies.hpp"
 #include "Teuchos_DependencySheet.hpp"
-#include "Teuchos_Array.hpp"
+#include "Teuchos_TwoDArray.hpp"
 #include "Teuchos_RCP.hpp"
 #include "Teuchos_XMLParameterListHelpers.hpp"
 #include "Teuchos_XMLParameterListWriter.hpp"
@@ -40,6 +40,7 @@ namespace Optika{
   using Teuchos::XMLObject;
   using Teuchos::getValue;
   using Teuchos::getParametersFromXmlFile;
+  using Teuchos::TwoDArray;
 
 
   

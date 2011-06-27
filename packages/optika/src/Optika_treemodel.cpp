@@ -406,6 +406,9 @@ void TreeModel::insertParameter(RCP<ParameterEntry> parameter, std::string name,
 			return;
 		}
 	}
+  else if(parameter->isTwoDArray()){
+
+  }
 	else{
 		values.append("");
 		values.append("");
