@@ -43,7 +43,7 @@ namespace Optika{
  * @param parameter The parameter whose array type is in question.
  * @return A QString containing the type of array in the parameter.
  */
-QString determineArrayType(RCP<const ParameterEntry> parameter);
+QString determineArrayType(RCP<const ParameterEntry> parameter, bool twoD=false);
 
 /**
  * \brief Creates a QVariant containing the array that is in
