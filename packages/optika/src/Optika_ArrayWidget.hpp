@@ -93,7 +93,7 @@ protected:
 	 * widget should be used for the particual type of array.
 	 */
 	virtual void setupArrayLayout(){
-    if(arrayContainer->layout() != NULL){
+    if(arrayContainer->layout() == NULL){
       arrayContainer->setLayout(getArrayLayout());
     }
   }
