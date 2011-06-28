@@ -439,10 +439,10 @@ private:
    * \brief .
    */
 	Array<int> getArrayFromWidgets(){
-    Array<int> toReturn;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
-			baseArray.push_back(((QSpinBox*)(*it))->value());
-		}
+    Array<int> toReturn(widgetVector.size(), 0);
+    for(size_t i=0; i < widgetVector.size(); ++i){
+      toReturn[i]= ((QSpinBox*)widgetVector[i])->value();
+    }
     return toReturn;
 	}
 
@@ -503,12 +503,12 @@ private:
 
   /** * \brief .  */
 	Array<short> getArrayFromWidgets(){
-    Array<short> toReturn;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
-			toReturn.push_back(((QSpinBox*)(*it))->value());
-		}
+    Array<short> toReturn(widgetVector.size(), 0);
+    for(size_t i=0; i < widgetVector.size(); ++i){
+      toReturn[i]= ((QSpinBox*)widgetVector[i])->value();
+    }
     return toReturn;
-  }
+	}
 
   //@}
 };
@@ -566,10 +566,10 @@ private:
 
   /** * \brief .  */
 	Array<double> getArrayFromWidgets(){
-    Array<double> toReturn;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
-			baseArray.push_back(((QDoubleSpinBox*)(*it))->value());
-		}
+    Array<double> toReturn(widgetVector.size(), 0.0);
+    for(size_t i=0; i < widgetVector.size(); ++i){
+      toReturn[i]= ((QSpinBox*)widgetVector[i])->value();
+    }
     return toReturn;
   }
 
@@ -629,10 +629,10 @@ private:
 
   /** * \brief .  */
 	Array<float> getArrayFromWidgets(){
-    Array<float> toReturn;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
-			toReturn.push_back(((QDoubleSpinBox*)(*it))->value());
-		}
+    Array<float> toReturn(widgetVector.size(), 0.0);
+    for(size_t i=0; i < widgetVector.size(); ++i){
+      toReturn[i]= ((QSpinBox*)widgetVector[i])->value();
+    }
     return toReturn;
   }
 
@@ -706,19 +706,19 @@ private:
 
   /** * \brief .  */
 	Array<std::string> getArrayFromWidgets(){
-    Array<std::string> toReturn;
-		for(WVector::iterator it = widgetVector.begin(); it != widgetVector.end(); ++it){
+    Array<std::string> toReturn(widgetVector.size(), "");
+    for(size_t i=0; i < widgetVector.size(); ++i){
 			if(is_null(getEntryValidator())){
-				toReturn.push_back(((QLineEdit*)(*it))->text().toStdString());
+        toReturn[i] = ((QLineEdit*)widgetVector[i])->text().toStdString();
 			}
 			else if(!is_null(rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(getEntryValidator()))){
-				toReturn.push_back(((FileNameWidget*)(*it))->getCurrentFileName().toStdString());
+        toReturn[i] = ((FileNameWidget*)widgetVector[i])->getCurrentFileName().toStdString();
 			}
 			else if(getEntryValidator()->validStringValues()->size() !=0){
-				toReturn.push_back(((QComboBox*)(*it))->currentText().toStdString());
+        toReturn[i] = ((QComboBox*)widgetVector[i])->currentText().toStdString();
 			}
 			else{
-				toReturn.push_back(((QLineEdit*)(*it))->text().toStdString());
+        toReturn[i] = ((QLineEdit*)widgetVector[i])->text().toStdString();
 			}
 		}
     return toReturn;
