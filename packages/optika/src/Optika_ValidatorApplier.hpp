@@ -30,8 +30,8 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QComboBox>
-#include <float.h>
-#include <limits>
+#include <QIntValidator>
+#include <QDoubleValidator>
 #include "Optika_ConfigDefs.hpp"
 
 /*! \file Optika_ValidatorApplier.hpp
@@ -73,6 +73,17 @@ public:
 		}
 	}
 
+	static void applyToLineEdit(RCP<const EnhancedNumberValidator<S> > validator, QLineEdit *lineEdit){
+    QIntValidator* qvalidator = new QIntValidator(lineEdit);
+		if(!is_null(validator)){
+      qvalidator->setRange(validator->getMin(), validator->getMax());
+		}
+		else{
+      qvalidator->setRange(EnhancedNumberTraits<S>::min(), EnhancedNumberTraits<S>::max());
+		}
+    lineEdit->setValidator(qvalidator);
+  }
+
   //@}
 
 };
@@ -109,6 +120,19 @@ public:
 		}
 	}
 
+	static void applyToLineEdit(RCP<const EnhancedNumberValidator<double> > validator, QLineEdit *lineEdit){
+    QDoubleValidator* qvalidator = new QDoubleValidator(lineEdit);
+		if(!is_null(validator)){
+      qvalidator->setRange(validator->getMin(), validator->getMax());
+      qvalidator->setDecimals(validator->getPrecision());
+		}
+		else{
+      qvalidator->setRange(EnhancedNumberTraits<double>::min(), EnhancedNumberTraits<double>::max());
+      qvalidator->setDecimals(EnhancedNumberTraits<double>::defaultPrecision());
+		}
+    lineEdit->setValidator(qvalidator);
+  }
+
   //@}
 };
 
@@ -143,6 +167,19 @@ public:
 			spinBox->setDecimals(EnhancedNumberTraits<float>::defaultPrecision());
 		}
 	}
+
+	static void applyToLineEdit(RCP<const EnhancedNumberValidator<float> > validator, QLineEdit *lineEdit){
+    QDoubleValidator* qvalidator = new QDoubleValidator(lineEdit);
+		if(!is_null(validator)){
+      qvalidator->setRange(validator->getMin(), validator->getMax());
+      qvalidator->setDecimals(validator->getPrecision());
+		}
+		else{
+      qvalidator->setRange(EnhancedNumberTraits<float>::min(), EnhancedNumberTraits<float>::max());
+      qvalidator->setDecimals(EnhancedNumberTraits<float>::defaultPrecision());
+		}
+    lineEdit->setValidator(qvalidator);
+  }
 
   //@}
 }; 

@@ -73,20 +73,20 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 		EnhancedNumberValidator<long long>::applyToSpinBox(longlongValidator, (QDoubleSpinBox*)editor);
 	}*/
 	else if(itemType == doubleId){
-		editor = new QDoubleSpinBox(parent);
+		editor = new QLineEdit(parent);
 		RCP<const EnhancedNumberValidator<double> > doubleValidator;
 		if(!is_null(paramValidator)){
 			doubleValidator = rcp_dynamic_cast<const EnhancedNumberValidator<double> >(paramValidator);
 		}
-		ValidatorApplier<double>::applyToSpinBox(doubleValidator, (QDoubleSpinBox*)editor);
+		ValidatorApplier<double>::applyToLineEdit(doubleValidator, (QLineEdit*)editor);
 	}
 	else if(itemType == floatId){
-		editor = new QDoubleSpinBox(parent);
+		editor = new QLineEdit(parent);
 		RCP<const EnhancedNumberValidator<float> > floatValidator; 
 		if(!is_null(paramValidator)){
 			floatValidator = rcp_dynamic_cast<const EnhancedNumberValidator<float> >(paramValidator);
 		}
-		ValidatorApplier<float>::applyToSpinBox(floatValidator, (QDoubleSpinBox*)editor);
+		ValidatorApplier<float>::applyToLineEdit(floatValidator, (QLineEdit*)editor);
 	}
 	else if(itemType == boolId){
 		editor = new QComboBox(parent);
@@ -135,33 +135,28 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 
 void Delegate::setEditorData(QWidget *editor, const QModelIndex &index) const{
 	QString itemType = ((TreeModel*)(index.model()))->itemType(index);
+	QVariant value = index.model()->data(index);
 	if(itemType == intId){
-		int value = index.model()->data(index).toInt();
-		static_cast<QSpinBox*>(editor)->setValue(value);
+		static_cast<QSpinBox*>(editor)->setValue(value.toInt());
 	}
 	else if(itemType == shortId){
-		short value = index.model()->data(index).toInt();
-		static_cast<QSpinBox*>(editor)->setValue(value);
+		static_cast<QSpinBox*>(editor)->setValue(value.toInt());
 	}
 	else if(itemType == doubleId){
-		double value = index.model()->data(index).toDouble();
-		static_cast<QDoubleSpinBox*>(editor)->setValue(value);
+		static_cast<QLineEdit*>(editor)->setText(value.toString());
 	}
 	else if(itemType == floatId){
-		float value = index.model()->data(index).toDouble();
-		static_cast<QDoubleSpinBox*>(editor)->setValue(value);
+		static_cast<QLineEdit*>(editor)->setText(value.toString());
 	}
 	else if(itemType == boolId){
-		QString value = index.model()->data(index).toString();
-		static_cast<QComboBox*>(editor)->setEditText(value);
+		static_cast<QComboBox*>(editor)->setEditText(value.toString());
 	}
 	else if(itemType == stringId){
-		QString value = index.model()->data(index).toString();
 		RCP<const ParameterEntryValidator> validator = ((TreeModel*)(index.model()))->getValidator(index);
 		if(is_null(validator) || validator->validStringValues()->size()==0)
-			static_cast<QLineEdit*>(editor)->setText(value);
+			static_cast<QLineEdit*>(editor)->setText(value.toString());
 	 	else
-			static_cast<QComboBox*>(editor)->setEditText(value);
+			static_cast<QComboBox*>(editor)->setEditText(value.toString());
 	}
   else if(itemType.contains(arrayId)){
     setArrayWidgetData(editor, itemType.section(" ", -1), index);
@@ -181,14 +176,12 @@ void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QM
 		model->setData(index, (short)spinBox->value(), Qt::EditRole);
 	}
 	else if(itemType == doubleId){
-		QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
-		spinBox->interpretText();
-		model->setData(index, spinBox->value(), Qt::EditRole);
+		QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
+		model->setData(index, lineEdit->text(), Qt::EditRole);
 	}
 	else if(itemType == floatId){
-		QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
-		spinBox->interpretText();
-		model->setData(index, (float)spinBox->value(), Qt::EditRole);
+		QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
+		model->setData(index, lineEdit->text(), Qt::EditRole);
 	}
 	else if(itemType == boolId){
 		bool value = static_cast<QComboBox*>(editor)->currentText() 
