@@ -101,6 +101,9 @@ void OptikaGUITests::typeTest(){
   RCP<ParameterList> My_List = 
     RCP<ParameterList>(new ParameterList);
 
+  RCP<EnhancedNumberValidator<int> > intVali =
+    rcp(new EnhancedNumberValidator<int>(0,2000,3));
+
   double *pointer = 0;
   Array<double*> doubleStarArray;
   Array<int> intArray;
@@ -108,7 +111,8 @@ void OptikaGUITests::typeTest(){
   My_List->set(
     "MaxIters", 
     1550, 
-    "Determines the maximum number of iterations in the solver");
+    "Determines the maximum number of iterations in the solver",
+    intVali);
   My_List->set(
     "Tolerance", 1e-10, "The tolerance used for the convergence check");
   My_List->set("DoublePointerArray", doubleStarArray);
@@ -122,6 +126,17 @@ void OptikaGUITests::typeTest(){
   VERIFY_PARAMETER_TYPE(My_List, Tolerance, doubleId, model)
   VERIFY_PARAMETER_TYPE(My_List, DoublePointerArray, unrecognizedId, model)
   VERIFY_PARAMETER_TYPE(My_List, IntArray, arrayId + " " + intId, model);
+  Delegate* delegate = new Delegate;
+  cleaner.add(delegate);
+
+  QStyleOptionViewItem genericStyleItem;
+  QModelIndex widgetIndex = getWidgetIndex(MaxItersIndex);
+  QSpinBox* intSpin = ((QSpinBox*)delegate->createEditor(0, genericStyleItem, widgetIndex));
+  QCOMPARE(intSpin->maximum(), 2000);
+  QCOMPARE(intSpin->minimum(),0);
+  QCOMPARE(intSpin->singleStep(),3);
+
+
   cleaner.remove(model);
   delete model; 
 }

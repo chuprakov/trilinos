@@ -25,8 +25,8 @@
 // 
 // ***********************************************************************
 // @HEADER
-#ifndef OPTIKA_SPINBOXAPPLIER_HPP_
-#define OPTIKA_SPINBOXAPPLIER_HPP_
+#ifndef OPTIKA_VALIDATORAPPLIER_HPP_
+#define OPTIKA_VALIDATORAPPLIER_HPP_
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QComboBox>
@@ -34,10 +34,10 @@
 #include <limits>
 #include "Optika_ConfigDefs.hpp"
 
-/*! \file Optika_SpinBoxApplier.hpp
+/*! \file Optika_ValidatorApplier.hpp
     \brief A collection of objects which
     apply the restriction of a EnhancedNumberValidator
-    to a spinbox.
+    to a SpinBoxes and LineEdits.
 */
 
 namespace Optika{
@@ -47,7 +47,7 @@ namespace Optika{
  * maximum and step specified in an EnhancedNumberValidator
  * onto a QSpingBox.
  */
-template<class S> class SpinBoxApplier{
+template<class S> class ValidatorApplier{
 public:
   //! @name Applier Functions
   //@{
@@ -78,117 +78,11 @@ public:
 };
 
 /**
- * \brief Template specialzation on type in of the SpinBoxApplier
- */
-template <>
-class SpinBoxApplier<int>{
-public:
-  
-  //! @name Applier Functions
-  //@{
-
-	/**
-	 * \brief Applies an EnhancedNumberValidator of type int to a QSpinBox
-	 *
-	 * @param validator The validator to be useed.
-	 * @param spinBox The spinBox on which to apply the validator.
-	 */
-	static void applyToSpinBox(RCP<const EnhancedNumberValidator<int> > validator, QSpinBox *spinBox){
-		if(!is_null(validator)){
-			spinBox->setMinimum(validator->getMin());
-			spinBox->setMaximum(validator->getMax());
-			spinBox->setSingleStep(validator->getStep());
-		}
-		else{
-			spinBox->setMinimum(EnhancedNumberTraits<int>::min());
-			spinBox->setMaximum(EnhancedNumberTraits<int>::max());
-			spinBox->setSingleStep(EnhancedNumberTraits<int>::defaultStep());
-		}
-	}
-
-  //@}
-};
-
-/**
- * \brief A specific validator used to validate values of type short.
- */
-template<>
-class SpinBoxApplier<short>{
-public:
-
-  //! @name Applier Functions
-  //@{
-
-	/**
-	 * \brief Applies an EnhancedNumberValidator of type short to a QSpinBox
-	 *
-	 * @param validator The validator to be useed.
-	 * @param spinBox The spinBox on which to apply the validator.
-	 */
-	static void applyToSpinBox(RCP<const EnhancedNumberValidator<short> > validator, QSpinBox *spinBox){
-		if(!is_null(validator)){
-			spinBox->setMinimum(validator->getMin());
-			spinBox->setMaximum(validator->getMax());
-			spinBox->setSingleStep(validator->getStep());
-		}
-		else{
-			spinBox->setMinimum(EnhancedNumberTraits<short>::min());
-			spinBox->setMaximum(EnhancedNumberTraits<short>::max());
-			spinBox->setSingleStep(EnhancedNumberTraits<short>::defaultStep());
-		}
-	}
-
-  //@}
-};
-
-/**
- * \brief A specific validator used to validate entry's of type long long int.
- */
-/*template<long long int>
-class EnhancedNumberValidator<long long int> : public EnhancedNumberValidator<long long int>{
-public:
-	**
-	 * Construcsts an EnhancedNumberValidator of type long long with no
-	 * minimum or maximum.
-	 *
-	EnhancedNumberValidator():EnhancedNumberValidator(longlongId, longlongDefaultStep){}
-	**
-	 * Constructs an Enhanced number validator for type long long int.
-	 *
-	 * @param min The minimum acceptable value for this validator.
-	 * @param max The maximum acceptable value for this validator.
-	 * @param step The increments at which the value should be changed. This is mostly used for 
-	 * the QSpinBox that is used in the Optika GUI. If you're not using the GUI, you may ignore this parameter.
-	 *
-	EnhancedNumberValidator(long long int min, long long int max, long long int step=longlongDefaultStep):
-	:EnhancedNumberValidator<long long int>(longlongId, min, max, step){}
-
-	**
-	 * Applies an EnhancedNumberValidator of type long long int to a QwwLongSpinBox
-	 *
-	 * @param validator The validator to be useed.
-	 * @param spinBox The spinBox on which to apply the validator.
-	 *
-	static void applyToSpinBox(RCP<const EnhancedNumberValidator<long long int> > validator, QwwLongSpinBox *spinBox){
-		if(!is_null(validator)){
-			spinBox->setMinimum(tempMin);
-			spinBox->setMaximum(validator->max());
-			spinBox->setSingleStep(validator->getStep());
-		}
-		else{
-			spinBox->setMinimum(LLONG_MIN);
-			spinBox->setMaximum(LLONG_MAX);
-			spinBox->setSingleStep(longlongDefaultStep);
-		}
-	}
-};*/
-
-/**
- * \brief A template spcialization of the SpinBoxApplier
+ * \brief A template spcialization of the ValidatorApplier
  * class on the type double.
  */
 template<>
-class SpinBoxApplier<double>{
+class ValidatorApplier<double>{
 public:
 
   //! @name Applier Functions
@@ -219,11 +113,11 @@ public:
 };
 
 /**
- * \brief A template specialzation of the SpinBoxApplier
+ * \brief A template specialzation of the ValidatorApplier
  * class on the type float.
  */
 template<>
-class SpinBoxApplier<float>{
+class ValidatorApplier<float>{
 public:
 
   //! @name Applier Functions
@@ -254,4 +148,4 @@ public:
 }; 
 
 }
-#endif // OPTIKA_SPINBOXAPPLIER_HPP_
+#endif // OPTIKA_VALIDATORAPPLIER_HPP_

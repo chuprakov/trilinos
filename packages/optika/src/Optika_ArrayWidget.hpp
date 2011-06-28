@@ -41,7 +41,7 @@
 #include <vector>
 #include "Optika_treemodel.hpp"
 #include "Optika_FileNameWidget.hpp"
-#include "Optika_SpinBoxApplier.hpp"
+#include "Optika_ValidatorApplier.hpp"
 
 /*! \file Optika_ArrayWidget.hpp
     \brief A collection of Widgets used to edit
@@ -449,7 +449,7 @@ private:
 		if(!is_null(getEntryValidator())){
 			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<int>, int> >(getEntryValidator(),true)->getPrototype();
 		}
-		SpinBoxApplier<int>::applyToSpinBox(validator, newSpin);
+		ValidatorApplier<int>::applyToSpinBox(validator, newSpin);
     newSpin->setValue(baseArray[index]);
 		return newSpin;
 	}
@@ -513,7 +513,7 @@ private:
 		if(!is_null(getEntryValidator())){
 			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<short>, short> >(getEntryValidator(),true)->getPrototype();
 		}
-		SpinBoxApplier<short>::applyToSpinBox(validator, newSpin);
+		ValidatorApplier<short>::applyToSpinBox(validator, newSpin);
     newSpin->setValue(baseArray[index]);
 		return newSpin;
 	}
@@ -579,7 +579,7 @@ private:
 		if(!is_null(getEntryValidator())){
 			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<double>, double> >(getEntryValidator(),true)->getPrototype();
 		}
-		SpinBoxApplier<double>::applyToSpinBox(validator, newSpin);
+		ValidatorApplier<double>::applyToSpinBox(validator, newSpin);
     newSpin->setValue(baseArray[index]);
 		return newSpin;
 	}
@@ -645,7 +645,7 @@ private:
 		if(!is_null(getEntryValidator())){
 			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<float>, float> >(getEntryValidator(),true)->getPrototype();
 		}
-		SpinBoxApplier<float>::applyToSpinBox(validator, newSpin);
+		ValidatorApplier<float>::applyToSpinBox(validator, newSpin);
     newSpin->setValue(baseArray[index]);
 		return newSpin;
 	}

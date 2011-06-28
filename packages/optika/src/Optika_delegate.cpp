@@ -54,7 +54,7 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 		if(!is_null(paramValidator)){
 			intValidator = rcp_dynamic_cast<const EnhancedNumberValidator<int> >(paramValidator);
 		}
-		SpinBoxApplier<int>::applyToSpinBox(intValidator, (QSpinBox*)editor);
+		ValidatorApplier<int>::applyToSpinBox(intValidator, (QSpinBox*)editor);
 	}
 	else if(itemType == shortId){
 		editor = new QSpinBox(parent);
@@ -62,7 +62,7 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 		if(!is_null(paramValidator)){
 			shortValidator = rcp_dynamic_cast<const EnhancedNumberValidator<short> >(paramValidator);
 		}
-		SpinBoxApplier<short>::applyToSpinBox(shortValidator, (QSpinBox*)editor);
+		ValidatorApplier<short>::applyToSpinBox(shortValidator, (QSpinBox*)editor);
 	}
 /*	else if(itemType == longlongId){
 		editor = new QwwLongSpinBox(parent);
@@ -78,7 +78,7 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 		if(!is_null(paramValidator)){
 			doubleValidator = rcp_dynamic_cast<const EnhancedNumberValidator<double> >(paramValidator);
 		}
-		SpinBoxApplier<double>::applyToSpinBox(doubleValidator, (QDoubleSpinBox*)editor);
+		ValidatorApplier<double>::applyToSpinBox(doubleValidator, (QDoubleSpinBox*)editor);
 	}
 	else if(itemType == floatId){
 		editor = new QDoubleSpinBox(parent);
@@ -86,7 +86,7 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 		if(!is_null(paramValidator)){
 			floatValidator = rcp_dynamic_cast<const EnhancedNumberValidator<float> >(paramValidator);
 		}
-		SpinBoxApplier<float>::applyToSpinBox(floatValidator, (QDoubleSpinBox*)editor);
+		ValidatorApplier<float>::applyToSpinBox(floatValidator, (QDoubleSpinBox*)editor);
 	}
 	else if(itemType == boolId){
 		editor = new QComboBox(parent);
