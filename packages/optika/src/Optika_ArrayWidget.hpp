@@ -193,13 +193,13 @@ class Generic2DArrayWidget : public GenericArrayWidget<S>{
     this->done(QDialog::Accepted);
   }
 
+  virtual TwoDArray<S> getArrayFromWidgets()=0;
 
 protected:
 
   
   virtual QWidget* getEditorWidget(int row, int col) =0;
 
-  virtual TwoDArray<S> getArrayFromWidgets()=0;
 
   TwoDArray<QWidget*> widgetArray;
 private:
@@ -303,6 +303,13 @@ public:
 	 */
 	virtual QWidget* getEditorWidget(int index) = 0;
 
+  /**
+   * \brief Get a new array reflecting the current values entered in the widgets.
+   *
+   * @return A new array reflecting the currecnt values entered in the widgets.
+   */
+  virtual Array<S> getArrayFromWidgets() = 0;
+
 
   //@}
 
@@ -340,12 +347,6 @@ private:
   /** \name Private Functions */
   //@{
 
-  /**
-   * \brief Get a new array reflecting the current values entered in the widgets.
-   *
-   * @return A new array reflecting the currecnt values entered in the widgets.
-   */
-  virtual Array<S> getArrayFromWidgets() = 0;
 
   QLayout* getArrayLayout();
 
@@ -408,6 +409,23 @@ public:
 
   //@}
 
+  /** \name Overridden from Generic1DArrayWidget */
+  //@{
+  
+  /**
+   * \brief .
+   */
+	Array<int> getArrayFromWidgets(){
+    Array<int> toReturn(widgetVector.size(), 0);
+    for(size_t i=0; i < widgetVector.size(); ++i){
+      toReturn[i]= ((QSpinBox*)widgetVector[i])->value();
+    }
+    return toReturn;
+	}
+
+  //@}
+
+
 public slots:
 
   /** \name Overridden from Generic1DArrayWidget */
@@ -418,6 +436,7 @@ public slots:
     doAcceptWork();
   }
 
+  //@}
 
 private:
 
@@ -433,17 +452,6 @@ private:
 		SpinBoxApplier<int>::applyToSpinBox(validator, newSpin);
     newSpin->setValue(baseArray[index]);
 		return newSpin;
-	}
-
-  /**
-   * \brief .
-   */
-	Array<int> getArrayFromWidgets(){
-    Array<int> toReturn(widgetVector.size(), 0);
-    for(size_t i=0; i < widgetVector.size(); ++i){
-      toReturn[i]= ((QSpinBox*)widgetVector[i])->value();
-    }
-    return toReturn;
 	}
 
   //@}
@@ -477,6 +485,15 @@ public:
 
   //@}
 
+  /** * \brief .  */
+	Array<short> getArrayFromWidgets(){
+    Array<short> toReturn(widgetVector.size(), 0);
+    for(size_t i=0; i < widgetVector.size(); ++i){
+      toReturn[i]= ((QSpinBox*)widgetVector[i])->value();
+    }
+    return toReturn;
+	}
+
 public slots:
   /** \name Overridden from Generic1DArrayWidget */
   //@{
@@ -501,14 +518,6 @@ private:
 		return newSpin;
 	}
 
-  /** * \brief .  */
-	Array<short> getArrayFromWidgets(){
-    Array<short> toReturn(widgetVector.size(), 0);
-    for(size_t i=0; i < widgetVector.size(); ++i){
-      toReturn[i]= ((QSpinBox*)widgetVector[i])->value();
-    }
-    return toReturn;
-	}
 
   //@}
 };
@@ -540,6 +549,15 @@ public:
     Generic1DArrayWidget<double>(name, type, validator,parent){}
 
   //@}
+
+  /** * \brief .  */
+	Array<double> getArrayFromWidgets(){
+    Array<double> toReturn(widgetVector.size(), 0.0);
+    for(size_t i=0; i < widgetVector.size(); ++i){
+      toReturn[i]= ((QDoubleSpinBox*)widgetVector[i])->value();
+    }
+    return toReturn;
+  }
   
 public slots:
   /** \name Overridden from Generic1DArrayWidget */
@@ -549,6 +567,8 @@ public slots:
 	void accept(){
     doAcceptWork();
 	}
+
+  //@}
 
 private:
 
@@ -564,14 +584,6 @@ private:
 		return newSpin;
 	}
 
-  /** * \brief .  */
-	Array<double> getArrayFromWidgets(){
-    Array<double> toReturn(widgetVector.size(), 0.0);
-    for(size_t i=0; i < widgetVector.size(); ++i){
-      toReturn[i]= ((QSpinBox*)widgetVector[i])->value();
-    }
-    return toReturn;
-  }
 
   //@}
 };
@@ -603,6 +615,15 @@ public:
 
   //@}
   
+  /** * \brief .  */
+	Array<float> getArrayFromWidgets(){
+    Array<float> toReturn(widgetVector.size(), 0.0);
+    for(size_t i=0; i < widgetVector.size(); ++i){
+      toReturn[i]= ((QDoubleSpinBox*)widgetVector[i])->value();
+    }
+    return toReturn;
+  }
+
 public slots:
 
   /** \name Overridden from Generic1DArrayWidget */
@@ -612,6 +633,8 @@ public slots:
 	void accept(){
     doAcceptWork();
 	}
+
+  //@}
 
 private:
 
@@ -627,14 +650,6 @@ private:
 		return newSpin;
 	}
 
-  /** * \brief .  */
-	Array<float> getArrayFromWidgets(){
-    Array<float> toReturn(widgetVector.size(), 0.0);
-    for(size_t i=0; i < widgetVector.size(); ++i){
-      toReturn[i]= ((QSpinBox*)widgetVector[i])->value();
-    }
-    return toReturn;
-  }
 
   //@}
 };
@@ -667,6 +682,28 @@ public:
 
   //@}
 
+  /** * \brief .  */
+	Array<std::string> getArrayFromWidgets(){
+    Array<std::string> toReturn(widgetVector.size(), "");
+    for(size_t i=0; i < widgetVector.size(); ++i){
+			if(is_null(getEntryValidator())){
+        toReturn[i] = ((QLineEdit*)widgetVector[i])->text().toStdString();
+			}
+			else if(!is_null(rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(getEntryValidator()))){
+        toReturn[i] = ((FileNameWidget*)widgetVector[i])->getCurrentFileName().toStdString();
+			}
+			else if(getEntryValidator()->validStringValues()->size() !=0){
+        toReturn[i] = ((QComboBox*)widgetVector[i])->currentText().toStdString();
+			}
+			else{
+        toReturn[i] = ((QLineEdit*)widgetVector[i])->text().toStdString();
+			}
+		}
+    return toReturn;
+  }
+
+public slots:
+
   /** \name Overridden from Generic1DArrayWidget */
   //@{
 
@@ -674,6 +711,8 @@ public:
 	void accept(){
     doAcceptWork();
 	}
+
+  //@}
 
 
 private:
@@ -704,25 +743,6 @@ private:
 		}
 	}
 
-  /** * \brief .  */
-	Array<std::string> getArrayFromWidgets(){
-    Array<std::string> toReturn(widgetVector.size(), "");
-    for(size_t i=0; i < widgetVector.size(); ++i){
-			if(is_null(getEntryValidator())){
-        toReturn[i] = ((QLineEdit*)widgetVector[i])->text().toStdString();
-			}
-			else if(!is_null(rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(getEntryValidator()))){
-        toReturn[i] = ((FileNameWidget*)widgetVector[i])->getCurrentFileName().toStdString();
-			}
-			else if(getEntryValidator()->validStringValues()->size() !=0){
-        toReturn[i] = ((QComboBox*)widgetVector[i])->currentText().toStdString();
-			}
-			else{
-        toReturn[i] = ((QLineEdit*)widgetVector[i])->text().toStdString();
-			}
-		}
-    return toReturn;
-  }
 
   //@}
 };

@@ -211,7 +211,7 @@ public:
 			spinBox->setMinimum(EnhancedNumberTraits<double>::min());
 			spinBox->setMaximum(EnhancedNumberTraits<double>::max());
 			spinBox->setSingleStep(EnhancedNumberTraits<double>::defaultStep());
-			spinBox->setDecimals(EnhancedNumberTraits<float>::defaultPrecision());
+			spinBox->setDecimals(EnhancedNumberTraits<double>::defaultPrecision());
 		}
 	}
 

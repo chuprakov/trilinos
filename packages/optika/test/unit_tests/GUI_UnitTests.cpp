@@ -57,6 +57,7 @@ Q_OBJECT
 private slots:
   void typeTest();
   void dependencyTests();
+  void arrayEditorTest();
   void cleanupTestCase();
 private:
   static inline QModelIndex getWidgetIndex(const QModelIndex& index);
@@ -123,6 +124,21 @@ void OptikaGUITests::typeTest(){
   VERIFY_PARAMETER_TYPE(My_List, IntArray, arrayId + " " + intId, model);
   cleaner.remove(model);
   delete model; 
+}
+
+
+void OptikaGUITests::arrayEditorTest(){
+  Array<double> testArray(4,4.5);
+  ParameterEntry testEntry(testArray);
+  DoubleArrayWidget* testWidget = new DoubleArrayWidget("tester", doubleId, null);
+  cleaner.add(testWidget);
+
+  testWidget->initData(testArray);
+  Array<double> retrievedArray = testWidget->getArrayFromWidgets();
+  QVERIFY(testArray == retrievedArray);
+
+  cleaner.remove(testWidget);
+  delete testWidget;
 }
 
 inline QModelIndex OptikaGUITests::getWidgetIndex(const QModelIndex& index){
