@@ -554,7 +554,7 @@ public:
 	Array<double> getArrayFromWidgets(){
     Array<double> toReturn(widgetVector.size(), 0.0);
     for(size_t i=0; i < widgetVector.size(); ++i){
-      toReturn[i]= ((QDoubleSpinBox*)widgetVector[i])->value();
+      toReturn[i]= ((QLineEdit*)widgetVector[i])->text().toDouble();
     }
     return toReturn;
   }
@@ -574,14 +574,14 @@ private:
 
   /** * \brief .  */
 	QWidget* getEditorWidget(int index){
-		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
+		QLineEdit *newEdit = new QLineEdit(this);
 		RCP<const EnhancedNumberValidator<double> > validator = null;
 		if(!is_null(getEntryValidator())){
 			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<double>, double> >(getEntryValidator(),true)->getPrototype();
 		}
-		ValidatorApplier<double>::applyToSpinBox(validator, newSpin);
-    newSpin->setValue(baseArray[index]);
-		return newSpin;
+		ValidatorApplier<double>::applyToLineEdit(validator, newEdit);
+    newEdit->setText(QString::number(baseArray[index], 'g', ((QDoubleValidator*)newEdit->validator())->decimals()));
+		return newEdit;
 	}
 
 
@@ -619,7 +619,7 @@ public:
 	Array<float> getArrayFromWidgets(){
     Array<float> toReturn(widgetVector.size(), 0.0);
     for(size_t i=0; i < widgetVector.size(); ++i){
-      toReturn[i]= ((QDoubleSpinBox*)widgetVector[i])->value();
+      toReturn[i]= ((QLineEdit*)widgetVector[i])->text().toDouble();
     }
     return toReturn;
   }
@@ -640,14 +640,14 @@ private:
 
   /** * \brief .  */
 	QWidget* getEditorWidget(int index){
-		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
+		QLineEdit *newEdit = new QLineEdit(this);
 		RCP<const EnhancedNumberValidator<float> > validator = null;
 		if(!is_null(getEntryValidator())){
 			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<float>, float> >(getEntryValidator(),true)->getPrototype();
 		}
-		ValidatorApplier<float>::applyToSpinBox(validator, newSpin);
-    newSpin->setValue(baseArray[index]);
-		return newSpin;
+		ValidatorApplier<float>::applyToLineEdit(validator, newEdit);
+    newEdit->setText(QString::number(baseArray[index], 'g', ((QDoubleValidator*)newEdit->validator())->decimals()));
+		return newEdit;
 	}
 
 
