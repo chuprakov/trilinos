@@ -81,7 +81,7 @@ public:
   /**
    * \brief called when the user is done entering data
    * into the widget. MUST BE IMPLEMENTED AS A SLOT IN
-   * SUBCLASSES!
+   * CONCRETE SUBCLASSES!
    */
   virtual void accept() =0;
 
@@ -196,12 +196,11 @@ class Generic2DArrayWidget : public GenericArrayWidget<S>{
   virtual TwoDArray<S> getArrayFromWidgets()=0;
 
 protected:
-
   
   virtual QWidget* getEditorWidget(int row, int col) =0;
 
-
   TwoDArray<QWidget*> widgetArray;
+
 private:
   TwoDArray<S> baseArray;
 	QLayout* getArrayLayout();
@@ -236,6 +235,43 @@ QLayout* Generic2DArrayWidget<S>::getArrayLayout(){
   }
   return widgetLayout;
 }
+/*
+class Int2DArrayWidget : public Generic2DArrayWidget<int>{
+
+public:
+
+  Int2DArrayWidget(
+    QString name,
+    QString type,
+    const RCP<const ParameterEntryValidator> validator,
+    QWidget *parent);
+
+  TwoDArray<int> getArrayFromWidgets();
+public slots:
+  void accept();
+protected:
+  QWidget* getEditorWidget(int row, int col);
+};
+
+Int2DArrayWidget::Int2DArrayWidget(
+  QString name,
+  QString type,
+  const RCP<const ParameterEntryValidator> validator,
+  QWidget *parent):
+  Generic2DArrayWidget<int>(name, type, validator, parent)
+{}
+
+TwoDArray<int> Int2DArrayWidget::getArrayFromWidgets(){
+  
+  for(int i=0; i<baseArray.getNumRows(); ++i){
+    for(int j=0; j<baseArray.getNumColumns(); ++j){
+
+    }
+  }
+}
+  void accept();
+  QWidget* getEditorWidget(int row, int col);
+*/
 
 
 /**
