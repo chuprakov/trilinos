@@ -129,6 +129,9 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 	else if(itemType.contains(arrayId)){
 		editor = getArrayEditor(index, getArrayType(itemType), parent);
 	}
+	else if(itemType.contains(twoDArrayId)){
+    editor = getArrayEditor(index, getArrayType(itemType), parent, true);
+  }
 
 	return editor;
 }
@@ -159,7 +162,10 @@ void Delegate::setEditorData(QWidget *editor, const QModelIndex &index) const{
 			static_cast<QComboBox*>(editor)->setEditText(value.toString());
 	}
   else if(itemType.contains(arrayId)){
-    setArrayWidgetData(editor, itemType.section(" ", -1), index);
+    setArrayWidgetData(editor, getArrayType(itemType), index);
+  }
+  else if(itemType.contains(twoDArrayId)){
+    setArrayWidgetData(editor, getArrayType(itemType), index, true);
   }
 }
 
@@ -201,16 +207,22 @@ void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QM
 		model->setData(index, value, Qt::EditRole);
 	}
   else if(itemType.contains(arrayId)){
-    QVariant value = extractValueFromArray(editor, itemType.section(" ", -1));
+    QVariant value = extractValueFromArray(editor, getArrayType(itemType));
+    model->setData(index, value, Qt::EditRole);
+  }
+  else if(itemType.contains(twoDArrayId)){
+    QVariant value = extractValueFromArray(editor, getArrayType(itemType), true);
     model->setData(index, value, Qt::EditRole);
   }
 }
 
-QVariant Delegate::extractValueFromArray(QWidget* editor, QString type) const
+QVariant Delegate::extractValueFromArray(QWidget* editor, QString type, bool isTwoD) const
 {
   if(type == intId){
-    IntArrayWidget* intEditor = (IntArrayWidget*)editor;
-    return QVariant::fromValue(intEditor->getData());
+    return (isTwoD ?
+    QVariant::fromValue(((Int2DArrayWidget*)editor)->getData())
+    :
+    QVariant::fromValue(((IntArrayWidget*)editor)->getData()));
   }
   else if(type == shortId){
     ShortArrayWidget* shortEditor = (ShortArrayWidget*)editor;
@@ -238,15 +250,19 @@ void Delegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem 
 	editor->setGeometry(option.rect);
 }
 
-QWidget* Delegate::getArrayEditor(const QModelIndex& index, QString type, QWidget *parent) const{
+QWidget* Delegate::getArrayEditor(const QModelIndex& index, QString type, QWidget *parent, bool isTwoD) const{
   TreeModel* model = (TreeModel*)index.model();
   QString name = model->data(
     index.sibling(index.row(),0),Qt::DisplayRole).toString();
   RCP<const ParameterEntryValidator> validator = 
     model->getValidator(index);
-    
 	if(type == intId){
-		return new IntArrayWidget(name, type, validator, parent);
+    if(isTwoD){
+      return new Int2DArrayWidget(name, type, validator, parent);
+    }
+    else{
+      return new IntArrayWidget(name, type, validator, parent);
+    }
 	}
 	else if(type == shortId){
 		return new ShortArrayWidget(name, type, validator, parent);
@@ -268,9 +284,12 @@ QWidget* Delegate::getArrayEditor(const QModelIndex& index, QString type, QWidge
   }
 }
 
-void Delegate::setArrayWidgetData(QWidget* editor, QString type, const QModelIndex& index) const{
+void Delegate::setArrayWidgetData(QWidget* editor, QString type, const QModelIndex& index, bool isTwoD) const{
   QVariant newData = index.model()->data(index, TreeModel::getRawDataRole());
 	if(type == intId){
+    isTwoD ?
+    ((Int2DArrayWidget*)editor)->initData(newData.value<TwoDArray<int> >())
+    :
     ((IntArrayWidget*)editor)->initData(newData.value<Array<int> >());
 	}
 	else if(type == shortId){

@@ -176,6 +176,7 @@ GenericArrayWidget<S>::GenericArrayWidget(
 template <class S>
 class Generic2DArrayWidget : public GenericArrayWidget<S>{
 
+public:
 	Generic2DArrayWidget(
     QString name, 
     QString type, 
@@ -187,22 +188,26 @@ class Generic2DArrayWidget : public GenericArrayWidget<S>{
     this->setupArrayLayout();
   }
 
+  virtual TwoDArray<S> getArrayFromWidgets()=0;
+
+  TwoDArray<S> getData() const{
+    return baseArray;
+  }
+
+protected:
+  
   void doAcceptWork(){
     baseArray.clear();
     baseArray = getArrayFromWidgets();
     this->done(QDialog::Accepted);
   }
 
-  virtual TwoDArray<S> getArrayFromWidgets()=0;
-
-protected:
-  
   virtual QWidget* getEditorWidget(int row, int col) =0;
 
   TwoDArray<QWidget*> widgetArray;
 
-private:
   TwoDArray<S> baseArray;
+private:
 	QLayout* getArrayLayout();
 
 };
@@ -220,7 +225,7 @@ Generic2DArrayWidget<S>::Generic2DArrayWidget(
 template<class S>
 QLayout* Generic2DArrayWidget<S>::getArrayLayout(){
  QGridLayout *widgetLayout = new QGridLayout;
-  for(int i =0; i < baseArray.getNumColumns(); ++i){
+  for(int i =0; i < baseArray.getNumCols(); ++i){
 		widgetLayout->addWidget(new QLabel("Column: " +QString::number(i)),0,i+1,Qt::AlignLeft);
   }
   for(int i =0; i < baseArray.getNumRows(); ++i){
@@ -235,44 +240,41 @@ QLayout* Generic2DArrayWidget<S>::getArrayLayout(){
   }
   return widgetLayout;
 }
-/*
+
 class Int2DArrayWidget : public Generic2DArrayWidget<int>{
-
+Q_OBJECT
 public:
-
   Int2DArrayWidget(
     QString name,
     QString type,
     const RCP<const ParameterEntryValidator> validator,
-    QWidget *parent);
+    QWidget *parent):
+    Generic2DArrayWidget<int>(name, type, validator, parent)
+  {}
 
-  TwoDArray<int> getArrayFromWidgets();
-public slots:
-  void accept();
-protected:
-  QWidget* getEditorWidget(int row, int col);
-};
-
-Int2DArrayWidget::Int2DArrayWidget(
-  QString name,
-  QString type,
-  const RCP<const ParameterEntryValidator> validator,
-  QWidget *parent):
-  Generic2DArrayWidget<int>(name, type, validator, parent)
-{}
-
-TwoDArray<int> Int2DArrayWidget::getArrayFromWidgets(){
-  
-  for(int i=0; i<baseArray.getNumRows(); ++i){
-    for(int j=0; j<baseArray.getNumColumns(); ++j){
-
+  TwoDArray<int> getArrayFromWidgets(){
+    TwoDArray<int> toReturn(
+      widgetArray.getNumRows(), widgetArray.getNumCols(), 0);
+    for(int i=0; i<widgetArray.getNumRows(); ++i){
+      for(int j=0; j<widgetArray.getNumCols(); ++j){
+        toReturn(i,j) = ((QSpinBox*)widgetArray(i,j))->value();
+      }
     }
+    return toReturn;
   }
-}
-  void accept();
-  QWidget* getEditorWidget(int row, int col);
-*/
 
+public slots:
+  void accept(){
+    doAcceptWork();
+  }
+
+protected:
+  QWidget* getEditorWidget(int row, int col){
+		QSpinBox *newSpin = new QSpinBox(this);
+    newSpin->setValue(baseArray(row, col));
+		return newSpin;
+  }
+};
 
 /**
  * \brief A templated abstract base class for all other array editing widgets. 
