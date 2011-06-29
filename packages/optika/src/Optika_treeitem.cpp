@@ -126,8 +126,19 @@ QVariant TreeItem::data(int column, int role) const{
 		}
 	}
 	else if(role == Qt::DisplayRole){
-    if(column == 1 && nonnull(parameterEntry) && parameterEntry->isArray()){
+    if(column == 1 && 
+      nonnull(parameterEntry) && 
+      parameterEntry->isArray()
+    )
+    {
       return QString::fromStdString(toString(parameterEntry->getAny()));
+    }
+    else if(column == 1 && 
+      nonnull(parameterEntry) && 
+      parameterEntry->isTwoDArray()
+    )
+    {
+      return QString("Click to view 2D Array");
     }
     else{
 		 return itemData.value(column);
@@ -140,7 +151,7 @@ QVariant TreeItem::data(int column, int role) const{
     }
     else if(column == 1 && nonnull(parameterEntry) && parameterEntry->isTwoDArray()){
       return arrayEntryToVariant(parameterEntry,
-        getArrayType(itemData.value(2).toString()));
+        getArrayType(itemData.value(2).toString()), true);
     }
     else{
       return itemData.value(column);

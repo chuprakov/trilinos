@@ -408,7 +408,6 @@ void TreeModel::insertParameter(RCP<ParameterEntry> parameter, std::string name,
 	}
   else if(parameter->isTwoDArray()){
 		QString determinedId = determineArrayType(parameter, true);
-    std::cout << "determined id: " << determinedId.toStdString() << std::endl;
 		if( determinedId != unrecognizedId){
 			values.append(arrayEntryToVariant(parameter, determinedId, true));
 			values.append(QString(twoDArrayId + " "+ determinedId));

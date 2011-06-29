@@ -224,6 +224,7 @@ Generic2DArrayWidget<S>::Generic2DArrayWidget(
 
 template<class S>
 QLayout* Generic2DArrayWidget<S>::getArrayLayout(){
+ widgetArray = TwoDArray<QWidget*>(baseArray.getNumRows(), baseArray.getNumCols());
  QGridLayout *widgetLayout = new QGridLayout;
   for(int i =0; i < baseArray.getNumCols(); ++i){
 		widgetLayout->addWidget(new QLabel("Column: " +QString::number(i)),0,i+1,Qt::AlignLeft);
