@@ -102,7 +102,7 @@ void OptikaGUITests::typeTest(){
     RCP<ParameterList>(new ParameterList);
 
   RCP<EnhancedNumberValidator<int> > intVali =
-    rcp(new EnhancedNumberValidator<int>(0,2000,3));
+    Teuchos::rcp(new EnhancedNumberValidator<int>(0,2000,3));
 
   double *pointer = 0;
   Array<double*> doubleStarArray;
