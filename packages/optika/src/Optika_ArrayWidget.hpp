@@ -188,7 +188,18 @@ public:
     this->setupArrayLayout();
   }
 
-  virtual TwoDArray<S> getArrayFromWidgets()=0;
+  TwoDArray<S> getArrayFromWidgets(){
+    TwoDArray<S> toReturn(
+      widgetArray.getNumRows(), widgetArray.getNumCols());
+    for(int i=0; i<widgetArray.getNumRows(); ++i){
+      for(int j=0; j<widgetArray.getNumCols(); ++j){
+        toReturn(i,j) = getWidgetValue(i,j);
+      }
+    }
+    return toReturn;
+  }
+
+  virtual S getWidgetValue(int row, int col) = 0;
 
   TwoDArray<S> getData() const{
     return baseArray;
@@ -253,15 +264,8 @@ public:
     Generic2DArrayWidget<int>(name, type, validator, parent)
   {}
 
-  TwoDArray<int> getArrayFromWidgets(){
-    TwoDArray<int> toReturn(
-      widgetArray.getNumRows(), widgetArray.getNumCols(), 0);
-    for(int i=0; i<widgetArray.getNumRows(); ++i){
-      for(int j=0; j<widgetArray.getNumCols(); ++j){
-        toReturn(i,j) = ((QSpinBox*)widgetArray(i,j))->value();
-      }
-    }
-    return toReturn;
+  inline int getWidgetValue(int row, int col){
+    return ((QSpinBox*)widgetArray(row,col))->value();
   }
 
 public slots:
@@ -288,15 +292,8 @@ public:
     Generic2DArrayWidget<short>(name, type, validator, parent)
   {}
 
-  TwoDArray<short> getArrayFromWidgets(){
-    TwoDArray<short> toReturn(
-      widgetArray.getNumRows(), widgetArray.getNumCols(), 0);
-    for(int i=0; i<widgetArray.getNumRows(); ++i){
-      for(int j=0; j<widgetArray.getNumCols(); ++j){
-        toReturn(i,j) = ((QSpinBox*)widgetArray(i,j))->value();
-      }
-    }
-    return toReturn;
+  inline short getWidgetValue(int row, int col){
+    return ((QSpinBox*)widgetArray(row,col))->value();
   }
 
 public slots:
@@ -309,6 +306,90 @@ protected:
 		QSpinBox *newSpin = new QSpinBox(this);
     newSpin->setValue(baseArray(row, col));
 		return newSpin;
+  }
+};
+
+class Double2DArrayWidget : public Generic2DArrayWidget<double>{
+Q_OBJECT
+public:
+  Double2DArrayWidget(
+    QString name,
+    QString type,
+    const RCP<const ParameterEntryValidator> validator,
+    QWidget *parent):
+    Generic2DArrayWidget<double>(name, type, validator, parent)
+  {}
+
+  inline double getWidgetValue(int row, int col){
+    return ((QLineEdit*)widgetArray(row,col))->text().toDouble();
+  }
+
+public slots:
+  void accept(){
+    doAcceptWork();
+  }
+
+protected:
+  QWidget* getEditorWidget(int row, int col){
+    QLineEdit *newEdit = new QLineEdit(this);
+    newEdit->setText(QString::number(baseArray(row,col)));
+    return newEdit;
+  }
+};
+
+class Float2DArrayWidget : public Generic2DArrayWidget<float>{
+Q_OBJECT
+public:
+  Float2DArrayWidget(
+    QString name,
+    QString type,
+    const RCP<const ParameterEntryValidator> validator,
+    QWidget *parent):
+    Generic2DArrayWidget<float>(name, type, validator, parent)
+  {}
+
+  inline float getWidgetValue(int row, int col){
+    return ((QLineEdit*)widgetArray(row,col))->text().toDouble();
+  }
+
+public slots:
+  void accept(){
+    doAcceptWork();
+  }
+
+protected:
+  QWidget* getEditorWidget(int row, int col){
+    QLineEdit *newEdit = new QLineEdit(this);
+    newEdit->setText(QString::number(baseArray(row,col)));
+    return newEdit;
+  }
+};
+
+class String2DArrayWidget : public Generic2DArrayWidget<std::string>{
+Q_OBJECT
+public:
+  String2DArrayWidget(
+    QString name,
+    QString type,
+    const RCP<const ParameterEntryValidator> validator,
+    QWidget *parent):
+    Generic2DArrayWidget<std::string>(name, type, validator, parent)
+  {}
+
+  inline std::string getWidgetValue(int row, int col){
+    return ((QLineEdit*)widgetArray(row,col))->text().toStdString();
+  }
+
+public slots:
+  void accept(){
+    doAcceptWork();
+  }
+
+protected:
+  QWidget* getEditorWidget(int row, int col){
+    QLineEdit *newEdit = new QLineEdit(this);
+    newEdit->setText(QString::fromStdString(baseArray(row,col)));
+    return newEdit;
   }
 };
 
