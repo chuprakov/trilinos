@@ -277,6 +277,41 @@ protected:
   }
 };
 
+class Short2DArrayWidget : public Generic2DArrayWidget<short>{
+Q_OBJECT
+public:
+  Short2DArrayWidget(
+    QString name,
+    QString type,
+    const RCP<const ParameterEntryValidator> validator,
+    QWidget *parent):
+    Generic2DArrayWidget<short>(name, type, validator, parent)
+  {}
+
+  TwoDArray<short> getArrayFromWidgets(){
+    TwoDArray<short> toReturn(
+      widgetArray.getNumRows(), widgetArray.getNumCols(), 0);
+    for(int i=0; i<widgetArray.getNumRows(); ++i){
+      for(int j=0; j<widgetArray.getNumCols(); ++j){
+        toReturn(i,j) = ((QSpinBox*)widgetArray(i,j))->value();
+      }
+    }
+    return toReturn;
+  }
+
+public slots:
+  void accept(){
+    doAcceptWork();
+  }
+
+protected:
+  QWidget* getEditorWidget(int row, int col){
+		QSpinBox *newSpin = new QSpinBox(this);
+    newSpin->setValue(baseArray(row, col));
+		return newSpin;
+  }
+};
+
 /**
  * \brief A templated abstract base class for all other array editing widgets. 
  *

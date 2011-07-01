@@ -225,8 +225,10 @@ QVariant Delegate::extractValueFromArray(QWidget* editor, QString type, bool isT
     QVariant::fromValue(((IntArrayWidget*)editor)->getData()));
   }
   else if(type == shortId){
-    ShortArrayWidget* shortEditor = (ShortArrayWidget*)editor;
-    return QVariant::fromValue(shortEditor->getData());
+    return (isTwoD ?
+    QVariant::fromValue(((Short2DArrayWidget*)editor)->getData())
+    :
+    QVariant::fromValue(((ShortArrayWidget*)editor)->getData()));
   }
   else if(type == floatId){
     FloatArrayWidget* floatEditor = (FloatArrayWidget*)editor;
@@ -265,11 +267,13 @@ QWidget* Delegate::getArrayEditor(const QModelIndex& index, QString type, QWidge
     }
 	}
 	else if(type == shortId){
-		return new ShortArrayWidget(name, type, validator, parent);
+    if(isTwoD){
+      return new Short2DArrayWidget(name, type, validator, parent);
+    }
+    else{
+      return new ShortArrayWidget(name, type, validator, parent);
+    }
 	}
-	/*else if(type == longlongId){
-		return new IntArrayWidget(index, type, parent);
-	}*/
 	else if(type == doubleId){
 		return new DoubleArrayWidget(name, type, validator, parent);
   }
@@ -293,10 +297,11 @@ void Delegate::setArrayWidgetData(QWidget* editor, QString type, const QModelInd
     ((IntArrayWidget*)editor)->initData(newData.value<Array<int> >());
 	}
 	else if(type == shortId){
+    isTwoD ?
+    ((Short2DArrayWidget*)editor)->initData(newData.value<TwoDArray<short> >())
+    :
     ((ShortArrayWidget*)editor)->initData(newData.value<Array<short> >());
 	}
-	/*else if(type == longlongId){
-	}*/
 	else if(type == doubleId){
     ((DoubleArrayWidget*)editor)->initData(newData.value<Array<double> >());
   }
