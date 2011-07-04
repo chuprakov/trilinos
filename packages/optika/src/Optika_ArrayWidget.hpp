@@ -423,6 +423,11 @@ protected:
   /** \brief . */
   QWidget* getEditorWidget(int row, int col){
 		QSpinBox *newSpin = new QSpinBox(this);
+		RCP<const EnhancedNumberValidator<int> > validator = null;
+		if(!is_null(getEntryValidator())){
+			validator = rcp_dynamic_cast<const TwoDArrayValidator<EnhancedNumberValidator<int>, int> >(getEntryValidator(),true)->getPrototype();
+		}
+		ValidatorApplier<int>::applyToSpinBox(validator, newSpin);
     newSpin->setValue(baseArray(row, col));
 		return newSpin;
   }
