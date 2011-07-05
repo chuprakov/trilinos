@@ -613,9 +613,14 @@ protected:
 
   /** \brief . */
   QWidget* getEditorWidget(int row, int col){
-    QLineEdit *newEdit = new QLineEdit(this);
+		QLineEdit *newEdit = new QLineEdit(this);
+		RCP<const EnhancedNumberValidator<float> > validator = null;
+		if(!is_null(getEntryValidator())){
+			validator = rcp_dynamic_cast<const TwoDArrayValidator<EnhancedNumberValidator<float>, float> >(getEntryValidator(),true)->getPrototype();
+		}
+		ValidatorApplier<float>::applyToLineEdit(validator, newEdit);
     newEdit->setText(QString::number(baseArray(row,col)));
-    return newEdit;
+		return newEdit;
   }
 
   //@}
@@ -665,17 +670,47 @@ public:
   //@{
 
   /** \brief . */
-  inline std::string getWidgetValue(int row, int col){
-    return ((QLineEdit*)widgetArray(row,col))->text().toStdString();
+  std::string getWidgetValue(int row, int col){
+		if(is_null(getEntryValidator())){
+       return ((QLineEdit*)widgetArray(row,col))->text().toStdString();
+		}
+		else if(!is_null(rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(getEntryValidator()))){
+       return ((FileNameWidget*)widgetArray(row,col))->getCurrentFileName().toStdString();
+		}
+		else if(getEntryValidator()->validStringValues()->size() !=0){
+       return  ((QComboBox*)widgetArray(row,col))->currentText().toStdString();
+		}
+		else{
+       return  ((QLineEdit*)widgetArray(row,col))->text().toStdString();
+		}
   }
 
 protected:
 
   /** \brief . */
   QWidget* getEditorWidget(int row, int col){
-    QLineEdit *newEdit = new QLineEdit(this);
-    newEdit->setText(QString::fromStdString(baseArray(row,col)));
-    return newEdit;
+    QString currentData = QString::fromStdString(baseArray(row,col));
+		if(is_null(getEntryValidator())){
+			return new QLineEdit(currentData,this);
+		}
+		else if(!is_null(rcp_dynamic_cast<const TwoDArrayValidator<FileNameValidator, std::string> >(getEntryValidator()))){
+			return new FileNameWidget(
+        currentData, 
+        rcp_dynamic_cast<const TwoDArrayValidator<FileNameValidator, std::string> >(getEntryValidator())->getPrototype()->fileMustExist(), this);
+		}
+		else if(getEntryValidator()->validStringValues()->size() != 0){
+			RCP<const Array<std::string> > options = getEntryValidator()->validStringValues();
+			QComboBox *newCombo = new QComboBox(this);
+			for(Array<std::string>::const_iterator itr = options->begin(); itr != options->end(); ++itr){
+				newCombo->addItem(QString::fromStdString(*itr));
+			}
+      int selectedItem = newCombo->findText(currentData);
+      newCombo->setCurrentIndex(selectedItem);
+			return newCombo;
+		}
+		else{
+			return new QLineEdit(currentData,this);
+		}
   }
 
   //@}
