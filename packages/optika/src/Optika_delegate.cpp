@@ -32,8 +32,6 @@
 #include <QComboBox>
 #include <QFileDialog>
 #include "Optika_delegate.hpp"
-#include "float.h"
-#include <iostream>
 #include "Teuchos_StandardParameterEntryValidators.hpp"
 
 namespace Optika{
@@ -73,6 +71,7 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 		EnhancedNumberValidator<long long>::applyToSpinBox(longlongValidator, (QDoubleSpinBox*)editor);
 	}*/
 	else if(itemType == doubleId){
+		//editor = new QLineEdit(parent);
 		editor = new QLineEdit(parent);
 		RCP<const EnhancedNumberValidator<double> > doubleValidator;
 		if(!is_null(paramValidator)){

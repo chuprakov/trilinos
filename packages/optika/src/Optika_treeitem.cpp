@@ -175,8 +175,9 @@ int TreeItem::row() const{
 }
 
 bool TreeItem::hasValidValue() const{
-	if(is_null(parameterEntry->validator()))
+	if(is_null(parameterEntry->validator())){
 		return true;
+  }
 	else{
 		try{
 			parameterEntry->validator()->validate(*parameterEntry, data(0).toString().toStdString(),
@@ -190,6 +191,20 @@ bool TreeItem::hasValidValue() const{
 	//should never get here
 	return true;
 
+}
+
+QString TreeItem::getCurrentInvalidValueMessage() const{
+  if(parameterEntry->validator() == null){
+    return "";
+  }
+	try{
+		parameterEntry->validator()->validate(*parameterEntry, data(0).toString().toStdString(),
+						      parentItem->data(0,Qt::DisplayRole).toString().toStdString());
+    return "";
+	}
+	catch(std::exception& e){
+		return QString::fromStdString(e.what());
+	}
 }
 	
 

@@ -548,9 +548,14 @@ protected:
 
   /** \brief . */
   QWidget* getEditorWidget(int row, int col){
-    QLineEdit *newEdit = new QLineEdit(this);
+		QLineEdit *newEdit = new QLineEdit(this);
+		RCP<const EnhancedNumberValidator<double> > validator = null;
+		if(!is_null(getEntryValidator())){
+			validator = rcp_dynamic_cast<const TwoDArrayValidator<EnhancedNumberValidator<double>, double> >(getEntryValidator(),true)->getPrototype();
+		}
+		ValidatorApplier<double>::applyToLineEdit(validator, newEdit);
     newEdit->setText(QString::number(baseArray(row,col)));
-    return newEdit;
+		return newEdit;
   }
 
   //@}
