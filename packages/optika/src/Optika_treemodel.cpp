@@ -25,7 +25,7 @@
 // 
 // ***********************************************************************
 // @HEADER
-#include <iostream>
+#include <QXmlStreamReader>
 #include "Optika_treemodel.hpp"
 #include "Teuchos_XMLParameterListWriter.hpp"
 #include <QTextStream>
@@ -61,7 +61,9 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const {
 	if(!index.isValid()){
 		return QVariant();
 	}
-	if(role != Qt::DisplayRole && role != Qt::ToolTipRole){
+	if(role != Qt::DisplayRole && role != Qt::ToolTipRole
+    && role != getRawDataRole())
+  {
 		return QVariant();
 	}
 	TreeItem *item = (TreeItem*)(index.internalPointer());
@@ -126,7 +128,14 @@ bool TreeModel::setData(const QModelIndex & index, const QVariant &value, int ro
 	if(index.isValid() && index.column() == 1 && role == Qt::EditRole){
 		TreeItem *item = (TreeItem*)(index.internalPointer());
 		if(item->changeValue(value)){
-			emit dataChanged(index, index);
+      //Need to do this check because QDoubleValidators are really lax.
+      //Plus it's probably good to do anyway.
+      if(item->hasValidValue()){
+			  emit dataChanged(index, index);
+      }
+      else{
+        emit badValue(index, item->getCurrentInvalidValueMessage());
+      }
 		}
 		return true;
 	}
@@ -394,7 +403,7 @@ void TreeModel::insertParameter(RCP<ParameterEntry> parameter, std::string name,
 	else if(parameter->isArray()){
 		QString determinedId = determineArrayType(parameter);
 		if( determinedId != unrecognizedId){
-			values.append(QString::fromStdString(toString(parameter->getAny())));
+			values.append(arrayEntryToVariant(parameter, determinedId));
 			values.append(QString(arrayId + " "+ determinedId));
 		}
 		else{
@@ -404,6 +413,19 @@ void TreeModel::insertParameter(RCP<ParameterEntry> parameter, std::string name,
 			return;
 		}
 	}
+  else if(parameter->isTwoDArray()){
+		QString determinedId = determineArrayType(parameter, true);
+		if( determinedId != unrecognizedId){
+			values.append(arrayEntryToVariant(parameter, determinedId, true));
+			values.append(QString(twoDArrayId + " "+ determinedId));
+		}
+		else{
+			values.append("");
+			values.append("");
+			parent->appendChild(new TreeItem(values, parameter, parent, true));
+			return;
+		}
+  }
 	else{
 		values.append("");
 		values.append("");
@@ -454,11 +476,11 @@ void TreeModel::checkDependentState(const QModelIndex dependee, RCP<Dependency> 
 }
 
 void TreeModel::redrawArray(const QModelIndex arrayIndex){
-	if(toString(itemEntry(arrayIndex)->getAny()).size() <= 2){
+  if(isArrayEmpty(itemEntry(arrayIndex), getArrayType(itemType(arrayIndex)))){
 		emit hideData(arrayIndex.row(), arrayIndex.parent());
 	}
 	else{
-		setData(arrayIndex, QString::fromStdString(toString(itemEntry(arrayIndex)->getAny())));
+		//setData(arrayIndex, QString::fromStdString(toString(itemEntry(arrayIndex)->getAny())));
 		emit showData(arrayIndex.row(), arrayIndex.parent());
 	}
 }

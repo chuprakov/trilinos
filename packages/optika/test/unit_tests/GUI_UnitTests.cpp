@@ -36,57 +36,352 @@
 #include <QSpinBox>
 #include <iostream>
 
-/**
- *  THIS IS JUST A PROOF OF CONCEPT!
- *  I just wanted to see if I could get the QTest
- *  framework working with our CTest Framework.
- *  I don't have time right now to actually
- *  do extensive GUI unit testing. I will come
- *  back and actually write the tests a.s.a.p.
- *
- *  kln 21/01/2011
- */
 namespace Optika{
 
-class BasicTests: public QObject{
-Q_OBJECT
-  private slots:
-  void testInt();
+class ModalClicker : public QThread{
+public:
+  void run();
 };
 
-void BasicTests::testInt(){
+void ModalClicker::run(){
+  QWidget* modalDialog = QApplication::activeModalWidget();
+  while(modalDialog == NULL){
+    modalDialog = QApplication::activeModalWidget();
+    msleep(100);
+  }
+  QTest::keyClick(QApplication::activeModalWidget(), Qt::Key_Return);
+}
+
+class OptikaGUITests: public QObject{
+Q_OBJECT
+private slots:
+  void typeTest();
+  void dependencyTests();
+  void arrayEditorTest();
+  void cleanupTestCase();
+private:
+  static inline QModelIndex getWidgetIndex(const QModelIndex& index);
+  QObjectCleanupHandler cleaner;
+  ModalClicker clicker;
+};
+
+void OptikaGUITests::cleanupTestCase(){
+  cleaner.clear();
+  if(clicker.isRunning()){
+    clicker.terminate();
+    clicker.wait();
+  }
+  QVERIFY(!clicker.isRunning());
+}
+  
+
+
+//QModelIndex OptikaGUITests::getEntryIndex(
+
+#define GET_ENTRY_INDEX(\
+  PL, \
+  NAME, \
+  MODEL) \
+  RCP<ParameterEntry> NAME##Entry = PL->getEntryRCP( #NAME  ); \
+  QVERIFY(nonnull( NAME##Entry )); \
+  QModelIndex NAME##Index = MODEL->findParameterEntryIndex( NAME##Entry ); \
+  QVERIFY( NAME##Index.isValid());
+
+#define VERIFY_PARAMETER_TYPE(PL, NAME, TYPE, MODEL) \
+  GET_ENTRY_INDEX( PL , NAME , MODEL ) \
+  QCOMPARE( MODEL->data( NAME##Index, Qt::DisplayRole).toString(), \
+    QString::fromStdString( #NAME) );  \
+  QModelIndex NAME##TypeIndex = NAME##Index.sibling(NAME##Index.row(),2); \
+  QVERIFY( NAME##TypeIndex.isValid()); \
+  QCOMPARE( MODEL->data( NAME##TypeIndex, Qt::DisplayRole).toString(), TYPE );
+
+
+void OptikaGUITests::typeTest(){
+  cleaner.clear();
   RCP<ParameterList> My_List = 
     RCP<ParameterList>(new ParameterList);
 
+  RCP<EnhancedNumberValidator<int> > intVali =
+    Teuchos::rcp(new EnhancedNumberValidator<int>(0,2000,3));
+
   double *pointer = 0;
-  My_List->set("Double pointer", pointer);
-  My_List->set("Max Iters", 1550, "Determines the maximum number of iterations in the solver");
-  My_List->set("Tolerance", 1e-10, "The tolerance used for the convergence check");
+  Array<double*> doubleStarArray;
+  Array<int> intArray;
+  My_List->set("Doublepointer", pointer);
+  My_List->set(
+    "MaxIters", 
+    1550, 
+    "Determines the maximum number of iterations in the solver",
+    intVali);
+  My_List->set(
+    "Tolerance", 1e-10, "The tolerance used for the convergence check");
+  My_List->set("DoublePointerArray", doubleStarArray);
+  My_List->set("IntArray", intArray);
   
-  TreeModel model(My_List);
-   
+  TreeModel* model = new TreeModel(My_List);
+  cleaner.add(model);
+
+  VERIFY_PARAMETER_TYPE(My_List, MaxIters, intId, model)
+  VERIFY_PARAMETER_TYPE(My_List, Doublepointer, unrecognizedId, model)
+  VERIFY_PARAMETER_TYPE(My_List, Tolerance, doubleId, model)
+  VERIFY_PARAMETER_TYPE(My_List, DoublePointerArray, unrecognizedId, model)
+  VERIFY_PARAMETER_TYPE(My_List, IntArray, arrayId + " " + intId, model);
+  Delegate* delegate = new Delegate;
+  cleaner.add(delegate);
+
+  QStyleOptionViewItem genericStyleItem;
+  QModelIndex widgetIndex = getWidgetIndex(MaxItersIndex);
+  QSpinBox* intSpin = ((QSpinBox*)delegate->createEditor(0, genericStyleItem, widgetIndex));
+  QCOMPARE(intSpin->maximum(), 2000);
+  QCOMPARE(intSpin->minimum(),0);
+  QCOMPARE(intSpin->singleStep(),3);
+
+
+  cleaner.remove(model);
+  cleaner.remove(delegate);
+  delete model; 
+  delete delegate;
 }
 
 
+void OptikaGUITests::arrayEditorTest(){
+  Array<double> testArray(4,4.5);
+  ParameterEntry testEntry(testArray);
+  DoubleArrayWidget* testWidget = new DoubleArrayWidget("tester", doubleId, null);
+  cleaner.add(testWidget);
+
+  testWidget->initData(testArray);
+  Array<double> retrievedArray = testWidget->getArrayFromWidgets();
+  QVERIFY(testArray == retrievedArray);
+
+  cleaner.remove(testWidget);
+  delete testWidget;
+}
+
+inline QModelIndex OptikaGUITests::getWidgetIndex(const QModelIndex& index){
+  return index.sibling(index.row(),1);
+}
+  
+  
+#define VERIFY_HIDDEN_ROW(INDEX) \
+  QVERIFY(treeView->isRowHidden(  INDEX.row(), INDEX.parent()));
+
+#define VERIFY_SHOWN_ROW(INDEX) \
+  QVERIFY(!treeView->isRowHidden(  INDEX.row(), INDEX.parent()));
+
+void OptikaGUITests::dependencyTests(){
+  cleaner.clear();
+  RCP<DependencySheet> dependencySheet = rcp(new DependencySheet);
+  RCP<ParameterList> validParameters = 
+    getParametersFromXmlFile("deptests.xml", dependencySheet);
+  TreeModel* model = new TreeModel(validParameters, dependencySheet);
+  Delegate* delegate = new Delegate;
+  TreeView* treeView = new TreeView(model, delegate);
+  cleaner.add(model);
+  cleaner.add(delegate);
+  cleaner.add(treeView);
+  QStyleOptionViewItem genericStyleItem;
+  
+//Testing Bool visual dependency
+  GET_ENTRY_INDEX(validParameters, Preconditioner, model)
+  GET_ENTRY_INDEX(validParameters, ShowPrecs, model)
+
+  VERIFY_HIDDEN_ROW(PreconditionerIndex)
+  QModelIndex precWidgetIndex = getWidgetIndex(ShowPrecsIndex);
+  QComboBox* precBox = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, precWidgetIndex);
+  precBox->setCurrentIndex(precBox->findText(Delegate::getBoolEditorTrue()));
+  delegate->setModelData(precBox, model, precWidgetIndex);
+  VERIFY_SHOWN_ROW(PreconditionerIndex)
+
+
+//StringVisualDependency testing
+  GET_ENTRY_INDEX(validParameters, Favorite_Cheese, model)
+  GET_ENTRY_INDEX(validParameters, Swiss_rating, model)
+
+  VERIFY_HIDDEN_ROW(Swiss_ratingIndex)
+  QModelIndex cheeseWidgetIndex = getWidgetIndex(Favorite_CheeseIndex);
+  QComboBox* cheeseBox = (QComboBox*)delegate->createEditor(
+    0,genericStyleItem, cheeseWidgetIndex);
+  cheeseBox->setCurrentIndex(cheeseBox->findText("Swiss"));
+  delegate->setModelData(cheeseBox, model, cheeseWidgetIndex);
+  VERIFY_SHOWN_ROW(Swiss_ratingIndex)
+ 
+//Testing Number Visual Dependencies
+  GET_ENTRY_INDEX(validParameters, Temp, model)
+  GET_ENTRY_INDEX(validParameters, Num_ice_cubes, model)
+  VERIFY_SHOWN_ROW(Num_ice_cubesIndex)
+  QModelIndex tempWidgetIndex = getWidgetIndex(TempIndex);
+  QLineEdit* tempLineEdit = (QLineEdit*)delegate->createEditor(
+    0,genericStyleItem, tempWidgetIndex);
+  tempLineEdit->setText("33.0");
+  delegate->setModelData(tempLineEdit, model, tempWidgetIndex);
+  VERIFY_HIDDEN_ROW(Num_ice_cubesIndex)
+
+  //Test condition visual dependency
+  GET_ENTRY_INDEX(validParameters, ParamA, model)
+  GET_ENTRY_INDEX(validParameters, ParamB, model)
+  GET_ENTRY_INDEX(validParameters, OptParam, model)
+  VERIFY_SHOWN_ROW(OptParamIndex)
+  QModelIndex paramAWidgetIndex = getWidgetIndex(ParamAIndex);
+  QModelIndex paramBWidgetIndex = getWidgetIndex(ParamBIndex);
+  QSpinBox* paramASpinner = (QSpinBox*)delegate->createEditor(
+    0, genericStyleItem, paramAWidgetIndex);
+  QSpinBox* paramBSpinner = (QSpinBox*)delegate->createEditor(
+    0, genericStyleItem, paramBWidgetIndex);
+  paramASpinner->setValue(0);
+  delegate->setModelData(paramASpinner, model, paramAWidgetIndex);
+  VERIFY_SHOWN_ROW(OptParamIndex)
+  paramBSpinner->setValue(0);
+  delegate->setModelData(paramBSpinner, model, paramBWidgetIndex);
+  VERIFY_HIDDEN_ROW(OptParamIndex)
+  paramBSpinner->setValue(1);
+  delegate->setModelData(paramBSpinner, model, paramBWidgetIndex);
+  VERIFY_SHOWN_ROW(OptParamIndex)
+
+
+  //Test Number Array Length Dependency
+  GET_ENTRY_INDEX(validParameters, NumBuckets, model)
+  GET_ENTRY_INDEX(validParameters, AmtInBuckets, model)
+  Array<double> bucketsArray = model->getArray<double>(AmtInBucketsIndex);
+  QCOMPARE(bucketsArray.size(),(Array<double>::size_type)3);
+  QModelIndex numBucketsWidgetIndex = getWidgetIndex(NumBucketsIndex);
+  QSpinBox* numBucketsSpinner = (QSpinBox*)delegate->createEditor(
+    0, genericStyleItem, numBucketsWidgetIndex);
+  numBucketsSpinner->setValue(5);
+  delegate->setModelData(numBucketsSpinner, model, numBucketsWidgetIndex);
+  bucketsArray = model->getArray<double>(AmtInBucketsIndex);
+  QCOMPARE(bucketsArray.size(),(Array<double>::size_type)5);
+  numBucketsSpinner->setValue(0);
+  delegate->setModelData(numBucketsSpinner, model, numBucketsWidgetIndex);
+  bucketsArray = model->getArray<double>(AmtInBucketsIndex);
+  VERIFY_HIDDEN_ROW(AmtInBucketsIndex)
+  QCOMPARE(bucketsArray.size(),(Array<double>::size_type)0);
+  numBucketsSpinner->setValue(2);
+  delegate->setModelData(numBucketsSpinner, model, numBucketsWidgetIndex);
+  bucketsArray = model->getArray<double>(AmtInBucketsIndex);
+  VERIFY_SHOWN_ROW(AmtInBucketsIndex)
+  QCOMPARE(bucketsArray.size(),(Array<double>::size_type)2);
+
+
+  //Testing for Bool ValidatorDependency
+  GET_ENTRY_INDEX(validParameters, TempConst, model)
+  GET_ENTRY_INDEX(validParameters, BoolTemp, model)
+  QVERIFY(nonnull(model->getValidator(BoolTempIndex)));
+  QModelIndex tempConstWidgetIndex = getWidgetIndex(TempConstIndex);
+  QModelIndex boolTempWidgetIndex = getWidgetIndex(BoolTempIndex);
+  QLineEdit* boolTempEdit = (QLineEdit*)delegate->createEditor(
+    0, genericStyleItem, boolTempWidgetIndex);
+  QCOMPARE(((QDoubleValidator*)boolTempEdit->validator())->bottom(), 0.0);
+  QCOMPARE(((QDoubleValidator*)boolTempEdit->validator())->top(), 50.0);
+  QComboBox* tempConstCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, tempConstWidgetIndex);
+  tempConstCombo->setCurrentIndex(
+    tempConstCombo->findText(Delegate::getBoolEditorFalse()));
+  delegate->setModelData(tempConstCombo, model, tempConstWidgetIndex);
+  QVERIFY(model->getValidator(BoolTempIndex).is_null());
+  boolTempEdit = (QLineEdit*)delegate->createEditor(
+    0, genericStyleItem, boolTempWidgetIndex);
+  QCOMPARE(((QDoubleValidator*)boolTempEdit->validator())->bottom(), EnhancedNumberTraits<double>::min());
+  QCOMPARE(((QDoubleValidator*)boolTempEdit->validator())->top(), EnhancedNumberTraits<double>::max());
+
+
+  //StringValidatorDepenecy tests
+  GET_ENTRY_INDEX(validParameters, FavFoodType, model)
+  GET_ENTRY_INDEX(validParameters, FavFood, model)
+  QVERIFY(nonnull(model->getValidator(FavFoodIndex)));
+  QModelIndex favFoodWidgetIndex = getWidgetIndex(FavFoodIndex);
+  QComboBox* favFoodCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, favFoodWidgetIndex);
+  QCOMPARE(favFoodCombo->count(),3);
+  QVERIFY(favFoodCombo->findText("American") != -1);
+  QVERIFY(favFoodCombo->findText("Swiss") != -1);
+  QVERIFY(favFoodCombo->findText("Pepperjack") != -1);
+
+  //Change to chips and verify new valid values
+  QSignalSpy badValSpy(model, SIGNAL(badValue(QModelIndex, QString)));
+  QModelIndex favFoodTypeWidgetIndex = getWidgetIndex(FavFoodTypeIndex);
+  QLineEdit* favFoodTypeEdit = (QLineEdit*)delegate->createEditor(
+    0, genericStyleItem, favFoodTypeWidgetIndex);
+  favFoodTypeEdit->setText("Chips");
+  clicker.start(QThread::IdlePriority);
+  delegate->setModelData(favFoodTypeEdit, model, favFoodTypeWidgetIndex);
+  QCOMPARE(badValSpy.count(), 1);
+  favFoodCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, favFoodWidgetIndex);
+  QCOMPARE(favFoodCombo->count(),3);
+  QVERIFY(favFoodCombo->findText("Lays") != -1);
+  QVERIFY(favFoodCombo->findText("Ruffles") != -1);
+  QVERIFY(favFoodCombo->findText("Pringles") != -1);
+
+  //Change to blah and validate ther validator is now null
+  favFoodTypeEdit->setText("blah");
+  delegate->setModelData(favFoodTypeEdit, model, favFoodTypeWidgetIndex);
+  QVERIFY(model->getValidator(FavFoodIndex).is_null());
+
+  //Change Back to chips and verify that the valid vlues have returned.
+  favFoodTypeEdit->setText("Chips");
+  delegate->setModelData(favFoodTypeEdit, model, favFoodTypeWidgetIndex);
+  favFoodCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, favFoodWidgetIndex);
+  QCOMPARE(favFoodCombo->count(),3);
+  QVERIFY(favFoodCombo->findText("Lays") != -1);
+  QVERIFY(favFoodCombo->findText("Ruffles") != -1);
+  QVERIFY(favFoodCombo->findText("Pringles") != -1);
+
+
+  //Test RangeValidatorDependency
+  GET_ENTRY_INDEX(validParameters, FondTemp, model)
+  GET_ENTRY_INDEX(validParameters, FondFood, model)
+  QVERIFY(nonnull(model->getValidator(FondFoodIndex)));
+  QModelIndex fondFoodWidgetIndex = getWidgetIndex(FondFoodIndex);
+  QComboBox* fondFoodCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, fondFoodWidgetIndex);
+  QCOMPARE(fondFoodCombo->count(), 2);
+  QVERIFY(fondFoodCombo->findText("Cheese") != -1);
+  QVERIFY(fondFoodCombo->findText("Bread") != -1);
+
+  QModelIndex fondTempWidgetIndex = getWidgetIndex(FondTempIndex);
+  QLineEdit* fondTempEdit = (QLineEdit*)delegate->createEditor(
+    0, genericStyleItem, fondTempWidgetIndex);
+  fondTempEdit->setText("120.1");
+  delegate->setModelData(fondTempEdit, model, fondTempWidgetIndex);
+  fondFoodCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, fondFoodWidgetIndex);
+  QCOMPARE(fondFoodCombo->count(), 2);
+  QVERIFY(fondFoodCombo->findText("Chicken") != -1);
+  QVERIFY(fondFoodCombo->findText("Beef") != -1);
+
+  fondTempEdit->setText("180.1");
+  delegate->setModelData(fondTempEdit, model, fondTempWidgetIndex);
+  QVERIFY(model->getValidator(FondFoodIndex).is_null());
+  QLineEdit* fondFoodLineEdit = (QLineEdit*)delegate->createEditor(
+    0, genericStyleItem, fondFoodWidgetIndex);
+  QVERIFY(fondFoodLineEdit != NULL);
+  
+
+  fondTempEdit->setText("90");
+  delegate->setModelData(fondTempEdit, model, fondTempWidgetIndex);
+  fondFoodCombo = (QComboBox*)delegate->createEditor(
+    0, genericStyleItem, fondFoodWidgetIndex);
+  QCOMPARE(fondFoodCombo->count(), 2);
+  QVERIFY(fondFoodCombo->findText("Cheese") != -1);
+  QVERIFY(fondFoodCombo->findText("Bread") != -1);
+
+  
+
+  cleaner.remove(model);
+  cleaner.remove(treeView);
+  cleaner.remove(delegate);
+  delete model;
+  delete treeView;
+  delete delegate;
+}
   
 
 
 } //namespace Optika
 
-/**
- *  Test the basics of Optika Functionality
- */
-/*TEUCHOS_UNIT_TEST(Optika_GUITests, testBasics){
-  int argc = 0;
-  char* argv[1];
-  char name [] = "optika_basic_test";
-  argv[0]=name;
-  QApplication app(argc, argv);
-  QTEST_DISABLE_KEYPAD_NAVIGATION
-  Optika::BasicTests bt;
-  TEUCHOS_ASSERT(QTest::qExec(&bt, argc, argv) == 0);
-}*/
-
-QTEST_MAIN(Optika::BasicTests)
+QTEST_MAIN(Optika::OptikaGUITests)
 #include "GUI_UnitTests.moc"
 

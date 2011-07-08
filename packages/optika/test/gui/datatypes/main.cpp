@@ -35,7 +35,7 @@ namespace Optika{
 
 
 void RUN_OPTIKA_DATA_TYPE_TESTS(){
-  TEUCHOS_ADD_NUMBERTYPECONVERTERS(short)
+  TEUCHOS_ADD_NUMBERTYPE_VALIDATOR_CONVERTERS(short)
   using Teuchos::FancyOStream;
   using Teuchos::VerboseObjectBase;
   using Teuchos::FileNameValidator;

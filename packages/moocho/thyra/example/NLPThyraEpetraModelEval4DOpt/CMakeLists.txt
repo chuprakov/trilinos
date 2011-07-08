@@ -95,7 +95,7 @@ IF (PYTHONINTERP_FOUND)
     )
   
   SET( THYRA_COMPARE_VECTORS
-    "${PROJECT_SOURCE_DIR}/packages/thyra/test/operator_vector/compare-thyra-spmd-multivector-files.py"
+    "${PROJECT_SOURCE_DIR}/packages/thyra/core/test/operator_vector/compare-thyra-spmd-multivector-files.py"
     )
   
   PACKAGE_ADD_ADVANCED_TEST(

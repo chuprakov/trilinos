@@ -123,18 +123,18 @@ QModelIndexList SearchWidget::removeHiddenItems(QModelIndexList& items){
 }
 
 MetaWindow::MetaWindow(RCP<ParameterList> validParameters, QString fileName){
-	model = new TreeModel(validParameters, fileName);
+	model = new TreeModel(validParameters, fileName, this);
 	initilization();
 }
 
 MetaWindow::MetaWindow(RCP<ParameterList> validParameters, void (*customFunc)(RCP<const ParameterList>), QString fileName){
-	model = new TreeModel(validParameters, fileName);
+	model = new TreeModel(validParameters, fileName,this);
 	initilization(customFunc);
 }
 
 MetaWindow::MetaWindow(
   RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet, QString fileName){
-	model = new TreeModel(validParameters, dependencySheet, fileName);
+	model = new TreeModel(validParameters, dependencySheet, fileName, this);
 	initilization();
 } 
 
@@ -145,7 +145,7 @@ MetaWindow::MetaWindow(
   QString fileName,
   const std::string actionButtonText)
 {
-	model = new TreeModel(validParameters, dependencySheet, fileName);
+	model = new TreeModel(validParameters, dependencySheet, fileName, this);
 	initilization(customFunc, actionButtonText);
 } 
 
@@ -175,8 +175,8 @@ void MetaWindow::initilization(
   const std::string actionButtonText)
 {
 	this->customFunc = customFunc;
-	delegate = new Delegate;
-	view = new TreeView(model, delegate);
+	delegate = new Delegate(this);
+	view = new TreeView(model, delegate, this);
 	view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
 	searchWidget = new SearchWidget(model, view, this);
 	searchWidget->hide();

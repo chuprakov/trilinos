@@ -29,22 +29,26 @@
 
 namespace Optika{
 
-
-bool doesParameterContainArray(RCP<const ParameterEntry> parameter){
-	std::string typeName = parameter->getAny(false).typeName();
-	return typeName.find("Teuchos")!=std::string::npos && typeName.find("Array")!=std::string::npos;	
-}
-
-QStringList getValues(QString& values){
-	values = values.remove("{");
-	values = values.remove("}");
-	QStringList toReturn = values.split(",");
-	for(int i = 0; i < toReturn.size(); ++i){
-		if(toReturn[i].at(0) == QChar(' ')){
-			toReturn[i] = toReturn[i].remove(0,1);
-		}
+QString determineArrayType(RCP<const ParameterEntry> parameter, bool twoD){
+	any anyArray = parameter->getAny();
+	if(anyArray.type() == (twoD ? typeid(TwoDArray<int>) : typeid(Array<int>))){
+		return intId;
 	}
-	return toReturn;
+	if(anyArray.type() == (twoD ? typeid(TwoDArray<short>) : typeid(Array<short>))){
+		return shortId;
+	}
+	if(anyArray.type() == (twoD ? typeid(TwoDArray<double>) : typeid(Array<double>))){
+		return doubleId;
+	}
+	if(anyArray.type() == (twoD ? typeid(TwoDArray<float>) : typeid(Array<float>))){
+		return floatId;
+	}
+	if(anyArray.type() == (twoD ? typeid(TwoDArray<std::string>) : typeid(Array<std::string>))){
+		return stringId;
+	}
+	else{
+		return unrecognizedId;		
+	}
 }
 
 QString determineArrayType(RCP<const ParameterEntry> parameter){
@@ -69,28 +73,73 @@ QString determineArrayType(RCP<const ParameterEntry> parameter){
 	}
 }
 
-template <>
-Array<std::string> fromStringToArray<std::string>(QString arrayString){
-	arrayString = arrayString.remove("{");
-	arrayString = arrayString.remove("}");
-	QStringList tempValues = arrayString.split(",");
-	for(int i = 0; i < tempValues.size(); ++i){
-		if(tempValues[i].at(0) == QChar(' ')){
-			tempValues[i] = tempValues[i].remove(0,1);
-		}
+QVariant arrayEntryToVariant(
+  RCP<const ParameterEntry> arrayEntry, QString type, bool twoD){
+	if(type == intId){
+    return (twoD ? 
+      QVariant::fromValue<TwoDArray<int> >(
+      getValue<TwoDArray<int> >(*arrayEntry))
+      :
+      QVariant::fromValue<Array<int> >(
+      getValue<Array<int> >(*arrayEntry)));
 	}
-	QList<QVariant> values;
-	for(int i = 0; i<tempValues.size(); ++i){
-		values.append(tempValues[i]);
+	else if(type == shortId){
+    return (twoD ? 
+      QVariant::fromValue<TwoDArray<short> >(
+      getValue<TwoDArray<short> >(*arrayEntry))
+      :
+      QVariant::fromValue<Array<short> >(
+      getValue<Array<short> >(*arrayEntry)));
 	}
-	Array<std::string> toReturn;
-	for(int i = 0; i<values.size(); ++i){
-		toReturn.append(values[i].value<QString>().toStdString());	
+	else if(type == doubleId){
+    return (twoD ? 
+      QVariant::fromValue<TwoDArray<double> >(
+      getValue<TwoDArray<double> >(*arrayEntry))
+      :
+      QVariant::fromValue<Array<double> >(
+      getValue<Array<double> >(*arrayEntry)));
+  }
+	else if(type == floatId){
+    return (twoD ? 
+      QVariant::fromValue<TwoDArray<float> >(
+      getValue<TwoDArray<float> >(*arrayEntry))
+      :
+      QVariant::fromValue<Array<float> >(
+      getValue<Array<float> >(*arrayEntry)));
+  }
+	else if(type == stringId){
+    return (twoD ? 
+      QVariant::fromValue<TwoDArray<std::string> >(
+      getValue<TwoDArray<std::string> >(*arrayEntry))
+      :
+      QVariant::fromValue<Array<std::string> >(
+      getValue<Array<std::string> >(*arrayEntry)));
 	}
-	return toReturn;
+  return QVariant();
+}
 
+QString getArrayType(QString itemType){
+  return itemType.section(" ",-1);  
+}
+
+bool isArrayEmpty(RCP<const ParameterEntry> arrayEntry, QString type){
+	if(type == intId){
+    return getValue<Array<int> >(*arrayEntry).size() == 0;
+	}
+	else if(type == shortId){
+    return getValue<Array<short> >(*arrayEntry).size() == 0;
+	}
+	else if(type == doubleId){
+    return getValue<Array<double> >(*arrayEntry).size() == 0;
+  }
+	else if(type == floatId){
+    return getValue<Array<float> >(*arrayEntry).size() == 0;
+  }
+	else if(type == stringId){
+    return getValue<Array<std::string> >(*arrayEntry).size() == 0;
+	}
+  return true;
 }
 
 
 }
-

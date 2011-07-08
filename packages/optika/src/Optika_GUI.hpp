@@ -30,10 +30,19 @@
 
 #include "Optika_metawindow.hpp"
 
+/*! \file Optika_GUI.hpp
+    \brief A collection of functions and an
+    Object that serve as the primary interface to the
+    Optika package allowing application developers to
+    obtain user input.*/
 
 namespace Optika{
+
+  //! @name Basic Input Getting Function
+  //@{
+
   /**
-   * Retreives the input for a Teuchos Parameter List using a GUI. Note the 
+   * \brief Retreives the input for a Teuchos Parameter List using a GUI. Note the 
    * Parameter List will be edited. All user input will be stored in it.
    *
    * @param validParameters A list of parameters from which the users may 
@@ -42,7 +51,7 @@ namespace Optika{
   void getInput(RCP<ParameterList> validParameters);
 
   /**
-   * Retreives the input for a Teuchos Parameter List using a GUI. Note the 
+   * \brief Retreives the input for a Teuchos Parameter List using a GUI. Note the 
    * Parameter List will be edited. All user input will be stored in it. Also 
    * runs the function specified whenever the user clicks the action button.
    *
@@ -56,7 +65,7 @@ namespace Optika{
     void (*customFunc)(RCP<const ParameterList>));
 
   /**
-   * Retreives the input for a Teuchos Parameter List using a GUI. Note the 
+   * \brief Retreives the input for a Teuchos Parameter List using a GUI. Note the 
    * Parameter List will be edited. All user input will be stored in it.
    *
    * @param validParameters A list of parameters from which the users may 
@@ -69,7 +78,7 @@ namespace Optika{
     RCP<DependencySheet> dependencySheet);
 
   /**
-   * Retreives the input for a Teuchos Parameter List using a GUI. Note the 
+   * \brief Retreives the input for a Teuchos Parameter List using a GUI. Note the 
    * Parameter List will be edited. All user input will be stored in it. 
    * Also runs the function specified whenever the user clicks the action
    * button and uses the specified dependency list.
@@ -87,7 +96,7 @@ namespace Optika{
     void (*customFunc)(RCP<const ParameterList>));
 
   /**
-   * Reads in a set of parameters and dependencies from the specified xmlfile,
+   * \brief Reads in a set of parameters and dependencies from the specified xmlfile,
    * displays a GUI, and stores the users input in the sprecified
    * ParameterList. If a custom function is provided, it is run upon the user
    * clicking the action button.
@@ -101,16 +110,21 @@ namespace Optika{
    */
   void getInput(
     const std::string& nameOfXmlFile,
-    RCP<ParameterList> userInput,
+    RCP<ParameterList>& userInput,
     void (*customFunc)(RCP<const ParameterList>)=NULL);
 
+  //@}
+
 /**
- * A class that allows the user to create and customize their Optika GUI.
+ * \brief A class that allows the user to create and customize their Optika GUI.
  */
 class OptikaGUI{
 public:
+  /** \name Constructors */
+  //@{
+
   /**
-   * Constructs an OptikaGUI object.
+   * \brief Constructs an OptikaGUI object.
    *
    * @param validParameters A list of parameters from which the users may 
    * specify values.
@@ -118,7 +132,7 @@ public:
   OptikaGUI(RCP<ParameterList> validParameters);
 
   /**
-   * Constructs an OptikaGUI object.
+   * \brief Constructs an OptikaGUI object.
    *
    * @param validParameters A list of parameters from which the users may 
    * specify values.
@@ -130,33 +144,43 @@ public:
     RCP<DependencySheet> dependencySheet);
 
   /**
-   * Constructs an OptikaGUI object.
+   * \brief Constructs an OptikaGUI object.
    *
    * @param xmlFileName Name of an XML file describing the GUI.
    */
   OptikaGUI(const std::string& xmlFileName);
 
+  //@}
+
+  //! @name Execution Functions
+  //@{
+  
   /**
-   * Runs the GUI and gets the user input.
+   * \brief Runs the GUI and gets the user input.
    */
   void exec();
 
+  //@}
+
+  //! @name Getters and Setters
+  //@{
+  
   /**
-   * Adds the information specified to the about dialog of the GUI.
+   * \brief Adds the information specified to the about dialog of the GUI.
    *
    * @param aboutInfo Information to be added to the about dialog of the GUI.
    */
   void setAboutInfo(const std::string& aboutInfo);
 
   /**
-   * Sets the text in the "action" button"
+   * \brief Sets the text in the "action" button"
    *
    * @param text The text for the action button
    */
   void setActionButtonText(const std::string& text);
 
   /**
-   * Sets the title of the GUI window that is displayed to the user.
+   * \brief Sets the title of the GUI window that is displayed to the user.
    *
    * @param title A string containing what the title of the GUI window 
    * should be.
@@ -164,7 +188,7 @@ public:
   void setWindowTitle(const std::string& title);
 
   /**
-   * Sets the window icon to the image specified in the filePath.
+   * \brief Sets the window icon to the image specified in the filePath.
    *
    * @param filePath File path to the image that should be used as
    *  the window icon.
@@ -172,7 +196,7 @@ public:
   void setWindowIcon(const std::string& filePath);
 
   /**
-   * Sets the QT style sheet that should be used for the GUI.
+   * \brief Sets the QT style sheet that should be used for the GUI.
    *
    * @param filePath File path to the QT style sheet to be used for
    * the GUI.
@@ -180,7 +204,7 @@ public:
   void setStyleSheet(const std::string& filePath);
 
   /**
-   * Sets the custom function to be used in the GUI. When ever the
+   * \brief Sets the custom function to be used in the GUI. When ever the
    * user clicks the action button, this function will be run.
    *
    * @param The custom function to be run whenever the user clicks the action 
@@ -189,14 +213,14 @@ public:
   void setCustomFunction(void (*customFunc)(RCP<const ParameterList>));
 
   /**
-   * Gets the window title.
+   * \brief Gets the window title.
    * 
    * @return A string containing the window title.
    */
   std::string getWindowTitle();
 
   /**
-   * Gets the file path describing the location of the file
+   * \brief Gets the file path describing the location of the file
    * being used for the window icon.
    *
    * @return The file path describing the location of the file
@@ -205,7 +229,7 @@ public:
   std::string getWindowIcon();
 
   /**
-   * Gets the file path describing the location of the file
+   * \brief Gets the file path describing the location of the file
    * being used as the QT Style Sheet.
    *
    * @return The file path describing the location of the file
@@ -214,53 +238,59 @@ public:
   std::string getStyleSheet();
 
   /**
-   * Gets the information to be added to the about dialog of the GUI.
+   * \brief Gets the information to be added to the about dialog of the GUI.
    *
    * @return the information to be added to the about dialog of the GUI.
    */
   std::string getAboutInfo();
 
-private:
+  //@}
 
+private:
+  /** \name Private Members */
+  //@{
+  
   /**
-   * A list of parameters from which the users may specify values.
+   * \brief A list of parameters from which the users may specify values.
    */
   RCP<ParameterList> validParameters;
 
   /**
-   * A sheet listing any dependencies between parameters in the validParameters
+   * \brief A sheet listing any dependencies between parameters in the validParameters
    */
   RCP<DependencySheet> dependencySheet;
 
   /**
-   * A string containing the window title.
+   * \brief A string containing the window title.
    */
   std::string title;
 
   /**
-   * File path to the image that should be used as the window icon.
+   * \brief File path to the image that should be used as the window icon.
    */
   std::string iconFilePath;
 
   /**
-   * File path to the QT style sheet to be used for the GUI.
+   * \brief File path to the QT style sheet to be used for the GUI.
    */
   std::string styleSheetFilePath;
 
   /**
-   * Information to be added to the about dialog of the GUI.
+   * \brief Information to be added to the about dialog of the GUI.
    */
   std::string aboutInfo;
 
   /**
-   * Text to display in the action button.
+   * \brief Text to display in the action button.
    */
   std::string actionButtonText;
 
   /**
-   * The custom function to be run whenever the user clicks the action button.
+   * \brief The custom function to be run whenever the user clicks the action button.
    */
   void (*customFunc)(RCP<const ParameterList>);
+
+  //@}
 };
 
 }

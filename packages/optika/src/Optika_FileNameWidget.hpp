@@ -30,18 +30,25 @@
 #include <QWidget>
 class QLabel;
 
+/*! \file Optika_FileNameWidget.hpp
+    \brief A widget used to obtain file information
+    in Optika.
+*/
 namespace Optika{
 
 /**
- * A small widget consisting of a button and label that allows the user
+ * \brief A small widget consisting of a button and label that allows the user
  *  to select a file through a QFileDialog. The label displays
  *  the currently selected file.
  */
 class FileNameWidget : public QWidget{
 	Q_OBJECT
 public:
+  /** \name Constructors */
+  //@{
+
 	/**
-	 * Constructs a FileNameWidget
+	 * \brief Constructs a FileNameWidget
 	 *
 	 * @param currentFileName The Filename with which the widget should be 
 	 * initialized.
@@ -49,41 +56,63 @@ public:
 	 */
 	FileNameWidget(QString currentFileName=QString(), bool mustAlreadyExist=false, QWidget* parent=0);
 
+  //@}
+
+  //! @name Attribute/Query Methods 
+  //@{
+
 	/**
-	 * Gets the current filename in the widget.
+	 * \brief Gets the current filename in the widget.
 	 *
 	 * @return The current filename in the widget.
 	 */
 	QString getCurrentFileName();
 
+  //@}
+
+  //! @name Setter Functions
+  //@{
+
 	/**
-	 * Sets the current filename in the widget.
+	 * \brief Sets the current filename in the widget.
 	 *
 	 * @param The name to which the widget should be set.
 	 */
 	void setCurrentFileName(QString newName);
 
+  //@}
+
 public slots:
+  //! \name Public Slots
+  //@{
+
 	/**
-	 * Opens a QFileDialog allowing the user to select a new filename.
+	 * \brief Opens a QFileDialog allowing the user to select a new filename.
 	 */
 	void getNewFileName();
 
+  //@}
+
 private:
+  /** \name Private Members */
+  //@{
+  
 	/**
-	 * The current file name stored in the list.
+	 * \brief The current file name stored in the list.
 	 */
 	QString currentFileName;
 
 	/**
-	 * The label describing the file path.
+	 * \brief The label describing the file path.
 	 */
 	QLabel *pathLabel;
 	
 	/**
-	 * Whether or not the file name specified must already exist.
+	 * \brief Whether or not the file name specified must already exist.
 	 */
 	bool mustAlreadyExist;
+
+  //@}
 };
 
 }

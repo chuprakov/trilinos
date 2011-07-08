@@ -8,7 +8,7 @@ include(${QT_USE_FILE})
 SET(HDRS 
 Optika_ArrayHelperFunctions.hpp 
 Optika_GUI.hpp 
-Optika_SpinBoxApplier.hpp
+Optika_ValidatorApplier.hpp
 Optika_treeitem.hpp Optika_Types.hpp 
 Optika_ConfigDefs.hpp)
 

@@ -39,8 +39,9 @@ void getInput(RCP<ParameterList> validParameters){
 		std::string appName ="Optika";
 		args[0] = &appName[0];
 		QApplication a(argNum,args);
-		MetaWindow *theWindow = new MetaWindow(validParameters);
-		theWindow->show();
+		//MetaWindow *theWindow = new MetaWindow(validParameters);
+		MetaWindow theWindow(validParameters);
+		theWindow.show();
 		a.exec();
 	}
 }
@@ -53,8 +54,9 @@ void getInput(RCP<ParameterList> validParameters, void (*customFunc)(RCP<const P
 		std::string appName ="Optika";
 		args[0] = &appName[0];
 		QApplication a(argNum,args);
-		MetaWindow *theWindow = new MetaWindow(validParameters, customFunc);
-		theWindow->show();
+		//MetaWindow *theWindow = new MetaWindow(validParameters, customFunc);
+		MetaWindow theWindow(validParameters, customFunc);
+		theWindow.show();
 		a.exec();
 	}
 }
@@ -67,8 +69,8 @@ void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependenc
 		std::string appName ="Optika";
 		args[0] = &appName[0];
 		QApplication a(argNum,args);
-		MetaWindow *theWindow = new MetaWindow(validParameters, dependencySheet);
-		theWindow->show();
+		MetaWindow theWindow(validParameters, dependencySheet);
+		theWindow.show();
 		a.exec();
 	}
 }
@@ -81,15 +83,15 @@ void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependenc
 		std::string appName ="Optika";
 		args[0] = &appName[0];
 		QApplication a(argNum,args);
-		MetaWindow *theWindow = new MetaWindow(validParameters, dependencySheet, customFunc);
-		theWindow->show();
+		MetaWindow theWindow(validParameters, dependencySheet, customFunc);
+		theWindow.show();
 		a.exec();
 	}
 }
 
 void getInput(
   const std::string& nameOfXmlFile,
-  RCP<ParameterList> userInput,
+  RCP<ParameterList>& userInput,
   void (*customFunc)(RCP<const ParameterList>))
 {
   {
@@ -101,9 +103,8 @@ void getInput(
 		std::string appName ="Optika";
 		args[0] = &appName[0];
 		QApplication a(argNum,args);
-		MetaWindow *theWindow = new MetaWindow(
-      userInput, depSheet, customFunc);
-		theWindow->show();
+		MetaWindow theWindow(userInput, depSheet, customFunc);
+		theWindow.show();
 		a.exec();
 	}
 }
@@ -166,6 +167,7 @@ void OptikaGUI::exec(){
 		theWindow->show();
 		theWindow->activateWindow();
 		a.exec();
+    delete theWindow;
 	}
 	
 }

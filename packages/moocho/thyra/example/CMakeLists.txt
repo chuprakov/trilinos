@@ -1,8 +1,8 @@
 ASSERT_DEFINED(${PACKAGE_NAME}_ENABLE_Stratimikos)
 IF (${PACKAGE_NAME}_ENABLE_Stratimikos)
 
-  ASSERT_DEFINED(${PACKAGE_NAME}_ENABLE_EpetraExt)
-  IF (${PACKAGE_NAME}_ENABLE_EpetraExt)
+  ASSERT_DEFINED(${PACKAGE_NAME}_ENABLE_ThyraEpetraExtAdapters)
+  IF (${PACKAGE_NAME}_ENABLE_ThyraEpetraExtAdapters)
     ADD_SUBDIRECTORY(NLPThyraEpetraModelEval4DOpt)
     ADD_SUBDIRECTORY(NLPThyraEpetraAdvDiffReactOpt)
     ADD_SUBDIRECTORY(DiagonalQuadraticResponseOnlyOpt)

@@ -1,12 +1,19 @@
 #ifndef OPTIKA_CONFIG_DEFS_HPP
 #define OPTIKA_CONFIG_DEFS_HPP
+
+/*! \file Optika_ConfigDefs.hpp
+ * \brief A Header file that includes some of the commonly used includes
+ * throughtout Optika as well as some overall information used throughout
+ * Optika.
+ */
 #include "Teuchos_StandardParameterEntryValidators.hpp"
 #include "Teuchos_StandardDependencies.hpp"
 #include "Teuchos_DependencySheet.hpp"
-#include "Teuchos_Array.hpp"
+#include "Teuchos_TwoDArray.hpp"
 #include "Teuchos_RCP.hpp"
 #include "Teuchos_XMLParameterListHelpers.hpp"
 #include "Teuchos_XMLParameterListWriter.hpp"
+
 
 namespace Optika{
 
@@ -33,8 +40,26 @@ namespace Optika{
   using Teuchos::XMLObject;
   using Teuchos::getValue;
   using Teuchos::getParametersFromXmlFile;
+  using Teuchos::TwoDArray;
+  using Teuchos::TwoDArrayValidator;
 
 
+  
 } //namespace Optika
+
+//Declarations of the supported Array types
+//as QMEATTYPES so that we can encapsulate them
+//in QVariant objects.
+Q_DECLARE_METATYPE(Teuchos::Array<int>)
+Q_DECLARE_METATYPE(Teuchos::Array<short>)
+Q_DECLARE_METATYPE(Teuchos::Array<float>)
+Q_DECLARE_METATYPE(Teuchos::Array<double>)
+Q_DECLARE_METATYPE(Teuchos::Array<std::string>)
+Q_DECLARE_METATYPE(Teuchos::TwoDArray<int>)
+Q_DECLARE_METATYPE(Teuchos::TwoDArray<short>)
+Q_DECLARE_METATYPE(Teuchos::TwoDArray<float>)
+Q_DECLARE_METATYPE(Teuchos::TwoDArray<double>)
+Q_DECLARE_METATYPE(Teuchos::TwoDArray<std::string>)
+
 
 #endif //OPTIKA_CONFIG_DEFS_HPP

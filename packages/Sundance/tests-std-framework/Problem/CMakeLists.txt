@@ -49,7 +49,6 @@ SET(SerialTests
   RefinementTest2D
   Poisson2D_HN_Nitsch
   Stokes_Chanel_Nitsche_line_obstic
-  NavStok_Chanel_stat_HN_Nitsch
 )
 
 
@@ -84,6 +83,7 @@ SET(MPITests
              Poisson3DTest_HN_Q2Q1
              LinearPartialDomain_mixed
              NonlinearPartialDomain_mixed
+             NavStok_Chanel_stat_HN_Nitsch
    )
 
 

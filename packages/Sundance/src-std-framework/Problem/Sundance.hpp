@@ -61,6 +61,7 @@
 #include "SundanceUserDefFunctor.hpp"
 #include "SundanceUserDefOp.hpp"
 #include "SundanceVectorCalculus.hpp"
+#include "SundanceCurveExpr.hpp"
 
 /* Parametrized Curves */
 #include "SundanceCircle.hpp"
