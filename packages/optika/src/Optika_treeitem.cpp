@@ -126,8 +126,19 @@ QVariant TreeItem::data(int column, int role) const{
 		}
 	}
 	else if(role == Qt::DisplayRole){
-    if(column == 1 && nonnull(parameterEntry) && parameterEntry->isArray()){
+    if(column == 1 && 
+      nonnull(parameterEntry) && 
+      parameterEntry->isArray()
+    )
+    {
       return QString::fromStdString(toString(parameterEntry->getAny()));
+    }
+    else if(column == 1 && 
+      nonnull(parameterEntry) && 
+      parameterEntry->isTwoDArray()
+    )
+    {
+      return QString("Click to view 2D Array");
     }
     else{
 		 return itemData.value(column);
@@ -140,7 +151,7 @@ QVariant TreeItem::data(int column, int role) const{
     }
     else if(column == 1 && nonnull(parameterEntry) && parameterEntry->isTwoDArray()){
       return arrayEntryToVariant(parameterEntry,
-        getArrayType(itemData.value(2).toString()));
+        getArrayType(itemData.value(2).toString()), true);
     }
     else{
       return itemData.value(column);
@@ -164,8 +175,9 @@ int TreeItem::row() const{
 }
 
 bool TreeItem::hasValidValue() const{
-	if(is_null(parameterEntry->validator()))
+	if(is_null(parameterEntry->validator())){
 		return true;
+  }
 	else{
 		try{
 			parameterEntry->validator()->validate(*parameterEntry, data(0).toString().toStdString(),
@@ -179,6 +191,20 @@ bool TreeItem::hasValidValue() const{
 	//should never get here
 	return true;
 
+}
+
+QString TreeItem::getCurrentInvalidValueMessage() const{
+  if(parameterEntry->validator() == null){
+    return "";
+  }
+	try{
+		parameterEntry->validator()->validate(*parameterEntry, data(0).toString().toStdString(),
+						      parentItem->data(0,Qt::DisplayRole).toString().toStdString());
+    return "";
+	}
+	catch(std::exception& e){
+		return QString::fromStdString(e.what());
+	}
 }
 	
 

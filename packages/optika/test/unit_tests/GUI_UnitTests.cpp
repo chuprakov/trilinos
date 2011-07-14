@@ -101,6 +101,9 @@ void OptikaGUITests::typeTest(){
   RCP<ParameterList> My_List = 
     RCP<ParameterList>(new ParameterList);
 
+  RCP<EnhancedNumberValidator<int> > intVali =
+    Teuchos::rcp(new EnhancedNumberValidator<int>(0,2000,3));
+
   double *pointer = 0;
   Array<double*> doubleStarArray;
   Array<int> intArray;
@@ -108,7 +111,8 @@ void OptikaGUITests::typeTest(){
   My_List->set(
     "MaxIters", 
     1550, 
-    "Determines the maximum number of iterations in the solver");
+    "Determines the maximum number of iterations in the solver",
+    intVali);
   My_List->set(
     "Tolerance", 1e-10, "The tolerance used for the convergence check");
   My_List->set("DoublePointerArray", doubleStarArray);
@@ -122,8 +126,21 @@ void OptikaGUITests::typeTest(){
   VERIFY_PARAMETER_TYPE(My_List, Tolerance, doubleId, model)
   VERIFY_PARAMETER_TYPE(My_List, DoublePointerArray, unrecognizedId, model)
   VERIFY_PARAMETER_TYPE(My_List, IntArray, arrayId + " " + intId, model);
+  Delegate* delegate = new Delegate;
+  cleaner.add(delegate);
+
+  QStyleOptionViewItem genericStyleItem;
+  QModelIndex widgetIndex = getWidgetIndex(MaxItersIndex);
+  QSpinBox* intSpin = ((QSpinBox*)delegate->createEditor(0, genericStyleItem, widgetIndex));
+  QCOMPARE(intSpin->maximum(), 2000);
+  QCOMPARE(intSpin->minimum(),0);
+  QCOMPARE(intSpin->singleStep(),3);
+
+
   cleaner.remove(model);
+  cleaner.remove(delegate);
   delete model; 
+  delete delegate;
 }
 
 
@@ -195,10 +212,10 @@ void OptikaGUITests::dependencyTests(){
   GET_ENTRY_INDEX(validParameters, Num_ice_cubes, model)
   VERIFY_SHOWN_ROW(Num_ice_cubesIndex)
   QModelIndex tempWidgetIndex = getWidgetIndex(TempIndex);
-  QDoubleSpinBox* tempSpinner = (QDoubleSpinBox*)delegate->createEditor(
+  QLineEdit* tempLineEdit = (QLineEdit*)delegate->createEditor(
     0,genericStyleItem, tempWidgetIndex);
-  tempSpinner->setValue(33.0);
-  delegate->setModelData(tempSpinner, model, tempWidgetIndex);
+  tempLineEdit->setText("33.0");
+  delegate->setModelData(tempLineEdit, model, tempWidgetIndex);
   VERIFY_HIDDEN_ROW(Num_ice_cubesIndex)
 
   //Test condition visual dependency
@@ -253,20 +270,20 @@ void OptikaGUITests::dependencyTests(){
   QVERIFY(nonnull(model->getValidator(BoolTempIndex)));
   QModelIndex tempConstWidgetIndex = getWidgetIndex(TempConstIndex);
   QModelIndex boolTempWidgetIndex = getWidgetIndex(BoolTempIndex);
-  QDoubleSpinBox* boolTempSpinner = (QDoubleSpinBox*)delegate->createEditor(
+  QLineEdit* boolTempEdit = (QLineEdit*)delegate->createEditor(
     0, genericStyleItem, boolTempWidgetIndex);
-  QCOMPARE(boolTempSpinner->minimum(), 0.0);
-  QCOMPARE(boolTempSpinner->maximum(), 50.0);
+  QCOMPARE(((QDoubleValidator*)boolTempEdit->validator())->bottom(), 0.0);
+  QCOMPARE(((QDoubleValidator*)boolTempEdit->validator())->top(), 50.0);
   QComboBox* tempConstCombo = (QComboBox*)delegate->createEditor(
     0, genericStyleItem, tempConstWidgetIndex);
   tempConstCombo->setCurrentIndex(
     tempConstCombo->findText(Delegate::getBoolEditorFalse()));
   delegate->setModelData(tempConstCombo, model, tempConstWidgetIndex);
   QVERIFY(model->getValidator(BoolTempIndex).is_null());
-  boolTempSpinner = (QDoubleSpinBox*)delegate->createEditor(
+  boolTempEdit = (QLineEdit*)delegate->createEditor(
     0, genericStyleItem, boolTempWidgetIndex);
-  QCOMPARE(boolTempSpinner->minimum(), EnhancedNumberTraits<double>::min());
-  QCOMPARE(boolTempSpinner->maximum(), EnhancedNumberTraits<double>::max());
+  QCOMPARE(((QDoubleValidator*)boolTempEdit->validator())->bottom(), EnhancedNumberTraits<double>::min());
+  QCOMPARE(((QDoubleValidator*)boolTempEdit->validator())->top(), EnhancedNumberTraits<double>::max());
 
 
   //StringValidatorDepenecy tests
@@ -325,26 +342,26 @@ void OptikaGUITests::dependencyTests(){
   QVERIFY(fondFoodCombo->findText("Bread") != -1);
 
   QModelIndex fondTempWidgetIndex = getWidgetIndex(FondTempIndex);
-  QDoubleSpinBox* fondTempSpinner = (QDoubleSpinBox*)delegate->createEditor(
+  QLineEdit* fondTempEdit = (QLineEdit*)delegate->createEditor(
     0, genericStyleItem, fondTempWidgetIndex);
-  fondTempSpinner->setValue(120.1);
-  delegate->setModelData(fondTempSpinner, model, fondTempWidgetIndex);
+  fondTempEdit->setText("120.1");
+  delegate->setModelData(fondTempEdit, model, fondTempWidgetIndex);
   fondFoodCombo = (QComboBox*)delegate->createEditor(
     0, genericStyleItem, fondFoodWidgetIndex);
   QCOMPARE(fondFoodCombo->count(), 2);
   QVERIFY(fondFoodCombo->findText("Chicken") != -1);
   QVERIFY(fondFoodCombo->findText("Beef") != -1);
 
-  fondTempSpinner->setValue(180.1);
-  delegate->setModelData(fondTempSpinner, model, fondTempWidgetIndex);
+  fondTempEdit->setText("180.1");
+  delegate->setModelData(fondTempEdit, model, fondTempWidgetIndex);
   QVERIFY(model->getValidator(FondFoodIndex).is_null());
   QLineEdit* fondFoodLineEdit = (QLineEdit*)delegate->createEditor(
     0, genericStyleItem, fondFoodWidgetIndex);
   QVERIFY(fondFoodLineEdit != NULL);
   
 
-  fondTempSpinner->setValue(90);
-  delegate->setModelData(fondTempSpinner, model, fondTempWidgetIndex);
+  fondTempEdit->setText("90");
+  delegate->setModelData(fondTempEdit, model, fondTempWidgetIndex);
   fondFoodCombo = (QComboBox*)delegate->createEditor(
     0, genericStyleItem, fondFoodWidgetIndex);
   QCOMPARE(fondFoodCombo->count(), 2);

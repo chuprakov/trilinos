@@ -32,6 +32,7 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 #include <Teuchos_XMLParameterListHelpers.hpp>
+#include <Teuchos_StandardCatchMacros.hpp>
 
   
 static const std::string aboutInfo = 
@@ -111,37 +112,43 @@ int main(int argc, char* argv[]){
   using Teuchos::DependencySheet;
   using Teuchos::getParametersFromXmlFile;
 
-  std::string xmlFileName = "";
-  CommandLineProcessor clp;
-  clp.setOption(
-    "xml-filename", 
-    &xmlFileName,
-    "The name of the xmlfile you wish to configure");
-
-  if(xmlFileName == ""){
-    retreiveFileName(xmlFileName);
+  bool verbose = true;
+  bool success = true;
+  try{
+    std::string xmlFileName = "";
+    CommandLineProcessor clp;
+    clp.setOption(
+      "xml-filename", 
+      &xmlFileName,
+      "The name of the xmlfile you wish to configure");
+  
     if(xmlFileName == ""){
-      std::cout << "No file name provided. Exiting..." << std::endl;
-      return 0;
+      retreiveFileName(xmlFileName);
+      if(xmlFileName == ""){
+        std::cout << "No file name provided. Exiting..." << std::endl;
+        return 0;
+      }
     }
+  
+    if(!QFile::exists(QString::fromStdString(xmlFileName))){
+      std::cerr << "File does not exists!" << std::endl;
+      std::cerr << "Bad file name: " << xmlFileName << "." << std::endl;
+      return -1;
+    }
+  
+  
+    RCP<DependencySheet> deps = rcp(new DependencySheet);
+  
+    RCP<ParameterList> parameters = getParametersFromXmlFile(xmlFileName, deps);
+  
+    OptikaGUI og(parameters, deps);
+    og.setAboutInfo(aboutInfo);
+    og.setWindowTitle("PLEditor");
+    og.setActionButtonText("Quit");
+    og.setWindowIcon("plicon.svg");
+    og.exec();
   }
-
-  if(!QFile::exists(QString::fromStdString(xmlFileName))){
-    std::cerr << "File does not exists!" << std::endl;
-    std::cerr << "Bad file name: " << xmlFileName << "." << std::endl;
-    return -1;
-  }
-
-
-  RCP<DependencySheet> deps = rcp(new DependencySheet);
-
-  RCP<ParameterList> parameters = getParametersFromXmlFile(xmlFileName, deps);
-
-  OptikaGUI og(parameters, deps);
-  og.setAboutInfo(aboutInfo);
-  og.setWindowTitle("PLEditor");
-  og.setActionButtonText("Quit");
-  og.setWindowIcon("plicon.svg");
-  og.exec();
+  TEUCHOS_STANDARD_CATCH_STATEMENTS(verbose, std::cerr, success);
+  return (success ? 0 : 1);
 
 }

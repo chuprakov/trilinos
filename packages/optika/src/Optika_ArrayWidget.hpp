@@ -41,7 +41,7 @@
 #include <vector>
 #include "Optika_treemodel.hpp"
 #include "Optika_FileNameWidget.hpp"
-#include "Optika_SpinBoxApplier.hpp"
+#include "Optika_ValidatorApplier.hpp"
 
 /*! \file Optika_ArrayWidget.hpp
     \brief A collection of Widgets used to edit
@@ -50,19 +50,39 @@
 
 namespace Optika {
 
+/**
+ * \brief An Abstract base class for both 2D and 1D ArrayWidgets.
+ *
+ * Note the absence of the Q_OBJECT
+ * macro. This is becuase classes using the Q_OBJECT macro can't be templated (bummer). The macro is therfore
+ * present in the subclasses.
+ */
 template<class S>
 class GenericArrayWidget : public QDialog{
 
 public:
 
+  /** \name Constructors */
+
+  //@{
+
+  /**
+   * \brief Constructs a GenericArrayWidget.
+   *
+   * @param name The name of the parameter beting edited.
+   * @param type The arrays template type.
+   * @param validator The validator to be used on the Array.
+   * @param parent The parent widget.
+   */
 	GenericArrayWidget(
     QString name, 
     QString type, 
     const RCP<const ParameterEntryValidator> validator,
     QWidget *parent=0);
+  //@}
 
 	/**
-	 * Gets the type of array being edited.
+	 * \brief Gets the type of array being edited.
 	 *
 	 * @return The type of array being edited.
 	 */
@@ -70,10 +90,16 @@ public:
 		return type;
 	}
 
+  /**
+   * \brief Returns the name of the parameter being edits.
+   */
   const QString getName() const{
     return name;
   }
 
+  /**
+   * \brief Returns the validator being used on the array.
+   */
   const RCP<const ParameterEntryValidator> getEntryValidator() const{
     return entryValidator;
   }
@@ -81,12 +107,16 @@ public:
   /**
    * \brief called when the user is done entering data
    * into the widget. MUST BE IMPLEMENTED AS A SLOT IN
-   * SUBCLASSES!
+   * CONCRETE SUBCLASSES!
    */
   virtual void accept() =0;
 
 
 protected: 
+
+  /** @name Protected Functions */
+
+  //@[
 
 	/**
 	 * \brief Sets up the layout for the arrayContainer, including adding what ever editing
@@ -98,16 +128,13 @@ protected:
     }
   }
 
-  /** @name Protected Members */
-  //@{
-
-	/**
-	 * \brief The widget containing all of the editing widgets (e.g.
-	 * QLineEdits, and QSpinBoxes) that comprise the array editor.
-	 */
-	QWidget *arrayContainer;
-
-
+  /**
+   * \brief Get's the layout to be used for the array container in
+   * the widget.
+   *
+   * @return The layout to be used for the array container in
+   * the widget.
+   */
   virtual QLayout* getArrayLayout() =0;  
 
 	/**
@@ -117,10 +144,23 @@ protected:
 
 
   //@}
+
+  /** @name Protected Members */
+  //@{
+
+	/**
+	 * \brief The widget containing all of the editing widgets (e.g.
+	 * QLineEdits, and QSpinBoxes) that comprise the array editor.
+	 */
+	QWidget *arrayContainer;
+
+  //@}
 	
 
 private:
 
+  /** @name Private Members */
+  //@{
 
 	/**
 	 * \brief The type of array.
@@ -137,6 +177,7 @@ private:
 	 */
 	RCP<const ParameterEntryValidator> entryValidator;	
 
+  //@}
 };
 
 template<class S>
@@ -172,38 +213,142 @@ GenericArrayWidget<S>::GenericArrayWidget(
 	setWindowTitle(name);
 }
 
-
+/**
+ * \brief An abstract base class for all 2D Array Widets.
+ *
+ * \reference TwoDArray
+ */
 template <class S>
 class Generic2DArrayWidget : public GenericArrayWidget<S>{
 
+public:
+  
+  /** @name Constructors */
+  //@{
+
+  /**
+   * \brief Constructs a Generic2DArrayWidget.
+   *
+   * @param name The name of the parameter beting edited.
+   * @param type The arrays template type.
+   * @param validator The validator to be used on the Array.
+   * @param parent The parent widget.
+   */
 	Generic2DArrayWidget(
     QString name, 
     QString type, 
     const RCP<const ParameterEntryValidator> validator,
     QWidget *parent=0);
 
+  //@}
+
+  /** @name Getters and Setters */
+  //@{
+
+  /**
+   * \brief Initializes all of the data in the array widget
+   * so when it pops up, the individual widgets are populate
+   * with their current values in the array. Also, sets the
+   * \c baseArray to \c array.
+   *
+   * @param array The array that should be used to populate
+   * the individual widgets making up the ArrayWidget.
+   */
   void initData(TwoDArray<S> array){
     baseArray = array;
     this->setupArrayLayout();
   }
 
+  /**
+   * \brief Retrieves all the data currently entered in each of the
+   * individual widgets and compiles it into a TwoDArray.
+   *
+   * @return A TwoDArray representing the current values in the
+   * idividual widgets.
+   */
+  TwoDArray<S> getArrayFromWidgets(){
+    TwoDArray<S> toReturn(
+      widgetArray.getNumRows(), widgetArray.getNumCols());
+    for(int i=0; i<widgetArray.getNumRows(); ++i){
+      for(int j=0; j<widgetArray.getNumCols(); ++j){
+        toReturn(i,j) = getWidgetValue(i,j);
+      }
+    }
+    return toReturn;
+  }
+
+  /**
+   * \brief Gets the current value entred in the widget located at row,col.
+   *
+   * \return The value entered in the widget at row,col.
+   */
+  virtual S getWidgetValue(int row, int col) = 0;
+
+  /**
+   * \brief gets the data currently stored in baseArray.
+   */
+  inline TwoDArray<S> getData() const{
+    return baseArray;
+  }
+
+  //@}
+
+protected:
+  
+  /** @name Protected Functions */
+  //@{
+
+  /**
+   * \brief Do all the things that need to be done when accept is called.
+   *
+   * Namely, set the base array to what is currently entered in the individual
+   * widgets and call done.
+   */
   void doAcceptWork(){
     baseArray.clear();
     baseArray = getArrayFromWidgets();
     this->done(QDialog::Accepted);
   }
 
-  virtual TwoDArray<S> getArrayFromWidgets()=0;
-
-protected:
-
-  
+  /**
+   * Get a widget used for editing the value located at row,col
+   * in the baseArray.
+   *
+   * @param row The row of the value for which an editor widget is desired.
+   * @param col The column of the value for which and editor widget is desired.
+   * @return An editor widget used to edit the value at row,co. in the
+   * baseArray.
+   */
   virtual QWidget* getEditorWidget(int row, int col) =0;
 
+  //@}
 
+  /** @name Protected members */
+  //@{
+
+  /** \brief An array containing the individual widgets which make up
+   * the array widget editor. The widget at row,col is the widget which
+   * will edit the value at row,col in the baseArray.
+   */
   TwoDArray<QWidget*> widgetArray;
-private:
+
+  /**
+   * \brief The actual array data that the widget is editing. When the user
+   * is finished editing, this TwoDArray is then populated with the values
+   * they entered.
+   */
   TwoDArray<S> baseArray;
+
+  //@}
+
+private:
+
+  /** @name Private functions */
+  //@{
+
+  /**
+   * \brief Retrieves the layout to be used in the array container.
+   */
 	QLayout* getArrayLayout();
 
 };
@@ -220,8 +365,9 @@ Generic2DArrayWidget<S>::Generic2DArrayWidget(
 
 template<class S>
 QLayout* Generic2DArrayWidget<S>::getArrayLayout(){
+ widgetArray = TwoDArray<QWidget*>(baseArray.getNumRows(), baseArray.getNumCols());
  QGridLayout *widgetLayout = new QGridLayout;
-  for(int i =0; i < baseArray.getNumColumns(); ++i){
+  for(int i =0; i < baseArray.getNumCols(); ++i){
 		widgetLayout->addWidget(new QLabel("Column: " +QString::number(i)),0,i+1,Qt::AlignLeft);
   }
   for(int i =0; i < baseArray.getNumRows(); ++i){
@@ -237,13 +383,353 @@ QLayout* Generic2DArrayWidget<S>::getArrayLayout(){
   return widgetLayout;
 }
 
+/**
+ * \brief A 2DArrayWidget used for editing arrays whose template type is int.
+ */
+class Int2DArrayWidget : public Generic2DArrayWidget<int>{
+Q_OBJECT
+public:
+
+  /** @name Constructors */
+  //@{
+
+  /**
+   * \brief Constructs an Int2DArrayWidget.
+   *
+   * @param name The name of the parameter beting edited.
+   * @param type The arrays template type.
+   * @param validator The validator to be used on the Array.
+   * @param parent The parent widget.
+   */
+  Int2DArrayWidget(
+    QString name,
+    QString type,
+    const RCP<const ParameterEntryValidator> validator,
+    QWidget *parent):
+    Generic2DArrayWidget<int>(name, type, validator, parent)
+  {}
+
+
+  /** @name Overridden from Generic2DArrayWidget */
+  //@{
+
+  /** \brief . */
+  inline int getWidgetValue(int row, int col){
+    return ((QSpinBox*)widgetArray(row,col))->value();
+  }
+
+protected:
+
+  /** \brief . */
+  QWidget* getEditorWidget(int row, int col){
+		QSpinBox *newSpin = new QSpinBox(this);
+		RCP<const EnhancedNumberValidator<int> > validator = null;
+		if(!is_null(getEntryValidator())){
+			validator = rcp_dynamic_cast<const TwoDArrayValidator<EnhancedNumberValidator<int>, int> >(getEntryValidator(),true)->getPrototype();
+		}
+		ValidatorApplier<int>::applyToSpinBox(validator, newSpin);
+    newSpin->setValue(baseArray(row, col));
+		return newSpin;
+  }
+
+  //@}
+
+public slots:
+  /** @name Overriden from GenericArrayWidget */
+  //@{
+
+  /** \brief . */
+  void accept(){
+    doAcceptWork();
+  }
+
+ //@} 
+
+};
 
 /**
- * \brief A templated abstract base class for all other array editing widgets. 
- *
- * Note the absence of the Q_OBJECT
- * macro. This is becuase classes using the Q_OBJECT macro can't be templated (bummer). The macro is therfore
- * present in the subclasses.
+ * \brief A 2DArrayWidget used for editing arrays whose template type is short.
+ */
+class Short2DArrayWidget : public Generic2DArrayWidget<short>{
+Q_OBJECT
+public:
+
+  /** @name Constructors */
+  //@{
+
+  /**
+   * \brief Constructs an Short2DArrayWidget.
+   *
+   * @param name The name of the parameter beting edited.
+   * @param type The arrays template type.
+   * @param validator The validator to be used on the Array.
+   * @param parent The parent widget.
+   */
+  Short2DArrayWidget(
+    QString name,
+    QString type,
+    const RCP<const ParameterEntryValidator> validator,
+    QWidget *parent):
+    Generic2DArrayWidget<short>(name, type, validator, parent)
+  {}
+
+  //@}
+
+  /** @name Overridden from Generic2DArrayWidget */
+  //@{
+
+  /** \brief . */
+  inline short getWidgetValue(int row, int col){
+    return ((QSpinBox*)widgetArray(row,col))->value();
+  }
+
+protected:
+
+  /** \brief . */
+  QWidget* getEditorWidget(int row, int col){
+		QSpinBox *newSpin = new QSpinBox(this);
+    newSpin->setValue(baseArray(row, col));
+		return newSpin;
+  }
+
+  //@}
+
+public slots:
+
+  /** @name Overridden from GenericArrayWidget */
+  //@{
+
+  /** \brief . */
+  void accept(){
+    doAcceptWork();
+  }
+
+  //@}
+
+};
+
+/**
+ * \brief A 2DArrayWidget used for editing arrays whose template type is double.
+ */
+class Double2DArrayWidget : public Generic2DArrayWidget<double>{
+Q_OBJECT
+public:
+
+  /** @name Constructors */
+  //@{
+
+  /**
+   * \brief Constructs an Double2DArrayWidget.
+   *
+   * @param name The name of the parameter beting edited.
+   * @param type The arrays template type.
+   * @param validator The validator to be used on the Array.
+   * @param parent The parent widget.
+   */
+  Double2DArrayWidget(
+    QString name,
+    QString type,
+    const RCP<const ParameterEntryValidator> validator,
+    QWidget *parent):
+    Generic2DArrayWidget<double>(name, type, validator, parent)
+  {}
+
+  //@}
+
+  /** @name Overridden from Generic2DArrayWidget */
+  //@{
+
+  /** \brief . */
+  inline double getWidgetValue(int row, int col){
+    return ((QLineEdit*)widgetArray(row,col))->text().toDouble();
+  }
+
+protected:
+
+  /** \brief . */
+  QWidget* getEditorWidget(int row, int col){
+		QLineEdit *newEdit = new QLineEdit(this);
+		RCP<const EnhancedNumberValidator<double> > validator = null;
+		if(!is_null(getEntryValidator())){
+			validator = rcp_dynamic_cast<const TwoDArrayValidator<EnhancedNumberValidator<double>, double> >(getEntryValidator(),true)->getPrototype();
+		}
+		ValidatorApplier<double>::applyToLineEdit(validator, newEdit);
+    newEdit->setText(QString::number(baseArray(row,col)));
+		return newEdit;
+  }
+
+  //@}
+
+public slots:
+
+  /** @name Overridden from GenericArrayWidget */
+  //@{
+
+  void accept(){
+    doAcceptWork();
+  }
+
+  //@}
+
+};
+
+/**
+ * \brief A 2DArrayWidget used for editing arrays whose template type is float.
+ */
+class Float2DArrayWidget : public Generic2DArrayWidget<float>{
+Q_OBJECT
+public:
+
+  /** @name Constructors */
+  //@{
+
+  /**
+   * \brief Constructs an Float2DArrayWidget.
+   *
+   * @param name The name of the parameter beting edited.
+   * @param type The arrays template type.
+   * @param validator The validator to be used on the Array.
+   * @param parent The parent widget.
+   */
+  Float2DArrayWidget(
+    QString name,
+    QString type,
+    const RCP<const ParameterEntryValidator> validator,
+    QWidget *parent):
+    Generic2DArrayWidget<float>(name, type, validator, parent)
+  {}
+
+  //@}
+
+  /** @name Overridden from Generic2DArrayWidget */
+  //@{
+
+  /** \brief . */
+  inline float getWidgetValue(int row, int col){
+    return ((QLineEdit*)widgetArray(row,col))->text().toDouble();
+  }
+
+protected:
+
+  /** \brief . */
+  QWidget* getEditorWidget(int row, int col){
+		QLineEdit *newEdit = new QLineEdit(this);
+		RCP<const EnhancedNumberValidator<float> > validator = null;
+		if(!is_null(getEntryValidator())){
+			validator = rcp_dynamic_cast<const TwoDArrayValidator<EnhancedNumberValidator<float>, float> >(getEntryValidator(),true)->getPrototype();
+		}
+		ValidatorApplier<float>::applyToLineEdit(validator, newEdit);
+    newEdit->setText(QString::number(baseArray(row,col)));
+		return newEdit;
+  }
+
+  //@}
+
+public slots:
+
+  /** @name Overridden from GenericArrayWidget */
+  //@{
+
+  void accept(){
+    doAcceptWork();
+  }
+
+  //@}
+
+};
+
+/**
+ * \brief A 2DArrayWidget used for editing arrays whose template type is std::string.
+ */
+class String2DArrayWidget : public Generic2DArrayWidget<std::string>{
+Q_OBJECT
+public:
+
+  /** @name Constructors */
+  //@{
+
+  /**
+   * \brief Constructs an String2DArrayWidget.
+   *
+   * @param name The name of the parameter beting edited.
+   * @param type The arrays template type.
+   * @param validator The validator to be used on the Array.
+   * @param parent The parent widget.
+   */
+  String2DArrayWidget(
+    QString name,
+    QString type,
+    const RCP<const ParameterEntryValidator> validator,
+    QWidget *parent):
+    Generic2DArrayWidget<std::string>(name, type, validator, parent)
+  {}
+
+  //@}
+
+  /** @name Overridden from Generic2DArrayWidget */
+  //@{
+
+  /** \brief . */
+  std::string getWidgetValue(int row, int col){
+		if(is_null(getEntryValidator())){
+       return ((QLineEdit*)widgetArray(row,col))->text().toStdString();
+		}
+		else if(!is_null(rcp_dynamic_cast<const ArrayValidator<FileNameValidator, std::string> >(getEntryValidator()))){
+       return ((FileNameWidget*)widgetArray(row,col))->getCurrentFileName().toStdString();
+		}
+		else if(getEntryValidator()->validStringValues()->size() !=0){
+       return  ((QComboBox*)widgetArray(row,col))->currentText().toStdString();
+		}
+		else{
+       return  ((QLineEdit*)widgetArray(row,col))->text().toStdString();
+		}
+  }
+
+protected:
+
+  /** \brief . */
+  QWidget* getEditorWidget(int row, int col){
+    QString currentData = QString::fromStdString(baseArray(row,col));
+		if(is_null(getEntryValidator())){
+			return new QLineEdit(currentData,this);
+		}
+		else if(!is_null(rcp_dynamic_cast<const TwoDArrayValidator<FileNameValidator, std::string> >(getEntryValidator()))){
+			return new FileNameWidget(
+        currentData, 
+        rcp_dynamic_cast<const TwoDArrayValidator<FileNameValidator, std::string> >(getEntryValidator())->getPrototype()->fileMustExist(), this);
+		}
+		else if(getEntryValidator()->validStringValues()->size() != 0){
+			RCP<const Array<std::string> > options = getEntryValidator()->validStringValues();
+			QComboBox *newCombo = new QComboBox(this);
+			for(Array<std::string>::const_iterator itr = options->begin(); itr != options->end(); ++itr){
+				newCombo->addItem(QString::fromStdString(*itr));
+			}
+      int selectedItem = newCombo->findText(currentData);
+      newCombo->setCurrentIndex(selectedItem);
+			return newCombo;
+		}
+		else{
+			return new QLineEdit(currentData,this);
+		}
+  }
+
+  //@}
+
+public slots:
+  /** @name Overridden from GenericArrayWidget */
+  //@{
+
+  /** \brief . */
+  void accept(){
+    doAcceptWork();
+  }
+
+  //@{
+
+};
+
+/**
+ * \brief A templated abstract base class for all 1D array editing widgets. 
  *
  * \reference Array
  */ 
@@ -290,8 +776,13 @@ public:
   //@{
 
   /**
-   * \brief Initialize the data in the widget with the currecnt values of the baseArray as
-   * well as setting up the widgets layout.
+   * \brief Initializes all of the data in the array widget
+   * so when it pops up, the individual widgets are populate
+   * with their current values in the array. Also, sets the
+   * \c baseArray to \c array.
+   *
+   * @param array The array that should be used to populate
+   * the individual widgets making up the ArrayWidget.
    */
   void initData(Array<S> array){
     baseArray = array;
@@ -334,19 +825,24 @@ protected:
 	WVector widgetVector;
 
 	/**
-	 * The array to be edited.
+	 * \brief The array to be edited.
 	 */
 	Array<S> baseArray;
-
-  void doAcceptWork();
+  
   //@}
 
+  /** @name Overriden from GenericArrayWidget */
+  //@{
+
+  /** \brief . */
+  void doAcceptWork();
+
+  //@}
 
 private:
 
   /** \name Private Functions */
   //@{
-
 
   QLayout* getArrayLayout();
 
@@ -383,7 +879,7 @@ void Generic1DArrayWidget<S>::doAcceptWork(){
 }
 
 /**
- * \brief A widget for editing Arrays of type int.
+ * \brief A 1D widget for editing Arrays of type int.
  */
 class IntArrayWidget: public Generic1DArrayWidget<int>{
 	Q_OBJECT
@@ -423,21 +919,6 @@ public:
     return toReturn;
 	}
 
-  //@}
-
-
-public slots:
-
-  /** \name Overridden from Generic1DArrayWidget */
-  //@{
-
-  /** * \brief .  */
-  void accept(){
-    doAcceptWork();
-  }
-
-  //@}
-
 private:
 
   /**
@@ -449,12 +930,26 @@ private:
 		if(!is_null(getEntryValidator())){
 			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<int>, int> >(getEntryValidator(),true)->getPrototype();
 		}
-		SpinBoxApplier<int>::applyToSpinBox(validator, newSpin);
+		ValidatorApplier<int>::applyToSpinBox(validator, newSpin);
     newSpin->setValue(baseArray[index]);
 		return newSpin;
 	}
 
   //@}
+
+
+public slots:
+
+  /** \name Overridden from GenericArrayWidget */
+  //@{
+
+  /** * \brief .  */
+  void accept(){
+    doAcceptWork();
+  }
+
+  //@}
+
 };
 
 /**
@@ -485,6 +980,9 @@ public:
 
   //@}
 
+  /** @name Overridden from Generic1DArrayWidget */
+  //@{
+
   /** * \brief .  */
 	Array<short> getArrayFromWidgets(){
     Array<short> toReturn(widgetVector.size(), 0);
@@ -494,18 +992,9 @@ public:
     return toReturn;
 	}
 
-public slots:
-  /** \name Overridden from Generic1DArrayWidget */
-  //@{
-
-  /** * \brief .  */
-	void accept(){
-    doAcceptWork();
-	}
-
-  //@}
 
 private:
+
   /** * \brief .  */
 	QWidget* getEditorWidget(int index){
 		QSpinBox *newSpin = new QSpinBox(this);
@@ -513,11 +1002,21 @@ private:
 		if(!is_null(getEntryValidator())){
 			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<short>, short> >(getEntryValidator(),true)->getPrototype();
 		}
-		SpinBoxApplier<short>::applyToSpinBox(validator, newSpin);
+		ValidatorApplier<short>::applyToSpinBox(validator, newSpin);
     newSpin->setValue(baseArray[index]);
 		return newSpin;
 	}
 
+  //@}
+
+public slots:
+  /** \name Overridden from GenericArrayWidget */
+  //@{
+
+  /** * \brief .  */
+	void accept(){
+    doAcceptWork();
+	}
 
   //@}
 };
@@ -550,17 +1049,36 @@ public:
 
   //@}
 
+  /** @name Overridden from Generic1DArrayWidget */
+  //@{
+
   /** * \brief .  */
 	Array<double> getArrayFromWidgets(){
     Array<double> toReturn(widgetVector.size(), 0.0);
     for(size_t i=0; i < widgetVector.size(); ++i){
-      toReturn[i]= ((QDoubleSpinBox*)widgetVector[i])->value();
+      toReturn[i]= ((QLineEdit*)widgetVector[i])->text().toDouble();
     }
     return toReturn;
   }
+
+private:
+
+  /** * \brief .  */
+	QWidget* getEditorWidget(int index){
+		QLineEdit *newEdit = new QLineEdit(this);
+		RCP<const EnhancedNumberValidator<double> > validator = null;
+		if(!is_null(getEntryValidator())){
+			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<double>, double> >(getEntryValidator(),true)->getPrototype();
+		}
+		ValidatorApplier<double>::applyToLineEdit(validator, newEdit);
+    newEdit->setText(QString::number(baseArray[index], 'g', ((QDoubleValidator*)newEdit->validator())->decimals()));
+		return newEdit;
+	}
+
+  //@}
   
 public slots:
-  /** \name Overridden from Generic1DArrayWidget */
+  /** \name Overridden from GenericArrayWidget */
   //@{
 
   /** * \brief .  */
@@ -570,22 +1088,6 @@ public slots:
 
   //@}
 
-private:
-
-  /** * \brief .  */
-	QWidget* getEditorWidget(int index){
-		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
-		RCP<const EnhancedNumberValidator<double> > validator = null;
-		if(!is_null(getEntryValidator())){
-			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<double>, double> >(getEntryValidator(),true)->getPrototype();
-		}
-		SpinBoxApplier<double>::applyToSpinBox(validator, newSpin);
-    newSpin->setValue(baseArray[index]);
-		return newSpin;
-	}
-
-
-  //@}
 };
 
 /**
@@ -615,18 +1117,38 @@ public:
 
   //@}
   
+  /** @name Overridden from Generic1DArrayWidget */
+  //@{
+
   /** * \brief .  */
 	Array<float> getArrayFromWidgets(){
     Array<float> toReturn(widgetVector.size(), 0.0);
     for(size_t i=0; i < widgetVector.size(); ++i){
-      toReturn[i]= ((QDoubleSpinBox*)widgetVector[i])->value();
+      toReturn[i]= ((QLineEdit*)widgetVector[i])->text().toDouble();
     }
     return toReturn;
   }
 
+private:
+
+  /** * \brief .  */
+	QWidget* getEditorWidget(int index){
+		QLineEdit *newEdit = new QLineEdit(this);
+		RCP<const EnhancedNumberValidator<float> > validator = null;
+		if(!is_null(getEntryValidator())){
+			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<float>, float> >(getEntryValidator(),true)->getPrototype();
+		}
+		ValidatorApplier<float>::applyToLineEdit(validator, newEdit);
+    newEdit->setText(QString::number(baseArray[index], 'g', ((QDoubleValidator*)newEdit->validator())->decimals()));
+		return newEdit;
+	}
+
+
+  //@}
+
 public slots:
 
-  /** \name Overridden from Generic1DArrayWidget */
+  /** \name Overridden from GenericArrayWidget */
   //@{
 
   /** * \brief .  */
@@ -636,22 +1158,6 @@ public slots:
 
   //@}
 
-private:
-
-  /** * \brief .  */
-	QWidget* getEditorWidget(int index){
-		QDoubleSpinBox *newSpin = new QDoubleSpinBox(this);
-		RCP<const EnhancedNumberValidator<float> > validator = null;
-		if(!is_null(getEntryValidator())){
-			validator = rcp_dynamic_cast<const ArrayValidator<EnhancedNumberValidator<float>, float> >(getEntryValidator(),true)->getPrototype();
-		}
-		SpinBoxApplier<float>::applyToSpinBox(validator, newSpin);
-    newSpin->setValue(baseArray[index]);
-		return newSpin;
-	}
-
-
-  //@}
 };
 
 /**
@@ -682,6 +1188,9 @@ public:
 
   //@}
 
+  /** @name Overridden from Generic1DArrayWidget */
+  //@{
+
   /** * \brief .  */
 	Array<std::string> getArrayFromWidgets(){
     Array<std::string> toReturn(widgetVector.size(), "");
@@ -701,19 +1210,6 @@ public:
 		}
     return toReturn;
   }
-
-public slots:
-
-  /** \name Overridden from Generic1DArrayWidget */
-  //@{
-
-  /** * \brief .  */
-	void accept(){
-    doAcceptWork();
-	}
-
-  //@}
-
 
 private:
 
@@ -743,8 +1239,21 @@ private:
 		}
 	}
 
+  //@}
+
+public slots:
+
+  /** \name Overridden from GenericArrayWidget */
+  //@{
+
+  /** * \brief .  */
+	void accept(){
+    doAcceptWork();
+	}
 
   //@}
+
+
 };
 
 

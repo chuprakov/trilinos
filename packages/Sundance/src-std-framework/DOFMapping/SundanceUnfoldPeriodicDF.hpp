@@ -55,7 +55,7 @@ DiscreteSpace unfoldPeriodicDiscreteSpace(const DiscreteSpace& space);
  * "Unfold" a discrete function defined on a periodic mesh, producing
  * a function usable on a non-periodic mesh of the same interval   
 */
-Expr unfoldPeriodicDiscreteFunction(const Expr& f);
+Expr unfoldPeriodicDiscreteFunction(const Expr& f, const string& name="");
 
 
 }

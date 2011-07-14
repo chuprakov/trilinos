@@ -128,7 +128,14 @@ bool TreeModel::setData(const QModelIndex & index, const QVariant &value, int ro
 	if(index.isValid() && index.column() == 1 && role == Qt::EditRole){
 		TreeItem *item = (TreeItem*)(index.internalPointer());
 		if(item->changeValue(value)){
-			emit dataChanged(index, index);
+      //Need to do this check because QDoubleValidators are really lax.
+      //Plus it's probably good to do anyway.
+      if(item->hasValidValue()){
+			  emit dataChanged(index, index);
+      }
+      else{
+        emit badValue(index, item->getCurrentInvalidValueMessage());
+      }
 		}
 		return true;
 	}
@@ -418,7 +425,6 @@ void TreeModel::insertParameter(RCP<ParameterEntry> parameter, std::string name,
 			parent->appendChild(new TreeItem(values, parameter, parent, true));
 			return;
 		}
-
   }
 	else{
 		values.append("");
