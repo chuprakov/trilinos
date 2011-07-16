@@ -58,6 +58,7 @@ private slots:
   void typeTest();
   void dependencyTests();
   void arrayEditorTest();
+  void twoDEditorTest();
   void cleanupTestCase();
 private:
   static inline QModelIndex getWidgetIndex(const QModelIndex& index);
@@ -156,6 +157,22 @@ void OptikaGUITests::arrayEditorTest(){
 
   cleaner.remove(testWidget);
   delete testWidget;
+}
+
+void OptikaGUITests::twoDEditorTest(){
+  TwoDArray<double> testArray(4,2,4.5);
+  ParameterEntry testEntry(testArray);
+  Double2DArrayWidget* testWidget = 
+    new Double2DArrayWidget("tester", doubleId, null);
+  cleaner.add(testWidget);
+
+  testWidget->initData(testArray);
+  TwoDArray<double> retrievedArray = testWidget->getArrayFromWidgets();
+  QVERIFY(testArray == retrievedArray);
+
+  cleaner.remove(testWidget);
+  delete testWidget;
+
 }
 
 inline QModelIndex OptikaGUITests::getWidgetIndex(const QModelIndex& index){

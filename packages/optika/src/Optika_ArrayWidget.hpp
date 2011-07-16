@@ -268,10 +268,10 @@ public:
    */
   TwoDArray<S> getArrayFromWidgets(){
     TwoDArray<S> toReturn(
-      widgetArray.getNumRows(), widgetArray.getNumCols());
-    for(int i=0; i<widgetArray.getNumRows(); ++i){
-      for(int j=0; j<widgetArray.getNumCols(); ++j){
-        toReturn(i,j) = getWidgetValue(i,j);
+      baseArray.getNumRows(), baseArray.getNumCols());
+    for(int i=0; i<baseArray.getNumRows(); ++i){
+      for(int j=0; j<baseArray.getNumCols(); ++j){
+        toReturn(i,j) = getWidgetValue(i+1,j+1);
       }
     }
     return toReturn;
@@ -365,7 +365,7 @@ Generic2DArrayWidget<S>::Generic2DArrayWidget(
 
 template<class S>
 QLayout* Generic2DArrayWidget<S>::getArrayLayout(){
- widgetArray = TwoDArray<QWidget*>(baseArray.getNumRows(), baseArray.getNumCols());
+ widgetArray = TwoDArray<QWidget*>(baseArray.getNumRows()+1, baseArray.getNumCols()+1);
  QGridLayout *widgetLayout = new QGridLayout;
   for(int i =0; i < baseArray.getNumCols(); ++i){
 		widgetLayout->addWidget(new QLabel("Column: " +QString::number(i)),0,i+1,Qt::AlignLeft);
@@ -374,10 +374,10 @@ QLayout* Generic2DArrayWidget<S>::getArrayLayout(){
 		widgetLayout->addWidget(new QLabel("Row: " +QString::number(i)),i+1,0,Qt::AlignLeft);
   }
   for(int i =0; i < baseArray.getNumRows(); ++i){
-    for(int j =0; j < baseArray.getNumRows(); ++j){
+    for(int j =0; j < baseArray.getNumCols(); ++j){
 		  QWidget* editorWidget = getEditorWidget(i,j);
 		  widgetLayout->addWidget(editorWidget,i+1,j+1,Qt::AlignLeft);
-		  widgetArray(i,j) = editorWidget;
+		  widgetArray(i+1,j+1) = editorWidget;
     }
   }
   return widgetLayout;
@@ -405,7 +405,7 @@ public:
     QString name,
     QString type,
     const RCP<const ParameterEntryValidator> validator,
-    QWidget *parent):
+    QWidget *parent=0):
     Generic2DArrayWidget<int>(name, type, validator, parent)
   {}
 
@@ -469,7 +469,7 @@ public:
     QString name,
     QString type,
     const RCP<const ParameterEntryValidator> validator,
-    QWidget *parent):
+    QWidget *parent=0):
     Generic2DArrayWidget<short>(name, type, validator, parent)
   {}
 
@@ -488,6 +488,11 @@ protected:
   /** \brief . */
   QWidget* getEditorWidget(int row, int col){
 		QSpinBox *newSpin = new QSpinBox(this);
+		RCP<const EnhancedNumberValidator<short> > validator = null;
+		if(!is_null(getEntryValidator())){
+			validator = rcp_dynamic_cast<const TwoDArrayValidator<EnhancedNumberValidator<short>, short> >(getEntryValidator(),true)->getPrototype();
+		}
+		ValidatorApplier<short>::applyToSpinBox(validator, newSpin);
     newSpin->setValue(baseArray(row, col));
 		return newSpin;
   }
@@ -530,7 +535,7 @@ public:
     QString name,
     QString type,
     const RCP<const ParameterEntryValidator> validator,
-    QWidget *parent):
+    QWidget *parent=0):
     Generic2DArrayWidget<double>(name, type, validator, parent)
   {}
 
@@ -595,7 +600,7 @@ public:
     QString name,
     QString type,
     const RCP<const ParameterEntryValidator> validator,
-    QWidget *parent):
+    QWidget *parent=0):
     Generic2DArrayWidget<float>(name, type, validator, parent)
   {}
 
@@ -660,7 +665,7 @@ public:
     QString name,
     QString type,
     const RCP<const ParameterEntryValidator> validator,
-    QWidget *parent):
+    QWidget *parent=0):
     Generic2DArrayWidget<std::string>(name, type, validator, parent)
   {}
 
