@@ -267,10 +267,14 @@ public:
    * idividual widgets.
    */
   TwoDArray<S> getArrayFromWidgets(){
+    Teuchos::TwoDArray<QWidget*>::size_type numRows = 
+      widgetArray.getNumRows()-1;
+    Teuchos::TwoDArray<QWidget*>::size_type numCols = 
+      widgetArray.getNumCols()-1;
     TwoDArray<S> toReturn(
-      baseArray.getNumRows(), baseArray.getNumCols());
-    for(int i=0; i<baseArray.getNumRows(); ++i){
-      for(int j=0; j<baseArray.getNumCols(); ++j){
+      numRows, numCols);
+    for(int i=0; i<numRows; ++i){
+      for(int j=0; j<numCols; ++j){
         toReturn(i,j) = getWidgetValue(i+1,j+1);
       }
     }

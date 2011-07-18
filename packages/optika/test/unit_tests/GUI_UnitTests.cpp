@@ -167,8 +167,10 @@ void OptikaGUITests::twoDEditorTest(){
   cleaner.add(testWidget);
 
   testWidget->initData(testArray);
-  TwoDArray<double> retrievedArray = testWidget->getArrayFromWidgets();
+  testWidget->accept();
+  TwoDArray<double> retrievedArray = testWidget->getData();
   QVERIFY(testArray == retrievedArray);
+
 
   cleaner.remove(testWidget);
   delete testWidget;
