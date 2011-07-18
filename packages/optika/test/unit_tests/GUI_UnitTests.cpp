@@ -434,7 +434,7 @@ void OptikaGUITests::twoDSymetryTest(){
   QGridLayout* layout = (QGridLayout*)testWidget->layout();
   QScrollArea* scrollArea = (QScrollArea*)(layout->itemAtPosition(0,0)->widget());
   QWidget* actualWidget = scrollArea->widget();
-  QCOMPARE(((QGridLayout*)actualWidget->layout())->itemAtPosition(3,3), (QLayoutItem*)0);
+  QCOMPARE(((QGridLayout*)actualWidget->layout())->itemAtPosition(1,1), (QLayoutItem*)0);
 
   testWidget->accept();
   TwoDArray<double> retrievedArray = testWidget->getData();

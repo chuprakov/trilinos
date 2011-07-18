@@ -276,7 +276,7 @@ public:
     int numColsToIterate =0;
     for(int i=0; i<numRows; ++i){
       numColsToIterate = baseArray.isSymetrical() ? 
-        numCols-i : numCols;
+        numCols-numRows+i : numCols;
       for(int j=0; j<numColsToIterate; ++j){
         toReturn(i,j) = getWidgetValue(i+1,j+1);
       }
@@ -385,7 +385,7 @@ QLayout* Generic2DArrayWidget<S>::getArrayLayout(){
   int numColsToIterate =0;
   for(int i =0; i < baseArray.getNumRows(); ++i){
     numColsToIterate = baseArray.isSymetrical() ? 
-      baseArray.getNumCols()-i : baseArray.getNumCols();
+      baseArray.getNumCols()-baseArray.getNumRows()+i : baseArray.getNumCols();
     for(int j =0; j < numColsToIterate; ++j){
 		  QWidget* editorWidget = getEditorWidget(i,j);
 		  widgetLayout->addWidget(editorWidget,i+1,j+1,Qt::AlignLeft);
