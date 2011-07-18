@@ -273,11 +273,16 @@ public:
       widgetArray.getNumCols()-1;
     TwoDArray<S> toReturn(
       numRows, numCols);
+    int numColsToIterate =0;
     for(int i=0; i<numRows; ++i){
-      for(int j=0; j<numCols; ++j){
+      numColsToIterate = baseArray.isSymetrical() ? 
+        numCols-i : numCols;
+      for(int j=0; j<numColsToIterate; ++j){
         toReturn(i,j) = getWidgetValue(i+1,j+1);
       }
     }
+    std::cerr << (baseArray.isSymetrical() ? "Yep" : "Nope")  << std::endl;
+    toReturn.setSymetrical(baseArray.isSymetrical());
     return toReturn;
   }
 
@@ -377,8 +382,11 @@ QLayout* Generic2DArrayWidget<S>::getArrayLayout(){
   for(int i =0; i < baseArray.getNumRows(); ++i){
 		widgetLayout->addWidget(new QLabel("Row: " +QString::number(i)),i+1,0,Qt::AlignLeft);
   }
+  int numColsToIterate =0;
   for(int i =0; i < baseArray.getNumRows(); ++i){
-    for(int j =0; j < baseArray.getNumCols(); ++j){
+    numColsToIterate = baseArray.isSymetrical() ? 
+      baseArray.getNumCols()-i : baseArray.getNumCols();
+    for(int j =0; j < numColsToIterate; ++j){
 		  QWidget* editorWidget = getEditorWidget(i,j);
 		  widgetLayout->addWidget(editorWidget,i+1,j+1,Qt::AlignLeft);
 		  widgetArray(i+1,j+1) = editorWidget;

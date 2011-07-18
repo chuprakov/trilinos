@@ -59,6 +59,7 @@ private slots:
   void dependencyTests();
   void arrayEditorTest();
   void twoDEditorTest();
+  void twoDSymetryTest();
   void cleanupTestCase();
 private:
   static inline QModelIndex getWidgetIndex(const QModelIndex& index);
@@ -422,6 +423,29 @@ void OptikaGUITests::dependencyTests(){
 }
   
 
+void OptikaGUITests::twoDSymetryTest(){
+  TwoDArray<double> testArray(4,4,4.5);
+  testArray.setSymetrical(true);
+  Double2DArrayWidget* testWidget = 
+    new Double2DArrayWidget("tester", doubleId, null);
+  cleaner.add(testWidget);
+
+  testWidget->initData(testArray);
+  QGridLayout* layout = (QGridLayout*)testWidget->layout();
+  QScrollArea* scrollArea = (QScrollArea*)(layout->itemAtPosition(0,0)->widget());
+  QWidget* actualWidget = scrollArea->widget();
+  QCOMPARE(((QGridLayout*)actualWidget->layout())->itemAtPosition(3,3), (QLayoutItem*)0);
+
+  testWidget->accept();
+  TwoDArray<double> retrievedArray = testWidget->getData();
+  QVERIFY(testArray == retrievedArray);
+
+
+  cleaner.remove(testWidget);
+  delete testWidget;
+
+
+}
 
 } //namespace Optika
 
