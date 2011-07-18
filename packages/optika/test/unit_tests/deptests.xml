@@ -123,6 +123,18 @@
   <Parameter name="FondFood" type="string" value="Cheese"
     id="24" docString="The food we're fonduing"/>
 
+  <Parameter name="NumRows" type="int" value="4"
+    id="25" docString="Number of rows in a 2D array"/>
+  <Parameter name="RowArray" type="TwoDArray(double)"
+    id="26" value="4x2:{1.0,1.0,1.0,1.0,1.0,2.0,2.0,2.0}"
+    docString="TwoDArray with a variable number of rows"/>
+
+  <Parameter name="NumCols" type="int" value="4"
+    id="27" docString="Number of rows in a 2D array"/>
+  <Parameter name="ColArray" type="TwoDArray(double)"
+    id="28" value="2x4:{1.0,1.0,1.0,1.0,1.0,2.0,2.0,2.0}"
+    docString="TwoDArray with a variable number of columns"/>
+
   <Validators>
     <Validator type="StringValidator" validatorId="0">
       <String value="American"/>
@@ -214,6 +226,14 @@
         <Pair min="80" max="120" validatorId="4"/>
         <Pair min="120" max="180" validatorId="5"/>
       </RangesAndValidators>
+    </Dependency>
+    <Dependency type="TwoDRowDependency(int, double)">
+      <Dependee parameterId="25"/>
+      <Dependent parameterId="26"/>
+    </Dependency>
+    <Dependency type="TwoDColDependency(int, double)">
+      <Dependee parameterId="27"/>
+      <Dependent parameterId="28"/>
     </Dependency>
   </Dependencies>
 </ParameterList>

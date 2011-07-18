@@ -387,6 +387,30 @@ void OptikaGUITests::dependencyTests(){
   QVERIFY(fondFoodCombo->findText("Cheese") != -1);
   QVERIFY(fondFoodCombo->findText("Bread") != -1);
 
+
+  //Test TwoDRowDependency
+  GET_ENTRY_INDEX(validParameters, NumRows, model)
+  GET_ENTRY_INDEX(validParameters, RowArray, model)
+  QModelIndex numRowsWidgetIndex = getWidgetIndex(NumRowsIndex);
+  QSpinBox* numRowSpin = (QSpinBox*)delegate->createEditor(
+    0, genericStyleItem, numRowsWidgetIndex);
+  numRowSpin->setValue(2);
+  delegate->setModelData(numRowSpin, model, numRowsWidgetIndex);
+  TwoDArray<double> rowArray = model->getTwoDArray<double>(RowArrayIndex);
+  QCOMPARE(rowArray.getNumRows(), (TwoDArray<double>::size_type)2);
+
+  //Test TwoDColDependency
+  GET_ENTRY_INDEX(validParameters, NumCols, model)
+  GET_ENTRY_INDEX(validParameters, ColArray, model)
+  QModelIndex numColsWidgetIndex = getWidgetIndex(NumColsIndex);
+  QSpinBox* numColSpin = (QSpinBox*)delegate->createEditor(
+    0, genericStyleItem, numColsWidgetIndex);
+  numColSpin->setValue(2);
+  delegate->setModelData(numColSpin, model, numColsWidgetIndex);
+  TwoDArray<double> colArray = model->getTwoDArray<double>(ColArrayIndex);
+  QCOMPARE(colArray.getNumCols(), (TwoDArray<double>::size_type)2);
+ 
+
   
 
   cleaner.remove(model);

@@ -208,12 +208,23 @@ public:
 	/**
 	 * \brief Gets the array for a particular TreeItem.
 	 *
-	 * @param index The index of the TreeItem whose arrays is sought.
+	 * @param index The index of the TreeItem whose array is sought.
 	 * @return The array at the given index.
 	 */
 	template <class S>
 	Array<S> getArray(const QModelIndex& index){
 		return any_cast<Array<S> >(itemEntry(index)->getAny()); 
+	}
+
+	/**
+	 * \brief Gets the TwoDArray for a particular TreeItem.
+	 *
+	 * @param index The index of the TreeItem whose TwoDArray is sought.
+	 * @return The TwoDArray at the given index.
+	 */
+	template <class S>
+	TwoDArray<S> getTwoDArray(const QModelIndex& index){
+		return any_cast<TwoDArray<S> >(itemEntry(index)->getAny()); 
 	}
 
 	/**
