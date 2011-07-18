@@ -275,14 +275,14 @@ public:
       numRows, numCols);
     int numColsToIterate =0;
     for(int i=0; i<numRows; ++i){
-      numColsToIterate = baseArray.isSymetrical() ? 
+      numColsToIterate = baseArray.isSymmetrical() ? 
         numCols-numRows+i : numCols;
       for(int j=0; j<numColsToIterate; ++j){
         toReturn(i,j) = getWidgetValue(i+1,j+1);
       }
     }
-    std::cerr << (baseArray.isSymetrical() ? "Yep" : "Nope")  << std::endl;
-    toReturn.setSymetrical(baseArray.isSymetrical());
+    std::cerr << (baseArray.isSymmetrical() ? "Yep" : "Nope")  << std::endl;
+    toReturn.setSymmetrical(baseArray.isSymmetrical());
     return toReturn;
   }
 
@@ -384,7 +384,7 @@ QLayout* Generic2DArrayWidget<S>::getArrayLayout(){
   }
   int numColsToIterate =0;
   for(int i =0; i < baseArray.getNumRows(); ++i){
-    numColsToIterate = baseArray.isSymetrical() ? 
+    numColsToIterate = baseArray.isSymmetrical() ? 
       baseArray.getNumCols()-baseArray.getNumRows()+i : baseArray.getNumCols();
     for(int j =0; j < numColsToIterate; ++j){
 		  QWidget* editorWidget = getEditorWidget(i,j);

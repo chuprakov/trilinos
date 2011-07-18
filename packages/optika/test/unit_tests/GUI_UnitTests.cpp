@@ -59,7 +59,7 @@ private slots:
   void dependencyTests();
   void arrayEditorTest();
   void twoDEditorTest();
-  void twoDSymetryTest();
+  void twoDSymmetryTest();
   void cleanupTestCase();
 private:
   static inline QModelIndex getWidgetIndex(const QModelIndex& index);
@@ -423,9 +423,9 @@ void OptikaGUITests::dependencyTests(){
 }
   
 
-void OptikaGUITests::twoDSymetryTest(){
+void OptikaGUITests::twoDSymmetryTest(){
   TwoDArray<double> testArray(4,4,4.5);
-  testArray.setSymetrical(true);
+  testArray.setSymmetrical(true);
   Double2DArrayWidget* testWidget = 
     new Double2DArrayWidget("tester", doubleId, null);
   cleaner.add(testWidget);
