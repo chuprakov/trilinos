@@ -34,6 +34,7 @@ clean:
 	@rm -f $(addsuffix .blg, $(FILES) $(PFILES)) $(addsuffix .lof, $(FILES) $(PFILES))
 	@rm -f $(addsuffix .log, $(FILES) $(PFILES)) $(addsuffix .lot, $(FILES) $(PFILES))
 	@rm -f $(addsuffix .toc, $(FILES) $(PFILES))
+	@rm -f $(addsuffix .out, $(FILES) $(PFILES))
 	@rm -f texput.log
 	@rm -f Mark*.aux
 	@rm -f SANDdistribution.aux
