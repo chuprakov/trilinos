@@ -34,6 +34,7 @@
 #include "Optika_treeview.hpp"
 #include <QApplication>
 #include <QSpinBox>
+#include "Optika_metawindow.hpp"
 
 namespace Optika{
 
@@ -61,6 +62,7 @@ private slots:
   void twoDSymmetryTest();
   void modelLoadTest();
   void validatorApplierTests();
+  void settingsTest();
   void cleanupTestCase();
 private:
   static inline QModelIndex getWidgetIndex(const QModelIndex& index);
@@ -572,8 +574,20 @@ void OptikaGUITests::validatorApplierTests(){
   valApplyTestTemplate<float>();
 }
 
-
-
+void OptikaGUITests::settingsTest(){
+  RCP<ParameterList> validParameters = 
+    getParametersFromXmlFile("loadtest.xml");
+  MetaWindow* m1 = new MetaWindow(validParameters);
+  m1->move(30,99);
+  m1->resize(673,823);
+  delete m1;
+  MetaWindow* m2 = new MetaWindow(validParameters);
+  QCOMPARE(m2->width(),673);
+  QCOMPARE(m2->height(),823);
+  QCOMPARE(m2->x(),30);
+  QCOMPARE(m2->y(),99);
+  delete m2;
+}
 
 } //namespace Optika
 

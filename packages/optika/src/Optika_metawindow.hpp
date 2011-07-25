@@ -364,6 +364,54 @@ private:
 	 */
 	void updateRecentDocsMenu();
 
+  /**
+   * \brief Gets the name of the last saved directory setting
+   */
+  static QString lastSaveDirSetting(){
+    static const QString saveDirSetting("last_save_dir");
+    return saveDirSetting;
+  }
+
+  /**
+   * \brief Gets the name of the last load directory setting
+   */
+  static QString lastLoadDirSetting(){
+    static const QString loadDirSetting("last_load_dir");
+    return loadDirSetting;
+  }
+
+  /**
+   * \brief Gets the name of the xres setting
+   */
+  static QString xresSetting(){
+    static const QString xres("xres");
+    return xres;
+  }
+
+  /**
+   * \brief Gets the name of the yres setting
+   */
+  static QString yresSetting(){
+    static const QString yres("yres");
+    return yres;
+  }
+
+  /**
+   * \brief Gets the name of the xpos setting
+   */
+  static QString xposSetting(){
+    static const QString xpos("xpos");
+    return xpos;
+  }
+
+  /**
+   * \brief Gets the name of the ypos setting
+   */
+  static QString yposSetting(){
+    static const QString ypos("ypos");
+    return ypos;
+  }
+
 private slots:
   /** \name Private Slots */
   //@{
