@@ -42,8 +42,8 @@ if(DO_GUI_UNIT_TESTS)
 endif(DO_GUI_UNIT_TESTS)
 
 PACKAGE_ADD_EXECUTABLE_AND_TEST(
-  Array_Functions_Tests
-  SOURCES Array_Functions_Tests.cpp
+  NonGUI_UnitTests
+  SOURCES NonGUI_UnitTests.cpp
   ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   DEPLIBS teuchos ${TPL_QT_LIBRARIES}
 )

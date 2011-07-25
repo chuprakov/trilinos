@@ -60,6 +60,7 @@ private slots:
   void twoDEditorTest();
   void twoDSymmetryTest();
   void modelLoadTest();
+  void validatorApplierTests();
   void cleanupTestCase();
 private:
   static inline QModelIndex getWidgetIndex(const QModelIndex& index);
@@ -477,6 +478,101 @@ void OptikaGUITests::modelLoadTest(){
   delete delegate;
 
 }
+
+template<class T>
+void testingSpinBoxApply(
+  const RCP<EnhancedNumberValidator<T> > validator,
+  QAbstractSpinBox* spinner)
+{
+  ValidatorApplier<T>::applyToSpinBox(validator, (QSpinBox*)spinner);
+}
+
+template<>
+void testingSpinBoxApply(
+  const RCP<EnhancedNumberValidator<double> > validator,
+  QAbstractSpinBox* spinner)
+{
+  ValidatorApplier<double>::applyToSpinBox(validator, (QDoubleSpinBox*)spinner);
+}
+
+template<>
+void testingSpinBoxApply(
+  const RCP<EnhancedNumberValidator<float> > validator,
+  QAbstractSpinBox* spinner)
+{
+  ValidatorApplier<float>::applyToSpinBox(validator, (QDoubleSpinBox*)spinner);
+}
+
+template<class T>
+void valApplyTestTemplate(){
+  EnhancedNumberValidator<T> validator(Teuchos::as<T>(0), Teuchos::as<T>(10));
+  RCP<EnhancedNumberValidator<T> > valPtr = rcpFromRef(validator);
+  std::string myType = Teuchos::TypeNameTraits<T>::name();
+  bool isFloatingType = 
+    myType == Teuchos::TypeNameTraits<double>::name() ||
+    myType == Teuchos::TypeNameTraits<float>::name();
+
+  QString val10("10");
+  QString val20("20");
+  QString val5("5");
+  QString val0("0");
+  QString valneg1("-1");
+
+
+  /** Do spinner testing */
+  QAbstractSpinBox* spinner = NULL;
+  if(isFloatingType)
+  {
+    spinner = new QDoubleSpinBox();
+  }
+  else{
+    spinner = new QSpinBox();
+  }
+  testingSpinBoxApply(valPtr, spinner);
+  int pos=0;
+  QCOMPARE(spinner->validate(val10,pos), QValidator::Acceptable);
+  QCOMPARE(spinner->validate(val20,pos), QValidator::Invalid);
+  QCOMPARE(spinner->validate(val5,pos), QValidator::Acceptable);
+  QCOMPARE(spinner->validate(val0,pos), QValidator::Acceptable);
+  QCOMPARE(spinner->validate(valneg1,pos), QValidator::Invalid);
+  if(isFloatingType){
+    QDoubleSpinBox* actualSpinner = (QDoubleSpinBox*)spinner;
+    QCOMPARE(actualSpinner->decimals(), Teuchos::as<int>(EnhancedNumberTraits<T>::defaultPrecision()));
+    QCOMPARE(Teuchos::as<T>(actualSpinner->singleStep()), EnhancedNumberTraits<T>::defaultStep());
+  }
+  if(isFloatingType){
+    QSpinBox* actualSpinner = (QSpinBox*)spinner;
+    QCOMPARE(Teuchos::as<T>(actualSpinner->singleStep()), EnhancedNumberTraits<T>::defaultStep());
+  }
+  delete spinner;
+
+  /** Do lineedit testing */
+  QLineEdit lineEdit;
+  ValidatorApplier<T>::applyToLineEdit(valPtr, &lineEdit);
+  const QValidator* appliedValidator = lineEdit.validator();
+  QCOMPARE(appliedValidator->validate(val10,pos), QValidator::Acceptable);
+  QCOMPARE(appliedValidator->validate(val5,pos), QValidator::Acceptable);
+  QCOMPARE(appliedValidator->validate(val0,pos), QValidator::Acceptable);
+  if(isFloatingType){
+    QCOMPARE(appliedValidator->validate(val20,pos), QValidator::Intermediate);
+    QCOMPARE(appliedValidator->validate(valneg1,pos), QValidator::Invalid);
+    const QDoubleValidator* doubleValidator = (QDoubleValidator*)appliedValidator;
+    QCOMPARE(doubleValidator->decimals(), Teuchos::as<int>(EnhancedNumberTraits<T>::defaultPrecision()));
+  }
+  else{
+    QCOMPARE(appliedValidator->validate(val20,pos), QValidator::Invalid);
+    QCOMPARE(appliedValidator->validate(valneg1,pos), QValidator::Invalid);
+  }
+}
+
+void OptikaGUITests::validatorApplierTests(){
+  valApplyTestTemplate<int>();
+  valApplyTestTemplate<short>();
+  valApplyTestTemplate<double>();
+  valApplyTestTemplate<float>();
+}
+
+
 
 
 } //namespace Optika

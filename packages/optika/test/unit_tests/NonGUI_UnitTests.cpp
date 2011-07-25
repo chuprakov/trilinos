@@ -28,6 +28,7 @@
 
 #include "Teuchos_UnitTestHarness.hpp"
 #include "Optika_ArrayHelperFunctions.hpp"
+#include "Optika_ValidatorApplier.hpp"
 
 namespace Optika{
 
@@ -100,7 +101,7 @@ TEUCHOS_UNIT_TEST(Array_Helper_Functions, IsArrayEmpty){
   Array<std::string> stringArray(4, "blah");
   ParameterEntry stringArrayParam(stringArray);
   TEST_ASSERT(!isArrayEmpty(rcpFromRef(stringArrayParam), stringId));
-
 }
+
 
 } //end namespace

@@ -29,10 +29,10 @@
 #define OPTIKA_VALIDATORAPPLIER_HPP_
 #include <QSpinBox>
 #include <QDoubleSpinBox>
-#include <QComboBox>
 #include <QIntValidator>
 #include <QDoubleValidator>
 #include "Optika_ConfigDefs.hpp"
+#include <QLineEdit>
 
 /*! \file Optika_ValidatorApplier.hpp
     \brief A collection of objects which
