@@ -34,7 +34,6 @@
 #include "Optika_treeview.hpp"
 #include <QApplication>
 #include <QSpinBox>
-#include <iostream>
 
 namespace Optika{
 
@@ -60,6 +59,7 @@ private slots:
   void arrayEditorTest();
   void twoDEditorTest();
   void twoDSymmetryTest();
+  void modelLoadTest();
   void cleanupTestCase();
 private:
   static inline QModelIndex getWidgetIndex(const QModelIndex& index);
@@ -424,6 +424,7 @@ void OptikaGUITests::dependencyTests(){
   
 
 void OptikaGUITests::twoDSymmetryTest(){
+  cleaner.clear();
   TwoDArray<double> testArray(4,4,4.5);
   testArray.setSymmetrical(true);
   Double2DArrayWidget* testWidget = 
@@ -446,6 +447,37 @@ void OptikaGUITests::twoDSymmetryTest(){
 
 
 }
+
+void OptikaGUITests::modelLoadTest(){
+  cleaner.clear();
+  RCP<ParameterList> validParameters = 
+    getParametersFromXmlFile("loadtest.xml");
+  TreeModel* model = new TreeModel(validParameters);
+  Delegate* delegate = new Delegate;
+  TreeView* treeView = new TreeView(model, delegate);
+  cleaner.add(model);
+  cleaner.add(delegate);
+  cleaner.add(treeView);
+
+  QCOMPARE(model->getCurrentParameters()->get<int>("Steve"), 4);
+  QCOMPARE(model->getCurrentParameters()->get<int>("Sam"), 4);
+  QCOMPARE(model->getCurrentParameters()->sublist("Prec").get<int>("Sam"), 9);
+  QCOMPARE(model->getCurrentParameters()->sublist("Prec").get<int>("Blah"), 1);
+  model->readInput("loadtest.in.xml");
+  QCOMPARE(model->getCurrentParameters()->get<int>("Steve"), 0);
+  QCOMPARE(model->getCurrentParameters()->sublist("Prec").get<int>("Blah"), 80);
+  QCOMPARE(model->getCurrentParameters()->sublist("Prec").get<int>("Sam"), 99);
+  QCOMPARE(model->getCurrentParameters()->get<int>("Sam"), 50);
+
+  cleaner.remove(model);
+  cleaner.remove(treeView);
+  cleaner.remove(delegate);
+  delete model;
+  delete treeView;
+  delete delegate;
+
+}
+
 
 } //namespace Optika
 

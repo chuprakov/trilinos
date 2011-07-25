@@ -281,7 +281,6 @@ public:
         toReturn(i,j) = getWidgetValue(i+1,j+1);
       }
     }
-    std::cerr << (baseArray.isSymmetrical() ? "Yep" : "Nope")  << std::endl;
     toReturn.setSymmetrical(baseArray.isSymmetrical());
     return toReturn;
   }

@@ -39,6 +39,8 @@
     framework.
 */
 
+class QDomElement;
+
 namespace Optika{
 
 class TreeItem;
@@ -87,7 +89,7 @@ public:
   //@{
 
   /** * \brief .  */
-	QVariant data(const QModelIndex &index, int role) const;
+	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
   /** * \brief .  */
 	Qt::ItemFlags flags(const QModelIndex &index) const;
   /** * \brief .  */
@@ -310,7 +312,7 @@ private:
 	QString saveFileName;
 
 	/**
-	 * \brief The Root item of the model.
+	 * \brief The root item of the model.
 	 */
 	TreeItem *rootItem;
 
@@ -409,6 +411,38 @@ private:
    */
   QModelIndexList parameterEntryMatch(const QModelIndex &start,
     const RCP<const ParameterEntry> &parameterEntry) const;
+
+
+  /**
+   * \brief Given a Dom element, searches for the corresponding parameter
+   * in the model, updates it's value with the value from the Dom element,
+   * and then recusively does the same for all children.
+   *
+   * @param element The element for which the corresponding parameter
+   * in the model and it's children should be updated.
+   */
+  void processInputElement(const QDomElement& element);
+
+  /**
+   * \brief Determines whether or not a model index corresponds to the
+   * parameter represented by the DomElement.
+   *
+   * This funciton determines whether or not the Dom Element and the 
+   * model index actually represent the same parameter by verifying they have
+   * the same set of parent nodes.
+   */
+  bool isRealMatch(
+    const QDomElement& element, 
+    const QModelIndex& potentialMatch) const;
+
+  /**
+   * Determines whether or not the given index is the root index.
+   *
+   * @param The index in question
+   * @return True is the index is the root index, false otherwise.
+   */
+  bool isRootIndex(const QModelIndex& index) const;
+  
 
   //@}
 

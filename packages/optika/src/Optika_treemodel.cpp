@@ -28,7 +28,9 @@
 #include <QXmlStreamReader>
 #include "Optika_treemodel.hpp"
 #include "Teuchos_XMLParameterListWriter.hpp"
+#include "Teuchos_ParameterEntryXMLConverter.hpp"
 #include <QTextStream>
+#include <QDomElement>
 
 namespace Optika{
 
@@ -212,25 +214,82 @@ bool TreeModel::writeOutput(QString fileName){
 	return true;
 }
 
-void TreeModel::readInput(QString fileName){
-	QFile *file = new QFile(fileName);
-	file->open(QIODevice::ReadOnly);
-	QXmlStreamReader xmlReader(file);
-	while(!xmlReader.atEnd()){
-		xmlReader.readNext();
-		if(xmlReader.name().toString() == "Parameter" && xmlReader.isStartElement()){
-			QList<QModelIndex> matches = match(index(0,0), Qt::DisplayRole, xmlReader.attributes().value("name").toString(),
-							   1, Qt::MatchExactly | Qt::MatchRecursive);
+bool TreeModel::isRootIndex(const QModelIndex& index) const{
+  TreeItem* item = (TreeItem*)index.internalPointer();
+  return item == NULL;
+}
+  
+
+bool TreeModel::isRealMatch(
+  const QDomElement& element, 
+  const QModelIndex& potentialMatch) const
+{
+  static QString nameAttr = QString::fromStdString(
+    Teuchos::XMLParameterListWriter::getNameAttributeName());
+  if(isRootIndex(potentialMatch) && element.parentNode().isDocument()){
+    return true;
+  }
+  std::string potmatch = data(potentialMatch.sibling(potentialMatch.row(),0)).toString().toStdString();
+  std::string elemcont = element.attribute(nameAttr).toStdString();
+  if(data(potentialMatch.sibling(potentialMatch.row(),0)).toString() == 
+    element.attribute(nameAttr))
+  {
+    return isRealMatch(element.parentNode().toElement(), potentialMatch.parent());
+  }
+  return false;
+
+}
+
+void TreeModel::processInputElement(const QDomElement& element){
+  static QString nameAttrib = QString::fromStdString(
+    Teuchos::XMLParameterListWriter::getNameAttributeName());
+  static QString valueAttrib = QString::fromStdString(
+    Teuchos::ParameterEntryXMLConverter::getValueAttributeName());
+  QDomNode n = element.firstChild();
+	while(!n.isNull()){
+    QDomElement e = n.toElement();
+		if(!e.isNull() && e.tagName().toStdString() == ParameterEntry::getTagName()){
+      QString name = e.attribute(nameAttrib, "");
+      TEST_FOR_EXCEPTION(name=="",std::runtime_error,
+        "Error: Found parameter with no name attribute. Check XML");
+			QList<QModelIndex> matches = match(index(0,0), Qt::DisplayRole, name,
+							   -1, Qt::MatchExactly | Qt::MatchRecursive);
 			if(matches.size() !=0){
-				QModelIndex valueToEdit = matches.at(0).sibling(matches.at(0).row(), 1);
-				setData(valueToEdit,xmlReader.attributes().value("value").toString(), Qt::EditRole);
+        for(int i =0; i<matches.size(); ++i){
+          if(isRealMatch(e, matches[i])){
+				    QModelIndex valueToEdit = matches.at(i).sibling(matches.at(i).row(), 1);
+            QString newValue = e.attribute(valueAttrib);
+				    setData(valueToEdit,newValue, Qt::EditRole);
+            break;
+          }
+        }
 			}
 		}
+    else if(
+      !e.isNull() 
+      &&
+      e.tagName().toStdString() == XMLParameterListWriter::getParameterListTagName()
+    )
+    {
+      processInputElement(e);
+    }
+    n = n.nextSibling();
 	}
-	file->close();
-	delete file;
-	saved = true;
-	saveFileName = fileName;
+}
+
+void TreeModel::readInput(QString fileName){
+	QFile file(fileName);
+  TEST_FOR_EXCEPTION(!file.open(QIODevice::ReadOnly), std::runtime_error, 
+    "Could not open file to read parameters.");
+  QDomDocument xmlDoc;
+  if(!xmlDoc.setContent(&file)){
+    file.close();
+    TEST_FOR_EXCEPTION(true, std::runtime_error, 
+      "Error reading xml document. Bad XML syntax.");
+  }
+	file.close();
+  QDomElement docElem = xmlDoc.documentElement();
+  processInputElement(docElem);
 }
 
 QString TreeModel::getSaveFileName(){

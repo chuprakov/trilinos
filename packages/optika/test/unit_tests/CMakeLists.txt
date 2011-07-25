@@ -36,7 +36,7 @@ if(DO_GUI_UNIT_TESTS)
     )
   
   PACKAGE_COPY_FILES_TO_BINARY_DIR(GUI_dep_test_copies
-    DEST_FILES deptests.xml
+    DEST_FILES deptests.xml loadtest.xml loadtest.in.xml
     EXEDEPS GUI_UnitTests
   )
 endif(DO_GUI_UNIT_TESTS)
