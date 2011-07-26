@@ -575,8 +575,8 @@ void OptikaGUITests::validatorApplierTests(){
 }
 
 void OptikaGUITests::settingsTest(){
-  RCP<ParameterList> validParameters = 
-    getParametersFromXmlFile("loadtest.xml");
+  RCP<ParameterList> validParameters = rcp(new ParameterList("Steve"));
+  validParameters->set("Don't care", "don't care");
   MetaWindow* m1 = new MetaWindow(validParameters);
   m1->move(30,99);
   m1->resize(673,823);
