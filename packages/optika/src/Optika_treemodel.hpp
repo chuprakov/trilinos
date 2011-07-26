@@ -360,10 +360,10 @@ private:
 	 *
 	 * @param parameterList The ParameterList to be inserted.
 	 * @param listEntry The ParameterEntry of the ParameterList to be inserted.
-	 * @param name The name of the ParameterList.
+	 * @param plname The name of the ParameterList.
 	 * @param The parent TreeItem.
 	 */
-	void insertParameterList(RCP<ParameterList> parameterList, RCP<ParameterEntry> listEntry, std::string name, TreeItem *parent);
+	void insertParameterList(RCP<ParameterList> parameterList, RCP<ParameterEntry> listEntry, std::string plname, TreeItem *parent);
 
 	/**
 	 * \brief Inserts a new parameter into the model.

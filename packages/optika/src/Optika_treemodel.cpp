@@ -303,8 +303,7 @@ bool TreeModel::isSaved(){
 void TreeModel::reset(){
 	delete rootItem;
 	QList<QVariant> headers;
-	headers  << "Parameter" << "Value" << "Type";
-	rootItem = new TreeItem(headers, null, 0, true);	
+	rootItem = new TreeItem("", null, 0, true);
 	validParameters->setParameters(*canonicalList);
 	readInParameterList(validParameters, rootItem);
 	this->saveFileName = saveFileName;
@@ -411,11 +410,12 @@ void TreeModel::readInParameterList(RCP<ParameterList> parameterList, TreeItem *
 }
 
 void TreeModel::insertParameterList(RCP<ParameterList> parameterList, RCP<ParameterEntry> listEntry, 
-				    std::string name, TreeItem *parent)
+				    std::string plname, TreeItem *parent)
 {
-	QList<QVariant> values = QList<QVariant>() << QString::fromStdString(name).section("->",-1) << QString("") << listId;
+  QString truncatedName = QString::fromStdString(plname).section("->",-1);
+  
 
-	TreeItem *newList = new TreeItem(values, listEntry, parent);
+	TreeItem *newList = new TreeItem(truncatedName, listEntry, parent);
 	parent->appendChild(newList);
 	for(ParameterList::ConstIterator itr = parameterList->begin(); itr != parameterList->end(); ++itr){
 		std::string name = parameterList->name(itr);
@@ -429,75 +429,12 @@ void TreeModel::insertParameterList(RCP<ParameterList> parameterList, RCP<Parame
 }
 
 void TreeModel::insertParameter(RCP<ParameterEntry> parameter, std::string name, TreeItem *parent){
-	QList<QVariant> values;
-	values.append(QString::fromStdString(name));
-	if(parameter->isType<int>()){
-		values.append(getValue<int>(*parameter));
-		values.append(intId);
-	}
-	else if(parameter->isType<short>()){
-		values.append(getValue<short>(*parameter));
-		values.append(shortId);
-	}
-	/*else if(parameter->isType<long long>()){
-		values.append(getValue<long long>(*parameter));
-		value.append(longlongId);
-	}*/
-	else if(parameter->isType<double>()){
-		values.append(getValue<double>(*parameter));
-		values.append(doubleId);
-	}
-	else if(parameter->isType<float>()){
-		values.append(getValue<float>(*parameter));
-		values.append(floatId);
-	}
-	else if(parameter->isType<bool>()){
-		values.append(getValue<bool>(*parameter));
-		values.append(boolId);
-	}
-	else if(parameter->isType<std::string>()){
-		values.append(QString::fromStdString(getValue<std::string>(*parameter)));
-		values.append(stringId);
-	}
-	else if(parameter->isArray()){
-		QString determinedId = determineArrayType(parameter);
-		if( determinedId != unrecognizedId){
-			values.append(arrayEntryToVariant(parameter, determinedId));
-			values.append(QString(arrayId + " "+ determinedId));
-		}
-		else{
-			values.append("");
-			values.append("");
-			parent->appendChild(new TreeItem(values, parameter, parent, true));
-			return;
-		}
-	}
-  else if(parameter->isTwoDArray()){
-		QString determinedId = determineArrayType(parameter, true);
-		if( determinedId != unrecognizedId){
-			values.append(arrayEntryToVariant(parameter, determinedId, true));
-			values.append(QString(twoDArrayId + " "+ determinedId));
-		}
-		else{
-			values.append("");
-			values.append("");
-			parent->appendChild(new TreeItem(values, parameter, parent, true));
-			return;
-		}
-  }
-	else{
-		values.append("");
-		values.append("");
-		parent->appendChild(new TreeItem(values, parameter, parent, true));
-		return;
-	}
-	parent->appendChild(new TreeItem(values, parameter, parent));
+	parent->appendChild(new TreeItem(QString::fromStdString(name), parameter, parent));
 }
 
 void TreeModel::basicSetup(QString saveFileName){
 	QList<QVariant> headers;
-	headers  << "Parameter" << "Value" << "Type";
-	rootItem = new TreeItem(headers, null, 0);	
+	rootItem = new TreeItem("", null, 0, true);	
 	canonicalList = RCP<const ParameterList>(new ParameterList(*validParameters));
 	readInParameterList(validParameters, rootItem);
 	this->saveFileName = saveFileName;

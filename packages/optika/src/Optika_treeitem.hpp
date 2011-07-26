@@ -48,25 +48,12 @@ public:
 	/**
 	 * \brief Constructs a TreeItem object.
 	 *
-	 * @param data A list of data that should be in the TreeItem. The list should be of length 3 and contain the following data in 
-	 * each respective location:
-	 * <ol>
-	 *	<li>The name of the parameter</li>
-	 *	<li>The default value of the parameter</li>
-	 *	<li>The type of parameter</li>
-	 * </ol>
-	 * In the case of a TreeItem representing a ParameterList the data list should contain the following in each
-	 * respective location:
-	 * <ol>
-	 * 	<li>The name of the ParameterList</li>
-	 * 	<li>An empty string</li>
-	 * 	<li>The "list" parameter type</li>
-	 * </ol>
+   * @param name The name of the parameter entry.
 	 * @param parameterEntry The ParameterEntry this TreeItem is ment to represent.
 	 * @param parent The parent TreeItem.
-	 * @param unrecognized If true, this item will be unrecognized and not displayed, if false the item will be displayed.
+   * @param isHeader Whether or not his treeitem represents a "header" tree item.
 	 */
-	TreeItem(const QList<QVariant> &data, RCP<ParameterEntry> parameterEntry, TreeItem *parent = 0, bool unrecognized=false);
+	TreeItem(const QString& name, RCP<ParameterEntry> parameterEntry, TreeItem *parent = 0, bool isHeader=false);
 
 	/**
 	 * \brief Deconstrcutor for the TreeItem.
@@ -208,20 +195,20 @@ private:
   /** \name Private Members */
   //@{
   
-	/**
-	 * \brief Whether or not the parameter type is unrecognized.
-	 */
-	bool unrecognized;
+  /**
+   * \brief the name of the tree item.
+   */
+  const QString name;
+
+  /**
+   * \brief The type id associated with this TreeItem.
+   */
+  QString myTypeId;
 
 	/**
 	 * \brief The childitems of the TreeItem.
 	 */
 	QList<TreeItem*> childItems;
-
-	/**
-	 * \brief The data in the item.
-	 */
-	QList<QVariant> itemData;
 
 	/**
 	 * \brief The parent TreeItem.
@@ -238,6 +225,11 @@ private:
 	 */
 	QString docString;
 
+  /**
+   * \brief Whether or not this is a header treeitem.
+   */
+  bool isHeader;
+
   //@}
 
   /** \name Private Functions */
@@ -250,6 +242,14 @@ private:
 	 * @param type The type of array.
 	 */
 	void changeValueForArray(QVariant value, QString type, bool twoD=false);
+
+  /**
+   * \brief Gets the type id to be used for the TreeItem.
+   *
+   * @param param The parameter who's type is in question.
+   * @return The type id for the parameter.
+   */
+  static QString getTypeId(const RCP<const ParameterEntry> parameter);
 
   //@}
 
