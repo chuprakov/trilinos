@@ -343,43 +343,37 @@ RCP<const ParameterList> TreeModel::getCurrentParameters(){
 	return validParameters;
 }
 
-QModelIndexList TreeModel::parameterEntryMatch(const QModelIndex &start,
+QModelIndex TreeModel::parameterEntryMatch(const QModelIndex &start,
   const RCP<const ParameterEntry> &parameterEntry) const
 {
-  QModelIndexList result;
   QModelIndex p = parent(start);
   int from = start.row();
   int to = rowCount(p);
 
-  for (int r = from; (r < to) && (result.size() < 1); ++r) {
+  for (int r = from; r < to; ++r) {
     QModelIndex idx = index(r, start.column(), p);
-    if (!idx.isValid())
+    if(!idx.isValid())
       continue;
     RCP<const ParameterEntry> entry = itemEntry(idx);
     if(entry != null && entry.get() == parameterEntry.get()){
-      result.append(idx);
+      return idx;
     }  
             
-    if (hasChildren(idx)) { // search the hierarchy
-      result += 
-        parameterEntryMatch(index(0, idx.column(), idx), parameterEntry);
+    if(hasChildren(idx)) { // search the hierarchy
+      QModelIndex childResult = parameterEntryMatch(index(0, idx.column(), idx), parameterEntry);
+      if(childResult.isValid()){
+        return childResult;
+      }
     }
   }
-  return result;
+  return QModelIndex();
 }
 
 
 QModelIndex TreeModel::findParameterEntryIndex(
   RCP<const ParameterEntry> parameterEntry)
 {
-	QList<QModelIndex> potentialMatches = parameterEntryMatch(
-    index(0,0),
-    parameterEntry);
-  
-  if(potentialMatches.size() == 1){
-    return potentialMatches.first();
-  }
-	return QModelIndex();
+	return parameterEntryMatch(index(0,0), parameterEntry);
 }
 
 

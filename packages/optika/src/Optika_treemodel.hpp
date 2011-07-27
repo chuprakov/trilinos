@@ -397,19 +397,14 @@ private:
 	void redrawArray(const QModelIndex arrayIndex);
   
   /**
-   * \brief Finds a list of QModelIndecies whose have associated ParameterEntrys
-   * that match the given parameterEntry. 
-   * 
-   * The fact this returns a list is a
-   * little missleading, as the list will always be length one. I really
-   * should just be returning a single QModelIndex. But my thesis is due on
-   * Friday so I'll have to come back and fix this later. 
-   * Kurtis Nusbaum 30/03/2011.
+   *
+   * \brief Finds the QModelIndex associated with a parameter entry.
    *
    * @param start The index where we should start looking.
    * @param parameterEntry The parameter entry we're looking for.
+   * @return The index associated with the parameter entry.
    */
-  QModelIndexList parameterEntryMatch(const QModelIndex &start,
+  QModelIndex parameterEntryMatch(const QModelIndex &start,
     const RCP<const ParameterEntry> &parameterEntry) const;
 
 
