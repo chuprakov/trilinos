@@ -15,6 +15,9 @@ work flow within their program:
 	\item Obtain the values the user entered in the form of a Parameter List.
 	\end{enumerate}
 
+\section Manual
+<a href="OptikaSANDReport.pdf">This SAND Report</a> describes in detail how to use Optika.
+
 \section Compile Notes
 In order to compile Optika you must have Qt installed. You can either download Qt directly from the website (http://qt.nokia.com)
 or if you are on Linux, you can use your package manager (this is highly recommended). If you use your package manager, make sure you 

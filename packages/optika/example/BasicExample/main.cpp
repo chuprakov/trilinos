@@ -28,6 +28,7 @@
 #include "Optika_GUI.hpp"
 #include "Teuchos_XMLParameterListHelpers.hpp"
 #include "Teuchos_VerboseObject.hpp"
+#include "Teuchos_ParameterEntryXMLConverterDB.hpp"
 
 using Teuchos::RCP;
 using Teuchos::ParameterList;
@@ -172,6 +173,7 @@ int main(int argc, char* argv[])
    * the more advanced features of the Optika package. If you have any 
    * suggestions or feature requests, please send them to klnusbaum@gmail.com.
    */
+  Teuchos::ParameterEntryXMLConverterDB::printKnownConverters(*out);
   return 0;
 }
 

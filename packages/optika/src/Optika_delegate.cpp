@@ -32,8 +32,6 @@
 #include <QComboBox>
 #include <QFileDialog>
 #include "Optika_delegate.hpp"
-#include "float.h"
-#include <iostream>
 #include "Teuchos_StandardParameterEntryValidators.hpp"
 
 namespace Optika{
@@ -73,6 +71,7 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 		EnhancedNumberValidator<long long>::applyToSpinBox(longlongValidator, (QDoubleSpinBox*)editor);
 	}*/
 	else if(itemType == doubleId){
+		//editor = new QLineEdit(parent);
 		editor = new QLineEdit(parent);
 		RCP<const EnhancedNumberValidator<double> > doubleValidator;
 		if(!is_null(paramValidator)){
@@ -129,6 +128,9 @@ QWidget* Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 	else if(itemType.contains(arrayId)){
 		editor = getArrayEditor(index, getArrayType(itemType), parent);
 	}
+	else if(itemType.contains(twoDArrayId)){
+    editor = getArrayEditor(index, getArrayType(itemType), parent, true);
+  }
 
 	return editor;
 }
@@ -159,7 +161,10 @@ void Delegate::setEditorData(QWidget *editor, const QModelIndex &index) const{
 			static_cast<QComboBox*>(editor)->setEditText(value.toString());
 	}
   else if(itemType.contains(arrayId)){
-    setArrayWidgetData(editor, itemType.section(" ", -1), index);
+    setArrayWidgetData(editor, getArrayType(itemType), index);
+  }
+  else if(itemType.contains(twoDArrayId)){
+    setArrayWidgetData(editor, getArrayType(itemType), index, true);
   }
 }
 
@@ -201,95 +206,142 @@ void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QM
 		model->setData(index, value, Qt::EditRole);
 	}
   else if(itemType.contains(arrayId)){
-    QVariant value = extractValueFromArray(editor, itemType.section(" ", -1));
+    QVariant value = extractValueFromArray(editor, getArrayType(itemType));
+    model->setData(index, value, Qt::EditRole);
+  }
+  else if(itemType.contains(twoDArrayId)){
+    QVariant value = extractValueFromArray(editor, getArrayType(itemType), true);
     model->setData(index, value, Qt::EditRole);
   }
 }
 
-QVariant Delegate::extractValueFromArray(QWidget* editor, QString type) const
-{
-  if(type == intId){
-    IntArrayWidget* intEditor = (IntArrayWidget*)editor;
-    return QVariant::fromValue(intEditor->getData());
-  }
-  else if(type == shortId){
-    ShortArrayWidget* shortEditor = (ShortArrayWidget*)editor;
-    return QVariant::fromValue(shortEditor->getData());
-  }
-  else if(type == floatId){
-    FloatArrayWidget* floatEditor = (FloatArrayWidget*)editor;
-    return QVariant::fromValue(floatEditor->getData());
-  }
-  else if(type == doubleId){
-    DoubleArrayWidget* doubleEditor = (DoubleArrayWidget*)editor;
-    return QVariant::fromValue(doubleEditor->getData());
-  }
-  else if(type == stringId){
-    StringArrayWidget* stringEditor = (StringArrayWidget*)editor;
-    return QVariant::fromValue(stringEditor->getData());
-  }
-  else{
-    return QVariant();
-  }
-}
  
 
 void Delegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const{
 	editor->setGeometry(option.rect);
 }
 
-QWidget* Delegate::getArrayEditor(const QModelIndex& index, QString type, QWidget *parent) const{
+QWidget* Delegate::getArrayEditor(const QModelIndex& index, QString type, QWidget *parent, bool isTwoD) const{
   TreeModel* model = (TreeModel*)index.model();
   QString name = model->data(
     index.sibling(index.row(),0),Qt::DisplayRole).toString();
   RCP<const ParameterEntryValidator> validator = 
     model->getValidator(index);
-    
 	if(type == intId){
-		return new IntArrayWidget(name, type, validator, parent);
+    if(isTwoD){
+      return new Int2DArrayWidget(name, type, validator, parent);
+    }
+    else{
+      return new IntArrayWidget(name, type, validator, parent);
+    }
 	}
 	else if(type == shortId){
-		return new ShortArrayWidget(name, type, validator, parent);
+    if(isTwoD){
+      return new Short2DArrayWidget(name, type, validator, parent);
+    }
+    else{
+      return new ShortArrayWidget(name, type, validator, parent);
+    }
 	}
-	/*else if(type == longlongId){
-		return new IntArrayWidget(index, type, parent);
-	}*/
 	else if(type == doubleId){
-		return new DoubleArrayWidget(name, type, validator, parent);
+    if(isTwoD){
+      return new Double2DArrayWidget(name, type, validator, parent);
+    }
+    else{
+      return new DoubleArrayWidget(name, type, validator, parent);
+    }
   }
 	else if(type == floatId){
-		return new FloatArrayWidget(name, type, validator, parent);
+    if(isTwoD){
+      return new Float2DArrayWidget(name, type, validator, parent);
+    }
+    else{
+      return new FloatArrayWidget(name, type, validator, parent);
+    }
 	}
 	else if(type == stringId){
-		return new StringArrayWidget(name, type, validator, parent);
+    if(isTwoD){
+      return new String2DArrayWidget(name, type, validator, parent);
+    }
+    else{
+      return new StringArrayWidget(name, type, validator, parent);
+    }
 	}
   else{
     return 0;
   }
 }
 
-void Delegate::setArrayWidgetData(QWidget* editor, QString type, const QModelIndex& index) const{
+void Delegate::setArrayWidgetData(QWidget* editor, QString type, const QModelIndex& index, bool isTwoD) const{
   QVariant newData = index.model()->data(index, TreeModel::getRawDataRole());
 	if(type == intId){
+    isTwoD ?
+    ((Int2DArrayWidget*)editor)->initData(newData.value<TwoDArray<int> >())
+    :
     ((IntArrayWidget*)editor)->initData(newData.value<Array<int> >());
 	}
 	else if(type == shortId){
+    isTwoD ?
+    ((Short2DArrayWidget*)editor)->initData(newData.value<TwoDArray<short> >())
+    :
     ((ShortArrayWidget*)editor)->initData(newData.value<Array<short> >());
 	}
-	/*else if(type == longlongId){
-	}*/
 	else if(type == doubleId){
+    isTwoD ?
+    ((Double2DArrayWidget*)editor)->initData(newData.value<TwoDArray<double> >())
+    :
     ((DoubleArrayWidget*)editor)->initData(newData.value<Array<double> >());
   }
 	else if(type == floatId){
+    isTwoD ?
+    ((Float2DArrayWidget*)editor)->initData(newData.value<TwoDArray<float> >())
+    :
     ((FloatArrayWidget*)editor)->initData(newData.value<Array<float> >());
 	}
 	else if(type == stringId){
-    ((StringArrayWidget*)editor)->initData(
-      newData.value<Array<std::string> >());
+    isTwoD ?
+    ((String2DArrayWidget*)editor)->initData(newData.value<TwoDArray<std::string> >())
+    :
+    ((StringArrayWidget*)editor)->initData(newData.value<Array<std::string> >());
 	}
 }
 
+QVariant Delegate::extractValueFromArray(QWidget* editor, QString type, bool isTwoD) const
+{
+  if(type == intId){
+    return (isTwoD ?
+    QVariant::fromValue(((Int2DArrayWidget*)editor)->getData())
+    :
+    QVariant::fromValue(((IntArrayWidget*)editor)->getData()));
+  }
+  else if(type == shortId){
+    return (isTwoD ?
+    QVariant::fromValue(((Short2DArrayWidget*)editor)->getData())
+    :
+    QVariant::fromValue(((ShortArrayWidget*)editor)->getData()));
+  }
+  else if(type == doubleId){
+    return (isTwoD ?
+    QVariant::fromValue(((Double2DArrayWidget*)editor)->getData())
+    :
+    QVariant::fromValue(((DoubleArrayWidget*)editor)->getData()));
+  }
+  else if(type == floatId){
+    return (isTwoD ?
+    QVariant::fromValue(((Float2DArrayWidget*)editor)->getData())
+    :
+    QVariant::fromValue(((FloatArrayWidget*)editor)->getData()));
+  }
+  else if(type == stringId){
+    return (isTwoD ?
+    QVariant::fromValue(((String2DArrayWidget*)editor)->getData())
+    :
+    QVariant::fromValue(((StringArrayWidget*)editor)->getData()));
+  }
+  else{
+    return QVariant();
+  }
+}
 
 } //End namespace
 

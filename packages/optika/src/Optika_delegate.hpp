@@ -116,7 +116,7 @@ private:
    * @param parent The parent widget.
    * @return An array widget with which to edit the parameter.
    */
-	QWidget* getArrayEditor(const QModelIndex& index, QString type, QWidget *parent) const;
+	QWidget* getArrayEditor(const QModelIndex& index, QString type, QWidget *parent, bool isTwoD=false) const;
 
   /**
    * \brief Sets the data in an array widget to the current values found at index.
@@ -126,7 +126,7 @@ private:
    * @param index The index of the parameter whose values are going to be
    * put in the ArrayWidget.
    */
-  void setArrayWidgetData(QWidget* editor, QString type, const QModelIndex& index) const;
+  void setArrayWidgetData(QWidget* editor, QString type, const QModelIndex& index, bool isTwoD=false) const;
 
   /**
    * \brief Gets an array from an ArrayWidget and puts it into a QVariant.
@@ -137,7 +137,7 @@ private:
    * @return A Qvariant containing an array that is equal to the array in
    * the given ArrayWidget.
    */
-  QVariant extractValueFromArray(QWidget* editor, QString type) const;
+  QVariant extractValueFromArray(QWidget* editor, QString type, bool isTwoD=false) const;
 
   //@}
 };

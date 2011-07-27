@@ -41,6 +41,8 @@ namespace Optika{
   using Teuchos::getValue;
   using Teuchos::getParametersFromXmlFile;
   using Teuchos::TwoDArray;
+  using Teuchos::TwoDArrayValidator;
+  using Teuchos::rcp;
 
 
   

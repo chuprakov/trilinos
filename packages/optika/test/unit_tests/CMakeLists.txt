@@ -36,14 +36,14 @@ if(DO_GUI_UNIT_TESTS)
     )
   
   PACKAGE_COPY_FILES_TO_BINARY_DIR(GUI_dep_test_copies
-    DEST_FILES deptests.xml
+    DEST_FILES deptests.xml loadtest.xml loadtest.in.xml
     EXEDEPS GUI_UnitTests
   )
 endif(DO_GUI_UNIT_TESTS)
 
 PACKAGE_ADD_EXECUTABLE_AND_TEST(
-  Array_Functions_Tests
-  SOURCES Array_Functions_Tests.cpp
+  NonGUI_UnitTests
+  SOURCES NonGUI_UnitTests.cpp
   ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
   DEPLIBS teuchos ${TPL_QT_LIBRARIES}
 )
