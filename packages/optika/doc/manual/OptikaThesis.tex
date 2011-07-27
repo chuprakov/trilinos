@@ -90,16 +90,17 @@ Parameters in Optika are typed. Parameters can be any one of the following types
 		\item float and double
 		\item string
 		\item boolean
-		\item arrays of int, short, double, and string
-		\item 2D arrays of int, short, double, and string
+		\item arrays of int, short, double, float, and string
+		\item 2D arrays of int, short, double, float, and string
 	\end{itemize}
 When editing a parameter in Optika, different ``widgets'' are used to change the parameters value. A widget is 
-a graphical construct used for obtaining input from the user. For number types, a spin box (Figure~\ref{spinboxfig}) is used to obtain input. 
+a graphical construct used for obtaining input from the user. For integer number types, a spin box (Figure~\ref{spinboxfig}) is used to obtain input. 
+For floating point number types, a line edit (Figure~\ref{lineeditfig}) is used to obtain input.
 If the valid values for a string type are specified (something that will be discussed later), a combo box (Figure~\ref{comboboxfig}) is used to obtain
 input for that parameter.
 Otherwise a line edit (Figure~\ref{lineeditfig}) is used to edit a string parameter. For booleans, a combo box (Figure~\ref{comboboxfig}) 
 is also used. For arrays, a pop-up box containing numerous input widgets is used. The input widgets' type is determined by the
-array type (e.g. for numerical, types a series of spinboxes is used; for string types, comboxes or lineedits are used, etc.). 
+array type (e.g. for integer numerical types, a series of spinboxes is used; for string types, comboxes or lineedits are used; etc.). 
 
 \begin{figure}
 	\centering
@@ -196,9 +197,9 @@ Using XML to declare input parameters has a number of advantages over declaring 
   \item When using XML, there is no need to recompile the entire program every time a small change is made to the GUI.
 \end{itemize}
 If we redo the example we made in the previous section, but using XML, we end up with the C++ code and XML code found in
-Figure~\ref{basicXMLC++} and Figure~\ref{basicXMLXML} respectively. The XML code is rather straight-forward. As in the C++ code, we specify 
-the name of the parameter, its default value, and a documentation string (the documentation XML attribute is optional, just like when using 
-C++). When using XML, we need to explicitly specify the type
+Figure~\ref{basicXMLC++} and Figure~\ref{basicXMLXML} respectively. The XML code is rather straight-forward. As in the previous C++ example, we specify 
+the name of the parameter, its default value, and a documentation string (the documentation XML attribute is optional but highly recommended, just like 
+when using C++). When using XML, we need to explicitly specify the type
 of the parameter since this cannot always be inferred from XML. Creating a ParameterList hierarchy is also arguable easier
 in XML. ParameterLists just simply need to be nested in one another.
 
@@ -232,22 +233,21 @@ These new validators were then placed in the Teuchos package.
 
 Validators are declared in a special section of the XML file. A special <Validators> tag is declared as a direct child
 of the root <ParameterList> tag. In this <Validators> tag all validators are declared. Each validator must specify at
-least its type and an Id using the <Validator> tag. This Id can then be used anywhere in the rest of the XML file. 
+least its type and an Id using the <Validator> tag. This Id can then be used \emph{anywhere} in the rest of the XML file. 
 To apply the validator to a parameter, simply add the validatorId XML attribute to the <Parameter> tag. The same validator 
 can be used on multiple parameters.
 
 \subsection{Enhanced Number Validators}
 Perhaps one of the most important validators is the Enhanced Number Validator. It allows the application developer
 to specify minimum and maximum values for a numerical parameter (both inclusive). It also allows the developer to specify the
-``step'' of a numerical parameter. The step of a numerical parameter is the amount by which the parameter's value
+``step'' of an integer numerical parameter. The step of a numerical parameter is the amount by which the parameter's value
 will be increased or decreased when the user clicks the up and down arrows on the spinbox being used to edit
 the parameter's value. For non-integer numerical parameters, the Enhanced Number Validator also allows the
 developer to declare with what precision the parameter's value should be displayed to the user.
 
 The XML in Figure~\ref{EnhancedNumberValidatorXML} shows an example of using an Enhanced Number Validator
 to validate a parameter of type double. In the example, we set the minimum acceptable value to be 0 and the 
-maximum to be 10. The step is set to .5 so that the parameters value will change by .5 when the user clicks
-up or down in the spinbox being used to edit the parameter. We also set the precision to two decimal places.
+maximum to be 10. We also set the precision to two decimal places.
 The validator is given the Id of 1 and applied thusly to the ``Double Parameter'' parameter using the validatorId
 XML attribute. Notice how the ``type'' XML attribute of the validator is set to ``EnhancedNumberValidator(double)''. If we 
 were validating a parameter of type int, this XML attribute would be set to ``EnhancedNumberValidator(int)'', 
@@ -268,7 +268,7 @@ Appropriate defaults will be selected for step and precision if the developer ch
     ...Other Parameters ....
   <Validators>
     <Validator type="EnhancedNumberValidator(double)" 
-      min="0" max="10" step=".5" precision="2" validatorId="1"/>
+      min="0" max="10" precision="2" validatorId="1"/>
   </Validators>
 </ParameterList>
 \end{Verbatim}
@@ -278,13 +278,14 @@ Appropriate defaults will be selected for step and precision if the developer ch
 \end{figure}
 
 \subsection{String Validators}
-String Validators are a simple yet powerful tool for restrict string input. String input can be a nice alternative to
+String Validators are a simple yet powerful tool for restricting string input. String input can be a nice alternative to
 using some standard set of integer values to represent various settings for a parameter. The problem is a simple wrong 
 keystroke can cause big problems. By using a String Validator, an application developer can ensure that a user 
 only selects a string value that is appropriate for a given parameter. 
 String Validators may only be used on parameters of type std::string, otherwise an error will occur.
 
-Figure~\ref{StringValidatorXML} shows how to use a String Validator. Children <String> tags with a mandatory ``value'' XML attribute specify which values are 
+Figure~\ref{StringValidatorXML} shows how to use a String Validator. 
+Children <String> tags with a mandatory ``value'' XML attribute specify which values are 
 valid.  In this example, ``Option 1'', ``Option 2'', and ``Option 3'' will be the only values the user can select from in the GUI.
 \begin{figure}
 \centering
@@ -312,10 +313,11 @@ valid.  In this example, ``Option 1'', ``Option 2'', and ``Option 3'' will be th
 Filename Validators allow application developers to designate a string parameter as a filename. When applied to a parameter,
 any attempt to edit that parameter will result in the user being presented with a special file selector widget (Figure~\ref{fileSelectorWidget}). If the 
 ``fileMustExist'' XML attribute is set to true, the user will only be able select files that already exist. Otherwise, any file may be selected by the user.
-Filename Validators can only be applied to parameters of type string. 
+Filename Validators can only be applied to parameters of type string. If the fileMustExist attribute is not present, it is assumed to be false.
 
 Figure~\ref{filenameValidatorXML} shows an example of how to use a Filename Validator. Here we use it to select a file to output the results
-of our program. We set the ``fileMustExist'' XML attribute to false so that the user can select a file that does not already exist.
+of our program. We set the ``fileMustExist'' XML attribute to false so that the user can select a file that does not already exist. Note that we could've
+just not include the fileMustExist attribute at all and it would've assumed to have been false.
 \begin{figure}
 \centering
 \includegraphics[scale=0.5]{graphics/fileWidget}
@@ -348,7 +350,7 @@ String Validator on an array of strings. To do this, we create an Array Validato
 ``prototype'' validator is just a term used to describe the validator the developer would like to be applied to each entry of an
 array. Prototype validators can be specified in one of two ways. First, the developer can code the validator as child of the array validator
 tag as in Figure~\ref{actualArrayValidatorXML}. In this case, the prototype validator does not need an Id. 
-Second, the developer can simply specify another validator as array validator's prototype by using the
+Second, the developer can simply specify another validator as an array validator's prototype by using the
 ``prototypeId'' XML attribute as in Figure~\ref{protoAttributeArrayXML}. This second option allows the developer to reuse the prototype validator in 
 other instances.
 
@@ -573,16 +575,17 @@ when the ``Temperature'' parameter is below zero.
 \label{NumberVisXML1}
 \end{figure}
 
-Notice in Figure~\ref{NumberVisXML1} that like Enhanced Number Validators, the ``type'' XML attribute of a Number Visual Dependency has to include the type of the
-parameter it is evaluating (in this case a double). Number Visual Dependencies may have only one dependee. The type of that dependee must match up with the
-type specified in the ``type'' XML attribute used in the Number Visual Dependency tag.
+Notice in Figure~\ref{NumberVisXML1} that like Enhanced Number Validators, the ``type'' XML attribute of a Number Visual Dependency has to include the 
+type of the parameter it is evaluating (in this case a double). Number Visual Dependencies may have only one dependee. The type of that dependee 
+must match up with the type specified in the ``type'' XML attribute used in the Number Visual Dependency tag.
 
 Sometimes it is necessary to test a number typed parameter using criteria other than whether or not its current value is greater than or equal to zero.
 This can be accomplished by using a <Function> tag. A <Function> tag instructs the dependency to run the value of the dependee through a function
-first, and then test the result of that function to see if it is greater than or equal to zero. Consider the example in Figure~\ref{NumberVisXML1}, only this
-time we will specify our temperature is in degrees Fahrenheit. In order to get the proper functionality, we will add a ``subtraction function'' to the dependency that will
-subtract 32 from the value of the temperature parameter before it is tested against zero. Figure~\ref{NumberVisXML2} shows an example of this. We set the operand 
-XML attribute to ``32'' and the type of the function to ``SubtractionFunction(double)''\footnote{For a complete list of available functions see Appendix~\ref{sec:funcs}}
+first, and then test the result of that function to see if it is greater than or equal to zero. Consider the example in Figure~\ref{NumberVisXML1}, 
+only this time we will specify our temperature is in degrees Fahrenheit. In order to get the proper functionality, we will add a 
+``subtraction function'' to the dependency that will subtract 32 from the value of the temperature parameter before it is tested against zero. 
+Figure~\ref{NumberVisXML2} shows an example of this. We set the operand XML attribute to ``32'' and the type of the function to 
+``SubtractionFunction(double)''\footnote{For a complete list of available functions see Appendix~\ref{sec:funcs}}
  since we want to use a subtraction function on a parameter of type double.
 \begin{figure}
 \centering
@@ -681,17 +684,17 @@ allows the user to enter in either ``Chips'' or ``Cheese''.
 
 \subsubsection{Range Validator Dependency}
 Range Validator Dependencies work very similarly to String Validator Dependencies in that they map validators to specific dependee values. However,
-instead of mapping string values to validators, Range Validator Dependencies map ranges of numbers to validators. If the dependee's value falls within one of the 
-mapped ranges, then that range's associated validator is applied to the dependent(s). A range is specified by defining its minimum (inclusive) and its maximum (exclusive) 
-values. Also, like String Validator Dependencies, a default validator can be specified. If the dependees value does not fall with in one of the mapped ranges, the default 
-validator is used. If the dependee takes on a value that is not specified in the values to validator mappings and no default validator is specified, then the 
-dependee(s) will have no validator(s).
+instead of mapping string values to validators, Range Validator Dependencies map ranges of numbers to validators. If the dependee's value falls within one 
+of the mapped ranges, then that range's associated validator is applied to the dependent(s). A range is specified by defining its minimum (inclusive) and 
+its maximum (exclusive) values. Also, like String Validator Dependencies, a default validator can be specified. If the dependees value does not fall with 
+in one of the mapped ranges, the default validator is used. If the dependee takes on a value that is not specified in the values to validator mappings and 
+no default validator is specified, then the dependee(s) will have no validator(s).
 
 A Range Validator Dependency must conform to the following constraints:
 \begin{itemize}
 \item The dependee must be a number type.
 \item At least one value to validator mapping must be supplied.
-\item All of the validators used specified in the mapping must be of the same type.
+\item All of the validators specified in the mapping must be of the same type.
 \item If specified, the default validator must be of the same type as the validators specified in the map.
 \item The validators specified in the map must be appropriate for the type of the dependent(s).
 \item Ranges cannot intersect.
@@ -701,9 +704,9 @@ Figure~\ref{RangeValiDepXML} shows an example of a Range Validator Dependency. I
 on the ``Fondue Food'' if the ``Fondue Pot Temperature'' is different. If the temperature is greater than or equal to 80 or less than 120,
 we only want the user to be able to select ``Cheese'' or ``Bread''. If it is greater than or equal to 120 but less than 180, we only want the
 user to be able to pick ``Chicken'' or ``Beef''. We associated these ranges with their appropriate values in the <RangesAndValidators> tag by
-using <Pair> tags for each range and validator. Notice that like Enhanced Number Validators and Number Visual Dependencies, the type of the dependee parameter is 
-included in the ``type'' XML attribute of the dependency. In Figure~\ref{RangeValiDepXML} the dependee's type is double so the type of the dependency is 
-``RangeValidatorDependency(double)''.
+using <Pair> tags for each range and validator. Notice that like Enhanced Number Validators and Number Visual Dependencies, the type of the dependee 
+parameter is included in the ``type'' XML attribute of the dependency. In Figure~\ref{RangeValiDepXML} the dependee's type is double, so the type of the 
+dependency is ``RangeValidatorDependency(double)''.
 \begin{figure}
 \centering
 {\footnotesize
