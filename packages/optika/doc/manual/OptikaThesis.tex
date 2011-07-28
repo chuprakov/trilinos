@@ -784,13 +784,13 @@ validator we want to use and do not specify a validator to be used if the depend
 
 \subsection{Array Modifier Dependencies}
 \subsubsection{Number Array Length Dependencies}
-Number Array Length Dependencies allow the application developer to have the length of an array parameter determined by the value of another parameter. Number Array Length
-Dependencies must have a dependee with an integer type and the dependent(s) must be an array. Unless otherwise specified, the value of the dependee parameter is directly
-used for the length of the dependent array parameter(s). 
+Number Array Length Dependencies allow the application developer to have the length of an array parameter determined by the value of another parameter. 
+Number Array Length Dependencies must have a dependee with an integer number type and the dependent(s) must be an array. Unless otherwise specified, 
+the value of the dependee parameter is directly used for the length of the dependent array parameter(s). 
 
-Figure~\ref{ArrayLengthXML} shows an example of an Number Array Length Dependency. When the ``Number of buckets'' parameter changes, the array in the ``Amount
-in each bucket'' shrinks and expands accordingly. Note how in the ``type'' XML attribute for the dependency we had to specify both the type of the dependee and the
-dependent. 
+Figure~\ref{ArrayLengthXML} shows an example of an Number Array Length Dependency. When the ``Number of buckets'' parameter changes, the array in 
+the ``Amount in each bucket'' shrinks and expands accordingly. Note how in the ``type'' XML attribute for the dependency we had to specify both the 
+type of the dependee and the dependent. 
 \begin{figure}
 \centering
 {\footnotesize
@@ -926,10 +926,12 @@ and columns the array contains is dependent on the same parameter.
 \end{figure}
 
 \section{Condition Visual Dependencies}
-Up until this point, all Dependencies have had a single dependee. Condition Visual Dependencies are a special type of visual dependencies that allow the application developer to
-create visual dependencies that have more than one dependee. This is accomplished by using ``Conditions''. Conditions allow the developer to test the state of multiple 
-parameters and generate a boolean value. If a condition evaluates to true then the dependent(s) of a Condition Visual Dependency will be shown. If the condition evaluates to 
-false, the dependent(s) will be hidden. Like the other Visual Dependencies, these evaluation consequences can be reversed using the ``showIf'' XML attribute.  Before discussing 
+Up until this point, all Dependencies have had a single dependee. Condition Visual Dependencies are a special type of visual dependencies 
+that allow the application developer to create visual dependencies that have more than one dependee. This is accomplished by using 
+``Conditions''. Conditions allow the developer to test the state of multiple parameters and generate a boolean value. 
+If a condition evaluates to true then the dependent(s) of a Condition Visual Dependency will be shown. If the condition evaluates to 
+false, the dependent(s) will be hidden. Like the other Visual Dependencies, these evaluation consequences can be reversed using the 
+``showIf'' XML attribute.  Before discussing 
 Condition Visual Dependencies, we will first consider the various types of conditions that are available in Optika~\footnote{Conditions are actually found in the Teuchos Package 
 but were developed with the intention of being used in Optika}.
 
@@ -984,8 +986,9 @@ evaluate to false.
 
 \subsubsection{Bool Parameter Conditions}
 A Bool Parameter Condition is the simplest of all parameter conditions. It simply looks at a parameter's boolean value and returns that as the evaluation result. The parameter 
-to be evaluated for a Bool Parameter Condition must obviously be of type bool. Figure~\ref{boolCon} shows an example of the Bool Parameter Condition. If the parameter with an Id
-of 5 is currently set to true then the condition will evaluate to true, otherwise the condition will evaluate to false.
+to be evaluated for a Bool Parameter Condition must obviously be of type bool. Figure~\ref{boolCon} shows an example of the Bool 
+Parameter Condition. If the parameter with an Id of 5 is currently set to true then the condition will evaluate to true, otherwise 
+the condition will evaluate to false.
 \begin{figure}
 \centering
 {\footnotesize
@@ -998,17 +1001,20 @@ of 5 is currently set to true then the condition will evaluate to true, otherwis
 \end{figure}
 
 \subsection{Boolean Logic Conditions}
-Boolean logic conditions are really what enable the use of multiple parameters as dependees. Given a group of conditions, a Boolean Logic Condition will return an evaluation 
-result by applying a boolean operator to each condition's evaluation result. The three types of Boolean Logic Conditions are:
+Boolean logic conditions are really what enable the use of multiple parameters as dependees. Given a group of conditions, a Boolean Logic 
+Condition will return an evaluation result by applying a boolean operator to each condition's evaluation result. The three types of 
+Boolean Logic Conditions are:
 \begin{itemize}
 \item And Condition
 \item Or Condition
 \item Equals Condition
 \end{itemize}
 
-Figure~\ref{andCon} shows an example of an And Condition. It works by evaluating the two other condition tags and ``anding'' their results together. The end result is a
-condition that only evaluates to true if both the Bool Condition and the Number Condition evaluate to true. In this example we only ``and'' together two conditions. That said,
-an arbitrary amount of conditions can have a Boolean Logic Condition applied to them (but there must be at least two conditions to evalute).
+Figure~\ref{andCon} shows an example of an And Condition. It works by evaluating the two other condition tags and ``anding'' their results together. 
+The end result is a condition that only evaluates to true if both the Bool Condition and the Number Condition evaluate to true. In this 
+example we only ``and'' together two conditions. That said, an arbitrary amount of conditions can have a Boolean Logic Condition applied 
+to them (but there must be at least two conditions to evalute). Also note that the conditions nested within a Boolean Logic Condition
+can be other Boolean Logic conditions with their own child conditions. There is no limit to the depth of this nesting.
 \begin{figure}
 \centering
 {\footnotesize
@@ -1024,8 +1030,9 @@ an arbitrary amount of conditions can have a Boolean Logic Condition applied to 
 \end{figure}
 
 \subsection{Not Conditions}
-Not Conditions allow the negation of single condition. If we modify the code in Figure~\ref{boolCon} to look like the code in Figure~\ref{notCon}, we get a 
-condition that will only evaluate to true when the boolean parameter with an Id of 5 is false and vice versa. 
+Not Conditions allow the negation of a single condition. If we modify the code in Figure~\ref{boolCon} to look like the code in 
+Figure~\ref{notCon}, we get a condition that will only evaluate to true when the boolean parameter with an Id of 5 is false and 
+vice versa. 
 \begin{figure}
 \centering
 {\footnotesize
@@ -1084,11 +1091,14 @@ the dependees of the Dependency.
 
 \section{Other Features of Optika}
 \subsection{Custom Functions}
-In addition to the traditional work flow of just calling the getInput function, Optika also allows for the specification of a ``custom function.''
-When a custom function is specified, the GUI does not exit when the user clicks the action button. Instead, the specified function is run. This work flow allows developers 
-to create a program in which users can rapidly change parameters and see the results of those changes. The function specified must have the same signature as the function 
-in Figure~\ref{custSig}. The ParameterList RCP that is given in the argument is the current values user has specified. To use a custom function, pass a pointer to the
-function when calling the getInput Optika function.
+In addition to the traditional work flow of just calling the getInput function, Optika also allows for the specification of a 
+``custom function.''
+When a custom function is specified, the GUI does not exit when the user clicks the action button. Instead, the specified function is run. 
+This work flow allows developers 
+to create a program in which users can rapidly change parameters and see the results of those changes. The function specified must have 
+the same signature as the function 
+in Figure~\ref{custSig}. The ParameterList RCP that is given in the argument is the current values user has specified. To use a custom 
+function, pass a pointer to the function when calling the getInput function.
 \begin{figure}
 \centering
 {\footnotesize
@@ -1101,21 +1111,22 @@ void customFunction(RCP<ParameterList> parameterList)
 \end{figure}
 
 \subsection{Customizing Look And Feel}
-There are a number of ways to customize the look and feel of an Optika based GUI. All of them involve creating an OptikaGUI object. Once the object is created, a call to the
-exec function will start the GUI running. The following functions change the appearance of the GUI:
+There are a number of ways to customize the look and feel of an Optika based GUI. All of them involve creating an OptikaGUI object. 
+Once the object is created, a call to the exec function will start the GUI running. The following functions change the appearance of the 
+GUI:
 \begin{description}
 \item[setWindowTitle(const std::string\& title)] Sets the title of the GUI window Optika generates.
 \item[setAboutInfo(const std::string\& aboutInfo)] When the user clicks on the about menu item, this information will be included.
 \item[setActionButtonText(const std::string\& text)] Sets the text that will be displayed in the action button.
-\item[setWindowIcon(const std::string\& filePath)] This function allows the developer to specify the file path of an image that will be used as the window icon for the 
-Optika GUI.
-\item[setStyleSheet(const std::string\& filePath)] This function allows the developer to specify a Qt Style Sheet\footnote{For more information on Qt Style Sheets, please 
-see~\cite{QtStyle}} that will be used to style the Optika generated GUI.
+\item[setWindowIcon(const std::string\& filePath)] This function allows the developer to specify the file path of an image that will be 
+used as the window icon for the Optika GUI.
+\item[setStyleSheet(const std::string\& filePath)] This function allows the developer to specify a Qt Style Sheet\footnote{For 
+more information on Qt Style Sheets, please see~\cite{QtStyle}} that will be used to style the Optika generated GUI.
 \end{description}
 
-Figure~\ref{lookGui} shows an example of using some of these functions. We create an Optika GUI object, set the title of the window to ``My GUI'', and set the
-about info to ``This is a GUI I created using Optika.'' We then call the ``exec'' function. Once that function returns, the ``usersInput'' parameter list will contain all 
-the values the user specified.
+Figure~\ref{lookGui} shows an example of using some of these functions. We create an Optika GUI object, set the title of the window to 
+``My GUI'', and set the about info to ``This is a GUI I created using Optika.'' We then call the ``exec'' function. Once that 
+function returns, the ``usersInput'' parameter list will contain all the values the user specified.
 \begin{figure}
 \centering
 {\footnotesize
@@ -1144,13 +1155,14 @@ int main(int argc, char* argv[]){
 \end{figure}
 
 \section{Future Development}
-Development is largely user driven. A small user base for Optika has developed at Sandia National Laboratories. Some Sandia scientists have suggested that a stand-alone version 
-of Optika used to simply configure parameter lists would be very useful. The ability to undo edits and save a configuration result only contaning the 
-parameter list entries that have changed have also been requested.
+Development is largely user driven. A small user base for Optika has developed at Sandia National Laboratories. Some Sandia scientists 
+have suggested that a stand-alone version of Optika used to simply configure parameter lists would be very useful. The ability to 
+undo edits and save a configuration result only contaning the parameter list entries that have changed have also been requested.
 
 \section{Contributions}
-The initial task for creating a GUI solution for Trilinos was proposed by Dr. Michael Heroux of Sandia National Laboratories. All code for Optika was written by Kurtis Nusbaum of
-St. John's University. The algorithm for evaluating dependencies was also developed by Kurtis Nusbaum. 
-Roscoe Bartlett of Sandia National Laboratories helped design the mechanisms by which Optika interprets XML. Jim Willenbring of Sandia National Laboratories
-provided assistance with integrating Optika into the Trilinos Framework. The Trilinos mailing lists were also great sources of information for questions involving integration 
-with the Trilinos Framework and the Teuchos packages.
+The initial task for creating a GUI solution for Trilinos was proposed by Dr. Michael Heroux of Sandia National Laboratories. 
+All code for Optika was written by Kurtis Nusbaum of St. John's University. The algorithm for evaluating dependencies was also developed 
+by Kurtis Nusbaum.  Roscoe Bartlett of Sandia National Laboratories helped design the mechanisms by which Optika interprets XML. 
+Jim Willenbring of Sandia National Laboratories provided assistance with integrating Optika into the Trilinos Framework. The Trilinos 
+mailing lists were also great sources of information for questions involving integration with the Trilinos Framework and the 
+Teuchos packages.
