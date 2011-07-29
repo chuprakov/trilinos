@@ -152,41 +152,6 @@ public:
 	 * \brief Constructs a MainWindow object.
 	 * 
 	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
-	 * @param fileName The name of a save file that may store previous values used by a user for the 
-	 * Parameter List specified by validParameters.
-	 */
-	MetaWindow(RCP<ParameterList> validParameters, 
-	QString fileName=QString());
-
-	/**
-	 * \brief Constructs a MainWindow object.
-	 * 
-	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
-	 * @param customFunc The function to run whenever the user clicks the action button.
-	 * @param fileName The name of a save file that may store previous values used by a user for the 
-	 * Parameter List specified by validParameters.
-	 */
-	MetaWindow(RCP<ParameterList> validParameters, 
-	void (*customFunc)(RCP<const ParameterList>),
-	QString fileName=QString());
-
-	/**
-	 * \brief Constructs a MainWindow object.
-	 * 
-	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
-	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
-	 * ParameterList.
-	 * @param fileName The name of a save file that may store previous values used by a user for the 
-	 * Parameter List specified by validParameters.
-	 */
-	MetaWindow(RCP<ParameterList> validParameters, 
-	RCP<DependencySheet> dependencySheet,
-	QString fileName=QString());
-
-	/**
-	 * \brief Constructs a MainWindow object.
-	 * 
-	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
 	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
 	 * ParameterList.
 	 * @param customFunc The function to run whenever the user clicks the action button.
@@ -194,8 +159,8 @@ public:
 	 * Parameter List specified by validParameters.
 	 */
 	MetaWindow(RCP<ParameterList> validParameters, 
-	RCP<DependencySheet> dependencySheet,
-	void (*customFunc)(RCP<const ParameterList>),
+	RCP<DependencySheet> dependencySheet=null,
+	void (*customFunc)(RCP<const ParameterList>)=NULL,
 	QString fileName=QString(),
   const std::string actionButtonText="submit");
 
