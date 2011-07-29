@@ -35,24 +35,18 @@
 namespace Optika{
 
 
-TreeModel::TreeModel(RCP<ParameterList> validParameters, QString saveFileName, QObject *parent):
-	QAbstractItemModel(parent),
-	dependencies(false),
-	validParameters(validParameters)
-{
-	basicSetup(saveFileName);
-}
-
 TreeModel::TreeModel(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet,
      QString saveFileName, QObject *parent):
 	 QAbstractItemModel(parent),
-	 dependencies(true),
+	 dependencies(nonnull(dependencySheet)),
 	 validParameters(validParameters),
 	 dependencySheet(dependencySheet)
 {
 	basicSetup(saveFileName);
-	connect(this, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), 
-		this, SLOT(dataChangedListener(const QModelIndex&, const QModelIndex&)));
+  if(dependencies){
+	  connect(this, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), 
+		  this, SLOT(dataChangedListener(const QModelIndex&, const QModelIndex&)));
+  }
 }
 
 TreeModel::~TreeModel() {

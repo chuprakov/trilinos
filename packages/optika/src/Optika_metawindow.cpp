@@ -123,22 +123,6 @@ QModelIndexList SearchWidget::removeHiddenItems(QModelIndexList& items){
 	return toReturn;
 }
 
-MetaWindow::MetaWindow(RCP<ParameterList> validParameters, QString fileName){
-	model = new TreeModel(validParameters, fileName, this);
-	initilization();
-}
-
-MetaWindow::MetaWindow(RCP<ParameterList> validParameters, void (*customFunc)(RCP<const ParameterList>), QString fileName){
-	model = new TreeModel(validParameters, fileName,this);
-	initilization(customFunc);
-}
-
-MetaWindow::MetaWindow(
-  RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet, QString fileName){
-	model = new TreeModel(validParameters, dependencySheet, fileName, this);
-	initilization();
-} 
-
 MetaWindow::MetaWindow(
   RCP<ParameterList> validParameters, 
   RCP<DependencySheet> dependencySheet, 

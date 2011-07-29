@@ -204,6 +204,9 @@ void OptikaGUITests::dependencyTests(){
   cleaner.add(delegate);
   cleaner.add(treeView);
   QStyleOptionViewItem genericStyleItem;
+
+  //Assert that the TreeModel has dependencies
+  QVERIFY(model->hasDependencies());
   
 //Testing Bool visual dependency
   GET_ENTRY_INDEX(validParameters, Preconditioner, model)
