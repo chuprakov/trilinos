@@ -195,7 +195,7 @@ bool TreeItem::hasValidValue() const{
 							      parentItem->data(0,Qt::DisplayRole).toString().toStdString());
 			return true;
 		}
-		catch(std::exception& e){
+		catch(std::exception& /*e*/){
 			return false;
 		}
 	}
