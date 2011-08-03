@@ -117,10 +117,11 @@ int main(int argc, char* argv[])
 
   /**
    * Here is where things get switched up a bit. Along with the list, we pass 
-   * along the address of the "customFunction". Let's skip down a bit and take 
+   * along the address of the "customFunction" (the Teuchos::null is there because we
+   * don't want to specify any dependencies for this GUI). Let's skip down a bit and take 
    * a look at the function.
    */
-  Optika::getInput(My_List, &customFunction);
+  Optika::getInput(My_List, Teuchos::null, &customFunction);
 
   RCP<Teuchos::FancyOStream> out = 
     Teuchos::VerboseObjectBase::getDefaultOStream();

@@ -60,24 +60,17 @@ public:
 	/**
 	 * \brief Constructs the TreeModel.
 	 * 
-	 * @param validParameters A list of parameters for which the users must enter values. Note the Parameter List will be edited.
-	 * All user input will be stored in it.
-	 * @param saveFileName Name of a save file used in a previous attempt to get values for the validParameters ParameterList.
-	 * @param parent The parent object.
-	 */
-	TreeModel(RCP<ParameterList> validParameters, QString saveFileName=QString(), QObject *parent=0);
-
-	/**
-	 * \brief Constructs the TreeModel.
-	 * 
 	 * @param validParameters A list of parameters for which the users must enter values.
 	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
 	 * ParameterList.
 	 * @param saveFileName Name of a save file used in a previous attempt to get values for the validParameters ParameterList.
 	 * @param parent The parent object.
 	 */
-	TreeModel(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet,
-		  QString saveFileName=QString(), QObject *parent=0);
+	TreeModel(
+    RCP<ParameterList> validParameters,
+    RCP<DependencySheet> dependencySheet=null,
+	  QString saveFileName=QString(), 
+    QObject *parent=0);
 
 	/**
 	 *

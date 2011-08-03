@@ -31,50 +31,6 @@
 #include "Optika_GUI.hpp"
 namespace Optika{
 
-void getInput(RCP<ParameterList> validParameters){
-	{
-		using namespace Qt;
-		int argNum=1;
-		char* args[1];
-		std::string appName ="Optika";
-		args[0] = &appName[0];
-		QApplication a(argNum,args);
-		//MetaWindow *theWindow = new MetaWindow(validParameters);
-		MetaWindow theWindow(validParameters);
-		theWindow.show();
-		a.exec();
-	}
-}
-
-void getInput(RCP<ParameterList> validParameters, void (*customFunc)(RCP<const ParameterList>)){
-	{
-		using namespace Qt;
-		int argNum=1;
-		char* args[1];
-		std::string appName ="Optika";
-		args[0] = &appName[0];
-		QApplication a(argNum,args);
-		//MetaWindow *theWindow = new MetaWindow(validParameters, customFunc);
-		MetaWindow theWindow(validParameters, customFunc);
-		theWindow.show();
-		a.exec();
-	}
-}
-
-void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet){	
-	{
-		using namespace Qt;
-		int argNum=1;
-		char* args[1];
-		std::string appName ="Optika";
-		args[0] = &appName[0];
-		QApplication a(argNum,args);
-		MetaWindow theWindow(validParameters, dependencySheet);
-		theWindow.show();
-		a.exec();
-	}
-}
-
 void getInput(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet, void (*customFunc)(RCP<const ParameterList>)){	
 	{
 		using namespace Qt;
@@ -109,22 +65,22 @@ void getInput(
 	}
 }
 
-OptikaGUI::OptikaGUI(RCP<ParameterList> validParameters):
-	validParameters(validParameters),
-  customFunc(0)
-  {}
-
-
-OptikaGUI::OptikaGUI(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet):
+OptikaGUI::OptikaGUI(
+  RCP<ParameterList> validParameters,
+  RCP<DependencySheet> dependencySheet,
+  void (*customFunc)(RCP<const ParameterList>)):
 	validParameters(validParameters),
 	dependencySheet(dependencySheet),
-  customFunc(0)
+  customFunc(customFunc)
   {}
 
-OptikaGUI::OptikaGUI(const std::string& xmlFileName){
+OptikaGUI::OptikaGUI(
+  const std::string& xmlFileName,
+  void (*customFunc)(RCP<const ParameterList>)):
+  customFunc(customFunc)
+{
   dependencySheet = rcp(new DependencySheet);
   validParameters = getParametersFromXmlFile(xmlFileName, dependencySheet);
-  customFunc =0;
 }
 
 void OptikaGUI::exec(){
@@ -136,12 +92,7 @@ void OptikaGUI::exec(){
 		args[0] = &appName[0];
 		QApplication a(argNum,args);
 		MetaWindow *theWindow;
-		if(is_null(dependencySheet)){
-			theWindow = new MetaWindow(validParameters, customFunc);
-		}
-		else{
-			theWindow = new MetaWindow(validParameters, dependencySheet, customFunc);
-		}
+  	theWindow = new MetaWindow(validParameters, dependencySheet, customFunc);
 		if(title != ""){
 			theWindow->setWindowTitle(QString::fromStdString(title));
 		}
