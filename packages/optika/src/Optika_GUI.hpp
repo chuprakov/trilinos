@@ -43,42 +43,6 @@ namespace Optika{
 
   /**
    * \brief Retreives the input for a Teuchos Parameter List using a GUI. Note the 
-   * Parameter List will be edited. All user input will be stored in it.
-   *
-   * @param validParameters A list of parameters from which the users may 
-   * specify values.
-   */
-  void getInput(RCP<ParameterList> validParameters);
-
-  /**
-   * \brief Retreives the input for a Teuchos Parameter List using a GUI. Note the 
-   * Parameter List will be edited. All user input will be stored in it. Also 
-   * runs the function specified whenever the user clicks the action button.
-   *
-   * @param validParameters A list of parameters from which the users may 
-   * specify values.
-   * @param customFunc Custom function to run whenever the user clicks the 
-   * action button.
-   */
-  void getInput(
-    RCP<ParameterList> validParameters, 
-    void (*customFunc)(RCP<const ParameterList>));
-
-  /**
-   * \brief Retreives the input for a Teuchos Parameter List using a GUI. Note the 
-   * Parameter List will be edited. All user input will be stored in it.
-   *
-   * @param validParameters A list of parameters from which the users may 
-   * specify values.
-   * @param dependencySheet A sheet listing any dependencies between parameters
-   * in the validParameters ParameterList.
-   */
-  void getInput(
-    RCP<ParameterList> validParameters, 
-    RCP<DependencySheet> dependencySheet);
-
-  /**
-   * \brief Retreives the input for a Teuchos Parameter List using a GUI. Note the 
    * Parameter List will be edited. All user input will be stored in it. 
    * Also runs the function specified whenever the user clicks the action
    * button and uses the specified dependency list.
@@ -92,8 +56,8 @@ namespace Optika{
    */
   void getInput(
     RCP<ParameterList> validParameters,
-    RCP<DependencySheet> dependencySheet,
-    void (*customFunc)(RCP<const ParameterList>));
+    RCP<DependencySheet> dependencySheet=null,
+    void (*customFunc)(RCP<const ParameterList>)=NULL);
 
   /**
    * \brief Reads in a set of parameters and dependencies from the specified xmlfile,
@@ -128,27 +92,25 @@ public:
    *
    * @param validParameters A list of parameters from which the users may 
    * specify values.
-   */
-  OptikaGUI(RCP<ParameterList> validParameters);
-
-  /**
-   * \brief Constructs an OptikaGUI object.
-   *
-   * @param validParameters A list of parameters from which the users may 
-   * specify values.
    * @param dependencySheet A sheet listing any dependencies between parameters
    * in the validParameters ParameterList.
+   * @param customFunc A custom function for Optika to run upon the user 
+   * clicking the action button.
    */
   OptikaGUI(
     RCP<ParameterList> validParameters, 
-    RCP<DependencySheet> dependencySheet);
+    RCP<DependencySheet> dependencySheet=null,
+    void (*customFunc)(RCP<const ParameterList>)=NULL);
 
   /**
    * \brief Constructs an OptikaGUI object.
    *
    * @param xmlFileName Name of an XML file describing the GUI.
+   * @param customFunc A custom function for Optika to run upon the user 
+   * clicking the action button.
    */
-  OptikaGUI(const std::string& xmlFileName);
+  OptikaGUI(const std::string& xmlFileName,
+    void (*customFunc)(RCP<const ParameterList>)=NULL);
 
   //@}
 

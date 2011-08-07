@@ -6,11 +6,12 @@ IF (${PACKAGE_NAME}_ENABLE_Stratimikos)
     ADD_SUBDIRECTORY(NLPThyraEpetraModelEval4DOpt)
     ADD_SUBDIRECTORY(NLPThyraEpetraAdvDiffReactOpt)
     ADD_SUBDIRECTORY(DiagonalQuadraticResponseOnlyOpt)
-  ENDIF()
 
-  ASSERT_DEFINED(${PACKAGE_NAME}_ENABLE_Rythmos)
-  IF (${PACKAGE_NAME}_ENABLE_Rythmos)
-    ADD_SUBDIRECTORY(DiagonalTransientInversion)
+    ASSERT_DEFINED(${PACKAGE_NAME}_ENABLE_Rythmos)
+    IF (${PACKAGE_NAME}_ENABLE_Rythmos)
+      ADD_SUBDIRECTORY(DiagonalTransientInversion)
+    ENDIF()
+
   ENDIF()
 
 ENDIF()

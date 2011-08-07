@@ -34,14 +34,18 @@
 
 namespace Optika{
 
-TreeItem::TreeItem(const QList<QVariant> &data, RCP<ParameterEntry> parameter, TreeItem *parent, bool unrecognized):
-	unrecognized(unrecognized),
-	itemData(data),
+TreeItem::TreeItem(const QString& name, RCP<ParameterEntry> parameter, TreeItem *parent, bool isHeader):
+  name(name),
 	parentItem(parent),
-	parameterEntry(parameter)
+	parameterEntry(parameter),
+  isHeader(isHeader)
 {
-	if(unrecognized && nonnull(parameterEntry)){
-		this->docString = "Sorry, but we don't recognize the type of the " + data.at(0).toString() + " parameter.\n"
+  myTypeId = getTypeId(parameter);
+  if(isHeader){
+    return;
+  }
+	else if(myTypeId == unrecognizedId && nonnull(parameterEntry)){
+		this->docString = "Sorry, but we don't recognize the type of the " + name + " parameter.\n"
 		 + "No worries though. Everything should be fine.\n"
 		 "We'll just go ahead and set this parameter to its default value for you."
 		 "\n\nActual Documentation:\n" + QString::fromStdString(parameter->docString());
@@ -59,11 +63,7 @@ TreeItem::~TreeItem(){
 }
 
 void TreeItem::printOut() const{
-	std::cout << itemData.at(0).toString().toStdString() <<  ":     ";
-	for(int i=0; i < itemData.size(); ++i){
-		std::cout << itemData.at(i).toString().toStdString() << " ";
-	}
-	std::cout << "\n";
+	std::cout << name.toStdString() <<  ":     ";
 	for(int i=0; i<childItems.size(); ++i){
 		childItems.at(i)->printOut();
 	}
@@ -86,26 +86,26 @@ const QList<TreeItem*> TreeItem::getChildItems(){
 }
 
 int TreeItem::columnCount() const{
-	return itemData.size();
+  return 3;
 }
 
 QVariant TreeItem::data(int column, int role) const{
 	if(role == Qt::ToolTipRole){
-		if(itemData.value(0).toString().compare(QString("Kurtis is awesome!"), Qt::CaseInsensitive) == 0){
+		if(name.compare(QString("Kurtis is awesome!"), Qt::CaseInsensitive) == 0){
 			return QString("I know! I think I'm awesome too!\n"
 			"You're pretty awesome yourself! You should send\n"
 			"me an e-mail letting me know you found the easter egg.\n"
 			"I'd enjoy that.\n"
 			"kob0724@gmail.com or klnusbaum@gmail.com");
 		}
-		else if(itemData.value(0).toString().compare(QString("Jim is awesome!"), Qt::CaseInsensitive) == 0){
+		else if(name.compare(QString("Jim is awesome!"), Qt::CaseInsensitive) == 0){
 			return QString("I know! I think he's awesome too!\n"
 			"You're pretty awesome yourself! You should send\n"
 			"Jim an e-mail letting him know you think he's awesome.\n"
 			"He'd enjoy that.\n"
 			"Tell him Kurtis sent you. jmwille@sandia.gov");
 		}
-		else if(itemData.value(0).toString().compare(QString("Dr. Heroux is awesome!"), Qt::CaseInsensitive) == 0){
+		else if(name.compare(QString("Dr. Heroux is awesome!"), Qt::CaseInsensitive) == 0){
 			return QString("I know! I think he's awesome too!\n"
 			"You're pretty awesome yourself! You should send\n"
 			"Dr. Heroux an e-mail letting him know you think he's awesome.\n"
@@ -114,9 +114,20 @@ QVariant TreeItem::data(int column, int role) const{
 		}
 		return docString;
 	}
-	else if(role == Qt::DisplayRole && unrecognized){
+	else if(role == Qt::DisplayRole && isHeader){
 		if(column == 0){
-			return itemData.at(0);
+			return "Parameter";
+		}
+		else if (column == 1){
+			return "Value";
+		}
+		else if(column == 2){
+			return "Type";
+		}
+  }
+	else if(role == Qt::DisplayRole && myTypeId == unrecognizedId){
+		if(column == 0){
+			return name;
 		}
 		else if (column == 1){
 			return QVariant("N/A");
@@ -126,7 +137,10 @@ QVariant TreeItem::data(int column, int role) const{
 		}
 	}
 	else if(role == Qt::DisplayRole){
-    if(column == 1 && 
+    if(column == 0){
+      return name;
+    }
+    else if(column == 1 && 
       nonnull(parameterEntry) && 
       parameterEntry->isArray()
     )
@@ -140,26 +154,23 @@ QVariant TreeItem::data(int column, int role) const{
     {
       return QString("Click to view 2D Array");
     }
-    else{
-		 return itemData.value(column);
+    else if(column == 2){
+      return myTypeId;
     }
 	}
   else if(role == TreeModel::getRawDataRole()){
     if(column == 1 && nonnull(parameterEntry) && parameterEntry->isArray()){
       return arrayEntryToVariant(parameterEntry, 
-        getArrayType(itemData.value(2).toString()));
+        getArrayType(myTypeId));
     }
     else if(column == 1 && nonnull(parameterEntry) && parameterEntry->isTwoDArray()){
       return arrayEntryToVariant(parameterEntry,
-        getArrayType(itemData.value(2).toString()), true);
+        getArrayType(myTypeId), true);
     }
-    else{
-      return itemData.value(column);
-    }
+    /*else{
+      return parameterEntry->getAny();
+    }*/
   }
-  /*else if(role == Qt::UserRole){
-    return QVariant::fromValue(parameterEntry.getConst());
-  }*/
 	return QVariant();
 }
 
@@ -184,7 +195,7 @@ bool TreeItem::hasValidValue() const{
 							      parentItem->data(0,Qt::DisplayRole).toString().toStdString());
 			return true;
 		}
-		catch(std::exception& e){
+		catch(std::exception& /*e*/){
 			return false;
 		}
 	}
@@ -209,34 +220,47 @@ QString TreeItem::getCurrentInvalidValueMessage() const{
 	
 
 bool TreeItem::changeValue(QVariant value){
-	if(itemData[1]== value){
-		return false;
+	if(myTypeId == intId){
+    int newValue = value.value<int>();
+    if(newValue != getValue<int>(*parameterEntry)){
+		  parameterEntry->setValue(newValue, false, parameterEntry->docString(), parameterEntry->validator());
+    }
 	}
-  itemData[1].clear();
-  itemData[1] = value;
-	if(data(2).toString() == intId){
-		parameterEntry->setValue(value.toInt(), false, parameterEntry->docString(), parameterEntry->validator());
+	else if(myTypeId == shortId){
+    short newValue = value.value<short>();
+    if(newValue != getValue<short>(*parameterEntry)){
+		  parameterEntry->setValue(newValue, false, parameterEntry->docString(), parameterEntry->validator());
+    }
 	}
-	else if(data(2).toString() == shortId){
-		parameterEntry->setValue((short)value.toInt(), false, parameterEntry->docString(), parameterEntry->validator());
+	else if(myTypeId == doubleId){
+    double newValue = value.value<double>();
+    if(newValue != getValue<double>(*parameterEntry)){
+		  parameterEntry->setValue(newValue, false, parameterEntry->docString(), parameterEntry->validator());
+    }
 	}
-	else if(data(2).toString() == doubleId){
-		parameterEntry->setValue(value.toDouble(), false, parameterEntry->docString(), parameterEntry->validator());
+	else if(myTypeId == floatId){
+    float newValue = value.value<float>();
+    if(newValue != getValue<float>(*parameterEntry)){
+		  parameterEntry->setValue(newValue, false, parameterEntry->docString(), parameterEntry->validator());
+    }
 	}
-	else if(data(2).toString() == floatId){
-		parameterEntry->setValue((float)value.toDouble(), false, parameterEntry->docString(), parameterEntry->validator());
+	else if(myTypeId == boolId){
+    bool newValue = value.value<bool>();
+    if(newValue != getValue<bool>(*parameterEntry)){
+		  parameterEntry->setValue(newValue, false, parameterEntry->docString(), parameterEntry->validator());
+    }
 	}
-	else if(data(2).toString() == boolId){
-		parameterEntry->setValue(value.toBool(), false, parameterEntry->docString(), parameterEntry->validator());
+	else if(myTypeId == stringId){
+    std::string newValue = value.toString().toStdString();
+    if(newValue != getValue<std::string>(*parameterEntry)){
+		  parameterEntry->setValue(newValue, false, parameterEntry->docString(), parameterEntry->validator());
+    }
 	}
-	else if(data(2).toString() == stringId){
-		parameterEntry->setValue(value.toString().toStdString(), false, parameterEntry->docString(), parameterEntry->validator());
+	else if(myTypeId.contains(arrayId)){
+		changeValueForArray(value, getArrayType(myTypeId));
 	}
-	else if(data(2).toString().contains(arrayId)){
-		changeValueForArray(value, getArrayType(data(2).toString()));
-	}
-	else if(data(2).toString().contains(twoDArrayId)){
-		changeValueForArray(value, getArrayType(data(2).toString()), true);
+	else if(myTypeId.contains(twoDArrayId)){
+		changeValueForArray(value, getArrayType(myTypeId), true);
 	}
 
 	return true;
@@ -289,6 +313,56 @@ void TreeItem::changeValueForArray(QVariant value, QString type, bool twoD){
 	}
 }
 
-
+QString TreeItem::getTypeId(const RCP<const ParameterEntry> parameter){
+  if(parameter.is_null()){
+    return unrecognizedId;
+  }
+  else if(parameter->isList()){
+    return listId;
+  }
+	else if(parameter->isType<int>()){
+    return intId;
+	}
+	else if(parameter->isType<short>()){
+		return shortId;
+	}
+	else if(parameter->isType<double>()){
+		return doubleId;
+	}
+	else if(parameter->isType<float>()){
+		return floatId;
+	}
+	else if(parameter->isType<bool>()){
+		return boolId;
+	}
+	else if(parameter->isType<std::string>()){
+		return stringId;
+	}
+	else if(parameter->isArray()){
+		QString determinedId = determineArrayType(parameter);
+		if( determinedId != unrecognizedId){
+			return QString(arrayId + " "+ determinedId);
+		}
+		else{
+			return unrecognizedId;
+		}
+	}
+  else if(parameter->isTwoDArray()){
+		QString determinedId = determineArrayType(parameter, true);
+		if( determinedId != unrecognizedId){
+			QString(twoDArrayId + " "+ determinedId);
+		}
+		else{
+			return unrecognizedId;
+		}
+  }
+	else{
+	  return unrecognizedId;
+	}
+  //Should never get here
+  //This is here to avoid compiler warnings
+  return unrecognizedId;
 }
 
+
+} //end namespace

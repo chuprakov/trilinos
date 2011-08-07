@@ -34,7 +34,7 @@
 #include "Optika_treeview.hpp"
 #include <QApplication>
 #include <QSpinBox>
-#include <iostream>
+#include "Optika_metawindow.hpp"
 
 namespace Optika{
 
@@ -58,6 +58,11 @@ private slots:
   void typeTest();
   void dependencyTests();
   void arrayEditorTest();
+  void twoDEditorTest();
+  void twoDSymmetryTest();
+  void modelLoadTest();
+  void validatorApplierTests();
+  void settingsTest();
   void cleanupTestCase();
 private:
   static inline QModelIndex getWidgetIndex(const QModelIndex& index);
@@ -158,6 +163,24 @@ void OptikaGUITests::arrayEditorTest(){
   delete testWidget;
 }
 
+void OptikaGUITests::twoDEditorTest(){
+  TwoDArray<double> testArray(4,2,4.5);
+  ParameterEntry testEntry(testArray);
+  Double2DArrayWidget* testWidget = 
+    new Double2DArrayWidget("tester", doubleId, null);
+  cleaner.add(testWidget);
+
+  testWidget->initData(testArray);
+  testWidget->accept();
+  TwoDArray<double> retrievedArray = testWidget->getData();
+  QVERIFY(testArray == retrievedArray);
+
+
+  cleaner.remove(testWidget);
+  delete testWidget;
+
+}
+
 inline QModelIndex OptikaGUITests::getWidgetIndex(const QModelIndex& index){
   return index.sibling(index.row(),1);
 }
@@ -181,6 +204,9 @@ void OptikaGUITests::dependencyTests(){
   cleaner.add(delegate);
   cleaner.add(treeView);
   QStyleOptionViewItem genericStyleItem;
+
+  //Assert that the TreeModel has dependencies
+  QVERIFY(model->hasDependencies());
   
 //Testing Bool visual dependency
   GET_ENTRY_INDEX(validParameters, Preconditioner, model)
@@ -368,6 +394,30 @@ void OptikaGUITests::dependencyTests(){
   QVERIFY(fondFoodCombo->findText("Cheese") != -1);
   QVERIFY(fondFoodCombo->findText("Bread") != -1);
 
+
+  //Test TwoDRowDependency
+  GET_ENTRY_INDEX(validParameters, NumRows, model)
+  GET_ENTRY_INDEX(validParameters, RowArray, model)
+  QModelIndex numRowsWidgetIndex = getWidgetIndex(NumRowsIndex);
+  QSpinBox* numRowSpin = (QSpinBox*)delegate->createEditor(
+    0, genericStyleItem, numRowsWidgetIndex);
+  numRowSpin->setValue(2);
+  delegate->setModelData(numRowSpin, model, numRowsWidgetIndex);
+  TwoDArray<double> rowArray = model->getTwoDArray<double>(RowArrayIndex);
+  QCOMPARE(rowArray.getNumRows(), (TwoDArray<double>::size_type)2);
+
+  //Test TwoDColDependency
+  GET_ENTRY_INDEX(validParameters, NumCols, model)
+  GET_ENTRY_INDEX(validParameters, ColArray, model)
+  QModelIndex numColsWidgetIndex = getWidgetIndex(NumColsIndex);
+  QSpinBox* numColSpin = (QSpinBox*)delegate->createEditor(
+    0, genericStyleItem, numColsWidgetIndex);
+  numColSpin->setValue(2);
+  delegate->setModelData(numColSpin, model, numColsWidgetIndex);
+  TwoDArray<double> colArray = model->getTwoDArray<double>(ColArrayIndex);
+  QCOMPARE(colArray.getNumCols(), (TwoDArray<double>::size_type)2);
+ 
+
   
 
   cleaner.remove(model);
@@ -379,6 +429,168 @@ void OptikaGUITests::dependencyTests(){
 }
   
 
+void OptikaGUITests::twoDSymmetryTest(){
+  cleaner.clear();
+  TwoDArray<double> testArray(4,4,4.5);
+  testArray.setSymmetrical(true);
+  Double2DArrayWidget* testWidget = 
+    new Double2DArrayWidget("tester", doubleId, null);
+  cleaner.add(testWidget);
+
+  testWidget->initData(testArray);
+  QGridLayout* layout = (QGridLayout*)testWidget->layout();
+  QScrollArea* scrollArea = (QScrollArea*)(layout->itemAtPosition(0,0)->widget());
+  QWidget* actualWidget = scrollArea->widget();
+  QCOMPARE(((QGridLayout*)actualWidget->layout())->itemAtPosition(1,1), (QLayoutItem*)0);
+
+  testWidget->accept();
+  TwoDArray<double> retrievedArray = testWidget->getData();
+  QVERIFY(testArray == retrievedArray);
+
+
+  cleaner.remove(testWidget);
+  delete testWidget;
+
+
+}
+
+void OptikaGUITests::modelLoadTest(){
+  cleaner.clear();
+  RCP<ParameterList> validParameters = 
+    getParametersFromXmlFile("loadtest.xml");
+  TreeModel* model = new TreeModel(validParameters);
+  Delegate* delegate = new Delegate;
+  TreeView* treeView = new TreeView(model, delegate);
+  cleaner.add(model);
+  cleaner.add(delegate);
+  cleaner.add(treeView);
+
+  QCOMPARE(model->getCurrentParameters()->get<int>("Steve"), 4);
+  QCOMPARE(model->getCurrentParameters()->get<int>("Sam"), 4);
+  QCOMPARE(model->getCurrentParameters()->sublist("Prec").get<int>("Sam"), 9);
+  QCOMPARE(model->getCurrentParameters()->sublist("Prec").get<int>("Blah"), 1);
+  model->readInput("loadtest.in.xml");
+  QCOMPARE(model->getCurrentParameters()->get<int>("Steve"), 0);
+  QCOMPARE(model->getCurrentParameters()->sublist("Prec").get<int>("Blah"), 80);
+  QCOMPARE(model->getCurrentParameters()->sublist("Prec").get<int>("Sam"), 99);
+  QCOMPARE(model->getCurrentParameters()->get<int>("Sam"), 50);
+
+  cleaner.remove(model);
+  cleaner.remove(treeView);
+  cleaner.remove(delegate);
+  delete model;
+  delete treeView;
+  delete delegate;
+
+}
+
+template<class T>
+void testingSpinBoxApply(
+  const RCP<EnhancedNumberValidator<T> > validator,
+  QAbstractSpinBox* spinner)
+{
+  ValidatorApplier<T>::applyToSpinBox(validator, (QSpinBox*)spinner);
+}
+
+template<>
+void testingSpinBoxApply(
+  const RCP<EnhancedNumberValidator<double> > validator,
+  QAbstractSpinBox* spinner)
+{
+  ValidatorApplier<double>::applyToSpinBox(validator, (QDoubleSpinBox*)spinner);
+}
+
+template<>
+void testingSpinBoxApply(
+  const RCP<EnhancedNumberValidator<float> > validator,
+  QAbstractSpinBox* spinner)
+{
+  ValidatorApplier<float>::applyToSpinBox(validator, (QDoubleSpinBox*)spinner);
+}
+
+template<class T>
+void valApplyTestTemplate(){
+  EnhancedNumberValidator<T> validator(Teuchos::as<T>(0), Teuchos::as<T>(10));
+  RCP<EnhancedNumberValidator<T> > valPtr = rcpFromRef(validator);
+  std::string myType = Teuchos::TypeNameTraits<T>::name();
+  bool isFloatingType = 
+    myType == Teuchos::TypeNameTraits<double>::name() ||
+    myType == Teuchos::TypeNameTraits<float>::name();
+
+  QString val10("10");
+  QString val20("20");
+  QString val5("5");
+  QString val0("0");
+  QString valneg1("-1");
+
+
+  /** Do spinner testing */
+  QAbstractSpinBox* spinner = NULL;
+  if(isFloatingType)
+  {
+    spinner = new QDoubleSpinBox();
+  }
+  else{
+    spinner = new QSpinBox();
+  }
+  testingSpinBoxApply(valPtr, spinner);
+  int pos=0;
+  QCOMPARE(spinner->validate(val10,pos), QValidator::Acceptable);
+  QCOMPARE(spinner->validate(val20,pos), QValidator::Invalid);
+  QCOMPARE(spinner->validate(val5,pos), QValidator::Acceptable);
+  QCOMPARE(spinner->validate(val0,pos), QValidator::Acceptable);
+  QCOMPARE(spinner->validate(valneg1,pos), QValidator::Invalid);
+  if(isFloatingType){
+    QDoubleSpinBox* actualSpinner = (QDoubleSpinBox*)spinner;
+    QCOMPARE(actualSpinner->decimals(), Teuchos::as<int>(EnhancedNumberTraits<T>::defaultPrecision()));
+    QCOMPARE(Teuchos::as<T>(actualSpinner->singleStep()), EnhancedNumberTraits<T>::defaultStep());
+  }
+  if(isFloatingType){
+    QSpinBox* actualSpinner = (QSpinBox*)spinner;
+    QCOMPARE(Teuchos::as<T>(actualSpinner->singleStep()), EnhancedNumberTraits<T>::defaultStep());
+  }
+  delete spinner;
+
+  /** Do lineedit testing */
+  QLineEdit lineEdit;
+  ValidatorApplier<T>::applyToLineEdit(valPtr, &lineEdit);
+  const QValidator* appliedValidator = lineEdit.validator();
+  QCOMPARE(appliedValidator->validate(val10,pos), QValidator::Acceptable);
+  QCOMPARE(appliedValidator->validate(val5,pos), QValidator::Acceptable);
+  QCOMPARE(appliedValidator->validate(val0,pos), QValidator::Acceptable);
+  if(isFloatingType){
+    QCOMPARE(appliedValidator->validate(val20,pos), QValidator::Intermediate);
+    QCOMPARE(appliedValidator->validate(valneg1,pos), QValidator::Invalid);
+    const QDoubleValidator* doubleValidator = (QDoubleValidator*)appliedValidator;
+    QCOMPARE(doubleValidator->decimals(), Teuchos::as<int>(EnhancedNumberTraits<T>::defaultPrecision()));
+  }
+  else{
+    QCOMPARE(appliedValidator->validate(val20,pos), QValidator::Invalid);
+    QCOMPARE(appliedValidator->validate(valneg1,pos), QValidator::Invalid);
+  }
+}
+
+void OptikaGUITests::validatorApplierTests(){
+  valApplyTestTemplate<int>();
+  valApplyTestTemplate<short>();
+  valApplyTestTemplate<double>();
+  valApplyTestTemplate<float>();
+}
+
+void OptikaGUITests::settingsTest(){
+  RCP<ParameterList> validParameters = rcp(new ParameterList("Steve"));
+  validParameters->set("Don't care", "don't care");
+  MetaWindow* m1 = new MetaWindow(validParameters);
+  m1->move(30,99);
+  m1->resize(673,823);
+  delete m1;
+  MetaWindow* m2 = new MetaWindow(validParameters);
+  QCOMPARE(m2->width(),673);
+  QCOMPARE(m2->height(),823);
+  QCOMPARE(m2->x(),30);
+  QCOMPARE(m2->y(),99);
+  delete m2;
+}
 
 } //namespace Optika
 

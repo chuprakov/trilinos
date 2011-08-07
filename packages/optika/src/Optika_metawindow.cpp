@@ -39,6 +39,7 @@
 #include <QIcon>
 #include <iostream>
 #include <algorithm>
+#include <QSettings>
 namespace Optika{
 
 
@@ -121,22 +122,6 @@ QModelIndexList SearchWidget::removeHiddenItems(QModelIndexList& items){
 	}
 	return toReturn;
 }
-
-MetaWindow::MetaWindow(RCP<ParameterList> validParameters, QString fileName){
-	model = new TreeModel(validParameters, fileName, this);
-	initilization();
-}
-
-MetaWindow::MetaWindow(RCP<ParameterList> validParameters, void (*customFunc)(RCP<const ParameterList>), QString fileName){
-	model = new TreeModel(validParameters, fileName,this);
-	initilization(customFunc);
-}
-
-MetaWindow::MetaWindow(
-  RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet, QString fileName){
-	model = new TreeModel(validParameters, dependencySheet, fileName, this);
-	initilization();
-} 
 
 MetaWindow::MetaWindow(
   RCP<ParameterList> validParameters, 
@@ -269,95 +254,27 @@ void MetaWindow::load(){
 }
 
 void MetaWindow::loadLastSettings(){
-	QFile *file = new QFile(getSettingsFileName());
-	if(file->open(QIODevice::ReadOnly)){
-		QXmlStreamReader xmlReader(file);
-		while(!xmlReader.isEndDocument()){
-			if(xmlReader.isStartElement()){
-				if(xmlReader.name() == "lastsavedir"){
-					QString tempCurSave = xmlReader.readElementText();
-					if(tempCurSave != ""){
-						currentSaveDir = tempCurSave;
-					}
-				}
-				else if(xmlReader.name() == "lastloaddir"){
-					QString tempCurLoad = xmlReader.readElementText();
-					if(tempCurLoad != ""){
-						currentLoadDir = tempCurLoad;
-					}
-				}
-				else if(xmlReader.name() == "xres"){
-					QString theWidth = xmlReader.readElementText();
-					if(theWidth != ""){
-						resize(theWidth.toInt(), height());
-					}
-				}
-				else if(xmlReader.name() == "yres"){
-					QString theHeight = xmlReader.readElementText();
-					if(theHeight != ""){
-						resize(width(), theHeight.toInt());
-					}
-				}
-				else if(xmlReader.name() == "xpos"){
-					QString xpos = xmlReader.readElementText();
-					if(xpos != ""){
-						move(xpos.toInt(), y());
-					}
-				}
-				else if(xmlReader.name() == "ypos"){
-					QString ypos = xmlReader.readElementText();
-					if(ypos != ""){
-						move(x(), ypos.toInt());
-					}
-				}
-				else if(xmlReader.name() == "recentdoc"){
-					addRecentDocument(xmlReader.readElementText());
-				}
-			}
-			xmlReader.readNext();
-		}
-		file->close();
-	}
-	delete file;
+  QSettings settings(QSettings::UserScope, "Sandia", "Optika");
+  currentSaveDir = 
+    settings.value(lastSaveDirSetting(), currentSaveDir).toString();
+  currentLoadDir = 
+    settings.value(lastLoadDirSetting(), currentLoadDir).toString();
+  resize(settings.value(xresSetting(), width()).toInt(),
+    settings.value(yresSetting(), height()).toInt());
+  move(settings.value(xposSetting(), x()).toInt(),
+    settings.value(yposSetting(), y()).toInt());
 }
 
 
 void MetaWindow::saveSettings(){
-	QFile *file = new QFile(getSettingsFileName());
-	file->open(QIODevice::WriteOnly);
-	QXmlStreamWriter xmlWriter(file);
+  QSettings settings(QSettings::UserScope, "Sandia", "Optika");
 
-	xmlWriter.setAutoFormatting(true);
-	xmlWriter.writeStartDocument();
-	xmlWriter.writeStartElement("settings");
-		xmlWriter.writeStartElement("lastsavedir");
-		xmlWriter.writeCharacters(currentSaveDir);
-		xmlWriter.writeEndElement();
-		xmlWriter.writeStartElement("lastloaddir");
-		xmlWriter.writeCharacters(currentLoadDir);
-		xmlWriter.writeEndElement();
-		xmlWriter.writeStartElement("xres");
-		xmlWriter.writeCharacters(QString::number(width()));
-		xmlWriter.writeEndElement();
-		xmlWriter.writeStartElement("yres");
-		xmlWriter.writeCharacters(QString::number(height()));
-		xmlWriter.writeEndElement();
-		xmlWriter.writeStartElement("xpos");
-		xmlWriter.writeCharacters(QString::number(x()));
-		xmlWriter.writeEndElement();
-		xmlWriter.writeStartElement("ypos");
-		xmlWriter.writeCharacters(QString::number(y()));
-		xmlWriter.writeEndElement();
-		for(int i =0; i<recentDocsList.size(); ++i){
-			xmlWriter.writeStartElement("recentdoc");
-				xmlWriter.writeCharacters(recentDocsList.at(i));
-			xmlWriter.writeEndElement();
-		}
-	xmlWriter.writeEndElement();
-	xmlWriter.writeEndDocument();
-
-	file->close();
-	delete file;
+  settings.setValue(lastSaveDirSetting(), currentSaveDir);
+  settings.setValue(lastLoadDirSetting(), currentLoadDir);
+  settings.setValue(xresSetting(), width());
+  settings.setValue(yresSetting(), height());
+  settings.setValue(xposSetting(), x());
+  settings.setValue(yposSetting(), y());
 }
 	
 

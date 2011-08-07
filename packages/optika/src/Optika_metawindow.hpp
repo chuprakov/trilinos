@@ -152,41 +152,6 @@ public:
 	 * \brief Constructs a MainWindow object.
 	 * 
 	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
-	 * @param fileName The name of a save file that may store previous values used by a user for the 
-	 * Parameter List specified by validParameters.
-	 */
-	MetaWindow(RCP<ParameterList> validParameters, 
-	QString fileName=QString());
-
-	/**
-	 * \brief Constructs a MainWindow object.
-	 * 
-	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
-	 * @param customFunc The function to run whenever the user clicks the action button.
-	 * @param fileName The name of a save file that may store previous values used by a user for the 
-	 * Parameter List specified by validParameters.
-	 */
-	MetaWindow(RCP<ParameterList> validParameters, 
-	void (*customFunc)(RCP<const ParameterList>),
-	QString fileName=QString());
-
-	/**
-	 * \brief Constructs a MainWindow object.
-	 * 
-	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
-	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
-	 * ParameterList.
-	 * @param fileName The name of a save file that may store previous values used by a user for the 
-	 * Parameter List specified by validParameters.
-	 */
-	MetaWindow(RCP<ParameterList> validParameters, 
-	RCP<DependencySheet> dependencySheet,
-	QString fileName=QString());
-
-	/**
-	 * \brief Constructs a MainWindow object.
-	 * 
-	 * @param validParameters The Parameter List the metawindow will display and the user will edit.
 	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
 	 * ParameterList.
 	 * @param customFunc The function to run whenever the user clicks the action button.
@@ -194,8 +159,8 @@ public:
 	 * Parameter List specified by validParameters.
 	 */
 	MetaWindow(RCP<ParameterList> validParameters, 
-	RCP<DependencySheet> dependencySheet,
-	void (*customFunc)(RCP<const ParameterList>),
+	RCP<DependencySheet> dependencySheet=null,
+	void (*customFunc)(RCP<const ParameterList>)=NULL,
 	QString fileName=QString(),
   const std::string actionButtonText="submit");
 
@@ -363,6 +328,54 @@ private:
 	 * \brief Currently under developement
 	 */
 	void updateRecentDocsMenu();
+
+  /**
+   * \brief Gets the name of the last saved directory setting
+   */
+  static QString lastSaveDirSetting(){
+    static const QString saveDirSetting("last_save_dir");
+    return saveDirSetting;
+  }
+
+  /**
+   * \brief Gets the name of the last load directory setting
+   */
+  static QString lastLoadDirSetting(){
+    static const QString loadDirSetting("last_load_dir");
+    return loadDirSetting;
+  }
+
+  /**
+   * \brief Gets the name of the xres setting
+   */
+  static QString xresSetting(){
+    static const QString xres("xres");
+    return xres;
+  }
+
+  /**
+   * \brief Gets the name of the yres setting
+   */
+  static QString yresSetting(){
+    static const QString yres("yres");
+    return yres;
+  }
+
+  /**
+   * \brief Gets the name of the xpos setting
+   */
+  static QString xposSetting(){
+    static const QString xpos("xpos");
+    return xpos;
+  }
+
+  /**
+   * \brief Gets the name of the ypos setting
+   */
+  static QString yposSetting(){
+    static const QString ypos("ypos");
+    return ypos;
+  }
 
 private slots:
   /** \name Private Slots */

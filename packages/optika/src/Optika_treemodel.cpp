@@ -28,29 +28,25 @@
 #include <QXmlStreamReader>
 #include "Optika_treemodel.hpp"
 #include "Teuchos_XMLParameterListWriter.hpp"
+#include "Teuchos_ParameterEntryXMLConverter.hpp"
 #include <QTextStream>
+#include <QDomElement>
 
 namespace Optika{
 
 
-TreeModel::TreeModel(RCP<ParameterList> validParameters, QString saveFileName, QObject *parent):
-	QAbstractItemModel(parent),
-	dependencies(false),
-	validParameters(validParameters)
-{
-	basicSetup(saveFileName);
-}
-
 TreeModel::TreeModel(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet,
      QString saveFileName, QObject *parent):
 	 QAbstractItemModel(parent),
-	 dependencies(true),
+	 dependencies(nonnull(dependencySheet)),
 	 validParameters(validParameters),
 	 dependencySheet(dependencySheet)
 {
 	basicSetup(saveFileName);
-	connect(this, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), 
-		this, SLOT(dataChangedListener(const QModelIndex&, const QModelIndex&)));
+  if(dependencies){
+	  connect(this, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), 
+		  this, SLOT(dataChangedListener(const QModelIndex&, const QModelIndex&)));
+  }
 }
 
 TreeModel::~TreeModel() {
@@ -212,25 +208,82 @@ bool TreeModel::writeOutput(QString fileName){
 	return true;
 }
 
-void TreeModel::readInput(QString fileName){
-	QFile *file = new QFile(fileName);
-	file->open(QIODevice::ReadOnly);
-	QXmlStreamReader xmlReader(file);
-	while(!xmlReader.atEnd()){
-		xmlReader.readNext();
-		if(xmlReader.name().toString() == "Parameter" && xmlReader.isStartElement()){
-			QList<QModelIndex> matches = match(index(0,0), Qt::DisplayRole, xmlReader.attributes().value("name").toString(),
-							   1, Qt::MatchExactly | Qt::MatchRecursive);
+bool TreeModel::isRootIndex(const QModelIndex& index) const{
+  TreeItem* item = (TreeItem*)index.internalPointer();
+  return item == NULL;
+}
+  
+
+bool TreeModel::isRealMatch(
+  const QDomElement& element, 
+  const QModelIndex& potentialMatch) const
+{
+  static QString nameAttr = QString::fromStdString(
+    Teuchos::XMLParameterListWriter::getNameAttributeName());
+  if(isRootIndex(potentialMatch) && element.parentNode().isDocument()){
+    return true;
+  }
+  std::string potmatch = data(potentialMatch.sibling(potentialMatch.row(),0)).toString().toStdString();
+  std::string elemcont = element.attribute(nameAttr).toStdString();
+  if(data(potentialMatch.sibling(potentialMatch.row(),0)).toString() == 
+    element.attribute(nameAttr))
+  {
+    return isRealMatch(element.parentNode().toElement(), potentialMatch.parent());
+  }
+  return false;
+
+}
+
+void TreeModel::processInputElement(const QDomElement& element){
+  static QString nameAttrib = QString::fromStdString(
+    Teuchos::XMLParameterListWriter::getNameAttributeName());
+  static QString valueAttrib = QString::fromStdString(
+    Teuchos::ParameterEntryXMLConverter::getValueAttributeName());
+  QDomNode n = element.firstChild();
+	while(!n.isNull()){
+    QDomElement e = n.toElement();
+		if(!e.isNull() && e.tagName().toStdString() == ParameterEntry::getTagName()){
+      QString name = e.attribute(nameAttrib, "");
+      TEST_FOR_EXCEPTION(name=="",std::runtime_error,
+        "Error: Found parameter with no name attribute. Check XML");
+			QList<QModelIndex> matches = match(index(0,0), Qt::DisplayRole, name,
+							   -1, Qt::MatchExactly | Qt::MatchRecursive);
 			if(matches.size() !=0){
-				QModelIndex valueToEdit = matches.at(0).sibling(matches.at(0).row(), 1);
-				setData(valueToEdit,xmlReader.attributes().value("value").toString(), Qt::EditRole);
+        for(int i =0; i<matches.size(); ++i){
+          if(isRealMatch(e, matches[i])){
+				    QModelIndex valueToEdit = matches.at(i).sibling(matches.at(i).row(), 1);
+            QString newValue = e.attribute(valueAttrib);
+				    setData(valueToEdit,newValue, Qt::EditRole);
+            break;
+          }
+        }
 			}
 		}
+    else if(
+      !e.isNull() 
+      &&
+      e.tagName().toStdString() == XMLParameterListWriter::getParameterListTagName()
+    )
+    {
+      processInputElement(e);
+    }
+    n = n.nextSibling();
 	}
-	file->close();
-	delete file;
-	saved = true;
-	saveFileName = fileName;
+}
+
+void TreeModel::readInput(QString fileName){
+	QFile file(fileName);
+  TEST_FOR_EXCEPTION(!file.open(QIODevice::ReadOnly), std::runtime_error, 
+    "Could not open file to read parameters.");
+  QDomDocument xmlDoc;
+  if(!xmlDoc.setContent(&file)){
+    file.close();
+    TEST_FOR_EXCEPTION(true, std::runtime_error, 
+      "Error reading xml document. Bad XML syntax.");
+  }
+	file.close();
+  QDomElement docElem = xmlDoc.documentElement();
+  processInputElement(docElem);
 }
 
 QString TreeModel::getSaveFileName(){
@@ -244,8 +297,7 @@ bool TreeModel::isSaved(){
 void TreeModel::reset(){
 	delete rootItem;
 	QList<QVariant> headers;
-	headers  << "Parameter" << "Value" << "Type";
-	rootItem = new TreeItem(headers, null, 0, true);	
+	rootItem = new TreeItem("", null, 0, true);
 	validParameters->setParameters(*canonicalList);
 	readInParameterList(validParameters, rootItem);
 	this->saveFileName = saveFileName;
@@ -285,43 +337,37 @@ RCP<const ParameterList> TreeModel::getCurrentParameters(){
 	return validParameters;
 }
 
-QModelIndexList TreeModel::parameterEntryMatch(const QModelIndex &start,
+QModelIndex TreeModel::parameterEntryMatch(const QModelIndex &start,
   const RCP<const ParameterEntry> &parameterEntry) const
 {
-  QModelIndexList result;
   QModelIndex p = parent(start);
   int from = start.row();
   int to = rowCount(p);
 
-  for (int r = from; (r < to) && (result.size() < 1); ++r) {
+  for (int r = from; r < to; ++r) {
     QModelIndex idx = index(r, start.column(), p);
-    if (!idx.isValid())
+    if(!idx.isValid())
       continue;
     RCP<const ParameterEntry> entry = itemEntry(idx);
     if(entry != null && entry.get() == parameterEntry.get()){
-      result.append(idx);
+      return idx;
     }  
             
-    if (hasChildren(idx)) { // search the hierarchy
-      result += 
-        parameterEntryMatch(index(0, idx.column(), idx), parameterEntry);
+    if(hasChildren(idx)) { // search the hierarchy
+      QModelIndex childResult = parameterEntryMatch(index(0, idx.column(), idx), parameterEntry);
+      if(childResult.isValid()){
+        return childResult;
+      }
     }
   }
-  return result;
+  return QModelIndex();
 }
 
 
 QModelIndex TreeModel::findParameterEntryIndex(
   RCP<const ParameterEntry> parameterEntry)
 {
-	QList<QModelIndex> potentialMatches = parameterEntryMatch(
-    index(0,0),
-    parameterEntry);
-  
-  if(potentialMatches.size() == 1){
-    return potentialMatches.first();
-  }
-	return QModelIndex();
+	return parameterEntryMatch(index(0,0), parameterEntry);
 }
 
 
@@ -352,11 +398,12 @@ void TreeModel::readInParameterList(RCP<ParameterList> parameterList, TreeItem *
 }
 
 void TreeModel::insertParameterList(RCP<ParameterList> parameterList, RCP<ParameterEntry> listEntry, 
-				    std::string name, TreeItem *parent)
+				    std::string plname, TreeItem *parent)
 {
-	QList<QVariant> values = QList<QVariant>() << QString::fromStdString(name).section("->",-1) << QString("") << listId;
+  QString truncatedName = QString::fromStdString(plname).section("->",-1);
+  
 
-	TreeItem *newList = new TreeItem(values, listEntry, parent);
+	TreeItem *newList = new TreeItem(truncatedName, listEntry, parent);
 	parent->appendChild(newList);
 	for(ParameterList::ConstIterator itr = parameterList->begin(); itr != parameterList->end(); ++itr){
 		std::string name = parameterList->name(itr);
@@ -370,75 +417,12 @@ void TreeModel::insertParameterList(RCP<ParameterList> parameterList, RCP<Parame
 }
 
 void TreeModel::insertParameter(RCP<ParameterEntry> parameter, std::string name, TreeItem *parent){
-	QList<QVariant> values;
-	values.append(QString::fromStdString(name));
-	if(parameter->isType<int>()){
-		values.append(getValue<int>(*parameter));
-		values.append(intId);
-	}
-	else if(parameter->isType<short>()){
-		values.append(getValue<short>(*parameter));
-		values.append(shortId);
-	}
-	/*else if(parameter->isType<long long>()){
-		values.append(getValue<long long>(*parameter));
-		value.append(longlongId);
-	}*/
-	else if(parameter->isType<double>()){
-		values.append(getValue<double>(*parameter));
-		values.append(doubleId);
-	}
-	else if(parameter->isType<float>()){
-		values.append(getValue<float>(*parameter));
-		values.append(floatId);
-	}
-	else if(parameter->isType<bool>()){
-		values.append(getValue<bool>(*parameter));
-		values.append(boolId);
-	}
-	else if(parameter->isType<std::string>()){
-		values.append(QString::fromStdString(getValue<std::string>(*parameter)));
-		values.append(stringId);
-	}
-	else if(parameter->isArray()){
-		QString determinedId = determineArrayType(parameter);
-		if( determinedId != unrecognizedId){
-			values.append(arrayEntryToVariant(parameter, determinedId));
-			values.append(QString(arrayId + " "+ determinedId));
-		}
-		else{
-			values.append("");
-			values.append("");
-			parent->appendChild(new TreeItem(values, parameter, parent, true));
-			return;
-		}
-	}
-  else if(parameter->isTwoDArray()){
-		QString determinedId = determineArrayType(parameter, true);
-		if( determinedId != unrecognizedId){
-			values.append(arrayEntryToVariant(parameter, determinedId, true));
-			values.append(QString(twoDArrayId + " "+ determinedId));
-		}
-		else{
-			values.append("");
-			values.append("");
-			parent->appendChild(new TreeItem(values, parameter, parent, true));
-			return;
-		}
-  }
-	else{
-		values.append("");
-		values.append("");
-		parent->appendChild(new TreeItem(values, parameter, parent, true));
-		return;
-	}
-	parent->appendChild(new TreeItem(values, parameter, parent));
+	parent->appendChild(new TreeItem(QString::fromStdString(name), parameter, parent));
 }
 
 void TreeModel::basicSetup(QString saveFileName){
 	QList<QVariant> headers;
-	headers  << "Parameter" << "Value" << "Type";
-	rootItem = new TreeItem(headers, null, 0);	
+	rootItem = new TreeItem("", null, 0, true);	
 	canonicalList = RCP<const ParameterList>(new ParameterList(*validParameters));
 	readInParameterList(validParameters, rootItem);
 	this->saveFileName = saveFileName;

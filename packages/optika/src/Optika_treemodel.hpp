@@ -39,6 +39,8 @@
     framework.
 */
 
+class QDomElement;
+
 namespace Optika{
 
 class TreeItem;
@@ -58,24 +60,17 @@ public:
 	/**
 	 * \brief Constructs the TreeModel.
 	 * 
-	 * @param validParameters A list of parameters for which the users must enter values. Note the Parameter List will be edited.
-	 * All user input will be stored in it.
-	 * @param saveFileName Name of a save file used in a previous attempt to get values for the validParameters ParameterList.
-	 * @param parent The parent object.
-	 */
-	TreeModel(RCP<ParameterList> validParameters, QString saveFileName=QString(), QObject *parent=0);
-
-	/**
-	 * \brief Constructs the TreeModel.
-	 * 
 	 * @param validParameters A list of parameters for which the users must enter values.
 	 * @param dependencySheet A sheet listing any dependencies between parameters in the validParameters
 	 * ParameterList.
 	 * @param saveFileName Name of a save file used in a previous attempt to get values for the validParameters ParameterList.
 	 * @param parent The parent object.
 	 */
-	TreeModel(RCP<ParameterList> validParameters, RCP<DependencySheet> dependencySheet,
-		  QString saveFileName=QString(), QObject *parent=0);
+	TreeModel(
+    RCP<ParameterList> validParameters,
+    RCP<DependencySheet> dependencySheet=null,
+	  QString saveFileName=QString(), 
+    QObject *parent=0);
 
 	/**
 	 *
@@ -87,7 +82,7 @@ public:
   //@{
 
   /** * \brief .  */
-	QVariant data(const QModelIndex &index, int role) const;
+	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
   /** * \brief .  */
 	Qt::ItemFlags flags(const QModelIndex &index) const;
   /** * \brief .  */
@@ -208,12 +203,23 @@ public:
 	/**
 	 * \brief Gets the array for a particular TreeItem.
 	 *
-	 * @param index The index of the TreeItem whose arrays is sought.
+	 * @param index The index of the TreeItem whose array is sought.
 	 * @return The array at the given index.
 	 */
 	template <class S>
 	Array<S> getArray(const QModelIndex& index){
 		return any_cast<Array<S> >(itemEntry(index)->getAny()); 
+	}
+
+	/**
+	 * \brief Gets the TwoDArray for a particular TreeItem.
+	 *
+	 * @param index The index of the TreeItem whose TwoDArray is sought.
+	 * @return The TwoDArray at the given index.
+	 */
+	template <class S>
+	TwoDArray<S> getTwoDArray(const QModelIndex& index){
+		return any_cast<TwoDArray<S> >(itemEntry(index)->getAny()); 
 	}
 
 	/**
@@ -299,7 +305,7 @@ private:
 	QString saveFileName;
 
 	/**
-	 * \brief The Root item of the model.
+	 * \brief The root item of the model.
 	 */
 	TreeItem *rootItem;
 
@@ -347,10 +353,10 @@ private:
 	 *
 	 * @param parameterList The ParameterList to be inserted.
 	 * @param listEntry The ParameterEntry of the ParameterList to be inserted.
-	 * @param name The name of the ParameterList.
+	 * @param plname The name of the ParameterList.
 	 * @param The parent TreeItem.
 	 */
-	void insertParameterList(RCP<ParameterList> parameterList, RCP<ParameterEntry> listEntry, std::string name, TreeItem *parent);
+	void insertParameterList(RCP<ParameterList> parameterList, RCP<ParameterEntry> listEntry, std::string plname, TreeItem *parent);
 
 	/**
 	 * \brief Inserts a new parameter into the model.
@@ -384,20 +390,47 @@ private:
 	void redrawArray(const QModelIndex arrayIndex);
   
   /**
-   * \brief Finds a list of QModelIndecies whose have associated ParameterEntrys
-   * that match the given parameterEntry. 
-   * 
-   * The fact this returns a list is a
-   * little missleading, as the list will always be length one. I really
-   * should just be returning a single QModelIndex. But my thesis is due on
-   * Friday so I'll have to come back and fix this later. 
-   * Kurtis Nusbaum 30/03/2011.
+   *
+   * \brief Finds the QModelIndex associated with a parameter entry.
    *
    * @param start The index where we should start looking.
    * @param parameterEntry The parameter entry we're looking for.
+   * @return The index associated with the parameter entry.
    */
-  QModelIndexList parameterEntryMatch(const QModelIndex &start,
+  QModelIndex parameterEntryMatch(const QModelIndex &start,
     const RCP<const ParameterEntry> &parameterEntry) const;
+
+
+  /**
+   * \brief Given a Dom element, searches for the corresponding parameter
+   * in the model, updates it's value with the value from the Dom element,
+   * and then recusively does the same for all children.
+   *
+   * @param element The element for which the corresponding parameter
+   * in the model and it's children should be updated.
+   */
+  void processInputElement(const QDomElement& element);
+
+  /**
+   * \brief Determines whether or not a model index corresponds to the
+   * parameter represented by the DomElement.
+   *
+   * This funciton determines whether or not the Dom Element and the 
+   * model index actually represent the same parameter by verifying they have
+   * the same set of parent nodes.
+   */
+  bool isRealMatch(
+    const QDomElement& element, 
+    const QModelIndex& potentialMatch) const;
+
+  /**
+   * Determines whether or not the given index is the root index.
+   *
+   * @param The index in question
+   * @return True is the index is the root index, false otherwise.
+   */
+  bool isRootIndex(const QModelIndex& index) const;
+  
 
   //@}
 
