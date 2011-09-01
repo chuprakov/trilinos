@@ -32,7 +32,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
+
 #ifdef HAVE_CTRILINOS_AMESOS
+
 
 #include "CTrilinos_enums.h"
 #include "CAmesos.h"
@@ -118,7 +120,7 @@ CT_Teuchos_ParameterList_ID_t Amesos_GetValidParameters (  )
 const Teuchos::RCP<Amesos>
 CAmesos::getAmesos( CT_Amesos_ID_t id )
 {
-        return tableOfAmesoss().get<Amesos>(
+    return tableOfAmesoss().get<Amesos>(
         CTrilinos::abstractType<CT_Amesos_ID_t>(id));
 }
 
@@ -126,7 +128,7 @@ CAmesos::getAmesos( CT_Amesos_ID_t id )
 const Teuchos::RCP<Amesos>
 CAmesos::getAmesos( CTrilinos_Universal_ID_t id )
 {
-        return tableOfAmesoss().get<Amesos>(id);
+    return tableOfAmesoss().get<Amesos>(id);
 }
 
 /* get const Amesos from either the const or non-const table
@@ -134,7 +136,7 @@ CAmesos::getAmesos( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Amesos>
 CAmesos::getConstAmesos( CT_Amesos_ID_t id )
 {
-        return tableOfAmesoss().getConst<Amesos>(
+    return tableOfAmesoss().getConst<Amesos>(
         CTrilinos::abstractType<CT_Amesos_ID_t>(id));
 }
 
@@ -143,7 +145,7 @@ CAmesos::getConstAmesos( CT_Amesos_ID_t id )
 const Teuchos::RCP<const Amesos>
 CAmesos::getConstAmesos( CTrilinos_Universal_ID_t id )
 {
-        return tableOfAmesoss().getConst<Amesos>(id);
+    return tableOfAmesoss().getConst<Amesos>(id);
 }
 
 /* store Amesos (owned) in non-const table */
@@ -176,7 +178,7 @@ CAmesos::removeAmesos( CT_Amesos_ID_t *id )
 {
     CTrilinos_Universal_ID_t aid = 
         CTrilinos::abstractType<CT_Amesos_ID_t>(*id);
-        tableOfAmesoss().remove(&aid);
+    tableOfAmesoss().remove(&aid);
     *id = CTrilinos::concreteType<CT_Amesos_ID_t>(aid);
 }
 
@@ -184,7 +186,7 @@ CAmesos::removeAmesos( CT_Amesos_ID_t *id )
 void
 CAmesos::removeAmesos( CTrilinos_Universal_ID_t *aid )
 {
-        tableOfAmesoss().remove(aid);
+    tableOfAmesoss().remove(aid);
 }
 
 /* purge Amesos table */
@@ -193,6 +195,7 @@ CAmesos::purgeAmesos(  )
 {
     tableOfAmesoss().purge();
 }
+
 
 
 #endif /* HAVE_CTRILINOS_AMESOS */

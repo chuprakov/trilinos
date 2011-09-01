@@ -32,7 +32,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
+
 #ifdef HAVE_CTRILINOS_AMESOS
+
 
 #include "CTrilinos_enums.h"
 #include "CAmesos_BaseSolver.h"
@@ -334,6 +336,7 @@ CAmesos::aliasConstBaseSolver( const Teuchos::RCP< const Amesos_BaseSolver > & r
 {
     return tableOfBaseSolvers().alias(robj);
 }
+
 
 
 #endif /* HAVE_CTRILINOS_AMESOS */

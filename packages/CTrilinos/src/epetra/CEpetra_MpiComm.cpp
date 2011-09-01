@@ -32,7 +32,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
+
 #ifdef HAVE_MPI
+
 
 #include "CTrilinos_enums.h"
 #include "CEpetra_MpiComm.h"
@@ -428,6 +430,7 @@ CEpetra::aliasConstMpiComm( const Teuchos::RCP< const Epetra_MpiComm > & robj )
 {
     return tableOfMpiComms().alias(robj);
 }
+
 
 
 #endif /* HAVE_MPI */

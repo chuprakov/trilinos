@@ -1,3 +1,5 @@
+#ifndef CTEUCHOS_COMMANDLINEPROCESSOR_H
+#define CTEUCHOS_COMMANDLINEPROCESSOR_H
 
 /*! @HEADER */
 /*
@@ -30,18 +32,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
 
 /*! @file CTeuchos_CommandLineProcessor.h
  * @brief Wrappers for Teuchos::CommandLineProcessor */
 
 /* True C header file! */
 
-
-#ifndef CTEUCHOS_COMMANDLINEPROCESSOR_H
-#define CTEUCHOS_COMMANDLINEPROCESSOR_H
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 

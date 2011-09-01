@@ -1,3 +1,5 @@
+#ifndef CIFPACK_PRECONDITIONER_H
+#define CIFPACK_PRECONDITIONER_H
 
 /*! @HEADER */
 /*
@@ -30,20 +32,18 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
+
+#ifdef HAVE_CTRILINOS_IFPACK
+
+
 
 /*! @file CIfpack_Preconditioner.h
  * @brief Wrappers for Ifpack_Preconditioner */
 
 /* True C header file! */
 
-
-#ifndef CIFPACK_PRECONDITIONER_H
-#define CIFPACK_PRECONDITIONER_H
-
-#ifdef HAVE_CTRILINOS_IFPACK
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 
@@ -186,6 +186,5 @@ double Ifpack_Preconditioner_ApplyInverseFlops (
 
 
 #endif /* HAVE_CTRILINOS_IFPACK */
-
 #endif /* CIFPACK_PRECONDITIONER_H */
 

@@ -1,3 +1,5 @@
+#ifndef CGALERI_UTILS_H
+#define CGALERI_UTILS_H
 
 /*! @HEADER */
 /*
@@ -30,20 +32,18 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
+
+#ifdef HAVE_CTRILINOS_GALERI
+
+
 
 /*! @file CGaleri_Utils.h
  * @brief Wrappers for Galeri_Utils */
 
 /* True C header file! */
 
-
-#ifndef CGALERI_UTILS_H
-#define CGALERI_UTILS_H
-
-#ifdef HAVE_CTRILINOS_GALERI
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 
@@ -144,6 +144,5 @@ void Galeri_Utils_PrintStencil2D (
 
 
 #endif /* HAVE_CTRILINOS_GALERI */
-
 #endif /* CGALERI_UTILS_H */
 

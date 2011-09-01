@@ -1,3 +1,5 @@
+#ifndef CAZTECOO_STATUSTESTMAXITERS_CPP_HPP
+#define CAZTECOO_STATUSTESTMAXITERS_CPP_HPP
 
 /*! @HEADER */
 /*
@@ -30,11 +32,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#ifndef CAZTECOO_STATUSTESTMAXITERS_CPP_HPP
-#define CAZTECOO_STATUSTESTMAXITERS_CPP_HPP
-
-
 #include "CTrilinos_config.h"
+
 
 #ifdef HAVE_CTRILINOS_AZTECOO
 
@@ -104,7 +103,6 @@ aliasConstStatusTestMaxIters( const Teuchos::RCP< const AztecOO_StatusTestMaxIte
 
 
 #endif /* HAVE_CTRILINOS_AZTECOO */
-
 #endif // CAZTECOO_STATUSTESTMAXITERS_CPP_HPP
 
 

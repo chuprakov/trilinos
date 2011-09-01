@@ -1,3 +1,5 @@
+#ifndef CGALERI_UTILS_CPP_HPP
+#define CGALERI_UTILS_CPP_HPP
 
 /*! @HEADER */
 /*
@@ -30,11 +32,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#ifndef CGALERI_UTILS_CPP_HPP
-#define CGALERI_UTILS_CPP_HPP
-
-
 #include "CTrilinos_config.h"
+
 
 #ifdef HAVE_CTRILINOS_GALERI
 
@@ -54,7 +53,6 @@ using Teuchos::RCP;
 
 
 #endif /* HAVE_CTRILINOS_GALERI */
-
 #endif // CGALERI_UTILS_CPP_HPP
 
 

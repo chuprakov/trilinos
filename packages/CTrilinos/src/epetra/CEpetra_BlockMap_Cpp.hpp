@@ -1,3 +1,5 @@
+#ifndef CEPETRA_BLOCKMAP_CPP_HPP
+#define CEPETRA_BLOCKMAP_CPP_HPP
 
 /*! @HEADER */
 /*
@@ -30,12 +32,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#ifndef CEPETRA_BLOCKMAP_CPP_HPP
-#define CEPETRA_BLOCKMAP_CPP_HPP
-
-
 #include "CTrilinos_config.h"
-
 
 #include "CTrilinos_enums.h"
 #include "Teuchos_RCP.hpp"

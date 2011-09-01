@@ -30,54 +30,40 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+/*! @file CTrilinos_difficult.hpp
+ * @brief Difficult enum conversions for CTrilinos. */
+
+
+#ifndef CTRILINOS_DIFFICULT_HPP
+#define CTRILINOS_DIFFICULT_HPP
+
+
 #include "CTrilinos_config.h"
 
 
-#ifdef HAVE_CTRILINOS_GALERI
-
+#include <string>
 
 #include "CTrilinos_enums.h"
-#include "CGaleri_Maps.h"
-#include "CGaleri_Maps_Cpp.hpp"
-#include "Galeri_Maps.h"
-#include "Teuchos_RCP.hpp"
-#include "CTrilinos_utils.hpp"
-#include "CTrilinos_utils_templ.hpp"
-#include "CEpetra_Map_Cpp.hpp"
-#include "CEpetra_Comm_Cpp.hpp"
-#include "CTeuchos_ParameterList_Cpp.hpp"
+#include "CTrilinos_exceptions.hpp"
+#ifdef HAVE_CTRILINOS_IFPACK
+#include "Ifpack.h"
+#endif /* HAVE_CTRILINOS_IFPACK */
 
 
-//
-// Definitions from CGaleri_Maps.h
-//
+namespace CTrilinos {
 
 
-extern "C" {
+#ifdef HAVE_CTRILINOS_IFPACK
+Ifpack::EPrecType convert_to_difficult_enum( CT_EPrecType_E_t en );
+#endif /* HAVE_CTRILINOS_IFPACK */
+
+#ifdef HAVE_CTRILINOS_IFPACK
+CT_EPrecType_E_t convert_from_difficult_enum( Ifpack::EPrecType en );
+#endif /* HAVE_CTRILINOS_IFPACK */
 
 
-CT_Epetra_Map_ID_t Galeri_Maps_CreateMap ( 
-  char MapType[], CT_Epetra_Comm_ID_t CommID, 
-  CT_Teuchos_ParameterList_ID_t ListID )
-{
-    const Teuchos::RCP<Epetra_Comm> Comm = CEpetra::getComm(CommID);
-    const Teuchos::RCP<Teuchos::ParameterList> List = 
-        CTeuchos::getParameterList(ListID);
-    return CEpetra::storeMap(Galeri::CreateMap(std::string(MapType), *Comm, 
-        *List));
-}
+} // namespace CTrilinos
 
 
-} // extern "C"
-
-
-//
-// Definitions from CGaleri_Maps_Cpp.hpp
-//
-
-
-
-
-#endif /* HAVE_CTRILINOS_GALERI */
-
+#endif
 

@@ -32,7 +32,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
+
 #ifdef HAVE_CTRILINOS_AZTECOO
+
 
 #include "CTrilinos_enums.h"
 #include "CAztecOO.h"
@@ -406,7 +408,7 @@ int AztecOO_GetAllAztecStatus (
 const Teuchos::RCP<AztecOO>
 CAztecOO::getAztecOO( CT_AztecOO_ID_t id )
 {
-        return tableOfAztecOOs().get<AztecOO>(
+    return tableOfAztecOOs().get<AztecOO>(
         CTrilinos::abstractType<CT_AztecOO_ID_t>(id));
 }
 
@@ -414,7 +416,7 @@ CAztecOO::getAztecOO( CT_AztecOO_ID_t id )
 const Teuchos::RCP<AztecOO>
 CAztecOO::getAztecOO( CTrilinos_Universal_ID_t id )
 {
-        return tableOfAztecOOs().get<AztecOO>(id);
+    return tableOfAztecOOs().get<AztecOO>(id);
 }
 
 /* get const AztecOO from either the const or non-const table
@@ -422,7 +424,7 @@ CAztecOO::getAztecOO( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const AztecOO>
 CAztecOO::getConstAztecOO( CT_AztecOO_ID_t id )
 {
-        return tableOfAztecOOs().getConst<AztecOO>(
+    return tableOfAztecOOs().getConst<AztecOO>(
         CTrilinos::abstractType<CT_AztecOO_ID_t>(id));
 }
 
@@ -431,7 +433,7 @@ CAztecOO::getConstAztecOO( CT_AztecOO_ID_t id )
 const Teuchos::RCP<const AztecOO>
 CAztecOO::getConstAztecOO( CTrilinos_Universal_ID_t id )
 {
-        return tableOfAztecOOs().getConst<AztecOO>(id);
+    return tableOfAztecOOs().getConst<AztecOO>(id);
 }
 
 /* store AztecOO (owned) in non-const table */
@@ -464,7 +466,7 @@ CAztecOO::removeAztecOO( CT_AztecOO_ID_t *id )
 {
     CTrilinos_Universal_ID_t aid = 
         CTrilinos::abstractType<CT_AztecOO_ID_t>(*id);
-        tableOfAztecOOs().remove(&aid);
+    tableOfAztecOOs().remove(&aid);
     *id = CTrilinos::concreteType<CT_AztecOO_ID_t>(aid);
 }
 
@@ -472,7 +474,7 @@ CAztecOO::removeAztecOO( CT_AztecOO_ID_t *id )
 void
 CAztecOO::removeAztecOO( CTrilinos_Universal_ID_t *aid )
 {
-        tableOfAztecOOs().remove(aid);
+    tableOfAztecOOs().remove(aid);
 }
 
 /* purge AztecOO table */
@@ -481,6 +483,7 @@ CAztecOO::purgeAztecOO(  )
 {
     tableOfAztecOOs().purge();
 }
+
 
 
 #endif /* HAVE_CTRILINOS_AZTECOO */

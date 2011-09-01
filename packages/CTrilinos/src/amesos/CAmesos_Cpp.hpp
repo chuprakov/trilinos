@@ -1,3 +1,5 @@
+#ifndef CAMESOS_CPP_HPP
+#define CAMESOS_CPP_HPP
 
 /*! @HEADER */
 /*
@@ -30,11 +32,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#ifndef CAMESOS_CPP_HPP
-#define CAMESOS_CPP_HPP
-
-
 #include "CTrilinos_config.h"
+
 
 #ifdef HAVE_CTRILINOS_AMESOS
 
@@ -96,7 +95,6 @@ purgeAmesos(  );
 
 
 #endif /* HAVE_CTRILINOS_AMESOS */
-
 #endif // CAMESOS_CPP_HPP
 
 

@@ -32,7 +32,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
+
 #ifdef HAVE_CTRILINOS_GALERI
+
 
 #include "CTrilinos_enums.h"
 #include "CGaleri_CrsMatrices.h"
@@ -72,6 +74,7 @@ CT_Epetra_CrsMatrix_ID_t Galeri_CrsMatrices_CreateCrsMatrix (
 //
 // Definitions from CGaleri_CrsMatrices_Cpp.hpp
 //
+
 
 
 

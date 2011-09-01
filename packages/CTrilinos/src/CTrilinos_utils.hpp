@@ -61,14 +61,6 @@ void pass_string_out( const std::string * const s, char *c[] );
 
 void pass_string_in( const char * const c[], std::string *s );
 
-#ifdef HAVE_CTRILINOS_IFPACK
-Ifpack::EPrecType convert_to_difficult_enum( CT_EPrecType_E_t en );
-#endif /* HAVE_CTRILINOS_IFPACK */
-
-#ifdef HAVE_CTRILINOS_IFPACK
-CT_EPrecType_E_t convert_from_difficult_enum( Ifpack::EPrecType en );
-#endif /* HAVE_CTRILINOS_IFPACK */
-
 /* stringify the enum name */
 std::string enum2str( CTrilinos_Table_ID_t ty );
 

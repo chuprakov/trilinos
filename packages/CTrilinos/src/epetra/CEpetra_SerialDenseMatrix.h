@@ -1,3 +1,5 @@
+#ifndef CEPETRA_SERIALDENSEMATRIX_H
+#define CEPETRA_SERIALDENSEMATRIX_H
 
 /*! @HEADER */
 /*
@@ -30,18 +32,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
 
 /*! @file CEpetra_SerialDenseMatrix.h
  * @brief Wrappers for Epetra_SerialDenseMatrix */
 
 /* True C header file! */
 
-
-#ifndef CEPETRA_SERIALDENSEMATRIX_H
-#define CEPETRA_SERIALDENSEMATRIX_H
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 

@@ -32,7 +32,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
+
 #ifdef HAVE_CTRILINOS_IFPACK
+
 
 #include "CTrilinos_enums.h"
 #include "CIfpack.h"
@@ -42,6 +44,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 #include "CTrilinos_utils.hpp"
 #include "CTrilinos_utils_templ.hpp"
 #include "CTrilinos_Table.hpp"
+#include "CTrilinos_difficult.hpp"
 #include "CIfpack_Preconditioner_Cpp.hpp"
 #include "CEpetra_RowMatrix_Cpp.hpp"
 #include "CTeuchos_ParameterList_Cpp.hpp"
@@ -139,7 +142,7 @@ CT_Ifpack_Preconditioner_ID_t Ifpack_CreatePreconditioner_UsingType (
 const Teuchos::RCP<Ifpack>
 CIfpack::getIfpack( CT_Ifpack_ID_t id )
 {
-        return tableOfIfpacks().get<Ifpack>(
+    return tableOfIfpacks().get<Ifpack>(
         CTrilinos::abstractType<CT_Ifpack_ID_t>(id));
 }
 
@@ -147,7 +150,7 @@ CIfpack::getIfpack( CT_Ifpack_ID_t id )
 const Teuchos::RCP<Ifpack>
 CIfpack::getIfpack( CTrilinos_Universal_ID_t id )
 {
-        return tableOfIfpacks().get<Ifpack>(id);
+    return tableOfIfpacks().get<Ifpack>(id);
 }
 
 /* get const Ifpack from either the const or non-const table
@@ -155,7 +158,7 @@ CIfpack::getIfpack( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Ifpack>
 CIfpack::getConstIfpack( CT_Ifpack_ID_t id )
 {
-        return tableOfIfpacks().getConst<Ifpack>(
+    return tableOfIfpacks().getConst<Ifpack>(
         CTrilinos::abstractType<CT_Ifpack_ID_t>(id));
 }
 
@@ -164,7 +167,7 @@ CIfpack::getConstIfpack( CT_Ifpack_ID_t id )
 const Teuchos::RCP<const Ifpack>
 CIfpack::getConstIfpack( CTrilinos_Universal_ID_t id )
 {
-        return tableOfIfpacks().getConst<Ifpack>(id);
+    return tableOfIfpacks().getConst<Ifpack>(id);
 }
 
 /* store Ifpack (owned) in non-const table */
@@ -197,7 +200,7 @@ CIfpack::removeIfpack( CT_Ifpack_ID_t *id )
 {
     CTrilinos_Universal_ID_t aid = 
         CTrilinos::abstractType<CT_Ifpack_ID_t>(*id);
-        tableOfIfpacks().remove(&aid);
+    tableOfIfpacks().remove(&aid);
     *id = CTrilinos::concreteType<CT_Ifpack_ID_t>(aid);
 }
 
@@ -205,7 +208,7 @@ CIfpack::removeIfpack( CT_Ifpack_ID_t *id )
 void
 CIfpack::removeIfpack( CTrilinos_Universal_ID_t *aid )
 {
-        tableOfIfpacks().remove(aid);
+    tableOfIfpacks().remove(aid);
 }
 
 /* purge Ifpack table */
@@ -214,6 +217,7 @@ CIfpack::purgeIfpack(  )
 {
     tableOfIfpacks().purge();
 }
+
 
 
 #endif /* HAVE_CTRILINOS_IFPACK */

@@ -1,3 +1,5 @@
+#ifndef CEPETRA_CRSMATRIX_H
+#define CEPETRA_CRSMATRIX_H
 
 /*! @HEADER */
 /*
@@ -30,18 +32,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
 
 /*! @file CEpetra_CrsMatrix.h
  * @brief Wrappers for Epetra_CrsMatrix */
 
 /* True C header file! */
 
-
-#ifndef CEPETRA_CRSMATRIX_H
-#define CEPETRA_CRSMATRIX_H
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 

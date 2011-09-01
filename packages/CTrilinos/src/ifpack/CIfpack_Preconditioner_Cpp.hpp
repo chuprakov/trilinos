@@ -1,3 +1,5 @@
+#ifndef CIFPACK_PRECONDITIONER_CPP_HPP
+#define CIFPACK_PRECONDITIONER_CPP_HPP
 
 /*! @HEADER */
 /*
@@ -30,11 +32,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#ifndef CIFPACK_PRECONDITIONER_CPP_HPP
-#define CIFPACK_PRECONDITIONER_CPP_HPP
-
-
 #include "CTrilinos_config.h"
+
 
 #ifdef HAVE_CTRILINOS_IFPACK
 
@@ -104,7 +103,6 @@ aliasConstPreconditioner( const Teuchos::RCP< const Ifpack_Preconditioner > & ro
 
 
 #endif /* HAVE_CTRILINOS_IFPACK */
-
 #endif // CIFPACK_PRECONDITIONER_CPP_HPP
 
 
