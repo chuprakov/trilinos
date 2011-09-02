@@ -32,7 +32,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
+
 #ifdef HAVE_CTRILINOS_IFPACK
+
 
 #include "CTrilinos_enums.h"
 #include "CIfpack_Preconditioner.h"
@@ -319,6 +321,7 @@ CIfpack::aliasConstPreconditioner( const Teuchos::RCP< const Ifpack_Precondition
 {
     return tableOfPreconditioners().alias(robj);
 }
+
 
 
 #endif /* HAVE_CTRILINOS_IFPACK */

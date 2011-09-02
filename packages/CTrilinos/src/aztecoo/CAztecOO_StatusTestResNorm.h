@@ -1,3 +1,5 @@
+#ifndef CAZTECOO_STATUSTESTRESNORM_H
+#define CAZTECOO_STATUSTESTRESNORM_H
 
 /*! @HEADER */
 /*
@@ -30,20 +32,18 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
+
+#ifdef HAVE_CTRILINOS_AZTECOO
+
+
 
 /*! @file CAztecOO_StatusTestResNorm.h
  * @brief Wrappers for AztecOO_StatusTestResNorm */
 
 /* True C header file! */
 
-
-#ifndef CAZTECOO_STATUSTESTRESNORM_H
-#define CAZTECOO_STATUSTESTRESNORM_H
-
-#ifdef HAVE_CTRILINOS_AZTECOO
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 
@@ -190,6 +190,5 @@ double AztecOO_StatusTestResNorm_GetScaledNormValue (
 
 
 #endif /* HAVE_CTRILINOS_AZTECOO */
-
 #endif /* CAZTECOO_STATUSTESTRESNORM_H */
 

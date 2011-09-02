@@ -1,3 +1,5 @@
+#ifndef CTEUCHOS_ANY_H
+#define CTEUCHOS_ANY_H
 
 /*! @HEADER */
 /*
@@ -30,18 +32,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
 
 /*! @file CTeuchos_any.h
  * @brief Wrappers for Teuchos::any */
 
 /* True C header file! */
 
-
-#ifndef CTEUCHOS_ANY_H
-#define CTEUCHOS_ANY_H
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 

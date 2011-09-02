@@ -1,3 +1,5 @@
+#ifndef CGALERI_CRSMATRICES_H
+#define CGALERI_CRSMATRICES_H
 
 /*! @HEADER */
 /*
@@ -30,20 +32,18 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
+
+#ifdef HAVE_CTRILINOS_GALERI
+
+
 
 /*! @file CGaleri_CrsMatrices.h
  * @brief Wrappers for Galeri_CrsMatrices */
 
 /* True C header file! */
 
-
-#ifndef CGALERI_CRSMATRICES_H
-#define CGALERI_CRSMATRICES_H
-
-#ifdef HAVE_CTRILINOS_GALERI
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 
@@ -72,6 +72,5 @@ CT_Epetra_CrsMatrix_ID_t Galeri_CrsMatrices_CreateCrsMatrix (
 
 
 #endif /* HAVE_CTRILINOS_GALERI */
-
 #endif /* CGALERI_CRSMATRICES_H */
 

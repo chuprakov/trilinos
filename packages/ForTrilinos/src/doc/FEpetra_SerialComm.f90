@@ -186,145 +186,286 @@ contains
   !> <BR> Epetra_SerialComm All Gather function. 
   !> @brief A no-op for a serial communicator.
   !!  Implements Epetra_Comm.
- subroutine gather(this,MyVals,AllVals,count,err)
+ subroutine GatherAll(this,MyVals,AllVals,count,err)
    class(Epetra_SerialComm)     ,intent(in)    :: this
-   real(c_double), dimension(:) ,intent(in)    :: MyVals
-   real(c_double), dimension(:) ,intent(inout) :: AllVals
-   integer(c_int)               ,intent(in)    :: count
+   real(c_double), dimension(:) ,intent(in)    :: MyVals &
+   !< On entry, contains the list of values, to be sent to all processors.
+   real(c_double), dimension(:) ,intent(inout) :: AllVals &
+   !< On exit, contains the list of values from all processors. Must be of size NumProc*Count.
+   integer(c_int)               ,intent(in)    :: count &
+   !< On entry, contains the length of the list of MyVals.
    type(error) ,optional, intent(inout) :: err &
    !< Return any error information.
   end subroutine
 
-  subroutine gather_int(this,MyVals,AllVals,count,err)
+  !> @name GatherAll Methods
+  !! @{
+
+  !> <BR> Epetra_SerialComm All Gather function. 
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm.
+  subroutine GatherAll(this,MyVals,AllVals,count,err)
     class(Epetra_SerialComm)     ,intent(in)    :: this
-    integer(c_int), dimension(:) ,intent(in)    :: MyVals
-    integer(c_int), dimension(:) ,intent(inout) :: AllVals
-    integer(c_int)               ,intent(in)    :: count
+    integer(c_int), dimension(:) ,intent(in)    :: MyVals &
+    !< On entry, contains the list of values, to be sent to all processors.
+    integer(c_int), dimension(:) ,intent(inout) :: AllVals &
+    !< On exit, contains the list of values from all processors. Must be of size NumProc*Count.
+    integer(c_int)               ,intent(in)    :: count &
+    !< On entry, contains the length of the list of MyVals.
     type(error) ,optional, intent(inout) :: err &
     !< Return any error information.
   end subroutine
 
+  !> @name GatherAll Methods
+  !! @{
+
+  !> <BR> Epetra_SerialComm All Gather function. 
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm.
   subroutine gather_long(this,MyVals,AllVals,count,err)
     class(Epetra_SerialComm)      ,intent(in)    :: this
-    integer(c_long), dimension(:) ,intent(in)    :: MyVals
-    integer(c_long), dimension(:) ,intent(inout) :: AllVals
-    integer(c_int)                ,intent(in)    :: count
+    integer(c_long), dimension(:) ,intent(in)    :: MyVals &
+    !< On entry, contains the list of values, to be sent to all processors.
+    integer(c_long), dimension(:) ,intent(inout) :: AllVals &
+    !< On exit, contains the list of values from all processors. Must be of size NumProc*Count.
+    integer(c_int)                ,intent(in)    :: count &
+    !< On entry, contains the length of the list of MyVals.
     type(error) ,optional, intent(inout) :: err &
     !< Return any error information.
   end subroutine
 
-  subroutine sum_double(this,PartialSums,GlobalSums,count,err)
+  !> @name Sum Methods
+  !! @{
+
+  !> <BR> Epetra_SerialComm Global Summ function. 
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm.
+  subroutine SumAll(this,PartialSums,GlobalSums,count,err)
     class(Epetra_SerialComm)     ,intent(in)    :: this
-    real(c_double), dimension(:) ,intent(in)    :: PartialSums
-    real(c_double), dimension(:) ,intent(inout) :: GlobalSums
-    integer(c_int)               ,intent(in)    :: count
+    real(c_double), dimension(:) ,intent(in)    :: PartialSums &
+    !<  On entry, contains the list of values, usually partial sums computed locally, to be summed across all processors.
+    real(c_double), dimension(:) ,intent(inout) :: GlobalSums &
+    !<   On exit, contains the list of values summed across all processors.
+    integer(c_int)               ,intent(in)    :: count &
+    !< On entry, contains the length of the list of values.
     type(error) ,optional, intent(inout) :: err &
     !< Return any error information.   
   end subroutine
 
-  subroutine sum_int(this,PartialSums,GlobalSums,count,err)
+  !> @name Sum Methods
+  !! @{
+
+  !> <BR> Epetra_SerialComm Global Summ function. 
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm.
+  subroutine SumAll(this,PartialSums,GlobalSums,count,err)
     class(Epetra_SerialComm)     ,intent(in)    :: this
-    integer(c_int), dimension(:) ,intent(in)    :: PartialSums
-    integer(c_int), dimension(:) ,intent(inout) :: GlobalSums
-    integer(c_int)               ,intent(in)    :: count
+    integer(c_int), dimension(:) ,intent(in)    :: PartialSums &
+    !<  On entry, contains the list of values, usually partial sums computed locally, to be summed across all processors.
+    integer(c_int), dimension(:) ,intent(inout) :: GlobalSums &
+    !<   On exit, contains the list of values summed across all processors.
+    integer(c_int)               ,intent(in)    :: count &
+    !< On entry, contains the length of the list of values.
     type(error) ,optional, intent(inout) :: err &
      !< Return any error information.
   end subroutine
 
+  !> @name Sum Methods
+  !! @{
+
+  !> <BR> Epetra_SerialComm Global Summ function. 
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm.
   subroutine sum_long(this,PartialSums,GlobalSums,count,err)
     class(Epetra_SerialComm)     ,intent(in)    :: this
-    integer(c_long), dimension(:),intent(in)    :: PartialSums
-     integer(c_long), dimension(:),intent(inout) :: GlobalSums
-    integer(c_int)               ,intent(in)    :: count
+    integer(c_long), dimension(:),intent(in)    :: PartialSums &
+    !<  On entry, contains the list of values, usually partial sums computed locally, to be summed across all processors.
+    integer(c_long), dimension(:),intent(inout) :: GlobalSums &
+    !<   On exit, contains the list of values summed across all processors.
+    integer(c_int)               ,intent(in)    :: count &
+    !< On entry, contains the length of the list of values.
     type(error) ,optional, intent(inout) :: err &
     !< Return any error information.
   end subroutine
-  
-  subroutine max_double(this,PartialMaxs,GlobalMaxs,count,err)
+ 
+  !> @name Max/Min Methods
+  !! @{
+
+  !> <BR> Epetra_SerialComm Global Max function. 
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm. 
+  subroutine MaxAll(this,PartialMaxs,GlobalMaxs,count,err)
     class(Epetra_SerialComm)     ,intent(in)    :: this
-    real(c_double), dimension(:) ,intent(in)    :: PartialMaxs
-    real(c_double), dimension(:) ,intent(inout) :: GlobalMaxs
-    integer(c_int)               ,intent(in)    :: count
+    real(c_double), dimension(:) ,intent(in)    :: PartialMaxs &
+    !<  On entry, contains the list of values, usually partial maxs computed locally, using these Partial Maxs, the max across all processors will be computed.
+    real(c_double), dimension(:) ,intent(inout) :: GlobalMaxs &
+    !<  On exit, contains the list of maxs computed across all processors.
+    integer(c_int)               ,intent(in)    :: count &
+    !< On entry, contains the length of the list of values.
     type(error) ,optional, intent(inout) :: err &
     !< Return any error information.
   end subroutine
 
-  subroutine max_int(this,PartialMaxs,GlobalMaxs,count,err)
+  !> @name Max/Min Methods
+  !! @{
+
+  !> <BR> Epetra_SerialComm Global Max function. 
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm. 
+  subroutine MaxAll(this,PartialMaxs,GlobalMaxs,count,err)
     class(Epetra_SerialComm)     ,intent(in)    :: this
-    integer(c_int), dimension(:) ,intent(in)    :: PartialMaxs
-    integer(c_int), dimension(:) ,intent(inout) :: GlobalMaxs
-    integer(c_int)               ,intent(in)    :: count
+    integer(c_int), dimension(:) ,intent(in)    :: PartialMaxs &
+    !<  On entry, contains the list of values, usually partial maxs computed locally, using these Partial Maxs, the max across all processors will be computed.
+    integer(c_int), dimension(:) ,intent(inout) :: GlobalMaxs &
+    !< On exit, contains the list of maxs computed across all processors.
+    integer(c_int)               ,intent(in)    :: count &
+    !< On entry, contains the length of the list of values.
     type(error) ,optional, intent(inout) :: err &
     !< Return any error information.
   end subroutine
 
+  !> @name Max/Min Methods
+  !! @{
+
+  !> <BR> Epetra_SerialComm Global Max function. 
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm. 
   subroutine max_long(this,PartialMaxs,GlobalMaxs,count,err)
     class(Epetra_SerialComm)     ,intent(in)    :: this
-    integer(c_long), dimension(:),intent(in)    :: PartialMaxs
-    integer(c_long), dimension(:),intent(inout) :: GlobalMaxs
-    integer(c_int)               ,intent(in)    :: count
+    integer(c_long), dimension(:),intent(in)    :: PartialMaxs &
+    !<  On entry, contains the list of values, usually partial maxs computed locally, using these Partial Maxs, the max across all processors will be computed.
+    integer(c_long), dimension(:),intent(inout) :: GlobalMaxs &
+    !< On exit, contains the list of maxs computed across all processors.
+    integer(c_int)               ,intent(in)    :: count &
+    !< On entry, contains the length of the list of values.
     type(error) ,optional, intent(inout) :: err &
     !< Return any error information.
   end subroutine
-  
-  subroutine min_double(this,PartialMins,GlobalMins,count,err)
+ 
+  !> @name Max/Min Methods
+  !! @{
+    
+  !> <BR> Epetra_SerialComm Global Min function. 
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm. 
+  subroutine MinAll(this,PartialMins,GlobalMins,count,err)
     class(Epetra_SerialComm)     ,intent(in)    :: this
-    real(c_double), dimension(:) ,intent(in)    :: PartialMins
-    real(c_double), dimension(:) ,intent(inout) :: GlobalMins
-    integer(c_int)               ,intent(in)    :: count
+    real(c_double), dimension(:) ,intent(in)    :: PartialMins &
+    !<  On entry, contains the list of values, usually partial mins computed locally; using these Partial Mins, the min across all processors will be computed.
+    real(c_double), dimension(:) ,intent(inout) :: GlobalMins &
+    !< On exit, contains the list of mins computed across all processors.
+    integer(c_int)               ,intent(in)    :: count &
+    !< On entry, contains the length of the list of values.
     type(error) ,optional, intent(inout) :: err &
     !< Return any error information.
   end subroutine
 
-  subroutine min_int(this,PartialMins,GlobalMins,count,err)
+  !> @name Max/Min Methods
+  !! @{
+    
+  !> <BR> Epetra_SerialComm Global Min function. 
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm. 
+  subroutine MinAll(this,PartialMins,GlobalMins,count,err)
     class(Epetra_SerialComm)     ,intent(in)    :: this
-    integer(c_int), dimension(:) ,intent(in)    :: PartialMins
-    integer(c_int), dimension(:) ,intent(inout) :: GlobalMins
-    integer(c_int)               ,intent(in)    :: count
+    integer(c_int), dimension(:) ,intent(in)    :: PartialMins &
+    !<  On entry, contains the list of values, usually partial mins computed locally; using these Partial Mins, the min across all processors will be computed.
+    integer(c_int), dimension(:) ,intent(inout) :: GlobalMins &
+    !< On exit, contains the list of mins computed across all processors.
+    integer(c_int)               ,intent(in)    :: count &
+    !< On entry, contains the length of the list of values.
     type(error) ,optional, intent(inout) :: err &
      !< Return any error information.
   end subroutine
 
+  !> @name Max/Min Methods
+  !! @{
+
+  !> <BR> Epetra_SerialComm Global Min function. 
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm.
   subroutine min_long(this,PartialMins,GlobalMins,count,err)
     class(Epetra_SerialComm)     ,intent(in)    :: this
-    integer(c_long), dimension(:),intent(in)    :: PartialMins
-    integer(c_long), dimension(:),intent(inout) :: GlobalMins
-    integer(c_int)               ,intent(in)    :: count
+    integer(c_long), dimension(:),intent(in)    :: PartialMins &
+    !<  On entry, contains the list of values, usually partial mins computed locally; using these Partial Mins, the min across all processors will be computed.
+    integer(c_long), dimension(:),intent(inout) :: GlobalMins &
+    !< On exit, contains the list of mins computed across all processors.
+    integer(c_int)               ,intent(in)    :: count &
+    !< On entry, contains the length of the list of values.
     type(error) ,optional, intent(inout) :: err &
      !< Return any error information.
   end subroutine
 
-  subroutine ScanSum_double(this,MyVals,scan_sums,count,err)
+  !> @name Parallel Prefix Methods
+  !! @{
+
+  !> <BR> Epetra_SerialComm Scan Sum function. 
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm.
+  subroutine ScanSum(this,MyVals,scan_sums,count,err)
     class(Epetra_SerialComm)     ,intent(in)    :: this
-    real(c_double), dimension(:) ,intent(in)    :: MyVals 
-    real(c_double), dimension(:) ,intent(inout) :: scan_sums
-    integer(c_int)               ,intent(in)    :: count
+    real(c_double), dimension(:) ,intent(in)    :: MyVals  &
+    !< On entry, contains the list of values to be summed across all processors.
+    real(c_double), dimension(:) ,intent(inout) :: scan_sums &
+    !< On exit, contains the list of values summed across processors 0 through i.
+    integer(c_int)               ,intent(in)    :: count &
+    !< On entry, contains the length of the list of values.
     type(error) ,optional, intent(inout) :: err &
     !< Return any error information.
   end subroutine
 
-  subroutine ScanSum_int(this,MyVals,scan_sums,count,err)
+  !> @name Parallel Prefix Methods
+  !! @{
+
+  !> <BR> Epetra_SerialComm Scan Sum function. 
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm.
+  subroutine ScanSum(this,MyVals,scan_sums,count,err)
     class(Epetra_SerialComm)     ,intent(in)    :: this
-    integer(c_int), dimension(:) ,intent(in)    :: MyVals 
-    integer(c_int), dimension(:) ,intent(inout) :: scan_sums
-    integer(c_int)               ,intent(in)    :: count
+    integer(c_int), dimension(:) ,intent(in)    :: MyVals  &
+    !< On entry, contains the list of values to be summed across all processors.
+    integer(c_int), dimension(:) ,intent(inout) :: scan_sums &
+    !< On exit, contains the list of values summed across processors 0 through i.
+    integer(c_int)               ,intent(in)    :: count &
+    !< On entry, contains the length of the list of values.
     type(error) ,optional, intent(inout) :: err &
      !< Return any error information.
   end subroutine
 
+  !> @name Parallel Prefix Methods
+  !! @{
+    
+  !> <BR> Epetra_SerialComm Scan Sum function.  
+  !> @brief A no-op for a serial communicator.
+  !!  Implements Epetra_Comm.
   subroutine ScanSum_long(this,MyVals,scan_sums,count,err)
     class(Epetra_SerialComm)     ,intent(in)    :: this
-    integer(c_long), dimension(:),intent(in)    :: MyVals 
-     integer(c_long), dimension(:),intent(inout) :: scan_sums
-    integer(c_int)               ,intent(in)    :: count
+    integer(c_long), dimension(:),intent(in)    :: MyVals &
+    !< On entry, contains the list of values to be summed across all processors.
+    integer(c_long), dimension(:),intent(inout) :: scan_sums &
+    !< On exit, contains the list of values summed across processors 0 through i.
+    integer(c_int)               ,intent(in)    :: count &
+    !< On entry, contains the length of the list of values.
     type(error) ,optional, intent(inout) :: err &
     !< Return any error information.
   end subroutine
-
+ 
+  !< name Attribute Accessor Methods
+  !! @{
+    
+  !> <BR> Return my process ID.  
+  !> @brief In MPI mode returns the rank of the calling process.  In serial mode returns 0.
+  !!  Implements Epetra_Comm.
   integer(c_int) function MyPID(this)
     class(Epetra_SerialComm)     , intent(in) :: this
   end function
+  
+  !< name Attribute Accessor Methods
+  !! @{
 
+  !> <BR> Return my process ID.  
+  !> @brief Returns total number of processes (always returns 1 for SerialComm).
+  !!  Implements Epetra_Comm.
   integer(c_int) function NumProc(this)
     class(Epetra_SerialComm)     , intent(in) :: this
   end function

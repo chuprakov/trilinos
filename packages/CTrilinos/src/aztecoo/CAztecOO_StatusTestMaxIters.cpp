@@ -32,7 +32,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
+
 #ifdef HAVE_CTRILINOS_AZTECOO
+
 
 #include "CTrilinos_enums.h"
 #include "CAztecOO_StatusTestMaxIters.h"
@@ -256,6 +258,7 @@ CAztecOO::aliasConstStatusTestMaxIters( const Teuchos::RCP< const AztecOO_Status
 {
     return tableOfStatusTestMaxIterss().alias(robj);
 }
+
 
 
 #endif /* HAVE_CTRILINOS_AZTECOO */

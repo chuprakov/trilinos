@@ -1,3 +1,5 @@
+#ifndef CEPETRA_MPICOMM_CPP_HPP
+#define CEPETRA_MPICOMM_CPP_HPP
 
 /*! @HEADER */
 /*
@@ -30,11 +32,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#ifndef CEPETRA_MPICOMM_CPP_HPP
-#define CEPETRA_MPICOMM_CPP_HPP
-
-
 #include "CTrilinos_config.h"
+
 
 #ifdef HAVE_MPI
 
@@ -104,7 +103,6 @@ aliasConstMpiComm( const Teuchos::RCP< const Epetra_MpiComm > & robj );
 
 
 #endif /* HAVE_MPI */
-
 #endif // CEPETRA_MPICOMM_CPP_HPP
 
 

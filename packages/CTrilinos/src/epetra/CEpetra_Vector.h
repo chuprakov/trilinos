@@ -1,3 +1,5 @@
+#ifndef CEPETRA_VECTOR_H
+#define CEPETRA_VECTOR_H
 
 /*! @HEADER */
 /*
@@ -30,18 +32,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
 
 /*! @file CEpetra_Vector.h
  * @brief Wrappers for Epetra_Vector */
 
 /* True C header file! */
 
-
-#ifndef CEPETRA_VECTOR_H
-#define CEPETRA_VECTOR_H
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 

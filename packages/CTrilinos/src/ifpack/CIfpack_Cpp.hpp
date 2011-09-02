@@ -1,3 +1,5 @@
+#ifndef CIFPACK_CPP_HPP
+#define CIFPACK_CPP_HPP
 
 /*! @HEADER */
 /*
@@ -30,11 +32,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#ifndef CIFPACK_CPP_HPP
-#define CIFPACK_CPP_HPP
-
-
 #include "CTrilinos_config.h"
+
 
 #ifdef HAVE_CTRILINOS_IFPACK
 
@@ -96,7 +95,6 @@ purgeIfpack(  );
 
 
 #endif /* HAVE_CTRILINOS_IFPACK */
-
 #endif // CIFPACK_CPP_HPP
 
 

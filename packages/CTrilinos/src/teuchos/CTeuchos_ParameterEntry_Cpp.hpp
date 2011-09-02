@@ -1,3 +1,5 @@
+#ifndef CTEUCHOS_PARAMETERENTRY_CPP_HPP
+#define CTEUCHOS_PARAMETERENTRY_CPP_HPP
 
 /*! @HEADER */
 /*
@@ -30,12 +32,7 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#ifndef CTEUCHOS_PARAMETERENTRY_CPP_HPP
-#define CTEUCHOS_PARAMETERENTRY_CPP_HPP
-
-
 #include "CTrilinos_config.h"
-
 
 #include "CTrilinos_enums.h"
 #include "Teuchos_RCP.hpp"

@@ -1,3 +1,5 @@
+#ifndef CTEUCHOS_PARAMETERLIST_H
+#define CTEUCHOS_PARAMETERLIST_H
 
 /*! @HEADER */
 /*
@@ -30,18 +32,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
 
 /*! @file CTeuchos_ParameterList.h
  * @brief Wrappers for Teuchos::ParameterList */
 
 /* True C header file! */
 
-
-#ifndef CTEUCHOS_PARAMETERLIST_H
-#define CTEUCHOS_PARAMETERLIST_H
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 
@@ -168,28 +166,28 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_setEntry (
 /*! @brief Wrapper for 
    template<typename T> T& Teuchos::ParameterList::get(const std::string& name, T def_value)
 */
-double Teuchos_ParameterList_get_double_def ( 
+double Teuchos_ParameterList_get_def_double ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   double def_value );
 
 /*! @brief Wrapper for 
    template<typename T> T& Teuchos::ParameterList::get(const std::string& name, T def_value)
 */
-int Teuchos_ParameterList_get_int_def ( 
+int Teuchos_ParameterList_get_def_int ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   int def_value );
 
 /*! @brief Wrapper for 
    std::string& Teuchos::ParameterList::get(const std::string& name, char def_value[])
 */
-const char * Teuchos_ParameterList_get_char_def ( 
+const char * Teuchos_ParameterList_get_def_char ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   char def_value[] );
 
 /*! @brief Wrapper for 
    std::string& Teuchos::ParameterList::get(const std::string& name, const char def_value[])
 */
-const char * Teuchos_ParameterList_get_const_char_def ( 
+const char * Teuchos_ParameterList_get_def_const_char ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   const char def_value[] );
 
@@ -208,13 +206,13 @@ int Teuchos_ParameterList_get_int (
 /*! @brief Wrapper for 
    template<typename T> const T& Teuchos::ParameterList::get(const std::string& name) const
 */
-double Teuchos_ParameterList_get_double_const ( 
+double Teuchos_ParameterList_get_const_double ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /*! @brief Wrapper for 
    template<typename T> const T& Teuchos::ParameterList::get(const std::string& name) const
 */
-int Teuchos_ParameterList_get_int_const ( 
+int Teuchos_ParameterList_get_const_int ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /*! @brief Wrapper for 
@@ -232,13 +230,13 @@ int * Teuchos_ParameterList_getPtr_int (
 /*! @brief Wrapper for 
    template<typename T> inline const T* Teuchos::ParameterList::getPtr(const std::string& name) const
 */
-const double * Teuchos_ParameterList_getPtr_double_const ( 
+const double * Teuchos_ParameterList_getPtr_const_double ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /*! @brief Wrapper for 
    template<typename T> inline const T* Teuchos::ParameterList::getPtr(const std::string& name) const
 */
-const int * Teuchos_ParameterList_getPtr_int_const ( 
+const int * Teuchos_ParameterList_getPtr_const_int ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[] );
 
 /*! @brief Wrapper for 
@@ -318,14 +316,14 @@ boolean Teuchos_ParameterList_isType_int (
 /*! @brief Wrapper for 
    template<typename T> bool Teuchos::ParameterList::isType(const std::string& name, T* ptr) const
 */
-boolean Teuchos_ParameterList_isType_double_type ( 
+boolean Teuchos_ParameterList_isType_type_double ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   double * ptr );
 
 /*! @brief Wrapper for 
    template<typename T> bool Teuchos::ParameterList::isType(const std::string& name, T* ptr) const
 */
-boolean Teuchos_ParameterList_isType_int_type ( 
+boolean Teuchos_ParameterList_isType_type_int ( 
   CT_Teuchos_ParameterList_ID_t selfID, const char name[], 
   int * ptr );
 

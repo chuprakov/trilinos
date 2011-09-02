@@ -1,3 +1,5 @@
+#ifndef CAMESOS_H
+#define CAMESOS_H
 
 /*! @HEADER */
 /*
@@ -30,20 +32,18 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
+
+#ifdef HAVE_CTRILINOS_AMESOS
+
+
 
 /*! @file CAmesos.h
  * @brief Wrappers for Amesos */
 
 /* True C header file! */
 
-
-#ifndef CAMESOS_H
-#define CAMESOS_H
-
-#ifdef HAVE_CTRILINOS_AMESOS
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 
@@ -108,6 +108,5 @@ CT_Teuchos_ParameterList_ID_t Amesos_GetValidParameters (  );
 
 
 #endif /* HAVE_CTRILINOS_AMESOS */
-
 #endif /* CAMESOS_H */
 

@@ -194,7 +194,7 @@ void Teuchos_CommandLineProcessor_setOption_str (
 const Teuchos::RCP<Teuchos::CommandLineProcessor>
 CTeuchos::getCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id )
 {
-        return tableOfCommandLineProcessors().get<Teuchos::CommandLineProcessor>(
+    return tableOfCommandLineProcessors().get<Teuchos::CommandLineProcessor>(
         CTrilinos::abstractType<CT_Teuchos_CommandLineProcessor_ID_t>(id));
 }
 
@@ -202,7 +202,7 @@ CTeuchos::getCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id )
 const Teuchos::RCP<Teuchos::CommandLineProcessor>
 CTeuchos::getCommandLineProcessor( CTrilinos_Universal_ID_t id )
 {
-        return tableOfCommandLineProcessors().get<Teuchos::CommandLineProcessor>(id);
+    return tableOfCommandLineProcessors().get<Teuchos::CommandLineProcessor>(id);
 }
 
 /* get const Teuchos::CommandLineProcessor from either the const or non-const table
@@ -210,7 +210,7 @@ CTeuchos::getCommandLineProcessor( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Teuchos::CommandLineProcessor>
 CTeuchos::getConstCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id )
 {
-        return tableOfCommandLineProcessors().getConst<Teuchos::CommandLineProcessor>(
+    return tableOfCommandLineProcessors().getConst<Teuchos::CommandLineProcessor>(
         CTrilinos::abstractType<CT_Teuchos_CommandLineProcessor_ID_t>(id));
 }
 
@@ -219,7 +219,7 @@ CTeuchos::getConstCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t id 
 const Teuchos::RCP<const Teuchos::CommandLineProcessor>
 CTeuchos::getConstCommandLineProcessor( CTrilinos_Universal_ID_t id )
 {
-        return tableOfCommandLineProcessors().getConst<Teuchos::CommandLineProcessor>(id);
+    return tableOfCommandLineProcessors().getConst<Teuchos::CommandLineProcessor>(id);
 }
 
 /* store Teuchos::CommandLineProcessor (owned) in non-const table */
@@ -252,7 +252,7 @@ CTeuchos::removeCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t *id )
 {
     CTrilinos_Universal_ID_t aid = 
         CTrilinos::abstractType<CT_Teuchos_CommandLineProcessor_ID_t>(*id);
-        tableOfCommandLineProcessors().remove(&aid);
+    tableOfCommandLineProcessors().remove(&aid);
     *id = CTrilinos::concreteType<CT_Teuchos_CommandLineProcessor_ID_t>(aid);
 }
 
@@ -260,7 +260,7 @@ CTeuchos::removeCommandLineProcessor( CT_Teuchos_CommandLineProcessor_ID_t *id )
 void
 CTeuchos::removeCommandLineProcessor( CTrilinos_Universal_ID_t *aid )
 {
-        tableOfCommandLineProcessors().remove(aid);
+    tableOfCommandLineProcessors().remove(aid);
 }
 
 /* purge Teuchos::CommandLineProcessor table */

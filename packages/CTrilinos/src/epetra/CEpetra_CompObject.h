@@ -1,3 +1,5 @@
+#ifndef CEPETRA_COMPOBJECT_H
+#define CEPETRA_COMPOBJECT_H
 
 /*! @HEADER */
 /*
@@ -30,18 +32,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
 
 /*! @file CEpetra_CompObject.h
  * @brief Wrappers for Epetra_CompObject */
 
 /* True C header file! */
 
-
-#ifndef CEPETRA_COMPOBJECT_H
-#define CEPETRA_COMPOBJECT_H
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 

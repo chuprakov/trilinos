@@ -1,3 +1,5 @@
+#ifndef CEPETRA_DISTRIBUTOR_H
+#define CEPETRA_DISTRIBUTOR_H
 
 /*! @HEADER */
 /*
@@ -30,18 +32,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
 
 /*! @file CEpetra_Distributor.h
  * @brief Wrappers for Epetra_Distributor */
 
 /* True C header file! */
 
-
-#ifndef CEPETRA_DISTRIBUTOR_H
-#define CEPETRA_DISTRIBUTOR_H
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 

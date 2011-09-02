@@ -32,7 +32,9 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 
 #include "CTrilinos_config.h"
 
+
 #ifdef HAVE_CTRILINOS_GALERI
+
 
 #include "CTrilinos_enums.h"
 #include "CGaleri_Maps.h"
@@ -72,6 +74,7 @@ CT_Epetra_Map_ID_t Galeri_Maps_CreateMap (
 //
 // Definitions from CGaleri_Maps_Cpp.hpp
 //
+
 
 
 

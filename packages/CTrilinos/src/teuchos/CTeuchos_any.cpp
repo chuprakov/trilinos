@@ -143,7 +143,7 @@ void Teuchos_any_Assign (
 const Teuchos::RCP<Teuchos::any>
 CTeuchos::getany( CT_Teuchos_any_ID_t id )
 {
-        return tableOfanys().get<Teuchos::any>(
+    return tableOfanys().get<Teuchos::any>(
         CTrilinos::abstractType<CT_Teuchos_any_ID_t>(id));
 }
 
@@ -151,7 +151,7 @@ CTeuchos::getany( CT_Teuchos_any_ID_t id )
 const Teuchos::RCP<Teuchos::any>
 CTeuchos::getany( CTrilinos_Universal_ID_t id )
 {
-        return tableOfanys().get<Teuchos::any>(id);
+    return tableOfanys().get<Teuchos::any>(id);
 }
 
 /* get const Teuchos::any from either the const or non-const table
@@ -159,7 +159,7 @@ CTeuchos::getany( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Teuchos::any>
 CTeuchos::getConstany( CT_Teuchos_any_ID_t id )
 {
-        return tableOfanys().getConst<Teuchos::any>(
+    return tableOfanys().getConst<Teuchos::any>(
         CTrilinos::abstractType<CT_Teuchos_any_ID_t>(id));
 }
 
@@ -168,7 +168,7 @@ CTeuchos::getConstany( CT_Teuchos_any_ID_t id )
 const Teuchos::RCP<const Teuchos::any>
 CTeuchos::getConstany( CTrilinos_Universal_ID_t id )
 {
-        return tableOfanys().getConst<Teuchos::any>(id);
+    return tableOfanys().getConst<Teuchos::any>(id);
 }
 
 /* store Teuchos::any (owned) in non-const table */
@@ -201,7 +201,7 @@ CTeuchos::removeany( CT_Teuchos_any_ID_t *id )
 {
     CTrilinos_Universal_ID_t aid = 
         CTrilinos::abstractType<CT_Teuchos_any_ID_t>(*id);
-        tableOfanys().remove(&aid);
+    tableOfanys().remove(&aid);
     *id = CTrilinos::concreteType<CT_Teuchos_any_ID_t>(aid);
 }
 
@@ -209,7 +209,7 @@ CTeuchos::removeany( CT_Teuchos_any_ID_t *id )
 void
 CTeuchos::removeany( CTrilinos_Universal_ID_t *aid )
 {
-        tableOfanys().remove(aid);
+    tableOfanys().remove(aid);
 }
 
 /* purge Teuchos::any table */

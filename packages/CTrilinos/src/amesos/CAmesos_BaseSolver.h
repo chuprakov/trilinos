@@ -1,3 +1,5 @@
+#ifndef CAMESOS_BASESOLVER_H
+#define CAMESOS_BASESOLVER_H
 
 /*! @HEADER */
 /*
@@ -30,20 +32,18 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
+
+#ifdef HAVE_CTRILINOS_AMESOS
+
+
 
 /*! @file CAmesos_BaseSolver.h
  * @brief Wrappers for Amesos_BaseSolver */
 
 /* True C header file! */
 
-
-#ifndef CAMESOS_BASESOLVER_H
-#define CAMESOS_BASESOLVER_H
-
-#ifdef HAVE_CTRILINOS_AMESOS
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 
@@ -201,6 +201,5 @@ void Amesos_BaseSolver_GetTiming (
 
 
 #endif /* HAVE_CTRILINOS_AMESOS */
-
 #endif /* CAMESOS_BASESOLVER_H */
 

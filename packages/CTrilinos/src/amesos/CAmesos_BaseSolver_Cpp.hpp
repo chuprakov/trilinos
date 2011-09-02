@@ -1,3 +1,5 @@
+#ifndef CAMESOS_BASESOLVER_CPP_HPP
+#define CAMESOS_BASESOLVER_CPP_HPP
 
 /*! @HEADER */
 /*
@@ -30,11 +32,8 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
-#ifndef CAMESOS_BASESOLVER_CPP_HPP
-#define CAMESOS_BASESOLVER_CPP_HPP
-
-
 #include "CTrilinos_config.h"
+
 
 #ifdef HAVE_CTRILINOS_AMESOS
 
@@ -104,7 +103,6 @@ aliasConstBaseSolver( const Teuchos::RCP< const Amesos_BaseSolver > & robj );
 
 
 #endif /* HAVE_CTRILINOS_AMESOS */
-
 #endif // CAMESOS_BASESOLVER_CPP_HPP
 
 

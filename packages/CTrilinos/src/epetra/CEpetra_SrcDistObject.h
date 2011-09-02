@@ -1,3 +1,5 @@
+#ifndef CEPETRA_SRCDISTOBJECT_H
+#define CEPETRA_SRCDISTOBJECT_H
 
 /*! @HEADER */
 /*
@@ -30,18 +32,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
 
 /*! @file CEpetra_SrcDistObject.h
  * @brief Wrappers for Epetra_SrcDistObject */
 
 /* True C header file! */
 
-
-#ifndef CEPETRA_SRCDISTOBJECT_H
-#define CEPETRA_SRCDISTOBJECT_H
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 

@@ -296,7 +296,7 @@ int main(int argc, char *argv[])
   /* 1) The symbolic factorization
    *    (parameter doesn't always exist)
    */
-  sfact_time = Teuchos_ParameterList_get_double_def( TimingsList, "Total symbolic factorization time", 0.0 );
+  sfact_time = Teuchos_ParameterList_get_def_double( TimingsList, "Total symbolic factorization time", 0.0 );
 
   /* 2) The numeric factorization
    *    (always exists if NumericFactorization() is called)
@@ -314,10 +314,10 @@ int main(int argc, char *argv[])
   mtx_conv_time = Teuchos_ParameterList_get_double( TimingsList, "Total solve time" );
 
   /* 5) Redistributing the matrix for each solve to the accepted format for the solver */
-  mtx_redist_time = Teuchos_ParameterList_get_double_def( TimingsList, "Total matrix redistribution time", 0.0 );
+  mtx_redist_time = Teuchos_ParameterList_get_def_double( TimingsList, "Total matrix redistribution time", 0.0 );
 
   /* 6) Redistributing the vector for each solve to the accepted format for the solver */
-  vec_redist_time = Teuchos_ParameterList_get_double_def( TimingsList, "Total vector redistribution time", 0.0 );
+  vec_redist_time = Teuchos_ParameterList_get_def_double( TimingsList, "Total vector redistribution time", 0.0 );
 
   /*
    * ===========================================

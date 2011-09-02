@@ -1,3 +1,5 @@
+#ifndef CTEUCHOS_PARAMETERENTRY_H
+#define CTEUCHOS_PARAMETERENTRY_H
 
 /*! @HEADER */
 /*
@@ -30,18 +32,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
 
 /*! @file CTeuchos_ParameterEntry.h
  * @brief Wrappers for Teuchos::ParameterEntry */
 
 /* True C header file! */
 
-
-#ifndef CTEUCHOS_PARAMETERENTRY_H
-#define CTEUCHOS_PARAMETERENTRY_H
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 

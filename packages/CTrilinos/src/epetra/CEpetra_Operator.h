@@ -1,3 +1,5 @@
+#ifndef CEPETRA_OPERATOR_H
+#define CEPETRA_OPERATOR_H
 
 /*! @HEADER */
 /*
@@ -30,18 +32,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
 
 /*! @file CEpetra_Operator.h
  * @brief Wrappers for Epetra_Operator */
 
 /* True C header file! */
 
-
-#ifndef CEPETRA_OPERATOR_H
-#define CEPETRA_OPERATOR_H
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 

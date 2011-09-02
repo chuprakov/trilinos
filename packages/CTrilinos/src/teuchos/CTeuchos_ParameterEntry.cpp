@@ -206,7 +206,7 @@ void Teuchos_ParameterEntry_Assign (
 const Teuchos::RCP<Teuchos::ParameterEntry>
 CTeuchos::getParameterEntry( CT_Teuchos_ParameterEntry_ID_t id )
 {
-        return tableOfParameterEntrys().get<Teuchos::ParameterEntry>(
+    return tableOfParameterEntrys().get<Teuchos::ParameterEntry>(
         CTrilinos::abstractType<CT_Teuchos_ParameterEntry_ID_t>(id));
 }
 
@@ -214,7 +214,7 @@ CTeuchos::getParameterEntry( CT_Teuchos_ParameterEntry_ID_t id )
 const Teuchos::RCP<Teuchos::ParameterEntry>
 CTeuchos::getParameterEntry( CTrilinos_Universal_ID_t id )
 {
-        return tableOfParameterEntrys().get<Teuchos::ParameterEntry>(id);
+    return tableOfParameterEntrys().get<Teuchos::ParameterEntry>(id);
 }
 
 /* get const Teuchos::ParameterEntry from either the const or non-const table
@@ -222,7 +222,7 @@ CTeuchos::getParameterEntry( CTrilinos_Universal_ID_t id )
 const Teuchos::RCP<const Teuchos::ParameterEntry>
 CTeuchos::getConstParameterEntry( CT_Teuchos_ParameterEntry_ID_t id )
 {
-        return tableOfParameterEntrys().getConst<Teuchos::ParameterEntry>(
+    return tableOfParameterEntrys().getConst<Teuchos::ParameterEntry>(
         CTrilinos::abstractType<CT_Teuchos_ParameterEntry_ID_t>(id));
 }
 
@@ -231,7 +231,7 @@ CTeuchos::getConstParameterEntry( CT_Teuchos_ParameterEntry_ID_t id )
 const Teuchos::RCP<const Teuchos::ParameterEntry>
 CTeuchos::getConstParameterEntry( CTrilinos_Universal_ID_t id )
 {
-        return tableOfParameterEntrys().getConst<Teuchos::ParameterEntry>(id);
+    return tableOfParameterEntrys().getConst<Teuchos::ParameterEntry>(id);
 }
 
 /* store Teuchos::ParameterEntry (owned) in non-const table */
@@ -264,7 +264,7 @@ CTeuchos::removeParameterEntry( CT_Teuchos_ParameterEntry_ID_t *id )
 {
     CTrilinos_Universal_ID_t aid = 
         CTrilinos::abstractType<CT_Teuchos_ParameterEntry_ID_t>(*id);
-        tableOfParameterEntrys().remove(&aid);
+    tableOfParameterEntrys().remove(&aid);
     *id = CTrilinos::concreteType<CT_Teuchos_ParameterEntry_ID_t>(aid);
 }
 
@@ -272,7 +272,7 @@ CTeuchos::removeParameterEntry( CT_Teuchos_ParameterEntry_ID_t *id )
 void
 CTeuchos::removeParameterEntry( CTrilinos_Universal_ID_t *aid )
 {
-        tableOfParameterEntrys().remove(aid);
+    tableOfParameterEntrys().remove(aid);
 }
 
 /* purge Teuchos::ParameterEntry table */

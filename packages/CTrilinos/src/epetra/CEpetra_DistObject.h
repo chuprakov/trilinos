@@ -1,3 +1,5 @@
+#ifndef CEPETRA_DISTOBJECT_H
+#define CEPETRA_DISTOBJECT_H
 
 /*! @HEADER */
 /*
@@ -30,18 +32,14 @@ Questions? Contact M. Nicole Lemaster (mnlemas@sandia.gov)
 /*! @HEADER */
 
 
+#include "CTrilinos_config.h"
+
 
 /*! @file CEpetra_DistObject.h
  * @brief Wrappers for Epetra_DistObject */
 
 /* True C header file! */
 
-
-#ifndef CEPETRA_DISTOBJECT_H
-#define CEPETRA_DISTOBJECT_H
-
-
-#include "CTrilinos_config.h"
 #include "CTrilinos_enums.h"
 
 
