@@ -27,7 +27,6 @@
 // ***********************************************************************
 // @HEADER
 
-// Generate a matrix using triutils and redistribute with Zoltan.
 
 #include "Didasko_config.h"
 #if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_EPETRAEXT) 
