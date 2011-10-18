@@ -177,7 +177,7 @@ void TreeModel::issueInitilizationSignals(){
       ++it2)
     {
 		  QModelIndex dependeeIndex = findParameterEntryIndex(*it2);
-      TEST_FOR_EXCEPTION(!dependeeIndex.isValid(), std::logic_error,
+      TEUCHOS_TEST_FOR_EXCEPTION(!dependeeIndex.isValid(), std::logic_error,
         "Could not find the index of the dependee. This is an internal error. "
         "Please contact the Optika team.");
 		  dataChangedListener(dependeeIndex, dependeeIndex);
@@ -244,7 +244,7 @@ void TreeModel::processInputElement(const QDomElement& element){
     QDomElement e = n.toElement();
 		if(!e.isNull() && e.tagName().toStdString() == ParameterEntry::getTagName()){
       QString name = e.attribute(nameAttrib, "");
-      TEST_FOR_EXCEPTION(name=="",std::runtime_error,
+      TEUCHOS_TEST_FOR_EXCEPTION(name=="",std::runtime_error,
         "Error: Found parameter with no name attribute. Check XML");
 			QList<QModelIndex> matches = match(index(0,0), Qt::DisplayRole, name,
 							   -1, Qt::MatchExactly | Qt::MatchRecursive);
@@ -273,12 +273,12 @@ void TreeModel::processInputElement(const QDomElement& element){
 
 void TreeModel::readInput(QString fileName){
 	QFile file(fileName);
-  TEST_FOR_EXCEPTION(!file.open(QIODevice::ReadOnly), std::runtime_error, 
+  TEUCHOS_TEST_FOR_EXCEPTION(!file.open(QIODevice::ReadOnly), std::runtime_error, 
     "Could not open file to read parameters.");
   QDomDocument xmlDoc;
   if(!xmlDoc.setContent(&file)){
     file.close();
-    TEST_FOR_EXCEPTION(true, std::runtime_error, 
+    TEUCHOS_TEST_FOR_EXCEPTION(true, std::runtime_error, 
       "Error reading xml document. Bad XML syntax.");
   }
 	file.close();
