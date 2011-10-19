@@ -37,7 +37,7 @@
 #include "RTOpPack_RTOpC.hpp"
 #include "RTOpPack_print_sub_vector.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_FancyOStream.hpp"
 
 #include <limits>
@@ -77,22 +77,22 @@ class init_rtop_server_t {
 public:
   init_rtop_server_t() {
     // Operator and target for getting a vector element
-    TEST_FOR_EXCEPT(0!=RTOp_ROp_sum_construct(&sum_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_sum_construct(&sum_op.op()));
     sum_targ = sum_op.reduct_obj_create();
     // Operator and target for norm 1
-    TEST_FOR_EXCEPT(0!=RTOp_ROp_num_nonzeros_construct(&num_nonzeros_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_num_nonzeros_construct(&num_nonzeros_op.op()));
     num_nonzeros_targ = num_nonzeros_op.reduct_obj_create();
     // Operator and target for norm 1
-    TEST_FOR_EXCEPT(0!=RTOp_ROp_norm_1_construct(&norm_1_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_norm_1_construct(&norm_1_op.op()));
     norm_1_targ = norm_1_op.reduct_obj_create();
     // Operator and target for norm 1
-    TEST_FOR_EXCEPT(0!=RTOp_ROp_norm_2_construct(&norm_2_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_norm_2_construct(&norm_2_op.op()));
     norm_2_targ = norm_2_op.reduct_obj_create();
     // Operator and target for norm 1
-    TEST_FOR_EXCEPT(0!=RTOp_ROp_norm_inf_construct(&norm_inf_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_norm_inf_construct(&norm_inf_op.op()));
     norm_inf_targ = norm_inf_op.reduct_obj_create();
     // Get sub-vector operator
-    TEST_FOR_EXCEPT(0!=RTOp_ROp_get_sub_vector_construct(1,1,&get_sub_vector_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_get_sub_vector_construct(1,1,&get_sub_vector_op.op()));
   }
 }; 
 
@@ -231,7 +231,7 @@ Vector::sub_view( const Range1D& rng_in ) const
   const index_type dim = this->dim();
   const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     rng.ubound() > dim, std::out_of_range
     ,"Vector::sub_view(rng): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
     "is not in the range [1,this->dim()] = [1,"<<dim<<"]" );
@@ -249,7 +249,7 @@ void Vector::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec
 {
   const Range1D rng = rng_in.full_range() ? Range1D(1,this->space().dim()) : rng_in;
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     this->space().dim() < rng.ubound(), std::out_of_range
     ,"Vector::get_sub_vector(rng,...): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()
     <<"] is not in range = [1,"<<this->space().dim()<<"]" );
@@ -260,7 +260,7 @@ void Vector::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec
   }
   // Initialize the operator
   RTOpPack::RTOpC get_sub_vector_op;
-  TEST_FOR_EXCEPT(0!=RTOp_ROp_get_sub_vector_construct(rng.lbound(),rng.ubound(),&get_sub_vector_op.op()));
+  TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_get_sub_vector_construct(rng.lbound(),rng.ubound(),&get_sub_vector_op.op()));
   // Create the reduction object (another sub_vec)
   Teuchos::RCP<RTOpPack::ReductTarget> reduct_obj = get_sub_vector_op.reduct_obj_create(); // This is really of type RTOpPack::ConstSubVectorView<Scalar>!
   // Perform the reduction (get the sub-vector requested)

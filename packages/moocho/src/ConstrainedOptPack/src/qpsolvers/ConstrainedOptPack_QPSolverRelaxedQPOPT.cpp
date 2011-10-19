@@ -212,12 +212,12 @@ QPSolverRelaxedQPOPTSOL::EInform QPSolverRelaxedQPOPT::call_qp_solver(bool warm_
       return_inform = bc::WEAK_LOCAL_MIN;
       break;
     case UNBOUNDED:
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, Unbounded
         ,"QPSolverRelaxedQPOPT::call_qp_solver() : Error,"
         " QPOPT returned that the QP is unbounded!" );
     case INFEASIBLE:
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, Infeasible
         ,"QPSolverRelaxedQPOPT::call_qp_solver() : Error,"
         " QPOPT returned that the QP is infeasible!" );
@@ -225,23 +225,23 @@ QPSolverRelaxedQPOPTSOL::EInform QPSolverRelaxedQPOPT::call_qp_solver(bool warm_
       return_inform = bc::MAX_ITER_EXCEEDED;
       break;
     case MAX_DOF_TOO_SMALL:
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, std::runtime_error,
         "QPSolverRelaxedQPOPT::call_qp_solver() : Error,"
         " QPOPT says that the max dof is too small" );
     case INVALID_INPUT:
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, InvalidInput,
         "QPSolverRelaxedQPOPT::call_qp_solver() : Error,"
         " QPOPT returned that the input is invalid" );
     case PROB_TYPE_NOT_REGOG:
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, std::logic_error,
         "QPSolverRelaxedQPOPT::call_qp_solver() : Error,"
         " QPOPT says that the problem type is not recognized" );
       break;
     default:
-      TEST_FOR_EXCEPT(true); // Should not happen
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Should not happen
   }
   
   return return_inform;

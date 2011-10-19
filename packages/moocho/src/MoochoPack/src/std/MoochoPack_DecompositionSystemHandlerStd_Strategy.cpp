@@ -45,7 +45,7 @@
 #include "AbstractLinAlgPack_MatrixSymIdent.hpp"
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace MoochoPack {
 
@@ -117,7 +117,7 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
         ds_olevel = DecompositionSystem::PRINT_EVERY_THING;
         break;
       default:
-        TEST_FOR_EXCEPT(true); // Should not get here!
+        TEUCHOS_TEST_FOR_EXCEPT(true); // Should not get here!
     };
     
     // Form the decomposition of Gc and update the decomposition system matrices

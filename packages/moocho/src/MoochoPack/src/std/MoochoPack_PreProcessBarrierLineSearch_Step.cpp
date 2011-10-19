@@ -42,7 +42,7 @@
 #include "MoochoPack_moocho_algo_conversion.hpp"
 #include "IterationPack_print_algorithm_step.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 #define min(a,b) ( (a < b) ? a : b )
 #define max(a,b) ( (a > b) ? a : b )
@@ -58,7 +58,7 @@ PreProcessBarrierLineSearch_Step::PreProcessBarrierLineSearch_Step(
   barrier_nlp_(barrier_nlp),
   filter_(FILTER_IQ_STRING)
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !barrier_nlp_.get(),
     std::logic_error,
     "PreProcessBarrierLineSearch_Step given NULL NLPBarrier."
@@ -163,8 +163,8 @@ bool PreProcessBarrierLineSearch_Step::do_step(
     dvu_k
     );
 
-  TEST_FOR_EXCEPT( !( alpha_k <= 1.0 && alpha_vl_k <= 1.0 && alpha_vu_k <= 1.0 ) );
-  TEST_FOR_EXCEPT( !( alpha_k >= 0.0 && alpha_vl_k >= 0.0 && alpha_vu_k >= 0.0 ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( alpha_k <= 1.0 && alpha_vl_k <= 1.0 && alpha_vu_k <= 1.0 ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( alpha_k >= 0.0 && alpha_vl_k >= 0.0 && alpha_vu_k >= 0.0 ) );
 
   x_kp1 = x_k;
   Vp_StV( &x_kp1, alpha_k, d_k);
@@ -259,7 +259,7 @@ void PreProcessBarrierLineSearch_StepSetOptions::setOption(
       target().tau_boundary_frac(std::atof(option_value.c_str()));
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

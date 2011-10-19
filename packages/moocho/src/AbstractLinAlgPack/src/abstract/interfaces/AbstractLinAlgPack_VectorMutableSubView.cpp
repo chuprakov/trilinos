@@ -27,7 +27,7 @@
 // @HEADER
 
 #include "AbstractLinAlgPack_VectorMutableSubView.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
@@ -94,7 +94,7 @@ VectorMutableSubView::sub_view( const Range1D& rng_in )
 void VectorMutableSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::MutableSubVector* sub_vec )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION( !sub_vec, std::logic_error ,"VectorMutableSubView::get_sub_vector(...): Error!" );
+  TEUCHOS_TEST_FOR_EXCEPTION( !sub_vec, std::logic_error ,"VectorMutableSubView::get_sub_vector(...): Error!" );
 #endif
   const index_type this_dim = this->dim();
   const Range1D rng = RangePack::full_range(rng_in,1,this_dim);
@@ -107,7 +107,7 @@ void VectorMutableSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::Muta
 void VectorMutableSubView::commit_sub_vector( RTOpPack::MutableSubVector* sub_vec )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION( !sub_vec, std::logic_error, "VectorMutableSubView::commit_sub_vector(...): Error!" );
+  TEUCHOS_TEST_FOR_EXCEPTION( !sub_vec, std::logic_error, "VectorMutableSubView::commit_sub_vector(...): Error!" );
 #endif
   const index_type this_offset = space_impl().rng().lbound() - 1;
   sub_vec->setGlobalOffset( sub_vec->globalOffset() + this_offset );

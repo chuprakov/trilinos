@@ -162,7 +162,7 @@ void MoochoTrackerSummaryStd::output_iteration(const Algorithm& algo) const
         o << "indef skiped";
         break;
       default:
-        TEST_FOR_EXCEPT(true);
+        TEUCHOS_TEST_FOR_EXCEPT(true);
     }
   }
   else {
@@ -334,7 +334,7 @@ void MoochoTrackerSummaryStd::output_final(const Algorithm& algo
         o << "indef skiped";
         break;
       default:
-        TEST_FOR_EXCEPT(true);
+        TEUCHOS_TEST_FOR_EXCEPT(true);
     }
   }
   else {
@@ -450,7 +450,7 @@ void MoochoTrackerSummaryStd::print_header(const NLPAlgoState &s) const
       o	<< "   ||GL||inf  ";
       break;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
   o 	<< "   quasi-Newton"
     << " #act  "

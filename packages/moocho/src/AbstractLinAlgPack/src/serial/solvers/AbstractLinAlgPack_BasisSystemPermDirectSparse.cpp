@@ -36,7 +36,7 @@
 #include "AbstractLinAlgPack_PermutationSerial.hpp"
 #include "AbstractLinAlgPack_MatrixSymPosDefCholFactor.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
@@ -133,11 +133,11 @@ void BasisSystemPermDirectSparse::update_basis(
     m  = Gc.cols();
 #ifdef TEUCHOS_DEBUG
   const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc.nz();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     Gc_rows != n_ || Gc_cols != m_ || Gc_nz != Gc_nz_, std::invalid_argument
     ,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
     "This matrix object is not compatible with last call to set_basis() or select_basis()!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     C == NULL, std::invalid_argument
     ,"BasisSystemPermDirectSparse::set_basis(...) : Error!" );
 #endif
@@ -165,7 +165,7 @@ void BasisSystemPermDirectSparse::update_basis(
     if(out)
       *out << "\nCurrent basis is singular : " << excpt.what() << std::endl
          << "Throwing SingularBasis exception to client ...\n";
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, SingularBasis
       ,"BasisSystemPermDirectSparse::update_basis(...) : Error, the current basis "
       "is singular : " << excpt.what() );
@@ -179,21 +179,21 @@ void BasisSystemPermDirectSparse::update_basis(
 const AbstractLinAlgPack::BasisSystemPerm::perm_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_P_var() const
 {
-  TEST_FOR_EXCEPT(true); // ToDo: Implement using PermutationSerial
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement using PermutationSerial
   return Teuchos::null;
 }
 
 const AbstractLinAlgPack::BasisSystemPerm::perm_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_P_equ() const
 {
-  TEST_FOR_EXCEPT(true); // ToDo: Implement using PermutationSerial
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement using PermutationSerial
   return Teuchos::null;
 }
 
 const AbstractLinAlgPack::BasisSystemPerm::perm_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_P_inequ() const
 {
-  TEST_FOR_EXCEPT(true); // ToDo: Implement using PermutationSerial
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement using PermutationSerial
   return Teuchos::null;
 }
 
@@ -218,10 +218,10 @@ void BasisSystemPermDirectSparse::set_basis(
     m  = Gc.cols();
 #ifdef TEUCHOS_DEBUG
   const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc.nz();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     P_equ == NULL || equ_decomp == NULL, std::invalid_argument
     ,"BasisSystemPermDirectSparse::set_basis(...) : Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     C == NULL, std::invalid_argument
     ,"BasisSystemPermDirectSparse::set_basis(...) : Error!" );
 #endif
@@ -256,7 +256,7 @@ void BasisSystemPermDirectSparse::set_basis(
     ,out
     );
   if( rank < var_dep.size() ) {
-    TEST_FOR_EXCEPT(true); // ToDo: Throw an exception with a good error message!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Throw an exception with a good error message!
   }
   // Update the rest of the basis stuff
   do_some_basis_stuff(Gc,var_dep,*equ_decomp,C_bm,&C_aggr,D,GcUP);
@@ -282,7 +282,7 @@ void BasisSystemPermDirectSparse::select_basis(
 #ifdef TEUCHOS_DEBUG
   // Validate input
   const char msg_err_head[] = "BasisSystemPermDirectSparse::set_basis(...) : Error!";
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     Gc == NULL, std::invalid_argument
     ,msg_err_head << " Must have equality constriants in this current implementation! " );
 #endif
@@ -292,11 +292,11 @@ void BasisSystemPermDirectSparse::select_basis(
 #ifdef TEUCHOS_DEBUG
   // Validate input
   const size_type Gc_rows = Gc->rows(), Gc_cols = Gc->cols(), Gc_nz = Gc->nz();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     P_var == NULL || var_dep == NULL, std::invalid_argument, msg_err_head );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     P_equ == NULL || equ_decomp == NULL, std::invalid_argument, msg_err_head );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     C == NULL, std::invalid_argument, msg_err_head );
 #endif
   // Get the aggreate matrix object for Gc
@@ -329,7 +329,7 @@ void BasisSystemPermDirectSparse::select_basis(
     ,out
     );
   if( rank == 0 ) {
-    TEST_FOR_EXCEPT( !(  rank == 0  ) ); // ToDo: Throw exception with good error message!
+    TEUCHOS_TEST_FOR_EXCEPT( !(  rank == 0  ) ); // ToDo: Throw exception with good error message!
   }
   // Return the selected basis
   // ToDo: Use var_perm_ds and equ_perm_ds together with nu to
@@ -415,7 +415,7 @@ void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
   // Get the concreate type of the direct sensitivity matrix (if one was passed in)
   if( D ) {
     MultiVectorMutableDense *D_mvd = &dyn_cast<MultiVectorMutableDense>(*D);
-    TEST_FOR_EXCEPT( !(  D  ) ); // ToDo: Throw exception!
+    TEUCHOS_TEST_FOR_EXCEPT( !(  D  ) ); // ToDo: Throw exception!
     // D = -inv(C) * N
     D_mvd->initialize(var_dep_.size(),var_indep_.size());
     AbstractLinAlgPack::M_StInvMtM(
@@ -424,7 +424,7 @@ void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
       );
   }
   if( GcUP ) {
-    TEST_FOR_EXCEPT(true); // ToDo: Implement!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
   }
 }
 

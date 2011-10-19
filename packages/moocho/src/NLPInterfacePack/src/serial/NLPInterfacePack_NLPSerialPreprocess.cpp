@@ -47,7 +47,7 @@
 #include "DenseLinAlgPack_IVector.hpp"
 #include "DenseLinAlgPack_PermVecMat.hpp"
 #include "DenseLinAlgPack_LinAlgOpPack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
@@ -170,7 +170,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
     n_ = 0;
     size_type num_fixed = 0;
     for(int i = 1; i <= n_full_; ++i, ++xl_full, ++xu_full) {
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         *xl_full > *xu_full, InconsistantBounds
         ,"NLPSerialPreprocess::initialize() : Error, Inconsistant bounds: xl_full("
         << i << ") > xu_full(" << i << ")" ); 
@@ -214,7 +214,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
   num_bounded_x_ = num_bnd_x;
 
   // Validate that we still have a solvable problem
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     n_ < m_full_, InvalidInitialization
     ,"NLPSerialPreprocess::initialize() : Error, after removing fixed "
     << "variables, n = " << n_ << " < m = " << m_full_
@@ -271,7 +271,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
         size_type rank;
         const bool 
            get_next_basis_return = get_next_basis_remove_fixed( &var_perm_, &equ_perm_, &rank );
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           !get_next_basis_return, std::logic_error
           ,"NLPSerialPreprocess::initialize():  "
           " If nlp_selects_basis() is true then imp_get_next_basis() "
@@ -565,11 +565,11 @@ void NLPSerialPreprocess::set_basis(
 {
   namespace mmp = MemMngPack;
   using Teuchos::dyn_cast;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     (m_full_ > 0 && (P_equ == NULL || equ_decomp == NULL))
     ,std::invalid_argument
     ,"NLPSerialPreprocess::set_basis(...) : Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     m_full_ > 0 && var_dep.size() != equ_decomp->size()
     ,InvalidBasis
     ,"NLPSerialPreprocess::set_basis(...) : Error!" );
@@ -583,7 +583,7 @@ void NLPSerialPreprocess::set_basis(
     equ_perm   = ( m_full_
              ? Teuchos::rcp_const_cast<IVector>(P_equ_s->perm())
              : Teuchos::null );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     (m_full_ > 0 && equ_perm.get() == NULL)
     ,std::invalid_argument
     ,"NLPSerialPreprocess::set_basis(...) : Error, P_equ is not initialized properly!" );
@@ -599,7 +599,7 @@ void NLPSerialPreprocess::get_basis(
   namespace mmp = MemMngPack;
   using Teuchos::dyn_cast;
   assert_initialized();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     P_var == NULL || var_dep == NULL
     || (m_full_ > 0 && (P_equ == NULL || equ_decomp == NULL))
     ,std::invalid_argument
@@ -735,7 +735,7 @@ bool NLPSerialPreprocess::imp_get_next_basis(
 
 void NLPSerialPreprocess::assert_initialized() const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !initialized_, UnInitialized
     ,"NLPSerialPreprocess : The nlp has not been initialized yet" );
 }
@@ -848,7 +848,7 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
         ++basic_itr;
       }
       else {
-        TEST_FOR_EXCEPT( !( *nonbasic_itr == *fixed_itr ) ); // If basic was not fixed then nonbasic better be!
+        TEUCHOS_TEST_FOR_EXCEPT( !( *nonbasic_itr == *fixed_itr ) ); // If basic was not fixed then nonbasic better be!
         ++count_nonbasic_fixed;
         ++nonbasic_itr;
 
@@ -860,7 +860,7 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
       for( ; *nonbasic_itr < next_fixed; ++nonbasic_itr )
         *(nonbasic_itr - count_nonbasic_fixed) = *nonbasic_itr - count_fixed;
     }
-    TEST_FOR_EXCEPT( !( count_fixed == n_full_ - n_ ) ); // Basic check
+    TEUCHOS_TEST_FOR_EXCEPT( !( count_fixed == n_full_ - n_ ) ); // Basic check
 
     var_perm->resize(n_);
     std::copy(
@@ -894,31 +894,31 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 
     int n;
     basis_file >> tags;
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       tags != "n", std::logic_error
       ,"Incorrect basis file format - \"n\" expected, \"" << tags << "\" found.");
     basis_file >> n;
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       n <= 0, std::logic_error
       , "Incorrect basis file format - n > 0 \"" << n << "\" found.");
 
     int m;
     basis_file >> tags;
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       tags != "m", std::logic_error
       ,"Incorrect basis file format - \"m\" expected, \"" << tags << "\" found.");
     basis_file >> m;
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       m > n , std::logic_error
       ,"Incorrect basis file format - 0 < m <= n expected, \"" << m << "\" found.");
     
     int r;
     basis_file >> tags;
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       tags != "rank", std::logic_error
       ,"Incorrect basis file format - \"rank\" expected, \"" << tags << "\" found.");
     basis_file >> r;
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       r > m, std::logic_error
       ,"Incorrect basis file format - 0 < rank <= m expected, \"" << r << "\" found.");		
     if (rank)
@@ -926,7 +926,7 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 
     // var_permutation
     basis_file >> tags;
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       tags != "var_perm", std::logic_error
       ,"Incorrect basis file format -\"var_perm\" expected, \"" << tags << "\" found.");
     var_perm->resize(n);
@@ -934,7 +934,7 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
       {
       int var_index;
       basis_file >> var_index;
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         var_index < 1 || var_index > n, std::logic_error
         ,"Incorrect basis file format for var_perm: 1 <= indice <= n expected, \"" << n << "\" found.");
       (*var_perm)[i] = var_index;
@@ -942,7 +942,7 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 
     // eqn_permutation
     basis_file >> tags;
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       tags != "equ_perm", std::logic_error
       ,"Incorrect basis file format -\"equ_perm\" expected, \"" << tags << "\" found.");
     equ_perm->resize(r);
@@ -950,7 +950,7 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
       {
       int equ_index;
       basis_file >> equ_index;
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         equ_index < 1 || equ_index > m, std::logic_error
         ,"Incorrect basis file format for equ_perm: 1 <= indice <= m expected, \"" << m << "\" found.");
       (*equ_perm)[i] = equ_index;
@@ -975,11 +975,11 @@ void NLPSerialPreprocess::assert_and_set_basis(
   const value_type inf_bnd = NLPSerialPreprocess::infinite_bound();
 
   // Assert the preconditions
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     var_perm.size() != n_ || equ_perm.size() != m_full_, std::length_error
     ,"NLPSerialPreprocess::set_basis():  The sizes "
     "of the permutation vectors does not match the size of the NLP" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     rank > m_full_, InvalidBasis
     ,"NLPSerialPreprocess::set_basis():  The rank "
     "of the basis can not be greater that the number of constraints" );
@@ -1008,7 +1008,7 @@ void NLPSerialPreprocess::assert_and_set_basis(
 
 void NLPSerialPreprocess::assert_bounds_on_variables() const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !(imp_has_var_bounds() || n_full_ > n_orig_), NLP::NoBounds
     ,"There are no bounds on the variables for this NLP" );
 }

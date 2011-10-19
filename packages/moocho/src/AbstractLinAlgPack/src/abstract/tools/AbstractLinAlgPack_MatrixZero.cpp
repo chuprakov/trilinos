@@ -31,7 +31,7 @@
 #include "AbstractLinAlgPack_MatrixZero.hpp"
 #include "AbstractLinAlgPack_MatrixSymOp.hpp"
 #include "AbstractLinAlgPack_VectorStdOps.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -50,7 +50,7 @@ void MatrixZero::initialize(
   ,const VectorSpace::space_ptr_t&   space_rows
   )
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     (space_cols.get() == NULL && space_rows.get() != NULL)
     || (space_cols.get() != NULL && space_rows.get() == NULL)
     , std::invalid_argument
@@ -106,7 +106,7 @@ void MatrixZero::Mt_S( value_type alpha )
 MatrixOp& MatrixZero::operator=(const MatrixOp& M)
 {
   assert_initialized();
-  TEST_FOR_EXCEPT(true); // ToDo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
   return *this;
 }
 
@@ -256,7 +256,7 @@ bool MatrixZero::syrk(
 // private
 
 void MatrixZero::assert_initialized() const {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_cols_.get() == NULL, std::logic_error
     ,"Error, the MatrixZero object has not been initialized!" );
 }

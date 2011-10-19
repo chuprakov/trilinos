@@ -51,7 +51,7 @@
 #include "AbstractLinAlgPack_SpVectorOp.hpp"
 #include "DenseLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace QPKWIKNEW_CppDecl {
 
@@ -158,7 +158,7 @@ EConstraintType constraint_type( const f_int m1, const f_int m2, const f_int m3,
   else if(2*m1+m2+1 <= j	 && j <= 2*m1+2*m2	 ) return GAMA_U;
   else if(2*m1+2*m2+1 <= j && j <= 2*m1+2*m2+m3) return LAMBDA;
   else if( j == 2*m1+2*m2+m3 + 1				 ) return RELAXATION;
-  TEST_FOR_EXCEPT(true);
+  TEUCHOS_TEST_FOR_EXCEPT(true);
   return NU_L;	// should never be exectuted
 }
 
@@ -173,7 +173,7 @@ f_int constraint_index( const f_int m1, const f_int m2, const f_int m3, const f_
     case LAMBDA		: return j-2*m1-2*m2;
     case RELAXATION	: return 0;
   }
-  TEST_FOR_EXCEPT(true);
+  TEUCHOS_TEST_FOR_EXCEPT(true);
   return 0;	// should never be exectuted
 }
 
@@ -362,7 +362,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
         ibnds_itr	= IBND_.begin() + M1_;
       // loop
       for(size_type i = 1; i <= M2_; ++i, ++eLU_itr, ++ibnds_itr ) {
-        TEST_FOR_EXCEPT( !( !eLU_itr.at_end() ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !( !eLU_itr.at_end() ) );
         const size_type k      = eLU_itr.index();
         *BL_itr++              = eLU_itr.lbound();
         *BU_itr++              = eLU_itr.ubound();
@@ -503,7 +503,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
       const value_type val = itr->value();
       if( j <= nd ) { // Variable bound
         const size_type ibnd_i = IBND_INV_[j-1];
-        TEST_FOR_EXCEPT( !( ibnd_i ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !( ibnd_i ) );
         IACTSTORE_[NACTSTORE_]
           = (val < 0.0
              ? ibnd_i               // lower bound (see IACT(*))
@@ -513,7 +513,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
       }
       else if( j <= nd + m_in ) { // General inequality constraint
         const size_type ibnd_i = IBND_INV_[j-1]; // offset into M1_ + ibnd_j
-        TEST_FOR_EXCEPT( !( ibnd_i ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !( ibnd_i ) );
         IACTSTORE_[NACTSTORE_]
           = (val < 0.0
              ? ibnd_i               // lower bound (see IACT(*))
@@ -593,18 +593,18 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
     solution_type = QPSolverStats::OPTIMAL_SOLUTION;
   }
   else if( INF_ == -1 ) { // Infeasible constraints
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, QPSolverRelaxed::Infeasible
       ,"QPSolverRelaxedQPKWIK::solve_qp(...) : Error, QP is infeasible" );
   }
   else if( INF_ == -2 ) { // LRW too small
-    TEST_FOR_EXCEPT( !( INF_ != -2 ) );  // Local programming error?
+    TEUCHOS_TEST_FOR_EXCEPT( !( INF_ != -2 ) );  // Local programming error?
   }
   else if( INF_ == -3 ) { // Max iterations exceeded
     solution_type = QPSolverStats::DUAL_FEASIBLE_POINT;
   }
   else {
-    TEST_FOR_EXCEPT(true); // Unknown return value!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // Unknown return value!
   }
   qp_stats_.set_stats(
     solution_type, QPSolverStats::CONVEX

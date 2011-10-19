@@ -44,7 +44,7 @@
 #include "AbstractLinAlgPack_EtaVector.hpp"
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
 #include "TestingHelperPack_update_success.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 template< class T >
@@ -89,7 +89,7 @@ bool NLPFirstDerivTester::finite_diff_check(
   // ///////////////////////////////////
   // Validate the input
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !m && Gc, std::invalid_argument
     ,"NLPFirstDerivTester::finite_diff_check(...) : "
     "Error, Gc must be NULL if m == 0" );
@@ -108,7 +108,7 @@ bool NLPFirstDerivTester::finite_diff_check(
     case FD_DIRECTIONAL:
       return fd_directional_check(nlp,xo,xl,xu,Gc,Gf,print_all_warnings,out);
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
 
   } // end try

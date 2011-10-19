@@ -149,7 +149,7 @@
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 // Stuff to read in options
 #include "OptionsFromStreamPack_StringToIntMap.hpp"
@@ -239,7 +239,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 
   typedef Teuchos::RCP<NLPAlgo>	algo_ptr_t;
   algo_ptr_t algo = Teuchos::rcp(new NLPAlgo);
-  TEST_FOR_EXCEPTION(!algo.get(),std::runtime_error,"Error!");
+  TEUCHOS_TEST_FOR_EXCEPTION(!algo.get(),std::runtime_error,"Error!");
   if(options_.get()) {
     IterationPack::AlgorithmSetOptions
       opt_setter( algo.get() );
@@ -391,7 +391,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
       cov_.quasi_newton_ = uov_.quasi_newton_;
       break;
       default:
-      TEST_FOR_EXCEPT(true); // Invalid option!
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Invalid option!
   }
 
   if( uov_.qp_solver_type_ == QP_AUTO && nb == 0 ) {
@@ -543,7 +543,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
             );
           break;
         default:
-          TEST_FOR_EXCEPT(true); // Should not be called for now!
+          TEUCHOS_TEST_FOR_EXCEPT(true); // Should not be called for now!
       }
       
       state->set_iter_quant(
@@ -558,7 +558,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
         );
     }
     else {
-      TEST_FOR_EXCEPT(true); // ToDo: Add rHL for an exact reduced Hessian!
+      TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Add rHL for an exact reduced Hessian!
     }
     
     //
@@ -580,7 +580,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
             new Teuchos::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPModL1>());
           break;
         default:
-          TEST_FOR_EXCEPT(true);	// local programming error
+          TEUCHOS_TEST_FOR_EXCEPT(true);	// local programming error
       }
       state->set_iter_quant(
         merit_func_nlp_name
@@ -802,7 +802,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
               case QN_PBFGS:
               case QN_LPBFGS:
             {
-              TEST_FOR_EXCEPTION(
+              TEUCHOS_TEST_FOR_EXCEPTION(
                 true, std::logic_error
                 ,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
                 "The quansi_newton options of PBFGS and LPBFGS have not been updated yet!" );
@@ -812,7 +812,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
           break;
         }
         default:
-          TEST_FOR_EXCEPT(true);
+          TEUCHOS_TEST_FOR_EXCEPT(true);
       }
       
       // Finally build the step object
@@ -842,7 +842,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
     {
       // InitFinDiffReducedHessian_Step
       Algorithm::poss_type poss;
-      TEST_FOR_EXCEPT( !( poss = algo->get_step_poss( ReducedHessian_name )  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !( poss = algo->get_step_poss( ReducedHessian_name )  ) );
       InitFinDiffReducedHessian_Step::EInitializationMethod
         init_hess;
       switch( cov_.hessian_initialization_ ) {
@@ -856,7 +856,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
           init_hess = InitFinDiffReducedHessian_Step::SCALE_DIAGONAL_ABS;
           break;
         default:
-          TEST_FOR_EXCEPT(true);	// only local programming error?
+          TEUCHOS_TEST_FOR_EXCEPT(true);	// only local programming error?
       }
       Teuchos::RCP<InitFinDiffReducedHessian_Step>
         _init_red_hess_step = Teuchos::rcp(new InitFinDiffReducedHessian_Step(init_hess));
@@ -909,13 +909,13 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
               break;
             case QN_PBFGS:
             case QN_LPBFGS:
-              TEST_FOR_EXCEPTION(true,std::logic_error,"Error! PBFGS and LPBFGS are not updated yet!");
+              TEUCHOS_TEST_FOR_EXCEPTION(true,std::logic_error,"Error! PBFGS and LPBFGS are not updated yet!");
 /*
               init_kkt_sys = new QPSchurInitKKTSystemHessianSuperBasic();
 */
               break;
             default:
-              TEST_FOR_EXCEPT(true);
+              TEUCHOS_TEST_FOR_EXCEPT(true);
           }
           Teuchos::RCP<QPSolverRelaxedQPSchur>
             _qp_solver = Teuchos::rcp(new QPSolverRelaxedQPSchur(init_kkt_sys));
@@ -934,14 +934,14 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
             _qp_solver = Teuchos::rcp(new QPSolverRelaxedQPKWIK());
           qp_solver = _qp_solver; // give ownership to delete!
 #else
-          TEST_FOR_EXCEPTION(
+          TEUCHOS_TEST_FOR_EXCEPTION(
             true,std::logic_error,"Error! QPKWIK interface is not supported since "
             "CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK is not defined!");
 #endif
           break;
         }
         case QP_QPOPT: {
-          TEST_FOR_EXCEPTION(true,std::logic_error,"Error! QPOPT interface is not updated yet!");
+          TEUCHOS_TEST_FOR_EXCEPTION(true,std::logic_error,"Error! QPOPT interface is not updated yet!");
 /*
 #ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
           using ConstrainedOptPack::QPSolverRelaxedQPOPT;
@@ -957,7 +957,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
           break;
         }
         default:
-          TEST_FOR_EXCEPT(true);
+          TEUCHOS_TEST_FOR_EXCEPT(true);
       }
       // QP solver tester
       Teuchos::RCP<QPSolverRelaxedTester> 
@@ -1031,7 +1031,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
             case L1_PENALTY_PARAM_WITH_MULT:
 //							param_update_step
 //								= Teuchos::rcp(new  MeritFunc_PenaltyParamUpdateWithMult_AddedStep());
-              TEST_FOR_EXCEPTION(
+              TEUCHOS_TEST_FOR_EXCEPTION(
                 true, std::logic_error
                 ,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
                 "The l1_penalty_parameter_update option of MULT_FREE has not been updated yet!" );
@@ -1041,7 +1041,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
                 = Teuchos::rcp(new  MeritFunc_PenaltyParamUpdateMultFree_AddedStep());
               break;
             default:
-              TEST_FOR_EXCEPT(true);
+              TEUCHOS_TEST_FOR_EXCEPT(true);
           }
           break;
         }
@@ -1049,13 +1049,13 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
         case MERIT_FUNC_MOD_L1_INCR:
 //					param_update_step = new  MeritFunc_PenaltyParamsUpdateWithMult_AddedStep(
 //											Teuchos::rcp_implicit_cast<MeritFuncNLP>(merit_func) );
-          TEST_FOR_EXCEPTION(
+          TEUCHOS_TEST_FOR_EXCEPTION(
             true, std::logic_error
             ,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
             "The merit_function_type options of MODIFIED_L1 and MODIFIED_L1_INCR have not been updated yet!" );
           break;
         default:
-          TEST_FOR_EXCEPT(true);	// local programming error
+          TEUCHOS_TEST_FOR_EXCEPT(true);	// local programming error
       }
       if(options_.get()) {
         MeritFunc_PenaltyParamUpdate_AddedStepSetOptions
@@ -1088,14 +1088,14 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
             break;
           }
           case LINE_SEARCH_2ND_ORDER_CORRECT: {
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::logic_error
               ,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
               "The line_search_method option of 2ND_ORDER_CORRECT has not been updated yet!" );
             break;
           }
           case LINE_SEARCH_WATCHDOG: {
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::logic_error
               ,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
               "The line_search_method option of WATCHDOG has not been updated yet!" );
@@ -1119,7 +1119,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
           case LINE_SEARCH_AUTO:
           case LINE_SEARCH_NONE:
           default:
-            TEST_FOR_EXCEPT(true); // Should not get here!
+            TEUCHOS_TEST_FOR_EXCEPT(true); // Should not get here!
         }
       }
       else {
@@ -1505,7 +1505,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 
     }
     else {
-      TEST_FOR_EXCEPT(true); // Error, this should not ever be called!
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Error, this should not ever be called!
     }
   }
   
@@ -1515,7 +1515,7 @@ void NLPAlgoConfigMamaJama::init_algo(NLPAlgoInterface* _algo)
 {
   using Teuchos::dyn_cast;
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     _algo == NULL, std::invalid_argument
     ,"NLPAlgoConfigMamaJama::init_algo(_algo) : Error, "
     "_algo can not be NULL" );
@@ -1555,7 +1555,7 @@ void NLPAlgoConfigMamaJama::readin_options(
   using		ofsp::StringToIntMap;
   using		ofsp::StringToBool;
 
-  TEST_FOR_EXCEPT( !( ov ) );	// only a local class error
+  TEUCHOS_TEST_FOR_EXCEPT( !( ov ) );	// only a local class error
 
   // Get the options group for "NLPAlgoConfigMamaJama"
   const std::string opt_grp_name = "NLPAlgoConfigMamaJama";
@@ -1619,7 +1619,7 @@ void NLPAlgoConfigMamaJama::readin_options(
           else if( opt_val == "LPBFGS" )
             ov->quasi_newton_ = QN_LPBFGS;
           else
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::invalid_argument
               ,"NLPAlgoConfigMamaJama::readin_options(...) : "
               "Error, incorrect value for \"quasi_newton\" "
@@ -1651,7 +1651,7 @@ void NLPAlgoConfigMamaJama::readin_options(
           else if( opt_val == "SERIALIZE" )
             ov->hessian_initialization_ = INIT_HESS_SERIALIZE;
           else
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::invalid_argument
               ,"NLPAlgoConfigMamaJama::readin_options(...) : "
               "Error, incorrect value for \"hessian_initialization\" "
@@ -1671,7 +1671,7 @@ void NLPAlgoConfigMamaJama::readin_options(
 #ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
             ov->qp_solver_type_ = QP_QPOPT;
 #else
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::invalid_argument
               ,"NLPAlgoConfigMamaJama::readin_options(...) : QPOPT is not supported,"
               " must define CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT!" );
@@ -1680,7 +1680,7 @@ void NLPAlgoConfigMamaJama::readin_options(
 #ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK
             ov->qp_solver_type_ = QP_QPKWIK;
 #else
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::invalid_argument
               ,"NLPAlgoConfigMamaJama::readin_options(...) : QPKWIK is not supported,"
               " must define CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK!" );
@@ -1688,7 +1688,7 @@ void NLPAlgoConfigMamaJama::readin_options(
           } else if( qp_solver == "QPSCHUR" ) {
             ov->qp_solver_type_ = QP_QPSCHUR;
           } else {
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::invalid_argument
               ,"NLPAlgoConfigMamaJama::readin_options(...) : "
               "Error, incorrect value for \"qp_solver\" "
@@ -1715,7 +1715,7 @@ void NLPAlgoConfigMamaJama::readin_options(
           } else if( option == "FILTER" ) {
             ov->line_search_method_ = LINE_SEARCH_FILTER;
           } else {
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::invalid_argument
               ,"NLPAlgoConfigMamaJama::readin_options(...) : "
               "Error, incorrect value for \"line_search_method\".\n"
@@ -1736,7 +1736,7 @@ void NLPAlgoConfigMamaJama::readin_options(
           else if( option == "AUTO" )
             ov->merit_function_type_ = MERIT_FUNC_AUTO;
           else
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::invalid_argument
               ,"NLPAlgoConfigMamaJama::readin_options(...) : "
               "Error, incorrect value for \"merit_function_type\".\n"
@@ -1757,7 +1757,7 @@ void NLPAlgoConfigMamaJama::readin_options(
             ov->l1_penalty_param_update_
               = L1_PENALTY_PARAM_AUTO;
           else
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::invalid_argument
               ,"NLPAlgoConfigMamaJama::readin_options(...) : "
               "Error, incorrect value for \"l1_penalty_param_update\".\n"
@@ -1777,7 +1777,7 @@ void NLPAlgoConfigMamaJama::readin_options(
         }
 
         default:
-          TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
+          TEUCHOS_TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
       }
     }
   }

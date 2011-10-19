@@ -34,7 +34,7 @@
 #include "AbstractLinAlgPack_SpVectorClass.hpp"
 #include "AbstractLinAlgPack_AssertOp.hpp"
 #include "Teuchos_Workspace.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 
@@ -189,22 +189,22 @@ void MatrixVarReductImplicit::initialize(
 {
   namespace rcp = MemMngPack;
   // Validate the inputs
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     C.get() == NULL, std::invalid_argument
     ,"MatrixVarReductImplicit::initialize(...): Error, "
     "C.get() must not be NULL" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     N.get() == NULL, std::invalid_argument
     ,"MatrixVarReductImplicit::initialize(...): Error, "
     "N.get() must not be NULL" );
   if( D_direct.get() ) {
     const bool is_compatible_cols = D_direct->space_cols().is_compatible(C->space_cols());
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       !is_compatible_cols, VectorSpace::IncompatibleVectorSpaces
       ,"MatrixVarReductImplicit::initialize(...): Error, "
       "D_direct->space_cols() is not compatible with C->space_cols()" );
     const bool is_compatible_rows = D_direct->space_rows().is_compatible(N->space_rows());
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       !is_compatible_rows, VectorSpace::IncompatibleVectorSpaces
       ,"MatrixVarReductImplicit::initialize(...): Error, "
       "D_direct->space_rows() is not compatible with N->space_rows()" );
@@ -260,7 +260,7 @@ const VectorSpace& MatrixVarReductImplicit::space_rows() const
 MatrixOp& MatrixVarReductImplicit::operator=(const MatrixOp& M)
 {
   assert_initialized();
-  TEST_FOR_EXCEPT(true); // ToDo: Finish!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Finish!
   return *this;
 }
 
@@ -406,7 +406,7 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 
 void MatrixVarReductImplicit::assert_initialized() const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     C_.get() == NULL, std::logic_error
     ,"MatrixVarReductImplicit::assert_initialized(): Error, "
     "initialize(...) has not been called yet!" );

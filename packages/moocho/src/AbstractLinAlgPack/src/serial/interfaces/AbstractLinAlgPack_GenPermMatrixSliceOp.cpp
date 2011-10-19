@@ -125,7 +125,7 @@ void AbstractLinAlgPack::V_StMtV(
     }
   }
   else {
-    TEST_FOR_EXCEPT(true);	// ToDo: Implement the other cases!
+    TEUCHOS_TEST_FOR_EXCEPT(true);	// ToDo: Implement the other cases!
   }
   if(	 P.ordered_by() == GPMSIP::BY_ROW_AND_COL
     || 	( P_trans == no_trans	&& P.ordered_by() == GPMSIP::BY_ROW )
@@ -250,7 +250,7 @@ void AbstractLinAlgPack::Vp_StMtV(
   else if( x.is_sorted() ) {
     const SpVectorSlice::difference_type x_off = x.offset();
     if( P_trans == no_trans && P.ordered_by() == GPMSIP::BY_COL ) {
-      TEST_FOR_EXCEPT(true);	// ToDo: implement this!
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// ToDo: implement this!
     }
     else if( ( P_trans == trans && P.ordered_by() == GPMSIP::BY_ROW )
       || P.ordered_by() == GPMSIP::BY_ROW_AND_COL )
@@ -281,13 +281,13 @@ void AbstractLinAlgPack::Vp_StMtV(
       }
     }
     else {
-      TEST_FOR_EXCEPT(true); // ToDo: Implement what ever this case is?	
+      TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement what ever this case is?	
     }
   }
   else {
     // Since things do not match up we will have to create a
     // temporary dense copy of x to operate on.
-    TEST_FOR_EXCEPT(true);	// ToDo: Implement this!
+    TEUCHOS_TEST_FOR_EXCEPT(true);	// ToDo: Implement this!
   }
 }
 
@@ -317,7 +317,7 @@ ordered_by(
       opP_ordered_by = GPMSIP::UNORDERED;
       break;
         default:
-      TEST_FOR_EXCEPT(true); // Should never happen
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Should never happen
   }
   return opP_ordered_by;
 }
@@ -371,14 +371,14 @@ void AbstractLinAlgPack::intersection(
   // Both are identity?
   if( P1.is_identity() && P2.is_identity() ) {
     *Q_nz = P1.nz(); // Should be the same as P2.nz();
-    TEST_FOR_EXCEPT( !(  P1.nz() == P2.nz()  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  P1.nz() == P2.nz()  ) );
     if(Q)
       Q->initialize(opP1_rows,opP2_cols,GenPermMatrixSlice::IDENTITY_MATRIX);
     return;
   }
   // One is identity?
   if( P1.is_identity() || P2.is_identity() ) {
-    TEST_FOR_EXCEPT(true); // ToDo: Implement this but it is a little tricking?
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement this but it is a little tricking?
     return;
   }
   //
@@ -389,7 +389,7 @@ void AbstractLinAlgPack::intersection(
   {
     // This is great!  Both of the matrices are sorted and we don't need any temparary storage
     if( Q_max_nz ) {
-      TEST_FOR_EXCEPT(true); // ToDo: Implement initializing Q_row_i, Q_col_j
+      TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement initializing Q_row_i, Q_col_j
     }
     else {
       GenPermMatrixSlice::const_iterator
@@ -444,7 +444,7 @@ void AbstractLinAlgPack::intersection(
     }
     // Loop through the columns of op(op(P1)) and look for matches
     if( Q_max_nz ) {
-      TEST_FOR_EXCEPT(true); // ToDo: Implement initializing Q_row_i, Q_col_j
+      TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement initializing Q_row_i, Q_col_j
     }
     else {
       GenPermMatrixSlice::const_iterator
@@ -460,5 +460,5 @@ void AbstractLinAlgPack::intersection(
 
   }
   // Setup Q
-  TEST_FOR_EXCEPT( !( Q == NULL ) ); // ToDo: Implement initializing Q
+  TEUCHOS_TEST_FOR_EXCEPT( !( Q == NULL ) ); // ToDo: Implement initializing Q
 }

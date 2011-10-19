@@ -34,7 +34,7 @@
 #include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack_VectorOut.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace NLPInterfacePack {
 
@@ -51,7 +51,7 @@ void NLPBarrier::InitializeFromNLP(
   Teuchos::RCP<NLP> original_nlp
   )
   {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !original_nlp.get(),
     std::logic_error,
     "null nlp passed to NLPBarrier decorator"
@@ -59,7 +59,7 @@ void NLPBarrier::InitializeFromNLP(
 
   nlp_ = Teuchos::rcp_dynamic_cast<NLPObjGrad>(original_nlp);
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !nlp_.get(),
     std::logic_error,
     "non NLPObjGrad NLP passed to NLPBarrier decorator"
@@ -144,7 +144,7 @@ void NLPBarrier::imp_calc_f(
   const ZeroOrderInfo& zero_order_info
   ) const
   {
-  TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
   }
 
 void NLPBarrier::imp_calc_c(
@@ -153,7 +153,7 @@ void NLPBarrier::imp_calc_c(
   const ZeroOrderInfo& zero_order_info
   ) const
   {
-  TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
   }
 
 void NLPBarrier::imp_calc_c_breve(
@@ -162,7 +162,7 @@ void NLPBarrier::imp_calc_c_breve(
   const ZeroOrderInfo& zero_order_info_breve
   ) const
   {	
-  TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
   }
 
 void NLPBarrier::imp_calc_h_breve(
@@ -171,7 +171,7 @@ void NLPBarrier::imp_calc_h_breve(
   const ZeroOrderInfo& zero_order_info_breve
   ) const
   {	
-  TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
   }
 
 void NLPBarrier::imp_calc_Gf(
@@ -180,7 +180,7 @@ void NLPBarrier::imp_calc_Gf(
   const ObjGradInfo& obj_grad_info
   ) const
   {
-  TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( false && !"This should never get called." ) );
   }
 
 

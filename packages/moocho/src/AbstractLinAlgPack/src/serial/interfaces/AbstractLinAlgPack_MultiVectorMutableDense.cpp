@@ -36,7 +36,7 @@
 #include "DenseLinAlgPack_DMatrixOut.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "Teuchos_Workspace.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -95,7 +95,7 @@ void MultiVectorMutableDense::initialize(
 const DMatrixSlice MultiVectorMutableDense::get_gms_view() const
 {
   if(gms_trans_ == BLAS_Cpp::trans) {
-    TEST_FOR_EXCEPT(true); // ToDo: We need to create a copy and transpose it!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: We need to create a copy and transpose it!
   }
   return get_gms(); // No memory to allocate!
 }
@@ -103,7 +103,7 @@ const DMatrixSlice MultiVectorMutableDense::get_gms_view() const
 void MultiVectorMutableDense::free_gms_view(const DMatrixSlice* gms_view) const
 {
   if(gms_trans_ == BLAS_Cpp::trans) {
-    TEST_FOR_EXCEPT(true); // ToDo: We need to free the copy that we created in get_gms_view()
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: We need to free the copy that we created in get_gms_view()
   }
   else {
     // Nothing to free!
@@ -115,7 +115,7 @@ void MultiVectorMutableDense::free_gms_view(const DMatrixSlice* gms_view) const
 DMatrixSlice MultiVectorMutableDense::get_gms_view()
 {
   if(gms_trans_ == BLAS_Cpp::trans) {
-    TEST_FOR_EXCEPT(true); // ToDo: We need to create a copy and transpose it!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: We need to create a copy and transpose it!
   }
   return set_gms(); // No memory to allocate!
 }
@@ -123,7 +123,7 @@ DMatrixSlice MultiVectorMutableDense::get_gms_view()
 void MultiVectorMutableDense::commit_gms_view(DMatrixSlice* gms_view)
 {
   if(gms_trans_ == BLAS_Cpp::trans) {
-    TEST_FOR_EXCEPT(true); // ToDo: We need to free the copy that we created in get_gms_view()
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: We need to free the copy that we created in get_gms_view()
   }
   else {
     // Nothing to free!
@@ -241,7 +241,7 @@ bool MultiVectorMutableDense::syrk(
   ) const
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     sym_lhs == NULL, std::invalid_argument
     ,"MultiVectorMutableDense::syrk(...) : Error!" );
 #endif

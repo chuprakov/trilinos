@@ -36,7 +36,7 @@
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -166,7 +166,7 @@ void DecompositionSystemCoordinate::initialize_matrices(
       ,BLAS_Cpp::no_trans                               // D_trans
       );
   }
-  TEST_FOR_EXCEPT( !( Uy_sv == NULL ) ); // ToDo: Implement for undecomposed equalities
+  TEUCHOS_TEST_FOR_EXCEPT( !( Uy_sv == NULL ) ); // ToDo: Implement for undecomposed equalities
 
   // The R = C matrix object should already be updateded
 

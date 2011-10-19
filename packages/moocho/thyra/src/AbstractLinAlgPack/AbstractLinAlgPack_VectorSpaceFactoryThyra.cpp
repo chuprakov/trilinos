@@ -28,7 +28,7 @@
 
 #include "AbstractLinAlgPack_VectorSpaceFactoryThyra.hpp"
 #include "AbstractLinAlgPack_VectorSpaceThyra.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -48,7 +48,7 @@ void VectorSpaceFactoryThyra::initialize(
   const Teuchos::RCP<const Thyra::VectorSpaceFactoryBase<value_type> >& thyra_vec_spc_fcty
   )
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     thyra_vec_spc_fcty.get()==NULL, std::invalid_argument
     ,"VectorSpaceFactoryThyra::initialize(thyra_vec_spc_fcty): Error!"
     );

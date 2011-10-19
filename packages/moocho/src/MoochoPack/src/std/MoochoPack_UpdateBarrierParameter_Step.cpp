@@ -39,7 +39,7 @@
 #include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack_VectorStdOps.hpp"
 #include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 #include "OptionsFromStreamPack_StringToBool.hpp"
 
@@ -255,7 +255,7 @@ void UpdateBarrierParameter_StepSetOptions::setOption(
       target().e_tol_max(std::atof(option_value.c_str()));
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
     }
   }
 

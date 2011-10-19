@@ -38,7 +38,7 @@
 #include "DenseLinAlgPack_AssertOp.hpp"
 #include "DenseLinAlgPack_LinAlgOpPack.hpp"
 #include "ProfileHackPack_profile_hack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 
@@ -61,7 +61,7 @@ void Vp_StPtMtV_imp(
   namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPT(y==NULL);
+  TEUCHOS_TEST_FOR_EXCEPT(y==NULL);
 #endif
 
   const DenseLinAlgPack::size_type
@@ -95,7 +95,7 @@ void Vp_StPtMtV_imp(
   {
     // Call the default implementation
     //H.MatrixOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b);
-    TEST_FOR_EXCEPT(true); // ToDo: Implement!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
     return;
   }
   const DenseLinAlgPack::Range1D
@@ -156,16 +156,16 @@ void MatrixSymHessianRelaxNonSing::initialize(
   namespace mmp = MemMngPack;
 #ifdef TEUCHOS_DEBUG
   const char err_msg_head[] = "MatrixSymHessianRelaxNonSing::initialize(...) : Error!";
-  TEST_FOR_EXCEPTION(G_ptr.get()==NULL, std::invalid_argument, err_msg_head);
-  TEST_FOR_EXCEPTION(M_diag_ptr.get()==NULL, std::invalid_argument, err_msg_head);
+  TEUCHOS_TEST_FOR_EXCEPTION(G_ptr.get()==NULL, std::invalid_argument, err_msg_head);
+  TEUCHOS_TEST_FOR_EXCEPTION(M_diag_ptr.get()==NULL, std::invalid_argument, err_msg_head);
   const size_type G_rows = G_ptr->rows(), M_diag_dim = M_diag_ptr->dim();
-  TEST_FOR_EXCEPTION(G_rows==0, std::invalid_argument, err_msg_head);
-  TEST_FOR_EXCEPTION(M_diag_dim==0, std::invalid_argument, err_msg_head);
+  TEUCHOS_TEST_FOR_EXCEPTION(G_rows==0, std::invalid_argument, err_msg_head);
+  TEUCHOS_TEST_FOR_EXCEPTION(M_diag_dim==0, std::invalid_argument, err_msg_head);
 #endif
   if( space.get() ) {
 #ifdef TEUCHOS_DEBUG
     const size_type space_dim = space->dim();
-    TEST_FOR_EXCEPTION(space_dim != G_rows + M_diag_dim, std::invalid_argument, err_msg_head);
+    TEUCHOS_TEST_FOR_EXCEPTION(space_dim != G_rows + M_diag_dim, std::invalid_argument, err_msg_head);
 #endif
     vec_space_ = space;
   }
@@ -390,7 +390,7 @@ void MatrixSymHessianRelaxNonSing::V_InvMtV(
 
 void MatrixSymHessianRelaxNonSing::assert_initialized() const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     G_ptr_.get() == NULL, std::logic_error
     ,"MatrixSymHessianRelaxNonSing::assert_initialized(): Error, Not initalized yet!" );
 }

@@ -31,7 +31,7 @@
 #include "AbstractLinAlgPack_VectorMutableThyra.hpp"
 #include "Thyra_VectorStdOps.hpp"
 #include "Thyra_MultiVectorStdOps.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
@@ -55,7 +55,7 @@ void MatrixOpNonsingThyra::initialize(
   )
 {
   namespace mmp = MemMngPack;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     thyra_linear_op_ns.get()==NULL, std::invalid_argument
     ,"MatrixOpNonsingThyra::initialize(thyra_linear_op_ns): Error!"
     );
@@ -95,7 +95,7 @@ void MatrixOpNonsingThyra::V_InvMtV(
   using Teuchos::dyn_cast;
   using BLAS_Cpp::trans_trans;
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     v_lhs==NULL, std::invalid_argument
     ,"MatrixOpThyra::Vp_StMtV(...): Error!"
     );

@@ -45,7 +45,7 @@
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace MoochoPack {
 
@@ -279,7 +279,7 @@ value_type CheckConvergenceStd_Strategy::CalculateScalingFactor( NLPAlgoState& s
       scale_factor = 1.0 + state.x().get_k(0).norm_inf();
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Should never be called
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Should never be called
     }
 
   return scale_factor;

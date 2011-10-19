@@ -289,10 +289,10 @@ Range1D& Range1D::operator-=( Index incr ) {
 inline
 void Range1D::assert_valid_range(Index lbound, Index ubound) const {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     lbound < 1, std::range_error
     ,"Range1D::assert_valid_range(): Error, lbound ="<<lbound<<" must be greater than 0." );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     lbound > ubound, std::range_error
     ,"Range1D::assert_valid_range(): Error, lbound = "<<lbound<<" > ubound = "<<ubound );
 #endif

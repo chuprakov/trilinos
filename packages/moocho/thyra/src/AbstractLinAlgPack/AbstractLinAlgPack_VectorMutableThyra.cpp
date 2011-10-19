@@ -33,7 +33,7 @@
 #include "AbstractLinAlgPack_VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack_GenPermMatrixSliceOp.hpp"
 #include "RTOpPack_RTOpSubRangeDecorator.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_as.hpp"
@@ -57,7 +57,7 @@ void VectorMutableThyra::initialize(
   )
 {
   namespace mmp = MemMngPack;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     thyra_vec.get()==NULL, std::invalid_argument
     ,"VectorMutableThyra::initialize(thyra_vec): Error!"
     );
@@ -202,7 +202,7 @@ void VectorMutableThyra::Vp_StMtV(
   )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPT(!(space().is_in_core()));
+  TEUCHOS_TEST_FOR_EXCEPT(!(space().is_in_core()));
 #endif
   VectorDenseMutableEncap  y_de(*this);
   VectorDenseEncap  x_de(x);

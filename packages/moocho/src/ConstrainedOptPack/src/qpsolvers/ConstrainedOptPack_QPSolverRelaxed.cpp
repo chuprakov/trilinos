@@ -37,7 +37,7 @@
 #include "AbstractLinAlgPack_VectorOut.hpp"
 #include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
 #include "ProfileHackPack_profile_hack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -176,26 +176,26 @@ void QPSolverRelaxed::validate_input(
   )
 {
   // Validate output arguments
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !d, std::invalid_argument
     ,"QPSolverRelaxed::validate_input(...) : Error, "
     "If d!=NULL is not allowed." );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     ( E || F ) && !eta, std::invalid_argument
     ,"QPSolverRelaxed::validate_input(...) : Error, "
     "If eta!=NULL is not allowed if E!=NULL or F!=NULL." );
 
   // Validate the sets of constraints arguments
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     dL && ( !dU || !nu ), std::invalid_argument
     ,"QPSolverRelaxed::validate_input(...) : Error, "
     "If dL!=NULL then dU!=NULL and nu!=NULL must also be true." );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     E && ( !b || !eL || !eU || !mu ), std::invalid_argument
     ,"QPSolverRelaxed::validate_input(...) : Error, "
     "If E!=NULL then b!=NULL, eL!=NULL, eU!=NULL and mu!=NULL must also "
     "be true." );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     F && ( !f || !lambda ), std::invalid_argument
     ,"QPSolverRelaxed::validate_input(...) : Error, "
     "If F!=NULL then f!=NULL and lambda!=NULL must also "
@@ -206,54 +206,54 @@ void QPSolverRelaxed::validate_input(
   // Validate the sizes of the arguments
   const size_type
     nd = d->dim();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     g.dim() != nd, std::invalid_argument
     ,"QPSolverRelaxed::validate_input(...) : Error, "
     "g.dim() != d->dim()." );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     G.rows() != nd || G.cols() != nd, std::invalid_argument
     ,"QPSolverRelaxed::validate_input(...) : Error, "
     "G.rows() != d->dim() or G.cols() != d->dim()." );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     dL && dL->dim() != nd, std::invalid_argument
     ,"QPSolverRelaxed::validate_input(...) : Error, "
     "dL->dim() = " << dL->dim() << " != d->dim() = " << nd << "." );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     dU && dU->dim() != nd, std::invalid_argument
     ,"QPSolverRelaxed::validate_input(...) : Error, "
     "dU->dim() = " << dU->dim() << " != d->dim() = " << nd << "." );
   if( E ) {
     const size_type
       m_in = BLAS_Cpp::rows( E->rows(), E->cols(), trans_E );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       BLAS_Cpp::cols( E->rows(), E->cols(), trans_E )	!= nd, std::invalid_argument
       ,"QPSolverRelaxed::validate_input(...) : Error, op(E).cols() != d->dim()." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       b->dim() != m_in, std::invalid_argument
       ,"QPSolverRelaxed::validate_input(...) : Error, b->dim() != op(E).rows()." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       eL->dim() != m_in, std::invalid_argument
       ,"QPSolverRelaxed::validate_input(...) : Error, eL->dim() != op(E).rows()." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       eU->dim() != m_in, std::invalid_argument
       ,"QPSolverRelaxed::validate_input(...) : Error, eU->dim() != op(E).rows()." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       Ed && Ed->dim() != m_in, std::invalid_argument
       ,"QPSolverRelaxed::validate_input(...) : Error, Ed->dim() != op(E).rows()." );
   }
   if( F ) {
     const size_type
       m_eq = BLAS_Cpp::rows( F->rows(), F->cols(), trans_F );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       BLAS_Cpp::cols( F->rows(), F->cols(), trans_F )	!= nd, std::invalid_argument
       ,"QPSolverRelaxed::validate_input(...) : Error, op(F).cols() != d->dim()." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       f->dim() != m_eq, std::invalid_argument
       ,"QPSolverRelaxed::validate_input(...) : Error, f->dim() != op(F).rows()." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       lambda->dim() != m_eq, std::invalid_argument
       ,"QPSolverRelaxed::validate_input(...) : Error, lambda->dim() != op(F).rows()." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       Fd && Fd->dim() != m_eq, std::invalid_argument
       ,"QPSolverRelaxed::validate_input(...) : Error, Fd->dim() != op(F).rows()." );
   }

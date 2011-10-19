@@ -42,7 +42,7 @@
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack_VectorMutableSubView.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_as.hpp"
 
 //#define FILTER_DEBUG_OUT 1
@@ -139,7 +139,7 @@ LineSearchFilter_Step::LineSearchFilter_Step(
   grad_obj_f_(grad_obj_iq_name),
   nlp_(nlp)
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !nlp_.get(),
     std::logic_error,
     "Null nlp passed to LineSearchFilter_Step constructor"
@@ -212,14 +212,14 @@ bool LineSearchFilter_Step::do_step(
   if (!s.d().updated_k(0) || !x_iq.updated_k(0))
   {
     // Dead in the water
-    TEST_FOR_EXCEPTION( true, std::logic_error, "Error, d_k or x_k not updated." ); 		
+    TEUCHOS_TEST_FOR_EXCEPTION( true, std::logic_error, "Error, d_k or x_k not updated." ); 		
     return false;
   }
     
   if (!alpha_iq.updated_k(0) || alpha_iq.get_k(0) > 1 || alpha_iq.get_k(0) <= 0)
   {
     // if alpha_k is not known then we would need to calculate all the new points
-    TEST_FOR_EXCEPTION( true, std::out_of_range, "Error, alpha_k not updated or out of range [0, 1)." ); 		
+    TEUCHOS_TEST_FOR_EXCEPTION( true, std::out_of_range, "Error, alpha_k not updated or out of range [0, 1)." ); 		
     return false;
   }
 
@@ -321,7 +321,7 @@ bool LineSearchFilter_Step::do_step(
   
       // Really, we do not need to throw an exception here, we can try and backtrack
       // alpha to get into an acceptable region
-      TEST_FOR_EXCEPTION( true, std::out_of_range, "Point Not Valid." );	
+      TEUCHOS_TEST_FOR_EXCEPTION( true, std::out_of_range, "Point Not Valid." );	
     }
       
     // Check if point satisfies filter
@@ -439,9 +439,9 @@ bool LineSearchFilter_Step::do_step(
     //	out << "\nCould not find acceptable alpha_k - going to restoration phase.\n"; 
     //  }
     
-    //TEST_FOR_EXCEPTION( true, std::out_of_range, "Tried to go to restoration phase." );	
+    //TEUCHOS_TEST_FOR_EXCEPTION( true, std::out_of_range, "Tried to go to restoration phase." );	
     
-    TEST_FOR_EXCEPTION( true, LineSearchFailure
+    TEUCHOS_TEST_FOR_EXCEPTION( true, LineSearchFailure
                         ,"FilterLineSearchFailure : Should go to restoration"
       );
   }
@@ -750,7 +750,7 @@ value_type LineSearchFilter_Step::CalculateTheta_k(
 {
   value_type theta = 0.0;
   if (h) {
-    TEST_FOR_EXCEPTION( true, std::out_of_range, "Error, do not support inequalities yet" );
+    TEUCHOS_TEST_FOR_EXCEPTION( true, std::out_of_range, "Error, do not support inequalities yet" );
   }
   if (c) {
     const Vector &c_k = c->get_k(k);

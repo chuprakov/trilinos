@@ -48,7 +48,7 @@
 #include "OptionsFromStreamPack_StringToIntMap.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
 #include "Teuchos_Workspace.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_oblackholestream.hpp"
 #include "Teuchos_VerboseObject.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
@@ -345,7 +345,7 @@ void MoochoSolver::update_solver() const
   // Validate the input
   //
   
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     nlp_.get() == NULL, std::logic_error
     ,"MoochoSolver::update_solver() : Error, this->get_nlp().get() can not be NULL!" );
 
@@ -459,7 +459,7 @@ void MoochoSolver::update_solver() const
               configuration_ = config_map( ofsp::option_value(itr).c_str() );
               break;
             default:
-              TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
+              TEUCHOS_TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
           }
         }
       }

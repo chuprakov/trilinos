@@ -35,7 +35,7 @@
 
 #include "FortranTypes_f_open_file.hpp"
 #include "FortranTypes_CppFortranStrings.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 
 typedef FortranTypes::f_int	f_int;
@@ -65,7 +65,7 @@ void FortranTypes::f_open_file( const f_int iunit, const char file[]
   // Convert the file name to an integer to pass to Fortran.
   FortranTypes::f_int int_file[100], int_file_len;
   result = convert_to_f_int_string( file, int_file, &int_file_len );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     result, InvalidFileNameException
     ,"f_open_file(...) : Error, the "
     << -result << " Character of the file name \""
@@ -78,12 +78,12 @@ void FortranTypes::f_open_file( const f_int iunit, const char file[]
       )
     )
   {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       result < 0, InvalidFileNameException
       ,"f_open_file(...) : Error, the "
       << -result << " Character of the file name \""
       << file << "\" is not a valid ASCII character." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       result > 0, OpenException
       ,"f_open_file(...) : Error, the file named \""
       << file << "\" could not be opened and OPEN(...) "

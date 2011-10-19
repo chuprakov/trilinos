@@ -370,7 +370,7 @@ bool TangentialStepWithInequStd_Step::do_step(
     qp_Ed  = Teuchos::rcp(&Zpz_k,false); // Zpz_k will be updated directly!
   }
   else {
-    TEST_FOR_EXCEPT(true);
+    TEUCHOS_TEST_FOR_EXCEPT(true);
   }
 
   // Set the general equality constriants (if they exist)
@@ -409,7 +409,7 @@ bool TangentialStepWithInequStd_Step::do_step(
       qp_olevel = QPSolverRelaxed::PRINT_EVERY_THING;
       break;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
   // ToDo: Set print options so that only vectors matrices etc
   // are only printed in the null space
@@ -489,7 +489,7 @@ bool TangentialStepWithInequStd_Step::do_step(
     }
   }
   else {
-    TEST_FOR_EXCEPT(true);
+    TEUCHOS_TEST_FOR_EXCEPT(true);
   }
 
   // Set the solution statistics
@@ -570,7 +570,7 @@ bool TangentialStepWithInequStd_Step::do_step(
       break;
     }
     default:
-      TEST_FOR_EXCEPT(true);	// should not happen!
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// should not happen!
   }
 
   //

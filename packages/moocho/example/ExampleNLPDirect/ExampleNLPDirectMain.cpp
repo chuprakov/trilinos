@@ -139,7 +139,7 @@ int main( int argc, char* argv[] ) {
         prog_return = PROG_EXCEPTION;
         break;
       default:
-        TEST_FOR_EXCEPT(true);
+        TEUCHOS_TEST_FOR_EXCEPT(true);
     }
     
   }	// end try

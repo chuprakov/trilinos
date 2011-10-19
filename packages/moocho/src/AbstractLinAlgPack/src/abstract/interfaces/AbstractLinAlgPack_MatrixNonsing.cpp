@@ -38,7 +38,7 @@
 #include "AbstractLinAlgPack_SpVectorView.hpp"
 #include "AbstractLinAlgPack_EtaVector.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
@@ -118,7 +118,7 @@ void MatrixNonsing::M_StInvMtM(
   using BLAS_Cpp::no_trans;
   using BLAS_Cpp::trans;
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     C_lhs == NULL, std::invalid_argument
     ,"MatrixNonsing::M_StInvMtM(...) : Error!" );
   
@@ -136,7 +136,7 @@ void MatrixNonsing::M_StInvMtM(
     M_rows    = this->rows(),
     M_cols    = this->cols(),
     op_B_rows = BLAS_Cpp::rows( B.rows(), B.cols(), B_trans );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     C_rows != M_rows || M_rows != M_cols || M_cols != op_B_rows || C_cols != op_B_cols
     , std::invalid_argument
     ,"MatrixNonsing::M_StInvMtM(...) : Error!" );
@@ -166,7 +166,7 @@ void MatrixNonsing::M_StMtInvM(
   ,BLAS_Cpp::Transp trans_rhs2
   ) const
 {
-  TEST_FOR_EXCEPT(true); // ToDo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
 }
 
 }	// end namespace AbstractLinAlgPack

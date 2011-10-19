@@ -82,7 +82,7 @@ void MatrixOpSerial::Mp_StMtP(DMatrixSlice* C, value_type a
   ) const 
 {
   // C += a * op(M) * op(P)
-  TEST_FOR_EXCEPT(true);	// Implement this!
+  TEUCHOS_TEST_FOR_EXCEPT(true);	// Implement this!
 }
 
 void MatrixOpSerial::Mp_StPtM(DMatrixSlice* C, value_type a
@@ -91,7 +91,7 @@ void MatrixOpSerial::Mp_StPtM(DMatrixSlice* C, value_type a
   ) const 
 {
   // C += a * op(P) * op(M)
-  TEST_FOR_EXCEPT(true);	// Implement this!
+  TEUCHOS_TEST_FOR_EXCEPT(true);	// Implement this!
 }
 
 void MatrixOpSerial::Mp_StPtMtP( DMatrixSlice* C, value_type a
@@ -101,7 +101,7 @@ void MatrixOpSerial::Mp_StPtMtP( DMatrixSlice* C, value_type a
   ) const
 {
   // C += a * op(P1) * op(M) * op(P2)
-  TEST_FOR_EXCEPT(true);	// Implement this!
+  TEUCHOS_TEST_FOR_EXCEPT(true);	// Implement this!
 }
 
 // Level-2 BLAS
@@ -345,26 +345,26 @@ void MatrixOpSerial::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha
   , BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceSym& sym_rhs2
   , BLAS_Cpp::Transp trans_rhs2, value_type beta) const
 {
-  TEST_FOR_EXCEPT(true); // Todo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // Todo: Implement!
 }
 
 void MatrixOpSerial::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceSym& sym_rhs1
   , BLAS_Cpp::Transp trans_rhs1, BLAS_Cpp::Transp trans_rhs2, value_type beta) const
 {
-  TEST_FOR_EXCEPT(true); // Todo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // Todo: Implement!
 }
 
 void MatrixOpSerial::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha
   , BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2
   , BLAS_Cpp::Transp trans_rhs2, value_type beta) const
 {
-  TEST_FOR_EXCEPT(true); // Todo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // Todo: Implement!
 }
 
 void MatrixOpSerial::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
   , BLAS_Cpp::Transp trans_rhs1, BLAS_Cpp::Transp trans_rhs2, value_type beta) const
 {
-  TEST_FOR_EXCEPT(true); // Todo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // Todo: Implement!
 }
 
 void MatrixOpSerial:: syrk(
