@@ -137,7 +137,7 @@ void CheckConvergence_StrategySetOptions::setOption(
         }
       else
         {
-        TEST_FOR_EXCEPTION( true,
+        TEUCHOS_TEST_FOR_EXCEPTION( true,
                  std::logic_error,
                  "Unaccounted for option_num in CheckConvergence_Strategy.cpp"
           );
@@ -152,7 +152,7 @@ void CheckConvergence_StrategySetOptions::setOption(
       break;
       }
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
     }
   }
 

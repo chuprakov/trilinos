@@ -123,7 +123,7 @@ void NLPSolverClientInterfaceSetOptions::setOption(
       else if( option_value == "PRINT_ITERATION_QUANTITIES" )
         target().journal_output_level(PRINT_ITERATION_QUANTITIES);
       else
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true,std::invalid_argument
           ,"NLPSolverClientInterfaceSetOptions::setOption(...) : "
           "Error, incorrect value \""<<option_value<<"\" for \"journal_output_level\"." );
@@ -142,7 +142,7 @@ void NLPSolverClientInterfaceSetOptions::setOption(
       else if( option_value == "PRINT_ITERATION_QUANTITIES" )
         target().null_space_journal_output_level(PRINT_ITERATION_QUANTITIES);
       else
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true,std::invalid_argument
           ,"NLPSolverClientInterfaceSetOptions::setOption(...) : "
           "Error, incorrect value \""<<option_value<<"\" for \"null_space_journal_output_level\"." );
@@ -172,7 +172,7 @@ void NLPSolverClientInterfaceSetOptions::setOption(
         );
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

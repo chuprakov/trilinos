@@ -95,11 +95,11 @@ bool UpdateReducedSigma_Step::do_step(
     case BFGS_DUAL_EXPLICIT_CORRECTION:
     case BFGS_DUAL_SCALING_CORRECTION:
       {
-      TEST_FOR_EXCEPTION(true, std::logic_error, "Option BFGS_primal not handled yet in UpdateReducedSigma\n");
+      TEUCHOS_TEST_FOR_EXCEPTION(true, std::logic_error, "Option BFGS_primal not handled yet in UpdateReducedSigma\n");
       }
       break;
     default:
-      TEST_FOR_EXCEPT(true); // local error ?
+      TEUCHOS_TEST_FOR_EXCEPT(true); // local error ?
     };
 
   if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) 
@@ -339,7 +339,7 @@ void UpdateReducedSigma_StepSetOptions::setOption(
       }
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
     }
   }
 

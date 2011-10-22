@@ -33,7 +33,7 @@
 #include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "AbstractLinAlgPack_Permutation.hpp"
 #include "AbstractLinAlgPack_PermutationOut.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
@@ -61,7 +61,7 @@ void MatrixPermAggr::initialize(
   )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     mat_orig.get() == NULL, std::invalid_argument
     ,"MatrixPermAggr::initialize(...): Error!" );
 #endif
@@ -69,14 +69,14 @@ void MatrixPermAggr::initialize(
   bool is_compatible = false;
   if(row_perm.get()) {
     is_compatible = mat_orig->space_cols().is_compatible(row_perm->space());
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       !is_compatible, VectorSpace::IncompatibleVectorSpaces
       ,"MatrixPermAggr::initialize(...): Error, " 
       "mat_orig->space_cols().is_compatible(row_perm->space()) == false" );
   }
   if(col_perm.get()) {
     is_compatible = mat_orig->space_rows().is_compatible(col_perm->space());
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       !is_compatible, VectorSpace::IncompatibleVectorSpaces
       ,"MatrixPermAggr::initialize(...): Error, " 
       "mat_orig->space_rows().is_compatible(col_perm->space()) == false" );

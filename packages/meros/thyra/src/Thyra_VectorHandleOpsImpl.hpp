@@ -158,7 +158,7 @@ namespace Thyra
     ConstVector<Scalar> x = xIn.convert();
     VectorBase<Scalar>* p = y.ptr().get();
     const VectorBase<Scalar>* px = x.rawPtr();
-    TEST_FOR_EXCEPT(px==0);
+    TEUCHOS_TEST_FOR_EXCEPT(px==0);
     Vp_StV(p, a, *px);
   }
 
@@ -166,7 +166,7 @@ namespace Thyra
   void scale(Vector<Scalar>& x, const Scalar& a)
   {
     VectorBase<Scalar>* p = x.rawPtr();
-    TEST_FOR_EXCEPT(p==0);
+    TEUCHOS_TEST_FOR_EXCEPT(p==0);
     Thyra::scale(a, p);
   }
 

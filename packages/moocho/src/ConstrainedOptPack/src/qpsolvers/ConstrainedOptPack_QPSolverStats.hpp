@@ -149,7 +149,7 @@ std::string toString( const QPSolverStats::ESolutionType &solution_type )
       return "SUBOPTIMAL_POINT";
       break;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
 }
 

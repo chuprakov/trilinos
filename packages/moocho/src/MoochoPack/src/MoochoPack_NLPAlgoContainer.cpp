@@ -36,7 +36,7 @@
 #include "MoochoPack_NLPAlgoInterface.hpp"
 #include "MoochoPack_NLPAlgoState.hpp"
 #include "NLPInterfacePack_NLP.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 
@@ -138,13 +138,13 @@ void NLPAlgoContainer::print_algorithm_times(
 }
 
 void NLPAlgoContainer::assert_valid_setup() const {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !get_nlp().get(), NLPSolverClientInterface::InvalidSetup
     ,"NLPAlgoContainer::assert_valid_setup() : The NLP object has not been set" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !get_track().get(), NLPSolverClientInterface::InvalidSetup
     ,"NLPAlgoContainer::assert_valid_setup() : The AlgorithmTracker object has not been set" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !get_config().get(), NLPSolverClientInterface::InvalidSetup
     ,"NLPAlgoContainer::assert_valid_setup() : The NLPAlgoConfig object has not been set" );
 }

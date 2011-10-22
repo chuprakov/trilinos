@@ -70,7 +70,7 @@
 #include "DenseLinAlgPack_DMatrixOut.hpp"
 #include "DenseLinAlgLAPack.hpp"
 #include "Teuchos_Workspace.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 
@@ -163,11 +163,11 @@ void MatrixSymPosDefLBFGS::initial_setup(
   )
 {
   // Validate input
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !maintain_original && !maintain_inverse, std::invalid_argument
     ,"MatrixSymPosDefLBFGS::initial_setup(...) : "
     "Error, both maintain_original and maintain_inverse can not both be false!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     m < 1, std::invalid_argument
     ,"MatrixSymPosDefLBFGS::set_num_updates_stored(m) : "
     "Error, the number of storage locations must be > 0" );
@@ -236,7 +236,7 @@ MatrixOp& MatrixSymPosDefLBFGS::operator=(const MatrixOp& mwo)
     QJ_			         = p_m->QJ_;
   }
   else {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true,std::invalid_argument
       ,"MatrixSymPosDefLBFGS::operator=(const MatrixOp& mwo) : Error, "
       "The concrete type of mwo \'" << typeName(mwo) << "\' is not "
@@ -264,7 +264,7 @@ void MatrixSymPosDefLBFGS::Vp_StMtV(
 
   assert_initialized();
 
-  TEST_FOR_EXCEPT( !(  original_is_updated_  ) ); // For now just always update
+  TEUCHOS_TEST_FOR_EXCEPT( !(  original_is_updated_  ) ); // For now just always update
 
   // y = b*y + Bk * x
   //
@@ -358,7 +358,7 @@ void MatrixSymPosDefLBFGS::V_InvMtV(
 
   assert_initialized();
 
-  TEST_FOR_EXCEPT( !(  inverse_is_updated_  ) ); // For now just always update
+  TEUCHOS_TEST_FOR_EXCEPT( !(  inverse_is_updated_  ) ); // For now just always update
 
   // y = inv(Bk) * x = Hk * x
   //
@@ -464,7 +464,7 @@ void MatrixSymPosDefLBFGS::V_InvMtV(
 void MatrixSymPosDefLBFGS::init_identity( const VectorSpace& space_diag, value_type alpha )
 {
   // Validate input
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     alpha <= 0.0, std::invalid_argument
     ,"MatrixSymPosDefLBFGS::init_identity(n,alpha) : Error, "
     "alpha = " << alpha << " <= 0 is not allowed!" );
@@ -476,8 +476,8 @@ void MatrixSymPosDefLBFGS::init_identity( const VectorSpace& space_diag, value_t
   // Set storage
   S_ = vec_spc_->create_members(m_);
   Y_ = vec_spc_->create_members(m_);
-  TEST_FOR_EXCEPT( !( S_.get() ) );
-  TEST_FOR_EXCEPT( !( Y_.get() ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( S_.get() ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( Y_.get() ) );
   STY_.resize( m_, m_ );
   STSYTY_.resize( m_+1, m_+1 );
   STSYTY_.diag(0) = 0.0;
@@ -780,7 +780,7 @@ void MatrixSymPosDefLBFGS::update_Q() const
     DenseLinAlgLAPack::potrf( &C_upper );
   }
   catch( const DenseLinAlgLAPack::FactorizationException &fe ) {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, UpdateFailedException
       ,"Error, the factorization of Q which should be s.p.d. failed with"
       " the error message: {" << fe.what() << "}";
@@ -932,7 +932,7 @@ void comp_Cb(
   typedef DenseLinAlgPack::size_type size_type;
   typedef DenseLinAlgPack::value_type value_type;
 
-  TEST_FOR_EXCEPT( !(  Lb.rows() == Cb->rows() && Cb->rows() == Db_diag.dim()  ) ); // only a local error!
+  TEUCHOS_TEST_FOR_EXCEPT( !(  Lb.rows() == Cb->rows() && Cb->rows() == Db_diag.dim()  ) ); // only a local error!
 
   const size_type p = Db_diag.dim();
 

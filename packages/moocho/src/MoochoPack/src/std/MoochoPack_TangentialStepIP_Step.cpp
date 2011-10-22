@@ -45,7 +45,7 @@
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace MoochoPack {
 

@@ -30,7 +30,7 @@
 
 #include "MoochoPack_EvalNewPointStd_StepSetOptions.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 // Define the options
 namespace {
@@ -79,7 +79,7 @@ void EvalNewPointStd_StepSetOptions::setOption(
       else if( option == "FD_NO_TEST" )
         target().fd_deriv_testing( target_t::FD_NO_TEST );
       else
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true, std::invalid_argument
           ,"Error, incorrect value for "
           "\"fd_deriv_testing\".  Only the options "
@@ -97,7 +97,7 @@ void EvalNewPointStd_StepSetOptions::setOption(
       else if( option == "DST_NO_TEST" )
         target().decomp_sys_testing( DecompositionSystemHandler_Strategy::DST_NO_TEST );
       else
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true, std::invalid_argument
           ,"Error, incorrect value for "
           "\"decomp_sys_testing\".  Only the options "
@@ -113,7 +113,7 @@ void EvalNewPointStd_StepSetOptions::setOption(
       else if( option == "DSPL_LEAVE_DEFAULT" )
         target().decomp_sys_testing_print_level( DecompositionSystemHandler_Strategy::DSPL_LEAVE_DEFAULT);
       else
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true, std::invalid_argument
           ,"Error, incorrect value for "
           "\"decomp_sys_testing_print_level\".  Only the options "
@@ -121,7 +121,7 @@ void EvalNewPointStd_StepSetOptions::setOption(
       break;
     }
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

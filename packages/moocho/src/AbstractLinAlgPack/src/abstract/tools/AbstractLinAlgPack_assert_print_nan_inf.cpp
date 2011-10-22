@@ -34,7 +34,7 @@
 #include "RTOp_ROp_find_nan_inf.h"
 #include "RTOpPack_RTOpC.hpp"
 #include "check_nan_inf.h"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 
@@ -45,7 +45,7 @@ static Teuchos::RCP<RTOpPack::ReductTarget>  find_nan_inf_targ;
 class init_rtop_server_t {
 public:
   init_rtop_server_t() {
-    TEST_FOR_EXCEPT(0!=RTOp_ROp_find_nan_inf_construct(&find_nan_inf_op.op() ));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_find_nan_inf_construct(&find_nan_inf_op.op() ));
     find_nan_inf_targ = find_nan_inf_op.reduct_obj_create();
   }
 }; 
@@ -64,7 +64,7 @@ bool AbstractLinAlgPack::assert_print_nan_inf( const value_type& val, char name[
       << "\" = " << val << " is not a valid bounded number";
     if(out)
       *out << omsg.str() << std::endl;
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       throw_excpt,NaNInfException
       ,"assert_print_nan_inf(...) : Error, " << omsg.str() );
     return false;
@@ -87,7 +87,7 @@ bool AbstractLinAlgPack::assert_print_nan_inf(
       << "The vector \"" << name << "\" has the first following NaN or Inf element\n"
       << name << "(" << ele.i << ") = " << ele.v0_i << std::endl;
   }
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     ele.i && throw_excpt, NaNInfException
     ,"assert_print_nan_inf(...) : Error, the vector named "
     << name << " has at least one element which is NaN or Inf" );

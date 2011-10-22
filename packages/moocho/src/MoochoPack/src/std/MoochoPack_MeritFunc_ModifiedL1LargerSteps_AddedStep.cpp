@@ -240,9 +240,9 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
         del_pos_itr = del_pos.begin();
 
       for( ; c_k_itr != c_k.end(); ++mu_itr, ++c_k_itr, ++c_kp1_itr, ++del_pos_itr ) {
-        TEST_FOR_EXCEPT( !(  mu_itr < const_cast<const DVectorSlice&>(mu).end()  ) );
-        TEST_FOR_EXCEPT( !(  c_kp1_itr < c_kp1.end()  ) );
-        TEST_FOR_EXCEPT( !(  del_pos_itr < del_pos.end()  ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !(  mu_itr < const_cast<const DVectorSlice&>(mu).end()  ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !(  c_kp1_itr < c_kp1.end()  ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !(  del_pos_itr < del_pos.end()  ) );
 
         const value_type
           del_j = ( 1 - eta() ) * ::fabs( *c_k_itr ) - ::fabs( *c_kp1_itr );
@@ -303,7 +303,7 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
       DVectorSlice::iterator
         mu_itr		= mu.begin();
       for( ; mu_itr != mu.end(); ++del_pos_itr, ++mu_itr ) {
-        TEST_FOR_EXCEPT( !(  del_pos_itr < const_cast<const del_pos_t&>(del_pos).end()  ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !(  del_pos_itr < const_cast<const del_pos_t&>(del_pos).end()  ) );
         *mu_itr = *mu_itr
               + (*del_pos_itr ?pos_step :neg_step) * (mu_max - (*mu_itr));
       }		

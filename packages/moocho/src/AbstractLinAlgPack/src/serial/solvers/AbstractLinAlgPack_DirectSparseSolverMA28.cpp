@@ -42,7 +42,7 @@
 #include "AbstractLinAlgPack_VectorDenseEncap.hpp"
 #include "DenseLinAlgPack_PermVecMat.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "FortranTypes_f_open_file.hpp"
@@ -126,16 +126,16 @@ void DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(
 
   // Validate input
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     y == NULL, std::invalid_argument
     ,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...) : Error! " );
 #endif
   const size_type y_dim = y->dim(), x_dim = x.dim();
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     fs.rank_ != y_dim, std::invalid_argument
     ,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...) : Error! " );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     fs.rank_ != x_dim, std::invalid_argument
     ,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...) : Error! " );
 #endif
@@ -277,7 +277,7 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
     nz = A.num_nonzeros( MCTS::EXTRACT_FULL_MATRIX ,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM );
 
   // Validate input
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     n <= 0 || m <= 0 || m > n, std::invalid_argument
     ,"DirectSparseSolverMA28::imp_analyze_and_factor(...) : Error!" );
 
@@ -436,7 +436,7 @@ void DirectSparseSolverMA28::imp_factor(
 
   // Validate input
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     m != fs.m_ || n != fs.n_ || fs.nz_ != nz, std::invalid_argument
     ,"DirectSparseSolverMA28::imp_factor(...) : Error, "
     "A is not compatible with matrix passed to imp_analyze_and_factor()!" );
@@ -546,67 +546,67 @@ void DirectSparseSolverMA28::ThrowIFlagException(index_type iflag)
   const char msg_err_head[] = "DirectSparseSolverMA28::ThrowIFlagException(iflag) : Error";
   switch(e_iflag) {
     case SLOW_ITER_CONV :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, std::runtime_error
         ,msg_err_head << ", Convergence to slow" );
     case MAXIT_REACHED :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, std::runtime_error
         ,msg_err_head << ", Maximum iterations exceeded");
     case MA28BD_CALLED_WITH_DROPPED :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, std::logic_error
         ,msg_err_head << ", ma28bd called with elements dropped in ma28ad");
     case DUPLICATE_ELEMENTS :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, FactorizationFailure
         ,msg_err_head << ", Duplicate elements have been detected");
     case NEW_NONZERO_ELEMENT :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, FactorizationFailure
         ,msg_err_head << ", A new non-zero element has be passed to ma28bd that was not ot ma28ad");
     case N_OUT_OF_RANGE :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, FactorizationFailure
         ,msg_err_head << ", 1 <=max(n,m) <= 32767 has been violated");
     case NZ_LE_ZERO :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, std::logic_error
         ,msg_err_head << ", nz <= 0 has been violated");
     case LICN_LE_NZ :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, std::logic_error
         ,msg_err_head << ", licn <= nz has been violated");
     case LIRN_LE_NZ :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, std::logic_error
         ,msg_err_head << ", lirn <= nz has been violated");
     case ERROR_DURRING_BLOCK_TRI :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, FactorizationFailure
         ,msg_err_head << ", An error has occured durring block triangularization");
     case LICN_AND_LIRN_TOO_SMALL :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, FactorizationFailure
         ,msg_err_head << ", licn and lirn are to small to hold matrix factorization");
     case LICN_TOO_SMALL :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, FactorizationFailure
         ,msg_err_head << ", licn is to small to hold matrix factorization");
     case LICN_FAR_TOO_SMALL :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, FactorizationFailure
         ,msg_err_head << ", licn is to far small to hold matrix factorization");
     case LIRN_TOO_SMALL :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, FactorizationFailure
         ,msg_err_head << ", lirn is to small to hold matrix factorization");
     case NUMERICALLY_SINGULAR :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, FactorizationFailure
         ,msg_err_head << ", matrix is numerically singular, see \'abort2\'");
     case STRUCTURALLY_SINGULAR :
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, FactorizationFailure
         ,msg_err_head << ", matrix is structurally singular, see \'abort1\'");
     default:

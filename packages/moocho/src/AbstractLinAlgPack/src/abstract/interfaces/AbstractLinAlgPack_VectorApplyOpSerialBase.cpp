@@ -18,7 +18,7 @@ void VectorApplyOpSerialBase::apply_op_serial(
   ,const index_type first_ele, const index_type sub_dim, const index_type global_offset
   ) const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     in_apply_op_, std::logic_error
     ,"VectorApplyOpSerialBase::apply_op_serial(...): Error, this function has been entered "
     "recursively which most likely means that the explicit sub-vector access methods Vector::get_sub_vector(...), "

@@ -30,7 +30,7 @@
 
 #include "AbstractLinAlgPack_MultiVectorMutableThyra.hpp"
 #include "AbstractLinAlgPack_VectorMutableThyra.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
@@ -52,7 +52,7 @@ void MultiVectorMutableThyra::initialize(
   )
 {
   namespace mmp = MemMngPack;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     thyra_multi_vec.get()==NULL, std::invalid_argument
     ,"MultiVectorMutableThyra::initialize(thyra_multi_vec): Error!"
     );
@@ -186,7 +186,7 @@ MultiVectorMutableThyra::mv_sub_view(const Range1D& row_rng_in, const Range1D& c
 {
   const index_type  this_rows = this->rows();
   const Range1D     row_rng = RangePack::full_range(row_rng_in,1,this->rows());
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !(row_rng.lbound()==1 && row_rng.ubound()==this_rows), std::invalid_argument
     ,"MultiVectorMutableThyra::mv_sub_view(thyra_multi_vec): Error, can not handle subviews of the"
     " elements in a row yet!"

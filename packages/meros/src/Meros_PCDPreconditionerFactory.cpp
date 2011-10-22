@@ -91,7 +91,7 @@ PCDPreconditionerFactory
 bool PCDPreconditionerFactory
 ::isCompatible(const LinearOpSourceBase<double> &fwdOpSrc) const
 {
-  TEST_FOR_EXCEPT("PCDPreconditionerFactory::isCompatible is not implemented");
+  TEUCHOS_TEST_FOR_EXCEPT("PCDPreconditionerFactory::isCompatible is not implemented");
   return(true);
 }
 
@@ -187,7 +187,7 @@ void PCDPreconditionerFactory
 		   RCP<const LinearOpSourceBase<double> > *fwdOp,
 		   ESupportSolveUse *supportSolveUse) const
 {
-TEST_FOR_EXCEPT("PCDPreconditionerFactory::uninitializePrec not implemented");
+TEUCHOS_TEST_FOR_EXCEPT("PCDPreconditionerFactory::uninitializePrec not implemented");
 }
 
 
@@ -196,7 +196,7 @@ TEST_FOR_EXCEPT("PCDPreconditionerFactory::uninitializePrec not implemented");
 void PCDPreconditionerFactory
 ::setParameterList(Teuchos::RCP<Teuchos::ParameterList> const& paramList)
 {
-  TEST_FOR_EXCEPT(paramList.get()==NULL);
+  TEUCHOS_TEST_FOR_EXCEPT(paramList.get()==NULL);
   // Don't really have meros parameter lists yet.
   //  paramList->validateParameters(*this->getValidParameters(),1);
   paramList_ = paramList;

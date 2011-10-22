@@ -36,7 +36,7 @@
 #include "AbstractLinAlgPack_VectorSpaceFactory.hpp"
 #include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
 #include "Teuchos_Workspace.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -69,7 +69,7 @@ void VectorSpaceBlocked::get_vector_space_position(
 {
   // Validate the preconditions
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     i < 1 || this->dim() < i, std::out_of_range
     ,"VectorSpaceBlocked::get_vector_space_position(...): Error, i = "
     << i << " is not in range [1,"<<this->dim()<<"]"
@@ -86,7 +86,7 @@ void VectorSpaceBlocked::get_vector_space_position(
     ++(*kth_vector_space);
   }
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPT( !( *kth_vector_space < vector_spaces_.size() ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( *kth_vector_space < vector_spaces_.size() ) );
 #endif
 }
 
@@ -142,7 +142,7 @@ VectorSpaceBlocked::create_member() const
 VectorSpace::multi_vec_mut_ptr_t
 VectorSpaceBlocked::create_members(size_type num_vecs) const
 {
-  TEST_FOR_EXCEPT(true); // ToDo: Implement using MultiVectorMutableCompositeStd!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement using MultiVectorMutableCompositeStd!
   return Teuchos::null;
 }
 
@@ -160,7 +160,7 @@ VectorSpaceBlocked::sub_space(const Range1D& rng_in) const
   const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
   // Validate the preconditions
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     dim < rng.ubound(), std::out_of_range
     ,"VectorSpaceBlocked::sub_space(...): Error, rng = "
     << "["<<rng.lbound()<<","<<rng.ubound()<<"] is not in range [1,"<<dim<<"]" );
@@ -174,7 +174,7 @@ VectorSpaceBlocked::sub_space(const Range1D& rng_in) const
   const vector_spaces_t      &vector_spaces      = vector_spaces_;      // Need to examine in debugger!
   const vec_spaces_offsets_t &vec_spaces_offsets = vec_spaces_offsets_;
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPT( !(  0 <= kth_vector_space && kth_vector_space <= vector_spaces.size()  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  0 <= kth_vector_space && kth_vector_space <= vector_spaces.size()  ) );
 #endif
   if( rng.lbound() == kth_global_offset + 1
     && rng.size() == vec_spaces_offsets[kth_vector_space+1] - vec_spaces_offsets[kth_vector_space] )
@@ -189,8 +189,8 @@ VectorSpaceBlocked::sub_space(const Range1D& rng_in) const
   index_type    end_kth_global_offset = 0;
   this->get_vector_space_position(rng.ubound(),&end_kth_vector_space,&end_kth_global_offset);
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPT( !(  0 <= end_kth_vector_space && end_kth_vector_space <= vector_spaces.size()  ) );
-  TEST_FOR_EXCEPT( !(  end_kth_vector_space > kth_vector_space  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  0 <= end_kth_vector_space && end_kth_vector_space <= vector_spaces.size()  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  end_kth_vector_space > kth_vector_space  ) );
 #endif
   // Create a VectorSpaceComposite object containing the relavant constituent vector spaces
   Teuchos::RCP<VectorSpaceBlocked>

@@ -43,7 +43,7 @@ public:
   RTOpCPostMod( const RTOp_RTOp_vtbl_t *vtbl ) : vtbl_(vtbl)
     {
 #ifdef TEUCHOS_DEBUG
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         !(vtbl && vtbl->obj_data_vtbl && vtbl->obj_data_vtbl->obj_create)
         ,std::logic_error, "Error!"
         );

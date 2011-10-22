@@ -34,7 +34,7 @@
 #include "RTOp_TOp_axpy.h"
 #include "RTOp_TOp_set_sub_vector.h"
 #include "RTOpPack_RTOpC.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 
@@ -54,15 +54,15 @@ class init_rtop_server_t {
 public:
   init_rtop_server_t() {
     // Vector scalar assignment operator
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_construct(0.0,&assign_scalar_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_construct(0.0,&assign_scalar_op.op()));
     // Vector assignment operator
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_vectors_construct(&assign_vec_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_vectors_construct(&assign_vec_op.op()));
     // Set sub-vector operator
     RTOp_SparseSubVector spc_sub_vec;
     RTOp_sparse_sub_vector_null(&spc_sub_vec);
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_set_sub_vector_construct(&spc_sub_vec,&set_sub_vector_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_set_sub_vector_construct(&spc_sub_vec,&set_sub_vector_op.op()));
     // axpy operator
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_axpy_construct(0.0,&axpy_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_axpy_construct(0.0,&axpy_op.op()));
   }
 }; 
 
@@ -78,7 +78,7 @@ namespace AbstractLinAlgPack {
 
 VectorMutable& VectorMutable::operator=(value_type alpha)
 {
-  TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_set_alpha(alpha,&assign_scalar_op.op()));
+  TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_set_alpha(alpha,&assign_scalar_op.op()));
   VectorMutable* targ_vecs[1] = { this };
   AbstractLinAlgPack::apply_op(assign_scalar_op,0,NULL,1,targ_vecs,NULL);
   return *this;
@@ -101,7 +101,7 @@ VectorMutable& VectorMutable::operator=(const VectorMutable& vec)
 
 void VectorMutable::set_ele( index_type i, value_type alpha )
 {
-  TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_set_alpha(alpha,&assign_scalar_op.op()));
+  TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_set_alpha(alpha,&assign_scalar_op.op()));
   VectorMutable* targ_vecs[1] = { this };
   AbstractLinAlgPack::apply_op(
     assign_scalar_op,0,NULL,1,targ_vecs,NULL
@@ -116,7 +116,7 @@ VectorMutable::sub_view( const Range1D& rng_in )
   const index_type dim = this->dim();
   const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     rng.ubound() > dim, std::out_of_range
     ,"VectorMutable::sub_view(rng): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
     "is not in the range [1,this->dim()] = [1,"<<dim<<"]" );
@@ -139,7 +139,7 @@ void VectorMutable::zero()
 
 void VectorMutable::axpy( value_type alpha, const Vector& x )
 {
-  TEST_FOR_EXCEPT(0!=RTOp_TOp_axpy_set_alpha(alpha,&axpy_op.op()));
+  TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_axpy_set_alpha(alpha,&axpy_op.op()));
   const Vector*  vecs[1]      = { &x   };
   VectorMutable* targ_vecs[1] = { this };
   AbstractLinAlgPack::apply_op(axpy_op,1,vecs,1,targ_vecs,NULL);
@@ -196,7 +196,7 @@ void VectorMutable::set_sub_vector( const RTOpPack::SparseSubVector& sub_vec )
     RTOp_sparse_sub_vector_from_dense( &_sub_vec, &spc_sub_vec );
   }
   RTOpPack::RTOpC  set_sub_vector_op;
-  TEST_FOR_EXCEPT(0!=RTOp_TOp_set_sub_vector_construct(&spc_sub_vec,&set_sub_vector_op.op()));
+  TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_set_sub_vector_construct(&spc_sub_vec,&set_sub_vector_op.op()));
   VectorMutable* targ_vecs[1] = { this };
   AbstractLinAlgPack::apply_op(
     set_sub_vector_op,0,NULL,1,targ_vecs,NULL
@@ -212,7 +212,7 @@ void VectorMutable::Vp_StMtV(
   ,value_type                      beta
   )
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     true, std::logic_error
     ,"VectorMutable::Vp_StMtV(...): Error, this function has not yet been "
     "given a default implementation and has not been overridden for the "

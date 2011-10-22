@@ -191,7 +191,7 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
   }
 
   if( P.is_identity() )
-    TEST_FOR_EXCEPT( !(  BLAS_Cpp::rows( P.rows(), P.cols(), P_trans ) == n_  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  BLAS_Cpp::rows( P.rows(), P.cols(), P_trans ) == n_  ) );
 
   const GenPermMatrixSlice
     P1 = ( P.is_identity() 
@@ -214,7 +214,7 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
   AbstractLinAlgPack::Vp_StPtMtV( y, a, P1, P_trans, *H_, no_trans, x1, b );
   // y += a*op(P2)*bigM*x2
   if( P2.nz() ){
-    TEST_FOR_EXCEPT( !( P2.nz() == 1 ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !( P2.nz() == 1 ) );
     const size_type
       i = P_trans == no_trans ? P2.begin()->row_i() : P2.begin()->col_j();
     (*y)(i) += a * bigM_ * x2;
@@ -258,7 +258,7 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
   }
 
   if( P.is_identity() )
-    TEST_FOR_EXCEPT( !(  BLAS_Cpp::rows( P.rows(), P.cols(), P_trans ) == n_  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  BLAS_Cpp::rows( P.rows(), P.cols(), P_trans ) == n_  ) );
 
   const GenPermMatrixSlice
     P1 = ( P.is_identity() 
@@ -283,7 +283,7 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
   AbstractLinAlgPack::Vp_StPtMtV( y, a, P1, P_trans, *H_, no_trans, x1, b );
   // y += a*op(P2)*bigM*x2
   if( P2.nz() ){
-    TEST_FOR_EXCEPT( !( P2.nz() == 1 ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !( P2.nz() == 1 ) );
     const size_type
       i = P_trans == no_trans ? P2.begin()->row_i() : P2.begin()->col_j();
     (*y)(i) += a * bigM_ * x2;
@@ -320,7 +320,7 @@ value_type MatrixHessianRelaxed::transVtMtV(
   }
   else {
     // x1 and x2 could be different sparse vectors
-    TEST_FOR_EXCEPT(true); // ToDo: Implement this!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement this!
   }
   return 0.0; // Will never be executed!
 }

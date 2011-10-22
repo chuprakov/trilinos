@@ -33,7 +33,7 @@
 #include "RangePack_Range1D.hpp"
 #include "BLAS_Cpp_Types.hpp"
 #include "Teuchos_TypeNameTraits.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace MemMngPack {}
 

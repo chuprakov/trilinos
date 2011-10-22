@@ -123,7 +123,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
       }
     }
   }
-  TEST_FOR_EXCEPT( !(  nd >= num_init_fixed  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  nd >= num_init_fixed  ) );
 
   // n_R
   *n_R = nd - num_init_fixed;
@@ -150,10 +150,10 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
       else {
         (*i_x_fixed)[i_X] = i;
         (*bnd_fixed)[i_X] = bnd_i;
-        TEST_FOR_EXCEPT( !(  !dLU_itr.at_end()  ) );    // find entry in b_X
+        TEUCHOS_TEST_FOR_EXCEPT( !(  !dLU_itr.at_end()  ) );    // find entry in b_X
         while( dLU_itr.indice() < i )
           ++dLU_itr;
-        TEST_FOR_EXCEPT( !(  dLU_itr.indice() == i  ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !(  dLU_itr.indice() == i  ) );
         value_type b_X_val = 0.0;
         switch( bnd_i ) {
           case EQUALITY:
@@ -164,7 +164,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
             b_X_val = dLU_itr.ubound();
             break;
           default:
-            TEST_FOR_EXCEPT(true); // Local error only?
+            TEUCHOS_TEST_FOR_EXCEPT(true); // Local error only?
         }
         (*b_X)[i_X] = b_X_val;
         ++i_X;

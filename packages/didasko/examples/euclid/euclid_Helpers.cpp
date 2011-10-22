@@ -28,7 +28,7 @@
 
 #include "euclid_Helpers.hpp"
 #include "Teuchos_UnitTestHarness.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_Array.hpp"
 #include "Teuchos_RCP.hpp"
 #include <iostream>

@@ -31,7 +31,7 @@
 #include <stdexcept>
 
 #include "AbstractLinAlgPack_VectorMutableSubView.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
@@ -46,7 +46,7 @@ void VectorSubView::initialize( const vec_ptr_t& vec, const Range1D& rng )
 {
   namespace rcp = MemMngPack;
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     vec.get() == NULL, std::invalid_argument
     ,"VectorSubView::initialize(...) : Error!" );
 #endif
@@ -99,7 +99,7 @@ void VectorSubView::apply_op(
   int k;
   const index_type this_dim = this->dim();
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     sub_dim_in < 0
     || !(1 <= first_ele_in && first_ele_in <= this_dim)
     || ( sub_dim_in > 0 && (sub_dim_in - (first_ele_in - 1) > this_dim) )
@@ -158,7 +158,7 @@ VectorSubView::sub_view( const Range1D& rng_in ) const
 void VectorSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec ) const
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION( !sub_vec, std::logic_error, "VectorSubView::get_sub_vector(...): Error!" );
+  TEUCHOS_TEST_FOR_EXCEPTION( !sub_vec, std::logic_error, "VectorSubView::get_sub_vector(...): Error!" );
 #endif
   const index_type this_dim = this->dim();
   const Range1D rng = RangePack::full_range(rng_in,1,this_dim);
@@ -171,7 +171,7 @@ void VectorSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* 
 void VectorSubView::free_sub_vector( RTOpPack::SubVector* sub_vec ) const
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION( !sub_vec, std::logic_error, "VectorSubView::free_sub_vector(...): Error!" );
+  TEUCHOS_TEST_FOR_EXCEPTION( !sub_vec, std::logic_error, "VectorSubView::free_sub_vector(...): Error!" );
 #endif
   const index_type this_offset = space_.rng().lbound() - 1;
   sub_vec->setGlobalOffset( sub_vec->globalOffset() + this_offset );

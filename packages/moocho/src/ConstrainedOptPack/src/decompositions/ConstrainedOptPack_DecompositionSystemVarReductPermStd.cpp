@@ -32,7 +32,7 @@
 #include "AbstractLinAlgPack_BasisSystemPerm.hpp"
 #include "AbstractLinAlgPack_PermutationOut.hpp"
 #include "AbstractLinAlgPack_MatrixOpOut.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -244,7 +244,7 @@ void DecompositionSystemVarReductPermStd::set_decomp(
     if(out && olevel >= PRINT_BASIC_INFO)
       *out << "Passed in basis is singular, throwing SingularDecomposition: "
          << except.what() << std::endl;
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, SingularDecomposition
       ,"DecompositionSystemVarReductPermStd::set_decomp(...): Passed in basis selection "
       "gave a singular basis matrix! : " << except.what() );
@@ -372,7 +372,7 @@ void DecompositionSystemVarReductPermStd::select_decomp(
 
 void DecompositionSystemVarReductPermStd::assert_basis_selected() const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !basis_selected_, std::logic_error
     ,"DecompositionSystemVarReductPermStd::assert_basis_selected(): Error, "
     "the methods set_decomp() or select_decomp() must be called first!" );

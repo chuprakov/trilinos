@@ -212,7 +212,7 @@ bool BasisSystemTester::test_basis_system(
 
   // Create the other auxillary matrix objects
   if( equ_undecomp.size() ) {
-    TEST_FOR_EXCEPT(true); // ToDo: Create matrix objects for Gc(var_dep,equ_undecomp) and Gc(var_indep,equ_undecomp)
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Create matrix objects for Gc(var_dep,equ_undecomp) and Gc(var_indep,equ_undecomp)
   }
 
   //
@@ -756,7 +756,7 @@ bool BasisSystemTester::test_basis_system(
     }
     
     if( GcUP ) {
-        TEST_FOR_EXCEPT(true); // ToDo: Validate GcUP and the related matrices
+        TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Validate GcUP and the related matrices
     }
 
     if(!lresult) success = false;

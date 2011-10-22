@@ -40,7 +40,7 @@
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "RTOpPack_RTOpC.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 
 namespace {
@@ -50,7 +50,7 @@ static RTOpPack::RTOpC explnlp2_calc_py_D_op;
 class init_rtop_server_t {
 public:
   init_rtop_server_t() {
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_explnlp2_calc_py_D_construct(0,&explnlp2_calc_py_D_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_explnlp2_calc_py_D_construct(0,&explnlp2_calc_py_D_op.op()));
   }
 }; 
 init_rtop_server_t  init_rtop_server;
@@ -143,29 +143,29 @@ void ExampleNLPDirect::calc_point(
   // Validate the input
 
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     x.dim() != n, std::invalid_argument
     ,"ExampleNLPDirect::calc_point(...), Error x.dim() = " << x.dim()
     << " != n = " << n );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     c && !this->space_c()->is_compatible(c->space()), std::invalid_argument
     ,"ExampleNLPDirect::calc_point(...), Error c is not compatible" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     Gf && !this->space_x()->is_compatible(Gf->space()), std::invalid_argument
     ,"ExampleNLPDirect::calc_point(...), Error, Gf is not compatible" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     py && !this->space_x()->sub_space(this->var_dep())->is_compatible(py->space()), std::invalid_argument
     ,"ExampleNLPDirect::calc_point(...), Error, py is not compatible" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     rGf && !this->space_x()->sub_space(this->var_dep())->is_compatible(rGf->space()), std::invalid_argument
     ,"ExampleNLPDirect::calc_point(...), Error, py is not compatible" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     GcU, std::invalid_argument
     ,"ExampleNLPDirect::calc_point(...), Error, there are no undecomposed equalities" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     D && !dynamic_cast<MatrixSymDiagStd*>(D), std::invalid_argument
     ,"ExampleNLPDirect::calc_point(...), Error, D is not compatible" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     py!=NULL && c==NULL, std::invalid_argument
     ,"ExampleNLPDirect::calc_point(...) : "
     "Error, if py!=NULL then c!=NULL must also be true" );
@@ -237,7 +237,7 @@ void ExampleNLPDirect::calc_point(
   else if( !py &&  D )  task = 1;
   else if( py  &&  D )  task = 2;
   
-  TEST_FOR_EXCEPT(0!=RTOp_TOp_explnlp2_calc_py_D_set_task(task,&explnlp2_calc_py_D_op.op()));
+  TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_explnlp2_calc_py_D_set_task(task,&explnlp2_calc_py_D_op.op()));
 
   const int              num_vecs = task < 2 ? 2 : 3;
   const Vector*          vecs[3] = { NULL, NULL, NULL };
@@ -252,7 +252,7 @@ void ExampleNLPDirect::calc_point(
   else if(py)
     targ_vecs[0] = py;
   else
-    TEST_FOR_EXCEPT(true); // Only local error?
+    TEUCHOS_TEST_FOR_EXCEPT(true); // Only local error?
   // targ_vecs[1] will be passed to apply_op(...)
   if(py && D)
     targ_vecs[1] = py;

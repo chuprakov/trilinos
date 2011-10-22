@@ -93,7 +93,7 @@ void InitFinDiffReducedHessian_StepSetOptions::setOption(
       target().step_scale(std::fabs(std::atof(option_value.c_str())));
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

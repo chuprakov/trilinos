@@ -33,7 +33,7 @@
 
 #include "AbstractLinAlgPack_SparseVectorClassDecl.hpp"
 #include "AbstractLinAlgPack_compare_element_indexes.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -53,7 +53,7 @@ create_slice(const SparseVectorUtilityPack::SpVecIndexLookup<T_Element>& index_l
   }
   else {
 #ifdef TEUCHOS_DEBUG
-    TEST_FOR_EXCEPT( !(  rng.ubound() <= size  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  rng.ubound() <= size  ) );
 #endif
   }
 
@@ -306,7 +306,7 @@ void SparseVector<T_Element,T_Alloc>::uninitialized_resize(size_type size, size_
   , difference_type offset)
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     nz > max_nz, std::length_error
     ,"SparseVector<...>::uninitialized_resize(...) : nz can not be greater"
     " than max_nz" );
@@ -332,7 +332,7 @@ void SparseVector<T_Element,T_Alloc>::insert_element(element_type ele)
         );
     // Make sure this element does not already exist!
 #ifdef TEUCHOS_DEBUG
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       nz() && poss.rel == SpVecIndexLookup::EQUAL_TO_ELE, std::length_error
       ,"SparseVector<...>::insert_element(...) : Error, this index"
       " all ready exists!" );
@@ -374,7 +374,7 @@ void SparseVector<T_Element,T_Alloc>::assert_valid_and_sorted() const
   {
     typename T_Element::index_type curr_index = p->index() + offset();
 #ifdef TEUCHOS_DEBUG
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       (1 > curr_index) || (curr_index > dim()), std::out_of_range
       ,"SparseVector<...>::assert_valid_and_sorted():"
       << " Error, not in range:  element (0-based) " << p - index_lookup_.ele() - 1
@@ -386,12 +386,12 @@ void SparseVector<T_Element,T_Alloc>::assert_valid_and_sorted() const
       continue;
     }
 #ifdef TEUCHOS_DEBUG
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       curr_index < last_index, NotSortedException
       ,"SparseVector<...>::assert_valid_and_sorted():"
       << " Error, not sorted:  element (0-based) " << p - index_lookup_.ele() - 1
       << " and " << p - index_lookup_.ele() << " are not in assending order" );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       curr_index == last_index, DuplicateIndexesException
       ,"SparseVector<...>::assert_valid_and_sorted():"
       << " Error, duplicate indexes:  element (0-based) " << p - index_lookup_.ele() - 1

@@ -30,7 +30,7 @@
 
 #include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
 #include "OptionsFromStreamPack_OptionsFromStream.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace OptionsFromStreamPack {
 
@@ -44,7 +44,7 @@ void SetOptionsFromStreamNode::set_options( const OptionsFromStream& options )
 {
   OptionsFromStream::options_group_t optgrp = options.options_group( name_map_.name() );
   if( !OptionsFromStream::options_group_exists( optgrp ) ) {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       !exists_optional_, std::invalid_argument
       ,"SetOptionsFromStreamNode::set_options(...) : "
       << "Error, The options group " << name_map_.name()

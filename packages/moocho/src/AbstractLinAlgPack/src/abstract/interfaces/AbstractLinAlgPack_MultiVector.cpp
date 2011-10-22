@@ -9,7 +9,7 @@
 #include "AbstractLinAlgPack_AssertOp.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_Workspace.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 
@@ -124,7 +124,7 @@ MultiVector::mv_clone() const
 MultiVector::multi_vec_ptr_t
 MultiVector::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
-  TEST_FOR_EXCEPT(true); // ToDo: return a MultiVectorSubView object.
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: return a MultiVectorSubView object.
   // Note that the MultiVectorSubView class should derive from MatrixOpSubView
   // so that a client can rely on the MatrixOpSubView interface.
   return Teuchos::null;
@@ -150,8 +150,8 @@ void MultiVector::apply_op(
     sec_dim      = ( apply_by == APPLY_BY_ROW ? cols()          : rows()   ),
     prim_sub_dim = ( prim_sub_dim_in != 0     ? prim_sub_dim_in : prim_dim ),
     sec_sub_dim  = ( sec_sub_dim_in != 0      ? sec_sub_dim_in  : sec_dim  );
-  TEST_FOR_EXCEPT( !( 0 < prim_sub_dim && prim_sub_dim <= prim_dim  ) );
-  TEST_FOR_EXCEPT( !( 0 < sec_sub_dim  && sec_sub_dim  <= sec_dim  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( 0 < prim_sub_dim && prim_sub_dim <= prim_dim  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( 0 < sec_sub_dim  && sec_sub_dim  <= sec_dim  ) );
 
   //
   // Apply the reduction/transformation operator and trnasform the target
@@ -208,7 +208,7 @@ void MultiVector::apply_op(
     prim_dim    = ( apply_by == APPLY_BY_ROW ? rows()         : cols()  ),
     sec_dim     = ( apply_by == APPLY_BY_ROW ? cols()         : rows()  ),
     sec_sub_dim = ( sec_sub_dim_in != 0      ? sec_sub_dim_in : sec_dim );
-  TEST_FOR_EXCEPT( !( 0 < sec_sub_dim && sec_sub_dim <= sec_dim  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( 0 < sec_sub_dim && sec_sub_dim <= sec_dim  ) );
 
   // Create a temporary buffer for the reduction objects of the primary reduction
   // so that we can call the companion version of this method.

@@ -114,8 +114,8 @@ void QPSolverRelaxedLOQO::InitLOQOHessianJacobian::init_hess_jacob(
     m_in  = E ? b->size() : 0,
     m_eq  = F ? f->size() : 0;
 
-  TEST_FOR_EXCEPT( !(  loqo_lp->n == nd + 1  ) );
-  TEST_FOR_EXCEPT( !(  loqo_lp->m == num_inequal + m_eq  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  loqo_lp->n == nd + 1  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  loqo_lp->m == num_inequal + m_eq  ) );
 
   // This default implementation assumes G, E and F are completely dense!
 
@@ -175,7 +175,7 @@ void QPSolverRelaxedLOQO::InitLOQOHessianJacobian::init_hess_jacob(
   else {
     // At least one of the inequality constriants has
     // both infinite upper and lower bounds.
-    TEST_FOR_EXCEPT(true); // ToDo: Finish this!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Finish this!
   }
   
   // Loop through and adjust A for absent lower bound and using upper bound
@@ -257,7 +257,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
   //
 
   LOQO *loqo_lp = openlp();
-  TEST_FOR_EXCEPT( !(  loqo_lp  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  loqo_lp  ) );
 
   //
   // Setup loqo_r and loqo_b and count the number of actual
@@ -304,7 +304,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
         *b_stat_itr = j; // We need to make A(k,:) = [ +op(E)(j,:), -b(j) ]
       }
       else {
-        TEST_FOR_EXCEPT( !( eLU_itr.ubound() < +inf_bnd ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !( eLU_itr.ubound() < +inf_bnd ) );
         *b_itr = -eLU_itr.ubound();
         *r_itr = eLU_itr.lbound() <= -inf_bnd ? real_big : - eLU_itr.lbound() + eLU_itr.ubound();
         *b_stat_itr = -j; // We need to make A(k,:) = [ -op(E)(j,:), +b(j) ]
@@ -406,7 +406,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
       loqo_lp->verbose = 6;
       break;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
 
   //
@@ -428,7 +428,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
   // Map the solution to the output arguments
   //
 
-  TEST_FOR_EXCEPT( !(  loqo_lp->x  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  loqo_lp->x  ) );
   DVectorSlice loqo_x_sol( loqo_lp->x, nd+1 );
 
   // d
@@ -444,8 +444,8 @@ QPSolverRelaxedLOQO::imp_solve_qp(
   // nu
   if(nu) {
     nu->resize(nd,nd);
-    TEST_FOR_EXCEPT( !(  loqo_lp->z  ) );
-    TEST_FOR_EXCEPT( !(  loqo_lp->s  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  loqo_lp->z  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  loqo_lp->s  ) );
     const DVectorSlice
       loqo_z(loqo_lp->z,loqo_lp->n),   // Multipliers for l - x <= 0
       loqo_s(loqo_lp->s,loqo_lp->n);   // Multipliers for x - u <= 0
@@ -472,8 +472,8 @@ QPSolverRelaxedLOQO::imp_solve_qp(
     mu->resize(m_in,num_inequal);
     DenseLinAlgPack::VectorSliceTmpl<int>::iterator
       b_stat_itr  = loqo_b_stat.begin();
-    TEST_FOR_EXCEPT( !(  loqo_lp->v  ) );
-    TEST_FOR_EXCEPT( !(  loqo_lp->q  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  loqo_lp->v  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  loqo_lp->q  ) );
     const DVectorSlice
       loqo_v(loqo_lp->v,loqo_lp->m),   // Multipliers for b <= A*x
       loqo_q(loqo_lp->q,loqo_lp->m);   // Multipliers for A*x <= b + r
@@ -505,7 +505,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 
   // lambda
   if(lambda) {
-    TEST_FOR_EXCEPT( !(  loqo_lp->y  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  loqo_lp->y  ) );
     const DVectorSlice
       loqo_y(loqo_lp->y,loqo_lp->m);         // Multipliers for equalities
     DVectorSlice::const_iterator
@@ -536,7 +536,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
       solution_type = QPSolverStats::DUAL_FEASIBLE_POINT;
       break;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
 
   qp_stats_.set_stats(

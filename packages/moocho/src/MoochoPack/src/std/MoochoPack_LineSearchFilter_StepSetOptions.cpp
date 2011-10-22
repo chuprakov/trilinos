@@ -30,7 +30,7 @@
 
 #include "MoochoPack_LineSearchFilter_StepSetOptions.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 // Define the options
 namespace {
@@ -126,7 +126,7 @@ void LineSearchFilter_StepSetOptions::setOption(
       target().back_track_frac(std::atof(option_value.c_str()));
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
     }
   }
 

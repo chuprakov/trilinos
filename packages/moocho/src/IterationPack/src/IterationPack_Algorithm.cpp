@@ -33,7 +33,7 @@
 
 #include "IterationPack_Algorithm.hpp"
 #include "StopWatchPack_stopwatch.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_TypeNameTraits.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
 
@@ -211,7 +211,7 @@ const Algorithm::step_ptr_t& Algorithm::get_assoc_step(poss_type step_poss, EAss
 void Algorithm::insert_step(poss_type step_poss, const std::string& step_name, const step_ptr_t& step)
 {
   validate_not_in_state(RUNNING);
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     step.get() == NULL, std::invalid_argument
     ,"Algorithm::insert_step(...) : A step with the name = \'" << step_name
     << "\' being inserted into the position  = " << step_poss
@@ -219,7 +219,7 @@ void Algorithm::insert_step(poss_type step_poss, const std::string& step_name, c
   // Make sure a step with this name does not already exist.
   steps_t::iterator itr;
   if( steps_.end() != ( itr = step_itr(step_name) ) )
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, AlreadyExists
       ,"Algorithm::insert_step(...) : A step with the name = " << step_name
       << " already exists at step_poss = " << std::distance(steps_.begin(),itr) + 1 );
@@ -273,7 +273,7 @@ void Algorithm::insert_assoc_step(poss_type step_poss, EAssocStepType type, poss
   , const std::string& assoc_step_name, const step_ptr_t& assoc_step)
 {
   validate_not_in_state(RUNNING);
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     assoc_step.get() == NULL, std::invalid_argument
     ,"Algorithm::insert_assoc_step(...) : A step with the name = \'" << assoc_step_name
     << "\' being inserted into the position  = " << step_poss
@@ -288,7 +288,7 @@ void Algorithm::insert_assoc_step(poss_type step_poss, EAssocStepType type, poss
   assoc_steps_ele_list_t::iterator itr = assoc_list.begin();
   char assoc_type_name[2][10] = { "PRE_STEP" , "POST_STEP" };
   if( assoc_list.end() != ( itr = assoc_step_itr(assoc_list,assoc_step_name) ) )
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, AlreadyExists
       ,"Algorithm::insert_assoc_step(...) : An associated step of type = "
       <<	assoc_type_name[type]
@@ -329,13 +329,13 @@ void Algorithm::end_config_update()
 
   // update next_step_poss_ and next_step_name_.
   steps_t::iterator itr = step_itr(saved_next_step_name_);
-  TEST_FOR_EXCEPT( !(  itr != steps_.end()  ) );	// the step with this name should not have been deleted or changed.
+  TEUCHOS_TEST_FOR_EXCEPT( !(  itr != steps_.end()  ) );	// the step with this name should not have been deleted or changed.
   next_step_poss_ = std::distance( steps_.begin() , itr ) + 1;
   next_step_name_ = &(*itr).name;
 
   // update curr_step_poss_
   itr = step_itr(saved_curr_step_name_);
-  TEST_FOR_EXCEPT( !(  itr != steps_.end()  ) );	// the step with this name should not have been deleted or changed.
+  TEUCHOS_TEST_FOR_EXCEPT( !(  itr != steps_.end()  ) );	// the step with this name should not have been deleted or changed.
   curr_step_poss_ = std::distance( steps_.begin() , itr ) + 1;
 
   // inform the step objects that *this has changes.
@@ -528,7 +528,7 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
       // should have called do_step_next(...) to request a jump to
       // a specific operation.
       if(!do_step_next_called_)
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true, InvalidControlProtocal
           ,"EAlgoReturn Algorithm::do_algorithm(...) :"
           " A step object returned false from its do_step(...) operation"
@@ -701,11 +701,11 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 
 void Algorithm::get_step_times_k( int offset, double step_times[] ) const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     step_times_.size() == 0, std::logic_error
     ,"Algorithm::get_step_times_k(...) : times requested, but no times calculated!"
     );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     offset > 0, std::invalid_argument
     ,"Algorithm::get_step_times_k(...) : Can\'t get times for an iteratin that has not occured yet!."
     );
@@ -826,7 +826,7 @@ void Algorithm::change_running_state(ERunningState _running_state)
 void Algorithm::validate_in_state(ERunningState _running_state) const {
   const char running_state_name[3][25] = { "NOT_RUNNING" , "RUNNING", "RUNNING_BEING_CONFIGURED" };
   if(running_state() != _running_state)
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, InvalidRunningState
       ,"Algorithm::validate_in_state(...) : The condition running_state() == "
       << running_state_name[running_state()] << " has been violated with "
@@ -836,7 +836,7 @@ void Algorithm::validate_in_state(ERunningState _running_state) const {
 void Algorithm::validate_not_in_state(ERunningState _running_state) const {
   const char running_state_name[3][25] = { "NOT_RUNNING" , "RUNNING", "RUNNING_BEING_CONFIGURED" };
   if(running_state() == _running_state)
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, InvalidRunningState
       ,"Algorithm::validate_not_in_state(...) : The condition running_state() != "
       << running_state_name[running_state()] << " has been violated" );
@@ -844,7 +844,7 @@ void Algorithm::validate_not_in_state(ERunningState _running_state) const {
 
 void Algorithm::validate_not_curr_step(poss_type step_poss) const {
   if(step_poss == curr_step_poss_)
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, InvalidConfigChange
       ,"Algorithm::validate_not_curr_step(step_poss="<<step_poss<<") : "
       "Error, You can not modify the step being currently executed" );
@@ -852,7 +852,7 @@ void Algorithm::validate_not_curr_step(poss_type step_poss) const {
 
 void Algorithm::validate_not_next_step(const std::string& step_name) const {
   if( step_name == saved_next_step_name_ )
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, InvalidConfigChange,
       "Algorithm::validate_not_next_step(step_name): "
       "Error, You can not modify name or remove the step given by "
@@ -863,7 +863,7 @@ Algorithm::steps_t::iterator Algorithm::step_itr_and_assert(const std::string& s
 {
   steps_t::iterator itr = step_itr(step_name);
   if(itr == steps_.end())
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, DoesNotExist
       ,"Algorithm::step_itr(...) : A step with the name "
       << step_name << " does not exist." );
@@ -874,7 +874,7 @@ Algorithm::steps_t::const_iterator Algorithm::step_itr_and_assert(const std::str
 {
   steps_t::const_iterator itr = step_itr(step_name);
   if(itr == steps_.end())
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, DoesNotExist
       ,"Algorithm::step_itr(...) : A step with the name "
       << step_name << " does not exist." );
@@ -1011,7 +1011,7 @@ void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
 Algorithm::poss_type Algorithm::validate(poss_type step_poss, int past_end) const
 {
     
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     step_poss < 1 || steps_.size() + past_end < step_poss, DoesNotExist
     ,"Algorithm::validate(step_poss) : The step_poss = " << step_poss
     << " is not in range of 1 to " << steps_.size() + past_end );
@@ -1021,7 +1021,7 @@ Algorithm::poss_type Algorithm::validate(poss_type step_poss, int past_end) cons
 Algorithm::poss_type Algorithm::validate(const assoc_steps_ele_list_t& assoc_list
   , poss_type assoc_step_poss, int past_end) const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     assoc_step_poss < 1 || assoc_list.size() + past_end < assoc_step_poss, DoesNotExist
     ,"Algorithm::validate(assoc_list,assoc_step_poss) : The assoc_step_poss = "
     << assoc_step_poss << " is not in range of 1 to " << assoc_list.size() + past_end );
@@ -1114,7 +1114,7 @@ void Algorithm::look_for_interrupt()
         break;
       }
       default: {
-        TEST_FOR_EXCEPT(true);
+        TEUCHOS_TEST_FOR_EXCEPT(true);
       }
     }
     static_processed_user_interrupt = true;
@@ -1148,7 +1148,7 @@ void Algorithm::look_for_interrupt()
           std::cerr	<< "Will abort the program gracefully at the end of this iteration!\n";
           static_interrupt_status = STOP_END_ITER;
         }
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           interrupt_file.eof(), std::logic_error,
           "IterationPack::Algorithm: Error, expected input for terminate_bool option from the "
           "file \""<<interrupt_file_name()<<"\"!"
@@ -1165,7 +1165,7 @@ void Algorithm::look_for_interrupt()
           static_interrupt_terminate_return = false;
         }
         else {
-          TEST_FOR_EXCEPTION(
+          TEUCHOS_TEST_FOR_EXCEPTION(
             true, std::logic_error
             ,"Error, the value of terminate_bool = \'"<<terminate_bool<<"\' is not "
             "valid!  Valid values include only \'t\' or \'f\'\n"
@@ -1173,7 +1173,7 @@ void Algorithm::look_for_interrupt()
         }
       }
       else {
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true, std::logic_error
           ,"Error, the value of abort_mode = \'"<<abort_mode<<"\' is not "
           "valid!  Valid values include only \'a\', \'s\' or \'i\'\n"
