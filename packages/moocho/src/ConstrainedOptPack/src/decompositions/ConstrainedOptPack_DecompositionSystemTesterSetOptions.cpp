@@ -31,7 +31,7 @@
 
 #include "ConstrainedOptPack_DecompositionSystemTesterSetOptions.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 // Define the options
 namespace {
@@ -41,7 +41,7 @@ namespace {
   enum local_EOptions {
     PRINT_TESTS
     ,DUMP_ALL
-    ,TEST_FOR_EXCEPTION
+    ,TEUCHOS_TEST_FOR_EXCEPTION
     ,NUM_RANDOM_TESTS
       ,MULT_WARNING_TOL
       ,MULT_ERROR_TOL
@@ -91,7 +91,7 @@ void DecompositionSystemTesterSetOptions::setOption(
         else if( option == "PRINT_ALL" )
         target().print_tests( target_t::PRINT_ALL );
       else
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true, std::invalid_argument
           ,"Error, incorrect value for "
           "\"print_tests\".  Only the options "
@@ -103,7 +103,7 @@ void DecompositionSystemTesterSetOptions::setOption(
         StringToBool( "dump_all", option_value.c_str() )
         );
       break;
-    case TEST_FOR_EXCEPTION:
+    case TEUCHOS_TEST_FOR_EXCEPTION:
       target().throw_exception(
         StringToBool( "throw_exception", option_value.c_str() )
         );
@@ -124,7 +124,7 @@ void DecompositionSystemTesterSetOptions::setOption(
       target().solve_error_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

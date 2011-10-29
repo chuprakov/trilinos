@@ -30,7 +30,7 @@
 #define STANDARD_COMPOSITION_RELATIONSHIPS_PACK_H
 
 #include "Moocho_ConfigDefs.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace StandardCompositionRelationshipsPack {
 
@@ -48,7 +48,7 @@ class NoRefSet : public std::logic_error
 // Throw a NoRefSet exception
 inline void ThrowNoRefSet(const char func_name[], const char name[])
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     true,NoRefSet
     ,func_name << ": The reference for \'" << name << "\' has not been set yet"
     );

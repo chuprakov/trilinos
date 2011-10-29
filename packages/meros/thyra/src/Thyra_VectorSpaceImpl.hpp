@@ -81,7 +81,7 @@ namespace Thyra
   template <class Scalar> inline
   bool VectorSpace<Scalar>::isCompatible(const VectorSpace<Scalar>& vecSpc) const 
   {
-    TEST_FOR_EXCEPTION(vecSpc.constPtr().get() == 0, std::runtime_error,
+    TEUCHOS_TEST_FOR_EXCEPTION(vecSpc.constPtr().get() == 0, std::runtime_error,
                        "null argument in VectorSpace<Scalar>::isCompatible()");
     return this->constPtr().get()->isCompatible(*(vecSpc.constPtr().get()));
   }
@@ -112,7 +112,7 @@ namespace Thyra
   {
     const Thyra::ProductVectorSpaceBase<Scalar>* pvs = 
       dynamic_cast<const Thyra::ProductVectorSpaceBase<Scalar>* > (this->constPtr().get());
-    TEST_FOR_EXCEPTION(pvs == 0 && numBlocks()!=1, std::runtime_error,
+    TEUCHOS_TEST_FOR_EXCEPTION(pvs == 0 && numBlocks()!=1, std::runtime_error,
                        "Space not a ProductVectorSpace" << std::endl);
     if (pvs != 0)
       {
@@ -129,7 +129,7 @@ namespace Thyra
   //   const Thyra::ProductVectorSpace<Scalar>*  pvs = 
   //     dynamic_cast<const Thyra::ProductVectorSpace<Scalar>* >  (this->constPtr().get());
 
-  //   TEST_FOR_EXCEPTION(pvs == 0, std::runtime_error,
+  //   TEUCHOS_TEST_FOR_EXCEPTION(pvs == 0, std::runtime_error,
   // 		     "Can't set block of std::vector space that is " <<
   // 		     "not a ProductVectorSpace.");
 
@@ -180,7 +180,7 @@ namespace Thyra
   template <class Scalar> inline 
   int lowestLocallyOwnedIndex(const VectorSpace<Scalar>& s) 
   {
-    TEST_FOR_EXCEPT(!isSPMD(s));
+    TEUCHOS_TEST_FOR_EXCEPT(!isSPMD(s));
     RCP<const SpmdVectorSpaceBase<Scalar> > spmdSpace
       = rcp_dynamic_cast<const SpmdVectorSpaceBase<Scalar> >(s.constPtr());
     return spmdSpace->localOffset();
@@ -190,7 +190,7 @@ namespace Thyra
   template <class Scalar> inline
   int numLocalElements(const VectorSpace<Scalar>& s) 
   {
-    TEST_FOR_EXCEPT(!isSPMD(s));
+    TEUCHOS_TEST_FOR_EXCEPT(!isSPMD(s));
     RCP<const SpmdVectorSpaceBase<Scalar> > spmdSpace
       = rcp_dynamic_cast<const SpmdVectorSpaceBase<Scalar> >(s.constPtr());
     return spmdSpace->localSubDim();

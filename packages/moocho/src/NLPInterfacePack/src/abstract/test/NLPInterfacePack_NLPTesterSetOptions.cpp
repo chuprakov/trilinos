@@ -39,7 +39,7 @@ namespace {
 
   enum local_EOptions {
     PRINT_ALL
-    ,TEST_FOR_EXCEPTION
+    ,TEUCHOS_TEST_FOR_EXCEPTION
   };
 
   const char* local_SOptions[local_num_options]	= {
@@ -73,13 +73,13 @@ void NLPTesterSetOptions::setOption(
         StringToBool( "print_all", option_value.c_str() )
         );
       break;
-    case TEST_FOR_EXCEPTION:
+    case TEUCHOS_TEST_FOR_EXCEPTION:
       target().throw_exception(
         StringToBool( "throw_exception", option_value.c_str() )
         );
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

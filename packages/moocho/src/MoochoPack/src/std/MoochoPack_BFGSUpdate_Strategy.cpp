@@ -40,7 +40,7 @@
 #include "AbstractLinAlgPack_VectorStdOps.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace MoochoPack {
 
@@ -252,7 +252,7 @@ void BFGSUpdate_Strategy::perform_update(
         msg[] =	"Error, the secant property for the BFGS update failed\n"
         "Stopping the algorithm ...\n";
       out << msg;
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, TestFailed
         ," BFGSUpdate_Strategy::perform_update(...) : " << msg );
     }

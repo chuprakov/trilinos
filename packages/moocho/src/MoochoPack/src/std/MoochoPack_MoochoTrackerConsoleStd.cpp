@@ -157,7 +157,7 @@ void MoochoTrackerConsoleStd::output_iteration(const Algorithm& p_algo) const
         o << "IS";
         break;
       default:
-        TEST_FOR_EXCEPT(true);
+        TEUCHOS_TEST_FOR_EXCEPT(true);
     }
   }
   else {
@@ -283,7 +283,7 @@ void MoochoTrackerConsoleStd::output_final( const Algorithm& p_algo
         o << "IS";
         break;
       default:
-        TEST_FOR_EXCEPT(true);
+        TEUCHOS_TEST_FOR_EXCEPT(true);
     }
   }
   else {
@@ -344,7 +344,7 @@ void MoochoTrackerConsoleStd::output_final( const Algorithm& p_algo
       o << "\nOops!  Not the solution.  The user terminated the algorithm and said to return non-optimal!\n";
       break;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
 
   o  << "\nNumber of function evaluations:\n"

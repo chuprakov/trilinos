@@ -90,7 +90,7 @@ void MatrixExtractSparseElements::get_dl_du(
       *du = 0;
       break;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
       break;
   }
 }

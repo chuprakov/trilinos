@@ -50,7 +50,7 @@ bool CheckConvergenceStd_AddedStep::do_step(
   )
   {
   
-    TEST_FOR_EXCEPTION(!convergence_strategy_.get(),
+    TEUCHOS_TEST_FOR_EXCEPTION(!convergence_strategy_.get(),
           std::logic_error,
           "Don't have a valid convergence_strategy in CheckConvergenceStd_AddedStep\n"
     );
@@ -88,7 +88,7 @@ void CheckConvergenceStd_AddedStep::print_step( const Algorithm& algo
   , std::ostream& out, const std::string& L ) const
   {
 
-    TEST_FOR_EXCEPTION(!convergence_strategy_.get(),
+    TEUCHOS_TEST_FOR_EXCEPTION(!convergence_strategy_.get(),
           std::logic_error,
           "Don't have a valid convergence_strategy in CheckConvergenceStd_AddedStep\n"
     );

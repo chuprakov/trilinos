@@ -54,7 +54,7 @@
 #include "DenseLinAlgPack_assert_print_nan_inf.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "ProfileHackPack_profile_hack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_FancyOStream.hpp"
 
 #ifdef HAVE_MOOCHO_FORTRAN
@@ -125,7 +125,7 @@ void MatrixSymPosDefCholFactor::init_setup(
   ,value_type                       scale
   )
 {
-  TEST_FOR_EXCEPT( !(  maintain_original || maintain_factor  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  maintain_original || maintain_factor  ) );
   if( MU_store == NULL ) {
     maintain_original_ = maintain_original;
     maintain_factor_   = maintain_factor;
@@ -144,13 +144,13 @@ void MatrixSymPosDefCholFactor::init_setup(
     is_diagonal_ = false;
   }
   else {
-    TEST_FOR_EXCEPT( !(  MU_store->rows()  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  MU_store->rows()  ) );
     allocates_storage_ = false; // The client allocated the storage!
     MU_store_.bind(*MU_store);
     release_resource_ptr_ = release_resource_ptr;
     max_size_ = my_min( MU_store->rows(), MU_store->cols() ) - 1;
     if( set_full_view ) {
-      TEST_FOR_EXCEPT( !(  scale != 0.0  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  scale != 0.0  ) );
       this->set_view(
         max_size_
         ,scale,maintain_original,1,1
@@ -178,19 +178,19 @@ void MatrixSymPosDefCholFactor::set_view(
   ,size_t           U_l_c
   )
 {
-  TEST_FOR_EXCEPT( !(  maintain_original || maintain_factor  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  maintain_original || maintain_factor  ) );
   if( max_size_ )
     allocate_storage(max_size_);
   else
     allocate_storage( my_max( M_l_r + M_size, M_l_c + M_size ) - 1 );
   // Check the preconditions
   if( maintain_original ) {
-    TEST_FOR_EXCEPT( !(  1 <= M_l_r && M_l_r <= M_l_c  ) );
-    TEST_FOR_EXCEPT( !(  M_l_r+M_size <= MU_store_.rows()  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  1 <= M_l_r && M_l_r <= M_l_c  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  M_l_r+M_size <= MU_store_.rows()  ) );
   }
   if( maintain_factor ) {
-    TEST_FOR_EXCEPT( !(  1 <= U_l_r && U_l_r >= U_l_c  ) );
-    TEST_FOR_EXCEPT( !(  U_l_c+M_size <= MU_store_.cols()  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  1 <= U_l_r && U_l_r >= U_l_c  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  U_l_c+M_size <= MU_store_.cols()  ) );
   }
   // Set the members
   maintain_original_    = maintain_original;
@@ -289,7 +289,7 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
   value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
   )
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !maintain_original_, std::logic_error
     ,"MatrixSymPosDefCholFactor::Mp_StM(alpha,M_rhs,trans_rhs): Error, Current implementation "
     "can not perform this operation unless the original matrix is being maintained." );
@@ -339,7 +339,7 @@ bool MatrixSymPosDefCholFactor::syrk(
   MatrixDenseSymMutableEncap  sym_gms_lhs(this);
   const MatrixOpGetGMS *mwo_rhs_gms = dynamic_cast<const MatrixOpGetGMS*>(&mwo_rhs);
   if(mwo_rhs_gms) {
-    TEST_FOR_EXCEPT(true); // ToDo: Implement
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement
     return true;
   }
   else {
@@ -492,7 +492,7 @@ void MatrixSymPosDefCholFactor::Vp_StPtMtV(
     // Compute product column by corresponding to x_itr->index() + x.offset()
     /*
     if( P.is_identity() ) {
-      TEST_FOR_EXCEPT(true); // ToDo: Implement
+      TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement
     }
     else {
       for( SpVectorSlice::const_iterator x_itr = x.begin(); x_itr != x.end(); ++x_itr ) {
@@ -655,7 +655,7 @@ void MatrixSymPosDefCholFactor::initialize( const DMatrixSliceSym& M )
 
 const DenseLinAlgPack::DMatrixSliceSym MatrixSymPosDefCholFactor::get_sym_gms_view() const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !maintain_original_, std::logic_error
     ,"MatrixSymPosDefCholFactor::get_sym_gms_view(): Error, maintain_original must be "
     "true in order to call this method!" );
@@ -664,7 +664,7 @@ const DenseLinAlgPack::DMatrixSliceSym MatrixSymPosDefCholFactor::get_sym_gms_vi
 
 void MatrixSymPosDefCholFactor::free_sym_gms_view(const DenseLinAlgPack::DMatrixSliceSym* sym_gms_view) const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !maintain_original_, std::logic_error
     ,"MatrixSymPosDefCholFactor::free_sym_gms_view(...): Error, maintain_original must be "
     "true in order to call this method!" );
@@ -675,7 +675,7 @@ void MatrixSymPosDefCholFactor::free_sym_gms_view(const DenseLinAlgPack::DMatrix
 
 DenseLinAlgPack::DMatrixSliceSym MatrixSymPosDefCholFactor::get_sym_gms_view()
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !maintain_original_, std::logic_error
     ,"MatrixSymPosDefCholFactor::get_sym_gms_view(): Error, maintain_original must be "
     "true in order to call this method!" );
@@ -684,7 +684,7 @@ DenseLinAlgPack::DMatrixSliceSym MatrixSymPosDefCholFactor::get_sym_gms_view()
 
 void MatrixSymPosDefCholFactor::commit_sym_gms_view(DenseLinAlgPack::DMatrixSliceSym* sym_gms_view)
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !maintain_original_, std::logic_error
     ,"MatrixSymPosDefCholFactor::commit_sym_gms_view(...): Error, maintain_original must be "
     "true in order to call this method!" );
@@ -716,7 +716,7 @@ void MatrixSymPosDefCholFactor::extract_inv_chol( DMatrixSliceTriEle* InvChol ) 
   // Lower cholesky:
   //    sqrt(scale) * L * LInv = I => InvChol = LInv = (1/sqrt(scale))*inv(U) * inv(U') * I
   //
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     scale_ < 0.0, std::logic_error
     ,"MatrixSymPosDefCholFactor::extract_inv_chol(...) : "
     "Error, we can not compute the inverse cholesky factor "
@@ -801,7 +801,7 @@ void MatrixSymPosDefCholFactor::secant_update(
   assert_initialized();
 
   // Validate the input
-  TEST_FOR_EXCEPT( !(  s_in && y_in  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  s_in && y_in  ) );
   DenseLinAlgPack::Vp_MtV_assert_sizes( y_in->dim(), M_size_, M_size_, no_trans, s_in->dim() );
 
   // Get the serial vectors
@@ -837,11 +837,11 @@ void MatrixSymPosDefCholFactor::secant_update(
   }
   // Check that s'*Bs is positive and if not then throw exception
   const value_type sTBs = dot(*s,*Bs);
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     scale_*sTBs <= 0.0 && scale_ > 0.0, UpdateFailedException
     ,"MatrixSymPosDefCholFactor::secant_update(...) : "
     "Error, B can't be positive definite if s'*Bs <= 0.0" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     scale_*sTBs <= 0.0 && scale_ <= 0.0, UpdateFailedException
     ,"MatrixSymPosDefCholFactor::secant_update(...) : "
     "Error, B can't be negative definite if s'*Bs >= 0.0" );
@@ -961,8 +961,8 @@ void MatrixSymPosDefCholFactor::initialize(
     n = A.rows();
 
   // Validate proper usage of inertia parameter
-  TEST_FOR_EXCEPT( !(  inertia.zero_eigens == Inertia::UNKNOWN || inertia.zero_eigens == 0  ) );
-  TEST_FOR_EXCEPT( !(  (inertia.neg_eigens == Inertia::UNKNOWN && inertia.pos_eigens == Inertia::UNKNOWN ) )
+  TEUCHOS_TEST_FOR_EXCEPT( !(  inertia.zero_eigens == Inertia::UNKNOWN || inertia.zero_eigens == 0  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  (inertia.neg_eigens == Inertia::UNKNOWN && inertia.pos_eigens == Inertia::UNKNOWN ) )
       || ( inertia.neg_eigens == n && inertia.pos_eigens == 0 )
       || ( inertia.neg_eigens == 0 && inertia.pos_eigens == n )
     );
@@ -1073,7 +1073,7 @@ void MatrixSymPosDefCholFactor::initialize(
         throw WarnNearSingularUpdateException( omsg.str(), gamma ); // The initialization still succeeded through
       }
       else {
-        TEST_FOR_EXCEPT(true); // Only local programming error?
+        TEUCHOS_TEST_FOR_EXCEPT(true); // Only local programming error?
       }
     }
   }
@@ -1122,11 +1122,11 @@ void MatrixSymPosDefCholFactor::augment_update(
   assert_initialized();
 
   // Validate the input
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     rows() >= max_size(), MaxSizeExceededException
     ,"MatrixSymPosDefCholFactor::augment_update(...) : "
     "Error, the maximum size would be exceeded." );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     t && t->dim() != M_size_, std::length_error
     ,"MatrixSymPosDefCholFactor::augment_update(...): "
     "Error, t.dim() must be equal to this->rows()." );
@@ -1261,7 +1261,7 @@ void MatrixSymPosDefCholFactor::augment_update(
         // Don't throw the exception till the very end!
       }
       else {
-        TEST_FOR_EXCEPT(true); // Only local programming error?
+        TEUCHOS_TEST_FOR_EXCEPT(true); // Only local programming error?
       }
     }
     // u22 = sqrt(u22^2)
@@ -1301,12 +1301,12 @@ void MatrixSymPosDefCholFactor::delete_update(
 #endif
   typedef MatrixSymAddDelUpdateable MSADU;
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     jd < 1 || M_size_ < jd, std::out_of_range
     ,"MatrixSymPosDefCholFactor::delete_update(jd,...): "
     "Error, the indice jd must be 1 <= jd <= rows()" );
 
-  TEST_FOR_EXCEPT( !( drop_eigen_val == MSADU::EIGEN_VAL_UNKNOWN
+  TEUCHOS_TEST_FOR_EXCEPT( !( drop_eigen_val == MSADU::EIGEN_VAL_UNKNOWN
     || (scale_ > 0.0 && drop_eigen_val == MSADU::EIGEN_VAL_POS)
     || (scale_ < 0.0 && drop_eigen_val == MSADU::EIGEN_VAL_NEG)
     ) );
@@ -1435,14 +1435,14 @@ void MatrixSymPosDefCholFactor::unserialize( std::istream &in )
   std::getline( in, keywords, '\n' );
   // For now make sure the types are exactly the same!
   const std::string this_keywords = build_serialization_string();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     this_keywords != keywords, std::logic_error
     ,"MatrixSymPosDefCholFactor::unserialize(...): Error, the matrix type being read in from file of "
     "\'"<<keywords<<"\' does not equal the type expected of \'"<<this_keywords<<"\'!"
     );
   // Read in the dimension of the matrix
   in >> M_size_;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     M_size_ < 0, std::logic_error
     ,"MatrixSymPosDefCholFactor::unserialize(...): Error, read in a size of M_size = "<<M_size_<<" < 0!"
     );
@@ -1464,7 +1464,7 @@ void MatrixSymPosDefCholFactor::unserialize( std::istream &in )
 
 void MatrixSymPosDefCholFactor::assert_storage() const
 {
-  TEST_FOR_EXCEPT( !(  MU_store_.rows()  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  MU_store_.rows()  ) );
 }
 
 void MatrixSymPosDefCholFactor::allocate_storage(size_type max_size) const
@@ -1480,13 +1480,13 @@ void MatrixSymPosDefCholFactor::allocate_storage(size_type max_size) const
     const_cast<MatrixSymPosDefCholFactor*>(this)->max_size_ = max_size;
   }
   else {
-    TEST_FOR_EXCEPT( !(  MU_store_.rows()  >= max_size + 1  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  MU_store_.rows()  >= max_size + 1  ) );
   }
 }
 
 void MatrixSymPosDefCholFactor::assert_initialized() const
 {
-  TEST_FOR_EXCEPT( !(  M_size_  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  M_size_  ) );
 }
 
 void MatrixSymPosDefCholFactor::resize_and_zero_off_diagonal(size_type n, value_type scale)
@@ -1494,7 +1494,7 @@ void MatrixSymPosDefCholFactor::resize_and_zero_off_diagonal(size_type n, value_
   using DenseLinAlgPack::nonconst_tri_ele;
   using DenseLinAlgPack::assign;
 
-  TEST_FOR_EXCEPT( !(  n <= my_min( MU_store_.rows(), MU_store_.cols() ) - 1  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  n <= my_min( MU_store_.rows(), MU_store_.cols() ) - 1  ) );
 
   // Resize the views
   set_view(
@@ -1513,7 +1513,7 @@ void MatrixSymPosDefCholFactor::resize_and_zero_off_diagonal(size_type n, value_
 void MatrixSymPosDefCholFactor::update_factorization() const
 {
   if( factor_is_updated_ ) return; // The factor should already be updated.
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     U_l_r_ == 0, std::logic_error
     ,"MatrixSymPosDefCholFactor::update_factorization() : "
     "Error, U_l_r == 0 was set in MatrixSymPosDefCholFactor::set_view(...) "
@@ -1576,7 +1576,7 @@ void MatrixSymPosDefCholFactor::read_matrix(  std::istream &in, BLAS_Cpp::Uplo Q
     for( int i = 1; i <= Q_dim; ++i ) {
       for( int j = 1; j <= i; ++j ) {
 #ifdef TEUCHOS_DEBUG
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           in.eof(), std::logic_error
           ,"MatrixSymPosDefCholFactor::read_matrix(in,lower,Q_out): Error, not finished reading in matrix yet (i="<<i<<",j="<<j<<")!"
           );
@@ -1589,7 +1589,7 @@ void MatrixSymPosDefCholFactor::read_matrix(  std::istream &in, BLAS_Cpp::Uplo Q
     for( int i = 1; i <= Q_dim; ++i ) {
       for( int j = i; j <= Q_dim; ++j ) {
 #ifdef TEUCHOS_DEBUG
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           in.eof(), std::logic_error
           ,"MatrixSymPosDefCholFactor::read_matrix(in,upper,Q_out): Error, not finished reading in matrix yet (i="<<i<<",j="<<j<<")!"
           );

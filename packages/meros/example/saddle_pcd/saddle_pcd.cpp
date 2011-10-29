@@ -561,10 +561,10 @@ int main(int argc, char *argv[])
 //       cerr << "saddleInv range = " << saddleInv.range() << endl;
 //       cerr << "soln space = " << space(solnblockvec) << endl;
 
-//       TEST_FOR_EXCEPT(!space(solnblockvec).isCompatible(saddleInv.range()));
-//       TEST_FOR_EXCEPT(!saddleInv.range().isCompatible(space(solnblockvec)));
-//       TEST_FOR_EXCEPT(!space(tmpRhs).isCompatible(saddleInv.domain()));
-//       TEST_FOR_EXCEPT(!space(tmpRhs).isCompatible(saddleInv.range()));
+//       TEUCHOS_TEST_FOR_EXCEPT(!space(solnblockvec).isCompatible(saddleInv.range()));
+//       TEUCHOS_TEST_FOR_EXCEPT(!saddleInv.range().isCompatible(space(solnblockvec)));
+//       TEUCHOS_TEST_FOR_EXCEPT(!space(tmpRhs).isCompatible(saddleInv.domain()));
+//       TEUCHOS_TEST_FOR_EXCEPT(!space(tmpRhs).isCompatible(saddleInv.range()));
 
 //       solnblockvec = saddleInv * tmpRhs;
 

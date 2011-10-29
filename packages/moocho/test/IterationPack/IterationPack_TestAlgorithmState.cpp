@@ -35,7 +35,7 @@
 #include "IterationPack_IterQuantityAccessContiguous.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "TestingHelperPack_update_success.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 // explicit instantiation for testing compilation only
 //template Teuchos::RCP<double>;

@@ -86,7 +86,7 @@ void cnoxinit(int* nelems, double* statevector, int* mpi_comm_ignored,
               void (*precFunction)(double *, double *, int, double*, void *))
 {
   try {
-    TEST_FOR_EXCEPTION(!is_null(solver), logic_error,
+    TEUCHOS_TEST_FOR_EXCEPTION(!is_null(solver), logic_error,
          "Exception: cnoxinit() called with solver!=null: "
       << "did not cnoxfinish() since last cnoxinit() call!!");
  
@@ -219,7 +219,7 @@ void cnoxsolve(int* nelems, double* statevector,
 {
 
   try {
-    TEST_FOR_EXCEPTION(is_null(solver), logic_error,
+    TEUCHOS_TEST_FOR_EXCEPTION(is_null(solver), logic_error,
          "Exception: cnoxsolve called with solver=null: "
       << "either did call cnoxinit first, or called cnoxfinish already");
 

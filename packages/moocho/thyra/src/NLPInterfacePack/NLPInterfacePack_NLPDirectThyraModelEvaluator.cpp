@@ -44,7 +44,7 @@
 #include "Thyra_VectorStdOps.hpp"
 #include "Thyra_MultiVectorStdOps.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace NLPInterfacePack {
@@ -85,7 +85,7 @@ void NLPDirectThyraModelEvaluator::initialize(
   Thyra::ModelEvaluatorBase::OutArgs<double> model_outArgs = model->createOutArgs();
   MEB::DerivativeProperties model_W_properties = model_outArgs.get_W_properties();
   if( p_idx >= 0 ) {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       (conDirecFiniteDiffCalculator_.get()==0 && !model_outArgs.supports(MEB::OUT_ARG_DfDp,p_idx).supports(MEB::DERIV_MV_BY_COL))
       ,std::invalid_argument
       ,"Error, model must support computing DfDp("<<p_idx<<") as a"
@@ -132,7 +132,7 @@ value_type NLPDirectThyraModelEvaluator::calc_Gf_prod(
   const Vector& x, const Vector& d, bool newx
   ) const
 {
-  TEST_FOR_EXCEPT(objDirecFiniteDiffCalculator_.get()==0);
+  TEUCHOS_TEST_FOR_EXCEPT(objDirecFiniteDiffCalculator_.get()==0);
   typedef Thyra::ModelEvaluatorBase MEB;
   MEB::InArgs<value_type> basePoint = model_->createInArgs();
   MEB::InArgs<value_type> directions = model_->createInArgs();
@@ -219,9 +219,9 @@ void NLPDirectThyraModelEvaluator::calc_point(
   //
   // Validate input
   //
-  TEST_FOR_EXCEPT(GcU!=NULL); // Can't handle these yet!
-  TEST_FOR_EXCEPT(Uz!=NULL);
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPT(GcU!=NULL); // Can't handle these yet!
+  TEUCHOS_TEST_FOR_EXCEPT(Uz!=NULL);
+  TEUCHOS_TEST_FOR_EXCEPTION(
     objDirecFiniteDiffCalculator_.get()!=NULL && Gf!=NULL, std::logic_error
     ,"Error, can not compute full gradient vector Gf when using directional finite differences!"
     );
@@ -446,10 +446,10 @@ void NLPDirectThyraModelEvaluator::calc_semi_newton_step(
     //
     // Recompute c
     //
-    TEST_FOR_EXCEPT(true);
+    TEUCHOS_TEST_FOR_EXCEPT(true);
   }
   // Compute py = - inv(C)*c
-  TEST_FOR_EXCEPT(true);
+  TEUCHOS_TEST_FOR_EXCEPT(true);
 }
 
 }	// end namespace NLPInterfacePack

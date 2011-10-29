@@ -36,7 +36,7 @@
 #include "DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack_PermVecMat.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
@@ -97,7 +97,7 @@ void DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(
   VectorDenseMutableEncap  yd(*y);
   VectorDenseEncap         xd(x);
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     yd().dim() != xd().dim(), std::invalid_argument
     ,"DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(...) : Error, "
     " y.dim() = " << yd().dim() << " != x.dim() = " << xd().dim() << "!"
@@ -241,7 +241,7 @@ void DirectSparseSolverDense::imp_analyze_and_factor(
     nz = A.num_nonzeros( MCTS::EXTRACT_FULL_MATRIX ,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM );
 
   // Validate input
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     n <= 0 || m <= 0 || m > n, std::invalid_argument
     ,"DirectSparseSolverDense::imp_analyze_and_factor(...) : Error!" );
 
@@ -372,7 +372,7 @@ void DirectSparseSolverDense::imp_factor(
     nz = A.num_nonzeros( MCTS::EXTRACT_FULL_MATRIX ,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM );
 
   // Validate input
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     (m != fs.m_ || n != fs.n_ || nz != fs.nz_), std::invalid_argument
     ,"DirectSparseSolverDense::imp_factor(...): Error!"
     );
@@ -420,7 +420,7 @@ void DirectSparseSolverDense::imp_factor(
   FortranTypes::f_int B_rank = 0;
   DenseLinAlgLAPack::getrf( &fn.LU_(), &fn.ipiv_[0], &B_rank );
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     B_rank != fs.rank_, FactorizationFailure
     ,"DirectSparseSolverDense::imp_factor(...): Error, the basis matrix is no "
     "longer full rank with B_rank = " << B_rank << " != fs.rank = " << fs.rank_ << "!"

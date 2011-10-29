@@ -34,7 +34,7 @@
 #include "AbstractLinAlgPack_VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack_AssertOp.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
@@ -85,10 +85,10 @@ void MatrixSparseCOORSerial::set_buffers(
 {
 #ifdef TEUCHOS_DEBUG
   const char msg_err[] = "MatrixSparseCOORSerial::set_buffer(...) : Error,!";
-  TEST_FOR_EXCEPTION( max_nz <= 0, std::invalid_argument, msg_err );
-  TEST_FOR_EXCEPTION( val == NULL || row_i == NULL || col_j == NULL, std::invalid_argument, msg_err );
-  TEST_FOR_EXCEPTION( rows > 0 && cols <= 0 , std::invalid_argument, msg_err );
-  TEST_FOR_EXCEPTION( rows > 0 && (nz < 0 || nz > max_nz), std::invalid_argument, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( max_nz <= 0, std::invalid_argument, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( val == NULL || row_i == NULL || col_j == NULL, std::invalid_argument, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( rows > 0 && cols <= 0 , std::invalid_argument, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( rows > 0 && (nz < 0 || nz > max_nz), std::invalid_argument, msg_err );
 #endif
   max_nz_           = max_nz;
   val_              = val;
@@ -103,7 +103,7 @@ void MatrixSparseCOORSerial::set_buffers(
     space_cols_.initialize(rows);
     space_rows_.initialize(cols);
     if( nz && check_input ) {
-      TEST_FOR_EXCEPT(true); // Todo: Check that row_i[] and col_j[] are in bounds
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Todo: Check that row_i[] and col_j[] are in bounds
     }
   }
   else {
@@ -236,8 +236,8 @@ void MatrixSparseCOORSerial::reinitialize(
   namespace rcp = MemMngPack;
 #ifdef TEUCHOS_DEBUG
   const char msg_err_head[] = "MatrixSparseCOORSerial::reinitialize(...) : Error";
-  TEST_FOR_EXCEPTION( max_nz <= 0, std::invalid_argument, msg_err_head<<"!" );
-  TEST_FOR_EXCEPTION( rows <= 0 || cols <= 0 , std::invalid_argument, msg_err_head<<"!" );
+  TEUCHOS_TEST_FOR_EXCEPTION( max_nz <= 0, std::invalid_argument, msg_err_head<<"!" );
+  TEUCHOS_TEST_FOR_EXCEPTION( rows <= 0 || cols <= 0 , std::invalid_argument, msg_err_head<<"!" );
 #endif
   rows_               = rows;
   cols_               = cols;	
@@ -257,7 +257,7 @@ void MatrixSparseCOORSerial::reinitialize(
   }
   else {
 #ifdef TEUCHOS_DEBUG
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       max_nz <= max_nz_, std::invalid_argument
       ,msg_err_head << "Buffers set up by client in set_buffers() only allows storage for "
       "max_nz_ = " << max_nz_ << " nonzero entries while client requests storage for "
@@ -273,7 +273,7 @@ void MatrixSparseCOORSerial::reinitialize(
 void MatrixSparseCOORSerial::reset_to_load_values()
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     rows_ == 0 || cols_ == 0, std::invalid_argument
     ,"MatrixSparseCOORSerial::reset_to_load_values(...) : Error, "
     "this matrix is not initialized so it can't be rest to load "
@@ -293,22 +293,22 @@ void MatrixSparseCOORSerial::get_load_nonzeros_buffers(
   )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     max_nz_load_ != 0 , std::logic_error
     ,"MatrixSparseCOORSerial::get_load_nonzeros_buffers(...) : Error, "
     "You must call commit_load_nonzeros_buffers() between calls to this method!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     max_nz_load <= 0 || max_nz_load > max_nz_ - nz_, std::invalid_argument
     ,"MatrixSparseCOORSerial::get_load_nonzeros_buffers(...) : Error, "
     "The number of nonzeros to load max_nz_load = " << max_nz_load << " can not "
     "be greater than max_nz - nz = " << max_nz_ << " - " << nz_ << " = " << (max_nz_-nz_) <<
     " entries!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     reload_val_only_ && (row_i != NULL || col_j != NULL), std::invalid_argument
     ,"MatrixSparseCOORSerial::get_load_nonzeros_buffers(...) : Error, "
     "reset_to_load_values() was called and therefore the structure of the matrix "
     "can not be set!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !reload_val_only_  && (row_i == NULL || col_j == NULL), std::invalid_argument
     ,"MatrixSparseCOORSerial::get_load_nonzeros_buffers(...) : Error, "
     "both *row_i and *col_j must be non-NULL since reinitialize() was called" );
@@ -329,21 +329,21 @@ void MatrixSparseCOORSerial::commit_load_nonzeros_buffers(
   )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     max_nz_load_ == 0 , std::logic_error
     ,"MatrixSparseCOORSerial::commit_load_nonzeros_buffers(...) : Error, "
     "You must call get_load_nonzeros_buffers() before calling this method!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     nz_commit > max_nz_load_ , std::logic_error
     ,"MatrixSparseCOORSerial::commit_load_nonzeros_buffers(...) : Error, "
     "You can not commit more nonzero entries than you requested buffer space for in "
     "get_load_nonzeros_buffers(...)!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     *val != val_ + nz_
     , std::logic_error
     ,"MatrixSparseCOORSerial::commit_load_nonzeros_buffers(...) : Error, "
     "This is not the buffer I give you in get_load_nonzeros_buffers(...)!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     reload_val_only_ && (row_i != NULL || col_j != NULL), std::invalid_argument
     ,"MatrixSparseCOORSerial::commit_load_nonzeros_buffers(...) : Error, "
     "reset_to_load_values() was called and therefore the structure of the matrix "
@@ -355,7 +355,7 @@ void MatrixSparseCOORSerial::commit_load_nonzeros_buffers(
 
 void MatrixSparseCOORSerial::finish_construction( bool test_setup )
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     reload_val_only_ == true && reload_val_only_nz_last_ != nz_, std::logic_error
     ,"MatrixSparseCOORSerial::finish_construction() : Error, the number of nonzeros on"
     " the initial load with row and column indexes was = " << reload_val_only_nz_last_ <<
@@ -365,11 +365,11 @@ void MatrixSparseCOORSerial::finish_construction( bool test_setup )
       const index_type
         i = row_i_[k],
         j = col_j_[k];
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         i < 1 || rows_ < i, std::logic_error
         ,"MatrixSparseCOORSerial::finish_construction(true) : Error, "
         "row_i[" << k << "] = " << i << " is not in the range [1,rows] = [1,"<<rows_<<"]!" );
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         j < 1 || cols_ < j, std::logic_error
         ,"MatrixSparseCOORSerial::finish_construction(true) : Error, "
         "col_j[" << k << "] = " << j << " is not in the range [1,cols] = [1,"<<cols_<<"]!" );
@@ -383,10 +383,10 @@ void MatrixSparseCOORSerial::finish_construction( bool test_setup )
 
 #ifdef TEUCHOS_DEBUG
 #define VALIDATE_ROW_COL_IN_RANGE() \
-TEST_FOR_EXCEPTION( \
+TEUCHOS_TEST_FOR_EXCEPTION( \
   i < 1 || rows_ < i, std::invalid_argument \
   ,err_msg_head<<", i = inv_row_perm[(row_i["<<k<<"]=="<<*row_i<<")-1] = "<<i<<" > rows = "<<rows_ ); \
-TEST_FOR_EXCEPTION( \
+TEUCHOS_TEST_FOR_EXCEPTION( \
   j < 1 || cols_ < j, std::invalid_argument \
   ,err_msg_head<<", j = inv_col_perm[(col_j["<<k<<"]=="<<*col_j<<")-1] = "<<j<<" > rows = "<<cols_ );
 #else
@@ -405,7 +405,7 @@ index_type MatrixSparseCOORSerial::count_nonzeros(
 {
 #ifdef TEUCHOS_DEBUG
   const char err_msg_head[] = "MatrixSparseCOORSerial::count_nonzeros(...): Error";
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     element_uniqueness_ == ELEMENTS_ASSUME_DUPLICATES_SUM && element_uniqueness == ELEMENTS_FORCE_UNIQUE
     ,std::logic_error
     ,err_msg_head << ", the client requests a count for unique "
@@ -474,7 +474,7 @@ index_type MatrixSparseCOORSerial::count_nonzeros(
   }
   else {
     // We have to consider the diagonals dl and du
-    TEST_FOR_EXCEPT(true); // ToDo: Implement!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
   }
   return cnt_nz;
 }
@@ -499,7 +499,7 @@ void MatrixSparseCOORSerial::coor_extract_nonzeros(
 {
 #ifdef TEUCHOS_DEBUG
   const char err_msg_head[] = "MatrixSparseCOORSerial::count_nonzeros(...): Error";
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     element_uniqueness_ == ELEMENTS_ASSUME_DUPLICATES_SUM && element_uniqueness == ELEMENTS_FORCE_UNIQUE
     ,std::logic_error
     ,err_msg_head << ", the client requests extraction of unique "
@@ -535,7 +535,7 @@ void MatrixSparseCOORSerial::coor_extract_nonzeros(
         }
       }
       else {
-        TEST_FOR_EXCEPT(true); // ToDo: Implement!
+        TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
       }
     }
     else {
@@ -616,10 +616,10 @@ void MatrixSparseCOORSerial::coor_extract_nonzeros(
   }
   else {
     // We have to consider the diagonals dl and du
-    TEST_FOR_EXCEPT(true); // ToDo: Implement!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
   }
-  TEST_FOR_EXCEPT( !(  len_Aval == 0 || len_Aval == cnt_nz  ) );
-  TEST_FOR_EXCEPT( !(  len_Aij == 0  || len_Aij  == cnt_nz  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  len_Aval == 0 || len_Aval == cnt_nz  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  len_Aij == 0  || len_Aij  == cnt_nz  ) );
 }
 
 // private
@@ -627,7 +627,7 @@ void MatrixSparseCOORSerial::coor_extract_nonzeros(
 void MatrixSparseCOORSerial::make_storage_unique()
 {
   if( release_resource_.count() > 1 ) {
-    TEST_FOR_EXCEPT(true); // ToDo: Allocate new storage and copy this memory.
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Allocate new storage and copy this memory.
     self_allocate_ = true;
   }
 }

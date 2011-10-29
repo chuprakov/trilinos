@@ -40,7 +40,7 @@
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "RTOpPack_RTOpC.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 
 namespace {
@@ -50,7 +50,7 @@ static RTOpPack::RTOpC explnlp2_c_eval_op;
 class init_rtop_server_t {
 public:
   init_rtop_server_t() {
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_explnlp2_c_eval_construct(&explnlp2_c_eval_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_explnlp2_c_eval_construct(&explnlp2_c_eval_op.op()));
   }
 }; 
 init_rtop_server_t  init_rtop_server;
@@ -72,7 +72,7 @@ ExampleNLPObjGrad::ExampleNLPObjGrad(
   namespace rcp = MemMngPack;
 
   // Assert the size of the NLP
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     vec_space->dim() <= 0, std::logic_error
     ,"ExampleNLPObjGrad::ExampleNLPObjGrad(...) Error!" );
 
@@ -233,7 +233,7 @@ void ExampleNLPObjGrad::imp_calc_f(const Vector& x, bool newx
   using AbstractLinAlgPack::dot;
   assert_is_initialized();
   f(); // assert f is set
-  TEST_FOR_EXCEPTION( n() != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_f(...)"  );
+  TEUCHOS_TEST_FOR_EXCEPTION( n() != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_f(...)"  );
   // f(x) = (obj_scale/2) * sum( x(i)^2, for i = 1..n )
   *zero_order_info.f = obj_scale_ / 2.0 * dot(x,x);
 }
@@ -243,7 +243,7 @@ void ExampleNLPObjGrad::imp_calc_c(const Vector& x, bool newx
 {
   assert_is_initialized();
   const size_type n = this->n();
-  TEST_FOR_EXCEPTION( n != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_c(...)"  );
+  TEUCHOS_TEST_FOR_EXCEPTION( n != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_c(...)"  );
 
   // c(x)(j) = x(j) * (x(m+j) -1) - 10 * x(m+j) = 0, for j = 1...m
 
@@ -260,7 +260,7 @@ void ExampleNLPObjGrad::imp_calc_c(const Vector& x, bool newx
 void ExampleNLPObjGrad::imp_calc_h(
   const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const
 {
-  TEST_FOR_EXCEPT(true); // Should never be called!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // Should never be called!
 }
 
 // Overridden protected members from NLPFirstOrder
@@ -269,7 +269,7 @@ void ExampleNLPObjGrad::imp_calc_Gf(const Vector& x, bool newx
   , const ObjGradInfo& obj_grad_info) const
 {
   assert_is_initialized();
-  TEST_FOR_EXCEPTION( n() != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_Gf(...)"  );
+  TEUCHOS_TEST_FOR_EXCEPTION( n() != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_Gf(...)"  );
   // Gf = obj_scale * x
   LinAlgOpPack::V_StV(obj_grad_info.Gf,obj_scale_,x);
 }

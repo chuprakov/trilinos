@@ -399,7 +399,7 @@ bool MoochoPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
       break;
     }
     default:
-      TEST_FOR_EXCEPT(true);	// Only local programming error
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Only local programming error
   }
 
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {

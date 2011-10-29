@@ -133,16 +133,16 @@ bool DecompositionSystemTester::test_decomp_system(
   }
 
   // validate input matrices
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
       Z==NULL&&Y==NULL&&R==NULL&&Uz==NULL&&Uy==NULL
     , std::invalid_argument
     ,"DecompositionSystemTester::test_decomp_system(...) : Error, "
     "at least one of Z, Y, R, Uz or Uy can not be NULL!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     m == r && Uz != NULL, std::invalid_argument
     ,"DecompositionSystemTester::test_decomp_system(...) : Error, "
     "Uz must be NULL if m==r is NULL!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     m == r && Uy != NULL, std::invalid_argument
     ,"DecompositionSystemTester::test_decomp_system(...) : Error, "
     "Uy must be NULL if m==r is NULL!" );
@@ -695,7 +695,7 @@ bool DecompositionSystemTester::test_decomp_system(
         olevel = MWONST_t::PRINT_ALL;
         break;
       default:
-        TEST_FOR_EXCEPT(true); // Should not get here
+        TEUCHOS_TEST_FOR_EXCEPT(true); // Should not get here
     }
     MWONST_t
       R_tester(

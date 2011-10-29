@@ -33,7 +33,7 @@
 #include "AbstractLinAlgPack_VectorMutable.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "AbstractLinAlgPack_VectorSpaceBlocked.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace NLPInterfacePack {
 
@@ -195,7 +195,7 @@ inline
 void ExampleNLPObjGrad::assert_is_initialized() const
 {
   typedef NLPInterfacePack::NLP NLP;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !is_initialized(), NLP::UnInitialized
     ,"ExampleNLPObjGrad::assert_is_initialized() : Error, "
     "ExampleNLPObjGrad::initialize() has not been called yet." );

@@ -12,7 +12,7 @@ void AbstractLinAlgPack::get_thyra_vector(
   )
 {
 #ifdef TEUCHOS_DEBUG
-    TEST_FOR_EXCEPTION( thyra_vec==NULL, std::invalid_argument, "Error!" );
+    TEUCHOS_TEST_FOR_EXCEPTION( thyra_vec==NULL, std::invalid_argument, "Error!" );
 #endif
   const VectorMutableThyra *vmthyra_vec = dynamic_cast<const VectorMutableThyra*>(&vec);
   if(vmthyra_vec) {
@@ -29,7 +29,7 @@ void AbstractLinAlgPack::get_thyra_vector(
     RTOpPack::SubVectorView<value_type> _thyra_vec_sv;
     _thyra_vec->acquireDetachedView( convert(Range1D()), &_thyra_vec_sv );
 #ifdef TEUCHOS_DEBUG
-    TEST_FOR_EXCEPTION( vec_sv.subDim() != _thyra_vec_sv.subDim(), std::logic_error, "Error!" );
+    TEUCHOS_TEST_FOR_EXCEPTION( vec_sv.subDim() != _thyra_vec_sv.subDim(), std::logic_error, "Error!" );
 #endif
     // Copy the elements
     for( int i = 0; i < vec_sv.subDim(); ++i )
@@ -41,7 +41,7 @@ void AbstractLinAlgPack::get_thyra_vector(
     *thyra_vec = _thyra_vec;
   }
   else {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, std::logic_error
       ,"AbstractLinAlgPack::get_thyra_vector(...): Error, the vector of concrete type \'"
       << typeName(vec) << "\' is not an incore vector."
@@ -56,7 +56,7 @@ void AbstractLinAlgPack::free_thyra_vector(
   )
 {
 #ifdef TEUCHOS_DEBUG
-    TEST_FOR_EXCEPTION( thyra_vec==NULL, std::invalid_argument, "Error!" );
+    TEUCHOS_TEST_FOR_EXCEPTION( thyra_vec==NULL, std::invalid_argument, "Error!" );
 #endif
   *thyra_vec = Teuchos::null;  // This works in both cases above!
 }
@@ -68,7 +68,7 @@ void AbstractLinAlgPack::get_thyra_vector(
   )
 { 
 #ifdef TEUCHOS_DEBUG
-    TEST_FOR_EXCEPTION( vec==NULL || thyra_vec==NULL, std::invalid_argument, "Error!" );
+    TEUCHOS_TEST_FOR_EXCEPTION( vec==NULL || thyra_vec==NULL, std::invalid_argument, "Error!" );
 #endif
   VectorMutableThyra *vmthyra_vec = dynamic_cast<VectorMutableThyra*>(vec);
   if(vmthyra_vec) {
@@ -85,7 +85,7 @@ void AbstractLinAlgPack::get_thyra_vector(
     RTOpPack::SubVectorView<value_type> _thyra_vec_sv;
     _thyra_vec->acquireDetachedView( convert(Range1D()), &_thyra_vec_sv );
 #ifdef TEUCHOS_DEBUG
-    TEST_FOR_EXCEPTION( vec_sv.subDim() != _thyra_vec_sv.subDim(), std::logic_error, "Error!" );
+    TEUCHOS_TEST_FOR_EXCEPTION( vec_sv.subDim() != _thyra_vec_sv.subDim(), std::logic_error, "Error!" );
 #endif
     // Copy the elements
     for( int i = 0; i < vec_sv.subDim(); ++i )
@@ -97,7 +97,7 @@ void AbstractLinAlgPack::get_thyra_vector(
     *thyra_vec = _thyra_vec;
   }
   else {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, std::logic_error
       ,"AbstractLinAlgPack::get_thyra_vector(...): Error, the vector of concrete type \'"
       << typeName(vec) << "\' is not an incore vector."
@@ -112,7 +112,7 @@ void AbstractLinAlgPack::commit_thyra_vector(
   )
 {
 #ifdef TEUCHOS_DEBUG
-    TEST_FOR_EXCEPTION( vec==NULL || thyra_vec_in==NULL, std::invalid_argument, "Error!" );
+    TEUCHOS_TEST_FOR_EXCEPTION( vec==NULL || thyra_vec_in==NULL, std::invalid_argument, "Error!" );
 #endif
   Teuchos::RCP<Thyra::VectorBase<value_type> >  &thyra_vec = *thyra_vec_in;
   VectorMutableThyra *vmthyra_vec = dynamic_cast<VectorMutableThyra*>(vec);
@@ -128,7 +128,7 @@ void AbstractLinAlgPack::commit_thyra_vector(
     RTOpPack::MutableSubVector vec_sv;
     vec->get_sub_vector( Range1D(), &vec_sv );
 #ifdef TEUCHOS_DEBUG
-    TEST_FOR_EXCEPTION( vec_sv.subDim() != thyra_vec_sv.subDim(), std::logic_error, "Error!" );
+    TEUCHOS_TEST_FOR_EXCEPTION( vec_sv.subDim() != thyra_vec_sv.subDim(), std::logic_error, "Error!" );
 #endif
     // Copy the elements
     for( int i = 0; i < vec_sv.subDim(); ++i )
@@ -140,6 +140,6 @@ void AbstractLinAlgPack::commit_thyra_vector(
     thyra_vec = Teuchos::null;
   }
   else {
-    TEST_FOR_EXCEPTION(	true, std::logic_error, "Should never get here?."	);
+    TEUCHOS_TEST_FOR_EXCEPTION(	true, std::logic_error, "Should never get here?."	);
   }
 }

@@ -37,7 +37,7 @@
 #include "AbstractLinAlgPack_VectorDenseEncap.hpp"
 #include "DenseLinAlgPack_PermVecMat.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
@@ -82,7 +82,7 @@ void convet_to_csr(
     acsr_col_j[row_ptr] = a_col_j[row_ptr] - 1; // from one-based to zero-based
     ++acsr_row_ptr[row_i];
   }}
-  TEST_FOR_EXCEPT( !(  acsr_row_ptr[m] == nz  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  acsr_row_ptr[m] == nz  ) );
 
 }
 
@@ -179,7 +179,7 @@ void DirectSparseSolverSuperLU::estimated_fillin_ratio(
   value_type estimated_fillin_ratio
   )
 {
-  TEST_FOR_EXCEPT(true);
+  TEUCHOS_TEST_FOR_EXCEPT(true);
 }
 
 // Overridden from DirectSparseSolverImp
@@ -234,7 +234,7 @@ void DirectSparseSolverSuperLU::imp_analyze_and_factor(
     nz = A.num_nonzeros( MCTS::EXTRACT_FULL_MATRIX ,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM );
 
   // Validate input
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     n <= 0 || m <= 0 || m > n, std::invalid_argument
     ,"DirectSparseSolverSuperLU::imp_analyze_and_factor(...) : Error!" );
 
@@ -334,7 +334,7 @@ void DirectSparseSolverSuperLU::imp_factor(
     &fn = dyn_cast<FactorizationNonzerosSuperLU>(*fact_nonzeros);
 
   // Allocate new storage if not done so already
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !fs.fact_struct_.get(), std::logic_error
     ,"DirectSparseSolverSuperLU::imp_factor(...): Error, the factorization sturcture must "
     "have already been computed!"
@@ -349,7 +349,7 @@ void DirectSparseSolverSuperLU::imp_factor(
     nz = A.num_nonzeros( MCTS::EXTRACT_FULL_MATRIX ,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM );
 
   // Validate input
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     n <= 0 || m <= 0 || m > n, std::invalid_argument
     ,"DirectSparseSolverSuperLU::imp_factor(...) : Error!" );
 

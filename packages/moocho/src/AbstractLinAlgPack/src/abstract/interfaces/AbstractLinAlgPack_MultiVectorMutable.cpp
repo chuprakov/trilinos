@@ -54,11 +54,11 @@ class init_rtop_server_t {
 public:
   init_rtop_server_t() {
     // Vector scalar assignment operator
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_construct(0.0,&assign_scalar_op().op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_construct(0.0,&assign_scalar_op().op()));
     // Vector assignment operator
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_vectors_construct(&assign_vec_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_vectors_construct(&assign_vec_op.op()));
     // Operator scale_vector
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_scale_vector_construct(0.0,&scale_vector_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_scale_vector_construct(0.0,&scale_vector_op.op()));
   }
 }; 
 
@@ -88,7 +88,7 @@ MultiVectorMutable::mv_clone()
 MultiVectorMutable::multi_vec_mut_ptr_t
 MultiVectorMutable::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng)
 {
-  TEST_FOR_EXCEPT(true); // ToDo: return a MultiVectorMutableSubView object.
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: return a MultiVectorMutableSubView object.
   // Note that the MultiVectorMutableSubView class should derive from
   // MultiVectorSubView.
   return Teuchos::null;
@@ -98,7 +98,7 @@ MultiVectorMutable::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng)
 
 void MultiVectorMutable::zero_out()
 {
-  TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_set_alpha(0.0,&assign_scalar_op().op()));
+  TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_set_alpha(0.0,&assign_scalar_op().op()));
   MultiVectorMutable* targ_multi_vecs[] = { this };
   AbstractLinAlgPack::apply_op(APPLY_BY_COL,assign_scalar_op(),0,NULL,1,targ_multi_vecs,NULL);
 }
@@ -106,12 +106,12 @@ void MultiVectorMutable::zero_out()
 void MultiVectorMutable::Mt_S( value_type alpha )
 {
   if( alpha == 0.0 ) {
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_set_alpha(alpha,&assign_scalar_op().op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_set_alpha(alpha,&assign_scalar_op().op()));
     MultiVectorMutable* targ_multi_vecs[] = { this };
     AbstractLinAlgPack::apply_op(APPLY_BY_COL,assign_scalar_op(),0,NULL,1,targ_multi_vecs,NULL);
   }
   else if( alpha != 1.0 ) {
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_scale_vector_set_alpha(alpha,&scale_vector_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_scale_vector_set_alpha(alpha,&scale_vector_op.op()));
     MultiVectorMutable* targ_multi_vecs[] = { this };
     AbstractLinAlgPack::apply_op(APPLY_BY_COL,scale_vector_op,0,NULL,1,targ_multi_vecs,NULL);
   }
@@ -126,7 +126,7 @@ MatrixOp& MultiVectorMutable::operator=(const MatrixOp& mwo_rhs)
     AbstractLinAlgPack::apply_op(APPLY_BY_COL,assign_vec_op,1,multi_vecs,1,targ_multi_vecs,NULL);
   }
   else {
-    TEST_FOR_EXCEPT(true); // ToDo: Get column by column or row by row
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Get column by column or row by row
   }
   return *this;
 }

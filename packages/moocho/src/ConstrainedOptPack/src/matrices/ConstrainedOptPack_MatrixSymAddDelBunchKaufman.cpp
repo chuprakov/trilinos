@@ -119,7 +119,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
     n = A.rows();
 
   // Validate proper usage of inertia parameter
-  TEST_FOR_EXCEPT( ! ( expected_inertia.zero_eigens == Inertia::UNKNOWN
+  TEUCHOS_TEST_FOR_EXCEPT( ! ( expected_inertia.zero_eigens == Inertia::UNKNOWN
     || expected_inertia.zero_eigens == 0 ) );
   
   try {
@@ -176,7 +176,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
       // matrix but it turns out to be p.d. or n.d. then modify the
       // DU factor appropriatly and switch to cholesky factorization.
       if( inertia.pos_eigens == n || inertia.neg_eigens == n ) {
-        TEST_FOR_EXCEPT(true); // ToDo Implememnt this!
+        TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo Implememnt this!
       }
       else {
         // Indead the new matrix is indefinite
@@ -371,7 +371,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
         throw WrongInertiaUpdateException( omsg.str(), gamma );
       }
       else {
-        TEST_FOR_EXCEPT(true); // Only local programming error?
+        TEUCHOS_TEST_FOR_EXCEPT(true); // Only local programming error?
       }
     }
   }
@@ -423,7 +423,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
     else if( add_eigen_val == MSADU::EIGEN_VAL_POS )
       ++expected_inertia.pos_eigens;
     else
-      TEST_FOR_EXCEPT(true); // Should not happen!
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Should not happen!
     // Compute the actually inertia and validate that it is what is expected
     Inertia inertia;
     throw_exception = compute_assert_inertia(
@@ -456,7 +456,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
     else if( add_eigen_val == MSADU::EIGEN_VAL_POS )
       ++inertia_.pos_eigens;
     else
-      TEST_FOR_EXCEPT(true); // Should not happen!
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Should not happen!
   }
   if( throw_exception )
     throw WarnNearSingularUpdateException(omsg.str(),gamma);
@@ -590,7 +590,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
         else if( drop_eigen_val == MSADU::EIGEN_VAL_POS )
           --expected_inertia.pos_eigens;
         else
-          TEST_FOR_EXCEPT(true); // Should not happen!
+          TEUCHOS_TEST_FOR_EXCEPT(true); // Should not happen!
         // Compute the exacted inertia and validate that it is what is expected
         Inertia inertia;
         throw_exception = compute_assert_inertia(
@@ -620,7 +620,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
         else if( drop_eigen_val == MSADU::EIGEN_VAL_POS )
           --inertia_.pos_eigens;
         else
-          TEST_FOR_EXCEPT(true); // Should not happen!
+          TEUCHOS_TEST_FOR_EXCEPT(true); // Should not happen!
       }
     }
   }
@@ -763,7 +763,7 @@ bool MatrixSymAddDelBunchKaufman::compute_assert_inertia(
       // D(k:k+1,k:k+1) is a 2x2 block.
       // This represents one positive eigen value and
       // on negative eigen value
-      TEST_FOR_EXCEPT( !(  IPIV_[k] == k_p ) ); // This is what the documentation for xSYTRF(...) says!
+      TEUCHOS_TEST_FOR_EXCEPT( !(  IPIV_[k] == k_p ) ); // This is what the documentation for xSYTRF(...) says!
       ++inertia.pos_eigens;
       ++inertia.neg_eigens;
       // To find the largest and smallest diagonals of U for L*U we must perform Gaussian
@@ -851,7 +851,7 @@ bool MatrixSymAddDelBunchKaufman::compute_assert_inertia(
       // Don't throw the exception till the very end!
     }
     else {
-      TEST_FOR_EXCEPT(true); // Only local programming error?
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Only local programming error?
     }
   }
   // Return

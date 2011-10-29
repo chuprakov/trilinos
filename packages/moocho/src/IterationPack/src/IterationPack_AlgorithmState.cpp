@@ -31,7 +31,7 @@
 #include <typeinfo>
 
 #include "IterationPack_AlgorithmState.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 namespace {
@@ -48,14 +48,14 @@ namespace IterationPack {
 AlgorithmState::iq_id_type AlgorithmState::set_iter_quant(
   const std::string& iq_name, const IQ_ptr& iq)
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     iq.get() == NULL, std::invalid_argument
     ,"AlgorithmState::set_iter_quant(...) : The iteration quantity witht the name = \'" << iq_name
     << "\' being inserted has iq.get() == NULL!" );
   iq_id_type new_id = iq_.size();
   std::pair<iq_name_to_id_t::iterator,bool>
     r = iq_name_to_id_.insert(iq_name_to_id_t::value_type(iq_name,new_id));
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !r.second // an insert did not take place, key = iq_name already existed.
     ,AlreadyExists
     ,"AlgorithmState::set_iter_quant(...) : An iteration quantity with the name \""
@@ -86,7 +86,7 @@ IterQuantity& AlgorithmState::iter_quant(iq_id_type iq_id) {
   catch(const std::range_error& excpt) {	// Thrown by libstdc++ v3 in g++ 2.95.2
     exists = false;
   }
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !exists, DoesNotExist
     ,"AlgorithmState::iter_quant(iq_id) : Error, the iteration quantity iq_id = "
     << iq_id << " does not exist.  "
@@ -151,7 +151,7 @@ AlgorithmState::iq_name_to_id_t::iterator AlgorithmState::find_and_assert(
 {
   iq_name_to_id_t::iterator itr = iq_name_to_id_.find(iq_name);
   if(itr == iq_name_to_id_.end())
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, DoesNotExist
       ,"AlgorithmState::find_and_assert(iq_name) : The iteration "
       "quantity with the name \"" << iq_name << "\" does not exist" );
@@ -163,7 +163,7 @@ AlgorithmState::iq_name_to_id_t::const_iterator AlgorithmState::find_and_assert(
 {
   iq_name_to_id_t::const_iterator itr = iq_name_to_id_.find(iq_name);
   if(itr == iq_name_to_id_.end())
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, DoesNotExist
       ,"AlgorithmState::find_and_assert(iq_name) : The iteration "
       "quantity with the name \"" << iq_name << "\" does not exist" );

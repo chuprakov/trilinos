@@ -27,7 +27,7 @@
 // @HEADER
 
 #include "RangePack_Range1D.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace RangePack {
 

@@ -30,7 +30,7 @@
 #define STRING_TO_INT_MAP_H
 
 #include "OptionsFromStreamPack_OptionsFromStreamExceptions.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace OptionsFromStreamPack {
 

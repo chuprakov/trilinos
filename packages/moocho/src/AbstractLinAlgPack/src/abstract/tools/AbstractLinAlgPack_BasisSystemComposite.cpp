@@ -37,7 +37,7 @@
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 
@@ -80,16 +80,16 @@ void BasisSystemComposite::initialize_space_x(
 {
   namespace mmp = MemMngPack;
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_xD.get() == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize_space_x(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
       var_dep == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize_space_x(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_xI.get() != NULL && var_indep == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize_space_x(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_x == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize_space_x(...): Error!" );
 #endif
@@ -126,10 +126,10 @@ void BasisSystemComposite::initialize_Gc(
   namespace mmp = MemMngPack;
   using Teuchos::dyn_cast;
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_x.get() == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize_Gc(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_c.get() == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize_Gc(...): Error!" );
 #endif
@@ -138,13 +138,13 @@ void BasisSystemComposite::initialize_Gc(
     m            = space_c->dim(),
     var_dep_size = var_dep.size();
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     C.get() == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize_Gc(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     var_dep_size < n && N.get() == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize_Gc(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     Gc == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize_Gc(...): Error!" );
 #endif
@@ -193,7 +193,7 @@ void BasisSystemComposite::get_C_N(
 {
   using Teuchos::dyn_cast;
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     Gc == NULL, std::invalid_argument
     ,"BasisSystemComposite::get_C_N(...): Error!" );
 #endif
@@ -201,10 +201,10 @@ void BasisSystemComposite::get_C_N(
     n = Gc->rows(),
     m = Gc->cols();
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     C == NULL, std::invalid_argument
     ,"BasisSystemComposite::get_C_N(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     n > m && N == NULL, std::invalid_argument
     ,"BasisSystemComposite::get_C_N(...): Error!" );
 #endif
@@ -216,14 +216,14 @@ void BasisSystemComposite::get_C_N(
     mat_itr = Gc_comp.matrices_begin(),
     mat_end = Gc_comp.matrices_end();
   if( mat_itr != mat_end ) {
-    TEST_FOR_EXCEPT( !( mat_itr != mat_end ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !( mat_itr != mat_end ) );
     *C = &dyn_cast<MatrixOpNonsing>(
       const_cast<MatrixOp&>(*(mat_itr++)->A_) );
     if( n > m ) {
-      TEST_FOR_EXCEPT( !( mat_itr != mat_end ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !( mat_itr != mat_end ) );
       *N = &const_cast<MatrixOp&>(*(mat_itr++)->A_);
     }
-    TEST_FOR_EXCEPT( !( mat_itr == mat_end ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !( mat_itr == mat_end ) );
   }
   else {
     *C = NULL;
@@ -242,10 +242,10 @@ void BasisSystemComposite::get_C_N(
     n = Gc.rows(),
     m = Gc.cols();
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     C == NULL, std::invalid_argument
     ,"BasisSystemComposite::get_C_N(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     n > m && N == NULL, std::invalid_argument
     ,"BasisSystemComposite::get_C_N(...): Error!" );
 #endif
@@ -257,16 +257,16 @@ void BasisSystemComposite::get_C_N(
     mat_itr = Gc_comp.matrices_begin(),
     mat_end = Gc_comp.matrices_end();
   if( mat_itr != mat_end ) {
-    TEST_FOR_EXCEPT( !( mat_itr != mat_end ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !( mat_itr != mat_end ) );
     *C = &dyn_cast<const MatrixOpNonsing>(*(mat_itr++)->A_);
     if( n > m ) {
-      TEST_FOR_EXCEPT( !( mat_itr != mat_end ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !( mat_itr != mat_end ) );
       *N = &dyn_cast<const MatrixOp>(*(mat_itr++)->A_);
     }
-    TEST_FOR_EXCEPT( !( mat_itr == mat_end ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !( mat_itr == mat_end ) );
   }
   else {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, std::invalid_argument
       ,"BasisSystemComposite::get_C_N(...): Error, "
       "The Gc matrix object has not been initialized with C and N!" );
@@ -327,27 +327,27 @@ void BasisSystemComposite::initialize(
 {
   namespace mmp = MemMngPack;
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_x.get() == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_c.get() == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize(...): Error!" );
 #endif
   const size_type n = space_x->dim(), m = space_c->dim();
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     var_dep.size() + var_indep.size() != space_x->dim(), std::invalid_argument
     ,"BasisSystemComposite::initialize(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     n > m && var_dep.lbound() < var_indep.lbound() && (var_dep.lbound() != 1 || var_dep.ubound()+1 != var_indep.lbound())
     , std::invalid_argument
     ,"BasisSystemComposite::initialize(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     n > m && var_dep.lbound() >= var_indep.lbound() && (var_indep.lbound() != 1 || var_indep.ubound()+1 != var_dep.lbound())
     , std::invalid_argument
     ,"BasisSystemComposite::initialize(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     factory_C.get() == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize(...): Error!" );
 #endif
@@ -438,10 +438,10 @@ void BasisSystemComposite::update_basis(
   const index_type
     n  = var_dep_.size() + var_indep_.size(),
     m  = var_dep_.size();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     n == 0, std::logic_error
     ,"BasisSystemComposite::update_basis(...): Error, this must be initialized first!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     C == NULL && ( n > m ? D == NULL : false ), std::logic_error
     ,"BasisSystemComposite::update_basis(...): Error, C or D must be non-NULL!" );
   // Get references to the aggregate C and N matrices

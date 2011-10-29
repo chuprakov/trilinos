@@ -60,7 +60,7 @@ void RTOpC::get_reduct_type_num_entries_impl(
   const Teuchos::Ptr<int> &num_chars
   ) const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     0!=RTOp_get_reduct_type_num_entries(&op_,&*num_values,&*num_indexes,&*num_chars)
     ,UnknownError
     ,"RTOpC::get_reduct_type_num_entries(...): Error, "
@@ -73,7 +73,7 @@ Teuchos::RCP<ReductTarget>
 RTOpC::reduct_obj_create_impl() const
 {
   RTOp_ReductTarget reduct_obj_raw = RTOp_REDUCT_OBJ_NULL;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     0!=RTOp_reduct_obj_create(&op_,&reduct_obj_raw)
     ,UnknownError
     ,"RTOpC::reduct_obj_create(...): Error, "
@@ -88,7 +88,7 @@ void RTOpC::reduce_reduct_objs_impl(
   const Teuchos::Ptr<ReductTarget> &inout_reduct_obj
   ) const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     0!=RTOp_reduce_reduct_objs( &op_, (*this)(in_reduct_obj), (*this)(*inout_reduct_obj) )
     ,UnknownError
     ,"RTOpC::reduce_reduct_objs(...): Error, "
@@ -100,7 +100,7 @@ void RTOpC::reduce_reduct_objs_impl(
 void RTOpC::reduct_obj_reinit_impl(
   const Teuchos::Ptr<ReductTarget> &reduct_obj ) const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     0!=RTOp_reduct_obj_reinit( &op_, (*this)(*reduct_obj) )
     ,UnknownError
     ,"RTOpC::reduct_obj_reinit(...): Error, "
@@ -116,7 +116,7 @@ void RTOpC::extract_reduct_obj_state_impl(
   const Teuchos::ArrayView<char_type> &char_data
   ) const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     0!=RTOp_extract_reduct_obj_state(
       &op_, (*this)(reduct_obj),
       value_data.size(), value_data.getRawPtr(),
@@ -137,7 +137,7 @@ void RTOpC::load_reduct_obj_state_impl(
   const Teuchos::Ptr<ReductTarget> &reduct_obj
   ) const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     0!=RTOp_load_reduct_obj_state(
       &op_,
       value_data.size(), value_data.getRawPtr(),
@@ -161,7 +161,7 @@ bool RTOpC::coord_invariant_impl() const
 std::string RTOpC::op_name_impl() const
 {
   const char* op_name = NULL;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     0!=RTOp_get_op_name(&op_,&op_name)
     ,UnknownError
     ,"RTOpC::get_op_name(...): Error, "
@@ -207,15 +207,15 @@ void RTOpC::apply_op_impl(
     ,num_targ_vecs,  num_targ_vecs  ? &c_targ_sub_vecs[0] : (RTOp_MutableSubVector*)NULL
     ,reduct_obj
     );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     err==RTOp_ERR_INVALID_NUM_VECS, InvalidNumVecs
     ,"RTOpC::apply_op(...): Error, "
     "RTOp_apply_op(...) returned RTOp_ERR_INVALID_NUM_VECS" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     err==RTOp_ERR_INVALID_NUM_TARG_VECS, InvalidNumTargVecs
     ,"RTOpC::apply_op(...): Error, "
     "RTOp_apply_op(...) returned RTOp_ERR_INVALID_NUM_TARG_VECS" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     err!=0, UnknownError
     ,"RTOpC::apply_op(...): Error, "
     "RTOp_apply_op(...) returned != 0 with unknown meaning" );

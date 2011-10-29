@@ -42,7 +42,7 @@
 #include "DenseLinAlgPack_DMatrixOp.hpp"
 #include "DenseLinAlgPack_assert_print_nan_inf.hpp"
 #include "DenseLinAlgPack_LinAlgOpPack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 template< class T >
@@ -214,8 +214,8 @@ void MatrixSymDiagSparse::Mp_StMtMtM(
     SpVectorSlice::const_iterator
       m_itr = diag.begin() + (i1-1);
     for( size_type l = 1; l <= i2-i1+1; ++l, ++m_itr ) {
-      TEST_FOR_EXCEPT( !(  m_itr < diag.end()  ) );
-      TEST_FOR_EXCEPT( !(  m_itr->value() >= 0.0  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  m_itr < diag.end()  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  m_itr->value() >= 0.0  ) );
       V_MtV( &D.col(l), A, trans_not(A_trans)
         , eta( m_itr->index(), n, std::sqrt(m_itr->value()) )() );
     }
@@ -257,11 +257,11 @@ void MatrixSymDiagSparse::coor_extract_nonzeros(
   const SpVectorSlice
     &diag = this->diag();
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     (len_Aval != 0 ? len_Aval != diag.nz() : Aval != NULL)
     ,std::invalid_argument
     ,"MatrixSymDiagSparse::coor_extract_nonzeros(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     (len_Aij != 0 ? len_Aij != diag.nz() : (Acol != NULL || Acol != NULL) )
     ,std::invalid_argument
     ,"MatrixSymDiagSparse::coor_extract_nonzeros(...): Error!" );

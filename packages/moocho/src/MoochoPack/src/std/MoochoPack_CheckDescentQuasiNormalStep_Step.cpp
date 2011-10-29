@@ -38,7 +38,7 @@
 #include "AbstractLinAlgPack_VectorStdOps.hpp"
 #include "AbstractLinAlgPack_MatrixOp.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace MoochoPack {
 
@@ -126,7 +126,7 @@ bool CheckDescentQuasiNormalStep_Step::do_step(
       out	<< "\nError, descent_c > 0.0; this is not a descent direction\n"
         << "Throw TestFailed and terminate the algorithm ...\n";
     }
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, TestFailed
       ,"CheckDescentQuasiNormalStep_Step::do_step(...) : Error, descent for the decomposed constraints "
       "with respect to the quasi-normal step c_k(equ_decomp)'*FDGc_k(:,equ_decomp)'*Ypy_k = "

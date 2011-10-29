@@ -27,7 +27,7 @@
 // @HEADER
 
 #include "NLPInterfacePack_NLPSecondOrder.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
   const char name_HL[] = "HL";
@@ -82,7 +82,7 @@ void NLPSecondOrder::calc_HL(
   ) const
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION( lambda  && this->m()  == 0, std::logic_error, "" );
+  TEUCHOS_TEST_FOR_EXCEPTION( lambda  && this->m()  == 0, std::logic_error, "" );
 #endif
   StandardCompositionRelationshipsPack::assert_role_name_set(HL_, "NLP::calc_HL()", name_HL);
   imp_calc_HL(x,lambda,newpoint,second_order_info());

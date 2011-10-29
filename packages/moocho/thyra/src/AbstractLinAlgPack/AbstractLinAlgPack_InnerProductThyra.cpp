@@ -32,7 +32,7 @@
 
 #include "AbstractLinAlgPack_InnerProductThyra.hpp"
 #include "AbstractLinAlgPack_VectorMutableThyra.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
@@ -53,7 +53,7 @@ void InnerProductThyra::initialize(
   const Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> >& thyra_vec_spc
   )
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     thyra_vec_spc.get()==NULL, std::invalid_argument
     ,"InnerProductThyra::initialize(thyra_vec_spc): Error!"
     );

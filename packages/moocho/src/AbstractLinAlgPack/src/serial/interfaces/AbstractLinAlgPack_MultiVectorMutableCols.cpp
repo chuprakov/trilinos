@@ -31,7 +31,7 @@
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack_SpVectorClass.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -127,14 +127,14 @@ MultiVectorMutableCols::operator=(const MatrixOp& mwo_rhs)
 MatrixOp::mat_mut_ptr_t
 MultiVectorMutableCols::clone()
 {
-  TEST_FOR_EXCEPT(true); // ToDo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
   return Teuchos::null;
 }
 
 MatrixOp::mat_ptr_t
 MultiVectorMutableCols::clone() const
 {
-  TEST_FOR_EXCEPT(true); // ToDo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
   return Teuchos::null;
 }
 
@@ -231,7 +231,7 @@ bool MultiVectorMutableCols::syrk(
   }
   MatrixDenseSymMutableEncap  DMatrixSliceSym(symwo_gms_lhs);
   const int num_vecs = this->col_vecs_.size();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     num_vecs != DMatrixSliceSym().rows(), std::logic_error
     ,"MultiVectorMutableCols::syrk(...) : Error, sizes do not match up!" );
   // Fill the upper or lower triangular region.
@@ -265,7 +265,7 @@ MultiVectorMutableCols::access_by() const
 MultiVectorMutable::vec_mut_ptr_t
 MultiVectorMutableCols::col(index_type j)
 {
-  TEST_FOR_EXCEPTION( !(  1 <= j  && j <= col_vecs_.size() ), std::logic_error, "Error!" );
+  TEUCHOS_TEST_FOR_EXCEPTION( !(  1 <= j  && j <= col_vecs_.size() ), std::logic_error, "Error!" );
   return col_vecs_[j-1];
 }
 
@@ -286,7 +286,7 @@ MultiVectorMutableCols::mv_sub_view(const Range1D& row_rng, const Range1D& col_r
 {
 #ifdef TEUCHOS_DEBUG
   const size_type rows = this->rows();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !( row_rng.full_range() || (row_rng.lbound() == 1 && row_rng.ubound() == rows) )
     ,std::logic_error, "Error, can't handle subrange on vectors yet!" );
 #endif

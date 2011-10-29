@@ -88,7 +88,7 @@ void QPSchurInitKKTSystemHessianRelaxed::initialize_kkt_system(
     nd = g.size(),
     no = G_orig.rows(),
     nr = M.rows();
-  TEST_FOR_EXCEPT( !(  no + nr == nd  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  no + nr == nd  ) );
 
   // Setup output arguments
 
