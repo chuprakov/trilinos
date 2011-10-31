@@ -45,7 +45,7 @@
 #include "Thyra_DetachedVectorView.hpp"
 #include "Thyra_VectorStdOps.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace NLPInterfacePack {
@@ -60,7 +60,7 @@ void NLPThyraModelEvaluatorBase::initialize(bool test_setup)
     NLPObjGrad::initialize(test_setup);
     return;
   }
-  //TEST_FOR_EXCEPT(true); // Todo: push the variables in bounds!
+  //TEUCHOS_TEST_FOR_EXCEPT(true); // Todo: push the variables in bounds!
   num_bounded_x_ = AbstractLinAlgPack::num_bounded(*xl_,*xu_,NLP::infinite_bound());
   NLPObjGrad::initialize(test_setup);
   initialized_ = true;
@@ -173,7 +173,7 @@ void NLPThyraModelEvaluatorBase::report_final_solution(
       model_finalPoint.set_p(0,model_->getNominalValues().get_p(0)); // Assume we will find in it zero!
   }
   else { // no dependent vars
-    TEST_FOR_EXCEPT(p_idx_<0);
+    TEUCHOS_TEST_FOR_EXCEPT(p_idx_<0);
     model_finalPoint.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(x).thyra_vec().assert_not_null());
   }
   model_->reportFinalPoint(model_finalPoint,optimal);
@@ -243,9 +243,9 @@ void NLPThyraModelEvaluatorBase::initializeBase(
 
   const char msg_err[] = "NLPThyraModelEvaluatorBase::initialize(...): Errror!";
   Thyra::ModelEvaluatorBase::OutArgs<value_type> model_outArgs = model->createOutArgs();
-  TEST_FOR_EXCEPTION( model.get() == NULL, std::invalid_argument, msg_err );
-  TEST_FOR_EXCEPTION( p_idx >= 0 && ( p_idx > model_outArgs.Np()-1 ), std::invalid_argument, msg_err );
-  TEST_FOR_EXCEPTION( g_idx >= 0 && ( g_idx > model_outArgs.Ng()-1 ), std::invalid_argument, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( model.get() == NULL, std::invalid_argument, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( p_idx >= 0 && ( p_idx > model_outArgs.Np()-1 ), std::invalid_argument, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( g_idx >= 0 && ( g_idx > model_outArgs.Ng()-1 ), std::invalid_argument, msg_err );
   //
   Teuchos::RCP<const Thyra::VectorSpaceBase<value_type> > model_space_x(model->get_x_space());
   const bool no_model_x = (model_space_x.get() == NULL);
@@ -253,19 +253,19 @@ void NLPThyraModelEvaluatorBase::initializeBase(
   const bool no_model_f = (model_space_f.get() == NULL);
   //
   if( !no_model_f ) {
-    TEST_FOR_EXCEPTION( !model_outArgs.supports(MEB::OUT_ARG_W), std::invalid_argument, msg_err );
+    TEUCHOS_TEST_FOR_EXCEPTION( !model_outArgs.supports(MEB::OUT_ARG_W), std::invalid_argument, msg_err );
     MEB::DerivativeProperties model_W_properties = model_outArgs.get_W_properties();
-    TEST_FOR_EXCEPTION( model_W_properties.supportsAdjoint==false, std::invalid_argument, msg_err );
-    TEST_FOR_EXCEPTION( model_W_properties.rank==MEB::DERIV_RANK_DEFICIENT, std::invalid_argument, msg_err );
+    TEUCHOS_TEST_FOR_EXCEPTION( model_W_properties.supportsAdjoint==false, std::invalid_argument, msg_err );
+    TEUCHOS_TEST_FOR_EXCEPTION( model_W_properties.rank==MEB::DERIV_RANK_DEFICIENT, std::invalid_argument, msg_err );
     /*
     if(p_idx >= 0 ) {
-      TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DfDp,p_idx).none(), std::invalid_argument, msg_err );
+      TEUCHOS_TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DfDp,p_idx).none(), std::invalid_argument, msg_err );
       if(g_idx >= 0) {
-        TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DgDp,g_idx,p_idx).none(), std::invalid_argument, msg_err );
+        TEUCHOS_TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DgDp,g_idx,p_idx).none(), std::invalid_argument, msg_err );
       }
     }
     if(g_idx >= 0) {
-      TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DgDx,g_idx).none(), std::invalid_argument, msg_err );
+      TEUCHOS_TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DgDx,g_idx).none(), std::invalid_argument, msg_err );
     }
     */
   }
@@ -301,7 +301,7 @@ void NLPThyraModelEvaluatorBase::initializeBase(
   else {
     space_x_ = space_xI;
   } 
-  TEST_FOR_EXCEPT(!space_x_.get());
+  TEUCHOS_TEST_FOR_EXCEPT(!space_x_.get());
 
   if(!no_model_f)
     space_c_ = Teuchos::rcp(new VectorSpaceThyra(model_space_f));
@@ -394,7 +394,7 @@ void NLPThyraModelEvaluatorBase::updateInitialGuessAndBounds() const
 
 void NLPThyraModelEvaluatorBase::assert_is_initialized() const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !is_initialized(), NLP::UnInitialized
     ,"NLPThyraModelEvaluatorBase::assert_is_initialized() : Error, "
     "NLPThyraModelEvaluatorBase::initialize() has not been called yet."
@@ -439,7 +439,7 @@ void NLPThyraModelEvaluatorBase::set_x(
       model_inArgs.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(*xI).thyra_vec().assert_not_null());
   }
   else { // no dependent vars
-    TEST_FOR_EXCEPT(p_idx_<0);
+    TEUCHOS_TEST_FOR_EXCEPT(p_idx_<0);
     model_inArgs.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(x).thyra_vec().assert_not_null());
   }
 }
@@ -499,7 +499,7 @@ void NLPThyraModelEvaluatorBase::preprocessBaseInOutArgs(
     c  = first_order_info->c;
   }
   else {
-    TEST_FOR_EXCEPT(true); // Should never be called!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // Should never be called!
   }
   //
   MEB::OutArgs<value_type> &model_outArgs = *model_outArgs_inout;

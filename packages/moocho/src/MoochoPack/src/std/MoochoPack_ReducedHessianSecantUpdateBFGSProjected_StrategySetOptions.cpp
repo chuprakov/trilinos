@@ -80,7 +80,7 @@ void ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions::setOption(
       break;
     }
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

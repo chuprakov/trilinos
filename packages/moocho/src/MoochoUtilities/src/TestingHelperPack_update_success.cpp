@@ -30,11 +30,11 @@
 #include <string>
 
 #include "TestingHelperPack_update_success.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 bool TestingHelperPack::update_success(bool result_check, bool* success) {
   if(result_check == false) {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       throw_except_on_fail, std::runtime_error
       ,"update_success(...) : Runtime check "
       "failed and throw_except_on_fail == false."	);	

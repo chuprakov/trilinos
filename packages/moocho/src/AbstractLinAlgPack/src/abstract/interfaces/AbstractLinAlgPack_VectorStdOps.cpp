@@ -46,7 +46,7 @@
 #include "RTOp_TOp_scale_vector.h"
 #include "RTOp_TOp_sign.h"
 #include "RTOpPack_RTOpC.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 
@@ -78,23 +78,23 @@ class init_rtop_server_t {
 public:
   init_rtop_server_t() {
     // Operator and target obj for sum
-    TEST_FOR_EXCEPT(0!=RTOp_ROp_sum_construct(&sum_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_sum_construct(&sum_op.op()));
     sum_targ = sum_op.reduct_obj_create();
     // Operator and target obj for dot_prod
-    TEST_FOR_EXCEPT(0!=RTOp_ROp_dot_prod_construct(&dot_prod_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_dot_prod_construct(&dot_prod_op.op()));
     dot_prod_targ = dot_prod_op.reduct_obj_create();
     // Operator add_scalar
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_add_scalar_construct(0.0,&add_scalar_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_add_scalar_construct(0.0,&add_scalar_op.op()));
     // Operator scale_vector
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_scale_vector_construct(0.0,&scale_vector_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_scale_vector_construct(0.0,&scale_vector_op.op()));
     // Operator axpy
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_axpy_construct(0.0,&axpy_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_axpy_construct(0.0,&axpy_op.op()));
     // Operator random_vector
-    //TEST_FOR_EXCEPT(0!=RTOp_TOp_random_vector_construct(0.0,0.0,&random_vector_op.op()));
+    //TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_random_vector_construct(0.0,0.0,&random_vector_op.op()));
     // Operator ele_wise_divide
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_ele_wise_divide_construct(0.0,&ele_wise_divide_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_ele_wise_divide_construct(0.0,&ele_wise_divide_op.op()));
     // Operator ele_wise_prod
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_ele_wise_prod_construct(0.0,&ele_wise_prod_op.op()));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_ele_wise_prod_construct(0.0,&ele_wise_prod_op.op()));
   }
 }; 
 
@@ -139,9 +139,9 @@ void AbstractLinAlgPack::max_abs_ele(
   const Vector& v, value_type* max_v_j, index_type* max_j
   )
 {
-  TEST_FOR_EXCEPT( !(  max_v_j && max_j  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  max_v_j && max_j  ) );
   RTOpPack::RTOpC op;
-  TEST_FOR_EXCEPT(0!=RTOp_ROp_max_abs_ele_construct(&op.op()));
+  TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_ROp_max_abs_ele_construct(&op.op()));
   Teuchos::RCP<RTOpPack::ReductTarget> reduct_obj = op.reduct_obj_create();
   const Vector* vecs[1] = { &v };
   apply_op(op,1,vecs,0,NULL,&*reduct_obj);
@@ -153,9 +153,9 @@ void AbstractLinAlgPack::max_abs_ele(
 void AbstractLinAlgPack::Vp_S( VectorMutable* v_lhs, const value_type& alpha )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_S(...), Error!");
+  TEUCHOS_TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_S(...), Error!");
 #endif
-  TEST_FOR_EXCEPT(0!=RTOp_TOp_add_scalar_set_alpha(alpha,&add_scalar_op.op()));
+  TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_add_scalar_set_alpha(alpha,&add_scalar_op.op()));
   VectorMutable* targ_vecs[1] = { v_lhs };
   apply_op(add_scalar_op,0,NULL,1,targ_vecs,NULL);
 }
@@ -163,13 +163,13 @@ void AbstractLinAlgPack::Vp_S( VectorMutable* v_lhs, const value_type& alpha )
 void AbstractLinAlgPack::Vt_S( VectorMutable* v_lhs, const value_type& alpha )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
+  TEUCHOS_TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
 #endif
   if( alpha == 0.0 ) {
     *v_lhs = 0.0;
   }
   else if( alpha != 1.0 ) {
-    TEST_FOR_EXCEPT(0!=RTOp_TOp_scale_vector_set_alpha( alpha, &scale_vector_op.op() ));
+    TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_scale_vector_set_alpha( alpha, &scale_vector_op.op() ));
     VectorMutable* targ_vecs[1] = { v_lhs };
     apply_op(scale_vector_op,0,NULL,1,targ_vecs,NULL);
   }
@@ -179,9 +179,9 @@ void AbstractLinAlgPack::Vp_StV(
   VectorMutable* v_lhs, const value_type& alpha, const Vector& v_rhs)
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_StV(...), Error!");
+  TEUCHOS_TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_StV(...), Error!");
 #endif
-  TEST_FOR_EXCEPT(0!=RTOp_TOp_axpy_set_alpha( alpha, &axpy_op.op() ));
+  TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_axpy_set_alpha( alpha, &axpy_op.op() ));
   const Vector*  vecs[1]      = { &v_rhs };
   VectorMutable* targ_vecs[1] = { v_lhs  };
   apply_op(axpy_op,1,vecs,1,targ_vecs,NULL);
@@ -204,9 +204,9 @@ void AbstractLinAlgPack::ele_wise_prod(
   , VectorMutable* v_lhs )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_prod(...), Error");
+  TEUCHOS_TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_prod(...), Error");
 #endif
-  TEST_FOR_EXCEPT(0!=RTOp_TOp_ele_wise_prod_set_alpha(alpha,&ele_wise_prod_op.op()));
+  TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_ele_wise_prod_set_alpha(alpha,&ele_wise_prod_op.op()));
   const Vector*   vecs[2]      = { &v_rhs1, &v_rhs2 };
   VectorMutable*  targ_vecs[1] = { v_lhs };
   apply_op(ele_wise_prod_op,2,vecs,1,targ_vecs,NULL);
@@ -217,9 +217,9 @@ void AbstractLinAlgPack::ele_wise_divide(
   , VectorMutable* v_lhs )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_divide(...), Error");
+  TEUCHOS_TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_divide(...), Error");
 #endif
-  TEST_FOR_EXCEPT(0!=RTOp_TOp_ele_wise_divide_set_alpha(alpha,&ele_wise_divide_op.op()));
+  TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_ele_wise_divide_set_alpha(alpha,&ele_wise_divide_op.op()));
   const int num_vecs = 2;
   const Vector*   vecs[2]      = { &v_rhs1, &v_rhs2 };
   VectorMutable*  targ_vecs[1] = { v_lhs };
@@ -234,9 +234,9 @@ void AbstractLinAlgPack::seed_random_vector_generator( unsigned int s )
 void AbstractLinAlgPack::random_vector( value_type l, value_type u, VectorMutable* v )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(v==NULL,std::logic_error,"Vt_S(...), Error");
+  TEUCHOS_TEST_FOR_EXCEPTION(v==NULL,std::logic_error,"Vt_S(...), Error");
 #endif
-  //TEST_FOR_EXCEPT(0!=RTOp_TOp_random_vector_set_bounds( l, u, &random_vector_op.op() ));
+  //TEUCHOS_TEST_FOR_EXCEPT(0!=RTOp_TOp_random_vector_set_bounds( l, u, &random_vector_op.op() ));
   random_vector_op.set_bounds(l,u);
   VectorMutable* targ_vecs[1] = { v };
   apply_op(random_vector_op,0,NULL,1,targ_vecs,NULL);
@@ -249,7 +249,7 @@ void AbstractLinAlgPack::sign(
   )
 {
   RTOpPack::RTOpC op;
-  TEST_FOR_EXCEPT( !( 0==RTOp_TOp_sign_construct(&op.op()) ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( 0==RTOp_TOp_sign_construct(&op.op()) ) );
   const Vector*   vecs[1]      = { &v };
   VectorMutable*  targ_vecs[1] = { z  };
   apply_op(op,1,vecs,1,targ_vecs,NULL);

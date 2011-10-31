@@ -31,7 +31,7 @@
 #include "NLPInterfacePack_ExampleNLPBanded.hpp"
 #include "DenseLinAlgPack_PermVecMat.hpp"
 #include "DenseLinAlgPack_LinAlgOpPack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace NLPInterfacePack {
 
@@ -75,22 +75,22 @@ ExampleNLPBanded::ExampleNLPBanded(
 {
 #ifdef TEUCHOS_DEBUG	
   const char msg_err_head[] = "ExampleNLPBanded::ExampleNLPBanded(...) : Error";
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     nD <= 0, std::invalid_argument
     ,msg_err_head<<"!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     nI <= 0 || nD < nI, std::invalid_argument
     ,msg_err_head<<"!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     bw < 1 || nD < bw, std::invalid_argument
     ,msg_err_head<<"!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     mU < 0, std::invalid_argument
     ,msg_err_head<<"!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     mI < 0, std::invalid_argument
     ,msg_err_head<<"!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     mU != 0, std::invalid_argument
     ,msg_err_head<<", can't handle undecomposed equalities yet!" );
 #endif
@@ -219,7 +219,7 @@ void ExampleNLPBanded::imp_calc_c_orig(
   inform_new_point(newx);
   if(c_orig_updated_)
     return; // c(x) is already computed in *zero_order_info.c
-  TEST_FOR_EXCEPT( !( zero_order_info.c ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( zero_order_info.c ) );
   DVector
     &c  = *zero_order_info.c;
   const size_type
@@ -305,9 +305,9 @@ bool ExampleNLPBanded::imp_get_next_basis(
   // converted to equalities with slacks, make the slack variables
   // basic variables also (after the nD variables).
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPT( !( var_perm_full ) );
-  TEST_FOR_EXCEPT( !( equ_perm_full ) );
-  TEST_FOR_EXCEPT( !( rank ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( var_perm_full ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( equ_perm_full ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( rank ) );
 #endif
   const size_type    n_orig = nD_    + nI_;
   const size_type    n_full = n_orig + mI_;
@@ -385,7 +385,7 @@ void ExampleNLPBanded::imp_calc_Gc_orig(
   inform_new_point(newx);
   // Compute c(x) if not already (will compute in temp if needed)
   this->imp_calc_c_orig( x_full, newx, zero_order_orig_info() );
-  TEST_FOR_EXCEPT( !( first_order_expl_info.c ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( first_order_expl_info.c ) );
   DVector
     &c = *first_order_expl_info.c;
   // Get references/pointers to data for Gc to be computed/updated.
@@ -398,7 +398,7 @@ void ExampleNLPBanded::imp_calc_Gc_orig(
             ? &(*first_order_expl_info.Gc_ivect)[0] : NULL ),
     *Gc_jvect = ( first_order_expl_info.Gc_jvect
             ? &(*first_order_expl_info.Gc_jvect)[0] : NULL );
-  TEST_FOR_EXCEPT( !(  (Gc_ivect != NULL) == (Gc_jvect != NULL)  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  (Gc_ivect != NULL) == (Gc_jvect != NULL)  ) );
   // Set nonzeros for Gc (in sorted compressed column format w.r.t., i.e. grouped by constraints)
   const size_type
     num_I_per_D = nD_ / nI_,  // Integer division (rounds down)
@@ -472,7 +472,7 @@ void ExampleNLPBanded::imp_calc_Gh_orig(
             ? &(*first_order_expl_info.Gh_ivect)[0] : NULL ),
     *Gh_jvect = ( first_order_expl_info.Gh_jvect
             ? &(*first_order_expl_info.Gh_jvect)[0] : NULL );
-  TEST_FOR_EXCEPT( !(  (Gh_ivect != NULL) == (Gh_jvect != NULL)  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  (Gh_ivect != NULL) == (Gh_jvect != NULL)  ) );
   // Set nonzeros for Gh (in sorted compressed column format w.r.t., i.e. grouped by constraints)
   const size_type
     num_I_per_D = nD_ / nI_,  // Integer division (rounds down)
@@ -507,7 +507,7 @@ void ExampleNLPBanded::imp_calc_Gh_orig(
 
 void ExampleNLPBanded::assert_is_initialized() const
 {
-  TEST_FOR_EXCEPT(true); //  ToDo: Implemenet!
+  TEUCHOS_TEST_FOR_EXCEPT(true); //  ToDo: Implemenet!
 }
 
 void ExampleNLPBanded::inform_new_point(bool newx) const

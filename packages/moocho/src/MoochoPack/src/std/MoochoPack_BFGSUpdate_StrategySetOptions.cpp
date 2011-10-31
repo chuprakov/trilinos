@@ -101,7 +101,7 @@ void BFGSUpdate_StrategySetOptions::setOption(
       target().secant_error_tol(std::fabs(std::atof(option_value.c_str())));
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

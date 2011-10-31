@@ -29,12 +29,12 @@
 #include <string>
 
 #include "AbstractLinAlgPack_GenPermMatrixSliceIterator.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 void AbstractLinAlgPack::GenPermMatrixSliceIteratorPack::GPMS_row_col_iterator_assert_not_null(
   const void* p)
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !p, std::logic_error
     ,"GenPermMatrixSliceIteratorPack::row_col_iterator<T>, Error "
     "row_i can not be NULL" );

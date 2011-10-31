@@ -178,7 +178,7 @@ void NLPAlgoState::update_iq_id(
   namespace rcp = MemMngPack;
   if(iq_id->iq_id == DOES_NOT_EXIST)
     iq_id->iq_id = this->get_iter_quant_id(iq_name);
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     iq_id->iq_id == DOES_NOT_EXIST, DoesNotExist
     ,"NLPAlgoState::update_iq_id(iq_name,iq_id) : Error, "
     " The iteration quantity with name \'" << iq_name <<

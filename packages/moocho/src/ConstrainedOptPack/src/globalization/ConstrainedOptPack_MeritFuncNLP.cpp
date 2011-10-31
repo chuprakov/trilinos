@@ -29,13 +29,13 @@
 #include <typeinfo>
 
 #include "ConstrainedOptPack_MeritFuncNLP.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace ConstrainedOptPack {
 
 MeritFuncNLP& MeritFuncNLP::operator=(const MeritFuncNLP& merit_func)
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     this != &merit_func, std::logic_error
     ,"MeritFuncNLP::operator=(merit_func) : Error, this is not assignment to self "
     "and the concreate subclass \'" << typeName(*this) << "\' has not overridden "

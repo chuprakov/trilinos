@@ -31,7 +31,7 @@
 #include "NLPInterfacePack_NLPDirect.hpp"
 #include "AbstractLinAlgPack_MatrixOp.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace NLPInterfacePack {
 

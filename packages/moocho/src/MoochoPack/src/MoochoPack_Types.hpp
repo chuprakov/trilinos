@@ -69,7 +69,7 @@ inline Teuchos::EVerbosityLevel convertToVerbLevel( const EJournalOutputLevel ou
     case PRINT_ITERATION_QUANTITIES:
       return Teuchos::VERB_EXTREME;
     default:
-      TEST_FOR_EXCEPT(true); // Should never get here!
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Should never get here!
   }
   return Teuchos::VERB_NONE; // Should never be called!
 }

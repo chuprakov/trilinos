@@ -170,7 +170,7 @@ inline
 ReductTargetC::~ReductTargetC()
 {
   if( obj() != RTOp_REDUCT_OBJ_NULL ) {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       0!=RTOp_reduct_obj_free(&op_,&obj_)
       ,UnknownError
       ,"RTOpC::reduct_obj_free(...): Error, "

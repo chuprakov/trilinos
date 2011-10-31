@@ -51,7 +51,7 @@ void MatrixSymOp::Mp_StPtMtP(
   , const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
   , value_type beta ) const
 {
-  TEST_FOR_EXCEPT(true); // ToDo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
 }
 
 void MatrixSymOp::Mp_StMtMtM(
@@ -60,7 +60,7 @@ void MatrixSymOp::Mp_StMtMtM(
   , const MatrixOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
   , value_type beta ) const
 {
-  TEST_FOR_EXCEPT(true); // ToDo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
 }
 
 // Overridden from MatrixOp

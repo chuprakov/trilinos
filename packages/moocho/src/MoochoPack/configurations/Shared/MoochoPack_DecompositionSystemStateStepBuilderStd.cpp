@@ -79,7 +79,7 @@
 #include "OptionsFromStreamPack_StringToIntMap.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
 #include "OptionsFromStreamPack_OptionsFromStream.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace {
@@ -152,7 +152,7 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
     *tailored_approach = true;
   }
   else {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, std::logic_error
       ,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
       "the NLP object of type \'" << typeName(nlp) <<
@@ -236,7 +236,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
     // Set the default basis system if one is not set
     basis_sys = nlp_foi->basis_sys();
     if( basis_sys.get() == NULL ) {
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, std::logic_error
         ,"\nA basis system object was not specified by the NLPFirstOrder object of type \'"
         << typeName(nlp) << "\' and we can not build a rSQP algorithm without one!" );
@@ -264,7 +264,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
         D_imp = DecompositionSystemVarReduct::MAT_IMP_IMPLICIT;
         break;
       default:
-        TEST_FOR_EXCEPT(true);
+        TEUCHOS_TEST_FOR_EXCEPT(true);
     }
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
     // See if the basis system object supports basis permutations
@@ -295,7 +295,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
         break;
       }
       default:
-        TEST_FOR_EXCEPT(true);	// only a local error
+        TEUCHOS_TEST_FOR_EXCEPT(true);	// only a local error
     }
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
     // Create the actual DecompositionSystem object being used
@@ -352,7 +352,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 
   if( tailored_approach ) {
     // NLPDirect
-    TEST_FOR_EXCEPT( !(  nlp_fod->con_undecomp().size() == 0  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  nlp_fod->con_undecomp().size() == 0  ) );
     // ToDo: Add the necessary iteration quantities when con_undecomp().size() > 0 is supported!
   }
   else {
@@ -630,7 +630,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
           = Teuchos::rcp(new EvalNewPointTailoredApproachOrthogonal_Step(deriv_tester,*bounds_tester) );
         break;
       default:
-        TEST_FOR_EXCEPT(true);	// only a local error
+        TEUCHOS_TEST_FOR_EXCEPT(true);	// only a local error
     }
     if(options_.get()) {
       EvalNewPointTailoredApproach_StepSetOptions
@@ -692,7 +692,7 @@ void DecompositionSystemStateStepBuilderStd::readin_options(
   using		ofsp::StringToIntMap;
   using		ofsp::StringToBool;
 
-  TEST_FOR_EXCEPT( !( ov ) );	// only a local class error
+  TEUCHOS_TEST_FOR_EXCEPT( !( ov ) );	// only a local class error
 
   const std::string opt_grp_name = "DecompositionSystemStateStepBuilderStd";
   const OptionsFromStream::options_group_t optgrp = options.options_group( opt_grp_name );
@@ -724,7 +724,7 @@ void DecompositionSystemStateStepBuilderStd::readin_options(
           } else if( opt_val == "AUTO" ) {
             ov->null_space_matrix_type_ = NULL_SPACE_MATRIX_AUTO;
           } else {
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::invalid_argument
               ,"NLPAlgoConfigMamaJama::readin_options(...) : "
               "Error, incorrect value for \"null_space_matrix\" "
@@ -743,7 +743,7 @@ void DecompositionSystemStateStepBuilderStd::readin_options(
           else if( opt_val == "AUTO" )
             ov->range_space_matrix_type_ = RANGE_SPACE_MATRIX_AUTO;
           else
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::invalid_argument
               ,"NLPAlgoConfigMamaJama::readin_options(...) : "
               "Error, incorrect value for \"range_space_matrix\" "
@@ -755,7 +755,7 @@ void DecompositionSystemStateStepBuilderStd::readin_options(
           ov->max_dof_quasi_newton_dense_ = std::atoi( ofsp::option_value(itr).c_str() );
           break;
         default:
-          TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
+          TEUCHOS_TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
       }
     }
   }
@@ -774,7 +774,7 @@ void DecompositionSystemStateStepBuilderStd::set_default_options(
   )
 {
 
-  TEST_FOR_EXCEPT( !( cov ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( cov ) );
 
   if(trase_out)
     *trase_out

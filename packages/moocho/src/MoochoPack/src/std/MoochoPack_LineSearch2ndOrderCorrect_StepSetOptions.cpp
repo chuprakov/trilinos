@@ -128,7 +128,7 @@ void LineSearch2ndOrderCorrect_StepSetOptions::setOption(
       target().max_newton_iter(::abs(::atoi(option_value.c_str())));
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

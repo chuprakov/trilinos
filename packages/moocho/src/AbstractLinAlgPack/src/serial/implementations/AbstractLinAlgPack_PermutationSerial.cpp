@@ -33,7 +33,7 @@
 #include "DenseLinAlgPack_IVector.hpp"
 #include "DenseLinAlgPack_PermVecMat.hpp"
 #include "DenseLinAlgPack_PermOut.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -68,11 +68,11 @@ void PermutationSerial::initialize(
   ,bool                     check_inv_perm
   )
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     perm.get() == NULL && inv_perm.get() == NULL, std::invalid_argument
     ,"PermutationSerial::initialize(...) : Error!" );
   if( perm.get() != NULL && inv_perm.get() != NULL ) {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       perm->size() != inv_perm->size(), std::invalid_argument
       ,"PermutationSerial::initialize(...) : Error!" );
     if(check_inv_perm) {
@@ -137,19 +137,19 @@ void PermutationSerial::permute(
   ) const
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     y == NULL, std::invalid_argument
     ,"PermutationSerial::permute(P_trans,x,y) : Error!" );
 #endif
 #ifdef ABSTRACTLINALGPACK_ASSERT_COMPATIBILITY
   bool is_compatible;
   is_compatible = space_.is_compatible(x.space());
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !is_compatible, std::invalid_argument
     ,"PermutationSerial::permute(P_trans,x,y) : Error, "
     "this->space().is_compatible(x.space()) returned false!" );
   is_compatible = space_.is_compatible(y->space());
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !is_compatible, std::invalid_argument
     ,"PermutationSerial::permute(P_trans,x,y) : Error, "
     "this->space().is_compatible(y->space()) returned false!" );
@@ -187,7 +187,7 @@ void PermutationSerial::permute(
   ) const
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     y == NULL, std::invalid_argument
     ,"PermutationSerial::permute(P_trans,y) : Error!" );
 #endif

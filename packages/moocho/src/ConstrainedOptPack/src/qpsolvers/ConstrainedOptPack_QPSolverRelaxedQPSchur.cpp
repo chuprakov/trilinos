@@ -167,9 +167,9 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
   const size_type
     n_R = n_R_tmp,
     n_X = nd + 1 - n_R; // fixed variables in d and eta
-  TEST_FOR_EXCEPT( !(  i_x_free.size() == 0 || i_x_free.size()  >= n_R  ) );  // Todo: Make an exception!
-  TEST_FOR_EXCEPT( !(  i_x_fixed.size() >= n_X  ) );  // Todo: Make an exception!
-  TEST_FOR_EXCEPT( !(  bnd_fixed.size() >= n_X  ) ); // Todo: Make and exception!
+  TEUCHOS_TEST_FOR_EXCEPT( !(  i_x_free.size() == 0 || i_x_free.size()  >= n_R  ) );  // Todo: Make an exception!
+  TEUCHOS_TEST_FOR_EXCEPT( !(  i_x_fixed.size() >= n_X  ) );  // Todo: Make an exception!
+  TEUCHOS_TEST_FOR_EXCEPT( !(  bnd_fixed.size() >= n_X  ) ); // Todo: Make and exception!
 
   // //////////////////////////////
   // Initialize constraints object
@@ -185,7 +185,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
     // Create a full lookup array to determine if a constraint
     // is decomposed or not.  We need this to fill the array
     // j_f_undecomp[] (which is sorted).
-    TEST_FOR_EXCEPT(true); // ToDo: Implement this!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement this!
   }
 
   // initialize constraints object
@@ -392,7 +392,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
           qpschur_olevel = QPSchur::OUTPUT_ITER_QUANTITIES;
           break;
         default:
-          TEST_FOR_EXCEPT(true);
+          TEUCHOS_TEST_FOR_EXCEPT(true);
       }
       break;
     }
@@ -415,7 +415,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
       qpschur_olevel = QPSchur::OUTPUT_ITER_QUANTITIES;
       break;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
 
   //
@@ -563,7 +563,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
       solution_type = QPSolverStats::SUBOPTIMAL_POINT;
       break;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
   qp_stats_.set_stats(
     solution_type,convexity,qp_iter,num_adds,num_drops

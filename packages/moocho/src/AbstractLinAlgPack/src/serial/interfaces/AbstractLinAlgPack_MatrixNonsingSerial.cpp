@@ -152,7 +152,7 @@ void MatrixNonsingSerial::M_StMtInvM(
   ,BLAS_Cpp::Transp trans_rhs2
   ) const
 {
-  TEST_FOR_EXCEPT(true);	// ToDo: Implement this!
+  TEUCHOS_TEST_FOR_EXCEPT(true);	// ToDo: Implement this!
 }
 
 void MatrixNonsingSerial::M_StMtInvM(
@@ -161,7 +161,7 @@ void MatrixNonsingSerial::M_StMtInvM(
   ,BLAS_Cpp::Transp trans_rhs2
   ) const
 {
-  TEST_FOR_EXCEPT(true);	// ToDo: Implement this!
+  TEUCHOS_TEST_FOR_EXCEPT(true);	// ToDo: Implement this!
 }
 
 void MatrixNonsingSerial::M_StInvMtM(
@@ -198,7 +198,7 @@ void MatrixNonsingSerial::M_StMtInvM(
   ,BLAS_Cpp::Transp trans_rhs2
   ) const
 {
-  TEST_FOR_EXCEPT(true);	// ToDo: Implement this!
+  TEUCHOS_TEST_FOR_EXCEPT(true);	// ToDo: Implement this!
 }
 
 void MatrixNonsingSerial::M_StMtInvM(
@@ -207,7 +207,7 @@ void MatrixNonsingSerial::M_StMtInvM(
   ,BLAS_Cpp::Transp trans_rhs2
   ) const
 {
-  TEST_FOR_EXCEPT(true);	// ToDo: Implement this!
+  TEUCHOS_TEST_FOR_EXCEPT(true);	// ToDo: Implement this!
 }
 
 // Overridden from MatrixNonsing

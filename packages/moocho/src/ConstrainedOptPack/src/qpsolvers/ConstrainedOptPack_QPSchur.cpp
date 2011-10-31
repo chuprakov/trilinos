@@ -64,7 +64,7 @@
 #include "DenseLinAlgPack_DVectorOut.hpp"
 #include "DenseLinAlgPack_DMatrixOut.hpp"
 #include "Teuchos_Workspace.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace LinAlgOpPack {
 using AbstractLinAlgPack::Vp_StV;
@@ -97,7 +97,7 @@ const char* bnd_str( ConstrainedOptPack::EBounds bnd )
     case ConstrainedOptPack::EQUALITY:
       return "EQUALITY";
   }
-  TEST_FOR_EXCEPT(true);	// should never be executed
+  TEUCHOS_TEST_FOR_EXCEPT(true);	// should never be executed
   return 0;
 }
 
@@ -135,7 +135,7 @@ void deincrement_indices(
 {
   typedef DenseLinAlgPack::size_type				size_type;
   typedef std::vector<DenseLinAlgPack::size_type>	vec_t;
-  TEST_FOR_EXCEPT( !(  len_vector <= indice_vector->size()  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  len_vector <= indice_vector->size()  ) );
   for( vec_t::iterator itr = indice_vector->begin(); itr != indice_vector->begin() + len_vector; ++itr ) {
     if( *itr > k_remove )
       --(*itr);
@@ -154,7 +154,7 @@ void insert_pair_sorted(
   )
 {
   typedef std::vector<DenseLinAlgPack::size_type> rc_t;
-  TEST_FOR_EXCEPT( !(  r->size() >= len_vector && c->size() >= len_vector  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  r->size() >= len_vector && c->size() >= len_vector  ) );
   // find the insertion point in r[]
   rc_t::iterator
     itr = std::lower_bound( r->begin(), r->begin() + len_vector-1, r_v );
@@ -696,7 +696,7 @@ void calc_obj_grad_norm_inf(
   ,DenseLinAlgPack::value_type                                *qp_grad_norm_inf
   )
 {
-  TEST_FOR_EXCEPT(true); // ToDo: Implement this?
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement this?
 }
 
 }	// end namespace
@@ -784,7 +784,7 @@ void QPSchur::U_hat_t::Mp_StM(DMatrixSlice* C, value_type a
       Mp_StMtP( &C2, a, *A(), trans, P_plus_hat(), no_trans );
   }
   else {
-    TEST_FOR_EXCEPT(true);	// Implement this!
+    TEUCHOS_TEST_FOR_EXCEPT(true);	// Implement this!
   }
 }
 */
@@ -890,7 +890,7 @@ void QPSchur::U_hat_t::Vp_StMtV(
       Vp_StPtMtV( y, a, P_XF_hat(), trans, *A(), no_trans, x2 );
   }
   else {
-    TEST_FOR_EXCEPT(true);	// Invalid value for M_trans
+    TEUCHOS_TEST_FOR_EXCEPT(true);	// Invalid value for M_trans
   }
 }
 
@@ -999,7 +999,7 @@ void QPSchur::U_hat_t::Vp_StMtV(
       Vp_StPtMtV( y, a, P_XF_hat(), trans, *A(), no_trans, x2 );
   }
   else {
-    TEST_FOR_EXCEPT(true);	// Invalid value for M_trans
+    TEUCHOS_TEST_FOR_EXCEPT(true);	// Invalid value for M_trans
   }
 }
 
@@ -1105,11 +1105,11 @@ void QPSchur::ActiveSet::initialize(
           }
           else if ( x_init_bnd == EQUALITY ) {
             // ToDo: Throw exception
-            TEST_FOR_EXCEPT(true);
+            TEUCHOS_TEST_FOR_EXCEPT(true);
           }
           else if( x_init_bnd == bnd ) {
             // ToDo: Throw exception
-            TEST_FOR_EXCEPT(true);
+            TEUCHOS_TEST_FOR_EXCEPT(true);
           }
           else {
             // Initially fixed variable being fixed to another bound
@@ -1121,7 +1121,7 @@ void QPSchur::ActiveSet::initialize(
           // Adding a general inequality (or equality) constraint
           if( ij > n + m_breve ) {
             // ToDo: Throw exception
-            TEST_FOR_EXCEPT(true);
+            TEUCHOS_TEST_FOR_EXCEPT(true);
           }		
           ++q_plus_hat;
         }
@@ -1198,7 +1198,7 @@ void QPSchur::ActiveSet::initialize(
         }
       }
     }
-    TEST_FOR_EXCEPT( !( s == q_hat ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !( s == q_hat ) );
   }
 
   // Setup P_XF_hat_ and P_plus_hat_
@@ -1221,7 +1221,7 @@ void QPSchur::ActiveSet::initialize(
       EBounds x_init_ij;
       if( ij < 0 ) {
         const size_type i = -ij;
-        TEST_FOR_EXCEPT( !(  i <= n  ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !(  i <= n  ) );
         // [P_XF_hat](:,s) = e(i)
         P_XF_hat_row_[k_XF_hat] = i;
         P_XF_hat_col_[k_XF_hat] = s;
@@ -1229,15 +1229,15 @@ void QPSchur::ActiveSet::initialize(
       }
       else if( !(ij <= n && (x_init_ij = x_init(ij)) != FREE ) ) {
         const size_type j = ij;
-        TEST_FOR_EXCEPT( !(  0 < j && j <= n + m_breve  ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !(  0 < j && j <= n + m_breve  ) );
         // [P_plus_hat](:,s) = e(j)
         P_plus_hat_row_[k_plus_hat] = j;
         P_plus_hat_col_[k_plus_hat] = s;
         ++k_plus_hat;
       }
     }
-    TEST_FOR_EXCEPT( !(  k_XF_hat == q_F_hat  ) );
-    TEST_FOR_EXCEPT( !(  k_plus_hat == q_plus_hat  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  k_XF_hat == q_F_hat  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  k_plus_hat == q_plus_hat  ) );
   }
   P_XF_hat_.initialize_and_sort(
     n,q_hat,q_F_hat,0,0,GPMSTP::BY_ROW
@@ -1290,7 +1290,7 @@ void QPSchur::ActiveSet::initialize(
         ++k_XD_hat;
       }
     }
-    TEST_FOR_EXCEPT( !(  k_XD_hat == q_D_hat  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  k_XD_hat == q_D_hat  ) );
   }
   Q_XD_hat_.initialize(
       n,q_D_hat,q_D_hat,0,0,GPMSTP::BY_ROW	// Should already be sorted by row!
@@ -1304,7 +1304,7 @@ void QPSchur::ActiveSet::initialize(
   if(q_D_hat) {
     for( size_type k = 0; k < q_D_hat; ++k ) {
       l_fxfx_[k] = l_x_X_map(Q_XD_hat_row_[k]);
-      TEST_FOR_EXCEPT( !(  l_fxfx_[k] != 0  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  l_fxfx_[k] != 0  ) );
     }
   }
 
@@ -1458,7 +1458,7 @@ void QPSchur::ActiveSet::initialize(
 void QPSchur::ActiveSet::refactorize_schur_comp()
 {
   // ToDo: Finish Me
-  TEST_FOR_EXCEPT(true);
+  TEUCHOS_TEST_FOR_EXCEPT(true);
 }
 
 bool QPSchur::ActiveSet::add_constraint(
@@ -1497,8 +1497,8 @@ bool QPSchur::ActiveSet::add_constraint(
     const size_type q_hat = this->q_hat();
     const size_type sd = s_map(-int(ja));
     const size_type la = qp_->l_x_X_map()(ja);
-    TEST_FOR_EXCEPT( !( sd ) );
-    TEST_FOR_EXCEPT( !( la ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !( sd ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !( la ) );
     wrote_output = remove_augmented_element(
       sd,force_refactorization
       ,MatrixSymAddDelUpdateable::EIGEN_VAL_POS
@@ -1506,7 +1506,7 @@ bool QPSchur::ActiveSet::add_constraint(
     // We must remove (ja,sd) from P_XF_hat
     P_row_t::iterator
       itr = std::lower_bound( P_XF_hat_row_.begin(), P_XF_hat_row_.begin()+q_F_hat_, ja );
-    TEST_FOR_EXCEPT( !(  itr != P_XF_hat_row_.end()  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  itr != P_XF_hat_row_.end()  ) );
     const size_type p = itr - P_XF_hat_row_.begin();
     std::copy( P_XF_hat_row_.begin() + p + 1, P_XF_hat_row_.begin()+q_F_hat_,
       P_XF_hat_row_.begin() + p );
@@ -1561,7 +1561,7 @@ bool QPSchur::ActiveSet::add_constraint(
       //
       const size_type
         la = qp_->Q_R().lookup_col_j(ja);
-      TEST_FOR_EXCEPT( !(  la  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  la  ) );
       const eta_t u_p = eta_t(la,n_R_+m_);
       // r = inv(Ko)*u_p
       DVector r;	// ToDo: Make this sparse!
@@ -1589,9 +1589,9 @@ bool QPSchur::ActiveSet::add_constraint(
       // v_p = e(sd) <: R^(q_hat), where sd = s_map(-ja)
       //
       sd = s_map(-int(ja));
-      TEST_FOR_EXCEPT( !( sd ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !( sd ) );
       const size_type la = qp_->l_x_X_map()(ja);
-      TEST_FOR_EXCEPT( !( la ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !( la ) );
       // t_hat = e(sd)
       t_hat = 0.0;
       t_hat(sd) = 1.0;
@@ -1690,7 +1690,7 @@ bool QPSchur::ActiveSet::add_constraint(
       insert_pair_sorted(ja,q_hat_new,q_plus_hat_,&P_plus_hat_row_,&P_plus_hat_col_);
     }
     else {
-      TEST_FOR_EXCEPT( !( sd ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !( sd ) );
       // Insert (sd,q_hat_new) into P_FC_hat, sorted by row)
       insert_pair_sorted(sd,q_hat_new,q_C_hat_,&P_FC_hat_row_,&P_FC_hat_col_);
     }
@@ -1736,14 +1736,14 @@ bool QPSchur::ActiveSet::drop_constraint(
       q_D_hat    = this->q_D_hat();
     // Get indexes
     const size_type id = -jd;
-    TEST_FOR_EXCEPT( !(  1 <= id && id <= n_  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  1 <= id && id <= n_  ) );
     const size_type ld = qp_->l_x_X_map()(-jd);
-    TEST_FOR_EXCEPT( !(  1 <= ld && ld <= n_ - n_R_  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  1 <= ld && ld <= n_ - n_R_  ) );
     size_type kd; // Find kd (this is unsorted)
     {for( kd = 1; kd <= q_D_hat; ++kd ) {
       if( l_fxfx_[kd-1] == ld ) break;
     }}
-    TEST_FOR_EXCEPT( !(  kd <= q_D_hat  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  kd <= q_D_hat  ) );
     // Get references
     const MatrixSymOp
       &G           = qp_->G();
@@ -1842,7 +1842,7 @@ bool QPSchur::ActiveSet::drop_constraint(
     // remove Q_XD_hat(id,ld) from Q_XD_hat(...)
     P_row_t::iterator
       itr = std::lower_bound( Q_XD_hat_row_.begin(), Q_XD_hat_row_.begin()+q_D_hat, id );
-    TEST_FOR_EXCEPT( !(  itr != Q_XD_hat_row_.end()  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  itr != Q_XD_hat_row_.end()  ) );
     const size_type p = itr - Q_XD_hat_row_.begin();
     std::copy( Q_XD_hat_row_.begin() + p + 1, Q_XD_hat_row_.begin()+q_D_hat,
       Q_XD_hat_row_.begin() + p );
@@ -1877,7 +1877,7 @@ bool QPSchur::ActiveSet::drop_constraint(
     //
     const size_type q_hat = this->q_hat();
     const size_type sd = s_map(jd);
-    TEST_FOR_EXCEPT( !( sd ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !( sd ) );
     wrote_output = remove_augmented_element(
       sd,force_refactorization
       ,MatrixSymAddDelUpdateable::EIGEN_VAL_NEG
@@ -1887,11 +1887,11 @@ bool QPSchur::ActiveSet::drop_constraint(
       // This must be an intially fixed variable, currently fixed at a different bound.
       // We must remove this element from P_FC_hat(...)
       const size_type sd1 = s_map(-jd); // This is the position in the schur complement where first freed
-      TEST_FOR_EXCEPT( !( sd1 ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !( sd1 ) );
       // Remove P_FC_hat(sd1,sd) from P_FC_hat(...)
       P_row_t::iterator
         itr = std::lower_bound( P_FC_hat_row_.begin(), P_FC_hat_row_.begin()+q_C_hat_, sd1 );
-      TEST_FOR_EXCEPT( !(  itr != P_FC_hat_row_.end()  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  itr != P_FC_hat_row_.end()  ) );
       const size_type p = itr - P_FC_hat_row_.begin();
       std::copy( P_FC_hat_row_.begin() + p + 1, P_FC_hat_row_.begin()+q_C_hat_,
         P_FC_hat_row_.begin() + p );
@@ -1903,7 +1903,7 @@ bool QPSchur::ActiveSet::drop_constraint(
       // We must remove P_plus_hat(jd,sd) from P_plus_hat(...)
       P_row_t::iterator
         itr = std::lower_bound( P_plus_hat_row_.begin(), P_plus_hat_row_.begin()+q_plus_hat_, jd );
-      TEST_FOR_EXCEPT( !(  itr != P_plus_hat_row_.end()  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  itr != P_plus_hat_row_.end()  ) );
       const size_type p = itr - P_plus_hat_row_.begin();
       std::copy( P_plus_hat_row_.begin() + p + 1, P_plus_hat_row_.begin()+q_plus_hat_,
         P_plus_hat_row_.begin() + p );
@@ -1983,7 +1983,7 @@ size_type QPSchur::ActiveSet::q_D_hat() const
 
 int QPSchur::ActiveSet::ij_map( size_type s ) const
 {
-  TEST_FOR_EXCEPT( !(  1 <= s && s <= this->q_hat()  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  1 <= s && s <= this->q_hat()  ) );
   return ij_map_[s-1];
 }
 
@@ -1998,19 +1998,19 @@ size_type QPSchur::ActiveSet::s_map( int ij ) const
 
 value_type QPSchur::ActiveSet::constr_norm( size_type s ) const
 {
-  TEST_FOR_EXCEPT( !(  1 <= s && s <= this->q_hat()  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  1 <= s && s <= this->q_hat()  ) );
   return constr_norm_(s);
 }
 
 EBounds QPSchur::ActiveSet::bnd( size_type s ) const
 {
-  TEST_FOR_EXCEPT( !(  1 <= s && s <= this->q_hat()  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  1 <= s && s <= this->q_hat()  ) );
   return bnds_[s-1];
 }
 
 size_type QPSchur::ActiveSet::l_fxfx( size_type k ) const
 {
-  TEST_FOR_EXCEPT( !(  1 <= k && k <= this->q_D_hat()  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  1 <= k && k <= this->q_D_hat()  ) );
   return l_fxfx_[k-1];
 }
 
@@ -2127,7 +2127,7 @@ void QPSchur::ActiveSet::assert_initialized() const
 
 void QPSchur::ActiveSet::assert_s( size_type s) const
 {
-  TEST_FOR_EXCEPT( !(  s <= q_hat()  ) );	// ToDo: Throw an exception
+  TEUCHOS_TEST_FOR_EXCEPT( !(  s <= q_hat()  ) );	// ToDo: Throw an exception
 }
 
 void QPSchur::ActiveSet::reinitialize_matrices(bool test)
@@ -2739,7 +2739,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
       const int       i    = itr->row_i();
       value_type      viol = 0.0;
       const EBounds   bnd  = x_init(i);
-      TEST_FOR_EXCEPT( !(  bnd != FREE  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  bnd != FREE  ) );
       const int dual_feas_status
         = correct_dual_infeas(
           i,bnd,0.0,1.0,dual_infeas_tol(),DEGENERATE_MULT
@@ -2788,7 +2788,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
           << "\n*** The current point is suboptimal but we will return it anyway!\n";
         break;
       default:
-        TEST_FOR_EXCEPT(true);
+        TEUCHOS_TEST_FOR_EXCEPT(true);
     }
     *out	<< "\nNumber of QP iteratons                                = " << *iter;
     *out	<< "\nNumber of iterative refinement residual calculations  = " << iter_refine_num_resid;
@@ -3011,7 +3011,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
                 << "\n||mu_D_hat_calc-mu_D_hat||inf/(1.0+||mu_D_hat_calc||inf) = "
                 << mu_D_hat_err << std::endl;
             }
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               mu_D_hat_err >= error_tol(), TestFailed
               ,"QPSchur::qp_algo(...) : Error, "
               "||mu_D_hat_calc-mu_D_hat||inf/(1.0+||mu_D_hat_calc||inf) = "
@@ -3152,7 +3152,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
               }
             }
             else {
-              TEST_FOR_EXCEPT(true); // Should not happen!
+              TEUCHOS_TEST_FOR_EXCEPT(true); // Should not happen!
             }
             if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
               *out
@@ -3299,7 +3299,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
               set_x( *act_set, *v, x );
               break;
             default:
-              TEST_FOR_EXCEPT(true); // Local programming error only!
+              TEUCHOS_TEST_FOR_EXCEPT(true); // Local programming error only!
             }
           }
           if( iter_refine_at_solution() || using_iter_refinement ) {
@@ -3479,8 +3479,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
             const size_type
               sa = act_set->s_map(-int(ja)),
               la = act_set->qp().l_x_X_map()(ja);
-            TEST_FOR_EXCEPT( !( sa ) );
-            TEST_FOR_EXCEPT( !( la ) );
+            TEUCHOS_TEST_FOR_EXCEPT( !( sa ) );
+            TEUCHOS_TEST_FOR_EXCEPT( !( la ) );
             // v_a = e(sa) <: R^q_hat
             Workspace<value_type> v_a_ws(wss,act_set->q_hat());
             DVectorSlice v_a(&v_a_ws[0],v_a_ws.size());
@@ -3551,7 +3551,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
               // 
               const size_type
                 la = act_set->qp().Q_R().lookup_col_j(ja);
-              TEST_FOR_EXCEPT( !(  la  ) );
+              TEUCHOS_TEST_FOR_EXCEPT( !(  la  ) );
               const EtaVector u_a = EtaVector(la,n_R+m);
               const value_type d_a = b_a;
               DVector t1;
@@ -4474,7 +4474,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
         }
       }
       default:
-        TEST_FOR_EXCEPT(true);	// only a local programming error
+        TEUCHOS_TEST_FOR_EXCEPT(true);	// only a local programming error
     }
   }
 

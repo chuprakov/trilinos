@@ -35,7 +35,7 @@
 #include "RTOp.h"
 #include "RTOpPack_OldTypes.hpp"
 #include "DenseLinAlgPack_Types.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_RCP.hpp"
 
 namespace AbstractLinAlgPack {

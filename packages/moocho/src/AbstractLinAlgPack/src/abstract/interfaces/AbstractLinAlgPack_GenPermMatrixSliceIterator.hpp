@@ -107,8 +107,8 @@ public:
   /** \brief . */
   row_col_value_type<T>& operator=( const external_row_col_value_type<T>& val )
   {
-    TEST_FOR_EXCEPT( !(  row_off_ == val.row_off_  ) );
-    TEST_FOR_EXCEPT( !(  col_off_ == val.col_off_  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  row_off_ == val.row_off_  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  col_off_ == val.col_off_  ) );
     *row_i_ = val.row_i_;
     *col_j_ = val.col_j_;
     return *this;
@@ -296,7 +296,7 @@ inline
 void row_col_value_type<T>::assert_in_range() const
 {
   // ToDo: Finish this!
-  TEST_FOR_EXCEPT( !(  0 <= k_ && k_ < nz_  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  0 <= k_ && k_ < nz_  ) );
 }
 
 /// Assert not null

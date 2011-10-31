@@ -31,7 +31,7 @@
 #include "NLPInterfacePack_NLPWBCounterExample.hpp"
 #include "DenseLinAlgPack_PermVecMat.hpp"
 #include "DenseLinAlgPack_LinAlgOpPack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace NLPInterfacePack {
 
@@ -45,10 +45,10 @@ NLPWBCounterExample::NLPWBCounterExample(
 {
 #ifdef TEUCHOS_DEBUG	
   const char msg_err_head[] = "NLPWBCounterExample::NLPWBCounterExample(...) : Error";
-  TEST_FOR_EXCEPTION( !(b >= 0),        std::invalid_argument, msg_err_head<<"!" );
-  TEST_FOR_EXCEPTION( !(a + b*b != 0),  std::invalid_argument, msg_err_head<<"!" );
-  TEST_FOR_EXCEPTION( !(xinit[1] >= 0), std::invalid_argument, msg_err_head<<"!" );
-  TEST_FOR_EXCEPTION( !(xinit[2] >= 0), std::invalid_argument, msg_err_head<<"!" );
+  TEUCHOS_TEST_FOR_EXCEPTION( !(b >= 0),        std::invalid_argument, msg_err_head<<"!" );
+  TEUCHOS_TEST_FOR_EXCEPTION( !(a + b*b != 0),  std::invalid_argument, msg_err_head<<"!" );
+  TEUCHOS_TEST_FOR_EXCEPTION( !(xinit[1] >= 0), std::invalid_argument, msg_err_head<<"!" );
+  TEUCHOS_TEST_FOR_EXCEPTION( !(xinit[2] >= 0), std::invalid_argument, msg_err_head<<"!" );
 #endif
   // Set the inital guess and the variable bounds
   xinit_orig_.resize(n_orig_); xl_orig_.resize(n_orig_); xu_orig_.resize(n_orig_);
@@ -121,13 +121,13 @@ const DVectorSlice NLPWBCounterExample::imp_xu_orig() const
 
 const DVectorSlice NLPWBCounterExample::imp_hl_orig() const
 {
-  TEST_FOR_EXCEPT(true);  // Should never be called
+  TEUCHOS_TEST_FOR_EXCEPT(true);  // Should never be called
    return xinit_orig_();
 }
 
 const DVectorSlice NLPWBCounterExample::imp_hu_orig() const
 {
-  TEST_FOR_EXCEPT(true);  // Should never be called
+  TEUCHOS_TEST_FOR_EXCEPT(true);  // Should never be called
    return xinit_orig_();
 }
 
@@ -150,7 +150,7 @@ void NLPWBCounterExample::imp_calc_c_orig(
 void NLPWBCounterExample::imp_calc_h_orig(
   const DVectorSlice &x_full, bool newx, const ZeroOrderInfoSerial &zero_order_info ) const
 {
-  TEST_FOR_EXCEPT(true); // Should never be called
+  TEUCHOS_TEST_FOR_EXCEPT(true); // Should never be called
 }
 
 void NLPWBCounterExample::imp_calc_Gf_orig(
@@ -169,10 +169,10 @@ bool NLPWBCounterExample::imp_get_next_basis(
   )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPT( !( var_perm_full) );
-  TEST_FOR_EXCEPT( !( equ_perm_full ) );
-  TEST_FOR_EXCEPT( !( rank_full ) );
-  TEST_FOR_EXCEPT( !( rank  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( var_perm_full) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( equ_perm_full ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( rank_full ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !( rank  ) );
 #endif
   if(basis_selection_was_given_) return false; // Already gave this basis selection
   // Select x(2) ans x(3) as the basic variables (sorted!)
@@ -244,7 +244,7 @@ void NLPWBCounterExample::imp_calc_Gc_orig(
 void NLPWBCounterExample::imp_calc_Gh_orig(
   const DVectorSlice& x_full, bool newx, const FirstOrderExplInfo& first_order_expl_info ) const
 {
-  TEST_FOR_EXCEPT(true); // Should never be called
+  TEUCHOS_TEST_FOR_EXCEPT(true); // Should never be called
 }
 
 }	// end namespace NLPInterfacePack

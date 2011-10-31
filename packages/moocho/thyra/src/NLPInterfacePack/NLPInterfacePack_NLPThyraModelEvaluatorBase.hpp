@@ -34,7 +34,7 @@
 #include "NLPInterfacePack_NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "Thyra_ModelEvaluator.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace AbstractLinAlgPack { class VectorSpaceThyra; }

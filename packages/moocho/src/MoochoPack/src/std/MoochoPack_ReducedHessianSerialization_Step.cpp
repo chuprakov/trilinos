@@ -89,7 +89,7 @@ bool ReducedHessianSerialization_Step::do_step(
       MatrixSymOp	&rHL_k = rHL_iq.set_k(0);
       Serializable &rHL_serializable = dyn_cast<Serializable>(rHL_k);
       std::ifstream reduced_hessian_input_file(reduced_hessian_input_file_name().c_str());
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         !reduced_hessian_input_file, std::logic_error
         ,"ReducedHessianSerialization_Step::do_step(...): Error, the file \""<<reduced_hessian_input_file_name()<<"\""
         " could not be opened or contains no input!"
@@ -112,7 +112,7 @@ bool ReducedHessianSerialization_Step::do_step(
       // Validate the space
       const MatrixOp &Z_k = s.Z().get_k(0);
       const VectorSpace &null_space = Z_k.space_rows();
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         !null_space.is_compatible(rHL_k.space_cols()) || !null_space.is_compatible(rHL_k.space_rows())
         ,std::runtime_error
         ,"ReducedHessianSerialization_Step::do_step(...): Error, the read-in reduced Hessian of dimension "
@@ -153,7 +153,7 @@ void ReducedHessianSerialization_Step::finalize_step(
     const MatrixSymOp	&rHL_k = rHL_iq.get_k(k_last_offset);
     const Serializable &rHL_serializable = dyn_cast<const Serializable>(rHL_k);
     std::ofstream reduced_hessian_output_file(reduced_hessian_output_file_name().c_str());
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       !reduced_hessian_output_file, std::logic_error
       ,"ReducedHessianSerialization_Step::finalize_step(...): Error, the file \""<<reduced_hessian_output_file_name()<<"\""
       " could not be opened!"

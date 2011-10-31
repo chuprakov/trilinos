@@ -7,7 +7,7 @@
 #include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "AbstractLinAlgPack_VectorMutable.hpp"
 #include "Teuchos_Workspace.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 void AbstractLinAlgPack::apply_op_validate_input(
   const char func_name[]
@@ -22,22 +22,22 @@ void AbstractLinAlgPack::apply_op_validate_input(
     &space = (num_vecs ? vecs[0]->space() : targ_vecs[0]->space() );
   const index_type
     dim = space.dim();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     global_offset_in < 0, std::logic_error
     ,func_name << " : Error!  global_offset_in = "
     <<global_offset_in<<" is not valid" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     first_ele_in > dim, std::logic_error
     ,func_name << " : Error!  first_ele_in = "
     <<first_ele_in<<" is not compatible with space.dim() = " << dim );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     sub_dim_in < 0 || (sub_dim_in > 0 && sub_dim_in > dim-(first_ele_in-1)), std::logic_error
     ,func_name << " : Error!  first_ele_in = "
     <<first_ele_in<<" and sub_dim_in = "<<sub_dim_in
     <<" is not compatible with space.dim() = " << dim );
   {for(int k = 0; k < num_vecs; ++k) {
     const bool is_compatible = space.is_compatible(vecs[k]->space());
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       !is_compatible, VectorSpace::IncompatibleVectorSpaces
       ,func_name << " : Error!  vecs["<<k<<"]->space() of type \'"
       << typeName(vecs[k]->space()) << "\' "
@@ -47,7 +47,7 @@ void AbstractLinAlgPack::apply_op_validate_input(
   }}
   {for(int k = 0; k < num_targ_vecs; ++k) {
     const bool is_compatible = space.is_compatible(targ_vecs[k]->space());
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       !is_compatible, VectorSpace::IncompatibleVectorSpaces
       ,func_name << " : Error!  targ_vecs["<<k<<"]->space() of type \'"
       << typeName(targ_vecs[k]->space()) << "\' "

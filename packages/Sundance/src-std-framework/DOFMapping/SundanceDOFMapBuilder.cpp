@@ -128,7 +128,7 @@ RCP<DOFMapBase> DOFMapBuilder::makeMap(const Mesh& mesh,
   }
   else if (hasCellBasis(basis) && hasCommonDomain(filters))
   {
-    TEST_FOR_EXCEPTION(filters[0].size() != 1, std::runtime_error,
+    TEUCHOS_TEST_FOR_EXCEPTION(filters[0].size() != 1, std::runtime_error,
       "only a single domain expected in construction of an element "
       "DOF map");
     rtn = rcp(new PartialElementDOFMap(mesh, *filters[0].begin(), basis.size(), verb_));
@@ -165,6 +165,15 @@ RCP<DOFMapBase> DOFMapBuilder::makeMap(const Mesh& mesh,
 	      = DOFMapBuilder::funcDomains(mesh, fmap, inputChildren);
     // the last option inhomogeneous mixed map, which supports hanging nodes
 	rtn = rcp(new InhomogeneousDOFMapHN(mesh, basis , disjoint, verb_));
+  }
+
+  if (verb_ > 0)
+  {
+    Out::os() << "done building DOF map" << std::endl;
+    if (verb_ > 1) Out::os() << "num DOFs" << rtn->numDOFs() << std::endl;
+    if (verb_ > 1) Out::os() << "num local DOFs" 
+                             << rtn->numLocalDOFs() << std::endl;
+    if (verb_ > 4) rtn->print(Out::os());
   }
   return rtn;
 }
@@ -493,7 +502,7 @@ bool DOFMapBuilder::allFuncsAreOmnipresent(const Mesh& mesh,
     if (!isWholeDomain(mesh, maxFilterDim, *iter)) rtn = 1;
   }
 
-  // make syncronization with the other processors
+  // make synchronization with the other processors
   int omniPresent = rtn;
   mesh.comm().allReduce((void*) &omniPresent, (void*) &rtn, 1,
     MPIComm::INT, MPIComm::SUM);
@@ -534,9 +543,12 @@ bool DOFMapBuilder::isWholeDomain(const Mesh& mesh,
     }
     if (cf.dimension(mesh) != maxFilterDim) continue;
     CellSet cells = cf.getCells(mesh);
+    SUNDANCE_MSG2(verb_, "found " << cells.numCells() << " in CF " << cf);
     remainder = remainder.setDifference(cells);
     if (remainder.begin() == remainder.end()) return true;
   }
+
+  SUNDANCE_MSG2(verb_, "num remaining cells: " << remainder.numCells());
 
   return false;
 }
@@ -553,7 +565,7 @@ CellFilter DOFMapBuilder::getMaxCellFilter(const Array<Set<CellFilter> >& filter
     if (0 != dynamic_cast<const MaximalCellFilter*>(cf.ptr().get()))
       return cf;
   }
-//  TEST_FOR_EXCEPT(true);
+//  TEUCHOS_TEST_FOR_EXCEPT(true);
   return new MaximalCellFilter();
 }
 
@@ -576,7 +588,7 @@ Array<Array<Set<CellFilter> > > DOFMapBuilder::testCellFilters() const
       {
         RCP<CellFilterBase> cfb 
           = rcp_dynamic_cast<CellFilterBase>(j->ptr());
-        TEST_FOR_EXCEPT(cfb.get()==0);
+        TEUCHOS_TEST_FOR_EXCEPT(cfb.get()==0);
         CellFilter cf = j->ptr();
         s.put(cf);
       }
@@ -605,7 +617,7 @@ Array<Array<Set<CellFilter> > > DOFMapBuilder::unkCellFilters() const
       {
         RCP<CellFilterBase> cfb 
           = rcp_dynamic_cast<CellFilterBase>(j->ptr());
-        TEST_FOR_EXCEPT(cfb.get()==0);
+        TEUCHOS_TEST_FOR_EXCEPT(cfb.get()==0);
         CellFilter cf = j->ptr();
         s.put(cf);
       }

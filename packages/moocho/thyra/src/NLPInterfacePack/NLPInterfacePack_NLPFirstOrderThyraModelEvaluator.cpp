@@ -44,7 +44,7 @@
 #include "Thyra_ModelEvaluatorHelpers.hpp"
 #include "Thyra_DetachedVectorView.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace NLPInterfacePack {

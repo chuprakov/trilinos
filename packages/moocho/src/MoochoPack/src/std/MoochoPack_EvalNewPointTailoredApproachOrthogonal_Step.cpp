@@ -38,7 +38,7 @@
 #include "AbstractLinAlgPack_AssertOp.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace MoochoPack {
 
@@ -66,7 +66,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::uninitialize_Y_Uy(
 
   if(Y_orth)
     Y_orth->set_uninitialized();
-  TEST_FOR_EXCEPT( !( Uy_cpst == NULL ) ); // ToDo: Implement for undecomposed equalities
+  TEUCHOS_TEST_FOR_EXCEPT( !( Uy_cpst == NULL ) ); // ToDo: Implement for undecomposed equalities
 }
 
 void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy(
@@ -110,7 +110,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy(
     D_ptr_t  D_ptr = D;
 //		if(mat_rel == MATRICES_INDEP_IMPS) {
 //			D_ptr = D->clone();
-//			TEST_FOR_EXCEPTION(
+//			TEUCHOS_TEST_FOR_EXCEPTION(
 //				D_ptr.get() == NULL, std::logic_error
 //				,"DecompositionSystemOrthogonal::update_decomp(...) : Error, "
 //				"The matrix class used for the direct sensitivity matrix D = inv(C)*N of type \'"
@@ -135,7 +135,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy(
   dyn_cast<MatrixSymInitDiag>(*S_ptr_).init_identity(D->space_rows());
   syrk(*D,BLAS_Cpp::trans,1.0,1.0,S_ptr_.get());
 
-  TEST_FOR_EXCEPT( !( Uy_cpst == NULL ) ); // ToDo: Implement for undecomposed equalities
+  TEUCHOS_TEST_FOR_EXCEPT( !( Uy_cpst == NULL ) ); // ToDo: Implement for undecomposed equalities
 
   recalc_py(*D,py,olevel,out);
 

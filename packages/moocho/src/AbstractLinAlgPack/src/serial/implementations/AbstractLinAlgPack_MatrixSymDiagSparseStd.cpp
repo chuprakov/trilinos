@@ -30,7 +30,7 @@
 #include "AbstractLinAlgPack_SpVectorOut.hpp"
 #include "DenseLinAlgPack_DVectorClass.hpp"
 #include "DenseLinAlgPack_AssertOp.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -54,7 +54,7 @@ MatrixOp& MatrixSymDiagSparseStd::operator=(const MatrixOp& m)
     diag_ = p_m->diag_;
   }
   else {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, std::invalid_argument
       ,"MatrixSymDiagSparseStd::operator=(const MatrixOp& m) : Error!"
       "The concrete type of m = \'" << typeName(m) << "\' is not a subclass of "

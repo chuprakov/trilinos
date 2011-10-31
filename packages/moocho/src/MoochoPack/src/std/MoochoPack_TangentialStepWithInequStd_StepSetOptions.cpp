@@ -31,7 +31,7 @@
 
 #include "MoochoPack_TangentialStepWithInequStd_StepSetOptions.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 // Define the options
 namespace {
@@ -86,7 +86,7 @@ void TangentialStepWithInequStd_StepSetOptions::setOption(
       else if( option == "QP_NO_TEST" )
         target().qp_testing( target_t::QP_NO_TEST );
       else
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true, std::invalid_argument
           ,"Error, incorrect value \'" << option << "\' for "
           "\"qp_testing\".  Only the options "
@@ -101,7 +101,7 @@ void TangentialStepWithInequStd_StepSetOptions::setOption(
         target().dual_feasible_point_error(StringToBool("dual_feasible_point_error",option_value.c_str()));
       break;
       default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

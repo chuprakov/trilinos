@@ -200,10 +200,10 @@ void MatrixSymPosDefBandedChol::Vp_StMtV(
              ,b,y->raw_ptr(),y->stride());
   }
   else if( UB_.rows() ) {
-    TEST_FOR_EXCEPT(true); // ToDo: Implement when and if needed!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement when and if needed!
   }
   else {
-    TEST_FOR_EXCEPT(true); // This should not happen!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // This should not happen!
   }
 }
 
@@ -261,7 +261,7 @@ void MatrixSymPosDefBandedChol::V_InvMtV(
     , n_, kd_, 1, UB_.col_ptr(1), UB_.max_rows()
     ,&t[0], t.size(), &info );
   if( info > 0 )
-    TEST_FOR_EXCEPT(true); // Should not happen!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // Should not happen!
   if( info < 0 ) {
     std::ostringstream omsg;
     omsg

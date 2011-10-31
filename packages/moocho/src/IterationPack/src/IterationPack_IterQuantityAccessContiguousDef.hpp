@@ -36,7 +36,7 @@
 #include <iterator>
 
 #include "IterationPack_IterQuantityAccessContiguousDecl.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace IterationPack {
 
@@ -77,7 +77,7 @@ void IterQuantityAccessContiguous<T_info>::set_factory(
 
 template<class T_info>
 void IterQuantityAccessContiguous<T_info>::resize( int num_quantities ) {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     num_quantities < 1, std::length_error
     ,"IterQuantityAccessContiguous::resize(num_quantities): Error, "
     "name = "<<name_<<", num_quantities = "<<num_quantities<<" must be greater than zero" );
@@ -264,7 +264,7 @@ bool IterQuantityAccessContiguous<T_info>::is_initialized() const {
 template<class T_info>
 void IterQuantityAccessContiguous<T_info>::lazy_initialization() {
   if( !is_initialized() ) {
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       abstract_factory_.get() == NULL, std::logic_error
       ,"IterQuantityAccessContiguous::lazy_initialization(): Error, "
       "iq_name = "<<name_<<" the abstract factory can not be NULL" );

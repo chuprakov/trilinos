@@ -29,7 +29,7 @@
 #include "ConstrainedOptPack_MeritFuncNLPModL1.hpp"
 #include "AbstractLinAlgPack_VectorMutable.hpp"
 #include "AbstractLinAlgPack_VectorStdOps.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -47,14 +47,14 @@ value_type MeritFuncNLPModL1::value(
   ,const Vector    *hu
   ) const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     h || hl || hu, std::logic_error
     ,"MeritFuncNLPModL1::value(...) : Error! general inequalities are not supported!" );
 /*
   using DenseLinAlgPack::norm_1;
   return f + local_constr_term( mu_, c, "calc_deriv" );
 */
-  TEST_FOR_EXCEPT(true); // ToDo: Write a reduction operator for the above operation
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Write a reduction operator for the above operation
   return 0.0;
 }
 
@@ -86,14 +86,14 @@ value_type MeritFuncNLPModL1::calc_deriv(
   ,const Vector   &d_k
   )
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     h_k || hl || hu, std::logic_error
     ,"MeritFuncNLPModL1::value(...) : Error! general inequalities are not supported!" );
 /*
   using DenseLinAlgPack::dot; using DenseLinAlgPack::norm_1;
   return deriv_ = dot( Gf_k, d_k ) - local_constr_term( mu_, c_k, "calc_deriv" );
 */
-  TEST_FOR_EXCEPT(true); // ToDo: Write a reduction operator for the above operation
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Write a reduction operator for the above operation
   return 0.0;
 }
 

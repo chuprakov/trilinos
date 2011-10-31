@@ -41,7 +41,7 @@
 #include "DenseLinAlgPack_DVectorOp.hpp"
 #include "DenseLinAlgPack_IVector.hpp"
 #include "DenseLinAlgPack_PermVecMat.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "OptionsFromStreamPack_OptionsFromStream.hpp"
@@ -318,7 +318,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
       for( index_type k = 1; k <= mI_orig; ++k ) {
         size_type var_idx = var_full_to_remove_fixed(n_orig+k); // Knows about slacks
 #ifdef TEUCHOS_DEBUG
-        TEST_FOR_EXCEPT( !(  0 < var_idx && var_idx <= n_full  ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !(  0 < var_idx && var_idx <= n_full  ) );
 #endif
         if(var_idx <= n) {
           // This is not a fixed variable
@@ -334,7 +334,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
       for( index_type k = 1; k <= mI_orig; ++k ) {
         size_type var_idx = var_full_to_remove_fixed(n_orig+k); // Knows about slacks
 #ifdef TEUCHOS_DEBUG
-        TEST_FOR_EXCEPT( !(  0 < var_idx && var_idx <= n_full  ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !(  0 < var_idx && var_idx <= n_full  ) );
 #endif
         if(var_idx <= n) {
           // This is not a fixed variable
@@ -347,7 +347,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
 
   if( !load_struct ) {
     // Check that the number of nonzeros added matches the number of nonzeros in G
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       G_nz_previous != nz, std::runtime_error
       ,"NLPSerialPreprocessExplJac::imp_calc_Gc(...): Error, "
       "The number of added nonzeros does not match the number of nonzeros "
@@ -434,7 +434,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
 
 void NLPSerialPreprocessExplJac::assert_initialized() const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !initialized_, UnInitialized
     ,"NLPSerialPreprocessExplJac : The nlp has not been initialized yet" );
 }
@@ -461,11 +461,11 @@ void NLPSerialPreprocessExplJac::imp_fill_jacobian_entries(
     // Fill values and i and j
     for( ; val_orig != val_orig_end ; ++val_orig, ++ivect_orig, ++jvect_orig) {
 #ifdef TEUCHOS_DEBUG
-      TEST_FOR_EXCEPT( !(  0 <= *ivect_orig && *ivect_orig <= n_full  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  0 <= *ivect_orig && *ivect_orig <= n_full  ) );
 #endif
       size_type var_idx = var_full_to_remove_fixed(*ivect_orig);
 #ifdef TEUCHOS_DEBUG
-      TEST_FOR_EXCEPT( !(  0 < var_idx && var_idx <= n_full  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  0 < var_idx && var_idx <= n_full  ) );
 #endif
       if(var_idx <= n) {
         // This is not a fixed variable
@@ -481,11 +481,11 @@ void NLPSerialPreprocessExplJac::imp_fill_jacobian_entries(
     // Just fill values
     for( ; val_orig != val_orig_end ; ++val_orig, ++ivect_orig) {
 #ifdef TEUCHOS_DEBUG
-      TEST_FOR_EXCEPT( !(  0 <= *ivect_orig && *ivect_orig <= n_full  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  0 <= *ivect_orig && *ivect_orig <= n_full  ) );
 #endif
       size_type var_idx = var_full_to_remove_fixed(*ivect_orig);
 #ifdef TEUCHOS_DEBUG
-      TEST_FOR_EXCEPT( !(  0 < var_idx && var_idx <= n_full  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  0 < var_idx && var_idx <= n_full  ) );
 #endif
       if(var_idx <= n) {
         // This is not a fixed variable

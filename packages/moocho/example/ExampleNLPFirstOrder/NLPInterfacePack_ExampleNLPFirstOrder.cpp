@@ -38,7 +38,7 @@
 #include "AbstractLinAlgPack_VectorStdOps.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace NLPInterfacePack {
 

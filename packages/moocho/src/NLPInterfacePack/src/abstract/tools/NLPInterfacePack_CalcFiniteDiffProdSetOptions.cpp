@@ -30,7 +30,7 @@
 #include <math.h>
 
 #include "NLPInterfacePack_CalcFiniteDiffProdSetOptions.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 // Define the options
 namespace {
@@ -90,7 +90,7 @@ void CalcFiniteDiffProdSetOptions::setOption(
       else if( option == "FD_ORDER_FOUR_AUTO" )
         target().fd_method_order( target_t::FD_ORDER_FOUR_AUTO );
       else
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true, std::invalid_argument
           ,"CalcFiniteDiffProdSetOptions::setOption(...) : Error, incorrect value for "
           "\"fd_method_order\".  Only the options FD_ORDER_ONE, FD_ORDER_TWO, "
@@ -106,7 +106,7 @@ void CalcFiniteDiffProdSetOptions::setOption(
       else if( option == "FD_STEP_RELATIVE" )
         target().fd_step_select( target_t::FD_STEP_RELATIVE );
       else
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true, std::invalid_argument
           ,"CalcFiniteDiffProdSetOptions::setOption(...) : Error, incorrect value for "
           "\"fd_step_select\".  Only the options are available" );
@@ -125,7 +125,7 @@ void CalcFiniteDiffProdSetOptions::setOption(
       target().fd_step_size_c(std::atof(option_value.c_str()));
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

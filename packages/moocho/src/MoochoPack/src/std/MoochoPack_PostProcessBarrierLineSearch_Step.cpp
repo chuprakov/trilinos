@@ -41,7 +41,7 @@
 #include "MoochoPack_moocho_algo_conversion.hpp"
 #include "IterationPack_print_algorithm_step.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 #define min(a,b) ( (a < b) ? a : b )
 #define max(a,b) ( (a > b) ? a : b )
@@ -54,7 +54,7 @@ PostProcessBarrierLineSearch_Step::PostProcessBarrierLineSearch_Step(
   :
   barrier_nlp_(barrier_nlp)
   {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !barrier_nlp_.get(),
     std::logic_error,
     "PostProcessBarrierLineSearch_Step given NULL NLPBarrier."

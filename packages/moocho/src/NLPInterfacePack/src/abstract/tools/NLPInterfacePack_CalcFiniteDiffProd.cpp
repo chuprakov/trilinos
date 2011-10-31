@@ -43,7 +43,7 @@
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
 #include "Teuchos_FancyOStream.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace NLPInterfacePack {
 
@@ -154,17 +154,17 @@ bool CalcFiniteDiffProd::calc_deriv_product(
   // /////////////////////////////////////////
   // Validate the input
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     m==0 && Gc_prod, std::invalid_argument
     ,"CalcFiniteDiffProd::calc_deriv(...) : "
     "Error, if nlp->m() == 0, then Gc_prod must equal NULL" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     Gc_prod && !Gc_prod->space().is_compatible(*nlp->space_c())
     ,std::invalid_argument
     ,"CalcFiniteDiffProd::calc_deriv(...) : "
     "Error, Gc_prod (type \' "<<typeName(*Gc_prod)<<"\' "
     "is not compatible with the NLP" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     (xl && !xu) || (!xl && xu), std::invalid_argument
     ,"CalcFiniteDiffProd::calc_deriv(...) : "
     "Error, both xl = "<<xl<<" and xu = "<<xu
@@ -195,7 +195,7 @@ bool CalcFiniteDiffProd::calc_deriv_product(
       if(out.get()&&trace) *out<<"\nUsing auto selection of some fourth-order finite difference method ...\n";
       break;
     default:
-      TEST_FOR_EXCEPT(true); // Should not get here!
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Should not get here!
   }
 
   // ////////////////////////
@@ -229,7 +229,7 @@ bool CalcFiniteDiffProd::calc_deriv_product(
       uh_opt = u_optimal_4 * ( fd_step_select() == FD_STEP_ABSOLUTE ? 1.0 : xo_norm_inf + 1.0 );
       break;
     default:
-      TEST_FOR_EXCEPT(true); // Should not get here!
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Should not get here!
   }
 
   if(out.get()&&trace) *out<<"\nDefault optimal step length uh_opt = " << uh_opt << " ...\n";
@@ -344,7 +344,7 @@ bool CalcFiniteDiffProd::calc_deriv_product(
       num_u_i = 2.0;
       break;
     default:
-      TEST_FOR_EXCEPT(true); // Should not get here!
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Should not get here!
   }
 
   uh   = ( abs_max_u_feas/num_u_i < uh   ? max_u_feas/num_u_i : uh   ); // This can be a negative number!
@@ -420,7 +420,7 @@ bool CalcFiniteDiffProd::calc_deriv_product(
       dwgt      = 12.0;
       break;
     default:
-      TEST_FOR_EXCEPT(true); // Should not get here!
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Should not get here!
   }
   if(Gc_prod) *Gc_prod = 0.0;
   if(Gf_prod) *Gf_prod = 0.0;

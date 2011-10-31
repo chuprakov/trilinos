@@ -29,7 +29,7 @@
 #include "AbstractLinAlgPack_BasisSystemFactoryStd.hpp"
 #include "AbstractLinAlgPack_BasisSystemPermDirectSparse.hpp"
 #include "AbstractLinAlgPack_DirectSparseSolverDense.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "OptionsFromStreamPack_OptionsFromStream.hpp"
 #include "OptionsFromStreamPack_StringToIntMap.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
@@ -98,14 +98,14 @@ BasisSystemFactoryStd::create() const
       }
       direct_sparse_solver = dss_ma28;
 #else
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, std::logic_error
         ,"Error, HAVE_MOOCHO_MA28 is not defined and therefore MA28 is not supported!" );
 #endif
       break;
     }
     case LA_MA48: {
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, std::logic_error
         ,"Error, MA48 is not supported yet!" );
       break;
@@ -117,14 +117,14 @@ BasisSystemFactoryStd::create() const
       // ToDo: Set options from stream!
       direct_sparse_solver = dss_slu;
 #else
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         true, std::logic_error
         ,"Error, SPARSE_SOLVER_PACK_USE_SUPERLU is not defined and therefore SuperLU is not supported!" );
 #endif
       break;
     }
     default:
-      TEST_FOR_EXCEPT(true); // Should not be called?
+      TEUCHOS_TEST_FOR_EXCEPT(true); // Should not be called?
   }
 
   // Return the basis system
@@ -170,7 +170,7 @@ void BasisSystemFactoryStd::read_options() const
 #ifdef HAVE_MOOCHO_MA28
             direct_linear_solver_type_ = LA_MA28;
 #else
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::logic_error
               ,"BasisSystemFactoryStd::read_options(...) : MA28 is not supported,"
               " you must configure with --enable-moocho-ma28!" );
@@ -179,7 +179,7 @@ void BasisSystemFactoryStd::read_options() const
 #ifdef SPARSE_SOLVER_PACK_USE_MA48
             direct_linear_solver_type_ = LA_MA48;
 #else
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::logic_error
               ,"BasisSystemFactoryStd::read_options(...) : MA48 is not supported,"
               " must define SPARSE_SOLVER_PACK_USE_MA48!" );
@@ -188,13 +188,13 @@ void BasisSystemFactoryStd::read_options() const
 #ifdef SPARSE_SOLVER_PACK_USE_SUPERLU
             direct_linear_solver_type_ = LA_SUPERLU;
 #else
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::logic_error
               ,"BasisSystemFactoryStd::read_options(...) : SUPERLU is not supported,"
               " must define SPARSE_SOLVER_PACK_USE_SUPERLU!" );
 #endif
           } else {
-            TEST_FOR_EXCEPTION(
+            TEUCHOS_TEST_FOR_EXCEPTION(
               true, std::invalid_argument
               ,"BasisSystemFactoryStd::read_options(...) : "
               "Error, incorrect value for \"direct_linear_solver\" "
@@ -203,7 +203,7 @@ void BasisSystemFactoryStd::read_options() const
           break;
         }
         default:
-          TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
+          TEUCHOS_TEST_FOR_EXCEPT(true);	// this would be a local programming error only.
       }
     }
   }

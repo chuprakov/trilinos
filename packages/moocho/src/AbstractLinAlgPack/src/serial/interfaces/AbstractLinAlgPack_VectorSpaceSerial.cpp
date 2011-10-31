@@ -35,7 +35,7 @@
 #include "AbstractLinAlgPack_VectorMutable.hpp"
 #include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
 #include "DenseLinAlgPack_DVectorClass.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 #ifdef TEUCHOS_DEBUG
 #define CLASS_MEMBER_PTRS \
@@ -117,7 +117,7 @@ VectorSpaceSerial::sub_space(const Range1D& rng_in) const
   const size_type this_dim = this->dim();
   const Range1D rng = RangePack::full_range( rng_in, 1, this_dim );
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     rng.ubound() > this_dim, std::out_of_range
     ,"VectorSpaceSerial::sub_view(...) : Error, "
     "rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "

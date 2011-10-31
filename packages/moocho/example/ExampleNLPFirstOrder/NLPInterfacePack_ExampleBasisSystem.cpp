@@ -32,7 +32,7 @@
 #include "AbstractLinAlgPack_VectorStdOps.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace NLPInterfacePack {
  
@@ -64,7 +64,7 @@ void ExampleBasisSystem::initialize(
   )
 {
   namespace mmp = MemMngPack;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_x.get() == NULL, std::invalid_argument
     ,"ExampleBasisSystem::initialize(...) : Error, space_x must be specified!"
     );
@@ -89,7 +89,7 @@ void ExampleBasisSystem::update_D(
 {
   using Teuchos::dyn_cast;
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     D == NULL, std::logic_error
     ,"ExampleBasisSystem::update_D(...): Error!" );
 

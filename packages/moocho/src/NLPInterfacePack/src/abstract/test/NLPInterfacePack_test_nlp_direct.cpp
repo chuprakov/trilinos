@@ -200,7 +200,7 @@ bool NLPInterfacePack::test_nlp_direct(
     if(nlp_tester.print_all())
       *out << "\nD =\n" << *D;
     if( con_decomp.size() < m ) {
-      TEST_FOR_EXCEPT(true); // ToDo: Print GcU and Uz
+      TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Print GcU and Uz
     }
     *out << "\n";
   }

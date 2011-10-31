@@ -211,7 +211,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
           {for( size_type k = n_pz_X; k > 0; --k ) { // Delete from the largest to the smallest index (cheaper!)
             rHL_RR.delete_update( i_x_fixed[k-1], false );
           }}
-          TEST_FOR_EXCEPT( !(  rHL_RR.rows() == n_pz_R  ) );
+          TEUCHOS_TEST_FOR_EXCEPT( !(  rHL_RR.rows() == n_pz_R  ) );
           if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
             out << "\nrHL_RR after rows/columns where removed =\n" << *rHL_super.B_RR_ptr();
           }
@@ -415,7 +415,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
         if( !i_x_free_still[k-1] )
           rHL_RR.delete_update( k, false );
       }}
-      TEST_FOR_EXCEPT( !(  rHL_RR.rows() == n_pz_R - num_fixed_to_free  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  rHL_RR.rows() == n_pz_R - num_fixed_to_free  ) );
       if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
         out << "\nrHL_RR after rows/columns where removed =\n" << *rHL_super.B_RR_ptr();
       }
@@ -428,7 +428,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
       {for( size_type k = 0; k < num_fixed_to_free; ++k ) {
         rHL_RR.augment_update( NULL, rHL_XX_scale, false );
       }}
-      TEST_FOR_EXCEPT( !(  rHL_RR.rows() == n_pz_R  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  rHL_RR.rows() == n_pz_R  ) );
       if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
         out << "\nrHL_RR after rows/columns where appended =\n" << *rHL_super.B_RR_ptr();
       }
@@ -446,7 +446,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
         i_x_free[tmp_n_pz_R] = i_x_fixed_to_free[k];
         ++tmp_n_pz_R;
       }}
-      TEST_FOR_EXCEPT( !(  tmp_n_pz_R == n_pz_R  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  tmp_n_pz_R == n_pz_R  ) );
     }
     // Initialize rHL_XX = rHL_XX_scale * I resized to the proper dimensions
     rHL_XX.init_identity(n_pz_X,rHL_XX_scale);
@@ -476,7 +476,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
     const size_type
       n_pz_R = Q_R.cols(),
       n_pz_X = Q_X.cols();
-    TEST_FOR_EXCEPT( !(  n_pz_R + n_pz_X == n_pz  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  n_pz_R + n_pz_X == n_pz  ) );
     // Get projected BFGS update vectors y_bfgs_R, s_bfgs_R
     Workspace<value_type>
       y_bfgs_R_ws(wss,Q_R.cols()),

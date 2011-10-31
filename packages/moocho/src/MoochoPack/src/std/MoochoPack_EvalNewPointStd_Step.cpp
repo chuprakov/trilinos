@@ -45,7 +45,7 @@
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 #ifdef TEUCHOS_DEBUG
 #include "DenseLinAlgPack_PermVecMat.hpp"
@@ -152,7 +152,7 @@ bool EvalNewPointStd_Step::do_step(
            ,x_iq.get_k(0),   "x_k"
            ))
       {
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true, TestFailed
           ,"EvalNewPointStd_Step::do_step(...) : Error, "
           "the variables bounds xl <= x_k <= xu where violated!" );
@@ -258,7 +258,7 @@ bool EvalNewPointStd_Step::do_step(
         ds_olevel = DecompositionSystem::PRINT_EVERY_THING;
         break;
       default:
-        TEST_FOR_EXCEPT(true); // Should not get here!
+        TEUCHOS_TEST_FOR_EXCEPT(true); // Should not get here!
     };
 
     // Test the decomposition system
@@ -282,7 +282,7 @@ bool EvalNewPointStd_Step::do_step(
             ds_olevel = DecompositionSystemTester::PRINT_ALL;
             break;
           default:
-            TEST_FOR_EXCEPT(true); // Should not get here!
+            TEUCHOS_TEST_FOR_EXCEPT(true); // Should not get here!
         }
         decomp_sys_tester().print_tests(ds_olevel);
         decomp_sys_tester().dump_all( olevel == PRINT_ITERATION_QUANTITIES );
@@ -302,7 +302,7 @@ bool EvalNewPointStd_Step::do_step(
           ,m > r  ? &Uy_iq->get_k(0) : NULL  // Uy
           ,( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : NULL
           );
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         !decomp_sys_passed, TestFailed
         ,"EvalNewPointStd_Step::do_step(...) : Error, "
         "the tests of the decomposition system failed!" );
@@ -428,7 +428,7 @@ bool EvalNewPointStd_Step::do_step(
         ,olevel >= PRINT_VECTORS
         ,( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : NULL
         );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       !nlp_passed, TestFailed
       ,"EvalNewPointStd_Step::do_step(...) : Error, "
       "the tests of the nlp derivatives failed!" );

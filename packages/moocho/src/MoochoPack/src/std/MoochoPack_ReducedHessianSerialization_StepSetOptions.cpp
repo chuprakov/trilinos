@@ -30,7 +30,7 @@
 
 #include "MoochoPack_ReducedHessianSerialization_StepSetOptions.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 // Define the options
 namespace {
@@ -50,7 +50,7 @@ const char* local_SOptions[local_num_options]	= {
 inline
 std::string remove_quotes( const std::string &option_name, const std::string &str )
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     str[0]!='\"' || str[str.length()-1]!='\"', std::logic_error
     ,"Error, the option \'" << option_name << "\' must have a single set of quotes around it!"
     );
@@ -88,7 +88,7 @@ void ReducedHessianSerialization_StepSetOptions::setOption(
       break;
     }
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

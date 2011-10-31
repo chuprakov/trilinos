@@ -107,7 +107,7 @@ void ConstrainedOptPack::initialize_Q_R_Q_X(
         *l_x_XR_itr = lR;
       }
     }
-    TEST_FOR_EXCEPT( !( lR == n_R ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !( lR == n_R ) );
   }
   else {
     if(test_setup) {
@@ -167,7 +167,7 @@ void ConstrainedOptPack::initialize_Q_R_Q_X(
     for( size_type iX = n_R+1; iX <= n; ++iX, ++l_x_X, ++row_i_itr, ++col_j_itr ) {
       *row_i_itr = iX;         // This is sorted of course
       *col_j_itr = -(*l_x_X);  // This might be sorted
-      TEST_FOR_EXCEPT( !(  *l_x_X < 0  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  *l_x_X < 0  ) );
     }					
     Q_X->initialize(
       n,n_X,n_X,0,0,i_x_fixed_is_sorted?GPMSIP::BY_ROW_AND_COL:GPMSIP::BY_ROW
@@ -190,7 +190,7 @@ void ConstrainedOptPack::initialize_Q_R_Q_X(
       *Q_X_col_j_itr = Q_X_col_j;
     for( size_type i = 1; i <= n; ++i, ++l_x ) {
       const long int l = *l_x;
-      TEST_FOR_EXCEPT( !(  l != 0  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  l != 0  ) );
       if( l > 0 ) {
         *Q_R_row_i_itr++ = i;
         *Q_R_col_j_itr++ = l;
@@ -200,8 +200,8 @@ void ConstrainedOptPack::initialize_Q_R_Q_X(
         *Q_X_col_j_itr++ = -l;
       }
     }					
-    TEST_FOR_EXCEPT( !(  Q_R_row_i_itr - Q_R_row_i == n_R  ) );
-    TEST_FOR_EXCEPT( !(  Q_X_row_i_itr - Q_X_row_i == n_X  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  Q_R_row_i_itr - Q_R_row_i == n_R  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  Q_X_row_i_itr - Q_X_row_i == n_X  ) );
     Q_R->initialize(
       n,n_R,n_R,0,0,i_x_free_is_sorted?GPMSIP::BY_ROW_AND_COL:GPMSIP::BY_ROW
       ,Q_R_row_i,Q_R_col_j,test_setup);

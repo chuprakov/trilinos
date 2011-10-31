@@ -210,7 +210,7 @@ void PreEvalNewPointBarrier_StepSetOptions::setOption(
       target().absolute_bound_push(std::atof(option_value.c_str()));
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
     }
   }
 

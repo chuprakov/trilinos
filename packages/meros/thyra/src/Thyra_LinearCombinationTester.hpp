@@ -39,9 +39,9 @@
 #define TESTER(form1, form2)\
   {\
     Vector<Scalar> _val1 = form1;\
-    TEST_FOR_EXCEPT(_val1.constPtr().get()==0);\
+    TEUCHOS_TEST_FOR_EXCEPT(_val1.constPtr().get()==0);\
     Vector<Scalar> _val2 = form2;\
-    TEST_FOR_EXCEPT(_val2.constPtr().get()==0);\
+    TEUCHOS_TEST_FOR_EXCEPT(_val2.constPtr().get()==0);\
     ScalarMag err = norm2(_val1-_val2);\
     if (!checkTest(spec_, err, "[" #form1 "] == [" #form2 "]")) pass = false;\
   }

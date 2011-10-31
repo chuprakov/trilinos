@@ -103,7 +103,7 @@ void ReducedHessianBFGSStd_StepSetOptions::setOption(
       target().secant_error_tol(::fabs(::atof(option_value.c_str())));
       break;
     default:
-      TEST_FOR_EXCEPT(true);	// Local error only?
+      TEUCHOS_TEST_FOR_EXCEPT(true);	// Local error only?
   }
 }
 

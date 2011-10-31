@@ -35,7 +35,7 @@
 #include "AbstractLinAlgPack_MatrixOpSubView.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -63,7 +63,7 @@ void DecompositionSystemVarReductImp::initialize(
   namespace rcp = MemMngPack;
   size_type num_vars = 0;
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     basis_sys.get() != NULL && (space_x.get() == NULL || space_c.get() == NULL)
     ,std::invalid_argument
     ,"DecompositionSystemVarReductImp::initialize(...) : Error, "
@@ -76,7 +76,7 @@ void DecompositionSystemVarReductImp::initialize(
       space_x_dim = space_x->dim(),
       space_c_dim = space_c->dim(),
       num_equ     = basis_sys->equ_decomp().size() + basis_sys->equ_undecomp().size();
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       num_vars != 0 && (space_x_dim != num_vars || space_c_dim != num_equ)
       , std::invalid_argument
       ,"DecompositionSystemVarReductImp::initialize(...) : Error, "
@@ -373,7 +373,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 
 #ifdef TEUCHOS_DEBUG
   // Validate setup
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     basis_sys_.get() == NULL, std::logic_error
     ,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
     "a BasisSystem object has not been set yet!" );
@@ -389,16 +389,16 @@ void DecompositionSystemVarReductImp::update_decomp(
 
 #ifdef TEUCHOS_DEBUG
   // Validate input
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
       Z==NULL&&Y==NULL&&R==NULL&&Uz==NULL&&Uy==NULL
     , std::invalid_argument
     ,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
     "at least one of Z, Y, R, Uz and Uycan not be NULL!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     m == r && Uz != NULL, std::invalid_argument
     ,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
     "Uz must be NULL if m==r is NULL!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     m == r && Uy != NULL, std::invalid_argument
     ,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
     "Uy must be NULL if m==r is NULL!" );
@@ -410,7 +410,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 
   MatrixIdentConcatStd
     *Z_vr = Z ? &dyn_cast<MatrixIdentConcatStd>(*Z) : NULL;
-  TEST_FOR_EXCEPT( !( Uz == NULL ) ); // ToDo: Implement undecomposed general equalities
+  TEUCHOS_TEST_FOR_EXCEPT( !( Uz == NULL ) ); // ToDo: Implement undecomposed general equalities
 
   //
   // Get smart pointers to unreferenced C and D matrix objects.
@@ -458,8 +458,8 @@ void DecompositionSystemVarReductImp::update_decomp(
     if( out && olevel >= PRINT_BASIC_INFO )
       *out << "\nUpdating the basis matrix C and other matices using the BasisSystem object ...\n";
   
-    TEST_FOR_EXCEPT( !(  D_ptr.get()  ) ); // local programming error only!
-    TEST_FOR_EXCEPT( !(  C_ptr.get()  ) ); // local programming error only!
+    TEUCHOS_TEST_FOR_EXCEPT( !(  D_ptr.get()  ) ); // local programming error only!
+    TEUCHOS_TEST_FOR_EXCEPT( !(  C_ptr.get()  ) ); // local programming error only!
   
     basis_sys_->update_basis(
       Gc                                                       // Gc
@@ -481,7 +481,7 @@ void DecompositionSystemVarReductImp::update_decomp(
   if( D_imp_used_ == MAT_IMP_IMPLICIT ) {
     Teuchos::RCP<const MatrixOp>
       GcDd_ptr = Gc.sub_view(var_indep,equ_decomp);
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       GcDd_ptr.get() == NULL, std::logic_error
       ,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
       "The matrix class used for the gradient of constraints matrix Gc of type \'"
@@ -489,7 +489,7 @@ void DecompositionSystemVarReductImp::update_decomp(
       "Gc.sub_view(var_indep,equ_decomp)!" );
     if(mat_rel == MATRICES_INDEP_IMPS) {
       GcDd_ptr = GcDd_ptr->clone();
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         GcDd_ptr.get() == NULL, std::logic_error
         ,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
         "The matrix class used for the gradient of constraints matrix Gc.sub_view(var_indep,equ_decomp) "
@@ -513,7 +513,7 @@ void DecompositionSystemVarReductImp::update_decomp(
   if( test_what == RUN_TESTS ) {
     if( out && olevel >= PRINT_BASIC_INFO )
       *out << "\nTesting the basis matrix C and other matices updated using the BasisSystem object ...\n";
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       basis_sys_tester_.get() == NULL, std::logic_error
       ,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
       "test_what == RUN_TESTS but this->basis_sys_tester().get() == NULL!" );
@@ -547,7 +547,7 @@ void DecompositionSystemVarReductImp::update_decomp(
       ,NULL                                                    // GcUP == Uz
       ,out                                                     // out
       );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       !passed, TestFailed
       ,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
       "Test of the basis system failed!" );
@@ -557,11 +557,11 @@ void DecompositionSystemVarReductImp::update_decomp(
   // Initialize the implicit D = -inv(C)*N matrix object.
   //
 
-  TEST_FOR_EXCEPT( !( D_ptr.get() ) ); // local programming error only?
+  TEUCHOS_TEST_FOR_EXCEPT( !( D_ptr.get() ) ); // local programming error only?
   if( D_imp_used_ == MAT_IMP_IMPLICIT ) {
     if( !C_ptr.has_ownership() && mat_rel == MATRICES_INDEP_IMPS ) {
       C_ptr = C_ptr->clone_mwons();
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         C_ptr.get() == NULL, std::logic_error
         ,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
         "The matrix class used for the basis matrix C (from the BasisSystem object) "
@@ -600,7 +600,7 @@ void DecompositionSystemVarReductImp::update_decomp(
       );
   }
 
-  TEST_FOR_EXCEPT( !( Uz == NULL ) ); // ToDo: Implement for undecomposed general equalities
+  TEUCHOS_TEST_FOR_EXCEPT( !( Uz == NULL ) ); // ToDo: Implement for undecomposed general equalities
 
   // Clear cache for basis matrices.
   C_ptr_ = Teuchos::null;

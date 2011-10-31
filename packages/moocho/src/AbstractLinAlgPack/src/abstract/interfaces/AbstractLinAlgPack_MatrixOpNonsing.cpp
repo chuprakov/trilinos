@@ -31,7 +31,7 @@
 #include "AbstractLinAlgPack_MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -61,7 +61,7 @@ MatrixOpNonsing::calc_cond_num(
     &space_rows = this->space_rows();
   const index_type
     num_cols = space_rows.dim();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !(requested_norm_type == MAT_NORM_1 || requested_norm_type == MAT_NORM_INF), MethodNotImplemented
     ,"MatrixOp::calc_norm(...): Error, This default implemenation can only "
     "compute the one norm or the infinity norm!"

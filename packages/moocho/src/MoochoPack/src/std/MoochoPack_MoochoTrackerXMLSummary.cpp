@@ -253,7 +253,7 @@ void MoochoTrackerXMLSummary::output_pre_file() const
 
   out << ind << "<Dimension n=\"?\" m=\"?\"/>\n";
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     true, std::logic_error
     ,"Error!, this function stopped compiling so RAB commented "
     "it out on 2/4/2005.  Sorry!"
@@ -298,7 +298,7 @@ void MoochoTrackerXMLSummary::open_problem_element( std::ostream& out, const Alg
     char ind[] = "   ";
 
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     true, std::logic_error
     ,"Error!, this function stopped compiling so RAB commented "
     "it out on 2/4/2005.  Sorry!"

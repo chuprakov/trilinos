@@ -158,7 +158,7 @@ int main( int argc, char* argv[] )
       *out << "\nCreating communicator for local cluster of "<<numProcsPerCluster<<" processes ...\n";
       numClusters = numProcs/numProcsPerCluster;
       const int remainingProcs = numProcs%numProcsPerCluster;
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         remainingProcs!=0,std::logic_error
         ,"Error, The number of processes per cluster numProcsPerCluster="<<numProcsPerCluster
         << " does not divide into the global number of processes numProcs="<<numProcs
@@ -413,7 +413,7 @@ int main( int argc, char* argv[] )
         }
         else {
 #ifdef TEUCHOS_DEBUG
-          TEST_FOR_EXCEPT( ! ( useStatelessPeriodModel && i > 0 ) );
+          TEUCHOS_TEST_FOR_EXCEPT( ! ( useStatelessPeriodModel && i > 0 ) );
 #endif
           inverseThyraModels[i] = inverseThyraModels[0];
         }
@@ -421,7 +421,7 @@ int main( int argc, char* argv[] )
     }
     else {
       *out << "\nUsing built-in inverse objective function ...\n";
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         N != 1, std::logic_error,
         "Error, you can't have N = "<<N<<" > 1\n"
         "and be using an internal inverse objective!" );
@@ -531,7 +531,7 @@ int main( int argc, char* argv[] )
 
         // Solve the period model
         solution_status = solver.solve();
-        TEST_FOR_EXCEPT( solution_status != MoochoSolver::SOLVE_RETURN_SOLVED );
+        TEUCHOS_TEST_FOR_EXCEPT( solution_status != MoochoSolver::SOLVE_RETURN_SOLVED );
 
         // Save the final solution for the next period!
         period_x = solver.getFinalPoint().get_x()->clone_v();
@@ -566,7 +566,7 @@ int main( int argc, char* argv[] )
       
       // Solve the initial forward problem
       solution_status = solver.solve();
-      TEST_FOR_EXCEPT( solution_status != MoochoSolver::SOLVE_RETURN_SOLVED );
+      TEUCHOS_TEST_FOR_EXCEPT( solution_status != MoochoSolver::SOLVE_RETURN_SOLVED );
 
       // Save the solution for model.x and model.p to be used later
       x_opt = solver.getFinalPoint().get_x()->clone_v();
@@ -619,11 +619,11 @@ int main( int argc, char* argv[] )
     // Set the deliminator for the output files!
     solver.getSolver().set_output_context("inv");
 
-    //TEST_FOR_EXCEPT("ToDo: We need to use the DefaultInverseModelEvaluator to set the matching vector correctly!");
+    //TEUCHOS_TEST_FOR_EXCEPT("ToDo: We need to use the DefaultInverseModelEvaluator to set the matching vector correctly!");
 
     // Set the matching vector
     if ( N > 1 ) {
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         !useOuterInverse, std::logic_error,
         "Error, if N > 1, you have to use the outer inverse objective function\n"
         "since each target vector will be different!" );
@@ -660,7 +660,7 @@ int main( int argc, char* argv[] )
       }
     }
     else {
-      TEST_FOR_EXCEPT("Error, should not get here!");
+      TEUCHOS_TEST_FOR_EXCEPT("Error, should not get here!");
     }
     
     // Set the solve mode to solve the inverse problem
@@ -681,7 +681,7 @@ int main( int argc, char* argv[] )
     
     // Solve the inverse problem
     solution_status = solver.solve();
-    TEST_FOR_EXCEPT( solution_status != MoochoSolver::SOLVE_RETURN_SOLVED );
+    TEUCHOS_TEST_FOR_EXCEPT( solution_status != MoochoSolver::SOLVE_RETURN_SOLVED );
 
     //
     *out << "\n***\n*** Testing the error in the inversion\n***\n";
@@ -718,7 +718,7 @@ int main( int argc, char* argv[] )
     lowsfCreator.writeParamsFile(*lowsFactory);
     solver.writeParamsFile();
     
-    TEST_FOR_EXCEPT(
+    TEUCHOS_TEST_FOR_EXCEPT(
       solution_status != MoochoSolver::SOLVE_RETURN_SOLVED
       );
     

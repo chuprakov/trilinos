@@ -30,7 +30,7 @@
 
 #include "AbstractLinAlgPack_VectorSpaceSubSpace.hpp"
 #include "AbstractLinAlgPack_VectorMutableSubView.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -42,13 +42,13 @@ VectorSpaceSubSpace::VectorSpaceSubSpace( const space_ptr_t& full_space, const R
 void VectorSpaceSubSpace::initialize( const space_ptr_t& full_space, const Range1D& rng )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     full_space.get() == NULL, std::invalid_argument
     ,"VectorSpaceSubSpace::initialize(...): Error!" );
 #endif
   const index_type n = full_space->dim();
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !rng.full_range() && rng.ubound() > n, std::out_of_range
     ,"VectorSpaceSubSpace::initialize(...): Error, "
     "rng = [" << rng.lbound() << "," << rng.ubound() << "] is not in the range "
@@ -68,10 +68,10 @@ void VectorSpaceSubSpace::set_uninitialized()
 void VectorSpaceSubSpace::validate_range(const Range1D& rng) const
 {
   const index_type n = this->dim();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     full_space_.get() == NULL, std::logic_error
     ,"VectorSpaceSubSpace::validate_range(rng): Error, Uninitialized" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     full_space_.get() && !rng.full_range() && rng.ubound() > n, std::logic_error
     ,"VectorSpaceSubSpace::validate_range(rng): Error, "
     "rng = [" << rng.lbound() << "," << rng.ubound() << "] is not in the range "

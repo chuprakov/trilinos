@@ -31,7 +31,7 @@
 #include "AbstractLinAlgPack_MatrixOpThyra.hpp"
 #include "AbstractLinAlgPack_VectorMutableThyra.hpp"
 #include "AbstractLinAlgPack_ThyraAccessors.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
@@ -55,12 +55,12 @@ void MatrixOpThyra::initialize(
   )
 {
   namespace mmp = MemMngPack;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     thyra_linear_op.get()==NULL, std::invalid_argument
     ,"MatrixOpThyra::initialize(thyra_linear_op): Error!"
     );
   const bool adjointSupported = ( ::Thyra::opSupported(*thyra_linear_op,Thyra::NOTRANS) && ::Thyra::opSupported(*thyra_linear_op,Thyra::TRANS) );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !adjointSupported, std::invalid_argument
     ,"MatrixOpThyra::initialize(thyra_linear_op): Error, the operator opSupported(thyra_linear_op,transp) must return true "
     "for both values of transp==NOTRANS and transp=TRANS!"

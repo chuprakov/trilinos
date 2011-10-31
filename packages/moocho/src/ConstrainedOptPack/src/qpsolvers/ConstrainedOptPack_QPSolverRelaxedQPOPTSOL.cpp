@@ -192,7 +192,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
   }
   BL_(N_) = etaL;
   BU_(N_) = +inf;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     E!=NULL, std::logic_error
     ,"Error, the QPOPT/QPSOL wrapper has not been updated for general inequalities yet!"
     );
@@ -214,7 +214,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
         ibnds_itr	= i_inequ_bnds_.begin();
       // loop
       for(size_type i = 1; i <= n_inequ_bnds_; ++i, ++eLU_itr, ++ibnds_itr ) {
-        TEST_FOR_EXCEPT( !( !eLU_itr.at_end() ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !( !eLU_itr.at_end() ) );
         const size_type k      = eLU_itr.indice();
         *BL_itr++              = eLU_itr.lbound();
         *BU_itr++              = eLU_itr.ubound();
@@ -243,7 +243,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
       ibnds_t::iterator
         ibnds_itr	= i_inequ_bnds_.begin();
       for(size_type i = 1; i <= n_inequ_bnds_; ++i, ++eLU_itr, ++ibnds_itr ) {
-        TEST_FOR_EXCEPT( !( !eLU_itr.at_end() ) );
+        TEUCHOS_TEST_FOR_EXCEPT( !( !eLU_itr.at_end() ) );
         const size_type k      = eLU_itr.indice();
         *BL_itr++              = eLU_itr.lbound();
         *BU_itr++              = eLU_itr.ubound();
@@ -256,7 +256,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
     }
   }
 */
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     F!=NULL, std::logic_error
     ,"Error, the QPOPT/QPSOL wrapper has not been updated for general equalities yet!"
     );
@@ -319,7 +319,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
           ISTATE_[i-1] = 2; // Upper bound is active
       }
     }
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       mu!=NULL, std::logic_error
       ,"Error, the QPOPT/QPSOL wrapper has not been updated for general inequalities yet!"
       );
@@ -386,13 +386,13 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
           // What do we do?
           break;
         default:
-          TEST_FOR_EXCEPT(true); // Should not get here!
+          TEUCHOS_TEST_FOR_EXCEPT(true); // Should not get here!
       }
     }
   }
   
   // mu
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     n_inequ_bnds_!=0, std::logic_error
     ,"Error, the QPOPT/QPSOL wrapper has not been updated for general inequalities yet!"
     );
@@ -426,7 +426,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
           // What do we do?
           break;
           default:
-          TEST_FOR_EXCEPT(true); // Should not get here!
+          TEUCHOS_TEST_FOR_EXCEPT(true); // Should not get here!
       }
     }
     mu->assume_sorted(true);
@@ -436,7 +436,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
   }
 */
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     F!=NULL, std::logic_error
     ,"Error, the QPOPT/QPSOL wrapper has not been updated for general equalities yet!"
     );
@@ -449,7 +449,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
     ISTATE_t::const_iterator
       istate_itr = ISTATE_.begin() + N_ + n_inequ_bnds_;
     for( size_type k = 1; k <= f->dim(); ++k, ++istate_itr ) {
-      TEST_FOR_EXCEPT( !(  *istate_itr == 3  ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !(  *istate_itr == 3  ) );
     }
   }
 

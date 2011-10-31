@@ -97,7 +97,7 @@ void NLPObjGrad::calc_Gf(const Vector& x, bool newx) const
 
 value_type NLPObjGrad::calc_Gf_prod(const Vector& x, const Vector& d, bool newx) const
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     true,std::logic_error
     ,"Error, the function calc_Gf_prod(...) is not implemented for the class "
     << typeName(*this) << "!"

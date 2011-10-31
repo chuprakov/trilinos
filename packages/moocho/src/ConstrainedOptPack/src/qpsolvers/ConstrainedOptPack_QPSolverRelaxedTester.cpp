@@ -55,7 +55,7 @@ const char* solution_type_str( ConstrainedOptPack::QPSolverStats::ESolutionType 
   case qpst::SUBOPTIMAL_POINT:
     return "SUBOPTIMAL_POINT";
   default:
-    TEST_FOR_EXCEPT(true);
+    TEUCHOS_TEST_FOR_EXCEPT(true);
   }
   return "";	// will never be executed.
 }
@@ -86,7 +86,7 @@ void set_complementarity(
   ,DenseLinAlgPack::DVector			 	*comp_err
   )
 {
-  TEST_FOR_EXCEPT( !(  gamma.size() == constr_resid.size() && gamma.size() == constr.size()  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  gamma.size() == constr_resid.size() && gamma.size() == constr.size()  ) );
   comp_err->resize( gamma.size() );
   *comp_err = 0.0;
   const AbstractLinAlgPack::SpVector::difference_type o = gamma.offset();
@@ -657,7 +657,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
   }
 
   if( F ) {
-    TEST_FOR_EXCEPT(true); // ToDo: Update below code!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Update below code!
 /*
 
     ///////////////////////////////////

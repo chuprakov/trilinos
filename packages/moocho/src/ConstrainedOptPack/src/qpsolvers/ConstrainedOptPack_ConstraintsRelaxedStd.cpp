@@ -48,7 +48,7 @@
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack_SpVectorOp.hpp"
 #include "AbstractLinAlgPack_VectorDenseEncap.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 
@@ -63,7 +63,7 @@ convert_bnd_type( int bnd_type )
     case +1:
       return ConstrainedOptPack::UPPER;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
   return ConstrainedOptPack::LOWER; // Never be called
 }
@@ -127,18 +127,18 @@ void ConstraintsRelaxedStd::initialize(
     m_in = 0,
     m_eq = 0;
 
-  TEST_FOR_EXCEPT( !(  m_undecomp == (F ? f->dim() : 0)  ) ); // ToDo: support decomposed equalities in future.
+  TEUCHOS_TEST_FOR_EXCEPT( !(  m_undecomp == (F ? f->dim() : 0)  ) ); // ToDo: support decomposed equalities in future.
 
   // Validate that the correct sets of constraints are selected
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     dL && !dU, std::invalid_argument
     ,"ConstraintsRelaxedStd::initialize(...) : Error, "
     "If dL!=NULL then dU!=NULL must also be true." );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     E && ( !b || !eL || !eU ), std::invalid_argument
     ,"ConstraintsRelaxedStd::initialize(...) : Error, "
     "If E!=NULL then b!=NULL, eL!=NULL and eU!=NULL must also be true." );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     F && !f, std::invalid_argument
     ,"ConstraintsRelaxedStd::initialize(...) : Error, "
     "If F!=NULL then f!=NULL must also be true." );
@@ -146,11 +146,11 @@ void ConstraintsRelaxedStd::initialize(
   // Validate input argument sizes
   if(dL) {
     const size_type dL_dim = dL->dim(), dU_dim = dU->dim();
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       dL_dim != nd, std::invalid_argument
       ,"ConstraintsRelaxedStd::initialize(...) : Error, "
       "dL.dim() != d->dim()." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       dU_dim != nd, std::invalid_argument 
       ,"ConstraintsRelaxedStd::initialize(...) : Error, "
       "dU.dim() != d->dim()." );
@@ -165,23 +165,23 @@ void ConstraintsRelaxedStd::initialize(
       eU_dim = eU->dim(),
       Ed_dim = Ed ? Ed->dim() : 0;
     m_in = BLAS_Cpp::rows( E_rows, E_cols, trans_E );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       opE_cols != nd, std::invalid_argument
       ,"ConstraintsRelaxedStd::initialize(...) : Error, "
       "op(E).cols() != nd." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       b_dim != m_in, std::invalid_argument
       ,"ConstraintsRelaxedStd::initialize(...) : Error, "
       "b->dim() != op(E).rows()." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       eL_dim != m_in, std::invalid_argument
       ,"ConstraintsRelaxedStd::initialize(...) : Error, "
       "eL->dim() != op(E).rows()." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       eU_dim != m_in, std::invalid_argument
       ,"ConstraintsRelaxedStd::initialize(...) : Error, "
       "eU->dim() != op(E).rows()." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       Ed && Ed_dim != m_in, std::invalid_argument
       ,"ConstraintsRelaxedStd::initialize(...) : Error, "
       "Ed->dim() != op(E).rows()." );
@@ -193,11 +193,11 @@ void ConstraintsRelaxedStd::initialize(
       opF_cols = BLAS_Cpp::cols( F_rows, F_cols, trans_F ),
       f_dim = f->dim();
     m_eq = BLAS_Cpp::rows( F_rows, F_cols, trans_F );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       opF_cols != nd, std::invalid_argument
       ,"QPSolverRelaxed::solve_qp(...) : Error, "
       "op(F).cols() != nd." );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       f_dim != m_eq, std::invalid_argument
       ,"QPSolverRelaxed::solve_qp(...) : Error, "
       "f->dim() != op(F).rows()." );
@@ -254,7 +254,7 @@ void ConstraintsRelaxedStd::pick_violated_policy( EPickPolicy pick_policy )
       inequality_pick_policy_ = ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY;
       break;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
 }
 
@@ -269,7 +269,7 @@ ConstraintsRelaxedStd::pick_violated_policy() const
     case ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY:
       return MOST_VIOLATED;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
   return ANY_VIOLATED;	// will never be executed
 }
@@ -283,7 +283,7 @@ void ConstraintsRelaxedStd::pick_violated(
   using AbstractLinAlgPack::max_inequ_viol;
   using LinAlgOpPack::V_VmV;
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     x_in.dim() != A_bar_.nd()+1, std::length_error
     ,"ConstraintsRelaxedStd::pick_violated(...) : Error, "
     "x is the wrong length" );
@@ -305,7 +305,7 @@ void ConstraintsRelaxedStd::pick_violated(
   // //////////////////////////////////////////////
   // Check the equality constraints first
   if( check_F_ && A_bar_.F() ) {
-    TEST_FOR_EXCEPT(true); // ToDo: Update below code!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Update below code!
 /*
     // The basic strategy here is to go through all of the equality
     // constraints first and add all of the ones that are violated by
@@ -373,7 +373,7 @@ void ConstraintsRelaxedStd::pick_violated(
       // Now look through the list of passed over equalities and see which one
       // is violated.  If a passed over constraint is added to the active set
       // then it is removed from this list.
-      TEST_FOR_EXCEPT(true); // ToDo: Implement!
+      TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
     }
 */
   }
@@ -431,7 +431,7 @@ void ConstraintsRelaxedStd::pick_violated(
   if( inequality_pick_policy_ == ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY ) {
     // Find the first general inequality violated by more than
     // the defined tolerance.
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, std::logic_error
       ,"ConstraintsRelaxedStd::pick_violated(...) : Error,\n"
       "The option ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY has not been implemented yet\n" );
@@ -492,7 +492,7 @@ void ConstraintsRelaxedStd::pick_violated(
 
 void ConstraintsRelaxedStd::ignore( size_type j )
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     true, std::logic_error
     ,"ConstraintsRelaxedStd::ignore(...) : Error, "
     "This operation is not supported yet!" );
@@ -502,7 +502,7 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 {
   const value_type inf = std::numeric_limits<value_type>::max();
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     j > A_bar_.cols(), std::range_error
     ,"ConstraintsRelaxedStd::get_bnd(j,bnd) : Error, "
     "j = " << j << " is not in range [1," << A_bar_.cols() << "]" );
@@ -524,7 +524,7 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
         case UPPER:
           return dU_->get_ele(j_local);
         default:
-          TEST_FOR_EXCEPT(true);
+          TEUCHOS_TEST_FOR_EXCEPT(true);
       }
     }
     else {
@@ -539,7 +539,7 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
       case UPPER:
         return +inf;
       default:
-        TEST_FOR_EXCEPT(true);
+        TEUCHOS_TEST_FOR_EXCEPT(true);
     }
   }
   else if( (j_local -= 1) <= A_bar_.m_in() ) {
@@ -550,7 +550,7 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
       case UPPER:
         return eU_->get_ele(j_local);
       default:
-        TEST_FOR_EXCEPT(true);
+        TEUCHOS_TEST_FOR_EXCEPT(true);
     }
   }
   else if( (j_local -= A_bar_.m_in()) <= A_bar_.m_eq() ) {
@@ -560,7 +560,7 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
       case UPPER:
         return -A_bar_.f()->get_ele(j_local);
       default:
-        TEST_FOR_EXCEPT(true);
+        TEUCHOS_TEST_FOR_EXCEPT(true);
     }
   }
   return 0.0;	// will never be executed!
@@ -688,7 +688,7 @@ MatrixOp& ConstraintsRelaxedStd::MatrixConstraints::operator=(
   )
 {
   // ToDo: Finish me
-  TEST_FOR_EXCEPT(true);
+  TEUCHOS_TEST_FOR_EXCEPT(true);
   return *this;
 }
 
@@ -750,11 +750,11 @@ void ConstraintsRelaxedStd::MatrixConstraints::Mp_StPtMtP(
     //      + a*op(P11)*op(F')*op(P24) - a*op(P12)*f'*op(P24)
     //      
 
-    TEST_FOR_EXCEPT(true);	// ToDo: Implement This!
+    TEUCHOS_TEST_FOR_EXCEPT(true);	// ToDo: Implement This!
 
   }
   else {
-    TEST_FOR_EXCEPT(true);	// ToDo: Finish This!
+    TEUCHOS_TEST_FOR_EXCEPT(true);	// ToDo: Finish This!
   }
 }
 */
@@ -764,7 +764,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
   ,const Vector& x, value_type b
   ) const
 {
-  TEST_FOR_EXCEPT( !(  !F_ || P_u_.cols() == f_->dim()  ) ); // ToDo: Add P_u when needed!
+  TEUCHOS_TEST_FOR_EXCEPT( !(  !F_ || P_u_.cols() == f_->dim()  ) ); // ToDo: Add P_u when needed!
 
   namespace mmp = MemMngPack;
   using BLAS_Cpp::trans_not;
@@ -873,7 +873,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
     }
   }
   else {
-    TEST_FOR_EXCEPT(true);	// Invalid trans value
+    TEUCHOS_TEST_FOR_EXCEPT(true);	// Invalid trans value
   }
 }
 
@@ -888,7 +888,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
   
 /*
 
-  TEST_FOR_EXCEPT( !(  !F_ || P_u_.cols() == f_->dim()  ) ); // ToDo: Add P_u when needed!
+  TEUCHOS_TEST_FOR_EXCEPT( !(  !F_ || P_u_.cols() == f_->dim()  ) ); // ToDo: Add P_u when needed!
 
   using BLAS_Cpp::no_trans;
   using BLAS_Cpp::trans;
@@ -932,7 +932,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
   {
     // Call the default implementation
     //MatrixOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,beta);
-    TEST_FOR_EXCEPT(true);
+    TEUCHOS_TEST_FOR_EXCEPT(true);
     return;
   }
 
@@ -993,7 +993,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
     // y(i) +=  a * ( x2 - b'*x3 - f'*x4 )
     //   
     if( P2.nz() ){
-      TEST_FOR_EXCEPT( !( P2.nz() == 1 ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !( P2.nz() == 1 ) );
       const size_type
         i = P_trans == BLAS_Cpp::no_trans
           ? P2.begin()->row_i() : P2.begin()->col_j();
@@ -1026,7 +1026,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
     //   P4 = op(P)(:,nd+1+m_in+1:nd+1+m_in+m_eq)
     //
 
-    TEST_FOR_EXCEPT( !(  !P.is_identity()  ) ); // We should never have this!
+    TEUCHOS_TEST_FOR_EXCEPT( !(  !P.is_identity()  ) ); // We should never have this!
 
     size_type off = 0;
     const GenPermMatrixSlice
@@ -1058,7 +1058,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
     Vp_StMtV( y, a, P1, P_trans, x1, beta );
     // y += a*op(P2)*x2
     if( P2.nz() ){
-      TEST_FOR_EXCEPT( !( P2.nz() == 1 ) );
+      TEUCHOS_TEST_FOR_EXCEPT( !( P2.nz() == 1 ) );
       (*y)( P_trans == BLAS_Cpp::no_trans
           ? P2.begin()->row_i() : P2.begin()->col_j() )
         += a * x2;
@@ -1078,7 +1078,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
     
   }
   else {
-    TEST_FOR_EXCEPT(true);	// Invalid trans value
+    TEUCHOS_TEST_FOR_EXCEPT(true);	// Invalid trans value
   }
 */
 }

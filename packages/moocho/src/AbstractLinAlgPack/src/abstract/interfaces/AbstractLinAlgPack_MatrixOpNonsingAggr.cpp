@@ -30,7 +30,7 @@
 #include "AbstractLinAlgPack_MatrixOpOut.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
@@ -58,10 +58,10 @@ void MatrixOpNonsingAggr::initialize(
   )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     mwo.get() == NULL, std::invalid_argument
     ,"MatrixOpNonsingAggr::initialize(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     mns.get() == NULL, std::invalid_argument
     ,"MatrixOpNonsingAggr::initialize(...): Error!" );
   const size_type
@@ -69,13 +69,13 @@ void MatrixOpNonsingAggr::initialize(
     mwo_cols = mwo->cols(),
     mns_rows = mns->rows(),
     mns_cols = mns->cols();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     mwo_rows != mwo_cols, std::invalid_argument
     ,"MatrixOpNonsingAggr::initialize(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     mns_rows != mns_cols, std::invalid_argument
     ,"MatrixOpNonsingAggr::initialize(...): Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     mwo_rows != mns_rows, std::invalid_argument
     ,"MatrixOpNonsingAggr::initialize(...): Error!" );
 #endif

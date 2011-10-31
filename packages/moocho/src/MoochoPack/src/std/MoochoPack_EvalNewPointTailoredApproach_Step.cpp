@@ -41,7 +41,7 @@
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace MoochoPack {
 
@@ -102,7 +102,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
     m  = nlp.m(),
     r  = var_dep.size();
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     m > r, TestFailed
     ,"EvalNewPointTailoredApproach_Step::do_step(...) : Error, "
     "Undecomposed equalities are supported yet!" );
@@ -133,7 +133,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
            ,x_iq.get_k(0),   "x_k"
            ))
       {
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true, TestFailed
           ,"EvalNewPointTailoredApproach_Step::do_step(...) : Error, "
           "the variables bounds xl <= x_k <= xu where violated!" );
@@ -297,7 +297,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
       ,olevel >= PRINT_VECTORS
       ,( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : (std::ostream*)NULL
       );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       !nlp_passed, TestFailed
       ,"EvalNewPointTailoredApproach_Step::do_step(...) : Error, "
       "the tests of the nlp derivatives failed!" );

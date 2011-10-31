@@ -186,7 +186,7 @@ void MatrixHessianSuperBasic::Vp_StMtV(
     //
     // B = Q_X *B_XX * Q_X'
     //
-    TEST_FOR_EXCEPT(true); // ToDo: Implement this!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement this!
   }
   else {
     //
@@ -258,7 +258,7 @@ void MatrixHessianSuperBasic::Vp_StMtV(
     //
     // B = Q_X *B_XX * Q_X'
     //
-    TEST_FOR_EXCEPT(true); // ToDo: Implement this!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement this!
   }
   else {
     //
@@ -422,7 +422,7 @@ value_type MatrixHessianSuperBasic::transVtMtV(
     //
     // B = Q_X *B_XX * Q_X'
     //
-    TEST_FOR_EXCEPT(true); // ToDo: Implement this!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement this!
   }
   else {
     //
@@ -465,7 +465,7 @@ value_type MatrixHessianSuperBasic::transVtMtV(
           );
     }
     else {
-      TEST_FOR_EXCEPT(true); // ToDo: Implement this!
+      TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement this!
     }
   }
   return 0.0; // Will never be executed!

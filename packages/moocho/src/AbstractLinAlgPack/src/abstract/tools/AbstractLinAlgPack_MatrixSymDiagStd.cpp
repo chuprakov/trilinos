@@ -34,7 +34,7 @@
 #include "AbstractLinAlgPack_VectorStdOps.hpp"
 #include "AbstractLinAlgPack_SpVectorClass.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -63,7 +63,7 @@ VectorMutable& MatrixSymDiagStd::diag()
 {
   copy_unique();
   VectorMutable *diag = diag_.get();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !diag, std::logic_error
     ,"MatrixSymDiagStd::diag(): Error, the diagonal vector has not been set! " );
   return *diag;;
@@ -103,7 +103,7 @@ MatrixSymDiagStd::operator=(const MatrixOp& M)
   const MatrixSymDiagStd
     *p_M = dynamic_cast<const MatrixSymDiagStd*>(&M);
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     p_M == NULL, std::logic_error
     ,"MatrixSymDiagStd::operator=(M): Error, the matrix M with concrete type "
     "\'" << typeName(M) << "\' does not support the MatrixSymDiagStd type! " );

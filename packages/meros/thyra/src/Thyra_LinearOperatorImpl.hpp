@@ -108,10 +108,10 @@ namespace Thyra
   {
     const Thyra::BlockedLinearOpBase<Scalar>* p = 
       dynamic_cast<const Thyra::BlockedLinearOpBase<Scalar>* >(this->constPtr().get());
-    TEST_FOR_EXCEPTION(p==0 && blockRow != 0, std::runtime_error,
+    TEUCHOS_TEST_FOR_EXCEPTION(p==0 && blockRow != 0, std::runtime_error,
                        "request for block row=" << blockRow << " in a non-block operator");
     
-    TEST_FOR_EXCEPTION(p==0 && blockCol != 0, std::runtime_error,
+    TEUCHOS_TEST_FOR_EXCEPTION(p==0 && blockCol != 0, std::runtime_error,
                        "request for block col=" << blockCol << " in a non-block operator");
     
     if (p != 0)
@@ -128,10 +128,10 @@ namespace Thyra
   {
     Thyra::BlockedLinearOpBase<Scalar>* p = 
       dynamic_cast<Thyra::BlockedLinearOpBase<Scalar>* >(this->ptr().get());
-    TEST_FOR_EXCEPTION(p==0 && blockRow != 0, std::runtime_error,
+    TEUCHOS_TEST_FOR_EXCEPTION(p==0 && blockRow != 0, std::runtime_error,
                        "request for block row=" << blockRow << " in a non-block operator");
     
-    TEST_FOR_EXCEPTION(p==0 && blockCol != 0, std::runtime_error,
+    TEUCHOS_TEST_FOR_EXCEPTION(p==0 && blockCol != 0, std::runtime_error,
                        "request for block col=" << blockCol << " in a non-block operator");
     
     if (p != 0)

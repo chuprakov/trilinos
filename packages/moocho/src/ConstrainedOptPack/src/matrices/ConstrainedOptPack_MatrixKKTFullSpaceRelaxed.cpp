@@ -86,7 +86,7 @@ void MatrixKKTFullSpaceRelaxed::initialize_relaxed(
   , std::ostream* out, EPrintMoreOrLess print_what, ERunTests test_what )
 {
   // ToDo: implement the relaxation in the future!
-  TEST_FOR_EXCEPT(true);
+  TEUCHOS_TEST_FOR_EXCEPT(true);
 }
 
 void MatrixKKTFullSpaceRelaxed::set_uninitialized()
@@ -124,7 +124,7 @@ std::ostream& MatrixKKTFullSpaceRelaxed::output(std::ostream& out) const
 {
   assert_initialized();
   // ToDo: Finish me!
-  TEST_FOR_EXCEPT(true);
+  TEUCHOS_TEST_FOR_EXCEPT(true);
   return out;
 }
 
@@ -132,7 +132,7 @@ MatrixOp& MatrixKKTFullSpaceRelaxed::operator=(const MatrixOp& m)
 {
   assert_initialized();
   // ToDo: Finish me!
-  TEST_FOR_EXCEPT(true);
+  TEUCHOS_TEST_FOR_EXCEPT(true);
   return *this;
 }
 
@@ -149,7 +149,7 @@ void MatrixKKTFullSpaceRelaxed::Vp_StMtV(
 
   if( use_relaxation_ ) {
     // ToDo: Implement the relaxation in the future
-    TEST_FOR_EXCEPT(true);
+    TEUCHOS_TEST_FOR_EXCEPT(true);
   }
   else {
     // y = b*y + a*K*x
@@ -187,7 +187,7 @@ void MatrixKKTFullSpaceRelaxed::V_InvMtV( DVectorSlice* v_lhs, BLAS_Cpp::Transp 
 {
   assert_initialized();
   // ToDo: Finish me!
-  TEST_FOR_EXCEPT(true);
+  TEUCHOS_TEST_FOR_EXCEPT(true);
 }
 
 // Overridden from MatrixConvertToSparseFortranCompatible
@@ -201,7 +201,7 @@ MatrixKKTFullSpaceRelaxed::num_nonzeros( EExtractRegion extract_region ) const
     nz;
   if( use_relaxation_ ) {
     // ToDo: Add support for the relaxation.
-    TEST_FOR_EXCEPT(true);
+    TEUCHOS_TEST_FOR_EXCEPT(true);
   }
   else {
     // Return the number of nonzeros in a region of :
@@ -315,7 +315,7 @@ void MatrixKKTFullSpaceRelaxed::coor_extract_nonzeros(
   // Extract the nonzero entries
   if( use_relaxation_ ) {
     // ToDo: Add support for the relaxation.
-    TEST_FOR_EXCEPT(true);
+    TEUCHOS_TEST_FOR_EXCEPT(true);
   }
   else {
     // Extract the nonzero entries in a region of :
@@ -327,10 +327,10 @@ void MatrixKKTFullSpaceRelaxed::coor_extract_nonzeros(
 
     switch(extract_region) {
       case MCTSFC_t::EXTRACT_FULL_MATRIX:
-        TEST_FOR_EXCEPT(true);	// We don't support this yet!
+        TEUCHOS_TEST_FOR_EXCEPT(true);	// We don't support this yet!
         break;
       case MCTSFC_t::EXTRACT_UPPER_TRIANGULAR:
-        TEST_FOR_EXCEPT(true);	// We don't support this yet!
+        TEUCHOS_TEST_FOR_EXCEPT(true);	// We don't support this yet!
         break;
       case MCTSFC_t::EXTRACT_LOWER_TRIANGULAR:
       {
@@ -344,7 +344,7 @@ void MatrixKKTFullSpaceRelaxed::coor_extract_nonzeros(
         const FortranTypes::f_int
           G_lo_nz = convG_->num_nonzeros( MCTSFC_t::EXTRACT_LOWER_TRIANGULAR ),
           A_nz = convA_->num_nonzeros( MCTSFC_t::EXTRACT_FULL_MATRIX);
-        TEST_FOR_EXCEPT( !(  (len_Aval == 0 || len_Aval == G_lo_nz + A_nz ) )
+        TEUCHOS_TEST_FOR_EXCEPT( !(  (len_Aval == 0 || len_Aval == G_lo_nz + A_nz ) )
             && (len_Aij == 0 || len_Aij == G_lo_nz + A_nz) );
         // Set the elements for G
         convG_->coor_extract_nonzeros(
@@ -361,7 +361,7 @@ void MatrixKKTFullSpaceRelaxed::coor_extract_nonzeros(
         break;
       }
       default:
-        TEST_FOR_EXCEPT(true);
+        TEUCHOS_TEST_FOR_EXCEPT(true);
         break;
     }
   }

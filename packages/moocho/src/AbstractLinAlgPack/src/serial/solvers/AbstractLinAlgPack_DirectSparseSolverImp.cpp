@@ -30,7 +30,7 @@
 
 #include "AbstractLinAlgPack_DirectSparseSolverImp.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
@@ -59,9 +59,9 @@ void DirectSparseSolverImp::BasisMatrixImp::initialize(
 {
 #ifdef TEUCHOS_DEBUG
   const char msg_err[] = "DirectSparseSolverImp::BasisMatrixImp::initialize(...): Error!";
-  TEST_FOR_EXCEPTION( dim < 0, std::logic_error, msg_err );
-  TEST_FOR_EXCEPTION( fact_struc.get() == NULL, std::logic_error, msg_err );
-  TEST_FOR_EXCEPTION( fact_nonzeros.get() == NULL, std::logic_error, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( dim < 0, std::logic_error, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( fact_struc.get() == NULL, std::logic_error, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( fact_nonzeros.get() == NULL, std::logic_error, msg_err );
 #endif
   dim_            = dim;
   fact_struc_     = fact_struc;
@@ -143,10 +143,10 @@ void DirectSparseSolverImp::analyze_and_factor(
   using Teuchos::dyn_cast;
 #ifdef TEUCHOS_DEBUG
   const char msg_err[] = "DirectSparseSolverImp::analyze_and_factor(...): Error!";
-  TEST_FOR_EXCEPTION( row_perm == NULL, std::logic_error, msg_err );
-  TEST_FOR_EXCEPTION( col_perm == NULL, std::logic_error, msg_err );
-  TEST_FOR_EXCEPTION( rank == NULL, std::logic_error, msg_err );
-  TEST_FOR_EXCEPTION( basis_matrix == NULL, std::logic_error, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( row_perm == NULL, std::logic_error, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( col_perm == NULL, std::logic_error, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( rank == NULL, std::logic_error, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( basis_matrix == NULL, std::logic_error, msg_err );
 #endif
   BasisMatrixImp
     &basis_matrix_imp = dyn_cast<BasisMatrixImp>(*basis_matrix);
@@ -196,7 +196,7 @@ void DirectSparseSolverImp::factor(
 #ifdef TEUCHOS_DEBUG
   const char msg_err[] = "DirectSparseSolverImp::analyze_and_factor(...): Error!";
   // ToDo: Validate that A is compatible!
-  TEST_FOR_EXCEPTION( basis_matrix == NULL, std::logic_error, msg_err );
+  TEUCHOS_TEST_FOR_EXCEPTION( basis_matrix == NULL, std::logic_error, msg_err );
 #endif
   BasisMatrixImp
     &basis_matrix_imp = dyn_cast<BasisMatrixImp>(*basis_matrix);
@@ -204,7 +204,7 @@ void DirectSparseSolverImp::factor(
   const BasisMatrix::fact_struc_ptr_t        &this_fact_struc = this->get_fact_struc();
   BasisMatrix::fact_struc_ptr_t              fact_struc;
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     fact_struc_in.get() == NULL && this_fact_struc.get() == NULL
     ,std::logic_error
     ,msg_err );

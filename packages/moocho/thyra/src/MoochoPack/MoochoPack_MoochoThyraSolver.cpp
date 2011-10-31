@@ -208,7 +208,7 @@ void MoochoThyraSolver::setupCLP(
   Teuchos::CommandLineProcessor *clp
   )
 {
-  TEST_FOR_EXCEPT(0==clp);
+  TEUCHOS_TEST_FOR_EXCEPT(0==clp);
   solver_.setup_commandline_processor(clp);
   clp->setOption(
     paramsXmlFileNameOption().c_str(),&paramsXmlFileName_
@@ -265,7 +265,7 @@ void MoochoThyraSolver::setParameterList(
   )
 {
   typedef MoochoPack::MoochoSolver MS;
-  TEST_FOR_EXCEPT(!paramList.get());
+  TEUCHOS_TEST_FOR_EXCEPT(!paramList.get());
   paramList->validateParameters(*getValidParameters(),0); // Just validate my level!
   paramList_ = paramList;
   solveMode_ = solveModeValidator->getIntegralValue(
@@ -682,13 +682,13 @@ void MoochoThyraSolver::setModel(
             break;
           }
           default:
-            TEST_FOR_EXCEPT(true);
+            TEUCHOS_TEST_FOR_EXCEPT(true);
         }
       }
       break;
     }
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
     
   // Set the NLP

@@ -35,7 +35,7 @@
 #include "AbstractLinAlgPack_apply_op_helper.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "Teuchos_Workspace.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 #ifdef TEUCHOS_DEBUG
 #define CLASS_MEMBER_PTRS \
@@ -145,7 +145,7 @@ void VectorMutableDense::get_sub_vector(
   CLASS_MEMBER_PTRS
   const size_type  this_dim = v_.dim();
   const Range1D    rng = RangePack::full_range(rng_in,1,this_dim);
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     rng.ubound() > this_dim, std::out_of_range
     ,"VectorMutableDense::get_sub_vector(...) : Error, "
     "rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
@@ -214,7 +214,7 @@ VectorMutableDense::sub_view( const Range1D& rng_in )
   const size_type this_dim = this->dim();
   const Range1D rng = RangePack::full_range( rng_in, 1, this_dim );
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     rng.ubound() > this_dim, std::out_of_range
     ,"VectorMutableDense::sub_view(...) : Error, "
     "rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
@@ -233,7 +233,7 @@ void VectorMutableDense::get_sub_vector(
   const size_type  this_dim = v_.dim();
   const Range1D    rng = RangePack::full_range(rng_in,1,this_dim);
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     rng.ubound() > this_dim, std::out_of_range
     ,"VectorMutableDense::get_sub_vector(...) : Error, "
     "rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "

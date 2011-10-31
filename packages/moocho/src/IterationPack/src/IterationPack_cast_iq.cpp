@@ -27,7 +27,7 @@
 // @HEADER
 
 #include "IterationPack_cast_iq.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 void IterationPack::imp_cast_iq_throw_error(
   const std::string&                 iq_name
@@ -35,7 +35,7 @@ void IterationPack::imp_cast_iq_throw_error(
   ,const std::string&                iq_want_type_name
   )
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     true, IterationPack::InvalidTypeCastException
     ,"cast_id<T>(state,iq_name) : Error, the iteration quantity \'"
     << iq_name << "\' exists with type \'" << iq_is_type_name << "\' but does not "
@@ -49,7 +49,7 @@ void IterationPack::imp_cast_iq_throw_error(
   ,const std::string&                iq_want_type_name
   )
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     true, IterationPack::InvalidTypeCastException
     ,"cast_id<T>(state,iq_id,iq_name) : Error, the iteration quantity \'"
     << iq_name << "\' with iq_id = \'" << iq_id

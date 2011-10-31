@@ -32,7 +32,7 @@
 
 #include "OptionsFromStreamPack_OptionsFromStream.hpp"
 #include "InputStreamHelperPack_EatInputComment.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 // Define this if you want to debug the parser
 //#define PRINT_OPTIONS_FROM_STREAM_TRACE
@@ -151,7 +151,7 @@ void OptionsFromStream::read_options( std::istream& in )
 #endif
       break;
     }
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       curr_word != "options_group", InputStreamError
       ,"OptionsFromStream::read_options(...) : "
       "Error, curr_word = \'" << curr_word << " != \'options_group\'" );
@@ -191,7 +191,7 @@ void OptionsFromStream::read_options( std::istream& in )
         break;
       // Process the option and value
       const std::string::size_type equal_idx = option_and_value.find('=',0);
-      TEST_FOR_EXCEPTION(
+      TEUCHOS_TEST_FOR_EXCEPTION(
         equal_idx==std::string::npos, std::logic_error,
         "Error, for the option group \"" << optgroup_name << "\""
         << " the option value string \"" << option_and_value << "\" is missing the \"=\" separator!"

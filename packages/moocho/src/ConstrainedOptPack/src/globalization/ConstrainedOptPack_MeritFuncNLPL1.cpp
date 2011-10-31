@@ -32,7 +32,7 @@
 #include "AbstractLinAlgPack_Vector.hpp"
 #include "AbstractLinAlgPack_VectorStdOps.hpp"
 #include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace ConstrainedOptPack {
@@ -99,7 +99,7 @@ value_type MeritFuncNLPL1::calc_deriv(
   )
 {
   using AbstractLinAlgPack::dot;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     h_k || hl || hu, std::logic_error
     ,"MeritFuncNLPL1::value(...) : Error! general inequalities are not supported yet" );
   return deriv_ = dot( Gf_k, d_k ) - ( c_k ? mu_ * c_k->norm_1() : 0.0 );

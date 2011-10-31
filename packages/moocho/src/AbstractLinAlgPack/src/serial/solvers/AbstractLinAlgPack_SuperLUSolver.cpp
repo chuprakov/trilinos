@@ -35,7 +35,7 @@
 #include "AbstractLinAlgPack_SuperLUSolver.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_Workspace.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 // SuperLU
 #include "dsp_defs.h"
@@ -281,7 +281,7 @@ void SuperLUSolverImpl::analyze_and_factor(
     ,&info
     );
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     info != 0, std::runtime_error
     ,"SuperLUSolverImpl::analyze_and_factor(...): Error, dgstrf(...) returned info = " << info
     );
@@ -317,7 +317,7 @@ void SuperLUSolverImpl::analyze_and_factor(
       ,fact_struct, fact_nonzeros
       ,&fs.perm_r_[0], &fs.perm_c_[0], &b_rank
       );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       (b_rank != *rank), std::runtime_error
       ,"SuperLUSolverImpl::analyze_and_factor(...): Error, the rank determined by "
       "the factorization of the rectangular " << m << " x " << n << " matrix of "
@@ -366,7 +366,7 @@ void SuperLUSolverImpl::factor(
       ,&b_val[0],&b_row_i[0],&b_col_ptr[0]
       ,&b_nz
       );
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       (b_nz != fs.nz_), std::runtime_error
       ,"SuperLUSolverImpl::factor(...): Error!"
       );
@@ -414,7 +414,7 @@ void SuperLUSolverImpl::factor(
     ,&info
     );
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     info != 0, std::runtime_error
     ,"SuperLUSolverImpl::factor(...): Error, dgstrf(...) returned info = " << info
     );
@@ -439,7 +439,7 @@ void SuperLUSolverImpl::solve(
   const FactorizationNonzerosImpl
     &fn = dyn_cast<const FactorizationNonzerosImpl>(fact_nonzeros);
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     n != fs.rank_, std::runtime_error
     ,"SuperLUSolverImpl::solve(...): Error, the dimmensions n = " << n << " and fs.rank = " << fs.rank_
     << " do not match up!"
@@ -461,7 +461,7 @@ void SuperLUSolverImpl::solve(
     ,&B, &info
     );
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     info != 0, std::runtime_error
     ,"SuperLUSolverImpl::solve(...): Error, dgssv(...) returned info = " << info
     );

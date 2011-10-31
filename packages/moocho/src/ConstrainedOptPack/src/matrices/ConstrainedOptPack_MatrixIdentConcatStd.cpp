@@ -29,7 +29,7 @@
 #include <assert.h>
 
 #include "ConstrainedOptPack_MatrixIdentConcatStd.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -50,15 +50,15 @@ void MatrixIdentConcatStd::initialize(
   )
 {
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_cols.get() == NULL, std::invalid_argument
     ,"MatrixIdentConcatStd::initialize(...): Error, "
     "space_cols.get() can not be NULL!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_rows.get() == NULL, std::invalid_argument
     ,"MatrixIdentConcatStd::initialize(...): Error, "
     "space_rows.get() can not be NULL!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     D_ptr.get() == NULL, std::invalid_argument
     ,"MatrixIdentConcatStd::initialize(...): Error, "
     "D_ptr.get() can not be NULL!" );
@@ -136,14 +136,14 @@ const VectorSpace& MatrixIdentConcatStd::space_rows() const
 
 MatrixOp& MatrixIdentConcatStd::operator=(const MatrixOp& m)
 {
-  TEST_FOR_EXCEPT(true); // Finish!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // Finish!
   return *this;
 }
 
 // private
 
 void MatrixIdentConcatStd::assert_initialized() const {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_cols_.get() == NULL, std::logic_error
     ,"Error, the MatrixIdentConcatStd object has not been initialized!" );
 }

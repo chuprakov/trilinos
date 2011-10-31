@@ -33,7 +33,7 @@
 #include "AbstractLinAlgPack_AssertOp.hpp"
 //#include "AbstractLinAlgPack/src/AbstractLinAlgPack_GenPermMatrixSliceOp.hpp"
 #include "Teuchos_Workspace.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "ProfileHackPack_profile_hack.hpp"
 
 namespace {
@@ -135,11 +135,11 @@ void Vp_StMtV_imp(
           // y(r) += a * beta * v'*x(c,c+n-1)
           //
 //					y->set_ele( r, y->get_ele(r) + a * itr->beta_ * dot( *itr->v_, *get_view(x,c,c+itr->v_->dim()-1) ) );
-          TEST_FOR_EXCEPT(true); // ToDo: Implement the above method in VectorStdOps for Vector,SpVectorSlice!
+          TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement the above method in VectorStdOps for Vector,SpVectorSlice!
         }
       }
       else { // op(op(G)*v) or op(v(rng_G))
-        TEST_FOR_EXCEPT(true); // ToDo: Implement when needed!
+        TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement when needed!
       }
     }
   }
@@ -169,7 +169,7 @@ void Vp_StMtV_imp(
       }
       else {
         if( itr->A_ == NULL ) { // op(P)
-          TEST_FOR_EXCEPT( !(  itr->P_.get() && !itr->P_->is_identity()  ) );
+          TEUCHOS_TEST_FOR_EXCEPT( !(  itr->P_.get() && !itr->P_->is_identity()  ) );
           //
           //       [ y1 ]        [                        ]   [ x1 ]
           // rl:ru [ y2 ] += a * [    alpha * op(op(P))   ] * [ x2 ] cl:cu
@@ -181,7 +181,7 @@ void Vp_StMtV_imp(
           // y(rl:ru) += a * alpha * op(op(P)) * x(cl:cu)
           //
 // 					AbstractLinAlgPack::Vp_StMtV( y->sub_view(rl,ru).get(), a * itr->alpha_, itr->P_, op_P_trans, *get_view(x,cl,cu) );
-          TEST_FOR_EXCEPT(true); // ToDo: Implement the above method properly!
+          TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement the above method properly!
         }
         else { // op(P)*op(A)*op(Q)  [or some simplification]
           //
@@ -205,7 +205,7 @@ void Vp_StMtV_imp(
               );
           }
           else {
-            TEST_FOR_EXCEPT(true); // ToDo: Implement when needed!
+            TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement when needed!
           }
         }
       }
@@ -275,7 +275,7 @@ void MatrixComposite::add_vector(
   )
 {
   fully_constructed_ = false;
-  TEST_FOR_EXCEPT(true); // ToDo: Finish!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Finish!
 }
 
 void MatrixComposite::add_vector(
@@ -289,7 +289,7 @@ void MatrixComposite::add_vector(
   )
 {
   fully_constructed_ = false;
-  TEST_FOR_EXCEPT(true); // ToDo: Finish!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Finish!
 }
 
 void MatrixComposite::add_vector(
@@ -303,16 +303,16 @@ void MatrixComposite::add_vector(
 {
   namespace rcp = MemMngPack;
 
-  TEST_FOR_EXCEPT( !(  beta != 0.0  ) );
-  TEST_FOR_EXCEPT( !(  v != NULL  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  beta != 0.0  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  v != NULL  ) );
   fully_constructed_ = false;
   if( v_trans == BLAS_Cpp::no_trans ) {
-    TEST_FOR_EXCEPT( !(  row_offset + v->dim() <= rows_  ) );
-    TEST_FOR_EXCEPT( !(  col_offset + 1 <= cols_  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  row_offset + v->dim() <= rows_  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  col_offset + 1 <= cols_  ) );
   }
   else {
-    TEST_FOR_EXCEPT( !(  row_offset + 1 <= rows_  ) );
-    TEST_FOR_EXCEPT( !(  col_offset + v->dim() <= cols_  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  row_offset + 1 <= rows_  ) );
+    TEUCHOS_TEST_FOR_EXCEPT( !(  col_offset + v->dim() <= cols_  ) );
   }
 
   vector_list_.push_back(
@@ -344,7 +344,7 @@ void MatrixComposite::add_matrix(
   )
 {
   fully_constructed_ = false;
-  TEST_FOR_EXCEPT(true); // ToDo: Finish!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Finish!
 }
 
 void MatrixComposite::add_matrix(
@@ -361,7 +361,7 @@ void MatrixComposite::add_matrix(
   )
 {
   fully_constructed_ = false;
-  TEST_FOR_EXCEPT(true); // ToDo: Finish!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Finish!
 }
 
 void MatrixComposite::add_matrix(
@@ -378,7 +378,7 @@ void MatrixComposite::add_matrix(
   )
 {
   fully_constructed_ = false;
-  TEST_FOR_EXCEPT(true); // ToDo: Finish!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Finish!
 }
 
 void MatrixComposite::add_matrix(
@@ -397,10 +397,10 @@ void MatrixComposite::add_matrix(
   using BLAS_Cpp::cols;
   using RangePack::full_range;
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     alpha == 0.0, std::invalid_argument
     ,"MatrixComposite::add_matrix(...) : Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     A == NULL, std::invalid_argument
     ,"MatrixComposite::add_matrix(...) : Error!" );
 
@@ -416,10 +416,10 @@ void MatrixComposite::add_matrix(
     opPopAopQ_rows = rng_P.size(),
     opPopAopQ_cols = rng_Q.size();
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     row_offset + opPopAopQ_rows > rows_, std::invalid_argument
     ,"MatrixComposite::add_matrix(...) : Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     col_offset + opPopAopQ_cols > cols_, std::invalid_argument
     ,"MatrixComposite::add_matrix(...) : Error!" );
 
@@ -457,10 +457,10 @@ void MatrixComposite::add_matrix(
   using BLAS_Cpp::rows;
   using BLAS_Cpp::cols;
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     alpha == 0.0, std::invalid_argument
     ,"MatrixComposite::add_matrix(...) : Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     A == NULL, std::invalid_argument
     ,"MatrixComposite::add_matrix(...) : Error!" );
 
@@ -470,10 +470,10 @@ void MatrixComposite::add_matrix(
     opA_rows = rows(A_rows,A_cols,A_trans),
     opA_cols = cols(A_rows,A_cols,A_trans);
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     row_offset + opA_rows > rows_, std::invalid_argument
     ,"MatrixComposite::add_matrix(...) : Error!" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     col_offset + opA_cols > cols_, std::invalid_argument
     ,"MatrixComposite::add_matrix(...) : Error!" );
 
@@ -506,8 +506,8 @@ void MatrixComposite::add_matrix(
   using BLAS_Cpp::rows;
   using BLAS_Cpp::cols;
 
-  TEST_FOR_EXCEPT( !(  alpha != 0.0  ) );
-  TEST_FOR_EXCEPT( !(  P != NULL  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  alpha != 0.0  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  P != NULL  ) );
 
   fully_constructed_ = false;
 
@@ -517,8 +517,8 @@ void MatrixComposite::add_matrix(
     opP_rows = rows(P_rows,P_cols,P_trans),
     opP_cols = cols(P_rows,P_cols,P_trans);
 
-  TEST_FOR_EXCEPT( !(  row_offset + opP_rows <= rows_  ) );
-  TEST_FOR_EXCEPT( !(  col_offset + opP_cols <= cols_  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  row_offset + opP_rows <= rows_  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  col_offset + opP_cols <= cols_  ) );
 
   matrix_list_.push_back(
     SubMatrixEntry(
@@ -543,17 +543,17 @@ void MatrixComposite::finish_construction(
   ,const VectorSpace::space_ptr_t& space_rows
   )
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !space_cols.get(), std::invalid_argument
     ,"MatrixComposite::finish_construction(...): Error, space_cols.get() can not be NULL" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !space_rows.get(), std::invalid_argument
     ,"MatrixComposite::finish_construction(...): Error, space_rows.get() can not be NULL" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_cols->dim() != rows_, std::invalid_argument
     ,"MatrixComposite::finish_construction(...): Error, space_colss->dim() = " << space_cols->dim()
     << " != rows = " << rows_ << " where cols was passed to this->reinitialize(...)" );
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     space_rows->dim() != cols_, std::invalid_argument
     ,"MatrixComposite::finish_construction(...): Error, space_rows->dim() = " << space_rows->dim()
     << " != cols = " << cols_ << " where cols was passed to this->reinitialize(...)" );
@@ -741,7 +741,7 @@ void MatrixComposite::Vp_StPtMtV(
 void MatrixComposite::assert_fully_constructed() const
 {
   const bool fully_constructed = fully_constructed_;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !fully_constructed, std::logic_error
     ,"MatrixComposite::assert_fully_constructed() : Error, not fully constructed!");
 }

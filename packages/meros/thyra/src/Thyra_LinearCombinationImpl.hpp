@@ -259,7 +259,7 @@ namespace Thyra
   operator*(const ConstLinearOperator<Scalar>& op, 
             const OpTimesLC<Scalar, Node>& x)
   {
-    TEST_FOR_EXCEPTION(op.constPtr().get()==0, std::runtime_error,
+    TEUCHOS_TEST_FOR_EXCEPTION(op.constPtr().get()==0, std::runtime_error,
                        "null operator in LinearOperator * ( OpTimesLC )");
     if (x.op().constPtr().get()==0)
       {

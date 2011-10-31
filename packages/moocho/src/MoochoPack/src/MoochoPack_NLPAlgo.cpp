@@ -62,7 +62,7 @@ NLPAlgo::dispatch() {
     case IterationPack::INTERRUPTED_TERMINATE_FALSE:
       return NLPSolverClientInterface::ALGORITHMIC_ERROR;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
   return NLPSolverClientInterface::SOLUTION_FOUND;	// will never be called.
 }

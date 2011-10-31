@@ -33,7 +33,7 @@
 #include "AbstractLinAlgPack_VectorMutableThyra.hpp"
 #include "AbstractLinAlgPack_MultiVectorMutableThyra.hpp"
 #include "AbstractLinAlgPack_InnerProductThyra.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
@@ -57,7 +57,7 @@ void VectorSpaceThyra::initialize(
   )
 {
   namespace mmp = MemMngPack;
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     thyra_vec_spc.get()==NULL, std::invalid_argument
     ,"VectorSpaceThyra::initialize(thyra_vec_spc): Error!"
     );

@@ -44,7 +44,7 @@
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
 #include "TestingHelperPack_update_success.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace {
 template< class T >
@@ -139,7 +139,7 @@ bool NLPDirectTester::finite_diff_check(
   // //////////////////////////////////////////////
   // Validate the input
 
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     py && !c, std::invalid_argument
     ,"NLPDirectTester::finite_diff_check(...) : "
     "Error, if py!=NULL then c!=NULL must also be true!" );
@@ -160,7 +160,7 @@ bool NLPDirectTester::finite_diff_check(
     switch( Gf_testing_method() ) {
       case FD_COMPUTE_ALL: {
         // Compute FDGf outright
-        TEST_FOR_EXCEPT(true); // ToDo: update above!
+        TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: update above!
         break;
       }
       case FD_DIRECTIONAL: {
@@ -232,7 +232,7 @@ bool NLPDirectTester::finite_diff_check(
         break;
       }
       default:
-        TEST_FOR_EXCEPT(true); // Invalid value
+        TEUCHOS_TEST_FOR_EXCEPT(true); // Invalid value
     }
   }
 
@@ -357,7 +357,7 @@ bool NLPDirectTester::finite_diff_check(
         update_success( result, &success );
         if(!result) return false;
 */
-        TEST_FOR_EXCEPT(true); // Todo: Implement above!
+        TEUCHOS_TEST_FOR_EXCEPT(true); // Todo: Implement above!
         break;
       }
       case FD_DIRECTIONAL: {
@@ -463,7 +463,7 @@ bool NLPDirectTester::finite_diff_check(
         break;
       }
       default:
-        TEST_FOR_EXCEPT(true);
+        TEUCHOS_TEST_FOR_EXCEPT(true);
     }
   }
 
@@ -572,7 +572,7 @@ bool NLPDirectTester::finite_diff_check(
       }
     }
     else {
-      TEST_FOR_EXCEPT(true); // ToDo: Test rGf without D? (This is not going to be easy!)
+      TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Test rGf without D? (This is not going to be easy!)
     }
   }
   
@@ -580,7 +580,7 @@ bool NLPDirectTester::finite_diff_check(
   // (5) Check GcU, and/or Uz (for undecomposed equalities)
 
   if(GcU || Uz) {
-    TEST_FOR_EXCEPT(true); // ToDo: Implement!
+    TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
   }
   
 FD_NOT_PREFORMED:

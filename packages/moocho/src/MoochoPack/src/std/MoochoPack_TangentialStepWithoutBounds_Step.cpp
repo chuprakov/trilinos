@@ -42,7 +42,7 @@
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 
 namespace LinAlgOpPack {
@@ -89,7 +89,7 @@ bool TangentialStepWithoutBounds_Step::do_step(
   }
 
   if( algo.nlp().num_bounded_x() )
-    TEST_FOR_EXCEPTION(
+    TEUCHOS_TEST_FOR_EXCEPTION(
       true, std::logic_error
       ,"TangentialStepWithoutBounds_Step::do_step(...): Error, "
       "can't solve for pz for NLP with undecomposed constraints or "

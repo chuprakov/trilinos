@@ -124,7 +124,7 @@ template<class T_Element>
 void
 AbstractLinAlgPack::SparseVectorUtilityPack::SpVecIndexLookup<T_Element>::validate_state() const
 {
-  TEST_FOR_EXCEPTION( ele() && ele()->index() + offset() < 1, NoSpVecSetException,
+  TEUCHOS_TEST_FOR_EXCEPTION( ele() && ele()->index() + offset() < 1, NoSpVecSetException,
     "SpVecIndexLookup<T_Element>::validate_state(): Error, ele()->index() + offset() < 1");
 }
 

@@ -32,7 +32,7 @@
 #include "AbstractLinAlgPack_MatrixExtractSparseElements.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "DenseLinAlgPack_IVector.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -74,11 +74,11 @@ void MatrixConvertToSparseEncap::initialize(
   const Range1D col_rng = RangePack::full_range(col_rng_in,1,mese_cols);
 #ifdef TEUCHOS_DEBUG
   const char msg_head[] = "MatrixConvertToSparseEncap::initialize(...): Error!";
-  TEST_FOR_EXCEPTION( mese.get() == NULL, std::logic_error, msg_head );
-  TEST_FOR_EXCEPTION( inv_row_perm.get() != NULL && inv_row_perm->size() != mese_rows, std::logic_error, msg_head );
-  TEST_FOR_EXCEPTION( row_rng.ubound() > mese_rows, std::logic_error, msg_head );
-  TEST_FOR_EXCEPTION( inv_col_perm.get() != NULL && inv_col_perm->size() != mese_cols, std::logic_error, msg_head );
-  TEST_FOR_EXCEPTION( col_rng.ubound() > mese->cols(), std::logic_error, msg_head );
+  TEUCHOS_TEST_FOR_EXCEPTION( mese.get() == NULL, std::logic_error, msg_head );
+  TEUCHOS_TEST_FOR_EXCEPTION( inv_row_perm.get() != NULL && inv_row_perm->size() != mese_rows, std::logic_error, msg_head );
+  TEUCHOS_TEST_FOR_EXCEPTION( row_rng.ubound() > mese_rows, std::logic_error, msg_head );
+  TEUCHOS_TEST_FOR_EXCEPTION( inv_col_perm.get() != NULL && inv_col_perm->size() != mese_cols, std::logic_error, msg_head );
+  TEUCHOS_TEST_FOR_EXCEPTION( col_rng.ubound() > mese->cols(), std::logic_error, msg_head );
 #endif
   mese_           = mese;
   mese_trans_     = mese_trans;
@@ -166,7 +166,7 @@ index_type MatrixConvertToSparseEncap::num_nonzeros(
       du = +(index_type)col_rng_.lbound() - (index_type)row_rng_.lbound();
       break;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
   const index_type
     *inv_row_perm = inv_row_perm_.get() ? &(*inv_row_perm_)(1) : NULL,
@@ -209,7 +209,7 @@ void MatrixConvertToSparseEncap::coor_extract_nonzeros(
       du = +(index_type)col_rng_.lbound() - (index_type)row_rng_.lbound();
       break;
     default:
-      TEST_FOR_EXCEPT(true);
+      TEUCHOS_TEST_FOR_EXCEPT(true);
   }
   const index_type
     *inv_row_perm = inv_row_perm_.get() ? &(*inv_row_perm_)(1) : NULL,

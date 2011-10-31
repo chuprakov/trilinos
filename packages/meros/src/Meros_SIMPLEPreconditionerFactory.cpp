@@ -60,7 +60,7 @@ SIMPLEPreconditionerFactory
 bool SIMPLEPreconditionerFactory
 ::isCompatible(const LinearOpSourceBase<double> &fwdOpSrc) const
 {
-  TEST_FOR_EXCEPT("SIMPLEPreconditionerFactory::isCompatible is not implemented");
+  TEUCHOS_TEST_FOR_EXCEPT("SIMPLEPreconditionerFactory::isCompatible is not implemented");
 }
 
 RCP<PreconditionerBase<double> > SIMPLEPreconditionerFactory
@@ -143,7 +143,7 @@ void SIMPLEPreconditionerFactory
 		   RCP<const LinearOpSourceBase<double> > *fwdOp,
 		   ESupportSolveUse *supportSolveUse) const
 {
-TEST_FOR_EXCEPT("SIMPLEPreconditionerFactory::uninitializePrec not implemented");
+TEUCHOS_TEST_FOR_EXCEPT("SIMPLEPreconditionerFactory::uninitializePrec not implemented");
 }
 
 
@@ -152,7 +152,7 @@ TEST_FOR_EXCEPT("SIMPLEPreconditionerFactory::uninitializePrec not implemented")
 void SIMPLEPreconditionerFactory
 ::setParameterList(Teuchos::RCP<Teuchos::ParameterList> const& paramList)
 {
-  TEST_FOR_EXCEPT(paramList.get()==NULL);
+  TEUCHOS_TEST_FOR_EXCEPT(paramList.get()==NULL);
   // Don't know how to validate an ML list
   //  paramList->validateParameters(*this->getValidParameters(),1);
   paramList_ = paramList;

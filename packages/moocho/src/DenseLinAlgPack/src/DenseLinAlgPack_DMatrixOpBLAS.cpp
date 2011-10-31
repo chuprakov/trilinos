@@ -131,7 +131,7 @@ void DenseLinAlgPack::assign(DMatrix* gm_lhs, const DMatrixSlice& gms_rhs, BLAS_
 // gms_lhs = alpha (elementwise)
 void DenseLinAlgPack::assign(DMatrixSlice* gms_lhs, value_type alpha)
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !gms_lhs->rows(), std::length_error
     ,"Error, assign(gms_lhs,alpha):  You can not assign Scalar to an unsized DMatrixSlice" );
   i_assign(gms_lhs, alpha);
@@ -147,7 +147,7 @@ void DenseLinAlgPack::assign(DMatrixSlice* gms_lhs, const DMatrixSlice& gms_rhs,
 // tri_lhs = alpha (elementwise)
 void DenseLinAlgPack::assign(DMatrixSliceTriEle* tri_lhs, value_type alpha)
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !tri_lhs->gms().rows(), std::length_error
     ,"Error, assign(tri_lhs,alpha):  You can not assign a scalar to an unsized triangular DMatrixSlice" );
   assert_gms_square(tri_lhs->gms()); 
@@ -201,7 +201,7 @@ void DenseLinAlgPack::assign(DMatrixSliceTriEle* tri_lhs, const DMatrixSliceTriE
 
 void DenseLinAlgPack::Mt_S(DMatrixSlice* gms_lhs, value_type alpha)
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !gms_lhs->rows(), std::length_error
     ,"Error, Mt_S(gms_lhs,alpha):  You can not scale an unsized DMatrixSlice" );
   for(int j = 1; j <= gms_lhs->cols(); ++j)
@@ -218,7 +218,7 @@ void DenseLinAlgPack::M_diagVtM( DMatrixSlice* gms_lhs, const DVectorSlice& vs_r
 }
 
 void DenseLinAlgPack::Mt_S(DMatrixSliceTriEle* tri_lhs, value_type alpha) {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !tri_lhs->gms().rows(), std::length_error
     ,"Error, Mt_S(tri_lhs,alpha):  You can not scale an unsized triangular DMatrixSlice" );
   BLAS_Cpp::Transp

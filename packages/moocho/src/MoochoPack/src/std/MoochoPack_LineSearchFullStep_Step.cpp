@@ -38,7 +38,7 @@
 #include "AbstractLinAlgPack_VectorOut.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 namespace MoochoPack {
 
@@ -115,7 +115,7 @@ bool LineSearchFullStep_Step::do_step(Algorithm& _algo
         , x_kp1, "x_kp1"
         ))
       {
-        TEST_FOR_EXCEPTION(
+        TEUCHOS_TEST_FOR_EXCEPTION(
           true, TestFailed
           ,"LineSearchFullStep_Step::do_step(...) : Error, "
           "the variables bounds xl <= x_k(+1) <= xu where violated!" );

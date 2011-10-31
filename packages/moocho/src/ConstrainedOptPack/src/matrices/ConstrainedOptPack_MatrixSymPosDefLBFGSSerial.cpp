@@ -251,7 +251,7 @@ void MatrixSymPosDefLBFGS::Vp_StMtV(
 
   assert_initialized();
 
-  TEST_FOR_EXCEPT( !(  original_is_updated_  ) ); // For now just always update
+  TEUCHOS_TEST_FOR_EXCEPT( !(  original_is_updated_  ) ); // For now just always update
 
   // y = b*y + Bk * x
   //
@@ -350,7 +350,7 @@ void MatrixSymPosDefLBFGS::V_InvMtV( DVectorSlice* y, BLAS_Cpp::Transp trans_rhs
 
   assert_initialized();
 
-  TEST_FOR_EXCEPT( !(  inverse_is_updated_  ) ); // For now just always update
+  TEUCHOS_TEST_FOR_EXCEPT( !(  inverse_is_updated_  ) ); // For now just always update
 
   // y = inv(Bk) * x = Hk * x
   //
@@ -1098,7 +1098,7 @@ void comp_Cb( const DMatrixSlice& Lb, const DVectorSlice& Db_diag
   typedef DenseLinAlgPack::size_type size_type;
   typedef DenseLinAlgPack::value_type value_type;
 
-  TEST_FOR_EXCEPT( !(  Lb.rows() == Cb->rows() && Cb->rows() == Db_diag.size()  ) );
+  TEUCHOS_TEST_FOR_EXCEPT( !(  Lb.rows() == Cb->rows() && Cb->rows() == Db_diag.size()  ) );
 
   const size_type p = Db_diag.size();
 

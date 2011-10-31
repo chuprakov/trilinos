@@ -36,7 +36,7 @@
 #include "AbstractLinAlgPack_VectorStdOps.hpp"
 #include "AbstractLinAlgPack_VectorOut.hpp"
 #include "TestingHelperPack_update_success.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 
 
 //#define ALAP_VECTOR_SPACE_TESTER_DUMP
@@ -547,7 +547,7 @@ void VectorSpaceTester::check_test(value_type err, std::ostream* out, bool* succ
       *out << "Warning!  |" << err << "| = " << ::fabs(err) << " >= warning_tol = "
              << warning_tol() << std::endl;
   }
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !*success && this->throw_exception(), std::logic_error
     ,"VectorSpaceTester::check_test(...): Error!  |" << err << "| = " << ::fabs(err) << " >= error_tol = "
     << error_tol() << std::endl );

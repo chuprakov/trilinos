@@ -43,14 +43,14 @@
 #include "AbstractLinAlgPack_SpVectorView.hpp"
 #include "AbstractLinAlgPack_EtaVector.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "Teuchos_Assert.hpp"
 #include "Teuchos_FancyOStream.hpp"
 
 namespace AbstractLinAlgPack {
 
 void MatrixOp::zero_out()
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     true, std::logic_error, "MatrixOp::zero_out(): "
     "Error, this method as not been defined by the subclass \'"
     <<typeName(*this)<<"\'" );
@@ -58,7 +58,7 @@ void MatrixOp::zero_out()
 
 void MatrixOp::Mt_S(value_type alpha)
 {
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     true, std::logic_error, "MatrixOp::Mt_S(): "
     "Error, this method as not been defined by the subclass \'"
     <<typeName(*this)<<"\'" );
@@ -67,7 +67,7 @@ void MatrixOp::Mt_S(value_type alpha)
 MatrixOp& MatrixOp::operator=(const MatrixOp& M)
 {
   const bool assign_to_self = dynamic_cast<const void*>(this) == dynamic_cast<const void*>(&M);
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !assign_to_self, std::logic_error
     ,"MatrixOp::operator=(M) : Error, this is not assignment "
     "to self and this method is not overridden for the subclass \'"
@@ -121,7 +121,7 @@ MatrixOp::calc_norm(
   const index_type
     num_rows = space_cols.dim(),
     num_cols = space_rows.dim();
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !(requested_norm_type == MAT_NORM_1 || requested_norm_type == MAT_NORM_INF), MethodNotImplemented
     ,"MatrixOp::calc_norm(...): Error, This default implemenation can only "
     "compute the one norm or the infinity norm!"
@@ -348,7 +348,7 @@ value_type MatrixOp::transVtMtV(
   const Vector& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
   , const Vector& vs_rhs3) const
 {
-  TEST_FOR_EXCEPT(true); // ToDo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
   return 0.0;
 }
 
@@ -356,7 +356,7 @@ value_type MatrixOp::transVtMtV(
   const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
   , const SpVectorSlice& sv_rhs3) const
 {
-  TEST_FOR_EXCEPT(true); // ToDo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
   return 0.0;
 }
 
@@ -366,7 +366,7 @@ void MatrixOp::syr2k(
   , const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
   , value_type beta, MatrixSymOp* sym_lhs ) const
 {
-  TEST_FOR_EXCEPT(true); // ToDo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
 }
 
 // Level-3 BLAS
@@ -448,7 +448,7 @@ void AbstractLinAlgPack::Mp_StM(
   // We must try to implement the method
   MultiVectorMutable
     *m_mut_lhs = dynamic_cast<MultiVectorMutable*>(mwo_lhs);
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !m_mut_lhs || !(m_mut_lhs->access_by() & MultiVector::COL_ACCESS)
     ,MatrixOp::MethodNotImplemented
     ,"MatrixOp::Mp_StM(...) : Error, mwo_lhs of type \'"
@@ -459,7 +459,7 @@ void AbstractLinAlgPack::Mp_StM(
     << "\' could not implement the operation!" );
     
 #ifdef TEUCHOS_DEBUG
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !mwo_lhs->space_rows().is_compatible(
       trans_rhs == no_trans ? M_rhs.space_rows() : M_rhs.space_cols() )
     || !mwo_lhs->space_cols().is_compatible(
@@ -495,13 +495,13 @@ void AbstractLinAlgPack::Mp_StMtP(
   // We must try to implement the method
   MultiVectorMutable
     *m_mut_lhs = dynamic_cast<MultiVectorMutable*>(mwo_lhs);
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !m_mut_lhs, MatrixOp::MethodNotImplemented
     ,"MatrixOp::Mp_StMtP(...) : Error, mwo_lhs of type \'"
     << typeName(*mwo_lhs) << "\' does not support the "
     "\'MultiVectorMutable\' interface!" );
 
-  TEST_FOR_EXCEPT(true); // ToDo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
 }
 
 void AbstractLinAlgPack::Mp_StPtM(
@@ -522,13 +522,13 @@ void AbstractLinAlgPack::Mp_StPtM(
   // We must try to implement the method
   MultiVectorMutable
     *m_mut_lhs = dynamic_cast<MultiVectorMutable*>(mwo_lhs);
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !m_mut_lhs, MatrixOp::MethodNotImplemented
     ,"MatrixOp::Mp_StPtM(...) : Error, mwo_lhs of type \'"
     << typeName(*mwo_lhs) << "\' does not support the "
     "\'MultiVectorMutable\' interface!" );
 
-  TEST_FOR_EXCEPT(true); // ToDo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
 
 }
 
@@ -551,13 +551,13 @@ void AbstractLinAlgPack::Mp_StPtMtP(
   // We must try to implement the method
   MultiVectorMutable
     *m_mut_lhs = dynamic_cast<MultiVectorMutable*>(mwo_lhs);
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !m_mut_lhs, MatrixOp::MethodNotImplemented
     ,"MatrixOp::Mp_StPtMtP(...) : Error, mwo_lhs of type \'"
     << typeName(*mwo_lhs) << "\' does not support the "
     "\'MultiVectorMutable\' interface!" );
 
-  TEST_FOR_EXCEPT(true); // ToDo: Implement!
+  TEUCHOS_TEST_FOR_EXCEPT(true); // ToDo: Implement!
 
 }
 
@@ -595,7 +595,7 @@ void AbstractLinAlgPack::Mp_StMtM(
   //
   Mp_MtM_assert_compatibility(C,BLAS_Cpp::no_trans,A,A_trans,B,B_trans);
   MultiVectorMutable *Cmv = dynamic_cast<MultiVectorMutable*>(C);
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     !Cmv || !(Cmv->access_by() & MultiVector::COL_ACCESS)
     ,MatrixOp::MethodNotImplemented
     ,"AbstractLinAlgPack::Mp_StMtM(...) : Error, mwo_lhs of type \'"
@@ -630,7 +630,7 @@ void AbstractLinAlgPack::syrk(
   if(B->syrk(A,A_trans,a,b))
     return;
   
-  TEST_FOR_EXCEPTION(
+  TEUCHOS_TEST_FOR_EXCEPTION(
     true, MatrixOp::MethodNotImplemented
     ,"AbstractLinAlgPack::syrk(...) : Error, neither the right-hand-side matrix "
     "argument mwo_rhs of type \'" << typeName(A) << " nore the left-hand-side matrix "
