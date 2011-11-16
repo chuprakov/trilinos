@@ -509,13 +509,96 @@ void testingSpinBoxApply(
 }
 
 template<class T>
+QAbstractSpinBox* createDefaultSpinner(){
+  return new QSpinBox();
+}
+
+template<>
+QAbstractSpinBox* createDefaultSpinner<float>(){
+  return new QDoubleSpinBox();
+}
+
+template<>
+QAbstractSpinBox* createDefaultSpinner<double>(){
+  return new QDoubleSpinBox();
+}
+
+template<class T>
+void assertSpinnerDefaults(QAbstractSpinBox *spinBox){
+  QSpinBox* actualSpinner = (QSpinBox*)spinBox;
+  QCOMPARE(
+    Teuchos::as<T>(actualSpinner->singleStep()), 
+    EnhancedNumberTraits<T>::defaultStep());
+}
+
+template<>
+void assertSpinnerDefaults<float>(QAbstractSpinBox *spinBox){
+  QDoubleSpinBox* actualSpinner = (QDoubleSpinBox*)spinBox;
+  QCOMPARE(
+    actualSpinner->decimals(),
+    Teuchos::as<int>(EnhancedNumberTraits<float>::defaultPrecision()));
+  QCOMPARE(
+    Teuchos::as<float>(actualSpinner->singleStep()),
+     EnhancedNumberTraits<float>::defaultStep());
+}
+
+template<>
+void assertSpinnerDefaults<double>(QAbstractSpinBox *spinBox){
+  QDoubleSpinBox* actualSpinner = (QDoubleSpinBox*)spinBox;
+  QCOMPARE(
+    actualSpinner->decimals(),
+    Teuchos::as<int>(EnhancedNumberTraits<double>::defaultPrecision()));
+  QCOMPARE(
+    Teuchos::as<double>(actualSpinner->singleStep()),
+     EnhancedNumberTraits<double>::defaultStep());
+}
+
+
+template<class T>
+void assertLineEditDetails(
+  const QValidator* validator, 
+  QString& val20, 
+  QString& valneg1,
+  int& pos)
+{
+    QCOMPARE(validator->validate(val20,pos), QValidator::Invalid);
+    QCOMPARE(validator->validate(valneg1,pos), QValidator::Invalid);
+}
+
+template<>
+void assertLineEditDetails<float>(
+  const QValidator* validator, 
+  QString& val20, 
+  QString& valneg1,
+  int& pos)
+{
+  QCOMPARE(validator->validate(val20,pos), QValidator::Intermediate);
+  QCOMPARE(validator->validate(valneg1,pos), QValidator::Invalid);
+  const QDoubleValidator* doubleValidator = (QDoubleValidator*)validator;
+  QCOMPARE(
+    doubleValidator->decimals(), 
+    Teuchos::as<int>(EnhancedNumberTraits<float>::defaultPrecision()));
+}
+
+template<>
+void assertLineEditDetails<double>(
+  const QValidator* validator, 
+  QString& val20, 
+  QString& valneg1,
+  int& pos)
+{
+  QCOMPARE(validator->validate(val20,pos), QValidator::Intermediate);
+  QCOMPARE(validator->validate(valneg1,pos), QValidator::Invalid);
+  const QDoubleValidator* doubleValidator = (QDoubleValidator*)validator;
+  QCOMPARE(
+    doubleValidator->decimals(), 
+    Teuchos::as<int>(EnhancedNumberTraits<double>::defaultPrecision()));
+}
+
+template<class T>
 void valApplyTestTemplate(){
   EnhancedNumberValidator<T> validator(Teuchos::as<T>(0), Teuchos::as<T>(10));
   RCP<EnhancedNumberValidator<T> > valPtr = rcpFromRef(validator);
-  std::string myType = Teuchos::TypeNameTraits<T>::name();
-  bool isFloatingType = 
-    myType == Teuchos::TypeNameTraits<double>::name() ||
-    myType == Teuchos::TypeNameTraits<float>::name();
 
   QString val10("10");
   QString val20("20");
@@ -525,14 +608,7 @@ void valApplyTestTemplate(){
 
 
   /** Do spinner testing */
-  QAbstractSpinBox* spinner = NULL;
-  if(isFloatingType)
-  {
-    spinner = new QDoubleSpinBox();
-  }
-  else{
-    spinner = new QSpinBox();
-  }
+  QAbstractSpinBox* spinner = createDefaultSpinner<T>();
   testingSpinBoxApply(valPtr, spinner);
   int pos=0;
   QCOMPARE(spinner->validate(val10,pos), QValidator::Acceptable);
@@ -540,15 +616,7 @@ void valApplyTestTemplate(){
   QCOMPARE(spinner->validate(val5,pos), QValidator::Acceptable);
   QCOMPARE(spinner->validate(val0,pos), QValidator::Acceptable);
   QCOMPARE(spinner->validate(valneg1,pos), QValidator::Invalid);
-  if(isFloatingType){
-    QDoubleSpinBox* actualSpinner = (QDoubleSpinBox*)spinner;
-    QCOMPARE(actualSpinner->decimals(), Teuchos::as<int>(EnhancedNumberTraits<T>::defaultPrecision()));
-    QCOMPARE(Teuchos::as<T>(actualSpinner->singleStep()), EnhancedNumberTraits<T>::defaultStep());
-  }
-  if(isFloatingType){
-    QSpinBox* actualSpinner = (QSpinBox*)spinner;
-    QCOMPARE(Teuchos::as<T>(actualSpinner->singleStep()), EnhancedNumberTraits<T>::defaultStep());
-  }
+  assertSpinnerDefaults<T>(spinner);
   delete spinner;
 
   /** Do lineedit testing */
@@ -558,16 +626,7 @@ void valApplyTestTemplate(){
   QCOMPARE(appliedValidator->validate(val10,pos), QValidator::Acceptable);
   QCOMPARE(appliedValidator->validate(val5,pos), QValidator::Acceptable);
   QCOMPARE(appliedValidator->validate(val0,pos), QValidator::Acceptable);
-  if(isFloatingType){
-    QCOMPARE(appliedValidator->validate(val20,pos), QValidator::Intermediate);
-    QCOMPARE(appliedValidator->validate(valneg1,pos), QValidator::Invalid);
-    const QDoubleValidator* doubleValidator = (QDoubleValidator*)appliedValidator;
-    QCOMPARE(doubleValidator->decimals(), Teuchos::as<int>(EnhancedNumberTraits<T>::defaultPrecision()));
-  }
-  else{
-    QCOMPARE(appliedValidator->validate(val20,pos), QValidator::Invalid);
-    QCOMPARE(appliedValidator->validate(valneg1,pos), QValidator::Invalid);
-  }
+  assertLineEditDetails<T>(appliedValidator, val20, valneg1, pos);
 }
 
 void OptikaGUITests::validatorApplierTests(){
