@@ -1,5 +1,5 @@
 
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
 
 ASSERT_DEFINED(${PACKAGE_NAME}_ENABLE_Teuchos)
 ASSERT_DEFINED(${PACKAGE_NAME}_ENABLE_Epetra)
@@ -15,7 +15,7 @@ IF (${PACKAGE_NAME}_ENABLE_Ifpack)
 IF (${PACKAGE_NAME}_ENABLE_AztecOO)
 IF (${PACKAGE_NAME}_ENABLE_Galeri)
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST(
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
   hypre_test
   SOURCES DIDASKO_Hypre_UnitTest.cpp hypre_UnitTest.cpp hypre_Helpers.cpp
   COMM serial mpi

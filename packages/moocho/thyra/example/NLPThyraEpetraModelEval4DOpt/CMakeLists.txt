@@ -1,6 +1,6 @@
-INCLUDE(PackageAddExecutableAndTest)
-INCLUDE(PackageAddAdvancedTest)
-INCLUDE(PackageCopyFilesToBinaryDir)
+INCLUDE(TribitsAddExecutableAndTest)
+INCLUDE(TribitsAddAdvancedTest)
+INCLUDE(TribitsCopyFilesToBinaryDir)
 
 
 SET(EPETRAEXT_4DOPT_DIR ${PACKAGE_SOURCE_DIR}/../epetraext/example/model_evaluator/4dopt)
@@ -17,7 +17,7 @@ MULTILINE_SET( XML_PARAMS_FWD_SOLVE
   "<ParameterList><Parameter name='Solve Mode' type='string' value='Forward Solve'/></ParameterList>"
   )
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST(
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
   NLPThyraEpetraModelEval4DOpt
   SOURCES
     NLPThyraEpetraModelEval4DOptMain.cpp
@@ -41,7 +41,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
   )
 
 
-PACKAGE_COPY_FILES_TO_BINARY_DIR(ThyraNLPThyraEpetraModelEval4DOptCopyFiles
+TRIBITS_COPY_FILES_TO_BINARY_DIR(ThyraNLPThyraEpetraModelEval4DOptCopyFiles
   DEST_FILES 
     moochoThyraFdNand.xml
     ExtraXML.txt
@@ -98,7 +98,7 @@ IF (PYTHONINTERP_FOUND)
     "${PROJECT_SOURCE_DIR}/packages/thyra/core/test/operator_vector/compare-thyra-spmd-multivector-files.py"
     )
   
-  PACKAGE_ADD_ADVANCED_TEST(
+  TRIBITS_ADD_ADVANCED_TEST(
     NLPThyraEpetraModelEval4DOpt_lumped_param
     COMM serial mpi
     OVERALL_NUM_MPI_PROCS 1
@@ -153,7 +153,7 @@ IF (PYTHONINTERP_FOUND)
     )
   
   
-  PACKAGE_COPY_FILES_TO_BINARY_DIR( NLPThyraEpetraModelEval4DOptCopyFiles_lumped_param
+  TRIBITS_COPY_FILES_TO_BINARY_DIR( NLPThyraEpetraModelEval4DOptCopyFiles_lumped_param
     DEST_FILES
       lumped_param_nonlumped.xml
       lumped_param_param1opt.xml
@@ -171,7 +171,7 @@ ENDIF(PYTHONINTERP_FOUND)
 ASSERT_DEFINED(${PACKAGE_NAME}_ENABLE_MPI)
 IF (${PACKAGE_NAME}_ENABLE_MPI)
 
-  PACKAGE_ADD_EXECUTABLE_AND_TEST(
+  TRIBITS_ADD_EXECUTABLE_AND_TEST(
     NLPThyraEpetraMultiPointModelEval4DOptMain
     SOURCES
       NLPThyraEpetraMultiPointModelEval4DOptMain.cpp

@@ -1,7 +1,7 @@
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
 
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST( ExampleNLPBanded
+TRIBITS_ADD_EXECUTABLE_AND_TEST( ExampleNLPBanded
   SOURCES
     ExampleNLPBandedMain.cpp
     NLPInterfacePack_ExampleNLPBanded.cpp
@@ -9,7 +9,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST( ExampleNLPBanded
   )
 
 
-PACKAGE_ADD_TEST( ExampleNLPBanded
+TRIBITS_ADD_TEST( ExampleNLPBanded
 
   POSTFIX_AND_ARGS_0  nD2_nI1_bw1_mI0_nsb
     --nD=2 --nI=1 --bw=1 --mI=0 --xo=0.1 --diag-scal=1e+1 --nlp-selects-basis

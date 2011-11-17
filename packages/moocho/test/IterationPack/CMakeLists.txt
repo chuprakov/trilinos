@@ -1,6 +1,6 @@
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST( TestIterationPack
+TRIBITS_ADD_EXECUTABLE_AND_TEST( TestIterationPack
   SOURCES
     IterationPack_AlgorithmStepTesting.cpp
     IterationPack_AlgorithmTrackTesting.cpp

@@ -1,13 +1,13 @@
 
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
 
-PACKAGE_ADD_EXECUTABLE(
+TRIBITS_ADD_EXECUTABLE(
   saddle_lsc
   SOURCES saddle_lsc.cpp
   COMM serial mpi
   )
 
-PACKAGE_ADD_EXECUTABLE(
+TRIBITS_ADD_EXECUTABLE(
   saddle_lsc_epetra
   SOURCES saddle_lsc_epetra.cpp
   COMM serial mpi

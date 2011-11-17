@@ -1,5 +1,5 @@
 
-INCLUDE(PackageLibraryMacros)
+INCLUDE(TribitsLibraryMacros)
 
 #
 # A) Package-specific configuration options
@@ -8,7 +8,7 @@ INCLUDE(PackageLibraryMacros)
 ASSERT_DEFINED(${PROJECT_NAME}_ENABLE_Fortran)
 SET(HAVE_MOOCHO_FORTRAN ${${PROJECT_NAME}_ENABLE_Fortran})
 
-PACKAGE_CONFIGURE_FILE(Moocho_Config.h)
+TRIBITS_CONFIGURE_FILE(Moocho_Config.h)
 
 #
 # B) Define the header and source files (and directories)
@@ -197,7 +197,7 @@ APPEND_GLOB(SOURCES ${DIR}/*.cpp)
 # C) Define the targets for package's library(s)
 #
 
-PACKAGE_ADD_LIBRARY(
+TRIBITS_ADD_LIBRARY(
   moocho
   HEADERS ${HEADERS}
   SOURCES ${SOURCES}

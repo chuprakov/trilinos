@@ -1,11 +1,11 @@
 
-INCLUDE(PackageLibraryMacros)
+INCLUDE(TribitsLibraryMacros)
 
 #
 # A) Package-specific configuration options
 #
 
-PACKAGE_CONFIGURE_FILE(phdmesh_config.h)
+TRIBITS_CONFIGURE_FILE(phdmesh_config.h)
 
 #
 # B) Define the header and source files (and directories)
@@ -206,37 +206,37 @@ ENDIF()
 # C) Define the targets for package's library(s)
 # 
 
-PACKAGE_ADD_LIBRARY(
+TRIBITS_ADD_LIBRARY(
   phdelement_mesh
   HEADERS ${ELEMENT_HEADERS}
   SOURCES ${ELEMENT_SOURCES}
   )
 
-PACKAGE_ADD_LIBRARY(
+TRIBITS_ADD_LIBRARY(
   phdmesh_util
   HEADERS ${UTIL_HEADERS}
   SOURCES ${UTIL_SOURCES}
   )
 
-PACKAGE_ADD_LIBRARY(
+TRIBITS_ADD_LIBRARY(
   phdmesh_yaml
   HEADERS ${YAML_HEADERS}
   SOURCES ${YAML_SOURCES}
   )
 
-PACKAGE_ADD_LIBRARY(
+TRIBITS_ADD_LIBRARY(
   phdmesh_mesh
   HEADERS ${MESH_HEADERS}
   SOURCES ${MESH_SOURCES}
   )
 
-PACKAGE_ADD_LIBRARY(
+TRIBITS_ADD_LIBRARY(
   phdmesh_meshio
   HEADERS ${MESH_IO_HEADERS}
   SOURCES ${MESH_IO_SOURCES}
   )
 
-PACKAGE_ADD_LIBRARY(
+TRIBITS_ADD_LIBRARY(
   phdmesh_txblas
   HEADERS ${TXBLAS_HEADERS}
   SOURCES ${TXBLAS_SOURCES}
