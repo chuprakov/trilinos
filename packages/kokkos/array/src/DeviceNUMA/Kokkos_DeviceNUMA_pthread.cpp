@@ -41,6 +41,7 @@
 /* Kokkos interfaces */
 
 #include <Kokkos_DeviceNUMA.hpp>
+#include <DeviceNUMA/Kokkos_DeviceNUMA_Internal.hpp>
 
 /*--------------------------------------------------------------------------*/
 /* Standard 'C' Linux libraries */

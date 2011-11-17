@@ -62,7 +62,7 @@ void RUN_OPTIKA_DATA_TYPE_TESTS(){
   	rcp(new EnhancedNumberValidator<short>(0,10,4));
   validatorList.set("Short", (short)4, "short tester", shortVali);
   RCP<EnhancedNumberValidator<float> > floatVali = 
-  	rcp(new EnhancedNumberValidator<float>(0,20,1e-2, 6));
+  	rcp(new EnhancedNumberValidator<float>(0.0f,20.0f,1e-2f, 6));
   validatorList.set("Float", (float)4.5, "float tester", floatVali);
   RCP<EnhancedNumberValidator<double> > doubleVali = 
   	rcp(new EnhancedNumberValidator<double>(0,20,1e-2, 6));
@@ -96,7 +96,7 @@ void RUN_OPTIKA_DATA_TYPE_TESTS(){
   RCP<StringValidator> easyStringValidator = RCP<StringValidator>(new StringValidator(tuple<std::string>("value1", "value2", "value3")));
   Array<int> intArray(10,0);
   Array<short> shortArray(10,3);
-  Array<float> floatArray(10,4.4);
+  Array<float> floatArray(10,4.4f);
   Array<double> doubleArray(10, 5.5);
   Array<std::string> stringArray(10,"CG");
   Array<std::string> easyStringArray(10, "value1");
