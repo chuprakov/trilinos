@@ -1,4 +1,4 @@
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
 INCLUDE(AddSubdirectories)
 
 
@@ -6,7 +6,7 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}
                      ${CMAKE_CURRENT_SOURCE_DIR}/.. )
 
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST(
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
   CAmesos_UnitTests
   SOURCES
     CAmesos_UnitTests.cpp
@@ -17,7 +17,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
   STANDARD_PASS_OUTPUT
   )
 
-#PACKAGE_ADD_EXECUTABLE_AND_TEST(
+#TRIBITS_ADD_EXECUTABLE_AND_TEST(
 #  CAmesos_BaseSolver_UnitTests
 #  SOURCES
 #    CAmesos_BaseSolver_UnitTests.cpp

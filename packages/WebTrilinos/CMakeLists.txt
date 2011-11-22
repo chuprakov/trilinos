@@ -1,13 +1,13 @@
 
-INCLUDE(PackageMacros)
-INCLUDE(AddOptionAndDefine)
+INCLUDE(TribitsPackageMacros)
+INCLUDE(TribitsAddOptionAndDefine)
 INCLUDE(DualScopeSet)
 
 #
 # A) Define the package
 #
 
-PACKAGE(WebTrilinos  DISABLE_CIRCULAR_REF_DETECTION_FAILURE)
+TRIBITS_PACKAGE(WebTrilinos  DISABLE_CIRCULAR_REF_DETECTION_FAILURE)
 
 #
 # B) Set up package-specific options
@@ -24,9 +24,9 @@ ADD_SUBDIRECTORY(c++)
 # Exclude files for source package.
 #
 
-PACKAGE_ARCH_EXCLUDE_AUTOTOOLS_FILES()
+TRIBITS_EXCLUDE_AUTOTOOLS_FILES()
 
-#PACKAGE_ARCH_EXCLUDE_FILES(
+#TRIBITS_EXCLUDE_FILES(
 #  util
 #  etc
 #  test/tmp
@@ -67,4 +67,4 @@ PACKAGE_ARCH_EXCLUDE_AUTOTOOLS_FILES()
 # D) Do standard postprocessing
 #
 
-PACKAGE_POSTPROCESS()
+TRIBITS_PACKAGE_POSTPROCESS()

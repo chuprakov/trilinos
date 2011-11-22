@@ -1,12 +1,12 @@
-INCLUDE(PackageAddExecutable)
-INCLUDE(PackageCopyFilesToBinaryDir)
+INCLUDE(TribitsAddExecutable)
+INCLUDE(TribitsCopyFilesToBinaryDir)
 
-PACKAGE_ADD_EXECUTABLE(
+TRIBITS_ADD_EXECUTABLE(
   ValidatorExample
   SOURCES main.cpp
 )
 
-PACKAGE_COPY_FILES_TO_BINARY_DIR(
+TRIBITS_COPY_FILES_TO_BINARY_DIR(
   ValidatorExampleFileCopy
   SOURCE_FILES inputs.xml
   EXEDEPS ValidatorExample

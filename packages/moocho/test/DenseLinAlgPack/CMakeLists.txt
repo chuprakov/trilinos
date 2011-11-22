@@ -1,6 +1,6 @@
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST( TestDenseLinAlgPack
+TRIBITS_ADD_EXECUTABLE_AND_TEST( TestDenseLinAlgPack
   SOURCES
     DenseLinAlgPack_TestGenMatrixClass.cpp
     DenseLinAlgPack_TestGenMatrixOp.cpp

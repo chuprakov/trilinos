@@ -1,18 +1,18 @@
 
-INCLUDE(PackageMacros)
-INCLUDE(AddOptionAndDefine)
+INCLUDE(TribitsPackageMacros)
+INCLUDE(TribitsAddOptionAndDefine)
 
 #
 # A) Define the package
 #
 
-PACKAGE(Didasko)
+TRIBITS_PACKAGE(Didasko)
 
 #
 # B) Set up package-specific options
 #
 
-ADD_OPTION_AND_DEFINE(${PACKAGE_NAME}_ENABLE_Latex
+TRIBITS_ADD_OPTION_AND_DEFINE(${PACKAGE_NAME}_ENABLE_Latex
   HAVE_DIDASKO_LATEX
   "Enables compilation of LaTeX source files.[Note, this is currently unsupported]"
   OFF )
@@ -23,15 +23,15 @@ ADD_OPTION_AND_DEFINE(${PACKAGE_NAME}_ENABLE_Latex
 
 ADD_SUBDIRECTORY(src)
 
-PACKAGE_ADD_EXAMPLE_DIRECTORIES(examples)
+TRIBITS_ADD_EXAMPLE_DIRECTORIES(examples)
 
 #
 # Exclude files for source package.
 #
 
-PACKAGE_ARCH_EXCLUDE_AUTOTOOLS_FILES()
+TRIBITS_EXCLUDE_AUTOTOOLS_FILES()
 
-PACKAGE_ARCH_EXCLUDE_FILES(
+TRIBITS_EXCLUDE_FILES(
   examples/teuchos/xml-data
   src/.*.eps
   src/.*.tex
@@ -53,4 +53,4 @@ PACKAGE_ARCH_EXCLUDE_FILES(
 # D) Do standard postprocessing
 #
 
-PACKAGE_POSTPROCESS()
+TRIBITS_PACKAGE_POSTPROCESS()

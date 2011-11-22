@@ -1,5 +1,5 @@
 
-INCLUDE(PackageLibraryMacros)
+INCLUDE(TribitsLibraryMacros)
 
 #
 # A) Package-specific configuration options
@@ -27,6 +27,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/Core)
 
 APPEND_SET(HEADERS
+  Core/PDEOptIterCallbackBase.hpp
   Core/PDEOptLinearPDEConstrainedObj.hpp
   Core/PDEOptNonlinearPDEConstrainedObj.hpp
   Core/PDEOptPDEConstrainedObjBase.hpp
@@ -34,6 +35,7 @@ APPEND_SET(HEADERS
   )
 
 APPEND_SET(SOURCES
+  Core/PDEOptIterCallbackBase.cpp
   Core/PDEOptLinearPDEConstrainedObj.cpp
   Core/PDEOptNonlinearPDEConstrainedObj.cpp
   Core/PDEOptPDEConstrainedObjBase.cpp
@@ -45,7 +47,7 @@ APPEND_SET(SOURCES
 # C) Define the targets for package's library(s)
 #
 
-PACKAGE_ADD_LIBRARY(
+TRIBITS_ADD_LIBRARY(
   pdeopt
   HEADERS ${HEADERS}
   SOURCES ${SOURCES}

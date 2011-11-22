@@ -1,4 +1,4 @@
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
 
 
 #
@@ -17,7 +17,7 @@ INCLUDE_DIRECTORIES(REQUIRED_DURING_INSTALLATION_TESTING ${PACKAGE_BINARY_DIR}/.
 INCLUDE_DIRECTORIES(REQUIRED_DURING_INSTALLATION_TESTING ${PACKAGE_SOURCE_DIR}/../${THYRA_DQROME_DIR})
 
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
+TRIBITS_ADD_EXECUTABLE_AND_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
   SOURCES
     EpetraExtDiagonalQuadraticResponseOnlyOptMain.cpp
     ${EPETRAEXT_DQROO_DIR}/EpetraExt_DiagonalQuadraticResponseOnlyModelEvaluator.cpp
@@ -25,14 +25,14 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
   )
 
 
-PACKAGE_ADD_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
+TRIBITS_ADD_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
   NAME_POSTFIX np1
   ARGS "--local-dim=100 --pt=0.0 --p0=2.0"
   NUM_MPI_PROCS 1
   )
 
 
-PACKAGE_ADD_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
+TRIBITS_ADD_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
   NAME_POSTFIX np2
   ARGS "--local-dim=100 --pt=0.0 --p0=2.0"
   COMM mpi
@@ -40,7 +40,7 @@ PACKAGE_ADD_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
   )
 
 
-PACKAGE_ADD_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
+TRIBITS_ADD_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
   NAME_POSTFIX np3
   ARGS "--local-dim=100 --pt=0.0 --p0=2.0"
   COMM mpi
@@ -48,7 +48,7 @@ PACKAGE_ADD_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
   )
 
 
-PACKAGE_ADD_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
+TRIBITS_ADD_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
   NAME_POSTFIX np4
   ARGS "--local-dim=100 --pt=0.0 --p0=2.0"
   COMM mpi
@@ -61,7 +61,7 @@ PACKAGE_ADD_TEST( EpetraExtDiagonalQuadraticResponseOnlyOpt
 #
 
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST( ThyraDiagonalQuadraticResponseOnlyOpt
+TRIBITS_ADD_EXECUTABLE_AND_TEST( ThyraDiagonalQuadraticResponseOnlyOpt
   SOURCES
     ThyraDiagonalQuadraticResponseOnlyOptMain.cpp
   DEPLIBS thyra_nonlinear_test_models
