@@ -16,7 +16,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_Comm_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -27,7 +27,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_SerialComm_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -38,7 +38,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_MpiComm_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -49,7 +49,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_BlockMap_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -60,7 +60,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_Map_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -71,7 +71,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_Object_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -82,7 +82,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_Distributor_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -93,7 +93,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_Directory_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -104,7 +104,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_Import_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -115,7 +115,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_Export_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -126,7 +126,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
 #  SOURCES
 #    CEpetra_OffsetIndex_UnitTests.cpp
 #    ../CTrilinos_UnitTestHelpers.cpp
-#    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+#    ${TEUCHOS_STD_UNIT_TEST_MAIN}
 #  COMM serial mpi
 #  NUM_MPI_PROCS 1
 #  STANDARD_PASS_OUTPUT
@@ -137,7 +137,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_DistObject_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -148,7 +148,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_SrcDistObject_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -159,7 +159,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_BLAS_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -170,7 +170,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_Flops_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -181,7 +181,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_CompObject_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -192,7 +192,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_MultiVector_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -203,7 +203,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_Vector_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -214,7 +214,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_CrsGraph_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -225,7 +225,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_CrsMatrix_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -236,7 +236,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_Operator_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -247,7 +247,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_RowMatrix_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -258,7 +258,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_JadMatrix_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -269,7 +269,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_Time_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -280,7 +280,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_LinearProblem_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -291,7 +291,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CEpetra_LAPACK_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
