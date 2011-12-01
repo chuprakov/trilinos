@@ -1,4 +1,4 @@
-INCLUDE(PackageLibraryMacros)
+INCLUDE(TribitsLibraryMacros)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
@@ -27,7 +27,7 @@ Optika_treemodel.cpp Optika_treeview.cpp Optika_Types.cpp
 QT4_WRAP_CPP(MOC_SRCS ${MOC_HDRS} )
 
 
-PACKAGE_ADD_LIBRARY(
+TRIBITS_ADD_LIBRARY(
 	optika 
 	HEADERS ${MOC_HDRS} ${HDRS} 
 	SOURCES ${SRCS} ${MOC_SRCS} 

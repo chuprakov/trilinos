@@ -1,5 +1,5 @@
-INCLUDE(PackageAddExecutableAndTest)
-INCLUDE(PackageCopyFilesToBinaryDir)
+INCLUDE(TribitsAddExecutableAndTest)
+INCLUDE(TribitsCopyFilesToBinaryDir)
 
 
 SET(EPETRAEXT_DT_DIR
@@ -9,14 +9,14 @@ SET(EPETRAEXT_DT_DIR
 INCLUDE_DIRECTORIES(REQUIRED_DURING_INSTALLATION_TESTING ${EPETRAEXT_DT_DIR})
 
 
-PACKAGE_ADD_EXECUTABLE( DiagonalTransientInversion
+TRIBITS_ADD_EXECUTABLE( DiagonalTransientInversion
   SOURCES
     DiagonalTransientInversionMain.cpp
     ${EPETRAEXT_DT_DIR}/EpetraExt_DiagonalTransientModel.cpp
   )
 
 
-PACKAGE_ADD_TEST( DiagonalTransientInversion
+TRIBITS_ADD_TEST( DiagonalTransientInversion
 
   POSTFIX_AND_ARGS_0  basic_no1
     --moocho-options-file=MoochoDiagTransInvSmall.opt
@@ -41,7 +41,7 @@ PACKAGE_ADD_TEST( DiagonalTransientInversion
   )
 
 
-PACKAGE_ADD_TEST( DiagonalTransientInversion
+TRIBITS_ADD_TEST( DiagonalTransientInversion
 
   CATEGORIES NIGHTLY
 
@@ -69,7 +69,7 @@ PACKAGE_ADD_TEST( DiagonalTransientInversion
   )
 
 
-PACKAGE_COPY_FILES_TO_BINARY_DIR( DiagonalTransientInversion_CopyFiles
+TRIBITS_COPY_FILES_TO_BINARY_DIR( DiagonalTransientInversion_CopyFiles
   DEST_FILES
     MoochoDiagTransInvSmall.opt
     diagTransInvSmall_1.xml

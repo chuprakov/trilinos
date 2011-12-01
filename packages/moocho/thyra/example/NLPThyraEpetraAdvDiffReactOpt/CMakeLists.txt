@@ -1,5 +1,5 @@
-INCLUDE(PackageAddExecutableAndTest)
-INCLUDE(PackageCopyFilesToBinaryDir)
+INCLUDE(TribitsAddExecutableAndTest)
+INCLUDE(TribitsCopyFilesToBinaryDir)
 
 
 SET(EPETRAEXT_GLPAPP_DIR ${PACKAGE_SOURCE_DIR}/../epetraext/example/model_evaluator/GLpApp)
@@ -26,7 +26,7 @@ SET( COMMON_SOURCES
 #
 
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST( NLPThyraEpetraAdvDiffReactOpt
+TRIBITS_ADD_EXECUTABLE_AND_TEST( NLPThyraEpetraAdvDiffReactOpt
   SOURCES
     NLPThyraEpetraAdvDiffReactOptMain.cpp
     ${COMMON_SOURCES}
@@ -34,7 +34,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST( NLPThyraEpetraAdvDiffReactOpt
   )
 
 
-PACKAGE_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
+TRIBITS_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
 
   NAME_POSTFIX fwd
 
@@ -67,7 +67,7 @@ PACKAGE_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
   )
 
 
-PACKAGE_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
+TRIBITS_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
 
   NAME_POSTFIX fwd
 
@@ -84,7 +84,7 @@ PACKAGE_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
   )
 
 
-PACKAGE_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
+TRIBITS_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
   NAME_POSTFIX fwd
   POSTFIX_AND_ARGS_0 aztecoo_genmsh_rr3
     --moocho-thyra-params-file=moochoThyra.fwd.xml
@@ -97,7 +97,7 @@ PACKAGE_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
   )
 
 
-PACKAGE_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
+TRIBITS_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
 
   NAME_POSTFIX opt
 
@@ -158,7 +158,7 @@ PACKAGE_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
   )
 
 
-PACKAGE_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
+TRIBITS_ADD_TEST( NLPThyraEpetraAdvDiffReactOpt
   NAME_POSTFIX opt
   POSTFIX_AND_ARGS_0 genmesh_50_5_4
     --local-nx=50 --local-ny=5 --np=4
@@ -188,7 +188,7 @@ IF (PERL_FOUND)
   # independently.
 
   FUNCTION(ADD_RUN_VARIED_TESTS_CASE  POSTFIX_NAME)
-    PACKAGE_ADD_ADVANCED_TEST( run-varied-tests_fdobj_bb_direct_testing
+    TRIBITS_ADD_ADVANCED_TEST( run-varied-tests_fdobj_bb_direct_testing
       TEST_0
        CMND ${PERL_EXECUTABLE}
        ARGS "${CMAKE_CURRENT_BINARY_DIR}/run-varied-tests.pl" --exe="${EXE_PATH}"
@@ -289,7 +289,7 @@ ENDIF (PERL_FOUND)
 #
 
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
+TRIBITS_ADD_EXECUTABLE_AND_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
   SOURCES
     MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp
     ${COMMON_SOURCES}
@@ -297,7 +297,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
   )
 
 
-PACKAGE_ADD_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
+TRIBITS_ADD_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
 
   NAME_POSTFIX np1
 
@@ -351,7 +351,7 @@ PACKAGE_ADD_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
   )
 
 
-PACKAGE_ADD_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
+TRIBITS_ADD_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
 
   NAME_POSTFIX np4
 
@@ -371,7 +371,7 @@ PACKAGE_ADD_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
   )
 
 
-PACKAGE_ADD_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
+TRIBITS_ADD_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
 
   NAME_POSTFIX np4
 
@@ -390,7 +390,7 @@ PACKAGE_ADD_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
   )
 
 
-PACKAGE_ADD_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
+TRIBITS_ADD_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
 
   NAME_POSTFIX dcspmdv
 
@@ -411,7 +411,7 @@ PACKAGE_ADD_TEST( MultiPeriodNLPThyraEpetraAdvDiffReactOpt
 # Copy files
 #
 
-PACKAGE_COPY_FILES_TO_BINARY_DIR( NLPThyraEpetraAdvDiffReactOpt_CopyFiles1
+TRIBITS_COPY_FILES_TO_BINARY_DIR( NLPThyraEpetraAdvDiffReactOpt_CopyFiles1
   DEST_FILES
     moochoThyra.fwd.xml
     moochoThyra.opt.firstOrder.xml
@@ -421,13 +421,13 @@ PACKAGE_COPY_FILES_TO_BINARY_DIR( NLPThyraEpetraAdvDiffReactOpt_CopyFiles1
   )
 
 
-PACKAGE_COPY_FILES_TO_BINARY_DIR( NLPThyraEpetraAdvDiffReactOpt_CopyFiles2
+TRIBITS_COPY_FILES_TO_BINARY_DIR( NLPThyraEpetraAdvDiffReactOpt_CopyFiles2
   DEST_FILES aztecooParams.xml
   SOURCE_PREFIX "_"
   )
 
 
-PACKAGE_COPY_FILES_TO_BINARY_DIR( NLPThyraEpetraAdvDiffReactOpt_CopyDataFiles
+TRIBITS_COPY_FILES_TO_BINARY_DIR( NLPThyraEpetraAdvDiffReactOpt_CopyDataFiles
   DEST_FILES square.1.000 square.2.000 square.9x9.2.000 square.9x9.2.001
   SOURCE_DIR ${EPETRAEXT_GLPAPP_DIR}/data/square
   )

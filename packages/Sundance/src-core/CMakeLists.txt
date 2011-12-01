@@ -1,5 +1,5 @@
 
-INCLUDE(PackageLibraryMacros)
+INCLUDE(TribitsLibraryMacros)
 
 #
 # A) Package-specific configuration options
@@ -372,6 +372,8 @@ APPEND_SET(HEADERS
   ParametrizedCurves/SundanceParametrizedCurve.hpp
   ParametrizedCurves/SundanceDummyParametrizedCurve.hpp
   ParametrizedCurves/SundancePolygon2D.hpp
+  ParametrizedCurves/SundanceTriangleSurf3D.hpp
+  ParametrizedCurves/SundanceCurveCollection.hpp
   )
 
 APPEND_SET(SOURCES
@@ -385,6 +387,9 @@ APPEND_SET(SOURCES
   ParametrizedCurves/SundanceParamCurveIntegral.cpp
   ParametrizedCurves/SundanceParametrizedCurve.cpp
   ParametrizedCurves/SundancePolygon2D.cpp
+  ParametrizedCurves/SundanceTriangleSurf3D.cpp
+  ParametrizedCurves/SundanceCurveCollection.cpp
+
   )
 
 IF (TPL_ENABLE_MPI)
@@ -394,7 +399,7 @@ ENDIF()
 # C) Define the targets for package's library(s)
 #
 
-PACKAGE_ADD_LIBRARY(
+TRIBITS_ADD_LIBRARY(
   sundanceCore
   HEADERS ${HEADERS}
   SOURCES ${SOURCES}

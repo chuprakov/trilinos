@@ -1,7 +1,7 @@
 
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
 
-PACKAGE_ADD_EXECUTABLE(
+TRIBITS_ADD_EXECUTABLE(
   Ifpack_ex1
   SOURCES ex1.cpp
 #  ARGS
@@ -9,7 +9,7 @@ PACKAGE_ADD_EXECUTABLE(
 #  NUM_MPI_PROCS 1-4
   )
 
-PACKAGE_ADD_EXECUTABLE(
+TRIBITS_ADD_EXECUTABLE(
   Ifpack_ex2
   SOURCES ex2.cpp
 #  ARGS

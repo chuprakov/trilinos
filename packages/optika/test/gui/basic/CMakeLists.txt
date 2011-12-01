@@ -1,6 +1,6 @@
-INCLUDE(PackageAddExecutable)
+INCLUDE(TribitsAddExecutable)
 
-PACKAGE_ADD_EXECUTABLE(
+TRIBITS_ADD_EXECUTABLE(
   basic
   SOURCES main.cpp
   )
