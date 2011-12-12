@@ -11,7 +11,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CTeuchos_any_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -22,7 +22,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CTeuchos_CommandLineProcessor_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -33,7 +33,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CTeuchos_ParameterEntry_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT
@@ -44,7 +44,7 @@ TRIBITS_ADD_EXECUTABLE_AND_TEST(
   SOURCES
     CTeuchos_ParameterList_UnitTests.cpp
     ../CTrilinos_UnitTestHelpers.cpp
-    ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+    ${TEUCHOS_STD_UNIT_TEST_MAIN}
   COMM serial mpi
   NUM_MPI_PROCS 1
   STANDARD_PASS_OUTPUT

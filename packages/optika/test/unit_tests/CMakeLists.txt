@@ -44,7 +44,7 @@ endif(DO_GUI_UNIT_TESTS)
 TRIBITS_ADD_EXECUTABLE_AND_TEST(
   NonGUI_UnitTests
   SOURCES NonGUI_UnitTests.cpp
-  ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+  ${TEUCHOS_STD_UNIT_TEST_MAIN}
   DEPLIBS teuchos ${TPL_QT_LIBRARIES}
 )
 
