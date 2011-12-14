@@ -142,17 +142,17 @@ QVariant TreeItem::data(int column, int role) const{
     }
     else if(column == 1 && 
       nonnull(parameterEntry) && 
-      parameterEntry->isArray()
-    )
-    {
-      return QString::fromStdString(toString(parameterEntry->getAny()));
-    }
-    else if(column == 1 && 
-      nonnull(parameterEntry) && 
       parameterEntry->isTwoDArray()
     )
     {
       return QString("Click to view 2D Array");
+    }
+    else if(column == 1 && 
+      nonnull(parameterEntry) &&
+      !parameterEntry->isList()
+    )
+    {
+      return QString::fromStdString(toString(parameterEntry->getAny()));
     }
     else if(column == 2){
       return myTypeId;
@@ -349,8 +349,8 @@ QString TreeItem::getTypeId(const RCP<const ParameterEntry> parameter){
 	}
   else if(parameter->isTwoDArray()){
 		QString determinedId = determineArrayType(parameter, true);
-		if( determinedId != unrecognizedId){
-			QString(twoDArrayId + " "+ determinedId);
+		if(determinedId != unrecognizedId){
+			return QString(twoDArrayId + " "+ determinedId);
 		}
 		else{
 			return unrecognizedId;

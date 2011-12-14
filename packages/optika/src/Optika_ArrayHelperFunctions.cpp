@@ -34,16 +34,16 @@ QString determineArrayType(RCP<const ParameterEntry> parameter, bool twoD){
 	if(anyArray.type() == (twoD ? typeid(TwoDArray<int>) : typeid(Array<int>))){
 		return intId;
 	}
-	if(anyArray.type() == (twoD ? typeid(TwoDArray<short>) : typeid(Array<short>))){
+	else if(anyArray.type() == (twoD ? typeid(TwoDArray<short>) : typeid(Array<short>))){
 		return shortId;
 	}
-	if(anyArray.type() == (twoD ? typeid(TwoDArray<double>) : typeid(Array<double>))){
+	else if(anyArray.type() == (twoD ? typeid(TwoDArray<double>) : typeid(Array<double>))){
 		return doubleId;
 	}
-	if(anyArray.type() == (twoD ? typeid(TwoDArray<float>) : typeid(Array<float>))){
+	else if(anyArray.type() == (twoD ? typeid(TwoDArray<float>) : typeid(Array<float>))){
 		return floatId;
 	}
-	if(anyArray.type() == (twoD ? typeid(TwoDArray<std::string>) : typeid(Array<std::string>))){
+	else if(anyArray.type() == (twoD ? typeid(TwoDArray<std::string>) : typeid(Array<std::string>))){
 		return stringId;
 	}
 	else{
