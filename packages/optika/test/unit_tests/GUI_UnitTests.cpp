@@ -63,6 +63,7 @@ private slots:
   void modelLoadTest();
   void validatorApplierTests();
   void settingsTest();
+  void displayRoleTest();
   void cleanupTestCase();
 private:
   static inline QModelIndex getWidgetIndex(const QModelIndex& index);
@@ -649,6 +650,48 @@ void OptikaGUITests::settingsTest(){
   QCOMPARE(m2->x(),30);
   QCOMPARE(m2->y(),99);
   delete m2;
+}
+
+void OptikaGUITests::displayRoleTest(){
+  cleaner.clear();
+  RCP<ParameterList> validParameters = 
+    getParametersFromXmlFile("loadtest.xml");
+  validParameters->set("2dtest", Teuchos::TwoDArray<int>(2,2,4));
+  TreeModel* model = new TreeModel(validParameters);
+  Delegate* delegate = new Delegate;
+  TreeView* treeView = new TreeView(model, delegate);
+  cleaner.add(model);
+  cleaner.add(delegate);
+  cleaner.add(treeView);
+  RCP<const ParameterList> parameters =  model->getCurrentParameters();
+
+  RCP<const ParameterEntry> steveParameter = parameters->getEntryRCP("Steve");
+  QModelIndex steveIndex = model->findParameterEntryIndex(steveParameter);
+  QVariant data = model->data(
+    steveIndex.sibling(steveIndex.row(), 1), Qt::DisplayRole);
+  QCOMPARE(data.toString(), QString("4"));
+
+  RCP<const ParameterEntry> twodParameter = parameters->getEntryRCP("2dtest");
+  QModelIndex twodIndex = model->findParameterEntryIndex(twodParameter);
+  data = model->data(
+    twodIndex.sibling(twodIndex.row(), 1), Qt::DisplayRole);
+  QCOMPARE(data.toString(), QString("Click to view 2D Array"));
+
+  RCP<const ParameterEntry> listParameter = parameters->getEntryRCP("Prec");
+  QModelIndex listIndex = model->findParameterEntryIndex(listParameter);
+  data = model->data(
+    listIndex.sibling(listIndex.row(), 1), Qt::DisplayRole);
+  QCOMPARE(data.toString(), QString(""));
+
+  cleaner.remove(model);
+  cleaner.remove(treeView);
+  cleaner.remove(delegate);
+  delete model;
+  delete treeView;
+  delete delegate;
+
+
+
 }
 
 } //namespace Optika
