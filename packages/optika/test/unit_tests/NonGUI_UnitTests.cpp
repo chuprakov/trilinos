@@ -27,6 +27,7 @@
 // @HEADER
 
 #include "Teuchos_UnitTestHarness.hpp"
+#include "Optika_treeitem.hpp"
 #include "Optika_ArrayHelperFunctions.hpp"
 #include "Optika_ValidatorApplier.hpp"
 
@@ -76,6 +77,18 @@ TEUCHOS_UNIT_TEST(Array_Helper_Functions, DetermineArrayType){
   TEST_EQUALITY(
     determineArrayType(rcpFromRef(floatParam), true).toStdString(), 
     floatId.toStdString());
+
+  TwoDArray<double> dDoubleArray(2,2,4.0);
+  ParameterEntry ddoubleParam(dDoubleArray);
+  TEST_EQUALITY(
+    determineArrayType(rcpFromRef(ddoubleParam), true).toStdString(), 
+    doubleId.toStdString());
+
+  TwoDArray<int> dIntArray(2,2,4);
+  ParameterEntry dintParam(dIntArray);
+  TEST_EQUALITY(
+    determineArrayType(rcpFromRef(dintParam), true).toStdString(), 
+    intId.toStdString());
 }
 
 TEUCHOS_UNIT_TEST(Array_Helper_Functions, GetArrayType){
@@ -101,6 +114,15 @@ TEUCHOS_UNIT_TEST(Array_Helper_Functions, IsArrayEmpty){
   Array<std::string> stringArray(4, "blah");
   ParameterEntry stringArrayParam(stringArray);
   TEST_ASSERT(!isArrayEmpty(rcpFromRef(stringArrayParam), stringId));
+}
+
+TEUCHOS_UNIT_TEST(TreeItem_Functions, ArrayTypes){
+  RCP<ParameterEntry> twoDArrayParameter = 
+    rcp(new ParameterEntry(Teuchos::TwoDArray<int>(2,2,4)));
+  QString type = TreeItem::getTypeId(twoDArrayParameter);
+  TEST_EQUALITY(
+    type.toStdString(), 
+    twoDArrayId.toStdString() + " " + intId.toStdString());
 }
 
 
