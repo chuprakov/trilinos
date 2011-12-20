@@ -279,16 +279,6 @@ void OptikaGUITests::dependencyTests(){
   delegate->setModelData(numBucketsSpinner, model, numBucketsWidgetIndex);
   bucketsArray = model->getArray<double>(AmtInBucketsIndex);
   QCOMPARE(bucketsArray.size(),(Array<double>::size_type)5);
-  numBucketsSpinner->setValue(0);
-  delegate->setModelData(numBucketsSpinner, model, numBucketsWidgetIndex);
-  bucketsArray = model->getArray<double>(AmtInBucketsIndex);
-  VERIFY_HIDDEN_ROW(AmtInBucketsIndex)
-  QCOMPARE(bucketsArray.size(),(Array<double>::size_type)0);
-  numBucketsSpinner->setValue(2);
-  delegate->setModelData(numBucketsSpinner, model, numBucketsWidgetIndex);
-  bucketsArray = model->getArray<double>(AmtInBucketsIndex);
-  VERIFY_SHOWN_ROW(AmtInBucketsIndex)
-  QCOMPARE(bucketsArray.size(),(Array<double>::size_type)2);
 
 
   //Testing for Bool ValidatorDependency
