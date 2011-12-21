@@ -438,34 +438,30 @@ void TreeModel::basicSetup(QString saveFileName){
 void TreeModel::checkDependentState(const QModelIndex dependee, RCP<Dependency> dependency){
 	QModelIndex dependent;
 	Dependency::ParameterEntryList dependents= dependency->getDependents();
-	for(Dependency::ParameterEntryList::iterator it = dependents.begin(); it != dependents.end(); ++it ){ 
+	for(
+    Dependency::ParameterEntryList::iterator it = dependents.begin(); 
+    it != dependents.end(); 
+    ++it )
+  {
 		dependent = findParameterEntryIndex(*it);
-		//if(!is_null(rcp_dynamic_cast<NumberArrayLengthDependency>(dependency))){
-    if((*it)->isArray()){
-			redrawArray(dependent.sibling(dependent.row(),1));
-		}
-		else if(!is_null(rcp_dynamic_cast<VisualDependency>(dependency))){
-			RCP<VisualDependency> visDep = rcp_static_cast<VisualDependency>(dependency);
-			visDep->isDependentVisible() ? emit showData(dependent.row(), dependent.parent()) :
-					       emit hideData(dependent.row(), dependent.parent());
+		if(!is_null(rcp_dynamic_cast<VisualDependency>(dependency))){
+			RCP<VisualDependency> visDep = 
+        rcp_static_cast<VisualDependency>(dependency);
+			visDep->isDependentVisible() ? 
+        emit showData(dependent.row(), dependent.parent()) :
+			  emit hideData(dependent.row(), dependent.parent());
 		}
 
 		if(!hasValidValue(dependent)){
-			QString message = "Because you recently modified the " + data(dependee, Qt::DisplayRole).toString() +
-			" parameter, the valid values for the " + data(dependent, Qt::DisplayRole).toString() +
-			" parameter have changed.\n\nPlease modify the " +  data(dependent,Qt::DisplayRole).toString() + " value.\n";
+			QString message = 
+        "Because you recently modified the " + 
+        data(dependee, Qt::DisplayRole).toString() +
+			  " parameter, the valid values for the " + 
+        data(dependent, Qt::DisplayRole).toString() +
+			  " parameter have changed.\n\nPlease modify the " +  
+        data(dependent,Qt::DisplayRole).toString() + " value.\n";
 			emit badValue(dependent.sibling(dependent.row(), 1), message);
 		}
-	}
-}
-
-void TreeModel::redrawArray(const QModelIndex arrayIndex){
-  if(isArrayEmpty(itemEntry(arrayIndex), getArrayType(itemType(arrayIndex)))){
-		emit hideData(arrayIndex.row(), arrayIndex.parent());
-	}
-	else{
-		//setData(arrayIndex, QString::fromStdString(toString(itemEntry(arrayIndex)->getAny())));
-		emit showData(arrayIndex.row(), arrayIndex.parent());
 	}
 }
 

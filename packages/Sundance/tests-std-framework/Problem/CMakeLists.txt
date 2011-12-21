@@ -49,6 +49,8 @@ SET(SerialTests
   RefinementTest2D
   Poisson2D_HN_Nitsch
   Stokes_Chanel_Nitsche_line_obstic
+  TransientNonlinTest
+  ControlledTransient1D
 )
 
 

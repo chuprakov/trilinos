@@ -28,77 +28,72 @@
 // ************************************************************************
 /* @HEADER@ */
 
-#ifndef SUNDANCE_VTKWRITER_H
-#define SUNDANCE_VTKWRITER_H
+#ifndef SUNDANCE_EVENT_DETECTOR_H
+#define SUNDANCE_EVENT_DETECTOR_H
 
 
 #include "SundanceDefs.hpp"
-#include "SundanceFieldWriterBase.hpp"
 
 namespace Sundance
 {
-/**
- * VTKWriter writes a mesh or fields to a VTK file
- */
-class VTKWriter : public FieldWriterBase
+class Expr;
+
+/** */
+class EventDetectorBase
 {
 public:
   /** */
-  VTKWriter(const std::string& filename="") 
-    : FieldWriterBase(filename) {;}
-    
-  /** virtual dtor */
-  virtual ~VTKWriter(){;}
+  EventDetectorBase() {}
+  
+  /** */
+  virtual bool terminateOnDetection() const {return false;}
 
   /** */
-  virtual void write() const ;
+  virtual bool checkForEvent(
+    const double& t1, const Expr& u1,
+    const double& t2, const Expr& u2) = 0 ;
+};
 
-  /** Return a ref count pointer to self */
-  virtual RCP<FieldWriterBase> getRcp() {return rcp(this);}
+/** */
+enum ThresholdEventType {AnyAbove, AllAbove, AnyBelow, AllBelow};
 
+/** */
+class ThresholdEventDetector : public EventDetectorBase
+{
+public:
+  /** */
+  ThresholdEventDetector(double threshold, ThresholdEventType eventType,
+    bool terminateOnDetection=false)
+    : threshold_(threshold), eventType_(eventType),
+      gotIt_(false), eventTime_(-1.0e300),
+      terminateOnDetection_(terminateOnDetection) {}
+
+  /** */
+  bool terminateOnDetection() const {return terminateOnDetection_;}
+
+  /** */
+  bool checkForEvent(
+    const double& t1, const Expr& u1,
+    const double& t2, const Expr& u2) ;
+
+  /** */
+  double eventTime() const {return eventTime_;}
+
+  /** */
+  double foundEvent() const {return gotIt_;}
 
 private:
-  /** */
-  void lowLevelWrite(const std::string& filename, bool isPHeader) const ;
-
-  /** */
-  void writePoints(std::ostream& os, bool isPHeader) const ;
-
-  /** */
-  void writeCells(std::ostream& os) const ;
-
-  /** */
-  void writePointData(std::ostream& os, bool isPHeader) const ;
-
-  /** */
-  void writeCellData(std::ostream& os, bool isPHeader) const ;
-
-  /** */
-  void writeDataArray(std::ostream& os, const std::string& name,
-    const RCP<FieldBase>& expr, bool isPHeader, bool isPointData) const ;
+  double threshold_;
+  ThresholdEventType eventType_;
+  mutable bool gotIt_;
+  mutable double eventTime_;
+  bool terminateOnDetection_;
 };
 
-/** 
- * Create a VTKWriter 
- */
-class VTKWriterFactory : public FieldWriterFactoryBase
-{
-public:
-  /** */
-  VTKWriterFactory() {}
 
-  /** Create a writer with the specified filename */
-  RCP<FieldWriterBase> createWriter(const string& name) const 
-    {return rcp(new VTKWriter(name));}
 
-  /** */
-  virtual RCP<FieldWriterFactoryBase> getRcp() {return rcp(this);}
-  
-};
 
 }
-
-
 
 
 #endif

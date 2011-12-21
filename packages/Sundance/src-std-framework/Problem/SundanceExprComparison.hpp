@@ -28,77 +28,38 @@
 // ************************************************************************
 /* @HEADER@ */
 
-#ifndef SUNDANCE_VTKWRITER_H
-#define SUNDANCE_VTKWRITER_H
-
-
-#include "SundanceDefs.hpp"
-#include "SundanceFieldWriterBase.hpp"
+#ifndef SUNDANCE_EXPR_COMPARISON_H
+#define SUNDANCE_EXPR_COMPARISON_H
 
 namespace Sundance
 {
+
+class Expr;
+
 /**
- * VTKWriter writes a mesh or fields to a VTK file
+ * Base class for callback that computes distance between discrete functions 
  */
-class VTKWriter : public FieldWriterBase
+class ExprComparisonBase
 {
 public:
   /** */
-  VTKWriter(const std::string& filename="") 
-    : FieldWriterBase(filename) {;}
-    
-  /** virtual dtor */
-  virtual ~VTKWriter(){;}
-
-  /** */
-  virtual void write() const ;
-
-  /** Return a ref count pointer to self */
-  virtual RCP<FieldWriterBase> getRcp() {return rcp(this);}
-
-
-private:
-  /** */
-  void lowLevelWrite(const std::string& filename, bool isPHeader) const ;
-
-  /** */
-  void writePoints(std::ostream& os, bool isPHeader) const ;
-
-  /** */
-  void writeCells(std::ostream& os) const ;
-
-  /** */
-  void writePointData(std::ostream& os, bool isPHeader) const ;
-
-  /** */
-  void writeCellData(std::ostream& os, bool isPHeader) const ;
-
-  /** */
-  void writeDataArray(std::ostream& os, const std::string& name,
-    const RCP<FieldBase>& expr, bool isPHeader, bool isPointData) const ;
+  virtual double diff(const Expr& u1, const Expr& u2) const = 0 ;
 };
 
-/** 
- * Create a VTKWriter 
- */
-class VTKWriterFactory : public FieldWriterFactoryBase
+/** Default comparison computes Euclidean distance between vectors */
+class DefaultExprComparison : public ExprComparisonBase
 {
 public:
   /** */
-  VTKWriterFactory() {}
-
-  /** Create a writer with the specified filename */
-  RCP<FieldWriterBase> createWriter(const string& name) const 
-    {return rcp(new VTKWriter(name));}
+  DefaultExprComparison();
 
   /** */
-  virtual RCP<FieldWriterFactoryBase> getRcp() {return rcp(this);}
-  
+  double diff(const Expr& u1, const Expr& u2) const ;
 };
+
+
 
 }
-
-
 
 
 #endif

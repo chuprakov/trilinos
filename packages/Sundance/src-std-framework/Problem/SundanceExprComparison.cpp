@@ -28,77 +28,24 @@
 // ************************************************************************
 /* @HEADER@ */
 
-#ifndef SUNDANCE_VTKWRITER_H
-#define SUNDANCE_VTKWRITER_H
-
-
-#include "SundanceDefs.hpp"
-#include "SundanceFieldWriterBase.hpp"
+#include "SundanceExpr.hpp"
+#include "SundanceExprComparison.hpp"
+#include "SundanceDiscreteFunction.hpp"
+#include "PlayaLinearCombinationImpl.hpp"
 
 namespace Sundance
 {
-/**
- * VTKWriter writes a mesh or fields to a VTK file
- */
-class VTKWriter : public FieldWriterBase
+
+DefaultExprComparison::DefaultExprComparison()
+{}
+
+double DefaultExprComparison::diff(const Expr& u1, const Expr& u2) const
 {
-public:
-  /** */
-  VTKWriter(const std::string& filename="") 
-    : FieldWriterBase(filename) {;}
-    
-  /** virtual dtor */
-  virtual ~VTKWriter(){;}
+  Vector<double> x1 = getDiscreteFunctionVector(u1);
+  Vector<double> x2 = getDiscreteFunctionVector(u2);
 
-  /** */
-  virtual void write() const ;
-
-  /** Return a ref count pointer to self */
-  virtual RCP<FieldWriterBase> getRcp() {return rcp(this);}
-
-
-private:
-  /** */
-  void lowLevelWrite(const std::string& filename, bool isPHeader) const ;
-
-  /** */
-  void writePoints(std::ostream& os, bool isPHeader) const ;
-
-  /** */
-  void writeCells(std::ostream& os) const ;
-
-  /** */
-  void writePointData(std::ostream& os, bool isPHeader) const ;
-
-  /** */
-  void writeCellData(std::ostream& os, bool isPHeader) const ;
-
-  /** */
-  void writeDataArray(std::ostream& os, const std::string& name,
-    const RCP<FieldBase>& expr, bool isPHeader, bool isPointData) const ;
-};
-
-/** 
- * Create a VTKWriter 
- */
-class VTKWriterFactory : public FieldWriterFactoryBase
-{
-public:
-  /** */
-  VTKWriterFactory() {}
-
-  /** Create a writer with the specified filename */
-  RCP<FieldWriterBase> createWriter(const string& name) const 
-    {return rcp(new VTKWriter(name));}
-
-  /** */
-  virtual RCP<FieldWriterFactoryBase> getRcp() {return rcp(this);}
-  
-};
-
+  return norm2(x1-x2);
 }
 
 
-
-
-#endif
+}

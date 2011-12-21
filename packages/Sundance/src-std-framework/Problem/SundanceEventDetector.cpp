@@ -28,77 +28,48 @@
 // ************************************************************************
 /* @HEADER@ */
 
-#ifndef SUNDANCE_VTKWRITER_H
-#define SUNDANCE_VTKWRITER_H
-
-
-#include "SundanceDefs.hpp"
-#include "SundanceFieldWriterBase.hpp"
+#include "SundanceEventDetector.hpp"
+#include "SundanceDiscreteFunction.hpp"
+#include "PlayaOut.hpp"
+#include "PlayaTabs.hpp"
 
 namespace Sundance
 {
-/**
- * VTKWriter writes a mesh or fields to a VTK file
- */
-class VTKWriter : public FieldWriterBase
+
+bool ThresholdEventDetector::checkForEvent(
+  const double& t1, const Expr& u1,
+  const double& t2, const Expr& u2) 
 {
-public:
-  /** */
-  VTKWriter(const std::string& filename="") 
-    : FieldWriterBase(filename) {;}
-    
-  /** virtual dtor */
-  virtual ~VTKWriter(){;}
+  if (foundEvent()) return false;
 
-  /** */
-  virtual void write() const ;
+  Vector<double> x1 = getDiscreteFunctionVector(u1);
+  Vector<double> x2 = getDiscreteFunctionVector(u2);
 
-  /** Return a ref count pointer to self */
-  virtual RCP<FieldWriterBase> getRcp() {return rcp(this);}
-
-
-private:
-  /** */
-  void lowLevelWrite(const std::string& filename, bool isPHeader) const ;
-
-  /** */
-  void writePoints(std::ostream& os, bool isPHeader) const ;
-
-  /** */
-  void writeCells(std::ostream& os) const ;
-
-  /** */
-  void writePointData(std::ostream& os, bool isPHeader) const ;
-
-  /** */
-  void writeCellData(std::ostream& os, bool isPHeader) const ;
-
-  /** */
-  void writeDataArray(std::ostream& os, const std::string& name,
-    const RCP<FieldBase>& expr, bool isPHeader, bool isPointData) const ;
-};
-
-/** 
- * Create a VTKWriter 
- */
-class VTKWriterFactory : public FieldWriterFactoryBase
-{
-public:
-  /** */
-  VTKWriterFactory() {}
-
-  /** Create a writer with the specified filename */
-  RCP<FieldWriterBase> createWriter(const string& name) const 
-    {return rcp(new VTKWriter(name));}
-
-  /** */
-  virtual RCP<FieldWriterFactoryBase> getRcp() {return rcp(this);}
-  
-};
-
+  if (eventType_==AllAbove || eventType_==AnyBelow)
+  {
+    double a1 = x1.min()-threshold_;
+    double a2 = x2.min()-threshold_;
+    if (a1*a2 <= 0) 
+    {
+      double t = t1 - a1*(t2-t1)/(a2-a1);
+      eventTime_ = t;
+      gotIt_ = true;
+      return true;
+    }
+  }
+  else
+  {
+    double a1 = x1.max()-threshold_;
+    double a2 = x2.max()-threshold_;
+    if (a1*a2 <= 0) 
+    {
+      double t = t1 - a1*(t2-t1)/(a2-a1);
+      eventTime_ = t;
+      gotIt_ = true;
+      return true;
+    }
+  }
+  return false;
 }
 
-
-
-
-#endif
+}
