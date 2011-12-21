@@ -382,13 +382,6 @@ private:
 	 */
 	void checkDependentState(const QModelIndex dependee, RCP<Dependency> dependency);
 
-	/**
-	 * \brief Redraws the array at arrayIndex if it's length has changed. 
-	 *
-	 * @param arrayIndex The index of the array to be redrawn.
-	 */
-	void redrawArray(const QModelIndex arrayIndex);
-  
   /**
    *
    * \brief Finds the QModelIndex associated with a parameter entry.
