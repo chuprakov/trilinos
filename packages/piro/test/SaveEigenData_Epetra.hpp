@@ -40,49 +40,48 @@
 // ************************************************************************
 // @HEADER
 
-#ifndef PIRO_CONFIGDEFS_H
-#define PIRO_CONFIGDEFS_H
+#ifndef SAVEEIGENDATA_EPETRA_H
+#define SAVEEIGENDATA_EPETRA_H
 
-#ifndef __cplusplus
-#define __cplusplus
-#endif
+#include "NOX_Common.H" // <string> and more
+#include "LOCA_SaveEigenData_AbstractStrategy.H" // base class
+#include "Teuchos_RCP.hpp"
+#include "Teuchos_ParameterList.hpp"
 
-/*
- * The macros PACKAGE, PACKAGE_NAME, etc, get defined for each package and 
- * need to be undef'd here to avoid warnings when this file is included from 
- * another package.
- * KL 11/25/02
+//! Strategy for saving eigenvector/value data
+/*!
+ * Saves eigenvectors and corresponding eigenvalues
+ * using a custom strategy.
  */
-#ifdef PACKAGE
-#undef PACKAGE
-#endif
+class SaveEigenData_Epetra : public LOCA::SaveEigenData::AbstractStrategy {
 
-#ifdef PACKAGE_NAME
-#undef PACKAGE_NAME
-#endif
+public:
 
-#ifdef PACKAGE_BUGREPORT
-#undef PACKAGE_BUGREPORT
-#endif
+  //! Constructor
+  SaveEigenData_Epetra(Teuchos::ParameterList& locaParams);
+    
+  //! Destructor
+  virtual ~SaveEigenData_Epetra();
 
-#ifdef PACKAGE_STRING
-#undef PACKAGE_STRING
-#endif
+  //! Save eigenvalues/eigenvectors
+  virtual NOX::Abstract::Group::ReturnType 
+  save(Teuchos::RCP< std::vector<double> >& evals_r,
+	 Teuchos::RCP< std::vector<double> >& evals_i,
+	 Teuchos::RCP< NOX::Abstract::MultiVector >& evecs_r,
+	 Teuchos::RCP< NOX::Abstract::MultiVector >& evecs_i);
 
-#ifdef PACKAGE_TARNAME
-#undef PACKAGE_TARNAME
-#endif
+private:
 
-#ifdef PACKAGE_VERSION
-#undef PACKAGE_VERSION
-#endif
+  //! Private to prohibit copying
+  SaveEigenData_Epetra(const SaveEigenData_Epetra&);
 
-#ifdef VERSION
-#undef VERSION
-#endif
+  //! Private to prohibit copying
+  SaveEigenData_Epetra& operator = (const SaveEigenData_Epetra&);
 
-#ifndef TRILINOS_NO_CONFIG_H
-#include <Piro_config.hpp>
-#endif
+protected:
 
-#endif /* PIRO_CONFIGDEFS_H */
+  //! number of eigenvalues/vectors to save
+  int nsave;
+
+}; // Class SaveEigenData_Epetra
+#endif
