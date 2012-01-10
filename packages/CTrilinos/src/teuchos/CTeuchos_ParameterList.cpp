@@ -331,6 +331,9 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist (
     return CTeuchos::storeParameterList(&( CTeuchos::getParameterList(
         selfID)->sublist(std::string(name), ((mustAlreadyExist) != 
         FALSE ? true : false), std::string(docString)) ));
+    // RAB: This is a segfault waiting to happen!  If the parent PL is
+    // destored, this will become a dangling reference and any access will
+    // result in undefined behavior!
 }
 
 CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist_existing ( 
@@ -338,6 +341,7 @@ CT_Teuchos_ParameterList_ID_t Teuchos_ParameterList_sublist_existing (
 {
     return CTeuchos::storeConstParameterList(&( CTeuchos::getConstParameterList(
         selfID)->sublist(std::string(name)) ));
+    // RAB: This is a segfault waiting to happen (see above)!
 }
 
 const char * Teuchos_ParameterList_name_it ( 
