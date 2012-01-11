@@ -1,7 +1,7 @@
  
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
  
-PACKAGE_ADD_EXECUTABLE(
+TRIBITS_ADD_EXECUTABLE(
   test_mesh
   INCLUDES Gears.hpp
   SOURCES
@@ -18,7 +18,7 @@ PACKAGE_ADD_EXECUTABLE(
 #specified by default for checkin testing, we will just disable the tests
 #on macs.
 IF ( NOT APPLE )
-PACKAGE_ADD_TEST(
+TRIBITS_ADD_TEST(
   test_mesh
   NAME test_simple
   COMM serial mpi
@@ -26,7 +26,7 @@ PACKAGE_ADD_TEST(
   NUM_MPI_PROCS 1
   )
 
-PACKAGE_ADD_TEST(
+TRIBITS_ADD_TEST(
   test_mesh
   NAME test_gears
   COMM serial mpi
@@ -36,7 +36,7 @@ PACKAGE_ADD_TEST(
   )
 ENDIF()
 
-# PACKAGE_ADD_TEST(
+# TRIBITS_ADD_TEST(
 #   test_mesh
 #   NAME test_gears
 #   COMM mpi

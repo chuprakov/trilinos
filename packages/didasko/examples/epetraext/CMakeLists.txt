@@ -1,7 +1,7 @@
 
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST(
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
   EpetraEXT_ex3
   SOURCES ex3.cpp
   ARGS

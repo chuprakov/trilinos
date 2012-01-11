@@ -72,10 +72,12 @@
 #include "SundanceEllipse2D.hpp"
 #include "SundanceSphere.hpp"
 #include "SundancePolygon2D.hpp"
+#include "SundanceTriangleSurf3D.hpp"
 #include "SundanceDummyParametrizedCurve.hpp"
 #include "SundanceParamCurveIntegral.hpp"
 #include "SundanceParametrizedCurve.hpp"
 #include "SundanceCurveIntegralCalc.hpp"
+#include "SundanceCurveCollection.hpp"
 
 /* Meshes */
 #include "SundanceMesh.hpp"
@@ -126,7 +128,8 @@
 
 /* Writers */
 #include "SundanceFieldWriter.hpp"
-#include "SundanceMatlabWriter.hpp"
+#include "SundanceMatlabWriter.hpp" // deprecated
+#include "SundanceDSVWriter.hpp"
 #include "SundanceVerboseFieldWriter.hpp"
 #include "SundanceTriangleWriter.hpp"
 #include "SundanceVTKWriter.hpp"
@@ -144,6 +147,7 @@
 #include "SundanceTrapesoidQuadrature.hpp"
 #include "SundanceGaussLobattoQuadrature.hpp"
 #include "SundancePolygonQuadrature.hpp"
+#include "SundanceSurfQuadrature.hpp"
 
 /* Spectral */
 #include "SundanceHermiteSpectralBasis.hpp"
@@ -187,6 +191,8 @@
 #include "NOX_Common.H"
 #include "NOX_Utils.H"
 #include "PlayaNOXSolver.hpp"
+#include "PlayaNonlinearSolver.hpp"
+
 
 /* Eigensolvers */
 #include "PlayaAnasaziEigensolverDecl.hpp"

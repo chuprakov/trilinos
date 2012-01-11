@@ -188,6 +188,15 @@ public:
 	 */
 	void setValidator(RCP<const ParameterEntryValidator> validator);
 
+  /**
+   * \brief Gets the type id to be used for the TreeItem.
+   *
+   * @param param The parameter who's type is in question.
+   * @return The type id for the parameter.
+   */
+  static QString getTypeId(const RCP<const ParameterEntry> parameter);
+
+
   //@}
 
 private:
@@ -242,14 +251,6 @@ private:
 	 * @param type The type of array.
 	 */
 	void changeValueForArray(QVariant value, QString type, bool twoD=false);
-
-  /**
-   * \brief Gets the type id to be used for the TreeItem.
-   *
-   * @param param The parameter who's type is in question.
-   * @return The type id for the parameter.
-   */
-  static QString getTypeId(const RCP<const ParameterEntry> parameter);
 
   //@}
 

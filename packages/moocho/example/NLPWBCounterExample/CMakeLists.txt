@@ -1,7 +1,7 @@
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
 
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST( NLPWBCounterExample
+TRIBITS_ADD_EXECUTABLE_AND_TEST( NLPWBCounterExample
   SOURCES
     NLPWBCounterExampleMain.cpp
     NLPInterfacePack_NLPWBCounterExample.cpp

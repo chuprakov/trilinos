@@ -38,84 +38,105 @@
 
 namespace Sundance
 {
-  /**
-   * ExodusWriter writes a mesh or fields to an ExodusII file
-   */
-  class ExodusWriter : public FieldWriterBase
-  {
-  public:
-    /** */
-    ExodusWriter(const std::string& filename) 
-      : FieldWriterBase(filename) {;}
+/**
+ * ExodusWriter writes a mesh or fields to an ExodusII file
+ */
+class ExodusWriter : public FieldWriterBase
+{
+public:
+  /** */
+  ExodusWriter(const std::string& filename) 
+    : FieldWriterBase(filename) {;}
     
-    /** virtual dtor */
-    virtual ~ExodusWriter(){;}
+  /** virtual dtor */
+  virtual ~ExodusWriter(){;}
 
-    /** */
-    virtual void write() const ;
+  /** */
+  virtual void write() const ;
 
-    /** Return a ref count pointer to self */
-    virtual RCP<FieldWriterBase> getRcp() {return rcp(this);}
+  /** Return a ref count pointer to self */
+  virtual RCP<FieldWriterBase> getRcp() {return rcp(this);}
 
-    /** */
-    void writeParallelInfo(const std::string& filename) const ;
-
-
-  private:    
-    /** */
-    void getCharpp(const Array<std::string>& s, Array<const char*>& p) const ;
-
-    /** */
-    void findNodeSets(
-      Array<CellFilter>& nodesetFilters,
-      Array<int>& omnipresentFuncs,
-      Array<RCP<Array<int> > >& funcsForNodeset,
-      Array<RCP<Array<int> > >& nodesForNodeset,
-      Array<int>& nsID,
-      Array<int>& nNodesPerSet,
-      Array<int>& nsNodePtr,
-      RCP<Array<int> > allNodes
-      ) const ;
-
-    /** */
-    void findBlocks(
-      Array<CellFilter>& blockFilters,
-      Array<int>& omnipresentFuncs,
-      Array<RCP<Array<int> > >& funcsForBlock,
-      Array<RCP<Array<int> > >& elemsForBlock,
-      Array<int>& elemIDs,
-      Array<int>& nElemsPerBlock,
-      Array<int>& blockElemPtr,
-      RCP<Array<int> > allElems
-      ) const ;
+  /** */
+  void writeParallelInfo(const std::string& filename) const ;
 
 
+private:    
+  /** */
+  void getCharpp(const Array<std::string>& s, Array<const char*>& p) const ;
 
-    /** */
-    void offset(Array<int>& x) const ;
+  /** */
+  void findNodeSets(
+    Array<CellFilter>& nodesetFilters,
+    Array<int>& omnipresentFuncs,
+    Array<RCP<Array<int> > >& funcsForNodeset,
+    Array<RCP<Array<int> > >& nodesForNodeset,
+    Array<int>& nsID,
+    Array<int>& nNodesPerSet,
+    Array<int>& nsNodePtr,
+    RCP<Array<int> > allNodes
+    ) const ;
 
-    /** */
-    std::string elemType(const CellType& type) const ;
+  /** */
+  void findBlocks(
+    Array<CellFilter>& blockFilters,
+    Array<int>& omnipresentFuncs,
+    Array<RCP<Array<int> > >& funcsForBlock,
+    Array<RCP<Array<int> > >& elemsForBlock,
+    Array<int>& elemIDs,
+    Array<int>& nElemsPerBlock,
+    Array<int>& blockElemPtr,
+    RCP<Array<int> > allElems
+    ) const ;
 
-    /** */
-    void writeMesh(int exoID, 
-      const Array<CellFilter>& nodesetFilters,
-      const Array<int>& nsID,
-      const Array<int>& nNodesPerSet,
-      const Array<int>& nsNodePtr,
-      const RCP<Array<int> >& allNodes) const ;
 
-    /** */
-    void writeFields(int exoID, 
-      const Array<CellFilter>& nodesetFilters,
-      const Array<int>& omnipresentNodalFuncs,
-      const Array<int>& omnipresentElemFuncs,
-      const Array<RCP<Array<int> > >& funcsForNodeset,
-      const Array<RCP<Array<int> > >& nodesForNodeset,
-      const Array<int>& nsID) const ;
+
+  /** */
+  void offset(Array<int>& x) const ;
+
+  /** */
+  std::string elemType(const CellType& type) const ;
+
+  /** */
+  void writeMesh(int exoID, 
+    const Array<CellFilter>& nodesetFilters,
+    const Array<int>& nsID,
+    const Array<int>& nNodesPerSet,
+    const Array<int>& nsNodePtr,
+    const RCP<Array<int> >& allNodes) const ;
+
+  /** */
+  void writeFields(int exoID, 
+    const Array<CellFilter>& nodesetFilters,
+    const Array<int>& omnipresentNodalFuncs,
+    const Array<int>& omnipresentElemFuncs,
+    const Array<RCP<Array<int> > >& funcsForNodeset,
+    const Array<RCP<Array<int> > >& nodesForNodeset,
+    const Array<int>& nsID) const ;
     
     
-  };
+};
+
+
+/** 
+ * ExodusWriterFactory produces an Exodus writer in contexts where a user cannot
+ * do so directly.
+ */
+class ExodusWriterFactory : public FieldWriterFactoryBase
+{
+public:
+  /** */
+  ExodusWriterFactory() {}
+
+  /** Create a writer with the specified filename */
+  RCP<FieldWriterBase> createWriter(const string& name) const 
+    {return rcp(new ExodusWriter(name));}
+
+  /** */
+  virtual RCP<FieldWriterFactoryBase> getRcp() {return rcp(this);}
+  
+};
+
 }
 
 

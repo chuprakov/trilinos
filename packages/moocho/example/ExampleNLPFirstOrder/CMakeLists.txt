@@ -1,10 +1,10 @@
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
 
 
 INCLUDE_DIRECTORIES(REQUIRED_DURING_INSTALLATION_TESTING ../ExampleNLPDirect)
 
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST( ExampleNLPFirstOrder
+TRIBITS_ADD_EXECUTABLE_AND_TEST( ExampleNLPFirstOrder
   SOURCES
     ExampleNLPFirstOrderMain.cpp
     NLPInterfacePack_ExampleBasisSystem.cpp

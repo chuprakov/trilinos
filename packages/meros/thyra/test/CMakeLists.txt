@@ -1,7 +1,7 @@
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
 
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST(
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
   test_handles
   SOURCES test_handles.cpp
   ARGS --verbose
@@ -9,14 +9,14 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
   )
 
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST(
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
   test_block_op
   SOURCES test_block_op.cpp
   ARGS --verbose
   )
 
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST(
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
   test_linear_combination
   SOURCES test_linear_combination
   ARGS --verbose
@@ -34,7 +34,7 @@ PACKAGE_ADD_EXECUTABLE_AND_TEST(
 #  SET(testEpetraOperatorWrapper_tol 1e-3)
 #ENDIF()
 #
-#PACKAGE_ADD_EXECUTABLE_AND_TEST(
+#TRIBITS_ADD_EXECUTABLE_AND_TEST(
 #  testEpetraOperatorWrapper
 #  SOURCES
 #    testEpetraOperatorWrapper.cpp

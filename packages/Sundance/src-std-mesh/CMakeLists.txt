@@ -1,5 +1,5 @@
 
-INCLUDE(PackageLibraryMacros)
+INCLUDE(TribitsLibraryMacros)
 
 #
 # A) Package-specific configuration options
@@ -276,10 +276,12 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/Writers)
 
 APPEND_SET(HEADERS
   Writers/SundanceCellLIDMappedFieldWrapper.hpp
+  Writers/SundanceDSVWriter.hpp
   Writers/SundanceExodusWriter.hpp
   Writers/SundanceFieldBase.hpp
   Writers/SundanceFieldWriter.hpp
   Writers/SundanceFieldWriterBase.hpp
+  Writers/SundanceFieldWriterFactory.hpp
   Writers/SundanceMatlabWriter.hpp
   Writers/SundanceTriangleWriter.hpp
   Writers/SundanceVerboseFieldWriter.hpp
@@ -287,10 +289,12 @@ APPEND_SET(HEADERS
   )
 
 APPEND_SET(SOURCES
+  Writers/SundanceDSVWriter.cpp
   Writers/SundanceExodusWriter.cpp
   Writers/SundanceFieldBase.cpp
   Writers/SundanceFieldWriter.cpp
   Writers/SundanceFieldWriterBase.cpp
+  Writers/SundanceFieldWriterFactory.cpp
   Writers/SundanceMatlabWriter.cpp
   Writers/SundanceTriangleWriter.cpp
   Writers/SundanceVerboseFieldWriter.cpp
@@ -322,7 +326,7 @@ ENDIF()
 # C) Define the targets for package's library(s)
 #
 
-PACKAGE_ADD_LIBRARY(
+TRIBITS_ADD_LIBRARY(
   sundanceStdMesh
   HEADERS ${HEADERS}
   SOURCES ${SOURCES}

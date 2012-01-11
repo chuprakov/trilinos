@@ -1,5 +1,5 @@
 
-INCLUDE(PackageLibraryMacros)
+INCLUDE(TribitsLibraryMacros)
 
 #
 # A) Package-specific configuration options
@@ -77,6 +77,7 @@ APPEND_SET(HEADERS
   Elements/SundanceUnknownFunction.hpp
   Elements/SundanceUnknownFunctionData.hpp
   Elements/SundanceLegendre.hpp
+  Elements/SundanceSurfQuadrature.hpp
   )
 
 APPEND_SET(SOURCES
@@ -121,6 +122,7 @@ APPEND_SET(SOURCES
   Elements/SundanceUnknownFunction.cpp
   Elements/SundanceUnknownFunctionData.cpp
   Elements/SundanceLegendre.cpp
+  Elements/SundanceSurfQuadrature.cpp
   )
 
 #
@@ -198,6 +200,7 @@ APPEND_SET(HEADERS
   Assembly/SundanceCurveIntegralCalc.hpp
   Assembly/SundanceCurveQuadratureIntegral.hpp
   Assembly/SundanceCurveEvalMediator.hpp
+  Assembly/SundanceSurf3DCalc.hpp
   )
 
 
@@ -246,6 +249,7 @@ APPEND_SET(SOURCES
   Assembly/SundanceCurveIntegralCalc.cpp
   Assembly/SundanceCurveQuadratureIntegral.cpp
   Assembly/SundanceCurveEvalMediator.cpp
+  Assembly/SundanceSurf3DCalc.cpp
   )
 #  Assembly/ElementIntegration/SundanceIQI_HdivLF_DivV_Cell.cpp
 #  Assembly/ElementIntegration/SundanceIQI_HdivLF_VN_Facet.cpp
@@ -272,7 +276,10 @@ APPEND_SET(HEADERS
   Problem/SundanceAToCPointLocator.hpp
   Problem/SundanceCToAInterpolator.hpp
   Problem/SundanceCoordinateSystem.hpp
+  Problem/SundanceDoublingStepController.hpp
   Problem/SundanceEigensolution.hpp
+  Problem/SundanceEventDetector.hpp
+  Problem/SundanceExprComparison.hpp
   Problem/SundanceExprFieldWrapper.hpp
   Problem/SundanceFunctional.hpp
   Problem/SundanceL2Projector.hpp
@@ -287,6 +294,7 @@ APPEND_SET(HEADERS
   Problem/SundanceRivaraDriver.hpp
   Problem/SundanceStochBlockJacobiSolver.hpp
   Problem/SundanceNonlinearProblem.hpp 
+  Problem/SundanceTransientStepProblem.hpp 
   Problem/SundanceUniformRefinementPair.hpp 
   )
 
@@ -296,6 +304,9 @@ APPEND_SET(SOURCES
   Problem/SundanceAToCPointLocator.cpp
   Problem/SundanceCToAInterpolator.cpp
   Problem/SundanceCoordinateSystem.cpp
+  Problem/SundanceDoublingStepController.cpp
+  Problem/SundanceEventDetector.cpp
+  Problem/SundanceExprComparison.cpp
   Problem/SundanceExprFieldWrapper.cpp
   Problem/SundanceFunctional.cpp
   Problem/SundanceL2Projector.cpp
@@ -309,7 +320,8 @@ APPEND_SET(SOURCES
   Problem/SundanceProblemTesting.cpp
   Problem/SundanceRivaraDriver.cpp
   Problem/SundanceStochBlockJacobiSolver.cpp
-  Problem/SundanceNonlinearProblem.cpp  
+  Problem/SundanceNonlinearProblem.cpp 
+  Problem/SundanceTransientStepProblem.cpp  
   Problem/SundanceUniformRefinementPair.cpp 
   )
 
@@ -347,7 +359,7 @@ ENDIF()
 # C) Define the targets for package's library(s)
 #
 
-PACKAGE_ADD_LIBRARY(
+TRIBITS_ADD_LIBRARY(
   sundanceStdFwk
   HEADERS ${HEADERS}
   SOURCES ${SOURCES}

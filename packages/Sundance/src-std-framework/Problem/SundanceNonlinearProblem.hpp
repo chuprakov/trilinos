@@ -34,6 +34,11 @@
 #include "SundanceDefs.hpp"
 #include "SundanceNLOp.hpp"
 #include "PlayaNOXSolver.hpp"
+#include "PlayaNonlinearSolver.hpp"
+#include "PlayaNewtonArmijoSolverDecl.hpp"
+#ifndef HAVE_TEUCHOS_EXPLICIT_INSTANTIATION
+#include "PlayaNewtonArmijoSolverImpl.hpp"
+#endif
 
 namespace Sundance
 {
@@ -78,7 +83,10 @@ public:
     {return op_->computeSensitivities(solver);}
 
   /** Solve the nonlinear problem */
-  NOX::StatusTest::StatusType solve(const NOXSolver& solver) const ;
+  SolverState<double> solve(const NOXSolver& solver) const ;
+
+  /** Solve the nonlinear problem */
+  SolverState<double> solve(const NonlinearSolver<double>& solver) const ;
 
   /** Return the current evaluation point as a Sundance expression */
   Expr getU0() const {return op_->getU0();}

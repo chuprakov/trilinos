@@ -1,4 +1,4 @@
-INCLUDE(PackageAddExecutableAndTest)
+INCLUDE(TribitsAddExecutableAndTest)
 
 include(${QT_USE_FILE})
   
@@ -28,23 +28,23 @@ if(DO_GUI_UNIT_TESTS)
 
   QT4_GENERATE_MOC(GUI_UnitTests.cpp GUI_UnitTests.moc)
   
-  PACKAGE_ADD_EXECUTABLE_AND_TEST(
+  TRIBITS_ADD_EXECUTABLE_AND_TEST(
 	  GUI_UnitTests
     SOURCES GUI_UnitTests.cpp GUI_UnitTests.moc
     FAIL_REGULAR_EXPRESSION "FAIL!"
     DEPLIBS teuchos ${TPL_QT_LIBRARIES}
     )
   
-  PACKAGE_COPY_FILES_TO_BINARY_DIR(GUI_dep_test_copies
+  TRIBITS_COPY_FILES_TO_BINARY_DIR(GUI_dep_test_copies
     DEST_FILES deptests.xml loadtest.xml loadtest.in.xml
     EXEDEPS GUI_UnitTests
   )
 endif(DO_GUI_UNIT_TESTS)
 
-PACKAGE_ADD_EXECUTABLE_AND_TEST(
+TRIBITS_ADD_EXECUTABLE_AND_TEST(
   NonGUI_UnitTests
   SOURCES NonGUI_UnitTests.cpp
-  ${PACKAGE_SOURCE_DIR}/../teuchos/test/UnitTest/Teuchos_StandardUnitTestMain.cpp
+  ${TEUCHOS_STD_UNIT_TEST_MAIN}
   DEPLIBS teuchos ${TPL_QT_LIBRARIES}
 )
 

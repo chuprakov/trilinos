@@ -1,11 +1,11 @@
 
-INCLUDE(PackageLibraryMacros)
+INCLUDE(TribitsLibraryMacros)
 
 #
 # A) Package-specific configuration options
 #
 
-PACKAGE_CONFIGURE_FILE(PlayaConfig.h)
+TRIBITS_CONFIGURE_FILE(PlayaConfig.h)
 
 #
 # B) Define the header and source files (and directories)
@@ -128,8 +128,11 @@ APPEND_SET(HEADERS
   PlayaMPISession.hpp
   PlayaMultiVectorOperatorDecl.hpp
   PlayaMultiVectorOperatorImpl.hpp
+  PlayaNewtonArmijoSolverDecl.hpp
+  PlayaNewtonArmijoSolverImpl.hpp
   PlayaNonlinearOperator.hpp
   PlayaNonlinearOperatorBase.hpp
+  PlayaNonlinearSolver.hpp
   PlayaNonlinearSolverBase.hpp
   PlayaNOXSolver.hpp
   PlayaObjectiveBase.hpp
@@ -253,6 +256,7 @@ APPEND_SET(SOURCES
   PlayaMPIComm.cpp
   PlayaMPISession.cpp
   PlayaMultiVectorOperator.cpp
+  PlayaNewtonArmijoSolver.cpp
   PlayaNOXSolver.cpp
   PlayaOut.cpp
   PlayaObjectiveBase.cpp
@@ -288,7 +292,7 @@ ENDIF()
 
 PRINT_VAR(DEPLIBS)
 
-PACKAGE_ADD_LIBRARY(
+TRIBITS_ADD_LIBRARY(
   playa
   HEADERS ${HEADERS}
   SOURCES ${SOURCES}
