@@ -140,7 +140,7 @@ public:
 
   protected:
 
-    /** @name Constructors/initailizers */
+    /** @name Constructors/initializers */
     //@{
 
     /** \brief Default initializers to uninitialized.
