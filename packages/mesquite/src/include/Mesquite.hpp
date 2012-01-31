@@ -231,14 +231,16 @@ inline bool divide( double num, double den, double& result )
   
 /**\brief get array pointer from std::vector */
 template <typename T> inline 
-T* arrptr( std::vector< T >& v )
+T* arrptr( std::vector< T >& v, bool check_zero_size=false )
 {
+  if (check_zero_size && !v.size()) return 0;
   assert(!v.empty());
   return &v[0];
 }
 template <typename T> inline 
-const T* arrptr( const std::vector< T >& v )
+const T* arrptr( const std::vector< T >& v, bool check_zero_size=false )
 {
+  if (check_zero_size && !v.size()) return 0;
   assert(!v.empty());
   return &v[0];
 }
