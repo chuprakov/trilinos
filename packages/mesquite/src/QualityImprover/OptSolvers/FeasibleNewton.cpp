@@ -50,6 +50,7 @@
 #include "FeasibleNewton.hpp"
 #include "MsqFreeVertexIndexIterator.hpp"
 #include "MsqDebug.hpp"
+#include "XYPlanarDomain.hpp"
 
 using namespace Mesquite;
 
@@ -88,8 +89,15 @@ void FeasibleNewton::optimize_vertex_positions(PatchData &pd,
 {
   MSQ_FUNCTION_TIMER( "FeasibleNewton::optimize_vertex_positions" );
   MSQ_DBGOUT(2) << "\no  Performing Feasible Newton optimization.\n";
+  
+  //
+  // the only valid 2D meshes that FeasibleNewton works for are truly planar which 
+  // lie in the X-Y coordinate plane.
+  //
 
-  if (!pd.domain_set())  // only optimize if input mesh is a volume
+  XYPlanarDomain *xyPlanarDomainPtr = dynamic_cast<XYPlanarDomain*>(pd.get_domain());
+    // only optimize if input mesh is a volume or an XYPlanarDomain
+  if (!pd.domain_set() || xyPlanarDomainPtr != NULL)  
   {
     const double sigma   = 1e-4;
     const double beta0   = 0.25;
@@ -366,8 +374,9 @@ void FeasibleNewton::optimize_vertex_positions(PatchData &pd,
   }
   else
   {
-    std::cout << "WARNING: Feasible Newton optimization not supported for surface meshes."
-      << std::endl << "Try a different solver such as Steepest Descent." << std::endl;
+    std::cout << "WARNING: Feasible Newton optimization only supported for volume meshes"
+        << std::endl <<  "   and XYPlanarDomain surface meshes." << std::endl
+        << std::endl << "Try a different solver such as Steepest Descent." << std::endl;
   }
 }
 
