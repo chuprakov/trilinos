@@ -36,14 +36,23 @@
 !*********************************************************************
 
 module ForTrilinos_assertion_utility
+#include "ForTrilinos_config.h"
   use iso_fortran_env ,only : error_unit  
   implicit none
   private
   public :: error_message,assert,assert_identical
 
+#ifdef ForTrilinos_DISABLE_DEFERRED_LENGTH_CHARACTERS
+  integer ,parameter :: max_string_length=256
+#endif /* ForTrilinos_DISABLE_DEFERRED_LENGTH_CHARACTERS */
+
   type error_message
     private
+#ifdef ForTrilinos_DISABLE_DEFERRED_LENGTH_CHARACTERS
+    character(len=max_string_length) :: string ! gfortran 4.7.0 workaround
+#else
     character(:) ,allocatable :: string
+#endif /* ForTrilinos_DISABLE_DEFERRED_LENGTH_CHARACTERS */
   contains 
     procedure :: text
   end type
@@ -65,12 +74,18 @@ contains
 
   function text(this)
     class(error_message) ,intent(in) :: this
+#ifdef ForTrilinos_DISABLE_DEFERRED_LENGTH_CHARACTERS
+    character(len=max_string_length) :: text
+#else
     character(:) ,allocatable :: text
     if (allocated(this%string)) then
+#endif /* ForTrilinos_DISABLE_DEFERRED_LENGTH_CHARACTERS */
        text = this%string
+#ifndef ForTrilinos_DISABLE_DEFERRED_LENGTH_CHARACTERS
     else
        text = 'No error message provided.'
     end if
+#endif /* ForTrilinos_DISABLE_DEFERRED_LENGTH_CHARACTERS */
   end function
 
   subroutine scalar_assert(assertion,text)
@@ -78,11 +93,15 @@ contains
     type(error_message) ,intent(in) :: text
     if (.not. assertion) then
       write(error_unit,fmt='(31a)',advance="no") 'Assertion failed with message: '
+#ifndef ForTrilinos_DISABLE_DEFERRED_LENGTH_CHARACTERS
       if (allocated(text%string)) then
+#endif
         write(error_unit,*) text%string
+#ifndef ForTrilinos_DISABLE_DEFERRED_LENGTH_CHARACTERS
       else
         write(error_unit,*) '(no message provided).'
       end if
+#endif
     end if
   end subroutine
 
@@ -97,11 +116,11 @@ contains
       if (.not. assertion(i)) then
         any_failures=.true.
         write(error_unit,fmt='(31a)',advance="no") 'Assertion failed with message: '
-        if (allocated(text(i)%string)) then
+       !if (allocated(text(i)%string)) then
           write(error_unit,*) text(i)%string
-        else
-          write(error_unit,*) '(no message provided).'
-        end if
+       !else
+       !  write(error_unit,*) '(no message provided).'
+       !end if
       end if
     end do
     if (any_failures) stop 'Execution halted on failed assertion(s)!'

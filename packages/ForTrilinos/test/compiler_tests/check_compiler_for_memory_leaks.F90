@@ -12,6 +12,7 @@ module hermetic_interface
 end module
 
 module ref_counter_implementation
+#include "ForTrilinos_config.h"
   use hermetic_interface ,only : hermetic
   type ref_counter
     integer, pointer :: count => null()
@@ -20,7 +21,9 @@ module ref_counter_implementation
     procedure, non_overridable :: grab
     procedure, non_overridable :: release
     procedure :: assign
+#ifndef ForTrilinos_DISABLE_FINAL_SUBROUTINES
     final :: finalize_ref_counter
+#endif /* ForTrilinos_DISABLE_FINAL_SUBROUTINES */
     generic :: assignment(=) => assign
   end type
 contains
