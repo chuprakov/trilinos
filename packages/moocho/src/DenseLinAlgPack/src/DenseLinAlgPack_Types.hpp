@@ -83,8 +83,6 @@ enum EOverLap { NO_OVERLAP = 0, SOME_OVERLAP, SAME_MEM };
 /** \brief . */
 class IVector;
 /** \brief . */
-class Range1D;
-/** \brief . */
 template<class T>
 class VectorTmpl;
 /** \brief . */
