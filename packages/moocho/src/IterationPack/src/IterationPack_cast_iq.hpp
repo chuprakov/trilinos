@@ -164,7 +164,7 @@ template<class T>
 const IterQuantityAccess<T>& cast_iq(
   const AlgorithmState& state, const AlgorithmState::iq_id_type iq_id, const std::string& iq_name )
 {
-  IterQuantity
+  const IterQuantity
      &iq = state.iter_quant( iq_id );
   const IterQuantityAccess<T>
     *p = dynamic_cast<const IterQuantityAccess<T>*>( &iq );
