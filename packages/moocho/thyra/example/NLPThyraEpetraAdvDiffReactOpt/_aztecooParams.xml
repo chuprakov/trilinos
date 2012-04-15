@@ -1,5 +1,5 @@
 <!-- This parameters file produces no output for the linear solves themselves.
-However, the precondtioner creation does produce output. -->
+However, the preconditioner creation does produce output. -->
 <ParameterList>
   <Parameter name="Linear Solver Type" type="string" value="AztecOO"/>
   <Parameter name="Preconditioner Type" type="string" value="Ifpack"/>

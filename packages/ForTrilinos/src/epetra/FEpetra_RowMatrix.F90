@@ -53,21 +53,20 @@ module FEpetra_RowMatrix
    private
    type(FT_Epetra_RowMatrix_ID_t)         :: RowMatrix_id 
   contains
-    ! Developers only
+    !Matrix data extraction routines
+    procedure(NumMyRowEntries_interface),deferred :: NumMyRowEntries
+    procedure(MaxNumEntries_interface)  ,deferred :: MaxNumEntries
+    ! Computational Methods
+    procedure(Multiply_interface) ,deferred :: Multiply
+    !Attribute access functions
+    procedure(RowMatrixRowMap_interface),deferred :: RowMatrixRowMap
+    ! ForTriliinos developers only -- not for invocation from end-user application code:
     procedure                          :: invalidate_EpetraRowMatrix_ID
     procedure                          :: ctrilinos_delete_EpetraRowMatrix
     procedure                          :: get_EpetraRowMatrix_ID
     procedure                          :: set_EpetraRowMatrix_ID
     procedure                 ,nopass  :: alias_EpetraRowMatrix_ID
     procedure ,non_overridable         :: generalize_EpetraRowMatrix
-    !Matrix data extraction routines
-    procedure(NumMyRowEntries_interface),deferred :: NumMyRowEntries
-    procedure(MaxNumEntries_interface)  ,deferred :: MaxNumEntries
-    ! Computational Methods
-    procedure(Multiply_interface) ,deferred :: Multiply
-    !Atribute access functions
-    procedure(RowMatrixRowMap_interface),deferred :: RowMatrixRowMap
-    !I/O methods
   end type
   
   abstract interface

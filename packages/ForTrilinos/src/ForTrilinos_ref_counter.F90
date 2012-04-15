@@ -36,6 +36,7 @@
 !*********************************************************************
 
 module ForTrilinos_ref_counter
+#include "ForTrilinos_config.h"
   use ForTrilinos_hermetic ,only : hermetic
   use ForTrilinos_assertion_utility ,only : assert,error_message
   use ForTrilinos_error ,only : error
@@ -50,7 +51,9 @@ module ForTrilinos_ref_counter
       procedure, non_overridable :: grab
       procedure, non_overridable :: release
       procedure :: assign
+#ifndef ForTrilinos_DISABLE_FINAL_SUBROUTINES
       final     :: finalize_ref_counter
+#endif /* ForTrilinos_DISABLE_FINAL_SUBROUTINES */
       generic   :: assignment(=) => assign
   end type
 
@@ -62,7 +65,8 @@ contains
 
   subroutine grab(this)
     class(ref_counter), intent(inout) :: this
-    call assert( [associated(this%count)], [error_message('Ref_counter%grab: count not associated.')] )
+    call assert( associated(this%count), error_message('Ref_counter%grab: count not associated.') )
+!!$    call assert( [associated(this%count)], [error_message('Ref_counter%grab: count not associated.')] )
     this%count = this%count + 1
   end subroutine
 
@@ -70,8 +74,10 @@ contains
     class (ref_counter), intent(inout) :: this
     integer  :: status
     type(error) :: ierr
-    call assert( [associated(this%count)], [error_message('Ref_counter%release: count not associated.')] )
-    call assert( [this%count>=1], [error_message('Ref_counter%release: non-positive count.')] )
+    call assert( associated(this%count), error_message('Ref_counter%release: count not associated.') )
+    call assert( (this%count>=1), error_message('Ref_counter%release: non-positive count.') )
+!!$    call assert( [associated(this%count)], [error_message('Ref_counter%release: count not associated.')] )
+!!$    call assert( [this%count>=1], [error_message('Ref_counter%release: non-positive count.')] )
     this%count = this%count - 1
     if (this%count == 0) then
       call this%obj%ctrilinos_delete
