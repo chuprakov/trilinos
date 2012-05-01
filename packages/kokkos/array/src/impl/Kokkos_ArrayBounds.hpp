@@ -117,6 +117,8 @@ void crsarray_require_equal_dimension(
   size_t x_row_count , size_t x_entry_count ,
   size_t y_row_count , size_t y_entry_count );
 
+void prefixsum_require_equal_dimension( size_t x , size_t y );
+
 //----------------------------------------------------------------------------
 
 } // namespace Impl
