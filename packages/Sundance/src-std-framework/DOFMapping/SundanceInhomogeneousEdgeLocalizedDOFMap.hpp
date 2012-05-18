@@ -28,35 +28,37 @@
 // ************************************************************************
 /* @HEADER@ */
 
-#ifndef SUNDANCE_INHOMOGENEOUSNODALDOFMAP_H
-#define SUNDANCE_INHOMOGENEOUSNODALDOFMAP_H
+#ifndef SUNDANCE_INHOMOGENEOUSEDGELOCALIZEDDOFMAP_H
+#define SUNDANCE_INHOMOGENEOUSEDGELOCALIZEDDOFMAP_H
+
+#include "SundanceDOFMapBase.hpp"
 
 #include "SundanceDefs.hpp"
-#include "SundanceDOFMapBase.hpp"
-#include "SundanceCellSet.hpp"
 #include "SundanceCellFilter.hpp"
-#include "SundanceBasisFamily.hpp"
-#include "SundanceObjectWithVerbosity.hpp"
 
+#include "SundanceSet.hpp"
+#include "SundanceMap.hpp"
+
+#include "Teuchos_RCP.hpp"
+#include "Teuchos_Array.hpp"
 
 namespace Sundance
 {
-using namespace Teuchos;
+
+using Teuchos::RCP;
+using Teuchos::Array;
 
 /** 
  * 
  */
-class InhomogeneousNodalDOFMap : public DOFMapBase
+class InhomogeneousEdgeLocalizedDOFMap : public DOFMapBase
 {
 public:
   /** */
-  InhomogeneousNodalDOFMap(const Mesh& mesh, 
+  InhomogeneousEdgeLocalizedDOFMap(const Mesh& mesh, 
     const Array<Map<Set<int>, CellFilter> >& funcSetToDomainMap, 
     int setupVerb);
-      
-  /** */
-  virtual ~InhomogeneousNodalDOFMap(){;}
-
+  
   /** */
   RCP<const MapStructure> 
   getDOFsForCellBatch(int cellDim,
@@ -64,69 +66,36 @@ public:
     const Set<int>& requestedFuncSet,
     Array<Array<int> >& dofs,
     Array<int>& nNodes,
-    int verb) const ;
-
-protected:
-  /** */
-  void getFunctionDofs(int cellDim,
-    const Array<int>& cellLID,
-    const Array<int>& facetLID,
-    const Array<int>& funcs,
-    Array<Array<int> >& dofs) const ;
-
-public:
+    int verb) const;
+  
   /** */
   RCP<const Set<int> >
   allowedFuncsOnCellBatch(int cellDim,
-    const Array<int>& cellLID) const ;
-
+    const Array<int>& cellLID) const;
+  
   /** */
-  const Array<CellFilter>& funcDomains() const {return funcDomains_;}
-
+  const Array<CellFilter>& funcDomains() const { return funcDomains_; }
+  
   /** */
   virtual void print(std::ostream& os) const ;
 
-
-protected:
-
-  /** */
-  Array<int> dofsOnCell(int cellDim, int cellLID, const Set<int>& reqFuncs) const ;
-                              
-
-  void init();
-
-  void computeOffsets(int localCount)  ;
-
-  void shareRemoteDOFs(const Array<Array<int> >& remoteNodes);
-
-  void assignNode(int fLID,
-    int funcComboIndex,
-    int dofOffset,
-    int nFuncs,
-    Array<Array<int> >& remoteNodes,
-    Array<int>& hasProcessedCell,
-    int& nextDOF) ;
-
-  int dim_;
-  RCP<BasisDOFTopologyBase> basis_;
-  int nTotalFuncs_;
+private:
   Array<CellFilter> funcDomains_;
+  Array<Array<int> > edgeDofs_;
 
-  Array<Array<int> > nodeDofs_;
-  Array<Array<int> > elemDofs_;
-  Array<int> nodeToFuncSetIndexMap_;
-  Array<int> elemToFuncSetIndexMap_;
-  Array<Set<int> > elemFuncSets_;
-  Array<Set<int> > nodalFuncSets_;
-  Array<int> nodeToOffsetMap_;
-  Array<int> elemToOffsetMap_;
+  int meshDimension() const;
 
-  Array<Array<int> > funcIndexWithinNodeFuncSet_;
-
-  Array<RCP<const MapStructure> > elemStructure_;
-  Array<RCP<const MapStructure> > nodeStructure_;
+  Array<int> getEdgeLIDs(const CellFilter &filter) const;
+  
+  void getDOFsForEdgeBatch(const Array<int> &cellLID,
+    const Set<int> &requestedFuncSet,
+    Array<Array<int> > &dofs,
+    int verb) const;
+  
+  RCP<Set<int> > allowedFuncsOnEdgeBatch(const Array<int> &edgeLIDs) const;
+  RCP<Set<int> > allFuncIDs() const;
 };
-}
 
+} // namespace Sundance
 
-#endif
+#endif /* SUNDANCE_INHOMOGENEOUSEDGELOCALIZEDDOFMAP_H */
