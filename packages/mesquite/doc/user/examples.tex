@@ -12,7 +12,7 @@ and details of defining geometric domains (see Chapter \ref{sec:geom}) are not
 given in this section.
 
 First, we write a small program using Mesquite's simplified API, or
-wrappers, to show the fastest way deploy Mesquite functionality to
+wrappers, to show the fastest way to deploy Mesquite functionality to
 improve a mesh.  The wrapper concept, as well as details about the
 different wrappers available, are described in section
 \ref{sec:tutWrapper}.  Following this first example, we set up customized mesh
@@ -24,7 +24,7 @@ are described in section \ref{sec:tutDetailedAPI}.
 
 To create and link a driver code, the Mesquite library must be
 installed per the instructions of section \ref{sec:compiling}. 
-This commands and file names specified in this section are relative 
+The commands and file names specified in this section are relative 
 to the installed \texttt{testsuite/tutorial} directory.  It 
 is assumed that that is the working diretory.
 This tutorial begins with the file \texttt{tutorial.cpp}, 
@@ -85,7 +85,7 @@ performs no action. We can compile it in the
 Our next step is to load one of the test meshes distributed with
 Mesquite.  These meshes are distributed in the VTK unstructured mesh
 format, the details of which are given in \cite{VTKbook, VTKuml}. This
-format was chosen because of its readability and ease of use.
+format was chosen because of its readability and ease of use. 
 In this tutorial we use
 the simplest mechanism for loadling a mesh into Mesquite; different
 options are described in Chapter \ref{sec:meshes}.  In particular, to
@@ -103,6 +103,9 @@ adding the following lines to the file template described in
     return 1;
   }
 \end{verbatim}
+
+If the mesh read in contains more than one type of element, Mesquite will automatically
+handle the mixed elements with no additional effort required.
 
 Mesquite also provides a function to write a mesh
 file in VTK format, given a \texttt{MeshImpl} object:
@@ -250,10 +253,10 @@ the details of each class and the low-level API are not described here.
   LPtoPTemplate obj_func(&inverse_mean_ratio, 2, err);
   
     // creates the optimization procedures
-  FeasibleNewton f_newton(&obj_func);
+  TrustRegion t_region(&obj_func);
 
     //performs optimization globally
-  f_newton.use_global_patch(); 
+  t_region.use_global_patch(); 
 
     // creates a termination criterion and 
     // add it to the optimization procedure
@@ -261,14 +264,14 @@ the details of each class and the low-level API are not described here.
     // inner loop: stop if gradient norm < eps
   TerminationCriterion tc_inner;
   tc_inner.add_absolute_gradient_L2_norm( 1e-4 ); 
-  f_newton.set_inner_termination_criterion(&tc_inner);
+  t_region.set_inner_termination_criterion(&tc_inner);
 
     // creates a quality assessor
   QualityAssessor m_ratio_qa(&inverse_mean_ratio);
     // creates an instruction queue
   InstructionQueue queue;
   queue.add_quality_assessor(&m_ratio_qa, err); 
-  queue.set_master_quality_improver(&f_newton, err); 
+  queue.set_master_quality_improver(&t_region, err); 
   queue.add_quality_assessor(&m_ratio_qa, err); 
 
     // do optimization of the mesh_set
@@ -285,6 +288,7 @@ The left image in figure \ref{fig:hole} shows a mesh that has
 been degraded by moving the disk from the right side of the square to
 the left while keeping the mesh topology fixed.
 The mesh file
+\newline
 \texttt{mesquite/meshFiles/2D/VTK/hole\_in\_square.vtk} contains the
 information for this mesh.  If you plan to run this example, note that
 the normal direction that defines the geometry is now $(0,0,-1)$.
@@ -313,22 +317,25 @@ The vertex locations have been repositioned and significantly improve
 the quality of the mesh, as shown by the onscreen
 quality assessor output:  
 \begin{verbatim}
-************** QualityAssessor Summary **************
+************** QualityAssessor(free only) Summary **************
 
+  Evaluating quality for 140 elements.
+  This mesh had 140 quadrilateral elements.
   There were no inverted elements detected. 
   No entities had undefined values for any computed metric.
 
-             metric     average
- Inverse Mean Ratio     85.8391
+            metric     minimum     average         rms     maximum    std.dev.
+Inverse Mean Ratio     1.07588     85.8391     463.357     5037.46     455.336
 
-************** QualityAssessor Summary **************
+************** QualityAssessor(free only) Summary **************
 
+  Evaluating quality for 140 elements.
+  This mesh had 140 quadrilateral elements.
   There were no inverted elements detected. 
-  No entities had undefined values for any computed  metric.
+  No entities had undefined values for any computed metric.
 
-             metric     average
- Inverse Mean Ratio     1.83479
-
+            metric     minimum     average         rms     maximum    std.dev.
+Inverse Mean Ratio     1.01896     1.83479     1.91775     3.36336    0.557969
 \end{verbatim}
 \begin{figure*}[htbp]
 \begin{center}
