@@ -86,6 +86,14 @@ private:
     }
 };
 
+/** */
+class StepHookBase
+{
+public:
+  virtual void call(const double& tCur, const Expr& uCur) const = 0 ;
+};
+
+/** */
 class OutputControlParameters
 {
 public:
@@ -131,6 +139,10 @@ public:
   /** */
   void setEventHandler(RCP<EventDetectorBase> e)
     {eventHandler_ = e;}
+
+  /** */
+  void setStepHook(RCP<StepHookBase> h)
+    {stepHook_ = h;}
       
 
   /** */
@@ -146,6 +158,7 @@ private:
   NonlinearSolver<double> solver_;
   RCP<ExprComparisonBase> compare_;
   RCP<EventDetectorBase> eventHandler_;
+  RCP<StepHookBase> stepHook_;
 };
 
 

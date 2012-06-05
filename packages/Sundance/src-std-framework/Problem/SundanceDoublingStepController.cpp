@@ -44,6 +44,7 @@ bool DoublingStepController::run() const
   Tabs tab0(0);
   Tabs tab1;
   int verb = stepControl_.verbosity_;
+  if (MPIComm::world().getRank()!=0) verb = 0;
   double t = stepControl_.tStart_;
   double p = stepControl_.stepOrder_;
   double tau = stepControl_.tau_;
@@ -152,6 +153,8 @@ bool DoublingStepController::run() const
       continue;
     }
 
+    if (stepHook_.get()) stepHook_->call(t+dt, uSolnTwoHalfSteps);
+
     if (eventHandler_.get())
     {
       gotEvent = eventHandler_->checkForEvent(t, uCur, t+0.5*dt, uSolnHalfStep);
@@ -228,7 +231,8 @@ bool DoublingStepController::run() const
   PLAYA_MSG2(verb, tab1 << "Num step increases: " << numGrow);
   if (terminateOnDetection && gotEvent)
   {
-    PLAYA_MSG2(verb, tab1 << "Terminated by event detection");
+    PLAYA_MSG2(verb, tab1 << "Terminated by event detection at time="
+      << eventHandler_->eventTime());
   }
   PLAYA_MSG1(verb, tab0 << "==================================================================");
 
