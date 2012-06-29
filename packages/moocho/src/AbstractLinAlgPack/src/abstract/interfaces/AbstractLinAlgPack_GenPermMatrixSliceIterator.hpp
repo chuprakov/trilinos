@@ -192,7 +192,7 @@ public:
   /** \brief . */
   pointer operator->() const;
   /// itr + a
-  row_col_iterator<T>	operator+(difference_type);
+  row_col_iterator<T>	operator+(difference_type) const;
   /// itr - a
   row_col_iterator<T>	operator-(difference_type);
   /// itr += a
@@ -377,7 +377,7 @@ row_col_iterator<T>::operator->() const
 template< class T >
 inline
 row_col_iterator<T>
-row_col_iterator<T>::operator+(difference_type d)
+row_col_iterator<T>::operator+(difference_type d) const
 {
   row_col_iterator<T> itr = *this;
   itr.value_.increment(d);
