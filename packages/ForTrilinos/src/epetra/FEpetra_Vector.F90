@@ -41,6 +41,7 @@ module FEpetra_Vector
   use ForTrilinos_table_man
   use ForTrilinos_error
   use ForTrilinos_universal
+  use ForTrilinos_assertion_utility
   use FEpetra_MultiVector ,only: Epetra_MultiVector
   use FEpetra_BlockMap    !,only: Epetra_BlockMap !use to circumvent reported compiler bug
   use iso_c_binding       ,only: c_int
@@ -225,101 +226,111 @@ contains
    ! ____ Use for CTrilinos function implementation ______
   end function
 
-  subroutine ReplaceGlobalValues_NoOffset(this,NumEntries,values,indices,err)
+  subroutine ReplaceGlobalValues_NoOffset(this,values,indices,err)
     class(Epetra_Vector), intent(in) :: this
-    integer(c_int),       intent(in) :: NumEntries
     real(c_double),dimension(:),intent(in) :: values
     integer(c_int),dimension(:),intent(in) :: indices 
     type(error),optional,intent(out) :: err
     integer(c_int)                      :: error_out
-    error_out=Epetra_Vector_ReplaceGlobalValues(this%vector_id,NumEntries,values,indices)
+    call assert(size(values)==size(indices)&
+       ,error_message('ReplaceGlobalValues: values and indices should have the same size'))
+    error_out=Epetra_Vector_ReplaceGlobalValues(this%vector_id,size(values),values,indices)
     if (present(err)) err=error(error_out,'Epetra_Vector%ReplaceGlobalValues_NoOffset: failed.')
   end subroutine
 
-  subroutine ReplaceGlobalValues_BlockPos(this,NumEntries,BlockOffset,values,indices,err)
+  subroutine ReplaceGlobalValues_BlockPos(this,BlockOffset,values,indices,err)
     class(Epetra_Vector), intent(in) :: this
-    integer(c_int),       intent(in) :: NumEntries
     integer(c_int)       ,intent(in) :: BlockOffset
     real(c_double),dimension(:),intent(in) :: values
     integer(c_int),dimension(:),intent(in) :: indices 
     type(error),optional,intent(out) :: err
     integer(c_int)                      :: error_out
-    error_out=Epetra_Vector_ReplaceGlobalValues_BlockPos(this%vector_id,NumEntries,BlockOffset,values,indices)
+    call assert(size(values)==size(indices)& 
+      ,error_message('ReplaceGlobalValues: values and indices should have the same size'))
+    error_out=Epetra_Vector_ReplaceGlobalValues_BlockPos(this%vector_id,size(values),BlockOffset,values,indices)
     if (present(err)) err=error(error_out,'Epetra_Vector%ReplaceGlobalValues_BlockPos: failed.')
   end subroutine
   
-  subroutine ReplaceMyValues_NoOffset(this,NumEntries,values,indices,err)
+  subroutine ReplaceMyValues_NoOffset(this,values,indices,err)
     class(Epetra_Vector), intent(in) :: this
-    integer(c_int),       intent(in) :: NumEntries
     real(c_double),dimension(:),intent(in) :: values
     integer(c_int),dimension(:),intent(in) :: indices 
     integer(c_int),dimension(size(indices)):: indices_c
     type(error),optional,intent(out) :: err
     integer(c_int)                      :: error_out
+    call assert(size(values)==size(indices)&
+      ,error_message('ReplaceMyValues: values and indices should have the same size'))
     indices_c=indices-FT_Index_OffSet ! To account for Fortran index base 1 
-    error_out=Epetra_Vector_ReplaceMyValues(this%vector_id,NumEntries,values,indices_c)
+    error_out=Epetra_Vector_ReplaceMyValues(this%vector_id,size(values),values,indices_c)
     if (present(err)) err=error(error_out,'Epetra_Vector%ReplaceMyValues_NoOffset: failed.')
   end subroutine
 
-  subroutine ReplaceMyValues_BlockPos(this,NumEntries,BlockOffset,values,indices,err)
+  subroutine ReplaceMyValues_BlockPos(this,BlockOffset,values,indices,err)
     class(Epetra_Vector), intent(in) :: this
-    integer(c_int),       intent(in) :: NumEntries
     integer(c_int)       ,intent(in) :: BlockOffset
     real(c_double),dimension(:),intent(in) :: values
     integer(c_int),dimension(:),intent(in) :: indices 
     integer(c_int),dimension(size(indices)):: indices_c
     type(error),optional,intent(out) :: err
     integer(c_int)                      :: error_out
+    call assert(size(values)==size(indices)&
+       ,error_message('ReplaceMyValues: values and indices should have the same size'))
     indices_c=indices-FT_Index_OffSet ! To account for Fortran index base 1
-    error_out=Epetra_Vector_ReplaceMyValues_BlockPos(this%vector_id,NumEntries,BlockOffset,values,indices_c)
+    error_out=Epetra_Vector_ReplaceMyValues_BlockPos(this%vector_id,size(values),BlockOffset,values,indices_c)
     if (present(err)) err=error(error_out,'Epetra_Vector%ReplaceMyValues_BlockPos: failed.')
   end subroutine
 
-  subroutine SumIntoGlobalValues_NoOffset(this,NumEntries,values,indices,err)
+  subroutine SumIntoGlobalValues_NoOffset(this,values,indices,err)
     class(Epetra_Vector), intent(in) :: this
-    integer(c_int),       intent(in) :: NumEntries
     real(c_double),dimension(:),intent(in) :: values
     integer(c_int),dimension(:),intent(in) :: indices 
     type(error),optional,intent(out) :: err
     integer(c_int)                      :: error_out
-    error_out=Epetra_Vector_SumIntoGlobalValues(this%vector_id,NumEntries,values,indices)
+    call assert(size(values)==size(indices)&
+       ,error_message('SumIntoGlobalValues: values and indices should have the same size'))
+    error_out=Epetra_Vector_SumIntoGlobalValues(this%vector_id,size(values),values,indices)
     if (present(err)) err=error(error_out,'Epetra_Vector%SumIntoGlobalValues_NoOffset: failed.')
   end subroutine
   
-  subroutine SumIntoGlobalValues_BlockPos(this,NumEntries,BlockOffset,values,indices,err)
+  subroutine SumIntoGlobalValues_BlockPos(this,BlockOffset,values,indices,err)
     class(Epetra_Vector), intent(in) :: this
-    integer(c_int),       intent(in) :: NumEntries
     integer(c_int)       ,intent(in) :: BlockOffset
     real(c_double),dimension(:),intent(in) :: values
     integer(c_int),dimension(:),intent(in) :: indices 
     type(error),optional,intent(out) :: err
     integer(c_int)                      :: error_out
-    error_out=Epetra_Vector_SumIntoGlobalValues_BlockPos(this%vector_id,NumEntries,BlockOffset,values,indices)
+    call assert(size(values)==size(indices)&
+      ,error_message('SumIntoGlobalValues: values and indices should have the same size'))
+    error_out=Epetra_Vector_SumIntoGlobalValues_BlockPos(this%vector_id,size(values),BlockOffset,values,indices)
     if (present(err)) err=error(error_out,'Epetra_Vector%SumIntoGlobalValues_BlockPos: failed.')
   end subroutine
 
-  subroutine SumIntoMyValues_NoOffset(this,NumEntries,values,indices,err)
+  subroutine SumIntoMyValues_NoOffset(this,values,indices,err)
     class(Epetra_Vector), intent(in) :: this
-    integer(c_int),       intent(in) :: NumEntries
     real(c_double),dimension(:),intent(in) :: values
     integer(c_int),dimension(:),intent(in) :: indices 
     integer(c_int),dimension(size(indices)):: indices_c   
     type(error),optional,intent(out) :: err
     integer(c_int)                      :: error_out
+    call assert(size(values)==size(indices)&
+       ,error_message('SumIntoMyValues: values and indices should have the same size'))
     indices_c=indices-FT_Index_OffSet ! To account for Fortran index base 1
-    error_out=Epetra_Vector_SumIntoMyValues(this%vector_id,NumEntries,values,indices_c)
+    error_out=Epetra_Vector_SumIntoMyValues(this%vector_id,size(values),values,indices_c)
     if (present(err)) err=error(error_out,'Epetra_Vector%SumIntoMyValues_NoOffset: failed.')
   end subroutine
   
-  subroutine SumIntoMyValues_BlockPos(this,NumEntries,BlockOffset,values,indices,err)
+  subroutine SumIntoMyValues_BlockPos(this,BlockOffset,values,indices,err)
     class(Epetra_Vector), intent(in) :: this
-    integer(c_int),       intent(in) :: NumEntries
     integer(c_int)       ,intent(in) :: BlockOffset
     real(c_double),dimension(:),intent(in) :: values
     integer(c_int),dimension(:),intent(in) :: indices 
+    integer(c_int),dimension(size(indices)):: indices_c
     type(error),optional,intent(out) :: err
     integer(c_int)                      :: error_out
-    error_out=Epetra_Vector_SumIntoMyValues_BlockPos(this%vector_id,NumEntries,BlockOffset,values,indices)
+   call assert(size(values)==size(indices)&
+       ,error_message('SumIntoMyValues: values and indices should have the same size'))
+    indices_c=indices-FT_Index_OffSet ! To account for Fortran index base 1
+    error_out=Epetra_Vector_SumIntoMyValues_BlockPos(this%vector_id,size(values),BlockOffset,values,indices_c)
     if (present(err)) err=error(error_out,'Epetra_Vector%SumIntoMyValues_BlockPos: failed.')
   end subroutine
 

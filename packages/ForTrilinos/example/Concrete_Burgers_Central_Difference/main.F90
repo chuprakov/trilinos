@@ -85,7 +85,7 @@ contains
     allocate(f_v(NumMyElements))
     forall(i=1:NumMyElements) f_v(i)=initial(x_node(MyGlobalElements(i))) 
     this%f=Epetra_Vector(map,zero_initial=.true.)
-    call this%f%ReplaceGlobalValues(NumMyElements,f_v,MyGlobalElements)
+    call this%f%ReplaceGlobalValues(f_v,MyGlobalElements)
   contains
     pure function grid()
       integer(c_int) :: i
@@ -152,10 +152,9 @@ end function
     integer(c_int),dimension(:),allocatable :: NumNz
     integer(c_int) :: NumGlobalElements
     integer(c_int) :: NumMyElements,i
-    integer(c_int) :: indices(2), NumEntries
+    integer(c_int) :: indices(2)
     real(c_double) ::values(2)
     real(c_double),parameter :: zero =0.0
-    integer(c_int),parameter :: diagonal=1
 
   ! Executable code
    nx=size(x_node)
@@ -189,21 +188,18 @@ end function
     if (MyGlobalElements(i)==1) then
       indices(1) = NumGlobalElements 
       indices(2) = 2
-      NumEntries = 2
     else if(MyGlobalElements(i)==NumGlobalElements) then
       indices(1) = NumGlobalElements-1
       indices(2) = 1
-      NumEntries = 2
     else
       indices(1) = MyGlobalElements(i)-1
       indices(2) = MyGlobalElements(i)+1
-      NumEntries = 2
     end if
-     call A%InsertGlobalValues(MyGlobalElements(i),NumEntries,values,indices,err)
+     call A%InsertGlobalValues(MyGlobalElements(i),values,indices,err)
      call assert( [err%error_code()==0_c_int] , [error_message('A%InsertGlobalValues: failed')] )
   !Put in the diaogonal entry
      MyGlobalElements_diagonal=MyGlobalElements(i)
-     call A%InsertGlobalValues(MyGlobalElements(i),diagonal,[zero],MyGlobalElements_diagonal,err)
+     call A%InsertGlobalValues(MyGlobalElements(i),[zero],MyGlobalElements_diagonal,err)
      call assert( [err%error_code()==0_c_int] , [error_message('A%InsertGlobalValues: failed')] )
   end do
 
@@ -230,10 +226,9 @@ end function
     integer(c_int),dimension(:),allocatable :: NumNz
     integer(c_int) :: NumGlobalElements
     integer(c_int) :: NumMyElements,i
-    integer(c_int) :: indices(2), NumEntries
+    integer(c_int) :: indices(2)
     real(c_double) :: values(2)
     real(c_double) :: two_dx2  
-    integer(c_int),parameter :: diagonal=1
 
   ! Executable code
    nx=size(x_node)
@@ -268,21 +263,18 @@ end function
     if (MyGlobalElements(i)==1) then
       indices(1) = NumGlobalElements 
       indices(2) = 2
-      NumEntries = 2
     else if(MyGlobalElements(i)==NumGlobalElements) then
       indices(1) = NumGlobalElements-1
       indices(2) = 1
-      NumEntries = 2
     else
       indices(1) = MyGlobalElements(i)-1
       indices(2) = MyGlobalElements(i)+1
-      NumEntries = 2
     end if
-     call A%InsertGlobalValues(MyGlobalElements(i),NumEntries,values,indices,err)
+     call A%InsertGlobalValues(MyGlobalElements(i),values,indices,err)
      call assert( [err%error_code()==0_c_int] , [error_message('A%InsertGlobalValues: failed')] )
   !Put in the diaogonal entry
      MyGlobalElements_diagonal=MyGlobalElements(i)
-     call A%InsertGlobalValues(MyGlobalElements(i),diagonal,[two_dx2],MyGlobalElements_diagonal,err)
+     call A%InsertGlobalValues(MyGlobalElements(i),[two_dx2],MyGlobalElements_diagonal,err)
      call assert( [err%error_code()==0_c_int] , [error_message('A%InsertGlobalValues: failed')] )
   end do
 
@@ -310,7 +302,7 @@ end function
     allocate(f_v(NumMyElements))
     f_v=this%f%ExtractCopy()
     allocate(f(NumGlobalElements))
-    call comm%GatherAll(f_v,f,NumMyElements)
+    call comm%GatherAll(f_v,f)
     do i=1,NumGlobalElements
      if (comm%MyPID()==0) write(20,'(2(E20.12,1x))') x_node(i),f(i)
     enddo
