@@ -148,20 +148,22 @@ AbstractLinAlgPack::SparseVectorUtilityPack::SpVecIndexLookup<T_Element>::adjust
 {
   if(ele_rel_cached_ == EQUAL_TO_ELE) return poss_cached_;	// nonzero element
   switch(uplow) {
-    case LOWER_ELE:
+    case LOWER_ELE: {
       switch(ele_rel_cached_) {
         case BEFORE_ELE:
           return poss_cached_;
         case AFTER_ELE:
           return poss_cached_ + 1;
       }
-    case UPPER_ELE:
+    }
+    case UPPER_ELE: {
       switch(ele_rel_cached_) {
         case BEFORE_ELE:
           return poss_cached_ - 1;
         case AFTER_ELE:
           return poss_cached_;
       }
+    }
   }
   return 0;	// you will never get here but the compiler needs it.
 }

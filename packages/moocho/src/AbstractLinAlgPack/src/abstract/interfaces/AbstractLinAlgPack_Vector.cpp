@@ -138,7 +138,7 @@ index_type Vector::nz() const
 #else
   if( num_nonzeros_ < 0 ) {
 #endif
-    num_nonzeros_op.reduct_obj_reinit(&*num_nonzeros_targ);
+    num_nonzeros_op.reduct_obj_reinit(num_nonzeros_targ.ptr());
     const Vector *vecs[1] = { this };
     AbstractLinAlgPack::apply_op(num_nonzeros_op,1,vecs,0,NULL,&*num_nonzeros_targ);
     num_nonzeros_ = RTOp_ROp_num_nonzeros_val(num_nonzeros_op(*num_nonzeros_targ));
@@ -174,7 +174,7 @@ VectorMutable::vec_mut_ptr_t Vector::clone() const
 
 value_type Vector::get_ele(index_type i) const
 {
-  sum_op.reduct_obj_reinit(&*sum_targ);
+  sum_op.reduct_obj_reinit(sum_targ.ptr());
   const Vector *vecs[1] = { this };
   AbstractLinAlgPack::apply_op(
     sum_op,1,vecs,0,NULL,&*sum_targ
@@ -191,7 +191,7 @@ value_type Vector::norm_1() const
 #else
   if( norm_1_ < 0.0 ) {
 #endif
-    norm_1_op.reduct_obj_reinit(&*norm_1_targ);
+    norm_1_op.reduct_obj_reinit(norm_1_targ.ptr());
     const Vector *vecs[1] = { this };
     AbstractLinAlgPack::apply_op(norm_1_op,1,vecs,0,NULL,&*norm_1_targ);
     norm_1_ = RTOp_ROp_norm_1_val(norm_1_op(*norm_1_targ));
@@ -207,7 +207,7 @@ value_type Vector::norm_2() const
 #else
   if( norm_2_ < 0.0 ) {
 #endif
-    norm_2_op.reduct_obj_reinit(&*norm_2_targ);
+    norm_2_op.reduct_obj_reinit(norm_2_targ.ptr());
     const Vector *vecs[1] = { this };
     AbstractLinAlgPack::apply_op(norm_2_op,1,vecs,0,NULL,&*norm_2_targ);
     norm_2_ = RTOp_ROp_norm_2_val(norm_2_op(*norm_2_targ));
@@ -223,7 +223,7 @@ value_type Vector::norm_inf() const
 #else
   if( norm_inf_ < 0.0 ) {
 #endif
-    norm_inf_op.reduct_obj_reinit(&*norm_inf_targ);
+    norm_inf_op.reduct_obj_reinit(norm_inf_targ.ptr());
     const Vector *vecs[1] = { this };
     AbstractLinAlgPack::apply_op(norm_inf_op,1,vecs,0,NULL,&*norm_inf_targ);
     norm_inf_ = RTOp_ROp_norm_inf_val(norm_inf_op(*norm_inf_targ));
@@ -317,7 +317,7 @@ void Vector::finalize_apply_op(
   const size_t num_targ_vecs, VectorMutable** targ_vecs
   ) const
 {
-  for( int k = 0; k < num_targ_vecs; ++k )
+  for( size_t k = 0; k < num_targ_vecs; ++k )
     targ_vecs[k]->has_changed();
 }
 

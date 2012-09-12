@@ -90,7 +90,7 @@ bool AbstractLinAlgPack::assert_print_nan_inf(
   ,bool throw_excpt, std::ostream* out
   )
 {
-  find_nan_inf_op.reduct_obj_reinit(&*find_nan_inf_targ);
+  find_nan_inf_op.reduct_obj_reinit(find_nan_inf_targ.ptr());
   const Vector* vecs[1] = { &v };
   apply_op(find_nan_inf_op,1,vecs,0,NULL,&*find_nan_inf_targ);
   RTOp_ROp_find_nan_inf_reduct_obj_t

@@ -78,7 +78,7 @@ void AbstractLinAlgPack::apply_op_validate_input(
     ,func_name << " : Error!  first_ele_in = "
     <<first_ele_in<<" and sub_dim_in = "<<sub_dim_in
     <<" is not compatible with space.dim() = " << dim );
-  {for(int k = 0; k < num_vecs; ++k) {
+  {for(size_t k = 0; k < num_vecs; ++k) {
     const bool is_compatible = space.is_compatible(vecs[k]->space());
     TEUCHOS_TEST_FOR_EXCEPTION(
       !is_compatible, VectorSpace::IncompatibleVectorSpaces
@@ -88,7 +88,7 @@ void AbstractLinAlgPack::apply_op_validate_input(
       << " is not compatible with space of type \'"
       << typeName(space) << " with dimmension space.dim() = " << dim );
   }}
-  {for(int k = 0; k < num_targ_vecs; ++k) {
+  {for(size_t k = 0; k < num_targ_vecs; ++k) {
     const bool is_compatible = space.is_compatible(targ_vecs[k]->space());
     TEUCHOS_TEST_FOR_EXCEPTION(
       !is_compatible, VectorSpace::IncompatibleVectorSpaces
@@ -126,7 +126,7 @@ void AbstractLinAlgPack::apply_op_serial(
 
   Workspace<RTOpPack::ConstSubVectorView<value_type> >         local_vecs(wss,num_vecs);
   Workspace<RTOpPack::SubVectorView<value_type> >  local_targ_vecs(wss,num_targ_vecs);
-  int k;
+  size_t k;
   for(k = 0; k < num_vecs; ++k) {
     RTOpPack::SubVector _v;
     vecs[k]->get_sub_vector( global_sub_rng, &_v );
@@ -142,11 +142,7 @@ void AbstractLinAlgPack::apply_op_serial(
   // Apply the reduction/transformation operator on all elements all at once!
   //
 
-  op.apply_op(
-    num_vecs,       num_vecs      ? &local_vecs[0]      : NULL
-    ,num_targ_vecs, num_targ_vecs ? &local_targ_vecs[0] : NULL
-    ,reduct_obj
-    );
+  op.apply_op( local_vecs(), local_targ_vecs(), Teuchos::ptr(reduct_obj) );
 
   //
   // Free (and commit) the explicit views of the vector elements

@@ -65,9 +65,9 @@ extern "C" {
 #define CALL_API 
 #endif
 
-typedef Teuchos_Index RTOp_index_type;
-typedef double        RTOp_value_type;
-typedef char          RTOp_char_type;
+typedef Teuchos_Ordinal RTOp_index_type;
+typedef double RTOp_value_type;
+typedef char RTOp_char_type;
 
 /** \defgroup RTOp_grp Interfaces for generalized vector
  * reduction/transformation operators in C.

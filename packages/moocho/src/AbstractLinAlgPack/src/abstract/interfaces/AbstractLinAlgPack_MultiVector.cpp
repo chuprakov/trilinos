@@ -275,7 +275,7 @@ void MultiVector::apply_op(
   // Reduce all the reduction objects using the secondary reduction operator
   // into one reduction object and free the intermedate reduction objects.
   for(index_type k = 0; k < sec_sub_dim; ++k) {
-    sec_op.reduce_reduct_objs( *reduct_objs[k], reduct_obj );
+    sec_op.reduce_reduct_objs( *reduct_objs[k], Teuchos::ptr(reduct_obj) );
   }
 }
 

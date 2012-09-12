@@ -100,6 +100,7 @@ AbstractLinAlgPack::sub_vec_view(
   ,const Range1D&        rng_in
   )
 {
+  using Teuchos::null;
   const Range1D        rng = RangePack::full_range(rng_in,1,sv_in.dim());
   const SpVectorSlice  sv = sv_in(rng);
 
@@ -110,20 +111,20 @@ AbstractLinAlgPack::sub_vec_view(
       rng.lbound()-1  // global_offset
       ,rng.size()     // sub_dim
       ,0              // nz
-      ,NULL           // vlaues
+      ,null           // vlaues
       ,1              // values_stride
-      ,NULL           // indices
+      ,null           // indices
       ,1              // indices_stride
       ,0              // local_offset
       ,1              // is_sorted
       );
   }
   else {
-    SpVectorSlice::const_iterator
-      itr = sv.begin();
+    SpVectorSlice::const_iterator itr = sv.begin();
     TEUCHOS_TEST_FOR_EXCEPT( !( itr != sv.end() ) );
-    const value_type  *values  = &itr->value();
     if( sv.dim() && sv.nz() == sv.dim() && sv.is_sorted() ) {
+      const Teuchos::ArrayRCP<const value_type>  values =
+        Teuchos::arcp(&itr->value(), 0, values_stride*rng.size(), false) ;
       sub_vec.initialize(
         rng.lbound()-1    // global_offset
         ,rng.size()       // sub_dim
@@ -132,8 +133,10 @@ AbstractLinAlgPack::sub_vec_view(
         );
     }
     else {
-      const value_type   *values  = &itr->value();
-      const index_type   *indexes = &itr->index();
+      const Teuchos::ArrayRCP<const value_type>  values =
+        Teuchos::arcp(&itr->value(), 0, values_stride*sv.nz(), false) ;
+      const Teuchos::ArrayRCP<const index_type> indexes =
+        Teuchos::arcp(&itr->index(), 0, indices_stride*sv.nz(), false);
       sub_vec.initialize(
         rng.lbound()-1    // global_offset
         ,sv.dim()         // sub_dim
